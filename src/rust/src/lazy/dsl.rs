@@ -1173,7 +1173,6 @@ impl Expr {
         strict: Robj,
         exact: Robj,
         cache: Robj,
-        ambiguous: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
@@ -1187,7 +1186,7 @@ impl Expr {
                     exact: robj_to!(bool, exact)?,
                     cache: robj_to!(bool, cache)?,
                 },
-                robj_to!(PLExpr, ambiguous)?,
+                pl::lit("raise")
             )
             .into())
     }

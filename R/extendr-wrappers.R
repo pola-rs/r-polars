@@ -661,7 +661,7 @@ Expr$list_eval <- function(expr, parallel) .Call(wrap__Expr__list_eval, self, ex
 
 Expr$list_to_struct <- function(width_strat, name_gen, upper_bound) .Call(wrap__Expr__list_to_struct, self, width_strat, name_gen, upper_bound)
 
-Expr$str_to_date <- function(format, strict, exact, cache, ambiguous) .Call(wrap__Expr__str_to_date, self, format, strict, exact, cache, ambiguous)
+Expr$str_to_date <- function(format, strict, exact, cache) .Call(wrap__Expr__str_to_date, self, format, strict, exact, cache)
 
 Expr$str_to_datetime <- function(format, time_unit, time_zone, strict, exact, cache, ambiguous) .Call(wrap__Expr__str_to_datetime, self, format, time_unit, time_zone, strict, exact, cache, ambiguous)
 

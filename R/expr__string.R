@@ -96,6 +96,47 @@ ExprStr_strptime = function(
     unwrap("in str$strptime():")
 }
 
+#' Convert a Utf8 column into a Date column.
+#'
+#' @inheritParams ExprStr_strptime
+#'
+#' @return Expr
+#'
+#' @examples
+#' test = pl$DataFrame(str_date = c("2009-01-02", "2009-01-03", "2009-1-4", "2009 05 01"))
+#' test
+#'
+#' test$with_columns(date = pl$col("str_date")$str$to_date(strict = FALSE))
+ExprStr_to_date = function(format = NULL, strict = TRUE, exact = TRUE, cache = TRUE) {
+  .pr$Expr$str_to_date(self, format, strict, exact, cache) |>
+    unwrap("in $str$to_date():")
+}
+
+#' Convert a Utf8 column into a Date column.
+#'
+#' @inheritParams ExprStr_strptime
+#' @inheritParams pl_date_range
+#'
+#' @return Expr
+#'
+#' @examples
+#' test = pl$DataFrame(str_date = c("2009-01-02 01:00", "2009-01-03 02:00", "2009-1-4 3:00"))
+#' test
+#'
+#' test$with_columns(datetime = pl$col("str_date")$str$to_datetime(strict = FALSE))
+ExprStr_to_datetime = function(
+    format = NULL,
+    time_unit = NULL,
+    time_zone = NULL,
+    strict = TRUE,
+    exact = TRUE,
+    cache = TRUE,
+    ambiguous = "raise") {
+  .pr$Expr$str_to_datetime(
+    self, format, time_unit, time_zone, strict, exact, cache, ambiguous
+  ) |>
+    unwrap("in $str$to_datetime():")
+}
 
 #' Get the number of bytes in strings
 #' @description

@@ -12,6 +12,8 @@
 - The Extract function (`[`) for DataFrame can use columns not included in the
   result for filtering (#547).
 - The Extract function (`[`) for LazyFrame can filter rows with Expressions (#547).
+- New methods `$str$to_date()` and `$str$to_datetime()` as alternatives to 
+  `$str$strptime()`.
 
 # polars 0.11.0
 
