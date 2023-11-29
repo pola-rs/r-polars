@@ -295,7 +295,6 @@ GroupBy_null_count = function() {
 #' gb
 #'
 #' gb$ungroup()
-#' @export
 GroupBy_ungroup = function() {
   self = .pr$DataFrame$clone_in_rust(self)
   class(self) = "DataFrame"
