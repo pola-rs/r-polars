@@ -1712,7 +1712,8 @@ Expr_fill_nan = function(expr = NULL) {
 #' @examples
 #' pl$select(pl$lit(1:5)$std())
 Expr_std = function(ddof = 1) {
-  unwrap(.pr$Expr$std(self, ddof))
+  .pr$Expr$std(self, ddof) |>
+    unwrap("in $std():")
 }
 
 #' Get variance
@@ -1722,7 +1723,8 @@ Expr_std = function(ddof = 1) {
 #' @examples
 #' pl$select(pl$lit(1:5)$var())
 Expr_var = function(ddof = 1) {
-  unwrap(.pr$Expr$var(self, ddof))
+  .pr$Expr$var(self, ddof) |>
+    unwrap("in $var():")
 }
 
 #' Get maximum value

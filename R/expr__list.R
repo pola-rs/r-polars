@@ -365,7 +365,9 @@ ExprList_tail = function(n = 5L) {
 
 #' List to Struct
 #' @param n_field_strategy Strategy to determine the number of fields of the struct.
-#'  default = 'first_non_null' else 'max_width'
+#'  default = "first_non_null": set number of fields equal to the length of the
+#'  first non zero-length sublist. else 'max_width'; else  "max_width":
+#'  set number of fields as max length of all sublists.
 #' @param name_generator an R function that takes an R scalar double and outputs
 #' a string value. It is a f64 because i32 might not be a big enough enumerate all.
 #' The default (`NULL`) is equivalent to the R function
@@ -391,7 +393,10 @@ ExprList_tail = function(n = 5L) {
 #'
 #' df2$to_list()
 ExprList_to_struct = function(
-    n_field_strategy = "first_non_null", name_generator = NULL, upper_bound = 0) {
+    n_field_strategy = c("first_non_null","max_width"),
+    name_generator = NULL,
+    upper_bound = 0
+) {
   .pr$Expr$list_to_struct(self, n_field_strategy, name_generator, upper_bound) |>
     unwrap("in <List>$to_struct():")
 }

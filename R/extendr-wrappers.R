@@ -659,7 +659,7 @@ Expr$list_slice <- function(offset, length) .Call(wrap__Expr__list_slice, self, 
 
 Expr$list_eval <- function(expr, parallel) .Call(wrap__Expr__list_eval, self, expr, parallel)
 
-Expr$list_to_struct <- function(width_strat, name_gen, upper_bound) .Call(wrap__Expr__list_to_struct, self, width_strat, name_gen, upper_bound)
+Expr$list_to_struct <- function(n_field_strategy, name_gen, upper_bound) .Call(wrap__Expr__list_to_struct, self, n_field_strategy, name_gen, upper_bound)
 
 Expr$str_to_date <- function(format, strict, exact, cache, ambiguous) .Call(wrap__Expr__str_to_date, self, format, strict, exact, cache, ambiguous)
 

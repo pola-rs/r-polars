@@ -9,7 +9,9 @@ function
 }
 \arguments{
 \item{n_field_strategy}{Strategy to determine the number of fields of the struct.
-default = 'first_non_null' else 'max_width'}
+default = "first_non_null": set number of fields equal to the length of the
+first non zero-length sublist. else 'max_width'; else  "max_width":
+set number of fields as max length of all sublists.}
 
 \item{name_generator}{an R function that takes an R scalar double and outputs
 a string value. It is a f64 because i32 might not be a big enough enumerate all.

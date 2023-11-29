@@ -28,10 +28,13 @@ use std::ops::{Add, Div, Mul, Rem, Sub};
 use std::result::Result;
 pub type NameGenerator = pl::Arc<dyn Fn(usize) -> String + Send + Sync>;
 use crate::rdatatype::robjs_to_ewm_options;
+
 use crate::utils::r_expr_to_rust_expr;
 use crate::utils::unpack_r_eval;
-#[derive(Clone, Debug)]
+use smartstring::{LazyCompact, SmartString};
+use std::sync::Arc;
 
+#[derive(Clone, Debug)]
 pub struct Expr(pub pl::Expr);
 
 impl Deref for Expr {
@@ -356,11 +359,11 @@ impl Expr {
         self.0.clone().reverse().into()
     }
 
-    pub fn std(&self, ddof: Robj) -> Result<Self, String> {
+    pub fn std(&self, ddof: Robj) -> RResult<Self> {
         Ok(self.clone().0.std(robj_to!(u8, ddof)?).into())
     }
 
-    pub fn var(&self, ddof: Robj) -> Result<Self, String> {
+    pub fn var(&self, ddof: Robj) -> RResult<Self> {
         Ok(self.clone().0.var(robj_to!(u8, ddof)?).into())
     }
 
@@ -882,32 +885,25 @@ impl Expr {
         Ok(self.0.clone().ewm_var(options).into())
     }
 
-    pub fn extend_constant(&self, value: &Expr, n: f64) -> List {
-        let expr_res = || -> Result<Expr, String> {
-            let av = match value.clone().0 {
-                pl::Expr::Literal(ma) => literal_to_any_value(ma),
-                ma => Err(format!("value [{:?}] was not a literal:", ma)),
-            }?;
-            let n = try_f64_into_usize(n)?;
-
-            Ok(Expr(
-                self.0
-                    .clone()
-                    .apply(
-                        move |s| {
-                            //swap owned inline string to str as only supported and if swapped here life time is long enough
-                            let av = match &av {
-                                pl::AnyValue::Utf8Owned(x) => pl::AnyValue::Utf8(x.as_str()),
-                                x => x.clone(),
-                            };
-                            s.extend_constant(av, n).map(Some)
-                        },
-                        pl::GetOutput::same_type(),
-                    )
-                    .with_fmt("extend"),
-            ))
-        }();
-        r_result_list(expr_res)
+    pub fn extend_constant(&self, value: Robj, n: Robj) -> RResult<Self> {
+        let av = robj_to!(LiteralValue, value).and_then(literal_to_any_value)?;
+        let n = robj_to!(usize, n)?;
+        Ok(Expr(
+            self.0
+                .clone()
+                .apply(
+                    move |s| {
+                        //swap owned inline string to str as only supported and if swapped here life time is long enough
+                        let av = match &av {
+                            pl::AnyValue::Utf8Owned(x) => pl::AnyValue::Utf8(x.as_str()),
+                            x => x.clone(),
+                        };
+                        s.extend_constant(av, n).map(Some)
+                    },
+                    pl::GetOutput::same_type(),
+                )
+                .with_fmt("extend"),
+        ))
     }
 
     pub fn rep(&self, n: f64, rechunk: bool) -> List {
@@ -1063,14 +1059,10 @@ impl Expr {
         )))
     }
 
-    fn list_shift(&self, periods: Robj) -> List {
-        let expr_res = || -> Result<Expr, String> {
-            Ok(Expr(
-                self.0.clone().list().shift(robj_to!(PLExpr, periods)?),
-            ))
-        }()
-        .map_err(|err| format!("list.shift: {}", err));
-        r_result_list(expr_res)
+    fn list_shift(&self, periods: Robj) -> RResult<Self> {
+        Ok(Expr(
+            self.0.clone().list().shift(robj_to!(PLExpr, periods)?),
+        ))
     }
 
     fn list_slice(&self, offset: &Expr, length: Nullable<&Expr>) -> Self {
@@ -1088,43 +1080,29 @@ impl Expr {
 
     fn list_to_struct(
         &self,
-        width_strat: &str,
-        name_gen: Nullable<Robj>,
-        upper_bound: f64,
-    ) -> List {
-        use crate::rdatatype::new_width_strategy;
-        use crate::utils::extendr_concurrent::ParRObj;
-        use smartstring::{LazyCompact, SmartString};
-        use std::sync::Arc;
-
-        let name_gen: std::option::Option<
-            Arc<(dyn Fn(usize) -> SmartString<LazyCompact> + Send + Sync + 'static)>,
-        > = if let Some(robj) = null_to_opt(name_gen) {
+        n_field_strategy: Robj,
+        name_gen: Robj,
+        upper_bound: Robj,
+    ) -> RResult<Self> {
+        let width_strat = robj_to!(ListToStructWidthStrategy, n_field_strategy)?;
+        let name_gen = robj_to!(Option, Robj, name_gen)?.map(|robj| {
             let par_fn: ParRObj = robj.into();
-            let x: std::option::Option<
-                Arc<(dyn Fn(usize) -> SmartString<LazyCompact> + Send + Sync + 'static)>,
-            > = Some(pl::Arc::new(move |idx: usize| {
-                let thread_com = ThreadCom::from_global(&CONFIG);
-                thread_com.send(RFnSignature::FnF64ToString(par_fn.clone(), idx as f64));
-                let s = thread_com.recv().unwrap_string();
-                let s: SmartString<LazyCompact> = s.into();
-                s
-            }));
-            x
-        } else {
-            None
-        };
-
-        //resolve usize from f64 and stategy from str
-        let res = || -> Result<Expr, String> {
-            let ub = try_f64_into_usize(upper_bound)?;
-            let strat = new_width_strategy(width_strat)?;
-            Ok(Expr(self.0.clone().list().to_struct(strat, name_gen, ub)))
-        }();
-
-        let res = res.map_err(|err| format!("in to_struct: {}", err));
-
-        r_result_list(res)
+            let f: Arc<(dyn Fn(usize) -> SmartString<LazyCompact> + Send + Sync + 'static)> =
+                pl::Arc::new(move |idx: usize| {
+                    let thread_com = ThreadCom::from_global(&CONFIG);
+                    thread_com.send(RFnSignature::FnF64ToString(par_fn.clone(), idx as f64));
+                    let s = thread_com.recv().unwrap_string();
+                    let s: SmartString<LazyCompact> = s.into();
+                    s
+                });
+            f
+        });
+        let ub = robj_to!(usize, upper_bound)?;
+        Ok(Expr(self.0.clone().list().to_struct(
+            width_strat,
+            name_gen,
+            ub,
+        )))
     }
 
     pub fn str_to_date(
@@ -1519,11 +1497,11 @@ impl Expr {
         self.0.clone().last().into()
     }
 
-    pub fn head(&self, n: Robj) -> Result<Self, String> {
+    pub fn head(&self, n: Robj) -> RResult<Self> {
         Ok(self.0.clone().head(Some(robj_to!(usize, n)?)).into())
     }
 
-    pub fn tail(&self, n: Robj) -> Result<Self, String> {
+    pub fn tail(&self, n: Robj) -> RResult<Self> {
         Ok(self.0.clone().tail(Some(robj_to!(usize, n)?)).into())
     }
 

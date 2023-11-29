@@ -303,9 +303,7 @@ pub fn new_rank_method(s: &str) -> std::result::Result<pl::RankMethod, String> {
     }
 }
 
-pub fn literal_to_any_value(
-    litval: pl::LiteralValue,
-) -> std::result::Result<pl::AnyValue<'static>, String> {
+pub fn literal_to_any_value(litval: pl::LiteralValue) -> RResult<pl::AnyValue<'static>> {
     use pl::AnyValue as av;
     use pl::LiteralValue as lv;
     use smartstring::alias::String as SString;
@@ -337,7 +335,7 @@ pub fn literal_to_any_value(
             s.push_str(x.as_str());
             Ok(av::Utf8Owned(s))
         }
-        x => Err(format!("cannot convert LiteralValue {:?} to AnyValue", x)),
+        x => rerr().bad_val(format!("cannot convert LiteralValue {:?} to AnyValue", x)),
     }
 }
 
@@ -371,13 +369,12 @@ pub fn new_interpolation_method(s: &str) -> std::result::Result<pl::Interpolatio
     }
 }
 
-pub fn new_width_strategy(s: &str) -> std::result::Result<pl::ListToStructWidthStrategy, String> {
+pub fn robj_to_width_strategy(robj: Robj) -> RResult<pl::ListToStructWidthStrategy> {
     use pl::ListToStructWidthStrategy as WS;
-    match s {
+    match robj_to_rchoice(robj)?.to_lowercase().as_str() {
         "first_non_null" => Ok(WS::FirstNonNull),
         "max_width" => Ok(WS::MaxWidth),
-
-        _ => Err(format!(
+        s => rerr().bad_val(format!(
             "n_field_strategy: [{}] is not any of 'first_non_null' or 'max_width'",
             s
         )),
