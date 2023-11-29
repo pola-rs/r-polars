@@ -780,14 +780,6 @@ ExprDT_replace_time_zone = function(tz, ambiguous = "raise") {
     unwrap("in $replace_time_zone():")
 }
 
-
-
-duration_total_depr_warning = function(x) {
-  warning(
-    paste0("$dt$", x, "() is deprecated and will be removed in 0.12.0. Use $dt$total_", x, "() instead."),
-    call. = FALSE)
-}
-
 #' Days
 #' @description Extract the days from a Duration type.
 #' @name ExprDT_total_days
@@ -808,12 +800,6 @@ duration_total_depr_warning = function(x) {
 ExprDT_total_days = function() {
   .pr$Expr$dt_total_days(self) |>
     unwrap("in $dt$total_days():")
-}
-
-ExprDT_days = function() {
-  duration_total_depr_warning("days")
-  .pr$Expr$dt_total_days(self) |>
-    unwrap("in $dt$days():")
 }
 
 #' Hours
@@ -838,12 +824,6 @@ ExprDT_total_hours = function() {
     unwrap("in $dt$total_hours():")
 }
 
-ExprDT_hours = function() {
-  duration_total_depr_warning("hours")
-  .pr$Expr$dt_total_hours(self) |>
-    unwrap("in $dt$hours():")
-}
-
 #' Minutes
 #' @description Extract the minutes from a Duration type.
 #' @name ExprDT_total_minutes
@@ -866,12 +846,6 @@ ExprDT_total_minutes = function() {
     unwrap("in $dt$total_minutes():")
 }
 
-ExprDT_minutes = function() {
-  duration_total_depr_warning("minutes")
-  .pr$Expr$dt_total_minutes(self) |>
-    unwrap("in $dt$minutes():")
-}
-
 #' Seconds
 #' @description Extract the seconds from a Duration type.
 #' @name ExprDT_total_seconds
@@ -890,12 +864,6 @@ ExprDT_minutes = function() {
 ExprDT_total_seconds = function() {
   .pr$Expr$dt_total_seconds(self) |>
     unwrap("in $dt$total_seconds():")
-}
-
-ExprDT_seconds = function() {
-  duration_total_depr_warning("seconds")
-  .pr$Expr$dt_total_seconds(self) |>
-    unwrap("in $dt$seconds():")
 }
 
 #' milliseconds
@@ -918,12 +886,6 @@ ExprDT_total_milliseconds = function() {
     unwrap("in $dt$total_milliseconds():")
 }
 
-ExprDT_milliseconds = function() {
-  duration_total_depr_warning("milliseconds")
-  .pr$Expr$dt_total_milliseconds(self) |>
-    unwrap("in $dt$milliseconds():")
-}
-
 #' microseconds
 #' @description Extract the microseconds from a Duration type.
 #' @name ExprDT_total_microseconds
@@ -944,12 +906,6 @@ ExprDT_total_microseconds = function() {
     unwrap("in $dt$total_microseconds():")
 }
 
-ExprDT_microseconds = function() {
-  duration_total_depr_warning("microseconds")
-  .pr$Expr$dt_total_microseconds(self) |>
-    unwrap("in $dt$microseconds():")
-}
-
 #' nanoseconds
 #' @description Extract the nanoseconds from a Duration type.
 #' @name ExprDT_total_nanoseconds
@@ -968,12 +924,6 @@ ExprDT_microseconds = function() {
 ExprDT_total_nanoseconds = function() {
   .pr$Expr$dt_total_nanoseconds(self) |>
     unwrap("in $dt$total_nanoseconds():")
-}
-
-ExprDT_nanoseconds = function() {
-  duration_total_depr_warning("nanoseconds")
-  .pr$Expr$dt_total_nanoseconds(self) |>
-    unwrap("in $dt$nanoseconds():")
 }
 
 #' Offset By

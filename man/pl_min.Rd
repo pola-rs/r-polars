@@ -13,9 +13,6 @@ If one arg:
 \item list of strings(column names) or expressions to add up as expr1 + expr2 + expr3 + ...
 If several args, then wrapped in a list and handled as above.
 }}
-
-\item{verbose}{Show the deprecation message when several columns or Expr are
-passed in \code{...}. Will be removed in 0.12.0.}
 }
 \value{
 Expr

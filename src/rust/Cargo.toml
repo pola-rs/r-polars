@@ -1,6 +1,6 @@
 [package]
 name = "r-polars"
-version = "0.35.0"
+version = "0.35.1"
 edition = "2021"
 rust-version = "1.73"
 publish = false
@@ -90,6 +90,7 @@ features = [
   "interpolate",
   "ipc",
   "is_first_distinct",
+  "is_last_distinct",
   "is_in",
   "is_unique",
   "json",

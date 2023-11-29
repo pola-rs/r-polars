@@ -463,8 +463,6 @@ pl$approx_n_unique = function(column) { #-> int or Expr
 #'  - list of strings(column names) or expressions to add up as expr1 + expr2 + expr3 + ...
 #'
 #' If several args, then wrapped in a list and handled as above.
-#' @param verbose Show the deprecation message when several columns or Expr are
-#' passed in `...`. Will be removed in 0.12.0.
 #'
 #' @return Expr
 #' @keywords Expr_new
@@ -492,9 +490,6 @@ pl$sum = function(..., verbose = TRUE) {
     return(pl$lit(column)$sum())
   }
   if (is.list(column)) {
-    if (verbose) {
-      warning("This usage of `pl$sum()` used to compute the sum rowwise. This is now deprecated, use `pl$sum_horizontal()` instead. This message will be removed in 0.12.0. Set `verbose = FALSE` to remove this message.")
-    }
     return(pl$col(column)$sum())
   }
   stop("pl$sum: this input is not supported")
@@ -512,8 +507,6 @@ pl$sum = function(..., verbose = TRUE) {
 #'  - numeric, same as `pl$lit(column)$sum()`
 #'  - list of strings(column names) or expressions to add up as expr1 + expr2 + expr3 + ...
 #' If several args, then wrapped in a list and handled as above.
-#' @param verbose Show the deprecation message when several columns or Expr are
-#' passed in `...`. Will be removed in 0.12.0.
 #'
 #' @return Expr
 #' @keywords Expr_new
@@ -538,9 +531,6 @@ pl$min = function(..., verbose = TRUE) {
     return(pl$lit(column)$min())
   }
   if (is.list(column)) {
-    if (verbose) {
-      warning("This usage of `pl$min()` used to find the minimum value rowwise. This is now deprecated, use `pl$min_horizontal()` instead. This message will be removed in 0.12.0. Set `verbose = FALSE` to remove this message.")
-    }
     return(pl$col(column)$min())
   }
   stop("pl$min: this input is not supported")
@@ -562,8 +552,6 @@ pl$min = function(..., verbose = TRUE) {
 #'  - list of strings(column names) or expressions to add up as expr1 + expr2 + expr3 + ...
 #'
 #' If several args, then wrapped in a list and handled as above.
-#' @param verbose Show the deprecation message when several columns or Expr are
-#' passed in `...`. Will be removed in 0.12.0.
 #'
 #' @return Expr
 #' @keywords Expr_new
@@ -588,9 +576,6 @@ pl$max = function(..., verbose = TRUE) {
     return(pl$lit(column)$max())
   }
   if (is.list(column)) {
-    if (verbose) {
-      warning("This usage of `pl$max()` used to find the maximum value rowwise. This is now deprecated, use `pl$max_horizontal()` instead. This message will be removed in 0.12.0. Set `verbose = FALSE` to remove this message.")
-    }
     return(pl$col(column)$max())
   }
   stop("pl$max: this input is not supported")

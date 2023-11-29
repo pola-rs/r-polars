@@ -10,7 +10,7 @@ Expr_is_duplicated
 Expr
 }
 \description{
-This is syntactic sugar for \verb{$is_unique()$not_()}.
+This is syntactic sugar for \verb{$is_unique()$not()}.
 }
 \examples{
 pl$DataFrame(head(mtcars[, 1:2]))$

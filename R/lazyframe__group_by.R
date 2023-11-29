@@ -92,7 +92,6 @@ LazyGroupBy_print = function() {
 #' lgb
 #'
 #' lgb$ungroup()
-#' @export
 LazyGroupBy_ungroup = function() {
   .pr$LazyGroupBy$ungroup(self)
 }
