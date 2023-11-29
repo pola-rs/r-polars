@@ -2,12 +2,12 @@
 % Please edit documentation in R/s3_methods.R
 \name{unique.DataFrame}
 \alias{unique.DataFrame}
-\alias{unique.LazyFrame}
+\alias{unique.RPolarsLazyFrame}
 \title{Drop duplicated rows}
 \usage{
 \method{unique}{DataFrame}(x, incomparables = FALSE, subset = NULL, keep = "first", ...)
 
-\method{unique}{LazyFrame}(x, incomparables = FALSE, subset = NULL, keep = "first", ...)
+\method{unique}{RPolarsLazyFrame}(x, incomparables = FALSE, subset = NULL, keep = "first", ...)
 }
 \arguments{
 \item{x}{A \link[=DataFrame_class]{DataFrame} or \link[=LazyFrame_class]{LazyFrame}}

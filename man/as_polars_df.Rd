@@ -7,7 +7,7 @@
 \alias{as_polars_df.DataFrame}
 \alias{as_polars_df.GroupBy}
 \alias{as_polars_df.Series}
-\alias{as_polars_df.LazyFrame}
+\alias{as_polars_df.RPolarsLazyFrame}
 \alias{as_polars_df.LazyGroupBy}
 \alias{as_polars_df.ArrowTabular}
 \title{To polars DataFrame}
@@ -24,7 +24,7 @@ as_polars_df(x, ...)
 
 \method{as_polars_df}{Series}(x, ...)
 
-\method{as_polars_df}{LazyFrame}(
+\method{as_polars_df}{RPolarsLazyFrame}(
   x,
   n_rows = Inf,
   ...,

@@ -2,13 +2,13 @@
 % Please edit documentation in R/s3_methods.R
 \name{[.DataFrame}
 \alias{[.DataFrame}
-\alias{[.LazyFrame}
+\alias{[.RPolarsLazyFrame}
 \alias{[.Series}
 \title{Extract Parts of a Polars Object}
 \usage{
 \method{[}{DataFrame}(x, i, j, drop = TRUE)
 
-\method{[}{LazyFrame}(x, i, j, drop = TRUE)
+\method{[}{RPolarsLazyFrame}(x, i, j, drop = TRUE)
 
 \method{[}{Series}(x, i)
 }

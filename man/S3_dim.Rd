@@ -2,12 +2,12 @@
 % Please edit documentation in R/s3_methods.R
 \name{dim.DataFrame}
 \alias{dim.DataFrame}
-\alias{dim.LazyFrame}
+\alias{dim.RPolarsLazyFrame}
 \title{Get the dimensions}
 \usage{
 \method{dim}{DataFrame}(x)
 
-\method{dim}{LazyFrame}(x)
+\method{dim}{RPolarsLazyFrame}(x)
 }
 \arguments{
 \item{x}{A \link[=DataFrame_class]{DataFrame} or \link[=LazyFrame_class]{LazyFrame}}

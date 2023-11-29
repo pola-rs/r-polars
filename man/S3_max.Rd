@@ -2,13 +2,13 @@
 % Please edit documentation in R/s3_methods.R
 \name{max.DataFrame}
 \alias{max.DataFrame}
-\alias{max.LazyFrame}
+\alias{max.RPolarsLazyFrame}
 \alias{max.Series}
 \title{Compute the maximum value}
 \usage{
 \method{max}{DataFrame}(x, ...)
 
-\method{max}{LazyFrame}(x, ...)
+\method{max}{RPolarsLazyFrame}(x, ...)
 
 \method{max}{Series}(x, ...)
 }

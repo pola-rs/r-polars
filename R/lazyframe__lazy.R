@@ -6,7 +6,7 @@
 #' instantiated `LazyFrame`-object is an `externalptr` to a lowlevel rust polars
 #' LazyFrame  object. The pointer address is the only statefullness of the
 #' LazyFrame object on the R side. Any other state resides on the rust side. The
-#' S3 method `.DollarNames.LazyFrame` exposes all public `$foobar()`-methods which
+#' S3 method `.DollarNames.RPolarsLazyFrame` exposes all public `$foobar()`-methods which
 #' are callable onto the object.
 #'
 #' Most methods return another `LazyFrame`-class instance or similar which allows
@@ -108,7 +108,7 @@ LazyFrame
 #' @inherit .DollarNames.DataFrame return
 #' @keywords internal
 
-.DollarNames.LazyFrame = function(x, pattern = "") {
+.DollarNames.RPolarsLazyFrame = function(x, pattern = "") {
   paste0(ls(LazyFrame, pattern = pattern), "()")
 }
 
@@ -161,7 +161,7 @@ pl$LazyFrame = function(...) {
 #' @export
 #'
 #' @examples pl$LazyFrame(iris)
-print.LazyFrame = function(x, ...) {
+print.RPolarsLazyFrame = function(x, ...) {
   print("polars LazyFrame naive plan: (run ldf$describe_optimized_plan() to see the optimized plan)")
   cloned_x = .pr$LazyFrame$print(x)
   invisible(cloned_x)

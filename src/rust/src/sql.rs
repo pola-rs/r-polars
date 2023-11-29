@@ -18,7 +18,7 @@ impl RPolarsSQLContext {
         }
     }
 
-    pub fn execute(&mut self, query: &str) -> RResult<LazyFrame> {
+    pub fn execute(&mut self, query: &str) -> RResult<RPolarsLazyFrame> {
         Ok(self
             .context
             .execute(query)

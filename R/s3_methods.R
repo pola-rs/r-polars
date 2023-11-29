@@ -130,7 +130,7 @@
 
 #' @export
 #' @rdname S3_extract
-`[.LazyFrame` = `[.DataFrame`
+`[.RPolarsLazyFrame` = `[.DataFrame`
 
 #' @export
 #' @rdname S3_extract
@@ -150,7 +150,7 @@ head.DataFrame = function(x, n = 6L, ...) x$limit(n = n)
 
 #' @export
 #' @rdname S3_head
-head.LazyFrame = head.DataFrame
+head.RPolarsLazyFrame = head.DataFrame
 
 #' Take the last n rows
 #'
@@ -164,7 +164,7 @@ tail.DataFrame = function(x, n = 6L, ...) x$tail(n = n)
 
 #' @export
 #' @rdname S3_tail
-tail.LazyFrame = tail.DataFrame
+tail.RPolarsLazyFrame = tail.DataFrame
 
 #' Get the dimensions
 #'
@@ -176,7 +176,7 @@ dim.DataFrame = function(x) x$shape
 
 #' @export
 #' @rdname S3_dim
-dim.LazyFrame = function(x) c(NA, x$width)
+dim.RPolarsLazyFrame = function(x) c(NA, x$width)
 
 #' Get the length
 #'
@@ -189,7 +189,7 @@ length.DataFrame = function(x) x$width
 
 #' @export
 #' @rdname S3_length
-length.LazyFrame = length.DataFrame
+length.RPolarsLazyFrame = length.DataFrame
 
 #' @export
 #' @rdname S3_length
@@ -205,7 +205,7 @@ names.DataFrame = function(x) x$columns
 
 #' @export
 #' @rdname S3_names
-names.LazyFrame = function(x) x$columns
+names.RPolarsLazyFrame = function(x) x$columns
 
 #' Get the row names
 #'
@@ -225,7 +225,7 @@ dimnames.DataFrame = function(x) list(row.names(x), names(x))
 
 #' @export
 #' @rdname S3_dimnames
-dimnames.LazyFrame = function(x) list(NULL, names(x))
+dimnames.RPolarsLazyFrame = function(x) list(NULL, names(x))
 
 #' Convert to a data.frame
 #'
@@ -239,7 +239,7 @@ as.data.frame.DataFrame = function(x, ...) x$to_data_frame(...)
 
 #' @export
 #' @rdname S3_as.data.frame
-as.data.frame.LazyFrame = function(x, ...) x$collect()$to_data_frame(...)
+as.data.frame.RPolarsLazyFrame = function(x, ...) x$collect()$to_data_frame(...)
 
 #' Convert to a matrix
 #'
@@ -251,7 +251,7 @@ as.matrix.DataFrame = function(x, ...) as.matrix(as.data.frame(x, ...))
 
 #' @export
 #' @rdname S3_as.matrix
-as.matrix.LazyFrame = as.matrix.DataFrame
+as.matrix.RPolarsLazyFrame = as.matrix.DataFrame
 
 #' Compute the mean
 #'
@@ -265,7 +265,7 @@ mean.DataFrame = function(x, ...) x$mean()
 
 #' @export
 #' @rdname S3_mean
-mean.LazyFrame = function(x, ...) x$mean()
+mean.RPolarsLazyFrame = function(x, ...) x$mean()
 
 #' @export
 #' @rdname S3_mean
@@ -285,7 +285,7 @@ median.DataFrame = function(x, ...) x$median()
 #' @export
 #' @importFrom stats median
 #' @rdname S3_median
-median.LazyFrame = function(x, ...) x$median()
+median.RPolarsLazyFrame = function(x, ...) x$median()
 
 #' @export
 #' @importFrom stats median
@@ -304,7 +304,7 @@ min.DataFrame = function(x, ...) x$min()
 
 #' @export
 #' @rdname S3_min
-min.LazyFrame = function(x, ...) x$min()
+min.RPolarsLazyFrame = function(x, ...) x$min()
 
 #' @export
 #' @rdname S3_min
@@ -322,7 +322,7 @@ max.DataFrame = function(x, ...) x$max()
 
 #' @export
 #' @rdname S3_max
-max.LazyFrame = function(x, ...) x$max()
+max.RPolarsLazyFrame = function(x, ...) x$max()
 
 #' @export
 #' @rdname S3_max
@@ -340,7 +340,7 @@ sum.DataFrame = function(x, ...) x$sum()
 
 #' @export
 #' @rdname S3_sum
-sum.LazyFrame = function(x, ...) x$sum()
+sum.RPolarsLazyFrame = function(x, ...) x$sum()
 
 #' @export
 #' @rdname S3_sum
@@ -442,7 +442,7 @@ c.Series = \(x, ...) {
 #' na.omit(df)
 #' na.omit(df, subset = "a")
 #' na.omit(df, subset = c("a", "b"))
-na.omit.LazyFrame = function(object, subset = NULL, ...) {
+na.omit.RPolarsLazyFrame = function(object, subset = NULL, ...) {
   if (!is.null(subset) && !is.atomic(subset) && !is.character(subset)) {
     stop("subset must be NULL, a string, or a character vector")
   }
@@ -484,7 +484,7 @@ unique.DataFrame = function(x, incomparables = FALSE, subset = NULL, keep = "fir
 
 #' @export
 #' @rdname S3_unique
-unique.LazyFrame = function(x, incomparables = FALSE, subset = NULL, keep = "first", ...) {
+unique.RPolarsLazyFrame = function(x, incomparables = FALSE, subset = NULL, keep = "first", ...) {
   if (!is.null(subset) && !is.atomic(subset) && !is.character(subset)) {
     stop("subset must be NULL, a string, or a character vector")
   }

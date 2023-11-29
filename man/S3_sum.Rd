@@ -2,13 +2,13 @@
 % Please edit documentation in R/s3_methods.R
 \name{sum.DataFrame}
 \alias{sum.DataFrame}
-\alias{sum.LazyFrame}
+\alias{sum.RPolarsLazyFrame}
 \alias{sum.Series}
 \title{Compute the sum}
 \usage{
 \method{sum}{DataFrame}(x, ...)
 
-\method{sum}{LazyFrame}(x, ...)
+\method{sum}{RPolarsLazyFrame}(x, ...)
 
 \method{sum}{Series}(x, ...)
 }

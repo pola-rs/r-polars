@@ -2,12 +2,12 @@
 % Please edit documentation in R/s3_methods.R
 \name{dimnames.DataFrame}
 \alias{dimnames.DataFrame}
-\alias{dimnames.LazyFrame}
+\alias{dimnames.RPolarsLazyFrame}
 \title{Get the row and column names}
 \usage{
 \method{dimnames}{DataFrame}(x)
 
-\method{dimnames}{LazyFrame}(x)
+\method{dimnames}{RPolarsLazyFrame}(x)
 }
 \arguments{
 \item{x}{A \link[=DataFrame_class]{DataFrame} or \link[=LazyFrame_class]{LazyFrame}}

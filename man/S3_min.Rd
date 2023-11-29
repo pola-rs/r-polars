@@ -2,13 +2,13 @@
 % Please edit documentation in R/s3_methods.R
 \name{min.DataFrame}
 \alias{min.DataFrame}
-\alias{min.LazyFrame}
+\alias{min.RPolarsLazyFrame}
 \alias{min.Series}
 \title{Compute the minimum value}
 \usage{
 \method{min}{DataFrame}(x, ...)
 
-\method{min}{LazyFrame}(x, ...)
+\method{min}{RPolarsLazyFrame}(x, ...)
 
 \method{min}{Series}(x, ...)
 }

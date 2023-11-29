@@ -119,8 +119,8 @@ impl DataFrame {
         DataFrame::new_with_capacity(0)
     }
 
-    pub fn lazy(&self) -> LazyFrame {
-        LazyFrame(self.0.clone().lazy())
+    pub fn lazy(&self) -> RPolarsLazyFrame {
+        RPolarsLazyFrame(self.0.clone().lazy())
     }
 
     //internal use only
@@ -318,7 +318,7 @@ impl DataFrame {
         } else {
             lazy_df.group_by(group_exprs)
         };
-        LazyFrame(lgb.agg(agg_exprs)).collect()
+        RPolarsLazyFrame(lgb.agg(agg_exprs)).collect()
     }
 
     pub fn to_struct(&self, name: &str) -> Series {

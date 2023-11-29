@@ -2,13 +2,13 @@
 % Please edit documentation in R/s3_methods.R
 \name{mean.DataFrame}
 \alias{mean.DataFrame}
-\alias{mean.LazyFrame}
+\alias{mean.RPolarsLazyFrame}
 \alias{mean.Series}
 \title{Compute the mean}
 \usage{
 \method{mean}{DataFrame}(x, ...)
 
-\method{mean}{LazyFrame}(x, ...)
+\method{mean}{RPolarsLazyFrame}(x, ...)
 
 \method{mean}{Series}(x, ...)
 }

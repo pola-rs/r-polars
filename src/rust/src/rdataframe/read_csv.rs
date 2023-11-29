@@ -2,7 +2,7 @@
 
 use crate::rdatatype::DataTypeVector;
 
-use crate::lazy::dataframe::LazyFrame;
+use crate::lazy::dataframe::RPolarsLazyFrame;
 use crate::robj_to;
 use crate::rpolarserr::*;
 use polars::io::RowCount;
@@ -69,7 +69,7 @@ pub fn new_from_csv(
     eol_char: Robj,
     raise_if_empty: Robj,
     truncate_ragged_lines: Robj,
-) -> RResult<LazyFrame> {
+) -> RResult<RPolarsLazyFrame> {
     let offset = robj_to!(Option, u32, row_count_offset)?.unwrap_or(0);
     let opt_rowcount =
         robj_to!(Option, String, row_count_name)?.map(|name| RowCount { name, offset });
@@ -124,7 +124,7 @@ pub fn new_from_csv(
         .raise_if_empty(robj_to!(bool, raise_if_empty)?)
         .finish()
         .map_err(polars_to_rpolars_err)
-        .map(LazyFrame)
+        .map(RPolarsLazyFrame)
 }
 
 extendr_module! {

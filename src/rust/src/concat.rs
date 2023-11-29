@@ -1,7 +1,7 @@
 use crate::rdataframe::DataFrame;
 use crate::robj_to;
 
-use crate::rdataframe::LazyFrame;
+use crate::rdataframe::RPolarsLazyFrame;
 use crate::rpolarserr::*;
 use crate::series::Series;
 use extendr_api::prelude::*;
@@ -12,7 +12,7 @@ use polars_core::functions as pl_functions;
 use std::result::Result;
 
 #[extendr]
-fn concat_lf(l: Robj, rechunk: bool, parallel: bool, to_supertypes: bool) -> RResult<LazyFrame> {
+fn concat_lf(l: Robj, rechunk: bool, parallel: bool, to_supertypes: bool) -> RResult<RPolarsLazyFrame> {
     let vlf = robj_to!(Vec, PLLazyFrame, l)?;
     dsl::concat(
         vlf,
@@ -23,7 +23,7 @@ fn concat_lf(l: Robj, rechunk: bool, parallel: bool, to_supertypes: bool) -> RRe
         },
     )
     .map_err(polars_to_rpolars_err)
-    .map(LazyFrame)
+    .map(RPolarsLazyFrame)
 }
 
 #[extendr]
@@ -32,7 +32,7 @@ fn concat_lf_diagonal(
     rechunk: bool,
     parallel: bool,
     to_supertypes: bool,
-) -> RResult<LazyFrame> {
+) -> RResult<RPolarsLazyFrame> {
     let vlf = robj_to!(Vec, PLLazyFrame, l)?;
     dsl::concat_lf_diagonal(
         vlf,
@@ -43,7 +43,7 @@ fn concat_lf_diagonal(
         },
     )
     .map_err(polars_to_rpolars_err)
-    .map(LazyFrame)
+    .map(RPolarsLazyFrame)
 }
 
 #[extendr]

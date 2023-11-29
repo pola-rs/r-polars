@@ -2,12 +2,12 @@
 % Please edit documentation in R/s3_methods.R
 \name{as.matrix.DataFrame}
 \alias{as.matrix.DataFrame}
-\alias{as.matrix.LazyFrame}
+\alias{as.matrix.RPolarsLazyFrame}
 \title{Convert to a matrix}
 \usage{
 \method{as.matrix}{DataFrame}(x, ...)
 
-\method{as.matrix}{LazyFrame}(x, ...)
+\method{as.matrix}{RPolarsLazyFrame}(x, ...)
 }
 \arguments{
 \item{x}{A \link[=DataFrame_class]{DataFrame} or \link[=LazyFrame_class]{LazyFrame}}

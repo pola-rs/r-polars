@@ -2,12 +2,12 @@
 % Please edit documentation in R/s3_methods.R
 \name{head.DataFrame}
 \alias{head.DataFrame}
-\alias{head.LazyFrame}
+\alias{head.RPolarsLazyFrame}
 \title{Take the first n rows}
 \usage{
 \method{head}{DataFrame}(x, n = 6L, ...)
 
-\method{head}{LazyFrame}(x, n = 6L, ...)
+\method{head}{RPolarsLazyFrame}(x, n = 6L, ...)
 }
 \arguments{
 \item{x}{A \link[=DataFrame_class]{DataFrame} or \link[=LazyFrame_class]{LazyFrame}}

@@ -67,7 +67,7 @@ as_polars_df.Series = function(x, ...) {
 #' @param n_rows Number of rows to fetch. Defaults to `Inf`, meaning all rows.
 #' @inheritParams LazyFrame_collect
 #' @export
-as_polars_df.LazyFrame = function(
+as_polars_df.RPolarsLazyFrame = function(
     x,
     n_rows = Inf,
     ...,
@@ -103,7 +103,7 @@ as_polars_df.LazyFrame = function(
 #' @rdname as_polars_df
 #' @export
 as_polars_df.LazyGroupBy = function(x, ...) {
-  as_polars_df.LazyFrame(x$ungroup(), ...)
+  as_polars_df.RPolarsLazyFrame(x$ungroup(), ...)
 }
 
 
@@ -153,7 +153,7 @@ as_polars_lf.default = function(x, ...) {
 
 #' @rdname as_polars_lf
 #' @export
-as_polars_lf.LazyFrame = function(x, ...) {
+as_polars_lf.RPolarsLazyFrame = function(x, ...) {
   x
 }
 

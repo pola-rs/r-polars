@@ -2,13 +2,13 @@
 % Please edit documentation in R/s3_methods.R
 \name{median.DataFrame}
 \alias{median.DataFrame}
-\alias{median.LazyFrame}
+\alias{median.RPolarsLazyFrame}
 \alias{median.Series}
 \title{Compute the median}
 \usage{
 \method{median}{DataFrame}(x, ...)
 
-\method{median}{LazyFrame}(x, ...)
+\method{median}{RPolarsLazyFrame}(x, ...)
 
 \method{median}{Series}(x, ...)
 }

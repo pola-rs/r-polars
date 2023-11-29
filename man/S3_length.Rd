@@ -2,13 +2,13 @@
 % Please edit documentation in R/s3_methods.R
 \name{length.DataFrame}
 \alias{length.DataFrame}
-\alias{length.LazyFrame}
+\alias{length.RPolarsLazyFrame}
 \alias{length.Series}
 \title{Get the length}
 \usage{
 \method{length}{DataFrame}(x)
 
-\method{length}{LazyFrame}(x)
+\method{length}{RPolarsLazyFrame}(x)
 
 \method{length}{Series}(x)
 }

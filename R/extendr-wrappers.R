@@ -1003,110 +1003,116 @@ ProtoExprArray$print <- function() invisible(.Call(wrap__ProtoExprArray__print, 
 
 LazyFrame <- new.env(parent = emptyenv())
 
-LazyFrame$print <- function() .Call(wrap__LazyFrame__print, self)
+LazyFrame$print <- function() .Call(wrap__RPolarsLazyFrame__print, self)
 
-LazyFrame$describe_plan <- function() invisible(.Call(wrap__LazyFrame__describe_plan, self))
+LazyFrame$describe_plan <- function() invisible(.Call(wrap__RPolarsLazyFrame__describe_plan, self))
 
-LazyFrame$debug_plan <- function() .Call(wrap__LazyFrame__debug_plan, self)
+LazyFrame$debug_plan <- function() .Call(wrap__RPolarsLazyFrame__debug_plan, self)
 
-LazyFrame$describe_optimized_plan <- function() .Call(wrap__LazyFrame__describe_optimized_plan, self)
+LazyFrame$describe_optimized_plan <- function() .Call(wrap__RPolarsLazyFrame__describe_optimized_plan, self)
 
-LazyFrame$collect <- function() .Call(wrap__LazyFrame__collect, self)
+LazyFrame$collect <- function() .Call(wrap__RPolarsLazyFrame__collect, self)
 
-LazyFrame$collect_in_background <- function() .Call(wrap__LazyFrame__collect_in_background, self)
+LazyFrame$collect_in_background <- function() .Call(wrap__RPolarsLazyFrame__collect_in_background, self)
 
-LazyFrame$sink_parquet <- function(path, compression_method, compression_level, statistics, row_group_size, data_pagesize_limit, maintain_order) .Call(wrap__LazyFrame__sink_parquet, self, path, compression_method, compression_level, statistics, row_group_size, data_pagesize_limit, maintain_order)
+LazyFrame$sink_parquet <- function(path, compression_method, compression_level, statistics, row_group_size, data_pagesize_limit, maintain_order) .Call(wrap__RPolarsLazyFrame__sink_parquet, self, path, compression_method, compression_level, statistics, row_group_size, data_pagesize_limit, maintain_order)
 
-LazyFrame$sink_ipc <- function(path, compression_method, maintain_order) .Call(wrap__LazyFrame__sink_ipc, self, path, compression_method, maintain_order)
+LazyFrame$sink_ipc <- function(path, compression_method, maintain_order) .Call(wrap__RPolarsLazyFrame__sink_ipc, self, path, compression_method, maintain_order)
 
-LazyFrame$sink_csv <- function(path, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style, maintain_order) .Call(wrap__LazyFrame__sink_csv, self, path, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style, maintain_order)
+LazyFrame$sink_csv <- function(path, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style, maintain_order) .Call(wrap__RPolarsLazyFrame__sink_csv, self, path, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style, maintain_order)
 
-LazyFrame$first <- function() .Call(wrap__LazyFrame__first, self)
+LazyFrame$first <- function() .Call(wrap__RPolarsLazyFrame__first, self)
 
-LazyFrame$last <- function() .Call(wrap__LazyFrame__last, self)
+LazyFrame$last <- function() .Call(wrap__RPolarsLazyFrame__last, self)
 
-LazyFrame$max <- function() .Call(wrap__LazyFrame__max, self)
+LazyFrame$max <- function() .Call(wrap__RPolarsLazyFrame__max, self)
 
-LazyFrame$min <- function() .Call(wrap__LazyFrame__min, self)
+LazyFrame$min <- function() .Call(wrap__RPolarsLazyFrame__min, self)
 
-LazyFrame$mean <- function() .Call(wrap__LazyFrame__mean, self)
+LazyFrame$mean <- function() .Call(wrap__RPolarsLazyFrame__mean, self)
 
-LazyFrame$median <- function() .Call(wrap__LazyFrame__median, self)
+LazyFrame$median <- function() .Call(wrap__RPolarsLazyFrame__median, self)
 
-LazyFrame$sum <- function() .Call(wrap__LazyFrame__sum, self)
+LazyFrame$sum <- function() .Call(wrap__RPolarsLazyFrame__sum, self)
 
-LazyFrame$std <- function(ddof) .Call(wrap__LazyFrame__std, self, ddof)
+LazyFrame$std <- function(ddof) .Call(wrap__RPolarsLazyFrame__std, self, ddof)
 
-LazyFrame$var <- function(ddof) .Call(wrap__LazyFrame__var, self, ddof)
+LazyFrame$var <- function(ddof) .Call(wrap__RPolarsLazyFrame__var, self, ddof)
 
-LazyFrame$quantile <- function(quantile, interpolation) .Call(wrap__LazyFrame__quantile, self, quantile, interpolation)
+LazyFrame$quantile <- function(quantile, interpolation) .Call(wrap__RPolarsLazyFrame__quantile, self, quantile, interpolation)
 
-LazyFrame$shift <- function(periods) .Call(wrap__LazyFrame__shift, self, periods)
+LazyFrame$shift <- function(periods) .Call(wrap__RPolarsLazyFrame__shift, self, periods)
 
-LazyFrame$shift_and_fill <- function(fill_value, periods) .Call(wrap__LazyFrame__shift_and_fill, self, fill_value, periods)
+LazyFrame$shift_and_fill <- function(fill_value, periods) .Call(wrap__RPolarsLazyFrame__shift_and_fill, self, fill_value, periods)
 
-LazyFrame$reverse <- function() .Call(wrap__LazyFrame__reverse, self)
+LazyFrame$reverse <- function() .Call(wrap__RPolarsLazyFrame__reverse, self)
 
-LazyFrame$drop <- function(columns) .Call(wrap__LazyFrame__drop, self, columns)
+LazyFrame$drop <- function(columns) .Call(wrap__RPolarsLazyFrame__drop, self, columns)
 
-LazyFrame$fill_nan <- function(fill_value) .Call(wrap__LazyFrame__fill_nan, self, fill_value)
+LazyFrame$fill_nan <- function(fill_value) .Call(wrap__RPolarsLazyFrame__fill_nan, self, fill_value)
 
-LazyFrame$fill_null <- function(fill_value) .Call(wrap__LazyFrame__fill_null, self, fill_value)
+LazyFrame$fill_null <- function(fill_value) .Call(wrap__RPolarsLazyFrame__fill_null, self, fill_value)
 
-LazyFrame$slice <- function(offset, length) .Call(wrap__LazyFrame__slice, self, offset, length)
+LazyFrame$slice <- function(offset, length) .Call(wrap__RPolarsLazyFrame__slice, self, offset, length)
 
-LazyFrame$with_columns <- function(exprs) .Call(wrap__LazyFrame__with_columns, self, exprs)
+LazyFrame$with_columns <- function(exprs) .Call(wrap__RPolarsLazyFrame__with_columns, self, exprs)
 
-LazyFrame$unnest <- function(names) .Call(wrap__LazyFrame__unnest, self, names)
+LazyFrame$unnest <- function(names) .Call(wrap__RPolarsLazyFrame__unnest, self, names)
 
-LazyFrame$select <- function(exprs) .Call(wrap__LazyFrame__select, self, exprs)
+LazyFrame$select <- function(exprs) .Call(wrap__RPolarsLazyFrame__select, self, exprs)
 
-LazyFrame$select_str_as_lit <- function(exprs) .Call(wrap__LazyFrame__select_str_as_lit, self, exprs)
+LazyFrame$select_str_as_lit <- function(exprs) .Call(wrap__RPolarsLazyFrame__select_str_as_lit, self, exprs)
 
-LazyFrame$limit <- function(n) .Call(wrap__LazyFrame__limit, self, n)
+LazyFrame$limit <- function(n) .Call(wrap__RPolarsLazyFrame__limit, self, n)
 
-LazyFrame$tail <- function(n) .Call(wrap__LazyFrame__tail, self, n)
+LazyFrame$tail <- function(n) .Call(wrap__RPolarsLazyFrame__tail, self, n)
 
-LazyFrame$filter <- function(expr) .Call(wrap__LazyFrame__filter, self, expr)
+LazyFrame$filter <- function(expr) .Call(wrap__RPolarsLazyFrame__filter, self, expr)
 
-LazyFrame$drop_nulls <- function(subset) .Call(wrap__LazyFrame__drop_nulls, self, subset)
+LazyFrame$drop_nulls <- function(subset) .Call(wrap__RPolarsLazyFrame__drop_nulls, self, subset)
 
-LazyFrame$unique <- function(subset, keep, maintain_order) .Call(wrap__LazyFrame__unique, self, subset, keep, maintain_order)
+LazyFrame$unique <- function(subset, keep, maintain_order) .Call(wrap__RPolarsLazyFrame__unique, self, subset, keep, maintain_order)
 
-LazyFrame$group_by <- function(exprs, maintain_order) .Call(wrap__LazyFrame__group_by, self, exprs, maintain_order)
+LazyFrame$group_by <- function(exprs, maintain_order) .Call(wrap__RPolarsLazyFrame__group_by, self, exprs, maintain_order)
 
-LazyFrame$with_row_count <- function(name, offset) .Call(wrap__LazyFrame__with_row_count, self, name, offset)
+LazyFrame$with_row_count <- function(name, offset) .Call(wrap__RPolarsLazyFrame__with_row_count, self, name, offset)
 
-LazyFrame$join_asof <- function(other, left_on, right_on, left_by, right_by, allow_parallel, force_parallel, suffix, strategy, tolerance, tolerance_str) .Call(wrap__LazyFrame__join_asof, self, other, left_on, right_on, left_by, right_by, allow_parallel, force_parallel, suffix, strategy, tolerance, tolerance_str)
+LazyFrame$join_asof <- function(other, left_on, right_on, left_by, right_by, allow_parallel, force_parallel, suffix, strategy, tolerance, tolerance_str) .Call(wrap__RPolarsLazyFrame__join_asof, self, other, left_on, right_on, left_by, right_by, allow_parallel, force_parallel, suffix, strategy, tolerance, tolerance_str)
 
-LazyFrame$join <- function(other, left_on, right_on, how, suffix, allow_parallel, force_parallel) .Call(wrap__LazyFrame__join, self, other, left_on, right_on, how, suffix, allow_parallel, force_parallel)
+LazyFrame$join <- function(other, left_on, right_on, how, suffix, allow_parallel, force_parallel) .Call(wrap__RPolarsLazyFrame__join, self, other, left_on, right_on, how, suffix, allow_parallel, force_parallel)
 
-LazyFrame$sort_by_exprs <- function(by, dotdotdot, descending, nulls_last, maintain_order) .Call(wrap__LazyFrame__sort_by_exprs, self, by, dotdotdot, descending, nulls_last, maintain_order)
+LazyFrame$sort_by_exprs <- function(by, dotdotdot, descending, nulls_last, maintain_order) .Call(wrap__RPolarsLazyFrame__sort_by_exprs, self, by, dotdotdot, descending, nulls_last, maintain_order)
 
-LazyFrame$melt <- function(id_vars, value_vars, value_name, variable_name, streamable) .Call(wrap__LazyFrame__melt, self, id_vars, value_vars, value_name, variable_name, streamable)
+LazyFrame$melt <- function(id_vars, value_vars, value_name, variable_name, streamable) .Call(wrap__RPolarsLazyFrame__melt, self, id_vars, value_vars, value_name, variable_name, streamable)
 
-LazyFrame$rename <- function(existing, new) .Call(wrap__LazyFrame__rename, self, existing, new)
+LazyFrame$rename <- function(existing, new) .Call(wrap__RPolarsLazyFrame__rename, self, existing, new)
 
-LazyFrame$schema <- function() .Call(wrap__LazyFrame__schema, self)
+LazyFrame$schema <- function() .Call(wrap__RPolarsLazyFrame__schema, self)
 
-LazyFrame$fetch <- function(n_rows) .Call(wrap__LazyFrame__fetch, self, n_rows)
+LazyFrame$fetch <- function(n_rows) .Call(wrap__RPolarsLazyFrame__fetch, self, n_rows)
 
-LazyFrame$set_optimization_toggle <- function(type_coercion, predicate_pushdown, projection_pushdown, simplify_expression, slice_pushdown, comm_subplan_elim, comm_subexpr_elim, streaming, eager) .Call(wrap__LazyFrame__set_optimization_toggle, self, type_coercion, predicate_pushdown, projection_pushdown, simplify_expression, slice_pushdown, comm_subplan_elim, comm_subexpr_elim, streaming, eager)
+LazyFrame$set_optimization_toggle <- function(type_coercion, predicate_pushdown, projection_pushdown, simplify_expression, slice_pushdown, comm_subplan_elim, comm_subexpr_elim, streaming, eager) .Call(wrap__RPolarsLazyFrame__set_optimization_toggle, self, type_coercion, predicate_pushdown, projection_pushdown, simplify_expression, slice_pushdown, comm_subplan_elim, comm_subexpr_elim, streaming, eager)
 
-LazyFrame$get_optimization_toggle <- function() .Call(wrap__LazyFrame__get_optimization_toggle, self)
+LazyFrame$get_optimization_toggle <- function() .Call(wrap__RPolarsLazyFrame__get_optimization_toggle, self)
 
-LazyFrame$profile <- function() .Call(wrap__LazyFrame__profile, self)
+LazyFrame$profile <- function() .Call(wrap__RPolarsLazyFrame__profile, self)
 
-LazyFrame$explode <- function(dotdotdot) .Call(wrap__LazyFrame__explode, self, dotdotdot)
+LazyFrame$explode <- function(dotdotdot) .Call(wrap__RPolarsLazyFrame__explode, self, dotdotdot)
 
-LazyFrame$clone_in_rust <- function() .Call(wrap__LazyFrame__clone_in_rust, self)
+LazyFrame$clone_in_rust <- function() .Call(wrap__RPolarsLazyFrame__clone_in_rust, self)
 
-LazyFrame$with_context <- function(contexts) .Call(wrap__LazyFrame__with_context, self, contexts)
+LazyFrame$with_context <- function(contexts) .Call(wrap__RPolarsLazyFrame__with_context, self, contexts)
+
+RPolarsLazyFrame <- LazyFrame
 
 #' @export
+`$.RPolarsLazyFrame` <- function (self, name) { func <- RPolarsLazyFrame[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.RPolarsLazyFrame` <- `$.RPolarsLazyFrame`
+
 `$.LazyFrame` <- function (self, name) { func <- LazyFrame[[name]]; environment(func) <- environment(); func }
 
-#' @export
 `[[.LazyFrame` <- `$.LazyFrame`
 
 LazyGroupBy <- new.env(parent = emptyenv())

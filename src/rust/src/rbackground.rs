@@ -571,7 +571,7 @@ pub fn test_rthreadhandle() -> RThreadHandle<RResult<RDF>> {
                     .alias("Price"),
             )
         };
-        let rlf = crate::lazy::dataframe::LazyFrame::from(plf)
+        let rlf = crate::lazy::dataframe::RPolarsLazyFrame::from(plf)
             .collect()
             .unwrap();
         Ok(rlf)

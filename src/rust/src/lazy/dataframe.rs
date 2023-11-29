@@ -25,22 +25,22 @@ use polars_lazy::prelude::CsvWriterOptions;
 use std::result::Result;
 
 #[derive(Clone)]
-pub struct LazyFrame(pub pl::LazyFrame);
+pub struct RPolarsLazyFrame(pub pl::LazyFrame);
 
-impl std::fmt::Debug for LazyFrame {
+impl std::fmt::Debug for RPolarsLazyFrame {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "LazyFrame:")
     }
 }
 
-impl From<pl::LazyFrame> for LazyFrame {
+impl From<pl::LazyFrame> for RPolarsLazyFrame {
     fn from(item: pl::LazyFrame) -> Self {
-        LazyFrame(item)
+        RPolarsLazyFrame(item)
     }
 }
 
 #[extendr]
-impl LazyFrame {
+impl RPolarsLazyFrame {
     fn print(&self) -> Self {
         rprintln!("{}", self.0.describe_plan());
         self.clone()
@@ -237,7 +237,7 @@ impl LazyFrame {
         self.0.clone().reverse().into()
     }
 
-    fn drop(&self, columns: Robj) -> Result<LazyFrame, String> {
+    fn drop(&self, columns: Robj) -> Result<RPolarsLazyFrame, String> {
         Ok(self
             .0
             .clone()
@@ -261,8 +261,8 @@ impl LazyFrame {
             .into())
     }
 
-    fn slice(&self, offset: Robj, length: Robj) -> Result<LazyFrame, String> {
-        Ok(LazyFrame(self.0.clone().slice(
+    fn slice(&self, offset: Robj, length: Robj) -> Result<RPolarsLazyFrame, String> {
+        Ok(RPolarsLazyFrame(self.0.clone().slice(
             robj_to!(i64, offset)?,
             robj_to!(Option, u32, length)?.unwrap_or(u32::MAX),
         )))
@@ -271,47 +271,47 @@ impl LazyFrame {
     pub fn with_columns(&self, exprs: Robj) -> RResult<Self> {
         let exprs =
             robj_to!(VecPLExprColNamed, exprs).when("preparing expressions for $with_columns()")?;
-        Ok(LazyFrame(self.clone().0.with_columns(exprs)))
+        Ok(RPolarsLazyFrame(self.clone().0.with_columns(exprs)))
     }
 
     pub fn unnest(&self, names: Vec<String>) -> RResult<Self> {
-        Ok(LazyFrame(self.clone().0.unnest(names)))
+        Ok(RPolarsLazyFrame(self.clone().0.unnest(names)))
     }
 
     pub fn select(&self, exprs: Robj) -> RResult<Self> {
         let exprs =
             robj_to!(VecPLExprColNamed, exprs).when("preparing expressions for $select()")?;
-        Ok(LazyFrame(self.clone().0.select(exprs)))
+        Ok(RPolarsLazyFrame(self.clone().0.select(exprs)))
     }
 
     pub fn select_str_as_lit(&self, exprs: Robj) -> RResult<Self> {
         let exprs = robj_to!(VecPLExprNamed, exprs).when("preparing columns for DataFrame")?;
-        Ok(LazyFrame(self.clone().0.select(exprs)))
+        Ok(RPolarsLazyFrame(self.clone().0.select(exprs)))
     }
 
     fn limit(&self, n: Robj) -> Result<Self, String> {
         Ok(self.0.clone().limit(robj_to!(u32, n)?).into())
     }
 
-    fn tail(&self, n: Robj) -> Result<LazyFrame, String> {
-        Ok(LazyFrame(self.0.clone().tail(robj_to!(u32, n)?)))
+    fn tail(&self, n: Robj) -> Result<RPolarsLazyFrame, String> {
+        Ok(RPolarsLazyFrame(self.0.clone().tail(robj_to!(u32, n)?)))
     }
 
-    fn filter(&self, expr: &Expr) -> LazyFrame {
+    fn filter(&self, expr: &Expr) -> RPolarsLazyFrame {
         let new_df = self.clone().0.filter(expr.0.clone());
-        LazyFrame(new_df)
+        RPolarsLazyFrame(new_df)
     }
 
-    fn drop_nulls(&self, subset: &ProtoExprArray) -> LazyFrame {
+    fn drop_nulls(&self, subset: &ProtoExprArray) -> RPolarsLazyFrame {
         if subset.0.is_empty() {
-            LazyFrame(self.0.clone().drop_nulls(None))
+            RPolarsLazyFrame(self.0.clone().drop_nulls(None))
         } else {
             let vec = pra_to_vec(subset, "select");
-            LazyFrame(self.0.clone().drop_nulls(Some(vec)))
+            RPolarsLazyFrame(self.0.clone().drop_nulls(Some(vec)))
         }
     }
 
-    fn unique(&self, subset: Robj, keep: Robj, maintain_order: Robj) -> Result<LazyFrame, String> {
+    fn unique(&self, subset: Robj, keep: Robj, maintain_order: Robj) -> Result<RPolarsLazyFrame, String> {
         let ke = new_unique_keep_strategy(robj_to!(str, keep)?)?;
         let maintain_order = robj_to!(bool, maintain_order)?;
         let subset = robj_to!(Option, Vec, String, subset)?;
@@ -422,8 +422,8 @@ impl LazyFrame {
         suffix: Robj,
         allow_parallel: Robj,
         force_parallel: Robj,
-    ) -> RResult<LazyFrame> {
-        Ok(LazyFrame(
+    ) -> RResult<RPolarsLazyFrame> {
+        Ok(RPolarsLazyFrame(
             self.0
                 .clone()
                 .join_builder()
@@ -477,7 +477,7 @@ impl LazyFrame {
         Ok(self.0.clone().melt(args).into())
     }
 
-    fn rename(&self, existing: Robj, new: Robj) -> Result<LazyFrame, String> {
+    fn rename(&self, existing: Robj, new: Robj) -> Result<RPolarsLazyFrame, String> {
         Ok(self
             .0
             .clone()
@@ -564,7 +564,7 @@ impl LazyFrame {
         profile_with_r_func_support(self.0.clone()).map(|(r, p)| list!(result = r, profile = p))
     }
 
-    fn explode(&self, dotdotdot: Robj) -> RResult<LazyFrame> {
+    fn explode(&self, dotdotdot: Robj) -> RResult<RPolarsLazyFrame> {
         Ok(self
             .0
             .clone()
@@ -572,7 +572,7 @@ impl LazyFrame {
             .into())
     }
 
-    pub fn clone_in_rust(&self) -> LazyFrame {
+    pub fn clone_in_rust(&self) -> RPolarsLazyFrame {
         self.clone()
     }
 
@@ -601,15 +601,15 @@ impl LazyGroupBy {
         self.clone()
     }
 
-    fn ungroup(&self) -> LazyFrame {
-        LazyFrame(
+    fn ungroup(&self) -> RPolarsLazyFrame {
+        RPolarsLazyFrame(
             pl::LazyFrame::from(self.lgb.logical_plan.clone())
                 .with_optimizations(self.opt_state.clone()),
         )
     }
 
-    fn agg(&self, exprs: Robj) -> Result<LazyFrame, String> {
-        Ok(LazyFrame(
+    fn agg(&self, exprs: Robj) -> Result<RPolarsLazyFrame, String> {
+        Ok(RPolarsLazyFrame(
             self.lgb.clone().agg(robj_to!(VecPLExprColNamed, exprs)?),
         ))
     }
@@ -617,7 +617,7 @@ impl LazyGroupBy {
     fn head(&self, n: f64) -> List {
         r_result_list(
             try_f64_into_usize(n)
-                .map(|n| LazyFrame(self.lgb.clone().head(Some(n))))
+                .map(|n| RPolarsLazyFrame(self.lgb.clone().head(Some(n))))
                 .map_err(|err| format!("head: {}", err)),
         )
     }
@@ -625,7 +625,7 @@ impl LazyGroupBy {
     fn tail(&self, n: f64) -> List {
         r_result_list(
             try_f64_into_usize(n)
-                .map(|n| LazyFrame(self.lgb.clone().tail(Some(n))))
+                .map(|n| RPolarsLazyFrame(self.lgb.clone().tail(Some(n))))
                 .map_err(|err| format!("tail: {}", err)),
         )
     }
@@ -633,6 +633,6 @@ impl LazyGroupBy {
 
 extendr_module! {
     mod dataframe;
-    impl LazyFrame;
+    impl RPolarsLazyFrame;
     impl LazyGroupBy;
 }
