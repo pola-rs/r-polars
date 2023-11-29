@@ -3,7 +3,7 @@
 use extendr_api::prelude::*;
 use polars::sql::SQLContext;
 
-use crate::{rdataframe::LazyFrame, robj_to, rpolarserr::*};
+use crate::{rdataframe::RPolarsLazyFrame, robj_to, rpolarserr::*};
 
 #[derive(Clone)]
 pub struct RPolarsSQLContext {
@@ -33,7 +33,7 @@ impl RPolarsSQLContext {
     pub fn register(&mut self, name: Robj, lf: Robj) -> RResult<()> {
         Ok(self
             .context
-            .register(&robj_to!(str, name)?, robj_to!(LazyFrame, lf)?.0))
+            .register(&robj_to!(str, name)?, robj_to!(RPolarsLazyFrame, lf)?.0))
     }
 
     pub fn unregister(&mut self, name: Robj) -> RResult<()> {
