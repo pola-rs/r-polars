@@ -188,7 +188,7 @@ move_env_elements = function(from_env, to_env, element_names, remove = TRUE) {
 #' @return VecDataFrame
 l_to_vdf = function(l) {
   if (!length(l)) stop("cannot concat empty list l")
-  do_inherit_DataFrame = sapply(l, inherits, "DataFrame")
+  do_inherit_DataFrame = sapply(l, inherits, "RPolarsDataFrame")
   if (!all(do_inherit_DataFrame)) {
     stop(paste(
       "element no(s) of concat param l:",

@@ -40,7 +40,7 @@ patrick::with_parameters_test_that("inspection",
     d = pl$DataFrame(mtcars)
     x = FUN(mtcars)
     y = FUN(d)
-    if (inherits(y, "DataFrame")) y <- y$to_data_frame()
+    if (inherits(y, "RPolarsDataFrame")) y <- y$to_data_frame()
     expect_equal(x, y, ignore_attr = TRUE)
     if (.test_name == "as.matrix") {
       z = FUN(d$lazy())

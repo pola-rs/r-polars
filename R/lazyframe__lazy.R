@@ -990,7 +990,7 @@ LazyFrame_join = function(
     force_parallel = FALSE) {
   uw = \(res) unwrap(res, "in $join():")
 
-  if (inherits(other, "DataFrame")) {
+  if (inherits(other, "RPolarsDataFrame")) {
     other = other$lazy()
   }
 

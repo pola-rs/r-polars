@@ -27,7 +27,7 @@ test_that("Then-class", {
   expect_true(inherits(pl$when("a")$then("b"), "Then"))
   expect_true(inherits(pl$when(TRUE)$then(FALSE), "Then"))
   expect_true(inherits(pl$when(TRUE)$then(FALSE)$when(NA), "ChainedWhen"))
-  expect_true(inherits(pl$when(TRUE)$then(FALSE)$otherwise(NA), "Expr"))
+  expect_true(inherits(pl$when(TRUE)$then(FALSE)$otherwise(NA), "RPolarsExpr"))
 
   ctx = result(pl$when("a")$then(complex(2)))$err$contexts()
   expect_identical(
@@ -46,7 +46,7 @@ test_that("Chained", {
   expect_true(inherits(pl$when(TRUE)$then(FALSE)$when(TRUE), "ChainedWhen"))
   cw = pl$when("a")$then("b")$when("c")
   expect_true(inherits(cw$then("a"), "ChainedThen"))
-  expect_true(inherits(cw$then("d")$otherwise("e"), "Expr"))
+  expect_true(inherits(cw$then("d")$otherwise("e"), "RPolarsExpr"))
 })
 
 

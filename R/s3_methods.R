@@ -49,13 +49,13 @@
     i = i %||% 0
 
     if (is.atomic(i) && is.vector(i)) {
-      if (inherits(x, "LazyFrame")) {
+      if (inherits(x, "RPolarsLazyFrame")) {
         Err_plain("Row selection using vector is not supported for LazyFrames.") |> uw()
       }
 
       if (is.logical(i)) {
         # nrow() not available for LazyFrame
-        if (inherits(x, "DataFrame") && length(i) != nrow(x)) {
+        if (inherits(x, "RPolarsDataFrame") && length(i) != nrow(x)) {
           stop(sprintf("`i` must be of length %s.", nrow(x)), call. = FALSE)
         }
         idx = i
@@ -74,7 +74,7 @@
         }
       }
       x = x$filter(pl$lit(idx))
-    } else if (identical(class(i), "Expr")) {
+    } else if (identical(class(i), "RPolarsExpr")) {
       x = x$filter(i)
     } else {
       Err_plain("`i` must be an Expr or an atomic vector of class logical or integer.") |> uw()
@@ -108,7 +108,7 @@
         }
       }
       x = do.call(x$select, lapply(cols, pl$col))
-    } else if (identical(class(j), "Expr")) {
+    } else if (identical(class(j), "RPolarsExpr")) {
       x = x$select(j)
     } else {
       Err_plain("`j` must be an Expr or an atomic vector of class logical, character, or integer.") |> uw()
@@ -116,7 +116,7 @@
   }
 
   if (drop && x$width == 1L) {
-    if (inherits(x, "LazyFrame")) {
+    if (inherits(x, "RPolarsLazyFrame")) {
       Err_plain(
         "Single column conversion to a Series using brackets is not supported for LazyFrames.\n",
         "Please set `drop = FALSE` to prevent conversion or use $collect() before using brackets."

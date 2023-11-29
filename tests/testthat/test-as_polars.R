@@ -21,7 +21,7 @@ patrick::with_parameters_test_that("as_polars_df S3 methods",
     skip_if_not_installed("arrow")
 
     pl_df = as_polars_df(x)
-    expect_s3_class(pl_df, "DataFrame")
+    expect_s3_class(pl_df, "RPolarsDataFrame")
 
     actual = as.data.frame(pl_df)
     expected = as.data.frame(pl$DataFrame(test_df))
@@ -35,5 +35,5 @@ patrick::with_parameters_test_that("as_polars_df S3 methods",
 test_that("as_polars_lf S3 method", {
   skip_if_not_installed("arrow")
   at = arrow::as_arrow_table(test_df)
-  expect_s3_class(as_polars_lf(at), "LazyFrame")
+  expect_s3_class(as_polars_lf(at), "RPolarsLazyFrame")
 })

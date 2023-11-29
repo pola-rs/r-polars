@@ -951,7 +951,7 @@ Series_expr = method_as_property(function() {
 
         x = do.call(f, scall)
         pcase(
-          inherits(x, "Expr"), df$select(x)$to_series(0),
+          inherits(x, "RPolarsExpr"), df$select(x)$to_series(0),
           or_else = x
         )
       }

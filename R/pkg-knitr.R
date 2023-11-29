@@ -166,7 +166,7 @@ to_html_table = function(x, max_cols = 75, max_rows = 40) {
 #' @return string vector of column type names
 #' @noRd
 .get_dtype_strings = function(df) {
-  if (inherits(df, "DataFrame")) {
+  if (inherits(df, "RPolarsDataFrame")) {
     df$dtype_strings()
   } else {
     if (!requireNamespace("pillar", quietly = TRUE)) {

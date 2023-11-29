@@ -43,7 +43,7 @@ GroupBy = new.env(parent = emptyenv())
 #' @return The input as grouped DataFrame
 #' @noRd
 construct_group_by = function(df, groupby_input, maintain_order) {
-  if (!inherits(df, "DataFrame")) stop("internal error: construct_group called not on DataFrame")
+  if (!inherits(df, "RPolarsDataFrame")) stop("internal error: construct_group called not on DataFrame")
   df = df$clone()
   attr(df, "private") = list(groupby_input = groupby_input, maintain_order = maintain_order)
   class(df) = "GroupBy"
@@ -297,7 +297,7 @@ GroupBy_null_count = function() {
 #' gb$ungroup()
 GroupBy_ungroup = function() {
   self = .pr$DataFrame$clone_in_rust(self)
-  class(self) = "DataFrame"
+  class(self) = "RPolarsDataFrame"
   attr(self, "private") = NULL
   self
 }

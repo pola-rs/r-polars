@@ -935,7 +935,7 @@ Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE,
 #' # vectors to literal implicitly
 #' (pl$lit(2) + 1:4) / 4:1
 Expr_lit = function(x) {
-  .Call(wrap__Expr__lit, x) |>
+  .Call(wrap__RPolarsExpr__lit, x) |>
     unwrap("in $lit()")
 }
 
@@ -3168,7 +3168,7 @@ Expr_to_r = function(df = NULL, i = 0) {
   if (is.null(df)) {
     pl$select(self)$to_series(i)$to_r()
   } else {
-    if (!inherits(df, c("DataFrame"))) {
+    if (!inherits(df, c("RPolarsDataFrame"))) {
       stop("Expr_to_r: input is not NULL or a DataFrame/Lazyframe")
     }
     df$select(self)$to_series(i)$to_r()

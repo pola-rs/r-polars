@@ -76,13 +76,13 @@ pl$concat = function(
     unwrap("in pl$concat()")
 
   first = l[[1L]]
-  eager = !inherits(first, "LazyFrame")
+  eager = !inherits(first, "RPolarsLazyFrame")
   args_modified = names(as.list(sys.call()[-1L]))
 
   # check not using any mixing of types which could lead to implicit collect
   if (eager) {
     for (i in seq_along(l)) {
-      if (inherits(l[[i]], c("LazyFrame", "Expr"))) {
+      if (inherits(l[[i]], c("RPolarsLazyFrame", "RPolarsExpr"))) {
         .pr$RPolarsErr$new()$
           plain("tip: explicitly collect lazy inputs first, e.g. pl$concat(dataframe, lazyframe$collect())")$
           plain("LazyFrame or Expr not allowed if first arg is a DataFrame, to avoid implicit collect")$
@@ -151,11 +151,11 @@ pl$concat = function(
   and_then(Result_out, \(x) {
     pcase(
       # run-time assertion for future changes
-      inherits(x, "DataFrame") && !eager, Err_plain("internal logical error in pl$concat()"),
+      inherits(x, "RPolarsDataFrame") && !eager, Err_plain("internal logical error in pl$concat()"),
 
       # must collect as in rust side only lazy concat is implemented. Eager inputs are wrapped in
       # lazy and then collected again. This does not mean any user input is collected.
-      inherits(x, "LazyFrame") && eager, Ok(x$collect()),
+      inherits(x, "RPolarsLazyFrame") && eager, Ok(x$collect()),
       or_else = Ok(x)
     )
   }) |>

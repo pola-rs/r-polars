@@ -158,7 +158,7 @@ pl$DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
   }
 
   # pass through if already a DataFrame
-  if (inherits(largs[[1L]], "DataFrame")) {
+  if (inherits(largs[[1L]], "RPolarsDataFrame")) {
     return(largs[[1L]])
   }
 
@@ -1306,8 +1306,8 @@ DataFrame_join_asof = function(
   # convert other to LazyFrame, capture any Error as a result, and pass it on
 
   other_df_result = pcase(
-    inherits(other, "DataFrame"), Ok(other$lazy()),
-    inherits(other, "LazyFrame"), Ok(other),
+    inherits(other, "RPolarsDataFrame"), Ok(other$lazy()),
+    inherits(other, "RPolarsLazyFrame"), Ok(other),
     or_else = Err(" not a LazyFrame or DataFrame")
   )
 
@@ -1412,7 +1412,7 @@ DataFrame_pivot = function(
     is_string(aggregate_function), result(`$.RPolarsExpr`(pl$element(), aggregate_function)()),
 
     # Expr or NULL pass as is
-    is.null(aggregate_function) || inherits(aggregate_function, "Expr"), Ok(aggregate_function),
+    is.null(aggregate_function) || inherits(aggregate_function, "RPolarsExpr"), Ok(aggregate_function),
 
     # anything else pass err
     or_else = Err(" is neither a string, NULL or an Expr")

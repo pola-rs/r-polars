@@ -149,7 +149,7 @@ impl RPolarsExpr {
                     Ok(pl::lit(s.0))
                 }
 
-                _ if robj.inherits("Expr") => {
+                _ if robj.inherits("RPolarsExpr") => {
                     let expr: RPolarsExpr = unsafe { &mut *robj.external_ptr_addr::<RPolarsExpr>() }.clone();
                     Ok(expr.0)
                 }
