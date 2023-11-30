@@ -329,16 +329,16 @@ impl RPolarsLazyFrame {
         Ok(lf.into())
     }
 
-    fn group_by(&self, exprs: Robj, maintain_order: Robj) -> Result<LazyGroupBy, String> {
+    fn group_by(&self, exprs: Robj, maintain_order: Robj) -> Result<RPolarsLazyGroupBy, String> {
         let expr_vec = robj_to!(VecPLExprCol, exprs)?;
         let maintain_order = robj_to!(Option, bool, maintain_order)?.unwrap_or(false);
         if maintain_order {
-            Ok(LazyGroupBy {
+            Ok(RPolarsLazyGroupBy {
                 lgb: self.0.clone().group_by_stable(expr_vec),
                 opt_state: self.0.get_current_optimizations(),
             })
         } else {
-            Ok(LazyGroupBy {
+            Ok(RPolarsLazyGroupBy {
                 lgb: self.0.clone().group_by(expr_vec),
                 opt_state: self.0.get_current_optimizations(),
             })
@@ -592,13 +592,13 @@ impl RPolarsLazyFrame {
 }
 
 #[derive(Clone)]
-pub struct LazyGroupBy {
+pub struct RPolarsLazyGroupBy {
     pub lgb: pl::LazyGroupBy,
     opt_state: pl::OptState,
 }
 
 #[extendr]
-impl LazyGroupBy {
+impl RPolarsLazyGroupBy {
     fn print(&self) {
         rprintln!("LazyGroupBy (internals are opaque)");
     }
@@ -640,5 +640,5 @@ impl LazyGroupBy {
 extendr_module! {
     mod dataframe;
     impl RPolarsLazyFrame;
-    impl LazyGroupBy;
+    impl RPolarsLazyGroupBy;
 }

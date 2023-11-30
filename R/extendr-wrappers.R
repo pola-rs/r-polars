@@ -1129,22 +1129,28 @@ RPolarsLazyFrame <- LazyFrame
 
 LazyGroupBy <- new.env(parent = emptyenv())
 
-LazyGroupBy$print <- function() invisible(.Call(wrap__LazyGroupBy__print, self))
+LazyGroupBy$print <- function() invisible(.Call(wrap__RPolarsLazyGroupBy__print, self))
 
-LazyGroupBy$clone_in_rust <- function() .Call(wrap__LazyGroupBy__clone_in_rust, self)
+LazyGroupBy$clone_in_rust <- function() .Call(wrap__RPolarsLazyGroupBy__clone_in_rust, self)
 
-LazyGroupBy$ungroup <- function() .Call(wrap__LazyGroupBy__ungroup, self)
+LazyGroupBy$ungroup <- function() .Call(wrap__RPolarsLazyGroupBy__ungroup, self)
 
-LazyGroupBy$agg <- function(exprs) .Call(wrap__LazyGroupBy__agg, self, exprs)
+LazyGroupBy$agg <- function(exprs) .Call(wrap__RPolarsLazyGroupBy__agg, self, exprs)
 
-LazyGroupBy$head <- function(n) .Call(wrap__LazyGroupBy__head, self, n)
+LazyGroupBy$head <- function(n) .Call(wrap__RPolarsLazyGroupBy__head, self, n)
 
-LazyGroupBy$tail <- function(n) .Call(wrap__LazyGroupBy__tail, self, n)
+LazyGroupBy$tail <- function(n) .Call(wrap__RPolarsLazyGroupBy__tail, self, n)
+
+RPolarsLazyGroupBy <- LazyGroupBy
 
 #' @export
+`$.RPolarsLazyGroupBy` <- function (self, name) { func <- RPolarsLazyGroupBy[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.RPolarsLazyGroupBy` <- `$.RPolarsLazyGroupBy`
+
 `$.LazyGroupBy` <- function (self, name) { func <- LazyGroupBy[[name]]; environment(func) <- environment(); func }
 
-#' @export
 `[[.LazyGroupBy` <- `$.LazyGroupBy`
 
 Series <- new.env(parent = emptyenv())

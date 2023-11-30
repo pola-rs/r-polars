@@ -102,7 +102,7 @@ as_polars_df.RPolarsLazyFrame = function(
 
 #' @rdname as_polars_df
 #' @export
-as_polars_df.LazyGroupBy = function(x, ...) {
+as_polars_df.RPolarsLazyGroupBy = function(x, ...) {
   as_polars_df.RPolarsLazyFrame(x$ungroup(), ...)
 }
 
@@ -160,6 +160,6 @@ as_polars_lf.RPolarsLazyFrame = function(x, ...) {
 
 #' @rdname as_polars_lf
 #' @export
-as_polars_lf.LazyGroupBy = function(x, ...) {
+as_polars_lf.RPolarsLazyGroupBy = function(x, ...) {
   x$ungroup()
 }

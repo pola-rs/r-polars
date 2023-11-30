@@ -8,7 +8,7 @@
 \alias{as_polars_df.GroupBy}
 \alias{as_polars_df.RPolarsSeries}
 \alias{as_polars_df.RPolarsLazyFrame}
-\alias{as_polars_df.LazyGroupBy}
+\alias{as_polars_df.RPolarsLazyGroupBy}
 \alias{as_polars_df.ArrowTabular}
 \title{To polars DataFrame}
 \usage{
@@ -41,7 +41,7 @@ as_polars_df(x, ...)
   collect_in_background = FALSE
 )
 
-\method{as_polars_df}{LazyGroupBy}(x, ...)
+\method{as_polars_df}{RPolarsLazyGroupBy}(x, ...)
 
 \method{as_polars_df}{ArrowTabular}(x, ..., rechunk = TRUE, schema = NULL, schema_overrides = NULL)
 }
