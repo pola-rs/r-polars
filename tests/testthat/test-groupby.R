@@ -116,7 +116,7 @@ test_that("LazyGroupBy ungroup", {
   # tests $ungroup() only changed the class of output, not input (lgb).
   lgb_ug = lgb$ungroup()
   expect_identical(class(lgb_ug), "RPolarsLazyFrame")
-  expect_identical(class(lgb), "LazyGroupBy")
+  expect_identical(class(lgb), "RPolarsLazyGroupBy")
 
   expect_equal(
     lgb$ungroup()$collect()$to_data_frame(),
