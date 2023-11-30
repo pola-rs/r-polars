@@ -152,7 +152,7 @@ print.RPolarsChainedThen = function(x, ...) {
 #' @inherit .DollarNames.RPolarsDataFrame return
 #' @keywords internal
 .DollarNames.RPolarsWhen = function(x, pattern = "") {
-  paste0(ls(When, pattern = pattern), "()")
+  paste0(ls(RPolarsWhen, pattern = pattern), "()")
 }
 
 #' @title auto complete $-access into a polars object
@@ -164,7 +164,7 @@ print.RPolarsChainedThen = function(x, ...) {
 #' @inherit .DollarNames.RPolarsDataFrame return
 #' @keywords internal
 .DollarNames.RPolarsThen = function(x, pattern = "") {
-  paste0(ls(Then, pattern = pattern), "()")
+  paste0(ls(RPolarsThen, pattern = pattern), "()")
 }
 
 #' @title auto complete $-access into a polars object
@@ -176,7 +176,7 @@ print.RPolarsChainedThen = function(x, ...) {
 #' @inherit .DollarNames.RPolarsDataFrame return
 #' @keywords internal
 .DollarNames.RPolarsChainedThen = function(x, pattern = "") {
-  paste0(ls(ChainedThen, pattern = pattern), "()")
+  paste0(ls(RPolarsChainedThen, pattern = pattern), "()")
 }
 
 #' @title auto complete $-access into a polars object
@@ -188,5 +188,5 @@ print.RPolarsChainedThen = function(x, ...) {
 #' @inherit .DollarNames.RPolarsDataFrame return
 #' @keywords internal
 .DollarNames.RPolarsChainedWhen = function(x, pattern = "") {
-  paste0(ls(ChainedWhen, pattern = pattern), "()")
+  paste0(ls(RPolarsChainedWhen, pattern = pattern), "()")
 }

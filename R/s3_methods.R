@@ -402,7 +402,7 @@ print.RPolarsSeries = function(x, ...) {
 #' @inherit .DollarNames.RPolarsDataFrame return
 #' @keywords internal
 .DollarNames.RPolarsSeries = function(x, pattern = "") {
-  get_method_usages(Series, pattern = pattern)
+  get_method_usages(RPolarsSeries, pattern = pattern)
 }
 
 #' Combine to a Series

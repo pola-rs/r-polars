@@ -109,7 +109,7 @@ NULL
 #' @keywords internal
 
 .DollarNames.RPolarsLazyFrame = function(x, pattern = "") {
-  paste0(ls(LazyFrame, pattern = pattern), "()")
+  paste0(ls(RPolarsLazyFrame, pattern = pattern), "()")
 }
 
 #' Create new LazyFrame
