@@ -127,7 +127,6 @@ features = [
   "search_sorted",
   "serde-lazy",
   "sign",
-  "sql",
   "strings",
   "string_encoding",
   "string_pad",
