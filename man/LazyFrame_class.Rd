@@ -43,7 +43,7 @@ prefixed \code{LazyFrame_}.
 }
 \examples{
 # see all exported methods
-ls(.pr$env$LazyFrame)
+ls(.pr$env$RPolarsLazyFrame)
 
 # see all private methods (not intended for regular use)
 ls(.pr$LazyFrame)

@@ -32,7 +32,7 @@
 #' @examples
 #' # see all public exported method names (normally accessed via a class
 #' # instance with $)
-#' ls(.pr$env$DataFrame)
+#' ls(.pr$env$RPolarsDataFrame)
 #'
 #' # see all private methods (not intended for regular use)
 #' ls(.pr$DataFrame)
