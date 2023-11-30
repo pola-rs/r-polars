@@ -36,7 +36,7 @@
 #' s_copy = s
 #' .pr$Series$append_mut(s, pl$Series(5:1))
 #' identical(s_copy$to_r(), s$to_r()) # s_copy was modified when s was modified
-Series
+NULL
 
 
 

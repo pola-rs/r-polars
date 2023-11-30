@@ -10,7 +10,7 @@
 #'   "SELECT b, a*2 AS two_a FROM frame WHERE b IS NOT NULL"
 #' )
 #' res$collect()
-RPolarsSQLContext
+NULL
 
 
 #' @title auto complete $-access into a polars object
