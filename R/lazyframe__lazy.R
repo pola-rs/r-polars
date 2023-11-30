@@ -96,7 +96,7 @@
 #'
 #' # a user might write it as a one-liner like so:
 #' Pdf_best2 = pl$scan_csv(temp_filepath)$filter(pl$col("Species") == "setosa")
-LazyFrame
+NULL
 
 
 #' @title auto complete $-access into a polars object

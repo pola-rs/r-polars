@@ -71,7 +71,7 @@
 #' # Try unwrapping an error from polars due to unmatching column lengths
 #' err_result = .pr$DataFrame$set_column_from_robj(df, 1:10000, "wrong_length")
 #' tryCatch(unwrap(err_result, call = NULL), error = \(e) cat(as.character(e)))
-DataFrame
+NULL
 
 
 #' @title auto complete $-access into a polars object
