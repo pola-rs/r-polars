@@ -936,7 +936,7 @@ Series_expr = method_as_property(function() {
 
   # loop over each expression function
   lapply(
-    Expr,
+    RPolarsExpr,
     \(f) { # f is orignial Expr method
 
       # point back to env with above defined 'df' and 'self'
