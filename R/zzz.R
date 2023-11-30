@@ -9,22 +9,21 @@ if (build_debug_print) {
   ))
 }
 
-
 # modify these Dataframe methods
-replace_private_with_pub_methods(DataFrame, "^DataFrame_")
+replace_private_with_pub_methods(RPolarsDataFrame, "^DataFrame_")
 
 # GroupBy - is special read header info in groupby.R
 replace_private_with_pub_methods(GroupBy, "^GroupBy_")
 macro_add_syntax_check_to_class("GroupBy") # not activated automatically as GroupBy is not extendr
 
 # LazyFrame
-replace_private_with_pub_methods(LazyFrame, "^LazyFrame_")
+replace_private_with_pub_methods(RPolarsLazyFrame, "^LazyFrame_")
 
 # LazyGroupBy
-replace_private_with_pub_methods(LazyGroupBy, "^LazyGroupBy_")
+replace_private_with_pub_methods(RPolarsLazyGroupBy, "^LazyGroupBy_")
 
 # Expr
-replace_private_with_pub_methods(Expr, "^Expr_")
+replace_private_with_pub_methods(RPolarsExpr, "^Expr_")
 
 # configure subnames spaces of Expr
 #' @export
@@ -59,10 +58,10 @@ expr_cat_make_sub_ns = macro_new_subnamespace("^ExprCat_", "ExprCatNameSpace")
 `$.ExprBinNameSpace` = sub_name_space_accessor_function
 expr_bin_make_sub_ns = macro_new_subnamespace("^ExprBin_", "ExprBinNameSpace")
 
-replace_private_with_pub_methods(When, "^When_")
-replace_private_with_pub_methods(Then, "^Then_")
-replace_private_with_pub_methods(ChainedWhen, "^ChainedWhen_")
-replace_private_with_pub_methods(ChainedThen, "^ChainedThen_")
+replace_private_with_pub_methods(RPolarsWhen, "^When_")
+replace_private_with_pub_methods(RPolarsThen, "^Then_")
+replace_private_with_pub_methods(RPolarsChainedWhen, "^ChainedWhen_")
+replace_private_with_pub_methods(RPolarsChainedThen, "^ChainedThen_")
 
 
 # any sub-namespace inherits 'method_environment'
@@ -95,7 +94,7 @@ replace_private_with_pub_methods(RField, "^RField_")
 
 
 # Series
-replace_private_with_pub_methods(Series, "^Series_")
+replace_private_with_pub_methods(RPolarsSeries, "^Series_")
 
 # RThreadHandle
 replace_private_with_pub_methods(RThreadHandle, "^RThreadHandle_")
@@ -106,7 +105,7 @@ replace_private_with_pub_methods(RPolarsSQLContext, "^SQLContext_")
 
 
 # expression constructors, why not just pl$lit = Expr_lit?
-move_env_elements(Expr, pl, c("lit"), remove = FALSE)
+move_env_elements(RPolarsExpr, pl, c("lit"), remove = FALSE)
 
 
 #' Get Memory Address
