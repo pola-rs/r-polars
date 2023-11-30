@@ -94,7 +94,7 @@ ChainedThen_otherwise = function(statement) {
 #' @export
 #' @examples
 #' print(pl$when(pl$col("a") > 2))
-print.When = function(x, ...) {
+print.RPolarsWhen = function(x, ...) {
   print("When")
   invisible(x)
 }
@@ -107,7 +107,7 @@ print.When = function(x, ...) {
 #' @export
 #' @examples
 #' print(pl$when(pl$col("a") > 2)$then(pl$lit("more than two")))
-print.Then = function(x, ...) {
+print.RPolarsThen = function(x, ...) {
   print("Then")
   invisible(x)
 }
@@ -122,7 +122,7 @@ print.Then = function(x, ...) {
 #' @examples
 #' #
 #' print(pl$when(pl$col("a") > 2)$then(pl$lit("more than two"))$when(pl$col("b") < 5))
-print.ChainedWhen = function(x, ...) {
+print.RPolarsChainedWhen = function(x, ...) {
   print("ChainedWhen")
   invisible(x)
 }
@@ -135,7 +135,7 @@ print.ChainedWhen = function(x, ...) {
 #' @export
 #' @examples
 #' print(pl$when(pl$col("a") > 2)$then(pl$lit("more than two"))$when(pl$col("b") < 5))
-print.ChainedThen = function(x, ...) {
+print.RPolarsChainedThen = function(x, ...) {
   print("ChainedThen")
   invisible(x)
 }
@@ -151,7 +151,7 @@ print.ChainedThen = function(x, ...) {
 #' @export
 #' @inherit .DollarNames.RPolarsDataFrame return
 #' @keywords internal
-.DollarNames.When = function(x, pattern = "") {
+.DollarNames.RPolarsWhen = function(x, pattern = "") {
   paste0(ls(When, pattern = pattern), "()")
 }
 
@@ -163,7 +163,7 @@ print.ChainedThen = function(x, ...) {
 #' @export
 #' @inherit .DollarNames.RPolarsDataFrame return
 #' @keywords internal
-.DollarNames.Then = function(x, pattern = "") {
+.DollarNames.RPolarsThen = function(x, pattern = "") {
   paste0(ls(Then, pattern = pattern), "()")
 }
 
@@ -175,7 +175,7 @@ print.ChainedThen = function(x, ...) {
 #' @export
 #' @inherit .DollarNames.RPolarsDataFrame return
 #' @keywords internal
-.DollarNames.ChainedThen = function(x, pattern = "") {
+.DollarNames.RPolarsChainedThen = function(x, pattern = "") {
   paste0(ls(ChainedThen, pattern = pattern), "()")
 }
 
@@ -187,6 +187,6 @@ print.ChainedThen = function(x, ...) {
 #' @export
 #' @inherit .DollarNames.RPolarsDataFrame return
 #' @keywords internal
-.DollarNames.ChainedWhen = function(x, pattern = "") {
+.DollarNames.RPolarsChainedWhen = function(x, pattern = "") {
   paste0(ls(ChainedWhen, pattern = pattern), "()")
 }

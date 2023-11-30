@@ -5,44 +5,44 @@ use extendr_api::prelude::*;
 use polars::lazy::dsl;
 
 #[derive(Clone)]
-pub struct When {
+pub struct RPolarsWhen {
     inner: dsl::When,
 }
 
 #[derive(Clone)]
-pub struct Then {
+pub struct RPolarsThen {
     inner: dsl::Then,
 }
 
 #[derive(Clone)]
-pub struct ChainedWhen {
+pub struct RPolarsChainedWhen {
     inner: dsl::ChainedWhen,
 }
 
 #[derive(Clone)]
-pub struct ChainedThen {
+pub struct RPolarsChainedThen {
     inner: dsl::ChainedThen,
 }
 
 #[extendr]
-impl When {
-    pub fn new(condition: Robj) -> RResult<When> {
-        Ok(When {
+impl RPolarsWhen {
+    pub fn new(condition: Robj) -> RResult<RPolarsWhen> {
+        Ok(RPolarsWhen {
             inner: dsl::when(robj_to!(PLExprCol, condition)?),
         })
     }
 
-    fn then(&self, statement: Robj) -> RResult<Then> {
-        Ok(Then {
+    fn then(&self, statement: Robj) -> RResult<RPolarsThen> {
+        Ok(RPolarsThen {
             inner: self.inner.clone().then(robj_to!(PLExprCol, statement)?),
         })
     }
 }
 
 #[extendr]
-impl Then {
-    fn when(&self, condition: Robj) -> RResult<ChainedWhen> {
-        Ok(ChainedWhen {
+impl RPolarsThen {
+    fn when(&self, condition: Robj) -> RResult<RPolarsChainedWhen> {
+        Ok(RPolarsChainedWhen {
             inner: self.inner.clone().when(robj_to!(PLExprCol, condition)?),
         })
     }
@@ -57,18 +57,18 @@ impl Then {
 }
 
 #[extendr]
-impl ChainedWhen {
-    fn then(&self, statement: Robj) -> RResult<ChainedThen> {
-        Ok(ChainedThen {
+impl RPolarsChainedWhen {
+    fn then(&self, statement: Robj) -> RResult<RPolarsChainedThen> {
+        Ok(RPolarsChainedThen {
             inner: self.inner.clone().then(robj_to!(PLExprCol, statement)?),
         })
     }
 }
 
 #[extendr]
-impl ChainedThen {
-    fn when(&self, condition: Robj) -> RResult<ChainedWhen> {
-        Ok(ChainedWhen {
+impl RPolarsChainedThen {
+    fn when(&self, condition: Robj) -> RResult<RPolarsChainedWhen> {
+        Ok(RPolarsChainedWhen {
             inner: self.inner.clone().when(robj_to!(PLExprCol, condition)?),
         })
     }
@@ -84,8 +84,8 @@ impl ChainedThen {
 
 extendr_module! {
     mod whenthen;
-    impl When;
-    impl Then;
-    impl ChainedWhen;
-    impl ChainedThen;
+    impl RPolarsWhen;
+    impl RPolarsThen;
+    impl RPolarsChainedWhen;
+    impl RPolarsChainedThen;
 }

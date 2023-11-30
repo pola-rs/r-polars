@@ -373,48 +373,72 @@ RThreadHandle$thread_description <- function() .Call(wrap__RThreadHandle__thread
 
 When <- new.env(parent = emptyenv())
 
-When$new <- function(condition) .Call(wrap__When__new, condition)
+When$new <- function(condition) .Call(wrap__RPolarsWhen__new, condition)
 
-When$then <- function(statement) .Call(wrap__When__then, self, statement)
+When$then <- function(statement) .Call(wrap__RPolarsWhen__then, self, statement)
+
+RPolarsWhen <- When
 
 #' @export
+`$.RPolarsWhen` <- function (self, name) { func <- RPolarsWhen[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.RPolarsWhen` <- `$.RPolarsWhen`
+
 `$.When` <- function (self, name) { func <- When[[name]]; environment(func) <- environment(); func }
 
-#' @export
 `[[.When` <- `$.When`
 
 Then <- new.env(parent = emptyenv())
 
-Then$when <- function(condition) .Call(wrap__Then__when, self, condition)
+Then$when <- function(condition) .Call(wrap__RPolarsThen__when, self, condition)
 
-Then$otherwise <- function(statement) .Call(wrap__Then__otherwise, self, statement)
+Then$otherwise <- function(statement) .Call(wrap__RPolarsThen__otherwise, self, statement)
+
+RPolarsThen <- Then
 
 #' @export
+`$.RPolarsThen` <- function (self, name) { func <- RPolarsThen[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.RPolarsThen` <- `$.RPolarsThen`
+
 `$.Then` <- function (self, name) { func <- Then[[name]]; environment(func) <- environment(); func }
 
-#' @export
 `[[.Then` <- `$.Then`
 
 ChainedWhen <- new.env(parent = emptyenv())
 
-ChainedWhen$then <- function(statement) .Call(wrap__ChainedWhen__then, self, statement)
+ChainedWhen$then <- function(statement) .Call(wrap__RPolarsChainedWhen__then, self, statement)
+
+RPolarsChainedWhen <- ChainedWhen
 
 #' @export
+`$.RPolarsChainedWhen` <- function (self, name) { func <- RPolarsChainedWhen[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.RPolarsChainedWhen` <- `$.RPolarsChainedWhen`
+
 `$.ChainedWhen` <- function (self, name) { func <- ChainedWhen[[name]]; environment(func) <- environment(); func }
 
-#' @export
 `[[.ChainedWhen` <- `$.ChainedWhen`
 
 ChainedThen <- new.env(parent = emptyenv())
 
-ChainedThen$when <- function(condition) .Call(wrap__ChainedThen__when, self, condition)
+ChainedThen$when <- function(condition) .Call(wrap__RPolarsChainedThen__when, self, condition)
 
-ChainedThen$otherwise <- function(statement) .Call(wrap__ChainedThen__otherwise, self, statement)
+ChainedThen$otherwise <- function(statement) .Call(wrap__RPolarsChainedThen__otherwise, self, statement)
+
+RPolarsChainedThen <- ChainedThen
 
 #' @export
+`$.RPolarsChainedThen` <- function (self, name) { func <- RPolarsChainedThen[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.RPolarsChainedThen` <- `$.RPolarsChainedThen`
+
 `$.ChainedThen` <- function (self, name) { func <- ChainedThen[[name]]; environment(func) <- environment(); func }
 
-#' @export
 `[[.ChainedThen` <- `$.ChainedThen`
 
 Expr <- new.env(parent = emptyenv())

@@ -16,13 +16,13 @@
 \alias{as_record_batch_reader.RPolarsDataFrame}
 \title{polars to nanoarrow and arrow}
 \usage{
-as_nanoarrow_array_stream.RPolarsDataFrame(x, ..., schema = NULL)
+\method{as_nanoarrow_array_stream}{RPolarsDataFrame}(x, ..., schema = NULL)
 
-infer_nanoarrow_schema.RPolarsDataFrame(x, ...)
+\method{infer_nanoarrow_schema}{RPolarsDataFrame}(x, ...)
 
-as_arrow_table.RPolarsDataFrame(x, ...)
+\method{as_arrow_table}{RPolarsDataFrame}(x, ...)
 
-as_record_batch_reader.RPolarsDataFrame(x, ..., schema = NULL)
+\method{as_record_batch_reader}{RPolarsDataFrame}(x, ..., schema = NULL)
 }
 \arguments{
 \item{x}{a polars DataFrame}
