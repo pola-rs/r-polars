@@ -71,10 +71,10 @@ impl RPolarsLazyFrame {
         collect_with_r_func_support(self.clone().0)
     }
 
-    pub fn collect_in_background(&self) -> crate::rbackground::RThreadHandle<RResult<RDF>> {
+    pub fn collect_in_background(&self) -> crate::rbackground::RPolarsRThreadHandle<RResult<RDF>> {
         use crate::rbackground::*;
         let dup = self.clone();
-        RThreadHandle::new(move || {
+        RPolarsRThreadHandle::new(move || {
             Ok(RDF::from(
                 dup.0
                     .collect()

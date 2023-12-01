@@ -94,7 +94,7 @@ extendr_method_to_pure_functions = function(env, class_name = NULL) {
 .pr$VecDataFrame = extendr_method_to_pure_functions(VecDataFrame)
 .pr$RNullValues = extendr_method_to_pure_functions(RNullValues)
 .pr$RPolarsErr = extendr_method_to_pure_functions(RPolarsErr)
-.pr$RThreadHandle = extendr_method_to_pure_functions(RThreadHandle)
+.pr$RThreadHandle = extendr_method_to_pure_functions(RPolarsRThreadHandle)
 .pr$RPolarsStringCacheHolder = extendr_method_to_pure_functions(RPolarsStringCacheHolder)
 .pr$RPolarsSQLContext = extendr_method_to_pure_functions(RPolarsSQLContext)
 

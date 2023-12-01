@@ -418,8 +418,8 @@ LazyFrame_collect = function(
 #'
 #' @details
 #' This function immediately returns an [RThreadHandle][RThreadHandle_RThreadHandle_class].
-#' Use [`<RThreadHandle>$is_finished()`][RThreadHandle_is_finished] to see if done.
-#' Use [`<RThreadHandle>$join()`][RThreadHandle_join] to wait and get the final result.
+#' Use [`<RPolarsRThreadHandle>$is_finished()`][RThreadHandle_is_finished] to see if done.
+#' Use [`<RPolarsRThreadHandle>$join()`][RThreadHandle_join] to wait and get the final result.
 #'
 #' It is useful to not block the R session while query executes. If you use
 #' [`<Expr>$map_batches()`][Expr_map_batches] or

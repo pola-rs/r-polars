@@ -2,7 +2,7 @@
 % Please edit documentation in R/rbackground.R
 \name{RThreadHandle_RThreadHandle_class}
 \alias{RThreadHandle_RThreadHandle_class}
-\title{The RThreadHandle class}
+\title{The RPolarsRThreadHandle class}
 \value{
 see methods:
 \code{\link[=RThreadHandle_is_finished]{is_finished()}}
@@ -13,8 +13,8 @@ A handle to some polars query running in a background thread.
 }
 \details{
 \code{\link[=LazyFrame_collect_in_background]{<LazyFrame>$collect_in_background()}} will execute a polars
-query detached from the R session and return an \code{RThreadHandle} immediately. This
-\code{RThreadHandle}-class has the methods \code{\link[=RThreadHandle_is_finished]{is_finished()}} and
+query detached from the R session and return an \code{RPolarsRThreadHandle} immediately. This
+\code{RPolarsRThreadHandle}-class has the methods \code{\link[=RThreadHandle_is_finished]{is_finished()}} and
 \code{\link[=RThreadHandle_join]{join()}}.
 
 NOTICE:
@@ -36,7 +36,6 @@ handle = pl$LazyFrame(mtcars)$with_columns(prexpr)$collect_in_background()
 if (!handle$is_finished()) print("not done yet")
 df = handle$join() # get result
 df
-
 }
 \seealso{
 \code{\link[=LazyFrame_collect_in_background]{<LazyFrame>$collect_in_background()}}

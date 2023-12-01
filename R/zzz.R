@@ -97,7 +97,7 @@ replace_private_with_pub_methods(RField, "^RField_")
 replace_private_with_pub_methods(RPolarsSeries, "^Series_")
 
 # RThreadHandle
-replace_private_with_pub_methods(RThreadHandle, "^RThreadHandle_")
+replace_private_with_pub_methods(RPolarsRThreadHandle, "^RThreadHandle_")
 
 # SQLContext
 replace_private_with_pub_methods(RPolarsSQLContext, "^SQLContext_")

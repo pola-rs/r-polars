@@ -16,13 +16,13 @@ use std::collections::VecDeque;
 use std::sync::{Arc, Mutex};
 use std::thread;
 #[derive(Debug)]
-pub struct RThreadHandle<T> {
+pub struct RPolarsRThreadHandle<T> {
     handle: Option<thread::JoinHandle<T>>,
 }
 
-impl<T: Send + Sync + 'static> RThreadHandle<T> {
+impl<T: Send + Sync + 'static> RPolarsRThreadHandle<T> {
     pub fn new(compute: impl FnOnce() -> T + Send + 'static) -> Self {
-        RThreadHandle {
+        RPolarsRThreadHandle {
             handle: Some(thread::spawn(compute)),
         }
     }
@@ -59,7 +59,7 @@ impl<T: Send + Sync + 'static> RThreadHandle<T> {
 }
 
 #[extendr]
-impl RThreadHandle<RResult<RPolarsDataFrame>> {
+impl RPolarsRThreadHandle<RResult<RPolarsDataFrame>> {
     fn join(&mut self) -> RResult<RPolarsDataFrame> {
         // Could use *.flatten() when it's stable
         self.join_generic().and_then(std::convert::identity)
@@ -553,8 +553,8 @@ pub fn test_rbackgroundhandler(lambda: Robj, arg: Robj) -> RResult<Robj> {
 }
 
 #[extendr]
-pub fn test_rthreadhandle() -> RThreadHandle<RResult<RPolarsDataFrame>> {
-    RThreadHandle::new(move || {
+pub fn test_rthreadhandle() -> RPolarsRThreadHandle<RResult<RPolarsDataFrame>> {
+    RPolarsRThreadHandle::new(move || {
         println!("Intense sleeping in Rust for 10 seconds!");
         let duration = std::time::Duration::from_millis(10000);
         thread::sleep(duration);
@@ -588,7 +588,7 @@ pub fn test_serde_df(df: &RPolarsDataFrame) -> RResult<RPolarsDataFrame> {
 
 extendr_module! {
     mod rbackground;
-    impl RThreadHandle<RResult<RPolarsDataFrame>>;
+    impl RPolarsRThreadHandle<RResult<RPolarsDataFrame>>;
     fn setup_renv;
     fn set_global_rpool_cap;
     fn get_global_rpool_cap;

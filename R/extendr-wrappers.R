@@ -351,19 +351,19 @@ RPolarsErr$when <- function(s) .Call(wrap__RPolarsErr__when, self, s)
 #' @export
 `[[.RPolarsErr` <- `$.RPolarsErr`
 
-RThreadHandle <- new.env(parent = emptyenv())
+RPolarsRThreadHandle <- new.env(parent = emptyenv())
 
-RThreadHandle$join <- function() .Call(wrap__RThreadHandle__join, self)
+RPolarsRThreadHandle$join <- function() .Call(wrap__RPolarsRThreadHandle__join, self)
 
-RThreadHandle$is_finished <- function() .Call(wrap__RThreadHandle__is_finished, self)
+RPolarsRThreadHandle$is_finished <- function() .Call(wrap__RPolarsRThreadHandle__is_finished, self)
 
-RThreadHandle$thread_description <- function() .Call(wrap__RThreadHandle__thread_description, self)
-
-#' @export
-`$.RThreadHandle` <- function (self, name) { func <- RThreadHandle[[name]]; environment(func) <- environment(); func }
+RPolarsRThreadHandle$thread_description <- function() .Call(wrap__RPolarsRThreadHandle__thread_description, self)
 
 #' @export
-`[[.RThreadHandle` <- `$.RThreadHandle`
+`$.RPolarsRThreadHandle` <- function (self, name) { func <- RPolarsRThreadHandle[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.RPolarsRThreadHandle` <- `$.RPolarsRThreadHandle`
 
 RPolarsWhen <- new.env(parent = emptyenv())
 
