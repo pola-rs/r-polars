@@ -1,6 +1,6 @@
 //read csv
 
-use crate::rdatatype::DataTypeVector;
+use crate::rdatatype::RPolarsDataTypeVector;
 
 use crate::lazy::dataframe::RPolarsLazyFrame;
 use crate::robj_to;
@@ -52,7 +52,7 @@ pub fn new_from_csv(
     comment_char: Robj,
     quote_char: Robj,
     skip_rows: Robj,
-    dtypes: Nullable<&DataTypeVector>,
+    dtypes: Nullable<&RPolarsDataTypeVector>,
     null_values: Nullable<&RNullValues>,
     // missing_utf8_is_empty_string: Robj,
     ignore_errors: Robj,

@@ -205,10 +205,10 @@ impl From<RPolarsDataType> for pl::DataType {
 //if any names are missing will become slice of dtypes and passed to polars_io.csv.csvread.with_dtypes_slice
 //zero length vector will neither trigger with_dtypes() or with_dtypes_slice() method calls
 #[derive(Debug, Clone, Default)]
-pub struct DataTypeVector(pub Vec<(Option<String>, pl::DataType)>);
+pub struct RPolarsDataTypeVector(pub Vec<(Option<String>, pl::DataType)>);
 
 #[extendr]
-impl DataTypeVector {
+impl RPolarsDataTypeVector {
     pub fn new() -> Self {
         Self::default()
     }
@@ -221,7 +221,7 @@ impl DataTypeVector {
     }
 
     pub fn from_rlist(list: List) -> List {
-        let mut dtv = DataTypeVector(Vec::with_capacity(list.len()));
+        let mut dtv = RPolarsDataTypeVector(Vec::with_capacity(list.len()));
 
         let result: std::result::Result<(), String> = list.iter().try_for_each(|(name, robj)| {
             if !robj.inherits("RPolarsDataType") || robj.rtype() != extendr_api::Rtype::ExternalPtr
@@ -240,7 +240,7 @@ impl DataTypeVector {
     }
 }
 
-impl DataTypeVector {
+impl RPolarsDataTypeVector {
     pub fn dtv_to_vec(&self) -> Vec<pl::DataType> {
         let v: Vec<_> = self.0.iter().map(|(_, dt)| dt.clone()).collect();
         v
@@ -533,6 +533,6 @@ pub fn robj_to_parallel_strategy(robj: extendr_api::Robj) -> RResult<pl::Paralle
 extendr_module! {
     mod rdatatype;
     impl RPolarsDataType;
-    impl DataTypeVector;
+    impl RPolarsDataTypeVector;
     impl RField;
 }

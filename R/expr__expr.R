@@ -1104,7 +1104,7 @@ Expr_exclude = function(columns) {
 
   pcase(
     is.character(columns), .pr$Expr$exclude(self, columns),
-    inherits(columns, "DataTypeVector"), .pr$Expr$exclude_dtype(self, columns),
+    inherits(columns, "RPolarsDataTypeVector"), .pr$Expr$exclude_dtype(self, columns),
     inherits(columns, "RPolarsDataType"), .pr$Expr$exclude_dtype(self, unwrap(.pr$DataTypeVector$from_rlist(list(columns)))),
     or_else = pstop(err = paste0("this type is not supported for Expr_exclude: ", columns))
   )

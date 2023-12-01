@@ -295,7 +295,7 @@ list_to_datatype_vector = function(x) {
   if (!is.list(x) || !is_named(x)) {
     stop("could not interpret dtypes, must be a named list of DataTypes")
   }
-  datatype_vector = DataTypeVector$new() # mutable
+  datatype_vector = RPolarsDataTypeVector$new() # mutable
   mapply(
     name = names(x),
     type = unname(x),

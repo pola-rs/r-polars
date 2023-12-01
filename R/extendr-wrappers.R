@@ -273,21 +273,21 @@ RPolarsDataType$is_temporal <- function() .Call(wrap__RPolarsDataType__is_tempor
 #' @export
 `[[.RPolarsDataType` <- `$.RPolarsDataType`
 
-DataTypeVector <- new.env(parent = emptyenv())
+RPolarsDataTypeVector <- new.env(parent = emptyenv())
 
-DataTypeVector$new <- function() .Call(wrap__DataTypeVector__new)
+RPolarsDataTypeVector$new <- function() .Call(wrap__RPolarsDataTypeVector__new)
 
-DataTypeVector$push <- function(colname, datatype) invisible(.Call(wrap__DataTypeVector__push, self, colname, datatype))
+RPolarsDataTypeVector$push <- function(colname, datatype) invisible(.Call(wrap__RPolarsDataTypeVector__push, self, colname, datatype))
 
-DataTypeVector$print <- function() invisible(.Call(wrap__DataTypeVector__print, self))
+RPolarsDataTypeVector$print <- function() invisible(.Call(wrap__RPolarsDataTypeVector__print, self))
 
-DataTypeVector$from_rlist <- function(list) .Call(wrap__DataTypeVector__from_rlist, list)
-
-#' @export
-`$.DataTypeVector` <- function (self, name) { func <- DataTypeVector[[name]]; environment(func) <- environment(); func }
+RPolarsDataTypeVector$from_rlist <- function(list) .Call(wrap__RPolarsDataTypeVector__from_rlist, list)
 
 #' @export
-`[[.DataTypeVector` <- `$.DataTypeVector`
+`$.RPolarsDataTypeVector` <- function (self, name) { func <- RPolarsDataTypeVector[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.RPolarsDataTypeVector` <- `$.RPolarsDataTypeVector`
 
 RField <- new.env(parent = emptyenv())
 

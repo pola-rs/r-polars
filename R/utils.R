@@ -323,7 +323,7 @@ replace_private_with_pub_methods = function(env, class_pattern, keep = c(), remo
 #' @return extptr to rust vector of RPolarsDataType's
 #' @keywords internal
 construct_DataTypeVector = function(l) {
-  dtv = DataTypeVector$new()
+  dtv = RPolarsDataTypeVector$new()
   for (i in seq_along(l)) {
     if (inherits(l[[i]], "RPolarsDataType")) {
       dtv$push(names(l)[i], l[[i]])

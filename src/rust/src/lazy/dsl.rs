@@ -1,7 +1,7 @@
 use crate::concurrent::RFnSignature;
 use crate::rdatatype::{
     literal_to_any_value, new_null_behavior, new_rank_method, new_rolling_cov_options,
-    robj_to_timeunit, DataTypeVector, RPolarsDataType,
+    robj_to_timeunit, RPolarsDataTypeVector, RPolarsDataType,
 };
 use crate::robj_to;
 use crate::rpolarserr::polars_to_rpolars_err;
@@ -65,7 +65,7 @@ impl RPolarsExpr {
     }
 
     //via col
-    pub fn dtype_cols(dtypes: &DataTypeVector) -> Self {
+    pub fn dtype_cols(dtypes: &RPolarsDataTypeVector) -> Self {
         dsl::dtype_cols(dtypes.dtv_to_vec()).into()
     }
 
@@ -1498,7 +1498,7 @@ impl RPolarsExpr {
         self.0.clone().exclude(columns).into()
     }
 
-    pub fn exclude_dtype(&self, columns: &DataTypeVector) -> Self {
+    pub fn exclude_dtype(&self, columns: &RPolarsDataTypeVector) -> Self {
         self.0.clone().exclude_dtype(columns.dtv_to_vec()).into()
     }
 

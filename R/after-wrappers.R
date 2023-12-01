@@ -83,7 +83,7 @@ extendr_method_to_pure_functions = function(env, class_name = NULL) {
 .pr$LazyFrame = extendr_method_to_pure_functions(RPolarsLazyFrame)
 .pr$LazyGroupBy = extendr_method_to_pure_functions(RPolarsLazyGroupBy)
 .pr$DataType = extendr_method_to_pure_functions(RPolarsDataType)
-.pr$DataTypeVector = extendr_method_to_pure_functions(DataTypeVector)
+.pr$DataTypeVector = extendr_method_to_pure_functions(RPolarsDataTypeVector)
 .pr$RField = extendr_method_to_pure_functions(RField)
 .pr$Expr = extendr_method_to_pure_functions(RPolarsExpr)
 .pr$ProtoExprArray = extendr_method_to_pure_functions(ProtoExprArray)
