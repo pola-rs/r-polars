@@ -46,7 +46,7 @@ print.RPolarsRField = function(x, ...) {
 #' @export
 #' @keywords internal
 .DollarNames.RPolarsRField = function(x, pattern = "") {
-  get_method_usages(RField, pattern = pattern)
+  get_method_usages(RPolarsRField, pattern = pattern)
 }
 
 
