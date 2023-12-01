@@ -281,7 +281,7 @@ test_that("map_batches unity", {
 test_that("$map() deprecated", {
   expect_warning(
     pl$DataFrame(iris)$select(
-        pl$col("Sepal.Length")$map(\(s) s)
+      pl$col("Sepal.Length")$map(\(s) s)
     ),
     "map_batches"
   )

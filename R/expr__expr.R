@@ -728,7 +728,6 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FAL
 
   out |>
     unwrap("in $map():")
-
 }
 
 #' Map a custom/user-defined function (UDF) to each element of a column
@@ -890,7 +889,7 @@ Expr_map_elements = function(f, return_type = NULL, strict_return_type = TRUE, a
 }
 
 Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE,
-                      allow_fail_eval = FALSE, in_background = FALSE) {
+                       allow_fail_eval = FALSE, in_background = FALSE) {
   warning("$apply() is deprecated and will be removed in 0.13.0. Use $map_elements() instead.", call. = FALSE)
   if (in_background) {
     return(.pr$Expr$map_elements_in_background(self, f, return_type))
