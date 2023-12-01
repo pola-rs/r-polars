@@ -6,6 +6,8 @@
   is renamed `$map_batches()`. `$map()` and `$apply()` will be removed in 0.13.0 (#534).
 - Removed `$days()`, `$hours()`, `$minutes()`, `$seconds()`, `$milliseconds()`,
   `$microseconds()`, `$nanoseconds()`. Those were deprecated in 0.11.0 (#550).
+- `pl$concat_list()`: elements being strings are now interpreted as column names. Use `pl$lit` to
+  concat with a string.
 
 ## What's changed
 
@@ -38,8 +40,6 @@
   columns to these functions will now compute the min/max/sum in each column
   separately. Use `pl$min_horizontal()` `pl$max_horizontal()`, and
   `pl$sum_horizontal()` instead for rowwise computation (#508).
-- `pl$concat_list()`: elements being strings are now interpreted as column names. Use `pl$lit` to
-  concat with a string.
 - `$is_not()` is deprecated and will be removed in 0.12.0. Use `$not()` instead
   (#511, #531).
 - `$is_first()` is deprecated and will be removed in 0.12.0. Use `$is_first_distinct()`
