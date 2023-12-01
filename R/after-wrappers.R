@@ -92,7 +92,7 @@ extendr_method_to_pure_functions = function(env, class_name = NULL) {
 .pr$ChainedWhen = extendr_method_to_pure_functions(RPolarsChainedWhen)
 .pr$ChainedThen = extendr_method_to_pure_functions(RPolarsChainedThen)
 .pr$VecDataFrame = extendr_method_to_pure_functions(RPolarsVecDataFrame)
-.pr$RNullValues = extendr_method_to_pure_functions(RNullValues)
+.pr$RNullValues = extendr_method_to_pure_functions(RPolarsRNullValues)
 .pr$RPolarsErr = extendr_method_to_pure_functions(RPolarsErr)
 .pr$RThreadHandle = extendr_method_to_pure_functions(RPolarsRThreadHandle)
 .pr$RPolarsStringCacheHolder = extendr_method_to_pure_functions(RPolarsStringCacheHolder)

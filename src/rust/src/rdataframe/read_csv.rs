@@ -15,16 +15,17 @@ use std::result::Result;
 
 //see param, null_values
 #[derive(Clone, Debug)]
-pub struct RNullValues(pl::NullValues);
+pub struct RPolarsRNullValues(pl::NullValues);
+
 use polars::prelude::LazyFileListReader;
 
 #[extendr]
-impl RNullValues {
+impl RPolarsRNullValues {
     pub fn new_all_columns(x: String) -> Self {
-        RNullValues(pl::NullValues::AllColumnsSingle(x))
+        RPolarsRNullValues(pl::NullValues::AllColumnsSingle(x))
     }
     pub fn new_columns(x: Vec<String>) -> Self {
-        RNullValues(pl::NullValues::AllColumns(x))
+        RPolarsRNullValues(pl::NullValues::AllColumns(x))
     }
     pub fn new_named(robj: Robj) -> Self {
         let null_markers = robj.as_str_iter().expect("must be str");
@@ -34,11 +35,11 @@ impl RNullValues {
             .zip(null_markers)
             .map(|(k, v)| (k.to_owned(), v.to_owned()))
             .collect();
-        RNullValues(pl::NullValues::Named(key_val_pair))
+        RPolarsRNullValues(pl::NullValues::Named(key_val_pair))
     }
 }
-impl From<Wrap<Nullable<&RNullValues>>> for Option<pl::NullValues> {
-    fn from(x: Wrap<Nullable<&RNullValues>>) -> Self {
+impl From<Wrap<Nullable<&RPolarsRNullValues>>> for Option<pl::NullValues> {
+    fn from(x: Wrap<Nullable<&RPolarsRNullValues>>) -> Self {
         null_to_opt(x.0).map(|y| y.clone().0)
     }
 }
@@ -53,7 +54,7 @@ pub fn new_from_csv(
     quote_char: Robj,
     skip_rows: Robj,
     dtypes: Nullable<&RPolarsDataTypeVector>,
-    null_values: Nullable<&RNullValues>,
+    null_values: Nullable<&RPolarsRNullValues>,
     // missing_utf8_is_empty_string: Robj,
     ignore_errors: Robj,
     cache: Robj,
@@ -130,5 +131,5 @@ pub fn new_from_csv(
 extendr_module! {
     mod read_csv;
     fn new_from_csv;
-    impl RNullValues;
+    impl RPolarsRNullValues;
 }

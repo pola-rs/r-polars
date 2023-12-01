@@ -225,19 +225,19 @@ RPolarsVecDataFrame$print <- function() invisible(.Call(wrap__RPolarsVecDataFram
 #' @export
 `[[.RPolarsVecDataFrame` <- `$.RPolarsVecDataFrame`
 
-RNullValues <- new.env(parent = emptyenv())
+RPolarsRNullValues <- new.env(parent = emptyenv())
 
-RNullValues$new_all_columns <- function(x) .Call(wrap__RNullValues__new_all_columns, x)
+RPolarsRNullValues$new_all_columns <- function(x) .Call(wrap__RPolarsRNullValues__new_all_columns, x)
 
-RNullValues$new_columns <- function(x) .Call(wrap__RNullValues__new_columns, x)
+RPolarsRNullValues$new_columns <- function(x) .Call(wrap__RPolarsRNullValues__new_columns, x)
 
-RNullValues$new_named <- function(robj) .Call(wrap__RNullValues__new_named, robj)
-
-#' @export
-`$.RNullValues` <- function (self, name) { func <- RNullValues[[name]]; environment(func) <- environment(); func }
+RPolarsRNullValues$new_named <- function(robj) .Call(wrap__RPolarsRNullValues__new_named, robj)
 
 #' @export
-`[[.RNullValues` <- `$.RNullValues`
+`$.RPolarsRNullValues` <- function (self, name) { func <- RPolarsRNullValues[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.RPolarsRNullValues` <- `$.RPolarsRNullValues`
 
 RPolarsDataType <- new.env(parent = emptyenv())
 
