@@ -30,7 +30,7 @@ pl$Field = function(name, datatype) {
 #'
 #' @examples
 #' print(pl$Field("foo", pl$List(pl$UInt64)))
-print.RField = function(x, ...) {
+print.RPolarsRField = function(x, ...) {
   x$print()
   invisible(x)
 }
@@ -40,12 +40,12 @@ print.RField = function(x, ...) {
 #'
 #' Called by the interactive R session internally
 #'
-#' @param x Name of a `RField` object
+#' @param x Name of a `RPolarsRField` object
 #' @param pattern String used to auto-complete
 #'
 #' @export
 #' @keywords internal
-.DollarNames.RField = function(x, pattern = "") {
+.DollarNames.RPolarsRField = function(x, pattern = "") {
   get_method_usages(RField, pattern = pattern)
 }
 
@@ -104,7 +104,7 @@ RField.property_setters$datatype = function(self, value) {
 }
 
 #' @export
-"$<-.RField" = function(self, name, value) {
+"$<-.RPolarsRField" = function(self, name, value) {
   name = sub("<-$", "", name)
 
   # stop if method is not a setter

@@ -289,27 +289,27 @@ RPolarsDataTypeVector$from_rlist <- function(list) .Call(wrap__RPolarsDataTypeVe
 #' @export
 `[[.RPolarsDataTypeVector` <- `$.RPolarsDataTypeVector`
 
-RField <- new.env(parent = emptyenv())
+RPolarsRField <- new.env(parent = emptyenv())
 
-RField$new <- function(name, datatype) .Call(wrap__RField__new, name, datatype)
+RPolarsRField$new <- function(name, datatype) .Call(wrap__RPolarsRField__new, name, datatype)
 
-RField$print <- function() invisible(.Call(wrap__RField__print, self))
+RPolarsRField$print <- function() invisible(.Call(wrap__RPolarsRField__print, self))
 
-RField$clone <- function() .Call(wrap__RField__clone, self)
+RPolarsRField$clone <- function() .Call(wrap__RPolarsRField__clone, self)
 
-RField$get_name <- function() .Call(wrap__RField__get_name, self)
+RPolarsRField$get_name <- function() .Call(wrap__RPolarsRField__get_name, self)
 
-RField$get_datatype <- function() .Call(wrap__RField__get_datatype, self)
+RPolarsRField$get_datatype <- function() .Call(wrap__RPolarsRField__get_datatype, self)
 
-RField$set_name_mut <- function(name) invisible(.Call(wrap__RField__set_name_mut, self, name))
+RPolarsRField$set_name_mut <- function(name) invisible(.Call(wrap__RPolarsRField__set_name_mut, self, name))
 
-RField$set_datatype_mut <- function(datatype) invisible(.Call(wrap__RField__set_datatype_mut, self, datatype))
-
-#' @export
-`$.RField` <- function (self, name) { func <- RField[[name]]; environment(func) <- environment(); func }
+RPolarsRField$set_datatype_mut <- function(datatype) invisible(.Call(wrap__RPolarsRField__set_datatype_mut, self, datatype))
 
 #' @export
-`[[.RField` <- `$.RField`
+`$.RPolarsRField` <- function (self, name) { func <- RPolarsRField[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.RPolarsRField` <- `$.RPolarsRField`
 
 RPolarsErr <- new.env(parent = emptyenv())
 

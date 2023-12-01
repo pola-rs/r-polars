@@ -90,7 +90,7 @@ replace_private_with_pub_methods(RPolarsChainedThen, "^ChainedThen_")
 
 
 # Field
-replace_private_with_pub_methods(RField, "^RField_")
+replace_private_with_pub_methods(RPolarsRField, "^RField_")
 
 
 # Series
