@@ -1,15 +1,16 @@
 use crate::concurrent::RFnSignature;
 use crate::rdatatype::{
-    literal_to_any_value, new_null_behavior, new_rank_method, new_rolling_cov_options,
+    literal_to_any_value, new_rank_method, new_rolling_cov_options, parse_fill_null_strategy,
     robj_to_timeunit, DataTypeVector, RPolarsDataType,
 };
 use crate::robj_to;
-use crate::rpolarserr::polars_to_rpolars_err;
-use crate::rpolarserr::{rerr, rpolars_to_polars_err, RResult, Rctx, WithRctx};
+use crate::rpolarserr::{
+    polars_to_rpolars_err, rerr, rpolars_to_polars_err, RResult, Rctx, WithRctx,
+};
 use crate::series::Series;
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::utils::extendr_helpers::robj_inherits;
-use crate::utils::parse_fill_null_strategy;
+use crate::utils::robj_to_rchoice;
 use crate::utils::wrappers::null_to_opt;
 use crate::utils::{r_error_list, r_ok_list, r_result_list, robj_to_binary_vec};
 use crate::utils::{try_f64_into_i64, try_f64_into_u32, try_f64_into_usize};
@@ -26,10 +27,14 @@ use polars::prelude::SortOptions;
 use std::ops::{Add, Div, Mul, Rem, Sub};
 use std::result::Result;
 pub type NameGenerator = pl::Arc<dyn Fn(usize) -> String + Send + Sync>;
+use crate::rdatatype::robjs_to_ewm_options;
+
 use crate::utils::r_expr_to_rust_expr;
 use crate::utils::unpack_r_eval;
-#[derive(Clone, Debug)]
+use smartstring::{LazyCompact, SmartString};
+use std::sync::Arc;
 
+#[derive(Clone, Debug)]
 pub struct Expr(pub pl::Expr);
 
 impl Deref for Expr {
@@ -329,25 +334,21 @@ impl Expr {
         Ok(self.0.clone().fill_null(robj_to!(PLExpr, expr)?).into())
     }
 
-    pub fn fill_null_with_strategy(&self, strategy: &str, limit: Nullable<f64>) -> List {
-        let res = || -> Result<Expr, String> {
-            let limit = null_to_opt(limit).map(try_f64_into_usize).transpose()?;
-            let limit: pl::FillNullLimit = limit.map(|x| x as u32);
+    pub fn fill_null_with_strategy(&self, strategy: Robj, limit: Robj) -> RResult<Self> {
+        let strat = parse_fill_null_strategy(
+            robj_to_rchoice(strategy)?.as_str(),
+            robj_to!(Option, u32, limit)?,
+        )?;
+        let expr: pl::Expr = self
+            .0
+            .clone()
+            .apply(
+                move |s| s.fill_null(strat).map(Some),
+                pl::GetOutput::same_type(),
+            )
+            .with_fmt("fill_null_with_strategy");
 
-            let strat = parse_fill_null_strategy(strategy, limit)
-                .map_err(|err| format!("this happe4nd {:?}", err))?;
-            let expr: pl::Expr = self
-                .0
-                .clone()
-                .apply(
-                    move |s| s.fill_null(strat).map(Some),
-                    pl::GetOutput::same_type(),
-                )
-                .with_fmt("fill_null_with_strategy");
-
-            Ok(Expr(expr))
-        }();
-        r_result_list(res)
+        Ok(Expr(expr))
     }
 
     pub fn fill_nan(&self, expr: &Expr) -> Self {
@@ -358,11 +359,11 @@ impl Expr {
         self.0.clone().reverse().into()
     }
 
-    pub fn std(&self, ddof: Robj) -> Result<Self, String> {
+    pub fn std(&self, ddof: Robj) -> RResult<Self> {
         Ok(self.clone().0.std(robj_to!(u8, ddof)?).into())
     }
 
-    pub fn var(&self, ddof: Robj) -> Result<Self, String> {
+    pub fn var(&self, ddof: Robj) -> RResult<Self> {
         Ok(self.clone().0.var(robj_to!(u8, ddof)?).into())
     }
 
@@ -449,13 +450,7 @@ impl Expr {
             .into())
     }
 
-    pub fn hash(
-        &self,
-        seed: Robj,
-        seed_1: Robj,
-        seed_2: Robj,
-        seed_3: Robj,
-    ) -> Result<Expr, String> {
+    pub fn hash(&self, seed: Robj, seed_1: Robj, seed_2: Robj, seed_3: Robj) -> RResult<Self> {
         Ok(Expr(self.0.clone().hash(
             robj_to!(u64, seed)?,
             robj_to!(u64, seed_1)?,
@@ -706,15 +701,11 @@ impl Expr {
         r_result_list(expr_res)
     }
 
-    fn diff(&self, n_float: f64, null_behavior: &str) -> List {
-        let expr_res = || -> Result<Expr, String> {
-            Ok(Expr(self.0.clone().diff(
-                try_f64_into_i64(n_float)?,
-                new_null_behavior(null_behavior)?,
-            )))
-        }()
-        .map_err(|err| format!("diff: {}", err));
-        r_result_list(expr_res)
+    fn diff(&self, n_float: Robj, null_behavior: Robj) -> RResult<Expr> {
+        Ok(Expr(self.0.clone().diff(
+            robj_to!(i64, n_float)?,
+            robj_to!(new_null_behavior, null_behavior)?,
+        )))
     }
 
     fn pct_change(&self, n_float: Robj) -> RResult<Self> {
@@ -859,91 +850,60 @@ impl Expr {
             .into())
     }
 
-    pub fn ewm_mean(&self, alpha: f64, adjust: bool, min_periods: f64, ignore_nulls: bool) -> List {
-        let expr_result = || -> Result<Expr, String> {
-            let min_periods = try_f64_into_usize(min_periods)?;
-            let options = pl::EWMOptions {
-                alpha,
-                adjust,
-                bias: false,
-                min_periods,
-                ignore_nulls,
-            };
-            Ok(self.0.clone().ewm_mean(options).into())
-        }();
-        r_result_list(expr_result)
+    pub fn ewm_mean(
+        &self,
+        alpha: Robj,
+        adjust: Robj,
+        min_periods: Robj,
+        ignore_nulls: Robj,
+    ) -> RResult<Self> {
+        let options = robjs_to_ewm_options(alpha, adjust, r!(false), min_periods, ignore_nulls)?;
+        Ok(self.0.clone().ewm_mean(options).into())
     }
 
     pub fn ewm_std(
         &self,
-        alpha: f64,
-        adjust: bool,
-        bias: bool,
-        min_periods: f64,
-        ignore_nulls: bool,
-    ) -> List {
-        let expr_result = || -> Result<Expr, String> {
-            let min_periods = try_f64_into_usize(min_periods)?;
-            let options = pl::EWMOptions {
-                alpha,
-                adjust,
-                bias,
-                min_periods,
-                ignore_nulls,
-            };
-            Ok(self.0.clone().ewm_std(options).into())
-        }();
-        r_result_list(expr_result)
+        alpha: Robj,
+        adjust: Robj,
+        bias: Robj,
+        min_periods: Robj,
+        ignore_nulls: Robj,
+    ) -> RResult<Self> {
+        let options = robjs_to_ewm_options(alpha, adjust, bias, min_periods, ignore_nulls)?;
+        Ok(self.0.clone().ewm_std(options).into())
     }
 
     pub fn ewm_var(
         &self,
-        alpha: f64,
-        adjust: bool,
-        bias: bool,
-        min_periods: f64,
-        ignore_nulls: bool,
-    ) -> List {
-        let expr_result = || -> Result<Expr, String> {
-            let min_periods = try_f64_into_usize(min_periods)?;
-            let options = pl::EWMOptions {
-                alpha,
-                adjust,
-                bias,
-                min_periods,
-                ignore_nulls,
-            };
-            Ok(self.0.clone().ewm_var(options).into())
-        }();
-        r_result_list(expr_result)
+        alpha: Robj,
+        adjust: Robj,
+        bias: Robj,
+        min_periods: Robj,
+        ignore_nulls: Robj,
+    ) -> RResult<Self> {
+        let options = robjs_to_ewm_options(alpha, adjust, bias, min_periods, ignore_nulls)?;
+        Ok(self.0.clone().ewm_var(options).into())
     }
 
-    pub fn extend_constant(&self, value: &Expr, n: f64) -> List {
-        let expr_res = || -> Result<Expr, String> {
-            let av = match value.clone().0 {
-                pl::Expr::Literal(ma) => literal_to_any_value(ma),
-                ma => Err(format!("value [{:?}] was not a literal:", ma)),
-            }?;
-            let n = try_f64_into_usize(n)?;
-
-            Ok(Expr(
-                self.0
-                    .clone()
-                    .apply(
-                        move |s| {
-                            //swap owned inline string to str as only supported and if swapped here life time is long enough
-                            let av = match &av {
-                                pl::AnyValue::Utf8Owned(x) => pl::AnyValue::Utf8(x.as_str()),
-                                x => x.clone(),
-                            };
-                            s.extend_constant(av, n).map(Some)
-                        },
-                        pl::GetOutput::same_type(),
-                    )
-                    .with_fmt("extend"),
-            ))
-        }();
-        r_result_list(expr_res)
+    pub fn extend_constant(&self, value: Robj, n: Robj) -> RResult<Self> {
+        let av = robj_to!(LiteralValue, value).and_then(literal_to_any_value)?;
+        let n = robj_to!(usize, n)?;
+        Ok(Expr(
+            self.0
+                .clone()
+                .apply(
+                    move |s| {
+                        //swap owned inline string to str as only supported and if swapped here life time is long enough
+                        let av = match &av {
+                            pl::AnyValue::Utf8Owned(x) => pl::AnyValue::Utf8(x.as_str()),
+                            x => x.clone(),
+                        };
+                        s.extend_constant(av, n).map(Some)
+                    },
+                    pl::GetOutput::same_type(),
+                )
+                .with_fmt("extend"),
+        ))
     }
 
     pub fn rep(&self, n: f64, rechunk: bool) -> List {
@@ -1092,25 +1052,17 @@ impl Expr {
         self.0.clone().list().arg_max().into()
     }
 
-    fn list_diff(&self, n: f64, null_behavior: &str) -> List {
-        let expr_res = || -> Result<Expr, String> {
-            Ok(Expr(self.0.clone().list().diff(
-                try_f64_into_i64(n)?,
-                new_null_behavior(null_behavior)?,
-            )))
-        }()
-        .map_err(|err| format!("list.diff: {}", err));
-        r_result_list(expr_res)
+    fn list_diff(&self, n: Robj, null_behavior: Robj) -> RResult<Self> {
+        Ok(Expr(self.0.clone().list().diff(
+            robj_to!(i64, n)?,
+            robj_to!(new_null_behavior, null_behavior)?,
+        )))
     }
 
-    fn list_shift(&self, periods: Robj) -> List {
-        let expr_res = || -> Result<Expr, String> {
-            Ok(Expr(
-                self.0.clone().list().shift(robj_to!(PLExpr, periods)?),
-            ))
-        }()
-        .map_err(|err| format!("list.shift: {}", err));
-        r_result_list(expr_res)
+    fn list_shift(&self, periods: Robj) -> RResult<Self> {
+        Ok(Expr(
+            self.0.clone().list().shift(robj_to!(PLExpr, periods)?),
+        ))
     }
 
     fn list_slice(&self, offset: &Expr, length: Nullable<&Expr>) -> Self {
@@ -1128,43 +1080,29 @@ impl Expr {
 
     fn list_to_struct(
         &self,
-        width_strat: &str,
-        name_gen: Nullable<Robj>,
-        upper_bound: f64,
-    ) -> List {
-        use crate::rdatatype::new_width_strategy;
-        use crate::utils::extendr_concurrent::ParRObj;
-        use smartstring::{LazyCompact, SmartString};
-        use std::sync::Arc;
-
-        let name_gen: std::option::Option<
-            Arc<(dyn Fn(usize) -> SmartString<LazyCompact> + Send + Sync + 'static)>,
-        > = if let Some(robj) = null_to_opt(name_gen) {
+        n_field_strategy: Robj,
+        name_gen: Robj,
+        upper_bound: Robj,
+    ) -> RResult<Self> {
+        let width_strat = robj_to!(ListToStructWidthStrategy, n_field_strategy)?;
+        let name_gen = robj_to!(Option, Robj, name_gen)?.map(|robj| {
             let par_fn: ParRObj = robj.into();
-            let x: std::option::Option<
-                Arc<(dyn Fn(usize) -> SmartString<LazyCompact> + Send + Sync + 'static)>,
-            > = Some(pl::Arc::new(move |idx: usize| {
-                let thread_com = ThreadCom::from_global(&CONFIG);
-                thread_com.send(RFnSignature::FnF64ToString(par_fn.clone(), idx as f64));
-                let s = thread_com.recv().unwrap_string();
-                let s: SmartString<LazyCompact> = s.into();
-                s
-            }));
-            x
-        } else {
-            None
-        };
-
-        //resolve usize from f64 and stategy from str
-        let res = || -> Result<Expr, String> {
-            let ub = try_f64_into_usize(upper_bound)?;
-            let strat = new_width_strategy(width_strat)?;
-            Ok(Expr(self.0.clone().list().to_struct(strat, name_gen, ub)))
-        }();
-
-        let res = res.map_err(|err| format!("in to_struct: {}", err));
-
-        r_result_list(res)
+            let f: Arc<(dyn Fn(usize) -> SmartString<LazyCompact> + Send + Sync + 'static)> =
+                pl::Arc::new(move |idx: usize| {
+                    let thread_com = ThreadCom::from_global(&CONFIG);
+                    thread_com.send(RFnSignature::FnF64ToString(par_fn.clone(), idx as f64));
+                    let s = thread_com.recv().unwrap_string();
+                    let s: SmartString<LazyCompact> = s.into();
+                    s
+                });
+            f
+        });
+        let ub = robj_to!(usize, upper_bound)?;
+        Ok(Expr(self.0.clone().list().to_struct(
+            width_strat,
+            name_gen,
+            ub,
+        )))
     }
 
     pub fn str_to_date(
@@ -1559,11 +1497,11 @@ impl Expr {
         self.0.clone().last().into()
     }
 
-    pub fn head(&self, n: Robj) -> Result<Self, String> {
+    pub fn head(&self, n: Robj) -> RResult<Self> {
         Ok(self.0.clone().head(Some(robj_to!(usize, n)?)).into())
     }
 
-    pub fn tail(&self, n: Robj) -> Result<Self, String> {
+    pub fn tail(&self, n: Robj) -> RResult<Self> {
         Ok(self.0.clone().tail(Some(robj_to!(usize, n)?)).into())
     }
 

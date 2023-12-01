@@ -476,7 +476,6 @@ pl$approx_n_unique = function(column) { #-> int or Expr
 #' df = pl$DataFrame(a = 1:2, b = 3:4, c = 5:6)
 #'
 #' # Compute sum in several columns
-#' df$with_columns(pl$sum("a", "c"))
 #' df$with_columns(pl$sum("*"))
 pl$sum = function(..., verbose = TRUE) {
   column = list2(...)
@@ -519,9 +518,6 @@ pl$sum = function(..., verbose = TRUE) {
 #' )
 #' df
 #'
-#' df$with_columns(
-#'   pl$min("a", "b", "c")
-#' )
 pl$min = function(..., verbose = TRUE) {
   column = list2(...)
   if (length(column) == 1L) column <- column[[1L]]
@@ -567,9 +563,6 @@ pl$min = function(..., verbose = TRUE) {
 #' )
 #' df
 #'
-#' df$with_columns(
-#'   pl$max("a", "b", "c")
-#' )
 pl$max = function(..., verbose = TRUE) {
   column = list2(...)
   if (length(column) == 1L) column <- column[[1L]]
@@ -667,7 +660,7 @@ pl$var = function(column, ddof = 1) {
 #' Concat the arrays in a Series dtype List in linear time.
 #' @description Folds the expressions from left to right, keeping the first non-null value.
 #' @name pl_concat_list
-#' @param exprs list of Expr or Series or strings or a mix, or a char vector
+#' @param exprs list of Into<Expr>, strings interpreted as column names
 #' @return Expr
 #'
 #' @keywords Expr_new
@@ -692,9 +685,8 @@ pl$var = function(column, ddof = 1) {
 #' ))$alias("alice")$lit_to_s()
 #'
 pl$concat_list = function(exprs) {
-  l_expr = lapply(as.list(exprs), wrap_e)
-  pra = do.call(construct_ProtoExprArray, l_expr)
-  unwrap(concat_list(pra))
+  concat_list(as.list(exprs)) |>
+    unwrap(" in pl$concat_list():")
 }
 
 

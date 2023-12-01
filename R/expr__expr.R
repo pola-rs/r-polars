@@ -1712,7 +1712,8 @@ Expr_fill_nan = function(expr = NULL) {
 #' @examples
 #' pl$select(pl$lit(1:5)$std())
 Expr_std = function(ddof = 1) {
-  unwrap(.pr$Expr$std(self, ddof))
+  .pr$Expr$std(self, ddof) |>
+    unwrap("in $std():")
 }
 
 #' Get variance
@@ -1722,7 +1723,8 @@ Expr_std = function(ddof = 1) {
 #' @examples
 #' pl$select(pl$lit(1:5)$var())
 Expr_var = function(ddof = 1) {
-  unwrap(.pr$Expr$var(self, ddof))
+  .pr$Expr$var(self, ddof) |>
+    unwrap("in $var():")
 }
 
 #' Get maximum value
@@ -2657,6 +2659,7 @@ Expr_rank = function(method = "average", descending = FALSE) {
   unwrap(.pr$Expr$rank(self, method, descending))
 }
 
+
 #' Difference
 #'
 #' Calculate the n-th discrete difference.
@@ -2669,8 +2672,9 @@ Expr_rank = function(method = "average", descending = FALSE) {
 #'   diff_default = pl$col("a")$diff(),
 #'   diff_2_ignore = pl$col("a")$diff(2, "ignore")
 #' )
-Expr_diff = function(n = 1, null_behavior = "ignore") {
-  unwrap(.pr$Expr$diff(self, n, null_behavior))
+  Expr_diff = function(n = 1, null_behavior = c("ignore", "drop")) {
+  .pr$Expr$diff(self, n, null_behavior) |>
+    unwrap("in $diff():")
 }
 
 #' Percentage change
@@ -3072,7 +3076,8 @@ Expr_ewm_mean = function(
     com = NULL, span = NULL, half_life = NULL, alpha = NULL,
     adjust = TRUE, min_periods = 1L, ignore_nulls = TRUE) {
   alpha = prepare_alpha(com, span, half_life, alpha)
-  unwrap(.pr$Expr$ewm_mean(self, alpha, adjust, min_periods, ignore_nulls))
+  .pr$Expr$ewm_mean(self, alpha, adjust, min_periods, ignore_nulls) |>
+    unwrap("in $ewm_mean()")
 }
 
 #' Exponentially-weighted moving standard deviation
@@ -3087,7 +3092,8 @@ Expr_ewm_std = function(
     com = NULL, span = NULL, half_life = NULL, alpha = NULL,
     adjust = TRUE, bias = FALSE, min_periods = 1L, ignore_nulls = TRUE) {
   alpha = prepare_alpha(com, span, half_life, alpha)
-  unwrap(.pr$Expr$ewm_std(self, alpha, adjust, bias, min_periods, ignore_nulls))
+  .pr$Expr$ewm_std(self, alpha, adjust, bias, min_periods, ignore_nulls) |>
+    unwrap("in $ewm_std()")
 }
 
 #' Exponentially-weighted moving variance
@@ -3102,7 +3108,8 @@ Expr_ewm_var = function(
     com = NULL, span = NULL, half_life = NULL, alpha = NULL,
     adjust = TRUE, bias = FALSE, min_periods = 1L, ignore_nulls = TRUE) {
   alpha = prepare_alpha(com, span, half_life, alpha)
-  unwrap(.pr$Expr$ewm_var(self, alpha, adjust, bias, min_periods, ignore_nulls))
+  .pr$Expr$ewm_var(self, alpha, adjust, bias, min_periods, ignore_nulls)  |>
+    unwrap("in $ewm_var()")
 }
 
 #' Extend Series with a constant
@@ -3116,7 +3123,8 @@ Expr_ewm_var = function(
 #' pl$select(pl$lit(1:4)$extend_constant(10.1, 2))
 #' pl$select(pl$lit(1:4)$extend_constant(NULL, 2))
 Expr_extend_constant = function(value, n) {
-  unwrap(.pr$Expr$extend_constant(self, wrap_e(value), n))
+  .pr$Expr$extend_constant(self, wrap_e(value), n) |>
+    unwrap("in $extend_constant()")
 }
 
 #' Repeat a Series
@@ -3134,7 +3142,8 @@ Expr_extend_constant = function(value, n) {
 #' pl$select(pl$lit("alice")$rep(n = 3))
 #' pl$select(pl$lit(1:3)$rep(n = 2))
 Expr_rep = function(n, rechunk = TRUE) {
-  unwrap(.pr$Expr$rep(self, n, rechunk))
+  .pr$Expr$rep(self, n, rechunk)  |>
+    unwrap("in $rep()")
 }
 
 #' Extend a Series by repeating values
