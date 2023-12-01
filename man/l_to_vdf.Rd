@@ -10,7 +10,7 @@ l_to_vdf(l)
 \item{l}{list of DataFrame}
 }
 \value{
-VecDataFrame
+RPolarsVecDataFrame
 }
 \description{
 lifecycle: DEPRECATE, imple on rust side as a function

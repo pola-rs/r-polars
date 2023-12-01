@@ -544,12 +544,12 @@ impl RPolarsDataFrame {
 }
 
 #[derive(Clone, Debug, Default)]
-pub struct VecDataFrame(pub Vec<pl::DataFrame>);
+pub struct RPolarsVecDataFrame(pub Vec<pl::DataFrame>);
 
 #[extendr]
-impl VecDataFrame {
+impl RPolarsVecDataFrame {
     pub fn with_capacity(n: i32) -> Self {
-        VecDataFrame(Vec::with_capacity(n as usize))
+        RPolarsVecDataFrame(Vec::with_capacity(n as usize))
     }
 
     pub fn push(&mut self, df: &RPolarsDataFrame) {
@@ -570,5 +570,5 @@ extendr_module! {
     use rdatatype;
 
     impl RPolarsDataFrame;
-    impl VecDataFrame;
+    impl RPolarsVecDataFrame;
 }

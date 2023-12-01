@@ -185,7 +185,7 @@ move_env_elements = function(from_env, to_env, element_names, remove = TRUE) {
 #' @description lifecycle: DEPRECATE, imple on rust side as a function
 #' @param l list of DataFrame
 #' @keywords internal
-#' @return VecDataFrame
+#' @return RPolarsVecDataFrame
 l_to_vdf = function(l) {
   if (!length(l)) stop("cannot concat empty list l")
   do_inherit_DataFrame = sapply(l, inherits, "RPolarsDataFrame")

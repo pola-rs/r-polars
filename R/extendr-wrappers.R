@@ -211,19 +211,19 @@ RPolarsDataFrame$write_ndjson <- function(file) .Call(wrap__RPolarsDataFrame__wr
 #' @export
 `[[.RPolarsDataFrame` <- `$.RPolarsDataFrame`
 
-VecDataFrame <- new.env(parent = emptyenv())
+RPolarsVecDataFrame <- new.env(parent = emptyenv())
 
-VecDataFrame$with_capacity <- function(n) .Call(wrap__VecDataFrame__with_capacity, n)
+RPolarsVecDataFrame$with_capacity <- function(n) .Call(wrap__RPolarsVecDataFrame__with_capacity, n)
 
-VecDataFrame$push <- function(df) invisible(.Call(wrap__VecDataFrame__push, self, df))
+RPolarsVecDataFrame$push <- function(df) invisible(.Call(wrap__RPolarsVecDataFrame__push, self, df))
 
-VecDataFrame$print <- function() invisible(.Call(wrap__VecDataFrame__print, self))
-
-#' @export
-`$.VecDataFrame` <- function (self, name) { func <- VecDataFrame[[name]]; environment(func) <- environment(); func }
+RPolarsVecDataFrame$print <- function() invisible(.Call(wrap__RPolarsVecDataFrame__print, self))
 
 #' @export
-`[[.VecDataFrame` <- `$.VecDataFrame`
+`$.RPolarsVecDataFrame` <- function (self, name) { func <- RPolarsVecDataFrame[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.RPolarsVecDataFrame` <- `$.RPolarsVecDataFrame`
 
 RNullValues <- new.env(parent = emptyenv())
 

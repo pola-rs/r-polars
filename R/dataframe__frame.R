@@ -89,14 +89,14 @@ NULL
 
 #' @title auto complete $-access into a polars object
 #' @description called by the interactive R session internally
-#' @param x VecDataFrame
+#' @param x RPolarsVecDataFrame
 #' @param pattern code-stump as string to auto-complete
 #' @return char vec
 #' @export
 #' @inherit .DollarNames.RPolarsDataFrame return
 #' @keywords internal
-.DollarNames.VecDataFrame = function(x, pattern = "") {
-  get_method_usages(VecDataFrame, pattern = pattern)
+.DollarNames.RPolarsVecDataFrame = function(x, pattern = "") {
+  get_method_usages(RPolarsVecDataFrame, pattern = pattern)
 }
 
 
