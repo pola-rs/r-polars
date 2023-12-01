@@ -23,8 +23,8 @@ df = pl$DataFrame(
 )
 df$select(pl$col("a")$list$concat(pl$col("b")))
 
-df$select(pl$col("a")$list$concat("hello from R"))
+df$select(pl$col("a")$list$concat(pl$lit("hello from R")))
 
-df$select(pl$col("a")$list$concat(list("hello", c("hello", "world"))))
+df$select(pl$col("a")$list$concat(pl$lit(list("hello", c("hello", "world")))))
 }
 \keyword{ExprList}

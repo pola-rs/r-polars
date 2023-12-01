@@ -286,21 +286,6 @@ pub fn new_quantile_interpolation_option(robj: Robj) -> RResult<QuantileInterpol
     }
 }
 
-pub fn new_null_behavior(
-    s: &str,
-) -> std::result::Result<polars::series::ops::NullBehavior, String> {
-    use polars::series::ops::NullBehavior as NB;
-    match s {
-        "ignore" => Ok(NB::Ignore),
-        "drop" => Ok(NB::Drop),
-
-        _ => Err(format!(
-            "NullBehavior choice: [{}] is not any of 'drop' or 'ignore'",
-            s
-        )),
-    }
-}
-
 pub fn new_rank_method(s: &str) -> std::result::Result<pl::RankMethod, String> {
     use pl::RankMethod as RM;
     let s_low = s.to_lowercase();
@@ -318,9 +303,7 @@ pub fn new_rank_method(s: &str) -> std::result::Result<pl::RankMethod, String> {
     }
 }
 
-pub fn literal_to_any_value(
-    litval: pl::LiteralValue,
-) -> std::result::Result<pl::AnyValue<'static>, String> {
+pub fn literal_to_any_value(litval: pl::LiteralValue) -> RResult<pl::AnyValue<'static>> {
     use pl::AnyValue as av;
     use pl::LiteralValue as lv;
     use smartstring::alias::String as SString;
@@ -352,7 +335,7 @@ pub fn literal_to_any_value(
             s.push_str(x.as_str());
             Ok(av::Utf8Owned(s))
         }
-        x => Err(format!("cannot convert LiteralValue {:?} to AnyValue", x)),
+        x => rerr().bad_val(format!("cannot convert LiteralValue {:?} to AnyValue", x)),
     }
 }
 
@@ -386,13 +369,12 @@ pub fn new_interpolation_method(s: &str) -> std::result::Result<pl::Interpolatio
     }
 }
 
-pub fn new_width_strategy(s: &str) -> std::result::Result<pl::ListToStructWidthStrategy, String> {
+pub fn robj_to_width_strategy(robj: Robj) -> RResult<pl::ListToStructWidthStrategy> {
     use pl::ListToStructWidthStrategy as WS;
-    match s {
+    match robj_to_rchoice(robj)?.to_lowercase().as_str() {
         "first_non_null" => Ok(WS::FirstNonNull),
         "max_width" => Ok(WS::MaxWidth),
-
-        _ => Err(format!(
+        s => rerr().bad_val(format!(
             "n_field_strategy: [{}] is not any of 'first_non_null' or 'max_width'",
             s
         )),
@@ -528,6 +510,52 @@ pub fn robj_to_parallel_strategy(robj: extendr_api::Robj) -> RResult<pl::Paralle
             "ParallelStrategy choice ['{s}'] should be one of 'Auto', 'None', 'Columns', 'RowGroups'"
         )),
     }
+}
+
+pub fn robj_new_null_behavior(robj: Robj) -> RResult<polars::series::ops::NullBehavior> {
+    use polars::series::ops::NullBehavior as NB;
+    match robj_to_rchoice(robj)?.to_lowercase().as_str() {
+        "ignore" => Ok(NB::Ignore),
+        "drop" => Ok(NB::Drop),
+        s => rerr().bad_val(format!(
+            "NullBehavior choice: [{}] is not any of 'drop' or 'ignore'",
+            s
+        )),
+    }
+}
+
+pub fn parse_fill_null_strategy(
+    strategy: &str,
+    limit: Option<u32>,
+) -> RResult<pl::FillNullStrategy> {
+    use pl::FillNullStrategy::*;
+    let parsed = match strategy {
+        "forward" => Forward(limit),
+        "backward" => Backward(limit),
+        "min" => Min,
+        "max" => Max,
+        "mean" => Mean,
+        "zero" => Zero,
+        "one" => One,
+        e => return rerr().plain("FillNullStrategy is not known").bad_val(e),
+    };
+    Ok(parsed)
+}
+
+pub fn robjs_to_ewm_options(
+    alpha: Robj,
+    adjust: Robj,
+    bias: Robj,
+    min_periods: Robj,
+    ignore_nulls: Robj,
+) -> RResult<pl::EWMOptions> {
+    Ok(pl::EWMOptions {
+        alpha: robj_to!(f64, alpha)?,
+        adjust: robj_to!(bool, adjust)?,
+        bias: robj_to!(bool, bias)?,
+        min_periods: robj_to!(usize, min_periods)?,
+        ignore_nulls: robj_to!(bool, ignore_nulls)?,
+    })
 }
 
 extendr_module! {

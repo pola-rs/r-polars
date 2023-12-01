@@ -777,6 +777,13 @@ pub fn robj_to_rexpr(robj: extendr_api::Robj, str_to_lit: bool) -> RResult<RPola
         .plain("cannot be converted into an Expr")
 }
 
+pub fn robj_to_pl_literal(robj: Robj) -> RResult<pl::LiteralValue> {
+    match robj_to_rexpr(robj, true)?.0 {
+        pl::Expr::Literal(litval) => Ok(litval),
+        other_expr => rerr().bad_val(format!("Expr [{:?}] was not a literal:", other_expr)),
+    }
+}
+
 // used in conjunction with R!("...")
 pub fn unpack_r_eval(res: extendr_api::Result<Robj>) -> RResult<Robj> {
     unpack_r_result_list(res.map_err(|err| {
@@ -940,6 +947,9 @@ macro_rules! robj_to_inner {
     (new_quantile_interpolation_option, $a:ident) => {
         $crate::rdatatype::new_quantile_interpolation_option($a)
     };
+    (new_null_behavior, $a:ident) => {
+        $crate::rdatatype::robj_new_null_behavior($a)
+    };
 
     (bool, $a:ident) => {
         $crate::utils::robj_to_bool($a)
@@ -1000,8 +1010,17 @@ macro_rules! robj_to_inner {
         $crate::utils::robj_to_field($a)
     };
 
+    (Robj, $a:ident) => {{
+        let ok_robj: RResult<Robj> = Ok($a);
+        ok_robj
+    }};
+
     (LazyFrame, $a:ident) => {
         $crate::utils::robj_to_lazyframe($a)
+    };
+
+    (LiteralValue, $a:ident) => {
+        $crate::utils::robj_to_pl_literal($a)
     };
 
     (PLLazyFrame, $a:ident) => {
@@ -1026,6 +1045,10 @@ macro_rules! robj_to_inner {
 
     (ParallelStrategy, $a:ident) => {
         $crate::rdatatype::robj_to_parallel_strategy($a)
+    };
+
+    (ListToStructWidthStrategy, $a:ident) => {
+        $crate::rdatatype::robj_to_width_strategy($a)
     };
 
     (PathBuf, $a:ident) => {
