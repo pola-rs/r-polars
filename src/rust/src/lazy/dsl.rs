@@ -1,7 +1,7 @@
 use crate::concurrent::RFnSignature;
 use crate::rdatatype::{
     literal_to_any_value, new_null_behavior, new_rank_method, new_rolling_cov_options,
-    robj_to_timeunit, RPolarsDataTypeVector, RPolarsDataType,
+    robj_to_timeunit, RPolarsDataType, RPolarsDataTypeVector,
 };
 use crate::robj_to;
 use crate::rpolarserr::polars_to_rpolars_err;
@@ -1701,7 +1701,7 @@ impl RPolarsExpr {
     }
 
     //expr      "funnies"
-    pub fn over(&self, proto_exprs: &ProtoExprArray) -> Self {
+    pub fn over(&self, proto_exprs: &RPolarsProtoExprArray) -> Self {
         let ve = pra_to_vec(proto_exprs, "select");
         self.0.clone().over(ve).into()
     }
@@ -2500,17 +2500,18 @@ impl ProtoRexpr {
 
 //and array of expression or proto expressions.
 #[derive(Clone, Debug)]
-pub struct ProtoExprArray(pub Vec<ProtoRexpr>);
-impl Default for ProtoExprArray {
+pub struct RPolarsProtoExprArray(pub Vec<ProtoRexpr>);
+
+impl Default for RPolarsProtoExprArray {
     fn default() -> Self {
         Self::new()
     }
 }
 
 #[extendr]
-impl ProtoExprArray {
+impl RPolarsProtoExprArray {
     pub fn new() -> Self {
-        ProtoExprArray(Vec::new())
+        RPolarsProtoExprArray(Vec::new())
     }
 
     pub fn push_back_str(&mut self, s: &str) {
@@ -2526,7 +2527,7 @@ impl ProtoExprArray {
     }
 }
 
-impl ProtoExprArray {
+impl RPolarsProtoExprArray {
     pub fn to_vec(&self, context: &str) -> Vec<pl::Expr> {
         self.0.iter().map(|re| re.to_rexpr(context).0).collect()
     }
@@ -2534,7 +2535,7 @@ impl ProtoExprArray {
 
 //external function as extendr-api do not allow methods returning unwrapped structs
 //deprecate use method instead
-pub fn pra_to_vec(pra: &ProtoExprArray, context: &str) -> Vec<pl::Expr> {
+pub fn pra_to_vec(pra: &RPolarsProtoExprArray, context: &str) -> Vec<pl::Expr> {
     pra.0.iter().map(|re| re.to_rexpr(context).0).collect()
 }
 
@@ -2702,7 +2703,7 @@ pub fn robj_to_col(name: Robj, dotdotdot: Robj) -> RResult<RPolarsExpr> {
 extendr_module! {
     mod dsl;
     impl RPolarsExpr;
-    impl ProtoExprArray;
+    impl RPolarsProtoExprArray;
     fn internal_wrap_e;
     fn robj_to_col;
 

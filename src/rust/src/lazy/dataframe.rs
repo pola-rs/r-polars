@@ -303,7 +303,7 @@ impl RPolarsLazyFrame {
         RPolarsLazyFrame(new_df)
     }
 
-    fn drop_nulls(&self, subset: &ProtoExprArray) -> RPolarsLazyFrame {
+    fn drop_nulls(&self, subset: &RPolarsProtoExprArray) -> RPolarsLazyFrame {
         if subset.0.is_empty() {
             RPolarsLazyFrame(self.0.clone().drop_nulls(None))
         } else {

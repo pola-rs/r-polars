@@ -577,11 +577,11 @@ Expr_is_not_null = "use_extendr_wrapper"
 #'
 #' @keywords internal
 #'
-#' @return ProtoExprArray object
+#' @return RPolarsProtoExprArray object
 #'
 #' @examples .pr$env$construct_ProtoExprArray(pl$col("Species"), "Sepal.Width")
 construct_ProtoExprArray = function(...) {
-  pra = ProtoExprArray$new()
+  pra = RPolarsProtoExprArray$new()
   args = list2(...)
 
   # deal with list of expressions

@@ -86,7 +86,7 @@ extendr_method_to_pure_functions = function(env, class_name = NULL) {
 .pr$DataTypeVector = extendr_method_to_pure_functions(RPolarsDataTypeVector)
 .pr$RField = extendr_method_to_pure_functions(RPolarsRField)
 .pr$Expr = extendr_method_to_pure_functions(RPolarsExpr)
-.pr$ProtoExprArray = extendr_method_to_pure_functions(ProtoExprArray)
+.pr$ProtoExprArray = extendr_method_to_pure_functions(RPolarsProtoExprArray)
 .pr$When = extendr_method_to_pure_functions(RPolarsWhen)
 .pr$Then = extendr_method_to_pure_functions(RPolarsThen)
 .pr$ChainedWhen = extendr_method_to_pure_functions(RPolarsChainedWhen)
