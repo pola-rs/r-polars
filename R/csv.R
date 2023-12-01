@@ -119,17 +119,17 @@ pl$scan_csv = function(
     RNullValues = (function() {
       # one string is used as one NULL marker for all columns
       if (is_string(nullvals)) {
-        return(RNullValues$new_all_columns(nullvals))
+        return(RPolarsRNullValues$new_all_columns(nullvals))
       }
 
       # many unnamed strings(char vec) is used one mark for each column
       if (is.character(nullvals) && !is_named(nullvals)) {
-        return(RNullValues = RNullValues$new_columns(nullvals))
+        return(RPolarsRNullValues$new_columns(nullvals))
       }
 
       # named list is used as column(name) marker(value) pairs
       if (is.list(nullvals) && is_named(nullvals)) {
-        return(RNullValues$new_named(unlist(null_values)))
+        return(RPolarsRNullValues$new_named(unlist(null_values)))
       }
 
       stop("null_values arg must be a string OR unamed char vec OR named char vec")
@@ -295,7 +295,7 @@ list_to_datatype_vector = function(x) {
   if (!is.list(x) || !is_named(x)) {
     stop("could not interpret dtypes, must be a named list of DataTypes")
   }
-  datatype_vector = DataTypeVector$new() # mutable
+  datatype_vector = RPolarsDataTypeVector$new() # mutable
   mapply(
     name = names(x),
     type = unname(x),

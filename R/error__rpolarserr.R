@@ -4,7 +4,7 @@
 #' @param pattern code-stump as string to auto-complete
 #' @return char vec
 #' @export
-#' @inherit .DollarNames.DataFrame return
+#' @inherit .DollarNames.RPolarsDataFrame return
 #' @keywords internal
 .DollarNames.RPolarsErr = function(x, pattern = "") {
   get_method_usages(RPolarsErr, pattern = pattern)

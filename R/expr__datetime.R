@@ -90,7 +90,7 @@ ExprDT_round = function(every, offset = NULL) {
     unwrap("in dt$round()")
 }
 
-# ExprDT_combine = function(self, tm: time | pli.Expr, tu: TimeUnit = "us") -> pli.Expr:
+# ExprDT_combine = function(self, tm: time | pli.RPolarsExpr, tu: TimeUnit = "us") -> pli.RPolarsExpr:
 
 
 #' Combine Data and Time

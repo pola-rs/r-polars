@@ -15,8 +15,8 @@ a detached thread. This can also be used via \verb{$collect(collect_in_backgroun
 }
 \details{
 This function immediately returns an \link[=RThreadHandle_RThreadHandle_class]{RThreadHandle}.
-Use \code{\link[=RThreadHandle_is_finished]{<RThreadHandle>$is_finished()}} to see if done.
-Use \code{\link[=RThreadHandle_join]{<RThreadHandle>$join()}} to wait and get the final result.
+Use \code{\link[=RThreadHandle_is_finished]{<RPolarsRThreadHandle>$is_finished()}} to see if done.
+Use \code{\link[=RThreadHandle_join]{<RPolarsRThreadHandle>$join()}} to wait and get the final result.
 
 It is useful to not block the R session while query executes. If you use
 \code{\link[=Expr_map_batches]{<Expr>$map_batches()}} or

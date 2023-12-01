@@ -1,13 +1,13 @@
 use crate::concurrent::RFnSignature;
 use crate::rdatatype::{
     literal_to_any_value, new_rank_method, new_rolling_cov_options, parse_fill_null_strategy,
-    robj_to_timeunit, DataTypeVector, RPolarsDataType,
+    robj_to_timeunit, RPolarsDataTypeVector, RPolarsDataType,
 };
 use crate::robj_to;
 use crate::rpolarserr::{
     polars_to_rpolars_err, rerr, rpolars_to_polars_err, RResult, Rctx, WithRctx,
 };
-use crate::series::Series;
+use crate::series::RPolarsSeries;
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::utils::extendr_helpers::robj_inherits;
 use crate::utils::robj_to_rchoice;
@@ -35,42 +35,42 @@ use smartstring::{LazyCompact, SmartString};
 use std::sync::Arc;
 
 #[derive(Clone, Debug)]
-pub struct Expr(pub pl::Expr);
+pub struct RPolarsExpr(pub pl::Expr);
 
-impl Deref for Expr {
+impl Deref for RPolarsExpr {
     type Target = pl::Expr;
     fn deref(&self) -> &pl::Expr {
         &self.0
     }
 }
 
-impl DerefMut for Expr {
+impl DerefMut for RPolarsExpr {
     fn deref_mut(&mut self) -> &mut pl::Expr {
         &mut self.0
     }
 }
 
-impl From<Expr> for pl::Expr {
-    fn from(x: Expr) -> Self {
+impl From<RPolarsExpr> for pl::Expr {
+    fn from(x: RPolarsExpr) -> Self {
         x.0
     }
 }
 
-impl From<pl::Expr> for Expr {
+impl From<pl::Expr> for RPolarsExpr {
     fn from(expr: pl::Expr) -> Self {
-        Expr(expr)
+        RPolarsExpr(expr)
     }
 }
 
 #[extendr]
-impl Expr {
+impl RPolarsExpr {
     //constructors
     pub fn col(name: &str) -> Self {
         dsl::col(name).into()
     }
 
     //via col
-    pub fn dtype_cols(dtypes: &DataTypeVector) -> Self {
+    pub fn dtype_cols(dtypes: &RPolarsDataTypeVector) -> Self {
         dsl::dtype_cols(dtypes.dtv_to_vec()).into()
     }
 
@@ -79,12 +79,12 @@ impl Expr {
         dsl::cols(names).into()
     }
 
-    pub fn lit(robj: Robj) -> RResult<Expr> {
+    pub fn lit(robj: Robj) -> RResult<RPolarsExpr> {
         let rtype = robj.rtype();
         let rlen = robj.len();
 
         fn to_series_then_lit(robj: Robj) -> RResult<pl::Expr> {
-            Series::any_robj_to_pl_series_result(robj)
+            RPolarsSeries::any_robj_to_pl_series_result(robj)
                 .map_err(polars_to_rpolars_err)
                 .map(dsl::lit)
         }
@@ -149,13 +149,15 @@ impl Expr {
                 }
             }
             (Rtype::ExternalPtr, 1) => match () {
-                _ if robj.inherits("Series") => {
-                    let s: Series = unsafe { &mut *robj.external_ptr_addr::<Series>() }.clone();
+                _ if robj.inherits("RPolarsSeries") => {
+                    let s: RPolarsSeries =
+                        unsafe { &mut *robj.external_ptr_addr::<RPolarsSeries>() }.clone();
                     Ok(pl::lit(s.0))
                 }
 
-                _ if robj.inherits("Expr") => {
-                    let expr: Expr = unsafe { &mut *robj.external_ptr_addr::<Expr>() }.clone();
+                _ if robj.inherits("RPolarsExpr") => {
+                    let expr: RPolarsExpr =
+                        unsafe { &mut *robj.external_ptr_addr::<RPolarsExpr>() }.clone();
                     Ok(expr.0)
                 }
 
@@ -175,7 +177,7 @@ impl Expr {
 
             (_, _) => rerr().bad_robj(&robj).plain("unsupported R type "),
         }
-        .map(Expr)
+        .map(RPolarsExpr)
         .when("constructing polars literal from Robj")
     }
 
@@ -288,7 +290,7 @@ impl Expr {
     }
 
     //TODO expose searchSorted side options
-    pub fn search_sorted(&self, element: &Expr) -> Self {
+    pub fn search_sorted(&self, element: &RPolarsExpr) -> Self {
         use pl::SearchSortedSide as Side;
         self.0
             .clone()
@@ -300,8 +302,8 @@ impl Expr {
         Ok(self.clone().0.gather(robj_to!(PLExpr, idx)?).into())
     }
 
-    pub fn sort_by(&self, by: Robj, descending: Robj) -> RResult<Expr> {
-        let expr = Expr(self.clone().0.sort_by(
+    pub fn sort_by(&self, by: Robj, descending: Robj) -> RResult<RPolarsExpr> {
+        let expr = RPolarsExpr(self.clone().0.sort_by(
             robj_to!(VecPLExprCol, by)?,
             robj_to!(Vec, bool, descending)?,
         ));
@@ -348,10 +350,10 @@ impl Expr {
             )
             .with_fmt("fill_null_with_strategy");
 
-        Ok(Expr(expr))
+        Ok(RPolarsExpr(expr))
     }
 
-    pub fn fill_nan(&self, expr: &Expr) -> Self {
+    pub fn fill_nan(&self, expr: &RPolarsExpr) -> Self {
         self.0.clone().fill_nan(expr.0.clone()).into()
     }
 
@@ -422,19 +424,19 @@ impl Expr {
             .into())
     }
 
-    pub fn filter(&self, predicate: &Expr) -> Expr {
+    pub fn filter(&self, predicate: &RPolarsExpr) -> RPolarsExpr {
         self.clone().0.filter(predicate.0.clone()).into()
     }
 
-    pub fn explode(&self) -> Expr {
+    pub fn explode(&self) -> RPolarsExpr {
         self.clone().0.explode().into()
     }
-    pub fn flatten(&self) -> Expr {
+    pub fn flatten(&self) -> RPolarsExpr {
         //same as explode
         self.clone().0.explode().into()
     }
 
-    pub fn gather_every(&self, n: Robj) -> RResult<Expr> {
+    pub fn gather_every(&self, n: Robj) -> RResult<RPolarsExpr> {
         let n = robj_to!(usize, n).and_then(|n| match n {
             0 => rerr().bad_arg("n").bad_val("n can't be zero"),
             _ => Ok(n),
@@ -451,7 +453,7 @@ impl Expr {
     }
 
     pub fn hash(&self, seed: Robj, seed_1: Robj, seed_2: Robj, seed_3: Robj) -> RResult<Self> {
-        Ok(Expr(self.0.clone().hash(
+        Ok(RPolarsExpr(self.0.clone().hash(
             robj_to!(u64, seed)?,
             robj_to!(u64, seed_1)?,
             robj_to!(u64, seed_2)?,
@@ -459,7 +461,7 @@ impl Expr {
         )))
     }
 
-    pub fn reinterpret(&self, signed: bool) -> Expr {
+    pub fn reinterpret(&self, signed: bool) -> RPolarsExpr {
         use crate::utils::reinterpret;
         let function = move |s: pl::Series| reinterpret(&s, signed).map(Some);
         let dt = if signed {
@@ -476,7 +478,7 @@ impl Expr {
     pub fn interpolate(&self, method: &str) -> List {
         use crate::rdatatype::new_interpolation_method;
         let im_result = new_interpolation_method(method)
-            .map(|im| Expr(self.0.clone().interpolate(im)))
+            .map(|im| RPolarsExpr(self.0.clone().interpolate(im)))
             .map_err(|err| format!("in interpolate(): {}", err));
         r_result_list(im_result)
     }
@@ -673,7 +675,7 @@ impl Expr {
     pub fn rolling_skew(&self, window_size_f: f64, bias: bool) -> List {
         use pl::*;
         let expr = try_f64_into_usize(window_size_f).map(|ws| {
-            Expr(
+            RPolarsExpr(
                 self.0
                     .clone()
                     .rolling_map_float(ws, move |ca| ca.clone().into_series().skew(bias).unwrap()),
@@ -694,22 +696,24 @@ impl Expr {
                     method: rank_method,
                     descending: descending,
                 };
-                Expr(self.0.clone().rank(options, Some(0u64)))
+                RPolarsExpr(self.0.clone().rank(options, Some(0u64)))
             })
             .map_err(|err| format!("rank: {}", err));
 
         r_result_list(expr_res)
     }
 
-    fn diff(&self, n_float: Robj, null_behavior: Robj) -> RResult<Expr> {
-        Ok(Expr(self.0.clone().diff(
+    fn diff(&self, n_float: Robj, null_behavior: Robj) -> RResult<RPolarsExpr> {
+        Ok(RPolarsExpr(self.0.clone().diff(
             robj_to!(i64, n_float)?,
             robj_to!(new_null_behavior, null_behavior)?,
         )))
     }
 
     fn pct_change(&self, n_float: Robj) -> RResult<Self> {
-        Ok(Expr(self.0.clone().pct_change(robj_to!(PLExpr, n_float)?)))
+        Ok(RPolarsExpr(
+            self.0.clone().pct_change(robj_to!(PLExpr, n_float)?),
+        ))
     }
 
     fn skew(&self, bias: bool) -> Self {
@@ -724,17 +728,17 @@ impl Expr {
     pub fn clip(&self, min: Robj, max: Robj) -> RResult<Self> {
         let av_min = robj_to!(PLExpr, min)?;
         let av_max = robj_to!(PLExpr, max)?;
-        Ok(Expr(self.0.clone().clip(av_min, av_max)))
+        Ok(RPolarsExpr(self.0.clone().clip(av_min, av_max)))
     }
 
     pub fn clip_min(&self, min: Robj) -> RResult<Self> {
         let av_min = robj_to!(PLExpr, min)?;
-        Ok(Expr(self.0.clone().clip_min(av_min)))
+        Ok(RPolarsExpr(self.0.clone().clip_min(av_min)))
     }
 
     pub fn clip_max(&self, max: Robj) -> RResult<Self> {
         let av_max = robj_to!(PLExpr, max)?;
-        Ok(Expr(self.0.clone().clip_max(av_max)))
+        Ok(RPolarsExpr(self.0.clone().clip_max(av_max)))
     }
 
     pub fn lower_bound(&self) -> Self {
@@ -803,7 +807,7 @@ impl Expr {
             .map(|x| try_f64_into_i64(*x).map_err(String::from))
             .collect();
         let expr_result = dims_result
-            .map(|dims| Expr(self.0.clone().reshape(&dims[..])))
+            .map(|dims| RPolarsExpr(self.0.clone().reshape(&dims[..])))
             .map_err(|err| format!("reshape: {}", err));
         r_result_list(expr_result)
     }
@@ -888,7 +892,7 @@ impl Expr {
     pub fn extend_constant(&self, value: Robj, n: Robj) -> RResult<Self> {
         let av = robj_to!(LiteralValue, value).and_then(literal_to_any_value)?;
         let n = robj_to!(usize, n)?;
-        Ok(Expr(
+        Ok(RPolarsExpr(
             self.0
                 .clone()
                 .apply(
@@ -909,7 +913,7 @@ impl Expr {
     pub fn rep(&self, n: f64, rechunk: bool) -> List {
         match try_f64_into_usize(n) {
             Err(err) => r_error_list(format!("rep: arg n invalid, {}", err)),
-            Ok(n) => r_ok_list(Expr(
+            Ok(n) => r_ok_list(RPolarsExpr(
                 self.0
                     .clone()
                     .apply(
@@ -917,7 +921,7 @@ impl Expr {
                             if s.len() == 1 {
                                 Ok(Some(s.new_from_index(0, n)))
                             } else {
-                                Series(s).rep_impl(n, rechunk).map(|s| Some(s.0))
+                                RPolarsSeries(s).rep_impl(n, rechunk).map(|s| Some(s.0))
                             }
                         },
                         pl::GetOutput::same_type(),
@@ -939,10 +943,10 @@ impl Expr {
         self.0.clone().entropy(base, normalize).into()
     }
 
-    fn cumulative_eval(&self, expr: &Expr, min_periods: f64, parallel: bool) -> List {
+    fn cumulative_eval(&self, expr: &RPolarsExpr, min_periods: f64, parallel: bool) -> List {
         use pl::*;
         r_result_list(try_f64_into_usize(min_periods).map(|min_p| {
-            Expr(
+            RPolarsExpr(
                 self.0
                     .clone()
                     .cumulative_eval(expr.0.clone(), min_p, parallel),
@@ -972,7 +976,7 @@ impl Expr {
         self.0.clone().list().len().into()
     }
 
-    pub fn list_contains(&self, other: &Expr) -> Expr {
+    pub fn list_contains(&self, other: &RPolarsExpr) -> RPolarsExpr {
         self.0.clone().list().contains(other.0.clone()).into()
     }
 
@@ -1031,7 +1035,7 @@ impl Expr {
             .into())
     }
 
-    fn list_get(&self, index: &Expr) -> Self {
+    fn list_get(&self, index: &RPolarsExpr) -> Self {
         self.0.clone().list().get(index.clone().0).into()
     }
 
@@ -1053,19 +1057,19 @@ impl Expr {
     }
 
     fn list_diff(&self, n: Robj, null_behavior: Robj) -> RResult<Self> {
-        Ok(Expr(self.0.clone().list().diff(
+        Ok(RPolarsExpr(self.0.clone().list().diff(
             robj_to!(i64, n)?,
             robj_to!(new_null_behavior, null_behavior)?,
         )))
     }
 
     fn list_shift(&self, periods: Robj) -> RResult<Self> {
-        Ok(Expr(
+        Ok(RPolarsExpr(
             self.0.clone().list().shift(robj_to!(PLExpr, periods)?),
         ))
     }
 
-    fn list_slice(&self, offset: &Expr, length: Nullable<&Expr>) -> Self {
+    fn list_slice(&self, offset: &RPolarsExpr, length: Nullable<&RPolarsExpr>) -> Self {
         let length = match null_to_opt(length) {
             Some(i) => i.0.clone(),
             None => dsl::lit(i64::MAX),
@@ -1073,7 +1077,7 @@ impl Expr {
         self.0.clone().list().slice(offset.0.clone(), length).into()
     }
 
-    fn list_eval(&self, expr: &Expr, parallel: bool) -> Self {
+    fn list_eval(&self, expr: &RPolarsExpr, parallel: bool) -> Self {
         use pl::*;
         self.0.clone().list().eval(expr.0.clone(), parallel).into()
     }
@@ -1098,7 +1102,7 @@ impl Expr {
             f
         });
         let ub = robj_to!(usize, upper_bound)?;
-        Ok(Expr(self.0.clone().list().to_struct(
+        Ok(RPolarsExpr(self.0.clone().list().to_struct(
             width_strat,
             name_gen,
             ub,
@@ -1226,7 +1230,7 @@ impl Expr {
         Ok(self.0.clone().dt().time().into())
     }
 
-    pub fn dt_combine(&self, time: Robj, tu: Robj) -> RResult<Expr> {
+    pub fn dt_combine(&self, time: Robj, tu: Robj) -> RResult<RPolarsExpr> {
         Ok(self
             .0
             .clone()
@@ -1287,7 +1291,7 @@ impl Expr {
 
     pub fn timestamp(&self, tu: Robj) -> List {
         let res = robj_to_timeunit(tu)
-            .map(|tu| Expr(self.0.clone().dt().timestamp(tu)))
+            .map(|tu| RPolarsExpr(self.0.clone().dt().timestamp(tu)))
             .map_err(|err| format!("valid tu needed for timestamp: {}", err));
         r_result_list(res)
     }
@@ -1305,14 +1309,14 @@ impl Expr {
             .into()
     }
 
-    pub fn dt_with_time_unit(&self, tu: Robj) -> RResult<Expr> {
-        Ok(Expr(
+    pub fn dt_with_time_unit(&self, tu: Robj) -> RResult<RPolarsExpr> {
+        Ok(RPolarsExpr(
             self.0.clone().dt().with_time_unit(robj_to!(timeunit, tu)?),
         ))
     }
 
-    pub fn dt_cast_time_unit(&self, tu: Robj) -> RResult<Expr> {
-        Ok(Expr(
+    pub fn dt_cast_time_unit(&self, tu: Robj) -> RResult<RPolarsExpr> {
+        Ok(RPolarsExpr(
             self.0.clone().dt().cast_time_unit(robj_to!(timeunit, tu)?),
         ))
     }
@@ -1322,7 +1326,7 @@ impl Expr {
     }
 
     pub fn dt_replace_time_zone(&self, tz: Nullable<String>, ambiguous: Robj) -> RResult<Self> {
-        Ok(Expr(
+        Ok(RPolarsExpr(
             self.0
                 .clone()
                 .dt()
@@ -1406,7 +1410,7 @@ impl Expr {
         Ok(self.clone().0.dt().offset_by(robj_to!(PLExpr, by)?).into())
     }
 
-    pub fn repeat_by(&self, by: &Expr) -> Self {
+    pub fn repeat_by(&self, by: &RPolarsExpr) -> Self {
         self.clone().0.repeat_by(by.0.clone()).into()
     }
 
@@ -1430,7 +1434,7 @@ impl Expr {
         self.0.clone().exclude(columns).into()
     }
 
-    pub fn exclude_dtype(&self, columns: &DataTypeVector) -> Self {
+    pub fn exclude_dtype(&self, columns: &RPolarsDataTypeVector) -> Self {
         self.0.clone().exclude_dtype(columns.dtv_to_vec()).into()
     }
 
@@ -1477,11 +1481,11 @@ impl Expr {
     pub fn round(&self, decimals: f64) -> List {
         let res = try_f64_into_u32(decimals)
             .map_err(|err| format!("in round: {}", err))
-            .map(|n| Expr(self.0.clone().round(n)));
+            .map(|n| RPolarsExpr(self.0.clone().round(n)));
         r_result_list(res)
     }
 
-    pub fn dot(&self, other: &Expr) -> Self {
+    pub fn dot(&self, other: &RPolarsExpr) -> Self {
         self.0.clone().dot(other.0.clone()).into()
     }
 
@@ -1583,7 +1587,7 @@ impl Expr {
         self.0.clone().count().into()
     }
 
-    pub fn slice(&self, offset: &Expr, length: Nullable<&Expr>) -> Self {
+    pub fn slice(&self, offset: &RPolarsExpr, length: Nullable<&RPolarsExpr>) -> Self {
         let length = match null_to_opt(length) {
             Some(i) => i.0.clone(),
             None => dsl::lit(i64::MAX),
@@ -1591,7 +1595,7 @@ impl Expr {
         self.0.clone().slice(offset.0.clone(), length).into()
     }
 
-    pub fn append(&self, other: &Expr, upcast: bool) -> Self {
+    pub fn append(&self, other: &RPolarsExpr, upcast: bool) -> Self {
         self.0.clone().append(other.0.clone(), upcast).into()
     }
 
@@ -1633,7 +1637,7 @@ impl Expr {
     }
 
     //expr      "funnies"
-    pub fn over(&self, proto_exprs: &ProtoExprArray) -> Self {
+    pub fn over(&self, proto_exprs: &RPolarsProtoExprArray) -> Self {
         let ve = pra_to_vec(proto_exprs, "select");
         self.0.clone().over(ve).into()
     }
@@ -1668,7 +1672,7 @@ impl Expr {
                     self.clone().0.map(f, output_map)
                 }
             })
-            .map(Expr)
+            .map(RPolarsExpr)
     }
 
     pub fn map_batches_in_background(
@@ -1702,7 +1706,7 @@ impl Expr {
                     self.clone().0.map(rbgfunc, output_map)
                 }
             })
-            .map(Expr)
+            .map(RPolarsExpr)
     }
 
     pub fn map_elements_in_background(
@@ -1907,23 +1911,23 @@ impl Expr {
             .into())
     }
 
-    pub fn str_contains(&self, pat: &Expr, literal: Nullable<bool>, strict: bool) -> Self {
-        Expr(match null_to_opt(literal) {
+    pub fn str_contains(&self, pat: &RPolarsExpr, literal: Nullable<bool>, strict: bool) -> Self {
+        RPolarsExpr(match null_to_opt(literal) {
             Some(true) => self.0.clone().str().contains_literal(pat.0.clone()),
             _ => self.0.clone().str().contains(pat.0.clone(), strict),
         })
     }
 
-    pub fn str_ends_with(&self, sub: &Expr) -> Self {
+    pub fn str_ends_with(&self, sub: &RPolarsExpr) -> Self {
         self.0.clone().str().ends_with(sub.0.clone()).into()
     }
 
-    pub fn str_starts_with(&self, sub: &Expr) -> Self {
+    pub fn str_starts_with(&self, sub: &RPolarsExpr) -> Self {
         self.0.clone().str().starts_with(sub.0.clone()).into()
     }
 
     pub fn str_json_path_match(&self, pat: Robj) -> List {
-        let res = || -> Result<Expr, String> {
+        let res = || -> Result<RPolarsExpr, String> {
             use pl::*;
             let pat: String = robj_to!(String, pat, "in str$json_path_match: {}")?;
             let function = move |s: Series| {
@@ -1933,7 +1937,7 @@ impl Expr {
                     Err(e) => Err(pl::PolarsError::ComputeError(format!("{e:?}").into())),
                 }
             };
-            Ok(Expr(
+            Ok(RPolarsExpr(
                 self.0
                     .clone()
                     .map(function, pl::GetOutput::from_type(pl::DataType::Utf8))
@@ -2006,7 +2010,7 @@ impl Expr {
     }
 
     pub fn str_extract(&self, pattern: Robj, group_index: Robj) -> List {
-        let res = || -> Result<Expr, String> {
+        let res = || -> Result<RPolarsExpr, String> {
             let pat = robj_to!(String, pattern)?;
             let gi = robj_to!(usize, group_index)?;
             Ok(self.0.clone().str().extract(pat.as_str(), gi).into())
@@ -2015,7 +2019,7 @@ impl Expr {
         r_result_list(res)
     }
 
-    pub fn str_extract_all(&self, pattern: &Expr) -> Self {
+    pub fn str_extract_all(&self, pattern: &RPolarsExpr) -> Self {
         self.0.clone().str().extract_all(pattern.0.clone()).into()
     }
 
@@ -2029,7 +2033,7 @@ impl Expr {
     }
 
     //NOTE SHOW CASE all R side argument handling
-    pub fn str_split(&self, by: Robj, inclusive: Robj) -> Result<Expr, String> {
+    pub fn str_split(&self, by: Robj, inclusive: Robj) -> Result<RPolarsExpr, String> {
         let by = robj_to!(PLExpr, by)?;
         let inclusive = robj_to!(bool, inclusive)?;
         if inclusive {
@@ -2041,7 +2045,12 @@ impl Expr {
 
     //NOTE SHOW CASE all rust side argument handling, n is usize and had to be
     //handled on rust side anyways
-    pub fn str_split_exact(&self, by: Robj, n: Robj, inclusive: Robj) -> Result<Expr, String> {
+    pub fn str_split_exact(
+        &self,
+        by: Robj,
+        n: Robj,
+        inclusive: Robj,
+    ) -> Result<RPolarsExpr, String> {
         let by = robj_to!(PLExpr, by)?;
         let n = robj_to!(usize, n)?;
         let inclusive = robj_to!(bool, inclusive)?;
@@ -2053,7 +2062,7 @@ impl Expr {
         .into())
     }
 
-    pub fn str_splitn(&self, by: Robj, n: Robj) -> Result<Expr, String> {
+    pub fn str_splitn(&self, by: Robj, n: Robj) -> Result<RPolarsExpr, String> {
         Ok(self
             .0
             .clone()
@@ -2062,7 +2071,12 @@ impl Expr {
             .into())
     }
 
-    pub fn str_replace(&self, pattern: Robj, value: Robj, literal: Robj) -> Result<Expr, String> {
+    pub fn str_replace(
+        &self,
+        pattern: Robj,
+        value: Robj,
+        literal: Robj,
+    ) -> Result<RPolarsExpr, String> {
         Ok(self
             .0
             .clone()
@@ -2080,7 +2094,7 @@ impl Expr {
         pattern: Robj,
         value: Robj,
         literal: Robj,
-    ) -> Result<Expr, String> {
+    ) -> Result<RPolarsExpr, String> {
         Ok(self
             .0
             .clone()
@@ -2093,14 +2107,14 @@ impl Expr {
             .into())
     }
 
-    pub fn str_slice(&self, offset: Robj, length: Robj) -> Result<Expr, String> {
+    pub fn str_slice(&self, offset: Robj, length: Robj) -> Result<RPolarsExpr, String> {
         let offset = robj_to!(i64, offset)?;
         let length = robj_to!(Option, u64, length)?;
 
         Ok(self.clone().0.str().slice(offset, length).into())
     }
 
-    pub fn str_explode(&self) -> Result<Expr, String> {
+    pub fn str_explode(&self) -> Result<RPolarsExpr, String> {
         Ok(self.0.clone().str().explode().into())
     }
 
@@ -2193,7 +2207,7 @@ impl Expr {
             .into()
     }
 
-    pub fn struct_field_by_name(&self, name: Robj) -> Result<Expr, String> {
+    pub fn struct_field_by_name(&self, name: Robj) -> Result<RPolarsExpr, String> {
         Ok(self
             .0
             .clone()
@@ -2206,7 +2220,7 @@ impl Expr {
     //     self.0.clone().struct_().field_by_index(index).into()
     // }
 
-    pub fn struct_rename_fields(&self, names: Robj) -> Result<Expr, String> {
+    pub fn struct_rename_fields(&self, names: Robj) -> Result<RPolarsExpr, String> {
         let string_vec: Vec<String> = robj_to!(Vec, String, names)?;
         Ok(self.0.clone().struct_().rename_fields(string_vec).into())
     }
@@ -2215,7 +2229,7 @@ impl Expr {
     //multiple export impl.
     fn meta_pop(&self) -> List {
         let exprs: Vec<pl::Expr> = self.0.clone().meta().pop();
-        List::from_values(exprs.iter().map(|e| Expr(e.clone())))
+        List::from_values(exprs.iter().map(|e| RPolarsExpr(e.clone())))
     }
 
     fn meta_eq(&self, other: Robj) -> Result<bool, String> {
@@ -2244,7 +2258,7 @@ impl Expr {
         Ok(name.to_string())
     }
 
-    fn meta_undo_aliases(&self) -> Expr {
+    fn meta_undo_aliases(&self) -> RPolarsExpr {
         self.0.clone().meta().undo_aliases().into()
     }
 
@@ -2266,33 +2280,33 @@ impl Expr {
         Ok(format!("{e}"))
     }
 
-    fn cat_set_ordering(&self, ordering: Robj) -> Result<Expr, String> {
+    fn cat_set_ordering(&self, ordering: Robj) -> Result<RPolarsExpr, String> {
         let ordering = robj_to!(Map, str, ordering, |s| {
             Ok(crate::rdatatype::new_categorical_ordering(s).map_err(Rctx::Plain)?)
         })?;
         Ok(self.0.clone().cat().set_ordering(ordering).into())
     }
 
-    fn cat_get_categories(&self) -> Expr {
+    fn cat_get_categories(&self) -> RPolarsExpr {
         self.0.clone().cat().get_categories().into()
     }
 
     // external expression function which typically starts a new expression chain
     // to avoid name space collisions in R, these static methods are not free functions
     // as in py-polars. prefix with new_ to not collide with other methods in class
-    pub fn new_count() -> Expr {
+    pub fn new_count() -> RPolarsExpr {
         dsl::count().into()
     }
 
-    pub fn new_first() -> Expr {
+    pub fn new_first() -> RPolarsExpr {
         dsl::first().into()
     }
 
-    pub fn new_last() -> Expr {
+    pub fn new_last() -> RPolarsExpr {
         dsl::last().into()
     }
 
-    pub fn cov(a: Robj, b: Robj, ddof: Robj) -> RResult<Expr> {
+    pub fn cov(a: Robj, b: Robj, ddof: Robj) -> RResult<RPolarsExpr> {
         Ok(pl::cov(
             robj_to!(PLExprCol, a)?,
             robj_to!(PLExprCol, b)?,
@@ -2376,7 +2390,7 @@ impl Expr {
 // could not get cfg feature flags conditions to work inside extendr macro
 // Therefore place it outside here instead
 #[allow(unused)]
-fn f_str_to_titlecase(expr: &Expr) -> RResult<Expr> {
+fn f_str_to_titlecase(expr: &RPolarsExpr) -> RResult<RPolarsExpr> {
     #[cfg(feature = "full_features")]
     return (Ok(expr.0.clone().str().to_titlecase().into()));
 
@@ -2391,7 +2405,7 @@ fn f_str_to_titlecase(expr: &Expr) -> RResult<Expr> {
 //string expression will transformed into an actual expression in different contexts such as select
 #[derive(Clone, Debug)]
 pub enum ProtoRexpr {
-    Expr(Expr),
+    RPolarsExpr(RPolarsExpr),
     String(String),
 }
 
@@ -2401,15 +2415,15 @@ impl ProtoRexpr {
         ProtoRexpr::String(s.to_owned())
     }
 
-    pub fn new_expr(r: &Expr) -> Self {
-        ProtoRexpr::Expr(r.clone())
+    pub fn new_expr(r: &RPolarsExpr) -> Self {
+        ProtoRexpr::RPolarsExpr(r.clone())
     }
 
-    pub fn to_rexpr(&self, context: &str) -> Expr {
+    pub fn to_rexpr(&self, context: &str) -> RPolarsExpr {
         match self {
-            ProtoRexpr::Expr(r) => r.clone(),
+            ProtoRexpr::RPolarsExpr(r) => r.clone(),
             ProtoRexpr::String(s) => match context {
-                "select" => Expr::col(s),
+                "select" => RPolarsExpr::col(s),
                 _ => panic!("unknown context"),
             },
         }
@@ -2422,24 +2436,25 @@ impl ProtoRexpr {
 
 //and array of expression or proto expressions.
 #[derive(Clone, Debug)]
-pub struct ProtoExprArray(pub Vec<ProtoRexpr>);
-impl Default for ProtoExprArray {
+pub struct RPolarsProtoExprArray(pub Vec<ProtoRexpr>);
+
+impl Default for RPolarsProtoExprArray {
     fn default() -> Self {
         Self::new()
     }
 }
 
 #[extendr]
-impl ProtoExprArray {
+impl RPolarsProtoExprArray {
     pub fn new() -> Self {
-        ProtoExprArray(Vec::new())
+        RPolarsProtoExprArray(Vec::new())
     }
 
     pub fn push_back_str(&mut self, s: &str) {
         self.0.push(ProtoRexpr::new_str(s));
     }
 
-    pub fn push_back_rexpr(&mut self, r: &Expr) {
+    pub fn push_back_rexpr(&mut self, r: &RPolarsExpr) {
         self.0.push(ProtoRexpr::new_expr(r));
     }
 
@@ -2448,7 +2463,7 @@ impl ProtoExprArray {
     }
 }
 
-impl ProtoExprArray {
+impl RPolarsProtoExprArray {
     pub fn to_vec(&self, context: &str) -> Vec<pl::Expr> {
         self.0.iter().map(|re| re.to_rexpr(context).0).collect()
     }
@@ -2456,7 +2471,7 @@ impl ProtoExprArray {
 
 //external function as extendr-api do not allow methods returning unwrapped structs
 //deprecate use method instead
-pub fn pra_to_vec(pra: &ProtoExprArray, context: &str) -> Vec<pl::Expr> {
+pub fn pra_to_vec(pra: &RPolarsProtoExprArray, context: &str) -> Vec<pl::Expr> {
     pra.0.iter().map(|re| re.to_rexpr(context).0).collect()
 }
 
@@ -2496,13 +2511,13 @@ pub fn make_rolling_options(
 
 // #[extendr]
 // impl WhenThenThen {
-//     pub fn when(&self, predicate: &Expr) -> WhenThenThen {
+//     pub fn when(&self, predicate: &RPolarsExpr) -> WhenThenThen {
 //         Self(self.0.clone().when(predicate.0.clone()))
 //     }
-//     pub fn then(&self, expr: &Expr) -> WhenThenThen {
+//     pub fn then(&self, expr: &RPolarsExpr) -> WhenThenThen {
 //         Self(self.0.clone().then(expr.0.clone()))
 //     }
-//     pub fn otherwise(&self, expr: &Expr) -> Expr {
+//     pub fn otherwise(&self, expr: &RPolarsExpr) -> RPolarsExpr {
 //         self.0.clone().otherwise(expr.0.clone()).into()
 //     }
 
@@ -2516,14 +2531,14 @@ pub fn make_rolling_options(
 
 // #[extendr]
 // impl Then {
-//     pub fn when(&self, predicate: &Expr) -> WhenThenThen {
+//     pub fn when(&self, predicate: &RPolarsExpr) -> WhenThenThen {
 //         let e = dsl::when(self.predicate.0.clone())
 //             .then(self.then.0.clone())
 //             .when(predicate.0.clone());
 //         WhenThenThen(e)
 //     }
 
-//     pub fn otherwise(&self, expr: &Expr) -> Expr {
+//     pub fn otherwise(&self, expr: &RPolarsExpr) -> RPolarsExpr {
 //         dsl::ternary_expr(
 //             self.predicate.0.clone(),
 //             self.then.0.clone(),
@@ -2540,13 +2555,13 @@ pub fn make_rolling_options(
 // #[extendr]
 // impl When {
 //     #[allow(clippy::self_named_constructors)]
-//     pub fn when(predicate: &Expr) -> When {
+//     pub fn when(predicate: &RPolarsExpr) -> When {
 //         When {
 //             predicate: predicate.clone(),
 //         }
 //     }
 
-//     pub fn then(&self, expr: &Expr) -> WhenThen {
+//     pub fn then(&self, expr: &RPolarsExpr) -> WhenThen {
 //         WhenThen {
 //             predicate: self.predicate.clone(),
 //             then: expr.clone(),
@@ -2559,7 +2574,7 @@ pub fn make_rolling_options(
 // }
 
 #[extendr]
-pub fn internal_wrap_e(robj: Robj, str_to_lit: Robj) -> RResult<Expr> {
+pub fn internal_wrap_e(robj: Robj, str_to_lit: Robj) -> RResult<RPolarsExpr> {
     if robj_to!(bool, str_to_lit)? {
         robj_to!(Expr, robj)
     } else {
@@ -2568,12 +2583,12 @@ pub fn internal_wrap_e(robj: Robj, str_to_lit: Robj) -> RResult<Expr> {
 }
 
 #[extendr]
-pub fn robj_to_col(name: Robj, dotdotdot: Robj) -> RResult<Expr> {
+pub fn robj_to_col(name: Robj, dotdotdot: Robj) -> RResult<RPolarsExpr> {
     //let last_type_str = None;
 
-    || -> RResult<Expr> {
+    || -> RResult<RPolarsExpr> {
         use crate::utils::unpack_r_eval;
-        let name = if name.inherits("Series") {
+        let name = if name.inherits("RPolarsSeries") {
             unpack_r_eval(R!("polars:::result({{name}}$to_vector())"))?
         } else {
             name
@@ -2581,7 +2596,7 @@ pub fn robj_to_col(name: Robj, dotdotdot: Robj) -> RResult<Expr> {
 
         match () {
             _ if name.is_string() && name.len() == 1 && dotdotdot.len() == 0 => {
-                Ok(Expr::col(name.as_str().unwrap_or(&"")))
+                Ok(RPolarsExpr::col(name.as_str().unwrap_or(&"")))
             }
             _ if name.inherits("RPolarsDataType")
                 //or if name is a list and first element is RPolarsDataType
@@ -2594,7 +2609,7 @@ pub fn robj_to_col(name: Robj, dotdotdot: Robj) -> RResult<Expr> {
                 let mut name = robj_to!(Vec, PLPolarsDataType, name)?;
                 let mut ddd = robj_to!(Vec, PLPolarsDataType, dotdotdot)?;
                 name.append(&mut ddd);
-                Ok(Expr(dsl::dtype_cols(name)))
+                Ok(RPolarsExpr(dsl::dtype_cols(name)))
             }
 
             _ => {
@@ -2602,7 +2617,7 @@ pub fn robj_to_col(name: Robj, dotdotdot: Robj) -> RResult<Expr> {
                 let mut ddd = robj_to!(Vec, String, dotdotdot)?;
                 name.append(&mut ddd);
 
-                Ok(Expr::cols(name))
+                Ok(RPolarsExpr::cols(name))
             }
         }
     }()
@@ -2623,8 +2638,8 @@ pub fn robj_to_col(name: Robj, dotdotdot: Robj) -> RResult<Expr> {
 #[extendr]
 extendr_module! {
     mod dsl;
-    impl Expr;
-    impl ProtoExprArray;
+    impl RPolarsExpr;
+    impl RPolarsProtoExprArray;
     fn internal_wrap_e;
     fn robj_to_col;
 

@@ -1,4 +1,4 @@
-use crate::lazy::dataframe::LazyFrame as RLazyFrame;
+use crate::lazy::dataframe::RPolarsLazyFrame as RLazyFrame;
 use crate::robj_to;
 use crate::rpolarserr::RResult;
 use extendr_api::prelude::*;

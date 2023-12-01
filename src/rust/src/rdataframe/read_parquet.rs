@@ -1,4 +1,4 @@
-use crate::lazy::dataframe::LazyFrame;
+use crate::lazy::dataframe::RPolarsLazyFrame;
 use crate::robj_to;
 use crate::rpolarserr::{polars_to_rpolars_err, RResult};
 
@@ -21,7 +21,7 @@ pub fn new_from_parquet(
     low_memory: Robj,
     hive_partitioning: Robj,
     //retries: Robj // not supported yet, with CloudOptions
-) -> RResult<LazyFrame> {
+) -> RResult<RPolarsLazyFrame> {
     let offset = robj_to!(Option, u32, row_count)?.unwrap_or(0);
     let opt_rowcount = robj_to!(Option, String, row_name)?.map(|name| RowCount { name, offset });
     let args = pl::ScanArgsParquet {
@@ -38,7 +38,7 @@ pub fn new_from_parquet(
 
     pl::LazyFrame::scan_parquet(robj_to!(String, path)?, args)
         .map_err(polars_to_rpolars_err)
-        .map(LazyFrame)
+        .map(RPolarsLazyFrame)
 }
 
 extendr_module! {

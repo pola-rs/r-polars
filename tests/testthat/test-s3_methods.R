@@ -40,7 +40,7 @@ patrick::with_parameters_test_that("inspection",
     d = pl$DataFrame(mtcars)
     x = FUN(mtcars)
     y = FUN(d)
-    if (inherits(y, "DataFrame")) y <- y$to_data_frame()
+    if (inherits(y, "RPolarsDataFrame")) y <- y$to_data_frame()
     expect_equal(x, y, ignore_attr = TRUE)
     if (.test_name == "as.matrix") {
       z = FUN(d$lazy())
@@ -73,14 +73,14 @@ make_cases = function() {
     "sum", "sum", sum,
   )
 }
-patrick::with_parameters_test_that("Series",
+patrick::with_parameters_test_that("RPolarsSeries",
   {
     d = pl$Series(mtcars$mpg)
     x = base(mtcars$mpg)
     y = base(d)
     z = d[[pola]]()
-    if (inherits(y, "Series")) y <- y$to_vector()
-    if (inherits(z, "Series")) z <- z$to_vector()
+    if (inherits(y, "RPolarsSeries")) y <- y$to_vector()
+    if (inherits(z, "RPolarsSeries")) z <- z$to_vector()
     expect_equal(x, y, ignore_attr = TRUE)
     expect_equal(x, z, ignore_attr = TRUE)
   },
