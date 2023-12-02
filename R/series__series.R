@@ -5,7 +5,7 @@
 #' the public and private methods/function calls to the polars rust side. The instantiated
 #' `Series`-object is an `externalptr` to a lowlevel rust polars Series  object. The pointer address
 #' is the only statefullness of the Series object on the R side. Any other state resides on the
-#' rust side. The S3 method `.DollarNames.Series` exposes all public `$foobar()`-methods which are callable onto the object.
+#' rust side. The S3 method `.DollarNames.RPolarsSeries` exposes all public `$foobar()`-methods which are callable onto the object.
 #' Most methods return another `Series`-class instance or similar which allows for method chaining.
 #' This class system in lack of a better name could be called "environment classes" and is the same class
 #' system extendr provides, except here there is both a public and private set of methods. For implementation
@@ -20,7 +20,7 @@
 #'
 #' @keywords Series
 #' @examples
-#' pl$show_all_public_methods("Series")
+#' pl$show_all_public_methods("RPolarsSeries")
 #'
 #' # see all private methods (not intended for regular use)
 #' ls(.pr$Series)
@@ -36,7 +36,7 @@
 #' s_copy = s
 #' .pr$Series$append_mut(s, pl$Series(5:1))
 #' identical(s_copy$to_r(), s$to_r()) # s_copy was modified when s was modified
-Series
+NULL
 
 
 
@@ -47,7 +47,7 @@ Series
 #' @param x a Series or something-turned-into-Series
 #' @return Series
 wrap_s = function(x) {
-  if (inherits(x, "Series")) x else pl$Series(x)
+  if (inherits(x, "RPolarsSeries")) x else pl$Series(x)
 }
 
 #' Create new Series
@@ -98,7 +98,7 @@ Series_add = function(other) {
 #' @rdname Series_add
 #' @param s1 lhs Series
 #' @param s2 rhs Series or any into Series
-"+.Series" = function(s1, s2) wrap_s(s1)$add(s2)
+"+.RPolarsSeries" = function(s1, s2) wrap_s(s1)$add(s2)
 
 #' sub Series
 #' @name Series_sub
@@ -120,7 +120,7 @@ Series_sub = function(other) {
 #' @rdname Series_sub
 #' @param s1 lhs Series
 #' @param s2 rhs Series or any into Series
-"-.Series" = function(s1, s2) wrap_s(s1)$sub(s2)
+"-.RPolarsSeries" = function(s1, s2) wrap_s(s1)$sub(s2)
 
 #' div Series
 #' @name Series_div
@@ -142,7 +142,7 @@ Series_div = function(other) {
 #' @rdname Series_div
 #' @param s1 lhs Series
 #' @param s2 rhs Series or any into Series
-"/.Series" = function(s1, s2) wrap_s(s1)$div(s2)
+"/.RPolarsSeries" = function(s1, s2) wrap_s(s1)$div(s2)
 
 #' mul Series
 #' @name Series_mul
@@ -164,7 +164,7 @@ Series_mul = function(other) {
 #' @rdname Series_mul
 #' @param s1 lhs Series
 #' @param s2 rhs Series or any into Series
-"*.Series" = function(s1, s2) wrap_s(s1)$mul(s2)
+"*.RPolarsSeries" = function(s1, s2) wrap_s(s1)$mul(s2)
 
 #' rem Series
 #' @description Series arithmetics, remainder
@@ -209,22 +209,22 @@ Series_compare = function(other, op) {
 #' @rdname Series_compare
 #' @param s1 lhs Series
 #' @param s2 rhs Series or any into Series
-"==.Series" = function(s1, s2) unwrap(wrap_s(s1)$compare(s2, "equal"))
+"==.RPolarsSeries" = function(s1, s2) unwrap(wrap_s(s1)$compare(s2, "equal"))
 #' @export
 #' @rdname Series_compare
-"!=.Series" = function(s1, s2) unwrap(wrap_s(s1)$compare(s2, "not_equal"))
+"!=.RPolarsSeries" = function(s1, s2) unwrap(wrap_s(s1)$compare(s2, "not_equal"))
 #' @export
 #' @rdname Series_compare
-"<.Series" = function(s1, s2) unwrap(wrap_s(s1)$compare(s2, "lt"))
+"<.RPolarsSeries" = function(s1, s2) unwrap(wrap_s(s1)$compare(s2, "lt"))
 #' @export
 #' @rdname Series_compare
-">.Series" = function(s1, s2) unwrap(wrap_s(s1)$compare(s2, "gt"))
+">.RPolarsSeries" = function(s1, s2) unwrap(wrap_s(s1)$compare(s2, "gt"))
 #' @export
 #' @rdname Series_compare
-"<=.Series" = function(s1, s2) unwrap(wrap_s(s1)$compare(s2, "lt_eq"))
+"<=.RPolarsSeries" = function(s1, s2) unwrap(wrap_s(s1)$compare(s2, "lt_eq"))
 #' @export
 #' @rdname Series_compare
-">=.Series" = function(s1, s2) unwrap(wrap_s(s1)$compare(s2, "gt_eq"))
+">=.RPolarsSeries" = function(s1, s2) unwrap(wrap_s(s1)$compare(s2, "gt_eq"))
 
 
 #' Shape of series
@@ -366,10 +366,12 @@ Series_map_elements = function(
 }
 
 Series_apply = function(f, datatype = NULL, strict_return_type = TRUE,
-                        allow_fail_eval = FALSE) {
+                         allow_fail_eval = FALSE) {
   warning("$apply() is deprecated and will be removed in 0.13.0. Use $map_elements() instead.")
-  Series_map_elements(f, datatype = datatype, strict_return_type = strict_return_type,
-                      allow_fail_eval = allow_fail_eval)
+  Series_map_elements(f,
+    datatype = datatype, strict_return_type = strict_return_type,
+    allow_fail_eval = allow_fail_eval
+  )
 }
 
 #' Series_len
@@ -936,7 +938,7 @@ Series_expr = method_as_property(function() {
 
   # loop over each expression function
   lapply(
-    Expr,
+    RPolarsExpr,
     \(f) { # f is orignial Expr method
 
       # point back to env with above defined 'df' and 'self'
@@ -951,7 +953,7 @@ Series_expr = method_as_property(function() {
 
         x = do.call(f, scall)
         pcase(
-          inherits(x, "Expr"), df$select(x)$to_series(0),
+          inherits(x, "RPolarsExpr"), df$select(x)$to_series(0),
           or_else = x
         )
       }

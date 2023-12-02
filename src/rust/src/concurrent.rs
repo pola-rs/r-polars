@@ -1,11 +1,11 @@
 //use crate::rdataframe::rseries::ptr_str_to_rseries;
-use crate::rdataframe::DataFrame;
+use crate::rdataframe::RPolarsDataFrame;
 use crate::utils::extendr_concurrent::ParRObj;
 use crate::utils::extendr_concurrent::{concurrent_handler, ThreadCom};
 use crate::CONFIG;
 use polars::prelude as pl;
 
-use crate::rdataframe::Series;
+use crate::rdataframe::RPolarsSeries;
 use crate::rpolarserr::*;
 use extendr_api::prelude::*;
 use extendr_api::Conversions;
@@ -42,14 +42,14 @@ impl RFnSignature {
         match self {
             RFnSignature::FnSeriesToSeries(f, s) => {
                 let s = unpack_rfn(f)?
-                    .call(pairlist!(Series(s)))
-                    .map(Series::any_robj_to_pl_series_result)??;
+                    .call(pairlist!(RPolarsSeries(s)))
+                    .map(RPolarsSeries::any_robj_to_pl_series_result)??;
                 Ok(RFnOutput::Series(s))
             }
             RFnSignature::FnTwoSeriesToSeries(f, s1, s2) => {
                 let s = unpack_rfn(f)?
-                    .call(pairlist!(Series(s1), Series(s2)))
-                    .map(Series::any_robj_to_pl_series_result)??;
+                    .call(pairlist!(RPolarsSeries(s1), RPolarsSeries(s2)))
+                    .map(RPolarsSeries::any_robj_to_pl_series_result)??;
                 Ok(RFnOutput::Series(s))
             }
             RFnSignature::FnF64ToString(f, f64_val) => {
@@ -89,7 +89,7 @@ fn serve_r(rfsig: RFnSignature) -> Result<RFnOutput, Box<dyn std::error::Error>>
 // This functions allows to call .collect() on polars lazy frame. A lazy frame may contain user defined functions
 // which could call R from any spawned thread by polars. This function is a bridge between multithraedded polars
 // and mostly single threaded only R
-pub fn collect_with_r_func_support(lazy_df: pl::LazyFrame) -> RResult<DataFrame> {
+pub fn collect_with_r_func_support(lazy_df: pl::LazyFrame) -> RResult<RPolarsDataFrame> {
     let new_df = if ThreadCom::try_from_global(&CONFIG).is_ok() {
         #[cfg(feature = "rpolars_debug_print")]
         println!("in collect:  concurrent handler already started");
@@ -123,10 +123,12 @@ pub fn collect_with_r_func_support(lazy_df: pl::LazyFrame) -> RResult<DataFrame>
     };
 
     //wrap ok
-    Ok(DataFrame(new_df?))
+    Ok(RPolarsDataFrame(new_df?))
 }
 
-pub fn profile_with_r_func_support(lazy_df: pl::LazyFrame) -> RResult<(DataFrame, DataFrame)> {
+pub fn profile_with_r_func_support(
+    lazy_df: pl::LazyFrame,
+) -> RResult<(RPolarsDataFrame, RPolarsDataFrame)> {
     if ThreadCom::try_from_global(&CONFIG).is_ok() {
         lazy_df.profile()
     } else {
@@ -143,10 +145,13 @@ pub fn profile_with_r_func_support(lazy_df: pl::LazyFrame) -> RResult<(DataFrame
         .map_err(|err| RPolarsErr::new().plain(err.to_string()))?
     }
     .map_err(polars_to_rpolars_err)
-    .map(|(result_df, profile_df)| (DataFrame(result_df), DataFrame(profile_df)))
+    .map(|(result_df, profile_df)| (RPolarsDataFrame(result_df), RPolarsDataFrame(profile_df)))
 }
 
-pub fn fetch_with_r_func_support(lazy_df: pl::LazyFrame, n_rows: usize) -> RResult<DataFrame> {
+pub fn fetch_with_r_func_support(
+    lazy_df: pl::LazyFrame,
+    n_rows: usize,
+) -> RResult<RPolarsDataFrame> {
     if ThreadCom::try_from_global(&CONFIG).is_ok() {
         lazy_df.fetch(n_rows)
     } else {
@@ -163,5 +168,5 @@ pub fn fetch_with_r_func_support(lazy_df: pl::LazyFrame, n_rows: usize) -> RResu
         .map_err(|err| RPolarsErr::new().plain(err.to_string()))?
     }
     .map_err(polars_to_rpolars_err)
-    .map(DataFrame)
+    .map(RPolarsDataFrame)
 }

@@ -3,27 +3,27 @@
 \name{Series_compare}
 \alias{Series_compare}
 \alias{compare}
-\alias{==.Series}
-\alias{!=.Series}
-\alias{<.Series}
-\alias{>.Series}
-\alias{<=.Series}
-\alias{>=.Series}
+\alias{==.RPolarsSeries}
+\alias{!=.RPolarsSeries}
+\alias{<.RPolarsSeries}
+\alias{>.RPolarsSeries}
+\alias{<=.RPolarsSeries}
+\alias{>=.RPolarsSeries}
 \title{Compare Series}
 \usage{
 Series_compare(other, op)
 
-\method{==}{Series}(s1, s2)
+\method{==}{RPolarsSeries}(s1, s2)
 
-\method{!=}{Series}(s1, s2)
+\method{!=}{RPolarsSeries}(s1, s2)
 
-\method{<}{Series}(s1, s2)
+\method{<}{RPolarsSeries}(s1, s2)
 
-\method{>}{Series}(s1, s2)
+\method{>}{RPolarsSeries}(s1, s2)
 
-\method{<=}{Series}(s1, s2)
+\method{<=}{RPolarsSeries}(s1, s2)
 
-\method{>=}{Series}(s1, s2)
+\method{>=}{RPolarsSeries}(s1, s2)
 }
 \arguments{
 \item{other}{A Series or something a Series can be created from}

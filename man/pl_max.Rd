@@ -29,8 +29,5 @@ df = pl$DataFrame(
 )
 df
 
-df$with_columns(
-  pl$max("a", "b", "c")
-)
 }
 \keyword{Expr_new}

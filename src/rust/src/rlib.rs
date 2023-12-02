@@ -1,9 +1,8 @@
-use crate::lazy::dsl::Expr;
-use crate::lazy::dsl::ProtoExprArray;
-use crate::rdataframe::DataFrame;
+use crate::lazy::dsl::{RPolarsProtoExprArray, RPolarsExpr};
+use crate::rdataframe::RPolarsDataFrame;
 use crate::robj_to;
 use crate::rpolarserr::{rdbg, RResult};
-use crate::series::Series;
+use crate::series::RPolarsSeries;
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::utils::robj_to_rchoice;
 use crate::RFnSignature;
@@ -13,7 +12,7 @@ use polars::prelude as pl;
 use std::result::Result;
 
 #[extendr]
-fn min_horizontal(dotdotdot: Robj) -> RResult<Expr> {
+fn min_horizontal(dotdotdot: Robj) -> RResult<RPolarsExpr> {
     Ok(
         polars::lazy::dsl::min_horizontal(robj_to!(VecPLExprCol, dotdotdot)?)
             .map_err(polars_to_rpolars_err)?
@@ -22,7 +21,7 @@ fn min_horizontal(dotdotdot: Robj) -> RResult<Expr> {
 }
 
 #[extendr]
-fn max_horizontal(dotdotdot: Robj) -> RResult<Expr> {
+fn max_horizontal(dotdotdot: Robj) -> RResult<RPolarsExpr> {
     Ok(
         polars::lazy::dsl::max_horizontal(robj_to!(VecPLExprCol, dotdotdot)?)
             .map_err(polars_to_rpolars_err)?
@@ -31,7 +30,7 @@ fn max_horizontal(dotdotdot: Robj) -> RResult<Expr> {
 }
 
 #[extendr]
-fn sum_horizontal(dotdotdot: Robj) -> RResult<Expr> {
+fn sum_horizontal(dotdotdot: Robj) -> RResult<RPolarsExpr> {
     Ok(
         polars::lazy::dsl::sum_horizontal(robj_to!(VecPLExprCol, dotdotdot)?)
             .map_err(polars_to_rpolars_err)?
@@ -40,7 +39,7 @@ fn sum_horizontal(dotdotdot: Robj) -> RResult<Expr> {
 }
 
 #[extendr]
-fn all_horizontal(dotdotdot: Robj) -> RResult<Expr> {
+fn all_horizontal(dotdotdot: Robj) -> RResult<RPolarsExpr> {
     Ok(
         polars::lazy::dsl::all_horizontal(robj_to!(VecPLExprCol, dotdotdot)?)
             .map_err(polars_to_rpolars_err)?
@@ -49,7 +48,7 @@ fn all_horizontal(dotdotdot: Robj) -> RResult<Expr> {
 }
 
 #[extendr]
-fn any_horizontal(dotdotdot: Robj) -> RResult<Expr> {
+fn any_horizontal(dotdotdot: Robj) -> RResult<RPolarsExpr> {
     Ok(
         polars::lazy::dsl::any_horizontal(robj_to!(VecPLExprCol, dotdotdot)?)
             .map_err(polars_to_rpolars_err)?
@@ -58,19 +57,20 @@ fn any_horizontal(dotdotdot: Robj) -> RResult<Expr> {
 }
 
 #[extendr]
-fn coalesce_exprs(exprs: &ProtoExprArray) -> Expr {
+fn coalesce_exprs(exprs: &RPolarsProtoExprArray) -> RPolarsExpr {
     let exprs: Vec<pl::Expr> = exprs.to_vec("select");
     pl::coalesce(exprs.as_slice()).into()
 }
 
 #[extendr]
-fn concat_list(exprs: &ProtoExprArray) -> Result<Expr, String> {
-    let exprs = exprs.to_vec("select");
-    Ok(Expr(pl::concat_list(exprs).map_err(|err| err.to_string())?))
+fn concat_list(exprs: Robj) -> RResult<RPolarsExpr> {
+    pl::concat_list(robj_to!(VecPLExprCol, exprs)?)
+        .map_err(polars_to_rpolars_err)
+        .map(RPolarsExpr)
 }
 
 #[extendr]
-fn concat_str(dotdotdot: Robj, separator: Robj) -> RResult<Expr> {
+fn concat_str(dotdotdot: Robj, separator: Robj) -> RResult<RPolarsExpr> {
     Ok(pl::concat_str(
         robj_to!(VecPLExprCol, dotdotdot)?,
         robj_to!(str, separator)?,
@@ -87,7 +87,7 @@ fn r_date_range_lazy(
     time_unit: Robj,
     time_zone: Robj,
     explode: Robj,
-) -> RResult<Expr> {
+) -> RResult<RPolarsExpr> {
     let expr = polars::lazy::prelude::date_range(
         robj_to!(PLExprCol, start)?,
         robj_to!(PLExprCol, end)?,
@@ -97,17 +97,15 @@ fn r_date_range_lazy(
         robj_to!(Option, String, time_zone)?,
     );
     if robj_to!(bool, explode)? {
-        Ok(Expr(expr.explode()))
+        Ok(RPolarsExpr(expr.explode()))
     } else {
-        Ok(Expr(expr))
+        Ok(RPolarsExpr(expr))
     }
 }
 
-//TODO py-polars have some fancy transmute conversions TOExprs trait, maybe imple that too
-//for now just use inner directly
 #[extendr]
-fn as_struct(exprs: Robj) -> Result<Expr, String> {
-    Ok(pl::as_struct(crate::utils::list_expr_to_vec_pl_expr(exprs, true, true)?).into())
+fn as_struct(exprs: Robj) -> RResult<RPolarsExpr> {
+    Ok(pl::as_struct(robj_to!(VecPLExprNamed, exprs)?).into())
 }
 
 #[extendr]
@@ -131,7 +129,7 @@ fn struct_(exprs: Robj, eager: Robj, schema: Robj) -> Result<Robj, String> {
             .select(&[struct_expr.0])
             .collect()
             .map_err(|err| format!("during eager evaluation of struct: {}", err))?;
-        Ok(crate::rdataframe::DataFrame(df).into())
+        Ok(crate::rdataframe::RPolarsDataFrame(df).into())
     } else {
         Ok(struct_expr.into())
     }
@@ -151,19 +149,19 @@ fn arrow_stream_to_df(robj_str: Robj) -> RResult<Robj> {
         .when("unpack struct from producer")
         .hint("producer exported a plain Series not a Struct series")?;
     let df: pl::DataFrame = ca.clone().into();
-    Ok(DataFrame(df).into_robj())
+    Ok(RPolarsDataFrame(df).into_robj())
 }
 
 #[extendr]
 fn arrow_stream_to_series(robj_str: Robj) -> RResult<Robj> {
     let s = crate::arrow_interop::to_rust::arrow_stream_to_series_internal(robj_str)?;
-    Ok(Series(s).into_robj())
+    Ok(RPolarsSeries(s).into_robj())
 }
 
 #[extendr]
 unsafe fn export_df_to_arrow_stream(robj_df: Robj, robj_str: Robj) -> RResult<Robj> {
-    let res: ExternalPtr<DataFrame> = robj_df.try_into()?;
-    let pl_df = DataFrame(res.0.clone()).0;
+    let res: ExternalPtr<RPolarsDataFrame> = robj_df.try_into()?;
+    let pl_df = RPolarsDataFrame(res.0.clone()).0;
     //safety robj_str must be ptr to a arrow2 stream ready to export into
     unsafe {
         crate::arrow_interop::to_rust::export_df_as_stream(pl_df, &robj_str)?;
@@ -172,7 +170,7 @@ unsafe fn export_df_to_arrow_stream(robj_df: Robj, robj_str: Robj) -> RResult<Ro
 }
 
 #[extendr]
-fn rb_list_to_df(r_batches: List, names: Vec<String>) -> Result<DataFrame, String> {
+fn rb_list_to_df(r_batches: List, names: Vec<String>) -> Result<RPolarsDataFrame, String> {
     let mut iter = r_batches.into_iter().map(|(_, robj)| {
         let robj = call!(r"\(x) x$columns", robj)?;
         let l = robj.as_list().ok_or_else(|| "not a list!?".to_string())?;
@@ -184,7 +182,7 @@ fn rb_list_to_df(r_batches: List, names: Vec<String>) -> Result<DataFrame, Strin
     for df in iter {
         df_acc.vstack_mut(&df?).map_err(|err| err.to_string())?;
     }
-    Ok(DataFrame(df_acc))
+    Ok(RPolarsDataFrame(df_acc))
 }
 
 #[extendr]
@@ -239,7 +237,7 @@ fn test_print_string(s: String) {
 }
 
 #[extendr]
-fn test_robj_to_expr(robj: Robj) -> RResult<Expr> {
+fn test_robj_to_expr(robj: Robj) -> RResult<RPolarsExpr> {
     robj_to!(Expr, robj)
 }
 
@@ -265,7 +263,7 @@ fn polars_features() -> List {
 }
 
 #[extendr]
-fn fold(acc: Robj, lambda: Robj, exprs: Robj) -> RResult<Expr> {
+fn fold(acc: Robj, lambda: Robj, exprs: Robj) -> RResult<RPolarsExpr> {
     let par_fn = ParRObj(lambda);
     let f = move |acc: pl::Series, x: pl::Series| {
         let thread_com = ThreadCom::try_from_global(&CONFIG)
@@ -278,7 +276,7 @@ fn fold(acc: Robj, lambda: Robj, exprs: Robj) -> RResult<Expr> {
 }
 
 #[extendr]
-fn reduce(lambda: Robj, exprs: Robj) -> RResult<Expr> {
+fn reduce(lambda: Robj, exprs: Robj) -> RResult<RPolarsExpr> {
     let par_fn = ParRObj(lambda);
     let f = move |acc: pl::Series, x: pl::Series| {
         let thread_com = ThreadCom::try_from_global(&CONFIG)

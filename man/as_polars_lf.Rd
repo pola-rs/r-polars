@@ -3,17 +3,17 @@
 \name{as_polars_lf}
 \alias{as_polars_lf}
 \alias{as_polars_lf.default}
-\alias{as_polars_lf.LazyFrame}
-\alias{as_polars_lf.LazyGroupBy}
+\alias{as_polars_lf.RPolarsLazyFrame}
+\alias{as_polars_lf.RPolarsLazyGroupBy}
 \title{To polars LazyFrame}
 \usage{
 as_polars_lf(x, ...)
 
 \method{as_polars_lf}{default}(x, ...)
 
-\method{as_polars_lf}{LazyFrame}(x, ...)
+\method{as_polars_lf}{RPolarsLazyFrame}(x, ...)
 
-\method{as_polars_lf}{LazyGroupBy}(x, ...)
+\method{as_polars_lf}{RPolarsLazyGroupBy}(x, ...)
 }
 \arguments{
 \item{x}{Object to convert to a polars DataFrame.}

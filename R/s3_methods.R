@@ -33,7 +33,7 @@
 #' lf[pl$col("a") >= 2, pl$col("b")$alias("new"), drop = FALSE] |>
 #'   as.data.frame()
 #' @export
-`[.DataFrame` = function(x, i, j, drop = TRUE) {
+`[.RPolarsDataFrame` = function(x, i, j, drop = TRUE) {
   uw = \(res) unwrap(res, "in `[` (Extract):")
 
   # Special case for only `i` being specified
@@ -49,13 +49,13 @@
     i = i %||% 0
 
     if (is.atomic(i) && is.vector(i)) {
-      if (inherits(x, "LazyFrame")) {
+      if (inherits(x, "RPolarsLazyFrame")) {
         Err_plain("Row selection using vector is not supported for LazyFrames.") |> uw()
       }
 
       if (is.logical(i)) {
         # nrow() not available for LazyFrame
-        if (inherits(x, "DataFrame") && length(i) != nrow(x)) {
+        if (inherits(x, "RPolarsDataFrame") && length(i) != nrow(x)) {
           stop(sprintf("`i` must be of length %s.", nrow(x)), call. = FALSE)
         }
         idx = i
@@ -74,7 +74,7 @@
         }
       }
       x = x$filter(pl$lit(idx))
-    } else if (identical(class(i), "Expr")) {
+    } else if (identical(class(i), "RPolarsExpr")) {
       x = x$filter(i)
     } else {
       Err_plain("`i` must be an Expr or an atomic vector of class logical or integer.") |> uw()
@@ -108,7 +108,7 @@
         }
       }
       x = do.call(x$select, lapply(cols, pl$col))
-    } else if (identical(class(j), "Expr")) {
+    } else if (identical(class(j), "RPolarsExpr")) {
       x = x$select(j)
     } else {
       Err_plain("`j` must be an Expr or an atomic vector of class logical, character, or integer.") |> uw()
@@ -116,7 +116,7 @@
   }
 
   if (drop && x$width == 1L) {
-    if (inherits(x, "LazyFrame")) {
+    if (inherits(x, "RPolarsLazyFrame")) {
       Err_plain(
         "Single column conversion to a Series using brackets is not supported for LazyFrames.\n",
         "Please set `drop = FALSE` to prevent conversion or use $collect() before using brackets."
@@ -130,11 +130,11 @@
 
 #' @export
 #' @rdname S3_extract
-`[.LazyFrame` = `[.DataFrame`
+`[.RPolarsLazyFrame` = `[.RPolarsDataFrame`
 
 #' @export
 #' @rdname S3_extract
-`[.Series` = function(x, i) {
+`[.RPolarsSeries` = function(x, i) {
   pl$select(x)[i, , drop = TRUE]
 }
 
@@ -146,11 +146,11 @@
 #'
 #' @export
 #' @rdname S3_head
-head.DataFrame = function(x, n = 6L, ...) x$limit(n = n)
+head.RPolarsDataFrame = function(x, n = 6L, ...) x$limit(n = n)
 
 #' @export
 #' @rdname S3_head
-head.LazyFrame = head.DataFrame
+head.RPolarsLazyFrame = head.RPolarsDataFrame
 
 #' Take the last n rows
 #'
@@ -160,11 +160,11 @@ head.LazyFrame = head.DataFrame
 #'
 #' @export
 #' @rdname S3_tail
-tail.DataFrame = function(x, n = 6L, ...) x$tail(n = n)
+tail.RPolarsDataFrame = function(x, n = 6L, ...) x$tail(n = n)
 
 #' @export
 #' @rdname S3_tail
-tail.LazyFrame = tail.DataFrame
+tail.RPolarsLazyFrame = tail.RPolarsDataFrame
 
 #' Get the dimensions
 #'
@@ -172,11 +172,11 @@ tail.LazyFrame = tail.DataFrame
 #'
 #' @export
 #' @rdname S3_dim
-dim.DataFrame = function(x) x$shape
+dim.RPolarsDataFrame = function(x) x$shape
 
 #' @export
 #' @rdname S3_dim
-dim.LazyFrame = function(x) c(NA, x$width)
+dim.RPolarsLazyFrame = function(x) c(NA, x$width)
 
 #' Get the length
 #'
@@ -185,15 +185,15 @@ dim.LazyFrame = function(x) c(NA, x$width)
 #'
 #' @export
 #' @rdname S3_length
-length.DataFrame = function(x) x$width
+length.RPolarsDataFrame = function(x) x$width
 
 #' @export
 #' @rdname S3_length
-length.LazyFrame = length.DataFrame
+length.RPolarsLazyFrame = length.RPolarsDataFrame
 
 #' @export
 #' @rdname S3_length
-length.Series = function(x) x$len()
+length.RPolarsSeries = function(x) x$len()
 
 #' Get the column names
 #'
@@ -201,11 +201,11 @@ length.Series = function(x) x$len()
 #'
 #' @export
 #' @rdname S3_names
-names.DataFrame = function(x) x$columns
+names.RPolarsDataFrame = function(x) x$columns
 
 #' @export
 #' @rdname S3_names
-names.LazyFrame = function(x) x$columns
+names.RPolarsLazyFrame = function(x) x$columns
 
 #' Get the row names
 #'
@@ -213,7 +213,7 @@ names.LazyFrame = function(x) x$columns
 #'
 #' @export
 #' @rdname S3_rownames
-row.names.DataFrame = function(x) as.character(seq_len(nrow(x)))
+row.names.RPolarsDataFrame = function(x) as.character(seq_len(nrow(x)))
 
 #' Get the row and column names
 #'
@@ -221,11 +221,11 @@ row.names.DataFrame = function(x) as.character(seq_len(nrow(x)))
 #'
 #' @export
 #' @rdname S3_dimnames
-dimnames.DataFrame = function(x) list(row.names(x), names(x))
+dimnames.RPolarsDataFrame = function(x) list(row.names(x), names(x))
 
 #' @export
 #' @rdname S3_dimnames
-dimnames.LazyFrame = function(x) list(NULL, names(x))
+dimnames.RPolarsLazyFrame = function(x) list(NULL, names(x))
 
 #' Convert to a data.frame
 #'
@@ -234,24 +234,24 @@ dimnames.LazyFrame = function(x) list(NULL, names(x))
 #'
 #' @export
 #' @rdname S3_as.data.frame
-as.data.frame.DataFrame = function(x, ...) x$to_data_frame(...)
+as.data.frame.RPolarsDataFrame = function(x, ...) x$to_data_frame(...)
 
 
 #' @export
 #' @rdname S3_as.data.frame
-as.data.frame.LazyFrame = function(x, ...) x$collect()$to_data_frame(...)
+as.data.frame.RPolarsLazyFrame = function(x, ...) x$collect()$to_data_frame(...)
 
 #' Convert to a matrix
 #'
-#' @inheritParams as.data.frame.DataFrame
+#' @inheritParams as.data.frame.RPolarsDataFrame
 #'
 #' @export
 #' @rdname S3_as.matrix
-as.matrix.DataFrame = function(x, ...) as.matrix(as.data.frame(x, ...))
+as.matrix.RPolarsDataFrame = function(x, ...) as.matrix(as.data.frame(x, ...))
 
 #' @export
 #' @rdname S3_as.matrix
-as.matrix.LazyFrame = as.matrix.DataFrame
+as.matrix.RPolarsLazyFrame = as.matrix.RPolarsDataFrame
 
 #' Compute the mean
 #'
@@ -261,15 +261,15 @@ as.matrix.LazyFrame = as.matrix.DataFrame
 #'
 #' @export
 #' @rdname S3_mean
-mean.DataFrame = function(x, ...) x$mean()
+mean.RPolarsDataFrame = function(x, ...) x$mean()
 
 #' @export
 #' @rdname S3_mean
-mean.LazyFrame = function(x, ...) x$mean()
+mean.RPolarsLazyFrame = function(x, ...) x$mean()
 
 #' @export
 #' @rdname S3_mean
-mean.Series = function(x, ...) x$mean()
+mean.RPolarsSeries = function(x, ...) x$mean()
 
 #' Compute the median
 #'
@@ -280,17 +280,17 @@ mean.Series = function(x, ...) x$mean()
 #' @export
 #' @rdname S3_median
 #' @importFrom stats median
-median.DataFrame = function(x, ...) x$median()
+median.RPolarsDataFrame = function(x, ...) x$median()
 
 #' @export
 #' @importFrom stats median
 #' @rdname S3_median
-median.LazyFrame = function(x, ...) x$median()
+median.RPolarsLazyFrame = function(x, ...) x$median()
 
 #' @export
 #' @importFrom stats median
 #' @rdname S3_median
-median.Series = function(x, ...) x$median()
+median.RPolarsSeries = function(x, ...) x$median()
 
 #' Compute the minimum value
 #'
@@ -300,15 +300,15 @@ median.Series = function(x, ...) x$median()
 #'
 #' @export
 #' @rdname S3_min
-min.DataFrame = function(x, ...) x$min()
+min.RPolarsDataFrame = function(x, ...) x$min()
 
 #' @export
 #' @rdname S3_min
-min.LazyFrame = function(x, ...) x$min()
+min.RPolarsLazyFrame = function(x, ...) x$min()
 
 #' @export
 #' @rdname S3_min
-min.Series = function(x, ...) x$min()
+min.RPolarsSeries = function(x, ...) x$min()
 
 #' Compute the maximum value
 #'
@@ -318,15 +318,15 @@ min.Series = function(x, ...) x$min()
 #'
 #' @export
 #' @rdname S3_max
-max.DataFrame = function(x, ...) x$max()
+max.RPolarsDataFrame = function(x, ...) x$max()
 
 #' @export
 #' @rdname S3_max
-max.LazyFrame = function(x, ...) x$max()
+max.RPolarsLazyFrame = function(x, ...) x$max()
 
 #' @export
 #' @rdname S3_max
-max.Series = function(x, ...) x$max()
+max.RPolarsSeries = function(x, ...) x$max()
 
 #' Compute the sum
 #'
@@ -336,15 +336,15 @@ max.Series = function(x, ...) x$max()
 #'
 #' @export
 #' @rdname S3_sum
-sum.DataFrame = function(x, ...) x$sum()
+sum.RPolarsDataFrame = function(x, ...) x$sum()
 
 #' @export
 #' @rdname S3_sum
-sum.LazyFrame = function(x, ...) x$sum()
+sum.RPolarsLazyFrame = function(x, ...) x$sum()
 
 #' @export
 #' @rdname S3_sum
-sum.Series = function(x, ...) x$sum()
+sum.RPolarsSeries = function(x, ...) x$sum()
 
 #' Convert to a vector
 #'
@@ -352,7 +352,7 @@ sum.Series = function(x, ...) x$sum()
 #' @param mode Not used.
 #' @export
 #' @rdname S3_as.vector
-as.vector.Series = function(x, mode) x$to_vector()
+as.vector.RPolarsSeries = function(x, mode) x$to_vector()
 
 
 #' Convert to a character vector
@@ -368,7 +368,7 @@ as.vector.Series = function(x, mode) x$to_vector()
 #' s = pl$Series(c("foo", "barbaz"))
 #' as.character(s)
 #' as.character(s, str_length = 3)
-as.character.Series = function(x, ..., str_length = NULL) {
+as.character.RPolarsSeries = function(x, ..., str_length = NULL) {
   if (is.numeric(str_length) && str_length > 0) {
     .pr$Series$to_fmt_char(x, str_length = str_length)
   } else {
@@ -384,7 +384,7 @@ as.character.Series = function(x, ..., str_length = NULL) {
 #'
 #' @rdname S3_print
 #' @export
-print.Series = function(x, ...) {
+print.RPolarsSeries = function(x, ...) {
   cat("polars Series: ")
   x$print()
   invisible(x)
@@ -399,10 +399,10 @@ print.Series = function(x, ...) {
 #' @return char vec
 #' @export
 #' @noRd
-#' @inherit .DollarNames.DataFrame return
+#' @inherit .DollarNames.RPolarsDataFrame return
 #' @keywords internal
-.DollarNames.Series = function(x, pattern = "") {
-  get_method_usages(Series, pattern = pattern)
+.DollarNames.RPolarsSeries = function(x, pattern = "") {
+  get_method_usages(RPolarsSeries, pattern = pattern)
 }
 
 #' Combine to a Series
@@ -419,7 +419,7 @@ print.Series = function(x, ...) {
 #' s$chunk_lengths() # the series contain three unmerged chunks
 #' @export
 #' @rdname S3_c
-c.Series = \(x, ...) {
+c.RPolarsSeries = \(x, ...) {
   l = list2(...)
   x = x$clone() # clone to retain an immutable api, append_mut is not immutable
   for (i in seq_along(l)) { # append each element of i being either Series or Into<Series>
@@ -442,7 +442,7 @@ c.Series = \(x, ...) {
 #' na.omit(df)
 #' na.omit(df, subset = "a")
 #' na.omit(df, subset = c("a", "b"))
-na.omit.LazyFrame = function(object, subset = NULL, ...) {
+na.omit.RPolarsLazyFrame = function(object, subset = NULL, ...) {
   if (!is.null(subset) && !is.atomic(subset) && !is.character(subset)) {
     stop("subset must be NULL, a string, or a character vector")
   }
@@ -451,7 +451,7 @@ na.omit.LazyFrame = function(object, subset = NULL, ...) {
 
 #' @export
 #' @rdname S3_na.omit
-na.omit.DataFrame = function(object, subset = NULL, ...) {
+na.omit.RPolarsDataFrame = function(object, subset = NULL, ...) {
   if (!is.null(subset) && !is.atomic(subset) && !is.character(subset)) {
     stop("subset must be NULL, a string, or a character vector")
   }
@@ -475,7 +475,7 @@ na.omit.DataFrame = function(object, subset = NULL, ...) {
 #'   z = as.numeric(c(1, 1, 1:4))
 #' )
 #' unique(df)
-unique.DataFrame = function(x, incomparables = FALSE, subset = NULL, keep = "first", ...) {
+unique.RPolarsDataFrame = function(x, incomparables = FALSE, subset = NULL, keep = "first", ...) {
   if (!is.null(subset) && !is.atomic(subset) && !is.character(subset)) {
     stop("subset must be NULL, a string, or a character vector")
   }
@@ -484,7 +484,7 @@ unique.DataFrame = function(x, incomparables = FALSE, subset = NULL, keep = "fir
 
 #' @export
 #' @rdname S3_unique
-unique.LazyFrame = function(x, incomparables = FALSE, subset = NULL, keep = "first", ...) {
+unique.RPolarsLazyFrame = function(x, incomparables = FALSE, subset = NULL, keep = "first", ...) {
   if (!is.null(subset) && !is.atomic(subset) && !is.character(subset)) {
     stop("subset must be NULL, a string, or a character vector")
   }

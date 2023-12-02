@@ -4,11 +4,11 @@
 \alias{as_polars_df}
 \alias{as_polars_df.default}
 \alias{as_polars_df.data.frame}
-\alias{as_polars_df.DataFrame}
+\alias{as_polars_df.RPolarsDataFrame}
 \alias{as_polars_df.GroupBy}
-\alias{as_polars_df.Series}
-\alias{as_polars_df.LazyFrame}
-\alias{as_polars_df.LazyGroupBy}
+\alias{as_polars_df.RPolarsSeries}
+\alias{as_polars_df.RPolarsLazyFrame}
+\alias{as_polars_df.RPolarsLazyGroupBy}
 \alias{as_polars_df.ArrowTabular}
 \title{To polars DataFrame}
 \usage{
@@ -18,13 +18,13 @@ as_polars_df(x, ...)
 
 \method{as_polars_df}{data.frame}(x, ...)
 
-\method{as_polars_df}{DataFrame}(x, ...)
+\method{as_polars_df}{RPolarsDataFrame}(x, ...)
 
 \method{as_polars_df}{GroupBy}(x, ...)
 
-\method{as_polars_df}{Series}(x, ...)
+\method{as_polars_df}{RPolarsSeries}(x, ...)
 
-\method{as_polars_df}{LazyFrame}(
+\method{as_polars_df}{RPolarsLazyFrame}(
   x,
   n_rows = Inf,
   ...,
@@ -41,7 +41,7 @@ as_polars_df(x, ...)
   collect_in_background = FALSE
 )
 
-\method{as_polars_df}{LazyGroupBy}(x, ...)
+\method{as_polars_df}{RPolarsLazyGroupBy}(x, ...)
 
 \method{as_polars_df}{ArrowTabular}(x, ..., rechunk = TRUE, schema = NULL, schema_overrides = NULL)
 }

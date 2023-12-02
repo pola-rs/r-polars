@@ -121,9 +121,9 @@ ExprList_unique = function() .pr$Expr$list_unique(self)
 #' )
 #' df$select(pl$col("a")$list$concat(pl$col("b")))
 #'
-#' df$select(pl$col("a")$list$concat("hello from R"))
+#' df$select(pl$col("a")$list$concat(pl$lit("hello from R")))
 #'
-#' df$select(pl$col("a")$list$concat(list("hello", c("hello", "world"))))
+#' df$select(pl$col("a")$list$concat(pl$lit(list("hello", c("hello", "world")))))
 ExprList_concat = function(other) {
   pl$concat_list(list(self, other))
 }
@@ -283,9 +283,10 @@ ExprList_arg_max = function() .pr$Expr$list_arg_max(self)
 #' @aliases Expr_list_diff
 #' @examples
 #' df = pl$DataFrame(list(s = list(1:4, c(10L, 2L, 1L))))
-#' df$select(pl$col("s")$list$diff())
-ExprList_diff = function(n = 1, null_behavior = "ignore") {
-  unwrap(.pr$Expr$list_diff(self, n, null_behavior))
+#' df$select(pl$col("s")$list$diff(1))
+ExprList_diff = function(n = 1, null_behavior = c("ignore", "drop")) {
+  .pr$Expr$list_diff(self, n, null_behavior) |>
+    unwrap("in $list$diff()")
 }
 
 #' Shift sublists
@@ -364,7 +365,9 @@ ExprList_tail = function(n = 5L) {
 
 #' List to Struct
 #' @param n_field_strategy Strategy to determine the number of fields of the struct.
-#'  default = 'first_non_null' else 'max_width'
+#'  default = "first_non_null": set number of fields equal to the length of the
+#'  first non zero-length sublist. else 'max_width'; else  "max_width":
+#'  set number of fields as max length of all sublists.
 #' @param name_generator an R function that takes an R scalar double and outputs
 #' a string value. It is a f64 because i32 might not be a big enough enumerate all.
 #' The default (`NULL`) is equivalent to the R function
@@ -390,7 +393,10 @@ ExprList_tail = function(n = 5L) {
 #'
 #' df2$to_list()
 ExprList_to_struct = function(
-    n_field_strategy = "first_non_null", name_generator = NULL, upper_bound = 0) {
+    n_field_strategy = c("first_non_null","max_width"),
+    name_generator = NULL,
+    upper_bound = 0
+) {
   .pr$Expr$list_to_struct(self, n_field_strategy, name_generator, upper_bound) |>
     unwrap("in <List>$to_struct():")
 }
@@ -410,7 +416,7 @@ ExprList_to_struct = function(
 #' @return Expr
 #' @aliases list_eval
 #' @examples
-#' df = pl$DataFrame(a = list(c(1, 8, 3), b = c(4, 5, 2)))
+#' df = pl$DataFrame(a = c(1, 8, 3), b = c(4, 5, 2))
 #' df$select(pl$all()$cast(pl$dtypes$Int64))$with_columns(
 #'   pl$concat_list(c("a", "b"))$list$eval(pl$element()$rank())$alias("rank")
 #' )

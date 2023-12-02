@@ -94,7 +94,7 @@ ChainedThen_otherwise = function(statement) {
 #' @export
 #' @examples
 #' print(pl$when(pl$col("a") > 2))
-print.When = function(x, ...) {
+print.RPolarsWhen = function(x, ...) {
   print("When")
   invisible(x)
 }
@@ -107,7 +107,7 @@ print.When = function(x, ...) {
 #' @export
 #' @examples
 #' print(pl$when(pl$col("a") > 2)$then(pl$lit("more than two")))
-print.Then = function(x, ...) {
+print.RPolarsThen = function(x, ...) {
   print("Then")
   invisible(x)
 }
@@ -122,7 +122,7 @@ print.Then = function(x, ...) {
 #' @examples
 #' #
 #' print(pl$when(pl$col("a") > 2)$then(pl$lit("more than two"))$when(pl$col("b") < 5))
-print.ChainedWhen = function(x, ...) {
+print.RPolarsChainedWhen = function(x, ...) {
   print("ChainedWhen")
   invisible(x)
 }
@@ -135,7 +135,7 @@ print.ChainedWhen = function(x, ...) {
 #' @export
 #' @examples
 #' print(pl$when(pl$col("a") > 2)$then(pl$lit("more than two"))$when(pl$col("b") < 5))
-print.ChainedThen = function(x, ...) {
+print.RPolarsChainedThen = function(x, ...) {
   print("ChainedThen")
   invisible(x)
 }
@@ -149,10 +149,10 @@ print.ChainedThen = function(x, ...) {
 #' @param pattern code-stump as string to auto-complete
 #' @return char vec
 #' @export
-#' @inherit .DollarNames.DataFrame return
+#' @inherit .DollarNames.RPolarsDataFrame return
 #' @keywords internal
-.DollarNames.When = function(x, pattern = "") {
-  paste0(ls(When, pattern = pattern), "()")
+.DollarNames.RPolarsWhen = function(x, pattern = "") {
+  paste0(ls(RPolarsWhen, pattern = pattern), "()")
 }
 
 #' @title auto complete $-access into a polars object
@@ -161,10 +161,10 @@ print.ChainedThen = function(x, ...) {
 #' @param pattern code-stump as string to auto-complete
 #' @return char vec
 #' @export
-#' @inherit .DollarNames.DataFrame return
+#' @inherit .DollarNames.RPolarsDataFrame return
 #' @keywords internal
-.DollarNames.Then = function(x, pattern = "") {
-  paste0(ls(Then, pattern = pattern), "()")
+.DollarNames.RPolarsThen = function(x, pattern = "") {
+  paste0(ls(RPolarsThen, pattern = pattern), "()")
 }
 
 #' @title auto complete $-access into a polars object
@@ -173,10 +173,10 @@ print.ChainedThen = function(x, ...) {
 #' @param pattern code-stump as string to auto-complete
 #' @return char vec
 #' @export
-#' @inherit .DollarNames.DataFrame return
+#' @inherit .DollarNames.RPolarsDataFrame return
 #' @keywords internal
-.DollarNames.ChainedThen = function(x, pattern = "") {
-  paste0(ls(ChainedThen, pattern = pattern), "()")
+.DollarNames.RPolarsChainedThen = function(x, pattern = "") {
+  paste0(ls(RPolarsChainedThen, pattern = pattern), "()")
 }
 
 #' @title auto complete $-access into a polars object
@@ -185,8 +185,8 @@ print.ChainedThen = function(x, ...) {
 #' @param pattern code-stump as string to auto-complete
 #' @return char vec
 #' @export
-#' @inherit .DollarNames.DataFrame return
+#' @inherit .DollarNames.RPolarsDataFrame return
 #' @keywords internal
-.DollarNames.ChainedWhen = function(x, pattern = "") {
-  paste0(ls(ChainedWhen, pattern = pattern), "()")
+.DollarNames.RPolarsChainedWhen = function(x, pattern = "") {
+  paste0(ls(RPolarsChainedWhen, pattern = pattern), "()")
 }

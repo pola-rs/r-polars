@@ -4,7 +4,7 @@
 \alias{pl_concat_list}
 \title{Concat the arrays in a Series dtype List in linear time.}
 \arguments{
-\item{exprs}{list of Expr or Series or strings or a mix, or a char vector}
+\item{exprs}{list of Into\if{html}{\out{<Expr>}}, strings interpreted as column names}
 }
 \value{
 Expr

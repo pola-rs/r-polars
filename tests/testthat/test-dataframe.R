@@ -84,7 +84,7 @@ test_that("DataFrame, input free vectors, input empty", {
     df1$to_list(), df2$to_list()
   )
   df_e = pl$DataFrame()
-  expect_s3_class(df_e, "DataFrame")
+  expect_s3_class(df_e, "RPolarsDataFrame")
   expect_identical(df_e$shape, c(0, 0))
   expect_identical(pl$DataFrame()$to_list(), .pr$DataFrame$default()$to_list())
 })
@@ -281,7 +281,7 @@ test_that("map_batches unity", {
 test_that("$map() deprecated", {
   expect_warning(
     pl$DataFrame(iris)$select(
-        pl$col("Sepal.Length")$map(\(s) s)
+      pl$col("Sepal.Length")$map(\(s) s)
     ),
     "map_batches"
   )
@@ -569,7 +569,7 @@ test_that("drop_in_place", {
   expect_true("Species" %in% dat$columns)
   x = dat$drop_in_place("Species")
   expect_false("Species" %in% dat$columns)
-  expect_s3_class(x, "Series")
+  expect_s3_class(x, "RPolarsSeries")
 })
 
 

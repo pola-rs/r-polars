@@ -33,7 +33,7 @@ NULL
 #'
 #' @examples
 #' print(pl$col("some_column")$sum())
-print.Expr = function(x, ...) {
+print.RPolarsExpr = function(x, ...) {
   cat("polars Expr: ")
   x$print()
   invisible(x)
@@ -51,11 +51,11 @@ Expr_print = function() {
 #'
 #' @param x Name of an `Expr` object
 #' @param pattern String used to auto-complete
-#' @inherit .DollarNames.DataFrame return
+#' @inherit .DollarNames.RPolarsDataFrame return
 #' @export
 #' @keywords internal
-.DollarNames.Expr = function(x, pattern = "") {
-  paste0(ls(Expr, pattern = pattern), "()")
+.DollarNames.RPolarsExpr = function(x, pattern = "") {
+  paste0(ls(RPolarsExpr, pattern = pattern), "()")
 }
 
 #' S3 method to convert an Expr to a list
@@ -66,7 +66,7 @@ Expr_print = function() {
 #' @return One Expr wrapped in a list
 #' @export
 #' @keywords internal
-as.list.Expr = function(x, ...) {
+as.list.RPolarsExpr = function(x, ...) {
   list(x)
 }
 
@@ -171,7 +171,7 @@ Expr_add = function(other) {
 #' @rdname Expr_add
 #' @param e1 Expr only
 #' @param e2 Expr or anything that can be converted to a literal
-"+.Expr" = function(e1, e2) {
+"+.RPolarsExpr" = function(e1, e2) {
   if (missing(e2)) {
     return(e1)
   }
@@ -193,7 +193,7 @@ Expr_div = function(other) {
 #' @export
 #' @rdname Expr_div
 #' @inheritParams Expr_add
-"/.Expr" = function(e1, e2) result(wrap_e(e1)$div(e2)) |> unwrap("using the '/'-operator")
+"/.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$div(e2)) |> unwrap("using the '/'-operator")
 
 #' Floor divide two expressions
 #'
@@ -210,7 +210,7 @@ Expr_floor_div = function(other) {
 #' @export
 #' @rdname Expr_floor_div
 #' @inheritParams Expr_add
-"%/%.Expr" = function(e1, e2) result(wrap_e(e1)$floor_div(e2)) |> unwrap("using the '%/%'-operator")
+"%/%.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$floor_div(e2)) |> unwrap("using the '%/%'-operator")
 
 #' Modulo two expressions
 #'
@@ -236,7 +236,7 @@ Expr_mod = function(other) {
 #' @export
 #' @rdname Expr_mod
 #' @inheritParams Expr_add
-"%%.Expr" = function(e1, e2) result(wrap_e(e1)$mod(e2)) |> unwrap("using the '%%'-operator")
+"%%.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$mod(e2)) |> unwrap("using the '%%'-operator")
 
 #' Substract two expressions
 #'
@@ -254,7 +254,7 @@ Expr_sub = function(other) {
 #' @export
 #' @rdname Expr_sub
 #' @inheritParams Expr_add
-"-.Expr" = function(e1, e2) {
+"-.RPolarsExpr" = function(e1, e2) {
   result(
     if (missing(e2)) wrap_e(0L)$sub(e1) else wrap_e(e1)$sub(e2)
   ) |> unwrap("using the '-'-operator")
@@ -275,7 +275,7 @@ Expr_mul = Expr_mul = function(other) {
 #' @export
 #' @rdname Expr_mul
 #' @inheritParams Expr_add
-"*.Expr" = function(e1, e2) result(wrap_e(e1)$mul(e2)) |> unwrap("using the '*'-operator")
+"*.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$mul(e2)) |> unwrap("using the '*'-operator")
 
 
 #' Negate a boolean expression
@@ -291,7 +291,7 @@ Expr_not = "use_extendr_wrapper"
 #' @export
 #' @rdname Expr_not
 #' @param x Expr
-"!.Expr" = function(x) x$not()
+"!.RPolarsExpr" = function(x) x$not()
 
 #' Check strictly lower inequality
 #'
@@ -307,7 +307,7 @@ Expr_lt = function(other) {
 #' @export
 #' @inheritParams Expr_add
 #' @rdname Expr_lt
-"<.Expr" = function(e1, e2) result(wrap_e(e1)$lt(e2)) |> unwrap("using the '<'-operator")
+"<.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$lt(e2)) |> unwrap("using the '<'-operator")
 
 #' Check strictly greater inequality
 #'
@@ -323,7 +323,7 @@ Expr_gt = function(other) {
 #' @export
 #' @inheritParams Expr_add
 #' @rdname Expr_gt
-">.Expr" = function(e1, e2) result(wrap_e(e1)$gt(e2)) |> unwrap("using the '>'-operator")
+">.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$gt(e2)) |> unwrap("using the '>'-operator")
 
 #' Check equality
 #'
@@ -341,7 +341,7 @@ Expr_eq = function(other) {
 #' @export
 #' @inheritParams Expr_add
 #' @rdname Expr_eq
-"==.Expr" = function(e1, e2) result(wrap_e(e1)$eq(e2)) |> unwrap("using the '=='-operator")
+"==.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$eq(e2)) |> unwrap("using the '=='-operator")
 
 #' Check equality without `null` propagation
 #'
@@ -374,7 +374,7 @@ Expr_neq = function(other) {
 #' @export
 #' @inheritParams Expr_add
 #' @rdname Expr_neq
-"!=.Expr" = function(e1, e2) result(wrap_e(e1)$neq(e2)) |> unwrap("using the '!='-operator")
+"!=.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$neq(e2)) |> unwrap("using the '!='-operator")
 
 #' Check inequality without `null` propagation
 #'
@@ -405,7 +405,7 @@ Expr_lt_eq = function(other) {
 #' @export
 #' @inheritParams Expr_add
 #' @rdname Expr_lt_eq
-"<=.Expr" = function(e1, e2) result(wrap_e(e1)$lt_eq(e2)) |> unwrap("using the '<='-operator")
+"<=.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$lt_eq(e2)) |> unwrap("using the '<='-operator")
 
 
 #' Check greater or equal inequality
@@ -422,7 +422,7 @@ Expr_gt_eq = function(other) {
 #' @export
 #' @inheritParams Expr_add
 #' @rdname Expr_gt_eq
-">=.Expr" = function(e1, e2) result(wrap_e(e1)$gt_eq(e2)) |> unwrap("using the '>='-operator")
+">=.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$gt_eq(e2)) |> unwrap("using the '>='-operator")
 
 
 
@@ -577,11 +577,11 @@ Expr_is_not_null = "use_extendr_wrapper"
 #'
 #' @keywords internal
 #'
-#' @return ProtoExprArray object
+#' @return RPolarsProtoExprArray object
 #'
 #' @examples .pr$env$construct_ProtoExprArray(pl$col("Species"), "Sepal.Width")
 construct_ProtoExprArray = function(...) {
-  pra = ProtoExprArray$new()
+  pra = RPolarsProtoExprArray$new()
   args = list2(...)
 
   # deal with list of expressions
@@ -728,7 +728,6 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FAL
 
   out |>
     unwrap("in $map():")
-
 }
 
 #' Map a custom/user-defined function (UDF) to each element of a column
@@ -890,7 +889,7 @@ Expr_map_elements = function(f, return_type = NULL, strict_return_type = TRUE, a
 }
 
 Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE,
-                      allow_fail_eval = FALSE, in_background = FALSE) {
+                       allow_fail_eval = FALSE, in_background = FALSE) {
   warning("$apply() is deprecated and will be removed in 0.13.0. Use $map_elements() instead.", call. = FALSE)
   if (in_background) {
     return(.pr$Expr$map_elements_in_background(self, f, return_type))
@@ -935,7 +934,7 @@ Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE,
 #' # vectors to literal implicitly
 #' (pl$lit(2) + 1:4) / 4:1
 Expr_lit = function(x) {
-  .Call(wrap__Expr__lit, x) |>
+  .Call(wrap__RPolarsExpr__lit, x) |>
     unwrap("in $lit()")
 }
 
@@ -963,7 +962,7 @@ Expr_and = function(other) {
   .pr$Expr$and(self, other) |> unwrap("in $and()")
 }
 #' @export
-"&.Expr" = function(e1, e2) result(wrap_e(e1)$and(e2)) |> unwrap("using the '&'-operator")
+"&.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$and(e2)) |> unwrap("using the '&'-operator")
 
 
 #' Apply logical OR on two expressions
@@ -980,7 +979,7 @@ Expr_or = function(other) {
   .pr$Expr$or(self, other) |> unwrap("in $or()")
 }
 #' @export
-"|.Expr" = function(e1, e2) result(wrap_e(e1)$or(e2)) |> unwrap("using the '|'-operator")
+"|.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$or(e2)) |> unwrap("using the '|'-operator")
 
 
 #' Apply logical XOR on two expressions
@@ -1105,7 +1104,7 @@ Expr_exclude = function(columns) {
 
   pcase(
     is.character(columns), .pr$Expr$exclude(self, columns),
-    inherits(columns, "DataTypeVector"), .pr$Expr$exclude_dtype(self, columns),
+    inherits(columns, "RPolarsDataTypeVector"), .pr$Expr$exclude_dtype(self, columns),
     inherits(columns, "RPolarsDataType"), .pr$Expr$exclude_dtype(self, unwrap(.pr$DataTypeVector$from_rlist(list(columns)))),
     or_else = pstop(err = paste0("this type is not supported for Expr_exclude: ", columns))
   )
@@ -1571,9 +1570,9 @@ Expr_sort_by = function(by, descending = FALSE) {
 
 # TODO coontribute pyPolars, if exceeding u32 return Null, if exceeding column return Error
 # either it should be error or Null.
-# pl.DataFrame({"a":[0,1,2,3,4],"b":[4,3,2,1,0]}).select(pl.col("a").take(5294967296.0)) #return Null
-# pl.DataFrame({"a":[0,1,2,3,4],"b":[4,3,2,1,0]}).select(pl.col("a").take(-3)) #return Null
-# pl.DataFrame({"a":[0,1,2,3,4],"b":[4,3,2,1,0]}).select(pl.col("a").take(7)) #return Error
+# pl.RPolarsDataFrame({"a":[0,1,2,3,4],"b":[4,3,2,1,0]}).select(pl.col("a").take(5294967296.0)) #return Null
+# pl.RPolarsDataFrame({"a":[0,1,2,3,4],"b":[4,3,2,1,0]}).select(pl.col("a").take(-3)) #return Null
+# pl.RPolarsDataFrame({"a":[0,1,2,3,4],"b":[4,3,2,1,0]}).select(pl.col("a").take(7)) #return Error
 
 #' Gather values by index
 #'
@@ -1712,7 +1711,8 @@ Expr_fill_nan = function(expr = NULL) {
 #' @examples
 #' pl$select(pl$lit(1:5)$std())
 Expr_std = function(ddof = 1) {
-  unwrap(.pr$Expr$std(self, ddof))
+  .pr$Expr$std(self, ddof) |>
+    unwrap("in $std():")
 }
 
 #' Get variance
@@ -1722,7 +1722,8 @@ Expr_std = function(ddof = 1) {
 #' @examples
 #' pl$select(pl$lit(1:5)$var())
 Expr_var = function(ddof = 1) {
-  unwrap(.pr$Expr$var(self, ddof))
+  .pr$Expr$var(self, ddof) |>
+    unwrap("in $var():")
 }
 
 #' Get maximum value
@@ -2131,7 +2132,7 @@ Expr_pow = function(exponent) {
   .pr$Expr$pow(self, exponent) |> unwrap("in $pow()")
 }
 #' @export
-"^.Expr" = function(e1, e2) result(wrap_e(e1)$pow(e2)) |> unwrap("using '^'-operator")
+"^.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$pow(e2)) |> unwrap("using '^'-operator")
 
 
 #' Check whether a value is in a vector
@@ -2657,6 +2658,7 @@ Expr_rank = function(method = "average", descending = FALSE) {
   unwrap(.pr$Expr$rank(self, method, descending))
 }
 
+
 #' Difference
 #'
 #' Calculate the n-th discrete difference.
@@ -2669,8 +2671,9 @@ Expr_rank = function(method = "average", descending = FALSE) {
 #'   diff_default = pl$col("a")$diff(),
 #'   diff_2_ignore = pl$col("a")$diff(2, "ignore")
 #' )
-Expr_diff = function(n = 1, null_behavior = "ignore") {
-  unwrap(.pr$Expr$diff(self, n, null_behavior))
+  Expr_diff = function(n = 1, null_behavior = c("ignore", "drop")) {
+  .pr$Expr$diff(self, n, null_behavior) |>
+    unwrap("in $diff():")
 }
 
 #' Percentage change
@@ -3072,7 +3075,8 @@ Expr_ewm_mean = function(
     com = NULL, span = NULL, half_life = NULL, alpha = NULL,
     adjust = TRUE, min_periods = 1L, ignore_nulls = TRUE) {
   alpha = prepare_alpha(com, span, half_life, alpha)
-  unwrap(.pr$Expr$ewm_mean(self, alpha, adjust, min_periods, ignore_nulls))
+  .pr$Expr$ewm_mean(self, alpha, adjust, min_periods, ignore_nulls) |>
+    unwrap("in $ewm_mean()")
 }
 
 #' Exponentially-weighted moving standard deviation
@@ -3087,7 +3091,8 @@ Expr_ewm_std = function(
     com = NULL, span = NULL, half_life = NULL, alpha = NULL,
     adjust = TRUE, bias = FALSE, min_periods = 1L, ignore_nulls = TRUE) {
   alpha = prepare_alpha(com, span, half_life, alpha)
-  unwrap(.pr$Expr$ewm_std(self, alpha, adjust, bias, min_periods, ignore_nulls))
+  .pr$Expr$ewm_std(self, alpha, adjust, bias, min_periods, ignore_nulls) |>
+    unwrap("in $ewm_std()")
 }
 
 #' Exponentially-weighted moving variance
@@ -3102,7 +3107,8 @@ Expr_ewm_var = function(
     com = NULL, span = NULL, half_life = NULL, alpha = NULL,
     adjust = TRUE, bias = FALSE, min_periods = 1L, ignore_nulls = TRUE) {
   alpha = prepare_alpha(com, span, half_life, alpha)
-  unwrap(.pr$Expr$ewm_var(self, alpha, adjust, bias, min_periods, ignore_nulls))
+  .pr$Expr$ewm_var(self, alpha, adjust, bias, min_periods, ignore_nulls)  |>
+    unwrap("in $ewm_var()")
 }
 
 #' Extend Series with a constant
@@ -3116,7 +3122,8 @@ Expr_ewm_var = function(
 #' pl$select(pl$lit(1:4)$extend_constant(10.1, 2))
 #' pl$select(pl$lit(1:4)$extend_constant(NULL, 2))
 Expr_extend_constant = function(value, n) {
-  unwrap(.pr$Expr$extend_constant(self, wrap_e(value), n))
+  .pr$Expr$extend_constant(self, wrap_e(value), n) |>
+    unwrap("in $extend_constant()")
 }
 
 #' Repeat a Series
@@ -3134,7 +3141,8 @@ Expr_extend_constant = function(value, n) {
 #' pl$select(pl$lit("alice")$rep(n = 3))
 #' pl$select(pl$lit(1:3)$rep(n = 2))
 Expr_rep = function(n, rechunk = TRUE) {
-  unwrap(.pr$Expr$rep(self, n, rechunk))
+  .pr$Expr$rep(self, n, rechunk)  |>
+    unwrap("in $rep()")
 }
 
 #' Extend a Series by repeating values
@@ -3168,7 +3176,7 @@ Expr_to_r = function(df = NULL, i = 0) {
   if (is.null(df)) {
     pl$select(self)$to_series(i)$to_r()
   } else {
-    if (!inherits(df, c("DataFrame"))) {
+    if (!inherits(df, c("RPolarsDataFrame"))) {
       stop("Expr_to_r: input is not NULL or a DataFrame/Lazyframe")
     }
     df$select(self)$to_series(i)$to_r()

@@ -6,6 +6,12 @@
   is renamed `$map_batches()`. `$map()` and `$apply()` will be removed in 0.13.0 (#534).
 - Removed `$days()`, `$hours()`, `$minutes()`, `$seconds()`, `$milliseconds()`,
   `$microseconds()`, `$nanoseconds()`. Those were deprecated in 0.11.0 (#550).
+ - `pl$concat_list()`: elements being strings are now interpreted as column names. Use `pl$lit` to
+  concat with a string.
+- The class name of all objects created by polars (`DataFrame`, `LazyFrame`, 
+  `Expr`, `Series`, etc.)  has changed. They now start with `RPolars`, for example
+  `RPolarsDataFrame`. This will only break your code if you directly use those 
+  class names, such as in S3 methods (#554).
 
 ## What's changed
 

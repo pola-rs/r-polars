@@ -199,7 +199,7 @@ DataType_constructors = list(
           if (inherits(arg, "RPolarsDataType")) {
             return(pl$Field(name, arg))
           }
-          if (inherits(arg, "RField")) {
+          if (inherits(arg, "RPolarsRField")) {
             return(arg)
           }
           stop(
