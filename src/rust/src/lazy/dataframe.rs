@@ -15,9 +15,9 @@ use crate::robj_to;
 use crate::rpolarserr::{polars_to_rpolars_err, RResult, Rctx, WithRctx};
 use crate::utils::{r_result_list, try_f64_into_usize, wrappers::null_to_opt};
 use extendr_api::prelude::*;
+use pl::{AsOfOptions, Duration, RollingGroupOptions};
 use polars::frame::explode::MeltArgs;
 use polars::prelude as pl;
-use polars::prelude::AsOfOptions;
 
 use polars::io::csv::SerializeOptions;
 use polars_lazy::prelude::CsvWriterOptions;
@@ -588,6 +588,38 @@ impl RPolarsLazyFrame {
             .map(|ldf| ldf.0)
             .collect::<Vec<_>>();
         Ok(self.0.clone().with_context(contexts).into())
+    }
+
+    pub fn rolling(
+        &self,
+        index_column: Robj,
+        period: Robj,
+        offset: Robj,
+        closed: Robj,
+        by: Robj,
+        check_sorted: Robj,
+    ) -> RResult<RPolarsLazyGroupBy> {
+        let index_column = robj_to!(PLExpr, index_column)?;
+        let period = Duration::parse(robj_to!(str, period)?);
+        let offset = Duration::parse(robj_to!(str, offset)?);
+        let closed_window = robj_to!(ClosedWindow, closed)?;
+        let by = robj_to!(VecPLExpr, by)?;
+        let check_sorted = robj_to!(bool, check_sorted)?;
+
+        let options = RollingGroupOptions {
+            index_column: "".into(),
+            period,
+            offset,
+            closed_window,
+            check_sorted,
+        };
+
+        let lazy_gb = self.0.clone().group_by_rolling(index_column, by, options);
+
+        Ok(RPolarsLazyGroupBy {
+            lgb: lazy_gb,
+            opt_state: self.0.get_current_optimizations(),
+        })
     }
 }
 

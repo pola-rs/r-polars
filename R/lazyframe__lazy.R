@@ -1586,3 +1586,29 @@ LazyFrame_with_context = function(other) {
   .pr$LazyFrame$with_context(self, other) |>
     unwrap("in with_context():")
 }
+
+
+#' Create rolling groups based on a time, Int32, or Int64 column
+#'
+#' The windows are now determined by the individual values and are not of
+#' constant intervals.
+#'
+#' @inherit Expr_rolling details params
+#' @param index_column Column used to group based on the time window. Often of
+#' type Date/Datetime. This column must be sorted in ascending order (or, if `by`
+#' is specified, then it must be sorted in ascending order within each group). In
+#' case of a rolling group by on indices, dtype needs to be either Int32 or Int64.
+#' Note that Int32 gets temporarily cast to Int64, so if performance matters use
+#' an Int64 column.
+#' @param by Also group by this column/these columns.
+#'
+#' @return A LazyGroupBy object
+#'
+#' @examples
+LazyFrame_rolling = function(index_column, period, offset = NULL, closed = "right", by = NULL, check_sorted = TRUE) {
+  if (is.null(offset)) {
+    offset = paste0("-", period)
+  }
+  .pr$LazyFrame$rolling(self, index_column, period, offset, closed, by, check_sorted) |>
+    unwrap("in $rolling():")
+}

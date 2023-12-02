@@ -1,4 +1,4 @@
-use crate::lazy::dsl::{RPolarsProtoExprArray, RPolarsExpr};
+use crate::lazy::dsl::{RPolarsExpr, RPolarsProtoExprArray};
 use crate::rdataframe::RPolarsDataFrame;
 use crate::robj_to;
 use crate::rpolarserr::{rdbg, RResult};
