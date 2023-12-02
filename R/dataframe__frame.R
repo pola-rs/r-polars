@@ -847,8 +847,6 @@ DataFrame_to_data_frame = function(...) {
   # do not unnest structs and mark with I to also preserve categoricals as is
   l = lapply(self$to_list(unnest_structs = FALSE), I)
 
-  print(l)
-
   # similar to as.data.frame, but avoid checks, whcih would edit structs
   df = data.frame(seq_along(l[[1L]]), ...)
   for (i in seq_along(l)) df[[i]] = l[[i]]
