@@ -681,3 +681,10 @@ make_profile_plot = function(data, truncate_nodes) {
   }
   plot
 }
+
+
+# Copied from the tibble package
+# https://github.com/tidyverse/tibble/blob/e78ea46caea5e89cbffa5887c11050335ab23896/R/rownames.R#L116-L118
+raw_rownames = function(x) {
+  .row_names_info(x, 0L) %||% .set_row_names(.row_names_info(x, 2L))
+}

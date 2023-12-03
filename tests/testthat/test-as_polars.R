@@ -5,7 +5,7 @@ test_df = data.frame(
   "col_lgl" = rep_len(c(TRUE, FALSE, NA), 10)
 )
 
-make_cases = function() {
+make_s3methods_cases = function() {
   tibble::tribble(
     ~.test_name, ~x,
     "data.frame", test_df,
@@ -28,7 +28,7 @@ patrick::with_parameters_test_that("as_polars_df S3 methods",
 
     expect_equal(actual, expected)
   },
-  .cases = make_cases()
+  .cases = make_s3methods_cases()
 )
 
 
@@ -37,3 +37,34 @@ test_that("as_polars_lf S3 method", {
   at = arrow::as_arrow_table(test_df)
   expect_s3_class(as_polars_lf(at), "RPolarsLazyFrame")
 })
+
+
+make_rownames_cases = function() {
+  tibble::tribble(
+    ~.test_name, ~x, ~rownames,
+    "mtcars - NULL", mtcars, NULL,
+    "mtcars - foo", mtcars, "foo",
+    "mtcars - existing name", mtcars, "cyl",
+    "trees - foo", trees, "foo",
+    "trees - existing name", trees, "Height",
+    "matrix - NULL", matrix(1:4, nrow = 2), NULL,
+    "matrix - foo", matrix(1:4, nrow = 2), "foo",
+  )
+}
+
+
+patrick::with_parameters_test_that("rownames option of as_polars_df",
+  {
+    pl_df = as_polars_df(x, rownames = rownames)
+    expect_s3_class(pl_df, "RPolarsDataFrame")
+
+    actual = as.data.frame(pl_df)
+    expected = as.data.frame(x) |>
+      (\(x) x[, !names(x) %in% rownames])() |>
+      tibble::as_tibble(rownames = rownames) |>
+      as.data.frame()
+
+    expect_equal(actual, expected)
+  },
+  .cases = make_rownames_cases()
+)

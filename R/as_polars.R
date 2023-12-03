@@ -12,10 +12,13 @@
 #' @param x Object to convert to a polars DataFrame.
 #' @param ... Additional arguments passed to methods.
 #' @examplesIf requireNamespace("arrow", quietly = TRUE)
-#' at = arrow::as_arrow_table(mtcars)
+#' # Convert the row names of a data frame to a column
+#' as_polars_df(mtcars, rownames = "car")
 #'
 #' # Convert an arrow Table to a polars LazyFrame
-#' lf = as_polars_df(at)$lazy()
+#' lf = as_polars_df(
+#'   arrow::as_arrow_table(mtcars)
+#' )$lazy()
 #'
 #' # Collect all rows
 #' as_polars_df(lf)
@@ -36,9 +39,28 @@ as_polars_df.default = function(x, ...) {
 
 
 #' @rdname as_polars_df
+#' @param rownames How to treat existing row names of a data frame:
+#'  - `NULL`: Remove row names. This is the default.
+#'  - A string: The name of a new column, which will contain the row names.
+#'    If `x` already has a column with that name, the existing column will be removed.
 #' @export
-as_polars_df.data.frame = function(x, ...) {
-  pl$DataFrame(x)
+as_polars_df.data.frame = function(x, ..., rownames = NULL) {
+  if (is.null(rownames)) {
+    pl$DataFrame(x)
+  } else {
+    old_rownames = raw_rownames(x)
+    if (length(old_rownames) > 0 && is.na(old_rownames[1L])) {
+      # if implicit rownames
+      old_rownames = seq_len(abs(old_rownames[2L]))
+    }
+    old_rownames = as.character(old_rownames)
+
+    pl$concat(
+      pl$Series(old_rownames, name = rownames),
+      pl$DataFrame(x)$drop(rownames),
+      how = "horizontal"
+    )
+  }
 }
 
 
