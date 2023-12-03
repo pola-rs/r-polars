@@ -37,12 +37,10 @@ Suggests:
     pillar,
     rlang,
     rmarkdown,
-    testthat (>= 3.0.0),
+    testthat (>= 3.2.1),
     tibble,
     tools,
     withr
-Remotes:
-    r-lib/testthat
 Config/Needs/website:
     altdoc (>= 0.2.2),
     here,
