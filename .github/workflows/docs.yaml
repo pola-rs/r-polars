@@ -79,7 +79,7 @@ jobs:
       - name: Build docs
         run: make docs
 
-      - uses: webfactory/ssh-agent@v0.6.0
+      - uses: webfactory/ssh-agent@v0.8.0
         env: 
           DEPLOY_DOCS: ${{ secrets.DEPLOY_DOCS  }}
         if: ${{ (github.event_name != 'pull_request') && (github.repository_owner == 'pola-rs') }} 
