@@ -21,6 +21,7 @@
 - `as_polars_df()` for `data.frame` has a new argument `rownames` for to convert
   the row.names attribute to a column.
   This option is inspired by the `tibble::as_tibble()` function (#561).
+- `as_polars_df()` for `data.frame` has a new argument `make_names_unique` (#561).
 
 # polars 0.11.0
 

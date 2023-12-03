@@ -16,7 +16,7 @@ as_polars_df(x, ...)
 
 \method{as_polars_df}{default}(x, ...)
 
-\method{as_polars_df}{data.frame}(x, ..., rownames = NULL)
+\method{as_polars_df}{data.frame}(x, ..., rownames = NULL, make_names_unique = TRUE)
 
 \method{as_polars_df}{RPolarsDataFrame}(x, ...)
 
@@ -56,6 +56,10 @@ as_polars_df(x, ...)
 \item A string: The name of a new column, which will contain the row names.
 If \code{x} already has a column with that name, an error is thrown.
 }}
+
+\item{make_names_unique}{A logical flag to replace duplicated column names
+with unique names. If \code{FALSE} and there are duplicated column names, an
+error is thrown.}
 
 \item{n_rows}{Number of rows to fetch. Defaults to \code{Inf}, meaning all rows.}
 

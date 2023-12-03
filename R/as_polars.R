@@ -43,10 +43,17 @@ as_polars_df.default = function(x, ...) {
 #'  - `NULL`: Remove row names. This is the default.
 #'  - A string: The name of a new column, which will contain the row names.
 #'    If `x` already has a column with that name, an error is thrown.
+#' @param make_names_unique A logical flag to replace duplicated column names
+#' with unique names. If `FALSE` and there are duplicated column names, an
+#' error is thrown.
 #' @export
-as_polars_df.data.frame = function(x, ..., rownames = NULL) {
+as_polars_df.data.frame = function(x, ..., rownames = NULL, make_names_unique = TRUE) {
+  if ((anyDuplicated(names(x)) > 0) && make_names_unique) {
+    names(x) = make.unique(names(x), sep = "_")
+  }
+
   if (is.null(rownames)) {
-    pl$DataFrame(x)
+    pl$DataFrame(x, make_names_unique = FALSE)
   } else {
     uw = \(res) unwrap(res, "in as_polars_df():")
 
@@ -74,7 +81,7 @@ as_polars_df.data.frame = function(x, ..., rownames = NULL) {
 
     pl$concat(
       pl$Series(old_rownames, name = rownames),
-      pl$DataFrame(x),
+      pl$DataFrame(x, make_names_unique = FALSE),
       how = "horizontal"
     )
   }

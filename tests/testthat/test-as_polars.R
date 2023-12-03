@@ -66,9 +66,22 @@ patrick::with_parameters_test_that("rownames option of as_polars_df",
   .cases = make_rownames_cases()
 )
 
+
 test_that("as_polars_df throws error when rownames is not a single string or already used", {
   expect_error(as_polars_df(mtcars, rownames = "cyl"), "already used")
   expect_error(as_polars_df(mtcars, rownames = c("cyl", "disp")), "must be a single string")
   expect_error(as_polars_df(mtcars, rownames = 1), "must be a single string")
   expect_error(as_polars_df(mtcars, rownames = NA_character_), "must be a single string")
+  expect_error(
+    as_polars_df(data.frame(a = 1, a = 2, check.names = FALSE), rownames = "a_1"),
+    "already used"
+  )
+})
+
+
+test_that("as_polars_df throws error when make_names_unique = FALSE and there are duplicated column names", {
+  expect_error(
+    as_polars_df(data.frame(a = 1, a = 2, check.names = FALSE), make_names_unique = FALSE),
+    "not allowed"
+  )
 })
