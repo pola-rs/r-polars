@@ -65,7 +65,7 @@ jobs:
       LIBR_POLARS_BUILD: "true"
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Tune GitHub-hosted runner network
         uses: smorimoto/tune-github-hosted-runner-network@v1
