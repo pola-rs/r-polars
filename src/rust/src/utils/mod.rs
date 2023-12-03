@@ -1043,6 +1043,10 @@ macro_rules! robj_to_inner {
         $crate::rdatatype::robj_to_join_type($a)
     };
 
+    (AsOfStrategy, $a:ident) => {
+        $crate::rdatatype::robj_to_asof_strategy($a)
+    };
+
     (ParallelStrategy, $a:ident) => {
         $crate::rdatatype::robj_to_parallel_strategy($a)
     };

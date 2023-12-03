@@ -184,13 +184,7 @@ DataType_constructors = list(
   # doc below pl_Struct
   Struct = function(...) {
     result({
-      largs = list2(...)
-      if (length(largs) >= 1 && is.list(largs[[1]])) {
-        largs = largs[[1]]
-        element_name = "list element"
-      } else {
-        element_name = "positional argument"
-      }
+      largs = unpack_list(...)
       mapply(
         names(largs) %||% character(length(largs)),
         largs,
@@ -202,10 +196,10 @@ DataType_constructors = list(
           if (inherits(arg, "RPolarsRField")) {
             return(arg)
           }
-          stop(
-            "%s [%s] {name:'%s', value:%s} must either be a Field (pl$Field) or a named %s",
-            element_name, i, name, arg, "DataType see (pl$dtypes), see examples for pl$Struct()"
-          )
+          stop(sprintf(
+            "element [%s] {name:'%s', value:%s} must either be a Field (pl$Field) or a named %s",
+            i, name, arg, "DataType see (pl$dtypes), see examples for pl$Struct()"
+          ))
         }, SIMPLIFY = FALSE
       )
     }) |>

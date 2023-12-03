@@ -25,10 +25,7 @@ test_that("plStruct", {
   expect_no_error(pl$Struct(bin = pl$Binary, pl$Boolean, pl$Boolean))
 
   # wrong uses
-  err_state = result(pl$Struct(bin = pl$Binary, pl$Boolean, "abc"))
-  expect_grepl_error(unwrap(err_state), "must either be a Field")
-  expect_grepl_error(unwrap(err_state), "positional argument")
-  expect_grepl_error(unwrap(err_state), "in pl\\$Struct\\:")
+  ctx = pl$Struct(bin = pl$Binary, pl$Boolean, "abc") |> get_err_ctx()
+  expect_true(startsWith(ctx$PlainErrorMessage,"element [3] {name:'', value:abc}"))
 
-  err_state = result(pl$Struct(bin = pl$Binary, pl$Boolean, bob = 42))
 })

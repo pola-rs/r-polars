@@ -13,7 +13,7 @@ DataFrame_join_asof(
   by_left = NULL,
   by_right = NULL,
   by = NULL,
-  strategy = "backward",
+  strategy = c("backward", "forward", "nearest"),
   suffix = "_right",
   tolerance = NULL,
   allow_parallel = TRUE,

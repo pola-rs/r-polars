@@ -1,11 +1,12 @@
 use crate::robj_to;
+
 use crate::utils::wrappers::Wrap;
 use crate::utils::{r_result_list, robj_to_string};
 use extendr_api::prelude::*;
 use polars::prelude as pl;
 use polars_core::prelude::QuantileInterpolOptions;
 //expose polars DateType in R
-use crate::rpolarserr::{polars_to_rpolars_err, rerr, RResult, WithRctx};
+use crate::rpolarserr::{polars_to_rpolars_err, rerr, RPolarsErr, RResult, WithRctx};
 use crate::utils::collect_hinted_result;
 use crate::utils::wrappers::null_to_opt;
 use std::result::Result;
@@ -103,33 +104,30 @@ impl RPolarsDataType {
         todo!("object not implemented")
     }
 
-    pub fn new_struct(l: Robj) -> List {
-        let res = || -> std::result::Result<RPolarsDataType, String> {
-            let len = l.len();
-
-            //iterate over R list and collect Fields and place in a Struct-datatype
-            l.as_list()
-                .ok_or_else(|| "argument [l] is not a list".to_string())
-                .map(|l| {
-                    l.into_iter().enumerate().map(|(i, (name, robj))| {
-                        let res: extendr_api::Result<ExternalPtr<RPolarsRField>> = robj.try_into();
-                        res.map_err(|err| {
-                            format!(
-                                "list element [[{}]] named {} is not a Field: {:?}",
-                                i + 1,
-                                name,
-                                err
-                            )
-                        })
-                        .map(|ok| ok.0.clone())
+    pub fn new_struct(l: Robj) -> RResult<RPolarsDataType> {
+        let len = l.len();
+        //iterate over R list and collect Fields and place in a Struct-datatype
+        l.as_list()
+            .ok_or_else(|| {
+                RPolarsErr::new()
+                    .bad_arg("l".into())
+                    .plain("is not a list".into())
+            })
+            .map(|l| {
+                l.into_iter().enumerate().map(|(i, (name, robj))| {
+                    let res: extendr_api::Result<ExternalPtr<RPolarsRField>> = robj.try_into();
+                    res.map_err(|extendr_err| {
+                        RPolarsErr::from(extendr_err).plain(format!(
+                            "list element [[{}]] named {} is not a Field.",
+                            i + 1,
+                            name,
+                        ))
                     })
+                    .map(|ok| ok.0.clone())
                 })
-                .and_then(|iter| collect_hinted_result(len, iter))
-                .map_err(|err| format!("in pl$Struct: {}", err))
-                .map(|v_field| RPolarsDataType(pl::DataType::Struct(v_field)))
-        }();
-
-        r_result_list(res)
+            })
+            .and_then(|iter| collect_hinted_result(len, iter))
+            .map(|v_field| RPolarsDataType(pl::DataType::Struct(v_field)))
     }
 
     pub fn get_all_simple_type_names() -> Vec<String> {
@@ -247,11 +245,11 @@ impl RPolarsDataTypeVector {
     }
 }
 
-pub fn new_asof_strategy(s: &str) -> Result<AsofStrategy, String> {
-    match s {
+pub fn robj_to_asof_strategy(robj: Robj) -> RResult<AsofStrategy> {
+    match robj_to_rchoice(robj)?.as_str() {
         "forward" => Ok(AsofStrategy::Forward),
         "backward" => Ok(AsofStrategy::Backward),
-        _ => Err(format!(
+        s => rerr().bad_val(format!(
             "asof strategy choice: [{}] is not any of 'forward' or 'backward'",
             s
         )),
