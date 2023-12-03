@@ -54,7 +54,7 @@ as_polars_df(x, ...)
 \itemize{
 \item \code{NULL}: Remove row names. This is the default.
 \item A string: The name of a new column, which will contain the row names.
-If \code{x} already has a column with that name, the existing column will be removed.
+If \code{x} already has a column with that name, an error is thrown.
 }}
 
 \item{n_rows}{Number of rows to fetch. Defaults to \code{Inf}, meaning all rows.}

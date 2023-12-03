@@ -42,12 +42,29 @@ as_polars_df.default = function(x, ...) {
 #' @param rownames How to treat existing row names of a data frame:
 #'  - `NULL`: Remove row names. This is the default.
 #'  - A string: The name of a new column, which will contain the row names.
-#'    If `x` already has a column with that name, the existing column will be removed.
+#'    If `x` already has a column with that name, an error is thrown.
 #' @export
 as_polars_df.data.frame = function(x, ..., rownames = NULL) {
   if (is.null(rownames)) {
     pl$DataFrame(x)
   } else {
+    uw = \(res) unwrap(res, "in as_polars_df():")
+
+    if (length(rownames) != 1L || !is.character(rownames) || is.na(rownames)) {
+      Err_plain("`rownames` must be a single string, or `NULL`") |>
+        uw()
+    }
+
+    if (rownames %in% names(x)) {
+      Err_plain(
+        sprintf(
+          "The column name '%s' is already used. Please choose a different name for the `rownames` argument.",
+          rownames
+        )
+      ) |>
+        uw()
+    }
+
     old_rownames = raw_rownames(x)
     if (length(old_rownames) > 0 && is.na(old_rownames[1L])) {
       # if implicit rownames
@@ -57,7 +74,7 @@ as_polars_df.data.frame = function(x, ..., rownames = NULL) {
 
     pl$concat(
       pl$Series(old_rownames, name = rownames),
-      pl$DataFrame(x)$drop(rownames),
+      pl$DataFrame(x),
       how = "horizontal"
     )
   }

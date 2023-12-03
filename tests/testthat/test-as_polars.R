@@ -44,9 +44,7 @@ make_rownames_cases = function() {
     ~.test_name, ~x, ~rownames,
     "mtcars - NULL", mtcars, NULL,
     "mtcars - foo", mtcars, "foo",
-    "mtcars - existing name", mtcars, "cyl",
     "trees - foo", trees, "foo",
-    "trees - existing name", trees, "Height",
     "matrix - NULL", matrix(1:4, nrow = 2), NULL,
     "matrix - foo", matrix(1:4, nrow = 2), "foo",
   )
@@ -60,7 +58,6 @@ patrick::with_parameters_test_that("rownames option of as_polars_df",
 
     actual = as.data.frame(pl_df)
     expected = as.data.frame(x) |>
-      (\(x) x[, !names(x) %in% rownames])() |>
       tibble::as_tibble(rownames = rownames) |>
       as.data.frame()
 
@@ -68,3 +65,10 @@ patrick::with_parameters_test_that("rownames option of as_polars_df",
   },
   .cases = make_rownames_cases()
 )
+
+test_that("as_polars_df throws error when rownames is not a single string or already used", {
+  expect_error(as_polars_df(mtcars, rownames = "cyl"), "already used")
+  expect_error(as_polars_df(mtcars, rownames = c("cyl", "disp")), "must be a single string")
+  expect_error(as_polars_df(mtcars, rownames = 1), "must be a single string")
+  expect_error(as_polars_df(mtcars, rownames = NA_character_), "must be a single string")
+})
