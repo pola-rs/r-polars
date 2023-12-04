@@ -1,4 +1,4 @@
-use crate::lazy::dsl::{RPolarsProtoExprArray, RPolarsExpr};
+use crate::lazy::dsl::{RPolarsExpr, RPolarsProtoExprArray};
 use crate::rdataframe::RPolarsDataFrame;
 use crate::robj_to;
 use crate::rpolarserr::{rdbg, RResult};
@@ -253,16 +253,6 @@ fn test_robj_to_rchoice(robj: Robj) -> RResult<String> {
 }
 
 #[extendr]
-fn polars_features() -> List {
-    list!(
-        full_features = cfg!(feature = "full_features"),
-        default = cfg!(feature = "default"),
-        simd = cfg!(feature = "simd"),
-        rpolars_debug_print = cfg!(feature = "rpolars_debug_print")
-    )
-}
-
-#[extendr]
 fn fold(acc: Robj, lambda: Robj, exprs: Robj) -> RResult<RPolarsExpr> {
     let par_fn = ParRObj(lambda);
     let f = move |acc: pl::Series, x: pl::Series| {
@@ -335,7 +325,4 @@ extendr_module! {
     fn test_robj_to_expr;
     fn test_wrong_call_pl_lit;
     fn test_robj_to_rchoice;
-
-    //feature flags
-    fn polars_features;
 }

@@ -23,7 +23,7 @@ jobs:
   test-min-rust-version:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: baptiste0928/cargo-install@v2
         with:
           crate: cargo-msrv

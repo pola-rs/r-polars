@@ -1,7 +1,7 @@
 use crate::concurrent::RFnSignature;
 use crate::rdatatype::{
     literal_to_any_value, new_rank_method, new_rolling_cov_options, parse_fill_null_strategy,
-    robj_to_timeunit, RPolarsDataTypeVector, RPolarsDataType,
+    robj_to_timeunit, RPolarsDataType, RPolarsDataTypeVector,
 };
 use crate::robj_to;
 use crate::rpolarserr::{
@@ -2385,17 +2385,17 @@ impl RPolarsExpr {
     }
 }
 
-// handle varition in implementation if not full_features
+// handle varition in implementation if not simd
 // could not get cfg feature flags conditions to work inside extendr macro
 // Therefore place it outside here instead
 #[allow(unused)]
 fn f_str_to_titlecase(expr: &RPolarsExpr) -> RResult<RPolarsExpr> {
-    #[cfg(feature = "full_features")]
+    #[cfg(feature = "simd")]
     return (Ok(expr.0.clone().str().to_titlecase().into()));
 
-    #[cfg(not(feature = "full_features"))]
+    #[cfg(not(feature = "simd"))]
     rerr().plain(
-        "$to_titlecase() is only available with 'full_features' enabled. Try our github \
+        "$to_titlecase() is only available with 'simd' enabled. Try our github \
     binary releases or compile with env var RPOLARS_FULL_FEATURES = 'true'",
     )
 }
