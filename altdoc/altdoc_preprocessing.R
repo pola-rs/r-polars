@@ -79,6 +79,14 @@ hierarchy = append(list("Reference" = "reference_home.md"), hierarchy)
 # Insert the links in the settings
 yml$nav[[3]]$Reference <- hierarchy
 
+# These two elements should be lists in the yaml format, not single elements,
+# otherwise mkdocs breaks
+for (i in c("extra_css", "plugins")) {
+  if (!is.null(yml[[i]]) && !is.list(length(yml[[i]]))) {
+    yml[[i]] <- as.list(yml[[i]])
+  }
+}
+
 # Write the settings to the `altdoc/` directory
 write_yaml(yml, "altdoc/mkdocs.yml", indent.mapping.sequence = TRUE)
 
