@@ -16,7 +16,7 @@ as_polars_df(x, ...)
 
 \method{as_polars_df}{default}(x, ...)
 
-\method{as_polars_df}{data.frame}(x, ...)
+\method{as_polars_df}{data.frame}(x, ..., rownames = NULL, make_names_unique = TRUE)
 
 \method{as_polars_df}{RPolarsDataFrame}(x, ...)
 
@@ -49,6 +49,17 @@ as_polars_df(x, ...)
 \item{x}{Object to convert to a polars DataFrame.}
 
 \item{...}{Additional arguments passed to methods.}
+
+\item{rownames}{How to treat existing row names of a data frame:
+\itemize{
+\item \code{NULL}: Remove row names. This is the default.
+\item A string: The name of a new column, which will contain the row names.
+If \code{x} already has a column with that name, an error is thrown.
+}}
+
+\item{make_names_unique}{A logical flag to replace duplicated column names
+with unique names. If \code{FALSE} and there are duplicated column names, an
+error is thrown.}
 
 \item{n_rows}{Number of rows to fetch. Defaults to \code{Inf}, meaning all rows.}
 
@@ -110,10 +121,13 @@ whether the number of rows to fetch is infinite or not.
 }
 \examples{
 \dontshow{if (requireNamespace("arrow", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-at = arrow::as_arrow_table(mtcars)
+# Convert the row names of a data frame to a column
+as_polars_df(mtcars, rownames = "car")
 
 # Convert an arrow Table to a polars LazyFrame
-lf = as_polars_df(at)$lazy()
+lf = as_polars_df(
+  arrow::as_arrow_table(mtcars)
+)$lazy()
 
 # Collect all rows
 as_polars_df(lf)
