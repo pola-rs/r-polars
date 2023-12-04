@@ -1,7 +1,7 @@
 use crate::concurrent::RFnSignature;
 use crate::rdatatype::{
-    literal_to_any_value, new_rank_method, new_rolling_cov_options, parse_fill_null_strategy,
-    robj_to_timeunit, RPolarsDataTypeVector, RPolarsDataType,
+    literal_to_any_value, new_rolling_cov_options, parse_fill_null_strategy, robj_to_timeunit,
+    RPolarsDataType, RPolarsDataTypeVector,
 };
 use crate::robj_to;
 use crate::rpolarserr::{
@@ -688,19 +688,13 @@ impl RPolarsExpr {
         self.0.clone().abs().into()
     }
 
-    // TODO: support seed option
-    fn rank(&self, method: &str, descending: bool) -> List {
-        let expr_res = new_rank_method(method)
-            .map(|rank_method| {
-                let options = pl::RankOptions {
-                    method: rank_method,
-                    descending: descending,
-                };
-                RPolarsExpr(self.0.clone().rank(options, Some(0u64)))
-            })
-            .map_err(|err| format!("rank: {}", err));
-
-        r_result_list(expr_res)
+    fn rank(&self, method: Robj, descending: Robj, seed: Robj) -> RResult<Self> {
+        let options = pl::RankOptions {
+            method: robj_to!(RankMethod, method)?,
+            descending: robj_to!(bool, descending)?,
+        };
+        let seed = robj_to!(Option, u64, seed)?;
+        Ok(self.0.clone().rank(options, seed).into())
     }
 
     fn diff(&self, n_float: Robj, null_behavior: Robj) -> RResult<RPolarsExpr> {

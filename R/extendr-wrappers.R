@@ -541,7 +541,7 @@ RPolarsExpr$rolling_skew <- function(window_size_f, bias) .Call(wrap__RPolarsExp
 
 RPolarsExpr$abs <- function() .Call(wrap__RPolarsExpr__abs, self)
 
-RPolarsExpr$rank <- function(method, descending) .Call(wrap__RPolarsExpr__rank, self, method, descending)
+RPolarsExpr$rank <- function(method, descending, seed) .Call(wrap__RPolarsExpr__rank, self, method, descending, seed)
 
 RPolarsExpr$diff <- function(n_float, null_behavior) .Call(wrap__RPolarsExpr__diff, self, n_float, null_behavior)
 

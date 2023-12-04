@@ -983,6 +983,10 @@ macro_rules! robj_to_inner {
         $crate::utils::robj_to_rexpr($a, false).map(|ok| ok.0)
     };
 
+    (RankMethod, $a:ident) => {
+        $crate::rdatatype::robj_to_rank_method($a)
+    };
+
     (VecPLExpr, $a:ident) => {
         $crate::utils::list_expr_to_vec_pl_expr($a, true, false)
     };

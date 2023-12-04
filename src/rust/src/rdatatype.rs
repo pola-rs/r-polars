@@ -250,14 +250,13 @@ pub fn robj_to_asof_strategy(robj: Robj) -> RResult<AsofStrategy> {
 }
 
 pub fn robj_to_unique_keep_strategy(robj: Robj) -> RResult<UniqueKeepStrategy> {
-    match robj_to_rchoice(robj)?.as_str() {
+    match robj_to_rchoice(robj)?.to_lowercase().as_str() {
         // "any" => Ok(pl::UniqueKeepStrategy::Any),
         "first" => Ok(pl::UniqueKeepStrategy::First),
         "last" => Ok(pl::UniqueKeepStrategy::Last),
         "none" => Ok(pl::UniqueKeepStrategy::None),
         s => rerr().bad_val(format!(
-            "keep strategy choice: [{}] is not any of 'any', 'first', 'last', 'none'",
-            s
+            "keep strategy choice: [{s}] is not any of 'any', 'first', 'last', 'none'"
         )),
     }
 }
@@ -271,25 +270,24 @@ pub fn new_quantile_interpolation_option(robj: Robj) -> RResult<QuantileInterpol
         "lower" => Ok(Lower),
         "midpoint" => Ok(Midpoint),
         "linear" => Ok(Linear),
-        _ => rerr()
-            .bad_val("interpolation choice is not any of 'nearest', 'higher', 'lower', 'midpoint', 'linear'")
-            .bad_robj(&robj),
+        s => rerr()
+            .bad_val(format!("interpolation choice [{s}] is not any of 'nearest', 'higher', 'lower', 'midpoint', 'linear'"))
+     ,
     }
 }
 
-pub fn new_rank_method(s: &str) -> std::result::Result<pl::RankMethod, String> {
+pub fn robj_to_rank_method(robj: Robj) -> RResult<pl::RankMethod> {
     use pl::RankMethod as RM;
-    let s_low = s.to_lowercase();
-    match s_low.as_str() {
+    match robj_to_rchoice(robj)?.to_lowercase().as_str() {
         "average" => Ok(RM::Average),
         "dense" => Ok(RM::Dense),
         "max" => Ok(RM::Max),
         "min" => Ok(RM::Min),
         "ordinal" => Ok(RM::Ordinal),
         "random" => Ok(RM::Random),
-        _ => Err(format!(
-            "RankMethod choice: [{}] is not any 'average','dense', 'min', 'max', 'ordinal', 'random'",
-            s_low.as_str()
+        s =>  rerr()
+        .bad_val(format!(
+            "RankMethod choice: [{s}] is not any 'average','dense', 'min', 'max', 'ordinal', 'random'"
         )),
     }
 }
