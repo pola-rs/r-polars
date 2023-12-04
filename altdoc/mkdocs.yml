@@ -237,7 +237,6 @@ nav:
         - quantile: man/LazyFrame_quantile.md
         - rename: man/LazyFrame_rename.md
         - reverse: man/LazyFrame_reverse.md
-        - rolling: man/LazyFrame_rolling.md
         - select: man/LazyFrame_select.md
         - set_optimization_toggle: man/LazyFrame_set_optimization_toggle.md
         - shift: man/LazyFrame_shift.md
