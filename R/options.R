@@ -58,7 +58,7 @@ polars_optreq$rpool_cap = list() # rust-side options already check args
 #' spawned in pool. `pl$options$rpool_cap` indicates the maximum number of new R
 #' sessions that can be spawned. Anytime a polars thread worker needs a background
 #' R session specifically to run R code embedded in a query via
-#' `$map(..., in_background = TRUE)` or `$apply(..., in_background = TRUE)`, it
+#' `$map_batches(..., in_background = TRUE)` or `$map_elements(..., in_background = TRUE)`, it
 #' will obtain any R session idling in rpool, or spawn a new R session (process)
 #' and add it to the rpool if `rpool_cap` is not already reached. If `rpool_cap`
 #' is already reached, the thread worker will sleep until an R session is idling.
@@ -314,7 +314,7 @@ pl$with_string_cache = function(expr) {
 #' in the pool. `rpool_cap` is the limit of new R sessions to spawn. Anytime a polars
 #' thread worker needs a background R session specifically to run R code embedded
 #' in a query via `$map(..., in_background = TRUE)` or
-#' `$apply(..., in_background = TRUE)`, it will obtain any R session idling in
+#' `$map_elements(..., in_background = TRUE)`, it will obtain any R session idling in
 #' rpool, or spawn a new R session (process) if `capacity`
 #' is not already reached. If `capacity` is already reached, the thread worker
 #' will sleep and in a R job queue until an R session is idle.

@@ -1,14 +1,14 @@
 test_that("expression boolean operators", {
-  expect_equal(class(pl$col("foo") == pl$col("bar")), "Expr")
-  expect_equal(class(pl$col("foo") <= pl$col("bar")), "Expr")
-  expect_equal(class(pl$col("foo") >= pl$col("bar")), "Expr")
-  expect_equal(class(pl$col("foo") != pl$col("bar")), "Expr")
+  expect_equal(class(pl$col("foo") == pl$col("bar")), "RPolarsExpr")
+  expect_equal(class(pl$col("foo") <= pl$col("bar")), "RPolarsExpr")
+  expect_equal(class(pl$col("foo") >= pl$col("bar")), "RPolarsExpr")
+  expect_equal(class(pl$col("foo") != pl$col("bar")), "RPolarsExpr")
 
-  expect_equal(class(pl$col("foo") > pl$lit(5)), "Expr")
-  expect_equal(class(pl$col("foo") < pl$lit(5)), "Expr")
-  expect_equal(class(pl$col("foo") > 5), "Expr")
-  expect_equal(class(pl$col("foo") < 5), "Expr")
-  expect_equal(class(!pl$col("foobar")), "Expr")
+  expect_equal(class(pl$col("foo") > pl$lit(5)), "RPolarsExpr")
+  expect_equal(class(pl$col("foo") < pl$lit(5)), "RPolarsExpr")
+  expect_equal(class(pl$col("foo") > 5), "RPolarsExpr")
+  expect_equal(class(pl$col("foo") < 5), "RPolarsExpr")
+  expect_equal(class(!pl$col("foobar")), "RPolarsExpr")
 
 
   cmp_operators_df = pl$DataFrame(list())$with_columns(

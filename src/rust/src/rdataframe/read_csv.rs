@@ -1,8 +1,8 @@
 //read csv
 
-use crate::rdatatype::DataTypeVector;
+use crate::rdatatype::RPolarsDataTypeVector;
 
-use crate::lazy::dataframe::LazyFrame;
+use crate::lazy::dataframe::RPolarsLazyFrame;
 use crate::robj_to;
 use crate::rpolarserr::*;
 use polars::io::RowCount;
@@ -15,16 +15,17 @@ use std::result::Result;
 
 //see param, null_values
 #[derive(Clone, Debug)]
-pub struct RNullValues(pl::NullValues);
+pub struct RPolarsRNullValues(pl::NullValues);
+
 use polars::prelude::LazyFileListReader;
 
 #[extendr]
-impl RNullValues {
+impl RPolarsRNullValues {
     pub fn new_all_columns(x: String) -> Self {
-        RNullValues(pl::NullValues::AllColumnsSingle(x))
+        RPolarsRNullValues(pl::NullValues::AllColumnsSingle(x))
     }
     pub fn new_columns(x: Vec<String>) -> Self {
-        RNullValues(pl::NullValues::AllColumns(x))
+        RPolarsRNullValues(pl::NullValues::AllColumns(x))
     }
     pub fn new_named(robj: Robj) -> Self {
         let null_markers = robj.as_str_iter().expect("must be str");
@@ -34,11 +35,11 @@ impl RNullValues {
             .zip(null_markers)
             .map(|(k, v)| (k.to_owned(), v.to_owned()))
             .collect();
-        RNullValues(pl::NullValues::Named(key_val_pair))
+        RPolarsRNullValues(pl::NullValues::Named(key_val_pair))
     }
 }
-impl From<Wrap<Nullable<&RNullValues>>> for Option<pl::NullValues> {
-    fn from(x: Wrap<Nullable<&RNullValues>>) -> Self {
+impl From<Wrap<Nullable<&RPolarsRNullValues>>> for Option<pl::NullValues> {
+    fn from(x: Wrap<Nullable<&RPolarsRNullValues>>) -> Self {
         null_to_opt(x.0).map(|y| y.clone().0)
     }
 }
@@ -52,8 +53,8 @@ pub fn new_from_csv(
     comment_char: Robj,
     quote_char: Robj,
     skip_rows: Robj,
-    dtypes: Nullable<&DataTypeVector>,
-    null_values: Nullable<&RNullValues>,
+    dtypes: Nullable<&RPolarsDataTypeVector>,
+    null_values: Nullable<&RPolarsRNullValues>,
     // missing_utf8_is_empty_string: Robj,
     ignore_errors: Robj,
     cache: Robj,
@@ -69,7 +70,7 @@ pub fn new_from_csv(
     eol_char: Robj,
     raise_if_empty: Robj,
     truncate_ragged_lines: Robj,
-) -> RResult<LazyFrame> {
+) -> RResult<RPolarsLazyFrame> {
     let offset = robj_to!(Option, u32, row_count_offset)?.unwrap_or(0);
     let opt_rowcount =
         robj_to!(Option, String, row_count_name)?.map(|name| RowCount { name, offset });
@@ -124,11 +125,11 @@ pub fn new_from_csv(
         .raise_if_empty(robj_to!(bool, raise_if_empty)?)
         .finish()
         .map_err(polars_to_rpolars_err)
-        .map(LazyFrame)
+        .map(RPolarsLazyFrame)
 }
 
 extendr_module! {
     mod read_csv;
     fn new_from_csv;
-    impl RNullValues;
+    impl RPolarsRNullValues;
 }

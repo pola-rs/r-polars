@@ -77,24 +77,24 @@ extendr_method_to_pure_functions = function(env, class_name = NULL) {
 #' # show all content of .pr
 #' .pr$print_env(.pr, ".pr the collection of private method calls to rust-polars")
 .pr = new.env(parent = emptyenv())
-.pr$Series = extendr_method_to_pure_functions(Series)
-.pr$DataFrame = extendr_method_to_pure_functions(DataFrame)
+.pr$Series = extendr_method_to_pure_functions(RPolarsSeries)
+.pr$DataFrame = extendr_method_to_pure_functions(RPolarsDataFrame)
 .pr$GroupBy = NULL # derived from DataFrame in R, has no rust calls
-.pr$LazyFrame = extendr_method_to_pure_functions(LazyFrame)
-.pr$LazyGroupBy = extendr_method_to_pure_functions(LazyGroupBy)
+.pr$LazyFrame = extendr_method_to_pure_functions(RPolarsLazyFrame)
+.pr$LazyGroupBy = extendr_method_to_pure_functions(RPolarsLazyGroupBy)
 .pr$DataType = extendr_method_to_pure_functions(RPolarsDataType)
-.pr$DataTypeVector = extendr_method_to_pure_functions(DataTypeVector)
-.pr$RField = extendr_method_to_pure_functions(RField)
-.pr$Expr = extendr_method_to_pure_functions(Expr)
-.pr$ProtoExprArray = extendr_method_to_pure_functions(ProtoExprArray)
-.pr$When = extendr_method_to_pure_functions(When)
-.pr$Then = extendr_method_to_pure_functions(Then)
-.pr$ChainedWhen = extendr_method_to_pure_functions(ChainedWhen)
-.pr$ChainedThen = extendr_method_to_pure_functions(ChainedThen)
-.pr$VecDataFrame = extendr_method_to_pure_functions(VecDataFrame)
-.pr$RNullValues = extendr_method_to_pure_functions(RNullValues)
+.pr$DataTypeVector = extendr_method_to_pure_functions(RPolarsDataTypeVector)
+.pr$RField = extendr_method_to_pure_functions(RPolarsRField)
+.pr$Expr = extendr_method_to_pure_functions(RPolarsExpr)
+.pr$ProtoExprArray = extendr_method_to_pure_functions(RPolarsProtoExprArray)
+.pr$When = extendr_method_to_pure_functions(RPolarsWhen)
+.pr$Then = extendr_method_to_pure_functions(RPolarsThen)
+.pr$ChainedWhen = extendr_method_to_pure_functions(RPolarsChainedWhen)
+.pr$ChainedThen = extendr_method_to_pure_functions(RPolarsChainedThen)
+.pr$VecDataFrame = extendr_method_to_pure_functions(RPolarsVecDataFrame)
+.pr$RNullValues = extendr_method_to_pure_functions(RPolarsRNullValues)
 .pr$RPolarsErr = extendr_method_to_pure_functions(RPolarsErr)
-.pr$RThreadHandle = extendr_method_to_pure_functions(RThreadHandle)
+.pr$RThreadHandle = extendr_method_to_pure_functions(RPolarsRThreadHandle)
 .pr$RPolarsStringCacheHolder = extendr_method_to_pure_functions(RPolarsStringCacheHolder)
 .pr$RPolarsSQLContext = extendr_method_to_pure_functions(RPolarsSQLContext)
 
@@ -267,8 +267,9 @@ DataType = clone_env_one_level_deep(RPolarsDataType)
 # used for printing public environment
 pl_class_names = sort(
   c(
-    "LazyFrame", "Series", "LazyGroupBy", "DataType", "Expr", "DataFrame",
-    "When", "Then", "ChainedWhen", "ChainedThen", "RPolarsSQLContext"
+    "RPolarsLazyFrame", "RPolarsSeries", "RPolarsLazyGroupBy", "RPolarsDataType",
+    "RPolarsExpr", "RPolarsDataFrame", "RPolarsWhen", "RPolarsThen",
+    "RPolarsChainedWhen", "RPolarsChainedThen", "RPolarsSQLContext"
   )
 ) # TODO discover all public class automatically
 

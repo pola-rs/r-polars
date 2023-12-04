@@ -11,7 +11,7 @@ test_that("Test collecting LazyFrame in background", {
   expect_equal(res_bg$to_data_frame(), compute$collect()$to_data_frame())
 })
 
-test_that("Test using $map() in background", {
+test_that("Test using $map_batches() in background", {
   skip_if_not(Sys.getenv("CI") == "true")
   # change capacity
   pl$set_options(rpool_cap = 0)
@@ -22,8 +22,8 @@ test_that("Test using $map() in background", {
   expect_equal(pl$options$rpool_active, 0)
 
 
-  compute = lf$select(pl$col("y")$map(\(x) x * x, in_background = FALSE))
-  compute_bg = lf$select(pl$col("y")$map(\(x) {
+  compute = lf$select(pl$col("y")$map_batches(\(x) x * x, in_background = FALSE))
+  compute_bg = lf$select(pl$col("y")$map_batches(\(x) {
     Sys.sleep(.3)
     x * x
   }, in_background = TRUE))
@@ -96,7 +96,7 @@ test_that("reduce cap and active while jobs in queue", {
   pl$set_options(rpool_cap = 0)
   pl$set_options(rpool_cap = 3)
   l_expr = lapply(1:5, \(i) {
-    pl$lit(i)$map(\(x) {
+    pl$lit(i)$map_batches(\(x) {
       Sys.sleep(.4)
       -i
     }, in_background = TRUE)$alias(paste0("lit_", i))

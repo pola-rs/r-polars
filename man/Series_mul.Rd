@@ -3,12 +3,12 @@
 \name{Series_mul}
 \alias{Series_mul}
 \alias{mul}
-\alias{*.Series}
+\alias{*.RPolarsSeries}
 \title{mul Series}
 \usage{
 Series_mul(other)
 
-\method{*}{Series}(s1, s2)
+\method{*}{RPolarsSeries}(s1, s2)
 }
 \arguments{
 \item{other}{Series or into Series}

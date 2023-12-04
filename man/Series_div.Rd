@@ -3,12 +3,12 @@
 \name{Series_div}
 \alias{Series_div}
 \alias{div}
-\alias{/.Series}
+\alias{/.RPolarsSeries}
 \title{div Series}
 \usage{
 Series_div(other)
 
-\method{/}{Series}(s1, s2)
+\method{/}{RPolarsSeries}(s1, s2)
 }
 \arguments{
 \item{other}{Series or into Series}

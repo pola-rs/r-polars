@@ -1,6 +1,6 @@
 //read ndjson
 
-use crate::lazy::dataframe::LazyFrame;
+use crate::lazy::dataframe::RPolarsLazyFrame;
 use crate::robj_to;
 use crate::rpolarserr::*;
 use polars::io::RowCount;
@@ -22,7 +22,7 @@ pub fn new_from_ndjson(
     rechunk: Robj,
     row_count_name: Robj,
     row_count_offset: Robj,
-) -> RResult<LazyFrame> {
+) -> RResult<RPolarsLazyFrame> {
     let offset = robj_to!(Option, u32, row_count_offset)?.unwrap_or(0);
     let opt_rowcount =
         robj_to!(Option, String, row_count_name)?.map(|name| RowCount { name, offset });
@@ -43,7 +43,7 @@ pub fn new_from_ndjson(
         .with_rechunk(robj_to!(bool, rechunk)?)
         .finish()
         .map_err(polars_to_rpolars_err)
-        .map(LazyFrame)
+        .map(RPolarsLazyFrame)
 }
 
 extendr_module! {

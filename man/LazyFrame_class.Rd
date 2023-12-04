@@ -12,7 +12,7 @@ the public and private methods/function calls to the polars rust side. The
 instantiated \code{LazyFrame}-object is an \code{externalptr} to a lowlevel rust polars
 LazyFrame  object. The pointer address is the only statefullness of the
 LazyFrame object on the R side. Any other state resides on the rust side. The
-S3 method \code{.DollarNames.LazyFrame} exposes all public \verb{$foobar()}-methods which
+S3 method \code{.DollarNames.RPolarsLazyFrame} exposes all public \verb{$foobar()}-methods which
 are callable onto the object.
 
 Most methods return another \code{LazyFrame}-class instance or similar which allows
@@ -43,7 +43,7 @@ prefixed \code{LazyFrame_}.
 }
 \examples{
 # see all exported methods
-ls(.pr$env$LazyFrame)
+ls(.pr$env$RPolarsLazyFrame)
 
 # see all private methods (not intended for regular use)
 ls(.pr$LazyFrame)

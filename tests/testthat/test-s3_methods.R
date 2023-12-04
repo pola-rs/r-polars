@@ -40,7 +40,7 @@ patrick::with_parameters_test_that("inspection",
     d = pl$DataFrame(mtcars)
     x = FUN(mtcars)
     y = FUN(d)
-    if (inherits(y, "DataFrame")) y <- y$to_data_frame()
+    if (inherits(y, "RPolarsDataFrame")) y <- y$to_data_frame()
     expect_equal(x, y, ignore_attr = TRUE)
     if (.test_name == "as.matrix") {
       z = FUN(d$lazy())
@@ -73,14 +73,14 @@ make_cases = function() {
     "sum", "sum", sum,
   )
 }
-patrick::with_parameters_test_that("Series",
+patrick::with_parameters_test_that("RPolarsSeries",
   {
     d = pl$Series(mtcars$mpg)
     x = base(mtcars$mpg)
     y = base(d)
     z = d[[pola]]()
-    if (inherits(y, "Series")) y <- y$to_vector()
-    if (inherits(z, "Series")) z <- z$to_vector()
+    if (inherits(y, "RPolarsSeries")) y <- y$to_vector()
+    if (inherits(z, "RPolarsSeries")) z <- z$to_vector()
     expect_equal(x, y, ignore_attr = TRUE)
     expect_equal(x, z, ignore_attr = TRUE)
   },
@@ -207,7 +207,11 @@ test_that("brackets", {
   expect_equal(df["cyl"]$to_data_frame(), mtcars["cyl"], ignore_attr = TRUE)
   expect_equal(df[1:3]$to_data_frame(), mtcars[1:3], ignore_attr = TRUE)
   expect_equal(df[NULL, ]$to_data_frame(), mtcars[NULL, ], ignore_attr = TRUE)
-  expect_equal(df[pl$col("cyl") >= 8, ]$to_data_frame(), mtcars[mtcars$cyl >= 8, ], ignore_attr = TRUE)
+  expect_equal(
+    df[pl$col("cyl") >= 8, c("disp", "mpg")]$to_data_frame(),
+    mtcars[mtcars$cyl >= 8, c("disp", "mpg")],
+    ignore_attr = TRUE
+  )
 
   df = pl$DataFrame(mtcars)
   a = mtcars[-(1:2), -c(1, 3, 6, 9)]
@@ -238,6 +242,12 @@ test_that("brackets", {
   a = lf[, c(1, 4, 2)]$collect()$to_data_frame()
   b = mtcars[, c(1, 4, 2)]
   expect_equal(a, b, ignore_attr = TRUE)
+
+  expect_equal(
+    lf[pl$col("cyl") >= 8, c("disp", "mpg")]$collect()$to_data_frame(),
+    mtcars[mtcars$cyl >= 8, c("disp", "mpg")],
+    ignore_attr = TRUE
+  )
 
   # Not supported for lazy
   expect_error(lf[1:3, ], "not supported")

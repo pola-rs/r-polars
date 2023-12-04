@@ -12,10 +12,13 @@
 #' @param x Object to convert to a polars DataFrame.
 #' @param ... Additional arguments passed to methods.
 #' @examplesIf requireNamespace("arrow", quietly = TRUE)
-#' at = arrow::as_arrow_table(mtcars)
+#' # Convert the row names of a data frame to a column
+#' as_polars_df(mtcars, rownames = "car")
 #'
 #' # Convert an arrow Table to a polars LazyFrame
-#' lf = as_polars_df(at)$lazy()
+#' lf = as_polars_df(
+#'   arrow::as_arrow_table(mtcars)
+#' )$lazy()
 #'
 #' # Collect all rows
 #' as_polars_df(lf)
@@ -36,15 +39,58 @@ as_polars_df.default = function(x, ...) {
 
 
 #' @rdname as_polars_df
+#' @param rownames How to treat existing row names of a data frame:
+#'  - `NULL`: Remove row names. This is the default.
+#'  - A string: The name of a new column, which will contain the row names.
+#'    If `x` already has a column with that name, an error is thrown.
+#' @param make_names_unique A logical flag to replace duplicated column names
+#' with unique names. If `FALSE` and there are duplicated column names, an
+#' error is thrown.
 #' @export
-as_polars_df.data.frame = function(x, ...) {
-  pl$DataFrame(x)
+as_polars_df.data.frame = function(x, ..., rownames = NULL, make_names_unique = TRUE) {
+  if ((anyDuplicated(names(x)) > 0) && make_names_unique) {
+    names(x) = make.unique(names(x), sep = "_")
+  }
+
+  if (is.null(rownames)) {
+    pl$DataFrame(x, make_names_unique = FALSE)
+  } else {
+    uw = \(res) unwrap(res, "in as_polars_df():")
+
+    if (length(rownames) != 1L || !is.character(rownames) || is.na(rownames)) {
+      Err_plain("`rownames` must be a single string, or `NULL`") |>
+        uw()
+    }
+
+    if (rownames %in% names(x)) {
+      Err_plain(
+        sprintf(
+          "The column name '%s' is already used. Please choose a different name for the `rownames` argument.",
+          rownames
+        )
+      ) |>
+        uw()
+    }
+
+    old_rownames = raw_rownames(x)
+    if (length(old_rownames) > 0 && is.na(old_rownames[1L])) {
+      # if implicit rownames
+      old_rownames = seq_len(abs(old_rownames[2L]))
+    }
+    old_rownames = as.character(old_rownames)
+
+    pl$concat(
+      pl$Series(old_rownames, name = rownames),
+      pl$DataFrame(x, make_names_unique = FALSE),
+      how = "horizontal"
+    )
+  }
 }
 
 
 #' @rdname as_polars_df
 #' @export
-as_polars_df.DataFrame = function(x, ...) {
+as_polars_df.RPolarsDataFrame = function(x, ...) {
   x
 }
 
@@ -58,7 +104,7 @@ as_polars_df.GroupBy = function(x, ...) {
 
 #' @rdname as_polars_df
 #' @export
-as_polars_df.Series = function(x, ...) {
+as_polars_df.RPolarsSeries = function(x, ...) {
   pl$DataFrame(x)
 }
 
@@ -67,7 +113,7 @@ as_polars_df.Series = function(x, ...) {
 #' @param n_rows Number of rows to fetch. Defaults to `Inf`, meaning all rows.
 #' @inheritParams LazyFrame_collect
 #' @export
-as_polars_df.LazyFrame = function(
+as_polars_df.RPolarsLazyFrame = function(
     x,
     n_rows = Inf,
     ...,
@@ -102,8 +148,8 @@ as_polars_df.LazyFrame = function(
 
 #' @rdname as_polars_df
 #' @export
-as_polars_df.LazyGroupBy = function(x, ...) {
-  as_polars_df.LazyFrame(x$ungroup(), ...)
+as_polars_df.RPolarsLazyGroupBy = function(x, ...) {
+  as_polars_df.RPolarsLazyFrame(x$ungroup(), ...)
 }
 
 
@@ -153,13 +199,13 @@ as_polars_lf.default = function(x, ...) {
 
 #' @rdname as_polars_lf
 #' @export
-as_polars_lf.LazyFrame = function(x, ...) {
+as_polars_lf.RPolarsLazyFrame = function(x, ...) {
   x
 }
 
 
 #' @rdname as_polars_lf
 #' @export
-as_polars_lf.LazyGroupBy = function(x, ...) {
+as_polars_lf.RPolarsLazyGroupBy = function(x, ...) {
   x$ungroup()
 }

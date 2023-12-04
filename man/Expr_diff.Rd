@@ -4,7 +4,7 @@
 \alias{Expr_diff}
 \title{Difference}
 \usage{
-Expr_diff(n = 1, null_behavior = "ignore")
+Expr_diff(n = 1, null_behavior = c("ignore", "drop"))
 }
 \arguments{
 \item{n}{Number of slots to shift.}

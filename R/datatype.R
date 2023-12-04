@@ -59,7 +59,7 @@ wrap_proto_schema = function(x) {
 #'
 #' # The function changes type from Integer(Int32)[Integers] to char(Utf8)[Strings]
 #' # specifying the output DataType: Utf8 solves the problem
-#' pl$Series(1:4)$apply(\(x) letters[x], datatype = pl$dtypes$Utf8)
+#' pl$Series(1:4)$map_elements(\(x) letters[x], datatype = pl$dtypes$Utf8)
 #'
 NULL
 
@@ -199,7 +199,7 @@ DataType_constructors = list(
           if (inherits(arg, "RPolarsDataType")) {
             return(pl$Field(name, arg))
           }
-          if (inherits(arg, "RField")) {
+          if (inherits(arg, "RPolarsRField")) {
             return(arg)
           }
           stop(

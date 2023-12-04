@@ -185,10 +185,10 @@ move_env_elements = function(from_env, to_env, element_names, remove = TRUE) {
 #' @description lifecycle: DEPRECATE, imple on rust side as a function
 #' @param l list of DataFrame
 #' @keywords internal
-#' @return VecDataFrame
+#' @return RPolarsVecDataFrame
 l_to_vdf = function(l) {
   if (!length(l)) stop("cannot concat empty list l")
-  do_inherit_DataFrame = sapply(l, inherits, "DataFrame")
+  do_inherit_DataFrame = sapply(l, inherits, "RPolarsDataFrame")
   if (!all(do_inherit_DataFrame)) {
     stop(paste(
       "element no(s) of concat param l:",
@@ -323,7 +323,7 @@ replace_private_with_pub_methods = function(env, class_pattern, keep = c(), remo
 #' @return extptr to rust vector of RPolarsDataType's
 #' @keywords internal
 construct_DataTypeVector = function(l) {
-  dtv = DataTypeVector$new()
+  dtv = RPolarsDataTypeVector$new()
   for (i in seq_along(l)) {
     if (inherits(l[[i]], "RPolarsDataType")) {
       dtv$push(names(l)[i], l[[i]])
@@ -680,4 +680,11 @@ make_profile_plot = function(data, truncate_nodes) {
     print(plot)
   }
   plot
+}
+
+
+# Copied from the tibble package
+# https://github.com/tidyverse/tibble/blob/e78ea46caea5e89cbffa5887c11050335ab23896/R/rownames.R#L116-L118
+raw_rownames = function(x) {
+  .row_names_info(x, 0L) %||% .set_row_names(.row_names_info(x, 2L))
 }

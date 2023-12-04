@@ -9,7 +9,7 @@
 #' @keywords internal
 #' @export
 #'
-print.LazyGroupBy = function(x, ...) {
+print.RPolarsLazyGroupBy = function(x, ...) {
   cat("polars LazyGroupBy: \n")
   x$print()
 }
@@ -92,7 +92,6 @@ LazyGroupBy_print = function() {
 #' lgb
 #'
 #' lgb$ungroup()
-#' @export
 LazyGroupBy_ungroup = function() {
   .pr$LazyGroupBy$ungroup(self)
 }

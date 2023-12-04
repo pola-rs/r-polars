@@ -114,7 +114,7 @@ pl$count = function(column = NULL) { # -> Expr | int:
   if (is.null(column)) {
     return(.pr$Expr$new_count())
   }
-  if (inherits(column, "Series")) {
+  if (inherits(column, "RPolarsSeries")) {
     return(column$len())
   }
   # add context to any error from pl$col
@@ -163,7 +163,7 @@ pl$implode = function(name) { # -> Expr
 pl$first = function(column = NULL) { #-> Expr | Any:
   pcase(
     is.null(column), Ok(.pr$Expr$new_first()),
-    inherits(column, "Series"), if (column$len() == 0) {
+    inherits(column, "RPolarsSeries"), if (column$len() == 0) {
       Err("The series is empty, so no first value can be returned.")
     } else {
       # TODO impl a direct slicing Series e.g. as pl$lit(series)$slice(x,y)$to_r()
@@ -205,7 +205,7 @@ pl$first = function(column = NULL) { #-> Expr | Any:
 pl$last = function(column = NULL) { #-> Expr | Any:
   pcase(
     is.null(column), Ok(.pr$Expr$new_last()),
-    inherits(column, "Series"), if (column$len() == 0) {
+    inherits(column, "RPolarsSeries"), if (column$len() == 0) {
       Err("The series is empty, so no last value can be returned.")
     } else {
       # TODO impl a direct slicing Series e.g. as pl$lit(series)$slice(x,y)$to_r()
@@ -242,9 +242,9 @@ pl$last = function(column = NULL) { #-> Expr | Any:
 #' pl$head(df$get_column("a"), 2)
 pl$head = function(column, n = 10) { #-> Expr | Any:
   pcase(
-    inherits(column, "Series"), result(column$expr$head(n)),
+    inherits(column, "RPolarsSeries"), result(column$expr$head(n)),
     is.character(column), result(pl$col(column)$head(n)),
-    inherits(column, "Expr"), result(column$head(n)),
+    inherits(column, "RPolarsExpr"), result(column$head(n)),
     or_else = Err(paste0(
       "param [column] type is neither Series, charvec nor Expr, but ",
       str_string(column)
@@ -277,9 +277,9 @@ pl$head = function(column, n = 10) { #-> Expr | Any:
 #' pl$tail(df$get_column("a"), 2)
 pl$tail = function(column, n = 10) { #-> Expr | Any:
   pcase(
-    inherits(column, "Series"), result(column$expr$tail(n)),
+    inherits(column, "RPolarsSeries"), result(column$expr$tail(n)),
     is.character(column), result(pl$col(column)$tail(n)),
-    inherits(column, "Expr"), result(column$tail(n)),
+    inherits(column, "RPolarsExpr"), result(column$tail(n)),
     or_else = Err(paste0(
       "param [column] type is neither Series, charvec nor Expr, but ",
       str_string(column)
@@ -323,9 +323,9 @@ pl$mean = function(...) { #-> Expr | Any:
     Err("When there are more than one arguments in pl$mean(), all arguments must be strings."),
     lc > 1L && stringflag,
     Ok(pl$col(unlist(column))$mean()),
-    lc == 1L && inherits(column[[1]], "Series") && column[[1]]$len() == 0,
+    lc == 1L && inherits(column[[1]], "RPolarsSeries") && column[[1]]$len() == 0,
     Err("The series is empty, so no mean value can be returned."),
-    lc == 1L && inherits(column[[1]], c("Series", "LazyFrame", "DataFrame")),
+    lc == 1L && inherits(column[[1]], c("RPolarsSeries", "RPolarsLazyFrame", "RPolarsDataFrame")),
     Ok(column[[1]]$mean()),
     or_else = Ok(pl$col(column[[1]])$mean())
   ) |>
@@ -368,9 +368,9 @@ pl$median = function(...) { #-> Expr | Any:
     Err("When there are more than one arguments in pl$median(), all arguments must be strings."),
     lc > 1L && stringflag,
     Ok(pl$col(unlist(column))$median()),
-    lc == 1L && inherits(column[[1]], "Series") && column[[1]]$len() == 0,
+    lc == 1L && inherits(column[[1]], "RPolarsSeries") && column[[1]]$len() == 0,
     Err("The series is empty, so no median value can be returned."),
-    lc == 1L && inherits(column[[1]], c("Series", "LazyFrame", "DataFrame")),
+    lc == 1L && inherits(column[[1]], c("RPolarsSeries", "RPolarsLazyFrame", "RPolarsDataFrame")),
     Ok(column[[1]]$median()),
     or_else = Ok(pl$col(column[[1]])$median())
   ) |>
@@ -402,7 +402,7 @@ pl$median = function(...) { #-> Expr | Any:
 #' pl$DataFrame(bob = 1:4)$select(pl$n_unique(pl$col("bob")))
 pl$n_unique = function(column) { #-> int or Expr
   pcase(
-    inherits(column, c("Series", "Expr")), result(column$n_unique()),
+    inherits(column, c("RPolarsSeries", "RPolarsExpr")), result(column$n_unique()),
     is_string(column), result(pl$col(column)$n_unique()),
     or_else = Err(paste("arg [column] is neither Series, Expr or String, but", str_string(column)))
   ) |>
@@ -442,7 +442,7 @@ pl$n_unique = function(column) { #-> int or Expr
 #' system.time(pl$n_unique(lit_series)$lit_to_s()$print())
 pl$approx_n_unique = function(column) { #-> int or Expr
   pcase(
-    inherits(column, "Expr"), result(column$approx_n_unique()),
+    inherits(column, "RPolarsExpr"), result(column$approx_n_unique()),
     is_string(column), result(pl$col(column)$approx_n_unique()),
     or_else = Err(paste("arg [column] is neither Expr or String, but", str_string(column)))
   ) |>
@@ -463,8 +463,6 @@ pl$approx_n_unique = function(column) { #-> int or Expr
 #'  - list of strings(column names) or expressions to add up as expr1 + expr2 + expr3 + ...
 #'
 #' If several args, then wrapped in a list and handled as above.
-#' @param verbose Show the deprecation message when several columns or Expr are
-#' passed in `...`. Will be removed in 0.12.0.
 #'
 #' @return Expr
 #' @keywords Expr_new
@@ -478,12 +476,11 @@ pl$approx_n_unique = function(column) { #-> int or Expr
 #' df = pl$DataFrame(a = 1:2, b = 3:4, c = 5:6)
 #'
 #' # Compute sum in several columns
-#' df$with_columns(pl$sum("a", "c"))
 #' df$with_columns(pl$sum("*"))
 pl$sum = function(..., verbose = TRUE) {
   column = list2(...)
   if (length(column) == 1L) column <- column[[1L]]
-  if (inherits(column, "Series") || inherits(column, "Expr")) {
+  if (inherits(column, "RPolarsSeries") || inherits(column, "RPolarsExpr")) {
     return(column$sum())
   }
   if (is_string(column)) {
@@ -493,9 +490,6 @@ pl$sum = function(..., verbose = TRUE) {
     return(pl$lit(column)$sum())
   }
   if (is.list(column)) {
-    if (verbose) {
-      warning("This usage of `pl$sum()` used to compute the sum rowwise. This is now deprecated, use `pl$sum_horizontal()` instead. This message will be removed in 0.12.0. Set `verbose = FALSE` to remove this message.")
-    }
     return(pl$col(column)$sum())
   }
   stop("pl$sum: this input is not supported")
@@ -513,8 +507,6 @@ pl$sum = function(..., verbose = TRUE) {
 #'  - numeric, same as `pl$lit(column)$sum()`
 #'  - list of strings(column names) or expressions to add up as expr1 + expr2 + expr3 + ...
 #' If several args, then wrapped in a list and handled as above.
-#' @param verbose Show the deprecation message when several columns or Expr are
-#' passed in `...`. Will be removed in 0.12.0.
 #'
 #' @return Expr
 #' @keywords Expr_new
@@ -526,13 +518,10 @@ pl$sum = function(..., verbose = TRUE) {
 #' )
 #' df
 #'
-#' df$with_columns(
-#'   pl$min("a", "b", "c")
-#' )
 pl$min = function(..., verbose = TRUE) {
   column = list2(...)
   if (length(column) == 1L) column <- column[[1L]]
-  if (inherits(column, "Series") || inherits(column, "Expr")) {
+  if (inherits(column, "RPolarsSeries") || inherits(column, "RPolarsExpr")) {
     return(column$min())
   }
   if (is_string(column)) {
@@ -542,9 +531,6 @@ pl$min = function(..., verbose = TRUE) {
     return(pl$lit(column)$min())
   }
   if (is.list(column)) {
-    if (verbose) {
-      warning("This usage of `pl$min()` used to find the minimum value rowwise. This is now deprecated, use `pl$min_horizontal()` instead. This message will be removed in 0.12.0. Set `verbose = FALSE` to remove this message.")
-    }
     return(pl$col(column)$min())
   }
   stop("pl$min: this input is not supported")
@@ -566,8 +552,6 @@ pl$min = function(..., verbose = TRUE) {
 #'  - list of strings(column names) or expressions to add up as expr1 + expr2 + expr3 + ...
 #'
 #' If several args, then wrapped in a list and handled as above.
-#' @param verbose Show the deprecation message when several columns or Expr are
-#' passed in `...`. Will be removed in 0.12.0.
 #'
 #' @return Expr
 #' @keywords Expr_new
@@ -579,13 +563,10 @@ pl$min = function(..., verbose = TRUE) {
 #' )
 #' df
 #'
-#' df$with_columns(
-#'   pl$max("a", "b", "c")
-#' )
 pl$max = function(..., verbose = TRUE) {
   column = list2(...)
   if (length(column) == 1L) column <- column[[1L]]
-  if (inherits(column, "Series") || inherits(column, "Expr")) {
+  if (inherits(column, "RPolarsSeries") || inherits(column, "RPolarsExpr")) {
     return(column$max())
   }
   if (is_string(column)) {
@@ -595,9 +576,6 @@ pl$max = function(..., verbose = TRUE) {
     return(pl$lit(column)$max())
   }
   if (is.list(column)) {
-    if (verbose) {
-      warning("This usage of `pl$max()` used to find the maximum value rowwise. This is now deprecated, use `pl$max_horizontal()` instead. This message will be removed in 0.12.0. Set `verbose = FALSE` to remove this message.")
-    }
     return(pl$col(column)$max())
   }
   stop("pl$max: this input is not supported")
@@ -645,7 +623,7 @@ pl$coalesce = function(...) {
 #' @return Expr or Series matching type of input column
 #' @name pl_std
 pl$std = function(column, ddof = 1) {
-  if (inherits(column, "Series") || inherits(column, "Expr")) {
+  if (inherits(column, "RPolarsSeries") || inherits(column, "RPolarsExpr")) {
     return(column$std(ddof))
   }
   if (is_string(column)) {
@@ -664,7 +642,7 @@ pl$std = function(column, ddof = 1) {
 #' @return Expr or Series matching type of input column
 #' @name pl_var
 pl$var = function(column, ddof = 1) {
-  if (inherits(column, "Series") || inherits(column, "Expr")) {
+  if (inherits(column, "RPolarsSeries") || inherits(column, "RPolarsExpr")) {
     return(column$var(ddof))
   }
   if (is_string(column)) {
@@ -682,7 +660,7 @@ pl$var = function(column, ddof = 1) {
 #' Concat the arrays in a Series dtype List in linear time.
 #' @description Folds the expressions from left to right, keeping the first non-null value.
 #' @name pl_concat_list
-#' @param exprs list of Expr or Series or strings or a mix, or a char vector
+#' @param exprs list of Into<Expr>, strings interpreted as column names
 #' @return Expr
 #'
 #' @keywords Expr_new
@@ -707,9 +685,8 @@ pl$var = function(column, ddof = 1) {
 #' ))$alias("alice")$lit_to_s()
 #'
 pl$concat_list = function(exprs) {
-  l_expr = lapply(as.list(exprs), wrap_e)
-  pra = do.call(construct_ProtoExprArray, l_expr)
-  unwrap(concat_list(pra))
+  concat_list(as.list(exprs)) |>
+    unwrap(" in pl$concat_list():")
 }
 
 

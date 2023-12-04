@@ -4,6 +4,7 @@
 #' @name polars_info
 #' @examples
 #' pl$polars_info()
+# TODO: Link to the installation vignette
 pl$polars_info = function() {
   # Similar to arrow::arrow_info()
   out = list(
@@ -14,6 +15,8 @@ pl$polars_info = function() {
   structure(out, class = "polars_info")
 }
 
+
+#' @noRd
 #' @export
 print.polars_info = function(x, ...) {
   # Copied from the arrow package
@@ -32,6 +35,7 @@ print.polars_info = function(x, ...) {
   cat("\n")
   print_key_values("Features", unlist(x$features))
 }
+
 
 #' Check Rust feature flag
 #'

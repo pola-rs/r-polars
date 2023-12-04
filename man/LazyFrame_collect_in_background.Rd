@@ -15,14 +15,16 @@ a detached thread. This can also be used via \verb{$collect(collect_in_backgroun
 }
 \details{
 This function immediately returns an \link[=RThreadHandle_RThreadHandle_class]{RThreadHandle}.
-Use \code{\link[=RThreadHandle_is_finished]{<RThreadHandle>$is_finished()}} to see if done.
-Use \code{\link[=RThreadHandle_join]{<RThreadHandle>$join()}} to wait and get the final result.
+Use \code{\link[=RThreadHandle_is_finished]{<RPolarsRThreadHandle>$is_finished()}} to see if done.
+Use \code{\link[=RThreadHandle_join]{<RPolarsRThreadHandle>$join()}} to wait and get the final result.
 
 It is useful to not block the R session while query executes. If you use
-\code{\link[=Expr_map]{<Expr>$map()}} or \code{\link[=Expr_apply]{<Expr>apply()}} to run R functions
-in the query, then you must pass \code{in_background = TRUE} in \verb{$map()} (or
-\verb{$apply()}). Otherwise, \verb{$collect_in_background()} will fail because the main
-R session is not available for polars execution. See also examples below.
+\code{\link[=Expr_map_batches]{<Expr>$map_batches()}} or
+\code{\link[=Expr_map_elements]{<Expr>$map_elements()}} to run R functions in the query,
+then you must pass \code{in_background = TRUE} in \verb{$map_batches()} (or
+\verb{$map_elements()}). Otherwise, \verb{$collect_in_background()} will fail because
+the main R session is not available for polars execution. See also examples
+below.
 }
 \examples{
 # Some expression which does contain a map

@@ -3,7 +3,7 @@
 use extendr_api::prelude::*;
 use polars::sql::SQLContext;
 
-use crate::{rdataframe::LazyFrame, robj_to, rpolarserr::*};
+use crate::{rdataframe::RPolarsLazyFrame, robj_to, rpolarserr::*};
 
 #[derive(Clone)]
 pub struct RPolarsSQLContext {
@@ -18,7 +18,7 @@ impl RPolarsSQLContext {
         }
     }
 
-    pub fn execute(&mut self, query: &str) -> RResult<LazyFrame> {
+    pub fn execute(&mut self, query: &str) -> RResult<RPolarsLazyFrame> {
         Ok(self
             .context
             .execute(query)

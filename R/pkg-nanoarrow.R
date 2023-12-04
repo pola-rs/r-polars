@@ -23,7 +23,7 @@
 #' nanoarrow_array_stream = as_nanoarrow_array_stream(df)
 #' rdf = as.data.frame(nanoarrow_array_stream)
 #' print(head(rdf))
-as_nanoarrow_array_stream.DataFrame = function(x, ..., schema = NULL) {
+as_nanoarrow_array_stream.RPolarsDataFrame = function(x, ..., schema = NULL) {
   # Don't support the schema argument yet
   stopifnot(is.null(schema))
   stream = nanoarrow::nanoarrow_allocate_array_stream()
@@ -36,8 +36,8 @@ as_nanoarrow_array_stream.DataFrame = function(x, ..., schema = NULL) {
 #' @examples
 #' nanoarrow_array_schema = infer_nanoarrow_schema(df)
 #' print(nanoarrow_array_schema)
-infer_nanoarrow_schema.DataFrame = function(x, ...) {
-  as_nanoarrow_array_stream.DataFrame(x)$get_schema()
+infer_nanoarrow_schema.RPolarsDataFrame = function(x, ...) {
+  as_nanoarrow_array_stream.RPolarsDataFrame(x)$get_schema()
 }
 
 #' @rdname nanoarrow
@@ -46,8 +46,8 @@ infer_nanoarrow_schema.DataFrame = function(x, ...) {
 #' library(arrow)
 #' arrow_table = as_arrow_table(df)
 #' print(arrow_table)
-as_arrow_table.DataFrame = function(x, ...) {
-  reader = as_record_batch_reader.DataFrame(x)
+as_arrow_table.RPolarsDataFrame = function(x, ...) {
+  reader = as_record_batch_reader.RPolarsDataFrame(x)
   reader$read_table()
 }
 
@@ -56,6 +56,6 @@ as_arrow_table.DataFrame = function(x, ...) {
 #' @examples
 #' arrow_record_batch_reader = as_record_batch_reader(df) # requires arrow
 #' print(arrow_record_batch_reader)
-as_record_batch_reader.DataFrame = function(x, ..., schema = NULL) {
-  arrow::as_record_batch_reader(as_nanoarrow_array_stream.DataFrame(x, schema = schema))
+as_record_batch_reader.RPolarsDataFrame = function(x, ..., schema = NULL) {
+  arrow::as_record_batch_reader(as_nanoarrow_array_stream.RPolarsDataFrame(x, schema = schema))
 }

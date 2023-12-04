@@ -6,17 +6,17 @@ test_that("pl$sum", {
 
   # from string
   df = pl$DataFrame(a = 1:5)$select(pl$sum("a"))
-  expect_true(inherits(df, "DataFrame"))
+  expect_true(inherits(df, "RPolarsDataFrame"))
   expect_identical(df$to_list()$a, 15L)
 
   # from numeric vector
   df = pl$DataFrame()$select(pl$sum(1:5))
-  expect_true(inherits(df, "DataFrame"))
+  expect_true(inherits(df, "RPolarsDataFrame"))
   expect_identical(df$to_list()[[1L]], 15L)
 
   # from numeric scalar
   df = pl$DataFrame()$select(pl$sum(1L))
-  expect_true(inherits(df, "DataFrame"))
+  expect_true(inherits(df, "RPolarsDataFrame"))
   expect_identical(df$to_list()[[1L]], 1L)
 
 

@@ -6,7 +6,7 @@
 #' instantiated `LazyFrame`-object is an `externalptr` to a lowlevel rust polars
 #' LazyFrame  object. The pointer address is the only statefullness of the
 #' LazyFrame object on the R side. Any other state resides on the rust side. The
-#' S3 method `.DollarNames.LazyFrame` exposes all public `$foobar()`-methods which
+#' S3 method `.DollarNames.RPolarsLazyFrame` exposes all public `$foobar()`-methods which
 #' are callable onto the object.
 #'
 #' Most methods return another `LazyFrame`-class instance or similar which allows
@@ -37,7 +37,7 @@
 #' @keywords LazyFrame
 #' @examples
 #' # see all exported methods
-#' ls(.pr$env$LazyFrame)
+#' ls(.pr$env$RPolarsLazyFrame)
 #'
 #' # see all private methods (not intended for regular use)
 #' ls(.pr$LazyFrame)
@@ -96,7 +96,7 @@
 #'
 #' # a user might write it as a one-liner like so:
 #' Pdf_best2 = pl$scan_csv(temp_filepath)$filter(pl$col("Species") == "setosa")
-LazyFrame
+NULL
 
 
 #' @title auto complete $-access into a polars object
@@ -105,11 +105,11 @@ LazyFrame
 #' @param pattern code-stump as string to auto-complete
 #' @return char vec
 #' @export
-#' @inherit .DollarNames.DataFrame return
+#' @inherit .DollarNames.RPolarsDataFrame return
 #' @keywords internal
 
-.DollarNames.LazyFrame = function(x, pattern = "") {
-  paste0(ls(LazyFrame, pattern = pattern), "()")
+.DollarNames.RPolarsLazyFrame = function(x, pattern = "") {
+  paste0(ls(RPolarsLazyFrame, pattern = pattern), "()")
 }
 
 #' Create new LazyFrame
@@ -161,7 +161,7 @@ pl$LazyFrame = function(...) {
 #' @export
 #'
 #' @examples pl$LazyFrame(iris)
-print.LazyFrame = function(x, ...) {
+print.RPolarsLazyFrame = function(x, ...) {
   print("polars LazyFrame naive plan: (run ldf$describe_optimized_plan() to see the optimized plan)")
   cloned_x = .pr$LazyFrame$print(x)
   invisible(cloned_x)
@@ -418,14 +418,16 @@ LazyFrame_collect = function(
 #'
 #' @details
 #' This function immediately returns an [RThreadHandle][RThreadHandle_RThreadHandle_class].
-#' Use [`<RThreadHandle>$is_finished()`][RThreadHandle_is_finished] to see if done.
-#' Use [`<RThreadHandle>$join()`][RThreadHandle_join] to wait and get the final result.
+#' Use [`<RPolarsRThreadHandle>$is_finished()`][RThreadHandle_is_finished] to see if done.
+#' Use [`<RPolarsRThreadHandle>$join()`][RThreadHandle_join] to wait and get the final result.
 #'
 #' It is useful to not block the R session while query executes. If you use
-#' [`<Expr>$map()`][Expr_map] or [`<Expr>apply()`][Expr_apply] to run R functions
-#' in the query, then you must pass `in_background = TRUE` in `$map()` (or
-#' `$apply()`). Otherwise, `$collect_in_background()` will fail because the main
-#' R session is not available for polars execution. See also examples below.
+#' [`<Expr>$map_batches()`][Expr_map_batches] or
+#' [`<Expr>$map_elements()`][Expr_map_elements] to run R functions in the query,
+#' then you must pass `in_background = TRUE` in `$map_batches()` (or
+#' `$map_elements()`). Otherwise, `$collect_in_background()` will fail because
+#' the main R session is not available for polars execution. See also examples
+#' below.
 #'
 #' @keywords LazyFrame DataFrame_new
 #' @return RThreadHandle, a future-like thread handle for the task
@@ -979,16 +981,16 @@ LazyFrame_group_by = function(..., maintain_order = pl$options$maintain_order) {
 #' df1$join(other = df2, how = "cross")
 LazyFrame_join = function(
     other, # : LazyFrame or DataFrame,
-    left_on = NULL, # : str | pli.Expr | Sequence[str | pli.Expr] | None = None,
-    right_on = NULL, # : str | pli.Expr | Sequence[str | pli.Expr] | None = None,
-    on = NULL, # : str | pli.Expr | Sequence[str | pli.Expr] | None = None,
+    left_on = NULL, # : str | pli.RPolarsExpr | Sequence[str | pli.RPolarsExpr] | None = None,
+    right_on = NULL, # : str | pli.RPolarsExpr | Sequence[str | pli.RPolarsExpr] | None = None,
+    on = NULL, # : str | pli.RPolarsExpr | Sequence[str | pli.RPolarsExpr] | None = None,
     how = c("inner", "left", "outer", "semi", "anti", "cross"),
     suffix = "_right",
     allow_parallel = TRUE,
     force_parallel = FALSE) {
   uw = \(res) unwrap(res, "in $join():")
 
-  if (inherits(other, "DataFrame")) {
+  if (inherits(other, "RPolarsDataFrame")) {
     other = other$lazy()
   }
 
@@ -1404,7 +1406,7 @@ LazyFrame_fetch = function(
 #' pl$LazyFrame(iris)$
 #'   sort("Sepal.Length")$
 #'   group_by("Species", maintain_order = TRUE)$
-#'   agg(pl$col(pl$Float64)$apply(r_func))$
+#'   agg(pl$col(pl$Float64)$map_elements(r_func))$
 #'   profile()
 LazyFrame_profile = function(
     type_coercion = TRUE,

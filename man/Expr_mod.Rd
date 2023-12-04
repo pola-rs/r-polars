@@ -2,12 +2,12 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_mod}
 \alias{Expr_mod}
-\alias{\%\%.Expr}
+\alias{\%\%.RPolarsExpr}
 \title{Modulo two expressions}
 \usage{
 Expr_mod(other)
 
-\method{\%\%}{Expr}(e1, e2)
+\method{\%\%}{RPolarsExpr}(e1, e2)
 }
 \arguments{
 \item{other}{Literal or object that can be converted to a literal}

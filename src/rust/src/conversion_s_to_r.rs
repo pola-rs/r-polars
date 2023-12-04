@@ -1,7 +1,7 @@
 use extendr_api::prelude::*;
 use polars::prelude::{self as pl};
 
-use crate::rdataframe::DataFrame;
+use crate::rdataframe::RPolarsDataFrame;
 use pl::PolarsError as pl_error;
 
 // #[extendr]
@@ -145,7 +145,7 @@ pub fn pl_series_to_list(
             }
             Struct(_) => {
                 let df = s.clone().into_frame().unnest([s.name()]).unwrap();
-                let mut l = DataFrame(df).to_list_result()?;
+                let mut l = RPolarsDataFrame(df).to_list_result()?;
 
                 //TODO contribute extendr_api set_attrib mutates &self, change signature to surprise anyone
                 if tag_structs {
