@@ -7,9 +7,7 @@ use crate::lazy::dsl::RPolarsExpr;
 use crate::lazy::dsl::*;
 
 use crate::rdataframe::RPolarsDataFrame as RDF;
-use crate::rdatatype::{
-    new_ipc_compression, new_parquet_compression, new_unique_keep_strategy, RPolarsDataType,
-};
+use crate::rdatatype::{new_ipc_compression, new_parquet_compression, RPolarsDataType};
 use crate::robj_to;
 use crate::rpolarserr::{polars_to_rpolars_err, RPolarsErr, RResult, WithRctx};
 use crate::utils::{r_result_list, try_f64_into_usize};
@@ -311,13 +309,8 @@ impl RPolarsLazyFrame {
         }
     }
 
-    fn unique(
-        &self,
-        subset: Robj,
-        keep: Robj,
-        maintain_order: Robj,
-    ) -> Result<RPolarsLazyFrame, String> {
-        let ke = new_unique_keep_strategy(robj_to!(str, keep)?)?;
+    fn unique(&self, subset: Robj, keep: Robj, maintain_order: Robj) -> RResult<RPolarsLazyFrame> {
+        let ke = robj_to!(UniqueKeepStrategy, keep)?;
         let maintain_order = robj_to!(bool, maintain_order)?;
         let subset = robj_to!(Option, Vec, String, subset)?;
         let lf = if maintain_order {
@@ -328,7 +321,7 @@ impl RPolarsLazyFrame {
         Ok(lf.into())
     }
 
-    fn group_by(&self, exprs: Robj, maintain_order: Robj) -> Result<RPolarsLazyGroupBy, String> {
+    fn group_by(&self, exprs: Robj, maintain_order: Robj) -> RResult<RPolarsLazyGroupBy> {
         let expr_vec = robj_to!(VecPLExprCol, exprs)?;
         let maintain_order = robj_to!(Option, bool, maintain_order)?.unwrap_or(false);
         if maintain_order {

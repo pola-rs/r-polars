@@ -1,7 +1,7 @@
 use crate::robj_to;
 
+use crate::utils::robj_to_string;
 use crate::utils::wrappers::Wrap;
-use crate::utils::{r_result_list, robj_to_string};
 use extendr_api::prelude::*;
 use polars::prelude as pl;
 use polars_core::prelude::QuantileInterpolOptions;
@@ -218,23 +218,16 @@ impl RPolarsDataTypeVector {
         rprintln!("{:#?}", self.0);
     }
 
-    pub fn from_rlist(list: List) -> List {
+    pub fn from_rlist(list: List) -> RResult<RPolarsDataTypeVector> {
         let mut dtv = RPolarsDataTypeVector(Vec::with_capacity(list.len()));
-
-        let result: std::result::Result<(), String> = list.iter().try_for_each(|(name, robj)| {
-            if !robj.inherits("RPolarsDataType") || robj.rtype() != extendr_api::Rtype::ExternalPtr
-            {
-                return Err("Internal error: Object is not a RPolarsDataType".into());
-            }
-            //safety checks class and type before conversion
-            let dt: RPolarsDataType =
-                unsafe { &mut *robj.external_ptr_addr::<RPolarsDataType>() }.clone();
-            let name = extendr_api::Nullable::NotNull(name.to_string());
-            dtv.push(name, &dt);
-            Ok(())
-        });
-
-        r_result_list(result.map(|_| dtv))
+        list.iter().try_for_each(|(name, robj)| {
+            dtv.push(
+                extendr_api::Nullable::NotNull(name.into()),
+                &crate::utils::robj_to_datatype(robj)?,
+            );
+            RResult::Ok(())
+        })?;
+        Ok(dtv)
     }
 }
 
@@ -256,13 +249,13 @@ pub fn robj_to_asof_strategy(robj: Robj) -> RResult<AsofStrategy> {
     }
 }
 
-pub fn new_unique_keep_strategy(s: &str) -> std::result::Result<UniqueKeepStrategy, String> {
-    match s {
+pub fn robj_to_unique_keep_strategy(robj: Robj) -> RResult<UniqueKeepStrategy> {
+    match robj_to_rchoice(robj)?.as_str() {
         // "any" => Ok(pl::UniqueKeepStrategy::Any),
         "first" => Ok(pl::UniqueKeepStrategy::First),
         "last" => Ok(pl::UniqueKeepStrategy::Last),
         "none" => Ok(pl::UniqueKeepStrategy::None),
-        _ => Err(format!(
+        s => rerr().bad_val(format!(
             "keep strategy choice: [{}] is not any of 'any', 'first', 'last', 'none'",
             s
         )),
