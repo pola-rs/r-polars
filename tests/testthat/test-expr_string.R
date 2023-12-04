@@ -99,6 +99,19 @@ test_that("$str$to_date", {
   )
 })
 
+test_that("$str$to_time", {
+  out = pl$lit(c("01:20:01", "28:00:02", "03:00:02"))$
+    str$to_time(strict = FALSE)$to_r()
+  expect_equal(
+    out,
+    pl$PTime(c("01:20:01", "28:00:02", "03:00:02"), tu = "ns")
+  )
+  expect_error(
+    ppl$lit(c("01:20:01", "28:00:02", "03:00:02"))$
+      str$to_time()
+  )
+})
+
 test_that("$str$to_datetime", {
   out = pl$lit(c("2009-01-02 01:00", "2009-01-03 02:00", "2009-1-4 03:00"))$
     str$to_datetime(time_zone = "UTC")$to_r()

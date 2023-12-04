@@ -84,11 +84,11 @@ ExprStr_strptime = function(
 
     # Date
     datatype == pl$Date,
-    .pr$Expr$str_to_date(self, format, strict, exact, cache, ambiguous),
+    .pr$Expr$str_to_date(self, format, strict, exact, cache),
 
     # Time
     datatype == pl$Time,
-    .pr$Expr$str_to_time(self, format, strict, exact, cache, ambiguous),
+    .pr$Expr$str_to_time(self, format, strict, cache),
 
     # Other
     or_else = Err_plain("datatype should be of type {Date, Datetime, Time}")
@@ -99,11 +99,11 @@ ExprStr_strptime = function(
 #' Convert a Utf8 column into a Date column
 #'
 #' @param format Format to use for conversion. See `?strptime` for possible
-#' values. Example: "%Y-%m-%d %H:%M:%S". If `NULL` (default), the format is
+#' values. Example: "%Y-%m-%d". If `NULL` (default), the format is
 #' inferred from the data. Notice that time zone `%Z` is not supported and will
 #' just ignore timezones. Numeric time zones like `%z` or `%:z`  are supported.
 #' @param strict If `TRUE` (default), raise an error if a single string cannot
-#' be parsed. Otherwise, produce a polars `null`.
+#' be parsed. If `FALSE`, parsing failure will produce a polars `null`.
 #' @param exact If `TRUE` (default), require an exact format match. Otherwise,
 #' allow the format to match anywhere in the target string.
 #' @param cache Use a cache of unique, converted dates to apply the datetime
@@ -120,6 +120,28 @@ ExprStr_to_date = function(format = NULL, strict = TRUE, exact = TRUE, cache = T
     unwrap("in $str$to_date():")
 }
 
+#' Convert a Utf8 column into a Time column
+#'
+#' @param format Format to use for conversion. See `?strptime` for possible
+#' values. Example: "%H:%M:%S". If `NULL` (default), the format is
+#' inferred from the data. Notice that time zone `%Z` is not supported and will
+#' just ignore timezones. Numeric time zones like `%z` or `%:z`  are supported.
+#' @param strict If `TRUE` (default), raise an error if a single string cannot
+#' be parsed. If `FALSE`, parsing failure will produce a polars `null`.
+#' @param cache Use a cache of unique, converted dates to apply the datetime
+#' conversion.
+#'
+#' @return Expr
+#' @name ExprStr_to_time
+#'
+#' @examples
+#' pl$DataFrame(str_time = c("01:20:01", "28:00:02", "03:00:02"))$
+#'   with_columns(time = pl$col("str_time")$str$to_time(strict = FALSE))
+ExprStr_to_time = function(format = NULL, strict = TRUE, cache = TRUE) {
+  .pr$Expr$str_to_time(self, format, strict, cache) |>
+    unwrap("in $str$to_time():")
+}
+
 #' Convert a Utf8 column into a Datetime column
 #'
 #' @param format Format to use for conversion. See `?strptime` for possible
@@ -130,7 +152,7 @@ ExprStr_to_date = function(format = NULL, strict = TRUE, exact = TRUE, cache = T
 #' @param time_zone String describing a timezone. If `NULL` (default), `"GMT` is
 #' used.
 #' @param strict If `TRUE` (default), raise an error if a single string cannot
-#' be parsed. Otherwise, produce a polars `null`.
+#' be parsed. If `FALSE`, parsing failure will produce a polars `null`.
 #' @param exact If `TRUE` (default), require an exact format match. Otherwise,
 #' allow the format to match anywhere in the target string.
 #' @param cache Use a cache of unique, converted dates to apply the datetime

@@ -15,7 +15,7 @@ just ignore timezones. Numeric time zones like \verb{\%z} or \verb{\%:z}  are su
 used.}
 
 \item{strict}{If \code{TRUE} (default), raise an error if a single string cannot
-be parsed. Otherwise, produce a polars \code{null}.}
+be parsed. If \code{FALSE}, parsing failure will produce a polars \code{null}.}
 
 \item{exact}{If \code{TRUE} (default), require an exact format match. Otherwise,
 allow the format to match anywhere in the target string.}
