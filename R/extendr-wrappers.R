@@ -659,11 +659,11 @@ RPolarsExpr$list_eval <- function(expr, parallel) .Call(wrap__RPolarsExpr__list_
 
 RPolarsExpr$list_to_struct <- function(n_field_strategy, name_gen, upper_bound) .Call(wrap__RPolarsExpr__list_to_struct, self, n_field_strategy, name_gen, upper_bound)
 
-RPolarsExpr$str_to_date <- function(format, strict, exact, cache, ambiguous) .Call(wrap__RPolarsExpr__str_to_date, self, format, strict, exact, cache, ambiguous)
+RPolarsExpr$str_to_date <- function(format, strict, exact, cache) .Call(wrap__RPolarsExpr__str_to_date, self, format, strict, exact, cache)
 
 RPolarsExpr$str_to_datetime <- function(format, time_unit, time_zone, strict, exact, cache, ambiguous) .Call(wrap__RPolarsExpr__str_to_datetime, self, format, time_unit, time_zone, strict, exact, cache, ambiguous)
 
-RPolarsExpr$str_to_time <- function(format, strict, exact, cache, ambiguous) .Call(wrap__RPolarsExpr__str_to_time, self, format, strict, exact, cache, ambiguous)
+RPolarsExpr$str_to_time <- function(format, strict, cache) .Call(wrap__RPolarsExpr__str_to_time, self, format, strict, cache)
 
 RPolarsExpr$dt_truncate <- function(every, offset) .Call(wrap__RPolarsExpr__dt_truncate, self, every, offset)
 
