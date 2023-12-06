@@ -131,7 +131,13 @@ for (i in names(pl)) {
 }
 #allow using [ ] as ( ) for all functions
 #' @export
-"[.pl_f" = function(x, ...) x(...)
+"[.pl_f" = \(x, ...) {
+  if(is.null(formals(x))) {
+    x()
+  } else {
+    x(...)
+  }
+}
 
 
 
