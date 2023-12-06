@@ -48,9 +48,9 @@ extra_css:
 nav:
   - Home: README.md
   - Articles:
-    - Get started: articles/polars.md
-    - Polars User Guide: articles/userguide.md
-    - Optimize `polars` performance: articles/performance.md
+    - Get started: vignettes/polars.md
+    - Polars User Guide: vignettes/userguide.md
+    - Optimize `polars` performance: vignettes/performance.md
   - Reference: $ALTDOC_MAN_BLOCK
   - About: about.md
   - Changelog: NEWS.md
