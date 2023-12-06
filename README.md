@@ -6,9 +6,9 @@
 <!-- badges: start -->
 
 [![R-universe status
-badge](https://rpolars.r-universe.dev/badges/polars.png)](https://rpolars.r-universe.dev)
+badge](https://rpolars.r-universe.dev/badges/polars)](https://rpolars.r-universe.dev)
 [![CRAN
-status](https://www.r-pkg.org/badges/version/polars.png)](https://CRAN.R-project.org/package=polars)
+status](https://www.r-pkg.org/badges/version/polars)](https://CRAN.R-project.org/package=polars)
 [![Dev
 R-CMD-check](https://github.com/pola-rs/r-polars/actions/workflows/check.yaml/badge.svg)](https://github.com/pola-rs/r-polars/actions/workflows/check.yaml)
 [![Docs
@@ -126,9 +126,9 @@ about Rust code in R packages.
 During source installation, some environment variables can be set to
 enable Rust features and profile changes.
 
--   `RPOLARS_FULL_FEATURES="true"` (Build with nightly feature enabled,
-    requires Rust toolchain nightly-2023-10-12)
--   `RPOLARS_PROFILE="release-optimized"` (Build with more optimization)
+- `RPOLARS_FULL_FEATURES="true"` (Build with nightly feature enabled,
+  requires Rust toolchain nightly-2023-10-12)
+- `RPOLARS_PROFILE="release-optimized"` (Build with more optimization)
 
 ## Quickstart example
 
@@ -208,18 +208,18 @@ the groups in the same order as they are in the original data.
 [The **polars** vignette](https://rpolars.github.io/articles/polars/)
 contains many more examples of how to use the package to:
 
--   Read CSV, JSON, Parquet, and other file formats.
--   Filter rows and select columns.
--   Modify and create new columns.
--   Group by and aggregate.
--   Reshape data.
--   Join and concatenate different datasets.
--   Sort data.
--   Work with dates and times.
--   Handle missing values.
--   Use the lazy execution engine for maximum performance and
-    memory-efficient operations.
--   Etc.
+- Read CSV, JSON, Parquet, and other file formats.
+- Filter rows and select columns.
+- Modify and create new columns.
+- Group by and aggregate.
+- Reshape data.
+- Join and concatenate different datasets.
+- Sort data.
+- Work with dates and times.
+- Handle missing values.
+- Use the lazy execution engine for maximum performance and
+  memory-efficient operations.
+- Etc.
 
 ## Development and Contributions
 
@@ -241,22 +241,22 @@ let us know on GitHub.
 To install the development version of Polars or develop new features,
 you will to install the Rust toolchain:
 
--   Install [`rustup`](https://rustup.rs/), the cross-platform Rust
-    installer. Then:
+- Install [`rustup`](https://rustup.rs/), the cross-platform Rust
+  installer. Then:
 
-    ``` sh
-    rustup toolchain install nightly-2023-10-12
-    rustup default nightly-2023-10-12
-    ```
+  ``` sh
+  rustup toolchain install nightly-2023-10-12
+  rustup default nightly-2023-10-12
+  ```
 
--   Windows: Make sure the latest version of
-    [Rtools](https://cran.r-project.org/bin/windows/Rtools/) is
-    installed and on your PATH.
+- Windows: Make sure the latest version of
+  [Rtools](https://cran.r-project.org/bin/windows/Rtools/) is installed
+  and on your PATH.
 
--   macOS: Make sure
-    [`Xcode`](https://developer.apple.com/support/xcode/) is installed.
+- macOS: Make sure [`Xcode`](https://developer.apple.com/support/xcode/)
+  is installed.
 
--   Install [CMake](https://cmake.org/) and add it to your PATH.
+- Install [CMake](https://cmake.org/) and add it to your PATH.
 
 ### Implementing new features
 
@@ -264,29 +264,29 @@ Here are the steps required for an example contribution, where we are
 implementing the [cosine
 expression](https://rpolars.github.io/reference/Expr_cos/):
 
--   Look up the [polars.Expr.cos method in py-polars
-    documentation](https://pola-rs.github.io/polars/py-polars/html/reference/expressions/api/polars.Expr.cos.html).
--   Press the `[source]` button to see the [Python
-    implementation](https://github.com/pola-rs/polars/blob/d23bbd2f14f1cd7ae2e27e1954a2dc4276501eef/py-polars/polars/expr/expr.py#L5892-L5914)
--   Find the cos [py-polars rust
-    implementation](https://github.com/pola-rs/polars/blob/a1afbc4b78f5850314351f7e85ded95fd68b6453/py-polars/src/lazy/dsl.rs#L396)
-    (likely just a simple call to the Rust-Polars API)
--   Adapt the Rust part and place it
-    [here](https://github.com/pola-rs/r-polars/blob/c56c49a6fc172685f50c15fffe3d14231297ad97/src/rust/src/rdataframe/rexpr.rs#L754).
--   Adapt the Python frontend syntax to R and place it
-    [here](https://github.com/pola-rs/r-polars/blob/c56c49a6fc172685f50c15fffe3d14231297ad97/R/expr__expr.R#L3138).
-    Add the roxygen docs + examples above.
--   Notice we use `Expr_cos = "use_extendr_wrapper"`, it means we’re
-    just using unmodified the [extendr auto-generated
-    wrapper](https://github.com/pola-rs/r-polars/blob/c56c49a6fc172685f50c15fffe3d14231297ad97/R/extendr-wrappers.R#L253)
--   Write a test
-    [here](https://github.com/pola-rs/r-polars/blob/c56c49a6fc172685f50c15fffe3d14231297ad97/tests/testthat/test-expr.R#L1921).
--   Run `renv::restore()` and resolve all R packages
--   Run `rextendr::document()` to recompile and confirm the added method
-    functions as intended,
-    e.g. `pl$DataFrame(a=c(0,pi/2,pi,NA_real_))$select(pl$col("a")$cos())`
--   Run `devtools::test()`. See below for how to set up your development
-    environment correctly.
+- Look up the [polars.Expr.cos method in py-polars
+  documentation](https://pola-rs.github.io/polars/py-polars/html/reference/expressions/api/polars.Expr.cos.html).
+- Press the `[source]` button to see the [Python
+  implementation](https://github.com/pola-rs/polars/blob/d23bbd2f14f1cd7ae2e27e1954a2dc4276501eef/py-polars/polars/expr/expr.py#L5892-L5914)
+- Find the cos [py-polars rust
+  implementation](https://github.com/pola-rs/polars/blob/a1afbc4b78f5850314351f7e85ded95fd68b6453/py-polars/src/lazy/dsl.rs#L396)
+  (likely just a simple call to the Rust-Polars API)
+- Adapt the Rust part and place it
+  [here](https://github.com/pola-rs/r-polars/blob/c56c49a6fc172685f50c15fffe3d14231297ad97/src/rust/src/rdataframe/rexpr.rs#L754).
+- Adapt the Python frontend syntax to R and place it
+  [here](https://github.com/pola-rs/r-polars/blob/c56c49a6fc172685f50c15fffe3d14231297ad97/R/expr__expr.R#L3138).
+  Add the roxygen docs + examples above.
+- Notice we use `Expr_cos = "use_extendr_wrapper"`, it means we’re just
+  using unmodified the [extendr auto-generated
+  wrapper](https://github.com/pola-rs/r-polars/blob/c56c49a6fc172685f50c15fffe3d14231297ad97/R/extendr-wrappers.R#L253)
+- Write a test
+  [here](https://github.com/pola-rs/r-polars/blob/c56c49a6fc172685f50c15fffe3d14231297ad97/tests/testthat/test-expr.R#L1921).
+- Run `renv::restore()` and resolve all R packages
+- Run `rextendr::document()` to recompile and confirm the added method
+  functions as intended,
+  e.g. `pl$DataFrame(a=c(0,pi/2,pi,NA_real_))$select(pl$col("a")$cos())`
+- Run `devtools::test()`. See below for how to set up your development
+  environment correctly.
 
 Note that PRs to **polars** will be automatically be built and tested on
 all platforms as part of our GitHub Actions workflow. A more detailed
@@ -309,18 +309,18 @@ cd r-polars
 **Step 2:** Build the package and install the suggested package
 dependencies.
 
--   Option A: Using **devtools**.
+- Option A: Using **devtools**.
 
-    ``` sh
-    Rscript -e 'devtools::install(pkg = ".", dependencies = TRUE)' 
-    ```
+  ``` sh
+  Rscript -e 'devtools::install(pkg = ".", dependencies = TRUE)' 
+  ```
 
--   Option B: Using **renv**.
+- Option B: Using **renv**.
 
-    ``` sh
-    # Rscript -e 'install.packages("renv")'
-    Rscript -e 'renv::activate(); renv::restore()'
-    ```
+  ``` sh
+  # Rscript -e 'install.packages("renv")'
+  Rscript -e 'renv::activate(); renv::restore()'
+  ```
 
 **Step 3:** Make your proposed changes to the R and/or Rust code. Don’t
 forget to run:
@@ -339,8 +339,8 @@ R CMD INSTALL --no-multiarch --with-keep.source .
 **Step 5:** Commit your changes and submit a PR to the main **polars**
 repo.
 
--   As aside, notice that `./renv.lock` sets all R packages during the
-    server build.
+- As aside, notice that `./renv.lock` sets all R packages during the
+  server build.
 
 *Tip:* To speed up the local rextendr::document() or R CMD check, run
 the following:
@@ -355,11 +355,11 @@ load_polars()
 check_polars() #assumes rust target at `paste0(getwd(),"/src/rust")`
 ```
 
--   The `RPOLARS_RUST_SOURCE` environment variable allows **polars** to
-    recover the Cargo cache even if source files have been moved.
-    Replace with your own absolute path to your local clone!
--   `filter_rcmdcheck.R` removes known warnings from final check report.
--   `unlink("check")` cleans up.
+- The `RPOLARS_RUST_SOURCE` environment variable allows **polars** to
+  recover the Cargo cache even if source files have been moved. Replace
+  with your own absolute path to your local clone!
+- `filter_rcmdcheck.R` removes known warnings from final check report.
+- `unlink("check")` cleans up.
 
 ### Misc
 

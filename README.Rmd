@@ -2,6 +2,8 @@
 output:
   github_document:
     html_preview: false
+# used by altdoc
+default-image-extension: ''
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
