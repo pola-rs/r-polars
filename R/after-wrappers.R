@@ -136,6 +136,7 @@ macro_add_syntax_check_to_class = function(Class_name) {
     "  verify_method_call(", Class_name, ",name)\n",
     "  func <- ", Class_name, "[[name]]\n",
     "  environment(func) <- environment()\n",
+    "  if(inherits(func,'function')) class(func) <- c('pl_f',class(func)) \n", # add pl_f prefix to all methods
     "  if(inherits(func,'property')) {\n",
     "    func()\n",
     "  } else {\n",

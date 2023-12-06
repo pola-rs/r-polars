@@ -123,6 +123,30 @@ pl$mem_address = mem_address
 .datatable.aware = TRUE
 
 
+# subtype all public functions pl_f
+for (i in names(pl)) {
+  if(is.function(pl[[i]])) {
+    class(pl[[i]]) = c("pl_f",class(pl[[i]]))
+  }
+}
+
+#allow using [ ] as ( ) for all functions
+"[.pl_f" = function(x, ...) {
+  f_env_self = environment(x)$self
+  wrapper_env = new.env(parent = parent.frame())
+  if (inherits(f_env_self,c("RPolarsDataFrame", "RPolarsLazyFrame"))) {
+    for(i in names(f_env_self)) {
+      assign(i, pl$col(i),envir = wrapper_env)
+    }
+  }
+  unevaluated_args = tail(sys.call(), -2L)
+  args = lapply(unevaluated_args, FUN = \(x, envir) if(!isTRUE(nchar(as.character(x))==0)) eval(x, envir=envir) , envir = wrapper_env)
+  if(is.null(formals(x))) x() else do.call(x, args)
+}
+
+
+
+
 .onLoad = function(libname, pkgname) {
   # instanciate one of each DataType (it's just an enum)
   all_types = .pr$DataType$get_all_simple_type_names()
