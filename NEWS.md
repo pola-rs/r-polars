@@ -1,6 +1,6 @@
-# polars (development version)
+## polars (development version)
 
-## Breaking changes and deprecations
+### Breaking changes and deprecations
 
 - `$apply()` on an Expr or a Series is renamed `$map_elements()`, and `$map()`
   is renamed `$map_batches()`. `$map()` and `$apply()` will be removed in 0.13.0 (#534).
@@ -13,7 +13,7 @@
   `RPolarsDataFrame`. This will only break your code if you directly use those
   class names, such as in S3 methods (#554).
 
-## What's changed
+### What's changed
 
 - The Extract function (`[`) for DataFrame can use columns not included in the
   result for filtering (#547).
@@ -25,9 +25,9 @@
 - New methods `$str$to_date()`, `$str$to_time()`, `$str$to_datetime()` as 
   alternatives to `$str$strptime()` (#558).
 
-# polars 0.11.0
+## polars 0.11.0
 
-## BREAKING CHANGES DUE TO RUST-POLARS UPDATE
+### BREAKING CHANGES DUE TO RUST-POLARS UPDATE
 
 - rust-polars is updated to 0.35.0 (2023-11-17) (#515)
   - changes in `$write_csv()` and `sink_csv()`: `has_header` is renamed
@@ -43,7 +43,7 @@
   - Removed argument `ambiguous` in `$dt$truncate()` and `$dt$round()`.
   - `$str$concat()` gains an argument `ignore_nulls`.
 
-## Breaking changes and deprecations
+### Breaking changes and deprecations
 
 - The rowwise computation when several columns are passed to `pl$min()`, `pl$max()`,
   and `pl$sum()` is deprecated and will be removed in 0.12.0. Passing several
@@ -66,7 +66,7 @@
   convert GroupBy objects to R data frames are removed.
   Use `$ungroup()` method and the `as.data.frame()` function instead (#533).
 
-## What's changed
+### What's changed
 
 - Fix the installation issue on Ubuntu 20.04 (#528, thanks @brownag).
 - New methods `$write_json()` and `$write_ndjson()` for DataFrame (#502).
@@ -95,9 +95,9 @@
     Please check the upstream issue [pola-rs/polars#10570](https://github.com/pola-rs/polars/issues/10570).
 - The extract function (`[`) for polars objects now behave more like for base R objects (#543).
 
-# polars 0.10.1
+## polars 0.10.1
 
-## What's changed
+### What's changed
 
 - The argument `quote_style` in `$write_csv()` and `$sink_csv()` can now take
   the value `"never"` (#483).
@@ -106,9 +106,9 @@
 - S3 methods for base R functions are well documented (#494).
 - A bug that failing `pl$SQLContext()$register()` without load the package was fixed (#496).
 
-# polars 0.10.0
+## polars 0.10.0
 
-## BREAKING CHANGES DUE TO RUST-POLARS UPDATE
+### BREAKING CHANGES DUE TO RUST-POLARS UPDATE
 
 - rust-polars is updated to 2023-10-25 unreleased version (#442)
   - New subnamespace `"name"` that contains methods `$prefix()`, `$suffix()`
@@ -129,7 +129,7 @@
   - `$scan_parquet()` gains an argument `hive_partitioning`.
   - `$meta$tree_format()` has a better formatted output.
 
-## Breaking changes
+### Breaking changes
 
 - `$scan_csv()` and `$read_csv()` now match more closely the Python-Polars API (#455):
   - `sep` is renamed `separator`, `overwrite_dtypes` is renamed `dtypes`,
@@ -138,7 +138,7 @@
   - `path` can now be a vector of characters indicating several paths to CSV files.
     This only works if all CSV files have the same schema.
 
-## What's changed
+### What's changed
 
 - New class `RPolarsSQLContext` and its methods to perform SQL queries on DataFrame-
   like objects. To use this feature, needs to build Rust library with full features
@@ -149,9 +149,9 @@
 - New method `$with_context()` for `LazyFrame` to have access to columns from
   other Data/LazyFrames during the computation (#475).
 
-# polars 0.9.0
+## polars 0.9.0
 
-## BREAKING CHANGES DUE TO RUST-POLARS UPDATE
+### BREAKING CHANGES DUE TO RUST-POLARS UPDATE
 
 - rust-polars is updated to 0.33.2 (#417)
   - In all date-time related methods, the argument `use_earliest` is replaced by `ambiguous`.
@@ -170,7 +170,7 @@
   - `$str$rstrip()` -> `$str$strip_chars_end()` (#417)
   - `$groupby()` is renamed `$group_by()`. (#427)
 
-## Breaking changes
+### Breaking changes
 
 - Remove some deprecated methods.
   - Method `$with_column()` has been removed (it was deprecated since 0.8.0).
@@ -180,7 +180,7 @@
 - Setting and getting polars options is now made with `pl$options`,
   `pl$set_options()` and `pl$reset_options()` (#384).
 
-## What's changed
+### What's changed
 
 - Bump supported R version to 4.2 or later (#435).
 - `pl$concat()` now also supports `Series`, `Expr` and `LazyFrame` (#407).
@@ -216,9 +216,9 @@
   The URL and SHA256 hash of the available binaries are recorded in `tools/lib-sums.tsv`.
   (#435, #448, #450, #451)
 
-# polars 0.8.1
+## polars 0.8.1
 
-## What's changed
+### What's changed
 
 - New string method `to_titlecase()` (#371).
 - Although stated in news for PR (#334) `strip = true` was not actually set for the
@@ -227,9 +227,9 @@
 - Subnamespace name "arr" as in `<Expr>$arr$` & `<Series>$arr$` is deprecated
   in favor of "list". The subnamespace "arr" will be removed in polars 0.9.0 (#375).
 
-# polars 0.8.0
+## polars 0.8.0
 
-## BREAKING CHANGES DUE TO RUST-POLARS UPDATE
+### BREAKING CHANGES DUE TO RUST-POLARS UPDATE
 
 rust-polars was updated to 0.32.0, which comes with many breaking changes and new
 features. Unrelated breaking changes and new features are put in separate sections
@@ -270,7 +270,7 @@ features. Unrelated breaking changes and new features are put in separate sectio
 - `<DataFrame>$sort()` and `<LazyFrame>$sort()` have a new arg
   `maintain_order = FALSE`.
 
-## OTHER BREAKING CHANGES
+### OTHER BREAKING CHANGES
 
 - `$rpow()` is removed. It should never have been translated. Use `^` and `$pow()`
   instead (#346).
@@ -279,7 +279,7 @@ features. Unrelated breaking changes and new features are put in separate sectio
   `RThreadHandle` (#311).
 - `pl$scan_arrow_ipc` is now called `pl$scan_ipc` (#343).
 
-## Other changes
+### Other changes
 
 - Stream query to file with `pl$sink_ipc()` and `pl$sink_parquet()` (#343)
 - New method `$explode()` for `DataFrame` and `LazyFrame` (#314).
@@ -314,9 +314,9 @@ features. Unrelated breaking changes and new features are put in separate sectio
   rust-polars. [See R package example here](https://github.com/rpolars/extendrpolarsexamples)
   (#326).
 
-# polars 0.7.0
+## polars 0.7.0
 
-## BREAKING CHANGES
+### BREAKING CHANGES
 
 - Replace the argument `reverse` by `descending` in all sorting functions. This
   is for consistency with the upstream Polars (#291, #293).
@@ -329,7 +329,7 @@ features. Unrelated breaking changes and new features are put in separate sectio
   consistency with the upstream Polars. `scan_xxx` and `read_xxx` functions are now accessed via `pl`,
   e.g. `pl$scan_csv()` (#305).
 
-## What's changed
+### What's changed
 
 - New method `$rename()` for `LazyFrame` and `DataFrame` (#239)
 - `<DataFrame>$unique()` and `<LazyFrame>$unique()` gain a `maintain_order` argument (#238).
@@ -359,9 +359,9 @@ features. Unrelated breaking changes and new features are put in separate sectio
   - New author accredited, SHIMA Tatsuya (@eitsupi).
   - DESCRIPTION revised.
 
-# polars 0.6.1
+## polars 0.6.1
 
-## What's changed
+### What's changed
 
 - use `pl$set_polars_options(debug_polars = TRUE)` to profile/debug method-calls of a polars query (#193)
 - add `<DataFrame>$melt(), <DataFrame>$pivot() + <LazyFrame>$melt()` methods (#232)
@@ -370,15 +370,15 @@ features. Unrelated breaking changes and new features are put in separate sectio
 - Docs improvements. (#210, #213)
 - Update nix flake. (#227)
 
-# polars 0.6.0
+## polars 0.6.0
 
-## BREAKING CHANGES
+### BREAKING CHANGES
 
 - Bump rust-polars from 2023-02-17 unreleased version to 2023-04-20 unreleased version. (#183)
   - `top_k`'s `reverse` option is removed. Use the new `bottom_k` method instead.
   - The name of the `fmt` argument of some methods (e.g. `parse_date`) has been changed to `format`.
 
-## What's changed
+### What's changed
 
 - `DataFrame` objects can be subsetted using brackets like standard R data frames: `pl$DataFrame(mtcars)[2:4, c("mpg", "hp")]` (#140 @vincentarelbundock)
 - An experimental `knit_print()` method has been added to DataFrame that outputs HTML tables
@@ -388,20 +388,20 @@ features. Unrelated breaking changes and new features are put in separate sectio
 - A new option `strict` of `parse_int`. (#183)
 - Perform joins on nearest keys with method `join_asof`. (#172)
 
-# polars v0.5.0
+## polars v0.5.0
 
-## BREAKING CHANGE
+### BREAKING CHANGE
 
 - The package name was changed from `rpolars` to `polars`. (#84)
 
-## What's changed
+### What's changed
 
 - Several new methods for DataFrame, LazyFrame & GroupBy translated (#103, #105 @vincentarelbundock)
 - Doc fixes (#102, #109 @etiennebacher)
 - Experimental opt-in auto completion (#96 @sorhawell)
 - Base R functions work on DataFrame and LazyFrame objects via S3 methods: as.data.frame, as.matrix, dim, head, length, max, mean, median, min, na.omit, names, sum, tail, unique, ncol, nrow (#107 @vincentarelbundock).
 
-## New Contributors
+### New Contributors
 
 - @etiennebacher made their first contribution in #102
 - @vincentarelbundock made their first contribution in #103
@@ -409,18 +409,18 @@ features. Unrelated breaking changes and new features are put in separate sectio
 Release date: 2023-04-16. Full changelog:
 [v0.4.6...v0.5.0](https://github.com/pola-rs/r-polars/compare/v0.4.7...v0.5.0)
 
-# rpolars v0.4.7
+## rpolars v0.4.7
 
-## What's changed
+### What's changed
 
 - Revamped docs that includes a new introductory vignette (#81 @grantmcdermott)
 - Misc documentation improvements
 
-# rpolars v0.4.6
+## rpolars v0.4.6
 
 Release date: 2023-03-13. Full changelog: [v0.4.5...v0.4.6](https://github.com/pola-rs/r-polars/compare/v0.4.5...v0.4.6)
 
-## What's new
+### What's new
 
 - Almost all Expr translated, only missing 'binary'-expr now. #52 #53
 - Run polars queries in detached background threads, no need for any parallel libraries or cluster config #56 #59
@@ -443,16 +443,16 @@ Release date: 2023-03-13. Full changelog: [v0.4.5...v0.4.6](https://github.com/p
   - DO NOT MERGE: tracking hello_r_universe branch by @eitsupi in #38
   - revert to nightly by @sorhawell in #78
 
-## New Contributors
+### New Contributors
 
 - @Sicheng-Pan made their first contribution in #54
 - @jeroen made their first contribution in #71
 
-# rpolars v0.4.5
+## rpolars v0.4.5
 
 Release date: 2023-02-21. Full Changelog: [v0.4.3...v0.4.5](https://github.com/pola-rs/r-polars/compare/v0.4.3...v0.4.5)
 
-## What's Changed
+### What's Changed
 
 - bump rust polars to latest rust-polars and fix all errors by @sorhawell in #42
 - Customize **extendr** to better support cross Rust-R/R-Rust error handling
@@ -481,27 +481,27 @@ Release date: 2023-02-21. Full Changelog: [v0.4.3...v0.4.5](https://github.com/p
   - Clippy + tiny optimization by @sorhawell in #45
   - Tidying by @sorhawell in #37
 
-# rpolars v0.4.3
+## rpolars v0.4.3
 
 Release date: 2023-02-01. Full Changelog: [v0.4.2...v0.4.3](https://github.com/pola-rs/r-polars/compare/v0.4.2...v0.4.3)
 
-## What's Changed
+### What's Changed
 
 - All DateTime expresssions implemented + update rust-polars to latest commit.
   - Arr str by @sorhawell in #32
   - Datetime continued by @sorhawell in #33
   - Datatime remaining tests + tidy util functions by @sorhawell in #36
 
-## Developer changes
+### Developer changes
 
 - Refactoring GitHub Actions workflows by @eitsupi in #24
 - Fix cache and check scan by @sorhawell in #30
 
-# rpolars v0.4.2
+## rpolars v0.4.2
 
 Release date: 2023-01-17. Full Changelog: [V0.4.1...v0.4.2](https://github.com/pola-rs/r-polars/compare/V0.4.1...v0.4.2)
 
-## What's Changed
+### What's Changed
 
 - fix minor Series syntax issue #8 @sorhawell in #22
 - nanoarrow followup: docs + adjust test by @sorhawell in #21
@@ -509,71 +509,71 @@ Release date: 2023-01-17. Full Changelog: [V0.4.1...v0.4.2](https://github.com/p
 - `usethis::use_mit_license()` by @yutannihilation in #27
 - Fix check errors by @sorhawell in #26
 
-## New Contributors
+### New Contributors
 
 - @eitsupi made their first contribution in #23
 - @yutannihilation made their first contribution in #27
 
-# rpolars v0.4.1
+## rpolars v0.4.1
 
 Release date: 2023-01-12. Full Changelog: [v0.4.0...V0.4.1](https://github.com/pola-rs/r-polars/compare/v0.4.0...V0.4.1)
 
-## What's Changed
+### What's Changed
 
 - Export ArrowArrayStream from polars data frame by @paleolimbot in #5
 - Minor arithmetics syntax improvement @sorhawell in #20
 
-## Dev env
+### Dev env
 
 - Renv is deactivated as default. Renv.lock still defines package stack on build server @sorhawell in #19
 
-## Minor stuff
+### Minor stuff
 
 - Improve docs by @sorhawell in #16
 - Update rust polars to +26.1 by @sorhawell in #18
 
-## New Contributors
+### New Contributors
 
 - @paleolimbot made their first contribution in #5
 
-# rpolars v0.4.0
+## rpolars v0.4.0
 
 Release date: 2023-01-11. Full Changelog: [v0.3.1...v0.4.0](https://github.com/pola-rs/r-polars/compare/V0.3.1...v0.4.0)
 
-## Breaking changes
+### Breaking changes
 
 - Class label "DataType" is now called "RPolarsDataType". Syntax wise 'DataType' can still be used, e.g. `.pr$DataType$`
 - try fix name space collision with arrow by @sorhawell in #15
 
-## New features
+### New features
 
 - all list Expr$arr$list functions have been translated:
 - Expr list 2.0 by @sorhawell in #10
 - Expr list 3.0 by @sorhawell in #12
 
-## Dev environment
+### Dev environment
 
 - update rextendr by @sorhawell in #13
 
-# rpolars v0.3.1
+## rpolars v0.3.1
 
 Release date: 2023-01-07. Full Changelog: [v0.3.0...v0.3.1](https://github.com/pola-rs/r-polars/compare/v0.3.0...V0.3.1)
 
-## What's Changed
+### What's Changed
 
 - drop github action upload pre-release of PR's by @sorhawell in #7
 - Fix readme typo by @erjanmx in #6
 - Expr arr list functions + rework r_to_series by @sorhawell in #2
 
-## New Contributors
+### New Contributors
 
 - @erjanmx made their first contribution in #6
 
-# rpolars v0.3.0
+## rpolars v0.3.0
 
 Release date: 2022-12-31. Full Changelog: [v0.2.1...v0.3.0](https://github.com/pola-rs/r-polars/compare/v0.2.1...v0.3.0)
 
-## What's Changed
+### What's Changed
 
 - use jemalloc(linux) else mimallac as py-polars by @sorhawell in #1
 - Bump rust polars 26.1 by @sorhawell in #3
@@ -581,7 +581,7 @@ Release date: 2022-12-31. Full Changelog: [v0.2.1...v0.3.0](https://github.com/p
 - Expr_quantile also takes quantile value as an expression
 - map_alias improved error handling
 
-# rpolars v0.2.1
+## rpolars v0.2.1
 
 Release date: 2022-12-27
 
