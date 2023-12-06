@@ -1109,43 +1109,26 @@ impl RPolarsExpr {
         strict: Robj,
         exact: Robj,
         cache: Robj,
-        ambiguous: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
             .clone()
             .str()
-            .strptime(
-                pl::DataType::Date,
-                pl::StrptimeOptions {
-                    format: robj_to!(Option, String, format)?,
-                    strict: robj_to!(bool, strict)?,
-                    exact: robj_to!(bool, exact)?,
-                    cache: robj_to!(bool, cache)?,
-                },
-                robj_to!(PLExpr, ambiguous)?,
-            )
+            .to_date(pl::StrptimeOptions {
+                format: robj_to!(Option, String, format)?,
+                strict: robj_to!(bool, strict)?,
+                exact: robj_to!(bool, exact)?,
+                cache: robj_to!(bool, cache)?,
+            })
             .into())
     }
-
-    // pub fn str_to_datetime(
-    //     &self,
-    //     format: Option<String>,
-    //     time_unit: Option<Wrap<TimeUnit>>,
-    //     time_zone: Option<TimeZone>,
-    //     strict: bool,
-    //     exact: bool,
-    //     cache: bool,
-    //     use_earliest: Option<bool>,
-    // ) -> Self {
-    // }
 
     #[allow(clippy::too_many_arguments)]
     pub fn str_to_datetime(
         &self,
         format: Robj,
-        time_unit: Robj, //Option<Wrap<TimeUnit>>,
-        time_zone: Robj, //
+        time_unit: Robj,
+        time_zone: Robj,
         strict: Robj,
         exact: Robj,
         cache: Robj,
@@ -1169,28 +1152,17 @@ impl RPolarsExpr {
             .into())
     }
 
-    pub fn str_to_time(
-        &self,
-        format: Robj,
-        strict: Robj,
-        exact: Robj,
-        cache: Robj,
-        ambiguous: Robj,
-    ) -> RResult<Self> {
+    pub fn str_to_time(&self, format: Robj, strict: Robj, cache: Robj) -> RResult<Self> {
         Ok(self
             .0
             .clone()
             .str()
-            .strptime(
-                pl::DataType::Time,
-                pl::StrptimeOptions {
-                    format: robj_to!(Option, String, format)?,
-                    strict: robj_to!(bool, strict)?,
-                    exact: robj_to!(bool, exact)?,
-                    cache: robj_to!(bool, cache)?,
-                },
-                robj_to!(PLExpr, ambiguous)?,
-            )
+            .to_time(pl::StrptimeOptions {
+                format: robj_to!(Option, String, format)?,
+                strict: robj_to!(bool, strict)?,
+                cache: robj_to!(bool, cache)?,
+                exact: true,
+            })
             .into())
     }
 
