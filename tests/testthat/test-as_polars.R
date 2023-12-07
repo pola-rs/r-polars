@@ -159,6 +159,6 @@ test_that("tests for vctrs_rcrd", {
 
   expect_identical(
     dim(as_polars_df(tibble::tibble(foo = vec))),
-    c(2, 1) # TODO: dim() should return integer https://github.com/pola-rs/r-polars/issues/576
+    c(2L, 1L)
   )
 })
