@@ -113,3 +113,52 @@ patrick::with_parameters_test_that("as_polars_series S3 methods",
   },
   .cases = make_as_polars_series_cases()
 )
+
+
+test_that("tests for vctrs_rcrd", {
+  skip_if_not_installed("vctrs")
+  skip_if_not_installed("tibble")
+
+  latlon = function(lat, lon) {
+    vctrs::new_rcrd(list(lat = lat, lon = lon), class = "earth_latlon")
+  }
+
+  format.earth_latlon = function(x, ..., formatter = deg_min) {
+    x_valid = which(!is.na(x))
+
+    lat = vctrs::field(x, "lat")[x_valid]
+    lon = vctrs::field(x, "lon")[x_valid]
+
+    ret = rep(NA_character_, vec_size(x))
+    ret[x_valid] = paste0(formatter(lat, "lat"), " ", formatter(lon, "lon"))
+
+    ret
+  }
+
+  deg_min = function(x, direction) {
+    pm = if (direction == "lat") c("N", "S") else c("E", "W")
+
+    sign = sign(x)
+    x = abs(x)
+    deg = trunc(x)
+    x = x - deg
+    min = round(x * 60)
+
+    # Ensure the columns are always the same width so they line up nicely
+    ret = sprintf("%d°%.2d'%s", deg, min, ifelse(sign >= 0, pm[[1]], pm[[2]]))
+    format(ret, justify = "right")
+  }
+
+  vec = latlon(c(32.71, 2.95), c(-117.17, 1.67))
+
+  expect_identical(length(as_polars_series(vec)), 2L)
+
+  # TODO: this should work
+  # https://github.com/pola-rs/r-polars/issues/575
+  # pl$DataFrame(foo = vec)
+
+  expect_identical(
+    dim(as_polars_df(tibble::tibble(foo = vec))),
+    c(2, 1) # TODO: dim() should return integer https://github.com/pola-rs/r-polars/issues/576
+  )
+})
