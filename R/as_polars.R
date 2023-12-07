@@ -255,16 +255,14 @@ as_polars_series.RPolarsSeries = function(x, name = NULL, ...) {
 #' @rdname as_polars_series
 #' @export
 as_polars_series.RPolarsExpr = function(x, name = NULL, ...) {
-  s = pl$select(x)$to_series(0)
-
-  s$alias(name %||% s$name)
+  as_polars_series(pl$select(x)$to_series(0), name = name)
 }
 
 
 #' @rdname as_polars_series
 #' @export
 as_polars_series.POSIXlt = function(x, name = NULL, ...) {
-  pl$Series(as.POSIXct(x), name = name)
+  as_polars_series(as.POSIXct(x), name = name)
 }
 
 
