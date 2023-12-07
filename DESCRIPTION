@@ -40,6 +40,7 @@ Suggests:
     testthat (>= 3.2.1),
     tibble,
     tools,
+    vctrs,
     withr
 Config/Needs/website:
     altdoc (>= 0.2.2),
