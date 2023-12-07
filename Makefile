@@ -33,9 +33,9 @@ requirements-r:
 
 .PHONY: requirements-py
 requirements-py: .venv
-	python -m pip install --upgrade pip
-	pip install --upgrade mkdocs
-	pip install --upgrade mkdocs-material
+	$(VENV_BIN)/python -m pip install --upgrade pip
+	$(VENV_BIN)/pip install --upgrade mkdocs
+	$(VENV_BIN)/pip install --upgrade mkdocs-material
 
 .PHONY: requirements-rs
 requirements-rs:
@@ -70,7 +70,7 @@ docs: build install README.md altdoc/reference_home.md ## Generate docs
 
 .PHONY: docs-preview
 docs-preview: ## Preview docs on local server. Needs `make docs`
-	cd docs && ../$(VENV_BIN)/python3 -m mkdocs serve
+	Rscript -e 'altdoc::preview_docs()'
 
 README.md: README.Rmd build ## Update README.md
 	Rscript -e 'devtools::load_all(); rmarkdown::render("README.Rmd")'
