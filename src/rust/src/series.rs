@@ -550,8 +550,10 @@ impl RPolarsSeries {
     }
 
     pub fn any_robj_to_pl_series_result(robj: Robj) -> pl::PolarsResult<pl::Series> {
-        let s = if !robj.inherits("RPolarsSeries") {
-            robjname2series(robj, "")?
+        let r_s = R!("polars:::result(polars::as_polars_series({{&robj}}))")
+            .map_err(|err| pl::PolarsError::ComputeError(err.to_string().into()))?;
+        let s = if let Ok(s) = robj_to!(PLSeries, r_s) {
+            s
         } else {
             RPolarsSeries::inner_from_robj_clone(&robj)
                 .map_err(|err| {
