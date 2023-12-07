@@ -16,7 +16,7 @@ test_that("Intialize SQLContext with LazyFrame like objects", {
       UNION ALL
       SELECT * FROM pl_lf"
     )$collect() |> nrow(),
-    3 * nrow(mtcars)
+    3L * nrow(mtcars)
   )
 })
 
@@ -29,7 +29,7 @@ test_that("SQLContext_register, register_many, unregister", {
   expect_equal(ctx$tables(), "mtcars")
   expect_identical(
     ctx$execute("SELECT * FROM mtcars LIMIT 5")$collect() |> nrow(),
-    5
+    5L
   )
 
   ctx$register("mtcars2", mtcars)
