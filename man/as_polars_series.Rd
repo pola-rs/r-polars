@@ -33,7 +33,7 @@ If \code{NULL} (default), the name of \code{x} is used or an unnamed Series is c
 \item{...}{Additional arguments passed to methods.}
 }
 \value{
-a \link[=Series_class]{RPolarsSeries}
+a \link[=Series_class]{Series}
 }
 \description{
 \code{\link[=as_polars_series]{as_polars_series()}} is a generic function that converts an R object to a

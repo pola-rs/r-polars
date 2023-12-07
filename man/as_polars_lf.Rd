@@ -21,7 +21,7 @@ as_polars_lf(x, ...)
 \item{...}{Additional arguments passed to methods.}
 }
 \value{
-a \link[=LazyFrame_class]{RPolarsLazyFrame}
+a \link[=LazyFrame_class]{LazyFrame}
 }
 \description{
 \code{\link[=as_polars_lf]{as_polars_lf()}} is a generic function that converts an R object to a

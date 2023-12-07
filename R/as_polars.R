@@ -11,7 +11,7 @@
 #' @rdname as_polars_df
 #' @param x Object to convert to a polars DataFrame.
 #' @param ... Additional arguments passed to methods.
-#' @return a [RPolarsDataFrame][DataFrame_class]
+#' @return a [DataFrame][DataFrame_class]
 #' @examplesIf requireNamespace("arrow", quietly = TRUE)
 #' # Convert the row names of a data frame to a column
 #' as_polars_df(mtcars, rownames = "car")
@@ -183,7 +183,7 @@ as_polars_df.ArrowTabular = function(
 #' [$lazy()][DataFrame_lazy] method.
 #' @rdname as_polars_lf
 #' @inheritParams as_polars_df
-#' @return a [RPolarsLazyFrame][LazyFrame_class]
+#' @return a [LazyFrame][LazyFrame_class]
 #' @examples
 #' as_polars_lf(mtcars)
 #' @export
@@ -221,7 +221,7 @@ as_polars_lf.RPolarsLazyGroupBy = function(x, ...) {
 #' @param name A string to use as the name of the Series.
 #' If `NULL` (default), the name of `x` is used or an unnamed Series is created.
 #' @inheritParams as_polars_df
-#' @return a [RPolarsSeries][Series_class]
+#' @return a [Series][Series_class]
 #' @export
 #' @examples
 #' as_polars_series(1:4)
