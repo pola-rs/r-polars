@@ -5,7 +5,7 @@ test_df = data.frame(
   "col_lgl" = rep_len(c(TRUE, FALSE, NA), 10)
 )
 
-make_s3methods_cases = function() {
+make_as_polars_df_cases = function() {
   tibble::tribble(
     ~.test_name, ~x,
     "data.frame", test_df,
@@ -28,7 +28,7 @@ patrick::with_parameters_test_that("as_polars_df S3 methods",
 
     expect_equal(actual, expected)
   },
-  .cases = make_s3methods_cases()
+  .cases = make_as_polars_df_cases()
 )
 
 
@@ -85,3 +85,31 @@ test_that("as_polars_df throws error when make_names_unique = FALSE and there ar
     "not allowed"
   )
 })
+
+
+make_as_polars_series_cases = function() {
+  tibble::tribble(
+    ~.test_name, ~x, ~expected_name,
+    "vector", 1, "",
+    "Series", pl$Series(1, "foo"), "foo",
+    "Expr", pl$lit(1)$alias("foo"), "foo",
+    "list", list(1:4), "",
+    "data.frame", data.frame(x = 1, y = letters[1]), "",
+    "POSIXlt", as.POSIXlt("1900-01-01"), "",
+  )
+}
+
+
+patrick::with_parameters_test_that("as_polars_series S3 methods",
+  {
+    pl_series = as_polars_series(x)
+    expect_s3_class(pl_series, "RPolarsSeries")
+
+    expect_identical(length(pl_series), 1L)
+    expect_equal(pl_series$name, expected_name)
+
+    pl_series = as_polars_series(x, name = "bar")
+    expect_equal(pl_series$name, "bar")
+  },
+  .cases = make_as_polars_series_cases()
+)
