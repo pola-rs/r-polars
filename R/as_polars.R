@@ -11,6 +11,7 @@
 #' @rdname as_polars_df
 #' @param x Object to convert to a polars DataFrame.
 #' @param ... Additional arguments passed to methods.
+#' @return a [RPolarsDataFrame][DataFrame_class]
 #' @examplesIf requireNamespace("arrow", quietly = TRUE)
 #' # Convert the row names of a data frame to a column
 #' as_polars_df(mtcars, rownames = "car")
@@ -182,6 +183,7 @@ as_polars_df.ArrowTabular = function(
 #' [$lazy()][DataFrame_lazy] method.
 #' @rdname as_polars_lf
 #' @inheritParams as_polars_df
+#' @return a [RPolarsLazyFrame][LazyFrame_class]
 #' @examples
 #' as_polars_lf(mtcars)
 #' @export
@@ -209,3 +211,50 @@ as_polars_lf.RPolarsLazyFrame = function(x, ...) {
 as_polars_lf.RPolarsLazyGroupBy = function(x, ...) {
   x$ungroup()
 }
+
+
+#' To polars Series
+#'
+#' [as_polars_series()] is a generic function that converts an R object to a
+#' polars Series. It is basically a wrapper for [pl$Series()][pl_Series].
+#' @param x Object to convert into a polars Series
+#' @param name A string to use as the name of the Series.
+#' If `NULL` (default), unnamed Series will be created.
+#' @inheritParams as_polars_df
+#' @return a [RPolarsSeries][Series_class]
+#' @export
+#' @examples
+#' as_polars_series(1:4)
+#'
+#' as_polars_series(list(1:4))
+#'
+#' as_polars_series(data.frame(a = 1:4))
+as_polars_series = function(x, name = NULL, ...) {
+  UseMethod("as_polars_series")
+}
+
+
+#' @rdname as_polars_series
+#' @export
+as_polars_series.default = function(x, name = NULL, ...) {
+  pl$Series(x, name = name)
+}
+
+
+#' @rdname as_polars_series
+#' @export
+as_polars_series.POSIXlt = function(x, name = NULL, ...) {
+  pl$Series(as.POSIXct(x), name = name)
+}
+
+
+#' @rdname as_polars_series
+#' @export
+as_polars_series.data.frame = function(x, name = NULL, ...) {
+  pl$DataFrame(unclass(x))$to_struct(name = name)
+}
+
+
+#' @rdname as_polars_series
+#' @export
+as_polars_series.vctrs_rcrd = as_polars_series.data.frame

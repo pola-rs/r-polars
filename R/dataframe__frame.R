@@ -946,7 +946,7 @@ DataFrame_join = function(
 #' df_s = s$to_frame()
 #' df_s
 DataFrame_to_struct = function(name = "") {
-  .pr$DataFrame$to_struct(self, name)
+  unwrap(.pr$DataFrame$to_struct(self, name), "in $to_struct():")
 }
 
 

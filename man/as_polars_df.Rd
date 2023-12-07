@@ -108,6 +108,9 @@ NULL default is to import columns as is. Takes no effect for Array or ChunkedArr
 \item{schema_overrides}{named list of DataTypes. Name some columns to recast by the DataType.
 Takes not effect for Array or ChunkedArray}
 }
+\value{
+a \link[=DataFrame_class]{RPolarsDataFrame}
+}
 \description{
 \code{\link[=as_polars_df]{as_polars_df()}} is a generic function that converts an R object to a
 polars DataFrame. It is basically a wrapper for \link[=pl_DataFrame]{pl$DataFrame()},
