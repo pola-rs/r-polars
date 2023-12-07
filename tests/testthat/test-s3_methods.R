@@ -264,3 +264,14 @@ test_that("brackets", {
   expect_equal(pl$Series(letters)[1:5]$to_vector(), letters[1:5])
   expect_equal(pl$Series(letters)[-5]$to_vector(), letters[-5])
 })
+
+
+test_that("dim should integer", {
+  d = dim(as_polars_df(mtcars))
+  expect_identical(d, dim(mtcars))
+  expect_true(is.integer(d))
+
+  d = dim(as_polars_lf(mtcars))
+  expect_identical(d, c(NA_integer_, ncol(mtcars)))
+  expect_true(is.integer(d))
+})
