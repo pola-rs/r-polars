@@ -2,7 +2,7 @@
 site_name: Polars R Package
 
 ### Repo information
-repo_url: $ALTDOC_PACKAGE_URL
+repo_url: $ALTDOC_PACKAGE_URL_GITHUB
 repo_name: $ALTDOC_PACKAGE_NAME
 
 ### Plugins

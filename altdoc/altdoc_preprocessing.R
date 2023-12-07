@@ -88,9 +88,7 @@ for (i in c("extra_css", "plugins")) {
 }
 
 # Write the settings to the `altdoc/` directory
-write_yaml(yml, "altdoc/mkdocs.yml", indent.mapping.sequence = TRUE)
-
-temp <- readLines("altdoc/mkdocs.yml", warn = FALSE)
-temp = gsub("- '(.*\\.md)'", "- \\1", temp)
-writeLines(temp, "altdoc/mkdocs.yml")
-
+out = as.yaml(yml, indent.mapping.sequence = TRUE)
+out = gsub("- '", "- ", out)
+out = gsub("\\.md'", "\\.md", out)
+cat(out, file = "altdoc/mkdocs.yml")

@@ -1,5 +1,5 @@
 site_name: Polars R Package
-repo_url: $ALTDOC_PACKAGE_URL
+repo_url: $ALTDOC_PACKAGE_URL_GITHUB
 repo_name: $ALTDOC_PACKAGE_NAME
 plugins:
   - search
@@ -37,9 +37,9 @@ extra_css:
 nav:
   - Home: README.md
   - Articles:
-      - Get started: articles/polars.md
-      - Polars User Guide: articles/userguide.md
-      - Optimize `polars` performance: articles/performance.md
+      - Get started: vignettes/polars.md
+      - Polars User Guide: vignettes/userguide.md
+      - Optimize `polars` performance: vignettes/performance.md
   - Reference:
       Reference: reference_home.md
       Polars:
@@ -612,7 +612,10 @@ nav:
             - strip_chars_end: man/ExprStr_strip_chars_end.md
             - strip_chars_start: man/ExprStr_strip_chars_start.md
             - strptime: man/ExprStr_strptime.md
+            - to_date: man/ExprStr_to_date.md
+            - to_datetime: man/ExprStr_to_datetime.md
             - to_lowercase: man/ExprStr_to_lowercase.md
+            - to_time: man/ExprStr_to_time.md
             - to_titlecase: man/ExprStr_to_titlecase.md
             - to_uppercase: man/ExprStr_to_uppercase.md
             - zfill: man/ExprStr_zfill.md
