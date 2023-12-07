@@ -219,7 +219,7 @@ as_polars_lf.RPolarsLazyGroupBy = function(x, ...) {
 #' polars Series. It is basically a wrapper for [pl$Series()][pl_Series].
 #' @param x Object to convert into a polars Series
 #' @param name A string to use as the name of the Series.
-#' If `NULL` (default), unnamed Series will be created.
+#' If `NULL` (default), the name of `x` is used or an unnamed Series is created.
 #' @inheritParams as_polars_df
 #' @return a [RPolarsSeries][Series_class]
 #' @export
@@ -229,6 +229,10 @@ as_polars_lf.RPolarsLazyGroupBy = function(x, ...) {
 #' as_polars_series(list(1:4))
 #'
 #' as_polars_series(data.frame(a = 1:4))
+#'
+#' as_polars_series(pl$Series(1:4, name = "foo"))
+#'
+#' as_polars_series(pl$lit(1:4))
 as_polars_series = function(x, name = NULL, ...) {
   UseMethod("as_polars_series")
 }
@@ -238,6 +242,22 @@ as_polars_series = function(x, name = NULL, ...) {
 #' @export
 as_polars_series.default = function(x, name = NULL, ...) {
   pl$Series(x, name = name)
+}
+
+
+#' @rdname as_polars_series
+#' @export
+as_polars_series.RPolarsSeries = function(x, name = NULL, ...) {
+  x$alias(name %||% x$name)
+}
+
+
+#' @rdname as_polars_series
+#' @export
+as_polars_series.RPolarsExpr = function(x, name = NULL, ...) {
+  s = pl$select(x)$to_series(0)
+
+  s$alias(name %||% s$name)
 }
 
 

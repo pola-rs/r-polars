@@ -3,6 +3,8 @@
 \name{as_polars_series}
 \alias{as_polars_series}
 \alias{as_polars_series.default}
+\alias{as_polars_series.RPolarsSeries}
+\alias{as_polars_series.RPolarsExpr}
 \alias{as_polars_series.POSIXlt}
 \alias{as_polars_series.data.frame}
 \alias{as_polars_series.vctrs_rcrd}
@@ -11,6 +13,10 @@
 as_polars_series(x, name = NULL, ...)
 
 \method{as_polars_series}{default}(x, name = NULL, ...)
+
+\method{as_polars_series}{RPolarsSeries}(x, name = NULL, ...)
+
+\method{as_polars_series}{RPolarsExpr}(x, name = NULL, ...)
 
 \method{as_polars_series}{POSIXlt}(x, name = NULL, ...)
 
@@ -22,7 +28,7 @@ as_polars_series(x, name = NULL, ...)
 \item{x}{Object to convert into a polars Series}
 
 \item{name}{A string to use as the name of the Series.
-If \code{NULL} (default), unnamed Series will be created.}
+If \code{NULL} (default), the name of \code{x} is used or an unnamed Series is created.}
 
 \item{...}{Additional arguments passed to methods.}
 }
@@ -39,4 +45,8 @@ as_polars_series(1:4)
 as_polars_series(list(1:4))
 
 as_polars_series(data.frame(a = 1:4))
+
+as_polars_series(pl$Series(1:4, name = "foo"))
+
+as_polars_series(pl$lit(1:4))
 }
