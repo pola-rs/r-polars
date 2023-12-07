@@ -24,6 +24,8 @@
 - `as_polars_df()` for `data.frame` has a new argument `make_names_unique` (#561).
 - New methods `$str$to_date()`, `$str$to_time()`, `$str$to_datetime()` as 
   alternatives to `$str$strptime()` (#558).
+- The `dim()` function for DataFrame and LazyFrame correctly returns integer instead of
+  double (#577).
 
 ## polars 0.11.0
 
