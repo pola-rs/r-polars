@@ -14,14 +14,8 @@ Expr
 convert Series to literal to perform modification and return
 }
 \examples{
-(
-  pl$Series(list(1:1, 1:2, 1:3, 1:4))
-  $print()
-  $to_lit()
-  $list$lengths()
-  $sum()
-  $cast(pl$dtypes$Int8)
-  $lit_to_s()
-)
+s = pl$Series(list(1:1, 1:2, 1:3, 1:4))
+
+s$to_lit()
 }
 \keyword{Series}

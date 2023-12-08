@@ -54,7 +54,8 @@ pl$PTime("23:59:59")
 
 
 pl$Series(pl$PTime(runif(5) * 3600 * 24 * 1E0, tu = "s"))
-pl$lit(pl$PTime("23:59:59"))$lit_to_s()
+pl$lit(pl$PTime("23:59:59")) |>
+  as_polars_series()
 
 pl$lit(pl$PTime("23:59:59"))$to_r()
 }

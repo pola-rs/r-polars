@@ -35,7 +35,7 @@ pl$DataFrame(bob = 1:4)$select(pl$approx_n_unique(pl$col("bob")))
 
 # comparison with n_unique for 2 million integers. (try change example to 20 million ints)
 lit_series = pl$lit(c(1:1E6, 1E6:1, 1:1E6))
-system.time(pl$approx_n_unique(lit_series)$lit_to_s()$print())
-system.time(pl$n_unique(lit_series)$lit_to_s()$print())
+system.time(as_polars_series(pl$approx_n_unique(lit_series)))
+system.time(as_polars_series(pl$n_unique(lit_series)))
 }
 \keyword{Expr_new}

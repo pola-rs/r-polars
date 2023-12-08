@@ -119,12 +119,18 @@ ExprDT_round = function(every, offset = NULL) {
 #' @aliases (Expr)$dt$combine
 #' @examples
 #' # Using pl$PTime
-#' pl$lit(as.Date("2021-01-01"))$dt$combine(pl$PTime("02:34:12"))$lit_to_s()
-#' pl$lit(as.Date("2021-01-01"))$dt$combine(pl$PTime(3600 * 1.5, tu = "s"))$lit_to_s()
-#' pl$lit(as.Date("2021-01-01"))$dt$combine(pl$PTime(3600 * 1.5E6 + 123, tu = "us"))$lit_to_s()
+#' pl$lit(as.Date("2021-01-01"))$dt$combine(pl$PTime("02:34:12")) |>
+#'   as_polars_series()
+#'
+#' pl$lit(as.Date("2021-01-01"))$dt$combine(pl$PTime(3600 * 1.5, tu = "s")) |>
+#'   as_polars_series()
+#'
+#' pl$lit(as.Date("2021-01-01"))$dt$combine(pl$PTime(3600 * 1.5E6 + 123, tu = "us")) |>
+#'   as_polars_series()
 #'
 #' # pass double and set tu manually
-#' pl$lit(as.Date("2021-01-01"))$dt$combine(3600 * 1.5E6 + 123, tu = "us")$lit_to_s()
+#' pl$lit(as.Date("2021-01-01"))$dt$combine(3600 * 1.5E6 + 123, tu = "us") |>
+#'   as_polars_series()
 #'
 #' # if needed to convert back to R it is more intuitive to set a specific time zone
 #' expr = pl$lit(as.Date("2021-01-01"))$dt$combine(3600 * 1.5E6 + 123, tu = "us")
@@ -582,10 +588,17 @@ ExprDT_nanosecond = function() {
 #' @usage NULL
 #' @aliases (Expr)$dt$epoch
 #' @examples
-#' pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$epoch("ns")$lit_to_s()
-#' pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$epoch("ms")$lit_to_s()
-#' pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$epoch("s")$lit_to_s()
-#' pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$epoch("d")$lit_to_s()
+#' pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$epoch("ns") |>
+#'   as_polars_series()
+#'
+#' pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$epoch("ms") |>
+#'   as_polars_series()
+#'
+#' pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$epoch("s") |>
+#'   as_polars_series()
+#'
+#' pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$epoch("d") |>
+#'   as_polars_series()
 ExprDT_epoch = function(tu = c("us", "ns", "ms", "s", "d")) {
   tu = tu[1]
 

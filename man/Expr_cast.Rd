@@ -26,12 +26,14 @@ df$with_columns(
 )
 
 # strict FALSE, inserts null for any cast failure
-pl$lit(c(100, 200, 300))$cast(pl$dtypes$UInt8, strict = FALSE)$lit_to_s()
+pl$lit(c(100, 200, 300))$cast(pl$dtypes$UInt8, strict = FALSE) |>
+  as_polars_series()
 
 # strict TRUE, raise any failure as an error when query is executed.
 tryCatch(
   {
-    pl$lit("a")$cast(pl$dtypes$Float64, strict = TRUE)$lit_to_s()
+    pl$lit("a")$cast(pl$dtypes$Float64, strict = TRUE) |>
+      as_polars_series()
   },
   error = function(e) e
 )

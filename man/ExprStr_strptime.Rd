@@ -67,6 +67,7 @@ txt_datetimes = c(
 pl$lit(txt_datetimes)$str$strptime(
   pl$Datetime("ns"),
   format = "\%Y-\%m-\%d \%H:\%M:\%S \%z", strict = FALSE,
-)$lit_to_s()
+) |>
+  as_polars_series()
 }
 \keyword{ExprStr}

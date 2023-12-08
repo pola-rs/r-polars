@@ -144,7 +144,7 @@ arrow_to_rseries_result = function(name, values, rechunk = TRUE) {
       is_arrow_dictonary(array) &&
       array$type$value_type %in_list% list(arrow::utf8(), arrow::large_utf8())
   ) {
-    return(Ok(pl$lit(c())$cast(pl$Categorical)$lit_to_s()))
+    return(Ok(as_polars_series(pl$lit(c())$cast(pl$Categorical))))
   }
 
   # rechunk immediately before import
@@ -161,7 +161,12 @@ arrow_to_rseries_result = function(name, values, rechunk = TRUE) {
     s_res
   }
 
-  rseries_result |> map(\(s) {
-    if (rechunk) wrap_e(s)$rechunk()$lit_to_s() else s
-  })
+  rseries_result |>
+    map(\(s) {
+      if (rechunk) {
+        as_polars_series(wrap_e(s)$rechunk())
+      } else {
+        s
+      }
+    })
 }

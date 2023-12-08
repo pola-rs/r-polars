@@ -34,12 +34,18 @@ the following string language:
 }
 \examples{
 # Using pl$PTime
-pl$lit(as.Date("2021-01-01"))$dt$combine(pl$PTime("02:34:12"))$lit_to_s()
-pl$lit(as.Date("2021-01-01"))$dt$combine(pl$PTime(3600 * 1.5, tu = "s"))$lit_to_s()
-pl$lit(as.Date("2021-01-01"))$dt$combine(pl$PTime(3600 * 1.5E6 + 123, tu = "us"))$lit_to_s()
+pl$lit(as.Date("2021-01-01"))$dt$combine(pl$PTime("02:34:12")) |>
+  as_polars_series()
+
+pl$lit(as.Date("2021-01-01"))$dt$combine(pl$PTime(3600 * 1.5, tu = "s")) |>
+  as_polars_series()
+
+pl$lit(as.Date("2021-01-01"))$dt$combine(pl$PTime(3600 * 1.5E6 + 123, tu = "us")) |>
+  as_polars_series()
 
 # pass double and set tu manually
-pl$lit(as.Date("2021-01-01"))$dt$combine(3600 * 1.5E6 + 123, tu = "us")$lit_to_s()
+pl$lit(as.Date("2021-01-01"))$dt$combine(3600 * 1.5E6 + 123, tu = "us") |>
+  as_polars_series()
 
 # if needed to convert back to R it is more intuitive to set a specific time zone
 expr = pl$lit(as.Date("2021-01-01"))$dt$combine(3600 * 1.5E6 + 123, tu = "us")
