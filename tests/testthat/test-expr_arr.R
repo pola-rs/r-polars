@@ -385,12 +385,12 @@ test_that("concat", {
   )
 
   expect_identical(
-    df$select(pl$col("a")$list$concat("hello from R"))$to_list(),
+    df$select(pl$col("a")$list$concat(pl$lit("hello from R")))$to_list(),
     list(a = list(c("a", "hello from R"), c("x", "hello from R")))
   )
 
   expect_identical(
-    df$select(pl$col("a")$list$concat(c("hello", "world")))$to_list(),
+    df$select(pl$col("a")$list$concat(pl$lit(c("hello", "world"))))$to_list(),
     list(a = list(c("a", "hello"), c("x", "world")))
   )
 })
@@ -434,15 +434,15 @@ test_that("to_struct", {
 
 test_that("eval", {
   df = pl$DataFrame(a = list(a = c(1, 8, 3), b = c(4, 5, 2)))
-  l_act = df$select(pl$all()$cast(pl$dtypes$Float64))$with_columns(
-    pl$concat_list(c("a", "b"))$list$eval(pl$element()$rank())$alias("rank")
+  l_act = df$with_columns(
+    pl$concat_list(list("a", "b"))$list$eval(pl$element()$rank())$alias("rank")
   )$to_list()
   expect_identical(
     l_act,
     list(
       a = c(1, 8, 3),
       b = c(4, 5, 2),
-      rank = list(c(1, 2), c(1, 2), c(1, 2))
+      rank = list(c(1, 2), c(2, 1), c(2, 1))
     )
   )
 })

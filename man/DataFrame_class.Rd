@@ -12,7 +12,7 @@ and private methods/function calls to the polars Rust side. The instantiated
 \code{DataFrame}-object is an \code{externalptr} to a low-level Rust polars DataFrame
 object.
 
-The S3 method \code{.DollarNames.DataFrame} exposes all public \verb{$foobar()}-methods
+The S3 method \code{.DollarNames.RPolarsDataFrame} exposes all public \verb{$foobar()}-methods
 which are callable onto the object. Most methods return another \code{DataFrame}-
 class instance or similar which allows for method chaining. This class system
 could be called "environment classes" (in lack of a better name) and is the
@@ -35,7 +35,7 @@ replaced by any function prefixed \code{DataFrame_}.
 \examples{
 # see all public exported method names (normally accessed via a class
 # instance with $)
-ls(.pr$env$DataFrame)
+ls(.pr$env$RPolarsDataFrame)
 
 # see all private methods (not intended for regular use)
 ls(.pr$DataFrame)

@@ -81,6 +81,55 @@ test_that("str$strptime time", {
   )
 })
 
+test_that("$str$to_date", {
+  out = pl$lit(c("2009-01-02", "2009-01-03", "2009-1-4"))$
+    str$to_date()$to_r()
+  expect_equal(
+    out,
+    as.Date(c("2009-01-02", "2009-01-03", "2009-01-04"))
+  )
+  expect_error(
+    pl$lit(c("2009-01-02", "2009-01-03", "2009-1-4"))$
+      str$to_date(format = "%Y / %m / %d")$to_r()
+  )
+  expect_equal(
+    pl$lit(c("2009-01-02", "2009-01-03", "2009-1-4"))$
+      str$to_date(format = "%Y / %m / %d", strict = FALSE)$to_r(),
+    as.Date(rep(NA_character_, 3))
+  )
+})
+
+test_that("$str$to_time", {
+  out = pl$lit(c("01:20:01", "28:00:02", "03:00:02"))$
+    str$to_time(strict = FALSE)$to_r()
+  expect_equal(
+    out,
+    pl$PTime(c("01:20:01", "28:00:02", "03:00:02"), tu = "ns")
+  )
+  expect_error(
+    ppl$lit(c("01:20:01", "28:00:02", "03:00:02"))$
+      str$to_time()
+  )
+})
+
+test_that("$str$to_datetime", {
+  out = pl$lit(c("2009-01-02 01:00", "2009-01-03 02:00", "2009-1-4 03:00"))$
+    str$to_datetime(time_zone = "UTC")$to_r()
+  expect_equal(
+    out,
+    as.POSIXct(c("2009-01-02 01:00:00", "2009-01-03 02:00:00", "2009-01-04 03:00:00"), tz = "UTC")
+  )
+  expect_error(
+    pl$lit(c("2009-01-02 01:00", "2009-01-03 02:00", "2009-1-4"))$
+      str$to_date(format = "%Y / %m / %d")$to_r()
+  )
+  expect_equal(
+    pl$lit(c("2009-01-02 01:00", "2009-01-03 02:00", "2009-1-4"))$
+      str$to_date(format = "%Y / %m / %d", strict = FALSE)$to_r(),
+    as.Date(rep(NA_character_, 3))
+  )
+})
+
 test_that("str$len_bytes str$len_chars", {
   test_str = c("Café", NA, "345", "東京") |> enc2utf8()
   Encoding(test_str)
@@ -102,8 +151,6 @@ test_that("str$len_bytes str$len_chars", {
     )
   )
 })
-
-
 
 test_that("str$concat", {
   # concatenate a Series of strings to a single string
@@ -137,8 +184,8 @@ test_that("to_uppercase, to_lowercase", {
   )
 })
 
-test_that("to_titlecase - enabled via full_features", {
-  skip_if_not(pl$polars_info()$features$full_features)
+test_that("to_titlecase - enabled via the simd feature", {
+  skip_if_not(pl$polars_info()$features$simd)
   df2 = pl$DataFrame(foo = c("hi there", "HI, THERE", NA))
   expect_identical(
     df2$select(pl$col("foo")$str$to_titlecase())$to_list()$foo,
@@ -146,8 +193,8 @@ test_that("to_titlecase - enabled via full_features", {
   )
 })
 
-test_that("to_titlecase - enabled via full_features", {
-  skip_if(pl$polars_info()$features$full_features)
+test_that("to_titlecase - enabled via the simd feature", {
+  skip_if(pl$polars_info()$features$simd)
   expect_error(pl$col("foo")$str$to_titlecase())
 })
 
@@ -419,7 +466,7 @@ test_that("str$extract_all", {
 
   expect_grepl_error(
     pl$lit("abc")$str$extract_all(complex(2)),
-    "new series from rtype Complexes is not supported",
+    "cannot be converted into an Expr",
   )
 })
 

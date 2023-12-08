@@ -33,7 +33,7 @@ NULL
 #'
 #' @examples
 #' print(pl$col("some_column")$sum())
-print.Expr = function(x, ...) {
+print.RPolarsExpr = function(x, ...) {
   cat("polars Expr: ")
   x$print()
   invisible(x)
@@ -51,11 +51,11 @@ Expr_print = function() {
 #'
 #' @param x Name of an `Expr` object
 #' @param pattern String used to auto-complete
-#' @inherit .DollarNames.DataFrame return
+#' @inherit .DollarNames.RPolarsDataFrame return
 #' @export
 #' @keywords internal
-.DollarNames.Expr = function(x, pattern = "") {
-  paste0(ls(Expr, pattern = pattern), "()")
+.DollarNames.RPolarsExpr = function(x, pattern = "") {
+  paste0(ls(RPolarsExpr, pattern = pattern), "()")
 }
 
 #' S3 method to convert an Expr to a list
@@ -66,7 +66,7 @@ Expr_print = function() {
 #' @return One Expr wrapped in a list
 #' @export
 #' @keywords internal
-as.list.Expr = function(x, ...) {
+as.list.RPolarsExpr = function(x, ...) {
   list(x)
 }
 
@@ -171,7 +171,7 @@ Expr_add = function(other) {
 #' @rdname Expr_add
 #' @param e1 Expr only
 #' @param e2 Expr or anything that can be converted to a literal
-"+.Expr" = function(e1, e2) {
+"+.RPolarsExpr" = function(e1, e2) {
   if (missing(e2)) {
     return(e1)
   }
@@ -193,7 +193,7 @@ Expr_div = function(other) {
 #' @export
 #' @rdname Expr_div
 #' @inheritParams Expr_add
-"/.Expr" = function(e1, e2) result(wrap_e(e1)$div(e2)) |> unwrap("using the '/'-operator")
+"/.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$div(e2)) |> unwrap("using the '/'-operator")
 
 #' Floor divide two expressions
 #'
@@ -210,7 +210,7 @@ Expr_floor_div = function(other) {
 #' @export
 #' @rdname Expr_floor_div
 #' @inheritParams Expr_add
-"%/%.Expr" = function(e1, e2) result(wrap_e(e1)$floor_div(e2)) |> unwrap("using the '%/%'-operator")
+"%/%.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$floor_div(e2)) |> unwrap("using the '%/%'-operator")
 
 #' Modulo two expressions
 #'
@@ -236,7 +236,7 @@ Expr_mod = function(other) {
 #' @export
 #' @rdname Expr_mod
 #' @inheritParams Expr_add
-"%%.Expr" = function(e1, e2) result(wrap_e(e1)$mod(e2)) |> unwrap("using the '%%'-operator")
+"%%.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$mod(e2)) |> unwrap("using the '%%'-operator")
 
 #' Substract two expressions
 #'
@@ -254,7 +254,7 @@ Expr_sub = function(other) {
 #' @export
 #' @rdname Expr_sub
 #' @inheritParams Expr_add
-"-.Expr" = function(e1, e2) {
+"-.RPolarsExpr" = function(e1, e2) {
   result(
     if (missing(e2)) wrap_e(0L)$sub(e1) else wrap_e(e1)$sub(e2)
   ) |> unwrap("using the '-'-operator")
@@ -275,7 +275,7 @@ Expr_mul = Expr_mul = function(other) {
 #' @export
 #' @rdname Expr_mul
 #' @inheritParams Expr_add
-"*.Expr" = function(e1, e2) result(wrap_e(e1)$mul(e2)) |> unwrap("using the '*'-operator")
+"*.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$mul(e2)) |> unwrap("using the '*'-operator")
 
 
 #' Negate a boolean expression
@@ -291,12 +291,7 @@ Expr_not = "use_extendr_wrapper"
 #' @export
 #' @rdname Expr_not
 #' @param x Expr
-"!.Expr" = function(x) x$not()
-
-Expr_is_not = function() {
-  warning("`$is_not()` is deprecated and will be removed in 0.12.0. Use `$not()` instead.")
-  .pr$Expr$not(self)
-}
+"!.RPolarsExpr" = function(x) x$not()
 
 #' Check strictly lower inequality
 #'
@@ -312,7 +307,7 @@ Expr_lt = function(other) {
 #' @export
 #' @inheritParams Expr_add
 #' @rdname Expr_lt
-"<.Expr" = function(e1, e2) result(wrap_e(e1)$lt(e2)) |> unwrap("using the '<'-operator")
+"<.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$lt(e2)) |> unwrap("using the '<'-operator")
 
 #' Check strictly greater inequality
 #'
@@ -328,7 +323,7 @@ Expr_gt = function(other) {
 #' @export
 #' @inheritParams Expr_add
 #' @rdname Expr_gt
-">.Expr" = function(e1, e2) result(wrap_e(e1)$gt(e2)) |> unwrap("using the '>'-operator")
+">.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$gt(e2)) |> unwrap("using the '>'-operator")
 
 #' Check equality
 #'
@@ -346,7 +341,7 @@ Expr_eq = function(other) {
 #' @export
 #' @inheritParams Expr_add
 #' @rdname Expr_eq
-"==.Expr" = function(e1, e2) result(wrap_e(e1)$eq(e2)) |> unwrap("using the '=='-operator")
+"==.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$eq(e2)) |> unwrap("using the '=='-operator")
 
 #' Check equality without `null` propagation
 #'
@@ -379,7 +374,7 @@ Expr_neq = function(other) {
 #' @export
 #' @inheritParams Expr_add
 #' @rdname Expr_neq
-"!=.Expr" = function(e1, e2) result(wrap_e(e1)$neq(e2)) |> unwrap("using the '!='-operator")
+"!=.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$neq(e2)) |> unwrap("using the '!='-operator")
 
 #' Check inequality without `null` propagation
 #'
@@ -410,7 +405,7 @@ Expr_lt_eq = function(other) {
 #' @export
 #' @inheritParams Expr_add
 #' @rdname Expr_lt_eq
-"<=.Expr" = function(e1, e2) result(wrap_e(e1)$lt_eq(e2)) |> unwrap("using the '<='-operator")
+"<=.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$lt_eq(e2)) |> unwrap("using the '<='-operator")
 
 
 #' Check greater or equal inequality
@@ -427,7 +422,7 @@ Expr_gt_eq = function(other) {
 #' @export
 #' @inheritParams Expr_add
 #' @rdname Expr_gt_eq
-">=.Expr" = function(e1, e2) result(wrap_e(e1)$gt_eq(e2)) |> unwrap("using the '>='-operator")
+">=.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$gt_eq(e2)) |> unwrap("using the '>='-operator")
 
 
 
@@ -582,11 +577,11 @@ Expr_is_not_null = "use_extendr_wrapper"
 #'
 #' @keywords internal
 #'
-#' @return ProtoExprArray object
+#' @return RPolarsProtoExprArray object
 #'
 #' @examples .pr$env$construct_ProtoExprArray(pl$col("Species"), "Sepal.Width")
 construct_ProtoExprArray = function(...) {
-  pra = ProtoExprArray$new()
+  pra = RPolarsProtoExprArray$new()
   args = list2(...)
 
   # deal with list of expressions
@@ -674,11 +669,10 @@ construct_ProtoExprArray = function(...) {
 #' to global variables. Use `pl$set_options(rpool_cap = 4)` and `pl$options$rpool_cap`
 #' to see and view number of parallel R sessions.
 #'
-#' @name Expr_map
 #' @examples
 #' pl$DataFrame(iris)$
 #'   select(
-#'   pl$col("Sepal.Length")$map(\(x) {
+#'   pl$col("Sepal.Length")$map_batches(\(x) {
 #'     paste("cheese", as.character(x$to_vector()))
 #'   }, pl$dtypes$Utf8)
 #' )
@@ -688,7 +682,7 @@ construct_ProtoExprArray = function(...) {
 #'
 #' # map a,b,c,d sequentially
 #' pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
-#'   pl$all()$map(\(s) {
+#'   pl$all()$map_batches(\(s) {
 #'     Sys.sleep(.1)
 #'     s * 2
 #'   })
@@ -699,7 +693,7 @@ construct_ProtoExprArray = function(...) {
 #' pl$set_options(rpool_cap = 4) # set back to 4, the default
 #' pl$options$rpool_cap
 #' pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
-#'   pl$all()$map(\(s) {
+#'   pl$all()$map_batches(\(s) {
 #'     Sys.sleep(.1)
 #'     s * 2
 #'   }, in_background = TRUE)
@@ -708,99 +702,113 @@ construct_ProtoExprArray = function(...) {
 #' # map in parallel 2: Reuse R processes in "polars global_rpool".
 #' pl$options$rpool_cap
 #' pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
-#'   pl$all()$map(\(s) {
+#'   pl$all()$map_batches(\(s) {
 #'     Sys.sleep(.1)
 #'     s * 2
 #'   }, in_background = TRUE)
 #' )$collect() |> system.time()
-Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FALSE) {
-  (if (isTRUE(in_background)) {
-    .pr$Expr$map_in_background(self, f, output_type, agg_list)
+Expr_map_batches = function(f, output_type = NULL, agg_list = FALSE, in_background = FALSE) {
+  if (isTRUE(in_background)) {
+    out = .pr$Expr$map_batches_in_background(self, f, output_type, agg_list)
   } else {
-    .pr$Expr$map(self, f, output_type, agg_list)
-  }) |>
+    out = .pr$Expr$map_batches(self, f, output_type, agg_list)
+  }
+
+  out |>
+    unwrap("in $map_batches():")
+}
+
+Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FALSE) {
+  warning("$map() is deprecated and will be removed in 0.13.0. Use $map_batches() instead.", call. = FALSE)
+  if (isTRUE(in_background)) {
+    out = .pr$Expr$map_batches_in_background(self, f, output_type, agg_list)
+  } else {
+    out = .pr$Expr$map_batches(self, f, output_type, agg_list)
+  }
+
+  out |>
     unwrap("in $map():")
 }
 
-#' Expr_apply
+#' Map a custom/user-defined function (UDF) to each element of a column
 #'
-#' @description
-#' Apply a custom/user-defined function (UDF) in a GroupBy or Projection context.
-#' Depending on the context it has the following behavior:
-#' -Selection
+#' The UDF is applied to each element of a column. See Details for more information
+#' on specificities related to the context.
 #'
-#' @param f r function see details depending on context
-#' @param return_type NULL or one of pl$dtypes, the output datatype, NULL is the same as input.
-#' @param strict_return_type bool (default TRUE), error if not correct datatype returned from R,
-#' if FALSE will convert to a Polars Null and carry on.
-#' @param allow_fail_eval  bool (default FALSE), if TRUE will not raise user function error
-#' but convert result to a polars Null and carry on.
-#' @param in_background Boolean. Whether to execute the map in a background R process. Combined wit
-#' setting e.g. `pl$set_options(rpool_cap = 4)` it can speed up some slow R functions as they can run
-#' in parallel R sessions. The communication speed between processes is quite slower than between
-#' threads. Will likely only give a speed-up in a "low IO - high CPU" usecase. A single map will not
-#' be paralleled, only in case of multiple `$map`(s) in the query these can be run in parallel.
+#' @param f Function to map
+#' @param return_type DataType of the output Series. If `NULL`, the dtype will
+#' be `pl$Unknown`.
+#' @param strict_return_type If `TRUE` (default), error if not correct datatype
+#' returned from R. If `FALSE`, the output will be converted to a polars null
+#' value.
+#' @param allow_fail_eval If `FALSE` (default), raise an error if the function
+#' fails. If `TRUE`, the result will be converted to a polars null value.
+#' @param in_background Whether to run the function in a background R process,
+#' default is `FALSE`. Combined with setting e.g. `pl$set_options(rpool_cap = 4)`,
+#' this can speed up some slow R functions as they can run in parallel R sessions.
+#' The communication speed between processes is quite slower than between threads.
+#' This will likely only give a speed-up in a "low IO - high CPU" usecase. A
+#' single map will not be paralleled, only in case of multiple `$map_elements()`
+#' in the query can these run in parallel.
 #'
 #' @details
 #'
-#' Apply a user function in a groupby or projection(select) context
+#' Note that, in a GroupBy context, the column will have been pre-aggregated and
+#' so each element will itself be a Series. Therefore, depending on the context,
+#' requirements for function differ:
+#' * in `$select()` or `$with_columns()` (selection context), the function must
+#'   operate on R scalar values. Polars will convert each element into an R value
+#'   and pass it to the function. The output of the user function will be converted
+#'   back into a polars type (the return type must match, see argument `return_type`).
+#'   Using `$map_elements()` in this context should be avoided as a `lapply()`
+#'   has half the overhead.
+#' * in `$agg()` (GroupBy context), the function must take a `Series` and return
+#'   a `Series` or an R object convertible to `Series`, e.g. a vector. In this
+#'   context, it is much faster if there are the number of groups is much lower
+#'   than the number of rows, as the iteration is only across the groups. The R
+#'   user function could e.g. convert the `Series` to a vector with `$to_r()` and
+#'   perform some vectorized operations.
 #'
+#' Note that it is preferred to express your function in polars syntax, which
+#' will almost always be _significantly_ faster and more memory efficient because:
+#' * the native expression engine runs in Rust; functions run in R.
+#' * use of R functions forces the DataFrame to be materialized in memory.
+#' * Polars-native expressions can be parallelized (R functions cannot).
+#' * Polars-native expressions can be logically optimized (R functions cannot).
 #'
-#' Depending on context the following behavior:
-#'
-#' * Projection/Selection:
-#'  Expects an `f` to operate on R scalar values.
-#'  Polars will convert each element into an R value and pass it to the function
-#'  The output of the user function will be converted back into a polars type.
-#'  Return type must match. See param return type.
-#'  Apply in selection context should be avoided as a `lapply()` has half the overhead.
-#'
-#' * Groupby
-#'   Expects a user function `f` to take a `Series` and return a `Series` or Robj convertible to
-#'   `Series`, eg. R vector. GroupBy context much faster if number groups are quite fewer than
-#'   number of rows, as the iteration is only across the groups.
-#'   The r user function could e.g. do vectorized operations and stay quite performant.
-#'   use `s$to_r()` to convert input Series to an r vector or list. use `s$to_vector` and
-#'   `s$to_r_list()` to force conversion to vector or list.
-#'
-#'  Implementing logic using an R function is almost always _significantly_
-#'   slower and more memory intensive than implementing the same logic using
-#'   the native expression API because:
-#'     - The native expression engine runs in Rust; functions run in R.
-#'     - Use of R functions forces the DataFrame to be materialized in memory.
-#'     - Polars-native expressions can be parallelized (R functions cannot*).
-#'     - Polars-native expressions can be logically optimized (R functions cannot).
-#'   Wherever possible you should strongly prefer the native expression API
-#'   to achieve the best performance.
+#' Wherever possible you should strongly prefer the native expression API to
+#' achieve the best performance and avoid using `$map_elements()`.
 #'
 #' @return Expr
-#' @aliases Expr_apply
 #' @examples
-#' # apply over groups - normal usage
-#' # s is a series of all values for one column within group, here Species
-#' e_all = pl$all() # perform groupby agg on all columns otherwise e.g. pl$col("Sepal.Length")
-#' e_sum = e_all$apply(\(s)  sum(s$to_r()))$name$suffix("_sum")
-#' e_head = e_all$apply(\(s) head(s$to_r(), 2))$name$suffix("_head")
+#' # apply over groups: here, the input must be a Series
+#' # prepare two expressions, one to compute the sum of each variable, one to
+#' # get the first two values of each variable and store them in a list
+#' e_sum = pl$all()$map_elements(\(s) sum(s$to_r()))$name$suffix("_sum")
+#' e_head = pl$all()$map_elements(\(s) head(s$to_r(), 2))$name$suffix("_head")
 #' pl$DataFrame(iris)$group_by("Species")$agg(e_sum, e_head)
 #'
+#' # apply a function on each value (should be avoided): here the input is an R
+#' # scalar
+#' # select only Float64 columns
+#' my_selection = pl$col(pl$dtypes$Float64)
 #'
-#' # apply over single values (should be avoided as it takes ~2.5us overhead + R function exec time
-#' # on a 2015 MacBook Pro) x is an R scalar
-#'
-#' # perform on all Float64 columns, using pl$all requires user function can handle any input type
-#' e_all = pl$col(pl$dtypes$Float64)
-#' e_add10 = e_all$apply(\(x)  {
+#' # prepare two expressions, the first one only adds 10 to each element, the
+#' # second returns the letter whose index matches the element
+#' e_add10 = my_selection$map_elements(\(x)  {
 #'   x + 10
 #' })$name$suffix("_sum")
-#' # quite silly index into alphabet(letters) by ceil of float value
-#' # must set return_type as not the same as input
-#' e_letter = e_all$apply(\(x) {
+#'
+#' e_letter = my_selection$map_elements(\(x) {
 #'   letters[ceiling(x)]
 #' }, return_type = pl$dtypes$Utf8)$name$suffix("_letter")
 #' pl$DataFrame(iris)$select(e_add10, e_letter)
 #'
 #'
-#' ## timing "slow" apply in select /with_columns context, this makes apply
+#' # Small benchmark --------------------------------
+#'
+#' # Using `$map_elements()` is much slower than a more polars-native approach.
+#' # First we multiply each element of a Series of 1M elements by 2.
 #' n = 1000000L
 #' set.seed(1)
 #' df = pl$DataFrame(list(
@@ -808,76 +816,94 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FAL
 #'   b = sample(letters, n, replace = TRUE)
 #' ))
 #'
-#' print("apply over 1 million values takes ~2.5 sec on 2015 MacBook Pro")
 #' system.time({
-#'   rdf = df$with_columns(
-#'     pl$col("a")$apply(\(x) {
+#'   df$with_columns(
+#'     bob = pl$col("a")$map_elements(\(x) {
 #'       x * 2L
-#'     })$alias("bob")
+#'     })
 #'   )
 #' })
 #'
-#' print("R lapply 1 million values take ~1sec on 2015 MacBook Pro")
+#' # Comparing this to the standard polars syntax:
 #' system.time({
-#'   lapply(df$get_column("a")$to_r(), \(x) x * 2L)
-#' })
-#' print("using polars syntax takes ~1ms")
-#' system.time({
-#'   (df$get_column("a") * 2L)
+#'   df$with_columns(
+#'     bob = pl$col("a") * 2L
+#'   )
 #' })
 #'
 #'
-#' print("using R vector syntax takes ~4ms")
-#' r_vec = df$get_column("a")$to_r()
+#' # Running in parallel --------------------------------
+#'
+#' # here, we use Sys.sleep() to imitate some CPU expensive computation.
+#'
+#' # use apply over each Species-group in each column equal to 12 sequential
+#' # runs ~1.2 sec.
 #' system.time({
-#'   r_vec * 2L
+#'   pl$LazyFrame(iris)$group_by("Species")$agg(
+#'     pl$all()$map_elements(\(s) {
+#'       Sys.sleep(.1)
+#'       s$sum()
+#'     })
+#'   )$collect()
 #' })
 #'
-#' # R parallel process example, use Sys.sleep() to imitate some CPU expensive computation.
-#'
-#' # use apply over each Species-group in each column equal to 12 sequential runs ~1.2 sec.
-#' pl$LazyFrame(iris)$group_by("Species")$agg(
-#'   pl$all()$apply(\(s) {
-#'     Sys.sleep(.1)
-#'     s$sum()
-#'   })
-#' )$collect() |> system.time()
-#'
-#' # map in parallel 1: Overhead to start up extra R processes / sessions
-#' pl$set_options(rpool_cap = 0) # drop any previous processes, just to show start-up overhead here
-#' pl$set_options(rpool_cap = 4) # set back to 4, the default
+#' # first run in parallel: there is some overhead to start up extra R processes
+#' # drop any previous processes, just to show start-up overhead here
+#' pl$set_options(rpool_cap = 0)
+#' # set back to 4, the default
+#' pl$set_options(rpool_cap = 4)
 #' pl$options$rpool_cap
-#' pl$LazyFrame(iris)$group_by("Species")$agg(
-#'   pl$all()$apply(\(s) {
-#'     Sys.sleep(.1)
-#'     s$sum()
-#'   }, in_background = TRUE)
-#' )$collect() |> system.time()
 #'
-#' # map in parallel 2: Reuse R processes in "polars global_rpool".
+#' system.time({
+#'   pl$LazyFrame(iris)$group_by("Species")$agg(
+#'     pl$all()$map_elements(\(s) {
+#'       Sys.sleep(.1)
+#'       s$sum()
+#'     }, in_background = TRUE)
+#'   )$collect()
+#' })
+#'
+#' # second run in parallel: this reuses R processes in "polars global_rpool".
 #' pl$options$rpool_cap
-#' pl$LazyFrame(iris)$group_by("Species")$agg(
-#'   pl$all()$apply(\(s) {
-#'     Sys.sleep(.1)
-#'     s$sum()
-#'   }, in_background = TRUE)
-#' )$collect() |> system.time()
-#'
-Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fail_eval = FALSE, in_background = FALSE) {
+#' system.time({
+#'   pl$LazyFrame(iris)$group_by("Species")$agg(
+#'     pl$all()$map_elements(\(s) {
+#'       Sys.sleep(.1)
+#'       s$sum()
+#'     }, in_background = TRUE)
+#'   )$collect()
+#' })
+Expr_map_elements = function(f, return_type = NULL, strict_return_type = TRUE, allow_fail_eval = FALSE, in_background = FALSE) {
   if (in_background) {
-    return(.pr$Expr$apply_in_background(self, f, return_type))
+    return(.pr$Expr$map_elements_in_background(self, f, return_type))
   }
 
   # use series apply
   wrap_f = function(s) {
-    s$apply(f, return_type, strict_return_type, allow_fail_eval)
+    s$map_elements(f, return_type, strict_return_type, allow_fail_eval)
   }
 
   # return expression from the functions above, activate agg_list (grouped mapping)
-  .pr$Expr$map(self, lambda = wrap_f, output_type = return_type, agg_list = TRUE) |>
-    unwrap("in $apply()")
+  .pr$Expr$map_batches(self, lambda = wrap_f, output_type = return_type, agg_list = TRUE) |>
+    unwrap("in $map_elements():")
 }
 
+Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE,
+                       allow_fail_eval = FALSE, in_background = FALSE) {
+  warning("$apply() is deprecated and will be removed in 0.13.0. Use $map_elements() instead.", call. = FALSE)
+  if (in_background) {
+    return(.pr$Expr$map_elements_in_background(self, f, return_type))
+  }
+
+  # use series apply
+  wrap_f = function(s) {
+    s$map_elements(f, return_type, strict_return_type, allow_fail_eval)
+  }
+
+  # return expression from the functions above, activate agg_list (grouped mapping)
+  .pr$Expr$map_batches(self, lambda = wrap_f, output_type = return_type, agg_list = TRUE) |>
+    unwrap("in $apply():")
+}
 
 #' Create a literal value
 #'
@@ -908,7 +934,7 @@ Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fa
 #' # vectors to literal implicitly
 #' (pl$lit(2) + 1:4) / 4:1
 Expr_lit = function(x) {
-  .Call(wrap__Expr__lit, x) |>
+  .Call(wrap__RPolarsExpr__lit, x) |>
     unwrap("in $lit()")
 }
 
@@ -936,7 +962,7 @@ Expr_and = function(other) {
   .pr$Expr$and(self, other) |> unwrap("in $and()")
 }
 #' @export
-"&.Expr" = function(e1, e2) result(wrap_e(e1)$and(e2)) |> unwrap("using the '&'-operator")
+"&.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$and(e2)) |> unwrap("using the '&'-operator")
 
 
 #' Apply logical OR on two expressions
@@ -953,7 +979,7 @@ Expr_or = function(other) {
   .pr$Expr$or(self, other) |> unwrap("in $or()")
 }
 #' @export
-"|.Expr" = function(e1, e2) result(wrap_e(e1)$or(e2)) |> unwrap("using the '|'-operator")
+"|.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$or(e2)) |> unwrap("using the '|'-operator")
 
 
 #' Apply logical XOR on two expressions
@@ -1078,7 +1104,7 @@ Expr_exclude = function(columns) {
 
   pcase(
     is.character(columns), .pr$Expr$exclude(self, columns),
-    inherits(columns, "DataTypeVector"), .pr$Expr$exclude_dtype(self, columns),
+    inherits(columns, "RPolarsDataTypeVector"), .pr$Expr$exclude_dtype(self, columns),
     inherits(columns, "RPolarsDataType"), .pr$Expr$exclude_dtype(self, unwrap(.pr$DataTypeVector$from_rlist(list(columns)))),
     or_else = pstop(err = paste0("this type is not supported for Expr_exclude: ", columns))
   )
@@ -1544,9 +1570,9 @@ Expr_sort_by = function(by, descending = FALSE) {
 
 # TODO coontribute pyPolars, if exceeding u32 return Null, if exceeding column return Error
 # either it should be error or Null.
-# pl.DataFrame({"a":[0,1,2,3,4],"b":[4,3,2,1,0]}).select(pl.col("a").take(5294967296.0)) #return Null
-# pl.DataFrame({"a":[0,1,2,3,4],"b":[4,3,2,1,0]}).select(pl.col("a").take(-3)) #return Null
-# pl.DataFrame({"a":[0,1,2,3,4],"b":[4,3,2,1,0]}).select(pl.col("a").take(7)) #return Error
+# pl.RPolarsDataFrame({"a":[0,1,2,3,4],"b":[4,3,2,1,0]}).select(pl.col("a").take(5294967296.0)) #return Null
+# pl.RPolarsDataFrame({"a":[0,1,2,3,4],"b":[4,3,2,1,0]}).select(pl.col("a").take(-3)) #return Null
+# pl.RPolarsDataFrame({"a":[0,1,2,3,4],"b":[4,3,2,1,0]}).select(pl.col("a").take(7)) #return Error
 
 #' Gather values by index
 #'
@@ -1685,7 +1711,8 @@ Expr_fill_nan = function(expr = NULL) {
 #' @examples
 #' pl$select(pl$lit(1:5)$std())
 Expr_std = function(ddof = 1) {
-  unwrap(.pr$Expr$std(self, ddof))
+  .pr$Expr$std(self, ddof) |>
+    unwrap("in $std():")
 }
 
 #' Get variance
@@ -1695,7 +1722,8 @@ Expr_std = function(ddof = 1) {
 #' @examples
 #' pl$select(pl$lit(1:5)$var())
 Expr_var = function(ddof = 1) {
-  unwrap(.pr$Expr$var(self, ddof))
+  .pr$Expr$var(self, ddof) |>
+    unwrap("in $var():")
 }
 
 #' Get maximum value
@@ -1918,12 +1946,6 @@ Expr_is_unique = "use_extendr_wrapper"
 #'   with_columns(is_ufirst = pl$col("mpg")$is_first_distinct())
 Expr_is_first_distinct = "use_extendr_wrapper"
 
-Expr_is_first = function() {
-  warning("`$is_first()` is deprecated and will be removed in 0.12.0. Use `$is_first_distinct()` instead.")
-  .pr$Expr$is_first_distinct(self)
-}
-
-
 #' Check whether each value is the last occurrence
 #'
 #' @return Expr
@@ -2110,7 +2132,7 @@ Expr_pow = function(exponent) {
   .pr$Expr$pow(self, exponent) |> unwrap("in $pow()")
 }
 #' @export
-"^.Expr" = function(e1, e2) result(wrap_e(e1)$pow(e2)) |> unwrap("using '^'-operator")
+"^.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$pow(e2)) |> unwrap("using '^'-operator")
 
 
 #' Check whether a value is in a vector
@@ -2272,7 +2294,7 @@ Expr_inspect = function(fmt = "{}") {
   }
 
   # add a map to expression printing the evaluated series
-  .pr$Expr$map(self = self, lambda = f_inspect, output_type = NULL, agg_list = TRUE) |>
+  .pr$Expr$map_batches(self = self, lambda = f_inspect, output_type = NULL, agg_list = TRUE) |>
     unwrap("in $inspect()")
 }
 
@@ -2636,6 +2658,7 @@ Expr_rank = function(method = "average", descending = FALSE) {
   unwrap(.pr$Expr$rank(self, method, descending))
 }
 
+
 #' Difference
 #'
 #' Calculate the n-th discrete difference.
@@ -2648,8 +2671,9 @@ Expr_rank = function(method = "average", descending = FALSE) {
 #'   diff_default = pl$col("a")$diff(),
 #'   diff_2_ignore = pl$col("a")$diff(2, "ignore")
 #' )
-Expr_diff = function(n = 1, null_behavior = "ignore") {
-  unwrap(.pr$Expr$diff(self, n, null_behavior))
+  Expr_diff = function(n = 1, null_behavior = c("ignore", "drop")) {
+  .pr$Expr$diff(self, n, null_behavior) |>
+    unwrap("in $diff():")
 }
 
 #' Percentage change
@@ -3051,7 +3075,8 @@ Expr_ewm_mean = function(
     com = NULL, span = NULL, half_life = NULL, alpha = NULL,
     adjust = TRUE, min_periods = 1L, ignore_nulls = TRUE) {
   alpha = prepare_alpha(com, span, half_life, alpha)
-  unwrap(.pr$Expr$ewm_mean(self, alpha, adjust, min_periods, ignore_nulls))
+  .pr$Expr$ewm_mean(self, alpha, adjust, min_periods, ignore_nulls) |>
+    unwrap("in $ewm_mean()")
 }
 
 #' Exponentially-weighted moving standard deviation
@@ -3066,7 +3091,8 @@ Expr_ewm_std = function(
     com = NULL, span = NULL, half_life = NULL, alpha = NULL,
     adjust = TRUE, bias = FALSE, min_periods = 1L, ignore_nulls = TRUE) {
   alpha = prepare_alpha(com, span, half_life, alpha)
-  unwrap(.pr$Expr$ewm_std(self, alpha, adjust, bias, min_periods, ignore_nulls))
+  .pr$Expr$ewm_std(self, alpha, adjust, bias, min_periods, ignore_nulls) |>
+    unwrap("in $ewm_std()")
 }
 
 #' Exponentially-weighted moving variance
@@ -3081,7 +3107,8 @@ Expr_ewm_var = function(
     com = NULL, span = NULL, half_life = NULL, alpha = NULL,
     adjust = TRUE, bias = FALSE, min_periods = 1L, ignore_nulls = TRUE) {
   alpha = prepare_alpha(com, span, half_life, alpha)
-  unwrap(.pr$Expr$ewm_var(self, alpha, adjust, bias, min_periods, ignore_nulls))
+  .pr$Expr$ewm_var(self, alpha, adjust, bias, min_periods, ignore_nulls)  |>
+    unwrap("in $ewm_var()")
 }
 
 #' Extend Series with a constant
@@ -3095,7 +3122,8 @@ Expr_ewm_var = function(
 #' pl$select(pl$lit(1:4)$extend_constant(10.1, 2))
 #' pl$select(pl$lit(1:4)$extend_constant(NULL, 2))
 Expr_extend_constant = function(value, n) {
-  unwrap(.pr$Expr$extend_constant(self, wrap_e(value), n))
+  .pr$Expr$extend_constant(self, wrap_e(value), n) |>
+    unwrap("in $extend_constant()")
 }
 
 #' Repeat a Series
@@ -3113,7 +3141,8 @@ Expr_extend_constant = function(value, n) {
 #' pl$select(pl$lit("alice")$rep(n = 3))
 #' pl$select(pl$lit(1:3)$rep(n = 2))
 Expr_rep = function(n, rechunk = TRUE) {
-  unwrap(.pr$Expr$rep(self, n, rechunk))
+  .pr$Expr$rep(self, n, rechunk)  |>
+    unwrap("in $rep()")
 }
 
 #' Extend a Series by repeating values
@@ -3147,7 +3176,7 @@ Expr_to_r = function(df = NULL, i = 0) {
   if (is.null(df)) {
     pl$select(self)$to_series(i)$to_r()
   } else {
-    if (!inherits(df, c("DataFrame"))) {
+    if (!inherits(df, c("RPolarsDataFrame"))) {
       stop("Expr_to_r: input is not NULL or a DataFrame/Lazyframe")
     }
     df$select(self)$to_series(i)$to_r()
@@ -3273,7 +3302,7 @@ Expr_cumulative_eval = function(expr, min_periods = 1L, parallel = FALSE) {
 #' s2$sort()
 #' s2$flags # returns TRUE while it's not actually sorted
 Expr_set_sorted = function(descending = FALSE) {
-  self$map(\(s) {
+  self$map_batches(\(s) {
     .pr$Series$set_sorted_mut(s, descending) # use private to bypass mut protection
     s
   })

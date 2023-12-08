@@ -3,22 +3,25 @@
 \name{as_polars_lf}
 \alias{as_polars_lf}
 \alias{as_polars_lf.default}
-\alias{as_polars_lf.LazyFrame}
-\alias{as_polars_lf.LazyGroupBy}
+\alias{as_polars_lf.RPolarsLazyFrame}
+\alias{as_polars_lf.RPolarsLazyGroupBy}
 \title{To polars LazyFrame}
 \usage{
 as_polars_lf(x, ...)
 
 \method{as_polars_lf}{default}(x, ...)
 
-\method{as_polars_lf}{LazyFrame}(x, ...)
+\method{as_polars_lf}{RPolarsLazyFrame}(x, ...)
 
-\method{as_polars_lf}{LazyGroupBy}(x, ...)
+\method{as_polars_lf}{RPolarsLazyGroupBy}(x, ...)
 }
 \arguments{
 \item{x}{Object to convert to a polars DataFrame.}
 
 \item{...}{Additional arguments passed to methods.}
+}
+\value{
+a \link[=LazyFrame_class]{LazyFrame}
 }
 \description{
 \code{\link[=as_polars_lf]{as_polars_lf()}} is a generic function that converts an R object to a

@@ -9,22 +9,21 @@ if (build_debug_print) {
   ))
 }
 
-
 # modify these Dataframe methods
-replace_private_with_pub_methods(DataFrame, "^DataFrame_")
+replace_private_with_pub_methods(RPolarsDataFrame, "^DataFrame_")
 
 # GroupBy - is special read header info in groupby.R
 replace_private_with_pub_methods(GroupBy, "^GroupBy_")
 macro_add_syntax_check_to_class("GroupBy") # not activated automatically as GroupBy is not extendr
 
 # LazyFrame
-replace_private_with_pub_methods(LazyFrame, "^LazyFrame_")
+replace_private_with_pub_methods(RPolarsLazyFrame, "^LazyFrame_")
 
 # LazyGroupBy
-replace_private_with_pub_methods(LazyGroupBy, "^LazyGroupBy_")
+replace_private_with_pub_methods(RPolarsLazyGroupBy, "^LazyGroupBy_")
 
 # Expr
-replace_private_with_pub_methods(Expr, "^Expr_")
+replace_private_with_pub_methods(RPolarsExpr, "^Expr_")
 
 # configure subnames spaces of Expr
 #' @export
@@ -59,10 +58,10 @@ expr_cat_make_sub_ns = macro_new_subnamespace("^ExprCat_", "ExprCatNameSpace")
 `$.ExprBinNameSpace` = sub_name_space_accessor_function
 expr_bin_make_sub_ns = macro_new_subnamespace("^ExprBin_", "ExprBinNameSpace")
 
-replace_private_with_pub_methods(When, "^When_")
-replace_private_with_pub_methods(Then, "^Then_")
-replace_private_with_pub_methods(ChainedWhen, "^ChainedWhen_")
-replace_private_with_pub_methods(ChainedThen, "^ChainedThen_")
+replace_private_with_pub_methods(RPolarsWhen, "^When_")
+replace_private_with_pub_methods(RPolarsThen, "^Then_")
+replace_private_with_pub_methods(RPolarsChainedWhen, "^ChainedWhen_")
+replace_private_with_pub_methods(RPolarsChainedThen, "^ChainedThen_")
 
 
 # any sub-namespace inherits 'method_environment'
@@ -72,7 +71,7 @@ replace_private_with_pub_methods(ChainedThen, "^ChainedThen_")
 #' @param x string, name of method in method_environment (sub-namespace)
 #' @param pattern code-stump as string to auto-complete
 #' @export
-#' @inherit .DollarNames.DataFrame return
+#' @inherit .DollarNames.RPolarsDataFrame return
 #' @keywords internal
 .DollarNames.method_environment = function(x, pattern = "") {
   # I ponder why R chose to let attributes of environments be mutable also?!
@@ -91,14 +90,14 @@ replace_private_with_pub_methods(ChainedThen, "^ChainedThen_")
 
 
 # Field
-replace_private_with_pub_methods(RField, "^RField_")
+replace_private_with_pub_methods(RPolarsRField, "^RField_")
 
 
 # Series
-replace_private_with_pub_methods(Series, "^Series_")
+replace_private_with_pub_methods(RPolarsSeries, "^Series_")
 
 # RThreadHandle
-replace_private_with_pub_methods(RThreadHandle, "^RThreadHandle_")
+replace_private_with_pub_methods(RPolarsRThreadHandle, "^RThreadHandle_")
 
 # SQLContext
 replace_private_with_pub_methods(RPolarsSQLContext, "^SQLContext_")
@@ -106,7 +105,7 @@ replace_private_with_pub_methods(RPolarsSQLContext, "^SQLContext_")
 
 
 # expression constructors, why not just pl$lit = Expr_lit?
-move_env_elements(Expr, pl, c("lit"), remove = FALSE)
+move_env_elements(RPolarsExpr, pl, c("lit"), remove = FALSE)
 
 
 #' Get Memory Address
@@ -137,11 +136,11 @@ pl$mem_address = mem_address
   move_env_elements(pl$dtypes, pl, names(pl$dtypes), remove = FALSE)
 
   # register S3 methods for packages in Suggests
-  s3_register("nanoarrow::as_nanoarrow_array_stream", "DataFrame")
-  s3_register("nanoarrow::infer_nanoarrow_schema", "DataFrame")
-  s3_register("arrow::as_record_batch_reader", "DataFrame")
-  s3_register("arrow::as_arrow_table", "DataFrame")
-  s3_register("knitr::knit_print", "DataFrame")
+  s3_register("nanoarrow::as_nanoarrow_array_stream", "RPolarsDataFrame")
+  s3_register("nanoarrow::infer_nanoarrow_schema", "RPolarsDataFrame")
+  s3_register("arrow::as_record_batch_reader", "RPolarsDataFrame")
+  s3_register("arrow::as_arrow_table", "RPolarsDataFrame")
+  s3_register("knitr::knit_print", "RPolarsDataFrame")
 
   pl$numeric_dtypes = pl$dtypes[substr(names(pl$dtypes), 1, 3) %in% c("Int", "Flo")]
 

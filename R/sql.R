@@ -10,7 +10,7 @@
 #'   "SELECT b, a*2 AS two_a FROM frame WHERE b IS NOT NULL"
 #' )
 #' res$collect()
-RPolarsSQLContext
+NULL
 
 
 #' @title auto complete $-access into a polars object
@@ -20,7 +20,7 @@ RPolarsSQLContext
 #' @return char vec
 #' @export
 #' @noRd
-#' @inherit .DollarNames.DataFrame return
+#' @inherit .DollarNames.RPolarsDataFrame return
 #' @keywords internal
 .DollarNames.RPolarsSQLContext = function(x, pattern = "") {
   get_method_usages(RPolarsSQLContext, pattern = pattern)

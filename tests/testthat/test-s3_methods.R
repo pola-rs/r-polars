@@ -40,7 +40,7 @@ patrick::with_parameters_test_that("inspection",
     d = pl$DataFrame(mtcars)
     x = FUN(mtcars)
     y = FUN(d)
-    if (inherits(y, "DataFrame")) y <- y$to_data_frame()
+    if (inherits(y, "RPolarsDataFrame")) y <- y$to_data_frame()
     expect_equal(x, y, ignore_attr = TRUE)
     if (.test_name == "as.matrix") {
       z = FUN(d$lazy())
@@ -73,14 +73,14 @@ make_cases = function() {
     "sum", "sum", sum,
   )
 }
-patrick::with_parameters_test_that("Series",
+patrick::with_parameters_test_that("RPolarsSeries",
   {
     d = pl$Series(mtcars$mpg)
     x = base(mtcars$mpg)
     y = base(d)
     z = d[[pola]]()
-    if (inherits(y, "Series")) y <- y$to_vector()
-    if (inherits(z, "Series")) z <- z$to_vector()
+    if (inherits(y, "RPolarsSeries")) y <- y$to_vector()
+    if (inherits(z, "RPolarsSeries")) z <- z$to_vector()
     expect_equal(x, y, ignore_attr = TRUE)
     expect_equal(x, z, ignore_attr = TRUE)
   },
@@ -204,12 +204,19 @@ test_that("brackets", {
   expect_equal(df[1:5, 1]$to_vector(), mtcars[1:5, 1])
 
   expect_equal(df[, "cyl", drop = FALSE]$to_data_frame(), mtcars[, "cyl", drop = FALSE], ignore_attr = TRUE)
+  expect_equal(df["cyl"]$to_data_frame(), mtcars["cyl"], ignore_attr = TRUE)
+  expect_equal(df[1:3]$to_data_frame(), mtcars[1:3], ignore_attr = TRUE)
+  expect_equal(df[NULL, ]$to_data_frame(), mtcars[NULL, ], ignore_attr = TRUE)
+  expect_equal(
+    df[pl$col("cyl") >= 8, c("disp", "mpg")]$to_data_frame(),
+    mtcars[mtcars$cyl >= 8, c("disp", "mpg")],
+    ignore_attr = TRUE
+  )
 
   df = pl$DataFrame(mtcars)
   a = mtcars[-(1:2), -c(1, 3, 6, 9)]
   b = df[-(1:2), -c(1, 3, 6, 9)]$to_data_frame()
   expect_equal(a, b, ignore_attr = TRUE)
-
 
   # lazy
   lf = pl$DataFrame(mtcars)$lazy()
@@ -222,6 +229,10 @@ test_that("brackets", {
   b = mtcars[, c("hp", "mpg")]
   expect_equal(a, b, ignore_attr = TRUE)
 
+  a = lf[c("hp", "mpg")]$collect()$to_data_frame()
+  b = mtcars[c("hp", "mpg")]
+  expect_equal(a, b, ignore_attr = TRUE)
+
   idx = rep(FALSE, ncol(mtcars))
   idx[c(1, 3, 6, 9)] = TRUE
   a = lf[, idx]$collect()$to_data_frame()
@@ -231,6 +242,12 @@ test_that("brackets", {
   a = lf[, c(1, 4, 2)]$collect()$to_data_frame()
   b = mtcars[, c(1, 4, 2)]
   expect_equal(a, b, ignore_attr = TRUE)
+
+  expect_equal(
+    lf[pl$col("cyl") >= 8, c("disp", "mpg")]$collect()$to_data_frame(),
+    mtcars[mtcars$cyl >= 8, c("disp", "mpg")],
+    ignore_attr = TRUE
+  )
 
   # Not supported for lazy
   expect_error(lf[1:3, ], "not supported")
@@ -242,4 +259,19 @@ test_that("brackets", {
     mtcars[, "cyl", drop = FALSE],
     ignore_attr = TRUE
   )
+
+  # Series
+  expect_equal(pl$Series(letters)[1:5]$to_vector(), letters[1:5])
+  expect_equal(pl$Series(letters)[-5]$to_vector(), letters[-5])
+})
+
+
+test_that("dim should integer", {
+  d = dim(as_polars_df(mtcars))
+  expect_identical(d, dim(mtcars))
+  expect_true(is.integer(d))
+
+  d = dim(as_polars_lf(mtcars))
+  expect_identical(d, c(NA_integer_, ncol(mtcars)))
+  expect_true(is.integer(d))
 })

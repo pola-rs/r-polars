@@ -1,4 +1,4 @@
-use crate::rdataframe::DataFrame as RDF;
+use crate::rdataframe::RPolarsDataFrame;
 use crate::robj_to;
 use crate::rpolarserr::rerr;
 use crate::rpolarserr::{
@@ -16,13 +16,13 @@ use std::collections::VecDeque;
 use std::sync::{Arc, Mutex};
 use std::thread;
 #[derive(Debug)]
-pub struct RThreadHandle<T> {
+pub struct RPolarsRThreadHandle<T> {
     handle: Option<thread::JoinHandle<T>>,
 }
 
-impl<T: Send + Sync + 'static> RThreadHandle<T> {
+impl<T: Send + Sync + 'static> RPolarsRThreadHandle<T> {
     pub fn new(compute: impl FnOnce() -> T + Send + 'static) -> Self {
-        RThreadHandle {
+        RPolarsRThreadHandle {
             handle: Some(thread::spawn(compute)),
         }
     }
@@ -59,8 +59,8 @@ impl<T: Send + Sync + 'static> RThreadHandle<T> {
 }
 
 #[extendr]
-impl RThreadHandle<RResult<RDF>> {
-    fn join(&mut self) -> RResult<RDF> {
+impl RPolarsRThreadHandle<RResult<RPolarsDataFrame>> {
+    fn join(&mut self) -> RResult<RPolarsDataFrame> {
         // Could use *.flatten() when it's stable
         self.join_generic().and_then(std::convert::identity)
     }
@@ -186,7 +186,7 @@ impl RIPCJob {
                 collector,
             } => {
                 let bits = || {
-                    use crate::series::Series as RSeries;
+                    use crate::series::RPolarsSeries;
                     let func_robj = deserialize_robj(raw_func)?;
                     let series = deserialize_series(&raw_series)?;
                     let func = func_robj
@@ -194,9 +194,10 @@ impl RIPCJob {
                         .ok_or(RPolarsErr::new())
                         .bad_val(rdbg(func_robj))
                         .mistyped("pure R function")?;
-                    let shared_memory = serialize_series(RSeries::any_robj_to_pl_series_result(
-                        func.call(pairlist!(RSeries(series)))?,
-                    )?)?;
+                    let shared_memory =
+                        serialize_series(RPolarsSeries::any_robj_to_pl_series_result(
+                            func.call(pairlist!(RPolarsSeries(series)))?,
+                        )?)?;
                     RResult::Ok(ipc::IpcSharedMemory::from_bytes(shared_memory.as_slice()))
                 };
                 collector.send(bits().when(
@@ -552,8 +553,8 @@ pub fn test_rbackgroundhandler(lambda: Robj, arg: Robj) -> RResult<Robj> {
 }
 
 #[extendr]
-pub fn test_rthreadhandle() -> RThreadHandle<RResult<RDF>> {
-    RThreadHandle::new(move || {
+pub fn test_rthreadhandle() -> RPolarsRThreadHandle<RResult<RPolarsDataFrame>> {
+    RPolarsRThreadHandle::new(move || {
         println!("Intense sleeping in Rust for 10 seconds!");
         let duration = std::time::Duration::from_millis(10000);
         thread::sleep(duration);
@@ -571,7 +572,7 @@ pub fn test_rthreadhandle() -> RThreadHandle<RResult<RDF>> {
                     .alias("Price"),
             )
         };
-        let rlf = crate::lazy::dataframe::LazyFrame::from(plf)
+        let rlf = crate::lazy::dataframe::RPolarsLazyFrame::from(plf)
             .collect()
             .unwrap();
         Ok(rlf)
@@ -579,15 +580,15 @@ pub fn test_rthreadhandle() -> RThreadHandle<RResult<RDF>> {
 }
 
 #[extendr]
-pub fn test_serde_df(df: &RDF) -> RResult<RDF> {
+pub fn test_serde_df(df: &RPolarsDataFrame) -> RResult<RPolarsDataFrame> {
     let x = serialize_dataframe(&mut df.0.clone())?;
     let df2 = deserialize_dataframe(x.as_slice())?;
-    Ok(RDF(df2))
+    Ok(RPolarsDataFrame(df2))
 }
 
 extendr_module! {
     mod rbackground;
-    impl RThreadHandle<RResult<RDF>>;
+    impl RPolarsRThreadHandle<RResult<RPolarsDataFrame>>;
     fn setup_renv;
     fn set_global_rpool_cap;
     fn get_global_rpool_cap;

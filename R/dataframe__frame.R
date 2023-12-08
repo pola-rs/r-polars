@@ -7,7 +7,7 @@
 #' `DataFrame`-object is an `externalptr` to a low-level Rust polars DataFrame
 #' object.
 #'
-#' The S3 method `.DollarNames.DataFrame` exposes all public `$foobar()`-methods
+#' The S3 method `.DollarNames.RPolarsDataFrame` exposes all public `$foobar()`-methods
 #' which are callable onto the object. Most methods return another `DataFrame`-
 #' class instance or similar which allows for method chaining. This class system
 #' could be called "environment classes" (in lack of a better name) and is the
@@ -32,7 +32,7 @@
 #' @examples
 #' # see all public exported method names (normally accessed via a class
 #' # instance with $)
-#' ls(.pr$env$DataFrame)
+#' ls(.pr$env$RPolarsDataFrame)
 #'
 #' # see all private methods (not intended for regular use)
 #' ls(.pr$DataFrame)
@@ -71,7 +71,7 @@
 #' # Try unwrapping an error from polars due to unmatching column lengths
 #' err_result = .pr$DataFrame$set_column_from_robj(df, 1:10000, "wrong_length")
 #' tryCatch(unwrap(err_result, call = NULL), error = \(e) cat(as.character(e)))
-DataFrame
+NULL
 
 
 #' @title auto complete $-access into a polars object
@@ -82,21 +82,21 @@ DataFrame
 #' @export
 #' @return Doesn't return a value. This is used for autocompletion in RStudio.
 #' @keywords internal
-.DollarNames.DataFrame = function(x, pattern = "") {
-  get_method_usages(DataFrame, pattern = pattern)
+.DollarNames.RPolarsDataFrame = function(x, pattern = "") {
+  get_method_usages(RPolarsDataFrame, pattern = pattern)
 }
 
 
 #' @title auto complete $-access into a polars object
 #' @description called by the interactive R session internally
-#' @param x VecDataFrame
+#' @param x RPolarsVecDataFrame
 #' @param pattern code-stump as string to auto-complete
 #' @return char vec
 #' @export
-#' @inherit .DollarNames.DataFrame return
+#' @inherit .DollarNames.RPolarsDataFrame return
 #' @keywords internal
-.DollarNames.VecDataFrame = function(x, pattern = "") {
-  get_method_usages(VecDataFrame, pattern = pattern)
+.DollarNames.RPolarsVecDataFrame = function(x, pattern = "") {
+  get_method_usages(RPolarsVecDataFrame, pattern = pattern)
 }
 
 
@@ -158,7 +158,7 @@ pl$DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
   }
 
   # pass through if already a DataFrame
-  if (inherits(largs[[1L]], "DataFrame")) {
+  if (inherits(largs[[1L]], "RPolarsDataFrame")) {
     return(largs[[1L]])
   }
 
@@ -167,7 +167,7 @@ pl$DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
   if (length(keys) == 0) keys <- rep(NA_character_, length(largs))
   keys = mapply(largs, keys, FUN = function(column, key) {
     if (is.na(key) || nchar(key) == 0) {
-      if (inherits(column, "Series")) {
+      if (inherits(column, "RPolarsSeries")) {
         key = column$name
       } else {
         key = "new_column"
@@ -218,7 +218,7 @@ pl$DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
 #' @export
 #'
 #' @examples pl$DataFrame(iris)
-print.DataFrame = function(x, ...) {
+print.RPolarsDataFrame = function(x, ...) {
   x$print()
   invisible(x)
 }
@@ -283,7 +283,7 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 #' # to verify inside code of a property, use the [[]] syntax instead.
 #' df[["columns"]] # to see property code, .pr is the internal polars api into rust polars
 #' DataFrame.property_setters$columns # and even more obscure to see setter code
-"$<-.DataFrame" = function(self, name, value) {
+"$<-.RPolarsDataFrame" = function(self, name, value) {
   name = sub("<-$", "", name)
 
   # stop if method is not a setter
@@ -914,9 +914,9 @@ DataFrame_to_list = function(unnest_structs = TRUE) {
 #' df1$join(other = df2, how = "cross")
 DataFrame_join = function(
     other, # : LazyFrame or DataFrame,
-    left_on = NULL, # : str | pli.Expr | Sequence[str | pli.Expr] | None = None,
-    right_on = NULL, # : str | pli.Expr | Sequence[str | pli.Expr] | None = None,
-    on = NULL, # : str | pli.Expr | Sequence[str | pli.Expr] | None = None,
+    left_on = NULL, # : str | pli.RPolarsExpr | Sequence[str | pli.RPolarsExpr] | None = None,
+    right_on = NULL, # : str | pli.RPolarsExpr | Sequence[str | pli.RPolarsExpr] | None = None,
+    on = NULL, # : str | pli.RPolarsExpr | Sequence[str | pli.RPolarsExpr] | None = None,
     how = c("inner", "left", "outer", "semi", "anti", "cross"),
     suffix = "_right",
     allow_parallel = TRUE,
@@ -946,7 +946,7 @@ DataFrame_join = function(
 #' df_s = s$to_frame()
 #' df_s
 DataFrame_to_struct = function(name = "") {
-  .pr$DataFrame$to_struct(self, name)
+  unwrap(.pr$DataFrame$to_struct(self, name), "in $to_struct():")
 }
 
 
@@ -1306,8 +1306,8 @@ DataFrame_join_asof = function(
   # convert other to LazyFrame, capture any Error as a result, and pass it on
 
   other_df_result = pcase(
-    inherits(other, "DataFrame"), Ok(other$lazy()),
-    inherits(other, "LazyFrame"), Ok(other),
+    inherits(other, "RPolarsDataFrame"), Ok(other$lazy()),
+    inherits(other, "RPolarsLazyFrame"), Ok(other),
     or_else = Err(" not a LazyFrame or DataFrame")
   )
 
@@ -1409,10 +1409,10 @@ DataFrame_pivot = function(
     separator = "_") {
   pcase(
     # if string, call it on Expr-method of pl$element() and capture any Error as Result
-    is_string(aggregate_function), result(`$.Expr`(pl$element(), aggregate_function)()),
+    is_string(aggregate_function), result(`$.RPolarsExpr`(pl$element(), aggregate_function)()),
 
     # Expr or NULL pass as is
-    is.null(aggregate_function) || inherits(aggregate_function, "Expr"), Ok(aggregate_function),
+    is.null(aggregate_function) || inherits(aggregate_function, "RPolarsExpr"), Ok(aggregate_function),
 
     # anything else pass err
     or_else = Err(" is neither a string, NULL or an Expr")

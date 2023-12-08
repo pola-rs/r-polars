@@ -36,13 +36,13 @@ test_that("from_arrow", {
     lapply(at$columns, \(x) x$num_chunks)
   ))
   expect_identical(
-    pl$from_arrow(at, rechunk = FALSE)$select(pl$all()$map(\(s) s$chunk_lengths()))$to_list() |>
+    pl$from_arrow(at, rechunk = FALSE)$select(pl$all()$map_batches(\(s) s$chunk_lengths()))$to_list() |>
       lapply(length) |> unname(),
     lapply(at$columns, \(x) x$num_chunks)
   )
 
   expect_error(expect_identical(
-    pl$from_arrow(at, rechunk = TRUE)$select(pl$all()$map(\(s) s$chunk_lengths()))$to_list() |>
+    pl$from_arrow(at, rechunk = TRUE)$select(pl$all()$map_batches(\(s) s$chunk_lengths()))$to_list() |>
       lapply(length) |> unname(),
     lapply(at$columns, \(x) x$num_chunks)
   ))

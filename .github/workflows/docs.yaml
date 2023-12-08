@@ -46,7 +46,7 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set rust target
         id: rust-target
@@ -61,7 +61,7 @@ jobs:
         with:
           target: "${{ steps.rust-target.outputs.TARGET }}"
 
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: 3.x
 
@@ -79,7 +79,7 @@ jobs:
       - name: Build docs
         run: make docs
 
-      - uses: webfactory/ssh-agent@v0.6.0
+      - uses: webfactory/ssh-agent@v0.8.0
         env: 
           DEPLOY_DOCS: ${{ secrets.DEPLOY_DOCS  }}
         if: ${{ (github.event_name != 'pull_request') && (github.repository_owner == 'pola-rs') }} 

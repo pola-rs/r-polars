@@ -4,15 +4,15 @@ pub mod extendr_helpers;
 pub mod wrappers;
 
 use crate::conversion_r_to_s::robjname2series;
-use crate::lazy::dsl::Expr;
+use crate::lazy::dsl::RPolarsExpr;
 use crate::rdatatype::RPolarsDataType;
 use crate::rpolarserr::{polars_to_rpolars_err, rdbg, rerr, RPolarsErr, RResult, WithRctx};
-use crate::series::Series;
+use crate::series::RPolarsSeries;
 
 use std::any::type_name as tn;
 //use std::intrinsics::read_via_copy;
 use crate::lazy::dsl::robj_to_col;
-use crate::rdataframe::{DataFrame, LazyFrame};
+use crate::rdataframe::{RPolarsDataFrame, RPolarsLazyFrame};
 use extendr_api::eval_string_with_params;
 use extendr_api::prelude::{list, Result as EResult, Strings};
 use extendr_api::Attributes;
@@ -222,7 +222,7 @@ macro_rules! apply_output {
             .collect::<extendr_api::Result<$ca_type>>()
             //if all ok collect into serias and rename
             .map(|ca| {
-                Series(ca.into_series())
+                RPolarsSeries(ca.into_series())
             })
     };
 }
@@ -767,7 +767,7 @@ pub fn robj_to_pl_duration_string(robj: extendr_api::Robj) -> RResult<String> {
 
 //this function is used to convert and Rside Expr into rust side Expr
 // wrap_e allows to also convert any allowed non Exp
-pub fn robj_to_rexpr(robj: extendr_api::Robj, str_to_lit: bool) -> RResult<Expr> {
+pub fn robj_to_rexpr(robj: extendr_api::Robj, str_to_lit: bool) -> RResult<RPolarsExpr> {
     let robj = unpack_r_result_list(robj)?;
     let robj_clone = robj.clone(); //reserve shallowcopy for writing err msg
 
@@ -777,6 +777,13 @@ pub fn robj_to_rexpr(robj: extendr_api::Robj, str_to_lit: bool) -> RResult<Expr>
         .plain("cannot be converted into an Expr")
 }
 
+pub fn robj_to_pl_literal(robj: Robj) -> RResult<pl::LiteralValue> {
+    match robj_to_rexpr(robj, true)?.0 {
+        pl::Expr::Literal(litval) => Ok(litval),
+        other_expr => rerr().bad_val(format!("Expr [{:?}] was not a literal:", other_expr)),
+    }
+}
+
 // used in conjunction with R!("...")
 pub fn unpack_r_eval(res: extendr_api::Result<Robj>) -> RResult<Robj> {
     unpack_r_result_list(res.map_err(|err| {
@@ -784,11 +791,11 @@ pub fn unpack_r_eval(res: extendr_api::Result<Robj>) -> RResult<Robj> {
     })?)
 }
 
-pub fn r_expr_to_rust_expr(robj_expr: Robj) -> RResult<Expr> {
-    let res: ExtendrResult<extendr_api::ExternalPtr<Expr>> = robj_expr.clone().try_into();
-    Ok(Expr(
+pub fn r_expr_to_rust_expr(robj_expr: Robj) -> RResult<RPolarsExpr> {
+    let res: ExtendrResult<extendr_api::ExternalPtr<RPolarsExpr>> = robj_expr.clone().try_into();
+    Ok(RPolarsExpr(
         res.bad_robj(&robj_expr)
-            .mistyped(tn::<Expr>())
+            .mistyped(tn::<RPolarsExpr>())
             .when("converting R extptr PolarsExpr to rust RExpr")
             .plain("internal error: could not convert R Expr (externalptr) to rust Expr")?
             .0
@@ -796,50 +803,50 @@ pub fn r_expr_to_rust_expr(robj_expr: Robj) -> RResult<Expr> {
     ))
 }
 
-fn internal_rust_wrap_e(robj: Robj, str_to_lit: bool) -> RResult<Expr> {
+fn internal_rust_wrap_e(robj: Robj, str_to_lit: bool) -> RResult<RPolarsExpr> {
     use extendr_api::*;
 
     if !str_to_lit && robj.rtype() == Rtype::Strings {
         robj_to_col(robj, extendr_api::NULL.into())
     } else {
-        Expr::lit(robj)
+        RPolarsExpr::lit(robj)
     }
 }
 
-pub fn robj_to_lazyframe(robj: extendr_api::Robj) -> RResult<LazyFrame> {
+pub fn robj_to_lazyframe(robj: extendr_api::Robj) -> RResult<RPolarsLazyFrame> {
     let robj = unpack_r_result_list(robj)?;
     let rv = rdbg(&robj);
 
     // closure to allow ?-convert extendr::Result to RResult
-    let res = || -> RResult<LazyFrame> {
-        let lf: ExternalPtr<LazyFrame> =
+    let res = || -> RResult<RPolarsLazyFrame> {
+        let lf: ExternalPtr<RPolarsLazyFrame> =
             (unpack_r_eval(R!("polars:::result(polars::as_polars_lf({{robj}}))"))?).try_into()?;
-        Ok(LazyFrame(lf.0.clone()))
+        Ok(RPolarsLazyFrame(lf.0.clone()))
     }();
 
-    res.bad_val(rv).mistyped(tn::<LazyFrame>())
+    res.bad_val(rv).mistyped(tn::<RPolarsLazyFrame>())
 }
 
-pub fn robj_to_dataframe(robj: extendr_api::Robj) -> RResult<DataFrame> {
+pub fn robj_to_dataframe(robj: extendr_api::Robj) -> RResult<RPolarsDataFrame> {
     let robj = unpack_r_result_list(robj)?;
     let robj_clone = robj.clone();
 
     // closure to allow ?-convert extendr::Result to RResult
-    let res = || -> RResult<DataFrame> {
-        let df: ExternalPtr<DataFrame> =
+    let res = || -> RResult<RPolarsDataFrame> {
+        let df: ExternalPtr<RPolarsDataFrame> =
             (unpack_r_eval(R!("polars:::result(polars::as_polars_df({{robj}}))"))?).try_into()?;
-        Ok(DataFrame(df.0.clone()))
+        Ok(RPolarsDataFrame(df.0.clone()))
     }();
 
     res.bad_val(rdbg(robj_clone))
         .plain("could not be converted into a DataFrame")
 }
 
-pub fn robj_to_series(robj: extendr_api::Robj) -> RResult<Series> {
+pub fn robj_to_series(robj: extendr_api::Robj) -> RResult<RPolarsSeries> {
     let robj = unpack_r_result_list(robj)?;
     let robj_clone = robj.clone();
     robjname2series(robj, "")
-        .map(Series)
+        .map(RPolarsSeries)
         .map_err(polars_to_rpolars_err)
         .bad_val(rdbg(robj_clone))
         .plain("could not be converted into a DataFrame")
@@ -878,7 +885,7 @@ where
     T::IntoIter: ExactSizeIterator,
 {
     use extendr_api::prelude::*;
-    let iter = ite.into_iter().map(Expr);
+    let iter = ite.into_iter().map(RPolarsExpr);
     List::from_values(iter)
 }
 
@@ -940,6 +947,9 @@ macro_rules! robj_to_inner {
     (new_quantile_interpolation_option, $a:ident) => {
         $crate::rdatatype::new_quantile_interpolation_option($a)
     };
+    (new_null_behavior, $a:ident) => {
+        $crate::rdatatype::robj_new_null_behavior($a)
+    };
 
     (bool, $a:ident) => {
         $crate::utils::robj_to_bool($a)
@@ -1000,8 +1010,17 @@ macro_rules! robj_to_inner {
         $crate::utils::robj_to_field($a)
     };
 
+    (Robj, $a:ident) => {{
+        let ok_robj: RResult<Robj> = Ok($a);
+        ok_robj
+    }};
+
     (LazyFrame, $a:ident) => {
         $crate::utils::robj_to_lazyframe($a)
+    };
+
+    (LiteralValue, $a:ident) => {
+        $crate::utils::robj_to_pl_literal($a)
     };
 
     (PLLazyFrame, $a:ident) => {
@@ -1026,6 +1045,10 @@ macro_rules! robj_to_inner {
 
     (ParallelStrategy, $a:ident) => {
         $crate::rdatatype::robj_to_parallel_strategy($a)
+    };
+
+    (ListToStructWidthStrategy, $a:ident) => {
+        $crate::rdatatype::robj_to_width_strategy($a)
     };
 
     (PathBuf, $a:ident) => {

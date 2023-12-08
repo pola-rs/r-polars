@@ -84,7 +84,7 @@ test_that("DataFrame, input free vectors, input empty", {
     df1$to_list(), df2$to_list()
   )
   df_e = pl$DataFrame()
-  expect_s3_class(df_e, "DataFrame")
+  expect_s3_class(df_e, "RPolarsDataFrame")
   expect_identical(df_e$shape, c(0, 0))
   expect_identical(pl$DataFrame()$to_list(), .pr$DataFrame$default()$to_list())
 })
@@ -225,12 +225,12 @@ test_that("select with list of exprs", {
   expect_equal(x6$columns, c("mpg", "hp"))
 })
 
-test_that("map unity", {
+test_that("map_batches unity", {
   x = pl$
     DataFrame(iris)$
     select(
     pl$col("Sepal.Length")$
-      map(\(s) s)
+      map_batches(\(s) s)
   )$
     to_data_frame()[, 1, drop = FALSE]
 
@@ -247,7 +247,7 @@ test_that("map unity", {
     DataFrame(int_iris)$
     select(
     pl$col("Sepal.Length")$
-      map(\(s) s)
+      map_batches(\(s) s)
   )$
     to_data_frame()[, 1, drop = FALSE]
 
@@ -261,7 +261,7 @@ test_that("map unity", {
     DataFrame(iris)$
     select(
     pl$col("Species")$
-      map(\(s) s)
+      map_batches(\(s) s)
   )$
     to_data_frame()[, 1]
 
@@ -272,14 +272,31 @@ test_that("map unity", {
     DataFrame(iris)$
     select(
     pl$col("Species")$
-      map(\(s) s)
+      map_batches(\(s) s)
   )$
     to_data_frame()
   expect_identical(x, iris[, 5, drop = FALSE])
 })
 
+test_that("$map() deprecated", {
+  expect_warning(
+    pl$DataFrame(iris)$select(
+      pl$col("Sepal.Length")$map(\(s) s)
+    ),
+    "map_batches"
+  )
+})
 
-test_that("map type", {
+test_that("$apply() deprecated", {
+  expect_warning(
+    pl$DataFrame(iris)$select(
+      pl$col("Sepal.Length")$apply(\(s) s)
+    ),
+    "map_elements"
+  )
+})
+
+test_that("map_batches type", {
   int_iris = iris
   int_iris[] = lapply(iris, as.integer)
 
@@ -287,12 +304,12 @@ test_that("map type", {
   x = pl$DataFrame(iris)$
     select(
     pl$col("Sepal.Length")$
-      map(\(s) {
+      map_batches(\(s) {
       as.integer(s$to_r()) # ok to return R vector also, will be
       # converted back to series named ""
     })$
-      map(\(s) s * 25L)$
-      map(\(s) s / 4)
+      map_batches(\(s) s * 25L)$
+      map_batches(\(s) s / 4)
   )$
     to_data_frame()[, 1, drop = FALSE]
 
@@ -552,7 +569,7 @@ test_that("drop_in_place", {
   expect_true("Species" %in% dat$columns)
   x = dat$drop_in_place("Species")
   expect_false("Species" %in% dat$columns)
-  expect_s3_class(x, "Series")
+  expect_s3_class(x, "RPolarsSeries")
 })
 
 

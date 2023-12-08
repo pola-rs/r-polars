@@ -3,12 +3,12 @@
 \name{Series_add}
 \alias{Series_add}
 \alias{add}
-\alias{+.Series}
+\alias{+.RPolarsSeries}
 \title{add Series}
 \usage{
 Series_add(other)
 
-\method{+}{Series}(s1, s2)
+\method{+}{RPolarsSeries}(s1, s2)
 }
 \arguments{
 \item{other}{Series or into Series}

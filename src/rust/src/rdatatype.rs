@@ -10,17 +10,17 @@ use crate::utils::collect_hinted_result;
 use crate::utils::wrappers::null_to_opt;
 use std::result::Result;
 #[derive(Debug, Clone, PartialEq)]
-pub struct RField(pub pl::Field);
+pub struct RPolarsRField(pub pl::Field);
 use pl::UniqueKeepStrategy;
 use polars::prelude::AsofStrategy;
 
 use crate::utils::robj_to_rchoice;
 
 #[extendr]
-impl RField {
-    fn new(name: String, datatype: &RPolarsDataType) -> RField {
+impl RPolarsRField {
+    fn new(name: String, datatype: &RPolarsDataType) -> RPolarsRField {
         let name = name.into();
-        RField(pl::Field {
+        RPolarsRField(pl::Field {
             name,
             dtype: datatype.0.clone(),
         })
@@ -32,7 +32,7 @@ impl RField {
 
     #[allow(clippy::should_implement_trait)]
     pub fn clone(&self) -> Self {
-        RField(self.0.clone())
+        RPolarsRField(self.0.clone())
     }
 
     pub fn get_name(&self) -> String {
@@ -112,7 +112,7 @@ impl RPolarsDataType {
                 .ok_or_else(|| "argument [l] is not a list".to_string())
                 .map(|l| {
                     l.into_iter().enumerate().map(|(i, (name, robj))| {
-                        let res: extendr_api::Result<ExternalPtr<RField>> = robj.try_into();
+                        let res: extendr_api::Result<ExternalPtr<RPolarsRField>> = robj.try_into();
                         res.map_err(|err| {
                             format!(
                                 "list element [[{}]] named {} is not a Field: {:?}",
@@ -205,10 +205,10 @@ impl From<RPolarsDataType> for pl::DataType {
 //if any names are missing will become slice of dtypes and passed to polars_io.csv.csvread.with_dtypes_slice
 //zero length vector will neither trigger with_dtypes() or with_dtypes_slice() method calls
 #[derive(Debug, Clone, Default)]
-pub struct DataTypeVector(pub Vec<(Option<String>, pl::DataType)>);
+pub struct RPolarsDataTypeVector(pub Vec<(Option<String>, pl::DataType)>);
 
 #[extendr]
-impl DataTypeVector {
+impl RPolarsDataTypeVector {
     pub fn new() -> Self {
         Self::default()
     }
@@ -221,7 +221,7 @@ impl DataTypeVector {
     }
 
     pub fn from_rlist(list: List) -> List {
-        let mut dtv = DataTypeVector(Vec::with_capacity(list.len()));
+        let mut dtv = RPolarsDataTypeVector(Vec::with_capacity(list.len()));
 
         let result: std::result::Result<(), String> = list.iter().try_for_each(|(name, robj)| {
             if !robj.inherits("RPolarsDataType") || robj.rtype() != extendr_api::Rtype::ExternalPtr
@@ -240,7 +240,7 @@ impl DataTypeVector {
     }
 }
 
-impl DataTypeVector {
+impl RPolarsDataTypeVector {
     pub fn dtv_to_vec(&self) -> Vec<pl::DataType> {
         let v: Vec<_> = self.0.iter().map(|(_, dt)| dt.clone()).collect();
         v
@@ -286,21 +286,6 @@ pub fn new_quantile_interpolation_option(robj: Robj) -> RResult<QuantileInterpol
     }
 }
 
-pub fn new_null_behavior(
-    s: &str,
-) -> std::result::Result<polars::series::ops::NullBehavior, String> {
-    use polars::series::ops::NullBehavior as NB;
-    match s {
-        "ignore" => Ok(NB::Ignore),
-        "drop" => Ok(NB::Drop),
-
-        _ => Err(format!(
-            "NullBehavior choice: [{}] is not any of 'drop' or 'ignore'",
-            s
-        )),
-    }
-}
-
 pub fn new_rank_method(s: &str) -> std::result::Result<pl::RankMethod, String> {
     use pl::RankMethod as RM;
     let s_low = s.to_lowercase();
@@ -318,9 +303,7 @@ pub fn new_rank_method(s: &str) -> std::result::Result<pl::RankMethod, String> {
     }
 }
 
-pub fn literal_to_any_value(
-    litval: pl::LiteralValue,
-) -> std::result::Result<pl::AnyValue<'static>, String> {
+pub fn literal_to_any_value(litval: pl::LiteralValue) -> RResult<pl::AnyValue<'static>> {
     use pl::AnyValue as av;
     use pl::LiteralValue as lv;
     use smartstring::alias::String as SString;
@@ -352,7 +335,7 @@ pub fn literal_to_any_value(
             s.push_str(x.as_str());
             Ok(av::Utf8Owned(s))
         }
-        x => Err(format!("cannot convert LiteralValue {:?} to AnyValue", x)),
+        x => rerr().bad_val(format!("cannot convert LiteralValue {:?} to AnyValue", x)),
     }
 }
 
@@ -386,13 +369,12 @@ pub fn new_interpolation_method(s: &str) -> std::result::Result<pl::Interpolatio
     }
 }
 
-pub fn new_width_strategy(s: &str) -> std::result::Result<pl::ListToStructWidthStrategy, String> {
+pub fn robj_to_width_strategy(robj: Robj) -> RResult<pl::ListToStructWidthStrategy> {
     use pl::ListToStructWidthStrategy as WS;
-    match s {
+    match robj_to_rchoice(robj)?.to_lowercase().as_str() {
         "first_non_null" => Ok(WS::FirstNonNull),
         "max_width" => Ok(WS::MaxWidth),
-
-        _ => Err(format!(
+        s => rerr().bad_val(format!(
             "n_field_strategy: [{}] is not any of 'first_non_null' or 'max_width'",
             s
         )),
@@ -530,9 +512,55 @@ pub fn robj_to_parallel_strategy(robj: extendr_api::Robj) -> RResult<pl::Paralle
     }
 }
 
+pub fn robj_new_null_behavior(robj: Robj) -> RResult<polars::series::ops::NullBehavior> {
+    use polars::series::ops::NullBehavior as NB;
+    match robj_to_rchoice(robj)?.to_lowercase().as_str() {
+        "ignore" => Ok(NB::Ignore),
+        "drop" => Ok(NB::Drop),
+        s => rerr().bad_val(format!(
+            "NullBehavior choice: [{}] is not any of 'drop' or 'ignore'",
+            s
+        )),
+    }
+}
+
+pub fn parse_fill_null_strategy(
+    strategy: &str,
+    limit: Option<u32>,
+) -> RResult<pl::FillNullStrategy> {
+    use pl::FillNullStrategy::*;
+    let parsed = match strategy {
+        "forward" => Forward(limit),
+        "backward" => Backward(limit),
+        "min" => Min,
+        "max" => Max,
+        "mean" => Mean,
+        "zero" => Zero,
+        "one" => One,
+        e => return rerr().plain("FillNullStrategy is not known").bad_val(e),
+    };
+    Ok(parsed)
+}
+
+pub fn robjs_to_ewm_options(
+    alpha: Robj,
+    adjust: Robj,
+    bias: Robj,
+    min_periods: Robj,
+    ignore_nulls: Robj,
+) -> RResult<pl::EWMOptions> {
+    Ok(pl::EWMOptions {
+        alpha: robj_to!(f64, alpha)?,
+        adjust: robj_to!(bool, adjust)?,
+        bias: robj_to!(bool, bias)?,
+        min_periods: robj_to!(usize, min_periods)?,
+        ignore_nulls: robj_to!(bool, ignore_nulls)?,
+    })
+}
+
 extendr_module! {
     mod rdatatype;
     impl RPolarsDataType;
-    impl DataTypeVector;
-    impl RField;
+    impl RPolarsDataTypeVector;
+    impl RPolarsRField;
 }

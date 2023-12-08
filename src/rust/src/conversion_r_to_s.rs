@@ -1,4 +1,4 @@
-use crate::series::Series;
+use crate::series::RPolarsSeries;
 use crate::utils::collect_hinted_result;
 use extendr_api::prelude::*;
 /// this file implements any conversion from Robject to polars::Series
@@ -19,13 +19,6 @@ enum SeriesTree {
 
 // Main module function: Convert any potentially nested R object handled in three steps
 pub fn robjname2series(x: Robj, name: &str) -> pl::PolarsResult<pl::Series> {
-    // check for any dependency injection
-    let opt_new_robj = crate::utils::inner_unpack_r_result_list(
-        R!("polars:::result_minimal(polars:::as_polars_series({{&x}}))")
-            .expect("result cannot fail"),
-    );
-    let x = opt_new_robj.unwrap_or(x);
-
     // 1 parse any (potentially) R structure, into a tree of Series, boubble any parse error
     let st = recursive_robjname2series_tree(&x, name)?;
 
@@ -58,8 +51,9 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
     // handle any supported Robj
     let series_result = match rtype {
         Rtype::ExternalPtr => match () {
-            _ if x.inherits("Series") => {
-                let s: Series = unsafe { &mut *x.external_ptr_addr::<Series>() }.clone();
+            _ if x.inherits("RPolarsSeries") => {
+                let s: RPolarsSeries =
+                    unsafe { &mut *x.external_ptr_addr::<RPolarsSeries>() }.clone();
                 Ok(SeriesTree::Series(s.0))
             }
             _ => Err(pl::PolarsError::InvalidOperation(

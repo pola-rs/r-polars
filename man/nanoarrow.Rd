@@ -2,7 +2,7 @@
 % Please edit documentation in R/pkg-nanoarrow.R
 \name{nanoarrow}
 \alias{nanoarrow}
-\alias{as_nanoarrow_array_stream.DataFrame}
+\alias{as_nanoarrow_array_stream.RPolarsDataFrame}
 \alias{array_stream}
 \alias{arrow}
 \alias{record_batch_reader}
@@ -11,18 +11,18 @@
 \alias{more}
 \alias{at}
 \alias{\url{https://github.com/apache/arrow-nanoarrow/r}}
-\alias{infer_nanoarrow_schema.DataFrame}
-\alias{as_arrow_table.DataFrame}
-\alias{as_record_batch_reader.DataFrame}
+\alias{infer_nanoarrow_schema.RPolarsDataFrame}
+\alias{as_arrow_table.RPolarsDataFrame}
+\alias{as_record_batch_reader.RPolarsDataFrame}
 \title{polars to nanoarrow and arrow}
 \usage{
-\method{as_nanoarrow_array_stream}{DataFrame}(x, ..., schema = NULL)
+\method{as_nanoarrow_array_stream}{RPolarsDataFrame}(x, ..., schema = NULL)
 
-\method{infer_nanoarrow_schema}{DataFrame}(x, ...)
+\method{infer_nanoarrow_schema}{RPolarsDataFrame}(x, ...)
 
-\method{as_arrow_table}{DataFrame}(x, ...)
+\method{as_arrow_table}{RPolarsDataFrame}(x, ...)
 
-\method{as_record_batch_reader}{DataFrame}(x, ..., schema = NULL)
+\method{as_record_batch_reader}{RPolarsDataFrame}(x, ..., schema = NULL)
 }
 \arguments{
 \item{x}{a polars DataFrame}

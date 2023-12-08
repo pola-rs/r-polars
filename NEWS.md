@@ -1,5 +1,34 @@
 # polars (development version)
 
+## Breaking changes and deprecations
+
+- `$apply()` on an Expr or a Series is renamed `$map_elements()`, and `$map()`
+  is renamed `$map_batches()`. `$map()` and `$apply()` will be removed in 0.13.0 (#534).
+- Removed `$days()`, `$hours()`, `$minutes()`, `$seconds()`, `$milliseconds()`,
+  `$microseconds()`, `$nanoseconds()`. Those were deprecated in 0.11.0 (#550).
+- `pl$concat_list()`: elements being strings are now interpreted as column names. 
+  Use `pl$lit` to concat with a string.
+- The class name of all objects created by polars (`DataFrame`, `LazyFrame`,
+  `Expr`, `Series`, etc.) has changed. They now start with `RPolars`, for example
+  `RPolarsDataFrame`. This will only break your code if you directly use those
+  class names, such as in S3 methods (#554).
+
+## What's changed
+
+- The Extract function (`[`) for DataFrame can use columns not included in the
+  result for filtering (#547).
+- The Extract function (`[`) for LazyFrame can filter rows with Expressions (#547).
+- `as_polars_df()` for `data.frame` has a new argument `rownames` for to convert
+  the row.names attribute to a column.
+  This option is inspired by the `tibble::as_tibble()` function (#561).
+- `as_polars_df()` for `data.frame` has a new argument `make_names_unique` (#561).
+- New methods `$str$to_date()`, `$str$to_time()`, `$str$to_datetime()` as 
+  alternatives to `$str$strptime()` (#558).
+- The `dim()` function for DataFrame and LazyFrame correctly returns integer instead of
+  double (#577).
+
+# polars 0.11.0
+
 ## BREAKING CHANGES DUE TO RUST-POLARS UPDATE
 
 - rust-polars is updated to 0.35.0 (2023-11-17) (#515)
@@ -33,7 +62,7 @@
 - All duration methods (`days()`, `hours()`, `minutes()`, `seconds()`,
   `milliseconds()`, `microseconds()`, `nanoseconds()`) are renamed, for example
   from `$dt$days()` to `$dt$total_days()`. The old usage is deprecated and will
-  be removed in 0.12.0.
+  be removed in 0.12.0 (#530).
 - DataFrame methods `$as_data_frame()` is removed in favor of `$to_data_frame()` (#533).
 - GroupBy methods `$as_data_frame()` and `$to_data_frame()` which were used to
   convert GroupBy objects to R data frames are removed.
@@ -66,6 +95,7 @@
   - Note that `$mod()` of Polars is different from the R operator `%%`, which is
     not guaranteed `x == (x %% y) + y * (x %/% y)`.
     Please check the upstream issue [pola-rs/polars#10570](https://github.com/pola-rs/polars/issues/10570).
+- The extract function (`[`) for polars objects now behave more like for base R objects (#543).
 
 # polars 0.10.1
 

@@ -8,9 +8,9 @@ use crate::apply_output;
 use crate::conversion_r_to_s::robjname2series;
 use crate::conversion_s_to_r::pl_series_to_list;
 use crate::handle_type;
-use crate::lazy::dsl::Expr;
+use crate::lazy::dsl::RPolarsExpr;
 use crate::make_r_na_fun;
-use crate::rdataframe::DataFrame;
+use crate::rdataframe::RPolarsDataFrame;
 use crate::rdatatype::RPolarsDataType;
 use crate::robj_to;
 use crate::rpolarserr::RResult;
@@ -30,17 +30,17 @@ use std::convert::TryInto;
 use std::result::Result;
 
 #[derive(Debug, Clone)]
-pub struct Series(pub pl::Series);
+pub struct RPolarsSeries(pub pl::Series);
 
-impl From<polars::prelude::Series> for Series {
+impl From<polars::prelude::Series> for RPolarsSeries {
     fn from(pls: polars::prelude::Series) -> Self {
-        Series(pls)
+        RPolarsSeries(pls)
     }
 }
 
-impl From<&Expr> for pl::PolarsResult<Series> {
-    fn from(expr: &Expr) -> Self {
-        DataFrame::default()
+impl From<&RPolarsExpr> for pl::PolarsResult<RPolarsSeries> {
+    fn from(expr: &RPolarsExpr) -> Self {
+        RPolarsDataFrame::default()
             .lazy()
             .0
             .select(&[expr.0.clone()])
@@ -55,27 +55,27 @@ impl From<&Expr> for pl::PolarsResult<Series> {
 }
 
 #[extendr]
-impl Series {
+impl RPolarsSeries {
     //utility methods
-    pub fn new(x: Robj, name: Robj) -> RResult<Series> {
+    pub fn new(x: Robj, name: Robj) -> RResult<RPolarsSeries> {
         robjname2series(x, robj_to!(Option, str, name)?.unwrap_or(""))
             .map_err(polars_to_rpolars_err)
-            .map(Series)
+            .map(RPolarsSeries)
     }
 
     // named like this to no collide with clone trait but still export with extendr
     #[allow(clippy::should_implement_trait)]
-    pub fn clone(&self) -> Series {
-        Series(self.0.clone())
+    pub fn clone(&self) -> RPolarsSeries {
+        RPolarsSeries(self.0.clone())
     }
 
     //function for debugging only
-    pub fn sleep(&self, millis: i32) -> Series {
+    pub fn sleep(&self, millis: i32) -> RPolarsSeries {
         std::thread::sleep(std::time::Duration::from_millis(millis as u64));
         self.clone()
     }
 
-    pub fn panic(&self) -> Series {
+    pub fn panic(&self) -> RPolarsSeries {
         panic!("somebody panicked on purpose");
     }
 
@@ -107,17 +107,17 @@ impl Series {
     }
 
     pub fn sort_mut(&mut self, descending: bool) -> Self {
-        Series(self.0.sort(descending))
+        RPolarsSeries(self.0.sort(descending))
     }
 
     pub fn value_counts(
         &self,
         sort: bool,
         parallel: bool,
-    ) -> std::result::Result<DataFrame, String> {
+    ) -> std::result::Result<RPolarsDataFrame, String> {
         self.0
             .value_counts(sort, parallel)
-            .map(DataFrame)
+            .map(RPolarsDataFrame)
             .map_err(|err| format!("in value_counts: {:?}", err))
     }
 
@@ -150,7 +150,7 @@ impl Series {
         self.0.is_sorted(options).map_err(polars_to_rpolars_err)
     }
 
-    pub fn series_equal(&self, other: &Series, null_equal: bool, strict: bool) -> bool {
+    pub fn series_equal(&self, other: &RPolarsSeries, null_equal: bool, strict: bool) -> bool {
         if strict {
             self.0.eq(&other.0)
         } else if null_equal {
@@ -192,7 +192,7 @@ impl Series {
         res
     }
 
-    pub fn compare(&self, other: &Series, op: String) -> List {
+    pub fn compare(&self, other: &RPolarsSeries, op: String) -> List {
         //try cast other to self, downcast(dc) to chunkedarray and compare with operator(op) elementwise
         macro_rules! comp {
             ($self:expr, $other:expr, $dc:ident, $op:expr) => {{
@@ -210,7 +210,7 @@ impl Series {
                     "lt_eq" => lhs.lt_eq(rhs),
                     _ => panic!("not supported operator"),
                 };
-                Ok(Series(ca_bool.into_series()))
+                Ok(RPolarsSeries(ca_bool.into_series()))
             }};
         }
 
@@ -232,7 +232,7 @@ impl Series {
     }
 
     //names repeat_ as repeat is locked keyword in R
-    pub fn rep(&self, n: Robj, rechunk: Robj) -> std::result::Result<Series, String> {
+    pub fn rep(&self, n: Robj, rechunk: Robj) -> std::result::Result<RPolarsSeries, String> {
         use crate::robj_to;
         self.rep_impl(robj_to!(usize, n)?, robj_to!(bool, rechunk)?)
             .map_err(|err| format!("{:?}", err))
@@ -250,14 +250,16 @@ impl Series {
         self.0.chunk_lengths().map(|val| val as f64).collect()
     }
 
-    pub fn abs(&self) -> RResult<Series> {
-        pl::abs(&self.0).map_err(polars_to_rpolars_err).map(Series)
+    pub fn abs(&self) -> RResult<RPolarsSeries> {
+        pl::abs(&self.0)
+            .map_err(polars_to_rpolars_err)
+            .map(RPolarsSeries)
     }
 
-    pub fn alias(&self, name: &str) -> Series {
+    pub fn alias(&self, name: &str) -> RPolarsSeries {
         let mut s = self.0.clone();
         s.rename(name);
-        Series(s)
+        RPolarsSeries(s)
     }
 
     pub fn all(&self) -> List {
@@ -298,27 +300,27 @@ impl Series {
         }
     }
 
-    pub fn add(&self, other: &Series) -> Self {
+    pub fn add(&self, other: &RPolarsSeries) -> Self {
         (&self.0 + &other.0).into()
     }
 
-    pub fn sub(&self, other: &Series) -> Self {
+    pub fn sub(&self, other: &RPolarsSeries) -> Self {
         (&self.0 - &other.0).into()
     }
 
-    pub fn mul(&self, other: &Series) -> Self {
+    pub fn mul(&self, other: &RPolarsSeries) -> Self {
         (&self.0 * &other.0).into()
     }
 
-    pub fn div(&self, other: &Series) -> Self {
+    pub fn div(&self, other: &RPolarsSeries) -> Self {
         (&self.0 / &other.0).into()
     }
 
-    pub fn rem(&self, other: &Series) -> Self {
+    pub fn rem(&self, other: &RPolarsSeries) -> Self {
         (&self.0 % &other.0).into()
     }
 
-    pub fn append_mut(&mut self, other: &Series) -> List {
+    pub fn append_mut(&mut self, other: &RPolarsSeries) -> List {
         r_result_list(
             self.0
                 .append(&other.0)
@@ -327,7 +329,7 @@ impl Series {
         )
     }
 
-    pub fn apply(
+    pub fn map_elements(
         &self,
         robj: Robj,
         rdatatype: Nullable<&RPolarsDataType>,
@@ -371,7 +373,7 @@ impl Series {
 
                 let y = ca_list.into_iter().map(|opt_ser| {
                     if let Some(ser) = opt_ser {
-                        rfun.call(pairlist!(Series(ser))).ok()
+                        rfun.call(pairlist!(RPolarsSeries(ser))).ok()
                     } else {
                         unreachable!("internal error: oh it was possible to get a None Series");
                     }
@@ -386,7 +388,7 @@ impl Series {
         };
 
         //handle any return type from R and collect into Series
-        let s: extendr_api::Result<Series> = || -> extendr_api::Result<Series> {
+        let s: extendr_api::Result<RPolarsSeries> = || -> extendr_api::Result<RPolarsSeries> {
             match out_type {
                 Float64 => apply_output!(r_iter, strict, allow_fail_eval, Doubles, Float64Chunked),
                 Int32 => apply_output!(r_iter, strict, allow_fail_eval, Integers, Int32Chunked),
@@ -398,7 +400,7 @@ impl Series {
                     let xx = r_iter.map(|opt_r| -> pl::PolarsResult<_> {
                         if let Some(robj) = opt_r {
                             //convert Robj of Series or something "into series" to pl Series
-                            let s = Series::any_robj_to_pl_series_result(robj)?;
+                            let s = RPolarsSeries::any_robj_to_pl_series_result(robj)?;
 
                             if s.len() > 1 {
                                 all_length_one = false;
@@ -412,10 +414,10 @@ impl Series {
 
                     let lc_res: pl::PolarsResult<ListChunked> = xx.collect::<pl::PolarsResult<_>>();
 
-                    let s: extendr_api::Result<Series> = lc_res
+                    let s: extendr_api::Result<RPolarsSeries> = lc_res
                         .map(|lc| lc.into_series())
                         .and_then(|s| if all_length_one { s.explode() } else { Ok(s) })
-                        .map(Series)
+                        .map(RPolarsSeries)
                         .map_err(|e| extendr_api::error::Error::Other(e.to_string()));
 
                     s
@@ -430,43 +432,43 @@ impl Series {
             x
         });
 
-        //if ok rename with prefix apply, convert Result<Series> in r_result_list
+        //if ok rename with prefix apply, convert Result<RPolarsSeries> in r_result_list
         r_result_list(s)
     }
 
     pub fn mean(&self) -> Result<Robj, String> {
-        Series(self.0.mean_as_series()).to_r()
+        RPolarsSeries(self.0.mean_as_series()).to_r()
     }
 
     pub fn median(&self) -> Result<Robj, String> {
-        Series(self.0.median_as_series()).to_r()
+        RPolarsSeries(self.0.median_as_series()).to_r()
     }
 
     pub fn min(&self) -> Result<Robj, String> {
-        Series(self.0.min_as_series()).to_r()
+        RPolarsSeries(self.0.min_as_series()).to_r()
     }
 
     pub fn max(&self) -> Result<Robj, String> {
-        Series(self.0.max_as_series()).to_r()
+        RPolarsSeries(self.0.max_as_series()).to_r()
     }
 
     pub fn sum(&self) -> Result<Robj, String> {
-        Series(self.0.sum_as_series()).to_r()
+        RPolarsSeries(self.0.sum_as_series()).to_r()
     }
 
     pub fn std(&self, ddof: Robj) -> Result<Robj, String> {
-        Series(self.0.std_as_series(robj_to!(u8, ddof)?)).to_r()
+        RPolarsSeries(self.0.std_as_series(robj_to!(u8, ddof)?)).to_r()
     }
 
     pub fn var(&self, ddof: Robj) -> Result<Robj, String> {
-        Series(self.0.var_as_series(robj_to!(u8, ddof)?)).to_r()
+        RPolarsSeries(self.0.var_as_series(robj_to!(u8, ddof)?)).to_r()
     }
 
     pub fn ceil(&self) -> List {
         r_result_list(
             self.0
                 .ceil()
-                .map(Series)
+                .map(RPolarsSeries)
                 .map_err(|err| format!("{:?}", err)),
         )
     }
@@ -475,7 +477,7 @@ impl Series {
         r_result_list(
             self.0
                 .floor()
-                .map(Series)
+                .map(RPolarsSeries)
                 .map_err(|err| format!("{:?}", err)),
         )
     }
@@ -484,14 +486,14 @@ impl Series {
         rprintln!("{:#?}", self.0);
     }
 
-    pub fn cum_sum(&self, reverse: bool) -> RResult<Series> {
+    pub fn cum_sum(&self, reverse: bool) -> RResult<RPolarsSeries> {
         pl::cum_sum(&self.0, reverse)
             .map_err(polars_to_rpolars_err)
-            .map(Series)
+            .map(RPolarsSeries)
     }
 
-    pub fn to_frame(&self) -> std::result::Result<DataFrame, String> {
-        let mut df = DataFrame::new_with_capacity(1);
+    pub fn to_frame(&self) -> std::result::Result<RPolarsDataFrame, String> {
+        let mut df = RPolarsDataFrame::new_with_capacity(1);
         df.set_column_from_series(self)?;
         Ok(df)
     }
@@ -536,10 +538,11 @@ impl Series {
 }
 
 //inner_from_robj only when used within Series, do not have to comply with extendr_api macro supported types
-impl Series {
+impl RPolarsSeries {
     pub fn inner_from_robj_clone(robj: &Robj) -> std::result::Result<Self, &'static str> {
-        if robj.check_external_ptr_type::<Series>() {
-            let x: Series = unsafe { &mut *robj.external_ptr_addr::<Series>() }.clone();
+        if robj.check_external_ptr_type::<RPolarsSeries>() {
+            let x: RPolarsSeries =
+                unsafe { &mut *robj.external_ptr_addr::<RPolarsSeries>() }.clone();
             Ok(x)
         } else {
             Err("expected Series")
@@ -547,10 +550,12 @@ impl Series {
     }
 
     pub fn any_robj_to_pl_series_result(robj: Robj) -> pl::PolarsResult<pl::Series> {
-        let s = if !robj.inherits("Series") {
-            robjname2series(robj, "")?
+        let r_s = R!("polars:::result(polars::as_polars_series({{&robj}}))")
+            .map_err(|err| pl::PolarsError::ComputeError(err.to_string().into()))?;
+        let s = if let Ok(s) = robj_to!(PLSeries, r_s) {
+            s
         } else {
-            Series::inner_from_robj_clone(&robj)
+            RPolarsSeries::inner_from_robj_clone(&robj)
                 .map_err(|err| {
                     //convert any error from R to a polars error
                     pl::PolarsError::ComputeError(err.into())
@@ -562,7 +567,7 @@ impl Series {
 
     pub fn rep_impl(&self, n: usize, rechunk: bool) -> pl::PolarsResult<Self> {
         if n == 0 {
-            return Ok(Series(self.clone().0.slice(0, 0)));
+            return Ok(RPolarsSeries(self.clone().0.slice(0, 0)));
         }
         let mut s = self.0.clone();
         for _ in 1..n {
@@ -571,21 +576,21 @@ impl Series {
         if rechunk {
             s = s.rechunk();
         }
-        Ok(Series(s))
+        Ok(RPolarsSeries(s))
     }
 
-    pub fn into_frame(&self) -> DataFrame {
-        DataFrame(pl::DataFrame::new_no_checks(vec![self.0.clone()]))
+    pub fn into_frame(&self) -> RPolarsDataFrame {
+        RPolarsDataFrame(pl::DataFrame::new_no_checks(vec![self.0.clone()]))
     }
 }
 
-impl From<&Series> for pl::Series {
-    fn from(x: &Series) -> Self {
+impl From<&RPolarsSeries> for pl::Series {
+    fn from(x: &RPolarsSeries) -> Self {
         x.clone().0
     }
 }
 
 extendr_module! {
     mod series;
-    impl Series;
+    impl RPolarsSeries;
 }
