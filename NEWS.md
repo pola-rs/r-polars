@@ -6,7 +6,7 @@
   is renamed `$map_batches()`. `$map()` and `$apply()` will be removed in 0.13.0 (#534).
 - Removed `$days()`, `$hours()`, `$minutes()`, `$seconds()`, `$milliseconds()`,
   `$microseconds()`, `$nanoseconds()`. Those were deprecated in 0.11.0 (#550).
-- `pl$concat_list()`: elements being strings are now interpreted as column names. 
+- `pl$concat_list()`: elements being strings are now interpreted as column names.
   Use `pl$lit` to concat with a string.
 - The class name of all objects created by polars (`DataFrame`, `LazyFrame`,
   `Expr`, `Series`, etc.) has changed. They now start with `RPolars`, for example
@@ -22,7 +22,7 @@
   the row.names attribute to a column.
   This option is inspired by the `tibble::as_tibble()` function (#561).
 - `as_polars_df()` for `data.frame` has a new argument `make_names_unique` (#561).
-- New methods `$str$to_date()`, `$str$to_time()`, `$str$to_datetime()` as 
+- New methods `$str$to_date()`, `$str$to_time()`, `$str$to_datetime()` as
   alternatives to `$str$strptime()` (#558).
 - The `dim()` function for DataFrame and LazyFrame correctly returns integer instead of
   double (#577).
