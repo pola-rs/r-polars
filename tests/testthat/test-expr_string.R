@@ -466,7 +466,7 @@ test_that("str$extract_all", {
 
   expect_grepl_error(
     pl$lit("abc")$str$extract_all(complex(2)),
-    "new series from rtype Complexes is not supported",
+    "cannot be converted into an Expr",
   )
 })
 
