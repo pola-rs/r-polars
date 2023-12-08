@@ -12,6 +12,8 @@
   `Expr`, `Series`, etc.) has changed. They now start with `RPolars`, for example
   `RPolarsDataFrame`. This will only break your code if you directly use those
   class names, such as in S3 methods (#554).
+- `$lit_to_s()` and `$lit_to_df()` methods of `RPolarsExpr` are removed.
+  Please use `as_polars_series()` and `as_polars_df()` instead (#582).
 
 ## What's changed
 
