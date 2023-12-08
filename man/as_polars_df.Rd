@@ -7,6 +7,7 @@
 \alias{as_polars_df.RPolarsDataFrame}
 \alias{as_polars_df.GroupBy}
 \alias{as_polars_df.RPolarsSeries}
+\alias{as_polars_df.RPolarsExpr}
 \alias{as_polars_df.RPolarsLazyFrame}
 \alias{as_polars_df.RPolarsLazyGroupBy}
 \alias{as_polars_df.ArrowTabular}
@@ -23,6 +24,8 @@ as_polars_df(x, ...)
 \method{as_polars_df}{GroupBy}(x, ...)
 
 \method{as_polars_df}{RPolarsSeries}(x, ...)
+
+\method{as_polars_df}{RPolarsExpr}(x, ...)
 
 \method{as_polars_df}{RPolarsLazyFrame}(
   x,

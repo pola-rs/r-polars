@@ -3434,16 +3434,6 @@ Expr_to_struct = function() {
   pl$struct(self)
 }
 
-#' Convert Literal to DataFrame
-#'
-#' Collect an expression based on literals into a DataFrame.
-#' @return Series
-#' @examples
-#' pl$lit(1:5)$lit_to_df()
-Expr_lit_to_df = function() {
-  pl$select(self)
-}
-
 #' Find local minima
 #'
 #' A local minimum is the point that marks the transition between a decrease
