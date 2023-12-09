@@ -83,7 +83,7 @@ pl$concat = function(
   if (eager) {
     for (i in seq_along(l)) {
       if (inherits(l[[i]], c("RPolarsLazyFrame", "RPolarsExpr"))) {
-        .pr$RPolarsErr$new()$
+        .pr$Err$new()$
           plain("tip: explicitly collect lazy inputs first, e.g. pl$concat(dataframe, lazyframe$collect())")$
           plain("LazyFrame or Expr not allowed if first arg is a DataFrame, to avoid implicit collect")$
           bad_robj(l[[i]])$

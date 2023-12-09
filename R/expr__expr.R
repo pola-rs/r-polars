@@ -2975,7 +2975,7 @@ Expr_sample = function(
     seed = NULL, n = NULL) {
   pcase(
     !is.null(n) && !is.null(frac), {
-      Err(.pr$RPolarsErr$new()$plain("either arg `n` or `frac` must be NULL"))
+      Err(.pr$Err$new()$plain("either arg `n` or `frac` must be NULL"))
     },
     !is.null(n), .pr$Expr$sample_n(self, n, with_replacement, shuffle, seed),
     or_else = {

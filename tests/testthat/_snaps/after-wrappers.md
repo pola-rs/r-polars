@@ -56,17 +56,14 @@
     Code
       ls(.pr)
     Output
-       [1] "ChainedThen"              "ChainedWhen"             
-       [3] "DataFrame"                "DataType"                
-       [5] "DataTypeVector"           "Expr"                    
-       [7] "GroupBy"                  "LazyFrame"               
-       [9] "LazyGroupBy"              "ProtoExprArray"          
-      [11] "RField"                   "RNullValues"             
-      [13] "RPolarsErr"               "RPolarsSQLContext"       
-      [15] "RPolarsStringCacheHolder" "RThreadHandle"           
-      [17] "Series"                   "Then"                    
-      [19] "VecDataFrame"             "When"                    
-      [21] "env"                      "print_env"               
+       [1] "ChainedThen"       "ChainedWhen"       "DataFrame"        
+       [4] "DataType"          "DataTypeVector"    "Err"              
+       [7] "Expr"              "GroupBy"           "LazyFrame"        
+      [10] "LazyGroupBy"       "ProtoExprArray"    "RField"           
+      [13] "RNullValues"       "RThreadHandle"     "SQLContext"       
+      [16] "Series"            "StringCacheHolder" "Then"             
+      [19] "VecDataFrame"      "When"              "env"              
+      [22] "print_env"        
 
 # public and private methods of each class DataFrame
 

@@ -8,12 +8,14 @@
   `$microseconds()`, `$nanoseconds()`. Those were deprecated in 0.11.0 (#550).
 - `pl$concat_list()`: elements being strings are now interpreted as column names.
   Use `pl$lit` to concat with a string.
-- The class name of all objects created by polars (`DataFrame`, `LazyFrame`,
-  `Expr`, `Series`, etc.) has changed. They now start with `RPolars`, for example
-  `RPolarsDataFrame`. This will only break your code if you directly use those
-  class names, such as in S3 methods (#554).
 - `$lit_to_s()` and `$lit_to_df()` methods of `RPolarsExpr` are removed.
   Please use `as_polars_series()` and `as_polars_df()` instead (#582).
+- Change class names and function names associated with class names.
+  - The class name of all objects created by polars (`DataFrame`, `LazyFrame`,
+    `Expr`, `Series`, etc.) has changed. They now start with `RPolars`, for example
+    `RPolarsDataFrame`. This will only break your code if you directly use those
+    class names, such as in S3 methods (#554).
+  - Private methods have been unified so that they do not have the `RPolars` prefix (#584).
 
 ## What's changed
 
