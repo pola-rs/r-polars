@@ -52,7 +52,7 @@ build: ## Compile polars R package with all features and generate Rd files
 	export NOT_CRAN=true \
 	&& export LIBR_POLARS_BUILD=true \
 	&& export RPOLARS_FULL_FEATURES=true \
-	&& Rscript -e 'if (!(require(arrow)&&require(nanoarrow))) warning("could not load arrow/nanoarrow, ignore changes to nanoarrow.Rd"); rextendr::document()'
+	&& Rscript -e 'if (!(require(arrow) && require(nanoarrow) && require(knitr))) warning("could not load arrow/nanoarrow/knitr, ignore changes to nanoarrow.Rd or knit_print.Rd"); rextendr::document()'
 
 .PHONY: install
 install: ## Install the R package
