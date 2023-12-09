@@ -27,6 +27,16 @@ NULL
 }
 
 
+#' @noRd
+#' @export
+print.RPolarsSQLContext = function(x, ...) {
+  cat("RPolarsSQLContext\n")
+  cat("  tables:", x$tables(), "\n")
+
+  invisible(x)
+}
+
+
 #' Initialise a new SQLContext
 #' @name pl_SQLContext
 #' @description Create a new SQLContext and register the given LazyFrames.
