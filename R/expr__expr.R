@@ -2671,7 +2671,7 @@ Expr_rank = function(method = "average", descending = FALSE) {
 #'   diff_default = pl$col("a")$diff(),
 #'   diff_2_ignore = pl$col("a")$diff(2, "ignore")
 #' )
-  Expr_diff = function(n = 1, null_behavior = c("ignore", "drop")) {
+Expr_diff = function(n = 1, null_behavior = c("ignore", "drop")) {
   .pr$Expr$diff(self, n, null_behavior) |>
     unwrap("in $diff():")
 }
@@ -2972,7 +2972,7 @@ Expr_sample = function(
     seed = NULL, n = NULL) {
   pcase(
     !is.null(n) && !is.null(frac), {
-      Err(.pr$RPolarsErr$new()$plain("either arg `n` or `frac` must be NULL"))
+      Err(.pr$Err$new()$plain("either arg `n` or `frac` must be NULL"))
     },
     !is.null(n), .pr$Expr$sample_n(self, n, with_replacement, shuffle, seed),
     or_else = {
@@ -3107,7 +3107,7 @@ Expr_ewm_var = function(
     com = NULL, span = NULL, half_life = NULL, alpha = NULL,
     adjust = TRUE, bias = FALSE, min_periods = 1L, ignore_nulls = TRUE) {
   alpha = prepare_alpha(com, span, half_life, alpha)
-  .pr$Expr$ewm_var(self, alpha, adjust, bias, min_periods, ignore_nulls)  |>
+  .pr$Expr$ewm_var(self, alpha, adjust, bias, min_periods, ignore_nulls) |>
     unwrap("in $ewm_var()")
 }
 
@@ -3141,7 +3141,7 @@ Expr_extend_constant = function(value, n) {
 #' pl$select(pl$lit("alice")$rep(n = 3))
 #' pl$select(pl$lit(1:3)$rep(n = 2))
 Expr_rep = function(n, rechunk = TRUE) {
-  .pr$Expr$rep(self, n, rechunk)  |>
+  .pr$Expr$rep(self, n, rechunk) |>
     unwrap("in $rep()")
 }
 

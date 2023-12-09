@@ -136,7 +136,7 @@ test_that("GroupBy ungroup", {
   # tests $ungroup() only changed the class of output, not input (lgb).
   gb_ug = gb$ungroup()
   expect_identical(class(gb_ug), "RPolarsDataFrame")
-  expect_identical(class(gb), "GroupBy")
+  expect_identical(class(gb), "RPolarsGroupBy")
 
   expect_equal(
     gb$ungroup()$to_data_frame(),

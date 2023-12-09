@@ -128,7 +128,7 @@ pl$set_options = function(
     if (!all(validation)) {
       failures = names(which(!validation))
       failures = translate_failures(failures)
-      err = .pr$RPolarsErr$new()
+      err = .pr$Err$new()
       {
         for (fail in failures) err = err$plain(fail)
       }
@@ -286,7 +286,7 @@ pl$using_string_cache = function() {
 #' })
 #' pl$concat(list(df1, df2))
 pl$with_string_cache = function(expr) {
-  token = .pr$RPolarsStringCacheHolder$hold()
+  token = .pr$StringCacheHolder$hold()
   on.exit(token$release()) # if token was not release on exit, would release later on gc()
   eval(expr, envir = parent.frame())
 }
