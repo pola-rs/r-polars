@@ -18,7 +18,7 @@ make_class_cases = function() {
     "RField", "RPolarsRField", "RField",
     "RPolarsSeries", "RPolarsSeries", "Series",
     "RThreadHandle", "RPolarsRThreadHandle", "RThreadHandle",
-    "RPolarsSQLContext", "RPolarsSQLContext", "RPolarsSQLContext", # TODO: Update private key to `SQLContext`
+    "RPolarsSQLContext", "RPolarsSQLContext", "SQLContext",
   )
 }
 
