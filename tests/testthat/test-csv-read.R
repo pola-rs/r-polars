@@ -29,7 +29,7 @@ test_that("works with single URL", {
   })
   # put messages back in the console
   sink(type = "message")
-  expect_identical(dim(out), c(31, 6))
+  expect_identical(dim(out), c(31L, 6L))
 })
 
 test_that("args separator and eol work", {
@@ -49,11 +49,11 @@ test_that("args skip_rows and skip_rows_after_header work", {
   write.csv(dat, tmpf, row.names = FALSE)
 
   out = pl$read_csv(tmpf, skip_rows = 25)
-  expect_identical(nrow(out), 125)
+  expect_identical(nrow(out), 125L)
   expect_named(out, c("4.8", "3.4", "1.9", "0.2", "setosa"))
 
   out = pl$read_csv(tmpf, skip_rows_after_header = 25)
-  expect_identical(nrow(out), 125)
+  expect_identical(nrow(out), 125L)
   expect_named(out, names(iris))
 })
 
@@ -88,7 +88,7 @@ test_that("arg raise_if_empty works", {
     "no data: empty CSV"
   )
   out = pl$read_csv(tmpf, raise_if_empty = FALSE)
-  expect_identical(dim(out), c(0, 0))
+  expect_identical(dim(out), c(0L, 0L))
 })
 
 # TODO: why does this one fail?
