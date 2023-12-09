@@ -80,7 +80,7 @@ unwrap_err = function(result) {
 #' result(throw_simpleError())
 #'
 #' throw_RPolarsErr = \() unwrap(
-#'   Err(.pr$RPolarsErr$new()$bad_robj(42)$mistyped("String")$when("doing something"))
+#'   Err(.pr$Err$new()$bad_robj(42)$mistyped("String")$when("doing something"))
 #' )
 #' res_RPolarsErr = result(throw_RPolarsErr())
 #' str(res_RPolarsErr)
