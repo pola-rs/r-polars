@@ -13,7 +13,7 @@ if (build_debug_print) {
 replace_private_with_pub_methods(RPolarsDataFrame, "^DataFrame_")
 
 # GroupBy - is special read header info in groupby.R
-replace_private_with_pub_methods(GroupBy, "^GroupBy_")
+replace_private_with_pub_methods(RPolarsGroupBy, "^GroupBy_")
 macro_add_syntax_check_to_class("GroupBy") # not activated automatically as GroupBy is not extendr
 
 # LazyFrame

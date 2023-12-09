@@ -8,7 +8,7 @@ make_class_cases = function() {
   tibble::tribble(
     ~.test_name, ~class_name, ~private_key,
     "DataFrame", "RPolarsDataFrame", "DataFrame",
-    "GroupBy", "GroupBy", NULL,
+    "GroupBy", "RPolarsGroupBy", NULL,
     "LazyFrame", "RPolarsLazyFrame", "LazyFrame",
     "Expr", "RPolarsExpr", "Expr",
     "When", "RPolarsWhen", "When",
