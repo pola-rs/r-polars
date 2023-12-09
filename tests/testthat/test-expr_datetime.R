@@ -18,6 +18,18 @@ test_that("pl$lit posix", {
     pl$lit(as.POSIXct("2022-01-01", tz = "GMT"))$to_r(),
     as.POSIXct("2022-01-01", tz = "GMT")
   )
+
+
+  x = as.POSIXct(
+    c(
+      "2020-01-01 13:45:48.343", "2020-01-01 13:45:48.815"
+      , "2020-01-01 13:45:49.289", "2020-01-01 13:45:49.974"
+      , "2020-01-01 13:45:51.190", "2020-01-01 13:45:51.631"
+    ), tz = "UTC"
+  )
+  expect_identical(pl$lit(x)$to_r(), x)  #preserve millisecond precision
+  expect_failure(expect_identical(pl$lit(x)$to_r(), x+0.001)) #control, detect 1ms offset
+
 })
 
 
@@ -846,3 +858,7 @@ test_that("$dt$time()", {
     c(0.00e+00, 2.16e+13, 4.32e+13, 6.48e+13, 0.00e+00)
   )
 })
+
+
+
+

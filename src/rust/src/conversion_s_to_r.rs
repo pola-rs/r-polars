@@ -186,19 +186,19 @@ pub fn pl_series_to_list(
                 }),
 
             Datetime(tu, opt_tz) => {
-                let tu_i64: i64 = match tu {
-                    pl::TimeUnit::Nanoseconds => 1_000_000_000,
-                    pl::TimeUnit::Microseconds => 1_000_000,
-                    pl::TimeUnit::Milliseconds => 1_000,
+                let tu_f64: f64 = match tu {
+                    pl::TimeUnit::Nanoseconds => 1_000_000_000.0,
+                    pl::TimeUnit::Microseconds => 1_000_000.0,
+                    pl::TimeUnit::Milliseconds => 1_000.0,
                 };
 
                 //resolve timezone
                 let tz = opt_tz.as_ref().map(|s| s.as_str()).unwrap_or("");
-                s.cast(&Int64)?
-                    .i64()
+                s.cast(&Float64)?
+                    .f64()
                     .map(|ca| {
                         ca.into_iter()
-                            .map(|opt| opt.map(|val| (val / tu_i64) as f64))
+                            .map(|opt| opt.map(|val| val / tu_f64))
                             .collect_robj()
                     })
                     // TODO set_class and set_attrib reallocates the vector, find some way to modify without.
