@@ -64,11 +64,11 @@ Users can find detailed documentation for all objects, functions, and methods
 on the Reference page of [this website](https://rpolars.github.io/). This documentation
 can also be accessed from the R console using the typical `?` syntax. For
 example, we will later use the `DataFrame()` constructor function and apply the
-`group_by()` method to a `DataFrame` object. The documentation for these can be
-accessed by typing these commands:
+`group_by()` method to a `DataFrame` object.
+The documentation for these can be accessed by typing these commands:
 
 ```r
-?DataFrame
+?DataFrame_class
 ?DataFrame_group_by
 ```
 
@@ -94,11 +94,16 @@ df$group_by("id")$mean()
 
 ## `Series` and `DataFrames`
 
-In `polars` objects of class `Series` are analogous to R vectors. Objects of
-class `DataFrame` are analogous to R data frames. To convert R vectors and data
-frames to Polars `Series` and `DataFrames`, we load the library and use
-constructor functions with the `pl$` prefix. This prefix is very important, as
-most of the `polars` functions are made available via `pl$`:
+In `polars`, objects of class `Series` are analogous to R vectors. Objects of
+class `DataFrame` are analogous to R data frames. Notice that to avoid
+collision with classes provided by other packages, the class name of all objects
+created by `polars` starts with "RPolars". For example, a `polars` `DataFrame`
+has the class "RPolarsDataFrame".
+
+To convert R vectors and data frames to Polars `Series` and `DataFrames`, we
+load the library and use constructor functions with the `pl$` prefix. This
+prefix is very important, as most of the `polars` functions are made available
+via `pl$`:
 
 ```{r}
 library(polars)
@@ -166,7 +171,7 @@ dat$slice(offset = 2, length = 3)
 ```
 
 One advantage of using methods is that many more operations are possible on
-Polars objects using methods than through base R functions. 
+Polars objects using methods than through base R functions.
 
 A second advantage is _Methods Chaining_, a core part of the Polars workflow.
 If you are coming from one of the other popular data wrangling libraries in R,
@@ -178,7 +183,7 @@ instance,
 - Etc.
 
 In **polars** our method chaining syntax takes the form `object$m1()$m2()`,
-where `object` is our data object, and `m1()` and `m2()` are appropriate 
+where `object` is our data object, and `m1()` and `m2()` are appropriate
 methods, like subsetting or aggregation expressions.
 
 This might all seem a little abstract, so let's walk through some quick
@@ -186,7 +191,7 @@ examples to help make things concrete. We continue with the `mtcars` dataset tha
 coerced to a `DataFrame` in the introduction.^[Similar to how (most) **data.table**
 operations are limited to objects of class `data.table`, we can only perform
 polars operations on objects that have been converted to an appropriate
-**polars** class. Later on, we'll see how to read data from disk directly in Polars format.] 
+**polars** class. Later on, we'll see how to read data from disk directly in Polars format.]
 
 To start, say we compute the maximum value in each column. We can use the
 `max()` method:
@@ -232,7 +237,7 @@ dat$filter(pl$col("cyl") == 6 & pl$col("am") == 1)
 dat$select(pl$col(c("mpg", "hp")))
 ```
 
-Of course, we can chain those methods to create a pipeline: 
+Of course, we can chain those methods to create a pipeline:
 
 ```{r}
 dat$filter(
@@ -283,7 +288,7 @@ dat$group_by(
 ```
 
 (arg `maintain_order = TRUE` is optional, since **polars** doesn't sort the results
-of grouped operations by default. This is similar to what **data.table** does 
+of grouped operations by default. This is similar to what **data.table** does
 and is also true for newer versions of **dplyr**.)
 
 The same principles of method chaining can be combined very flexibly to group by
@@ -312,16 +317,14 @@ basic examples. Note that the data are currently in long format.
 indo = pl$DataFrame(Indometh)
 ```
 
-To go from long to wide, we use the
-[`pivot`](https://rpolars.github.io/reference/DataFrame_pivot/) method.
+To go from long to wide, we use the `pivot` method.
 Here we pivot the data so that every subject takes its own column.
 
 ```{r}
 indo_wide = indo$pivot(values = "conc", index = "time", columns = "Subject")
 ```
 
-To go from wide to long, we use the
-[melt](https://rpolars.github.io/reference/DataFrame_melt/) method.
+To go from wide to long, we use the `melt` method.
 
 ```{r}
 # indo_wide$melt(id_vars = "time") # default column names are "variable" and "value"
@@ -370,7 +373,7 @@ flights$join(
 More information on the **polars** joining method can be found in the
 [reference manual](https://rpolars.github.io/reference/DataFrame_join/).
 
-The package supports many other data manipulation operations, which we won't 
+The package supports many other data manipulation operations, which we won't
 cover here. Hopefully, you will already have a sense of the key syntax features.
 We now turn to another core idea of the Polars ecosystem: _lazy execution_.
 
@@ -405,7 +408,7 @@ subset_query = ldat$filter(
 subset_query
 ```
 
-Right now we only have a tree of instructions. But underneath the hood, 
+Right now we only have a tree of instructions. But underneath the hood,
 Polars has already worked out a more optimized version of the query. We can
 view this optimized plan this by requesting it.
 
@@ -475,7 +478,7 @@ dir.create("airquality-ds")
 write_dataset(airquality, "airquality-ds", partitioning = "Month")
 
 # Use pattern globbing to scan all parquet files in the folder
-aq2 = pl$scan_parquet("airquality-ds/*/*.parquet")
+aq2 = pl$scan_parquet("airquality-ds/**/*.parquet")
 
 # Just print the first two rows.
 aq2$limit(2)$collect()
@@ -498,7 +501,7 @@ and expressions wherever possible.
 
 ```{r}
 pl$DataFrame(iris)$select(
-  pl$col("Sepal.Length")$map(\(s) { # map with a R function
+  pl$col("Sepal.Length")$map_batches(\(s) { # map with a R function
     x = s$to_vector() # convert from Polars Series to a native R vector
     x[x >= 5] = 10
     x[1:10] # if return is R vector, it will automatically be converted to Polars Series again
@@ -516,7 +519,7 @@ types can be created with the `dtypes` constructor. For example:
 pl$dtypes$Float64
 ```
 
-The full list of valid Polars types can be found by typing `pl$dtypes` 
+The full list of valid Polars types can be found by typing `pl$dtypes`
 into your R console. These include _Boolean_, _Float32(64)_, _Int32(64)_,
 _Utf8_, _Categorical_, _Date_, etc. Note that some type names differ from what
 they are called in R (e.g., _Boolean_ in Polars is equivalent to `logical()` in
