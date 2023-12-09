@@ -12,7 +12,7 @@
   - The class name of all objects created by polars (`DataFrame`, `LazyFrame`,
     `Expr`, `Series`, etc.) has changed. They now start with `RPolars`, for example
     `RPolarsDataFrame`. This will only break your code if you directly use those
-    class names, such as in S3 methods (#554).
+    class names, such as in S3 methods (#554, 585).
   - Private methods have been unified so that they do not have the `RPolars` prefix (#584).
 
 ## What's changed
