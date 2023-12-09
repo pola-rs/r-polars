@@ -45,4 +45,5 @@ src/Makevars
 tools/libr_polars.a
 
 # altdoc stuff
+altdoc/freeze.rds
 docs
