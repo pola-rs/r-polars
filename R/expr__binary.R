@@ -1,7 +1,7 @@
 # this file sources list-expression functions to be bundled in the 'expr$bin' sub namespace
 # the sub name space is instantiated from Expr_bin- function
 # bundling these functions into an environment, depends on a macro call in zzz.R
-# expr_bin_make_sub_ns = macro_new_subnamespace("^ExprBin_", "ExprBinNameSpace")
+# expr_bin_make_sub_ns = macro_new_subnamespace("^ExprBin_", "RPolarsExprBinNameSpace")
 
 
 #' contains
