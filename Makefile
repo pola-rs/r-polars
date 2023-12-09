@@ -52,7 +52,7 @@ build: ## Compile polars R package with all features and generate Rd files
 	export NOT_CRAN=true \
 	&& export LIBR_POLARS_BUILD=true \
 	&& export RPOLARS_FULL_FEATURES=true \
-	&& Rscript -e 'if (!(require(arrow)&&require(nanoarrow))) warning("could not load arrow/nanoarrow, igonore changes to nanoarrow.Rd"); rextendr::document()'
+	&& Rscript -e 'if (!(require(arrow)&&require(nanoarrow))) warning("could not load arrow/nanoarrow, ignore changes to nanoarrow.Rd"); rextendr::document()'
 
 .PHONY: install
 install: ## Install the R package
@@ -66,7 +66,7 @@ all: fmt tools/lib-sums.tsv build test README.md LICENSE.note ## build -> test -
 
 .PHONY: docs
 docs: build install README.md altdoc/reference_home.md ## Generate docs
-	Rscript -e 'future::plan(future::multicore); source("altdoc/altdoc_preprocessing.R"); altdoc::render_docs(freeze = FALSE, parallel = TRUE)'
+	Rscript -e 'future::plan(future::multicore); source("altdoc/altdoc_preprocessing.R"); altdoc::render_docs(verbose = TRUE, freeze = FALSE, parallel = TRUE)'
 
 .PHONY: docs-preview
 docs-preview: ## Preview docs on local server. Needs `make docs`
