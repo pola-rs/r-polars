@@ -66,7 +66,7 @@ all: fmt tools/lib-sums.tsv build test README.md LICENSE.note ## build -> test -
 
 .PHONY: docs
 docs: build install README.md altdoc/reference_home.md ## Generate docs
-	Rscript -e 'future::plan(future::multicore); source("altdoc/altdoc_preprocessing.R"); altdoc::render_docs(verbose = TRUE, freeze = FALSE, parallel = TRUE)'
+	Rscript -e 'future::plan(future::multicore); source("altdoc/altdoc_preprocessing.R"); altdoc::render_docs(freeze = FALSE, parallel = TRUE)'
 
 .PHONY: docs-preview
 docs-preview: ## Preview docs on local server. Needs `make docs`
