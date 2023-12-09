@@ -98,7 +98,7 @@ as_polars_df.RPolarsDataFrame = function(x, ...) {
 
 #' @rdname as_polars_df
 #' @export
-as_polars_df.GroupBy = function(x, ...) {
+as_polars_df.RPolarsGroupBy = function(x, ...) {
   x$ungroup()
 }
 

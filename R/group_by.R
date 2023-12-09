@@ -13,17 +13,17 @@ NULL
 
 
 
-GroupBy = new.env(parent = emptyenv())
+RPolarsGroupBy = new.env(parent = emptyenv())
 
 #' @export
-`$.GroupBy` = function(self, name) {
-  func = GroupBy[[name]]
+`$.RPolarsGroupBy` = function(self, name) {
+  func = RPolarsGroupBy[[name]]
   environment(func) = environment()
   func
 }
 
 #' @export
-`[[.GroupBy` = `$.GroupBy`
+`[[.RPolarsGroupBy` = `$.RPolarsGroupBy`
 
 #' @title auto complete $-access into a polars object
 #' @description called by the interactive R session internally
@@ -33,8 +33,8 @@ GroupBy = new.env(parent = emptyenv())
 #' @export
 #' @inherit .DollarNames.RPolarsDataFrame return
 #' @keywords internal
-.DollarNames.GroupBy = function(x, pattern = "") {
-  paste0(ls(GroupBy, pattern = pattern), "()")
+.DollarNames.RPolarsGroupBy = function(x, pattern = "") {
+  paste0(ls(RPolarsGroupBy, pattern = pattern), "()")
 }
 
 
@@ -46,7 +46,7 @@ construct_group_by = function(df, groupby_input, maintain_order) {
   if (!inherits(df, "RPolarsDataFrame")) stop("internal error: construct_group called not on DataFrame")
   df = df$clone()
   attr(df, "private") = list(groupby_input = groupby_input, maintain_order = maintain_order)
-  class(df) = "GroupBy"
+  class(df) = "RPolarsGroupBy"
   df
 }
 
@@ -60,7 +60,7 @@ construct_group_by = function(df, groupby_input, maintain_order) {
 #' @export
 #'
 #' @examples pl$DataFrame(iris)$group_by("Species")
-print.GroupBy = function(x, ...) {
+print.RPolarsGroupBy = function(x, ...) {
   .pr$DataFrame$print(x)
   cat("groups: ")
   prv = attr(x, "private")
