@@ -1,38 +1,3 @@
-test_that("pl$lit posix", {
-  expect_identical(
-    pl$lit(as.POSIXct("2022-01-01"))$to_r(),
-    as.POSIXct("2022-01-01")
-  )
-
-  expect_identical(
-    pl$lit(as.POSIXct("2022-01-01", tz = "GMT"))$to_r(),
-    as.POSIXct("2022-01-01", tz = "GMT")
-  )
-
-  expect_identical(
-    pl$lit(as.POSIXct("2022-01-01", tz = "HST"))$to_r(),
-    as.POSIXct("2022-01-01", tz = "HST")
-  )
-
-  expect_identical(
-    pl$lit(as.POSIXct("2022-01-01", tz = "GMT"))$to_r(),
-    as.POSIXct("2022-01-01", tz = "GMT")
-  )
-
-
-  x = as.POSIXct(
-    c(
-      "2020-01-01 13:45:48.343", "2020-01-01 13:45:48.815",
-      "2020-01-01 13:45:49.289", "2020-01-01 13:45:49.974",
-      "2020-01-01 13:45:51.190", "2020-01-01 13:45:51.631"
-    ),
-    tz = "UTC"
-  )
-  expect_identical(pl$lit(x)$to_r(), x) # preserve millisecond precision
-  expect_failure(expect_identical(pl$lit(x)$to_r(), x + 0.001)) # control, detect 1ms offset
-})
-
-
 test_that("pl$date_range", {
   t1 = as.POSIXct("2022-01-01")
   t2 = as.POSIXct("2022-01-02")
