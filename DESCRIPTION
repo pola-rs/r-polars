@@ -40,6 +40,7 @@ Suggests:
     testthat (>= 3.2.1),
     tibble,
     tools,
+    vctrs,
     withr
 Config/Needs/website:
     altdoc (>= 0.2.2),
@@ -105,7 +106,6 @@ Collate:
     'rust_result.R'
     's3_methods.R'
     'series__series.R'
-    'series__trait.R'
     'sql.R'
     'vctrs.R'
     'zzz.R'

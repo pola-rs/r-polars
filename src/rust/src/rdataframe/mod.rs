@@ -326,10 +326,11 @@ impl RPolarsDataFrame {
         RPolarsLazyFrame(lgb.agg(agg_exprs)).collect()
     }
 
-    pub fn to_struct(&self, name: &str) -> RPolarsSeries {
+    pub fn to_struct(&self, name: Robj) -> RResult<RPolarsSeries> {
         use pl::IntoSeries;
+        let name = robj_to!(Option, str, name)?.unwrap_or("");
         let s = self.0.clone().into_struct(name);
-        s.into_series().into()
+        Ok(s.into_series().into())
     }
 
     pub fn unnest(&self, names: Vec<String>) -> RResult<Self> {

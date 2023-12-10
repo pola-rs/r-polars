@@ -7,6 +7,8 @@ test_that("Intialize SQLContext with LazyFrame like objects", {
     pl_lf = pl$LazyFrame(mtcars)
   )
 
+  expect_snapshot(ctx)
+
   expect_equal(sort(ctx$tables()), sort(c("r_df", "pl_df", "pl_lf")))
   expect_identical(
     ctx$execute(
