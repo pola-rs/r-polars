@@ -81,6 +81,7 @@ jobs:
 
       - name: Build docs
         run: make docs
+        shell: bash
 
       - uses: webfactory/ssh-agent@v0.8.0
         env:
