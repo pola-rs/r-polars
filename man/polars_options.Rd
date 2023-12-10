@@ -21,6 +21,13 @@ messages. The default (\code{FALSE}) is to show them.}
 
 \item{rpool_cap}{The maximum number of R sessions that can be used to process
 R code in the background. See Details.}
+
+\item{bracket_syntax}{Allow using \verb{[]} instead of \verb{()} on all polars functions and methods.
+When using \verb{[]} chained method completion is possible natively with R. E.g
+\verb{pl$DataFrame[iris]$lazy[]$select[pl$all[]]$<tab-complete-to-see-methods>}. Chained
+method completion can be slow with eager polars syntax, as the query is re-evaluated for every
+completion. For polars lazy syntax is very fast until calling \verb{$collect()}. Where ever using \verb{()}
+the completion is locally disabled. This is an experimental feature is subject to future changes.}
 }
 \value{
 \code{pl$options} returns a named list with the value (\code{TRUE} or \code{FALSE}) of

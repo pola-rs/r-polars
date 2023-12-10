@@ -132,14 +132,19 @@ for (i in names(pl)) {
 #allow using [ ] as ( ) for all functions
 #' @export
 "[.pl_f" = \(x, ...) {
+  if(!isTRUE(polars_optenv$bracket_syntax)) { # using polars_optenv directly as this is hot code
+    Err_plain(
+      "Bracket_syntax is not enaabled. Try pl$options_set(bracket_syntax = TRUE)",
+      "\nReplacing `()` with square brackets `[]` allows auto-completion on chained r-polars",
+      "queries.\nE.g. pl$DataFrame[iris]$lazy[]$select[pl$all[]]$<tab-complete-to-see-methods>"
+    ) |> unwrap()
+  }
   if(is.null(formals(x))) {
     x()
   } else {
     x(...)
   }
 }
-
-
 
 
 .onLoad = function(libname, pkgname) {

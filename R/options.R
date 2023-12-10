@@ -22,6 +22,9 @@ polars_optreq$maintain_order = list(must_be_bool = is_bool)
 polars_optenv$debug_polars = FALSE
 polars_optreq$debug_polars = list(must_be_bool = is_bool)
 
+polars_optenv$bracket_syntax = FALSE
+polars_optenv$bracket_syntax = list(must_be_bool = is_bool)
+
 # polars_optenv$rpool_cap # active binding for getting value, not for
 polars_optreq$rpool_cap = list() # rust-side options already check args
 
@@ -45,6 +48,12 @@ polars_optreq$rpool_cap = list() # rust-side options already check args
 #' @param no_messages Hide messages.
 #' @param rpool_cap The maximum number of R sessions that can be used to process
 #' R code in the background. See Details.
+#' @param bracket_syntax Allow using `[]` instead of `()` on all polars functions and methods.
+#' When using `[]` chained method completion is possible natively with R. E.g
+#' `pl$DataFrame[iris]$lazy[]$select[pl$all[]]$<tab-complete-to-see-methods>`. Chained
+#' method completion can be slow with eager polars syntax, as the query is re-evaluated for every
+#' completion. For polars lazy syntax is very fast until calling `$collect()`. Where ever using `()`
+#' the completion is locally disabled. This is an experimental feature is subject to future changes.
 #'
 #' @rdname polars_options
 #' @name set_options
@@ -96,7 +105,8 @@ pl$set_options = function(
     do_not_repeat_call = FALSE,
     debug_polars = FALSE,
     no_messages = FALSE,
-    rpool_cap = 4) {
+    rpool_cap = 4,
+    bracket_syntax = FALSE) {
   # only modify arguments that were explicitly written in the function call
   # (otherwise calling set_options() twice in a row would reset the args
   # modified in the first call)
