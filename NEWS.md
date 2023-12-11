@@ -28,6 +28,8 @@
   alternatives to `$str$strptime()` (#558).
 - The `dim()` function for DataFrame and LazyFrame correctly returns integer instead of
   double (#577).
+- The conversion of R's `POSIXct` class to Polars datetime now works correctly with millisecond
+  precision (#589).
 
 ## polars 0.11.0
 

@@ -32,3 +32,37 @@ test_that("plStruct", {
 
   err_state = result(pl$Struct(bin = pl$Binary, pl$Boolean, bob = 42))
 })
+
+
+test_that("POSIXct data conversion", {
+  expect_identical(
+    pl$lit(as.POSIXct("2022-01-01"))$to_r(),
+    as.POSIXct("2022-01-01")
+  )
+
+  expect_identical(
+    pl$lit(as.POSIXct("2022-01-01", tz = "GMT"))$to_r(),
+    as.POSIXct("2022-01-01", tz = "GMT")
+  )
+
+  expect_identical(
+    pl$lit(as.POSIXct("2022-01-01", tz = "HST"))$to_r(),
+    as.POSIXct("2022-01-01", tz = "HST")
+  )
+
+  expect_identical(
+    pl$lit(as.POSIXct("2022-01-01", tz = "GMT"))$to_r(),
+    as.POSIXct("2022-01-01", tz = "GMT")
+  )
+
+
+  x = as.POSIXct(
+    c(
+      "2020-01-01 13:45:48.343",
+      "2020-01-01 13:45:48.343999"
+    ),
+    tz = "UTC"
+  )
+  # POSIXct is converted to datetime[ms], so sub-ms precision is lost
+  expect_identical(pl$lit(x)$to_r(), as.POSIXct(c("2020-01-01 13:45:48.343", "2020-01-01 13:45:48.343"), tz = "UTC"))
+})
