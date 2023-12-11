@@ -57,12 +57,10 @@ style_files = function(
     do_parallel = FALSE,
     ncpu = NULL,
     verbose = TRUE,
-    ...) {
+    ...) { # ... current supported in paralllel
   if (verbose) {
     print(paths_list)
   }
-
-
 
   paths = unlist(paths_list)
 
@@ -73,9 +71,6 @@ style_files = function(
     print("no files to style")
     return(NULL)
   }
-
-
-
 
   if (do_parallel) {
     ncpu = if (is.null(ncpu)) parallel::detectCores() else ncpu
@@ -92,9 +87,11 @@ style_files = function(
     on.exit(parallel::stopCluster(cl))
     this_frame = (\() parent.frame())()
     parallel::clusterExport(cl, "transformers", envir = this_frame)
+
     outs = parallel::clusterApplyLB(
       cl,
       paths,
+      #TODO support ... args in parallel, or just add explicitly
       \(path) capture.output(styler::style_file(path, transformers = transformers))
     )
     if (verbose) print(outs)
