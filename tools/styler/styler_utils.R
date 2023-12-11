@@ -1,20 +1,20 @@
 # Prepare rpolars style (the function that output the set transformers and name/version)
-rpolars_style <- function() {
+rpolars_style = function() {
   # derive from tidyverse
-  transformers <- styler::tidyverse_style()
-  transformers$style_guide_name <- "rpolars_style"
-  transformers$style_guide_version <- "0.1.0"
+  transformers = styler::tidyverse_style()
+  transformers$style_guide_name = "rpolars_style"
+  transformers$style_guide_version = "0.1.0"
 
   # reverse tranformer to make <- into =
-  transformers$token$force_assignment_op <- function(pd) {
-    to_replace <- pd$token == "LEFT_ASSIGN"
-    pd$token[to_replace] <- "EQ_ASSIGN"
-    pd$text[to_replace] <- "="
+  transformers$token$force_assignment_op = function(pd) {
+    to_replace = pd$token == "LEFT_ASSIGN"
+    pd$token[to_replace] = "EQ_ASSIGN"
+    pd$text[to_replace] = "="
     pd
   }
 
-  #Specify which tokens must be absent for a transformer to be dropped
-  #https://styler.r-lib.org/reference/specify_transformers_drop.html?q=transformers%20_%20drop
+  # Specify which tokens must be absent for a transformer to be dropped
+  # https://styler.r-lib.org/reference/specify_transformers_drop.html?q=transformers%20_%20drop
   transformers$transformers_drop$token$force_assignment_op = "LEFT_ASSIGN"
 
   transformers
@@ -22,7 +22,7 @@ rpolars_style <- function() {
 
 
 # a function to discover files changes via git
-get_file_changes <- function(
+get_file_changes = function(
     # a list functions that generate file suggestions
     git_calls = list(
 
@@ -51,7 +51,7 @@ get_file_changes <- function(
 }
 
 
-style_files <- function(
+style_files = function(
     paths_list = get_file_changes(),
     transformers = rpolars_style(),
     do_parallel = FALSE,
@@ -61,20 +61,26 @@ style_files <- function(
   if (verbose) {
     print(paths_list)
   }
-  paths <- unlist(paths_list)
+
+
+
+  paths = unlist(paths_list)
+
+  # do big files first for better load balancing
+  paths = paths[order(file.info(paths)$size, decreasing = TRUE)]
+
   if (length(paths) == 0) {
     print("no files to style")
     return(NULL)
   }
 
-  # do big files first for better load balancing
-  paths = paths[order(file.info(paths)$size,decreasing = TRUE)]
 
 
-  if(do_parallel) {
-    ncpu <- if (is.null(ncpu)) parallel::detectCores() else ncpu
-    ncpu <- min(ncpu, length(paths))
-    cl <- tryCatch(
+
+  if (do_parallel) {
+    ncpu = if (is.null(ncpu)) parallel::detectCores() else ncpu
+    ncpu = min(ncpu, length(paths))
+    cl = tryCatch(
       parallel::makeForkCluster(nnodes = ncpu),
       error = function(e) {
         if (verbose) {
@@ -84,9 +90,9 @@ style_files <- function(
       }
     )
     on.exit(parallel::stopCluster(cl))
-    this_frame <- (\() parent.frame())()
+    this_frame = (\() parent.frame())()
     parallel::clusterExport(cl, "transformers", envir = this_frame)
-    outs <- parallel::clusterApplyLB(
+    outs = parallel::clusterApplyLB(
       cl,
       paths,
       \(path) capture.output(styler::style_file(path, transformers = transformers))
@@ -96,6 +102,3 @@ style_files <- function(
     styler::style_file(paths, transformers = transformers, ...)
   }
 }
-
-styler::style_pkg
-style_files(list.files("R",pattern = "*.R",full.names = TRUE),do_parallel = TRUE)
