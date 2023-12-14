@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := help
 
 SHELL := /bin/bash
-VENV := .venv
+VENV := .venv_altdoc
 
 RUST_TOOLCHAIN_VERSION := $(shell Rscript -e 'read.dcf("DESCRIPTION", fields = "Config/polars/RustToolchainVersion", all = TRUE)[1, 1] |> cat()')
 
