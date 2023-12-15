@@ -21,7 +21,7 @@ convert Series to literal to perform modification and return
   $list$lengths()
   $sum()
   $cast(pl$dtypes$Int8)
-  $lit_to_s()
+  $to_series()
 )
 }
 \keyword{Series}

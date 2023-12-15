@@ -5,7 +5,7 @@
 \alias{as_polars_df.default}
 \alias{as_polars_df.data.frame}
 \alias{as_polars_df.RPolarsDataFrame}
-\alias{as_polars_df.GroupBy}
+\alias{as_polars_df.RPolarsGroupBy}
 \alias{as_polars_df.RPolarsSeries}
 \alias{as_polars_df.RPolarsLazyFrame}
 \alias{as_polars_df.RPolarsLazyGroupBy}
@@ -20,7 +20,7 @@ as_polars_df(x, ...)
 
 \method{as_polars_df}{RPolarsDataFrame}(x, ...)
 
-\method{as_polars_df}{GroupBy}(x, ...)
+\method{as_polars_df}{RPolarsGroupBy}(x, ...)
 
 \method{as_polars_df}{RPolarsSeries}(x, ...)
 
@@ -107,6 +107,9 @@ NULL default is to import columns as is. Takes no effect for Array or ChunkedArr
 
 \item{schema_overrides}{named list of DataTypes. Name some columns to recast by the DataType.
 Takes not effect for Array or ChunkedArray}
+}
+\value{
+a \link[=DataFrame_class]{DataFrame}
 }
 \description{
 \code{\link[=as_polars_df]{as_polars_df()}} is a generic function that converts an R object to a

@@ -1,7 +1,7 @@
 # this file sources list-expression functions to be bundled in the 'expr$str' sub namespace
 # the sub name space is instantiated from Expr_str- function
 # bundling these functions into an environment, depends on a macro call in zzz.R
-# expr_str_make_sub_ns = macro_new_subnamespace("^ExprStr_", "ExprStrNameSpace")
+# expr_str_make_sub_ns = macro_new_subnamespace("^ExprStr_", "RPolarsExprStrNameSpace")
 
 
 #' Convert a Utf8 column into a Date/Datetime/Time column.
@@ -57,7 +57,7 @@
 #' pl$lit(txt_datetimes)$str$strptime(
 #'   pl$Datetime("ns"),
 #'   format = "%Y-%m-%d %H:%M:%S %z", strict = FALSE,
-#' )$lit_to_s()
+#' )$to_series()
 ExprStr_strptime = function(
     datatype,
     format,
@@ -244,7 +244,7 @@ ExprStr_concat = function(delimiter = "-", ignore_nulls = TRUE) {
 #' @keywords ExprStr
 #' @return Expr of Utf8 uppercase chars
 #' @examples
-#' pl$lit(c("A", "b", "c", "1", NA))$str$to_uppercase()$lit_to_s()
+#' pl$lit(c("A", "b", "c", "1", NA))$str$to_uppercase()$to_series()
 ExprStr_to_uppercase = function() {
   .pr$Expr$str_to_uppercase(self)
 }
@@ -255,7 +255,7 @@ ExprStr_to_uppercase = function() {
 #' @keywords ExprStr
 #' @return Expr of Utf8 lowercase chars
 #' @examples
-#' pl$lit(c("A", "b", "c", "1", NA))$str$to_lowercase()$lit_to_s()
+#' pl$lit(c("A", "b", "c", "1", NA))$str$to_lowercase()$to_series()
 ExprStr_to_lowercase = function() {
   .pr$Expr$str_to_lowercase(self)
 }
@@ -271,7 +271,7 @@ ExprStr_to_lowercase = function() {
 #' Rust nightly toolchain to compile.
 #' See [`pl$polars_info()`][polars_info] for more details.
 #' @examplesIf pl$polars_info()$features$simd
-#' pl$lit(c("hello there", "HI, THERE", NA))$str$to_titlecase()$lit_to_s()
+#' pl$lit(c("hello there", "HI, THERE", NA))$str$to_titlecase()$to_series()
 ExprStr_to_titlecase = function() {
   check_feature("simd", "in $to_titlecase():")
 

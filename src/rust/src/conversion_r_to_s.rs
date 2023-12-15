@@ -19,13 +19,6 @@ enum SeriesTree {
 
 // Main module function: Convert any potentially nested R object handled in three steps
 pub fn robjname2series(x: Robj, name: &str) -> pl::PolarsResult<pl::Series> {
-    // check for any dependency injection
-    let opt_new_robj = crate::utils::inner_unpack_r_result_list(
-        R!("polars:::result_minimal(polars:::as_polars_series({{&x}}))")
-            .expect("result cannot fail"),
-    );
-    let x = opt_new_robj.unwrap_or(x);
-
     // 1 parse any (potentially) R structure, into a tree of Series, boubble any parse error
     let st = recursive_robjname2series_tree(&x, name)?;
 
@@ -219,7 +212,7 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
             //todo this could probably in fewer allocations
             let dt = pl::DataType::Datetime(pl::TimeUnit::Milliseconds, tz);
             Ok(SeriesTree::Series(
-                (s.cast(&pl::DataType::Int64)? * 1_000i64).cast(&dt)?,
+                ((s * 1000f64).cast(&pl::DataType::Int64)?).cast(&dt)?,
             ))
         }
         Ok(SeriesTree::Series(s)) if x.inherits("Date") => {
