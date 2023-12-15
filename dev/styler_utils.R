@@ -130,23 +130,38 @@ style_files = function(
     ncpu = if (is.null(ncpu)) parallel::detectCores() else ncpu
     ncpu = min(ncpu, length(paths))
     if (verbose) print(paste("ncpu = ", ncpu))
-    cl = tryCatch(
-      parallel::makeForkCluster(nnodes = ncpu),
-      error = function(e) {
-        if (verbose) {
-          print("using psock cluster")
+
+    cl_init_time = system.time({
+      cl = tryCatch(
+        parallel::makeForkCluster(nnodes = ncpu),
+        error = function(e) {
+          if (verbose) {
+            print("using psock cluster")
+          }
+          parallel::makePSOCKcluster(spec = ncpu)
         }
-        parallel::makePSOCKcluster(spec = ncpu)
-      }
-    )
+      )
+    })
     on.exit(parallel::stopCluster(cl))
+
+    if (verbose) {
+      print(paste("time to start cluster: ", round(cl_init_time[3], 3), "seconds"))
+    }
+
     this_frame = (\() parent.frame())()
-    parallel::clusterExport(cl, "transformers", envir = this_frame)
+    parallel::clusterExport(cl, c("transformers", "verbose"), envir = this_frame)
     outs = parallel::clusterApplyLB(
       cl,
       paths,
       # TODO support ... args in parallel, or just add explicitly
-      \(path) capture.output(styler::style_file(path, transformers = transformers))
+      \(path) capture.output({
+        t = system.time({
+          styler::style_file(path, transformers = transformers)
+        })
+        if (verbose) {
+          cat(paste(".   ", round(t[3], 2), "seconds\n"))
+        }
+      })
     )
     if (verbose) lapply(outs, cat, sep = "\n")
   } else {
