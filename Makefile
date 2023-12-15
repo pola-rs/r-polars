@@ -97,8 +97,8 @@ GIT_DIF_TARGET ?=
 MODIFIED_R_FILES ?= $(shell R -s -e 'setdiff(system("git diff $(GIT_DIF_TARGET) --name-only | grep -e .*R$$ -e .*Rmd$$", intern = TRUE), "R/extendr-wrappers.R") |> cat()')
 
 .PHONY: fmt-r
-fmt-r: $(MODIFIED_R_FILES) ## Format R files
-	$(foreach file, $^, $(shell R -q -e 'styler::style_file("$(file)"); styler.equals::style_file("$(file)")' >/dev/null))
+fmt-r: ## Format R files
+	Rscript -e "source("./dev/styler_utils.R"); style_files()"
 
 .PHONY: fmt-rs
 fmt-rs: ## Format Rust files

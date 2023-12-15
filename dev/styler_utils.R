@@ -59,8 +59,6 @@ get_file_changes = function(
     pattern = "\\.R$|\\.Rmd$",
     # specific files never to style
     excludes = c("R/extendr-wrappers.R")) {
-
-
   # temporarily set GIT_DIF_TARGET
   old_env = Sys.getenv("GIT_DIF_TARGET")
   on.exit({
@@ -81,7 +79,6 @@ get_file_changes = function(
         setdiff(excludes) # exclude specific filenames
     }
   )
-
 }
 
 
