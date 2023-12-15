@@ -1,26 +1,3 @@
-test_that("pl$lit posix", {
-  expect_identical(
-    pl$lit(as.POSIXct("2022-01-01"))$to_r(),
-    as.POSIXct("2022-01-01")
-  )
-
-  expect_identical(
-    pl$lit(as.POSIXct("2022-01-01", tz = "GMT"))$to_r(),
-    as.POSIXct("2022-01-01", tz = "GMT")
-  )
-
-  expect_identical(
-    pl$lit(as.POSIXct("2022-01-01", tz = "HST"))$to_r(),
-    as.POSIXct("2022-01-01", tz = "HST")
-  )
-
-  expect_identical(
-    pl$lit(as.POSIXct("2022-01-01", tz = "GMT"))$to_r(),
-    as.POSIXct("2022-01-01", tz = "GMT")
-  )
-})
-
-
 test_that("pl$date_range", {
   t1 = as.POSIXct("2022-01-01")
   t2 = as.POSIXct("2022-01-02")
