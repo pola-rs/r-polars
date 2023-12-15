@@ -929,7 +929,7 @@ Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE,
 #' pl$select(pl$lit(1:4))
 #'
 #' # r vector to literal to Series
-#' pl$lit(1:4)$lit_to_s()
+#' pl$lit(1:4)$to_series()
 #'
 #' # vectors to literal implicitly
 #' (pl$lit(2) + 1:4) / 4:1
@@ -1036,12 +1036,12 @@ Expr_to_physical = "use_extendr_wrapper"
 #' )
 #'
 #' # strict FALSE, inserts null for any cast failure
-#' pl$lit(c(100, 200, 300))$cast(pl$dtypes$UInt8, strict = FALSE)$lit_to_s()
+#' pl$lit(c(100, 200, 300))$cast(pl$dtypes$UInt8, strict = FALSE)$to_series()
 #'
 #' # strict TRUE, raise any failure as an error when query is executed.
 #' tryCatch(
 #'   {
-#'     pl$lit("a")$cast(pl$dtypes$Float64, strict = TRUE)$lit_to_s()
+#'     pl$lit("a")$cast(pl$dtypes$Float64, strict = TRUE)$to_series()
 #'   },
 #'   error = function(e) e
 #' )
@@ -3436,20 +3436,11 @@ Expr_to_struct = function() {
 #' Collect an expression based on literals into a Series.
 #' @return Series
 #' @examples
-#' pl$lit(1:5)$lit_to_s()
-Expr_lit_to_s = function() {
+#' pl$lit(1:5)$to_series()
+Expr_to_series = function() {
   pl$select(self)$to_series(0)
 }
 
-#' Convert Literal to DataFrame
-#'
-#' Collect an expression based on literals into a DataFrame.
-#' @return Series
-#' @examples
-#' pl$lit(1:5)$lit_to_df()
-Expr_lit_to_df = function() {
-  pl$select(self)
-}
 
 #' Find local minima
 #'

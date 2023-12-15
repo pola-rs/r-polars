@@ -981,7 +981,7 @@ Series_expr = method_as_property(function() {
 #'   $list$lengths()
 #'   $sum()
 #'   $cast(pl$dtypes$Int8)
-#'   $lit_to_s()
+#'   $to_series()
 #' )
 Series_to_lit = function() {
   pl$lit(self)

@@ -2310,11 +2310,11 @@ test_that("concat_list", {
   )
 
   # concat Expr a Series and an R obejct
-  df_act = pl$concat_list(list(
+  df_act = pl$select(pl$concat_list(list(
     pl$lit(1:5),
     pl$Series(5:1),
     rep(0L, 5)
-  ))$alias("alice")$lit_to_df()
+  ))$alias("alice"))
 
   expect_identical(
     df_act$to_data_frame(),
