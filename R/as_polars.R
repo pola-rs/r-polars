@@ -111,13 +111,6 @@ as_polars_df.RPolarsSeries = function(x, ...) {
 
 
 #' @rdname as_polars_df
-#' @export
-as_polars_df.RPolarsExpr = function(x, ...) {
-  pl$select(x)
-}
-
-
-#' @rdname as_polars_df
 #' @param n_rows Number of rows to fetch. Defaults to `Inf`, meaning all rows.
 #' @inheritParams LazyFrame_collect
 #' @export

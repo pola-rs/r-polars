@@ -3441,15 +3441,6 @@ Expr_to_series = function() {
   pl$select(self)$to_series(0)
 }
 
-#' Convert Literal to DataFrame
-#'
-#' Collect an expression based on literals into a DataFrame.
-#' @return Series
-#' @examples
-#' pl$lit(1:5)$lit_to_df()
-Expr_lit_to_df = function() {
-  pl$select(self)
-}
 
 #' Find local minima
 #'
