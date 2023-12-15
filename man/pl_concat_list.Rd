@@ -29,8 +29,7 @@ pl$concat_list(list(
   pl$lit(1:5),
   pl$Series(5:1),
   rep(0L, 5)
-))$alias("alice") |>
-  as_polars_series()
+))$alias("alice")$lit_to_s()
 
 }
 \keyword{Expr_new}

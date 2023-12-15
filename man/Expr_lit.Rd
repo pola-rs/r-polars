@@ -33,8 +33,7 @@ pl$lit(1:4)$to_r()
 pl$select(pl$lit(1:4))
 
 # r vector to literal to Series
-pl$lit(1:4) |>
-  as_polars_series()
+pl$lit(1:4)$lit_to_s()
 
 # vectors to literal implicitly
 (pl$lit(2) + 1:4) / 4:1

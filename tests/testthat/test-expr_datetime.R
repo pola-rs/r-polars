@@ -382,7 +382,7 @@ test_that("second, milli, micro, nano", {
       interval = "2h3m4s555ms666us777ns",
       time_zone = "GMT",
       time_unit = "ns"
-    )
+    )$lit_to_s()
   )$with_columns(
     pl$col("date")$dt$second()$alias("second"),
     pl$col("date")$dt$second(fractional = TRUE)$alias("second_frac"),

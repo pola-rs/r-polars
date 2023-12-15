@@ -232,7 +232,7 @@ pl$date_range = function(
 
   f_eager_eval = \(lit) {
     if (isTRUE(eager)) {
-      result(as_polars_series(lit))
+      result(lit$lit_to_s())
     } else {
       Ok(lit)
     }

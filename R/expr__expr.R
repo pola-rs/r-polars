@@ -929,8 +929,7 @@ Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE,
 #' pl$select(pl$lit(1:4))
 #'
 #' # r vector to literal to Series
-#' pl$lit(1:4) |>
-#'   as_polars_series()
+#' pl$lit(1:4)$lit_to_s()
 #'
 #' # vectors to literal implicitly
 #' (pl$lit(2) + 1:4) / 4:1
@@ -1037,14 +1036,12 @@ Expr_to_physical = "use_extendr_wrapper"
 #' )
 #'
 #' # strict FALSE, inserts null for any cast failure
-#' pl$lit(c(100, 200, 300))$cast(pl$dtypes$UInt8, strict = FALSE) |>
-#'   as_polars_series()
+#' pl$lit(c(100, 200, 300))$cast(pl$dtypes$UInt8, strict = FALSE)$lit_to_s()
 #'
 #' # strict TRUE, raise any failure as an error when query is executed.
 #' tryCatch(
 #'   {
-#'     pl$lit("a")$cast(pl$dtypes$Float64, strict = TRUE) |>
-#'       as_polars_series()
+#'     pl$lit("a")$cast(pl$dtypes$Float64, strict = TRUE)$lit_to_s()
 #'   },
 #'   error = function(e) e
 #' )
@@ -2674,7 +2671,7 @@ Expr_rank = function(method = "average", descending = FALSE) {
 #'   diff_default = pl$col("a")$diff(),
 #'   diff_2_ignore = pl$col("a")$diff(2, "ignore")
 #' )
-Expr_diff = function(n = 1, null_behavior = c("ignore", "drop")) {
+  Expr_diff = function(n = 1, null_behavior = c("ignore", "drop")) {
   .pr$Expr$diff(self, n, null_behavior) |>
     unwrap("in $diff():")
 }
@@ -3110,7 +3107,7 @@ Expr_ewm_var = function(
     com = NULL, span = NULL, half_life = NULL, alpha = NULL,
     adjust = TRUE, bias = FALSE, min_periods = 1L, ignore_nulls = TRUE) {
   alpha = prepare_alpha(com, span, half_life, alpha)
-  .pr$Expr$ewm_var(self, alpha, adjust, bias, min_periods, ignore_nulls) |>
+  .pr$Expr$ewm_var(self, alpha, adjust, bias, min_periods, ignore_nulls)  |>
     unwrap("in $ewm_var()")
 }
 
@@ -3144,7 +3141,7 @@ Expr_extend_constant = function(value, n) {
 #' pl$select(pl$lit("alice")$rep(n = 3))
 #' pl$select(pl$lit(1:3)$rep(n = 2))
 Expr_rep = function(n, rechunk = TRUE) {
-  .pr$Expr$rep(self, n, rechunk) |>
+  .pr$Expr$rep(self, n, rechunk)  |>
     unwrap("in $rep()")
 }
 
@@ -3432,6 +3429,26 @@ Expr_struct = method_as_property(function() {
 #' )
 Expr_to_struct = function() {
   pl$struct(self)
+}
+
+#' Convert Literal to Series
+#'
+#' Collect an expression based on literals into a Series.
+#' @return Series
+#' @examples
+#' pl$lit(1:5)$lit_to_s()
+Expr_lit_to_s = function() {
+  pl$select(self)$to_series(0)
+}
+
+#' Convert Literal to DataFrame
+#'
+#' Collect an expression based on literals into a DataFrame.
+#' @return Series
+#' @examples
+#' pl$lit(1:5)$lit_to_df()
+Expr_lit_to_df = function() {
+  pl$select(self)
 }
 
 #' Find local minima

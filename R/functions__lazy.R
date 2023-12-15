@@ -438,8 +438,8 @@ pl$n_unique = function(column) { #-> int or Expr
 #'
 #' # comparison with n_unique for 2 million integers. (try change example to 20 million ints)
 #' lit_series = pl$lit(c(1:1E6, 1E6:1, 1:1E6))
-#' system.time(as_polars_series(pl$approx_n_unique(lit_series)))
-#' system.time(as_polars_series(pl$n_unique(lit_series)))
+#' system.time(pl$approx_n_unique(lit_series)$lit_to_s()$print())
+#' system.time(pl$n_unique(lit_series)$lit_to_s()$print())
 pl$approx_n_unique = function(column) { #-> int or Expr
   pcase(
     inherits(column, "RPolarsExpr"), result(column$approx_n_unique()),
@@ -682,8 +682,7 @@ pl$var = function(column, ddof = 1) {
 #'   pl$lit(1:5),
 #'   pl$Series(5:1),
 #'   rep(0L, 5)
-#' ))$alias("alice") |>
-#'   as_polars_series()
+#' ))$alias("alice")$lit_to_s()
 #'
 pl$concat_list = function(exprs) {
   concat_list(as.list(exprs)) |>

@@ -974,9 +974,15 @@ Series_expr = method_as_property(function() {
 #' @return Expr
 #' @aliases to_lit
 #' @examples
-#' s = pl$Series(list(1:1, 1:2, 1:3, 1:4))
-#'
-#' s$to_lit()
+#' (
+#'   pl$Series(list(1:1, 1:2, 1:3, 1:4))
+#'   $print()
+#'   $to_lit()
+#'   $list$lengths()
+#'   $sum()
+#'   $cast(pl$dtypes$Int8)
+#'   $lit_to_s()
+#' )
 Series_to_lit = function() {
   pl$lit(self)
 }

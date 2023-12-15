@@ -66,8 +66,7 @@ time_unit_conv_factor = c(
 #'
 #'
 #' pl$Series(pl$PTime(runif(5) * 3600 * 24 * 1E0, tu = "s"))
-#' pl$lit(pl$PTime("23:59:59")) |>
-#'   as_polars_series()
+#' pl$lit(pl$PTime("23:59:59"))$lit_to_s()
 #'
 #' pl$lit(pl$PTime("23:59:59"))$to_r()
 pl$PTime = function(x, tu = c("s", "ms", "us", "ns"), format = "%H:%M:%S") {
