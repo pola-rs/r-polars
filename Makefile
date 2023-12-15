@@ -93,9 +93,6 @@ test: build install ## Run fast unittests
 .PHONY: fmt
 fmt: fmt-rs fmt-r ## Format files
 
-GIT_DIF_TARGET ?=
-MODIFIED_R_FILES ?= $(shell R -s -e 'setdiff(system("git diff $(GIT_DIF_TARGET) --name-only | grep -e .*R$$ -e .*Rmd$$", intern = TRUE), "R/extendr-wrappers.R") |> cat()')
-
 .PHONY: fmt-r
 fmt-r: ## Format R files
 	Rscript -e 'source("./dev/styler_utils.R"); style_files()'
