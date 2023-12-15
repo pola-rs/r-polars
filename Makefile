@@ -98,7 +98,7 @@ MODIFIED_R_FILES ?= $(shell R -s -e 'setdiff(system("git diff $(GIT_DIF_TARGET) 
 
 .PHONY: fmt-r
 fmt-r: ## Format R files
-	Rscript -e "source("./dev/styler_utils.R"); style_files()"
+	Rscript -e 'source("./dev/styler_utils.R"); style_files()'
 
 .PHONY: fmt-rs
 fmt-rs: ## Format Rust files
