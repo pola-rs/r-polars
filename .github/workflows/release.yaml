@@ -94,7 +94,7 @@ jobs:
           mv ../polars* ./
 
       - name: Upload produced R packages
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: |
             polars_*
