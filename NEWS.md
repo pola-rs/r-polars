@@ -8,8 +8,8 @@
   `$microseconds()`, `$nanoseconds()`. Those were deprecated in 0.11.0 (#550).
 - `pl$concat_list()`: elements being strings are now interpreted as column names.
   Use `pl$lit` to concat with a string.
-- `$lit_to_s()` and `$lit_to_df()` methods of `RPolarsExpr` are removed.
-  Please use `as_polars_series()` and `as_polars_df()` instead (#582).
+- `<RPolarsExpr>$lit_to_s()` is renamed to `<RPolarsExpr>$to_series()` (#582).
+- `<RPolarsExpr>$lit_to_df()` is removed (#582).
 - Change class names and function names associated with class names.
   - The class name of all objects created by polars (`DataFrame`, `LazyFrame`,
     `Expr`, `Series`, etc.) has changed. They now start with `RPolars`, for example
