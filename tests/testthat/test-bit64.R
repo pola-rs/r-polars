@@ -3,7 +3,7 @@ test_that("from r to series and reverse", {
   testthat::skip_if_not_installed("bit64")
   values = c(-1, 0, 1, NA, 2^61, -2^61)
   s_act = pl$Series(bit64::as.integer64(values))
-  s_ref = pl$lit(values)$cast(pl$Int64)$lit_to_s()
+  s_ref = pl$lit(values)$cast(pl$Int64)$to_series()
   expect_true(all((s_act == s_ref)$to_r(), na.rm = TRUE))
   # sereis to R
   r_act = s_act$to_r()

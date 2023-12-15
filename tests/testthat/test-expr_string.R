@@ -6,7 +6,7 @@ test_that("str$strptime datetime", {
   )
 
   expect_error(
-    pl$lit(txt_datetimes)$str$strptime(pl$Datetime(), format = "%Y-%m-%d %H:%M:%S")$lit_to_s(),
+    pl$lit(txt_datetimes)$str$strptime(pl$Datetime(), format = "%Y-%m-%d %H:%M:%S")$to_series(),
     "Conversion .* failed"
   )
 
@@ -29,12 +29,12 @@ test_that("str$strptime date", {
   )
 
   expect_grepl_error(
-    pl$lit(txt_dates)$str$strptime(pl$Int32, format = "%Y-%m-%d")$lit_to_s(),
+    pl$lit(txt_dates)$str$strptime(pl$Int32, format = "%Y-%m-%d")$to_series(),
     "datatype should be of type \\{Date, Datetime, Time\\}"
   )
 
   expect_grepl_error(
-    pl$lit(txt_dates)$str$strptime(pl$Date, format = "%Y-%m-%d")$lit_to_s(),
+    pl$lit(txt_dates)$str$strptime(pl$Date, format = "%Y-%m-%d")$to_series(),
     "Conversion from `str` to `date` failed"
   )
 
@@ -63,12 +63,12 @@ test_that("str$strptime time", {
   )
 
   expect_grepl_error(
-    pl$lit(txt_times)$str$strptime(pl$Int32, format = "%H:%M:%S %z")$lit_to_s(),
+    pl$lit(txt_times)$str$strptime(pl$Int32, format = "%H:%M:%S %z")$to_series(),
     "datatype should be of type \\{Date, Datetime, Time\\}"
   )
 
   expect_grepl_error(
-    pl$lit(txt_times)$str$strptime(pl$Time, format = "%H:%M:%S %z")$lit_to_s(),
+    pl$lit(txt_times)$str$strptime(pl$Time, format = "%H:%M:%S %z")$to_series(),
     "Conversion from `str` to `time` failed"
   )
 
