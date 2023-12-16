@@ -43,7 +43,7 @@ Suggests:
     vctrs,
     withr
 Config/Needs/website:
-    etiennebacher/altdoc@use-venv,
+    etiennebacher/altdoc@95a5f42,
     future.apply,
     here,
     magrittr,
