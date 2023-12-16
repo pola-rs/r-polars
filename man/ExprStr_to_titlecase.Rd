@@ -17,7 +17,7 @@ See \code{\link[=polars_info]{pl$polars_info()}} for more details.
 }
 \examples{
 \dontshow{if (pl$polars_info()$features$simd) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-pl$lit(c("hello there", "HI, THERE", NA))$str$to_titlecase()$lit_to_s()
+pl$lit(c("hello there", "HI, THERE", NA))$str$to_titlecase()$to_series()
 \dontshow{\}) # examplesIf}
 }
 \keyword{ExprStr}
