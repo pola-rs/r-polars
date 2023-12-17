@@ -1,7 +1,6 @@
 ---
 output:
-  github_document:
-    html_preview: false
+  github_document
 # used by altdoc
 default-image-extension: ''
 ---
@@ -52,7 +51,6 @@ The package can be installed from R-universe, or GitHub.
 Some platforms can install pre-compiled binaries, and others will need to build from source.
 
 ````{comment}
-
 ### CRAN
 
 CRAN provides pre-compiled binaries for Windows (x86_64) and macOS.
@@ -62,7 +60,6 @@ Binary packages on CRAN are compiled by stable Rust, with nightly features disab
 ```r
 install.packages("polars")
 ```
-
 ````
 
 ### R-universe (recommended)
@@ -153,52 +150,25 @@ During source installation, some environment variables can be set to enable Rust
 - `RPOLARS_FULL_FEATURES="true"` (Build with nightly feature enabled, requires Rust toolchain `r rust_toolchain_version`)
 - `RPOLARS_PROFILE="release-optimized"` (Build with more optimization)
 
-## Quickstart example
+## Get started
 
-The [Get Started](https://rpolars.github.io/articles/polars/) vignette (`vignette("polars")`) contains a series of detailed
-examples, but here is a quick illustration.
+**polars** is a very powerful package with many functions. The [Get Started](https://rpolars.github.io/articles/polars/) 
+vignette (`vignette("polars")`) gives an easy introduction and provides examples 
+of common operations: 
 
-**polars** is a very powerful package with many functions. To avoid conflicts
-with other packages and base R function names, **polars**'s top level functions
-are hosted in the `pl` namespace, and accessible via the `pl$` prefix. To
-convert an R data frame to a Polars `DataFrame`, we call:
+* read CSV, JSON, Parquet, and other file formats;
+* filter rows and select columns;
+* modify and create new columns;
+* group by and aggregate;
+* reshape data;
+* join and concatenate different datasets;
+* sort data;
+* work with dates and times;
+* handle missing values;
+* use the lazy execution engine for maximum performance and memory-efficient operations
 
-```{r}
-library(polars)
+While one can use **polars** as-is, other packages build on it to provide 
+different syntaxes:
 
-dat = pl$DataFrame(mtcars)
-dat
-```
-
-This `DataFrame` object can be manipulated using many of the usual R functions and accessors, e.g.:
-
-```{r}
-dat[1:4, c("mpg", "qsec", "hp")]
-```
-
-However, the true power of Polars is unlocked by using *methods*, which are
-encapsulated in the `DataFrame` object itself. For example, we can chain the
-`$group_by()` and the `$mean()` methods to compute group-wise means for each
-column of the dataset:
-
-```{r}
-dat$group_by("cyl", maintain_order = TRUE)$mean()
-```
-
-Note that we use `maintain_order = TRUE` so that `polars` always keeps the groups
-in the same order as they are in the original data.
-
-[The **polars** vignette](https://rpolars.github.io/articles/polars/)
-contains many more examples of how to use the package to:
-
-* Read CSV, JSON, Parquet, and other file formats.
-* Filter rows and select columns.
-* Modify and create new columns.
-* Group by and aggregate.
-* Reshape data.
-* Join and concatenate different datasets.
-* Sort data.
-* Work with dates and times.
-* Handle missing values.
-* Use the lazy execution engine for maximum performance and memory-efficient operations.
-* Etc.
+* [`polarssql`](https://github.com/rpolars/r-polarssql/) provides `{DBI}` backend and `{dbplyr}` backend;
+* [`tidypolars`](https://tidypolars.etiennebacher.com/) allows one to use the `tidyverse` syntax while using the power of **polars**.

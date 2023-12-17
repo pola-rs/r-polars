@@ -130,93 +130,29 @@ enable Rust features and profile changes.
   requires Rust toolchain nightly-2023-10-12)
 - `RPOLARS_PROFILE="release-optimized"` (Build with more optimization)
 
-## Quickstart example
+## Get started
 
-The [Get Started](https://rpolars.github.io/articles/polars/) vignette
-(`vignette("polars")`) contains a series of detailed examples, but here
-is a quick illustration.
+**polars** is a very powerful package with many functions. The [Get
+Started](https://rpolars.github.io/articles/polars/) vignette
+(`vignette("polars")`) gives an easy introduction and provides examples
+of common operations:
 
-**polars** is a very powerful package with many functions. To avoid
-conflicts with other packages and base R function names, **polars**’s
-top level functions are hosted in the `pl` namespace, and accessible via
-the `pl$` prefix. To convert an R data frame to a Polars `DataFrame`, we
-call:
+- read CSV, JSON, Parquet, and other file formats;
+- filter rows and select columns;
+- modify and create new columns;
+- group by and aggregate;
+- reshape data;
+- join and concatenate different datasets;
+- sort data;
+- work with dates and times;
+- handle missing values;
+- use the lazy execution engine for maximum performance and
+  memory-efficient operations
 
-``` r
-library(polars)
+While one can use **polars** as-is, other packages build on it to
+provide different syntaxes:
 
-dat = pl$DataFrame(mtcars)
-dat
-#> shape: (32, 11)
-#> ┌──────┬─────┬───────┬───────┬───┬─────┬─────┬──────┬──────┐
-#> │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ … ┆ vs  ┆ am  ┆ gear ┆ carb │
-#> │ ---  ┆ --- ┆ ---   ┆ ---   ┆   ┆ --- ┆ --- ┆ ---  ┆ ---  │
-#> │ f64  ┆ f64 ┆ f64   ┆ f64   ┆   ┆ f64 ┆ f64 ┆ f64  ┆ f64  │
-#> ╞══════╪═════╪═══════╪═══════╪═══╪═════╪═════╪══════╪══════╡
-#> │ 21.0 ┆ 6.0 ┆ 160.0 ┆ 110.0 ┆ … ┆ 0.0 ┆ 1.0 ┆ 4.0  ┆ 4.0  │
-#> │ 21.0 ┆ 6.0 ┆ 160.0 ┆ 110.0 ┆ … ┆ 0.0 ┆ 1.0 ┆ 4.0  ┆ 4.0  │
-#> │ 22.8 ┆ 4.0 ┆ 108.0 ┆ 93.0  ┆ … ┆ 1.0 ┆ 1.0 ┆ 4.0  ┆ 1.0  │
-#> │ 21.4 ┆ 6.0 ┆ 258.0 ┆ 110.0 ┆ … ┆ 1.0 ┆ 0.0 ┆ 3.0  ┆ 1.0  │
-#> │ …    ┆ …   ┆ …     ┆ …     ┆ … ┆ …   ┆ …   ┆ …    ┆ …    │
-#> │ 15.8 ┆ 8.0 ┆ 351.0 ┆ 264.0 ┆ … ┆ 0.0 ┆ 1.0 ┆ 5.0  ┆ 4.0  │
-#> │ 19.7 ┆ 6.0 ┆ 145.0 ┆ 175.0 ┆ … ┆ 0.0 ┆ 1.0 ┆ 5.0  ┆ 6.0  │
-#> │ 15.0 ┆ 8.0 ┆ 301.0 ┆ 335.0 ┆ … ┆ 0.0 ┆ 1.0 ┆ 5.0  ┆ 8.0  │
-#> │ 21.4 ┆ 4.0 ┆ 121.0 ┆ 109.0 ┆ … ┆ 1.0 ┆ 1.0 ┆ 4.0  ┆ 2.0  │
-#> └──────┴─────┴───────┴───────┴───┴─────┴─────┴──────┴──────┘
-```
-
-This `DataFrame` object can be manipulated using many of the usual R
-functions and accessors, e.g.:
-
-``` r
-dat[1:4, c("mpg", "qsec", "hp")]
-#> shape: (4, 3)
-#> ┌──────┬───────┬───────┐
-#> │ mpg  ┆ qsec  ┆ hp    │
-#> │ ---  ┆ ---   ┆ ---   │
-#> │ f64  ┆ f64   ┆ f64   │
-#> ╞══════╪═══════╪═══════╡
-#> │ 21.0 ┆ 16.46 ┆ 110.0 │
-#> │ 21.0 ┆ 17.02 ┆ 110.0 │
-#> │ 22.8 ┆ 18.61 ┆ 93.0  │
-#> │ 21.4 ┆ 19.44 ┆ 110.0 │
-#> └──────┴───────┴───────┘
-```
-
-However, the true power of Polars is unlocked by using *methods*, which
-are encapsulated in the `DataFrame` object itself. For example, we can
-chain the `$group_by()` and the `$mean()` methods to compute group-wise
-means for each column of the dataset:
-
-``` r
-dat$group_by("cyl", maintain_order = TRUE)$mean()
-#> shape: (3, 11)
-#> ┌─────┬───────────┬────────────┬────────────┬───┬──────────┬──────────┬──────────┬──────────┐
-#> │ cyl ┆ mpg       ┆ disp       ┆ hp         ┆ … ┆ vs       ┆ am       ┆ gear     ┆ carb     │
-#> │ --- ┆ ---       ┆ ---        ┆ ---        ┆   ┆ ---      ┆ ---      ┆ ---      ┆ ---      │
-#> │ f64 ┆ f64       ┆ f64        ┆ f64        ┆   ┆ f64      ┆ f64      ┆ f64      ┆ f64      │
-#> ╞═════╪═══════════╪════════════╪════════════╪═══╪══════════╪══════════╪══════════╪══════════╡
-#> │ 6.0 ┆ 19.742857 ┆ 183.314286 ┆ 122.285714 ┆ … ┆ 0.571429 ┆ 0.428571 ┆ 3.857143 ┆ 3.428571 │
-#> │ 4.0 ┆ 26.663636 ┆ 105.136364 ┆ 82.636364  ┆ … ┆ 0.909091 ┆ 0.727273 ┆ 4.090909 ┆ 1.545455 │
-#> │ 8.0 ┆ 15.1      ┆ 353.1      ┆ 209.214286 ┆ … ┆ 0.0      ┆ 0.142857 ┆ 3.285714 ┆ 3.5      │
-#> └─────┴───────────┴────────────┴────────────┴───┴──────────┴──────────┴──────────┴──────────┘
-```
-
-Note that we use `maintain_order = TRUE` so that `polars` always keeps
-the groups in the same order as they are in the original data.
-
-[The **polars** vignette](https://rpolars.github.io/articles/polars/)
-contains many more examples of how to use the package to:
-
-- Read CSV, JSON, Parquet, and other file formats.
-- Filter rows and select columns.
-- Modify and create new columns.
-- Group by and aggregate.
-- Reshape data.
-- Join and concatenate different datasets.
-- Sort data.
-- Work with dates and times.
-- Handle missing values.
-- Use the lazy execution engine for maximum performance and
-  memory-efficient operations.
-- Etc.
+- [`polarssql`](https://github.com/rpolars/r-polarssql/) provides
+  `{DBI}` backend and `{dbplyr}` backend;
+- [`tidypolars`](https://tidypolars.etiennebacher.com/) allows one to
+  use the `tidyverse` syntax while using the power of **polars**.
