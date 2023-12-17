@@ -47,3 +47,4 @@ tools/libr_polars.a
 # altdoc stuff
 altdoc/freeze.rds
 docs
+.venv_altdoc
