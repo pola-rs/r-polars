@@ -53,7 +53,7 @@ Expr_print = function() {
 #' @param pattern String used to auto-complete
 #' @inherit .DollarNames.RPolarsDataFrame return
 #' @export
-#' @keywords internal
+#' @noRd
 .DollarNames.RPolarsExpr = function(x, pattern = "") {
   paste0(ls(RPolarsExpr, pattern = pattern), "()")
 }
@@ -65,7 +65,7 @@ Expr_print = function() {
 #'
 #' @return One Expr wrapped in a list
 #' @export
-#' @keywords internal
+#' @noRd
 as.list.RPolarsExpr = function(x, ...) {
   list(x)
 }
@@ -76,7 +76,7 @@ as.list.RPolarsExpr = function(x, ...) {
 #' @param e an Expr(polars) or any R expression
 #' @details
 #' used internally to ensure an object is an expression
-#' @keywords internal
+#' @noRd
 #' @return Expr
 #' @examples pl$col("foo") < 5
 wrap_e = function(e, str_to_lit = TRUE) {
@@ -92,7 +92,7 @@ wrap_e = function(e, str_to_lit = TRUE) {
 #' @param argname if error, blame argument of this name
 #' @details
 #' used internally to ensure an object is an expression and to catch any error
-#' @keywords internal
+#' @noRd
 #' @return Expr
 #' @examples pl$col("foo") < 5
 wrap_e_result = function(e, str_to_lit = TRUE, argname = NULL) {
@@ -129,7 +129,7 @@ wrap_e_result = function(e, str_to_lit = TRUE, argname = NULL) {
 #' Used internally to ensure an object is a list of expression
 #' The output is wrapped in a result, which can contain an ok or
 #' err value.
-#' @keywords internal
+#' @noRd
 #' @return Expr
 #' @examples .pr$env$wrap_elist_result(list(pl$lit(42), 42, 1:3))
 wrap_elist_result = function(elist, str_to_lit = TRUE) {
@@ -575,7 +575,7 @@ Expr_is_not_null = "use_extendr_wrapper"
 #' @param ...  any Expr or string
 #'
 #'
-#' @keywords internal
+#' @noRd
 #'
 #' @return RPolarsProtoExprArray object
 #'
@@ -2987,7 +2987,7 @@ Expr_sample = function(
 #' @param span numeric or NULL
 #' @param half_life numeric or NULL
 #' @param alpha numeric or NULL
-#' @keywords internal
+#' @noRd
 #' @return numeric
 #' @noRd
 prepare_alpha = function(

@@ -3,7 +3,7 @@
 #' @param fun target function to check incoming arguments for
 #' @param args list of args to check
 #' @param warn bool if TRUE throw warning when check fails
-#' @keywords internal
+#' @noRd
 #' @return true if args are correct
 check_no_missing_args = function(
     fun, args, warn = TRUE) {
@@ -32,7 +32,7 @@ check_no_missing_args = function(
 #' @param Method_name name of method requested by user
 #' @param call context to throw user error, just use default
 #' @param class_name NULLs
-#' @keywords internal
+#' @noRd
 #' @return invisible(NULL)
 verify_method_call = function(Class_env, Method_name, call = sys.call(1L), class_name = NULL) {
   if (polars_optenv$debug_polars) {
@@ -83,7 +83,7 @@ verify_method_call = function(Class_env, Method_name, call = sys.call(1L), class
 #' list2 - one day like rlang
 #' list2 placeholder for future rust-impl
 #' @noRd
-#' @keywords internal
+#' @noRd
 #' @return An R list
 #' @details rlang has this wonderful list2 implemented in c/c++, that is agnostic about trailing
 #' commas in ... params. One day r-polars will have a list2-impl written in rust, which also allows
@@ -150,7 +150,7 @@ unpack_bool_expr = function(..., .msg = NULL) {
 #' @details Lifecycle: perhaps replace with something written in rust to speed up a bit
 #'
 #' @return any return given first true bool statement otherwise value of or_else
-#' @keywords internal
+#' @noRd
 #' @examples
 #' n = 7
 #' .pr$env$pcase(
@@ -177,7 +177,7 @@ pcase = function(..., or_else = NULL) {
 #' @param element_names names of elements to move, if named names, then name of name is to_env name
 #' @param remove bool, actually remove element in from_env
 #' @param to_env env to
-#' @keywords internal
+#' @noRd
 #' @return invisble NULL
 #'
 move_env_elements = function(from_env, to_env, element_names, remove = TRUE) {
@@ -205,7 +205,7 @@ move_env_elements = function(from_env, to_env, element_names, remove = TRUE) {
 #' DataFrame-list to rust vector of DataFrame
 #' @description lifecycle: DEPRECATE, imple on rust side as a function
 #' @param l list of DataFrame
-#' @keywords internal
+#' @noRd
 #' @return RPolarsVecDataFrame
 l_to_vdf = function(l) {
   if (!length(l)) stop("cannot concat empty list l")
@@ -243,7 +243,7 @@ l_to_vdf = function(l) {
 #'
 #' @param env an R environment.
 #' @return shallow clone of R environment
-#' @keywords internal
+#' @noRd
 #' @noRd
 #' @examples
 #'
@@ -284,7 +284,7 @@ clone_env_one_level_deep = function(env) {
 #' @param class_pattern a regex string matching declared public functions of that class
 #' @param keep list of unmentioned methods to keep in public api
 #' @param remove_f bool if true, will move methods, not copy
-#' @keywords internal
+#' @noRd
 #' @return side effects only
 replace_private_with_pub_methods = function(env, class_pattern, keep = c(), remove_f = FALSE) {
   if (build_debug_print) cat("\n\n setting public methods for ", class_pattern)
@@ -342,7 +342,7 @@ replace_private_with_pub_methods = function(env, class_pattern, keep = c(), remo
 #' @description lifecycle: Deprecate, move to rust side
 #' @param l list of Expr or string
 #' @return extptr to rust vector of RPolarsDataType's
-#' @keywords internal
+#' @noRd
 construct_DataTypeVector = function(l) {
   dtv = RPolarsDataTypeVector$new()
   for (i in seq_along(l)) {
@@ -361,7 +361,7 @@ construct_DataTypeVector = function(l) {
 #' @param pattern string passed to ls(pattern) to subset methods by pattern
 #' @details used internally for auto completion in .DollarNames methods
 #' @return method usages
-#' @keywords internal
+#' @noRd
 #' @noRd
 #' @examples
 #' .pr$env$get_method_usages(.pr$env$DataFrame, pattern = "col")
@@ -395,7 +395,7 @@ get_method_usages = function(env, pattern = "") {
 }
 
 #' Print recursively an environment, used in some documentation
-#' @keywords internal
+#' @noRd
 #' @return Print recursively an environment to the console
 #' @param api env
 #' @param name  name of env
@@ -433,7 +433,7 @@ print_env = function(api, name, max_depth = 10) {
 #' @param X any Robj wrapped in `I()``
 #' @details
 #' https://stackoverflow.com/questions/12865218/getting-rid-of-asis-class-attribute
-#' @keywords internal
+#' @noRd
 #' @return X without any AsIs subclass
 unAsIs = function(X) {
   if ("AsIs" %in% class(X)) {
@@ -452,7 +452,7 @@ unAsIs = function(X) {
 #' This function should be replaced with rust code writing this output
 #' directly before nesting.
 #' This hack relies on rust uses the tag "is_struct" to mark what should be re-structed.
-#' @keywords internal
+#' @noRd
 #' @param l list
 #' @return restructed list
 restruct_list = function(l) {
@@ -505,7 +505,7 @@ restruct_list = function(l) {
 #' All R functions coined 'macro_'-functions use eval(parse()) but only at package build time
 #' to solve some tricky self-referential problem. If possible to deprecate a macro in a clean way
 #' , go ahead.
-#' @keywords internal
+#' @noRd
 #' @noRd
 #' @examples
 #'
@@ -574,7 +574,7 @@ macro_new_subnamespace = function(class_pattern, subclass_env = NULL, remove_f =
 #'
 #' @param x object to view.
 #' @param collapse word to glue possible multilines with
-#' @keywords internal
+#' @noRd
 #' @return string
 #' @noRd
 #' @examples
@@ -592,7 +592,7 @@ str_string = function(x, collapse = " ") {
 #' @param allow_null bool, if TRUE accept NULL
 #'
 #' @return a result object, with either a valid string or an Err
-#' @keywords internal
+#' @noRd
 #'
 #' @noRd
 #' @examples

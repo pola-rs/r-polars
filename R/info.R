@@ -44,7 +44,7 @@ print.polars_info = function(x, ...) {
 #' @param feature_name name of feature to check
 #' @inheritParams unwrap
 #' @return TRUE invisibly if the feature is enabled
-#' @keywords internal
+#' @noRd
 #' @examples
 #' tryCatch(
 #'   check_feature("simd", "in example"),

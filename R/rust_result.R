@@ -2,7 +2,7 @@
 #' @param x R object which could be a rust-like result of a list with two elements, ok and err
 #' @details both ok and err being NULL encodes ok-value NULL. No way to encode an err-value NULL
 #' If both ok and err has value then this is an invalid result
-#' @keywords internal
+#' @noRd
 #' @return bool if is a result object
 is_result = function(x) {
   identical(class(x), "extendr_result")
@@ -17,7 +17,7 @@ guard_result = function(x, msg = "") {
 #' check if x ss a result and an err
 #' @param x R object which could be a rust-like result of a list with two elements, ok and err
 #' @return bool if is a result object which is an err
-#' @keywords internal
+#' @noRd
 is_err = function(x) {
   guard_result(x)
   !is.null(x$err)
@@ -26,7 +26,7 @@ is_err = function(x) {
 #' check if x ss a result and an ok
 #' @param x R object which could be a rust-like result of a list with two elements, ok and err
 #' @return bool if is a result object which is an ok
-#' @keywords internal
+#' @noRd
 is_ok = function(x) {
   guard_result(x)
   is.null(x$err)
@@ -35,14 +35,14 @@ is_ok = function(x) {
 #' Wrap in Ok
 #' @param x any R object
 #' @return same R object wrapped in a Ok-result
-#' @keywords internal
+#' @noRd
 Ok = function(x) {
   structure(list(ok = x, err = NULL), class = "extendr_result")
 }
 
 #' Wrap in Err
 #' @param x any R object
-#' @keywords internal
+#' @noRd
 #' @return same R object wrapped in a Err-result
 Err = function(x) {
   if (is.null(x)) stop("internal error in Err(x): x cannot be a NULL, not allowed")
@@ -51,7 +51,7 @@ Err = function(x) {
 
 
 #' map an Err part of Result
-#' @keywords internal
+#' @noRd
 #' @param x any R object
 #' @param f a closure that takes the err part as input
 #' @return same R object wrapped in a Err-result
@@ -74,7 +74,7 @@ map = function(x, f) {
 #' @param x any R object
 #' @param f a closure that takes the ok part as input
 #' @return same R object wrapped in a Err-result
-#' @keywords internal
+#' @noRd
 and_then = function(x, f) {
   if (is_err(x)) {
     return(x)
@@ -84,7 +84,7 @@ and_then = function(x, f) {
 
 #' map an Err part of Result
 #' @param x any R object
-#' @keywords internal
+#' @noRd
 #' @param f a closure that takes the ok part as input, must return a result itself
 #' @return same R object wrapped in a Err-result
 or_else = function(x, f) {
@@ -98,7 +98,7 @@ or_else = function(x, f) {
 
 #' unwrap return or if err
 #' @param x any R object
-#' @keywords internal
+#' @noRd
 #' @param or any R value
 #' @return pl
 unwrap_or = function(x, or) {
@@ -116,7 +116,7 @@ unwrap_or = function(x, or) {
 #' @description DEPRECATED USE stopf instead
 #' @param err error msg string
 #' @param call calling context
-#' @keywords internal
+#' @noRd
 #'
 #' @return throws an error
 #'

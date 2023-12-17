@@ -8,7 +8,7 @@
 #' @details
 #' Additional details...
 #'
-#' @keywords internal
+#' @noRd
 #' @return err as string
 #' @examples
 #' #
@@ -31,7 +31,7 @@ call_to_string = function(call) paste(capture.output(print(call)), collapse = "\
 #' @description Internal generic method to point to which public method the user got wrong
 #' @param err any type which impl as.character
 #' @param context calling context
-#' @keywords internal
+#' @noRd
 #' @noRd
 #' @return err as string
 #' @examples
@@ -56,7 +56,7 @@ where_in.default = function(err, context) {
 
 #' Internal generic method to convert an error_type to condition.
 #' @param err any type which impl as.character
-#' @keywords internal
+#' @noRd
 #' @noRd
 #' @details
 #' this method is needed to preserve state of err without upcasting to a string message
@@ -80,7 +80,7 @@ to_condition.default = function(err) {
 #' @param err some error type object
 #' @param msg string to add
 #' @noRd
-#' @keywords internal
+#' @noRd
 #' @return condition
 plain = function(err, msg) {
   if (is.null(msg)) {
@@ -101,7 +101,7 @@ plain.default = function(err, msg) {
 #' As fall back the error will be deparsed into a string with rust Debug, see rdbg()
 #' @param err some error type object
 #' @noRd
-#' @keywords internal
+#' @noRd
 #' @return condition
 upgrade_err = function(err) {
   UseMethod("upgrade_err", err)
