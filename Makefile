@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := help
 
 SHELL := /bin/bash
-VENV := .venv
+VENV := .venv_altdoc
 
 RUST_TOOLCHAIN_VERSION := $(shell Rscript -e 'read.dcf("DESCRIPTION", fields = "Config/polars/RustToolchainVersion", all = TRUE)[1, 1] |> cat()')
 
@@ -34,6 +34,7 @@ requirements-r:
 .PHONY: requirements-py
 requirements-py: .venv
 	$(VENV_BIN)/python -m pip install --upgrade pip
+	$(VENV_BIN)/pip install --upgrade mkdocs
 	$(VENV_BIN)/pip install --upgrade mkdocs-material
 
 .PHONY: requirements-rs
@@ -51,7 +52,7 @@ build: ## Compile polars R package with all features and generate Rd files
 	export NOT_CRAN=true \
 	&& export LIBR_POLARS_BUILD=true \
 	&& export RPOLARS_FULL_FEATURES=true \
-	&& Rscript -e 'if (!(require(arrow) && require(nanoarrow) && require(knitr))) warning("could not load arrow/nanoarrow/knitr, igonore changes to nanoarrow.Rd or knit_print.Rd"); rextendr::document()'
+	&& Rscript -e 'if (!(require(arrow) && require(nanoarrow) && require(knitr))) warning("could not load arrow/nanoarrow/knitr, ignore changes to nanoarrow.Rd or knit_print.Rd"); rextendr::document()'
 
 .PHONY: install
 install: ## Install the R package
@@ -64,20 +65,18 @@ install: ## Install the R package
 all: fmt tools/lib-sums.tsv build test README.md LICENSE.note ## build -> test -> Update README.md, LICENSE.note
 
 .PHONY: docs
-docs: build install README.md docs/docs/reference_home.md ## Generate docs
-	cp docs/mkdocs.orig.yml docs/mkdocs.yml
-	Rscript -e 'altdoc::update_docs(custom_reference = "docs/make-docs.R")'
-	cd docs && ../$(VENV_BIN)/python3 -m mkdocs build
+docs: build install README.md altdoc/reference_home.md ## Generate docs
+	Rscript -e 'future::plan(future::multicore); source("altdoc/altdoc_preprocessing.R"); altdoc::render_docs(freeze = FALSE, parallel = TRUE)'
 
 .PHONY: docs-preview
 docs-preview: ## Preview docs on local server. Needs `make docs`
-	cd docs && ../$(VENV_BIN)/python3 -m mkdocs serve
+	Rscript -e 'altdoc::preview_docs()'
 
 README.md: README.Rmd build ## Update README.md
 	Rscript -e 'devtools::load_all(); rmarkdown::render("README.Rmd")'
 
-docs/docs/reference_home.md: docs/docs/reference_home.Rmd build ## Update the reference home page source
-	Rscript -e 'devtools::load_all(); rmarkdown::render("docs/docs/reference_home.Rmd")'
+altdoc/reference_home.md: altdoc/reference_home.Rmd build ## Update the reference home page source
+	Rscript -e 'devtools::load_all(); rmarkdown::render("altdoc/reference_home.Rmd")'
 
 LICENSE.note: src/rust/Cargo.lock ## Update LICENSE.note
 	Rscript -e 'rextendr::write_license_note(force = TRUE)'
