@@ -43,7 +43,8 @@ Suggests:
     vctrs,
     withr
 Config/Needs/website:
-    altdoc (>= 0.2.2),
+    etiennebacher/altdoc@95a5f42,
+    future.apply,
     here,
     magrittr,
     pkgload,
