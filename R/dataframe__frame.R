@@ -164,7 +164,7 @@ pl$DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
 
   # keys are tentative new column names
   keys = names(largs)
-  if (length(keys) == 0) keys <- rep(NA_character_, length(largs))
+  if (length(keys) == 0) keys = rep(NA_character_, length(largs))
   keys = mapply(largs, keys, FUN = function(column, key) {
     if (is.na(key) || nchar(key) == 0) {
       if (inherits(column, "RPolarsSeries")) {
@@ -291,7 +291,7 @@ DataFrame.property_setters = new.env(parent = emptyenv())
     pstop(err = paste("no setter method for", name))
   }
 
-  if (polars_optenv$strictly_immutable) self <- self$clone()
+  if (polars_optenv$strictly_immutable) self = self$clone()
   func = DataFrame.property_setters[[name]]
   func(self, value)
   self
@@ -791,10 +791,8 @@ DataFrame_tail = function(n) {
 #' Filter rows of a DataFrame
 #' @name DataFrame_filter
 #'
-#' @description This is equivalent to `dplyr::filter()`. Note that rows where
-#' the condition returns `NA` are dropped, unlike base subsetting with `[`.
+#' @inherit LazyFrame_filter description params details
 #'
-#' @param bool_expr Polars expression which will evaluate to a boolean.
 #' @keywords DataFrame
 #' @return A DataFrame with only the rows where the conditions are `TRUE`.
 #' @examples
@@ -802,14 +800,18 @@ DataFrame_tail = function(n) {
 #'
 #' df$filter(pl$col("Sepal.Length") > 5)
 #'
+#' # This is equivalent to
+#' # df$filter(pl$col("Sepal.Length") > 5 & pl$col("Petal.Width") < 1)
+#' df$filter(pl$col("Sepal.Length") > 5, pl$col("Petal.Width") < 1)
+#'
 #' # rows where condition is NA are dropped
 #' iris2 = iris
 #' iris2[c(1, 3, 5), "Species"] = NA
 #' df = pl$DataFrame(iris2)
 #'
 #' df$filter(pl$col("Species") == "setosa")
-DataFrame_filter = function(bool_expr) {
-  .pr$DataFrame$lazy(self)$filter(bool_expr)$collect()
+DataFrame_filter = function(...) {
+  .pr$DataFrame$lazy(self)$filter(...)$collect()
 }
 
 #' Group a DataFrame
@@ -1542,7 +1544,7 @@ DataFrame_glimpse = function(..., return_as_string = FALSE) {
   max_col_name_trunc = 50
   parse_column_ = \(col_name, dtype) {
     dtype_str = dtype_str_repr(dtype) |> unwrap_or(paste0("??", str_string(dtype)))
-    if (inherits(dtype, "RPolarsDataType")) dtype_str <- paste0(" <", dtype_str, ">")
+    if (inherits(dtype, "RPolarsDataType")) dtype_str = paste0(" <", dtype_str, ">")
     val = self$select(pl$col(col_name)$slice(0, max_num_value))$to_list()[[1]]
     val_str = paste(val, collapse = ", ")
     if (nchar(col_name) > max_col_name_trunc) {

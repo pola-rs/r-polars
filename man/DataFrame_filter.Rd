@@ -4,22 +4,30 @@
 \alias{DataFrame_filter}
 \title{Filter rows of a DataFrame}
 \usage{
-DataFrame_filter(bool_expr)
+DataFrame_filter(...)
 }
 \arguments{
-\item{bool_expr}{Polars expression which will evaluate to a boolean.}
+\item{...}{Polars expressions which will evaluate to a boolean.}
 }
 \value{
 A DataFrame with only the rows where the conditions are \code{TRUE}.
 }
 \description{
-This is equivalent to \code{dplyr::filter()}. Note that rows where
-the condition returns \code{NA} are dropped, unlike base subsetting with \code{[}.
+Filter rows with an Expression defining a boolean column.
+Multiple expressions are combined with \code{&} (AND).
+This is equivalent to \code{\link[dplyr:filter]{dplyr::filter()}}.
+}
+\details{
+Rows where the condition returns \code{NA} are dropped.
 }
 \examples{
 df = pl$DataFrame(iris)
 
 df$filter(pl$col("Sepal.Length") > 5)
+
+# This is equivalent to
+# df$filter(pl$col("Sepal.Length") > 5 & pl$col("Petal.Width") < 1)
+df$filter(pl$col("Sepal.Length") > 5, pl$col("Petal.Width") < 1)
 
 # rows where condition is NA are dropped
 iris2 = iris
