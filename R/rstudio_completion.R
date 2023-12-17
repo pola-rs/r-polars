@@ -84,20 +84,21 @@ activate_pl_autocomplete <- function() {
     .rs.getCompletionsDollar_orig <- .rs.getCompletionsDollar
     .rs.getCompletionsDollar <- function(token, string, functionCall, envir, isAt) {
       lhs = polars:::.dev$eval_lhs_string(string, envir)
-      if(!  polars:::.dev$is_polars_related_type(lhs)) {
-        .rs.getCompletionsDollar_orig(token, string, functionCall, envir, isAt)
+      string = "lhs"
+      if(TRUE ){#!  polars:::.dev$is_polars_related_type(lhs)) {
+        return(.rs.getCompletionsDollar_orig(token, string, functionCall, envir=(\() parent.frame())(), isAt))
       }
-      results = gsub("\\(|\\)","",.DollarNames(lhs,token))
-      types = sapply(
-        results,
-        function(x) .rs.getCompletionType(eval(substitute(`$`(lhs,x), list(x=x))))
-      )
-      .rs.makeCompletions(
-        token = token, results = results, excludeOtherCompletions = TRUE, packages = "polars",
-        quote = FALSE, helpHandler = FALSE,
-        context = .rs.acContextTypes$DOLLAR, suggestOnAccept ="foobar",
-        type = types, meta = "more info",
-      )
+      # results = gsub("\\(|\\)","",.DollarNames(lhs,token))
+      # types = sapply(
+      #   results,
+      #   function(x) .rs.getCompletionType(eval(substitute(`$`(lhs,x), list(x=x))))
+      # )
+      # .rs.makeCompletions(
+      #   token = token, results = results, excludeOtherCompletions = TRUE, packages = "polars",
+      #   quote = FALSE, helpHandler = FALSE,
+      #   context = .rs.acContextTypes$DOLLAR, suggestOnAccept ="foobar",
+      #   type = types, meta = "more info",
+      # )
     } # end new dollar f
   }, envir = rs) #end local
 }
@@ -105,10 +106,10 @@ activate_pl_autocomplete <- function() {
 # # # #
 # polars:::activate_pl_autocomplete()
 # # # #
+## # #
+#library(polars)
 # # # #
-# library(polars)
 # # # #
-# # # #
-# pl$col("a")$alias("blop")$sum()$alias(
+#pl$col("a")$alias("blop")$li
 
 
