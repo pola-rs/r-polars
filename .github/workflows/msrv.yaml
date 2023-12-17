@@ -1,31 +1,31 @@
-# name: Check MSRV
-# on:
-#   push:
-#     branches:
-#       - main
-#     paths:
-#       - src/rust/**
-#   pull_request:
-#     branches:
-#       - main
-#     paths:
-#       - src/rust/**
-#   workflow_dispatch:
-#
-# concurrency:
-#   group: ${{ github.workflow }}-${{ github.ref }}
-#   cancel-in-progress: true
-#
-# permissions:
-#   contents: read
-#
-# jobs:
-#   test-min-rust-version:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - uses: actions/checkout@v4
-#       - uses: baptiste0928/cargo-install@v2
-#         with:
-#           crate: cargo-msrv
-#       - name: Verify minimum rust version
-#         run: cargo-msrv --path src/rust/ verify
+name: Check MSRV
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - src/rust/**
+  pull_request:
+    branches:
+      - main
+    paths:
+      - src/rust/**
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test-min-rust-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: baptiste0928/cargo-install@v2
+        with:
+          crate: cargo-msrv
+      - name: Verify minimum rust version
+        run: cargo-msrv --path src/rust/ verify
