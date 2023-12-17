@@ -94,7 +94,12 @@ test_that("when-then multiple predicates", {
         pl$col("foo") %% 2 != 0
       )
       $then(99)
-      $otherwise(-1)
+      $when(
+        pl$col("bar") == 0,
+        pl$col("foo") %% 2 == 0
+      )
+      $then(-1)
+      $otherwise(NA)
     )$to_data_frame(),
     data.frame(
       foo = c(1, 3, 4),
