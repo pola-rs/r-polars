@@ -32,6 +32,8 @@
   double (#577).
 - The conversion of R's `POSIXct` class to Polars datetime now works correctly with millisecond
   precision (#589).
+- `<LazyFrame>$filter()`, `<DataFrame>$filter()`, and `pl$when()` now allow multiple conditions
+  to be separated by commas, like `lf$filter(pl$col("foo") == 1, pl$col("bar") != 2)` (#598).
 
 # polars 0.11.0
 
