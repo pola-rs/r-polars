@@ -266,15 +266,31 @@ LazyFrame_with_row_count = function(name, offset = NULL) {
   .pr$LazyFrame$with_row_count(self, name, offset) |> unwrap()
 }
 
-#' @title Apply filter to LazyFrame
-#' @description Filter rows with an Expression defining a boolean column
+#' Apply filter to LazyFrame
+#'
+#' Filter rows with an Expression defining a boolean column.
+#' Multiple expressions are combined with `&` (AND).
+#' This is equivalent to [dplyr::filter()].
+#'
+#' Rows where the condition returns `NA` are dropped.
 #' @keywords LazyFrame
-#' @param expr one Expr or string naming a column
+#' @param ... Polars expressions which will evaluate to a boolean.
 #' @return A new `LazyFrame` object with add/modified column.
 #' @docType NULL
-#' @usage LazyFrame_filter(expr)
-#' @examples pl$LazyFrame(iris)$filter(pl$col("Species") == "setosa")$collect()
-LazyFrame_filter = "use_extendr_wrapper"
+#' @examples
+#' lf = pl$LazyFrame(iris)
+#'
+#' lf$filter(pl$col("Species") == "setosa")$collect()
+#'
+#' # This is equivalent to
+#' # lf$filter(pl$col("Sepal.Length") > 5 & pl$col("Petal.Width") < 1)
+#' lf$filter(pl$col("Sepal.Length") > 5, pl$col("Petal.Width") < 1)
+LazyFrame_filter = function(...) {
+  bool_expr = unpack_bool_expr(...) |>
+    unwrap("in $filter()")
+
+  .pr$LazyFrame$filter(self, bool_expr)
+}
 
 #' @title Get optimization settings
 #' @description Get the current optimization toggles for the lazy query
@@ -1148,8 +1164,8 @@ LazyFrame_join_asof = function(
     tolerance = NULL,
     allow_parallel = TRUE,
     force_parallel = FALSE) {
-  if (!is.null(by)) by_left <- by_right <- by
-  if (!is.null(on)) left_on <- right_on <- on
+  if (!is.null(by)) by_left = by_right = by
+  if (!is.null(on)) left_on = right_on = on
   tolerance_str = if (is.character(tolerance)) tolerance else NULL
   tolerance_num = if (!is.character(tolerance)) tolerance else NULL
 

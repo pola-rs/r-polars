@@ -117,6 +117,27 @@ unpack_list = function(..., skip_classes = NULL) {
   }
 }
 
+#' Convert dot-dot-dot to bool expression
+#' @noRd
+#' @return Result, a list has `ok` (RPolarsExpr class) and `err` (RPolarsErr class)
+#' @examples
+#' unpack_bool_expr(pl$lit(TRUE), pl$lit(FALSE))
+unpack_bool_expr = function(..., .msg = NULL) {
+  dots = list2(...)
+
+  if (!is.null(names(dots))) {
+    return(Err_plain(
+      "Detected a named input.",
+      "This usually means that you've used `=` instead of `==`."
+    ))
+  }
+
+  dots |>
+    Reduce(`&`, x = _) |>
+    result(msg = .msg) |>
+    suppressWarnings()
+}
+
 #' Simple SQL CASE WHEN implementation for R
 #' @noRd
 #' @description Inspired by data.table::fcase + dplyr::case_when.
