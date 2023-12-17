@@ -153,6 +153,6 @@ While one can use **polars** as-is, other packages build on it to
 provide different syntaxes:
 
 - [`polarssql`](https://github.com/rpolars/r-polarssql/) provides
-  `{DBI}` backend and `{dbplyr}` backend;
+  `{DBI}` and `{dbplyr}` methods;
 - [`tidypolars`](https://tidypolars.etiennebacher.com/) allows one to
   use the `tidyverse` syntax while using the power of **polars**.
