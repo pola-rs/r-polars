@@ -2,7 +2,7 @@
 #' @name Expr_when_then_otherwise
 #' @description Start a “when, then, otherwise” expression.
 #' @keywords Expr
-#' @param condition Into Expr into a boolean mask to branch by. Strings interpreted as column.
+#' @param ... Into Expr into a boolean mask to branch by.
 #' @param statement Into Expr value to insert in when() or otherwise().
 #' Strings interpreted as column.
 #' @return Expr
@@ -44,7 +44,10 @@
 #'     otherwise(pl$lit(">6cyl"))$alias("cyl_groups")
 #' print(wtt)
 #' df$with_columns(wtt)
-pl$when = function(condition) {
+pl$when = function(...) {
+  condition = unpack_bool_expr(...) |>
+    unwrap("in pl$when():")
+
   .pr$When$new(condition) |>
     unwrap("in pl$when():")
 }
@@ -57,7 +60,10 @@ When_then = function(statement) {
     unwrap("in $then():")
 }
 
-Then_when = function(condition) {
+Then_when = function(...) {
+  condition = unpack_bool_expr(...) |>
+    unwrap("in $when():")
+
   .pr$Then$when(self, condition) |>
     unwrap("in $when():")
 }
@@ -72,7 +78,10 @@ ChainedWhen_then = function(statement) {
     unwrap("in $then():")
 }
 
-ChainedThen_when = function(condition) {
+ChainedThen_when = function(...) {
+  condition = unpack_bool_expr(...) |>
+    unwrap("in $when():")
+
   .pr$ChainedThen$when(self, condition) |>
     unwrap("in $when():")
 }

@@ -11,7 +11,7 @@
 \alias{ChainedThen}
 \title{when-then-otherwise Expr}
 \arguments{
-\item{condition}{Into Expr into a boolean mask to branch by. Strings interpreted as column.}
+\item{...}{Into Expr into a boolean mask to branch by.}
 
 \item{statement}{Into Expr value to insert in when() or otherwise().
 Strings interpreted as column.}
