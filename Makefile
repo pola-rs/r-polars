@@ -93,8 +93,6 @@ test: build install ## Run fast unittests
 .PHONY: fmt
 fmt: fmt-rs fmt-r ## Format files
 
-
-
 .PHONY: fmt-r
 fmt-r: ## Format R files, set envvar GIT_DIF_TARGET to git diff branch target. Default is "main".
 	Rscript -e 'source("./dev/styler_utils.R"); style_files()'
