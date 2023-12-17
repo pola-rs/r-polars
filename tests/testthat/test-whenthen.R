@@ -83,3 +83,27 @@ test_that("when-then-otherwise", {
     )
   )
 })
+
+test_that("when-then multiple predicates", {
+  df = pl$DataFrame(foo = c(1, 3, 4), bar = c(3, 4, 0))
+
+  expect_identical(
+    df$with_columns(
+      val = pl$when(
+        pl$col("bar") > 0,
+        pl$col("foo") %% 2 != 0
+      )
+      $then(99)
+      $otherwise(-1)
+    )$to_data_frame(),
+    data.frame(
+      foo = c(1, 3, 4),
+      bar = c(3, 4, 0),
+      val = c(99, 99, -1)
+    )
+  )
+})
+
+test_that("named input is not allowed in when", {
+  expect_error(pl$when(foo = 1), "Detected a named input")
+})
