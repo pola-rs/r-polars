@@ -15,7 +15,6 @@
 #' error into an R error condition. These s3 methods can be implemented for any future error type.
 #'
 #' @return the ok-element of list , or a error will be thrown
-#' @keywords internal
 #' @examples
 #'
 #' # fetch internal unwrap-function
@@ -49,7 +48,6 @@ unwrap = function(result, context = NULL, call = sys.call(1L)) {
 #' @noRd
 #' @details
 #' throwed error info is sparse because only for internal errors
-#' @keywords internal
 #' @param result a Result, see rust_result.R#'
 #' @return some error type
 unwrap_err = function(result) {
@@ -65,7 +63,6 @@ unwrap_err = function(result) {
 #' @noRd
 #' @param expr code to capture any error from and wrap as Result
 #' @param msg handy way to add a context msg
-#' @keywords internal
 #' @return Result
 #' @examples
 #'
@@ -103,7 +100,6 @@ result = function(expr, msg = NULL) {
 #' @description use sparingly internally for speed optimization where the error is not important.
 #' @noRd
 #' @param expr code to capture any error from and wrap as Result
-#' @keywords internal
 #' @return Result
 #' @examples
 #' # get user internal functions

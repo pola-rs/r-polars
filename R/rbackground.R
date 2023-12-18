@@ -3,7 +3,7 @@
 #' @param x RPolarsRThreadHandle
 #' @param pattern code-stump as string to auto-complete
 #' @export
-#' @keywords internal
+#' @noRd
 .DollarNames.RPolarsRThreadHandle = function(x, pattern = "") {
   paste0(ls(RPolarsRThreadHandle, pattern = pattern), "()")
 }
@@ -14,7 +14,7 @@
 #' @param x RThreadHandle
 #' @param ... not used
 #' @export
-#' @keywords internal
+#' @noRd
 as.character.RPolarsRThreadHandle = function(x, ...) {
   .pr$RThreadHandle$thread_description(x) |>
     unwrap_or("An exhausted RThreadHandle")
@@ -22,7 +22,7 @@ as.character.RPolarsRThreadHandle = function(x, ...) {
 
 #' s3 method print RThreadHandle
 #'
-#' @keywords internal
+#' @noRd
 #' @param x RThreadHandle
 #' @param ... not used
 #'

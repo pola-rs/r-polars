@@ -81,7 +81,7 @@ NULL
 #' @return char vec
 #' @export
 #' @return Doesn't return a value. This is used for autocompletion in RStudio.
-#' @keywords internal
+#' @noRd
 .DollarNames.RPolarsDataFrame = function(x, pattern = "") {
   get_method_usages(RPolarsDataFrame, pattern = pattern)
 }
@@ -94,7 +94,7 @@ NULL
 #' @return char vec
 #' @export
 #' @inherit .DollarNames.RPolarsDataFrame return
-#' @keywords internal
+#' @noRd
 .DollarNames.RPolarsVecDataFrame = function(x, pattern = "") {
   get_method_usages(RPolarsVecDataFrame, pattern = pattern)
 }
@@ -210,7 +210,7 @@ pl$DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
 
 #' S3 method to print a DataFrame
 #'
-#' @keywords internal
+#' @noRd
 #' @param x DataFrame
 #' @param ... not used
 #'
@@ -225,7 +225,6 @@ print.RPolarsDataFrame = function(x, ...) {
 
 #' internal method print DataFrame
 #' @noRd
-#' @keywords internal
 #' @return self
 #'
 #' @examples pl$DataFrame(iris)

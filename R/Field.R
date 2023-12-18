@@ -44,7 +44,7 @@ print.RPolarsRField = function(x, ...) {
 #' @param pattern String used to auto-complete
 #'
 #' @export
-#' @keywords internal
+#' @noRd
 .DollarNames.RPolarsRField = function(x, pattern = "") {
   get_method_usages(RPolarsRField, pattern = pattern)
 }
@@ -52,7 +52,7 @@ print.RPolarsRField = function(x, ...) {
 
 #' Print a polars Field
 #'
-#' @keywords internal
+#' @noRd
 #' @return self
 #'
 #' @examples

@@ -116,7 +116,7 @@ ChainedThen_otherwise = function(statement) {
 #' print When
 #' @param x When object
 #' @param ... not used
-#' @keywords internal WhenThen
+#' @noRd
 #'
 #' @return self
 #' @export
@@ -178,7 +178,7 @@ print.RPolarsChainedThen = function(x, ...) {
 #' @return char vec
 #' @export
 #' @inherit .DollarNames.RPolarsDataFrame return
-#' @keywords internal
+#' @noRd
 .DollarNames.RPolarsWhen = function(x, pattern = "") {
   paste0(ls(RPolarsWhen, pattern = pattern), "()")
 }
@@ -190,7 +190,7 @@ print.RPolarsChainedThen = function(x, ...) {
 #' @return char vec
 #' @export
 #' @inherit .DollarNames.RPolarsDataFrame return
-#' @keywords internal
+#' @noRd
 .DollarNames.RPolarsThen = function(x, pattern = "") {
   paste0(ls(RPolarsThen, pattern = pattern), "()")
 }
@@ -202,7 +202,7 @@ print.RPolarsChainedThen = function(x, ...) {
 #' @return char vec
 #' @export
 #' @inherit .DollarNames.RPolarsDataFrame return
-#' @keywords internal
+#' @noRd
 .DollarNames.RPolarsChainedThen = function(x, pattern = "") {
   paste0(ls(RPolarsChainedThen, pattern = pattern), "()")
 }
@@ -214,7 +214,7 @@ print.RPolarsChainedThen = function(x, ...) {
 #' @return char vec
 #' @export
 #' @inherit .DollarNames.RPolarsDataFrame return
-#' @keywords internal
+#' @noRd
 .DollarNames.RPolarsChainedWhen = function(x, pattern = "") {
   paste0(ls(RPolarsChainedWhen, pattern = pattern), "()")
 }
