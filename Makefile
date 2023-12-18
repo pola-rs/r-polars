@@ -62,18 +62,15 @@ install: ## Install the R package
 	&& R CMD INSTALL --no-multiarch --with-keep.source .
 
 .PHONY: all
-all: fmt tools/lib-sums.tsv build test README.md LICENSE.note ## build -> test -> Update README.md, LICENSE.note
+all: fmt tools/lib-sums.tsv build test LICENSE.note ## build -> test -> update LICENSE.note
 
 .PHONY: docs
-docs: build install README.md altdoc/reference_home.md ## Generate docs
+docs: build install altdoc/reference_home.md ## Generate docs
 	Rscript -e 'future::plan(future::multicore); source("altdoc/altdoc_preprocessing.R"); altdoc::render_docs(freeze = FALSE, parallel = TRUE)'
 
 .PHONY: docs-preview
 docs-preview: ## Preview docs on local server. Needs `make docs`
 	Rscript -e 'altdoc::preview_docs()'
-
-README.md: README.Rmd build ## Update README.md
-	Rscript -e 'devtools::load_all(); rmarkdown::render("README.Rmd")'
 
 altdoc/reference_home.md: altdoc/reference_home.Rmd build ## Update the reference home page source
 	Rscript -e 'devtools::load_all(); rmarkdown::render("altdoc/reference_home.Rmd")'
