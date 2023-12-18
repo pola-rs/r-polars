@@ -15,7 +15,7 @@ load_polars = function(
     RPOLARS_CARGO_CLEAN_DEPS = "false",
     RPOLARS_PROFILE = "release",
     ...,
-    .packages = c("arrow", "nanoarrow")) {
+    .packages = c("arrow", "nanoarrow", "knitr")) {
   # bundle all envvars
   args = c(
     list(
@@ -48,7 +48,7 @@ build_polars = function(
     RPOLARS_CARGO_CLEAN_DEPS = "false",
     RPOLARS_PROFILE = "release",
     ...,
-    .packages = c("arrow", "nanoarrow")) {
+    .packages = c("arrow", "nanoarrow", "knitr")) {
   # bundle all envvars
   args = c(
     list(
