@@ -83,7 +83,6 @@ verify_method_call = function(Class_env, Method_name, call = sys.call(1L), class
 #' list2 - one day like rlang
 #' list2 placeholder for future rust-impl
 #' @noRd
-#' @noRd
 #' @return An R list
 #' @details rlang has this wonderful list2 implemented in c/c++, that is agnostic about trailing
 #' commas in ... params. One day r-polars will have a list2-impl written in rust, which also allows
@@ -150,7 +149,6 @@ unpack_bool_expr = function(..., .msg = NULL) {
 #' @details Lifecycle: perhaps replace with something written in rust to speed up a bit
 #'
 #' @return any return given first true bool statement otherwise value of or_else
-#' @noRd
 #' @examples
 #' n = 7
 #' .pr$env$pcase(
@@ -243,7 +241,6 @@ l_to_vdf = function(l) {
 #'
 #' @param env an R environment.
 #' @return shallow clone of R environment
-#' @noRd
 #' @noRd
 #' @examples
 #'
@@ -361,7 +358,6 @@ construct_DataTypeVector = function(l) {
 #' @param pattern string passed to ls(pattern) to subset methods by pattern
 #' @details used internally for auto completion in .DollarNames methods
 #' @return method usages
-#' @noRd
 #' @noRd
 #' @examples
 #' .pr$env$get_method_usages(.pr$env$DataFrame, pattern = "col")
@@ -506,7 +502,6 @@ restruct_list = function(l) {
 #' to solve some tricky self-referential problem. If possible to deprecate a macro in a clean way
 #' , go ahead.
 #' @noRd
-#' @noRd
 #' @examples
 #'
 #' # macro_new_subnamespace() is not exported, export for this toy example
@@ -574,7 +569,6 @@ macro_new_subnamespace = function(class_pattern, subclass_env = NULL, remove_f =
 #'
 #' @param x object to view.
 #' @param collapse word to glue possible multilines with
-#' @noRd
 #' @return string
 #' @noRd
 #' @examples
@@ -592,7 +586,6 @@ str_string = function(x, collapse = " ") {
 #' @param allow_null bool, if TRUE accept NULL
 #'
 #' @return a result object, with either a valid string or an Err
-#' @noRd
 #'
 #' @noRd
 #' @examples

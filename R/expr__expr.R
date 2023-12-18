@@ -2987,7 +2987,6 @@ Expr_sample = function(
 #' @param span numeric or NULL
 #' @param half_life numeric or NULL
 #' @param alpha numeric or NULL
-#' @noRd
 #' @return numeric
 #' @noRd
 prepare_alpha = function(

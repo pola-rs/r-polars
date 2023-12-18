@@ -49,7 +49,6 @@ unwrap = function(result, context = NULL, call = sys.call(1L)) {
 #' @noRd
 #' @details
 #' throwed error info is sparse because only for internal errors
-#' @noRd
 #' @param result a Result, see rust_result.R#'
 #' @return some error type
 unwrap_err = function(result) {
@@ -65,7 +64,6 @@ unwrap_err = function(result) {
 #' @noRd
 #' @param expr code to capture any error from and wrap as Result
 #' @param msg handy way to add a context msg
-#' @noRd
 #' @return Result
 #' @examples
 #'

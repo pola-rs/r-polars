@@ -400,7 +400,6 @@ print.RPolarsSeries = function(x, ...) {
 #' @export
 #' @noRd
 #' @inherit .DollarNames.RPolarsDataFrame return
-#' @noRd
 .DollarNames.RPolarsSeries = function(x, pattern = "") {
   get_method_usages(RPolarsSeries, pattern = pattern)
 }

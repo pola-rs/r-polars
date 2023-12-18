@@ -225,7 +225,6 @@ print.RPolarsDataFrame = function(x, ...) {
 
 #' internal method print DataFrame
 #' @noRd
-#' @noRd
 #' @return self
 #'
 #' @examples pl$DataFrame(iris)

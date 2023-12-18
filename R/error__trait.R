@@ -32,7 +32,6 @@ call_to_string = function(call) paste(capture.output(print(call)), collapse = "\
 #' @param err any type which impl as.character
 #' @param context calling context
 #' @noRd
-#' @noRd
 #' @return err as string
 #' @examples
 #' #
@@ -57,7 +56,6 @@ where_in.default = function(err, context) {
 #' Internal generic method to convert an error_type to condition.
 #' @param err any type which impl as.character
 #' @noRd
-#' @noRd
 #' @details
 #' this method is needed to preserve state of err without upcasting to a string message
 #' an implementation will describe how to store the error in the condition
@@ -80,7 +78,6 @@ to_condition.default = function(err) {
 #' @param err some error type object
 #' @param msg string to add
 #' @noRd
-#' @noRd
 #' @return condition
 plain = function(err, msg) {
   if (is.null(msg)) {
@@ -100,7 +97,6 @@ plain.default = function(err, msg) {
 #' An error type can choose to implement this to improve the translation.
 #' As fall back the error will be deparsed into a string with rust Debug, see rdbg()
 #' @param err some error type object
-#' @noRd
 #' @noRd
 #' @return condition
 upgrade_err = function(err) {

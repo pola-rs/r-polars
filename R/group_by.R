@@ -39,7 +39,6 @@ RPolarsGroupBy = new.env(parent = emptyenv())
 
 
 #' The internal GroupBy constructor
-#' @noRd
 #' @return The input as grouped DataFrame
 #' @noRd
 construct_group_by = function(df, groupby_input, maintain_order) {

@@ -93,7 +93,6 @@ print.RPolarsDataType = function(x, ...) {
 #' @name is_polars_dtype
 #' @noRd
 #' @param x a candidate
-#' @noRd
 #' @return a list DataType with an inner DataType
 #' @examples .pr$env$is_polars_dtype(pl$Int64)
 is_polars_dtype = function(x, include_unknown = FALSE) {
@@ -122,7 +121,6 @@ pl$same_outer_dt = function(lhs, rhs) {
 #' @noRd
 #' @description Create a new flag like DataType
 #' @param str name of DataType to create
-#' @noRd
 #' @details
 #' This function is mainly used in `zzz.R` `.onLoad` to instantiate singletons of all
 #' flag-like DataType.
