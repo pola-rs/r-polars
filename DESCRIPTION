@@ -55,7 +55,6 @@ Config/Needs/dev:
     RcppTOML,
     readr,
     rextendr,
-    robinlovelace/styler.equals,
     spelling,
     stringr,
     styler

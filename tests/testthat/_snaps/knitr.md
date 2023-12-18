@@ -102,7 +102,9 @@
     Output
       
       ```r
-      nycflights13::flights |> to_html_table(5, 5) |> writeLines()
+      nycflights13::flights |>
+        to_html_table(5, 5) |>
+        writeLines()
       ```
       
       <div><style>

@@ -140,7 +140,7 @@ test_that("Series_append", {
   pl$reset_options()
 
   expect_error(
-    s_new = s_mut$append(pl$Series(1:3), immutable = FALSE),
+    s_mut$append(pl$Series(1:3), immutable = FALSE),
     regexp = "breaks immutability"
   )
 })
