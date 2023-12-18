@@ -89,22 +89,41 @@ verify_method_call = function(Class_env, Method_name, call = sys.call(1L), class
 #' trailing commas.
 list2 = list
 
+
+
+
 #' Internal unpack list
 #' @noRd
-#' @param l any list
+#'
+#' @param ... args to unwrap
+#' @param .context a context passed to unwrap
+#' @param .call  a call passed to unwrap
 #' @param skip_classes char vec, do not unpack list inherits skip_classes.
+#'
 #' @details py-polars syntax only allows e.g. `df.select([expr1, expr2,])` and not
 #' `df.select(expr1, expr2,)`. r-polars also allows user to directly write
 #' `df$select(expr1, expr2)` or `df$select(list(expr1,expr2))`. Unpack list
 #' checks whether first and only arg is a list and unpacks it, to bridge the
 #' allowed patterns of passing expr to methods with ... param input.
+#' Will throw an error if trailing comma.
 #' @return a list
 #' @examples
 #' f = \(...) unpack_list(list(...))
 #' identical(f(list(1L, 2L, 3L)), f(1L, 2L, 3L)) # is TRUE
 #' identical(f(list(1L, 2L), 3L), f(1L, 2L, 3L)) # is FALSE
-unpack_list = function(..., skip_classes = NULL) {
-  l = list2(...)
+unpack_list = function(..., .context = NULL, .call = sys.call(1L), skip_classes = NULL) {
+  l =
+    list2(...) |>
+    result() |>
+    map_err(\(err) {
+      if (identical(err$contexts()$PlainErrorMessage, "argument is missing, with no default")) {
+        err$plain("trailing argument commas are not (yet) supported with polars")
+      } else {
+        err
+      }
+    }) |>
+    unwrap(context = .context, call = .call)
+
   if (
     length(l) == 1L &&
       is.list(l[[1L]]) &&
@@ -115,6 +134,7 @@ unpack_list = function(..., skip_classes = NULL) {
     l
   }
 }
+
 
 #' Convert dot-dot-dot to bool expression
 #' @noRd
