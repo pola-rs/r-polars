@@ -99,7 +99,7 @@ jobs:
         with:
           clean: true
           branch: main
-          folder: docs/site
+          folder: docs
           repository-name: rpolars/rpolars.github.io
           ssh-key: true
           clean-exclude: |
