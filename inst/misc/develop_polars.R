@@ -290,15 +290,15 @@ run_all_examples_collect_errors = \(skip_these = character(), time_examples = FA
 
 
   out = lapply(paths, \(path) {
-    cat("\n",path)
-    if(time_examples) t1 = Sys.time()
+    cat("\n", path)
+    if (time_examples) t1 = Sys.time()
     txt = capture.output({
       err = polars:::result(pkgload::run_example(path = path))$err
     })
-    if(time_examples) {
+    if (time_examples) {
       t2 = Sys.time()
-      duration = difftime(t2,t1, units = "secs")
-      if(duration >.1) cat(" ", duration,"s")
+      duration = difftime(t2, t1, units = "secs")
+      if (duration > .1) cat(" ", duration, "s")
     }
     if (!is.null(err)) list(err = err, txt = txt)
   })

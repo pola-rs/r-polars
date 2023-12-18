@@ -11,1257 +11,1333 @@
 #' @useDynLib polars, .registration = TRUE
 NULL
 
-all_horizontal <- function(dotdotdot) .Call(wrap__all_horizontal, dotdotdot)
+all_horizontal = function(dotdotdot) .Call(wrap__all_horizontal, dotdotdot)
 
-any_horizontal <- function(dotdotdot) .Call(wrap__any_horizontal, dotdotdot)
+any_horizontal = function(dotdotdot) .Call(wrap__any_horizontal, dotdotdot)
 
-min_horizontal <- function(dotdotdot) .Call(wrap__min_horizontal, dotdotdot)
+min_horizontal = function(dotdotdot) .Call(wrap__min_horizontal, dotdotdot)
 
-max_horizontal <- function(dotdotdot) .Call(wrap__max_horizontal, dotdotdot)
+max_horizontal = function(dotdotdot) .Call(wrap__max_horizontal, dotdotdot)
 
-sum_horizontal <- function(dotdotdot) .Call(wrap__sum_horizontal, dotdotdot)
+sum_horizontal = function(dotdotdot) .Call(wrap__sum_horizontal, dotdotdot)
 
-coalesce_exprs <- function(exprs) .Call(wrap__coalesce_exprs, exprs)
+coalesce_exprs = function(exprs) .Call(wrap__coalesce_exprs, exprs)
 
-concat_list <- function(exprs) .Call(wrap__concat_list, exprs)
+concat_list = function(exprs) .Call(wrap__concat_list, exprs)
 
-concat_str <- function(dotdotdot, separator) .Call(wrap__concat_str, dotdotdot, separator)
+concat_str = function(dotdotdot, separator) .Call(wrap__concat_str, dotdotdot, separator)
 
-fold <- function(acc, lambda, exprs) .Call(wrap__fold, acc, lambda, exprs)
+fold = function(acc, lambda, exprs) .Call(wrap__fold, acc, lambda, exprs)
 
-reduce <- function(lambda, exprs) .Call(wrap__reduce, lambda, exprs)
+reduce = function(lambda, exprs) .Call(wrap__reduce, lambda, exprs)
 
-r_date_range_lazy <- function(start, end, every, closed, time_unit, time_zone, explode) .Call(wrap__r_date_range_lazy, start, end, every, closed, time_unit, time_zone, explode)
+r_date_range_lazy = function(start, end, every, closed, time_unit, time_zone, explode) .Call(wrap__r_date_range_lazy, start, end, every, closed, time_unit, time_zone, explode)
 
-as_struct <- function(exprs) .Call(wrap__as_struct, exprs)
+as_struct = function(exprs) .Call(wrap__as_struct, exprs)
 
-struct_ <- function(exprs, eager, schema) .Call(wrap__struct_, exprs, eager, schema)
+struct_ = function(exprs, eager, schema) .Call(wrap__struct_, exprs, eager, schema)
 
-rb_list_to_df <- function(r_batches, names) .Call(wrap__rb_list_to_df, r_batches, names)
+rb_list_to_df = function(r_batches, names) .Call(wrap__rb_list_to_df, r_batches, names)
 
-dtype_str_repr <- function(dtype) .Call(wrap__dtype_str_repr, dtype)
+dtype_str_repr = function(dtype) .Call(wrap__dtype_str_repr, dtype)
 
-new_arrow_stream <- function() .Call(wrap__new_arrow_stream)
+new_arrow_stream = function() .Call(wrap__new_arrow_stream)
 
-arrow_stream_to_df <- function(robj_str) .Call(wrap__arrow_stream_to_df, robj_str)
+arrow_stream_to_df = function(robj_str) .Call(wrap__arrow_stream_to_df, robj_str)
 
-arrow_stream_to_series <- function(robj_str) .Call(wrap__arrow_stream_to_series, robj_str)
+arrow_stream_to_series = function(robj_str) .Call(wrap__arrow_stream_to_series, robj_str)
 
-export_df_to_arrow_stream <- function(robj_df, robj_str) .Call(wrap__export_df_to_arrow_stream, robj_df, robj_str)
+export_df_to_arrow_stream = function(robj_df, robj_str) .Call(wrap__export_df_to_arrow_stream, robj_df, robj_str)
 
-mem_address <- function(robj) .Call(wrap__mem_address, robj)
+mem_address = function(robj) .Call(wrap__mem_address, robj)
 
-clone_robj <- function(robj) .Call(wrap__clone_robj, robj)
+clone_robj = function(robj) .Call(wrap__clone_robj, robj)
 
-test_robj_to_usize <- function(robj) .Call(wrap__test_robj_to_usize, robj)
+test_robj_to_usize = function(robj) .Call(wrap__test_robj_to_usize, robj)
 
-test_robj_to_f64 <- function(robj) .Call(wrap__test_robj_to_f64, robj)
+test_robj_to_f64 = function(robj) .Call(wrap__test_robj_to_f64, robj)
 
-test_robj_to_i64 <- function(robj) .Call(wrap__test_robj_to_i64, robj)
+test_robj_to_i64 = function(robj) .Call(wrap__test_robj_to_i64, robj)
 
-test_robj_to_u32 <- function(robj) .Call(wrap__test_robj_to_u32, robj)
+test_robj_to_u32 = function(robj) .Call(wrap__test_robj_to_u32, robj)
 
-test_robj_to_i32 <- function(robj) .Call(wrap__test_robj_to_i32, robj)
+test_robj_to_i32 = function(robj) .Call(wrap__test_robj_to_i32, robj)
 
-test_print_string <- function(s) invisible(.Call(wrap__test_print_string, s))
+test_print_string = function(s) invisible(.Call(wrap__test_print_string, s))
 
-test_robj_to_expr <- function(robj) .Call(wrap__test_robj_to_expr, robj)
+test_robj_to_expr = function(robj) .Call(wrap__test_robj_to_expr, robj)
 
-test_wrong_call_pl_lit <- function(robj) .Call(wrap__test_wrong_call_pl_lit, robj)
+test_wrong_call_pl_lit = function(robj) .Call(wrap__test_wrong_call_pl_lit, robj)
 
-test_robj_to_rchoice <- function(robj) .Call(wrap__test_robj_to_rchoice, robj)
+test_robj_to_rchoice = function(robj) .Call(wrap__test_robj_to_rchoice, robj)
 
-concat_lf <- function(l, rechunk, parallel, to_supertypes) .Call(wrap__concat_lf, l, rechunk, parallel, to_supertypes)
+concat_lf = function(l, rechunk, parallel, to_supertypes) .Call(wrap__concat_lf, l, rechunk, parallel, to_supertypes)
 
-concat_lf_diagonal <- function(l, rechunk, parallel, to_supertypes) .Call(wrap__concat_lf_diagonal, l, rechunk, parallel, to_supertypes)
+concat_lf_diagonal = function(l, rechunk, parallel, to_supertypes) .Call(wrap__concat_lf_diagonal, l, rechunk, parallel, to_supertypes)
 
-concat_df_horizontal <- function(l) .Call(wrap__concat_df_horizontal, l)
+concat_df_horizontal = function(l) .Call(wrap__concat_df_horizontal, l)
 
-concat_series <- function(l, rechunk, to_supertypes) .Call(wrap__concat_series, l, rechunk, to_supertypes)
+concat_series = function(l, rechunk, to_supertypes) .Call(wrap__concat_series, l, rechunk, to_supertypes)
 
-new_from_csv <- function(path, has_header, separator, comment_char, quote_char, skip_rows, dtypes, null_values, ignore_errors, cache, infer_schema_length, n_rows, encoding, low_memory, rechunk, skip_rows_after_header, row_count_name, row_count_offset, try_parse_dates, eol_char, raise_if_empty, truncate_ragged_lines) .Call(wrap__new_from_csv, path, has_header, separator, comment_char, quote_char, skip_rows, dtypes, null_values, ignore_errors, cache, infer_schema_length, n_rows, encoding, low_memory, rechunk, skip_rows_after_header, row_count_name, row_count_offset, try_parse_dates, eol_char, raise_if_empty, truncate_ragged_lines)
+new_from_csv = function(path, has_header, separator, comment_char, quote_char, skip_rows, dtypes, null_values, ignore_errors, cache, infer_schema_length, n_rows, encoding, low_memory, rechunk, skip_rows_after_header, row_count_name, row_count_offset, try_parse_dates, eol_char, raise_if_empty, truncate_ragged_lines) .Call(wrap__new_from_csv, path, has_header, separator, comment_char, quote_char, skip_rows, dtypes, null_values, ignore_errors, cache, infer_schema_length, n_rows, encoding, low_memory, rechunk, skip_rows_after_header, row_count_name, row_count_offset, try_parse_dates, eol_char, raise_if_empty, truncate_ragged_lines)
 
-import_arrow_ipc <- function(path, n_rows, cache, rechunk, row_name, row_count, memmap) .Call(wrap__import_arrow_ipc, path, n_rows, cache, rechunk, row_name, row_count, memmap)
+import_arrow_ipc = function(path, n_rows, cache, rechunk, row_name, row_count, memmap) .Call(wrap__import_arrow_ipc, path, n_rows, cache, rechunk, row_name, row_count, memmap)
 
-new_from_ndjson <- function(path, infer_schema_length, batch_size, n_rows, low_memory, rechunk, row_count_name, row_count_offset) .Call(wrap__new_from_ndjson, path, infer_schema_length, batch_size, n_rows, low_memory, rechunk, row_count_name, row_count_offset)
+new_from_ndjson = function(path, infer_schema_length, batch_size, n_rows, low_memory, rechunk, row_count_name, row_count_offset) .Call(wrap__new_from_ndjson, path, infer_schema_length, batch_size, n_rows, low_memory, rechunk, row_count_name, row_count_offset)
 
-new_from_parquet <- function(path, n_rows, cache, parallel, rechunk, row_name, row_count, use_statistics, low_memory, hive_partitioning) .Call(wrap__new_from_parquet, path, n_rows, cache, parallel, rechunk, row_name, row_count, use_statistics, low_memory, hive_partitioning)
+new_from_parquet = function(path, n_rows, cache, parallel, rechunk, row_name, row_count, use_statistics, low_memory, hive_partitioning) .Call(wrap__new_from_parquet, path, n_rows, cache, parallel, rechunk, row_name, row_count, use_statistics, low_memory, hive_partitioning)
 
-test_rpolarserr <- function() .Call(wrap__test_rpolarserr)
+test_rpolarserr = function() .Call(wrap__test_rpolarserr)
 
-setup_renv <- function() .Call(wrap__setup_renv)
+setup_renv = function() .Call(wrap__setup_renv)
 
-set_global_rpool_cap <- function(c) .Call(wrap__set_global_rpool_cap, c)
+set_global_rpool_cap = function(c) .Call(wrap__set_global_rpool_cap, c)
 
-get_global_rpool_cap <- function() .Call(wrap__get_global_rpool_cap)
+get_global_rpool_cap = function() .Call(wrap__get_global_rpool_cap)
 
-handle_background_request <- function(server_name) .Call(wrap__handle_background_request, server_name)
+handle_background_request = function(server_name) .Call(wrap__handle_background_request, server_name)
 
-test_rbackgroundhandler <- function(lambda, arg) .Call(wrap__test_rbackgroundhandler, lambda, arg)
+test_rbackgroundhandler = function(lambda, arg) .Call(wrap__test_rbackgroundhandler, lambda, arg)
 
-test_rthreadhandle <- function() .Call(wrap__test_rthreadhandle)
+test_rthreadhandle = function() .Call(wrap__test_rthreadhandle)
 
-test_serde_df <- function(df) .Call(wrap__test_serde_df, df)
+test_serde_df = function(df) .Call(wrap__test_serde_df, df)
 
-internal_wrap_e <- function(robj, str_to_lit) .Call(wrap__internal_wrap_e, robj, str_to_lit)
+internal_wrap_e = function(robj, str_to_lit) .Call(wrap__internal_wrap_e, robj, str_to_lit)
 
-robj_to_col <- function(name, dotdotdot) .Call(wrap__robj_to_col, name, dotdotdot)
+robj_to_col = function(name, dotdotdot) .Call(wrap__robj_to_col, name, dotdotdot)
 
-cargo_rpolars_feature_info <- function() .Call(wrap__cargo_rpolars_feature_info)
+cargo_rpolars_feature_info = function() .Call(wrap__cargo_rpolars_feature_info)
 
-rust_polars_version <- function() .Call(wrap__rust_polars_version)
+rust_polars_version = function() .Call(wrap__rust_polars_version)
 
-enable_string_cache <- function() .Call(wrap__enable_string_cache)
+enable_string_cache = function() .Call(wrap__enable_string_cache)
 
-disable_string_cache <- function() .Call(wrap__disable_string_cache)
+disable_string_cache = function() .Call(wrap__disable_string_cache)
 
-using_string_cache <- function() .Call(wrap__using_string_cache)
+using_string_cache = function() .Call(wrap__using_string_cache)
 
-RPolarsDataFrame <- new.env(parent = emptyenv())
+RPolarsDataFrame = new.env(parent = emptyenv())
 
-RPolarsDataFrame$shape <- function() .Call(wrap__RPolarsDataFrame__shape, self)
+RPolarsDataFrame$shape = function() .Call(wrap__RPolarsDataFrame__shape, self)
 
-RPolarsDataFrame$n_chunks <- function(strategy) .Call(wrap__RPolarsDataFrame__n_chunks, self, strategy)
+RPolarsDataFrame$n_chunks = function(strategy) .Call(wrap__RPolarsDataFrame__n_chunks, self, strategy)
 
-RPolarsDataFrame$rechunk <- function() .Call(wrap__RPolarsDataFrame__rechunk, self)
+RPolarsDataFrame$rechunk = function() .Call(wrap__RPolarsDataFrame__rechunk, self)
 
-RPolarsDataFrame$clone_in_rust <- function() .Call(wrap__RPolarsDataFrame__clone_in_rust, self)
+RPolarsDataFrame$clone_in_rust = function() .Call(wrap__RPolarsDataFrame__clone_in_rust, self)
 
-RPolarsDataFrame$default <- function() .Call(wrap__RPolarsDataFrame__default)
+RPolarsDataFrame$default = function() .Call(wrap__RPolarsDataFrame__default)
 
-RPolarsDataFrame$lazy <- function() .Call(wrap__RPolarsDataFrame__lazy, self)
+RPolarsDataFrame$lazy = function() .Call(wrap__RPolarsDataFrame__lazy, self)
 
-RPolarsDataFrame$drop_all_in_place <- function() invisible(.Call(wrap__RPolarsDataFrame__drop_all_in_place, self))
+RPolarsDataFrame$drop_all_in_place = function() invisible(.Call(wrap__RPolarsDataFrame__drop_all_in_place, self))
 
-RPolarsDataFrame$new_with_capacity <- function(capacity) .Call(wrap__RPolarsDataFrame__new_with_capacity, capacity)
+RPolarsDataFrame$new_with_capacity = function(capacity) .Call(wrap__RPolarsDataFrame__new_with_capacity, capacity)
 
-RPolarsDataFrame$set_column_from_robj <- function(robj, name) .Call(wrap__RPolarsDataFrame__set_column_from_robj, self, robj, name)
+RPolarsDataFrame$set_column_from_robj = function(robj, name) .Call(wrap__RPolarsDataFrame__set_column_from_robj, self, robj, name)
 
-RPolarsDataFrame$set_column_from_series <- function(x) .Call(wrap__RPolarsDataFrame__set_column_from_series, self, x)
+RPolarsDataFrame$set_column_from_series = function(x) .Call(wrap__RPolarsDataFrame__set_column_from_series, self, x)
 
-RPolarsDataFrame$with_row_count <- function(name, offset) .Call(wrap__RPolarsDataFrame__with_row_count, self, name, offset)
+RPolarsDataFrame$with_row_count = function(name, offset) .Call(wrap__RPolarsDataFrame__with_row_count, self, name, offset)
 
-RPolarsDataFrame$print <- function() .Call(wrap__RPolarsDataFrame__print, self)
+RPolarsDataFrame$print = function() .Call(wrap__RPolarsDataFrame__print, self)
 
-RPolarsDataFrame$columns <- function() .Call(wrap__RPolarsDataFrame__columns, self)
+RPolarsDataFrame$columns = function() .Call(wrap__RPolarsDataFrame__columns, self)
 
-RPolarsDataFrame$set_column_names_mut <- function(names) .Call(wrap__RPolarsDataFrame__set_column_names_mut, self, names)
+RPolarsDataFrame$set_column_names_mut = function(names) .Call(wrap__RPolarsDataFrame__set_column_names_mut, self, names)
 
-RPolarsDataFrame$get_column <- function(name) .Call(wrap__RPolarsDataFrame__get_column, self, name)
+RPolarsDataFrame$get_column = function(name) .Call(wrap__RPolarsDataFrame__get_column, self, name)
 
-RPolarsDataFrame$get_columns <- function() .Call(wrap__RPolarsDataFrame__get_columns, self)
+RPolarsDataFrame$get_columns = function() .Call(wrap__RPolarsDataFrame__get_columns, self)
 
-RPolarsDataFrame$dtypes <- function() .Call(wrap__RPolarsDataFrame__dtypes, self)
+RPolarsDataFrame$dtypes = function() .Call(wrap__RPolarsDataFrame__dtypes, self)
 
-RPolarsDataFrame$dtype_strings <- function() .Call(wrap__RPolarsDataFrame__dtype_strings, self)
+RPolarsDataFrame$dtype_strings = function() .Call(wrap__RPolarsDataFrame__dtype_strings, self)
 
-RPolarsDataFrame$schema <- function() .Call(wrap__RPolarsDataFrame__schema, self)
+RPolarsDataFrame$schema = function() .Call(wrap__RPolarsDataFrame__schema, self)
 
-RPolarsDataFrame$to_list <- function() .Call(wrap__RPolarsDataFrame__to_list, self)
+RPolarsDataFrame$to_list = function() .Call(wrap__RPolarsDataFrame__to_list, self)
 
-RPolarsDataFrame$to_list_unwind <- function() .Call(wrap__RPolarsDataFrame__to_list_unwind, self)
+RPolarsDataFrame$to_list_unwind = function() .Call(wrap__RPolarsDataFrame__to_list_unwind, self)
 
-RPolarsDataFrame$to_list_tag_structs <- function() .Call(wrap__RPolarsDataFrame__to_list_tag_structs, self)
+RPolarsDataFrame$to_list_tag_structs = function() .Call(wrap__RPolarsDataFrame__to_list_tag_structs, self)
 
-RPolarsDataFrame$frame_equal <- function(other) .Call(wrap__RPolarsDataFrame__frame_equal, self, other)
+RPolarsDataFrame$frame_equal = function(other) .Call(wrap__RPolarsDataFrame__frame_equal, self, other)
 
-RPolarsDataFrame$select_at_idx <- function(idx) .Call(wrap__RPolarsDataFrame__select_at_idx, self, idx)
+RPolarsDataFrame$select_at_idx = function(idx) .Call(wrap__RPolarsDataFrame__select_at_idx, self, idx)
 
-RPolarsDataFrame$drop_in_place <- function(names) .Call(wrap__RPolarsDataFrame__drop_in_place, self, names)
+RPolarsDataFrame$drop_in_place = function(names) .Call(wrap__RPolarsDataFrame__drop_in_place, self, names)
 
-RPolarsDataFrame$select <- function(exprs) .Call(wrap__RPolarsDataFrame__select, self, exprs)
+RPolarsDataFrame$select = function(exprs) .Call(wrap__RPolarsDataFrame__select, self, exprs)
 
-RPolarsDataFrame$with_columns <- function(exprs) .Call(wrap__RPolarsDataFrame__with_columns, self, exprs)
+RPolarsDataFrame$with_columns = function(exprs) .Call(wrap__RPolarsDataFrame__with_columns, self, exprs)
 
-RPolarsDataFrame$by_agg <- function(group_exprs, agg_exprs, maintain_order) .Call(wrap__RPolarsDataFrame__by_agg, self, group_exprs, agg_exprs, maintain_order)
+RPolarsDataFrame$by_agg = function(group_exprs, agg_exprs, maintain_order) .Call(wrap__RPolarsDataFrame__by_agg, self, group_exprs, agg_exprs, maintain_order)
 
-RPolarsDataFrame$to_struct <- function(name) .Call(wrap__RPolarsDataFrame__to_struct, self, name)
+RPolarsDataFrame$to_struct = function(name) .Call(wrap__RPolarsDataFrame__to_struct, self, name)
 
-RPolarsDataFrame$unnest <- function(names) .Call(wrap__RPolarsDataFrame__unnest, self, names)
+RPolarsDataFrame$unnest = function(names) .Call(wrap__RPolarsDataFrame__unnest, self, names)
 
-RPolarsDataFrame$export_stream <- function(stream_ptr) invisible(.Call(wrap__RPolarsDataFrame__export_stream, self, stream_ptr))
+RPolarsDataFrame$export_stream = function(stream_ptr) invisible(.Call(wrap__RPolarsDataFrame__export_stream, self, stream_ptr))
 
-RPolarsDataFrame$from_arrow_record_batches <- function(rbr) .Call(wrap__RPolarsDataFrame__from_arrow_record_batches, rbr)
+RPolarsDataFrame$from_arrow_record_batches = function(rbr) .Call(wrap__RPolarsDataFrame__from_arrow_record_batches, rbr)
 
-RPolarsDataFrame$estimated_size <- function() .Call(wrap__RPolarsDataFrame__estimated_size, self)
+RPolarsDataFrame$estimated_size = function() .Call(wrap__RPolarsDataFrame__estimated_size, self)
 
-RPolarsDataFrame$null_count <- function() .Call(wrap__RPolarsDataFrame__null_count, self)
+RPolarsDataFrame$null_count = function() .Call(wrap__RPolarsDataFrame__null_count, self)
 
-RPolarsDataFrame$melt <- function(id_vars, value_vars, value_name, variable_name) .Call(wrap__RPolarsDataFrame__melt, self, id_vars, value_vars, value_name, variable_name)
+RPolarsDataFrame$melt = function(id_vars, value_vars, value_name, variable_name) .Call(wrap__RPolarsDataFrame__melt, self, id_vars, value_vars, value_name, variable_name)
 
-RPolarsDataFrame$pivot_expr <- function(values, index, columns, maintain_order, sort_columns, aggregate_expr, separator) .Call(wrap__RPolarsDataFrame__pivot_expr, self, values, index, columns, maintain_order, sort_columns, aggregate_expr, separator)
+RPolarsDataFrame$pivot_expr = function(values, index, columns, maintain_order, sort_columns, aggregate_expr, separator) .Call(wrap__RPolarsDataFrame__pivot_expr, self, values, index, columns, maintain_order, sort_columns, aggregate_expr, separator)
 
-RPolarsDataFrame$sample_n <- function(n, with_replacement, shuffle, seed) .Call(wrap__RPolarsDataFrame__sample_n, self, n, with_replacement, shuffle, seed)
+RPolarsDataFrame$sample_n = function(n, with_replacement, shuffle, seed) .Call(wrap__RPolarsDataFrame__sample_n, self, n, with_replacement, shuffle, seed)
 
-RPolarsDataFrame$sample_frac <- function(frac, with_replacement, shuffle, seed) .Call(wrap__RPolarsDataFrame__sample_frac, self, frac, with_replacement, shuffle, seed)
+RPolarsDataFrame$sample_frac = function(frac, with_replacement, shuffle, seed) .Call(wrap__RPolarsDataFrame__sample_frac, self, frac, with_replacement, shuffle, seed)
 
-RPolarsDataFrame$transpose <- function(keep_names_as, new_col_names) .Call(wrap__RPolarsDataFrame__transpose, self, keep_names_as, new_col_names)
+RPolarsDataFrame$transpose = function(keep_names_as, new_col_names) .Call(wrap__RPolarsDataFrame__transpose, self, keep_names_as, new_col_names)
 
-RPolarsDataFrame$write_csv <- function(path, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style) .Call(wrap__RPolarsDataFrame__write_csv, self, path, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style)
+RPolarsDataFrame$write_csv = function(path, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style) .Call(wrap__RPolarsDataFrame__write_csv, self, path, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style)
 
-RPolarsDataFrame$write_json <- function(file, pretty, row_oriented) .Call(wrap__RPolarsDataFrame__write_json, self, file, pretty, row_oriented)
+RPolarsDataFrame$write_json = function(file, pretty, row_oriented) .Call(wrap__RPolarsDataFrame__write_json, self, file, pretty, row_oriented)
 
-RPolarsDataFrame$write_ndjson <- function(file) .Call(wrap__RPolarsDataFrame__write_ndjson, self, file)
+RPolarsDataFrame$write_ndjson = function(file) .Call(wrap__RPolarsDataFrame__write_ndjson, self, file)
 
 #' @export
-`$.RPolarsDataFrame` <- function (self, name) { func <- RPolarsDataFrame[[name]]; environment(func) <- environment(); func }
+`$.RPolarsDataFrame` = function(self, name) {
+  func = RPolarsDataFrame[[name]]
+  environment(func) = environment()
+  func
+}
 
 #' @export
-`[[.RPolarsDataFrame` <- `$.RPolarsDataFrame`
+`[[.RPolarsDataFrame` = `$.RPolarsDataFrame`
 
-RPolarsVecDataFrame <- new.env(parent = emptyenv())
+RPolarsVecDataFrame = new.env(parent = emptyenv())
 
-RPolarsVecDataFrame$with_capacity <- function(n) .Call(wrap__RPolarsVecDataFrame__with_capacity, n)
+RPolarsVecDataFrame$with_capacity = function(n) .Call(wrap__RPolarsVecDataFrame__with_capacity, n)
 
-RPolarsVecDataFrame$push <- function(df) invisible(.Call(wrap__RPolarsVecDataFrame__push, self, df))
+RPolarsVecDataFrame$push = function(df) invisible(.Call(wrap__RPolarsVecDataFrame__push, self, df))
 
-RPolarsVecDataFrame$print <- function() invisible(.Call(wrap__RPolarsVecDataFrame__print, self))
-
-#' @export
-`$.RPolarsVecDataFrame` <- function (self, name) { func <- RPolarsVecDataFrame[[name]]; environment(func) <- environment(); func }
+RPolarsVecDataFrame$print = function() invisible(.Call(wrap__RPolarsVecDataFrame__print, self))
 
 #' @export
-`[[.RPolarsVecDataFrame` <- `$.RPolarsVecDataFrame`
-
-RPolarsRNullValues <- new.env(parent = emptyenv())
-
-RPolarsRNullValues$new_all_columns <- function(x) .Call(wrap__RPolarsRNullValues__new_all_columns, x)
-
-RPolarsRNullValues$new_columns <- function(x) .Call(wrap__RPolarsRNullValues__new_columns, x)
-
-RPolarsRNullValues$new_named <- function(robj) .Call(wrap__RPolarsRNullValues__new_named, robj)
+`$.RPolarsVecDataFrame` = function(self, name) {
+  func = RPolarsVecDataFrame[[name]]
+  environment(func) = environment()
+  func
+}
 
 #' @export
-`$.RPolarsRNullValues` <- function (self, name) { func <- RPolarsRNullValues[[name]]; environment(func) <- environment(); func }
+`[[.RPolarsVecDataFrame` = `$.RPolarsVecDataFrame`
+
+RPolarsRNullValues = new.env(parent = emptyenv())
+
+RPolarsRNullValues$new_all_columns = function(x) .Call(wrap__RPolarsRNullValues__new_all_columns, x)
+
+RPolarsRNullValues$new_columns = function(x) .Call(wrap__RPolarsRNullValues__new_columns, x)
+
+RPolarsRNullValues$new_named = function(robj) .Call(wrap__RPolarsRNullValues__new_named, robj)
 
 #' @export
-`[[.RPolarsRNullValues` <- `$.RPolarsRNullValues`
-
-RPolarsDataType <- new.env(parent = emptyenv())
-
-RPolarsDataType$new <- function(s) .Call(wrap__RPolarsDataType__new, s)
-
-RPolarsDataType$new_datetime <- function(tu, tz) .Call(wrap__RPolarsDataType__new_datetime, tu, tz)
-
-RPolarsDataType$new_duration <- function() .Call(wrap__RPolarsDataType__new_duration)
-
-RPolarsDataType$new_list <- function(inner) .Call(wrap__RPolarsDataType__new_list, inner)
-
-RPolarsDataType$new_object <- function() .Call(wrap__RPolarsDataType__new_object)
-
-RPolarsDataType$new_struct <- function(l) .Call(wrap__RPolarsDataType__new_struct, l)
-
-RPolarsDataType$get_all_simple_type_names <- function() .Call(wrap__RPolarsDataType__get_all_simple_type_names)
-
-RPolarsDataType$print <- function() invisible(.Call(wrap__RPolarsDataType__print, self))
-
-RPolarsDataType$eq <- function(other) .Call(wrap__RPolarsDataType__eq, self, other)
-
-RPolarsDataType$ne <- function(other) .Call(wrap__RPolarsDataType__ne, self, other)
-
-RPolarsDataType$same_outer_datatype <- function(other) .Call(wrap__RPolarsDataType__same_outer_datatype, self, other)
-
-RPolarsDataType$get_insides <- function() .Call(wrap__RPolarsDataType__get_insides, self)
-
-RPolarsDataType$is_temporal <- function() .Call(wrap__RPolarsDataType__is_temporal, self)
+`$.RPolarsRNullValues` = function(self, name) {
+  func = RPolarsRNullValues[[name]]
+  environment(func) = environment()
+  func
+}
 
 #' @export
-`$.RPolarsDataType` <- function (self, name) { func <- RPolarsDataType[[name]]; environment(func) <- environment(); func }
+`[[.RPolarsRNullValues` = `$.RPolarsRNullValues`
+
+RPolarsDataType = new.env(parent = emptyenv())
+
+RPolarsDataType$new = function(s) .Call(wrap__RPolarsDataType__new, s)
+
+RPolarsDataType$new_datetime = function(tu, tz) .Call(wrap__RPolarsDataType__new_datetime, tu, tz)
+
+RPolarsDataType$new_duration = function() .Call(wrap__RPolarsDataType__new_duration)
+
+RPolarsDataType$new_list = function(inner) .Call(wrap__RPolarsDataType__new_list, inner)
+
+RPolarsDataType$new_object = function() .Call(wrap__RPolarsDataType__new_object)
+
+RPolarsDataType$new_struct = function(l) .Call(wrap__RPolarsDataType__new_struct, l)
+
+RPolarsDataType$get_all_simple_type_names = function() .Call(wrap__RPolarsDataType__get_all_simple_type_names)
+
+RPolarsDataType$print = function() invisible(.Call(wrap__RPolarsDataType__print, self))
+
+RPolarsDataType$eq = function(other) .Call(wrap__RPolarsDataType__eq, self, other)
+
+RPolarsDataType$ne = function(other) .Call(wrap__RPolarsDataType__ne, self, other)
+
+RPolarsDataType$same_outer_datatype = function(other) .Call(wrap__RPolarsDataType__same_outer_datatype, self, other)
+
+RPolarsDataType$get_insides = function() .Call(wrap__RPolarsDataType__get_insides, self)
+
+RPolarsDataType$is_temporal = function() .Call(wrap__RPolarsDataType__is_temporal, self)
 
 #' @export
-`[[.RPolarsDataType` <- `$.RPolarsDataType`
-
-RPolarsDataTypeVector <- new.env(parent = emptyenv())
-
-RPolarsDataTypeVector$new <- function() .Call(wrap__RPolarsDataTypeVector__new)
-
-RPolarsDataTypeVector$push <- function(colname, datatype) invisible(.Call(wrap__RPolarsDataTypeVector__push, self, colname, datatype))
-
-RPolarsDataTypeVector$print <- function() invisible(.Call(wrap__RPolarsDataTypeVector__print, self))
-
-RPolarsDataTypeVector$from_rlist <- function(list) .Call(wrap__RPolarsDataTypeVector__from_rlist, list)
+`$.RPolarsDataType` = function(self, name) {
+  func = RPolarsDataType[[name]]
+  environment(func) = environment()
+  func
+}
 
 #' @export
-`$.RPolarsDataTypeVector` <- function (self, name) { func <- RPolarsDataTypeVector[[name]]; environment(func) <- environment(); func }
+`[[.RPolarsDataType` = `$.RPolarsDataType`
+
+RPolarsDataTypeVector = new.env(parent = emptyenv())
+
+RPolarsDataTypeVector$new = function() .Call(wrap__RPolarsDataTypeVector__new)
+
+RPolarsDataTypeVector$push = function(colname, datatype) invisible(.Call(wrap__RPolarsDataTypeVector__push, self, colname, datatype))
+
+RPolarsDataTypeVector$print = function() invisible(.Call(wrap__RPolarsDataTypeVector__print, self))
+
+RPolarsDataTypeVector$from_rlist = function(list) .Call(wrap__RPolarsDataTypeVector__from_rlist, list)
 
 #' @export
-`[[.RPolarsDataTypeVector` <- `$.RPolarsDataTypeVector`
-
-RPolarsRField <- new.env(parent = emptyenv())
-
-RPolarsRField$new <- function(name, datatype) .Call(wrap__RPolarsRField__new, name, datatype)
-
-RPolarsRField$print <- function() invisible(.Call(wrap__RPolarsRField__print, self))
-
-RPolarsRField$clone <- function() .Call(wrap__RPolarsRField__clone, self)
-
-RPolarsRField$get_name <- function() .Call(wrap__RPolarsRField__get_name, self)
-
-RPolarsRField$get_datatype <- function() .Call(wrap__RPolarsRField__get_datatype, self)
-
-RPolarsRField$set_name_mut <- function(name) invisible(.Call(wrap__RPolarsRField__set_name_mut, self, name))
-
-RPolarsRField$set_datatype_mut <- function(datatype) invisible(.Call(wrap__RPolarsRField__set_datatype_mut, self, datatype))
+`$.RPolarsDataTypeVector` = function(self, name) {
+  func = RPolarsDataTypeVector[[name]]
+  environment(func) = environment()
+  func
+}
 
 #' @export
-`$.RPolarsRField` <- function (self, name) { func <- RPolarsRField[[name]]; environment(func) <- environment(); func }
+`[[.RPolarsDataTypeVector` = `$.RPolarsDataTypeVector`
+
+RPolarsRField = new.env(parent = emptyenv())
+
+RPolarsRField$new = function(name, datatype) .Call(wrap__RPolarsRField__new, name, datatype)
+
+RPolarsRField$print = function() invisible(.Call(wrap__RPolarsRField__print, self))
+
+RPolarsRField$clone = function() .Call(wrap__RPolarsRField__clone, self)
+
+RPolarsRField$get_name = function() .Call(wrap__RPolarsRField__get_name, self)
+
+RPolarsRField$get_datatype = function() .Call(wrap__RPolarsRField__get_datatype, self)
+
+RPolarsRField$set_name_mut = function(name) invisible(.Call(wrap__RPolarsRField__set_name_mut, self, name))
+
+RPolarsRField$set_datatype_mut = function(datatype) invisible(.Call(wrap__RPolarsRField__set_datatype_mut, self, datatype))
 
 #' @export
-`[[.RPolarsRField` <- `$.RPolarsRField`
-
-RPolarsErr <- new.env(parent = emptyenv())
-
-RPolarsErr$new <- function() .Call(wrap__RPolarsErr__new)
-
-RPolarsErr$contexts <- function() .Call(wrap__RPolarsErr__contexts, self)
-
-RPolarsErr$pretty_msg <- function() .Call(wrap__RPolarsErr__pretty_msg, self)
-
-RPolarsErr$bad_arg <- function(s) .Call(wrap__RPolarsErr__bad_arg, self, s)
-
-RPolarsErr$bad_robj <- function(r) .Call(wrap__RPolarsErr__bad_robj, self, r)
-
-RPolarsErr$bad_val <- function(s) .Call(wrap__RPolarsErr__bad_val, self, s)
-
-RPolarsErr$hint <- function(s) .Call(wrap__RPolarsErr__hint, self, s)
-
-RPolarsErr$mistyped <- function(s) .Call(wrap__RPolarsErr__mistyped, self, s)
-
-RPolarsErr$misvalued <- function(s) .Call(wrap__RPolarsErr__misvalued, self, s)
-
-RPolarsErr$notachoice <- function(s) .Call(wrap__RPolarsErr__notachoice, self, s)
-
-RPolarsErr$plain <- function(s) .Call(wrap__RPolarsErr__plain, self, s)
-
-RPolarsErr$rcall <- function(c) .Call(wrap__RPolarsErr__rcall, self, c)
-
-RPolarsErr$get_rcall <- function() .Call(wrap__RPolarsErr__get_rcall, self)
-
-RPolarsErr$rinfo <- function(i) .Call(wrap__RPolarsErr__rinfo, self, i)
-
-RPolarsErr$get_rinfo <- function() .Call(wrap__RPolarsErr__get_rinfo, self)
-
-RPolarsErr$when <- function(s) .Call(wrap__RPolarsErr__when, self, s)
+`$.RPolarsRField` = function(self, name) {
+  func = RPolarsRField[[name]]
+  environment(func) = environment()
+  func
+}
 
 #' @export
-`$.RPolarsErr` <- function (self, name) { func <- RPolarsErr[[name]]; environment(func) <- environment(); func }
+`[[.RPolarsRField` = `$.RPolarsRField`
+
+RPolarsErr = new.env(parent = emptyenv())
+
+RPolarsErr$new = function() .Call(wrap__RPolarsErr__new)
+
+RPolarsErr$contexts = function() .Call(wrap__RPolarsErr__contexts, self)
+
+RPolarsErr$pretty_msg = function() .Call(wrap__RPolarsErr__pretty_msg, self)
+
+RPolarsErr$bad_arg = function(s) .Call(wrap__RPolarsErr__bad_arg, self, s)
+
+RPolarsErr$bad_robj = function(r) .Call(wrap__RPolarsErr__bad_robj, self, r)
+
+RPolarsErr$bad_val = function(s) .Call(wrap__RPolarsErr__bad_val, self, s)
+
+RPolarsErr$hint = function(s) .Call(wrap__RPolarsErr__hint, self, s)
+
+RPolarsErr$mistyped = function(s) .Call(wrap__RPolarsErr__mistyped, self, s)
+
+RPolarsErr$misvalued = function(s) .Call(wrap__RPolarsErr__misvalued, self, s)
+
+RPolarsErr$notachoice = function(s) .Call(wrap__RPolarsErr__notachoice, self, s)
+
+RPolarsErr$plain = function(s) .Call(wrap__RPolarsErr__plain, self, s)
+
+RPolarsErr$rcall = function(c) .Call(wrap__RPolarsErr__rcall, self, c)
+
+RPolarsErr$get_rcall = function() .Call(wrap__RPolarsErr__get_rcall, self)
+
+RPolarsErr$rinfo = function(i) .Call(wrap__RPolarsErr__rinfo, self, i)
+
+RPolarsErr$get_rinfo = function() .Call(wrap__RPolarsErr__get_rinfo, self)
+
+RPolarsErr$when = function(s) .Call(wrap__RPolarsErr__when, self, s)
 
 #' @export
-`[[.RPolarsErr` <- `$.RPolarsErr`
-
-RPolarsRThreadHandle <- new.env(parent = emptyenv())
-
-RPolarsRThreadHandle$join <- function() .Call(wrap__RPolarsRThreadHandle__join, self)
-
-RPolarsRThreadHandle$is_finished <- function() .Call(wrap__RPolarsRThreadHandle__is_finished, self)
-
-RPolarsRThreadHandle$thread_description <- function() .Call(wrap__RPolarsRThreadHandle__thread_description, self)
+`$.RPolarsErr` = function(self, name) {
+  func = RPolarsErr[[name]]
+  environment(func) = environment()
+  func
+}
 
 #' @export
-`$.RPolarsRThreadHandle` <- function (self, name) { func <- RPolarsRThreadHandle[[name]]; environment(func) <- environment(); func }
+`[[.RPolarsErr` = `$.RPolarsErr`
+
+RPolarsRThreadHandle = new.env(parent = emptyenv())
+
+RPolarsRThreadHandle$join = function() .Call(wrap__RPolarsRThreadHandle__join, self)
+
+RPolarsRThreadHandle$is_finished = function() .Call(wrap__RPolarsRThreadHandle__is_finished, self)
+
+RPolarsRThreadHandle$thread_description = function() .Call(wrap__RPolarsRThreadHandle__thread_description, self)
 
 #' @export
-`[[.RPolarsRThreadHandle` <- `$.RPolarsRThreadHandle`
-
-RPolarsWhen <- new.env(parent = emptyenv())
-
-RPolarsWhen$new <- function(condition) .Call(wrap__RPolarsWhen__new, condition)
-
-RPolarsWhen$then <- function(statement) .Call(wrap__RPolarsWhen__then, self, statement)
+`$.RPolarsRThreadHandle` = function(self, name) {
+  func = RPolarsRThreadHandle[[name]]
+  environment(func) = environment()
+  func
+}
 
 #' @export
-`$.RPolarsWhen` <- function (self, name) { func <- RPolarsWhen[[name]]; environment(func) <- environment(); func }
+`[[.RPolarsRThreadHandle` = `$.RPolarsRThreadHandle`
+
+RPolarsWhen = new.env(parent = emptyenv())
+
+RPolarsWhen$new = function(condition) .Call(wrap__RPolarsWhen__new, condition)
+
+RPolarsWhen$then = function(statement) .Call(wrap__RPolarsWhen__then, self, statement)
 
 #' @export
-`[[.RPolarsWhen` <- `$.RPolarsWhen`
-
-RPolarsThen <- new.env(parent = emptyenv())
-
-RPolarsThen$when <- function(condition) .Call(wrap__RPolarsThen__when, self, condition)
-
-RPolarsThen$otherwise <- function(statement) .Call(wrap__RPolarsThen__otherwise, self, statement)
+`$.RPolarsWhen` = function(self, name) {
+  func = RPolarsWhen[[name]]
+  environment(func) = environment()
+  func
+}
 
 #' @export
-`$.RPolarsThen` <- function (self, name) { func <- RPolarsThen[[name]]; environment(func) <- environment(); func }
+`[[.RPolarsWhen` = `$.RPolarsWhen`
+
+RPolarsThen = new.env(parent = emptyenv())
+
+RPolarsThen$when = function(condition) .Call(wrap__RPolarsThen__when, self, condition)
+
+RPolarsThen$otherwise = function(statement) .Call(wrap__RPolarsThen__otherwise, self, statement)
 
 #' @export
-`[[.RPolarsThen` <- `$.RPolarsThen`
-
-RPolarsChainedWhen <- new.env(parent = emptyenv())
-
-RPolarsChainedWhen$then <- function(statement) .Call(wrap__RPolarsChainedWhen__then, self, statement)
-
-#' @export
-`$.RPolarsChainedWhen` <- function (self, name) { func <- RPolarsChainedWhen[[name]]; environment(func) <- environment(); func }
+`$.RPolarsThen` = function(self, name) {
+  func = RPolarsThen[[name]]
+  environment(func) = environment()
+  func
+}
 
 #' @export
-`[[.RPolarsChainedWhen` <- `$.RPolarsChainedWhen`
+`[[.RPolarsThen` = `$.RPolarsThen`
 
-RPolarsChainedThen <- new.env(parent = emptyenv())
+RPolarsChainedWhen = new.env(parent = emptyenv())
 
-RPolarsChainedThen$when <- function(condition) .Call(wrap__RPolarsChainedThen__when, self, condition)
-
-RPolarsChainedThen$otherwise <- function(statement) .Call(wrap__RPolarsChainedThen__otherwise, self, statement)
+RPolarsChainedWhen$then = function(statement) .Call(wrap__RPolarsChainedWhen__then, self, statement)
 
 #' @export
-`$.RPolarsChainedThen` <- function (self, name) { func <- RPolarsChainedThen[[name]]; environment(func) <- environment(); func }
+`$.RPolarsChainedWhen` = function(self, name) {
+  func = RPolarsChainedWhen[[name]]
+  environment(func) = environment()
+  func
+}
 
 #' @export
-`[[.RPolarsChainedThen` <- `$.RPolarsChainedThen`
+`[[.RPolarsChainedWhen` = `$.RPolarsChainedWhen`
 
-RPolarsExpr <- new.env(parent = emptyenv())
+RPolarsChainedThen = new.env(parent = emptyenv())
 
-RPolarsExpr$col <- function(name) .Call(wrap__RPolarsExpr__col, name)
+RPolarsChainedThen$when = function(condition) .Call(wrap__RPolarsChainedThen__when, self, condition)
 
-RPolarsExpr$dtype_cols <- function(dtypes) .Call(wrap__RPolarsExpr__dtype_cols, dtypes)
-
-RPolarsExpr$cols <- function(names) .Call(wrap__RPolarsExpr__cols, names)
-
-RPolarsExpr$lit <- function(robj) .Call(wrap__RPolarsExpr__lit, robj)
-
-RPolarsExpr$gt <- function(other) .Call(wrap__RPolarsExpr__gt, self, other)
-
-RPolarsExpr$gt_eq <- function(other) .Call(wrap__RPolarsExpr__gt_eq, self, other)
-
-RPolarsExpr$lt <- function(other) .Call(wrap__RPolarsExpr__lt, self, other)
-
-RPolarsExpr$lt_eq <- function(other) .Call(wrap__RPolarsExpr__lt_eq, self, other)
-
-RPolarsExpr$neq <- function(other) .Call(wrap__RPolarsExpr__neq, self, other)
-
-RPolarsExpr$neq_missing <- function(other) .Call(wrap__RPolarsExpr__neq_missing, self, other)
-
-RPolarsExpr$eq <- function(other) .Call(wrap__RPolarsExpr__eq, self, other)
-
-RPolarsExpr$eq_missing <- function(other) .Call(wrap__RPolarsExpr__eq_missing, self, other)
-
-RPolarsExpr$and <- function(other) .Call(wrap__RPolarsExpr__and, self, other)
-
-RPolarsExpr$or <- function(other) .Call(wrap__RPolarsExpr__or, self, other)
-
-RPolarsExpr$xor <- function(other) .Call(wrap__RPolarsExpr__xor, self, other)
-
-RPolarsExpr$to_physical <- function() .Call(wrap__RPolarsExpr__to_physical, self)
-
-RPolarsExpr$cast <- function(data_type, strict) .Call(wrap__RPolarsExpr__cast, self, data_type, strict)
-
-RPolarsExpr$sort <- function(descending, nulls_last) .Call(wrap__RPolarsExpr__sort, self, descending, nulls_last)
-
-RPolarsExpr$arg_sort <- function(descending, nulls_last) .Call(wrap__RPolarsExpr__arg_sort, self, descending, nulls_last)
-
-RPolarsExpr$top_k <- function(k) .Call(wrap__RPolarsExpr__top_k, self, k)
-
-RPolarsExpr$bottom_k <- function(k) .Call(wrap__RPolarsExpr__bottom_k, self, k)
-
-RPolarsExpr$arg_max <- function() .Call(wrap__RPolarsExpr__arg_max, self)
-
-RPolarsExpr$arg_min <- function() .Call(wrap__RPolarsExpr__arg_min, self)
-
-RPolarsExpr$search_sorted <- function(element) .Call(wrap__RPolarsExpr__search_sorted, self, element)
-
-RPolarsExpr$gather <- function(idx) .Call(wrap__RPolarsExpr__gather, self, idx)
-
-RPolarsExpr$sort_by <- function(by, descending) .Call(wrap__RPolarsExpr__sort_by, self, by, descending)
-
-RPolarsExpr$backward_fill <- function(limit) .Call(wrap__RPolarsExpr__backward_fill, self, limit)
-
-RPolarsExpr$forward_fill <- function(limit) .Call(wrap__RPolarsExpr__forward_fill, self, limit)
-
-RPolarsExpr$shift <- function(periods) .Call(wrap__RPolarsExpr__shift, self, periods)
-
-RPolarsExpr$shift_and_fill <- function(periods, fill_value) .Call(wrap__RPolarsExpr__shift_and_fill, self, periods, fill_value)
-
-RPolarsExpr$fill_null <- function(expr) .Call(wrap__RPolarsExpr__fill_null, self, expr)
-
-RPolarsExpr$fill_null_with_strategy <- function(strategy, limit) .Call(wrap__RPolarsExpr__fill_null_with_strategy, self, strategy, limit)
-
-RPolarsExpr$fill_nan <- function(expr) .Call(wrap__RPolarsExpr__fill_nan, self, expr)
-
-RPolarsExpr$reverse <- function() .Call(wrap__RPolarsExpr__reverse, self)
-
-RPolarsExpr$std <- function(ddof) .Call(wrap__RPolarsExpr__std, self, ddof)
-
-RPolarsExpr$var <- function(ddof) .Call(wrap__RPolarsExpr__var, self, ddof)
-
-RPolarsExpr$max <- function() .Call(wrap__RPolarsExpr__max, self)
-
-RPolarsExpr$min <- function() .Call(wrap__RPolarsExpr__min, self)
-
-RPolarsExpr$nan_min <- function() .Call(wrap__RPolarsExpr__nan_min, self)
-
-RPolarsExpr$nan_max <- function() .Call(wrap__RPolarsExpr__nan_max, self)
-
-RPolarsExpr$mean <- function() .Call(wrap__RPolarsExpr__mean, self)
-
-RPolarsExpr$median <- function() .Call(wrap__RPolarsExpr__median, self)
-
-RPolarsExpr$sum <- function() .Call(wrap__RPolarsExpr__sum, self)
-
-RPolarsExpr$product <- function() .Call(wrap__RPolarsExpr__product, self)
-
-RPolarsExpr$n_unique <- function() .Call(wrap__RPolarsExpr__n_unique, self)
-
-RPolarsExpr$null_count <- function() .Call(wrap__RPolarsExpr__null_count, self)
-
-RPolarsExpr$arg_unique <- function() .Call(wrap__RPolarsExpr__arg_unique, self)
-
-RPolarsExpr$quantile <- function(quantile, interpolation) .Call(wrap__RPolarsExpr__quantile, self, quantile, interpolation)
-
-RPolarsExpr$filter <- function(predicate) .Call(wrap__RPolarsExpr__filter, self, predicate)
-
-RPolarsExpr$explode <- function() .Call(wrap__RPolarsExpr__explode, self)
-
-RPolarsExpr$flatten <- function() .Call(wrap__RPolarsExpr__flatten, self)
-
-RPolarsExpr$gather_every <- function(n) .Call(wrap__RPolarsExpr__gather_every, self, n)
-
-RPolarsExpr$hash <- function(seed, seed_1, seed_2, seed_3) .Call(wrap__RPolarsExpr__hash, self, seed, seed_1, seed_2, seed_3)
-
-RPolarsExpr$reinterpret <- function(signed) .Call(wrap__RPolarsExpr__reinterpret, self, signed)
-
-RPolarsExpr$interpolate <- function(method) .Call(wrap__RPolarsExpr__interpolate, self, method)
-
-RPolarsExpr$rolling_min <- function(window_size, weights, min_periods, center, by_null, closed_null) .Call(wrap__RPolarsExpr__rolling_min, self, window_size, weights, min_periods, center, by_null, closed_null)
-
-RPolarsExpr$rolling_max <- function(window_size, weights, min_periods, center, by_null, closed_null) .Call(wrap__RPolarsExpr__rolling_max, self, window_size, weights, min_periods, center, by_null, closed_null)
-
-RPolarsExpr$rolling_mean <- function(window_size, weights, min_periods, center, by_null, closed_null) .Call(wrap__RPolarsExpr__rolling_mean, self, window_size, weights, min_periods, center, by_null, closed_null)
-
-RPolarsExpr$rolling_sum <- function(window_size, weights, min_periods, center, by_null, closed_null) .Call(wrap__RPolarsExpr__rolling_sum, self, window_size, weights, min_periods, center, by_null, closed_null)
-
-RPolarsExpr$rolling_std <- function(window_size, weights, min_periods, center, by_null, closed_null) .Call(wrap__RPolarsExpr__rolling_std, self, window_size, weights, min_periods, center, by_null, closed_null)
-
-RPolarsExpr$rolling_var <- function(window_size, weights, min_periods, center, by_null, closed_null) .Call(wrap__RPolarsExpr__rolling_var, self, window_size, weights, min_periods, center, by_null, closed_null)
-
-RPolarsExpr$rolling_median <- function(window_size, weights, min_periods, center, by_null, closed_null) .Call(wrap__RPolarsExpr__rolling_median, self, window_size, weights, min_periods, center, by_null, closed_null)
-
-RPolarsExpr$rolling_quantile <- function(quantile, interpolation, window_size, weights, min_periods, center, by, closed) .Call(wrap__RPolarsExpr__rolling_quantile, self, quantile, interpolation, window_size, weights, min_periods, center, by, closed)
-
-RPolarsExpr$rolling_skew <- function(window_size_f, bias) .Call(wrap__RPolarsExpr__rolling_skew, self, window_size_f, bias)
-
-RPolarsExpr$abs <- function() .Call(wrap__RPolarsExpr__abs, self)
-
-RPolarsExpr$rank <- function(method, descending) .Call(wrap__RPolarsExpr__rank, self, method, descending)
-
-RPolarsExpr$diff <- function(n_float, null_behavior) .Call(wrap__RPolarsExpr__diff, self, n_float, null_behavior)
-
-RPolarsExpr$pct_change <- function(n_float) .Call(wrap__RPolarsExpr__pct_change, self, n_float)
-
-RPolarsExpr$skew <- function(bias) .Call(wrap__RPolarsExpr__skew, self, bias)
-
-RPolarsExpr$kurtosis <- function(fisher, bias) .Call(wrap__RPolarsExpr__kurtosis, self, fisher, bias)
-
-RPolarsExpr$clip <- function(min, max) .Call(wrap__RPolarsExpr__clip, self, min, max)
-
-RPolarsExpr$clip_min <- function(min) .Call(wrap__RPolarsExpr__clip_min, self, min)
-
-RPolarsExpr$clip_max <- function(max) .Call(wrap__RPolarsExpr__clip_max, self, max)
-
-RPolarsExpr$lower_bound <- function() .Call(wrap__RPolarsExpr__lower_bound, self)
-
-RPolarsExpr$upper_bound <- function() .Call(wrap__RPolarsExpr__upper_bound, self)
-
-RPolarsExpr$sign <- function() .Call(wrap__RPolarsExpr__sign, self)
-
-RPolarsExpr$sin <- function() .Call(wrap__RPolarsExpr__sin, self)
-
-RPolarsExpr$cos <- function() .Call(wrap__RPolarsExpr__cos, self)
-
-RPolarsExpr$tan <- function() .Call(wrap__RPolarsExpr__tan, self)
-
-RPolarsExpr$arcsin <- function() .Call(wrap__RPolarsExpr__arcsin, self)
-
-RPolarsExpr$arccos <- function() .Call(wrap__RPolarsExpr__arccos, self)
-
-RPolarsExpr$arctan <- function() .Call(wrap__RPolarsExpr__arctan, self)
-
-RPolarsExpr$sinh <- function() .Call(wrap__RPolarsExpr__sinh, self)
-
-RPolarsExpr$cosh <- function() .Call(wrap__RPolarsExpr__cosh, self)
-
-RPolarsExpr$tanh <- function() .Call(wrap__RPolarsExpr__tanh, self)
-
-RPolarsExpr$arcsinh <- function() .Call(wrap__RPolarsExpr__arcsinh, self)
-
-RPolarsExpr$arccosh <- function() .Call(wrap__RPolarsExpr__arccosh, self)
-
-RPolarsExpr$arctanh <- function() .Call(wrap__RPolarsExpr__arctanh, self)
-
-RPolarsExpr$reshape <- function(dims) .Call(wrap__RPolarsExpr__reshape, self, dims)
-
-RPolarsExpr$shuffle <- function(seed) .Call(wrap__RPolarsExpr__shuffle, self, seed)
-
-RPolarsExpr$sample_n <- function(n, with_replacement, shuffle, seed) .Call(wrap__RPolarsExpr__sample_n, self, n, with_replacement, shuffle, seed)
-
-RPolarsExpr$sample_frac <- function(frac, with_replacement, shuffle, seed) .Call(wrap__RPolarsExpr__sample_frac, self, frac, with_replacement, shuffle, seed)
-
-RPolarsExpr$ewm_mean <- function(alpha, adjust, min_periods, ignore_nulls) .Call(wrap__RPolarsExpr__ewm_mean, self, alpha, adjust, min_periods, ignore_nulls)
-
-RPolarsExpr$ewm_std <- function(alpha, adjust, bias, min_periods, ignore_nulls) .Call(wrap__RPolarsExpr__ewm_std, self, alpha, adjust, bias, min_periods, ignore_nulls)
-
-RPolarsExpr$ewm_var <- function(alpha, adjust, bias, min_periods, ignore_nulls) .Call(wrap__RPolarsExpr__ewm_var, self, alpha, adjust, bias, min_periods, ignore_nulls)
-
-RPolarsExpr$extend_constant <- function(value, n) .Call(wrap__RPolarsExpr__extend_constant, self, value, n)
-
-RPolarsExpr$rep <- function(n, rechunk) .Call(wrap__RPolarsExpr__rep, self, n, rechunk)
-
-RPolarsExpr$value_counts <- function(sort, parallel) .Call(wrap__RPolarsExpr__value_counts, self, sort, parallel)
-
-RPolarsExpr$unique_counts <- function() .Call(wrap__RPolarsExpr__unique_counts, self)
-
-RPolarsExpr$entropy <- function(base, normalize) .Call(wrap__RPolarsExpr__entropy, self, base, normalize)
-
-RPolarsExpr$cumulative_eval <- function(expr, min_periods, parallel) .Call(wrap__RPolarsExpr__cumulative_eval, self, expr, min_periods, parallel)
-
-RPolarsExpr$implode <- function() .Call(wrap__RPolarsExpr__implode, self)
-
-RPolarsExpr$shrink_dtype <- function() .Call(wrap__RPolarsExpr__shrink_dtype, self)
-
-RPolarsExpr$peak_min <- function() .Call(wrap__RPolarsExpr__peak_min, self)
-
-RPolarsExpr$peak_max <- function() .Call(wrap__RPolarsExpr__peak_max, self)
-
-RPolarsExpr$list_lengths <- function() .Call(wrap__RPolarsExpr__list_lengths, self)
-
-RPolarsExpr$list_contains <- function(other) .Call(wrap__RPolarsExpr__list_contains, self, other)
-
-RPolarsExpr$list_max <- function() .Call(wrap__RPolarsExpr__list_max, self)
-
-RPolarsExpr$list_min <- function() .Call(wrap__RPolarsExpr__list_min, self)
-
-RPolarsExpr$list_sum <- function() .Call(wrap__RPolarsExpr__list_sum, self)
-
-RPolarsExpr$list_mean <- function() .Call(wrap__RPolarsExpr__list_mean, self)
-
-RPolarsExpr$list_sort <- function(descending) .Call(wrap__RPolarsExpr__list_sort, self, descending)
-
-RPolarsExpr$list_reverse <- function() .Call(wrap__RPolarsExpr__list_reverse, self)
-
-RPolarsExpr$list_unique <- function() .Call(wrap__RPolarsExpr__list_unique, self)
-
-RPolarsExpr$list_gather <- function(index, null_on_oob) .Call(wrap__RPolarsExpr__list_gather, self, index, null_on_oob)
-
-RPolarsExpr$list_get <- function(index) .Call(wrap__RPolarsExpr__list_get, self, index)
-
-RPolarsExpr$list_join <- function(separator) .Call(wrap__RPolarsExpr__list_join, self, separator)
-
-RPolarsExpr$list_arg_min <- function() .Call(wrap__RPolarsExpr__list_arg_min, self)
-
-RPolarsExpr$list_arg_max <- function() .Call(wrap__RPolarsExpr__list_arg_max, self)
-
-RPolarsExpr$list_diff <- function(n, null_behavior) .Call(wrap__RPolarsExpr__list_diff, self, n, null_behavior)
-
-RPolarsExpr$list_shift <- function(periods) .Call(wrap__RPolarsExpr__list_shift, self, periods)
-
-RPolarsExpr$list_slice <- function(offset, length) .Call(wrap__RPolarsExpr__list_slice, self, offset, length)
-
-RPolarsExpr$list_eval <- function(expr, parallel) .Call(wrap__RPolarsExpr__list_eval, self, expr, parallel)
-
-RPolarsExpr$list_to_struct <- function(n_field_strategy, name_gen, upper_bound) .Call(wrap__RPolarsExpr__list_to_struct, self, n_field_strategy, name_gen, upper_bound)
-
-RPolarsExpr$str_to_date <- function(format, strict, exact, cache) .Call(wrap__RPolarsExpr__str_to_date, self, format, strict, exact, cache)
-
-RPolarsExpr$str_to_datetime <- function(format, time_unit, time_zone, strict, exact, cache, ambiguous) .Call(wrap__RPolarsExpr__str_to_datetime, self, format, time_unit, time_zone, strict, exact, cache, ambiguous)
-
-RPolarsExpr$str_to_time <- function(format, strict, cache) .Call(wrap__RPolarsExpr__str_to_time, self, format, strict, cache)
-
-RPolarsExpr$dt_truncate <- function(every, offset) .Call(wrap__RPolarsExpr__dt_truncate, self, every, offset)
-
-RPolarsExpr$dt_round <- function(every, offset) .Call(wrap__RPolarsExpr__dt_round, self, every, offset)
-
-RPolarsExpr$dt_time <- function() .Call(wrap__RPolarsExpr__dt_time, self)
-
-RPolarsExpr$dt_combine <- function(time, tu) .Call(wrap__RPolarsExpr__dt_combine, self, time, tu)
-
-RPolarsExpr$dt_strftime <- function(fmt) .Call(wrap__RPolarsExpr__dt_strftime, self, fmt)
-
-RPolarsExpr$dt_year <- function() .Call(wrap__RPolarsExpr__dt_year, self)
-
-RPolarsExpr$dt_iso_year <- function() .Call(wrap__RPolarsExpr__dt_iso_year, self)
-
-RPolarsExpr$dt_quarter <- function() .Call(wrap__RPolarsExpr__dt_quarter, self)
-
-RPolarsExpr$dt_month <- function() .Call(wrap__RPolarsExpr__dt_month, self)
-
-RPolarsExpr$dt_week <- function() .Call(wrap__RPolarsExpr__dt_week, self)
-
-RPolarsExpr$dt_weekday <- function() .Call(wrap__RPolarsExpr__dt_weekday, self)
-
-RPolarsExpr$dt_day <- function() .Call(wrap__RPolarsExpr__dt_day, self)
-
-RPolarsExpr$dt_ordinal_day <- function() .Call(wrap__RPolarsExpr__dt_ordinal_day, self)
-
-RPolarsExpr$dt_hour <- function() .Call(wrap__RPolarsExpr__dt_hour, self)
-
-RPolarsExpr$dt_minute <- function() .Call(wrap__RPolarsExpr__dt_minute, self)
-
-RPolarsExpr$dt_second <- function() .Call(wrap__RPolarsExpr__dt_second, self)
-
-RPolarsExpr$dt_millisecond <- function() .Call(wrap__RPolarsExpr__dt_millisecond, self)
-
-RPolarsExpr$dt_microsecond <- function() .Call(wrap__RPolarsExpr__dt_microsecond, self)
-
-RPolarsExpr$dt_nanosecond <- function() .Call(wrap__RPolarsExpr__dt_nanosecond, self)
-
-RPolarsExpr$timestamp <- function(tu) .Call(wrap__RPolarsExpr__timestamp, self, tu)
-
-RPolarsExpr$dt_epoch_seconds <- function() .Call(wrap__RPolarsExpr__dt_epoch_seconds, self)
-
-RPolarsExpr$dt_with_time_unit <- function(tu) .Call(wrap__RPolarsExpr__dt_with_time_unit, self, tu)
-
-RPolarsExpr$dt_cast_time_unit <- function(tu) .Call(wrap__RPolarsExpr__dt_cast_time_unit, self, tu)
-
-RPolarsExpr$dt_convert_time_zone <- function(tz) .Call(wrap__RPolarsExpr__dt_convert_time_zone, self, tz)
-
-RPolarsExpr$dt_replace_time_zone <- function(tz, ambiguous) .Call(wrap__RPolarsExpr__dt_replace_time_zone, self, tz, ambiguous)
-
-RPolarsExpr$dt_total_days <- function() .Call(wrap__RPolarsExpr__dt_total_days, self)
-
-RPolarsExpr$dt_total_hours <- function() .Call(wrap__RPolarsExpr__dt_total_hours, self)
-
-RPolarsExpr$dt_total_minutes <- function() .Call(wrap__RPolarsExpr__dt_total_minutes, self)
-
-RPolarsExpr$dt_total_seconds <- function() .Call(wrap__RPolarsExpr__dt_total_seconds, self)
-
-RPolarsExpr$dt_total_milliseconds <- function() .Call(wrap__RPolarsExpr__dt_total_milliseconds, self)
-
-RPolarsExpr$dt_total_microseconds <- function() .Call(wrap__RPolarsExpr__dt_total_microseconds, self)
-
-RPolarsExpr$dt_total_nanoseconds <- function() .Call(wrap__RPolarsExpr__dt_total_nanoseconds, self)
-
-RPolarsExpr$dt_offset_by <- function(by) .Call(wrap__RPolarsExpr__dt_offset_by, self, by)
-
-RPolarsExpr$repeat_by <- function(by) .Call(wrap__RPolarsExpr__repeat_by, self, by)
-
-RPolarsExpr$log10 <- function() .Call(wrap__RPolarsExpr__log10, self)
-
-RPolarsExpr$log <- function(base) .Call(wrap__RPolarsExpr__log, self, base)
-
-RPolarsExpr$exp <- function() .Call(wrap__RPolarsExpr__exp, self)
-
-RPolarsExpr$exclude <- function(columns) .Call(wrap__RPolarsExpr__exclude, self, columns)
-
-RPolarsExpr$exclude_dtype <- function(columns) .Call(wrap__RPolarsExpr__exclude_dtype, self, columns)
-
-RPolarsExpr$alias <- function(s) .Call(wrap__RPolarsExpr__alias, self, s)
-
-RPolarsExpr$drop_nulls <- function() .Call(wrap__RPolarsExpr__drop_nulls, self)
-
-RPolarsExpr$drop_nans <- function() .Call(wrap__RPolarsExpr__drop_nans, self)
-
-RPolarsExpr$cum_sum <- function(reverse) .Call(wrap__RPolarsExpr__cum_sum, self, reverse)
-
-RPolarsExpr$cum_prod <- function(reverse) .Call(wrap__RPolarsExpr__cum_prod, self, reverse)
-
-RPolarsExpr$cum_min <- function(reverse) .Call(wrap__RPolarsExpr__cum_min, self, reverse)
-
-RPolarsExpr$cum_max <- function(reverse) .Call(wrap__RPolarsExpr__cum_max, self, reverse)
-
-RPolarsExpr$cum_count <- function(reverse) .Call(wrap__RPolarsExpr__cum_count, self, reverse)
-
-RPolarsExpr$floor <- function() .Call(wrap__RPolarsExpr__floor, self)
-
-RPolarsExpr$ceil <- function() .Call(wrap__RPolarsExpr__ceil, self)
-
-RPolarsExpr$round <- function(decimals) .Call(wrap__RPolarsExpr__round, self, decimals)
-
-RPolarsExpr$dot <- function(other) .Call(wrap__RPolarsExpr__dot, self, other)
-
-RPolarsExpr$mode <- function() .Call(wrap__RPolarsExpr__mode, self)
-
-RPolarsExpr$first <- function() .Call(wrap__RPolarsExpr__first, self)
-
-RPolarsExpr$last <- function() .Call(wrap__RPolarsExpr__last, self)
-
-RPolarsExpr$head <- function(n) .Call(wrap__RPolarsExpr__head, self, n)
-
-RPolarsExpr$tail <- function(n) .Call(wrap__RPolarsExpr__tail, self, n)
-
-RPolarsExpr$unique <- function() .Call(wrap__RPolarsExpr__unique, self)
-
-RPolarsExpr$unique_stable <- function() .Call(wrap__RPolarsExpr__unique_stable, self)
-
-RPolarsExpr$agg_groups <- function() .Call(wrap__RPolarsExpr__agg_groups, self)
-
-RPolarsExpr$all <- function(drop_nulls) .Call(wrap__RPolarsExpr__all, self, drop_nulls)
-
-RPolarsExpr$any <- function(drop_nulls) .Call(wrap__RPolarsExpr__any, self, drop_nulls)
-
-RPolarsExpr$is_duplicated <- function() .Call(wrap__RPolarsExpr__is_duplicated, self)
-
-RPolarsExpr$is_finite <- function() .Call(wrap__RPolarsExpr__is_finite, self)
-
-RPolarsExpr$is_first_distinct <- function() .Call(wrap__RPolarsExpr__is_first_distinct, self)
-
-RPolarsExpr$is_in <- function(other) .Call(wrap__RPolarsExpr__is_in, self, other)
-
-RPolarsExpr$is_infinite <- function() .Call(wrap__RPolarsExpr__is_infinite, self)
-
-RPolarsExpr$is_last_distinct <- function() .Call(wrap__RPolarsExpr__is_last_distinct, self)
-
-RPolarsExpr$is_nan <- function() .Call(wrap__RPolarsExpr__is_nan, self)
-
-RPolarsExpr$is_not_null <- function() .Call(wrap__RPolarsExpr__is_not_null, self)
-
-RPolarsExpr$is_not_nan <- function() .Call(wrap__RPolarsExpr__is_not_nan, self)
-
-RPolarsExpr$is_null <- function() .Call(wrap__RPolarsExpr__is_null, self)
-
-RPolarsExpr$is_unique <- function() .Call(wrap__RPolarsExpr__is_unique, self)
-
-RPolarsExpr$not <- function() .Call(wrap__RPolarsExpr__not, self)
-
-RPolarsExpr$count <- function() .Call(wrap__RPolarsExpr__count, self)
-
-RPolarsExpr$len <- function() .Call(wrap__RPolarsExpr__len, self)
-
-RPolarsExpr$slice <- function(offset, length) .Call(wrap__RPolarsExpr__slice, self, offset, length)
-
-RPolarsExpr$append <- function(other, upcast) .Call(wrap__RPolarsExpr__append, self, other, upcast)
-
-RPolarsExpr$rechunk <- function() .Call(wrap__RPolarsExpr__rechunk, self)
-
-RPolarsExpr$add <- function(other) .Call(wrap__RPolarsExpr__add, self, other)
-
-RPolarsExpr$floor_div <- function(other) .Call(wrap__RPolarsExpr__floor_div, self, other)
-
-RPolarsExpr$rem <- function(other) .Call(wrap__RPolarsExpr__rem, self, other)
-
-RPolarsExpr$mul <- function(other) .Call(wrap__RPolarsExpr__mul, self, other)
-
-RPolarsExpr$sub <- function(other) .Call(wrap__RPolarsExpr__sub, self, other)
-
-RPolarsExpr$div <- function(other) .Call(wrap__RPolarsExpr__div, self, other)
-
-RPolarsExpr$pow <- function(exponent) .Call(wrap__RPolarsExpr__pow, self, exponent)
-
-RPolarsExpr$over <- function(proto_exprs) .Call(wrap__RPolarsExpr__over, self, proto_exprs)
-
-RPolarsExpr$print <- function() invisible(.Call(wrap__RPolarsExpr__print, self))
-
-RPolarsExpr$map_batches <- function(lambda, output_type, agg_list) .Call(wrap__RPolarsExpr__map_batches, self, lambda, output_type, agg_list)
-
-RPolarsExpr$map_batches_in_background <- function(lambda, output_type, agg_list) .Call(wrap__RPolarsExpr__map_batches_in_background, self, lambda, output_type, agg_list)
-
-RPolarsExpr$map_elements_in_background <- function(lambda, output_type) .Call(wrap__RPolarsExpr__map_elements_in_background, self, lambda, output_type)
-
-RPolarsExpr$approx_n_unique <- function() .Call(wrap__RPolarsExpr__approx_n_unique, self)
-
-RPolarsExpr$name_keep <- function() .Call(wrap__RPolarsExpr__name_keep, self)
-
-RPolarsExpr$name_suffix <- function(suffix) .Call(wrap__RPolarsExpr__name_suffix, self, suffix)
-
-RPolarsExpr$name_prefix <- function(prefix) .Call(wrap__RPolarsExpr__name_prefix, self, prefix)
-
-RPolarsExpr$name_to_lowercase <- function() .Call(wrap__RPolarsExpr__name_to_lowercase, self)
-
-RPolarsExpr$name_to_uppercase <- function() .Call(wrap__RPolarsExpr__name_to_uppercase, self)
-
-RPolarsExpr$name_map <- function(lambda) .Call(wrap__RPolarsExpr__name_map, self, lambda)
-
-RPolarsExpr$str_len_bytes <- function() .Call(wrap__RPolarsExpr__str_len_bytes, self)
-
-RPolarsExpr$str_len_chars <- function() .Call(wrap__RPolarsExpr__str_len_chars, self)
-
-RPolarsExpr$str_concat <- function(delimiter, ignore_nulls) .Call(wrap__RPolarsExpr__str_concat, self, delimiter, ignore_nulls)
-
-RPolarsExpr$str_to_uppercase <- function() .Call(wrap__RPolarsExpr__str_to_uppercase, self)
-
-RPolarsExpr$str_to_lowercase <- function() .Call(wrap__RPolarsExpr__str_to_lowercase, self)
-
-RPolarsExpr$str_to_titlecase <- function() .Call(wrap__RPolarsExpr__str_to_titlecase, self)
-
-RPolarsExpr$str_strip_chars <- function(matches) .Call(wrap__RPolarsExpr__str_strip_chars, self, matches)
-
-RPolarsExpr$str_strip_chars_end <- function(matches) .Call(wrap__RPolarsExpr__str_strip_chars_end, self, matches)
-
-RPolarsExpr$str_strip_chars_start <- function(matches) .Call(wrap__RPolarsExpr__str_strip_chars_start, self, matches)
-
-RPolarsExpr$str_zfill <- function(alignment) .Call(wrap__RPolarsExpr__str_zfill, self, alignment)
-
-RPolarsExpr$str_pad_end <- function(width, fillchar) .Call(wrap__RPolarsExpr__str_pad_end, self, width, fillchar)
-
-RPolarsExpr$str_pad_start <- function(width, fillchar) .Call(wrap__RPolarsExpr__str_pad_start, self, width, fillchar)
-
-RPolarsExpr$str_contains <- function(pat, literal, strict) .Call(wrap__RPolarsExpr__str_contains, self, pat, literal, strict)
-
-RPolarsExpr$str_ends_with <- function(sub) .Call(wrap__RPolarsExpr__str_ends_with, self, sub)
-
-RPolarsExpr$str_starts_with <- function(sub) .Call(wrap__RPolarsExpr__str_starts_with, self, sub)
-
-RPolarsExpr$str_json_path_match <- function(pat) .Call(wrap__RPolarsExpr__str_json_path_match, self, pat)
-
-RPolarsExpr$str_json_extract <- function(dtype, infer_schema_len) .Call(wrap__RPolarsExpr__str_json_extract, self, dtype, infer_schema_len)
-
-RPolarsExpr$str_hex_encode <- function() .Call(wrap__RPolarsExpr__str_hex_encode, self)
-
-RPolarsExpr$str_hex_decode <- function(strict) .Call(wrap__RPolarsExpr__str_hex_decode, self, strict)
-
-RPolarsExpr$str_base64_encode <- function() .Call(wrap__RPolarsExpr__str_base64_encode, self)
-
-RPolarsExpr$str_base64_decode <- function(strict) .Call(wrap__RPolarsExpr__str_base64_decode, self, strict)
-
-RPolarsExpr$str_extract <- function(pattern, group_index) .Call(wrap__RPolarsExpr__str_extract, self, pattern, group_index)
-
-RPolarsExpr$str_extract_all <- function(pattern) .Call(wrap__RPolarsExpr__str_extract_all, self, pattern)
-
-RPolarsExpr$str_count_matches <- function(pattern, literal) .Call(wrap__RPolarsExpr__str_count_matches, self, pattern, literal)
-
-RPolarsExpr$str_split <- function(by, inclusive) .Call(wrap__RPolarsExpr__str_split, self, by, inclusive)
-
-RPolarsExpr$str_split_exact <- function(by, n, inclusive) .Call(wrap__RPolarsExpr__str_split_exact, self, by, n, inclusive)
-
-RPolarsExpr$str_splitn <- function(by, n) .Call(wrap__RPolarsExpr__str_splitn, self, by, n)
-
-RPolarsExpr$str_replace <- function(pattern, value, literal) .Call(wrap__RPolarsExpr__str_replace, self, pattern, value, literal)
-
-RPolarsExpr$str_replace_all <- function(pattern, value, literal) .Call(wrap__RPolarsExpr__str_replace_all, self, pattern, value, literal)
-
-RPolarsExpr$str_slice <- function(offset, length) .Call(wrap__RPolarsExpr__str_slice, self, offset, length)
-
-RPolarsExpr$str_explode <- function() .Call(wrap__RPolarsExpr__str_explode, self)
-
-RPolarsExpr$str_parse_int <- function(radix, strict) .Call(wrap__RPolarsExpr__str_parse_int, self, radix, strict)
-
-RPolarsExpr$bin_contains <- function(lit) .Call(wrap__RPolarsExpr__bin_contains, self, lit)
-
-RPolarsExpr$bin_starts_with <- function(sub) .Call(wrap__RPolarsExpr__bin_starts_with, self, sub)
-
-RPolarsExpr$bin_ends_with <- function(sub) .Call(wrap__RPolarsExpr__bin_ends_with, self, sub)
-
-RPolarsExpr$bin_encode_hex <- function() .Call(wrap__RPolarsExpr__bin_encode_hex, self)
-
-RPolarsExpr$bin_encode_base64 <- function() .Call(wrap__RPolarsExpr__bin_encode_base64, self)
-
-RPolarsExpr$bin_decode_hex <- function(strict) .Call(wrap__RPolarsExpr__bin_decode_hex, self, strict)
-
-RPolarsExpr$bin_decode_base64 <- function(strict) .Call(wrap__RPolarsExpr__bin_decode_base64, self, strict)
-
-RPolarsExpr$struct_field_by_name <- function(name) .Call(wrap__RPolarsExpr__struct_field_by_name, self, name)
-
-RPolarsExpr$struct_rename_fields <- function(names) .Call(wrap__RPolarsExpr__struct_rename_fields, self, names)
-
-RPolarsExpr$meta_pop <- function() .Call(wrap__RPolarsExpr__meta_pop, self)
-
-RPolarsExpr$meta_eq <- function(other) .Call(wrap__RPolarsExpr__meta_eq, self, other)
-
-RPolarsExpr$meta_roots <- function() .Call(wrap__RPolarsExpr__meta_roots, self)
-
-RPolarsExpr$meta_output_name <- function() .Call(wrap__RPolarsExpr__meta_output_name, self)
-
-RPolarsExpr$meta_undo_aliases <- function() .Call(wrap__RPolarsExpr__meta_undo_aliases, self)
-
-RPolarsExpr$meta_has_multiple_outputs <- function() .Call(wrap__RPolarsExpr__meta_has_multiple_outputs, self)
-
-RPolarsExpr$meta_is_regex_projection <- function() .Call(wrap__RPolarsExpr__meta_is_regex_projection, self)
-
-RPolarsExpr$meta_tree_format <- function() .Call(wrap__RPolarsExpr__meta_tree_format, self)
-
-RPolarsExpr$cat_set_ordering <- function(ordering) .Call(wrap__RPolarsExpr__cat_set_ordering, self, ordering)
-
-RPolarsExpr$cat_get_categories <- function() .Call(wrap__RPolarsExpr__cat_get_categories, self)
-
-RPolarsExpr$new_count <- function() .Call(wrap__RPolarsExpr__new_count)
-
-RPolarsExpr$new_first <- function() .Call(wrap__RPolarsExpr__new_first)
-
-RPolarsExpr$new_last <- function() .Call(wrap__RPolarsExpr__new_last)
-
-RPolarsExpr$cov <- function(a, b, ddof) .Call(wrap__RPolarsExpr__cov, a, b, ddof)
-
-RPolarsExpr$rolling_cov <- function(a, b, window_size, min_periods, ddof) .Call(wrap__RPolarsExpr__rolling_cov, a, b, window_size, min_periods, ddof)
-
-RPolarsExpr$corr <- function(a, b, method, ddof, propagate_nans) .Call(wrap__RPolarsExpr__corr, a, b, method, ddof, propagate_nans)
-
-RPolarsExpr$rolling_corr <- function(a, b, window_size, min_periods, ddof) .Call(wrap__RPolarsExpr__rolling_corr, a, b, window_size, min_periods, ddof)
-
-RPolarsExpr$rolling <- function(index_column, period, offset, closed, check_sorted) .Call(wrap__RPolarsExpr__rolling, self, index_column, period, offset, closed, check_sorted)
+RPolarsChainedThen$otherwise = function(statement) .Call(wrap__RPolarsChainedThen__otherwise, self, statement)
 
 #' @export
-`$.RPolarsExpr` <- function (self, name) { func <- RPolarsExpr[[name]]; environment(func) <- environment(); func }
+`$.RPolarsChainedThen` = function(self, name) {
+  func = RPolarsChainedThen[[name]]
+  environment(func) = environment()
+  func
+}
 
 #' @export
-`[[.RPolarsExpr` <- `$.RPolarsExpr`
+`[[.RPolarsChainedThen` = `$.RPolarsChainedThen`
 
-RPolarsProtoExprArray <- new.env(parent = emptyenv())
+RPolarsExpr = new.env(parent = emptyenv())
 
-RPolarsProtoExprArray$new <- function() .Call(wrap__RPolarsProtoExprArray__new)
+RPolarsExpr$col = function(name) .Call(wrap__RPolarsExpr__col, name)
 
-RPolarsProtoExprArray$push_back_str <- function(s) invisible(.Call(wrap__RPolarsProtoExprArray__push_back_str, self, s))
+RPolarsExpr$dtype_cols = function(dtypes) .Call(wrap__RPolarsExpr__dtype_cols, dtypes)
 
-RPolarsProtoExprArray$push_back_rexpr <- function(r) invisible(.Call(wrap__RPolarsProtoExprArray__push_back_rexpr, self, r))
+RPolarsExpr$cols = function(names) .Call(wrap__RPolarsExpr__cols, names)
 
-RPolarsProtoExprArray$print <- function() invisible(.Call(wrap__RPolarsProtoExprArray__print, self))
+RPolarsExpr$lit = function(robj) .Call(wrap__RPolarsExpr__lit, robj)
+
+RPolarsExpr$gt = function(other) .Call(wrap__RPolarsExpr__gt, self, other)
+
+RPolarsExpr$gt_eq = function(other) .Call(wrap__RPolarsExpr__gt_eq, self, other)
+
+RPolarsExpr$lt = function(other) .Call(wrap__RPolarsExpr__lt, self, other)
+
+RPolarsExpr$lt_eq = function(other) .Call(wrap__RPolarsExpr__lt_eq, self, other)
+
+RPolarsExpr$neq = function(other) .Call(wrap__RPolarsExpr__neq, self, other)
+
+RPolarsExpr$neq_missing = function(other) .Call(wrap__RPolarsExpr__neq_missing, self, other)
+
+RPolarsExpr$eq = function(other) .Call(wrap__RPolarsExpr__eq, self, other)
+
+RPolarsExpr$eq_missing = function(other) .Call(wrap__RPolarsExpr__eq_missing, self, other)
+
+RPolarsExpr$and = function(other) .Call(wrap__RPolarsExpr__and, self, other)
+
+RPolarsExpr$or = function(other) .Call(wrap__RPolarsExpr__or, self, other)
+
+RPolarsExpr$xor = function(other) .Call(wrap__RPolarsExpr__xor, self, other)
+
+RPolarsExpr$to_physical = function() .Call(wrap__RPolarsExpr__to_physical, self)
+
+RPolarsExpr$cast = function(data_type, strict) .Call(wrap__RPolarsExpr__cast, self, data_type, strict)
+
+RPolarsExpr$sort = function(descending, nulls_last) .Call(wrap__RPolarsExpr__sort, self, descending, nulls_last)
+
+RPolarsExpr$arg_sort = function(descending, nulls_last) .Call(wrap__RPolarsExpr__arg_sort, self, descending, nulls_last)
+
+RPolarsExpr$top_k = function(k) .Call(wrap__RPolarsExpr__top_k, self, k)
+
+RPolarsExpr$bottom_k = function(k) .Call(wrap__RPolarsExpr__bottom_k, self, k)
+
+RPolarsExpr$arg_max = function() .Call(wrap__RPolarsExpr__arg_max, self)
+
+RPolarsExpr$arg_min = function() .Call(wrap__RPolarsExpr__arg_min, self)
+
+RPolarsExpr$search_sorted = function(element) .Call(wrap__RPolarsExpr__search_sorted, self, element)
+
+RPolarsExpr$gather = function(idx) .Call(wrap__RPolarsExpr__gather, self, idx)
+
+RPolarsExpr$sort_by = function(by, descending) .Call(wrap__RPolarsExpr__sort_by, self, by, descending)
+
+RPolarsExpr$backward_fill = function(limit) .Call(wrap__RPolarsExpr__backward_fill, self, limit)
+
+RPolarsExpr$forward_fill = function(limit) .Call(wrap__RPolarsExpr__forward_fill, self, limit)
+
+RPolarsExpr$shift = function(periods) .Call(wrap__RPolarsExpr__shift, self, periods)
+
+RPolarsExpr$shift_and_fill = function(periods, fill_value) .Call(wrap__RPolarsExpr__shift_and_fill, self, periods, fill_value)
+
+RPolarsExpr$fill_null = function(expr) .Call(wrap__RPolarsExpr__fill_null, self, expr)
+
+RPolarsExpr$fill_null_with_strategy = function(strategy, limit) .Call(wrap__RPolarsExpr__fill_null_with_strategy, self, strategy, limit)
+
+RPolarsExpr$fill_nan = function(expr) .Call(wrap__RPolarsExpr__fill_nan, self, expr)
+
+RPolarsExpr$reverse = function() .Call(wrap__RPolarsExpr__reverse, self)
+
+RPolarsExpr$std = function(ddof) .Call(wrap__RPolarsExpr__std, self, ddof)
+
+RPolarsExpr$var = function(ddof) .Call(wrap__RPolarsExpr__var, self, ddof)
+
+RPolarsExpr$max = function() .Call(wrap__RPolarsExpr__max, self)
+
+RPolarsExpr$min = function() .Call(wrap__RPolarsExpr__min, self)
+
+RPolarsExpr$nan_min = function() .Call(wrap__RPolarsExpr__nan_min, self)
+
+RPolarsExpr$nan_max = function() .Call(wrap__RPolarsExpr__nan_max, self)
+
+RPolarsExpr$mean = function() .Call(wrap__RPolarsExpr__mean, self)
+
+RPolarsExpr$median = function() .Call(wrap__RPolarsExpr__median, self)
+
+RPolarsExpr$sum = function() .Call(wrap__RPolarsExpr__sum, self)
+
+RPolarsExpr$product = function() .Call(wrap__RPolarsExpr__product, self)
+
+RPolarsExpr$n_unique = function() .Call(wrap__RPolarsExpr__n_unique, self)
+
+RPolarsExpr$null_count = function() .Call(wrap__RPolarsExpr__null_count, self)
+
+RPolarsExpr$arg_unique = function() .Call(wrap__RPolarsExpr__arg_unique, self)
+
+RPolarsExpr$quantile = function(quantile, interpolation) .Call(wrap__RPolarsExpr__quantile, self, quantile, interpolation)
+
+RPolarsExpr$filter = function(predicate) .Call(wrap__RPolarsExpr__filter, self, predicate)
+
+RPolarsExpr$explode = function() .Call(wrap__RPolarsExpr__explode, self)
+
+RPolarsExpr$flatten = function() .Call(wrap__RPolarsExpr__flatten, self)
+
+RPolarsExpr$gather_every = function(n) .Call(wrap__RPolarsExpr__gather_every, self, n)
+
+RPolarsExpr$hash = function(seed, seed_1, seed_2, seed_3) .Call(wrap__RPolarsExpr__hash, self, seed, seed_1, seed_2, seed_3)
+
+RPolarsExpr$reinterpret = function(signed) .Call(wrap__RPolarsExpr__reinterpret, self, signed)
+
+RPolarsExpr$interpolate = function(method) .Call(wrap__RPolarsExpr__interpolate, self, method)
+
+RPolarsExpr$rolling_min = function(window_size, weights, min_periods, center, by_null, closed_null) .Call(wrap__RPolarsExpr__rolling_min, self, window_size, weights, min_periods, center, by_null, closed_null)
+
+RPolarsExpr$rolling_max = function(window_size, weights, min_periods, center, by_null, closed_null) .Call(wrap__RPolarsExpr__rolling_max, self, window_size, weights, min_periods, center, by_null, closed_null)
+
+RPolarsExpr$rolling_mean = function(window_size, weights, min_periods, center, by_null, closed_null) .Call(wrap__RPolarsExpr__rolling_mean, self, window_size, weights, min_periods, center, by_null, closed_null)
+
+RPolarsExpr$rolling_sum = function(window_size, weights, min_periods, center, by_null, closed_null) .Call(wrap__RPolarsExpr__rolling_sum, self, window_size, weights, min_periods, center, by_null, closed_null)
+
+RPolarsExpr$rolling_std = function(window_size, weights, min_periods, center, by_null, closed_null) .Call(wrap__RPolarsExpr__rolling_std, self, window_size, weights, min_periods, center, by_null, closed_null)
+
+RPolarsExpr$rolling_var = function(window_size, weights, min_periods, center, by_null, closed_null) .Call(wrap__RPolarsExpr__rolling_var, self, window_size, weights, min_periods, center, by_null, closed_null)
+
+RPolarsExpr$rolling_median = function(window_size, weights, min_periods, center, by_null, closed_null) .Call(wrap__RPolarsExpr__rolling_median, self, window_size, weights, min_periods, center, by_null, closed_null)
+
+RPolarsExpr$rolling_quantile = function(quantile, interpolation, window_size, weights, min_periods, center, by, closed) .Call(wrap__RPolarsExpr__rolling_quantile, self, quantile, interpolation, window_size, weights, min_periods, center, by, closed)
+
+RPolarsExpr$rolling_skew = function(window_size_f, bias) .Call(wrap__RPolarsExpr__rolling_skew, self, window_size_f, bias)
+
+RPolarsExpr$abs = function() .Call(wrap__RPolarsExpr__abs, self)
+
+RPolarsExpr$rank = function(method, descending) .Call(wrap__RPolarsExpr__rank, self, method, descending)
+
+RPolarsExpr$diff = function(n_float, null_behavior) .Call(wrap__RPolarsExpr__diff, self, n_float, null_behavior)
+
+RPolarsExpr$pct_change = function(n_float) .Call(wrap__RPolarsExpr__pct_change, self, n_float)
+
+RPolarsExpr$skew = function(bias) .Call(wrap__RPolarsExpr__skew, self, bias)
+
+RPolarsExpr$kurtosis = function(fisher, bias) .Call(wrap__RPolarsExpr__kurtosis, self, fisher, bias)
+
+RPolarsExpr$clip = function(min, max) .Call(wrap__RPolarsExpr__clip, self, min, max)
+
+RPolarsExpr$clip_min = function(min) .Call(wrap__RPolarsExpr__clip_min, self, min)
+
+RPolarsExpr$clip_max = function(max) .Call(wrap__RPolarsExpr__clip_max, self, max)
+
+RPolarsExpr$lower_bound = function() .Call(wrap__RPolarsExpr__lower_bound, self)
+
+RPolarsExpr$upper_bound = function() .Call(wrap__RPolarsExpr__upper_bound, self)
+
+RPolarsExpr$sign = function() .Call(wrap__RPolarsExpr__sign, self)
+
+RPolarsExpr$sin = function() .Call(wrap__RPolarsExpr__sin, self)
+
+RPolarsExpr$cos = function() .Call(wrap__RPolarsExpr__cos, self)
+
+RPolarsExpr$tan = function() .Call(wrap__RPolarsExpr__tan, self)
+
+RPolarsExpr$arcsin = function() .Call(wrap__RPolarsExpr__arcsin, self)
+
+RPolarsExpr$arccos = function() .Call(wrap__RPolarsExpr__arccos, self)
+
+RPolarsExpr$arctan = function() .Call(wrap__RPolarsExpr__arctan, self)
+
+RPolarsExpr$sinh = function() .Call(wrap__RPolarsExpr__sinh, self)
+
+RPolarsExpr$cosh = function() .Call(wrap__RPolarsExpr__cosh, self)
+
+RPolarsExpr$tanh = function() .Call(wrap__RPolarsExpr__tanh, self)
+
+RPolarsExpr$arcsinh = function() .Call(wrap__RPolarsExpr__arcsinh, self)
+
+RPolarsExpr$arccosh = function() .Call(wrap__RPolarsExpr__arccosh, self)
+
+RPolarsExpr$arctanh = function() .Call(wrap__RPolarsExpr__arctanh, self)
+
+RPolarsExpr$reshape = function(dims) .Call(wrap__RPolarsExpr__reshape, self, dims)
+
+RPolarsExpr$shuffle = function(seed) .Call(wrap__RPolarsExpr__shuffle, self, seed)
+
+RPolarsExpr$sample_n = function(n, with_replacement, shuffle, seed) .Call(wrap__RPolarsExpr__sample_n, self, n, with_replacement, shuffle, seed)
+
+RPolarsExpr$sample_frac = function(frac, with_replacement, shuffle, seed) .Call(wrap__RPolarsExpr__sample_frac, self, frac, with_replacement, shuffle, seed)
+
+RPolarsExpr$ewm_mean = function(alpha, adjust, min_periods, ignore_nulls) .Call(wrap__RPolarsExpr__ewm_mean, self, alpha, adjust, min_periods, ignore_nulls)
+
+RPolarsExpr$ewm_std = function(alpha, adjust, bias, min_periods, ignore_nulls) .Call(wrap__RPolarsExpr__ewm_std, self, alpha, adjust, bias, min_periods, ignore_nulls)
+
+RPolarsExpr$ewm_var = function(alpha, adjust, bias, min_periods, ignore_nulls) .Call(wrap__RPolarsExpr__ewm_var, self, alpha, adjust, bias, min_periods, ignore_nulls)
+
+RPolarsExpr$extend_constant = function(value, n) .Call(wrap__RPolarsExpr__extend_constant, self, value, n)
+
+RPolarsExpr$rep = function(n, rechunk) .Call(wrap__RPolarsExpr__rep, self, n, rechunk)
+
+RPolarsExpr$value_counts = function(sort, parallel) .Call(wrap__RPolarsExpr__value_counts, self, sort, parallel)
+
+RPolarsExpr$unique_counts = function() .Call(wrap__RPolarsExpr__unique_counts, self)
+
+RPolarsExpr$entropy = function(base, normalize) .Call(wrap__RPolarsExpr__entropy, self, base, normalize)
+
+RPolarsExpr$cumulative_eval = function(expr, min_periods, parallel) .Call(wrap__RPolarsExpr__cumulative_eval, self, expr, min_periods, parallel)
+
+RPolarsExpr$implode = function() .Call(wrap__RPolarsExpr__implode, self)
+
+RPolarsExpr$shrink_dtype = function() .Call(wrap__RPolarsExpr__shrink_dtype, self)
+
+RPolarsExpr$peak_min = function() .Call(wrap__RPolarsExpr__peak_min, self)
+
+RPolarsExpr$peak_max = function() .Call(wrap__RPolarsExpr__peak_max, self)
+
+RPolarsExpr$list_lengths = function() .Call(wrap__RPolarsExpr__list_lengths, self)
+
+RPolarsExpr$list_contains = function(other) .Call(wrap__RPolarsExpr__list_contains, self, other)
+
+RPolarsExpr$list_max = function() .Call(wrap__RPolarsExpr__list_max, self)
+
+RPolarsExpr$list_min = function() .Call(wrap__RPolarsExpr__list_min, self)
+
+RPolarsExpr$list_sum = function() .Call(wrap__RPolarsExpr__list_sum, self)
+
+RPolarsExpr$list_mean = function() .Call(wrap__RPolarsExpr__list_mean, self)
+
+RPolarsExpr$list_sort = function(descending) .Call(wrap__RPolarsExpr__list_sort, self, descending)
+
+RPolarsExpr$list_reverse = function() .Call(wrap__RPolarsExpr__list_reverse, self)
+
+RPolarsExpr$list_unique = function() .Call(wrap__RPolarsExpr__list_unique, self)
+
+RPolarsExpr$list_gather = function(index, null_on_oob) .Call(wrap__RPolarsExpr__list_gather, self, index, null_on_oob)
+
+RPolarsExpr$list_get = function(index) .Call(wrap__RPolarsExpr__list_get, self, index)
+
+RPolarsExpr$list_join = function(separator) .Call(wrap__RPolarsExpr__list_join, self, separator)
+
+RPolarsExpr$list_arg_min = function() .Call(wrap__RPolarsExpr__list_arg_min, self)
+
+RPolarsExpr$list_arg_max = function() .Call(wrap__RPolarsExpr__list_arg_max, self)
+
+RPolarsExpr$list_diff = function(n, null_behavior) .Call(wrap__RPolarsExpr__list_diff, self, n, null_behavior)
+
+RPolarsExpr$list_shift = function(periods) .Call(wrap__RPolarsExpr__list_shift, self, periods)
+
+RPolarsExpr$list_slice = function(offset, length) .Call(wrap__RPolarsExpr__list_slice, self, offset, length)
+
+RPolarsExpr$list_eval = function(expr, parallel) .Call(wrap__RPolarsExpr__list_eval, self, expr, parallel)
+
+RPolarsExpr$list_to_struct = function(n_field_strategy, name_gen, upper_bound) .Call(wrap__RPolarsExpr__list_to_struct, self, n_field_strategy, name_gen, upper_bound)
+
+RPolarsExpr$str_to_date = function(format, strict, exact, cache) .Call(wrap__RPolarsExpr__str_to_date, self, format, strict, exact, cache)
+
+RPolarsExpr$str_to_datetime = function(format, time_unit, time_zone, strict, exact, cache, ambiguous) .Call(wrap__RPolarsExpr__str_to_datetime, self, format, time_unit, time_zone, strict, exact, cache, ambiguous)
+
+RPolarsExpr$str_to_time = function(format, strict, cache) .Call(wrap__RPolarsExpr__str_to_time, self, format, strict, cache)
+
+RPolarsExpr$dt_truncate = function(every, offset) .Call(wrap__RPolarsExpr__dt_truncate, self, every, offset)
+
+RPolarsExpr$dt_round = function(every, offset) .Call(wrap__RPolarsExpr__dt_round, self, every, offset)
+
+RPolarsExpr$dt_time = function() .Call(wrap__RPolarsExpr__dt_time, self)
+
+RPolarsExpr$dt_combine = function(time, tu) .Call(wrap__RPolarsExpr__dt_combine, self, time, tu)
+
+RPolarsExpr$dt_strftime = function(fmt) .Call(wrap__RPolarsExpr__dt_strftime, self, fmt)
+
+RPolarsExpr$dt_year = function() .Call(wrap__RPolarsExpr__dt_year, self)
+
+RPolarsExpr$dt_iso_year = function() .Call(wrap__RPolarsExpr__dt_iso_year, self)
+
+RPolarsExpr$dt_quarter = function() .Call(wrap__RPolarsExpr__dt_quarter, self)
+
+RPolarsExpr$dt_month = function() .Call(wrap__RPolarsExpr__dt_month, self)
+
+RPolarsExpr$dt_week = function() .Call(wrap__RPolarsExpr__dt_week, self)
+
+RPolarsExpr$dt_weekday = function() .Call(wrap__RPolarsExpr__dt_weekday, self)
+
+RPolarsExpr$dt_day = function() .Call(wrap__RPolarsExpr__dt_day, self)
+
+RPolarsExpr$dt_ordinal_day = function() .Call(wrap__RPolarsExpr__dt_ordinal_day, self)
+
+RPolarsExpr$dt_hour = function() .Call(wrap__RPolarsExpr__dt_hour, self)
+
+RPolarsExpr$dt_minute = function() .Call(wrap__RPolarsExpr__dt_minute, self)
+
+RPolarsExpr$dt_second = function() .Call(wrap__RPolarsExpr__dt_second, self)
+
+RPolarsExpr$dt_millisecond = function() .Call(wrap__RPolarsExpr__dt_millisecond, self)
+
+RPolarsExpr$dt_microsecond = function() .Call(wrap__RPolarsExpr__dt_microsecond, self)
+
+RPolarsExpr$dt_nanosecond = function() .Call(wrap__RPolarsExpr__dt_nanosecond, self)
+
+RPolarsExpr$timestamp = function(tu) .Call(wrap__RPolarsExpr__timestamp, self, tu)
+
+RPolarsExpr$dt_epoch_seconds = function() .Call(wrap__RPolarsExpr__dt_epoch_seconds, self)
+
+RPolarsExpr$dt_with_time_unit = function(tu) .Call(wrap__RPolarsExpr__dt_with_time_unit, self, tu)
+
+RPolarsExpr$dt_cast_time_unit = function(tu) .Call(wrap__RPolarsExpr__dt_cast_time_unit, self, tu)
+
+RPolarsExpr$dt_convert_time_zone = function(tz) .Call(wrap__RPolarsExpr__dt_convert_time_zone, self, tz)
+
+RPolarsExpr$dt_replace_time_zone = function(tz, ambiguous) .Call(wrap__RPolarsExpr__dt_replace_time_zone, self, tz, ambiguous)
+
+RPolarsExpr$dt_total_days = function() .Call(wrap__RPolarsExpr__dt_total_days, self)
+
+RPolarsExpr$dt_total_hours = function() .Call(wrap__RPolarsExpr__dt_total_hours, self)
+
+RPolarsExpr$dt_total_minutes = function() .Call(wrap__RPolarsExpr__dt_total_minutes, self)
+
+RPolarsExpr$dt_total_seconds = function() .Call(wrap__RPolarsExpr__dt_total_seconds, self)
+
+RPolarsExpr$dt_total_milliseconds = function() .Call(wrap__RPolarsExpr__dt_total_milliseconds, self)
+
+RPolarsExpr$dt_total_microseconds = function() .Call(wrap__RPolarsExpr__dt_total_microseconds, self)
+
+RPolarsExpr$dt_total_nanoseconds = function() .Call(wrap__RPolarsExpr__dt_total_nanoseconds, self)
+
+RPolarsExpr$dt_offset_by = function(by) .Call(wrap__RPolarsExpr__dt_offset_by, self, by)
+
+RPolarsExpr$repeat_by = function(by) .Call(wrap__RPolarsExpr__repeat_by, self, by)
+
+RPolarsExpr$log10 = function() .Call(wrap__RPolarsExpr__log10, self)
+
+RPolarsExpr$log = function(base) .Call(wrap__RPolarsExpr__log, self, base)
+
+RPolarsExpr$exp = function() .Call(wrap__RPolarsExpr__exp, self)
+
+RPolarsExpr$exclude = function(columns) .Call(wrap__RPolarsExpr__exclude, self, columns)
+
+RPolarsExpr$exclude_dtype = function(columns) .Call(wrap__RPolarsExpr__exclude_dtype, self, columns)
+
+RPolarsExpr$alias = function(s) .Call(wrap__RPolarsExpr__alias, self, s)
+
+RPolarsExpr$drop_nulls = function() .Call(wrap__RPolarsExpr__drop_nulls, self)
+
+RPolarsExpr$drop_nans = function() .Call(wrap__RPolarsExpr__drop_nans, self)
+
+RPolarsExpr$cum_sum = function(reverse) .Call(wrap__RPolarsExpr__cum_sum, self, reverse)
+
+RPolarsExpr$cum_prod = function(reverse) .Call(wrap__RPolarsExpr__cum_prod, self, reverse)
+
+RPolarsExpr$cum_min = function(reverse) .Call(wrap__RPolarsExpr__cum_min, self, reverse)
+
+RPolarsExpr$cum_max = function(reverse) .Call(wrap__RPolarsExpr__cum_max, self, reverse)
+
+RPolarsExpr$cum_count = function(reverse) .Call(wrap__RPolarsExpr__cum_count, self, reverse)
+
+RPolarsExpr$floor = function() .Call(wrap__RPolarsExpr__floor, self)
+
+RPolarsExpr$ceil = function() .Call(wrap__RPolarsExpr__ceil, self)
+
+RPolarsExpr$round = function(decimals) .Call(wrap__RPolarsExpr__round, self, decimals)
+
+RPolarsExpr$dot = function(other) .Call(wrap__RPolarsExpr__dot, self, other)
+
+RPolarsExpr$mode = function() .Call(wrap__RPolarsExpr__mode, self)
+
+RPolarsExpr$first = function() .Call(wrap__RPolarsExpr__first, self)
+
+RPolarsExpr$last = function() .Call(wrap__RPolarsExpr__last, self)
+
+RPolarsExpr$head = function(n) .Call(wrap__RPolarsExpr__head, self, n)
+
+RPolarsExpr$tail = function(n) .Call(wrap__RPolarsExpr__tail, self, n)
+
+RPolarsExpr$unique = function() .Call(wrap__RPolarsExpr__unique, self)
+
+RPolarsExpr$unique_stable = function() .Call(wrap__RPolarsExpr__unique_stable, self)
+
+RPolarsExpr$agg_groups = function() .Call(wrap__RPolarsExpr__agg_groups, self)
+
+RPolarsExpr$all = function(drop_nulls) .Call(wrap__RPolarsExpr__all, self, drop_nulls)
+
+RPolarsExpr$any = function(drop_nulls) .Call(wrap__RPolarsExpr__any, self, drop_nulls)
+
+RPolarsExpr$is_duplicated = function() .Call(wrap__RPolarsExpr__is_duplicated, self)
+
+RPolarsExpr$is_finite = function() .Call(wrap__RPolarsExpr__is_finite, self)
+
+RPolarsExpr$is_first_distinct = function() .Call(wrap__RPolarsExpr__is_first_distinct, self)
+
+RPolarsExpr$is_in = function(other) .Call(wrap__RPolarsExpr__is_in, self, other)
+
+RPolarsExpr$is_infinite = function() .Call(wrap__RPolarsExpr__is_infinite, self)
+
+RPolarsExpr$is_last_distinct = function() .Call(wrap__RPolarsExpr__is_last_distinct, self)
+
+RPolarsExpr$is_nan = function() .Call(wrap__RPolarsExpr__is_nan, self)
+
+RPolarsExpr$is_not_null = function() .Call(wrap__RPolarsExpr__is_not_null, self)
+
+RPolarsExpr$is_not_nan = function() .Call(wrap__RPolarsExpr__is_not_nan, self)
+
+RPolarsExpr$is_null = function() .Call(wrap__RPolarsExpr__is_null, self)
+
+RPolarsExpr$is_unique = function() .Call(wrap__RPolarsExpr__is_unique, self)
+
+RPolarsExpr$not = function() .Call(wrap__RPolarsExpr__not, self)
+
+RPolarsExpr$count = function() .Call(wrap__RPolarsExpr__count, self)
+
+RPolarsExpr$len = function() .Call(wrap__RPolarsExpr__len, self)
+
+RPolarsExpr$slice = function(offset, length) .Call(wrap__RPolarsExpr__slice, self, offset, length)
+
+RPolarsExpr$append = function(other, upcast) .Call(wrap__RPolarsExpr__append, self, other, upcast)
+
+RPolarsExpr$rechunk = function() .Call(wrap__RPolarsExpr__rechunk, self)
+
+RPolarsExpr$add = function(other) .Call(wrap__RPolarsExpr__add, self, other)
+
+RPolarsExpr$floor_div = function(other) .Call(wrap__RPolarsExpr__floor_div, self, other)
+
+RPolarsExpr$rem = function(other) .Call(wrap__RPolarsExpr__rem, self, other)
+
+RPolarsExpr$mul = function(other) .Call(wrap__RPolarsExpr__mul, self, other)
+
+RPolarsExpr$sub = function(other) .Call(wrap__RPolarsExpr__sub, self, other)
+
+RPolarsExpr$div = function(other) .Call(wrap__RPolarsExpr__div, self, other)
+
+RPolarsExpr$pow = function(exponent) .Call(wrap__RPolarsExpr__pow, self, exponent)
+
+RPolarsExpr$over = function(proto_exprs) .Call(wrap__RPolarsExpr__over, self, proto_exprs)
+
+RPolarsExpr$print = function() invisible(.Call(wrap__RPolarsExpr__print, self))
+
+RPolarsExpr$map_batches = function(lambda, output_type, agg_list) .Call(wrap__RPolarsExpr__map_batches, self, lambda, output_type, agg_list)
+
+RPolarsExpr$map_batches_in_background = function(lambda, output_type, agg_list) .Call(wrap__RPolarsExpr__map_batches_in_background, self, lambda, output_type, agg_list)
+
+RPolarsExpr$map_elements_in_background = function(lambda, output_type) .Call(wrap__RPolarsExpr__map_elements_in_background, self, lambda, output_type)
+
+RPolarsExpr$approx_n_unique = function() .Call(wrap__RPolarsExpr__approx_n_unique, self)
+
+RPolarsExpr$name_keep = function() .Call(wrap__RPolarsExpr__name_keep, self)
+
+RPolarsExpr$name_suffix = function(suffix) .Call(wrap__RPolarsExpr__name_suffix, self, suffix)
+
+RPolarsExpr$name_prefix = function(prefix) .Call(wrap__RPolarsExpr__name_prefix, self, prefix)
+
+RPolarsExpr$name_to_lowercase = function() .Call(wrap__RPolarsExpr__name_to_lowercase, self)
+
+RPolarsExpr$name_to_uppercase = function() .Call(wrap__RPolarsExpr__name_to_uppercase, self)
+
+RPolarsExpr$name_map = function(lambda) .Call(wrap__RPolarsExpr__name_map, self, lambda)
+
+RPolarsExpr$str_len_bytes = function() .Call(wrap__RPolarsExpr__str_len_bytes, self)
+
+RPolarsExpr$str_len_chars = function() .Call(wrap__RPolarsExpr__str_len_chars, self)
+
+RPolarsExpr$str_concat = function(delimiter, ignore_nulls) .Call(wrap__RPolarsExpr__str_concat, self, delimiter, ignore_nulls)
+
+RPolarsExpr$str_to_uppercase = function() .Call(wrap__RPolarsExpr__str_to_uppercase, self)
+
+RPolarsExpr$str_to_lowercase = function() .Call(wrap__RPolarsExpr__str_to_lowercase, self)
+
+RPolarsExpr$str_to_titlecase = function() .Call(wrap__RPolarsExpr__str_to_titlecase, self)
+
+RPolarsExpr$str_strip_chars = function(matches) .Call(wrap__RPolarsExpr__str_strip_chars, self, matches)
+
+RPolarsExpr$str_strip_chars_end = function(matches) .Call(wrap__RPolarsExpr__str_strip_chars_end, self, matches)
+
+RPolarsExpr$str_strip_chars_start = function(matches) .Call(wrap__RPolarsExpr__str_strip_chars_start, self, matches)
+
+RPolarsExpr$str_zfill = function(alignment) .Call(wrap__RPolarsExpr__str_zfill, self, alignment)
+
+RPolarsExpr$str_pad_end = function(width, fillchar) .Call(wrap__RPolarsExpr__str_pad_end, self, width, fillchar)
+
+RPolarsExpr$str_pad_start = function(width, fillchar) .Call(wrap__RPolarsExpr__str_pad_start, self, width, fillchar)
+
+RPolarsExpr$str_contains = function(pat, literal, strict) .Call(wrap__RPolarsExpr__str_contains, self, pat, literal, strict)
+
+RPolarsExpr$str_ends_with = function(sub) .Call(wrap__RPolarsExpr__str_ends_with, self, sub)
+
+RPolarsExpr$str_starts_with = function(sub) .Call(wrap__RPolarsExpr__str_starts_with, self, sub)
+
+RPolarsExpr$str_json_path_match = function(pat) .Call(wrap__RPolarsExpr__str_json_path_match, self, pat)
+
+RPolarsExpr$str_json_extract = function(dtype, infer_schema_len) .Call(wrap__RPolarsExpr__str_json_extract, self, dtype, infer_schema_len)
+
+RPolarsExpr$str_hex_encode = function() .Call(wrap__RPolarsExpr__str_hex_encode, self)
+
+RPolarsExpr$str_hex_decode = function(strict) .Call(wrap__RPolarsExpr__str_hex_decode, self, strict)
+
+RPolarsExpr$str_base64_encode = function() .Call(wrap__RPolarsExpr__str_base64_encode, self)
+
+RPolarsExpr$str_base64_decode = function(strict) .Call(wrap__RPolarsExpr__str_base64_decode, self, strict)
+
+RPolarsExpr$str_extract = function(pattern, group_index) .Call(wrap__RPolarsExpr__str_extract, self, pattern, group_index)
+
+RPolarsExpr$str_extract_all = function(pattern) .Call(wrap__RPolarsExpr__str_extract_all, self, pattern)
+
+RPolarsExpr$str_count_matches = function(pattern, literal) .Call(wrap__RPolarsExpr__str_count_matches, self, pattern, literal)
+
+RPolarsExpr$str_split = function(by, inclusive) .Call(wrap__RPolarsExpr__str_split, self, by, inclusive)
+
+RPolarsExpr$str_split_exact = function(by, n, inclusive) .Call(wrap__RPolarsExpr__str_split_exact, self, by, n, inclusive)
+
+RPolarsExpr$str_splitn = function(by, n) .Call(wrap__RPolarsExpr__str_splitn, self, by, n)
+
+RPolarsExpr$str_replace = function(pattern, value, literal) .Call(wrap__RPolarsExpr__str_replace, self, pattern, value, literal)
+
+RPolarsExpr$str_replace_all = function(pattern, value, literal) .Call(wrap__RPolarsExpr__str_replace_all, self, pattern, value, literal)
+
+RPolarsExpr$str_slice = function(offset, length) .Call(wrap__RPolarsExpr__str_slice, self, offset, length)
+
+RPolarsExpr$str_explode = function() .Call(wrap__RPolarsExpr__str_explode, self)
+
+RPolarsExpr$str_parse_int = function(radix, strict) .Call(wrap__RPolarsExpr__str_parse_int, self, radix, strict)
+
+RPolarsExpr$bin_contains = function(lit) .Call(wrap__RPolarsExpr__bin_contains, self, lit)
+
+RPolarsExpr$bin_starts_with = function(sub) .Call(wrap__RPolarsExpr__bin_starts_with, self, sub)
+
+RPolarsExpr$bin_ends_with = function(sub) .Call(wrap__RPolarsExpr__bin_ends_with, self, sub)
+
+RPolarsExpr$bin_encode_hex = function() .Call(wrap__RPolarsExpr__bin_encode_hex, self)
+
+RPolarsExpr$bin_encode_base64 = function() .Call(wrap__RPolarsExpr__bin_encode_base64, self)
+
+RPolarsExpr$bin_decode_hex = function(strict) .Call(wrap__RPolarsExpr__bin_decode_hex, self, strict)
+
+RPolarsExpr$bin_decode_base64 = function(strict) .Call(wrap__RPolarsExpr__bin_decode_base64, self, strict)
+
+RPolarsExpr$struct_field_by_name = function(name) .Call(wrap__RPolarsExpr__struct_field_by_name, self, name)
+
+RPolarsExpr$struct_rename_fields = function(names) .Call(wrap__RPolarsExpr__struct_rename_fields, self, names)
+
+RPolarsExpr$meta_pop = function() .Call(wrap__RPolarsExpr__meta_pop, self)
+
+RPolarsExpr$meta_eq = function(other) .Call(wrap__RPolarsExpr__meta_eq, self, other)
+
+RPolarsExpr$meta_roots = function() .Call(wrap__RPolarsExpr__meta_roots, self)
+
+RPolarsExpr$meta_output_name = function() .Call(wrap__RPolarsExpr__meta_output_name, self)
+
+RPolarsExpr$meta_undo_aliases = function() .Call(wrap__RPolarsExpr__meta_undo_aliases, self)
+
+RPolarsExpr$meta_has_multiple_outputs = function() .Call(wrap__RPolarsExpr__meta_has_multiple_outputs, self)
+
+RPolarsExpr$meta_is_regex_projection = function() .Call(wrap__RPolarsExpr__meta_is_regex_projection, self)
+
+RPolarsExpr$meta_tree_format = function() .Call(wrap__RPolarsExpr__meta_tree_format, self)
+
+RPolarsExpr$cat_set_ordering = function(ordering) .Call(wrap__RPolarsExpr__cat_set_ordering, self, ordering)
+
+RPolarsExpr$cat_get_categories = function() .Call(wrap__RPolarsExpr__cat_get_categories, self)
+
+RPolarsExpr$new_count = function() .Call(wrap__RPolarsExpr__new_count)
+
+RPolarsExpr$new_first = function() .Call(wrap__RPolarsExpr__new_first)
+
+RPolarsExpr$new_last = function() .Call(wrap__RPolarsExpr__new_last)
+
+RPolarsExpr$cov = function(a, b, ddof) .Call(wrap__RPolarsExpr__cov, a, b, ddof)
+
+RPolarsExpr$rolling_cov = function(a, b, window_size, min_periods, ddof) .Call(wrap__RPolarsExpr__rolling_cov, a, b, window_size, min_periods, ddof)
+
+RPolarsExpr$corr = function(a, b, method, ddof, propagate_nans) .Call(wrap__RPolarsExpr__corr, a, b, method, ddof, propagate_nans)
+
+RPolarsExpr$rolling_corr = function(a, b, window_size, min_periods, ddof) .Call(wrap__RPolarsExpr__rolling_corr, a, b, window_size, min_periods, ddof)
+
+RPolarsExpr$rolling = function(index_column, period, offset, closed, check_sorted) .Call(wrap__RPolarsExpr__rolling, self, index_column, period, offset, closed, check_sorted)
 
 #' @export
-`$.RPolarsProtoExprArray` <- function (self, name) { func <- RPolarsProtoExprArray[[name]]; environment(func) <- environment(); func }
+`$.RPolarsExpr` = function(self, name) {
+  func = RPolarsExpr[[name]]
+  environment(func) = environment()
+  func
+}
 
 #' @export
-`[[.RPolarsProtoExprArray` <- `$.RPolarsProtoExprArray`
+`[[.RPolarsExpr` = `$.RPolarsExpr`
 
-RPolarsLazyFrame <- new.env(parent = emptyenv())
+RPolarsProtoExprArray = new.env(parent = emptyenv())
 
-RPolarsLazyFrame$print <- function() .Call(wrap__RPolarsLazyFrame__print, self)
+RPolarsProtoExprArray$new = function() .Call(wrap__RPolarsProtoExprArray__new)
 
-RPolarsLazyFrame$describe_plan <- function() invisible(.Call(wrap__RPolarsLazyFrame__describe_plan, self))
+RPolarsProtoExprArray$push_back_str = function(s) invisible(.Call(wrap__RPolarsProtoExprArray__push_back_str, self, s))
 
-RPolarsLazyFrame$debug_plan <- function() .Call(wrap__RPolarsLazyFrame__debug_plan, self)
+RPolarsProtoExprArray$push_back_rexpr = function(r) invisible(.Call(wrap__RPolarsProtoExprArray__push_back_rexpr, self, r))
 
-RPolarsLazyFrame$describe_optimized_plan <- function() .Call(wrap__RPolarsLazyFrame__describe_optimized_plan, self)
-
-RPolarsLazyFrame$collect <- function() .Call(wrap__RPolarsLazyFrame__collect, self)
-
-RPolarsLazyFrame$collect_in_background <- function() .Call(wrap__RPolarsLazyFrame__collect_in_background, self)
-
-RPolarsLazyFrame$sink_parquet <- function(path, compression_method, compression_level, statistics, row_group_size, data_pagesize_limit, maintain_order) .Call(wrap__RPolarsLazyFrame__sink_parquet, self, path, compression_method, compression_level, statistics, row_group_size, data_pagesize_limit, maintain_order)
-
-RPolarsLazyFrame$sink_ipc <- function(path, compression_method, maintain_order) .Call(wrap__RPolarsLazyFrame__sink_ipc, self, path, compression_method, maintain_order)
-
-RPolarsLazyFrame$sink_csv <- function(path, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style, maintain_order) .Call(wrap__RPolarsLazyFrame__sink_csv, self, path, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style, maintain_order)
-
-RPolarsLazyFrame$first <- function() .Call(wrap__RPolarsLazyFrame__first, self)
-
-RPolarsLazyFrame$last <- function() .Call(wrap__RPolarsLazyFrame__last, self)
-
-RPolarsLazyFrame$max <- function() .Call(wrap__RPolarsLazyFrame__max, self)
-
-RPolarsLazyFrame$min <- function() .Call(wrap__RPolarsLazyFrame__min, self)
-
-RPolarsLazyFrame$mean <- function() .Call(wrap__RPolarsLazyFrame__mean, self)
-
-RPolarsLazyFrame$median <- function() .Call(wrap__RPolarsLazyFrame__median, self)
-
-RPolarsLazyFrame$sum <- function() .Call(wrap__RPolarsLazyFrame__sum, self)
-
-RPolarsLazyFrame$std <- function(ddof) .Call(wrap__RPolarsLazyFrame__std, self, ddof)
-
-RPolarsLazyFrame$var <- function(ddof) .Call(wrap__RPolarsLazyFrame__var, self, ddof)
-
-RPolarsLazyFrame$quantile <- function(quantile, interpolation) .Call(wrap__RPolarsLazyFrame__quantile, self, quantile, interpolation)
-
-RPolarsLazyFrame$shift <- function(periods) .Call(wrap__RPolarsLazyFrame__shift, self, periods)
-
-RPolarsLazyFrame$shift_and_fill <- function(fill_value, periods) .Call(wrap__RPolarsLazyFrame__shift_and_fill, self, fill_value, periods)
-
-RPolarsLazyFrame$reverse <- function() .Call(wrap__RPolarsLazyFrame__reverse, self)
-
-RPolarsLazyFrame$drop <- function(columns) .Call(wrap__RPolarsLazyFrame__drop, self, columns)
-
-RPolarsLazyFrame$fill_nan <- function(fill_value) .Call(wrap__RPolarsLazyFrame__fill_nan, self, fill_value)
-
-RPolarsLazyFrame$fill_null <- function(fill_value) .Call(wrap__RPolarsLazyFrame__fill_null, self, fill_value)
-
-RPolarsLazyFrame$slice <- function(offset, length) .Call(wrap__RPolarsLazyFrame__slice, self, offset, length)
-
-RPolarsLazyFrame$with_columns <- function(exprs) .Call(wrap__RPolarsLazyFrame__with_columns, self, exprs)
-
-RPolarsLazyFrame$unnest <- function(names) .Call(wrap__RPolarsLazyFrame__unnest, self, names)
-
-RPolarsLazyFrame$select <- function(exprs) .Call(wrap__RPolarsLazyFrame__select, self, exprs)
-
-RPolarsLazyFrame$select_str_as_lit <- function(exprs) .Call(wrap__RPolarsLazyFrame__select_str_as_lit, self, exprs)
-
-RPolarsLazyFrame$limit <- function(n) .Call(wrap__RPolarsLazyFrame__limit, self, n)
-
-RPolarsLazyFrame$tail <- function(n) .Call(wrap__RPolarsLazyFrame__tail, self, n)
-
-RPolarsLazyFrame$filter <- function(expr) .Call(wrap__RPolarsLazyFrame__filter, self, expr)
-
-RPolarsLazyFrame$drop_nulls <- function(subset) .Call(wrap__RPolarsLazyFrame__drop_nulls, self, subset)
-
-RPolarsLazyFrame$unique <- function(subset, keep, maintain_order) .Call(wrap__RPolarsLazyFrame__unique, self, subset, keep, maintain_order)
-
-RPolarsLazyFrame$group_by <- function(exprs, maintain_order) .Call(wrap__RPolarsLazyFrame__group_by, self, exprs, maintain_order)
-
-RPolarsLazyFrame$with_row_count <- function(name, offset) .Call(wrap__RPolarsLazyFrame__with_row_count, self, name, offset)
-
-RPolarsLazyFrame$join_asof <- function(other, left_on, right_on, left_by, right_by, allow_parallel, force_parallel, suffix, strategy, tolerance, tolerance_str) .Call(wrap__RPolarsLazyFrame__join_asof, self, other, left_on, right_on, left_by, right_by, allow_parallel, force_parallel, suffix, strategy, tolerance, tolerance_str)
-
-RPolarsLazyFrame$join <- function(other, left_on, right_on, how, suffix, allow_parallel, force_parallel) .Call(wrap__RPolarsLazyFrame__join, self, other, left_on, right_on, how, suffix, allow_parallel, force_parallel)
-
-RPolarsLazyFrame$sort_by_exprs <- function(by, dotdotdot, descending, nulls_last, maintain_order) .Call(wrap__RPolarsLazyFrame__sort_by_exprs, self, by, dotdotdot, descending, nulls_last, maintain_order)
-
-RPolarsLazyFrame$melt <- function(id_vars, value_vars, value_name, variable_name, streamable) .Call(wrap__RPolarsLazyFrame__melt, self, id_vars, value_vars, value_name, variable_name, streamable)
-
-RPolarsLazyFrame$rename <- function(existing, new) .Call(wrap__RPolarsLazyFrame__rename, self, existing, new)
-
-RPolarsLazyFrame$schema <- function() .Call(wrap__RPolarsLazyFrame__schema, self)
-
-RPolarsLazyFrame$fetch <- function(n_rows) .Call(wrap__RPolarsLazyFrame__fetch, self, n_rows)
-
-RPolarsLazyFrame$set_optimization_toggle <- function(type_coercion, predicate_pushdown, projection_pushdown, simplify_expression, slice_pushdown, comm_subplan_elim, comm_subexpr_elim, streaming, eager) .Call(wrap__RPolarsLazyFrame__set_optimization_toggle, self, type_coercion, predicate_pushdown, projection_pushdown, simplify_expression, slice_pushdown, comm_subplan_elim, comm_subexpr_elim, streaming, eager)
-
-RPolarsLazyFrame$get_optimization_toggle <- function() .Call(wrap__RPolarsLazyFrame__get_optimization_toggle, self)
-
-RPolarsLazyFrame$profile <- function() .Call(wrap__RPolarsLazyFrame__profile, self)
-
-RPolarsLazyFrame$explode <- function(dotdotdot) .Call(wrap__RPolarsLazyFrame__explode, self, dotdotdot)
-
-RPolarsLazyFrame$clone_in_rust <- function() .Call(wrap__RPolarsLazyFrame__clone_in_rust, self)
-
-RPolarsLazyFrame$with_context <- function(contexts) .Call(wrap__RPolarsLazyFrame__with_context, self, contexts)
+RPolarsProtoExprArray$print = function() invisible(.Call(wrap__RPolarsProtoExprArray__print, self))
 
 #' @export
-`$.RPolarsLazyFrame` <- function (self, name) { func <- RPolarsLazyFrame[[name]]; environment(func) <- environment(); func }
+`$.RPolarsProtoExprArray` = function(self, name) {
+  func = RPolarsProtoExprArray[[name]]
+  environment(func) = environment()
+  func
+}
 
 #' @export
-`[[.RPolarsLazyFrame` <- `$.RPolarsLazyFrame`
+`[[.RPolarsProtoExprArray` = `$.RPolarsProtoExprArray`
 
-RPolarsLazyGroupBy <- new.env(parent = emptyenv())
+RPolarsLazyFrame = new.env(parent = emptyenv())
 
-RPolarsLazyGroupBy$print <- function() invisible(.Call(wrap__RPolarsLazyGroupBy__print, self))
+RPolarsLazyFrame$print = function() .Call(wrap__RPolarsLazyFrame__print, self)
 
-RPolarsLazyGroupBy$clone_in_rust <- function() .Call(wrap__RPolarsLazyGroupBy__clone_in_rust, self)
+RPolarsLazyFrame$describe_plan = function() invisible(.Call(wrap__RPolarsLazyFrame__describe_plan, self))
 
-RPolarsLazyGroupBy$ungroup <- function() .Call(wrap__RPolarsLazyGroupBy__ungroup, self)
+RPolarsLazyFrame$debug_plan = function() .Call(wrap__RPolarsLazyFrame__debug_plan, self)
 
-RPolarsLazyGroupBy$agg <- function(exprs) .Call(wrap__RPolarsLazyGroupBy__agg, self, exprs)
+RPolarsLazyFrame$describe_optimized_plan = function() .Call(wrap__RPolarsLazyFrame__describe_optimized_plan, self)
 
-RPolarsLazyGroupBy$head <- function(n) .Call(wrap__RPolarsLazyGroupBy__head, self, n)
+RPolarsLazyFrame$collect = function() .Call(wrap__RPolarsLazyFrame__collect, self)
 
-RPolarsLazyGroupBy$tail <- function(n) .Call(wrap__RPolarsLazyGroupBy__tail, self, n)
+RPolarsLazyFrame$collect_in_background = function() .Call(wrap__RPolarsLazyFrame__collect_in_background, self)
 
-#' @export
-`$.RPolarsLazyGroupBy` <- function (self, name) { func <- RPolarsLazyGroupBy[[name]]; environment(func) <- environment(); func }
+RPolarsLazyFrame$sink_parquet = function(path, compression_method, compression_level, statistics, row_group_size, data_pagesize_limit, maintain_order) .Call(wrap__RPolarsLazyFrame__sink_parquet, self, path, compression_method, compression_level, statistics, row_group_size, data_pagesize_limit, maintain_order)
 
-#' @export
-`[[.RPolarsLazyGroupBy` <- `$.RPolarsLazyGroupBy`
+RPolarsLazyFrame$sink_ipc = function(path, compression_method, maintain_order) .Call(wrap__RPolarsLazyFrame__sink_ipc, self, path, compression_method, maintain_order)
 
-RPolarsSeries <- new.env(parent = emptyenv())
+RPolarsLazyFrame$sink_csv = function(path, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style, maintain_order) .Call(wrap__RPolarsLazyFrame__sink_csv, self, path, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style, maintain_order)
 
-RPolarsSeries$new <- function(x, name) .Call(wrap__RPolarsSeries__new, x, name)
+RPolarsLazyFrame$first = function() .Call(wrap__RPolarsLazyFrame__first, self)
 
-RPolarsSeries$clone <- function() .Call(wrap__RPolarsSeries__clone, self)
+RPolarsLazyFrame$last = function() .Call(wrap__RPolarsLazyFrame__last, self)
 
-RPolarsSeries$sleep <- function(millis) .Call(wrap__RPolarsSeries__sleep, self, millis)
+RPolarsLazyFrame$max = function() .Call(wrap__RPolarsLazyFrame__max, self)
 
-RPolarsSeries$panic <- function() .Call(wrap__RPolarsSeries__panic, self)
+RPolarsLazyFrame$min = function() .Call(wrap__RPolarsLazyFrame__min, self)
 
-RPolarsSeries$to_r <- function() .Call(wrap__RPolarsSeries__to_r, self)
+RPolarsLazyFrame$mean = function() .Call(wrap__RPolarsLazyFrame__mean, self)
 
-RPolarsSeries$rename_mut <- function(name) invisible(.Call(wrap__RPolarsSeries__rename_mut, self, name))
+RPolarsLazyFrame$median = function() .Call(wrap__RPolarsLazyFrame__median, self)
 
-RPolarsSeries$dtype <- function() .Call(wrap__RPolarsSeries__dtype, self)
+RPolarsLazyFrame$sum = function() .Call(wrap__RPolarsLazyFrame__sum, self)
 
-RPolarsSeries$n_unique <- function() .Call(wrap__RPolarsSeries__n_unique, self)
+RPolarsLazyFrame$std = function(ddof) .Call(wrap__RPolarsLazyFrame__std, self, ddof)
 
-RPolarsSeries$name <- function() .Call(wrap__RPolarsSeries__name, self)
+RPolarsLazyFrame$var = function(ddof) .Call(wrap__RPolarsLazyFrame__var, self, ddof)
 
-RPolarsSeries$sort_mut <- function(descending) .Call(wrap__RPolarsSeries__sort_mut, self, descending)
+RPolarsLazyFrame$quantile = function(quantile, interpolation) .Call(wrap__RPolarsLazyFrame__quantile, self, quantile, interpolation)
 
-RPolarsSeries$value_counts <- function(sort, parallel) .Call(wrap__RPolarsSeries__value_counts, self, sort, parallel)
+RPolarsLazyFrame$shift = function(periods) .Call(wrap__RPolarsLazyFrame__shift, self, periods)
 
-RPolarsSeries$arg_min <- function() .Call(wrap__RPolarsSeries__arg_min, self)
+RPolarsLazyFrame$shift_and_fill = function(fill_value, periods) .Call(wrap__RPolarsLazyFrame__shift_and_fill, self, fill_value, periods)
 
-RPolarsSeries$arg_max <- function() .Call(wrap__RPolarsSeries__arg_max, self)
+RPolarsLazyFrame$reverse = function() .Call(wrap__RPolarsLazyFrame__reverse, self)
 
-RPolarsSeries$is_sorted_flag <- function() .Call(wrap__RPolarsSeries__is_sorted_flag, self)
+RPolarsLazyFrame$drop = function(columns) .Call(wrap__RPolarsLazyFrame__drop, self, columns)
 
-RPolarsSeries$is_sorted_reverse_flag <- function() .Call(wrap__RPolarsSeries__is_sorted_reverse_flag, self)
+RPolarsLazyFrame$fill_nan = function(fill_value) .Call(wrap__RPolarsLazyFrame__fill_nan, self, fill_value)
 
-RPolarsSeries$is_sorted <- function(descending) .Call(wrap__RPolarsSeries__is_sorted, self, descending)
+RPolarsLazyFrame$fill_null = function(fill_value) .Call(wrap__RPolarsLazyFrame__fill_null, self, fill_value)
 
-RPolarsSeries$series_equal <- function(other, null_equal, strict) .Call(wrap__RPolarsSeries__series_equal, self, other, null_equal, strict)
+RPolarsLazyFrame$slice = function(offset, length) .Call(wrap__RPolarsLazyFrame__slice, self, offset, length)
 
-RPolarsSeries$get_fmt <- function(index, str_length) .Call(wrap__RPolarsSeries__get_fmt, self, index, str_length)
+RPolarsLazyFrame$with_columns = function(exprs) .Call(wrap__RPolarsLazyFrame__with_columns, self, exprs)
 
-RPolarsSeries$to_fmt_char <- function(str_length) .Call(wrap__RPolarsSeries__to_fmt_char, self, str_length)
+RPolarsLazyFrame$unnest = function(names) .Call(wrap__RPolarsLazyFrame__unnest, self, names)
 
-RPolarsSeries$compare <- function(other, op) .Call(wrap__RPolarsSeries__compare, self, other, op)
+RPolarsLazyFrame$select = function(exprs) .Call(wrap__RPolarsLazyFrame__select, self, exprs)
 
-RPolarsSeries$rep <- function(n, rechunk) .Call(wrap__RPolarsSeries__rep, self, n, rechunk)
+RPolarsLazyFrame$select_str_as_lit = function(exprs) .Call(wrap__RPolarsLazyFrame__select_str_as_lit, self, exprs)
 
-RPolarsSeries$shape <- function() .Call(wrap__RPolarsSeries__shape, self)
+RPolarsLazyFrame$limit = function(n) .Call(wrap__RPolarsLazyFrame__limit, self, n)
 
-RPolarsSeries$len <- function() .Call(wrap__RPolarsSeries__len, self)
+RPolarsLazyFrame$tail = function(n) .Call(wrap__RPolarsLazyFrame__tail, self, n)
 
-RPolarsSeries$chunk_lengths <- function() .Call(wrap__RPolarsSeries__chunk_lengths, self)
+RPolarsLazyFrame$filter = function(expr) .Call(wrap__RPolarsLazyFrame__filter, self, expr)
 
-RPolarsSeries$abs <- function() .Call(wrap__RPolarsSeries__abs, self)
+RPolarsLazyFrame$drop_nulls = function(subset) .Call(wrap__RPolarsLazyFrame__drop_nulls, self, subset)
 
-RPolarsSeries$alias <- function(name) .Call(wrap__RPolarsSeries__alias, self, name)
+RPolarsLazyFrame$unique = function(subset, keep, maintain_order) .Call(wrap__RPolarsLazyFrame__unique, self, subset, keep, maintain_order)
 
-RPolarsSeries$all <- function() .Call(wrap__RPolarsSeries__all, self)
+RPolarsLazyFrame$group_by = function(exprs, maintain_order) .Call(wrap__RPolarsLazyFrame__group_by, self, exprs, maintain_order)
 
-RPolarsSeries$any <- function() .Call(wrap__RPolarsSeries__any, self)
+RPolarsLazyFrame$with_row_count = function(name, offset) .Call(wrap__RPolarsLazyFrame__with_row_count, self, name, offset)
 
-RPolarsSeries$add <- function(other) .Call(wrap__RPolarsSeries__add, self, other)
+RPolarsLazyFrame$join_asof = function(other, left_on, right_on, left_by, right_by, allow_parallel, force_parallel, suffix, strategy, tolerance, tolerance_str) .Call(wrap__RPolarsLazyFrame__join_asof, self, other, left_on, right_on, left_by, right_by, allow_parallel, force_parallel, suffix, strategy, tolerance, tolerance_str)
 
-RPolarsSeries$sub <- function(other) .Call(wrap__RPolarsSeries__sub, self, other)
+RPolarsLazyFrame$join = function(other, left_on, right_on, how, suffix, allow_parallel, force_parallel) .Call(wrap__RPolarsLazyFrame__join, self, other, left_on, right_on, how, suffix, allow_parallel, force_parallel)
 
-RPolarsSeries$mul <- function(other) .Call(wrap__RPolarsSeries__mul, self, other)
+RPolarsLazyFrame$sort_by_exprs = function(by, dotdotdot, descending, nulls_last, maintain_order) .Call(wrap__RPolarsLazyFrame__sort_by_exprs, self, by, dotdotdot, descending, nulls_last, maintain_order)
 
-RPolarsSeries$div <- function(other) .Call(wrap__RPolarsSeries__div, self, other)
+RPolarsLazyFrame$melt = function(id_vars, value_vars, value_name, variable_name, streamable) .Call(wrap__RPolarsLazyFrame__melt, self, id_vars, value_vars, value_name, variable_name, streamable)
 
-RPolarsSeries$rem <- function(other) .Call(wrap__RPolarsSeries__rem, self, other)
+RPolarsLazyFrame$rename = function(existing, new) .Call(wrap__RPolarsLazyFrame__rename, self, existing, new)
 
-RPolarsSeries$append_mut <- function(other) .Call(wrap__RPolarsSeries__append_mut, self, other)
+RPolarsLazyFrame$schema = function() .Call(wrap__RPolarsLazyFrame__schema, self)
 
-RPolarsSeries$map_elements <- function(robj, rdatatype, strict, allow_fail_eval) .Call(wrap__RPolarsSeries__map_elements, self, robj, rdatatype, strict, allow_fail_eval)
+RPolarsLazyFrame$fetch = function(n_rows) .Call(wrap__RPolarsLazyFrame__fetch, self, n_rows)
 
-RPolarsSeries$mean <- function() .Call(wrap__RPolarsSeries__mean, self)
+RPolarsLazyFrame$set_optimization_toggle = function(type_coercion, predicate_pushdown, projection_pushdown, simplify_expression, slice_pushdown, comm_subplan_elim, comm_subexpr_elim, streaming, eager) .Call(wrap__RPolarsLazyFrame__set_optimization_toggle, self, type_coercion, predicate_pushdown, projection_pushdown, simplify_expression, slice_pushdown, comm_subplan_elim, comm_subexpr_elim, streaming, eager)
 
-RPolarsSeries$median <- function() .Call(wrap__RPolarsSeries__median, self)
+RPolarsLazyFrame$get_optimization_toggle = function() .Call(wrap__RPolarsLazyFrame__get_optimization_toggle, self)
 
-RPolarsSeries$min <- function() .Call(wrap__RPolarsSeries__min, self)
+RPolarsLazyFrame$profile = function() .Call(wrap__RPolarsLazyFrame__profile, self)
 
-RPolarsSeries$max <- function() .Call(wrap__RPolarsSeries__max, self)
+RPolarsLazyFrame$explode = function(dotdotdot) .Call(wrap__RPolarsLazyFrame__explode, self, dotdotdot)
 
-RPolarsSeries$sum <- function() .Call(wrap__RPolarsSeries__sum, self)
+RPolarsLazyFrame$clone_in_rust = function() .Call(wrap__RPolarsLazyFrame__clone_in_rust, self)
 
-RPolarsSeries$std <- function(ddof) .Call(wrap__RPolarsSeries__std, self, ddof)
-
-RPolarsSeries$var <- function(ddof) .Call(wrap__RPolarsSeries__var, self, ddof)
-
-RPolarsSeries$ceil <- function() .Call(wrap__RPolarsSeries__ceil, self)
-
-RPolarsSeries$floor <- function() .Call(wrap__RPolarsSeries__floor, self)
-
-RPolarsSeries$print <- function() invisible(.Call(wrap__RPolarsSeries__print, self))
-
-RPolarsSeries$cum_sum <- function(reverse) .Call(wrap__RPolarsSeries__cum_sum, self, reverse)
-
-RPolarsSeries$to_frame <- function() .Call(wrap__RPolarsSeries__to_frame, self)
-
-RPolarsSeries$set_sorted_mut <- function(descending) invisible(.Call(wrap__RPolarsSeries__set_sorted_mut, self, descending))
-
-RPolarsSeries$from_arrow <- function(name, array) .Call(wrap__RPolarsSeries__from_arrow, name, array)
+RPolarsLazyFrame$with_context = function(contexts) .Call(wrap__RPolarsLazyFrame__with_context, self, contexts)
 
 #' @export
-`$.RPolarsSeries` <- function (self, name) { func <- RPolarsSeries[[name]]; environment(func) <- environment(); func }
+`$.RPolarsLazyFrame` = function(self, name) {
+  func = RPolarsLazyFrame[[name]]
+  environment(func) = environment()
+  func
+}
 
 #' @export
-`[[.RPolarsSeries` <- `$.RPolarsSeries`
+`[[.RPolarsLazyFrame` = `$.RPolarsLazyFrame`
 
-RPolarsSQLContext <- new.env(parent = emptyenv())
+RPolarsLazyGroupBy = new.env(parent = emptyenv())
 
-RPolarsSQLContext$new <- function() .Call(wrap__RPolarsSQLContext__new)
+RPolarsLazyGroupBy$print = function() invisible(.Call(wrap__RPolarsLazyGroupBy__print, self))
 
-RPolarsSQLContext$execute <- function(query) .Call(wrap__RPolarsSQLContext__execute, self, query)
+RPolarsLazyGroupBy$clone_in_rust = function() .Call(wrap__RPolarsLazyGroupBy__clone_in_rust, self)
 
-RPolarsSQLContext$get_tables <- function() .Call(wrap__RPolarsSQLContext__get_tables, self)
+RPolarsLazyGroupBy$ungroup = function() .Call(wrap__RPolarsLazyGroupBy__ungroup, self)
 
-RPolarsSQLContext$register <- function(name, lf) .Call(wrap__RPolarsSQLContext__register, self, name, lf)
+RPolarsLazyGroupBy$agg = function(exprs) .Call(wrap__RPolarsLazyGroupBy__agg, self, exprs)
 
-RPolarsSQLContext$unregister <- function(name) .Call(wrap__RPolarsSQLContext__unregister, self, name)
+RPolarsLazyGroupBy$head = function(n) .Call(wrap__RPolarsLazyGroupBy__head, self, n)
 
-#' @export
-`$.RPolarsSQLContext` <- function (self, name) { func <- RPolarsSQLContext[[name]]; environment(func) <- environment(); func }
-
-#' @export
-`[[.RPolarsSQLContext` <- `$.RPolarsSQLContext`
-
-RPolarsStringCacheHolder <- new.env(parent = emptyenv())
-
-RPolarsStringCacheHolder$hold <- function() .Call(wrap__RPolarsStringCacheHolder__hold)
-
-RPolarsStringCacheHolder$release <- function() .Call(wrap__RPolarsStringCacheHolder__release, self)
+RPolarsLazyGroupBy$tail = function(n) .Call(wrap__RPolarsLazyGroupBy__tail, self, n)
 
 #' @export
-`$.RPolarsStringCacheHolder` <- function (self, name) { func <- RPolarsStringCacheHolder[[name]]; environment(func) <- environment(); func }
+`$.RPolarsLazyGroupBy` = function(self, name) {
+  func = RPolarsLazyGroupBy[[name]]
+  environment(func) = environment()
+  func
+}
 
 #' @export
-`[[.RPolarsStringCacheHolder` <- `$.RPolarsStringCacheHolder`
+`[[.RPolarsLazyGroupBy` = `$.RPolarsLazyGroupBy`
+
+RPolarsSeries = new.env(parent = emptyenv())
+
+RPolarsSeries$new = function(x, name) .Call(wrap__RPolarsSeries__new, x, name)
+
+RPolarsSeries$clone = function() .Call(wrap__RPolarsSeries__clone, self)
+
+RPolarsSeries$sleep = function(millis) .Call(wrap__RPolarsSeries__sleep, self, millis)
+
+RPolarsSeries$panic = function() .Call(wrap__RPolarsSeries__panic, self)
+
+RPolarsSeries$to_r = function() .Call(wrap__RPolarsSeries__to_r, self)
+
+RPolarsSeries$rename_mut = function(name) invisible(.Call(wrap__RPolarsSeries__rename_mut, self, name))
+
+RPolarsSeries$dtype = function() .Call(wrap__RPolarsSeries__dtype, self)
+
+RPolarsSeries$n_unique = function() .Call(wrap__RPolarsSeries__n_unique, self)
+
+RPolarsSeries$name = function() .Call(wrap__RPolarsSeries__name, self)
+
+RPolarsSeries$sort_mut = function(descending) .Call(wrap__RPolarsSeries__sort_mut, self, descending)
+
+RPolarsSeries$value_counts = function(sort, parallel) .Call(wrap__RPolarsSeries__value_counts, self, sort, parallel)
+
+RPolarsSeries$arg_min = function() .Call(wrap__RPolarsSeries__arg_min, self)
+
+RPolarsSeries$arg_max = function() .Call(wrap__RPolarsSeries__arg_max, self)
+
+RPolarsSeries$is_sorted_flag = function() .Call(wrap__RPolarsSeries__is_sorted_flag, self)
+
+RPolarsSeries$is_sorted_reverse_flag = function() .Call(wrap__RPolarsSeries__is_sorted_reverse_flag, self)
+
+RPolarsSeries$is_sorted = function(descending) .Call(wrap__RPolarsSeries__is_sorted, self, descending)
+
+RPolarsSeries$series_equal = function(other, null_equal, strict) .Call(wrap__RPolarsSeries__series_equal, self, other, null_equal, strict)
+
+RPolarsSeries$get_fmt = function(index, str_length) .Call(wrap__RPolarsSeries__get_fmt, self, index, str_length)
+
+RPolarsSeries$to_fmt_char = function(str_length) .Call(wrap__RPolarsSeries__to_fmt_char, self, str_length)
+
+RPolarsSeries$compare = function(other, op) .Call(wrap__RPolarsSeries__compare, self, other, op)
+
+RPolarsSeries$rep = function(n, rechunk) .Call(wrap__RPolarsSeries__rep, self, n, rechunk)
+
+RPolarsSeries$shape = function() .Call(wrap__RPolarsSeries__shape, self)
+
+RPolarsSeries$len = function() .Call(wrap__RPolarsSeries__len, self)
+
+RPolarsSeries$chunk_lengths = function() .Call(wrap__RPolarsSeries__chunk_lengths, self)
+
+RPolarsSeries$abs = function() .Call(wrap__RPolarsSeries__abs, self)
+
+RPolarsSeries$alias = function(name) .Call(wrap__RPolarsSeries__alias, self, name)
+
+RPolarsSeries$all = function() .Call(wrap__RPolarsSeries__all, self)
+
+RPolarsSeries$any = function() .Call(wrap__RPolarsSeries__any, self)
+
+RPolarsSeries$add = function(other) .Call(wrap__RPolarsSeries__add, self, other)
+
+RPolarsSeries$sub = function(other) .Call(wrap__RPolarsSeries__sub, self, other)
+
+RPolarsSeries$mul = function(other) .Call(wrap__RPolarsSeries__mul, self, other)
+
+RPolarsSeries$div = function(other) .Call(wrap__RPolarsSeries__div, self, other)
+
+RPolarsSeries$rem = function(other) .Call(wrap__RPolarsSeries__rem, self, other)
+
+RPolarsSeries$append_mut = function(other) .Call(wrap__RPolarsSeries__append_mut, self, other)
+
+RPolarsSeries$map_elements = function(robj, rdatatype, strict, allow_fail_eval) .Call(wrap__RPolarsSeries__map_elements, self, robj, rdatatype, strict, allow_fail_eval)
+
+RPolarsSeries$mean = function() .Call(wrap__RPolarsSeries__mean, self)
+
+RPolarsSeries$median = function() .Call(wrap__RPolarsSeries__median, self)
+
+RPolarsSeries$min = function() .Call(wrap__RPolarsSeries__min, self)
+
+RPolarsSeries$max = function() .Call(wrap__RPolarsSeries__max, self)
+
+RPolarsSeries$sum = function() .Call(wrap__RPolarsSeries__sum, self)
+
+RPolarsSeries$std = function(ddof) .Call(wrap__RPolarsSeries__std, self, ddof)
+
+RPolarsSeries$var = function(ddof) .Call(wrap__RPolarsSeries__var, self, ddof)
+
+RPolarsSeries$ceil = function() .Call(wrap__RPolarsSeries__ceil, self)
+
+RPolarsSeries$floor = function() .Call(wrap__RPolarsSeries__floor, self)
+
+RPolarsSeries$print = function() invisible(.Call(wrap__RPolarsSeries__print, self))
+
+RPolarsSeries$cum_sum = function(reverse) .Call(wrap__RPolarsSeries__cum_sum, self, reverse)
+
+RPolarsSeries$to_frame = function() .Call(wrap__RPolarsSeries__to_frame, self)
+
+RPolarsSeries$set_sorted_mut = function(descending) invisible(.Call(wrap__RPolarsSeries__set_sorted_mut, self, descending))
+
+RPolarsSeries$from_arrow = function(name, array) .Call(wrap__RPolarsSeries__from_arrow, name, array)
+
+#' @export
+`$.RPolarsSeries` = function(self, name) {
+  func = RPolarsSeries[[name]]
+  environment(func) = environment()
+  func
+}
+
+#' @export
+`[[.RPolarsSeries` = `$.RPolarsSeries`
+
+RPolarsSQLContext = new.env(parent = emptyenv())
+
+RPolarsSQLContext$new = function() .Call(wrap__RPolarsSQLContext__new)
+
+RPolarsSQLContext$execute = function(query) .Call(wrap__RPolarsSQLContext__execute, self, query)
+
+RPolarsSQLContext$get_tables = function() .Call(wrap__RPolarsSQLContext__get_tables, self)
+
+RPolarsSQLContext$register = function(name, lf) .Call(wrap__RPolarsSQLContext__register, self, name, lf)
+
+RPolarsSQLContext$unregister = function(name) .Call(wrap__RPolarsSQLContext__unregister, self, name)
+
+#' @export
+`$.RPolarsSQLContext` = function(self, name) {
+  func = RPolarsSQLContext[[name]]
+  environment(func) = environment()
+  func
+}
+
+#' @export
+`[[.RPolarsSQLContext` = `$.RPolarsSQLContext`
+
+RPolarsStringCacheHolder = new.env(parent = emptyenv())
+
+RPolarsStringCacheHolder$hold = function() .Call(wrap__RPolarsStringCacheHolder__hold)
+
+RPolarsStringCacheHolder$release = function() .Call(wrap__RPolarsStringCacheHolder__release, self)
+
+#' @export
+`$.RPolarsStringCacheHolder` = function(self, name) {
+  func = RPolarsStringCacheHolder[[name]]
+  environment(func) = environment()
+  func
+}
+
+#' @export
+`[[.RPolarsStringCacheHolder` = `$.RPolarsStringCacheHolder`
 
 
 # nolint end

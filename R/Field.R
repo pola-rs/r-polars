@@ -113,7 +113,7 @@ RField.property_setters$datatype = function(self, value) {
   }
 
   # if(is.null(func)) pstop(err= paste("no setter method for",name)))
-  if (polars_optenv$strictly_immutable) self <- .pr$RField$clone(self)
+  if (polars_optenv$strictly_immutable) self = .pr$RField$clone(self)
   func = RField.property_setters[[name]]
   func(self, value)
   self
