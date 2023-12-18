@@ -42,7 +42,7 @@ NULL
 
 
 #' Wrap as Series
-#' @keywords internal
+#' @noRd
 #' @description input is either already a Series of will be passed to the Series constructor
 #' @param x a Series or something-turned-into-Series
 #' @return Series

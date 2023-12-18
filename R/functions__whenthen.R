@@ -2,7 +2,7 @@
 #' @name Expr_when_then_otherwise
 #' @description Start a “when, then, otherwise” expression.
 #' @keywords Expr
-#' @param condition Into Expr into a boolean mask to branch by. Strings interpreted as column.
+#' @param ... Into Expr into a boolean mask to branch by.
 #' @param statement Into Expr value to insert in when() or otherwise().
 #' Strings interpreted as column.
 #' @return Expr
@@ -37,14 +37,36 @@
 #'  a nested when-then-otherwise expression.
 #'
 #' @examples
-#' df = pl$DataFrame(mtcars)
-#' wtt =
-#'   pl$when(pl$col("cyl") <= 4)$then(pl$lit("<=4cyl"))$
-#'     when(pl$col("cyl") <= 6)$then(pl$lit("<=6cyl"))$
-#'     otherwise(pl$lit(">6cyl"))$alias("cyl_groups")
-#' print(wtt)
-#' df$with_columns(wtt)
-pl$when = function(condition) {
+#' df = pl$DataFrame(foo = c(1, 3, 4), bar = c(3, 4, 0))
+#'
+#' # Add a column with the value 1, where column "foo" > 2 and the value -1 where it isn’t.
+#' df$with_columns(
+#'   pl$when(pl$col("foo") > 2)$then(1)$otherwise(-1)$alias("val")
+#' )
+#'
+#' # With multiple when, thens chained:
+#' df$with_columns(
+#'   pl$when(pl$col("foo") > 2)
+#'   $then(1)
+#'   $when(pl$col("bar") > 2)
+#'   $then(4)
+#'   $otherwise(-1)
+#'   $alias("val")
+#' )
+#'
+#' # Pass multiple predicates, each of which must be met:
+#' df$with_columns(
+#'   val = pl$when(
+#'     pl$col("bar") > 0,
+#'     pl$col("foo") %% 2 != 0
+#'   )
+#'   $then(99)
+#'   $otherwise(-1)
+#' )
+pl$when = function(...) {
+  condition = unpack_bool_expr(...) |>
+    unwrap("in pl$when():")
+
   .pr$When$new(condition) |>
     unwrap("in pl$when():")
 }
@@ -57,7 +79,10 @@ When_then = function(statement) {
     unwrap("in $then():")
 }
 
-Then_when = function(condition) {
+Then_when = function(...) {
+  condition = unpack_bool_expr(...) |>
+    unwrap("in $when():")
+
   .pr$Then$when(self, condition) |>
     unwrap("in $when():")
 }
@@ -72,7 +97,10 @@ ChainedWhen_then = function(statement) {
     unwrap("in $then():")
 }
 
-ChainedThen_when = function(condition) {
+ChainedThen_when = function(...) {
+  condition = unpack_bool_expr(...) |>
+    unwrap("in $when():")
+
   .pr$ChainedThen$when(self, condition) |>
     unwrap("in $when():")
 }
@@ -88,7 +116,7 @@ ChainedThen_otherwise = function(statement) {
 #' print When
 #' @param x When object
 #' @param ... not used
-#' @keywords internal WhenThen
+#' @noRd
 #'
 #' @return self
 #' @export
@@ -150,7 +178,7 @@ print.RPolarsChainedThen = function(x, ...) {
 #' @return char vec
 #' @export
 #' @inherit .DollarNames.RPolarsDataFrame return
-#' @keywords internal
+#' @noRd
 .DollarNames.RPolarsWhen = function(x, pattern = "") {
   paste0(ls(RPolarsWhen, pattern = pattern), "()")
 }
@@ -162,7 +190,7 @@ print.RPolarsChainedThen = function(x, ...) {
 #' @return char vec
 #' @export
 #' @inherit .DollarNames.RPolarsDataFrame return
-#' @keywords internal
+#' @noRd
 .DollarNames.RPolarsThen = function(x, pattern = "") {
   paste0(ls(RPolarsThen, pattern = pattern), "()")
 }
@@ -174,7 +202,7 @@ print.RPolarsChainedThen = function(x, ...) {
 #' @return char vec
 #' @export
 #' @inherit .DollarNames.RPolarsDataFrame return
-#' @keywords internal
+#' @noRd
 .DollarNames.RPolarsChainedThen = function(x, pattern = "") {
   paste0(ls(RPolarsChainedThen, pattern = pattern), "()")
 }
@@ -186,7 +214,7 @@ print.RPolarsChainedThen = function(x, ...) {
 #' @return char vec
 #' @export
 #' @inherit .DollarNames.RPolarsDataFrame return
-#' @keywords internal
+#' @noRd
 .DollarNames.RPolarsChainedWhen = function(x, pattern = "") {
   paste0(ls(RPolarsChainedWhen, pattern = pattern), "()")
 }

@@ -174,7 +174,6 @@ translate_failures = \(x) {
 
 #' internal keeping of state at runtime
 #' @name polars_runtime_flags
-#' @keywords internal
 #' @return not applicable
 #' @noRd
 #' @description This environment is used internally for the package to remember

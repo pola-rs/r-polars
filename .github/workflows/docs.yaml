@@ -71,6 +71,9 @@ jobs:
           use-public-rspm: true
           Ncpus: 2
 
+        # altdoc uses quarto
+      - uses: quarto-dev/quarto-actions/setup@v2
+
       - name: Get requirements
         run: |
           make requirements-r
@@ -78,24 +81,25 @@ jobs:
 
       - name: Build docs
         run: make docs
+        shell: bash
 
       - uses: webfactory/ssh-agent@v0.8.0
-        env: 
+        env:
           DEPLOY_DOCS: ${{ secrets.DEPLOY_DOCS  }}
-        if: ${{ (github.event_name != 'pull_request') && (github.repository_owner == 'pola-rs') }} 
+        if: ${{ (github.event_name != 'pull_request') && (github.repository_owner == 'pola-rs') }}
         with:
           ssh-private-key: ${{ secrets.DEPLOY_DOCS }}
 
         # https://www.mkdocs.org/user-guide/deploying-your-docs/
       - name: Build site and deploy to GitHub pages
-        env: 
+        env:
           DEPLOY_DOCS: ${{ secrets.DEPLOY_DOCS  }}
-        if: ${{ (github.event_name != 'pull_request') && (github.repository_owner == 'pola-rs') }} 
+        if: ${{ (github.event_name != 'pull_request') && (github.repository_owner == 'pola-rs') }}
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           clean: true
           branch: main
-          folder: docs/site
+          folder: docs
           repository-name: rpolars/rpolars.github.io
           ssh-key: true
           clean-exclude: |
