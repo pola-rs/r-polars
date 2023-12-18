@@ -2,4 +2,7 @@
 format:
   md:
     prefer-html: true
+knitr:
+  opts_chunk:
+    comment: "#>"
 ---
