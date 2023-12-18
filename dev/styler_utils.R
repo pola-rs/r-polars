@@ -6,11 +6,17 @@ rpolars_style = function() {
   # derive from tidyverse
   transformers = styler::tidyverse_style()
   transformers$style_guide_name = "rpolars_style"
-  transformers$style_guide_version = "0.1.0"
+  transformers$style_guide_version = "0.1.1"
 
   # reverse tranformer to make <- into =
   transformers$token$force_assignment_op = function(pd) {
     to_replace = pd$token == "LEFT_ASSIGN"
+
+    # pretect against changing globalAssign operator, which does not have a unique defined token.
+    if (any(to_replace)) {
+      to_replace = to_replace & pd$text != "<<-"
+    }
+
     pd$token[to_replace] = "EQ_ASSIGN"
     pd$text[to_replace] = "="
     pd
