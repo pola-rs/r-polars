@@ -22,7 +22,6 @@ pl$is_schema = is_schema
 #' mean undefined.
 #' @return bool
 #' @format function
-#' @keywords internal
 #' @examples
 #' .pr$env$wrap_proto_schema(c("alice", "bob"))
 #' .pr$env$wrap_proto_schema(list("alice" = pl$Int64, "bob" = NULL))
@@ -73,7 +72,7 @@ NULL
 #' @return self
 #' @export
 #'
-#' @keywords internal
+#' @noRd
 #' @examples
 #' pl$dtypes$Boolean # implicit print
 print.RPolarsDataType = function(x, ...) {
@@ -93,7 +92,6 @@ print.RPolarsDataType = function(x, ...) {
 #' @name is_polars_dtype
 #' @noRd
 #' @param x a candidate
-#' @keywords internal
 #' @return a list DataType with an inner DataType
 #' @examples .pr$env$is_polars_dtype(pl$Int64)
 is_polars_dtype = function(x, include_unknown = FALSE) {
@@ -104,7 +102,7 @@ is_polars_dtype = function(x, include_unknown = FALSE) {
 #' @name same_outer_datatype
 #' @param lhs an RPolarsDataType
 #' @param rhs an RPolarsDataType
-#' @keywords internal
+#' @noRd
 #' @return bool TRUE if outer datatype is the same.
 #' @examples
 #' # TRUE
@@ -122,7 +120,6 @@ pl$same_outer_dt = function(lhs, rhs) {
 #' @noRd
 #' @description Create a new flag like DataType
 #' @param str name of DataType to create
-#' @keywords internal
 #' @details
 #' This function is mainly used in `zzz.R` `.onLoad` to instantiate singletons of all
 #' flag-like DataType.
@@ -142,7 +139,7 @@ DataType_new = function(str) {
 
 #' DataType_constructors (composite DataType's)
 #' @description List of all composite DataType constructors
-#' @keywords internal
+#' @noRd
 #' @details
 #' This list is mainly used in `zzz.R` `.onLoad` to instantiate singletons of all
 #' flag-like DataTypes.

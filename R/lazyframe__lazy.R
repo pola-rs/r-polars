@@ -106,7 +106,7 @@ NULL
 #' @return char vec
 #' @export
 #' @inherit .DollarNames.RPolarsDataFrame return
-#' @keywords internal
+#' @noRd
 
 .DollarNames.RPolarsLazyFrame = function(x, pattern = "") {
   paste0(ls(RPolarsLazyFrame, pattern = pattern), "()")
@@ -156,7 +156,7 @@ pl$LazyFrame = function(...) {
 #' @param ... not used
 #' @keywords LazyFrame
 #'
-#' @keywords internal
+#' @noRd
 #' @return self
 #' @export
 #'
