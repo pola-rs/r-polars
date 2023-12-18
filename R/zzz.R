@@ -72,7 +72,7 @@ replace_private_with_pub_methods(RPolarsChainedThen, "^ChainedThen_")
 #' @param pattern code-stump as string to auto-complete
 #' @export
 #' @inherit .DollarNames.RPolarsDataFrame return
-#' @keywords internal
+#' @noRd
 .DollarNames.method_environment = function(x, pattern = "") {
   # I ponder why R chose to let attributes of environments be mutable also?!
   # temp store full class and upcast to plain environment
