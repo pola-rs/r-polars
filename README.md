@@ -1,6 +1,3 @@
-
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
 # polars
 
 <!-- badges: start -->
@@ -152,7 +149,7 @@ of common operations:
 While one can use **polars** as-is, other packages build on it to
 provide different syntaxes:
 
-- [`polarssql`](https://github.com/rpolars/r-polarssql/) provides
-  `{DBI}` and `{dbplyr}` methods;
+- [`polarssql`](https://github.com/rpolars/r-polarssql/) provides a **polars** 
+  backend for `DBI` and `dbplyr`;
 - [`tidypolars`](https://tidypolars.etiennebacher.com/) allows one to
   use the `tidyverse` syntax while using the power of **polars**.
