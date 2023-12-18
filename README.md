@@ -31,6 +31,35 @@ by Søren Welling ([@sorhawell](https://github.com/sorhawell)) and
 Consider joining our [Discord](https://discord.com/invite/4UfP5cfBE7)
 (subchannel) for additional help and discussion.
 
+
+## Get started
+
+**polars** is a very powerful package with many functions. The [Get
+Started](https://rpolars.github.io/articles/polars/) vignette
+(`vignette("polars")`) gives an easy introduction and provides examples
+of common operations:
+
+- read CSV, JSON, Parquet, and other file formats;
+- filter rows and select columns;
+- modify and create new columns;
+- group by and aggregate;
+- reshape data;
+- join and concatenate different datasets;
+- sort data;
+- work with dates and times;
+- handle missing values;
+- use the lazy execution engine for maximum performance and
+  memory-efficient operations
+
+While one can use **polars** as-is, other packages build on it to
+provide different syntaxes:
+
+- [`polarssql`](https://github.com/rpolars/r-polarssql/) provides a **polars** 
+  backend for `DBI` and `dbplyr`;
+- [`tidypolars`](https://tidypolars.etiennebacher.com/) allows one to
+  use the `tidyverse` syntax while using the power of **polars**.
+
+
 ## Install
 
 The package can be installed from R-universe, or GitHub.
@@ -126,30 +155,3 @@ enable Rust features and profile changes.
 - `RPOLARS_FULL_FEATURES="true"` (Build with nightly feature enabled,
   requires Rust toolchain nightly-2023-10-12)
 - `RPOLARS_PROFILE="release-optimized"` (Build with more optimization)
-
-## Get started
-
-**polars** is a very powerful package with many functions. The [Get
-Started](https://rpolars.github.io/articles/polars/) vignette
-(`vignette("polars")`) gives an easy introduction and provides examples
-of common operations:
-
-- read CSV, JSON, Parquet, and other file formats;
-- filter rows and select columns;
-- modify and create new columns;
-- group by and aggregate;
-- reshape data;
-- join and concatenate different datasets;
-- sort data;
-- work with dates and times;
-- handle missing values;
-- use the lazy execution engine for maximum performance and
-  memory-efficient operations
-
-While one can use **polars** as-is, other packages build on it to
-provide different syntaxes:
-
-- [`polarssql`](https://github.com/rpolars/r-polarssql/) provides a **polars** 
-  backend for `DBI` and `dbplyr`;
-- [`tidypolars`](https://tidypolars.etiennebacher.com/) allows one to
-  use the `tidyverse` syntax while using the power of **polars**.
