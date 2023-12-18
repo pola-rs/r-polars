@@ -20,6 +20,10 @@ pre.r-example {
 	padding-top: 0;
 }
 
+.md-typeset pre:not(#__code_0) .md-clipboard {
+	display: none;
+}
+
 .md-typeset pre {
 	margin-top: 0;
 	margin-bottom: 0;
