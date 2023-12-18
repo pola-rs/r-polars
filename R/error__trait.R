@@ -8,7 +8,6 @@
 #' @details
 #' Additional details...
 #'
-#' @noRd
 #' @return err as string
 #' @examples
 #' #

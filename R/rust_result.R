@@ -116,7 +116,6 @@ unwrap_or = function(x, or) {
 #' @description DEPRECATED USE stopf instead
 #' @param err error msg string
 #' @param call calling context
-#' @noRd
 #'
 #' @return throws an error
 #'

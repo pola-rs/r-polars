@@ -15,7 +15,6 @@
 #' error into an R error condition. These s3 methods can be implemented for any future error type.
 #'
 #' @return the ok-element of list , or a error will be thrown
-#' @noRd
 #' @examples
 #'
 #' # fetch internal unwrap-function
@@ -101,7 +100,6 @@ result = function(expr, msg = NULL) {
 #' @description use sparingly internally for speed optimization where the error is not important.
 #' @noRd
 #' @param expr code to capture any error from and wrap as Result
-#' @noRd
 #' @return Result
 #' @examples
 #' # get user internal functions

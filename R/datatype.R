@@ -22,7 +22,6 @@ pl$is_schema = is_schema
 #' mean undefined.
 #' @return bool
 #' @format function
-#' @noRd
 #' @examples
 #' .pr$env$wrap_proto_schema(c("alice", "bob"))
 #' .pr$env$wrap_proto_schema(list("alice" = pl$Int64, "bob" = NULL))

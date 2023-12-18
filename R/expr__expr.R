@@ -129,7 +129,6 @@ wrap_e_result = function(e, str_to_lit = TRUE, argname = NULL) {
 #' Used internally to ensure an object is a list of expression
 #' The output is wrapped in a result, which can contain an ok or
 #' err value.
-#' @noRd
 #' @return Expr
 #' @examples .pr$env$wrap_elist_result(list(pl$lit(42), 42, 1:3))
 wrap_elist_result = function(elist, str_to_lit = TRUE) {
@@ -575,7 +574,6 @@ Expr_is_not_null = "use_extendr_wrapper"
 #' @param ...  any Expr or string
 #'
 #'
-#' @noRd
 #'
 #' @return RPolarsProtoExprArray object
 #'

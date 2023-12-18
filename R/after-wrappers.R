@@ -16,7 +16,6 @@ build_debug_print = FALSE
 #' @param env environment object output from extendr-wrappers.R classes
 #' @param class_name optional class string, only used for debug printing
 #' Default NULL, will infer class_name automatically
-#' @noRd
 #' @description self is a global of extendr wrapper methods
 #' this function copies the function into a new environment and
 #' modify formals to have a self argument
