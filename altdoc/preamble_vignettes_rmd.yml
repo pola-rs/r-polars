@@ -1,4 +1,7 @@
 ---
 always_allow_html: yes
 default-image-extension: ""
+knitr:
+  opts_chunk:
+    comment: "#>"
 ---

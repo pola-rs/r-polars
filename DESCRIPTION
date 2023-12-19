@@ -43,7 +43,7 @@ Suggests:
     vctrs,
     withr
 Config/Needs/website:
-    etiennebacher/altdoc@95a5f42,
+    etiennebacher/altdoc@5c69f3b,
     future.apply,
     here,
     magrittr,
@@ -55,7 +55,6 @@ Config/Needs/dev:
     RcppTOML,
     readr,
     rextendr,
-    robinlovelace/styler.equals,
     spelling,
     stringr,
     styler
