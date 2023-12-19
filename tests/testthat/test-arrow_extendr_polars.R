@@ -33,7 +33,7 @@ test_that("rust-polars DataFrame import/export via arrow stream", {
   # check imported/exported df's are identical
   expect_identical(df_import$to_list(), df_export$to_list())
 
-  ##UNSAFE / Undefined behavior / will blow up eventually /  STUFF NOT TO DO
+  ## UNSAFE / Undefined behavior / will blow up eventually /  STUFF NOT TO DO
   # examples below of did segfault ~every 5-10th time, during development
 
   # 1: DO NOT EXPORT TO STREAM MORE THAN ONCE
@@ -45,8 +45,8 @@ test_that("rust-polars DataFrame import/export via arrow stream", {
   # 2: DO NOT IMPORT FROM STREAM MORE THAN ONCE
   # reading from released(exhuasted) stream results in error most times
   # BUT THIS SEGFAULTs sometimes
-  #ctx = arrow_stream_to_df(str_ptr)$err$contexts()
-  #expect_equal(
+  # ctx = arrow_stream_to_df(str_ptr)$err$contexts()
+  # expect_equal(
   # ctx$PlainErrorMessage,
   # r"{InvalidArgumentError("The C stream was already released")}"
   # )
@@ -67,5 +67,4 @@ test_that("rust-polars DataFrame import/export via arrow stream", {
   # print(df_import)
   # str_ptr = new_arrow_stream()
   # rsess$get_result()
-
 })
