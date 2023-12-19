@@ -154,7 +154,7 @@ unpack_bool_expr_result = function(...) {
       } else {
         l |>
           Reduce(`&`, x = _) |>
-          result(msg = .msg) |>
+          result() |>
           suppressWarnings()
       }
     })
