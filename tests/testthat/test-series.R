@@ -140,7 +140,7 @@ test_that("Series_append", {
   pl$reset_options()
 
   expect_error(
-    s_new <- s_mut$append(pl$Series(1:3), immutable = FALSE),
+    s_mut$append(pl$Series(1:3), immutable = FALSE),
     regexp = "breaks immutability"
   )
 })
@@ -521,7 +521,7 @@ patrick::with_parameters_test_that("mean, median, std, var",
     s = pl$Series(rnorm(100))
     a = s[[.test_name]]()
     # upstream .std_as_series() does not appear to return Series
-    if (inherits(a, "RPolarsSeries")) a <- a$to_vector()
+    if (inherits(a, "RPolarsSeries")) a = a$to_vector()
     b = base(s$to_vector())
     expect_equal(a, b)
   },

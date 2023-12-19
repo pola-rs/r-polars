@@ -9,7 +9,7 @@ library(pkgload)
 
 pkgload::load_all(".")
 
-yml <- read_yaml("altdoc/mkdocs_static.yml")
+yml = read_yaml("altdoc/mkdocs_static.yml")
 
 is_internal = function(file) {
   y = capture.output(tools::Rd2latex(file))
@@ -77,13 +77,13 @@ hierarchy = append(out, setNames(list(tmp), "Other"))
 hierarchy = append(list("Reference" = "reference_home.md"), hierarchy)
 
 # Insert the links in the settings
-yml$nav[[3]]$Reference <- hierarchy
+yml$nav[[3]]$Reference = hierarchy
 
 # These two elements should be lists in the yaml format, not single elements,
 # otherwise mkdocs breaks
 for (i in c("extra_css", "plugins")) {
   if (!is.null(yml[[i]]) && !is.list(length(yml[[i]]))) {
-    yml[[i]] <- as.list(yml[[i]])
+    yml[[i]] = as.list(yml[[i]])
   }
 }
 

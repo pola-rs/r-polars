@@ -309,7 +309,7 @@ test_that("slice", {
   df = pl$DataFrame(l)
 
   r_slice = function(x, o, n = NULL) {
-    if (is.null(n)) n <- max(length(x) - o, 1L)
+    if (is.null(n)) n = max(length(x) - o, 1L)
     if (o >= 0) {
       o = o + 1
     } else {

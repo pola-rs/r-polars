@@ -23,7 +23,7 @@ build_debug_print = FALSE
 #' @return env of pure function calls to rust
 #'
 extendr_method_to_pure_functions = function(env, class_name = NULL) {
-  if (is.null(class_name)) class_name <- as.character(sys.call()[2])
+  if (is.null(class_name)) class_name = as.character(sys.call()[2])
   e = as.environment(lapply(env, function(f) {
     if (!is.function(f)) {
       return(f)
