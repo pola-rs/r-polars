@@ -679,13 +679,16 @@ impl RPolarsExpr {
             by: robj_to!(Option, String, by)?,
             closed_window: robj_to!(Option, ClosedWindow, closed)?,
             warn_if_unsorted: robj_to!(bool, warn_if_unsorted)?,
-            fn_params: Some(pl::Arc::new(pl::RollingQuantileParams {
-                prob: robj_to!(f64, quantile)?,
-                interpol: robj_to!(new_quantile_interpolation_option, interpolation)?,
-            }) as pl::Arc<dyn std::any::Any + Send + Sync>),
+            fn_params: None,
         };
+        let quantile = robj_to!(f64, quantile)?;
+        let interpolation = robj_to!(new_quantile_interpolation_option, interpolation)?;
 
-        Ok(self.0.clone().rolling_quantile(options).into())
+        Ok(self
+            .0
+            .clone()
+            .rolling_quantile(interpolation, quantile, options)
+            .into())
     }
 
     pub fn rolling_skew(&self, window_size_f: f64, bias: bool) -> List {
