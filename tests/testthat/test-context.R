@@ -1,8 +1,8 @@
 make_cases = function() {
   tibble::tribble(
-    ~.test_name, ~pola,   ~base,
-    "mean",       "mean",   mean,
-    "median",     "median", median,
+    ~.test_name, ~pola, ~base,
+    "mean", "mean", mean,
+    "median", "median", median,
   )
 }
 
