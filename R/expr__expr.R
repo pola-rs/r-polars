@@ -2380,6 +2380,8 @@ prepare_rolling_window_args = function(
 #' must be of DataType Date or DateTime.
 #' @param closed String, one of `"left"`, `"right"`, `"both"`, `"none"`. Defines
 #' whether the temporal window interval is closed or not.
+#' @param warn_if_unsorted Warn if data is not known to be sorted by `by` column (if passed).
+#' Experimental.
 #'
 #' @details
 #' If you want to compute multiple aggregation statistics over the same dynamic
@@ -2395,11 +2397,12 @@ Expr_rolling_min = function(
     min_periods = NULL,
     center = FALSE,
     by = NULL,
-    closed = c("left", "right", "both", "none")) {
+    closed = c("left", "right", "both", "none"),
+    warn_if_unsorted = TRUE) {
   wargs = prepare_rolling_window_args(window_size, min_periods)
   .pr$Expr$rolling_min(
     self, wargs$window_size, weights,
-    wargs$min_periods, center, by, closed[1L]
+    wargs$min_periods, center, by, closed[1L], warn_if_unsorted
   ) |>
     unwrap("in $rolling_min():")
 }
@@ -2420,11 +2423,12 @@ Expr_rolling_max = function(
     min_periods = NULL,
     center = FALSE,
     by = NULL,
-    closed = c("left", "right", "both", "none")) {
+    closed = c("left", "right", "both", "none"),
+    warn_if_unsorted = TRUE) {
   wargs = prepare_rolling_window_args(window_size, min_periods)
   .pr$Expr$rolling_max(
     self, wargs$window_size, weights,
-    wargs$min_periods, center, by, closed[1L]
+    wargs$min_periods, center, by, closed[1L], warn_if_unsorted
   ) |>
     unwrap("in $rolling_max()")
 }
@@ -2445,11 +2449,12 @@ Expr_rolling_mean = function(
     min_periods = NULL,
     center = FALSE,
     by = NULL,
-    closed = c("left", "right", "both", "none")) {
+    closed = c("left", "right", "both", "none"),
+    warn_if_unsorted = TRUE) {
   wargs = prepare_rolling_window_args(window_size, min_periods)
   .pr$Expr$rolling_mean(
     self, wargs$window_size, weights,
-    wargs$min_periods, center, by, closed[1L]
+    wargs$min_periods, center, by, closed[1L], warn_if_unsorted
   ) |>
     unwrap("in $rolling_mean():")
 }
@@ -2470,11 +2475,12 @@ Expr_rolling_sum = function(
     min_periods = NULL,
     center = FALSE,
     by = NULL,
-    closed = c("left", "right", "both", "none")) {
+    closed = c("left", "right", "both", "none"),
+    warn_if_unsorted = TRUE) {
   wargs = prepare_rolling_window_args(window_size, min_periods)
   .pr$Expr$rolling_sum(
     self, wargs$window_size, weights,
-    wargs$min_periods, center, by, closed[1L]
+    wargs$min_periods, center, by, closed[1L], warn_if_unsorted
   ) |>
     unwrap("in $rolling_sum():")
 }
@@ -2497,11 +2503,12 @@ Expr_rolling_std = function(
     min_periods = NULL,
     center = FALSE,
     by = NULL,
-    closed = c("left", "right", "both", "none")) {
+    closed = c("left", "right", "both", "none"),
+    warn_if_unsorted = TRUE) {
   wargs = prepare_rolling_window_args(window_size, min_periods)
   .pr$Expr$rolling_std(
     self, wargs$window_size, weights,
-    wargs$min_periods, center, by, closed[1L]
+    wargs$min_periods, center, by, closed[1L], warn_if_unsorted
   ) |>
     unwrap("in $rolling_std(): ")
 }
@@ -2523,11 +2530,12 @@ Expr_rolling_var = function(
     min_periods = NULL,
     center = FALSE,
     by = NULL,
-    closed = c("left", "right", "both", "none")) {
+    closed = c("left", "right", "both", "none"),
+    warn_if_unsorted = TRUE) {
   wargs = prepare_rolling_window_args(window_size, min_periods)
   .pr$Expr$rolling_var(
     self, wargs$window_size, weights,
-    wargs$min_periods, center, by, closed[1L]
+    wargs$min_periods, center, by, closed[1L], warn_if_unsorted
   ) |>
     unwrap("in $rolling_var():")
 }
@@ -2549,11 +2557,12 @@ Expr_rolling_median = function(
     min_periods = NULL,
     center = FALSE,
     by = NULL,
-    closed = c("left", "right", "both", "none")) {
+    closed = c("left", "right", "both", "none"),
+    warn_if_unsorted = TRUE) {
   wargs = prepare_rolling_window_args(window_size, min_periods)
   .pr$Expr$rolling_median(
     self, wargs$window_size, weights,
-    wargs$min_periods, center, by, closed[1L]
+    wargs$min_periods, center, by, closed[1L], warn_if_unsorted
   ) |> unwrap("in $rolling_median():")
 }
 
