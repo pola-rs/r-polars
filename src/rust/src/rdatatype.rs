@@ -476,7 +476,8 @@ pub fn robj_to_join_type(robj: Robj) -> RResult<pl::JoinType> {
         "cross" => Ok(pl::JoinType::Cross),
         "inner" => Ok(pl::JoinType::Inner),
         "left" => Ok(pl::JoinType::Left),
-        "outer" => Ok(pl::JoinType::Outer),
+        "outer" => Ok(pl::JoinType::Outer{coalesce: false}),
+        "outer_coalesce" => Ok(pl::JoinType::Outer{coalesce: true}),
         "semi" => Ok(pl::JoinType::Semi),
         "anti" => Ok(pl::JoinType::Anti),
         s => rerr().bad_val(format!(
