@@ -8,10 +8,18 @@ source("~/Documents/projs/r-polars/R/rstudio_completion.R")
 .dev$activate_polars_rstudio_completion()
 
 library(polars)
-pl$col("a")$list$diff(n = 4)
+
 
 
 pl$
   DataFrame(iris)$
+  lazy()$
+  silly()$
+  this_method_does_exist()$
   with_columns(pl$col('Sepal.Width')$
-  alias("mycol"))$group_by(
+  alias("mycol"))$group_by()
+
+
+
+
+

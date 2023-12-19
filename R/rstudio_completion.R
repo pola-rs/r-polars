@@ -21,8 +21,8 @@ if (interactive()) .dev = polars:::.dev
     },
     error = function(e) {
       message("could no auto complete syntax because:")
-      if (inherits(e, "RPolarsError")) {
-        message(e$rcall(string))
+      if (inherits(e, "RPolarsErr_error")) {
+        message(polars:::result(stop(e))$err$rcall(string))
       } else if (
         inherits(e, "simpleError") &&
           identical(e$message, "reached elapsed time limit")
@@ -120,6 +120,7 @@ if (interactive()) .dev = polars:::.dev
         col_results = NULL
         if (isFALSE(object)) {
           lhs = polars:::.dev$eval_lhs_string(string, envir)
+          if(is.null(lhs)) return(.rs.emptyCompletions())
           if(polars:::.dev$is_polars_function(lhs)) {
             #browser()
             object = lhs
@@ -155,6 +156,7 @@ if (interactive()) .dev = polars:::.dev
         #browser()
         #perform evaluation of lhs
         lhs = polars:::.dev$eval_lhs_string(string, envir)
+        if(is.null(lhs)) return(.rs.emptyCompletions())
         if (!polars:::.dev$is_polars_related_type(lhs)) {
           results = .rs.getCompletionsDollar_orig(
             token, string, functionCall, envir = envir, isAt
@@ -175,8 +177,8 @@ if (interactive()) .dev = polars:::.dev
         .rs.makeCompletions(
           token = token, results = results, excludeOtherCompletions = TRUE, packages = "polars",
           quote = FALSE, helpHandler = FALSE,
-          context = .rs.acContextTypes$DOLLAR, suggestOnAccept = "foobar",
-          type = types, meta = "more info",
+          context = .rs.acContextTypes$DOLLAR,
+          type = types,
         )
       } # end new dollar f
     }
