@@ -2591,11 +2591,12 @@ Expr_rolling_quantile = function(
     min_periods = NULL,
     center = FALSE,
     by = NULL,
-    closed = c("left", "right", "both", "none")) {
+    closed = c("left", "right", "both", "none"),
+    warn_if_unsorted = TRUE) {
   wargs = prepare_rolling_window_args(window_size, min_periods)
   .pr$Expr$rolling_quantile(
     self, quantile, interpolation, wargs$window_size, weights,
-    wargs$min_periods, center, by, closed[1L]
+    wargs$min_periods, center, by, closed[1L], warn_if_unsorted
   ) |>
     unwrap("in $rolling_quantile():")
 }

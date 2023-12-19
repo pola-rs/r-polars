@@ -456,10 +456,10 @@ test_that("and or is_in xor", {
   expect_true(
     pl$select(
       # nothing is nothing
-      pl$lit(NULL) == pl$lit(NULL)$alias("NULL is NULL"),
+      (pl$lit(NULL) == pl$lit(NULL))$alias("NULL is NULL"),
 
       # nothing is typed nothing
-      pl$lit(NULL) == pl$lit(NA_real_)$alias("NULL is NULL_real"),
+      (pl$lit(NULL) == pl$lit(NA_real_))$alias("NULL is NULL_real"),
 
       # typed nothing is typed nothing
       (pl$lit(NA_real_) == pl$lit(NA_real_))$is_null()$alias("NULL_eral is NULL_real is null"),
@@ -941,7 +941,7 @@ test_that("Expr_k_top", {
     pl$col("a")$top_k(3)$alias("k_top"),
     pl$col("a")$bottom_k(3)$alias("k_bot")
   )
-  known = structure(list(k_top = c(Inf, 6, NaN), k_bot = c(NA, -Inf, 0)),
+  known = structure(list(k_top = c(NaN, Inf, 6), k_bot = c(NA, -Inf, 0)),
     row.names = c(NA, -3L), class = "data.frame"
   )
   expect_equal(l_actual$to_data_frame(), known)
@@ -1424,7 +1424,7 @@ test_that("Expr_quantile", {
       midpoint_na = .5,
       midpoint_nan = 1,
       nearest_na = 0,
-      nearest_nan = NaN,
+      nearest_nan = 1,
       linear_na = 0,
       linear_nan = NaN,
       linear_nan_0.7 = NaN,
