@@ -1935,14 +1935,14 @@ impl RPolarsExpr {
         r_result_list(res)
     }
 
-    pub fn str_json_extract(&self, dtype: Robj, infer_schema_len: Robj) -> RResult<Self> {
+    pub fn str_json_decode(&self, dtype: Robj, infer_schema_len: Robj) -> RResult<Self> {
         let dtype = robj_to!(Option, RPolarsDataType, dtype)?.map(|dty| dty.0);
         let infer_schema_len = robj_to!(Option, usize, infer_schema_len)?;
         Ok(self
             .0
             .clone()
             .str()
-            .json_extract(dtype, infer_schema_len)
+            .json_decode(dtype, infer_schema_len)
             .into())
     }
 
