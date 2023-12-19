@@ -15,20 +15,6 @@ pre.r-example {
 	font-size: 0.73rem;
 }
 
-/* Keep some space above the first example */
-.md-typeset pre:not(#__code_0) code {
-	padding-top: 0;
-}
-
-.md-typeset pre:not(#__code_0) .md-clipboard {
-	display: none;
-}
-
-.md-typeset pre {
-	margin-top: 0;
-	margin-bottom: 0;
-}
-
 .md-typeset code {
   font-size: inherit;
 }
