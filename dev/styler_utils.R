@@ -175,3 +175,12 @@ style_files = function(
   }
   invisible(NULL)
 }
+
+#' rpolars style entire package
+#' @return NULL
+#' style_entire_pkg()
+style_entire_pkg = function() {
+  list.files(".", full.names = TRUE, pattern = "\\.R$|\\.Rmd$", recursive = TRUE) |>
+    setdiff("./R/extendr-wrappers.R") |>
+    style_files()
+}
