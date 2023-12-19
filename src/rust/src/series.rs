@@ -441,27 +441,33 @@ impl RPolarsSeries {
     }
 
     pub fn median(&self) -> Result<Robj, String> {
-        RPolarsSeries(self.0.median_as_series()).to_r()
+        let s = self.0.median_as_series().map_err(polars_to_rpolars_err)?;
+        RPolarsSeries(s).to_r()
     }
 
     pub fn min(&self) -> Result<Robj, String> {
-        RPolarsSeries(self.0.min_as_series()).to_r()
+        let s = self.0.min_as_series().map_err(polars_to_rpolars_err)?;
+        RPolarsSeries(s).to_r()
     }
 
     pub fn max(&self) -> Result<Robj, String> {
-        RPolarsSeries(self.0.max_as_series()).to_r()
+        let s = self.0.max_as_series().map_err(polars_to_rpolars_err)?;
+        RPolarsSeries(s).to_r()
     }
 
     pub fn sum(&self) -> Result<Robj, String> {
-        RPolarsSeries(self.0.sum_as_series()).to_r()
+        let s = self.0.sum_as_series().map_err(polars_to_rpolars_err)?;
+        RPolarsSeries(s).to_r()
     }
 
     pub fn std(&self, ddof: Robj) -> Result<Robj, String> {
-        RPolarsSeries(self.0.std_as_series(robj_to!(u8, ddof)?)).to_r()
+        let s = self.0.std_as_series(robj_to!(u8, ddof)?).map_err(polars_to_rpolars_err)?;
+        RPolarsSeries(s).to_r()
     }
 
     pub fn var(&self, ddof: Robj) -> Result<Robj, String> {
-        RPolarsSeries(self.0.var_as_series(robj_to!(u8, ddof)?)).to_r()
+        let s = self.0.var_as_series(robj_to!(u8, ddof)?).map_err(polars_to_rpolars_err)?;
+        RPolarsSeries(s).to_r()
     }
 
     pub fn ceil(&self) -> List {
