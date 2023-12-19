@@ -183,43 +183,61 @@ impl RPolarsLazyFrame {
         self.0.clone().last().into()
     }
 
-    fn max(&self) -> Self {
-        self.0.clone().max().into()
+    fn max(&self) -> RResult<Self> {
+        let ldf = self.0.clone();
+        let out = ldf.max().map_err(polars_to_rpolars_err)?;
+        Ok(out.into())
     }
 
-    fn min(&self) -> Self {
-        self.0.clone().min().into()
+    fn min(&self) -> RResult<Self> {
+        let ldf = self.0.clone();
+        let out = ldf.min().map_err(polars_to_rpolars_err)?;
+        Ok(out.into())
     }
 
-    fn mean(&self) -> Self {
-        self.0.clone().mean().into()
+    fn mean(&self) -> RResult<Self> {
+        let ldf = self.0.clone();
+        let out = ldf.mean().map_err(polars_to_rpolars_err)?;
+        Ok(out.into())
     }
 
-    fn median(&self) -> Self {
-        self.0.clone().median().into()
+    fn median(&self) -> RResult<Self> {
+        let ldf = self.0.clone();
+        let out = ldf.median().map_err(polars_to_rpolars_err)?;
+        Ok(out.into())
     }
 
-    fn sum(&self) -> Self {
-        self.0.clone().sum().into()
+    fn sum(&self) -> RResult<Self> {
+        let ldf = self.0.clone();
+        let out = ldf.sum().map_err(polars_to_rpolars_err)?;
+        Ok(out.into())
     }
 
-    pub fn std(&self, ddof: Robj) -> Result<Self, String> {
-        Ok(self.clone().0.std(robj_to!(u8, ddof)?).into())
+    fn std(&self, ddof: Robj) -> RResult<Self> {
+        let ldf = self.0.clone();
+        let out = ldf
+            .std(robj_to!(u8, ddof)?)
+            .map_err(polars_to_rpolars_err)?;
+        Ok(out.into())
     }
 
-    pub fn var(&self, ddof: Robj) -> Result<Self, String> {
-        Ok(self.clone().0.var(robj_to!(u8, ddof)?).into())
+    fn var(&self, ddof: Robj) -> RResult<Self> {
+        let ldf = self.0.clone();
+        let out = ldf
+            .var(robj_to!(u8, ddof)?)
+            .map_err(polars_to_rpolars_err)?;
+        Ok(out.into())
     }
 
-    pub fn quantile(&self, quantile: Robj, interpolation: Robj) -> RResult<Self> {
-        Ok(self
-            .clone()
-            .0
+    fn quantile(&self, quantile: Robj, interpolation: Robj) -> RResult<Self> {
+        let ldf = self.0.clone();
+        let out = ldf
             .quantile(
                 robj_to!(PLExpr, quantile)?,
                 robj_to!(new_quantile_interpolation_option, interpolation)?,
             )
-            .into())
+            .map_err(polars_to_rpolars_err)?;
+        Ok(out.into())
     }
 
     fn shift(&self, periods: Robj) -> Result<Self, String> {
