@@ -150,7 +150,7 @@ impl RPolarsSeries {
         self.0.is_sorted(options).map_err(polars_to_rpolars_err)
     }
 
-    pub fn series_equal(&self, other: &RPolarsSeries, null_equal: bool, strict: bool) -> bool {
+    pub fn equals(&self, other: &RPolarsSeries, null_equal: bool, strict: bool) -> bool {
         if strict {
             self.0.eq(&other.0)
         } else if null_equal {

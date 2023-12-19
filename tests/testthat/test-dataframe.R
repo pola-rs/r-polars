@@ -345,7 +345,7 @@ test_that("cloning", {
 # }
 # actual_list_of_series = df$get_columns()
 # for (i in 1:5) {
-#   is_equal = expected_list_of_series[[i]]$series_equal(actual_list_of_series[[i]])
+#   is_equal = expected_list_of_series[[i]]$equals(actual_list_of_series[[i]])
 #   if (!is_equal) {
 #     fail("series are not equal according to polars internal check")
 #   }
@@ -362,7 +362,7 @@ test_that("cloning", {
 
 test_that("get column", {
   expect_true(
-    pl$DataFrame(iris)$get_column("Sepal.Length")$series_equal(
+    pl$DataFrame(iris)$get_column("Sepal.Length")$equals(
       pl$Series(iris$Sepal.Length, "Sepal.Length")
     )
   )

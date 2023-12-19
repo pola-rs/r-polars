@@ -1161,7 +1161,7 @@ RPolarsSeries$is_sorted_reverse_flag <- function() .Call(wrap__RPolarsSeries__is
 
 RPolarsSeries$is_sorted <- function(descending) .Call(wrap__RPolarsSeries__is_sorted, self, descending)
 
-RPolarsSeries$series_equal <- function(other, null_equal, strict) .Call(wrap__RPolarsSeries__series_equal, self, other, null_equal, strict)
+RPolarsSeries$equals <- function(other, null_equal, strict) .Call(wrap__RPolarsSeries__equals, self, other, null_equal, strict)
 
 RPolarsSeries$get_fmt <- function(index, str_length) .Call(wrap__RPolarsSeries__get_fmt, self, index, str_length)
 
