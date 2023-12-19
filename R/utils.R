@@ -87,7 +87,18 @@ verify_method_call = function(Class_env, Method_name, call = sys.call(1L), class
 #' @details rlang has this wonderful list2 implemented in c/c++, that is agnostic about trailing
 #' commas in ... params. One day r-polars will have a list2-impl written in rust, which also allows
 #' trailing commas.
-list2 = list
+list2 = function(..., .context = NULL, .call = sys.call(1L)) {
+  list(...) |>
+    result() |>
+    map_err(\(err) {
+      if (identical(err$contexts()$PlainErrorMessage, "argument is missing, with no default")) {
+        err$plain("trailing argument commas are not (yet) supported with polars")
+      } else {
+        err
+      }
+    }) |>
+    unwrap(context = .context, call = .call)
+}
 
 
 
@@ -112,18 +123,7 @@ list2 = list
 #' identical(f(list(1L, 2L, 3L)), f(1L, 2L, 3L)) # is TRUE
 #' identical(f(list(1L, 2L), 3L), f(1L, 2L, 3L)) # is FALSE
 unpack_list = function(..., .context = NULL, .call = sys.call(1L), skip_classes = NULL) {
-  l =
-    list2(...) |>
-    result() |>
-    map_err(\(err) {
-      if (identical(err$contexts()$PlainErrorMessage, "argument is missing, with no default")) {
-        err$plain("trailing argument commas are not (yet) supported with polars")
-      } else {
-        err
-      }
-    }) |>
-    unwrap(context = .context, call = .call)
-
+  l = list2(..., .context = .context, .call = .call)
   if (
     length(l) == 1L &&
       is.list(l[[1L]]) &&
@@ -140,21 +140,24 @@ unpack_list = function(..., .context = NULL, .call = sys.call(1L), skip_classes 
 #' @noRd
 #' @return Result, a list has `ok` (RPolarsExpr class) and `err` (RPolarsErr class)
 #' @examples
-#' unpack_bool_expr(pl$lit(TRUE), pl$lit(FALSE))
-unpack_bool_expr = function(..., .msg = NULL) {
-  dots = list2(...)
-
-  if (!is.null(names(dots))) {
-    return(Err_plain(
-      "Detected a named input.",
-      "This usually means that you've used `=` instead of `==`."
-    ))
-  }
-
-  dots |>
-    Reduce(`&`, x = _) |>
-    result(msg = .msg) |>
-    suppressWarnings()
+#' unpack_bool_expr_result(pl$lit(TRUE), pl$lit(FALSE))
+unpack_bool_expr_result = function(...) {
+  unpack_list(...) |>
+    result() |>
+    and_then(\(l) {
+      if (!is.null(names(l))) {
+        Err_plain(
+          "Detected a named input.",
+          "This usually means that you've used `=` instead of `==`.",
+          "Some names seen:", head(names(l))
+        )
+      } else {
+        l |>
+          Reduce(`&`, x = _) |>
+          result(msg = .msg) |>
+          suppressWarnings()
+      }
+    })
 }
 
 #' Simple SQL CASE WHEN implementation for R

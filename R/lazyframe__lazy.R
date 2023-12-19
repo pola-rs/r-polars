@@ -286,7 +286,7 @@ LazyFrame_with_row_count = function(name, offset = NULL) {
 #' # lf$filter(pl$col("Sepal.Length") > 5 & pl$col("Petal.Width") < 1)
 #' lf$filter(pl$col("Sepal.Length") > 5, pl$col("Petal.Width") < 1)
 LazyFrame_filter = function(...) {
-  bool_expr = unpack_bool_expr(...) |>
+  bool_expr = unpack_bool_expr_result(...) |>
     unwrap("in $filter()")
 
   .pr$LazyFrame$filter(self, bool_expr)
