@@ -154,9 +154,9 @@ impl RPolarsSeries {
         if strict {
             self.0.eq(&other.0)
         } else if null_equal {
-            self.0.series_equal_missing(&other.0)
+            self.0.equals_missing(&other.0)
         } else {
-            self.0.series_equal(&other.0)
+            self.0.equals(&other.0)
         }
     }
 
