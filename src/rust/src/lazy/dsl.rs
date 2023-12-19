@@ -2272,7 +2272,11 @@ impl RPolarsExpr {
         let ordering = robj_to!(Map, str, ordering, |s| {
             Ok(crate::rdatatype::new_categorical_ordering(s).map_err(Rctx::Plain)?)
         })?;
-        Ok(self.0.clone().cat().set_ordering(ordering).into())
+        Ok(self
+            .0
+            .clone()
+            .cast(pl::DataType::Categorical(None, ordering))
+            .into())
     }
 
     fn cat_get_categories(&self) -> RPolarsExpr {

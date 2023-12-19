@@ -78,7 +78,7 @@ impl RPolarsDataType {
             "Date" | "date" => pl::DataType::Date,
             "Time" | "time" => pl::DataType::Time,
             "Null" | "null" => pl::DataType::Null,
-            "Categorical" | "factor" => pl::DataType::Categorical(None),
+            "Categorical" | "factor" => pl::DataType::Categorical(None, Default::default()),
             "Unknown" | "unknown" => pl::DataType::Unknown,
 
             _ => panic!("data type not recgnized "),

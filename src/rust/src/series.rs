@@ -166,7 +166,7 @@ impl RPolarsSeries {
             "{}",
             self.0.get(index.try_into().expect("usize>u32")).unwrap()
         );
-        if let DataType::Utf8 | DataType::Categorical(_) = self.0.dtype() {
+        if let DataType::Utf8 | DataType::Categorical(_, _) = self.0.dtype() {
             let v_trunc = &val[..val
                 .char_indices()
                 .take(str_length.try_into().expect("usize>u32"))
