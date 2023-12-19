@@ -41,21 +41,20 @@ verify_method_call = function(Class_env, Method_name, call = sys.call(1L), class
   }
   if (!Method_name %in% names(Class_env)) {
     class_name = class_name %||% as.character(as.list(match.call())$Class_env)
-    stop(
+    Err_plain(
       paste(
-        "syntax error:", Method_name, "is not a method/attribute of the class", class_name,
-
-        # add call to error messages
-        if (!polars_optenv$do_not_repeat_call) {
-          paste(
-            "\n when calling method:\n",
-            paste(capture.output(print(call)), collapse = "\n")
-          )
-        }
-      ),
-      domain = NA,
-      call. = FALSE
-    )
+        "$ - syntax error:", Method_name, "is not a method/attribute of the class", class_name
+        #,
+#
+#         # add call to error messages
+#         if (!polars_optenv$do_not_repeat_call) {
+#           paste(
+#             "\n when calling method:\n",
+#             paste(capture.output(print(call)), collapse = "\n")
+#           )
+#         }
+      )
+    ) |> unwrap(call = call)
   }
   invisible(NULL)
 }
