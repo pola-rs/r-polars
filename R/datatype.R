@@ -210,7 +210,7 @@ DataType_constructors = list(
       unwrap("in pl$Struct:")
   }
 
-  # TODO: Categorical
+  # TODO: Categorical https://github.com/pola-rs/polars/pull/12911
 )
 
 #' Create Datetime DataType
