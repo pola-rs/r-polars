@@ -135,7 +135,7 @@ wrap_elist_result = function(elist, str_to_lit = TRUE) {
   element_i = 0L
   result(
     {
-      if (!is.list(elist) && length(elist) == 1L) elist <- list(elist)
+      if (!is.list(elist) && length(elist) == 1L) elist = list(elist)
       lapply(elist, \(e) {
         element_i <<- element_i + 1L
         wrap_e(e, str_to_lit)
@@ -887,7 +887,7 @@ Expr_map_elements = function(f, return_type = NULL, strict_return_type = TRUE, a
 }
 
 Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE,
-                       allow_fail_eval = FALSE, in_background = FALSE) {
+                      allow_fail_eval = FALSE, in_background = FALSE) {
   warning("$apply() is deprecated and will be removed in 0.13.0. Use $map_elements() instead.", call. = FALSE)
   if (in_background) {
     return(.pr$Expr$map_elements_in_background(self, f, return_type))
@@ -2273,8 +2273,8 @@ Expr_inspect = function(fmt = "{}") {
   # check fmt and create something to print before and after printing Series.
   if (!is_string(fmt)) stop("Inspect: arg fmt is not a string (length=1)")
   strs = strsplit(fmt, split = "\\{\\}")[[1L]]
-  if (identical(strs, "")) strs <- c("", "")
-  if (length(strs) == 1 && grepl("\\{\\}$", fmt)) strs <- c(strs, "")
+  if (identical(strs, "")) strs = c("", "")
+  if (length(strs) == 1 && grepl("\\{\\}$", fmt)) strs = c(strs, "")
   if (length(strs) != 2L || length(gregexpr("\\{\\}", fmt)[[1L]]) != 1L) {
     result(stop(paste0(
       "Inspect: failed to parse arg fmt [", fmt, "] ",
@@ -2334,10 +2334,10 @@ prepare_rolling_window_args = function(
     min_periods = NULL # : int | None = None,
     ) { # ->tuple[str, int]:
   if (is.numeric(window_size)) {
-    if (is.null(min_periods)) min_periods <- as.numeric(window_size)
+    if (is.null(min_periods)) min_periods = as.numeric(window_size)
     window_size = paste0(as.character(floor(window_size)), "i")
   }
-  if (is.null(min_periods)) min_periods <- 1
+  if (is.null(min_periods)) min_periods = 1
   list(window_size = window_size, min_periods = min_periods)
 }
 
@@ -3559,7 +3559,7 @@ Expr_peak_max = function() {
 #'   sum_a_offset1 = pl$sum("a")$rolling(index_column = "dt", period = "2d", offset = "1d")
 #' )
 Expr_rolling = function(index_column, period, offset = NULL,
-                         closed = "right", check_sorted = TRUE) {
+                        closed = "right", check_sorted = TRUE) {
   if (is.null(offset)) {
     offset = paste0("-", period)
   }

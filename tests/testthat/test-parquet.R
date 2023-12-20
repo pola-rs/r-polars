@@ -59,5 +59,4 @@ test_that("scan read parquet - parallel strategies", {
   expect_identical(ctx$BadArgument, "parallel")
   ctx = pl$read_parquet(tmpf, parallel = 42) |> get_err_ctx()
   expect_identical(ctx$NotAChoice, "input is not a character vector")
-
 })
