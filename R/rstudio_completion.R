@@ -155,7 +155,7 @@ if (interactive()) .dev = polars:::.dev
 
         # pass on to normal Rstudio completion
         results = .rs.getCompletionsFunction_orig(
-          token, string, functionCall, numCommas,
+          token, string, functionCall = NULL, numCommas,
           envir = envir, object = object
         )
         results$excludeOtherArgumentCompletions  = FALSE
