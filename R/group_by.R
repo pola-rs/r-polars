@@ -69,6 +69,24 @@ print.RPolarsGroupBy = function(x, ...) {
 }
 
 
+
+#' Get and set column names of a GroupBy
+#' @name GroupBy_columns
+#' @rdname GroupBy_columns
+#'
+#' @return A character vector with the column names.
+#' @keywords GroupBy
+#'
+#' @examples
+#' gb = pl$GroupBy(iris)$group_by("Species")
+#'
+#' # get values
+#' gb$columns
+GroupBy_columns = method_as_property(function() {
+  self$ungroup()$columns
+})
+
+
 #' Aggregate over a GroupBy
 #' @description Aggregate a DataFrame over a groupby
 #' @param ... exprs to aggregate over.
