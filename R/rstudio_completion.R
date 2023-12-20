@@ -45,7 +45,7 @@ if (interactive()) .dev = polars:::.dev
       "RPolarsLazyFrame", "RPolarsSeries", "RPolarsLazyGroupBy", "RPolarsDataType",
       "RPolarsExpr", "RPolarsDataFrame", "RPolarsWhen", "RPolarsThen",
       "RPolarsChainedWhen", "RPolarsChainedThen", "RPolarsSQLContext",
-      "method_environment"
+      "method_environment", "RPolarsGroupBy"
     )
   )
 }
@@ -125,6 +125,8 @@ if (interactive()) .dev = polars:::.dev
             #browser()
             object = lhs
             object_self = environment(lhs)$self
+
+
             if(inherits(object_self, c("RPolarsDataFrame","RPolarsLazyFrame"))) {
               #browser()
               col_results = .rs.makeCompletions(

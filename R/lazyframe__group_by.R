@@ -14,6 +14,18 @@ print.RPolarsLazyGroupBy = function(x, ...) {
   x$print()
 }
 
+
+#' @title auto complete $-access into a polars object
+#' @description called by the interactive R session internally
+#' @param x GroupBy
+#' @param pattern token as string to filter methods by
+#' @return char vec
+#' @export
+#' @noRd
+.DollarNames.RPolarsLazyGroupBy = function(x, pattern = "") {
+  paste0(ls(RPolarsLazyGroupBy, pattern = pattern), "()")
+}
+
 #' @title LazyGroupBy_agg
 #' @description
 #' aggregate a polar_lazy_group_by
