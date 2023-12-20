@@ -4,22 +4,24 @@
 
 
 ## missing autocomplete, docs
-source("~/Documents/projs/r-polars/R/rstudio_completion.R")
-.dev$activate_polars_rstudio_completion()
 
+
+source("~/Documents/projs/r-polars/R/rstudio_completion.R")
+.dev$deactivate_polars_rstudio_completion()
+.dev$activate_polars_rstudio_completion()
 library(polars)
 
 
 
-pl$
-  DataFrame(iris)$
-  lazy()$
-  silly()$
-  this_method_does_exist()$
-  with_columns(pl$col('Sepal.Width')$
-  alias("mycol"))$group_by()
+#
+#
+# pl$
+#   DataFrame(iris)$
+#   lazy()$
+#   with_columns(pl$col('Sepal.Width')$
+#   alias("mycol"))$group_by(pl$col('Sepal.Length'))$
+#
 
 
 
-
-
+pl$DataFrame(iris)$group_by(pl$col('Sepal.Length'))$agg(

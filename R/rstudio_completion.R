@@ -50,6 +50,16 @@ if (interactive()) .dev = polars:::.dev
   )
 }
 
+.dev$has_columns = function(x) {
+  inherits(
+    x,
+    c(
+      "RPolarsLazyFrame",  "RPolarsLazyGroupBy",
+      "RPolarsDataFrame", "RPolarsGroupBy"
+    )
+  )
+}
+
 # decide if some function/method belongs to polars
 .dev$is_polars_function = function(x, limit_search = 256) {
   pl_env = asNamespace("polars")
@@ -86,10 +96,11 @@ if (interactive()) .dev = polars:::.dev
 
 
 #' activate_polars_rstudio_completion
-#'
-#' @return
+#' @name activate_polars_rstudio_completion
+#' @returnNULL
 #'
 #' @examples
+#' .dev$activate_polars_rstudio_completion()
 .dev$activate_polars_rstudio_completion = function() {
 
   #find rstudio tools
@@ -127,11 +138,11 @@ if (interactive()) .dev = polars:::.dev
             object_self = environment(lhs)$self
 
 
-            if(inherits(object_self, c("RPolarsDataFrame","RPolarsLazyFrame"))) {
+            if(polars:::.dev$has_columns(object_self)) {
               #browser()
               col_results = .rs.makeCompletions(
                 token = token,
-                results =  paste0("pl$col('",colnames(object_self),"')"),
+                results =  paste0("pl$col('",object_self$columns, "')"),
                 excludeOtherCompletions = FALSE,
                 quote = FALSE, helpHandler = FALSE,
                 context = .rs.acContextTypes$FUNCTION,
