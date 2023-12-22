@@ -7,7 +7,7 @@ test_that("str$strptime datetime", {
 
   expect_error(
     pl$lit(txt_datetimes)$str$strptime(pl$Datetime(), format = "%Y-%m-%d %H:%M:%S")$to_series(),
-    "Conversion .* failed"
+    "conversion .* failed"
   )
 
   expect_identical(
@@ -687,3 +687,4 @@ test_that("str$parse_int", {
 
   expect_error(pl$lit("foo")$str$parse_int()$to_r(), "strict integer parsing failed for 1 value")
 })
+
