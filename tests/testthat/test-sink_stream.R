@@ -99,6 +99,7 @@ test_that("sink_csv: null_values works", {
   dat_pl$sink_csv(tempf, null_values = "hello")
   expect_equal(
     pl$read_csv(tempf)$
+      sort("id")$
       select("disp", "hp")$
       slice(offset = 0, length = 1)$
       to_list(),
