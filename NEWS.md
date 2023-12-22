@@ -19,7 +19,7 @@
 
 ### What's changed
 - Use `pl$polars_code_completion()` to assist writing polars syntax. Support for native R terminal
-  and Rstudio. (#XYZ).
+  and Rstudio. (#597).
 - The Extract function (`[`) for DataFrame can use columns not included in the
   result for filtering (#547).
 - The Extract function (`[`) for LazyFrame can filter rows with Expressions (#547).
