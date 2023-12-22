@@ -2580,3 +2580,57 @@ test_that("eq_missing and ne_missing", {
     )
   )
 })
+
+test_that("replace works", {
+  df = pl$DataFrame(a = c(1, 2, 2, 3))
+
+  # "old" and "new" can take either scalars or vectors of same length
+  expect_equal(
+    df$select(replaced = pl$col("a")$replace(2, 100))$to_list(),
+    list(replaced = c(1, 100, 100, 3))
+  )
+  expect_equal(
+    df$select(replaced = pl$col("a")$replace(c(2, 3), 999))$to_list(),
+    list(replaced = c(1, 999, 999, 999))
+  )
+  expect_equal(
+    df$select(replaced = pl$col("a")$replace(c(2, 3), c(100, 200)))$to_list(),
+    list(replaced = c(1, 100, 100, 200))
+  )
+
+  # "old" can be a named list where names are values to replace, and values are
+  # the replacements
+  mapping = list(`2` = 100, `3` = 200)
+  expect_equal(
+    df$select(replaced = pl$col("a")$replace(mapping, default = -1))$to_list(),
+    list(replaced = c(-1, 100, 100, 200))
+  )
+
+  df = pl$DataFrame(a = c("x", "y", "z"))
+  mapping = list(x = 1, y = 2, z = 3)
+  expect_equal(
+    df$select(replaced = pl$col("a")$replace(mapping))$to_list(),
+    list(replaced = c("1.0", "2.0", "3.0"))
+  )
+
+  # one can specify the data type to return instead of automatically inferring it
+  expect_equal(
+    df$
+      select(replaced = pl$col("a")$replace(mapping, return_dtype = pl$Int8))$
+      to_list(),
+    list(replaced = 1:3)
+  )
+
+  # "old", "new", and "default" can take Expr
+  df = pl$DataFrame(a = c(1, 2, 2, 3), b = c(1.5, 2.5, 5, 1))
+  expect_equal(
+    df$select(
+      replaced = pl$col("a")$replace(
+        old=pl$col("a")$max(),
+        new=pl$col("b")$sum(),
+        default=pl$col("b"),
+      )
+    )$to_list(),
+    list(replaced = c(1.5, 2.5, 5, 10))
+  )
+})

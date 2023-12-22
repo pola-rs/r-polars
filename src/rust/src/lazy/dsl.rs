@@ -989,6 +989,25 @@ impl RPolarsExpr {
         self.0.clone().peak_max().into()
     }
 
+    pub fn replace(
+        &self,
+        old: Robj,
+        new: Robj,
+        default: Robj,
+        return_dtype: Robj,
+    ) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .replace(
+                robj_to!(PLExpr, old)?,
+                robj_to!(PLExpr, new)?,
+                robj_to!(Option, PLExpr, default)?.map(|e| e),
+                robj_to!(Option, PLPolarsDataType, return_dtype)?.map(|dt| dt),
+            )
+            .into())
+    }
+
     //arr/list methods
 
     fn list_lengths(&self) -> Self {

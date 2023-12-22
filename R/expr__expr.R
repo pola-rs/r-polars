@@ -3576,3 +3576,59 @@ Expr_rolling = function(index_column, period, offset = NULL,
   .pr$Expr$rolling(self, index_column, period, offset, closed, check_sorted) |>
     unwrap("in $rolling():")
 }
+
+#' Replace values by different values
+#'
+#' This allows one to recode values in a column.
+#'
+#' @param old Can be several things:
+#' * a vector indicating the values to recode;
+#' * if `new` is missing, this can be a named list e.g `list(old = "new")` where
+#'   the names are the old values and the values are the replacements. Note that
+#'   if old values are numeric, the names must be wrapped in backticks;
+#' * an Expr
+#' @param new Either a scalar, a vector of same length as `old` or an Expr. If
+#' missing, `old` must be a named list.
+#' @param default The default replacement if the value is not in `old`. Can be
+#' an Expr. If `NULL` (default), then the value doesn't change.
+#' @param return_dtype The data type of the resulting expression. If set to
+#' `NULL` (default), the data type is determined automatically based on the
+#' other inputs.
+#'
+#' @return Expr
+#' @examples
+#' df = pl$DataFrame(a = c(1, 2, 2, 3))
+#'
+#' # "old" and "new" can take either scalars or vectors of same length
+#' df$with_columns(replaced = pl$col("a")$replace(2, 100))
+#' df$with_columns(replaced = pl$col("a")$replace(c(2, 3), c(100, 200)))
+#'
+#' # "old" can be a named list where names are values to replace, and values are
+#' # the replacements
+#' mapping = list(`2` = 100, `3` = 200)
+#' df$with_columns(replaced = pl$col("a")$replace(mapping, default = -1))
+#'
+#' df = pl$DataFrame(a = c("x", "y", "z"))
+#' mapping = list(x = 1, y = 2, z = 3)
+#' df$with_columns(replaced = pl$col("a")$replace(mapping))
+#'
+#' # one can specify the data type to return instead of automatically inferring it
+#' df$with_columns(replaced = pl$col("a")$replace(mapping, return_dtype = pl$Int8))
+#'
+#' # "old", "new", and "default" can take Expr
+#' df = pl$DataFrame(a = c(1, 2, 2, 3), b = c(1.5, 2.5, 5, 1))
+#' df$with_columns(
+#'   replaced = pl$col("a")$replace(
+#'     old=pl$col("a")$max(),
+#'     new=pl$col("b")$sum(),
+#'     default=pl$col("b"),
+#'   )
+#' )
+Expr_replace = function(old, new, default = NULL, return_dtype = NULL) {
+  if (missing(new) && is.list(old)) {
+    new = unlist(old, use.names = FALSE)
+    old = names(old)
+  }
+  .pr$Expr$replace(self, old, new, default, return_dtype) |>
+    unwrap("in $replace():")
+}

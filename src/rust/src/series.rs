@@ -461,12 +461,18 @@ impl RPolarsSeries {
     }
 
     pub fn std(&self, ddof: Robj) -> Result<Robj, String> {
-        let s = self.0.std_as_series(robj_to!(u8, ddof)?).map_err(polars_to_rpolars_err)?;
+        let s = self
+            .0
+            .std_as_series(robj_to!(u8, ddof)?)
+            .map_err(polars_to_rpolars_err)?;
         RPolarsSeries(s).to_r()
     }
 
     pub fn var(&self, ddof: Robj) -> Result<Robj, String> {
-        let s = self.0.var_as_series(robj_to!(u8, ddof)?).map_err(polars_to_rpolars_err)?;
+        let s = self
+            .0
+            .var_as_series(robj_to!(u8, ddof)?)
+            .map_err(polars_to_rpolars_err)?;
         RPolarsSeries(s).to_r()
     }
 

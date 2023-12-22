@@ -119,6 +119,7 @@ features = [
   "rank",
   "reinterpret",
   "repeat_by",
+  "replace",
   "rolling_window",
   "round_series",
   "row_hash",
