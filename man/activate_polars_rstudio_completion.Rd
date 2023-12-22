@@ -6,6 +6,12 @@
 \description{
 activate_polars_rstudio_completion
 }
+\details{
+Modifies rstudio auto-completion functions by wrapping them.
+
+Any other package can also wrap these or other completion functions.
+Multiple wrappers can also co-exists, just keep the signature the same.
+}
 \examples{
 .dev$activate_polars_rstudio_completion()
 }

@@ -1,12 +1,9 @@
 
 
 # storing autocompletion functions in an environment,
-# allows experimentaion at run-time, without rebuilding package
+# allows modification at run-time, without rebuilding package.
+# This is useful as rstudio to do fast trial&error experimentation.
 .dev = new.env(parent = emptyenv())
-
-# expose .dev in interactive development
-if (interactive()) .dev = polars:::.dev
-
 
 
 # function to parse eval left-hand-side string
@@ -50,6 +47,7 @@ if (interactive()) .dev = polars:::.dev
   )
 }
 
+# classes that have the method $columns() and implement names()
 .dev$has_columns = function(x) {
   inherits(
     x,
@@ -60,7 +58,7 @@ if (interactive()) .dev = polars:::.dev
   )
 }
 
-# decide if some function/method belongs to polars
+# decide if some function/method recursively has the polars nameSpace as parant environment.
 .dev$is_polars_function = function(x, limit_search = 256) {
   pl_env = asNamespace("polars")
   if(!is.function(x)) return(FALSE)
@@ -76,28 +74,19 @@ if (interactive()) .dev = polars:::.dev
 # TODO this function will hopefully one day find and compile helpsection
 # for any selected method
 .dev$helpHandler = function(type = "completion", topic, source, ...) {
-
   print("hello helper")
-  #print(type)
-  #print(topic)
-  if (type == "completion") {
-    list(
-      title = topic, signature = NULL, returns = "lots of stuff",
-      description = "description", details = "details", sections = "sections"
-    )
-  } else if (type == "parameter") {
-    "here to help <3 parameter"
-  } else if (type == "url") {
-    "here to help <3 url"
-  }
 }
-
-
 
 
 #' activate_polars_rstudio_completion
 #' @name activate_polars_rstudio_completion
-#' @returnNULL
+#' @return NULL
+#' @details
+#' Modifies rstudio auto-completion functions by wrapping them.
+#'
+#' Any other package can also wrap these or other completion functions.
+#' Multiple wrappers can also co-exists, just keep the signature the same.
+#'
 #'
 #' @examples
 #' .dev$activate_polars_rstudio_completion()
@@ -110,23 +99,20 @@ if (interactive()) .dev = polars:::.dev
   )
 
   # check if mod already has been done
-  if (!is.null(rs$.rs.getCompletionsDollar_orig)) {
+  if (!is.null(rs$.rs.getCompletionsFunction_polars_orig)) {
     stop("cannot stack multiple rules with this impl")
   }
-
 
   # do the following mod to  the Rstudio tool environment...
   local(
     envir = rs,
     {
       ## 1 - add completion to function arguments
-      .rs.getCompletionsFunction_orig = .rs.getCompletionsFunction # save original function here
+      .rs.getCompletionsFunction_polars_orig = .rs.getCompletionsFunction # save original function here
       .rs.getCompletionsFunction = function(
         token, string, functionCall, numCommas, envir = parent.frame(),
         object = .rs.resolveObjectFromFunctionCall(functionCall, envir)
       ) {
-        #browser()
-        #print(string)
 
         # if Rstudio failed to immediately resolve the object, do a full evaluation of the entire
         # lhs line/section which creates the calling function
@@ -135,13 +121,11 @@ if (interactive()) .dev = polars:::.dev
           lhs = polars:::.dev$eval_lhs_string(string, envir)
           if(is.null(lhs)) return(.rs.emptyCompletions())
           if(polars:::.dev$is_polars_function(lhs)) {
-            #browser()
             object = lhs
             object_self = environment(lhs)$self
 
 
             if(polars:::.dev$has_columns(object_self)) {
-              #browser()
               col_results = .rs.makeCompletions(
                 token = token,
                 results =  paste0("pl$col('",object_self$columns, "')"),
@@ -156,32 +140,29 @@ if (interactive()) .dev = polars:::.dev
         }
 
         # pass on to normal Rstudio completion
-        results = .rs.getCompletionsFunction_orig(
+        results = .rs.getCompletionsFunction_polars_orig(
           token, string, functionCall = NULL, numCommas,
           envir = envir, object = object
         )
         results$excludeOtherArgumentCompletions  = FALSE
-
         .rs.appendCompletions(results, col_results)
       }
 
       ## 2 - completion for dollar lists
-      .rs.getCompletionsDollar_orig = .rs.getCompletionsDollar
+      .rs.getCompletionsFunction_polars_orig = .rs.getCompletionsDollar
       .rs.getCompletionsDollar = function(token, string, functionCall, envir, isAt) {
-        #browser()
-        #print(string)
 
         #perform evaluation of lhs
         lhs = polars:::.dev$eval_lhs_string(string, envir)
         if(is.null(lhs)) return(.rs.emptyCompletions())
         if (!polars:::.dev$is_polars_related_type(lhs)) {
-          results = .rs.getCompletionsDollar_orig(
+          results = .rs.getCompletionsFunction_polars_orig(
             token, string, functionCall, envir = envir, isAt
           )
           return(results)
         }
 
-        string =  ""#paste(class(lhs),collapse = " ")    # show class of inferred polars object
+        string =  ""
 
         # get method, attribute names and drop ()
         results = gsub("\\(|\\)", "", .DollarNames(lhs, token))
@@ -200,21 +181,9 @@ if (interactive()) .dev = polars:::.dev
             .rs.getCompletionType(eval(substitute(`$`(lhs, x), list(x = x))))
           }
         )
-
-        helpHandler = 'function(...) {
-          print("hellowklfelknerlkn")
-          #browser()
-          #.rs.getHelp("DataFrame_columns", "polars", subset = FALSE)
-          list(
-            description = "hello world!!",
-            sections = list(Args= "hej"),
-            returns = "something beautiful!"
-          )
-        }'
-
         .rs.makeCompletions(
           token = token, results = results, excludeOtherCompletions = TRUE, packages = "polars",
-          quote = FALSE, helpHandler = FALSE,#;list(helpHandler),
+          quote = FALSE, helpHandler = FALSE,
           context = .rs.acContextTypes$DOLLAR,
           type = types , meta = "", cacheable = FALSE
         )
@@ -231,14 +200,14 @@ if (interactive()) .dev = polars:::.dev
     error = function(err) stop("failed to find tools:rstudio, is this really the Rstudio IDE?")
   )
 
-  if(!is.null( rs$.rs.getCompletionsFunction_orig)) {
-    rs$.rs.getCompletionsFunction = rs$.rs.getCompletionsFunction_orig
-    rs$.rs.getCompletionsFunction_orig = NULL
+  if(!is.null( rs$.rs.getCompletionsFunction_polars_orig)) {
+    rs$.rs.getCompletionsFunction = rs$.rs.getCompletionsFunction_polars_orig
+    rs$.rs.getCompletionsFunction_polars_orig = NULL
   }
 
-  if(!is.null(rs$.rs.getCompletionsDollar_orig)) {
-    rs$.rs.getCompletionsDollar = rs$.rs.getCompletionsDollar_orig
-    rs$.rs.getCompletionsDollar_orig = NULL
+  if(!is.null(rs$.rs.getCompletionsFunction_polars_orig)) {
+    rs$.rs.getCompletionsDollar = rs$.rs.getCompletionsFunction_polars_orig
+    rs$.rs.getCompletionsFunction_polars_orig = NULL
   }
 
 }
