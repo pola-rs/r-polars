@@ -1,5 +1,24 @@
 ## polars (development version)
 
+### BREAKING CHANGES DUE TO RUST-POLARS UPDATE
+
+- rust-polars is updated to 2023-12-21 unreleased version (py-polars 0.20.2) (#601).
+  - `pl$scan_csv()` and `pl$read_csv()`'s `comment_char` argument is renamed `comment_prefix`.
+  - `<DataFrame>$frame_equal()` and `<Series>$series_equal()` are renamed
+    to `<DataFrame>$equals()` and `<Series>$equals()`.
+  - `<Expr>$rolling_*` functions are gained the new `warn_in_unsorted` argument.
+  - `<Expr>$str$json_extract()` is renamed to `<Expr>$str$json_decode()`.
+  - Change default join behavior with regard to `null` values.
+    See the py-polars upgrade guide for details.
+    <https://pola-rs.github.io/polars/releases/upgrade/0.20/>
+  - Preserve left and right join keys in outer joins.
+    See the py-polars upgrade guide for details.
+    <https://pola-rs.github.io/polars/releases/upgrade/0.20/>
+  - `count` now ignores null values.
+  - `NaN` values are now considered equal.
+    See the py-polars upgrade guide for details.
+    <https://pola-rs.github.io/polars/releases/upgrade/0.20/>
+
 ### Breaking changes and deprecations
 
 - `$apply()` on an Expr or a Series is renamed `$map_elements()`, and `$map()`
