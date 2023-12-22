@@ -6,7 +6,7 @@
 #' @param x LazyGroupBy
 #' @param ... not used
 #' @return self
-#' @keywords internal
+#' @noRd
 #' @export
 #'
 print.RPolarsLazyGroupBy = function(x, ...) {

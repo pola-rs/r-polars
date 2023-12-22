@@ -1,7 +1,7 @@
 # this file sources list-expression functions to be bundled in the 'expr$list' sub namespace
 # the sub name space is instantiated from Expr_arr- function
 # bundling these functions into an environment, depends on a macro call in zzz.R
-# expr_list_make_sub_ns = macro_new_subnamespace("^ExprList_", "ExprListNameSpace")
+# expr_list_make_sub_ns = macro_new_subnamespace("^ExprList_", "RPolarsExprListNameSpace")
 
 
 ## TODO revisit array, list terminology and pick one way, e.g list of sublists or list of elements
@@ -151,15 +151,15 @@ ExprList_get = function(index) .pr$Expr$list_get(self, wrap_e(index, str_to_lit 
 #' Get list
 #' @rdname ExprList_get
 #' @export
-#' @param x ExprListNameSpace
+#' @param x RPolarsExprListNameSpace
 #' @param index value to get
 #' @details
-#' `[.ExprListNameSpace` used as e.g. `pl$col("a")$arr[0]` same as `pl$col("a")$get(0)`
+#' `[.RPolarsExprListNameSpace` used as e.g. `pl$col("a")$arr[0]` same as `pl$col("a")$get(0)`
 #' @examples
 #' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) # NULL or integer() or list()
 #' df$select(pl$col("a")$list[0])
 #' df$select(pl$col("a")$list[c(2, 0, -1)])
-`[.ExprListNameSpace` = function(x, index) { # S3 sub class-name set in zzz.R
+`[.RPolarsExprListNameSpace` = function(x, index) { # S3 sub class-name set in zzz.R
   x$get(index)
 }
 
@@ -393,10 +393,9 @@ ExprList_tail = function(n = 5L) {
 #'
 #' df2$to_list()
 ExprList_to_struct = function(
-    n_field_strategy = c("first_non_null","max_width"),
+    n_field_strategy = c("first_non_null", "max_width"),
     name_generator = NULL,
-    upper_bound = 0
-) {
+    upper_bound = 0) {
   .pr$Expr$list_to_struct(self, n_field_strategy, name_generator, upper_bound) |>
     unwrap("in <List>$to_struct():")
 }

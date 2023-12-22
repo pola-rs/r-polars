@@ -438,8 +438,8 @@ pl$n_unique = function(column) { #-> int or Expr
 #'
 #' # comparison with n_unique for 2 million integers. (try change example to 20 million ints)
 #' lit_series = pl$lit(c(1:1E6, 1E6:1, 1:1E6))
-#' system.time(pl$approx_n_unique(lit_series)$lit_to_s()$print())
-#' system.time(pl$n_unique(lit_series)$lit_to_s()$print())
+#' system.time(pl$approx_n_unique(lit_series)$to_series()$print())
+#' system.time(pl$n_unique(lit_series)$to_series()$print())
 pl$approx_n_unique = function(column) { #-> int or Expr
   pcase(
     inherits(column, "RPolarsExpr"), result(column$approx_n_unique()),
@@ -479,7 +479,7 @@ pl$approx_n_unique = function(column) { #-> int or Expr
 #' df$with_columns(pl$sum("*"))
 pl$sum = function(..., verbose = TRUE) {
   column = list2(...)
-  if (length(column) == 1L) column <- column[[1L]]
+  if (length(column) == 1L) column = column[[1L]]
   if (inherits(column, "RPolarsSeries") || inherits(column, "RPolarsExpr")) {
     return(column$sum())
   }
@@ -520,7 +520,7 @@ pl$sum = function(..., verbose = TRUE) {
 #'
 pl$min = function(..., verbose = TRUE) {
   column = list2(...)
-  if (length(column) == 1L) column <- column[[1L]]
+  if (length(column) == 1L) column = column[[1L]]
   if (inherits(column, "RPolarsSeries") || inherits(column, "RPolarsExpr")) {
     return(column$min())
   }
@@ -565,7 +565,7 @@ pl$min = function(..., verbose = TRUE) {
 #'
 pl$max = function(..., verbose = TRUE) {
   column = list2(...)
-  if (length(column) == 1L) column <- column[[1L]]
+  if (length(column) == 1L) column = column[[1L]]
   if (inherits(column, "RPolarsSeries") || inherits(column, "RPolarsExpr")) {
     return(column$max())
   }
@@ -682,7 +682,7 @@ pl$var = function(column, ddof = 1) {
 #'   pl$lit(1:5),
 #'   pl$Series(5:1),
 #'   rep(0L, 5)
-#' ))$alias("alice")$lit_to_s()
+#' ))$alias("alice")$to_series()
 #'
 pl$concat_list = function(exprs) {
   concat_list(as.list(exprs)) |>

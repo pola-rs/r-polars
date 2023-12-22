@@ -1770,7 +1770,7 @@ test_that("Expr_pct_change", {
 
 test_that("skew", {
   R_skewness = function(x, bias = TRUE, na.rm = FALSE) {
-    if (na.rm) x <- x[!is.na(x)]
+    if (na.rm) x = x[!is.na(x)]
     n = length(x)
     m2 = sum((x - mean(x))^2) / n
     m3 = sum((x - mean(x))^3) / n
@@ -1804,7 +1804,7 @@ test_that("skew", {
 
 test_that("kurtosis", {
   R_kurtosis = function(x, fisher = TRUE, bias = TRUE, na.rm = TRUE) {
-    if (na.rm) x <- x[!is.na(x)]
+    if (na.rm) x = x[!is.na(x)]
     n = length(x)
     m2 = sum((x - mean(x))^2) / n
     m4 = sum((x - mean(x))^4) / n
@@ -2213,7 +2213,7 @@ test_that("unique_counts", {
 test_that("entropy", {
   # https://stackoverflow.com/questions/27254550/calculating-entropy
   r_entropy = function(x, base = exp(1), normalize = TRUE) {
-    if (normalize) x <- x / sum(x)
+    if (normalize) x = x / sum(x)
     -sum(x * log(x) / log(base))
   }
 
@@ -2310,11 +2310,11 @@ test_that("concat_list", {
   )
 
   # concat Expr a Series and an R obejct
-  df_act = pl$concat_list(list(
+  df_act = pl$select(pl$concat_list(list(
     pl$lit(1:5),
     pl$Series(5:1),
     rep(0L, 5)
-  ))$alias("alice")$lit_to_df()
+  ))$alias("alice"))
 
   expect_identical(
     df_act$to_data_frame(),

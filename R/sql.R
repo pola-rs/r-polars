@@ -21,9 +21,18 @@ NULL
 #' @export
 #' @noRd
 #' @inherit .DollarNames.RPolarsDataFrame return
-#' @keywords internal
 .DollarNames.RPolarsSQLContext = function(x, pattern = "") {
   get_method_usages(RPolarsSQLContext, pattern = pattern)
+}
+
+
+#' @noRd
+#' @export
+print.RPolarsSQLContext = function(x, ...) {
+  cat("RPolarsSQLContext\n")
+  cat("  tables:", x$tables(), "\n")
+
+  invisible(x)
 }
 
 
@@ -38,12 +47,12 @@ NULL
 pl$SQLContext = function(...) {
   check_feature("sql", "in $SQLContext()")
 
-  self = .pr$RPolarsSQLContext$new()
+  self = .pr$SQLContext$new()
   lazyframes = list(...)
 
   if (length(lazyframes)) {
     for (index in seq_along(lazyframes)) {
-      .pr$RPolarsSQLContext$register(
+      .pr$SQLContext$register(
         self,
         names(lazyframes[index]),
         lazyframes[[index]]
@@ -67,7 +76,7 @@ pl$SQLContext = function(...) {
 #' pl$SQLContext(mtcars = mtcars)$execute(query)
 #' pl$SQLContext(mtcars = mtcars)$execute(query, eager = TRUE)
 SQLContext_execute = function(query, eager = FALSE) {
-  lf = .pr$RPolarsSQLContext$execute(self, query) |>
+  lf = .pr$SQLContext$execute(self, query) |>
     unwrap("in $execute()")
 
   if (eager) {
@@ -89,7 +98,7 @@ SQLContext_execute = function(query, eager = FALSE) {
 #'
 #' ctx$execute("SELECT * FROM mtcars LIMIT 5")$collect()
 SQLContext_register = function(name, frame) {
-  .pr$RPolarsSQLContext$register(self, name, frame) |>
+  .pr$SQLContext$register(self, name, frame) |>
     unwrap("in $register()")
   invisible(self)
 }
@@ -119,7 +128,7 @@ SQLContext_register_many = function(...) {
 
   if (length(lazyframes)) {
     for (index in seq_along(lazyframes)) {
-      .pr$RPolarsSQLContext$register(
+      .pr$SQLContext$register(
         self,
         names(lazyframes[index]),
         lazyframes[[index]]
@@ -146,7 +155,7 @@ SQLContext_register_many = function(...) {
 #' ctx$tables()
 SQLContext_unregister = function(names) {
   for (index in seq_along(names)) {
-    .pr$RPolarsSQLContext$unregister(self, names[index]) |>
+    .pr$SQLContext$unregister(self, names[index]) |>
       unwrap("in $register()")
   }
   invisible(self)
@@ -164,6 +173,6 @@ SQLContext_unregister = function(names) {
 #' ctx$register("df2", mtcars)
 #' ctx$tables()
 SQLContext_tables = function() {
-  .pr$RPolarsSQLContext$get_tables(self) |>
+  .pr$SQLContext$get_tables(self) |>
     unwrap("in $tables()")
 }

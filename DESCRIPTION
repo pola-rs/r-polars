@@ -43,7 +43,8 @@ Suggests:
     vctrs,
     withr
 Config/Needs/website:
-    altdoc (>= 0.2.2),
+    etiennebacher/altdoc@5c69f3b,
+    future.apply,
     here,
     magrittr,
     pkgload,
@@ -54,7 +55,6 @@ Config/Needs/dev:
     RcppTOML,
     readr,
     rextendr,
-    robinlovelace/styler.equals,
     spelling,
     stringr,
     styler

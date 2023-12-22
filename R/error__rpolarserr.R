@@ -5,7 +5,7 @@
 #' @return char vec
 #' @export
 #' @inherit .DollarNames.RPolarsDataFrame return
-#' @keywords internal
+#' @noRd
 .DollarNames.RPolarsErr = function(x, pattern = "") {
   get_method_usages(RPolarsErr, pattern = pattern)
 }
@@ -50,11 +50,11 @@ upgrade_err.RPolarsErr = function(err) { # already RPolarsErr pass through
 
 # short hand  for starting new error with a bad robj input
 bad_robj = function(r) {
-  .pr$RPolarsErr$new()$bad_robj(r)
+  .pr$Err$new()$bad_robj(r)
 }
 
 Err_plain = function(...) {
-  Err(.pr$RPolarsErr$new()$plain(paste(..., collapse = " ")))
+  Err(.pr$Err$new()$plain(paste(..., collapse = " ")))
 }
 
 # short hand for extracting an error context in unit testing, will raise error if not an RPolarsErr
@@ -75,7 +75,7 @@ err_on_named_args = function(...) {
     Ok(l)
   } else {
     bad_names = names(l)[names(l) != ""]
-    .pr$RPolarsErr$
+    .pr$Err$
       new()$
       bad_arg(paste(bad_names, collapse = ", "))$
       plain("... args not allowed to be named here")$

@@ -53,7 +53,7 @@ Expr_print = function() {
 #' @param pattern String used to auto-complete
 #' @inherit .DollarNames.RPolarsDataFrame return
 #' @export
-#' @keywords internal
+#' @noRd
 .DollarNames.RPolarsExpr = function(x, pattern = "") {
   paste0(ls(RPolarsExpr, pattern = pattern), "()")
 }
@@ -65,7 +65,7 @@ Expr_print = function() {
 #'
 #' @return One Expr wrapped in a list
 #' @export
-#' @keywords internal
+#' @noRd
 as.list.RPolarsExpr = function(x, ...) {
   list(x)
 }
@@ -76,7 +76,7 @@ as.list.RPolarsExpr = function(x, ...) {
 #' @param e an Expr(polars) or any R expression
 #' @details
 #' used internally to ensure an object is an expression
-#' @keywords internal
+#' @noRd
 #' @return Expr
 #' @examples pl$col("foo") < 5
 wrap_e = function(e, str_to_lit = TRUE) {
@@ -92,7 +92,7 @@ wrap_e = function(e, str_to_lit = TRUE) {
 #' @param argname if error, blame argument of this name
 #' @details
 #' used internally to ensure an object is an expression and to catch any error
-#' @keywords internal
+#' @noRd
 #' @return Expr
 #' @examples pl$col("foo") < 5
 wrap_e_result = function(e, str_to_lit = TRUE, argname = NULL) {
@@ -129,14 +129,13 @@ wrap_e_result = function(e, str_to_lit = TRUE, argname = NULL) {
 #' Used internally to ensure an object is a list of expression
 #' The output is wrapped in a result, which can contain an ok or
 #' err value.
-#' @keywords internal
 #' @return Expr
 #' @examples .pr$env$wrap_elist_result(list(pl$lit(42), 42, 1:3))
 wrap_elist_result = function(elist, str_to_lit = TRUE) {
   element_i = 0L
   result(
     {
-      if (!is.list(elist) && length(elist) == 1L) elist <- list(elist)
+      if (!is.list(elist) && length(elist) == 1L) elist = list(elist)
       lapply(elist, \(e) {
         element_i <<- element_i + 1L
         wrap_e(e, str_to_lit)
@@ -575,7 +574,6 @@ Expr_is_not_null = "use_extendr_wrapper"
 #' @param ...  any Expr or string
 #'
 #'
-#' @keywords internal
 #'
 #' @return RPolarsProtoExprArray object
 #'
@@ -889,7 +887,7 @@ Expr_map_elements = function(f, return_type = NULL, strict_return_type = TRUE, a
 }
 
 Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE,
-                       allow_fail_eval = FALSE, in_background = FALSE) {
+                      allow_fail_eval = FALSE, in_background = FALSE) {
   warning("$apply() is deprecated and will be removed in 0.13.0. Use $map_elements() instead.", call. = FALSE)
   if (in_background) {
     return(.pr$Expr$map_elements_in_background(self, f, return_type))
@@ -929,7 +927,7 @@ Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE,
 #' pl$select(pl$lit(1:4))
 #'
 #' # r vector to literal to Series
-#' pl$lit(1:4)$lit_to_s()
+#' pl$lit(1:4)$to_series()
 #'
 #' # vectors to literal implicitly
 #' (pl$lit(2) + 1:4) / 4:1
@@ -1036,12 +1034,12 @@ Expr_to_physical = "use_extendr_wrapper"
 #' )
 #'
 #' # strict FALSE, inserts null for any cast failure
-#' pl$lit(c(100, 200, 300))$cast(pl$dtypes$UInt8, strict = FALSE)$lit_to_s()
+#' pl$lit(c(100, 200, 300))$cast(pl$dtypes$UInt8, strict = FALSE)$to_series()
 #'
 #' # strict TRUE, raise any failure as an error when query is executed.
 #' tryCatch(
 #'   {
-#'     pl$lit("a")$cast(pl$dtypes$Float64, strict = TRUE)$lit_to_s()
+#'     pl$lit("a")$cast(pl$dtypes$Float64, strict = TRUE)$to_series()
 #'   },
 #'   error = function(e) e
 #' )
@@ -2275,8 +2273,8 @@ Expr_inspect = function(fmt = "{}") {
   # check fmt and create something to print before and after printing Series.
   if (!is_string(fmt)) stop("Inspect: arg fmt is not a string (length=1)")
   strs = strsplit(fmt, split = "\\{\\}")[[1L]]
-  if (identical(strs, "")) strs <- c("", "")
-  if (length(strs) == 1 && grepl("\\{\\}$", fmt)) strs <- c(strs, "")
+  if (identical(strs, "")) strs = c("", "")
+  if (length(strs) == 1 && grepl("\\{\\}$", fmt)) strs = c(strs, "")
   if (length(strs) != 2L || length(gregexpr("\\{\\}", fmt)[[1L]]) != 1L) {
     result(stop(paste0(
       "Inspect: failed to parse arg fmt [", fmt, "] ",
@@ -2336,10 +2334,10 @@ prepare_rolling_window_args = function(
     min_periods = NULL # : int | None = None,
     ) { # ->tuple[str, int]:
   if (is.numeric(window_size)) {
-    if (is.null(min_periods)) min_periods <- as.numeric(window_size)
+    if (is.null(min_periods)) min_periods = as.numeric(window_size)
     window_size = paste0(as.character(floor(window_size)), "i")
   }
-  if (is.null(min_periods)) min_periods <- 1
+  if (is.null(min_periods)) min_periods = 1
   list(window_size = window_size, min_periods = min_periods)
 }
 
@@ -2677,7 +2675,7 @@ Expr_rank = function(
 #'   diff_default = pl$col("a")$diff(),
 #'   diff_2_ignore = pl$col("a")$diff(2, "ignore")
 #' )
-  Expr_diff = function(n = 1, null_behavior = c("ignore", "drop")) {
+Expr_diff = function(n = 1, null_behavior = c("ignore", "drop")) {
   .pr$Expr$diff(self, n, null_behavior) |>
     unwrap("in $diff():")
 }
@@ -2978,7 +2976,7 @@ Expr_sample = function(
     seed = NULL, n = NULL) {
   pcase(
     !is.null(n) && !is.null(frac), {
-      Err(.pr$RPolarsErr$new()$plain("either arg `n` or `frac` must be NULL"))
+      Err(.pr$Err$new()$plain("either arg `n` or `frac` must be NULL"))
     },
     !is.null(n), .pr$Expr$sample_n(self, n, with_replacement, shuffle, seed),
     or_else = {
@@ -2993,7 +2991,6 @@ Expr_sample = function(
 #' @param span numeric or NULL
 #' @param half_life numeric or NULL
 #' @param alpha numeric or NULL
-#' @keywords internal
 #' @return numeric
 #' @noRd
 prepare_alpha = function(
@@ -3113,7 +3110,7 @@ Expr_ewm_var = function(
     com = NULL, span = NULL, half_life = NULL, alpha = NULL,
     adjust = TRUE, bias = FALSE, min_periods = 1L, ignore_nulls = TRUE) {
   alpha = prepare_alpha(com, span, half_life, alpha)
-  .pr$Expr$ewm_var(self, alpha, adjust, bias, min_periods, ignore_nulls)  |>
+  .pr$Expr$ewm_var(self, alpha, adjust, bias, min_periods, ignore_nulls) |>
     unwrap("in $ewm_var()")
 }
 
@@ -3147,7 +3144,7 @@ Expr_extend_constant = function(value, n) {
 #' pl$select(pl$lit("alice")$rep(n = 3))
 #' pl$select(pl$lit(1:3)$rep(n = 2))
 Expr_rep = function(n, rechunk = TRUE) {
-  .pr$Expr$rep(self, n, rechunk)  |>
+  .pr$Expr$rep(self, n, rechunk) |>
     unwrap("in $rep()")
 }
 
@@ -3442,20 +3439,11 @@ Expr_to_struct = function() {
 #' Collect an expression based on literals into a Series.
 #' @return Series
 #' @examples
-#' pl$lit(1:5)$lit_to_s()
-Expr_lit_to_s = function() {
+#' pl$lit(1:5)$to_series()
+Expr_to_series = function() {
   pl$select(self)$to_series(0)
 }
 
-#' Convert Literal to DataFrame
-#'
-#' Collect an expression based on literals into a DataFrame.
-#' @return Series
-#' @examples
-#' pl$lit(1:5)$lit_to_df()
-Expr_lit_to_df = function() {
-  pl$select(self)
-}
 
 #' Find local minima
 #'
@@ -3577,7 +3565,7 @@ Expr_peak_max = function() {
 #'   sum_a_offset1 = pl$sum("a")$rolling(index_column = "dt", period = "2d", offset = "1d")
 #' )
 Expr_rolling = function(index_column, period, offset = NULL,
-                         closed = "right", check_sorted = TRUE) {
+                        closed = "right", check_sorted = TRUE) {
   if (is.null(offset)) {
     offset = paste0("-", period)
   }

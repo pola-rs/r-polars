@@ -15,7 +15,8 @@
 #' @param ... additional arguments, not used
 #' @return invisible x or NULL
 #' @keywords DataFrame
-#' @export
+#' @rdname S3_knit_print
+# exported in zzz.R
 knit_print.RPolarsDataFrame = function(x, ...) {
   .print_opt = getOption("polars.df_print", "auto")
   .rmd_df_print = knitr::opts_knit$get("rmarkdown.df_print")

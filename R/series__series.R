@@ -42,7 +42,7 @@ NULL
 
 
 #' Wrap as Series
-#' @keywords internal
+#' @noRd
 #' @description input is either already a Series of will be passed to the Series constructor
 #' @param x a Series or something-turned-into-Series
 #' @return Series
@@ -366,7 +366,7 @@ Series_map_elements = function(
 }
 
 Series_apply = function(f, datatype = NULL, strict_return_type = TRUE,
-                         allow_fail_eval = FALSE) {
+                        allow_fail_eval = FALSE) {
   warning("$apply() is deprecated and will be removed in 0.13.0. Use $map_elements() instead.")
   Series_map_elements(f,
     datatype = datatype, strict_return_type = strict_return_type,
@@ -981,7 +981,7 @@ Series_expr = method_as_property(function() {
 #'   $list$lengths()
 #'   $sum()
 #'   $cast(pl$dtypes$Int8)
-#'   $lit_to_s()
+#'   $to_series()
 #' )
 Series_to_lit = function() {
   pl$lit(self)

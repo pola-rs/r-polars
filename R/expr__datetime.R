@@ -119,18 +119,18 @@ ExprDT_round = function(every, offset = NULL) {
 #' @aliases (Expr)$dt$combine
 #' @examples
 #' # Using pl$PTime
-#' pl$lit(as.Date("2021-01-01"))$dt$combine(pl$PTime("02:34:12"))$lit_to_s()
-#' pl$lit(as.Date("2021-01-01"))$dt$combine(pl$PTime(3600 * 1.5, tu = "s"))$lit_to_s()
-#' pl$lit(as.Date("2021-01-01"))$dt$combine(pl$PTime(3600 * 1.5E6 + 123, tu = "us"))$lit_to_s()
+#' pl$lit(as.Date("2021-01-01"))$dt$combine(pl$PTime("02:34:12"))$to_series()
+#' pl$lit(as.Date("2021-01-01"))$dt$combine(pl$PTime(3600 * 1.5, tu = "s"))$to_series()
+#' pl$lit(as.Date("2021-01-01"))$dt$combine(pl$PTime(3600 * 1.5E6 + 123, tu = "us"))$to_series()
 #'
 #' # pass double and set tu manually
-#' pl$lit(as.Date("2021-01-01"))$dt$combine(3600 * 1.5E6 + 123, tu = "us")$lit_to_s()
+#' pl$lit(as.Date("2021-01-01"))$dt$combine(3600 * 1.5E6 + 123, tu = "us")$to_series()
 #'
 #' # if needed to convert back to R it is more intuitive to set a specific time zone
 #' expr = pl$lit(as.Date("2021-01-01"))$dt$combine(3600 * 1.5E6 + 123, tu = "us")
 #' expr$cast(pl$Datetime(tu = "us", tz = "GMT"))$to_r()
 ExprDT_combine = function(tm, tu = "us") {
-  if (inherits(tm, "PTime")) tu <- "ns" # PTime implicitly gets converted to "ns"
+  if (inherits(tm, "PTime")) tu = "ns" # PTime implicitly gets converted to "ns"
   if (!is_string(tu)) stop("combine: input tu is not a string, [%s ]", str_string(tu))
   unwrap(.pr$Expr$dt_combine(self, wrap_e(tm), tu))
 }
@@ -582,10 +582,10 @@ ExprDT_nanosecond = function() {
 #' @usage NULL
 #' @aliases (Expr)$dt$epoch
 #' @examples
-#' pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$epoch("ns")$lit_to_s()
-#' pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$epoch("ms")$lit_to_s()
-#' pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$epoch("s")$lit_to_s()
-#' pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$epoch("d")$lit_to_s()
+#' pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$epoch("ns")$to_series()
+#' pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$epoch("ms")$to_series()
+#' pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$epoch("s")$to_series()
+#' pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$epoch("d")$to_series()
 ExprDT_epoch = function(tu = c("us", "ns", "ms", "s", "d")) {
   tu = tu[1]
 

@@ -13,8 +13,8 @@ if (build_debug_print) {
 replace_private_with_pub_methods(RPolarsDataFrame, "^DataFrame_")
 
 # GroupBy - is special read header info in groupby.R
-replace_private_with_pub_methods(GroupBy, "^GroupBy_")
-macro_add_syntax_check_to_class("GroupBy") # not activated automatically as GroupBy is not extendr
+replace_private_with_pub_methods(RPolarsGroupBy, "^GroupBy_")
+macro_add_syntax_check_to_class("RPolarsGroupBy") # not activated automatically as GroupBy is not extendr
 
 # LazyFrame
 replace_private_with_pub_methods(RPolarsLazyFrame, "^LazyFrame_")
@@ -27,36 +27,36 @@ replace_private_with_pub_methods(RPolarsExpr, "^Expr_")
 
 # configure subnames spaces of Expr
 #' @export
-`$.ExprListNameSpace` = sub_name_space_accessor_function
-expr_list_make_sub_ns = macro_new_subnamespace("^ExprList_", "ExprListNameSpace")
+`$.RPolarsExprListNameSpace` = sub_name_space_accessor_function
+expr_list_make_sub_ns = macro_new_subnamespace("^ExprList_", "RPolarsExprListNameSpace")
 
 #' @export
-`$.ExprStrNameSpace` = sub_name_space_accessor_function
-expr_str_make_sub_ns = macro_new_subnamespace("^ExprStr_", "ExprStrNameSpace")
+`$.RPolarsExprStrNameSpace` = sub_name_space_accessor_function
+expr_str_make_sub_ns = macro_new_subnamespace("^ExprStr_", "RPolarsExprStrNameSpace")
 
 #' @export
-`$.ExprNameNameSpace` = sub_name_space_accessor_function
-expr_name_make_sub_ns = macro_new_subnamespace("^ExprName_", "ExprNameNameSpace")
+`$.RPolarsExprNameNameSpace` = sub_name_space_accessor_function
+expr_name_make_sub_ns = macro_new_subnamespace("^ExprName_", "RPolarsExprNameNameSpace")
 
 #' @export
-`$.ExprDTNameSpace` = sub_name_space_accessor_function
-expr_dt_make_sub_ns = macro_new_subnamespace("^ExprDT_", "ExprDTNameSpace")
+`$.RPolarsExprDTNameSpace` = sub_name_space_accessor_function
+expr_dt_make_sub_ns = macro_new_subnamespace("^ExprDT_", "RPolarsExprDTNameSpace")
 
 #' @export
-`$.ExprStructNameSpace` = sub_name_space_accessor_function
-expr_struct_make_sub_ns = macro_new_subnamespace("^ExprStruct_", "ExprStructNameSpace")
+`$.RPolarsExprStructNameSpace` = sub_name_space_accessor_function
+expr_struct_make_sub_ns = macro_new_subnamespace("^ExprStruct_", "RPolarsExprStructNameSpace")
 
 #' @export
-`$.ExprMetaNameSpace` = sub_name_space_accessor_function
-expr_meta_make_sub_ns = macro_new_subnamespace("^ExprMeta_", "ExprMetaNameSpace")
+`$.RPolarsExprMetaNameSpace` = sub_name_space_accessor_function
+expr_meta_make_sub_ns = macro_new_subnamespace("^ExprMeta_", "RPolarsExprMetaNameSpace")
 
 #' @export
-`$.ExprCatNameSpace` = sub_name_space_accessor_function
-expr_cat_make_sub_ns = macro_new_subnamespace("^ExprCat_", "ExprCatNameSpace")
+`$.RPolarsExprCatNameSpace` = sub_name_space_accessor_function
+expr_cat_make_sub_ns = macro_new_subnamespace("^ExprCat_", "RPolarsExprCatNameSpace")
 
 #' @export
-`$.ExprBinNameSpace` = sub_name_space_accessor_function
-expr_bin_make_sub_ns = macro_new_subnamespace("^ExprBin_", "ExprBinNameSpace")
+`$.RPolarsExprBinNameSpace` = sub_name_space_accessor_function
+expr_bin_make_sub_ns = macro_new_subnamespace("^ExprBin_", "RPolarsExprBinNameSpace")
 
 replace_private_with_pub_methods(RPolarsWhen, "^When_")
 replace_private_with_pub_methods(RPolarsThen, "^Then_")
@@ -72,7 +72,7 @@ replace_private_with_pub_methods(RPolarsChainedThen, "^ChainedThen_")
 #' @param pattern code-stump as string to auto-complete
 #' @export
 #' @inherit .DollarNames.RPolarsDataFrame return
-#' @keywords internal
+#' @noRd
 .DollarNames.method_environment = function(x, pattern = "") {
   # I ponder why R chose to let attributes of environments be mutable also?!
   # temp store full class and upcast to plain environment

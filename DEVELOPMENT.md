@@ -97,3 +97,77 @@ usethis::use_version()
 ```r
 usethis::use_dev_version()
 ```
+
+## Check the performance via debug mode
+
+If you experience unexpected sluggish performance, when using polars in a given IDE, we'd like to hear about it. You can try to activate `pl$set_options(debug_polars = TRUE)` to profile what methods are being touched (not necessarily run) and how fast. Below is an example of good behavior.
+
+``` r
+library(polars)
+pl$set_options(debug_polars = TRUE)
+pl$DataFrame(iris)$select("Species")
+#> [TIME? ms]
+#> pl$DataFrame() -> [3.257ms]
+#> pl$lit() -> [2.721ms]
+#> pl$Series() -> [0.2244ms]
+#>    .pr$RPolarsSeries$new() -> [5.901ms]
+#> RPolarsExpr$alias() -> [20.62ms]
+#> pl$lit() -> [0.4537ms]
+#> pl$Series() -> [0.1681ms]
+#>    .pr$RPolarsSeries$new() -> [0.4008ms]
+#> RPolarsExpr$alias() -> [0.3057ms]
+#> pl$lit() -> [0.2573ms]
+#> pl$Series() -> [0.1891ms]
+#>    .pr$RPolarsSeries$new() -> [0.3707ms]
+#> RPolarsExpr$alias() -> [0.2408ms]
+#> pl$lit() -> [0.3285ms]
+#> pl$Series() -> [0.1342ms]
+#>    .pr$RPolarsSeries$new() -> [0.2878ms]
+#> RPolarsExpr$alias() -> [0.2875ms]
+#> pl$lit() -> [0.283ms]
+#> pl$Series() -> [0.1855ms]
+#>    .pr$RPolarsSeries$new() -> [9.417ms]
+#> RPolarsExpr$alias() -> [0.2825ms]
+#> pl$select() -> [0.1724ms]
+#>    .pr$RPolarsDataFrame$select() -> [45.21ms]
+#> RPolarsDataFrame$select() -> [0.2534ms]
+#>    .pr$RPolarsDataFrame$select() ->
+#> [6.062ms]
+#> RPolarsDataFrame$print() -> [0.2882ms]
+#>    .pr$RPolarsDataFrame$print() -> shape: (150, 1)
+#> ┌───────────┐
+#> │ Species   │
+#> │ ---       │
+#> │ cat       │
+#> ╞═══════════╡
+#> │ setosa    │
+#> │ setosa    │
+#> │ setosa    │
+#> │ setosa    │
+#> │ …         │
+#> │ virginica │
+#> │ virginica │
+#> │ virginica │
+#> │ virginica │
+#> └───────────┘
+```
+
+## Other tips
+
+<!-- TODO: Clean up -->
+
+To speed up the local rextendr::document() or R CMD check, run the following:
+
+```r
+source("inst/misc/develop_polars.R")
+
+#to rextendr:document() + not_cran + load packages + all_features
+load_polars()
+
+#to check package + reuses previous compilation in check, protects against deletion
+check_polars() #assumes rust target at `paste0(getwd(),"/src/rust")`
+```
+
+- The `RPOLARS_RUST_SOURCE` environment variable allows **polars** to recover the Cargo cache even if source files have been moved. Replace with your own absolute path to your local clone!
+- `filter_rcmdcheck.R` removes known warnings from final check report.
+- `unlink("check")` cleans up.
