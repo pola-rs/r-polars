@@ -1458,7 +1458,7 @@ DataFrame_rename = function(...) {
 #' @keywords DataFrame
 #' @return DataFrame
 #' @examples
-#' pl$DataFrame(iris)$describe()
+#' pl$DataFrame(mtcars)$describe()
 DataFrame_describe = function(percentiles = c(.25, .75)) {
   perc = percentiles
 
