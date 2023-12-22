@@ -76,25 +76,29 @@ dat = head(mtcars, n = 15)
 dat[c(1, 3, 9, 12), c(3, 4, 5)] = NA
 dat$id = 1:nrow(dat)
 dat_pl = pl$LazyFrame(dat)
-temp_out = tempfile(fileext = ".csv")
 
 test_that("sink_csv works", {
-  dat_pl$select(pl$col("id", "drat", "mpg"))$sink_csv(temp_out)
+  tempf = tempfile()
+  on.exit(unlink(tmpf))
+  dat_pl$select(pl$col("id", "drat", "mpg"))$sink_csv(tempf)
 
   expect_identical(
-    pl$read_csv(temp_out)$sort("id")$drop("id")$to_data_frame(),
+    pl$read_csv(tempf)$sort("id")$drop("id")$to_data_frame(),
     dat[, c("drat", "mpg")],
     ignore_attr = TRUE # ignore row names
   )
 })
 
 test_that("sink_csv: null_values works", {
+  tempf = tempfile()
+  on.exit(unlink(tmpf))
+
   expect_error(
-    dat_pl$sink_csv(temp_out, null_values = NULL)
+    dat_pl$sink_csv(tempf, null_values = NULL)
   )
-  dat_pl$sink_csv(temp_out, null_values = "hello")
+  dat_pl$sink_csv(tempf, null_values = "hello")
   expect_equal(
-    pl$read_csv(temp_out)$
+    pl$read_csv(tempf)$
       select("disp", "hp")$
       slice(offset = 0, length = 1)$
       to_list(),
@@ -104,44 +108,53 @@ test_that("sink_csv: null_values works", {
 
 
 test_that("sink_csv: separator works", {
-  dat_pl$sink_csv(temp_out, separator = "|")
-  expect_true(grepl("mpg|cyl|disp", readLines(temp_out)[1]))
+  tempf = tempfile()
+  on.exit(unlink(tmpf))
+
+  dat_pl$sink_csv(tempf, separator = "|")
+  expect_true(grepl("mpg|cyl|disp", readLines(tempf)[1]))
 })
 
 test_that("sink_csv: quote_style and quote works", {
   dat_pl2 = pl$LazyFrame(head(iris))
 
+  tempf = tempfile()
+  on.exit(unlink(tmpf))
+
   # wrong quote_style
-  ctx = dat_pl2$sink_csv(temp_out, quote_style = "foo") |> get_err_ctx()
+  ctx = dat_pl2$sink_csv(tempf, quote_style = "foo") |> get_err_ctx()
   expect_identical(ctx$BadArgument, "quote_style")
   expect_identical(ctx$Plain, "`quote_style` should be one of 'always', 'necessary', 'non_numeric', or 'never'.")
 
   # wrong quote_style type
-  ctx = dat_pl2$sink_csv(temp_out, quote_style = 42) |> get_err_ctx()
+  ctx = dat_pl2$sink_csv(tempf, quote_style = 42) |> get_err_ctx()
   expect_identical(ctx$TypeMismatch, "&str")
 
   # zero byte quote
-  ctx = dat_pl2$sink_csv(temp_out, quote = "") |> get_err_ctx()
+  ctx = dat_pl2$sink_csv(tempf, quote = "") |> get_err_ctx()
   expect_identical(ctx$Plain, "cannot extract single byte from empty string")
 
   # multi byte quote not allowed
-  ctx = dat_pl2$sink_csv(temp_out, quote = "£") |> get_err_ctx()
+  ctx = dat_pl2$sink_csv(tempf, quote = "£") |> get_err_ctx()
   expect_identical(ctx$Plain, "multi byte-string not allowed")
 
   # multi string not allowed
-  ctx = dat_pl2$sink_csv(temp_out, quote = c("a", "b")) |> get_err_ctx()
+  ctx = dat_pl2$sink_csv(tempf, quote = c("a", "b")) |> get_err_ctx()
   expect_identical(ctx$TypeMismatch, "&str")
 })
 
 patrick::with_parameters_test_that(
   "sink_csv: quote_style",
   {
+    tempf = tempfile()
+    on.exit(unlink(tmpf))
+
     df = pl$LazyFrame(
       a = c(r"("foo")"),
       b = 1,
       c = letters[1]
-    )$sink_csv(temp_out, quote_style = quote_style)
-    expect_snapshot_file(temp_out)
+    )$sink_csv(tempf, quote_style = quote_style)
+    expect_snapshot_file(tempf)
     # TODO: this is to avoid upstream locking issue
     # https://github.com/pola-rs/polars/issues/12918
     Sys.sleep(1)
@@ -158,17 +171,25 @@ test_that("sink_csv: date_format works", {
       eager = TRUE
     )
   )
-  dat$sink_csv(temp_out, date_format = "%Y")
+
+  tempf = tempfile()
+  on.exit(unlink(tmpf))
+
+  dat$sink_csv(tempf, date_format = "%Y")
   expect_equal(
-    pl$read_csv(temp_out)$
+    pl$read_csv(tempf)$
       with_columns(pl$col("date")$shrink_dtype())$
       sort("date")$
       to_data_frame(),
     data.frame(date = 2020:2023)
   )
-  dat$sink_csv(temp_out, date_format = "%d/%m/%Y")
+
+  tempf2 = tempfile()
+  on.exit(unlink(tmpf2))
+
+  dat$sink_csv(tempf2, date_format = "%d/%m/%Y")
   expect_equal(
-    pl$read_csv(temp_out)$sort("date")$to_data_frame(),
+    pl$read_csv(tempf2)$sort("date")$to_data_frame(),
     data.frame(date = paste0("01/01/", 2020:2023))
   )
 })
@@ -182,9 +203,13 @@ test_that("sink_csv: datetime_format works", {
       eager = TRUE
     )
   )
-  dat$sink_csv(temp_out, datetime_format = "%Hh%Mm - %d/%m/%Y")
+
+  tempf = tempfile()
+  on.exit(unlink(tmpf))
+
+  dat$sink_csv(tempf, datetime_format = "%Hh%Mm - %d/%m/%Y")
   expect_equal(
-    pl$read_csv(temp_out)$sort("date")$to_data_frame(),
+    pl$read_csv(tempf)$sort("date")$to_data_frame(),
     data.frame(date = c(
       "00h00m - 01/01/2020",
       "00h00m - 02/01/2020",
@@ -202,9 +227,13 @@ test_that("sink_csv: time_format works", {
       eager = TRUE
     )
   )$with_columns(pl$col("date")$dt$time())
-  dat$sink_csv(temp_out, time_format = "%Hh%Mm%Ss")
+
+  tempf = tempfile()
+  on.exit(unlink(tmpf))
+
+  dat$sink_csv(tempf, time_format = "%Hh%Mm%Ss")
   expect_equal(
-    pl$read_csv(temp_out)$sort("date")$to_data_frame(),
+    pl$read_csv(tempf)$sort("date")$to_data_frame(),
     data.frame(date = paste0(c("00", "00", "08", "16"), "h00m00s"))
   )
 })
@@ -212,15 +241,22 @@ test_that("sink_csv: time_format works", {
 
 test_that("sink_csv: float_precision works", {
   dat = pl$LazyFrame(x = c(1.234, 5.6))
-  dat$sink_csv(temp_out, float_precision = 1)
+
+  tempf = tempfile()
+  on.exit(unlink(tmpf))
+
+  dat$sink_csv(tempf, float_precision = 1)
   expect_equal(
-    pl$read_csv(temp_out)$sort("x")$to_data_frame(),
+    pl$read_csv(tempf)$sort("x")$to_data_frame(),
     data.frame(x = c(1.2, 5.6))
   )
 
-  dat$sink_csv(temp_out, float_precision = 3)
+  tempf2 = tempfile()
+  on.exit(unlink(tmpf2))
+
+  dat$sink_csv(tempf, float_precision = 3)
   expect_equal(
-    pl$read_csv(temp_out)$sort("x")$to_data_frame(),
+    pl$read_csv(tempf)$sort("x")$to_data_frame(),
     data.frame(x = c(1.234, 5.600))
   )
 })
