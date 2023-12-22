@@ -78,8 +78,8 @@ if (interactive()) .dev = polars:::.dev
 .dev$helpHandler = function(type = "completion", topic, source, ...) {
 
   print("hello helper")
-  print(type)
-  print(topic)
+  #print(type)
+  #print(topic)
   if (type == "completion") {
     list(
       title = topic, signature = NULL, returns = "lots of stuff",
@@ -125,6 +125,8 @@ if (interactive()) .dev = polars:::.dev
         token, string, functionCall, numCommas, envir = parent.frame(),
         object = .rs.resolveObjectFromFunctionCall(functionCall, envir)
       ) {
+        #browser()
+        #print(string)
 
         # if Rstudio failed to immediately resolve the object, do a full evaluation of the entire
         # lhs line/section which creates the calling function
@@ -167,6 +169,8 @@ if (interactive()) .dev = polars:::.dev
       .rs.getCompletionsDollar_orig = .rs.getCompletionsDollar
       .rs.getCompletionsDollar = function(token, string, functionCall, envir, isAt) {
         #browser()
+        #print(string)
+
         #perform evaluation of lhs
         lhs = polars:::.dev$eval_lhs_string(string, envir)
         if(is.null(lhs)) return(.rs.emptyCompletions())
@@ -177,9 +181,18 @@ if (interactive()) .dev = polars:::.dev
           return(results)
         }
 
-        string =  paste(class(lhs),collapse = " ")    # show class of inferred polars object
+        string =  ""#paste(class(lhs),collapse = " ")    # show class of inferred polars object
 
+        # get method, attribute names and drop ()
         results = gsub("\\(|\\)", "", .DollarNames(lhs, token))
+
+        # single "" means no found results, return with empty result set
+        if (identical(results, "")) {
+          return(.rs.emptyCompletions())
+        }
+
+        # decide if type attribute getter, or setter (<-) or regular method
+        # used for icons in drop-down-list
         types = sapply(
           results,
           function(x) {
@@ -187,12 +200,25 @@ if (interactive()) .dev = polars:::.dev
             .rs.getCompletionType(eval(substitute(`$`(lhs, x), list(x = x))))
           }
         )
+
+        helpHandler = 'function(...) {
+          print("hellowklfelknerlkn")
+          #browser()
+          #.rs.getHelp("DataFrame_columns", "polars", subset = FALSE)
+          list(
+            description = "hello world!!",
+            sections = list(Args= "hej"),
+            returns = "something beautiful!"
+          )
+        }'
+
         .rs.makeCompletions(
           token = token, results = results, excludeOtherCompletions = TRUE, packages = "polars",
-          quote = FALSE, helpHandler = FALSE,
+          quote = FALSE, helpHandler = FALSE,#;list(helpHandler),
           context = .rs.acContextTypes$DOLLAR,
-          type = types,
+          type = types , meta = "", cacheable = FALSE
         )
+
       } # end new dollar f
     }
   ) # end local

@@ -23,6 +23,31 @@ pl$
 
 
 
-pl$col()$alias(s = "hej")$all()
+pl$col()$alias(s = "hej")$
+
+
+l = list(m = 42)
+l$m
+
+
+
+x = 42
+class(x) ="bob"
+.DollarNames.bob = function(x, pattern) {
+  letters
+}
+
+e = pl$col()
+e$
+
+
+library(data.table)
+
+dt = data.table(iris)
+
+
+
+library(polars)
+pl$DataFrame(iris)$select(pl$col('Sepal.Length')$add())
 
 
