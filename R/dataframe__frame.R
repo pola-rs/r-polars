@@ -143,9 +143,11 @@ NULL
 #' # custom schema
 #' pl$DataFrame(iris, schema = list(Sepal.Length = pl$Float32, Species = pl$Utf8))
 pl$DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
-  largs = unpack_list(...)
-
   uw = \(res) unwrap(res, "in $DataFrame():")
+
+  largs = unpack_list(...) |>
+    result() |>
+    uw()
 
   if (!is.null(schema) && !all(names(schema) %in% names(largs))) {
     Err_plain("Some columns in `schema` are not in the DataFrame.") |>
@@ -633,7 +635,7 @@ DataFrame_sort = function(
 #'   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
 #' )
 DataFrame_select = function(...) {
-  .pr$DataFrame$select(self, unpack_list(...)) |>
+  .pr$DataFrame$select(self, unpack_list(..., .context = "in $select()")) |>
     unwrap("in $select()")
 }
 
@@ -740,7 +742,7 @@ DataFrame_shift_and_fill = function(fill_value, periods = 1) {
 #'   SW_add_2 = (pl$col("Sepal.Width") + 2)
 #' )
 DataFrame_with_columns = function(...) {
-  .pr$DataFrame$with_columns(self, unpack_list(...)) |>
+  .pr$DataFrame$with_columns(self, unpack_list(..., .context = "in $with_columns()")) |>
     unwrap("in $with_columns()")
 }
 
@@ -831,7 +833,11 @@ DataFrame_filter = function(...) {
 #' )
 DataFrame_group_by = function(..., maintain_order = pl$options$maintain_order) {
   # clone the DataFrame, bundle args as attributes. Non fallible.
-  construct_group_by(self, groupby_input = unpack_list(...), maintain_order = maintain_order)
+  construct_group_by(
+    self,
+    groupby_input = unpack_list(..., .context = "$group_by()"),
+    maintain_order = maintain_order
+  )
 }
 
 
