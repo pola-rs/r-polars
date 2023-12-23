@@ -220,7 +220,7 @@ LazyFrame_describe_plan = "use_extendr_wrapper"
 #'   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
 #' )
 LazyFrame_select = function(...) {
-  .pr$LazyFrame$select(self, unpack_list(...)) |>
+  .pr$LazyFrame$select(self, unpack_list(..., .context = "in $select()")) |>
     unwrap("in $select()")
 }
 
@@ -246,7 +246,7 @@ LazyFrame_select = function(...) {
 #'   SW_add_2 = (pl$col("Sepal.Width") + 2)
 #' )
 LazyFrame_with_columns = function(...) {
-  .pr$LazyFrame$with_columns(self, unpack_list(...)) |>
+  .pr$LazyFrame$with_columns(self, unpack_list(..., .context = "in $with_columns()")) |>
     unwrap("in $with_columns()")
 }
 
@@ -286,7 +286,7 @@ LazyFrame_with_row_count = function(name, offset = NULL) {
 #' # lf$filter(pl$col("Sepal.Length") > 5 & pl$col("Petal.Width") < 1)
 #' lf$filter(pl$col("Sepal.Length") > 5, pl$col("Petal.Width") < 1)
 LazyFrame_filter = function(...) {
-  bool_expr = unpack_bool_expr(...) |>
+  bool_expr = unpack_bool_expr_result(...) |>
     unwrap("in $filter()")
 
   .pr$LazyFrame$filter(self, bool_expr)
@@ -987,7 +987,7 @@ LazyFrame_unique = function(subset = NULL, keep = "first", maintain_order = FALS
 #' )$
 #'   collect()
 LazyFrame_group_by = function(..., maintain_order = pl$options$maintain_order) {
-  .pr$LazyFrame$group_by(self, unpack_list(...), maintain_order) |>
+  .pr$LazyFrame$group_by(self, unpack_list(..., .context = "in $group_by():"), maintain_order) |>
     unwrap("in $group_by():")
 }
 
@@ -1070,7 +1070,8 @@ LazyFrame_sort = function(
     nulls_last = FALSE,
     maintain_order = FALSE) {
   .pr$LazyFrame$sort_by_exprs(
-    self, unpack_list(by), err_on_named_args(...), descending, nulls_last, maintain_order
+    self, unpack_list(by, .context = "in $sort():"), err_on_named_args(...),
+    descending, nulls_last, maintain_order
   ) |>
     unwrap("in $sort():")
 }
@@ -1527,7 +1528,7 @@ LazyFrame_profile = function(
 #' df$explode("numbers", "numbers_2")$collect()
 #' df$explode(pl$col(pl$List(pl$Float64)))$collect()
 LazyFrame_explode = function(...) {
-  dotdotdot_args = unpack_list(...)
+  dotdotdot_args = unpack_list(..., .context = "in explode():")
   .pr$LazyFrame$explode(self, dotdotdot_args) |>
     unwrap("in explode():")
 }
