@@ -1,5 +1,5 @@
 #' Polars code completion
-#'
+#' @include rstudio_completion.R
 #' @name polars_code_completion
 #' @param activate bool, TRUE activates, FALSE deactivates
 #' @param mode choice either. "auto" picks "rstudio" if  "tools:rstudio" is found in search().
@@ -46,7 +46,7 @@ pl$polars_code_completion = function(
   ) {
 
   # settle on mode
-  mode = match.arg(mode,  c("auto","rstudio", "utils"))
+  mode = match.arg(mode[1],  c("auto","rstudio", "nativeR"))
   is_rstudio = "tools:rstudio" %in% search()
   if(mode == "auto") {
     if(is_rstudio) {
@@ -123,21 +123,43 @@ nativeR_completion = function(activate = TRUE) {
       # get line buffer
       .CompletionEnv = utils::getFromNamespace(".CompletionEnv", "utils")
       CE = .CompletionEnv
+      CE_frozen = as.list(CE)
       lb = CE$linebuffer
 
+
+
+
+
       # skip custom completion if token completion already yielded suggestions.
-      if (length(CE$comps) >= 1) {
+      if (length(CE$comps) >= 1L) {
         return(NULL)
       }
 
 
       ### your custom part###
       # generate a new completion or multiple...
-      last_char = substr(lb, nchar(lb), nchar(lb))
-      if (last_char == "$" && nchar(lb) > 1L) {
-        x = eval(parse(text = substr(lb, 1, nchar(lb) - 1)))
+      lb_wo_token = sub(paste0("\\Q",CE_frozen$token,"\\E","$"), replacement = "",lb)
+      first_token_char = substr(CE_frozen$token,1L, 1L)
+      # if(!exists(".no_browse")) {
+      #   browser()
+      #   assign(".no_browse",value = 1,envir = .GlobalEnv)
+      # }
+      if (first_token_char == "$" && nchar(lb_wo_token) > 1L) {
+        res = result(eval(parse(text = lb_wo_token)))
+
+        if(is_err(res)) {
+          message(
+            "\nfailed to code complete because...\n",
+            as.character(res$err),
+            "\n"
+          )
+          return(NULL)
+        } else {
+          x = res$ok
+        }
         if (inherits(x, c(pl_class_names, "method_environment"))) {
-          your_comps = .DollarNames(x)
+          token = substr(CE_frozen$token,2,.Machine$integer.max)
+          your_comps = paste0("$",.DollarNames(x, token))
           # append your suggestions to the vanilla suggestions/completions
           CE$comps = c(your_comps, CE$comps)
         }
