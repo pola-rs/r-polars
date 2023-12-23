@@ -121,7 +121,7 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
                     .expect("as_character_factor() enforces same type"),
                 name,
             )
-            .cast(&pl::DataType::Categorical(None))
+            .cast(&pl::DataType::Categorical(None, Default::default()))
             .expect("as matched"),
         )),
 

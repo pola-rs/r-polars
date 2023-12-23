@@ -209,6 +209,8 @@ DataType_constructors = list(
       and_then(DataType$new_struct) |>
       unwrap("in pl$Struct:")
   }
+
+  # TODO: Categorical https://github.com/pola-rs/polars/pull/12911
 )
 
 #' Create Datetime DataType

@@ -4,7 +4,7 @@
 \alias{LazyFrame_sum}
 \title{Sum}
 \usage{
-LazyFrame_sum
+LazyFrame_sum()
 }
 \value{
 A LazyFrame with one row

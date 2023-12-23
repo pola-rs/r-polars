@@ -656,7 +656,7 @@ DataFrame_drop_in_place = function(name) {
 }
 
 #' Compare two DataFrames
-#' @name DataFrame_frame_equal
+#' @name DataFrame_equals
 #' @description Check if two DataFrames are equal.
 #'
 #' @param other DataFrame to compare with.
@@ -666,10 +666,10 @@ DataFrame_drop_in_place = function(name) {
 #' dat1 = pl$DataFrame(iris)
 #' dat2 = pl$DataFrame(iris)
 #' dat3 = pl$DataFrame(mtcars)
-#' dat1$frame_equal(dat2)
-#' dat1$frame_equal(dat3)
-DataFrame_frame_equal = function(other) {
-  .pr$DataFrame$frame_equal(self, other)
+#' dat1$equals(dat2)
+#' dat1$equals(dat3)
+DataFrame_equals = function(other) {
+  .pr$DataFrame$equals(self, other)
 }
 
 #' Shift a DataFrame
@@ -1464,7 +1464,7 @@ DataFrame_rename = function(...) {
 #' @keywords DataFrame
 #' @return DataFrame
 #' @examples
-#' pl$DataFrame(iris)$describe()
+#' pl$DataFrame(mtcars)$describe()
 DataFrame_describe = function(percentiles = c(.25, .75)) {
   perc = percentiles
 

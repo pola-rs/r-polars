@@ -14,8 +14,8 @@ provide several URLs.}
 
 \item{separator}{Single byte character to use as separator in the file.}
 
-\item{comment_char}{Single byte character that indicates the start of a comment
-line, for instance \verb{#}.}
+\item{comment_prefix}{A string, which can be up to 5 symbols in length, used to indicate
+the start of a comment line. For instance, it can be set to \verb{#} or \verb{//}.}
 
 \item{quote_char}{Single byte character used for quoting. Set to \code{NULL} to
 turn off special handling and escaping of quotes.}
