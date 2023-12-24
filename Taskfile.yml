@@ -176,6 +176,7 @@ tasks:
       - Rscript -e 'if (desc::desc_get("RoxygenNote") < packageVersion("roxygen2")) quit(status = 1)'
     deps:
       - build-extendr-wrappers
+      - format-r
     cmds:
       - Rscript -e
         '{{.R_FUNC_IMPORT_REQUIRED_PKGS}};
@@ -190,6 +191,8 @@ tasks:
       - "{{.MANIFEST}}"
       - "{{.CARGO_LOCK}}"
       - "{{.RUST_SOURCE}}"
+    deps:
+      - format-rs
     generates:
       - R/extendr-wrappers.R
     status:
@@ -245,8 +248,49 @@ tasks:
     deps:
       - install-package
       - build-readme
+      - build-altdoc-ref-home
     cmds:
       - Rscript -e
         'future::plan(future::multicore);
         source("altdoc/altdoc_preprocessing.R");
         altdoc::render_docs(freeze = FALSE, parallel = TRUE, verbose = TRUE)'
+
+  build-altdoc-ref-home:
+    internal: true
+    desc: Build the altdoc reference home markdown
+    sources:
+      - "{{.R_SOURCE}}"
+      - src/Makevars*
+      - configure*
+      - "{{.MANIFEST}}"
+      - "{{.CARGO_LOCK}}"
+      - "{{.RUST_SOURCE}}"
+    generates:
+      - altdoc/reference_home.md
+    deps:
+      - install-package
+    cmds:
+      - Rscript -e
+        'library({{.PACKAGE_NAME}});
+        rmarkdown::render("altdoc/reference_home.Rmd")'
+
+  format-r:
+    desc: Format R source files.
+    vars:
+      FORMATER_SCRIPT: dev/styler_utils.R
+    sources:
+      - "{{.R_SOURCE}}"
+      - "{{.FORMATER_SCRIPT}}"
+    generates:
+      - "{{.R_SOURCE}}"
+      - exclude: R/extendr-wrappers.R
+    cmds:
+      - Rscript -e
+        'source("{{.FORMATER_SCRIPT}}"); style_files()'
+
+  format-rs:
+    desc: Format Rust source files.
+    sources:
+      - "{{.RUST_SOURCE}}"
+    cmds:
+      - cargo fmt --manifest-path "{{.MANIFEST}}"
