@@ -25,7 +25,22 @@ out-of-memory operations. This allows users to analyze datasets many
 times larger than RAM.
 
 Documentation can be found on the **r-polars**
-[homepage](https://rpolars.github.io).
+[homepage](https://rpolars.github.io). The [Get
+Started](https://rpolars.github.io/articles/polars/) vignette
+(`vignette("polars")`) gives an easy introduction and provides examples
+of common operations:
+
+- read CSV, JSON, Parquet, and other file formats;
+- filter rows and select columns;
+- modify and create new columns;
+- group by and aggregate;
+- reshape data;
+- join and concatenate different datasets;
+- sort data;
+- work with dates and times;
+- handle missing values;
+- use the lazy execution engine for maximum performance and
+  memory-efficient operations
 
 The primary developer of the upstream Polars project is Ritchie Vink
 ([@ritchie46](https://github.com/ritchie46)). This R port is maintained
@@ -33,6 +48,16 @@ by Søren Welling ([@sorhawell](https://github.com/sorhawell)) and
 [contributors](https://github.com/pola-rs/r-polars/graphs/contributors).
 Consider joining our [Discord](https://discord.com/invite/4UfP5cfBE7)
 (subchannel) for additional help and discussion.
+
+## Extensions
+
+While one can use **polars** as-is, other packages build on it to
+provide different syntaxes:
+
+- [`polarssql`](https://github.com/rpolars/r-polarssql/) provides a
+  **polars** backend for `DBI` and `dbplyr`;
+- [`tidypolars`](https://tidypolars.etiennebacher.com/) allows one to
+  use the `tidyverse` syntax while using the power of **polars**.
 
 ## Install
 
@@ -132,15 +157,10 @@ enable Rust features and profile changes.
 
 ## Quickstart example
 
-The [Get Started](https://rpolars.github.io/articles/polars/) vignette
-(`vignette("polars")`) contains a series of detailed examples, but here
-is a quick illustration.
-
-**polars** is a very powerful package with many functions. To avoid
-conflicts with other packages and base R function names, **polars**’s
-top level functions are hosted in the `pl` namespace, and accessible via
-the `pl$` prefix. To convert an R data frame to a Polars `DataFrame`, we
-call:
+To avoid conflicts with other packages and base R function names,
+**polars**’s top level functions are hosted in the `pl` namespace, and
+accessible via the `pl$` prefix. To convert an R data frame to a Polars
+`DataFrame`, we call:
 
 ``` r
 library(polars)
@@ -204,19 +224,3 @@ dat$group_by("cyl", maintain_order = TRUE)$mean()
 
 Note that we use `maintain_order = TRUE` so that `polars` always keeps
 the groups in the same order as they are in the original data.
-
-[The **polars** vignette](https://rpolars.github.io/articles/polars/)
-contains many more examples of how to use the package to:
-
-- Read CSV, JSON, Parquet, and other file formats.
-- Filter rows and select columns.
-- Modify and create new columns.
-- Group by and aggregate.
-- Reshape data.
-- Join and concatenate different datasets.
-- Sort data.
-- Work with dates and times.
-- Handle missing values.
-- Use the lazy execution engine for maximum performance and
-  memory-efficient operations.
-- Etc.
