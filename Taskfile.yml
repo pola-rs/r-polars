@@ -226,7 +226,7 @@ tasks:
       - man/*.Rd
       - altdoc/altdoc_preprocessing.R
       - altdoc/*.yml
-      - vignettes/*.Rmd
+      - "{{.VIGNETTES}}"
     generates:
       - docs/**
     deps:
