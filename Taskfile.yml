@@ -24,11 +24,11 @@ tasks:
   setup-dev:
     desc: Install tools for development.
     deps:
-      - install-r-tools
-      - install-rust-tools
-      - install-python-tools
+      - setup-r-tools
+      - setup-rust-tools
+      - setup-python-tools
 
-  install-r-tools:
+  setup-r-tools:
     internal: true
     env:
       PKG_SYSREQS: FALSE
@@ -38,9 +38,18 @@ tasks:
         'pak::repo_add("https://cloud.r-project.org/");
         pak::local_install_deps(dependencies = c("all", "Config/Needs/dev", "Config/Needs/website"))'
 
-  install-rust-tools:
+  setup-rust-tools:
     internal: true
     desc: Install Rust tools for development.
+    vars:
+      RUST_TOOLCHAIN_VERSION:
+        sh: Rscript -e 'read.dcf("DESCRIPTION", fields = "Config/polars/RustToolchainVersion", all = TRUE)[1, 1] |> cat()'
+    cmds:
+      - task: setup-rust-toolchain
+      - task: setup-cargo-tools
+
+  setup-rust-toolchain:
+    desc: Install Rust toolchain.
     vars:
       RUST_TOOLCHAIN_VERSION:
         sh: Rscript -e 'read.dcf("DESCRIPTION", fields = "Config/polars/RustToolchainVersion", all = TRUE)[1, 1] |> cat()'
@@ -49,8 +58,12 @@ tasks:
       - rustup default {{.RUST_TOOLCHAIN_VERSION}}{{if eq OS "windows"}}-gnu{{end}}
       - rustup component add rustfmt
       - rustup component add clippy
-      # - cargo install cargo-binstall
-      # - cargo binstall cargo-license cargo-outdated
+
+  setup-cargo-tools:
+    desc: Install cargo tools for development.
+    cmds:
+      - cargo install cargo-binstall
+      - cargo binstall cargo-license cargo-outdated
 
   setup-venv:
     desc: Setup Python venv for development.
@@ -60,7 +73,7 @@ tasks:
     cmds:
       - python3 -m venv {{.VENV_DIR}}
 
-  install-python-tools:
+  setup-python-tools:
     internal: true
     desc: Install Python tools for development.
     deps:
