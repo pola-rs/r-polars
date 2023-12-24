@@ -203,7 +203,8 @@ tasks:
     cmds:
       - Rscript -e
         '{{.R_FUNC_IMPORT_REQUIRED_PKGS}};
-        rextendr::document()'
+        withr::local_envvar(devtools::r_env_vars());
+        rextendr::register_extendr()'
 
   build-readme:
     internal: true
