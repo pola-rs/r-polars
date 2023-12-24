@@ -10,7 +10,8 @@ Expr_rolling_min(
   min_periods = NULL,
   center = FALSE,
   by = NULL,
-  closed = c("left", "right", "both", "none")
+  closed = c("left", "right", "both", "none"),
+  warn_if_unsorted = TRUE
 )
 }
 \arguments{
@@ -46,6 +47,9 @@ must be of DataType Date or DateTime.}
 
 \item{closed}{String, one of \code{"left"}, \code{"right"}, \code{"both"}, \code{"none"}. Defines
 whether the temporal window interval is closed or not.}
+
+\item{warn_if_unsorted}{Warn if data is not known to be sorted by \code{by} column (if passed).
+Experimental.}
 }
 \value{
 Expr

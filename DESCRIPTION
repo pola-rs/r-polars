@@ -43,7 +43,7 @@ Suggests:
     vctrs,
     withr
 Config/Needs/website:
-    etiennebacher/altdoc@5c69f3b,
+    etiennebacher/altdoc@c75ec50,
     future.apply,
     here,
     magrittr,
@@ -73,6 +73,7 @@ Collate:
     'dataframe__frame.R'
     'datatype.R'
     'docs.R'
+    'dotdotdot.R'
     'error__rpolarserr.R'
     'error__string.R'
     'error__trait.R'

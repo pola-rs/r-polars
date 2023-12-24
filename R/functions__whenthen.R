@@ -64,10 +64,8 @@
 #'   $otherwise(-1)
 #' )
 pl$when = function(...) {
-  condition = unpack_bool_expr(...) |>
-    unwrap("in pl$when():")
-
-  .pr$When$new(condition) |>
+  unpack_bool_expr_result(...) |>
+    and_then(.pr$When$new) |>
     unwrap("in pl$when():")
 }
 
@@ -80,10 +78,8 @@ When_then = function(statement) {
 }
 
 Then_when = function(...) {
-  condition = unpack_bool_expr(...) |>
-    unwrap("in $when():")
-
-  .pr$Then$when(self, condition) |>
+  unpack_bool_expr_result(...) |>
+    and_then(\(condition) .pr$Then$when(self, condition)) |>
     unwrap("in $when():")
 }
 
@@ -98,10 +94,8 @@ ChainedWhen_then = function(statement) {
 }
 
 ChainedThen_when = function(...) {
-  condition = unpack_bool_expr(...) |>
-    unwrap("in $when():")
-
-  .pr$ChainedThen$when(self, condition) |>
+  unpack_bool_expr_result(...) |>
+    and_then(\(condition) .pr$ChainedThen$when(self, condition)) |>
     unwrap("in $when():")
 }
 

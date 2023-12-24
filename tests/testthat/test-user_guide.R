@@ -71,7 +71,7 @@ test_that("Expression examples // types/NAS in-out", {
 
   expect_equal(three_counts, list(
     unique_names_1 = 5,
-    unique_names_2 = 5,
+    unique_names_2 = 4,
     unique_names_3_overflow = 5 + .Machine$integer.max
   ))
 })

@@ -19,6 +19,6 @@ values, the mean, standard deviation, min, max, median and the percentiles
 specified in the argument \code{percentiles}.
 }
 \examples{
-pl$DataFrame(iris)$describe()
+pl$DataFrame(mtcars)$describe()
 }
 \keyword{DataFrame}
