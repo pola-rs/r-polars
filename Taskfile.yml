@@ -149,6 +149,9 @@ tasks:
   test-vignettes:
     desc: Check if vignettes can be rendered.
     internal: true
+    vars:
+      ITEMS:
+        sh: find vignettes -type f -name '*.Rmd'
     sources:
       - "{{.VIGNETTES}}"
       - "{{.R_SOURCE}}"
@@ -160,10 +163,10 @@ tasks:
     deps:
       - install-package
     cmds:
-      - Rscript -e
-        'library({{.PACKAGE_NAME}});
-        list.files("vignettes/", pattern = r"(\.Rmd$)", recursive = TRUE, full.names = TRUE) |>
-        purrr::walk(\(x) rmarkdown::render(x, output_dir = tempdir()))'
+      - for: { var: ITEMS }
+        cmd: Rscript -e
+          'library({{.PACKAGE_NAME}});
+          rmarkdown::render("{{.ITEM}}", output_dir = tempdir())'
 
   build-documents:
     desc: Build the R package and generate documents.
