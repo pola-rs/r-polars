@@ -79,6 +79,9 @@ jobs:
           make requirements-r
           make requirements-py
 
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+
       - name: Build docs
         run: make docs
         shell: bash
