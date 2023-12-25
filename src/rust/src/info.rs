@@ -18,8 +18,14 @@ fn rust_polars_version() -> String {
     polars::VERSION.into()
 }
 
+#[extendr]
+fn threadpool_size() -> usize {
+    polars_core::POOL.current_num_threads()
+}
+
 extendr_module! {
     mod info;
     fn cargo_rpolars_feature_info;
     fn rust_polars_version;
+    fn threadpool_size;
 }

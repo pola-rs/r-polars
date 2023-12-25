@@ -170,7 +170,6 @@ tasks:
 
   build-documents:
     desc: Build the R package and generate documents.
-    internal: true
     sources:
       - "{{.R_SOURCE}}"
     generates:
@@ -178,16 +177,15 @@ tasks:
     status:
       - Rscript -e 'if (desc::desc_get("RoxygenNote") < packageVersion("roxygen2")) quit(status = 1)'
     deps:
-      - build-extendr-wrappers
+      - build-rust
       - format-r
     cmds:
       - Rscript -e
         '{{.R_FUNC_IMPORT_REQUIRED_PKGS}};
         devtools::document()'
 
-  build-extendr-wrappers:
-    internal: true
-    desc: Build the extendr wrappers.
+  build-rust:
+    desc: Build the Rust library and generate the `extendr-wrappers.R` file.
     sources:
       - src/Makevars*
       - configure*
@@ -202,8 +200,7 @@ tasks:
       - Rscript -e 'if (desc::desc_get("Config/rextendr/version") < packageVersion("rextendr")) quit(status = 1)'
     cmds:
       - Rscript -e
-        '{{.R_FUNC_IMPORT_REQUIRED_PKGS}};
-        withr::local_envvar(devtools::r_env_vars());
+        'withr::local_envvar(devtools::r_env_vars());
         rextendr::register_extendr()'
 
   build-readme:
@@ -298,3 +295,8 @@ tasks:
       - "{{.RUST_SOURCE}}"
     cmds:
       - cargo fmt --manifest-path "{{.MANIFEST}}"
+
+  test-snapshot-accept:
+    desc: Accept all test snapshots. (Shortcut to accept snapshots after running tests)
+    cmds:
+      - Rscript -e 'testthat::snapshot_accept()'
