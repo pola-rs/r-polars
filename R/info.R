@@ -65,3 +65,18 @@ check_feature = function(feature_name, context = NULL, call = sys.call(1L)) {
 
   invisible(TRUE)
 }
+
+
+#' Get the number of threads in the Polars thread pool.
+#'
+#' The threadpool size can be overridden by setting the
+#' `POLARS_MAX_THREADS` environment variable before process start.
+#' (The thread pool is not behind a lock, so it cannot be modified once set).
+#' It is strongly recommended not to override this value as it will be
+#' set automatically by the engine.
+#'
+#' @name threadpool_size
+#' @return The number of threads
+#' @examples
+#' pl$threadpool_size()
+pl$threadpool_size = function() threadpool_size()

@@ -170,7 +170,6 @@ tasks:
 
   build-documents:
     desc: Build the R package and generate documents.
-    internal: true
     sources:
       - "{{.R_SOURCE}}"
     generates:
@@ -186,8 +185,7 @@ tasks:
         devtools::document()'
 
   build-extendr-wrappers:
-    internal: true
-    desc: Build the extendr wrappers.
+    desc: Build the Rust library and generate the `extendr-wrappers.R` file.
     sources:
       - src/Makevars*
       - configure*
@@ -202,8 +200,7 @@ tasks:
       - Rscript -e 'if (desc::desc_get("Config/rextendr/version") < packageVersion("rextendr")) quit(status = 1)'
     cmds:
       - Rscript -e
-        '{{.R_FUNC_IMPORT_REQUIRED_PKGS}};
-        withr::local_envvar(devtools::r_env_vars());
+        'withr::local_envvar(devtools::r_env_vars());
         rextendr::register_extendr()'
 
   build-readme:
