@@ -93,7 +93,6 @@ jobs:
       - name: Build site and deploy to GitHub pages
         env:
           DEPLOY_DOCS: ${{ secrets.DEPLOY_DOCS  }}
-        if: ${{ (github.event_name != 'pull_request') && (github.repository_owner == 'pola-rs') }}
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           clean: true
