@@ -79,9 +79,6 @@ jobs:
           make requirements-r
           make requirements-py
 
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-
       - name: Build docs
         run: make docs
         shell: bash
@@ -89,7 +86,6 @@ jobs:
       - uses: webfactory/ssh-agent@v0.8.0
         env:
           DEPLOY_DOCS: ${{ secrets.DEPLOY_DOCS  }}
-        if: ${{ (github.event_name != 'pull_request') && (github.repository_owner == 'pola-rs') }}
         with:
           ssh-private-key: ${{ secrets.DEPLOY_DOCS }}
 
