@@ -41,6 +41,9 @@ src/Makevars
 # Python
 .venv
 
+# Task cache
+.task
+
 # Binary files
 tools/libr_polars.a
 
