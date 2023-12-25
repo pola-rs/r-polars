@@ -47,9 +47,9 @@
       [83] "show_all_public_functions" "show_all_public_methods"  
       [85] "std"                       "struct"                   
       [87] "sum"                       "sum_horizontal"           
-      [89] "tail"                      "using_string_cache"       
-      [91] "var"                       "when"                     
-      [93] "with_string_cache"        
+      [89] "tail"                      "threadpool_size"          
+      [91] "using_string_cache"        "var"                      
+      [93] "when"                      "with_string_cache"        
 
 ---
 

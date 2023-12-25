@@ -1,5 +1,7 @@
 ---
-output: github_document
+output: 
+  github_document:
+    html_preview: false
 # used by altdoc
 default-image-extension: ''
 ---

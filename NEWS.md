@@ -52,6 +52,8 @@
   to be separated by commas, like `lf$filter(pl$col("foo") == 1, pl$col("bar") != 2)` (#598).
 - New method `$replace()` for expressions (#601).
 - Better error messages for trailing argument commas such as `pl$DataFrame()$select("a",)` (#607).
+- New function `pl$threadpool_size()` to get the number of threads used by Polars (#620).
+  Thread pool size is also included in the output of `pl$polars_info()`.
 
 ## polars 0.11.0
 
