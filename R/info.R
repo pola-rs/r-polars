@@ -10,6 +10,7 @@ pl$polars_info = function() {
   out = list(
     version = utils::packageVersion("polars"),
     rust_polars = rust_polars_version(),
+    threadpool_size = threadpool_size(),
     features = cargo_rpolars_feature_info()
   )
   structure(out, class = "polars_info")
@@ -32,6 +33,8 @@ print.polars_info = function(x, ...) {
 
   cat("r-polars package version : ", format(x$version), "\n", sep = "")
   cat("rust-polars crate version: ", format(x$rust_polars), "\n", sep = "")
+  cat("\n")
+  cat("Thread pool size:", x$threadpool_size, "\n")
   cat("\n")
   print_key_values("Features", unlist(x$features))
 }
