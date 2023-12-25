@@ -513,7 +513,7 @@ RPolarsExpr$explode <- function() .Call(wrap__RPolarsExpr__explode, self)
 
 RPolarsExpr$flatten <- function() .Call(wrap__RPolarsExpr__flatten, self)
 
-RPolarsExpr$gather_every <- function(n) .Call(wrap__RPolarsExpr__gather_every, self, n)
+RPolarsExpr$gather_every <- function(n, offset) .Call(wrap__RPolarsExpr__gather_every, self, n, offset)
 
 RPolarsExpr$hash <- function(seed, seed_1, seed_2, seed_3) .Call(wrap__RPolarsExpr__hash, self, seed, seed_1, seed_2, seed_3)
 

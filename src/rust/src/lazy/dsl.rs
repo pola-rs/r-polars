@@ -436,16 +436,17 @@ impl RPolarsExpr {
         self.clone().0.explode().into()
     }
 
-    pub fn gather_every(&self, n: Robj) -> RResult<RPolarsExpr> {
+    pub fn gather_every(&self, n: Robj, offset: Robj) -> RResult<RPolarsExpr> {
         let n = robj_to!(usize, n).and_then(|n| match n {
             0 => rerr().bad_arg("n").bad_val("n can't be zero"),
             _ => Ok(n),
         })?;
+        let offset = robj_to!(usize, offset)?;
         Ok(self
             .0
             .clone()
             .map(
-                move |s: pl::Series| Ok(Some(s.gather_every(n))),
+                move |s: pl::Series| Ok(Some(s.gather_every(n, offset))),
                 pl::GetOutput::same_type(),
             )
             .with_fmt("gather_every")

@@ -2,7 +2,7 @@
 
 ### BREAKING CHANGES DUE TO RUST-POLARS UPDATE
 
-- rust-polars is updated to 2023-12-21 unreleased version.
+- rust-polars is updated to 2023-12-25 unreleased version (#601, #622).
   This is the same version of Python Polars package 0.20.2, so please check
   the  [upgrade guide](https://pola-rs.github.io/polars/releases/upgrade/0.20/) for details too.
   - `pl$scan_csv()` and `pl$read_csv()`'s `comment_char` argument is renamed `comment_prefix`.
@@ -14,6 +14,7 @@
   - Preserve left and right join keys in outer joins.
   - `count` now ignores null values.
   - `NaN` values are now considered equal.
+  - `$gather_every()` gained an argument `offset`.
 
 ### Breaking changes and deprecations
 
