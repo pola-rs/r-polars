@@ -177,14 +177,14 @@ tasks:
     status:
       - Rscript -e 'if (desc::desc_get("RoxygenNote") < packageVersion("roxygen2")) quit(status = 1)'
     deps:
-      - build-extendr-wrappers
+      - build-rust
       - format-r
     cmds:
       - Rscript -e
         '{{.R_FUNC_IMPORT_REQUIRED_PKGS}};
         devtools::document()'
 
-  build-extendr-wrappers:
+  build-rust:
     desc: Build the Rust library and generate the `extendr-wrappers.R` file.
     sources:
       - src/Makevars*
