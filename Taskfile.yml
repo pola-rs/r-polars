@@ -295,3 +295,8 @@ tasks:
       - "{{.RUST_SOURCE}}"
     cmds:
       - cargo fmt --manifest-path "{{.MANIFEST}}"
+
+  test-snapshot-accept:
+    desc: Accept all test snapshots. (Shortcut to accept snapshots after running tests)
+    cmds:
+      - Rscript -e 'testthat::snapshot_accept()'
