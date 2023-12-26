@@ -286,12 +286,12 @@ impl RPolarsDataFrame {
     }
 
     pub fn select_at_idx(&self, idx: i32) -> List {
-        let expr_result = || -> Result<RPolarsSeries, String> {
+        let expr_result = {
             self.0
                 .select_at_idx(idx as usize)
                 .map(|s| RPolarsSeries(s.clone()))
                 .ok_or_else(|| format!("select_at_idx: no series found at idx {:?}", idx))
-        }();
+        };
         r_result_list(expr_result)
     }
 
@@ -460,7 +460,7 @@ impl RPolarsDataFrame {
     pub fn transpose(&self, keep_names_as: Robj, new_col_names: Robj) -> RResult<Self> {
         let opt_s = robj_to!(Option, str, keep_names_as)?;
         let opt_vec_s = robj_to!(Option, Vec, String, new_col_names)?;
-        let opt_either_vec_s = opt_vec_s.map(|vec_s| Either::Right(vec_s));
+        let opt_either_vec_s = opt_vec_s.map(Either::Right);
         self.0
             .transpose(opt_s, opt_either_vec_s)
             .map_err(polars_to_rpolars_err)

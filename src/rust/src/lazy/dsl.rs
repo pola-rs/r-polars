@@ -713,7 +713,7 @@ impl RPolarsExpr {
             .map(|rank_method| {
                 let options = pl::RankOptions {
                     method: rank_method,
-                    descending: descending,
+                    descending,
                 };
                 RPolarsExpr(self.0.clone().rank(options, Some(0u64)))
             })
@@ -1002,8 +1002,8 @@ impl RPolarsExpr {
             .replace(
                 robj_to!(PLExpr, old)?,
                 robj_to!(PLExpr, new)?,
-                robj_to!(Option, PLExpr, default)?.map(|e| e),
-                robj_to!(Option, PLPolarsDataType, return_dtype)?.map(|dt| dt),
+                robj_to!(Option, PLExpr, default)?,
+                robj_to!(Option, PLPolarsDataType, return_dtype)?,
             )
             .into())
     }
@@ -1039,7 +1039,7 @@ impl RPolarsExpr {
             .clone()
             .list()
             .sort(SortOptions {
-                descending: descending,
+                descending,
                 ..Default::default()
             })
             .with_fmt("list.sort")
@@ -1340,8 +1340,7 @@ impl RPolarsExpr {
             self.0
                 .clone()
                 .dt()
-                .replace_time_zone(tz.into_option(), robj_to!(PLExpr, ambiguous)?)
-                .into(),
+                .replace_time_zone(tz.into_option(), robj_to!(PLExpr, ambiguous)?),
         ))
     }
 
@@ -1864,7 +1863,7 @@ impl RPolarsExpr {
     }
 
     pub fn str_to_titlecase(&self) -> RResult<Self> {
-        f_str_to_titlecase(&self)
+        f_str_to_titlecase(self)
     }
 
     pub fn str_strip_chars(&self, matches: Robj) -> RResult<Self> {
@@ -2612,7 +2611,7 @@ pub fn robj_to_col(name: Robj, dotdotdot: Robj) -> RResult<RPolarsExpr> {
 
         match () {
             _ if name.is_string() && name.len() == 1 && dotdotdot.len() == 0 => {
-                Ok(RPolarsExpr::col(name.as_str().unwrap_or(&"")))
+                Ok(RPolarsExpr::col(name.as_str().unwrap_or("")))
             }
             _ if name.inherits("RPolarsDataType")
                 //or if name is a list and first element is RPolarsDataType

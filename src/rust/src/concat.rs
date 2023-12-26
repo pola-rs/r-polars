@@ -72,7 +72,7 @@ pub fn concat_series(l: Robj, rechunk: Robj, to_supertypes: Robj) -> RResult<RPo
                 Ok(None) => Ok(Some(x)), // first fold, acc is None, just us x,
                 Ok(Some(acc)) => polars_core::utils::get_supertype(&acc, &x)
                     .ok_or(RPolarsErr::new().plain("Series' have no common supertype".to_string()))
-                    .map(|dt| Some(dt)),
+                    .map(Some),
             });
         let shared_supertype = shared_supertype?.expect("cannot be None, unless empty s_vec");
 

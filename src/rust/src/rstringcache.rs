@@ -12,7 +12,7 @@ impl RPolarsStringCacheHolder {
 
     // R Garbage collection is not deterministic. Deleting all references to RPolarsStringCacheHolder
     // will cause it to be dropped eventually. Calling release ensures immediate drop, leave back a None.
-    fn release(&mut self) -> () {
+    fn release(&mut self) {
         let _opt_sch = self.0.take();
     }
 }

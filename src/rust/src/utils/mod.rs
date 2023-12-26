@@ -445,11 +445,11 @@ pub fn inner_unpack_r_result_list(robj: extendr_api::Robj) -> Result<Robj, Robj>
         let l = robj.as_list().expect("extendr_result is a list");
         let ok = l.elt(0).expect("extendr_result has a 1st element");
         let err = l.elt(1).expect("extendr_result has a 2nd element");
-        let inner_res = match err.rtype() {
+        
+        match err.rtype() {
             Rtype::Null => Ok(ok),
             _ => Err(err),
-        };
-        inner_res
+        }
     } else {
         Ok(robj)
     }
@@ -475,7 +475,9 @@ pub fn unpack_r_result_list(robj: extendr_api::Robj) -> RResult<Robj> {
     });
 
     // 3 - Convert any Robj-err to a Robj-RPolarsErr
-    let res = res.map_err(|err| {
+    
+
+    res.map_err(|err| {
         if err.inherits("RPolarsErr") {
             //robj was already an external ptr to RPolarsErr, use as is
             unsafe { &mut *err.external_ptr_addr::<RPolarsErr>() }.clone()
@@ -483,9 +485,7 @@ pub fn unpack_r_result_list(robj: extendr_api::Robj) -> RResult<Robj> {
             //robj was still some other error, upcast err to a string err and wrap in RPolarsErr
             RPolarsErr::new().plain(rdbg(err))
         }
-    });
-
-    res
+    })
 }
 
 //None if not real or Na.
@@ -547,7 +547,7 @@ pub fn robj_to_rchoice(robj: extendr_api::Robj) -> RResult<String> {
     let robj = unpack_r_result_list(robj)?;
     let robj_clone = robj.clone();
     let s_res: EResult<Strings> = robj.try_into();
-    let opt_str = s_res.map(|s| s.iter().next().map(|rstr| rstr.clone()));
+    let opt_str = s_res.map(|s| s.iter().next().cloned());
     match opt_str {
         // NA_CHARACTER not allowed as first element return error
         Ok(Some(rstr)) if rstr.is_na() => {
@@ -609,7 +609,7 @@ pub fn robj_to_i64(robj: extendr_api::Robj) -> RResult<i64> {
     let robj = unpack_r_result_list(robj)?;
     use extendr_api::*;
 
-    return match (robj.rtype(), robj.len()) {
+    match (robj.rtype(), robj.len()) {
         (_, 0 | 2..) => Some(err_no_scalar()),
         (Rtype::Strings, 1) => Some(robj_parse_str_to_t(robj.clone())),
         (Rtype::Doubles, 1) if robj.inherits("integer64") => {
@@ -625,14 +625,14 @@ pub fn robj_to_i64(robj: extendr_api::Robj) -> RResult<i64> {
     .unwrap_or_else(err_no_nan)
     .bad_robj(&robj)
     .mistyped(tn::<i64>())
-    .when("converting into type");
+    .when("converting into type")
 }
 
 pub fn robj_to_i32(robj: extendr_api::Robj) -> RResult<i32> {
     let robj = unpack_r_result_list(robj)?;
     use extendr_api::*;
 
-    return match (robj.rtype(), robj.len()) {
+    match (robj.rtype(), robj.len()) {
         (_, 0 | 2..) => Some(err_no_scalar()),
         (Rtype::Strings, 1) => Some(robj_parse_str_to_t(robj.clone())),
         (Rtype::Doubles, 1) if robj.inherits("integer64") => {
@@ -647,14 +647,14 @@ pub fn robj_to_i32(robj: extendr_api::Robj) -> RResult<i32> {
     .unwrap_or_else(err_no_nan)
     .bad_robj(&robj)
     .mistyped(tn::<i32>())
-    .when("converting into type");
+    .when("converting into type")
 }
 
 pub fn robj_to_f64(robj: extendr_api::Robj) -> RResult<f64> {
     let robj = unpack_r_result_list(robj)?;
     use extendr_api::*;
 
-    return match (robj.rtype(), robj.len()) {
+    match (robj.rtype(), robj.len()) {
         (_, 0 | 2..) => Some(err_no_scalar()),
         (Rtype::Strings, 1) => Some(robj_parse_str_to_t(robj.clone())),
         (Rtype::Doubles, 1) if robj.inherits("integer64") => {
@@ -669,7 +669,7 @@ pub fn robj_to_f64(robj: extendr_api::Robj) -> RResult<f64> {
     .unwrap_or_else(err_no_nan)
     .bad_robj(&robj)
     .mistyped(tn::<f64>())
-    .when("converting into type");
+    .when("converting into type")
 }
 
 pub fn robj_to_u64(robj: extendr_api::Robj) -> RResult<u64> {
@@ -869,7 +869,7 @@ pub fn list_expr_to_vec_pl_expr(
         robj_to_rexpr(robj.clone(), str_to_lit)
             .when(format!("converting element {} into an Expr", i + 1))
             .map(|e| {
-                if name != "" && named {
+                if !name.is_empty() && named {
                     e.0.alias(name)
                 } else {
                     e.0

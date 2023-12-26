@@ -388,7 +388,7 @@ impl RPolarsSeries {
         };
 
         //handle any return type from R and collect into Series
-        let s: extendr_api::Result<RPolarsSeries> = || -> extendr_api::Result<RPolarsSeries> {
+        let s: extendr_api::Result<RPolarsSeries> = {
             match out_type {
                 Float64 => apply_output!(r_iter, strict, allow_fail_eval, Doubles, Float64Chunked),
                 Int32 => apply_output!(r_iter, strict, allow_fail_eval, Integers, Int32Chunked),
@@ -425,7 +425,7 @@ impl RPolarsSeries {
 
                 _ => todo!("this output type is not implemented"),
             }
-        }();
+        };
 
         let s = s.map(move |mut x| {
             x.rename_mut(&format!("{}_apply", &self.name()));
