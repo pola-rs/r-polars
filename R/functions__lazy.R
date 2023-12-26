@@ -479,7 +479,7 @@ pl$approx_n_unique = function(column) { #-> int or Expr
 #' df$with_columns(pl$sum("*"))
 pl$sum = function(..., verbose = TRUE) {
   column = list2(...)
-  if (length(column) == 1L) column <- column[[1L]]
+  if (length(column) == 1L) column = column[[1L]]
   if (inherits(column, "RPolarsSeries") || inherits(column, "RPolarsExpr")) {
     return(column$sum())
   }
@@ -520,7 +520,7 @@ pl$sum = function(..., verbose = TRUE) {
 #'
 pl$min = function(..., verbose = TRUE) {
   column = list2(...)
-  if (length(column) == 1L) column <- column[[1L]]
+  if (length(column) == 1L) column = column[[1L]]
   if (inherits(column, "RPolarsSeries") || inherits(column, "RPolarsExpr")) {
     return(column$min())
   }
@@ -565,7 +565,7 @@ pl$min = function(..., verbose = TRUE) {
 #'
 pl$max = function(..., verbose = TRUE) {
   column = list2(...)
-  if (length(column) == 1L) column <- column[[1L]]
+  if (length(column) == 1L) column = column[[1L]]
   if (inherits(column, "RPolarsSeries") || inherits(column, "RPolarsExpr")) {
     return(column$max())
   }

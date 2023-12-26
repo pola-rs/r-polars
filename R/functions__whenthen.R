@@ -64,10 +64,8 @@
 #'   $otherwise(-1)
 #' )
 pl$when = function(...) {
-  condition = unpack_bool_expr(...) |>
-    unwrap("in pl$when():")
-
-  .pr$When$new(condition) |>
+  unpack_bool_expr_result(...) |>
+    and_then(.pr$When$new) |>
     unwrap("in pl$when():")
 }
 
@@ -80,10 +78,8 @@ When_then = function(statement) {
 }
 
 Then_when = function(...) {
-  condition = unpack_bool_expr(...) |>
-    unwrap("in $when():")
-
-  .pr$Then$when(self, condition) |>
+  unpack_bool_expr_result(...) |>
+    and_then(\(condition) .pr$Then$when(self, condition)) |>
     unwrap("in $when():")
 }
 
@@ -98,10 +94,8 @@ ChainedWhen_then = function(statement) {
 }
 
 ChainedThen_when = function(...) {
-  condition = unpack_bool_expr(...) |>
-    unwrap("in $when():")
-
-  .pr$ChainedThen$when(self, condition) |>
+  unpack_bool_expr_result(...) |>
+    and_then(\(condition) .pr$ChainedThen$when(self, condition)) |>
     unwrap("in $when():")
 }
 
@@ -116,7 +110,7 @@ ChainedThen_otherwise = function(statement) {
 #' print When
 #' @param x When object
 #' @param ... not used
-#' @keywords internal WhenThen
+#' @noRd
 #'
 #' @return self
 #' @export
@@ -178,7 +172,7 @@ print.RPolarsChainedThen = function(x, ...) {
 #' @return char vec
 #' @export
 #' @inherit .DollarNames.RPolarsDataFrame return
-#' @keywords internal
+#' @noRd
 .DollarNames.RPolarsWhen = function(x, pattern = "") {
   paste0(ls(RPolarsWhen, pattern = pattern), "()")
 }
@@ -190,7 +184,7 @@ print.RPolarsChainedThen = function(x, ...) {
 #' @return char vec
 #' @export
 #' @inherit .DollarNames.RPolarsDataFrame return
-#' @keywords internal
+#' @noRd
 .DollarNames.RPolarsThen = function(x, pattern = "") {
   paste0(ls(RPolarsThen, pattern = pattern), "()")
 }
@@ -202,7 +196,7 @@ print.RPolarsChainedThen = function(x, ...) {
 #' @return char vec
 #' @export
 #' @inherit .DollarNames.RPolarsDataFrame return
-#' @keywords internal
+#' @noRd
 .DollarNames.RPolarsChainedThen = function(x, pattern = "") {
   paste0(ls(RPolarsChainedThen, pattern = pattern), "()")
 }
@@ -214,7 +208,7 @@ print.RPolarsChainedThen = function(x, ...) {
 #' @return char vec
 #' @export
 #' @inherit .DollarNames.RPolarsDataFrame return
-#' @keywords internal
+#' @noRd
 .DollarNames.RPolarsChainedWhen = function(x, pattern = "") {
   paste0(ls(RPolarsChainedWhen, pattern = pattern), "()")
 }

@@ -81,7 +81,7 @@ NULL
 #' @return char vec
 #' @export
 #' @return Doesn't return a value. This is used for autocompletion in RStudio.
-#' @keywords internal
+#' @noRd
 .DollarNames.RPolarsDataFrame = function(x, pattern = "") {
   get_method_usages(RPolarsDataFrame, pattern = pattern)
 }
@@ -94,7 +94,7 @@ NULL
 #' @return char vec
 #' @export
 #' @inherit .DollarNames.RPolarsDataFrame return
-#' @keywords internal
+#' @noRd
 .DollarNames.RPolarsVecDataFrame = function(x, pattern = "") {
   get_method_usages(RPolarsVecDataFrame, pattern = pattern)
 }
@@ -143,9 +143,11 @@ NULL
 #' # custom schema
 #' pl$DataFrame(iris, schema = list(Sepal.Length = pl$Float32, Species = pl$Utf8))
 pl$DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
-  largs = unpack_list(...)
-
   uw = \(res) unwrap(res, "in $DataFrame():")
+
+  largs = unpack_list(...) |>
+    result() |>
+    uw()
 
   if (!is.null(schema) && !all(names(schema) %in% names(largs))) {
     Err_plain("Some columns in `schema` are not in the DataFrame.") |>
@@ -210,7 +212,7 @@ pl$DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
 
 #' S3 method to print a DataFrame
 #'
-#' @keywords internal
+#' @noRd
 #' @param x DataFrame
 #' @param ... not used
 #'
@@ -225,7 +227,6 @@ print.RPolarsDataFrame = function(x, ...) {
 
 #' internal method print DataFrame
 #' @noRd
-#' @keywords internal
 #' @return self
 #'
 #' @examples pl$DataFrame(iris)
@@ -634,7 +635,7 @@ DataFrame_sort = function(
 #'   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
 #' )
 DataFrame_select = function(...) {
-  .pr$DataFrame$select(self, unpack_list(...)) |>
+  .pr$DataFrame$select(self, unpack_list(..., .context = "in $select()")) |>
     unwrap("in $select()")
 }
 
@@ -655,7 +656,7 @@ DataFrame_drop_in_place = function(name) {
 }
 
 #' Compare two DataFrames
-#' @name DataFrame_frame_equal
+#' @name DataFrame_equals
 #' @description Check if two DataFrames are equal.
 #'
 #' @param other DataFrame to compare with.
@@ -665,10 +666,10 @@ DataFrame_drop_in_place = function(name) {
 #' dat1 = pl$DataFrame(iris)
 #' dat2 = pl$DataFrame(iris)
 #' dat3 = pl$DataFrame(mtcars)
-#' dat1$frame_equal(dat2)
-#' dat1$frame_equal(dat3)
-DataFrame_frame_equal = function(other) {
-  .pr$DataFrame$frame_equal(self, other)
+#' dat1$equals(dat2)
+#' dat1$equals(dat3)
+DataFrame_equals = function(other) {
+  .pr$DataFrame$equals(self, other)
 }
 
 #' Shift a DataFrame
@@ -741,7 +742,7 @@ DataFrame_shift_and_fill = function(fill_value, periods = 1) {
 #'   SW_add_2 = (pl$col("Sepal.Width") + 2)
 #' )
 DataFrame_with_columns = function(...) {
-  .pr$DataFrame$with_columns(self, unpack_list(...)) |>
+  .pr$DataFrame$with_columns(self, unpack_list(..., .context = "in $with_columns()")) |>
     unwrap("in $with_columns()")
 }
 
@@ -832,7 +833,11 @@ DataFrame_filter = function(...) {
 #' )
 DataFrame_group_by = function(..., maintain_order = pl$options$maintain_order) {
   # clone the DataFrame, bundle args as attributes. Non fallible.
-  construct_group_by(self, groupby_input = unpack_list(...), maintain_order = maintain_order)
+  construct_group_by(
+    self,
+    groupby_input = unpack_list(..., .context = "$group_by()"),
+    maintain_order = maintain_order
+  )
 }
 
 
@@ -1459,7 +1464,7 @@ DataFrame_rename = function(...) {
 #' @keywords DataFrame
 #' @return DataFrame
 #' @examples
-#' pl$DataFrame(iris)$describe()
+#' pl$DataFrame(mtcars)$describe()
 DataFrame_describe = function(percentiles = c(.25, .75)) {
   perc = percentiles
 

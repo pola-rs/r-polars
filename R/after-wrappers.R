@@ -16,7 +16,6 @@ build_debug_print = FALSE
 #' @param env environment object output from extendr-wrappers.R classes
 #' @param class_name optional class string, only used for debug printing
 #' Default NULL, will infer class_name automatically
-#' @keywords internal
 #' @description self is a global of extendr wrapper methods
 #' this function copies the function into a new environment and
 #' modify formals to have a self argument
@@ -24,7 +23,7 @@ build_debug_print = FALSE
 #' @return env of pure function calls to rust
 #'
 extendr_method_to_pure_functions = function(env, class_name = NULL) {
-  if (is.null(class_name)) class_name <- as.character(sys.call()[2])
+  if (is.null(class_name)) class_name = as.character(sys.call()[2])
   e = as.environment(lapply(env, function(f) {
     if (!is.function(f)) {
       return(f)
@@ -43,7 +42,6 @@ extendr_method_to_pure_functions = function(env, class_name = NULL) {
 #' @details This method if polars_optenv$debug_polars == TRUE will print what methods are called
 #' @noRd
 #' @export
-#' @keywords internal
 "$.private_polars_env" = function(self, name) {
   # print called private class in debug mode
   if (polars_optenv$debug_polars) {
@@ -67,7 +65,7 @@ extendr_method_to_pure_functions = function(env, class_name = NULL) {
 #' deprecation warning. Most private methods takes `self` as a first argument, the object the
 #' method should be called upon.
 #' @aliases  .pr
-#' @keywords internal api_private
+#' @noRd
 #' @return not applicable
 #' @export
 #' @examples
@@ -116,7 +114,6 @@ extendr_method_to_pure_functions = function(env, class_name = NULL) {
 #' @param Class_name string name of env class
 #' @rdname macro_add_syntax_check_to
 #' @noRd
-#' @keywords internal
 #' @return dollarsign method with syntax verification
 #'
 #' @details this function overrides dollarclass method of a extendr env_class
@@ -169,7 +166,6 @@ if (build_debug_print) cat("\n")
 #' @noRd
 #' @param f a function
 #' @param setter bool, if true a property method can be modified by user
-#' @keywords internal
 #' @return function subclassed into c("property","function") or c("setter","property","function")
 method_as_property = function(f, setter = FALSE) {
   class(f) = if (setter) {
@@ -247,7 +243,6 @@ pl$show_all_public_methods = function(class_names = NULL) {
 #' @return an element from the public namespace `pl` polars. Likely a function or an RPolarsDataType
 #' @export
 #' @noRd
-#' @keywords internal
 "$.pl_polars_env" = function(self, name) {
   # print called private class in debug mode
   if (polars_optenv$debug_polars) {

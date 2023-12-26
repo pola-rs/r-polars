@@ -21,7 +21,6 @@ NULL
 #' @export
 #' @noRd
 #' @inherit .DollarNames.RPolarsDataFrame return
-#' @keywords internal
 .DollarNames.RPolarsSQLContext = function(x, pattern = "") {
   get_method_usages(RPolarsSQLContext, pattern = pattern)
 }

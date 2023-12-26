@@ -15,7 +15,7 @@ expect_different = function(x, y) {
 #'
 #' @details expr must raise an error and expected_err pattern must match
 #' against the error text with grepl()
-#' @keywords internal
+#' @noRd
 #' @return invisble NULL
 #'
 #' @examples

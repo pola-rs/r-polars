@@ -7,7 +7,7 @@ test_that("str$strptime datetime", {
 
   expect_error(
     pl$lit(txt_datetimes)$str$strptime(pl$Datetime(), format = "%Y-%m-%d %H:%M:%S")$to_series(),
-    "Conversion .* failed"
+    "conversion .* failed"
   )
 
   expect_identical(
@@ -369,7 +369,7 @@ test_that("str$starts_with str$ends_with", {
   )
 })
 
-test_that("str$json_path. json_extract", {
+test_that("str$json_path. json_decode", {
   df = pl$DataFrame(
     json_val = c('{"a":"1"}', NA, '{"a":2}', '{"a":2.1}', '{"a":true}')
   )
@@ -383,7 +383,7 @@ test_that("str$json_path. json_extract", {
     json_val = c('{"a":1, "b": true}', NA, '{"a":2, "b": false}')
   )
   dtype = pl$Struct(pl$Field("a", pl$Float64), pl$Field("b", pl$Boolean))
-  actual = df$select(pl$col("json_val")$str$json_extract(dtype))$to_list()
+  actual = df$select(pl$col("json_val")$str$json_decode(dtype))$to_list()
   expect_identical(
     actual,
     list(json_val = list(a = c(1, NA, 2), b = c(TRUE, NA, FALSE)))
@@ -687,3 +687,4 @@ test_that("str$parse_int", {
 
   expect_error(pl$lit("foo")$str$parse_int()$to_r(), "strict integer parsing failed for 1 value")
 })
+

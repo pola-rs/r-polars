@@ -44,7 +44,7 @@ print.RPolarsRField = function(x, ...) {
 #' @param pattern String used to auto-complete
 #'
 #' @export
-#' @keywords internal
+#' @noRd
 .DollarNames.RPolarsRField = function(x, pattern = "") {
   get_method_usages(RPolarsRField, pattern = pattern)
 }
@@ -52,7 +52,7 @@ print.RPolarsRField = function(x, ...) {
 
 #' Print a polars Field
 #'
-#' @keywords internal
+#' @noRd
 #' @return self
 #'
 #' @examples
@@ -113,7 +113,7 @@ RField.property_setters$datatype = function(self, value) {
   }
 
   # if(is.null(func)) pstop(err= paste("no setter method for",name)))
-  if (polars_optenv$strictly_immutable) self <- .pr$RField$clone(self)
+  if (polars_optenv$strictly_immutable) self = .pr$RField$clone(self)
   func = RField.property_setters[[name]]
   func(self, value)
   self

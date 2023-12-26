@@ -1,14 +1,14 @@
 test_that("lazyframe join examples", {
-  df = pl$DataFrame(list(
+  df = pl$LazyFrame(
     foo = 1:3,
     bar = c(6, 7, 8),
     ham = c("a", "b", "c")
-  ))$lazy()
+  )
 
-  other_df = pl$DataFrame(list(
+  other_df = pl$LazyFrame(
     apple = c("x", "y", "z"),
     ham = c("a", "b", "d")
-  ))$lazy()
+  )
 
   # inner default join
   df_inner = df$join(other_df, on = "ham")$collect()
@@ -24,8 +24,9 @@ test_that("lazyframe join examples", {
     data.frame(
       foo = c(1L, 2L, NA, 3L),
       bar = c(6, 7, NA, 8),
-      ham = c("a", "b", "d", "c"),
-      apple = c("x", "y", "z", NA)
+      ham = c("a", "b", NA, "c"),
+      apple = c("x", "y", "z", NA),
+      ham_right = c("a", "b", "d", NA)
     )
   )
 

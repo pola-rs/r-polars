@@ -50,7 +50,7 @@ pub fn new_from_csv(
     path: Robj,
     has_header: Robj,
     separator: Robj,
-    comment_char: Robj,
+    comment_prefix: Robj,
     quote_char: Robj,
     skip_rows: Robj,
     dtypes: Nullable<&RPolarsDataTypeVector>,
@@ -111,7 +111,7 @@ pub fn new_from_csv(
         .with_cache(robj_to!(bool, cache)?)
         .with_dtype_overwrite(schema.as_ref())
         .low_memory(robj_to!(bool, low_memory)?)
-        .with_comment_char(robj_to!(Option, Utf8Byte, comment_char)?)
+        .with_comment_prefix(robj_to!(Option, str, comment_prefix)?)
         .with_quote_char(robj_to!(Option, Utf8Byte, quote_char)?)
         .with_end_of_line_char(robj_to!(Utf8Byte, eol_char)?)
         .with_rechunk(robj_to!(bool, rechunk)?)

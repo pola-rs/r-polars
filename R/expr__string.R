@@ -481,7 +481,7 @@ ExprStr_starts_with = function(sub) {
 }
 
 #' Parse string values as JSON.
-#' @name ExprStr_json_extract
+#' @name ExprStr_json_decode
 #' @keywords ExprStr
 #' @param dtype The dtype to cast the extracted value to. If `NULL`, the dtype
 #' will be inferred from the JSON value.
@@ -496,10 +496,10 @@ ExprStr_starts_with = function(sub) {
 #'   json_val = c('{"a":1, "b": true}', NA, '{"a":2, "b": false}')
 #' )
 #' dtype = pl$Struct(pl$Field("a", pl$Int64), pl$Field("b", pl$Boolean))
-#' df$select(pl$col("json_val")$str$json_extract(dtype))
-ExprStr_json_extract = function(dtype, infer_schema_length = 100) {
-  .pr$Expr$str_json_extract(self, dtype, infer_schema_length) |>
-    unwrap("in str$json_extract():")
+#' df$select(pl$col("json_val")$str$json_decode(dtype))
+ExprStr_json_decode = function(dtype, infer_schema_length = 100) {
+  .pr$Expr$str_json_decode(self, dtype, infer_schema_length) |>
+    unwrap("in str$json_decode():")
 }
 
 #' Extract the first match of JSON string with the provided JSONPath expression

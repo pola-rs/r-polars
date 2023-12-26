@@ -42,7 +42,7 @@ NULL
 
 
 #' Wrap as Series
-#' @keywords internal
+#' @noRd
 #' @description input is either already a Series of will be passed to the Series constructor
 #' @param x a Series or something-turned-into-Series
 #' @return Series
@@ -366,7 +366,7 @@ Series_map_elements = function(
 }
 
 Series_apply = function(f, datatype = NULL, strict_return_type = TRUE,
-                         allow_fail_eval = FALSE) {
+                        allow_fail_eval = FALSE) {
   warning("$apply() is deprecated and will be removed in 0.13.0. Use $map_elements() instead.")
   Series_map_elements(f,
     datatype = datatype, strict_return_type = strict_return_type,
@@ -802,16 +802,16 @@ Series_to_frame = function() {
 #' @param strict bool if TRUE, do not allow similar DataType comparison. Overrides null_equal.
 #'
 #' @description  Check if series is equal with another Series.
-#' @name Series_series_equal
+#' @name Series_equals
 #' @return bool
 #' @keywords Series
-#' @aliases series_equal
+#' @aliases equals
 #' @format method
 #'
 #' @examples
-#' pl$Series(1:4, "bob")$series_equal(pl$Series(1:4))
-Series_series_equal = function(other, null_equal = FALSE, strict = FALSE) {
-  .pr$Series$series_equal(self, other, null_equal, strict)
+#' pl$Series(1:4, "bob")$equals(pl$Series(1:4))
+Series_equals = function(other, null_equal = FALSE, strict = FALSE) {
+  .pr$Series$equals(self, other, null_equal, strict)
 }
 # TODO add Series_cast and show examples of strict and null_equals
 

@@ -4,7 +4,7 @@
 \alias{LazyFrame_mean}
 \title{Mean}
 \usage{
-LazyFrame_mean
+LazyFrame_mean()
 }
 \value{
 A LazyFrame with one row

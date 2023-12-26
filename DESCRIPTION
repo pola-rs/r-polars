@@ -43,7 +43,7 @@ Suggests:
     vctrs,
     withr
 Config/Needs/website:
-    etiennebacher/altdoc@95a5f42,
+    etiennebacher/altdoc@e9c7ee8,
     future.apply,
     here,
     magrittr,
@@ -55,7 +55,6 @@ Config/Needs/dev:
     RcppTOML,
     readr,
     rextendr,
-    robinlovelace/styler.equals,
     spelling,
     stringr,
     styler
@@ -74,6 +73,7 @@ Collate:
     'dataframe__frame.R'
     'datatype.R'
     'docs.R'
+    'dotdotdot.R'
     'error__rpolarserr.R'
     'error__string.R'
     'error__trait.R'

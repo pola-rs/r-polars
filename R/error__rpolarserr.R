@@ -5,7 +5,7 @@
 #' @return char vec
 #' @export
 #' @inherit .DollarNames.RPolarsDataFrame return
-#' @keywords internal
+#' @noRd
 .DollarNames.RPolarsErr = function(x, pattern = "") {
   get_method_usages(RPolarsErr, pattern = pattern)
 }
@@ -54,7 +54,7 @@ bad_robj = function(r) {
 }
 
 Err_plain = function(...) {
-  Err(.pr$Err$new()$plain(paste(..., collapse = " ")))
+  Err(.pr$Err$new()$plain(paste0(..., collapse = " ")))
 }
 
 # short hand for extracting an error context in unit testing, will raise error if not an RPolarsErr

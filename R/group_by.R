@@ -32,14 +32,13 @@ RPolarsGroupBy = new.env(parent = emptyenv())
 #' @return char vec
 #' @export
 #' @inherit .DollarNames.RPolarsDataFrame return
-#' @keywords internal
+#' @noRd
 .DollarNames.RPolarsGroupBy = function(x, pattern = "") {
   paste0(ls(RPolarsGroupBy, pattern = pattern), "()")
 }
 
 
 #' The internal GroupBy constructor
-#' @keywords internal
 #' @return The input as grouped DataFrame
 #' @noRd
 construct_group_by = function(df, groupby_input, maintain_order) {
@@ -55,7 +54,7 @@ construct_group_by = function(df, groupby_input, maintain_order) {
 #'
 #' @param x DataFrame
 #' @param ... not used
-#' @keywords internal
+#' @noRd
 #' @return self
 #' @export
 #'
@@ -90,7 +89,7 @@ GroupBy_agg = function(...) {
   .pr$DataFrame$by_agg(
     self = self,
     group_exprs = attr(self, "private")$groupby_input,
-    agg_exprs = unpack_list(...),
+    agg_exprs = unpack_list(..., .context = "in $agg():"),
     maintain_order = attr(self, "private")$maintain_order
   ) |>
     unwrap("in $agg():")
