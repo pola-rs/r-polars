@@ -152,7 +152,7 @@ During source installation, some environment variables can be set to
 enable Rust features and profile changes.
 
 - `RPOLARS_FULL_FEATURES="true"` (Build with nightly feature enabled,
-  requires Rust toolchain nightly-2023-10-12)
+  requires Rust toolchain nightly-2023-10-25)
 - `RPOLARS_PROFILE="release-optimized"` (Build with more optimization)
 
 ## Quickstart example
