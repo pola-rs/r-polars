@@ -114,8 +114,6 @@ tasks:
   test-source:
     desc: Run all tests for source.
     internal: true
-    env:
-      POLARS_MAX_THREADS: 2 # workaround for https://github.com/pola-rs/polars/issues/13202
     sources:
       - tests/**/*
       - "{{.R_SOURCE}}"
@@ -132,8 +130,6 @@ tasks:
   test-examples:
     desc: Check if examples can be run.
     internal: true
-    env:
-      POLARS_MAX_THREADS: 2 # workaround for https://github.com/pola-rs/polars/issues/13202
     sources:
       - "{{.R_SOURCE}}"
       - src/Makevars*

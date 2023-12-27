@@ -2069,13 +2069,14 @@ Expr_flatten = "use_extendr_wrapper"
 #'
 #' Gather every nth value in the Series and return as a new Series.
 #' @param n Positive integer.
+#' @param offset Starting index.
 #'
 #' @return Expr
 #'
 #' @examples
 #' pl$DataFrame(a = 0:24)$select(pl$col("a")$gather_every(6))
-Expr_gather_every = function(n) {
-  unwrap(.pr$Expr$gather_every(self, n))
+Expr_gather_every = function(n, offset = 0) {
+  unwrap(.pr$Expr$gather_every(self, n, offset))
 }
 
 #' Get the first n elements
@@ -3619,9 +3620,9 @@ Expr_rolling = function(index_column, period, offset = NULL,
 #' df = pl$DataFrame(a = c(1, 2, 2, 3), b = c(1.5, 2.5, 5, 1))
 #' df$with_columns(
 #'   replaced = pl$col("a")$replace(
-#'     old=pl$col("a")$max(),
-#'     new=pl$col("b")$sum(),
-#'     default=pl$col("b"),
+#'     old = pl$col("a")$max(),
+#'     new = pl$col("b")$sum(),
+#'     default = pl$col("b"),
 #'   )
 #' )
 Expr_replace = function(old, new, default = NULL, return_dtype = NULL) {
