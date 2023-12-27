@@ -278,10 +278,10 @@ tasks:
     vars:
       FORMATER_SCRIPT: dev/styler_utils.R
     sources:
-      - "{{.R_SOURCE}}"
+      - "**/*.R"
       - "{{.FORMATER_SCRIPT}}"
     generates:
-      - "{{.R_SOURCE}}"
+      - "**/*.R"
       - exclude: R/extendr-wrappers.R
     cmds:
       - Rscript -e

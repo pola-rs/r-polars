@@ -1,7 +1,9 @@
 ### To be run after altdoc::render_docs()
 
-list_man_html = list.files("docs/man", pattern = "\\.html$", full.names = TRUE,
-                           recursive = TRUE)
+list_man_html = list.files("docs/man",
+  pattern = "\\.html$", full.names = TRUE,
+  recursive = TRUE
+)
 
 ### Make the "Usage" section prettier (if there is one):
 ### DataFrame_describe(...)   ->   <DataFrame>$describe()
