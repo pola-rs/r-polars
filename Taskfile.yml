@@ -238,19 +238,19 @@ tasks:
     sources:
       - man/*.Rd
       - altdoc/altdoc_preprocessing.R
+      - altdoc/altdoc_postprocessing.R
       - altdoc/*.yml
       - "{{.VIGNETTES}}"
     generates:
       - docs/**
-    deps:
-      - install-package
-      - build-readme
-      - build-altdoc-ref-home
     cmds:
+      - task: build-readme
+      - task: build-altdoc-ref-home
       - Rscript -e
         'future::plan(future::multicore);
         source("altdoc/altdoc_preprocessing.R");
-        altdoc::render_docs(freeze = FALSE, parallel = TRUE, verbose = TRUE)'
+        altdoc::render_docs(freeze = FALSE, parallel = TRUE, verbose = TRUE);
+        source("altdoc/altdoc_postprocessing.R");'
 
   build-altdoc-ref-home:
     internal: true
@@ -276,10 +276,10 @@ tasks:
     vars:
       FORMATER_SCRIPT: dev/styler_utils.R
     sources:
-      - "{{.R_SOURCE}}"
+      - "**/*.R"
       - "{{.FORMATER_SCRIPT}}"
     generates:
-      - "{{.R_SOURCE}}"
+      - "**/*.R"
       - exclude: R/extendr-wrappers.R
     cmds:
       - Rscript -e

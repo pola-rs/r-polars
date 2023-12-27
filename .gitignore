@@ -51,3 +51,5 @@ tools/libr_polars.a
 altdoc/freeze.rds
 docs
 .venv_altdoc
+altdoc/mkdocs.yml
+altdoc/reference_home.md
