@@ -3,6 +3,9 @@
 \name{pl_concat_str}
 \alias{pl_concat_str}
 \title{Horizontally concatenate columns into a single string column}
+\usage{
+pl_concat_str(..., separator = "")
+}
 \arguments{
 \item{...}{Columns to concatenate into a single string column. Accepts
 expressions. Strings are parsed as column names, other non-expression inputs

@@ -7,12 +7,12 @@
 pl_median(...)
 }
 \arguments{
-\item{column}{if dtype is:
+\item{...}{One or several elements:
 \itemize{
-\item Series: Take median value in \code{Series}
-\item DataFrame or LazyFrame: Take median value of each column
-\item str: syntactic sugar for \code{pl$col(..)$median()}
-\item NULL: expression to take median column of a context.
+\item Series: Take mean value in \code{Series}
+\item DataFrame or LazyFrame: Take mean value of each column
+\item character vector: parsed as column names
+\item NULL: expression to take mean column of a context.
 }}
 }
 \value{

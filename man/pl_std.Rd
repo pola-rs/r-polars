@@ -3,6 +3,9 @@
 \name{pl_std}
 \alias{pl_std}
 \title{Standard deviation}
+\usage{
+pl_std(column, ddof = 1)
+}
 \arguments{
 \item{ddof}{integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.}
 }

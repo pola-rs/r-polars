@@ -7,11 +7,11 @@
 pl_mean(...)
 }
 \arguments{
-\item{column}{if dtype is:
+\item{...}{One or several elements:
 \itemize{
 \item Series: Take mean value in \code{Series}
 \item DataFrame or LazyFrame: Take mean value of each column
-\item str: syntactic sugar for \code{pl$col(..)$mean()}
+\item character vector: parsed as column names
 \item NULL: expression to take mean column of a context.
 }}
 }

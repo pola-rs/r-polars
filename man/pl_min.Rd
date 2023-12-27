@@ -4,7 +4,7 @@
 \alias{pl_min}
 \title{Find minimum value in one or several columns}
 \usage{
-pl_min(..., verbose = TRUE)
+pl_min(...)
 }
 \arguments{
 \item{...}{is a:
