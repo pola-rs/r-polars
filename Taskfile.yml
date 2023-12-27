@@ -243,11 +243,9 @@ tasks:
       - "{{.VIGNETTES}}"
     generates:
       - docs/**
-    deps:
-      - install-package
-      - build-readme
-      - build-altdoc-ref-home
     cmds:
+      - task: build-readme
+      - task: build-altdoc-ref-home
       - Rscript -e
         'future::plan(future::multicore);
         source("altdoc/altdoc_preprocessing.R");
