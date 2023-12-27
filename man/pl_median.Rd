@@ -3,6 +3,9 @@
 \name{pl_median}
 \alias{pl_median}
 \title{pl$median}
+\usage{
+pl_median(...)
+}
 \arguments{
 \item{column}{if dtype is:
 \itemize{

@@ -3,6 +3,9 @@
 \name{pl_mean}
 \alias{pl_mean}
 \title{pl$mean}
+\usage{
+pl_mean(...)
+}
 \arguments{
 \item{column}{if dtype is:
 \itemize{

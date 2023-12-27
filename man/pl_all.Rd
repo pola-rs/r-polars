@@ -3,6 +3,9 @@
 \name{pl_all}
 \alias{pl_all}
 \title{New Expr referring to all columns}
+\usage{
+pl_all(name = NULL)
+}
 \value{
 Boolean literal
 }

@@ -3,6 +3,9 @@
 \name{pl_last}
 \alias{pl_last}
 \title{pl$last}
+\usage{
+pl_last(column = NULL)
+}
 \arguments{
 \item{column}{if dtype is:
 \itemize{

@@ -3,6 +3,9 @@
 \name{pl_max}
 \alias{pl_max}
 \title{Find maximum value in one or several columns}
+\usage{
+pl_max(..., verbose = TRUE)
+}
 \arguments{
 \item{...}{is a:
 If one arg:

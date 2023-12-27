@@ -3,6 +3,9 @@
 \name{pl_coalesce}
 \alias{pl_coalesce}
 \title{Coalesce}
+\usage{
+pl_coalesce(...)
+}
 \arguments{
 \item{...}{is a:
 If one arg:

@@ -3,6 +3,9 @@
 \name{pl_sum}
 \alias{pl_sum}
 \title{Compute sum in one or several columns}
+\usage{
+pl_sum(..., verbose = TRUE)
+}
 \arguments{
 \item{...}{is a:
 If one arg:

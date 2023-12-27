@@ -1,5 +1,4 @@
 #' New Expr referring to all columns
-#' @name pl_all
 #' @description
 #' Not to mix up with `Expr_object$all()` which is a 'reduce Boolean columns by AND' method.
 #'
@@ -12,7 +11,7 @@
 #'
 #' @examples
 #' pl$DataFrame(list(all = c(TRUE, TRUE), some = c(TRUE, FALSE)))$select(pl$all()$all())
-pl$all = function(name = NULL) {
+pl_all = function(name = NULL) {
   if (is.null(name)) {
     return(.pr$Expr$col("*"))
   }
@@ -21,10 +20,10 @@ pl$all = function(name = NULL) {
   # TODO implement input list of Expr as in:
   # https://github.com/pola-rs/polars/blob/589f36432de6e95e81d9715a77d6fe78360512e5/py-polars/polars/internals/lazy_functions.py#L1095
 }
+pl$all = pl_all
 
 
 #' Start Expression with a column
-#' @name pl_col
 #' @description
 #' Return an expression representing a column in a DataFrame.
 #' @param name
@@ -68,26 +67,25 @@ pl$all = function(name = NULL) {
 #'
 #' # from Series of names
 #' df$select(pl$col(pl$Series(c("bar", "foobar"))))
-pl$col = function(name = "", ...) {
+pl_col = function(name = "", ...) {
   robj_to_col(name, list2(...)) |>
     unwrap("in pl$col()")
 }
+pl$col = pl_col
 
 #' an element in 'eval'-expr
-#' @name pl_element
 #' @description Alias for an element in evaluated in an `eval` expression.
 #' @keywords Expr
 #' @return Expr
 #' @aliases element
 #' @examples
 #' pl$lit(1:5)$cumulative_eval(pl$element()$first() - pl$element()$last()**2)$to_r()
-pl$element = function() pl$col("")
-
+pl_element = function() pl$col("")
+pl$element = pl_element
 
 # TODO move all lazy functions to a new keyword lazy functions
 
 #' pl$count
-#' @name pl_count
 #' @description Count the number of values in this column/context.
 #' @param column if dtype is:
 #' - Series: count length of Series
@@ -110,7 +108,7 @@ pl$element = function() pl$col("")
 #'
 #'
 #' df$group_by("c", maintain_order = TRUE)$agg(pl$count())
-pl$count = function(column = NULL) { # -> Expr | int:
+pl_count = function(column = NULL) { # -> Expr | int:
   if (is.null(column)) {
     return(.pr$Expr$new_count())
   }
@@ -120,22 +118,22 @@ pl$count = function(column = NULL) { # -> Expr | int:
   # add context to any error from pl$col
   unwrap(result(pl$col(column)$count()), "in pl$count():")
 }
+pl$count = pl_count
 
 #' Aggregate all column values into a list.
-#' @name pl_implode
 #' @param name Name of the column(s) that should be imploded, passed to pl$col()
 #' @keywords Expr
 #' @return Expr
 #' @examples
 #' pl$DataFrame(iris)$select(pl$implode("Species"))
-pl$implode = function(name) { # -> Expr
+pl_implode = function(name) { # -> Expr
   result(pl$col(name)) |>
     map(.pr$Expr$implode) |>
     unwrap("in pl$implode():")
 }
+pl$implode = pl_implode
 
 #' pl$first
-#' @name pl_first
 #' @description  Depending on the input type this function does different things:
 #' @param column if dtype is:
 #' - Series: Take first value in `Series`
@@ -160,7 +158,7 @@ pl$implode = function(name) { # -> Expr
 #'
 #' pl$first(df$get_column("a"))
 #'
-pl$first = function(column = NULL) { #-> Expr | Any:
+pl_first = function(column = NULL) { #-> Expr | Any:
   pcase(
     is.null(column), Ok(.pr$Expr$new_first()),
     inherits(column, "RPolarsSeries"), if (column$len() == 0) {
@@ -175,10 +173,9 @@ pl$first = function(column = NULL) { #-> Expr | Any:
   ) |>
     unwrap("in pl$first():")
 }
-
+pl$first = pl_first
 
 #' pl$last
-#' @name pl_last
 #' @description Depending on the input type this function does different things:
 #' @param column if dtype is:
 #' - Series: Take last value in `Series`
@@ -202,7 +199,7 @@ pl$first = function(column = NULL) { #-> Expr | Any:
 #'
 #' pl$last(df$get_column("a"))
 #'
-pl$last = function(column = NULL) { #-> Expr | Any:
+pl_last = function(column = NULL) { #-> Expr | Any:
   pcase(
     is.null(column), Ok(.pr$Expr$new_last()),
     inherits(column, "RPolarsSeries"), if (column$len() == 0) {
@@ -217,10 +214,10 @@ pl$last = function(column = NULL) { #-> Expr | Any:
   ) |>
     unwrap("in pl$last():")
 }
-
+pl$last = pl_last
 
 #' Get the first `n` rows.
-#' @name pl_head
+#'
 #' @param column if dtype is:
 #' - Series: Take head value in `Series`
 #' - str or int: syntactic sugar for `pl.col(..).head()`
@@ -240,7 +237,7 @@ pl$last = function(column = NULL) { #-> Expr | Any:
 #'
 #' df$select(pl$head("a", 2))
 #' pl$head(df$get_column("a"), 2)
-pl$head = function(column, n = 10) { #-> Expr | Any:
+pl_head = function(column, n = 10) { #-> Expr | Any:
   pcase(
     inherits(column, "RPolarsSeries"), result(column$expr$head(n)),
     is.character(column), result(pl$col(column)$head(n)),
@@ -252,10 +249,11 @@ pl$head = function(column, n = 10) { #-> Expr | Any:
   ) |>
     unwrap("in pl$head():")
 }
+pl$head = pl_head
 
 
 #' Get the last `n` rows.
-#' @name pl_tail
+#'
 #' @param column if dtype is:
 #' - Series: Take tail value in `Series`
 #' - str or in: syntactic sugar for `pl.col(..).tail()`
@@ -275,7 +273,7 @@ pl$head = function(column, n = 10) { #-> Expr | Any:
 #' df$select(pl$tail("a", 2))
 #'
 #' pl$tail(df$get_column("a"), 2)
-pl$tail = function(column, n = 10) { #-> Expr | Any:
+pl_tail = function(column, n = 10) { #-> Expr | Any:
   pcase(
     inherits(column, "RPolarsSeries"), result(column$expr$tail(n)),
     is.character(column), result(pl$col(column)$tail(n)),
@@ -287,9 +285,9 @@ pl$tail = function(column, n = 10) { #-> Expr | Any:
   ) |>
     unwrap("in pl$tail():")
 }
+pl$tail = pl_tail
 
 #' pl$mean
-#' @name pl_mean
 #' @description Depending on the input type this function does different things:
 #' @param column if dtype is:
 #' - Series: Take mean value in `Series`
@@ -312,7 +310,7 @@ pl$tail = function(column, n = 10) { #-> Expr | Any:
 #'
 #' df$select(pl$mean("a", "b"))
 #'
-pl$mean = function(...) { #-> Expr | Any:
+pl_mean = function(...) { #-> Expr | Any:
   column = list2(...)
   lc = length(column)
   stringflag = all(sapply(column, is_string))
@@ -331,10 +329,9 @@ pl$mean = function(...) { #-> Expr | Any:
   ) |>
     unwrap("in pl$mean():")
 }
-
+pl$mean = pl_mean
 
 #' pl$median
-#' @name pl_median
 #' @description Depending on the input type this function does different things:
 #' @param column if dtype is:
 #' - Series: Take median value in `Series`
@@ -357,7 +354,7 @@ pl$mean = function(...) { #-> Expr | Any:
 #'
 #' df$select(pl$median("a", "b"))
 #'
-pl$median = function(...) { #-> Expr | Any:
+pl_median = function(...) { #-> Expr | Any:
   column = list2(...)
   lc = length(column)
   stringflag = all(sapply(column, is_string))
@@ -376,9 +373,9 @@ pl$median = function(...) { #-> Expr | Any:
   ) |>
     unwrap("in pl$median():")
 }
+pl$median = pl_median
 
 #' Count `n` unique values
-#' @name pl_n_unique
 #' @description Depending on the input type this function does different things:
 #' @param column if dtype is:
 #' - Series: call method n_unique() to return value of unique values.
@@ -400,7 +397,7 @@ pl$median = function(...) { #-> Expr | Any:
 #'
 #' # colum as Expr
 #' pl$DataFrame(bob = 1:4)$select(pl$n_unique(pl$col("bob")))
-pl$n_unique = function(column) { #-> int or Expr
+pl_n_unique = function(column) { #-> int or Expr
   pcase(
     inherits(column, c("RPolarsSeries", "RPolarsExpr")), result(column$n_unique()),
     is_string(column), result(pl$col(column)$n_unique()),
@@ -408,9 +405,9 @@ pl$n_unique = function(column) { #-> int or Expr
   ) |>
     unwrap("in pl$n_unique():")
 }
+pl$n_unique = pl_n_unique
 
 #' Approximate count of unique values.
-#' @name pl_approx_n_unique
 #' @description This is done using the HyperLogLog++ algorithm for cardinality estimation.
 #' @param column if dtype is:
 #' - String: syntactic sugar for `pl$col(column)$approx_n_unique()`, returns Expr
@@ -440,7 +437,7 @@ pl$n_unique = function(column) { #-> int or Expr
 #' lit_series = pl$lit(c(1:1E6, 1E6:1, 1:1E6))
 #' system.time(pl$approx_n_unique(lit_series)$to_series()$print())
 #' system.time(pl$n_unique(lit_series)$to_series()$print())
-pl$approx_n_unique = function(column) { #-> int or Expr
+pl_approx_n_unique = function(column) { #-> int or Expr
   pcase(
     inherits(column, "RPolarsExpr"), result(column$approx_n_unique()),
     is_string(column), result(pl$col(column)$approx_n_unique()),
@@ -448,12 +445,11 @@ pl$approx_n_unique = function(column) { #-> int or Expr
   ) |>
     unwrap("in pl$approx_n_unique():")
 }
-
+pl$approx_n_unique = pl_approx_n_unique
 
 #' Compute sum in one or several columns
 #'
 #' This is syntactic sugar for `pl$col(...)$sum()`.
-#' @name pl_sum
 #'
 #' @param ...  is a:
 #' If one arg:
@@ -477,7 +473,7 @@ pl$approx_n_unique = function(column) { #-> int or Expr
 #'
 #' # Compute sum in several columns
 #' df$with_columns(pl$sum("*"))
-pl$sum = function(..., verbose = TRUE) {
+pl_sum = function(..., verbose = TRUE) {
   column = list2(...)
   if (length(column) == 1L) column = column[[1L]]
   if (inherits(column, "RPolarsSeries") || inherits(column, "RPolarsExpr")) {
@@ -494,12 +490,12 @@ pl$sum = function(..., verbose = TRUE) {
   }
   stop("pl$sum: this input is not supported")
 }
+pl$sum = pl_sum
 
 
 #' Find minimum value in one or several columns
 #'
 #' This is syntactic sugar for `pl$col(...)$min()`.
-#' @name pl_min
 #' @param ...  is a:
 #' If one arg:
 #'  - Series or Expr, same as `column$sum()`
@@ -518,7 +514,7 @@ pl$sum = function(..., verbose = TRUE) {
 #' )
 #' df
 #'
-pl$min = function(..., verbose = TRUE) {
+pl_min = function(..., verbose = TRUE) {
   column = list2(...)
   if (length(column) == 1L) column = column[[1L]]
   if (inherits(column, "RPolarsSeries") || inherits(column, "RPolarsExpr")) {
@@ -535,7 +531,7 @@ pl$min = function(..., verbose = TRUE) {
   }
   stop("pl$min: this input is not supported")
 }
-
+pl$min = pl_min
 
 
 
@@ -543,7 +539,6 @@ pl$min = function(..., verbose = TRUE) {
 #' Find maximum value in one or several columns
 #'
 #' This is syntactic sugar for `pl$col(...)$max()`.
-#' @name pl_max
 #' @param ...  is a:
 #' If one arg:
 #'  - Series or Expr, same as `column$sum()`
@@ -563,7 +558,7 @@ pl$min = function(..., verbose = TRUE) {
 #' )
 #' df
 #'
-pl$max = function(..., verbose = TRUE) {
+pl_max = function(..., verbose = TRUE) {
   column = list2(...)
   if (length(column) == 1L) column = column[[1L]]
   if (inherits(column, "RPolarsSeries") || inherits(column, "RPolarsExpr")) {
@@ -580,8 +575,7 @@ pl$max = function(..., verbose = TRUE) {
   }
   stop("pl$max: this input is not supported")
 }
-
-
+pl$max = pl_max
 
 
 #' Coalesce
@@ -608,13 +602,12 @@ pl$max = function(..., verbose = TRUE) {
 #'   pl$coalesce("a", "b", "c", 99.9)$alias("d")
 #' )
 #'
-pl$coalesce = function(...) {
+pl_coalesce = function(...) {
   column = list2(...)
   pra = do.call(construct_ProtoExprArray, column)
   coalesce_exprs(pra)
 }
-
-
+pl$coalesce = pl_coalesce
 
 
 #' Standard deviation

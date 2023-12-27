@@ -3,6 +3,9 @@
 \name{pl_min}
 \alias{pl_min}
 \title{Find minimum value in one or several columns}
+\usage{
+pl_min(..., verbose = TRUE)
+}
 \arguments{
 \item{...}{is a:
 If one arg:
