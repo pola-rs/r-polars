@@ -3,6 +3,18 @@
 \name{read_ndjson}
 \alias{read_ndjson}
 \title{New DataFrame from NDJSON}
+\usage{
+read_ndjson(
+  path,
+  infer_schema_length = 100,
+  batch_size = NULL,
+  n_rows = NULL,
+  low_memory = FALSE,
+  rechunk = TRUE,
+  row_count_name = NULL,
+  row_count_offset = 0
+)
+}
 \arguments{
 \item{path}{Path to a file or URL. It is possible to provide multiple paths
 provided that all NDJSON files have the same schema. It is not possible to

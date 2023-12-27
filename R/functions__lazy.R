@@ -1,7 +1,8 @@
 #' New Expr referring to all columns
 #' @description
 #' Not to mix up with `Expr_object$all()` which is a 'reduce Boolean columns by AND' method.
-#'
+#' @param name Character vector indicating on which columns the AND operation
+#' should be applied.
 #' @keywords Expr_new
 #'
 #' @return Boolean literal
@@ -550,7 +551,7 @@ pl$min = pl_min
 #' )
 #' df
 #'
-pl_max = function(..., verbose = TRUE) {
+pl_max = function(...) {
   column = list2(...)
   if (length(column) == 1L) column = column[[1L]]
   if (inherits(column, "RPolarsSeries") || inherits(column, "RPolarsExpr")) {
@@ -604,7 +605,9 @@ pl$coalesce = pl_coalesce
 
 #' Standard deviation
 #' @description  syntactic sugar for starting a expression with std
-#' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
+#' @param column Column name.
+#' @param ddof Delta Degrees of Freedom: the divisor used in the calculation is
+#' N - ddof, where N represents the number of elements. By default ddof is 1.
 #' @return Expr or Series matching type of input column
 pl_std = function(column, ddof = 1) {
   if (inherits(column, "RPolarsSeries") || inherits(column, "RPolarsExpr")) {
@@ -622,7 +625,7 @@ pl$std = pl_std
 
 #' Variance
 #' @description  syntactic sugar for starting a expression with var
-#' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
+#' @inheritParams pl_std
 #' @return Expr or Series matching type of input column
 pl_var = function(column, ddof = 1) {
   if (inherits(column, "RPolarsSeries") || inherits(column, "RPolarsExpr")) {

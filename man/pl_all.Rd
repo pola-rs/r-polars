@@ -6,6 +6,10 @@
 \usage{
 pl_all(name = NULL)
 }
+\arguments{
+\item{name}{Character vector indicating on which columns the AND operation
+should be applied.}
+}
 \value{
 Boolean literal
 }

@@ -3,6 +3,33 @@
 \name{scan_csv}
 \alias{scan_csv}
 \title{New LazyFrame from CSV}
+\usage{
+scan_csv(
+  path,
+  has_header = TRUE,
+  separator = ",",
+  comment_prefix = NULL,
+  quote_char = "\\"",
+  skip_rows = 0,
+  dtypes = NULL,
+  null_values = NULL,
+  ignore_errors = FALSE,
+  cache = FALSE,
+  infer_schema_length = 100,
+  n_rows = NULL,
+  encoding = "utf8",
+  low_memory = FALSE,
+  rechunk = TRUE,
+  skip_rows_after_header = 0,
+  row_count_name = NULL,
+  row_count_offset = 0,
+  try_parse_dates = FALSE,
+  eol_char = "\\n",
+  raise_if_empty = TRUE,
+  truncate_ragged_lines = FALSE,
+  reuse_downloaded = TRUE
+)
+}
 \arguments{
 \item{path}{Path to a file or URL. It is possible to provide multiple paths
 provided that all CSV files have the same schema. It is not possible to

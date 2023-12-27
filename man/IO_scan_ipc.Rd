@@ -3,18 +3,34 @@
 \name{scan_ipc}
 \alias{scan_ipc}
 \title{Import data in Apache Arrow IPC format}
+\usage{
+scan_ipc(
+  path,
+  n_rows = NULL,
+  cache = TRUE,
+  rechunk = TRUE,
+  row_count_name = NULL,
+  row_count_offset = 0L,
+  memmap = TRUE
+)
+}
 \arguments{
-\item{path}{string, path}
+\item{path}{Path to a file or URL. It is possible to provide multiple paths
+provided that all CSV files have the same schema. It is not possible to
+provide several URLs.}
 
-\item{n_rows}{integer, limit rows to scan}
+\item{n_rows}{Maximum number of rows to read.}
 
-\item{cache}{bool, use cache}
+\item{cache}{Cache the result after reading.}
 
-\item{rechunk}{bool, rechunk reorganize memory layout, potentially make future operations faster, however perform reallocation now.}
+\item{rechunk}{Reallocate to contiguous memory when all chunks / files are
+parsed.}
 
-\item{row_count_name}{NULL or string, if a string add a rowcount column named by this string}
+\item{row_count_name}{If not \code{NULL}, this will insert a row count column with
+the given name into the DataFrame.}
 
-\item{row_count_offset}{integer, the rowcount column can be offset by this value}
+\item{row_count_offset}{Offset to start the row_count column (only used if
+the name is set).}
 
 \item{memmap}{bool, mapped memory}
 }

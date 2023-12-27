@@ -72,7 +72,7 @@
 #' lazy_frame = pl$scan_csv(path = my_file)
 #' lazy_frame$collect()
 #' unlink(my_file)
-pl$scan_csv = function(
+scan_csv = function(
     path,
     has_header = TRUE,
     separator = ",",
@@ -147,6 +147,7 @@ pl$scan_csv = function(
   do.call(new_from_csv, args) |>
     unwrap("in pl$scan_csv():")
 }
+pl$scan_csv = scan_csv
 
 #' New DataFrame from CSV
 #' @rdname IO_read_csv

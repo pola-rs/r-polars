@@ -2,7 +2,6 @@
 #'
 #' @description
 #' Read a file from path into a polars LazyFrame.
-#' @name scan_ndjson
 #' @rdname IO_scan_ndjson
 #'
 #' @param path Path to a file or URL. It is possible to provide multiple paths
@@ -31,7 +30,7 @@
 #'   jsonlite::stream_out(iris, file(ndjson_filename), verbose = FALSE)
 #'   pl$scan_ndjson(ndjson_filename)$collect()
 #' }
-pl$scan_ndjson = function(
+scan_ndjson = function(
     path,
     infer_schema_length = 100,
     batch_size = NULL,
@@ -58,29 +57,15 @@ pl$scan_ndjson = function(
   do.call(new_from_ndjson, args) |>
     unwrap("in pl$scan_ndjson():")
 }
+pl$scan_ndjson = scan_ndjson
 
 #' New DataFrame from NDJSON
 #'
 #' @description
 #' Read a file from path into a polars DataFrame.
-#' @name read_ndjson
 #' @rdname IO_read_ndjson
 #'
-#' @param path Path to a file or URL. It is possible to provide multiple paths
-#' provided that all NDJSON files have the same schema. It is not possible to
-#' provide several URLs.
-#' @param infer_schema_length Maximum number of rows to read to infer the column
-#' types. If set to 0, all columns will be read as UTF-8. If `NULL`, a full
-#' table scan will be done (slow).
-#' @param batch_size Number of rows that will be processed per thread.
-#' @param n_rows Maximum number of rows to read.
-#' @param low_memory Reduce memory usage (will yield a lower performance).
-#' @param rechunk Reallocate to contiguous memory when all chunks / files are
-#' parsed.
-#' @param row_count_name If not `NULL`, this will insert a row count column with
-#' the given name into the DataFrame.
-#' @param row_count_offset Offset to start the row_count column (only used if
-#' the name is set).
+#' @inheritParams scan_ndjson
 #'
 #' @return A DataFrame
 #'
@@ -91,7 +76,7 @@ pl$scan_ndjson = function(
 #'   jsonlite::stream_out(iris, file(ndjson_filename), verbose = FALSE)
 #'   pl$read_ndjson(ndjson_filename)
 #' }
-pl$read_ndjson = function(
+read_ndjson = function(
     path,
     infer_schema_length = 100,
     batch_size = NULL,
@@ -104,3 +89,5 @@ pl$read_ndjson = function(
   mc[[1]] = get("pl", envir = asNamespace("polars"))$scan_ndjson
   eval.parent(mc)$collect()
 }
+
+pl$read_ndjson = read_ndjson
