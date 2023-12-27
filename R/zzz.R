@@ -63,7 +63,6 @@ replace_private_with_pub_methods(RPolarsThen, "^Then_")
 replace_private_with_pub_methods(RPolarsChainedWhen, "^ChainedWhen_")
 replace_private_with_pub_methods(RPolarsChainedThen, "^ChainedThen_")
 
-
 # any sub-namespace inherits 'method_environment'
 # This s3 method performs auto-completion
 #' @title auto complete $-access into a polars object
@@ -102,11 +101,12 @@ replace_private_with_pub_methods(RPolarsRThreadHandle, "^RThreadHandle_")
 # SQLContext
 replace_private_with_pub_methods(RPolarsSQLContext, "^SQLContext_")
 
+replace_private_with_pub_methods(pl, "^pl_")
 
 
 # expression constructors, why not just pl$lit = Expr_lit?
-move_env_elements(RPolarsExpr, pl, c("lit"), remove = FALSE)
-
+# move_env_elements(RPolarsExpr, pl, c("lit"), remove = FALSE)
+pl$lit = Expr_lit
 
 #' Get Memory Address
 #' @name pl_mem_address

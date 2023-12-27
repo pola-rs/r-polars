@@ -21,8 +21,6 @@ pl_all = function(name = NULL) {
   # TODO implement input list of Expr as in:
   # https://github.com/pola-rs/polars/blob/589f36432de6e95e81d9715a77d6fe78360512e5/py-polars/polars/internals/lazy_functions.py#L1095
 }
-pl$all = pl_all
-
 
 #' Start Expression with a column
 #' @description
@@ -72,7 +70,6 @@ pl_col = function(name = "", ...) {
   robj_to_col(name, list2(...)) |>
     unwrap("in pl$col()")
 }
-pl$col = pl_col
 
 #' an element in 'eval'-expr
 #' @description Alias for an element in evaluated in an `eval` expression.
@@ -82,7 +79,6 @@ pl$col = pl_col
 #' @examples
 #' pl$lit(1:5)$cumulative_eval(pl$element()$first() - pl$element()$last()**2)$to_r()
 pl_element = function() pl$col("")
-pl$element = pl_element
 
 # TODO move all lazy functions to a new keyword lazy functions
 
@@ -119,7 +115,6 @@ pl_count = function(column = NULL) { # -> Expr | int:
   # add context to any error from pl$col
   unwrap(result(pl$col(column)$count()), "in pl$count():")
 }
-pl$count = pl_count
 
 #' Aggregate all column values into a list.
 #' @param name Name of the column(s) that should be imploded, passed to pl$col()
@@ -132,7 +127,6 @@ pl_implode = function(name) { # -> Expr
     map(.pr$Expr$implode) |>
     unwrap("in pl$implode():")
 }
-pl$implode = pl_implode
 
 #' pl$first
 #' @description  Depending on the input type this function does different things:
@@ -174,7 +168,6 @@ pl_first = function(column = NULL) { #-> Expr | Any:
   ) |>
     unwrap("in pl$first():")
 }
-pl$first = pl_first
 
 #' pl$last
 #' @description Depending on the input type this function does different things:
@@ -215,7 +208,6 @@ pl_last = function(column = NULL) { #-> Expr | Any:
   ) |>
     unwrap("in pl$last():")
 }
-pl$last = pl_last
 
 #' Get the first `n` rows.
 #'
@@ -250,7 +242,6 @@ pl_head = function(column, n = 10) { #-> Expr | Any:
   ) |>
     unwrap("in pl$head():")
 }
-pl$head = pl_head
 
 
 #' Get the last `n` rows.
@@ -286,7 +277,6 @@ pl_tail = function(column, n = 10) { #-> Expr | Any:
   ) |>
     unwrap("in pl$tail():")
 }
-pl$tail = pl_tail
 
 #' pl$mean
 #' @description Depending on the input type this function does different things:
@@ -330,7 +320,6 @@ pl_mean = function(...) { #-> Expr | Any:
   ) |>
     unwrap("in pl$mean():")
 }
-pl$mean = pl_mean
 
 #' pl$median
 #' @description Depending on the input type this function does different things:
@@ -370,7 +359,6 @@ pl_median = function(...) { #-> Expr | Any:
   ) |>
     unwrap("in pl$median():")
 }
-pl$median = pl_median
 
 #' Count `n` unique values
 #' @description Depending on the input type this function does different things:
@@ -402,7 +390,6 @@ pl_n_unique = function(column) { #-> int or Expr
   ) |>
     unwrap("in pl$n_unique():")
 }
-pl$n_unique = pl_n_unique
 
 #' Approximate count of unique values.
 #' @description This is done using the HyperLogLog++ algorithm for cardinality estimation.
@@ -442,7 +429,6 @@ pl_approx_n_unique = function(column) { #-> int or Expr
   ) |>
     unwrap("in pl$approx_n_unique():")
 }
-pl$approx_n_unique = pl_approx_n_unique
 
 #' Compute sum in one or several columns
 #'
@@ -483,7 +469,6 @@ pl_sum = function(...) {
   }
   stop("pl$sum: this input is not supported")
 }
-pl$sum = pl_sum
 
 
 #' Find minimum value in one or several columns
@@ -524,10 +509,6 @@ pl_min = function(...) {
   }
   stop("pl$min: this input is not supported")
 }
-pl$min = pl_min
-
-
-
 
 #' Find maximum value in one or several columns
 #'
@@ -568,8 +549,6 @@ pl_max = function(...) {
   }
   stop("pl$max: this input is not supported")
 }
-pl$max = pl_max
-
 
 #' Coalesce
 #' @description Folds the expressions from left to right, keeping the first non-null value.
@@ -600,7 +579,6 @@ pl_coalesce = function(...) {
   pra = do.call(construct_ProtoExprArray, column)
   coalesce_exprs(pra)
 }
-pl$coalesce = pl_coalesce
 
 
 #' Standard deviation
@@ -621,7 +599,6 @@ pl_std = function(column, ddof = 1) {
   }
   stop("pl$std: this input is not supported")
 }
-pl$std = pl_std
 
 #' Variance
 #' @description  syntactic sugar for starting a expression with var
@@ -639,8 +616,6 @@ pl_var = function(column, ddof = 1) {
   }
   stop("pl$var: this input is not supported")
 }
-pl$var = pl_var
-
 
 
 #' Concat the arrays in a Series dtype List in linear time.
@@ -673,7 +648,6 @@ pl_concat_list = function(exprs) {
   concat_list(as.list(exprs)) |>
     unwrap(" in pl$concat_list():")
 }
-pl$concat_list = pl_concat_list
 
 #' struct
 #' @aliases struct
@@ -762,7 +736,6 @@ pl_struct = function(
       "in pl$struct:"
     )
 }
-pl$struct = pl_struct
 
 #' Horizontally concatenate columns into a single string column
 #'
@@ -792,7 +765,6 @@ pl$struct = pl_struct
 pl_concat_str = function(..., separator = "") {
   concat_str(list2(...), separator) |> unwrap("in $concat_str()")
 }
-pl$concat_str = pl_concat_str
 
 #' Covariance
 #' @description Calculates the covariance between two columns / expressions.
@@ -809,7 +781,6 @@ pl_cov = function(a, b, ddof = 1) {
   .pr$Expr$cov(a, b, ddof) |>
     unwrap("in pl$cov()")
 }
-pl$cov = pl_cov
 
 #' Rolling covariance
 #' @description Calculates the rolling covariance between two columns
@@ -829,7 +800,6 @@ pl_rolling_cov = function(a, b, window_size, min_periods = NULL, ddof = 1) {
   }
   .pr$Expr$rolling_cov(a, b, window_size, min_periods, ddof) |> unwrap("in pl$rolling_cov()")
 }
-pl$rolling_cov = pl_rolling_cov
 
 
 #' Correlation
@@ -848,7 +818,6 @@ pl$rolling_cov = pl_rolling_cov
 pl_corr = function(a, b, method = "pearson", ddof = 1, propagate_nans = FALSE) {
   .pr$Expr$corr(a, b, method, ddof, propagate_nans) |> unwrap("in pl$corr()")
 }
-pl$corr = pl_corr
 
 #' Rolling correlation
 #' @description Calculates the rolling correlation between two columns
@@ -868,7 +837,6 @@ pl_rolling_corr = function(a, b, window_size, min_periods = NULL, ddof = 1) {
   }
   .pr$Expr$rolling_corr(a, b, window_size, min_periods, ddof) |> unwrap("in pl$rolling_corr()")
 }
-pl$rolling_corr = pl_rolling_corr
 
 
 #' Accumulate over multiple columns horizontally with an R function
@@ -905,7 +873,6 @@ pl_fold = function(acc, lambda, exprs) {
   fold(acc, lambda, exprs) |>
     unwrap("in pl$fold():")
 }
-pl$fold = pl_fold
 
 #' @rdname pl_fold_reduce
 #' @name pl_fold_reduce_part2
@@ -913,7 +880,6 @@ pl_reduce = function(lambda, exprs) {
   reduce(lambda, exprs) |>
     unwrap("in pl$reduce():")
 }
-pl$reduce = pl_reduce
 
 #' Get the minimum value rowwise
 #'
@@ -935,7 +901,6 @@ pl_min_horizontal = function(...) {
   min_horizontal(list2(...)) |>
     unwrap("in $min_horizontal():")
 }
-pl$min_horizontal = pl_min_horizontal
 
 #' Get the maximum value rowwise
 #'
@@ -957,7 +922,6 @@ pl_max_horizontal = function(...) {
   max_horizontal(list2(...)) |>
     unwrap("in $max_horizontal():")
 }
-pl$max_horizontal = pl_max_horizontal
 
 #' Apply the AND logical rowwise
 #'
@@ -987,7 +951,6 @@ pl_all_horizontal = function(...) {
   all_horizontal(list2(...)) |>
     unwrap("in $all_horizontal():")
 }
-pl$all_horizontal = pl_all_horizontal
 
 #' Apply the OR logical rowwise
 #'
@@ -1017,7 +980,6 @@ pl_any_horizontal = function(...) {
   any_horizontal(list2(...)) |>
     unwrap("in $any_horizontal():")
 }
-pl$any_horizontal = pl_any_horizontal
 
 #' Compute the sum rowwise
 #'
@@ -1039,4 +1001,3 @@ pl_sum_horizontal = function(...) {
   sum_horizontal(list2(...)) |>
     unwrap("in $sum_horizontal():")
 }
-pl$sum_horizontal = pl_sum_horizontal

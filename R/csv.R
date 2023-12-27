@@ -2,7 +2,6 @@
 #'
 #' @description
 #' Read a file from path into a polars LazyFrame.
-#' @name scan_csv
 #' @rdname IO_scan_csv
 #'
 #' @param path Path to a file or URL. It is possible to provide multiple paths
@@ -72,7 +71,7 @@
 #' lazy_frame = pl$scan_csv(path = my_file)
 #' lazy_frame$collect()
 #' unlink(my_file)
-scan_csv = function(
+pl_scan_csv = function(
     path,
     has_header = TRUE,
     separator = ",",
@@ -147,13 +146,12 @@ scan_csv = function(
   do.call(new_from_csv, args) |>
     unwrap("in pl$scan_csv():")
 }
-pl$scan_csv = scan_csv
 
 #' New DataFrame from CSV
 #' @rdname IO_read_csv
-#' @inheritParams scan_csv
+#' @inheritParams pl_scan_csv
 #' @return DataFrame
-read_csv = function( # remapped to pl$read_csv, a hack to support roxygen2 @inheritsParams
+pl_read_csv = function( # remapped to pl$read_csv, a hack to support roxygen2 @inheritsParams
     path,
     has_header = TRUE,
     separator = ",",
@@ -185,8 +183,6 @@ read_csv = function( # remapped to pl$read_csv, a hack to support roxygen2 @inhe
   }) |>
     unwrap("in pl$read_csv(): ")
 }
-
-pl$read_csv = read_csv
 
 check_is_link = function(path, reuse_downloaded, raise_error = FALSE) {
   # do nothing let path fail on rust side

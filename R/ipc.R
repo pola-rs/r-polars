@@ -3,13 +3,12 @@
 #' @details Create new LazyFrame from Apache Arrow IPC file or stream
 #' @keywords LazyFrame_new
 #'
-#' @inheritParams scan_csv
+#' @inheritParams pl_scan_csv
 #' @param memmap bool, mapped memory
 #'
 #' @return LazyFrame
-#' @name scan_ipc
 #' @rdname IO_scan_ipc
-scan_ipc = function(
+pl_scan_ipc = function(
     path,
     n_rows = NULL,
     cache = TRUE,
@@ -29,4 +28,3 @@ scan_ipc = function(
   )
   unwrap(result_lf, "in pl$scan_ipc:")
 }
-pl$scan_ipc = scan_ipc

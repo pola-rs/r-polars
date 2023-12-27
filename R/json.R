@@ -30,7 +30,7 @@
 #'   jsonlite::stream_out(iris, file(ndjson_filename), verbose = FALSE)
 #'   pl$scan_ndjson(ndjson_filename)$collect()
 #' }
-scan_ndjson = function(
+pl_scan_ndjson = function(
     path,
     infer_schema_length = 100,
     batch_size = NULL,
@@ -57,7 +57,6 @@ scan_ndjson = function(
   do.call(new_from_ndjson, args) |>
     unwrap("in pl$scan_ndjson():")
 }
-pl$scan_ndjson = scan_ndjson
 
 #' New DataFrame from NDJSON
 #'
@@ -65,7 +64,7 @@ pl$scan_ndjson = scan_ndjson
 #' Read a file from path into a polars DataFrame.
 #' @rdname IO_read_ndjson
 #'
-#' @inheritParams scan_ndjson
+#' @inheritParams pl_scan_ndjson
 #'
 #' @return A DataFrame
 #'
@@ -76,7 +75,7 @@ pl$scan_ndjson = scan_ndjson
 #'   jsonlite::stream_out(iris, file(ndjson_filename), verbose = FALSE)
 #'   pl$read_ndjson(ndjson_filename)
 #' }
-read_ndjson = function(
+pl_read_ndjson = function(
     path,
     infer_schema_length = 100,
     batch_size = NULL,
@@ -89,5 +88,3 @@ read_ndjson = function(
   mc[[1]] = get("pl", envir = asNamespace("polars"))$scan_ndjson
   eval.parent(mc)$collect()
 }
-
-pl$read_ndjson = read_ndjson

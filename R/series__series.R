@@ -63,7 +63,7 @@ wrap_s = function(x) {
 #' @examples {
 #'   pl$Series(1:4)
 #' }
-pl$Series = function(x, name = NULL) {
+pl_Series = function(x, name = NULL) {
   .pr$Series$new(x, name) |>
     unwrap("in pl$Series()")
 }
