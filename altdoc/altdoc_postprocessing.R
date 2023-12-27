@@ -51,6 +51,12 @@ for (i in to_modify) {
       paste0("<code class='language-R'>pl$", which_input, "_"),
       orig
     )
+  } else if (which_class == "pl") {
+    new = gsub(
+      "<code class='language-R'>pl_",
+      "<code class='language-R'>pl$",
+      orig
+    )
   } else {
     new = gsub(
       paste0("<code class='language-R'>", which_class, "_"),
