@@ -143,9 +143,6 @@ patrick::with_parameters_test_that(
       c = letters[1]
     )$sink_csv(temp_out, quote_style = quote_style)
     expect_snapshot_file(temp_out)
-    # TODO: this is to avoid upstream locking issue
-    # https://github.com/pola-rs/polars/issues/12918
-    Sys.sleep(1)
   },
   quote_style = c("necessary", "always", "non_numeric", "never")
 )

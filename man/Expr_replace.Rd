@@ -55,9 +55,9 @@ df$with_columns(replaced = pl$col("a")$replace(mapping, return_dtype = pl$Int8))
 df = pl$DataFrame(a = c(1, 2, 2, 3), b = c(1.5, 2.5, 5, 1))
 df$with_columns(
   replaced = pl$col("a")$replace(
-    old=pl$col("a")$max(),
-    new=pl$col("b")$sum(),
-    default=pl$col("b"),
+    old = pl$col("a")$max(),
+    new = pl$col("b")$sum(),
+    default = pl$col("b"),
   )
 )
 }
