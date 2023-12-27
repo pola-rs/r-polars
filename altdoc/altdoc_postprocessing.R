@@ -27,11 +27,38 @@ for (i in to_modify) {
   if (!any(grepl("<h2 id=\"usage\">Usage</h2>", orig))) {
     next
   }
-  new = gsub(
-    paste0("<code class='language-R'>", which_class, "_"),
-    paste0("<code class='language-R'>&lt;", which_class, "&gt;$"),
-    orig
-  )
+
+  # IO functions are DataFrame or LazyFrame methods
+  if (which_class == "IO") {
+    if (any(grepl("<code class='language-R'>LazyFrame_sink", orig))) {
+      which_class <<- "LazyFrame"
+    } else if (any(grepl("<code class='language-R'>DataFrame_write", orig))) {
+      which_class <<- "DataFrame"
+    }
+  }
+
+  # prefix with pl$ for read/scan
+  if (which_class == "IO") {
+    which_input = if (any(grepl("<code class='language-R'>read_", orig))) {
+      "read"
+    } else if (any(grepl("<code class='language-R'>scan_", orig))) {
+      "scan"
+    } else {
+      ""
+    }
+    new = gsub(
+      paste0("<code class='language-R'>", which_input, "_"),
+      paste0("<code class='language-R'>pl$", which_input, "_"),
+      orig
+    )
+  } else {
+    new = gsub(
+      paste0("<code class='language-R'>", which_class, "_"),
+      paste0("<code class='language-R'>&lt;", which_class, "&gt;$"),
+      orig
+    )
+  }
+
   writeLines(new, i)
 }
 
