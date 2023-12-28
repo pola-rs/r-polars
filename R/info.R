@@ -82,4 +82,4 @@ check_feature = function(feature_name, context = NULL, call = sys.call(1L)) {
 #' @return The number of threads
 #' @examples
 #' pl$threadpool_size()
-pl$threadpool_size = function() threadpool_size()
+pl_threadpool_size = function() threadpool_size()

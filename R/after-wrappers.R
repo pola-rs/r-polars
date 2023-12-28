@@ -208,7 +208,9 @@ class(pl) = c("pl_polars_env", "environment")
 #' @return NULL
 #' @keywords functions
 #' @examples
+#' \dontrun{
 #' pl$show_all_public_functions()
+#' }
 pl_show_all_public_functions = function() {
   print_env(pl, "polars public functions via pl$...")
 }

@@ -11,6 +11,8 @@ pl_show_all_public_functions()
 print any object(function, RPolarsDataType) available via \verb{pl$}.
 }
 \examples{
+\dontrun{
 pl$show_all_public_functions()
+}
 }
 \keyword{functions}
