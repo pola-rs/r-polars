@@ -21,6 +21,6 @@
 		}
 	],
 	"updateContentCommand": {
-		"prqlr-build-deps": "task setup-dev"
+		"setup-r-polars-requirements": "task setup-dev"
 	}
 }
