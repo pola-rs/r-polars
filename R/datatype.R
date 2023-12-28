@@ -111,7 +111,7 @@ is_polars_dtype = function(x, include_unknown = FALSE) {
 #'
 #' # FALSE
 #' pl$same_outer_dt(pl$Int64, pl$Float64)
-pl$same_outer_dt = function(lhs, rhs) {
+pl_same_outer_dt = function(lhs, rhs) {
   .pr$DataType$same_outer_datatype(lhs, rhs)
 }
 

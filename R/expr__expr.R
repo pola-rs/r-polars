@@ -3200,11 +3200,10 @@ Expr_to_r = function(df = NULL, i = 0) {
 #' Otherwise, provide a DataFrame that the Expr should be evaluated in.
 #' @param i Numeric column to extract. Default is zero (which gives the first
 #' column).
-#' @name pl_expr_to_r
 #' @return R object
 #' @examples
 #' pl$expr_to_r(pl$lit(1:3))
-pl$expr_to_r = function(expr, df = NULL, i = 0) {
+pl_expr_to_r = function(expr, df = NULL, i = 0) {
   wrap_e(expr)$to_r(df, i)
 }
 

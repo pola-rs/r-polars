@@ -47,7 +47,6 @@ polars_optreq$rpool_cap = list() # rust-side options already check args
 #' R code in the background. See Details.
 #'
 #' @rdname polars_options
-#' @name set_options
 #'
 #' @docType NULL
 #'
@@ -90,7 +89,7 @@ polars_optreq$rpool_cap = list() # rust-side options already check args
 #'
 #' # reset options to their default value
 #' pl$reset_options()
-pl$set_options = function(
+pl_set_options = function(
     strictly_immutable = TRUE,
     maintain_order = FALSE,
     do_not_repeat_call = FALSE,
@@ -148,9 +147,8 @@ pl$set_options = function(
 }
 
 #' @rdname polars_options
-#' @name reset_options
 
-pl$reset_options = function() {
+pl_reset_options = function() {
   assign("strictly_immutable", TRUE, envir = polars_optenv)
   assign("maintain_order", FALSE, envir = polars_optenv)
   assign("do_not_repeat_call", FALSE, envir = polars_optenv)
@@ -198,8 +196,6 @@ subtimer_ms = function(cap_name = NULL, cap = 9999) {
 #' if using the global string cache is enabled. This function enables
 #' the string_cache. In general, you should use `pl$with_string_cache()` instead.
 #'
-#' @name pl_enable_string_cache
-#'
 #' @keywords options
 #' @return This doesn't return any value.
 #' @seealso
@@ -211,7 +207,7 @@ subtimer_ms = function(cap_name = NULL, cap = 9999) {
 #' pl$using_string_cache()
 #' pl$disable_string_cache()
 #' pl$using_string_cache()
-pl$enable_string_cache = function() {
+pl_enable_string_cache = function() {
   enable_string_cache() |>
     unwrap("in pl$enable_string_cache()") |>
     invisible()
@@ -224,8 +220,6 @@ pl$enable_string_cache = function() {
 #' if using the global string cache is enabled. This function disables
 #' the string_cache. In general, you should use `pl$with_string_cache()` instead.
 #'
-#' @name pl_disable_string_cache
-#'
 #' @keywords options
 #' @return This doesn't return any value.
 #' @seealso
@@ -237,7 +231,7 @@ pl$enable_string_cache = function() {
 #' pl$using_string_cache()
 #' pl$disable_string_cache()
 #' pl$using_string_cache()
-pl$disable_string_cache = function() {
+pl_disable_string_cache = function() {
   disable_string_cache() |>
     unwrap("in pl$disable_string_cache()") |>
     invisible()
@@ -249,8 +243,6 @@ pl$disable_string_cache = function() {
 #'
 #' This function simply checks if the global string cache is active.
 #'
-#' @name pl_using_string_cache
-#'
 #' @keywords options
 #' @return A boolean
 #' @seealso
@@ -261,7 +253,7 @@ pl$disable_string_cache = function() {
 #' pl$using_string_cache()
 #' pl$disable_string_cache()
 #' pl$using_string_cache()
-pl$using_string_cache = function() {
+pl_using_string_cache = function() {
   using_string_cache()
 }
 
@@ -269,8 +261,6 @@ pl$using_string_cache = function() {
 #' Evaluate one or several expressions with global string cache
 #'
 #' This function only temporarily enables the global string cache.
-#'
-#' @name pl_with_string_cache
 #'
 #' @keywords options
 #' @return return value of expression
@@ -284,7 +274,7 @@ pl$using_string_cache = function() {
 #'   df2 = pl$DataFrame(tail(iris, 2))
 #' })
 #' pl$concat(list(df1, df2))
-pl$with_string_cache = function(expr) {
+pl_with_string_cache = function(expr) {
   token = .pr$StringCacheHolder$hold()
   on.exit(token$release()) # if token was not release on exit, would release later on gc()
   eval(expr, envir = parent.frame())
@@ -325,7 +315,7 @@ pl$with_string_cache = function(expr) {
 #' pl$options$rpool_cap
 #' pl$set_options(rpool_cap = default)
 #' pl$options$rpool_cap
-pl$get_global_rpool_cap = function() {
+pl_get_global_rpool_cap = function() {
   warning(
     "in pl$get_global_rpool_cap(): Deprecated. Use pl$options$rpool_cap instead.",
     .Call = NULL
@@ -335,7 +325,7 @@ pl$get_global_rpool_cap = function() {
 
 #' @rdname global_rpool_cap
 #' @name set_global_rpool_cap
-pl$set_global_rpool_cap = function(n) {
+pl_set_global_rpool_cap = function(n) {
   warning(
     "in pl$get_global_rpool_cap(): Deprecated. Use pl$set_options(rpool_cap = ?) instead.",
     .Call = NULL

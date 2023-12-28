@@ -2,6 +2,7 @@
 % Please edit documentation in R/functions__whenthen.R
 \name{Expr_when_then_otherwise}
 \alias{Expr_when_then_otherwise}
+\alias{pl_when}
 \alias{when}
 \alias{then}
 \alias{otherwise}
@@ -10,6 +11,9 @@
 \alias{ChainedWhen}
 \alias{ChainedThen}
 \title{when-then-otherwise Expr}
+\usage{
+pl_when(...)
+}
 \arguments{
 \item{...}{Into Expr into a boolean mask to branch by.}
 

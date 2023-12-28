@@ -2,7 +2,11 @@
 % Please edit documentation in R/Field.R
 \name{RField_class}
 \alias{RField_class}
+\alias{pl_Field}
 \title{Create Field}
+\usage{
+pl_Field(name, datatype)
+}
 \arguments{
 \item{name}{Field name}
 

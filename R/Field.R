@@ -14,7 +14,7 @@
 #' DataType.
 #' @examples
 #' pl$Field("city_names", pl$Utf8)
-pl$Field = function(name, datatype) {
+pl_Field = function(name, datatype) {
   .pr$RField$new(name, datatype)
 }
 

@@ -63,7 +63,7 @@
 #'   $then(99)
 #'   $otherwise(-1)
 #' )
-pl$when = function(...) {
+pl_when = function(...) {
   unpack_bool_expr_result(...) |>
     and_then(.pr$When$new) |>
     unwrap("in pl$when():")

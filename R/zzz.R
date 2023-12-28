@@ -105,8 +105,7 @@ replace_private_with_pub_methods(pl, "^pl_")
 
 
 # expression constructors, why not just pl$lit = Expr_lit?
-# move_env_elements(RPolarsExpr, pl, c("lit"), remove = FALSE)
-pl$lit = Expr_lit
+move_env_elements(RPolarsExpr, pl, c("lit"), remove = FALSE)
 
 #' Get Memory Address
 #' @name pl_mem_address

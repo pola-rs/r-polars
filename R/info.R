@@ -5,7 +5,7 @@
 #' @examples
 #' pl$polars_info()
 # TODO: Link to the installation vignette
-pl$polars_info = function() {
+pl_polars_info = function() {
   # Similar to arrow::arrow_info()
   out = list(
     version = utils::packageVersion("polars"),
