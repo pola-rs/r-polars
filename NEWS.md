@@ -7,16 +7,16 @@
 - rust-polars is updated to 2023-12-25 unreleased version (#601, #622).
   This is the same version of Python Polars package 0.20.2, so please check
   the [upgrade guide](https://pola-rs.github.io/polars/releases/upgrade/0.20/) for details too.
-  - `pl$scan_csv()` and `pl$read_csv()`'s `comment_char` argument is renamed `comment_prefix`.
-  - `<DataFrame>$frame_equal()` and `<Series>$series_equal()` are renamed
+    - `pl$scan_csv()` and `pl$read_csv()`'s `comment_char` argument is renamed `comment_prefix`.
+    - `<DataFrame>$frame_equal()` and `<Series>$series_equal()` are renamed
     to `<DataFrame>$equals()` and `<Series>$equals()`.
-  - `<Expr>$rolling_*` functions gained an argument `warn_if_unsorted`.
-  - `<Expr>$str$json_extract()` is renamed to `<Expr>$str$json_decode()`.
-  - Change default join behavior with regard to `null` values.
-  - Preserve left and right join keys in outer joins.
-  - `count` now ignores null values.
-  - `NaN` values are now considered equal.
-  - `$gather_every()` gained an argument `offset`.
+    - `<Expr>$rolling_*` functions gained an argument `warn_if_unsorted`.
+    - `<Expr>$str$json_extract()` is renamed to `<Expr>$str$json_decode()`.
+    - Change default join behavior with regard to `null` values.
+    - Preserve left and right join keys in outer joins.
+    - `count` now ignores null values.
+    - `NaN` values are now considered equal.
+    - `$gather_every()` gained an argument `offset`.
 
 ## Breaking changes and deprecations
 
@@ -29,11 +29,11 @@
 - `<RPolarsExpr>$lit_to_s()` is renamed to `<RPolarsExpr>$to_series()` (#582).
 - `<RPolarsExpr>$lit_to_df()` is removed (#582).
 - Change class names and function names associated with class names.
-  - The class name of all objects created by polars (`DataFrame`, `LazyFrame`,
+    - The class name of all objects created by polars (`DataFrame`, `LazyFrame`,
     `Expr`, `Series`, etc.) has changed. They now start with `RPolars`, for example
     `RPolarsDataFrame`. This will only break your code if you directly use those
     class names, such as in S3 methods (#554, #585).
-  - Private methods have been unified so that they do not have the `RPolars` prefix (#584).
+    - Private methods have been unified so that they do not have the `RPolars` prefix (#584).
 
 ## What's changed
 
@@ -62,18 +62,18 @@
 ## BREAKING CHANGES DUE TO RUST-POLARS UPDATE
 
 - rust-polars is updated to 0.35.0 (2023-11-17) (#515)
-  - changes in `$write_csv()` and `sink_csv()`: `has_header` is renamed
+    - changes in `$write_csv()` and `sink_csv()`: `has_header` is renamed
     `include_header` and there's a new argument `include_bom`.
-  - `pl$cov()` gains a `ddof` argument.
-  - `$cumsum()`, `$cumprod()`, `$cummin()`, `$cummax()`, `$cumcount()` are
+    - `pl$cov()` gains a `ddof` argument.
+    - `$cumsum()`, `$cumprod()`, `$cummin()`, `$cummax()`, `$cumcount()` are
     renamed `$cum_sum()`, `$cum_prod()`, `$cum_min()`, `$cum_max()`,
     `$cum_count()`.
-  - `take()` and `take_every()` are renamed `$gather()` and `gather_every()`.
-  - `$shift()` and `$shift_and_fill()` now accept Expr as input.
-  - when `reverse = TRUE`, `$arg_sort()` now places null values in the first
+    - `take()` and `take_every()` are renamed `$gather()` and `gather_every()`.
+    - `$shift()` and `$shift_and_fill()` now accept Expr as input.
+    - when `reverse = TRUE`, `$arg_sort()` now places null values in the first
     positions.
-  - Removed argument `ambiguous` in `$dt$truncate()` and `$dt$round()`.
-  - `$str$concat()` gains an argument `ignore_nulls`.
+    - Removed argument `ambiguous` in `$dt$truncate()` and `$dt$round()`.
+    - `$str$concat()` gains an argument `ignore_nulls`.
 
 ## Breaking changes and deprecations
 
@@ -122,7 +122,7 @@
 - New methods of the Expressions class, `$floor_div()`, `$mod()`, `$eq_missing()`
   and `$neq_missing()`. The base R operators `%/%` and `%%` for Expressions are
   now translated to `$floor_div()` and `$mod()` (#523).
-  - Note that `$mod()` of Polars is different from the R operator `%%`, which is
+    - Note that `$mod()` of Polars is different from the R operator `%%`, which is
     not guaranteed `x == (x %% y) + y * (x %/% y)`.
     Please check the upstream issue [pola-rs/polars#10570](https://github.com/pola-rs/polars/issues/10570).
 - The extract function (`[`) for polars objects now behave more like for base R objects (#543).
@@ -143,31 +143,31 @@
 ## BREAKING CHANGES DUE TO RUST-POLARS UPDATE
 
 - rust-polars is updated to 2023-10-25 unreleased version (#442)
-  - New subnamespace `"name"` that contains methods `$prefix()`, `$suffix()`
+    - New subnamespace `"name"` that contains methods `$prefix()`, `$suffix()`
     `keep()` (renamed from `keep_name()`) and `map()` (renamed from `map_alias()`).
-  - `$dt$round()` gains an argument `ambiguous`.
-  - The following methods now accept an `Expr` as input: `$top_k()`, `$bottom_k()`,
+    - `$dt$round()` gains an argument `ambiguous`.
+    - The following methods now accept an `Expr` as input: `$top_k()`, `$bottom_k()`,
     `$list$join()`, `$str$strip_chars()`, `$str$strip_chars_start()`,
     `$str$strip_chars_end()`, `$str$split_exact()`.
-  - The following methods were renamed:
-    - `$str$n_chars()` -> `$str$len_chars()`
-    - `$str$lengths()` -> `$str$len_bytes()`
-    - `$str$ljust()` -> `$str$pad_end()`
-    - `$str$rjust()` -> `$str$pad_start()`
-  - `$concat()` with `how = "diagonal"` now accepts an argument `to_supertypes`
+    - The following methods were renamed:
+      - `$str$n_chars()` -> `$str$len_chars()`
+      - `$str$lengths()` -> `$str$len_bytes()`
+      - `$str$ljust()` -> `$str$pad_end()`
+      - `$str$rjust()` -> `$str$pad_start()`
+    - `$concat()` with `how = "diagonal"` now accepts an argument `to_supertypes`
     to automatically convert concatenated columns to the same type.
-  - `pl$enable_string_cache()` doesn't take any argument anymore. The string cache
+    - `pl$enable_string_cache()` doesn't take any argument anymore. The string cache
     can now be disabled with `pl$disable_string_cache()`.
-  - `$scan_parquet()` gains an argument `hive_partitioning`.
-  - `$meta$tree_format()` has a better formatted output.
+    - `$scan_parquet()` gains an argument `hive_partitioning`.
+    - `$meta$tree_format()` has a better formatted output.
 
 ## Breaking changes
 
 - `$scan_csv()` and `$read_csv()` now match more closely the Python-Polars API (#455):
-  - `sep` is renamed `separator`, `overwrite_dtypes` is renamed `dtypes`,
+    - `sep` is renamed `separator`, `overwrite_dtypes` is renamed `dtypes`,
     `parse_dates` is renamed `try_parse_dates`.
-  - new arguments `rechunk`, `eol_char`, `raise_if_empty`, `truncate_ragged_lines`
-  - `path` can now be a vector of characters indicating several paths to CSV files.
+    - new arguments `rechunk`, `eol_char`, `raise_if_empty`, `truncate_ragged_lines`
+    - `path` can now be a vector of characters indicating several paths to CSV files.
     This only works if all CSV files have the same schema.
 
 ## What's changed
@@ -186,28 +186,28 @@
 ## BREAKING CHANGES DUE TO RUST-POLARS UPDATE
 
 - rust-polars is updated to 0.33.2 (#417)
-  - In all date-time related methods, the argument `use_earliest` is replaced by `ambiguous`.
-  - In `$sample()` and `$shuffle()`, the argument `fixed_seed` is removed.
-  - In `$value_counts()`, the arguments `multithreaded` and `sort`
+    - In all date-time related methods, the argument `use_earliest` is replaced by `ambiguous`.
+    - In `$sample()` and `$shuffle()`, the argument `fixed_seed` is removed.
+    - In `$value_counts()`, the arguments `multithreaded` and `sort`
     (sometimes called `sorted`) have been swapped and renamed `sort` and `parallel`.
-  - `$str$count_match()` gains a `literal` argument.
-  - `$arg_min()` doesn't consider `NA` as the minimum anymore (this was already the behavior of `$min()`).
-  - Using `$is_in()` with `NA` on both sides now returns `NA` and not `TRUE` anymore.
-  - Argument `pattern` of `$str$count_matches()` can now use expressions.
-  - Needs Rust toolchain `nightly-2023-08-26` for to build with full features.
+    - `$str$count_match()` gains a `literal` argument.
+    - `$arg_min()` doesn't consider `NA` as the minimum anymore (this was already the behavior of `$min()`).
+    - Using `$is_in()` with `NA` on both sides now returns `NA` and not `TRUE` anymore.
+    - Argument `pattern` of `$str$count_matches()` can now use expressions.
+    - Needs Rust toolchain `nightly-2023-08-26` for to build with full features.
 - Rename R functions to match rust-polars
-  - `$str$count_match()` -> `$str$count_matches()` (#417)
-  - `$str$strip()` -> `$str$strip_chars()` (#417)
-  - `$str$lstrip()` -> `$str$strip_chars_start()` (#417)
-  - `$str$rstrip()` -> `$str$strip_chars_end()` (#417)
-  - `$groupby()` is renamed `$group_by()`. (#427)
+    - `$str$count_match()` -> `$str$count_matches()` (#417)
+    - `$str$strip()` -> `$str$strip_chars()` (#417)
+    - `$str$lstrip()` -> `$str$strip_chars_start()` (#417)
+    - `$str$rstrip()` -> `$str$strip_chars_end()` (#417)
+    - `$groupby()` is renamed `$group_by()`. (#427)
 
 ## Breaking changes
 
 - Remove some deprecated methods.
-  - Method `$with_column()` has been removed (it was deprecated since 0.8.0).
+    - Method `$with_column()` has been removed (it was deprecated since 0.8.0).
     Use `$with_columns()` instead (#402).
-  - Subnamespace `$arr` has been removed (it was deprecated since 0.8.1).
+    - Subnamespace `$arr` has been removed (it was deprecated since 0.8.1).
     Use `$list` instead (#402).
 - Setting and getting polars options is now made with `pl$options`,
   `pl$set_options()` and `pl$reset_options()` (#384).
@@ -292,11 +292,11 @@ features. Unrelated breaking changes and new features are put in separate sectio
   `start` and `end` is not allowed anymore.
 - `<Expr>$is_in()` operation no longer supported for dtype `null`.
 - Various subtle changes:
-  - `(pl$lit(NA_real_) == pl$lit(NA_real_))$lit_to_s()` renders now to `null`
+    - `(pl$lit(NA_real_) == pl$lit(NA_real_))$lit_to_s()` renders now to `null`
     not `true`.
-  - `pl$lit(NA_real_)$is_in(pl$lit(NULL))$lit_to_s()` renders now to `false`
+    - `pl$lit(NA_real_)$is_in(pl$lit(NULL))$lit_to_s()` renders now to `false`
     and before `true`
-  - `pl$lit(numeric(0))$sum()$lit_to_s()` now yields `0f64` and not `null`.
+    - `pl$lit(numeric(0))$sum()$lit_to_s()` now yields `0f64` and not `null`.
 - `<Expr>$all()` and `<Expr>$any()` have a new arg `drop_nulls = TRUE`.
 - `<Expr>$sample()` and `<Expr>$shuffle()` have a new arg `fix_seed`.
 - `<DataFrame>$sort()` and `<LazyFrame>$sort()` have a new arg
@@ -353,10 +353,10 @@ features. Unrelated breaking changes and new features are put in separate sectio
 - Replace the argument `reverse` by `descending` in all sorting functions. This
   is for consistency with the upstream Polars (#291, #293).
 - Bump rust-polars from 2023-04-20 unreleased version to version 0.30.0 released in 2023-05-30 (#289).
-  - Rename `concat_lst` to `concat_list`.
-  - Rename `$str$explode` to `$str$str_explode`.
-  - Remove `tz_aware` and `utc` arguments from `str_parse`.
-  - in `$date_range`'s the `lazy` argument is now `TRUE` by default.
+    - Rename `concat_lst` to `concat_list`.
+    - Rename `$str$explode` to `$str$str_explode`.
+    - Remove `tz_aware` and `utc` arguments from `str_parse`.
+    - in `$date_range`'s the `lazy` argument is now `TRUE` by default.
 - The functions to read CSV have been renamed `scan_csv` and `read_csv` for
   consistency with the upstream Polars. `scan_xxx` and `read_xxx` functions are now accessed via `pl`,
   e.g. `pl$scan_csv()` (#305).
@@ -373,9 +373,9 @@ features. Unrelated breaking changes and new features are put in separate sectio
 - Fix memory leak on error bug. Fix printing of `%` bug. Prepare for renaming of polars classes (#252).
 - Add helpful reference landing page at `polars.github.io/reference_home` (#223, #264).
 - Supports Rust 1.65 (#262, #280)
-  - rust-polars' `simd` feature is now disabled by default. To enable it, set the environment variable
+    - rust-polars' `simd` feature is now disabled by default. To enable it, set the environment variable
     `RPOLARS_ALL_FEATURES` to `true` when build r-polars (#262).
-  - `opt-level` of `argminmax` is now set to `1` in the `release` profile to support Rust < 1.66.
+    - `opt-level` of `argminmax` is now set to `1` in the `release` profile to support Rust < 1.66.
     The profile can be changed by setting the environment variable `RPOLARS_PROFILE` (when set to `release-optimized`,
     `opt-level` of `argminmax` is set to `3`).
 - A new function `pl$polars_info()` will tell which features enabled (#271, #285, #305).
@@ -388,8 +388,8 @@ features. Unrelated breaking changes and new features are put in separate sectio
 - Cross joining is now possible with `how = "cross"` in `$join()` (#310).
 - Add license info of all rust crates to `LICENSE.note` (#309).
 - With CRAN 0.7.0 release candidate (#308).
-  - New author accredited, SHIMA Tatsuya (@eitsupi).
-  - DESCRIPTION revised.
+    - New author accredited, SHIMA Tatsuya (@eitsupi).
+    - DESCRIPTION revised.
 
 # polars 0.6.1
 
@@ -407,8 +407,8 @@ features. Unrelated breaking changes and new features are put in separate sectio
 ## BREAKING CHANGES
 
 - Bump rust-polars from 2023-02-17 unreleased version to 2023-04-20 unreleased version. (#183)
-  - `top_k`'s `reverse` option is removed. Use the new `bottom_k` method instead.
-  - The name of the `fmt` argument of some methods (e.g. `parse_date`) has been changed to `format`.
+    - `top_k`'s `reverse` option is removed. Use the new `bottom_k` method instead.
+    - The name of the `fmt` argument of some methods (e.g. `parse_date`) has been changed to `format`.
 
 ## What's changed
 
@@ -462,18 +462,18 @@ Release date: 2023-03-13. Full changelog: [v0.4.5...v0.4.6](https://github.com/p
 - Support inter process connections with `scan_ipc`
 - Implement `scan_ipc` by @Sicheng-Pan in #63
 - 'Backend' improvements
-  - (prepare support for aarch64-linux) Touch libgcc_eh.a by @yutannihilation in #49
-  - Use py-polars rust file structure (to help devs) by @sorhawell in #55
-  - Refactor Makefiles by @eitsupi in #58
-  - Build **rpolars** from Nix by @Sicheng-Pan in #54
-  - `extendr_api` 0.4 by @sorhawell in #6
-  - Add r-universe URL by @jeroen in #71
-  - chore: install **nanoarrow** from cran by @eitsupi in #72
-  - chore: install **nanoarrow** from cran (#72) by @sorhawell in #73
-  - Fix pdf latex errors by @sorhawell in #74
-  - re-enable devel test, **pak** R-devel issue went away by @sorhawell in #75
-  - DO NOT MERGE: tracking hello_r_universe branch by @eitsupi in #38
-  - revert to nightly by @sorhawell in #78
+    - (prepare support for aarch64-linux) Touch libgcc_eh.a by @yutannihilation in #49
+    - Use py-polars rust file structure (to help devs) by @sorhawell in #55
+    - Refactor Makefiles by @eitsupi in #58
+    - Build **rpolars** from Nix by @Sicheng-Pan in #54
+    - `extendr_api` 0.4 by @sorhawell in #6
+    - Add r-universe URL by @jeroen in #71
+    - chore: install **nanoarrow** from cran by @eitsupi in #72
+    - chore: install **nanoarrow** from cran (#72) by @sorhawell in #73
+    - Fix pdf latex errors by @sorhawell in #74
+    - re-enable devel test, **pak** R-devel issue went away by @sorhawell in #75
+    - DO NOT MERGE: tracking hello_r_universe branch by @eitsupi in #38
+    - revert to nightly by @sorhawell in #78
 
 ## New Contributors
 
@@ -488,19 +488,19 @@ Release date: 2023-02-21. Full Changelog: [v0.4.3...v0.4.5](https://github.com/p
 
 - bump rust polars to latest rust-polars and fix all errors by @sorhawell in #42
 - Customize **extendr** to better support cross Rust-R/R-Rust error handling
-  - bump extendr_api by @sorhawell in #44
-  - Str even more by @sorhawell in #47
+    - bump extendr_api by @sorhawell in #44
+    - Str even more by @sorhawell in #47
 - **rpolars** is now available for install from [rpolars.r-universe.dev](https://rpolars.r-universe.dev/polars#install) @eitsupi
-  - advertise R-universe by @sorhawell in #39
-  - Includes reasonably easy pre-compiled installation for arm64-MacBooks
+    - advertise R-universe by @sorhawell in #39
+    - Includes reasonably easy pre-compiled installation for arm64-MacBooks
 - All string Expressions available
-  - Expr str strptime by @sorhawell in #40
-  - rust_result tests + fixes by @sorhawell in #41
-  - Str continued by @sorhawell in #43
-  - Str even more by @sorhawell in #47
+    - Expr str strptime by @sorhawell in #40
+    - rust_result tests + fixes by @sorhawell in #41
+    - Str continued by @sorhawell in #43
+    - Str even more by @sorhawell in #47
 - Starting to roll out new error-handling and type-conversions between R and rust.
 
-  - Precise source of error should be very clear even in a long method-chain e.g.
+    - Precise source of error should be very clear even in a long method-chain e.g.
 
   ```r
   pl$lit("hey-you-there")$str$splitn("-",-3)$alias("struct_of_words")$to_r()
@@ -510,8 +510,8 @@ Release date: 2023-02-21. Full Changelog: [v0.4.3...v0.4.5](https://github.com/p
   ```
 
 - Misc
-  - Clippy + tiny optimization by @sorhawell in #45
-  - Tidying by @sorhawell in #37
+    - Clippy + tiny optimization by @sorhawell in #45
+    - Tidying by @sorhawell in #37
 
 # rpolars v0.4.3
 
@@ -520,9 +520,9 @@ Release date: 2023-02-01. Full Changelog: [v0.4.2...v0.4.3](https://github.com/p
 ## What's Changed
 
 - All DateTime expresssions implemented + update rust-polars to latest commit.
-  - Arr str by @sorhawell in #32
-  - Datetime continued by @sorhawell in #33
-  - Datatime remaining tests + tidy util functions by @sorhawell in #36
+    - Arr str by @sorhawell in #32
+    - Datetime continued by @sorhawell in #33
+    - Datatime remaining tests + tidy util functions by @sorhawell in #36
 
 ## Developer changes
 
