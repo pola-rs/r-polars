@@ -4,7 +4,7 @@
 \alias{LazyFrame_min}
 \title{Min}
 \usage{
-LazyFrame_min
+LazyFrame_min()
 }
 \value{
 A LazyFrame with one row

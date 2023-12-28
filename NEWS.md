@@ -1,4 +1,24 @@
+# NEWS
+
 ## polars (development version)
+
+## polars 0.12.0
+
+### BREAKING CHANGES DUE TO RUST-POLARS UPDATE
+
+- rust-polars is updated to 2023-12-25 unreleased version (#601, #622).
+  This is the same version of Python Polars package 0.20.2, so please check
+  the [upgrade guide](https://pola-rs.github.io/polars/releases/upgrade/0.20/) for details too.
+  - `pl$scan_csv()` and `pl$read_csv()`'s `comment_char` argument is renamed `comment_prefix`.
+  - `<DataFrame>$frame_equal()` and `<Series>$series_equal()` are renamed
+    to `<DataFrame>$equals()` and `<Series>$equals()`.
+  - `<Expr>$rolling_*` functions gained an argument `warn_if_unsorted`.
+  - `<Expr>$str$json_extract()` is renamed to `<Expr>$str$json_decode()`.
+  - Change default join behavior with regard to `null` values.
+  - Preserve left and right join keys in outer joins.
+  - `count` now ignores null values.
+  - `NaN` values are now considered equal.
+  - `$gather_every()` gained an argument `offset`.
 
 ### Breaking changes and deprecations
 
@@ -14,7 +34,7 @@
   - The class name of all objects created by polars (`DataFrame`, `LazyFrame`,
     `Expr`, `Series`, etc.) has changed. They now start with `RPolars`, for example
     `RPolarsDataFrame`. This will only break your code if you directly use those
-    class names, such as in S3 methods (#554, 585).
+    class names, such as in S3 methods (#554, #585).
   - Private methods have been unified so that they do not have the `RPolars` prefix (#584).
 
 ### What's changed
@@ -34,6 +54,10 @@
   precision (#589).
 - `<LazyFrame>$filter()`, `<DataFrame>$filter()`, and `pl$when()` now allow multiple conditions
   to be separated by commas, like `lf$filter(pl$col("foo") == 1, pl$col("bar") != 2)` (#598).
+- New method `$replace()` for expressions (#601).
+- Better error messages for trailing argument commas such as `pl$DataFrame()$select("a",)` (#607).
+- New function `pl$threadpool_size()` to get the number of threads used by Polars (#620).
+  Thread pool size is also included in the output of `pl$polars_info()`.
 
 ## polars 0.11.0
 

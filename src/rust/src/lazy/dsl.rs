@@ -436,16 +436,17 @@ impl RPolarsExpr {
         self.clone().0.explode().into()
     }
 
-    pub fn gather_every(&self, n: Robj) -> RResult<RPolarsExpr> {
+    pub fn gather_every(&self, n: Robj, offset: Robj) -> RResult<RPolarsExpr> {
         let n = robj_to!(usize, n).and_then(|n| match n {
             0 => rerr().bad_arg("n").bad_val("n can't be zero"),
             _ => Ok(n),
         })?;
+        let offset = robj_to!(usize, offset)?;
         Ok(self
             .0
             .clone()
             .map(
-                move |s: pl::Series| Ok(Some(s.gather_every(n))),
+                move |s: pl::Series| Ok(Some(s.gather_every(n, offset))),
                 pl::GetOutput::same_type(),
             )
             .with_fmt("gather_every")
@@ -491,6 +492,7 @@ impl RPolarsExpr {
         center: Robj,
         by_null: Robj,
         closed_null: Robj,
+        warn_if_unsorted: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
@@ -502,6 +504,7 @@ impl RPolarsExpr {
                 center,
                 by_null,
                 closed_null,
+                warn_if_unsorted,
             )?)
             .into())
     }
@@ -514,6 +517,7 @@ impl RPolarsExpr {
         center: Robj,
         by_null: Robj,
         closed_null: Robj,
+        warn_if_unsorted: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
@@ -525,6 +529,7 @@ impl RPolarsExpr {
                 center,
                 by_null,
                 closed_null,
+                warn_if_unsorted,
             )?)
             .into())
     }
@@ -537,6 +542,7 @@ impl RPolarsExpr {
         center: Robj,
         by_null: Robj,
         closed_null: Robj,
+        warn_if_unsorted: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
@@ -548,6 +554,7 @@ impl RPolarsExpr {
                 center,
                 by_null,
                 closed_null,
+                warn_if_unsorted,
             )?)
             .into())
     }
@@ -560,6 +567,7 @@ impl RPolarsExpr {
         center: Robj,
         by_null: Robj,
         closed_null: Robj,
+        warn_if_unsorted: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
@@ -571,6 +579,7 @@ impl RPolarsExpr {
                 center,
                 by_null,
                 closed_null,
+                warn_if_unsorted,
             )?)
             .into())
     }
@@ -583,6 +592,7 @@ impl RPolarsExpr {
         center: Robj,
         by_null: Robj,
         closed_null: Robj,
+        warn_if_unsorted: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
@@ -594,6 +604,7 @@ impl RPolarsExpr {
                 center,
                 by_null,
                 closed_null,
+                warn_if_unsorted,
             )?)
             .into())
     }
@@ -606,6 +617,7 @@ impl RPolarsExpr {
         center: Robj,
         by_null: Robj,
         closed_null: Robj,
+        warn_if_unsorted: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
@@ -617,6 +629,7 @@ impl RPolarsExpr {
                 center,
                 by_null,
                 closed_null,
+                warn_if_unsorted,
             )?)
             .into())
     }
@@ -629,6 +642,7 @@ impl RPolarsExpr {
         center: Robj,
         by_null: Robj,
         closed_null: Robj,
+        warn_if_unsorted: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
@@ -640,6 +654,7 @@ impl RPolarsExpr {
                 center,
                 by_null,
                 closed_null,
+                warn_if_unsorted,
             )?)
             .into())
     }
@@ -655,6 +670,7 @@ impl RPolarsExpr {
         center: Robj,
         by: Robj,
         closed: Robj,
+        warn_if_unsorted: Robj,
     ) -> RResult<Self> {
         let options = pl::RollingOptions {
             window_size: pl::Duration::parse(robj_to!(str, window_size)?),
@@ -663,13 +679,17 @@ impl RPolarsExpr {
             center: robj_to!(bool, center)?,
             by: robj_to!(Option, String, by)?,
             closed_window: robj_to!(Option, ClosedWindow, closed)?,
-            fn_params: Some(pl::Arc::new(pl::RollingQuantileParams {
-                prob: robj_to!(f64, quantile)?,
-                interpol: robj_to!(new_quantile_interpolation_option, interpolation)?,
-            }) as pl::Arc<dyn std::any::Any + Send + Sync>),
+            warn_if_unsorted: robj_to!(bool, warn_if_unsorted)?,
+            fn_params: None,
         };
+        let quantile = robj_to!(f64, quantile)?;
+        let interpolation = robj_to!(new_quantile_interpolation_option, interpolation)?;
 
-        Ok(self.0.clone().rolling_quantile(options).into())
+        Ok(self
+            .0
+            .clone()
+            .rolling_quantile(interpolation, quantile, options)
+            .into())
     }
 
     pub fn rolling_skew(&self, window_size_f: f64, bias: bool) -> List {
@@ -968,6 +988,25 @@ impl RPolarsExpr {
 
     pub fn peak_max(&self) -> Self {
         self.0.clone().peak_max().into()
+    }
+
+    pub fn replace(
+        &self,
+        old: Robj,
+        new: Robj,
+        default: Robj,
+        return_dtype: Robj,
+    ) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .replace(
+                robj_to!(PLExpr, old)?,
+                robj_to!(PLExpr, new)?,
+                robj_to!(Option, PLExpr, default)?.map(|e| e),
+                robj_to!(Option, PLPolarsDataType, return_dtype)?.map(|dt| dt),
+            )
+            .into())
     }
 
     //arr/list methods
@@ -1919,14 +1958,14 @@ impl RPolarsExpr {
         r_result_list(res)
     }
 
-    pub fn str_json_extract(&self, dtype: Robj, infer_schema_len: Robj) -> RResult<Self> {
+    pub fn str_json_decode(&self, dtype: Robj, infer_schema_len: Robj) -> RResult<Self> {
         let dtype = robj_to!(Option, RPolarsDataType, dtype)?.map(|dty| dty.0);
         let infer_schema_len = robj_to!(Option, usize, infer_schema_len)?;
         Ok(self
             .0
             .clone()
             .str()
-            .json_extract(dtype, infer_schema_len)
+            .json_decode(dtype, infer_schema_len)
             .into())
     }
 
@@ -2256,7 +2295,11 @@ impl RPolarsExpr {
         let ordering = robj_to!(Map, str, ordering, |s| {
             Ok(crate::rdatatype::new_categorical_ordering(s).map_err(Rctx::Plain)?)
         })?;
-        Ok(self.0.clone().cat().set_ordering(ordering).into())
+        Ok(self
+            .0
+            .clone()
+            .cast(pl::DataType::Categorical(None, ordering))
+            .into())
     }
 
     fn cat_get_categories(&self) -> RPolarsExpr {
@@ -2455,6 +2498,7 @@ pub fn make_rolling_options(
     center: Robj,
     by_null: Robj,
     closed_null: Robj,
+    warn_if_unsorted: Robj,
 ) -> RResult<pl::RollingOptions> {
     Ok(pl::RollingOptions {
         window_size: pl::Duration::parse(robj_to!(str, window_size)?),
@@ -2463,6 +2507,7 @@ pub fn make_rolling_options(
         center: robj_to!(bool, center)?,
         by: robj_to!(Option, String, by_null)?,
         closed_window: robj_to!(Option, ClosedWindow, closed_null)?,
+        warn_if_unsorted: robj_to!(bool, warn_if_unsorted)?,
         ..Default::default()
     })
 }

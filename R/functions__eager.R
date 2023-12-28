@@ -62,7 +62,7 @@ pl$concat = function(
     ),
     rechunk = TRUE,
     parallel = TRUE) {
-  l = unpack_list(..., skip_classes = "data.frame")
+  l = unpack_list(..., skip_classes = "data.frame", .context = "in pl$concat")
 
   if (length(l) == 0L) {
     return(NULL)

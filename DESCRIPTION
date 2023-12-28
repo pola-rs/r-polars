@@ -1,6 +1,6 @@
 Package: polars
 Title: Lightning-Fast 'DataFrame' Library
-Version: 0.11.0.9001
+Version: 0.12.0.9000
 Depends: R (>= 4.2)
 Imports: utils, codetools
 Authors@R:
@@ -43,7 +43,7 @@ Suggests:
     vctrs,
     withr
 Config/Needs/website:
-    etiennebacher/altdoc@5c69f3b,
+    etiennebacher/altdoc@e9c7ee8,
     future.apply,
     here,
     magrittr,
@@ -73,6 +73,7 @@ Collate:
     'dataframe__frame.R'
     'datatype.R'
     'docs.R'
+    'dotdotdot.R'
     'error__rpolarserr.R'
     'error__string.R'
     'error__trait.R'
@@ -112,4 +113,4 @@ Collate:
 Config/rextendr/version: 0.3.1
 VignetteBuilder: knitr
 Config/polars/LibVersion: 0.35.1
-Config/polars/RustToolchainVersion: nightly-2023-10-12
+Config/polars/RustToolchainVersion: nightly-2023-12-23

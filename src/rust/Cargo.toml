@@ -48,9 +48,9 @@ serde = { version = "1.0.193", features = ["derive"] }
 serde_json = "*"
 smartstring = "1.0.1"
 state = "0.6.0"
-thiserror = "1.0.51"
-polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "b13afbecac039205dacbaca766ecca4bf441b347", default-features = false }
-polars-lazy = { git = "https://github.com/pola-rs/polars.git", rev = "b13afbecac039205dacbaca766ecca4bf441b347", default-features = false }
+thiserror = "1.0.52"
+polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "4046c732dec0c9311294a2589590b4d017c5a02a", default-features = false }
+polars-lazy = { git = "https://github.com/pola-rs/polars.git", rev = "4046c732dec0c9311294a2589590b4d017c5a02a", default-features = false }
 either = "1"
 #features copied from node-polars
 
@@ -119,6 +119,7 @@ features = [
   "rank",
   "reinterpret",
   "repeat_by",
+  "replace",
   "rolling_window",
   "round_series",
   "row_hash",
@@ -141,4 +142,4 @@ features = [
   "zip_with",
 ]
 git = "https://github.com/pola-rs/polars.git"
-rev = "b13afbecac039205dacbaca766ecca4bf441b347"
+rev = "4046c732dec0c9311294a2589590b4d017c5a02a"

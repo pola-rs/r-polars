@@ -37,7 +37,7 @@ print.RPolarsLazyGroupBy = function(x, ...) {
 #'   pl$col("bar")$mean()$alias("bar_tail_sum")
 #' )
 LazyGroupBy_agg = agg = function(...) {
-  .pr$LazyGroupBy$agg(self, unpack_list(...)) |>
+  .pr$LazyGroupBy$agg(self, unpack_list(..., .context = "in $agg():")) |>
     unwrap("in $agg():")
 }
 
