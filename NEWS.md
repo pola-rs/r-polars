@@ -1,4 +1,4 @@
-# polars (development version)
+# polars 0.12.0
 
 ## BREAKING CHANGES DUE TO RUST-POLARS UPDATE
 
