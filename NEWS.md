@@ -4,7 +4,7 @@
 
 - rust-polars is updated to 2023-12-25 unreleased version (#601, #622).
   This is the same version of Python Polars package 0.20.2, so please check
-  the  [upgrade guide](https://pola-rs.github.io/polars/releases/upgrade/0.20/) for details too.
+  the [upgrade guide](https://pola-rs.github.io/polars/releases/upgrade/0.20/) for details too.
   - `pl$scan_csv()` and `pl$read_csv()`'s `comment_char` argument is renamed `comment_prefix`.
   - `<DataFrame>$frame_equal()` and `<Series>$series_equal()` are renamed
     to `<DataFrame>$equals()` and `<Series>$equals()`.
@@ -30,7 +30,7 @@
   - The class name of all objects created by polars (`DataFrame`, `LazyFrame`,
     `Expr`, `Series`, etc.) has changed. They now start with `RPolars`, for example
     `RPolarsDataFrame`. This will only break your code if you directly use those
-    class names, such as in S3 methods (#554, 585).
+    class names, such as in S3 methods (#554, #585).
   - Private methods have been unified so that they do not have the `RPolars` prefix (#584).
 
 ## What's changed
