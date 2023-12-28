@@ -14,7 +14,7 @@ This doesn't block the R session as it calls \verb{$collect()} in a
 a detached thread. This can also be used via \verb{$collect(collect_in_background = TRUE)}.
 }
 \details{
-This function immediately returns an \link[=RThreadHandle_RThreadHandle_class]{RThreadHandle}.
+This function immediately returns an \link[=RThreadHandle_class]{RThreadHandle}.
 Use \code{\link[=RThreadHandle_is_finished]{<RPolarsRThreadHandle>$is_finished()}} to see if done.
 Use \code{\link[=RThreadHandle_join]{<RPolarsRThreadHandle>$join()}} to wait and get the final result.
 

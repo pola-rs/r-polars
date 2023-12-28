@@ -81,7 +81,7 @@ NULL
 #' Calling `<RThreadHandle>$join()` a second time will raise an error because handle is already
 #' exhausted.
 #' @return return value from background thread
-#' @seealso [RThreadHandle_class][RThreadHandle_RThreadHandle_class]
+#' @seealso [RThreadHandle_class][RThreadHandle_class]
 RThreadHandle_join = function() {
   .pr$RThreadHandle$join(self) |> unwrap()
 }

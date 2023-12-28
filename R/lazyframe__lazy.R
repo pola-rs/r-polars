@@ -433,7 +433,7 @@ LazyFrame_collect = function(
 #' a detached thread. This can also be used via `$collect(collect_in_background = TRUE)`.
 #'
 #' @details
-#' This function immediately returns an [RThreadHandle][RThreadHandle_RThreadHandle_class].
+#' This function immediately returns an [RThreadHandle][RThreadHandle_class].
 #' Use [`<RPolarsRThreadHandle>$is_finished()`][RThreadHandle_is_finished] to see if done.
 #' Use [`<RPolarsRThreadHandle>$join()`][RThreadHandle_join] to wait and get the final result.
 #'
