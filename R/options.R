@@ -261,6 +261,7 @@ pl_using_string_cache = function() {
 #' Evaluate one or several expressions with global string cache
 #'
 #' This function only temporarily enables the global string cache.
+#' @param expr An Expr to evaluate while the string cache is enabled.
 #'
 #' @keywords options
 #' @return return value of expression

@@ -1,5 +1,4 @@
 #' check if schema
-#' @name is_schema
 #' @param x object to test if schema
 #' @return bool
 #' @format function
@@ -7,11 +6,10 @@
 #' @examples
 #' pl$is_schema(pl$DataFrame(iris)$schema)
 #' pl$is_schema(list("alice", "bob"))
-is_schema = \(x) {
+pl_is_schema = \(x) {
   is.list(x) && !is.null(names(x)) && !anyNA(names(x)) &&
     do.call(all, lapply(x, inherits, "RPolarsDataType"))
 }
-pl$is_schema = is_schema
 
 
 #' wrap proto schema

@@ -209,7 +209,7 @@ class(pl) = c("pl_polars_env", "environment")
 #' @keywords functions
 #' @examples
 #' pl$show_all_public_functions()
-pl$show_all_public_functions = function() {
+pl_show_all_public_functions = function() {
   print_env(pl, "polars public functions via pl$...")
 }
 
@@ -221,7 +221,7 @@ pl$show_all_public_functions = function() {
 #' @keywords functions
 #' @examples
 #' pl$show_all_public_methods()
-pl$show_all_public_methods = function(class_names = NULL) {
+pl_show_all_public_methods = function(class_names = NULL) {
   # subset classes to show
   show_this_env = if (!is.null(class_names)) {
     as.environment(mget(class_names, envir = pl_pub_class_env))

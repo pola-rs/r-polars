@@ -38,7 +38,7 @@ print.RPolarsRThreadHandle = function(x, ...) as.character(x) |> cat("\n")
 
 
 #' @title The RPolarsRThreadHandle class
-#' @name RThreadHandle_RThreadHandle_class
+#' @name RThreadHandle_class
 #' @description A handle to some polars query running in a background thread.
 #' @details
 #' [`<LazyFrame>$collect_in_background()`][LazyFrame_collect_in_background] will execute a polars
@@ -49,7 +49,7 @@ print.RPolarsRThreadHandle = function(x, ...) as.character(x) |> cat("\n")
 #' NOTICE:
 #' The background thread cannot use the main R session, but can access the pool of extra R sessions
 #' to process R code embedded in polars query via `$map_batches(..., background = TRUE)` or
-#' `$map_elements(background=TRUE)`. Use [`pl$set_options(rpool_cap = XX)`][set_options] to limit number of
+#' `$map_elements(background=TRUE)`. Use [`pl$set_options(rpool_cap = XX)`][pl_set_options] to limit number of
 #'  parallel R sessions.
 #' Starting polars  [`<LazyFrame>$collect_in_background()`][LazyFrame_collect_in_background] with
 #' e.g. some `$map_batches(..., background = FALSE)` will raise an Error as the main R session is not

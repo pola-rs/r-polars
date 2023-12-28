@@ -10,9 +10,27 @@
 \alias{Then}
 \alias{ChainedWhen}
 \alias{ChainedThen}
+\alias{When_then}
+\alias{Then_when}
+\alias{Then_otherwise}
+\alias{ChainedWhen_then}
+\alias{ChainedThen_when}
+\alias{ChainedThen_otherwise}
 \title{when-then-otherwise Expr}
 \usage{
 pl_when(...)
+
+When_then(statement)
+
+Then_when(...)
+
+Then_otherwise(statement)
+
+ChainedWhen_then(statement)
+
+ChainedThen_when(...)
+
+ChainedThen_otherwise(statement)
 }
 \arguments{
 \item{...}{Into Expr into a boolean mask to branch by.}
