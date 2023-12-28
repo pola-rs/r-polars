@@ -23,7 +23,7 @@ print.RPolarsLazyGroupBy = function(x, ...) {
 #' @export
 #' @noRd
 .DollarNames.RPolarsLazyGroupBy = function(x, pattern = "") {
-  paste0(ls(RPolarsLazyGroupBy, pattern = pattern), "()")
+  paste0(ls(RPolarsLazyGroupBy, pattern = pattern), completion_symbols$method)
 }
 
 #' Get and set column names of a DataFrame

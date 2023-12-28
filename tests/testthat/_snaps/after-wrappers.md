@@ -35,21 +35,21 @@
       [59] "median"                    "mem_address"              
       [61] "min"                       "min_horizontal"           
       [63] "n_unique"                  "numeric_dtypes"           
-      [65] "options"                   "polars_info"              
-      [67] "raw_list"                  "read_csv"                 
-      [69] "read_ndjson"               "read_parquet"             
-      [71] "reduce"                    "reset_options"            
-      [73] "rolling_corr"              "rolling_cov"              
-      [75] "same_outer_dt"             "scan_csv"                 
-      [77] "scan_ipc"                  "scan_ndjson"              
-      [79] "scan_parquet"              "select"                   
-      [81] "set_global_rpool_cap"      "set_options"              
-      [83] "show_all_public_functions" "show_all_public_methods"  
-      [85] "std"                       "struct"                   
-      [87] "sum"                       "sum_horizontal"           
-      [89] "tail"                      "using_string_cache"       
-      [91] "var"                       "when"                     
-      [93] "with_string_cache"        
+      [65] "options"                   "polars_code_completion"   
+      [67] "polars_info"               "raw_list"                 
+      [69] "read_csv"                  "read_ndjson"              
+      [71] "read_parquet"              "reduce"                   
+      [73] "reset_options"             "rolling_corr"             
+      [75] "rolling_cov"               "same_outer_dt"            
+      [77] "scan_csv"                  "scan_ipc"                 
+      [79] "scan_ndjson"               "scan_parquet"             
+      [81] "select"                    "set_global_rpool_cap"     
+      [83] "set_options"               "show_all_public_functions"
+      [85] "show_all_public_methods"   "std"                      
+      [87] "struct"                    "sum"                      
+      [89] "sum_horizontal"            "tail"                     
+      [91] "using_string_cache"        "var"                      
+      [93] "when"                      "with_string_cache"        
 
 ---
 
@@ -119,10 +119,10 @@
     Code
       ls(.pr$env[[class_name]])
     Output
-       [1] "agg"            "first"          "last"           "max"           
-       [5] "mean"           "median"         "min"            "null_count"    
-       [9] "quantile"       "shift"          "shift_and_fill" "std"           
-      [13] "sum"            "ungroup"        "var"           
+       [1] "agg"            "columns"        "first"          "last"          
+       [5] "max"            "mean"           "median"         "min"           
+       [9] "null_count"     "quantile"       "shift"          "shift_and_fill"
+      [13] "std"            "sum"            "ungroup"        "var"           
 
 # public and private methods of each class LazyFrame
 

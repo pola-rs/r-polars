@@ -145,7 +145,9 @@ nativeR_completion = function(activate = TRUE) {
       #   assign(".no_browse",value = 1,envir = .GlobalEnv)
       # }
       if (first_token_char == "$" && nchar(lb_wo_token) > 1L) {
-        res = result(eval(parse(text = lb_wo_token)))
+
+        #eval last expression prior to token
+        res = result(eval(tail(parse(text = lb_wo_token), 1)))
 
         if(is_err(res)) {
           message(
@@ -157,7 +159,7 @@ nativeR_completion = function(activate = TRUE) {
         } else {
           x = res$ok
         }
-        if (inherits(x, c(pl_class_names, "method_environment"))) {
+        if (inherits(x, c(pl_class_names, "method_environment", "pl_polars_env"))) {
           token = substr(CE_frozen$token,2,.Machine$integer.max)
           your_comps = paste0("$",.DollarNames(x, token))
           # append your suggestions to the vanilla suggestions/completions

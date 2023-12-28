@@ -148,13 +148,14 @@ macro_add_syntax_check_to_class = function(Class_name) {
 ## modify classes to perform syntax checking
 ## this relies on no envrionment other than env_classes has been defined when macro called
 ## this mod should be run immediately after extendr-wrappers.R are sourced
-is_env_class = sapply(mget(ls()), \(x) typeof(x) == "environment")
+non_class_envs = c("completion_symbols")
+is_env_class = sapply(ls(), \(x) typeof(get(x)) == "environment" && !x %in% non_class_envs)
 env_class_names = names(is_env_class)[is_env_class]
 if (build_debug_print) cat("\nadd syntax check to: ")
 for (i_class in env_class_names) {
   if (build_debug_print) cat(i_class, ", ", sep = "")
   if (!exists(paste0("$.", i_class))) {
-    stop("internal assertion failed, env class without a dollarsign method")
+    stop("internal assertion failed, env class without a dollarsign method for ", i_class)
   }
   macro_add_syntax_check_to_class(i_class)
 }
@@ -252,6 +253,10 @@ pl$show_all_public_methods = function(class_names = NULL) {
     )
   }
   self[[name]]
+}
+
+.DollarNames.pl_polars_env = function(x, pattern = "") {
+  ls(x, pattern = pattern)
 }
 
 

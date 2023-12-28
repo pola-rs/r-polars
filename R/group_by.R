@@ -34,7 +34,7 @@ RPolarsGroupBy = new.env(parent = emptyenv())
 #' @inherit .DollarNames.RPolarsDataFrame return
 #' @noRd
 .DollarNames.RPolarsGroupBy = function(x, pattern = "") {
-  paste0(ls(RPolarsGroupBy, pattern = pattern), "()")
+  paste0(ls(RPolarsGroupBy, pattern = pattern), completion_symbols$method)
 }
 
 

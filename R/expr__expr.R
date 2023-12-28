@@ -55,7 +55,7 @@ Expr_print = function() {
 #' @export
 #' @noRd
 .DollarNames.RPolarsExpr = function(x, pattern = "") {
-  paste0(ls(RPolarsExpr, pattern = pattern), "()")
+  paste0(ls(RPolarsExpr, pattern = pattern), completion_symbols$method)
 }
 
 #' S3 method to convert an Expr to a list

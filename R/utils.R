@@ -350,6 +350,14 @@ construct_DataTypeVector = function(l) {
   dtv
 }
 
+
+# completion symbols to method/property names.
+# Can be altered to "" at session time to support e.g. vscode autocomplete which will literally
+# evaluate these symbols and cause error and abort.
+completion_symbols = new.env(parent = emptyenv())
+completion_symbols$method = "()"
+completion_symbols$setter = "<-"
+
 #' Generate autocompletion suggestions for object
 #'
 #' @param env environment to extract usages from
@@ -381,8 +389,8 @@ get_method_usages = function(env, pattern = "") {
 
   suggestions = sort(c(
     found_names[facts$is_property],
-    paste0_len(found_names[facts$is_setter], "<-"),
-    paste0_len(found_names[facts$is_method], "()")
+    paste0_len(found_names[facts$is_setter], completion_symbols$setter),
+    paste0_len(found_names[facts$is_method], completion_symbols$method)
   ))
 
   suggestions
