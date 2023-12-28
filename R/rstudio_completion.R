@@ -142,7 +142,7 @@
         # pass on to normal Rstudio completion
         results = .rs.getCompletionsFunction_polars_orig(
           token, string, functionCall = NULL, numCommas,
-          envir = envir, object = object
+          envir = envir
         )
         results$excludeOtherArgumentCompletions  = FALSE
         .rs.appendCompletions(results, col_results)
