@@ -272,6 +272,35 @@ pub_env = as.environment(asNamespace("polars"))
 pub_class_env = as.environment(mget(pl_class_names, envir = pub_env))
 
 
+#' Select from an empty DataFrame
+#'
+#' `pl$select(...)` is a shorthand for `pl$DataFrame(list())$select(...)`
+#' @keywords DataFrame
+#' @param ... [Expressions][Expr_class]
+#' @return a [DataFrame][DataFrame_class]
+#' @examples
+#' pl$select(
+#'   pl$lit(1:4)$alias("ints"),
+#'   pl$lit(letters[1:4])$alias("letters")
+#' )
+pl_select = function(...) {
+  .pr$DataFrame$default()$select(...)
+}
+
+
+#' Get Memory Address
+#'
+#' Get underlying mem address a rust object (via ExtPtr). Expert use only.
+#'
+#' Does not give meaningful answers for regular R objects.
+#' @param robj an R object
+#' @return String of mem address
+#' @examples pl$mem_address(pl$Series(1:3))
+pl_mem_address = function(robj) {
+  mem_address(robj)
+}
+
+
 #' @title Any polars class object is made of this
 #' @name polars_class_object
 #' @description One SEXP of Rtype: "externalptr" + a class attribute

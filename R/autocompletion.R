@@ -20,7 +20,7 @@
 #' pl$extra_auto_completion() # first activate feature (this will 'annoy' the Rstudio auto-completer)
 #' pl$lit(42)$to_series() # add a $ and press tab 1-3 times
 #' pl$extra_auto_completion(activate = FALSE) # deactivate
-pl$extra_auto_completion = function(activate = TRUE) {
+pl_extra_auto_completion = function(activate = TRUE) {
   # load this function into custom.completer setting to activate
   if (!activate) {
     rc.options("custom.completer" = NULL)
