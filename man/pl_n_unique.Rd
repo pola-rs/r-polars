@@ -3,6 +3,9 @@
 \name{pl_n_unique}
 \alias{pl_n_unique}
 \title{Count \code{n} unique values}
+\usage{
+pl_n_unique(column)
+}
 \arguments{
 \item{column}{if dtype is:
 \itemize{

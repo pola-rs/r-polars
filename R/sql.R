@@ -44,7 +44,7 @@ print.RPolarsSQLContext = function(x, ...) {
 #' @examplesIf pl$polars_info()$features$sql
 #' ctx = pl$SQLContext(mtcars = mtcars)
 #' ctx
-pl$SQLContext = function(...) {
+pl_SQLContext = function(...) {
   check_feature("sql", "in $SQLContext()")
 
   self = .pr$SQLContext$new()

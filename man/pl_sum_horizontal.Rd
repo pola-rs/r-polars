@@ -3,6 +3,9 @@
 \name{pl_sum_horizontal}
 \alias{pl_sum_horizontal}
 \title{Compute the sum rowwise}
+\usage{
+pl_sum_horizontal(...)
+}
 \arguments{
 \item{...}{Columns to concatenate into a single string column. Accepts
 expressions. Strings are parsed as column names, other non-expression inputs

@@ -3,6 +3,9 @@
 \name{pl_using_string_cache}
 \alias{pl_using_string_cache}
 \title{Check if the global string cache is enabled}
+\usage{
+pl_using_string_cache()
+}
 \value{
 A boolean
 }

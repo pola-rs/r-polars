@@ -2,7 +2,11 @@
 % Please edit documentation in R/info.R
 \name{polars_info}
 \alias{polars_info}
+\alias{pl_polars_info}
 \title{Report information of the package}
+\usage{
+pl_polars_info()
+}
 \value{
 A list with information of the package
 }

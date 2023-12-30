@@ -3,6 +3,12 @@
 \name{pl_with_string_cache}
 \alias{pl_with_string_cache}
 \title{Evaluate one or several expressions with global string cache}
+\usage{
+pl_with_string_cache(expr)
+}
+\arguments{
+\item{expr}{An Expr to evaluate while the string cache is enabled.}
+}
 \value{
 return value of expression
 }

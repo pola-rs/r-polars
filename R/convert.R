@@ -1,6 +1,5 @@
 #' from_arrow
 #' @description import Arrow Table or Array
-#' @name pl_from_arrow
 #' @param data arrow Table or Array or ChunkedArray
 #' @param ... Ignored.
 #' @param rechunk bool rewrite in one array per column, Implemented for ChunkedArray
@@ -25,7 +24,7 @@
 #'   data = arrow::arrow_table(iris),
 #'   schema = char_schema
 #' )
-pl$from_arrow = function(
+pl_from_arrow = function(
     data,
     ...,
     rechunk = TRUE,

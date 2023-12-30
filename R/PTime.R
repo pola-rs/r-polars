@@ -17,7 +17,7 @@ time_unit_conv_factor = c(
 
 
 #' Store Time in R
-#' @name pl_PTime
+#'
 #' @include after-wrappers.R
 #'
 #' @param x an integer or double vector of n epochs since midnight OR a char vector of char times
@@ -69,7 +69,7 @@ time_unit_conv_factor = c(
 #' pl$lit(pl$PTime("23:59:59"))$to_series()
 #'
 #' pl$lit(pl$PTime("23:59:59"))$to_r()
-pl$PTime = function(x, tu = c("s", "ms", "us", "ns"), format = "%H:%M:%S") {
+pl_PTime = function(x, tu = c("s", "ms", "us", "ns"), format = "%H:%M:%S") {
   tu = tu[1]
   if (!is_string(tu) || !tu %in% c("s", "ms", "us", "ns")) {
     stop("tu must be either 's','ms','us', or 'ns', not '", tu, "'")

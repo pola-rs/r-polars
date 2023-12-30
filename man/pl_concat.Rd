@@ -3,6 +3,14 @@
 \name{pl_concat}
 \alias{pl_concat}
 \title{Concat polars objects}
+\usage{
+pl_concat(
+  ...,
+  how = c("vertical", "vertical_relaxed", "horizontal", "diagonal", "diagonal_relaxed"),
+  rechunk = TRUE,
+  parallel = TRUE
+)
+}
 \arguments{
 \item{...}{Either individual unpacked args or args wrapped in list(). Args can
 be eager as DataFrame, Series and R vectors, or lazy as LazyFrame and Expr.
