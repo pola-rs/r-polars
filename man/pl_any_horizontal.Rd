@@ -3,6 +3,9 @@
 \name{pl_any_horizontal}
 \alias{pl_any_horizontal}
 \title{Apply the OR logical rowwise}
+\usage{
+pl_any_horizontal(...)
+}
 \arguments{
 \item{...}{Columns to concatenate into a single string column. Accepts
 expressions. Strings are parsed as column names, other non-expression inputs

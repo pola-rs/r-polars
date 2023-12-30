@@ -63,7 +63,6 @@ replace_private_with_pub_methods(RPolarsThen, "^Then_")
 replace_private_with_pub_methods(RPolarsChainedWhen, "^ChainedWhen_")
 replace_private_with_pub_methods(RPolarsChainedThen, "^ChainedThen_")
 
-
 # any sub-namespace inherits 'method_environment'
 # This s3 method performs auto-completion
 #' @title auto complete $-access into a polars object
@@ -88,10 +87,8 @@ replace_private_with_pub_methods(RPolarsChainedThen, "^ChainedThen_")
 }
 
 
-
 # Field
 replace_private_with_pub_methods(RPolarsRField, "^RField_")
-
 
 # Series
 replace_private_with_pub_methods(RPolarsSeries, "^Series_")
@@ -102,22 +99,11 @@ replace_private_with_pub_methods(RPolarsRThreadHandle, "^RThreadHandle_")
 # SQLContext
 replace_private_with_pub_methods(RPolarsSQLContext, "^SQLContext_")
 
-
+# pl top level functions
+replace_private_with_pub_methods(pl, "^pl_")
 
 # expression constructors, why not just pl$lit = Expr_lit?
 move_env_elements(RPolarsExpr, pl, c("lit"), remove = FALSE)
-
-
-#' Get Memory Address
-#' @name pl_mem_address
-#' @description Get underlying mem address a rust object (via ExtPtr). Expert use only.
-#' @details Does not give meaningful answers for regular R objects.
-#' @param robj an R object
-#' @aliases mem_address
-#' @return String of mem address
-#' @examples pl$mem_address(pl$Series(1:3))
-pl$mem_address = mem_address
-
 
 # tell testthat data.table is suggested
 .datatable.aware = TRUE
@@ -143,9 +129,6 @@ pl$mem_address = mem_address
   s3_register("knitr::knit_print", "RPolarsDataFrame")
 
   pl$numeric_dtypes = pl$dtypes[substr(names(pl$dtypes), 1, 3) %in% c("Int", "Flo")]
-
-  # see doc below, R CMD check did not like this function def
-  pl$select = .pr$DataFrame$default()$select
 
   # create the binding for options on loading, otherwise its values are frozen
   # to what the default values were at build time
@@ -176,21 +159,3 @@ pl$mem_address = mem_address
   setup_renv()
   lockEnvironment(pl, bindings = TRUE)
 }
-
-#' Select from an empty DataFrame
-#' @details
-#' param ... expressions passed to select
-#' `pl$select` is a shorthand for `pl$DataFrame(list())$select`
-#'
-#' NB param of this function
-#'
-#' @name pl_select
-#' @keywords DataFrame
-#' @return DataFrame
-#' @format method
-#' @examples
-#' pl$select(
-#'   pl$lit(1:4)$alias("ints"),
-#'   pl$lit(letters[1:4])$alias("letters")
-#' )
-NULL

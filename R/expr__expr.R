@@ -3196,15 +3196,15 @@ Expr_to_r = function(df = NULL, i = 0) {
 #' This is mostly useful to debug an expression. It evaluates the Expr in an
 #' empty DataFrame and return the first Series to R. This is an alias for
 #' `$to_r()`.
+#' @param expr An Expr to evaluate.
 #' @param df If `NULL` (default), it evaluates the Expr in an empty DataFrame.
 #' Otherwise, provide a DataFrame that the Expr should be evaluated in.
 #' @param i Numeric column to extract. Default is zero (which gives the first
 #' column).
-#' @name pl_expr_to_r
 #' @return R object
 #' @examples
 #' pl$expr_to_r(pl$lit(1:3))
-pl$expr_to_r = function(expr, df = NULL, i = 0) {
+pl_expr_to_r = function(expr, df = NULL, i = 0) {
   wrap_e(expr)$to_r(df, i)
 }
 

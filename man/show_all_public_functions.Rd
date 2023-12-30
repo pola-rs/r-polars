@@ -2,7 +2,11 @@
 % Please edit documentation in R/after-wrappers.R
 \name{show_all_public_functions}
 \alias{show_all_public_functions}
+\alias{pl_show_all_public_functions}
 \title{show all public functions / objects}
+\usage{
+pl_show_all_public_functions()
+}
 \description{
 print any object(function, RPolarsDataType) available via \verb{pl$}.
 }

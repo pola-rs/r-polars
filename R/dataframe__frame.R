@@ -142,7 +142,7 @@ NULL
 #'
 #' # custom schema
 #' pl$DataFrame(iris, schema = list(Sepal.Length = pl$Float32, Species = pl$Utf8))
-pl$DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
+pl_DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
   uw = \(res) unwrap(res, "in $DataFrame():")
 
   largs = unpack_list(...) |>
@@ -177,7 +177,6 @@ pl$DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
     }
     return(key)
   })
-
 
   result({
     # check for conflicting names, to avoid silent overwrite

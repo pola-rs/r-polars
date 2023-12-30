@@ -3,6 +3,9 @@
 \name{pl_concat_list}
 \alias{pl_concat_list}
 \title{Concat the arrays in a Series dtype List in linear time.}
+\usage{
+pl_concat_list(exprs)
+}
 \arguments{
 \item{exprs}{list of Into\if{html}{\out{<Expr>}}, strings interpreted as column names}
 }

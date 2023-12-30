@@ -5,7 +5,7 @@
 #' @examples
 #' pl$polars_info()
 # TODO: Link to the installation vignette
-pl$polars_info = function() {
+pl_polars_info = function() {
   # Similar to arrow::arrow_info()
   out = list(
     version = utils::packageVersion("polars"),
@@ -82,4 +82,4 @@ check_feature = function(feature_name, context = NULL, call = sys.call(1L)) {
 #' @return The number of threads
 #' @examples
 #' pl$threadpool_size()
-pl$threadpool_size = function() threadpool_size()
+pl_threadpool_size = function() threadpool_size()

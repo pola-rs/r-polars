@@ -3,6 +3,9 @@
 \name{pl_first}
 \alias{pl_first}
 \title{pl$first}
+\usage{
+pl_first(column = NULL)
+}
 \arguments{
 \item{column}{if dtype is:
 \itemize{

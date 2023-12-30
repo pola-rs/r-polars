@@ -6,16 +6,18 @@
 \alias{as.list.rpolars_raw_list}
 \title{Polars raw list}
 \usage{
+pl_raw_list(...)
+
 \method{[}{rpolars_raw_list}(x, index)
 
 \method{as.list}{rpolars_raw_list}(x, ...)
 }
 \arguments{
+\item{...}{Elements}
+
 \item{x}{A \code{rpolars_raw_list} object created with \code{pl$raw_list()}}
 
 \item{index}{Elements to select}
-
-\item{...}{Elements}
 }
 \value{
 An R list where any elements must be raw, and the S3 class is

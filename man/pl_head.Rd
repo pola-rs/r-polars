@@ -3,6 +3,9 @@
 \name{pl_head}
 \alias{pl_head}
 \title{Get the first \code{n} rows.}
+\usage{
+pl_head(column, n = 10)
+}
 \arguments{
 \item{column}{if dtype is:
 \itemize{

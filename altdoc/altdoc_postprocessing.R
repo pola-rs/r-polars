@@ -11,7 +11,7 @@ list_man_html = list.files("docs/man",
 classes = c(
   "Series", "DataFrame", "LazyFrame", "GroupBy",
   "LazyGroupBy", "IO", "RField", "RThreadHandle", "SQLContext", "S3",
-  "Expr"
+  "Expr", "pl"
 )
 
 to_modify = grep(
@@ -49,6 +49,12 @@ for (i in to_modify) {
     new = gsub(
       paste0("<code class='language-R'>", which_input, "_"),
       paste0("<code class='language-R'>pl$", which_input, "_"),
+      orig
+    )
+  } else if (which_class == "pl") {
+    new = gsub(
+      "<code class='language-R'>pl_",
+      "<code class='language-R'>pl$",
       orig
     )
   } else {

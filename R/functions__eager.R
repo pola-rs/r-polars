@@ -1,5 +1,4 @@
 #' Concat polars objects
-#' @name pl_concat
 #' @param ... Either individual unpacked args or args wrapped in list(). Args can
 #' be eager as DataFrame, Series and R vectors, or lazy as LazyFrame and Expr.
 #' The first element determines the output of `$concat()`: if the first element
@@ -54,7 +53,7 @@
 #' test2 = pl$DataFrame(x = 1.0) # f64
 #'
 #' pl$concat(test, test2, how = "vertical_relaxed")
-pl$concat = function(
+pl_concat = function(
     ...,
     how = c(
       "vertical", "vertical_relaxed", "horizontal",
@@ -164,7 +163,6 @@ pl$concat = function(
 
 
 #' New date range
-#' @name pl_date_range
 #' @param start POSIXt or Date preferably with time_zone or double or integer
 #' @param end POSIXt or Date preferably with time_zone or double or integer. If
 #' `end` and `interval` are missing, then a single datetime is constructed.
@@ -216,7 +214,7 @@ pl$concat = function(
 #' t2 = ISOdate(2022, 1, 2, 0) # preset GMT
 #' pl$date_range(t1, t2, interval = "4h", time_unit = "ms", time_zone = "GMT")$to_r()
 #'
-pl$date_range = function(
+pl_date_range = function(
     start,
     end,
     interval,
@@ -289,7 +287,6 @@ difftime_to_pl_duration = function(dft) {
 #' @description
 #' Create an "rpolars_raw_list", which is an R list where all elements must be
 #' an R raw or `NULL`.
-#' @name pl_raw_list
 #' @param ... Elements
 #' @details
 #' In R, raw can contain a binary sequence of bytes, and the length is the number
@@ -323,7 +320,7 @@ difftime_to_pl_duration = function(dft) {
 #'
 #' # to regular list, use as.list or unclass
 #' as.list(raw_list)
-pl$raw_list = function(...) {
+pl_raw_list = function(...) {
   l = list2(...)
   if (any(!sapply(l, is.raw) & !sapply(l, is.null))) {
     Err_plain("some elements where not raw or NULL") |>
