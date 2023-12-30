@@ -15,8 +15,7 @@ pl_scan_ipc = function(
     rechunk = TRUE,
     row_count_name = NULL,
     row_count_offset = 0L,
-    memmap = TRUE
-  ) {
+    memmap = TRUE) {
   result_lf = import_arrow_ipc(
     path,
     n_rows,

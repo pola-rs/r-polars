@@ -151,7 +151,7 @@ pl_scan_csv = function(
 #' @rdname IO_read_csv
 #' @inheritParams pl_scan_csv
 #' @return DataFrame
-pl_read_csv = function( # remapped to pl$read_csv, a hack to support roxygen2 @inheritsParams
+pl_read_csv = function(
     path,
     has_header = TRUE,
     separator = ",",
@@ -176,7 +176,6 @@ pl_read_csv = function( # remapped to pl$read_csv, a hack to support roxygen2 @i
     raise_if_empty = TRUE,
     truncate_ragged_lines = FALSE,
     reuse_downloaded = TRUE) {
-
   args = as.list(environment())
   result({
     do.call(pl$scan_csv, args)$collect()
