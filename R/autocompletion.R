@@ -23,20 +23,20 @@
 pl_extra_auto_completion = function(activate = TRUE) {
   # load this function into custom.completer setting to activate
   if (!activate) {
-    rc.options("custom.completer" = NULL)
+    utils::rc.options("custom.completer" = NULL)
   } else {
-    rc.options("custom.completer" = function(x) {
+    utils::rc.options("custom.completer" = function(x) {
       ## activating custom deactivates anything else
       # however you can run utils auto completer also like this
       # rstudio auto completion is not entirely the same as utils
-      f = rc.getOption("custom.completer")
-      rc.options("custom.completer" = NULL)
+      f = utils::rc.getOption("custom.completer")
+      utils::rc.options("custom.completer" = NULL)
       # function running  base auto complete.
       # It will dump suggestion into mutable .CompletionEnv$comps
       .completeToken = utils::getFromNamespace(".completeToken", "utils")
       .completeToken()
 
-      rc.options("custom.completer" = f)
+      utils::rc.options("custom.completer" = f)
 
       # get line buffer
       .CompletionEnv = utils::getFromNamespace(".CompletionEnv", "utils")
