@@ -63,7 +63,7 @@ tasks:
     desc: Install cargo tools for development.
     cmds:
       - cargo install cargo-binstall
-      - cargo binstall cargo-license cargo-outdated
+      - cargo binstall -y cargo-license cargo-outdated
 
   setup-venv:
     desc: Setup Python venv for development.
