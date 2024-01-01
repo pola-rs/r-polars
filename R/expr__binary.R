@@ -5,7 +5,7 @@
 
 
 #' contains
-#' @name ExprBin_contains
+#'
 #' @aliases expr_bin_contains
 #' @description R Check if binaries in Series contain a binary substring.
 #' @keywords ExprBin
@@ -17,7 +17,7 @@ ExprBin_contains = function(lit) {
 
 
 #' starts_with
-#' @name ExprBin_starts_with
+#'
 #' @aliases expr_bin_starts_with
 #' @description   Check if values starts with a binary substring.
 #' @keywords ExprBin
@@ -29,7 +29,7 @@ ExprBin_starts_with = function(sub) {
 
 
 #' ends_with
-#' @name ExprBin_ends_with
+#'
 #' @aliases expr_bin_ends_with
 #' @description   Check if string values end with a binary substring.
 #' @keywords ExprBin
@@ -41,7 +41,7 @@ ExprBin_ends_with = function(sub) {
 
 
 #' encode
-#' @name ExprBin_encode
+#'
 #' @aliases expr_bin_encode
 #' @description  Encode a value using the provided encoding.
 #' @keywords ExprBin
@@ -57,7 +57,7 @@ ExprBin_encode = function(encoding) {
 }
 
 #' decode
-#' @name ExprBin_decode
+#'
 #' @aliases expr_bin_decode
 #' @description Decode a value using the provided encoding.
 #' @keywords ExprBin
