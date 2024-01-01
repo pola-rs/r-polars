@@ -3,6 +3,9 @@
 \name{ExprName_keep}
 \alias{ExprName_keep}
 \title{Keep the original root name of the expression.}
+\usage{
+ExprName_keep()
+}
 \value{
 Expr
 }

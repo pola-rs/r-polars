@@ -7,6 +7,9 @@
 \format{
 function
 }
+\usage{
+ExprList_join(separator)
+}
 \arguments{
 \item{separator}{String to separate the items with. Can be an Expr.}
 }

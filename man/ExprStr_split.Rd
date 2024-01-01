@@ -3,6 +3,9 @@
 \name{ExprStr_split}
 \alias{ExprStr_split}
 \title{Split the string by a substring}
+\usage{
+ExprStr_split(by, inclusive = FALSE)
+}
 \arguments{
 \item{by}{String or Expr of a string, a valid regex pattern that will be
 used to split the string.}

@@ -7,6 +7,9 @@
 \format{
 function
 }
+\usage{
+ExprList_contains(other)
+}
 \arguments{
 \item{item}{any into Expr/literal}
 }

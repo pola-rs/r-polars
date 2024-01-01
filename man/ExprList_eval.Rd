@@ -7,15 +7,18 @@
 \format{
 function
 }
+\usage{
+ExprList_eval(expr, parallel = FALSE)
+}
 \arguments{
-\item{Expr}{Expression to run. Note that you can select an element with \code{pl$first()}, or
-\code{pl$col()}}
-
 \item{parallel}{bool
 Run all expression parallel. Don't activate this blindly.
 Parallelism is worth it if there is enough work to do per thread.
 This likely should not be use in the groupby context, because we already
 parallel execution per group}
+
+\item{Expr}{Expression to run. Note that you can select an element with \code{pl$first()}, or
+\code{pl$col()}}
 }
 \value{
 Expr

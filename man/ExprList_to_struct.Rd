@@ -7,6 +7,13 @@
 \format{
 function
 }
+\usage{
+ExprList_to_struct(
+  n_field_strategy = c("first_non_null", "max_width"),
+  name_generator = NULL,
+  upper_bound = 0
+)
+}
 \arguments{
 \item{n_field_strategy}{Strategy to determine the number of fields of the struct.
 default = "first_non_null": set number of fields equal to the length of the

@@ -4,6 +4,9 @@
 \alias{ExprBin_ends_with}
 \alias{expr_bin_ends_with}
 \title{ends_with}
+\usage{
+ExprBin_ends_with(sub)
+}
 \value{
 Expr returning a Boolean
 }

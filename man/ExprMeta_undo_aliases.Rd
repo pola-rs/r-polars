@@ -4,6 +4,9 @@
 \alias{ExprMeta_undo_aliases}
 \alias{expr_meta_undo_aliases}
 \title{Undo aliases}
+\usage{
+ExprMeta_undo_aliases()
+}
 \value{
 Expr with aliases undone
 }

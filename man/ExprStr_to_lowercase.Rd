@@ -3,6 +3,9 @@
 \name{ExprStr_to_lowercase}
 \alias{ExprStr_to_lowercase}
 \title{Convert a string to lowercase}
+\usage{
+ExprStr_to_lowercase()
+}
 \value{
 Expr of Utf8 lowercase chars
 }

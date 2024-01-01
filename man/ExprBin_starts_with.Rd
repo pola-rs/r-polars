@@ -4,6 +4,9 @@
 \alias{ExprBin_starts_with}
 \alias{expr_bin_starts_with}
 \title{starts_with}
+\usage{
+ExprBin_starts_with(sub)
+}
 \arguments{
 \item{sub}{Prefix substring.}
 }

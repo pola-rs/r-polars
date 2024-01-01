@@ -3,6 +3,16 @@
 \name{ExprStr_strptime}
 \alias{ExprStr_strptime}
 \title{Convert a Utf8 column into a Date/Datetime/Time column.}
+\usage{
+ExprStr_strptime(
+  datatype,
+  format,
+  strict = TRUE,
+  exact = TRUE,
+  cache = TRUE,
+  ambiguous = "raise"
+)
+}
 \arguments{
 \item{datatype}{The data type to convert into. Can be either Date, Datetime,
 or Time.}

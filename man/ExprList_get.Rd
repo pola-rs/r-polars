@@ -9,12 +9,14 @@
 function
 }
 \usage{
+ExprList_get(index)
+
 \method{[}{RPolarsExprListNameSpace}(x, index)
 }
 \arguments{
-\item{x}{RPolarsExprListNameSpace}
-
 \item{index}{value to get}
+
+\item{x}{RPolarsExprListNameSpace}
 }
 \value{
 Expr

@@ -3,6 +3,9 @@
 \name{ExprStr_slice}
 \alias{ExprStr_slice}
 \title{Create subslices of the string values of a Utf8 Series}
+\usage{
+ExprStr_slice(offset, length = NULL)
+}
 \arguments{
 \item{offset}{Start index. Negative indexing is supported.}
 

@@ -7,6 +7,9 @@
 \format{
 function
 }
+\usage{
+ExprList_last(index)
+}
 \value{
 Expr
 }

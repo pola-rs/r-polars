@@ -7,6 +7,9 @@
 \format{
 function
 }
+\usage{
+ExprList_diff(n = 1, null_behavior = c("ignore", "drop"))
+}
 \arguments{
 \item{n}{Number of slots to shift}
 
