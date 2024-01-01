@@ -1,0 +1,33 @@
+{
+	"image": "ghcr.io/rocker-org/devcontainer/r-ver:4",
+	"features": {
+		"ghcr.io/devcontainers/features/rust:1": {},
+		"ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
+			"packages": "cmake,python3-venv"
+		},
+		"ghcr.io/eitsupi/devcontainer-features/go-task:1": {},
+		"ghcr.io/rocker-org/devcontainer-features/quarto-cli:1": {}
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"EditorConfig.EditorConfig"
+			]
+		}
+	},
+	"mounts": [
+		{
+			"source": "devcontainer-pak-cache",
+			"target": "/home/rstudio/.cache/R/pkgcache/pkg",
+			"type": "volume"
+		},
+		{
+			"source": "devcontainer-cargo-cache-${devcontainerId}",
+			"target": "/usr/local/cargo",
+			"type": "volume"
+		}
+	],
+	"updateContentCommand": {
+		"setup-r-polars-requirements": "task setup-dev"
+	}
+}

@@ -209,7 +209,7 @@ class(pl) = c("pl_polars_env", "environment")
 #' @keywords functions
 #' @examples
 #' pl$show_all_public_functions()
-pl$show_all_public_functions = function() {
+pl_show_all_public_functions = function() {
   print_env(pl, "polars public functions via pl$...")
 }
 
@@ -221,12 +221,12 @@ pl$show_all_public_functions = function() {
 #' @keywords functions
 #' @examples
 #' pl$show_all_public_methods()
-pl$show_all_public_methods = function(class_names = NULL) {
+pl_show_all_public_methods = function(class_names = NULL) {
   # subset classes to show
   show_this_env = if (!is.null(class_names)) {
-    as.environment(mget(class_names, envir = pl_pub_class_env))
+    as.environment(mget(class_names, envir = pub_class_env))
   } else {
-    pl_pub_class_env
+    pub_class_env
   }
 
   print_env(
@@ -268,8 +268,37 @@ pl_class_names = sort(
   )
 ) # TODO discover all public class automatically
 
-pl_pub_env = as.environment(asNamespace("polars"))
-pl_pub_class_env = as.environment(mget(pl_class_names, envir = pl_pub_env))
+pub_env = as.environment(asNamespace("polars"))
+pub_class_env = as.environment(mget(pl_class_names, envir = pub_env))
+
+
+#' Select from an empty DataFrame
+#'
+#' `pl$select(...)` is a shorthand for `pl$DataFrame(list())$select(...)`
+#' @keywords DataFrame
+#' @param ... [Expressions][Expr_class]
+#' @return a [DataFrame][DataFrame_class]
+#' @examples
+#' pl$select(
+#'   pl$lit(1:4)$alias("ints"),
+#'   pl$lit(letters[1:4])$alias("letters")
+#' )
+pl_select = function(...) {
+  .pr$DataFrame$default()$select(...)
+}
+
+
+#' Get Memory Address
+#'
+#' Get underlying mem address a rust object (via ExtPtr). Expert use only.
+#'
+#' Does not give meaningful answers for regular R objects.
+#' @param robj an R object
+#' @return String of mem address
+#' @examples pl$mem_address(pl$Series(1:3))
+pl_mem_address = function(robj) {
+  mem_address(robj)
+}
 
 
 #' @title Any polars class object is made of this

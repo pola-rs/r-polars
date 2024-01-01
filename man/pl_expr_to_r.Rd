@@ -3,7 +3,12 @@
 \name{pl_expr_to_r}
 \alias{pl_expr_to_r}
 \title{Convert an Expr to R output}
+\usage{
+pl_expr_to_r(expr, df = NULL, i = 0)
+}
 \arguments{
+\item{expr}{An Expr to evaluate.}
+
 \item{df}{If \code{NULL} (default), it evaluates the Expr in an empty DataFrame.
 Otherwise, provide a DataFrame that the Expr should be evaluated in.}
 

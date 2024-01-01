@@ -3,6 +3,18 @@
 \name{pl_date_range}
 \alias{pl_date_range}
 \title{New date range}
+\usage{
+pl_date_range(
+  start,
+  end,
+  interval,
+  eager = FALSE,
+  closed = "both",
+  time_unit = "us",
+  time_zone = NULL,
+  explode = TRUE
+)
+}
 \arguments{
 \item{start}{POSIXt or Date preferably with time_zone or double or integer}
 

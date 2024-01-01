@@ -2,7 +2,11 @@
 % Please edit documentation in R/info.R
 \name{threadpool_size}
 \alias{threadpool_size}
+\alias{pl_threadpool_size}
 \title{Get the number of threads in the Polars thread pool.}
+\usage{
+pl_threadpool_size()
+}
 \value{
 The number of threads
 }

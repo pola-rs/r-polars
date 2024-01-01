@@ -63,7 +63,7 @@ tasks:
     desc: Install cargo tools for development.
     cmds:
       - cargo install cargo-binstall
-      - cargo binstall cargo-license cargo-outdated
+      - cargo binstall -y cargo-license cargo-outdated
 
   setup-venv:
     desc: Setup Python venv for development.
@@ -114,8 +114,6 @@ tasks:
   test-source:
     desc: Run all tests for source.
     internal: true
-    env:
-      POLARS_MAX_THREADS: 2 # workaround for https://github.com/pola-rs/polars/issues/13202
     sources:
       - tests/**/*
       - "{{.R_SOURCE}}"
@@ -132,8 +130,6 @@ tasks:
   test-examples:
     desc: Check if examples can be run.
     internal: true
-    env:
-      POLARS_MAX_THREADS: 2 # workaround for https://github.com/pola-rs/polars/issues/13202
     sources:
       - "{{.R_SOURCE}}"
       - src/Makevars*
@@ -242,19 +238,19 @@ tasks:
     sources:
       - man/*.Rd
       - altdoc/altdoc_preprocessing.R
+      - altdoc/altdoc_postprocessing.R
       - altdoc/*.yml
       - "{{.VIGNETTES}}"
     generates:
       - docs/**
-    deps:
-      - install-package
-      - build-readme
-      - build-altdoc-ref-home
     cmds:
+      - task: build-readme
+      - task: build-altdoc-ref-home
       - Rscript -e
         'future::plan(future::multicore);
         source("altdoc/altdoc_preprocessing.R");
-        altdoc::render_docs(freeze = FALSE, parallel = TRUE, verbose = TRUE)'
+        altdoc::render_docs(freeze = FALSE, parallel = TRUE, verbose = TRUE);
+        source("altdoc/altdoc_postprocessing.R");'
 
   build-altdoc-ref-home:
     internal: true
@@ -280,10 +276,10 @@ tasks:
     vars:
       FORMATER_SCRIPT: dev/styler_utils.R
     sources:
-      - "{{.R_SOURCE}}"
+      - "**/*.R"
       - "{{.FORMATER_SCRIPT}}"
     generates:
-      - "{{.R_SOURCE}}"
+      - "**/*.R"
       - exclude: R/extendr-wrappers.R
     cmds:
       - Rscript -e

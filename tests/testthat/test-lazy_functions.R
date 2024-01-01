@@ -25,11 +25,11 @@ test_that("pl$sum", {
   # for now
   l = list(a = 1:2, b = 3:4, c = 5:6)
   expect_identical(
-    pl$DataFrame(l)$with_columns(pl$sum("a", "c", verbose = FALSE)$shrink_dtype())$to_list(),
+    pl$DataFrame(l)$with_columns(pl$sum("a", "c")$shrink_dtype())$to_list(),
     list(a = c(3L, 3L), b = c(3L, 4L), c = c(11L, 11L))
   )
   expect_identical(
-    pl$DataFrame(l)$with_columns(pl$sum("*", verbose = FALSE)$shrink_dtype())$to_list(),
+    pl$DataFrame(l)$with_columns(pl$sum("*")$shrink_dtype())$to_list(),
     list(a = c(3L, 3L), b = c(7L, 7L), c = c(11L, 11L))
   )
 })
@@ -64,13 +64,13 @@ test_that("pl$min pl$max", {
   l = list(a = 1:2, b = 3:4, c = 5:6)
   expect_identical(
     pl$DataFrame(l)$
-      with_columns(pl$min("a", "c", verbose = FALSE))$
+      with_columns(pl$min("a", "c"))$
       to_list(),
     list(a = c(1L, 1L), b = c(3L, 4L), c = c(5L, 5L))
   )
   expect_identical(
     pl$DataFrame(l)$
-      with_columns(pl$max("a", "c", verbose = FALSE))$
+      with_columns(pl$max("a", "c"))$
       to_list(),
     list(a = c(2L, 2L), b = c(3L, 4L), c = c(6L, 6L))
   )

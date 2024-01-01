@@ -3,6 +3,9 @@
 \name{pl_LazyFrame}
 \alias{pl_LazyFrame}
 \title{Create new LazyFrame}
+\usage{
+pl_LazyFrame(...)
+}
 \arguments{
 \item{...}{Anything that is accepted by \code{pl$DataFrame()}}
 }

@@ -4,6 +4,9 @@
 \alias{pl_PTime}
 \alias{PTIME}
 \title{Store Time in R}
+\usage{
+pl_PTime(x, tu = c("s", "ms", "us", "ns"), format = "\%H:\%M:\%S")
+}
 \arguments{
 \item{x}{an integer or double vector of n epochs since midnight OR a char vector of char times
 passed to as.POSIXct converted to seconds.}

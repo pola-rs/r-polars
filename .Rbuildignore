@@ -29,3 +29,4 @@
 
 ^\.venv_altdoc$
 ^Taskfile\.yml$
+^\.editorconfig$

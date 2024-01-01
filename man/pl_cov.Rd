@@ -3,6 +3,9 @@
 \name{pl_cov}
 \alias{pl_cov}
 \title{Covariance}
+\usage{
+pl_cov(a, b, ddof = 1)
+}
 \arguments{
 \item{a}{One column name or Expr or anything convertible Into\if{html}{\out{<Expr>}} via \code{pl$col()}.}
 
