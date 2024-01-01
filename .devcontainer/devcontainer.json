@@ -8,6 +8,13 @@
 		"ghcr.io/eitsupi/devcontainer-features/go-task:1": {},
 		"ghcr.io/rocker-org/devcontainer-features/quarto-cli:1": {}
 	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"EditorConfig.EditorConfig"
+			]
+		}
+	},
 	"mounts": [
 		{
 			"source": "devcontainer-pak-cache",
