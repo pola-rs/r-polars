@@ -63,7 +63,7 @@ wrap_s = function(x) {
 #' @examples {
 #'   pl$Series(1:4)
 #' }
-pl$Series = function(x, name = NULL) {
+pl_Series = function(x, name = NULL) {
   .pr$Series$new(x, name) |>
     unwrap("in pl$Series()")
 }
@@ -802,16 +802,16 @@ Series_to_frame = function() {
 #' @param strict bool if TRUE, do not allow similar DataType comparison. Overrides null_equal.
 #'
 #' @description  Check if series is equal with another Series.
-#' @name Series_series_equal
+#' @name Series_equals
 #' @return bool
 #' @keywords Series
-#' @aliases series_equal
+#' @aliases equals
 #' @format method
 #'
 #' @examples
-#' pl$Series(1:4, "bob")$series_equal(pl$Series(1:4))
-Series_series_equal = function(other, null_equal = FALSE, strict = FALSE) {
-  .pr$Series$series_equal(self, other, null_equal, strict)
+#' pl$Series(1:4, "bob")$equals(pl$Series(1:4))
+Series_equals = function(other, null_equal = FALSE, strict = FALSE) {
+  .pr$Series$equals(self, other, null_equal, strict)
 }
 # TODO add Series_cast and show examples of strict and null_equals
 

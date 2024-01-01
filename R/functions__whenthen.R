@@ -63,48 +63,48 @@
 #'   $then(99)
 #'   $otherwise(-1)
 #' )
-pl$when = function(...) {
-  condition = unpack_bool_expr(...) |>
-    unwrap("in pl$when():")
-
-  .pr$When$new(condition) |>
+pl_when = function(...) {
+  unpack_bool_expr_result(...) |>
+    and_then(.pr$When$new) |>
     unwrap("in pl$when():")
 }
 
 
 ##  -------- all when-then-otherwise methods of state-machine ---------
 
+#' @rdname Expr_when_then_otherwise
 When_then = function(statement) {
   .pr$When$then(self, statement) |>
     unwrap("in $then():")
 }
 
+#' @rdname Expr_when_then_otherwise
 Then_when = function(...) {
-  condition = unpack_bool_expr(...) |>
-    unwrap("in $when():")
-
-  .pr$Then$when(self, condition) |>
+  unpack_bool_expr_result(...) |>
+    and_then(\(condition) .pr$Then$when(self, condition)) |>
     unwrap("in $when():")
 }
 
+#' @rdname Expr_when_then_otherwise
 Then_otherwise = function(statement) {
   .pr$Then$otherwise(self, statement) |>
     unwrap("in $otherwise():")
 }
 
+#' @rdname Expr_when_then_otherwise
 ChainedWhen_then = function(statement) {
   .pr$ChainedWhen$then(self, statement) |>
     unwrap("in $then():")
 }
 
+#' @rdname Expr_when_then_otherwise
 ChainedThen_when = function(...) {
-  condition = unpack_bool_expr(...) |>
-    unwrap("in $when():")
-
-  .pr$ChainedThen$when(self, condition) |>
+  unpack_bool_expr_result(...) |>
+    and_then(\(condition) .pr$ChainedThen$when(self, condition)) |>
     unwrap("in $when():")
 }
 
+#' @rdname Expr_when_then_otherwise
 ChainedThen_otherwise = function(statement) {
   .pr$ChainedThen$otherwise(self, statement) |>
     unwrap("in $otherwise():")

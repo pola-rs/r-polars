@@ -3,6 +3,9 @@
 \name{pl_min_horizontal}
 \alias{pl_min_horizontal}
 \title{Get the minimum value rowwise}
+\usage{
+pl_min_horizontal(...)
+}
 \arguments{
 \item{...}{Columns to concatenate into a single string column. Accepts
 expressions. Strings are parsed as column names, other non-expression inputs

@@ -4,10 +4,12 @@
 \alias{Expr_gather_every}
 \title{Gather every nth element}
 \usage{
-Expr_gather_every(n)
+Expr_gather_every(n, offset = 0)
 }
 \arguments{
 \item{n}{Positive integer.}
+
+\item{offset}{Starting index.}
 }
 \value{
 Expr

@@ -3,6 +3,9 @@
 \name{pl_disable_string_cache}
 \alias{pl_disable_string_cache}
 \title{Disable the global string cache}
+\usage{
+pl_disable_string_cache()
+}
 \value{
 This doesn't return any value.
 }

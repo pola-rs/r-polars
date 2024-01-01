@@ -1,0 +1,298 @@
+version: "3"
+
+env:
+  NOT_CRAN: "true"
+  LIBR_POLARS_BUILD: "true"
+  RPOLARS_FULL_FEATURES: "true"
+
+vars:
+  PACKAGE_NAME: polars
+  REQUIRE_R_PKGS: "arrow,nanoarrow,knitr"
+  VENV_DIR: .venv_altdoc
+  VENV_BIN:
+    sh: echo '{{.VENV_DIR}}/{{if eq OS "windows"}}Scripts{{else}}bin{{end}}'
+
+  MANIFEST: src/rust/Cargo.toml
+  CARGO_LOCK: src/rust/Cargo.lock
+  R_SOURCE: R/*
+  VIGNETTES: vignettes/**/*.Rmd
+  RUST_SOURCE: src/rust/src/**/*.rs
+
+  R_FUNC_IMPORT_REQUIRED_PKGS: strsplit("{{.REQUIRE_R_PKGS}}", ",") |> unlist() |> lapply(require, character.only = TRUE) |> invisible()
+
+tasks:
+  setup-dev:
+    desc: Install tools for development.
+    deps:
+      - setup-r-tools
+      - setup-rust-tools
+      - setup-python-tools
+
+  setup-r-tools:
+    internal: true
+    env:
+      PKG_SYSREQS: FALSE
+    desc: Install R packages for development.
+    cmds:
+      - Rscript -e
+        'pak::repo_add("https://cloud.r-project.org/");
+        pak::local_install_deps(dependencies = c("all", "Config/Needs/dev", "Config/Needs/website"))'
+
+  setup-rust-tools:
+    internal: true
+    desc: Install Rust tools for development.
+    vars:
+      RUST_TOOLCHAIN_VERSION:
+        sh: Rscript -e 'read.dcf("DESCRIPTION", fields = "Config/polars/RustToolchainVersion", all = TRUE)[1, 1] |> cat()'
+    cmds:
+      - task: setup-rust-toolchain
+      - task: setup-cargo-tools
+
+  setup-rust-toolchain:
+    desc: Install Rust toolchain.
+    vars:
+      RUST_TOOLCHAIN_VERSION:
+        sh: Rscript -e 'read.dcf("DESCRIPTION", fields = "Config/polars/RustToolchainVersion", all = TRUE)[1, 1] |> cat()'
+    cmds:
+      - rustup toolchain install {{.RUST_TOOLCHAIN_VERSION}}{{if eq OS "windows"}}-gnu{{end}}
+      - rustup default {{.RUST_TOOLCHAIN_VERSION}}{{if eq OS "windows"}}-gnu{{end}}
+      - rustup component add rustfmt
+      - rustup component add clippy
+
+  setup-cargo-tools:
+    desc: Install cargo tools for development.
+    cmds:
+      - cargo install cargo-binstall
+      - cargo binstall -y cargo-license cargo-outdated
+
+  setup-venv:
+    desc: Setup Python venv for development.
+    internal: true
+    generates:
+      - "{{.VENV_BIN}}"
+    cmds:
+      - python3 -m venv {{.VENV_DIR}}
+
+  setup-python-tools:
+    internal: true
+    desc: Install Python tools for development.
+    deps:
+      - setup-venv
+    cmds:
+      - "{{.VENV_BIN}}/python -m pip install --upgrade pip"
+      - "{{.VENV_BIN}}/python -m pip install --upgrade mkdocs"
+      - "{{.VENV_BIN}}/python -m pip install --upgrade mkdocs-material"
+
+  build-lib-sums:
+    desc: Build lib-sums.tsv.
+    sources:
+      - dev/generate-lib-sums.R
+      - tools/prep-lib.R
+      - DESCRIPTION
+      - "{{.CARGO_LOCK}}"
+    generates:
+      - tools/lib-sums.tsv
+    cmds:
+      - Rscript dev/generate-lib-sums.R
+
+  build-all:
+    desc: Build the R package, generate documents, run all tests, and update files.
+    deps:
+      - build-lib-sums
+      - build-documents
+    cmds:
+      - task: test-all
+      - task: build-readme
+
+  test-all:
+    desc: Run all tests.
+    cmds:
+      - task: test-source
+      - task: test-examples
+      - task: test-vignettes
+
+  test-source:
+    desc: Run all tests for source.
+    internal: true
+    sources:
+      - tests/**/*
+      - "{{.R_SOURCE}}"
+      - src/Makevars*
+      - configure*
+      - "{{.MANIFEST}}"
+      - "{{.CARGO_LOCK}}"
+      - "{{.RUST_SOURCE}}"
+    deps:
+      - install-package
+    cmds:
+      - Rscript -e 'devtools::test()'
+
+  test-examples:
+    desc: Check if examples can be run.
+    internal: true
+    sources:
+      - "{{.R_SOURCE}}"
+      - src/Makevars*
+      - configure*
+      - "{{.MANIFEST}}"
+      - "{{.CARGO_LOCK}}"
+      - "{{.RUST_SOURCE}}"
+    deps:
+      - install-package
+    cmds:
+      - Rscript -e 'devtools::run_examples(document = FALSE)'
+
+  test-vignettes:
+    desc: Check if vignettes can be rendered.
+    internal: true
+    vars:
+      ITEMS:
+        sh: find vignettes -type f -name '*.Rmd'
+    sources:
+      - "{{.VIGNETTES}}"
+      - "{{.R_SOURCE}}"
+      - src/Makevars*
+      - configure*
+      - "{{.MANIFEST}}"
+      - "{{.CARGO_LOCK}}"
+      - "{{.RUST_SOURCE}}"
+    deps:
+      - install-package
+    cmds:
+      - for: { var: ITEMS }
+        cmd: Rscript -e
+          'library({{.PACKAGE_NAME}});
+          rmarkdown::render("{{.ITEM}}", output_dir = tempdir())'
+
+  build-documents:
+    desc: Build the R package and generate documents.
+    sources:
+      - "{{.R_SOURCE}}"
+    generates:
+      - man/*.Rd
+    status:
+      - Rscript -e 'if (desc::desc_get("RoxygenNote") < packageVersion("roxygen2")) quit(status = 1)'
+    deps:
+      - build-rust
+      - format-r
+    cmds:
+      - Rscript -e
+        '{{.R_FUNC_IMPORT_REQUIRED_PKGS}};
+        devtools::document()'
+
+  build-rust:
+    desc: Build the Rust library and generate the `extendr-wrappers.R` file.
+    sources:
+      - src/Makevars*
+      - configure*
+      - "{{.MANIFEST}}"
+      - "{{.CARGO_LOCK}}"
+      - "{{.RUST_SOURCE}}"
+    deps:
+      - format-rs
+    generates:
+      - R/extendr-wrappers.R
+    status:
+      - Rscript -e 'if (desc::desc_get("Config/rextendr/version") < packageVersion("rextendr")) quit(status = 1)'
+    cmds:
+      - Rscript -e
+        'withr::local_envvar(devtools::r_env_vars());
+        rextendr::register_extendr()'
+
+  build-readme:
+    internal: true
+    desc: Build README.md
+    sources:
+      - README.Rmd
+      - "{{.R_SOURCE}}"
+      - src/Makevars*
+      - configure*
+      - "{{.MANIFEST}}"
+      - "{{.CARGO_LOCK}}"
+      - "{{.RUST_SOURCE}}"
+    generates:
+      - README.md
+    deps:
+      - install-package
+    cmds:
+      - Rscript -e
+        'library({{.PACKAGE_NAME}});
+        rmarkdown::render(input = "README.Rmd", output_file = "README.md")'
+
+  install-package:
+    desc: Install the R package.
+    sources:
+      - "{{.R_SOURCE}}"
+      - src/Makevars*
+      - configure*
+      - "{{.MANIFEST}}"
+      - "{{.CARGO_LOCK}}"
+      - "{{.RUST_SOURCE}}"
+    deps:
+      - build-documents
+    cmds:
+      - R CMD INSTALL --no-multiarch --with-keep.source .
+
+  build-website:
+    desc: Build the website.
+    sources:
+      - man/*.Rd
+      - altdoc/altdoc_preprocessing.R
+      - altdoc/altdoc_postprocessing.R
+      - altdoc/*.yml
+      - "{{.VIGNETTES}}"
+    generates:
+      - docs/**
+    cmds:
+      - task: build-readme
+      - task: build-altdoc-ref-home
+      - Rscript -e
+        'future::plan(future::multicore);
+        source("altdoc/altdoc_preprocessing.R");
+        altdoc::render_docs(freeze = FALSE, parallel = TRUE, verbose = TRUE);
+        source("altdoc/altdoc_postprocessing.R");'
+
+  build-altdoc-ref-home:
+    internal: true
+    desc: Build the altdoc reference home markdown
+    sources:
+      - "{{.R_SOURCE}}"
+      - src/Makevars*
+      - configure*
+      - "{{.MANIFEST}}"
+      - "{{.CARGO_LOCK}}"
+      - "{{.RUST_SOURCE}}"
+    generates:
+      - altdoc/reference_home.md
+    deps:
+      - install-package
+    cmds:
+      - Rscript -e
+        'library({{.PACKAGE_NAME}});
+        rmarkdown::render("altdoc/reference_home.Rmd")'
+
+  format-r:
+    desc: Format R source files.
+    vars:
+      FORMATER_SCRIPT: dev/styler_utils.R
+    sources:
+      - "**/*.R"
+      - "{{.FORMATER_SCRIPT}}"
+    generates:
+      - "**/*.R"
+      - exclude: R/extendr-wrappers.R
+    cmds:
+      - Rscript -e
+        'source("{{.FORMATER_SCRIPT}}"); style_files()'
+
+  format-rs:
+    desc: Format Rust source files.
+    sources:
+      - "{{.RUST_SOURCE}}"
+    cmds:
+      - cargo fmt --manifest-path "{{.MANIFEST}}"
+
+  test-snapshot-accept:
+    desc: Accept all test snapshots. (Shortcut to accept snapshots after running tests)
+    cmds:
+      - Rscript -e 'testthat::snapshot_accept()'

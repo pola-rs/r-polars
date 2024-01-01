@@ -28,3 +28,5 @@
 ^DEVELOPMENT\.md$
 
 ^\.venv_altdoc$
+^Taskfile\.yml$
+^\.editorconfig$

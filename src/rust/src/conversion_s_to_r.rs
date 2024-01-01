@@ -113,7 +113,7 @@ pub fn pl_series_to_list(
                     .set_class(["rpolars_raw_list", "list"])
                     .expect("this class label is always valid")
             }),
-            Categorical(_) => s
+            Categorical(_, _) => s
                 .categorical()
                 .map(|ca| extendr_api::call!("factor", ca.iter_str().collect_robj()).unwrap()),
             List(_) => {

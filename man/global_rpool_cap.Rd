@@ -2,8 +2,15 @@
 % Please edit documentation in R/options.R
 \name{global_rpool_cap}
 \alias{global_rpool_cap}
+\alias{pl_get_global_rpool_cap}
 \alias{set_global_rpool_cap}
+\alias{pl_set_global_rpool_cap}
 \title{Get/set global R session pool capacity (DEPRECATED)}
+\usage{
+pl_get_global_rpool_cap()
+
+pl_set_global_rpool_cap(n)
+}
 \arguments{
 \item{n}{Integer, the capacity limit R sessions to process R code.}
 }

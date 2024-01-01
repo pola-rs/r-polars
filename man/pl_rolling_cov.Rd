@@ -3,6 +3,9 @@
 \name{pl_rolling_cov}
 \alias{pl_rolling_cov}
 \title{Rolling covariance}
+\usage{
+pl_rolling_cov(a, b, window_size, min_periods = NULL, ddof = 1)
+}
 \arguments{
 \item{a}{One column name or Expr or anything convertible Into\if{html}{\out{<Expr>}} via \code{pl$col()}.}
 

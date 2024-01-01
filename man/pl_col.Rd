@@ -3,6 +3,9 @@
 \name{pl_col}
 \alias{pl_col}
 \title{Start Expression with a column}
+\usage{
+pl_col(name = "", ...)
+}
 \arguments{
 \item{name}{\itemize{
 \item a single column by a string

@@ -150,13 +150,13 @@ impl RPolarsSeries {
         self.0.is_sorted(options).map_err(polars_to_rpolars_err)
     }
 
-    pub fn series_equal(&self, other: &RPolarsSeries, null_equal: bool, strict: bool) -> bool {
+    pub fn equals(&self, other: &RPolarsSeries, null_equal: bool, strict: bool) -> bool {
         if strict {
             self.0.eq(&other.0)
         } else if null_equal {
-            self.0.series_equal_missing(&other.0)
+            self.0.equals_missing(&other.0)
         } else {
-            self.0.series_equal(&other.0)
+            self.0.equals(&other.0)
         }
     }
 
@@ -166,7 +166,7 @@ impl RPolarsSeries {
             "{}",
             self.0.get(index.try_into().expect("usize>u32")).unwrap()
         );
-        if let DataType::Utf8 | DataType::Categorical(_) = self.0.dtype() {
+        if let DataType::Utf8 | DataType::Categorical(_, _) = self.0.dtype() {
             let v_trunc = &val[..val
                 .char_indices()
                 .take(str_length.try_into().expect("usize>u32"))
@@ -441,27 +441,39 @@ impl RPolarsSeries {
     }
 
     pub fn median(&self) -> Result<Robj, String> {
-        RPolarsSeries(self.0.median_as_series()).to_r()
+        let s = self.0.median_as_series().map_err(polars_to_rpolars_err)?;
+        RPolarsSeries(s).to_r()
     }
 
     pub fn min(&self) -> Result<Robj, String> {
-        RPolarsSeries(self.0.min_as_series()).to_r()
+        let s = self.0.min_as_series().map_err(polars_to_rpolars_err)?;
+        RPolarsSeries(s).to_r()
     }
 
     pub fn max(&self) -> Result<Robj, String> {
-        RPolarsSeries(self.0.max_as_series()).to_r()
+        let s = self.0.max_as_series().map_err(polars_to_rpolars_err)?;
+        RPolarsSeries(s).to_r()
     }
 
     pub fn sum(&self) -> Result<Robj, String> {
-        RPolarsSeries(self.0.sum_as_series()).to_r()
+        let s = self.0.sum_as_series().map_err(polars_to_rpolars_err)?;
+        RPolarsSeries(s).to_r()
     }
 
     pub fn std(&self, ddof: Robj) -> Result<Robj, String> {
-        RPolarsSeries(self.0.std_as_series(robj_to!(u8, ddof)?)).to_r()
+        let s = self
+            .0
+            .std_as_series(robj_to!(u8, ddof)?)
+            .map_err(polars_to_rpolars_err)?;
+        RPolarsSeries(s).to_r()
     }
 
     pub fn var(&self, ddof: Robj) -> Result<Robj, String> {
-        RPolarsSeries(self.0.var_as_series(robj_to!(u8, ddof)?)).to_r()
+        let s = self
+            .0
+            .var_as_series(robj_to!(u8, ddof)?)
+            .map_err(polars_to_rpolars_err)?;
+        RPolarsSeries(s).to_r()
     }
 
     pub fn ceil(&self) -> List {

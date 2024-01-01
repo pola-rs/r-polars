@@ -2,7 +2,22 @@
 % Please edit documentation in R/parquet.R
 \name{scan_parquet}
 \alias{scan_parquet}
+\alias{pl_scan_parquet}
 \title{Scan a parquet file}
+\usage{
+pl_scan_parquet(
+  file,
+  n_rows = NULL,
+  cache = TRUE,
+  parallel = c("Auto", "None", "Columns", "RowGroups"),
+  rechunk = TRUE,
+  row_count_name = NULL,
+  row_count_offset = 0L,
+  low_memory = FALSE,
+  use_statistics = TRUE,
+  hive_partitioning = TRUE
+)
+}
 \arguments{
 \item{file}{Path to a file. You can use globbing with \code{*} to scan/read multiple
 files in the same directory (see examples).}
@@ -26,11 +41,11 @@ the name is set).}
 
 \item{low_memory}{Reduce memory usage (will yield a lower performance).}
 
-\item{hive_partitioning}{Infer statistics and schema from hive partitioned URL
-and use them to prune reads.}
-
 \item{use_statistics}{Use statistics in the parquet file to determine if pages
 can be skipped from reading.}
+
+\item{hive_partitioning}{Infer statistics and schema from hive partitioned URL
+and use them to prune reads.}
 }
 \value{
 LazyFrame

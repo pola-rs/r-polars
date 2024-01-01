@@ -34,7 +34,7 @@ check_no_missing_args = function(
 #' @param class_name NULLs
 #' @noRd
 #' @return invisible(NULL)
-verify_method_call = function(Class_env, Method_name, call = sys.call(1L), class_name = NULL) {
+verify_method_call = function(Class_env, Method_name, call = sys.call(sys.nframe() - 2L), class_name = NULL) {
   if (polars_optenv$debug_polars) {
     class_name = class_name %||% as.character(as.list(match.call())$Class_env)
     cat("[", format(subtimer_ms(), digits = 4), "ms]\n", class_name, "$", Method_name, "() -> ", sep = "")
@@ -58,83 +58,6 @@ verify_method_call = function(Class_env, Method_name, call = sys.call(1L), class
     )
   }
   invisible(NULL)
-}
-
-
-# #highly experimental work around to use list2 without rlang
-# ok.comma <- function(FUN, which=0) {
-#   function(...) {
-#     #browser()
-#     arg.list <- as.list(sys.call(which=which))[-1L]
-#     len <- length(arg.list)
-#     if (len > 1L) {
-#       last <- arg.list[[len]]
-#       if (missing(last)) {
-#         arg.list <- arg.list[-len]
-#       }
-#     }
-#     do.call(FUN, arg.list,envir=parent.frame(which+1))
-#   }
-# }
-# list2 = ok.comma(list)
-# list3 = ok.comma(list,which = 2)
-
-
-#' list2 - one day like rlang
-#' list2 placeholder for future rust-impl
-#' @noRd
-#' @return An R list
-#' @details rlang has this wonderful list2 implemented in c/c++, that is agnostic about trailing
-#' commas in ... params. One day r-polars will have a list2-impl written in rust, which also allows
-#' trailing commas.
-list2 = list
-
-#' Internal unpack list
-#' @noRd
-#' @param l any list
-#' @param skip_classes char vec, do not unpack list inherits skip_classes.
-#' @details py-polars syntax only allows e.g. `df.select([expr1, expr2,])` and not
-#' `df.select(expr1, expr2,)`. r-polars also allows user to directly write
-#' `df$select(expr1, expr2)` or `df$select(list(expr1,expr2))`. Unpack list
-#' checks whether first and only arg is a list and unpacks it, to bridge the
-#' allowed patterns of passing expr to methods with ... param input.
-#' @return a list
-#' @examples
-#' f = \(...) unpack_list(list(...))
-#' identical(f(list(1L, 2L, 3L)), f(1L, 2L, 3L)) # is TRUE
-#' identical(f(list(1L, 2L), 3L), f(1L, 2L, 3L)) # is FALSE
-unpack_list = function(..., skip_classes = NULL) {
-  l = list2(...)
-  if (
-    length(l) == 1L &&
-      is.list(l[[1L]]) &&
-      !(!is.null(skip_classes) && inherits(l[[1L]], skip_classes))
-  ) {
-    l[[1L]]
-  } else {
-    l
-  }
-}
-
-#' Convert dot-dot-dot to bool expression
-#' @noRd
-#' @return Result, a list has `ok` (RPolarsExpr class) and `err` (RPolarsErr class)
-#' @examples
-#' unpack_bool_expr(pl$lit(TRUE), pl$lit(FALSE))
-unpack_bool_expr = function(..., .msg = NULL) {
-  dots = list2(...)
-
-  if (!is.null(names(dots))) {
-    return(Err_plain(
-      "Detected a named input.",
-      "This usually means that you've used `=` instead of `==`."
-    ))
-  }
-
-  dots |>
-    Reduce(`&`, x = _) |>
-    result(msg = .msg) |>
-    suppressWarnings()
 }
 
 #' Simple SQL CASE WHEN implementation for R

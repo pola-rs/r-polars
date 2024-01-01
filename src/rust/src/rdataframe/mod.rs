@@ -281,8 +281,8 @@ impl RPolarsDataFrame {
         r_result_list(robj_list_res)
     }
 
-    pub fn frame_equal(&self, other: &RPolarsDataFrame) -> bool {
-        self.0.frame_equal(&other.0)
+    pub fn equals(&self, other: &RPolarsDataFrame) -> bool {
+        self.0.equals(&other.0)
     }
 
     pub fn select_at_idx(&self, idx: i32) -> List {

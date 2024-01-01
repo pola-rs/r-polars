@@ -1,5 +1,4 @@
 #' check if schema
-#' @name is_schema
 #' @param x object to test if schema
 #' @return bool
 #' @format function
@@ -7,11 +6,10 @@
 #' @examples
 #' pl$is_schema(pl$DataFrame(iris)$schema)
 #' pl$is_schema(list("alice", "bob"))
-is_schema = \(x) {
+pl_is_schema = \(x) {
   is.list(x) && !is.null(names(x)) && !anyNA(names(x)) &&
     do.call(all, lapply(x, inherits, "RPolarsDataType"))
 }
-pl$is_schema = is_schema
 
 
 #' wrap proto schema
@@ -111,7 +109,7 @@ is_polars_dtype = function(x, include_unknown = FALSE) {
 #'
 #' # FALSE
 #' pl$same_outer_dt(pl$Int64, pl$Float64)
-pl$same_outer_dt = function(lhs, rhs) {
+pl_same_outer_dt = function(lhs, rhs) {
   .pr$DataType$same_outer_datatype(lhs, rhs)
 }
 
@@ -203,6 +201,8 @@ DataType_constructors = list(
       and_then(DataType$new_struct) |>
       unwrap("in pl$Struct:")
   }
+
+  # TODO: Categorical https://github.com/pola-rs/polars/pull/12911
 )
 
 #' Create Datetime DataType

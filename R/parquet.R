@@ -38,7 +38,7 @@
 #' pl$scan_parquet(
 #'   file.path(temp_dir, "**/*.parquet")
 #' )$collect()
-pl$scan_parquet = function(
+pl_scan_parquet = function(
     file,
     n_rows = NULL,
     cache = TRUE,
@@ -74,7 +74,7 @@ pl$scan_parquet = function(
 #' @rdname IO_read_parquet
 #' @inheritParams scan_parquet
 #' @return DataFrame
-read_parquet = function(
+pl_read_parquet = function(
     # remapped to pl$read_parquet, a hack to support roxygen2 @inheritsParams
     file,
     n_rows = NULL,
@@ -97,4 +97,3 @@ read_parquet = function(
   }) |>
     unwrap("in pl$read_parquet(): ")
 }
-pl$read_parquet = read_parquet

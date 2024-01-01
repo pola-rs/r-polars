@@ -6,6 +6,8 @@
       r-polars package version : 999.999.999
       rust-polars crate version: 999.999.999
       
+      Thread pool size: 1 
+      
       Features:                         
       default             FALSE
       full_features       FALSE

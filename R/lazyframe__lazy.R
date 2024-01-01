@@ -146,7 +146,7 @@ NULL
 #'   iris,
 #'   schema = list(Sepal.Length = pl$Float32, Species = pl$Utf8)
 #' )$collect()
-pl$LazyFrame = function(...) {
+pl_LazyFrame = function(...) {
   pl$DataFrame(...)$lazy()
 }
 
@@ -220,7 +220,7 @@ LazyFrame_describe_plan = "use_extendr_wrapper"
 #'   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
 #' )
 LazyFrame_select = function(...) {
-  .pr$LazyFrame$select(self, unpack_list(...)) |>
+  .pr$LazyFrame$select(self, unpack_list(..., .context = "in $select()")) |>
     unwrap("in $select()")
 }
 
@@ -246,7 +246,7 @@ LazyFrame_select = function(...) {
 #'   SW_add_2 = (pl$col("Sepal.Width") + 2)
 #' )
 LazyFrame_with_columns = function(...) {
-  .pr$LazyFrame$with_columns(self, unpack_list(...)) |>
+  .pr$LazyFrame$with_columns(self, unpack_list(..., .context = "in $with_columns()")) |>
     unwrap("in $with_columns()")
 }
 
@@ -286,7 +286,7 @@ LazyFrame_with_row_count = function(name, offset = NULL) {
 #' # lf$filter(pl$col("Sepal.Length") > 5 & pl$col("Petal.Width") < 1)
 #' lf$filter(pl$col("Sepal.Length") > 5, pl$col("Petal.Width") < 1)
 LazyFrame_filter = function(...) {
-  bool_expr = unpack_bool_expr(...) |>
+  bool_expr = unpack_bool_expr_result(...) |>
     unwrap("in $filter()")
 
   .pr$LazyFrame$filter(self, bool_expr)
@@ -433,7 +433,7 @@ LazyFrame_collect = function(
 #' a detached thread. This can also be used via `$collect(collect_in_background = TRUE)`.
 #'
 #' @details
-#' This function immediately returns an [RThreadHandle][RThreadHandle_RThreadHandle_class].
+#' This function immediately returns an [RThreadHandle][RThreadHandle_class].
 #' Use [`<RPolarsRThreadHandle>$is_finished()`][RThreadHandle_is_finished] to see if done.
 #' Use [`<RPolarsRThreadHandle>$join()`][RThreadHandle_join] to wait and get the final result.
 #'
@@ -763,7 +763,9 @@ LazyFrame_last = "use_extendr_wrapper"
 #' @docType NULL
 #' @format NULL
 #' @examples pl$LazyFrame(mtcars)$max()$collect()
-LazyFrame_max = "use_extendr_wrapper"
+LazyFrame_max = function() {
+  unwrap(.pr$LazyFrame$max(self), "in $max():")
+}
 
 #' @title Mean
 #' @description Aggregate the columns in the LazyFrame to their mean value.
@@ -772,7 +774,9 @@ LazyFrame_max = "use_extendr_wrapper"
 #' @docType NULL
 #' @format NULL
 #' @examples pl$LazyFrame(mtcars)$mean()$collect()
-LazyFrame_mean = "use_extendr_wrapper"
+LazyFrame_mean = function() {
+  unwrap(.pr$LazyFrame$mean(self), "in $mean():")
+}
 
 #' @title Median
 #' @description Aggregate the columns in the LazyFrame to their median value.
@@ -781,7 +785,9 @@ LazyFrame_mean = "use_extendr_wrapper"
 #' @docType NULL
 #' @format NULL
 #' @examples pl$LazyFrame(mtcars)$median()$collect()
-LazyFrame_median = "use_extendr_wrapper"
+LazyFrame_median = function() {
+  unwrap(.pr$LazyFrame$median(self), "in $median():")
+}
 
 #' @title Min
 #' @description Aggregate the columns in the LazyFrame to their minimum value.
@@ -790,7 +796,9 @@ LazyFrame_median = "use_extendr_wrapper"
 #' @docType NULL
 #' @format NULL
 #' @examples pl$LazyFrame(mtcars)$min()$collect()
-LazyFrame_min = "use_extendr_wrapper"
+LazyFrame_min = function() {
+  unwrap(.pr$LazyFrame$min(self), "in $min():")
+}
 
 #' @title Sum
 #' @description Aggregate the columns of this LazyFrame to their sum values.
@@ -799,7 +807,9 @@ LazyFrame_min = "use_extendr_wrapper"
 #' @docType NULL
 #' @format NULL
 #' @examples pl$LazyFrame(mtcars)$sum()$collect()
-LazyFrame_sum = "use_extendr_wrapper"
+LazyFrame_sum = function() {
+  unwrap(.pr$LazyFrame$sum(self), "in $sum():")
+}
 
 #' @title Var
 #' @description Aggregate the columns of this LazyFrame to their variance values.
@@ -980,7 +990,7 @@ LazyFrame_unique = function(
 #' )$
 #'   collect()
 LazyFrame_group_by = function(..., maintain_order = pl$options$maintain_order) {
-  .pr$LazyFrame$group_by(self, unpack_list(...), maintain_order) |>
+  .pr$LazyFrame$group_by(self, unpack_list(..., .context = "in $group_by():"), maintain_order) |>
     unwrap("in $group_by():")
 }
 
@@ -1063,7 +1073,8 @@ LazyFrame_sort = function(
     nulls_last = FALSE,
     maintain_order = FALSE) {
   .pr$LazyFrame$sort_by_exprs(
-    self, unpack_list(by), err_on_named_args(...), descending, nulls_last, maintain_order
+    self, unpack_list(by, .context = "in $sort():"), err_on_named_args(...),
+    descending, nulls_last, maintain_order
   ) |>
     unwrap("in $sort():")
 }
@@ -1520,7 +1531,7 @@ LazyFrame_profile = function(
 #' df$explode("numbers", "numbers_2")$collect()
 #' df$explode(pl$col(pl$List(pl$Float64)))$collect()
 LazyFrame_explode = function(...) {
-  dotdotdot_args = unpack_list(...)
+  dotdotdot_args = unpack_list(..., .context = "in explode():")
   .pr$LazyFrame$explode(self, dotdotdot_args) |>
     unwrap("in explode():")
 }
