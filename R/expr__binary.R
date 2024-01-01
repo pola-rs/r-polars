@@ -31,11 +31,12 @@ ExprBin_starts_with = function(sub) {
 #' ends_with
 #'
 #' @aliases expr_bin_ends_with
-#' @description   Check if string values end with a binary substring.
+#' @description Check if string values end with a binary substring.
+#' @param suffix Suffix substring.
 #' @keywords ExprBin
 #' @return Expr returning a Boolean
-ExprBin_ends_with = function(sub) {
-  unwrap(.pr$Expr$bin_ends_with(self, sub))
+ExprBin_ends_with = function(suffix) {
+  unwrap(.pr$Expr$bin_ends_with(self, suffix))
 }
 
 

@@ -5,7 +5,10 @@
 \alias{expr_bin_ends_with}
 \title{ends_with}
 \usage{
-ExprBin_ends_with(sub)
+ExprBin_ends_with(suffix)
+}
+\arguments{
+\item{suffix}{Suffix substring.}
 }
 \value{
 Expr returning a Boolean
