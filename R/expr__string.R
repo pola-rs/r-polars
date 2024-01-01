@@ -518,8 +518,8 @@ ExprStr_json_decode = function(dtype, infer_schema_length = 100) {
 #'   json_val = c('{"a":"1"}', NA, '{"a":2}', '{"a":2.1}', '{"a":true}')
 #' )
 #' df$select(pl$col("json_val")$str$json_path_match("$.a"))
-ExprStr_json_path_match = function(pat) {
-  .pr$Expr$str_json_path_match(self, pat) |>
+ExprStr_json_path_match = function(json_path) {
+  .pr$Expr$str_json_path_match(self, json_path) |>
     unwrap("in str$json_path_match(): ")
 }
 

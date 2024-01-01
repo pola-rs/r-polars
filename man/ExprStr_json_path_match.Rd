@@ -4,7 +4,7 @@
 \alias{ExprStr_json_path_match}
 \title{Extract the first match of JSON string with the provided JSONPath expression}
 \usage{
-ExprStr_json_path_match(pat)
+ExprStr_json_path_match(json_path)
 }
 \arguments{
 \item{json_path}{A valid JSON path query string.}

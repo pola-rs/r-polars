@@ -8,7 +8,7 @@
 function
 }
 \usage{
-ExprList_contains(other)
+ExprList_contains(item)
 }
 \arguments{
 \item{item}{any into Expr/literal}

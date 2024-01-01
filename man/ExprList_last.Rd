@@ -8,7 +8,7 @@
 function
 }
 \usage{
-ExprList_last(index)
+ExprList_last()
 }
 \value{
 Expr

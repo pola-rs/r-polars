@@ -199,7 +199,7 @@ ExprList_gather = function(index, null_on_oob = FALSE) {
 #' @examples
 #' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) # NULL or integer() or list()
 #' df$select(pl$col("a")$list$first())
-ExprList_first = function(index) .pr$Expr$list_get(self, wrap_e(0L, str_to_lit = FALSE))
+ExprList_first = function() .pr$Expr$list_get(self, wrap_e(0L, str_to_lit = FALSE))
 
 #' Last in sublists
 #' @name ExprList_last
@@ -211,7 +211,7 @@ ExprList_first = function(index) .pr$Expr$list_get(self, wrap_e(0L, str_to_lit =
 #' @examples
 #' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) # NULL or integer() or list()
 #' df$select(pl$col("a")$list$last())
-ExprList_last = function(index) .pr$Expr$list_get(self, wrap_e(-1L, str_to_lit = FALSE))
+ExprList_last = function() .pr$Expr$list_get(self, wrap_e(-1L, str_to_lit = FALSE))
 
 #' Sublists contains
 #' @name ExprList_contains
@@ -224,7 +224,7 @@ ExprList_last = function(index) .pr$Expr$list_get(self, wrap_e(-1L, str_to_lit =
 #' @examples
 #' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) # NULL or integer() or list()
 #' df$select(pl$col("a")$list$contains(1L))
-ExprList_contains = function(other) .pr$Expr$list_contains(self, wrap_e(other))
+ExprList_contains = function(item) .pr$Expr$list_contains(self, wrap_e(item))
 
 
 #' Join sublists
@@ -403,13 +403,12 @@ ExprList_to_struct = function(
 #' eval sublists (kinda like lapply)
 #' @name ExprList_eval
 #' @description Run any polars expression against the lists' elements.
-#' @param Expr Expression to run. Note that you can select an element with `pl$first()`, or
-#' `pl$col()`
-#' @param parallel bool
-#' Run all expression parallel. Don't activate this blindly.
-#'             Parallelism is worth it if there is enough work to do per thread.
-#'             This likely should not be use in the groupby context, because we already
-#'             parallel execution per group
+#' @param expr Expression to run. Note that you can select an element with
+#' `pl$first()`, or `pl$col()`
+#' @param parallel Run all expression parallel. Don't activate this blindly.
+#' Parallelism is worth it if there is enough work to do per thread. This likely
+#' should not be use in the groupby context, because we already do parallel
+#' execution per group.
 #' @keywords ExprList
 #' @format function
 #' @return Expr

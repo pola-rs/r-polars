@@ -11,14 +11,13 @@ function
 ExprList_eval(expr, parallel = FALSE)
 }
 \arguments{
-\item{parallel}{bool
-Run all expression parallel. Don't activate this blindly.
-Parallelism is worth it if there is enough work to do per thread.
-This likely should not be use in the groupby context, because we already
-parallel execution per group}
+\item{expr}{Expression to run. Note that you can select an element with
+\code{pl$first()}, or \code{pl$col()}}
 
-\item{Expr}{Expression to run. Note that you can select an element with \code{pl$first()}, or
-\code{pl$col()}}
+\item{parallel}{Run all expression parallel. Don't activate this blindly.
+Parallelism is worth it if there is enough work to do per thread. This likely
+should not be use in the groupby context, because we already do parallel
+execution per group.}
 }
 \value{
 Expr
