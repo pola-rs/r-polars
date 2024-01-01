@@ -822,3 +822,83 @@ ExprStr_explode = function() {
 ExprStr_parse_int = function(radix = 2, strict = TRUE) {
   .pr$Expr$str_parse_int(self, radix, strict) |> unwrap("in str$parse_int():")
 }
+
+#' Returns string values in reversed order
+#'
+#' @name ExprStr_reverse
+#' @return Expr
+#'
+#' @examples
+#' df = pl$DataFrame(text = c("foo", "bar", NA))
+#' df$with_columns(reversed = pl$col("text")$str$reverse())
+ExprStr_reverse = function() {
+  .pr$Expr$str_reverse(self) |>
+    unwrap("in str$reverse():")
+}
+
+#' Use the aho-corasick algorithm to find matches
+#'
+#' This function determines if any of the patterns find a match.
+#' @name ExprStr_contains_any
+#' @param patterns String patterns to search. Can be an Expr.
+#' @param ascii_case_insensitive Enable ASCII-aware case insensitive matching.
+#' When this option is enabled, searching will be performed without respect to
+#' case for ASCII letters (a-z and A-Z) only.
+#'
+#' @return Expr
+#'
+#' @examples
+#' df = pl$DataFrame(
+#'   lyrics = c(
+#'     "Everybody wants to rule the world",
+#'     "Tell me what you want, what you really really want",
+#'     "Can you feel the love tonight"
+#'   )
+#' )
+#'
+#' df$with_columns(
+#'   contains_any = pl$col("lyrics")$str$contains_any(c("you", "me"))
+#' )
+ExprStr_contains_any = function(patterns, ascii_case_insensitive = FALSE) {
+  .pr$Expr$str_contains_any(self, patterns, ascii_case_insensitive) |>
+    unwrap("in str$contains_any():")
+}
+
+#' Use the aho-corasick algorithm to replace many matches
+#'
+#' This function replaces several matches at once.
+#' @name ExprStr_replace_many
+#'
+#' @param patterns String patterns to search. Can be an Expr.
+#' @param replace_with A vector of strings used as replacements. If this is of
+#' length 1, then it is applied to all matches. Otherwise, it must be of same
+#' length as the `patterns` argument.
+#' @param ascii_case_insensitive Enable ASCII-aware case insensitive matching.
+#' When this option is enabled, searching will be performed without respect to
+#' case for ASCII letters (a-z and A-Z) only.
+#'
+#' @return Expr
+#'
+#' @examples
+#' df = pl$DataFrame(
+#'   lyrics = c(
+#'     "Everybody wants to rule the world",
+#'     "Tell me what you want, what you really really want",
+#'     "Can you feel the love tonight"
+#'   )
+#' )
+#'
+#' # a replacement of length 1 is applied to all matches
+#' df$with_columns(
+#'   remove_pronouns = pl$col("lyrics")$str$replace_many(c("you", "me"), "")
+#' )
+#'
+#' # if there are more than one replacement, the patterns and replacements are
+#' # matched
+#' df$with_columns(
+#'   fake_pronouns = pl$col("lyrics")$str$replace_many(c("you", "me"), c("foo", "bar"))
+#' )
+ExprStr_replace_many = function(patterns, replace_with, ascii_case_insensitive = FALSE) {
+  .pr$Expr$str_replace_many(self, patterns, replace_with, ascii_case_insensitive) |>
+    unwrap("in str$replace_many():")
+}

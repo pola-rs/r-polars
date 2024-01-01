@@ -2,6 +2,11 @@
 
 ## polars (development version)
 
+### What's changed
+
+-   New methods `$str$reverse()`, `$str$contains_any()`, and `$str$replace_many()`
+    (#641).
+
 ## polars 0.12.0
 
 ### BREAKING CHANGES DUE TO RUST-POLARS UPDATE
