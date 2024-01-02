@@ -4,6 +4,9 @@
 \alias{ExprMeta_root_names}
 \alias{expr_meta_root_names}
 \title{Root Name}
+\usage{
+ExprMeta_root_names()
+}
 \value{
 R charvec of root names.
 }

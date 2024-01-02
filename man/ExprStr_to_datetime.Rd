@@ -3,6 +3,17 @@
 \name{ExprStr_to_datetime}
 \alias{ExprStr_to_datetime}
 \title{Convert a Utf8 column into a Datetime column}
+\usage{
+ExprStr_to_datetime(
+  format = NULL,
+  time_unit = NULL,
+  time_zone = NULL,
+  strict = TRUE,
+  exact = TRUE,
+  cache = TRUE,
+  ambiguous = "raise"
+)
+}
 \arguments{
 \item{format}{Format to use for conversion. See \code{?strptime} for possible
 values. Example: "\%Y-\%m-\%d \%H:\%M:\%S". If \code{NULL} (default), the format is

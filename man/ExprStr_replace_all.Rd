@@ -3,6 +3,9 @@
 \name{ExprStr_replace_all}
 \alias{ExprStr_replace_all}
 \title{Replace all matching regex/literal substrings with a new string value}
+\usage{
+ExprStr_replace_all(pattern, value, literal = FALSE)
+}
 \arguments{
 \item{pattern}{Regex pattern, can be an Expr.}
 

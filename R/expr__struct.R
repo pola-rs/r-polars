@@ -1,5 +1,5 @@
 #' field
-#' @name ExprStruct_field
+#'
 #' @aliases expr_struct_field
 #' @description Retrieve a ``Struct`` field as a new Series.
 #' By default base 2.
@@ -26,7 +26,7 @@ ExprStruct_field = function(name) {
 
 
 #' rename fields
-#' @name ExprStruct_rename_fields
+#'
 #' @aliases expr_struct_rename_fields
 #' @description Rename the fields of the struct.
 #' By default base 2.

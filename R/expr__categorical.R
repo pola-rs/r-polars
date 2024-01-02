@@ -1,5 +1,5 @@
 #' Set Ordering
-#' @name ExprCat_set_ordering
+#'
 #' @aliases expr_cat_set_ordering
 #' @description Determine how this categorical series should be sorted.
 #' @keywords ExprCat
@@ -23,7 +23,7 @@ ExprCat_set_ordering = function(ordering) {
 
 
 #' Get the categories stored in this data type
-#' @name ExprCat_get_categories
+#'
 #' @keywords ExprCat
 #' @return A polars DataFrame with the categories for each categorical Series.
 #' @examples

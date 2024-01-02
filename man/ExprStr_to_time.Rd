@@ -3,6 +3,9 @@
 \name{ExprStr_to_time}
 \alias{ExprStr_to_time}
 \title{Convert a Utf8 column into a Time column}
+\usage{
+ExprStr_to_time(format = NULL, strict = TRUE, cache = TRUE)
+}
 \arguments{
 \item{format}{Format to use for conversion. See \code{?strptime} for possible
 values. Example: "\%H:\%M:\%S". If \code{NULL} (default), the format is

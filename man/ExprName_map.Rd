@@ -3,6 +3,9 @@
 \name{ExprName_map}
 \alias{ExprName_map}
 \title{Map alias of expression with an R function}
+\usage{
+ExprName_map(fun)
+}
 \arguments{
 \item{fun}{an R function which takes a string as input and return a string}
 }

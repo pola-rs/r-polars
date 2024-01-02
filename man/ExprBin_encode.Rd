@@ -4,6 +4,9 @@
 \alias{ExprBin_encode}
 \alias{expr_bin_encode}
 \title{encode}
+\usage{
+ExprBin_encode(encoding)
+}
 \arguments{
 \item{encoding}{binary choice either 'hex' or 'base64'}
 }

@@ -3,6 +3,9 @@
 \name{ExprStr_concat}
 \alias{ExprStr_concat}
 \title{Vertically concatenate values of a Series}
+\usage{
+ExprStr_concat(delimiter = "-", ignore_nulls = TRUE)
+}
 \arguments{
 \item{delimiter}{The delimiter to insert between consecutive string values.}
 

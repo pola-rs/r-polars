@@ -3,6 +3,9 @@
 \name{ExprStr_extract}
 \alias{ExprStr_extract}
 \title{Extract the target capture group from provided patterns}
+\usage{
+ExprStr_extract(pattern, group_index)
+}
 \arguments{
 \item{pattern}{A valid regex pattern}
 

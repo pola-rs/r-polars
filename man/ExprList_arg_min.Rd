@@ -7,6 +7,9 @@
 \format{
 function
 }
+\usage{
+ExprList_arg_min()
+}
 \value{
 Expr
 }
