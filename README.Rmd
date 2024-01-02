@@ -1,5 +1,5 @@
 ---
-output: 
+output:
   github_document:
     html_preview: false
 # used by altdoc
@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 [![R-universe status badge](https://rpolars.r-universe.dev/badges/polars)](https://rpolars.r-universe.dev)
 [![CRAN status](https://www.r-pkg.org/badges/version/polars)](https://CRAN.R-project.org/package=polars)
 [![Dev R-CMD-check](https://github.com/pola-rs/r-polars/actions/workflows/check.yaml/badge.svg)](https://github.com/pola-rs/r-polars/actions/workflows/check.yaml)
-[![Docs release](https://img.shields.io/badge/docs-release-blue.svg)](https://rpolars.github.io)
+[![Docs dev version](https://img.shields.io/badge/docs-dev-blue.svg)](https://rpolars.github.io)
 <!-- badges: end -->
 
 The **polars** package for R gives users access to [a lightning
@@ -34,11 +34,7 @@ wrangling, data pipelines, snappy APIs, and much more besides. Polars also suppo
 "streaming mode" for out-of-memory operations. This allows users to analyze
 datasets many times larger than RAM.
 
-Documentation can be found on the **r-polars**
-[homepage](https://rpolars.github.io). The [Get
-Started](https://rpolars.github.io/articles/polars/) vignette
-(`vignette("polars")`) gives an easy introduction and provides examples
-of common operations:
+Examples of common operations:
 
 - read CSV, JSON, Parquet, and other file formats;
 - filter rows and select columns;
@@ -52,159 +48,63 @@ of common operations:
 - use the lazy execution engine for maximum performance and
   memory-efficient operations
 
-The primary developer of the upstream Polars project is
-Ritchie Vink ([@ritchie46](https://github.com/ritchie46)).
-This R port is maintained by
-Søren Welling ([@sorhawell](https://github.com/sorhawell)) and
-[contributors](https://github.com/pola-rs/r-polars/graphs/contributors).
 Consider joining our [Discord](https://discord.com/invite/4UfP5cfBE7) (subchannel) for
 additional help and discussion.
 
-## Extensions
-
-While one can use **polars** as-is, other packages build on it to
-provide different syntaxes:
-
-- [`polarssql`](https://github.com/rpolars/r-polarssql/) provides a **polars** 
-  backend for `DBI` and `dbplyr`;
-- [`tidypolars`](https://tidypolars.etiennebacher.com/) allows one to
-  use the `tidyverse` syntax while using the power of **polars**.
-
 ## Install
 
-The package can be installed from R-universe, or GitHub.
-
-Some platforms can install pre-compiled binaries, and others will need to build from source.
-
-````{comment}
-
-### CRAN
-
-CRAN provides pre-compiled binaries for Windows (x86_64) and macOS.
-
-Binary packages on CRAN are compiled by stable Rust, with nightly features disabled.
-
-```r
-install.packages("polars")
-```
-
-````
-
-### R-universe (recommended)
-
-[R-universe](https://rpolars.r-universe.dev/polars#install) provides
-pre-compiled **polars** binaries for Windows (x86_64), macOS (x86_64) and Ubuntu 22.04 (x86_64)
-with source builds for other platforms.
-
-Binary packages on R-universe are compiled by nightly Rust, with nightly features enabled.
-
-```r
-# Binary installation for x86_64 Windows and macOS, source for other platforms
-install.packages("polars", repos = "https://rpolars.r-universe.dev")
-```
-
-```r
-# Binary installation for Ubuntu 22.04 (x86_64)
-install.packages("polars", repos = "https://rpolars.r-universe.dev/bin/linux/jammy/4.3")
-```
-
-Special thanks to Jeroen Ooms ([@jeroen](https://github.com/jeroen)) for the
-excellent R-universe support.
-
-### GitHub releases
-
-Binary packages on GitHub releases are compiled by nightly Rust, with nightly features enabled.
-
-See latest and all previous [GitHub Releases here](https://github.com/pola-rs/r-polars/releases).
-
-You can download and install these files manually, or install directly
-from R. Simply match the URL for your operating system and the desired release. For example, to
-install the latest release of **polars** on one can use:
-
-Just remember to invoke the `repos = NULL` argument if you are installing these
-binary builds directly from within R.
-
-#### Linux (x86_64)
-
-```r
-install.packages(
-  "https://github.com/pola-rs/r-polars/releases/latest/download/polars__x86_64-pc-linux-gnu.gz",
-  repos = NULL
-)
-```
-
-#### Windows (x86_64)
-
-```r
-install.packages(
-  "https://github.com/pola-rs/r-polars/releases/latest/download/polars.zip",
-  repos = NULL
-)
-```
-
-#### macOS (x86_64)
-
-```r
-install.packages(
-  "https://github.com/pola-rs/r-polars/releases/latest/download/polars__x86_64-apple-darwin20.tgz",
-  repos = NULL
-)
-```
-
-### Build from source
-
-For source installation, pre-built Rust libraries may be available
-if the environment variable `NOT_CRAN` is set to `"true"`. (Or, set `LIBR_POLARS_BUILD` to `"false"`)
+The recommended way to install this package is via R-universe:
 
 ```r
 Sys.setenv(NOT_CRAN = "true")
 install.packages("polars", repos = "https://rpolars.r-universe.dev")
 ```
 
-Otherwise, the Rust library will be built from source.
-the Rust toolchain (Rust `r RcppTOML::parseTOML("src/rust/Cargo.toml")$package$"rust-version"` or later) must be configured.
-
-Please check the <https://github.com/r-rust/hellorust> repository for about Rust code in R packages.
-
-```{r, include = FALSE}
-rust_toolchain_version = read.dcf(
-  "DESCRIPTION",
-  fields = "Config/polars/RustToolchainVersion", all = TRUE
-)[1, 1]
-```
-
-During source installation, some environment variables can be set to enable Rust features and profile changes.
-
-- `RPOLARS_FULL_FEATURES="true"` (Build with nightly feature enabled, requires Rust toolchain `r rust_toolchain_version`)
-- `RPOLARS_PROFILE="release-optimized"` (Build with more optimization)
+Other installation methods and installation details can be
+found in the [Install vignette](https://rpolars.github.io/vignettes/install/)
+(`vignette("install", "polars")`).
 
 ## Quickstart example
 
 To avoid conflicts with other packages and base R function names, **polars**'s
 top level functions are hosted in the `pl` namespace, and accessible via the
-`pl$` prefix. To convert an R data frame to a Polars `DataFrame`, we call:
+`pl$` prefix.
+So we can write queries in a similar way to Python when import polars with `import polars as pl`.
+
+For example, rewriting the Python example from <https://github.com/pola-rs/polars> in R:
 
 ```{r}
 library(polars)
 
-dat = pl$DataFrame(mtcars)
-dat
+df = pl$DataFrame(
+  A = 1:5,
+  fruits = c("banana", "banana", "apple", "apple", "banana"),
+  B = 5:1,
+  cars = c("beetle", "audi", "beetle", "beetle", "beetle")
+)
+
+# embarrassingly parallel execution & very expressive query language
+df$sort("fruits")$select(
+  "fruits",
+  "cars",
+  pl$lit("fruits")$alias("literal_string_fruits"),
+  pl$col("B")$filter(pl$col("cars") == "beetle")$sum(),
+  pl$col("A")$filter(pl$col("B") > 2)$sum()$over("cars")$alias("sum_A_by_cars"),
+  pl$col("A")$sum()$over("fruits")$alias("sum_A_by_fruits"),
+  pl$col("A")$reverse()$over("fruits")$alias("rev_A_by_fruits"),
+  pl$col("A")$sort_by("B")$over("fruits")$alias("sort_A_by_B_by_fruits")
+)
 ```
 
-This `DataFrame` object can be manipulated using many of the usual R functions and accessors, e.g.:
+The [Get Started vignette](https://rpolars.github.io/articles/polars/) (`vignette("polars")`) provides
+a more detailed introduction to **polars**.
 
-```{r}
-dat[1:4, c("mpg", "qsec", "hp")]
-```
+## Extensions
 
-However, the true power of Polars is unlocked by using *methods*, which are
-encapsulated in the `DataFrame` object itself. For example, we can chain the
-`$group_by()` and the `$mean()` methods to compute group-wise means for each
-column of the dataset:
+While one can use **polars** as-is, other packages build on it to
+provide different syntaxes:
 
-```{r}
-dat$group_by("cyl", maintain_order = TRUE)$mean()
-```
-
-Note that we use `maintain_order = TRUE` so that `polars` always keeps the groups
-in the same order as they are in the original data.
+- [`polarssql`](https://github.com/rpolars/r-polarssql/) provides a **polars**
+  backend for `DBI` and `dbplyr`.
+- [`tidypolars`](https://tidypolars.etiennebacher.com/) allows one to
+  use the `tidyverse` syntax while using the power of **polars**.
