@@ -3,6 +3,9 @@
 \name{ExprDT_total_seconds}
 \alias{ExprDT_total_seconds}
 \title{Seconds}
+\usage{
+ExprDT_total_seconds()
+}
 \value{
 Expr of i64
 }

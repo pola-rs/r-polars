@@ -3,6 +3,9 @@
 \name{ExprStr_to_titlecase}
 \alias{ExprStr_to_titlecase}
 \title{Convert a string to titlecase}
+\usage{
+ExprStr_to_titlecase()
+}
 \value{
 Expr of Utf8 titlecase chars
 }

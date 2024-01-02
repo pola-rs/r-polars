@@ -7,6 +7,9 @@
 \format{
 function
 }
+\usage{
+ExprList_reverse()
+}
 \value{
 Expr
 }

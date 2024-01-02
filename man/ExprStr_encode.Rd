@@ -3,6 +3,9 @@
 \name{ExprStr_encode}
 \alias{ExprStr_encode}
 \title{Encode a value using the provided encoding}
+\usage{
+ExprStr_encode(encoding)
+}
 \arguments{
 \item{encoding}{Either 'hex' or 'base64'.}
 }

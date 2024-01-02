@@ -3,6 +3,9 @@
 \name{ExprStr_ends_with}
 \alias{ExprStr_ends_with}
 \title{Check if string ends with a regex}
+\usage{
+ExprStr_ends_with(sub)
+}
 \arguments{
 \item{sub}{Suffix substring or Expr.}
 }

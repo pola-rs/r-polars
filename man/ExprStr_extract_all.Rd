@@ -3,6 +3,9 @@
 \name{ExprStr_extract_all}
 \alias{ExprStr_extract_all}
 \title{Extract all matches for the given regex pattern}
+\usage{
+ExprStr_extract_all(pattern)
+}
 \arguments{
 \item{pattern}{A valid regex pattern}
 }

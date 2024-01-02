@@ -1,7 +1,7 @@
 #' Truncate datetime
 #' @description  Divide the date/datetime range into buckets.
 #' Each date/datetime is mapped to the start of its bucket.
-#' @name ExprDT_truncate
+#'
 #' @param every string encoding duration see details.
 #' @param offset optional string encoding duration see details.
 #'
@@ -46,7 +46,7 @@ ExprDT_truncate = function(every, offset = NULL) {
 #' is mapped to the start of its bucket.
 #' Each date/datetime in the second half of the interval
 #' is mapped to the end of its bucket.
-#' @name ExprDT_round
+#'
 #'
 #' @param every string encoding duration see details.
 #' @param ofset optional string encoding duration see details.
@@ -99,7 +99,7 @@ ExprDT_round = function(every, offset = NULL) {
 #' is mapped to the start of its bucket.
 #' Each date/datetime in the second half of the interval
 #' is mapped to the end of its bucket.
-#' @name ExprDT_combine
+#'
 #'
 #' @param tm Expr or numeric or PTime, the number of epoch since or before(if negative) the Date
 #' or tm is an Expr e.g. a column of DataType 'Time' or something into an Expr.
@@ -142,7 +142,7 @@ ExprDT_combine = function(tm, tu = "us") {
 #' Format Date/Datetime with a formatting rule.
 #' See `chrono strftime/strptime
 #' <https://docs.rs/chrono/latest/chrono/format/strftime/index.html>`_.
-#' @name ExprDT_strftime
+#'
 #'
 #' @param format string format very much like in R passed to chrono
 #'
@@ -163,7 +163,7 @@ ExprDT_strftime = function(format) {
 #' Extract year from underlying Date representation.
 #' Applies to Date and Datetime columns.
 #' Returns the year number in the calendar date.
-#' @name ExprDT_year
+#'
 #'
 #' @return Expr of Year as Int32
 #' @keywords ExprDT
@@ -194,7 +194,7 @@ ExprDT_year = function() {
 #' Applies to Date and Datetime columns.
 #' Returns the year number in the ISO standard.
 #' This may not correspond with the calendar year.
-#' @name ExprDT_iso_year
+#'
 #'
 #'
 #' @return Expr of iso_year as Int32
@@ -226,7 +226,7 @@ ExprDT_iso_year = function() {
 #' Extract quarter from underlying Date representation.
 #' Applies to Date and Datetime columns.
 #' Returns the quarter ranging from 1 to 4.
-#' @name ExprDT_quarter
+#'
 #' @return Expr of quarter as UInt32
 #' @keywords ExprDT
 #' @format function
@@ -255,7 +255,7 @@ ExprDT_quarter = function() {
 #' Applies to Date and Datetime columns.
 #' Returns the month number starting from 1.
 #' The return value ranges from 1 to 12.
-#' @name ExprDT_month
+#'
 #' @return Expr of month as UInt32
 #' @keywords ExprDT
 #' @format function
@@ -285,7 +285,7 @@ ExprDT_month = function() {
 #' Applies to Date and Datetime columns.
 #' Returns the ISO week number starting from 1.
 #' The return value ranges from 1 to 53. (The last week of year differs by years.)
-#' @name ExprDT_week
+#'
 #' @return Expr of week as UInt32
 #' @keywords ExprDT
 #' @format function
@@ -313,7 +313,7 @@ ExprDT_week = function() {
 #' Extract the week day from the underlying Date representation.
 #' Applies to Date and Datetime columns.
 #' Returns the ISO weekday number where monday = 1 and sunday = 7
-#' @name ExprDT_weekday
+#'
 #' @return Expr of weekday as UInt32
 #' @keywords ExprDT
 #' @format function
@@ -343,7 +343,7 @@ ExprDT_weekday = function() {
 #' Applies to Date and Datetime columns.
 #' Returns the day of month starting from 1.
 #' The return value ranges from 1 to 31. (The last day of month differs by months.)
-#' @name ExprDT_day
+#'
 #' @return Expr of day as UInt32
 #' @keywords ExprDT
 #' @format function
@@ -372,7 +372,7 @@ ExprDT_day = function() {
 #' Applies to Date and Datetime columns.
 #' Returns the day of year starting from 1.
 #' The return value ranges from 1 to 366. (The last day of year differs by years.)
-#' @name ExprDT_ordinal_day
+#'
 #' @return Expr of ordinal_day as UInt32
 #' @keywords ExprDT
 #' @format function
@@ -401,7 +401,7 @@ ExprDT_ordinal_day = function() {
 #' Extract hour from underlying Datetime representation.
 #' Applies to Datetime columns.
 #' Returns the hour number from 0 to 23.
-#' @name ExprDT_hour
+#'
 #' @return Expr of hour as UInt32
 #' @keywords ExprDT
 #' @format function
@@ -429,7 +429,7 @@ ExprDT_hour = function() {
 #' Extract minutes from underlying Datetime representation.
 #' Applies to Datetime columns.
 #' Returns the minute number from 0 to 59.
-#' @name ExprDT_minute
+#'
 #' @return Expr of minute as UInt32
 #' @keywords ExprDT
 #' @format function
@@ -459,7 +459,7 @@ ExprDT_minute = function() {
 #' Returns the integer second number from 0 to 59, or a floating
 #' point number from 0 < 60 if ``fractional=True`` that includes
 #' any milli/micro/nanosecond component.
-#' @name ExprDT_second
+#'
 #' @return Expr of second as UInt32
 #' @keywords ExprDT
 #' @format function
@@ -489,7 +489,7 @@ ExprDT_second = function(fractional = FALSE) {
 #' @description
 #' Extract milliseconds from underlying Datetime representation.
 #' Applies to Datetime columns.
-#' @name ExprDT_millisecond
+#'
 #' @return Expr of millisecond as Int64
 #' @keywords ExprDT
 #' @format function
@@ -514,7 +514,7 @@ ExprDT_millisecond = function() {
 #' @description
 #' Extract microseconds from underlying Datetime representation.
 #' Applies to Datetime columns.
-#' @name ExprDT_microsecond
+#'
 #' @return Expr of microsecond as Int64
 #' @keywords ExprDT
 #' @format function
@@ -546,7 +546,7 @@ ExprDT_microsecond = function() {
 #' Returns the integer second number from 0 to 59, or a floating
 #' point number from 0 < 60 if ``fractional=True`` that includes
 #' any milli/micro/nanosecond component.
-#' @name ExprDT_nanosecond
+#'
 #' @return Expr of second as Int64
 #' @keywords ExprDT
 #' @format function
@@ -572,7 +572,7 @@ ExprDT_nanosecond = function() {
 #' Epoch
 #' @description
 #' Get the time passed since the Unix EPOCH in the give time unit.
-#' @name ExprDT_epoch
+#'
 #' @param tu string option either 'ns', 'us', 'ms', 's' or  'd'
 #' @details ns and perhaps us will exceed integerish limit if returning to
 #' R as flaot64/double.
@@ -608,7 +608,7 @@ ExprDT_epoch = function(tu = c("us", "ns", "ms", "s", "d")) {
 
 #' timestamp
 #' @description Return a timestamp in the given time unit.
-#' @name ExprDT_timestamp
+#'
 #' @param tu string option either 'ns', 'us', or 'ms'
 #' @return Expr of i64
 #' @keywords ExprDT
@@ -640,7 +640,7 @@ ExprDT_timestamp = function(tu = c("ns", "us", "ms")) {
 #' @description  Set time unit of a Series of dtype Datetime or Duration.
 #' This does not modify underlying data, and should be used to fix an incorrect time unit.
 #' The corresponding global timepoint will change.
-#' @name ExprDT_with_time_unit
+#'
 #' @param tu string option either 'ns', 'us', or 'ms'
 #' @return Expr of i64
 #' @keywords ExprDT
@@ -673,7 +673,7 @@ ExprDT_with_time_unit = function(tu = c("ns", "us", "ms")) {
 #' Cast the underlying data to another time unit. This may lose precision.
 #' The corresponding global timepoint will stay unchanged +/- precision.
 #'
-#' @name ExprDT_cast_time_unit
+#'
 #' @param tu string option either 'ns', 'us', or 'ms'
 #' @return Expr of i64
 #' @keywords ExprDT
@@ -703,7 +703,7 @@ ExprDT_cast_time_unit = function(tu = c("ns", "us", "ms")) {
 #' With Time Zone
 #' @description Set time zone for a Series of type Datetime.
 #' Use to change time zone annotation, but keep the corresponding global timepoint.
-#' @name ExprDT_convert_time_zone
+#'
 #' @param tz String time zone from base::OlsonNames()
 #' @return Expr of i64
 #' @keywords ExprDT
@@ -740,7 +740,7 @@ ExprDT_convert_time_zone = function(tz) {
 #' Different from ``convert_time_zone``, this will also modify the underlying timestamp.
 #' Use to correct a wrong time zone annotation. This will change the corresponding global timepoint.
 #'
-#' @name ExprDT_replace_time_zone
+#'
 #' @param tz NULL or string time zone from [base::OlsonNames()]
 #' @param ambiguous Determine how to deal with ambiguous datetimes:
 #' * `"raise"` (default): raise
@@ -782,7 +782,7 @@ ExprDT_replace_time_zone = function(tz, ambiguous = "raise") {
 
 #' Days
 #' @description Extract the days from a Duration type.
-#' @name ExprDT_total_days
+#'
 #' @return Expr of i64
 #' @examples
 #' df = pl$DataFrame(
@@ -804,7 +804,7 @@ ExprDT_total_days = function() {
 
 #' Hours
 #' @description Extract the hours from a Duration type.
-#' @name ExprDT_total_hours
+#'
 #' @return Expr of i64
 #' @examples
 #' df = pl$DataFrame(
@@ -826,7 +826,7 @@ ExprDT_total_hours = function() {
 
 #' Minutes
 #' @description Extract the minutes from a Duration type.
-#' @name ExprDT_total_minutes
+#'
 #' @return Expr of i64
 #' @examples
 #' df = pl$DataFrame(
@@ -848,7 +848,7 @@ ExprDT_total_minutes = function() {
 
 #' Seconds
 #' @description Extract the seconds from a Duration type.
-#' @name ExprDT_total_seconds
+#'
 #' @return Expr of i64
 #' @examples
 #' df = pl$DataFrame(date = pl$date_range(
@@ -868,7 +868,7 @@ ExprDT_total_seconds = function() {
 
 #' milliseconds
 #' @description Extract the milliseconds from a Duration type.
-#' @name ExprDT_total_milliseconds
+#'
 #' @return Expr of i64
 #' @examples
 #' df = pl$DataFrame(date = pl$date_range(
@@ -888,7 +888,7 @@ ExprDT_total_milliseconds = function() {
 
 #' microseconds
 #' @description Extract the microseconds from a Duration type.
-#' @name ExprDT_total_microseconds
+#'
 #' @return Expr of i64
 #' @examples
 #' df = pl$DataFrame(date = pl$date_range(
@@ -908,7 +908,7 @@ ExprDT_total_microseconds = function() {
 
 #' nanoseconds
 #' @description Extract the nanoseconds from a Duration type.
-#' @name ExprDT_total_nanoseconds
+#'
 #' @return Expr of i64
 #' @examples
 #' df = pl$DataFrame(date = pl$date_range(
@@ -931,7 +931,7 @@ ExprDT_total_nanoseconds = function() {
 #' This differs from ``pl$col("foo_datetime_tu") + value_tu`` in that it can
 #' take months and leap years into account. Note that only a single minus
 #' sign is allowed in the ``by`` string, as the first character.
-#' @name ExprDT_offset_by
+#'
 #'
 #' @param by optional string encoding duration see details.
 #'
@@ -997,7 +997,7 @@ ExprDT_offset_by = function(by) {
 #'
 #' @return A Time Expr
 #'
-#' @name ExprDT_time
+#'
 #' @examples
 #' df = pl$DataFrame(dates = pl$date_range(
 #'   as.Date("2000-1-1"),

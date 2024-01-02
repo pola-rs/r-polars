@@ -4,6 +4,9 @@
 \alias{ExprMeta_has_multiple_outputs}
 \alias{expr_has_multiple_outputs}
 \title{Has multiple outputs}
+\usage{
+ExprMeta_has_multiple_outputs()
+}
 \value{
 Bool
 }

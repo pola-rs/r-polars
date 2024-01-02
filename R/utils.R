@@ -458,7 +458,7 @@ restruct_list = function(l) {
 #' # e$my_sub_ns$add2() #use the sub namespace
 #' # e$my_sub_ns$mul2()
 #'
-macro_new_subnamespace = function(class_pattern, subclass_env = NULL, remove_f = TRUE) {
+macro_new_subnamespace = function(class_pattern, subclass_env = NULL) {
   # get all methods within class
   class_methods = ls(parent.frame(), pattern = class_pattern)
   names(class_methods) = sub(class_pattern, "", class_methods)
@@ -478,10 +478,6 @@ macro_new_subnamespace = function(class_pattern, subclass_env = NULL, remove_f =
     "  env",
     "}"
   )
-
-  if (remove_f) {
-    rm(list = class_methods, envir = parent.frame())
-  }
 
   if (build_debug_print) cat("new subnamespace: ", class_pattern, "\n", string)
   eval(parse(text = string))

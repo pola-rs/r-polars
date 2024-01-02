@@ -3,6 +3,9 @@
 \name{ExprStr_split_exact}
 \alias{ExprStr_split_exact}
 \title{Split the string by a substring using \code{n} splits}
+\usage{
+ExprStr_split_exact(by, n, inclusive = FALSE)
+}
 \arguments{
 \item{by}{Substring to split by.}
 

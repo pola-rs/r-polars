@@ -7,6 +7,9 @@
 \format{
 function
 }
+\usage{
+ExprList_concat(other)
+}
 \arguments{
 \item{other}{Rlist, Expr or column of same type as self.}
 }
