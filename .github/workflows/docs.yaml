@@ -108,7 +108,7 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           clean: true
-          force: true
+          single-commit: true
           branch: main
           folder: docs
           repository-name: rpolars/rpolars.github.io
