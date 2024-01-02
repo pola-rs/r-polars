@@ -1,0 +1,131 @@
+---
+title: "installing polars details"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{install}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+rust_toolchain_version = read.dcf(
+  system.file("DESCRIPTION", package = "polars"),
+  fields = "Config/polars/RustToolchainVersion", all = TRUE
+)[1, 1]
+```
+
+The `polars` package can be installed from R-universe or GitHub.
+
+Some platforms can install pre-compiled binaries, and others will need to build from source.
+
+## How to install
+
+### From R-universe (recommended)
+
+Installing the latest release version.
+
+```r
+Sys.setenv(NOT_CRAN = "true") # Enable installation with pre-built Rust library binary, or enable Rust caching
+install.packages("polars", repos = "https://rpolars.r-universe.dev")
+```
+
+- On amd64 architecture Windows and macOS, binary R packages will be installed.
+- On the other platforms, the pre-built Rust library binary will be downloaded while building the R source package.
+- If the pre-built Rust library binary is not available, the Rust library will be built from source (provided that Rust is installed).
+
+### From GitHub releases
+
+Binary packages for the amd64 architecture are available.
+
+#### Linux (x86_64)
+
+```r
+install.packages(
+  "https://github.com/pola-rs/r-polars/releases/latest/download/polars__x86_64-pc-linux-gnu.gz",
+  repos = NULL
+)
+```
+
+#### Windows (x86_64)
+
+```r
+install.packages(
+  "https://github.com/pola-rs/r-polars/releases/latest/download/polars.zip",
+  repos = NULL
+)
+```
+
+#### macOS (x86_64)
+
+```r
+install.packages(
+  "https://github.com/pola-rs/r-polars/releases/latest/download/polars__x86_64-apple-darwin20.tgz",
+  repos = NULL
+)
+```
+
+### From GitHub commits
+
+Installing from GitHub commits or GitHub releases can be done using the `{remotes}` package's functions.
+
+For example, installing the version 0.9.0 from the GitHub release.
+
+```r
+Sys.setenv(NOT_CRAN = "true") # Enable installation with pre-built Rust library binary, or enable Rust caching
+remotes::install_github("pola-rs/r-polars@v0.9.0")
+```
+
+## Details of installation
+
+### Pre-built Rust library binaries
+
+If one of the following environment variables is set,
+a pre-built Rust library binary will be tried to be used before building the Rust source.
+
+- `NOT_CRAN="true"`
+- `LIBR_POLARS_BUILD="false"` (This is prioritized, so if you want to force a source build, set `LIBR_POLARS_BUILD="true"`)
+
+By default, the pre-built Rust library binary is downloaded from the URL recorded in `tools/lib-sums.tsv`.
+If `tools/lib-sums.tsv` does not exist, or the corresponding URL does not exist,
+or the hash of the downloaded file does not match the recorded one, it falls back to building from source.
+
+If you want to use a pre-built Rust library binary that exists locally,
+set the `LIBR_POLARS_PATH` environment variable to the path to the binary.
+For example:
+
+```sh
+export LIBR_POLARS_BUILD="false"
+export LIBR_POLARS_PATH="/tmp/libr_polars.a"
+Rscript -e 'install.packages("polars", repos = "https://rpolars.r-universe.dev", type = "source")'
+```
+
+### Rust build time options
+
+r-polars Rust library has some [feature flags](https://doc.rust-lang.org/cargo/reference/features.html)
+that affect the R package features.
+These flags are set at compile time, and cannot be changed at runtime.
+
+The features enabled in the compiled Rust library are shown by the `pl$polars_info()` function.
+
+```{r}
+library(polars)
+pl$polars_info()
+```
+
+At this time, the following environment variables can be used to change the Rust library build time options.
+
+- `RPOLARS_FULL_FEATURES="true"` (Build with nightly feature enabled, requires Rust nightly toolchain `r rust_toolchain_version`)
+- `RPOLARS_PROFILE="release-optimized"` (Build with more optimization)
+
+### Minimum Supported Rust Version (MSRV)
+
+The minimum supported Rust version (MSRV) is declared
+in the `src/rust/Cargo.toml` file's `package.rust-version` field.
+
+This MSRV is for the default features.
+For other features, the nightly Rust toolchain is required.

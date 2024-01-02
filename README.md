@@ -30,17 +30,17 @@ Started](https://rpolars.github.io/articles/polars/) vignette
 (`vignette("polars")`) gives an easy introduction and provides examples
 of common operations:
 
-- read CSV, JSON, Parquet, and other file formats;
-- filter rows and select columns;
-- modify and create new columns;
-- group by and aggregate;
-- reshape data;
-- join and concatenate different datasets;
-- sort data;
-- work with dates and times;
-- handle missing values;
-- use the lazy execution engine for maximum performance and
-  memory-efficient operations
+-   read CSV, JSON, Parquet, and other file formats;
+-   filter rows and select columns;
+-   modify and create new columns;
+-   group by and aggregate;
+-   reshape data;
+-   join and concatenate different datasets;
+-   sort data;
+-   work with dates and times;
+-   handle missing values;
+-   use the lazy execution engine for maximum performance and
+    memory-efficient operations
 
 The primary developer of the upstream Polars project is Ritchie Vink
 ([@ritchie46](https://github.com/ritchie46)). This R port is maintained
@@ -54,10 +54,10 @@ Consider joining our [Discord](https://discord.com/invite/4UfP5cfBE7)
 While one can use **polars** as-is, other packages build on it to
 provide different syntaxes:
 
-- [`polarssql`](https://github.com/rpolars/r-polarssql/) provides a
-  **polars** backend for `DBI` and `dbplyr`;
-- [`tidypolars`](https://tidypolars.etiennebacher.com/) allows one to
-  use the `tidyverse` syntax while using the power of **polars**.
+-   [`polarssql`](https://github.com/rpolars/r-polarssql/) provides a
+    **polars** backend for `DBI` and `dbplyr`;
+-   [`tidypolars`](https://tidypolars.etiennebacher.com/) allows one to
+    use the `tidyverse` syntax while using the power of **polars**.
 
 ## Install
 
@@ -151,9 +151,9 @@ about Rust code in R packages.
 During source installation, some environment variables can be set to
 enable Rust features and profile changes.
 
-- `RPOLARS_FULL_FEATURES="true"` (Build with nightly feature enabled,
-  requires Rust toolchain nightly-2023-12-23)
-- `RPOLARS_PROFILE="release-optimized"` (Build with more optimization)
+-   `RPOLARS_FULL_FEATURES="true"` (Build with nightly feature enabled,
+    requires Rust toolchain nightly-2023-12-23)
+-   `RPOLARS_PROFILE="release-optimized"` (Build with more optimization)
 
 ## Quickstart example
 
