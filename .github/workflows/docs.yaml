@@ -96,7 +96,7 @@ jobs:
       - uses: webfactory/ssh-agent@v0.8.0
         env:
           DEPLOY_DOCS: ${{ secrets.DEPLOY_DOCS  }}
-        if: ${{ (github.event_name != 'pull_request') && (github.repository_owner == 'pola-rs') }}
+        # if: ${{ (github.event_name != 'pull_request') && (github.repository_owner == 'pola-rs') }}
         with:
           ssh-private-key: ${{ secrets.DEPLOY_DOCS }}
 
@@ -104,7 +104,7 @@ jobs:
       - name: Build site and deploy to GitHub pages
         env:
           DEPLOY_DOCS: ${{ secrets.DEPLOY_DOCS  }}
-        if: ${{ (github.event_name != 'pull_request') && (github.repository_owner == 'pola-rs') }}
+        # if: ${{ (github.event_name != 'pull_request') && (github.repository_owner == 'pola-rs') }}
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           clean: true
