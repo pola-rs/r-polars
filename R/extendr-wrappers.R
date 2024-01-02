@@ -927,6 +927,12 @@ RPolarsExpr$str_explode <- function() .Call(wrap__RPolarsExpr__str_explode, self
 
 RPolarsExpr$str_parse_int <- function(radix, strict) .Call(wrap__RPolarsExpr__str_parse_int, self, radix, strict)
 
+RPolarsExpr$str_reverse <- function() .Call(wrap__RPolarsExpr__str_reverse, self)
+
+RPolarsExpr$str_contains_any <- function(patterns, ascii_case_insensitive) .Call(wrap__RPolarsExpr__str_contains_any, self, patterns, ascii_case_insensitive)
+
+RPolarsExpr$str_replace_many <- function(patterns, replace_with, ascii_case_insensitive) .Call(wrap__RPolarsExpr__str_replace_many, self, patterns, replace_with, ascii_case_insensitive)
+
 RPolarsExpr$bin_contains <- function(lit) .Call(wrap__RPolarsExpr__bin_contains, self, lit)
 
 RPolarsExpr$bin_starts_with <- function(sub) .Call(wrap__RPolarsExpr__bin_starts_with, self, sub)
