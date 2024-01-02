@@ -3,6 +3,9 @@
 \name{ExprStr_pad_start}
 \alias{ExprStr_pad_start}
 \title{Right justify strings}
+\usage{
+ExprStr_pad_start(width, fillchar = " ")
+}
 \arguments{
 \item{width}{Justify right to this length.}
 

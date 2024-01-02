@@ -688,3 +688,73 @@ test_that("str$parse_int", {
   expect_error(pl$lit("foo")$str$parse_int()$to_r(), "strict integer parsing failed for 1 value")
 })
 
+test_that("str$reverse()", {
+  expect_identical(
+    pl$lit(c("abc", "def", "mañana", NA))$str$reverse()$to_r(),
+    c("cba", "fed", "anañam", NA)
+  )
+})
+
+test_that("str$contains_any()", {
+  expect_identical(
+    pl$lit(c("HELLO there", "hi there", "good bye", NA))$
+      str$
+      contains_any(c("hi", "hello"))$
+      to_r(),
+    c(FALSE, TRUE, FALSE, NA)
+  )
+
+  # case insensitive
+  expect_identical(
+    pl$lit(c("HELLO there", "hi there", "good bye", NA))$
+      str$
+      contains_any(c("hi", "hello"), ascii_case_insensitive = TRUE)$
+      to_r(),
+    c(TRUE, TRUE, FALSE, NA)
+  )
+})
+
+test_that("str$replace_many()", {
+  expect_identical(
+    pl$lit(c("HELLO there", "hi there", "good bye", NA))$
+      str$
+      replace_many(c("hi", "hello"), "foo")$
+      to_r(),
+    c("HELLO there", "foo there", "good bye", NA)
+  )
+
+  # case insensitive
+  expect_identical(
+    pl$lit(c("HELLO there", "hi there", "good bye", NA))$
+      str$
+      replace_many(c("hi", "hello"), "foo", ascii_case_insensitive = TRUE)$
+      to_r(),
+    c("foo there", "foo there", "good bye", NA)
+  )
+
+  # identical lengths of patterns and replacements
+  expect_identical(
+    pl$lit(c("hello there", "hi there", "good bye", NA))$
+      str$
+      replace_many(c("hi", "hello"), c("foo", "bar"))$
+      to_r(),
+    c("bar there", "foo there", "good bye", NA)
+  )
+
+  # error if different lengths
+  expect_error(
+    pl$lit(c("hello there", "hi there", "good bye", NA))$
+      str$
+      replace_many(c("hi", "hello"), c("foo", "bar", "foo2"))$
+      to_r(),
+    "same amount of patterns as replacement"
+  )
+
+  expect_error(
+    pl$lit(c("hello there", "hi there", "good bye", NA))$
+      str$
+      replace_many(c("hi", "hello", "good morning"), c("foo", "bar"))$
+      to_r(),
+    "same amount of patterns as replacement"
+  )
+})

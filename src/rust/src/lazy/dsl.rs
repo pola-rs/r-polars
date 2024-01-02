@@ -2139,6 +2139,41 @@ impl RPolarsExpr {
             .into())
     }
 
+    pub fn str_reverse(&self) -> RResult<Self> {
+        Ok(self.0.clone().str().reverse().into())
+    }
+
+    pub fn str_contains_any(&self, patterns: Robj, ascii_case_insensitive: Robj) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .str()
+            .contains_any(
+                robj_to!(PLExpr, patterns)?,
+                robj_to!(bool, ascii_case_insensitive)?,
+            )
+            .into())
+    }
+
+    pub fn str_replace_many(
+        &self,
+        patterns: Robj,
+        replace_with: Robj,
+        ascii_case_insensitive: Robj,
+    ) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .str()
+            .replace_many(
+                robj_to!(PLExpr, patterns)?,
+                robj_to!(PLExpr, replace_with)?,
+                robj_to!(bool, ascii_case_insensitive)?,
+            )
+            .into())
+    }
+
+    //binary methods
     pub fn bin_contains(&self, lit: Robj) -> RResult<Self> {
         Ok(self
             .0

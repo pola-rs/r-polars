@@ -4,6 +4,9 @@
 \alias{ExprStruct_rename_fields}
 \alias{expr_struct_rename_fields}
 \title{rename fields}
+\usage{
+ExprStruct_rename_fields(names)
+}
 \arguments{
 \item{names}{char vec or list of strings given in the same order as the struct's fields.
 Providing fewer names will drop the latter fields. Providing too many names is ignored.}

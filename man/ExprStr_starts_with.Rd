@@ -3,6 +3,9 @@
 \name{ExprStr_starts_with}
 \alias{ExprStr_starts_with}
 \title{Check if string starts with a regex}
+\usage{
+ExprStr_starts_with(sub)
+}
 \arguments{
 \item{sub}{Prefix substring or Expr.}
 }

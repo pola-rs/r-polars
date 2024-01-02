@@ -8,6 +8,9 @@
 \format{
 function
 }
+\usage{
+ExprList_lengths()
+}
 \value{
 Expr
 }

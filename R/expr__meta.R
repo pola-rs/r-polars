@@ -1,5 +1,5 @@
 #' Meta Equal
-#' @name ExprMeta_eq
+#'
 #' @aliases expr_meta_equal
 #' @description Are two expressions on a meta level equal
 #' @keywords ExprMeta
@@ -28,7 +28,7 @@ ExprMeta_eq = function(other) {
 
 
 #' Meta Not Equal
-#' @name ExprMeta_neq
+#'
 #' @aliases expr_meta_not_equal
 #' @description Are two expressions on a meta level NOT equal
 #' @keywords ExprMeta
@@ -56,7 +56,7 @@ ExprMeta_neq = function(other) {
 }
 
 #' Pop
-#' @name ExprMeta_pop
+#'
 #' @aliases expr_meta_pop
 #' @description Pop the latest expression and return the input(s) of the popped expression.
 #' @keywords ExprMeta
@@ -76,7 +76,7 @@ ExprMeta_pop = function() {
 
 
 #' Root Name
-#' @name ExprMeta_root_names
+#'
 #' @aliases expr_meta_root_names
 #' @description Get a vector with the root column name
 #' @keywords ExprMeta
@@ -91,7 +91,7 @@ ExprMeta_root_names = function() {
 }
 
 #' Output Name
-#' @name ExprMeta_output_name
+#'
 #' @aliases expr_meta_output_names
 #' @description Get the column name that this expression would produce.
 #' It might not always be possible to determine the output name
@@ -109,7 +109,7 @@ ExprMeta_output_name = function() {
 }
 
 #' Undo aliases
-#' @name ExprMeta_undo_aliases
+#'
 #' @aliases expr_meta_undo_aliases
 #' @description Undo any renaming operation like ``alias`` or ``keep_name``.
 #' @keywords ExprMeta
@@ -125,7 +125,7 @@ ExprMeta_undo_aliases = function() {
 
 
 #' Has multiple outputs
-#' @name ExprMeta_has_multiple_outputs
+#'
 #' @aliases expr_has_multiple_outputs
 #' @description Whether this expression expands into multiple expressions.
 #' @keywords ExprMeta
@@ -139,7 +139,7 @@ ExprMeta_has_multiple_outputs = function() {
 
 
 #' Is regex projection.
-#' @name ExprMeta_is_regex_projection
+#'
 #' @aliases expr_is_regex_projection
 #' @description Whether this expression expands to columns that match a regex pattern.
 #' @keywords ExprMeta
@@ -162,7 +162,7 @@ ExprMeta_is_regex_projection = function() {
 #' If `return_as_string` is `FALSE`, prints the tree in the console but doesn't
 #' return any value.
 #'
-#' @name ExprMeta_tree_format
+#'
 #' @examples
 #' my_expr = (pl$col("foo") * pl$col("bar"))$sum()$over(pl$col("ham")) / 2
 #' my_expr$meta$tree_format()

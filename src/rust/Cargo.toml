@@ -1,6 +1,6 @@
 [package]
 name = "r-polars"
-version = "0.35.1"
+version = "0.35.2"
 edition = "2021"
 rust-version = "1.73"
 publish = false
@@ -85,6 +85,7 @@ features = [
   "dynamic_group_by",
   "extract_jsonpath",
   "ewma",
+  "find_many",
   "fmt",
   "horizontal_concat",
   "interpolate",
@@ -131,6 +132,7 @@ features = [
   "strings",
   "string_encoding",
   "string_pad",
+  "string_reverse",
   "string_to_integer",
   "temporal",
   "timezones",

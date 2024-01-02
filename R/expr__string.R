@@ -6,7 +6,7 @@
 
 #' Convert a Utf8 column into a Date/Datetime/Time column.
 #'
-#' @name ExprStr_strptime
+#'
 #' @param datatype The data type to convert into. Can be either Date, Datetime,
 #' or Time.
 #' @param format Format to use for conversion. See `?strptime` for possible
@@ -110,7 +110,7 @@ ExprStr_strptime = function(
 #' conversion.
 #'
 #' @return Expr
-#' @name ExprStr_to_date
+#'
 #'
 #' @examples
 #' pl$DataFrame(str_date = c("2009-01-02", "2009-01-03", "2009-1-4", "2009 05 01"))$
@@ -132,7 +132,7 @@ ExprStr_to_date = function(format = NULL, strict = TRUE, exact = TRUE, cache = T
 #' conversion.
 #'
 #' @return Expr
-#' @name ExprStr_to_time
+#'
 #'
 #' @examples
 #' pl$DataFrame(str_time = c("01:20:01", "28:00:02", "03:00:02"))$
@@ -163,7 +163,7 @@ ExprStr_to_time = function(format = NULL, strict = TRUE, cache = TRUE) {
 #' * `"latest"`: use the latest datetime
 #'
 #' @return Expr
-#' @name ExprStr_to_datetime
+#'
 #'
 #' @examples
 #' pl$DataFrame(str_date = c("2009-01-02 01:00", "2009-01-03 02:00", "2009-1-4 3:00"))$
@@ -186,7 +186,7 @@ ExprStr_to_datetime = function(
 #' @description
 #' Get length of the strings as UInt32 (as number of bytes). Use `$str$len_chars()`
 #' to get the number of characters.
-#' @name ExprStr_len_bytes
+#'
 #' @keywords ExprStr
 #' @details
 #' If you know that you are working with ASCII text, `lengths` will be
@@ -208,7 +208,7 @@ ExprStr_len_bytes = function() {
 #' @description
 #' Get length of the strings as UInt32 (as number of characters). Use
 #' `$str$len_bytes()` to get the number of bytes.
-#' @name ExprStr_len_chars
+#'
 #' @keywords ExprStr
 #' @inherit ExprStr_len_bytes examples details return
 ExprStr_len_chars = function() {
@@ -216,7 +216,7 @@ ExprStr_len_chars = function() {
 }
 
 #' Vertically concatenate values of a Series
-#' @name ExprStr_concat
+#'
 #' @description Vertically concatenate the values in the Series to a single
 #' string value.
 #' @param delimiter The delimiter to insert between consecutive string values.
@@ -239,7 +239,7 @@ ExprStr_concat = function(delimiter = "-", ignore_nulls = TRUE) {
 }
 
 #' Convert a string to uppercase
-#' @name ExprStr_to_uppercase
+#'
 #' @description Transform to uppercase variant.
 #' @keywords ExprStr
 #' @return Expr of Utf8 uppercase chars
@@ -250,7 +250,7 @@ ExprStr_to_uppercase = function() {
 }
 
 #' Convert a string to lowercase
-#' @name ExprStr_to_lowercase
+#'
 #' @description Transform to lowercase variant.
 #' @keywords ExprStr
 #' @return Expr of Utf8 lowercase chars
@@ -261,7 +261,7 @@ ExprStr_to_lowercase = function() {
 }
 
 #' Convert a string to titlecase
-#' @name ExprStr_to_titlecase
+#'
 #' @description Transform to titlecase variant.
 #' @keywords ExprStr
 #' @return Expr of Utf8 titlecase chars
@@ -282,7 +282,7 @@ ExprStr_to_titlecase = function() {
 
 #' Strip leading and trailing characters
 #'
-#' @name ExprStr_strip_chars
+#'
 #' @aliases expr_str_strip_chars
 #' @description  Remove leading and trailing characters.
 #'
@@ -308,7 +308,7 @@ ExprStr_strip_chars = function(matches = NULL) {
 
 #' Strip leading characters
 #'
-#' @name ExprStr_strip_chars_start
+#'
 #' @aliases expr_str_strip_chars_start
 #' @description  Remove leading characters.
 #'
@@ -332,7 +332,7 @@ ExprStr_strip_chars_start = function(matches = NULL) {
 
 #' Strip trailing characters
 #'
-#' @name ExprStr_strip_chars_end
+#'
 #' @aliases expr_str_strip_chars_end
 #' @description  Remove trailing characters.
 #'
@@ -357,7 +357,7 @@ ExprStr_strip_chars_end = function(matches = NULL) {
 
 
 #' Fills the string with zeroes.
-#' @name ExprStr_zfill
+#'
 #' @aliases expr_str_zfill
 #' @description Add zeroes to a string until it reaches `n` characters. If the
 #' number of characters is already greater than `n`, the string is not modified.
@@ -388,7 +388,7 @@ ExprStr_zfill = function(alignment) {
 
 
 #' Left justify strings
-#' @name ExprStr_pad_end
+#'
 #' @description Return the string left justified in a string of length `width`.
 #' @keywords ExprStr
 #' @param width Justify left to this length.
@@ -406,7 +406,7 @@ ExprStr_pad_end = function(width, fillchar = " ") {
 
 
 #' Right justify strings
-#' @name ExprStr_pad_start
+#'
 #' @description Return the string right justified in a string of length `width`.
 #' @keywords ExprStr
 #' @param width Justify right to this length.
@@ -422,7 +422,7 @@ ExprStr_pad_start = function(width, fillchar = " ") {
 
 
 #' Check if string contains a regex
-#' @name ExprStr_contains
+#'
 #' @description Check if string contains a substring that matches a regex.
 #' @keywords ExprStr
 #' @param pattern String or Expr of a string, a valid regex pattern.
@@ -444,7 +444,7 @@ ExprStr_contains = function(pattern, literal = FALSE, strict = TRUE) {
 }
 
 #' Check if string ends with a regex
-#' @name ExprStr_ends_with
+#'
 #' @description Check if string values end with a substring.
 #' @keywords ExprStr
 #' @param sub Suffix substring or Expr.
@@ -463,7 +463,7 @@ ExprStr_ends_with = function(sub) {
 
 
 #' Check if string starts with a regex
-#' @name ExprStr_starts_with
+#'
 #' @description Check if string values starts with a substring.
 #' @keywords ExprStr
 #' @param sub Prefix substring or Expr.
@@ -481,7 +481,7 @@ ExprStr_starts_with = function(sub) {
 }
 
 #' Parse string values as JSON.
-#' @name ExprStr_json_decode
+#'
 #' @keywords ExprStr
 #' @param dtype The dtype to cast the extracted value to. If `NULL`, the dtype
 #' will be inferred from the JSON value.
@@ -503,7 +503,7 @@ ExprStr_json_decode = function(dtype, infer_schema_length = 100) {
 }
 
 #' Extract the first match of JSON string with the provided JSONPath expression
-#' @name ExprStr_json_path_match
+#'
 #' @keywords ExprStr
 #' @param json_path A valid JSON path query string.
 #' @details
@@ -518,14 +518,14 @@ ExprStr_json_decode = function(dtype, infer_schema_length = 100) {
 #'   json_val = c('{"a":"1"}', NA, '{"a":2}', '{"a":2.1}', '{"a":true}')
 #' )
 #' df$select(pl$col("json_val")$str$json_path_match("$.a"))
-ExprStr_json_path_match = function(pat) {
-  .pr$Expr$str_json_path_match(self, pat) |>
+ExprStr_json_path_match = function(json_path) {
+  .pr$Expr$str_json_path_match(self, json_path) |>
     unwrap("in str$json_path_match(): ")
 }
 
 
 #' Decode a value using the provided encoding
-#' @name ExprStr_decode
+#'
 #' @keywords ExprStr
 #' @param encoding Either 'hex' or 'base64'.
 #' @param ... Not used currently.
@@ -554,7 +554,7 @@ ExprStr_decode = function(encoding, ..., strict = TRUE) {
 }
 
 #' Encode a value using the provided encoding
-#' @name ExprStr_encode
+#'
 #' @keywords ExprStr
 #' @param encoding Either 'hex' or 'base64'.
 #' @return Utf8 array with values encoded using provided encoding
@@ -580,7 +580,7 @@ ExprStr_encode = function(encoding) {
 
 
 #' Extract the target capture group from provided patterns
-#' @name ExprStr_extract
+#'
 #' @keywords ExprStr
 #' @param pattern A valid regex pattern
 #' @param group_index Index of the targeted capture group. Group 0 means the whole
@@ -607,7 +607,7 @@ ExprStr_extract = function(pattern, group_index) {
 
 
 #' Extract all matches for the given regex pattern
-#' @name ExprStr_extract_all
+#'
 #' @description Extracts all matches for the given regex pattern. Extracts each
 #' successive non-overlapping regex match in an individual string as an array.
 #' @keywords ExprStr
@@ -627,7 +627,7 @@ ExprStr_extract_all = function(pattern) {
 }
 
 #' Count all successive non-overlapping regex matches
-#' @name ExprStr_count_matches
+#'
 #' @keywords ExprStr
 #' @param pattern A valid regex pattern
 #' @param literal Treat pattern as a literal string.
@@ -654,7 +654,7 @@ ExprStr_count_matches = function(pattern, literal = FALSE) {
 
 
 #' Split the string by a substring
-#' @name ExprStr_split
+#'
 #' @keywords ExprStr
 #' @param by String or Expr of a string, a valid regex pattern that will be
 #' used to split the string.
@@ -682,7 +682,7 @@ ExprStr_split = function(by, inclusive = FALSE) {
 
 # TODO write 2nd example after expr_struct has been implemented
 #' Split the string by a substring using `n` splits
-#' @name ExprStr_split_exact
+#'
 #' @description This results in a struct of `n+1` fields. If it cannot make `n`
 #' splits, the remaining field elements will be null.
 #' @keywords ExprStr
@@ -704,7 +704,7 @@ ExprStr_split_exact = function(by, n, inclusive = FALSE) {
 
 
 #' Split the string by a substring, restricted to returning at most `n` items
-#' @name ExprStr_splitn
+#'
 #' @description
 #' If the number of possible splits is less than `n-1`, the remaining field
 #' elements will be null. If the number of possible splits is `n-1` or greater,
@@ -727,7 +727,7 @@ ExprStr_splitn = function(by, n) {
 
 
 #' Replace first matching regex/literal substring with a new string value
-#' @name ExprStr_replace
+#'
 #' @keywords ExprStr
 #' @param pattern Regex pattern, can be an Expr.
 #' @param value Replacement, can be an Expr.
@@ -750,7 +750,7 @@ ExprStr_replace = function(pattern, value, literal = FALSE) {
 
 
 #' Replace all matching regex/literal substrings with a new string value
-#' @name ExprStr_replace_all
+#'
 #' @keywords ExprStr
 #' @param pattern Regex pattern, can be an Expr.
 #' @param value Replacement, can be an Expr.
@@ -772,7 +772,7 @@ ExprStr_replace_all = function(pattern, value, literal = FALSE) {
 
 
 #' Create subslices of the string values of a Utf8 Series
-#' @name ExprStr_slice
+#'
 #' @keywords ExprStr
 #' @param offset Start index. Negative indexing is supported.
 #' @param length Length of the slice. If `NULL` (default), the slice is taken to
@@ -791,7 +791,7 @@ ExprStr_slice = function(offset, length = NULL) {
 }
 
 #' Returns a column with a separate row for every string character
-#' @name ExprStr_explode
+#'
 #' @keywords ExprStr
 #' @return Expr: Series of dtype Utf8.
 #' @examples
@@ -803,7 +803,7 @@ ExprStr_explode = function() {
 }
 
 #' Parse integers with base radix from strings
-#' @name ExprStr_parse_int
+#'
 #' @description Parse integers with base 2 by default.
 #' @keywords ExprStr
 #' @param radix Positive integer which is the base of the string we are parsing.
@@ -821,4 +821,81 @@ ExprStr_explode = function() {
 #' df$select(pl$col("x")$str$parse_int(10, FALSE))
 ExprStr_parse_int = function(radix = 2, strict = TRUE) {
   .pr$Expr$str_parse_int(self, radix, strict) |> unwrap("in str$parse_int():")
+}
+
+#' Returns string values in reversed order
+#'
+#' @return Expr
+#'
+#' @examples
+#' df = pl$DataFrame(text = c("foo", "bar", NA))
+#' df$with_columns(reversed = pl$col("text")$str$reverse())
+ExprStr_reverse = function() {
+  .pr$Expr$str_reverse(self) |>
+    unwrap("in str$reverse():")
+}
+
+#' Use the aho-corasick algorithm to find matches
+#'
+#' This function determines if any of the patterns find a match.
+#' @param patterns String patterns to search. Can be an Expr.
+#' @param ascii_case_insensitive Enable ASCII-aware case insensitive matching.
+#' When this option is enabled, searching will be performed without respect to
+#' case for ASCII letters (a-z and A-Z) only.
+#'
+#' @return Expr
+#'
+#' @examples
+#' df = pl$DataFrame(
+#'   lyrics = c(
+#'     "Everybody wants to rule the world",
+#'     "Tell me what you want, what you really really want",
+#'     "Can you feel the love tonight"
+#'   )
+#' )
+#'
+#' df$with_columns(
+#'   contains_any = pl$col("lyrics")$str$contains_any(c("you", "me"))
+#' )
+ExprStr_contains_any = function(patterns, ascii_case_insensitive = FALSE) {
+  .pr$Expr$str_contains_any(self, patterns, ascii_case_insensitive) |>
+    unwrap("in str$contains_any():")
+}
+
+#' Use the aho-corasick algorithm to replace many matches
+#'
+#' This function replaces several matches at once.
+#'
+#' @param patterns String patterns to search. Can be an Expr.
+#' @param replace_with A vector of strings used as replacements. If this is of
+#' length 1, then it is applied to all matches. Otherwise, it must be of same
+#' length as the `patterns` argument.
+#' @param ascii_case_insensitive Enable ASCII-aware case insensitive matching.
+#' When this option is enabled, searching will be performed without respect to
+#' case for ASCII letters (a-z and A-Z) only.
+#'
+#' @return Expr
+#'
+#' @examples
+#' df = pl$DataFrame(
+#'   lyrics = c(
+#'     "Everybody wants to rule the world",
+#'     "Tell me what you want, what you really really want",
+#'     "Can you feel the love tonight"
+#'   )
+#' )
+#'
+#' # a replacement of length 1 is applied to all matches
+#' df$with_columns(
+#'   remove_pronouns = pl$col("lyrics")$str$replace_many(c("you", "me"), "")
+#' )
+#'
+#' # if there are more than one replacement, the patterns and replacements are
+#' # matched
+#' df$with_columns(
+#'   fake_pronouns = pl$col("lyrics")$str$replace_many(c("you", "me"), c("foo", "bar"))
+#' )
+ExprStr_replace_many = function(patterns, replace_with, ascii_case_insensitive = FALSE) {
+  .pr$Expr$str_replace_many(self, patterns, replace_with, ascii_case_insensitive) |>
+    unwrap("in str$replace_many():")
 }

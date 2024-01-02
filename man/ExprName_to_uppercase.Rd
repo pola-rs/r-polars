@@ -3,6 +3,9 @@
 \name{ExprName_to_uppercase}
 \alias{ExprName_to_uppercase}
 \title{Make the root column name uppercase}
+\usage{
+ExprName_to_uppercase()
+}
 \value{
 Expr
 }

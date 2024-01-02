@@ -1390,6 +1390,7 @@ dependencies = [
  "polars-io",
  "polars-lazy",
  "polars-ops",
+ "polars-plan",
  "polars-sql",
  "polars-time",
  "version_check",
@@ -1580,6 +1581,7 @@ version = "0.35.4"
 source = "git+https://github.com/pola-rs/polars.git?rev=4046c732dec0c9311294a2589590b4d017c5a02a#4046c732dec0c9311294a2589590b4d017c5a02a"
 dependencies = [
  "ahash",
+ "aho-corasick",
  "argminmax",
  "base64",
  "bytemuck",
@@ -1605,6 +1607,7 @@ dependencies = [
  "serde",
  "serde_json",
  "smartstring",
+ "unicode-reverse",
  "version_check",
 ]
 
@@ -1773,7 +1776,7 @@ dependencies = [
 
 [[package]]
 name = "r-polars"
-version = "0.35.1"
+version = "0.35.2"
 dependencies = [
  "either",
  "extendr-api",
@@ -2355,6 +2358,21 @@ name = "unicode-ident"
 version = "1.0.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3354b9ac3fae1ff6755cb6db53683adb661634f67557942dea4facebec0fee4b"
+
+[[package]]
+name = "unicode-reverse"
+version = "1.0.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0bea5dacebb0d2d0a69a6700a05b59b3908bf801bf563a49bd27a1b60122962c"
+dependencies = [
+ "unicode-segmentation",
+]
+
+[[package]]
+name = "unicode-segmentation"
+version = "1.10.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1dd624098567895118886609431a7c3b8f516e41d30e0643f03d94592a147e36"
 
 [[package]]
 name = "unicode-width"

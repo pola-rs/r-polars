@@ -4,6 +4,9 @@
 \alias{ExprStruct_field}
 \alias{expr_struct_field}
 \title{field}
+\usage{
+ExprStruct_field(name)
+}
 \arguments{
 \item{name}{string, the Name of the struct field to retrieve.}
 }
