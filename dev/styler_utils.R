@@ -144,7 +144,7 @@ style_files = function(
           if (verbose) {
             print("using psock cluster")
           }
-          parallel::makePSOCKcluster(spec = ncpu)
+          parallel::makePSOCKcluster(ncpu)
         }
       )
     })
