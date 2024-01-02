@@ -41,6 +41,8 @@ markdown_extensions:
       anchor_linenums: yes
   - pymdownx.superfences
 
+use_directory_urls: false
+
 extra_css:
   - stylesheets/extra.css
 
