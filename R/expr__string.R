@@ -825,7 +825,6 @@ ExprStr_parse_int = function(radix = 2, strict = TRUE) {
 
 #' Returns string values in reversed order
 #'
-#' @name ExprStr_reverse
 #' @return Expr
 #'
 #' @examples
@@ -839,7 +838,6 @@ ExprStr_reverse = function() {
 #' Use the aho-corasick algorithm to find matches
 #'
 #' This function determines if any of the patterns find a match.
-#' @name ExprStr_contains_any
 #' @param patterns String patterns to search. Can be an Expr.
 #' @param ascii_case_insensitive Enable ASCII-aware case insensitive matching.
 #' When this option is enabled, searching will be performed without respect to
@@ -867,7 +865,6 @@ ExprStr_contains_any = function(patterns, ascii_case_insensitive = FALSE) {
 #' Use the aho-corasick algorithm to replace many matches
 #'
 #' This function replaces several matches at once.
-#' @name ExprStr_replace_many
 #'
 #' @param patterns String patterns to search. Can be an Expr.
 #' @param replace_with A vector of strings used as replacements. If this is of
