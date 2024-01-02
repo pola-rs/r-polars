@@ -19,7 +19,7 @@ rust_toolchain_version = read.dcf(
 )[1, 1]
 ```
 
-The `polars` package can be installed from R-universe, or GitHub.
+The `polars` package can be installed from R-universe or GitHub.
 
 Some platforms can install pre-compiled binaries, and others will need to build from source.
 
@@ -36,11 +36,11 @@ install.packages("polars", repos = "https://rpolars.r-universe.dev")
 
 - On amd64 architecture Windows and macOS, binary R packages will be installed.
 - On the other platforms, the pre-built Rust library binary will be downloaded while building the R source package.
-- If the pre-built Rust library binary is not available, the Rust library will be built from source.
+- If the pre-built Rust library binary is not available, the Rust library will be built from source (provided that Rust is installed).
 
 ### From GitHub releases
 
-Binary pacages for the Amd64 architecture are available.
+Binary packages for the amd64 architecture are available.
 
 #### Linux (x86_64)
 
