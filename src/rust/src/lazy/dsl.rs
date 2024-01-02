@@ -1009,6 +1009,14 @@ impl RPolarsExpr {
             .into())
     }
 
+    pub fn rle(&self) -> RResult<Self> {
+        Ok(self.0.clone().rle().into())
+    }
+
+    pub fn rle_id(&self) -> RResult<Self> {
+        Ok(self.0.clone().rle_id().into())
+    }
+
     //arr/list methods
 
     fn list_lengths(&self) -> Self {

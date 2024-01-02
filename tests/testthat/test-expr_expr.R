@@ -2626,11 +2626,33 @@ test_that("replace works", {
   expect_equal(
     df$select(
       replaced = pl$col("a")$replace(
-        old=pl$col("a")$max(),
-        new=pl$col("b")$sum(),
-        default=pl$col("b"),
+        old = pl$col("a")$max(),
+        new = pl$col("b")$sum(),
+        default = pl$col("b"),
       )
     )$to_list(),
     list(replaced = c(1.5, 2.5, 5, 10))
+  )
+})
+
+test_that("rle works", {
+  df = pl$DataFrame(s = c(1, 1, 2, 1, NA, 1, 3, 3))
+  expect_equal(
+    df$select(pl$col("s")$rle())$unnest("s")$to_data_frame(),
+    data.frame(
+      lengths = c(2, 1, 1, 1, 1, 2),
+      values = c(1, 2, 1, NA, 1, 3)
+    )
+  )
+})
+
+test_that("rle_id works", {
+  df = pl$DataFrame(s = c(1, 1, 2, 1, NA, 1, 3, 3))
+  expect_equal(
+    df$with_columns(id = pl$col("s")$rle_id())$to_data_frame(),
+    data.frame(
+      s = c(1, 1, 2, 1, NA, 1, 3, 3),
+      id = c(0, 0, 1, 2, 3, 4, 5, 5)
+    )
   )
 })

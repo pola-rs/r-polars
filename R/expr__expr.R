@@ -3633,3 +3633,32 @@ Expr_replace = function(old, new, default = NULL, return_dtype = NULL) {
   .pr$Expr$replace(self, old, new, default, return_dtype) |>
     unwrap("in $replace():")
 }
+
+#' Get the lengths of runs of identical values
+#'
+#' @return Expr
+#'
+#' @examples
+#' df = pl$DataFrame(s = c(1, 1, 2, 1, NA, 1, 3, 3))
+#' df$select(pl$col("s")$rle())$unnest("s")
+Expr_rle = function() {
+  .pr$Expr$rle(self) |>
+    unwrap("in $rle():")
+}
+
+#' Map values to run IDs
+#'
+#' Similar to $rle(), but it maps each value to an ID corresponding to the run
+#' into which it falls. This is especially useful when you want to define groups
+#' by runs of identical values rather than the values themselves. Note that
+#' the ID is 0-indexed.
+#'
+#' @return Expr
+#'
+#' @examples
+#' df = pl$DataFrame(a = c(1, 2, 1, 1, 1, 4))
+#' df$with_columns(a_r = pl$col("a")$rle_id())
+Expr_rle_id = function() {
+  .pr$Expr$rle_id(self) |>
+    unwrap("in $rle_id():")
+}
