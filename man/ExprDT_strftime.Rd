@@ -4,8 +4,8 @@
 \alias{ExprDT_strftime}
 \alias{(Expr)$dt$strftime}
 \title{strftime}
-\format{
-function
+\usage{
+ExprDT_strftime(format)
 }
 \arguments{
 \item{format}{string format very much like in R passed to chrono}

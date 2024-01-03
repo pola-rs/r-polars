@@ -869,8 +869,6 @@ DataFrame_to_data_frame = function(...) {
 #' @param unnest_structs Boolean. If `TRUE` (default), then `$unnest()` is applied
 #' on any struct column.
 #'
-#' @name to_list
-#'
 #' @details
 #' For simplicity reasons, this implementation relies on unnesting all structs
 #' before exporting to R. If `unnest_structs = FALSE`, then `struct` columns

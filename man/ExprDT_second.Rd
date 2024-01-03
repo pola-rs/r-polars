@@ -4,8 +4,11 @@
 \alias{ExprDT_second}
 \alias{(Expr)$dt$second}
 \title{Second}
-\format{
-function
+\usage{
+ExprDT_second(fractional = FALSE)
+}
+\arguments{
+\item{fractional}{Whether to include the fractional component of the second.}
 }
 \value{
 Expr of second as UInt32

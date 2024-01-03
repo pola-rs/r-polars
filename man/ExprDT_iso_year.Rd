@@ -4,8 +4,8 @@
 \alias{ExprDT_iso_year}
 \alias{(Expr)$dt$iso_year}
 \title{Iso-Year}
-\format{
-function
+\usage{
+ExprDT_iso_year()
 }
 \value{
 Expr of iso_year as Int32
