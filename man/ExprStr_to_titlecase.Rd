@@ -16,7 +16,7 @@ Transform to titlecase variant.
 This method is only available with the feature flag "simd" which can
 be set via envvar "RPOLARS_FULL_FEATURES" and it requires
 Rust nightly toolchain to compile.
-See \code{\link[=polars_info]{pl$polars_info()}} for more details.
+See \code{\link[=pl_polars_info]{pl$polars_info()}} for more details.
 }
 \examples{
 \dontshow{if (pl$polars_info()$features$simd) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
