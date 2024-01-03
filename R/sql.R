@@ -1,7 +1,7 @@
 #' @title Run SQL queries against DataFrame/LazyFrame data.
 #' @description Run SQL queries against DataFrame/LazyFrame data.
 #' @details Currently, only available when built with the `full` feature.
-#' See [polars_info()] for more information.
+#' See [`pl$polars_info()`][pl_polars_info] for more information.
 #' @name SQLContext_class
 #' @keywords SQLContext
 #' @examplesIf pl$polars_info()$features$sql

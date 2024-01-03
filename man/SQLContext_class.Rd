@@ -8,7 +8,7 @@ Run SQL queries against DataFrame/LazyFrame data.
 }
 \details{
 Currently, only available when built with the \code{full} feature.
-See \code{\link[=polars_info]{polars_info()}} for more information.
+See \code{\link[=pl_polars_info]{pl$polars_info()}} for more information.
 }
 \examples{
 \dontshow{if (pl$polars_info()$features$sql) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
