@@ -7,6 +7,7 @@
 -   New methods `$str$reverse()`, `$str$contains_any()`, and `$str$replace_many()`
     (#641).
 -   New methods `$rle()` and `$rle_id()` (#648).
+-   New functions `is_polars_df()`, `is_polars_lf()`, `is_polars_series()` (#658).
 
 ### Miscellaneous
 

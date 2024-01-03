@@ -93,6 +93,7 @@ Collate:
     'group_by.R'
     'info.R'
     'ipc.R'
+    'is_polars.R'
     'json.R'
     'lazyframe__group_by.R'
     'lazyframe__lazy.R'
