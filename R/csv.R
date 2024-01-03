@@ -25,7 +25,7 @@
 #' * "Float64" or "float64" for DataType::Float64,
 #' * "Int32" or "integer" for DataType::Int32,
 #' * "Int64" or "integer64" for DataType::Int64,
-#' * "Utf8" or "character" for DataType::Utf8,
+#' * "String" or "character" for DataType::String,
 #' @param null_values Values to interpret as `NA` values. Can be:
 #' * a character vector: all values that match one of the values in this vector
 #'   will be `NA`;

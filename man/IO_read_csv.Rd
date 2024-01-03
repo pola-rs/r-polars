@@ -59,7 +59,7 @@ list is used while reading to overwrite dtypes. Supported types so far are:
 \item "Float64" or "float64" for DataType::Float64,
 \item "Int32" or "integer" for DataType::Int32,
 \item "Int64" or "integer64" for DataType::Int64,
-\item "Utf8" or "character" for DataType::Utf8,
+\item "String" or "character" for DataType::String,
 }}
 
 \item{null_values}{Values to interpret as \code{NA} values. Can be:
