@@ -21,12 +21,12 @@ pl_Field = function(name, datatype) {
 
 #' S3 method to print a Field
 #'
+#' @noRd
 #' @param x An object of type `"RField"`
 #' @param ... Not used.
 #'
 #' @return No value returned, it prints in the console.
 #' @export
-#' @rdname Field_print
 #'
 #' @examples
 #' print(pl$Field("foo", pl$List(pl$UInt64)))
