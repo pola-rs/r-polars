@@ -7,6 +7,9 @@ inputs:
   target:
     description: Rust target triple to use
     required: true
+  token:
+    description: GitHub token
+    required: true
 
 runs:
   using: composite
@@ -17,11 +20,17 @@ runs:
         run: |
           rustup update
 
+      - name: Install Task
+        uses: arduino/setup-task@v1
+        with:
+          version: 3.x
+          repo-token: ${{ inputs.token }}
+
       - name: Set up Rust nightly toolchain
         if: inputs.rust-nightly == 'true' || env.RPOLARS_FULL_FEATURES == 'true'
         shell: bash
         run: |
-          make requirements-rs
+          task setup-rust-toolchain
 
       - name: Set up Rust target
         if: inputs.target != ''
