@@ -38,9 +38,6 @@ Examples of common operations:
 - use the lazy execution engine for maximum performance and
   memory-efficient operations
 
-Consider joining our [Discord](https://discord.com/invite/4UfP5cfBE7)
-(subchannel) for additional help and discussion.
-
 ## Install
 
 The recommended way to install this package is via R-universe:
@@ -50,16 +47,16 @@ Sys.setenv(NOT_CRAN = "true")
 install.packages("polars", repos = "https://rpolars.r-universe.dev")
 ```
 
-Other installation methods and installation details can be found in the
-[Install vignette](https://rpolars.github.io/vignettes/install/)
-(`vignette("install", "polars")`).
+[The “Install” vignette](https://rpolars.github.io/vignettes/install/)
+(`vignette("install", "polars")`) gives more details on how to install
+this package and other way to install it.
 
 ## Quickstart example
 
 To avoid conflicts with other packages and base R function names,
 **polars**’s top level functions are hosted in the `pl` namespace, and
-accessible via the `pl$` prefix. So we can write queries in a similar
-way to Python when import polars with `import polars as pl`.
+accessible via the `pl$` prefix. This means that `polars` queries
+written in Python and in R are very similar.
 
 For example, rewriting the Python example from
 <https://github.com/pola-rs/polars> in R:
@@ -112,3 +109,14 @@ provide different syntaxes:
   **polars** backend for `DBI` and `dbplyr`.
 - [`tidypolars`](https://tidypolars.etiennebacher.com/) allows one to
   use the `tidyverse` syntax while using the power of **polars**.
+
+## Getting help
+
+The online documentation can be found at <https://rpolars.github.io/>.
+
+If you encounter a clear bug, please file an issue with a minimal
+reproducible example on
+[GitHub](https://github.com/pola-rs/r-polars/issues).
+
+Consider joining our [Discord](https://discord.com/invite/4UfP5cfBE7)
+(subchannel) for additional help and discussion.
