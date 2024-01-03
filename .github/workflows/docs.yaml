@@ -70,6 +70,7 @@ jobs:
       - uses: ./.github/actions/setup
         with:
           target: "${{ steps.rust-target.outputs.TARGET }}"
+          token: "${{ secrets.GITHUB_TOKEN }}"
 
       - uses: actions/setup-python@v5
         with:
@@ -86,12 +87,11 @@ jobs:
 
       - name: Get requirements
         run: |
-          make requirements-r
-          make requirements-py
+          task setup-r-tools
+          task setup-python-tools
 
       - name: Build docs
-        run: make docs
-        shell: bash
+        run: task build-website
 
       - uses: webfactory/ssh-agent@v0.8.0
         env:

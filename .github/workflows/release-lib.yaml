@@ -61,6 +61,7 @@ jobs:
         with:
           rust-nightly: "true"
           target: "${{ matrix.target }}"
+          token: "${{ secrets.GITHUB_TOKEN }}"
 
       - name: Set for arm64 Linux
         if: matrix.target == 'aarch64-unknown-linux-gnu'
