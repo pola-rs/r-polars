@@ -299,7 +299,11 @@ impl RPolarsExpr {
     }
 
     pub fn gather(&self, idx: Robj) -> RResult<Self> {
-        Ok(self.clone().0.gather(robj_to!(PLExpr, idx)?).into())
+        Ok(self
+            .clone()
+            .0
+            .gather(robj_to!(PLExpr, idx)?.cast(pl::DataType::UInt32))
+            .into())
     }
 
     pub fn sort_by(&self, by: Robj, descending: Robj) -> RResult<RPolarsExpr> {
