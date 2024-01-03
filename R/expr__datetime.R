@@ -47,7 +47,7 @@ ExprDT_truncate = function(every, offset = NULL) {
 #'
 #'
 #' @param every string encoding duration see details.
-#' @param ofset optional string encoding duration see details.
+#' @param offset optional string encoding duration see details.
 #'
 #' @details The ``every`` and ``offset`` argument are created with the
 #' the following string language:
@@ -431,6 +431,8 @@ ExprDT_minute = function() {
 #' Returns the integer second number from 0 to 59, or a floating
 #' point number from 0 < 60 if ``fractional=True`` that includes
 #' any milli/micro/nanosecond component.
+#'
+#' @param fractional Whether to include the fractional component of the second.
 #'
 #' @return Expr of second as UInt32
 #' @keywords ExprDT

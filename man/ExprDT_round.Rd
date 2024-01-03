@@ -10,7 +10,7 @@ ExprDT_round(every, offset = NULL)
 \arguments{
 \item{every}{string encoding duration see details.}
 
-\item{ofset}{optional string encoding duration see details.}
+\item{offset}{optional string encoding duration see details.}
 }
 \value{
 Date/Datetime expr
