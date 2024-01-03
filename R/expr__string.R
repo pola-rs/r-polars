@@ -545,10 +545,12 @@ ExprStr_json_path_match = function(json_path) {
 #'   pl$col("hex")$str$decode("hex")$alias("hex_decoded")$cast(pl$Utf8)
 #' )
 ExprStr_decode = function(encoding, ..., strict = TRUE) {
+  uw = \(res) unwrap(res, "in $decode():")
+
   pcase(
     !is_string(encoding), stop("encoding must be a string, it was: ", encoding),
-    encoding == "hex", .pr$Expr$str_hex_decode(self, strict),
-    encoding == "base64", .pr$Expr$str_base64_decode(self, strict),
+    encoding == "hex", uw(.pr$Expr$str_hex_decode(self, strict)),
+    encoding == "base64", uw(.pr$Expr$str_base64_decode(self, strict)),
     or_else = stop("encoding must be one of 'hex' or 'base64', got ", encoding)
   )
 }
@@ -570,10 +572,12 @@ ExprStr_decode = function(encoding, ..., strict = TRUE) {
 #'   pl$col("hex")$str$decode("hex")$alias("hex_decoded")$cast(pl$Utf8)
 #' )
 ExprStr_encode = function(encoding) {
+  uw = \(res) unwrap(res, "in $encode():")
+
   pcase(
     !is_string(encoding), stop("encoding must be a string, it was: ", encoding),
-    encoding == "hex", .pr$Expr$str_hex_encode(self),
-    encoding == "base64", .pr$Expr$str_base64_encode(self),
+    encoding == "hex", uw(.pr$Expr$str_hex_encode(self)),
+    encoding == "base64", uw(.pr$Expr$str_base64_encode(self)),
     or_else = stop("encoding must be one of 'hex' or 'base64', got ", encoding)
   )
 }
