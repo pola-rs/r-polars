@@ -49,7 +49,7 @@ install.packages("polars", repos = "https://rpolars.r-universe.dev")
 
 [The “Install” vignette](https://rpolars.github.io/vignettes/install/)
 (`vignette("install", "polars")`) gives more details on how to install
-this package and other way to install it.
+this package and other ways to install it.
 
 ## Quickstart example
 
@@ -114,9 +114,8 @@ provide different syntaxes:
 
 The online documentation can be found at <https://rpolars.github.io/>.
 
-If you encounter a clear bug, please file an issue with a minimal
-reproducible example on
-[GitHub](https://github.com/pola-rs/r-polars/issues).
+If you encounter a bug, please file an issue with a minimal reproducible
+example on [GitHub](https://github.com/pola-rs/r-polars/issues).
 
 Consider joining our [Discord](https://discord.com/invite/4UfP5cfBE7)
-(subchannel) for additional help and discussion.
+subchannel for additional help and discussion.
