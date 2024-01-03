@@ -18,6 +18,7 @@ install some tools outside of R.
 - Install [CMake](https://cmake.org/) and add it to your PATH.
 - If generate the website locally, please
   install [Quarto CLI](https://quarto.org/) and add it to your PATH.
+- Install [Task](https://taskfile.dev/), used as a task runner.
 
 Note that the `Taskfile.yml` in the root directory of the repository provides some
 useful commands (e.g. `task setup-dev` to install the required version of
