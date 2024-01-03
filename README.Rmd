@@ -65,7 +65,7 @@ gives more details on how to install this package and other way to install it.
 To avoid conflicts with other packages and base R function names, **polars**'s
 top level functions are hosted in the `pl` namespace, and accessible via the
 `pl$` prefix.
-So we can write queries in a similar way to Python when import polars with `import polars as pl`.
+This means that `polars` queries written in Python and in R are very similar.
 
 For example, rewriting the Python example from <https://github.com/pola-rs/polars> in R:
 
