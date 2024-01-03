@@ -1054,12 +1054,18 @@ test_that("gather that", {
     c(1L, 3L, 5L, NA_integer_)
   )
 
+  expect_identical(
+    pl$select(pl$lit(1:6)$gather(c(0, -1)))$to_list()[[1L]],
+    c(1L, 6L)
+  )
+
   expect_error(
     pl$select(pl$lit(0:10)$gather(11))$to_list()[[1L]]
   )
 
-  expect_error(
-    pl$select(pl$lit(0:10)$gather(-5))$to_list()[[1L]]
+  expect_identical(
+    pl$select(pl$lit(0:10)$gather(-5))$to_list()[[1L]],
+    6L
   )
 })
 

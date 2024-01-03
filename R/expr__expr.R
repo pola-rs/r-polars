@@ -1575,10 +1575,12 @@ Expr_sort_by = function(by, descending = FALSE) {
 #' Gather values by index
 #'
 #' @param indices R scalar/vector or Series, or Expr that leads to a Series of
-#' dtype UInt32.
+#' dtype Int64. (0-indexed)
 #' @return Expr
 #' @examples
-#' pl$DataFrame(a = c(1, 2, 4, 5, 8))$select(pl$col("a")$gather(c(0, 2, 4)))
+#' df = pl$DataFrame(a = 1:10)
+#'
+#' df$select(pl$col("a")$gather(c(0, 2, 4, -1)))
 Expr_gather = function(indices) {
   .pr$Expr$gather(self, pl$lit(indices)) |>
     unwrap("in $gather():")

@@ -302,7 +302,7 @@ impl RPolarsExpr {
         Ok(self
             .clone()
             .0
-            .gather(robj_to!(PLExpr, idx)?.cast(pl::DataType::UInt32))
+            .gather(robj_to!(PLExpr, idx)?.cast(pl::DataType::Int64))
             .into())
     }
 
