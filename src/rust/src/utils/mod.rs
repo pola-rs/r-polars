@@ -53,7 +53,7 @@ macro_rules! make_r_na_fun {
     (i8 $rfun:expr) => {make_r_na_fun!(i32 $rfun)};
     (f32 $rfun:expr) => {make_r_na_fun!(f64 $rfun)};
 
-    (utf8 $rfun:expr) => {
+    (str $rfun:expr) => {
         R!("function(f) {function() f(NA_character_)}")
             .unwrap()
             .as_function()

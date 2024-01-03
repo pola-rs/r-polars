@@ -19,7 +19,7 @@ use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut, Rinternals};
 use pl::PolarsError as pl_error;
 use pl::{
     BinaryNameSpaceImpl, Duration, DurationMethods, IntoSeries, RollingGroupOptions,
-    TemporalMethods, Utf8NameSpaceImpl,
+    StringNameSpaceImpl, TemporalMethods,
 };
 use polars::lazy::dsl;
 use polars::prelude as pl;
@@ -133,7 +133,7 @@ impl RPolarsExpr {
             }
             (Rtype::Strings, 1) => {
                 if robj.is_na() {
-                    Ok(dsl::lit(pl::NULL).cast(pl::DataType::Utf8))
+                    Ok(dsl::lit(pl::NULL).cast(pl::DataType::String))
                 } else {
                     Ok(dsl::lit(robj.as_str().unwrap()))
                 }
@@ -919,7 +919,7 @@ impl RPolarsExpr {
                     move |s| {
                         //swap owned inline string to str as only supported and if swapped here life time is long enough
                         let av = match &av {
-                            pl::AnyValue::Utf8Owned(x) => pl::AnyValue::Utf8(x.as_str()),
+                            pl::AnyValue::StringOwned(x) => pl::AnyValue::String(x.as_str()),
                             x => x.clone(),
                         };
                         s.extend_constant(av, n).map(Some)
@@ -1833,7 +1833,7 @@ impl RPolarsExpr {
     pub fn str_len_bytes(&self) -> Self {
         use pl::*;
         let function = |s: pl::Series| {
-            let ca = s.utf8()?;
+            let ca = s.str()?;
             Ok(Some(ca.str_len_bytes().into_series()))
         };
         self.clone()
@@ -1845,7 +1845,7 @@ impl RPolarsExpr {
 
     pub fn str_len_chars(&self) -> Self {
         let function = |s: pl::Series| {
-            let ca = s.utf8()?;
+            let ca = s.str()?;
             Ok(Some(ca.str_len_chars().into_series()))
         };
         self.clone()
@@ -1950,7 +1950,7 @@ impl RPolarsExpr {
             use pl::*;
             let pat: String = robj_to!(String, pat, "in str$json_path_match: {}")?;
             let function = move |s: Series| {
-                let ca = s.utf8()?;
+                let ca = s.str()?;
                 match ca.json_path_match(&pat) {
                     Ok(ca) => Ok(Some(ca.into_series())),
                     Err(e) => Err(pl::PolarsError::ComputeError(format!("{e:?}").into())),
@@ -1959,7 +1959,7 @@ impl RPolarsExpr {
             Ok(RPolarsExpr(
                 self.0
                     .clone()
-                    .map(function, pl::GetOutput::from_type(pl::DataType::Utf8))
+                    .map(function, pl::GetOutput::from_type(pl::DataType::String))
                     .with_fmt("str.json_path_match"),
             ))
         }();
@@ -1982,7 +1982,7 @@ impl RPolarsExpr {
         self.clone()
             .0
             .map(
-                move |s| s.utf8().map(|s| Some(s.hex_encode().into_series())),
+                move |s| s.str().map(|s| Some(s.hex_encode().into_series())),
                 pl::GetOutput::same_type(),
             )
             .with_fmt("str.hex_encode")
@@ -1994,7 +1994,7 @@ impl RPolarsExpr {
         self.clone()
             .0
             .map(
-                move |s| s.utf8()?.hex_decode(strict).map(|s| Some(s.into_series())),
+                move |s| s.str()?.hex_decode(strict).map(|s| Some(s.into_series())),
                 pl::GetOutput::same_type(),
             )
             .with_fmt("str.hex_decode")
@@ -2005,7 +2005,7 @@ impl RPolarsExpr {
         self.clone()
             .0
             .map(
-                move |s| s.utf8().map(|s| Some(s.base64_encode().into_series())),
+                move |s| s.str().map(|s| Some(s.base64_encode().into_series())),
                 pl::GetOutput::same_type(),
             )
             .with_fmt("str.base64_encode")
@@ -2018,7 +2018,7 @@ impl RPolarsExpr {
             .0
             .map(
                 move |s| {
-                    s.utf8()?
+                    s.str()?
                         .base64_decode(strict)
                         .map(|s| Some(s.into_series()))
                 },

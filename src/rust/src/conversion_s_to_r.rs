@@ -94,7 +94,7 @@ pub fn pl_series_to_list(
                     .map(|opt| opt.map(|val| val as f64))
                     .collect_robj()
             }),
-            Utf8 => s.utf8().map(|ca| ca.into_iter().collect_robj()),
+            String => s.str().map(|ca| ca.into_iter().collect_robj()),
 
             Boolean => s.bool().map(|ca| ca.into_iter().collect_robj()),
             Binary => s.binary().map(|ca| {
