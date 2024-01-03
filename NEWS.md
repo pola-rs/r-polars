@@ -11,7 +11,7 @@
 
 ### Miscellaneous
 
--   Remeve the `Makefile` in favor of `Taskfile.yml`.
+-   Remove the `Makefile` in favor of `Taskfile.yml`.
     Please use `task` instaed of `make` as a task runner (#654).
 
 ## polars 0.12.0
