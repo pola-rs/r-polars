@@ -144,7 +144,7 @@ NULL
 #' # custom schema
 #' pl$LazyFrame(
 #'   iris,
-#'   schema = list(Sepal.Length = pl$Float32, Species = pl$Utf8)
+#'   schema = list(Sepal.Length = pl$Float32, Species = pl$String)
 #' )$collect()
 pl_LazyFrame = function(...) {
   pl$DataFrame(...)$lazy()

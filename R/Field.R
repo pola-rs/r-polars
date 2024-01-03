@@ -13,7 +13,7 @@
 #' @return A object of with DataType `"RField"` containing its name and its
 #' DataType.
 #' @examples
-#' pl$Field("city_names", pl$Utf8)
+#' pl$Field("city_names", pl$String)
 pl_Field = function(name, datatype) {
   .pr$RField$new(name, datatype)
 }
@@ -71,7 +71,7 @@ RField.property_setters = new.env(parent = emptyenv())
 #'
 #' @rdname RField_name
 #' @examples
-#' field = pl$Field("Cities", pl$Utf8)
+#' field = pl$Field("Cities", pl$String)
 #' field$name
 #'
 #' field$name = "CityPoPulations" #<- is fine too
@@ -90,7 +90,7 @@ RField.property_setters$name = function(self, value) {
 #'
 #' @keywords DataFrame
 #' @examples
-#' field = pl$Field("Cities", pl$Utf8)
+#' field = pl$Field("Cities", pl$String)
 #' field$datatype
 #'
 #' field$datatype = pl$Categorical #<- is fine too

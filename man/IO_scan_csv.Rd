@@ -100,7 +100,7 @@ the name is set).}
 
 \item{try_parse_dates}{Try to automatically parse dates. Most ISO8601-like
 formats can be inferred, as well as a handful of others. If this does not
-succeed, the column remains of data type \code{pl$Utf8}.}
+succeed, the column remains of data type \code{pl$String}.}
 
 \item{eol_char}{Single byte end of line character (default: \verb{\\n}). When
 encountering a file with Windows line endings (\verb{\\r\\n}), one can go with the

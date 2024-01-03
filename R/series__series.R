@@ -354,7 +354,7 @@ Series_value_counts = function(sort = TRUE, parallel = FALSE) {
 #' @examples
 #' s = pl$Series(letters[1:5], "ltrs")
 #' f = \(x) paste(x, ":", as.integer(charToRaw(x)))
-#' s$map_elements(f, pl$Utf8)
+#' s$map_elements(f, pl$String)
 #'
 #' # same as
 #' pl$Series(sapply(s$to_r(), f), s$name)

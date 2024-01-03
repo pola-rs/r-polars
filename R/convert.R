@@ -15,7 +15,7 @@
 #' @examples
 #' pl$from_arrow(
 #'   data = arrow::arrow_table(iris),
-#'   schema_overrides = list(Sepal.Length = pl$Float32, Species = pl$Utf8)
+#'   schema_overrides = list(Sepal.Length = pl$Float32, Species = pl$String)
 #' )
 #'
 #' char_schema = names(iris)

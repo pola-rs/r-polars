@@ -144,7 +144,7 @@ test_that("get set properties", {
 test_that("DataFrame, custom schema", {
   df = pl$DataFrame(
     iris,
-    schema = list(Sepal.Length = pl$Float32, Species = pl$Utf8)
+    schema = list(Sepal.Length = pl$Float32, Species = pl$String)
   )
   # dtypes from object are as expected
   expect_true(
@@ -1217,7 +1217,7 @@ test_that("transpose", {
   expect_identical(
     pl$DataFrame(iris)$
       with_columns(pl$col("Species")$
-      cast(pl$Utf8))$
+      cast(pl$String))$
       transpose(FALSE)$
       to_data_frame(),
     df_expected

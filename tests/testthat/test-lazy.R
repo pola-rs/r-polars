@@ -33,7 +33,7 @@ test_that("create LazyFrame", {
 test_that("LazyFrame, custom schema", {
   df = pl$LazyFrame(
     iris,
-    schema = list(Sepal.Length = pl$Float32, Species = pl$Utf8)
+    schema = list(Sepal.Length = pl$Float32, Species = pl$String)
   )$collect()
 
   # dtypes from object are as expected

@@ -141,7 +141,7 @@ NULL
 #' pl$DataFrame(mtcars)
 #'
 #' # custom schema
-#' pl$DataFrame(iris, schema = list(Sepal.Length = pl$Float32, Species = pl$Utf8))
+#' pl$DataFrame(iris, schema = list(Sepal.Length = pl$Float32, Species = pl$String))
 pl_DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
   uw = \(res) unwrap(res, "in $DataFrame():")
 
@@ -1671,7 +1671,7 @@ DataFrame_sample = function(
 #'
 #' # All rows must have one shared supertype, recast Categorical to Utf8 which is a supertype
 #' # of f64, and then dataset "Iris" can be transposed
-#' pl$DataFrame(iris)$with_columns(pl$col("Species")$cast(pl$Utf8))$transpose()
+#' pl$DataFrame(iris)$with_columns(pl$col("Species")$cast(pl$String))$transpose()
 #'
 DataFrame_transpose = function(
     include_header = FALSE,

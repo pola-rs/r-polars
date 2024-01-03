@@ -376,11 +376,11 @@ ExprStr_strip_chars_end = function(matches = NULL) {
 #' some_floats_expr = pl$lit(c(0, 10, -5, 5))
 #'
 #' # cast to Utf8 and ljust alignment = 5, and view as R char vector
-#' some_floats_expr$cast(pl$Utf8)$str$zfill(5)$to_r()
+#' some_floats_expr$cast(pl$String)$str$zfill(5)$to_r()
 #'
 #' # cast to int and the to utf8 and then ljust alignment = 5, and view as R
 #' # char vector
-#' some_floats_expr$cast(pl$Int64)$cast(pl$Utf8)$str$zfill(5)$to_r()
+#' some_floats_expr$cast(pl$Int64)$cast(pl$String)$str$zfill(5)$to_r()
 ExprStr_zfill = function(alignment) {
   .pr$Expr$str_zfill(self, alignment) |>
     unwrap("in str$zfill():")
@@ -541,11 +541,11 @@ ExprStr_json_path_match = function(json_path) {
 #'   pl$col("strings")$str$encode("base64")$alias("base64"), # notice DataType is not encoded
 #'   pl$col("strings")$str$encode("hex")$alias("hex") # ... and must restored with cast
 #' )$with_columns(
-#'   pl$col("base64")$str$decode("base64")$alias("base64_decoded")$cast(pl$Utf8),
-#'   pl$col("hex")$str$decode("hex")$alias("hex_decoded")$cast(pl$Utf8)
+#'   pl$col("base64")$str$decode("base64")$alias("base64_decoded")$cast(pl$String),
+#'   pl$col("hex")$str$decode("hex")$alias("hex_decoded")$cast(pl$String)
 #' )
 ExprStr_decode = function(encoding, ..., strict = TRUE) {
-  uw = \(res) unwrap(res, "in $decode():")
+  uw = \(res) unwrap(res, "in $str$decode():")
 
   pcase(
     !is_string(encoding), stop("encoding must be a string, it was: ", encoding),
@@ -568,11 +568,11 @@ ExprStr_decode = function(encoding, ..., strict = TRUE) {
 #'   pl$col("strings")$str$encode("base64")$alias("base64"), # notice DataType is not encoded
 #'   pl$col("strings")$str$encode("hex")$alias("hex") # ... and must restored with cast
 #' )$with_columns(
-#'   pl$col("base64")$str$decode("base64")$alias("base64_decoded")$cast(pl$Utf8),
-#'   pl$col("hex")$str$decode("hex")$alias("hex_decoded")$cast(pl$Utf8)
+#'   pl$col("base64")$str$decode("base64")$alias("base64_decoded")$cast(pl$String),
+#'   pl$col("hex")$str$decode("hex")$alias("hex_decoded")$cast(pl$String)
 #' )
 ExprStr_encode = function(encoding) {
-  uw = \(res) unwrap(res, "in $encode():")
+  uw = \(res) unwrap(res, "in $str$$encode():")
 
   pcase(
     !is_string(encoding), stop("encoding must be a string, it was: ", encoding),

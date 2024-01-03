@@ -1528,7 +1528,7 @@ test_that("hash + reinterpret", {
 
   hash_values1 = unname(unlist(df$select(pl$col(c("Sepal.Width", "Species"))$unique()$hash()$implode())$to_list()))
   hash_values2 = unname(unlist(df$select(pl$col(c("Sepal.Width", "Species"))$unique()$hash(1, 2, 3, 4)$implode())$to_list()))
-  hash_values3 = unname((df$select(pl$col(c("Sepal.Width", "Species"))$unique()$hash(1, 2, 3, 4)$implode()$cast(pl$List(pl$Utf8)))$to_list()))
+  hash_values3 = unname((df$select(pl$col(c("Sepal.Width", "Species"))$unique()$hash(1, 2, 3, 4)$implode()$cast(pl$List(pl$String)))$to_list()))
   expect_true(!any(duplicated(hash_values1)))
   expect_true(!any(sapply(hash_values3, \(x) any(duplicated(x)))))
 

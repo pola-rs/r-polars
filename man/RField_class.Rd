@@ -22,5 +22,5 @@ datatypes and Schemas to represent everything of the Series/Column except the
 raw values.
 }
 \examples{
-pl$Field("city_names", pl$Utf8)
+pl$Field("city_names", pl$String)
 }

@@ -41,7 +41,7 @@ pl$DataFrame(mtcars)$transpose(include_header = TRUE, column_names = rownames(mt
 
 # All rows must have one shared supertype, recast Categorical to Utf8 which is a supertype
 # of f64, and then dataset "Iris" can be transposed
-pl$DataFrame(iris)$with_columns(pl$col("Species")$cast(pl$Utf8))$transpose()
+pl$DataFrame(iris)$with_columns(pl$col("Species")$cast(pl$String))$transpose()
 
 }
 \keyword{DataFrame}

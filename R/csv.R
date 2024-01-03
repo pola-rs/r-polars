@@ -55,7 +55,7 @@
 #' the name is set).
 #' @param try_parse_dates Try to automatically parse dates. Most ISO8601-like
 #' formats can be inferred, as well as a handful of others. If this does not
-#' succeed, the column remains of data type `pl$Utf8`.
+#' succeed, the column remains of data type `pl$String`.
 #' @param eol_char Single byte end of line character (default: `\n`). When
 #' encountering a file with Windows line endings (`\r\n`), one can go with the
 #' default `\n`. The extra `\r` will be removed when processed.

@@ -16,7 +16,7 @@ pl$dtypes$Utf8
 
 pl$List(pl$List(pl$UInt64))
 
-pl$Struct(pl$Field("CityNames", pl$Utf8))
+pl$Struct(pl$Field("CityNames", pl$String))
 
 # The function changes type from Integer(Int32)[Integers] to char(Utf8)[Strings]
 # specifying the output DataType: Utf8 solves the problem

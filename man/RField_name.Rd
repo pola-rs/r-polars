@@ -10,7 +10,7 @@ RField_name()
 Get/set Field name
 }
 \examples{
-field = pl$Field("Cities", pl$Utf8)
+field = pl$Field("Cities", pl$String)
 field$name
 
 field$name = "CityPoPulations" #<- is fine too
