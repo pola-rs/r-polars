@@ -625,6 +625,10 @@ RPolarsExpr$peak_max <- function() .Call(wrap__RPolarsExpr__peak_max, self)
 
 RPolarsExpr$replace <- function(old, new, default, return_dtype) .Call(wrap__RPolarsExpr__replace, self, old, new, default, return_dtype)
 
+RPolarsExpr$rle <- function() .Call(wrap__RPolarsExpr__rle, self)
+
+RPolarsExpr$rle_id <- function() .Call(wrap__RPolarsExpr__rle_id, self)
+
 RPolarsExpr$list_lengths <- function() .Call(wrap__RPolarsExpr__list_lengths, self)
 
 RPolarsExpr$list_contains <- function(other) .Call(wrap__RPolarsExpr__list_contains, self, other)

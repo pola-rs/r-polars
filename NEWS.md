@@ -6,6 +6,7 @@
 
 -   New methods `$str$reverse()`, `$str$contains_any()`, and `$str$replace_many()`
     (#641).
+-   New methods `$rle()` and `$rle_id()` (#648).
 
 ## polars 0.12.0
 
