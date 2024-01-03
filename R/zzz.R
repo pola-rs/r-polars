@@ -111,7 +111,7 @@ move_env_elements(RPolarsExpr, pl, c("lit"), remove = FALSE)
 
 .onLoad = function(libname, pkgname) {
   # instanciate one of each DataType (it's just an enum)
-  all_types = .pr$DataType$get_all_simple_type_names()
+  all_types = c(.pr$DataType$get_all_simple_type_names(), "Utf8") # Allow "Utf8" as an alias of "String"
   names(all_types) = all_types
   pl$dtypes = c(
     lapply(all_types, DataType_new), # instanciate all simple flag-like types
