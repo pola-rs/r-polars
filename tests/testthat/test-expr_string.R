@@ -442,7 +442,7 @@ test_that("str$extract", {
 
   expect_grepl_error(
     pl$lit("abc")$str$extract(42, 42),
-    "String"
+    "str"
   )
 
   expect_true(
