@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr__string.R
 \name{ExprStr_to_datetime}
 \alias{ExprStr_to_datetime}
-\title{Convert a Utf8 column into a Datetime column}
+\title{Convert a String column into a Datetime column}
 \usage{
 ExprStr_to_datetime(
   format = NULL,
@@ -45,7 +45,7 @@ conversion.}
 Expr
 }
 \description{
-Convert a Utf8 column into a Datetime column
+Convert a String column into a Datetime column
 }
 \examples{
 pl$DataFrame(str_date = c("2009-01-02 01:00", "2009-01-03 02:00", "2009-1-4 3:00"))$

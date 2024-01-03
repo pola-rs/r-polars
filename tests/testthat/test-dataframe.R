@@ -150,7 +150,7 @@ test_that("DataFrame, custom schema", {
   expect_true(
     all(mapply(
       df$dtypes,
-      pl$dtypes[c("Float32", rep("Float64", 3), "Utf8")],
+      pl$dtypes[c("Float32", rep("Float64", 3), "String")],
       FUN = "=="
     ))
   )

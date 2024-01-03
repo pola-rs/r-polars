@@ -231,11 +231,11 @@ ExprList_contains = function(item) .pr$Expr$list_contains(self, wrap_e(item))
 #'
 #' @description
 #' Join all string items in a sublist and place a separator between them.
-#' This errors if inner type of list `!= Utf8`.
+#' This errors if inner type of list `!= String`.
 #' @param separator String to separate the items with. Can be an Expr.
 #' @keywords ExprList
 #' @format function
-#' @return Series of dtype Utf8
+#' @return Series of dtype String
 #' @aliases list_join
 #' @examples
 #' df = pl$DataFrame(list(s = list(c("a", "b", "c"), c("x", "y"))))

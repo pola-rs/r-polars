@@ -7,7 +7,7 @@
 ExprStr_to_lowercase()
 }
 \value{
-Expr of Utf8 lowercase chars
+Expr of String lowercase chars
 }
 \description{
 Transform to lowercase variant.

@@ -7,7 +7,7 @@
 ExprStr_to_titlecase()
 }
 \value{
-Expr of Utf8 titlecase chars
+Expr of String titlecase chars
 }
 \description{
 Transform to titlecase variant.

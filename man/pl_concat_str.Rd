@@ -9,7 +9,7 @@ pl_concat_str(..., separator = "")
 \arguments{
 \item{...}{Columns to concatenate into a single string column. Accepts
 expressions. Strings are parsed as column names, other non-expression inputs
-are parsed as literals. Non-Utf8 columns are cast to Utf8.}
+are parsed as literals. Non-String columns are cast to String}
 
 \item{separator}{String that will be used to separate the values of each
 column.}

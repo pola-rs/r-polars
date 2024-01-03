@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_explode}
 \alias{Expr_explode}
-\title{Explode a list or Utf8 Series}
+\title{Explode a list or String Series}
 \usage{
 Expr_explode
 }

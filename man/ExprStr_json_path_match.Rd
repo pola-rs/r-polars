@@ -10,7 +10,7 @@ ExprStr_json_path_match(json_path)
 \item{json_path}{A valid JSON path query string.}
 }
 \value{
-Utf8 array. Contain null if original value is null or the json_path
+String array. Contain null if original value is null or the json_path
 return nothing.
 }
 \description{
@@ -18,7 +18,7 @@ Extract the first match of JSON string with the provided JSONPath expression
 }
 \details{
 Throw errors if encounter invalid JSON strings. All return value will be
-cast to Utf8 regardless of the original value.
+cast to String regardless of the original value.
 
 Documentation on JSONPath standard can be found here: \url{https://goessner.net/articles/JsonPath/}.
 }

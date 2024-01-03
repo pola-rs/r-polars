@@ -7,7 +7,7 @@
 ExprStr_to_uppercase()
 }
 \value{
-Expr of Utf8 uppercase chars
+Expr of String uppercase chars
 }
 \description{
 Transform to uppercase variant.

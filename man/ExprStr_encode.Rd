@@ -10,7 +10,7 @@ ExprStr_encode(encoding)
 \item{encoding}{Either 'hex' or 'base64'.}
 }
 \value{
-Utf8 array with values encoded using provided encoding
+String array with values encoded using provided encoding
 }
 \description{
 Encode a value using the provided encoding

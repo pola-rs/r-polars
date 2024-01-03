@@ -12,14 +12,14 @@ not applicable
 \examples{
 print(ls(pl$dtypes))
 pl$dtypes$Float64
-pl$dtypes$Utf8
+pl$dtypes$String
 
 pl$List(pl$List(pl$UInt64))
 
 pl$Struct(pl$Field("CityNames", pl$String))
 
-# The function changes type from Integer(Int32)[Integers] to char(Utf8)[Strings]
-# specifying the output DataType: Utf8 solves the problem
-pl$Series(1:4)$map_elements(\(x) letters[x], datatype = pl$dtypes$Utf8)
+# The function changes type from Int32 to String
+# Specifying the output DataType: String solves the problem
+pl$Series(1:4)$map_elements(\(x) letters[x], datatype = pl$dtypes$String)
 
 }

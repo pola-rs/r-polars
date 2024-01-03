@@ -457,7 +457,7 @@ test_that("Series list", {
   s = pl$Series(l)
 
   # check data_type
-  expect_true(s$dtype == with(pl, List(List(List(Utf8)))))
+  expect_true(s$dtype == with(pl, List(List(List(String)))))
 
   # flatten 3-levels and return to R
   # TODO CONTRIBUTE POLARS this is a bug, when flattening an empty list, it should not give a null

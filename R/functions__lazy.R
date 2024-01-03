@@ -62,7 +62,7 @@ pl_all = function(name = NULL) {
 #' df$select(pl$col(pl$dtypes$Float64))
 #'
 #' # ... or an R list of DataTypes, select any column of any such DataType
-#' df$select(pl$col(list(pl$dtypes$Float64, pl$dtypes$Utf8)))
+#' df$select(pl$col(list(pl$dtypes$Float64, pl$dtypes$String)))
 #'
 #' # from Series of names
 #' df$select(pl$col(pl$Series(c("bar", "foobar"))))
@@ -741,7 +741,7 @@ pl_struct = function(
 #'
 #' @param ... Columns to concatenate into a single string column. Accepts
 #' expressions. Strings are parsed as column names, other non-expression inputs
-#' are parsed as literals. Non-Utf8 columns are cast to Utf8.
+#' are parsed as literals. Non-String columns are cast to String
 #' @param separator String that will be used to separate the values of each
 #' column.
 #' @return Expr

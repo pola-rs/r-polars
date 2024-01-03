@@ -10,7 +10,7 @@ ExprStr_extract_all(pattern)
 \item{pattern}{A valid regex pattern}
 }
 \value{
-\code{List[Utf8]} array. Contain null if original value is null or regex capture
+\code{List[String]} array. Contain null if original value is null or regex capture
 nothing.
 }
 \description{

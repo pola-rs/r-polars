@@ -13,7 +13,7 @@ used to split the string.}
 \item{inclusive}{If \code{TRUE}, include the split character/string in the results.}
 }
 \value{
-List of Utf8 type
+List of String type
 }
 \description{
 Split the string by a substring

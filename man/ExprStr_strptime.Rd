@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr__string.R
 \name{ExprStr_strptime}
 \alias{ExprStr_strptime}
-\title{Convert a Utf8 column into a Date/Datetime/Time column.}
+\title{Convert a String column into a Date/Datetime/Time column.}
 \usage{
 ExprStr_strptime(
   datatype,
@@ -42,7 +42,7 @@ conversion.}
 Expr of a Date, Datetime or Time Series
 }
 \description{
-Convert a Utf8 column into a Date/Datetime/Time column.
+Convert a String column into a Date/Datetime/Time column.
 }
 \details{
 When parsing a Datetime the column precision will be inferred from the format

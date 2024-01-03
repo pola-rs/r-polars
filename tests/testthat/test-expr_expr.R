@@ -501,10 +501,10 @@ test_that("to_physical + cast", {
   df
 
 
-  # cast error raised for Utf8 to Boolean
+  # cast error raised for String to Boolean
   expect_error(
     pl$DataFrame(iris)$with_columns(
-      pl$col("Species")$cast(pl$dtypes$Utf8)$cast(pl$dtypes$Boolean)
+      pl$col("Species")$cast(pl$dtypes$String)$cast(pl$dtypes$Boolean)
     )
   )
 
@@ -2118,7 +2118,7 @@ test_that("ewm_", {
 test_that("extend_constant", {
   expect_identical(
     pl$lit(c("5", "Bob_is_not_a_number"))
-    $cast(pl$dtypes$Utf8, strict = FALSE)
+    $cast(pl$dtypes$String, strict = FALSE)
     $extend_constant("chuchu", 2)$to_r(),
     c("5", "Bob_is_not_a_number", "chuchu", "chuchu")
   )
@@ -2282,7 +2282,7 @@ test_that("shrink_dtype", {
 
   expect_true(all(mapply(
     df$dtypes,
-    pl$dtypes[c("Int8", "Int64", "Int32", "Int8", "Int16", "Utf8", "Float32", "Boolean")],
+    pl$dtypes[c("Int8", "Int64", "Int32", "Int8", "Int16", "String", "Float32", "Boolean")],
     FUN = function(actual, expected) actual == expected
   )))
 })

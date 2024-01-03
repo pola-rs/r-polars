@@ -15,7 +15,7 @@ ExprStr_decode(encoding, ..., strict = TRUE)
 cannot be decoded. Otherwise, replace it with a null value.}
 }
 \value{
-Utf8 array with values decoded using provided encoding
+String array with values decoded using provided encoding
 }
 \description{
 Decode a value using the provided encoding
