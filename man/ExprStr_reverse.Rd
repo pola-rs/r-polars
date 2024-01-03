@@ -3,6 +3,9 @@
 \name{ExprStr_reverse}
 \alias{ExprStr_reverse}
 \title{Returns string values in reversed order}
+\usage{
+ExprStr_reverse()
+}
 \value{
 Expr
 }
