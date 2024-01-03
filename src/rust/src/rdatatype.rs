@@ -73,7 +73,7 @@ impl RPolarsDataType {
             "Float32" | "float32" | "double" => pl::DataType::Float32,
             "Float64" | "float64" => pl::DataType::Float64,
 
-            "String" | "character" => pl::DataType::String,
+            "Utf8" | "String" | "character" => pl::DataType::String,
             "Binary" | "binary" => pl::DataType::Binary,
             "Date" | "date" => pl::DataType::Date,
             "Time" | "time" => pl::DataType::Time,
