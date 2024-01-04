@@ -21,7 +21,7 @@ This will take every element of a list column and add it on an
 additional row.
 }
 \details{
-Only columns of DataType \code{List} or \code{Utf8} can be exploded.
+Only columns of DataType \code{List} or \code{String} can be exploded.
 
 Named expressions like \verb{$explode(a = pl$col("b"))} will not implicitly trigger
 \verb{$alias("a")} here, due to only variant \code{Expr::Column} is supported in

@@ -72,7 +72,7 @@ test_that("from_arrow", {
   # use schema override
   df = pl$from_arrow(
     arrow::arrow_table(iris),
-    schema_overrides = list(Sepal.Length = pl$Float32, Species = pl$Utf8)
+    schema_overrides = list(Sepal.Length = pl$Float32, Species = pl$String)
   )
   iris_str = iris
   iris_str$Species = as.character(iris_str$Species)

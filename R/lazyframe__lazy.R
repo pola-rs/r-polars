@@ -144,7 +144,7 @@ NULL
 #' # custom schema
 #' pl$LazyFrame(
 #'   iris,
-#'   schema = list(Sepal.Length = pl$Float32, Species = pl$Utf8)
+#'   schema = list(Sepal.Length = pl$Float32, Species = pl$String)
 #' )$collect()
 pl_LazyFrame = function(...) {
   pl$DataFrame(...)$lazy()
@@ -1502,7 +1502,7 @@ LazyFrame_profile = function(
 #' `"name"` is implicitly converted to `pl$col("name")`.
 #'
 #' @details
-#' Only columns of DataType `List` or `Utf8` can be exploded.
+#' Only columns of DataType `List` or `String` can be exploded.
 #'
 #' Named expressions like `$explode(a = pl$col("b"))` will not implicitly trigger
 #' `$alias("a")` here, due to only variant `Expr::Column` is supported in

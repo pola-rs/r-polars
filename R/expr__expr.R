@@ -672,7 +672,7 @@ construct_ProtoExprArray = function(...) {
 #'   select(
 #'   pl$col("Sepal.Length")$map_batches(\(x) {
 #'     paste("cheese", as.character(x$to_vector()))
-#'   }, pl$dtypes$Utf8)
+#'   }, pl$dtypes$String)
 #' )
 #'
 #' # R parallel process example, use Sys.sleep() to imitate some CPU expensive
@@ -799,7 +799,7 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FAL
 #'
 #' e_letter = my_selection$map_elements(\(x) {
 #'   letters[ceiling(x)]
-#' }, return_type = pl$dtypes$Utf8)$name$suffix("_letter")
+#' }, return_type = pl$dtypes$String)$name$suffix("_letter")
 #' pl$DataFrame(iris)$select(e_add10, e_letter)
 #'
 #'
@@ -1575,10 +1575,12 @@ Expr_sort_by = function(by, descending = FALSE) {
 #' Gather values by index
 #'
 #' @param indices R scalar/vector or Series, or Expr that leads to a Series of
-#' dtype UInt32.
+#' dtype Int64. (0-indexed)
 #' @return Expr
 #' @examples
-#' pl$DataFrame(a = c(1, 2, 4, 5, 8))$select(pl$col("a")$gather(c(0, 2, 4)))
+#' df = pl$DataFrame(a = 1:10)
+#'
+#' df$select(pl$col("a")$gather(c(0, 2, 4, -1)))
 Expr_gather = function(indices) {
   .pr$Expr$gather(self, pl$lit(indices)) |>
     unwrap("in $gather():")
@@ -2034,7 +2036,7 @@ Expr_filter = function(predicate) {
 Expr_where = Expr_filter
 
 
-#' Explode a list or Utf8 Series
+#' Explode a list or String Series
 #'
 #' This means that every item is expanded to a new row.
 #'

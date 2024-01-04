@@ -56,7 +56,7 @@ pl$DataFrame(iris)$
   select(
   pl$col("Sepal.Length")$map_batches(\(x) {
     paste("cheese", as.character(x$to_vector()))
-  }, pl$dtypes$Utf8)
+  }, pl$dtypes$String)
 )
 
 # R parallel process example, use Sys.sleep() to imitate some CPU expensive

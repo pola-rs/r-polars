@@ -14,7 +14,7 @@ ExprStr_replace(pattern, value, literal = FALSE)
 \item{literal}{Treat pattern as a literal string.}
 }
 \value{
-Expr of Utf8 Series
+Expr of String Series
 }
 \description{
 Replace first matching regex/literal substring with a new string value

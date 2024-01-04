@@ -13,7 +13,7 @@ set of characters will be stripped. If \code{NULL} (default), all whitespace is
 removed instead. This can be an Expr.}
 }
 \value{
-Expr of Utf8 lowercase chars
+Expr of String lowercase chars
 }
 \description{
 Remove leading characters.

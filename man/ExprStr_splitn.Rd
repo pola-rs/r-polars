@@ -12,7 +12,7 @@ ExprStr_splitn(by, n)
 \item{n}{Number of splits to make.}
 }
 \value{
-Struct where each of \code{n} fields is of Utf8 type
+Struct where each of \code{n} fields is of String type
 }
 \description{
 If the number of possible splits is less than \code{n-1}, the remaining field

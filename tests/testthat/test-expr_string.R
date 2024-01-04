@@ -400,15 +400,15 @@ test_that("encode decode", {
     pl$col("strings")$str$encode("base64")$alias("base64"), # notice DataType is not encoded
     pl$col("strings")$str$encode("hex")$alias("hex") # ... and must restored with cast
   )$with_columns(
-    pl$col("base64")$str$decode("base64")$alias("base64_decoded")$cast(pl$Utf8),
-    pl$col("hex")$str$decode("hex")$alias("hex_decoded")$cast(pl$Utf8)
+    pl$col("base64")$str$decode("base64")$alias("base64_decoded")$cast(pl$String),
+    pl$col("hex")$str$decode("hex")$alias("hex_decoded")$cast(pl$String)
   )$to_list()
 
   expect_identical(l$strings, l$base64_decoded)
   expect_identical(l$strings, l$hex_decoded)
 
   expect_identical(
-    pl$lit("?")$str$decode("base64", strict = FALSE)$cast(pl$Utf8)$to_r(),
+    pl$lit("?")$str$decode("base64", strict = FALSE)$cast(pl$String)$to_r(),
     NA_character_
   )
 
@@ -442,7 +442,7 @@ test_that("str$extract", {
 
   expect_grepl_error(
     pl$lit("abc")$str$extract(42, 42),
-    "String"
+    "str"
   )
 
   expect_true(

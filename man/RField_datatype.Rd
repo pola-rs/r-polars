@@ -10,7 +10,7 @@ RField_datatype()
 Get/set Field datatype
 }
 \examples{
-field = pl$Field("Cities", pl$Utf8)
+field = pl$Field("Cities", pl$String)
 field$datatype
 
 field$datatype = pl$Categorical #<- is fine too

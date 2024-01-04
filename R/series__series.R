@@ -251,11 +251,10 @@ Series_shape = method_as_property(function() {
 #'
 #' @examples
 #'
-#' # make polars Series_Utf8
 #' series_vec = pl$Series(letters[1:3])
 #'
 #' # Series_non_list
-#' series_vec$to_r() # as vector because Series DataType is not list (is Utf8)
+#' series_vec$to_r() # as vector because Series DataType is not list (is String)
 #' series_vec$to_r_list() # implicit call as.list(), convert to list
 #' series_vec$to_vector() # implicit call unlist(), same as to_r() as already vector
 #'
@@ -354,7 +353,7 @@ Series_value_counts = function(sort = TRUE, parallel = FALSE) {
 #' @examples
 #' s = pl$Series(letters[1:5], "ltrs")
 #' f = \(x) paste(x, ":", as.integer(charToRaw(x)))
-#' s$map_elements(f, pl$Utf8)
+#' s$map_elements(f, pl$String)
 #'
 #' # same as
 #' pl$Series(sapply(s$to_r(), f), s$name)

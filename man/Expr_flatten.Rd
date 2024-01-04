@@ -3,7 +3,7 @@
 \docType{data}
 \name{Expr_flatten}
 \alias{Expr_flatten}
-\title{Explode a list or Utf8 Series}
+\title{Explode a list or String Series}
 \format{
 An object of class \code{character} of length 1.
 }

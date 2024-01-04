@@ -13,7 +13,7 @@ ExprStr_concat(delimiter = "-", ignore_nulls = TRUE)
 propagated: if the column contains any null values, the output is null.}
 }
 \value{
-Expr of Utf8 concatenated
+Expr of String concatenated
 }
 \description{
 Vertically concatenate the values in the Series to a single

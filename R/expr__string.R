@@ -4,7 +4,7 @@
 # expr_str_make_sub_ns = macro_new_subnamespace("^ExprStr_", "RPolarsExprStrNameSpace")
 
 
-#' Convert a Utf8 column into a Date/Datetime/Time column.
+#' Convert a String column into a Date/Datetime/Time column.
 #'
 #'
 #' @param datatype The data type to convert into. Can be either Date, Datetime,
@@ -96,7 +96,7 @@ ExprStr_strptime = function(
     unwrap("in str$strptime():")
 }
 
-#' Convert a Utf8 column into a Date column
+#' Convert a String column into a Date column
 #'
 #' @param format Format to use for conversion. See `?strptime` for possible
 #' values. Example: "%Y-%m-%d". If `NULL` (default), the format is
@@ -120,7 +120,7 @@ ExprStr_to_date = function(format = NULL, strict = TRUE, exact = TRUE, cache = T
     unwrap("in $str$to_date():")
 }
 
-#' Convert a Utf8 column into a Time column
+#' Convert a String column into a Time column
 #'
 #' @param format Format to use for conversion. See `?strptime` for possible
 #' values. Example: "%H:%M:%S". If `NULL` (default), the format is
@@ -142,7 +142,7 @@ ExprStr_to_time = function(format = NULL, strict = TRUE, cache = TRUE) {
     unwrap("in $str$to_time():")
 }
 
-#' Convert a Utf8 column into a Datetime column
+#' Convert a String column into a Datetime column
 #'
 #' @param format Format to use for conversion. See `?strptime` for possible
 #' values. Example: "%Y-%m-%d %H:%M:%S". If `NULL` (default), the format is
@@ -223,7 +223,7 @@ ExprStr_len_chars = function() {
 #' @param ignore_nulls Ignore null values. If `FALSE`, null values will be
 #' propagated: if the column contains any null values, the output is null.
 #' @keywords ExprStr
-#' @return Expr of Utf8 concatenated
+#' @return Expr of String concatenated
 #' @examples
 #' # concatenate a Series of strings to a single string
 #' df = pl$DataFrame(foo = c("1", NA, 2))
@@ -242,7 +242,7 @@ ExprStr_concat = function(delimiter = "-", ignore_nulls = TRUE) {
 #'
 #' @description Transform to uppercase variant.
 #' @keywords ExprStr
-#' @return Expr of Utf8 uppercase chars
+#' @return Expr of String uppercase chars
 #' @examples
 #' pl$lit(c("A", "b", "c", "1", NA))$str$to_uppercase()$to_series()
 ExprStr_to_uppercase = function() {
@@ -253,7 +253,7 @@ ExprStr_to_uppercase = function() {
 #'
 #' @description Transform to lowercase variant.
 #' @keywords ExprStr
-#' @return Expr of Utf8 lowercase chars
+#' @return Expr of String lowercase chars
 #' @examples
 #' pl$lit(c("A", "b", "c", "1", NA))$str$to_lowercase()$to_series()
 ExprStr_to_lowercase = function() {
@@ -264,7 +264,7 @@ ExprStr_to_lowercase = function() {
 #'
 #' @description Transform to titlecase variant.
 #' @keywords ExprStr
-#' @return Expr of Utf8 titlecase chars
+#' @return Expr of String titlecase chars
 #' @details
 #' This method is only available with the feature flag "simd" which can
 #' be set via envvar "RPOLARS_FULL_FEATURES" and it requires
@@ -296,7 +296,7 @@ ExprStr_to_titlecase = function() {
 #' `strip_chars()` removes characters at the beginning and the end of the string.
 #' Use `strip_chars_start()` and `strip_chars_end()` to remove characters only
 #' from left and right respectively.
-#' @return Expr of Utf8 lowercase chars
+#' @return Expr of String lowercase chars
 #' @examples
 #' df = pl$DataFrame(foo = c(" hello", "\tworld"))
 #' df$select(pl$col("foo")$str$strip_chars())
@@ -321,7 +321,7 @@ ExprStr_strip_chars = function(matches = NULL) {
 #' `strip_chars_start()` removes characters at the beginning of the string only.
 #' Use `strip_chars()` and `strip_chars_end()` to remove characters from the left
 #' and right or only from the right respectively.
-#' @return Expr of Utf8 lowercase chars
+#' @return Expr of String lowercase chars
 #' @examples
 #' df = pl$DataFrame(foo = c(" hello", "\tworld"))
 #' df$select(pl$col("foo")$str$strip_chars_start(" hel rld"))
@@ -345,7 +345,7 @@ ExprStr_strip_chars_start = function(matches = NULL) {
 #' `strip_chars_end()` removes characters at the end of the string only.
 #' Use `strip_chars()` and `strip_chars_start()` to remove characters from the left
 #' and right or only from the left respectively.
-#' @return Expr of Utf8 lowercase chars
+#' @return Expr of String lowercase chars
 #' @examples
 #' df = pl$DataFrame(foo = c(" hello", "\tworld"))
 #' df$select(pl$col("foo")$str$strip_chars_end(" hel\trld"))
@@ -375,12 +375,12 @@ ExprStr_strip_chars_end = function(matches = NULL) {
 #' @examples
 #' some_floats_expr = pl$lit(c(0, 10, -5, 5))
 #'
-#' # cast to Utf8 and ljust alignment = 5, and view as R char vector
-#' some_floats_expr$cast(pl$Utf8)$str$zfill(5)$to_r()
+#' # cast to String and ljust alignment = 5, and view as R char vector
+#' some_floats_expr$cast(pl$String)$str$zfill(5)$to_r()
 #'
 #' # cast to int and the to utf8 and then ljust alignment = 5, and view as R
 #' # char vector
-#' some_floats_expr$cast(pl$Int64)$cast(pl$Utf8)$str$zfill(5)$to_r()
+#' some_floats_expr$cast(pl$Int64)$cast(pl$String)$str$zfill(5)$to_r()
 ExprStr_zfill = function(alignment) {
   .pr$Expr$str_zfill(self, alignment) |>
     unwrap("in str$zfill():")
@@ -395,7 +395,7 @@ ExprStr_zfill = function(alignment) {
 #' @param fillchar Fill with this ASCII character.
 #' @details Padding is done using the specified `fillchar`. The original string
 #' is returned if `width` is less than or equal to `len(s)`.
-#' @return Expr of Utf8
+#' @return Expr of String
 #' @examples
 #' df = pl$DataFrame(a = c("cow", "monkey", NA, "hippopotamus"))
 #' df$select(pl$col("a")$str$pad_end(8, "*"))
@@ -508,10 +508,10 @@ ExprStr_json_decode = function(dtype, infer_schema_length = 100) {
 #' @param json_path A valid JSON path query string.
 #' @details
 #' Throw errors if encounter invalid JSON strings. All return value will be
-#' cast to Utf8 regardless of the original value.
+#' cast to String regardless of the original value.
 #'
 #' Documentation on JSONPath standard can be found here: <https://goessner.net/articles/JsonPath/>.
-#' @return Utf8 array. Contain null if original value is null or the json_path
+#' @return String array. Contain null if original value is null or the json_path
 #' return nothing.
 #' @examples
 #' df = pl$DataFrame(
@@ -532,7 +532,7 @@ ExprStr_json_path_match = function(json_path) {
 #' @param strict If `TRUE` (default), raise an error if the underlying value
 #' cannot be decoded. Otherwise, replace it with a null value.
 #'
-#' @return Utf8 array with values decoded using provided encoding
+#' @return String array with values decoded using provided encoding
 #'
 #' @examples
 #' df = pl$DataFrame(strings = c("foo", "bar", NA))
@@ -541,14 +541,16 @@ ExprStr_json_path_match = function(json_path) {
 #'   pl$col("strings")$str$encode("base64")$alias("base64"), # notice DataType is not encoded
 #'   pl$col("strings")$str$encode("hex")$alias("hex") # ... and must restored with cast
 #' )$with_columns(
-#'   pl$col("base64")$str$decode("base64")$alias("base64_decoded")$cast(pl$Utf8),
-#'   pl$col("hex")$str$decode("hex")$alias("hex_decoded")$cast(pl$Utf8)
+#'   pl$col("base64")$str$decode("base64")$alias("base64_decoded")$cast(pl$String),
+#'   pl$col("hex")$str$decode("hex")$alias("hex_decoded")$cast(pl$String)
 #' )
 ExprStr_decode = function(encoding, ..., strict = TRUE) {
+  uw = \(res) unwrap(res, "in $str$decode():")
+
   pcase(
     !is_string(encoding), stop("encoding must be a string, it was: ", encoding),
-    encoding == "hex", .pr$Expr$str_hex_decode(self, strict),
-    encoding == "base64", .pr$Expr$str_base64_decode(self, strict),
+    encoding == "hex", uw(.pr$Expr$str_hex_decode(self, strict)),
+    encoding == "base64", uw(.pr$Expr$str_base64_decode(self, strict)),
     or_else = stop("encoding must be one of 'hex' or 'base64', got ", encoding)
   )
 }
@@ -557,7 +559,7 @@ ExprStr_decode = function(encoding, ..., strict = TRUE) {
 #'
 #' @keywords ExprStr
 #' @param encoding Either 'hex' or 'base64'.
-#' @return Utf8 array with values encoded using provided encoding
+#' @return String array with values encoded using provided encoding
 #'
 #' @examples
 #' df = pl$DataFrame(strings = c("foo", "bar", NA))
@@ -566,14 +568,16 @@ ExprStr_decode = function(encoding, ..., strict = TRUE) {
 #'   pl$col("strings")$str$encode("base64")$alias("base64"), # notice DataType is not encoded
 #'   pl$col("strings")$str$encode("hex")$alias("hex") # ... and must restored with cast
 #' )$with_columns(
-#'   pl$col("base64")$str$decode("base64")$alias("base64_decoded")$cast(pl$Utf8),
-#'   pl$col("hex")$str$decode("hex")$alias("hex_decoded")$cast(pl$Utf8)
+#'   pl$col("base64")$str$decode("base64")$alias("base64_decoded")$cast(pl$String),
+#'   pl$col("hex")$str$decode("hex")$alias("hex_decoded")$cast(pl$String)
 #' )
 ExprStr_encode = function(encoding) {
+  uw = \(res) unwrap(res, "in $str$$encode():")
+
   pcase(
     !is_string(encoding), stop("encoding must be a string, it was: ", encoding),
-    encoding == "hex", .pr$Expr$str_hex_encode(self),
-    encoding == "base64", .pr$Expr$str_base64_encode(self),
+    encoding == "hex", uw(.pr$Expr$str_hex_encode(self)),
+    encoding == "base64", uw(.pr$Expr$str_base64_encode(self)),
     or_else = stop("encoding must be one of 'hex' or 'base64', got ", encoding)
   )
 }
@@ -587,7 +591,7 @@ ExprStr_encode = function(encoding) {
 #' pattern, first group begin at index 1 (default).
 #'
 #' @return
-#' Utf8 array. Contains null if original value is null or regex capture nothing.
+#' String array. Contains null if original value is null or regex capture nothing.
 #'
 #' @examples
 #' df = pl$DataFrame(
@@ -614,7 +618,7 @@ ExprStr_extract = function(pattern, group_index) {
 #' @param pattern A valid regex pattern
 #'
 #' @return
-#' `List[Utf8]` array. Contain null if original value is null or regex capture
+#' `List[String]` array. Contain null if original value is null or regex capture
 #' nothing.
 #'
 #' @examples
@@ -661,7 +665,7 @@ ExprStr_count_matches = function(pattern, literal = FALSE) {
 #' @param inclusive If `TRUE`, include the split character/string in the results.
 #'
 #' @return
-#' List of Utf8 type
+#' List of String type
 #'
 #' @examples
 #' df = pl$DataFrame(s = c("foo bar", "foo-bar", "foo bar baz"))
@@ -690,7 +694,7 @@ ExprStr_split = function(by, inclusive = FALSE) {
 #' @param n Number of splits to make.
 #' @param inclusive If `TRUE`, include the split character/string in the results.
 #'
-#' @return Struct where each of n+1 fields is of Utf8 type
+#' @return Struct where each of n+1 fields is of String type
 #'
 #' @examples
 #' df = pl$DataFrame(s = c("a_1", NA, "c", "d_4"))
@@ -714,7 +718,7 @@ ExprStr_split_exact = function(by, n, inclusive = FALSE) {
 #' @param n Number of splits to make.
 #'
 #' @return
-#' Struct where each of `n` fields is of Utf8 type
+#' Struct where each of `n` fields is of String type
 #'
 #' @examples
 #' df = pl$DataFrame(s = c("a_1", NA, "c", "d_4"))
@@ -733,7 +737,7 @@ ExprStr_splitn = function(by, n) {
 #' @param value Replacement, can be an Expr.
 #' @param literal Treat pattern as a literal string.
 #'
-#' @return Expr of Utf8 Series
+#' @return Expr of String Series
 #'
 #' @seealso `$str$replace_all()`: Replace all matching regex/literal substrings.
 #'
@@ -756,7 +760,7 @@ ExprStr_replace = function(pattern, value, literal = FALSE) {
 #' @param value Replacement, can be an Expr.
 #' @param literal Treat pattern as a literal string.
 #'
-#' @return Expr of Utf8 Series
+#' @return Expr of String Series
 #'
 #' @seealso `$str$replace()`: Replace first matching regex/literal substring.
 #'
@@ -771,14 +775,14 @@ ExprStr_replace_all = function(pattern, value, literal = FALSE) {
 }
 
 
-#' Create subslices of the string values of a Utf8 Series
+#' Create subslices of the string values of a String Series
 #'
 #' @keywords ExprStr
 #' @param offset Start index. Negative indexing is supported.
 #' @param length Length of the slice. If `NULL` (default), the slice is taken to
 #' the end of the string.
 #'
-#' @return Expr: Series of dtype Utf8.
+#' @return Expr: Series of dtype String.
 #'
 #' @examples
 #' df = pl$DataFrame(s = c("pear", NA, "papaya", "dragonfruit"))
@@ -793,7 +797,7 @@ ExprStr_slice = function(offset, length = NULL) {
 #' Returns a column with a separate row for every string character
 #'
 #' @keywords ExprStr
-#' @return Expr: Series of dtype Utf8.
+#' @return Expr: Series of dtype String.
 #' @examples
 #' df = pl$DataFrame(a = c("foo", "bar"))
 #' df$select(pl$col("a")$str$explode())
