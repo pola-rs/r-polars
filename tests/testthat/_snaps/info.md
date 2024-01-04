@@ -1,4 +1,4 @@
-# print pl$polars_info()
+# print polars_info()
 
     Code
       info

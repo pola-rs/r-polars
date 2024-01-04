@@ -5,9 +5,10 @@
 #' - [Number of threads used by Polars][pl_threadpool_size]
 #' - Rust feature flags (See `vignette("install", "polars")` for details)
 #' @return A list with information of the package
+#' @export
 #' @examples
-#' pl$polars_info()
-pl_polars_info = function() {
+#' polars_info()
+polars_info = function() {
   # Similar to arrow::arrow_info()
   out = list(
     version = utils::packageVersion("polars"),
@@ -18,6 +19,10 @@ pl_polars_info = function() {
   structure(out, class = "polars_info")
 }
 
+pl_polars_info = function() {
+  warning("pl$polars_info() is deprecated and will be removed in 0.13.0. Use polars_info() instead.", call. = FALSE)
+  polars_info()
+}
 
 #' @noRd
 #' @export
