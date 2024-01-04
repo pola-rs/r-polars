@@ -2,6 +2,9 @@
 
 ## polars (development version)
 
+This version includes a few additional features and
+a large amount of documentation improvements.
+
 ### Deprecations
 
 -   `pl$polars_info()` is moved to `polars_info()`. `pl$polars_info()` is deprecated
@@ -9,8 +12,9 @@
 
 ### Rust-polars update
 
--   rust-polars is updated to 0.36.2 (#659). Most of the changes were covered
-    in 0.12.0. The main change is that `pl$Utf8` is replaced by `pl$String`.
+-   rust-polars is updated to 0.36.2 (#659). Most of the changes from 0.35.x to 0.36.2
+    were covered in R polars 0.12.0.
+    The main change is that `pl$Utf8` is replaced by `pl$String`.
     `pl$Utf8` is an alias and will keep working, but `pl$String` is now preferred
     in the documentation and in new code.
 
@@ -25,7 +29,7 @@
 ### Miscellaneous
 
 -   Remove the `Makefile` in favor of `Taskfile.yml`.
-    Please use `task` instead of `make` as a task runner (#654).
+    Please use `task` instead of `make` as a task runner in the development (#654).
 
 ## polars 0.12.0
 
