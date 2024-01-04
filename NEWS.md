@@ -2,6 +2,11 @@
 
 ## polars (development version)
 
+### Deprecations
+
+-   `pl$polars_info()` is moved to `polars_info()`. `pl$polars_info()` is deprecated
+    and will be removed in 0.13.0 (#662).
+
 ### Rust-polars update
 
 -   rust-polars is updated to 0.36.2 (#659). Most of the changes were covered
