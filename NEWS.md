@@ -4,7 +4,7 @@
 
 ### Rust-polars update
 
--   rust-polars is updated to 0.36.0 (#659). Most of the changes were covered
+-   rust-polars is updated to 0.36.2 (#659). Most of the changes were covered
     in 0.12.0. The main change is that `pl$Utf8` is replaced by `pl$String`.
     `pl$Utf8` is an alias and will keep working, but `pl$String` is now preferred
     in the documentation and in new code.
