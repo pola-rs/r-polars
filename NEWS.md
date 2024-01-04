@@ -1,5 +1,7 @@
 # NEWS
 
+## polars (development version)
+
 ## polars 0.12.1
 
 This version includes a few additional features and
