@@ -269,8 +269,8 @@ ExprStr_to_lowercase = function() {
 #' This method is only available with the feature flag "simd" which can
 #' be set via envvar "RPOLARS_FULL_FEATURES" and it requires
 #' Rust nightly toolchain to compile.
-#' See [`pl$polars_info()`][pl_polars_info] for more details.
-#' @examplesIf pl$polars_info()$features$simd
+#' See [polars_info] for more details.
+#' @examplesIf polars_info()$features$simd
 #' pl$lit(c("hello there", "HI, THERE", NA))$str$to_titlecase()$to_series()
 ExprStr_to_titlecase = function() {
   check_feature("simd", "in $to_titlecase():")

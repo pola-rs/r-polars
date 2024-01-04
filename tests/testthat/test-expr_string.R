@@ -185,7 +185,7 @@ test_that("to_uppercase, to_lowercase", {
 })
 
 test_that("to_titlecase - enabled via the simd feature", {
-  skip_if_not(pl$polars_info()$features$simd)
+  skip_if_not(polars_info()$features$simd)
   df2 = pl$DataFrame(foo = c("hi there", "HI, THERE", NA))
   expect_identical(
     df2$select(pl$col("foo")$str$to_titlecase())$to_list()$foo,
@@ -194,7 +194,7 @@ test_that("to_titlecase - enabled via the simd feature", {
 })
 
 test_that("to_titlecase - enabled via the simd feature", {
-  skip_if(pl$polars_info()$features$simd)
+  skip_if(polars_info()$features$simd)
   expect_error(pl$col("foo")$str$to_titlecase())
 })
 
