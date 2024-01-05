@@ -111,7 +111,7 @@ r-polars Rust library has some [feature flags](https://doc.rust-lang.org/cargo/r
 that affect the R package features.
 These flags are set at compile time, and cannot be changed at runtime.
 
-The features enabled in the compiled Rust library are shown by the `pl$polars_info()` function.
+The features enabled in the compiled Rust library are shown by the `polars_info()` function.
 
 ```{r}
 library(polars)
