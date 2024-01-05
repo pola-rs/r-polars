@@ -1,5 +1,5 @@
 ---
-title: "installing polars details"
+title: "Installation details"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{install}
@@ -88,6 +88,7 @@ If one of the following environment variables is set,
 a pre-built Rust library binary will be tried to be used before building the Rust source.
 
 - `NOT_CRAN="true"`
+- `MY_UNIVERSE` is not empty (This environment variable is set by R-universe)
 - `LIBR_POLARS_BUILD="false"` (This is prioritized, so if you want to force a source build, set `LIBR_POLARS_BUILD="true"`)
 
 By default, the pre-built Rust library binary is downloaded from the URL recorded in `tools/lib-sums.tsv`.
@@ -96,7 +97,7 @@ or the hash of the downloaded file does not match the recorded one, it falls bac
 
 If you want to use a pre-built Rust library binary that exists locally,
 set the `LIBR_POLARS_PATH` environment variable to the path to the binary.
-For example:
+For example (on Bash):
 
 ```sh
 export LIBR_POLARS_BUILD="false"
@@ -110,11 +111,11 @@ r-polars Rust library has some [feature flags](https://doc.rust-lang.org/cargo/r
 that affect the R package features.
 These flags are set at compile time, and cannot be changed at runtime.
 
-The features enabled in the compiled Rust library are shown by the `pl$polars_info()` function.
+The features enabled in the compiled Rust library are shown by the `polars_info()` function.
 
 ```{r}
 library(polars)
-pl$polars_info()
+polars_info()
 ```
 
 At this time, the following environment variables can be used to change the Rust library build time options.
