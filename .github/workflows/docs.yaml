@@ -17,7 +17,7 @@ on:
       - man/**
       - R/**
       - src/**
-      - vignetts/**
+      - vignettes/**
       - DESCRIPTION
       - README.md
   pull_request:
@@ -29,7 +29,7 @@ on:
       - man/**
       - R/**
       - src/**
-      - vignetts/**
+      - vignettes/**
       - DESCRIPTION
       - README.md
   workflow_dispatch:
