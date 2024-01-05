@@ -1,5 +1,5 @@
 ---
-title: "installing polars details"
+title: "Installation details"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{install}
