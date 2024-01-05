@@ -114,7 +114,7 @@ The features enabled in the compiled Rust library are shown by the `pl$polars_in
 
 ```{r}
 library(polars)
-pl$polars_info()
+polars_info()
 ```
 
 At this time, the following environment variables can be used to change the Rust library build time options.
