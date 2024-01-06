@@ -17,12 +17,13 @@ install some tools outside of R.
   is installed.
 - Install [CMake](https://cmake.org/) and add it to your PATH.
 - If generate the website locally, please
-  install [Quarto CLI](https://quarto.org/) and add it to your PATH.
+  install [Python](https://www.python.org/) with [venv](https://docs.python.org/3/library/venv.html)
+  and [Quarto CLI](https://quarto.org/) in your PATH.
 - Install [Task](https://taskfile.dev/), used as a task runner.
 
 Note that the `Taskfile.yml` in the root directory of the repository provides some
 useful commands (e.g. `task setup-dev` to install the required version of
-Rust toolchain and dependent R packages).
+Rust toolchain dependent R packages, and Python virtual inviroment).
 
 About Rust code for R packages, see also
 [the `hellorust` package](https://github.com/r-rust/hellorust) documentation.
