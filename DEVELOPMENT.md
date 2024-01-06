@@ -23,7 +23,7 @@ install some tools outside of R.
 
 Note that the `Taskfile.yml` in the root directory of the repository provides some
 useful commands (e.g. `task setup-dev` to install the required version of
-Rust toolchain dependent R packages, and Python virtual inviroment).
+Rust toolchain dependent R packages, and Python virtual environment).
 
 About Rust code for R packages, see also
 [the `hellorust` package](https://github.com/r-rust/hellorust) documentation.
