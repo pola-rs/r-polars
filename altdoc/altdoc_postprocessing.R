@@ -76,5 +76,8 @@ for (i in to_modify) {
     )
   }
 
+  # fix escaping of left-angle brackets (not needed for right-angle brackets)
+  new = gsub("\\\\&lt;", "&lt;", new)
+
   writeLines(new, i)
 }
