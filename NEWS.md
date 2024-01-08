@@ -4,7 +4,7 @@
 
 ### What's changed
 
--   New method `$sink_ndjson()` for LazyFrame
+-   New method `$sink_ndjson()` for LazyFrame (#681).
 
 ## polars 0.12.1
 
