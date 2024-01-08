@@ -3,7 +3,7 @@ test_that("can add any context to err", {
     "bad_arg", "bad_robj", "bad_val", "hint",
     "mistyped", "misvalued", "plain", "when"
   )
-  rpolarserr = .pr$RPolarsErr$new()
+  rpolarserr = .pr$Err$new()
   for (i in err_types) rpolarserr = rpolarserr[[i]](i)
 
   expect_identical(
@@ -16,7 +16,7 @@ test_that("can add any context to err", {
 })
 
 test_that("set/replace/read rcall & rinfo", {
-  err0 = .pr$RPolarsErr$new()$bad_robj(42)$mistyped("is a string")
+  err0 = .pr$Err$new()$bad_robj(42)$mistyped("is a string")
   err1 = err0$rinfo("in $foo()")
   err2 = err1$rinfo("in $bar()")
 

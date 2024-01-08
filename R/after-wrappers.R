@@ -16,7 +16,6 @@ build_debug_print = FALSE
 #' @param env environment object output from extendr-wrappers.R classes
 #' @param class_name optional class string, only used for debug printing
 #' Default NULL, will infer class_name automatically
-#' @keywords internal
 #' @description self is a global of extendr wrapper methods
 #' this function copies the function into a new environment and
 #' modify formals to have a self argument
@@ -24,7 +23,7 @@ build_debug_print = FALSE
 #' @return env of pure function calls to rust
 #'
 extendr_method_to_pure_functions = function(env, class_name = NULL) {
-  if (is.null(class_name)) class_name <- as.character(sys.call()[2])
+  if (is.null(class_name)) class_name = as.character(sys.call()[2])
   e = as.environment(lapply(env, function(f) {
     if (!is.function(f)) {
       return(f)
@@ -43,7 +42,6 @@ extendr_method_to_pure_functions = function(env, class_name = NULL) {
 #' @details This method if polars_optenv$debug_polars == TRUE will print what methods are called
 #' @noRd
 #' @export
-#' @keywords internal
 "$.private_polars_env" = function(self, name) {
   # print called private class in debug mode
   if (polars_optenv$debug_polars) {
@@ -67,7 +65,7 @@ extendr_method_to_pure_functions = function(env, class_name = NULL) {
 #' deprecation warning. Most private methods takes `self` as a first argument, the object the
 #' method should be called upon.
 #' @aliases  .pr
-#' @keywords internal api_private
+#' @noRd
 #' @return not applicable
 #' @export
 #' @examples
@@ -93,10 +91,10 @@ extendr_method_to_pure_functions = function(env, class_name = NULL) {
 .pr$ChainedThen = extendr_method_to_pure_functions(RPolarsChainedThen)
 .pr$VecDataFrame = extendr_method_to_pure_functions(RPolarsVecDataFrame)
 .pr$RNullValues = extendr_method_to_pure_functions(RPolarsRNullValues)
-.pr$RPolarsErr = extendr_method_to_pure_functions(RPolarsErr)
+.pr$Err = extendr_method_to_pure_functions(RPolarsErr)
 .pr$RThreadHandle = extendr_method_to_pure_functions(RPolarsRThreadHandle)
-.pr$RPolarsStringCacheHolder = extendr_method_to_pure_functions(RPolarsStringCacheHolder)
-.pr$RPolarsSQLContext = extendr_method_to_pure_functions(RPolarsSQLContext)
+.pr$StringCacheHolder = extendr_method_to_pure_functions(RPolarsStringCacheHolder)
+.pr$SQLContext = extendr_method_to_pure_functions(RPolarsSQLContext)
 
 
 
@@ -116,7 +114,6 @@ extendr_method_to_pure_functions = function(env, class_name = NULL) {
 #' @param Class_name string name of env class
 #' @rdname macro_add_syntax_check_to
 #' @noRd
-#' @keywords internal
 #' @return dollarsign method with syntax verification
 #'
 #' @details this function overrides dollarclass method of a extendr env_class
@@ -169,7 +166,6 @@ if (build_debug_print) cat("\n")
 #' @noRd
 #' @param f a function
 #' @param setter bool, if true a property method can be modified by user
-#' @keywords internal
 #' @return function subclassed into c("property","function") or c("setter","property","function")
 method_as_property = function(f, setter = FALSE) {
   class(f) = if (setter) {
@@ -213,7 +209,7 @@ class(pl) = c("pl_polars_env", "environment")
 #' @keywords functions
 #' @examples
 #' pl$show_all_public_functions()
-pl$show_all_public_functions = function() {
+pl_show_all_public_functions = function() {
   print_env(pl, "polars public functions via pl$...")
 }
 
@@ -225,12 +221,12 @@ pl$show_all_public_functions = function() {
 #' @keywords functions
 #' @examples
 #' pl$show_all_public_methods()
-pl$show_all_public_methods = function(class_names = NULL) {
+pl_show_all_public_methods = function(class_names = NULL) {
   # subset classes to show
   show_this_env = if (!is.null(class_names)) {
-    as.environment(mget(class_names, envir = pl_pub_class_env))
+    as.environment(mget(class_names, envir = pub_class_env))
   } else {
-    pl_pub_class_env
+    pub_class_env
   }
 
   print_env(
@@ -247,7 +243,6 @@ pl$show_all_public_methods = function(class_names = NULL) {
 #' @return an element from the public namespace `pl` polars. Likely a function or an RPolarsDataType
 #' @export
 #' @noRd
-#' @keywords internal
 "$.pl_polars_env" = function(self, name) {
   # print called private class in debug mode
   if (polars_optenv$debug_polars) {
@@ -273,8 +268,37 @@ pl_class_names = sort(
   )
 ) # TODO discover all public class automatically
 
-pl_pub_env = as.environment(asNamespace("polars"))
-pl_pub_class_env = as.environment(mget(pl_class_names, envir = pl_pub_env))
+pub_env = as.environment(asNamespace("polars"))
+pub_class_env = as.environment(mget(pl_class_names, envir = pub_env))
+
+
+#' Select from an empty DataFrame
+#'
+#' `pl$select(...)` is a shorthand for `pl$DataFrame(list())$select(...)`
+#' @keywords DataFrame
+#' @param ... [Expressions][Expr_class]
+#' @return a [DataFrame][DataFrame_class]
+#' @examples
+#' pl$select(
+#'   pl$lit(1:4)$alias("ints"),
+#'   pl$lit(letters[1:4])$alias("letters")
+#' )
+pl_select = function(...) {
+  .pr$DataFrame$default()$select(...)
+}
+
+
+#' Get Memory Address
+#'
+#' Get underlying mem address a rust object (via ExtPtr). Expert use only.
+#'
+#' Does not give meaningful answers for regular R objects.
+#' @param robj an R object
+#' @return String of mem address
+#' @examples pl$mem_address(pl$Series(1:3))
+pl_mem_address = function(robj) {
+  mem_address(robj)
+}
 
 
 #' @title Any polars class object is made of this

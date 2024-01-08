@@ -4,7 +4,7 @@
 \alias{LazyFrame_max}
 \title{Max}
 \usage{
-LazyFrame_max
+LazyFrame_max()
 }
 \value{
 A LazyFrame with one row

@@ -1,26 +1,3 @@
-test_that("pl$lit posix", {
-  expect_identical(
-    pl$lit(as.POSIXct("2022-01-01"))$to_r(),
-    as.POSIXct("2022-01-01")
-  )
-
-  expect_identical(
-    pl$lit(as.POSIXct("2022-01-01", tz = "GMT"))$to_r(),
-    as.POSIXct("2022-01-01", tz = "GMT")
-  )
-
-  expect_identical(
-    pl$lit(as.POSIXct("2022-01-01", tz = "HST"))$to_r(),
-    as.POSIXct("2022-01-01", tz = "HST")
-  )
-
-  expect_identical(
-    pl$lit(as.POSIXct("2022-01-01", tz = "GMT"))$to_r(),
-    as.POSIXct("2022-01-01", tz = "GMT")
-  )
-})
-
-
 test_that("pl$date_range", {
   t1 = as.POSIXct("2022-01-01")
   t2 = as.POSIXct("2022-01-02")
@@ -405,7 +382,7 @@ test_that("second, milli, micro, nano", {
       interval = "2h3m4s555ms666us777ns",
       time_zone = "GMT",
       time_unit = "ns"
-    )$lit_to_s()
+    )$to_series()
   )$with_columns(
     pl$col("date")$dt$second()$alias("second"),
     pl$col("date")$dt$second(fractional = TRUE)$alias("second_frac"),

@@ -3,6 +3,9 @@
 \name{ExprStr_split}
 \alias{ExprStr_split}
 \title{Split the string by a substring}
+\usage{
+ExprStr_split(by, inclusive = FALSE)
+}
 \arguments{
 \item{by}{String or Expr of a string, a valid regex pattern that will be
 used to split the string.}
@@ -10,7 +13,7 @@ used to split the string.}
 \item{inclusive}{If \code{TRUE}, include the split character/string in the results.}
 }
 \value{
-List of Utf8 type
+List of String type
 }
 \description{
 Split the string by a substring

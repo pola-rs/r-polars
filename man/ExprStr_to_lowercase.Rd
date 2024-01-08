@@ -3,13 +3,16 @@
 \name{ExprStr_to_lowercase}
 \alias{ExprStr_to_lowercase}
 \title{Convert a string to lowercase}
+\usage{
+ExprStr_to_lowercase()
+}
 \value{
-Expr of Utf8 lowercase chars
+Expr of String lowercase chars
 }
 \description{
 Transform to lowercase variant.
 }
 \examples{
-pl$lit(c("A", "b", "c", "1", NA))$str$to_lowercase()$lit_to_s()
+pl$lit(c("A", "b", "c", "1", NA))$str$to_lowercase()$to_series()
 }
 \keyword{ExprStr}

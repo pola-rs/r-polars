@@ -1,19 +1,30 @@
 #' Report information of the package
 #'
+#' This function reports the following information:
+#' - Package versions (the R package version and the dependent Rust Polars version)
+#' - [Number of threads used by Polars][pl_threadpool_size]
+#' - Rust feature flags (See `vignette("install", "polars")` for details)
 #' @return A list with information of the package
-#' @name polars_info
+#' @export
 #' @examples
-#' pl$polars_info()
-pl$polars_info = function() {
+#' polars_info()
+polars_info = function() {
   # Similar to arrow::arrow_info()
   out = list(
     version = utils::packageVersion("polars"),
     rust_polars = rust_polars_version(),
+    threadpool_size = threadpool_size(),
     features = cargo_rpolars_feature_info()
   )
   structure(out, class = "polars_info")
 }
 
+pl_polars_info = function() {
+  warning("pl$polars_info() is deprecated and will be removed in 0.13.0. Use polars_info() instead.", call. = FALSE)
+  polars_info()
+}
+
+#' @noRd
 #' @export
 print.polars_info = function(x, ...) {
   # Copied from the arrow package
@@ -30,8 +41,11 @@ print.polars_info = function(x, ...) {
   cat("r-polars package version : ", format(x$version), "\n", sep = "")
   cat("rust-polars crate version: ", format(x$rust_polars), "\n", sep = "")
   cat("\n")
+  cat("Thread pool size:", x$threadpool_size, "\n")
+  cat("\n")
   print_key_values("Features", unlist(x$features))
 }
+
 
 #' Check Rust feature flag
 #'
@@ -40,7 +54,6 @@ print.polars_info = function(x, ...) {
 #' @param feature_name name of feature to check
 #' @inheritParams unwrap
 #' @return TRUE invisibly if the feature is enabled
-#' @keywords internal
 #' @examples
 #' tryCatch(
 #'   check_feature("simd", "in example"),
@@ -51,7 +64,7 @@ print.polars_info = function(x, ...) {
 #'   error = \(e) cat(as.character(e))
 #' )
 check_feature = function(feature_name, context = NULL, call = sys.call(1L)) {
-  if (!pl$polars_info()$features[[feature_name]]) {
+  if (!cargo_rpolars_feature_info()[[feature_name]]) {
     Err_plain(
       "\nFeature '", feature_name, "' is not enabled.\n",
       "Please check the documentation about installation\n",
@@ -62,3 +75,17 @@ check_feature = function(feature_name, context = NULL, call = sys.call(1L)) {
 
   invisible(TRUE)
 }
+
+
+#' Get the number of threads in the Polars thread pool.
+#'
+#' The threadpool size can be overridden by setting the
+#' `POLARS_MAX_THREADS` environment variable before process start.
+#' (The thread pool is not behind a lock, so it cannot be modified once set).
+#' It is strongly recommended not to override this value as it will be
+#' set automatically by the engine.
+#'
+#' @return The number of threads
+#' @examples
+#' pl$threadpool_size()
+pl_threadpool_size = function() threadpool_size()

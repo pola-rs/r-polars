@@ -3,18 +3,20 @@
 \name{ExprList_get}
 \alias{ExprList_get}
 \alias{Expr_list_get}
-\alias{[.ExprListNameSpace}
+\alias{[.RPolarsExprListNameSpace}
 \title{Get list}
 \format{
 function
 }
 \usage{
-\method{[}{ExprListNameSpace}(x, index)
+ExprList_get(index)
+
+\method{[}{RPolarsExprListNameSpace}(x, index)
 }
 \arguments{
-\item{x}{ExprListNameSpace}
-
 \item{index}{value to get}
+
+\item{x}{RPolarsExprListNameSpace}
 }
 \value{
 Expr
@@ -23,7 +25,7 @@ Expr
 Get the value by index in the sublists.
 }
 \details{
-\verb{[.ExprListNameSpace} used as e.g. \code{pl$col("a")$arr[0]} same as \code{pl$col("a")$get(0)}
+\verb{[.RPolarsExprListNameSpace} used as e.g. \code{pl$col("a")$arr[0]} same as \code{pl$col("a")$get(0)}
 }
 \examples{
 df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) # NULL or integer() or list()

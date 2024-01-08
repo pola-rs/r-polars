@@ -13,7 +13,7 @@ A character vector of the registered table names.
 Return a character vector of the registered table names.
 }
 \examples{
-\dontshow{if (pl$polars_info()$features$sql) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (polars_info()$features$sql) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 ctx = pl$SQLContext()
 ctx$tables()
 ctx$register("df1", mtcars)

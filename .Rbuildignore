@@ -22,3 +22,11 @@
 ^src/Makevars$
 ^tools/libr_polars\.a$
 ^dev$
+
+^altdoc$
+
+^DEVELOPMENT\.md$
+
+^\.venv_altdoc$
+^Taskfile\.yml$
+^\.editorconfig$

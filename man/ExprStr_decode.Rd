@@ -3,6 +3,9 @@
 \name{ExprStr_decode}
 \alias{ExprStr_decode}
 \title{Decode a value using the provided encoding}
+\usage{
+ExprStr_decode(encoding, ..., strict = TRUE)
+}
 \arguments{
 \item{encoding}{Either 'hex' or 'base64'.}
 
@@ -12,7 +15,7 @@
 cannot be decoded. Otherwise, replace it with a null value.}
 }
 \value{
-Utf8 array with values decoded using provided encoding
+String array with values decoded using provided encoding
 }
 \description{
 Decode a value using the provided encoding
@@ -24,8 +27,8 @@ df$with_columns(
   pl$col("strings")$str$encode("base64")$alias("base64"), # notice DataType is not encoded
   pl$col("strings")$str$encode("hex")$alias("hex") # ... and must restored with cast
 )$with_columns(
-  pl$col("base64")$str$decode("base64")$alias("base64_decoded")$cast(pl$Utf8),
-  pl$col("hex")$str$decode("hex")$alias("hex_decoded")$cast(pl$Utf8)
+  pl$col("base64")$str$decode("base64")$alias("base64_decoded")$cast(pl$String),
+  pl$col("hex")$str$decode("hex")$alias("hex_decoded")$cast(pl$String)
 )
 }
 \keyword{ExprStr}

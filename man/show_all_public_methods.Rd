@@ -2,7 +2,11 @@
 % Please edit documentation in R/after-wrappers.R
 \name{show_all_public_methods}
 \alias{show_all_public_methods}
+\alias{pl_show_all_public_methods}
 \title{show all public methods}
+\usage{
+pl_show_all_public_methods(class_names = NULL)
+}
 \arguments{
 \item{class_names}{character vector of polars class names to show, Default NULL is all.}
 }

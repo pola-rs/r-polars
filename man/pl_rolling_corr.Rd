@@ -3,6 +3,9 @@
 \name{pl_rolling_corr}
 \alias{pl_rolling_corr}
 \title{Rolling correlation}
+\usage{
+pl_rolling_corr(a, b, window_size, min_periods = NULL, ddof = 1)
+}
 \arguments{
 \item{a}{One column name or Expr or anything convertible Into\if{html}{\out{<Expr>}} via \code{pl$col()}.}
 

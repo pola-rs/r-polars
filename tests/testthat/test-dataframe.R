@@ -144,13 +144,13 @@ test_that("get set properties", {
 test_that("DataFrame, custom schema", {
   df = pl$DataFrame(
     iris,
-    schema = list(Sepal.Length = pl$Float32, Species = pl$Utf8)
+    schema = list(Sepal.Length = pl$Float32, Species = pl$String)
   )
   # dtypes from object are as expected
   expect_true(
     all(mapply(
       df$dtypes,
-      pl$dtypes[c("Float32", rep("Float64", 3), "Utf8")],
+      pl$dtypes[c("Float32", rep("Float64", 3), "String")],
       FUN = "=="
     ))
   )
@@ -345,7 +345,7 @@ test_that("cloning", {
 # }
 # actual_list_of_series = df$get_columns()
 # for (i in 1:5) {
-#   is_equal = expected_list_of_series[[i]]$series_equal(actual_list_of_series[[i]])
+#   is_equal = expected_list_of_series[[i]]$equals(actual_list_of_series[[i]])
 #   if (!is_equal) {
 #     fail("series are not equal according to polars internal check")
 #   }
@@ -362,7 +362,7 @@ test_that("cloning", {
 
 test_that("get column", {
   expect_true(
-    pl$DataFrame(iris)$get_column("Sepal.Length")$series_equal(
+    pl$DataFrame(iris)$get_column("Sepal.Length")$equals(
       pl$Series(iris$Sepal.Length, "Sepal.Length")
     )
   )
@@ -585,11 +585,11 @@ test_that("shift   _and_fill", {
 })
 
 
-test_that("frame_equal", {
+test_that("equals", {
   dat1 = pl$DataFrame(iris)
   dat2 = pl$DataFrame(mtcars)
-  expect_true(dat1$frame_equal(dat1))
-  expect_false(dat1$frame_equal(dat2))
+  expect_true(dat1$equals(dat1))
+  expect_false(dat1$equals(dat2))
 })
 
 test_that("fill_nan", {
@@ -1217,7 +1217,7 @@ test_that("transpose", {
   expect_identical(
     pl$DataFrame(iris)$
       with_columns(pl$col("Species")$
-      cast(pl$Utf8))$
+      cast(pl$String))$
       transpose(FALSE)$
       to_data_frame(),
     df_expected

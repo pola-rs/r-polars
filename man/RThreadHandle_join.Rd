@@ -19,6 +19,6 @@ Calling \verb{<RThreadHandle>$join()} a second time will raise an error because 
 exhausted.
 }
 \seealso{
-\link[=RThreadHandle_RThreadHandle_class]{RThreadHandle_class}
+\link{RThreadHandle_class}
 }
 \keyword{RThreadHandle}

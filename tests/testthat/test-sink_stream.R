@@ -69,16 +69,20 @@ test_that("Test sinking data to parquet file", {
 
 # sink_csv ---------------------------------------------------------
 
+# sink_csv writes in parallel so it doesn't always write the rows in
+# the same order => can't use snapshots
+
 dat = head(mtcars, n = 15)
 dat[c(1, 3, 9, 12), c(3, 4, 5)] = NA
+dat$id = 1:nrow(dat)
 dat_pl = pl$LazyFrame(dat)
 temp_out = tempfile(fileext = ".csv")
 
 test_that("sink_csv works", {
-  dat_pl$select(pl$col("drat", "mpg"))$sink_csv(temp_out)
+  dat_pl$select(pl$col("id", "drat", "mpg"))$sink_csv(temp_out)
 
   expect_identical(
-    pl$read_csv(temp_out)$to_data_frame(),
+    pl$read_csv(temp_out)$sort("id")$drop("id")$to_data_frame(),
     dat[, c("drat", "mpg")],
     ignore_attr = TRUE # ignore row names
   )
@@ -89,13 +93,20 @@ test_that("sink_csv: null_values works", {
     dat_pl$sink_csv(temp_out, null_values = NULL)
   )
   dat_pl$sink_csv(temp_out, null_values = "hello")
-  expect_snapshot_file(temp_out)
+  expect_equal(
+    pl$read_csv(temp_out)$
+      sort("id")$
+      select("disp", "hp")$
+      slice(offset = 0, length = 1)$
+      to_list(),
+    list(disp = "hello", hp = "hello")
+  )
 })
 
 
 test_that("sink_csv: separator works", {
   dat_pl$sink_csv(temp_out, separator = "|")
-  expect_snapshot_file(temp_out)
+  expect_true(grepl("mpg|cyl|disp", readLines(temp_out)[1]))
 })
 
 test_that("sink_csv: quote_style and quote works", {
@@ -127,9 +138,9 @@ patrick::with_parameters_test_that(
   "sink_csv: quote_style",
   {
     df = pl$LazyFrame(
-      a = c(r"("foo")", "bar"),
-      b = 1:2,
-      c = letters[1:2]
+      a = c(r"("foo")"),
+      b = 1,
+      c = letters[1]
     )$sink_csv(temp_out, quote_style = quote_style)
     expect_snapshot_file(temp_out)
   },
@@ -146,9 +157,18 @@ test_that("sink_csv: date_format works", {
     )
   )
   dat$sink_csv(temp_out, date_format = "%Y")
-  expect_snapshot_file(temp_out)
+  expect_equal(
+    pl$read_csv(temp_out)$
+      with_columns(pl$col("date")$shrink_dtype())$
+      sort("date")$
+      to_data_frame(),
+    data.frame(date = 2020:2023)
+  )
   dat$sink_csv(temp_out, date_format = "%d/%m/%Y")
-  expect_snapshot_file(temp_out)
+  expect_equal(
+    pl$read_csv(temp_out)$sort("date")$to_data_frame(),
+    data.frame(date = paste0("01/01/", 2020:2023))
+  )
 })
 
 test_that("sink_csv: datetime_format works", {
@@ -161,7 +181,14 @@ test_that("sink_csv: datetime_format works", {
     )
   )
   dat$sink_csv(temp_out, datetime_format = "%Hh%Mm - %d/%m/%Y")
-  expect_snapshot_file(temp_out)
+  expect_equal(
+    pl$read_csv(temp_out)$sort("date")$to_data_frame(),
+    data.frame(date = c(
+      "00h00m - 01/01/2020",
+      "00h00m - 02/01/2020",
+      paste0(c("06", "12", "18"), "h00m - 01/01/2020")
+    ))
+  )
 })
 
 test_that("sink_csv: time_format works", {
@@ -174,15 +201,24 @@ test_that("sink_csv: time_format works", {
     )
   )$with_columns(pl$col("date")$dt$time())
   dat$sink_csv(temp_out, time_format = "%Hh%Mm%Ss")
-  expect_snapshot_file(temp_out)
+  expect_equal(
+    pl$read_csv(temp_out)$sort("date")$to_data_frame(),
+    data.frame(date = paste0(c("00", "00", "08", "16"), "h00m00s"))
+  )
 })
 
 
 test_that("sink_csv: float_precision works", {
   dat = pl$LazyFrame(x = c(1.234, 5.6))
   dat$sink_csv(temp_out, float_precision = 1)
-  expect_snapshot_file(temp_out)
+  expect_equal(
+    pl$read_csv(temp_out)$sort("x")$to_data_frame(),
+    data.frame(x = c(1.2, 5.6))
+  )
 
   dat$sink_csv(temp_out, float_precision = 3)
-  expect_snapshot_file(temp_out)
+  expect_equal(
+    pl$read_csv(temp_out)$sort("x")$to_data_frame(),
+    data.frame(x = c(1.234, 5.600))
+  )
 })

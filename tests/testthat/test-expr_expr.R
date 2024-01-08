@@ -456,10 +456,10 @@ test_that("and or is_in xor", {
   expect_true(
     pl$select(
       # nothing is nothing
-      pl$lit(NULL) == pl$lit(NULL)$alias("NULL is NULL"),
+      (pl$lit(NULL) == pl$lit(NULL))$alias("NULL is NULL"),
 
       # nothing is typed nothing
-      pl$lit(NULL) == pl$lit(NA_real_)$alias("NULL is NULL_real"),
+      (pl$lit(NULL) == pl$lit(NA_real_))$alias("NULL is NULL_real"),
 
       # typed nothing is typed nothing
       (pl$lit(NA_real_) == pl$lit(NA_real_))$is_null()$alias("NULL_eral is NULL_real is null"),
@@ -501,10 +501,10 @@ test_that("to_physical + cast", {
   df
 
 
-  # cast error raised for Utf8 to Boolean
+  # cast error raised for String to Boolean
   expect_error(
     pl$DataFrame(iris)$with_columns(
-      pl$col("Species")$cast(pl$dtypes$Utf8)$cast(pl$dtypes$Boolean)
+      pl$col("Species")$cast(pl$dtypes$String)$cast(pl$dtypes$Boolean)
     )
   )
 
@@ -941,7 +941,7 @@ test_that("Expr_k_top", {
     pl$col("a")$top_k(3)$alias("k_top"),
     pl$col("a")$bottom_k(3)$alias("k_bot")
   )
-  known = structure(list(k_top = c(Inf, 6, NaN), k_bot = c(NA, -Inf, 0)),
+  known = structure(list(k_top = c(NaN, Inf, 6), k_bot = c(NA, -Inf, 0)),
     row.names = c(NA, -3L), class = "data.frame"
   )
   expect_equal(l_actual$to_data_frame(), known)
@@ -1054,12 +1054,18 @@ test_that("gather that", {
     c(1L, 3L, 5L, NA_integer_)
   )
 
+  expect_identical(
+    pl$select(pl$lit(1:6)$gather(c(0, -1)))$to_list()[[1L]],
+    c(1L, 6L)
+  )
+
   expect_error(
     pl$select(pl$lit(0:10)$gather(11))$to_list()[[1L]]
   )
 
-  expect_error(
-    pl$select(pl$lit(0:10)$gather(-5))$to_list()[[1L]]
+  expect_identical(
+    pl$select(pl$lit(0:10)$gather(-5))$to_list()[[1L]],
+    6L
   )
 })
 
@@ -1424,7 +1430,7 @@ test_that("Expr_quantile", {
       midpoint_na = .5,
       midpoint_nan = 1,
       nearest_na = 0,
-      nearest_nan = NaN,
+      nearest_nan = 1,
       linear_na = 0,
       linear_nan = NaN,
       linear_nan_0.7 = NaN,
@@ -1522,7 +1528,7 @@ test_that("hash + reinterpret", {
 
   hash_values1 = unname(unlist(df$select(pl$col(c("Sepal.Width", "Species"))$unique()$hash()$implode())$to_list()))
   hash_values2 = unname(unlist(df$select(pl$col(c("Sepal.Width", "Species"))$unique()$hash(1, 2, 3, 4)$implode())$to_list()))
-  hash_values3 = unname((df$select(pl$col(c("Sepal.Width", "Species"))$unique()$hash(1, 2, 3, 4)$implode()$cast(pl$List(pl$Utf8)))$to_list()))
+  hash_values3 = unname((df$select(pl$col(c("Sepal.Width", "Species"))$unique()$hash(1, 2, 3, 4)$implode()$cast(pl$List(pl$String)))$to_list()))
   expect_true(!any(duplicated(hash_values1)))
   expect_true(!any(sapply(hash_values3, \(x) any(duplicated(x)))))
 
@@ -1770,7 +1776,7 @@ test_that("Expr_pct_change", {
 
 test_that("skew", {
   R_skewness = function(x, bias = TRUE, na.rm = FALSE) {
-    if (na.rm) x <- x[!is.na(x)]
+    if (na.rm) x = x[!is.na(x)]
     n = length(x)
     m2 = sum((x - mean(x))^2) / n
     m3 = sum((x - mean(x))^3) / n
@@ -1804,7 +1810,7 @@ test_that("skew", {
 
 test_that("kurtosis", {
   R_kurtosis = function(x, fisher = TRUE, bias = TRUE, na.rm = TRUE) {
-    if (na.rm) x <- x[!is.na(x)]
+    if (na.rm) x = x[!is.na(x)]
     n = length(x)
     m2 = sum((x - mean(x))^2) / n
     m4 = sum((x - mean(x))^4) / n
@@ -2112,7 +2118,7 @@ test_that("ewm_", {
 test_that("extend_constant", {
   expect_identical(
     pl$lit(c("5", "Bob_is_not_a_number"))
-    $cast(pl$dtypes$Utf8, strict = FALSE)
+    $cast(pl$dtypes$String, strict = FALSE)
     $extend_constant("chuchu", 2)$to_r(),
     c("5", "Bob_is_not_a_number", "chuchu", "chuchu")
   )
@@ -2213,7 +2219,7 @@ test_that("unique_counts", {
 test_that("entropy", {
   # https://stackoverflow.com/questions/27254550/calculating-entropy
   r_entropy = function(x, base = exp(1), normalize = TRUE) {
-    if (normalize) x <- x / sum(x)
+    if (normalize) x = x / sum(x)
     -sum(x * log(x) / log(base))
   }
 
@@ -2276,7 +2282,7 @@ test_that("shrink_dtype", {
 
   expect_true(all(mapply(
     df$dtypes,
-    pl$dtypes[c("Int8", "Int64", "Int32", "Int8", "Int16", "Utf8", "Float32", "Boolean")],
+    pl$dtypes[c("Int8", "Int64", "Int32", "Int8", "Int16", "String", "Float32", "Boolean")],
     FUN = function(actual, expected) actual == expected
   )))
 })
@@ -2310,11 +2316,11 @@ test_that("concat_list", {
   )
 
   # concat Expr a Series and an R obejct
-  df_act = pl$concat_list(list(
+  df_act = pl$select(pl$concat_list(list(
     pl$lit(1:5),
     pl$Series(5:1),
     rep(0L, 5)
-  ))$alias("alice")$lit_to_df()
+  ))$alias("alice"))
 
   expect_identical(
     df_act$to_data_frame(),
@@ -2577,6 +2583,82 @@ test_that("eq_missing and ne_missing", {
     list(
       eq_missing = c(TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, TRUE),
       neq_missing = c(FALSE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, TRUE, FALSE)
+    )
+  )
+})
+
+test_that("replace works", {
+  df = pl$DataFrame(a = c(1, 2, 2, 3))
+
+  # "old" and "new" can take either scalars or vectors of same length
+  expect_equal(
+    df$select(replaced = pl$col("a")$replace(2, 100))$to_list(),
+    list(replaced = c(1, 100, 100, 3))
+  )
+  expect_equal(
+    df$select(replaced = pl$col("a")$replace(c(2, 3), 999))$to_list(),
+    list(replaced = c(1, 999, 999, 999))
+  )
+  expect_equal(
+    df$select(replaced = pl$col("a")$replace(c(2, 3), c(100, 200)))$to_list(),
+    list(replaced = c(1, 100, 100, 200))
+  )
+
+  # "old" can be a named list where names are values to replace, and values are
+  # the replacements
+  mapping = list(`2` = 100, `3` = 200)
+  expect_equal(
+    df$select(replaced = pl$col("a")$replace(mapping, default = -1))$to_list(),
+    list(replaced = c(-1, 100, 100, 200))
+  )
+
+  df = pl$DataFrame(a = c("x", "y", "z"))
+  mapping = list(x = 1, y = 2, z = 3)
+  expect_equal(
+    df$select(replaced = pl$col("a")$replace(mapping))$to_list(),
+    list(replaced = c("1.0", "2.0", "3.0"))
+  )
+
+  # one can specify the data type to return instead of automatically inferring it
+  expect_equal(
+    df$
+      select(replaced = pl$col("a")$replace(mapping, return_dtype = pl$Int8))$
+      to_list(),
+    list(replaced = 1:3)
+  )
+
+  # "old", "new", and "default" can take Expr
+  df = pl$DataFrame(a = c(1, 2, 2, 3), b = c(1.5, 2.5, 5, 1))
+  expect_equal(
+    df$select(
+      replaced = pl$col("a")$replace(
+        old = pl$col("a")$max(),
+        new = pl$col("b")$sum(),
+        default = pl$col("b"),
+      )
+    )$to_list(),
+    list(replaced = c(1.5, 2.5, 5, 10))
+  )
+})
+
+test_that("rle works", {
+  df = pl$DataFrame(s = c(1, 1, 2, 1, NA, 1, 3, 3))
+  expect_equal(
+    df$select(pl$col("s")$rle())$unnest("s")$to_data_frame(),
+    data.frame(
+      lengths = c(2, 1, 1, 1, 1, 2),
+      values = c(1, 2, 1, NA, 1, 3)
+    )
+  )
+})
+
+test_that("rle_id works", {
+  df = pl$DataFrame(s = c(1, 1, 2, 1, NA, 1, 3, 3))
+  expect_equal(
+    df$with_columns(id = pl$col("s")$rle_id())$to_data_frame(),
+    data.frame(
+      s = c(1, 1, 2, 1, NA, 1, 3, 3),
+      id = c(0, 0, 1, 2, 3, 4, 5, 5)
     )
   )
 })

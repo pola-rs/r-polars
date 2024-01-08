@@ -140,7 +140,7 @@ test_that("Series_append", {
   pl$reset_options()
 
   expect_error(
-    s_new <- s_mut$append(pl$Series(1:3), immutable = FALSE),
+    s_mut$append(pl$Series(1:3), immutable = FALSE),
     regexp = "breaks immutability"
   )
 })
@@ -457,7 +457,7 @@ test_that("Series list", {
   s = pl$Series(l)
 
   # check data_type
-  expect_true(s$dtype == with(pl, List(List(List(Utf8)))))
+  expect_true(s$dtype == with(pl, List(List(List(String)))))
 
   # flatten 3-levels and return to R
   # TODO CONTRIBUTE POLARS this is a bug, when flattening an empty list, it should not give a null
@@ -521,7 +521,7 @@ patrick::with_parameters_test_that("mean, median, std, var",
     s = pl$Series(rnorm(100))
     a = s[[.test_name]]()
     # upstream .std_as_series() does not appear to return Series
-    if (inherits(a, "RPolarsSeries")) a <- a$to_vector()
+    if (inherits(a, "RPolarsSeries")) a = a$to_vector()
     b = base(s$to_vector())
     expect_equal(a, b)
   },
@@ -532,5 +532,5 @@ patrick::with_parameters_test_that("mean, median, std, var",
 test_that("n_unique", {
   x = c(1:4, NA, NaN, 1) # 6 unique one repeated
   expect_identical(pl$Series(x)$n_unique(), 6)
-  expect_grepl_error(pl$Series(c())$n_unique(), "operation not supported for dtype")
+  expect_identical(pl$Series(c())$n_unique(), 0)
 })

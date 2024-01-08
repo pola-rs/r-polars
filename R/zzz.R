@@ -13,8 +13,8 @@ if (build_debug_print) {
 replace_private_with_pub_methods(RPolarsDataFrame, "^DataFrame_")
 
 # GroupBy - is special read header info in groupby.R
-replace_private_with_pub_methods(GroupBy, "^GroupBy_")
-macro_add_syntax_check_to_class("GroupBy") # not activated automatically as GroupBy is not extendr
+replace_private_with_pub_methods(RPolarsGroupBy, "^GroupBy_")
+macro_add_syntax_check_to_class("RPolarsGroupBy") # not activated automatically as GroupBy is not extendr
 
 # LazyFrame
 replace_private_with_pub_methods(RPolarsLazyFrame, "^LazyFrame_")
@@ -27,42 +27,41 @@ replace_private_with_pub_methods(RPolarsExpr, "^Expr_")
 
 # configure subnames spaces of Expr
 #' @export
-`$.ExprListNameSpace` = sub_name_space_accessor_function
-expr_list_make_sub_ns = macro_new_subnamespace("^ExprList_", "ExprListNameSpace")
+`$.RPolarsExprListNameSpace` = sub_name_space_accessor_function
+expr_list_make_sub_ns = macro_new_subnamespace("^ExprList_", "RPolarsExprListNameSpace")
 
 #' @export
-`$.ExprStrNameSpace` = sub_name_space_accessor_function
-expr_str_make_sub_ns = macro_new_subnamespace("^ExprStr_", "ExprStrNameSpace")
+`$.RPolarsExprStrNameSpace` = sub_name_space_accessor_function
+expr_str_make_sub_ns = macro_new_subnamespace("^ExprStr_", "RPolarsExprStrNameSpace")
 
 #' @export
-`$.ExprNameNameSpace` = sub_name_space_accessor_function
-expr_name_make_sub_ns = macro_new_subnamespace("^ExprName_", "ExprNameNameSpace")
+`$.RPolarsExprNameNameSpace` = sub_name_space_accessor_function
+expr_name_make_sub_ns = macro_new_subnamespace("^ExprName_", "RPolarsExprNameNameSpace")
 
 #' @export
-`$.ExprDTNameSpace` = sub_name_space_accessor_function
-expr_dt_make_sub_ns = macro_new_subnamespace("^ExprDT_", "ExprDTNameSpace")
+`$.RPolarsExprDTNameSpace` = sub_name_space_accessor_function
+expr_dt_make_sub_ns = macro_new_subnamespace("^ExprDT_", "RPolarsExprDTNameSpace")
 
 #' @export
-`$.ExprStructNameSpace` = sub_name_space_accessor_function
-expr_struct_make_sub_ns = macro_new_subnamespace("^ExprStruct_", "ExprStructNameSpace")
+`$.RPolarsExprStructNameSpace` = sub_name_space_accessor_function
+expr_struct_make_sub_ns = macro_new_subnamespace("^ExprStruct_", "RPolarsExprStructNameSpace")
 
 #' @export
-`$.ExprMetaNameSpace` = sub_name_space_accessor_function
-expr_meta_make_sub_ns = macro_new_subnamespace("^ExprMeta_", "ExprMetaNameSpace")
+`$.RPolarsExprMetaNameSpace` = sub_name_space_accessor_function
+expr_meta_make_sub_ns = macro_new_subnamespace("^ExprMeta_", "RPolarsExprMetaNameSpace")
 
 #' @export
-`$.ExprCatNameSpace` = sub_name_space_accessor_function
-expr_cat_make_sub_ns = macro_new_subnamespace("^ExprCat_", "ExprCatNameSpace")
+`$.RPolarsExprCatNameSpace` = sub_name_space_accessor_function
+expr_cat_make_sub_ns = macro_new_subnamespace("^ExprCat_", "RPolarsExprCatNameSpace")
 
 #' @export
-`$.ExprBinNameSpace` = sub_name_space_accessor_function
-expr_bin_make_sub_ns = macro_new_subnamespace("^ExprBin_", "ExprBinNameSpace")
+`$.RPolarsExprBinNameSpace` = sub_name_space_accessor_function
+expr_bin_make_sub_ns = macro_new_subnamespace("^ExprBin_", "RPolarsExprBinNameSpace")
 
 replace_private_with_pub_methods(RPolarsWhen, "^When_")
 replace_private_with_pub_methods(RPolarsThen, "^Then_")
 replace_private_with_pub_methods(RPolarsChainedWhen, "^ChainedWhen_")
 replace_private_with_pub_methods(RPolarsChainedThen, "^ChainedThen_")
-
 
 # any sub-namespace inherits 'method_environment'
 # This s3 method performs auto-completion
@@ -72,7 +71,7 @@ replace_private_with_pub_methods(RPolarsChainedThen, "^ChainedThen_")
 #' @param pattern code-stump as string to auto-complete
 #' @export
 #' @inherit .DollarNames.RPolarsDataFrame return
-#' @keywords internal
+#' @noRd
 .DollarNames.method_environment = function(x, pattern = "") {
   # I ponder why R chose to let attributes of environments be mutable also?!
   # temp store full class and upcast to plain environment
@@ -88,10 +87,8 @@ replace_private_with_pub_methods(RPolarsChainedThen, "^ChainedThen_")
 }
 
 
-
 # Field
 replace_private_with_pub_methods(RPolarsRField, "^RField_")
-
 
 # Series
 replace_private_with_pub_methods(RPolarsSeries, "^Series_")
@@ -102,22 +99,11 @@ replace_private_with_pub_methods(RPolarsRThreadHandle, "^RThreadHandle_")
 # SQLContext
 replace_private_with_pub_methods(RPolarsSQLContext, "^SQLContext_")
 
-
+# pl top level functions
+replace_private_with_pub_methods(pl, "^pl_")
 
 # expression constructors, why not just pl$lit = Expr_lit?
 move_env_elements(RPolarsExpr, pl, c("lit"), remove = FALSE)
-
-
-#' Get Memory Address
-#' @name pl_mem_address
-#' @description Get underlying mem address a rust object (via ExtPtr). Expert use only.
-#' @details Does not give meaningful answers for regular R objects.
-#' @param robj an R object
-#' @aliases mem_address
-#' @return String of mem address
-#' @examples pl$mem_address(pl$Series(1:3))
-pl$mem_address = mem_address
-
 
 # tell testthat data.table is suggested
 .datatable.aware = TRUE
@@ -125,7 +111,7 @@ pl$mem_address = mem_address
 
 .onLoad = function(libname, pkgname) {
   # instanciate one of each DataType (it's just an enum)
-  all_types = .pr$DataType$get_all_simple_type_names()
+  all_types = c(.pr$DataType$get_all_simple_type_names(), "Utf8") # Allow "Utf8" as an alias of "String"
   names(all_types) = all_types
   pl$dtypes = c(
     lapply(all_types, DataType_new), # instanciate all simple flag-like types
@@ -143,9 +129,6 @@ pl$mem_address = mem_address
   s3_register("knitr::knit_print", "RPolarsDataFrame")
 
   pl$numeric_dtypes = pl$dtypes[substr(names(pl$dtypes), 1, 3) %in% c("Int", "Flo")]
-
-  # see doc below, R CMD check did not like this function def
-  pl$select = .pr$DataFrame$default()$select
 
   # create the binding for options on loading, otherwise its values are frozen
   # to what the default values were at build time
@@ -176,21 +159,3 @@ pl$mem_address = mem_address
   setup_renv()
   lockEnvironment(pl, bindings = TRUE)
 }
-
-#' Select from an empty DataFrame
-#' @details
-#' param ... expressions passed to select
-#' `pl$select` is a shorthand for `pl$DataFrame(list())$select`
-#'
-#' NB param of this function
-#'
-#' @name pl_select
-#' @keywords DataFrame
-#' @return DataFrame
-#' @format method
-#' @examples
-#' pl$select(
-#'   pl$lit(1:4)$alias("ints"),
-#'   pl$lit(letters[1:4])$alias("letters")
-#' )
-NULL

@@ -61,7 +61,7 @@ test_that("bin$encode and bin$decode", {
     c("hex_decoded")
   )$select(
     pl$lit(
-      pl$col("hex_decoded")$cast(pl$Utf8)
+      pl$col("hex_decoded")$cast(pl$String)
     )
   )$to_list()
 
@@ -71,7 +71,7 @@ test_that("bin$encode and bin$decode", {
     c("base64_decoded")
   )$select(
     pl$lit(
-      pl$col("base64_decoded")$cast(pl$Utf8)
+      pl$col("base64_decoded")$cast(pl$String)
     )
   )$to_list()
 
@@ -95,7 +95,7 @@ test_that("Raw to lit and series", {
   expect_identical(pl$lit(raw())$to_r(), pl$raw_list(raw())) # plain lit becomes, rpolars_raw_list
 
   # raw -> lit -> s -> R == raw -> s -> R
-  expect_identical(pl$lit(raw())$lit_to_s()$to_r(), pl$Series(raw())$to_r())
+  expect_identical(pl$lit(raw())$to_series()$to_r(), pl$Series(raw())$to_r())
 
   # raw -> s -> lit -> R  == raw -> lit -> R
   expect_identical(pl$lit(pl$Series(raw()))$to_r(), pl$lit(raw())$to_r())
@@ -114,5 +114,4 @@ test_that("Raw to lit and series", {
     pl$raw_list(42) |> get_err_ctx("Plain"),
     "some elements where not raw or NULL"
   )
-
 })

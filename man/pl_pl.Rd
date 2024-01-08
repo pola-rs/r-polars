@@ -6,7 +6,7 @@
 \alias{pl}
 \title{The complete polars public API.}
 \format{
-An object of class \code{pl_polars_env} (inherits from \code{environment}) of length 93.
+An object of class \code{pl_polars_env} (inherits from \code{environment}) of length 96.
 }
 \usage{
 pl

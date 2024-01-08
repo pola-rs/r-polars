@@ -45,11 +45,12 @@ jobs:
           - {os: ubuntu-latest,   r: 'release'}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: ./.github/actions/setup
         with:
           rust-nightly: true
+          token: "${{ secrets.GITHUB_TOKEN }}"
 
       - uses: r-lib/actions/setup-pandoc@v2
 

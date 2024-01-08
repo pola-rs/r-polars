@@ -3,7 +3,7 @@
 #' @param x RPolarsRThreadHandle
 #' @param pattern code-stump as string to auto-complete
 #' @export
-#' @keywords internal
+#' @noRd
 .DollarNames.RPolarsRThreadHandle = function(x, pattern = "") {
   paste0(ls(RPolarsRThreadHandle, pattern = pattern), "()")
 }
@@ -14,7 +14,7 @@
 #' @param x RThreadHandle
 #' @param ... not used
 #' @export
-#' @keywords internal
+#' @noRd
 as.character.RPolarsRThreadHandle = function(x, ...) {
   .pr$RThreadHandle$thread_description(x) |>
     unwrap_or("An exhausted RThreadHandle")
@@ -22,7 +22,7 @@ as.character.RPolarsRThreadHandle = function(x, ...) {
 
 #' s3 method print RThreadHandle
 #'
-#' @keywords internal
+#' @noRd
 #' @param x RThreadHandle
 #' @param ... not used
 #'
@@ -38,7 +38,7 @@ print.RPolarsRThreadHandle = function(x, ...) as.character(x) |> cat("\n")
 
 
 #' @title The RPolarsRThreadHandle class
-#' @name RThreadHandle_RThreadHandle_class
+#' @name RThreadHandle_class
 #' @description A handle to some polars query running in a background thread.
 #' @details
 #' [`<LazyFrame>$collect_in_background()`][LazyFrame_collect_in_background] will execute a polars
@@ -49,7 +49,7 @@ print.RPolarsRThreadHandle = function(x, ...) as.character(x) |> cat("\n")
 #' NOTICE:
 #' The background thread cannot use the main R session, but can access the pool of extra R sessions
 #' to process R code embedded in polars query via `$map_batches(..., background = TRUE)` or
-#' `$map_elements(background=TRUE)`. Use [`pl$set_options(rpool_cap = XX)`][set_options] to limit number of
+#' `$map_elements(background=TRUE)`. Use [`pl$set_options(rpool_cap = XX)`][pl_set_options] to limit number of
 #'  parallel R sessions.
 #' Starting polars  [`<LazyFrame>$collect_in_background()`][LazyFrame_collect_in_background] with
 #' e.g. some `$map_batches(..., background = FALSE)` will raise an Error as the main R session is not
@@ -81,7 +81,7 @@ NULL
 #' Calling `<RThreadHandle>$join()` a second time will raise an error because handle is already
 #' exhausted.
 #' @return return value from background thread
-#' @seealso [RThreadHandle_class][RThreadHandle_RThreadHandle_class]
+#' @seealso [RThreadHandle_class][RThreadHandle_class]
 RThreadHandle_join = function() {
   .pr$RThreadHandle$join(self) |> unwrap()
 }

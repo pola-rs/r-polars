@@ -2,7 +2,10 @@
 % Please edit documentation in R/expr__string.R
 \name{ExprStr_slice}
 \alias{ExprStr_slice}
-\title{Create subslices of the string values of a Utf8 Series}
+\title{Create subslices of the string values of a String Series}
+\usage{
+ExprStr_slice(offset, length = NULL)
+}
 \arguments{
 \item{offset}{Start index. Negative indexing is supported.}
 
@@ -10,10 +13,10 @@
 the end of the string.}
 }
 \value{
-Expr: Series of dtype Utf8.
+Expr: Series of dtype String.
 }
 \description{
-Create subslices of the string values of a Utf8 Series
+Create subslices of the string values of a String Series
 }
 \examples{
 df = pl$DataFrame(s = c("pear", NA, "papaya", "dragonfruit"))

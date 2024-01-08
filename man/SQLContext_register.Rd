@@ -18,7 +18,7 @@ Returns the \link{SQLContext_class} object invisibly.
 Register a single frame as a table, using the given name.
 }
 \examples{
-\dontshow{if (pl$polars_info()$features$sql) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (polars_info()$features$sql) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 ctx = pl$SQLContext()
 ctx$register("mtcars", mtcars)
 

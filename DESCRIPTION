@@ -1,6 +1,6 @@
 Package: polars
 Title: Lightning-Fast 'DataFrame' Library
-Version: 0.11.0.9001
+Version: 0.12.1.9000
 Depends: R (>= 4.2)
 Imports: utils, codetools
 Authors@R:
@@ -37,14 +37,14 @@ Suggests:
     pillar,
     rlang,
     rmarkdown,
-    testthat (>= 3.0.0),
+    testthat (>= 3.2.1),
     tibble,
     tools,
+    vctrs,
     withr
-Remotes:
-    r-lib/testthat
 Config/Needs/website:
-    altdoc (>= 0.2.2),
+    etiennebacher/altdoc@7b5cec5,
+    future.apply,
     here,
     magrittr,
     pkgload,
@@ -55,7 +55,6 @@ Config/Needs/dev:
     RcppTOML,
     readr,
     rextendr,
-    robinlovelace/styler.equals,
     spelling,
     stringr,
     styler
@@ -74,6 +73,7 @@ Collate:
     'dataframe__frame.R'
     'datatype.R'
     'docs.R'
+    'dotdotdot.R'
     'error__rpolarserr.R'
     'error__string.R'
     'error__trait.R'
@@ -93,6 +93,7 @@ Collate:
     'group_by.R'
     'info.R'
     'ipc.R'
+    'is_polars.R'
     'json.R'
     'lazyframe__group_by.R'
     'lazyframe__lazy.R'
@@ -107,11 +108,10 @@ Collate:
     'rust_result.R'
     's3_methods.R'
     'series__series.R'
-    'series__trait.R'
     'sql.R'
     'vctrs.R'
     'zzz.R'
 Config/rextendr/version: 0.3.1
 VignetteBuilder: knitr
-Config/polars/LibVersion: 0.35.1
-Config/polars/RustToolchainVersion: nightly-2023-10-12
+Config/polars/LibVersion: 0.36.0
+Config/polars/RustToolchainVersion: nightly-2023-12-23

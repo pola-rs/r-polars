@@ -33,14 +33,14 @@ test_that("create LazyFrame", {
 test_that("LazyFrame, custom schema", {
   df = pl$LazyFrame(
     iris,
-    schema = list(Sepal.Length = pl$Float32, Species = pl$Utf8)
+    schema = list(Sepal.Length = pl$Float32, Species = pl$String)
   )$collect()
 
   # dtypes from object are as expected
   expect_true(
     all(mapply(
       df$dtypes,
-      pl$dtypes[c("Float32", rep("Float64", 3), "Utf8")],
+      pl$dtypes[c("Float32", rep("Float64", 3), "String")],
       FUN = "=="
     ))
   )
@@ -544,7 +544,7 @@ test_that("melt vs data.table::melt", {
   )$lazy()
 
   rdf = plf$collect()$to_data_frame()
-  dtt = data.table(rdf)
+  dtt = data.table::data.table(rdf)
 
   melt_mod = \(...) {
     data.table::melt(variable.factor = FALSE, value.factor = FALSE, ...)
@@ -869,5 +869,17 @@ test_that("with_context works", {
       pl$col("feature_0")$fill_null(pl$col("feature_0_train")$median())
     )$collect()$to_data_frame(),
     data.frame(feature_0 = c(-1, 0, 1))
+  )
+})
+
+test_that("Multiple conditions in filter", {
+  expect_identical(
+    pl$LazyFrame(mtcars)$filter(
+      pl$col("cyl") > 6,
+      pl$col("mpg") > 15
+    )$collect()$to_data_frame(),
+    pl$LazyFrame(mtcars)$filter(
+      pl$col("cyl") > 6 & pl$col("mpg") > 15
+    )$collect()$to_data_frame()
   )
 })

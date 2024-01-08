@@ -4,8 +4,8 @@
 \alias{ExprDT_epoch}
 \alias{(Expr)$dt$epoch}
 \title{Epoch}
-\format{
-function
+\usage{
+ExprDT_epoch(tu = c("us", "ns", "ms", "s", "d"))
 }
 \arguments{
 \item{tu}{string option either 'ns', 'us', 'ms', 's' or  'd'}
@@ -21,9 +21,9 @@ ns and perhaps us will exceed integerish limit if returning to
 R as flaot64/double.
 }
 \examples{
-pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$epoch("ns")$lit_to_s()
-pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$epoch("ms")$lit_to_s()
-pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$epoch("s")$lit_to_s()
-pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$epoch("d")$lit_to_s()
+pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$epoch("ns")$to_series()
+pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$epoch("ms")$to_series()
+pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$epoch("s")$to_series()
+pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$epoch("d")$to_series()
 }
 \keyword{ExprDT}

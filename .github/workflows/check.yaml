@@ -65,7 +65,7 @@ jobs:
       LIBR_POLARS_BUILD: "true"
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Tune GitHub-hosted runner network
         uses: smorimoto/tune-github-hosted-runner-network@v1
@@ -89,6 +89,7 @@ jobs:
         with:
           rust-nightly: "${{ matrix.config.full-features }}"
           target: "${{ steps.rust-target.outputs.TARGET }}"
+          token: "${{ secrets.GITHUB_TOKEN }}"
 
       - name: print files
         run: print(list.files("..",recursive = TRUE,full.names=TRUE))

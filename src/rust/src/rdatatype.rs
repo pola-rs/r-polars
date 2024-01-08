@@ -73,12 +73,12 @@ impl RPolarsDataType {
             "Float32" | "float32" | "double" => pl::DataType::Float32,
             "Float64" | "float64" => pl::DataType::Float64,
 
-            "Utf8" | "character" => pl::DataType::Utf8,
+            "Utf8" | "String" | "character" => pl::DataType::String,
             "Binary" | "binary" => pl::DataType::Binary,
             "Date" | "date" => pl::DataType::Date,
             "Time" | "time" => pl::DataType::Time,
             "Null" | "null" => pl::DataType::Null,
-            "Categorical" | "factor" => pl::DataType::Categorical(None),
+            "Categorical" | "factor" => pl::DataType::Categorical(None, Default::default()),
             "Unknown" | "unknown" => pl::DataType::Unknown,
 
             _ => panic!("data type not recgnized "),
@@ -145,7 +145,7 @@ impl RPolarsDataType {
             "Int64".into(),
             "Float32".into(),
             "Float64".into(),
-            "Utf8".into(),
+            "String".into(),
             "Binary".into(),
             "Date".into(),
             "Time".into(),
@@ -329,11 +329,11 @@ pub fn literal_to_any_value(litval: pl::LiteralValue) -> RResult<pl::AnyValue<'s
         lv::UInt64(x) => Ok(av::UInt64(x)),
         lv::UInt8(x) => Ok(av::UInt8(x)),
         // lv::Utf8(x) => Ok(av::Utf8(x.as_str())),
-        lv::Utf8(x) => {
+        lv::String(x) => {
             let mut s = SString::new();
 
             s.push_str(x.as_str());
-            Ok(av::Utf8Owned(s))
+            Ok(av::StringOwned(s))
         }
         x => rerr().bad_val(format!("cannot convert LiteralValue {:?} to AnyValue", x)),
     }
@@ -476,7 +476,8 @@ pub fn robj_to_join_type(robj: Robj) -> RResult<pl::JoinType> {
         "cross" => Ok(pl::JoinType::Cross),
         "inner" => Ok(pl::JoinType::Inner),
         "left" => Ok(pl::JoinType::Left),
-        "outer" => Ok(pl::JoinType::Outer),
+        "outer" => Ok(pl::JoinType::Outer{coalesce: false}),
+        "outer_coalesce" => Ok(pl::JoinType::Outer{coalesce: true}),
         "semi" => Ok(pl::JoinType::Semi),
         "anti" => Ok(pl::JoinType::Anti),
         s => rerr().bad_val(format!(

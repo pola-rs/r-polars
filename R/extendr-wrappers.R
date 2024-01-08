@@ -71,8 +71,6 @@ test_wrong_call_pl_lit <- function(robj) .Call(wrap__test_wrong_call_pl_lit, rob
 
 test_robj_to_rchoice <- function(robj) .Call(wrap__test_robj_to_rchoice, robj)
 
-polars_features <- function() .Call(wrap__polars_features)
-
 concat_lf <- function(l, rechunk, parallel, to_supertypes) .Call(wrap__concat_lf, l, rechunk, parallel, to_supertypes)
 
 concat_lf_diagonal <- function(l, rechunk, parallel, to_supertypes) .Call(wrap__concat_lf_diagonal, l, rechunk, parallel, to_supertypes)
@@ -81,7 +79,7 @@ concat_df_horizontal <- function(l) .Call(wrap__concat_df_horizontal, l)
 
 concat_series <- function(l, rechunk, to_supertypes) .Call(wrap__concat_series, l, rechunk, to_supertypes)
 
-new_from_csv <- function(path, has_header, separator, comment_char, quote_char, skip_rows, dtypes, null_values, ignore_errors, cache, infer_schema_length, n_rows, encoding, low_memory, rechunk, skip_rows_after_header, row_count_name, row_count_offset, try_parse_dates, eol_char, raise_if_empty, truncate_ragged_lines) .Call(wrap__new_from_csv, path, has_header, separator, comment_char, quote_char, skip_rows, dtypes, null_values, ignore_errors, cache, infer_schema_length, n_rows, encoding, low_memory, rechunk, skip_rows_after_header, row_count_name, row_count_offset, try_parse_dates, eol_char, raise_if_empty, truncate_ragged_lines)
+new_from_csv <- function(path, has_header, separator, comment_prefix, quote_char, skip_rows, dtypes, null_values, ignore_errors, cache, infer_schema_length, n_rows, encoding, low_memory, rechunk, skip_rows_after_header, row_count_name, row_count_offset, try_parse_dates, eol_char, raise_if_empty, truncate_ragged_lines) .Call(wrap__new_from_csv, path, has_header, separator, comment_prefix, quote_char, skip_rows, dtypes, null_values, ignore_errors, cache, infer_schema_length, n_rows, encoding, low_memory, rechunk, skip_rows_after_header, row_count_name, row_count_offset, try_parse_dates, eol_char, raise_if_empty, truncate_ragged_lines)
 
 import_arrow_ipc <- function(path, n_rows, cache, rechunk, row_name, row_count, memmap) .Call(wrap__import_arrow_ipc, path, n_rows, cache, rechunk, row_name, row_count, memmap)
 
@@ -112,6 +110,8 @@ robj_to_col <- function(name, dotdotdot) .Call(wrap__robj_to_col, name, dotdotdo
 cargo_rpolars_feature_info <- function() .Call(wrap__cargo_rpolars_feature_info)
 
 rust_polars_version <- function() .Call(wrap__rust_polars_version)
+
+threadpool_size <- function() .Call(wrap__threadpool_size)
 
 enable_string_cache <- function() .Call(wrap__enable_string_cache)
 
@@ -165,7 +165,7 @@ RPolarsDataFrame$to_list_unwind <- function() .Call(wrap__RPolarsDataFrame__to_l
 
 RPolarsDataFrame$to_list_tag_structs <- function() .Call(wrap__RPolarsDataFrame__to_list_tag_structs, self)
 
-RPolarsDataFrame$frame_equal <- function(other) .Call(wrap__RPolarsDataFrame__frame_equal, self, other)
+RPolarsDataFrame$equals <- function(other) .Call(wrap__RPolarsDataFrame__equals, self, other)
 
 RPolarsDataFrame$select_at_idx <- function(idx) .Call(wrap__RPolarsDataFrame__select_at_idx, self, idx)
 
@@ -515,7 +515,7 @@ RPolarsExpr$explode <- function() .Call(wrap__RPolarsExpr__explode, self)
 
 RPolarsExpr$flatten <- function() .Call(wrap__RPolarsExpr__flatten, self)
 
-RPolarsExpr$gather_every <- function(n) .Call(wrap__RPolarsExpr__gather_every, self, n)
+RPolarsExpr$gather_every <- function(n, offset) .Call(wrap__RPolarsExpr__gather_every, self, n, offset)
 
 RPolarsExpr$hash <- function(seed, seed_1, seed_2, seed_3) .Call(wrap__RPolarsExpr__hash, self, seed, seed_1, seed_2, seed_3)
 
@@ -523,21 +523,21 @@ RPolarsExpr$reinterpret <- function(signed) .Call(wrap__RPolarsExpr__reinterpret
 
 RPolarsExpr$interpolate <- function(method) .Call(wrap__RPolarsExpr__interpolate, self, method)
 
-RPolarsExpr$rolling_min <- function(window_size, weights, min_periods, center, by_null, closed_null) .Call(wrap__RPolarsExpr__rolling_min, self, window_size, weights, min_periods, center, by_null, closed_null)
+RPolarsExpr$rolling_min <- function(window_size, weights, min_periods, center, by_null, closed_null, warn_if_unsorted) .Call(wrap__RPolarsExpr__rolling_min, self, window_size, weights, min_periods, center, by_null, closed_null, warn_if_unsorted)
 
-RPolarsExpr$rolling_max <- function(window_size, weights, min_periods, center, by_null, closed_null) .Call(wrap__RPolarsExpr__rolling_max, self, window_size, weights, min_periods, center, by_null, closed_null)
+RPolarsExpr$rolling_max <- function(window_size, weights, min_periods, center, by_null, closed_null, warn_if_unsorted) .Call(wrap__RPolarsExpr__rolling_max, self, window_size, weights, min_periods, center, by_null, closed_null, warn_if_unsorted)
 
-RPolarsExpr$rolling_mean <- function(window_size, weights, min_periods, center, by_null, closed_null) .Call(wrap__RPolarsExpr__rolling_mean, self, window_size, weights, min_periods, center, by_null, closed_null)
+RPolarsExpr$rolling_mean <- function(window_size, weights, min_periods, center, by_null, closed_null, warn_if_unsorted) .Call(wrap__RPolarsExpr__rolling_mean, self, window_size, weights, min_periods, center, by_null, closed_null, warn_if_unsorted)
 
-RPolarsExpr$rolling_sum <- function(window_size, weights, min_periods, center, by_null, closed_null) .Call(wrap__RPolarsExpr__rolling_sum, self, window_size, weights, min_periods, center, by_null, closed_null)
+RPolarsExpr$rolling_sum <- function(window_size, weights, min_periods, center, by_null, closed_null, warn_if_unsorted) .Call(wrap__RPolarsExpr__rolling_sum, self, window_size, weights, min_periods, center, by_null, closed_null, warn_if_unsorted)
 
-RPolarsExpr$rolling_std <- function(window_size, weights, min_periods, center, by_null, closed_null) .Call(wrap__RPolarsExpr__rolling_std, self, window_size, weights, min_periods, center, by_null, closed_null)
+RPolarsExpr$rolling_std <- function(window_size, weights, min_periods, center, by_null, closed_null, warn_if_unsorted) .Call(wrap__RPolarsExpr__rolling_std, self, window_size, weights, min_periods, center, by_null, closed_null, warn_if_unsorted)
 
-RPolarsExpr$rolling_var <- function(window_size, weights, min_periods, center, by_null, closed_null) .Call(wrap__RPolarsExpr__rolling_var, self, window_size, weights, min_periods, center, by_null, closed_null)
+RPolarsExpr$rolling_var <- function(window_size, weights, min_periods, center, by_null, closed_null, warn_if_unsorted) .Call(wrap__RPolarsExpr__rolling_var, self, window_size, weights, min_periods, center, by_null, closed_null, warn_if_unsorted)
 
-RPolarsExpr$rolling_median <- function(window_size, weights, min_periods, center, by_null, closed_null) .Call(wrap__RPolarsExpr__rolling_median, self, window_size, weights, min_periods, center, by_null, closed_null)
+RPolarsExpr$rolling_median <- function(window_size, weights, min_periods, center, by_null, closed_null, warn_if_unsorted) .Call(wrap__RPolarsExpr__rolling_median, self, window_size, weights, min_periods, center, by_null, closed_null, warn_if_unsorted)
 
-RPolarsExpr$rolling_quantile <- function(quantile, interpolation, window_size, weights, min_periods, center, by, closed) .Call(wrap__RPolarsExpr__rolling_quantile, self, quantile, interpolation, window_size, weights, min_periods, center, by, closed)
+RPolarsExpr$rolling_quantile <- function(quantile, interpolation, window_size, weights, min_periods, center, by, closed, warn_if_unsorted) .Call(wrap__RPolarsExpr__rolling_quantile, self, quantile, interpolation, window_size, weights, min_periods, center, by, closed, warn_if_unsorted)
 
 RPolarsExpr$rolling_skew <- function(window_size_f, bias) .Call(wrap__RPolarsExpr__rolling_skew, self, window_size_f, bias)
 
@@ -623,6 +623,12 @@ RPolarsExpr$peak_min <- function() .Call(wrap__RPolarsExpr__peak_min, self)
 
 RPolarsExpr$peak_max <- function() .Call(wrap__RPolarsExpr__peak_max, self)
 
+RPolarsExpr$replace <- function(old, new, default, return_dtype) .Call(wrap__RPolarsExpr__replace, self, old, new, default, return_dtype)
+
+RPolarsExpr$rle <- function() .Call(wrap__RPolarsExpr__rle, self)
+
+RPolarsExpr$rle_id <- function() .Call(wrap__RPolarsExpr__rle_id, self)
+
 RPolarsExpr$list_lengths <- function() .Call(wrap__RPolarsExpr__list_lengths, self)
 
 RPolarsExpr$list_contains <- function(other) .Call(wrap__RPolarsExpr__list_contains, self, other)
@@ -661,11 +667,11 @@ RPolarsExpr$list_eval <- function(expr, parallel) .Call(wrap__RPolarsExpr__list_
 
 RPolarsExpr$list_to_struct <- function(n_field_strategy, name_gen, upper_bound) .Call(wrap__RPolarsExpr__list_to_struct, self, n_field_strategy, name_gen, upper_bound)
 
-RPolarsExpr$str_to_date <- function(format, strict, exact, cache, ambiguous) .Call(wrap__RPolarsExpr__str_to_date, self, format, strict, exact, cache, ambiguous)
+RPolarsExpr$str_to_date <- function(format, strict, exact, cache) .Call(wrap__RPolarsExpr__str_to_date, self, format, strict, exact, cache)
 
 RPolarsExpr$str_to_datetime <- function(format, time_unit, time_zone, strict, exact, cache, ambiguous) .Call(wrap__RPolarsExpr__str_to_datetime, self, format, time_unit, time_zone, strict, exact, cache, ambiguous)
 
-RPolarsExpr$str_to_time <- function(format, strict, exact, cache, ambiguous) .Call(wrap__RPolarsExpr__str_to_time, self, format, strict, exact, cache, ambiguous)
+RPolarsExpr$str_to_time <- function(format, strict, cache) .Call(wrap__RPolarsExpr__str_to_time, self, format, strict, cache)
 
 RPolarsExpr$dt_truncate <- function(every, offset) .Call(wrap__RPolarsExpr__dt_truncate, self, every, offset)
 
@@ -893,7 +899,7 @@ RPolarsExpr$str_starts_with <- function(sub) .Call(wrap__RPolarsExpr__str_starts
 
 RPolarsExpr$str_json_path_match <- function(pat) .Call(wrap__RPolarsExpr__str_json_path_match, self, pat)
 
-RPolarsExpr$str_json_extract <- function(dtype, infer_schema_len) .Call(wrap__RPolarsExpr__str_json_extract, self, dtype, infer_schema_len)
+RPolarsExpr$str_json_decode <- function(dtype, infer_schema_len) .Call(wrap__RPolarsExpr__str_json_decode, self, dtype, infer_schema_len)
 
 RPolarsExpr$str_hex_encode <- function() .Call(wrap__RPolarsExpr__str_hex_encode, self)
 
@@ -924,6 +930,12 @@ RPolarsExpr$str_slice <- function(offset, length) .Call(wrap__RPolarsExpr__str_s
 RPolarsExpr$str_explode <- function() .Call(wrap__RPolarsExpr__str_explode, self)
 
 RPolarsExpr$str_parse_int <- function(radix, strict) .Call(wrap__RPolarsExpr__str_parse_int, self, radix, strict)
+
+RPolarsExpr$str_reverse <- function() .Call(wrap__RPolarsExpr__str_reverse, self)
+
+RPolarsExpr$str_contains_any <- function(patterns, ascii_case_insensitive) .Call(wrap__RPolarsExpr__str_contains_any, self, patterns, ascii_case_insensitive)
+
+RPolarsExpr$str_replace_many <- function(patterns, replace_with, ascii_case_insensitive) .Call(wrap__RPolarsExpr__str_replace_many, self, patterns, replace_with, ascii_case_insensitive)
 
 RPolarsExpr$bin_contains <- function(lit) .Call(wrap__RPolarsExpr__bin_contains, self, lit)
 
@@ -1165,7 +1177,7 @@ RPolarsSeries$is_sorted_reverse_flag <- function() .Call(wrap__RPolarsSeries__is
 
 RPolarsSeries$is_sorted <- function(descending) .Call(wrap__RPolarsSeries__is_sorted, self, descending)
 
-RPolarsSeries$series_equal <- function(other, null_equal, strict) .Call(wrap__RPolarsSeries__series_equal, self, other, null_equal, strict)
+RPolarsSeries$equals <- function(other, null_equal, strict) .Call(wrap__RPolarsSeries__equals, self, other, null_equal, strict)
 
 RPolarsSeries$get_fmt <- function(index, str_length) .Call(wrap__RPolarsSeries__get_fmt, self, index, str_length)
 

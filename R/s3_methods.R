@@ -172,7 +172,7 @@ tail.RPolarsLazyFrame = tail.RPolarsDataFrame
 #'
 #' @export
 #' @rdname S3_dim
-dim.RPolarsDataFrame = function(x) x$shape
+dim.RPolarsDataFrame = function(x) as.integer(x$shape)
 
 #' @export
 #' @rdname S3_dim
@@ -400,7 +400,6 @@ print.RPolarsSeries = function(x, ...) {
 #' @export
 #' @noRd
 #' @inherit .DollarNames.RPolarsDataFrame return
-#' @keywords internal
 .DollarNames.RPolarsSeries = function(x, pattern = "") {
   get_method_usages(RPolarsSeries, pattern = pattern)
 }

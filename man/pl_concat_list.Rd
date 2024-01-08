@@ -3,6 +3,9 @@
 \name{pl_concat_list}
 \alias{pl_concat_list}
 \title{Concat the arrays in a Series dtype List in linear time.}
+\usage{
+pl_concat_list(exprs)
+}
 \arguments{
 \item{exprs}{list of Into\if{html}{\out{<Expr>}}, strings interpreted as column names}
 }
@@ -29,7 +32,7 @@ pl$concat_list(list(
   pl$lit(1:5),
   pl$Series(5:1),
   rep(0L, 5)
-))$alias("alice")$lit_to_s()
+))$alias("alice")$to_series()
 
 }
 \keyword{Expr_new}

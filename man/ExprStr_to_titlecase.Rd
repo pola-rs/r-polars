@@ -3,23 +3,24 @@
 \name{ExprStr_to_titlecase}
 \alias{ExprStr_to_titlecase}
 \title{Convert a string to titlecase}
+\usage{
+ExprStr_to_titlecase()
+}
 \value{
-Expr of Utf8 titlecase chars
+Expr of String titlecase chars
 }
 \description{
 Transform to titlecase variant.
 }
 \details{
-This method is only available with rust compiler flag "full_features" which can
-be set via envvar "RPOLARS_FULL_FEATURES" and it requires rust nightly to compile.
-Polars GitHub binary releases are compiled with "full_features".
+This method is only available with the feature flag "simd" which can
+be set via envvar "RPOLARS_FULL_FEATURES" and it requires
+Rust nightly toolchain to compile.
+See \link{polars_info} for more details.
 }
 \examples{
-f = \() pl$lit(c("hello there", "HI, THERE", NA))$str$to_titlecase()$lit_to_s()
-if (pl$polars_info()$features$full_features) {
-  f()
-} else {
-  tryCatch(f(), error = as.character)
-}
+\dontshow{if (polars_info()$features$simd) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+pl$lit(c("hello there", "HI, THERE", NA))$str$to_titlecase()$to_series()
+\dontshow{\}) # examplesIf}
 }
 \keyword{ExprStr}

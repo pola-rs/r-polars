@@ -3,6 +3,9 @@
 \name{ExprDT_total_nanoseconds}
 \alias{ExprDT_total_nanoseconds}
 \title{nanoseconds}
+\usage{
+ExprDT_total_nanoseconds()
+}
 \value{
 Expr of i64
 }

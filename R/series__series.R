@@ -42,7 +42,7 @@ NULL
 
 
 #' Wrap as Series
-#' @keywords internal
+#' @noRd
 #' @description input is either already a Series of will be passed to the Series constructor
 #' @param x a Series or something-turned-into-Series
 #' @return Series
@@ -63,7 +63,7 @@ wrap_s = function(x) {
 #' @examples {
 #'   pl$Series(1:4)
 #' }
-pl$Series = function(x, name = NULL) {
+pl_Series = function(x, name = NULL) {
   .pr$Series$new(x, name) |>
     unwrap("in pl$Series()")
 }
@@ -251,11 +251,10 @@ Series_shape = method_as_property(function() {
 #'
 #' @examples
 #'
-#' # make polars Series_Utf8
 #' series_vec = pl$Series(letters[1:3])
 #'
 #' # Series_non_list
-#' series_vec$to_r() # as vector because Series DataType is not list (is Utf8)
+#' series_vec$to_r() # as vector because Series DataType is not list (is String)
 #' series_vec$to_r_list() # implicit call as.list(), convert to list
 #' series_vec$to_vector() # implicit call unlist(), same as to_r() as already vector
 #'
@@ -354,7 +353,7 @@ Series_value_counts = function(sort = TRUE, parallel = FALSE) {
 #' @examples
 #' s = pl$Series(letters[1:5], "ltrs")
 #' f = \(x) paste(x, ":", as.integer(charToRaw(x)))
-#' s$map_elements(f, pl$Utf8)
+#' s$map_elements(f, pl$String)
 #'
 #' # same as
 #' pl$Series(sapply(s$to_r(), f), s$name)
@@ -366,7 +365,7 @@ Series_map_elements = function(
 }
 
 Series_apply = function(f, datatype = NULL, strict_return_type = TRUE,
-                         allow_fail_eval = FALSE) {
+                        allow_fail_eval = FALSE) {
   warning("$apply() is deprecated and will be removed in 0.13.0. Use $map_elements() instead.")
   Series_map_elements(f,
     datatype = datatype, strict_return_type = strict_return_type,
@@ -802,16 +801,16 @@ Series_to_frame = function() {
 #' @param strict bool if TRUE, do not allow similar DataType comparison. Overrides null_equal.
 #'
 #' @description  Check if series is equal with another Series.
-#' @name Series_series_equal
+#' @name Series_equals
 #' @return bool
 #' @keywords Series
-#' @aliases series_equal
+#' @aliases equals
 #' @format method
 #'
 #' @examples
-#' pl$Series(1:4, "bob")$series_equal(pl$Series(1:4))
-Series_series_equal = function(other, null_equal = FALSE, strict = FALSE) {
-  .pr$Series$series_equal(self, other, null_equal, strict)
+#' pl$Series(1:4, "bob")$equals(pl$Series(1:4))
+Series_equals = function(other, null_equal = FALSE, strict = FALSE) {
+  .pr$Series$equals(self, other, null_equal, strict)
 }
 # TODO add Series_cast and show examples of strict and null_equals
 
@@ -981,7 +980,7 @@ Series_expr = method_as_property(function() {
 #'   $list$lengths()
 #'   $sum()
 #'   $cast(pl$dtypes$Int8)
-#'   $lit_to_s()
+#'   $to_series()
 #' )
 Series_to_lit = function() {
   pl$lit(self)

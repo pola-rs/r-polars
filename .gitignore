@@ -41,5 +41,15 @@ src/Makevars
 # Python
 .venv
 
+# Task cache
+.task
+
 # Binary files
 tools/libr_polars.a
+
+# altdoc stuff
+altdoc/freeze.rds
+docs
+.venv_altdoc
+altdoc/mkdocs.yml
+altdoc/reference_home.md

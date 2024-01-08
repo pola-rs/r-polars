@@ -3,11 +3,14 @@
 \name{ExprStr_extract_all}
 \alias{ExprStr_extract_all}
 \title{Extract all matches for the given regex pattern}
+\usage{
+ExprStr_extract_all(pattern)
+}
 \arguments{
 \item{pattern}{A valid regex pattern}
 }
 \value{
-\code{List[Utf8]} array. Contain null if original value is null or regex capture
+\code{List[String]} array. Contain null if original value is null or regex capture
 nothing.
 }
 \description{

@@ -1,10 +1,12 @@
-# print pl$polars_info()
+# print polars_info()
 
     Code
       info
     Output
       r-polars package version : 999.999.999
       rust-polars crate version: 999.999.999
+      
+      Thread pool size: 1 
       
       Features:                         
       default             FALSE

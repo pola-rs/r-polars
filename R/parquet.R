@@ -38,7 +38,7 @@
 #' pl$scan_parquet(
 #'   file.path(temp_dir, "**/*.parquet")
 #' )$collect()
-pl$scan_parquet = function(
+pl_scan_parquet = function(
     file,
     n_rows = NULL,
     cache = TRUE,
@@ -53,9 +53,7 @@ pl$scan_parquet = function(
     row_count_offset = 0L,
     low_memory = FALSE,
     use_statistics = TRUE,
-    hive_partitioning = TRUE
-  ) {
-
+    hive_partitioning = TRUE) {
   new_from_parquet(
     path = file,
     n_rows = n_rows,
@@ -64,7 +62,7 @@ pl$scan_parquet = function(
     rechunk = rechunk,
     row_name = row_count_name,
     row_count = row_count_offset,
-    #storage_options = storage_options, # not supported yet
+    # storage_options = storage_options, # not supported yet
     low_memory = low_memory,
     use_statistics = use_statistics,
     hive_partitioning = hive_partitioning
@@ -76,27 +74,26 @@ pl$scan_parquet = function(
 #' @rdname IO_read_parquet
 #' @inheritParams scan_parquet
 #' @return DataFrame
-read_parquet = function( # remapped to pl$read_parquet, a hack to support roxygen2 @inheritsParams
-  file,
-  n_rows = NULL,
-  cache = TRUE,
-  parallel = c(
-    "Auto", # default
-    "None",
-    "Columns",
-    "RowGroups"
-  ),
-  rechunk = TRUE,
-  row_count_name = NULL,
-  row_count_offset = 0L,
-  low_memory = FALSE,
-  use_statistics = TRUE,
-  hive_partitioning = TRUE) {
-
+pl_read_parquet = function(
+    # remapped to pl$read_parquet, a hack to support roxygen2 @inheritsParams
+    file,
+    n_rows = NULL,
+    cache = TRUE,
+    parallel = c(
+      "Auto", # default
+      "None",
+      "Columns",
+      "RowGroups"
+    ),
+    rechunk = TRUE,
+    row_count_name = NULL,
+    row_count_offset = 0L,
+    low_memory = FALSE,
+    use_statistics = TRUE,
+    hive_partitioning = TRUE) {
   args = as.list(environment())
   result({
     do.call(pl$scan_parquet, args)$collect()
   }) |>
     unwrap("in pl$read_parquet(): ")
 }
-pl$read_parquet = read_parquet

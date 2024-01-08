@@ -106,7 +106,7 @@ NULL
 #' @return char vec
 #' @export
 #' @inherit .DollarNames.RPolarsDataFrame return
-#' @keywords internal
+#' @noRd
 
 .DollarNames.RPolarsLazyFrame = function(x, pattern = "") {
   paste0(ls(RPolarsLazyFrame, pattern = pattern), "()")
@@ -144,9 +144,9 @@ NULL
 #' # custom schema
 #' pl$LazyFrame(
 #'   iris,
-#'   schema = list(Sepal.Length = pl$Float32, Species = pl$Utf8)
+#'   schema = list(Sepal.Length = pl$Float32, Species = pl$String)
 #' )$collect()
-pl$LazyFrame = function(...) {
+pl_LazyFrame = function(...) {
   pl$DataFrame(...)$lazy()
 }
 
@@ -156,7 +156,7 @@ pl$LazyFrame = function(...) {
 #' @param ... not used
 #' @keywords LazyFrame
 #'
-#' @keywords internal
+#' @noRd
 #' @return self
 #' @export
 #'
@@ -220,7 +220,7 @@ LazyFrame_describe_plan = "use_extendr_wrapper"
 #'   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
 #' )
 LazyFrame_select = function(...) {
-  .pr$LazyFrame$select(self, unpack_list(...)) |>
+  .pr$LazyFrame$select(self, unpack_list(..., .context = "in $select()")) |>
     unwrap("in $select()")
 }
 
@@ -246,7 +246,7 @@ LazyFrame_select = function(...) {
 #'   SW_add_2 = (pl$col("Sepal.Width") + 2)
 #' )
 LazyFrame_with_columns = function(...) {
-  .pr$LazyFrame$with_columns(self, unpack_list(...)) |>
+  .pr$LazyFrame$with_columns(self, unpack_list(..., .context = "in $with_columns()")) |>
     unwrap("in $with_columns()")
 }
 
@@ -266,15 +266,31 @@ LazyFrame_with_row_count = function(name, offset = NULL) {
   .pr$LazyFrame$with_row_count(self, name, offset) |> unwrap()
 }
 
-#' @title Apply filter to LazyFrame
-#' @description Filter rows with an Expression defining a boolean column
+#' Apply filter to LazyFrame
+#'
+#' Filter rows with an Expression defining a boolean column.
+#' Multiple expressions are combined with `&` (AND).
+#' This is equivalent to [dplyr::filter()].
+#'
+#' Rows where the condition returns `NA` are dropped.
 #' @keywords LazyFrame
-#' @param expr one Expr or string naming a column
+#' @param ... Polars expressions which will evaluate to a boolean.
 #' @return A new `LazyFrame` object with add/modified column.
 #' @docType NULL
-#' @usage LazyFrame_filter(expr)
-#' @examples pl$LazyFrame(iris)$filter(pl$col("Species") == "setosa")$collect()
-LazyFrame_filter = "use_extendr_wrapper"
+#' @examples
+#' lf = pl$LazyFrame(iris)
+#'
+#' lf$filter(pl$col("Species") == "setosa")$collect()
+#'
+#' # This is equivalent to
+#' # lf$filter(pl$col("Sepal.Length") > 5 & pl$col("Petal.Width") < 1)
+#' lf$filter(pl$col("Sepal.Length") > 5, pl$col("Petal.Width") < 1)
+LazyFrame_filter = function(...) {
+  bool_expr = unpack_bool_expr_result(...) |>
+    unwrap("in $filter()")
+
+  .pr$LazyFrame$filter(self, bool_expr)
+}
 
 #' @title Get optimization settings
 #' @description Get the current optimization toggles for the lazy query
@@ -417,7 +433,7 @@ LazyFrame_collect = function(
 #' a detached thread. This can also be used via `$collect(collect_in_background = TRUE)`.
 #'
 #' @details
-#' This function immediately returns an [RThreadHandle][RThreadHandle_RThreadHandle_class].
+#' This function immediately returns an [RThreadHandle][RThreadHandle_class].
 #' Use [`<RPolarsRThreadHandle>$is_finished()`][RThreadHandle_is_finished] to see if done.
 #' Use [`<RPolarsRThreadHandle>$join()`][RThreadHandle_join] to wait and get the final result.
 #'
@@ -747,7 +763,9 @@ LazyFrame_last = "use_extendr_wrapper"
 #' @docType NULL
 #' @format NULL
 #' @examples pl$LazyFrame(mtcars)$max()$collect()
-LazyFrame_max = "use_extendr_wrapper"
+LazyFrame_max = function() {
+  unwrap(.pr$LazyFrame$max(self), "in $max():")
+}
 
 #' @title Mean
 #' @description Aggregate the columns in the LazyFrame to their mean value.
@@ -756,7 +774,9 @@ LazyFrame_max = "use_extendr_wrapper"
 #' @docType NULL
 #' @format NULL
 #' @examples pl$LazyFrame(mtcars)$mean()$collect()
-LazyFrame_mean = "use_extendr_wrapper"
+LazyFrame_mean = function() {
+  unwrap(.pr$LazyFrame$mean(self), "in $mean():")
+}
 
 #' @title Median
 #' @description Aggregate the columns in the LazyFrame to their median value.
@@ -765,7 +785,9 @@ LazyFrame_mean = "use_extendr_wrapper"
 #' @docType NULL
 #' @format NULL
 #' @examples pl$LazyFrame(mtcars)$median()$collect()
-LazyFrame_median = "use_extendr_wrapper"
+LazyFrame_median = function() {
+  unwrap(.pr$LazyFrame$median(self), "in $median():")
+}
 
 #' @title Min
 #' @description Aggregate the columns in the LazyFrame to their minimum value.
@@ -774,7 +796,9 @@ LazyFrame_median = "use_extendr_wrapper"
 #' @docType NULL
 #' @format NULL
 #' @examples pl$LazyFrame(mtcars)$min()$collect()
-LazyFrame_min = "use_extendr_wrapper"
+LazyFrame_min = function() {
+  unwrap(.pr$LazyFrame$min(self), "in $min():")
+}
 
 #' @title Sum
 #' @description Aggregate the columns of this LazyFrame to their sum values.
@@ -783,7 +807,9 @@ LazyFrame_min = "use_extendr_wrapper"
 #' @docType NULL
 #' @format NULL
 #' @examples pl$LazyFrame(mtcars)$sum()$collect()
-LazyFrame_sum = "use_extendr_wrapper"
+LazyFrame_sum = function() {
+  unwrap(.pr$LazyFrame$sum(self), "in $sum():")
+}
 
 #' @title Var
 #' @description Aggregate the columns of this LazyFrame to their variance values.
@@ -961,7 +987,7 @@ LazyFrame_unique = function(subset = NULL, keep = "first", maintain_order = FALS
 #' )$
 #'   collect()
 LazyFrame_group_by = function(..., maintain_order = pl$options$maintain_order) {
-  .pr$LazyFrame$group_by(self, unpack_list(...), maintain_order) |>
+  .pr$LazyFrame$group_by(self, unpack_list(..., .context = "in $group_by():"), maintain_order) |>
     unwrap("in $group_by():")
 }
 
@@ -1044,7 +1070,8 @@ LazyFrame_sort = function(
     nulls_last = FALSE,
     maintain_order = FALSE) {
   .pr$LazyFrame$sort_by_exprs(
-    self, unpack_list(by), err_on_named_args(...), descending, nulls_last, maintain_order
+    self, unpack_list(by, .context = "in $sort():"), err_on_named_args(...),
+    descending, nulls_last, maintain_order
   ) |>
     unwrap("in $sort():")
 }
@@ -1148,8 +1175,8 @@ LazyFrame_join_asof = function(
     tolerance = NULL,
     allow_parallel = TRUE,
     force_parallel = FALSE) {
-  if (!is.null(by)) by_left <- by_right <- by
-  if (!is.null(on)) left_on <- right_on <- on
+  if (!is.null(by)) by_left = by_right = by
+  if (!is.null(on)) left_on = right_on = on
   tolerance_str = if (is.character(tolerance)) tolerance else NULL
   tolerance_num = if (!is.character(tolerance)) tolerance else NULL
 
@@ -1475,7 +1502,7 @@ LazyFrame_profile = function(
 #' `"name"` is implicitly converted to `pl$col("name")`.
 #'
 #' @details
-#' Only columns of DataType `List` or `Utf8` can be exploded.
+#' Only columns of DataType `List` or `String` can be exploded.
 #'
 #' Named expressions like `$explode(a = pl$col("b"))` will not implicitly trigger
 #' `$alias("a")` here, due to only variant `Expr::Column` is supported in
@@ -1501,7 +1528,7 @@ LazyFrame_profile = function(
 #' df$explode("numbers", "numbers_2")$collect()
 #' df$explode(pl$col(pl$List(pl$Float64)))$collect()
 LazyFrame_explode = function(...) {
-  dotdotdot_args = unpack_list(...)
+  dotdotdot_args = unpack_list(..., .context = "in explode():")
   .pr$LazyFrame$explode(self, dotdotdot_args) |>
     unwrap("in explode():")
 }

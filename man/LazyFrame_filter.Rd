@@ -3,22 +3,30 @@
 \name{LazyFrame_filter}
 \alias{LazyFrame_filter}
 \title{Apply filter to LazyFrame}
-\format{
-An object of class \code{character} of length 1.
-}
 \usage{
-LazyFrame_filter(expr)
+LazyFrame_filter(...)
 }
 \arguments{
-\item{expr}{one Expr or string naming a column}
+\item{...}{Polars expressions which will evaluate to a boolean.}
 }
 \value{
 A new \code{LazyFrame} object with add/modified column.
 }
 \description{
-Filter rows with an Expression defining a boolean column
+Filter rows with an Expression defining a boolean column.
+Multiple expressions are combined with \code{&} (AND).
+This is equivalent to \code{\link[dplyr:filter]{dplyr::filter()}}.
+}
+\details{
+Rows where the condition returns \code{NA} are dropped.
 }
 \examples{
-pl$LazyFrame(iris)$filter(pl$col("Species") == "setosa")$collect()
+lf = pl$LazyFrame(iris)
+
+lf$filter(pl$col("Species") == "setosa")$collect()
+
+# This is equivalent to
+# lf$filter(pl$col("Sepal.Length") > 5 & pl$col("Petal.Width") < 1)
+lf$filter(pl$col("Sepal.Length") > 5, pl$col("Petal.Width") < 1)
 }
 \keyword{LazyFrame}

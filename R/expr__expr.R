@@ -53,7 +53,7 @@ Expr_print = function() {
 #' @param pattern String used to auto-complete
 #' @inherit .DollarNames.RPolarsDataFrame return
 #' @export
-#' @keywords internal
+#' @noRd
 .DollarNames.RPolarsExpr = function(x, pattern = "") {
   paste0(ls(RPolarsExpr, pattern = pattern), "()")
 }
@@ -65,7 +65,7 @@ Expr_print = function() {
 #'
 #' @return One Expr wrapped in a list
 #' @export
-#' @keywords internal
+#' @noRd
 as.list.RPolarsExpr = function(x, ...) {
   list(x)
 }
@@ -76,7 +76,7 @@ as.list.RPolarsExpr = function(x, ...) {
 #' @param e an Expr(polars) or any R expression
 #' @details
 #' used internally to ensure an object is an expression
-#' @keywords internal
+#' @noRd
 #' @return Expr
 #' @examples pl$col("foo") < 5
 wrap_e = function(e, str_to_lit = TRUE) {
@@ -92,7 +92,7 @@ wrap_e = function(e, str_to_lit = TRUE) {
 #' @param argname if error, blame argument of this name
 #' @details
 #' used internally to ensure an object is an expression and to catch any error
-#' @keywords internal
+#' @noRd
 #' @return Expr
 #' @examples pl$col("foo") < 5
 wrap_e_result = function(e, str_to_lit = TRUE, argname = NULL) {
@@ -129,14 +129,13 @@ wrap_e_result = function(e, str_to_lit = TRUE, argname = NULL) {
 #' Used internally to ensure an object is a list of expression
 #' The output is wrapped in a result, which can contain an ok or
 #' err value.
-#' @keywords internal
 #' @return Expr
 #' @examples .pr$env$wrap_elist_result(list(pl$lit(42), 42, 1:3))
 wrap_elist_result = function(elist, str_to_lit = TRUE) {
   element_i = 0L
   result(
     {
-      if (!is.list(elist) && length(elist) == 1L) elist <- list(elist)
+      if (!is.list(elist) && length(elist) == 1L) elist = list(elist)
       lapply(elist, \(e) {
         element_i <<- element_i + 1L
         wrap_e(e, str_to_lit)
@@ -575,7 +574,6 @@ Expr_is_not_null = "use_extendr_wrapper"
 #' @param ...  any Expr or string
 #'
 #'
-#' @keywords internal
 #'
 #' @return RPolarsProtoExprArray object
 #'
@@ -674,7 +672,7 @@ construct_ProtoExprArray = function(...) {
 #'   select(
 #'   pl$col("Sepal.Length")$map_batches(\(x) {
 #'     paste("cheese", as.character(x$to_vector()))
-#'   }, pl$dtypes$Utf8)
+#'   }, pl$dtypes$String)
 #' )
 #'
 #' # R parallel process example, use Sys.sleep() to imitate some CPU expensive
@@ -801,7 +799,7 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FAL
 #'
 #' e_letter = my_selection$map_elements(\(x) {
 #'   letters[ceiling(x)]
-#' }, return_type = pl$dtypes$Utf8)$name$suffix("_letter")
+#' }, return_type = pl$dtypes$String)$name$suffix("_letter")
 #' pl$DataFrame(iris)$select(e_add10, e_letter)
 #'
 #'
@@ -889,7 +887,7 @@ Expr_map_elements = function(f, return_type = NULL, strict_return_type = TRUE, a
 }
 
 Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE,
-                       allow_fail_eval = FALSE, in_background = FALSE) {
+                      allow_fail_eval = FALSE, in_background = FALSE) {
   warning("$apply() is deprecated and will be removed in 0.13.0. Use $map_elements() instead.", call. = FALSE)
   if (in_background) {
     return(.pr$Expr$map_elements_in_background(self, f, return_type))
@@ -929,7 +927,7 @@ Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE,
 #' pl$select(pl$lit(1:4))
 #'
 #' # r vector to literal to Series
-#' pl$lit(1:4)$lit_to_s()
+#' pl$lit(1:4)$to_series()
 #'
 #' # vectors to literal implicitly
 #' (pl$lit(2) + 1:4) / 4:1
@@ -1036,12 +1034,12 @@ Expr_to_physical = "use_extendr_wrapper"
 #' )
 #'
 #' # strict FALSE, inserts null for any cast failure
-#' pl$lit(c(100, 200, 300))$cast(pl$dtypes$UInt8, strict = FALSE)$lit_to_s()
+#' pl$lit(c(100, 200, 300))$cast(pl$dtypes$UInt8, strict = FALSE)$to_series()
 #'
 #' # strict TRUE, raise any failure as an error when query is executed.
 #' tryCatch(
 #'   {
-#'     pl$lit("a")$cast(pl$dtypes$Float64, strict = TRUE)$lit_to_s()
+#'     pl$lit("a")$cast(pl$dtypes$Float64, strict = TRUE)$to_series()
 #'   },
 #'   error = function(e) e
 #' )
@@ -1577,10 +1575,12 @@ Expr_sort_by = function(by, descending = FALSE) {
 #' Gather values by index
 #'
 #' @param indices R scalar/vector or Series, or Expr that leads to a Series of
-#' dtype UInt32.
+#' dtype Int64. (0-indexed)
 #' @return Expr
 #' @examples
-#' pl$DataFrame(a = c(1, 2, 4, 5, 8))$select(pl$col("a")$gather(c(0, 2, 4)))
+#' df = pl$DataFrame(a = 1:10)
+#'
+#' df$select(pl$col("a")$gather(c(0, 2, 4, -1)))
 Expr_gather = function(indices) {
   .pr$Expr$gather(self, pl$lit(indices)) |>
     unwrap("in $gather():")
@@ -2036,7 +2036,7 @@ Expr_filter = function(predicate) {
 Expr_where = Expr_filter
 
 
-#' Explode a list or Utf8 Series
+#' Explode a list or String Series
 #'
 #' This means that every item is expanded to a new row.
 #'
@@ -2071,13 +2071,14 @@ Expr_flatten = "use_extendr_wrapper"
 #'
 #' Gather every nth value in the Series and return as a new Series.
 #' @param n Positive integer.
+#' @param offset Starting index.
 #'
 #' @return Expr
 #'
 #' @examples
 #' pl$DataFrame(a = 0:24)$select(pl$col("a")$gather_every(6))
-Expr_gather_every = function(n) {
-  unwrap(.pr$Expr$gather_every(self, n))
+Expr_gather_every = function(n, offset = 0) {
+  unwrap(.pr$Expr$gather_every(self, n, offset))
 }
 
 #' Get the first n elements
@@ -2275,8 +2276,8 @@ Expr_inspect = function(fmt = "{}") {
   # check fmt and create something to print before and after printing Series.
   if (!is_string(fmt)) stop("Inspect: arg fmt is not a string (length=1)")
   strs = strsplit(fmt, split = "\\{\\}")[[1L]]
-  if (identical(strs, "")) strs <- c("", "")
-  if (length(strs) == 1 && grepl("\\{\\}$", fmt)) strs <- c(strs, "")
+  if (identical(strs, "")) strs = c("", "")
+  if (length(strs) == 1 && grepl("\\{\\}$", fmt)) strs = c(strs, "")
   if (length(strs) != 2L || length(gregexpr("\\{\\}", fmt)[[1L]]) != 1L) {
     result(stop(paste0(
       "Inspect: failed to parse arg fmt [", fmt, "] ",
@@ -2336,10 +2337,10 @@ prepare_rolling_window_args = function(
     min_periods = NULL # : int | None = None,
     ) { # ->tuple[str, int]:
   if (is.numeric(window_size)) {
-    if (is.null(min_periods)) min_periods <- as.numeric(window_size)
+    if (is.null(min_periods)) min_periods = as.numeric(window_size)
     window_size = paste0(as.character(floor(window_size)), "i")
   }
-  if (is.null(min_periods)) min_periods <- 1
+  if (is.null(min_periods)) min_periods = 1
   list(window_size = window_size, min_periods = min_periods)
 }
 
@@ -2382,6 +2383,8 @@ prepare_rolling_window_args = function(
 #' must be of DataType Date or DateTime.
 #' @param closed String, one of `"left"`, `"right"`, `"both"`, `"none"`. Defines
 #' whether the temporal window interval is closed or not.
+#' @param warn_if_unsorted Warn if data is not known to be sorted by `by` column (if passed).
+#' Experimental.
 #'
 #' @details
 #' If you want to compute multiple aggregation statistics over the same dynamic
@@ -2397,11 +2400,12 @@ Expr_rolling_min = function(
     min_periods = NULL,
     center = FALSE,
     by = NULL,
-    closed = c("left", "right", "both", "none")) {
+    closed = c("left", "right", "both", "none"),
+    warn_if_unsorted = TRUE) {
   wargs = prepare_rolling_window_args(window_size, min_periods)
   .pr$Expr$rolling_min(
     self, wargs$window_size, weights,
-    wargs$min_periods, center, by, closed[1L]
+    wargs$min_periods, center, by, closed[1L], warn_if_unsorted
   ) |>
     unwrap("in $rolling_min():")
 }
@@ -2422,11 +2426,12 @@ Expr_rolling_max = function(
     min_periods = NULL,
     center = FALSE,
     by = NULL,
-    closed = c("left", "right", "both", "none")) {
+    closed = c("left", "right", "both", "none"),
+    warn_if_unsorted = TRUE) {
   wargs = prepare_rolling_window_args(window_size, min_periods)
   .pr$Expr$rolling_max(
     self, wargs$window_size, weights,
-    wargs$min_periods, center, by, closed[1L]
+    wargs$min_periods, center, by, closed[1L], warn_if_unsorted
   ) |>
     unwrap("in $rolling_max()")
 }
@@ -2447,11 +2452,12 @@ Expr_rolling_mean = function(
     min_periods = NULL,
     center = FALSE,
     by = NULL,
-    closed = c("left", "right", "both", "none")) {
+    closed = c("left", "right", "both", "none"),
+    warn_if_unsorted = TRUE) {
   wargs = prepare_rolling_window_args(window_size, min_periods)
   .pr$Expr$rolling_mean(
     self, wargs$window_size, weights,
-    wargs$min_periods, center, by, closed[1L]
+    wargs$min_periods, center, by, closed[1L], warn_if_unsorted
   ) |>
     unwrap("in $rolling_mean():")
 }
@@ -2472,11 +2478,12 @@ Expr_rolling_sum = function(
     min_periods = NULL,
     center = FALSE,
     by = NULL,
-    closed = c("left", "right", "both", "none")) {
+    closed = c("left", "right", "both", "none"),
+    warn_if_unsorted = TRUE) {
   wargs = prepare_rolling_window_args(window_size, min_periods)
   .pr$Expr$rolling_sum(
     self, wargs$window_size, weights,
-    wargs$min_periods, center, by, closed[1L]
+    wargs$min_periods, center, by, closed[1L], warn_if_unsorted
   ) |>
     unwrap("in $rolling_sum():")
 }
@@ -2499,11 +2506,12 @@ Expr_rolling_std = function(
     min_periods = NULL,
     center = FALSE,
     by = NULL,
-    closed = c("left", "right", "both", "none")) {
+    closed = c("left", "right", "both", "none"),
+    warn_if_unsorted = TRUE) {
   wargs = prepare_rolling_window_args(window_size, min_periods)
   .pr$Expr$rolling_std(
     self, wargs$window_size, weights,
-    wargs$min_periods, center, by, closed[1L]
+    wargs$min_periods, center, by, closed[1L], warn_if_unsorted
   ) |>
     unwrap("in $rolling_std(): ")
 }
@@ -2525,11 +2533,12 @@ Expr_rolling_var = function(
     min_periods = NULL,
     center = FALSE,
     by = NULL,
-    closed = c("left", "right", "both", "none")) {
+    closed = c("left", "right", "both", "none"),
+    warn_if_unsorted = TRUE) {
   wargs = prepare_rolling_window_args(window_size, min_periods)
   .pr$Expr$rolling_var(
     self, wargs$window_size, weights,
-    wargs$min_periods, center, by, closed[1L]
+    wargs$min_periods, center, by, closed[1L], warn_if_unsorted
   ) |>
     unwrap("in $rolling_var():")
 }
@@ -2551,11 +2560,12 @@ Expr_rolling_median = function(
     min_periods = NULL,
     center = FALSE,
     by = NULL,
-    closed = c("left", "right", "both", "none")) {
+    closed = c("left", "right", "both", "none"),
+    warn_if_unsorted = TRUE) {
   wargs = prepare_rolling_window_args(window_size, min_periods)
   .pr$Expr$rolling_median(
     self, wargs$window_size, weights,
-    wargs$min_periods, center, by, closed[1L]
+    wargs$min_periods, center, by, closed[1L], warn_if_unsorted
   ) |> unwrap("in $rolling_median():")
 }
 
@@ -2584,11 +2594,12 @@ Expr_rolling_quantile = function(
     min_periods = NULL,
     center = FALSE,
     by = NULL,
-    closed = c("left", "right", "both", "none")) {
+    closed = c("left", "right", "both", "none"),
+    warn_if_unsorted = TRUE) {
   wargs = prepare_rolling_window_args(window_size, min_periods)
   .pr$Expr$rolling_quantile(
     self, quantile, interpolation, wargs$window_size, weights,
-    wargs$min_periods, center, by, closed[1L]
+    wargs$min_periods, center, by, closed[1L], warn_if_unsorted
   ) |>
     unwrap("in $rolling_quantile():")
 }
@@ -2671,7 +2682,7 @@ Expr_rank = function(method = "average", descending = FALSE) {
 #'   diff_default = pl$col("a")$diff(),
 #'   diff_2_ignore = pl$col("a")$diff(2, "ignore")
 #' )
-  Expr_diff = function(n = 1, null_behavior = c("ignore", "drop")) {
+Expr_diff = function(n = 1, null_behavior = c("ignore", "drop")) {
   .pr$Expr$diff(self, n, null_behavior) |>
     unwrap("in $diff():")
 }
@@ -2972,7 +2983,7 @@ Expr_sample = function(
     seed = NULL, n = NULL) {
   pcase(
     !is.null(n) && !is.null(frac), {
-      Err(.pr$RPolarsErr$new()$plain("either arg `n` or `frac` must be NULL"))
+      Err(.pr$Err$new()$plain("either arg `n` or `frac` must be NULL"))
     },
     !is.null(n), .pr$Expr$sample_n(self, n, with_replacement, shuffle, seed),
     or_else = {
@@ -2987,7 +2998,6 @@ Expr_sample = function(
 #' @param span numeric or NULL
 #' @param half_life numeric or NULL
 #' @param alpha numeric or NULL
-#' @keywords internal
 #' @return numeric
 #' @noRd
 prepare_alpha = function(
@@ -3107,7 +3117,7 @@ Expr_ewm_var = function(
     com = NULL, span = NULL, half_life = NULL, alpha = NULL,
     adjust = TRUE, bias = FALSE, min_periods = 1L, ignore_nulls = TRUE) {
   alpha = prepare_alpha(com, span, half_life, alpha)
-  .pr$Expr$ewm_var(self, alpha, adjust, bias, min_periods, ignore_nulls)  |>
+  .pr$Expr$ewm_var(self, alpha, adjust, bias, min_periods, ignore_nulls) |>
     unwrap("in $ewm_var()")
 }
 
@@ -3141,7 +3151,7 @@ Expr_extend_constant = function(value, n) {
 #' pl$select(pl$lit("alice")$rep(n = 3))
 #' pl$select(pl$lit(1:3)$rep(n = 2))
 Expr_rep = function(n, rechunk = TRUE) {
-  .pr$Expr$rep(self, n, rechunk)  |>
+  .pr$Expr$rep(self, n, rechunk) |>
     unwrap("in $rep()")
 }
 
@@ -3188,15 +3198,15 @@ Expr_to_r = function(df = NULL, i = 0) {
 #' This is mostly useful to debug an expression. It evaluates the Expr in an
 #' empty DataFrame and return the first Series to R. This is an alias for
 #' `$to_r()`.
+#' @param expr An Expr to evaluate.
 #' @param df If `NULL` (default), it evaluates the Expr in an empty DataFrame.
 #' Otherwise, provide a DataFrame that the Expr should be evaluated in.
 #' @param i Numeric column to extract. Default is zero (which gives the first
 #' column).
-#' @name pl_expr_to_r
 #' @return R object
 #' @examples
 #' pl$expr_to_r(pl$lit(1:3))
-pl$expr_to_r = function(expr, df = NULL, i = 0) {
+pl_expr_to_r = function(expr, df = NULL, i = 0) {
   wrap_e(expr)$to_r(df, i)
 }
 
@@ -3436,20 +3446,11 @@ Expr_to_struct = function() {
 #' Collect an expression based on literals into a Series.
 #' @return Series
 #' @examples
-#' pl$lit(1:5)$lit_to_s()
-Expr_lit_to_s = function() {
+#' pl$lit(1:5)$to_series()
+Expr_to_series = function() {
   pl$select(self)$to_series(0)
 }
 
-#' Convert Literal to DataFrame
-#'
-#' Collect an expression based on literals into a DataFrame.
-#' @return Series
-#' @examples
-#' pl$lit(1:5)$lit_to_df()
-Expr_lit_to_df = function() {
-  pl$select(self)
-}
 
 #' Find local minima
 #'
@@ -3571,10 +3572,95 @@ Expr_peak_max = function() {
 #'   sum_a_offset1 = pl$sum("a")$rolling(index_column = "dt", period = "2d", offset = "1d")
 #' )
 Expr_rolling = function(index_column, period, offset = NULL,
-                         closed = "right", check_sorted = TRUE) {
+                        closed = "right", check_sorted = TRUE) {
   if (is.null(offset)) {
     offset = paste0("-", period)
   }
   .pr$Expr$rolling(self, index_column, period, offset, closed, check_sorted) |>
     unwrap("in $rolling():")
+}
+
+#' Replace values by different values
+#'
+#' This allows one to recode values in a column.
+#'
+#' @param old Can be several things:
+#' * a vector indicating the values to recode;
+#' * if `new` is missing, this can be a named list e.g `list(old = "new")` where
+#'   the names are the old values and the values are the replacements. Note that
+#'   if old values are numeric, the names must be wrapped in backticks;
+#' * an Expr
+#' @param new Either a scalar, a vector of same length as `old` or an Expr. If
+#' missing, `old` must be a named list.
+#' @param default The default replacement if the value is not in `old`. Can be
+#' an Expr. If `NULL` (default), then the value doesn't change.
+#' @param return_dtype The data type of the resulting expression. If set to
+#' `NULL` (default), the data type is determined automatically based on the
+#' other inputs.
+#'
+#' @return Expr
+#' @examples
+#' df = pl$DataFrame(a = c(1, 2, 2, 3))
+#'
+#' # "old" and "new" can take either scalars or vectors of same length
+#' df$with_columns(replaced = pl$col("a")$replace(2, 100))
+#' df$with_columns(replaced = pl$col("a")$replace(c(2, 3), c(100, 200)))
+#'
+#' # "old" can be a named list where names are values to replace, and values are
+#' # the replacements
+#' mapping = list(`2` = 100, `3` = 200)
+#' df$with_columns(replaced = pl$col("a")$replace(mapping, default = -1))
+#'
+#' df = pl$DataFrame(a = c("x", "y", "z"))
+#' mapping = list(x = 1, y = 2, z = 3)
+#' df$with_columns(replaced = pl$col("a")$replace(mapping))
+#'
+#' # one can specify the data type to return instead of automatically inferring it
+#' df$with_columns(replaced = pl$col("a")$replace(mapping, return_dtype = pl$Int8))
+#'
+#' # "old", "new", and "default" can take Expr
+#' df = pl$DataFrame(a = c(1, 2, 2, 3), b = c(1.5, 2.5, 5, 1))
+#' df$with_columns(
+#'   replaced = pl$col("a")$replace(
+#'     old = pl$col("a")$max(),
+#'     new = pl$col("b")$sum(),
+#'     default = pl$col("b"),
+#'   )
+#' )
+Expr_replace = function(old, new, default = NULL, return_dtype = NULL) {
+  if (missing(new) && is.list(old)) {
+    new = unlist(old, use.names = FALSE)
+    old = names(old)
+  }
+  .pr$Expr$replace(self, old, new, default, return_dtype) |>
+    unwrap("in $replace():")
+}
+
+#' Get the lengths of runs of identical values
+#'
+#' @return Expr
+#'
+#' @examples
+#' df = pl$DataFrame(s = c(1, 1, 2, 1, NA, 1, 3, 3))
+#' df$select(pl$col("s")$rle())$unnest("s")
+Expr_rle = function() {
+  .pr$Expr$rle(self) |>
+    unwrap("in $rle():")
+}
+
+#' Map values to run IDs
+#'
+#' Similar to $rle(), but it maps each value to an ID corresponding to the run
+#' into which it falls. This is especially useful when you want to define groups
+#' by runs of identical values rather than the values themselves. Note that
+#' the ID is 0-indexed.
+#'
+#' @return Expr
+#'
+#' @examples
+#' df = pl$DataFrame(a = c(1, 2, 1, 1, 1, 4))
+#' df$with_columns(a_r = pl$col("a")$rle_id())
+Expr_rle_id = function() {
+  .pr$Expr$rle_id(self) |>
+    unwrap("in $rle_id():")
 }

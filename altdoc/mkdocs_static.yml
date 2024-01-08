@@ -1,0 +1,57 @@
+### Basic information
+site_name: Polars R Package
+
+### Repo information
+repo_url: $ALTDOC_PACKAGE_URL_GITHUB
+repo_name: $ALTDOC_PACKAGE_NAME
+
+### Plugins
+plugins:
+  - search
+
+### Theming
+theme:
+  name: material
+  logo: polars-logo.png
+  favicon: polars-logo.png
+  font:
+    text: Roboto
+  palette:
+    - media: '(prefers-color-scheme: light)'
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+    - media: '(prefers-color-scheme: dark)'
+      scheme: slate
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.top
+    - content.code.copy
+    - toc.follow
+
+markdown_extensions:
+  - footnotes
+  - toc:
+      baselevel: 1
+      toc_depth: 3
+  - pymdownx.highlight:
+      anchor_linenums: yes
+  - pymdownx.superfences
+
+extra_css:
+  - stylesheets/extra.css
+
+### Navigation tree
+nav:
+  - Home: README.md
+  - Articles:
+    - Get started: vignettes/polars.md
+    - Installation details: vignettes/install.md
+    - Polars User Guide: vignettes/userguide.md
+    - Optimize `polars` performance: vignettes/performance.md
+  - Reference: $ALTDOC_MAN_BLOCK
+  - About: about.md
+  - Changelog: NEWS.md

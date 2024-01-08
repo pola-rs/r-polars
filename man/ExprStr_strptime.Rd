@@ -2,7 +2,17 @@
 % Please edit documentation in R/expr__string.R
 \name{ExprStr_strptime}
 \alias{ExprStr_strptime}
-\title{Convert a Utf8 column into a Date/Datetime/Time column.}
+\title{Convert a String column into a Date/Datetime/Time column.}
+\usage{
+ExprStr_strptime(
+  datatype,
+  format,
+  strict = TRUE,
+  exact = TRUE,
+  cache = TRUE,
+  ambiguous = "raise"
+)
+}
 \arguments{
 \item{datatype}{The data type to convert into. Can be either Date, Datetime,
 or Time.}
@@ -32,7 +42,7 @@ conversion.}
 Expr of a Date, Datetime or Time Series
 }
 \description{
-Convert a Utf8 column into a Date/Datetime/Time column.
+Convert a String column into a Date/Datetime/Time column.
 }
 \details{
 When parsing a Datetime the column precision will be inferred from the format
@@ -67,6 +77,6 @@ txt_datetimes = c(
 pl$lit(txt_datetimes)$str$strptime(
   pl$Datetime("ns"),
   format = "\%Y-\%m-\%d \%H:\%M:\%S \%z", strict = FALSE,
-)$lit_to_s()
+)$to_series()
 }
 \keyword{ExprStr}

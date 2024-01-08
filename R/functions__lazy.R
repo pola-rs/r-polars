@@ -1,8 +1,8 @@
 #' New Expr referring to all columns
-#' @name pl_all
 #' @description
 #' Not to mix up with `Expr_object$all()` which is a 'reduce Boolean columns by AND' method.
-#'
+#' @param name Character vector indicating on which columns the AND operation
+#' should be applied.
 #' @keywords Expr_new
 #'
 #' @return Boolean literal
@@ -12,7 +12,7 @@
 #'
 #' @examples
 #' pl$DataFrame(list(all = c(TRUE, TRUE), some = c(TRUE, FALSE)))$select(pl$all()$all())
-pl$all = function(name = NULL) {
+pl_all = function(name = NULL) {
   if (is.null(name)) {
     return(.pr$Expr$col("*"))
   }
@@ -22,9 +22,7 @@ pl$all = function(name = NULL) {
   # https://github.com/pola-rs/polars/blob/589f36432de6e95e81d9715a77d6fe78360512e5/py-polars/polars/internals/lazy_functions.py#L1095
 }
 
-
 #' Start Expression with a column
-#' @name pl_col
 #' @description
 #' Return an expression representing a column in a DataFrame.
 #' @param name
@@ -64,30 +62,27 @@ pl$all = function(name = NULL) {
 #' df$select(pl$col(pl$dtypes$Float64))
 #'
 #' # ... or an R list of DataTypes, select any column of any such DataType
-#' df$select(pl$col(list(pl$dtypes$Float64, pl$dtypes$Utf8)))
+#' df$select(pl$col(list(pl$dtypes$Float64, pl$dtypes$String)))
 #'
 #' # from Series of names
 #' df$select(pl$col(pl$Series(c("bar", "foobar"))))
-pl$col = function(name = "", ...) {
+pl_col = function(name = "", ...) {
   robj_to_col(name, list2(...)) |>
     unwrap("in pl$col()")
 }
 
 #' an element in 'eval'-expr
-#' @name pl_element
 #' @description Alias for an element in evaluated in an `eval` expression.
 #' @keywords Expr
 #' @return Expr
 #' @aliases element
 #' @examples
 #' pl$lit(1:5)$cumulative_eval(pl$element()$first() - pl$element()$last()**2)$to_r()
-pl$element = function() pl$col("")
-
+pl_element = function() pl$col("")
 
 # TODO move all lazy functions to a new keyword lazy functions
 
 #' pl$count
-#' @name pl_count
 #' @description Count the number of values in this column/context.
 #' @param column if dtype is:
 #' - Series: count length of Series
@@ -110,7 +105,7 @@ pl$element = function() pl$col("")
 #'
 #'
 #' df$group_by("c", maintain_order = TRUE)$agg(pl$count())
-pl$count = function(column = NULL) { # -> Expr | int:
+pl_count = function(column = NULL) { # -> Expr | int:
   if (is.null(column)) {
     return(.pr$Expr$new_count())
   }
@@ -122,20 +117,18 @@ pl$count = function(column = NULL) { # -> Expr | int:
 }
 
 #' Aggregate all column values into a list.
-#' @name pl_implode
 #' @param name Name of the column(s) that should be imploded, passed to pl$col()
 #' @keywords Expr
 #' @return Expr
 #' @examples
 #' pl$DataFrame(iris)$select(pl$implode("Species"))
-pl$implode = function(name) { # -> Expr
+pl_implode = function(name) { # -> Expr
   result(pl$col(name)) |>
     map(.pr$Expr$implode) |>
     unwrap("in pl$implode():")
 }
 
 #' pl$first
-#' @name pl_first
 #' @description  Depending on the input type this function does different things:
 #' @param column if dtype is:
 #' - Series: Take first value in `Series`
@@ -160,7 +153,7 @@ pl$implode = function(name) { # -> Expr
 #'
 #' pl$first(df$get_column("a"))
 #'
-pl$first = function(column = NULL) { #-> Expr | Any:
+pl_first = function(column = NULL) { #-> Expr | Any:
   pcase(
     is.null(column), Ok(.pr$Expr$new_first()),
     inherits(column, "RPolarsSeries"), if (column$len() == 0) {
@@ -176,9 +169,7 @@ pl$first = function(column = NULL) { #-> Expr | Any:
     unwrap("in pl$first():")
 }
 
-
 #' pl$last
-#' @name pl_last
 #' @description Depending on the input type this function does different things:
 #' @param column if dtype is:
 #' - Series: Take last value in `Series`
@@ -202,7 +193,7 @@ pl$first = function(column = NULL) { #-> Expr | Any:
 #'
 #' pl$last(df$get_column("a"))
 #'
-pl$last = function(column = NULL) { #-> Expr | Any:
+pl_last = function(column = NULL) { #-> Expr | Any:
   pcase(
     is.null(column), Ok(.pr$Expr$new_last()),
     inherits(column, "RPolarsSeries"), if (column$len() == 0) {
@@ -218,9 +209,8 @@ pl$last = function(column = NULL) { #-> Expr | Any:
     unwrap("in pl$last():")
 }
 
-
 #' Get the first `n` rows.
-#' @name pl_head
+#'
 #' @param column if dtype is:
 #' - Series: Take head value in `Series`
 #' - str or int: syntactic sugar for `pl.col(..).head()`
@@ -240,7 +230,7 @@ pl$last = function(column = NULL) { #-> Expr | Any:
 #'
 #' df$select(pl$head("a", 2))
 #' pl$head(df$get_column("a"), 2)
-pl$head = function(column, n = 10) { #-> Expr | Any:
+pl_head = function(column, n = 10) { #-> Expr | Any:
   pcase(
     inherits(column, "RPolarsSeries"), result(column$expr$head(n)),
     is.character(column), result(pl$col(column)$head(n)),
@@ -255,7 +245,7 @@ pl$head = function(column, n = 10) { #-> Expr | Any:
 
 
 #' Get the last `n` rows.
-#' @name pl_tail
+#'
 #' @param column if dtype is:
 #' - Series: Take tail value in `Series`
 #' - str or in: syntactic sugar for `pl.col(..).tail()`
@@ -275,7 +265,7 @@ pl$head = function(column, n = 10) { #-> Expr | Any:
 #' df$select(pl$tail("a", 2))
 #'
 #' pl$tail(df$get_column("a"), 2)
-pl$tail = function(column, n = 10) { #-> Expr | Any:
+pl_tail = function(column, n = 10) { #-> Expr | Any:
   pcase(
     inherits(column, "RPolarsSeries"), result(column$expr$tail(n)),
     is.character(column), result(pl$col(column)$tail(n)),
@@ -289,12 +279,11 @@ pl$tail = function(column, n = 10) { #-> Expr | Any:
 }
 
 #' pl$mean
-#' @name pl_mean
 #' @description Depending on the input type this function does different things:
-#' @param column if dtype is:
+#' @param ... One or several elements:
 #' - Series: Take mean value in `Series`
 #' - DataFrame or LazyFrame: Take mean value of each column
-#' - str: syntactic sugar for `pl$col(..)$mean()`
+#' - character vector: parsed as column names
 #' - NULL: expression to take mean column of a context.
 #'
 #' @keywords Expr_new
@@ -312,7 +301,7 @@ pl$tail = function(column, n = 10) { #-> Expr | Any:
 #'
 #' df$select(pl$mean("a", "b"))
 #'
-pl$mean = function(...) { #-> Expr | Any:
+pl_mean = function(...) { #-> Expr | Any:
   column = list2(...)
   lc = length(column)
   stringflag = all(sapply(column, is_string))
@@ -332,15 +321,9 @@ pl$mean = function(...) { #-> Expr | Any:
     unwrap("in pl$mean():")
 }
 
-
 #' pl$median
-#' @name pl_median
 #' @description Depending on the input type this function does different things:
-#' @param column if dtype is:
-#' - Series: Take median value in `Series`
-#' - DataFrame or LazyFrame: Take median value of each column
-#' - str: syntactic sugar for `pl$col(..)$median()`
-#' - NULL: expression to take median column of a context.
+#' @inheritParams pl_mean
 #'
 #' @keywords Expr_new
 #'
@@ -357,7 +340,7 @@ pl$mean = function(...) { #-> Expr | Any:
 #'
 #' df$select(pl$median("a", "b"))
 #'
-pl$median = function(...) { #-> Expr | Any:
+pl_median = function(...) { #-> Expr | Any:
   column = list2(...)
   lc = length(column)
   stringflag = all(sapply(column, is_string))
@@ -378,7 +361,6 @@ pl$median = function(...) { #-> Expr | Any:
 }
 
 #' Count `n` unique values
-#' @name pl_n_unique
 #' @description Depending on the input type this function does different things:
 #' @param column if dtype is:
 #' - Series: call method n_unique() to return value of unique values.
@@ -400,7 +382,7 @@ pl$median = function(...) { #-> Expr | Any:
 #'
 #' # colum as Expr
 #' pl$DataFrame(bob = 1:4)$select(pl$n_unique(pl$col("bob")))
-pl$n_unique = function(column) { #-> int or Expr
+pl_n_unique = function(column) { #-> int or Expr
   pcase(
     inherits(column, c("RPolarsSeries", "RPolarsExpr")), result(column$n_unique()),
     is_string(column), result(pl$col(column)$n_unique()),
@@ -410,7 +392,6 @@ pl$n_unique = function(column) { #-> int or Expr
 }
 
 #' Approximate count of unique values.
-#' @name pl_approx_n_unique
 #' @description This is done using the HyperLogLog++ algorithm for cardinality estimation.
 #' @param column if dtype is:
 #' - String: syntactic sugar for `pl$col(column)$approx_n_unique()`, returns Expr
@@ -438,9 +419,9 @@ pl$n_unique = function(column) { #-> int or Expr
 #'
 #' # comparison with n_unique for 2 million integers. (try change example to 20 million ints)
 #' lit_series = pl$lit(c(1:1E6, 1E6:1, 1:1E6))
-#' system.time(pl$approx_n_unique(lit_series)$lit_to_s()$print())
-#' system.time(pl$n_unique(lit_series)$lit_to_s()$print())
-pl$approx_n_unique = function(column) { #-> int or Expr
+#' system.time(pl$approx_n_unique(lit_series)$to_series()$print())
+#' system.time(pl$n_unique(lit_series)$to_series()$print())
+pl_approx_n_unique = function(column) { #-> int or Expr
   pcase(
     inherits(column, "RPolarsExpr"), result(column$approx_n_unique()),
     is_string(column), result(pl$col(column)$approx_n_unique()),
@@ -449,20 +430,14 @@ pl$approx_n_unique = function(column) { #-> int or Expr
     unwrap("in pl$approx_n_unique():")
 }
 
-
 #' Compute sum in one or several columns
 #'
 #' This is syntactic sugar for `pl$col(...)$sum()`.
-#' @name pl_sum
 #'
-#' @param ...  is a:
-#' If one arg:
-#'  - Series or Expr, same as `column$sum()`
-#'  - string, same as `pl$col(column)$sum()`
-#'  - numeric, same as `pl$lit(column)$sum()`
-#'  - list of strings(column names) or expressions to add up as expr1 + expr2 + expr3 + ...
-#'
-#' If several args, then wrapped in a list and handled as above.
+#' @param ...  One or several elements. Each element can be:
+#'  - Series or Expr
+#'  - string, that is parsed as columns
+#'  - numeric, that is parsed as literal
 #'
 #' @return Expr
 #' @keywords Expr_new
@@ -477,9 +452,9 @@ pl$approx_n_unique = function(column) { #-> int or Expr
 #'
 #' # Compute sum in several columns
 #' df$with_columns(pl$sum("*"))
-pl$sum = function(..., verbose = TRUE) {
+pl_sum = function(...) {
   column = list2(...)
-  if (length(column) == 1L) column <- column[[1L]]
+  if (length(column) == 1L) column = column[[1L]]
   if (inherits(column, "RPolarsSeries") || inherits(column, "RPolarsExpr")) {
     return(column$sum())
   }
@@ -499,7 +474,6 @@ pl$sum = function(..., verbose = TRUE) {
 #' Find minimum value in one or several columns
 #'
 #' This is syntactic sugar for `pl$col(...)$min()`.
-#' @name pl_min
 #' @param ...  is a:
 #' If one arg:
 #'  - Series or Expr, same as `column$sum()`
@@ -518,9 +492,9 @@ pl$sum = function(..., verbose = TRUE) {
 #' )
 #' df
 #'
-pl$min = function(..., verbose = TRUE) {
+pl_min = function(...) {
   column = list2(...)
-  if (length(column) == 1L) column <- column[[1L]]
+  if (length(column) == 1L) column = column[[1L]]
   if (inherits(column, "RPolarsSeries") || inherits(column, "RPolarsExpr")) {
     return(column$min())
   }
@@ -536,14 +510,9 @@ pl$min = function(..., verbose = TRUE) {
   stop("pl$min: this input is not supported")
 }
 
-
-
-
-
 #' Find maximum value in one or several columns
 #'
 #' This is syntactic sugar for `pl$col(...)$max()`.
-#' @name pl_max
 #' @param ...  is a:
 #' If one arg:
 #'  - Series or Expr, same as `column$sum()`
@@ -563,9 +532,9 @@ pl$min = function(..., verbose = TRUE) {
 #' )
 #' df
 #'
-pl$max = function(..., verbose = TRUE) {
+pl_max = function(...) {
   column = list2(...)
-  if (length(column) == 1L) column <- column[[1L]]
+  if (length(column) == 1L) column = column[[1L]]
   if (inherits(column, "RPolarsSeries") || inherits(column, "RPolarsExpr")) {
     return(column$max())
   }
@@ -580,9 +549,6 @@ pl$max = function(..., verbose = TRUE) {
   }
   stop("pl$max: this input is not supported")
 }
-
-
-
 
 #' Coalesce
 #' @description Folds the expressions from left to right, keeping the first non-null value.
@@ -608,21 +574,20 @@ pl$max = function(..., verbose = TRUE) {
 #'   pl$coalesce("a", "b", "c", 99.9)$alias("d")
 #' )
 #'
-pl$coalesce = function(...) {
+pl_coalesce = function(...) {
   column = list2(...)
   pra = do.call(construct_ProtoExprArray, column)
   coalesce_exprs(pra)
 }
 
 
-
-
 #' Standard deviation
 #' @description  syntactic sugar for starting a expression with std
-#' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
+#' @param column Column name.
+#' @param ddof Delta Degrees of Freedom: the divisor used in the calculation is
+#' N - ddof, where N represents the number of elements. By default ddof is 1.
 #' @return Expr or Series matching type of input column
-#' @name pl_std
-pl$std = function(column, ddof = 1) {
+pl_std = function(column, ddof = 1) {
   if (inherits(column, "RPolarsSeries") || inherits(column, "RPolarsExpr")) {
     return(column$std(ddof))
   }
@@ -635,13 +600,11 @@ pl$std = function(column, ddof = 1) {
   stop("pl$std: this input is not supported")
 }
 
-
 #' Variance
 #' @description  syntactic sugar for starting a expression with var
-#' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
+#' @inheritParams pl_std
 #' @return Expr or Series matching type of input column
-#' @name pl_var
-pl$var = function(column, ddof = 1) {
+pl_var = function(column, ddof = 1) {
   if (inherits(column, "RPolarsSeries") || inherits(column, "RPolarsExpr")) {
     return(column$var(ddof))
   }
@@ -655,11 +618,8 @@ pl$var = function(column, ddof = 1) {
 }
 
 
-
-
 #' Concat the arrays in a Series dtype List in linear time.
 #' @description Folds the expressions from left to right, keeping the first non-null value.
-#' @name pl_concat_list
 #' @param exprs list of Into<Expr>, strings interpreted as column names
 #' @return Expr
 #'
@@ -682,16 +642,14 @@ pl$var = function(column, ddof = 1) {
 #'   pl$lit(1:5),
 #'   pl$Series(5:1),
 #'   rep(0L, 5)
-#' ))$alias("alice")$lit_to_s()
+#' ))$alias("alice")$to_series()
 #'
-pl$concat_list = function(exprs) {
+pl_concat_list = function(exprs) {
   concat_list(as.list(exprs)) |>
     unwrap(" in pl$concat_list():")
 }
 
-
 #' struct
-#' @name pl_struct
 #' @aliases struct
 #' @description Collect several columns into a Series of dtype Struct.
 #' @param exprs Columns/Expressions to collect into a Struct.
@@ -733,13 +691,13 @@ pl$concat_list = function(exprs) {
 #' # wrap two columns in a struct and provide a schema to set all or some DataTypes by name
 #' e1 = pl$struct(
 #'   pl$col(c("int", "str")),
-#'   schema = list(int = pl$Int64, str = pl$Utf8)
+#'   schema = list(int = pl$Int64, str = pl$String)
 #' )$alias("my_struct")
 #' # same result as e.g. wrapping the columns in a struct and casting afterwards
 #' e2 = pl$struct(
 #'   list(pl$col("int"), pl$col("str"))
 #' )$cast(
-#'   pl$Struct(int = pl$Int64, str = pl$Utf8)
+#'   pl$Struct(int = pl$Int64, str = pl$String)
 #' )$alias("my_struct")
 #'
 #' df = pl$DataFrame(
@@ -754,7 +712,7 @@ pl$concat_list = function(exprs) {
 #'
 #' df$select(e2)
 #' df$select(e2)$to_data_frame()
-pl$struct = function(
+pl_struct = function(
     exprs, # list of exprs, str or Series or Expr or Series,
     eager = FALSE,
     schema = NULL) {
@@ -783,10 +741,9 @@ pl$struct = function(
 #'
 #' @param ... Columns to concatenate into a single string column. Accepts
 #' expressions. Strings are parsed as column names, other non-expression inputs
-#' are parsed as literals. Non-Utf8 columns are cast to Utf8.
+#' are parsed as literals. Non-String columns are cast to String
 #' @param separator String that will be used to separate the values of each
 #' column.
-#' @name pl_concat_str
 #' @return Expr
 #' @examples
 #' df = pl$DataFrame(
@@ -805,12 +762,11 @@ pl$struct = function(
 #'   )$alias("full_sentence")
 #' )
 #'
-pl$concat_str = function(..., separator = "") {
+pl_concat_str = function(..., separator = "") {
   concat_str(list2(...), separator) |> unwrap("in $concat_str()")
 }
 
 #' Covariance
-#' @name pl_cov
 #' @description Calculates the covariance between two columns / expressions.
 #' @param a One column name or Expr or anything convertible Into<Expr> via `pl$col()`.
 #' @param b Another column name or Expr or anything convertible Into<Expr> via `pl$col()`.
@@ -821,13 +777,12 @@ pl$concat_str = function(..., separator = "") {
 #' lf = pl$LazyFrame(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
 #' lf$select(pl$cov("a", "b"))$collect()
 #' pl$cov(c(1, 8, 3), c(4, 5, 2))$to_r()
-pl$cov = function(a, b, ddof = 1) {
+pl_cov = function(a, b, ddof = 1) {
   .pr$Expr$cov(a, b, ddof) |>
     unwrap("in pl$cov()")
 }
 
 #' Rolling covariance
-#' @name pl_rolling_cov
 #' @description Calculates the rolling covariance between two columns
 #' @param a One column name or Expr or anything convertible Into<Expr> via `pl$col()`.
 #' @param b Another column name or Expr or anything convertible Into<Expr> via `pl$col()`.
@@ -839,15 +794,15 @@ pl$cov = function(a, b, ddof = 1) {
 #' @examples
 #' lf = pl$LazyFrame(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
 #' lf$select(pl$rolling_cov("a", "b", window_size = 2))$collect()
-pl$rolling_cov = function(a, b, window_size, min_periods = NULL, ddof = 1) {
+pl_rolling_cov = function(a, b, window_size, min_periods = NULL, ddof = 1) {
   if (is.null(min_periods)) {
     min_periods = window_size
   }
   .pr$Expr$rolling_cov(a, b, window_size, min_periods, ddof) |> unwrap("in pl$rolling_cov()")
 }
 
+
 #' Correlation
-#' @name pl_corr
 #' @description Calculates the correlation between two columns
 #' @param a One column name or Expr or anything convertible Into<Expr> via `pl$col()`.
 #' @param b Another column name or Expr or anything convertible Into<Expr> via `pl$col()`.
@@ -860,12 +815,11 @@ pl$rolling_cov = function(a, b, window_size, min_periods = NULL, ddof = 1) {
 #' @examples
 #' lf = pl$LazyFrame(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
 #' lf$select(pl$corr("a", "b", method = "spearman"))$collect()
-pl$corr = function(a, b, method = "pearson", ddof = 1, propagate_nans = FALSE) {
+pl_corr = function(a, b, method = "pearson", ddof = 1, propagate_nans = FALSE) {
   .pr$Expr$corr(a, b, method, ddof, propagate_nans) |> unwrap("in pl$corr()")
 }
 
 #' Rolling correlation
-#' @name pl_rolling_corr
 #' @description Calculates the rolling correlation between two columns
 #' @param a One column name or Expr or anything convertible Into<Expr> via `pl$col()`.
 #' @param b Another column name or Expr or anything convertible Into<Expr> via `pl$col()`.
@@ -877,7 +831,7 @@ pl$corr = function(a, b, method = "pearson", ddof = 1, propagate_nans = FALSE) {
 #' @examples
 #' lf = pl$LazyFrame(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
 #' lf$select(pl$rolling_corr("a", "b", window_size = 2))$collect()
-pl$rolling_corr = function(a, b, window_size, min_periods = NULL, ddof = 1) {
+pl_rolling_corr = function(a, b, window_size, min_periods = NULL, ddof = 1) {
   if (is.null(min_periods)) {
     min_periods = window_size
   }
@@ -915,14 +869,14 @@ pl$rolling_corr = function(a, b, window_size, min_periods = NULL, ddof = 1) {
 #'   )$alias("mpg_drat_sum_folded"),
 #'   (pl$col("mpg") + pl$col("drat"))$alias("mpg_drat_vector_sum")
 #' )
-pl$fold = function(acc, lambda, exprs) {
+pl_fold = function(acc, lambda, exprs) {
   fold(acc, lambda, exprs) |>
     unwrap("in pl$fold():")
 }
 
 #' @rdname pl_fold_reduce
 #' @name pl_fold_reduce_part2
-pl$reduce = function(lambda, exprs) {
+pl_reduce = function(lambda, exprs) {
   reduce(lambda, exprs) |>
     unwrap("in pl$reduce():")
 }
@@ -932,7 +886,6 @@ pl$reduce = function(lambda, exprs) {
 #' @param ... Columns to concatenate into a single string column. Accepts
 #' expressions. Strings are parsed as column names, other non-expression inputs
 #' are parsed as literals.
-#' @name pl_min_horizontal
 #' @return Expr
 #'
 #' @examples
@@ -944,7 +897,7 @@ pl$reduce = function(lambda, exprs) {
 #' df$with_columns(
 #'   pl$min_horizontal("a", "b", "c", 99.9)$alias("min")
 #' )
-pl$min_horizontal = function(...) {
+pl_min_horizontal = function(...) {
   min_horizontal(list2(...)) |>
     unwrap("in $min_horizontal():")
 }
@@ -954,7 +907,6 @@ pl$min_horizontal = function(...) {
 #' @param ... Columns to concatenate into a single string column. Accepts
 #' expressions. Strings are parsed as column names, other non-expression inputs
 #' are parsed as literals.
-#' @name pl_max_horizontal
 #' @return Expr
 #'
 #' @examples
@@ -966,7 +918,7 @@ pl$min_horizontal = function(...) {
 #' df$with_columns(
 #'   pl$max_horizontal("a", "b", "c", 99.9)$alias("max")
 #' )
-pl$max_horizontal = function(...) {
+pl_max_horizontal = function(...) {
   max_horizontal(list2(...)) |>
     unwrap("in $max_horizontal():")
 }
@@ -976,7 +928,6 @@ pl$max_horizontal = function(...) {
 #' @param ... Columns to concatenate into a single string column. Accepts
 #' expressions. Strings are parsed as column names, other non-expression inputs
 #' are parsed as literals.
-#' @name pl_all_horizontal
 #' @return Expr
 #'
 #' @examples
@@ -996,7 +947,7 @@ pl$max_horizontal = function(...) {
 #' df$filter(
 #'   pl$all_horizontal(pl$all()$is_not_null())
 #' )
-pl$all_horizontal = function(...) {
+pl_all_horizontal = function(...) {
   all_horizontal(list2(...)) |>
     unwrap("in $all_horizontal():")
 }
@@ -1006,7 +957,6 @@ pl$all_horizontal = function(...) {
 #' @param ... Columns to concatenate into a single string column. Accepts
 #' expressions. Strings are parsed as column names, other non-expression inputs
 #' are parsed as literals.
-#' @name pl_any_horizontal
 #' @return Expr
 #'
 #' @examples
@@ -1026,7 +976,7 @@ pl$all_horizontal = function(...) {
 #' df$filter(
 #'   pl$any_horizontal(pl$all()$is_not_null())
 #' )
-pl$any_horizontal = function(...) {
+pl_any_horizontal = function(...) {
   any_horizontal(list2(...)) |>
     unwrap("in $any_horizontal():")
 }
@@ -1036,7 +986,6 @@ pl$any_horizontal = function(...) {
 #' @param ... Columns to concatenate into a single string column. Accepts
 #' expressions. Strings are parsed as column names, other non-expression inputs
 #' are parsed as literals.
-#' @name pl_sum_horizontal
 #' @return Expr
 #'
 #' @examples
@@ -1048,7 +997,7 @@ pl$any_horizontal = function(...) {
 #' df$with_columns(
 #'   pl$sum_horizontal("a", "b", "c", 2)$alias("sum")
 #' )
-pl$sum_horizontal = function(...) {
+pl_sum_horizontal = function(...) {
   sum_horizontal(list2(...)) |>
     unwrap("in $sum_horizontal():")
 }

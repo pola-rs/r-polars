@@ -3,6 +3,9 @@
 \name{pl_max_horizontal}
 \alias{pl_max_horizontal}
 \title{Get the maximum value rowwise}
+\usage{
+pl_max_horizontal(...)
+}
 \arguments{
 \item{...}{Columns to concatenate into a single string column. Accepts
 expressions. Strings are parsed as column names, other non-expression inputs

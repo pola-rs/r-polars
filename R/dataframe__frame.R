@@ -81,7 +81,7 @@ NULL
 #' @return char vec
 #' @export
 #' @return Doesn't return a value. This is used for autocompletion in RStudio.
-#' @keywords internal
+#' @noRd
 .DollarNames.RPolarsDataFrame = function(x, pattern = "") {
   get_method_usages(RPolarsDataFrame, pattern = pattern)
 }
@@ -94,7 +94,7 @@ NULL
 #' @return char vec
 #' @export
 #' @inherit .DollarNames.RPolarsDataFrame return
-#' @keywords internal
+#' @noRd
 .DollarNames.RPolarsVecDataFrame = function(x, pattern = "") {
   get_method_usages(RPolarsVecDataFrame, pattern = pattern)
 }
@@ -141,11 +141,13 @@ NULL
 #' pl$DataFrame(mtcars)
 #'
 #' # custom schema
-#' pl$DataFrame(iris, schema = list(Sepal.Length = pl$Float32, Species = pl$Utf8))
-pl$DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
-  largs = unpack_list(...)
-
+#' pl$DataFrame(iris, schema = list(Sepal.Length = pl$Float32, Species = pl$String))
+pl_DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
   uw = \(res) unwrap(res, "in $DataFrame():")
+
+  largs = unpack_list(...) |>
+    result() |>
+    uw()
 
   if (!is.null(schema) && !all(names(schema) %in% names(largs))) {
     Err_plain("Some columns in `schema` are not in the DataFrame.") |>
@@ -164,7 +166,7 @@ pl$DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
 
   # keys are tentative new column names
   keys = names(largs)
-  if (length(keys) == 0) keys <- rep(NA_character_, length(largs))
+  if (length(keys) == 0) keys = rep(NA_character_, length(largs))
   keys = mapply(largs, keys, FUN = function(column, key) {
     if (is.na(key) || nchar(key) == 0) {
       if (inherits(column, "RPolarsSeries")) {
@@ -175,7 +177,6 @@ pl$DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
     }
     return(key)
   })
-
 
   result({
     # check for conflicting names, to avoid silent overwrite
@@ -210,7 +211,7 @@ pl$DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
 
 #' S3 method to print a DataFrame
 #'
-#' @keywords internal
+#' @noRd
 #' @param x DataFrame
 #' @param ... not used
 #'
@@ -225,7 +226,6 @@ print.RPolarsDataFrame = function(x, ...) {
 
 #' internal method print DataFrame
 #' @noRd
-#' @keywords internal
 #' @return self
 #'
 #' @examples pl$DataFrame(iris)
@@ -291,7 +291,7 @@ DataFrame.property_setters = new.env(parent = emptyenv())
     pstop(err = paste("no setter method for", name))
   }
 
-  if (polars_optenv$strictly_immutable) self <- self$clone()
+  if (polars_optenv$strictly_immutable) self = self$clone()
   func = DataFrame.property_setters[[name]]
   func(self, value)
   self
@@ -634,7 +634,7 @@ DataFrame_sort = function(
 #'   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
 #' )
 DataFrame_select = function(...) {
-  .pr$DataFrame$select(self, unpack_list(...)) |>
+  .pr$DataFrame$select(self, unpack_list(..., .context = "in $select()")) |>
     unwrap("in $select()")
 }
 
@@ -655,7 +655,7 @@ DataFrame_drop_in_place = function(name) {
 }
 
 #' Compare two DataFrames
-#' @name DataFrame_frame_equal
+#' @name DataFrame_equals
 #' @description Check if two DataFrames are equal.
 #'
 #' @param other DataFrame to compare with.
@@ -665,10 +665,10 @@ DataFrame_drop_in_place = function(name) {
 #' dat1 = pl$DataFrame(iris)
 #' dat2 = pl$DataFrame(iris)
 #' dat3 = pl$DataFrame(mtcars)
-#' dat1$frame_equal(dat2)
-#' dat1$frame_equal(dat3)
-DataFrame_frame_equal = function(other) {
-  .pr$DataFrame$frame_equal(self, other)
+#' dat1$equals(dat2)
+#' dat1$equals(dat3)
+DataFrame_equals = function(other) {
+  .pr$DataFrame$equals(self, other)
 }
 
 #' Shift a DataFrame
@@ -741,7 +741,7 @@ DataFrame_shift_and_fill = function(fill_value, periods = 1) {
 #'   SW_add_2 = (pl$col("Sepal.Width") + 2)
 #' )
 DataFrame_with_columns = function(...) {
-  .pr$DataFrame$with_columns(self, unpack_list(...)) |>
+  .pr$DataFrame$with_columns(self, unpack_list(..., .context = "in $with_columns()")) |>
     unwrap("in $with_columns()")
 }
 
@@ -791,10 +791,8 @@ DataFrame_tail = function(n) {
 #' Filter rows of a DataFrame
 #' @name DataFrame_filter
 #'
-#' @description This is equivalent to `dplyr::filter()`. Note that rows where
-#' the condition returns `NA` are dropped, unlike base subsetting with `[`.
+#' @inherit LazyFrame_filter description params details
 #'
-#' @param bool_expr Polars expression which will evaluate to a boolean.
 #' @keywords DataFrame
 #' @return A DataFrame with only the rows where the conditions are `TRUE`.
 #' @examples
@@ -802,14 +800,18 @@ DataFrame_tail = function(n) {
 #'
 #' df$filter(pl$col("Sepal.Length") > 5)
 #'
+#' # This is equivalent to
+#' # df$filter(pl$col("Sepal.Length") > 5 & pl$col("Petal.Width") < 1)
+#' df$filter(pl$col("Sepal.Length") > 5, pl$col("Petal.Width") < 1)
+#'
 #' # rows where condition is NA are dropped
 #' iris2 = iris
 #' iris2[c(1, 3, 5), "Species"] = NA
 #' df = pl$DataFrame(iris2)
 #'
 #' df$filter(pl$col("Species") == "setosa")
-DataFrame_filter = function(bool_expr) {
-  .pr$DataFrame$lazy(self)$filter(bool_expr)$collect()
+DataFrame_filter = function(...) {
+  .pr$DataFrame$lazy(self)$filter(...)$collect()
 }
 
 #' Group a DataFrame
@@ -830,7 +832,11 @@ DataFrame_filter = function(bool_expr) {
 #' )
 DataFrame_group_by = function(..., maintain_order = pl$options$maintain_order) {
   # clone the DataFrame, bundle args as attributes. Non fallible.
-  construct_group_by(self, groupby_input = unpack_list(...), maintain_order = maintain_order)
+  construct_group_by(
+    self,
+    groupby_input = unpack_list(..., .context = "$group_by()"),
+    maintain_order = maintain_order
+  )
 }
 
 
@@ -862,8 +868,6 @@ DataFrame_to_data_frame = function(...) {
 #'
 #' @param unnest_structs Boolean. If `TRUE` (default), then `$unnest()` is applied
 #' on any struct column.
-#'
-#' @name to_list
 #'
 #' @details
 #' For simplicity reasons, this implementation relies on unnesting all structs
@@ -946,7 +950,7 @@ DataFrame_join = function(
 #' df_s = s$to_frame()
 #' df_s
 DataFrame_to_struct = function(name = "") {
-  .pr$DataFrame$to_struct(self, name)
+  unwrap(.pr$DataFrame$to_struct(self, name), "in $to_struct():")
 }
 
 
@@ -1457,7 +1461,7 @@ DataFrame_rename = function(...) {
 #' @keywords DataFrame
 #' @return DataFrame
 #' @examples
-#' pl$DataFrame(iris)$describe()
+#' pl$DataFrame(mtcars)$describe()
 DataFrame_describe = function(percentiles = c(.25, .75)) {
   perc = percentiles
 
@@ -1542,7 +1546,7 @@ DataFrame_glimpse = function(..., return_as_string = FALSE) {
   max_col_name_trunc = 50
   parse_column_ = \(col_name, dtype) {
     dtype_str = dtype_str_repr(dtype) |> unwrap_or(paste0("??", str_string(dtype)))
-    if (inherits(dtype, "RPolarsDataType")) dtype_str <- paste0(" <", dtype_str, ">")
+    if (inherits(dtype, "RPolarsDataType")) dtype_str = paste0(" <", dtype_str, ">")
     val = self$select(pl$col(col_name)$slice(0, max_num_value))$to_list()[[1]]
     val_str = paste(val, collapse = ", ")
     if (nchar(col_name) > max_col_name_trunc) {
@@ -1665,9 +1669,9 @@ DataFrame_sample = function(
 #' # simple use-case
 #' pl$DataFrame(mtcars)$transpose(include_header = TRUE, column_names = rownames(mtcars))
 #'
-#' # All rows must have one shared supertype, recast Categorical to Utf8 which is a supertype
+#' # All rows must have one shared supertype, recast Categorical to String which is a supertype
 #' # of f64, and then dataset "Iris" can be transposed
-#' pl$DataFrame(iris)$with_columns(pl$col("Species")$cast(pl$Utf8))$transpose()
+#' pl$DataFrame(iris)$with_columns(pl$col("Species")$cast(pl$String))$transpose()
 #'
 DataFrame_transpose = function(
     include_header = FALSE,

@@ -3,13 +3,16 @@
 \name{ExprStr_to_uppercase}
 \alias{ExprStr_to_uppercase}
 \title{Convert a string to uppercase}
+\usage{
+ExprStr_to_uppercase()
+}
 \value{
-Expr of Utf8 uppercase chars
+Expr of String uppercase chars
 }
 \description{
 Transform to uppercase variant.
 }
 \examples{
-pl$lit(c("A", "b", "c", "1", NA))$str$to_uppercase()$lit_to_s()
+pl$lit(c("A", "b", "c", "1", NA))$str$to_uppercase()$to_series()
 }
 \keyword{ExprStr}

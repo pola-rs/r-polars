@@ -3,6 +3,9 @@
 \name{pl_tail}
 \alias{pl_tail}
 \title{Get the last \code{n} rows.}
+\usage{
+pl_tail(column, n = 10)
+}
 \arguments{
 \item{column}{if dtype is:
 \itemize{

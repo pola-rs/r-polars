@@ -2,8 +2,15 @@
 % Please edit documentation in R/functions__lazy.R
 \name{pl_fold_reduce}
 \alias{pl_fold_reduce}
+\alias{pl_fold}
 \alias{pl_fold_reduce_part2}
+\alias{pl_reduce}
 \title{Accumulate over multiple columns horizontally with an R function}
+\usage{
+pl_fold(acc, lambda, exprs)
+
+pl_reduce(lambda, exprs)
+}
 \arguments{
 \item{acc}{an Expr or Into\if{html}{\out{<Expr>}} of the initial accumulator.}
 

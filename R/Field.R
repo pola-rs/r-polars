@@ -13,20 +13,20 @@
 #' @return A object of with DataType `"RField"` containing its name and its
 #' DataType.
 #' @examples
-#' pl$Field("city_names", pl$Utf8)
-pl$Field = function(name, datatype) {
+#' pl$Field("city_names", pl$String)
+pl_Field = function(name, datatype) {
   .pr$RField$new(name, datatype)
 }
 
 
 #' S3 method to print a Field
 #'
+#' @noRd
 #' @param x An object of type `"RField"`
 #' @param ... Not used.
 #'
 #' @return No value returned, it prints in the console.
 #' @export
-#' @rdname Field_print
 #'
 #' @examples
 #' print(pl$Field("foo", pl$List(pl$UInt64)))
@@ -44,7 +44,7 @@ print.RPolarsRField = function(x, ...) {
 #' @param pattern String used to auto-complete
 #'
 #' @export
-#' @keywords internal
+#' @noRd
 .DollarNames.RPolarsRField = function(x, pattern = "") {
   get_method_usages(RPolarsRField, pattern = pattern)
 }
@@ -52,7 +52,7 @@ print.RPolarsRField = function(x, ...) {
 
 #' Print a polars Field
 #'
-#' @keywords internal
+#' @noRd
 #' @return self
 #'
 #' @examples
@@ -71,7 +71,7 @@ RField.property_setters = new.env(parent = emptyenv())
 #'
 #' @rdname RField_name
 #' @examples
-#' field = pl$Field("Cities", pl$Utf8)
+#' field = pl$Field("Cities", pl$String)
 #' field$name
 #'
 #' field$name = "CityPoPulations" #<- is fine too
@@ -90,7 +90,7 @@ RField.property_setters$name = function(self, value) {
 #'
 #' @keywords DataFrame
 #' @examples
-#' field = pl$Field("Cities", pl$Utf8)
+#' field = pl$Field("Cities", pl$String)
 #' field$datatype
 #'
 #' field$datatype = pl$Categorical #<- is fine too
@@ -113,7 +113,7 @@ RField.property_setters$datatype = function(self, value) {
   }
 
   # if(is.null(func)) pstop(err= paste("no setter method for",name)))
-  if (polars_optenv$strictly_immutable) self <- .pr$RField$clone(self)
+  if (polars_optenv$strictly_immutable) self = .pr$RField$clone(self)
   func = RField.property_setters[[name]]
   func(self, value)
   self

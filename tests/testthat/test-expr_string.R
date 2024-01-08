@@ -6,8 +6,8 @@ test_that("str$strptime datetime", {
   )
 
   expect_error(
-    pl$lit(txt_datetimes)$str$strptime(pl$Datetime(), format = "%Y-%m-%d %H:%M:%S")$lit_to_s(),
-    "Conversion .* failed"
+    pl$lit(txt_datetimes)$str$strptime(pl$Datetime(), format = "%Y-%m-%d %H:%M:%S")$to_series(),
+    "conversion .* failed"
   )
 
   expect_identical(
@@ -29,12 +29,12 @@ test_that("str$strptime date", {
   )
 
   expect_grepl_error(
-    pl$lit(txt_dates)$str$strptime(pl$Int32, format = "%Y-%m-%d")$lit_to_s(),
+    pl$lit(txt_dates)$str$strptime(pl$Int32, format = "%Y-%m-%d")$to_series(),
     "datatype should be of type \\{Date, Datetime, Time\\}"
   )
 
   expect_grepl_error(
-    pl$lit(txt_dates)$str$strptime(pl$Date, format = "%Y-%m-%d")$lit_to_s(),
+    pl$lit(txt_dates)$str$strptime(pl$Date, format = "%Y-%m-%d")$to_series(),
     "Conversion from `str` to `date` failed"
   )
 
@@ -63,12 +63,12 @@ test_that("str$strptime time", {
   )
 
   expect_grepl_error(
-    pl$lit(txt_times)$str$strptime(pl$Int32, format = "%H:%M:%S %z")$lit_to_s(),
+    pl$lit(txt_times)$str$strptime(pl$Int32, format = "%H:%M:%S %z")$to_series(),
     "datatype should be of type \\{Date, Datetime, Time\\}"
   )
 
   expect_grepl_error(
-    pl$lit(txt_times)$str$strptime(pl$Time, format = "%H:%M:%S %z")$lit_to_s(),
+    pl$lit(txt_times)$str$strptime(pl$Time, format = "%H:%M:%S %z")$to_series(),
     "Conversion from `str` to `time` failed"
   )
 
@@ -78,6 +78,55 @@ test_that("str$strptime time", {
       format = "%H:%M:%S %z", strict = FALSE,
     )$to_r(),
     pl$PTime(txt_times, tu = "ns")
+  )
+})
+
+test_that("$str$to_date", {
+  out = pl$lit(c("2009-01-02", "2009-01-03", "2009-1-4"))$
+    str$to_date()$to_r()
+  expect_equal(
+    out,
+    as.Date(c("2009-01-02", "2009-01-03", "2009-01-04"))
+  )
+  expect_error(
+    pl$lit(c("2009-01-02", "2009-01-03", "2009-1-4"))$
+      str$to_date(format = "%Y / %m / %d")$to_r()
+  )
+  expect_equal(
+    pl$lit(c("2009-01-02", "2009-01-03", "2009-1-4"))$
+      str$to_date(format = "%Y / %m / %d", strict = FALSE)$to_r(),
+    as.Date(rep(NA_character_, 3))
+  )
+})
+
+test_that("$str$to_time", {
+  out = pl$lit(c("01:20:01", "28:00:02", "03:00:02"))$
+    str$to_time(strict = FALSE)$to_r()
+  expect_equal(
+    out,
+    pl$PTime(c("01:20:01", "28:00:02", "03:00:02"), tu = "ns")
+  )
+  expect_error(
+    ppl$lit(c("01:20:01", "28:00:02", "03:00:02"))$
+      str$to_time()
+  )
+})
+
+test_that("$str$to_datetime", {
+  out = pl$lit(c("2009-01-02 01:00", "2009-01-03 02:00", "2009-1-4 03:00"))$
+    str$to_datetime(time_zone = "UTC")$to_r()
+  expect_equal(
+    out,
+    as.POSIXct(c("2009-01-02 01:00:00", "2009-01-03 02:00:00", "2009-01-04 03:00:00"), tz = "UTC")
+  )
+  expect_error(
+    pl$lit(c("2009-01-02 01:00", "2009-01-03 02:00", "2009-1-4"))$
+      str$to_date(format = "%Y / %m / %d")$to_r()
+  )
+  expect_equal(
+    pl$lit(c("2009-01-02 01:00", "2009-01-03 02:00", "2009-1-4"))$
+      str$to_date(format = "%Y / %m / %d", strict = FALSE)$to_r(),
+    as.Date(rep(NA_character_, 3))
   )
 })
 
@@ -102,8 +151,6 @@ test_that("str$len_bytes str$len_chars", {
     )
   )
 })
-
-
 
 test_that("str$concat", {
   # concatenate a Series of strings to a single string
@@ -137,8 +184,8 @@ test_that("to_uppercase, to_lowercase", {
   )
 })
 
-test_that("to_titlecase - enabled via full_features", {
-  skip_if_not(pl$polars_info()$features$full_features)
+test_that("to_titlecase - enabled via the simd feature", {
+  skip_if_not(polars_info()$features$simd)
   df2 = pl$DataFrame(foo = c("hi there", "HI, THERE", NA))
   expect_identical(
     df2$select(pl$col("foo")$str$to_titlecase())$to_list()$foo,
@@ -146,8 +193,8 @@ test_that("to_titlecase - enabled via full_features", {
   )
 })
 
-test_that("to_titlecase - enabled via full_features", {
-  skip_if(pl$polars_info()$features$full_features)
+test_that("to_titlecase - enabled via the simd feature", {
+  skip_if(polars_info()$features$simd)
   expect_error(pl$col("foo")$str$to_titlecase())
 })
 
@@ -322,7 +369,7 @@ test_that("str$starts_with str$ends_with", {
   )
 })
 
-test_that("str$json_path. json_extract", {
+test_that("str$json_path. json_decode", {
   df = pl$DataFrame(
     json_val = c('{"a":"1"}', NA, '{"a":2}', '{"a":2.1}', '{"a":true}')
   )
@@ -336,7 +383,7 @@ test_that("str$json_path. json_extract", {
     json_val = c('{"a":1, "b": true}', NA, '{"a":2, "b": false}')
   )
   dtype = pl$Struct(pl$Field("a", pl$Float64), pl$Field("b", pl$Boolean))
-  actual = df$select(pl$col("json_val")$str$json_extract(dtype))$to_list()
+  actual = df$select(pl$col("json_val")$str$json_decode(dtype))$to_list()
   expect_identical(
     actual,
     list(json_val = list(a = c(1, NA, 2), b = c(TRUE, NA, FALSE)))
@@ -353,15 +400,15 @@ test_that("encode decode", {
     pl$col("strings")$str$encode("base64")$alias("base64"), # notice DataType is not encoded
     pl$col("strings")$str$encode("hex")$alias("hex") # ... and must restored with cast
   )$with_columns(
-    pl$col("base64")$str$decode("base64")$alias("base64_decoded")$cast(pl$Utf8),
-    pl$col("hex")$str$decode("hex")$alias("hex_decoded")$cast(pl$Utf8)
+    pl$col("base64")$str$decode("base64")$alias("base64_decoded")$cast(pl$String),
+    pl$col("hex")$str$decode("hex")$alias("hex_decoded")$cast(pl$String)
   )$to_list()
 
   expect_identical(l$strings, l$base64_decoded)
   expect_identical(l$strings, l$hex_decoded)
 
   expect_identical(
-    pl$lit("?")$str$decode("base64", strict = FALSE)$cast(pl$Utf8)$to_r(),
+    pl$lit("?")$str$decode("base64", strict = FALSE)$cast(pl$String)$to_r(),
     NA_character_
   )
 
@@ -395,7 +442,7 @@ test_that("str$extract", {
 
   expect_grepl_error(
     pl$lit("abc")$str$extract(42, 42),
-    "String"
+    "str"
   )
 
   expect_true(
@@ -419,7 +466,7 @@ test_that("str$extract_all", {
 
   expect_grepl_error(
     pl$lit("abc")$str$extract_all(complex(2)),
-    "new series from rtype Complexes is not supported",
+    "cannot be converted into an Expr",
   )
 })
 
@@ -639,4 +686,75 @@ test_that("str$parse_int", {
   )
 
   expect_error(pl$lit("foo")$str$parse_int()$to_r(), "strict integer parsing failed for 1 value")
+})
+
+test_that("str$reverse()", {
+  expect_identical(
+    pl$lit(c("abc", "def", "mañana", NA))$str$reverse()$to_r(),
+    c("cba", "fed", "anañam", NA)
+  )
+})
+
+test_that("str$contains_any()", {
+  expect_identical(
+    pl$lit(c("HELLO there", "hi there", "good bye", NA))$
+      str$
+      contains_any(c("hi", "hello"))$
+      to_r(),
+    c(FALSE, TRUE, FALSE, NA)
+  )
+
+  # case insensitive
+  expect_identical(
+    pl$lit(c("HELLO there", "hi there", "good bye", NA))$
+      str$
+      contains_any(c("hi", "hello"), ascii_case_insensitive = TRUE)$
+      to_r(),
+    c(TRUE, TRUE, FALSE, NA)
+  )
+})
+
+test_that("str$replace_many()", {
+  expect_identical(
+    pl$lit(c("HELLO there", "hi there", "good bye", NA))$
+      str$
+      replace_many(c("hi", "hello"), "foo")$
+      to_r(),
+    c("HELLO there", "foo there", "good bye", NA)
+  )
+
+  # case insensitive
+  expect_identical(
+    pl$lit(c("HELLO there", "hi there", "good bye", NA))$
+      str$
+      replace_many(c("hi", "hello"), "foo", ascii_case_insensitive = TRUE)$
+      to_r(),
+    c("foo there", "foo there", "good bye", NA)
+  )
+
+  # identical lengths of patterns and replacements
+  expect_identical(
+    pl$lit(c("hello there", "hi there", "good bye", NA))$
+      str$
+      replace_many(c("hi", "hello"), c("foo", "bar"))$
+      to_r(),
+    c("bar there", "foo there", "good bye", NA)
+  )
+
+  # error if different lengths
+  expect_error(
+    pl$lit(c("hello there", "hi there", "good bye", NA))$
+      str$
+      replace_many(c("hi", "hello"), c("foo", "bar", "foo2"))$
+      to_r(),
+    "same amount of patterns as replacement"
+  )
+
+  expect_error(
+    pl$lit(c("hello there", "hi there", "good bye", NA))$
+      str$
+      replace_many(c("hi", "hello", "good morning"), c("foo", "bar"))$
+      to_r(),
+    "same amount of patterns as replacement"
+  )
 })

@@ -1,5 +1,4 @@
 #' check if schema
-#' @name is_schema
 #' @param x object to test if schema
 #' @return bool
 #' @format function
@@ -7,11 +6,10 @@
 #' @examples
 #' pl$is_schema(pl$DataFrame(iris)$schema)
 #' pl$is_schema(list("alice", "bob"))
-is_schema = \(x) {
+pl_is_schema = \(x) {
   is.list(x) && !is.null(names(x)) && !anyNA(names(x)) &&
     do.call(all, lapply(x, inherits, "RPolarsDataType"))
 }
-pl$is_schema = is_schema
 
 
 #' wrap proto schema
@@ -22,7 +20,6 @@ pl$is_schema = is_schema
 #' mean undefined.
 #' @return bool
 #' @format function
-#' @keywords internal
 #' @examples
 #' .pr$env$wrap_proto_schema(c("alice", "bob"))
 #' .pr$env$wrap_proto_schema(list("alice" = pl$Int64, "bob" = NULL))
@@ -51,15 +48,15 @@ wrap_proto_schema = function(x) {
 #' @examples
 #' print(ls(pl$dtypes))
 #' pl$dtypes$Float64
-#' pl$dtypes$Utf8
+#' pl$dtypes$String
 #'
 #' pl$List(pl$List(pl$UInt64))
 #'
-#' pl$Struct(pl$Field("CityNames", pl$Utf8))
+#' pl$Struct(pl$Field("CityNames", pl$String))
 #'
-#' # The function changes type from Integer(Int32)[Integers] to char(Utf8)[Strings]
-#' # specifying the output DataType: Utf8 solves the problem
-#' pl$Series(1:4)$map_elements(\(x) letters[x], datatype = pl$dtypes$Utf8)
+#' # The function changes type from Int32 to String
+#' # Specifying the output DataType: String solves the problem
+#' pl$Series(1:4)$map_elements(\(x) letters[x], datatype = pl$dtypes$String)
 #'
 NULL
 
@@ -73,7 +70,7 @@ NULL
 #' @return self
 #' @export
 #'
-#' @keywords internal
+#' @noRd
 #' @examples
 #' pl$dtypes$Boolean # implicit print
 print.RPolarsDataType = function(x, ...) {
@@ -93,7 +90,6 @@ print.RPolarsDataType = function(x, ...) {
 #' @name is_polars_dtype
 #' @noRd
 #' @param x a candidate
-#' @keywords internal
 #' @return a list DataType with an inner DataType
 #' @examples .pr$env$is_polars_dtype(pl$Int64)
 is_polars_dtype = function(x, include_unknown = FALSE) {
@@ -104,7 +100,7 @@ is_polars_dtype = function(x, include_unknown = FALSE) {
 #' @name same_outer_datatype
 #' @param lhs an RPolarsDataType
 #' @param rhs an RPolarsDataType
-#' @keywords internal
+#' @noRd
 #' @return bool TRUE if outer datatype is the same.
 #' @examples
 #' # TRUE
@@ -113,7 +109,7 @@ is_polars_dtype = function(x, include_unknown = FALSE) {
 #'
 #' # FALSE
 #' pl$same_outer_dt(pl$Int64, pl$Float64)
-pl$same_outer_dt = function(lhs, rhs) {
+pl_same_outer_dt = function(lhs, rhs) {
   .pr$DataType$same_outer_datatype(lhs, rhs)
 }
 
@@ -122,7 +118,6 @@ pl$same_outer_dt = function(lhs, rhs) {
 #' @noRd
 #' @description Create a new flag like DataType
 #' @param str name of DataType to create
-#' @keywords internal
 #' @details
 #' This function is mainly used in `zzz.R` `.onLoad` to instantiate singletons of all
 #' flag-like DataType.
@@ -142,7 +137,7 @@ DataType_new = function(str) {
 
 #' DataType_constructors (composite DataType's)
 #' @description List of all composite DataType constructors
-#' @keywords internal
+#' @noRd
 #' @details
 #' This list is mainly used in `zzz.R` `.onLoad` to instantiate singletons of all
 #' flag-like DataTypes.
@@ -212,6 +207,8 @@ DataType_constructors = list(
       and_then(DataType$new_struct) |>
       unwrap("in pl$Struct:")
   }
+
+  # TODO: Categorical https://github.com/pola-rs/polars/pull/12911
 )
 
 #' Create Datetime DataType
