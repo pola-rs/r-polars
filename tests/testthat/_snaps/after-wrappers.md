@@ -149,13 +149,14 @@
       [33] "schema"                  "select"                 
       [35] "set_optimization_toggle" "shift"                  
       [37] "shift_and_fill"          "sink_csv"               
-      [39] "sink_ipc"                "sink_parquet"           
-      [41] "slice"                   "sort"                   
-      [43] "std"                     "sum"                    
-      [45] "tail"                    "unique"                 
-      [47] "unnest"                  "var"                    
-      [49] "width"                   "with_columns"           
-      [51] "with_context"            "with_row_count"         
+      [39] "sink_ipc"                "sink_ndjson"            
+      [41] "sink_parquet"            "slice"                  
+      [43] "sort"                    "std"                    
+      [45] "sum"                     "tail"                   
+      [47] "unique"                  "unnest"                 
+      [49] "var"                     "width"                  
+      [51] "with_columns"            "with_context"           
+      [53] "with_row_count"         
 
 ---
 
@@ -181,12 +182,13 @@
       [33] "select_str_as_lit"       "set_optimization_toggle"
       [35] "shift"                   "shift_and_fill"         
       [37] "sink_csv"                "sink_ipc"               
-      [39] "sink_parquet"            "slice"                  
-      [41] "sort_by_exprs"           "std"                    
-      [43] "sum"                     "tail"                   
-      [45] "unique"                  "unnest"                 
-      [47] "var"                     "with_columns"           
-      [49] "with_context"            "with_row_count"         
+      [39] "sink_json"               "sink_parquet"           
+      [41] "slice"                   "sort_by_exprs"          
+      [43] "std"                     "sum"                    
+      [45] "tail"                    "unique"                 
+      [47] "unnest"                  "var"                    
+      [49] "with_columns"            "with_context"           
+      [51] "with_row_count"         
 
 # public and private methods of each class Expr
 
