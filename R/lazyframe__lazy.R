@@ -721,6 +721,66 @@ LazyFrame_sink_csv = function(
 }
 
 
+#' @title Stream the output of a query to a JSON file
+#' @description
+#' This writes the output of a query directly to a JSON file without collecting
+#' it in the R session first. This is useful if the output of the query is still
+#' larger than RAM as it would crash the R session if it was collected into R.
+#'
+#' @inheritParams DataFrame_write_csv
+#' @inheritParams LazyFrame_collect
+#' @inheritParams DataFrame_unique
+#'
+#' @rdname IO_sink_ndjson
+#'
+#' @examples
+#' # sink table 'mtcars' from mem to JSON
+#' tmpf = tempfile(fileext = ".json")
+#' pl$LazyFrame(mtcars)$sink_ndjson(tmpf)
+#'
+#' # load parquet directly into a DataFrame / memory
+#' pl$scan_ndjson(tmpf)$collect()
+LazyFrame_sink_ndjson = function(
+    path,
+    maintain_order = TRUE,
+    type_coercion = TRUE,
+    predicate_pushdown = TRUE,
+    projection_pushdown = TRUE,
+    simplify_expression = TRUE,
+    slice_pushdown = TRUE,
+    no_optimization = FALSE,
+    inherit_optimization = FALSE) {
+  if (isTRUE(no_optimization)) {
+    predicate_pushdown = FALSE
+    projection_pushdown = FALSE
+    slice_pushdown = FALSE
+  }
+
+  lf = self
+
+  if (isFALSE(inherit_optimization)) {
+    lf = self$set_optimization_toggle(
+      type_coercion,
+      predicate_pushdown,
+      projection_pushdown,
+      simplify_expression,
+      slice_pushdown,
+      comm_subplan_elim = FALSE,
+      comm_subexpr_elim = FALSE,
+      streaming = FALSE
+    ) |> unwrap("in $sink_ndjson()")
+  }
+
+  lf |>
+    .pr$LazyFrame$sink_json(
+      path,
+      maintain_order
+    ) |>
+    unwrap("in $sink_ndjson()") |>
+    invisible()
+}
+
+
 #' @title Limit a LazyFrame
 #' @inherit DataFrame_limit description params details
 #' @return A `LazyFrame`

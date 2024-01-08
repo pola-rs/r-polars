@@ -2,6 +2,10 @@
 
 ## polars (development version)
 
+### What's changed
+
+-   New method `$sink_ndjson()` for LazyFrame
+
 ## polars 0.12.1
 
 This version includes a few additional features and

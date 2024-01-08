@@ -1033,6 +1033,8 @@ RPolarsLazyFrame$sink_ipc <- function(path, compression_method, maintain_order) 
 
 RPolarsLazyFrame$sink_csv <- function(path, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style, maintain_order) .Call(wrap__RPolarsLazyFrame__sink_csv, self, path, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style, maintain_order)
 
+RPolarsLazyFrame$sink_json <- function(path, maintain_order) .Call(wrap__RPolarsLazyFrame__sink_json, self, path, maintain_order)
+
 RPolarsLazyFrame$first <- function() .Call(wrap__RPolarsLazyFrame__first, self)
 
 RPolarsLazyFrame$last <- function() .Call(wrap__RPolarsLazyFrame__last, self)
