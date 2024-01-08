@@ -621,7 +621,7 @@ impl RPolarsLazyFrame {
         let period = Duration::parse(robj_to!(str, period)?);
         let offset = Duration::parse(robj_to!(str, offset)?);
         let closed_window = robj_to!(ClosedWindow, closed)?;
-        let by = robj_to!(VecPLExpr, by)?;
+        let by = robj_to!(VecPLExprCol, by)?;
         let check_sorted = robj_to!(bool, check_sorted)?;
 
         let options = RollingGroupOptions {
