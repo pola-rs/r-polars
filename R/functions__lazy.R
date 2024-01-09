@@ -842,7 +842,7 @@ pl_rolling_corr = function(a, b, window_size, min_periods = NULL, ddof = 1) {
 #' Accumulate over multiple columns horizontally with an R function
 #'
 #' This allows one to do rowwise operations, starting with an initial value
-#' (`acc`). See `pl$reduce()` to do rowwise operations without this initial
+#' (`acc`). See [`pl$reduce()`][pl_reduce] to do rowwise operations without this initial
 #' value.
 #'
 #' @param acc an Expr or Into<Expr> of the initial accumulator.
