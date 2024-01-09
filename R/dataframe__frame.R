@@ -1807,3 +1807,27 @@ DataFrame_write_ndjson = function(file) {
     unwrap("in $write_ndjson():") |>
     invisible()
 }
+
+#' @inherit LazyFrame_rolling title description params details
+#' @return A GroupBy object
+#'
+#' @examples
+#' df = pl$DataFrame(
+#'   dt = c("2020-01-01", "2020-01-01", "2020-01-01", "2020-01-02", "2020-01-03", "2020-01-08"),
+#'   a = c(3, 7, 5, 9, 2, 1)
+#' )$with_columns(
+#'   pl$col("dt")$str$strptime(pl$Date, format = NULL)$set_sorted()
+#' )
+#'
+#' df$rolling(index_column="dt", period="2d")$agg(
+#'   pl$col("a"),
+#'   pl$sum("a")$alias("sum_a"),
+#'   pl$min("a")$alias("min_a"),
+#'   pl$max("a")$alias("max_a")
+#' )
+DataFrame_rolling = function(index_column, period, offset = NULL, closed = "right", by = NULL, check_sorted = TRUE) {
+  out = self$lazy()$rolling(index_column, period, offset, closed, by, check_sorted)
+  # TODO: wrong
+  class(out) = "RPolarsGroupBy"
+  out
+}
