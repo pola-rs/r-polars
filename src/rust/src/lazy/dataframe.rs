@@ -617,22 +617,24 @@ impl RPolarsLazyFrame {
         by: Robj,
         check_sorted: Robj,
     ) -> RResult<RPolarsLazyGroupBy> {
-        let index_column = robj_to!(PLExpr, index_column)?;
+        let index_column = robj_to!(PLExprCol, index_column)?;
         let period = Duration::parse(robj_to!(str, period)?);
         let offset = Duration::parse(robj_to!(str, offset)?);
         let closed_window = robj_to!(ClosedWindow, closed)?;
         let by = robj_to!(VecPLExprCol, by)?;
         let check_sorted = robj_to!(bool, check_sorted)?;
 
-        let options = RollingGroupOptions {
-            index_column: "".into(),
-            period,
-            offset,
-            closed_window,
-            check_sorted,
-        };
-
-        let lazy_gb = self.0.clone().group_by_rolling(index_column, by, options);
+        let lazy_gb = self.0.clone().group_by_rolling(
+            index_column,
+            by,
+            RollingGroupOptions {
+                index_column: "".into(),
+                period,
+                offset,
+                closed_window,
+                check_sorted,
+            },
+        );
 
         Ok(RPolarsLazyGroupBy {
             lgb: lazy_gb,
