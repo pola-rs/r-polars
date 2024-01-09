@@ -870,7 +870,7 @@ pl_fold = function(acc, lambda, exprs) {
 #' @inherit pl_fold title params return
 #'
 #' @description
-#' This allows one to do rowwise operations. See `pl$fold()` to do rowwise
+#' This allows one to do rowwise operations. See [`pl$fold()`][pl_fold] to do rowwise
 #' operations with an initial value.
 #'
 #' @examples
