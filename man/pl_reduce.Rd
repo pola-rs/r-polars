@@ -15,7 +15,7 @@ pl_reduce(lambda, exprs)
 An expression that will be applied rowwise
 }
 \description{
-This allows one to do rowwise operations. See \code{pl$fold()} to do rowwise
+This allows one to do rowwise operations. See \code{\link[=pl_fold]{pl$fold()}} to do rowwise
 operations with an initial value.
 }
 \examples{

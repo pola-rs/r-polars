@@ -18,7 +18,7 @@ An expression that will be applied rowwise
 }
 \description{
 This allows one to do rowwise operations, starting with an initial value
-(\code{acc}). See \code{pl$reduce()} to do rowwise operations without this initial
+(\code{acc}). See \code{\link[=pl_reduce]{pl$reduce()}} to do rowwise operations without this initial
 value.
 }
 \examples{
