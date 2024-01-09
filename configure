@@ -110,11 +110,11 @@ check_darwin() {
 detect_target_option() {
   for option in "$@"; do
     case "${option}" in
-    --build=*)
-      specified_target="$(echo "${option}" | sed -e 's/--build=//' | sed -E 's/([0-9]+\.)*[0-9]+$//')"
+    --host=*)
+      specified_target="$(echo "${option}" | sed -e 's/--host=//' | sed -E 's/([0-9]+\.)*[0-9]+$//')"
       echo ""
       echo "------------------------------ [DETECTED TARGET] ------------------------------"
-      echo "The target was specified as <${specified_target}> via the '--build' option."
+      echo "The target was specified as <${specified_target}> via the '--host' option."
       echo "-------------------------------------------------------------------------------"
       echo ""
       export TARGET="${specified_target}"
