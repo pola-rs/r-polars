@@ -841,11 +841,9 @@ pl_rolling_corr = function(a, b, window_size, min_periods = NULL, ddof = 1) {
 
 #' Accumulate over multiple columns horizontally with an R function
 #'
-#' @description `pl$fold()` and `pl$reduce()` allows one to do rowwise operations.
-#' The only difference between them is that `pl$fold()` has an additional argument
-#' (`acc`) that contains the value that will be initialized when the fold starts.
-#'
-#' @name pl_fold_reduce
+#' This allows one to do rowwise operations, starting with an initial value
+#' (`acc`). See `pl$reduce()` to do rowwise operations without this initial
+#' value.
 #'
 #' @param acc an Expr or Into<Expr> of the initial accumulator.
 #' @param lambda R function which takes two polars Series as input and return one.
@@ -856,26 +854,35 @@ pl_rolling_corr = function(a, b, window_size, min_periods = NULL, ddof = 1) {
 #' @examples
 #' df = pl$DataFrame(mtcars)
 #'
-#' # Make the row-wise sum of all columns with fold, reduce and vectorized "+"
+#' # Make the row-wise sum of all columns
 #' df$with_columns(
-#'   pl$reduce(
-#'     lambda = \(acc, x) acc + x,
-#'     exprs = pl$col("mpg", "drat")
-#'   )$alias("mpg_drat_sum_reduced"),
 #'   pl$fold(
 #'     acc = pl$lit(0),
 #'     lambda = \(acc, x) acc + x,
-#'     exprs = pl$col("mpg", "drat")
-#'   )$alias("mpg_drat_sum_folded"),
-#'   (pl$col("mpg") + pl$col("drat"))$alias("mpg_drat_vector_sum")
+#'     exprs = pl$col("*")
+#'   )$alias("mpg_drat_sum_folded")
 #' )
 pl_fold = function(acc, lambda, exprs) {
   fold(acc, lambda, exprs) |>
     unwrap("in pl$fold():")
 }
 
-#' @rdname pl_fold_reduce
-#' @name pl_fold_reduce_part2
+#' @inherit pl_fold title params return
+#'
+#' @description
+#' This allows one to do rowwise operations. See `pl$fold()` to do rowwise
+#' operations with an initial value.
+#'
+#' @examples
+#' df = pl$DataFrame(mtcars)
+#'
+#' # Make the row-wise sum of all columns
+#' df$with_columns(
+#'   pl$reduce(
+#'     lambda = \(acc, x) acc + x,
+#'     exprs = pl$col("*")
+#'   )$alias("mpg_drat_sum_reduced")
+#' )
 pl_reduce = function(lambda, exprs) {
   reduce(lambda, exprs) |>
     unwrap("in pl$reduce():")
