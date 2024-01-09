@@ -41,12 +41,12 @@ check_cargo() {
 }
 
 check_bin_lib() {
-  if [ "${NOT_CRAN}" = "true" ] && [ -z "${LIBR_POLARS_BUILD}"  ]; then
+  if [ "${NOT_CRAN}" = "true" ] && [ -z "${LIBR_POLARS_BUILD}" ]; then
     LIBR_POLARS_BUILD="false"
   fi
 
   # On R-universe, we try to download the pre-built binary from GitHub releases.
-  if [ -n "${MY_UNIVERSE}" ] && [ -z "${LIBR_POLARS_BUILD}"  ]; then
+  if [ -n "${MY_UNIVERSE}" ] && [ -z "${LIBR_POLARS_BUILD}" ]; then
     echo ""
     echo "--------------------- [SETTING FOR R-UNIVERSE] ---------------------"
     echo "It seems that this is on R-universe <${MY_UNIVERSE}>."
@@ -56,7 +56,7 @@ check_bin_lib() {
     LIBR_POLARS_BUILD="false"
   fi
 
-  if [ "${LIBR_POLARS_BUILD}" = "false" ] && [ -f "tools/lib-sums.tsv" ] && [ ! -f "${LIBR_POLARS_PATH}" ] ; then
+  if [ "${LIBR_POLARS_BUILD}" = "false" ] && [ -f "tools/lib-sums.tsv" ] && [ ! -f "${LIBR_POLARS_PATH}" ]; then
     echo ""
     echo "---------------- [TRY TO DOWNLOAD PRE-BUILT BINARY] ----------------"
     "${R_HOME}/bin${R_ARCH_BIN}/Rscript" "tools/prep-lib.R" || echo "Failed to download pre-built binary."
@@ -102,15 +102,39 @@ check_bin_lib() {
 }
 
 check_darwin() {
-  if [ "$(uname)" = "Darwin" ] ; then
+  if [ "$(uname)" = "Darwin" ]; then
     ADDITIONAL_PKG_LIBS_FLAG=""
   fi
 }
 
+detect_target_option() {
+  for option in "$@"; do
+    case "${option}" in
+    --build=*)
+      specified_target="$(echo "${option}" | sed -e 's/--build=//' | sed -E 's/([0-9]+\.)*[0-9]+$//')"
+      echo ""
+      echo "------------------------------ [DETECTED TARGET] ------------------------------"
+      echo "The target was specified as <${specified_target}> via the '--build' option."
+      echo "-------------------------------------------------------------------------------"
+      echo ""
+      export TARGET="${specified_target}"
+      ;;
+    *) ;;
+    esac
+    shift
+  done
+}
+
+detect_target_option "$@"
 check_darwin
 check_bin_lib
 check_cargo
 
-sed -e "s|@RUST_TARGET@|$(rustc -vV | grep host | cut -d' ' -f2)|" -e "s|@ADDITIONAL_PKG_LIBS_FLAG@|${ADDITIONAL_PKG_LIBS_FLAG}|" src/Makevars.in >src/Makevars
+RUST_TARGET="${TARGET:-$(rustc -vV | grep host | cut -d' ' -f2)}"
+
+sed \
+  -e "s|@RUST_TARGET@|${RUST_TARGET}|" \
+  -e "s|@ADDITIONAL_PKG_LIBS_FLAG@|${ADDITIONAL_PKG_LIBS_FLAG}|" \
+  src/Makevars.in >src/Makevars
 
 exit 0
