@@ -1819,7 +1819,7 @@ DataFrame_write_ndjson = function(file) {
 #'   pl$col("dt")$str$strptime(pl$Date, format = NULL)$set_sorted()
 #' )
 #'
-#' df$rolling(index_column="dt", period="2d")$agg(
+#' df$rolling(index_column = "dt", period = "2d")$agg(
 #'   pl$col("a"),
 #'   pl$sum("a")$alias("sum_a"),
 #'   pl$min("a")$alias("min_a"),

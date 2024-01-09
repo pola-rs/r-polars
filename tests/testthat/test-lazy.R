@@ -885,13 +885,16 @@ test_that("with_context works", {
 
 test_that("rolling for LazyFrame: date variable", {
   df = pl$LazyFrame(
-    dt = c("2020-01-01", "2020-01-01", "2020-01-01", "2020-01-02", "2020-01-03", "2020-01-08"),
+    dt = c(
+      "2020-01-01", "2020-01-01", "2020-01-01",
+      "2020-01-02", "2020-01-03", "2020-01-08"
+    ),
     a = c(3, 7, 5, 9, 2, 1)
   )$with_columns(
     pl$col("dt")$str$strptime(pl$Date, format = NULL)$set_sorted()
   )
 
-  actual = df$rolling(index_column="dt", period="2d")$agg(
+  actual = df$rolling(index_column = "dt", period = "2d")$agg(
     pl$col("a"),
     pl$sum("a")$alias("sum_a"),
     pl$min("a")$alias("min_a"),
@@ -919,7 +922,7 @@ test_that("rolling for LazyFrame: datetime variable", {
     pl$col("dt")$str$strptime(pl$Datetime("ms"), format = NULL)$set_sorted()
   )
 
-  actual = df$rolling(index_column="dt", period="2d")$agg(
+  actual = df$rolling(index_column = "dt", period = "2d")$agg(
     pl$col("a"),
     pl$sum("a")$alias("sum_a"),
     pl$min("a")$alias("min_a"),
@@ -942,7 +945,7 @@ test_that("rolling for LazyFrame: integer variable", {
     a = c(3, 7, 5, 9, 2, 1)
   )$with_columns(pl$col("index")$set_sorted())
 
-  actual = df$rolling(index_column="index", period="2i")$agg(
+  actual = df$rolling(index_column = "index", period = "2i")$agg(
     pl$col("a"),
     pl$sum("a")$alias("sum_a"),
     pl$min("a")$alias("min_a"),
@@ -965,7 +968,7 @@ test_that("rolling for LazyFrame: error if not explictly sorted", {
     a = c(3, 7, 5, 9, 2, 1)
   )
   expect_error(
-    df$rolling(index_column="index", period="2i")$agg(pl$col("a"))$collect(),
+    df$rolling(index_column = "index", period = "2i")$agg(pl$col("a"))$collect(),
     "not explicitly sorted"
   )
 })
@@ -976,10 +979,29 @@ test_that("rolling for LazyFrame: argument 'by' works", {
     grp = c("a", "a", rep("b", 4)),
     a = c(3, 7, 5, 9, 2, 1)
   )
-  actual = df$rolling(index_column="index", period="2i", by = "grp")$agg(
+  actual = df$rolling(index_column = "index", period = "2i", by = pl$col("grp"))$agg(
     pl$col("a"),
     pl$sum("a")$alias("sum_a"),
     pl$min("a")$alias("min_a"),
     pl$max("a")$alias("max_a")
   )$collect()$to_data_frame()
+
+  expect_equal(
+    actual[, c("sum_a", "min_a", "max_a")],
+    data.frame(
+      sum_a = c(3, 10, 5, 14, 2, 3),
+      min_a = c(3, 3, 5, 5, 2, 1),
+      max_a = c(3, 7, 5, 9, 2, 2)
+    )
+  )
+
+  # string is parsed as column name in "by"
+  expect_equal(
+    df$rolling(index_column = "index", period = "2i", by = "grp")$agg(
+      pl$sum("a")$alias("sum_a")
+    )$collect()$to_data_frame(),
+    df$rolling(index_column = "index", period = "2i", by = pl$col("grp"))$agg(
+      pl$sum("a")$alias("sum_a")
+    )$collect()$to_data_frame()
+  )
 })

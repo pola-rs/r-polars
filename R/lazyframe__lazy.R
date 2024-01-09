@@ -1638,17 +1638,19 @@ LazyFrame_with_context = function(other) {
 #'
 #' df$collect()
 #'
-#' df$rolling(index_column="dt", period="2d")$agg(
+#' df$rolling(index_column = "dt", period = "2d")$agg(
 #'   pl$col("a"),
 #'   pl$sum("a")$alias("sum_a"),
 #'   pl$min("a")$alias("min_a"),
 #'   pl$max("a")$alias("max_a")
 #' )$collect()
-
 LazyFrame_rolling = function(index_column, period, offset = NULL, closed = "right", by = NULL, check_sorted = TRUE) {
   if (is.null(offset)) {
     offset = paste0("-", period)
   }
-  .pr$LazyFrame$rolling(self, index_column, period, offset, closed, by, check_sorted) |>
+  .pr$LazyFrame$rolling(
+    self, index_column, period, offset, closed,
+    wrap_elist_result(by, str_to_lit = FALSE), check_sorted
+  ) |>
     unwrap("in $rolling():")
 }
