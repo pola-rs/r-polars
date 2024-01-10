@@ -1020,3 +1020,44 @@ test_that("rolling for LazyFrame: argument 'check_sorted' works", {
     )$collect()
   )
 })
+
+test_that("rolling for LazyFrame: error if index not int or date/time", {
+  df = pl$LazyFrame(
+    index = c(1:5, 6.0),
+    a = c(3, 7, 5, 9, 2, 1)
+  )$with_columns(pl$col("index")$set_sorted())
+
+  expect_error(
+    df$rolling(index_column = "index", period = "2i")$agg(
+      pl$sum("a")$alias("sum_a")
+    )$collect()
+  )
+})
+
+test_that("rolling for LazyFrame: arg 'offset' works", {
+  df = pl$LazyFrame(
+    dt = c(
+      "2020-01-01", "2020-01-01", "2020-01-01",
+      "2020-01-02", "2020-01-03", "2020-01-08"
+    ),
+    a = c(3, 7, 5, 9, 2, 1)
+  )$with_columns(
+    pl$col("dt")$str$strptime(pl$Date, format = NULL)$set_sorted()
+  )
+
+  # checked with python-polars but unclear on how "offset" works
+  actual = df$rolling(index_column = "dt", period = "2d", offset = "1d")$agg(
+    pl$sum("a")$alias("sum_a"),
+    pl$min("a")$alias("min_a"),
+    pl$max("a")$alias("max_a")
+  )$collect()$to_data_frame()
+
+  expect_equal(
+    actual[, c("sum_a", "min_a", "max_a")],
+    data.frame(
+      sum_a = c(2, 2, 2, NA, NA, NA),
+      min_a = c(2, 2, 2, NA, NA, NA),
+      max_a = c(2, 2, 2, NA, NA, NA)
+    )
+  )
+})
