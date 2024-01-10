@@ -2,6 +2,10 @@
 
 ## polars (development version)
 
+### What's changed
+
+-   New method `$rolling()` for `DataFrame` and `LazyFrame` (#682).
+
 ## polars 0.12.2
 
 This is a small release including a few documentation improvements and internal updates.

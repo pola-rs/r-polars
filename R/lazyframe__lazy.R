@@ -1613,3 +1613,44 @@ LazyFrame_with_context = function(other) {
   .pr$LazyFrame$with_context(self, other) |>
     unwrap("in with_context():")
 }
+
+
+#' Create rolling groups based on a date/time or integer column
+#'
+#' @inherit Expr_rolling description details params
+#' @param index_column Column used to group based on the time window. Often of
+#' type Date/Datetime. This column must be sorted in ascending order (or, if `by`
+#' is specified, then it must be sorted in ascending order within each group). In
+#' case of a rolling group by on indices, dtype needs to be either Int32 or Int64.
+#' Note that Int32 gets temporarily cast to Int64, so if performance matters use
+#' an Int64 column.
+#' @param by Also group by this column/these columns.
+#'
+#' @return A [LazyGroupBy][LazyGroupBy_class] object
+#'
+#' @examples
+#' df = pl$LazyFrame(
+#'   dt = c("2020-01-01", "2020-01-01", "2020-01-01", "2020-01-02", "2020-01-03", "2020-01-08"),
+#'   a = c(3, 7, 5, 9, 2, 1)
+#' )$with_columns(
+#'   pl$col("dt")$str$strptime(pl$Date, format = NULL)$set_sorted()
+#' )
+#'
+#' df$collect()
+#'
+#' df$rolling(index_column = "dt", period = "2d")$agg(
+#'   pl$col("a"),
+#'   pl$sum("a")$alias("sum_a"),
+#'   pl$min("a")$alias("min_a"),
+#'   pl$max("a")$alias("max_a")
+#' )$collect()
+LazyFrame_rolling = function(index_column, period, offset = NULL, closed = "right", by = NULL, check_sorted = TRUE) {
+  if (is.null(offset)) {
+    offset = paste0("-", period)
+  }
+  .pr$LazyFrame$rolling(
+    self, index_column, period, offset, closed,
+    wrap_elist_result(by, str_to_lit = FALSE), check_sorted
+  ) |>
+    unwrap("in $rolling():")
+}
