@@ -1237,3 +1237,44 @@ test_that("drop_all_in_place", {
   expect_identical(df_clone$shape, c(32, 11))
   expect_identical(s$len(), 32)
 })
+
+test_that("rolling for DataFrame: basic example", {
+  # this is just to ensure that the DataFrame method calls the lazy method
+  # under the hood. See the tests on lazy for more.
+  df = pl$DataFrame(
+    dt = c(
+      "2020-01-01", "2020-01-01", "2020-01-01",
+      "2020-01-02", "2020-01-03", "2020-01-08"
+    ),
+    a = c(3, 7, 5, 9, 2, 1)
+  )$with_columns(
+    pl$col("dt")$str$strptime(pl$Date, format = NULL)$set_sorted()
+  )
+
+  actual = df$rolling(index_column = "dt", period = "2d")$agg(
+    pl$sum("a")$alias("sum_a"),
+    pl$min("a")$alias("min_a"),
+    pl$max("a")$alias("max_a")
+  )$to_data_frame()
+
+  expect_equal(
+    actual[, c("sum_a", "min_a", "max_a")],
+    data.frame(
+      sum_a = c(15, 15, 15, 24, 11, 1),
+      min_a = c(3, 3, 3, 3, 2, 1),
+      max_a = c(7, 7, 7, 9, 9, 1)
+    )
+  )
+})
+
+test_that("rolling for DataFrame: can be ungrouped", {
+  df = pl$DataFrame(
+    index = c(1:5, 6.0),
+    a = c(3, 7, 5, 9, 2, 1)
+  )$with_columns(pl$col("index")$set_sorted())
+
+  actual = df$rolling(index_column = "dt", period = "2i")$
+    ungroup()$
+    to_data_frame()
+  expect_equal(actual, df$to_data_frame())
+})

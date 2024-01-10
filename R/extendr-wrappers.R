@@ -1117,6 +1117,8 @@ RPolarsLazyFrame$clone_in_rust <- function() .Call(wrap__RPolarsLazyFrame__clone
 
 RPolarsLazyFrame$with_context <- function(contexts) .Call(wrap__RPolarsLazyFrame__with_context, self, contexts)
 
+RPolarsLazyFrame$rolling <- function(index_column, period, offset, closed, by, check_sorted) .Call(wrap__RPolarsLazyFrame__rolling, self, index_column, period, offset, closed, by, check_sorted)
+
 #' @export
 `$.RPolarsLazyFrame` <- function (self, name) { func <- RPolarsLazyFrame[[name]]; environment(func) <- environment(); func }
 
