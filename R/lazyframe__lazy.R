@@ -1626,7 +1626,7 @@ LazyFrame_with_context = function(other) {
 #' an Int64 column.
 #' @param by Also group by this column/these columns.
 #'
-#' @return A LazyGroupBy object
+#' @return A [LazyGroupBy][LazyGroupBy_class] object
 #'
 #' @examples
 #' df = pl$LazyFrame(
