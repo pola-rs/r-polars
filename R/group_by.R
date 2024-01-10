@@ -86,13 +86,18 @@ print.RPolarsGroupBy = function(x, ...) {
 #'   pl$col("bar")$mean()$alias("bar_tail_sum")
 #' )
 GroupBy_agg = function(...) {
-  .pr$DataFrame$by_agg(
-    self = self,
-    group_exprs = attr(self, "private")$groupby_input,
-    agg_exprs = unpack_list(..., .context = "in $agg():"),
-    maintain_order = attr(self, "private")$maintain_order
-  ) |>
-    unwrap("in $agg():")
+  if (isTRUE(attributes(self)[["is_rolling_group_by"]])) {
+    class(self) = "RPolarsLazyGroupBy"
+    self$agg(unpack_list(..., .context = "in $agg():"))$collect(no_optimization = TRUE)
+  } else {
+    .pr$DataFrame$by_agg(
+      self = self,
+      group_exprs = attr(self, "private")$groupby_input,
+      agg_exprs = unpack_list(..., .context = "in $agg():"),
+      maintain_order = attr(self, "private")$maintain_order
+    ) |>
+      unwrap("in $agg():")
+  }
 }
 
 
