@@ -36,7 +36,7 @@ can set this to \code{FALSE} but note that if the data actually is unsorted, it
 will lead to incorrect output.}
 }
 \value{
-A GroupBy object
+A \link[=GroupBy_class]{GroupBy} object
 }
 \description{
 If you have a time series \verb{<t_0, t_1, ..., t_n>}, then by default the windows
