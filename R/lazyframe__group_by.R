@@ -1,4 +1,11 @@
-## ----- LazyGroupBy
+#' @title Operations on Polars grouped LazyFrame
+#' @return not applicable
+#' @details The LazyGroupBy class in R, is just another interface on top of the
+#'   LazyFrame (R wrapper class) in rust polars.
+#'
+#' @name LazyGroupBy_class
+NULL
+
 
 
 #' print LazyGroupBy
