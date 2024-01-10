@@ -1615,7 +1615,7 @@ LazyFrame_with_context = function(other) {
 }
 
 
-#' Create rolling groups based on a time, Int32, or Int64 column
+#' Create rolling groups based on a date/time or integer column
 #'
 #' @inherit Expr_rolling description details params
 #' @param index_column Column used to group based on the time window. Often of

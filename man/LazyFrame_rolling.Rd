@@ -2,7 +2,7 @@
 % Please edit documentation in R/lazyframe__lazy.R
 \name{LazyFrame_rolling}
 \alias{LazyFrame_rolling}
-\title{Create rolling groups based on a time, Int32, or Int64 column}
+\title{Create rolling groups based on a date/time or integer column}
 \usage{
 LazyFrame_rolling(
   index_column,
@@ -97,7 +97,7 @@ df = pl$LazyFrame(
 
 df$collect()
 
-df$rolling(index_column="dt", period="2d")$agg(
+df$rolling(index_column = "dt", period = "2d")$agg(
   pl$col("a"),
   pl$sum("a")$alias("sum_a"),
   pl$min("a")$alias("min_a"),
