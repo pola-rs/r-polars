@@ -44,7 +44,7 @@ RPolarsGroupBy = new.env(parent = emptyenv())
 construct_group_by = function(df, groupby_input, maintain_order) {
   if (!inherits(df, "RPolarsDataFrame")) stop("internal error: construct_group called not on DataFrame")
   df = df$clone()
-  attr(df, "private") = list(groupby_input = groupby_input, maintain_order = maintain_order)
+  attr(df, "private") = list(groupby_input = unlist(groupby_input), maintain_order = maintain_order)
   class(df) = "RPolarsGroupBy"
   df
 }
@@ -63,8 +63,8 @@ print.RPolarsGroupBy = function(x, ...) {
   .pr$DataFrame$print(x)
   cat("groups: ")
   prv = attr(x, "private")
-  print(prv$groupby_input)
-  cat("maintain order: ", prv$maintain_order)
+  cat(toString(prv$groupby_input))
+  cat("\nmaintain order: ", prv$maintain_order)
   invisible(x)
 }
 
@@ -90,13 +90,13 @@ GroupBy_agg = function(...) {
     class(self) = "RPolarsLazyGroupBy"
     self$agg(unpack_list(..., .context = "in $agg():"))$collect(no_optimization = TRUE)
   } else {
-    .pr$DataFrame$by_agg(
-      self = self,
-      group_exprs = attr(self, "private")$groupby_input,
-      agg_exprs = unpack_list(..., .context = "in $agg():"),
+    class(self) = "RPolarsDataFrame"
+    self$lazy()$group_by(
+      attr(self, "private")$groupby_input,
       maintain_order = attr(self, "private")$maintain_order
-    ) |>
-      unwrap("in $agg():")
+    )$
+      agg(...)$
+      collect(no_optimization = TRUE)
   }
 }
 
