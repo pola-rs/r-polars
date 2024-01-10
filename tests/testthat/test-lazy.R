@@ -1061,3 +1061,16 @@ test_that("rolling for LazyFrame: arg 'offset' works", {
     )
   )
 })
+
+test_that("rolling for LazyFrame: can be ungrouped", {
+  df = pl$LazyFrame(
+    index = c(1:5, 6.0),
+    a = c(3, 7, 5, 9, 2, 1)
+  )$with_columns(pl$col("index")$set_sorted())
+
+  actual = df$rolling(index_column = "dt", period = "2i")$
+    ungroup()$
+    collect()$
+    to_data_frame()
+  expect_equal(actual, df$collect()$to_data_frame())
+})

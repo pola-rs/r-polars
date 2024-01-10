@@ -300,8 +300,13 @@ GroupBy_null_count = function() {
 #'
 #' gb$ungroup()
 GroupBy_ungroup = function() {
-  self = .pr$DataFrame$clone_in_rust(self)
-  class(self) = "RPolarsDataFrame"
-  attr(self, "private") = NULL
+  if (isTRUE(attributes(self)[["is_rolling_group_by"]])) {
+    class(self) = "RPolarsLazyGroupBy"
+    self = self$ungroup()$collect(no_optimization = TRUE)
+  } else {
+    self = .pr$DataFrame$clone_in_rust(self)
+    class(self) = "RPolarsDataFrame"
+    attr(self, "private") = NULL
+  }
   self
 }
