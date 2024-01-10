@@ -1011,12 +1011,12 @@ test_that("rolling for LazyFrame: argument 'check_sorted' works", {
   expect_error(
     df$rolling(index_column = "index", period = "2i", by = "grp")$agg(
       pl$sum("a")$alias("sum_a")
-    )$collect()$to_data_frame(),
+    )$collect(),
     "not sorted"
   )
   expect_no_error(
     df$rolling(index_column = "index", period = "2i", by = "grp", check_sorted = FALSE)$agg(
       pl$sum("a")$alias("sum_a")
-    )$collect()$to_data_frame()
+    )$collect()
   )
 })
