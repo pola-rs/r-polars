@@ -11,7 +11,8 @@
 #' to "all-columns" and is an expression constructor
 #'
 #' @examples
-#' pl$DataFrame(list(all = c(TRUE, TRUE), some = c(TRUE, FALSE)))$select(pl$all()$all())
+#' pl$DataFrame(all = c(TRUE, TRUE), some = c(TRUE, FALSE))$
+#'   select(pl$all()$all())
 pl_all = function(name = NULL) {
   if (is.null(name)) {
     return(.pr$Expr$col("*"))
@@ -79,8 +80,6 @@ pl_col = function(name = "", ...) {
 #' @examples
 #' pl$lit(1:5)$cumulative_eval(pl$element()$first() - pl$element()$last()**2)$to_r()
 pl_element = function() pl$col("")
-
-# TODO move all lazy functions to a new keyword lazy functions
 
 #' pl$count
 #' @description Count the number of values in this column/context.

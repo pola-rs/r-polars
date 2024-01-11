@@ -2165,8 +2165,6 @@ Expr_is_in = function(other) {
   .pr$Expr$is_in(self, other) |> unwrap("in $is_in():")
 }
 
-## TODO contribute polars, do not panic on by pointing to non positive values
-
 #' Repeat values
 #'
 #' Repeat the elements in this Series as specified in the given expression.
@@ -2175,7 +2173,7 @@ Expr_is_in = function(other) {
 #' column will be coerced to UInt32.
 #' @return Expr
 #' @examples
-#' df = pl$DataFrame(a = c("x", "y", "z"), n = c(0:2))
+#' df = pl$DataFrame(a = c("w", "x", "y", "z"), n = c(-1, 0, 1, 2))
 #' df$with_columns(repeated = pl$col("a")$repeat_by("n"))
 Expr_repeat_by = function(by) {
   if (is.numeric(by) && any(by < 0)) stop("In repeat_by: any value less than zero is not allowed")

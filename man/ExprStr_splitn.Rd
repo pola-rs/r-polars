@@ -20,9 +20,11 @@ elements will be null. If the number of possible splits is \code{n-1} or greater
 the last (nth) substring will contain the remainder of the string.
 }
 \examples{
-df = pl$DataFrame(s = c("a_1", NA, "c", "d_4"))
-df$select(pl$col("s")$str$splitn(by = "_", 0))
-df$select(pl$col("s")$str$splitn(by = "_", 1))
-df$select(pl$col("s")$str$splitn(by = "_", 2))
+df = pl$DataFrame(s = c("a_1", NA, "c", "d_4_e"))
+df$with_columns(
+  s1 = pl$col("s")$str$splitn(by = "_", 1),
+  s2 = pl$col("s")$str$splitn(by = "_", 2),
+  s3 = pl$col("s")$str$splitn(by = "_", 3)
+)
 }
 \keyword{ExprStr}
