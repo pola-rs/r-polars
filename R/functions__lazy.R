@@ -1054,7 +1054,7 @@ pl_sum_horizontal = function(...) {
 #' )
 #'
 #' # we can also pass an Expr
-#' #' test$with_columns(
+#' test$with_columns(
 #'   (pl$col("dt") + pl$duration(weeks = pl$col("add") + 1))$alias("add_weeks"),
 #'   (pl$col("dt") + pl$duration(days = pl$col("add") + 1))$alias("add_days"),
 #'   (pl$col("dt") + pl$duration(seconds = pl$col("add") + 1))$alias("add_seconds"),
