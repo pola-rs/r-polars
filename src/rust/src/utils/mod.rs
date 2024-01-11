@@ -61,6 +61,13 @@ macro_rules! make_r_na_fun {
     };
 }
 
+#[macro_export]
+macro_rules! set_unwrapped_or_0 {
+    ($($var:ident),+ $(,)?) => {
+        $(let $var = $var.map(|e| e.inner).unwrap_or(pl::dsl::lit(0));)+
+    };
+}
+
 //build iterator which handle any polars Series input type and convert to R type and evaluate
 #[macro_export]
 macro_rules! apply_input {
