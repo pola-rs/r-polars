@@ -25,14 +25,38 @@ case of a rolling group by on indices, dtype needs to be either Int32 or Int64.
 Note that Int32 gets temporarily cast to Int64, so if performance matters use
 an Int64 column.}
 
+\item{every}{Interval of the window.}
+
 \item{period}{Length of the window, must be non-negative.}
 
 \item{offset}{Offset of the window. Default is \code{-period}.}
 
+\item{include_boundaries}{Add two columns \code{"_lower_boundary"} and
+\code{"_upper_boundary"} columns that show the boundaries of the window. This will
+impact performance because it’s harder to parallelize.}
+
 \item{closed}{Define which sides of the temporal interval are closed
 (inclusive). This can be either \code{"left"}, \code{"right"}, \code{"both"} or \code{"none"}.}
 
+\item{label}{Define which label to use for the window:
+\itemize{
+\item \code{"left"}: lower boundary of the window
+\item \code{"right"}: upper boundary of the window
+\item \code{"datapoint"}: the first value of the index column in the given window. If
+you don’t need the label to be at one of the boundaries, choose this option
+for maximum performance.
+}}
+
 \item{by}{Also group by this column/these columns.}
+
+\item{start_by}{The strategy to determine the start of the first window by:
+\itemize{
+\item \code{"window"}: start by taking the earliest timestamp, truncating it with \code{every},
+and then adding \code{offset}. Note that weekly windows start on Monday.
+\item \code{"datapoint"}: start from the first encountered data point.
+\item a day of the week (only takes effect if \code{every} contains \code{"w"}): \code{"monday"}
+starts the window on the Monday before the first data point, etc.
+}}
 
 \item{check_sorted}{Check whether data is actually sorted. Checking it is
 expensive so if you are sure the data within the \code{index_column} is sorted, you
@@ -90,4 +114,68 @@ by:
 \item "1i" # length 1
 \item "10i" # length 10
 }
+}
+\examples{
+lf = pl$LazyFrame(
+  time = pl$date_range(
+    start = strptime("2021-12-16 00:00:00", format = "\%Y-\%m-\%d \%H:\%M:\%S", tz = "UTC"),
+    end = strptime("2021-12-16 03:00:00", format = "\%Y-\%m-\%d \%H:\%M:\%S", tz = "UTC"),
+    interval = "30m",
+    eager = TRUE,
+  ),
+  n = 0:6
+)
+lf$collect()
+
+# get the sum in the following hour relative to the "time" column
+lf$group_by_dynamic("time", every = "1h")$agg(
+  vals = pl$col("n"),
+  sum = pl$col("n")$sum()
+)$collect()
+
+# using "include_boundaries = TRUE" is helpful to see the period considered
+lf$group_by_dynamic("time", every = "1h", include_boundaries = TRUE)$agg(
+  vals = pl$col("n")
+)$collect()
+
+# in the example above, the values didn't include the one *exactly* 1h after
+# the start because "closed = 'left'" by default.
+# Changing it to "right" includes values that are exactly 1h after. Note that
+# the value at 00:00:00 now becomes included in the interval [23:00:00 - 00:00:00],
+# even if this interval wasn't there originally
+lf$group_by_dynamic("time", every = "1h", closed = "right")$agg(
+  vals = pl$col("n")
+)$collect()
+# To keep both boundaries, we use "closed = 'both'". Some values now belong to
+# several groups:
+lf$group_by_dynamic("time", every = "1h", closed = "both")$agg(
+  vals = pl$col("n")
+)$collect()
+
+# Dynamic group bys can also be combined with grouping on normal keys
+lf = lf$with_columns(groups = pl$Series(c("a", "a", "a", "b", "b", "a", "a")))
+lf$collect()
+
+lf$group_by_dynamic(
+  "time",
+  every = "1h",
+  closed = "both",
+  by = "groups",
+  include_boundaries = TRUE
+)$agg(pl$col("n"))$collect()
+
+# We can also create a dynamic group by based on an index column
+lf = pl$LazyFrame(
+  idx = 0:5,
+  A = c("A", "A", "B", "B", "B", "C")
+)$with_columns(pl$col("idx")$set_sorted())
+lf$collect()
+
+lf$group_by_dynamic(
+  "idx",
+  every = "2i",
+  period = "3i",
+  include_boundaries = TRUE,
+  closed = "right"
+)$agg(A_agg_list = pl$col("A"))$collect()
 }

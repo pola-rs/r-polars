@@ -1658,22 +1658,99 @@ LazyFrame_rolling = function(index_column, period, offset = NULL, closed = "righ
 #'
 #' @inherit LazyFrame_rolling description details params
 #'
+#' @param every Interval of the window.
+#' @param include_boundaries Add two columns `"_lower_boundary"` and
+#' `"_upper_boundary"` columns that show the boundaries of the window. This will
+#' impact performance because it’s harder to parallelize.
+#' @param label Define which label to use for the window:
+#' * `"left"`: lower boundary of the window
+#' * `"right"`: upper boundary of the window
+#' * `"datapoint"`: the first value of the index column in the given window. If
+#' you don’t need the label to be at one of the boundaries, choose this option
+#' for maximum performance.
+#' @param start_by The strategy to determine the start of the first window by:
+#' * `"window"`: start by taking the earliest timestamp, truncating it with `every`,
+#'   and then adding `offset`. Note that weekly windows start on Monday.
+#' * `"datapoint"`: start from the first encountered data point.
+#' * a day of the week (only takes effect if `every` contains `"w"`): `"monday"`
+#'   starts the window on the Monday before the first data point, etc.
 #'
 #' @return A [LazyGroupBy][LazyGroupBy_class] object
 #'
 #' @examples
+#' lf = pl$LazyFrame(
+#'   time = pl$date_range(
+#'     start = strptime("2021-12-16 00:00:00", format = "%Y-%m-%d %H:%M:%S", tz = "UTC"),
+#'     end = strptime("2021-12-16 03:00:00", format = "%Y-%m-%d %H:%M:%S", tz = "UTC"),
+#'     interval = "30m",
+#'     eager = TRUE,
+#'   ),
+#'   n = 0:6
+#' )
+#' lf$collect()
+#'
+#' # get the sum in the following hour relative to the "time" column
+#' lf$group_by_dynamic("time", every = "1h")$agg(
+#'   vals = pl$col("n"),
+#'   sum = pl$col("n")$sum()
+#' )$collect()
+#'
+#' # using "include_boundaries = TRUE" is helpful to see the period considered
+#' lf$group_by_dynamic("time", every = "1h", include_boundaries = TRUE)$agg(
+#'   vals = pl$col("n")
+#' )$collect()
+#'
+#' # in the example above, the values didn't include the one *exactly* 1h after
+#' # the start because "closed = 'left'" by default.
+#' # Changing it to "right" includes values that are exactly 1h after. Note that
+#' # the value at 00:00:00 now becomes included in the interval [23:00:00 - 00:00:00],
+#' # even if this interval wasn't there originally
+#' lf$group_by_dynamic("time", every = "1h", closed = "right")$agg(
+#'   vals = pl$col("n")
+#' )$collect()
+#' # To keep both boundaries, we use "closed = 'both'". Some values now belong to
+#' # several groups:
+#' lf$group_by_dynamic("time", every = "1h", closed = "both")$agg(
+#'   vals = pl$col("n")
+#' )$collect()
+#'
+#' # Dynamic group bys can also be combined with grouping on normal keys
+#' lf = lf$with_columns(groups = pl$Series(c("a", "a", "a", "b", "b", "a", "a")))
+#' lf$collect()
+#'
+#' lf$group_by_dynamic(
+#'   "time",
+#'   every = "1h",
+#'   closed = "both",
+#'   by = "groups",
+#'   include_boundaries = TRUE
+#' )$agg(pl$col("n"))$collect()
+#'
+#' # We can also create a dynamic group by based on an index column
+#' lf = pl$LazyFrame(
+#'   idx = 0:5,
+#'   A = c("A", "A", "B", "B", "B", "C")
+#' )$with_columns(pl$col("idx")$set_sorted())
+#' lf$collect()
+#'
+#' lf$group_by_dynamic(
+#'   "idx",
+#'   every = "2i",
+#'   period = "3i",
+#'   include_boundaries = TRUE,
+#'   closed = "right"
+#' )$agg(A_agg_list = pl$col("A"))$collect()
 LazyFrame_group_by_dynamic = function(
-  index_column,
-  every,
-  period = NULL,
-  offset = NULL,
-  include_boundaries = FALSE,
-  closed = "left",
-  label = "left",
-  by = NULL,
-  start_by = "window",
-  check_sorted = TRUE
-) {
+    index_column,
+    every,
+    period = NULL,
+    offset = NULL,
+    include_boundaries = FALSE,
+    closed = "left",
+    label = "left",
+    by = NULL,
+    start_by = "window",
+    check_sorted = TRUE) {
   if (is.null(offset)) {
     offset = paste0("-", every)
   }
