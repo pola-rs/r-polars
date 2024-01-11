@@ -1833,3 +1833,88 @@ DataFrame_rolling = function(index_column, period, offset = NULL, closed = "righ
   class(out) = "RPolarsGroupBy"
   out
 }
+
+#' @inherit LazyFrame_group_by_dynamic title description details params
+#' @return A [GroupBy][GroupBy_class] object
+#'
+#' @examples
+#' df = pl$DataFrame(
+#'   time = pl$date_range(
+#'     start = strptime("2021-12-16 00:00:00", format = "%Y-%m-%d %H:%M:%S", tz = "UTC"),
+#'     end = strptime("2021-12-16 03:00:00", format = "%Y-%m-%d %H:%M:%S", tz = "UTC"),
+#'     interval = "30m",
+#'     eager = TRUE,
+#'   ),
+#'   n = 0:6
+#' )
+#'
+#' # get the sum in the following hour relative to the "time" column
+#' df$group_by_dynamic("time", every = "1h")$agg(
+#'   vals = pl$col("n"),
+#'   sum = pl$col("n")$sum()
+#' )
+#'
+#' # using "include_boundaries = TRUE" is helpful to see the period considered
+#' df$group_by_dynamic("time", every = "1h", include_boundaries = TRUE)$agg(
+#'   vals = pl$col("n")
+#' )
+#'
+#' # in the example above, the values didn't include the one *exactly* 1h after
+#' # the start because "closed = 'left'" by default.
+#' # Changing it to "right" includes values that are exactly 1h after. Note that
+#' # the value at 00:00:00 now becomes included in the interval [23:00:00 - 00:00:00],
+#' # even if this interval wasn't there originally
+#' df$group_by_dynamic("time", every = "1h", closed = "right")$agg(
+#'   vals = pl$col("n")
+#' )
+#' # To keep both boundaries, we use "closed = 'both'". Some values now belong to
+#' # several groups:
+#' df$group_by_dynamic("time", every = "1h", closed = "both")$agg(
+#'   vals = pl$col("n")
+#' )
+#'
+#' # Dynamic group bys can also be combined with grouping on normal keys
+#' df = df$with_columns(groups = pl$Series(c("a", "a", "a", "b", "b", "a", "a")))
+#' df
+#'
+#' df$group_by_dynamic(
+#'   "time",
+#'   every = "1h",
+#'   closed = "both",
+#'   by = "groups",
+#'   include_boundaries = TRUE
+#' )$agg(pl$col("n"))
+#'
+#' # We can also create a dynamic group by based on an index column
+#' df = pl$LazyFrame(
+#'   idx = 0:5,
+#'   A = c("A", "A", "B", "B", "B", "C")
+#' )$with_columns(pl$col("idx")$set_sorted())
+#' df
+#'
+#' df$group_by_dynamic(
+#'   "idx",
+#'   every = "2i",
+#'   period = "3i",
+#'   include_boundaries = TRUE,
+#'   closed = "right"
+#' )$agg(A_agg_list = pl$col("A"))
+DataFrame_group_by_dynamic = function(
+    index_column,
+    every,
+    period = NULL,
+    offset = NULL,
+    include_boundaries = FALSE,
+    closed = "left",
+    label = "left",
+    by = NULL,
+    start_by = "window",
+    check_sorted = TRUE) {
+  out = self$lazy()$group_by_dynamic(
+    index_column, every, period, offset, include_boundaries, closed, label, by,
+    start_by, check_sorted
+  )
+  attr(out, "is_dynamic_group_by") = TRUE
+  class(out) = "RPolarsGroupBy"
+  out
+}

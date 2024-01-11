@@ -86,7 +86,8 @@ print.RPolarsGroupBy = function(x, ...) {
 #'   pl$col("bar")$mean()$alias("bar_tail_sum")
 #' )
 GroupBy_agg = function(...) {
-  if (isTRUE(attributes(self)[["is_rolling_group_by"]])) {
+  if (isTRUE(attributes(self)[["is_rolling_group_by"]]) ||
+      isTRUE(attributes(self)[["is_dynamic_group_by"]])) {
     class(self) = "RPolarsLazyGroupBy"
     self$agg(unpack_list(..., .context = "in $agg():"))$collect(no_optimization = TRUE)
   } else {
@@ -300,7 +301,8 @@ GroupBy_null_count = function() {
 #'
 #' gb$ungroup()
 GroupBy_ungroup = function() {
-  if (isTRUE(attributes(self)[["is_rolling_group_by"]])) {
+  if (isTRUE(attributes(self)[["is_rolling_group_by"]]) ||
+      isTRUE(attributes(self)[["is_dynamic_group_by"]])) {
     class(self) = "RPolarsLazyGroupBy"
     self = self$ungroup()$collect(no_optimization = TRUE)
   } else {
