@@ -429,3 +429,21 @@
       groups: foo
       maintain order:  TRUE
 
+# groupby print when several groups
+
+    Code
+      df
+    Output
+      shape: (3, 4)
+      ┌──────┬─────┬───────┬───────┐
+      │ mpg  ┆ cyl ┆ disp  ┆ hp    │
+      │ ---  ┆ --- ┆ ---   ┆ ---   │
+      │ f64  ┆ f64 ┆ f64   ┆ f64   │
+      ╞══════╪═════╪═══════╪═══════╡
+      │ 21.0 ┆ 6.0 ┆ 160.0 ┆ 110.0 │
+      │ 21.0 ┆ 6.0 ┆ 160.0 ┆ 110.0 │
+      │ 22.8 ┆ 4.0 ┆ 108.0 ┆ 93.0  │
+      └──────┴─────┴───────┴───────┘
+      groups: mpg, cyl, disp
+      maintain order:  TRUE
+
