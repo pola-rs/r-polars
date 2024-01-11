@@ -113,13 +113,11 @@ impl<T, E: Into<RPolarsErr>> WithRctx<T> for core::result::Result<T, E> {
 }
 
 #[extendr]
-impl Default for RPolarsErr {
+impl RPolarsErr {
     fn default() -> Self {
         Self::new()
     }
-}
 
-impl RPolarsErr {
     pub fn new() -> Self {
         RPolarsErr::new_from_ctxs(VecDeque::new())
     }
