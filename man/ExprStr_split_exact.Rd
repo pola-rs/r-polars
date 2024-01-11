@@ -22,6 +22,9 @@ splits, the remaining field elements will be null.
 }
 \examples{
 df = pl$DataFrame(s = c("a_1", NA, "c", "d_4"))
-df$select(pl$col("s")$str$split_exact(by = "_", 1))
+df$with_columns(
+  split = pl$col("s")$str$split_exact(by = "_", 1),
+  split_inclusive = pl$col("s")$str$split_exact(by = "_", 1, inclusive = TRUE)
+)
 }
 \keyword{ExprStr}

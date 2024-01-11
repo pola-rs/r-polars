@@ -307,25 +307,6 @@ impl RPolarsDataFrame {
         self.lazy().with_columns(exprs)?.collect()
     }
 
-    //used in GroupBy, not DataFrame
-    pub fn by_agg(
-        &mut self,
-        group_exprs: Robj,
-        agg_exprs: Robj,
-        maintain_order: Robj,
-    ) -> RResult<RPolarsDataFrame> {
-        let group_exprs: Vec<pl::Expr> = robj_to!(VecPLExprCol, group_exprs)?;
-        let agg_exprs: Vec<pl::Expr> = robj_to!(VecPLExprColNamed, agg_exprs)?;
-        let maintain_order = robj_to!(Option, bool, maintain_order)?.unwrap_or(false);
-        let lazy_df = self.clone().0.lazy();
-        let lgb = if maintain_order {
-            lazy_df.group_by_stable(group_exprs)
-        } else {
-            lazy_df.group_by(group_exprs)
-        };
-        RPolarsLazyFrame(lgb.agg(agg_exprs)).collect()
-    }
-
     pub fn to_struct(&self, name: Robj) -> RResult<RPolarsSeries> {
         use pl::IntoSeries;
         let name = robj_to!(Option, str, name)?.unwrap_or("");

@@ -18,6 +18,6 @@ Repeat the elements in this Series as specified in the given expression.
 The repeated elements are expanded into a \code{List}.
 }
 \examples{
-df = pl$DataFrame(a = c("x", "y", "z"), n = c(0:2))
+df = pl$DataFrame(a = c("w", "x", "y", "z"), n = c(-1, 0, 1, 2))
 df$with_columns(repeated = pl$col("a")$repeat_by("n"))
 }

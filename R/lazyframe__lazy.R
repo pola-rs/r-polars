@@ -179,8 +179,6 @@ print.RPolarsLazyFrame = function(x, ...) {
 #' @examples pl$LazyFrame(iris)$print()
 LazyFrame_print = "use_extendr_wrapper"
 
-# TODO write missing examples in this file
-
 #' @title Print the optimized or non-optimized plans of `LazyFrame`
 #'
 #' @rdname LazyFrame_describe_plan

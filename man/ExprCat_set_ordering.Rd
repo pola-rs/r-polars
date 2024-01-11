@@ -25,9 +25,16 @@ Determine how this categorical series should be sorted.
 df = pl$DataFrame(
   cats = factor(c("z", "z", "k", "a", "b")),
   vals = c(3, 1, 2, 2, 3)
-)$with_columns(
-  pl$col("cats")$cat$set_ordering("physical")
 )
-df$select(pl$all()$sort())
+
+# sort by the string value of categories
+df$with_columns(
+  pl$col("cats")$cat$set_ordering("lexical")
+)$sort("cats", "vals")
+
+# sort by the underlying value of categories
+df$with_columns(
+  pl$col("cats")$cat$set_ordering("physical")
+)$sort("cats", "vals")
 }
 \keyword{ExprCat}
