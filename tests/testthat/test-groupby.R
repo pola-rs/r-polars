@@ -296,7 +296,7 @@ test_that("group_by_dynamic for LazyFrame: arg 'label' works", {
     ),
     n = 0:6
   )$with_columns(
-    pl$col("dt")$str$strptime(pl$Datetime("ms"), format = NULL)$set_sorted()
+    pl$col("dt")$str$strptime(pl$Datetime("ms"), format = NULL)$set_sorted()$dt$replace_time_zone("UTC")
   )
 
   actual = df$group_by_dynamic(index_column = "dt", label = "right", every = "1h")$agg(
@@ -306,7 +306,8 @@ test_that("group_by_dynamic for LazyFrame: arg 'label' works", {
   expect_equal(
     actual[, "dt"],
     as.POSIXct(
-      c("2021-12-16 02:00:00 CET", "2021-12-16 03:00:00 CET", "2021-12-16 04:00:00 CET", "2021-12-16 05:00:00 CET")
+      c("2021-12-16 01:00:00", "2021-12-16 02:00:00", "2021-12-16 03:00:00", "2021-12-16 04:00:00"),
+      tz = "UTC"
     )
   )
 
