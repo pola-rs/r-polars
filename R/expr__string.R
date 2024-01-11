@@ -684,7 +684,6 @@ ExprStr_split = function(by, inclusive = FALSE) {
   )
 }
 
-# TODO write 2nd example after expr_struct has been implemented
 #' Split the string by a substring using `n` splits
 #'
 #' @description This results in a struct of `n+1` fields. If it cannot make `n`
@@ -698,7 +697,10 @@ ExprStr_split = function(by, inclusive = FALSE) {
 #'
 #' @examples
 #' df = pl$DataFrame(s = c("a_1", NA, "c", "d_4"))
-#' df$select(pl$col("s")$str$split_exact(by = "_", 1))
+#' df$with_columns(
+#'   split = pl$col("s")$str$split_exact(by = "_", 1),
+#'   split_inclusive = pl$col("s")$str$split_exact(by = "_", 1, inclusive = TRUE)
+#' )
 ExprStr_split_exact = function(by, n, inclusive = FALSE) {
   unwrap(
     .pr$Expr$str_split_exact(self, by, result(n), result(inclusive)),
@@ -721,10 +723,12 @@ ExprStr_split_exact = function(by, n, inclusive = FALSE) {
 #' Struct where each of `n` fields is of String type
 #'
 #' @examples
-#' df = pl$DataFrame(s = c("a_1", NA, "c", "d_4"))
-#' df$select(pl$col("s")$str$splitn(by = "_", 0))
-#' df$select(pl$col("s")$str$splitn(by = "_", 1))
-#' df$select(pl$col("s")$str$splitn(by = "_", 2))
+#' df = pl$DataFrame(s = c("a_1", NA, "c", "d_4_e"))
+#' df$with_columns(
+#'   s1 = pl$col("s")$str$splitn(by = "_", 1),
+#'   s2 = pl$col("s")$str$splitn(by = "_", 2),
+#'   s3 = pl$col("s")$str$splitn(by = "_", 3)
+#' )
 ExprStr_splitn = function(by, n) {
   .pr$Expr$str_splitn(self, result(by), result(n)) |> unwrap("in str$splitn():")
 }
