@@ -499,6 +499,36 @@ pub fn robj_to_closed_window(robj: Robj) -> RResult<pl::ClosedWindow> {
     }
 }
 
+pub fn robj_to_label(robj: Robj) -> RResult<pl::Label> {
+    use pl::Label;
+    match robj_to_rchoice(robj)?.as_str() {
+        "left" => Ok(Label::Left),
+        "right" => Ok(Label::Right),
+        "datapoint" => Ok(Label::DataPoint),
+        s => rerr().bad_val(format!(
+            "Label choice ['{s}'] should be one of 'left', 'right', 'datapoint'"
+        )),
+    }
+}
+
+pub fn robj_to_start_by(robj: Robj) -> RResult<pl::StartBy> {
+    use pl::StartBy as SB;
+    match robj_to_rchoice(robj)?.as_str() {
+        "window" => Ok(SB::WindowBound),
+        "datapoint" => Ok(SB::DataPoint),
+        "monday" => Ok(SB::Monday),
+        "tuesday" => Ok(SB::Tuesday),
+        "wednesday" => Ok(SB::Wednesday),
+        "thursday" => Ok(SB::Thursday),
+        "friday" => Ok(SB::Friday),
+        "saturday" => Ok(SB::Saturday),
+        "sunday" => Ok(SB::Sunday),
+        s => rerr().bad_val(format!(
+            "StartBy choice ['{s}'] should be one of 'window', 'datapoint', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'"
+        )),
+    }
+}
+
 pub fn robj_to_parallel_strategy(robj: extendr_api::Robj) -> RResult<pl::ParallelStrategy> {
     use pl::ParallelStrategy as PS;
     match robj_to_rchoice(robj)?.to_lowercase().as_str() {

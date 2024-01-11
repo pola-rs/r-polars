@@ -1654,3 +1654,37 @@ LazyFrame_rolling = function(index_column, period, offset = NULL, closed = "righ
   ) |>
     unwrap("in $rolling():")
 }
+
+
+#' Group based on a date/time or integer column
+#'
+#' @inherit LazyFrame_rolling description details params
+#'
+#'
+#' @return A [LazyGroupBy][LazyGroupBy_class] object
+#'
+#' @examples
+LazyFrame_group_by_dynamic = function(
+  index_column,
+  every,
+  period = NULL,
+  offset = NULL,
+  include_boundaries = FALSE,
+  closed = "left",
+  label = "left",
+  by = NULL,
+  start_by = "window",
+  check_sorted = TRUE
+) {
+  if (is.null(offset)) {
+    offset = paste0("-", every)
+  }
+  if (is.null(period)) {
+    period = every
+  }
+  .pr$LazyFrame$group_by_dynamic(
+    self, index_column, every, period, offset, label, include_boundaries, closed,
+    wrap_elist_result(by, str_to_lit = FALSE), start_by, check_sorted
+  ) |>
+    unwrap("in $group_by_dynamic():")
+}
