@@ -244,8 +244,7 @@ impl std::fmt::Display for RPolarsErr {
         if let Some(c) = &self.rcall {
             writeln!(indented(f).ind(0), "During function call [{}]", c)?
         }
-        self
-            .contexts
+        self.contexts
             .iter()
             .rev()
             .enumerate()

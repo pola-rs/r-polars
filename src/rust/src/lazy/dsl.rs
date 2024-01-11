@@ -1349,12 +1349,10 @@ impl RPolarsExpr {
     }
 
     pub fn dt_replace_time_zone(&self, tz: Nullable<String>, ambiguous: Robj) -> RResult<Self> {
-        Ok(RPolarsExpr(
-            self.0
-                .clone()
-                .dt()
-                .replace_time_zone(tz.into_option(), robj_to!(PLExpr, ambiguous)?),
-        ))
+        Ok(RPolarsExpr(self.0.clone().dt().replace_time_zone(
+            tz.into_option(),
+            robj_to!(PLExpr, ambiguous)?,
+        )))
     }
 
     pub fn dt_total_days(&self) -> RResult<Self> {

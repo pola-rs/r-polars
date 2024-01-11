@@ -426,7 +426,7 @@ impl RBackgroundPool {
                 drop(pool_guard); // avoid deadlock
                 #[cfg(feature = "rpolars_debug_print")]
                 println!("wait for freed handler");
-                
+
                 #[cfg(feature = "rpolars_debug_print")]
                 println!("thread was awoken queue and passed a handler");
                 Ok(rx.recv()?)

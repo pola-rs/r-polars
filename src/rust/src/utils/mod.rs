@@ -445,7 +445,7 @@ pub fn inner_unpack_r_result_list(robj: extendr_api::Robj) -> Result<Robj, Robj>
         let l = robj.as_list().expect("extendr_result is a list");
         let ok = l.elt(0).expect("extendr_result has a 1st element");
         let err = l.elt(1).expect("extendr_result has a 2nd element");
-        
+
         match err.rtype() {
             Rtype::Null => Ok(ok),
             _ => Err(err),
@@ -475,7 +475,6 @@ pub fn unpack_r_result_list(robj: extendr_api::Robj) -> RResult<Robj> {
     });
 
     // 3 - Convert any Robj-err to a Robj-RPolarsErr
-    
 
     res.map_err(|err| {
         if err.inherits("RPolarsErr") {

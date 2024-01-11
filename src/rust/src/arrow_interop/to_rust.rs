@@ -163,7 +163,7 @@ fn consume_arrow_stream_to_series(boxed_stream: Box<ffi::ArrowArrayStream>) -> R
         let array = array_res?;
         let series_res: pl::PolarsResult<pl::Series> =
             std::convert::TryFrom::try_from(("df", array));
-        
+
         series_res.map_err(polars_to_rpolars_err)?
     } else {
         rerr()

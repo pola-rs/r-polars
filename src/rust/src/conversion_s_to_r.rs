@@ -150,7 +150,7 @@ pub fn pl_series_to_list(
                 //TODO contribute extendr_api set_attrib mutates &self, change signature to surprise anyone
                 if tag_structs {
                     l.set_attrib("is_struct", true).unwrap();
-                } ;
+                };
 
                 Ok(l.into_robj())
             }

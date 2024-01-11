@@ -97,7 +97,7 @@ pub fn collect_with_r_func_support(lazy_df: pl::LazyFrame) -> RResult<RPolarsDat
     } else {
         #[cfg(feature = "rpolars_debug_print")]
         println!("in collect: starting a concurrent handler");
-        
+
         #[cfg(feature = "rpolars_debug_print")]
         println!("in collect: concurrent handler done");
         concurrent_handler(
