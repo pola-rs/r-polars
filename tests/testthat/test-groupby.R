@@ -16,6 +16,11 @@ patrick::with_parameters_test_that("groupby print",
   .cases = make_print_cases()
 )
 
+test_that("groupby print when several groups", {
+  df = pl$DataFrame(mtcars[1:3, 1:4])$group_by("mpg", "cyl", "disp", maintain_order = TRUE)
+  expect_snapshot(df)
+})
+
 test_that("groupby", {
   df2 = gb$agg(
     pl$col("bar")$sum()$alias("bar_sum"),

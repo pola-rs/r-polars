@@ -175,8 +175,6 @@ RPolarsDataFrame$select <- function(exprs) .Call(wrap__RPolarsDataFrame__select,
 
 RPolarsDataFrame$with_columns <- function(exprs) .Call(wrap__RPolarsDataFrame__with_columns, self, exprs)
 
-RPolarsDataFrame$by_agg <- function(group_exprs, agg_exprs, maintain_order) .Call(wrap__RPolarsDataFrame__by_agg, self, group_exprs, agg_exprs, maintain_order)
-
 RPolarsDataFrame$to_struct <- function(name) .Call(wrap__RPolarsDataFrame__to_struct, self, name)
 
 RPolarsDataFrame$unnest <- function(names) .Call(wrap__RPolarsDataFrame__unnest, self, names)
