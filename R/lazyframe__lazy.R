@@ -496,6 +496,7 @@ LazyFrame_collect_in_background = function() {
 #' smaller chunks may reduce memory pressure and improve writing speeds.
 #' @param data_pagesize_limit `NULL` or Integer. If `NULL` (default), the limit
 #' will be ~1MB.
+#' @inheritParams LazyFrame_group_by
 #' @inheritParams DataFrame_unique
 #' @inheritParams LazyFrame_collect
 #'
@@ -573,6 +574,7 @@ LazyFrame_sink_parquet = function(
 #' "lz4" or "zstd". Choose "zstd" for good compression performance. Choose "lz4"
 #' for fast compression/decompression.
 #' @inheritParams LazyFrame_collect
+#' @inheritParams LazyFrame_group_by
 #' @inheritParams DataFrame_unique
 #'
 #' @rdname IO_sink_ipc
@@ -639,6 +641,7 @@ LazyFrame_sink_ipc = function(
 #'
 #' @inheritParams DataFrame_write_csv
 #' @inheritParams LazyFrame_collect
+#' @inheritParams LazyFrame_group_by
 #' @inheritParams DataFrame_unique
 #'
 #' @rdname IO_sink_csv
@@ -715,6 +718,67 @@ LazyFrame_sink_csv = function(
       maintain_order
     ) |>
     unwrap("in $sink_csv()") |>
+    invisible()
+}
+
+
+#' @title Stream the output of a query to a JSON file
+#' @description
+#' This writes the output of a query directly to a JSON file without collecting
+#' it in the R session first. This is useful if the output of the query is still
+#' larger than RAM as it would crash the R session if it was collected into R.
+#'
+#' @inheritParams DataFrame_write_csv
+#' @inheritParams LazyFrame_collect
+#' @inheritParams LazyFrame_group_by
+#' @inheritParams DataFrame_unique
+#'
+#' @rdname IO_sink_ndjson
+#'
+#' @examples
+#' # sink table 'mtcars' from mem to JSON
+#' tmpf = tempfile(fileext = ".json")
+#' pl$LazyFrame(mtcars)$sink_ndjson(tmpf)
+#'
+#' # load parquet directly into a DataFrame / memory
+#' pl$scan_ndjson(tmpf)$collect()
+LazyFrame_sink_ndjson = function(
+    path,
+    maintain_order = TRUE,
+    type_coercion = TRUE,
+    predicate_pushdown = TRUE,
+    projection_pushdown = TRUE,
+    simplify_expression = TRUE,
+    slice_pushdown = TRUE,
+    no_optimization = FALSE,
+    inherit_optimization = FALSE) {
+  if (isTRUE(no_optimization)) {
+    predicate_pushdown = FALSE
+    projection_pushdown = FALSE
+    slice_pushdown = FALSE
+  }
+
+  lf = self
+
+  if (isFALSE(inherit_optimization)) {
+    lf = self$set_optimization_toggle(
+      type_coercion,
+      predicate_pushdown,
+      projection_pushdown,
+      simplify_expression,
+      slice_pushdown,
+      comm_subplan_elim = FALSE,
+      comm_subexpr_elim = FALSE,
+      streaming = FALSE
+    ) |> unwrap("in $sink_ndjson()")
+  }
+
+  lf |>
+    .pr$LazyFrame$sink_json(
+      path,
+      maintain_order
+    ) |>
+    unwrap("in $sink_ndjson()") |>
     invisible()
 }
 
@@ -971,7 +1035,10 @@ LazyFrame_unique = function(subset = NULL, keep = "first", maintain_order = FALS
 #' (`$agg()`, `$filter()`, etc.).
 #' @keywords LazyFrame
 #' @param ... Any Expr(s) or string(s) naming a column.
-#' @inheritParams DataFrame_unique
+#' @param maintain_order Keep the same order as the original `LazyFrame`. Setting
+#'  this to `TRUE` makes it more expensive to compute and blocks the possibility
+#'  to run on the streaming engine. The default value can be changed with
+#' `pl$set_options(maintain_order = TRUE)`.
 #' @return LazyGroupBy (a LazyFrame with special groupby methods like `$agg()`)
 #' @examples
 #' pl$LazyFrame(
@@ -1047,6 +1114,7 @@ LazyFrame_join = function(
 #' either of length 1 or a logical vector of the same length as the number of
 #' Expr(s) specified in `by` and `...`.
 #' @param nulls_last Boolean. Place `NULL`s at the end? Default is `FALSE`.
+#' @inheritParams LazyFrame_group_by
 #' @inheritParams DataFrame_unique
 #' @return LazyFrame
 #' @keywords  LazyFrame
