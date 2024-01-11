@@ -3,13 +3,16 @@
 \name{ExprStr_pad_start}
 \alias{ExprStr_pad_start}
 \title{Right justify strings}
+\usage{
+ExprStr_pad_start(width, fillchar = " ")
+}
 \arguments{
 \item{width}{Justify right to this length.}
 
 \item{fillchar}{Fill with this ASCII character.}
 }
 \value{
-Expr of Utf8
+Expr of String
 }
 \description{
 Return the string right justified in a string of length \code{width}.

@@ -33,14 +33,14 @@ test_that("create LazyFrame", {
 test_that("LazyFrame, custom schema", {
   df = pl$LazyFrame(
     iris,
-    schema = list(Sepal.Length = pl$Float32, Species = pl$Utf8)
+    schema = list(Sepal.Length = pl$Float32, Species = pl$String)
   )$collect()
 
   # dtypes from object are as expected
   expect_true(
     all(mapply(
       df$dtypes,
-      pl$dtypes[c("Float32", rep("Float64", 3), "Utf8")],
+      pl$dtypes[c("Float32", rep("Float64", 3), "String")],
       FUN = "=="
     ))
   )
@@ -134,6 +134,17 @@ test_that("lazy filter", {
   )
 })
 
+test_that("Multiple conditions in filter", {
+  expect_identical(
+    pl$LazyFrame(mtcars)$filter(
+      pl$col("cyl") > 6,
+      pl$col("mpg") > 15
+    )$collect()$to_data_frame(),
+    pl$LazyFrame(mtcars)$filter(
+      pl$col("cyl") > 6 & pl$col("mpg") > 15
+    )$collect()$to_data_frame()
+  )
+})
 
 make_cases = function() {
   tibble::tribble(
@@ -872,14 +883,194 @@ test_that("with_context works", {
   )
 })
 
-test_that("Multiple conditions in filter", {
-  expect_identical(
-    pl$LazyFrame(mtcars)$filter(
-      pl$col("cyl") > 6,
-      pl$col("mpg") > 15
+test_that("rolling for LazyFrame: date variable", {
+  df = pl$LazyFrame(
+    dt = c(
+      "2020-01-01", "2020-01-01", "2020-01-01",
+      "2020-01-02", "2020-01-03", "2020-01-08"
+    ),
+    a = c(3, 7, 5, 9, 2, 1)
+  )$with_columns(
+    pl$col("dt")$str$strptime(pl$Date, format = NULL)$set_sorted()
+  )
+
+  actual = df$rolling(index_column = "dt", period = "2d")$agg(
+    pl$sum("a")$alias("sum_a"),
+    pl$min("a")$alias("min_a"),
+    pl$max("a")$alias("max_a")
+  )$collect()$to_data_frame()
+
+  expect_equal(
+    actual[, c("sum_a", "min_a", "max_a")],
+    data.frame(
+      sum_a = c(15, 15, 15, 24, 11, 1),
+      min_a = c(3, 3, 3, 3, 2, 1),
+      max_a = c(7, 7, 7, 9, 9, 1)
+    )
+  )
+})
+
+test_that("rolling for LazyFrame: datetime variable", {
+  df = pl$LazyFrame(
+    dt = c(
+      "2020-01-01 13:45:48", "2020-01-01 16:42:13", "2020-01-01 16:45:09",
+      "2020-01-02 18:12:48", "2020-01-03 19:45:32", "2020-01-08 23:16:43"
+    ),
+    a = c(3, 7, 5, 9, 2, 1)
+  )$with_columns(
+    pl$col("dt")$str$strptime(pl$Datetime("ms"), format = NULL)$set_sorted()
+  )
+
+  actual = df$rolling(index_column = "dt", period = "2d")$agg(
+    pl$sum("a")$alias("sum_a"),
+    pl$min("a")$alias("min_a"),
+    pl$max("a")$alias("max_a")
+  )$collect()$to_data_frame()
+
+  expect_equal(
+    actual[, c("sum_a", "min_a", "max_a")],
+    data.frame(
+      sum_a = c(3, 10, 15, 24, 11, 1),
+      min_a = c(3, 3, 3, 3, 2, 1),
+      max_a = c(3, 7, 7, 9, 9, 1)
+    )
+  )
+})
+
+test_that("rolling for LazyFrame: integer variable", {
+  df = pl$LazyFrame(
+    index = c(1L, 2L, 3L, 4L, 8L, 9L),
+    a = c(3, 7, 5, 9, 2, 1)
+  )$with_columns(pl$col("index")$set_sorted())
+
+  actual = df$rolling(index_column = "index", period = "2i")$agg(
+    pl$sum("a")$alias("sum_a"),
+    pl$min("a")$alias("min_a"),
+    pl$max("a")$alias("max_a")
+  )$collect()$to_data_frame()
+
+  expect_equal(
+    actual[, c("sum_a", "min_a", "max_a")],
+    data.frame(
+      sum_a = c(3, 10, 12, 14, 2, 3),
+      min_a = c(3, 3, 5, 5, 2, 1),
+      max_a = c(3, 7, 7, 9, 2, 2)
+    )
+  )
+})
+
+test_that("rolling for LazyFrame: error if not explicitly sorted", {
+  df = pl$LazyFrame(
+    index = c(1L, 2L, 3L, 4L, 8L, 9L),
+    a = c(3, 7, 5, 9, 2, 1)
+  )
+  expect_error(
+    df$rolling(index_column = "index", period = "2i")$agg(pl$col("a"))$collect(),
+    "not explicitly sorted"
+  )
+})
+
+test_that("rolling for LazyFrame: argument 'by' works", {
+  df = pl$LazyFrame(
+    index = c(1L, 2L, 3L, 4L, 8L, 9L),
+    grp = c("a", "a", rep("b", 4)),
+    a = c(3, 7, 5, 9, 2, 1)
+  )
+  actual = df$rolling(index_column = "index", period = "2i", by = pl$col("grp"))$agg(
+    pl$sum("a")$alias("sum_a"),
+    pl$min("a")$alias("min_a"),
+    pl$max("a")$alias("max_a")
+  )$collect()$to_data_frame()
+
+  expect_equal(
+    actual[, c("sum_a", "min_a", "max_a")],
+    data.frame(
+      sum_a = c(3, 10, 5, 14, 2, 3),
+      min_a = c(3, 3, 5, 5, 2, 1),
+      max_a = c(3, 7, 5, 9, 2, 2)
+    )
+  )
+
+  # string is parsed as column name in "by"
+  expect_equal(
+    df$rolling(index_column = "index", period = "2i", by = "grp")$agg(
+      pl$sum("a")$alias("sum_a")
     )$collect()$to_data_frame(),
-    pl$LazyFrame(mtcars)$filter(
-      pl$col("cyl") > 6 & pl$col("mpg") > 15
+    df$rolling(index_column = "index", period = "2i", by = pl$col("grp"))$agg(
+      pl$sum("a")$alias("sum_a")
     )$collect()$to_data_frame()
   )
+})
+
+test_that("rolling for LazyFrame: argument 'check_sorted' works", {
+  df = pl$LazyFrame(
+    index = c(2L, 1L, 3L, 4L, 9L, 8L), # unsorted index
+    grp = c("a", "a", rep("b", 4)),
+    a = c(3, 7, 5, 9, 2, 1)
+  )
+  expect_error(
+    df$rolling(index_column = "index", period = "2i", by = "grp")$agg(
+      pl$sum("a")$alias("sum_a")
+    )$collect(),
+    "not sorted"
+  )
+  expect_no_error(
+    df$rolling(index_column = "index", period = "2i", by = "grp", check_sorted = FALSE)$agg(
+      pl$sum("a")$alias("sum_a")
+    )$collect()
+  )
+})
+
+test_that("rolling for LazyFrame: error if index not int or date/time", {
+  df = pl$LazyFrame(
+    index = c(1:5, 6.0),
+    a = c(3, 7, 5, 9, 2, 1)
+  )$with_columns(pl$col("index")$set_sorted())
+
+  expect_error(
+    df$rolling(index_column = "index", period = "2i")$agg(
+      pl$sum("a")$alias("sum_a")
+    )$collect()
+  )
+})
+
+test_that("rolling for LazyFrame: arg 'offset' works", {
+  df = pl$LazyFrame(
+    dt = c(
+      "2020-01-01", "2020-01-01", "2020-01-01",
+      "2020-01-02", "2020-01-03", "2020-01-08"
+    ),
+    a = c(3, 7, 5, 9, 2, 1)
+  )$with_columns(
+    pl$col("dt")$str$strptime(pl$Date, format = NULL)$set_sorted()
+  )
+
+  # checked with python-polars but unclear on how "offset" works
+  actual = df$rolling(index_column = "dt", period = "2d", offset = "1d")$agg(
+    pl$sum("a")$alias("sum_a"),
+    pl$min("a")$alias("min_a"),
+    pl$max("a")$alias("max_a")
+  )$collect()$to_data_frame()
+
+  expect_equal(
+    actual[, c("sum_a", "min_a", "max_a")],
+    data.frame(
+      sum_a = c(2, 2, 2, NA, NA, NA),
+      min_a = c(2, 2, 2, NA, NA, NA),
+      max_a = c(2, 2, 2, NA, NA, NA)
+    )
+  )
+})
+
+test_that("rolling for LazyFrame: can be ungrouped", {
+  df = pl$LazyFrame(
+    index = c(1:5, 6.0),
+    a = c(3, 7, 5, 9, 2, 1)
+  )$with_columns(pl$col("index")$set_sorted())
+
+  actual = df$rolling(index_column = "dt", period = "2i")$
+    ungroup()$
+    collect()$
+    to_data_frame()
+  expect_equal(actual, df$collect()$to_data_frame())
 })

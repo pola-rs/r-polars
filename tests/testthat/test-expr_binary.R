@@ -61,7 +61,7 @@ test_that("bin$encode and bin$decode", {
     c("hex_decoded")
   )$select(
     pl$lit(
-      pl$col("hex_decoded")$cast(pl$Utf8)
+      pl$col("hex_decoded")$cast(pl$String)
     )
   )$to_list()
 
@@ -71,7 +71,7 @@ test_that("bin$encode and bin$decode", {
     c("base64_decoded")
   )$select(
     pl$lit(
-      pl$col("base64_decoded")$cast(pl$Utf8)
+      pl$col("base64_decoded")$cast(pl$String)
     )
   )$to_list()
 

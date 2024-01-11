@@ -3,6 +3,9 @@
 \name{ExprStr_extract}
 \alias{ExprStr_extract}
 \title{Extract the target capture group from provided patterns}
+\usage{
+ExprStr_extract(pattern, group_index)
+}
 \arguments{
 \item{pattern}{A valid regex pattern}
 
@@ -10,7 +13,7 @@
 pattern, first group begin at index 1 (default).}
 }
 \value{
-Utf8 array. Contains null if original value is null or regex capture nothing.
+String array. Contains null if original value is null or regex capture nothing.
 }
 \description{
 Extract the target capture group from provided patterns

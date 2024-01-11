@@ -4,8 +4,8 @@
 \alias{ExprDT_ordinal_day}
 \alias{(Expr)$dt$ordinal_day}
 \title{Ordinal Day}
-\format{
-function
+\usage{
+ExprDT_ordinal_day()
 }
 \value{
 Expr of ordinal_day as UInt32

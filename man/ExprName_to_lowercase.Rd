@@ -3,6 +3,9 @@
 \name{ExprName_to_lowercase}
 \alias{ExprName_to_lowercase}
 \title{Make the root column name lowercase}
+\usage{
+ExprName_to_lowercase()
+}
 \value{
 Expr
 }

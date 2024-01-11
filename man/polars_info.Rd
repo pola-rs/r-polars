@@ -2,17 +2,21 @@
 % Please edit documentation in R/info.R
 \name{polars_info}
 \alias{polars_info}
-\alias{pl_polars_info}
 \title{Report information of the package}
 \usage{
-pl_polars_info()
+polars_info()
 }
 \value{
 A list with information of the package
 }
 \description{
-Report information of the package
+This function reports the following information:
+\itemize{
+\item Package versions (the R package version and the dependent Rust Polars version)
+\item \link[=pl_threadpool_size]{Number of threads used by Polars}
+\item Rust feature flags (See \code{vignette("install", "polars")} for details)
+}
 }
 \examples{
-pl$polars_info()
+polars_info()
 }

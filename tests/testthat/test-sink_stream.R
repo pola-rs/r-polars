@@ -222,3 +222,12 @@ test_that("sink_csv: float_precision works", {
     data.frame(x = c(1.234, 5.600))
   )
 })
+
+
+# sink_ndjson ---------------------------------------------------------
+
+test_that("sink_ndjson works", {
+  temp_out = tempfile(fileext = ".json")
+  pl$LazyFrame(mtcars)$head(15)$select(pl$col("drat", "mpg"))$sink_ndjson(temp_out)
+  expect_snapshot_file(temp_out)
+})

@@ -144,7 +144,7 @@ NULL
 #' # custom schema
 #' pl$LazyFrame(
 #'   iris,
-#'   schema = list(Sepal.Length = pl$Float32, Species = pl$Utf8)
+#'   schema = list(Sepal.Length = pl$Float32, Species = pl$String)
 #' )$collect()
 pl_LazyFrame = function(...) {
   pl$DataFrame(...)$lazy()
@@ -178,8 +178,6 @@ print.RPolarsLazyFrame = function(x, ...) {
 #' @usage LazyFrame_print(x)
 #' @examples pl$LazyFrame(iris)$print()
 LazyFrame_print = "use_extendr_wrapper"
-
-# TODO write missing examples in this file
 
 #' @title Print the optimized or non-optimized plans of `LazyFrame`
 #'
@@ -498,6 +496,7 @@ LazyFrame_collect_in_background = function() {
 #' smaller chunks may reduce memory pressure and improve writing speeds.
 #' @param data_pagesize_limit `NULL` or Integer. If `NULL` (default), the limit
 #' will be ~1MB.
+#' @inheritParams LazyFrame_group_by
 #' @inheritParams DataFrame_unique
 #' @inheritParams LazyFrame_collect
 #'
@@ -575,6 +574,7 @@ LazyFrame_sink_parquet = function(
 #' "lz4" or "zstd". Choose "zstd" for good compression performance. Choose "lz4"
 #' for fast compression/decompression.
 #' @inheritParams LazyFrame_collect
+#' @inheritParams LazyFrame_group_by
 #' @inheritParams DataFrame_unique
 #'
 #' @rdname IO_sink_ipc
@@ -641,6 +641,7 @@ LazyFrame_sink_ipc = function(
 #'
 #' @inheritParams DataFrame_write_csv
 #' @inheritParams LazyFrame_collect
+#' @inheritParams LazyFrame_group_by
 #' @inheritParams DataFrame_unique
 #'
 #' @rdname IO_sink_csv
@@ -717,6 +718,67 @@ LazyFrame_sink_csv = function(
       maintain_order
     ) |>
     unwrap("in $sink_csv()") |>
+    invisible()
+}
+
+
+#' @title Stream the output of a query to a JSON file
+#' @description
+#' This writes the output of a query directly to a JSON file without collecting
+#' it in the R session first. This is useful if the output of the query is still
+#' larger than RAM as it would crash the R session if it was collected into R.
+#'
+#' @inheritParams DataFrame_write_csv
+#' @inheritParams LazyFrame_collect
+#' @inheritParams LazyFrame_group_by
+#' @inheritParams DataFrame_unique
+#'
+#' @rdname IO_sink_ndjson
+#'
+#' @examples
+#' # sink table 'mtcars' from mem to JSON
+#' tmpf = tempfile(fileext = ".json")
+#' pl$LazyFrame(mtcars)$sink_ndjson(tmpf)
+#'
+#' # load parquet directly into a DataFrame / memory
+#' pl$scan_ndjson(tmpf)$collect()
+LazyFrame_sink_ndjson = function(
+    path,
+    maintain_order = TRUE,
+    type_coercion = TRUE,
+    predicate_pushdown = TRUE,
+    projection_pushdown = TRUE,
+    simplify_expression = TRUE,
+    slice_pushdown = TRUE,
+    no_optimization = FALSE,
+    inherit_optimization = FALSE) {
+  if (isTRUE(no_optimization)) {
+    predicate_pushdown = FALSE
+    projection_pushdown = FALSE
+    slice_pushdown = FALSE
+  }
+
+  lf = self
+
+  if (isFALSE(inherit_optimization)) {
+    lf = self$set_optimization_toggle(
+      type_coercion,
+      predicate_pushdown,
+      projection_pushdown,
+      simplify_expression,
+      slice_pushdown,
+      comm_subplan_elim = FALSE,
+      comm_subexpr_elim = FALSE,
+      streaming = FALSE
+    ) |> unwrap("in $sink_ndjson()")
+  }
+
+  lf |>
+    .pr$LazyFrame$sink_json(
+      path,
+      maintain_order
+    ) |>
+    unwrap("in $sink_ndjson()") |>
     invisible()
 }
 
@@ -973,7 +1035,10 @@ LazyFrame_unique = function(subset = NULL, keep = "first", maintain_order = FALS
 #' (`$agg()`, `$filter()`, etc.).
 #' @keywords LazyFrame
 #' @param ... Any Expr(s) or string(s) naming a column.
-#' @inheritParams DataFrame_unique
+#' @param maintain_order Keep the same order as the original `LazyFrame`. Setting
+#'  this to `TRUE` makes it more expensive to compute and blocks the possibility
+#'  to run on the streaming engine. The default value can be changed with
+#' `pl$set_options(maintain_order = TRUE)`.
 #' @return LazyGroupBy (a LazyFrame with special groupby methods like `$agg()`)
 #' @examples
 #' pl$LazyFrame(
@@ -1049,6 +1114,7 @@ LazyFrame_join = function(
 #' either of length 1 or a logical vector of the same length as the number of
 #' Expr(s) specified in `by` and `...`.
 #' @param nulls_last Boolean. Place `NULL`s at the end? Default is `FALSE`.
+#' @inheritParams LazyFrame_group_by
 #' @inheritParams DataFrame_unique
 #' @return LazyFrame
 #' @keywords  LazyFrame
@@ -1502,7 +1568,7 @@ LazyFrame_profile = function(
 #' `"name"` is implicitly converted to `pl$col("name")`.
 #'
 #' @details
-#' Only columns of DataType `List` or `Utf8` can be exploded.
+#' Only columns of DataType `List` or `String` can be exploded.
 #'
 #' Named expressions like `$explode(a = pl$col("b"))` will not implicitly trigger
 #' `$alias("a")` here, due to only variant `Expr::Column` is supported in
@@ -1612,4 +1678,45 @@ LazyFrame_unnest = function(names = NULL) {
 LazyFrame_with_context = function(other) {
   .pr$LazyFrame$with_context(self, other) |>
     unwrap("in with_context():")
+}
+
+
+#' Create rolling groups based on a date/time or integer column
+#'
+#' @inherit Expr_rolling description details params
+#' @param index_column Column used to group based on the time window. Often of
+#' type Date/Datetime. This column must be sorted in ascending order (or, if `by`
+#' is specified, then it must be sorted in ascending order within each group). In
+#' case of a rolling group by on indices, dtype needs to be either Int32 or Int64.
+#' Note that Int32 gets temporarily cast to Int64, so if performance matters use
+#' an Int64 column.
+#' @param by Also group by this column/these columns.
+#'
+#' @return A [LazyGroupBy][LazyGroupBy_class] object
+#'
+#' @examples
+#' df = pl$LazyFrame(
+#'   dt = c("2020-01-01", "2020-01-01", "2020-01-01", "2020-01-02", "2020-01-03", "2020-01-08"),
+#'   a = c(3, 7, 5, 9, 2, 1)
+#' )$with_columns(
+#'   pl$col("dt")$str$strptime(pl$Date, format = NULL)$set_sorted()
+#' )
+#'
+#' df$collect()
+#'
+#' df$rolling(index_column = "dt", period = "2d")$agg(
+#'   pl$col("a"),
+#'   pl$sum("a")$alias("sum_a"),
+#'   pl$min("a")$alias("min_a"),
+#'   pl$max("a")$alias("max_a")
+#' )$collect()
+LazyFrame_rolling = function(index_column, period, offset = NULL, closed = "right", by = NULL, check_sorted = TRUE) {
+  if (is.null(offset)) {
+    offset = paste0("-", period)
+  }
+  .pr$LazyFrame$rolling(
+    self, index_column, period, offset, closed,
+    wrap_elist_result(by, str_to_lit = FALSE), check_sorted
+  ) |>
+    unwrap("in $rolling():")
 }

@@ -4,8 +4,8 @@
 \alias{ExprDT_month}
 \alias{(Expr)$dtmonth}
 \title{Month}
-\format{
-function
+\usage{
+ExprDT_month()
 }
 \value{
 Expr of month as UInt32

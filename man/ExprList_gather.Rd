@@ -7,6 +7,9 @@
 \format{
 function
 }
+\usage{
+ExprList_gather(index, null_on_oob = FALSE)
+}
 \arguments{
 \item{index}{R list of integers for each sub-element or Expr or Series of type \code{List[usize]}}
 

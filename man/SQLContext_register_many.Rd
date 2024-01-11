@@ -16,7 +16,7 @@ Returns the \link{SQLContext_class} object invisibly.
 Register multiple frames as tables.
 }
 \examples{
-\dontshow{if (pl$polars_info()$features$sql) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (polars_info()$features$sql) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 ctx = pl$SQLContext()
 r_df = mtcars
 pl_df = pl$DataFrame(mtcars)

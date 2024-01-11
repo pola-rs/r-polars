@@ -17,7 +17,7 @@ on:
       - man/**
       - R/**
       - src/**
-      - vignetts/**
+      - vignettes/**
       - DESCRIPTION
       - README.md
   pull_request:
@@ -29,7 +29,7 @@ on:
       - man/**
       - R/**
       - src/**
-      - vignetts/**
+      - vignettes/**
       - DESCRIPTION
       - README.md
   workflow_dispatch:
@@ -70,6 +70,7 @@ jobs:
       - uses: ./.github/actions/setup
         with:
           target: "${{ steps.rust-target.outputs.TARGET }}"
+          token: "${{ secrets.GITHUB_TOKEN }}"
 
       - uses: actions/setup-python@v5
         with:
@@ -86,12 +87,18 @@ jobs:
 
       - name: Get requirements
         run: |
-          make requirements-r
-          make requirements-py
+          task setup-r-tools
+          task setup-python-tools
 
       - name: Build docs
-        run: make docs
-        shell: bash
+        run: task build-website
+
+      - name: upload docs
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs
+          path: docs
 
       - uses: webfactory/ssh-agent@v0.8.0
         env:

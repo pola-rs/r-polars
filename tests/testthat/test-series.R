@@ -457,7 +457,7 @@ test_that("Series list", {
   s = pl$Series(l)
 
   # check data_type
-  expect_true(s$dtype == with(pl, List(List(List(Utf8)))))
+  expect_true(s$dtype == with(pl, List(List(List(String)))))
 
   # flatten 3-levels and return to R
   # TODO CONTRIBUTE POLARS this is a bug, when flattening an empty list, it should not give a null
@@ -532,5 +532,5 @@ patrick::with_parameters_test_that("mean, median, std, var",
 test_that("n_unique", {
   x = c(1:4, NA, NaN, 1) # 6 unique one repeated
   expect_identical(pl$Series(x)$n_unique(), 6)
-  expect_grepl_error(pl$Series(c())$n_unique(), "operation not supported for dtype")
+  expect_identical(pl$Series(c())$n_unique(), 0)
 })

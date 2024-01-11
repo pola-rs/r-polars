@@ -1,5 +1,5 @@
 #' Set Ordering
-#' @name ExprCat_set_ordering
+#'
 #' @aliases expr_cat_set_ordering
 #' @description Determine how this categorical series should be sorted.
 #' @keywords ExprCat
@@ -12,18 +12,24 @@
 #' df = pl$DataFrame(
 #'   cats = factor(c("z", "z", "k", "a", "b")),
 #'   vals = c(3, 1, 2, 2, 3)
-#' )$with_columns(
-#'   pl$col("cats")$cat$set_ordering("physical")
 #' )
-#' df$select(pl$all()$sort())
+#'
+#' # sort by the string value of categories
+#' df$with_columns(
+#'   pl$col("cats")$cat$set_ordering("lexical")
+#' )$sort("cats", "vals")
+#'
+#' # sort by the underlying value of categories
+#' df$with_columns(
+#'   pl$col("cats")$cat$set_ordering("physical")
+#' )$sort("cats", "vals")
 ExprCat_set_ordering = function(ordering) {
   .pr$Expr$cat_set_ordering(self, ordering) |> unwrap("in $cat$set_ordering:")
 }
-# TODO use df$sort(c("cats","vals")) when implemented
 
 
 #' Get the categories stored in this data type
-#' @name ExprCat_get_categories
+#'
 #' @keywords ExprCat
 #' @return A polars DataFrame with the categories for each categorical Series.
 #' @examples

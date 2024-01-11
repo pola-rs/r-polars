@@ -3,6 +3,9 @@
 \name{ExprStr_replace}
 \alias{ExprStr_replace}
 \title{Replace first matching regex/literal substring with a new string value}
+\usage{
+ExprStr_replace(pattern, value, literal = FALSE)
+}
 \arguments{
 \item{pattern}{Regex pattern, can be an Expr.}
 
@@ -11,7 +14,7 @@
 \item{literal}{Treat pattern as a literal string.}
 }
 \value{
-Expr of Utf8 Series
+Expr of String Series
 }
 \description{
 Replace first matching regex/literal substring with a new string value

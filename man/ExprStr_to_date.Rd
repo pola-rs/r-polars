@@ -2,7 +2,10 @@
 % Please edit documentation in R/expr__string.R
 \name{ExprStr_to_date}
 \alias{ExprStr_to_date}
-\title{Convert a Utf8 column into a Date column}
+\title{Convert a String column into a Date column}
+\usage{
+ExprStr_to_date(format = NULL, strict = TRUE, exact = TRUE, cache = TRUE)
+}
 \arguments{
 \item{format}{Format to use for conversion. See \code{?strptime} for possible
 values. Example: "\%Y-\%m-\%d". If \code{NULL} (default), the format is
@@ -22,7 +25,7 @@ conversion.}
 Expr
 }
 \description{
-Convert a Utf8 column into a Date column
+Convert a String column into a Date column
 }
 \examples{
 pl$DataFrame(str_date = c("2009-01-02", "2009-01-03", "2009-1-4", "2009 05 01"))$

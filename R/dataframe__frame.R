@@ -141,7 +141,7 @@ NULL
 #' pl$DataFrame(mtcars)
 #'
 #' # custom schema
-#' pl$DataFrame(iris, schema = list(Sepal.Length = pl$Float32, Species = pl$Utf8))
+#' pl$DataFrame(iris, schema = list(Sepal.Length = pl$Float32, Species = pl$String))
 pl_DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
   uw = \(res) unwrap(res, "in $DataFrame():")
 
@@ -589,6 +589,7 @@ DataFrame_to_series = function(idx = 0) {
 }
 
 #' Sort a DataFrame
+#' @inheritParams DataFrame_unique
 #' @inherit LazyFrame_sort details description params
 #' @return DataFrame
 #' @keywords  DataFrame
@@ -815,6 +816,7 @@ DataFrame_filter = function(...) {
 }
 
 #' Group a DataFrame
+#' @inheritParams DataFrame_unique
 #' @inherit LazyFrame_group_by description params
 #' @keywords DataFrame
 #' @return GroupBy (a DataFrame with special groupby methods like `$agg()`)
@@ -868,8 +870,6 @@ DataFrame_to_data_frame = function(...) {
 #'
 #' @param unnest_structs Boolean. If `TRUE` (default), then `$unnest()` is applied
 #' on any struct column.
-#'
-#' @name to_list
 #'
 #' @details
 #' For simplicity reasons, this implementation relies on unnesting all structs
@@ -1671,9 +1671,9 @@ DataFrame_sample = function(
 #' # simple use-case
 #' pl$DataFrame(mtcars)$transpose(include_header = TRUE, column_names = rownames(mtcars))
 #'
-#' # All rows must have one shared supertype, recast Categorical to Utf8 which is a supertype
+#' # All rows must have one shared supertype, recast Categorical to String which is a supertype
 #' # of f64, and then dataset "Iris" can be transposed
-#' pl$DataFrame(iris)$with_columns(pl$col("Species")$cast(pl$Utf8))$transpose()
+#' pl$DataFrame(iris)$with_columns(pl$col("Species")$cast(pl$String))$transpose()
 #'
 DataFrame_transpose = function(
     include_header = FALSE,
@@ -1808,4 +1808,28 @@ DataFrame_write_ndjson = function(file) {
   .pr$DataFrame$write_ndjson(self, file) |>
     unwrap("in $write_ndjson():") |>
     invisible()
+}
+
+#' @inherit LazyFrame_rolling title description params details
+#' @return A [GroupBy][GroupBy_class] object
+#'
+#' @examples
+#' df = pl$DataFrame(
+#'   dt = c("2020-01-01", "2020-01-01", "2020-01-01", "2020-01-02", "2020-01-03", "2020-01-08"),
+#'   a = c(3, 7, 5, 9, 2, 1)
+#' )$with_columns(
+#'   pl$col("dt")$str$strptime(pl$Date, format = NULL)$set_sorted()
+#' )
+#'
+#' df$rolling(index_column = "dt", period = "2d")$agg(
+#'   pl$col("a"),
+#'   pl$sum("a")$alias("sum_a"),
+#'   pl$min("a")$alias("min_a"),
+#'   pl$max("a")$alias("max_a")
+#' )
+DataFrame_rolling = function(index_column, period, offset = NULL, closed = "right", by = NULL, check_sorted = TRUE) {
+  out = self$lazy()$rolling(index_column, period, offset, closed, by, check_sorted)
+  attr(out, "is_rolling_group_by") = TRUE
+  class(out) = "RPolarsGroupBy"
+  out
 }

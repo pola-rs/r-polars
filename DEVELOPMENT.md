@@ -16,15 +16,19 @@ install some tools outside of R.
 - macOS: Make sure [Xcode](https://developer.apple.com/support/xcode/)
   is installed.
 - Install [CMake](https://cmake.org/) and add it to your PATH.
+- If generate the website locally, please
+  install [Python](https://www.python.org/) with [venv](https://docs.python.org/3/library/venv.html)
+  and [Quarto CLI](https://quarto.org/) in your PATH.
+- Install [Task](https://taskfile.dev/), used as a task runner.
 
-Note that the `Makefile` in the root directory of the repository provides some
-useful commands (e.g. `make requirements` to install the required version of
-Rust toolchain and dependent R packages).
+Note that the `Taskfile.yml` in the root directory of the repository provides some
+useful commands (e.g. `task setup-dev` to install the required version of
+Rust toolchain dependent R packages, and Python virtual environment).
 
 About Rust code for R packages, see also
 [the `hellorust` package](https://github.com/r-rust/hellorust) documentation.
 
-## Implementing new functions
+## Implementing new functions on the Rust side
 
 Here are the steps required for an example contribution, where we are implementing the
 [cosine expression](https://rpolars.github.io/reference/Expr_cos/):
@@ -51,6 +55,19 @@ There are some wildlife examples of implementations via GitHub Pull Requests:
 - Implementing the `RPolarsSQLContext` class and related functions:
   [#457](https://github.com/pola-rs/r-polars/pull/457)
 
+## Updating Rust Polars
+
+When updating the Rust Polars crate that the R package depends on,
+the following steps are required:
+
+1. Since the version of the Polars crate is specified by the Git revision,
+   update the `rev` of all `polars-*` crates in the `src/rust/Cargo.toml` file.
+2. Update the `Config/polars/RustToolchainVersion` field in the `DESCRIPTION`
+   file to the version of the Rust toolchain specified in the `toolchain.channel`
+   field of the `rust-toolchain.toml` file in the Polars crate Git repository.
+3. Update the toolchain to the version specified in the `DESCRIPTION` file.
+4. Repeat the build, test, and bug fixes of the R package.
+
 ## Release
 
 ### Binary library release
@@ -60,7 +77,7 @@ create a library release to GitHub.
 
 Please push a tag (requires write access to the repository) named starting with
 `lib-v` (e.g. `lib-v0.35.0`, `0.35.0` is matched against the version number in
-the `Cargo.toml` file). This triggers the GitHub action to build the libraries
+the `src/rust/Cargo.toml` file). This triggers the GitHub action to build the libraries
 for all platforms and upload them to the release.
 
 The version number of the Rust library is only used for compatibility with the
@@ -102,7 +119,7 @@ usethis::use_dev_version()
 
 If you experience unexpected sluggish performance, when using polars in a given IDE, we'd like to hear about it. You can try to activate `pl$set_options(debug_polars = TRUE)` to profile what methods are being touched (not necessarily run) and how fast. Below is an example of good behavior.
 
-``` r
+```r
 library(polars)
 pl$set_options(debug_polars = TRUE)
 pl$DataFrame(iris)$select("Species")

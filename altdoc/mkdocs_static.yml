@@ -49,6 +49,7 @@ nav:
   - Home: README.md
   - Articles:
     - Get started: vignettes/polars.md
+    - Installation details: vignettes/install.md
     - Polars User Guide: vignettes/userguide.md
     - Optimize `polars` performance: vignettes/performance.md
   - Reference: $ALTDOC_MAN_BLOCK

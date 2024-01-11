@@ -175,8 +175,6 @@ RPolarsDataFrame$select <- function(exprs) .Call(wrap__RPolarsDataFrame__select,
 
 RPolarsDataFrame$with_columns <- function(exprs) .Call(wrap__RPolarsDataFrame__with_columns, self, exprs)
 
-RPolarsDataFrame$by_agg <- function(group_exprs, agg_exprs, maintain_order) .Call(wrap__RPolarsDataFrame__by_agg, self, group_exprs, agg_exprs, maintain_order)
-
 RPolarsDataFrame$to_struct <- function(name) .Call(wrap__RPolarsDataFrame__to_struct, self, name)
 
 RPolarsDataFrame$unnest <- function(names) .Call(wrap__RPolarsDataFrame__unnest, self, names)
@@ -625,6 +623,10 @@ RPolarsExpr$peak_max <- function() .Call(wrap__RPolarsExpr__peak_max, self)
 
 RPolarsExpr$replace <- function(old, new, default, return_dtype) .Call(wrap__RPolarsExpr__replace, self, old, new, default, return_dtype)
 
+RPolarsExpr$rle <- function() .Call(wrap__RPolarsExpr__rle, self)
+
+RPolarsExpr$rle_id <- function() .Call(wrap__RPolarsExpr__rle_id, self)
+
 RPolarsExpr$list_lengths <- function() .Call(wrap__RPolarsExpr__list_lengths, self)
 
 RPolarsExpr$list_contains <- function(other) .Call(wrap__RPolarsExpr__list_contains, self, other)
@@ -927,6 +929,12 @@ RPolarsExpr$str_explode <- function() .Call(wrap__RPolarsExpr__str_explode, self
 
 RPolarsExpr$str_parse_int <- function(radix, strict) .Call(wrap__RPolarsExpr__str_parse_int, self, radix, strict)
 
+RPolarsExpr$str_reverse <- function() .Call(wrap__RPolarsExpr__str_reverse, self)
+
+RPolarsExpr$str_contains_any <- function(patterns, ascii_case_insensitive) .Call(wrap__RPolarsExpr__str_contains_any, self, patterns, ascii_case_insensitive)
+
+RPolarsExpr$str_replace_many <- function(patterns, replace_with, ascii_case_insensitive) .Call(wrap__RPolarsExpr__str_replace_many, self, patterns, replace_with, ascii_case_insensitive)
+
 RPolarsExpr$bin_contains <- function(lit) .Call(wrap__RPolarsExpr__bin_contains, self, lit)
 
 RPolarsExpr$bin_starts_with <- function(sub) .Call(wrap__RPolarsExpr__bin_starts_with, self, sub)
@@ -1023,6 +1031,8 @@ RPolarsLazyFrame$sink_ipc <- function(path, compression_method, maintain_order) 
 
 RPolarsLazyFrame$sink_csv <- function(path, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style, maintain_order) .Call(wrap__RPolarsLazyFrame__sink_csv, self, path, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style, maintain_order)
 
+RPolarsLazyFrame$sink_json <- function(path, maintain_order) .Call(wrap__RPolarsLazyFrame__sink_json, self, path, maintain_order)
+
 RPolarsLazyFrame$first <- function() .Call(wrap__RPolarsLazyFrame__first, self)
 
 RPolarsLazyFrame$last <- function() .Call(wrap__RPolarsLazyFrame__last, self)
@@ -1104,6 +1114,8 @@ RPolarsLazyFrame$explode <- function(dotdotdot) .Call(wrap__RPolarsLazyFrame__ex
 RPolarsLazyFrame$clone_in_rust <- function() .Call(wrap__RPolarsLazyFrame__clone_in_rust, self)
 
 RPolarsLazyFrame$with_context <- function(contexts) .Call(wrap__RPolarsLazyFrame__with_context, self, contexts)
+
+RPolarsLazyFrame$rolling <- function(index_column, period, offset, closed, by, check_sorted) .Call(wrap__RPolarsLazyFrame__rolling, self, index_column, period, offset, closed, by, check_sorted)
 
 #' @export
 `$.RPolarsLazyFrame` <- function (self, name) { func <- RPolarsLazyFrame[[name]]; environment(func) <- environment(); func }

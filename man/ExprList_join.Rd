@@ -7,15 +7,18 @@
 \format{
 function
 }
+\usage{
+ExprList_join(separator)
+}
 \arguments{
 \item{separator}{String to separate the items with. Can be an Expr.}
 }
 \value{
-Series of dtype Utf8
+Series of dtype String
 }
 \description{
 Join all string items in a sublist and place a separator between them.
-This errors if inner type of list \verb{!= Utf8}.
+This errors if inner type of list \verb{!= String}.
 }
 \examples{
 df = pl$DataFrame(list(s = list(c("a", "b", "c"), c("x", "y"))))

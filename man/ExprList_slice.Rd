@@ -7,6 +7,9 @@
 \format{
 function
 }
+\usage{
+ExprList_slice(offset, length = NULL)
+}
 \arguments{
 \item{offset}{value or Expr.  Start index. Negative indexing is supported.}
 

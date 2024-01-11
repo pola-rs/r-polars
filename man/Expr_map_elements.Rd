@@ -92,7 +92,7 @@ e_add10 = my_selection$map_elements(\(x)  {
 
 e_letter = my_selection$map_elements(\(x) {
   letters[ceiling(x)]
-}, return_type = pl$dtypes$Utf8)$name$suffix("_letter")
+}, return_type = pl$dtypes$String)$name$suffix("_letter")
 pl$DataFrame(iris)$select(e_add10, e_letter)
 
 

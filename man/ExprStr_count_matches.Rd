@@ -3,6 +3,9 @@
 \name{ExprStr_count_matches}
 \alias{ExprStr_count_matches}
 \title{Count all successive non-overlapping regex matches}
+\usage{
+ExprStr_count_matches(pattern, literal = FALSE)
+}
 \arguments{
 \item{pattern}{A valid regex pattern}
 

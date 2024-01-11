@@ -55,7 +55,7 @@ smaller chunks may reduce memory pressure and improve writing speeds.}
 \item{data_pagesize_limit}{\code{NULL} or Integer. If \code{NULL} (default), the limit
 will be ~1MB.}
 
-\item{maintain_order}{Keep the same order as the original \code{DataFrame}. Setting
+\item{maintain_order}{Keep the same order as the original \code{LazyFrame}. Setting
 this to \code{TRUE} makes it more expensive to compute and blocks the possibility
 to run on the streaming engine. The default value can be changed with
 \code{pl$set_options(maintain_order = TRUE)}.}

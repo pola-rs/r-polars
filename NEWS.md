@@ -2,6 +2,46 @@
 
 ## polars (development version)
 
+### What's changed
+
+-   New method `$rolling()` for `DataFrame` and `LazyFrame` (#682).
+-   New method `$sink_ndjson()` for LazyFrame (#681).
+
+## polars 0.12.2
+
+This is a small release including a few documentation improvements and internal updates.
+
+## polars 0.12.1
+
+This version includes a few additional features and
+a large amount of documentation improvements.
+
+### Deprecations
+
+-   `pl$polars_info()` is moved to `polars_info()`. `pl$polars_info()` is deprecated
+    and will be removed in 0.13.0 (#662).
+
+### Rust-polars update
+
+-   rust-polars is updated to 0.36.2 (#659). Most of the changes from 0.35.x to 0.36.2
+    were covered in R polars 0.12.0.
+    The main change is that `pl$Utf8` is replaced by `pl$String`.
+    `pl$Utf8` is an alias and will keep working, but `pl$String` is now preferred
+    in the documentation and in new code.
+
+### What's changed
+
+-   New methods `$str$reverse()`, `$str$contains_any()`, and `$str$replace_many()`
+    (#641).
+-   New methods `$rle()` and `$rle_id()` (#648).
+-   New functions `is_polars_df()`, `is_polars_lf()`, `is_polars_series()` (#658).
+-   `$gather()` now accepts negative indexing (#659).
+
+### Miscellaneous
+
+-   Remove the `Makefile` in favor of `Taskfile.yml`.
+    Please use `task` instead of `make` as a task runner in the development (#654).
+
 ## polars 0.12.0
 
 ### BREAKING CHANGES DUE TO RUST-POLARS UPDATE

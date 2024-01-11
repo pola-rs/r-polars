@@ -166,7 +166,7 @@ impl RPolarsSeries {
             "{}",
             self.0.get(index.try_into().expect("usize>u32")).unwrap()
         );
-        if let DataType::Utf8 | DataType::Categorical(_, _) = self.0.dtype() {
+        if let DataType::String | DataType::Categorical(_, _) = self.0.dtype() {
             let v_trunc = &val[..val
                 .char_indices()
                 .take(str_length.try_into().expect("usize>u32"))
@@ -222,7 +222,7 @@ impl RPolarsSeries {
             Int64 => comp!(self, other, i64, op),
             Float64 => comp!(self, other, f64, op),
             Boolean => comp!(self, other, bool, op),
-            Utf8 => comp!(self, other, utf8, op),
+            String => comp!(self, other, str, op),
             _ => Err(format!(
                 "oups this type: {} is not supported yet, but easily could be",
                 dtype
@@ -365,7 +365,7 @@ impl RPolarsSeries {
             Int32 => apply_input!(self.0, i32, rfun, na_fun),
             Int16 => apply_input!(self.0, i16, rfun, na_fun),
             Int8 => apply_input!(self.0, i8, rfun, na_fun),
-            Utf8 => apply_input!(self.0, utf8, rfun, na_fun),
+            String => apply_input!(self.0, str, rfun, na_fun),
             Boolean => apply_input!(self.0, bool, rfun, na_fun),
             //List(..) => apply_input!(self.0, list, rfun, na_fun),
             List(..) => {
@@ -392,7 +392,7 @@ impl RPolarsSeries {
             match out_type {
                 Float64 => apply_output!(r_iter, strict, allow_fail_eval, Doubles, Float64Chunked),
                 Int32 => apply_output!(r_iter, strict, allow_fail_eval, Integers, Int32Chunked),
-                Utf8 => apply_output!(r_iter, strict, allow_fail_eval, Strings, Utf8Chunked),
+                String => apply_output!(r_iter, strict, allow_fail_eval, Strings, StringChunked),
                 Boolean => apply_output!(r_iter, strict, allow_fail_eval, Logicals, BooleanChunked),
                 List(..) => {
                     //ierate over R return values, opt if never run (no values), err if fail

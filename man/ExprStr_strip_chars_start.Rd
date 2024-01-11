@@ -4,13 +4,16 @@
 \alias{ExprStr_strip_chars_start}
 \alias{expr_str_strip_chars_start}
 \title{Strip leading characters}
+\usage{
+ExprStr_strip_chars_start(matches = NULL)
+}
 \arguments{
 \item{matches}{The set of characters to be removed. All combinations of this
 set of characters will be stripped. If \code{NULL} (default), all whitespace is
 removed instead. This can be an Expr.}
 }
 \value{
-Expr of Utf8 lowercase chars
+Expr of String lowercase chars
 }
 \description{
 Remove leading characters.

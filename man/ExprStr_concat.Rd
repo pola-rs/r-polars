@@ -3,6 +3,9 @@
 \name{ExprStr_concat}
 \alias{ExprStr_concat}
 \title{Vertically concatenate values of a Series}
+\usage{
+ExprStr_concat(delimiter = "-", ignore_nulls = TRUE)
+}
 \arguments{
 \item{delimiter}{The delimiter to insert between consecutive string values.}
 
@@ -10,7 +13,7 @@
 propagated: if the column contains any null values, the output is null.}
 }
 \value{
-Expr of Utf8 concatenated
+Expr of String concatenated
 }
 \description{
 Vertically concatenate the values in the Series to a single

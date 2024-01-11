@@ -672,7 +672,7 @@ construct_ProtoExprArray = function(...) {
 #'   select(
 #'   pl$col("Sepal.Length")$map_batches(\(x) {
 #'     paste("cheese", as.character(x$to_vector()))
-#'   }, pl$dtypes$Utf8)
+#'   }, pl$dtypes$String)
 #' )
 #'
 #' # R parallel process example, use Sys.sleep() to imitate some CPU expensive
@@ -799,7 +799,7 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FAL
 #'
 #' e_letter = my_selection$map_elements(\(x) {
 #'   letters[ceiling(x)]
-#' }, return_type = pl$dtypes$Utf8)$name$suffix("_letter")
+#' }, return_type = pl$dtypes$String)$name$suffix("_letter")
 #' pl$DataFrame(iris)$select(e_add10, e_letter)
 #'
 #'
@@ -1575,10 +1575,12 @@ Expr_sort_by = function(by, descending = FALSE) {
 #' Gather values by index
 #'
 #' @param indices R scalar/vector or Series, or Expr that leads to a Series of
-#' dtype UInt32.
+#' dtype Int64. (0-indexed)
 #' @return Expr
 #' @examples
-#' pl$DataFrame(a = c(1, 2, 4, 5, 8))$select(pl$col("a")$gather(c(0, 2, 4)))
+#' df = pl$DataFrame(a = 1:10)
+#'
+#' df$select(pl$col("a")$gather(c(0, 2, 4, -1)))
 Expr_gather = function(indices) {
   .pr$Expr$gather(self, pl$lit(indices)) |>
     unwrap("in $gather():")
@@ -2034,7 +2036,7 @@ Expr_filter = function(predicate) {
 Expr_where = Expr_filter
 
 
-#' Explode a list or Utf8 Series
+#' Explode a list or String Series
 #'
 #' This means that every item is expanded to a new row.
 #'
@@ -2163,8 +2165,6 @@ Expr_is_in = function(other) {
   .pr$Expr$is_in(self, other) |> unwrap("in $is_in():")
 }
 
-## TODO contribute polars, do not panic on by pointing to non positive values
-
 #' Repeat values
 #'
 #' Repeat the elements in this Series as specified in the given expression.
@@ -2173,7 +2173,7 @@ Expr_is_in = function(other) {
 #' column will be coerced to UInt32.
 #' @return Expr
 #' @examples
-#' df = pl$DataFrame(a = c("x", "y", "z"), n = c(0:2))
+#' df = pl$DataFrame(a = c("w", "x", "y", "z"), n = c(-1, 0, 1, 2))
 #' df$with_columns(repeated = pl$col("a")$repeat_by("n"))
 Expr_repeat_by = function(by) {
   if (is.numeric(by) && any(by < 0)) stop("In repeat_by: any value less than zero is not allowed")
@@ -3632,4 +3632,33 @@ Expr_replace = function(old, new, default = NULL, return_dtype = NULL) {
   }
   .pr$Expr$replace(self, old, new, default, return_dtype) |>
     unwrap("in $replace():")
+}
+
+#' Get the lengths of runs of identical values
+#'
+#' @return Expr
+#'
+#' @examples
+#' df = pl$DataFrame(s = c(1, 1, 2, 1, NA, 1, 3, 3))
+#' df$select(pl$col("s")$rle())$unnest("s")
+Expr_rle = function() {
+  .pr$Expr$rle(self) |>
+    unwrap("in $rle():")
+}
+
+#' Map values to run IDs
+#'
+#' Similar to $rle(), but it maps each value to an ID corresponding to the run
+#' into which it falls. This is especially useful when you want to define groups
+#' by runs of identical values rather than the values themselves. Note that
+#' the ID is 0-indexed.
+#'
+#' @return Expr
+#'
+#' @examples
+#' df = pl$DataFrame(a = c(1, 2, 1, 1, 1, 4))
+#' df$with_columns(a_r = pl$col("a")$rle_id())
+Expr_rle_id = function() {
+  .pr$Expr$rle_id(self) |>
+    unwrap("in $rle_id():")
 }

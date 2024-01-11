@@ -501,10 +501,10 @@ test_that("to_physical + cast", {
   df
 
 
-  # cast error raised for Utf8 to Boolean
+  # cast error raised for String to Boolean
   expect_error(
     pl$DataFrame(iris)$with_columns(
-      pl$col("Species")$cast(pl$dtypes$Utf8)$cast(pl$dtypes$Boolean)
+      pl$col("Species")$cast(pl$dtypes$String)$cast(pl$dtypes$Boolean)
     )
   )
 
@@ -1054,12 +1054,18 @@ test_that("gather that", {
     c(1L, 3L, 5L, NA_integer_)
   )
 
+  expect_identical(
+    pl$select(pl$lit(1:6)$gather(c(0, -1)))$to_list()[[1L]],
+    c(1L, 6L)
+  )
+
   expect_error(
     pl$select(pl$lit(0:10)$gather(11))$to_list()[[1L]]
   )
 
-  expect_error(
-    pl$select(pl$lit(0:10)$gather(-5))$to_list()[[1L]]
+  expect_identical(
+    pl$select(pl$lit(0:10)$gather(-5))$to_list()[[1L]],
+    6L
   )
 })
 
@@ -1522,7 +1528,7 @@ test_that("hash + reinterpret", {
 
   hash_values1 = unname(unlist(df$select(pl$col(c("Sepal.Width", "Species"))$unique()$hash()$implode())$to_list()))
   hash_values2 = unname(unlist(df$select(pl$col(c("Sepal.Width", "Species"))$unique()$hash(1, 2, 3, 4)$implode())$to_list()))
-  hash_values3 = unname((df$select(pl$col(c("Sepal.Width", "Species"))$unique()$hash(1, 2, 3, 4)$implode()$cast(pl$List(pl$Utf8)))$to_list()))
+  hash_values3 = unname((df$select(pl$col(c("Sepal.Width", "Species"))$unique()$hash(1, 2, 3, 4)$implode()$cast(pl$List(pl$String)))$to_list()))
   expect_true(!any(duplicated(hash_values1)))
   expect_true(!any(sapply(hash_values3, \(x) any(duplicated(x)))))
 
@@ -2112,7 +2118,7 @@ test_that("ewm_", {
 test_that("extend_constant", {
   expect_identical(
     pl$lit(c("5", "Bob_is_not_a_number"))
-    $cast(pl$dtypes$Utf8, strict = FALSE)
+    $cast(pl$dtypes$String, strict = FALSE)
     $extend_constant("chuchu", 2)$to_r(),
     c("5", "Bob_is_not_a_number", "chuchu", "chuchu")
   )
@@ -2276,7 +2282,7 @@ test_that("shrink_dtype", {
 
   expect_true(all(mapply(
     df$dtypes,
-    pl$dtypes[c("Int8", "Int64", "Int32", "Int8", "Int16", "Utf8", "Float32", "Boolean")],
+    pl$dtypes[c("Int8", "Int64", "Int32", "Int8", "Int16", "String", "Float32", "Boolean")],
     FUN = function(actual, expected) actual == expected
   )))
 })
@@ -2626,11 +2632,33 @@ test_that("replace works", {
   expect_equal(
     df$select(
       replaced = pl$col("a")$replace(
-        old=pl$col("a")$max(),
-        new=pl$col("b")$sum(),
-        default=pl$col("b"),
+        old = pl$col("a")$max(),
+        new = pl$col("b")$sum(),
+        default = pl$col("b"),
       )
     )$to_list(),
     list(replaced = c(1.5, 2.5, 5, 10))
+  )
+})
+
+test_that("rle works", {
+  df = pl$DataFrame(s = c(1, 1, 2, 1, NA, 1, 3, 3))
+  expect_equal(
+    df$select(pl$col("s")$rle())$unnest("s")$to_data_frame(),
+    data.frame(
+      lengths = c(2, 1, 1, 1, 1, 2),
+      values = c(1, 2, 1, NA, 1, 3)
+    )
+  )
+})
+
+test_that("rle_id works", {
+  df = pl$DataFrame(s = c(1, 1, 2, 1, NA, 1, 3, 3))
+  expect_equal(
+    df$with_columns(id = pl$col("s")$rle_id())$to_data_frame(),
+    data.frame(
+      s = c(1, 1, 2, 1, NA, 1, 3, 3),
+      id = c(0, 0, 1, 2, 3, 4, 5, 5)
+    )
   )
 })
