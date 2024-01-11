@@ -175,6 +175,15 @@ impl RPolarsLazyFrame {
             .map_err(polars_to_rpolars_err)
     }
 
+    fn sink_json(&self, path: Robj, maintain_order: Robj) -> RResult<()> {
+        let maintain_order = robj_to!(bool, maintain_order)?;
+        let options = pl::JsonWriterOptions { maintain_order };
+        self.0
+            .clone()
+            .sink_json(robj_to!(String, path)?.into(), options)
+            .map_err(polars_to_rpolars_err)
+    }
+
     fn first(&self) -> Self {
         self.0.clone().first().into()
     }
