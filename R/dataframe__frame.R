@@ -589,6 +589,7 @@ DataFrame_to_series = function(idx = 0) {
 }
 
 #' Sort a DataFrame
+#' @inheritParams DataFrame_unique
 #' @inherit LazyFrame_sort details description params
 #' @return DataFrame
 #' @keywords  DataFrame
@@ -815,6 +816,7 @@ DataFrame_filter = function(...) {
 }
 
 #' Group a DataFrame
+#' @inheritParams DataFrame_unique
 #' @inherit LazyFrame_group_by description params
 #' @keywords DataFrame
 #' @return GroupBy (a DataFrame with special groupby methods like `$agg()`)

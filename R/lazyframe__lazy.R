@@ -498,6 +498,7 @@ LazyFrame_collect_in_background = function() {
 #' smaller chunks may reduce memory pressure and improve writing speeds.
 #' @param data_pagesize_limit `NULL` or Integer. If `NULL` (default), the limit
 #' will be ~1MB.
+#' @inheritParams LazyFrame_group_by
 #' @inheritParams DataFrame_unique
 #' @inheritParams LazyFrame_collect
 #'
@@ -575,6 +576,7 @@ LazyFrame_sink_parquet = function(
 #' "lz4" or "zstd". Choose "zstd" for good compression performance. Choose "lz4"
 #' for fast compression/decompression.
 #' @inheritParams LazyFrame_collect
+#' @inheritParams LazyFrame_group_by
 #' @inheritParams DataFrame_unique
 #'
 #' @rdname IO_sink_ipc
@@ -641,6 +643,7 @@ LazyFrame_sink_ipc = function(
 #'
 #' @inheritParams DataFrame_write_csv
 #' @inheritParams LazyFrame_collect
+#' @inheritParams LazyFrame_group_by
 #' @inheritParams DataFrame_unique
 #'
 #' @rdname IO_sink_csv
@@ -729,6 +732,7 @@ LazyFrame_sink_csv = function(
 #'
 #' @inheritParams DataFrame_write_csv
 #' @inheritParams LazyFrame_collect
+#' @inheritParams LazyFrame_group_by
 #' @inheritParams DataFrame_unique
 #'
 #' @rdname IO_sink_ndjson
@@ -1033,7 +1037,10 @@ LazyFrame_unique = function(subset = NULL, keep = "first", maintain_order = FALS
 #' (`$agg()`, `$filter()`, etc.).
 #' @keywords LazyFrame
 #' @param ... Any Expr(s) or string(s) naming a column.
-#' @inheritParams DataFrame_unique
+#' @param maintain_order Keep the same order as the original `LazyFrame`. Setting
+#'  this to `TRUE` makes it more expensive to compute and blocks the possibility
+#'  to run on the streaming engine. The default value can be changed with
+#' `pl$set_options(maintain_order = TRUE)`.
 #' @return LazyGroupBy (a LazyFrame with special groupby methods like `$agg()`)
 #' @examples
 #' pl$LazyFrame(
@@ -1109,6 +1116,7 @@ LazyFrame_join = function(
 #' either of length 1 or a logical vector of the same length as the number of
 #' Expr(s) specified in `by` and `...`.
 #' @param nulls_last Boolean. Place `NULL`s at the end? Default is `FALSE`.
+#' @inheritParams LazyFrame_group_by
 #' @inheritParams DataFrame_unique
 #' @return LazyFrame
 #' @keywords  LazyFrame

@@ -19,7 +19,7 @@ LazyFrame_sink_ndjson(
 \arguments{
 \item{path}{File path to which the result should be written.}
 
-\item{maintain_order}{Keep the same order as the original \code{DataFrame}. Setting
+\item{maintain_order}{Keep the same order as the original \code{LazyFrame}. Setting
 this to \code{TRUE} makes it more expensive to compute and blocks the possibility
 to run on the streaming engine. The default value can be changed with
 \code{pl$set_options(maintain_order = TRUE)}.}
