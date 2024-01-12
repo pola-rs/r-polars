@@ -1828,8 +1828,9 @@ DataFrame_write_ndjson = function(file) {
 #'   pl$max("a")$alias("max_a")
 #' )
 DataFrame_rolling = function(index_column, period, offset = NULL, closed = "right", by = NULL, check_sorted = TRUE) {
-  out = self$lazy()$rolling(index_column, period, offset, closed, by, check_sorted)
-  attr(out, "is_rolling_group_by") = TRUE
-  class(out) = "RPolarsGroupBy"
-  out
+  construct_rolling_group_by(self, index_column, period, offset, closed, by, check_sorted)
+  # out = self$lazy()$rolling(index_column, period, offset, closed, by, check_sorted)
+  # attr(out, "is_rolling_group_by") = TRUE
+  # class(out) = "RPolarsGroupBy"
+  # out
 }
