@@ -15,13 +15,15 @@ all_horizontal <- function(dotdotdot) .Call(wrap__all_horizontal, dotdotdot)
 
 any_horizontal <- function(dotdotdot) .Call(wrap__any_horizontal, dotdotdot)
 
+coalesce_exprs <- function(exprs) .Call(wrap__coalesce_exprs, exprs)
+
+duration <- function(weeks, days, hours, minutes, seconds, milliseconds, microseconds, nanoseconds, time_unit) .Call(wrap__duration, weeks, days, hours, minutes, seconds, milliseconds, microseconds, nanoseconds, time_unit)
+
 min_horizontal <- function(dotdotdot) .Call(wrap__min_horizontal, dotdotdot)
 
 max_horizontal <- function(dotdotdot) .Call(wrap__max_horizontal, dotdotdot)
 
 sum_horizontal <- function(dotdotdot) .Call(wrap__sum_horizontal, dotdotdot)
-
-coalesce_exprs <- function(exprs) .Call(wrap__coalesce_exprs, exprs)
 
 concat_list <- function(exprs) .Call(wrap__concat_list, exprs)
 
@@ -310,6 +312,8 @@ RPolarsRField$set_datatype_mut <- function(datatype) invisible(.Call(wrap__RPola
 `[[.RPolarsRField` <- `$.RPolarsRField`
 
 RPolarsErr <- new.env(parent = emptyenv())
+
+RPolarsErr$default <- function() .Call(wrap__RPolarsErr__default)
 
 RPolarsErr$new <- function() .Call(wrap__RPolarsErr__new)
 
@@ -1273,7 +1277,7 @@ RPolarsStringCacheHolder <- new.env(parent = emptyenv())
 
 RPolarsStringCacheHolder$hold <- function() .Call(wrap__RPolarsStringCacheHolder__hold)
 
-RPolarsStringCacheHolder$release <- function() .Call(wrap__RPolarsStringCacheHolder__release, self)
+RPolarsStringCacheHolder$release <- function() invisible(.Call(wrap__RPolarsStringCacheHolder__release, self))
 
 #' @export
 `$.RPolarsStringCacheHolder` <- function (self, name) { func <- RPolarsStringCacheHolder[[name]]; environment(func) <- environment(); func }

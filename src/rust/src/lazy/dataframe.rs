@@ -708,8 +708,7 @@ impl RPolarsLazyGroupBy {
 
     fn ungroup(&self) -> RPolarsLazyFrame {
         RPolarsLazyFrame(
-            pl::LazyFrame::from(self.lgb.logical_plan.clone())
-                .with_optimizations(self.opt_state.clone()),
+            pl::LazyFrame::from(self.lgb.logical_plan.clone()).with_optimizations(self.opt_state),
         )
     }
 

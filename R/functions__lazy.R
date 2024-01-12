@@ -1007,3 +1007,72 @@ pl_sum_horizontal = function(...) {
   sum_horizontal(list2(...)) |>
     unwrap("in $sum_horizontal():")
 }
+
+
+#' Create polars Duration from distinct time components
+#'
+#' @param weeks Number of weeks to add. Expr or something coercible to an Expr.
+#'   Strings are parsed as column names. *Same thing for argument `days` to
+#'   `nanoseconds`*.
+#' @param days Number of days to add.
+#' @param hours Number of hours to add.
+#' @param minutes Number of minutes to add.
+#' @param seconds Number of seconds to add.
+#' @param milliseconds Number of milliseconds to add.
+#' @param microseconds Number of microseconds to add.
+#' @param nanoseconds Number of nanoseconds to add.
+#' @param time_unit Time unit of the resulting expression.
+#' @param ... Not used.
+#'
+#' @details
+#' A duration represents a fixed amount of time. For example,
+#' `pl$duration(days = 1)` means "exactly 24 hours". By contrast,
+#' `Expr$dt$offset_by('1d')` means "1 calendar day", which could sometimes be 23
+#' hours or 25 hours depending on Daylight Savings Time. For non-fixed durations
+#' such as "calendar month" or "calendar day", please use `Expr$dt$offset_by()`
+#' instead.
+#'
+#'
+#' @return Expr
+#'
+#' @examples
+#' test = pl$DataFrame(
+#'   dt = c(
+#'     "2022-01-01 00:00:00",
+#'     "2022-01-02 00:00:00"
+#'   ),
+#'   add = 1:2
+#' )$with_columns(
+#'   pl$col("dt")$str$strptime(pl$Datetime("us"), format = NULL)
+#' )
+#'
+#' test$with_columns(
+#'   (pl$col("dt") + pl$duration(weeks = "add"))$alias("add_weeks"),
+#'   (pl$col("dt") + pl$duration(days = "add"))$alias("add_days"),
+#'   (pl$col("dt") + pl$duration(seconds = "add"))$alias("add_seconds"),
+#'   (pl$col("dt") + pl$duration(milliseconds = "add"))$alias("add_millis"),
+#'   (pl$col("dt") + pl$duration(hours = "add"))$alias("add_hours")
+#' )
+#'
+#' # we can also pass an Expr
+#' test$with_columns(
+#'   (pl$col("dt") + pl$duration(weeks = pl$col("add") + 1))$alias("add_weeks"),
+#'   (pl$col("dt") + pl$duration(days = pl$col("add") + 1))$alias("add_days"),
+#'   (pl$col("dt") + pl$duration(seconds = pl$col("add") + 1))$alias("add_seconds"),
+#'   (pl$col("dt") + pl$duration(milliseconds = pl$col("add") + 1))$alias("add_millis"),
+#'   (pl$col("dt") + pl$duration(hours = pl$col("add") + 1))$alias("add_hours")
+#' )
+pl_duration = function(
+    ...,
+    weeks = NULL,
+    days = NULL,
+    hours = NULL,
+    minutes = NULL,
+    seconds = NULL,
+    milliseconds = NULL,
+    microseconds = NULL,
+    nanoseconds = NULL,
+    time_unit = "us") {
+  duration(weeks, days, hours, minutes, seconds, milliseconds, microseconds, nanoseconds, time_unit) |>
+    unwrap("in $duration():")
+}
