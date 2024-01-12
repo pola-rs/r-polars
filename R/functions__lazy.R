@@ -1022,6 +1022,7 @@ pl_sum_horizontal = function(...) {
 #' @param microseconds Number of microseconds to add.
 #' @param nanoseconds Number of nanoseconds to add.
 #' @param time_unit Time unit of the resulting expression.
+#' @param ... Not used.
 #'
 #' @details
 #' A duration represents a fixed amount of time. For example,
@@ -1062,6 +1063,7 @@ pl_sum_horizontal = function(...) {
 #'   (pl$col("dt") + pl$duration(hours = pl$col("add") + 1))$alias("add_hours")
 #' )
 pl_duration = function(
+    ...,
     weeks = NULL,
     days = NULL,
     hours = NULL,

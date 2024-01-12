@@ -5,6 +5,7 @@
 \title{Create polars Duration from distinct time components}
 \usage{
 pl_duration(
+  ...,
   weeks = NULL,
   days = NULL,
   hours = NULL,
@@ -17,6 +18,8 @@ pl_duration(
 )
 }
 \arguments{
+\item{...}{Not used.}
+
 \item{weeks}{Number of weeks to add. Expr or something coercible to an Expr.
 Strings are parsed as column names. \emph{Same thing for argument \code{days} to
 \code{nanoseconds}}.}
