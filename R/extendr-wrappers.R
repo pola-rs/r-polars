@@ -313,6 +313,8 @@ RPolarsRField$set_datatype_mut <- function(datatype) invisible(.Call(wrap__RPola
 
 RPolarsErr <- new.env(parent = emptyenv())
 
+RPolarsErr$default <- function() .Call(wrap__RPolarsErr__default)
+
 RPolarsErr$new <- function() .Call(wrap__RPolarsErr__new)
 
 RPolarsErr$contexts <- function() .Call(wrap__RPolarsErr__contexts, self)
@@ -1273,7 +1275,7 @@ RPolarsStringCacheHolder <- new.env(parent = emptyenv())
 
 RPolarsStringCacheHolder$hold <- function() .Call(wrap__RPolarsStringCacheHolder__hold)
 
-RPolarsStringCacheHolder$release <- function() .Call(wrap__RPolarsStringCacheHolder__release, self)
+RPolarsStringCacheHolder$release <- function() invisible(.Call(wrap__RPolarsStringCacheHolder__release, self))
 
 #' @export
 `$.RPolarsStringCacheHolder` <- function (self, name) { func <- RPolarsStringCacheHolder[[name]]; environment(func) <- environment(); func }

@@ -104,7 +104,7 @@ impl RPolarsDataType {
     }
 
     pub fn new_struct(l: Robj) -> List {
-        let res = || -> std::result::Result<RPolarsDataType, String> {
+        let res = {
             let len = l.len();
 
             //iterate over R list and collect Fields and place in a Struct-datatype
@@ -127,7 +127,7 @@ impl RPolarsDataType {
                 .and_then(|iter| collect_hinted_result(len, iter))
                 .map_err(|err| format!("in pl$Struct: {}", err))
                 .map(|v_field| RPolarsDataType(pl::DataType::Struct(v_field)))
-        }();
+        };
 
         r_result_list(res)
     }

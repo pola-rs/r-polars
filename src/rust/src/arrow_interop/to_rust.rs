@@ -163,8 +163,8 @@ fn consume_arrow_stream_to_series(boxed_stream: Box<ffi::ArrowArrayStream>) -> R
         let array = array_res?;
         let series_res: pl::PolarsResult<pl::Series> =
             std::convert::TryFrom::try_from(("df", array));
-        let series = series_res.map_err(polars_to_rpolars_err)?;
-        series
+
+        series_res.map_err(polars_to_rpolars_err)?
     } else {
         rerr()
             .plain("Arrow array stream was empty")
