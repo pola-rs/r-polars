@@ -97,7 +97,10 @@ pub fn collect_with_r_func_support(lazy_df: pl::LazyFrame) -> RResult<RPolarsDat
     } else {
         #[cfg(feature = "rpolars_debug_print")]
         println!("in collect: starting a concurrent handler");
-        let new_df = concurrent_handler(
+
+        #[cfg(feature = "rpolars_debug_print")]
+        println!("in collect: concurrent handler done");
+        concurrent_handler(
             // closure 1: spawned by main thread
             // tc is a ThreadCom which any child thread can use to submit R jobs to main thread
             move |tc| {
@@ -116,10 +119,7 @@ pub fn collect_with_r_func_support(lazy_df: pl::LazyFrame) -> RResult<RPolarsDat
             &CONFIG,
         )
         .map_err(|err| RPolarsErr::new().plain(err.to_string()))?
-        .map_err(polars_to_rpolars_err);
-        #[cfg(feature = "rpolars_debug_print")]
-        println!("in collect: concurrent handler done");
-        new_df
+        .map_err(polars_to_rpolars_err)
     };
 
     //wrap ok
