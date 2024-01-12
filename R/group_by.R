@@ -89,16 +89,19 @@ GroupBy_agg = function(...) {
   if (isTRUE(attributes(self)[["is_rolling_group_by"]]) ||
       isTRUE(attributes(self)[["is_dynamic_group_by"]])) {
     class(self) = "RPolarsLazyGroupBy"
-    self$agg(unpack_list(..., .context = "in $agg():"))$collect(no_optimization = TRUE)
+    out = self$agg(unpack_list(..., .context = "in $agg():"))$collect(no_optimization = TRUE)
+    class(self) = "RPolarsGroupBy"
   } else {
     class(self) = "RPolarsDataFrame"
-    self$lazy()$group_by(
+    out = self$lazy()$clone()$group_by(
       attr(self, "private")$groupby_input,
       maintain_order = attr(self, "private")$maintain_order
     )$
       agg(...)$
       collect(no_optimization = TRUE)
+    class(self) = "RPolarsGroupBy"
   }
+  out
 }
 
 
