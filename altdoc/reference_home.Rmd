@@ -26,10 +26,13 @@ to choose between eager and lazy evaluation, that require respectively a
 for grouped data).
 
 We can apply functions directly on a `DataFrame` or `LazyFrame`, such as `rename()`
-or `drop()`. Most (but not all!) functions that can be applied to `DataFrame`s
-can also be used on `LazyFrame`s. Calling `<DataFrame>$lazy()` yields
-a `LazyFrame`. While calling `<LazyFrame>$collect()` starts a computation and
-yields a `DataFrame` as result.
+or `drop()`. Most functions that can be applied to `DataFrame`s can also be used 
+on `LazyFrame`s, but some are specific to one or the other: 
+
+* `$lazy()` converts a `DataFrame` to a `LazyFrame`, and therefore only exists µ
+  for `DataFrame`
+* `$collect()` executes a lazy query, which means it can only be applied on 
+  a `LazyFrame`.
 
 Another common data structure is the `Series`, which can be considered as the
 equivalent of R vectors in `polars`' world. Therefore, a `DataFrame` is a list of
@@ -48,10 +51,10 @@ of contexts:
 * filter rows with `filter()`;
 * group and aggregate rows with `group_by()` and `agg()`
 
-Inside each context, you can use various **expressions** (aka. `Expr`). Some expressions cannot
-be used in some contexts. For example, in `with_columns()`, you can only apply
-expressions that return either the same number of values or a single value that
-will be duplicated on all rows:
+Inside each context, you can use various **expressions** (aka. `Expr`). Some
+expressions cannot be used in some contexts. For example, in `with_columns()`,
+you can only apply expressions that return either the same number of values or a
+single value that will be duplicated on all rows:
 
 ```{r}
 test = pl$DataFrame(mtcars)
@@ -71,7 +74,7 @@ test$with_columns(
 )
 ```
 
-By contrast, in an `agg` context, any number of return values are possible, as
+By contrast, in an `agg()` context, any number of return values are possible, as
 they are returned in a list, and only the new columns or the grouping columns
 are returned.
 
@@ -86,33 +89,38 @@ test$group_by(pl$col("cyl"))$agg(
 
 ## Expressions
 
-`polars` is quite verbose and requires you to be very explicit on the operations
-you want to perform. This can be seen in the way expressions work. All polars
-public functions (excluding methods) are accessed via the namespace handle `pl`.
+Expressions are the building blocks that give all the flexibility we need to
+modify or create new columns. 
 
 Two important expressions starters are `pl$col()` (names a column in the context)
 and `pl$lit()` (wraps a literal value or vector/series in an Expr). Most other
 expression starters are syntactic sugar derived from thereof, e.g. `pl$sum(_)` is
 actually `pl$col(_)$sum()`.
 
-Expressions can be chained with about 170 expression methods such as `$sum()`
+Expressions can be chained with more than 170 expression methods such as `$sum()`
 which aggregates e.g. the column with summing.
 
 ```{r}
 # two examples of starting, chaining and combining expressions
 pl$DataFrame(a = 1:4)$with_columns(
-  # take col mpg, slice it, sum it, then cast it
-  pl$col("a")$slice(0, 2)$sum()$cast(pl$Float32)$alias("a_slice_sum_cast"),
+  # compute the cosine of column "a"
+  a_cos = pl$col("a")$cos()$sin(),
+  # standardize the values of column "a"
+  a_stand = (pl$col("a") - pl$col("a")$mean()) / pl$col("a")$std(),
   # take 1:3, name it, then sum, then multiply with two
-  pl$lit(1:3)$alias("lit_sum_add_two")$sum() * 2L,
-  # similar to above, but with `mul()`-method instead of `*`.
-  pl$lit(1:3)$sum()$mul(pl$col("a"))$alias("lit_sum_add_mpg")
+  lit_sum_add_two = pl$lit(1:3)$sum() * 2L
 )
 ```
 
-Moreover there are subnamespaces with special methods only applicable for a
-specific type `dt`(datetime), `arr`(list), `str`(strings), `struct`(structs),
-`cat`(categoricals) and `bin`(binary). As a sidenote, there is also an exotic
+Some methods share a common name but their behavior might be very different
+depending on the input type. For example, `$decode()` doesn't do the same thing
+when it is applied on binary data or on string data.
+
+To be able to distinguish those usages and to check the validity of a query,
+`polars` stores methods in subnamespaces. For each datatype other than numeric
+(floats and integers), there is a subnamespace containing the available methods:
+`dt` (datetime), `list` (list), `str` (strings), `struct` (structs), `cat` 
+(categoricals) and `bin` (binary). As a sidenote, there is also an exotic
 subnamespace called `meta` which is rarely used to manipulate the expressions
 themselves. Each subsection in the "Expressions" section lists all operations
 available for a specific subnamespace.
@@ -133,21 +141,20 @@ df = pl$DataFrame(
 df
 ```
 
-The function `year()` only makes sense for date-time data, so the type of input
-that can receive this function is `dt` (for **d**ate-**t**ime):
+The function `year()` only makes sense for date-time data, so we look for functions
+in the `dt` subnamespace (for **d**ate-**t**ime):
 
 ```{r}
 df$with_columns(
-  pl$col("date")$dt$year()$alias("year")
+  year = pl$col("date")$dt$year()
 )
 ```
 
-Similarly, if we have text data that we want to convert text to uppercase, we
-use the `str` prefix before using `to_uppercase()`:
+Similarly, to convert a string column to uppercase, we use the `str` prefix 
+before using `to_uppercase()`:
 
 ```{r}
 # Create the DataFrame
-df = pl$DataFrame(foo = c("jake", "mary", "john peter"))
-
-df$select(pl$col("foo")$str$to_uppercase())
+pl$DataFrame(foo = c("jake", "mary", "john peter"))$
+  with_columns(upper = pl$col("foo")$str$to_uppercase())
 ```
