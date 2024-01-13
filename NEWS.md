@@ -2,6 +2,16 @@
 
 ## polars (development version)
 
+### Breaking changes
+
+-   The environment variables used when building the library have been changed. (#693)
+    This only affects selecting the feature flag and selecting profiles during source installation.
+    -   `RPOLARS_PROFILE` is renamed to `LIBR_POLARS_PROFILE`
+    -   `RPOLARS_FULL_FEATURES` is removed and `LIBR_POLARS_FEATURES` is added.
+        If want to select the `full_features`, we need to set `LIBR_POLARS_FEATURES="full_features"`.
+    -   `RPOLARS_RUST_SOURCE`, which was used for development, has been removed.
+        If you want to use library binaries located elsewhere, use `LIBR_POLARS_PATH` instead.
+
 ### What's changed
 
 -   New method `$rolling()` for `DataFrame` and `LazyFrame` (#682).
