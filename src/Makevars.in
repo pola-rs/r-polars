@@ -1,16 +1,12 @@
 TARGET ?= @RUST_TARGET@
-RPOLARS_PROFILE ?= release
-RPOLARS_BUILD_COMMAND_BASE ?= cargo build --target=$(TARGET)
-BUILD_COMMAND = $(RPOLARS_BUILD_COMMAND_BASE) --lib --profile $(RPOLARS_PROFILE) --manifest-path="$(RPOLARS_RUST_SOURCE)/Cargo.toml"
+R_POLARS_PROFILE ?= release
+R_POLARS_FEATURES ?=
 
 LIBNAME = libr_polars.a
 TARGET_DIR = $(CURDIR)/rust/target
 LIBDIR = $(TARGET_DIR)/$(TARGET)/$(RPOLARS_PROFILE)
 STATLIB = $(LIBDIR)/$(LIBNAME)
 PKG_LIBS = -L$(LIBDIR) -lr_polars @ADDITIONAL_PKG_LIBS_FLAG@
-RPOLARS_RUST_SOURCE ?= ./rust
-
-rpolars_ext_binary = $(RPOLARS_RUST_SOURCE)/target/$(TARGET)/$(RPOLARS_PROFILE)/$(LIBNAME)
 
 all: C_clean
 
@@ -25,41 +21,19 @@ $(STATLIB):
 		exit 0; \
 	fi && \
 	if [ "true" != "true" ]; then \
-		export CARGO_HOME=$(CARGOTMP); \
+		export CARGO_HOME="$(CARGOTMP)"; \
+		export CARGO_BUILD_JOBS=2; \
 	fi && \
-	export PATH="$(PATH):$(HOME)/.cargo/bin" && \
-	if [ "$(RPOLARS_FULL_FEATURES)" = "true" ]; then \
-		$(BUILD_COMMAND) --features "full_features"; \
-	else \
-		$(BUILD_COMMAND); \
-	fi
+		export PATH="$(PATH):$(HOME)/.cargo/bin" && \
+		cargo build --lib --manifest-path="$(CURDIR)/rust/Cargo.toml" --target-dir "$(TARGET_DIR)" --target="$(TARGET)" \
+			--profile="$(R_POLARS_PROFILE)" --features="$(R_POLARS_FEATURES)"
+
 	if [ "true" != "true" ]; then \
-		rm -Rf $(CARGOTMP) && \
-		rm -Rf $(LIBDIR)/build; \
+		rm -Rf "$(CARGOTMP)" "$(LIBDIR)/build"; \
 	fi
-	if [ -f "$(STATLIB)" ]; then \
-		echo "file is there: "; \
-	elif [ -f "$(rpolars_ext_binary)" ]; then \
-		echo "file is '$(rpolars_ext_binary)'"; \
-		mkdir -p $(LIBDIR) ; \
-		echo "trying to symlink in $(rpolars_ext_binary)"; \
-		ln -s $(rpolars_ext_binary) $(STATLIB) ; \
-	fi
-
-	if [ "$(RPOLARS_CARGO_CLEAN_DEPS)" = "true" ]; then \
-		echo "cleanup!!" ; \
-		mv $(STATLIB) $(LIBDIR)/../temp_binary.a; \
-		rm -rf $(LIBDIR); \
-		mkdir $(LIBDIR); \
-		mv $(LIBDIR)/../temp_binary.a $(STATLIB); \
-		rm -rf ./src/.cargo; \
-	else \
-		echo "hands off!!" ; \
-	fi
-
 
 C_clean:
-	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS)
+	rm -Rf "$(SHLIB)" "$(STATLIB)" "$(OBJECTS)"
 
 clean:
-	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) rust/target
+	rm -Rf "$(SHLIB)" "$(STATLIB)" "$(OBJECTS)" "$(TARGET_DIR)"

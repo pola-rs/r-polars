@@ -1,16 +1,12 @@
 TARGET ?= $(subst 64,x86_64,$(subst 32,i686,$(WIN)))-pc-windows-gnu
-RPOLARS_PROFILE ?= release
-RPOLARS_BUILD_COMMAND_BASE ?= cargo build --target=$(TARGET)
-BUILD_COMMAND = $(RPOLARS_BUILD_COMMAND_BASE) --lib --profile $(RPOLARS_PROFILE) --manifest-path="$(RPOLARS_RUST_SOURCE)/Cargo.toml"
+R_POLARS_PROFILE ?= release
+R_POLARS_FEATURES ?=
 
 LIBNAME = libr_polars.a
 TARGET_DIR = $(CURDIR)/rust/target
-LIBDIR = $(TARGET_DIR)/$(TARGET)/$(RPOLARS_PROFILE)
+LIBDIR = $(TARGET_DIR)/$(TARGET)/$(R_POLARS_PROFILE)
 STATLIB = $(LIBDIR)/$(LIBNAME)
 PKG_LIBS = -L$(LIBDIR) -lr_polars -lws2_32 -ladvapi32 -luserenv -lbcrypt -lole32 -lntdll -lpsapi -liphlpapi -lpdh -lpowrprof -loleaut32 -lnetapi32 -lsecur32 -t
-RPOLARS_RUST_SOURCE ?= ./rust
-
-rpolars_ext_binary = $(RPOLARS_RUST_SOURCE)/target/$(TARGET)/$(RPOLARS_PROFILE)/$(LIBNAME)
 
 # Rtools42 doesn't have the linker in the location that cargo expects, so we
 # need to overwrite it via configuration.
@@ -23,57 +19,35 @@ $(SHLIB): $(STATLIB)
 CARGOTMP = $(CURDIR)/.cargo
 
 $(STATLIB):
-	echo "RPOLARS_RUST_SOURCE is set to $(RPOLARS_RUST_SOURCE)"
-	mkdir -p $(TARGET_DIR)/libgcc_mock && touch $(TARGET_DIR)/libgcc_mock/libgcc_eh.a
+	# `rustc` adds `-lgcc_eh` flags to the compiler, but Rtools' GCC doesn't have
+	# `libgcc_eh` due to the compilation settings. So, in order to please the
+	# compiler, we need to add empty `libgcc_eh` to the library search paths.
+	#
+	# For more details, please refer to
+	# https://github.com/r-windows/rtools-packages/blob/2407b23f1e0925bbb20a4162c963600105236318/mingw-w64-gcc/PKGBUILD#L313-L316
+	mkdir -p "$(TARGET_DIR)/libgcc_mock"
+	touch "$(TARGET_DIR)/libgcc_mock/libgcc_eh.a"
 
-	# CARGO_LINKER is provided in Makevars.ucrt for R >= 4.2
 	if [ -f "$(CURDIR)/../tools/$(LIBNAME)" ]; then \
 		mkdir -p "$(LIBDIR)" ; \
 		mv "$(CURDIR)/../tools/$(LIBNAME)" "$(STATLIB)" ; \
 		exit 0; \
 	fi && \
 	if [ "true" != "true" ]; then \
-		export CARGO_HOME=$(CARGOTMP); \
+		export CARGO_HOME="$(CARGOTMP)"; \
+		export CARGO_BUILD_JOBS=2; \
 	fi && \
 		export CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER="$(CARGO_LINKER)" && \
 		export LIBRARY_PATH="$${LIBRARY_PATH};$(TARGET_DIR)/libgcc_mock" && \
-		if [ "$(RPOLARS_FULL_FEATURES)" = "true" ]; then \
-			$(BUILD_COMMAND) --features "full_features"; \
-		else \
-			$(BUILD_COMMAND); \
-		fi;
+		cargo build --lib --manifest-path="$(CURDIR)/rust/Cargo.toml" --target-dir "$(TARGET_DIR)" --target="$(TARGET)" \
+			--profile="$(R_POLARS_PROFILE)" --features="$(R_POLARS_FEATURES)"
+
 	if [ "true" != "true" ]; then \
-		rm -Rf $(CARGOTMP) && \
-		rm -Rf $(LIBDIR)/build; \
-	fi
-
-	# when RPOLARS_RUST_SOURCE is defined rust binary is compiled there
-	# if binary is not here, it can be symlinked instead.
-	# This solves both caching and R CMD check failing cargo build files
-	# see issue #28
-	if [ -f "$(STATLIB)" ]; then \
-		echo "file is there: "; \
-	elif [ -f "$(rpolars_ext_binary)" ]; then \
-		echo "file is '$(rpolars_ext_binary)'"; \
-		echo "binary not built here, trying to symlink in $(rpolars_ext_binary)"; \
-		mkdir -p $(LIBDIR) ; \
-		ln -s $(rpolars_ext_binary) $(STATLIB) ; \
-	fi
-
-	# CRAN might even need more files to be gone, delete them here...
-	if [ "$(RPOLARS_CARGO_CLEAN_DEPS)" = "true" ]; then \
-		echo "clean up target, to not let R CMD check fail on rust files"; \
-		mv $(STATLIB) $(LIBDIR)/../temp_binary.a; \
-		rm -rf $(LIBDIR); \
-		mkdir $(LIBDIR); \
-		mv $(LIBDIR)/../temp_binary.a $(STATLIB); \
-		rm -rf -v ./src/.cargo; \
-	else \
-		echo "skip cleaning" ; \
+		rm -Rf "$(CARGOTMP)" "$(LIBDIR)/build"; \
 	fi
 
 C_clean:
-	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS)
+	rm -Rf "$(SHLIB)" "$(STATLIB)" "$(OBJECTS)"
 
 clean:
-	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) rust/target
+	rm -Rf "$(SHLIB)" "$(STATLIB)" "$(OBJECTS)" "$(TARGET_DIR)"
