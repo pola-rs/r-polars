@@ -87,24 +87,6 @@ print.RPolarsGroupBy = function(x, ...) {
 #'   pl$col("bar")$mean()$alias("bar_tail_sum")
 #' )
 GroupBy_agg = function(...) {
-<<<<<<< HEAD
-  if (isTRUE(attributes(self)[["is_rolling_group_by"]]) ||
-      isTRUE(attributes(self)[["is_dynamic_group_by"]])) {
-    class(self) = "RPolarsLazyGroupBy"
-    out = self$agg(unpack_list(..., .context = "in $agg():"))$collect(no_optimization = TRUE)
-    class(self) = "RPolarsGroupBy"
-  } else {
-    class(self) = "RPolarsDataFrame"
-    out = self$lazy()$clone()$group_by(
-      attr(self, "private")$groupby_input,
-      maintain_order = attr(self, "private")$maintain_order
-    )$
-      agg(...)$
-      collect(no_optimization = TRUE)
-    class(self) = "RPolarsGroupBy"
-  }
-  out
-=======
   prv = attr(self, "private")
   prv$dat$lazy()$group_by(
     prv$groupby_input,
@@ -112,7 +94,6 @@ GroupBy_agg = function(...) {
   )$
     agg(...)$
     collect(no_optimization = TRUE)
->>>>>>> main
 }
 
 
@@ -315,19 +296,6 @@ GroupBy_null_count = function() {
 #'
 #' gb$ungroup()
 GroupBy_ungroup = function() {
-<<<<<<< HEAD
-  if (isTRUE(attributes(self)[["is_rolling_group_by"]]) ||
-      isTRUE(attributes(self)[["is_dynamic_group_by"]])) {
-    class(self) = "RPolarsLazyGroupBy"
-    self = self$ungroup()$collect(no_optimization = TRUE)
-  } else {
-    self = .pr$DataFrame$clone_in_rust(self)
-    class(self) = "RPolarsDataFrame"
-    attr(self, "private") = NULL
-  }
-  self
-=======
   prv = attr(self, "private")
   prv$dat
->>>>>>> main
 }
