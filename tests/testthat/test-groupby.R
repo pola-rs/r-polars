@@ -328,7 +328,7 @@ test_that("group_by_dynamic for LazyFrame: arg 'start_by' works", {
     ),
     n = 0:6
   )$with_columns(
-    pl$col("dt")$str$strptime(pl$Datetime("ms"), format = NULL)$set_sorted()
+    pl$col("dt")$str$strptime(pl$Datetime("ms", tz = "UTC"), format = NULL)$set_sorted()
   )
 
   # TODO: any weekday should return the same since it is ignored when there's no
@@ -341,7 +341,8 @@ test_that("group_by_dynamic for LazyFrame: arg 'start_by' works", {
   expect_equal(
     actual[, "dt"],
     as.POSIXct(
-      c("2021-12-16 01:00:00 CET", "2021-12-16 02:00:00 CET", "2021-12-16 03:00:00 CET", "2021-12-16 04:00:00 CET")
+      c("2021-12-16 00:00:00 UTC", "2021-12-16 01:00:00 UTC", "2021-12-16 02:00:00 UTC", "2021-12-16 03:00:00 UTC"),
+      tz = "UTC"
     )
   )
 
