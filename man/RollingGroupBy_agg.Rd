@@ -14,7 +14,7 @@ list, e.g \verb{$agg(list(e1,e2,e3))}.}
 An aggregated \link[=DataFrame_class]{DataFrame}
 }
 \description{
-Aggregate a DataFrame over a rolling window created with \verb{$rolling()}
+Aggregate a DataFrame over a rolling window created with \verb{$rolling()}.
 }
 \examples{
 df = pl$DataFrame(

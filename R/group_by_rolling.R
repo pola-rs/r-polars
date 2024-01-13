@@ -68,7 +68,7 @@ print.RPolarsRollingGroupBy = function(x, ...) {
 
 #' Aggregate over a RollingGroupBy
 #'
-#' Aggregate a DataFrame over a rolling window created with `$rolling()`
+#' Aggregate a DataFrame over a rolling window created with `$rolling()`.
 #'
 #' @param ... Exprs to aggregate over. Those can also be passed wrapped in a
 #' list, e.g `$agg(list(e1,e2,e3))`.
@@ -93,13 +93,13 @@ RollingGroupBy_agg = function(...) {
   prv$dat$
     lazy()$
     rolling(
-      index_column = prv$index,
-      period = prv$period,
-      offset = prv$offset,
-      closed = prv$closed,
-      by = prv$by,
-      check_sorted = prv$check_sorted
-    )$
+    index_column = prv$index,
+    period = prv$period,
+    offset = prv$offset,
+    closed = prv$closed,
+    by = prv$by,
+    check_sorted = prv$check_sorted
+  )$
     agg(unpack_list(..., .context = "in $agg():"))$
     collect(no_optimization = TRUE)
 }
