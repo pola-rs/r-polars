@@ -25,7 +25,10 @@ RPolarsDynamicGroupBy = new.env(parent = emptyenv())
 #' The internal DynamicGroupBy constructor
 #' @return The input as grouped DataFrame
 #' @noRd
-construct_rolling_group_by = function(df, index_column, period, offset, closed, by, check_sorted) {
+construct_group_by_dynamic = function(
+    df, index_column, every, period, offset, include_boundaries, closed, label,
+    by, start_by, check_sorted
+) {
   if (!inherits(df, "RPolarsDataFrame")) {
     stop("internal error: construct_group called not on DataFrame")
   }
@@ -36,10 +39,14 @@ construct_rolling_group_by = function(df, index_column, period, offset, closed, 
   attr(out, "private") = list(
     dat = df$clone(),
     index_column = index_column,
+    every = every,
     period = period,
     offset = offset,
+    include_boundaries = include_boundaries,
     closed = closed,
+    label = label,
     by = by,
+    start_by = start_by,
     check_sorted = check_sorted
   )
   class(out) = "RPolarsDynamicGroupBy"
@@ -56,56 +63,46 @@ construct_rolling_group_by = function(df, index_column, period, offset, closed, 
 #'
 #' @examples
 #' df = pl$DataFrame(
-#'   dt = c("2020-01-01", "2020-01-01", "2020-01-01", "2020-01-02", "2020-01-03", "2020-01-08"),
-#'   a = c(3, 7, 5, 9, 2, 1)
-#' )$with_columns(
-#'   pl$col("dt")$str$strptime(pl$Date, format = NULL)$set_sorted()
+#'   time = pl$date_range(
+#'     start = strptime("2021-12-16 00:00:00", format = "%Y-%m-%d %H:%M:%S", tz = "UTC"),
+#'     end = strptime("2021-12-16 03:00:00", format = "%Y-%m-%d %H:%M:%S", tz = "UTC"),
+#'     interval = "30m",
+#'     eager = TRUE,
+#'   ),
+#'   n = 0:6
 #' )
 #'
-#' df$rolling(index_column = "dt", period = "2d")
+#' # get the sum in the following hour relative to the "time" column
+#' df$group_by_dynamic("time", every = "1h")
 print.RPolarsDynamicGroupBy = function(x, ...) {
-  prv = attr(x, "private")
-  .pr$DataFrame$print(prv$dat)
-  cat(paste("index column:", prv$index))
-  cat(paste("\nother groups:", toString(prv$by)))
-  cat(paste("\nperiod:", prv$period))
-  cat(paste("\noffset:", prv$offset))
-  cat(paste("\nclosed:", prv$closed))
+  .pr$DataFrame$print(attr(x, "private")$dat)
 }
 
 
 #' Aggregate over a DynamicGroupBy
 #'
-#' Aggregate a DataFrame over a rolling window created with `$rolling()`.
+#' Aggregate a DataFrame over a time or integer window created with
+#' `$group_by_dynamic()`.
 #'
 #' @param ... Exprs to aggregate over. Those can also be passed wrapped in a
 #' list, e.g `$agg(list(e1,e2,e3))`.
 #'
 #' @return An aggregated [DataFrame][DataFrame_class]
-#' @examples
-#' df = pl$DataFrame(
-#'   dt = c("2020-01-01", "2020-01-01", "2020-01-01", "2020-01-02", "2020-01-03", "2020-01-08"),
-#'   a = c(3, 7, 5, 9, 2, 1)
-#' )$with_columns(
-#'   pl$col("dt")$str$strptime(pl$Date, format = NULL)$set_sorted()
-#' )
-#'
-#' df$rolling(index_column = "dt", period = "2d")$agg(
-#'   pl$col("a"),
-#'   pl$sum("a")$alias("sum_a"),
-#'   pl$min("a")$alias("min_a"),
-#'   pl$max("a")$alias("max_a")
-#' )
+#' @inherit DataFrame_group_by_dynamic examples
 DynamicGroupBy_agg = function(...) {
   prv = attr(self, "private")
   prv$dat$
     lazy()$
-    rolling(
-      index_column = prv$index,
+    group_by_dynamic(
+      index_column = prv$index_column,
+      every = prv$every,
       period = prv$period,
       offset = prv$offset,
+      include_boundaries = prv$include_boundaries,
       closed = prv$closed,
+      label = prv$label,
       by = prv$by,
+      start_by = prv$start_by,
       check_sorted = prv$check_sorted
     )$
     agg(unpack_list(..., .context = "in $agg():"))$
@@ -114,19 +111,23 @@ DynamicGroupBy_agg = function(...) {
 
 #' Ungroup a DynamicGroupBy object
 #'
-#' Revert the `$rolling()` operation. Doing `<DataFrame>$rolling(...)$ungroup()`
-#' returns the original `DataFrame`.
+#' Revert the `$group_by_dynamic()` operation. Doing
+#' `<DataFrame>$group_by_dynamic(...)$ungroup()` returns the original `DataFrame`.
 #'
 #' @return [DataFrame][DataFrame_class]
 #' @examples
 #' df = pl$DataFrame(
-#'   dt = c("2020-01-01", "2020-01-01", "2020-01-01", "2020-01-02", "2020-01-03", "2020-01-08"),
-#'   a = c(3, 7, 5, 9, 2, 1)
-#' )$with_columns(
-#'   pl$col("dt")$str$strptime(pl$Date, format = NULL)$set_sorted()
+#'   time = pl$date_range(
+#'     start = strptime("2021-12-16 00:00:00", format = "%Y-%m-%d %H:%M:%S", tz = "UTC"),
+#'     end = strptime("2021-12-16 03:00:00", format = "%Y-%m-%d %H:%M:%S", tz = "UTC"),
+#'     interval = "30m",
+#'     eager = TRUE,
+#'   ),
+#'   n = 0:6
 #' )
+#' df
 #'
-#' df$rolling(index_column = "dt", period = "2d")$ungroup()
+#' df$group_by_dynamic("time", every = "1h")$ungroup()
 DynamicGroupBy_ungroup = function() {
   prv = attr(self, "private")
   prv$dat

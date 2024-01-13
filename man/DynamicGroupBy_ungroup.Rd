@@ -10,16 +10,20 @@ DynamicGroupBy_ungroup()
 \link[=DataFrame_class]{DataFrame}
 }
 \description{
-Revert the \verb{$rolling()} operation. Doing \verb{<DataFrame>$rolling(...)$ungroup()}
-returns the original \code{DataFrame}.
+Revert the \verb{$group_by_dynamic()} operation. Doing
+\verb{<DataFrame>$group_by_dynamic(...)$ungroup()} returns the original \code{DataFrame}.
 }
 \examples{
 df = pl$DataFrame(
-  dt = c("2020-01-01", "2020-01-01", "2020-01-01", "2020-01-02", "2020-01-03", "2020-01-08"),
-  a = c(3, 7, 5, 9, 2, 1)
-)$with_columns(
-  pl$col("dt")$str$strptime(pl$Date, format = NULL)$set_sorted()
+  time = pl$date_range(
+    start = strptime("2021-12-16 00:00:00", format = "\%Y-\%m-\%d \%H:\%M:\%S", tz = "UTC"),
+    end = strptime("2021-12-16 03:00:00", format = "\%Y-\%m-\%d \%H:\%M:\%S", tz = "UTC"),
+    interval = "30m",
+    eager = TRUE,
+  ),
+  n = 0:6
 )
+df
 
-df$rolling(index_column = "dt", period = "2d")$ungroup()
+df$group_by_dynamic("time", every = "1h")$ungroup()
 }

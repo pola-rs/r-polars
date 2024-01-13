@@ -1910,11 +1910,14 @@ DataFrame_group_by_dynamic = function(
     by = NULL,
     start_by = "window",
     check_sorted = TRUE) {
-  out = self$lazy()$group_by_dynamic(
-    index_column, every, period, offset, include_boundaries, closed, label, by,
-    start_by, check_sorted
+  if (is.null(offset)) {
+    offset = paste0("-", every)
+  }
+  if (is.null(period)) {
+    period = every
+  }
+  construct_group_by_dynamic(
+    self, index_column, every, period, offset, include_boundaries, closed, label,
+    by, start_by, check_sorted
   )
-  attr(out, "is_dynamic_group_by") = TRUE
-  class(out) = "RPolarsGroupBy"
-  out
 }
