@@ -1,10 +1,10 @@
 TARGET ?= @RUST_TARGET@
-R_POLARS_PROFILE ?= release
-R_POLARS_FEATURES ?=
+LIBR_POLARS_PROFILE ?= release
+LIBR_POLARS_FEATURES ?=
 
 LIBNAME = libr_polars.a
 TARGET_DIR = $(CURDIR)/rust/target
-LIBDIR = $(TARGET_DIR)/$(TARGET)/$(R_POLARS_PROFILE)
+LIBDIR = $(TARGET_DIR)/$(TARGET)/$(LIBR_POLARS_PROFILE)
 STATLIB = $(LIBDIR)/$(LIBNAME)
 PKG_LIBS = -L$(LIBDIR) -lr_polars @ADDITIONAL_PKG_LIBS_FLAG@
 
@@ -26,7 +26,7 @@ $(STATLIB):
 	fi && \
 		export PATH="$(PATH):$(HOME)/.cargo/bin" && \
 		cargo build --lib --manifest-path="$(CURDIR)/rust/Cargo.toml" --target-dir "$(TARGET_DIR)" --target="$(TARGET)" \
-			--profile="$(R_POLARS_PROFILE)" --features="$(R_POLARS_FEATURES)"
+			--profile="$(LIBR_POLARS_PROFILE)" --features="$(LIBR_POLARS_FEATURES)"
 
 	if [ "true" != "true" ]; then \
 		rm -Rf "$(CARGOTMP)" "$(LIBDIR)/build"; \

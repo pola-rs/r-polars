@@ -39,9 +39,9 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  R_POLARS_FEATURES: "full_features"
+  LIBR_POLARS_FEATURES: "full_features"
   LIBR_POLARS_BUILD: "true"
-  R_POLARS_PROFILE: release
+  LIBR_POLARS_PROFILE: release
 
 jobs:
   documentation:

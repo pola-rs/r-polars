@@ -121,7 +121,7 @@ polars_info()
 At this time, the following environment variables can be used to change the Rust library build time options.
 
 - `RPOLARS_FULL_FEATURES="true"` (Build with nightly feature enabled, requires Rust nightly toolchain `r rust_toolchain_version`)
-- `R_POLARS_PROFILE="release-optimized"` (Build with more optimization)
+- `LIBR_POLARS_PROFILE="release-optimized"` (Build with more optimization)
 
 ### Minimum Supported Rust Version (MSRV)
 
