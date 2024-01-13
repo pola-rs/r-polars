@@ -108,6 +108,10 @@ as_polars_df.RPolarsRollingGroupBy = as_polars_df.RPolarsGroupBy
 
 #' @rdname as_polars_df
 #' @export
+as_polars_df.RPolarsDynamicGroupBy = as_polars_df.RPolarsGroupBy
+
+#' @rdname as_polars_df
+#' @export
 as_polars_df.RPolarsSeries = function(x, ...) {
   pl$DataFrame(x)
 }
