@@ -38,3 +38,27 @@
       & carb    <f64> 4, 4, 1, 1, 2, 1, 4, 2, 2, 4
       & literal <i8>  42, 42, 42, 42, 42, 42, 42, 42, 42, 42
 
+# rolling for DataFrame: prints all info
+
+    Code
+      df$rolling(index_column = "dt", period = "2i")
+    Output
+      shape: (6, 2)
+      ┌───────┬─────┐
+      │ index ┆ a   │
+      │ ---   ┆ --- │
+      │ f64   ┆ f64 │
+      ╞═══════╪═════╡
+      │ 1.0   ┆ 3.0 │
+      │ 2.0   ┆ 7.0 │
+      │ 3.0   ┆ 5.0 │
+      │ 4.0   ┆ 9.0 │
+      │ 5.0   ┆ 2.0 │
+      │ 6.0   ┆ 1.0 │
+      └───────┴─────┘
+      index column: dt
+      other groups: 
+      period: 2i
+      offset: -2i
+      closed: right
+

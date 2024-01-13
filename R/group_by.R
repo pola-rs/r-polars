@@ -12,7 +12,6 @@
 NULL
 
 
-
 RPolarsGroupBy = new.env(parent = emptyenv())
 
 #' @export
@@ -25,28 +24,30 @@ RPolarsGroupBy = new.env(parent = emptyenv())
 #' @export
 `[[.RPolarsGroupBy` = `$.RPolarsGroupBy`
 
-#' @title auto complete $-access into a polars object
-#' @description called by the interactive R session internally
-#' @param x GroupBy
-#' @param pattern code-stump as string to auto-complete
-#' @return char vec
 #' @export
-#' @inherit .DollarNames.RPolarsDataFrame return
 #' @noRd
 .DollarNames.RPolarsGroupBy = function(x, pattern = "") {
   paste0(ls(RPolarsGroupBy, pattern = pattern), "()")
 }
 
-
 #' The internal GroupBy constructor
 #' @return The input as grouped DataFrame
 #' @noRd
 construct_group_by = function(df, groupby_input, maintain_order) {
-  if (!inherits(df, "RPolarsDataFrame")) stop("internal error: construct_group called not on DataFrame")
-  df = df$clone()
-  attr(df, "private") = list(groupby_input = unlist(groupby_input), maintain_order = maintain_order)
-  class(df) = "RPolarsGroupBy"
-  df
+  if (!inherits(df, "RPolarsDataFrame")) {
+    stop("internal error: construct_group called not on DataFrame")
+  }
+  # Make an empty object. Store everything (including data) in attributes, so
+  # that we can keep the RPolarsDataFrame class on the data but still return
+  # a RPolarsGroupBy object here.
+  out = c(" ")
+  attr(out, "private") = list(
+    dat = df$clone(),
+    groupby_input = unlist(groupby_input),
+    maintain_order = maintain_order
+  )
+  class(out) = "RPolarsGroupBy"
+  out
 }
 
 
@@ -58,13 +59,13 @@ construct_group_by = function(df, groupby_input, maintain_order) {
 #' @return self
 #' @export
 #'
-#' @examples pl$DataFrame(iris)$group_by("Species")
+#' @examples
+#' pl$DataFrame(iris)$group_by("Species")
 print.RPolarsGroupBy = function(x, ...) {
-  .pr$DataFrame$print(x)
-  cat("groups: ")
   prv = attr(x, "private")
-  cat(toString(prv$groupby_input))
-  cat("\nmaintain order: ", prv$maintain_order)
+  .pr$DataFrame$print(prv$dat)
+  cat("groups:", toString(prv$groupby_input))
+  cat("\nmaintain order:", prv$maintain_order)
   invisible(x)
 }
 
@@ -86,18 +87,13 @@ print.RPolarsGroupBy = function(x, ...) {
 #'   pl$col("bar")$mean()$alias("bar_tail_sum")
 #' )
 GroupBy_agg = function(...) {
-  if (isTRUE(attributes(self)[["is_rolling_group_by"]])) {
-    class(self) = "RPolarsLazyGroupBy"
-    self$agg(unpack_list(..., .context = "in $agg():"))$collect(no_optimization = TRUE)
-  } else {
-    class(self) = "RPolarsDataFrame"
-    self$lazy()$group_by(
-      attr(self, "private")$groupby_input,
-      maintain_order = attr(self, "private")$maintain_order
-    )$
-      agg(...)$
-      collect(no_optimization = TRUE)
-  }
+  prv = attr(self, "private")
+  prv$dat$lazy()$group_by(
+    prv$groupby_input,
+    maintain_order = prv$maintain_order
+  )$
+    agg(...)$
+    collect(no_optimization = TRUE)
 }
 
 
@@ -300,13 +296,6 @@ GroupBy_null_count = function() {
 #'
 #' gb$ungroup()
 GroupBy_ungroup = function() {
-  if (isTRUE(attributes(self)[["is_rolling_group_by"]])) {
-    class(self) = "RPolarsLazyGroupBy"
-    self = self$ungroup()$collect(no_optimization = TRUE)
-  } else {
-    self = .pr$DataFrame$clone_in_rust(self)
-    class(self) = "RPolarsDataFrame"
-    attr(self, "private") = NULL
-  }
-  self
+  prv = attr(self, "private")
+  prv$dat
 }

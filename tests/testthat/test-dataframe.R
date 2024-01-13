@@ -1267,6 +1267,15 @@ test_that("rolling for DataFrame: basic example", {
   )
 })
 
+test_that("rolling for DataFrame: prints all info", {
+  df = pl$DataFrame(
+    index = c(1:5, 6.0),
+    a = c(3, 7, 5, 9, 2, 1)
+  )$with_columns(pl$col("index")$set_sorted())
+
+  expect_snapshot(df$rolling(index_column = "dt", period = "2i"))
+})
+
 test_that("rolling for DataFrame: can be ungrouped", {
   df = pl$DataFrame(
     index = c(1:5, 6.0),

@@ -102,6 +102,9 @@ as_polars_df.RPolarsGroupBy = function(x, ...) {
   x$ungroup()
 }
 
+#' @rdname as_polars_df
+#' @export
+as_polars_df.RPolarsRollingGroupBy = as_polars_df.RPolarsGroupBy
 
 #' @rdname as_polars_df
 #' @export
