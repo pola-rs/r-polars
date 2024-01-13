@@ -27,7 +27,7 @@ for grouped data).
 
 We can apply functions directly on a `DataFrame` or `LazyFrame`, such as `rename()`
 or `drop()`. Most functions that can be applied to `DataFrame`s can also be used 
-on `LazyFrame`s, but some are specific to one or the other: 
+on `LazyFrame`s, but some are specific to one or the other. For example: 
 
 * `$lazy()` converts a `DataFrame` to a `LazyFrame`, and therefore only exists µ
   for `DataFrame`
