@@ -36,7 +36,7 @@ out = list()
 # order determines order in sidebar
 classes = c(
   "pl", "Series", "DataFrame", "LazyFrame", "GroupBy",
-  "LazyGroupBy", "ExprList", "ExprBin", "ExprCat", "ExprDT",
+  "LazyGroupBy", "RollingGroupBy", "ExprList", "ExprBin", "ExprCat", "ExprDT",
   "ExprMeta", "ExprName", "ExprStr", "ExprStruct",
   "Expr", "IO", "RField", "RThreadHandle", "SQLContext", "S3"
 )

@@ -12,6 +12,8 @@ make_as_polars_df_cases = function() {
     "polars_lf", pl$LazyFrame(test_df),
     "polars_group_by", pl$DataFrame(test_df)$group_by("col_int"),
     "polars_lazy_group_by", pl$LazyFrame(test_df)$group_by("col_int"),
+    "polars_rolling_group_by", pl$DataFrame(test_df)$rolling("col_int", period = "1i"),
+    "polars_lazy_rolling_group_by", pl$LazyFrame(test_df)$rolling("col_int", period = "1i"),
     "arrow Table", arrow::as_arrow_table(test_df)
   )
 }

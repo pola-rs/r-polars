@@ -91,6 +91,7 @@ Collate:
     'functions__lazy.R'
     'functions__whenthen.R'
     'group_by.R'
+    'group_by_rolling.R'
     'info.R'
     'ipc.R'
     'is_polars.R'

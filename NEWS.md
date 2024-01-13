@@ -4,11 +4,13 @@
 
 ### What's changed
 
--   New method `$rolling()` for `DataFrame` and `LazyFrame` (#682).
--   New method `$sink_ndjson()` for `LazyFrame` (#681).
+-   New method `$rolling()` for `DataFrame` and `LazyFrame`. When this is
+    applied, it creates an object of class `RPolarsRollingGroupBy` (#682, #694).
+-   New method `$group_by_dynamic()` for `DataFrame` and `LazyFrame`. When this 
+    is applied, it creates an object of class `RPolarsDynamicGroupBy` (#691).
+-   New method `$sink_ndjson()` for LazyFrame (#681).
 -   New function `pl$duration()` to create a duration by components (week, day,
     hour, etc.), and use them with date(time) variables (#692).
--   New method `$group_by_dynamic()` for `DataFrame` and `LazyFrame` (#691).
 
 ## polars 0.12.2
 
