@@ -192,7 +192,7 @@ test_that("group_by_dynamic for DataFrame calls the LazyFrame method", {
 
 test_that("group_by_dynamic for LazyFrame: date variable", {
   df = pl$LazyFrame(
-    dt = as.Date(as.Date("2021-12-16"):as.Date("2021-12-22")),
+    dt = as.Date(as.Date("2021-12-16"):as.Date("2021-12-22"), origin = "1970-01-01"),
     n = 0:6
   )$with_columns(
     pl$col("dt")$set_sorted()
