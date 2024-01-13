@@ -1,17 +1,8 @@
-#' @title Operations on Polars grouped DataFrame
-#' @return not applicable
-#' @details The RollingGroupBy class in R, is just another interface on top of the DataFrame(R wrapper class) in
-#' rust polars. Groupby does not use the rust api for groupby+agg because the groupby-struct is a
-#' reference to a DataFrame and that reference will share lifetime with its parent DataFrame. There
-#' is no way to expose lifetime limited objects via extendr currently (might be quirky anyhow with R
-#'  GC). Instead the inputs for the groupby are just stored on R side, until also agg is called.
-#' Which will end up in a self-owned DataFrame object and all is fine. groupby aggs are performed
-#' via the rust polars LazyGroupBy methods, see DataFrame.groupby_agg method.
+#' Operations on Polars DataFrame grouped by rolling windows
 #'
+#' @return not applicable
 #' @name RollingGroupBy_class
 NULL
-
-
 
 RPolarsRollingGroupBy = new.env(parent = emptyenv())
 
@@ -25,13 +16,7 @@ RPolarsRollingGroupBy = new.env(parent = emptyenv())
 #' @export
 `[[.RPolarsRollingGroupBy` = `$.RPolarsRollingGroupBy`
 
-#' @title auto complete $-access into a polars object
-#' @description called by the interactive R session internally
-#' @param x RollingGroupBy
-#' @param pattern code-stump as string to auto-complete
-#' @return char vec
 #' @export
-#' @inherit .DollarNames.RPolarsDataFrame return
 #' @noRd
 .DollarNames.RPolarsRollingGroupBy = function(x, pattern = "") {
   paste0(ls(RPolarsRollingGroupBy, pattern = pattern), "()")
@@ -44,8 +29,12 @@ construct_rolling_group_by = function(df, index_column, period, offset, closed, 
   if (!inherits(df, "RPolarsDataFrame")) {
     stop("internal error: construct_group called not on DataFrame")
   }
-  df = df$clone()
-  attr(df, "private") = list(
+  # Make an empty object. Store everything (including data) in attributes, so
+  # that we can keep the RPolarsDataFrame class on the data but still return
+  # a RPolarsRollingGroupBy object here.
+  out = c(" ")
+  attr(out, "private") = list(
+    dat = df$clone(),
     index_column = index_column,
     period = period,
     offset = offset,
@@ -53,8 +42,8 @@ construct_rolling_group_by = function(df, index_column, period, offset, closed, 
     by = by,
     check_sorted = check_sorted
   )
-  class(df) = "RPolarsRollingGroupBy"
-  df
+  class(out) = "RPolarsRollingGroupBy"
+  out
 }
 
 #' print RollingGroupBy
@@ -67,53 +56,70 @@ construct_rolling_group_by = function(df, index_column, period, offset, closed, 
 #'
 #' @examples pl$DataFrame(iris)$group_by("Species")
 print.RPolarsRollingGroupBy = function(x, ...) {
-  .pr$DataFrame$print(x)
   prv = attr(x, "private")
-  index = prv$index_column
-  period = prv$period
-  offset = prv$offset
-  closed = prv$closed
-  by = prv$by
-  cat(paste("index column:", index))
-  cat(paste("\nother groups:", toString(by)))
-  cat(paste("\nperiod:", period))
-  cat(paste("\noffset:", offset))
-  cat(paste("\nclosed:", closed))
-  invisible(x)
+  .pr$DataFrame$print(prv$dat)
+  cat(paste("index column:", prv$index))
+  cat(paste("\nother groups:", toString(prv$by)))
+  cat(paste("\nperiod:", prv$period))
+  cat(paste("\noffset:", prv$offset))
+  cat(paste("\nclosed:", prv$closed))
 }
 
 
 #' Aggregate over a RollingGroupBy
-#' @description Aggregate a DataFrame over a groupby
-#' @param ... exprs to aggregate over.
-#' ... args can also be passed wrapped in a list `$agg(list(e1,e2,e3))`
-#' @return aggregated DataFrame
-#' @aliases agg
+#'
+#' Aggregate a DataFrame over a rolling window created with `$rolling()`
+#'
+#' @param ... Exprs to aggregate over. Those can also be passed wrapped in a
+#' list, e.g `$agg(list(e1,e2,e3))`.
+#'
+#' @return An aggregated [DataFrame][DataFrame_class]
 #' @examples
-#' pl$DataFrame(
-#'   foo = c("one", "two", "two", "one", "two"),
-#'   bar = c(5, 3, 2, 4, 1)
-#' )$
-#'   group_by("foo")$
-#'   agg(
-#'   pl$col("bar")$sum()$name$suffix("_sum"),
-#'   pl$col("bar")$mean()$alias("bar_tail_sum")
+#' df = pl$DataFrame(
+#'   dt = c("2020-01-01", "2020-01-01", "2020-01-01", "2020-01-02", "2020-01-03", "2020-01-08"),
+#'   a = c(3, 7, 5, 9, 2, 1)
+#' )$with_columns(
+#'   pl$col("dt")$str$strptime(pl$Date, format = NULL)$set_sorted()
+#' )
+#'
+#' df$rolling(index_column = "dt", period = "2d")$agg(
+#'   pl$col("a"),
+#'   pl$sum("a")$alias("sum_a"),
+#'   pl$min("a")$alias("min_a"),
+#'   pl$max("a")$alias("max_a")
 #' )
 RollingGroupBy_agg = function(...) {
-  class(self) = "RPolarsLazyGroupBy"
-  self$agg(unpack_list(..., .context = "in $agg():"))$collect(no_optimization = TRUE)
+  prv = attr(self, "private")
+  prv$dat$
+    lazy()$
+    rolling(
+      index_column = prv$index,
+      period = prv$period,
+      offset = prv$offset,
+      closed = prv$closed,
+      by = prv$by,
+      check_sorted = prv$check_sorted
+    )$
+    agg(unpack_list(..., .context = "in $agg():"))$
+    collect(no_optimization = TRUE)
 }
 
-#' RollingGroupBy_ungroup
+#' Ungroup a RollingGroupBy object
 #'
-#' Revert the group by operation.
+#' Revert the `$rolling()` operation. Doing `<DataFrame>$rolling(...)$ungroup()`
+#' returns the original `DataFrame`.
+#'
 #' @return [DataFrame][DataFrame_class]
 #' @examples
-#' gb = pl$DataFrame(mtcars)$group_by("cyl")
-#' gb
+#' df = pl$DataFrame(
+#'   dt = c("2020-01-01", "2020-01-01", "2020-01-01", "2020-01-02", "2020-01-03", "2020-01-08"),
+#'   a = c(3, 7, 5, 9, 2, 1)
+#' )$with_columns(
+#'   pl$col("dt")$str$strptime(pl$Date, format = NULL)$set_sorted()
+#' )
 #'
-#' gb$ungroup()
+#' df$rolling(index_column = "dt", period = "2d")$ungroup()
 RollingGroupBy_ungroup = function() {
-  class(self) = "RPolarsLazyGroupBy"
-  self$ungroup()$collect(no_optimization = TRUE)
+  prv = attr(self, "private")
+  prv$dat
 }

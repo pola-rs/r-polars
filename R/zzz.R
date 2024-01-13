@@ -22,6 +22,9 @@ replace_private_with_pub_methods(RPolarsLazyFrame, "^LazyFrame_")
 # LazyGroupBy
 replace_private_with_pub_methods(RPolarsLazyGroupBy, "^LazyGroupBy_")
 
+# LazyGroupBy
+replace_private_with_pub_methods(RPolarsRollingGroupBy, "^RollingGroupBy_")
+
 # Expr
 replace_private_with_pub_methods(RPolarsExpr, "^Expr_")
 
