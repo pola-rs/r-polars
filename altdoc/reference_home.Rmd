@@ -29,8 +29,7 @@ We can apply functions directly on a `DataFrame` or `LazyFrame`, such as `rename
 or `drop()`. Most functions that can be applied to `DataFrame`s can also be used 
 on `LazyFrame`s, but some are specific to one or the other. For example: 
 
-* `$lazy()` converts a `DataFrame` to a `LazyFrame`, and therefore only exists 
-  for `DataFrame`;
+* `$equals()` exists for `DataFrame` but not for `LazyFrame`;
 * `$collect()` executes a lazy query, which means it can only be applied on 
   a `LazyFrame`.
 
