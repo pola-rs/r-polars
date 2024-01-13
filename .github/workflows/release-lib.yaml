@@ -24,7 +24,7 @@ defaults:
 
 env:
   LIB_NAME: libr_polars
-  RPOLARS_FULL_FEATURES: "true"
+  R_POLARS_FEATURES: "full_features"
   R_POLARS_PROFILE: release-optimized
 
 jobs:

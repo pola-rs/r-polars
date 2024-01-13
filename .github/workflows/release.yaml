@@ -23,7 +23,7 @@ defaults:
     shell: bash
 
 env:
-  RPOLARS_FULL_FEATURES: "true"
+  R_POLARS_FEATURES: "full_features"
   R_POLARS_PROFILE: release-optimized
   NOT_CRAN: "true"
 

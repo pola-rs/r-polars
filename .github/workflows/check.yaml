@@ -82,7 +82,7 @@ jobs:
       - name: Set env vars for build option
         if: matrix.config.full-features
         run: |
-          echo "RPOLARS_FULL_FEATURES=true" >>$GITHUB_ENV
+          echo "R_POLARS_FEATURES=full_features" >>$GITHUB_ENV
           echo "R_POLARS_PROFILE=release" >>$GITHUB_ENV
 
       - uses: ./.github/actions/setup

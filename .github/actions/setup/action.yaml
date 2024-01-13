@@ -15,7 +15,7 @@ runs:
   using: composite
   steps:
       - name: Update Rust
-        if: inputs.rust-nightly != 'true' && env.RPOLARS_FULL_FEATURES != 'true'
+        if: inputs.rust-nightly != 'true' && env.R_POLARS_FEATURES == ''
         shell: bash
         run: |
           rustup update
@@ -27,7 +27,7 @@ runs:
           repo-token: ${{ inputs.token }}
 
       - name: Set up Rust nightly toolchain
-        if: inputs.rust-nightly == 'true' || env.RPOLARS_FULL_FEATURES == 'true'
+        if: inputs.rust-nightly == 'true' || env.R_POLARS_FEATURES != ''
         shell: bash
         run: |
           task setup-rust-toolchain
