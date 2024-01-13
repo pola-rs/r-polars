@@ -2427,10 +2427,7 @@ fn f_str_to_titlecase(expr: &RPolarsExpr) -> RResult<RPolarsExpr> {
     return (Ok(expr.0.clone().str().to_titlecase().into()));
 
     #[cfg(not(feature = "simd"))]
-    rerr().plain(
-        "$to_titlecase() is only available with 'simd' enabled. Try our github \
-    binary releases or compile with env var RPOLARS_FULL_FEATURES = 'true'",
-    )
+    rerr().plain("$to_titlecase() is only available with the 'simd' feature")
 }
 
 //allow proto expression that yet only are strings

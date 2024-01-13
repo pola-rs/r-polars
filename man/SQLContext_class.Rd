@@ -7,7 +7,7 @@
 Run SQL queries against DataFrame/LazyFrame data.
 }
 \details{
-Currently, only available when built with the \code{full} feature.
+Currently, only available when built with the "sql" feature.
 See \link{polars_info} for more information.
 }
 \examples{
