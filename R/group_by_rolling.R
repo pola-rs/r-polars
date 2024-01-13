@@ -54,7 +54,15 @@ construct_rolling_group_by = function(df, index_column, period, offset, closed, 
 #' @return self
 #' @export
 #'
-#' @examples pl$DataFrame(iris)$group_by("Species")
+#' @examples
+#' df = pl$DataFrame(
+#'   dt = c("2020-01-01", "2020-01-01", "2020-01-01", "2020-01-02", "2020-01-03", "2020-01-08"),
+#'   a = c(3, 7, 5, 9, 2, 1)
+#' )$with_columns(
+#'   pl$col("dt")$str$strptime(pl$Date, format = NULL)$set_sorted()
+#' )
+#'
+#' df$rolling(index_column = "dt", period = "2d")
 print.RPolarsRollingGroupBy = function(x, ...) {
   prv = attr(x, "private")
   .pr$DataFrame$print(prv$dat)
