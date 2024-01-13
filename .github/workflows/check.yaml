@@ -83,7 +83,7 @@ jobs:
         if: matrix.config.full-features
         run: |
           echo "RPOLARS_FULL_FEATURES=true" >>$GITHUB_ENV
-          echo "RPOLARS_PROFILE=release" >>$GITHUB_ENV
+          echo "R_POLARS_PROFILE=release" >>$GITHUB_ENV
 
       - uses: ./.github/actions/setup
         with:
