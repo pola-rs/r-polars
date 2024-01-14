@@ -4,7 +4,7 @@
 \alias{pl_scan_ndjson}
 \title{New LazyFrame from NDJSON}
 \usage{
-pl_scan_ndjson(
+pl$scan_ndjson(
   path,
   infer_schema_length = 100,
   batch_size = NULL,

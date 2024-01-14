@@ -5,7 +5,7 @@
 \alias{\%/\%.RPolarsExpr}
 \title{Floor divide two expressions}
 \usage{
-Expr_floor_div(other)
+<Expr>$floor_div(other)
 
 \method{\%/\%}{RPolarsExpr}(e1, e2)
 }

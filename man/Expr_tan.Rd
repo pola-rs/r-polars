@@ -4,7 +4,7 @@
 \alias{Expr_tan}
 \title{Compute tangent}
 \usage{
-Expr_tan
+<Expr>$tan
 }
 \value{
 Expr

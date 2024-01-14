@@ -5,7 +5,7 @@
 \alias{<=.RPolarsExpr}
 \title{Check lower or equal inequality}
 \usage{
-Expr_lt_eq(other)
+<Expr>$lt_eq(other)
 
 \method{<=}{RPolarsExpr}(e1, e2)
 }

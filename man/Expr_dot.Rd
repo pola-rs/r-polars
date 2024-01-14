@@ -4,7 +4,7 @@
 \alias{Expr_dot}
 \title{Dot product}
 \usage{
-Expr_dot(other)
+<Expr>$dot(other)
 }
 \arguments{
 \item{other}{Literal or object that can be converted to a literal}

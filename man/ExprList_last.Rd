@@ -8,7 +8,7 @@
 function
 }
 \usage{
-ExprList_last()
+<Expr>$list$last()
 }
 \value{
 Expr

@@ -4,7 +4,7 @@
 \alias{GroupBy_min}
 \title{GroupBy Min}
 \usage{
-GroupBy_min()
+<GroupBy>$min()
 }
 \value{
 aggregated DataFrame

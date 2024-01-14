@@ -4,7 +4,7 @@
 \alias{DataFrame_min}
 \title{Min}
 \usage{
-DataFrame_min()
+<DataFrame>$min()
 }
 \value{
 A DataFrame with one row.

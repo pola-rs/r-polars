@@ -4,7 +4,7 @@
 \alias{LazyFrame_join}
 \title{Join LazyFrames}
 \usage{
-LazyFrame_join(
+<LazyFrame>$join(
   other,
   left_on = NULL,
   right_on = NULL,

@@ -4,7 +4,7 @@
 \alias{pl_concat}
 \title{Concat polars objects}
 \usage{
-pl_concat(
+pl$concat(
   ...,
   how = c("vertical", "vertical_relaxed", "horizontal", "diagonal", "diagonal_relaxed"),
   rechunk = TRUE,

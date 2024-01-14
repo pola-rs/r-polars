@@ -4,7 +4,7 @@
 \alias{LazyFrame_sink_ipc}
 \title{Stream the output of a query to an Arrow IPC file}
 \usage{
-LazyFrame_sink_ipc(
+<LazyFrame>$sink_ipc(
   path,
   compression = "zstd",
   maintain_order = TRUE,

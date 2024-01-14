@@ -4,7 +4,7 @@
 \alias{LazyFrame_limit}
 \title{Limit a LazyFrame}
 \usage{
-LazyFrame_limit(n)
+<LazyFrame>$limit(n)
 }
 \arguments{
 \item{n}{Positive number not larger than 2^32.}

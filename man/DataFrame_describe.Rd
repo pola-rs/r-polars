@@ -4,7 +4,7 @@
 \alias{DataFrame_describe}
 \title{Summary statistics for a DataFrame}
 \usage{
-DataFrame_describe(percentiles = c(0.25, 0.75))
+<DataFrame>$describe(percentiles = c(0.25, 0.75))
 }
 \arguments{
 \item{percentiles}{One or more percentiles to include in the summary statistics.

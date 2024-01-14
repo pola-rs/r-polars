@@ -4,7 +4,7 @@
 \alias{RollingGroupBy_ungroup}
 \title{Ungroup a RollingGroupBy object}
 \usage{
-RollingGroupBy_ungroup()
+Rolling<GroupBy>$ungroup()
 }
 \value{
 \link[=DataFrame_class]{DataFrame}

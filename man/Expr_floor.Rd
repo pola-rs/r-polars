@@ -4,7 +4,7 @@
 \alias{Expr_floor}
 \title{Floor}
 \usage{
-Expr_floor
+<Expr>$floor
 }
 \value{
 Expr

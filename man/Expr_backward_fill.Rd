@@ -4,7 +4,7 @@
 \alias{Expr_backward_fill}
 \title{Fill null values backward}
 \usage{
-Expr_backward_fill(limit = NULL)
+<Expr>$backward_fill(limit = NULL)
 }
 \arguments{
 \item{limit}{Number of consecutive null values to fill when using the

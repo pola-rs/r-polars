@@ -4,7 +4,7 @@
 \alias{DataFrame_with_row_count}
 \title{Add a column for row indices}
 \usage{
-DataFrame_with_row_count(name, offset = NULL)
+<DataFrame>$with_row_count(name, offset = NULL)
 }
 \arguments{
 \item{name}{string name of the created column}

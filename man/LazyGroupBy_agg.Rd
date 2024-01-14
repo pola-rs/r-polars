@@ -4,7 +4,7 @@
 \alias{LazyGroupBy_agg}
 \title{LazyGroupBy_agg}
 \usage{
-LazyGroupBy_agg(...)
+Lazy<GroupBy>$agg(...)
 }
 \arguments{
 \item{...}{exprs to aggregate over.

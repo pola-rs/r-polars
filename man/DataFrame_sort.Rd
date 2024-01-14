@@ -4,7 +4,7 @@
 \alias{DataFrame_sort}
 \title{Sort a DataFrame}
 \usage{
-DataFrame_sort(
+<DataFrame>$sort(
   by,
   ...,
   descending = FALSE,

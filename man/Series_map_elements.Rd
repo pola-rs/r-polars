@@ -5,7 +5,7 @@
 \alias{apply}
 \title{Apply every value with an R fun}
 \usage{
-Series_map_elements(
+<Series>$map_elements(
   fun,
   datatype = NULL,
   strict_return_type = TRUE,
@@ -29,7 +29,7 @@ About as slow as regular non-vectorized R. Similar to using R sapply on a vector
 }
 \examples{
 s = pl$Series(letters[1:5], "ltrs")
-f = \(x) paste(x, ":", as.integer(charToRaw(x)))
+f = \\(x) paste(x, ":", as.integer(charToRaw(x)))
 s$map_elements(f, pl$String)
 
 # same as

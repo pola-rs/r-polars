@@ -4,7 +4,7 @@
 \alias{DataFrame_drop}
 \title{Drop columns of a DataFrame}
 \usage{
-DataFrame_drop(columns)
+<DataFrame>$drop(columns)
 }
 \arguments{
 \item{columns}{A character vector with the names of the column(s) to remove.}

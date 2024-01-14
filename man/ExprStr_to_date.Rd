@@ -4,7 +4,7 @@
 \alias{ExprStr_to_date}
 \title{Convert a String column into a Date column}
 \usage{
-ExprStr_to_date(format = NULL, strict = TRUE, exact = TRUE, cache = TRUE)
+<Expr>$str$to_date(format = NULL, strict = TRUE, exact = TRUE, cache = TRUE)
 }
 \arguments{
 \item{format}{Format to use for conversion. See \code{?strptime} for possible

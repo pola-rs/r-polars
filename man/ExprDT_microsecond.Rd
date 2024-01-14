@@ -5,7 +5,7 @@
 \alias{(Expr)$dt$microsecond}
 \title{Microsecond}
 \usage{
-ExprDT_microsecond()
+<Expr>$dt$microsecond()
 }
 \value{
 Expr of microsecond as Int64

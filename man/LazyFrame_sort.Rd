@@ -4,7 +4,7 @@
 \alias{LazyFrame_sort}
 \title{Sort a LazyFrame}
 \usage{
-LazyFrame_sort(
+<LazyFrame>$sort(
   by,
   ...,
   descending = FALSE,

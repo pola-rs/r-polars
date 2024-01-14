@@ -4,7 +4,7 @@
 \alias{pl_SQLContext}
 \title{Initialise a new SQLContext}
 \usage{
-pl_SQLContext(...)
+pl$SQLContext(...)
 }
 \arguments{
 \item{...}{Name-value pairs of \link[=LazyFrame_class]{LazyFrame} like objects to register.}

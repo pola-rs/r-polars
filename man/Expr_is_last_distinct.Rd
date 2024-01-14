@@ -4,7 +4,7 @@
 \alias{Expr_is_last_distinct}
 \title{Check whether each value is the last occurrence}
 \usage{
-Expr_is_last_distinct
+<Expr>$is_last_distinct
 }
 \value{
 Expr

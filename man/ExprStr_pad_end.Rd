@@ -4,7 +4,7 @@
 \alias{ExprStr_pad_end}
 \title{Left justify strings}
 \usage{
-ExprStr_pad_end(width, fillchar = " ")
+<Expr>$str$pad_end(width, fillchar = " ")
 }
 \arguments{
 \item{width}{Justify left to this length.}

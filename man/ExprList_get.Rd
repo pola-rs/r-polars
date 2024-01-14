@@ -9,7 +9,7 @@
 function
 }
 \usage{
-ExprList_get(index)
+<Expr>$list$get(index)
 
 \method{[}{RPolarsExprListNameSpace}(x, index)
 }

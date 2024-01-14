@@ -4,7 +4,7 @@
 \alias{pl_max_horizontal}
 \title{Get the maximum value rowwise}
 \usage{
-pl_max_horizontal(...)
+pl$max_horizontal(...)
 }
 \arguments{
 \item{...}{Columns to concatenate into a single string column. Accepts

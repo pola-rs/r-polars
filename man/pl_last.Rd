@@ -4,7 +4,7 @@
 \alias{pl_last}
 \title{pl$last}
 \usage{
-pl_last(column = NULL)
+pl$last(column = NULL)
 }
 \arguments{
 \item{column}{if dtype is:

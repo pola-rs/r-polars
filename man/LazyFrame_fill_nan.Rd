@@ -4,7 +4,7 @@
 \alias{LazyFrame_fill_nan}
 \title{Fill \code{NaN}}
 \usage{
-LazyFrame_fill_nan(fill_value)
+<LazyFrame>$fill_nan(fill_value)
 }
 \arguments{
 \item{fill_value}{Value to fill \code{NaN} with.}

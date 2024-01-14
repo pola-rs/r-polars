@@ -8,7 +8,7 @@
 method
 }
 \usage{
-Series_equals(other, null_equal = FALSE, strict = FALSE)
+<Series>$equals(other, null_equal = FALSE, strict = FALSE)
 }
 \arguments{
 \item{other}{Series to compare with}

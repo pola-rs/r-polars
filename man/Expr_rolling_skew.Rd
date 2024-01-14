@@ -4,7 +4,7 @@
 \alias{Expr_rolling_skew}
 \title{Rolling skew}
 \usage{
-Expr_rolling_skew(window_size, bias = TRUE)
+<Expr>$rolling_skew(window_size, bias = TRUE)
 }
 \arguments{
 \item{window_size}{The length of the window. Can be a fixed integer size, or a dynamic temporal

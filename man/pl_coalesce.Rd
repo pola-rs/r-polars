@@ -4,7 +4,7 @@
 \alias{pl_coalesce}
 \title{Coalesce}
 \usage{
-pl_coalesce(...)
+pl$coalesce(...)
 }
 \arguments{
 \item{...}{is a:

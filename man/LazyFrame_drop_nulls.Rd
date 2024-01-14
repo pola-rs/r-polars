@@ -4,7 +4,7 @@
 \alias{LazyFrame_drop_nulls}
 \title{Drop nulls (missing values)}
 \usage{
-LazyFrame_drop_nulls(subset = NULL)
+<LazyFrame>$drop_nulls(subset = NULL)
 }
 \arguments{
 \item{subset}{A character vector with the names of the column(s) for which

@@ -4,7 +4,7 @@
 \alias{ExprStr_parse_int}
 \title{Parse integers with base radix from strings}
 \usage{
-ExprStr_parse_int(radix = 2, strict = TRUE)
+<Expr>$str$parse_int(radix = 2, strict = TRUE)
 }
 \arguments{
 \item{radix}{Positive integer which is the base of the string we are parsing.

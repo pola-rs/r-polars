@@ -8,7 +8,7 @@
 method
 }
 \usage{
-Series_to_frame()
+<Series>$to_frame()
 }
 \value{
 Series

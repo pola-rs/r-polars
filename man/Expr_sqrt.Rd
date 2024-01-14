@@ -4,7 +4,7 @@
 \alias{Expr_sqrt}
 \title{Compute the square root of the elements}
 \usage{
-Expr_sqrt()
+<Expr>$sqrt()
 }
 \value{
 Expr

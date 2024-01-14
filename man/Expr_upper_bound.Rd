@@ -4,7 +4,7 @@
 \alias{Expr_upper_bound}
 \title{Find the upper bound of a DataType}
 \usage{
-Expr_upper_bound
+<Expr>$upper_bound
 }
 \value{
 Expr

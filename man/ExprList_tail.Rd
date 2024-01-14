@@ -8,7 +8,7 @@
 function
 }
 \usage{
-ExprList_tail(n = 5L)
+<Expr>$list$tail(n = 5L)
 }
 \arguments{
 \item{n}{Numeric or Expr, number of values to return for each sublist.}

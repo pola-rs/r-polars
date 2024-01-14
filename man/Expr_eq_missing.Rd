@@ -4,7 +4,7 @@
 \alias{Expr_eq_missing}
 \title{Check equality without \code{null} propagation}
 \usage{
-Expr_eq_missing(other)
+<Expr>$eq_missing(other)
 }
 \arguments{
 \item{other}{Literal or object that can be converted to a literal}

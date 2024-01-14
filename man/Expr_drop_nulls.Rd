@@ -4,7 +4,7 @@
 \alias{Expr_drop_nulls}
 \title{Drop missing values}
 \usage{
-Expr_drop_nulls
+<Expr>$drop_nulls
 }
 \value{
 Expr

@@ -4,7 +4,7 @@
 \alias{LazyFrame_filter}
 \title{Apply filter to LazyFrame}
 \usage{
-LazyFrame_filter(...)
+<LazyFrame>$filter(...)
 }
 \arguments{
 \item{...}{Polars expressions which will evaluate to a boolean.}

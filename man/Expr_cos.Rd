@@ -4,7 +4,7 @@
 \alias{Expr_cos}
 \title{Compute cosine}
 \usage{
-Expr_cos
+<Expr>$cos
 }
 \value{
 Expr

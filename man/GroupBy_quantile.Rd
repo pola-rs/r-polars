@@ -4,7 +4,7 @@
 \alias{GroupBy_quantile}
 \title{Quantile}
 \usage{
-GroupBy_quantile(quantile, interpolation = "nearest")
+<GroupBy>$quantile(quantile, interpolation = "nearest")
 }
 \arguments{
 \item{quantile}{numeric Quantile between 0.0 and 1.0.}

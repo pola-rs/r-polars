@@ -4,7 +4,7 @@
 \alias{GroupBy_shift}
 \title{Shift}
 \usage{
-GroupBy_shift(periods = 1)
+<GroupBy>$shift(periods = 1)
 }
 \arguments{
 \item{periods}{integer Number of periods to shift (may be negative).}

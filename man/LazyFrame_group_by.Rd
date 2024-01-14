@@ -4,7 +4,7 @@
 \alias{LazyFrame_group_by}
 \title{Group a LazyFrame}
 \usage{
-LazyFrame_group_by(..., maintain_order = pl$options$maintain_order)
+<LazyFrame>$group_by(..., maintain_order = pl$options$maintain_order)
 }
 \arguments{
 \item{...}{Any Expr(s) or string(s) naming a column.}

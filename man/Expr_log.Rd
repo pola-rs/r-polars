@@ -4,7 +4,7 @@
 \alias{Expr_log}
 \title{Compute the logarithm of elements}
 \usage{
-Expr_log(base = base::exp(1))
+<Expr>$log(base = base::exp(1))
 }
 \arguments{
 \item{base}{Numeric base value for logarithm, default is \code{exp(1)}.}

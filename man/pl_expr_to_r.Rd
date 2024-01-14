@@ -4,7 +4,7 @@
 \alias{pl_expr_to_r}
 \title{Convert an Expr to R output}
 \usage{
-pl_expr_to_r(expr, df = NULL, i = 0)
+pl$expr_to_r(expr, df = NULL, i = 0)
 }
 \arguments{
 \item{expr}{An Expr to evaluate.}

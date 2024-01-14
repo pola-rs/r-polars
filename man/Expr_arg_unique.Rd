@@ -5,7 +5,7 @@
 \alias{arg_unique}
 \title{Index of first unique values}
 \usage{
-Expr_arg_unique
+<Expr>$arg_unique
 }
 \value{
 Expr

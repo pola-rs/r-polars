@@ -4,7 +4,7 @@
 \alias{LazyFrame_collect_in_background}
 \title{Collect a query in background}
 \usage{
-LazyFrame_collect_in_background()
+<LazyFrame>$collect_in_background()
 }
 \value{
 RThreadHandle, a future-like thread handle for the task
@@ -29,7 +29,7 @@ below.
 \examples{
 # Some expression which does contain a map
 expr = pl$col("mpg")$map(
-  \(x) {
+  \\(x) {
     Sys.sleep(.1)
     x * 0.43
   },

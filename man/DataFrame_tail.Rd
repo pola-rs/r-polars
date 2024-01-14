@@ -4,7 +4,7 @@
 \alias{DataFrame_tail}
 \title{Tail of a DataFrame}
 \usage{
-DataFrame_tail(n)
+<DataFrame>$tail(n)
 }
 \arguments{
 \item{n}{Positive number not larger than 2^32.}

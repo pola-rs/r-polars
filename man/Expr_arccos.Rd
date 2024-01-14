@@ -4,7 +4,7 @@
 \alias{Expr_arccos}
 \title{Compute inverse cosine}
 \usage{
-Expr_arccos
+<Expr>$arccos
 }
 \value{
 Expr

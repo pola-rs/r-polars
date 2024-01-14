@@ -4,7 +4,7 @@
 \alias{Expr_to_series}
 \title{Convert Literal to Series}
 \usage{
-Expr_to_series()
+<Expr>$to_series()
 }
 \value{
 Series

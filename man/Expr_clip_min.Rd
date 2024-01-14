@@ -4,7 +4,7 @@
 \alias{Expr_clip_min}
 \title{Clip elements below minimum value}
 \usage{
-Expr_clip_min(min)
+<Expr>$clip_min(min)
 }
 \arguments{
 \item{min}{Minimum value, Expr returning a numeric.}

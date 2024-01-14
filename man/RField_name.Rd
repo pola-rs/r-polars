@@ -4,7 +4,7 @@
 \alias{RField_name}
 \title{Get/set Field name}
 \usage{
-RField_name()
+<RField>$name()
 }
 \description{
 Get/set Field name

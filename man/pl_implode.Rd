@@ -4,7 +4,7 @@
 \alias{pl_implode}
 \title{Aggregate all column values into a list.}
 \usage{
-pl_implode(name)
+pl$implode(name)
 }
 \arguments{
 \item{name}{Name of the column(s) that should be imploded, passed to pl$col()}

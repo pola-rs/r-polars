@@ -4,7 +4,7 @@
 \alias{ExprStr_replace_many}
 \title{Use the aho-corasick algorithm to replace many matches}
 \usage{
-ExprStr_replace_many(patterns, replace_with, ascii_case_insensitive = FALSE)
+<Expr>$str$replace_many(patterns, replace_with, ascii_case_insensitive = FALSE)
 }
 \arguments{
 \item{patterns}{String patterns to search. Can be an Expr.}

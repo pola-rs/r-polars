@@ -4,7 +4,7 @@
 \alias{Expr_peak_max}
 \title{Find local maxima}
 \usage{
-Expr_peak_max()
+<Expr>$peak_max()
 }
 \value{
 Expr

@@ -5,7 +5,7 @@
 \alias{==.RPolarsExpr}
 \title{Check equality}
 \usage{
-Expr_eq(other)
+<Expr>$eq(other)
 
 \method{==}{RPolarsExpr}(e1, e2)
 }

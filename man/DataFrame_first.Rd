@@ -4,7 +4,7 @@
 \alias{DataFrame_first}
 \title{Get the first row of the DataFrame.}
 \usage{
-DataFrame_first()
+<DataFrame>$first()
 }
 \value{
 A DataFrame with one row.

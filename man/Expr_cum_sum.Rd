@@ -4,7 +4,7 @@
 \alias{Expr_cum_sum}
 \title{Cumulative sum}
 \usage{
-Expr_cum_sum(reverse = FALSE)
+<Expr>$cum_sum(reverse = FALSE)
 }
 \arguments{
 \item{reverse}{If \code{TRUE}, start with the total sum of elements and substract

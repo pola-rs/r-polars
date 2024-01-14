@@ -7,7 +7,7 @@
 An object of class \code{character} of length 1.
 }
 \usage{
-LazyFrame_print(x)
+<LazyFrame>$print(x)
 }
 \arguments{
 \item{x}{LazyFrame}

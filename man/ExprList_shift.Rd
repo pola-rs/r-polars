@@ -8,7 +8,7 @@
 function
 }
 \usage{
-ExprList_shift(periods = 1)
+<Expr>$list$shift(periods = 1)
 }
 \arguments{
 \item{periods}{Value. Number of places to shift (may be negative).}

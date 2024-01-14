@@ -8,7 +8,7 @@
 method
 }
 \usage{
-Series_is_numeric()
+<Series>$is_numeric()
 }
 \value{
 bool

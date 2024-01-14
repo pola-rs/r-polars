@@ -4,7 +4,7 @@
 \alias{LazyFrame_quantile}
 \title{Quantile}
 \usage{
-LazyFrame_quantile(quantile, interpolation = "nearest")
+<LazyFrame>$quantile(quantile, interpolation = "nearest")
 }
 \arguments{
 \item{quantile}{Numeric of length 1 between 0 and 1.}

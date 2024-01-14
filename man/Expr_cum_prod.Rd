@@ -4,7 +4,7 @@
 \alias{Expr_cum_prod}
 \title{Cumulative product}
 \usage{
-Expr_cum_prod(reverse = FALSE)
+<Expr>$cum_prod(reverse = FALSE)
 }
 \arguments{
 \item{reverse}{If \code{TRUE}, start with the total product of elements and divide

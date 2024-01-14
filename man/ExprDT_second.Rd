@@ -5,7 +5,7 @@
 \alias{(Expr)$dt$second}
 \title{Second}
 \usage{
-ExprDT_second(fractional = FALSE)
+<Expr>$dt$second(fractional = FALSE)
 }
 \arguments{
 \item{fractional}{Whether to include the fractional component of the second.}

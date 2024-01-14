@@ -4,7 +4,7 @@
 \alias{Series_list}
 \title{list: list related methods on Series of dtype List}
 \usage{
-Series_list()
+<Series>$list()
 }
 \value{
 Series

@@ -4,7 +4,7 @@
 \alias{Expr_nan_min}
 \title{Get minimum value with NaN}
 \usage{
-Expr_nan_min
+<Expr>$nan_min
 }
 \value{
 Expr

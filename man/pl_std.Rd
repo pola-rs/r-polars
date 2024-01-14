@@ -4,7 +4,7 @@
 \alias{pl_std}
 \title{Standard deviation}
 \usage{
-pl_std(column, ddof = 1)
+pl$std(column, ddof = 1)
 }
 \arguments{
 \item{column}{Column name.}

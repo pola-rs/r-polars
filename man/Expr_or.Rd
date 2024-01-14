@@ -4,7 +4,7 @@
 \alias{Expr_or}
 \title{Apply logical OR on two expressions}
 \usage{
-Expr_or(other)
+<Expr>$or(other)
 }
 \arguments{
 \item{other}{Literal or object that can be converted to a literal}

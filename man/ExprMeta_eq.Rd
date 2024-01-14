@@ -5,7 +5,7 @@
 \alias{expr_meta_equal}
 \title{Meta Equal}
 \usage{
-ExprMeta_eq(other)
+<Expr>$meta$eq(other)
 }
 \arguments{
 \item{other}{Expr to compare with}

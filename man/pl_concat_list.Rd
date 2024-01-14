@@ -4,7 +4,7 @@
 \alias{pl_concat_list}
 \title{Concat the arrays in a Series dtype List in linear time.}
 \usage{
-pl_concat_list(exprs)
+pl$concat_list(exprs)
 }
 \arguments{
 \item{exprs}{list of Into\if{html}{\out{<Expr>}}, strings interpreted as column names}
@@ -20,9 +20,9 @@ Folds the expressions from left to right, keeping the first non-null value.
 df = pl$DataFrame(A = c(1, 2, 9, 2, 13))
 df$with_columns(lapply(
   0:2,
-  \(i) pl$col("A")$shift(i)$alias(paste0("A_lag_", i))
+  \\(i) pl$col("A")$shift(i)$alias(paste0("A_lag_", i))
 ))$select(
-  pl$concat_list(lapply(2:0, \(i) pl$col(paste0("A_lag_", i))))$alias(
+  pl$concat_list(lapply(2:0, \\(i) pl$col(paste0("A_lag_", i))))$alias(
     "A_rolling"
   )
 )

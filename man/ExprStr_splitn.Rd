@@ -4,7 +4,7 @@
 \alias{ExprStr_splitn}
 \title{Split the string by a substring, restricted to returning at most \code{n} items}
 \usage{
-ExprStr_splitn(by, n)
+<Expr>$str$splitn(by, n)
 }
 \arguments{
 \item{by}{Substring to split by.}

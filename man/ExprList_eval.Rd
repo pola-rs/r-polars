@@ -8,7 +8,7 @@
 function
 }
 \usage{
-ExprList_eval(expr, parallel = FALSE)
+<Expr>$list$eval(expr, parallel = FALSE)
 }
 \arguments{
 \item{expr}{Expression to run. Note that you can select an element with

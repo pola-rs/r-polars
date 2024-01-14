@@ -5,7 +5,7 @@
 \alias{to_lit}
 \title{Series to Literal}
 \usage{
-Series_to_lit()
+<Series>$to_lit()
 }
 \value{
 Expr

@@ -4,7 +4,7 @@
 \alias{Series_min}
 \title{min}
 \usage{
-Series_min()
+<Series>$min()
 }
 \value{
 R scalar value

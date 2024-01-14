@@ -4,7 +4,7 @@
 \alias{Expr_agg_groups}
 \title{Aggregate groups}
 \usage{
-Expr_agg_groups
+<Expr>$agg_groups
 }
 \value{
 Expr

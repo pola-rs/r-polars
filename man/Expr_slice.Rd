@@ -5,7 +5,7 @@
 \alias{slice}
 \title{Get a slice of an Expr}
 \usage{
-Expr_slice(offset, length = NULL)
+<Expr>$slice(offset, length = NULL)
 }
 \arguments{
 \item{offset}{Numeric or expression, zero-indexed. Indicates where to start

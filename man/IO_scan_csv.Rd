@@ -4,7 +4,7 @@
 \alias{pl_scan_csv}
 \title{New LazyFrame from CSV}
 \usage{
-pl_scan_csv(
+pl$scan_csv(
   path,
   has_header = TRUE,
   separator = ",",

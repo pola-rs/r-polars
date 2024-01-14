@@ -4,7 +4,7 @@
 \alias{Expr_abs}
 \title{Compute the absolute values}
 \usage{
-Expr_abs
+<Expr>$abs
 }
 \value{
 Expr

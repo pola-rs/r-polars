@@ -4,7 +4,7 @@
 \alias{Expr_lit}
 \title{Create a literal value}
 \usage{
-Expr_lit(x)
+<Expr>$lit(x)
 }
 \arguments{
 \item{x}{A vector of any length}

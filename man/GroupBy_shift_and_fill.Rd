@@ -4,7 +4,7 @@
 \alias{GroupBy_shift_and_fill}
 \title{Shift and fill}
 \usage{
-GroupBy_shift_and_fill(fill_value, periods = 1)
+<GroupBy>$shift_and_fill(fill_value, periods = 1)
 }
 \arguments{
 \item{fill_value}{fill None values with the result of this expression.}

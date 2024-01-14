@@ -4,7 +4,7 @@
 \alias{DataFrame_max}
 \title{Max}
 \usage{
-DataFrame_max()
+<DataFrame>$max()
 }
 \value{
 A DataFrame with one row.

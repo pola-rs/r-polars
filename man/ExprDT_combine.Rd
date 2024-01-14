@@ -5,7 +5,7 @@
 \alias{(Expr)$dt$combine}
 \title{Combine Data and Time}
 \usage{
-ExprDT_combine(tm, tu = "us")
+<Expr>$dt$combine(tm, tu = "us")
 }
 \arguments{
 \item{tm}{Expr or numeric or PTime, the number of epoch since or before(if negative) the Date

@@ -4,7 +4,7 @@
 \alias{Expr_reverse}
 \title{Reverse a variable}
 \usage{
-Expr_reverse()
+<Expr>$reverse()
 }
 \value{
 Expr

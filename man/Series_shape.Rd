@@ -4,7 +4,7 @@
 \alias{Series_shape}
 \title{Shape of series}
 \usage{
-Series_shape()
+<Series>$shape()
 }
 \value{
 dimension vector of Series

@@ -4,7 +4,7 @@
 \alias{ExprStr_to_datetime}
 \title{Convert a String column into a Datetime column}
 \usage{
-ExprStr_to_datetime(
+<Expr>$str$to_datetime(
   format = NULL,
   time_unit = NULL,
   time_zone = NULL,

@@ -4,7 +4,7 @@
 \alias{Series_append}
 \title{append (default immutable)}
 \usage{
-Series_append(other, immutable = TRUE)
+<Series>$append(other, immutable = TRUE)
 }
 \arguments{
 \item{other}{Series to append}

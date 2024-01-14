@@ -4,7 +4,7 @@
 \alias{RThreadHandle_join}
 \title{Join a RThreadHandle}
 \usage{
-RThreadHandle_join()
+<RThreadHandle>$join()
 }
 \value{
 return value from background thread

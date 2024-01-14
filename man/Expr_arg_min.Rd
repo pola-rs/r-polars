@@ -4,7 +4,7 @@
 \alias{Expr_arg_min}
 \title{Index of min value}
 \usage{
-Expr_arg_min
+<Expr>$arg_min
 }
 \value{
 Expr

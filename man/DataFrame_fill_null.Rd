@@ -4,7 +4,7 @@
 \alias{DataFrame_fill_null}
 \title{Fill nulls}
 \usage{
-DataFrame_fill_null(fill_value)
+<DataFrame>$fill_null(fill_value)
 }
 \arguments{
 \item{fill_value}{Value to fill nulls with.}

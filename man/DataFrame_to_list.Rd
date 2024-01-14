@@ -4,7 +4,7 @@
 \alias{DataFrame_to_list}
 \title{Return Polars DataFrame as a list of vectors}
 \usage{
-DataFrame_to_list(unnest_structs = TRUE)
+<DataFrame>$to_list(unnest_structs = TRUE)
 }
 \arguments{
 \item{unnest_structs}{Boolean. If \code{TRUE} (default), then \verb{$unnest()} is applied

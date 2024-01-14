@@ -4,7 +4,7 @@
 \alias{pl_first}
 \title{pl$first}
 \usage{
-pl_first(column = NULL)
+pl$first(column = NULL)
 }
 \arguments{
 \item{column}{if dtype is:

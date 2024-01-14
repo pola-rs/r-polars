@@ -5,7 +5,7 @@
 \alias{expr_cat_set_ordering}
 \title{Set Ordering}
 \usage{
-ExprCat_set_ordering(ordering)
+<Expr>$cat$set_ordering(ordering)
 }
 \arguments{
 \item{ordering}{string either 'physical' or 'lexical'

@@ -5,7 +5,7 @@
 \alias{/.RPolarsExpr}
 \title{Divide two expressions}
 \usage{
-Expr_div(other)
+<Expr>$div(other)
 
 \method{/}{RPolarsExpr}(e1, e2)
 }

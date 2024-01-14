@@ -4,7 +4,7 @@
 \alias{pl_date_range}
 \title{New date range}
 \usage{
-pl_date_range(
+pl$date_range(
   start,
   end,
   interval,

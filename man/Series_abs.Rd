@@ -5,7 +5,7 @@
 \alias{abs}
 \title{Take absolute value of Series}
 \usage{
-Series_abs()
+<Series>$abs()
 }
 \value{
 Series

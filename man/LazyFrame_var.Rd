@@ -4,7 +4,7 @@
 \alias{LazyFrame_var}
 \title{Var}
 \usage{
-LazyFrame_var(ddof = 1)
+<LazyFrame>$var(ddof = 1)
 }
 \arguments{
 \item{ddof}{Delta Degrees of Freedom: the divisor used in the calculation is

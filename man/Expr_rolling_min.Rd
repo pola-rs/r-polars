@@ -4,7 +4,7 @@
 \alias{Expr_rolling_min}
 \title{Rolling minimum}
 \usage{
-Expr_rolling_min(
+<Expr>$rolling_min(
   window_size,
   weights = NULL,
   min_periods = NULL,

@@ -4,7 +4,7 @@
 \alias{DataFrame_write_json}
 \title{Write to JSON file}
 \usage{
-DataFrame_write_json(file, pretty = FALSE, row_oriented = FALSE)
+<DataFrame>$write_json(file, pretty = FALSE, row_oriented = FALSE)
 }
 \arguments{
 \item{file}{File path to which the result should be written.}

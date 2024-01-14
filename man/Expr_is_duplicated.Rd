@@ -4,7 +4,7 @@
 \alias{Expr_is_duplicated}
 \title{Check whether each value is duplicated}
 \usage{
-Expr_is_duplicated
+<Expr>$is_duplicated
 }
 \value{
 Expr

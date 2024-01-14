@@ -5,7 +5,7 @@
 \alias{Series_cum_sum}
 \title{Cumulative sum}
 \usage{
-Series_cum_sum(reverse = FALSE)
+<Series>$cum_sum(reverse = FALSE)
 }
 \arguments{
 \item{reverse}{bool, default FALSE, if true roll over vector from back to forth}

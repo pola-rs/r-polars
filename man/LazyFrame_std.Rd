@@ -4,7 +4,7 @@
 \alias{LazyFrame_std}
 \title{Std}
 \usage{
-LazyFrame_std(ddof = 1)
+<LazyFrame>$std(ddof = 1)
 }
 \arguments{
 \item{ddof}{Delta Degrees of Freedom: the divisor used in the calculation is

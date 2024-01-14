@@ -4,7 +4,7 @@
 \alias{DataFrame_group_by_dynamic}
 \title{Group based on a date/time or integer column}
 \usage{
-DataFrame_group_by_dynamic(
+<DataFrame>$group_by_dynamic(
   index_column,
   every,
   period = NULL,

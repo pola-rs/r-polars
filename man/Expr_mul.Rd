@@ -5,7 +5,7 @@
 \alias{*.RPolarsExpr}
 \title{Multiply two expressions}
 \usage{
-Expr_mul(other)
+<Expr>$mul(other)
 
 \method{*}{RPolarsExpr}(e1, e2)
 }

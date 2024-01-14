@@ -4,7 +4,7 @@
 \alias{DataFrame_sum}
 \title{Sum}
 \usage{
-DataFrame_sum()
+<DataFrame>$sum()
 }
 \value{
 A DataFrame with one row.

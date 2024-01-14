@@ -4,7 +4,7 @@
 \alias{LazyFrame_head}
 \title{Head of a LazyFrame}
 \usage{
-LazyFrame_head(n)
+<LazyFrame>$head(n)
 }
 \arguments{
 \item{n}{Positive number not larger than 2^32.}

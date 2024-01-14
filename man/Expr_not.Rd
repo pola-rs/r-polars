@@ -5,7 +5,7 @@
 \alias{!.RPolarsExpr}
 \title{Negate a boolean expression}
 \usage{
-Expr_not
+<Expr>$not
 
 \method{!}{RPolarsExpr}(x)
 }

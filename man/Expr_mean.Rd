@@ -4,7 +4,7 @@
 \alias{Expr_mean}
 \title{Get mean value}
 \usage{
-Expr_mean
+<Expr>$mean
 }
 \value{
 Expr

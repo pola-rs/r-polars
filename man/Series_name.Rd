@@ -5,7 +5,7 @@
 \alias{name}
 \title{Property: Name}
 \usage{
-Series_name()
+<Series>$name()
 }
 \value{
 String the name

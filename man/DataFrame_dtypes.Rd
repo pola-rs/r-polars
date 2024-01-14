@@ -5,7 +5,7 @@
 \alias{DataFrame_schema}
 \title{Data types information}
 \usage{
-DataFrame_dtypes()
+<DataFrame>$dtypes()
 
 DataFrame_schema()
 }

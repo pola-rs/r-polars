@@ -4,7 +4,7 @@
 \alias{SQLContext_tables}
 \title{List registered tables}
 \usage{
-SQLContext_tables()
+<SQLContext>$tables()
 }
 \value{
 A character vector of the registered table names.

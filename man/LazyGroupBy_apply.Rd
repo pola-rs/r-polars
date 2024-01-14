@@ -4,7 +4,7 @@
 \alias{LazyGroupBy_apply}
 \title{LazyGroupBy_apply}
 \usage{
-LazyGroupBy_apply(f)
+Lazy<GroupBy>$apply(f)
 }
 \arguments{
 \item{f}{R function to apply}

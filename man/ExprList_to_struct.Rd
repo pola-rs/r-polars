@@ -8,7 +8,7 @@
 function
 }
 \usage{
-ExprList_to_struct(
+<Expr>$list$to_struct(
   n_field_strategy = c("first_non_null", "max_width"),
   name_generator = NULL,
   upper_bound = 0
@@ -41,7 +41,7 @@ List to Struct
 \examples{
 df = pl$DataFrame(list(a = list(1:3, 1:2)))
 df2 = df$select(pl$col("a")$list$to_struct(
-  name_generator = \(idx) paste0("hello_you_", idx)
+  name_generator = \\(idx) paste0("hello_you_", idx)
 ))
 df2$unnest()
 

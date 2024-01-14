@@ -4,7 +4,7 @@
 \alias{SQLContext_execute}
 \title{Execute SQL query against the registered data}
 \usage{
-SQLContext_execute(query, eager = FALSE)
+<SQLContext>$execute(query, eager = FALSE)
 }
 \arguments{
 \item{query}{A valid string SQL query.}

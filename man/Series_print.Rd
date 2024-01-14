@@ -4,7 +4,7 @@
 \alias{Series_print}
 \title{Print Series}
 \usage{
-Series_print()
+<Series>$print()
 }
 \value{
 self

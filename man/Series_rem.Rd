@@ -5,7 +5,7 @@
 \alias{rem}
 \title{rem Series}
 \usage{
-Series_rem(other)
+<Series>$rem(other)
 }
 \arguments{
 \item{other}{Series or into Series}

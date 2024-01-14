@@ -4,7 +4,7 @@
 \alias{Expr_rolling_mean}
 \title{Rolling mean}
 \usage{
-Expr_rolling_mean(
+<Expr>$rolling_mean(
   window_size,
   weights = NULL,
   min_periods = NULL,

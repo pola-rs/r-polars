@@ -4,7 +4,7 @@
 \alias{pl_approx_n_unique}
 \title{Approximate count of unique values.}
 \usage{
-pl_approx_n_unique(column)
+pl$approx_n_unique(column)
 }
 \arguments{
 \item{column}{if dtype is:

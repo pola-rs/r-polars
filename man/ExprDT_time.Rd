@@ -4,7 +4,7 @@
 \alias{ExprDT_time}
 \title{Extract time from a Datetime Series}
 \usage{
-ExprDT_time()
+<Expr>$dt$time()
 }
 \value{
 A Time Expr

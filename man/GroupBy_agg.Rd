@@ -5,7 +5,7 @@
 \alias{agg}
 \title{Aggregate over a GroupBy}
 \usage{
-GroupBy_agg(...)
+<GroupBy>$agg(...)
 }
 \arguments{
 \item{...}{exprs to aggregate over.

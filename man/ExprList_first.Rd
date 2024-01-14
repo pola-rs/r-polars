@@ -8,7 +8,7 @@
 function
 }
 \usage{
-ExprList_first()
+<Expr>$list$first()
 }
 \value{
 Expr

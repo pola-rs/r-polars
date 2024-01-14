@@ -4,7 +4,7 @@
 \alias{Expr_last}
 \title{Get the last value}
 \usage{
-Expr_last
+<Expr>$last
 }
 \value{
 Expr

@@ -4,7 +4,7 @@
 \alias{Expr_rank}
 \title{Rank elements}
 \usage{
-Expr_rank(method = "average", descending = FALSE)
+<Expr>$rank(method = "average", descending = FALSE)
 }
 \arguments{
 \item{method}{String, one of \code{"average"} (default), \code{"min"}, \code{"max"},

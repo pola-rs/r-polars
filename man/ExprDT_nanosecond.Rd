@@ -5,7 +5,7 @@
 \alias{(Expr)$dt$nanosecond}
 \title{Nanosecond}
 \usage{
-ExprDT_nanosecond()
+<Expr>$dt$nanosecond()
 }
 \value{
 Expr of second as Int64

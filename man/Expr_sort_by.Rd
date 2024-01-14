@@ -4,7 +4,7 @@
 \alias{Expr_sort_by}
 \title{Sort Expr by order of others}
 \usage{
-Expr_sort_by(by, descending = FALSE)
+<Expr>$sort_by(by, descending = FALSE)
 }
 \arguments{
 \item{by}{One expression or a list of expressions and/or strings (interpreted

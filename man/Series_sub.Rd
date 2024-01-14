@@ -6,7 +6,7 @@
 \alias{-.RPolarsSeries}
 \title{sub Series}
 \usage{
-Series_sub(other)
+<Series>$sub(other)
 
 \method{-}{RPolarsSeries}(s1, s2)
 }

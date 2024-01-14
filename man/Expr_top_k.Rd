@@ -4,7 +4,7 @@
 \alias{Expr_top_k}
 \title{Top k values}
 \usage{
-Expr_top_k(k)
+<Expr>$top_k(k)
 }
 \arguments{
 \item{k}{Number of top values to get}

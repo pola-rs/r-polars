@@ -4,7 +4,7 @@
 \alias{DataFrame_fill_nan}
 \title{Fill \code{NaN}}
 \usage{
-DataFrame_fill_nan(fill_value)
+<DataFrame>$fill_nan(fill_value)
 }
 \arguments{
 \item{fill_value}{Value to fill \code{NaN} with.}

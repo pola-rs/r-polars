@@ -4,7 +4,7 @@
 \alias{Expr_extend_constant}
 \title{Extend Series with a constant}
 \usage{
-Expr_extend_constant(value, n)
+<Expr>$extend_constant(value, n)
 }
 \arguments{
 \item{value}{The value to extend the Series with. This value may be \code{NULL} to

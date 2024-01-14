@@ -4,7 +4,7 @@
 \alias{Expr_drop_nans}
 \title{Drop NaN}
 \usage{
-Expr_drop_nans
+<Expr>$drop_nans
 }
 \value{
 Expr

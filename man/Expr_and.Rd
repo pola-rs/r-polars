@@ -4,7 +4,7 @@
 \alias{Expr_and}
 \title{Apply logical AND on two expressions}
 \usage{
-Expr_and(other)
+<Expr>$and(other)
 }
 \arguments{
 \item{other}{Literal or object that can be converted to a literal}

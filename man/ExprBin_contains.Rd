@@ -5,7 +5,7 @@
 \alias{expr_bin_contains}
 \title{contains}
 \usage{
-ExprBin_contains(lit)
+<Expr>$bin$contains(lit)
 }
 \arguments{
 \item{lit}{The binary substring to look for}

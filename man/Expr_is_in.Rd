@@ -4,7 +4,7 @@
 \alias{Expr_is_in}
 \title{Check whether a value is in a vector}
 \usage{
-Expr_is_in(other)
+<Expr>$is_in(other)
 }
 \arguments{
 \item{other}{Literal or object that can be converted to a literal}

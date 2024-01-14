@@ -4,7 +4,7 @@
 \alias{ExprStr_to_titlecase}
 \title{Convert a string to titlecase}
 \usage{
-ExprStr_to_titlecase()
+<Expr>$str$to_titlecase()
 }
 \value{
 Expr of String titlecase chars

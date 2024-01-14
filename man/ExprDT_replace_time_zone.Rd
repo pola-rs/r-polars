@@ -5,7 +5,7 @@
 \alias{(Expr)$dt$replace_time_zone}
 \title{replace_time_zone}
 \usage{
-ExprDT_replace_time_zone(tz, ambiguous = "raise")
+<Expr>$dt$replace_time_zone(tz, ambiguous = "raise")
 }
 \arguments{
 \item{tz}{NULL or string time zone from \code{\link[base:timezones]{base::OlsonNames()}}}

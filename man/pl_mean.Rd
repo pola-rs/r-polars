@@ -4,7 +4,7 @@
 \alias{pl_mean}
 \title{pl$mean}
 \usage{
-pl_mean(...)
+pl$mean(...)
 }
 \arguments{
 \item{...}{One or several elements:

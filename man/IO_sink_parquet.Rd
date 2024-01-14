@@ -4,7 +4,7 @@
 \alias{LazyFrame_sink_parquet}
 \title{Stream the output of a query to a Parquet file}
 \usage{
-LazyFrame_sink_parquet(
+<LazyFrame>$sink_parquet(
   path,
   compression = "zstd",
   compression_level = 3,

@@ -5,7 +5,7 @@
 \alias{expr_has_multiple_outputs}
 \title{Has multiple outputs}
 \usage{
-ExprMeta_has_multiple_outputs()
+<Expr>$meta$has_multiple_outputs()
 }
 \value{
 Bool

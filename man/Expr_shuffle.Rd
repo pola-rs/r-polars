@@ -4,7 +4,7 @@
 \alias{Expr_shuffle}
 \title{Shuffle values}
 \usage{
-Expr_shuffle(seed = NULL)
+<Expr>$shuffle(seed = NULL)
 }
 \arguments{
 \item{seed}{numeric value of 0 to 2^52 Seed for the random number generator.

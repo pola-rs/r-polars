@@ -4,7 +4,7 @@
 \alias{DataFrame_head}
 \title{Head of a DataFrame}
 \usage{
-DataFrame_head(n)
+<DataFrame>$head(n)
 }
 \arguments{
 \item{n}{Positive number not larger than 2^32.}

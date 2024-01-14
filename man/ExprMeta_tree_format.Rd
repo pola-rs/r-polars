@@ -4,7 +4,7 @@
 \alias{ExprMeta_tree_format}
 \title{Format an expression as a tree}
 \usage{
-ExprMeta_tree_format(return_as_string = FALSE)
+<Expr>$meta$tree_format(return_as_string = FALSE)
 }
 \arguments{
 \item{return_as_string}{Return the tree as a character vector? If \code{FALSE}

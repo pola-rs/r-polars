@@ -5,7 +5,7 @@
 \alias{expr_meta_output_names}
 \title{Output Name}
 \usage{
-ExprMeta_output_name()
+<Expr>$meta$output_name()
 }
 \value{
 R charvec of output names.

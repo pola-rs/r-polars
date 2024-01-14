@@ -4,7 +4,7 @@
 \alias{Series_any}
 \title{Reduce Boolean Series with ANY}
 \usage{
-Series_any()
+<Series>$any()
 }
 \value{
 bool

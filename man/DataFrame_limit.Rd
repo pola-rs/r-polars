@@ -4,7 +4,7 @@
 \alias{DataFrame_limit}
 \title{Limit a DataFrame}
 \usage{
-DataFrame_limit(n)
+<DataFrame>$limit(n)
 }
 \arguments{
 \item{n}{Positive number not larger than 2^32.}

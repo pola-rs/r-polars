@@ -4,7 +4,7 @@
 \alias{Series_max}
 \title{max}
 \usage{
-Series_max()
+<Series>$max()
 }
 \value{
 R scalar value

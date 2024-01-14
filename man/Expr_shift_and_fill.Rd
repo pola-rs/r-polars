@@ -4,7 +4,7 @@
 \alias{Expr_shift_and_fill}
 \title{Shift and fill values}
 \usage{
-Expr_shift_and_fill(periods, fill_value)
+<Expr>$shift_and_fill(periods, fill_value)
 }
 \arguments{
 \item{periods}{Number of periods to shift, may be negative.}

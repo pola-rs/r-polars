@@ -4,7 +4,7 @@
 \alias{ExprStr_slice}
 \title{Create subslices of the string values of a String Series}
 \usage{
-ExprStr_slice(offset, length = NULL)
+<Expr>$str$slice(offset, length = NULL)
 }
 \arguments{
 \item{offset}{Start index. Negative indexing is supported.}

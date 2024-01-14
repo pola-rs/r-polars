@@ -5,7 +5,7 @@
 \alias{expr_str_strip_chars_end}
 \title{Strip trailing characters}
 \usage{
-ExprStr_strip_chars_end(matches = NULL)
+<Expr>$str$strip_chars_end(matches = NULL)
 }
 \arguments{
 \item{matches}{The set of characters to be removed. All combinations of this

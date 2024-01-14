@@ -4,7 +4,7 @@
 \alias{pl_read_parquet}
 \title{Read a parquet file}
 \usage{
-pl_read_parquet(
+pl$read_parquet(
   file,
   n_rows = NULL,
   cache = TRUE,

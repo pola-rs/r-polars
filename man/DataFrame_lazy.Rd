@@ -5,7 +5,7 @@
 \alias{lazy}
 \title{Convert an existing DataFrame to a LazyFrame}
 \usage{
-DataFrame_lazy
+<DataFrame>$lazy
 }
 \value{
 A LazyFrame

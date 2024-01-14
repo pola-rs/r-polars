@@ -4,7 +4,7 @@
 \alias{DataFrame_drop_in_place}
 \title{Drop in place}
 \usage{
-DataFrame_drop_in_place(name)
+<DataFrame>$drop_in_place(name)
 }
 \arguments{
 \item{name}{string Name of the column to drop.}

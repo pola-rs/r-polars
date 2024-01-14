@@ -5,7 +5,7 @@
 \alias{!=.RPolarsExpr}
 \title{Check inequality}
 \usage{
-Expr_neq(other)
+<Expr>$neq(other)
 
 \method{!=}{RPolarsExpr}(e1, e2)
 }

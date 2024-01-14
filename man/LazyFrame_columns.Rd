@@ -4,7 +4,7 @@
 \alias{LazyFrame_columns}
 \title{Get the column names of a LazyFrame}
 \usage{
-LazyFrame_columns()
+<LazyFrame>$columns()
 }
 \value{
 A vector of column names

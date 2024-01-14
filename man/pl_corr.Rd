@@ -4,7 +4,7 @@
 \alias{pl_corr}
 \title{Correlation}
 \usage{
-pl_corr(a, b, method = "pearson", ddof = 1, propagate_nans = FALSE)
+pl$corr(a, b, method = "pearson", ddof = 1, propagate_nans = FALSE)
 }
 \arguments{
 \item{a}{One column name or Expr or anything convertible Into\if{html}{\out{<Expr>}} via \code{pl$col()}.}

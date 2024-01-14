@@ -4,7 +4,7 @@
 \alias{LazyFrame_explode}
 \title{Explode columns containing a list of values}
 \usage{
-LazyFrame_explode(...)
+<LazyFrame>$explode(...)
 }
 \arguments{
 \item{...}{Column(s) to be exploded as individual \verb{Into<Expr>} or list/vector

@@ -4,7 +4,7 @@
 \alias{Expr_cum_count}
 \title{Cumulative count}
 \usage{
-Expr_cum_count(reverse = FALSE)
+<Expr>$cum_count(reverse = FALSE)
 }
 \arguments{
 \item{reverse}{If \code{TRUE}, reverse the count.}

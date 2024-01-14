@@ -4,7 +4,7 @@
 \alias{Expr_min}
 \title{Get minimum value}
 \usage{
-Expr_min
+<Expr>$min
 }
 \value{
 Expr

@@ -6,7 +6,7 @@
 \alias{/.RPolarsSeries}
 \title{div Series}
 \usage{
-Series_div(other)
+<Series>$div(other)
 
 \method{/}{RPolarsSeries}(s1, s2)
 }

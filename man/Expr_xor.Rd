@@ -4,7 +4,7 @@
 \alias{Expr_xor}
 \title{Apply logical XOR on two expressions}
 \usage{
-Expr_xor(other)
+<Expr>$xor(other)
 }
 \arguments{
 \item{other}{Literal or object that can be converted to a literal}

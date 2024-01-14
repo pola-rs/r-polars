@@ -4,7 +4,7 @@
 \alias{DataFrame_slice}
 \title{Slice}
 \usage{
-DataFrame_slice(offset, length = NULL)
+<DataFrame>$slice(offset, length = NULL)
 }
 \arguments{
 \item{offset}{Start index, can be a negative value. This is 0-indexed, so

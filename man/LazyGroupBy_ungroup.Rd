@@ -4,7 +4,7 @@
 \alias{LazyGroupBy_ungroup}
 \title{LazyGroupBy_ungroup}
 \usage{
-LazyGroupBy_ungroup()
+Lazy<GroupBy>$ungroup()
 }
 \value{
 A new \code{LazyFrame} object.

@@ -5,7 +5,7 @@
 \alias{from_arrow}
 \title{from_arrow}
 \usage{
-pl_from_arrow(
+pl$from_arrow(
   data,
   ...,
   rechunk = TRUE,

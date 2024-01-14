@@ -4,7 +4,7 @@
 \alias{DataFrame_filter}
 \title{Filter rows of a DataFrame}
 \usage{
-DataFrame_filter(...)
+<DataFrame>$filter(...)
 }
 \arguments{
 \item{...}{Polars expressions which will evaluate to a boolean.}

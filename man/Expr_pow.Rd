@@ -4,7 +4,7 @@
 \alias{Expr_pow}
 \title{Exponentiation}
 \usage{
-Expr_pow(exponent)
+<Expr>$pow(exponent)
 }
 \arguments{
 \item{exponent}{Exponent value.}

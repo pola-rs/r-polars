@@ -5,7 +5,7 @@
 \alias{(Expr)$dt$ordinal_day}
 \title{Ordinal Day}
 \usage{
-ExprDT_ordinal_day()
+<Expr>$dt$ordinal_day()
 }
 \value{
 Expr of ordinal_day as UInt32

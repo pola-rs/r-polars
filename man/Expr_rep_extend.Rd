@@ -4,7 +4,7 @@
 \alias{Expr_rep_extend}
 \title{Extend a Series by repeating values}
 \usage{
-Expr_rep_extend(expr, n, rechunk = TRUE, upcast = TRUE)
+<Expr>$rep_extend(expr, n, rechunk = TRUE, upcast = TRUE)
 }
 \arguments{
 \item{expr}{Expr or something coercible to an Expr.}

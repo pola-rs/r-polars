@@ -4,7 +4,7 @@
 \alias{Expr_mode}
 \title{Mode}
 \usage{
-Expr_mode
+<Expr>$mode
 }
 \value{
 Expr

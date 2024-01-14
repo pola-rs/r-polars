@@ -4,7 +4,7 @@
 \alias{Series_median}
 \title{Median}
 \usage{
-Series_median()
+<Series>$median()
 }
 \value{
 R scalar value

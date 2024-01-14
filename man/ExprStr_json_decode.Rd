@@ -4,7 +4,7 @@
 \alias{ExprStr_json_decode}
 \title{Parse string values as JSON.}
 \usage{
-ExprStr_json_decode(dtype, infer_schema_length = 100)
+<Expr>$str$json_decode(dtype, infer_schema_length = 100)
 }
 \arguments{
 \item{dtype}{The dtype to cast the extracted value to. If \code{NULL}, the dtype

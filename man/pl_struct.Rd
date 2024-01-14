@@ -5,7 +5,7 @@
 \alias{struct}
 \title{struct}
 \usage{
-pl_struct(exprs, eager = FALSE, schema = NULL)
+pl$struct(exprs, eager = FALSE, schema = NULL)
 }
 \arguments{
 \item{exprs}{Columns/Expressions to collect into a Struct.}

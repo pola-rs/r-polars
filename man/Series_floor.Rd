@@ -4,7 +4,7 @@
 \alias{Series_floor}
 \title{Series_floor}
 \usage{
-Series_floor()
+<Series>$floor()
 }
 \value{
 numeric

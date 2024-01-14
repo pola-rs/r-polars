@@ -4,7 +4,7 @@
 \alias{GroupBy_sum}
 \title{GroupBy Sum}
 \usage{
-GroupBy_sum()
+<GroupBy>$sum()
 }
 \value{
 aggregated DataFrame

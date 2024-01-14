@@ -4,7 +4,7 @@
 \alias{Expr_kurtosis}
 \title{Kurtosis}
 \usage{
-Expr_kurtosis(fisher = TRUE, bias = TRUE)
+<Expr>$kurtosis(fisher = TRUE, bias = TRUE)
 }
 \arguments{
 \item{fisher}{If \code{TRUE} (default), Fisher’s definition is used (normal,

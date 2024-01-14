@@ -4,7 +4,7 @@
 \alias{LazyFrame_with_columns}
 \title{Select and modify columns of a LazyFrame}
 \usage{
-LazyFrame_with_columns(...)
+<LazyFrame>$with_columns(...)
 }
 \arguments{
 \item{...}{Any expressions or string column name, or same wrapped in a list.

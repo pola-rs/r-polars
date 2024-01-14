@@ -4,7 +4,7 @@
 \alias{Expr_rolling_var}
 \title{Rolling variance}
 \usage{
-Expr_rolling_var(
+<Expr>$rolling_var(
   window_size,
   weights = NULL,
   min_periods = NULL,

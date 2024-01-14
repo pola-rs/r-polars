@@ -5,7 +5,7 @@
 \alias{(Expr)$dt$convert_time_zone}
 \title{With Time Zone}
 \usage{
-ExprDT_convert_time_zone(tz)
+<Expr>$dt$convert_time_zone(tz)
 }
 \arguments{
 \item{tz}{String time zone from base::OlsonNames()}

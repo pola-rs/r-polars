@@ -4,7 +4,7 @@
 \alias{DataFrame_shift_and_fill}
 \title{Shift and fill}
 \usage{
-DataFrame_shift_and_fill(fill_value, periods = 1)
+<DataFrame>$shift_and_fill(fill_value, periods = 1)
 }
 \arguments{
 \item{fill_value}{Fill new \code{NULL} values with this value. Must of length 1.

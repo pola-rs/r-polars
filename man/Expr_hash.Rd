@@ -5,7 +5,7 @@
 \alias{hash}
 \title{Hash elements}
 \usage{
-Expr_hash(seed = 0, seed_1 = NULL, seed_2 = NULL, seed_3 = NULL)
+<Expr>$hash(seed = 0, seed_1 = NULL, seed_2 = NULL, seed_3 = NULL)
 }
 \arguments{
 \item{seed}{Random seed parameter. Defaults to 0. Doesn't have any effect

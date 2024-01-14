@@ -4,7 +4,7 @@
 \alias{RField_datatype}
 \title{Get/set Field datatype}
 \usage{
-RField_datatype()
+<RField>$datatype()
 }
 \description{
 Get/set Field datatype

@@ -4,7 +4,7 @@
 \alias{Series_n_unique}
 \title{Count unique values in Series}
 \usage{
-Series_n_unique()
+<Series>$n_unique()
 }
 \value{
 Expr

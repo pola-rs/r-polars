@@ -4,7 +4,7 @@
 \alias{pl_median}
 \title{pl$median}
 \usage{
-pl_median(...)
+pl$median(...)
 }
 \arguments{
 \item{...}{One or several elements:

@@ -4,7 +4,7 @@
 \alias{DataFrame_mean}
 \title{Mean}
 \usage{
-DataFrame_mean()
+<DataFrame>$mean()
 }
 \value{
 A DataFrame with one row.

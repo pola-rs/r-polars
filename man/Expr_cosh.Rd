@@ -4,7 +4,7 @@
 \alias{Expr_cosh}
 \title{Compute hyperbolic cosine}
 \usage{
-Expr_cosh
+<Expr>$cosh
 }
 \value{
 Expr

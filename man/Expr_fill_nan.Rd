@@ -4,7 +4,7 @@
 \alias{Expr_fill_nan}
 \title{Fill NaN}
 \usage{
-Expr_fill_nan(expr = NULL)
+<Expr>$fill_nan(expr = NULL)
 }
 \arguments{
 \item{expr}{Expr or something coercible in an Expr}

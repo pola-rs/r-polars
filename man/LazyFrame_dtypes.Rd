@@ -5,7 +5,7 @@
 \alias{LazyFrame_dtypes}
 \title{Data types information}
 \usage{
-LazyFrame_schema()
+<LazyFrame>$schema()
 
 LazyFrame_dtypes()
 }

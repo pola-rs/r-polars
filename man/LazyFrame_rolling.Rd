@@ -4,7 +4,7 @@
 \alias{LazyFrame_rolling}
 \title{Create rolling groups based on a date/time or integer column}
 \usage{
-LazyFrame_rolling(
+<LazyFrame>$rolling(
   index_column,
   ...,
   period,

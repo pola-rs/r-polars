@@ -4,7 +4,7 @@
 \alias{Expr_approx_n_unique}
 \title{Approx count unique values}
 \usage{
-Expr_approx_n_unique
+<Expr>$approx_n_unique
 }
 \value{
 Expr

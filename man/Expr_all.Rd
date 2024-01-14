@@ -4,7 +4,7 @@
 \alias{Expr_all}
 \title{Apply logical AND on a column}
 \usage{
-Expr_all(drop_nulls = TRUE)
+<Expr>$all(drop_nulls = TRUE)
 }
 \arguments{
 \item{drop_nulls}{Boolean. Default TRUE, as name says.}

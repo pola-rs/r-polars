@@ -4,7 +4,7 @@
 \alias{Expr_pct_change}
 \title{Percentage change}
 \usage{
-Expr_pct_change(n = 1)
+<Expr>$pct_change(n = 1)
 }
 \arguments{
 \item{n}{Periods to shift for computing percent change.}

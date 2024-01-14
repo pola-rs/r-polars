@@ -4,7 +4,7 @@
 \alias{DataFrame_median}
 \title{Median}
 \usage{
-DataFrame_median()
+<DataFrame>$median()
 }
 \value{
 A DataFrame with one row.

@@ -4,7 +4,7 @@
 \alias{DataFrame_last}
 \title{Get the last row of the DataFrame.}
 \usage{
-DataFrame_last()
+<DataFrame>$last()
 }
 \value{
 A DataFrame with one row.

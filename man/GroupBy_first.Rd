@@ -4,7 +4,7 @@
 \alias{GroupBy_first}
 \title{GroupBy First}
 \usage{
-GroupBy_first()
+<GroupBy>$first()
 }
 \value{
 aggregated DataFrame

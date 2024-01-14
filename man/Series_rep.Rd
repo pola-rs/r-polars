@@ -8,7 +8,7 @@
 method
 }
 \usage{
-Series_rep(n, rechunk = TRUE)
+<Series>$rep(n, rechunk = TRUE)
 }
 \arguments{
 \item{n}{number of times to repeat}

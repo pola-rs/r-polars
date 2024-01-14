@@ -4,7 +4,7 @@
 \alias{Expr_rolling_quantile}
 \title{Rolling quantile}
 \usage{
-Expr_rolling_quantile(
+<Expr>$rolling_quantile(
   quantile,
   interpolation = "nearest",
   window_size,

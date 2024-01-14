@@ -4,7 +4,7 @@
 \alias{DataFrame_unique}
 \title{Drop duplicated rows}
 \usage{
-DataFrame_unique(subset = NULL, keep = "first", maintain_order = FALSE)
+<DataFrame>$unique(subset = NULL, keep = "first", maintain_order = FALSE)
 }
 \arguments{
 \item{subset}{A character vector with the names of the column(s) to use to

@@ -4,7 +4,7 @@
 \alias{GroupBy_null_count}
 \title{GroupBy null count}
 \usage{
-GroupBy_null_count()
+<GroupBy>$null_count()
 }
 \value{
 DataFrame

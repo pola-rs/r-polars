@@ -5,7 +5,7 @@
 \alias{(Expr)$dt$minute}
 \title{Minute}
 \usage{
-ExprDT_minute()
+<Expr>$dt$minute()
 }
 \value{
 Expr of minute as UInt32

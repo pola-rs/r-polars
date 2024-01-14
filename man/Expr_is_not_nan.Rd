@@ -5,7 +5,7 @@
 \alias{is_not_nan}
 \title{Check if elements are not NaN}
 \usage{
-Expr_is_not_nan
+<Expr>$is_not_nan
 }
 \value{
 Expr

@@ -4,7 +4,7 @@
 \alias{pl_count}
 \title{pl$count}
 \usage{
-pl_count(column = NULL)
+pl$count(column = NULL)
 }
 \arguments{
 \item{column}{if dtype is:

@@ -4,7 +4,7 @@
 \alias{Expr_ewm_mean}
 \title{Exponentially-weighted moving average}
 \usage{
-Expr_ewm_mean(
+<Expr>$ewm_mean(
   com = NULL,
   span = NULL,
   half_life = NULL,

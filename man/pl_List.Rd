@@ -2,9 +2,13 @@
 % Please edit documentation in R/datatype.R
 \name{pl_List}
 \alias{pl_List}
+\alias{DataType_List}
 \title{Create List DataType}
 \format{
 function
+}
+\usage{
+DataType_List(datatype = "unknown")
 }
 \arguments{
 \item{datatype}{an inner DataType, default is "Unknown" (placeholder for when inner DataType

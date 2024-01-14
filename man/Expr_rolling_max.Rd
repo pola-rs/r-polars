@@ -4,7 +4,7 @@
 \alias{Expr_rolling_max}
 \title{Rolling maximum}
 \usage{
-Expr_rolling_max(
+<Expr>$rolling_max(
   window_size,
   weights = NULL,
   min_periods = NULL,

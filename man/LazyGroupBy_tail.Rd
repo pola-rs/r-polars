@@ -4,7 +4,7 @@
 \alias{LazyGroupBy_tail}
 \title{LazyGroupBy_tail}
 \usage{
-LazyGroupBy_tail(n = 1L)
+Lazy<GroupBy>$tail(n = 1L)
 }
 \arguments{
 \item{n}{integer number of rows to get}

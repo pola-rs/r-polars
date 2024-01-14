@@ -8,7 +8,7 @@
 function
 }
 \usage{
-ExprList_unique()
+<Expr>$list$unique()
 }
 \value{
 Expr

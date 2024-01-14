@@ -4,7 +4,7 @@
 \alias{ExprStr_replace}
 \title{Replace first matching regex/literal substring with a new string value}
 \usage{
-ExprStr_replace(pattern, value, literal = FALSE)
+<Expr>$str$replace(pattern, value, literal = FALSE)
 }
 \arguments{
 \item{pattern}{Regex pattern, can be an Expr.}

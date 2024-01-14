@@ -6,7 +6,7 @@
 \alias{+.RPolarsSeries}
 \title{add Series}
 \usage{
-Series_add(other)
+<Series>$add(other)
 
 \method{+}{RPolarsSeries}(s1, s2)
 }

@@ -4,7 +4,7 @@
 \alias{pl_select}
 \title{Select from an empty DataFrame}
 \usage{
-pl_select(...)
+pl$select(...)
 }
 \arguments{
 \item{...}{\link[=Expr_class]{Expressions}}

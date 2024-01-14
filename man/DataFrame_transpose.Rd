@@ -4,7 +4,7 @@
 \alias{DataFrame_transpose}
 \title{Transpose a DataFrame over the diagonal.}
 \usage{
-DataFrame_transpose(
+<DataFrame>$transpose(
   include_header = FALSE,
   header_name = "column",
   column_names = NULL

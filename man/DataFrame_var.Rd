@@ -4,7 +4,7 @@
 \alias{DataFrame_var}
 \title{Var}
 \usage{
-DataFrame_var(ddof = 1)
+<DataFrame>$var(ddof = 1)
 }
 \arguments{
 \item{ddof}{Delta Degrees of Freedom: the divisor used in the calculation is

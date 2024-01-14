@@ -4,7 +4,7 @@
 \alias{Expr_forward_fill}
 \title{Fill null values forward}
 \usage{
-Expr_forward_fill(limit = NULL)
+<Expr>$forward_fill(limit = NULL)
 }
 \arguments{
 \item{limit}{Number of consecutive null values to fill when using the

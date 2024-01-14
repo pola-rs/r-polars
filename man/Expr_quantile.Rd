@@ -4,7 +4,7 @@
 \alias{Expr_quantile}
 \title{Get quantile value.}
 \usage{
-Expr_quantile(quantile, interpolation = "nearest")
+<Expr>$quantile(quantile, interpolation = "nearest")
 }
 \arguments{
 \item{quantile}{Either a numeric value or an Expr whose value must be

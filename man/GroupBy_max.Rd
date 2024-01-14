@@ -4,7 +4,7 @@
 \alias{GroupBy_max}
 \title{GroupBy Max}
 \usage{
-GroupBy_max()
+<GroupBy>$max()
 }
 \value{
 aggregated DataFrame

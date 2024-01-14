@@ -4,7 +4,7 @@
 \alias{DataFrame_shift}
 \title{Shift a DataFrame}
 \usage{
-DataFrame_shift(periods = 1)
+<DataFrame>$shift(periods = 1)
 }
 \arguments{
 \item{periods}{Number of periods to shift (can be negative).}

@@ -4,7 +4,7 @@
 \alias{GroupBy_median}
 \title{GroupBy Median}
 \usage{
-GroupBy_median()
+<GroupBy>$median()
 }
 \value{
 aggregated DataFrame

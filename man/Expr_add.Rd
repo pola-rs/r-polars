@@ -5,7 +5,7 @@
 \alias{+.RPolarsExpr}
 \title{Add two expressions}
 \usage{
-Expr_add(other)
+<Expr>$add(other)
 
 \method{+}{RPolarsExpr}(e1, e2)
 }

@@ -5,7 +5,7 @@
 \alias{with_columns}
 \title{Modify/append column(s)}
 \usage{
-DataFrame_with_columns(...)
+<DataFrame>$with_columns(...)
 }
 \arguments{
 \item{...}{Any expressions or string column name, or same wrapped in a list.

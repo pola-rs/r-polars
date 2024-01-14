@@ -4,7 +4,7 @@
 \alias{ExprStr_explode}
 \title{Returns a column with a separate row for every string character}
 \usage{
-ExprStr_explode()
+<Expr>$str$explode()
 }
 \value{
 Expr: Series of dtype String.

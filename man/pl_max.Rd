@@ -4,7 +4,7 @@
 \alias{pl_max}
 \title{Find maximum value in one or several columns}
 \usage{
-pl_max(...)
+pl$max(...)
 }
 \arguments{
 \item{...}{is a:

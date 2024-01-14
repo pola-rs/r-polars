@@ -4,7 +4,7 @@
 \alias{DataFrame_write_ndjson}
 \title{Write to NDJSON file}
 \usage{
-DataFrame_write_ndjson(file)
+<DataFrame>$write_ndjson(file)
 }
 \arguments{
 \item{file}{File path to which the result should be written.}

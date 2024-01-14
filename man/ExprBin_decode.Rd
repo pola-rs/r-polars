@@ -5,7 +5,7 @@
 \alias{expr_bin_decode}
 \title{decode}
 \usage{
-ExprBin_decode(encoding, strict = TRUE)
+<Expr>$bin$decode(encoding, strict = TRUE)
 }
 \arguments{
 \item{encoding}{binary choice either 'hex' or 'base64'}

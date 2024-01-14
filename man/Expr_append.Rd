@@ -4,7 +4,7 @@
 \alias{Expr_append}
 \title{Append expressions}
 \usage{
-Expr_append(other, upcast = TRUE)
+<Expr>$append(other, upcast = TRUE)
 }
 \arguments{
 \item{other}{Expr or something coercible to an Expr.}

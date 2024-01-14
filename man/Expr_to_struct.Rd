@@ -4,7 +4,7 @@
 \alias{Expr_to_struct}
 \title{Convert an Expr to a Struct}
 \usage{
-Expr_to_struct()
+<Expr>$to_struct()
 }
 \value{
 Expr

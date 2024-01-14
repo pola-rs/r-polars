@@ -4,7 +4,7 @@
 \alias{Expr_is_between}
 \title{Check whether a value is between two values}
 \usage{
-Expr_is_between(start, end, include_bounds = FALSE)
+<Expr>$is_between(start, end, include_bounds = FALSE)
 }
 \arguments{
 \item{start}{Lower bound, an Expr that is either numeric or datetime.}

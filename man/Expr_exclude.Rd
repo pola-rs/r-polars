@@ -5,7 +5,7 @@
 \alias{exclude}
 \title{Exclude certain columns from selection}
 \usage{
-Expr_exclude(columns)
+<Expr>$exclude(columns)
 }
 \arguments{
 \item{columns}{Given param type:

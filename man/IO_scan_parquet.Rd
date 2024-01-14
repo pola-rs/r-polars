@@ -5,7 +5,7 @@
 \alias{pl_scan_parquet}
 \title{Scan a parquet file}
 \usage{
-pl_scan_parquet(
+pl$scan_parquet(
   file,
   n_rows = NULL,
   cache = TRUE,

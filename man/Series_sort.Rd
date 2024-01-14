@@ -4,7 +4,7 @@
 \alias{Series_sort}
 \title{Sort this Series}
 \usage{
-Series_sort(descending = FALSE, in_place = FALSE)
+<Series>$sort(descending = FALSE, in_place = FALSE)
 }
 \arguments{
 \item{descending}{Sort in descending order..}

@@ -5,7 +5,7 @@
 \alias{expr_str_zfill}
 \title{Fills the string with zeroes.}
 \usage{
-ExprStr_zfill(alignment)
+<Expr>$str$zfill(alignment)
 }
 \arguments{
 \item{alignment}{Fill the value up to this length.}

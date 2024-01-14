@@ -4,7 +4,7 @@
 \alias{Expr_arg_max}
 \title{Index of max value}
 \usage{
-Expr_arg_max
+<Expr>$arg_max
 }
 \value{
 Expr

@@ -4,7 +4,7 @@
 \alias{DataFrame_rolling}
 \title{Create rolling groups based on a date/time or integer column}
 \usage{
-DataFrame_rolling(
+<DataFrame>$rolling(
   index_column,
   period,
   offset = NULL,

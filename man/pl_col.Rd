@@ -4,7 +4,7 @@
 \alias{pl_col}
 \title{Start Expression with a column}
 \usage{
-pl_col(name = "", ...)
+pl$col(name = "", ...)
 }
 \arguments{
 \item{name}{\itemize{

@@ -5,7 +5,7 @@
 \alias{is_sorted}
 \title{is_sorted}
 \usage{
-Series_is_sorted(descending = FALSE)
+<Series>$is_sorted(descending = FALSE)
 }
 \arguments{
 \item{descending}{Check if the Series is sorted in descending order.}

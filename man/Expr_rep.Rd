@@ -4,7 +4,7 @@
 \alias{Expr_rep}
 \title{Repeat a Series}
 \usage{
-Expr_rep(n, rechunk = TRUE)
+<Expr>$rep(n, rechunk = TRUE)
 }
 \arguments{
 \item{n}{The number of times to repeat, must be non-negative and finite.}

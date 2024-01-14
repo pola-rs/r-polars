@@ -4,7 +4,7 @@
 \alias{DataFrame_sample}
 \title{Take a sample of rows from a DataFrame}
 \usage{
-DataFrame_sample(
+<DataFrame>$sample(
   n = NULL,
   fraction = NULL,
   with_replacement = FALSE,

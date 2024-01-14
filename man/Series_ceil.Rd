@@ -4,7 +4,7 @@
 \alias{Series_ceil}
 \title{Series_ceil}
 \usage{
-Series_ceil()
+<Series>$ceil()
 }
 \value{
 bool

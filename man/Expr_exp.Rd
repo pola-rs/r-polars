@@ -4,7 +4,7 @@
 \alias{Expr_exp}
 \title{Compute the exponential of the elements}
 \usage{
-Expr_exp
+<Expr>$exp
 }
 \value{
 Expr

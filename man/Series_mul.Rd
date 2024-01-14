@@ -6,7 +6,7 @@
 \alias{*.RPolarsSeries}
 \title{mul Series}
 \usage{
-Series_mul(other)
+<Series>$mul(other)
 
 \method{*}{RPolarsSeries}(s1, s2)
 }

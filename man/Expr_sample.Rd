@@ -4,7 +4,7 @@
 \alias{Expr_sample}
 \title{Take a sample}
 \usage{
-Expr_sample(
+<Expr>$sample(
   frac = NULL,
   with_replacement = TRUE,
   shuffle = FALSE,

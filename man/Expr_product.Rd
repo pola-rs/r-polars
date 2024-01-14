@@ -4,7 +4,7 @@
 \alias{Expr_product}
 \title{Product}
 \usage{
-Expr_product
+<Expr>$product
 }
 \value{
 Expr

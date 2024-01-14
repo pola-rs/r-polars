@@ -5,7 +5,7 @@
 \alias{>=.RPolarsExpr}
 \title{Check greater or equal inequality}
 \usage{
-Expr_gt_eq(other)
+<Expr>$gt_eq(other)
 
 \method{>=}{RPolarsExpr}(e1, e2)
 }

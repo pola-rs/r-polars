@@ -4,7 +4,7 @@
 \alias{GroupBy_mean}
 \title{GroupBy Mean}
 \usage{
-GroupBy_mean()
+<GroupBy>$mean()
 }
 \value{
 aggregated DataFrame

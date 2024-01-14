@@ -4,7 +4,7 @@
 \alias{RollingGroupBy_agg}
 \title{Aggregate over a RollingGroupBy}
 \usage{
-RollingGroupBy_agg(...)
+Rolling<GroupBy>$agg(...)
 }
 \arguments{
 \item{...}{Exprs to aggregate over. Those can also be passed wrapped in a

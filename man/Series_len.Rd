@@ -4,7 +4,7 @@
 \alias{Series_len}
 \title{Series_len}
 \usage{
-Series_len
+<Series>$len
 }
 \value{
 numeric

@@ -4,7 +4,7 @@
 \alias{Expr_rolling_std}
 \title{Rolling standard deviation}
 \usage{
-Expr_rolling_std(
+<Expr>$rolling_std(
   window_size,
   weights = NULL,
   min_periods = NULL,

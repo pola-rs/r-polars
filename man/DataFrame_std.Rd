@@ -4,7 +4,7 @@
 \alias{DataFrame_std}
 \title{Std}
 \usage{
-DataFrame_std(ddof = 1)
+<DataFrame>$std(ddof = 1)
 }
 \arguments{
 \item{ddof}{Delta Degrees of Freedom: the divisor used in the calculation is

@@ -4,7 +4,7 @@
 \alias{LazyFrame_median}
 \title{Median}
 \usage{
-LazyFrame_median()
+<LazyFrame>$median()
 }
 \value{
 A LazyFrame with one row

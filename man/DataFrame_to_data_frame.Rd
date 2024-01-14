@@ -4,7 +4,7 @@
 \alias{DataFrame_to_data_frame}
 \title{Return Polars DataFrame as R data.frame}
 \usage{
-DataFrame_to_data_frame(...)
+<DataFrame>$to_data_frame(...)
 }
 \arguments{
 \item{...}{Any args pased to \code{as.data.frame()}.}

@@ -4,7 +4,7 @@
 \alias{DataFrame_unnest}
 \title{Unnest the Struct columns of a DataFrame}
 \usage{
-DataFrame_unnest(names = NULL)
+<DataFrame>$unnest(names = NULL)
 }
 \arguments{
 \item{names}{Names of the struct columns to unnest. If \code{NULL} (default), then

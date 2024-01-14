@@ -4,7 +4,7 @@
 \alias{Series_arg_max}
 \title{idx to max value}
 \usage{
-Series_arg_max
+<Series>$arg_max
 }
 \value{
 bool

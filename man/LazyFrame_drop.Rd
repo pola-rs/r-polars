@@ -4,7 +4,7 @@
 \alias{LazyFrame_drop}
 \title{Drop columns of a LazyFrame}
 \usage{
-LazyFrame_drop(columns)
+<LazyFrame>$drop(columns)
 }
 \arguments{
 \item{columns}{A character vector with the names of the column(s) to remove.}

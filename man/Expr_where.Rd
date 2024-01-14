@@ -4,7 +4,7 @@
 \alias{Expr_where}
 \title{Filter a single column.}
 \usage{
-Expr_where(predicate)
+<Expr>$where(predicate)
 }
 \arguments{
 \item{predicate}{An Expr or something coercible to an Expr. Must return a

@@ -4,7 +4,7 @@
 \alias{ExprName_prefix}
 \title{Add a prefix to a column name}
 \usage{
-ExprName_prefix(prefix)
+<Expr>$name$prefix(prefix)
 }
 \arguments{
 \item{prefix}{Prefix to be added to column name(s)}

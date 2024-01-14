@@ -4,7 +4,7 @@
 \alias{LazyFrame_slice}
 \title{Slice}
 \usage{
-LazyFrame_slice(offset, length = NULL)
+<LazyFrame>$slice(offset, length = NULL)
 }
 \arguments{
 \item{offset}{Start index, can be a negative value. This is 0-indexed, so

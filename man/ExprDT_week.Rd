@@ -5,7 +5,7 @@
 \alias{(Expr)$dt$week}
 \title{Week}
 \usage{
-ExprDT_week()
+<Expr>$dt$week()
 }
 \value{
 Expr of week as UInt32

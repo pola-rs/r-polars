@@ -4,7 +4,7 @@
 \alias{pl_DataFrame}
 \title{Create new DataFrame}
 \usage{
-pl_DataFrame(..., make_names_unique = TRUE, schema = NULL)
+pl$DataFrame(..., make_names_unique = TRUE, schema = NULL)
 }
 \arguments{
 \item{...}{One of the following:

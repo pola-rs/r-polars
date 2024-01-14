@@ -6,7 +6,7 @@
 \alias{Series_to_r_list}
 \title{Get r vector/list}
 \usage{
-Series_to_r()
+<Series>$to_r()
 
 Series_to_vector()
 

@@ -5,7 +5,7 @@
 \alias{element}
 \title{an element in 'eval'-expr}
 \usage{
-pl_element()
+pl$element()
 }
 \value{
 Expr

@@ -4,7 +4,7 @@
 \alias{ExprStr_to_uppercase}
 \title{Convert a string to uppercase}
 \usage{
-ExprStr_to_uppercase()
+<Expr>$str$to_uppercase()
 }
 \value{
 Expr of String uppercase chars

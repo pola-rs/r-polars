@@ -4,7 +4,7 @@
 \alias{pl_duration}
 \title{Create polars Duration from distinct time components}
 \usage{
-pl_duration(
+pl$duration(
   ...,
   weeks = NULL,
   days = NULL,

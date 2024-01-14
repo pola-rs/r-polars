@@ -4,7 +4,7 @@
 \alias{DataFrame_drop_nulls}
 \title{Drop nulls (missing values)}
 \usage{
-DataFrame_drop_nulls(subset = NULL)
+<DataFrame>$drop_nulls(subset = NULL)
 }
 \arguments{
 \item{subset}{A character vector with the names of the column(s) for which

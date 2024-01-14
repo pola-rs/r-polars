@@ -5,7 +5,7 @@
 \alias{to_struct}
 \title{Convert DataFrame to a Series of type "struct"}
 \usage{
-DataFrame_to_struct(name = "")
+<DataFrame>$to_struct(name = "")
 }
 \arguments{
 \item{name}{Name given to the new Series}

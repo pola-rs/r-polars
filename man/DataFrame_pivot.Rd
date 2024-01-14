@@ -4,7 +4,7 @@
 \alias{DataFrame_pivot}
 \title{Pivot data from long to wide}
 \usage{
-DataFrame_pivot(
+<DataFrame>$pivot(
   values,
   index,
   columns,

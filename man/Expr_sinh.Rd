@@ -4,7 +4,7 @@
 \alias{Expr_sinh}
 \title{Compute hyperbolic sine}
 \usage{
-Expr_sinh
+<Expr>$sinh
 }
 \value{
 Expr

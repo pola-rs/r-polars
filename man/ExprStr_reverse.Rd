@@ -4,7 +4,7 @@
 \alias{ExprStr_reverse}
 \title{Returns string values in reversed order}
 \usage{
-ExprStr_reverse()
+<Expr>$str$reverse()
 }
 \value{
 Expr

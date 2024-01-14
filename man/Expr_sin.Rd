@@ -4,7 +4,7 @@
 \alias{Expr_sin}
 \title{Compute sine}
 \usage{
-Expr_sin
+<Expr>$sin
 }
 \value{
 Expr

@@ -4,7 +4,7 @@
 \alias{LazyFrame_rename}
 \title{Rename columns of a DataFrame}
 \usage{
-LazyFrame_rename(...)
+<LazyFrame>$rename(...)
 }
 \arguments{
 \item{...}{One of the following:

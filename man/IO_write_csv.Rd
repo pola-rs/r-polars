@@ -4,12 +4,12 @@
 \alias{DataFrame_write_csv}
 \title{Write to comma-separated values (CSV) file}
 \usage{
-DataFrame_write_csv(
+<DataFrame>$write_csv(
   path,
   include_bom = FALSE,
   include_header = TRUE,
   separator = ",",
-  line_terminator = "\\n",
+  line_terminator = "\n",
   quote = "\\"",
   batch_size = 1024,
   datetime_format = NULL,

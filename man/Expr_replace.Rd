@@ -4,7 +4,7 @@
 \alias{Expr_replace}
 \title{Replace values by different values}
 \usage{
-Expr_replace(old, new, default = NULL, return_dtype = NULL)
+<Expr>$replace(old, new, default = NULL, return_dtype = NULL)
 }
 \arguments{
 \item{old}{Can be several things:

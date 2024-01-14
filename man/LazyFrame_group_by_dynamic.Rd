@@ -4,7 +4,7 @@
 \alias{LazyFrame_group_by_dynamic}
 \title{Group based on a date/time or integer column}
 \usage{
-LazyFrame_group_by_dynamic(
+<LazyFrame>$group_by_dynamic(
   index_column,
   ...,
   every,

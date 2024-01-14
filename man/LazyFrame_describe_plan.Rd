@@ -9,7 +9,7 @@
 An object of class \code{character} of length 1.
 }
 \usage{
-LazyFrame_describe_optimized_plan()
+<LazyFrame>$describe_optimized_plan()
 
 LazyFrame_describe_plan
 }

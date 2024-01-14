@@ -4,7 +4,7 @@
 \alias{LazyFrame_sink_ndjson}
 \title{Stream the output of a query to a JSON file}
 \usage{
-LazyFrame_sink_ndjson(
+<LazyFrame>$sink_ndjson(
   path,
   maintain_order = TRUE,
   type_coercion = TRUE,

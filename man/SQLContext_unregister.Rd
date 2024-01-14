@@ -4,7 +4,7 @@
 \alias{SQLContext_unregister}
 \title{Unregister tables by name}
 \usage{
-SQLContext_unregister(names)
+<SQLContext>$unregister(names)
 }
 \arguments{
 \item{names}{A character vector of table names to unregister.}

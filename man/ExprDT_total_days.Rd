@@ -4,7 +4,7 @@
 \alias{ExprDT_total_days}
 \title{Days}
 \usage{
-ExprDT_total_days()
+<Expr>$dt$total_days()
 }
 \value{
 Expr of i64

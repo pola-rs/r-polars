@@ -4,7 +4,7 @@
 \alias{DataFrame_melt}
 \title{Unpivot a Frame from wide to long format}
 \usage{
-DataFrame_melt(
+<DataFrame>$melt(
   id_vars = NULL,
   value_vars = NULL,
   variable_name = NULL,

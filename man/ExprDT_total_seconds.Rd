@@ -4,7 +4,7 @@
 \alias{ExprDT_total_seconds}
 \title{Seconds}
 \usage{
-ExprDT_total_seconds()
+<Expr>$dt$total_seconds()
 }
 \value{
 Expr of i64

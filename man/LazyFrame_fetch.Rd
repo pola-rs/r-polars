@@ -4,7 +4,7 @@
 \alias{LazyFrame_fetch}
 \title{Fetch \code{n} rows of a LazyFrame}
 \usage{
-LazyFrame_fetch(
+<LazyFrame>$fetch(
   n_rows = 500,
   ...,
   type_coercion = TRUE,

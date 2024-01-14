@@ -4,7 +4,7 @@
 \alias{Expr_peak_min}
 \title{Find local minima}
 \usage{
-Expr_peak_min()
+<Expr>$peak_min()
 }
 \value{
 Expr

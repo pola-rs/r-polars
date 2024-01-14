@@ -4,7 +4,7 @@
 \alias{Series_mean}
 \title{Mean}
 \usage{
-Series_mean()
+<Series>$mean()
 }
 \value{
 R scalar value

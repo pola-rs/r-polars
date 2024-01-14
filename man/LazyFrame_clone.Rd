@@ -4,7 +4,7 @@
 \alias{LazyFrame_clone}
 \title{Clone a LazyFrame}
 \usage{
-LazyFrame_clone()
+<LazyFrame>$clone()
 }
 \value{
 A LazyFrame

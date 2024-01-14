@@ -5,7 +5,7 @@
 \alias{select}
 \title{Select and modify columns of a DataFrame}
 \usage{
-DataFrame_select(...)
+<DataFrame>$select(...)
 }
 \arguments{
 \item{...}{Columns to keep. Those can be expressions (e.g \code{pl$col("a")}),

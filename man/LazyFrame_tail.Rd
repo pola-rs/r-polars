@@ -4,7 +4,7 @@
 \alias{LazyFrame_tail}
 \title{Tail of a DataFrame}
 \usage{
-LazyFrame_tail(n)
+<LazyFrame>$tail(n)
 }
 \arguments{
 \item{n}{Positive number not larger than 2^32.}

@@ -8,7 +8,7 @@
 method
 }
 \usage{
-Series_rename(name, in_place = FALSE)
+<Series>$rename(name, in_place = FALSE)
 }
 \arguments{
 \item{name}{string the new name}

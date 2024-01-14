@@ -4,7 +4,7 @@
 \alias{Expr_cumulative_eval}
 \title{Cumulative evaluation of expressions}
 \usage{
-Expr_cumulative_eval(expr, min_periods = 1L, parallel = FALSE)
+<Expr>$cumulative_eval(expr, min_periods = 1L, parallel = FALSE)
 }
 \arguments{
 \item{expr}{Expression to evaluate.}

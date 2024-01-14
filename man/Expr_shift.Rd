@@ -4,7 +4,7 @@
 \alias{Expr_shift}
 \title{Shift values}
 \usage{
-Expr_shift(periods = 1)
+<Expr>$shift(periods = 1)
 }
 \arguments{
 \item{periods}{Number of periods to shift, may be negative.}

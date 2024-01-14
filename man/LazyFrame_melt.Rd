@@ -4,7 +4,7 @@
 \alias{LazyFrame_melt}
 \title{Unpivot a Frame from wide to long format}
 \usage{
-LazyFrame_melt(
+<LazyFrame>$melt(
   id_vars = NULL,
   value_vars = NULL,
   variable_name = NULL,

@@ -4,7 +4,7 @@
 \alias{pl_sum}
 \title{Compute sum in one or several columns}
 \usage{
-pl_sum(...)
+pl$sum(...)
 }
 \arguments{
 \item{...}{One or several elements. Each element can be:

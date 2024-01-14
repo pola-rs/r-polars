@@ -4,7 +4,7 @@
 \alias{LazyFrame_fill_null}
 \title{Fill nulls}
 \usage{
-LazyFrame_fill_null(fill_value)
+<LazyFrame>$fill_null(fill_value)
 }
 \arguments{
 \item{fill_value}{Value to fill nulls with.}

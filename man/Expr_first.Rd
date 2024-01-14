@@ -4,7 +4,7 @@
 \alias{Expr_first}
 \title{Get the first value.}
 \usage{
-Expr_first
+<Expr>$first
 }
 \value{
 Expr

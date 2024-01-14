@@ -9,7 +9,7 @@
 An object of class \code{character} of length 1.
 }
 \usage{
-Expr_count
+<Expr>$count
 
 Expr_len
 }

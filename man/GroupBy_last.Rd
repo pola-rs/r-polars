@@ -4,7 +4,7 @@
 \alias{GroupBy_last}
 \title{GroupBy Last}
 \usage{
-GroupBy_last()
+<GroupBy>$last()
 }
 \value{
 aggregated DataFrame

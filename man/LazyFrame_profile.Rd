@@ -4,7 +4,7 @@
 \alias{LazyFrame_profile}
 \title{Collect and profile a lazy query.}
 \usage{
-LazyFrame_profile(
+<LazyFrame>$profile(
   type_coercion = TRUE,
   predicate_pushdown = TRUE,
   projection_pushdown = TRUE,
@@ -90,7 +90,7 @@ pl$LazyFrame(iris)$
 # -2-  map each Species-group of each numeric column with an R function, takes ~7000us (slow!)
 
 # some R function, prints `.` for each time called by polars
-r_func = \(s) {
+r_func = \\(s) {
   cat(".")
   s$to_r()[1] + 5
 }

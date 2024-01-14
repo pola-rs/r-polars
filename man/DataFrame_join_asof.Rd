@@ -4,7 +4,7 @@
 \alias{DataFrame_join_asof}
 \title{Perform joins on nearest keys}
 \usage{
-DataFrame_join_asof(
+<DataFrame>$join_asof(
   other,
   ...,
   left_on = NULL,

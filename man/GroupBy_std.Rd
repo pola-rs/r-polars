@@ -4,7 +4,7 @@
 \alias{GroupBy_std}
 \title{GroupBy Std}
 \usage{
-GroupBy_std()
+<GroupBy>$std()
 }
 \value{
 aggregated DataFrame

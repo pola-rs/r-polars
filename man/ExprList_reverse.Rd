@@ -8,7 +8,7 @@
 function
 }
 \usage{
-ExprList_reverse()
+<Expr>$list$reverse()
 }
 \value{
 Expr

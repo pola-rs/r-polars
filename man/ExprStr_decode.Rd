@@ -4,7 +4,7 @@
 \alias{ExprStr_decode}
 \title{Decode a value using the provided encoding}
 \usage{
-ExprStr_decode(encoding, ..., strict = TRUE)
+<Expr>$str$decode(encoding, ..., strict = TRUE)
 }
 \arguments{
 \item{encoding}{Either 'hex' or 'base64'.}

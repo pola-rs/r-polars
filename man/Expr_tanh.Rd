@@ -4,7 +4,7 @@
 \alias{Expr_tanh}
 \title{Compute hyperbolic tangent}
 \usage{
-Expr_tanh
+<Expr>$tanh
 }
 \value{
 Expr

@@ -4,7 +4,7 @@
 \alias{pl_read_ndjson}
 \title{New DataFrame from NDJSON}
 \usage{
-pl_read_ndjson(
+pl$read_ndjson(
   path,
   infer_schema_length = 100,
   batch_size = NULL,

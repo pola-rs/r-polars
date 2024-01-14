@@ -5,7 +5,7 @@
 \alias{(Expr)$dt$strftime}
 \title{strftime}
 \usage{
-ExprDT_strftime(format)
+<Expr>$dt$strftime(format)
 }
 \arguments{
 \item{format}{string format very much like in R passed to chrono}

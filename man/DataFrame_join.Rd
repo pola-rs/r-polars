@@ -4,7 +4,7 @@
 \alias{DataFrame_join}
 \title{Join DataFrames}
 \usage{
-DataFrame_join(
+<DataFrame>$join(
   other,
   left_on = NULL,
   right_on = NULL,

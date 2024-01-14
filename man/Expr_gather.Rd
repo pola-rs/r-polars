@@ -4,7 +4,7 @@
 \alias{Expr_gather}
 \title{Gather values by index}
 \usage{
-Expr_gather(indices)
+<Expr>$gather(indices)
 }
 \arguments{
 \item{indices}{R scalar/vector or Series, or Expr that leads to a Series of

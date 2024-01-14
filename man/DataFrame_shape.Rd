@@ -4,7 +4,7 @@
 \alias{DataFrame_shape}
 \title{Dimensions of a DataFrame}
 \usage{
-DataFrame_shape()
+<DataFrame>$shape()
 }
 \value{
 Numeric vector of length two with the number of rows and the number

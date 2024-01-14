@@ -4,7 +4,7 @@
 \alias{ExprDT_total_hours}
 \title{Hours}
 \usage{
-ExprDT_total_hours()
+<Expr>$dt$total_hours()
 }
 \value{
 Expr of i64

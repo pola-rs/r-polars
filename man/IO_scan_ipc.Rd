@@ -4,7 +4,7 @@
 \alias{pl_scan_ipc}
 \title{Import data in Apache Arrow IPC format}
 \usage{
-pl_scan_ipc(
+pl$scan_ipc(
   path,
   n_rows = NULL,
   cache = TRUE,

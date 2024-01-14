@@ -4,7 +4,7 @@
 \alias{DataFrame_explode}
 \title{Explode columns containing a list of values}
 \usage{
-DataFrame_explode(...)
+<DataFrame>$explode(...)
 }
 \arguments{
 \item{...}{Column(s) to be exploded as individual \verb{Into<Expr>} or list/vector

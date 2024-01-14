@@ -4,7 +4,7 @@
 \alias{Expr_limit}
 \title{Get the first n elements}
 \usage{
-Expr_limit(n = 10)
+<Expr>$limit(n = 10)
 }
 \arguments{
 \item{n}{Number of elements to take.}

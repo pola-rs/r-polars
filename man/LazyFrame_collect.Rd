@@ -4,7 +4,7 @@
 \alias{LazyFrame_collect}
 \title{Collect a query into a DataFrame}
 \usage{
-LazyFrame_collect(
+<LazyFrame>$collect(
   ...,
   type_coercion = TRUE,
   predicate_pushdown = TRUE,

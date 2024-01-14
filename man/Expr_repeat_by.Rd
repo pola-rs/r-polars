@@ -4,7 +4,7 @@
 \alias{Expr_repeat_by}
 \title{Repeat values}
 \usage{
-Expr_repeat_by(by)
+<Expr>$repeat_by(by)
 }
 \arguments{
 \item{by}{Expr that determines how often the values will be repeated. The

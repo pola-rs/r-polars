@@ -4,7 +4,7 @@
 \alias{Expr_rolling_sum}
 \title{Rolling sum}
 \usage{
-Expr_rolling_sum(
+<Expr>$rolling_sum(
   window_size,
   weights = NULL,
   min_periods = NULL,

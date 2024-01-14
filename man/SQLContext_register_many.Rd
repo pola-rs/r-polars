@@ -4,7 +4,7 @@
 \alias{SQLContext_register_many}
 \title{Register multiple data as tables}
 \usage{
-SQLContext_register_many(...)
+<SQLContext>$register_many(...)
 }
 \arguments{
 \item{...}{Name-value pairs of \link[=LazyFrame_class]{LazyFrame} like objects to register.}

@@ -4,7 +4,7 @@
 \alias{Expr_explode}
 \title{Explode a list or String Series}
 \usage{
-Expr_explode
+<Expr>$explode
 }
 \value{
 Expr

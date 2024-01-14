@@ -4,7 +4,7 @@
 \alias{Expr_cum_min}
 \title{Cumulative minimum}
 \usage{
-Expr_cum_min(reverse = FALSE)
+<Expr>$cum_min(reverse = FALSE)
 }
 \arguments{
 \item{reverse}{If \code{TRUE}, start from the last value.}

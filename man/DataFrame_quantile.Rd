@@ -4,7 +4,7 @@
 \alias{DataFrame_quantile}
 \title{Quantile}
 \usage{
-DataFrame_quantile(quantile, interpolation = "nearest")
+<DataFrame>$quantile(quantile, interpolation = "nearest")
 }
 \arguments{
 \item{quantile}{Numeric of length 1 between 0 and 1.}

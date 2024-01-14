@@ -4,7 +4,7 @@
 \alias{Expr_arctanh}
 \title{Compute inverse hyperbolic tangent}
 \usage{
-Expr_arctanh
+<Expr>$arctanh
 }
 \value{
 Expr

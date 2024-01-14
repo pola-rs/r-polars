@@ -4,7 +4,7 @@
 \alias{Expr_over}
 \title{Apply window function over a subgroup}
 \usage{
-Expr_over(...)
+<Expr>$over(...)
 }
 \arguments{
 \item{...}{Character vector indicating the columns to group by.}

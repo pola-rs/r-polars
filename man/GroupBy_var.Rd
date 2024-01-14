@@ -4,7 +4,7 @@
 \alias{GroupBy_var}
 \title{GroupBy Var}
 \usage{
-GroupBy_var()
+<GroupBy>$var()
 }
 \value{
 aggregated DataFrame

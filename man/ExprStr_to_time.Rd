@@ -4,7 +4,7 @@
 \alias{ExprStr_to_time}
 \title{Convert a String column into a Time column}
 \usage{
-ExprStr_to_time(format = NULL, strict = TRUE, cache = TRUE)
+<Expr>$str$to_time(format = NULL, strict = TRUE, cache = TRUE)
 }
 \arguments{
 \item{format}{Format to use for conversion. See \code{?strptime} for possible

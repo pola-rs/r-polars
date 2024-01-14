@@ -4,7 +4,7 @@
 \alias{Expr_interpolate}
 \title{Interpolate null values}
 \usage{
-Expr_interpolate(method = "linear")
+<Expr>$interpolate(method = "linear")
 }
 \arguments{
 \item{method}{String, either \code{"linear"} (default) or \code{"nearest"}.}

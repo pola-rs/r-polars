@@ -4,7 +4,7 @@
 \alias{Expr_arccosh}
 \title{Compute inverse hyperbolic cosine}
 \usage{
-Expr_arccosh
+<Expr>$arccosh
 }
 \value{
 Expr

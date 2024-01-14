@@ -5,7 +5,7 @@
 \alias{(Expr)$dt$truncate}
 \title{Truncate datetime}
 \usage{
-ExprDT_truncate(every, offset = NULL)
+<Expr>$dt$truncate(every, offset = NULL)
 }
 \arguments{
 \item{every}{string encoding duration see details.}

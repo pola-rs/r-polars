@@ -4,7 +4,7 @@
 \alias{Expr_round}
 \title{Round}
 \usage{
-Expr_round(decimals)
+<Expr>$round(decimals)
 }
 \arguments{
 \item{decimals}{Number of decimals to round by.}

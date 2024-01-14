@@ -4,7 +4,7 @@
 \alias{pl_read_csv}
 \title{New DataFrame from CSV}
 \usage{
-pl_read_csv(
+pl$read_csv(
   path,
   has_header = TRUE,
   separator = ",",

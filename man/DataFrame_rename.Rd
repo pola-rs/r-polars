@@ -4,7 +4,7 @@
 \alias{DataFrame_rename}
 \title{Rename columns of a DataFrame}
 \usage{
-DataFrame_rename(...)
+<DataFrame>$rename(...)
 }
 \arguments{
 \item{...}{One of the following:

@@ -8,7 +8,7 @@
 function
 }
 \usage{
-ExprList_sum()
+<Expr>$list$sum()
 }
 \value{
 Expr

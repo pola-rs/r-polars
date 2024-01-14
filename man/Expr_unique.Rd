@@ -4,7 +4,7 @@
 \alias{Expr_unique}
 \title{Get unique values}
 \usage{
-Expr_unique(maintain_order = FALSE)
+<Expr>$unique(maintain_order = FALSE)
 }
 \arguments{
 \item{maintain_order}{If \code{TRUE}, the unique values are returned in order of

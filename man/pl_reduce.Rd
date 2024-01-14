@@ -4,7 +4,7 @@
 \alias{pl_reduce}
 \title{Accumulate over multiple columns horizontally with an R function}
 \usage{
-pl_reduce(lambda, exprs)
+pl$reduce(lambda, exprs)
 }
 \arguments{
 \item{lambda}{R function which takes two polars Series as input and return one.}
@@ -24,7 +24,7 @@ df = pl$DataFrame(mtcars)
 # Make the row-wise sum of all columns
 df$with_columns(
   pl$reduce(
-    lambda = \(acc, x) acc + x,
+    lambda = \\(acc, x) acc + x,
     exprs = pl$col("*")
   )$alias("mpg_drat_sum_reduced")
 )

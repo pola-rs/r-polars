@@ -9,7 +9,7 @@
 An object of class \code{character} of length 1.
 }
 \usage{
-Series_chunk_lengths
+<Series>$chunk_lengths
 }
 \value{
 numeric vector. Length is number of chunks. Sum of lengths is equal to size of Series.

@@ -4,7 +4,7 @@
 \alias{Expr_arcsinh}
 \title{Compute inverse hyperbolic sine}
 \usage{
-Expr_arcsinh
+<Expr>$arcsinh
 }
 \value{
 Expr

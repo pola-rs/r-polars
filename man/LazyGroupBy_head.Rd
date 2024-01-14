@@ -4,7 +4,7 @@
 \alias{LazyGroupBy_head}
 \title{LazyGroupBy_head}
 \usage{
-LazyGroupBy_head(n = 1L)
+Lazy<GroupBy>$head(n = 1L)
 }
 \arguments{
 \item{n}{integer number of rows to get}

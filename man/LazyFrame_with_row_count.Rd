@@ -4,7 +4,7 @@
 \alias{LazyFrame_with_row_count}
 \title{Add a column for row indices}
 \usage{
-LazyFrame_with_row_count(name, offset = NULL)
+<LazyFrame>$with_row_count(name, offset = NULL)
 }
 \arguments{
 \item{name}{string name of the created column}

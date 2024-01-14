@@ -4,7 +4,7 @@
 \alias{LazyGroupBy_print}
 \title{LazyGroupBy_print}
 \usage{
-LazyGroupBy_print()
+Lazy<GroupBy>$print()
 }
 \value{
 invisible self

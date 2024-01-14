@@ -4,7 +4,7 @@
 \alias{Expr_reinterpret}
 \title{Reinterpret bits}
 \usage{
-Expr_reinterpret(signed = TRUE)
+<Expr>$reinterpret(signed = TRUE)
 }
 \arguments{
 \item{signed}{If \code{TRUE} (default), reinterpret into Int64. Otherwise, it

@@ -4,7 +4,7 @@
 \alias{LazyFrame_width}
 \title{Number of columns of a LazyFrame}
 \usage{
-LazyFrame_width()
+<LazyFrame>$width()
 }
 \value{
 The number of columns of a DataFrame

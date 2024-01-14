@@ -4,7 +4,7 @@
 \alias{Series_dtype}
 \title{Get data type of Series}
 \usage{
-Series_dtype()
+<Series>$dtype()
 }
 \value{
 DataType

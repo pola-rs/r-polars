@@ -4,7 +4,7 @@
 \alias{LazyFrame_shift}
 \title{Shift}
 \usage{
-LazyFrame_shift(periods = 1)
+<LazyFrame>$shift(periods = 1)
 }
 \arguments{
 \item{periods}{integer Number of periods to shift (may be negative).}

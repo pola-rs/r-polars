@@ -4,7 +4,7 @@
 \alias{LazyFrame_unnest}
 \title{Unnest the Struct columns of a LazyFrame}
 \usage{
-LazyFrame_unnest(names = NULL)
+<LazyFrame>$unnest(names = NULL)
 }
 \arguments{
 \item{names}{Names of the struct columns to unnest. If \code{NULL} (default), then

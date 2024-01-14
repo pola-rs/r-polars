@@ -5,7 +5,7 @@
 \alias{expr_is_regex_projection}
 \title{Is regex projection.}
 \usage{
-ExprMeta_is_regex_projection()
+<Expr>$meta$is_regex_projection()
 }
 \value{
 Bool

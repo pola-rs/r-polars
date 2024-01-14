@@ -8,7 +8,7 @@
 An object of class \code{character} of length 1.
 }
 \usage{
-LazyFrame_reverse
+<LazyFrame>$reverse
 }
 \value{
 LazyFrame

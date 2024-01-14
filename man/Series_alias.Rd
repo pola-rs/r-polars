@@ -5,7 +5,7 @@
 \alias{alias}
 \title{Alias}
 \usage{
-Series_alias(name)
+<Series>$alias(name)
 }
 \arguments{
 \item{name}{a String as the new name}

@@ -5,7 +5,7 @@
 \alias{Series_value_counts}
 \title{Value Counts as DataFrame}
 \usage{
-Series_value_counts(sort = TRUE, parallel = FALSE)
+<Series>$value_counts(sort = TRUE, parallel = FALSE)
 }
 \arguments{
 \item{sort}{bool, default TRUE: sort table by value; FALSE: random}

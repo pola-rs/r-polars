@@ -4,7 +4,7 @@
 \alias{Expr_map_batches}
 \title{Map an expression with an R function}
 \usage{
-Expr_map_batches(
+<Expr>$map_batches(
   f,
   output_type = NULL,
   agg_list = FALSE,
@@ -54,7 +54,7 @@ to see and view number of parallel R sessions.
 \examples{
 pl$DataFrame(iris)$
   select(
-  pl$col("Sepal.Length")$map_batches(\(x) {
+  pl$col("Sepal.Length")$map_batches(\\(x) {
     paste("cheese", as.character(x$to_vector()))
   }, pl$dtypes$String)
 )
@@ -64,7 +64,7 @@ pl$DataFrame(iris)$
 
 # map a,b,c,d sequentially
 pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
-  pl$all()$map_batches(\(s) {
+  pl$all()$map_batches(\\(s) {
     Sys.sleep(.1)
     s * 2
   })
@@ -75,7 +75,7 @@ pl$set_options(rpool_cap = 0) # drop any previous processes, just to show start-
 pl$set_options(rpool_cap = 4) # set back to 4, the default
 pl$options$rpool_cap
 pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
-  pl$all()$map_batches(\(s) {
+  pl$all()$map_batches(\\(s) {
     Sys.sleep(.1)
     s * 2
   }, in_background = TRUE)
@@ -84,7 +84,7 @@ pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
 # map in parallel 2: Reuse R processes in "polars global_rpool".
 pl$options$rpool_cap
 pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
-  pl$all()$map_batches(\(s) {
+  pl$all()$map_batches(\\(s) {
     Sys.sleep(.1)
     s * 2
   }, in_background = TRUE)

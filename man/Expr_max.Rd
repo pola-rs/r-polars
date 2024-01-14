@@ -4,7 +4,7 @@
 \alias{Expr_max}
 \title{Get maximum value}
 \usage{
-Expr_max
+<Expr>$max
 }
 \value{
 Expr

@@ -8,7 +8,7 @@
 function
 }
 \usage{
-ExprList_arg_max()
+<Expr>$list$arg_max()
 }
 \value{
 Expr

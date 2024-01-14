@@ -4,7 +4,7 @@
 \alias{pl_all}
 \title{New Expr referring to all columns}
 \usage{
-pl_all(name = NULL)
+pl$all(name = NULL)
 }
 \arguments{
 \item{name}{Character vector indicating on which columns the AND operation

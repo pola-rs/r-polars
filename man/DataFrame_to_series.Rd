@@ -4,7 +4,7 @@
 \alias{DataFrame_to_series}
 \title{Get column by index}
 \usage{
-DataFrame_to_series(idx = 0)
+<DataFrame>$to_series(idx = 0)
 }
 \arguments{
 \item{idx}{Index of the column to return as Series. Defaults to 0, which is

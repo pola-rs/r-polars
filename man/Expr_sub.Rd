@@ -5,7 +5,7 @@
 \alias{-.RPolarsExpr}
 \title{Substract two expressions}
 \usage{
-Expr_sub(other)
+<Expr>$sub(other)
 
 \method{-}{RPolarsExpr}(e1, e2)
 }

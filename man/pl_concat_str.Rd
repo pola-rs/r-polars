@@ -4,7 +4,7 @@
 \alias{pl_concat_str}
 \title{Horizontally concatenate columns into a single string column}
 \usage{
-pl_concat_str(..., separator = "")
+pl$concat_str(..., separator = "")
 }
 \arguments{
 \item{...}{Columns to concatenate into a single string column. Accepts

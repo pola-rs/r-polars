@@ -6,7 +6,7 @@
 \alias{as.list.rpolars_raw_list}
 \title{Polars raw list}
 \usage{
-pl_raw_list(...)
+pl$raw_list(...)
 
 \method{[}{rpolars_raw_list}(x, index)
 

@@ -4,7 +4,7 @@
 \alias{Expr_nan_max}
 \title{Get maximum value with NaN}
 \usage{
-Expr_nan_max
+<Expr>$nan_max
 }
 \value{
 Expr

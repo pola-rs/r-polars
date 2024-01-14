@@ -5,7 +5,7 @@
 \alias{pl_reset_options}
 \title{Set polars options}
 \usage{
-pl_set_options(
+pl$set_options(
   ...,
   strictly_immutable = TRUE,
   maintain_order = FALSE,

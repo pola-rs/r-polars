@@ -4,7 +4,7 @@
 \alias{pl_any_horizontal}
 \title{Apply the OR logical rowwise}
 \usage{
-pl_any_horizontal(...)
+pl$any_horizontal(...)
 }
 \arguments{
 \item{...}{Columns to concatenate into a single string column. Accepts

@@ -4,7 +4,7 @@
 \alias{SQLContext_register}
 \title{Register a single data as a table}
 \usage{
-SQLContext_register(name, frame)
+<SQLContext>$register(name, frame)
 }
 \arguments{
 \item{name}{A string name to register the frame as.}

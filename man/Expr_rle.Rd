@@ -4,7 +4,7 @@
 \alias{Expr_rle}
 \title{Get the lengths of runs of identical values}
 \usage{
-Expr_rle()
+<Expr>$rle()
 }
 \value{
 Expr

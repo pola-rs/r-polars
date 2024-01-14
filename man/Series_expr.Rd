@@ -4,7 +4,7 @@
 \alias{Series_expr}
 \title{Any expr method on a Series}
 \usage{
-Series_expr()
+<Series>$expr()
 }
 \value{
 Expr

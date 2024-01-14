@@ -4,7 +4,7 @@
 \alias{ExprName_map}
 \title{Map alias of expression with an R function}
 \usage{
-ExprName_map(fun)
+<Expr>$name$map(fun)
 }
 \arguments{
 \item{fun}{an R function which takes a string as input and return a string}
@@ -17,6 +17,6 @@ Rename the output of an expression by mapping a function over the root name.
 }
 \examples{
 pl$DataFrame(list(alice = 1:3))$select(
-  pl$col("alice")$alias("joe_is_not_root")$name$map(\(x) paste0(x, "_and_bob"))
+  pl$col("alice")$alias("joe_is_not_root")$name$map(\\(x) paste0(x, "_and_bob"))
 )
 }

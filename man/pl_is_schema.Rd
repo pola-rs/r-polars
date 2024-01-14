@@ -7,7 +7,7 @@
 function
 }
 \usage{
-pl_is_schema(x)
+pl$is_schema(x)
 }
 \arguments{
 \item{x}{object to test if schema}

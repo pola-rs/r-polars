@@ -5,7 +5,7 @@
 \alias{\%\%.RPolarsExpr}
 \title{Modulo two expressions}
 \usage{
-Expr_mod(other)
+<Expr>$mod(other)
 
 \method{\%\%}{RPolarsExpr}(e1, e2)
 }

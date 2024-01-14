@@ -8,7 +8,7 @@
 function
 }
 \usage{
-ExprList_mean()
+<Expr>$list$mean()
 }
 \value{
 Expr

@@ -4,7 +4,7 @@
 \alias{Expr_implode}
 \title{Wrap column in list}
 \usage{
-Expr_implode
+<Expr>$implode
 }
 \value{
 Expr

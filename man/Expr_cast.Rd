@@ -4,7 +4,7 @@
 \alias{Expr_cast}
 \title{Cast between DataType}
 \usage{
-Expr_cast(dtype, strict = TRUE)
+<Expr>$cast(dtype, strict = TRUE)
 }
 \arguments{
 \item{dtype}{DataType to cast to.}

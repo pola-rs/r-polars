@@ -4,7 +4,7 @@
 \alias{pl_mem_address}
 \title{Get Memory Address}
 \usage{
-pl_mem_address(robj)
+pl$mem_address(robj)
 }
 \arguments{
 \item{robj}{an R object}

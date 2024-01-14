@@ -4,7 +4,7 @@
 \alias{ExprList_sort}
 \title{Sort an Expr}
 \usage{
-ExprList_sort(descending = FALSE)
+<Expr>$list$sort(descending = FALSE)
 }
 \arguments{
 \item{descending}{Sort values in descending order}

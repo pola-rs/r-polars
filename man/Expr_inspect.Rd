@@ -4,7 +4,7 @@
 \alias{Expr_inspect}
 \title{Inspect evaluated Series}
 \usage{
-Expr_inspect(fmt = "{}")
+<Expr>$inspect(fmt = "{}")
 }
 \arguments{
 \item{fmt}{format string, should contain one set of \code{{}} where object will be

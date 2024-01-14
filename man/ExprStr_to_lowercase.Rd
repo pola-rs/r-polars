@@ -4,7 +4,7 @@
 \alias{ExprStr_to_lowercase}
 \title{Convert a string to lowercase}
 \usage{
-ExprStr_to_lowercase()
+<Expr>$str$to_lowercase()
 }
 \value{
 Expr of String lowercase chars

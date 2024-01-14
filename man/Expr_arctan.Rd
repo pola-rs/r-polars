@@ -4,7 +4,7 @@
 \alias{Expr_arctan}
 \title{Compute inverse tangent}
 \usage{
-Expr_arctan
+<Expr>$arctan
 }
 \value{
 Expr

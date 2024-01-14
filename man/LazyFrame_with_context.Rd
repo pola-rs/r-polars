@@ -4,7 +4,7 @@
 \alias{LazyFrame_with_context}
 \title{Add an external context to the computation graph}
 \usage{
-LazyFrame_with_context(other)
+<LazyFrame>$with_context(other)
 }
 \arguments{
 \item{other}{Data/LazyFrame to have access to. This can be a list of DataFrames

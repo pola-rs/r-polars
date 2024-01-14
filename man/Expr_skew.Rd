@@ -4,7 +4,7 @@
 \alias{Expr_skew}
 \title{Skewness}
 \usage{
-Expr_skew(bias = TRUE)
+<Expr>$skew(bias = TRUE)
 }
 \arguments{
 \item{bias}{If \code{FALSE}, then the calculations are corrected for statistical

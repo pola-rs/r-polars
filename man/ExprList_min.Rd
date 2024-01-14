@@ -8,7 +8,7 @@
 function
 }
 \usage{
-ExprList_min()
+<Expr>$list$min()
 }
 \value{
 Expr

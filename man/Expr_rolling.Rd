@@ -4,7 +4,7 @@
 \alias{Expr_rolling}
 \title{Create rolling groups based on a time or numeric column}
 \usage{
-Expr_rolling(
+<Expr>$rolling(
   index_column,
   ...,
   period,

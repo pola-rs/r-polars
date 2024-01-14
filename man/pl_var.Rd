@@ -4,7 +4,7 @@
 \alias{pl_var}
 \title{Variance}
 \usage{
-pl_var(column, ddof = 1)
+pl$var(column, ddof = 1)
 }
 \arguments{
 \item{column}{Column name.}

@@ -4,7 +4,7 @@
 \alias{Expr_value_counts}
 \title{Value counts}
 \usage{
-Expr_value_counts(sort = FALSE, parallel = FALSE)
+<Expr>$value_counts(sort = FALSE, parallel = FALSE)
 }
 \arguments{
 \item{sort}{Ensure the output is sorted from most values to least.}

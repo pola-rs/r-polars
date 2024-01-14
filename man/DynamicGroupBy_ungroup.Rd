@@ -4,7 +4,7 @@
 \alias{DynamicGroupBy_ungroup}
 \title{Ungroup a DynamicGroupBy object}
 \usage{
-DynamicGroupBy_ungroup()
+<DynamicGroupBy>$ungroup()
 }
 \value{
 \link[=DataFrame_class]{DataFrame}

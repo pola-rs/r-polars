@@ -4,7 +4,7 @@
 \alias{Series_std}
 \title{Std}
 \usage{
-Series_std(ddof = 1)
+<Series>$std(ddof = 1)
 }
 \arguments{
 \item{ddof}{integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.}

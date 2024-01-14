@@ -4,7 +4,7 @@
 \alias{Expr_reshape}
 \title{Reshape}
 \usage{
-Expr_reshape(dims)
+<Expr>$reshape(dims)
 }
 \arguments{
 \item{dims}{Numeric vec of the dimension sizes. If a -1 is used in any of the

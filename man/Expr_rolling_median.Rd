@@ -4,7 +4,7 @@
 \alias{Expr_rolling_median}
 \title{Rolling median}
 \usage{
-Expr_rolling_median(
+<Expr>$rolling_median(
   window_size,
   weights = NULL,
   min_periods = NULL,

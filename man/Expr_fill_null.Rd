@@ -4,7 +4,7 @@
 \alias{Expr_fill_null}
 \title{Fill null values with a value or strategy}
 \usage{
-Expr_fill_null(value = NULL, strategy = NULL, limit = NULL)
+<Expr>$fill_null(value = NULL, strategy = NULL, limit = NULL)
 }
 \arguments{
 \item{value}{Expr or something coercible in an Expr}

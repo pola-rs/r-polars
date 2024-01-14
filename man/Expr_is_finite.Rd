@@ -4,7 +4,7 @@
 \alias{Expr_is_finite}
 \title{Check if elements are finite}
 \usage{
-Expr_is_finite
+<Expr>$is_finite
 }
 \value{
 Expr

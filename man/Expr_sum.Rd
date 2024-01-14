@@ -4,7 +4,7 @@
 \alias{Expr_sum}
 \title{Get sum value}
 \usage{
-Expr_sum
+<Expr>$sum
 }
 \value{
 Expr

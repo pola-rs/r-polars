@@ -4,7 +4,7 @@
 \alias{DataFrame_width}
 \title{Number of columns of a DataFrame}
 \usage{
-DataFrame_width()
+<DataFrame>$width()
 }
 \value{
 The number of columns of a DataFrame

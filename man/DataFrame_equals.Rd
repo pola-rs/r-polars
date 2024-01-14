@@ -4,7 +4,7 @@
 \alias{DataFrame_equals}
 \title{Compare two DataFrames}
 \usage{
-DataFrame_equals(other)
+<DataFrame>$equals(other)
 }
 \arguments{
 \item{other}{DataFrame to compare with.}

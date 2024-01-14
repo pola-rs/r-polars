@@ -4,7 +4,7 @@
 \alias{Expr_log10}
 \title{Compute the base-10 logarithm of elements}
 \usage{
-Expr_log10
+<Expr>$log10
 }
 \value{
 Expr

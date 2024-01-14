@@ -5,7 +5,7 @@
 \alias{(Expr)$dt$round}
 \title{Round datetime}
 \usage{
-ExprDT_round(every, offset = NULL)
+<Expr>$dt$round(every, offset = NULL)
 }
 \arguments{
 \item{every}{string encoding duration see details.}

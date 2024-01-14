@@ -4,7 +4,7 @@
 \alias{Expr_arg_sort}
 \title{Index of a sort}
 \usage{
-Expr_arg_sort(descending = FALSE, nulls_last = FALSE)
+<Expr>$arg_sort(descending = FALSE, nulls_last = FALSE)
 }
 \arguments{
 \item{descending}{Sort in descending order. When sorting by multiple columns,

@@ -4,7 +4,7 @@
 \alias{Series_flags}
 \title{Get data type of Series}
 \usage{
-Series_flags()
+<Series>$flags()
 }
 \value{
 DataType

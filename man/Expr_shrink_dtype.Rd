@@ -7,7 +7,7 @@
 An object of class \code{character} of length 1.
 }
 \usage{
-Expr_shrink_dtype
+<Expr>$shrink_dtype
 }
 \value{
 Expr

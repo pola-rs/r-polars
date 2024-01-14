@@ -4,7 +4,7 @@
 \alias{Series_all}
 \title{Reduce Boolean Series with ALL}
 \usage{
-Series_all()
+<Series>$all()
 }
 \value{
 bool

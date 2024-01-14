@@ -4,7 +4,7 @@
 \alias{pl_n_unique}
 \title{Count \code{n} unique values}
 \usage{
-pl_n_unique(column)
+pl$n_unique(column)
 }
 \arguments{
 \item{column}{if dtype is:

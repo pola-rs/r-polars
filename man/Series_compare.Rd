@@ -11,7 +11,7 @@
 \alias{>=.RPolarsSeries}
 \title{Compare Series}
 \usage{
-Series_compare(other, op)
+<Series>$compare(other, op)
 
 \method{==}{RPolarsSeries}(s1, s2)
 

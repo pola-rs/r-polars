@@ -4,7 +4,7 @@
 \alias{DataFrame_get_column}
 \title{Get column (as one Series)}
 \usage{
-DataFrame_get_column(name)
+<DataFrame>$get_column(name)
 }
 \arguments{
 \item{name}{Name of the column to extract.}

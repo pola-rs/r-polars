@@ -4,7 +4,7 @@
 \alias{Expr_search_sorted}
 \title{Where to inject element(s) to maintain sorting}
 \usage{
-Expr_search_sorted(element)
+<Expr>$search_sorted(element)
 }
 \arguments{
 \item{element}{Expr or scalar value.}

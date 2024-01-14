@@ -4,7 +4,7 @@
 \alias{ExprStr_len_chars}
 \title{Get the number of characters in strings}
 \usage{
-ExprStr_len_chars()
+<Expr>$str$len_chars()
 }
 \value{
 Expr of u32

@@ -4,7 +4,7 @@
 \alias{Expr_lower_bound}
 \title{Find the lower bound of a DataType}
 \usage{
-Expr_lower_bound
+<Expr>$lower_bound
 }
 \value{
 Expr

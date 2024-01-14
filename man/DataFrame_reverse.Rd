@@ -4,7 +4,7 @@
 \alias{DataFrame_reverse}
 \title{Reverse}
 \usage{
-DataFrame_reverse()
+<DataFrame>$reverse()
 }
 \value{
 DataFrame

@@ -4,7 +4,7 @@
 \alias{DataFrame_columns}
 \title{Get and set column names of a DataFrame}
 \usage{
-DataFrame_columns()
+<DataFrame>$columns()
 }
 \value{
 A character vector with the column names.

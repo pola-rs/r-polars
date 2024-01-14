@@ -4,7 +4,7 @@
 \alias{Expr_clip_max}
 \title{Clip elements above maximum value}
 \usage{
-Expr_clip_max(max)
+<Expr>$clip_max(max)
 }
 \arguments{
 \item{max}{Maximum value, Expr returning a numeric.}

@@ -4,7 +4,7 @@
 \alias{Series_sum}
 \title{Sum}
 \usage{
-Series_sum()
+<Series>$sum()
 }
 \value{
 R scalar value

@@ -4,7 +4,7 @@
 \alias{DynamicGroupBy_agg}
 \title{Aggregate over a DynamicGroupBy}
 \usage{
-DynamicGroupBy_agg(...)
+<DynamicGroupBy>$agg(...)
 }
 \arguments{
 \item{...}{Exprs to aggregate over. Those can also be passed wrapped in a

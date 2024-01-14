@@ -4,7 +4,7 @@
 \alias{LazyFrame_first}
 \title{Get the first row of a LazyFrame}
 \usage{
-LazyFrame_first
+<LazyFrame>$first
 }
 \value{
 A LazyFrame with one row

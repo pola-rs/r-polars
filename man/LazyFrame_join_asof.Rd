@@ -4,7 +4,7 @@
 \alias{LazyFrame_join_asof}
 \title{Perform joins on nearest keys}
 \usage{
-LazyFrame_join_asof(
+<LazyFrame>$join_asof(
   other,
   ...,
   left_on = NULL,

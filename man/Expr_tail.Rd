@@ -4,7 +4,7 @@
 \alias{Expr_tail}
 \title{Get the last n elements}
 \usage{
-Expr_tail(n = 10)
+<Expr>$tail(n = 10)
 }
 \arguments{
 \item{n}{Number of elements to take.}

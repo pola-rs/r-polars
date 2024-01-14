@@ -4,7 +4,7 @@
 \alias{Expr_is_first_distinct}
 \title{Check whether each value is the first occurrence}
 \usage{
-Expr_is_first_distinct
+<Expr>$is_first_distinct
 }
 \value{
 Expr

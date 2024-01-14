@@ -4,7 +4,7 @@
 \alias{Expr_median}
 \title{Get median value}
 \usage{
-Expr_median
+<Expr>$median
 }
 \value{
 Expr

@@ -4,7 +4,7 @@
 \alias{Expr_arcsin}
 \title{Compute inverse sine}
 \usage{
-Expr_arcsin
+<Expr>$arcsin
 }
 \value{
 Expr

@@ -4,7 +4,7 @@
 \alias{Expr_ceil}
 \title{Ceiling}
 \usage{
-Expr_ceil
+<Expr>$ceil
 }
 \value{
 Expr

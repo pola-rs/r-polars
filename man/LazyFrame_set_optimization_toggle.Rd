@@ -4,7 +4,7 @@
 \alias{LazyFrame_set_optimization_toggle}
 \title{Configure optimization toggles}
 \usage{
-LazyFrame_set_optimization_toggle(
+<LazyFrame>$set_optimization_toggle(
   type_coercion = TRUE,
   predicate_pushdown = TRUE,
   projection_pushdown = TRUE,

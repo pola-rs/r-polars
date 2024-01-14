@@ -4,7 +4,7 @@
 \alias{Expr_var}
 \title{Get variance}
 \usage{
-Expr_var(ddof = 1)
+<Expr>$var(ddof = 1)
 }
 \arguments{
 \item{ddof}{Degrees of freedom, must be an integer between 0 and 255}

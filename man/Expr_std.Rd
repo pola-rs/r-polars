@@ -4,7 +4,7 @@
 \alias{Expr_std}
 \title{Get standard deviation}
 \usage{
-Expr_std(ddof = 1)
+<Expr>$std(ddof = 1)
 }
 \arguments{
 \item{ddof}{Degrees of freedom, must be an integer between 0 and 255}

@@ -5,7 +5,7 @@
 \alias{(Expr)$dt$year}
 \title{Year}
 \usage{
-ExprDT_year()
+<Expr>$dt$year()
 }
 \value{
 Expr of Year as Int32

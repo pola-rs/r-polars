@@ -6,7 +6,7 @@
 \alias{nrow}
 \title{Number of rows of a DataFrame}
 \usage{
-DataFrame_height()
+<DataFrame>$height()
 }
 \value{
 The number of rows of the DataFrame

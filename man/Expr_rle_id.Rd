@@ -4,7 +4,7 @@
 \alias{Expr_rle_id}
 \title{Map values to run IDs}
 \usage{
-Expr_rle_id()
+<Expr>$rle_id()
 }
 \value{
 Expr

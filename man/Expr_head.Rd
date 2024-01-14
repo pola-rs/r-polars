@@ -4,7 +4,7 @@
 \alias{Expr_head}
 \title{Get the first n elements}
 \usage{
-Expr_head(n = 10)
+<Expr>$head(n = 10)
 }
 \arguments{
 \item{n}{Number of elements to take.}

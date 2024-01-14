@@ -4,7 +4,7 @@
 \alias{ExprStr_contains_any}
 \title{Use the aho-corasick algorithm to find matches}
 \usage{
-ExprStr_contains_any(patterns, ascii_case_insensitive = FALSE)
+<Expr>$str$contains_any(patterns, ascii_case_insensitive = FALSE)
 }
 \arguments{
 \item{patterns}{String patterns to search. Can be an Expr.}

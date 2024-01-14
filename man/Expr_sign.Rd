@@ -4,7 +4,7 @@
 \alias{Expr_sign}
 \title{Get the sign of elements}
 \usage{
-Expr_sign
+<Expr>$sign
 }
 \value{
 Expr

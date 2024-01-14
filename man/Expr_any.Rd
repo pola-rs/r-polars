@@ -4,7 +4,7 @@
 \alias{Expr_any}
 \title{Apply logical OR on a column}
 \usage{
-Expr_any(drop_nulls = TRUE)
+<Expr>$any(drop_nulls = TRUE)
 }
 \arguments{
 \item{drop_nulls}{Boolean. Default TRUE, as name says.}

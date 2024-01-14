@@ -4,7 +4,7 @@
 \alias{Expr_map_elements}
 \title{Map a custom/user-defined function (UDF) to each element of a column}
 \usage{
-Expr_map_elements(
+<Expr>$map_elements(
   f,
   return_type = NULL,
   strict_return_type = TRUE,
@@ -75,8 +75,8 @@ achieve the best performance and avoid using \verb{$map_elements()}.
 # apply over groups: here, the input must be a Series
 # prepare two expressions, one to compute the sum of each variable, one to
 # get the first two values of each variable and store them in a list
-e_sum = pl$all()$map_elements(\(s) sum(s$to_r()))$name$suffix("_sum")
-e_head = pl$all()$map_elements(\(s) head(s$to_r(), 2))$name$suffix("_head")
+e_sum = pl$all()$map_elements(\\(s) sum(s$to_r()))$name$suffix("_sum")
+e_head = pl$all()$map_elements(\\(s) head(s$to_r(), 2))$name$suffix("_head")
 pl$DataFrame(iris)$group_by("Species")$agg(e_sum, e_head)
 
 # apply a function on each value (should be avoided): here the input is an R
@@ -86,11 +86,11 @@ my_selection = pl$col(pl$dtypes$Float64)
 
 # prepare two expressions, the first one only adds 10 to each element, the
 # second returns the letter whose index matches the element
-e_add10 = my_selection$map_elements(\(x)  {
+e_add10 = my_selection$map_elements(\\(x)  {
   x + 10
 })$name$suffix("_sum")
 
-e_letter = my_selection$map_elements(\(x) {
+e_letter = my_selection$map_elements(\\(x) {
   letters[ceiling(x)]
 }, return_type = pl$dtypes$String)$name$suffix("_letter")
 pl$DataFrame(iris)$select(e_add10, e_letter)
@@ -109,7 +109,7 @@ df = pl$DataFrame(list(
 
 system.time({
   df$with_columns(
-    bob = pl$col("a")$map_elements(\(x) {
+    bob = pl$col("a")$map_elements(\\(x) {
       x * 2L
     })
   )
@@ -131,7 +131,7 @@ system.time({
 # runs ~1.2 sec.
 system.time({
   pl$LazyFrame(iris)$group_by("Species")$agg(
-    pl$all()$map_elements(\(s) {
+    pl$all()$map_elements(\\(s) {
       Sys.sleep(.1)
       s$sum()
     })
@@ -147,7 +147,7 @@ pl$options$rpool_cap
 
 system.time({
   pl$LazyFrame(iris)$group_by("Species")$agg(
-    pl$all()$map_elements(\(s) {
+    pl$all()$map_elements(\\(s) {
       Sys.sleep(.1)
       s$sum()
     }, in_background = TRUE)
@@ -158,7 +158,7 @@ system.time({
 pl$options$rpool_cap
 system.time({
   pl$LazyFrame(iris)$group_by("Species")$agg(
-    pl$all()$map_elements(\(s) {
+    pl$all()$map_elements(\\(s) {
       Sys.sleep(.1)
       s$sum()
     }, in_background = TRUE)

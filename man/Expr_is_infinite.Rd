@@ -5,7 +5,7 @@
 \alias{is_infinite}
 \title{Check if elements are infinite}
 \usage{
-Expr_is_infinite
+<Expr>$is_infinite
 }
 \value{
 Expr

@@ -4,7 +4,7 @@
 \alias{Expr_ewm_std}
 \title{Exponentially-weighted moving standard deviation}
 \usage{
-Expr_ewm_std(
+<Expr>$ewm_std(
   com = NULL,
   span = NULL,
   half_life = NULL,

@@ -5,7 +5,7 @@
 \alias{(Expr)$dt$offset_by}
 \title{Offset By}
 \usage{
-ExprDT_offset_by(by)
+<Expr>$dt$offset_by(by)
 }
 \arguments{
 \item{by}{optional string encoding duration see details.}

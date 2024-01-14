@@ -4,7 +4,7 @@
 \alias{Expr_ewm_var}
 \title{Exponentially-weighted moving variance}
 \usage{
-Expr_ewm_var(
+<Expr>$ewm_var(
   com = NULL,
   span = NULL,
   half_life = NULL,

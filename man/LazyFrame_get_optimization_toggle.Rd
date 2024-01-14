@@ -4,7 +4,7 @@
 \alias{LazyFrame_get_optimization_toggle}
 \title{Get optimization settings}
 \usage{
-LazyFrame_get_optimization_toggle()
+<LazyFrame>$get_optimization_toggle()
 }
 \value{
 List of optimization toggles

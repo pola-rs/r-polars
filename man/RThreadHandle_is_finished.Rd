@@ -4,7 +4,7 @@
 \alias{RThreadHandle_is_finished}
 \title{Ask if RThreadHandle is finished?}
 \usage{
-RThreadHandle_is_finished()
+<RThreadHandle>$is_finished()
 }
 \value{
 trinary value: \code{TRUE} if finished, \code{FALSE} if not, and \code{NULL} if the handle was exhausted

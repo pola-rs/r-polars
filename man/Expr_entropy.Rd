@@ -4,7 +4,7 @@
 \alias{Expr_entropy}
 \title{Entropy}
 \usage{
-Expr_entropy(base = base::exp(1), normalize = TRUE)
+<Expr>$entropy(base = base::exp(1), normalize = TRUE)
 }
 \arguments{
 \item{base}{Given exponential base, defaults to \code{exp(1)}.}

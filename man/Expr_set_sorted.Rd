@@ -4,7 +4,7 @@
 \alias{Expr_set_sorted}
 \title{Flag an Expr as "sorted"}
 \usage{
-Expr_set_sorted(descending = FALSE)
+<Expr>$set_sorted(descending = FALSE)
 }
 \arguments{
 \item{descending}{Sort the columns in descending order.}

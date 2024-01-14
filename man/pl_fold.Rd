@@ -4,7 +4,7 @@
 \alias{pl_fold}
 \title{Accumulate over multiple columns horizontally with an R function}
 \usage{
-pl_fold(acc, lambda, exprs)
+pl$fold(acc, lambda, exprs)
 }
 \arguments{
 \item{acc}{an Expr or Into\if{html}{\out{<Expr>}} of the initial accumulator.}
@@ -28,7 +28,7 @@ df = pl$DataFrame(mtcars)
 df$with_columns(
   pl$fold(
     acc = pl$lit(0),
-    lambda = \(acc, x) acc + x,
+    lambda = \\(acc, x) acc + x,
     exprs = pl$col("*")
   )$alias("mpg_drat_sum_folded")
 )

@@ -4,7 +4,7 @@
 \alias{LazyFrame_select}
 \title{Select and modify columns of a LazyFrame}
 \usage{
-LazyFrame_select(...)
+<LazyFrame>$select(...)
 }
 \arguments{
 \item{...}{Columns to keep. Those can be expressions (e.g \code{pl$col("a")}),

@@ -4,7 +4,7 @@
 \alias{Series_set_sorted}
 \title{Set sorted}
 \usage{
-Series_set_sorted(descending = FALSE, in_place = FALSE)
+<Series>$set_sorted(descending = FALSE, in_place = FALSE)
 }
 \arguments{
 \item{descending}{Sort the columns in descending order.}

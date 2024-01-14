@@ -4,7 +4,7 @@
 \alias{Expr_unique_counts}
 \title{Count unique values}
 \usage{
-Expr_unique_counts
+<Expr>$unique_counts
 }
 \value{
 Expr

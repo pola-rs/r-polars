@@ -4,7 +4,7 @@
 \alias{DataFrame_glimpse}
 \title{Glimpse values in a DataFrame}
 \usage{
-DataFrame_glimpse(..., return_as_string = FALSE)
+<DataFrame>$glimpse(..., return_as_string = FALSE)
 }
 \arguments{
 \item{...}{not used}

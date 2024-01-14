@@ -4,7 +4,7 @@
 \alias{Expr_is_unique}
 \title{Check whether each value is unique}
 \usage{
-Expr_is_unique
+<Expr>$is_unique
 }
 \value{
 Expr

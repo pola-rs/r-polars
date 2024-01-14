@@ -4,7 +4,7 @@
 \alias{pl_all_horizontal}
 \title{Apply the AND logical rowwise}
 \usage{
-pl_all_horizontal(...)
+pl$all_horizontal(...)
 }
 \arguments{
 \item{...}{Columns to concatenate into a single string column. Accepts

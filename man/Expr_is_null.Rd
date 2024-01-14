@@ -4,7 +4,7 @@
 \alias{Expr_is_null}
 \title{Check if elements are NULL}
 \usage{
-Expr_is_null
+<Expr>$is_null
 }
 \value{
 Expr

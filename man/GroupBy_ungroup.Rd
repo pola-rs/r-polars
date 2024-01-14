@@ -4,7 +4,7 @@
 \alias{GroupBy_ungroup}
 \title{GroupBy_ungroup}
 \usage{
-GroupBy_ungroup()
+<GroupBy>$ungroup()
 }
 \value{
 \link[=DataFrame_class]{DataFrame}

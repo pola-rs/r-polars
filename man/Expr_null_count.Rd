@@ -4,7 +4,7 @@
 \alias{Expr_null_count}
 \title{Count missing values}
 \usage{
-Expr_null_count
+<Expr>$null_count
 }
 \value{
 Expr

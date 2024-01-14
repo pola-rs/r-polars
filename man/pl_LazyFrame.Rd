@@ -4,7 +4,7 @@
 \alias{pl_LazyFrame}
 \title{Create new LazyFrame}
 \usage{
-pl_LazyFrame(...)
+pl$LazyFrame(...)
 }
 \arguments{
 \item{...}{Anything that is accepted by \code{pl$DataFrame()}}

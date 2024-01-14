@@ -4,7 +4,7 @@
 \alias{Expr_to_r}
 \title{Convert an Expr to R output}
 \usage{
-Expr_to_r(df = NULL, i = 0)
+<Expr>$to_r(df = NULL, i = 0)
 }
 \arguments{
 \item{df}{If \code{NULL} (default), it evaluates the Expr in an empty DataFrame.

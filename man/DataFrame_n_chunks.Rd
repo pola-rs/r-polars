@@ -4,7 +4,7 @@
 \alias{DataFrame_n_chunks}
 \title{Number of chunks of the Series in a DataFrame}
 \usage{
-DataFrame_n_chunks(strategy = "all")
+<DataFrame>$n_chunks(strategy = "all")
 }
 \arguments{
 \item{strategy}{Either \code{"all"} or \code{"first"}. \code{"first"} only returns chunks
@@ -54,12 +54,12 @@ df$n_chunks()
 # The following toy example emulates the Series "chunkyness" in R. Here it a
 # S3-classed list with same type of vectors and where have all relevant S3
 # generics implemented to make behave as if it was a regular vector.
-"+.chunked_vector" = \(x, y) structure(list(unlist(x) + unlist(y)), class = "chunked_vector")
-print.chunked_vector = \(x, ...) print(unlist(x), ...)
-c.chunked_vector = \(...) {
+"+.chunked_vector" = \\(x, y) structure(list(unlist(x) + unlist(y)), class = "chunked_vector")
+print.chunked_vector = \\(x, ...) print(unlist(x), ...)
+c.chunked_vector = \\(...) {
   structure(do.call(c, lapply(list(...), unclass)), class = "chunked_vector")
 }
-rechunk = \(x) structure(unlist(x), class = "chunked_vector")
+rechunk = \\(x) structure(unlist(x), class = "chunked_vector")
 x = structure(list(1:4, 5L), class = "chunked_vector")
 x
 x + 5:1

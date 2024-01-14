@@ -4,7 +4,7 @@
 \alias{Expr_cum_max}
 \title{Cumulative maximum}
 \usage{
-Expr_cum_max(reverse = FALSE)
+<Expr>$cum_max(reverse = FALSE)
 }
 \arguments{
 \item{reverse}{If \code{TRUE}, start from the last value.}

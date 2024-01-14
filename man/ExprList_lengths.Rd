@@ -9,7 +9,7 @@
 function
 }
 \usage{
-ExprList_lengths()
+<Expr>$list$lengths()
 }
 \value{
 Expr
