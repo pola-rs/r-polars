@@ -4,7 +4,7 @@
 \alias{Expr_tanh}
 \title{Compute hyperbolic tangent}
 \usage{
-Expr_tanh
+Expr_tanh()
 }
 \value{
 Expr
@@ -16,4 +16,3 @@ Compute hyperbolic tangent
 pl$DataFrame(a = c(-1, atanh(0.5), 0, 1, NA_real_))$
   with_columns(tanh = pl$col("a")$tanh())
 }
-\keyword{datasets}

@@ -4,7 +4,7 @@
 \alias{Expr_median}
 \title{Get median value}
 \usage{
-Expr_median
+Expr_median()
 }
 \value{
 Expr
@@ -16,4 +16,3 @@ Get median value
 pl$DataFrame(x = c(1L, NA, 2L))$
   with_columns(median = pl$col("x")$median())
 }
-\keyword{datasets}

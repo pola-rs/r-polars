@@ -4,7 +4,7 @@
 \alias{Expr_upper_bound}
 \title{Find the upper bound of a DataType}
 \usage{
-Expr_upper_bound
+Expr_upper_bound()
 }
 \value{
 Expr
@@ -19,4 +19,3 @@ pl$DataFrame(
 )$
   select(pl$all()$upper_bound())
 }
-\keyword{datasets}

@@ -7,7 +7,7 @@
 function
 }
 \usage{
-DataFrame_estimated_size
+DataFrame_estimated_size()
 }
 \value{
 Estimated size in bytes

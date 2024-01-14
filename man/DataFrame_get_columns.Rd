@@ -4,7 +4,7 @@
 \alias{DataFrame_get_columns}
 \title{Get columns (as Series)}
 \usage{
-DataFrame_get_columns
+DataFrame_get_columns()
 }
 \value{
 A list of series

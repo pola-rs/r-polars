@@ -4,7 +4,7 @@
 \alias{LazyFrame_last}
 \title{Get the last row of a LazyFrame}
 \usage{
-LazyFrame_last
+LazyFrame_last()
 }
 \value{
 A LazyFrame with one row

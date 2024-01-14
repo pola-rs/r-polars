@@ -4,7 +4,7 @@
 \alias{Expr_arg_max}
 \title{Index of max value}
 \usage{
-Expr_arg_max
+Expr_arg_max()
 }
 \value{
 Expr
@@ -17,4 +17,3 @@ pl$DataFrame(
   a = c(6, 1, 0, NA, Inf, NaN)
 )$with_columns(arg_max = pl$col("a")$arg_max())
 }
-\keyword{datasets}

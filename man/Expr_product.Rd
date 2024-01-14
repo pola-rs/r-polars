@@ -4,7 +4,7 @@
 \alias{Expr_product}
 \title{Product}
 \usage{
-Expr_product
+Expr_product()
 }
 \value{
 Expr
@@ -16,4 +16,3 @@ Compute the product of an expression.
 pl$DataFrame(x = c(2L, NA, 2L))$
   with_columns(product = pl$col("x")$product())
 }
-\keyword{datasets}

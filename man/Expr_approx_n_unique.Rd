@@ -4,7 +4,7 @@
 \alias{Expr_approx_n_unique}
 \title{Approx count unique values}
 \usage{
-Expr_approx_n_unique
+Expr_approx_n_unique()
 }
 \value{
 Expr
@@ -16,4 +16,3 @@ This is done using the HyperLogLog++ algorithm for cardinality estimation.
 pl$DataFrame(iris[, 4:5])$
   with_columns(count = pl$col("Species")$approx_n_unique())
 }
-\keyword{datasets}

@@ -4,7 +4,7 @@
 \alias{Expr_arctanh}
 \title{Compute inverse hyperbolic tangent}
 \usage{
-Expr_arctanh
+Expr_arctanh()
 }
 \value{
 Expr
@@ -16,4 +16,3 @@ Compute inverse hyperbolic tangent
 pl$DataFrame(a = c(-1, tanh(0.5), 0, 1, NA_real_))$
   with_columns(arctanh = pl$col("a")$arctanh())
 }
-\keyword{datasets}
