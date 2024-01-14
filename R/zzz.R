@@ -121,7 +121,7 @@ move_env_elements(RPolarsExpr, pl, c("lit"), remove = FALSE)
   names(all_types) = all_types
   pl$dtypes = c(
     lapply(all_types, DataType_new), # instanciate all simple flag-like types
-    DataType_constructors # add function constructors for the remainders
+    DataType_constructors() # add function constructors for the remainders
   )
 
   # export dtypes directly into pl, because py-polars does that
