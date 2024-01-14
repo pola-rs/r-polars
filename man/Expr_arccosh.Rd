@@ -4,7 +4,7 @@
 \alias{Expr_arccosh}
 \title{Compute inverse hyperbolic cosine}
 \usage{
-Expr_arccosh
+Expr_arccosh()
 }
 \value{
 Expr
@@ -16,4 +16,3 @@ Compute inverse hyperbolic cosine
 pl$DataFrame(a = c(-1, cosh(0.5), 0, 1, NA_real_))$
   with_columns(arccosh = pl$col("a")$arccosh())
 }
-\keyword{datasets}

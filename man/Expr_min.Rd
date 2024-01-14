@@ -4,7 +4,7 @@
 \alias{Expr_min}
 \title{Get minimum value}
 \usage{
-Expr_min
+Expr_min()
 }
 \value{
 Expr
@@ -16,4 +16,3 @@ Get minimum value
 pl$DataFrame(x = c(1, NA, 3))$
   with_columns(min = pl$col("x")$min())
 }
-\keyword{datasets}

@@ -4,7 +4,7 @@
 \alias{Expr_sin}
 \title{Compute sine}
 \usage{
-Expr_sin
+Expr_sin()
 }
 \value{
 Expr
@@ -16,4 +16,3 @@ Compute sine
 pl$DataFrame(a = c(0, pi / 2, pi, NA_real_))$
   with_columns(sine = pl$col("a")$sin())
 }
-\keyword{datasets}

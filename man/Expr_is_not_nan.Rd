@@ -5,7 +5,7 @@
 \alias{is_not_nan}
 \title{Check if elements are not NaN}
 \usage{
-Expr_is_not_nan
+Expr_is_not_nan()
 }
 \value{
 Expr
@@ -18,4 +18,3 @@ for \verb{$is_nan()$not()}.
 pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$
   with_columns(not_nan = pl$col("alice")$is_not_nan())
 }
-\keyword{datasets}

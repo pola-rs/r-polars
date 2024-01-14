@@ -484,7 +484,7 @@ DataFrame_dtypes = method_as_property(function() {
 #' @keywords DataFrame
 #' @examples
 #' pl$DataFrame(iris)$dtype_strings()
-DataFrame_dtype_strings = "use_extendr_wrapper"
+DataFrame_dtype_strings = use_extendr_wrapper
 
 #' @rdname DataFrame_dtypes
 
@@ -504,7 +504,7 @@ DataFrame_schema = method_as_property(function() {
 #' @keywords  DataFrame LazyFrame_new
 #' @examples
 #' pl$DataFrame(iris)$lazy()
-DataFrame_lazy = "use_extendr_wrapper"
+DataFrame_lazy = use_extendr_wrapper
 
 #' Clone a DataFrame
 #' @name DataFrame_clone
@@ -539,7 +539,7 @@ DataFrame_clone = function() {
 #' @examples
 #' df = pl$DataFrame(iris[1:2, ])
 #' df$get_columns()
-DataFrame_get_columns = "use_extendr_wrapper"
+DataFrame_get_columns = use_extendr_wrapper
 
 #' Get column (as one Series)
 #' @name DataFrame_get_column
@@ -1240,7 +1240,7 @@ DataFrame_slice = function(offset, length = NULL) {
 #' x = mtcars
 #' x[1, 2:3] = NA
 #' pl$DataFrame(x)$null_count()
-DataFrame_null_count = "use_extendr_wrapper"
+DataFrame_null_count = use_extendr_wrapper
 
 
 #' @title Estimated size
@@ -1253,7 +1253,7 @@ DataFrame_null_count = "use_extendr_wrapper"
 #' @format function
 #' @examples
 #' pl$DataFrame(mtcars)$estimated_size()
-DataFrame_estimated_size = "use_extendr_wrapper"
+DataFrame_estimated_size = use_extendr_wrapper
 
 
 

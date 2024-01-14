@@ -4,7 +4,7 @@
 \alias{Expr_is_not_null}
 \title{Check if elements are not NULL}
 \usage{
-Expr_is_not_null
+Expr_is_not_null()
 }
 \value{
 Expr
@@ -16,4 +16,3 @@ for \verb{$is_null()$not()}.
 \examples{
 pl$DataFrame(list(x = c(1, NA, 3)))$select(pl$col("x")$is_not_null())
 }
-\keyword{datasets}

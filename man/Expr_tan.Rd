@@ -4,7 +4,7 @@
 \alias{Expr_tan}
 \title{Compute tangent}
 \usage{
-Expr_tan
+Expr_tan()
 }
 \value{
 Expr
@@ -16,4 +16,3 @@ Compute tangent
 pl$DataFrame(a = c(0, pi / 2, pi, NA_real_))$
   with_columns(tangent = pl$col("a")$tan())
 }
-\keyword{datasets}

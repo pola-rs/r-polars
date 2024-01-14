@@ -4,7 +4,7 @@
 \alias{Expr_arccos}
 \title{Compute inverse cosine}
 \usage{
-Expr_arccos
+Expr_arccos()
 }
 \value{
 Expr
@@ -16,4 +16,3 @@ Compute inverse cosine
 pl$DataFrame(a = c(-1, cos(0.5), 0, 1, NA_real_))$
   with_columns(arccos = pl$col("a")$arccos())
 }
-\keyword{datasets}

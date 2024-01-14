@@ -4,7 +4,7 @@
 \alias{Expr_mean}
 \title{Get mean value}
 \usage{
-Expr_mean
+Expr_mean()
 }
 \value{
 Expr
@@ -16,4 +16,3 @@ Get mean value
 pl$DataFrame(x = c(1L, NA, 2L))$
   with_columns(mean = pl$col("x")$mean())
 }
-\keyword{datasets}

@@ -385,7 +385,7 @@ Series_apply = function(f, datatype = NULL, strict_return_type = TRUE,
 #' @examples
 #' pl$Series(1:10)$len()
 #'
-Series_len = "use_extendr_wrapper"
+Series_len = use_extendr_wrapper
 
 #' Series_floor
 #' @description Floor of this Series
@@ -427,7 +427,7 @@ Series_ceil = function() {
 #' @examples
 #' chunked_series = c(pl$Series(1:3), pl$Series(1:10))
 #' chunked_series$chunk_lengths()
-Series_chunk_lengths = "use_extendr_wrapper"
+Series_chunk_lengths = use_extendr_wrapper
 
 #' append (default immutable)
 #' @description append two Series, see details for mutability
@@ -486,7 +486,7 @@ Series_append = function(other, immutable = TRUE) {
 #' @usage Series_alias(name)
 #' @examples
 #' pl$Series(1:3, name = "alice")$alias("bob")
-Series_alias = "use_extendr_wrapper"
+Series_alias = use_extendr_wrapper
 
 #' Property: Name
 #' @description Get name of Series
@@ -534,7 +534,7 @@ Series_all = function() {
 #' @name Series_arg_max
 #' @examples
 #' pl$Series(c(5, 1))$arg_max()
-Series_arg_max = "use_extendr_wrapper"
+Series_arg_max = use_extendr_wrapper
 
 #' idx to min value
 #'
@@ -545,7 +545,7 @@ Series_arg_max = "use_extendr_wrapper"
 #' @name Series_arg_min
 #' @examples
 #' pl$Series(c(5, 1))$arg_min()
-Series_arg_min = "use_extendr_wrapper"
+Series_arg_min = use_extendr_wrapper
 
 
 #' Clone a Series
@@ -565,7 +565,7 @@ Series_arg_min = "use_extendr_wrapper"
 #' pl$mem_address(s1) != pl$mem_address(s2)
 #' pl$mem_address(s1) == pl$mem_address(s3)
 #'
-Series_clone = "use_extendr_wrapper"
+Series_clone = use_extendr_wrapper
 
 #' Cumulative sum
 #' @description  Get an array with the cumulative sum computed at every element.
