@@ -64,13 +64,7 @@ construct_rolling_group_by = function(df, index_column, period, offset, closed, 
 #'
 #' df$rolling(index_column = "dt", period = "2d")
 print.RPolarsRollingGroupBy = function(x, ...) {
-  prv = attr(x, "private")
-  .pr$DataFrame$print(prv$dat)
-  cat(paste("index column:", prv$index))
-  cat(paste("\nother groups:", toString(prv$by)))
-  cat(paste("\nperiod:", prv$period))
-  cat(paste("\noffset:", prv$offset))
-  cat(paste("\nclosed:", prv$closed))
+  .pr$DataFrame$print(attr(x, "private")$dat)
 }
 
 

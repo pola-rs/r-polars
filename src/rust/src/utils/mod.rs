@@ -943,6 +943,12 @@ macro_rules! robj_to_inner {
     (ClosedWindow, $a:ident) => {
         $crate::rdatatype::robj_to_closed_window($a)
     };
+    (Label, $a:ident) => {
+        $crate::rdatatype::robj_to_label($a)
+    };
+    (StartBy, $a:ident) => {
+        $crate::rdatatype::robj_to_start_by($a)
+    };
     (new_quantile_interpolation_option, $a:ident) => {
         $crate::rdatatype::new_quantile_interpolation_option($a)
     };
