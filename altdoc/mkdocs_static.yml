@@ -44,6 +44,8 @@ markdown_extensions:
 extra_css:
   - stylesheets/extra.css
 
+use_directory_urls: false
+
 ### Navigation tree
 nav:
   - Home: README.md
