@@ -163,7 +163,6 @@ DataType_constructors = function() {
 }
 
 #' Create Datetime DataType
-#' @name pl_Datetime
 #' @description Datetime DataType constructor
 #' @param tu string option either "ms", "us" or "ns"
 #' @param tz string the Time Zone, see details
@@ -181,14 +180,15 @@ DataType_Datetime = function(tu = "us", tz = NULL) {
 }
 
 #' Create Struct DataType
-#' @name pl_Struct
-#' @description Struct DataType Constructor
-#' @param datatype an inner DataType
+#'
+#' Struct DataType Constructor
+#' @param ... RPolarsDataType objects
 #' @return a list DataType with an inner DataType
 #' @format function
 #' @examples
 #' # create a Struct-DataType
-#' pl$List(pl$List(pl$Boolean))
+#' pl$Struct(pl$Boolean)
+#' pl$Struct(foo = pl$Int32, bar = pl$Float64)
 #'
 #' # Find any DataType via pl$dtypes
 #' print(pl$dtypes)
@@ -219,10 +219,10 @@ DataType_Struct = function(...) {
         if (inherits(arg, "RPolarsRField")) {
           return(arg)
         }
-        stop(
-          "%s [%s] {name:'%s', value:%s} must either be a Field (pl$Field) or a named %s",
-          element_name, i, name, arg, "DataType see (pl$dtypes), see examples for pl$Struct()"
-        )
+        stop(sprintf(
+          "%s [%s] {name:'%s', value:%s} must either be a Field (pl$Field) or a named DataType",
+          element_name, i, name, arg
+        ))
       }, SIMPLIFY = FALSE
     )
   }) |>
@@ -232,7 +232,6 @@ DataType_Struct = function(...) {
 
 #' Create List DataType
 #' @keywords pl
-#' @name pl_List
 #' @param datatype an inner DataType, default is "Unknown" (placeholder for when inner DataType
 #' does not matter, e.g. as used in example)
 #' @return a list DataType with an inner DataType
