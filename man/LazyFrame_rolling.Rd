@@ -6,6 +6,7 @@
 \usage{
 LazyFrame_rolling(
   index_column,
+  ...,
   period,
   offset = NULL,
   closed = "right",
@@ -20,6 +21,8 @@ is specified, then it must be sorted in ascending order within each group). In
 case of a rolling group by on indices, dtype needs to be either Int32 or Int64.
 Note that Int32 gets temporarily cast to Int64, so if performance matters use
 an Int64 column.}
+
+\item{...}{Ignored.}
 
 \item{period}{Length of the window, must be non-negative.}
 

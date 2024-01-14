@@ -6,6 +6,7 @@
 \usage{
 LazyFrame_group_by_dynamic(
   index_column,
+  ...,
   every,
   period = NULL,
   offset = NULL,
@@ -24,6 +25,8 @@ is specified, then it must be sorted in ascending order within each group). In
 case of a rolling group by on indices, dtype needs to be either Int32 or Int64.
 Note that Int32 gets temporarily cast to Int64, so if performance matters use
 an Int64 column.}
+
+\item{...}{Ignored.}
 
 \item{every}{Interval of the window.}
 

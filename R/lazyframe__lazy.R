@@ -1710,7 +1710,8 @@ LazyFrame_with_context = function(other) {
 #'   pl$min("a")$alias("min_a"),
 #'   pl$max("a")$alias("max_a")
 #' )$collect()
-LazyFrame_rolling = function(index_column, period, offset = NULL, closed = "right", by = NULL, check_sorted = TRUE) {
+LazyFrame_rolling = function(
+    index_column, ..., period, offset = NULL, closed = "right", by = NULL, check_sorted = TRUE) {
   if (is.null(offset)) {
     offset = paste0("-", period)
   }
@@ -1810,6 +1811,7 @@ LazyFrame_rolling = function(index_column, period, offset = NULL, closed = "righ
 #' )$agg(A_agg_list = pl$col("A"))$collect()
 LazyFrame_group_by_dynamic = function(
     index_column,
+    ...,
     every,
     period = NULL,
     offset = NULL,

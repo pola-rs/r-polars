@@ -454,10 +454,11 @@ test_that("group_by_dynamic for LazyFrame: arg 'include_boundaries' works", {
 
   actual = df$group_by_dynamic(
     index_column = "dt", every = "2d", offset = "1d",
-    include_boundaries = TRUE)$
+    include_boundaries = TRUE
+  )$
     agg(
-      pl$col("n")
-    )
+    pl$col("n")
+  )
 
   expect_named(actual, c("_lower_boundary", "_upper_boundary", "dt", "n"))
 })
