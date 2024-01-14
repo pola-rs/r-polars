@@ -12,6 +12,10 @@
 #'
 #' Define a polars class method like `ClassName_method = use_extendr_wrapper`,
 #' then this method replaced to a function in the extendr-wrappers.R file.
+#'
+#' In the past, we used strings "use_extendr_wrapper" instead of this function,
+#' but in that case [roxygen2][roxygen2::roxygen2] recognized them as data
+#' instead of a function.
 #' @noRd
 use_extendr_wrapper = function() {
   invisible(TRUE)
