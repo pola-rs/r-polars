@@ -17,6 +17,7 @@ vars:
   R_SOURCE: R/*
   VIGNETTES: vignettes/**/*.Rmd
   RUST_SOURCE: src/rust/src/**/*.rs
+  FORMATER_SCRIPT: dev/styler_utils.R
 
   R_FUNC_IMPORT_REQUIRED_PKGS: strsplit("{{.REQUIRE_R_PKGS}}", ",") |> unlist() |> lapply(require, character.only = TRUE) |> invisible()
 
@@ -167,6 +168,7 @@ tasks:
     desc: Build the R package and generate documents.
     sources:
       - "{{.R_SOURCE}}"
+      - "{{.FORMATER_SCRIPT}}"
     generates:
       - man/*.Rd
     status:
@@ -178,6 +180,8 @@ tasks:
       - Rscript -e
         '{{.R_FUNC_IMPORT_REQUIRED_PKGS}};
         devtools::document()'
+      - Rscript -e
+        'source("{{.FORMATER_SCRIPT}}"); rd_usage_update()'
 
   build-rust:
     desc: Build the Rust library and generate the `extendr-wrappers.R` file.
@@ -272,8 +276,6 @@ tasks:
 
   format-r:
     desc: Format R source files.
-    vars:
-      FORMATER_SCRIPT: dev/styler_utils.R
     sources:
       - "**/*.R"
       - "{{.FORMATER_SCRIPT}}"
