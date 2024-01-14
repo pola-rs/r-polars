@@ -177,7 +177,7 @@ print.RPolarsLazyFrame = function(x, ...) {
 #'
 #' @usage LazyFrame_print(x)
 #' @examples pl$LazyFrame(iris)$print()
-LazyFrame_print = "use_extendr_wrapper"
+LazyFrame_print = use_extendr_wrapper
 
 #' @title Print the optimized or non-optimized plans of `LazyFrame`
 #'
@@ -207,7 +207,7 @@ LazyFrame_describe_optimized_plan = function() {
 }
 
 #' @rdname LazyFrame_describe_plan
-LazyFrame_describe_plan = "use_extendr_wrapper"
+LazyFrame_describe_plan = use_extendr_wrapper
 
 #' @title Select and modify columns of a LazyFrame
 #' @inherit DataFrame_select description params
@@ -807,7 +807,7 @@ LazyFrame_head = function(n) {
 #' @docType NULL
 #' @format NULL
 #' @examples pl$LazyFrame(mtcars)$first()$collect()
-LazyFrame_first = "use_extendr_wrapper"
+LazyFrame_first = use_extendr_wrapper
 
 #' @title Get the last row of a LazyFrame
 #' @description Aggregate the columns in the LazyFrame to their maximum value.
@@ -816,7 +816,7 @@ LazyFrame_first = "use_extendr_wrapper"
 #' @docType NULL
 #' @format NULL
 #' @examples pl$LazyFrame(mtcars)$last()$collect()
-LazyFrame_last = "use_extendr_wrapper"
+LazyFrame_last = use_extendr_wrapper
 
 #' @title Max
 #' @description Aggregate the columns in the LazyFrame to their maximum value.
@@ -967,7 +967,7 @@ LazyFrame_drop = function(columns) {
 #' @keywords LazyFrame
 #' @return LazyFrame
 #' @examples pl$LazyFrame(mtcars)$reverse()$collect()
-LazyFrame_reverse = "use_extendr_wrapper"
+LazyFrame_reverse = use_extendr_wrapper
 
 #' @title Slice
 #' @description Get a slice of the LazyFrame.

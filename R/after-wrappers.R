@@ -8,6 +8,16 @@
 ## 5. ADD OPTION TO FLAG A METHOD TO BEHAVE LIKE A PROPERTY method_as_property()
 
 
+#' A dummy function to mark a function to replace extendr-wrapper function
+#'
+#' Define a polars class method like `ClassName_method = use_extendr_wrapper`,
+#' then this method replaced to a function in the extendr-wrappers.R file.
+#' @noRd
+use_extendr_wrapper = function() {
+  invisible(TRUE)
+}
+
+
 # Build time options
 build_debug_print = FALSE
 
