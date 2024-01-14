@@ -31,7 +31,7 @@ About Rust code for R packages, see also
 ## Implementing new functions on the Rust side
 
 Here are the steps required for an example contribution, where we are implementing the
-[cosine expression](https://rpolars.github.io/reference/Expr_cos/):
+[cosine expression](https://rpolars.github.io/man/Expr_cos.html):
 
 1. Look up the [polars.Expr.cos method in py-polars documentation](https://pola-rs.github.io/polars/py-polars/html/reference/expressions/api/polars.Expr.cos.html).
 2. Press the `[source]` button to see the [Python implementation](https://github.com/pola-rs/polars/blob/d23bbd2f14f1cd7ae2e27e1954a2dc4276501eef/py-polars/polars/expr/expr.py#L5892-L5914)

@@ -47,7 +47,8 @@ Sys.setenv(NOT_CRAN = "true")
 install.packages("polars", repos = "https://rpolars.r-universe.dev")
 ```
 
-[The “Install” vignette](https://rpolars.github.io/vignettes/install/)
+[The “Install”
+vignette](https://rpolars.github.io/vignettes/install.html)
 (`vignette("install", "polars")`) gives more details on how to install
 this package and other ways to install it.
 
@@ -83,20 +84,22 @@ df$sort("fruits")$select(
   pl$col("A")$sort_by("B")$over("fruits")$alias("sort_A_by_B_by_fruits")
 )
 #> shape: (5, 8)
-#> ┌────────┬────────┬───────────────────────┬─────┬───────────────┬─────────────────┬─────────────────┬───────────────────────┐
-#> │ fruits ┆ cars   ┆ literal_string_fruits ┆ B   ┆ sum_A_by_cars ┆ sum_A_by_fruits ┆ rev_A_by_fruits ┆ sort_A_by_B_by_fruits │
-#> │ ---    ┆ ---    ┆ ---                   ┆ --- ┆ ---           ┆ ---             ┆ ---             ┆ ---                   │
-#> │ str    ┆ str    ┆ str                   ┆ i32 ┆ i32           ┆ i32             ┆ i32             ┆ i32                   │
-#> ╞════════╪════════╪═══════════════════════╪═════╪═══════════════╪═════════════════╪═════════════════╪═══════════════════════╡
-#> │ apple  ┆ beetle ┆ fruits                ┆ 11  ┆ 4             ┆ 7               ┆ 4               ┆ 4                     │
-#> │ apple  ┆ beetle ┆ fruits                ┆ 11  ┆ 4             ┆ 7               ┆ 3               ┆ 3                     │
-#> │ banana ┆ beetle ┆ fruits                ┆ 11  ┆ 4             ┆ 8               ┆ 5               ┆ 5                     │
-#> │ banana ┆ audi   ┆ fruits                ┆ 11  ┆ 2             ┆ 8               ┆ 2               ┆ 2                     │
-#> │ banana ┆ beetle ┆ fruits                ┆ 11  ┆ 4             ┆ 8               ┆ 1               ┆ 1                     │
-#> └────────┴────────┴───────────────────────┴─────┴───────────────┴─────────────────┴─────────────────┴───────────────────────┘
+#> ┌────────┬────────┬──────────────┬─────┬──────────────┬──────────────┬──────────────┬──────────────┐
+#> │ fruits ┆ cars   ┆ literal_stri ┆ B   ┆ sum_A_by_car ┆ sum_A_by_fru ┆ rev_A_by_fru ┆ sort_A_by_B_ │
+#> │ ---    ┆ ---    ┆ ng_fruits    ┆ --- ┆ s            ┆ its          ┆ its          ┆ by_fruits    │
+#> │ str    ┆ str    ┆ ---          ┆ i32 ┆ ---          ┆ ---          ┆ ---          ┆ ---          │
+#> │        ┆        ┆ str          ┆     ┆ i32          ┆ i32          ┆ i32          ┆ i32          │
+#> ╞════════╪════════╪══════════════╪═════╪══════════════╪══════════════╪══════════════╪══════════════╡
+#> │ apple  ┆ beetle ┆ fruits       ┆ 11  ┆ 4            ┆ 7            ┆ 4            ┆ 4            │
+#> │ apple  ┆ beetle ┆ fruits       ┆ 11  ┆ 4            ┆ 7            ┆ 3            ┆ 3            │
+#> │ banana ┆ beetle ┆ fruits       ┆ 11  ┆ 4            ┆ 8            ┆ 5            ┆ 5            │
+#> │ banana ┆ audi   ┆ fruits       ┆ 11  ┆ 2            ┆ 8            ┆ 2            ┆ 2            │
+#> │ banana ┆ beetle ┆ fruits       ┆ 11  ┆ 4            ┆ 8            ┆ 1            ┆ 1            │
+#> └────────┴────────┴──────────────┴─────┴──────────────┴──────────────┴──────────────┴──────────────┘
 ```
 
-The [Get Started vignette](https://rpolars.github.io/vignettes/polars/)
+The [Get Started
+vignette](https://rpolars.github.io/vignettes/polars.html)
 (`vignette("polars")`) provides a more detailed introduction to
 **polars**.
 
