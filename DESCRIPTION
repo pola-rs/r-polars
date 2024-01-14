@@ -104,7 +104,6 @@ Collate:
     'parquet.R'
     'pkg-knitr.R'
     'pkg-nanoarrow.R'
-    'polars-package.R'
     'rbackground.R'
     'rlang.R'
     'rust_result.R'
