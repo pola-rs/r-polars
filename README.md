@@ -47,7 +47,8 @@ Sys.setenv(NOT_CRAN = "true")
 install.packages("polars", repos = "https://rpolars.r-universe.dev")
 ```
 
-[The “Install” vignette](https://rpolars.github.io/vignettes/install/)
+[The “Install”
+vignette](https://rpolars.github.io/vignettes/install.html)
 (`vignette("install", "polars")`) gives more details on how to install
 this package and other ways to install it.
 
@@ -96,7 +97,8 @@ df$sort("fruits")$select(
 #> └────────┴────────┴───────────────────────┴─────┴───────────────┴─────────────────┴─────────────────┴───────────────────────┘
 ```
 
-The [Get Started vignette](https://rpolars.github.io/vignettes/polars/)
+The [Get Started
+vignette](https://rpolars.github.io/vignettes/polars.html)
 (`vignette("polars")`) provides a more detailed introduction to
 **polars**.
 
