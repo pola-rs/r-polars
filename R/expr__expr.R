@@ -29,7 +29,7 @@ NULL
 #'
 #' @return No value returned, it prints in the console.
 #' @export
-#' @rdname Expr_print
+#' @noRd
 #'
 #' @examples
 #' print(pl$col("some_column")$sum())
@@ -39,7 +39,7 @@ print.RPolarsExpr = function(x, ...) {
   invisible(x)
 }
 
-#' @rdname Expr_print
+#' @noRd
 Expr_print = function() {
   .pr$Expr$print(self)
   invisible(self)
@@ -286,7 +286,7 @@ Expr_mul = Expr_mul = function(other) {
 #' # two syntaxes same result
 #' pl$lit(TRUE)$not()
 #' !pl$lit(TRUE)
-Expr_not = "use_extendr_wrapper"
+Expr_not = use_extendr_wrapper
 #' @export
 #' @rdname Expr_not
 #' @param x Expr
@@ -438,7 +438,7 @@ Expr_gt_eq = function(other) {
 #'   value = c(94, 95, 96, 97, 97, 99)
 #' ))
 #' df$group_by("group", maintain_order = TRUE)$agg(pl$col("value")$agg_groups())
-Expr_agg_groups = "use_extendr_wrapper"
+Expr_agg_groups = use_extendr_wrapper
 
 
 #' Rename Expr output
@@ -451,7 +451,7 @@ Expr_agg_groups = "use_extendr_wrapper"
 #' @format NULL
 #' @usage Expr_alias(name)
 #' @examples pl$col("bob")$alias("alice")
-Expr_alias = "use_extendr_wrapper"
+Expr_alias = use_extendr_wrapper
 
 #' Apply logical AND on a column
 #'
@@ -513,10 +513,10 @@ Expr_any = function(drop_nulls = TRUE) {
 #' )$select(
 #'   pl$all()$count()
 #' )
-Expr_count = "use_extendr_wrapper"
+Expr_count = use_extendr_wrapper
 
 #' @rdname Expr_count
-Expr_len = "use_extendr_wrapper"
+Expr_len = use_extendr_wrapper
 
 #' Drop missing values
 #'
@@ -527,7 +527,7 @@ Expr_len = "use_extendr_wrapper"
 #' @format NULL
 #' @examples
 #' pl$DataFrame(list(x = c(1, 2, NaN, NA)))$select(pl$col("x")$drop_nulls())
-Expr_drop_nulls = "use_extendr_wrapper"
+Expr_drop_nulls = use_extendr_wrapper
 
 #' Drop NaN
 #'
@@ -543,7 +543,7 @@ Expr_drop_nulls = "use_extendr_wrapper"
 #' @format NULL
 #' @examples
 #' pl$DataFrame(list(x = c(1, 2, NaN, NA)))$select(pl$col("x")$drop_nans())
-Expr_drop_nans = "use_extendr_wrapper"
+Expr_drop_nans = use_extendr_wrapper
 
 #' Check if elements are NULL
 #'
@@ -553,7 +553,7 @@ Expr_drop_nans = "use_extendr_wrapper"
 #' @format NULL
 #' @examples
 #' pl$DataFrame(list(x = c(1, NA, 3)))$select(pl$col("x")$is_null())
-Expr_is_null = "use_extendr_wrapper"
+Expr_is_null = use_extendr_wrapper
 
 #' Check if elements are not NULL
 #'
@@ -564,7 +564,7 @@ Expr_is_null = "use_extendr_wrapper"
 #' @format NULL
 #' @examples
 #' pl$DataFrame(list(x = c(1, NA, 3)))$select(pl$col("x")$is_not_null())
-Expr_is_not_null = "use_extendr_wrapper"
+Expr_is_not_null = use_extendr_wrapper
 
 
 # TODO move this function in to rust with input list of args
@@ -1017,7 +1017,7 @@ Expr_xor = function(other) {
 #'   $to_physical()
 #'   $alias("vals_physical")
 #' )
-Expr_to_physical = "use_extendr_wrapper"
+Expr_to_physical = use_extendr_wrapper
 
 
 #' Cast between DataType
@@ -1062,7 +1062,7 @@ Expr_sqrt = function() {
 #' @format NULL
 #' @examples
 #' pl$DataFrame(a = -1:3)$with_columns(a_exp = pl$col("a")$exp())
-Expr_exp = "use_extendr_wrapper"
+Expr_exp = use_extendr_wrapper
 
 
 #' Exclude certain columns from selection
@@ -1117,7 +1117,7 @@ Expr_exclude = function(columns) {
 #' @examples
 #' pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$
 #'   with_columns(finite = pl$col("alice")$is_finite())
-Expr_is_finite = "use_extendr_wrapper"
+Expr_is_finite = use_extendr_wrapper
 
 
 #' Check if elements are infinite
@@ -1132,7 +1132,7 @@ Expr_is_finite = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$
 #'   with_columns(infinite = pl$col("alice")$is_infinite())
-Expr_is_infinite = "use_extendr_wrapper"
+Expr_is_infinite = use_extendr_wrapper
 
 
 #' Check if elements are NaN
@@ -1148,7 +1148,7 @@ Expr_is_infinite = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$
 #'   with_columns(nan = pl$col("alice")$is_nan())
-Expr_is_nan = "use_extendr_wrapper"
+Expr_is_nan = use_extendr_wrapper
 
 
 #' Check if elements are not NaN
@@ -1164,7 +1164,7 @@ Expr_is_nan = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$
 #'   with_columns(not_nan = pl$col("alice")$is_not_nan())
-Expr_is_not_nan = "use_extendr_wrapper"
+Expr_is_not_nan = use_extendr_wrapper
 
 #' Get a slice of an Expr
 #'
@@ -1243,7 +1243,7 @@ Expr_append = function(other, upcast = TRUE) {
 #'   pl$col("a")$append(pl$col("b"))$rechunk()$alias("a_rechunked")
 #' )$get_columns()
 #' lapply(series_list, \(x) x$chunk_lengths())
-Expr_rechunk = "use_extendr_wrapper"
+Expr_rechunk = use_extendr_wrapper
 
 #' Cumulative sum
 #'
@@ -1348,7 +1348,7 @@ Expr_cum_count = function(reverse = FALSE) {
 #' pl$DataFrame(a = c(0.33, 0.5, 1.02, 1.5, NaN, NA, Inf, -Inf))$with_columns(
 #'   floor = pl$col("a")$floor()
 #' )
-Expr_floor = "use_extendr_wrapper"
+Expr_floor = use_extendr_wrapper
 
 #' Ceiling
 #'
@@ -1360,7 +1360,7 @@ Expr_floor = "use_extendr_wrapper"
 #' pl$DataFrame(a = c(0.33, 0.5, 1.02, 1.5, NaN, NA, Inf, -Inf))$with_columns(
 #'   ceiling = pl$col("a")$ceil()
 #' )
-Expr_ceil = "use_extendr_wrapper"
+Expr_ceil = use_extendr_wrapper
 
 #' Round
 #'
@@ -1408,7 +1408,7 @@ Expr_dot = function(other) {
 #' df$select(pl$col("a")$mode())
 #' df$select(pl$col("b")$mode())
 #' df$select(pl$col("c")$mode())
-Expr_mode = "use_extendr_wrapper"
+Expr_mode = use_extendr_wrapper
 
 
 #' Sort an Expr
@@ -1487,7 +1487,7 @@ Expr_argsort = Expr_arg_sort
 #' pl$DataFrame(
 #'   a = c(6, 1, 0, NA, Inf, NaN)
 #' )$with_columns(arg_min = pl$col("a")$arg_min())
-Expr_arg_min = "use_extendr_wrapper"
+Expr_arg_min = use_extendr_wrapper
 
 #' Index of max value
 #'
@@ -1499,7 +1499,7 @@ Expr_arg_min = "use_extendr_wrapper"
 #' pl$DataFrame(
 #'   a = c(6, 1, 0, NA, Inf, NaN)
 #' )$with_columns(arg_max = pl$col("a")$arg_max())
-Expr_arg_max = "use_extendr_wrapper"
+Expr_arg_max = use_extendr_wrapper
 
 
 # TODO contribute pypolars search_sorted behavior is under-documented, does multiple elements work?
@@ -1734,7 +1734,7 @@ Expr_var = function(ddof = 1) {
 #' @examples
 #' pl$DataFrame(x = c(1, NA, 3))$
 #'   with_columns(max = pl$col("x")$max())
-Expr_max = "use_extendr_wrapper"
+Expr_max = use_extendr_wrapper
 
 #' Get minimum value
 #'
@@ -1744,7 +1744,7 @@ Expr_max = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(x = c(1, NA, 3))$
 #'   with_columns(min = pl$col("x")$min())
-Expr_min = "use_extendr_wrapper"
+Expr_min = use_extendr_wrapper
 
 
 
@@ -1761,7 +1761,7 @@ Expr_min = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(x = c(1, NA, 3, NaN, Inf))$
 #'   with_columns(nan_max = pl$col("x")$nan_max())
-Expr_nan_max = "use_extendr_wrapper"
+Expr_nan_max = use_extendr_wrapper
 
 #' Get minimum value with NaN
 #'
@@ -1772,7 +1772,7 @@ Expr_nan_max = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(x = c(1, NA, 3, NaN, Inf))$
 #'   with_columns(nan_min = pl$col("x")$nan_min())
-Expr_nan_min = "use_extendr_wrapper"
+Expr_nan_min = use_extendr_wrapper
 
 #' Get sum value
 #'
@@ -1786,7 +1786,7 @@ Expr_nan_min = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(x = c(1L, NA, 2L))$
 #'   with_columns(sum = pl$col("x")$sum())
-Expr_sum = "use_extendr_wrapper"
+Expr_sum = use_extendr_wrapper
 
 #' Get mean value
 #'
@@ -1796,7 +1796,7 @@ Expr_sum = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(x = c(1L, NA, 2L))$
 #'   with_columns(mean = pl$col("x")$mean())
-Expr_mean = "use_extendr_wrapper"
+Expr_mean = use_extendr_wrapper
 
 #' Get median value
 #'
@@ -1806,7 +1806,7 @@ Expr_mean = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(x = c(1L, NA, 2L))$
 #'   with_columns(median = pl$col("x")$median())
-Expr_median = "use_extendr_wrapper"
+Expr_median = use_extendr_wrapper
 
 #' Product
 #'
@@ -1817,7 +1817,7 @@ Expr_median = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(x = c(2L, NA, 2L))$
 #'   with_columns(product = pl$col("x")$product())
-Expr_product = "use_extendr_wrapper"
+Expr_product = use_extendr_wrapper
 
 #' Count number of unique values
 #'
@@ -1826,7 +1826,7 @@ Expr_product = "use_extendr_wrapper"
 #' @format NULL
 #' @examples
 #' pl$DataFrame(iris[, 4:5])$with_columns(count = pl$col("Species")$n_unique())
-Expr_n_unique = "use_extendr_wrapper"
+Expr_n_unique = use_extendr_wrapper
 
 #' Approx count unique values
 #'
@@ -1837,7 +1837,7 @@ Expr_n_unique = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(iris[, 4:5])$
 #'   with_columns(count = pl$col("Species")$approx_n_unique())
-Expr_approx_n_unique = "use_extendr_wrapper"
+Expr_approx_n_unique = use_extendr_wrapper
 
 #' Count missing values
 #'
@@ -1847,7 +1847,7 @@ Expr_approx_n_unique = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(x = c(NA, "a", NA, "b"))$
 #'   with_columns(n_missing = pl$col("x")$null_count())
-Expr_null_count = "use_extendr_wrapper"
+Expr_null_count = use_extendr_wrapper
 
 #' Index of first unique values
 #'
@@ -1858,7 +1858,7 @@ Expr_null_count = "use_extendr_wrapper"
 #' @format NULL
 #' @examples
 #' pl$select(pl$lit(c(1:2, 1:3))$arg_unique())
-Expr_arg_unique = "use_extendr_wrapper"
+Expr_arg_unique = use_extendr_wrapper
 
 #' Get unique values
 #'
@@ -1883,7 +1883,7 @@ Expr_unique = function(maintain_order = FALSE) {
 #' @format NULL
 #' @examples
 #' pl$DataFrame(x = 3:1)$with_columns(first = pl$col("x")$first())
-Expr_first = "use_extendr_wrapper"
+Expr_first = use_extendr_wrapper
 
 #' Get the last value
 #'
@@ -1892,7 +1892,7 @@ Expr_first = "use_extendr_wrapper"
 #' @format NULL
 #' @examples
 #' pl$DataFrame(x = 3:1)$with_columns(last = pl$col("x")$last())
-Expr_last = "use_extendr_wrapper"
+Expr_last = use_extendr_wrapper
 
 #' Apply window function over a subgroup
 #'
@@ -1933,7 +1933,7 @@ Expr_over = function(...) {
 #' @examples
 #' pl$DataFrame(head(mtcars[, 1:2]))$
 #'   with_columns(is_unique = pl$col("mpg")$is_unique())
-Expr_is_unique = "use_extendr_wrapper"
+Expr_is_unique = use_extendr_wrapper
 
 #' Check whether each value is the first occurrence
 #'
@@ -1944,7 +1944,7 @@ Expr_is_unique = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(head(mtcars[, 1:2]))$
 #'   with_columns(is_ufirst = pl$col("mpg")$is_first_distinct())
-Expr_is_first_distinct = "use_extendr_wrapper"
+Expr_is_first_distinct = use_extendr_wrapper
 
 #' Check whether each value is the last occurrence
 #'
@@ -1955,7 +1955,7 @@ Expr_is_first_distinct = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(head(mtcars[, 1:2]))$
 #'   with_columns(is_ulast = pl$col("mpg")$is_last_distinct())
-Expr_is_last_distinct = "use_extendr_wrapper"
+Expr_is_last_distinct = use_extendr_wrapper
 
 
 #' Check whether each value is duplicated
@@ -1968,7 +1968,7 @@ Expr_is_last_distinct = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(head(mtcars[, 1:2]))$
 #'   with_columns(is_duplicated = pl$col("mpg")$is_duplicated())
-Expr_is_duplicated = "use_extendr_wrapper"
+Expr_is_duplicated = use_extendr_wrapper
 
 
 # TODO contribute polars, example of where NA/Null is omitted and the smallest value
@@ -2052,7 +2052,7 @@ Expr_where = Expr_filter
 #' df
 #'
 #' df$select(pl$col("y")$explode())
-Expr_explode = "use_extendr_wrapper"
+Expr_explode = use_extendr_wrapper
 
 #' @inherit Expr_explode title return
 #'
@@ -2064,7 +2064,7 @@ Expr_explode = "use_extendr_wrapper"
 #' df
 #'
 #' df$select(pl$col("y")$flatten())
-Expr_flatten = "use_extendr_wrapper"
+Expr_flatten = use_extendr_wrapper
 
 
 #' Gather every nth element
@@ -2631,7 +2631,7 @@ Expr_rolling_skew = function(window_size, bias = TRUE) {
 #' @examples
 #' pl$DataFrame(a = -1:1)$
 #'   with_columns(abs = pl$col("a")$abs())
-Expr_abs = "use_extendr_wrapper"
+Expr_abs = use_extendr_wrapper
 
 #' Rank elements
 #'
@@ -2789,7 +2789,7 @@ Expr_clip_max = function(max) {
 #'   schema = list(x = pl$Float64, y = pl$Int32)
 #' )$
 #'   select(pl$all()$upper_bound())
-Expr_upper_bound = "use_extendr_wrapper"
+Expr_upper_bound = use_extendr_wrapper
 
 #' Find the lower bound of a DataType
 #'
@@ -2802,7 +2802,7 @@ Expr_upper_bound = "use_extendr_wrapper"
 #'   schema = list(x = pl$UInt32, y = pl$Int32)
 #' )$
 #'   select(pl$all()$lower_bound())
-Expr_lower_bound = "use_extendr_wrapper"
+Expr_lower_bound = use_extendr_wrapper
 
 #' Get the sign of elements
 #'
@@ -2812,7 +2812,7 @@ Expr_lower_bound = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(a = c(.9, -3, -0, 0, 4, NA_real_))$
 #'   with_columns(sign = pl$col("a")$sign())
-Expr_sign = "use_extendr_wrapper"
+Expr_sign = use_extendr_wrapper
 
 #' Compute sine
 #'
@@ -2822,7 +2822,7 @@ Expr_sign = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(a = c(0, pi / 2, pi, NA_real_))$
 #'   with_columns(sine = pl$col("a")$sin())
-Expr_sin = "use_extendr_wrapper"
+Expr_sin = use_extendr_wrapper
 
 #' Compute cosine
 #'
@@ -2832,7 +2832,7 @@ Expr_sin = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(a = c(0, pi / 2, pi, NA_real_))$
 #'   with_columns(cosine = pl$col("a")$cos())
-Expr_cos = "use_extendr_wrapper"
+Expr_cos = use_extendr_wrapper
 
 #' Compute tangent
 #'
@@ -2842,7 +2842,7 @@ Expr_cos = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(a = c(0, pi / 2, pi, NA_real_))$
 #'   with_columns(tangent = pl$col("a")$tan())
-Expr_tan = "use_extendr_wrapper"
+Expr_tan = use_extendr_wrapper
 
 #' Compute inverse sine
 #'
@@ -2852,7 +2852,7 @@ Expr_tan = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(a = c(-1, sin(0.5), 0, 1, NA_real_))$
 #'   with_columns(arcsin = pl$col("a")$arcsin())
-Expr_arcsin = "use_extendr_wrapper"
+Expr_arcsin = use_extendr_wrapper
 
 #' Compute inverse cosine
 #'
@@ -2862,7 +2862,7 @@ Expr_arcsin = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(a = c(-1, cos(0.5), 0, 1, NA_real_))$
 #'   with_columns(arccos = pl$col("a")$arccos())
-Expr_arccos = "use_extendr_wrapper"
+Expr_arccos = use_extendr_wrapper
 
 #' Compute inverse tangent
 #'
@@ -2872,7 +2872,7 @@ Expr_arccos = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(a = c(-1, tan(0.5), 0, 1, NA_real_))$
 #'   with_columns(arctan = pl$col("a")$arctan())
-Expr_arctan = "use_extendr_wrapper"
+Expr_arctan = use_extendr_wrapper
 
 #' Compute hyperbolic sine
 #'
@@ -2882,7 +2882,7 @@ Expr_arctan = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(a = c(-1, asinh(0.5), 0, 1, NA_real_))$
 #'   with_columns(sinh = pl$col("a")$sinh())
-Expr_sinh = "use_extendr_wrapper"
+Expr_sinh = use_extendr_wrapper
 
 #' Compute hyperbolic cosine
 #'
@@ -2892,7 +2892,7 @@ Expr_sinh = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(a = c(-1, acosh(0.5), 0, 1, NA_real_))$
 #'   with_columns(cosh = pl$col("a")$cosh())
-Expr_cosh = "use_extendr_wrapper"
+Expr_cosh = use_extendr_wrapper
 
 #' Compute hyperbolic tangent
 #'
@@ -2902,7 +2902,7 @@ Expr_cosh = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(a = c(-1, atanh(0.5), 0, 1, NA_real_))$
 #'   with_columns(tanh = pl$col("a")$tanh())
-Expr_tanh = "use_extendr_wrapper"
+Expr_tanh = use_extendr_wrapper
 
 #' Compute inverse hyperbolic sine
 #'
@@ -2912,7 +2912,7 @@ Expr_tanh = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(a = c(-1, sinh(0.5), 0, 1, NA_real_))$
 #'   with_columns(arcsinh = pl$col("a")$arcsinh())
-Expr_arcsinh = "use_extendr_wrapper"
+Expr_arcsinh = use_extendr_wrapper
 
 #' Compute inverse hyperbolic cosine
 #'
@@ -2922,7 +2922,7 @@ Expr_arcsinh = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(a = c(-1, cosh(0.5), 0, 1, NA_real_))$
 #'   with_columns(arccosh = pl$col("a")$arccosh())
-Expr_arccosh = "use_extendr_wrapper"
+Expr_arccosh = use_extendr_wrapper
 
 #' Compute inverse hyperbolic tangent
 #'
@@ -2932,7 +2932,7 @@ Expr_arccosh = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(a = c(-1, tanh(0.5), 0, 1, NA_real_))$
 #'   with_columns(arctanh = pl$col("a")$arctanh())
-Expr_arctanh = "use_extendr_wrapper"
+Expr_arctanh = use_extendr_wrapper
 
 #' Reshape
 #'
@@ -3234,7 +3234,7 @@ Expr_value_counts = function(sort = FALSE, parallel = FALSE) {
 #' @format NULL
 #' @examples
 #' pl$DataFrame(iris)$select(pl$col("Species")$unique_counts())
-Expr_unique_counts = "use_extendr_wrapper"
+Expr_unique_counts = use_extendr_wrapper
 
 #' Compute the logarithm of elements
 #'
@@ -3256,7 +3256,7 @@ Expr_log = function(base = base::exp(1)) {
 #' @examples
 #' pl$DataFrame(a = c(1, 2, 3, exp(1)))$
 #'   with_columns(log10 = pl$col("a")$log10())
-Expr_log10 = "use_extendr_wrapper"
+Expr_log10 = use_extendr_wrapper
 
 #' Entropy
 #'
@@ -3330,7 +3330,7 @@ Expr_set_sorted = function(descending = FALSE) {
 #'   b = 4:6
 #' )
 #' df$select(pl$all()$implode())
-Expr_implode = "use_extendr_wrapper"
+Expr_implode = use_extendr_wrapper
 
 #' Shrink numeric columns to the minimal required datatype
 #'
@@ -3346,7 +3346,7 @@ Expr_implode = "use_extendr_wrapper"
 #' df
 #'
 #' df$with_columns(pl$all()$shrink_dtype()$name$suffix("_shrunk"))
-Expr_shrink_dtype = "use_extendr_wrapper"
+Expr_shrink_dtype = use_extendr_wrapper
 
 #' List related methods
 #'

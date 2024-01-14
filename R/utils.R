@@ -217,13 +217,7 @@ replace_private_with_pub_methods = function(env, class_pattern, keep = c(), remo
   use_internal_bools = sapply(class_methods, function(method) {
     x = get(method)
 
-    if (is_string(x)) {
-      if (x == "use_extendr_wrapper") {
-        return(TRUE)
-      }
-      warning(paste("unknown flag for", method, x))
-    }
-    FALSE
+    isTRUE(all.equal(x, use_extendr_wrapper))
   })
 
   # keep internals flagged with "use_internal_method"

@@ -4,7 +4,7 @@
 \alias{Expr_agg_groups}
 \title{Aggregate groups}
 \usage{
-Expr_agg_groups
+Expr_agg_groups()
 }
 \value{
 Expr
@@ -20,4 +20,3 @@ df = pl$DataFrame(list(
 ))
 df$group_by("group", maintain_order = TRUE)$agg(pl$col("value")$agg_groups())
 }
-\keyword{datasets}

@@ -4,7 +4,7 @@
 \alias{Expr_cos}
 \title{Compute cosine}
 \usage{
-Expr_cos
+Expr_cos()
 }
 \value{
 Expr
@@ -16,4 +16,3 @@ Compute cosine
 pl$DataFrame(a = c(0, pi / 2, pi, NA_real_))$
   with_columns(cosine = pl$col("a")$cos())
 }
-\keyword{datasets}

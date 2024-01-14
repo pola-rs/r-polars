@@ -4,7 +4,7 @@
 \alias{Expr_rechunk}
 \title{Rechunk memory layout}
 \usage{
-Expr_rechunk
+Expr_rechunk()
 }
 \value{
 Expr
@@ -23,4 +23,3 @@ series_list = pl$DataFrame(list(a = 1:3, b = 4:6))$select(
 )$get_columns()
 lapply(series_list, \(x) x$chunk_lengths())
 }
-\keyword{datasets}

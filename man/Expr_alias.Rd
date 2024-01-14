@@ -18,4 +18,3 @@ Rename the output of an expression.
 \examples{
 pl$col("bob")$alias("alice")
 }
-\keyword{datasets}

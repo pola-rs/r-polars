@@ -4,7 +4,7 @@
 \alias{Expr_arctan}
 \title{Compute inverse tangent}
 \usage{
-Expr_arctan
+Expr_arctan()
 }
 \value{
 Expr
@@ -16,4 +16,3 @@ Compute inverse tangent
 pl$DataFrame(a = c(-1, tan(0.5), 0, 1, NA_real_))$
   with_columns(arctan = pl$col("a")$arctan())
 }
-\keyword{datasets}

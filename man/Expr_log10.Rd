@@ -4,7 +4,7 @@
 \alias{Expr_log10}
 \title{Compute the base-10 logarithm of elements}
 \usage{
-Expr_log10
+Expr_log10()
 }
 \value{
 Expr
@@ -16,4 +16,3 @@ Compute the base-10 logarithm of elements
 pl$DataFrame(a = c(1, 2, 3, exp(1)))$
   with_columns(log10 = pl$col("a")$log10())
 }
-\keyword{datasets}

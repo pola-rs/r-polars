@@ -4,7 +4,7 @@
 \alias{Expr_drop_nulls}
 \title{Drop missing values}
 \usage{
-Expr_drop_nulls
+Expr_drop_nulls()
 }
 \value{
 Expr
@@ -18,4 +18,3 @@ pl$DataFrame(list(x = c(1, 2, NaN, NA)))$select(pl$col("x")$drop_nulls())
 \seealso{
 \code{drop_nans()}
 }
-\keyword{datasets}

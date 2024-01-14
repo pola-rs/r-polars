@@ -4,7 +4,7 @@
 \alias{Expr_cosh}
 \title{Compute hyperbolic cosine}
 \usage{
-Expr_cosh
+Expr_cosh()
 }
 \value{
 Expr
@@ -16,4 +16,3 @@ Compute hyperbolic cosine
 pl$DataFrame(a = c(-1, acosh(0.5), 0, 1, NA_real_))$
   with_columns(cosh = pl$col("a")$cosh())
 }
-\keyword{datasets}

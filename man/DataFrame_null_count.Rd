@@ -7,7 +7,7 @@
 function
 }
 \usage{
-DataFrame_null_count
+DataFrame_null_count()
 }
 \value{
 DataFrame

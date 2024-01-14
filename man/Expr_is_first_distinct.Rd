@@ -4,7 +4,7 @@
 \alias{Expr_is_first_distinct}
 \title{Check whether each value is the first occurrence}
 \usage{
-Expr_is_first_distinct
+Expr_is_first_distinct()
 }
 \value{
 Expr
@@ -16,4 +16,3 @@ Check whether each value is the first occurrence
 pl$DataFrame(head(mtcars[, 1:2]))$
   with_columns(is_ufirst = pl$col("mpg")$is_first_distinct())
 }
-\keyword{datasets}

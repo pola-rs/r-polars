@@ -3,9 +3,6 @@
 \name{LazyFrame_print}
 \alias{LazyFrame_print}
 \title{print LazyFrame internal method}
-\format{
-An object of class \code{character} of length 1.
-}
 \usage{
 LazyFrame_print(x)
 }

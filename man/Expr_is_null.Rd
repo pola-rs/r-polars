@@ -4,7 +4,7 @@
 \alias{Expr_is_null}
 \title{Check if elements are NULL}
 \usage{
-Expr_is_null
+Expr_is_null()
 }
 \value{
 Expr
@@ -15,4 +15,3 @@ Returns a boolean Series indicating which values are null.
 \examples{
 pl$DataFrame(list(x = c(1, NA, 3)))$select(pl$col("x")$is_null())
 }
-\keyword{datasets}

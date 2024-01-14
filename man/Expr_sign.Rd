@@ -4,7 +4,7 @@
 \alias{Expr_sign}
 \title{Get the sign of elements}
 \usage{
-Expr_sign
+Expr_sign()
 }
 \value{
 Expr
@@ -16,4 +16,3 @@ Get the sign of elements
 pl$DataFrame(a = c(.9, -3, -0, 0, 4, NA_real_))$
   with_columns(sign = pl$col("a")$sign())
 }
-\keyword{datasets}
