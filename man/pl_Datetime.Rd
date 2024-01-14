@@ -2,9 +2,13 @@
 % Please edit documentation in R/datatype.R
 \name{pl_Datetime}
 \alias{pl_Datetime}
+\alias{DataType_Datetime}
 \title{Create Datetime DataType}
 \format{
 function
+}
+\usage{
+DataType_Datetime(tu = "us", tz = NULL)
 }
 \arguments{
 \item{tu}{string option either "ms", "us" or "ns"}

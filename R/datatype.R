@@ -152,64 +152,15 @@ DataType_new = function(str) {
 #' @examples
 #' # constructors are finally available via pl$... or pl$dtypes$...
 #' pl$List(pl$List(pl$Int64))
-DataType_constructors = list(
+DataType_constructors = function() {
+  list(
+    Datetime = DataType_Datetime,
+    List = DataType_List,
+    Struct = DataType_Struct
 
-  # docs bwlow pl_DataTime
-  Datetime = function(tu = "us", tz = NULL) {
-    if (!is.null(tz) && (!is_string(tz) || !tz %in% base::OlsonNames())) {
-      stop("Datetime: the tz '%s' is not a valid timezone string, see base::OlsonNames()", tz)
-    }
-    unwrap(.pr$DataType$new_datetime(tu, tz))
-  },
-
-  # doc below pl_List
-  List = function(datatype = "unknown") {
-    if (is.character(datatype) && length(datatype) == 1) {
-      datatype = .pr$DataType$new(datatype)
-    }
-    if (!inherits(datatype, "RPolarsDataType")) {
-      stop(paste(
-        "input for generating a list DataType must be another DataType",
-        "or an interpretable name thereof."
-      ))
-    }
-    .pr$DataType$new_list(datatype)
-  },
-
-  # doc below pl_Struct
-  Struct = function(...) {
-    result({
-      largs = list2(...)
-      if (length(largs) >= 1 && is.list(largs[[1]])) {
-        largs = largs[[1]]
-        element_name = "list element"
-      } else {
-        element_name = "positional argument"
-      }
-      mapply(
-        names(largs) %||% character(length(largs)),
-        largs,
-        seq_along(largs),
-        FUN = \(name, arg, i) {
-          if (inherits(arg, "RPolarsDataType")) {
-            return(pl$Field(name, arg))
-          }
-          if (inherits(arg, "RPolarsRField")) {
-            return(arg)
-          }
-          stop(
-            "%s [%s] {name:'%s', value:%s} must either be a Field (pl$Field) or a named %s",
-            element_name, i, name, arg, "DataType see (pl$dtypes), see examples for pl$Struct()"
-          )
-        }, SIMPLIFY = FALSE
-      )
-    }) |>
-      and_then(DataType$new_struct) |>
-      unwrap("in pl$Struct:")
-  }
-
-  # TODO: Categorical https://github.com/pola-rs/polars/pull/12911
-)
+    # TODO: Categorical https://github.com/pola-rs/polars/pull/12911
+  )
+}
 
 #' Create Datetime DataType
 #' @name pl_Datetime
@@ -222,10 +173,15 @@ DataType_constructors = list(
 #' @return Datetime DataType
 #' @examples
 #' pl$Datetime("ns", "Pacific/Samoa")
-NULL
+DataType_Datetime = function(tu = "us", tz = NULL) {
+  if (!is.null(tz) && (!is_string(tz) || !tz %in% base::OlsonNames())) {
+    stop("Datetime: the tz '%s' is not a valid timezone string, see base::OlsonNames()", tz)
+  }
+  unwrap(.pr$DataType$new_datetime(tu, tz))
+}
 
 #' Create Struct DataType
-#' @name pl_Struct_datatype
+#' @name pl_Struct
 #' @description Struct DataType Constructor
 #' @param datatype an inner DataType
 #' @return a list DataType with an inner DataType
@@ -243,7 +199,36 @@ NULL
 #'
 #' # `test` is a type of Struct, but it doesn't mean it is equal to an empty Struct
 #' test == pl$Struct()
-NULL
+DataType_Struct = function(...) {
+  result({
+    largs = list2(...)
+    if (length(largs) >= 1 && is.list(largs[[1]])) {
+      largs = largs[[1]]
+      element_name = "list element"
+    } else {
+      element_name = "positional argument"
+    }
+    mapply(
+      names(largs) %||% character(length(largs)),
+      largs,
+      seq_along(largs),
+      FUN = \(name, arg, i) {
+        if (inherits(arg, "RPolarsDataType")) {
+          return(pl$Field(name, arg))
+        }
+        if (inherits(arg, "RPolarsRField")) {
+          return(arg)
+        }
+        stop(
+          "%s [%s] {name:'%s', value:%s} must either be a Field (pl$Field) or a named %s",
+          element_name, i, name, arg, "DataType see (pl$dtypes), see examples for pl$Struct()"
+        )
+      }, SIMPLIFY = FALSE
+    )
+  }) |>
+    and_then(DataType$new_struct) |>
+    unwrap("in pl$Struct:")
+}
 
 #' Create List DataType
 #' @keywords pl
@@ -259,4 +244,15 @@ NULL
 #' # check if some maybe_list is a List DataType
 #' maybe_List = pl$List(pl$UInt64)
 #' pl$same_outer_dt(maybe_List, pl$List())
-NULL
+DataType_List = function(datatype = "unknown") {
+  if (is.character(datatype) && length(datatype) == 1) {
+    datatype = .pr$DataType$new(datatype)
+  }
+  if (!inherits(datatype, "RPolarsDataType")) {
+    stop(paste(
+      "input for generating a list DataType must be another DataType",
+      "or an interpretable name thereof."
+    ))
+  }
+  .pr$DataType$new_list(datatype)
+}
