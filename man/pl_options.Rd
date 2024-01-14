@@ -6,6 +6,7 @@
 \title{Set polars options}
 \usage{
 pl_set_options(
+  ...,
   strictly_immutable = TRUE,
   maintain_order = FALSE,
   do_not_repeat_call = FALSE,
@@ -17,6 +18,8 @@ pl_set_options(
 pl_reset_options()
 }
 \arguments{
+\item{...}{Ignored.}
+
 \item{strictly_immutable}{Keep polars strictly immutable. Polars/arrow is in
 general pro "immutable objects". Immutability is also classic in R. To mimic
 the Python-polars API, set this to \code{FALSE.}}
@@ -47,8 +50,6 @@ Get and set polars options. See sections "Value" and "Examples" below for
 more details.
 }
 \details{
-All args must be explicitly and fully named.
-
 \code{pl$options$rpool_active} indicates the number of R sessions already
 spawned in pool. \code{pl$options$rpool_cap} indicates the maximum number of new R
 sessions that can be spawned. Anytime a polars thread worker needs a background
