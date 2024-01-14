@@ -13,7 +13,6 @@
 ^README\.Rmd$
 ^NEWS\.0\.md$
 ^docs$
-^site$
 ^\.venv$
 ^Makefile$
 ^src/\.cargo$
