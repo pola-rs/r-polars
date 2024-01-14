@@ -650,6 +650,44 @@ impl RPolarsLazyFrame {
             opt_state: self.0.get_current_optimizations(),
         })
     }
+
+    pub fn group_by_dynamic(
+        &self,
+        index_column: Robj,
+        every: Robj,
+        period: Robj,
+        offset: Robj,
+        label: Robj,
+        include_boundaries: Robj,
+        closed: Robj,
+        by: Robj,
+        start_by: Robj,
+        check_sorted: Robj,
+    ) -> RResult<RPolarsLazyGroupBy> {
+        let closed_window = robj_to!(ClosedWindow, closed)?;
+        let by = robj_to!(VecPLExprCol, by)?;
+        let ldf = self.0.clone();
+        let lazy_gb = ldf.group_by_dynamic(
+            robj_to!(PLExprCol, index_column)?,
+            by,
+            pl::DynamicGroupOptions {
+                every: robj_to!(pl_duration, every)?,
+                period: robj_to!(pl_duration, period)?,
+                offset: robj_to!(pl_duration, offset)?,
+                label: robj_to!(Label, label)?,
+                include_boundaries: robj_to!(bool, include_boundaries)?,
+                closed_window,
+                start_by: robj_to!(StartBy, start_by)?,
+                check_sorted: robj_to!(bool, check_sorted)?,
+                ..Default::default()
+            },
+        );
+
+        Ok(RPolarsLazyGroupBy {
+            lgb: lazy_gb,
+            opt_state: self.0.get_current_optimizations(),
+        })
+    }
 }
 
 #[derive(Clone)]

@@ -34,25 +34,6 @@ polars_optreq$rpool_cap = list() # rust-side options already check args
 #' Get and set polars options. See sections "Value" and "Examples" below for
 #' more details.
 #'
-#' @param strictly_immutable Keep polars strictly immutable. Polars/arrow is in
-#' general pro "immutable objects". Immutability is also classic in R. To mimic
-#' the Python-polars API, set this to `FALSE.`
-#' @param maintain_order Default for all `maintain_order` options (present in
-#' `$group_by()` or `$unique()` for example).
-#' @param do_not_repeat_call Do not print the call causing the error in error
-#' messages. The default (`FALSE`) is to show them.
-#' @param debug_polars Print additional information to debug Polars.
-#' @param no_messages Hide messages.
-#' @param rpool_cap The maximum number of R sessions that can be used to process
-#' R code in the background. See Details.
-#'
-#' @rdname polars_options
-#'
-#' @docType NULL
-#'
-#' @details
-#' All args must be explicitly and fully named.
-#'
 #' `pl$options$rpool_active` indicates the number of R sessions already
 #' spawned in pool. `pl$options$rpool_cap` indicates the maximum number of new R
 #' sessions that can be spawned. Anytime a polars thread worker needs a background
@@ -68,6 +49,22 @@ polars_optreq$rpool_cap = list() # rust-side options already check args
 #' serialized/de-serialized and sent via buffers. Using multiple R sessions
 #' will likely only give a speed-up in a `low io - high cpu` scenario. Native
 #' polars query syntax runs in threads and have no overhead.
+#'
+#' @param ... Ignored.
+#' @param strictly_immutable Keep polars strictly immutable. Polars/arrow is in
+#' general pro "immutable objects". Immutability is also classic in R. To mimic
+#' the Python-polars API, set this to `FALSE.`
+#' @param maintain_order Default for all `maintain_order` options (present in
+#' `$group_by()` or `$unique()` for example).
+#' @param do_not_repeat_call Do not print the call causing the error in error
+#' messages. The default (`FALSE`) is to show them.
+#' @param debug_polars Print additional information to debug Polars.
+#' @param no_messages Hide messages.
+#' @param rpool_cap The maximum number of R sessions that can be used to process
+#' R code in the background. See Details.
+#'
+#' @rdname pl_options
+#' @docType NULL
 #'
 #' @return
 #' `pl$options` returns a named list with the value (`TRUE` or `FALSE`) of
@@ -90,6 +87,7 @@ polars_optreq$rpool_cap = list() # rust-side options already check args
 #' # reset options to their default value
 #' pl$reset_options()
 pl_set_options = function(
+    ...,
     strictly_immutable = TRUE,
     maintain_order = FALSE,
     do_not_repeat_call = FALSE,
@@ -146,8 +144,7 @@ pl_set_options = function(
   }
 }
 
-#' @rdname polars_options
-
+#' @rdname pl_options
 pl_reset_options = function() {
   assign("strictly_immutable", TRUE, envir = polars_optenv)
   assign("maintain_order", FALSE, envir = polars_optenv)

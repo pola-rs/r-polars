@@ -3507,6 +3507,7 @@ Expr_peak_max = function() {
 #' column represents an index, it has to be either Int32 or Int64. Note that
 #' Int32 gets temporarily cast to Int64, so if performance matters use an Int64
 #' column.
+#' @param ... Ignored.
 #' @param period Length of the window, must be non-negative.
 #' @param offset Offset of the window. Default is `-period`.
 #' @param closed Define which sides of the temporal interval are closed
@@ -3569,8 +3570,11 @@ Expr_peak_max = function() {
 #' df$with_columns(
 #'   sum_a_offset1 = pl$sum("a")$rolling(index_column = "dt", period = "2d", offset = "1d")
 #' )
-Expr_rolling = function(index_column, period, offset = NULL,
-                        closed = "right", check_sorted = TRUE) {
+Expr_rolling = function(
+    index_column,
+    ...,
+    period, offset = NULL,
+    closed = "right", check_sorted = TRUE) {
   if (is.null(offset)) {
     offset = paste0("-", period)
   }
