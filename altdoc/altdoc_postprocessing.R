@@ -56,7 +56,12 @@ for (i in to_modify) {
       "<code class='language-R'>pl_",
       "<code class='language-R'>pl$",
       orig
-    )
+    ) |>
+      gsub( # TODO: better datetype documentation
+        "<code class='language-R'>DataType_",
+        "<code class='language-R'>pl$",
+        x = _
+      )
   } else if (which_class %in% c(
     "ExprBin", "ExprCat", "ExprDT", "ExprList",
     "ExprMeta", "ExprName", "ExprStr", "ExprStruct"
