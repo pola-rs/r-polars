@@ -50,8 +50,10 @@ Config/Needs/website:
     pkgload,
     yaml
 Config/Needs/dev:
+    brio,
     devtools,
     dplyr,
+    purrr,
     RcppTOML,
     readr,
     rextendr,
