@@ -29,7 +29,7 @@ NULL
 #'
 #' @return No value returned, it prints in the console.
 #' @export
-#' @rdname Expr_print
+#' @noRd
 #'
 #' @examples
 #' print(pl$col("some_column")$sum())
@@ -39,7 +39,7 @@ print.RPolarsExpr = function(x, ...) {
   invisible(x)
 }
 
-#' @rdname Expr_print
+#' @noRd
 Expr_print = function() {
   .pr$Expr$print(self)
   invisible(self)
