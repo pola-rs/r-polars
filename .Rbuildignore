@@ -30,4 +30,3 @@
 ^\.venv_altdoc$
 ^Taskfile\.yml$
 ^\.editorconfig$
-^pkgdown.yml$
