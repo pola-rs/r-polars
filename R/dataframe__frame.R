@@ -883,9 +883,12 @@ DataFrame_to_data_frame = function(...) {
 #' pl$DataFrame(iris)$to_list()
 DataFrame_to_list = function(unnest_structs = TRUE) {
   if (unnest_structs) {
-    unwrap(.pr$DataFrame$to_list(self))
+    .pr$DataFrame$to_list(self, pl$options$bigint_conversion) |>
+      unwrap("in $to_list():")
   } else {
-    restruct_list(unwrap(.pr$DataFrame$to_list_tag_structs(self)))
+    .pr$DataFrame$to_list_tag_structs(self) |>
+      unwrap("in $to_list():") |>
+      restruct_list()
   }
 }
 

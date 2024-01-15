@@ -225,10 +225,12 @@ impl RPolarsDataFrame {
     //     self.0.compare
     // }
 
-    pub fn to_list(&self) -> List {
+    pub fn to_list(&self, bigint_conversion: Robj) -> List {
         let robj_vec_res: Result<Vec<Robj>, _> = collect_hinted_result(
             self.0.width(),
-            self.0.iter().map(|x| pl_series_to_list(x, false, true)),
+            self.0
+                .iter()
+                .map(|x| pl_series_to_list(x, false, bigint_conversion)),
         );
 
         let robj_list_res = robj_vec_res

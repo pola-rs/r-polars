@@ -25,6 +25,8 @@ polars_optreq$debug_polars = list(must_be_bool = is_bool)
 # polars_optenv$rpool_cap # active binding for getting value, not for
 polars_optreq$rpool_cap = list() # rust-side options already check args
 
+polars_optenv$bigint_conversion = "real"
+polars_optreq$bigint_conversion = c("bit64", "real", "string")
 
 ## END OF DEFINED OPTIONS
 
@@ -62,6 +64,13 @@ polars_optreq$rpool_cap = list() # rust-side options already check args
 #' @param no_messages Hide messages.
 #' @param rpool_cap The maximum number of R sessions that can be used to process
 #' R code in the background. See Details.
+#' @param bigint_conversion How should Int64 values be handled when converting a
+#' polars object to R?
+#'
+#' * `"real"` (default) converts the values to Float64.
+#' * `"bit64"` uses `bit64::as.integer64()` to do the conversion (requires
+#'   the package `bit64` to be installed).
+#' * `"string"` converts Int64 values to character.
 #'
 #' @rdname pl_options
 #' @docType NULL
@@ -93,7 +102,8 @@ pl_set_options = function(
     do_not_repeat_call = FALSE,
     debug_polars = FALSE,
     no_messages = FALSE,
-    rpool_cap = 4) {
+    rpool_cap = 4,
+    bigint_conversion = c("bit64", "real", "string")) {
   # only modify arguments that were explicitly written in the function call
   # (otherwise calling set_options() twice in a row would reset the args
   # modified in the first call)

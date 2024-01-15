@@ -1,8 +1,11 @@
+use crate::rdataframe::{RPolarsDataFrame, RPolarsLazyFrame};
+use crate::robj_to;
+use crate::rpolarserr::{polars_to_rpolars_err, rerr, RResult, WithRctx};
 use extendr_api::prelude::*;
 use polars::prelude::{self as pl};
-
-use crate::rdataframe::RPolarsDataFrame;
-use pl::PolarsError as pl_error;
+use polars_core::chunked_array::ops::ChunkCast;
+use polars_core::datatypes::DataType;
+use polars_core::error::map_err;
 
 // #[extendr]
 // fn hello_bit64() -> Robj {
@@ -24,10 +27,15 @@ use pl::PolarsError as pl_error;
 pub fn pl_series_to_list(
     series: &pl::Series,
     tag_structs: bool,
-    bit64: bool,
+    bigint_conversion: Robj,
 ) -> pl::PolarsResult<Robj> {
     use pl::DataType::*;
-    fn to_list_recursive(s: &pl::Series, tag_structs: bool, bit64: bool) -> pl::PolarsResult<Robj> {
+    fn to_list_recursive(
+        s: &pl::Series,
+        tag_structs: bool,
+        bigint_conversion: Robj,
+    ) -> pl::PolarsResult<Robj> {
+        let bigint_conversion = robj_to!(str, bigint_conversion).unwrap();
         match s.dtype() {
             Float64 => s.f64().map(|ca| ca.into_iter().collect_robj()),
             Float32 => s.f32().map(|ca| ca.into_iter().collect_robj()),
@@ -35,23 +43,37 @@ pub fn pl_series_to_list(
             Int8 => s.i8().map(|ca| ca.into_iter().collect_robj()),
             Int16 => s.i16().map(|ca| ca.into_iter().collect_robj()),
             Int32 => s.i32().map(|ca| ca.into_iter().collect_robj()),
-            Int64 if bit64 => s.i64().map(|ca| {
-                ca.into_iter()
-                    .map(|opt| match opt {
-                        Some(x) if x != crate::utils::BIT64_NA_ECODING => {
-                            let x = f64::from_bits(x as u64);
-                            Some(x)
-                        }
-                        _ => {
-                            let x = crate::utils::BIT64_NA_ECODING;
-                            let x = f64::from_bits(x as u64);
-                            Some(x)
-                        }
-                    })
-                    .collect_robj()
-                    .set_class(&["integer64"])
-                    .expect("internal error could not set class label 'integer64'")
-            }),
+            Int64 => || match bigint_conversion {
+                "real" => s
+                    .cast(&DataType::Float64)?
+                    .f64()
+                    .map(|ca| ca.into_iter().collect_robj())
+                    .ok(),
+                "string" => s
+                    .cast(&DataType::String)?
+                    .str()
+                    .map(|ca| ca.into_iter().collect_robj())
+                    .ok(),
+                "bit64" => s.i64().map(|ca| {
+                    ca.into_iter()
+                        .map(|opt| match opt {
+                            Some(x) if x != crate::utils::BIT64_NA_ECODING => {
+                                let x = f64::from_bits(x as u64);
+                                Some(x)
+                            }
+                            _ => {
+                                let x = crate::utils::BIT64_NA_ECODING;
+                                let x = f64::from_bits(x as u64);
+                                Some(x)
+                            }
+                        })
+                        .collect_robj()
+                        .set_class(&["integer64"])
+                        .expect("internal error could not set class label 'integer64'")
+                }).ok(),
+                _ => NA_INTEGER.
+                
+            },
             Int64 => s.i64().map(|ca| {
                 ca.into_iter()
                     .map(|opt| opt.map(|val| val as f64))
