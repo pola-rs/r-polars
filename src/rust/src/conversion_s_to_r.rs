@@ -1,11 +1,8 @@
-use crate::rdataframe::{RPolarsDataFrame, RPolarsLazyFrame};
 use crate::robj_to;
-use crate::rpolarserr::{polars_to_rpolars_err, rerr, RResult, WithRctx};
+use crate::rpolarserr::{polars_to_rpolars_err};
 use extendr_api::prelude::*;
 use polars::prelude::{self as pl};
-use polars_core::chunked_array::ops::ChunkCast;
 use polars_core::datatypes::DataType;
-use polars_core::error::map_err;
 
 // #[extendr]
 // fn hello_bit64() -> Robj {
@@ -43,7 +40,7 @@ pub fn pl_series_to_list(
             Int8 => s.i8().map(|ca| ca.into_iter().collect_robj()),
             Int16 => s.i16().map(|ca| ca.into_iter().collect_robj()),
             Int32 => s.i32().map(|ca| ca.into_iter().collect_robj()),
-            Int64 => || match bigint_conversion {
+            Int64 => match bigint_conversion {
                 "real" => s
                     .cast(&DataType::Float64)?
                     .f64()
@@ -71,8 +68,7 @@ pub fn pl_series_to_list(
                         .set_class(&["integer64"])
                         .expect("internal error could not set class label 'integer64'")
                 }).ok(),
-                _ => NA_INTEGER.
-                
+                _ => panic!("foo"),              
             },
             Int64 => s.i64().map(|ca| {
                 ca.into_iter()
