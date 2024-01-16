@@ -5,7 +5,7 @@
 \alias{arg_unique}
 \title{Index of first unique values}
 \usage{
-Expr_arg_unique
+Expr_arg_unique()
 }
 \value{
 Expr
@@ -16,4 +16,3 @@ This finds the position of first occurrence of each unique value.
 \examples{
 pl$select(pl$lit(c(1:2, 1:3))$arg_unique())
 }
-\keyword{datasets}

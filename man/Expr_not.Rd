@@ -5,7 +5,7 @@
 \alias{!.RPolarsExpr}
 \title{Negate a boolean expression}
 \usage{
-Expr_not
+Expr_not()
 
 \method{!}{RPolarsExpr}(x)
 }
@@ -24,4 +24,3 @@ The RHS can either be an Expr or an object that can be converted to a literal
 pl$lit(TRUE)$not()
 !pl$lit(TRUE)
 }
-\keyword{datasets}

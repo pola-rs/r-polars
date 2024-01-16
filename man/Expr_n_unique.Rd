@@ -4,7 +4,7 @@
 \alias{Expr_n_unique}
 \title{Count number of unique values}
 \usage{
-Expr_n_unique
+Expr_n_unique()
 }
 \value{
 Expr
@@ -15,4 +15,3 @@ Count number of unique values
 \examples{
 pl$DataFrame(iris[, 4:5])$with_columns(count = pl$col("Species")$n_unique())
 }
-\keyword{datasets}

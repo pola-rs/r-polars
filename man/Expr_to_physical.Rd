@@ -5,7 +5,7 @@
 \alias{to_physical}
 \title{Cast an Expr to its physical representation}
 \usage{
-Expr_to_physical
+Expr_to_physical()
 }
 \value{
 Expr
@@ -33,4 +33,3 @@ pl$DataFrame(
   $alias("vals_physical")
 )
 }
-\keyword{datasets}

@@ -4,7 +4,7 @@
 \alias{Series_arg_min}
 \title{idx to min value}
 \usage{
-Series_arg_min
+Series_arg_min()
 }
 \value{
 bool

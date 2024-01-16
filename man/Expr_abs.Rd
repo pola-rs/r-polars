@@ -4,7 +4,7 @@
 \alias{Expr_abs}
 \title{Compute the absolute values}
 \usage{
-Expr_abs
+Expr_abs()
 }
 \value{
 Expr
@@ -16,4 +16,3 @@ Compute the absolute values
 pl$DataFrame(a = -1:1)$
   with_columns(abs = pl$col("a")$abs())
 }
-\keyword{datasets}

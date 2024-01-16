@@ -4,7 +4,7 @@
 \alias{Expr_arg_min}
 \title{Index of min value}
 \usage{
-Expr_arg_min
+Expr_arg_min()
 }
 \value{
 Expr
@@ -17,4 +17,3 @@ pl$DataFrame(
   a = c(6, 1, 0, NA, Inf, NaN)
 )$with_columns(arg_min = pl$col("a")$arg_min())
 }
-\keyword{datasets}

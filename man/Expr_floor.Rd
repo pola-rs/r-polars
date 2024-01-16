@@ -4,7 +4,7 @@
 \alias{Expr_floor}
 \title{Floor}
 \usage{
-Expr_floor
+Expr_floor()
 }
 \value{
 Expr
@@ -17,4 +17,3 @@ pl$DataFrame(a = c(0.33, 0.5, 1.02, 1.5, NaN, NA, Inf, -Inf))$with_columns(
   floor = pl$col("a")$floor()
 )
 }
-\keyword{datasets}

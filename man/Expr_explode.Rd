@@ -4,7 +4,7 @@
 \alias{Expr_explode}
 \title{Explode a list or String Series}
 \usage{
-Expr_explode
+Expr_explode()
 }
 \value{
 Expr
@@ -21,4 +21,3 @@ df
 
 df$select(pl$col("y")$explode())
 }
-\keyword{datasets}

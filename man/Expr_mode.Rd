@@ -4,7 +4,7 @@
 \alias{Expr_mode}
 \title{Mode}
 \usage{
-Expr_mode
+Expr_mode()
 }
 \value{
 Expr
@@ -19,4 +19,3 @@ df$select(pl$col("a")$mode())
 df$select(pl$col("b")$mode())
 df$select(pl$col("c")$mode())
 }
-\keyword{datasets}

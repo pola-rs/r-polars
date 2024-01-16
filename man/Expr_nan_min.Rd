@@ -4,7 +4,7 @@
 \alias{Expr_nan_min}
 \title{Get minimum value with NaN}
 \usage{
-Expr_nan_min
+Expr_nan_min()
 }
 \value{
 Expr
@@ -16,4 +16,3 @@ Get minimum value, but returns \code{NaN} if there are any.
 pl$DataFrame(x = c(1, NA, 3, NaN, Inf))$
   with_columns(nan_min = pl$col("x")$nan_min())
 }
-\keyword{datasets}
