@@ -430,14 +430,14 @@
     Code
       ls(.pr$env[[class_name]])
     Output
-      [1] "otherwise" "when"     
+      [1] "alias"     "otherwise" "when"     
 
 ---
 
     Code
       ls(.pr[[private_key]])
     Output
-      [1] "otherwise" "when"     
+      [1] "alias"     "otherwise" "when"     
 
 # public and private methods of each class ChainedWhen
 
@@ -458,14 +458,14 @@
     Code
       ls(.pr$env[[class_name]])
     Output
-      [1] "otherwise" "when"     
+      [1] "alias"     "otherwise" "when"     
 
 ---
 
     Code
       ls(.pr[[private_key]])
     Output
-      [1] "otherwise" "when"     
+      [1] "alias"     "otherwise" "when"     
 
 # public and private methods of each class RField
 
