@@ -11,9 +11,6 @@
 -   New method `$sink_ndjson()` for LazyFrame (#681).
 -   New function `pl$duration()` to create a duration by components (week, day,
     hour, etc.), and use them with date(time) variables (#692).
--   `pl$when()$then()` no longer requires an `$otherwise()` statement. If absent,
-    rows where the condition in `$when()` is false will be filled with `null`
-    (#707).
 
 ## polars 0.12.2
 

@@ -3,7 +3,6 @@ use crate::robj_to;
 use crate::rpolarserr::RResult;
 use extendr_api::prelude::*;
 use polars::lazy::dsl;
-use polars::prelude as pl;
 
 #[derive(Clone)]
 pub struct RPolarsWhen {
@@ -55,15 +54,6 @@ impl RPolarsThen {
             .otherwise(robj_to!(PLExprCol, statement)?)
             .into())
     }
-
-    fn alias(&self, name: &str) -> RResult<RPolarsExpr> {
-        Ok(self
-            .inner
-            .clone()
-            .otherwise(dsl::lit(pl::NULL))
-            .alias(name)
-            .into())
-    }
 }
 
 #[extendr]
@@ -88,15 +78,6 @@ impl RPolarsChainedThen {
             .inner
             .clone()
             .otherwise(robj_to!(PLExprCol, statement)?)
-            .into())
-    }
-
-    fn alias(&self, name: &str) -> RResult<RPolarsExpr> {
-        Ok(self
-            .inner
-            .clone()
-            .otherwise(dsl::lit(pl::NULL))
-            .alias(name)
             .into())
     }
 }

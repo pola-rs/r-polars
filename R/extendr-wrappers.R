@@ -385,8 +385,6 @@ RPolarsThen$when <- function(condition) .Call(wrap__RPolarsThen__when, self, con
 
 RPolarsThen$otherwise <- function(statement) .Call(wrap__RPolarsThen__otherwise, self, statement)
 
-RPolarsThen$alias <- function(name) .Call(wrap__RPolarsThen__alias, self, name)
-
 #' @export
 `$.RPolarsThen` <- function (self, name) { func <- RPolarsThen[[name]]; environment(func) <- environment(); func }
 
@@ -408,8 +406,6 @@ RPolarsChainedThen <- new.env(parent = emptyenv())
 RPolarsChainedThen$when <- function(condition) .Call(wrap__RPolarsChainedThen__when, self, condition)
 
 RPolarsChainedThen$otherwise <- function(statement) .Call(wrap__RPolarsChainedThen__otherwise, self, statement)
-
-RPolarsChainedThen$alias <- function(name) .Call(wrap__RPolarsChainedThen__alias, self, name)
 
 #' @export
 `$.RPolarsChainedThen` <- function (self, name) { func <- RPolarsChainedThen[[name]]; environment(func) <- environment(); func }

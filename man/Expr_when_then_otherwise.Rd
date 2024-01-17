@@ -13,11 +13,9 @@
 \alias{When_then}
 \alias{Then_when}
 \alias{Then_otherwise}
-\alias{Then_alias}
 \alias{ChainedWhen_then}
 \alias{ChainedThen_when}
 \alias{ChainedThen_otherwise}
-\alias{ChainedThen_alias}
 \title{Make a then-when-otherwise expression}
 \usage{
 pl_when(...)
@@ -28,15 +26,11 @@ Then_when(...)
 
 Then_otherwise(statement)
 
-Then_alias(name)
-
 ChainedWhen_then(statement)
 
 ChainedThen_when(...)
 
 ChainedThen_otherwise(statement)
-
-ChainedThen_alias(name)
 }
 \arguments{
 \item{...}{Expr or something coercible to an Expr into a boolean mask to
@@ -44,8 +38,6 @@ branch by.}
 
 \item{statement}{Expr or something coercible to an Expr value to insert in
 when() or otherwise(). Strings interpreted as column.}
-
-\item{name}{New name of output}
 }
 \value{
 Expr
@@ -57,13 +49,14 @@ Start a “when, then, otherwise” expression.
 \code{when-then-otherwise} is similar to R \code{ifelse()}. This has to start with
 \verb{pl$when(<condition>)$then(<value if condition>)}. From there, it can:
 \itemize{
-\item be evaluated as-is, in which case all rows where the condition is \code{FALSE}
-will be \code{null} (\code{NA} once converted to R);
 \item be chained to an \verb{$otherwise()} statement that specifies the Expr to apply
 to the rows where the condition is \code{FALSE};
-\item be chained to other \verb{$when()$then()} to specify more cases. When you arrive
-at the end of your chain, you can do either of the first two choices.
+\item or be chained to other \verb{$when()$then()} to specify more cases, and then use
+\verb{$otherwise()} when you arrive at the end of your chain.
 }
+
+Note that one difference with the Python implementation is that we \emph{must}
+end the chain with an \verb{$otherwise()} statement.
 
 If you want to use the class of those \code{when-then-otherwise} statement, note
 that there are 6 different classes corresponding to the different steps:
@@ -78,12 +71,6 @@ that there are 6 different classes corresponding to the different steps:
 }
 \examples{
 df = pl$DataFrame(foo = c(1, 3, 4), bar = c(3, 4, 0))
-
-# the $otherwise() is optional: if absent, rows where the condition is FALSE
-# are null
-df$with_columns(
-  val = pl$when(pl$col("foo") > 2)$then(1)
-)
 
 # Add a column with the value 1, where column "foo" > 2 and the value -1
 # where it isn’t.

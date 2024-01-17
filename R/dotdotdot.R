@@ -43,13 +43,6 @@ list2 = function(..., .context = NULL, .call = sys.call(1L)) {
 #' identical(f(list(1L, 2L), 3L), f(1L, 2L, 3L)) # is FALSE
 unpack_list = function(..., .context = NULL, .call = sys.call(1L), skip_classes = NULL) {
   l = list2(..., .context = .context, .call = .call)
-  l = lapply(l, function(x) {
-    if (inherits(x, c("RPolarsThen", "RPolarsChainedThen"))) {
-      x$otherwise(pl$lit(NULL))
-    } else {
-      x
-    }
-  })
   if (
     length(l) == 1L &&
       is.list(l[[1L]]) &&
