@@ -98,6 +98,7 @@ features = [
   "lazy",
   "lazy_regex",
   #"list",
+  "list_any_all",
   "list_eval",
   "list_gather",
   "list_to_struct",

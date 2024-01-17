@@ -446,3 +446,23 @@ test_that("eval", {
     )
   )
 })
+
+test_that("$list$all() works", {
+  df = pl$DataFrame(
+    list(a = list(c(TRUE, TRUE), c(FALSE, TRUE), c(FALSE, FALSE), NA, c()))
+  )
+  expect_identical(
+    df$select(all = pl$col("a")$list$all())$to_list(),
+    list(all = c(TRUE, FALSE, FALSE, TRUE, TRUE))
+  )
+})
+
+test_that("$list$any() works", {
+  df = pl$DataFrame(
+    list(a = list(c(TRUE, TRUE), c(FALSE, TRUE), c(FALSE, FALSE), NA, c()))
+  )
+  expect_identical(
+    df$select(any = pl$col("a")$list$any())$to_list(),
+    list(any = c(TRUE, TRUE, FALSE, FALSE, FALSE))
+  )
+})
