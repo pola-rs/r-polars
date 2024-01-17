@@ -1091,10 +1091,12 @@ pl_duration = function(
 #'
 #' @param column An Expr from which integers will be parsed. If this is a float
 #' column, then the decimal part of the float will be ignored. Character are
-#' parsed as column names, but other literal values must be passed to `pl$lit()`.
+#' parsed as column names, but other literal values must be passed to
+#' [`pl$lit()`][Expr_lit].
 #' @param time_unit One of `"ns"`, `"us"`, `"ms"`, `"s"`, `"d"`
 #'
-#' @return Expr as Date or Datetime depending on the `time_unit`
+#' @return Expr as Date or [Datetime][DataType_Datetime] depending on the
+#' `time_unit`.
 #'
 #' @examples
 #' # pass an integer column

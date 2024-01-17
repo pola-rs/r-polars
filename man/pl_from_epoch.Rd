@@ -9,12 +9,14 @@ pl_from_epoch(column, time_unit = "s")
 \arguments{
 \item{column}{An Expr from which integers will be parsed. If this is a float
 column, then the decimal part of the float will be ignored. Character are
-parsed as column names, but other literal values must be passed to \code{pl$lit()}.}
+parsed as column names, but other literal values must be passed to
+\code{\link[=Expr_lit]{pl$lit()}}.}
 
 \item{time_unit}{One of \code{"ns"}, \code{"us"}, \code{"ms"}, \code{"s"}, \code{"d"}}
 }
 \value{
-Expr as Date or Datetime depending on the \code{time_unit}
+Expr as Date or \link[=DataType_Datetime]{Datetime} depending on the
+\code{time_unit}.
 }
 \description{
 Depending on the \code{time_unit} provided, this function will return a different
