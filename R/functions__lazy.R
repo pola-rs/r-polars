@@ -1109,7 +1109,7 @@ pl_duration = function(
 #' # pass a literal
 #' pl$from_epoch(pl$lit(100:105), time_unit = "s")$to_series()
 pl_from_epoch = function(column, time_unit = "s") {
-  uw = \(res) unwrap(res, "in $DataFrame():")
+  uw = \(res) unwrap(res, "in $from_epoch():")
   if (is.character(column)) {
     column = pl$col(column)
   }
