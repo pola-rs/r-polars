@@ -1078,6 +1078,36 @@ pl_duration = function(
 }
 
 
+#' Convert a Unix timestamp to date(time)
+#'
+#' Depending on the `time_unit` provided, this function will return a different
+#' dtype:
+#' * `time_unit = "d"` returns `pl$Date`
+#' * `time_unit = "s"` returns `pl$Datetime("us")` (`pl$Datetime`’s default)
+#' * `time_unit = "ms"` returns `pl$Datetime("ms")`
+#' * `time_unit = "us"` returns `pl$Datetime("us")`
+#' * `time_unit = "ns"` returns `pl$Datetime("ns")`
+#'
+#' @param column An Expr from which integers will be parsed. If this is a float
+#' column, then the decimal part of the float will be ignored. Character are
+#' parsed as column names, but other literal values must be passed to `pl$lit()`.
+#' @param time_unit One of `"ns"`, `"us"`, `"ms"`, `"s"`, `"d"`
+#'
+#' @return Expr as Date or Datetime depending on the `time_unit`
+#'
+#' @examples
+#' # pass an integer column
+#' df = pl$DataFrame(timestamp = 100:150)
+#' df$with_columns(
+#'    timestamp_to_datetime = pl$from_epoch(pl$col("timestamp"), time_unit = "s")
+#' )
+#'
+#' df$with_columns(
+#'    timestamp_to_date = pl$from_epoch(pl$col("timestamp"), time_unit = "d")
+#' )
+#'
+#' # pass a literal
+#' pl$from_epoch(pl$lit(100:105), time_unit = "s")$to_series()
 pl_from_epoch = function(column, time_unit = "s") {
   uw = \(res) unwrap(res, "in $DataFrame():")
   if (is.character(column)) {
