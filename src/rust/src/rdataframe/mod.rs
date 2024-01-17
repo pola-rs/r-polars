@@ -225,7 +225,7 @@ impl RPolarsDataFrame {
     //     self.0.compare
     // }
 
-    pub fn to_list(&self, bigint_conversion: Robj) -> List {
+    pub fn to_list(&self, bigint_conversion: &str) -> List {
         let robj_vec_res: Result<Vec<Robj>, _> = collect_hinted_result(
             self.0.width(),
             self.0
@@ -245,10 +245,12 @@ impl RPolarsDataFrame {
     }
 
     //this methods should only be used for benchmarking
-    pub fn to_list_unwind(&self) -> Robj {
+    pub fn to_list_unwind(&self, bigint_conversion: &str) -> Robj {
         let robj_vec_res: Result<Vec<Robj>, _> = collect_hinted_result(
             self.0.width(),
-            self.0.iter().map(|x| pl_series_to_list(x, false, true)),
+            self.0
+                .iter()
+                .map(|x| pl_series_to_list(x, false, bigint_conversion)),
         );
 
         let robj_list_res = robj_vec_res
@@ -264,11 +266,13 @@ impl RPolarsDataFrame {
 
     // to_list have this variant with set_structs = true at pl_series_to_list
     // does not expose this arg in to_list as it is quite niche and might be deprecated later
-    pub fn to_list_tag_structs(&self) -> List {
+    pub fn to_list_tag_structs(&self, bigint_conversion: &str) -> List {
         //convert DataFrame to Result of to R vectors, error if DataType is not supported
         let robj_vec_res: Result<Vec<Robj>, _> = collect_hinted_result(
             self.0.width(),
-            self.0.iter().map(|x| pl_series_to_list(x, true, true)),
+            self.0
+                .iter()
+                .map(|x| pl_series_to_list(x, true, bigint_conversion)),
         );
 
         //rewrap Ok(Vec<Robj>) as R list
@@ -510,12 +514,12 @@ impl RPolarsDataFrame {
 }
 
 impl RPolarsDataFrame {
-    pub fn to_list_result(&self) -> Result<Robj, pl::PolarsError> {
+    pub fn to_list_result(&self, bigint_conversion: &str) -> Result<Robj, pl::PolarsError> {
         //convert DataFrame to Result of to R vectors, error if DataType is not supported
         let robj_vec_res: Result<Vec<Robj>, _> = self
             .0
             .iter()
-            .map(|s| pl_series_to_list(s, true, true))
+            .map(|s| pl_series_to_list(s, true, bigint_conversion))
             .collect();
 
         //rewrap Ok(Vec<Robj>) as R list

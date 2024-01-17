@@ -275,7 +275,7 @@ Series_shape = method_as_property(function() {
 #' series_list$to_r_list() # implicit call as.list(), same as to_r() as already list
 #' series_list$to_vector() # implicit call unlist(), append into a vector
 Series_to_r = \() {
-  unwrap(.pr$Series$to_r(self), "in $to_r():")
+  unwrap(.pr$Series$to_r(self, pl$options$bigint_conversion), "in $to_r():")
 }
 # TODO replace list example with Series only syntax
 
