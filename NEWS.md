@@ -11,7 +11,7 @@
 -   New method `$sink_ndjson()` for LazyFrame (#681).
 -   New function `pl$duration()` to create a duration by components (week, day,
     hour, etc.), and use them with date(time) variables (#692).
--   New methods `$list$any()` and `$list$all()` (#703).
+-   New methods `$list$any()` and `$list$all()` (#709).
 
 ## polars 0.12.2
 
