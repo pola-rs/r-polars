@@ -21,10 +21,11 @@ Depending on the \code{time_unit} provided, this function will return a differen
 dtype:
 \itemize{
 \item \code{time_unit = "d"} returns \code{pl$Date}
-\item \code{time_unit = "s"} returns \code{pl$Datetime("us")} (\code{pl$Datetime}’s default)
-\item \code{time_unit = "ms"} returns \code{pl$Datetime("ms")}
-\item \code{time_unit = "us"} returns \code{pl$Datetime("us")}
-\item \code{time_unit = "ns"} returns \code{pl$Datetime("ns")}
+\item \code{time_unit = "s"} returns \code{\link[=DataType_Datetime]{pl$Datetime("us")}}
+(\code{pl$Datetime}’s default)
+\item \code{time_unit = "ms"} returns \code{\link[=DataType_Datetime]{pl$Datetime("ms")}}
+\item \code{time_unit = "us"} returns \code{\link[=DataType_Datetime]{pl$Datetime("us")}}
+\item \code{time_unit = "ns"} returns \code{\link[=DataType_Datetime]{pl$Datetime("ns")}}
 }
 }
 \examples{

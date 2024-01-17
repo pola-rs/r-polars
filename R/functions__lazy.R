@@ -1083,10 +1083,11 @@ pl_duration = function(
 #' Depending on the `time_unit` provided, this function will return a different
 #' dtype:
 #' * `time_unit = "d"` returns `pl$Date`
-#' * `time_unit = "s"` returns `pl$Datetime("us")` (`pl$Datetime`’s default)
-#' * `time_unit = "ms"` returns `pl$Datetime("ms")`
-#' * `time_unit = "us"` returns `pl$Datetime("us")`
-#' * `time_unit = "ns"` returns `pl$Datetime("ns")`
+#' * `time_unit = "s"` returns [`pl$Datetime("us")`][DataType_Datetime]
+#'   (`pl$Datetime`’s default)
+#' * `time_unit = "ms"` returns [`pl$Datetime("ms")`][DataType_Datetime]
+#' * `time_unit = "us"` returns [`pl$Datetime("us")`][DataType_Datetime]
+#' * `time_unit = "ns"` returns [`pl$Datetime("ns")`][DataType_Datetime]
 #'
 #' @param column An Expr from which integers will be parsed. If this is a float
 #' column, then the decimal part of the float will be ignored. Character are
