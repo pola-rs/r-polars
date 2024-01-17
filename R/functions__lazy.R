@@ -1123,7 +1123,6 @@ pl_from_epoch = function(column, time_unit = "s") {
     time_unit,
     "d" = column$cast(pl$Date),
     "s" = (column$cast(pl$Int64) * 1000000)$cast(pl$Datetime("us")),
-    "d" = column$cast(pl$Date),
     column$cast(pl$Datetime(tu = time_unit))
   )
 }
