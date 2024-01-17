@@ -1098,17 +1098,19 @@ pl_duration = function(
 #'
 #' @examples
 #' # pass an integer column
-#' df = pl$DataFrame(timestamp = 100:150)
+#' df = pl$DataFrame(timestamp = c(1666683077, 1666683099))
 #' df$with_columns(
 #'    timestamp_to_datetime = pl$from_epoch(pl$col("timestamp"), time_unit = "s")
 #' )
 #'
+#' # pass a literal
+#' pl$from_epoch(pl$lit(c(1666683077, 1666683099)), time_unit = "s")$to_series()
+#'
+#' # use different time_unit
+#' df = pl$DataFrame(timestamp = c(12345, 12346))
 #' df$with_columns(
 #'    timestamp_to_date = pl$from_epoch(pl$col("timestamp"), time_unit = "d")
 #' )
-#'
-#' # pass a literal
-#' pl$from_epoch(pl$lit(100:105), time_unit = "s")$to_series()
 pl_from_epoch = function(column, time_unit = "s") {
   uw = \(res) unwrap(res, "in $from_epoch():")
   if (is.character(column)) {
