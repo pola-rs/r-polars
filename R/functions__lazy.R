@@ -1076,3 +1076,24 @@ pl_duration = function(
   duration(weeks, days, hours, minutes, seconds, milliseconds, microseconds, nanoseconds, time_unit) |>
     unwrap("in $duration():")
 }
+
+
+pl_from_epoch = function(column, time_unit = "s") {
+  uw = \(res) unwrap(res, "in $DataFrame():")
+  if (is.character(column)) {
+    column = pl$col(column)
+  }
+
+  if (!time_unit %in% c("ns", "us", "ms", "s", "d")) {
+    Err_plain("`time_unit` must be one of 'ns', 'us', 'ms', 's', 'd'") |>
+      uw()
+  }
+
+  switch(
+    time_unit,
+    "d" = column$cast(pl$Date),
+    "s" = (column$cast(pl$Int64) * 1000000)$cast(pl$Datetime("us")),
+    "d" = column$cast(pl$Date),
+    column$cast(pl$Datetime(tu = time_unit))
+  )
+}
