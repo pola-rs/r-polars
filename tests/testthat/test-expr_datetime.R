@@ -371,7 +371,6 @@ test_that("hour minute", {
 
 
 test_that("second, milli, micro, nano", {
-
   df = pl$DataFrame(
     date = pl$date_range(
       as.Date("2020-12-25"),
@@ -503,7 +502,6 @@ test_that("offset_by", {
 
 
 test_that("dt$epoch", {
-
   df = pl$select(
     pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$epoch("ns")$alias("e_ns"),
     pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$epoch("us")$alias("e_us"),
@@ -534,7 +532,6 @@ test_that("dt$epoch", {
 
 
 test_that("dt$timestamp", {
-
   df = pl$DataFrame(
     date = pl$date_range(
       start = as.Date("2001-1-1"), end = as.Date("2001-1-3"), interval = "1d", eager = TRUE
