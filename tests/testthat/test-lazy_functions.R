@@ -340,3 +340,40 @@ test_that("pl$duration() works", {
     )
   )
 })
+
+test_that("pl$from_epoch() works", {
+  df = pl$DataFrame(timestamp = c(12345, 12346))
+
+  # with expr
+  expect_identical(
+    df$select(
+      pl$from_epoch(pl$col("timestamp") + 1, time_unit = "d")
+    )$to_data_frame()$timestamp,
+    as.Date(c("2003-10-21", "2003-10-22"))
+  )
+
+  # with string
+  expect_identical(
+    df$select(
+      pl$from_epoch("timestamp", time_unit = "d")
+    )$to_data_frame()$timestamp,
+    as.Date(c("2003-10-20", "2003-10-21"))
+  )
+
+  # time_unit = "s"
+  df = pl$DataFrame(timestamp = c(1666683077, 1666683099))
+  expect_identical(
+    df$select(
+      pl$from_epoch("timestamp", time_unit = "s")$dt$replace_time_zone("UTC")
+    )$to_data_frame()$timestamp,
+    as.POSIXct(c("2022-10-25 07:31:17", "2022-10-25 07:31:39"), tz = "UTC")
+  )
+})
+
+test_that("pl$from_epoch() errors if wrong time unit", {
+  df = pl$DataFrame(timestamp = c(12345, 12346))
+  expect_error(
+    df$select(pl$from_epoch(pl$col("timestamp"), time_unit = "foobar")),
+    "one of"
+  )
+})

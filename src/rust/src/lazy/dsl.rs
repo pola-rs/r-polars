@@ -1160,70 +1160,15 @@ impl RPolarsExpr {
         )))
     }
 
-    pub fn str_to_date(
-        &self,
-        format: Robj,
-        strict: Robj,
-        exact: Robj,
-        cache: Robj,
-    ) -> RResult<Self> {
-        Ok(self
-            .0
-            .clone()
-            .str()
-            .to_date(pl::StrptimeOptions {
-                format: robj_to!(Option, String, format)?,
-                strict: robj_to!(bool, strict)?,
-                exact: robj_to!(bool, exact)?,
-                cache: robj_to!(bool, cache)?,
-            })
-            .into())
+    fn list_all(&self) -> Self {
+        self.0.clone().list().all().into()
     }
 
-    #[allow(clippy::too_many_arguments)]
-    pub fn str_to_datetime(
-        &self,
-        format: Robj,
-        time_unit: Robj,
-        time_zone: Robj,
-        strict: Robj,
-        exact: Robj,
-        cache: Robj,
-        ambiguous: Robj,
-    ) -> RResult<Self> {
-        Ok(self
-            .0
-            .clone()
-            .str()
-            .to_datetime(
-                robj_to!(Option, timeunit, time_unit)?,
-                robj_to!(Option, String, time_zone)?,
-                pl::StrptimeOptions {
-                    format: robj_to!(Option, String, format)?,
-                    strict: robj_to!(bool, strict)?,
-                    exact: robj_to!(bool, exact)?,
-                    cache: robj_to!(bool, cache)?,
-                },
-                robj_to!(PLExpr, ambiguous)?,
-            )
-            .into())
+    fn list_any(&self) -> Self {
+        self.0.clone().list().any().into()
     }
 
-    pub fn str_to_time(&self, format: Robj, strict: Robj, cache: Robj) -> RResult<Self> {
-        Ok(self
-            .0
-            .clone()
-            .str()
-            .to_time(pl::StrptimeOptions {
-                format: robj_to!(Option, String, format)?,
-                strict: robj_to!(bool, strict)?,
-                cache: robj_to!(bool, cache)?,
-                exact: true,
-            })
-            .into())
-    }
-
-    //end list/arr methods
+    //datetime methods
 
     pub fn dt_truncate(&self, every: Robj, offset: Robj) -> RResult<Self> {
         Ok(self
@@ -2025,7 +1970,70 @@ impl RPolarsExpr {
             .into())
     }
 
-    //NOTE SHOW CASE all R side argument handling
+    pub fn str_to_date(
+        &self,
+        format: Robj,
+        strict: Robj,
+        exact: Robj,
+        cache: Robj,
+    ) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .str()
+            .to_date(pl::StrptimeOptions {
+                format: robj_to!(Option, String, format)?,
+                strict: robj_to!(bool, strict)?,
+                exact: robj_to!(bool, exact)?,
+                cache: robj_to!(bool, cache)?,
+            })
+            .into())
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    pub fn str_to_datetime(
+        &self,
+        format: Robj,
+        time_unit: Robj,
+        time_zone: Robj,
+        strict: Robj,
+        exact: Robj,
+        cache: Robj,
+        ambiguous: Robj,
+    ) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .str()
+            .to_datetime(
+                robj_to!(Option, timeunit, time_unit)?,
+                robj_to!(Option, String, time_zone)?,
+                pl::StrptimeOptions {
+                    format: robj_to!(Option, String, format)?,
+                    strict: robj_to!(bool, strict)?,
+                    exact: robj_to!(bool, exact)?,
+                    cache: robj_to!(bool, cache)?,
+                },
+                robj_to!(PLExpr, ambiguous)?,
+            )
+            .into())
+    }
+
+    pub fn str_to_time(&self, format: Robj, strict: Robj, cache: Robj) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .str()
+            .to_time(pl::StrptimeOptions {
+                format: robj_to!(Option, String, format)?,
+                strict: robj_to!(bool, strict)?,
+                cache: robj_to!(bool, cache)?,
+                exact: true,
+            })
+            .into())
+    }
+
+    //TODO: SHOW CASE all R side argument handling
     pub fn str_split(&self, by: Robj, inclusive: Robj) -> Result<RPolarsExpr, String> {
         let by = robj_to!(PLExpr, by)?;
         let inclusive = robj_to!(bool, inclusive)?;
@@ -2036,7 +2044,7 @@ impl RPolarsExpr {
         }
     }
 
-    //NOTE SHOW CASE all rust side argument handling, n is usize and had to be
+    //TODO: SHOW CASE all rust side argument handling, n is usize and had to be
     //handled on rust side anyways
     pub fn str_split_exact(
         &self,
