@@ -1076,3 +1076,58 @@ pl_duration = function(
   duration(weeks, days, hours, minutes, seconds, milliseconds, microseconds, nanoseconds, time_unit) |>
     unwrap("in $duration():")
 }
+
+
+#' Convert a Unix timestamp to date(time)
+#'
+#' Depending on the `time_unit` provided, this function will return a different
+#' dtype:
+#' * `time_unit = "d"` returns `pl$Date`
+#' * `time_unit = "s"` returns [`pl$Datetime("us")`][DataType_Datetime]
+#'   (`pl$Datetime`’s default)
+#' * `time_unit = "ms"` returns [`pl$Datetime("ms")`][DataType_Datetime]
+#' * `time_unit = "us"` returns [`pl$Datetime("us")`][DataType_Datetime]
+#' * `time_unit = "ns"` returns [`pl$Datetime("ns")`][DataType_Datetime]
+#'
+#' @param column An Expr from which integers will be parsed. If this is a float
+#' column, then the decimal part of the float will be ignored. Character are
+#' parsed as column names, but other literal values must be passed to
+#' [`pl$lit()`][Expr_lit].
+#' @param time_unit One of `"ns"`, `"us"`, `"ms"`, `"s"`, `"d"`
+#'
+#' @return Expr as Date or [Datetime][DataType_Datetime] depending on the
+#' `time_unit`.
+#'
+#' @examples
+#' # pass an integer column
+#' df = pl$DataFrame(timestamp = c(1666683077, 1666683099))
+#' df$with_columns(
+#'    timestamp_to_datetime = pl$from_epoch(pl$col("timestamp"), time_unit = "s")
+#' )
+#'
+#' # pass a literal
+#' pl$from_epoch(pl$lit(c(1666683077, 1666683099)), time_unit = "s")$to_series()
+#'
+#' # use different time_unit
+#' df = pl$DataFrame(timestamp = c(12345, 12346))
+#' df$with_columns(
+#'    timestamp_to_date = pl$from_epoch(pl$col("timestamp"), time_unit = "d")
+#' )
+pl_from_epoch = function(column, time_unit = "s") {
+  uw = \(res) unwrap(res, "in $from_epoch():")
+  if (is.character(column)) {
+    column = pl$col(column)
+  }
+
+  if (!time_unit %in% c("ns", "us", "ms", "s", "d")) {
+    Err_plain("`time_unit` must be one of 'ns', 'us', 'ms', 's', 'd'") |>
+      uw()
+  }
+
+  switch(
+    time_unit,
+    "d" = column$cast(pl$Date),
+    "s" = (column$cast(pl$Int64) * 1000000L)$cast(pl$Datetime("us")),
+    column$cast(pl$Datetime(tu = time_unit))
+  )
+}

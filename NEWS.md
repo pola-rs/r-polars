@@ -12,6 +12,8 @@
 -   New function `pl$duration()` to create a duration by components (week, day,
     hour, etc.), and use them with date(time) variables (#692).
 -   New methods `$list$any()` and `$list$all()` (#709).
+-   New function `pl$from_epoch()` to convert a Unix timestamp to a date(time)
+    variable (#708).
 
 ## polars 0.12.2
 
