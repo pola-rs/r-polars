@@ -289,7 +289,6 @@ test_that("dt$year iso_year", {
 
 
 test_that("dt$quarter, month, day", {
-  skip_if_not_installed("bit64")
   df = pl$DataFrame(
     date = pl$date_range(
       as.Date("2020-12-25"),
@@ -324,7 +323,6 @@ test_that("dt$quarter, month, day", {
 
 
 test_that("hour minute", {
-  skip_if_not_installed("bit64")
   df = pl$DataFrame(
     date = pl$date_range(
       as.Date("2020-12-25"),
@@ -373,7 +371,6 @@ test_that("hour minute", {
 
 
 test_that("second, milli, micro, nano", {
-  skip_if_not_installed("bit64")
 
   df = pl$DataFrame(
     date = pl$date_range(
@@ -506,7 +503,6 @@ test_that("offset_by", {
 
 
 test_that("dt$epoch", {
-  skip_if_not_installed("bit64")
 
   df = pl$select(
     pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$epoch("ns")$alias("e_ns"),
@@ -538,7 +534,6 @@ test_that("dt$epoch", {
 
 
 test_that("dt$timestamp", {
-  skip_if_not_installed("bit64")
 
   df = pl$DataFrame(
     date = pl$date_range(
@@ -742,18 +737,15 @@ test_that("replace_time_zone for ambiguous time", {
 
 
 test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
-  skip_if_not_installed("bit64")
   # diff with settable units
-  diffy = \(x, units) bit64::as.integer64(as.numeric(diff(x), units = units))
-  diffy2 = \(x, units) (as.numeric(diff(x), units = units))
-  NA64 = bit64::NA_integer64_
+  diffy = \(x, units) as.numeric(diff(x), units = units)
   # days
   df = pl$DataFrame(date = pl$date_range(
     start = as.Date("2020-3-1"), end = as.Date("2020-5-1"), interval = "1mo", eager = TRUE
   ))$with_columns(
     pl$col("date")$diff()$dt$total_days()$alias("diff")
   )$to_list()
-  expect_identical(df$diff, c(NA64, diffy(df$date, "days")))
+  expect_identical(df$diff, c(NA, diffy(df$date, "days")))
 
   # hours
   df = pl$DataFrame(date = pl$date_range(
@@ -761,7 +753,7 @@ test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
   ))$with_columns(
     pl$col("date")$diff()$dt$total_hours()$alias("diff")
   )$to_list()
-  expect_identical(df$diff, c(NA64, diffy(df$date, "hours")))
+  expect_identical(df$diff, c(NA, diffy(df$date, "hours")))
 
   # minutes
   df = pl$DataFrame(date = pl$date_range(
@@ -769,7 +761,7 @@ test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
   ))$with_columns(
     pl$col("date")$diff()$dt$total_minutes()$alias("diff")
   )$to_list()
-  expect_identical(df$diff, c(NA64, diffy(df$date, "mins")))
+  expect_identical(df$diff, c(NA, diffy(df$date, "mins")))
 
   # seconds
   df = pl$DataFrame(date = pl$date_range(
@@ -778,7 +770,7 @@ test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
   ))$with_columns(
     pl$col("date")$diff()$dt$total_seconds()$alias("diff")
   )$to_list()
-  expect_identical(df$diff, c(NA64, diffy(df$date, "secs")))
+  expect_identical(df$diff, c(NA, diffy(df$date, "secs")))
 
 
   # milliseconds
@@ -788,7 +780,7 @@ test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
   ))$with_columns(
     pl$col("date")$diff()$dt$total_milliseconds()$alias("diff")
   )$to_list()
-  expect_identical(df$diff, bit64::as.integer64(c(NA, diffy2(df$date, "secs")) * 1000))
+  expect_identical(df$diff, c(NA, diffy(df$date, "secs")) * 1000)
 
   # microseconds
   df = pl$DataFrame(date = pl$date_range(
@@ -797,7 +789,7 @@ test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
   ))$with_columns(
     pl$col("date")$diff()$dt$total_microseconds()$alias("diff")
   )$to_list()
-  expect_identical(df$diff, bit64::as.integer64(c(NA, diffy2(df$date, "secs")) * 1E6))
+  expect_identical(df$diff, c(NA, diffy(df$date, "secs")) * 1E6)
 
   # nanoseconds
   df = pl$DataFrame(date = pl$date_range(
@@ -806,7 +798,7 @@ test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
   ))$with_columns(
     pl$col("date")$diff()$dt$total_nanoseconds()$alias("diff")
   )$to_list()
-  expect_identical(df$diff, bit64::as.integer64(c(NA, diffy2(df$date, "secs")) * 1E9))
+  expect_identical(df$diff, c(NA, diffy(df$date, "secs")) * 1E9)
 })
 
 test_that("$dt$time()", {

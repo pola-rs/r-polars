@@ -8,9 +8,9 @@
 \usage{
 Series_to_r(bigint_conversion = pl$options$bigint_conversion)
 
-Series_to_vector()
+Series_to_vector(bigint_conversion = pl$options$bigint_conversion)
 
-Series_to_r_list()
+Series_to_r_list(bigint_conversion = pl$options$bigint_conversion)
 }
 \arguments{
 \item{bigint_conversion}{How should Int64 values be handled when converting a

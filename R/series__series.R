@@ -283,12 +283,13 @@ Series_to_r = \(bigint_conversion = pl$options$bigint_conversion) {
 #' @rdname Series_to_r
 #' @name Series_to_vector
 #' @description return R vector (implicit unlist)
+#' @inheritParams pl_set_options
 #' @return R vector
 #' @keywords Series
 #' series_vec = pl$Series(letters[1:3])
 #' series_vec$to_vector()
-Series_to_vector = \() {
-  unlist(unwrap(.pr$Series$to_r(self)), "in $to_vector():")
+Series_to_vector = \(bigint_conversion = pl$options$bigint_conversion) {
+  unlist(unwrap(.pr$Series$to_r(self, bigint_conversion)), "in $to_vector():")
 }
 
 #' Alias to Series_to_vector (backward compatibility)
@@ -299,11 +300,12 @@ Series_to_r_vector = Series_to_vector
 #' @rdname Series_to_r
 #' @name Series_to_r_list
 #' @description return R list (implicit as.list)
+#' @inheritParams pl_set_options
 #' @return R list
 #' @keywords Series
 #' @examples #
-Series_to_r_list = \() {
-  as.list(unwrap(.pr$Series$to_r(self)), "in $to_r_list():")
+Series_to_r_list = \(bigint_conversion = pl$options$bigint_conversion) {
+  as.list(unwrap(.pr$Series$to_r(self, bigint_conversion)), "in $to_r_list():")
 }
 
 

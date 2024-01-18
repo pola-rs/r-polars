@@ -3177,17 +3177,18 @@ Expr_rep_extend = function(expr, n, rechunk = TRUE, upcast = TRUE) {
 #' Otherwise, provide a DataFrame that the Expr should be evaluated in.
 #' @param i Numeric column to extract. Default is zero (which gives the first
 #' column).
+#' @inheritParams pl_set_options
 #' @return R object
 #' @examples
 #' pl$lit(1:3)$to_r()
-Expr_to_r = function(df = NULL, i = 0) {
+Expr_to_r = function(df = NULL, i = 0, bigint_conversion = pl$options$bigint_conversion) {
   if (is.null(df)) {
-    pl$select(self)$to_series(i)$to_r()
+    pl$select(self)$to_series(i)$to_r(bigint_conversion)
   } else {
     if (!inherits(df, c("RPolarsDataFrame"))) {
       stop("Expr_to_r: input is not NULL or a DataFrame/Lazyframe")
     }
-    df$select(self)$to_series(i)$to_r()
+    df$select(self)$to_series(i)$to_r(bigint_conversion)
   }
 }
 
