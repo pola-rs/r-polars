@@ -26,7 +26,9 @@ polars_optreq$debug_polars = list(must_be_bool = is_bool)
 polars_optreq$rpool_cap = list() # rust-side options already check args
 
 polars_optenv$bigint_conversion = "real"
-polars_optreq$bigint_conversion = c("bit64", "real", "string")
+polars_optreq$bigint_conversion = list(acceptable_choices = function(x) {
+  !is.null(x) && x %in% c("bit64", "real", "string")
+})
 
 ## END OF DEFINED OPTIONS
 
@@ -162,6 +164,7 @@ pl_reset_options = function() {
   assign("debug_polars", FALSE, envir = polars_optenv)
   assign("no_messages", FALSE, envir = polars_optenv)
   assign("rpool_cap", 4, envir = polars_optenv)
+  assign("²bigint_conversion", "real", envir = polars_optenv)
 }
 
 
