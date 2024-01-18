@@ -52,3 +52,49 @@ test_that("pl$options$ read-write", {
     "arg-name does not match any defined args of `?set_options`"
   )
 })
+
+
+test_that("option 'bigint_conversion' works", {
+  pl$reset_options()
+  df = pl$DataFrame(a = c(1:3, NA), schema = list(a = pl$Int64))
+
+  # default is to convert Int64 to float
+  expect_identical(
+    df$to_list(),
+    list(a = c(1, 2, 3, NA))
+  )
+
+  # can convert to string
+  pl$set_options(bigint_conversion = "string")
+  expect_identical(
+    df$to_list(),
+    list(a = c("1", "2", "3", NA))
+  )
+
+  # can convert to bit64, but *only* if bit64 is attached
+  try(detach("package:bit64"), silent = TRUE)
+  expect_error(
+    pl$set_options(bigint_conversion = "bit64"),
+    "must be attached"
+  )
+  skip_if_not_installed("bit64")
+  suppressPackageStartupMessages(library(bit64))
+  pl$set_options(bigint_conversion = "bit64")
+  expect_identical(
+    df$to_list(),
+    list(a = as.integer64(c(1, 2, 3, NA)))
+  )
+
+  # can override the global option by passing a custom arg
+  # option currently is "bit64"
+  expect_identical(
+    df$to_list(bigint_conversion = "string"),
+    list(a = c("1", "2", "3", NA))
+  )
+
+  # arg correctly passed from to_data_frame() to to_list()
+  expect_identical(
+    df$to_data_frame(bigint_conversion = "string"),
+    data.frame(a = c("1", "2", "3", NA))
+  )
+})

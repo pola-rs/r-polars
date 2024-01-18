@@ -4,10 +4,19 @@
 \alias{DataFrame_to_data_frame}
 \title{Return Polars DataFrame as R data.frame}
 \usage{
-DataFrame_to_data_frame(...)
+DataFrame_to_data_frame(..., bigint_conversion = pl$options$bigint_conversion)
 }
 \arguments{
 \item{...}{Any args pased to \code{as.data.frame()}.}
+
+\item{bigint_conversion}{How should Int64 values be handled when converting a
+polars object to R?
+\itemize{
+\item \code{"float"} (default) converts the values to Float64.
+\item \code{"bit64"} uses \code{bit64::as.integer64()} to do the conversion (requires
+the package \code{bit64} to be attached).
+\item \code{"string"} converts Int64 values to character.
+}}
 }
 \value{
 An R data.frame

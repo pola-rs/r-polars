@@ -40,7 +40,7 @@ pub fn pl_series_to_list(
             Int16 => s.i16().map(|ca| ca.into_iter().collect_robj()),
             Int32 => s.i32().map(|ca| ca.into_iter().collect_robj()),
             Int64 => match bigint_conversion {
-                "real" => s
+                "float" => s
                     .cast(&DataType::Float64)?
                     .f64()
                     .map(|ca| ca.into_iter().collect_robj()),
@@ -65,7 +65,7 @@ pub fn pl_series_to_list(
                         .set_class(&["integer64"])
                         .expect("internal error could not set class label 'integer64'")
                 }),
-                _ => panic!("foo"),
+                _ => panic!("`bigint_conversion` must be one of 'float', 'string', 'bit64'"),
             },
             UInt8 => s.u8().map(|ca| {
                 ca.into_iter()

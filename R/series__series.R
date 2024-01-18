@@ -240,8 +240,9 @@ Series_shape = method_as_property(function() {
 
 #' Get r vector/list
 #' @description return R list (if polars Series is list)  or vector (any other polars Series type)
-#' @name Series_to_r
-#' @rdname Series_to_r
+#'
+#' @inheritParams pl_set_options
+#'
 #' @return R list or vector
 #' @keywords Series
 #' @details
@@ -274,8 +275,8 @@ Series_shape = method_as_property(function() {
 #' series_list$to_r() # as list because Series DataType is list
 #' series_list$to_r_list() # implicit call as.list(), same as to_r() as already list
 #' series_list$to_vector() # implicit call unlist(), append into a vector
-Series_to_r = \() {
-  unwrap(.pr$Series$to_r(self, pl$options$bigint_conversion), "in $to_r():")
+Series_to_r = \(bigint_conversion = pl$options$bigint_conversion) {
+  unwrap(.pr$Series$to_r(self, bigint_conversion), "in $to_r():")
 }
 # TODO replace list example with Series only syntax
 
