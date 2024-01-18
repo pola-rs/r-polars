@@ -43,7 +43,7 @@ flume = "0.11.0"
 indenter = "0.3.3"
 ipc-channel = "0.18.0"
 once_cell = "1.19.0"
-rayon = "1.6.1"
+rayon = "1.8.1"
 serde = { version = "1.0.195", features = ["derive"] }
 serde_json = "*"
 smartstring = "1.0.1"
@@ -98,6 +98,7 @@ features = [
   "lazy",
   "lazy_regex",
   #"list",
+  "list_any_all",
   "list_eval",
   "list_gather",
   "list_to_struct",
