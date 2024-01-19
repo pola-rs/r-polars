@@ -1,40 +1,31 @@
 #' Make a then-when-otherwise expression
 #'
-#' @name Expr_when_then_otherwise
-#'
-#' @description
-#' Start a "when, then, otherwise" expression.
-#'
-#' @param ... Expr or something coercible to an Expr into a boolean mask to
-#'   branch by.
-#' @param statement Expr or something coercible to an Expr value to insert in
-#'   when() or otherwise(). Strings interpreted as column.
-#' @inheritParams Expr_alias
-#' @return Expr
-#' @aliases when then otherwise When Then ChainedWhen ChainedThen
-#'
-#' @details
 #' `when-then-otherwise` is similar to R [`ifelse()`]. This has to start with
 #' `pl$when(<condition>)$then(<value if condition>)`. From there, it can:
-
 #' * be chained to an `$otherwise()` statement that specifies the Expr to apply
 #'   to the rows where the condition is `FALSE`;
 #' * or be chained to other `$when()$then()` to specify more cases, and then use
 #'   `$otherwise()` when you arrive at the end of your chain.
-#'
 #' Note that one difference with the Python implementation is that we *must*
 #' end the chain with an `$otherwise()` statement.
 #'
 #' If you want to use the class of those `when-then-otherwise` statement, note
 #' that there are 6 different classes corresponding to the different steps:
 #'
-#' * `pl$when()`returns a `"When"` object,
-#' * `pl$then()`returns a `"Then"` object,
-#' * `<Then>$otherwise()`returns an `"Expr"` object,
-#' * `<Then>$when()`returns a `"ChainedWhen"` object,
-#' * `<ChainedWhen>$then()`returns a `"ChainedThen"` object,
-#' * `<ChainedThen>$otherwise()`returns an `"Expr"` object.
+#' * `pl$when()`returns a `When` object,
+#' * `pl$then()`returns a `Then` object,
+#' * `<Then>$otherwise()`returns an [Expresion][Expr_class] object,
+#' * `<Then>$when()`returns a `ChainedWhen` object,
+#' * `<ChainedWhen>$then()`returns a `ChainedThen` object,
+#' * `<ChainedThen>$otherwise()`returns an [Expresion][Expr_class] object.
 #'
+#' @name Expr_when_then_otherwise
+#' @param ... Expr or something coercible to an Expr into a boolean mask to
+#'   branch by.
+#' @param statement Expr or something coercible to an Expr value to insert in
+#'   when() or otherwise(). Strings interpreted as column.
+#' @return an polars object, see details.
+#' @aliases when then otherwise When Then ChainedWhen ChainedThen
 #' @examples
 #' df = pl$DataFrame(foo = c(1, 3, 4), bar = c(3, 4, 0))
 #'
@@ -47,10 +38,10 @@
 #' # With multiple when-then chained:
 #' df$with_columns(
 #'   val = pl$when(pl$col("foo") > 2)
-#'     $then(1)
-#'     $when(pl$col("bar") > 2)
-#'     $then(4)
-#'     $otherwise(-1)
+#'   $then(1)
+#'   $when(pl$col("bar") > 2)
+#'   $then(4)
+#'   $otherwise(-1)
 #' )
 #'
 #' # Pass multiple predicates, each of which must be met:

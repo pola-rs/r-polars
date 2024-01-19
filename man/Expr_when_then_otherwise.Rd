@@ -40,12 +40,9 @@ branch by.}
 when() or otherwise(). Strings interpreted as column.}
 }
 \value{
-Expr
+an polars object, see details.
 }
 \description{
-Start a "when, then, otherwise" expression.
-}
-\details{
 \code{when-then-otherwise} is similar to R \code{\link[=ifelse]{ifelse()}}. This has to start with
 \verb{pl$when(<condition>)$then(<value if condition>)}. From there, it can:
 \itemize{
@@ -53,20 +50,20 @@ Start a "when, then, otherwise" expression.
 to the rows where the condition is \code{FALSE};
 \item or be chained to other \verb{$when()$then()} to specify more cases, and then use
 \verb{$otherwise()} when you arrive at the end of your chain.
-}
-
 Note that one difference with the Python implementation is that we \emph{must}
 end the chain with an \verb{$otherwise()} statement.
-
+}
+}
+\details{
 If you want to use the class of those \code{when-then-otherwise} statement, note
 that there are 6 different classes corresponding to the different steps:
 \itemize{
-\item \code{pl$when()}returns a \code{"When"} object,
-\item \code{pl$then()}returns a \code{"Then"} object,
-\item \verb{<Then>$otherwise()}returns an \code{"Expr"} object,
-\item \verb{<Then>$when()}returns a \code{"ChainedWhen"} object,
-\item \verb{<ChainedWhen>$then()}returns a \code{"ChainedThen"} object,
-\item \verb{<ChainedThen>$otherwise()}returns an \code{"Expr"} object.
+\item \code{pl$when()}returns a \code{When} object,
+\item \code{pl$then()}returns a \code{Then} object,
+\item \verb{<Then>$otherwise()}returns an \link[=Expr_class]{Expresion} object,
+\item \verb{<Then>$when()}returns a \code{ChainedWhen} object,
+\item \verb{<ChainedWhen>$then()}returns a \code{ChainedThen} object,
+\item \verb{<ChainedThen>$otherwise()}returns an \link[=Expr_class]{Expresion} object.
 }
 }
 \examples{
@@ -81,10 +78,10 @@ df$with_columns(
 # With multiple when-then chained:
 df$with_columns(
   val = pl$when(pl$col("foo") > 2)
-    $then(1)
-    $when(pl$col("bar") > 2)
-    $then(4)
-    $otherwise(-1)
+  $then(1)
+  $when(pl$col("bar") > 2)
+  $then(4)
+  $otherwise(-1)
 )
 
 # Pass multiple predicates, each of which must be met:
