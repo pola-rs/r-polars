@@ -14,10 +14,10 @@
 #'
 #' * `pl$when()`returns a `When` object,
 #' * `pl$then()`returns a `Then` object,
-#' * `<Then>$otherwise()`returns an [Expresion][Expr_class] object,
+#' * `<Then>$otherwise()`returns an [Expression][Expr_class] object,
 #' * `<Then>$when()`returns a `ChainedWhen` object,
 #' * `<ChainedWhen>$then()`returns a `ChainedThen` object,
-#' * `<ChainedThen>$otherwise()`returns an [Expresion][Expr_class] object.
+#' * `<ChainedThen>$otherwise()`returns an [Expression][Expr_class] object.
 #'
 #' @name Expr_when_then_otherwise
 #' @param ... Expr or something coercible to an Expr into a boolean mask to

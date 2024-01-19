@@ -60,10 +60,10 @@ that there are 6 different classes corresponding to the different steps:
 \itemize{
 \item \code{pl$when()}returns a \code{When} object,
 \item \code{pl$then()}returns a \code{Then} object,
-\item \verb{<Then>$otherwise()}returns an \link[=Expr_class]{Expresion} object,
+\item \verb{<Then>$otherwise()}returns an \link[=Expr_class]{Expression} object,
 \item \verb{<Then>$when()}returns a \code{ChainedWhen} object,
 \item \verb{<ChainedWhen>$then()}returns a \code{ChainedThen} object,
-\item \verb{<ChainedThen>$otherwise()}returns an \link[=Expr_class]{Expresion} object.
+\item \verb{<ChainedThen>$otherwise()}returns an \link[=Expr_class]{Expression} object.
 }
 }
 \examples{
