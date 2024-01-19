@@ -1101,7 +1101,7 @@ RPolarsLazyFrame$with_row_count <- function(name, offset) .Call(wrap__RPolarsLaz
 
 RPolarsLazyFrame$join_asof <- function(other, left_on, right_on, left_by, right_by, allow_parallel, force_parallel, suffix, strategy, tolerance, tolerance_str) .Call(wrap__RPolarsLazyFrame__join_asof, self, other, left_on, right_on, left_by, right_by, allow_parallel, force_parallel, suffix, strategy, tolerance, tolerance_str)
 
-RPolarsLazyFrame$join <- function(other, left_on, right_on, how, suffix, allow_parallel, force_parallel) .Call(wrap__RPolarsLazyFrame__join, self, other, left_on, right_on, how, suffix, allow_parallel, force_parallel)
+RPolarsLazyFrame$join <- function(other, left_on, right_on, how, validate, join_nulls, suffix, allow_parallel, force_parallel) .Call(wrap__RPolarsLazyFrame__join, self, other, left_on, right_on, how, validate, join_nulls, suffix, allow_parallel, force_parallel)
 
 RPolarsLazyFrame$sort_by_exprs <- function(by, dotdotdot, descending, nulls_last, maintain_order) .Call(wrap__RPolarsLazyFrame__sort_by_exprs, self, by, dotdotdot, descending, nulls_last, maintain_order)
 

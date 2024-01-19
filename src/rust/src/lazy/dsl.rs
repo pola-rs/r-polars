@@ -18,8 +18,8 @@ use crate::CONFIG;
 use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut, Rinternals};
 use pl::PolarsError as pl_error;
 use pl::{
-    BinaryNameSpaceImpl, Duration, DurationMethods, IntoSeries, RollingGroupOptions, SetOperation,
-    StringNameSpaceImpl, TemporalMethods,
+    BinaryNameSpaceImpl, Duration, DurationMethods, IntoSeries, JoinValidation,
+    RollingGroupOptions, SetOperation, StringNameSpaceImpl, TemporalMethods,
 };
 use polars::lazy::dsl;
 use polars::prelude as pl;

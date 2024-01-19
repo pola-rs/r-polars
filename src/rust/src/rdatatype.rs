@@ -512,6 +512,19 @@ pub fn robj_to_set_operation(robj: Robj) -> RResult<pl::SetOperation> {
     }
 }
 
+pub fn robj_to_join_validation(robj: Robj) -> RResult<pl::JoinValidation> {
+    use pl::JoinValidation as JV;
+    match robj_to_rchoice(robj)?.as_str() {
+        "m:m" => Ok(JV::ManyToMany),
+        "1:m" => Ok(JV::OneToMany),
+        "1:1" => Ok(JV::OneToOne),
+        "m:1" => Ok(JV::ManyToOne),
+        s => rerr().bad_val(format!(
+            "JoinValidation choice ['{s}'] should be one of 'm:m', '1:m', '1:1', 'm:1'"
+        )),
+    }
+}
+
 pub fn robj_to_label(robj: Robj) -> RResult<pl::Label> {
     use pl::Label;
     match robj_to_rchoice(robj)?.as_str() {

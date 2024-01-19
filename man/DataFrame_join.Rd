@@ -6,29 +6,46 @@
 \usage{
 DataFrame_join(
   other,
+  on = NULL,
+  how = c("inner", "left", "outer", "semi", "anti", "cross", "outer_coalesce"),
   left_on = NULL,
   right_on = NULL,
-  on = NULL,
-  how = c("inner", "left", "outer", "semi", "anti", "cross"),
   suffix = "_right",
+  validate = "m:m",
+  join_nulls = FALSE,
   allow_parallel = TRUE,
   force_parallel = FALSE
 )
 }
 \arguments{
-\item{other}{DataFrame}
-
-\item{left_on, right_on}{Same as \code{on} but only for the left or the right
-DataFrame. They must have the same length.}
+\item{other}{DataFrame to join with.}
 
 \item{on}{Either a vector of column names or a list of expressions and/or
 strings. Use \code{left_on} and \code{right_on} if the column names to match on are
 different between the two DataFrames.}
 
 \item{how}{One of the following methods: "inner", "left", "outer", "semi",
-"anti", "cross".}
+"anti", "cross", "outer_coalesce".}
+
+\item{left_on, right_on}{Same as \code{on} but only for the left or the right
+DataFrame. They must have the same length.}
 
 \item{suffix}{Suffix to add to duplicated column names.}
+
+\item{validate}{Checks if join is of specified type:
+\itemize{
+\item \code{"m:m"} (default): many-to-many, doesn't perform any checks;
+\item \code{"1:1"}: one-to-one, check if join keys are unique in both left and right
+datasets;
+\item \code{"1:m"}: one-to-many, check if join keys are unique in left dataset
+\item \code{"m:1"}: many-to-one, check if join keys are unique in right dataset
+}
+
+Note that this is currently not supported by the streaming engine, and is
+only supported when joining by single columns.}
+
+\item{join_nulls}{Join on null values. By default null values will never
+produce matches.}
 
 \item{allow_parallel}{Boolean.}
 

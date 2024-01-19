@@ -452,6 +452,8 @@ impl RPolarsLazyFrame {
         left_on: Robj,
         right_on: Robj,
         how: Robj,
+        validate: Robj,
+        join_nulls: Robj,
         suffix: Robj,
         allow_parallel: Robj,
         force_parallel: Robj,
@@ -467,6 +469,8 @@ impl RPolarsLazyFrame {
                 .force_parallel(robj_to!(bool, force_parallel)?)
                 .how(robj_to!(JoinType, how)?)
                 .suffix(robj_to!(str, suffix)?)
+                .join_nulls(robj_to!(bool, join_nulls)?)
+                .validate(robj_to!(JoinValidation, validate)?)
                 .finish(),
         ))
     }

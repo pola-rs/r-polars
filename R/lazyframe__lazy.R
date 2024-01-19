@@ -1058,7 +1058,36 @@ LazyFrame_group_by = function(..., maintain_order = pl$options$maintain_order) {
 
 #' Join LazyFrames
 #'
-#' @inherit DataFrame_join description params
+#' This function can do both mutating joins (adding columns based on matching
+#' observations, for example with `how = "left"`) and filtering joins (keeping
+#' observations based on matching observations, for example with `how =
+#' "inner"`).
+#'
+#' @param other LazyFrame to join with.
+#' @param on Either a vector of column names or a list of expressions and/or
+#'   strings. Use `left_on` and `right_on` if the column names to match on are
+#'   different between the two DataFrames.
+#' @param how One of the following methods: "inner", "left", "outer", "semi",
+#'   "anti", "cross", "outer_coalesce".
+#' @param left_on,right_on Same as `on` but only for the left or the right
+#'   DataFrame. They must have the same length.
+#' @param suffix Suffix to add to duplicated column names.
+#' @param validate Checks if join is of specified type:
+#' * `"m:m"` (default): many-to-many, doesn't perform any checks;
+#' * `"1:1"`: one-to-one, check if join keys are unique in both left and right
+#'   datasets;
+#' * `"1:m"`: one-to-many, check if join keys are unique in left dataset
+#' * `"m:1"`: many-to-one, check if join keys are unique in right dataset
+#'
+#' Note that this is currently not supported by the streaming engine, and is
+#' only supported when joining by single columns.
+#'
+#' @param join_nulls Join on null values. By default null values will never
+#'   produce matches.
+
+#' @param allow_parallel Boolean.
+#' @param force_parallel Boolean.
+#'
 #' @return LazyFrame
 #' @examples
 #' # inner join by default
@@ -1070,20 +1099,31 @@ LazyFrame_group_by = function(..., maintain_order = pl$options$maintain_order) {
 #' df1 = pl$LazyFrame(x = letters[1:3])
 #' df2 = pl$LazyFrame(y = 1:4)
 #' df1$join(other = df2, how = "cross")
+#'
+#' # use "validate" to ensure join keys are not duplicated
+#' df1 = pl$LazyFrame(x = letters[1:5], y = 1:5)
+#' df2 = pl$LazyFrame(x = c("a", letters[1:4]), y2 = 6:10)
+#'
+#' # this throws an error because there are two keys in df2 that match the key
+#' # in df1
+#' tryCatch(
+#'   df1$join(df2, on = "x", validate = "1:1")$collect(),
+#'   error = function(e) print(e)
+#' )
 LazyFrame_join = function(
-    other, # : LazyFrame or DataFrame,
-    left_on = NULL, # : str | pli.RPolarsExpr | Sequence[str | pli.RPolarsExpr] | None = None,
-    right_on = NULL, # : str | pli.RPolarsExpr | Sequence[str | pli.RPolarsExpr] | None = None,
-    on = NULL, # : str | pli.RPolarsExpr | Sequence[str | pli.RPolarsExpr] | None = None,
-    how = c("inner", "left", "outer", "semi", "anti", "cross"),
+    other,
+    on = NULL,
+    how = c("inner", "left", "outer", "semi", "anti", "cross", "outer_coalesce"),
+    left_on = NULL,
+    right_on = NULL,
     suffix = "_right",
+    validate = "m:m",
+    join_nulls = FALSE,
     allow_parallel = TRUE,
     force_parallel = FALSE) {
   uw = \(res) unwrap(res, "in $join():")
 
-  if (inherits(other, "RPolarsDataFrame")) {
-    other = other$lazy()
-  }
+  how = match.arg(how, choices = c("inner", "left", "outer", "semi", "anti", "cross", "outer_coalesce"))
 
   if (!is.null(on)) {
     rexprs_right = rexprs_left = as.list(on)
@@ -1091,15 +1131,15 @@ LazyFrame_join = function(
     rexprs_left = as.list(left_on)
     rexprs_right = as.list(right_on)
   } else if (how != "cross") {
-    Err_plain("must specify `on` OR (  `left_on` AND `right_on` ) ") |> uw()
+    Err_plain("must specify either `on`, or `left_on` and `right_on`.") |> uw()
   } else {
     rexprs_left = as.list(self$columns)
     rexprs_right = as.list(other$columns)
   }
 
   .pr$LazyFrame$join(
-    self, other, rexprs_left, rexprs_right,
-    how, suffix, allow_parallel, force_parallel
+    self, other, rexprs_left, rexprs_right, how, validate, join_nulls, suffix,
+    allow_parallel, force_parallel
   ) |>
     uw()
 }
