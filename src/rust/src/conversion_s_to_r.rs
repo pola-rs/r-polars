@@ -65,7 +65,9 @@ pub fn pl_series_to_list(
                         .set_class(&["integer64"])
                         .expect("internal error could not set class label 'integer64'")
                 }),
-                _ => panic!("`int64_conversion ` must be one of 'float', 'string', 'bit64'"),
+                _ => Err(pl::PolarsError::InvalidOperation(
+                    "`int64_conversion ` must be one of 'float', 'string', 'bit64'".into(),
+                )),
             },
             UInt8 => s.u8().map(|ca| {
                 ca.into_iter()

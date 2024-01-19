@@ -64,6 +64,12 @@ test_that("option 'int64_conversion ' works", {
     list(a = c(1, 2, 3, NA))
   )
 
+  # check value of int64_conversion
+  expect_error(
+    pl$set_options(int64_conversion = "foobar"),
+    "`int64_conversion ` must be one of"
+  )
+
   # can convert to string
   pl$set_options(int64_conversion = "string")
   expect_identical(
