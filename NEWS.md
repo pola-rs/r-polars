@@ -14,6 +14,8 @@
 -   New methods `$list$any()` and `$list$all()` (#709).
 -   New function `pl$from_epoch()` to convert a Unix timestamp to a date(time)
     variable (#708).
+-   New methods for the `list` subnamespace: `$set_union()`, `$set_intersection()`,
+    `$set_difference()`, `$set_symmetric_difference()` (#712).
 
 ## polars 0.12.2
 
