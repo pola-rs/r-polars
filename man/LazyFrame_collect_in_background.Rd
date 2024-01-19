@@ -28,7 +28,7 @@ below.
 }
 \examples{
 # Some expression which does contain a map
-expr = pl$col("mpg")$map(
+expr = pl$col("mpg")$map_batches(
   \(x) {
     Sys.sleep(.1)
     x * 0.43
