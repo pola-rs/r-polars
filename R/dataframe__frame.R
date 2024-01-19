@@ -1552,7 +1552,7 @@ DataFrame_describe = function(percentiles = c(.25, .75)) {
         unlist(
           list(
             pl$all()$count()$name$prefix(paste0("count", custom_sep)),
-            pl$all()$null_count()$name$prefix(paste0("null_count:", custom_sep)),
+            pl$all()$null_count()$name$prefix(paste0("null_count", custom_sep)),
             mean_exprs,
             std_exprs,
             min_exprs,
