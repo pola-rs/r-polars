@@ -24,13 +24,13 @@ use polars_core::datatypes::DataType;
 pub fn pl_series_to_list(
     series: &pl::Series,
     tag_structs: bool,
-    bigint_conversion: &str,
+    int64_conversion: &str,
 ) -> pl::PolarsResult<Robj> {
     use pl::DataType::*;
     fn to_list_recursive(
         s: &pl::Series,
         tag_structs: bool,
-        bigint_conversion: &str,
+        int64_conversion: &str,
     ) -> pl::PolarsResult<Robj> {
         match s.dtype() {
             Float64 => s.f64().map(|ca| ca.into_iter().collect_robj()),
@@ -39,8 +39,8 @@ pub fn pl_series_to_list(
             Int8 => s.i8().map(|ca| ca.into_iter().collect_robj()),
             Int16 => s.i16().map(|ca| ca.into_iter().collect_robj()),
             Int32 => s.i32().map(|ca| ca.into_iter().collect_robj()),
-            Int64 => match bigint_conversion {
-                "float" => s
+            Int64 => match int64_conversion {
+                "double" => s
                     .cast(&DataType::Float64)?
                     .f64()
                     .map(|ca| ca.into_iter().collect_robj()),
@@ -65,7 +65,7 @@ pub fn pl_series_to_list(
                         .set_class(&["integer64"])
                         .expect("internal error could not set class label 'integer64'")
                 }),
-                _ => panic!("`bigint_conversion` must be one of 'float', 'string', 'bit64'"),
+                _ => panic!("`int64_conversion ` must be one of 'float', 'string', 'bit64'"),
             },
             UInt8 => s.u8().map(|ca| {
                 ca.into_iter()
@@ -139,7 +139,7 @@ pub fn pl_series_to_list(
                                 let s_ref = s.as_ref();
                                 // is safe because s is read to generate new Robj, then discarded.
                                 let inner_val =
-                                    to_list_recursive(s_ref, tag_structs, bigint_conversion)?;
+                                    to_list_recursive(s_ref, tag_structs, int64_conversion)?;
                                 v.push(inner_val);
                             }
 
@@ -156,7 +156,7 @@ pub fn pl_series_to_list(
             }
             Struct(_) => {
                 let df = s.clone().into_frame().unnest([s.name()]).unwrap();
-                let mut l = RPolarsDataFrame(df).to_list_result(bigint_conversion)?;
+                let mut l = RPolarsDataFrame(df).to_list_result(int64_conversion)?;
 
                 //TODO contribute extendr_api set_attrib mutates &self, change signature to surprise anyone
                 if tag_structs {
@@ -235,5 +235,5 @@ pub fn pl_series_to_list(
         }
     }
 
-    to_list_recursive(series, tag_structs, bigint_conversion)
+    to_list_recursive(series, tag_structs, int64_conversion)
 }

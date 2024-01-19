@@ -54,7 +54,7 @@ test_that("pl$options$ read-write", {
 })
 
 
-test_that("option 'bigint_conversion' works", {
+test_that("option 'int64_conversion ' works", {
   pl$reset_options()
   df = pl$DataFrame(a = c(1:3, NA), schema = list(a = pl$Int64))
 
@@ -65,7 +65,7 @@ test_that("option 'bigint_conversion' works", {
   )
 
   # can convert to string
-  pl$set_options(bigint_conversion = "string")
+  pl$set_options(int64_conversion  = "string")
   expect_identical(
     df$to_list(),
     list(a = c("1", "2", "3", NA))
@@ -74,12 +74,12 @@ test_that("option 'bigint_conversion' works", {
   # can convert to bit64, but *only* if bit64 is attached
   try(detach("package:bit64"), silent = TRUE)
   expect_error(
-    pl$set_options(bigint_conversion = "bit64"),
+    pl$set_options(int64_conversion  = "bit64"),
     "must be attached"
   )
   skip_if_not_installed("bit64")
   suppressPackageStartupMessages(library(bit64))
-  pl$set_options(bigint_conversion = "bit64")
+  pl$set_options(int64_conversion  = "bit64")
   expect_identical(
     df$to_list(),
     list(a = as.integer64(c(1, 2, 3, NA)))
@@ -88,13 +88,13 @@ test_that("option 'bigint_conversion' works", {
   # can override the global option by passing a custom arg
   # option currently is "bit64"
   expect_identical(
-    df$to_list(bigint_conversion = "string"),
+    df$to_list(int64_conversion  = "string"),
     list(a = c("1", "2", "3", NA))
   )
 
   # arg correctly passed from to_data_frame() to to_list()
   expect_identical(
-    df$to_data_frame(bigint_conversion = "string"),
+    df$to_data_frame(int64_conversion  = "string"),
     data.frame(a = c("1", "2", "3", NA))
   )
 })

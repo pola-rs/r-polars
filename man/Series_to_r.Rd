@@ -6,17 +6,17 @@
 \alias{Series_to_r_list}
 \title{Get r vector/list}
 \usage{
-Series_to_r(bigint_conversion = pl$options$bigint_conversion)
+Series_to_r(int64_conversion = pl$options$int64_conversion)
 
-Series_to_vector(bigint_conversion = pl$options$bigint_conversion)
+Series_to_vector(int64_conversion = pl$options$int64_conversion)
 
-Series_to_r_list(bigint_conversion = pl$options$bigint_conversion)
+Series_to_r_list(int64_conversion = pl$options$int64_conversion)
 }
 \arguments{
-\item{bigint_conversion}{How should Int64 values be handled when converting a
+\item{int64_conversion}{How should Int64 values be handled when converting a
 polars object to R?
 \itemize{
-\item \code{"float"} (default) converts the values to Float64.
+\item \code{"double"} (default) converts the integer values to double.
 \item \code{"bit64"} uses \code{bit64::as.integer64()} to do the conversion (requires
 the package \code{bit64} to be attached).
 \item \code{"string"} converts Int64 values to character.

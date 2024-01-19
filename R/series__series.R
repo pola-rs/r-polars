@@ -275,8 +275,8 @@ Series_shape = method_as_property(function() {
 #' series_list$to_r() # as list because Series DataType is list
 #' series_list$to_r_list() # implicit call as.list(), same as to_r() as already list
 #' series_list$to_vector() # implicit call unlist(), append into a vector
-Series_to_r = \(bigint_conversion = pl$options$bigint_conversion) {
-  unwrap(.pr$Series$to_r(self, bigint_conversion), "in $to_r():")
+Series_to_r = \(int64_conversion  = pl$options$int64_conversion ) {
+  unwrap(.pr$Series$to_r(self, int64_conversion ), "in $to_r():")
 }
 # TODO replace list example with Series only syntax
 
@@ -288,8 +288,8 @@ Series_to_r = \(bigint_conversion = pl$options$bigint_conversion) {
 #' @keywords Series
 #' series_vec = pl$Series(letters[1:3])
 #' series_vec$to_vector()
-Series_to_vector = \(bigint_conversion = pl$options$bigint_conversion) {
-  unlist(unwrap(.pr$Series$to_r(self, bigint_conversion)), "in $to_vector():")
+Series_to_vector = \(int64_conversion  = pl$options$int64_conversion ) {
+  unlist(unwrap(.pr$Series$to_r(self, int64_conversion )), "in $to_vector():")
 }
 
 #' Alias to Series_to_vector (backward compatibility)
@@ -304,8 +304,8 @@ Series_to_r_vector = Series_to_vector
 #' @return R list
 #' @keywords Series
 #' @examples #
-Series_to_r_list = \(bigint_conversion = pl$options$bigint_conversion) {
-  as.list(unwrap(.pr$Series$to_r(self, bigint_conversion)), "in $to_r_list():")
+Series_to_r_list = \(int64_conversion  = pl$options$int64_conversion ) {
+  as.list(unwrap(.pr$Series$to_r(self, int64_conversion )), "in $to_r_list():")
 }
 
 

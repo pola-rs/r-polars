@@ -3181,14 +3181,14 @@ Expr_rep_extend = function(expr, n, rechunk = TRUE, upcast = TRUE) {
 #' @return R object
 #' @examples
 #' pl$lit(1:3)$to_r()
-Expr_to_r = function(df = NULL, i = 0, bigint_conversion = pl$options$bigint_conversion) {
+Expr_to_r = function(df = NULL, i = 0, int64_conversion  = pl$options$int64_conversion ) {
   if (is.null(df)) {
-    pl$select(self)$to_series(i)$to_r(bigint_conversion)
+    pl$select(self)$to_series(i)$to_r(int64_conversion )
   } else {
     if (!inherits(df, c("RPolarsDataFrame"))) {
       stop("Expr_to_r: input is not NULL or a DataFrame/Lazyframe")
     }
-    df$select(self)$to_series(i)$to_r(bigint_conversion)
+    df$select(self)$to_series(i)$to_r(int64_conversion )
   }
 }
 

@@ -6,17 +6,17 @@
 \usage{
 DataFrame_to_list(
   unnest_structs = TRUE,
-  bigint_conversion = pl$options$bigint_conversion
+  int64_conversion = pl$options$int64_conversion
 )
 }
 \arguments{
 \item{unnest_structs}{Boolean. If \code{TRUE} (default), then \verb{$unnest()} is applied
 on any struct column.}
 
-\item{bigint_conversion}{How should Int64 values be handled when converting a
+\item{int64_conversion}{How should Int64 values be handled when converting a
 polars object to R?
 \itemize{
-\item \code{"float"} (default) converts the values to Float64.
+\item \code{"double"} (default) converts the integer values to double.
 \item \code{"bit64"} uses \code{bit64::as.integer64()} to do the conversion (requires
 the package \code{bit64} to be attached).
 \item \code{"string"} converts Int64 values to character.

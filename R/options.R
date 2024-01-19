@@ -25,9 +25,9 @@ polars_optreq$debug_polars = list(must_be_bool = is_bool)
 # polars_optenv$rpool_cap # active binding for getting value, not for
 polars_optreq$rpool_cap = list() # rust-side options already check args
 
-polars_optenv$bigint_conversion = "float"
-polars_optreq$bigint_conversion = list(
-  acceptable_choices = function(x) !is.null(x) && x %in% c("bit64", "float", "string"),
+polars_optenv$int64_conversion  = "double"
+polars_optreq$int64_conversion  = list(
+  acceptable_choices = function(x) !is.null(x) && x %in% c("bit64", "double", "string"),
   bit64_is_attached = function(x) if (x == "bit64") x %in% .packages() else TRUE
 )
 
@@ -67,10 +67,10 @@ polars_optreq$bigint_conversion = list(
 #' @param no_messages Hide messages.
 #' @param rpool_cap The maximum number of R sessions that can be used to process
 #' R code in the background. See Details.
-#' @param bigint_conversion How should Int64 values be handled when converting a
+#' @param int64_conversion  How should Int64 values be handled when converting a
 #' polars object to R?
 #'
-#' * `"float"` (default) converts the values to Float64.
+#' * `"double"` (default) converts the integer values to double.
 #' * `"bit64"` uses `bit64::as.integer64()` to do the conversion (requires
 #'   the package `bit64` to be attached).
 #' * `"string"` converts Int64 values to character.
@@ -105,7 +105,7 @@ pl_set_options = function(
     debug_polars = FALSE,
     no_messages = FALSE,
     rpool_cap = 4,
-    bigint_conversion = c("bit64", "float", "string")) {
+    int64_conversion  = c("bit64", "double", "string")) {
   # only modify arguments that were explicitly written in the function call
   # (otherwise calling set_options() twice in a row would reset the args
   # modified in the first call)
@@ -164,7 +164,7 @@ pl_reset_options = function() {
   assign("debug_polars", FALSE, envir = polars_optenv)
   assign("no_messages", FALSE, envir = polars_optenv)
   assign("rpool_cap", 4, envir = polars_optenv)
-  assign("bigint_conversion", "float", envir = polars_optenv)
+  assign("int64_conversion ", "double", envir = polars_optenv)
 }
 
 
@@ -173,8 +173,8 @@ translate_failures = \(x) {
     "must_be_scalar" = "Input must be of length one.",
     "must_be_integer" = "Input must be an integer.",
     "must_be_bool" = "Input must be TRUE or FALSE.",
-    "acceptable_choices" = "`bigint_conversion` must be one of \"float\", \"string\", \"bit64\".",
-    "bit64_is_attached" = "Package `bit64` must be attached to use `bigint_conversion = \"bit64\"`."
+    "acceptable_choices" = "`int64_conversion ` must be one of \"float\", \"string\", \"bit64\".",
+    "bit64_is_attached" = "Package `bit64` must be attached to use `int64_conversion  = \"bit64\"`."
   )
   trans = lookups[x]
   trans[is.na(trans)] = x[is.na(trans)]
