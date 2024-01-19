@@ -506,7 +506,7 @@ ExprList_set_difference = function(other) {
 #' Get the symmetric difference of two list variables
 #'
 #' This returns all elements that are in only one of the two lists. To get only
-#' elements of the first list that are not in the second one, use
+#' elements that are in the first list but not in the second one, use
 #' [`$set_difference()`][ExprList_set_difference].
 #'
 #' @inherit ExprList_set_union params details return
