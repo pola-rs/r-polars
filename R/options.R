@@ -25,8 +25,8 @@ polars_optreq$debug_polars = list(must_be_bool = is_bool)
 # polars_optenv$rpool_cap # active binding for getting value, not for
 polars_optreq$rpool_cap = list() # rust-side options already check args
 
-polars_optenv$int64_conversion  = "double"
-polars_optreq$int64_conversion  = list(
+polars_optenv$int64_conversion = "double"
+polars_optreq$int64_conversion = list(
   acceptable_choices = function(x) !is.null(x) && x %in% c("bit64", "double", "string"),
   bit64_is_attached = function(x) if (x == "bit64") x %in% .packages() else TRUE
 )
@@ -105,7 +105,7 @@ pl_set_options = function(
     debug_polars = FALSE,
     no_messages = FALSE,
     rpool_cap = 4,
-    int64_conversion  = c("bit64", "double", "string")) {
+    int64_conversion = c("bit64", "double", "string")) {
   # only modify arguments that were explicitly written in the function call
   # (otherwise calling set_options() twice in a row would reset the args
   # modified in the first call)
@@ -174,7 +174,7 @@ translate_failures = \(x) {
     "must_be_integer" = "Input must be an integer.",
     "must_be_bool" = "Input must be TRUE or FALSE.",
     "acceptable_choices" = "`int64_conversion ` must be one of \"float\", \"string\", \"bit64\".",
-    "bit64_is_attached" = "Package `bit64` must be attached to use `int64_conversion  = \"bit64\"`."
+    "bit64_is_attached" = "Package `bit64` must be attached to use `int64_conversion = \"bit64\"`."
   )
   trans = lookups[x]
   trans[is.na(trans)] = x[is.na(trans)]

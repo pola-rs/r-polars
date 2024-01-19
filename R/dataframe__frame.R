@@ -852,9 +852,9 @@ DataFrame_group_by = function(..., maintain_order = pl$options$maintain_order) {
 #' @examples
 #' df = pl$DataFrame(iris[1:3, ])
 #' df$to_data_frame()
-DataFrame_to_data_frame = function(..., int64_conversion  = pl$options$int64_conversion ) {
+DataFrame_to_data_frame = function(..., int64_conversion = pl$options$int64_conversion ) {
   # do not unnest structs and mark with I to also preserve categoricals as is
-  l = lapply(self$to_list(unnest_structs = FALSE, int64_conversion ), I)
+  l = lapply(self$to_list(unnest_structs = FALSE, int64_conversion = int64_conversion), I)
 
   # similar to as.data.frame, but avoid checks, whcih would edit structs
   df = data.frame(seq_along(l[[1L]]), ...)
@@ -883,7 +883,7 @@ DataFrame_to_data_frame = function(..., int64_conversion  = pl$options$int64_con
 #' @keywords DataFrame
 #' @examples
 #' pl$DataFrame(iris)$to_list()
-DataFrame_to_list = function(unnest_structs = TRUE, int64_conversion  = pl$options$int64_conversion ) {
+DataFrame_to_list = function(unnest_structs = TRUE, ..., int64_conversion = pl$options$int64_conversion ) {
   if (unnest_structs) {
     .pr$DataFrame$to_list(self, int64_conversion ) |>
       unwrap("in $to_list():")
