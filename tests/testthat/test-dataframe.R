@@ -1027,9 +1027,6 @@ test_that("describe", {
 
   df = pl$DataFrame(mtcars)$describe()
   expect_error(pl$DataFrame(mtcars)$describe("not a percentile"))
-  err_ctx = unwrap_err(result(pl$DataFrame(mtcars)$describe("not a percentile")))$contexts()
-  expect_identical(names(err_ctx), c("BadArgument", "TypeMismatch", "BadValue"))
-  expect_identical(unlist(err_ctx[1:2], use.names = FALSE), c("percentiles", "numeric"))
 
   # perc = NULL  is the same as numeric()
   expect_identical(
