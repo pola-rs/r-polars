@@ -1123,7 +1123,9 @@ LazyFrame_join = function(
     force_parallel = FALSE) {
   uw = \(res) unwrap(res, "in $join():")
 
-  how = match.arg(how, choices = c("inner", "left", "outer", "semi", "anti", "cross", "outer_coalesce"))
+  if (!inherits(other, "RPolarsLazyFrame")) {
+    Err_plain("`other` must be a LazyFrame.") |> uw()
+  }
 
   if (!is.null(on)) {
     rexprs_right = rexprs_left = as.list(on)

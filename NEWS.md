@@ -16,6 +16,14 @@
     variable (#708).
 -   New methods for the `list` subnamespace: `$set_union()`, `$set_intersection()`,
     `$set_difference()`, `$set_symmetric_difference()` (#712).
+-   Several changes in `$join()` for `DataFrame` and `LazyFrame`:
+    -   Some arguments have been reordered (e.g `how` now comes before `left_on`).
+        This can lead to bugs if the user didn't use argument names.
+    -   Argument `how` now accepts `"outer_coalesce"` to coalesce the join keys
+        automatically after joining.
+    -   New argument `validate` to perform some checks on join keys (e.g ensure 
+        that there is a one-to-one matching between join keys).
+    -   New argument `join_nulls` to consider `null` values as a valid key.
 
 ## polars 0.12.2
 

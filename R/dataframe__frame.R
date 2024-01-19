@@ -917,6 +917,9 @@ DataFrame_join = function(
     join_nulls = FALSE,
     allow_parallel = TRUE,
     force_parallel = FALSE) {
+  if (!inherits(other, "RPolarsDataFrame")) {
+    Err_plain("`other` must be a DataFrame.") |> uw()
+  }
   .pr$DataFrame$lazy(self)$join(
     other = other$lazy(), left_on = left_on, right_on = right_on,
     on = on, how = how, suffix = suffix, allow_parallel = allow_parallel,
