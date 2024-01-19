@@ -647,21 +647,23 @@ construct_ProtoExprArray = function(...) {
 #' up some slow R functions as they can run in parallel R sessions. The
 #' communication speed between processes is quite slower than between threads.
 #' This will likely only give a speed-up in a "low IO - high CPU" use case.
-#' If there are multiple `$map_batches(in_background = TRUE)` calls in the query, they
-#' will be run in parallel.
+#' If there are multiple [`$map_batches(in_background = TRUE)`][Expr_map_batches]
+#' calls in the query, they will be run in parallel.
 #'
 #' @return Expr
 #' @details
 #' It is sometimes necessary to apply a specific R function on one or several
-#' columns. However, note that using R code in `$map_batches()` is slower than native
-#' polars. The user function must take one polars `Series` as input and the return
+#' columns. However, note that using R code in [`$map_batches()`][Expr_map_batches]
+#' is slower than native polars.
+#' The user function must take one polars `Series` as input and the return
 #' should be a `Series` or any Robj convertible into a `Series` (e.g. vectors).
 #' Map fully supports `browser()`.
 #'
 #' If `in_background = FALSE` the function can access any global variable of the
-#' R session. However, note that several calls to `$map_batches()` will sequentially
-#' share the same main R session, so the global environment might change between
-#' the start of the query and the moment a `$map_batches()` call is evaluated. Any native
+#' R session. However, note that several calls to [`$map_batches()`][Expr_map_batches]
+#' will sequentially share the same main R session,
+#' so the global environment might change between the start of the query and the moment
+#' a [`$map_batches()`][Expr_map_batches] call is evaluated. Any native
 #' polars computations can still be executed meanwhile. If `in_background = TRUE`,
 #' the map will run in one or more other R sessions and will not have access
 #' to global variables. Use `pl$set_options(rpool_cap = 4)` and `pl$options$rpool_cap`

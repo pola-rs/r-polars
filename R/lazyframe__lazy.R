@@ -438,8 +438,8 @@ LazyFrame_collect = function(
 #' It is useful to not block the R session while query executes. If you use
 #' [`<Expr>$map_batches()`][Expr_map_batches] or
 #' [`<Expr>$map_elements()`][Expr_map_elements] to run R functions in the query,
-#' then you must pass `in_background = TRUE` in `$map_batches()` (or
-#' `$map_elements()`). Otherwise, `$collect_in_background()` will fail because
+#' then you must pass `in_background = TRUE` in [`$map_batches()`][Expr_map_batches] (or
+#' [`$map_elements()`][Expr_map_elements]). Otherwise, `$collect_in_background()` will fail because
 #' the main R session is not available for polars execution. See also examples
 #' below.
 #'

@@ -21,8 +21,8 @@ Use \code{\link[=RThreadHandle_join]{<RPolarsRThreadHandle>$join()}} to wait and
 It is useful to not block the R session while query executes. If you use
 \code{\link[=Expr_map_batches]{<Expr>$map_batches()}} or
 \code{\link[=Expr_map_elements]{<Expr>$map_elements()}} to run R functions in the query,
-then you must pass \code{in_background = TRUE} in \verb{$map_batches()} (or
-\verb{$map_elements()}). Otherwise, \verb{$collect_in_background()} will fail because
+then you must pass \code{in_background = TRUE} in \code{\link[=Expr_map_batches]{$map_batches()}} (or
+\code{\link[=Expr_map_elements]{$map_elements()}}). Otherwise, \verb{$collect_in_background()} will fail because
 the main R session is not available for polars execution. See also examples
 below.
 }
