@@ -518,7 +518,7 @@ test_that("$list$set_*() work with strings", {
 
 # TODO: currently (rs-0.36.2), this panicks, which leads to other tests failing
 # due to panicks
-# Uncomment when resolved upstream
+# Uncomment when resolved upstream: https://github.com/pola-rs/polars/issues/13840
 # test_that("$list$set_*() errors if no common supertype", {
 #   df = pl$DataFrame(
 #     a = list(c(1, 2, 3), NA_real_, c(NA_real_, 3), c(5, 6, 7)),
