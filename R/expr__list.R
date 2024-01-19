@@ -441,3 +441,86 @@ ExprList_all = function() .pr$Expr$list_all(self)
 #' )
 #' df$with_columns(any = pl$col("a")$list$any())
 ExprList_any = function() .pr$Expr$list_any(self)
+
+#' Get the union of two list variables
+#'
+#' @param other Other list variable. Can be an Expr or something coercible to an
+#' Expr.
+#'
+#' @details
+#' Note that the datatypes inside the list must have a common supertype. For
+#' example, the first column can be `list[i32]` and the second one can be
+#' `list[i8]` because it can be cast to `list[i32]`. However, the second column
+#' cannot be e.g `list[f32]`.
+#'
+#' @return Expr
+#' @examples
+#' df = pl$DataFrame(
+#'   a = list(1:3, NA_integer_, c(NA_integer_, 3L), 5:7),
+#'   b = list(2:4, 3L, c(3L, 4L, NA_integer_), c(6L, 8L))
+#' )
+#'
+#' df$with_columns(union = pl$col("a")$list$set_union("b"))
+ExprList_set_union = function(other) {
+  .pr$Expr$list_set_operation(self, other, "union") |>
+    unwrap("in $list$set_union():")
+}
+
+#' Get the intersection of two list variables
+#'
+#' @inherit ExprList_set_union params details return
+#'
+#' @examples
+#' df = pl$DataFrame(
+#'   a = list(1:3, NA_integer_, c(NA_integer_, 3L), 5:7),
+#'   b = list(2:4, 3L, c(3L, 4L, NA_integer_), c(6L, 8L))
+#' )
+#'
+#' df$with_columns(intersection = pl$col("a")$list$set_intersection("b"))
+ExprList_set_intersection = function(other) {
+  .pr$Expr$list_set_operation(self, other, "intersection") |>
+    unwrap("in $list$set_intersection():")
+}
+
+#' Get the difference of two list variables
+#'
+#' This returns the "asymmetric difference", meaning only the elements of the
+#' first list that are not in the second list. To get all elements that are in
+#' only one of the two lists, use
+#' [`$set_symmetric_difference()`][ExprList_set_symmetric_difference].
+#'
+#' @inherit ExprList_set_union params details return
+#'
+#' @examples
+#' df = pl$DataFrame(
+#'   a = list(1:3, NA_integer_, c(NA_integer_, 3L), 5:7),
+#'   b = list(2:4, 3L, c(3L, 4L, NA_integer_), c(6L, 8L))
+#' )
+#'
+#' df$with_columns(difference = pl$col("a")$list$set_difference("b"))
+ExprList_set_difference = function(other) {
+  .pr$Expr$list_set_operation(self, other, "difference") |>
+    unwrap("in $list$set_difference():")
+}
+
+#' Get the symmetric difference of two list variables
+#'
+#' This returns all elements that are in only one of the two lists. To get only
+#' elements of the first list that are not in the second one, use
+#' [`$set_difference()`][ExprList_set_difference].
+#'
+#' @inherit ExprList_set_union params details return
+#'
+#' @examples
+#' df = pl$DataFrame(
+#'   a = list(1:3, NA_integer_, c(NA_integer_, 3L), 5:7),
+#'   b = list(2:4, 3L, c(3L, 4L, NA_integer_), c(6L, 8L))
+#' )
+#'
+#' df$with_columns(
+#'   symmetric_difference = pl$col("a")$list$set_symmetric_difference("b")
+#' )
+ExprList_set_symmetric_difference = function(other) {
+  .pr$Expr$list_set_operation(self, other, "symmetric_difference") |>
+    unwrap("in $list$set_symmetric_difference():")
+}

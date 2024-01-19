@@ -18,7 +18,7 @@ use crate::CONFIG;
 use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut, Rinternals};
 use pl::PolarsError as pl_error;
 use pl::{
-    BinaryNameSpaceImpl, Duration, DurationMethods, IntoSeries, RollingGroupOptions,
+    BinaryNameSpaceImpl, Duration, DurationMethods, IntoSeries, RollingGroupOptions, SetOperation,
     StringNameSpaceImpl, TemporalMethods,
 };
 use polars::lazy::dsl;
@@ -1166,6 +1166,19 @@ impl RPolarsExpr {
 
     fn list_any(&self) -> Self {
         self.0.clone().list().any().into()
+    }
+
+    fn list_set_operation(&self, other: Robj, operation: Robj) -> RResult<Self> {
+        let other = robj_to!(PLExprCol, other)?;
+        let operation = robj_to!(SetOperation, operation)?;
+        let e = self.0.clone().list();
+        Ok(match operation {
+            SetOperation::Intersection => e.set_intersection(other),
+            SetOperation::Difference => e.set_difference(other),
+            SetOperation::Union => e.union(other),
+            SetOperation::SymmetricDifference => e.set_symmetric_difference(other),
+        }
+        .into())
     }
 
     //datetime methods

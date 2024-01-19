@@ -673,6 +673,8 @@ RPolarsExpr$list_all <- function() .Call(wrap__RPolarsExpr__list_all, self)
 
 RPolarsExpr$list_any <- function() .Call(wrap__RPolarsExpr__list_any, self)
 
+RPolarsExpr$list_set_operation <- function(other, operation) .Call(wrap__RPolarsExpr__list_set_operation, self, other, operation)
+
 RPolarsExpr$dt_truncate <- function(every, offset) .Call(wrap__RPolarsExpr__dt_truncate, self, every, offset)
 
 RPolarsExpr$dt_round <- function(every, offset) .Call(wrap__RPolarsExpr__dt_round, self, every, offset)
