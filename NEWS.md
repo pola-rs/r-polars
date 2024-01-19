@@ -2,6 +2,12 @@
 
 ## polars (development version)
 
+### Breaking changes
+
+-   Depricated functions from 0.12.x are removed (#714).
+    -   `<Expr>$apply()` and `<Expr>$map()`, use `$map_elements()` and `$map_batches()` instead.
+    -   `pl$polars_info()`, use `polars_info()` instead.
+
 ### What's changed
 
 -   New method `$rolling()` for `DataFrame` and `LazyFrame`. When this is
