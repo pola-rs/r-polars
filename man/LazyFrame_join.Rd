@@ -47,9 +47,11 @@ only supported when joining by single columns.}
 \item{join_nulls}{Join on null values. By default null values will never
 produce matches.}
 
-\item{allow_parallel}{Boolean.}
+\item{allow_parallel}{Allow the physical plan to optionally evaluate the
+computation of both DataFrames up to the join in parallel.}
 
-\item{force_parallel}{Boolean.}
+\item{force_parallel}{Force the physical plan to evaluate the computation of
+both DataFrames up to the join in parallel.}
 }
 \value{
 LazyFrame

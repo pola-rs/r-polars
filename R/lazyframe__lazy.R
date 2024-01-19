@@ -1084,9 +1084,11 @@ LazyFrame_group_by = function(..., maintain_order = pl$options$maintain_order) {
 #'
 #' @param join_nulls Join on null values. By default null values will never
 #'   produce matches.
+#' @param allow_parallel Allow the physical plan to optionally evaluate the
+#'   computation of both DataFrames up to the join in parallel.
+#' @param force_parallel Force the physical plan to evaluate the computation of
+#'   both DataFrames up to the join in parallel.
 
-#' @param allow_parallel Boolean.
-#' @param force_parallel Boolean.
 #'
 #' @return LazyFrame
 #' @examples
