@@ -421,3 +421,23 @@ ExprList_to_struct = function(
 ExprList_eval = function(expr, parallel = FALSE) {
   .pr$Expr$list_eval(self, expr, parallel)
 }
+
+#' Evaluate whether all boolean values in a list are true
+#'
+#' @return Expr
+#' @examples
+#' df = pl$DataFrame(
+#'   list(a = list(c(TRUE, TRUE), c(FALSE, TRUE), c(FALSE, FALSE), NA, c()))
+#' )
+#' df$with_columns(all = pl$col("a")$list$all())
+ExprList_all = function() .pr$Expr$list_all(self)
+
+#' Evaluate whether any boolean values in a list are true
+#'
+#' @return Expr
+#' @examples
+#' df = pl$DataFrame(
+#'   list(a = list(c(TRUE, TRUE), c(FALSE, TRUE), c(FALSE, FALSE), NA, c()))
+#' )
+#' df$with_columns(any = pl$col("a")$list$any())
+ExprList_any = function() .pr$Expr$list_any(self)
