@@ -3,7 +3,7 @@
 #' @name Expr_when_then_otherwise
 #'
 #' @description
-#' Start a “when, then, otherwise” expression.
+#' Start a "when, then, otherwise" expression.
 #'
 #' @param ... Expr or something coercible to an Expr into a boolean mask to
 #'   branch by.
@@ -14,7 +14,7 @@
 #' @aliases when then otherwise When Then ChainedWhen ChainedThen
 #'
 #' @details
-#' `when-then-otherwise` is similar to R `ifelse()`. This has to start with
+#' `when-then-otherwise` is similar to R [`ifelse()`]. This has to start with
 #' `pl$when(<condition>)$then(<value if condition>)`. From there, it can:
 
 #' * be chained to an `$otherwise()` statement that specifies the Expr to apply

@@ -43,10 +43,10 @@ when() or otherwise(). Strings interpreted as column.}
 Expr
 }
 \description{
-Start a “when, then, otherwise” expression.
+Start a "when, then, otherwise" expression.
 }
 \details{
-\code{when-then-otherwise} is similar to R \code{ifelse()}. This has to start with
+\code{when-then-otherwise} is similar to R \code{\link[=ifelse]{ifelse()}}. This has to start with
 \verb{pl$when(<condition>)$then(<value if condition>)}. From there, it can:
 \itemize{
 \item be chained to an \verb{$otherwise()} statement that specifies the Expr to apply
