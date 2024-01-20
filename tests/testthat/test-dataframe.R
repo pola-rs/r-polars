@@ -1011,10 +1011,8 @@ test_that("describe", {
     bool = c(TRUE, FALSE, NA)
   )
   expect_snapshot(df$describe())
-
   expect_snapshot(pl$DataFrame(mtcars)$describe())
-
-  df = pl$DataFrame(mtcars)$describe()
+  expect_snapshot(pl$DataFrame(mtcars)$describe(interpolation = "linear"))
   expect_error(pl$DataFrame(mtcars)$describe("not a percentile"))
 
   # perc = NULL  is the same as numeric()

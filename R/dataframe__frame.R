@@ -1165,8 +1165,7 @@ DataFrame_std = function(ddof = 1) {
 #' value. Use `$describe()` to specify several quantiles.
 #' @keywords DataFrame
 #' @param quantile Numeric of length 1 between 0 and 1.
-#' @param interpolation Interpolation method: "nearest", "higher", "lower",
-#' "midpoint", or "linear".
+#' @inheritParams Expr_quantile
 #' @return DataFrame
 #' @examples pl$DataFrame(mtcars)$quantile(.4)
 DataFrame_quantile = function(quantile, interpolation = "nearest") {
@@ -1465,6 +1464,8 @@ DataFrame_rename = function(...) {
 #'
 #' @param percentiles One or more percentiles to include in the summary statistics.
 #' All values must be in the range `[0; 1]`.
+#' @param interpolation Interpolation method for computing quantiles. One of
+#'  `"nearest"`, `"higher"`, `"lower"`, `"midpoint"`, or `"linear"`.
 #' @keywords DataFrame
 #' @return DataFrame
 #' @examples
@@ -1481,7 +1482,7 @@ DataFrame_rename = function(...) {
 #' df
 #'
 #' df$describe()
-DataFrame_describe = function(percentiles = c(.25, .75)) {
+DataFrame_describe = function(percentiles = c(.25, .75), interpolation = "nearest") {
 
   uw = \(res) unwrap(res, "in $describe():")
 
@@ -1518,7 +1519,7 @@ DataFrame_describe = function(percentiles = c(.25, .75)) {
     for (p in sort(percentiles)) {
       for (c in self$columns) {
         expr = if (c %in% stat_cols) {
-          pl$col(c)$quantile(p)
+          pl$col(c)$quantile(p, interpolation = interpolation)
         } else {
           pl$lit(NA)
         }
