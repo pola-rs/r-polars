@@ -4,6 +4,10 @@
 
 ### Breaking changes
 
+-   `<Expr>$where()` is removed. Use `<Expr>$filter()` instead (#718).
+-   Deprecated functions from 0.12.x are removed (#714).
+    -   `<Expr>$apply()` and `<Expr>$map()`, use `$map_elements()` and `$map_batches()` instead.
+    -   `pl$polars_info()`, use `polars_info()` instead.
 -   The environment variables used when building the library have been changed. (#693)
     This only affects selecting the feature flag and selecting profiles during source installation.
     -   `RPOLARS_PROFILE` is renamed to `LIBR_POLARS_PROFILE`
@@ -11,6 +15,8 @@
         If want to select the `full_features`, we need to set `LIBR_POLARS_FEATURES="full_features"`.
     -   `RPOLARS_RUST_SOURCE`, which was used for development, has been removed.
         If you want to use library binaries located elsewhere, use `LIBR_POLARS_PATH` instead.
+-   Remove the `eager` argument of `<SQLContext>$execute()`.
+    Use the `$collect()` method after `$execute()` or `as_polars_df` to get the result as a `DataFrame`. (#719)
 
 ### What's changed
 
@@ -22,7 +28,7 @@
         before loading the package.
 -   New method `$rolling()` for `DataFrame` and `LazyFrame`. When this is
     applied, it creates an object of class `RPolarsRollingGroupBy` (#682, #694).
--   New method `$group_by_dynamic()` for `DataFrame` and `LazyFrame`. When this 
+-   New method `$group_by_dynamic()` for `DataFrame` and `LazyFrame`. When this
     is applied, it creates an object of class `RPolarsDynamicGroupBy` (#691).
 -   New method `$sink_ndjson()` for LazyFrame (#681).
 -   New function `pl$duration()` to create a duration by components (week, day,
@@ -32,6 +38,22 @@
     variable (#708).
 -   New methods for the `list` subnamespace: `$set_union()`, `$set_intersection()`,
     `$set_difference()`, `$set_symmetric_difference()` (#712).
+-   New option `int64_conversion` to specify how Int64 columns (that don't have
+    equivalent in base R) should be converted. This option can either be set 
+    globally with `pl$set_options()` or on a case-by-case basis, e.g with 
+    `$to_data_frame(int64_conversion =)` (#706).
+-   Several changes in `$join()` for `DataFrame` and `LazyFrame` (#716):
+    -   `<LazyFrame>$join()` now errors if `other` is not a `LazyFrame` and
+        `<DataFrame>$join()` errors if `other` is not a `DataFrame`.
+    -   Some arguments have been reordered (e.g `how` now comes before `left_on`).
+        This can lead to bugs if the user didn't use argument names.
+    -   Argument `how` now accepts `"outer_coalesce"` to coalesce the join keys
+        automatically after joining.
+    -   New argument `validate` to perform some checks on join keys (e.g ensure 
+        that there is a one-to-one matching between join keys).
+    -   New argument `join_nulls` to consider `null` values as a valid key.
+-   `<DataFrame>$describe()` now works with all datatypes. It also gains an 
+    `interpolation` argument that is used for quantiles computation (#717).
 
 ## polars 0.12.2
 

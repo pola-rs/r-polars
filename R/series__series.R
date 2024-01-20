@@ -240,8 +240,9 @@ Series_shape = method_as_property(function() {
 
 #' Get r vector/list
 #' @description return R list (if polars Series is list)  or vector (any other polars Series type)
-#' @name Series_to_r
-#' @rdname Series_to_r
+#'
+#' @inheritParams pl_set_options
+#'
 #' @return R list or vector
 #' @keywords Series
 #' @details
@@ -274,20 +275,21 @@ Series_shape = method_as_property(function() {
 #' series_list$to_r() # as list because Series DataType is list
 #' series_list$to_r_list() # implicit call as.list(), same as to_r() as already list
 #' series_list$to_vector() # implicit call unlist(), append into a vector
-Series_to_r = \() {
-  unwrap(.pr$Series$to_r(self), "in $to_r():")
+Series_to_r = \(int64_conversion = pl$options$int64_conversion) {
+  unwrap(.pr$Series$to_r(self, int64_conversion), "in $to_r():")
 }
 # TODO replace list example with Series only syntax
 
 #' @rdname Series_to_r
 #' @name Series_to_vector
 #' @description return R vector (implicit unlist)
+#' @inheritParams pl_set_options
 #' @return R vector
 #' @keywords Series
 #' series_vec = pl$Series(letters[1:3])
 #' series_vec$to_vector()
-Series_to_vector = \() {
-  unlist(unwrap(.pr$Series$to_r(self)), "in $to_vector():")
+Series_to_vector = \(int64_conversion = pl$options$int64_conversion) {
+  unlist(unwrap(.pr$Series$to_r(self, int64_conversion)), "in $to_vector():")
 }
 
 #' Alias to Series_to_vector (backward compatibility)
@@ -298,11 +300,12 @@ Series_to_r_vector = Series_to_vector
 #' @rdname Series_to_r
 #' @name Series_to_r_list
 #' @description return R list (implicit as.list)
+#' @inheritParams pl_set_options
 #' @return R list
 #' @keywords Series
 #' @examples #
-Series_to_r_list = \() {
-  as.list(unwrap(.pr$Series$to_r(self)), "in $to_r_list():")
+Series_to_r_list = \(int64_conversion = pl$options$int64_conversion) {
+  as.list(unwrap(.pr$Series$to_r(self, int64_conversion)), "in $to_r_list():")
 }
 
 
@@ -363,14 +366,6 @@ Series_map_elements = function(
   ) |> unwrap("in $map_elements():")
 }
 
-Series_apply = function(f, datatype = NULL, strict_return_type = TRUE,
-                        allow_fail_eval = FALSE) {
-  warning("$apply() is deprecated and will be removed in 0.13.0. Use $map_elements() instead.")
-  Series_map_elements(f,
-    datatype = datatype, strict_return_type = strict_return_type,
-    allow_fail_eval = allow_fail_eval
-  )
-}
 
 #' Series_len
 #' @description Length of this Series.

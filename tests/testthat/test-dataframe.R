@@ -278,23 +278,6 @@ test_that("map_batches unity", {
   expect_identical(x, iris[, 5, drop = FALSE])
 })
 
-test_that("$map() deprecated", {
-  expect_warning(
-    pl$DataFrame(iris)$select(
-      pl$col("Sepal.Length")$map(\(s) s)
-    ),
-    "map_batches"
-  )
-})
-
-test_that("$apply() deprecated", {
-  expect_warning(
-    pl$DataFrame(iris)$select(
-      pl$col("Sepal.Length")$apply(\(s) s)
-    ),
-    "map_elements"
-  )
-})
 
 test_that("map_batches type", {
   int_iris = iris
@@ -544,8 +527,6 @@ test_that("simple translations", {
 
 
 test_that("null_count 64bit", {
-  skip_if_not_installed("bit64")
-  suppressPackageStartupMessages(library("bit64", quietly = TRUE))
   tmp = mtcars
   tmp[1:2, 1:2] = NA
   tmp[5, 3] = NA
@@ -1023,13 +1004,16 @@ test_that("rename", {
 
 
 test_that("describe", {
+  df =  pl$DataFrame(
+    string = c(letters[1:2], NA),
+    date = c(as.Date("2024-01-20"), as.Date("2024-01-21"), NA),
+    cat = factor(c(letters[1:2], NA)),
+    bool = c(TRUE, FALSE, NA)
+  )
+  expect_snapshot(df$describe())
   expect_snapshot(pl$DataFrame(mtcars)$describe())
-
-  df = pl$DataFrame(mtcars)$describe()
+  expect_snapshot(pl$DataFrame(mtcars)$describe(interpolation = "linear"))
   expect_error(pl$DataFrame(mtcars)$describe("not a percentile"))
-  err_ctx = unwrap_err(result(pl$DataFrame(mtcars)$describe("not a percentile")))$contexts()
-  expect_identical(names(err_ctx), c("BadArgument", "TypeMismatch", "BadValue"))
-  expect_identical(unlist(err_ctx[1:2], use.names = FALSE), c("percentiles", "numeric"))
 
   # perc = NULL  is the same as numeric()
   expect_identical(

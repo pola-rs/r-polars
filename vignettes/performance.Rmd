@@ -203,7 +203,7 @@ bench::mark(
     pl$col("country")$str$contains("na")
   ),
   grepl = df_test$with_columns(
-    pl$col("country")$map(\(s) { # map with a R function
+    pl$col("country")$map_batches(\(s) { # map with a R function
       grepl("na", s)
     })
   ),
