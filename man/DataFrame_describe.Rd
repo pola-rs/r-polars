@@ -19,6 +19,18 @@ values, the mean, standard deviation, min, max, median and the percentiles
 specified in the argument \code{percentiles}.
 }
 \examples{
-pl$DataFrame(mtcars)$describe()
+pl$DataFrame(iris)$describe()
+
+# string, date, boolean columns are also supported:
+df = pl$DataFrame(
+  int = 1:3,
+  string = c(letters[1:2], NA),
+  date = c(as.Date("2024-01-20"), as.Date("2024-01-21"), NA),
+  cat = factor(c(letters[1:2], NA)),
+  bool = c(TRUE, FALSE, NA)
+)
+df
+
+df$describe()
 }
 \keyword{DataFrame}
