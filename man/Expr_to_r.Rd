@@ -4,7 +4,12 @@
 \alias{Expr_to_r}
 \title{Convert an Expr to R output}
 \usage{
-Expr_to_r(df = NULL, i = 0)
+Expr_to_r(
+  df = NULL,
+  i = 0,
+  ...,
+  int64_conversion = pl$options$int64_conversion
+)
 }
 \arguments{
 \item{df}{If \code{NULL} (default), it evaluates the Expr in an empty DataFrame.
@@ -12,6 +17,17 @@ Otherwise, provide a DataFrame that the Expr should be evaluated in.}
 
 \item{i}{Numeric column to extract. Default is zero (which gives the first
 column).}
+
+\item{...}{Ignored.}
+
+\item{int64_conversion}{How should Int64 values be handled when converting a
+polars object to R?
+\itemize{
+\item \code{"double"} (default) converts the integer values to double.
+\item \code{"bit64"} uses \code{bit64::as.integer64()} to do the conversion (requires
+the package \code{bit64} to be attached).
+\item \code{"string"} converts Int64 values to character.
+}}
 }
 \value{
 R object

@@ -4,8 +4,9 @@
 
 ### Breaking changes
 
--   Remove the `eager` argument of `<SQLContext>$execute()`.
-    Use the `$collect()` method after `$execute()` or `as_polars_df` to get the result as a `DataFrame`. (#719)
+-   Deprecated functions from 0.12.x are removed (#714).
+    -   `<Expr>$apply()` and `<Expr>$map()`, use `$map_elements()` and `$map_batches()` instead.
+    -   `pl$polars_info()`, use `polars_info()` instead.
 -   The environment variables used when building the library have been changed. (#693)
     This only affects selecting the feature flag and selecting profiles during source installation.
     -   `RPOLARS_PROFILE` is renamed to `LIBR_POLARS_PROFILE`
@@ -13,6 +14,8 @@
         If want to select the `full_features`, we need to set `LIBR_POLARS_FEATURES="full_features"`.
     -   `RPOLARS_RUST_SOURCE`, which was used for development, has been removed.
         If you want to use library binaries located elsewhere, use `LIBR_POLARS_PATH` instead.
+-   Remove the `eager` argument of `<SQLContext>$execute()`.
+    Use the `$collect()` method after `$execute()` or `as_polars_df` to get the result as a `DataFrame`. (#719)
 
 ### What's changed
 
@@ -28,6 +31,10 @@
     variable (#708).
 -   New methods for the `list` subnamespace: `$set_union()`, `$set_intersection()`,
     `$set_difference()`, `$set_symmetric_difference()` (#712).
+-   New option `int64_conversion` to specify how Int64 columns (that don't have
+    equivalent in base R) should be converted. This option can either be set 
+    globally with `pl$set_options()` or on a case-by-case basis, e.g with 
+    `$to_data_frame(int64_conversion =)` (#706).
 
 ## polars 0.12.2
 

@@ -647,21 +647,23 @@ construct_ProtoExprArray = function(...) {
 #' up some slow R functions as they can run in parallel R sessions. The
 #' communication speed between processes is quite slower than between threads.
 #' This will likely only give a speed-up in a "low IO - high CPU" use case.
-#' If there are multiple `$map(in_background = TRUE)` calls in the query, they
-#' will be run in parallel.
+#' If there are multiple [`$map_batches(in_background = TRUE)`][Expr_map_batches]
+#' calls in the query, they will be run in parallel.
 #'
 #' @return Expr
 #' @details
 #' It is sometimes necessary to apply a specific R function on one or several
-#' columns. However, note that using R code in `$map()` is slower than native
-#' polars. The user function must take one polars `Series` as input and the return
+#' columns. However, note that using R code in [`$map_batches()`][Expr_map_batches]
+#' is slower than native polars.
+#' The user function must take one polars `Series` as input and the return
 #' should be a `Series` or any Robj convertible into a `Series` (e.g. vectors).
 #' Map fully supports `browser()`.
 #'
 #' If `in_background = FALSE` the function can access any global variable of the
-#' R session. However, note that several calls to `$map()` will sequentially
-#' share the same main R session, so the global environment might change between
-#' the start of the query and the moment a `map()` call is evaluated. Any native
+#' R session. However, note that several calls to [`$map_batches()`][Expr_map_batches]
+#' will sequentially share the same main R session,
+#' so the global environment might change between the start of the query and the moment
+#' a [`$map_batches()`][Expr_map_batches] call is evaluated. Any native
 #' polars computations can still be executed meanwhile. If `in_background = TRUE`,
 #' the map will run in one or more other R sessions and will not have access
 #' to global variables. Use `pl$set_options(rpool_cap = 4)` and `pl$options$rpool_cap`
@@ -714,18 +716,6 @@ Expr_map_batches = function(f, output_type = NULL, agg_list = FALSE, in_backgrou
 
   out |>
     unwrap("in $map_batches():")
-}
-
-Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FALSE) {
-  warning("$map() is deprecated and will be removed in 0.13.0. Use $map_batches() instead.", call. = FALSE)
-  if (isTRUE(in_background)) {
-    out = .pr$Expr$map_batches_in_background(self, f, output_type, agg_list)
-  } else {
-    out = .pr$Expr$map_batches(self, f, output_type, agg_list)
-  }
-
-  out |>
-    unwrap("in $map():")
 }
 
 #' Map a custom/user-defined function (UDF) to each element of a column
@@ -884,23 +874,6 @@ Expr_map_elements = function(f, return_type = NULL, strict_return_type = TRUE, a
   # return expression from the functions above, activate agg_list (grouped mapping)
   .pr$Expr$map_batches(self, lambda = wrap_f, output_type = return_type, agg_list = TRUE) |>
     unwrap("in $map_elements():")
-}
-
-Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE,
-                      allow_fail_eval = FALSE, in_background = FALSE) {
-  warning("$apply() is deprecated and will be removed in 0.13.0. Use $map_elements() instead.", call. = FALSE)
-  if (in_background) {
-    return(.pr$Expr$map_elements_in_background(self, f, return_type))
-  }
-
-  # use series apply
-  wrap_f = function(s) {
-    s$map_elements(f, return_type, strict_return_type, allow_fail_eval)
-  }
-
-  # return expression from the functions above, activate agg_list (grouped mapping)
-  .pr$Expr$map_batches(self, lambda = wrap_f, output_type = return_type, agg_list = TRUE) |>
-    unwrap("in $apply():")
 }
 
 #' Create a literal value
@@ -3177,17 +3150,18 @@ Expr_rep_extend = function(expr, n, rechunk = TRUE, upcast = TRUE) {
 #' Otherwise, provide a DataFrame that the Expr should be evaluated in.
 #' @param i Numeric column to extract. Default is zero (which gives the first
 #' column).
+#' @inheritParams pl_set_options
 #' @return R object
 #' @examples
 #' pl$lit(1:3)$to_r()
-Expr_to_r = function(df = NULL, i = 0) {
+Expr_to_r = function(df = NULL, i = 0, ..., int64_conversion = pl$options$int64_conversion ) {
   if (is.null(df)) {
-    pl$select(self)$to_series(i)$to_r()
+    pl$select(self)$to_series(i)$to_r(int64_conversion )
   } else {
     if (!inherits(df, c("RPolarsDataFrame"))) {
       stop("Expr_to_r: input is not NULL or a DataFrame/Lazyframe")
     }
-    df$select(self)$to_series(i)$to_r()
+    df$select(self)$to_series(i)$to_r(int64_conversion )
   }
 }
 
