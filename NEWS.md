@@ -14,6 +14,8 @@
         If want to select the `full_features`, we need to set `LIBR_POLARS_FEATURES="full_features"`.
     -   `RPOLARS_RUST_SOURCE`, which was used for development, has been removed.
         If you want to use library binaries located elsewhere, use `LIBR_POLARS_PATH` instead.
+-   Remove the `eager` argument of `<SQLContext>$execute()`.
+    Use the `$collect()` method after `$execute()` or `as_polars_df` to get the result as a `DataFrame`. (#719)
 
 ### What's changed
 
