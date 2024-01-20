@@ -116,6 +116,14 @@ move_env_elements(RPolarsExpr, pl, c("lit"), remove = FALSE)
 
 
 .onLoad = function(libname, pkgname) {
+  # Auto limit the max number of threads used by polars
+  if (!cargo_rpolars_feature_info()[["disable_auto_limit_max_threads"]] && Sys.getenv("POLARS_MAX_THREADS") == "") {
+    Sys.setenv(POLARS_MAX_THREADS = 2)
+    # Call polars to lock the pool size
+    invisible(threadpool_size())
+    Sys.unsetenv("POLARS_MAX_THREADS")
+  }
+
   # instanciate one of each DataType (it's just an enum)
   all_types = c(.pr$DataType$get_all_simple_type_names(), "Utf8") # Allow "Utf8" as an alias of "String"
   names(all_types) = all_types
