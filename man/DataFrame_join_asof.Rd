@@ -76,9 +76,11 @@ There may be a circumstance where R types are not sufficient to express a
 numeric tolerance. In that case, you can use the expression syntax like
 \code{tolerance = pl$lit(42)$cast(pl$Uint64)}}
 
-\item{allow_parallel}{Boolean.}
+\item{allow_parallel}{Allow the physical plan to optionally evaluate the
+computation of both DataFrames up to the join in parallel.}
 
-\item{force_parallel}{Boolean.}
+\item{force_parallel}{Force the physical plan to evaluate the computation of
+both DataFrames up to the join in parallel.}
 }
 \value{
 New joined DataFrame
