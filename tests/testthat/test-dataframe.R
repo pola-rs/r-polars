@@ -1004,13 +1004,16 @@ test_that("rename", {
 
 
 test_that("describe", {
+  df =  pl$DataFrame(
+    string = c(letters[1:2], NA),
+    date = c(as.Date("2024-01-20"), as.Date("2024-01-21"), NA),
+    cat = factor(c(letters[1:2], NA)),
+    bool = c(TRUE, FALSE, NA)
+  )
+  expect_snapshot(df$describe())
   expect_snapshot(pl$DataFrame(mtcars)$describe())
-
-  df = pl$DataFrame(mtcars)$describe()
+  expect_snapshot(pl$DataFrame(mtcars)$describe(interpolation = "linear"))
   expect_error(pl$DataFrame(mtcars)$describe("not a percentile"))
-  err_ctx = unwrap_err(result(pl$DataFrame(mtcars)$describe("not a percentile")))$contexts()
-  expect_identical(names(err_ctx), c("BadArgument", "TypeMismatch", "BadValue"))
-  expect_identical(unlist(err_ctx[1:2], use.names = FALSE), c("percentiles", "numeric"))
 
   # perc = NULL  is the same as numeric()
   expect_identical(
