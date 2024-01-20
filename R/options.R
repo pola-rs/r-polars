@@ -1,46 +1,10 @@
-# R runtime options
-## all polars sessions options saved to here
-
-polars_optenv = new.env(parent = emptyenv())
-polars_optreq = list()
-
-# WRITE ALL DEFINED OPTIONS AND THEIR REQUIREMENTS
-# Requirements will be used to validate inputs passed in pl$set_options()
-
-polars_optenv$strictly_immutable = TRUE
-polars_optreq$strictly_immutable = list(must_be_bool = is_bool)
-
-polars_optenv$no_messages = FALSE
-polars_optreq$no_messages = list(must_be_bool = is_bool)
-
-polars_optenv$do_not_repeat_call = FALSE
-polars_optreq$do_not_repeat_call = list(must_be_bool = is_bool)
-
-polars_optenv$maintain_order = FALSE
-polars_optreq$maintain_order = list(must_be_bool = is_bool)
-
-polars_optenv$debug_polars = FALSE
-polars_optreq$debug_polars = list(must_be_bool = is_bool)
-
-# polars_optenv$rpool_cap # active binding for getting value, not for
-polars_optreq$rpool_cap = list() # rust-side options already check args
-
-polars_optenv$int64_conversion = "double"
-polars_optreq$int64_conversion = list(
-  acceptable_choices = function(x) !is.null(x) && x %in% c("bit64", "double", "string"),
-  bit64_is_attached = function(x) if (x == "bit64") x %in% .packages() else TRUE
-)
-
-## END OF DEFINED OPTIONS
-
-
 #' Set polars options
 #'
 #' Get and set polars options. See sections "Value" and "Examples" below for
 #' more details.
 #'
-#' `pl$options$rpool_active` indicates the number of R sessions already
-#' spawned in pool. `pl$options$rpool_cap` indicates the maximum number of new R
+#' `polars_options()$rpool_active` indicates the number of R sessions already
+#' spawned in pool. `polars_options()$rpool_cap` indicates the maximum number of new R
 #' sessions that can be spawned. Anytime a polars thread worker needs a background
 #' R session specifically to run R code embedded in a query via
 #' [`$map_batches(..., in_background = TRUE)`][Expr_map_batches] or
@@ -79,7 +43,7 @@ polars_optreq$int64_conversion = list(
 #' @rdname pl_options
 #'
 #' @return
-#' `pl$options` returns a named list with the value (`TRUE` or `FALSE`) of
+#' `polars_options()` returns a named list with the value (`TRUE` or `FALSE`) of
 #' each option.
 #'
 #' `pl$set_options()` silently modifies the options values.
@@ -88,7 +52,7 @@ polars_optreq$int64_conversion = list(
 #'
 #' @examples
 #' pl$set_options(maintain_order = TRUE, strictly_immutable = FALSE)
-#' pl$options
+#' polars_options()
 #'
 #' # these options only accept booleans (TRUE or FALSE)
 #' tryCatch(
@@ -126,46 +90,26 @@ pl_set_options = function(
       }) |>
       unwrap("in pl$set_options")
 
-    # each argument has its own input requirements
-    validation = c()
-    for (fun in seq_along(polars_optreq[[args_modified[i]]])) {
-      validation[fun] = do.call(
-        polars_optreq[[args_modified[i]]][[fun]],
-        list(value)
-      )
-    }
-    names(validation) = names(polars_optreq[[args_modified[i]]])
-    if (!all(validation)) {
-      failures = names(which(!validation))
-      failures = translate_failures(failures)
-      err = .pr$Err$new()
-      {
-        for (fail in failures) err = err$plain(fail)
-      }
-      err$
-        bad_robj(value)$
-        bad_arg(args_modified[i]) |>
-        Err() |>
-        unwrap("in pl$set_options")
-    }
-
-    assign(args_modified[i], value, envir = polars_optenv) |>
-      result() |>
-      map_err(\(err) err$bad_arg(args_modified[i])) |>
-      unwrap("in pl$set_options") |>
-      invisible()
+    op = list(value)
+    names(op) = paste0("polars.", args_modified[i])
+    options(op)
   }
 }
 
 #' @rdname pl_options
 pl_reset_options = function() {
-  assign("strictly_immutable", TRUE, envir = polars_optenv)
-  assign("maintain_order", FALSE, envir = polars_optenv)
-  assign("do_not_repeat_call", FALSE, envir = polars_optenv)
-  assign("debug_polars", FALSE, envir = polars_optenv)
-  assign("no_messages", FALSE, envir = polars_optenv)
-  assign("rpool_cap", 4, envir = polars_optenv)
-  assign("int64_conversion ", "double", envir = polars_optenv)
+  options(
+    list(
+      polars.debug_polars = FALSE,
+      polars.do_not_repeat_call = FALSE,
+      polars.int64_conversion = "double",
+      polars.maintain_order = FALSE,
+      polars.no_messages = FALSE,
+      polars.rpool_active = 0,
+      polars.rpool_cap = 4,
+      polars.strictly_immutable = TRUE
+    )
+  )
 }
 
 
@@ -297,7 +241,7 @@ pl_with_string_cache = function(expr) {
 
 
 #' Get/set global R session pool capacity (DEPRECATED)
-#' @description Deprecated. Use pl$options to get, and pl$set_options() to set.
+#' @description Deprecated. Use polars_options() to get, and pl$set_options() to set.
 #' @name global_rpool_cap
 #' @param n Integer, the capacity limit R sessions to process R code.
 #'
@@ -312,8 +256,8 @@ pl_with_string_cache = function(expr) {
 #' other workers can still continue any native polars parts as much as possible.
 #'
 #' @return
-#' `pl$options$rpool_cap` returns the capacity ("limit") of co-running external R sessions /
-#' processes. `pl$options$rpool_active` is the number of R sessions are already spawned
+#' `polars_options()$rpool_cap` returns the capacity ("limit") of co-running external R sessions /
+#' processes. `polars_options()$rpool_active` is the number of R sessions are already spawned
 #' in the pool. `rpool_cap` is the limit of new R sessions to spawn. Anytime a polars
 #' thread worker needs a background R session specifically to run R code embedded
 #' in a query via [`$map_batches(..., in_background = TRUE)`][Expr_map_batches]
@@ -325,14 +269,14 @@ pl_with_string_cache = function(expr) {
 #'
 #' @keywords options
 #' @examples
-#' default = pl$options$rpool_cap |> print()
+#' default = polars_options()$rpool_cap |> print()
 #' pl$set_options(rpool_cap = 8)
-#' pl$options$rpool_cap
+#' polars_options()$rpool_cap
 #' pl$set_options(rpool_cap = default)
-#' pl$options$rpool_cap
+#' polars_options()$rpool_cap
 pl_get_global_rpool_cap = function() {
   warning(
-    "in pl$get_global_rpool_cap(): Deprecated. Use pl$options$rpool_cap instead.",
+    "in pl$get_global_rpool_cap(): Deprecated. Use polars_options()$rpool_cap instead.",
     .Call = NULL
   )
   get_global_rpool_cap() |> unwrap()
@@ -348,4 +292,99 @@ pl_set_global_rpool_cap = function(n) {
   set_global_rpool_cap(n) |>
     unwrap() |>
     invisible()
+}
+
+
+
+#' @export
+#' @examples
+#' polars_options()
+polars_options = function() {
+  out = list(
+    debug_polars = getOption("polars.debug_polars", FALSE),
+    do_not_repeat_call = getOption("polars.do_not_repeat_call"),
+    int64_conversion = getOption("polars.int64_conversion"),
+    maintain_order = getOption("polars.maintain_order"),
+    no_messages = getOption("polars.no_messages"),
+    rpool_active = getOption("polars.rpool_active"),
+    rpool_cap = getOption("polars.rpool_cap"),
+    strictly_immutable = getOption("polars.strictly_immutable")
+  )
+  validate_polars_options(out)
+  structure(out, class = "polars_options")
+}
+
+#' @noRd
+#' @export
+print.polars_options = function(x, ...) {
+  # Copied from the arrow package
+  # https://github.com/apache/arrow/blob/6f3bd2524c2abe3a4a278fc1c62fc5c49b56cab3/r/R/arrow-info.R#L149-L157
+  print_key_values = function(title, vals, ...) {
+    df = data.frame(vals, ...)
+    names(df) = ""
+
+    cat(title, ":\n========", sep = "")
+    print(df)
+    cat("\nSee `?polars_options` for the definition of all options.")
+  }
+
+  print_key_values("Options", unlist(x))
+}
+
+validate_polars_options = function(options) {
+
+  results = list()
+
+  ### Check functions
+  is_bool2 = function(x) {
+    res = is_bool(x)
+    if (!res) {
+      "input must be TRUE or FALSE."
+    } else {
+      TRUE
+    }
+  }
+  is_acceptable_choice = function(x) {
+    res = !is.null(x) && x %in% c("bit64", "double", "string")
+    if (!res) {
+      "input must be one of \"float\", \"string\", \"bit64\"."
+    } else {
+      TRUE
+    }
+  }
+  bit64_is_attached = function(x) {
+    res = if (x == "bit64") x %in% .packages() else TRUE
+    if (!res) {
+      "package `bit64` must be attached to use `int64_conversion = \"bit64\"`."
+    } else {
+      TRUE
+    }
+  }
+
+  ### Perform checks
+  for (i in c("strictly_immutable", "no_messages", "do_not_repeat_call",
+              "maintain_order", "debug_polars")) {
+    results[[i]] = do.call(is_bool2, list(options[[i]]))
+  }
+  results[["int64_conversion"]] = c(
+    do.call(is_acceptable_choice, list(options[["int64_conversion"]])),
+    do.call(bit64_is_attached, list(options[["int64_conversion"]]))
+  )
+
+  ### Collect error messages
+  errors = lapply(results, function(x) {
+    if (is.character(x)) {
+      setdiff(x, c("TRUE", "FALSE"))
+    } else {
+      return()
+    }
+  })
+  errors = Filter(Negate(is.null), errors)
+
+  ### Print errors (if any)
+  if (length(errors) > 0) {
+    msg = "Some polars options have an unexpected value:\n"
+    bullets = paste0("- ", names(errors), ": ", errors, collapse = "\n")
+    stop(paste0(msg, bullets, "\n\nMore info at `?polars_options`."))
+  }
 }

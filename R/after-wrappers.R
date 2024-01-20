@@ -58,7 +58,7 @@ extendr_method_to_pure_functions = function(env, class_name = NULL) {
 #' @export
 "$.private_polars_env" = function(self, name) {
   # print called private class in debug mode
-  if (polars_optenv$debug_polars) {
+  if (getOption("polars.debug_polars", FALSE)) {
     cat(
       "[", format(subtimer_ms("TIME? "), digits = 4), "ms]\n   .pr$",
       substr(class(self)[2], 4, 99), "$", name, "() -> ",
@@ -259,7 +259,7 @@ pl_show_all_public_methods = function(class_names = NULL) {
 #' @noRd
 "$.pl_polars_env" = function(self, name) {
   # print called private class in debug mode
-  if (polars_optenv$debug_polars) {
+  if (getOption("polars.debug_polars", FALSE)) {
     cat(
       "[", format(subtimer_ms("TIME? "), digits = 4), "ms]\npl$", name, "() -> ",
       sep = ""

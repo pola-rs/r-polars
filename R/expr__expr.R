@@ -97,7 +97,7 @@ wrap_e = function(e, str_to_lit = TRUE) {
 #' @examples pl$col("foo") < 5
 wrap_e_result = function(e, str_to_lit = TRUE, argname = NULL) {
   # disable call info
-  old_option = pl$options$do_not_repeat_call
+  old_option = polars_options()$do_not_repeat_call
   pl$set_options(do_not_repeat_call = TRUE)
 
   # wrap_e and catch nay error in a result
@@ -666,7 +666,7 @@ construct_ProtoExprArray = function(...) {
 #' a [`$map_batches()`][Expr_map_batches] call is evaluated. Any native
 #' polars computations can still be executed meanwhile. If `in_background = TRUE`,
 #' the map will run in one or more other R sessions and will not have access
-#' to global variables. Use `pl$set_options(rpool_cap = 4)` and `pl$options$rpool_cap`
+#' to global variables. Use `pl$set_options(rpool_cap = 4)` and `polars_options()$rpool_cap`
 #' to see and view number of parallel R sessions.
 #'
 #' @examples
@@ -691,7 +691,7 @@ construct_ProtoExprArray = function(...) {
 #' # map in parallel 1: Overhead to start up extra R processes / sessions
 #' pl$set_options(rpool_cap = 0) # drop any previous processes, just to show start-up overhead
 #' pl$set_options(rpool_cap = 4) # set back to 4, the default
-#' pl$options$rpool_cap
+#' polars_options()$rpool_cap
 #' pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
 #'   pl$all()$map_batches(\(s) {
 #'     Sys.sleep(.1)
@@ -700,7 +700,7 @@ construct_ProtoExprArray = function(...) {
 #' )$collect() |> system.time()
 #'
 #' # map in parallel 2: Reuse R processes in "polars global_rpool".
-#' pl$options$rpool_cap
+#' polars_options()$rpool_cap
 #' pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
 #'   pl$all()$map_batches(\(s) {
 #'     Sys.sleep(.1)
@@ -840,7 +840,7 @@ Expr_map_batches = function(f, output_type = NULL, agg_list = FALSE, in_backgrou
 #' pl$set_options(rpool_cap = 0)
 #' # set back to 4, the default
 #' pl$set_options(rpool_cap = 4)
-#' pl$options$rpool_cap
+#' polars_options()$rpool_cap
 #'
 #' system.time({
 #'   pl$LazyFrame(iris)$group_by("Species")$agg(
@@ -852,7 +852,7 @@ Expr_map_batches = function(f, output_type = NULL, agg_list = FALSE, in_backgrou
 #' })
 #'
 #' # second run in parallel: this reuses R processes in "polars global_rpool".
-#' pl$options$rpool_cap
+#' polars_options()$rpool_cap
 #' system.time({
 #'   pl$LazyFrame(iris)$group_by("Species")$agg(
 #'     pl$all()$map_elements(\(s) {
@@ -3135,7 +3135,7 @@ Expr_rep_extend = function(expr, n, rechunk = TRUE, upcast = TRUE) {
 #' @return R object
 #' @examples
 #' pl$lit(1:3)$to_r()
-Expr_to_r = function(df = NULL, i = 0, ..., int64_conversion = pl$options$int64_conversion) {
+Expr_to_r = function(df = NULL, i = 0, ..., int64_conversion = polars_options()$int64_conversion) {
   if (is.null(df)) {
     pl$select(self)$to_series(i)$to_r(int64_conversion)
   } else {
