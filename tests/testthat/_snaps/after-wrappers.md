@@ -258,7 +258,7 @@
       [169] "to_physical"       "to_r"              "to_series"        
       [172] "to_struct"         "top_k"             "unique"           
       [175] "unique_counts"     "upper_bound"       "value_counts"     
-      [178] "var"               "where"             "xor"              
+      [178] "var"               "xor"              
 
 ---
 
