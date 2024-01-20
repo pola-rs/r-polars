@@ -2,11 +2,8 @@
 % Please edit documentation in R/expr__list.R
 \name{ExprList_arg_max}
 \alias{ExprList_arg_max}
-\alias{Expr_list_arg_max}
-\title{Arg max sublists}
-\format{
-function
-}
+\alias{list_arg_max}
+\title{Get the index of the maximal value in list}
 \usage{
 ExprList_arg_max()
 }
@@ -14,10 +11,11 @@ ExprList_arg_max()
 Expr
 }
 \description{
-Retrieve the index of the maximum value in every sublist.
+Get the index of the maximal value in list
 }
 \examples{
 df = pl$DataFrame(list(s = list(1:2, 2:1)))
-df$select(pl$col("s")$list$arg_max())
+df$with_columns(
+  arg_max = pl$col("s")$list$arg_max()
+)
 }
-\keyword{ExprList}

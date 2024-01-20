@@ -630,7 +630,7 @@ RPolarsExpr$rle <- function() .Call(wrap__RPolarsExpr__rle, self)
 
 RPolarsExpr$rle_id <- function() .Call(wrap__RPolarsExpr__rle_id, self)
 
-RPolarsExpr$list_lengths <- function() .Call(wrap__RPolarsExpr__list_lengths, self)
+RPolarsExpr$list_len <- function() .Call(wrap__RPolarsExpr__list_len, self)
 
 RPolarsExpr$list_contains <- function(other) .Call(wrap__RPolarsExpr__list_contains, self, other)
 
