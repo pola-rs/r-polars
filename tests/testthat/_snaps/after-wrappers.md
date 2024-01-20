@@ -257,8 +257,7 @@
       [166] "tanh"              "to_physical"       "to_r"             
       [169] "to_series"         "to_struct"         "top_k"            
       [172] "unique"            "unique_counts"     "upper_bound"      
-      [175] "value_counts"      "var"               "where"            
-      [178] "xor"              
+      [175] "value_counts"      "var"               "xor"              
 
 ---
 
