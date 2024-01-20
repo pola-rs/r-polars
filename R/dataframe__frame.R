@@ -1488,12 +1488,14 @@ DataFrame_describe = function(percentiles = c(.25, .75)) {
       unlist() |>
       names()
 
-
     # separator used temporarily and used to split the column names later on
     # It's voluntarily weird so that it doesn't match actual column names
     custom_sep = "??-??"
 
     # Determine metrics and optional/additional percentiles
+    if (!0.5 %in% percentiles) {
+      percentiles = c(percentiles, 0.5)
+    }
     metrics = c("count", "null_count", "mean", "std", "min")
     percentile_exprs = list()
     for (p in sort(percentiles)) {
@@ -1528,8 +1530,18 @@ DataFrame_describe = function(percentiles = c(.25, .75)) {
       expr$alias(paste0("std", custom_sep, x))
     })
 
+    # accept all types but categorical
+    # TODO: add "Enum" to the list of non-accepted types when implemented
+    minmax_cols = lapply(self$schema, \(x) {
+      if (x != pl$Categorical) {
+        x
+      }
+    }) |>
+      unlist() |>
+      names()
+
     min_exprs = lapply(self$columns, function(x) {
-      expr = if (x %in% stat_cols) {
+      expr = if (x %in% minmax_cols) {
         pl$col(x)$min()
       } else {
         pl$lit(NA)
@@ -1538,7 +1550,7 @@ DataFrame_describe = function(percentiles = c(.25, .75)) {
     })
 
     max_exprs = lapply(self$columns, function(x) {
-      expr = if (x %in% stat_cols) {
+      expr = if (x %in% minmax_cols) {
         pl$col(x)$max()
       } else {
         pl$lit(NA)
