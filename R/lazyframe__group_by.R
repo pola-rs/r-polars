@@ -48,14 +48,6 @@ LazyGroupBy_agg = function(...) {
     unwrap("in $agg():")
 }
 
-#' @title LazyGroupBy_apply
-#' @description
-#' one day this will apply
-#' @param f  R function to apply
-#' @return A new `LazyFrame` object.
-LazyGroupBy_apply = function(f) {
-  stop("this function is not yet implemented")
-}
 
 #' @title LazyGroupBy_head
 #' @description

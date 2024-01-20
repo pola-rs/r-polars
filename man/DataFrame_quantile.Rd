@@ -9,8 +9,8 @@ DataFrame_quantile(quantile, interpolation = "nearest")
 \arguments{
 \item{quantile}{Numeric of length 1 between 0 and 1.}
 
-\item{interpolation}{Interpolation method: "nearest", "higher", "lower",
-"midpoint", or "linear".}
+\item{interpolation}{One of \code{"nearest"}, \code{"higher"}, \code{"lower"},
+\code{"midpoint"}, or \code{"linear"}.}
 }
 \value{
 DataFrame

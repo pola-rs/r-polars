@@ -1160,8 +1160,7 @@ DataFrame_std = function(ddof = 1) {
 #' value. Use `$describe()` to specify several quantiles.
 #' @keywords DataFrame
 #' @param quantile Numeric of length 1 between 0 and 1.
-#' @param interpolation Interpolation method: "nearest", "higher", "lower",
-#' "midpoint", or "linear".
+#' @inheritParams Expr_quantile
 #' @return DataFrame
 #' @examples pl$DataFrame(mtcars)$quantile(.4)
 DataFrame_quantile = function(quantile, interpolation = "nearest") {
@@ -1460,68 +1459,148 @@ DataFrame_rename = function(...) {
 #'
 #' @param percentiles One or more percentiles to include in the summary statistics.
 #' All values must be in the range `[0; 1]`.
+#' @param interpolation Interpolation method for computing quantiles. One of
+#'  `"nearest"`, `"higher"`, `"lower"`, `"midpoint"`, or `"linear"`.
 #' @keywords DataFrame
 #' @return DataFrame
 #' @examples
-#' pl$DataFrame(mtcars)$describe()
-DataFrame_describe = function(percentiles = c(.25, .75)) {
-  perc = percentiles
+#' pl$DataFrame(iris)$describe()
+#'
+#' # string, date, boolean columns are also supported:
+#' df = pl$DataFrame(
+#'   int = 1:3,
+#'   string = c(letters[1:2], NA),
+#'   date = c(as.Date("2024-01-20"), as.Date("2024-01-21"), NA),
+#'   cat = factor(c(letters[1:2], NA)),
+#'   bool = c(TRUE, FALSE, NA)
+#' )
+#' df
+#'
+#' df$describe()
+DataFrame_describe = function(percentiles = c(.25, .75), interpolation = "nearest") {
 
-  # guard input
-  # styler: off
-  pcase(
-    is.null(perc), Ok(numeric()),
-    !is.numeric(perc), Err(bad_robj(perc)$mistyped("numeric")),
-    isFALSE(all(perc > 0) && all(perc < 1)), {
-      Err(bad_robj(perc)$misvalued("has all vector elements within 0 and 1"))
-    },
-    or_else = Ok(perc)
-    # styler: on
-  ) |>
-    map_err(
-      \(err)  err$bad_arg("percentiles")
-    ) |>
-    and_then(
-      \(perc) {
-        # this polars query should always succeed else flag as ...
-        result(msg = "internal error", {
-          # make percentile expressions
-          perc_exprs = lapply(
-            perc, \(x) pl$all()$quantile(x)$name$prefix(paste0(as.character(x * 100), "pct:"))
-          )
+  uw = \(res) unwrap(res, "in $describe():")
 
-          # bundle all expressions
-          largs = c(
-            list(
-              pl$all()$count()$name$prefix("count:"),
-              pl$all()$null_count()$name$prefix("null_count:"),
-              pl$all()$mean()$name$prefix("mean:"),
-              pl$all()$std()$name$prefix("std:"),
-              pl$all()$min()$name$prefix("min:"),
-              pl$all()$max()$name$prefix("max:"),
-              pl$all()$median()$name$prefix("median:")
-            ),
-            perc_exprs
-          )
+  if (length(self$columns) == 0) {
+    Err_plain("cannot describe a DataFrame without any columns") |>
+      uw()
+  }
 
-          # compute aggregates
-          df_aggs = do.call(self$select, largs)
-          e_col_row_names = pl$lit(df_aggs$columns)$str$splitn(":", 2)
-
-          # pivotize
-          df_pivot = pl$select(
-            e_col_row_names$struct$field("field_0")$alias("rowname"),
-            e_col_row_names$struct$field("field_1")$alias("colname"),
-            pl$lit(unlist(as.data.frame(df_aggs)))$alias("value")
-          )$pivot(
-            values = "value", index = "rowname", columns = "colname"
-          )
-          df_pivot$columns[1] = "describe"
-          df_pivot
-        })
+  result(msg = "internal error", {
+    # Determine which columns should get std/mean/percentile statistics
+    stat_cols = lapply(self$schema, \(x) {
+      is_num = lapply(pl$numeric_dtypes, \(w) w == x) |>
+        unlist() |>
+        any()
+      if (!is_num) {
+        return()
+      } else {
+        is_num
       }
-    ) |>
-    unwrap("in $describe():")
+    }) |>
+      unlist() |>
+      names()
+
+    # separator used temporarily and used to split the column names later on
+    # It's voluntarily weird so that it doesn't match actual column names
+    custom_sep = "??-??"
+
+    # Determine metrics and optional/additional percentiles
+    if (!0.5 %in% percentiles) {
+      percentiles = c(percentiles, 0.5)
+    }
+    metrics = c("count", "null_count", "mean", "std", "min")
+    percentile_exprs = list()
+    for (p in sort(percentiles)) {
+      for (c in self$columns) {
+        expr = if (c %in% stat_cols) {
+          pl$col(c)$quantile(p, interpolation = interpolation)
+        } else {
+          pl$lit(NA)
+        }
+        expr = expr$alias(paste0(p, custom_sep, c))
+        percentile_exprs = append(percentile_exprs, expr)
+      }
+      metrics = append(metrics, paste0(p * 100, "%"))
+    }
+    metrics = append(metrics, "max")
+
+    mean_exprs = lapply(self$columns, function(x) {
+      expr = if (x %in% stat_cols) {
+        pl$col(x)$mean()
+      } else {
+        pl$lit(NA)
+      }
+      expr$alias(paste0("mean", custom_sep, x))
+    })
+
+    std_exprs = lapply(self$columns, function(x) {
+      expr = if (x %in% stat_cols) {
+        pl$col(x)$std()
+      } else {
+        pl$lit(NA)
+      }
+      expr$alias(paste0("std", custom_sep, x))
+    })
+
+    # accept all types but categorical
+    # TODO: add "Enum" to the list of non-accepted types when implemented
+    minmax_cols = lapply(self$schema, \(x) {
+      if (x != pl$Categorical) {
+        x
+      }
+    }) |>
+      unlist() |>
+      names()
+
+    min_exprs = lapply(self$columns, function(x) {
+      expr = if (x %in% minmax_cols) {
+        pl$col(x)$min()
+      } else {
+        pl$lit(NA)
+      }
+      expr$alias(paste0("min", custom_sep, x))
+    })
+
+    max_exprs = lapply(self$columns, function(x) {
+      expr = if (x %in% minmax_cols) {
+        pl$col(x)$max()
+      } else {
+        pl$lit(NA)
+      }
+      expr$alias(paste0("max", custom_sep, x))
+    })
+
+    # Calculate metrics in parallel
+    df_metrics = self$
+      select(
+        unlist(
+          list(
+            pl$all()$count()$name$prefix(paste0("count", custom_sep)),
+            pl$all()$null_count()$name$prefix(paste0("null_count", custom_sep)),
+            mean_exprs,
+            std_exprs,
+            min_exprs,
+            percentile_exprs,
+            max_exprs
+          ),
+          recursive = FALSE
+        )
+      )
+
+    df_metrics$
+      transpose(include_header = TRUE)$
+      with_columns(
+        pl$col("column")$str$split_exact(custom_sep, 1)$
+          struct$rename_fields(c("describe", "variable"))$
+          alias("fields")
+      )$
+      unnest("fields")$
+      drop("column")$
+      pivot(index = "describe", columns = "variable", values = "column_0")$
+      with_columns(describe = pl$lit(metrics))
+  }) |>
+    uw()
 }
 
 #' @title Glimpse values in a DataFrame

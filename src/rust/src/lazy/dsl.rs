@@ -1023,7 +1023,7 @@ impl RPolarsExpr {
 
     //arr/list methods
 
-    fn list_lengths(&self) -> Self {
+    fn list_len(&self) -> Self {
         self.0.clone().list().len().into()
     }
 

@@ -3,10 +3,7 @@
 \name{ExprList_first}
 \alias{ExprList_first}
 \alias{list_first}
-\title{First in sublists}
-\format{
-function
-}
+\title{Get the first value in a list}
 \usage{
 ExprList_first()
 }
@@ -14,10 +11,11 @@ ExprList_first()
 Expr
 }
 \description{
-Get the first value of the sublists.
+Get the first value in a list
 }
 \examples{
-df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) # NULL or integer() or list()
-df$select(pl$col("a")$list$first())
+df = pl$DataFrame(list(a = list(3:1, NULL, 1:2)))
+df$with_columns(
+  first = pl$col("a")$list$first()
+)
 }
-\keyword{ExprList}

@@ -46,6 +46,8 @@
     -   New argument `validate` to perform some checks on join keys (e.g ensure 
         that there is a one-to-one matching between join keys).
     -   New argument `join_nulls` to consider `null` values as a valid key.
+-   `<DataFrame>$describe()` now works with all datatypes. It also gains an 
+    `interpolation` argument that is used for quantiles computation (#717).
 
 ## polars 0.12.2
 
