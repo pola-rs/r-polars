@@ -4,6 +4,7 @@
 
 ### Breaking changes
 
+-   `<Expr>$where()` is removed. Use `<Expr>$filter()` instead (#718).
 -   The environment variables used when building the library have been changed. (#693)
     This only affects selecting the feature flag and selecting profiles during source installation.
     -   `RPOLARS_PROFILE` is renamed to `LIBR_POLARS_PROFILE`
@@ -16,7 +17,7 @@
 
 -   New method `$rolling()` for `DataFrame` and `LazyFrame`. When this is
     applied, it creates an object of class `RPolarsRollingGroupBy` (#682, #694).
--   New method `$group_by_dynamic()` for `DataFrame` and `LazyFrame`. When this 
+-   New method `$group_by_dynamic()` for `DataFrame` and `LazyFrame`. When this
     is applied, it creates an object of class `RPolarsDynamicGroupBy` (#691).
 -   New method `$sink_ndjson()` for LazyFrame (#681).
 -   New function `pl$duration()` to create a duration by components (week, day,
