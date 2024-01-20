@@ -36,6 +36,8 @@
     equivalent in base R) should be converted. This option can either be set 
     globally with `pl$set_options()` or on a case-by-case basis, e.g with 
     `$to_data_frame(int64_conversion =)` (#706).
+-   `<DataFrame>$describe()` now works with all datatypes. It also gains an 
+    `interpolation` argument that is used for quantiles computation (#717).
 
 ## polars 0.12.2
 
