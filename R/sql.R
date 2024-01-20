@@ -1,6 +1,6 @@
 #' @title Run SQL queries against DataFrame/LazyFrame data.
 #' @description Run SQL queries against DataFrame/LazyFrame data.
-#' @details Currently, only available when built with the `full` feature.
+#' @details Currently, only available when built with the "sql" feature.
 #' See [polars_info] for more information.
 #' @name SQLContext_class
 #' @keywords SQLContext

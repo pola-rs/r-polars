@@ -184,7 +184,3 @@ load_polars()
 #to check package + reuses previous compilation in check, protects against deletion
 check_polars() #assumes rust target at `paste0(getwd(),"/src/rust")`
 ```
-
-- The `RPOLARS_RUST_SOURCE` environment variable allows **polars** to recover the Cargo cache even if source files have been moved. Replace with your own absolute path to your local clone!
-- `filter_rcmdcheck.R` removes known warnings from final check report.
-- `unlink("check")` cleans up.
