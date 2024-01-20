@@ -433,7 +433,7 @@ ExprList_to_struct = function(
 #' @examples
 #' df = pl$DataFrame(
 #'   a = list(c(1, 8, 3), c(3, 2), c(NA, NA, 1)),
-#'   b = list(c("R" "is", "amazing"), c("foo", "bar"), "text")
+#'   b = list(c("R", "is", "amazing"), c("foo", "bar"), "text")
 #' )
 #' df$with_columns(
 #'   # standardize each value inside a list, using only the values in this list
