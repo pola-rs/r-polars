@@ -19,20 +19,14 @@
 #' as pure functions solved/simplified self-referential complications.
 #'
 #' `DataFrame` and `LazyFrame` can both be said to be a `Frame`. To convert use
-#' `DataFrame_object$lazy() -> LazyFrame_object` and `LazyFrame_object$collect() -> DataFrame_object`. You can also create a `LazyFrame` directly with `pl$LazyFrame()`.
-#' This is quite similar to the lazy-collect syntax of the dplyrpackage to
+#' [`<DataFrame>$lazy()`][DataFrame_lazy] and [`<LazyFrame>$collect()`][LazyFrame_collect].
+#' You can also create a `LazyFrame` directly with [`pl$LazyFrame()`][pl_LazyFrame].
+#' This is quite similar to the lazy-collect syntax of the `dplyr` package to
 #' interact with database connections such as SQL variants. Most SQL databases
-#' would be able to perform the same optimizations as polars such Predicate Pushdown
-#' and Projection. However polars can interact and optimize queries with both
-#' SQL DBs and other data sources such parquet files simultaneously. (#TODO
-#' implement r-polars SQL ;).
+#' would be able to perform the same optimizations as polars such predicate pushdown
+#' and projection pushdown. However polars can interact and optimize queries with both
+#' SQL DBs and other data sources such parquet files simultaneously.
 #'
-#' @details Check out the source code in R/LazyFrame__lazy.R how public methods
-#' are derived from private methods. Check out  extendr-wrappers.R to see the
-#' extendr-auto-generated methods. These are moved to `.pr` and converted into
-#' pure external functions in after-wrappers.R. In zzz.R (named zzz to be last
-#' file sourced) the extendr-methods are removed and replaced by any function
-#' prefixed `LazyFrame_`.
 #' @return not applicable
 #' @keywords LazyFrame
 #' @examples
