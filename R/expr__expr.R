@@ -1989,25 +1989,6 @@ Expr_filter = function(predicate) {
   .pr$Expr$filter(self, wrap_e(predicate))
 }
 
-#' @inherit Expr_filter title params return
-#'
-#' @description
-#' This is an alias for `<Expr>$filter()`.
-#'
-#'
-#' @examples
-#' df = pl$DataFrame(
-#'   group_col = c("g1", "g1", "g2"),
-#'   b = c(1, 2, 3)
-#' )
-#' df
-#'
-#' df$group_by("group_col")$agg(
-#'   lt = pl$col("b")$where(pl$col("b") < 2),
-#'   gte = pl$col("b")$where(pl$col("b") >= 2)
-#' )
-Expr_where = Expr_filter
-
 
 #' Explode a list or String Series
 #'
@@ -3154,14 +3135,14 @@ Expr_rep_extend = function(expr, n, rechunk = TRUE, upcast = TRUE) {
 #' @return R object
 #' @examples
 #' pl$lit(1:3)$to_r()
-Expr_to_r = function(df = NULL, i = 0, ..., int64_conversion = pl$options$int64_conversion ) {
+Expr_to_r = function(df = NULL, i = 0, ..., int64_conversion = pl$options$int64_conversion) {
   if (is.null(df)) {
-    pl$select(self)$to_series(i)$to_r(int64_conversion )
+    pl$select(self)$to_series(i)$to_r(int64_conversion)
   } else {
     if (!inherits(df, c("RPolarsDataFrame"))) {
       stop("Expr_to_r: input is not NULL or a DataFrame/Lazyframe")
     }
-    df$select(self)$to_series(i)$to_r(int64_conversion )
+    df$select(self)$to_series(i)$to_r(int64_conversion)
   }
 }
 
