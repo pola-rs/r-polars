@@ -278,23 +278,6 @@ test_that("map_batches unity", {
   expect_identical(x, iris[, 5, drop = FALSE])
 })
 
-test_that("$map() deprecated", {
-  expect_warning(
-    pl$DataFrame(iris)$select(
-      pl$col("Sepal.Length")$map(\(s) s)
-    ),
-    "map_batches"
-  )
-})
-
-test_that("$apply() deprecated", {
-  expect_warning(
-    pl$DataFrame(iris)$select(
-      pl$col("Sepal.Length")$apply(\(s) s)
-    ),
-    "map_elements"
-  )
-})
 
 test_that("map_batches type", {
   int_iris = iris
@@ -544,8 +527,6 @@ test_that("simple translations", {
 
 
 test_that("null_count 64bit", {
-  skip_if_not_installed("bit64")
-  suppressPackageStartupMessages(library("bit64", quietly = TRUE))
   tmp = mtcars
   tmp[1:2, 1:2] = NA
   tmp[5, 3] = NA

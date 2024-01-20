@@ -68,22 +68,14 @@ pl_SQLContext = function(...) {
 #' @title Execute SQL query against the registered data
 #' @description Parse the given SQL query and execute it against the registered frame data.
 #' @param query A valid string SQL query.
-#' @param eager A logical flag indicating whether to collect the result immediately.
-#' If FALSE (default), a [LazyFrame][LazyFrame_class] is returned. If TRUE, a [DataFrame][DataFrame_class] is returned.
-#' @return A [LazyFrame][LazyFrame_class] or [DataFrame][DataFrame_class] depending on the value of `eager`.
+#' @return A [LazyFrame][LazyFrame_class]
 #' @examplesIf polars_info()$features$sql
 #' query = "SELECT * FROM mtcars WHERE cyl = 4"
+#'
 #' pl$SQLContext(mtcars = mtcars)$execute(query)
-#' pl$SQLContext(mtcars = mtcars)$execute(query, eager = TRUE)
-SQLContext_execute = function(query, eager = FALSE) {
-  lf = .pr$SQLContext$execute(self, query) |>
+SQLContext_execute = function(query) {
+  .pr$SQLContext$execute(self, query) |>
     unwrap("in $execute()")
-
-  if (eager) {
-    lf$collect()
-  } else {
-    lf
-  }
 }
 
 
