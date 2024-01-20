@@ -8,6 +8,7 @@ DataFrame_join(
   other,
   on = NULL,
   how = c("inner", "left", "outer", "semi", "anti", "cross", "outer_coalesce"),
+  ...,
   left_on = NULL,
   right_on = NULL,
   suffix = "_right",
@@ -26,6 +27,8 @@ different between the two DataFrames.}
 
 \item{how}{One of the following methods: "inner", "left", "outer", "semi",
 "anti", "cross", "outer_coalesce".}
+
+\item{...}{Ignored.}
 
 \item{left_on, right_on}{Same as \code{on} but only for the left or the right
 DataFrame. They must have the same length.}

@@ -17,6 +17,8 @@
 -   New methods for the `list` subnamespace: `$set_union()`, `$set_intersection()`,
     `$set_difference()`, `$set_symmetric_difference()` (#712).
 -   Several changes in `$join()` for `DataFrame` and `LazyFrame` (#716):
+    -   `<LazyFrame>$join()` now errors if `other` is not a `LazyFrame` and
+        `<DataFrame>$join()` errors if `other` is not a `DataFrame`.
     -   Some arguments have been reordered (e.g `how` now comes before `left_on`).
         This can lead to bugs if the user didn't use argument names.
     -   Argument `how` now accepts `"outer_coalesce"` to coalesce the join keys

@@ -910,6 +910,7 @@ DataFrame_join = function(
     other,
     on = NULL,
     how = c("inner", "left", "outer", "semi", "anti", "cross", "outer_coalesce"),
+    ...,
     left_on = NULL,
     right_on = NULL,
     suffix = "_right",
@@ -917,7 +918,7 @@ DataFrame_join = function(
     join_nulls = FALSE,
     allow_parallel = TRUE,
     force_parallel = FALSE) {
-  if (!inherits(other, "RPolarsDataFrame")) {
+  if (!is_polars_df(other)) {
     Err_plain("`other` must be a DataFrame.") |>
       unwrap("in $join():")
   }

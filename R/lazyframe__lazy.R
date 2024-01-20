@@ -1088,7 +1088,7 @@ LazyFrame_group_by = function(..., maintain_order = pl$options$maintain_order) {
 #'   computation of both DataFrames up to the join in parallel.
 #' @param force_parallel Force the physical plan to evaluate the computation of
 #'   both DataFrames up to the join in parallel.
-
+#' @param ... Ignored.
 #'
 #' @return LazyFrame
 #' @examples
@@ -1116,6 +1116,7 @@ LazyFrame_join = function(
     other,
     on = NULL,
     how = c("inner", "left", "outer", "semi", "anti", "cross", "outer_coalesce"),
+    ...,
     left_on = NULL,
     right_on = NULL,
     suffix = "_right",
@@ -1125,7 +1126,7 @@ LazyFrame_join = function(
     force_parallel = FALSE) {
   uw = \(res) unwrap(res, "in $join():")
 
-  if (!inherits(other, "RPolarsLazyFrame")) {
+  if (!is_polars_lf(other)) {
     Err_plain("`other` must be a LazyFrame.") |> uw()
   }
 
