@@ -19,11 +19,11 @@ query detached from the R session and return an \code{RPolarsRThreadHandle} imme
 
 NOTICE:
 The background thread cannot use the main R session, but can access the pool of extra R sessions
-to process R code embedded in polars query via \verb{$map_batches(..., background = TRUE)} or
+to process R code embedded in polars query via \code{\link[=Expr_map_batches]{$map_batches(..., in_background = TRUE)}} or
 \verb{$map_elements(background=TRUE)}. Use \code{\link[=pl_set_options]{pl$set_options(rpool_cap = XX)}} to limit number of
 parallel R sessions.
 Starting polars  \code{\link[=LazyFrame_collect_in_background]{<LazyFrame>$collect_in_background()}} with
-e.g. some \verb{$map_batches(..., background = FALSE)} will raise an Error as the main R session is not
+e.g. some \code{\link[=Expr_map_batches]{$map_batches(..., in_background = FALSE)}} will raise an Error as the main R session is not
 available to process the R part of the polars query. Native polars query does not need any R
 session.
 }

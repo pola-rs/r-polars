@@ -43,7 +43,8 @@ polars_optreq$int64_conversion = list(
 #' spawned in pool. `pl$options$rpool_cap` indicates the maximum number of new R
 #' sessions that can be spawned. Anytime a polars thread worker needs a background
 #' R session specifically to run R code embedded in a query via
-#' `$map_batches(..., in_background = TRUE)` or `$map_elements(..., in_background = TRUE)`, it
+#' [`$map_batches(..., in_background = TRUE)`][Expr_map_batches] or
+#' [`$map_elements(..., in_background = TRUE)`][Expr_map_elements], it
 #' will obtain any R session idling in rpool, or spawn a new R session (process)
 #' and add it to the rpool if `rpool_cap` is not already reached. If `rpool_cap`
 #' is already reached, the thread worker will sleep until an R session is idling.
@@ -315,8 +316,9 @@ pl_with_string_cache = function(expr) {
 #' processes. `pl$options$rpool_active` is the number of R sessions are already spawned
 #' in the pool. `rpool_cap` is the limit of new R sessions to spawn. Anytime a polars
 #' thread worker needs a background R session specifically to run R code embedded
-#' in a query via `$map(..., in_background = TRUE)` or
-#' `$map_elements(..., in_background = TRUE)`, it will obtain any R session idling in
+#' in a query via [`$map_batches(..., in_background = TRUE)`][Expr_map_batches]
+#' or [`$map_elements(..., in_background = TRUE)`][Expr_map_elements],
+#' it will obtain any R session idling in
 #' rpool, or spawn a new R session (process) if `capacity`
 #' is not already reached. If `capacity` is already reached, the thread worker
 #' will sleep and in a R job queue until an R session is idle.

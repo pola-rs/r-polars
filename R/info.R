@@ -19,10 +19,6 @@ polars_info = function() {
   structure(out, class = "polars_info")
 }
 
-pl_polars_info = function() {
-  warning("pl$polars_info() is deprecated and will be removed in 0.13.0. Use polars_info() instead.", call. = FALSE)
-  polars_info()
-}
 
 #' @noRd
 #' @export

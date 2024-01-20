@@ -278,23 +278,6 @@ test_that("map_batches unity", {
   expect_identical(x, iris[, 5, drop = FALSE])
 })
 
-test_that("$map() deprecated", {
-  expect_warning(
-    pl$DataFrame(iris)$select(
-      pl$col("Sepal.Length")$map(\(s) s)
-    ),
-    "map_batches"
-  )
-})
-
-test_that("$apply() deprecated", {
-  expect_warning(
-    pl$DataFrame(iris)$select(
-      pl$col("Sepal.Length")$apply(\(s) s)
-    ),
-    "map_elements"
-  )
-})
 
 test_that("map_batches type", {
   int_iris = iris

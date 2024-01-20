@@ -4,6 +4,9 @@
 
 ### Breaking changes
 
+-   Deprecated functions from 0.12.x are removed (#714).
+    -   `<Expr>$apply()` and `<Expr>$map()`, use `$map_elements()` and `$map_batches()` instead.
+    -   `pl$polars_info()`, use `polars_info()` instead.
 -   The environment variables used when building the library have been changed. (#693)
     This only affects selecting the feature flag and selecting profiles during source installation.
     -   `RPOLARS_PROFILE` is renamed to `LIBR_POLARS_PROFILE`
