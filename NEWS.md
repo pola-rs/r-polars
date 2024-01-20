@@ -14,6 +14,12 @@
 
 ### What's changed
 
+-   For compatibility with CRAN, the number of threads used by Polars may be automatically set to 2 (#720).
+    To disable this behavior and have the maximum number of threads used automatically,
+    one of the following ways can be used:
+    -   Build the Rust library with the `disable_auto_limit_max_threads` feature.
+    -   Set the `polars.disable_auto_limit_max_threads` option to `TRUE` with the `options()` function
+        before loading the package.
 -   New method `$rolling()` for `DataFrame` and `LazyFrame`. When this is
     applied, it creates an object of class `RPolarsRollingGroupBy` (#682, #694).
 -   New method `$group_by_dynamic()` for `DataFrame` and `LazyFrame`. When this 
