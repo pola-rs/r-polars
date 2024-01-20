@@ -12,7 +12,8 @@ pl_set_options(
   do_not_repeat_call = FALSE,
   debug_polars = FALSE,
   no_messages = FALSE,
-  rpool_cap = 4
+  rpool_cap = 4,
+  int64_conversion = c("bit64", "double", "string")
 )
 
 pl_reset_options()
@@ -36,6 +37,15 @@ messages. The default (\code{FALSE}) is to show them.}
 
 \item{rpool_cap}{The maximum number of R sessions that can be used to process
 R code in the background. See Details.}
+
+\item{int64_conversion}{How should Int64 values be handled when converting a
+polars object to R?
+\itemize{
+\item \code{"double"} (default) converts the integer values to double.
+\item \code{"bit64"} uses \code{bit64::as.integer64()} to do the conversion (requires
+the package \code{bit64} to be attached).
+\item \code{"string"} converts Int64 values to character.
+}}
 }
 \value{
 \code{pl$options} returns a named list with the value (\code{TRUE} or \code{FALSE}) of

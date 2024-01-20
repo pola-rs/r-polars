@@ -26,6 +26,10 @@
     variable (#708).
 -   New methods for the `list` subnamespace: `$set_union()`, `$set_intersection()`,
     `$set_difference()`, `$set_symmetric_difference()` (#712).
+-   New option `int64_conversion` to specify how Int64 columns (that don't have
+    equivalent in base R) should be converted. This option can either be set 
+    globally with `pl$set_options()` or on a case-by-case basis, e.g with 
+    `$to_data_frame(int64_conversion =)` (#706).
 
 ## polars 0.12.2
 

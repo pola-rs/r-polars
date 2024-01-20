@@ -544,8 +544,6 @@ test_that("simple translations", {
 
 
 test_that("null_count 64bit", {
-  skip_if_not_installed("bit64")
-  suppressPackageStartupMessages(library("bit64", quietly = TRUE))
   tmp = mtcars
   tmp[1:2, 1:2] = NA
   tmp[5, 3] = NA
