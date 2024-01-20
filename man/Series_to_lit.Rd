@@ -18,7 +18,7 @@ convert Series to literal to perform modification and return
   pl$Series(list(1:1, 1:2, 1:3, 1:4))
   $print()
   $to_lit()
-  $list$lengths()
+  $list$len()
   $sum()
   $cast(pl$dtypes$Int8)
   $to_series()

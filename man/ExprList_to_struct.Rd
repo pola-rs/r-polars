@@ -54,7 +54,7 @@ df$with_columns(
 # pass a custom function that will name all fields by adding a prefix
 df2 = df$with_columns(
   pl$col("a")$list$to_struct(
-    name_generator = \(idx) paste0("col_", idx)
+    fields = \(idx) paste0("col_", idx)
   )
 )
 df2

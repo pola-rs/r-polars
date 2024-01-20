@@ -403,7 +403,7 @@ ExprList_tail = function(n = 5L) {
 #' # pass a custom function that will name all fields by adding a prefix
 #' df2 = df$with_columns(
 #'   pl$col("a")$list$to_struct(
-#'     name_generator = \(idx) paste0("col_", idx)
+#'     fields = \(idx) paste0("col_", idx)
 #'   )
 #' )
 #' df2
@@ -415,7 +415,7 @@ ExprList_to_struct = function(
     n_field_strategy = c("first_non_null", "max_width"),
     fields = NULL,
     upper_bound = 0) {
-  .pr$Expr$list_to_struct(self, n_field_strategy, name_generator, upper_bound) |>
+  .pr$Expr$list_to_struct(self, n_field_strategy, fields, upper_bound) |>
     unwrap("in <List>$to_struct():")
 }
 

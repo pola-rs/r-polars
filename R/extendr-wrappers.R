@@ -666,7 +666,7 @@ RPolarsExpr$list_slice <- function(offset, length) .Call(wrap__RPolarsExpr__list
 
 RPolarsExpr$list_eval <- function(expr, parallel) .Call(wrap__RPolarsExpr__list_eval, self, expr, parallel)
 
-RPolarsExpr$list_to_struct <- function(n_field_strategy, name_gen, upper_bound) .Call(wrap__RPolarsExpr__list_to_struct, self, n_field_strategy, name_gen, upper_bound)
+RPolarsExpr$list_to_struct <- function(n_field_strategy, fields, upper_bound) .Call(wrap__RPolarsExpr__list_to_struct, self, n_field_strategy, fields, upper_bound)
 
 RPolarsExpr$list_all <- function() .Call(wrap__RPolarsExpr__list_all, self)
 
