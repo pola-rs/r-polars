@@ -8,6 +8,10 @@
 #' @export
 #' @examples
 #' polars_info()
+#'
+#' polars_info()$rust_polars
+#'
+#' polars_info()$features$simd
 polars_info = function() {
   # Similar to arrow::arrow_info()
   out = list(
@@ -81,9 +85,20 @@ check_feature = function(feature_name, context = NULL, call = sys.call(1L)) {
 #'
 #' The threadpool size can be overridden by setting the
 #' `POLARS_MAX_THREADS` environment variable before process start.
-#' (The thread pool is not behind a lock, so it cannot be modified once set).
+#' It cannot be modified once `polars` is loaded.
 #' It is strongly recommended not to override this value as it will be
 #' set automatically by the engine.
+#'
+#' For compatibility with CRAN, the threadpool size is set to 2 by default.
+#' To disable this behavior and let the engine determine the threadpool size,
+#' one of the following ways can be used:
+#'
+#' - Enable the `disable_auto_limit_max_threads` feature of the library.
+#'   This can be done by setting the feature flag when installing the package.
+#'   See the installation vignette (`vignette("install", "polars")`)
+#'   for details.
+#' - Set the `polars.disable_auto_limit_max_threads` option to `TRUE` with
+#'   the [options()] function.
 #'
 #' @return The number of threads
 #' @examples
