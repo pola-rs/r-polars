@@ -6,7 +6,6 @@
 # This file was created with the following call:
 #   .Call("wrap__make_polars_wrappers", use_symbols = TRUE, package_name = "polars")
 
-#' @docType package
 #' @usage NULL
 #' @useDynLib polars, .registration = TRUE
 NULL
