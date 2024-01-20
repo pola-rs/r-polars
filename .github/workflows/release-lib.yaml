@@ -24,8 +24,8 @@ defaults:
 
 env:
   LIB_NAME: libr_polars
-  RPOLARS_FULL_FEATURES: "true"
-  RPOLARS_PROFILE: release-optimized
+  LIBR_POLARS_FEATURES: "full_features"
+  LIBR_POLARS_PROFILE: release-optimized
 
 jobs:
   build:
@@ -74,11 +74,11 @@ jobs:
         env:
           NOT_CRAN: "true"
           TARGET: ${{ matrix.target }}
-          RPOLARS_PROFILE: ${{ env.RPOLARS_PROFILE }}
+          LIBR_POLARS_PROFILE: ${{ env.LIBR_POLARS_PROFILE }}
           LIBR_POLARS_BUILD: "true"
         working-directory: src
         run: |
-          LIB_PATH="$(pwd)/rust/target/${TARGET}/${RPOLARS_PROFILE}/${LIB_NAME}.a"
+          LIB_PATH="$(pwd)/rust/target/${TARGET}/${LIBR_POLARS_PROFILE}/${LIB_NAME}.a"
           ARTIFACT_NAME="${LIB_NAME}-${LIB_VERSION}-${TARGET}.tar.gz"
           if [[ ${{ runner.os }} == 'Windows' ]]; then
             pushd ..
@@ -88,7 +88,7 @@ jobs:
           else
             make -f Makevars.in "${LIB_PATH}"
           fi
-          tar -czf "../${ARTIFACT_NAME}" -C "rust/target/${TARGET}/${RPOLARS_PROFILE}" "${LIB_NAME}.a"
+          tar -czf "../${ARTIFACT_NAME}" -C "rust/target/${TARGET}/${LIBR_POLARS_PROFILE}" "${LIB_NAME}.a"
           echo "ARTIFACT_NAME=${ARTIFACT_NAME}" >>"$GITHUB_ENV"
 
       - name: upload artifact

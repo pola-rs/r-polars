@@ -266,9 +266,7 @@ ExprStr_to_lowercase = function() {
 #' @keywords ExprStr
 #' @return Expr of String titlecase chars
 #' @details
-#' This method is only available with the feature flag "simd" which can
-#' be set via envvar "RPOLARS_FULL_FEATURES" and it requires
-#' Rust nightly toolchain to compile.
+#' This method is only available with the "simd" feature.
 #' See [polars_info] for more details.
 #' @examplesIf polars_info()$features$simd
 #' pl$lit(c("hello there", "HI, THERE", NA))$str$to_titlecase()$to_series()

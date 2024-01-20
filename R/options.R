@@ -25,6 +25,11 @@ polars_optreq$debug_polars = list(must_be_bool = is_bool)
 # polars_optenv$rpool_cap # active binding for getting value, not for
 polars_optreq$rpool_cap = list() # rust-side options already check args
 
+polars_optenv$int64_conversion = "double"
+polars_optreq$int64_conversion = list(
+  acceptable_choices = function(x) !is.null(x) && x %in% c("bit64", "double", "string"),
+  bit64_is_attached = function(x) if (x == "bit64") x %in% .packages() else TRUE
+)
 
 ## END OF DEFINED OPTIONS
 
@@ -38,7 +43,8 @@ polars_optreq$rpool_cap = list() # rust-side options already check args
 #' spawned in pool. `pl$options$rpool_cap` indicates the maximum number of new R
 #' sessions that can be spawned. Anytime a polars thread worker needs a background
 #' R session specifically to run R code embedded in a query via
-#' `$map_batches(..., in_background = TRUE)` or `$map_elements(..., in_background = TRUE)`, it
+#' [`$map_batches(..., in_background = TRUE)`][Expr_map_batches] or
+#' [`$map_elements(..., in_background = TRUE)`][Expr_map_elements], it
 #' will obtain any R session idling in rpool, or spawn a new R session (process)
 #' and add it to the rpool if `rpool_cap` is not already reached. If `rpool_cap`
 #' is already reached, the thread worker will sleep until an R session is idling.
@@ -62,9 +68,15 @@ polars_optreq$rpool_cap = list() # rust-side options already check args
 #' @param no_messages Hide messages.
 #' @param rpool_cap The maximum number of R sessions that can be used to process
 #' R code in the background. See Details.
+#' @param int64_conversion  How should Int64 values be handled when converting a
+#' polars object to R?
+#'
+#' * `"double"` (default) converts the integer values to double.
+#' * `"bit64"` uses `bit64::as.integer64()` to do the conversion (requires
+#'   the package `bit64` to be attached).
+#' * `"string"` converts Int64 values to character.
 #'
 #' @rdname pl_options
-#' @docType NULL
 #'
 #' @return
 #' `pl$options` returns a named list with the value (`TRUE` or `FALSE`) of
@@ -93,7 +105,8 @@ pl_set_options = function(
     do_not_repeat_call = FALSE,
     debug_polars = FALSE,
     no_messages = FALSE,
-    rpool_cap = 4) {
+    rpool_cap = 4,
+    int64_conversion = c("bit64", "double", "string")) {
   # only modify arguments that were explicitly written in the function call
   # (otherwise calling set_options() twice in a row would reset the args
   # modified in the first call)
@@ -152,6 +165,7 @@ pl_reset_options = function() {
   assign("debug_polars", FALSE, envir = polars_optenv)
   assign("no_messages", FALSE, envir = polars_optenv)
   assign("rpool_cap", 4, envir = polars_optenv)
+  assign("int64_conversion ", "double", envir = polars_optenv)
 }
 
 
@@ -159,7 +173,9 @@ translate_failures = \(x) {
   lookups = c(
     "must_be_scalar" = "Input must be of length one.",
     "must_be_integer" = "Input must be an integer.",
-    "must_be_bool" = "Input must be TRUE or FALSE"
+    "must_be_bool" = "Input must be TRUE or FALSE.",
+    "acceptable_choices" = "`int64_conversion ` must be one of \"float\", \"string\", \"bit64\".",
+    "bit64_is_attached" = "Package `bit64` must be attached to use `int64_conversion = \"bit64\"`."
   )
   trans = lookups[x]
   trans[is.na(trans)] = x[is.na(trans)]
@@ -300,8 +316,9 @@ pl_with_string_cache = function(expr) {
 #' processes. `pl$options$rpool_active` is the number of R sessions are already spawned
 #' in the pool. `rpool_cap` is the limit of new R sessions to spawn. Anytime a polars
 #' thread worker needs a background R session specifically to run R code embedded
-#' in a query via `$map(..., in_background = TRUE)` or
-#' `$map_elements(..., in_background = TRUE)`, it will obtain any R session idling in
+#' in a query via [`$map_batches(..., in_background = TRUE)`][Expr_map_batches]
+#' or [`$map_elements(..., in_background = TRUE)`][Expr_map_elements],
+#' it will obtain any R session idling in
 #' rpool, or spawn a new R session (process) if `capacity`
 #' is not already reached. If `capacity` is already reached, the thread worker
 #' will sleep and in a R job queue until an R session is idle.

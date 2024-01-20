@@ -13,9 +13,7 @@ Expr of String titlecase chars
 Transform to titlecase variant.
 }
 \details{
-This method is only available with the feature flag "simd" which can
-be set via envvar "RPOLARS_FULL_FEATURES" and it requires
-Rust nightly toolchain to compile.
+This method is only available with the "simd" feature.
 See \link{polars_info} for more details.
 }
 \examples{

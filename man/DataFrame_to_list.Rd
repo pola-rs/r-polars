@@ -4,11 +4,26 @@
 \alias{DataFrame_to_list}
 \title{Return Polars DataFrame as a list of vectors}
 \usage{
-DataFrame_to_list(unnest_structs = TRUE)
+DataFrame_to_list(
+  unnest_structs = TRUE,
+  ...,
+  int64_conversion = pl$options$int64_conversion
+)
 }
 \arguments{
 \item{unnest_structs}{Boolean. If \code{TRUE} (default), then \verb{$unnest()} is applied
 on any struct column.}
+
+\item{...}{Ignored.}
+
+\item{int64_conversion}{How should Int64 values be handled when converting a
+polars object to R?
+\itemize{
+\item \code{"double"} (default) converts the integer values to double.
+\item \code{"bit64"} uses \code{bit64::as.integer64()} to do the conversion (requires
+the package \code{bit64} to be attached).
+\item \code{"string"} converts Int64 values to character.
+}}
 }
 \value{
 R list of vectors

@@ -3,7 +3,7 @@ version: "3"
 env:
   NOT_CRAN: "true"
   LIBR_POLARS_BUILD: "true"
-  RPOLARS_FULL_FEATURES: "true"
+  LIBR_POLARS_FEATURES: "full_features"
 
 vars:
   PACKAGE_NAME: polars

@@ -26,8 +26,8 @@ process. Combined with setting e.g. \code{pl$set_options(rpool_cap = 4)} it can 
 up some slow R functions as they can run in parallel R sessions. The
 communication speed between processes is quite slower than between threads.
 This will likely only give a speed-up in a "low IO - high CPU" use case.
-If there are multiple \verb{$map(in_background = TRUE)} calls in the query, they
-will be run in parallel.}
+If there are multiple \code{\link[=Expr_map_batches]{$map_batches(in_background = TRUE)}}
+calls in the query, they will be run in parallel.}
 }
 \value{
 Expr
@@ -37,15 +37,17 @@ Map an expression with an R function
 }
 \details{
 It is sometimes necessary to apply a specific R function on one or several
-columns. However, note that using R code in \verb{$map()} is slower than native
-polars. The user function must take one polars \code{Series} as input and the return
+columns. However, note that using R code in \code{\link[=Expr_map_batches]{$map_batches()}}
+is slower than native polars.
+The user function must take one polars \code{Series} as input and the return
 should be a \code{Series} or any Robj convertible into a \code{Series} (e.g. vectors).
 Map fully supports \code{browser()}.
 
 If \code{in_background = FALSE} the function can access any global variable of the
-R session. However, note that several calls to \verb{$map()} will sequentially
-share the same main R session, so the global environment might change between
-the start of the query and the moment a \code{map()} call is evaluated. Any native
+R session. However, note that several calls to \code{\link[=Expr_map_batches]{$map_batches()}}
+will sequentially share the same main R session,
+so the global environment might change between the start of the query and the moment
+a \code{\link[=Expr_map_batches]{$map_batches()}} call is evaluated. Any native
 polars computations can still be executed meanwhile. If \code{in_background = TRUE},
 the map will run in one or more other R sessions and will not have access
 to global variables. Use \code{pl$set_options(rpool_cap = 4)} and \code{pl$options$rpool_cap}
