@@ -4,16 +4,13 @@
 \alias{SQLContext_execute}
 \title{Execute SQL query against the registered data}
 \usage{
-SQLContext_execute(query, eager = FALSE)
+SQLContext_execute(query)
 }
 \arguments{
 \item{query}{A valid string SQL query.}
-
-\item{eager}{A logical flag indicating whether to collect the result immediately.
-If FALSE (default), a \link[=LazyFrame_class]{LazyFrame} is returned. If TRUE, a \link[=DataFrame_class]{DataFrame} is returned.}
 }
 \value{
-A \link[=LazyFrame_class]{LazyFrame} or \link[=DataFrame_class]{DataFrame} depending on the value of \code{eager}.
+A \link[=LazyFrame_class]{LazyFrame}
 }
 \description{
 Parse the given SQL query and execute it against the registered frame data.
@@ -21,7 +18,7 @@ Parse the given SQL query and execute it against the registered frame data.
 \examples{
 \dontshow{if (polars_info()$features$sql) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 query = "SELECT * FROM mtcars WHERE cyl = 4"
+
 pl$SQLContext(mtcars = mtcars)$execute(query)
-pl$SQLContext(mtcars = mtcars)$execute(query, eager = TRUE)
 \dontshow{\}) # examplesIf}
 }
