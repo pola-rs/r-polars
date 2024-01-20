@@ -23,8 +23,8 @@ defaults:
     shell: bash
 
 env:
-  RPOLARS_FULL_FEATURES: "true"
-  RPOLARS_PROFILE: release-optimized
+  LIBR_POLARS_FEATURES: "full_features"
+  LIBR_POLARS_PROFILE: release-optimized
   NOT_CRAN: "true"
 
 jobs:
@@ -74,7 +74,7 @@ jobs:
             TARGET="$(rustc -vV | grep host | cut -d' ' -f2)"
           fi
           Rscript -e 'pkgbuild::compile_dll()'
-          echo "LIBR_POLARS_PATH=$(pwd)/src/rust/target/${TARGET}/${{ env.RPOLARS_PROFILE }}/libr_polars.a" >>$GITHUB_ENV
+          echo "LIBR_POLARS_PATH=$(pwd)/src/rust/target/${TARGET}/${{ env.LIBR_POLARS_PROFILE }}/libr_polars.a" >>$GITHUB_ENV
 
       - name: make binary R package + test on host arch
         if: matrix.config.target == ''
