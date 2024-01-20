@@ -2046,7 +2046,6 @@ impl RPolarsExpr {
             .into())
     }
 
-    //TODO: SHOW CASE all R side argument handling
     pub fn str_split(&self, by: Robj, inclusive: Robj) -> Result<RPolarsExpr, String> {
         let by = robj_to!(PLExpr, by)?;
         let inclusive = robj_to!(bool, inclusive)?;
@@ -2057,8 +2056,6 @@ impl RPolarsExpr {
         }
     }
 
-    //TODO: SHOW CASE all rust side argument handling, n is usize and had to be
-    //handled on rust side anyways
     pub fn str_split_exact(
         &self,
         by: Robj,

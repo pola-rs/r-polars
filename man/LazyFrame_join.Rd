@@ -6,33 +6,55 @@
 \usage{
 LazyFrame_join(
   other,
+  on = NULL,
+  how = c("inner", "left", "outer", "semi", "anti", "cross", "outer_coalesce"),
+  ...,
   left_on = NULL,
   right_on = NULL,
-  on = NULL,
-  how = c("inner", "left", "outer", "semi", "anti", "cross"),
   suffix = "_right",
+  validate = "m:m",
+  join_nulls = FALSE,
   allow_parallel = TRUE,
   force_parallel = FALSE
 )
 }
 \arguments{
-\item{other}{DataFrame}
-
-\item{left_on, right_on}{Same as \code{on} but only for the left or the right
-DataFrame. They must have the same length.}
+\item{other}{LazyFrame to join with.}
 
 \item{on}{Either a vector of column names or a list of expressions and/or
 strings. Use \code{left_on} and \code{right_on} if the column names to match on are
 different between the two DataFrames.}
 
 \item{how}{One of the following methods: "inner", "left", "outer", "semi",
-"anti", "cross".}
+"anti", "cross", "outer_coalesce".}
+
+\item{...}{Ignored.}
+
+\item{left_on, right_on}{Same as \code{on} but only for the left or the right
+DataFrame. They must have the same length.}
 
 \item{suffix}{Suffix to add to duplicated column names.}
 
-\item{allow_parallel}{Boolean.}
+\item{validate}{Checks if join is of specified type:
+\itemize{
+\item \code{"m:m"} (default): many-to-many, doesn't perform any checks;
+\item \code{"1:1"}: one-to-one, check if join keys are unique in both left and right
+datasets;
+\item \code{"1:m"}: one-to-many, check if join keys are unique in left dataset
+\item \code{"m:1"}: many-to-one, check if join keys are unique in right dataset
+}
 
-\item{force_parallel}{Boolean.}
+Note that this is currently not supported by the streaming engine, and is
+only supported when joining by single columns.}
+
+\item{join_nulls}{Join on null values. By default null values will never
+produce matches.}
+
+\item{allow_parallel}{Allow the physical plan to optionally evaluate the
+computation of both DataFrames up to the join in parallel.}
+
+\item{force_parallel}{Force the physical plan to evaluate the computation of
+both DataFrames up to the join in parallel.}
 }
 \value{
 LazyFrame
@@ -52,4 +74,15 @@ df1$join(other = df2, on = "key")
 df1 = pl$LazyFrame(x = letters[1:3])
 df2 = pl$LazyFrame(y = 1:4)
 df1$join(other = df2, how = "cross")
+
+# use "validate" to ensure join keys are not duplicated
+df1 = pl$LazyFrame(x = letters[1:5], y = 1:5)
+df2 = pl$LazyFrame(x = c("a", letters[1:4]), y2 = 6:10)
+
+# this throws an error because there are two keys in df2 that match the key
+# in df1
+tryCatch(
+  df1$join(df2, on = "x", validate = "1:1")$collect(),
+  error = function(e) print(e)
+)
 }

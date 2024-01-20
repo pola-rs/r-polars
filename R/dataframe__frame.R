@@ -896,21 +896,9 @@ DataFrame_to_list = function(unnest_structs = TRUE, ..., int64_conversion = pl$o
 
 #' Join DataFrames
 #'
-#' This function can do both mutating joins (adding columns based on matching
-#' observations, for example with `how = "left"`) and filtering joins (keeping
-#' observations based on matching observations, for example with `how = "inner"`).
+#' @param other DataFrame to join with.
+#' @inherit LazyFrame_join description params
 #'
-#' @param other DataFrame
-#' @param on Either a vector of column names or a list of expressions and/or
-#' strings. Use `left_on` and `right_on` if the column names to match on are
-#' different between the two DataFrames.
-#' @param left_on,right_on Same as `on` but only for the left or the right
-#' DataFrame. They must have the same length.
-#' @param how One of the following methods: "inner", "left", "outer", "semi",
-#' "anti", "cross".
-#' @param suffix Suffix to add to duplicated column names.
-#' @param allow_parallel Boolean.
-#' @param force_parallel Boolean.
 #' @return DataFrame
 #' @keywords DataFrame
 #' @examples
@@ -924,14 +912,21 @@ DataFrame_to_list = function(unnest_structs = TRUE, ..., int64_conversion = pl$o
 #' df2 = pl$DataFrame(y = 1:4)
 #' df1$join(other = df2, how = "cross")
 DataFrame_join = function(
-    other, # : LazyFrame or DataFrame,
-    left_on = NULL, # : str | pli.RPolarsExpr | Sequence[str | pli.RPolarsExpr] | None = None,
-    right_on = NULL, # : str | pli.RPolarsExpr | Sequence[str | pli.RPolarsExpr] | None = None,
-    on = NULL, # : str | pli.RPolarsExpr | Sequence[str | pli.RPolarsExpr] | None = None,
-    how = c("inner", "left", "outer", "semi", "anti", "cross"),
+    other,
+    on = NULL,
+    how = c("inner", "left", "outer", "semi", "anti", "cross", "outer_coalesce"),
+    ...,
+    left_on = NULL,
+    right_on = NULL,
     suffix = "_right",
+    validate = "m:m",
+    join_nulls = FALSE,
     allow_parallel = TRUE,
     force_parallel = FALSE) {
+  if (!is_polars_df(other)) {
+    Err_plain("`other` must be a DataFrame.") |>
+      unwrap("in $join():")
+  }
   .pr$DataFrame$lazy(self)$join(
     other = other$lazy(), left_on = left_on, right_on = right_on,
     on = on, how = how, suffix = suffix, allow_parallel = allow_parallel,
