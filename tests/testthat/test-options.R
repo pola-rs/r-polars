@@ -1,40 +1,42 @@
-test_that("pl$options$ read-write", {
+test_that("default options", {
+  pl$reset_options()
+  expect_snapshot(polars_options())
+})
+
+
+test_that("polars_options()$ read-write", {
   pl$reset_options()
 
-  # basic checks
-  expect_identical(
-    pl$options,
-    as.list(polars_optenv)
-  )
-  expect_identical(
-    pl$options$maintain_order,
-    polars_optenv$maintain_order
-  )
-
-  old_options = pl$options
+  old_options = polars_options()
 
   # set_options() works
   pl$set_options(maintain_order = TRUE)
-  expect_true(pl$options$maintain_order)
+  expect_true(polars_options()$maintain_order)
 
   # set_options() only modifies the value for arguments that were explicitly
   # called
   pl$set_options(do_not_repeat_call = TRUE)
-  expect_true(pl$options$do_not_repeat_call)
-  expect_true(pl$options$maintain_order)
+  expect_true(polars_options()$do_not_repeat_call)
+  expect_true(polars_options()$maintain_order)
 
-  # set_options() only accepts booleans
-  ctx = pl$set_options(maintain_order = 42) |> get_err_ctx()
-  expect_identical(ctx$BadArgument, "maintain_order")
-  expect_identical(ctx$PlainErrorMessage, "Input must be TRUE or FALSE.")
+  # set_options() only accepts booleans (but error only shown later when
+  # polars_options() is called, either directly or in internal functions)
+  pl$set_options(maintain_order = 42)
+  expect_error(
+    polars_options(),
+    "input must be TRUE or FALSE."
+  )
 
-  ctx = pl$set_options(strictly_immutable = c(TRUE, TRUE)) |> get_err_ctx()
-  expect_identical(ctx$BadArgument, "strictly_immutable")
-  expect_identical(ctx$PlainErrorMessage, "Input must be TRUE or FALSE.")
+  pl$set_options(maintain_order = FALSE, strictly_immutable = c(TRUE, TRUE))
+  expect_error(
+    polars_options(),
+    "input must be TRUE or FALSE."
+  )
+  pl$set_options(strictly_immutable = TRUE)
 
   # reset_options() works
   pl$reset_options()
-  expect_identical(pl$options, old_options)
+  expect_identical(polars_options(), old_options)
 
   # all set_options args must be named
   expect_identical(
@@ -65,9 +67,10 @@ test_that("option 'int64_conversion ' works", {
   )
 
   # check value of int64_conversion
+  pl$set_options(int64_conversion = "foobar")
   expect_error(
-    pl$set_options(int64_conversion = "foobar"),
-    "`int64_conversion ` must be one of"
+    polars_options(),
+    "input must be one of"
   )
 
   # can convert to string
@@ -79,8 +82,9 @@ test_that("option 'int64_conversion ' works", {
 
   # can convert to bit64, but *only* if bit64 is attached
   try(detach("package:bit64"), silent = TRUE)
+  pl$set_options(int64_conversion = "bit64")
   expect_error(
-    pl$set_options(int64_conversion = "bit64"),
+    polars_options(),
     "must be attached"
   )
   skip_if_not_installed("bit64")

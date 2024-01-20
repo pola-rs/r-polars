@@ -15,11 +15,11 @@ test_that("Test using $map_batches() in background", {
   skip_if_not(Sys.getenv("CI") == "true")
   # change capacity
   pl$set_options(rpool_cap = 0)
-  expect_equal(pl$options$rpool_cap, 0)
-  expect_equal(pl$options$rpool_active, 0)
+  expect_equal(polars_options()$rpool_cap, 0)
+  expect_equal(polars_options()$rpool_active, 0)
   pl$set_options(rpool_cap = 1)
-  expect_equal(pl$options$rpool_cap, 1)
-  expect_equal(pl$options$rpool_active, 0)
+  expect_equal(polars_options()$rpool_cap, 1)
+  expect_equal(polars_options()$rpool_active, 0)
 
 
   compute = lf$select(pl$col("y")$map_batches(\(x) x * x, in_background = FALSE))
@@ -30,13 +30,13 @@ test_that("Test using $map_batches() in background", {
   res_ref = compute$collect()$to_data_frame()
 
   # no process spawned yet
-  expect_equal(pl$options$rpool_cap, 1)
-  expect_equal(pl$options$rpool_active, 0)
+  expect_equal(polars_options()$rpool_cap, 1)
+  expect_equal(polars_options()$rpool_active, 0)
 
   # process was spawned
   res_fg_map_bg = compute_bg$collect()$to_data_frame()
-  expect_equal(pl$options$rpool_cap, 1)
-  expect_equal(pl$options$rpool_active, 1)
+  expect_equal(polars_options()$rpool_cap, 1)
+  expect_equal(polars_options()$rpool_active, 1)
 
   # same result
   expect_identical(res_ref, res_fg_map_bg)
@@ -67,11 +67,11 @@ test_that("Test using $map_batches() in background", {
 test_that("reset rpool_cap", {
   skip_if_not(Sys.getenv("CI") == "true")
   pl$reset_options()
-  orig = pl$options$rpool_cap
+  orig = polars_options()$rpool_cap
   pl$set_options(rpool_cap = orig + 1)
-  expect_different(pl$options$rpool_cap, orig)
+  expect_different(polars_options()$rpool_cap, orig)
   pl$reset_options()
-  expect_identical(pl$options$rpool_cap, orig)
+  expect_identical(polars_options()$rpool_cap, orig)
 })
 
 

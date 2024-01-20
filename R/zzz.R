@@ -136,30 +136,17 @@ move_env_elements(RPolarsExpr, pl, c("lit"), remove = FALSE)
 
   pl$numeric_dtypes = pl$dtypes[substr(names(pl$dtypes), 1, 3) %in% c("Int", "Flo")]
 
-  # create the binding for options on loading, otherwise its values are frozen
-  # to what the default values were at build time
-  makeActiveBinding("options", \() as.list(polars_optenv), env = pl)
-  makeActiveBinding(
-    "rpool_cap",
-    \(arg) {
-      if (missing(arg)) {
-        unwrap(get_global_rpool_cap())$capacity
-      } else {
-        unwrap(set_global_rpool_cap(arg))
-      }
-    },
-    env = polars_optenv
-  )
-  makeActiveBinding(
-    "rpool_active",
-    \(arg) {
-      if (missing(arg)) {
-        unwrap(get_global_rpool_cap())$active
-      } else {
-        unwrap(stop("internal error: polars_optenv$rpool_active cannot be set directly"))
-      }
-    },
-    env = polars_optenv
+
+  # set options (NEW METHOD)
+  options(
+    polars.debug_polars = FALSE,
+    polars.do_not_repeat_call = FALSE,
+    polars.int64_conversion = "double",
+    polars.maintain_order = FALSE,
+    polars.no_messages = FALSE,
+    polars.rpool_active = unwrap(get_global_rpool_cap())$active,
+    polars.rpool_cap = unwrap(get_global_rpool_cap())$capacity,
+    polars.strictly_immutable = TRUE
   )
 
   setup_renv()

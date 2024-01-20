@@ -1045,7 +1045,7 @@ LazyFrame_unique = function(subset = NULL, keep = "first", maintain_order = FALS
 #'   pl$col("bar")$mean()$alias("bar_tail_sum")
 #' )$
 #'   collect()
-LazyFrame_group_by = function(..., maintain_order = pl$options$maintain_order) {
+LazyFrame_group_by = function(..., maintain_order = polars_options()$maintain_order) {
   .pr$LazyFrame$group_by(self, unpack_list(..., .context = "in $group_by():"), maintain_order) |>
     unwrap("in $group_by():")
 }
