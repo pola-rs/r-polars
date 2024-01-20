@@ -388,3 +388,4 @@ validate_polars_options = function(options) {
     stop(paste0(msg, bullets, "\n\nMore info at `?polars_options`."))
   }
 }
+
