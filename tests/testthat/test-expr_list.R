@@ -1,6 +1,6 @@
 test_that("list$lengths", {
   df = pl$DataFrame(list_of_strs = pl$Series(list(c("a", "b"), "c", character(), list(), NULL)))
-  l = df$with_columns(pl$col("list_of_strs")$list$lengths()$alias("list_of_strs_lengths"))$to_list()
+  l = df$with_columns(pl$col("list_of_strs")$list$len()$alias("list_of_strs_lengths"))$to_list()
 
   expect_identical(
     l |> lapply(\(x) if (inherits(x, "integer64")) as.numeric(x) else x),
