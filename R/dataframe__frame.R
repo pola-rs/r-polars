@@ -1602,7 +1602,8 @@ DataFrame_describe = function(percentiles = c(.25, .75), interpolation = "neares
       )$
       unnest("fields")$
       drop("column")$
-      pivot(index = "describe", columns = "variable", values = "column_0")
+      pivot(index = "describe", columns = "variable", values = "column_0")$
+      with_columns(describe = pl$lit(metrics))
   }) |>
     uw()
 }
