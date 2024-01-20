@@ -402,12 +402,12 @@ test_that("to_struct", {
   df = pl$DataFrame(list(a = l))
   act_1 = df$select(pl$col("a")$list$to_struct(
     n_field_strategy = "first_non_null",
-    name_generator = \(idx) paste0("hello_you_", idx)
+    fields = \(idx) paste0("hello_you_", idx)
   ))$to_list()
 
   act_2 = df$select(pl$col("a")$list$to_struct(
     n_field_strategy = "max_width",
-    name_generator = \(idx) paste0("hello_you_", idx)
+    fields = \(idx) paste0("hello_you_", idx)
   ))$to_list()
 
 
