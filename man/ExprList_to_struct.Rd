@@ -7,7 +7,7 @@
 \usage{
 ExprList_to_struct(
   n_field_strategy = c("first_non_null", "max_width"),
-  name_generator = NULL,
+  fields = NULL,
   upper_bound = 0
 )
 }
@@ -17,6 +17,12 @@ struct. If \code{"first_non_null"} (default), set number of fields equal to the
 length of the first non zero-length list. If \code{"max_width"}, the number of
 fields is the maximum length of a list.}
 
+\item{fields}{If the name and number of the desired fields is known in
+advance, a list of field names can be given, which will be assigned by
+index. Otherwise, to dynamically assign field names, a custom R function
+that takes an R scalar double and outputs a string value can be used. If
+\code{NULL} (default), fields will be \code{field_0}, \code{field_1} ... \code{field_n}.}
+
 \item{upper_bound}{A \code{LazyFrame} needs to know the schema at all time. The
 caller therefore must provide an \code{upper_bound} of struct fields that will
 be set. If set incorrectly, downstream operation may fail. For instance an
@@ -24,12 +30,6 @@ be set. If set incorrectly, downstream operation may fail. For instance an
 columns to select. When operating on a \code{DataFrame}, the schema does not
 need to be tracked or pre-determined, as the result will be eagerly
 evaluated, so you can leave this parameter unset.}
-
-\item{fields}{If the name and number of the desired fields is known in
-advance, a list of field names can be given, which will be assigned by
-index. Otherwise, to dynamically assign field names, a custom R function
-that takes an R scalar double and outputs a string value can be used. If
-\code{NULL} (default), fields will be \code{field_0}, \code{field_1} ... \code{field_n}.}
 }
 \value{
 Expr

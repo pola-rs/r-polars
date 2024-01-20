@@ -413,7 +413,7 @@ ExprList_tail = function(n = 5L) {
 #' df2$to_list()
 ExprList_to_struct = function(
     n_field_strategy = c("first_non_null", "max_width"),
-    name_generator = NULL,
+    fields = NULL,
     upper_bound = 0) {
   .pr$Expr$list_to_struct(self, n_field_strategy, name_generator, upper_bound) |>
     unwrap("in <List>$to_struct():")
