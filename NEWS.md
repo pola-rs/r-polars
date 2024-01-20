@@ -4,6 +4,8 @@
 
 ### Breaking changes
 
+-   Remove the `eager` argument of `<SQLContext>$execute()`.
+    Use the `$collect()` method after `$execute()` or `as_polars_df` to get the result as a `DataFrame`. (#719)
 -   The environment variables used when building the library have been changed. (#693)
     This only affects selecting the feature flag and selecting profiles during source installation.
     -   `RPOLARS_PROFILE` is renamed to `LIBR_POLARS_PROFILE`
