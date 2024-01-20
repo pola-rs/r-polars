@@ -6,7 +6,6 @@
 # This file was created with the following call:
 #   .Call("wrap__make_polars_wrappers", use_symbols = TRUE, package_name = "polars")
 
-#' @docType package
 #' @usage NULL
 #' @useDynLib polars, .registration = TRUE
 NULL
@@ -161,11 +160,11 @@ RPolarsDataFrame$dtype_strings <- function() .Call(wrap__RPolarsDataFrame__dtype
 
 RPolarsDataFrame$schema <- function() .Call(wrap__RPolarsDataFrame__schema, self)
 
-RPolarsDataFrame$to_list <- function() .Call(wrap__RPolarsDataFrame__to_list, self)
+RPolarsDataFrame$to_list <- function(int64_conversion) .Call(wrap__RPolarsDataFrame__to_list, self, int64_conversion)
 
-RPolarsDataFrame$to_list_unwind <- function() .Call(wrap__RPolarsDataFrame__to_list_unwind, self)
+RPolarsDataFrame$to_list_unwind <- function(int64_conversion) .Call(wrap__RPolarsDataFrame__to_list_unwind, self, int64_conversion)
 
-RPolarsDataFrame$to_list_tag_structs <- function() .Call(wrap__RPolarsDataFrame__to_list_tag_structs, self)
+RPolarsDataFrame$to_list_tag_structs <- function(int64_conversion) .Call(wrap__RPolarsDataFrame__to_list_tag_structs, self, int64_conversion)
 
 RPolarsDataFrame$equals <- function(other) .Call(wrap__RPolarsDataFrame__equals, self, other)
 
@@ -1165,7 +1164,7 @@ RPolarsSeries$sleep <- function(millis) .Call(wrap__RPolarsSeries__sleep, self, 
 
 RPolarsSeries$panic <- function() .Call(wrap__RPolarsSeries__panic, self)
 
-RPolarsSeries$to_r <- function() .Call(wrap__RPolarsSeries__to_r, self)
+RPolarsSeries$to_r <- function(int64_conversion) .Call(wrap__RPolarsSeries__to_r, self, int64_conversion)
 
 RPolarsSeries$rename_mut <- function(name) invisible(.Call(wrap__RPolarsSeries__rename_mut, self, name))
 

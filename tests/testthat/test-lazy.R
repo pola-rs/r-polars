@@ -760,7 +760,6 @@ test_that("fetch", {
   )
 
   # uszie input can be bit64
-  skip_if_not_installed("bit64")
   expect_identical(
     lf$select(pl$col("a") * 2L)$fetch(bit64::as.integer64(5))$to_list(),
     lf$select(pl$col("a") * 2L)$fetch(5)$to_list()

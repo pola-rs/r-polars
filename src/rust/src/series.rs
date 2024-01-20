@@ -79,8 +79,9 @@ impl RPolarsSeries {
         panic!("somebody panicked on purpose");
     }
 
-    pub fn to_r(&self) -> std::result::Result<Robj, String> {
-        pl_series_to_list(&self.0, true, true).map_err(|err| format!("in to_r: {:?}", err))
+    pub fn to_r(&self, int64_conversion: &str) -> std::result::Result<Robj, String> {
+        pl_series_to_list(&self.0, true, int64_conversion)
+            .map_err(|err| format!("in to_r: {:?}", err))
     }
     //any mut method exposed in R suffixed _mut
     pub fn rename_mut(&mut self, name: &str) {
@@ -437,27 +438,27 @@ impl RPolarsSeries {
     }
 
     pub fn mean(&self) -> Result<Robj, String> {
-        RPolarsSeries(self.0.mean_as_series()).to_r()
+        RPolarsSeries(self.0.mean_as_series()).to_r("double")
     }
 
     pub fn median(&self) -> Result<Robj, String> {
         let s = self.0.median_as_series().map_err(polars_to_rpolars_err)?;
-        RPolarsSeries(s).to_r()
+        RPolarsSeries(s).to_r("double")
     }
 
     pub fn min(&self) -> Result<Robj, String> {
         let s = self.0.min_as_series().map_err(polars_to_rpolars_err)?;
-        RPolarsSeries(s).to_r()
+        RPolarsSeries(s).to_r("double")
     }
 
     pub fn max(&self) -> Result<Robj, String> {
         let s = self.0.max_as_series().map_err(polars_to_rpolars_err)?;
-        RPolarsSeries(s).to_r()
+        RPolarsSeries(s).to_r("double")
     }
 
     pub fn sum(&self) -> Result<Robj, String> {
         let s = self.0.sum_as_series().map_err(polars_to_rpolars_err)?;
-        RPolarsSeries(s).to_r()
+        RPolarsSeries(s).to_r("double")
     }
 
     pub fn std(&self, ddof: Robj) -> Result<Robj, String> {
@@ -465,7 +466,7 @@ impl RPolarsSeries {
             .0
             .std_as_series(robj_to!(u8, ddof)?)
             .map_err(polars_to_rpolars_err)?;
-        RPolarsSeries(s).to_r()
+        RPolarsSeries(s).to_r("double")
     }
 
     pub fn var(&self, ddof: Robj) -> Result<Robj, String> {
@@ -473,7 +474,7 @@ impl RPolarsSeries {
             .0
             .var_as_series(robj_to!(u8, ddof)?)
             .map_err(polars_to_rpolars_err)?;
-        RPolarsSeries(s).to_r()
+        RPolarsSeries(s).to_r("double")
     }
 
     pub fn ceil(&self) -> List {
