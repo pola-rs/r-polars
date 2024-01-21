@@ -116,6 +116,20 @@ move_env_elements(RPolarsExpr, pl, c("lit"), remove = FALSE)
 
 
 .onLoad = function(libname, pkgname) {
+  # set options: this has to be done first because functions in the "pl"
+  # namespace will validate options internally
+  options(
+    polars.debug_polars = FALSE,
+    polars.df_knitr_print = "auto",
+    polars.do_not_repeat_call = FALSE,
+    polars.int64_conversion = "double",
+    polars.maintain_order = FALSE,
+    polars.no_messages = FALSE,
+    polars.rpool_active = unwrap(get_global_rpool_cap())$active,
+    polars.rpool_cap = unwrap(get_global_rpool_cap())$capacity,
+    polars.strictly_immutable = TRUE
+  )
+
   # instanciate one of each DataType (it's just an enum)
   all_types = c(.pr$DataType$get_all_simple_type_names(), "Utf8") # Allow "Utf8" as an alias of "String"
   names(all_types) = all_types
@@ -135,20 +149,6 @@ move_env_elements(RPolarsExpr, pl, c("lit"), remove = FALSE)
   s3_register("knitr::knit_print", "RPolarsDataFrame")
 
   pl$numeric_dtypes = pl$dtypes[substr(names(pl$dtypes), 1, 3) %in% c("Int", "Flo")]
-
-
-  # set options (NEW METHOD)
-  options(
-    polars.debug_polars = FALSE,
-    polars.df_knitr_print = "auto",
-    polars.do_not_repeat_call = FALSE,
-    polars.int64_conversion = "double",
-    polars.maintain_order = FALSE,
-    polars.no_messages = FALSE,
-    polars.rpool_active = unwrap(get_global_rpool_cap())$active,
-    polars.rpool_cap = unwrap(get_global_rpool_cap())$capacity,
-    polars.strictly_immutable = TRUE
-  )
 
   setup_renv()
   lockEnvironment(pl, bindings = TRUE)
