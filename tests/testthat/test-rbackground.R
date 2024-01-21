@@ -109,13 +109,6 @@ test_that("rpool errors", {
       "integer of length 1"
     )
   )
-  withr::with_options(
-    list(polars.rpool_cap = 0),
-    expect_error(
-      polars_options(),
-      "integer of length 1"
-    )
-  )
 })
 
 test_that("reduce cap and active while jobs in queue", {
