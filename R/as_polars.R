@@ -23,7 +23,7 @@
 #' # Convert an arrow Table, with renaming all columns
 #' as_polars_df(
 #'   at,
-#'   shema = c("a", "b")
+#'   schema = c("a", "b")
 #' )
 #'
 #' # Convert an arrow Table, with renaming and casting all columns
