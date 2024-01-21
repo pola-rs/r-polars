@@ -1,9 +1,14 @@
+#' Internal function of `as_polars_df()` for `arrow::Table` class objects.
+#'
+#' This is a copy of Python Polars' `arrow_to_pydf` function.
+#' @noRd
+#' @return RPolarsDataFrame
 arrow_to_rdf = function(at, schema = NULL, schema_overrides = NULL, rechunk = TRUE) {
   # new column names by schema, #todo get names if schema not NULL
   n_cols = at$num_columns
 
   new_schema = unpack_schema(
-    schema = schema %||% at$ColumnNames(),
+    schema = schema %||% names(at),
     schema_overrides = schema_overrides
   )
   col_names = names(new_schema)
@@ -17,7 +22,7 @@ arrow_to_rdf = function(at, schema = NULL, schema_overrides = NULL, rechunk = TR
   special_cols = list()
 
   ## iter over columns, possibly do special conversion
-  for (i in 1L:n_cols) {
+  for (i in seq_len(n_cols)) {
     column = at$column(i - 1L)
     col_name = col_names[i]
 
