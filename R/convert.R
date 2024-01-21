@@ -41,16 +41,12 @@ pl_from_arrow = function(
       identical(class(data), c("Table", "ArrowTabular", "ArrowObject", "R6")) ||
         identical(class(data), c("RecordBatchReader", "ArrowObject", "R6"))
     ) {
-      df = arrow_to_rdf(
-        data,
-        rechunk = rechunk, schema = schema, schema_overrides = schema_overrides
-      )
-      return(df)
+      return(as_polars_df(data, rechunk = rechunk, schema = schema, schema_overrides = schema_overrides))
     }
 
     # 2 both Array and ChunkedArray
     if (identical(class(data)[-1L], c("ArrowDatum", "ArrowObject", "R6"))) {
-      return(unwrap(arrow_to_rseries_result("", data, rechunk = rechunk)))
+      return(as_polars_series(data, rechunk = rechunk))
     }
 
     # 0 no suitable method found, raise error
