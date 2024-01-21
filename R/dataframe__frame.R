@@ -845,7 +845,13 @@ DataFrame_group_by = function(..., maintain_order = polars_options()$maintain_or
 #' Return Polars DataFrame as R data.frame
 #'
 #' @param ... Any args pased to `as.data.frame()`.
-#' @inheritParams pl_set_options
+#' @param int64_conversion How should Int64 values be handled when converting a
+#' polars object to R?
+#'
+#' * `"double"` (default) converts the integer values to double.
+#' * `"bit64"` uses `bit64::as.integer64()` to do the conversion (requires
+#'   the package `bit64` to be attached).
+#' * `"string"` converts Int64 values to character.
 #'
 #' @return An R data.frame
 #' @keywords DataFrame
@@ -871,7 +877,7 @@ DataFrame_to_data_frame = function(..., int64_conversion = polars_options()$int6
 #'
 #' @param unnest_structs Boolean. If `TRUE` (default), then `$unnest()` is applied
 #' on any struct column.
-#' @inheritParams pl_set_options
+#' @inheritParams DataFrame_to_data_frame
 #'
 #' @details
 #' For simplicity reasons, this implementation relies on unnesting all structs

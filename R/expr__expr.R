@@ -3131,7 +3131,7 @@ Expr_rep_extend = function(expr, n, rechunk = TRUE, upcast = TRUE) {
 #' Otherwise, provide a DataFrame that the Expr should be evaluated in.
 #' @param i Numeric column to extract. Default is zero (which gives the first
 #' column).
-#' @inheritParams pl_set_options
+#' @inheritParams DataFrame_to_data_frame
 #' @return R object
 #' @examples
 #' pl$lit(1:3)$to_r()

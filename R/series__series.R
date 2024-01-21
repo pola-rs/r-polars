@@ -241,7 +241,7 @@ Series_shape = method_as_property(function() {
 #' Get r vector/list
 #' @description return R list (if polars Series is list)  or vector (any other polars Series type)
 #'
-#' @inheritParams pl_set_options
+#' @inheritParams DataFrame_to_data_frame
 #'
 #' @return R list or vector
 #' @keywords Series
@@ -283,7 +283,7 @@ Series_to_r = \(int64_conversion = polars_options()$int64_conversion) {
 #' @rdname Series_to_r
 #' @name Series_to_vector
 #' @description return R vector (implicit unlist)
-#' @inheritParams pl_set_options
+#' @inheritParams DataFrame_to_data_frame
 #' @return R vector
 #' @keywords Series
 #' series_vec = pl$Series(letters[1:3])
@@ -300,7 +300,7 @@ Series_to_r_vector = Series_to_vector
 #' @rdname Series_to_r
 #' @name Series_to_r_list
 #' @description return R list (implicit as.list)
-#' @inheritParams pl_set_options
+#' @inheritParams DataFrame_to_data_frame
 #' @return R list
 #' @keywords Series
 #' @examples #
