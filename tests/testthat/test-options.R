@@ -3,6 +3,12 @@ test_that("default options", {
   expect_snapshot(polars_options())
 })
 
+test_that("options are validated", {
+  pl$reset_options()
+  options("polars.strictly_immutable" = 42, "polars.debug_polars" = "a")
+  expect_snapshot_error(polars_options())
+  pl$reset_options()
+})
 
 test_that("polars_options()$ read-write", {
   pl$reset_options()

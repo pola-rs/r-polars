@@ -16,3 +16,11 @@
       
       See `?polars_options` for the definition of all options.
 
+# options are validated
+
+    Some polars options have an unexpected value:
+    - strictly_immutable: input must be TRUE or FALSE.
+    - debug_polars: input must be TRUE or FALSE.
+    
+    More info at `?polars_options`.
+
