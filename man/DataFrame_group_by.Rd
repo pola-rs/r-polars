@@ -12,7 +12,7 @@ DataFrame_group_by(..., maintain_order = polars_options()$maintain_order)
 \item{maintain_order}{Keep the same order as the original \code{DataFrame}. Setting
 this to \code{TRUE} makes it more expensive to compute and blocks the possibility
 to run on the streaming engine. The default value can be changed with
-\code{pl$set_options(maintain_order = TRUE)}.}
+\code{options(polars.maintain_order = TRUE)}.}
 }
 \value{
 GroupBy (a DataFrame with special groupby methods like \verb{$agg()})

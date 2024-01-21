@@ -10,8 +10,10 @@ polars_options()
 polars_options_reset()
 }
 \value{
-This returns a named list where the names are option names and values
-are option values.
+\code{polars_options()} returns a named list where the names are option names and
+values are option values.
+
+\code{polars_options_reset()} doesn't return anything.
 }
 \description{
 \code{polars_options()} returns a list of options for polars. Options

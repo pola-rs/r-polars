@@ -39,7 +39,7 @@ test_that("Test sinking data to parquet file", {
       collect()$
       to_series()
   }
-  pl$set_options(rpool_cap = 4)
+  options(polars.rpool_cap = 4)
   rdf_in_bg = pl$LazyFrame()$
     select(pl$lit(tmpf)$map_batches(f_ipc_to_s, in_background = TRUE))$
     collect()$

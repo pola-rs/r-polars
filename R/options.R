@@ -82,8 +82,7 @@ pl_reset_options = function() {
 
 #' Get and reset polars options
 #'
-#' @description
-#' `polars_options()` returns a list of options for polars. Options
+#' @description `polars_options()` returns a list of options for polars. Options
 #' can be set with [`options()`]. Note that **options must be prefixed with
 #' "polars."**, e.g to modify the option `strictly_immutable` you need to pass
 #' `options(polars.strictly_immutable =)`. See below for a description of all
@@ -140,8 +139,11 @@ pl_reset_options = function() {
 #'   will likely only give a speed-up in a `low io - high cpu` scenario. Native
 #'   polars query syntax runs in threads and have no overhead.
 #'
-#' @return This returns a named list where the names are option names and values
-#'   are option values.
+#' @return
+#' `polars_options()` returns a named list where the names are option names and
+#' values are option values.
+#'
+#' `polars_options_reset()` doesn't return anything.
 #'
 #' @export
 #' @examples
@@ -161,6 +163,7 @@ pl_reset_options = function() {
 polars_options = function() {
   out = list(
     debug_polars = getOption("polars.debug_polars"),
+    df_knitr_print = getOption("polars.df_knitr_print"),
     do_not_repeat_call = getOption("polars.do_not_repeat_call"),
     int64_conversion = getOption("polars.int64_conversion"),
     maintain_order = getOption("polars.maintain_order"),
@@ -179,6 +182,7 @@ polars_options_reset = function() {
   options(
     list(
       polars.debug_polars = FALSE,
+      polars.df_knitr_print = "auto",
       polars.do_not_repeat_call = FALSE,
       polars.int64_conversion = "double",
       polars.maintain_order = FALSE,
@@ -411,9 +415,9 @@ pl_with_string_cache = function(expr) {
 #' @keywords options
 #' @examples
 #' default = polars_options()$rpool_cap |> print()
-#' pl$set_options(rpool_cap = 8)
+#' options(polars.rpool_cap = 8)
 #' polars_options()$rpool_cap
-#' pl$set_options(rpool_cap = default)
+#' options(polars.rpool_cap = default)
 #' polars_options()$rpool_cap
 pl_get_global_rpool_cap = function() {
   warning(
@@ -427,7 +431,7 @@ pl_get_global_rpool_cap = function() {
 #' @name set_global_rpool_cap
 pl_set_global_rpool_cap = function(n) {
   warning(
-    "in pl$get_global_rpool_cap(): Deprecated. Use pl$set_options(rpool_cap = ?) instead.",
+    "in pl$get_global_rpool_cap(): Deprecated. Use options(polars.rpool_cap = ?) instead.",
     .Call = NULL
   )
   set_global_rpool_cap(n) |>

@@ -98,7 +98,7 @@ wrap_e = function(e, str_to_lit = TRUE) {
 wrap_e_result = function(e, str_to_lit = TRUE, argname = NULL) {
   # disable call info
   old_option = polars_options()$do_not_repeat_call
-  pl$set_options(do_not_repeat_call = TRUE)
+  options(polars.do_not_repeat_call = TRUE)
 
   # wrap_e and catch nay error in a result
   expr_result = result(
@@ -113,7 +113,7 @@ wrap_e_result = function(e, str_to_lit = TRUE, argname = NULL) {
 
   # restore this option but only if it was originally FALSE
   if (isFALSE(old_option)) {
-    pl$set_options(do_not_repeat_call = FALSE)
+    options(polars.do_not_repeat_call = FALSE)
   }
 
   expr_result
@@ -643,7 +643,7 @@ construct_ProtoExprArray = function(...) {
 #' could theoretically have some downstream implications to the query.
 #' @param agg_list Aggregate list. Map from vector to group in group_by context.
 #' @param in_background Boolean. Whether to execute the map in a background R
-#' process. Combined with setting e.g. `pl$set_options(rpool_cap = 4)` it can speed
+#' process. Combined with setting e.g. `options(polars.rpool_cap = 4)` it can speed
 #' up some slow R functions as they can run in parallel R sessions. The
 #' communication speed between processes is quite slower than between threads.
 #' This will likely only give a speed-up in a "low IO - high CPU" use case.
@@ -666,8 +666,8 @@ construct_ProtoExprArray = function(...) {
 #' a [`$map_batches()`][Expr_map_batches] call is evaluated. Any native
 #' polars computations can still be executed meanwhile. If `in_background = TRUE`,
 #' the map will run in one or more other R sessions and will not have access
-#' to global variables. Use `pl$set_options(rpool_cap = 4)` and `polars_options()$rpool_cap`
-#' to see and view number of parallel R sessions.
+#' to global variables. Use `options(polars.rpool_cap = 4)` and
+#' `polars_options()$rpool_cap` to set and view number of parallel R sessions.
 #'
 #' @examples
 #' pl$DataFrame(iris)$
@@ -689,8 +689,8 @@ construct_ProtoExprArray = function(...) {
 #' )$collect() |> system.time()
 #'
 #' # map in parallel 1: Overhead to start up extra R processes / sessions
-#' pl$set_options(rpool_cap = 0) # drop any previous processes, just to show start-up overhead
-#' pl$set_options(rpool_cap = 4) # set back to 4, the default
+#' options(polars.rpool_cap = 0) # drop any previous processes, just to show start-up overhead
+#' options(polars.rpool_cap = 4) # set back to 4, the default
 #' polars_options()$rpool_cap
 #' pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
 #'   pl$all()$map_batches(\(s) {
@@ -732,7 +732,7 @@ Expr_map_batches = function(f, output_type = NULL, agg_list = FALSE, in_backgrou
 #' @param allow_fail_eval If `FALSE` (default), raise an error if the function
 #' fails. If `TRUE`, the result will be converted to a polars null value.
 #' @param in_background Whether to run the function in a background R process,
-#' default is `FALSE`. Combined with setting e.g. `pl$set_options(rpool_cap = 4)`,
+#' default is `FALSE`. Combined with setting e.g. `options(polars.rpool_cap = 4)`,
 #' this can speed up some slow R functions as they can run in parallel R sessions.
 #' The communication speed between processes is quite slower than between threads.
 #' This will likely only give a speed-up in a "low IO - high CPU" usecase. A
@@ -837,9 +837,9 @@ Expr_map_batches = function(f, output_type = NULL, agg_list = FALSE, in_backgrou
 #'
 #' # first run in parallel: there is some overhead to start up extra R processes
 #' # drop any previous processes, just to show start-up overhead here
-#' pl$set_options(rpool_cap = 0)
+#' options(polars.rpool_cap = 0)
 #' # set back to 4, the default
-#' pl$set_options(rpool_cap = 4)
+#' options(polars.rpool_cap = 4)
 #' polars_options()$rpool_cap
 #'
 #' system.time({

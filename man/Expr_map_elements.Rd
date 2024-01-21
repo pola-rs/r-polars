@@ -26,7 +26,7 @@ value.}
 fails. If \code{TRUE}, the result will be converted to a polars null value.}
 
 \item{in_background}{Whether to run the function in a background R process,
-default is \code{FALSE}. Combined with setting e.g. \code{pl$set_options(rpool_cap = 4)},
+default is \code{FALSE}. Combined with setting e.g. \code{options(polars.rpool_cap = 4)},
 this can speed up some slow R functions as they can run in parallel R sessions.
 The communication speed between processes is quite slower than between threads.
 This will likely only give a speed-up in a "low IO - high CPU" usecase. A
@@ -140,9 +140,9 @@ system.time({
 
 # first run in parallel: there is some overhead to start up extra R processes
 # drop any previous processes, just to show start-up overhead here
-pl$set_options(rpool_cap = 0)
+options(polars.rpool_cap = 0)
 # set back to 4, the default
-pl$set_options(rpool_cap = 4)
+options(polars.rpool_cap = 4)
 polars_options()$rpool_cap
 
 system.time({

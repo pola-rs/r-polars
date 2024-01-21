@@ -1108,7 +1108,7 @@ test_that("strictly_immutable = FALSE", {
   expect_true(all(names(df) != names(df_immutable_copy)))
 
   # setting and option returns the previous/state state as defualt
-  pl$set_options(strictly_immutable = FALSE)
+  options(polars.strictly_immutable = FALSE)
 
   # check change setting took effect
   df = pl$DataFrame(iris)

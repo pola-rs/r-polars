@@ -88,7 +88,7 @@ test_that("shift    _and_fill", {
 
 
 test_that("groupby, lazygroupby unpack + charvec same as list of strings", {
-  pl$set_options(maintain_order = TRUE)
+  options(polars.maintain_order = TRUE)
   df = pl$DataFrame(mtcars)
   to_l = \(x) (if (inherits(x, "RPolarsDataFrame")) x else x$collect())$to_list()
   for (x in list(df, df$lazy())) {
@@ -98,11 +98,11 @@ test_that("groupby, lazygroupby unpack + charvec same as list of strings", {
     expect_identical(df1 |> to_l(), df2 |> to_l())
     expect_identical(df1 |> to_l(), df3 |> to_l())
   }
-  pl$set_options(maintain_order = FALSE)
+  options(polars.maintain_order = FALSE)
 })
 
 test_that("agg, lazygroupby unpack + charvec same as list of strings", {
-  pl$set_options(maintain_order = TRUE)
+  options(polars.maintain_order = TRUE)
   df = pl$DataFrame(mtcars)
   to_l = \(x) (if (inherits(x, "RPolarsDataFrame")) x else x$collect())$to_list()
   for (x in list(df, df$lazy())) {
@@ -112,7 +112,7 @@ test_that("agg, lazygroupby unpack + charvec same as list of strings", {
     expect_identical(df1 |> to_l(), df2 |> to_l())
     expect_identical(df1 |> to_l(), df3 |> to_l())
   }
-  pl$set_options(maintain_order = FALSE)
+  options(polars.maintain_order = FALSE)
 })
 
 

@@ -6,6 +6,7 @@
       Options:
       ========                         
       debug_polars        FALSE
+      df_knitr_print       auto
       do_not_repeat_call  FALSE
       int64_conversion   double
       maintain_order      FALSE

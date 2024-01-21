@@ -41,9 +41,9 @@ other workers can still continue any native polars parts as much as possible.
 }
 \examples{
 default = polars_options()$rpool_cap |> print()
-pl$set_options(rpool_cap = 8)
+options(polars.rpool_cap = 8)
 polars_options()$rpool_cap
-pl$set_options(rpool_cap = default)
+options(polars.rpool_cap = default)
 polars_options()$rpool_cap
 }
 \keyword{options}
