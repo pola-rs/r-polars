@@ -173,6 +173,98 @@ test_that("tests for vctrs_rcrd", {
 })
 
 
+test_that("from arrow Table and ChunkedArray", {
+  skip_if_not_installed("arrow")
+
+  # support plain chunked Table
+  l = list(
+    df1 = data.frame(val = c(1, 2, 3), blop = c("a", "b", "c")),
+    df2 = data.frame(val = c(4, 5, 6), blop = c("a", "b", "c"))
+  )
+  at = lapply(l, arrow::as_arrow_table) |> do.call(what = rbind)
+
+  # chunked conversion
+  expect_identical(
+    as_polars_df.ArrowTabular(at)$to_list(),
+    as.list(at)
+  )
+  expect_identical(
+    lapply(at$columns, \(x) as_polars_series.ChunkedArray(x)$to_r()),
+    unname(as.list(at))
+  )
+
+  # no rechunk
+  expect_identical(
+    lapply(at$columns, \(x) length(as_polars_series.ChunkedArray(x, rechunk = FALSE)$chunk_lengths())),
+    lapply(at$columns, \(x) x$num_chunks)
+  )
+  expect_error(expect_identical(
+    lapply(at$columns, \(x) length(as_polars_series.ChunkedArray(x, rechunk = TRUE)$chunk_lengths())),
+    lapply(at$columns, \(x) x$num_chunks)
+  ))
+  expect_identical(
+    as_polars_df.ArrowTabular(at, rechunk = FALSE)$
+      select(pl$all()$map_batches(\(s) s$chunk_lengths()))$
+      to_list() |>
+      lapply(length) |>
+      unname(),
+    lapply(at$columns, \(x) x$num_chunks)
+  )
+
+  expect_error(expect_identical(
+    as_polars_df.ArrowTabular(at, rechunk = TRUE)$
+      select(pl$all()$map_batches(\(s) s$chunk_lengths()))$
+      to_list() |>
+      lapply(length) |>
+      unname(),
+    lapply(at$columns, \(x) x$num_chunks)
+  ))
+
+
+  # #not supported yet
+  # #chunked data with factors
+  l = list(
+    df1 = data.frame(factor = factor(c("apple", "apple", "banana"))),
+    df2 = data.frame(factor = factor(c("apple", "apple", "clementine")))
+  )
+  at = lapply(l, arrow::arrow_table) |> do.call(what = rbind)
+  df = as_polars_df.ArrowTabular(at)
+  expect_identical(as.data.frame(at), as.data.frame(df))
+
+  # chunked data with factors and regular integer32
+  at2 = lapply(l, \(df) {
+    df$value = 1:3
+    df
+  }) |>
+    lapply(arrow::arrow_table) |>
+    do.call(what = rbind)
+  df2 = as_polars_df.ArrowTabular(at2)
+  expect_identical(as.data.frame(at2), as.data.frame(df2))
+
+
+  # use schema override
+  df = as_polars_df.ArrowTabular(
+    arrow::arrow_table(iris),
+    schema_overrides = list(Sepal.Length = pl$Float32, Species = pl$String)
+  )
+  iris_str = iris
+  iris_str$Species = as.character(iris_str$Species)
+  expect_error(expect_equal(df$to_list(), as.list(iris_str)))
+  expect_equal(df$to_list(), as.list(iris_str), tolerance = 0.0001)
+
+  # change column name via char schema
+  char_schema = names(iris)
+  char_schema[1] = "Alice"
+  expect_identical(
+    as_polars_df.ArrowTabular(
+      arrow::arrow_table(iris),
+      schema = char_schema
+    )$columns,
+    char_schema
+  )
+})
+
+
 test_that("can convert an arrow Table contains dictionary<large_string, uint32> type, issue #725", {
   skip_if_not_installed("arrow")
 

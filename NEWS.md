@@ -59,6 +59,8 @@
     `$list$len()` instead (#724).
 -   `as_polars_df()` and `as_polars_series()` for the `arrow` package classes have been
     rewritten and work better (#727).
+-   `pl$from_arrow()` is deprecated and will be removed in 0.14.0.
+    Use `as_polars_df()` or `as_polars_series()` instead (#728).
 
 ## polars 0.12.2
 
