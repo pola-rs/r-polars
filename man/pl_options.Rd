@@ -48,7 +48,7 @@ the package \code{bit64} to be attached).
 }}
 }
 \value{
-\code{pl$options} returns a named list with the value (\code{TRUE} or \code{FALSE}) of
+\code{polars_options()} returns a named list with the value (\code{TRUE} or \code{FALSE}) of
 each option.
 
 \code{pl$set_options()} silently modifies the options values.
@@ -60,8 +60,8 @@ Get and set polars options. See sections "Value" and "Examples" below for
 more details.
 }
 \details{
-\code{pl$options$rpool_active} indicates the number of R sessions already
-spawned in pool. \code{pl$options$rpool_cap} indicates the maximum number of new R
+\code{polars_options()$rpool_active} indicates the number of R sessions already
+spawned in pool. \code{polars_options()$rpool_cap} indicates the maximum number of new R
 sessions that can be spawned. Anytime a polars thread worker needs a background
 R session specifically to run R code embedded in a query via
 \code{\link[=Expr_map_batches]{$map_batches(..., in_background = TRUE)}} or
@@ -79,7 +79,7 @@ polars query syntax runs in threads and have no overhead.
 }
 \examples{
 pl$set_options(maintain_order = TRUE, strictly_immutable = FALSE)
-pl$options
+polars_options()
 
 # these options only accept booleans (TRUE or FALSE)
 tryCatch(

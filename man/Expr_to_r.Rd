@@ -8,7 +8,7 @@ Expr_to_r(
   df = NULL,
   i = 0,
   ...,
-  int64_conversion = pl$options$int64_conversion
+  int64_conversion = polars_options()$int64_conversion
 )
 }
 \arguments{

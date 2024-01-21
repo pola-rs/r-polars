@@ -7,7 +7,7 @@
 DataFrame_to_list(
   unnest_structs = TRUE,
   ...,
-  int64_conversion = pl$options$int64_conversion
+  int64_conversion = polars_options()$int64_conversion
 )
 }
 \arguments{

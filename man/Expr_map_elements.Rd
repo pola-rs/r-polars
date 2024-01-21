@@ -143,7 +143,7 @@ system.time({
 pl$set_options(rpool_cap = 0)
 # set back to 4, the default
 pl$set_options(rpool_cap = 4)
-pl$options$rpool_cap
+polars_options()$rpool_cap
 
 system.time({
   pl$LazyFrame(iris)$group_by("Species")$agg(
@@ -155,7 +155,7 @@ system.time({
 })
 
 # second run in parallel: this reuses R processes in "polars global_rpool".
-pl$options$rpool_cap
+polars_options()$rpool_cap
 system.time({
   pl$LazyFrame(iris)$group_by("Species")$agg(
     pl$all()$map_elements(\(s) {

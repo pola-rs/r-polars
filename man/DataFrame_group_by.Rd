@@ -4,7 +4,7 @@
 \alias{DataFrame_group_by}
 \title{Group a DataFrame}
 \usage{
-DataFrame_group_by(..., maintain_order = pl$options$maintain_order)
+DataFrame_group_by(..., maintain_order = polars_options()$maintain_order)
 }
 \arguments{
 \item{...}{Any Expr(s) or string(s) naming a column.}

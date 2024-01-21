@@ -35,7 +35,7 @@ check_no_missing_args = function(
 #' @noRd
 #' @return invisible(NULL)
 verify_method_call = function(Class_env, Method_name, call = sys.call(sys.nframe() - 2L), class_name = NULL) {
-  if (getOption("polars.debug_polars", FALSE)) {
+  if (polars_options()$debug_polars) {
     class_name = class_name %||% as.character(as.list(match.call())$Class_env)
     cat("[", format(subtimer_ms(), digits = 4), "ms]\n", class_name, "$", Method_name, "() -> ", sep = "")
   }
@@ -46,7 +46,7 @@ verify_method_call = function(Class_env, Method_name, call = sys.call(sys.nframe
         "syntax error:", Method_name, "is not a method/attribute of the class", class_name,
 
         # add call to error messages
-        if (!getOption("polars.do_not_repeat_call")) {
+        if (!polars_options()$do_not_repeat_call) {
           paste(
             "\n when calling method:\n",
             paste(capture.output(print(call)), collapse = "\n")

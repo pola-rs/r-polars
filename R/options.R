@@ -332,7 +332,6 @@ print.polars_options = function(x, ...) {
 }
 
 validate_polars_options = function(options) {
-
   results = list()
 
   ### Check functions
@@ -362,8 +361,10 @@ validate_polars_options = function(options) {
   }
 
   ### Perform checks
-  for (i in c("strictly_immutable", "no_messages", "do_not_repeat_call",
-              "maintain_order", "debug_polars")) {
+  for (i in c(
+    "strictly_immutable", "no_messages", "do_not_repeat_call",
+    "maintain_order", "debug_polars"
+  )) {
     results[[i]] = do.call(is_bool2, list(options[[i]]))
   }
   results[["int64_conversion"]] = c(
@@ -388,4 +389,3 @@ validate_polars_options = function(options) {
     stop(paste0(msg, bullets, "\n\nMore info at `?polars_options`."))
   }
 }
-

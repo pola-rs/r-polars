@@ -66,7 +66,7 @@ ExprName_keep = function() {
 #' )
 ExprName_map = function(fun) {
   if (
-    !getOption("polars.no_messages") &&
+    !polars_options()$no_messages &&
       !exists(".warn_map_alias", envir = runtime_state)
   ) {
     assign(".warn_map_alias", 1L, envir = runtime_state)

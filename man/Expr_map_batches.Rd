@@ -50,7 +50,7 @@ so the global environment might change between the start of the query and the mo
 a \code{\link[=Expr_map_batches]{$map_batches()}} call is evaluated. Any native
 polars computations can still be executed meanwhile. If \code{in_background = TRUE},
 the map will run in one or more other R sessions and will not have access
-to global variables. Use \code{pl$set_options(rpool_cap = 4)} and \code{pl$options$rpool_cap}
+to global variables. Use \code{pl$set_options(rpool_cap = 4)} and \code{polars_options()$rpool_cap}
 to see and view number of parallel R sessions.
 }
 \examples{
@@ -75,7 +75,7 @@ pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
 # map in parallel 1: Overhead to start up extra R processes / sessions
 pl$set_options(rpool_cap = 0) # drop any previous processes, just to show start-up overhead
 pl$set_options(rpool_cap = 4) # set back to 4, the default
-pl$options$rpool_cap
+polars_options()$rpool_cap
 pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
   pl$all()$map_batches(\(s) {
     Sys.sleep(.1)
@@ -84,7 +84,7 @@ pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
 )$collect() |> system.time()
 
 # map in parallel 2: Reuse R processes in "polars global_rpool".
-pl$options$rpool_cap
+polars_options()$rpool_cap
 pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
   pl$all()$map_batches(\(s) {
     Sys.sleep(.1)

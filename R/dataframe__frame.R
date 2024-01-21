@@ -291,7 +291,7 @@ DataFrame.property_setters = new.env(parent = emptyenv())
     pstop(err = paste("no setter method for", name))
   }
 
-  if (getOption("polars.strictly_immutable")) self = self$clone()
+  if (polars_options()$strictly_immutable) self = self$clone()
   func = DataFrame.property_setters[[name]]
   func(self, value)
   self
@@ -1478,7 +1478,6 @@ DataFrame_rename = function(...) {
 #'
 #' df$describe()
 DataFrame_describe = function(percentiles = c(.25, .75), interpolation = "nearest") {
-
   uw = \(res) unwrap(res, "in $describe():")
 
   if (length(self$columns) == 0) {
@@ -1574,27 +1573,27 @@ DataFrame_describe = function(percentiles = c(.25, .75), interpolation = "neares
     # Calculate metrics in parallel
     df_metrics = self$
       select(
-        unlist(
-          list(
-            pl$all()$count()$name$prefix(paste0("count", custom_sep)),
-            pl$all()$null_count()$name$prefix(paste0("null_count", custom_sep)),
-            mean_exprs,
-            std_exprs,
-            min_exprs,
-            percentile_exprs,
-            max_exprs
-          ),
-          recursive = FALSE
-        )
+      unlist(
+        list(
+          pl$all()$count()$name$prefix(paste0("count", custom_sep)),
+          pl$all()$null_count()$name$prefix(paste0("null_count", custom_sep)),
+          mean_exprs,
+          std_exprs,
+          min_exprs,
+          percentile_exprs,
+          max_exprs
+        ),
+        recursive = FALSE
       )
+    )
 
     df_metrics$
       transpose(include_header = TRUE)$
       with_columns(
-        pl$col("column")$str$split_exact(custom_sep, 1)$
-          struct$rename_fields(c("describe", "variable"))$
-          alias("fields")
-      )$
+      pl$col("column")$str$split_exact(custom_sep, 1)$
+        struct$rename_fields(c("describe", "variable"))$
+        alias("fields")
+    )$
       unnest("fields")$
       drop("column")$
       pivot(index = "describe", columns = "variable", values = "column_0")$

@@ -458,7 +458,7 @@ Series_append = function(other, immutable = TRUE) {
   if (!isFALSE(immutable)) {
     c(self, other)
   } else {
-    if (getOption("polars.strictly_immutable")) {
+    if (polars_options()$strictly_immutable) {
       stop(paste(
         "append(other , immutable=FALSE) breaks immutability, to enable mutable features run:\n",
         "`pl$set_options(strictly_immutable = FALSE)`"
@@ -730,7 +730,7 @@ Series_is_sorted = function(descending = FALSE) {
 #' s = pl$Series(1:4)$set_sorted()
 #' s$flags
 Series_set_sorted = function(descending = FALSE, in_place = FALSE) {
-  if (in_place && getOption("polars.strictly_immutable")) {
+  if (in_place && polars_options()$strictly_immutable) {
     stop(paste(
       "in_place set_sorted() breaks immutability, to enable mutable features run:\n",
       "`pl$set_options(strictly_immutable = FALSE)`"
@@ -760,7 +760,7 @@ Series_set_sorted = function(descending = FALSE, in_place = FALSE) {
 #' @examples
 #' pl$Series(c(1, NA, NaN, Inf, -Inf))$sort()
 Series_sort = function(descending = FALSE, in_place = FALSE) {
-  if (in_place && getOption("polars.strictly_immutable")) {
+  if (in_place && polars_options()$strictly_immutable) {
     stop(paste(
       "in_place sort breaks immutability, to enable mutable features run:\n",
       "`pl$set_options(strictly_immutable = FALSE)`"
@@ -829,7 +829,7 @@ Series_rename = function(name, in_place = FALSE) {
   if (identical(self$name, name)) {
     return(self)
   } # no change needed
-  if (in_place && getOption("polars.strictly_immutable")) {
+  if (in_place && polars_options()$strictly_immutable) {
     stop(paste(
       "in_place breaks \"objects are immutable\" which is expected in R.",
       "To enable mutable features run: `pl$set_options(strictly_immutable = FALSE)`"
