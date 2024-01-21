@@ -3,24 +3,27 @@
 \name{ExprList_tail}
 \alias{ExprList_tail}
 \alias{list_tail}
-\title{Tails of sublists}
-\format{
-function
-}
+\title{Get the last \code{n} values of a list}
 \usage{
 ExprList_tail(n = 5L)
 }
 \arguments{
-\item{n}{Numeric or Expr, number of values to return for each sublist.}
+\item{n}{Number of values to return for each sublist. Can be an Expr. Strings
+are parsed as column names.}
 }
 \value{
 Expr
 }
 \description{
-tail the first \code{n} values of every sublist.
+Get the last \code{n} values of a list
 }
 \examples{
-df = pl$DataFrame(list(a = list(1:4, c(10L, 2L, 1L))))
-df$select(pl$col("a")$list$tail(2))
+df = pl$DataFrame(
+  s = list(1:4, c(10L, 2L, 1L)),
+  n = 1:2
+)
+df$with_columns(
+  tail_by_expr = pl$col("s")$list$tail("n"),
+  tail_by_lit = pl$col("s")$list$tail(2)
+)
 }
-\keyword{ExprList}

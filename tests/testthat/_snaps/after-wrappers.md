@@ -332,7 +332,7 @@
       [133] "list_contains"              "list_diff"                 
       [135] "list_eval"                  "list_gather"               
       [137] "list_get"                   "list_join"                 
-      [139] "list_lengths"               "list_max"                  
+      [139] "list_len"                   "list_max"                  
       [141] "list_mean"                  "list_min"                  
       [143] "list_reverse"               "list_set_operation"        
       [145] "list_shift"                 "list_slice"                
