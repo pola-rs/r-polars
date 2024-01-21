@@ -1618,7 +1618,7 @@ DataFrame_describe = function(percentiles = c(.25, .75), interpolation = "neares
 #' pl$DataFrame(iris)$glimpse()
 DataFrame_glimpse = function(..., return_as_string = FALSE) {
   # guard input
-  if (!is_bool(return_as_string)) {
+  if (!is_scalar_bool(return_as_string)) {
     RPolarsErr$new()$
       bad_robj(return_as_string)$
       mistyped("bool")$

@@ -1841,7 +1841,7 @@ Expr_arg_unique = use_extendr_wrapper
 #' @examples
 #' pl$DataFrame(iris)$select(pl$col("Species")$unique())
 Expr_unique = function(maintain_order = FALSE) {
-  if (!is_bool(maintain_order)) stop("param maintain_order must be a bool")
+  if (!is_scalar_bool(maintain_order)) stop("param maintain_order must be a bool")
   if (maintain_order) {
     .pr$Expr$unique_stable(self)
   } else {
@@ -2207,7 +2207,7 @@ Expr_hash = function(seed = 0, seed_1 = NULL, seed_2 = NULL, seed_3 = NULL) {
 #' df = pl$DataFrame(x = 1:5, schema = list(x = pl$Int64))
 #' df$select(pl$all()$reinterpret())
 Expr_reinterpret = function(signed = TRUE) {
-  if (!is_bool(signed)) stop("in reinterpret() : arg signed must be a bool")
+  if (!is_scalar_bool(signed)) stop("in reinterpret() : arg signed must be a bool")
   .pr$Expr$reinterpret(self, signed)
 }
 

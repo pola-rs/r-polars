@@ -861,7 +861,7 @@ Series_rename = function(name, in_place = FALSE) {
 #' pl$Series(1:2, "bob")$rep(3)
 Series_rep = function(n, rechunk = TRUE) {
   if (!is.numeric(n)) stop("n must be numeric")
-  if (!is_bool(rechunk)) stop("rechunk must be a bool")
+  if (!is_scalar_bool(rechunk)) stop("rechunk must be a bool")
   unwrap(.pr$Series$rep(self, n, rechunk), "in $rep():")
 }
 

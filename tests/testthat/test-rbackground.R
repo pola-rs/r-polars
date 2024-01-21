@@ -77,18 +77,28 @@ test_that("reset rpool_cap", {
 
 test_that("rpool errors", {
   skip_if_not(Sys.getenv("CI") == "true")
-  ctx = options(polars.rpool_cap = c(1, 2)) |> get_err_ctx()
-  expect_identical(ctx$BadArgument, "rpool_cap")
-  expect_true(startsWith(ctx$TypeMismatch, "i64"))
-
-  ctx = options(polars.rpool_cap = -1) |> get_err_ctx()
-  expect_identical(ctx$ValueOutOfScope, "cannot be less than zero")
-
-  ctx =
-    {
-      polars_optenv$rpool_active = 0
-    } |> get_err_ctx()
-  expect_true(endsWith(ctx$PlainErrorMessage, "rpool_active cannot be set directly"))
+  skip_if_not_installed("withr")
+  withr::with_options(
+    list(polars.rpool_cap = c(1, 2)),
+    expect_error(
+      polars_options(),
+      "integer of length 1"
+    )
+  )
+  withr::with_options(
+    list(polars.rpool_cap = -1),
+    expect_error(
+      polars_options(),
+      "integer of length 1"
+    )
+  )
+  withr::with_options(
+    list(polars.rpool_cap = 0),
+    expect_error(
+      polars_options(),
+      "integer of length 1"
+    )
+  )
 })
 
 test_that("reduce cap and active while jobs in queue", {

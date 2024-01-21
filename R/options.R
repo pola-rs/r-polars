@@ -215,10 +215,18 @@ validate_polars_options = function(options) {
   results = list()
 
   ### Check functions
-  is_bool2 = function(x) {
-    res = is_bool(x)
+  is_scalar_bool2 = function(x) {
+    res = is_scalar_bool(x)
     if (!res) {
       "input must be TRUE or FALSE."
+    } else {
+      TRUE
+    }
+  }
+  is_scalar_numeric2 = function(x) {
+    res = is_scalar_numeric(x) && x > 0
+    if (!res) {
+      "input must be a positive integer of length 1."
     } else {
       TRUE
     }
@@ -245,8 +253,11 @@ validate_polars_options = function(options) {
     "strictly_immutable", "no_messages", "do_not_repeat_call",
     "maintain_order", "debug_polars"
   )) {
-    results[[i]] = do.call(is_bool2, list(options[[i]]))
+    results[[i]] = do.call(is_scalar_bool2, list(options[[i]]))
   }
+  results[["rpool_cap"]] = c(
+    do.call(is_scalar_numeric2, list(options[["rpool_cap"]]))
+  )
   results[["int64_conversion"]] = c(
     do.call(is_acceptable_choice, list(options[["int64_conversion"]])),
     do.call(bit64_is_attached, list(options[["int64_conversion"]]))

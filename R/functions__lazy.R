@@ -722,7 +722,7 @@ pl_struct = function(
       if (!is.null(schema)) {
         struct_expr = struct_expr$cast(pl$Struct(schema))
       }
-      if (!is_bool(eager)) {
+      if (!is_scalar_bool(eager)) {
         return(Err("arg [eager] is not a bool"))
       }
       if (eager) {
