@@ -232,7 +232,7 @@ validate_polars_options = function(options) {
     }
   }
   bit64_is_attached = function(x) {
-    res = if (x == "bit64") x %in% .packages() else TRUE
+    res = if (!is.null(x) && x == "bit64") x %in% .packages() else TRUE
     if (!res) {
       "package `bit64` must be attached to use `int64_conversion = \"bit64\"`."
     } else {
