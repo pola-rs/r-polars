@@ -28,9 +28,9 @@ arrow_to_rdf = function(at, schema = NULL, schema_overrides = NULL, rechunk = TR
 
     if (is_arrow_dictonary(column)) {
       column = coerce_arrow(column)
-      special_cols[[col_name]] = unwrap(arrow_to_rseries_result(col_name, column, rechunk))
+      special_cols[[col_name]] = as_polars_series.ChunkedArray(column, col_name, rechunk = rechunk)
     } else if (is_arrow_struct(column) && column$num_chunks > 1L) {
-      special_cols[[col_name]] = unwrap(arrow_to_rseries_result(col_name, column, rechunk))
+      special_cols[[col_name]] = as_polars_series.ChunkedArray(column, col_name, rechunk = rechunk)
     } else {
       data_cols[[col_name]] = column
     }
@@ -140,7 +140,11 @@ coerce_arrow = function(arr, rechunk = TRUE) {
 }
 
 
-
+#' Internal function of `as_polars_series()` for `arrow::Array` and `arrow::ChunkedArray` class objects.
+#'
+#' This is a copy of Python Polars' `arrow_to_pyseries` function.
+#' @noRd
+#' @return A result inclueds RPolarsSeries
 arrow_to_rseries_result = function(name, values, rechunk = TRUE) {
   ## must rechunk
   array = coerce_arrow(values)

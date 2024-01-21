@@ -282,3 +282,16 @@ as_polars_series.data.frame = function(x, name = NULL, ...) {
 #' @rdname as_polars_series
 #' @export
 as_polars_series.vctrs_rcrd = as_polars_series.data.frame
+
+
+#' @rdname as_polars_series
+#' @param rechunk A logical flag (default `TRUE`). Make sure that all data is in contiguous memory.
+#' @export
+as_polars_series.Array = function(x, name = NULL, ..., rechunk = TRUE) {
+  arrow_to_rseries_result(name = name %||% "", values = x, rechunk = rechunk) |>
+    unwrap()
+}
+
+#' @rdname as_polars_series
+#' @export
+as_polars_series.ChunkedArray = as_polars_series.Array

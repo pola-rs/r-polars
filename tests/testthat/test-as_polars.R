@@ -101,12 +101,16 @@ make_as_polars_series_cases = function() {
     "list", list(1:4), "",
     "data.frame", data.frame(x = 1, y = letters[1]), "",
     "POSIXlt", as.POSIXlt("1900-01-01"), "",
+    "arrow Array", arrow::arrow_array(1), "",
+    "arrow ChunkedArray", arrow::chunked_array(1), "",
   )
 }
 
 
 patrick::with_parameters_test_that("as_polars_series S3 methods",
   {
+    skip_if_not_installed("arrow")
+
     pl_series = as_polars_series(x)
     expect_s3_class(pl_series, "RPolarsSeries")
 
@@ -184,8 +188,11 @@ test_that("can convert an arrow Table contains dictionary<large_string, uint32> 
   )
 
   at = arrow::arrow_table(foo = da_string, bar = da_large_string)
+  ps = as_polars_series.Array(da_large_string)
   pdf = as_polars_df.ArrowTabular(at)
 
+  expect_s3_class(ps, "RPolarsSeries")
+  expect_equal(ps$to_r(), factor(c("x", "y", "z")))
   expect_s3_class(pdf, "RPolarsDataFrame")
   expect_equal(
     pdf$to_data_frame(),
