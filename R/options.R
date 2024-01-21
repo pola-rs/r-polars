@@ -386,6 +386,6 @@ validate_polars_options = function(options) {
   if (length(errors) > 0) {
     msg = "Some polars options have an unexpected value:\n"
     bullets = paste0("- ", names(errors), ": ", errors, collapse = "\n")
-    stop(paste0(msg, bullets, "\n\nMore info at `?polars_options`."))
+    stop(paste0(msg, bullets, "\n\nMore info at `?polars_options`."), call. = FALSE)
   }
 }

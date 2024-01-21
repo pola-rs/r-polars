@@ -259,7 +259,9 @@ pl_show_all_public_methods = function(class_names = NULL) {
 #' @noRd
 "$.pl_polars_env" = function(self, name) {
   # print called private class in debug mode
-  if (polars_options()$debug_polars) {
+  # Exception for pl$reset_options: we don't want to check for options validity
+  # because we're resetting options to their default anyway
+  if (!name %in% c("reset_options", "set_options") && polars_options()$debug_polars) {
     cat(
       "[", format(subtimer_ms("TIME? "), digits = 4), "ms]\npl$", name, "() -> ",
       sep = ""
