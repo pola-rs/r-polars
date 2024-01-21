@@ -1023,7 +1023,7 @@ impl RPolarsExpr {
 
     //arr/list methods
 
-    fn list_lengths(&self) -> Self {
+    fn list_len(&self) -> Self {
         self.0.clone().list().len().into()
     }
 
@@ -1136,11 +1136,11 @@ impl RPolarsExpr {
     fn list_to_struct(
         &self,
         n_field_strategy: Robj,
-        name_gen: Robj,
+        fields: Robj,
         upper_bound: Robj,
     ) -> RResult<Self> {
         let width_strat = robj_to!(ListToStructWidthStrategy, n_field_strategy)?;
-        let name_gen = robj_to!(Option, Robj, name_gen)?.map(|robj| {
+        let fields = robj_to!(Option, Robj, fields)?.map(|robj| {
             let par_fn: ParRObj = robj.into();
             let f: Arc<(dyn Fn(usize) -> SmartString<LazyCompact> + Send + Sync + 'static)> =
                 pl::Arc::new(move |idx: usize| {
@@ -1155,7 +1155,7 @@ impl RPolarsExpr {
         let ub = robj_to!(usize, upper_bound)?;
         Ok(RPolarsExpr(self.0.clone().list().to_struct(
             width_strat,
-            name_gen,
+            fields,
             ub,
         )))
     }

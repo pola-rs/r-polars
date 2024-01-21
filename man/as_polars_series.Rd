@@ -8,6 +8,8 @@
 \alias{as_polars_series.POSIXlt}
 \alias{as_polars_series.data.frame}
 \alias{as_polars_series.vctrs_rcrd}
+\alias{as_polars_series.Array}
+\alias{as_polars_series.ChunkedArray}
 \title{To polars Series}
 \usage{
 as_polars_series(x, name = NULL, ...)
@@ -23,6 +25,10 @@ as_polars_series(x, name = NULL, ...)
 \method{as_polars_series}{data.frame}(x, name = NULL, ...)
 
 \method{as_polars_series}{vctrs_rcrd}(x, name = NULL, ...)
+
+\method{as_polars_series}{Array}(x, name = NULL, ..., rechunk = TRUE)
+
+\method{as_polars_series}{ChunkedArray}(x, name = NULL, ..., rechunk = TRUE)
 }
 \arguments{
 \item{x}{Object to convert into a polars Series}
@@ -31,6 +37,8 @@ as_polars_series(x, name = NULL, ...)
 If \code{NULL} (default), the name of \code{x} is used or an unnamed Series is created.}
 
 \item{...}{Additional arguments passed to methods.}
+
+\item{rechunk}{A logical flag (default \code{TRUE}). Make sure that all data is in contiguous memory.}
 }
 \value{
 a \link[=Series_class]{Series}

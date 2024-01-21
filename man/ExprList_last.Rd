@@ -3,10 +3,7 @@
 \name{ExprList_last}
 \alias{ExprList_last}
 \alias{list_last}
-\title{Last in sublists}
-\format{
-function
-}
+\title{Get the last value in a list}
 \usage{
 ExprList_last()
 }
@@ -14,10 +11,11 @@ ExprList_last()
 Expr
 }
 \description{
-Get the last value of the sublists.
+Get the last value in a list
 }
 \examples{
-df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) # NULL or integer() or list()
-df$select(pl$col("a")$list$last())
+df = pl$DataFrame(list(a = list(3:1, NULL, 1:2)))
+df$with_columns(
+  last = pl$col("a")$list$last()
+)
 }
-\keyword{ExprList}

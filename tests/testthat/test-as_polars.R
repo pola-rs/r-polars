@@ -16,7 +16,8 @@ make_as_polars_df_cases = function() {
     "polars_lazy_rolling_group_by", pl$LazyFrame(test_df)$rolling("col_int", period = "1i"),
     "polars_group_by_dynamic", pl$DataFrame(test_df)$group_by_dynamic("col_int", every = "1i"),
     "polars_lazy_group_by_dynamic", pl$LazyFrame(test_df)$group_by_dynamic("col_int", every = "1i"),
-    "arrow Table", arrow::as_arrow_table(test_df)
+    "arrow Table", arrow::as_arrow_table(test_df),
+    "arrow RecordBatch", arrow::as_record_batch(test_df),
   )
 }
 
@@ -100,12 +101,16 @@ make_as_polars_series_cases = function() {
     "list", list(1:4), "",
     "data.frame", data.frame(x = 1, y = letters[1]), "",
     "POSIXlt", as.POSIXlt("1900-01-01"), "",
+    "arrow Array", arrow::arrow_array(1), "",
+    "arrow ChunkedArray", arrow::chunked_array(1), "",
   )
 }
 
 
 patrick::with_parameters_test_that("as_polars_series S3 methods",
   {
+    skip_if_not_installed("arrow")
+
     pl_series = as_polars_series(x)
     expect_s3_class(pl_series, "RPolarsSeries")
 
@@ -164,5 +169,36 @@ test_that("tests for vctrs_rcrd", {
   expect_identical(
     dim(as_polars_df(tibble::tibble(foo = vec))),
     c(2L, 1L)
+  )
+})
+
+
+test_that("can convert an arrow Table contains dictionary<large_string, uint32> type, issue #725", {
+  skip_if_not_installed("arrow")
+
+  da_string = arrow::Array$create(
+    factor(c("x", "y", "z"))
+  )
+
+  da_large_string = da_string$cast(
+    arrow::dictionary(
+      index_type = arrow::uint32(),
+      value_type = arrow::large_utf8()
+    )
+  )
+
+  at = arrow::arrow_table(foo = da_string, bar = da_large_string)
+  ps = as_polars_series.Array(da_large_string)
+  pdf = as_polars_df.ArrowTabular(at)
+
+  expect_s3_class(ps, "RPolarsSeries")
+  expect_equal(ps$to_r(), factor(c("x", "y", "z")))
+  expect_s3_class(pdf, "RPolarsDataFrame")
+  expect_equal(
+    pdf$to_data_frame(),
+    data.frame(
+      foo = factor(c("x", "y", "z")),
+      bar = factor(c("x", "y", "z"))
+    )
   )
 })
