@@ -161,8 +161,16 @@ pl_reset_options = function() {
 #' # reset options to their default value
 #' polars_options_reset()
 polars_options = function() {
+  # rpool_cap is a special case because setting its value has to be done through
+  # set_global_rpool_cap(). This means that we need to check that its value is
+  # correct before all the others since there's no check for this on the Rust
+  # side.
   rpool_cap = getOption("polars.rpool_cap")
   if (!is.null(rpool_cap)) {
+    check = is_scalar_numeric(rpool_cap) && rpool_cap >= 0
+    if (!check) {
+      stop("Option `rpool_cap` must be a positive integer of length 1.")
+    }
     set_global_rpool_cap(rpool_cap)
   }
 
@@ -228,14 +236,6 @@ validate_polars_options = function(options) {
       TRUE
     }
   }
-  is_scalar_numeric2 = function(x) {
-    res = is_scalar_numeric(x) && x >= 0
-    if (!res) {
-      "input must be a positive integer of length 1."
-    } else {
-      TRUE
-    }
-  }
   is_acceptable_choice = function(x) {
     res = !is.null(x) && x %in% c("bit64", "double", "string")
     if (!res) {
@@ -260,9 +260,6 @@ validate_polars_options = function(options) {
   )) {
     results[[i]] = do.call(is_scalar_bool2, list(options[[i]]))
   }
-  results[["rpool_cap"]] = c(
-    do.call(is_scalar_numeric2, list(options[["rpool_cap"]]))
-  )
   results[["int64_conversion"]] = c(
     do.call(is_acceptable_choice, list(options[["int64_conversion"]])),
     do.call(bit64_is_attached, list(options[["int64_conversion"]]))
