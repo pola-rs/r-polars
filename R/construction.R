@@ -1,58 +1,71 @@
+#' Internal function of `as_polars_df()` for `arrow::Table` class objects.
+#'
+#' This is a copy of Python Polars' `arrow_to_pydf` function.
+#' @noRd
+#' @return RPolarsDataFrame
 arrow_to_rdf = function(at, schema = NULL, schema_overrides = NULL, rechunk = TRUE) {
   # new column names by schema, #todo get names if schema not NULL
-  original_schema = schema
+  n_cols = at$num_columns
+
   new_schema = unpack_schema(
-    schema = schema %||% at$ColumnNames(),
+    schema = schema %||% names(at),
     schema_overrides = schema_overrides
   )
   col_names = names(new_schema)
 
-  if (length(col_names) != at$num_columns) stop("schema length does not match arrow table")
+  if (length(col_names) != n_cols) stop("schema length does not match arrow table")
 
-
-  # store special translated columns here
-  special_cols = new.env(parent = emptyenv())
+  data_cols = list()
+  # dictionaries cannot be built in different batches (categorical does not allow
+  # that) so we rechunk them and create them separately.
+  # struct columns don't work properly if they contain multiple chunks.
+  special_cols = list()
 
   ## iter over columns, possibly do special conversion
-  i_col = 0
-  for (column in at$columns) {
-    i_col = i_col + 1
-    name = col_names[i_col]
+  for (i in seq_len(n_cols)) {
+    column = at$column(i - 1L)
+    col_name = col_names[i]
+
     if (is_arrow_dictonary(column)) {
       column = coerce_arrow(column)
-      special_cols[[name]] = unwrap(arrow_to_rseries_result(name, column, rechunk))
-    } else if (is_arrow_struct(column) && has_multiple_chunks(column)) {
-      special_cols[[name]] = unwrap(arrow_to_rseries_result(name, column, rechunk))
-    } # else do nothing
+      special_cols[[col_name]] = as_polars_series.ChunkedArray(column, col_name, rechunk = rechunk)
+    } else if (is_arrow_struct(column) && column$num_chunks > 1L) {
+      special_cols[[col_name]] = as_polars_series.ChunkedArray(column, col_name, rechunk = rechunk)
+    } else {
+      data_cols[[col_name]] = column
+    }
   }
 
-  # drop already converted columns
-  at_new = at$SelectColumns(which(!names(at) %in% names(special_cols)) - 1L)
+  if (length(data_cols)) {
+    tbl = do.call(arrow::arrow_table, data_cols)
 
-  # convert remaining to polars DataFrame and rechunk
-  record_batches = arrow::as_record_batch_reader(at_new)$batches()
-  df = unwrap(.pr$DataFrame$from_arrow_record_batches(record_batches))
+    if (tbl$num_rows == 0L) {
+      rdf = pl$DataFrame() # TODO: support creating 0-row DataFrame
+    } else {
+      rdf = unwrap(
+        .pr$DataFrame$from_arrow_record_batches(arrow::as_record_batch_reader(tbl)$batches())
+      )
+    }
+  } else {
+    rdf = pl$DataFrame()
+  }
+
   if (rechunk) {
-    df = df$select(pl$all()$rechunk())
+    rdf = rdf$select(pl$all()$rechunk())
   }
-  df$columns = setdiff(col_names, names(special_cols))
 
-  # add back in special coversions and reorder by col_names
-  if (length(names(special_cols))) {
-    df = df$with_columns(
+  if (length(special_cols)) {
+    rdf = rdf$with_columns(
       unname(lapply(special_cols, \(s) pl$lit(s)$alias(s$name)))
     )$select(
       pl$col(col_names)
     )
   }
 
-  # update column names
-  df$columns = col_names
-
   # cast any imported arrow fields not matching schema
   cast_these_fields = mapply(
     new_schema,
-    df$schema,
+    rdf$schema,
     FUN = \(new_field, df_field)  {
       if (is.null(new_field) || new_field == df_field) NULL else new_field
     },
@@ -60,7 +73,7 @@ arrow_to_rdf = function(at, schema = NULL, schema_overrides = NULL, rechunk = TR
   ) |> (\(l) l[!sapply(l, is.null)])()
 
   if (length(cast_these_fields)) {
-    df = df$with_columns(
+    rdf = rdf$with_columns(
       mapply(
         cast_these_fields,
         names(cast_these_fields),
@@ -70,7 +83,7 @@ arrow_to_rdf = function(at, schema = NULL, schema_overrides = NULL, rechunk = TR
     )
   }
 
-  df
+  rdf
 }
 
 unpack_schema = function(
@@ -110,12 +123,6 @@ is_arrow_struct = \(x) {
   identical(class(x$type), c("StructType", "NestedType", "DataType", "ArrowObject", "R6"))
 }
 
-has_multiple_chunks = \(x) {
-  (x$num_chunks %||% -1L) > 1L
-}
-
-
-
 
 coerce_arrow = function(arr, rechunk = TRUE) {
   if (!is.null(arr$num_chunks) && is_arrow_dictonary(arr)) {
@@ -125,43 +132,58 @@ coerce_arrow = function(arr, rechunk = TRUE) {
       arrow::uint16(), arrow::int32()
     )
     if (arr$type$index_type %in_list% non_ideal_idx_types) {
-      arr = arr$cast(arrow::dictionary(arrow::uint32(), arrow::large_utf8()))
-      arr = arrow::as_arrow_array(arr) # combine chunks
+      arr = arr$cast(arrow::dictionary(arrow::uint32(), arrow::large_utf8())) |>
+        arrow::as_arrow_array()
     }
   }
   arr
 }
 
 
-
+#' Internal function of `as_polars_series()` for `arrow::Array` and `arrow::ChunkedArray` class objects.
+#'
+#' This is a copy of Python Polars' `arrow_to_pyseries` function.
+#' @noRd
+#' @return A result inclueds RPolarsSeries
 arrow_to_rseries_result = function(name, values, rechunk = TRUE) {
   ## must rechunk
   array = coerce_arrow(values)
 
   # special handling of empty categorical arrays
   if (
-    length(array) == 0 &&
+    (length(array) == 0L) &&
       is_arrow_dictonary(array) &&
       array$type$value_type %in_list% list(arrow::utf8(), arrow::large_utf8())
   ) {
-    return(Ok(pl$lit(c())$cast(pl$Categorical)$to_series()))
-  }
-
-  # rechunk immediately before import
-  rseries_result = if ((array$num_chunks %||% 1L) <= 1L) {
-    .pr$Series$from_arrow(name, array)
+    res = Ok(pl$lit(c())$cast(pl$Categorical)$to_series())
+  } else if (is.null(array$num_chunks)) {
+    res = .pr$Series$from_arrow(name, array)
   } else {
-    chunks = array$chunks
-    s_res = .pr$Series$from_arrow(name, chunks[[1]])
-    for (i in chunks[-1L]) {
-      s_res = and_then(s_res, \(s) {
-        .pr$Series$append_mut(s, pl$from_arrow(i)) |> map(\(x) s)
-      })
+    if (array$num_chunks > 1) {
+      if (is_arrow_dictonary(array)) {
+        res = .pr$Series$from_arrow(name, arrow::as_arrow_array(array))
+      } else {
+        chunks = array$chunks
+        res = .pr$Series$from_arrow(name, chunks[[1]])
+        for (chunk in chunks[-1L]) {
+          res = and_then(res, \(s) {
+            .pr$Series$append_mut(s, unwrap(.pr$Series$from_arrow(name, chunk))) |> map(\(x) s)
+          })
+        }
+        res
+      }
+    } else if (array$num_chunks == 0L) {
+      res = .pr$Series$from_arrow(name, arrow::Array$create(NULL)$cast(array$type))
+    } else {
+      res = .pr$Series$from_arrow(name, array$chunk(0L))
     }
-    s_res
   }
 
-  rseries_result |> map(\(s) {
-    if (rechunk) wrap_e(s)$rechunk()$to_series() else s
-  })
+  if (rechunk) {
+    res = res |> map(\(s) {
+      wrap_e(s)$rechunk()$to_series()
+    })
+  }
+
+  res
 }
