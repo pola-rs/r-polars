@@ -32,7 +32,7 @@ pl_from_arrow = function(
     rechunk = TRUE,
     schema = NULL,
     schema_overrides = NULL) {
-  warning("`pl$from_arrow()` is deprecated and will be removed in 0.14.0. Use `as_polars_df()` or `as_polars_series` insead.")
+  warning("`pl$from_arrow()` is deprecated and will be removed in 0.14.0. Use `as_polars_df()` or `as_polars_series()` insead.")
 
   if (!requireNamespace("arrow", quietly = TRUE)) {
     stop("in pl$from_arrow: cannot import from arrow without R package arrow installed")
