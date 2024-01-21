@@ -3,31 +3,28 @@
 \name{ExprList_concat}
 \alias{ExprList_concat}
 \alias{list_concat}
-\title{concat another list}
-\format{
-function
-}
+\title{Concat two list variables}
 \usage{
 ExprList_concat(other)
 }
 \arguments{
-\item{other}{Rlist, Expr or column of same type as self.}
+\item{other}{Values to concat with. Can be an Expr or something coercible to
+an Expr.}
 }
 \value{
 Expr
 }
 \description{
-Concat the arrays in a Series dtype List in linear time.
+Concat two list variables
 }
 \examples{
 df = pl$DataFrame(
   a = list("a", "x"),
   b = list(c("b", "c"), c("y", "z"))
 )
-df$select(pl$col("a")$list$concat(pl$col("b")))
-
-df$select(pl$col("a")$list$concat(pl$lit("hello from R")))
-
-df$select(pl$col("a")$list$concat(pl$lit(list("hello", c("hello", "world")))))
+df$with_columns(
+  conc_to_b = pl$col("a")$list$concat(pl$col("b")),
+  conc_to_lit_str = pl$col("a")$list$concat(pl$lit("some string")),
+  conc_to_lit_list = pl$col("a")$list$concat(pl$lit(list("hello", c("hello", "world"))))
+)
 }
-\keyword{ExprList}

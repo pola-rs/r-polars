@@ -25,21 +25,13 @@ any self as an argument, thus they are pure functions. Having the private method
 as pure functions solved/simplified self-referential complications.
 
 \code{DataFrame} and \code{LazyFrame} can both be said to be a \code{Frame}. To convert use
-\code{DataFrame_object$lazy() -> LazyFrame_object} and \code{LazyFrame_object$collect() -> DataFrame_object}. You can also create a \code{LazyFrame} directly with \code{pl$LazyFrame()}.
-This is quite similar to the lazy-collect syntax of the dplyrpackage to
+\code{\link[=DataFrame_lazy]{<DataFrame>$lazy()}} and \code{\link[=LazyFrame_collect]{<LazyFrame>$collect()}}.
+You can also create a \code{LazyFrame} directly with \code{\link[=pl_LazyFrame]{pl$LazyFrame()}}.
+This is quite similar to the lazy-collect syntax of the \code{dplyr} package to
 interact with database connections such as SQL variants. Most SQL databases
-would be able to perform the same optimizations as polars such Predicate Pushdown
-and Projection. However polars can interact and optimize queries with both
-SQL DBs and other data sources such parquet files simultaneously. (#TODO
-implement r-polars SQL ;).
-}
-\details{
-Check out the source code in R/LazyFrame__lazy.R how public methods
-are derived from private methods. Check out  extendr-wrappers.R to see the
-extendr-auto-generated methods. These are moved to \code{.pr} and converted into
-pure external functions in after-wrappers.R. In zzz.R (named zzz to be last
-file sourced) the extendr-methods are removed and replaced by any function
-prefixed \code{LazyFrame_}.
+would be able to perform the same optimizations as polars such predicate pushdown
+and projection pushdown. However polars can interact and optimize queries with both
+SQL DBs and other data sources such parquet files simultaneously.
 }
 \examples{
 # see all exported methods

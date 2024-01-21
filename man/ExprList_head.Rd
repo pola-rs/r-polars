@@ -3,24 +3,27 @@
 \name{ExprList_head}
 \alias{ExprList_head}
 \alias{list_head}
-\title{Heads of sublists}
-\format{
-function
-}
+\title{Get the first \code{n} values of a list}
 \usage{
 ExprList_head(n = 5L)
 }
 \arguments{
-\item{n}{Numeric or Expr, number of values to return for each sublist.}
+\item{n}{Number of values to return for each sublist. Can be an Expr. Strings
+are parsed as column names.}
 }
 \value{
 Expr
 }
 \description{
-head the first \code{n} values of every sublist.
+Get the first \code{n} values of a list
 }
 \examples{
-df = pl$DataFrame(list(a = list(1:4, c(10L, 2L, 1L))))
-df$select(pl$col("a")$list$head(2))
+df = pl$DataFrame(
+  s = list(1:4, c(10L, 2L, 1L)),
+  n = 1:2
+)
+df$with_columns(
+  head_by_expr = pl$col("s")$list$head("n"),
+  head_by_lit = pl$col("s")$list$head(2)
+)
 }
-\keyword{ExprList}

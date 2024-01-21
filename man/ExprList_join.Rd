@@ -3,25 +3,28 @@
 \name{ExprList_join}
 \alias{ExprList_join}
 \alias{list_join}
-\title{Join sublists}
-\format{
-function
-}
+\title{Join elements of a list}
 \usage{
 ExprList_join(separator)
 }
 \arguments{
-\item{separator}{String to separate the items with. Can be an Expr.}
+\item{separator}{String to separate the items with. Can be an Expr. Strings
+are \emph{not} parsed as columns.}
 }
 \value{
-Series of dtype String
+Expr
 }
 \description{
-Join all string items in a sublist and place a separator between them.
-This errors if inner type of list \verb{!= String}.
+Join all string items in a sublist and place a separator between them. This
+only works on columns of type \code{list[str]}.
 }
 \examples{
-df = pl$DataFrame(list(s = list(c("a", "b", "c"), c("x", "y"))))
-df$select(pl$col("s")$list$join(" "))
+df = pl$DataFrame(
+  s = list(c("a", "b", "c"), c("x", "y"), c("e", NA)),
+  separator = c("-", "+", "/")
+)
+df$with_columns(
+  join_with_expr = pl$col("s")$list$join(pl$col("separator")),
+  join_with_lit = pl$col("s")$list$join(" ")
+)
 }
-\keyword{ExprList}

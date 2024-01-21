@@ -3,24 +3,27 @@
 \name{ExprList_contains}
 \alias{ExprList_contains}
 \alias{list_contains}
-\title{Sublists contains}
-\format{
-function
-}
+\title{Check if list contains a given value}
 \usage{
 ExprList_contains(item)
 }
 \arguments{
-\item{item}{any into Expr/literal}
+\item{item}{Expr or something coercible to an Expr. Strings are \emph{not} parsed
+as columns.}
 }
 \value{
-Expr of a boolean mask
+Expr
 }
 \description{
-Check if sublists contain the given item.
+Check if list contains a given value
 }
 \examples{
-df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) # NULL or integer() or list()
-df$select(pl$col("a")$list$contains(1L))
+df = pl$DataFrame(
+  a = list(3:1, NULL, 1:2),
+  item = 0:2
+)
+df$with_columns(
+  with_expr = pl$col("a")$list$contains(pl$col("item")),
+  with_lit = pl$col("a")$list$contains(1)
+)
 }
-\keyword{ExprList}
