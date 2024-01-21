@@ -48,6 +48,8 @@
     -   New argument `join_nulls` to consider `null` values as a valid key.
 -   `<DataFrame>$describe()` now works with all datatypes. It also gains an 
     `interpolation` argument that is used for quantiles computation (#717).
+-   `as_polars_df()` and `as_polars_series()` for the `arrow` package classes have been
+    rewritten and work better (#727).
 
 ## polars 0.12.2
 
