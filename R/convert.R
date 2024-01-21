@@ -1,5 +1,8 @@
 #' from_arrow
-#' @description import Arrow Table or Array
+#'
+#' Import Arrow Table or Array.
+#' Deprecated in favor of [as_polars_df] and [as_polars_series].
+#' Will be removed in 0.14.0.
 #' @param data arrow Table or Array or ChunkedArray
 #' @param ... Ignored.
 #' @param rechunk bool rewrite in one array per column, Implemented for ChunkedArray
@@ -11,7 +14,6 @@
 #' Takes not effect for Array or ChunkedArray
 #' @return DataFrame or Series
 #' @aliases from_arrow
-#' @keywords pl
 #' @examples
 #' pl$from_arrow(
 #'   data = arrow::arrow_table(iris),
@@ -30,6 +32,8 @@ pl_from_arrow = function(
     rechunk = TRUE,
     schema = NULL,
     schema_overrides = NULL) {
+  warning("`pl$from_arrow()` is deprecated and will be removed in 0.14.0. Use `as_polars_df()` or `as_polars_series` insead.")
+
   if (!requireNamespace("arrow", quietly = TRUE)) {
     stop("in pl$from_arrow: cannot import from arrow without R package arrow installed")
   }
