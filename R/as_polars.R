@@ -170,9 +170,8 @@ as_polars_df.ArrowTabular = function(
     rechunk = TRUE,
     schema = NULL,
     schema_overrides = NULL) {
-  pl$from_arrow(
+  arrow_to_rdf(
     x,
-    ...,
     rechunk = rechunk,
     schema = schema,
     schema_overrides = schema_overrides
