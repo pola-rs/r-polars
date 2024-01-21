@@ -116,18 +116,22 @@ move_env_elements(RPolarsExpr, pl, c("lit"), remove = FALSE)
 
 
 .onLoad = function(libname, pkgname) {
-  # set options: this has to be done first because functions in the "pl"
-  # namespace will validate options internally
+  # Set options: this has to be done first because functions in the "pl"
+  # namespace (used later in .onLoad) will validate options internally.
+  # We use getOption() because the user could have set some options in .Rprofile.
+  # If the user didn't, then we use the default value.
+  # Note that the two options relative to rpool can't be set by the user in the
+  # .Rprofile because they call some Rust functions.
   options(
-    polars.debug_polars = FALSE,
-    polars.df_knitr_print = "auto",
-    polars.do_not_repeat_call = FALSE,
-    polars.int64_conversion = "double",
-    polars.maintain_order = FALSE,
-    polars.no_messages = FALSE,
+    polars.debug_polars = getOption("polars.debug_polars", FALSE),
+    polars.df_knitr_print = getOption("polars.df_knitr_print", "auto"),
+    polars.do_not_repeat_call = getOption("polars.do_not_repeat_call", FALSE),
+    polars.int64_conversion = getOption("polars.int64_conversion", "double"),
+    polars.maintain_order = getOption("polars.maintain_order", FALSE),
+    polars.no_messages = getOption("polars.no_messages", FALSE),
     polars.rpool_active = unwrap(get_global_rpool_cap())$active,
     polars.rpool_cap = unwrap(get_global_rpool_cap())$capacity,
-    polars.strictly_immutable = TRUE
+    polars.strictly_immutable = getOption("polars.strictly_immutable", TRUE)
   )
 
   # instanciate one of each DataType (it's just an enum)

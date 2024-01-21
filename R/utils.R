@@ -11,6 +11,7 @@
 #' @noRd
 options(
   polars.debug_polars = FALSE,
+  polars.df_knitr_print = "auto",
   polars.do_not_repeat_call = FALSE,
   polars.int64_conversion = "double",
   polars.maintain_order = FALSE,
