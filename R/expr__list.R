@@ -1,117 +1,93 @@
-# this file sources list-expression functions to be bundled in the 'expr$list' sub namespace
-# the sub name space is instantiated from Expr_arr- function
-# bundling these functions into an environment, depends on a macro call in zzz.R
-# expr_list_make_sub_ns = macro_new_subnamespace("^ExprList_", "RPolarsExprListNameSpace")
-
-
-## TODO revisit array, list terminology and pick one way, e.g list of sublists or list of elements
-
-#' Lengths arrays in list
-#' @rdname ExprList_lengths
+#' Get the length of each list
 #'
-#' @description
-#' Get the length of the arrays as UInt32
-#' @keywords ExprList
-#' @format function
+#' Return the number of elements in each list. Null values are counted in the
+#' total. `$list$lengths()` is deprecated.
+#'
 #' @return Expr
-#' @aliases lengths list_lengths
+#' @aliases list_len
 #' @examples
-#' df = pl$DataFrame(list_of_strs = pl$Series(list(c("a", "b"), "c")))
-#' df$with_columns(pl$col("list_of_strs")$list$lengths()$alias("list_of_strs_lengths"))
-ExprList_lengths = function() .pr$Expr$list_lengths(self)
+#' df = pl$DataFrame(list(list_of_strs = list(c("a", "b", NA), "c")))
+#' df$with_columns(len_list = pl$col("list_of_strs")$list$len())
+ExprList_len = function() .pr$Expr$list_len(self)
 
-#' Sum lists
+#' @rdname ExprList_len
+ExprList_lengths = function() {
+  warning("`$list$lengths()` is deprecated and will be removed in 0.14.0. Use `$list$len()` instead")
+  .pr$Expr$list_len(self)
+}
+
+#' Sum all elements in a list
 #'
-#' @description
-#' Sum all the lists in the array.
-#' @keywords ExprList
-#' @format function
 #' @return Expr
 #' @aliases list_sum
 #' @examples
-#' df = pl$DataFrame(values = pl$Series(list(1L, 2:3)))
-#' df$select(pl$col("values")$list$sum())
+#' df = pl$DataFrame(list(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_)))
+#' df$with_columns(sum = pl$col("values")$list$sum())
 ExprList_sum = function() .pr$Expr$list_sum(self)
 
-#' Max lists
+#' Find the maximum value in a list
 #'
-#' @description
-#' Compute the max value of the lists in the array.
-#' @keywords ExprList
-#' @format function
 #' @return Expr
-#' @aliases Expr_list_max
+#' @aliases list_max
 #' @examples
-#' df = pl$DataFrame(values = pl$Series(list(1L, 2:3)))
-#' df$select(pl$col("values")$list$max())
+#' df = pl$DataFrame(list(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_)))
+#' df$with_columns(max = pl$col("values")$list$max())
 ExprList_max = function() .pr$Expr$list_max(self)
 
-#'  #' Min lists
+#' Find the minimum value in a list
 #'
-#' @description
-#' Compute the min value of the lists in the array.
-#' @keywords ExprList
-#' @format function
 #' @return Expr
-#' @aliases Expr_list_min
+#' @aliases list_min
 #' @examples
-#' df = pl$DataFrame(values = pl$Series(list(1L, 2:3)))
-#' df$select(pl$col("values")$list$min())
+#' df = pl$DataFrame(list(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_)))
+#' df$with_columns(min = pl$col("values")$list$min())
 ExprList_min = function() .pr$Expr$list_min(self)
 
-#' Mean of lists
+#' Compute the mean value of a list
 #'
-#' @description
-#' Compute the mean value of the lists in the array.
-#' @keywords ExprList
-#' @format function
 #' @return Expr
 #' @aliases list_mean
 #' @examples
-#' df = pl$DataFrame(values = pl$Series(list(1L, 2:3)))
-#' df$select(pl$col("values")$list$mean())
+#' df = pl$DataFrame(list(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_)))
+#' df$with_columns(mean = pl$col("values")$list$mean())
 ExprList_mean = function() .pr$Expr$list_mean(self)
 
-#' @inherit Expr_sort title description return
-#' @param descending Sort values in descending order
+#' Sort values in a list
 #'
+#' @param descending Sort values in descending order
+#' @return Expr
+#' @aliases list_sort
+#' @examples
+#' df = pl$DataFrame(list(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_)))
+#' df$with_columns(sort = pl$col("values")$list$sort())
 ExprList_sort = function(descending = FALSE) .pr$Expr$list_sort(self, descending)
 
-#' Reverse list
+#' Reverse values in a list
 #'
-#' @description
-#' Reverse the arrays in the list.
-#' @keywords ExprList
-#' @format function
 #' @return Expr
 #' @aliases list_reverse
 #' @examples
-#' df = pl$DataFrame(list(
-#'   values = list(3:1, c(9L, 1:2))
-#' ))
-#' df$select(pl$col("values")$list$reverse())
+#' df = pl$DataFrame(list(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_)))
+#' df$with_columns(reverse = pl$col("values")$list$reverse())
 ExprList_reverse = function() .pr$Expr$list_reverse(self)
 
-#' Unique list
+#' Get unique values in a list
 #'
 #' @description
 #' Get the unique/distinct values in the list.
-#' @keywords ExprList
-#' @format function
+#'
 #' @return Expr
 #' @aliases list_unique
 #' @examples
-#' df = pl$DataFrame(list(a = list(1, 1, 2)))
-#' df$select(pl$col("a")$list$unique())
+#' df = pl$DataFrame(list(values = list(c(2, 2, NA), c(1, 2, 3), NA_real_)))
+#' df$with_columns(unique = pl$col("values")$list$unique())
 ExprList_unique = function() .pr$Expr$list_unique(self)
 
-
-#' concat another list
-#' @description Concat the arrays in a Series dtype List in linear time.
-#' @param other Rlist, Expr or column of same type as self.
+#' Concat two list variables
 #'
-#' @keywords ExprList
-#' @format function
+#' @param other Values to concat with. Can be an Expr or something coercible to
+#' an Expr.
+#'
 #' @return Expr
 #' @aliases list_concat
 #' @examples
@@ -119,58 +95,53 @@ ExprList_unique = function() .pr$Expr$list_unique(self)
 #'   a = list("a", "x"),
 #'   b = list(c("b", "c"), c("y", "z"))
 #' )
-#' df$select(pl$col("a")$list$concat(pl$col("b")))
-#'
-#' df$select(pl$col("a")$list$concat(pl$lit("hello from R")))
-#'
-#' df$select(pl$col("a")$list$concat(pl$lit(list("hello", c("hello", "world")))))
+#' df$with_columns(
+#'   conc_to_b = pl$col("a")$list$concat(pl$col("b")),
+#'   conc_to_lit_str = pl$col("a")$list$concat(pl$lit("some string")),
+#'   conc_to_lit_list = pl$col("a")$list$concat(pl$lit(list("hello", c("hello", "world"))))
+#' )
 ExprList_concat = function(other) {
   pl$concat_list(list(self, other))
 }
 
-#' Get list
+#' Get the value by index in a list
 #'
-#' @description Get the value by index in the sublists.
-#' @param index numeric vector or Expr of length 1 or same length of Series.
-#' if length 1 pick same value from each sublist, if length as Series/column,
-#' pick by individual index across sublists.
+#' This allows to extract one value per list only. To extract several values by
+#' index, use [`$list$gather()`][ExprList_gather].
 #'
-#' So index `0` would return the first item of every sublist
-#' and index `-1` would return the last item of every sublist
-#' if an index is out of bounds, it will return a `None`.
-#' @keywords ExprList
-#' @format function
+#' @param index An Expr or something coercible to an Expr, that must return a
+#'   single index. Values are 0-indexed (so index 0 would return the first item
+#'   of every sublist) and negative values start from the end (index `-1`
+#'   returns the last item). If the index is out of bounds, it will return a
+#'   `null`. Strings are parsed as column names.
+#'
 #' @return Expr
-#' @aliases Expr_list_get
+#' @aliases list_get
 #' @examples
-#' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) # NULL or integer() or list()
-#' df$select(pl$col("a")$list$get(0))
-#' df$select(pl$col("a")$list$get(c(2, 0, -1)))
+#' df = pl$DataFrame(
+#'   values = list(c(2, 2, NA), c(1, 2, 3), NA_real_, NULL),
+#'   idx = c(1, 2, NA, 3)
+#' )
+#' df$with_columns(
+#'   using_expr = pl$col("values")$list$get("idx"),
+#'   val_0 = pl$col("values")$list$get(0),
+#'   val_minus_1 = pl$col("values")$list$get(-1),
+#'   val_oob = pl$col("values")$list$get(10)
+#' )
 ExprList_get = function(index) .pr$Expr$list_get(self, wrap_e(index, str_to_lit = FALSE))
 
-#' Get list
-#' @rdname ExprList_get
-#' @export
-#' @param x RPolarsExprListNameSpace
-#' @param index value to get
-#' @details
-#' `[.RPolarsExprListNameSpace` used as e.g. `pl$col("a")$arr[0]` same as `pl$col("a")$get(0)`
-#' @examples
-#' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) # NULL or integer() or list()
-#' df$select(pl$col("a")$list[0])
-#' df$select(pl$col("a")$list[c(2, 0, -1)])
-`[.RPolarsExprListNameSpace` = function(x, index) { # S3 sub class-name set in zzz.R
-  x$get(index)
-}
-
-
-#' take in sublists
+#' Get several values by index in a list
 #'
-#' @description Get the take value of the sublists.
-#' @keywords ExprList
-#' @param index R list of integers for each sub-element or Expr or Series of type `List[usize]`
-#' @param null_on_oob boolean
-#' @format function
+#' This allows to extract several values per list. To extract a single value by
+#' index, use [`$list$get()`][ExprList_get].
+#'
+#' @param index An Expr or something coercible to an Expr, that can return
+#'   several single indices. Values are 0-indexed (so index 0 would return the
+#'   first item of every sublist) and negative values start from the end (index
+#'   `-1` returns the last item). If the index is out of bounds, it will return
+#'   a `null`. Strings are parsed as column names.
+#' @param null_on_oob Return a `null` value if index is out of bounds.
+#'
 #' @return Expr
 #' @aliases list_gather
 #' @examples
@@ -189,133 +160,157 @@ ExprList_gather = function(index, null_on_oob = FALSE) {
     unwrap("in $gather()")
 }
 
-#' First in sublists
+#' Get the first value in a list
 #'
-#' @description Get the first value of the sublists.
-#' @keywords ExprList
-#' @format function
 #' @return Expr
 #' @aliases list_first
 #' @examples
-#' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) # NULL or integer() or list()
-#' df$select(pl$col("a")$list$first())
+#' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2)))
+#' df$with_columns(
+#'   first = pl$col("a")$list$first()
+#' )
 ExprList_first = function() .pr$Expr$list_get(self, wrap_e(0L, str_to_lit = FALSE))
 
-#' Last in sublists
+#' Get the last value in a list
 #'
-#' @description Get the last value of the sublists.
-#' @keywords ExprList
-#' @format function
 #' @return Expr
 #' @aliases list_last
 #' @examples
-#' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) # NULL or integer() or list()
-#' df$select(pl$col("a")$list$last())
+#' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2)))
+#' df$with_columns(
+#'   last = pl$col("a")$list$last()
+#' )
 ExprList_last = function() .pr$Expr$list_get(self, wrap_e(-1L, str_to_lit = FALSE))
 
-#' Sublists contains
+#' Check if list contains a given value
 #'
-#' @description Check if sublists contain the given item.
-#' @param item any into Expr/literal
-#' @keywords ExprList
-#' @format function
-#' @return Expr of a boolean mask
+#' @param item Expr or something coercible to an Expr. Strings are *not* parsed
+#' as columns.
+#'
+#' @return Expr
 #' @aliases list_contains
 #' @examples
-#' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) # NULL or integer() or list()
-#' df$select(pl$col("a")$list$contains(1L))
+#' df = pl$DataFrame(
+#'   a = list(3:1, NULL, 1:2),
+#'   item = 0:2
+#' )
+#' df$with_columns(
+#'   with_expr = pl$col("a")$list$contains(pl$col("item")),
+#'   with_lit = pl$col("a")$list$contains(1)
+#' )
 ExprList_contains = function(item) .pr$Expr$list_contains(self, wrap_e(item))
 
-
-#' Join sublists
+#' Join elements of a list
 #'
-#' @description
-#' Join all string items in a sublist and place a separator between them.
-#' This errors if inner type of list `!= String`.
-#' @param separator String to separate the items with. Can be an Expr.
-#' @keywords ExprList
-#' @format function
-#' @return Series of dtype String
+#' Join all string items in a sublist and place a separator between them. This
+#' only works on columns of type `list[str]`.
+#'
+#' @param separator String to separate the items with. Can be an Expr. Strings
+#'   are *not* parsed as columns.
+#'
+#' @return Expr
 #' @aliases list_join
 #' @examples
-#' df = pl$DataFrame(list(s = list(c("a", "b", "c"), c("x", "y"))))
-#' df$select(pl$col("s")$list$join(" "))
+#' df = pl$DataFrame(
+#'   s = list(c("a", "b", "c"), c("x", "y"), c("e", NA)),
+#'   separator = c("-", "+", "/")
+#' )
+#' df$with_columns(
+#'   join_with_expr = pl$col("s")$list$join(pl$col("separator")),
+#'   join_with_lit = pl$col("s")$list$join(" ")
+#' )
 ExprList_join = function(separator) {
   .pr$Expr$list_join(self, separator) |>
     unwrap("in $list$join():")
 }
 
-#' Arg min sublists
+#' Get the index of the minimal value in list
 #'
-#' @description Retrieve the index of the minimal value in every sublist.
-#' @keywords ExprList
-#' @format function
 #' @return Expr
 #' @aliases list_arg_min
 #' @examples
 #' df = pl$DataFrame(list(s = list(1:2, 2:1)))
-#' df$select(pl$col("s")$list$arg_min())
+#' df$with_columns(
+#'   arg_min = pl$col("s")$list$arg_min()
+#' )
 ExprList_arg_min = function() .pr$Expr$list_arg_min(self)
 
-#' Arg max sublists
+#' Get the index of the maximal value in list
 #'
-#' @description Retrieve the index of the maximum value in every sublist.
-#' @keywords ExprList
-#' @format function
 #' @return Expr
-#' @aliases Expr_list_arg_max
+#' @aliases list_arg_max
 #' @examples
 #' df = pl$DataFrame(list(s = list(1:2, 2:1)))
-#' df$select(pl$col("s")$list$arg_max())
+#' df$with_columns(
+#'   arg_max = pl$col("s")$list$arg_max()
+#' )
 ExprList_arg_max = function() .pr$Expr$list_arg_max(self)
 
 
 ## TODO contribute polars support negative n values for Diff sublist
 
-#' Diff sublists
+#' Compute difference between list values
 #'
-#' @description Calculate the n-th discrete difference of every sublist.
-#' @param n Number of slots to shift
-#' @param null_behavior choice "ignore"(default) "drop"
-#' @keywords ExprList
-#' @format function
+#' This computes the first discrete difference between shifted items of every
+#' list. The parameter `n` gives the interval between items to subtract, e.g `n
+#' = 2` the output will be the difference between the 1st and the 3rd value, the
+#' 2nd and 4th value, etc.
+#'
+#' @param n Number of slots to shift.
+#' @param null_behavior How to handle `null` values. Either `"ignore"` (default)
+#'   or `"drop"`.
+#'
 #' @return Expr
-#' @aliases Expr_list_diff
+#' @aliases list_diff
 #' @examples
 #' df = pl$DataFrame(list(s = list(1:4, c(10L, 2L, 1L))))
-#' df$select(pl$col("s")$list$diff(1))
+#' df$with_columns(diff = pl$col("s")$list$diff(2))
 ExprList_diff = function(n = 1, null_behavior = c("ignore", "drop")) {
   .pr$Expr$list_diff(self, n, null_behavior) |>
     unwrap("in $list$diff()")
 }
 
-#' Shift sublists
+#' Shift list values by `n` indices
 #'
-#' @description Shift values by the given period.
-#' @param periods Value. Number of places to shift (may be negative).
-#' @keywords ExprList
-#' @format function
+#' @param periods Number of places to shift (may be negative). Can be an Expr.
+#' Strings are *not* parsed as columns.
+#'
 #' @return Expr
 #' @aliases list_shift
 #' @examples
-#' df = pl$DataFrame(list(s = list(1:4, c(10L, 2L, 1L))))
-#' df$select(pl$col("s")$list$shift())
+#' df = pl$DataFrame(
+#'   s = list(1:4, c(10L, 2L, 1L)),
+#'   idx = 1:2
+#' )
+#' df$with_columns(
+#'   shift_by_expr = pl$col("s")$list$shift(pl$col("idx")),
+#'   shift_by_lit = pl$col("s")$list$shift(2)
+#' )
 ExprList_shift = function(periods = 1) unwrap(.pr$Expr$list_shift(self, periods))
 
-#' Slice sublists
+#' Slice list
 #'
-#' @description Slice every sublist.
-#' @param offset value or Expr.  Start index. Negative indexing is supported.
-#' @param length value or Expr.
-#' Length of the slice. If set to ``None`` (default), the slice is taken to the
-#' end of the list.
-#' @keywords ExprList
-#' @format function
+#' This extracts `length` values at most, starting at index `offset`. This can
+#' return less than `length` values if `length` is larger than the number of
+#' values.
+#'
+#' @param offset Start index. Negative indexing is supported. Can be an Expr.
+#'   Strings are parsed as column names.
+#' @param length Length of the slice. If `NULL` (default), the slice is taken to
+#'   the end of the list. Can be an Expr. Strings are parsed as column names.
+#'
 #' @return Expr
 #' @aliases list_slice
 #' @examples
-#' df = pl$DataFrame(list(s = list(1:4, c(10L, 2L, 1L))))
-#' df$select(pl$col("s")$list$slice(2))
+#' df = pl$DataFrame(
+#'   s = list(1:4, c(10L, 2L, 1L)),
+#'   idx_off = 1:2,
+#'   len = c(4, 1)
+#' )
+#' df$with_columns(
+#'   slice_by_expr = pl$col("s")$list$slice("idx_off", "len"),
+#'   slice_by_lit = pl$col("s")$list$slice(2, 3)
+#' )
 ExprList_slice = function(offset, length = NULL) {
   offset = wrap_e(offset, str_to_lit = FALSE)
   if (!is.null(length)) {
@@ -327,96 +322,130 @@ ExprList_slice = function(offset, length = NULL) {
 
 # TODO contribute polars let head and tail support negative indicies also regular head tail
 
-#' Heads of sublists
+#' Get the first `n` values of a list
 #'
-#' @description head the first `n` values of every sublist.
-#' @param n Numeric or Expr, number of values to return for each sublist.
-#' @keywords ExprList
-#' @format function
+#' @param n Number of values to return for each sublist. Can be an Expr. Strings
+#'   are parsed as column names.
+#'
 #' @return Expr
 #' @aliases list_head
 #' @examples
-#' df = pl$DataFrame(list(a = list(1:4, c(10L, 2L, 1L))))
-#' df$select(pl$col("a")$list$head(2))
+#' df = pl$DataFrame(
+#'   s = list(1:4, c(10L, 2L, 1L)),
+#'   n = 1:2
+#' )
+#' df$with_columns(
+#'   head_by_expr = pl$col("s")$list$head("n"),
+#'   head_by_lit = pl$col("s")$list$head(2)
+#' )
 ExprList_head = function(n = 5L) {
   self$list$slice(0L, n)
 }
 
-#' Tails of sublists
+#' Get the last `n` values of a list
 #'
-#' @description tail the first `n` values of every sublist.
-#' @param n Numeric or Expr, number of values to return for each sublist.
-#' @keywords ExprList
-#' @format function
+#' @param n Number of values to return for each sublist. Can be an Expr. Strings
+#'   are parsed as column names.
+#'
 #' @return Expr
 #' @aliases list_tail
 #' @examples
-#' df = pl$DataFrame(list(a = list(1:4, c(10L, 2L, 1L))))
-#' df$select(pl$col("a")$list$tail(2))
+#' df = pl$DataFrame(
+#'   s = list(1:4, c(10L, 2L, 1L)),
+#'   n = 1:2
+#' )
+#' df$with_columns(
+#'   tail_by_expr = pl$col("s")$list$tail("n"),
+#'   tail_by_lit = pl$col("s")$list$tail(2)
+#' )
 ExprList_tail = function(n = 5L) {
   offset = -wrap_e(n, str_to_lit = FALSE)
   self$list$slice(offset, n)
 }
 
-
-
-# TODO update rust-polars, this function has likely changed behavior as upper_bound is
-# no longer needed
-
-#' List to Struct
-#' @param n_field_strategy Strategy to determine the number of fields of the struct.
-#'  default = "first_non_null": set number of fields equal to the length of the
-#'  first non zero-length sublist. else 'max_width'; else  "max_width":
-#'  set number of fields as max length of all sublists.
-#' @param name_generator an R function that takes an R scalar double and outputs
-#' a string value. It is a f64 because i32 might not be a big enough enumerate all.
-#' The default (`NULL`) is equivalent to the R function
-#' `\(idx) paste0("field_", idx)`
-#' @param upper_bound upper_bound A polars `LazyFrame` needs to know the schema
-#' at all time. The caller therefore must provide an `upper_bound` of struct
-#' fields that will be set. If set incorrectly, downstream operation may fail.
-#' For instance an `all()$sum()` expression will look in the current schema to
-#' determine which columns to select. It is advised to set this value in a lazy
-#' query.
+#' Convert a Series of type `List` to `Struct`
 #'
+#' @param n_field_strategy Strategy to determine the number of fields of the
+#'   struct. If `"first_non_null"` (default), set number of fields equal to the
+#'   length of the first non zero-length list. If `"max_width"`, the number of
+#'   fields is the maximum length of a list.
 #'
-#' @keywords ExprList
-#' @format function
+#' @param fields If the name and number of the desired fields is known in
+#'   advance, a list of field names can be given, which will be assigned by
+#'   index. Otherwise, to dynamically assign field names, a custom R function
+#'   that takes an R scalar double and outputs a string value can be used. If
+#'   `NULL` (default), fields will be `field_0`, `field_1` ... `field_n`.
+
+#' @param upper_bound A `LazyFrame` needs to know the schema at all time. The
+#'   caller therefore must provide an `upper_bound` of struct fields that will
+#'   be set. If set incorrectly, downstream operation may fail. For instance an
+#'   `all()$sum()` expression will look in the current schema to determine which
+#'   columns to select. When operating on a `DataFrame`, the schema does not
+#'   need to be tracked or pre-determined, as the result will be eagerly
+#'   evaluated, so you can leave this parameter unset.
+#'
 #' @return Expr
 #' @aliases list_to_struct
 #' @examples
-#' df = pl$DataFrame(list(a = list(1:3, 1:2)))
-#' df2 = df$select(pl$col("a")$list$to_struct(
-#'   name_generator = \(idx) paste0("hello_you_", idx)
-#' ))
+#' df = pl$DataFrame(list(a = list(1:2, 1:3)))
+#'
+#' # this discards the third value of the second list as the struct length is
+#' # determined based on the length of the first non-empty list
+#' df$with_columns(
+#'   struct = pl$col("a")$list$to_struct()
+#' )
+#'
+#' # we can use "max_width" to keep all values
+#' df$with_columns(
+#'   struct = pl$col("a")$list$to_struct(n_field_strategy = "max_width")
+#' )
+#'
+#' # pass a custom function that will name all fields by adding a prefix
+#' df2 = df$with_columns(
+#'   pl$col("a")$list$to_struct(
+#'     fields = \(idx) paste0("col_", idx)
+#'   )
+#' )
+#' df2
+#'
 #' df2$unnest()
 #'
 #' df2$to_list()
 ExprList_to_struct = function(
     n_field_strategy = c("first_non_null", "max_width"),
-    name_generator = NULL,
+    fields = NULL,
     upper_bound = 0) {
-  .pr$Expr$list_to_struct(self, n_field_strategy, name_generator, upper_bound) |>
+  .pr$Expr$list_to_struct(self, n_field_strategy, fields, upper_bound) |>
     unwrap("in <List>$to_struct():")
 }
 
-#' eval sublists (kinda like lapply)
+#' Run any polars expression on the list values
 #'
-#' @description Run any polars expression against the lists' elements.
 #' @param expr Expression to run. Note that you can select an element with
-#' `pl$first()`, or `pl$col()`
+#'   `pl$element()`, `pl$first()`, and more. See Examples.
 #' @param parallel Run all expression parallel. Don't activate this blindly.
-#' Parallelism is worth it if there is enough work to do per thread. This likely
-#' should not be use in the groupby context, because we already do parallel
-#' execution per group.
-#' @keywords ExprList
-#' @format function
+#'   Parallelism is worth it if there is enough work to do per thread. This
+#'   likely should not be used in the `$group_by()` context, because we already
+#'   do parallel execution per group.
+#'
 #' @return Expr
 #' @aliases list_eval
 #' @examples
-#' df = pl$DataFrame(a = c(1, 8, 3), b = c(4, 5, 2))
-#' df$select(pl$all()$cast(pl$dtypes$Int64))$with_columns(
-#'   pl$concat_list(c("a", "b"))$list$eval(pl$element()$rank())$alias("rank")
+#' df = pl$DataFrame(
+#'   a = list(c(1, 8, 3), c(3, 2), c(NA, NA, 1)),
+#'   b = list(c("R", "is", "amazing"), c("foo", "bar"), "text")
+#' )
+#' df$with_columns(
+#'   # standardize each value inside a list, using only the values in this list
+#'   a_stand = pl$col("a")$list$eval(
+#'     (pl$element() - pl$element()$mean()) / pl$element()$std()
+#'   ),
+#'
+#'   # count characters for each element in list. Since column "b" is list[str],
+#'   # we can apply all `$str` functions on elements in the list:
+#'   b_len_chars = pl$col("b")$list$eval(
+#'     pl$element()$str$len_chars()
+#'   )
 #' )
 ExprList_eval = function(expr, parallel = FALSE) {
   .pr$Expr$list_eval(self, expr, parallel)

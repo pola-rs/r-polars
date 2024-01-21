@@ -6,17 +6,24 @@
 
 -   `<Expr>$where()` is removed. Use `<Expr>$filter()` instead (#718).
 -   Deprecated functions from 0.12.x are removed (#714).
-    -   `<Expr>$apply()` and `<Expr>$map()`, use `$map_elements()` and `$map_batches()` instead.
+    -   `<Expr>$apply()` and `<Expr>$map()`, use `$map_elements()` and 
+        `$map_batches()` instead.
     -   `pl$polars_info()`, use `polars_info()` instead.
--   The environment variables used when building the library have been changed. (#693)
-    This only affects selecting the feature flag and selecting profiles during source installation.
+-   The environment variables used when building the library have been changed 
+    (#693). This only affects selecting the feature flag and selecting profiles 
+    during source installation.
     -   `RPOLARS_PROFILE` is renamed to `LIBR_POLARS_PROFILE`
     -   `RPOLARS_FULL_FEATURES` is removed and `LIBR_POLARS_FEATURES` is added.
-        If want to select the `full_features`, we need to set `LIBR_POLARS_FEATURES="full_features"`.
+        To select the `full_features`, set `LIBR_POLARS_FEATURES="full_features"`.
     -   `RPOLARS_RUST_SOURCE`, which was used for development, has been removed.
-        If you want to use library binaries located elsewhere, use `LIBR_POLARS_PATH` instead.
+        If you want to use library binaries located elsewhere, use `LIBR_POLARS_PATH`
+        instead.
 -   Remove the `eager` argument of `<SQLContext>$execute()`.
-    Use the `$collect()` method after `$execute()` or `as_polars_df` to get the result as a `DataFrame`. (#719)
+    Use the `$collect()` method after `$execute()` or `as_polars_df` to get the 
+    result as a `DataFrame`. (#719)
+-   The argument `name_generator` of `$list$to_struct()` is renamed `fields` 
+    (#724).
+-   The S3 method `[` for the `$list` subnamespace is removed (#724).
 
 ### What's changed
 
@@ -48,6 +55,8 @@
     -   New argument `join_nulls` to consider `null` values as a valid key.
 -   `<DataFrame>$describe()` now works with all datatypes. It also gains an 
     `interpolation` argument that is used for quantiles computation (#717).
+-   `$list$lengths()` is deprecated and will be removed in 0.14.0. Use 
+    `$list$len()` instead (#724).
 
 ## polars 0.12.2
 
