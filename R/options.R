@@ -161,6 +161,11 @@ pl_reset_options = function() {
 #' # reset options to their default value
 #' polars_options_reset()
 polars_options = function() {
+  rpool_cap = getOption("polars.rpool_cap")
+  if (!is.null(rpool_cap)) {
+    set_global_rpool_cap(rpool_cap)
+  }
+
   out = list(
     debug_polars = getOption("polars.debug_polars"),
     df_knitr_print = getOption("polars.df_knitr_print"),
@@ -168,8 +173,8 @@ polars_options = function() {
     int64_conversion = getOption("polars.int64_conversion"),
     maintain_order = getOption("polars.maintain_order"),
     no_messages = getOption("polars.no_messages"),
-    rpool_active = getOption("polars.rpool_active"),
-    rpool_cap = getOption("polars.rpool_cap"),
+    rpool_active = unwrap(get_global_rpool_cap())$active,
+    rpool_cap = unwrap(get_global_rpool_cap())$capacity,
     strictly_immutable = getOption("polars.strictly_immutable")
   )
   validate_polars_options(out)
@@ -224,7 +229,7 @@ validate_polars_options = function(options) {
     }
   }
   is_scalar_numeric2 = function(x) {
-    res = is_scalar_numeric(x) && x > 0
+    res = is_scalar_numeric(x) && x >= 0
     if (!res) {
       "input must be a positive integer of length 1."
     } else {
@@ -449,4 +454,3 @@ pl_set_global_rpool_cap = function(n) {
     unwrap() |>
     invisible()
 }
-

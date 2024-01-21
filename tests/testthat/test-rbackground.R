@@ -17,8 +17,8 @@ test_that("Test using $map_batches() in background", {
   withr::with_options(
     list(polars.rpool_cap = 0),
     {
-  expect_equal(polars_options()$rpool_cap, 0)
-  expect_equal(polars_options()$rpool_active, 0)
+      expect_equal(polars_options()$rpool_cap, 0)
+      expect_equal(polars_options()$rpool_active, 0)
     }
   )
   withr::with_options(
@@ -51,6 +51,12 @@ test_that("Test using $map_batches() in background", {
   withr::with_options(
     list(polars.rpool_cap = 0),
     {
+      compute = lf$select(pl$col("y")$map_batches(\(x) x * x, in_background = FALSE))
+      compute_bg = lf$select(pl$col("y")$map_batches(\(x) {
+        Sys.sleep(.3)
+        x * x
+      }, in_background = TRUE))
+
       handle = compute_bg$collect_in_background()
       res = result(handle$join())
       expect_rpolarserr(unwrap(res), c("When", "Hint", "PlainErrorMessage"))

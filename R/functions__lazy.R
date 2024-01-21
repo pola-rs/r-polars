@@ -1102,7 +1102,7 @@ pl_duration = function(
 #' # pass an integer column
 #' df = pl$DataFrame(timestamp = c(1666683077, 1666683099))
 #' df$with_columns(
-#'    timestamp_to_datetime = pl$from_epoch(pl$col("timestamp"), time_unit = "s")
+#'   timestamp_to_datetime = pl$from_epoch(pl$col("timestamp"), time_unit = "s")
 #' )
 #'
 #' # pass a literal
@@ -1111,7 +1111,7 @@ pl_duration = function(
 #' # use different time_unit
 #' df = pl$DataFrame(timestamp = c(12345, 12346))
 #' df$with_columns(
-#'    timestamp_to_date = pl$from_epoch(pl$col("timestamp"), time_unit = "d")
+#'   timestamp_to_date = pl$from_epoch(pl$col("timestamp"), time_unit = "d")
 #' )
 pl_from_epoch = function(column, time_unit = "s") {
   uw = \(res) unwrap(res, "in $from_epoch():")
@@ -1124,8 +1124,7 @@ pl_from_epoch = function(column, time_unit = "s") {
       uw()
   }
 
-  switch(
-    time_unit,
+  switch(time_unit,
     "d" = column$cast(pl$Date),
     "s" = (column$cast(pl$Int64) * 1000000L)$cast(pl$Datetime("us")),
     column$cast(pl$Datetime(tu = time_unit))
