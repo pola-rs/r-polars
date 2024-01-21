@@ -1108,15 +1108,17 @@ test_that("strictly_immutable = FALSE", {
   expect_true(all(names(df) != names(df_immutable_copy)))
 
   # setting and option returns the previous/state state as defualt
-  options(polars.strictly_immutable = FALSE)
-
-  # check change setting took effect
-  df = pl$DataFrame(iris)
-  df_mutable_copy = df
-  df_mutable_copy$columns = paste0(df_mutable_copy$columns, "_modified")
-  expect_true(all(names(df) == names(df_mutable_copy)))
-
-  pl$reset_options()
+  skip_if_not_installed("withr")
+  withr::with_options(
+    list(polars.strictly_immutable = FALSE),
+    {
+      # check change setting took effect
+      df = pl$DataFrame(iris)
+      df_mutable_copy = df
+      df_mutable_copy$columns = paste0(df_mutable_copy$columns, "_modified")
+      expect_true(all(names(df) == names(df_mutable_copy)))
+    }
+  )
 })
 
 test_that("sample", {

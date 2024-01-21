@@ -88,8 +88,11 @@ test_that("shift    _and_fill", {
 
 
 test_that("groupby, lazygroupby unpack + charvec same as list of strings", {
-  options(polars.maintain_order = TRUE)
-  df = pl$DataFrame(mtcars)
+  skip_if_not_installed("withr")
+  withr::with_options(
+    list(polars.maintain_order = TRUE),
+    {
+        df = pl$DataFrame(mtcars)
   to_l = \(x) (if (inherits(x, "RPolarsDataFrame")) x else x$collect())$to_list()
   for (x in list(df, df$lazy())) {
     df1 = x$group_by(list("cyl", "gear"))$agg(pl$mean("hp")) # args wrapped in list
@@ -98,12 +101,16 @@ test_that("groupby, lazygroupby unpack + charvec same as list of strings", {
     expect_identical(df1 |> to_l(), df2 |> to_l())
     expect_identical(df1 |> to_l(), df3 |> to_l())
   }
-  options(polars.maintain_order = FALSE)
+    }
+  )
 })
 
 test_that("agg, lazygroupby unpack + charvec same as list of strings", {
-  options(polars.maintain_order = TRUE)
-  df = pl$DataFrame(mtcars)
+  skip_if_not_installed("withr")
+  withr::with_options(
+    list(polars.maintain_order = TRUE),
+    {
+        df = pl$DataFrame(mtcars)
   to_l = \(x) (if (inherits(x, "RPolarsDataFrame")) x else x$collect())$to_list()
   for (x in list(df, df$lazy())) {
     df1 = x$group_by("cyl")$agg(pl$col("hp")$mean(), pl$col("gear")$mean()) # args wrapped in list
@@ -112,7 +119,9 @@ test_that("agg, lazygroupby unpack + charvec same as list of strings", {
     expect_identical(df1 |> to_l(), df2 |> to_l())
     expect_identical(df1 |> to_l(), df3 |> to_l())
   }
-  options(polars.maintain_order = FALSE)
+    }
+  )
+
 })
 
 
