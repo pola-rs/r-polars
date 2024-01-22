@@ -1,10 +1,14 @@
-#' Set some default options
+#' Set some options
 #'
 #' This is done here because it is the first file run by devtools::load_all()
 #' (cf field 'Collate' in DESCRIPTION) and options are used in other internal
 #' functions so options have to be defined first.
 #'
-#' NOTE that options on "rpool" are not defined here because they require
+#' NOTE 1: I don't think values here actually matter because this is just used
+#' to build the package. Those values won't be exported in the user environment.
+#' Default options are specified in .onLoad().
+#'
+#' NOTE 2: options on "rpool" are not defined here because they require
 #' functions defined later in the process to be run. Also, they are not used in
 #' other internal functions.
 #'
