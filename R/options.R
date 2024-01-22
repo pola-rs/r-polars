@@ -227,32 +227,6 @@ print.polars_options = function(x, ...) {
 validate_polars_options = function(options) {
   results = list()
 
-  ### Check functions
-  is_scalar_bool2 = function(x) {
-    res = is_scalar_bool(x)
-    if (!res) {
-      "input must be TRUE or FALSE."
-    } else {
-      TRUE
-    }
-  }
-  is_acceptable_choice = function(x) {
-    res = !is.null(x) && x %in% c("bit64", "double", "string")
-    if (!res) {
-      "input must be one of \"float\", \"string\", \"bit64\"."
-    } else {
-      TRUE
-    }
-  }
-  bit64_is_attached = function(x) {
-    res = if (!is.null(x) && x == "bit64") x %in% .packages() else TRUE
-    if (!res) {
-      "package `bit64` must be attached to use `int64_conversion = \"bit64\"`."
-    } else {
-      TRUE
-    }
-  }
-
   ### Perform checks
   for (i in c(
     "strictly_immutable", "no_messages", "do_not_repeat_call",
@@ -282,6 +256,38 @@ validate_polars_options = function(options) {
     stop(paste0(msg, bullets, "\n\nMore info at `?polars_options`."), call. = FALSE)
   }
 }
+
+
+### Check functions
+is_scalar_bool2 = function(x) {
+  res = is_scalar_bool(x)
+  if (!res) {
+    "input must be TRUE or FALSE."
+  } else {
+    TRUE
+  }
+}
+is_acceptable_choice = function(x) {
+  res = !is.null(x) && x %in% c("bit64", "double", "string")
+  if (!res) {
+    "input must be one of \"float\", \"string\", \"bit64\"."
+  } else {
+    TRUE
+  }
+}
+bit64_is_attached = function(x) {
+  res = if (!is.null(x) && x == "bit64") x %in% .packages() else TRUE
+  if (!res) {
+    "package `bit64` must be attached to use `int64_conversion = \"bit64\"`."
+  } else {
+    TRUE
+  }
+}
+
+
+
+
+
 
 
 
