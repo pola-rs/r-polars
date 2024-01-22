@@ -8,11 +8,53 @@ use polars_core::utils::arrow::ffi;
 use polars_core::POOL;
 use std::result::Result;
 
+pub enum RArrowArrayClass {
+    ArrowArray,
+    NanoArrowArray,
+}
+
+#[derive(Debug)]
+pub struct ArrowRPackage;
+#[derive(Debug)]
+pub struct NanoArrowRPackage;
+
+impl RArrowArrayClass {
+    pub fn package_name(&self) -> Box<dyn RPackage> {
+        match self {
+            RArrowArrayClass::ArrowArray => Box::new(ArrowRPackage),
+            RArrowArrayClass::NanoArrowArray => Box::new(NanoArrowRPackage),
+        }
+    }
+}
+
+pub trait RPackage {
+    fn export_array(&self, array: &Robj) -> Result<Function, String>;
+}
+
+impl RPackage for ArrowRPackage {
+    fn export_array(&self, array: &Robj) -> Result<Function, String> {
+        R!("function(exportable_array, exportable_schema) arrow:::ExportArray({{array}}, exportable_array, exportable_schema)")?
+            .as_function()
+            .ok_or_else(|| "could not find `arrow:::ExportArray` function. Is the arrow package installed?".to_string())
+    }
+}
+
+impl RPackage for NanoArrowRPackage {
+    fn export_array(&self, array: &Robj) -> Result<Function, String> {
+        R!(r#"""
+        function(exportable_array, exportable_schema) {
+            nanoarrow::nanoarrow_pointer_export(
+                nanoarrow::infer_nanoarrow_schema({{array}}),
+                exportable_schema
+            )
+            nanoarrow::nanoarrow_pointer_export({{array}}, exportable_array)
+        }
+        """#)?.as_function().ok_or_else(|| "could not find `nanoarrow::nanoarrow_pointer_export` function. Is the nanoarrow package installed?".to_string())
+    }
+}
+
 //does not support chunked array
-pub fn arrow_array_to_rust(
-    arrow_array: Robj,
-    opt_f: Option<&Function>,
-) -> Result<ArrayRef, String> {
+pub fn arrow_array_to_rust(arrow_array: Robj, class: RArrowArrayClass) -> Result<ArrayRef, String> {
     let mut array = Box::new(ffi::ArrowArray::empty());
     let mut schema = Box::new(ffi::ArrowSchema::empty());
     let (ext_a, ext_s) = unsafe {
@@ -22,11 +64,8 @@ pub fn arrow_array_to_rust(
         )
     };
 
-    if let Some(f) = opt_f {
-        f.call(pairlist!(arrow_array, ext_a, ext_s))?;
-    } else {
-        call!("arrow:::ExportArray", arrow_array, ext_a, ext_s)?;
-    };
+    let export_func = class.package_name().export_array(&arrow_array)?;
+    export_func.call(pairlist!(ext_a, ext_s))?;
 
     let array = unsafe {
         let field = ffi::import_field_from_c(schema.as_ref()).map_err(|err| err.to_string())?;
@@ -43,14 +82,11 @@ unsafe fn wrap_make_external_ptr<T>(t: &mut T) -> Robj {
 
 pub fn rb_to_rust_df(r_rb_columns: List, names: &[String]) -> Result<pl::DataFrame, String> {
     let n_col = r_rb_columns.len();
-    let f = R!("arrow:::ExportArray")?
-        .as_function()
-        .expect("could not find Arrow");
     let col_iter = r_rb_columns
         .into_iter()
         .zip(names.iter())
         .map(|((_, r_array), str)| {
-            let arr = arrow_array_to_rust(r_array, Some(&f))?;
+            let arr = arrow_array_to_rust(r_array, RArrowArrayClass::ArrowArray)?;
             let s = <polars::prelude::Series>::try_from((str.as_str(), arr))
                 .map_err(|err| err.to_string());
             s
@@ -62,11 +98,6 @@ pub fn rb_to_rust_df(r_rb_columns: List, names: &[String]) -> Result<pl::DataFra
 
 pub fn to_rust_df(rb: Robj) -> Result<pl::DataFrame, String> {
     let rb = rb.as_list().ok_or("arrow record batches is not a List")?;
-
-    //prepare function calls to R package arrow
-    let export_array_f = R!("arrow:::ExportArray")?.as_function().ok_or_else(|| {
-        "could not find arrow:::ExportArray is R package arrow installed?".to_string()
-    })?;
     let get_columns_f = R!(r"\(x) x$columns")?.as_function().unwrap();
 
     //read columns names of first batch, if not any batches return empty DataFrame
@@ -94,7 +125,7 @@ pub fn to_rust_df(rb: Robj) -> Result<pl::DataFrame, String> {
 
         //collect vector of exported arrow arrays, one for each column
         let array_iter = columns_list.into_iter().map(|(_, column)| {
-            let arr = arrow_array_to_rust(column, Some(&export_array_f))?;
+            let arr = arrow_array_to_rust(column, RArrowArrayClass::ArrowArray)?;
             run_parallel |= matches!(
                 arr.data_type(),
                 ArrowDataType::Utf8 | ArrowDataType::Dictionary(_, _, _)

@@ -520,7 +520,9 @@ impl RPolarsSeries {
     }
 
     pub fn from_arrow(name: &str, array: Robj) -> Result<Self, String> {
-        let arr = crate::arrow_interop::to_rust::arrow_array_to_rust(array, None)?;
+        use crate::arrow_interop::to_rust;
+
+        let arr = to_rust::arrow_array_to_rust(array, to_rust::RArrowArrayClass::ArrowArray)?;
 
         match arr.data_type() {
             ArrowDataType::LargeList(_) => {
