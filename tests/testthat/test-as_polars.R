@@ -103,6 +103,7 @@ make_as_polars_series_cases = function() {
     "POSIXlt", as.POSIXlt("1900-01-01"), "",
     "arrow Array", arrow::arrow_array(1), "",
     "arrow ChunkedArray", arrow::chunked_array(1), "",
+    "nanoarrow_array", nanoarrow::as_nanoarrow_array(1), "",
   )
 }
 
@@ -110,6 +111,7 @@ make_as_polars_series_cases = function() {
 patrick::with_parameters_test_that("as_polars_series S3 methods",
   {
     skip_if_not_installed("arrow")
+    skip_if_not_installed("nanoarrow")
 
     pl_series = as_polars_series(x)
     expect_s3_class(pl_series, "RPolarsSeries")

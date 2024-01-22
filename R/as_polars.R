@@ -322,3 +322,10 @@ as_polars_series.Array = function(x, name = NULL, ..., rechunk = TRUE) {
 #' @rdname as_polars_series
 #' @export
 as_polars_series.ChunkedArray = as_polars_series.Array
+
+#' @rdname as_polars_series
+#' @export
+as_polars_series.nanoarrow_array = function(x, name = NULL, ...) {
+  .pr$Series$from_arrow(name %||% "", x) |>
+    unwrap()
+}
