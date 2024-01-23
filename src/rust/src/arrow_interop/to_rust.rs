@@ -32,7 +32,7 @@ pub struct ArrowRPackage;
 pub struct NanoArrowRPackage;
 
 impl RArrowArrayClass {
-    pub fn package_name(&self) -> Box<dyn RPackage> {
+    pub fn get_package(&self) -> Box<dyn RPackage> {
         match self {
             RArrowArrayClass::ArrowArray => Box::new(ArrowRPackage),
             RArrowArrayClass::NanoArrowArray => Box::new(NanoArrowRPackage),
@@ -88,9 +88,10 @@ pub fn arrow_array_to_rust(arrow_array: Robj) -> Result<ArrayRef, String> {
         )
     };
 
-    let class = RArrowArrayClass::from_robj(&arrow_array)?;
-    let export_func = class.package_name().export_array_func()?;
-    export_func.call(pairlist!(&arrow_array, ext_a, ext_s))?;
+    RArrowArrayClass::from_robj(&arrow_array)?
+        .get_package()
+        .export_array_func()?
+        .call(pairlist!(&arrow_array, ext_a, ext_s))?;
 
     let array = unsafe {
         let field = ffi::import_field_from_c(schema.as_ref()).map_err(|err| err.to_string())?;
