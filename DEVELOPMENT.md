@@ -68,6 +68,23 @@ Each class object's methods are defined in multiple source files as follows:
   with functions prefixed with the class name and deletes the original methods.
   (e.g. `SQLContext_execute` is replaced with `pl$SQLContext$execute`)
 
+## API documentation
+
+This package uses the `roxygen2` package to generate Rd files.
+
+Note that, some S3 methods exported in the `zzz.R` file are not recognized as S3 methods by roxygen2
+if the suggested package is not loaded.
+
+For example, to generate the documentation for the `nanoarrow::as_nanoarrow_array_stream.RPolarsDataFrame` function,
+the `nanoarrow` package must be installed and loaded.
+
+```r
+s3_register("nanoarrow::as_nanoarrow_array_stream", "RPolarsDataFrame")
+```
+
+If not loaded, the Rd file will be generated as a normal function.
+This is not intended, so please do not commit the updated Rd file.
+
 ## Updating Rust Polars
 
 When updating the Rust Polars crate that the R package depends on,
