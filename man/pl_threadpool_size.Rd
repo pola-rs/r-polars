@@ -25,8 +25,9 @@ one of the following ways can be used:
 This can be done by setting the feature flag when installing the package.
 See the installation vignette (\code{vignette("install", "polars")})
 for details.
-\item Set the \code{polars.disable_auto_limit_max_threads} option to \code{TRUE} with
-the \code{\link[=options]{options()}} function.
+\item Set the \code{polars.limit_max_threads} option to \code{FALSE} with
+the \code{\link[=options]{options()}} function. Same as setting the \code{POLARS_MAX_THREADS} environment
+variable, this option must be set before loading the package.
 }
 }
 \examples{

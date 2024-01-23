@@ -1,7 +1,7 @@
 # default options
 
     Code
-      polars_options()
+      default_options
     Output
       Options:
       ========                         
@@ -9,6 +9,7 @@
       df_knitr_print       auto
       do_not_repeat_call  FALSE
       int64_conversion   double
+      limit_max_threads    TRUE
       maintain_order      FALSE
       no_messages         FALSE
       rpool_active            0
@@ -23,5 +24,5 @@
     - strictly_immutable: input must be TRUE or FALSE.
     - debug_polars: input must be TRUE or FALSE.
     
-    More info at `?polars_options`.
+    More info at `?polars::polars_options`.
 

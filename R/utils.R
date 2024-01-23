@@ -20,7 +20,8 @@ options(
   polars.int64_conversion = "double",
   polars.maintain_order = FALSE,
   polars.no_messages = FALSE,
-  polars.strictly_immutable = TRUE
+  polars.strictly_immutable = TRUE,
+  polars.limit_max_threads = NULL
 )
 
 

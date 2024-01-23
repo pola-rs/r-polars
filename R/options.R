@@ -95,26 +95,22 @@ pl_reset_options = function() {
 #'   default value in parenthesis):
 #'
 #' * `debug_polars` (`FALSE`): Print additional information to debug Polars.
-#'
 #' * `do_not_repeat_call` (`FALSE`): Do not print the call causing the error in
 #'   error messages. The default is to show them.
-#'
 #' * `int64_conversion` (`"double"`): How should Int64 values be handled when
 #'   converting a polars object to R?
-#'
 #'    * `"double"` converts the integer values to double.
 #'    * `"bit64"` uses `bit64::as.integer64()` to do the conversion (requires
 #'   the package `bit64` to be attached).
 #'    * `"string"` converts Int64 values to character.
-#'
+#' * `limit_max_threads` (`NULL`):
+#'   See [`?pl_threadpool_size`][pl_threadpool_size] for details.
+#'   This option should be set before the package is loaded.
 #' * `maintain_order` (`FALSE`): Default for all `maintain_order` options
 #'   (present in `$group_by()` or `$unique()` for example).
-#'
 #' * `no_messages` (`FALSE`): Hide messages.
-#'
 #' * `rpool_cap`: The maximum number of R sessions that can be used to process
 #'   R code in the background. See the section "About pool options" below.
-#'
 #' * `strictly_immutable` (`TRUE`): Keep polars strictly immutable. Polars/arrow
 #'   is in general pro "immutable objects". Immutability is also classic in R.
 #'   To mimic the Python-polars API, set this to `FALSE.`
@@ -179,6 +175,7 @@ polars_options = function() {
     df_knitr_print = getOption("polars.df_knitr_print"),
     do_not_repeat_call = getOption("polars.do_not_repeat_call"),
     int64_conversion = getOption("polars.int64_conversion"),
+    limit_max_threads = getOption("polars.limit_max_threads") %||% "Not set (NULL)",
     maintain_order = getOption("polars.maintain_order"),
     no_messages = getOption("polars.no_messages"),
     rpool_active = unwrap(get_global_rpool_cap())$active,
@@ -202,7 +199,8 @@ polars_options_reset = function() {
       polars.no_messages = FALSE,
       polars.rpool_active = 0,
       polars.rpool_cap = 4,
-      polars.strictly_immutable = TRUE
+      polars.strictly_immutable = TRUE,
+      polars.limit_max_threads = NULL
     )
   )
 }
@@ -234,6 +232,7 @@ validate_polars_options = function(options) {
   )) {
     results[[i]] = do.call(is_scalar_bool2, list(options[[i]]))
   }
+
   results[["int64_conversion"]] = c(
     do.call(is_acceptable_choice, list(options[["int64_conversion"]])),
     do.call(bit64_is_attached, list(options[["int64_conversion"]]))
@@ -253,7 +252,7 @@ validate_polars_options = function(options) {
   if (length(errors) > 0) {
     msg = "Some polars options have an unexpected value:\n"
     bullets = paste0("- ", names(errors), ": ", errors, collapse = "\n")
-    stop(paste0(msg, bullets, "\n\nMore info at `?polars_options`."), call. = FALSE)
+    stop(paste0(msg, bullets, "\n\nMore info at `?polars::polars_options`."), call. = FALSE)
   }
 }
 
@@ -267,6 +266,7 @@ is_scalar_bool2 = function(x) {
     TRUE
   }
 }
+
 is_acceptable_choice = function(x) {
   res = !is.null(x) && x %in% c("bit64", "double", "string")
   if (!res) {
@@ -275,6 +275,7 @@ is_acceptable_choice = function(x) {
     TRUE
   }
 }
+
 bit64_is_attached = function(x) {
   res = if (!is.null(x) && x == "bit64") x %in% .packages() else TRUE
   if (!res) {
