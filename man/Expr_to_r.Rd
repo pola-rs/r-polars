@@ -8,7 +8,7 @@ Expr_to_r(
   df = NULL,
   i = 0,
   ...,
-  int64_conversion = pl$options$int64_conversion
+  int64_conversion = polars_options()$int64_conversion
 )
 }
 \arguments{
@@ -18,7 +18,7 @@ Otherwise, provide a DataFrame that the Expr should be evaluated in.}
 \item{i}{Numeric column to extract. Default is zero (which gives the first
 column).}
 
-\item{...}{Ignored.}
+\item{...}{Any args pased to \code{as.data.frame()}.}
 
 \item{int64_conversion}{How should Int64 values be handled when converting a
 polars object to R?

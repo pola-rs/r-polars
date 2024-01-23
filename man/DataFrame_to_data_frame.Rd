@@ -4,7 +4,10 @@
 \alias{DataFrame_to_data_frame}
 \title{Return Polars DataFrame as R data.frame}
 \usage{
-DataFrame_to_data_frame(..., int64_conversion = pl$options$int64_conversion)
+DataFrame_to_data_frame(
+  ...,
+  int64_conversion = polars_options()$int64_conversion
+)
 }
 \arguments{
 \item{...}{Any args pased to \code{as.data.frame()}.}

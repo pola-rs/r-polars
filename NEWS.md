@@ -61,6 +61,18 @@
     rewritten and work better (#727).
 -   `pl$from_arrow()` is deprecated and will be removed in 0.14.0.
     Use `as_polars_df()` or `as_polars_series()` instead (#728).
+-   Options handling has been rewritten to match the standard option handling in 
+    R (#726):
+    -   Options are now passed via `options()`. The option names don't change but
+        they must be prefixed with `"polars."`. For example, we can now pass
+        `options(polars.strictly_immutable = FALSE)`.
+    -   Options can be accessed with `polars_options()`, which returns a named
+        list (this is the replacement of `pl$options`).
+    -   Options can be reset with `polars_options_reset()` (this is the 
+        replacement of `pl$reset_options()`).
+    -   `pl$set_options()` and `pl$reset_options()` are deprecated and will be
+        removed in 0.14.0.
+    -   The option `polars.df_print` has been renamed `polars.df_knitr_print`.
 
 ## polars 0.12.2
 

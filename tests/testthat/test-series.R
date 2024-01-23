@@ -113,31 +113,33 @@ test_that("pl$Series_alias", {
 
 
 test_that("Series_append", {
-  pl$set_options(strictly_immutable = FALSE)
+  skip_if_not_installed("withr")
+  withr::with_options(
+    list(polars.strictly_immutable = FALSE),
+    {
+      s = pl$Series(letters, "foo")
+      s2 = s
+      S = pl$Series(LETTERS, "bar")
+      unwrap(.pr$Series$append_mut(s, S))
 
-  s = pl$Series(letters, "foo")
-  s2 = s
-  S = pl$Series(LETTERS, "bar")
-  unwrap(.pr$Series$append_mut(s, S))
+      expect_identical(
+        s$to_vector(),
+        pl$Series(c(letters, LETTERS))$to_vector()
+      )
 
-  expect_identical(
-    s$to_vector(),
-    pl$Series(c(letters, LETTERS))$to_vector()
+      # default immutable behavior, s_imut and s_imut_copy stay the same
+      s_imut = pl$Series(1:3)
+      s_imut_copy = s_imut
+      s_new = s_imut$append(pl$Series(1:3))
+      expect_identical(s_imut$to_vector(), s_imut_copy$to_vector())
+
+      # pypolars-like mutable behavior,s_mut_copy become the same as s_new
+      s_mut = pl$Series(1:3)
+      s_mut_copy = s_mut
+      s_new = s_mut$append(pl$Series(1:3), immutable = FALSE)
+      expect_identical(s_new$to_vector(), s_mut_copy$to_vector())
+    }
   )
-
-  # default immutable behavior, s_imut and s_imut_copy stay the same
-  s_imut = pl$Series(1:3)
-  s_imut_copy = s_imut
-  s_new = s_imut$append(pl$Series(1:3))
-  expect_identical(s_imut$to_vector(), s_imut_copy$to_vector())
-
-  # pypolars-like mutable behavior,s_mut_copy become the same as s_new
-  s_mut = pl$Series(1:3)
-  s_mut_copy = s_mut
-  s_new = s_mut$append(pl$Series(1:3), immutable = FALSE)
-  expect_identical(s_new$to_vector(), s_mut_copy$to_vector())
-
-  pl$reset_options()
 
   expect_error(
     s_mut$append(pl$Series(1:3), immutable = FALSE),
@@ -283,46 +285,46 @@ test_that("sorted flags, sort", {
 # })
 
 test_that("set_sorted", {
-  pl$reset_options()
-
   expect_error(
     pl$Series(c(1, 3, 2, 4))$set_sorted(in_place = TRUE),
     regexp = "breaks immutability"
   )
 
-  pl$set_options(strictly_immutable = FALSE)
+  skip_if_not_installed("withr")
+  withr::with_options(
+    list(polars.strictly_immutable = FALSE),
+    {
+      # test in_place, test set_sorted
+      s = pl$Series(c(1, 3, 2, 4))
+      s$set_sorted(descending = FALSE, in_place = TRUE)
+      expect_identical(
+        s$sort(descending = FALSE)$to_r(),
+        c(1, 3, 2, 4)
+      )
 
-  # test in_place, test set_sorted
-  s = pl$Series(c(1, 3, 2, 4))
-  s$set_sorted(descending = FALSE, in_place = TRUE)
-  expect_identical(
-    s$sort(descending = FALSE)$to_r(),
-    c(1, 3, 2, 4)
+      # test NOT in_place no effect
+      s = pl$Series(c(1, 3, 2, 4))
+      s$set_sorted(descending = FALSE, in_place = FALSE)
+      expect_identical(
+        s$sort(descending = FALSE)$to_r(),
+        c(1, 2, 3, 4)
+      )
+
+      # test NOT in_place with effect
+      s = pl$Series(c(1, 3, 2, 4))$
+        set_sorted(descending = FALSE, in_place = FALSE)$
+        sort()$
+        to_r()
+      expect_identical(s, c(1, 3, 2, 4))
+
+      # test NOT in_place. reverse-reverse
+      s = pl$Series(c(1, 3, 2, 4))$
+        set_sorted(descending = TRUE, in_place = FALSE)$
+        sort(descending = TRUE)$
+        to_r()
+      expect_identical(s, c(1, 3, 2, 4))
+    }
   )
-
-  # test NOT in_place no effect
-  s = pl$Series(c(1, 3, 2, 4))
-  s$set_sorted(descending = FALSE, in_place = FALSE)
-  expect_identical(
-    s$sort(descending = FALSE)$to_r(),
-    c(1, 2, 3, 4)
-  )
-
-  # test NOT in_place with effect
-  s = pl$Series(c(1, 3, 2, 4))$
-    set_sorted(descending = FALSE, in_place = FALSE)$
-    sort()$
-    to_r()
-  expect_identical(s, c(1, 3, 2, 4))
-
-  # test NOT in_place. reverse-reverse
-  s = pl$Series(c(1, 3, 2, 4))$
-    set_sorted(descending = TRUE, in_place = FALSE)$
-    sort(descending = TRUE)$
-    to_r()
-  expect_identical(s, c(1, 3, 2, 4))
-
-  pl$reset_options()
 })
 
 test_that("value counts", {

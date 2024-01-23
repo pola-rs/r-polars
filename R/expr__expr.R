@@ -97,8 +97,8 @@ wrap_e = function(e, str_to_lit = TRUE) {
 #' @examples pl$col("foo") < 5
 wrap_e_result = function(e, str_to_lit = TRUE, argname = NULL) {
   # disable call info
-  old_option = pl$options$do_not_repeat_call
-  pl$set_options(do_not_repeat_call = TRUE)
+  old_option = polars_options()$do_not_repeat_call
+  options(polars.do_not_repeat_call = TRUE)
 
   # wrap_e and catch nay error in a result
   expr_result = result(
@@ -113,7 +113,7 @@ wrap_e_result = function(e, str_to_lit = TRUE, argname = NULL) {
 
   # restore this option but only if it was originally FALSE
   if (isFALSE(old_option)) {
-    pl$set_options(do_not_repeat_call = FALSE)
+    options(polars.do_not_repeat_call = FALSE)
   }
 
   expr_result
@@ -643,7 +643,7 @@ construct_ProtoExprArray = function(...) {
 #' could theoretically have some downstream implications to the query.
 #' @param agg_list Aggregate list. Map from vector to group in group_by context.
 #' @param in_background Boolean. Whether to execute the map in a background R
-#' process. Combined with setting e.g. `pl$set_options(rpool_cap = 4)` it can speed
+#' process. Combined with setting e.g. `options(polars.rpool_cap = 4)` it can speed
 #' up some slow R functions as they can run in parallel R sessions. The
 #' communication speed between processes is quite slower than between threads.
 #' This will likely only give a speed-up in a "low IO - high CPU" use case.
@@ -666,8 +666,8 @@ construct_ProtoExprArray = function(...) {
 #' a [`$map_batches()`][Expr_map_batches] call is evaluated. Any native
 #' polars computations can still be executed meanwhile. If `in_background = TRUE`,
 #' the map will run in one or more other R sessions and will not have access
-#' to global variables. Use `pl$set_options(rpool_cap = 4)` and `pl$options$rpool_cap`
-#' to see and view number of parallel R sessions.
+#' to global variables. Use `options(polars.rpool_cap = 4)` and
+#' `polars_options()$rpool_cap` to set and view number of parallel R sessions.
 #'
 #' @examples
 #' pl$DataFrame(iris)$
@@ -689,9 +689,9 @@ construct_ProtoExprArray = function(...) {
 #' )$collect() |> system.time()
 #'
 #' # map in parallel 1: Overhead to start up extra R processes / sessions
-#' pl$set_options(rpool_cap = 0) # drop any previous processes, just to show start-up overhead
-#' pl$set_options(rpool_cap = 4) # set back to 4, the default
-#' pl$options$rpool_cap
+#' options(polars.rpool_cap = 0) # drop any previous processes, just to show start-up overhead
+#' options(polars.rpool_cap = 4) # set back to 4, the default
+#' polars_options()$rpool_cap
 #' pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
 #'   pl$all()$map_batches(\(s) {
 #'     Sys.sleep(.1)
@@ -700,7 +700,7 @@ construct_ProtoExprArray = function(...) {
 #' )$collect() |> system.time()
 #'
 #' # map in parallel 2: Reuse R processes in "polars global_rpool".
-#' pl$options$rpool_cap
+#' polars_options()$rpool_cap
 #' pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
 #'   pl$all()$map_batches(\(s) {
 #'     Sys.sleep(.1)
@@ -732,7 +732,7 @@ Expr_map_batches = function(f, output_type = NULL, agg_list = FALSE, in_backgrou
 #' @param allow_fail_eval If `FALSE` (default), raise an error if the function
 #' fails. If `TRUE`, the result will be converted to a polars null value.
 #' @param in_background Whether to run the function in a background R process,
-#' default is `FALSE`. Combined with setting e.g. `pl$set_options(rpool_cap = 4)`,
+#' default is `FALSE`. Combined with setting e.g. `options(polars.rpool_cap = 4)`,
 #' this can speed up some slow R functions as they can run in parallel R sessions.
 #' The communication speed between processes is quite slower than between threads.
 #' This will likely only give a speed-up in a "low IO - high CPU" usecase. A
@@ -837,10 +837,10 @@ Expr_map_batches = function(f, output_type = NULL, agg_list = FALSE, in_backgrou
 #'
 #' # first run in parallel: there is some overhead to start up extra R processes
 #' # drop any previous processes, just to show start-up overhead here
-#' pl$set_options(rpool_cap = 0)
+#' options(polars.rpool_cap = 0)
 #' # set back to 4, the default
-#' pl$set_options(rpool_cap = 4)
-#' pl$options$rpool_cap
+#' options(polars.rpool_cap = 4)
+#' polars_options()$rpool_cap
 #'
 #' system.time({
 #'   pl$LazyFrame(iris)$group_by("Species")$agg(
@@ -852,7 +852,7 @@ Expr_map_batches = function(f, output_type = NULL, agg_list = FALSE, in_backgrou
 #' })
 #'
 #' # second run in parallel: this reuses R processes in "polars global_rpool".
-#' pl$options$rpool_cap
+#' polars_options()$rpool_cap
 #' system.time({
 #'   pl$LazyFrame(iris)$group_by("Species")$agg(
 #'     pl$all()$map_elements(\(s) {
@@ -1841,7 +1841,7 @@ Expr_arg_unique = use_extendr_wrapper
 #' @examples
 #' pl$DataFrame(iris)$select(pl$col("Species")$unique())
 Expr_unique = function(maintain_order = FALSE) {
-  if (!is_bool(maintain_order)) stop("param maintain_order must be a bool")
+  if (!is_scalar_bool(maintain_order)) stop("param maintain_order must be a bool")
   if (maintain_order) {
     .pr$Expr$unique_stable(self)
   } else {
@@ -2207,7 +2207,7 @@ Expr_hash = function(seed = 0, seed_1 = NULL, seed_2 = NULL, seed_3 = NULL) {
 #' df = pl$DataFrame(x = 1:5, schema = list(x = pl$Int64))
 #' df$select(pl$all()$reinterpret())
 Expr_reinterpret = function(signed = TRUE) {
-  if (!is_bool(signed)) stop("in reinterpret() : arg signed must be a bool")
+  if (!is_scalar_bool(signed)) stop("in reinterpret() : arg signed must be a bool")
   .pr$Expr$reinterpret(self, signed)
 }
 
@@ -3131,11 +3131,11 @@ Expr_rep_extend = function(expr, n, rechunk = TRUE, upcast = TRUE) {
 #' Otherwise, provide a DataFrame that the Expr should be evaluated in.
 #' @param i Numeric column to extract. Default is zero (which gives the first
 #' column).
-#' @inheritParams pl_set_options
+#' @inheritParams DataFrame_to_data_frame
 #' @return R object
 #' @examples
 #' pl$lit(1:3)$to_r()
-Expr_to_r = function(df = NULL, i = 0, ..., int64_conversion = pl$options$int64_conversion) {
+Expr_to_r = function(df = NULL, i = 0, ..., int64_conversion = polars_options()$int64_conversion) {
   if (is.null(df)) {
     pl$select(self)$to_series(i)$to_r(int64_conversion)
   } else {
