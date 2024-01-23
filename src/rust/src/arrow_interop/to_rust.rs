@@ -46,9 +46,15 @@ pub trait RPackage {
 
 impl RPackage for ArrowRPackage {
     fn export_array_func(&self) -> Result<Function, String> {
-        R!("function(array, exportable_array, exportable_schema) arrow:::ExportArray(array, exportable_array, exportable_schema)")?
-            .as_function()
-            .ok_or_else(|| "could not find `arrow:::ExportArray` function. Is the arrow package installed?".to_string())
+        R!(r#"
+        function(array, exportable_array, exportable_schema) {
+            array$export_to_c(exportable_array, exportable_schema)
+        }"#)?
+        .as_function()
+        .ok_or_else(|| {
+            "Internal error: failed to create a function to export array from arrow::Array"
+                .to_string()
+        })
     }
 }
 
@@ -62,7 +68,12 @@ impl RPackage for NanoArrowRPackage {
             )
             nanoarrow::nanoarrow_pointer_export(array, exportable_array)
         }
-        "#)?.as_function().ok_or_else(|| "could not find `nanoarrow::nanoarrow_pointer_export` function. Is the nanoarrow package installed?".to_string())
+        "#)?
+        .as_function()
+        .ok_or_else(|| {
+            "Internal error: failed to create a function to export array from nanoarrow_array"
+                .to_string()
+        })
     }
 }
 
