@@ -130,7 +130,7 @@ Currently `full_features` would work as a combination of the following features.
 - Features for CRAN compatibility
   - `disable_auto_limit_max_threads`, this feature disables the automatic limit of the maximum number of threads to 2 for CRAN compatibility,
     and the maximum number of threads is used by default.
-    In other words, if this feature is enabled, it is not compatible with CRAN.
+    See `?pl_threadpool_size` for details.
 - Features for nightly toolchain
   - `simd` for SIMD support.
   - `sql` for enable `pl$SQLContext()`.

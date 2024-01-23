@@ -137,7 +137,7 @@ move_env_elements(RPolarsExpr, pl, c("lit"), remove = FALSE)
   # Auto limit the max number of threads used by polars
   if (
     !(cargo_rpolars_feature_info()[["disable_auto_limit_max_threads"]] ||
-      isTRUE(getOption("polars.disable_auto_limit_max_threads"))) &&
+      isTRUE(getOption("polars.use_max_threads"))) &&
       Sys.getenv("POLARS_MAX_THREADS") == "") {
     Sys.setenv(POLARS_MAX_THREADS = 2)
     # Call polars to lock the pool size

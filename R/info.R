@@ -93,8 +93,9 @@ check_feature = function(feature_name, context = NULL, call = sys.call(1L)) {
 #'   This can be done by setting the feature flag when installing the package.
 #'   See the installation vignette (`vignette("install", "polars")`)
 #'   for details.
-#' - Set the `polars.disable_auto_limit_max_threads` option to `TRUE` with
-#'   the [options()] function.
+#' - Set the `polars.limit_max_threads` option to `FALSE` with
+#'   the [options()] function. Same as setting the `POLARS_MAX_THREADS` environment
+#'   variable, this option must be set before loading the package.
 #'
 #' @return The number of threads
 #' @examples
