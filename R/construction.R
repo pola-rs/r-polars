@@ -127,11 +127,8 @@ is_arrow_struct = \(x) {
 coerce_arrow = function(arr, rechunk = TRUE) {
   if (!is.null(arr$num_chunks) && is_arrow_dictonary(arr)) {
     # recast non ideal index types
-    non_ideal_idx_types = list(
-      arrow::int8(), arrow::uint8(), arrow::int16(),
-      arrow::uint16(), arrow::int32()
-    )
-    if (arr$type$index_type %in_list% non_ideal_idx_types) {
+    non_ideal_idx_types = c("int8", "uint8", "int16", "uint16", "int32")
+    if (arr$type$index_type$ToString() %in% non_ideal_idx_types) {
       arr = arr$cast(arrow::dictionary(arrow::uint32(), arrow::large_utf8())) |>
         arrow::as_arrow_array()
     }
@@ -153,7 +150,7 @@ arrow_to_rseries_result = function(name, values, rechunk = TRUE) {
   if (
     (length(array) == 0L) &&
       is_arrow_dictonary(array) &&
-      array$type$value_type %in_list% list(arrow::utf8(), arrow::large_utf8())
+      array$type$value_type$ToString() %in% c("string", "large_string")
   ) {
     res = Ok(pl$lit(c())$cast(pl$Categorical)$to_series())
   } else if (is.null(array$num_chunks)) {
