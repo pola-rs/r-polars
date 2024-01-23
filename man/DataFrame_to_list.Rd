@@ -7,14 +7,14 @@
 DataFrame_to_list(
   unnest_structs = TRUE,
   ...,
-  int64_conversion = pl$options$int64_conversion
+  int64_conversion = polars_options()$int64_conversion
 )
 }
 \arguments{
 \item{unnest_structs}{Boolean. If \code{TRUE} (default), then \verb{$unnest()} is applied
 on any struct column.}
 
-\item{...}{Ignored.}
+\item{...}{Any args pased to \code{as.data.frame()}.}
 
 \item{int64_conversion}{How should Int64 values be handled when converting a
 polars object to R?

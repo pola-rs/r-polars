@@ -241,7 +241,7 @@ Series_shape = method_as_property(function() {
 #' Get r vector/list
 #' @description return R list (if polars Series is list)  or vector (any other polars Series type)
 #'
-#' @inheritParams pl_set_options
+#' @inheritParams DataFrame_to_data_frame
 #'
 #' @return R list or vector
 #' @keywords Series
@@ -275,7 +275,7 @@ Series_shape = method_as_property(function() {
 #' series_list$to_r() # as list because Series DataType is list
 #' series_list$to_r_list() # implicit call as.list(), same as to_r() as already list
 #' series_list$to_vector() # implicit call unlist(), append into a vector
-Series_to_r = \(int64_conversion = pl$options$int64_conversion) {
+Series_to_r = \(int64_conversion = polars_options()$int64_conversion) {
   unwrap(.pr$Series$to_r(self, int64_conversion), "in $to_r():")
 }
 # TODO replace list example with Series only syntax
@@ -283,12 +283,12 @@ Series_to_r = \(int64_conversion = pl$options$int64_conversion) {
 #' @rdname Series_to_r
 #' @name Series_to_vector
 #' @description return R vector (implicit unlist)
-#' @inheritParams pl_set_options
+#' @inheritParams DataFrame_to_data_frame
 #' @return R vector
 #' @keywords Series
 #' series_vec = pl$Series(letters[1:3])
 #' series_vec$to_vector()
-Series_to_vector = \(int64_conversion = pl$options$int64_conversion) {
+Series_to_vector = \(int64_conversion = polars_options()$int64_conversion) {
   unlist(unwrap(.pr$Series$to_r(self, int64_conversion)), "in $to_vector():")
 }
 
@@ -300,11 +300,11 @@ Series_to_r_vector = Series_to_vector
 #' @rdname Series_to_r
 #' @name Series_to_r_list
 #' @description return R list (implicit as.list)
-#' @inheritParams pl_set_options
+#' @inheritParams DataFrame_to_data_frame
 #' @return R list
 #' @keywords Series
 #' @examples #
-Series_to_r_list = \(int64_conversion = pl$options$int64_conversion) {
+Series_to_r_list = \(int64_conversion = polars_options()$int64_conversion) {
   as.list(unwrap(.pr$Series$to_r(self, int64_conversion)), "in $to_r_list():")
 }
 
@@ -451,17 +451,17 @@ Series_chunk_lengths = use_extendr_wrapper
 #' s_mut = pl$Series(1:3)
 #' s_mut_copy = s_mut
 #' # must deactivate this to allow to use immutable=FALSE
-#' pl$set_options(strictly_immutable = FALSE)
+#' options(polars.strictly_immutable = FALSE)
 #' s_new = s_mut$append(pl$Series(1:3), immutable = FALSE)
 #' identical(s_new$to_vector(), s_mut_copy$to_vector())
 Series_append = function(other, immutable = TRUE) {
   if (!isFALSE(immutable)) {
     c(self, other)
   } else {
-    if (polars_optenv$strictly_immutable) {
+    if (polars_options()$strictly_immutable) {
       stop(paste(
         "append(other , immutable=FALSE) breaks immutability, to enable mutable features run:\n",
-        "`pl$set_options(strictly_immutable = FALSE)`"
+        "`options(polars.strictly_immutable = FALSE)`"
       ))
     }
     unwrap(.pr$Series$append_mut(self, other), "in $append():")
@@ -722,7 +722,7 @@ Series_is_sorted = function(descending = FALSE) {
 #' @keywords Series
 #' @param descending Sort the columns in descending order.
 #' @param in_place if TRUE, will set flag mutably and return NULL. Remember to use
-#' pl$set_options(strictly_immutable = FALSE) otherwise an error will be thrown. If FALSE
+#' options(polars.strictly_immutable = FALSE) otherwise an error will be thrown. If FALSE
 #' will return a cloned Series with set_flag which in the very most cases should be just fine.
 #' @return Series invisible
 #' @aliases Series_set_sorted
@@ -730,10 +730,10 @@ Series_is_sorted = function(descending = FALSE) {
 #' s = pl$Series(1:4)$set_sorted()
 #' s$flags
 Series_set_sorted = function(descending = FALSE, in_place = FALSE) {
-  if (in_place && polars_optenv$strictly_immutable) {
+  if (in_place && polars_options()$strictly_immutable) {
     stop(paste(
       "in_place set_sorted() breaks immutability, to enable mutable features run:\n",
-      "`pl$set_options(strictly_immutable = FALSE)`"
+      "`options(polars.strictly_immutable = FALSE)`"
     ))
   }
 
@@ -753,17 +753,17 @@ Series_set_sorted = function(descending = FALSE, in_place = FALSE) {
 #' @param descending Sort in descending order..
 #' @param in_place bool sort mutable in-place, breaks immutability
 #' If true will throw an error unless this option has been set:
-#' `pl$set_options(strictly_immutable = FALSE)`
+#' `options(polars.strictly_immutable = FALSE)`
 #'
 #' @return Series
 #'
 #' @examples
 #' pl$Series(c(1, NA, NaN, Inf, -Inf))$sort()
 Series_sort = function(descending = FALSE, in_place = FALSE) {
-  if (in_place && polars_optenv$strictly_immutable) {
+  if (in_place && polars_options()$strictly_immutable) {
     stop(paste(
       "in_place sort breaks immutability, to enable mutable features run:\n",
-      "`pl$set_options(strictly_immutable = FALSE)`"
+      "`options(polars.strictly_immutable = FALSE)`"
     ))
   }
   if (!in_place) {
@@ -815,7 +815,7 @@ Series_equals = function(other, null_equal = FALSE, strict = FALSE) {
 #' @param name string the new name
 #' @param in_place bool rename in-place, breaks immutability
 #' If true will throw an error unless this option has been set:
-#' `pl$set_options(strictly_immutable = FALSE)`
+#' `options(polars.strictly_immutable = FALSE)`
 #'
 #' @name Series_rename
 #' @return bool
@@ -829,10 +829,10 @@ Series_rename = function(name, in_place = FALSE) {
   if (identical(self$name, name)) {
     return(self)
   } # no change needed
-  if (in_place && polars_optenv$strictly_immutable) {
+  if (in_place && polars_options()$strictly_immutable) {
     stop(paste(
       "in_place breaks \"objects are immutable\" which is expected in R.",
-      "To enable mutable features run: `pl$set_options(strictly_immutable = FALSE)`"
+      "To enable mutable features run: `options(polars.strictly_immutable = FALSE)`"
     ))
   }
 
@@ -861,7 +861,7 @@ Series_rename = function(name, in_place = FALSE) {
 #' pl$Series(1:2, "bob")$rep(3)
 Series_rep = function(n, rechunk = TRUE) {
   if (!is.numeric(n)) stop("n must be numeric")
-  if (!is_bool(rechunk)) stop("rechunk must be a bool")
+  if (!is_scalar_bool(rechunk)) stop("rechunk must be a bool")
   unwrap(.pr$Series$rep(self, n, rechunk), "in $rep():")
 }
 

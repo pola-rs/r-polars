@@ -32,7 +32,9 @@ Takes not effect for Array or ChunkedArray}
 DataFrame or Series
 }
 \description{
-import Arrow Table or Array
+Import Arrow Table or Array.
+Deprecated in favor of \link{as_polars_df} and \link{as_polars_series}.
+Will be removed in 0.14.0.
 }
 \examples{
 pl$from_arrow(
@@ -47,4 +49,3 @@ pl$from_arrow(
   schema = char_schema
 )
 }
-\keyword{pl}

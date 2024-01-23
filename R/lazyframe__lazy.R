@@ -1032,7 +1032,7 @@ LazyFrame_unique = function(subset = NULL, keep = "first", maintain_order = FALS
 #' @param maintain_order Keep the same order as the original `LazyFrame`. Setting
 #'  this to `TRUE` makes it more expensive to compute and blocks the possibility
 #'  to run on the streaming engine. The default value can be changed with
-#' `pl$set_options(maintain_order = TRUE)`.
+#' `options(polars.maintain_order = TRUE)`.
 #' @return LazyGroupBy (a LazyFrame with special groupby methods like `$agg()`)
 #' @examples
 #' pl$LazyFrame(
@@ -1045,7 +1045,7 @@ LazyFrame_unique = function(subset = NULL, keep = "first", maintain_order = FALS
 #'   pl$col("bar")$mean()$alias("bar_tail_sum")
 #' )$
 #'   collect()
-LazyFrame_group_by = function(..., maintain_order = pl$options$maintain_order) {
+LazyFrame_group_by = function(..., maintain_order = polars_options()$maintain_order) {
   .pr$LazyFrame$group_by(self, unpack_list(..., .context = "in $group_by():"), maintain_order) |>
     unwrap("in $group_by():")
 }

@@ -34,7 +34,7 @@ dtype:
 # pass an integer column
 df = pl$DataFrame(timestamp = c(1666683077, 1666683099))
 df$with_columns(
-   timestamp_to_datetime = pl$from_epoch(pl$col("timestamp"), time_unit = "s")
+  timestamp_to_datetime = pl$from_epoch(pl$col("timestamp"), time_unit = "s")
 )
 
 # pass a literal
@@ -43,6 +43,6 @@ pl$from_epoch(pl$lit(c(1666683077, 1666683099)), time_unit = "s")$to_series()
 # use different time_unit
 df = pl$DataFrame(timestamp = c(12345, 12346))
 df$with_columns(
-   timestamp_to_date = pl$from_epoch(pl$col("timestamp"), time_unit = "d")
+  timestamp_to_date = pl$from_epoch(pl$col("timestamp"), time_unit = "d")
 )
 }

@@ -16,7 +16,7 @@ time_print = \(expr, name) {
 # many io's - low bitrate - low cpu
 print("test 1a - sequential")
 library(polars)
-pl$set_options(rpool_cap = 1)
+options(polars.rpool_cap = 1)
 regular_lf = pl$LazyFrame(data.frame(val = 1:1e1))
 long_map_fg = pl$col("val")
 long_map_bg = pl$col("val")
@@ -41,7 +41,7 @@ long_compute_bg$collect_in_background()$join() |> time_print("- 1a +io %bitrate 
 # many io's - high bitrate - low cpu
 print("test 1b - sequential")
 library(polars)
-pl$set_options(rpool_cap = 1)
+options(polars.rpool_cap = 1)
 regular_lf = pl$LazyFrame(data.frame(val = 1:2e6))
 long_map_fg = pl$col("val")
 long_map_bg = pl$col("val")
@@ -65,7 +65,7 @@ long_compute_bg$collect_in_background()$join() |> time_print("- 1b -io +bitrate 
 # low io - med bitrate - high cpu
 print("test 2a - sequential")
 library(polars)
-pl$set_options(rpool_cap = 1)
+options(polars.rpool_cap = 1)
 regular_lf = pl$LazyFrame(data.frame(val = 1:1e5))
 long_map_fg = pl$col("val")
 long_map_bg = pl$col("val")
@@ -104,17 +104,17 @@ f_sum_all_cols = \(lf, ...) lf$select(pl$all()$map(\(x) {
 
 f_sum_all_cols(lf)$collect() |> time_print("- 3a +io %bitrate %cpu foreground")
 
-pl$set_options(rpool_cap = 8)
+options(polars.rpool_cap = 8)
 f_sum_all_cols(lf, in_background = TRUE)$collect() |> time_print("- 3a +io %bitrate %cpu pool=8 background burn-in ") # burn-in start processes
 f_sum_all_cols(lf, in_background = TRUE)$collect() |> time_print("- 3a +io %bitrate %cpu pool=8 background")
 
-pl$set_options(rpool_cap = 4)
+options(polars.rpool_cap = 4)
 f_sum_all_cols(lf, in_background = TRUE)$collect() |> time_print("- 3a +io %bitrate %cpu pool=4 background")
 
-pl$set_options(rpool_cap = 2)
+options(polars.rpool_cap = 2)
 f_sum_all_cols(lf, in_background = TRUE)$collect() |> time_print("- 3a +io %bitrate %cpu pool=2 background")
 
-pl$set_options(rpool_cap = 1)
+options(polars.rpool_cap = 1)
 f_sum_all_cols(lf, in_background = TRUE)$collect() |> time_print("- 3a +io %bitrate %cpu pool=1 background")
 
 
@@ -131,21 +131,21 @@ f_all_cols = \(lf, ...) lf$select(pl$all()$map(\(x) {
 
 f_all_cols(lf, in_background = FALSE)$collect() |> time_print("- 3b %io %bitrate +cpu foreground")
 
-pl$set_options(rpool_cap = 8)
+options(polars.rpool_cap = 8)
 f_all_cols(lf, in_background = TRUE)$collect() |> time_print("- 3b %io %bitrate +cpu pool=8 background burn-in ")
 f_all_cols(lf, in_background = TRUE)$collect() |> time_print("- 3b %io %bitrate +cpu pool=8 background")
 
 
-pl$set_options(rpool_cap = 6)
+options(polars.rpool_cap = 6)
 f_all_cols(lf, in_background = TRUE)$collect() |> time_print("- 3b %io %bitrate +cpu pool=6 background")
 
-pl$set_options(rpool_cap = 4)
+options(polars.rpool_cap = 4)
 f_all_cols(lf, in_background = TRUE)$collect() |> time_print("- 3b %io %bitrate +cpu pool=4 background")
 
-pl$set_options(rpool_cap = 2)
+options(polars.rpool_cap = 2)
 f_all_cols(lf, in_background = TRUE)$collect() |> time_print("- 3b %io %bitrate +cpu pool=2 background")
 
-pl$set_options(rpool_cap = 1)
+options(polars.rpool_cap = 1)
 f_all_cols(lf, in_background = TRUE)$collect() |> time_print("- 3b %io %bitrate +cpu pool=1 background")
 
 
@@ -161,21 +161,21 @@ f_all_cols = \(lf, ...) lf$select(pl$all()$map(\(x) {
 
 f_all_cols(lf, in_background = FALSE)$collect() |> time_print("- 3c %io +bitrate +cpu foreground ")
 
-pl$set_options(rpool_cap = 8)
+options(polars.rpool_cap = 8)
 f_all_cols(lf, in_background = TRUE)$collect() |> time_print("- 3c %io +bitrate +cpu pool=8 background burn-in ")
 f_all_cols(lf, in_background = TRUE)$collect() |> time_print("- 3c %io +bitrate +cpu pool=8 background")
 
 
-pl$set_options(rpool_cap = 6)
+options(polars.rpool_cap = 6)
 f_all_cols(lf, in_background = TRUE)$collect() |> time_print("- 3c %io +bitrate +cpu pool=6 background")
 
-pl$set_options(rpool_cap = 4)
+options(polars.rpool_cap = 4)
 f_all_cols(lf, in_background = TRUE)$collect() |> time_print("- 3c %io +bitrate +cpu pool=4 background")
 
-pl$set_options(rpool_cap = 2)
+options(polars.rpool_cap = 2)
 f_all_cols(lf, in_background = TRUE)$collect() |> time_print("- 3c %io +bitrate +cpu pool=2 background")
 
-pl$set_options(rpool_cap = 1)
+options(polars.rpool_cap = 1)
 f_all_cols(lf, in_background = TRUE)$collect() |> time_print("- 3c %io +bitrate +cpu pool=1 background")
 
 
@@ -190,19 +190,19 @@ f_all_cols = \(lf, ...) lf$select(pl$all()$map(\(x) {
 
 f_all_cols(lf, in_background = FALSE)$collect() |> time_print("- 3d %io +bitrate +cpu foreground ")
 
-pl$set_options(rpool_cap = 8)
+options(polars.rpool_cap = 8)
 f_all_cols(lf, in_background = TRUE)$collect() |> time_print("- 3d %io +bitrate +cpu pool=8 background burn-in ")
 f_all_cols(lf, in_background = TRUE)$collect() |> time_print("- 3d %io +bitrate +cpu pool=8 background")
 
 
-pl$set_options(rpool_cap = 6)
+options(polars.rpool_cap = 6)
 f_all_cols(lf, in_background = TRUE)$collect() |> time_print("- 3d %io +bitrate +cpu pool=6 background")
 
-pl$set_options(rpool_cap = 4)
+options(polars.rpool_cap = 4)
 f_all_cols(lf, in_background = TRUE)$collect() |> time_print("- 3d %io +bitrate +cpu pool=4 background")
 
-pl$set_options(rpool_cap = 2)
+options(polars.rpool_cap = 2)
 f_all_cols(lf, in_background = TRUE)$collect() |> time_print("- 3d %io +bitrate +cpu pool=2 background")
 
-pl$set_options(rpool_cap = 1)
+options(polars.rpool_cap = 1)
 f_all_cols(lf, in_background = TRUE)$collect() |> time_print("- 3d %io +bitrate +cpu pool=1 background")

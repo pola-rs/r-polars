@@ -1,61 +1,50 @@
-test_that("pl$options$ read-write", {
-  pl$reset_options()
+test_that("default options", {
+  polars_options_reset()
+  expect_snapshot(polars_options())
+})
 
-  # basic checks
-  expect_identical(
-    pl$options,
-    as.list(polars_optenv)
-  )
-  expect_identical(
-    pl$options$maintain_order,
-    polars_optenv$maintain_order
-  )
+test_that("options are validated", {
+  polars_options_reset()
+  options("polars.strictly_immutable" = 42, "polars.debug_polars" = "a")
+  expect_snapshot_error(polars_options())
+  polars_options_reset()
+})
 
-  old_options = pl$options
+# TODO: remove before 0.14.0
+test_that("$set_options() and $reset_options() work", {
+  expect_warning(pl$set_options(strictly_immutable = FALSE), "deprecated")
+  expect_warning(pl$reset_options(), "deprecated")
+  expect_true(getOption("polars.strictly_immutable"))
+})
 
-  # set_options() works
-  pl$set_options(maintain_order = TRUE)
-  expect_true(pl$options$maintain_order)
+test_that("polars_options() read-write", {
+  polars_options_reset()
 
-  # set_options() only modifies the value for arguments that were explicitly
-  # called
-  pl$set_options(do_not_repeat_call = TRUE)
-  expect_true(pl$options$do_not_repeat_call)
-  expect_true(pl$options$maintain_order)
+  old_options = polars_options()
 
-  # set_options() only accepts booleans
-  ctx = pl$set_options(maintain_order = 42) |> get_err_ctx()
-  expect_identical(ctx$BadArgument, "maintain_order")
-  expect_identical(ctx$PlainErrorMessage, "Input must be TRUE or FALSE.")
+  # options() works
+  options(polars.maintain_order = TRUE)
+  expect_true(polars_options()$maintain_order)
 
-  ctx = pl$set_options(strictly_immutable = c(TRUE, TRUE)) |> get_err_ctx()
-  expect_identical(ctx$BadArgument, "strictly_immutable")
-  expect_identical(ctx$PlainErrorMessage, "Input must be TRUE or FALSE.")
-
-  # reset_options() works
-  pl$reset_options()
-  expect_identical(pl$options, old_options)
-
-  # all set_options args must be named
-  expect_identical(
-    pl$set_options(42) |> get_err_ctx("Plain"),
-    "all args must be named"
-  )
-  expect_identical(
-    pl$set_options(rpool_cap = 42, 42) |> get_err_ctx("Plain"),
-    "all args must be named"
+  # 'maintain_order' only accepts booleans (but error only shown later when
+  # polars_options() is called, either directly or in internal functions)
+  options(polars.maintain_order = 42)
+  expect_error(
+    polars_options(),
+    "input must be TRUE or FALSE."
   )
 
-  # incomplete/misspelled name not allowed
-  expect_identical(
-    pl$set_options(rpo = 42) |> get_err_ctx("Hint"),
-    "arg-name does not match any defined args of `?set_options`"
+  options(polars.maintain_order = FALSE, polars.strictly_immutable = c(TRUE, TRUE))
+  expect_error(
+    polars_options(),
+    "input must be TRUE or FALSE."
   )
+  polars_options_reset()
 })
 
 
 test_that("option 'int64_conversion ' works", {
-  pl$reset_options()
+  polars_options_reset()
   df = pl$DataFrame(a = c(1:3, NA), schema = list(a = pl$Int64))
 
   # default is to convert Int64 to float
@@ -65,13 +54,14 @@ test_that("option 'int64_conversion ' works", {
   )
 
   # check value of int64_conversion
+  options(polars.int64_conversion = "foobar")
   expect_error(
-    pl$set_options(int64_conversion = "foobar"),
-    "`int64_conversion ` must be one of"
+    polars_options(),
+    "input must be one of"
   )
 
   # can convert to string
-  pl$set_options(int64_conversion = "string")
+  options(polars.int64_conversion = "string")
   expect_identical(
     df$to_list(),
     list(a = c("1", "2", "3", NA))
@@ -79,13 +69,14 @@ test_that("option 'int64_conversion ' works", {
 
   # can convert to bit64, but *only* if bit64 is attached
   try(detach("package:bit64"), silent = TRUE)
+  options(polars.int64_conversion = "bit64")
   expect_error(
-    pl$set_options(int64_conversion = "bit64"),
+    polars_options(),
     "must be attached"
   )
   skip_if_not_installed("bit64")
   suppressPackageStartupMessages(library(bit64))
-  pl$set_options(int64_conversion = "bit64")
+  options(polars.int64_conversion = "bit64")
   expect_identical(
     df$to_list(),
     list(a = as.integer64(c(1, 2, 3, NA)))
@@ -103,4 +94,19 @@ test_that("option 'int64_conversion ' works", {
     df$to_data_frame(int64_conversion = "string"),
     data.frame(a = c("1", "2", "3", NA))
   )
+  polars_options_reset()
+})
+
+test_that("options work fine with withr", {
+  skip_if_not_installed("withr")
+  df = pl$DataFrame(a = c(1:3, NA), schema = list(a = pl$Int64))
+
+  withr::with_options(
+    list(polars.int64_conversion = "string"),
+    expect_identical(
+      df$to_list(),
+      list(a = c("1", "2", "3", NA))
+    )
+  )
+  expect_identical(polars_options()$int64_conversion, "double")
 })

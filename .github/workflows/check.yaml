@@ -67,9 +67,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Tune GitHub-hosted runner network
-        uses: smorimoto/tune-github-hosted-runner-network@v1
-
       - name: Set rust target
         id: rust-target
         run: |
@@ -90,10 +87,6 @@ jobs:
           rust-nightly: "${{ matrix.config.full-features }}"
           target: "${{ steps.rust-target.outputs.TARGET }}"
           token: "${{ secrets.GITHUB_TOKEN }}"
-
-      - name: print files
-        run: print(list.files("..",recursive = TRUE,full.names=TRUE))
-        shell: Rscript {0}
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -124,36 +117,18 @@ jobs:
           upload-snapshots: false
           error-on: '"never"' #errors are filtered by rules below
 
-      # - name: print R CMD check - install log
-      #   shell: bash
-      #   env:
-      #     RUNNER_OS: ${{ runner.os }}
-      #   run: |
-      #     echo $RUNNER_OS
-      #     if [ "$RUNNER_OS" == "Linux" ]
-      #     then
-      #       less /home/runner/work/r-polars/r-polars/check/polars.Rcheck/00install.out
-      #     fi
-      #
-      #     if [ "$RUNNER_OS" == "Windows" ]
-      #     then
-      #       less D:/a/r-polars/r-polars/check/polars.Rcheck/00install.out
-      #     fi
-      #
-      #     if [ "$RUNNER_OS" == "macOS" ]
-      #     then
-      #       less /home/runner/work/r-polars/r-polars/check/polars.Rcheck/00install.out
-      #     fi
-
-      - name: print files
-        run: print(list.files("..",recursive = TRUE,full.names=TRUE))
-        shell: Rscript {0}
-
       - name: raise remaining rcmdcheck errors
         run: |
          print(getwd());
          source("./inst/misc/filter_rcmdcheck.R");
         shell: Rscript {0}
+
+      - name: upload artifact
+        if: matrix.config.full-features
+        uses: actions/upload-artifact@v3
+        with:
+          name: libs
+          path: ${{ env.LIBR_POLARS_PATH }}
 
   source-with-bin-check:
     runs-on: ${{ matrix.os }}

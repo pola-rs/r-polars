@@ -10,7 +10,7 @@
 #'
 #' @return err as string
 when_calling = function(err, call) {
-  if (polars_optenv$do_not_repeat_call || is.null(call)) {
+  if (polars_options()$do_not_repeat_call || is.null(call)) {
     err
   } else {
     UseMethod("when_calling", err)

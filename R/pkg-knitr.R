@@ -8,8 +8,8 @@
 #'
 #' Or, the output format can be enforced with R's `options` function as follows:
 #'
-#' - `options(polars.df_print = "default")` for the default print method.
-#' - `options(polars.df_print = "html")` for the HTML table.
+#' - `options(polars.df_knitr_print  = "default")` for the default print method.
+#' - `options(polars.df_knitr_print  = "html")` for the HTML table.
 #' @name knit_print.RPolarsDataFrame
 #' @param x a polars DataFrame to knit_print
 #' @param ... additional arguments, not used
@@ -18,7 +18,7 @@
 #' @rdname S3_knit_print
 # exported in zzz.R
 knit_print.RPolarsDataFrame = function(x, ...) {
-  .print_opt = getOption("polars.df_print", "auto")
+  .print_opt = polars_options()$df_knitr_print
   .rmd_df_print = knitr::opts_knit$get("rmarkdown.df_print")
   if (isTRUE(.print_opt == "html") ||
     (isTRUE(.print_opt != "default") &&
