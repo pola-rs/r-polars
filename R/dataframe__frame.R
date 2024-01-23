@@ -291,7 +291,7 @@ DataFrame.property_setters = new.env(parent = emptyenv())
     pstop(err = paste("no setter method for", name))
   }
 
-  if (polars_optenv$strictly_immutable) self = self$clone()
+  if (polars_options()$strictly_immutable) self = self$clone()
   func = DataFrame.property_setters[[name]]
   func(self, value)
   self
@@ -389,7 +389,7 @@ DataFrame_drop_nulls = function(subset = NULL) {
 #' @param maintain_order Keep the same order as the original `DataFrame`. Setting
 #'  this to `TRUE` makes it more expensive to compute and blocks the possibility
 #'  to run on the streaming engine. The default value can be changed with
-#' `pl$set_options(maintain_order = TRUE)`.
+#' `options(polars.maintain_order = TRUE)`.
 #'
 #' @return DataFrame
 #' @examples
@@ -832,7 +832,7 @@ DataFrame_filter = function(...) {
 #'   pl$col("bar")$sum()$name$suffix("_sum"),
 #'   pl$col("bar")$mean()$alias("bar_tail_sum")
 #' )
-DataFrame_group_by = function(..., maintain_order = pl$options$maintain_order) {
+DataFrame_group_by = function(..., maintain_order = polars_options()$maintain_order) {
   # clone the DataFrame, bundle args as attributes. Non fallible.
   construct_group_by(
     self,
@@ -845,14 +845,20 @@ DataFrame_group_by = function(..., maintain_order = pl$options$maintain_order) {
 #' Return Polars DataFrame as R data.frame
 #'
 #' @param ... Any args pased to `as.data.frame()`.
-#' @inheritParams pl_set_options
+#' @param int64_conversion How should Int64 values be handled when converting a
+#' polars object to R?
+#'
+#' * `"double"` (default) converts the integer values to double.
+#' * `"bit64"` uses `bit64::as.integer64()` to do the conversion (requires
+#'   the package `bit64` to be attached).
+#' * `"string"` converts Int64 values to character.
 #'
 #' @return An R data.frame
 #' @keywords DataFrame
 #' @examples
 #' df = pl$DataFrame(iris[1:3, ])
 #' df$to_data_frame()
-DataFrame_to_data_frame = function(..., int64_conversion = pl$options$int64_conversion) {
+DataFrame_to_data_frame = function(..., int64_conversion = polars_options()$int64_conversion) {
   # do not unnest structs and mark with I to also preserve categoricals as is
   l = lapply(self$to_list(unnest_structs = FALSE, int64_conversion = int64_conversion), I)
 
@@ -871,7 +877,7 @@ DataFrame_to_data_frame = function(..., int64_conversion = pl$options$int64_conv
 #'
 #' @param unnest_structs Boolean. If `TRUE` (default), then `$unnest()` is applied
 #' on any struct column.
-#' @inheritParams pl_set_options
+#' @inheritParams DataFrame_to_data_frame
 #'
 #' @details
 #' For simplicity reasons, this implementation relies on unnesting all structs
@@ -883,7 +889,7 @@ DataFrame_to_data_frame = function(..., int64_conversion = pl$options$int64_conv
 #' @keywords DataFrame
 #' @examples
 #' pl$DataFrame(iris)$to_list()
-DataFrame_to_list = function(unnest_structs = TRUE, ..., int64_conversion = pl$options$int64_conversion) {
+DataFrame_to_list = function(unnest_structs = TRUE, ..., int64_conversion = polars_options()$int64_conversion) {
   if (unnest_structs) {
     .pr$DataFrame$to_list(self, int64_conversion) |>
       unwrap("in $to_list():")
@@ -1478,7 +1484,6 @@ DataFrame_rename = function(...) {
 #'
 #' df$describe()
 DataFrame_describe = function(percentiles = c(.25, .75), interpolation = "nearest") {
-
   uw = \(res) unwrap(res, "in $describe():")
 
   if (length(self$columns) == 0) {
@@ -1574,27 +1579,27 @@ DataFrame_describe = function(percentiles = c(.25, .75), interpolation = "neares
     # Calculate metrics in parallel
     df_metrics = self$
       select(
-        unlist(
-          list(
-            pl$all()$count()$name$prefix(paste0("count", custom_sep)),
-            pl$all()$null_count()$name$prefix(paste0("null_count", custom_sep)),
-            mean_exprs,
-            std_exprs,
-            min_exprs,
-            percentile_exprs,
-            max_exprs
-          ),
-          recursive = FALSE
-        )
+      unlist(
+        list(
+          pl$all()$count()$name$prefix(paste0("count", custom_sep)),
+          pl$all()$null_count()$name$prefix(paste0("null_count", custom_sep)),
+          mean_exprs,
+          std_exprs,
+          min_exprs,
+          percentile_exprs,
+          max_exprs
+        ),
+        recursive = FALSE
       )
+    )
 
     df_metrics$
       transpose(include_header = TRUE)$
       with_columns(
-        pl$col("column")$str$split_exact(custom_sep, 1)$
-          struct$rename_fields(c("describe", "variable"))$
-          alias("fields")
-      )$
+      pl$col("column")$str$split_exact(custom_sep, 1)$
+        struct$rename_fields(c("describe", "variable"))$
+        alias("fields")
+    )$
       unnest("fields")$
       drop("column")$
       pivot(index = "describe", columns = "variable", values = "column_0")$
@@ -1613,7 +1618,7 @@ DataFrame_describe = function(percentiles = c(.25, .75), interpolation = "neares
 #' pl$DataFrame(iris)$glimpse()
 DataFrame_glimpse = function(..., return_as_string = FALSE) {
   # guard input
-  if (!is_bool(return_as_string)) {
+  if (!is_scalar_bool(return_as_string)) {
     RPolarsErr$new()$
       bad_robj(return_as_string)$
       mistyped("bool")$

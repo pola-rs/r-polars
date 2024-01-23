@@ -6,11 +6,11 @@
 \alias{Series_to_r_list}
 \title{Get r vector/list}
 \usage{
-Series_to_r(int64_conversion = pl$options$int64_conversion)
+Series_to_r(int64_conversion = polars_options()$int64_conversion)
 
-Series_to_vector(int64_conversion = pl$options$int64_conversion)
+Series_to_vector(int64_conversion = polars_options()$int64_conversion)
 
-Series_to_r_list(int64_conversion = pl$options$int64_conversion)
+Series_to_r_list(int64_conversion = polars_options()$int64_conversion)
 }
 \arguments{
 \item{int64_conversion}{How should Int64 values be handled when converting a

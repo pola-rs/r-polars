@@ -13,8 +13,12 @@
   if (!length(x)) y else x
 }
 
-is_bool = function(x) {
-  is.logical(x) && length(x) == 1 && !is.na(x)
+is_scalar_bool = function(x) {
+  length(x) == 1 && !is.na(x) && is.logical(x)
+}
+
+is_scalar_numeric = function(x) {
+  length(x) == 1 && !is.na(x) && is.numeric(x)
 }
 
 is_string = function(x) {
