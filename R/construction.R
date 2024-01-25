@@ -138,7 +138,7 @@ is_arrow_struct = function(x) {
 #' @param arr Array, ChunkedArray
 #' @noRd
 coerce_arrow = function(arr, rechunk = TRUE) {
-  if (!is.null(arr$num_chunks) && is_arrow_dictionary(arr)) {
+  if (!is.null(arr$num_chunks) && is_arrow_dictionary(arr) && rechunk) {
     # recast non ideal index types
     non_ideal_idx_types = c("int8", "uint8", "int16", "uint16", "int32")
     if (arr$type$index_type$ToString() %in% non_ideal_idx_types) {
