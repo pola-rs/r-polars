@@ -121,12 +121,18 @@ unpack_schema = function(
   schema
 }
 
+#' @param x An [arrow::Array], [arrow::ChunkedArray]
+#' @noRd
 is_arrow_dictionary = function(x) {
-  identical(class(x$type), c("DictionaryType", "FixedWidthType", "DataType", "ArrowObject", "R6"))
+  all(inherits(x, c("ArrowObject", "R6"), which = TRUE) > 0) &&
+    identical(class(x$type), c("DictionaryType", "FixedWidthType", "DataType", "ArrowObject", "R6"))
 }
 
+#' @param x An [arrow::Array], [arrow::ChunkedArray]
+#' @noRd
 is_arrow_struct = function(x) {
-  identical(class(x$type), c("StructType", "NestedType", "DataType", "ArrowObject", "R6"))
+  all(inherits(x, c("ArrowObject", "R6"), which = TRUE) > 0) &&
+    identical(class(x$type), c("StructType", "NestedType", "DataType", "ArrowObject", "R6"))
 }
 
 #' @param arr Array, ChunkedArray
