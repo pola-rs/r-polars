@@ -89,7 +89,7 @@ check_feature = function(feature_name, context = NULL, call = sys.call(1L)) {
 #' To disable this behavior and let the engine determine the threadpool size,
 #' one of the following ways can be used:
 #'
-#' - Enable the `disable_auto_limit_max_threads` feature of the library.
+#' - Enable the `disable_limit_max_threads` feature of the library.
 #'   This can be done by setting the feature flag when installing the package.
 #'   See the installation vignette (`vignette("install", "polars")`)
 #'   for details.

@@ -118,7 +118,7 @@ move_env_elements(RPolarsExpr, pl, c("lit"), remove = FALSE)
 .onLoad = function(libname, pkgname) {
   # Auto limit the max number of threads used by polars
   if (
-    isFALSE(cargo_rpolars_feature_info()[["disable_auto_limit_max_threads"]]) &&
+    isFALSE(cargo_rpolars_feature_info()[["disable_limit_max_threads"]]) &&
       !isFALSE(getOption("polars.limit_max_threads")) &&
       Sys.getenv("POLARS_MAX_THREADS") == "") {
     Sys.setenv(POLARS_MAX_THREADS = 2)

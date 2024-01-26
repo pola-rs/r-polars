@@ -21,7 +21,7 @@ For compatibility with CRAN, the threadpool size is set to 2 by default.
 To disable this behavior and let the engine determine the threadpool size,
 one of the following ways can be used:
 \itemize{
-\item Enable the \code{disable_auto_limit_max_threads} feature of the library.
+\item Enable the \code{disable_limit_max_threads} feature of the library.
 This can be done by setting the feature flag when installing the package.
 See the installation vignette (\code{vignette("install", "polars")})
 for details.

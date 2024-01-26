@@ -8,8 +8,8 @@ fn cargo_rpolars_feature_info() -> List {
         // `full_features` is a combination of `simd` and `sql` features
         full_features = cfg!(feature = "simd")
             & cfg!(feature = "sql")
-            & cfg!(feature = "disable_auto_limit_max_threads"),
-        disable_auto_limit_max_threads = cfg!(feature = "disable_auto_limit_max_threads"),
+            & cfg!(feature = "disable_limit_max_threads"),
+        disable_limit_max_threads = cfg!(feature = "disable_limit_max_threads"),
         simd = cfg!(feature = "simd"),
         sql = cfg!(feature = "sql"),
         rpolars_debug_print = cfg!(feature = "rpolars_debug_print"),
