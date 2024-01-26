@@ -103,7 +103,7 @@ pl_reset_options = function() {
 #'    * `"bit64"` uses `bit64::as.integer64()` to do the conversion (requires
 #'   the package `bit64` to be attached).
 #'    * `"string"` converts Int64 values to character.
-#' * `limit_max_threads` (`NULL`):
+#' * `limit_max_threads` ([`!polars_info()$features$disable_limit_max_threads`][polars_info]):
 #'   See [`?pl_threadpool_size`][pl_threadpool_size] for details.
 #'   This option should be set before the package is loaded.
 #' * `maintain_order` (`FALSE`): Default for all `maintain_order` options
@@ -175,7 +175,8 @@ polars_options = function() {
     df_knitr_print = getOption("polars.df_knitr_print"),
     do_not_repeat_call = getOption("polars.do_not_repeat_call"),
     int64_conversion = getOption("polars.int64_conversion"),
-    limit_max_threads = getOption("polars.limit_max_threads") %||% "Not set (NULL)",
+    limit_max_threads = getOption("polars.limit_max_threads") %||%
+      !cargo_rpolars_feature_info()[["disable_limit_max_threads"]],
     maintain_order = getOption("polars.maintain_order"),
     no_messages = getOption("polars.no_messages"),
     rpool_active = unwrap(get_global_rpool_cap())$active,
@@ -195,7 +196,7 @@ polars_options_reset = function() {
       polars.df_knitr_print = "auto",
       polars.do_not_repeat_call = FALSE,
       polars.int64_conversion = "double",
-      polars.limit_max_threads = NULL,
+      polars.limit_max_threads = !cargo_rpolars_feature_info()[["disable_limit_max_threads"]],
       polars.maintain_order = FALSE,
       polars.no_messages = FALSE,
       polars.rpool_active = 0,
