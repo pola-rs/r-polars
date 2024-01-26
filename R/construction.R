@@ -135,6 +135,21 @@ is_arrow_struct = function(x) {
     identical(class(x$type), c("StructType", "NestedType", "DataType", "ArrowObject", "R6"))
 }
 
+# https://github.com/apache/arrow-nanoarrow/issues/370
+infer_nanoarrow_type_string = function(x) {
+  nanoarrow::nanoarrow_schema_parse(nanoarrow::infer_nanoarrow_schema(x))$type
+}
+
+is_nanoarrow_dictionary = function(x) {
+  any(inherits(x, c("nanoarrow_array", "nanoarrow_array_stream"), which = TRUE) > 0) &&
+    infer_nanoarrow_type_string(x) == "dictionary"
+}
+
+is_nanoarrow_struct = function(x) {
+  any(inherits(x, c("nanoarrow_array", "nanoarrow_array_stream"), which = TRUE) > 0) &&
+    infer_nanoarrow_type_string(x) == "struct"
+}
+
 #' @param arr Array, ChunkedArray
 #' @noRd
 coerce_arrow = function(arr, rechunk = TRUE) {
@@ -142,13 +157,14 @@ coerce_arrow = function(arr, rechunk = TRUE) {
     # recast non ideal index types
     non_ideal_idx_types = c("int8", "uint8", "int16", "uint16", "int32")
     if (arr$type$index_type$ToString() %in% non_ideal_idx_types) {
-      arr = arr$cast(arrow::dictionary(arrow::uint32(), arrow::large_utf8())) |>
+      arr = arr$cast(
+        arrow::dictionary(index_type = arrow::uint32(), value_type = arrow::large_utf8())
+      ) |>
         arrow::as_arrow_array()
     }
   }
   arr
 }
-
 
 #' Internal function of `as_polars_series()` for `arrow::Array` and `arrow::ChunkedArray` class objects.
 #'

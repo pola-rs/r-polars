@@ -16,7 +16,7 @@ make_arrow_dict_array_cases = function() {
     "da_string", da_string,
     "da_large_string", da_large_string,
     "dca_string", dca_string,
-    "dca_large_string", dca_large_string
+    "dca_large_string", dca_large_string,
   )
 }
 
