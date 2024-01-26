@@ -135,21 +135,6 @@ is_arrow_struct = function(x) {
     identical(class(x$type), c("StructType", "NestedType", "DataType", "ArrowObject", "R6"))
 }
 
-# https://github.com/apache/arrow-nanoarrow/issues/370
-infer_nanoarrow_type_string = function(x) {
-  nanoarrow::nanoarrow_schema_parse(nanoarrow::infer_nanoarrow_schema(x))$type
-}
-
-is_nanoarrow_dictionary = function(x) {
-  any(inherits(x, c("nanoarrow_array", "nanoarrow_array_stream"), which = TRUE) > 0) &&
-    infer_nanoarrow_type_string(x) == "dictionary"
-}
-
-is_nanoarrow_struct = function(x) {
-  any(inherits(x, c("nanoarrow_array", "nanoarrow_array_stream"), which = TRUE) > 0) &&
-    infer_nanoarrow_type_string(x) == "struct"
-}
-
 #' @param arr Array, ChunkedArray
 #' @noRd
 coerce_arrow = function(arr, rechunk = TRUE) {
