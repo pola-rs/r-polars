@@ -1,6 +1,9 @@
 test_that("default options", {
   polars_options_reset()
-  expect_snapshot(polars_options())
+  default_options = polars_options()
+  # This value is set automatically, so we should update for the snapshot
+  default_options[["limit_max_threads"]] = TRUE
+  expect_snapshot(default_options)
 })
 
 test_that("options are validated", {

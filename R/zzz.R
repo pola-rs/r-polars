@@ -116,6 +116,17 @@ move_env_elements(RPolarsExpr, pl, c("lit"), remove = FALSE)
 
 
 .onLoad = function(libname, pkgname) {
+  # Auto limit the max number of threads used by polars
+  if (
+    isFALSE(cargo_rpolars_feature_info()[["disable_limit_max_threads"]]) &&
+      !isFALSE(getOption("polars.limit_max_threads")) &&
+      Sys.getenv("POLARS_MAX_THREADS") == "") {
+    Sys.setenv(POLARS_MAX_THREADS = 2)
+    # Call polars to lock the pool size
+    invisible(threadpool_size())
+    Sys.unsetenv("POLARS_MAX_THREADS")
+  }
+
   # Set options: this has to be done first because functions in the "pl"
   # namespace (used later in .onLoad) will validate options internally.
   # We use getOption() because the user could have set some options in .Rprofile.
