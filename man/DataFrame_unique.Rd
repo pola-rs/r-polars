@@ -41,7 +41,7 @@ df$height
 
 df$unique()$height
 
-# s subset to define unique, keep only last or first
+# subset to define unique, keep only last or first
 df$unique(subset = "x", keep = c("last"))
 df$unique(subset = "x", keep = c("first"))
 
