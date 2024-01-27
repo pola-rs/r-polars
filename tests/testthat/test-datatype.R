@@ -27,8 +27,7 @@ test_that("plStruct", {
   # wrong uses
   expect_error(
     pl$Struct(bin = pl$Binary, pl$Boolean, "abc"),
-    "element [3] {name:'', value:abc}",
-    fixed = TRUE
+    "must either be a Field"
   )
 })
 
