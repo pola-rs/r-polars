@@ -45,6 +45,9 @@
 #'   or `"1"`.
 #' * `POLARS_FMT_TABLE_ROUNDED_CORNERS` (`"0"`): Apply rounded corners to
 #'   UTF8-styled tables (only applies to UTF8 formats).
+#' * `POLARS_MAX_THREADS` (`<variable>`): Maximum number of threads used to
+#'   initialize the thread pool. The thread pool is locked once polars is loaded,
+#'   so setting this envvar must be set before loading the package.
 #' * `POLARS_STREAMING_CHUNK_SIZE` (`<variable>`): Chunk size used in the
 #'   streaming engine. Integer larger than 1. By default, the chunk size is
 #'   determined by the schema and size of the thread pool. For some datasets
@@ -80,12 +83,13 @@
 #'
 polars_envvars = function() {
   envvars = rbind(
-    c("POLARS_AUTO_STRUCTIFY", ""),
+    # c("POLARS_AUTO_STRUCTIFY", ""),
     c("POLARS_FMT_MAX_COLS", "5"),
     c("POLARS_FMT_MAX_ROWS", "8"),
-    c("POLARS_FMT_NUM_DECIMAL", ""),
-    c("POLARS_FMT_NUM_GROUP_SEPARATOR", ""),
-    c("POLARS_FMT_NUM_LEN", ""),
+    # Exist in polars but can't be set (even in py-polars)
+    # c("POLARS_FMT_NUM_DECIMAL", ""),
+    # c("POLARS_FMT_NUM_GROUP_SEPARATOR", ""),
+    # c("POLARS_FMT_NUM_LEN", ""),
     c("POLARS_FMT_STR_LEN", "32"),
     c("POLARS_FMT_TABLE_CELL_ALIGNMENT", "LEFT"),
     c("POLARS_FMT_TABLE_CELL_LIST_LEN", "3"),
@@ -98,6 +102,7 @@ polars_envvars = function() {
     c("POLARS_FMT_TABLE_HIDE_DATAFRAME_SHAPE_INFORMATION", "0"),
     c("POLARS_FMT_TABLE_INLINE_COLUMN_DATA_TYPE", "0"),
     c("POLARS_FMT_TABLE_ROUNDED_CORNERS", "0"),
+    c("POLARS_MAX_THREADS", unwrap(get_global_rpool_cap())$capacity),
     c("POLARS_STREAMING_CHUNK_SIZE", "variable"),
     c("POLARS_TABLE_WIDTH", "variable"),
     c("POLARS_VERBOSE", "0"),

@@ -5,12 +5,8 @@
     Output
       Environment variables:
       ========                                                                     
-      POLARS_AUTO_STRUCTIFY                                               0
       POLARS_FMT_MAX_COLS                                                 5
       POLARS_FMT_MAX_ROWS                                                 8
-      POLARS_FMT_NUM_DECIMAL                                               
-      POLARS_FMT_NUM_GROUP_SEPARATOR                                       
-      POLARS_FMT_NUM_LEN                                                   
       POLARS_FMT_STR_LEN                                                 32
       POLARS_FMT_TABLE_CELL_ALIGNMENT                                  LEFT
       POLARS_FMT_TABLE_CELL_LIST_LEN                                      3
@@ -23,6 +19,7 @@
       POLARS_FMT_TABLE_HIDE_DATAFRAME_SHAPE_INFORMATION                   0
       POLARS_FMT_TABLE_INLINE_COLUMN_DATA_TYPE                            0
       POLARS_FMT_TABLE_ROUNDED_CORNERS                                    0
+      POLARS_MAX_THREADS                                                  2
       POLARS_STREAMING_CHUNK_SIZE                                  variable
       POLARS_TABLE_WIDTH                                           variable
       POLARS_VERBOSE                                                      0

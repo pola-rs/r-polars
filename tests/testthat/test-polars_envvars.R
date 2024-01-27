@@ -1,9 +1,17 @@
+skip_if_not_installed("withr")
+
 test_that("default envvars", {
-  default_envvars = polars_envvars()
-  expect_snapshot(default_envvars)
+  # this should have no effect on the threadpool size because it's set after
+  # package loading, but we only check that the number is correctly reported
+  withr::with_envvar(
+    list(POLARS_MAX_THREADS = 2),
+    {
+      default_envvars = polars_envvars()
+      expect_snapshot(default_envvars)
+    }
+  )
 })
 
-skip_if_not_installed("withr")
 
 # run snapshots with non-default values
 make_class_cases = function() {
