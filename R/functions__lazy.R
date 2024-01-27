@@ -11,7 +11,8 @@
 #' to "all-columns" and is an expression constructor
 #'
 #' @examples
-#' pl$DataFrame(list(all = c(TRUE, TRUE), some = c(TRUE, FALSE)))$select(pl$all()$all())
+#' pl$DataFrame(all = c(TRUE, TRUE), some = c(TRUE, FALSE))$
+#'   select(pl$all()$all())
 pl_all = function(name = NULL) {
   if (is.null(name)) {
     return(.pr$Expr$col("*"))
@@ -62,7 +63,7 @@ pl_all = function(name = NULL) {
 #' df$select(pl$col(pl$dtypes$Float64))
 #'
 #' # ... or an R list of DataTypes, select any column of any such DataType
-#' df$select(pl$col(list(pl$dtypes$Float64, pl$dtypes$Utf8)))
+#' df$select(pl$col(list(pl$dtypes$Float64, pl$dtypes$String)))
 #'
 #' # from Series of names
 #' df$select(pl$col(pl$Series(c("bar", "foobar"))))
@@ -79,8 +80,6 @@ pl_col = function(name = "", ...) {
 #' @examples
 #' pl$lit(1:5)$cumulative_eval(pl$element()$first() - pl$element()$last()**2)$to_r()
 pl_element = function() pl$col("")
-
-# TODO move all lazy functions to a new keyword lazy functions
 
 #' pl$count
 #' @description Count the number of values in this column/context.
@@ -691,13 +690,13 @@ pl_concat_list = function(exprs) {
 #' # wrap two columns in a struct and provide a schema to set all or some DataTypes by name
 #' e1 = pl$struct(
 #'   pl$col(c("int", "str")),
-#'   schema = list(int = pl$Int64, str = pl$Utf8)
+#'   schema = list(int = pl$Int64, str = pl$String)
 #' )$alias("my_struct")
 #' # same result as e.g. wrapping the columns in a struct and casting afterwards
 #' e2 = pl$struct(
 #'   list(pl$col("int"), pl$col("str"))
 #' )$cast(
-#'   pl$Struct(int = pl$Int64, str = pl$Utf8)
+#'   pl$Struct(int = pl$Int64, str = pl$String)
 #' )$alias("my_struct")
 #'
 #' df = pl$DataFrame(
@@ -723,7 +722,7 @@ pl_struct = function(
       if (!is.null(schema)) {
         struct_expr = struct_expr$cast(pl$Struct(schema))
       }
-      if (!is_bool(eager)) {
+      if (!is_scalar_bool(eager)) {
         return(Err("arg [eager] is not a bool"))
       }
       if (eager) {
@@ -741,7 +740,7 @@ pl_struct = function(
 #'
 #' @param ... Columns to concatenate into a single string column. Accepts
 #' expressions. Strings are parsed as column names, other non-expression inputs
-#' are parsed as literals. Non-Utf8 columns are cast to Utf8.
+#' are parsed as literals. Non-String columns are cast to String
 #' @param separator String that will be used to separate the values of each
 #' column.
 #' @return Expr
@@ -841,11 +840,9 @@ pl_rolling_corr = function(a, b, window_size, min_periods = NULL, ddof = 1) {
 
 #' Accumulate over multiple columns horizontally with an R function
 #'
-#' @description `pl$fold()` and `pl$reduce()` allows one to do rowwise operations.
-#' The only difference between them is that `pl$fold()` has an additional argument
-#' (`acc`) that contains the value that will be initialized when the fold starts.
-#'
-#' @name pl_fold_reduce
+#' This allows one to do rowwise operations, starting with an initial value
+#' (`acc`). See [`pl$reduce()`][pl_reduce] to do rowwise operations without this initial
+#' value.
 #'
 #' @param acc an Expr or Into<Expr> of the initial accumulator.
 #' @param lambda R function which takes two polars Series as input and return one.
@@ -856,26 +853,35 @@ pl_rolling_corr = function(a, b, window_size, min_periods = NULL, ddof = 1) {
 #' @examples
 #' df = pl$DataFrame(mtcars)
 #'
-#' # Make the row-wise sum of all columns with fold, reduce and vectorized "+"
+#' # Make the row-wise sum of all columns
 #' df$with_columns(
-#'   pl$reduce(
-#'     lambda = \(acc, x) acc + x,
-#'     exprs = pl$col("mpg", "drat")
-#'   )$alias("mpg_drat_sum_reduced"),
 #'   pl$fold(
 #'     acc = pl$lit(0),
 #'     lambda = \(acc, x) acc + x,
-#'     exprs = pl$col("mpg", "drat")
-#'   )$alias("mpg_drat_sum_folded"),
-#'   (pl$col("mpg") + pl$col("drat"))$alias("mpg_drat_vector_sum")
+#'     exprs = pl$col("*")
+#'   )$alias("mpg_drat_sum_folded")
 #' )
 pl_fold = function(acc, lambda, exprs) {
   fold(acc, lambda, exprs) |>
     unwrap("in pl$fold():")
 }
 
-#' @rdname pl_fold_reduce
-#' @name pl_fold_reduce_part2
+#' @inherit pl_fold title params return
+#'
+#' @description
+#' This allows one to do rowwise operations. See [`pl$fold()`][pl_fold] to do rowwise
+#' operations with an initial value.
+#'
+#' @examples
+#' df = pl$DataFrame(mtcars)
+#'
+#' # Make the row-wise sum of all columns
+#' df$with_columns(
+#'   pl$reduce(
+#'     lambda = \(acc, x) acc + x,
+#'     exprs = pl$col("*")
+#'   )$alias("mpg_drat_sum_reduced")
+#' )
 pl_reduce = function(lambda, exprs) {
   reduce(lambda, exprs) |>
     unwrap("in pl$reduce():")
@@ -1000,4 +1006,127 @@ pl_any_horizontal = function(...) {
 pl_sum_horizontal = function(...) {
   sum_horizontal(list2(...)) |>
     unwrap("in $sum_horizontal():")
+}
+
+
+#' Create polars Duration from distinct time components
+#'
+#' @param weeks Number of weeks to add. Expr or something coercible to an Expr.
+#'   Strings are parsed as column names. *Same thing for argument `days` to
+#'   `nanoseconds`*.
+#' @param days Number of days to add.
+#' @param hours Number of hours to add.
+#' @param minutes Number of minutes to add.
+#' @param seconds Number of seconds to add.
+#' @param milliseconds Number of milliseconds to add.
+#' @param microseconds Number of microseconds to add.
+#' @param nanoseconds Number of nanoseconds to add.
+#' @param time_unit Time unit of the resulting expression.
+#' @param ... Not used.
+#'
+#' @details
+#' A duration represents a fixed amount of time. For example,
+#' `pl$duration(days = 1)` means "exactly 24 hours". By contrast,
+#' `Expr$dt$offset_by('1d')` means "1 calendar day", which could sometimes be 23
+#' hours or 25 hours depending on Daylight Savings Time. For non-fixed durations
+#' such as "calendar month" or "calendar day", please use `Expr$dt$offset_by()`
+#' instead.
+#'
+#'
+#' @return Expr
+#'
+#' @examples
+#' test = pl$DataFrame(
+#'   dt = c(
+#'     "2022-01-01 00:00:00",
+#'     "2022-01-02 00:00:00"
+#'   ),
+#'   add = 1:2
+#' )$with_columns(
+#'   pl$col("dt")$str$strptime(pl$Datetime("us"), format = NULL)
+#' )
+#'
+#' test$with_columns(
+#'   (pl$col("dt") + pl$duration(weeks = "add"))$alias("add_weeks"),
+#'   (pl$col("dt") + pl$duration(days = "add"))$alias("add_days"),
+#'   (pl$col("dt") + pl$duration(seconds = "add"))$alias("add_seconds"),
+#'   (pl$col("dt") + pl$duration(milliseconds = "add"))$alias("add_millis"),
+#'   (pl$col("dt") + pl$duration(hours = "add"))$alias("add_hours")
+#' )
+#'
+#' # we can also pass an Expr
+#' test$with_columns(
+#'   (pl$col("dt") + pl$duration(weeks = pl$col("add") + 1))$alias("add_weeks"),
+#'   (pl$col("dt") + pl$duration(days = pl$col("add") + 1))$alias("add_days"),
+#'   (pl$col("dt") + pl$duration(seconds = pl$col("add") + 1))$alias("add_seconds"),
+#'   (pl$col("dt") + pl$duration(milliseconds = pl$col("add") + 1))$alias("add_millis"),
+#'   (pl$col("dt") + pl$duration(hours = pl$col("add") + 1))$alias("add_hours")
+#' )
+pl_duration = function(
+    ...,
+    weeks = NULL,
+    days = NULL,
+    hours = NULL,
+    minutes = NULL,
+    seconds = NULL,
+    milliseconds = NULL,
+    microseconds = NULL,
+    nanoseconds = NULL,
+    time_unit = "us") {
+  duration(weeks, days, hours, minutes, seconds, milliseconds, microseconds, nanoseconds, time_unit) |>
+    unwrap("in $duration():")
+}
+
+
+#' Convert a Unix timestamp to date(time)
+#'
+#' Depending on the `time_unit` provided, this function will return a different
+#' dtype:
+#' * `time_unit = "d"` returns `pl$Date`
+#' * `time_unit = "s"` returns [`pl$Datetime("us")`][DataType_Datetime]
+#'   (`pl$Datetime`’s default)
+#' * `time_unit = "ms"` returns [`pl$Datetime("ms")`][DataType_Datetime]
+#' * `time_unit = "us"` returns [`pl$Datetime("us")`][DataType_Datetime]
+#' * `time_unit = "ns"` returns [`pl$Datetime("ns")`][DataType_Datetime]
+#'
+#' @param column An Expr from which integers will be parsed. If this is a float
+#' column, then the decimal part of the float will be ignored. Character are
+#' parsed as column names, but other literal values must be passed to
+#' [`pl$lit()`][Expr_lit].
+#' @param time_unit One of `"ns"`, `"us"`, `"ms"`, `"s"`, `"d"`
+#'
+#' @return Expr as Date or [Datetime][DataType_Datetime] depending on the
+#' `time_unit`.
+#'
+#' @examples
+#' # pass an integer column
+#' df = pl$DataFrame(timestamp = c(1666683077, 1666683099))
+#' df$with_columns(
+#'   timestamp_to_datetime = pl$from_epoch(pl$col("timestamp"), time_unit = "s")
+#' )
+#'
+#' # pass a literal
+#' pl$from_epoch(pl$lit(c(1666683077, 1666683099)), time_unit = "s")$to_series()
+#'
+#' # use different time_unit
+#' df = pl$DataFrame(timestamp = c(12345, 12346))
+#' df$with_columns(
+#'   timestamp_to_date = pl$from_epoch(pl$col("timestamp"), time_unit = "d")
+#' )
+pl_from_epoch = function(column, time_unit = "s") {
+  uw = \(res) unwrap(res, "in $from_epoch():")
+  if (is.character(column)) {
+    column = pl$col(column)
+  }
+
+  if (!time_unit %in% c("ns", "us", "ms", "s", "d")) {
+    Err_plain("`time_unit` must be one of 'ns', 'us', 'ms', 's', 'd'") |>
+      uw()
+  }
+
+  switch(time_unit,
+    "d" = column$cast(pl$Date),
+    "s" = (column$cast(pl$Int64) * 1000000L)$cast(pl$Datetime("us")),
+    column$cast(pl$Datetime(tu = time_unit))
+  )
 }

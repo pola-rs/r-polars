@@ -29,7 +29,7 @@ NULL
 #'
 #' @return No value returned, it prints in the console.
 #' @export
-#' @rdname Expr_print
+#' @noRd
 #'
 #' @examples
 #' print(pl$col("some_column")$sum())
@@ -39,7 +39,7 @@ print.RPolarsExpr = function(x, ...) {
   invisible(x)
 }
 
-#' @rdname Expr_print
+#' @noRd
 Expr_print = function() {
   .pr$Expr$print(self)
   invisible(self)
@@ -97,8 +97,8 @@ wrap_e = function(e, str_to_lit = TRUE) {
 #' @examples pl$col("foo") < 5
 wrap_e_result = function(e, str_to_lit = TRUE, argname = NULL) {
   # disable call info
-  old_option = pl$options$do_not_repeat_call
-  pl$set_options(do_not_repeat_call = TRUE)
+  old_option = polars_options()$do_not_repeat_call
+  options(polars.do_not_repeat_call = TRUE)
 
   # wrap_e and catch nay error in a result
   expr_result = result(
@@ -113,7 +113,7 @@ wrap_e_result = function(e, str_to_lit = TRUE, argname = NULL) {
 
   # restore this option but only if it was originally FALSE
   if (isFALSE(old_option)) {
-    pl$set_options(do_not_repeat_call = FALSE)
+    options(polars.do_not_repeat_call = FALSE)
   }
 
   expr_result
@@ -286,7 +286,7 @@ Expr_mul = Expr_mul = function(other) {
 #' # two syntaxes same result
 #' pl$lit(TRUE)$not()
 #' !pl$lit(TRUE)
-Expr_not = "use_extendr_wrapper"
+Expr_not = use_extendr_wrapper
 #' @export
 #' @rdname Expr_not
 #' @param x Expr
@@ -438,7 +438,7 @@ Expr_gt_eq = function(other) {
 #'   value = c(94, 95, 96, 97, 97, 99)
 #' ))
 #' df$group_by("group", maintain_order = TRUE)$agg(pl$col("value")$agg_groups())
-Expr_agg_groups = "use_extendr_wrapper"
+Expr_agg_groups = use_extendr_wrapper
 
 
 #' Rename Expr output
@@ -451,7 +451,7 @@ Expr_agg_groups = "use_extendr_wrapper"
 #' @format NULL
 #' @usage Expr_alias(name)
 #' @examples pl$col("bob")$alias("alice")
-Expr_alias = "use_extendr_wrapper"
+Expr_alias = use_extendr_wrapper
 
 #' Apply logical AND on a column
 #'
@@ -513,10 +513,10 @@ Expr_any = function(drop_nulls = TRUE) {
 #' )$select(
 #'   pl$all()$count()
 #' )
-Expr_count = "use_extendr_wrapper"
+Expr_count = use_extendr_wrapper
 
 #' @rdname Expr_count
-Expr_len = "use_extendr_wrapper"
+Expr_len = use_extendr_wrapper
 
 #' Drop missing values
 #'
@@ -527,7 +527,7 @@ Expr_len = "use_extendr_wrapper"
 #' @format NULL
 #' @examples
 #' pl$DataFrame(list(x = c(1, 2, NaN, NA)))$select(pl$col("x")$drop_nulls())
-Expr_drop_nulls = "use_extendr_wrapper"
+Expr_drop_nulls = use_extendr_wrapper
 
 #' Drop NaN
 #'
@@ -543,7 +543,7 @@ Expr_drop_nulls = "use_extendr_wrapper"
 #' @format NULL
 #' @examples
 #' pl$DataFrame(list(x = c(1, 2, NaN, NA)))$select(pl$col("x")$drop_nans())
-Expr_drop_nans = "use_extendr_wrapper"
+Expr_drop_nans = use_extendr_wrapper
 
 #' Check if elements are NULL
 #'
@@ -553,7 +553,7 @@ Expr_drop_nans = "use_extendr_wrapper"
 #' @format NULL
 #' @examples
 #' pl$DataFrame(list(x = c(1, NA, 3)))$select(pl$col("x")$is_null())
-Expr_is_null = "use_extendr_wrapper"
+Expr_is_null = use_extendr_wrapper
 
 #' Check if elements are not NULL
 #'
@@ -564,7 +564,7 @@ Expr_is_null = "use_extendr_wrapper"
 #' @format NULL
 #' @examples
 #' pl$DataFrame(list(x = c(1, NA, 3)))$select(pl$col("x")$is_not_null())
-Expr_is_not_null = "use_extendr_wrapper"
+Expr_is_not_null = use_extendr_wrapper
 
 
 # TODO move this function in to rust with input list of args
@@ -643,36 +643,38 @@ construct_ProtoExprArray = function(...) {
 #' could theoretically have some downstream implications to the query.
 #' @param agg_list Aggregate list. Map from vector to group in group_by context.
 #' @param in_background Boolean. Whether to execute the map in a background R
-#' process. Combined with setting e.g. `pl$set_options(rpool_cap = 4)` it can speed
+#' process. Combined with setting e.g. `options(polars.rpool_cap = 4)` it can speed
 #' up some slow R functions as they can run in parallel R sessions. The
 #' communication speed between processes is quite slower than between threads.
 #' This will likely only give a speed-up in a "low IO - high CPU" use case.
-#' If there are multiple `$map(in_background = TRUE)` calls in the query, they
-#' will be run in parallel.
+#' If there are multiple [`$map_batches(in_background = TRUE)`][Expr_map_batches]
+#' calls in the query, they will be run in parallel.
 #'
 #' @return Expr
 #' @details
 #' It is sometimes necessary to apply a specific R function on one or several
-#' columns. However, note that using R code in `$map()` is slower than native
-#' polars. The user function must take one polars `Series` as input and the return
+#' columns. However, note that using R code in [`$map_batches()`][Expr_map_batches]
+#' is slower than native polars.
+#' The user function must take one polars `Series` as input and the return
 #' should be a `Series` or any Robj convertible into a `Series` (e.g. vectors).
 #' Map fully supports `browser()`.
 #'
 #' If `in_background = FALSE` the function can access any global variable of the
-#' R session. However, note that several calls to `$map()` will sequentially
-#' share the same main R session, so the global environment might change between
-#' the start of the query and the moment a `map()` call is evaluated. Any native
+#' R session. However, note that several calls to [`$map_batches()`][Expr_map_batches]
+#' will sequentially share the same main R session,
+#' so the global environment might change between the start of the query and the moment
+#' a [`$map_batches()`][Expr_map_batches] call is evaluated. Any native
 #' polars computations can still be executed meanwhile. If `in_background = TRUE`,
 #' the map will run in one or more other R sessions and will not have access
-#' to global variables. Use `pl$set_options(rpool_cap = 4)` and `pl$options$rpool_cap`
-#' to see and view number of parallel R sessions.
+#' to global variables. Use `options(polars.rpool_cap = 4)` and
+#' `polars_options()$rpool_cap` to set and view number of parallel R sessions.
 #'
 #' @examples
 #' pl$DataFrame(iris)$
 #'   select(
 #'   pl$col("Sepal.Length")$map_batches(\(x) {
 #'     paste("cheese", as.character(x$to_vector()))
-#'   }, pl$dtypes$Utf8)
+#'   }, pl$dtypes$String)
 #' )
 #'
 #' # R parallel process example, use Sys.sleep() to imitate some CPU expensive
@@ -687,9 +689,9 @@ construct_ProtoExprArray = function(...) {
 #' )$collect() |> system.time()
 #'
 #' # map in parallel 1: Overhead to start up extra R processes / sessions
-#' pl$set_options(rpool_cap = 0) # drop any previous processes, just to show start-up overhead
-#' pl$set_options(rpool_cap = 4) # set back to 4, the default
-#' pl$options$rpool_cap
+#' options(polars.rpool_cap = 0) # drop any previous processes, just to show start-up overhead
+#' options(polars.rpool_cap = 4) # set back to 4, the default
+#' polars_options()$rpool_cap
 #' pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
 #'   pl$all()$map_batches(\(s) {
 #'     Sys.sleep(.1)
@@ -698,7 +700,7 @@ construct_ProtoExprArray = function(...) {
 #' )$collect() |> system.time()
 #'
 #' # map in parallel 2: Reuse R processes in "polars global_rpool".
-#' pl$options$rpool_cap
+#' polars_options()$rpool_cap
 #' pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
 #'   pl$all()$map_batches(\(s) {
 #'     Sys.sleep(.1)
@@ -716,18 +718,6 @@ Expr_map_batches = function(f, output_type = NULL, agg_list = FALSE, in_backgrou
     unwrap("in $map_batches():")
 }
 
-Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FALSE) {
-  warning("$map() is deprecated and will be removed in 0.13.0. Use $map_batches() instead.", call. = FALSE)
-  if (isTRUE(in_background)) {
-    out = .pr$Expr$map_batches_in_background(self, f, output_type, agg_list)
-  } else {
-    out = .pr$Expr$map_batches(self, f, output_type, agg_list)
-  }
-
-  out |>
-    unwrap("in $map():")
-}
-
 #' Map a custom/user-defined function (UDF) to each element of a column
 #'
 #' The UDF is applied to each element of a column. See Details for more information
@@ -742,7 +732,7 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FAL
 #' @param allow_fail_eval If `FALSE` (default), raise an error if the function
 #' fails. If `TRUE`, the result will be converted to a polars null value.
 #' @param in_background Whether to run the function in a background R process,
-#' default is `FALSE`. Combined with setting e.g. `pl$set_options(rpool_cap = 4)`,
+#' default is `FALSE`. Combined with setting e.g. `options(polars.rpool_cap = 4)`,
 #' this can speed up some slow R functions as they can run in parallel R sessions.
 #' The communication speed between processes is quite slower than between threads.
 #' This will likely only give a speed-up in a "low IO - high CPU" usecase. A
@@ -799,7 +789,7 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FAL
 #'
 #' e_letter = my_selection$map_elements(\(x) {
 #'   letters[ceiling(x)]
-#' }, return_type = pl$dtypes$Utf8)$name$suffix("_letter")
+#' }, return_type = pl$dtypes$String)$name$suffix("_letter")
 #' pl$DataFrame(iris)$select(e_add10, e_letter)
 #'
 #'
@@ -847,10 +837,10 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FAL
 #'
 #' # first run in parallel: there is some overhead to start up extra R processes
 #' # drop any previous processes, just to show start-up overhead here
-#' pl$set_options(rpool_cap = 0)
+#' options(polars.rpool_cap = 0)
 #' # set back to 4, the default
-#' pl$set_options(rpool_cap = 4)
-#' pl$options$rpool_cap
+#' options(polars.rpool_cap = 4)
+#' polars_options()$rpool_cap
 #'
 #' system.time({
 #'   pl$LazyFrame(iris)$group_by("Species")$agg(
@@ -862,7 +852,7 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FAL
 #' })
 #'
 #' # second run in parallel: this reuses R processes in "polars global_rpool".
-#' pl$options$rpool_cap
+#' polars_options()$rpool_cap
 #' system.time({
 #'   pl$LazyFrame(iris)$group_by("Species")$agg(
 #'     pl$all()$map_elements(\(s) {
@@ -884,23 +874,6 @@ Expr_map_elements = function(f, return_type = NULL, strict_return_type = TRUE, a
   # return expression from the functions above, activate agg_list (grouped mapping)
   .pr$Expr$map_batches(self, lambda = wrap_f, output_type = return_type, agg_list = TRUE) |>
     unwrap("in $map_elements():")
-}
-
-Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE,
-                      allow_fail_eval = FALSE, in_background = FALSE) {
-  warning("$apply() is deprecated and will be removed in 0.13.0. Use $map_elements() instead.", call. = FALSE)
-  if (in_background) {
-    return(.pr$Expr$map_elements_in_background(self, f, return_type))
-  }
-
-  # use series apply
-  wrap_f = function(s) {
-    s$map_elements(f, return_type, strict_return_type, allow_fail_eval)
-  }
-
-  # return expression from the functions above, activate agg_list (grouped mapping)
-  .pr$Expr$map_batches(self, lambda = wrap_f, output_type = return_type, agg_list = TRUE) |>
-    unwrap("in $apply():")
 }
 
 #' Create a literal value
@@ -1017,7 +990,7 @@ Expr_xor = function(other) {
 #'   $to_physical()
 #'   $alias("vals_physical")
 #' )
-Expr_to_physical = "use_extendr_wrapper"
+Expr_to_physical = use_extendr_wrapper
 
 
 #' Cast between DataType
@@ -1062,7 +1035,7 @@ Expr_sqrt = function() {
 #' @format NULL
 #' @examples
 #' pl$DataFrame(a = -1:3)$with_columns(a_exp = pl$col("a")$exp())
-Expr_exp = "use_extendr_wrapper"
+Expr_exp = use_extendr_wrapper
 
 
 #' Exclude certain columns from selection
@@ -1117,7 +1090,7 @@ Expr_exclude = function(columns) {
 #' @examples
 #' pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$
 #'   with_columns(finite = pl$col("alice")$is_finite())
-Expr_is_finite = "use_extendr_wrapper"
+Expr_is_finite = use_extendr_wrapper
 
 
 #' Check if elements are infinite
@@ -1132,7 +1105,7 @@ Expr_is_finite = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$
 #'   with_columns(infinite = pl$col("alice")$is_infinite())
-Expr_is_infinite = "use_extendr_wrapper"
+Expr_is_infinite = use_extendr_wrapper
 
 
 #' Check if elements are NaN
@@ -1148,7 +1121,7 @@ Expr_is_infinite = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$
 #'   with_columns(nan = pl$col("alice")$is_nan())
-Expr_is_nan = "use_extendr_wrapper"
+Expr_is_nan = use_extendr_wrapper
 
 
 #' Check if elements are not NaN
@@ -1164,7 +1137,7 @@ Expr_is_nan = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$
 #'   with_columns(not_nan = pl$col("alice")$is_not_nan())
-Expr_is_not_nan = "use_extendr_wrapper"
+Expr_is_not_nan = use_extendr_wrapper
 
 #' Get a slice of an Expr
 #'
@@ -1243,7 +1216,7 @@ Expr_append = function(other, upcast = TRUE) {
 #'   pl$col("a")$append(pl$col("b"))$rechunk()$alias("a_rechunked")
 #' )$get_columns()
 #' lapply(series_list, \(x) x$chunk_lengths())
-Expr_rechunk = "use_extendr_wrapper"
+Expr_rechunk = use_extendr_wrapper
 
 #' Cumulative sum
 #'
@@ -1348,7 +1321,7 @@ Expr_cum_count = function(reverse = FALSE) {
 #' pl$DataFrame(a = c(0.33, 0.5, 1.02, 1.5, NaN, NA, Inf, -Inf))$with_columns(
 #'   floor = pl$col("a")$floor()
 #' )
-Expr_floor = "use_extendr_wrapper"
+Expr_floor = use_extendr_wrapper
 
 #' Ceiling
 #'
@@ -1360,7 +1333,7 @@ Expr_floor = "use_extendr_wrapper"
 #' pl$DataFrame(a = c(0.33, 0.5, 1.02, 1.5, NaN, NA, Inf, -Inf))$with_columns(
 #'   ceiling = pl$col("a")$ceil()
 #' )
-Expr_ceil = "use_extendr_wrapper"
+Expr_ceil = use_extendr_wrapper
 
 #' Round
 #'
@@ -1408,7 +1381,7 @@ Expr_dot = function(other) {
 #' df$select(pl$col("a")$mode())
 #' df$select(pl$col("b")$mode())
 #' df$select(pl$col("c")$mode())
-Expr_mode = "use_extendr_wrapper"
+Expr_mode = use_extendr_wrapper
 
 
 #' Sort an Expr
@@ -1487,7 +1460,7 @@ Expr_argsort = Expr_arg_sort
 #' pl$DataFrame(
 #'   a = c(6, 1, 0, NA, Inf, NaN)
 #' )$with_columns(arg_min = pl$col("a")$arg_min())
-Expr_arg_min = "use_extendr_wrapper"
+Expr_arg_min = use_extendr_wrapper
 
 #' Index of max value
 #'
@@ -1499,7 +1472,7 @@ Expr_arg_min = "use_extendr_wrapper"
 #' pl$DataFrame(
 #'   a = c(6, 1, 0, NA, Inf, NaN)
 #' )$with_columns(arg_max = pl$col("a")$arg_max())
-Expr_arg_max = "use_extendr_wrapper"
+Expr_arg_max = use_extendr_wrapper
 
 
 # TODO contribute pypolars search_sorted behavior is under-documented, does multiple elements work?
@@ -1575,10 +1548,12 @@ Expr_sort_by = function(by, descending = FALSE) {
 #' Gather values by index
 #'
 #' @param indices R scalar/vector or Series, or Expr that leads to a Series of
-#' dtype UInt32.
+#' dtype Int64. (0-indexed)
 #' @return Expr
 #' @examples
-#' pl$DataFrame(a = c(1, 2, 4, 5, 8))$select(pl$col("a")$gather(c(0, 2, 4)))
+#' df = pl$DataFrame(a = 1:10)
+#'
+#' df$select(pl$col("a")$gather(c(0, 2, 4, -1)))
 Expr_gather = function(indices) {
   .pr$Expr$gather(self, pl$lit(indices)) |>
     unwrap("in $gather():")
@@ -1732,7 +1707,7 @@ Expr_var = function(ddof = 1) {
 #' @examples
 #' pl$DataFrame(x = c(1, NA, 3))$
 #'   with_columns(max = pl$col("x")$max())
-Expr_max = "use_extendr_wrapper"
+Expr_max = use_extendr_wrapper
 
 #' Get minimum value
 #'
@@ -1742,7 +1717,7 @@ Expr_max = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(x = c(1, NA, 3))$
 #'   with_columns(min = pl$col("x")$min())
-Expr_min = "use_extendr_wrapper"
+Expr_min = use_extendr_wrapper
 
 
 
@@ -1759,7 +1734,7 @@ Expr_min = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(x = c(1, NA, 3, NaN, Inf))$
 #'   with_columns(nan_max = pl$col("x")$nan_max())
-Expr_nan_max = "use_extendr_wrapper"
+Expr_nan_max = use_extendr_wrapper
 
 #' Get minimum value with NaN
 #'
@@ -1770,7 +1745,7 @@ Expr_nan_max = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(x = c(1, NA, 3, NaN, Inf))$
 #'   with_columns(nan_min = pl$col("x")$nan_min())
-Expr_nan_min = "use_extendr_wrapper"
+Expr_nan_min = use_extendr_wrapper
 
 #' Get sum value
 #'
@@ -1784,7 +1759,7 @@ Expr_nan_min = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(x = c(1L, NA, 2L))$
 #'   with_columns(sum = pl$col("x")$sum())
-Expr_sum = "use_extendr_wrapper"
+Expr_sum = use_extendr_wrapper
 
 #' Get mean value
 #'
@@ -1794,7 +1769,7 @@ Expr_sum = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(x = c(1L, NA, 2L))$
 #'   with_columns(mean = pl$col("x")$mean())
-Expr_mean = "use_extendr_wrapper"
+Expr_mean = use_extendr_wrapper
 
 #' Get median value
 #'
@@ -1804,7 +1779,7 @@ Expr_mean = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(x = c(1L, NA, 2L))$
 #'   with_columns(median = pl$col("x")$median())
-Expr_median = "use_extendr_wrapper"
+Expr_median = use_extendr_wrapper
 
 #' Product
 #'
@@ -1815,7 +1790,7 @@ Expr_median = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(x = c(2L, NA, 2L))$
 #'   with_columns(product = pl$col("x")$product())
-Expr_product = "use_extendr_wrapper"
+Expr_product = use_extendr_wrapper
 
 #' Count number of unique values
 #'
@@ -1824,7 +1799,7 @@ Expr_product = "use_extendr_wrapper"
 #' @format NULL
 #' @examples
 #' pl$DataFrame(iris[, 4:5])$with_columns(count = pl$col("Species")$n_unique())
-Expr_n_unique = "use_extendr_wrapper"
+Expr_n_unique = use_extendr_wrapper
 
 #' Approx count unique values
 #'
@@ -1835,7 +1810,7 @@ Expr_n_unique = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(iris[, 4:5])$
 #'   with_columns(count = pl$col("Species")$approx_n_unique())
-Expr_approx_n_unique = "use_extendr_wrapper"
+Expr_approx_n_unique = use_extendr_wrapper
 
 #' Count missing values
 #'
@@ -1845,7 +1820,7 @@ Expr_approx_n_unique = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(x = c(NA, "a", NA, "b"))$
 #'   with_columns(n_missing = pl$col("x")$null_count())
-Expr_null_count = "use_extendr_wrapper"
+Expr_null_count = use_extendr_wrapper
 
 #' Index of first unique values
 #'
@@ -1856,7 +1831,7 @@ Expr_null_count = "use_extendr_wrapper"
 #' @format NULL
 #' @examples
 #' pl$select(pl$lit(c(1:2, 1:3))$arg_unique())
-Expr_arg_unique = "use_extendr_wrapper"
+Expr_arg_unique = use_extendr_wrapper
 
 #' Get unique values
 #'
@@ -1866,7 +1841,7 @@ Expr_arg_unique = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(iris)$select(pl$col("Species")$unique())
 Expr_unique = function(maintain_order = FALSE) {
-  if (!is_bool(maintain_order)) stop("param maintain_order must be a bool")
+  if (!is_scalar_bool(maintain_order)) stop("param maintain_order must be a bool")
   if (maintain_order) {
     .pr$Expr$unique_stable(self)
   } else {
@@ -1881,7 +1856,7 @@ Expr_unique = function(maintain_order = FALSE) {
 #' @format NULL
 #' @examples
 #' pl$DataFrame(x = 3:1)$with_columns(first = pl$col("x")$first())
-Expr_first = "use_extendr_wrapper"
+Expr_first = use_extendr_wrapper
 
 #' Get the last value
 #'
@@ -1890,7 +1865,7 @@ Expr_first = "use_extendr_wrapper"
 #' @format NULL
 #' @examples
 #' pl$DataFrame(x = 3:1)$with_columns(last = pl$col("x")$last())
-Expr_last = "use_extendr_wrapper"
+Expr_last = use_extendr_wrapper
 
 #' Apply window function over a subgroup
 #'
@@ -1931,7 +1906,7 @@ Expr_over = function(...) {
 #' @examples
 #' pl$DataFrame(head(mtcars[, 1:2]))$
 #'   with_columns(is_unique = pl$col("mpg")$is_unique())
-Expr_is_unique = "use_extendr_wrapper"
+Expr_is_unique = use_extendr_wrapper
 
 #' Check whether each value is the first occurrence
 #'
@@ -1942,7 +1917,7 @@ Expr_is_unique = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(head(mtcars[, 1:2]))$
 #'   with_columns(is_ufirst = pl$col("mpg")$is_first_distinct())
-Expr_is_first_distinct = "use_extendr_wrapper"
+Expr_is_first_distinct = use_extendr_wrapper
 
 #' Check whether each value is the last occurrence
 #'
@@ -1953,7 +1928,7 @@ Expr_is_first_distinct = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(head(mtcars[, 1:2]))$
 #'   with_columns(is_ulast = pl$col("mpg")$is_last_distinct())
-Expr_is_last_distinct = "use_extendr_wrapper"
+Expr_is_last_distinct = use_extendr_wrapper
 
 
 #' Check whether each value is duplicated
@@ -1966,7 +1941,7 @@ Expr_is_last_distinct = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(head(mtcars[, 1:2]))$
 #'   with_columns(is_duplicated = pl$col("mpg")$is_duplicated())
-Expr_is_duplicated = "use_extendr_wrapper"
+Expr_is_duplicated = use_extendr_wrapper
 
 
 # TODO contribute polars, example of where NA/Null is omitted and the smallest value
@@ -2014,27 +1989,8 @@ Expr_filter = function(predicate) {
   .pr$Expr$filter(self, wrap_e(predicate))
 }
 
-#' @inherit Expr_filter title params return
-#'
-#' @description
-#' This is an alias for `<Expr>$filter()`.
-#'
-#'
-#' @examples
-#' df = pl$DataFrame(
-#'   group_col = c("g1", "g1", "g2"),
-#'   b = c(1, 2, 3)
-#' )
-#' df
-#'
-#' df$group_by("group_col")$agg(
-#'   lt = pl$col("b")$where(pl$col("b") < 2),
-#'   gte = pl$col("b")$where(pl$col("b") >= 2)
-#' )
-Expr_where = Expr_filter
 
-
-#' Explode a list or Utf8 Series
+#' Explode a list or String Series
 #'
 #' This means that every item is expanded to a new row.
 #'
@@ -2050,7 +2006,7 @@ Expr_where = Expr_filter
 #' df
 #'
 #' df$select(pl$col("y")$explode())
-Expr_explode = "use_extendr_wrapper"
+Expr_explode = use_extendr_wrapper
 
 #' @inherit Expr_explode title return
 #'
@@ -2062,7 +2018,7 @@ Expr_explode = "use_extendr_wrapper"
 #' df
 #'
 #' df$select(pl$col("y")$flatten())
-Expr_flatten = "use_extendr_wrapper"
+Expr_flatten = use_extendr_wrapper
 
 
 #' Gather every nth element
@@ -2163,8 +2119,6 @@ Expr_is_in = function(other) {
   .pr$Expr$is_in(self, other) |> unwrap("in $is_in():")
 }
 
-## TODO contribute polars, do not panic on by pointing to non positive values
-
 #' Repeat values
 #'
 #' Repeat the elements in this Series as specified in the given expression.
@@ -2173,7 +2127,7 @@ Expr_is_in = function(other) {
 #' column will be coerced to UInt32.
 #' @return Expr
 #' @examples
-#' df = pl$DataFrame(a = c("x", "y", "z"), n = c(0:2))
+#' df = pl$DataFrame(a = c("w", "x", "y", "z"), n = c(-1, 0, 1, 2))
 #' df$with_columns(repeated = pl$col("a")$repeat_by("n"))
 Expr_repeat_by = function(by) {
   if (is.numeric(by) && any(by < 0)) stop("In repeat_by: any value less than zero is not allowed")
@@ -2253,7 +2207,7 @@ Expr_hash = function(seed = 0, seed_1 = NULL, seed_2 = NULL, seed_3 = NULL) {
 #' df = pl$DataFrame(x = 1:5, schema = list(x = pl$Int64))
 #' df$select(pl$all()$reinterpret())
 Expr_reinterpret = function(signed = TRUE) {
-  if (!is_bool(signed)) stop("in reinterpret() : arg signed must be a bool")
+  if (!is_scalar_bool(signed)) stop("in reinterpret() : arg signed must be a bool")
   .pr$Expr$reinterpret(self, signed)
 }
 
@@ -2631,7 +2585,7 @@ Expr_rolling_skew = function(window_size, bias = TRUE) {
 #' @examples
 #' pl$DataFrame(a = -1:1)$
 #'   with_columns(abs = pl$col("a")$abs())
-Expr_abs = "use_extendr_wrapper"
+Expr_abs = use_extendr_wrapper
 
 #' Rank elements
 #'
@@ -2795,7 +2749,7 @@ Expr_clip_max = function(max) {
 #'   schema = list(x = pl$Float64, y = pl$Int32)
 #' )$
 #'   select(pl$all()$upper_bound())
-Expr_upper_bound = "use_extendr_wrapper"
+Expr_upper_bound = use_extendr_wrapper
 
 #' Find the lower bound of a DataType
 #'
@@ -2808,7 +2762,7 @@ Expr_upper_bound = "use_extendr_wrapper"
 #'   schema = list(x = pl$UInt32, y = pl$Int32)
 #' )$
 #'   select(pl$all()$lower_bound())
-Expr_lower_bound = "use_extendr_wrapper"
+Expr_lower_bound = use_extendr_wrapper
 
 #' Get the sign of elements
 #'
@@ -2818,7 +2772,7 @@ Expr_lower_bound = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(a = c(.9, -3, -0, 0, 4, NA_real_))$
 #'   with_columns(sign = pl$col("a")$sign())
-Expr_sign = "use_extendr_wrapper"
+Expr_sign = use_extendr_wrapper
 
 #' Compute sine
 #'
@@ -2828,7 +2782,7 @@ Expr_sign = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(a = c(0, pi / 2, pi, NA_real_))$
 #'   with_columns(sine = pl$col("a")$sin())
-Expr_sin = "use_extendr_wrapper"
+Expr_sin = use_extendr_wrapper
 
 #' Compute cosine
 #'
@@ -2838,7 +2792,7 @@ Expr_sin = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(a = c(0, pi / 2, pi, NA_real_))$
 #'   with_columns(cosine = pl$col("a")$cos())
-Expr_cos = "use_extendr_wrapper"
+Expr_cos = use_extendr_wrapper
 
 #' Compute tangent
 #'
@@ -2848,7 +2802,7 @@ Expr_cos = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(a = c(0, pi / 2, pi, NA_real_))$
 #'   with_columns(tangent = pl$col("a")$tan())
-Expr_tan = "use_extendr_wrapper"
+Expr_tan = use_extendr_wrapper
 
 #' Compute inverse sine
 #'
@@ -2858,7 +2812,7 @@ Expr_tan = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(a = c(-1, sin(0.5), 0, 1, NA_real_))$
 #'   with_columns(arcsin = pl$col("a")$arcsin())
-Expr_arcsin = "use_extendr_wrapper"
+Expr_arcsin = use_extendr_wrapper
 
 #' Compute inverse cosine
 #'
@@ -2868,7 +2822,7 @@ Expr_arcsin = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(a = c(-1, cos(0.5), 0, 1, NA_real_))$
 #'   with_columns(arccos = pl$col("a")$arccos())
-Expr_arccos = "use_extendr_wrapper"
+Expr_arccos = use_extendr_wrapper
 
 #' Compute inverse tangent
 #'
@@ -2878,7 +2832,7 @@ Expr_arccos = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(a = c(-1, tan(0.5), 0, 1, NA_real_))$
 #'   with_columns(arctan = pl$col("a")$arctan())
-Expr_arctan = "use_extendr_wrapper"
+Expr_arctan = use_extendr_wrapper
 
 #' Compute hyperbolic sine
 #'
@@ -2888,7 +2842,7 @@ Expr_arctan = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(a = c(-1, asinh(0.5), 0, 1, NA_real_))$
 #'   with_columns(sinh = pl$col("a")$sinh())
-Expr_sinh = "use_extendr_wrapper"
+Expr_sinh = use_extendr_wrapper
 
 #' Compute hyperbolic cosine
 #'
@@ -2898,7 +2852,7 @@ Expr_sinh = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(a = c(-1, acosh(0.5), 0, 1, NA_real_))$
 #'   with_columns(cosh = pl$col("a")$cosh())
-Expr_cosh = "use_extendr_wrapper"
+Expr_cosh = use_extendr_wrapper
 
 #' Compute hyperbolic tangent
 #'
@@ -2908,7 +2862,7 @@ Expr_cosh = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(a = c(-1, atanh(0.5), 0, 1, NA_real_))$
 #'   with_columns(tanh = pl$col("a")$tanh())
-Expr_tanh = "use_extendr_wrapper"
+Expr_tanh = use_extendr_wrapper
 
 #' Compute inverse hyperbolic sine
 #'
@@ -2918,7 +2872,7 @@ Expr_tanh = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(a = c(-1, sinh(0.5), 0, 1, NA_real_))$
 #'   with_columns(arcsinh = pl$col("a")$arcsinh())
-Expr_arcsinh = "use_extendr_wrapper"
+Expr_arcsinh = use_extendr_wrapper
 
 #' Compute inverse hyperbolic cosine
 #'
@@ -2928,7 +2882,7 @@ Expr_arcsinh = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(a = c(-1, cosh(0.5), 0, 1, NA_real_))$
 #'   with_columns(arccosh = pl$col("a")$arccosh())
-Expr_arccosh = "use_extendr_wrapper"
+Expr_arccosh = use_extendr_wrapper
 
 #' Compute inverse hyperbolic tangent
 #'
@@ -2938,7 +2892,7 @@ Expr_arccosh = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(a = c(-1, tanh(0.5), 0, 1, NA_real_))$
 #'   with_columns(arctanh = pl$col("a")$arctanh())
-Expr_arctanh = "use_extendr_wrapper"
+Expr_arctanh = use_extendr_wrapper
 
 #' Reshape
 #'
@@ -3183,17 +3137,18 @@ Expr_rep_extend = function(expr, n, rechunk = TRUE, upcast = TRUE) {
 #' Otherwise, provide a DataFrame that the Expr should be evaluated in.
 #' @param i Numeric column to extract. Default is zero (which gives the first
 #' column).
+#' @inheritParams DataFrame_to_data_frame
 #' @return R object
 #' @examples
 #' pl$lit(1:3)$to_r()
-Expr_to_r = function(df = NULL, i = 0) {
+Expr_to_r = function(df = NULL, i = 0, ..., int64_conversion = polars_options()$int64_conversion) {
   if (is.null(df)) {
-    pl$select(self)$to_series(i)$to_r()
+    pl$select(self)$to_series(i)$to_r(int64_conversion)
   } else {
     if (!inherits(df, c("RPolarsDataFrame"))) {
       stop("Expr_to_r: input is not NULL or a DataFrame/Lazyframe")
     }
-    df$select(self)$to_series(i)$to_r()
+    df$select(self)$to_series(i)$to_r(int64_conversion)
   }
 }
 
@@ -3240,7 +3195,7 @@ Expr_value_counts = function(sort = FALSE, parallel = FALSE) {
 #' @format NULL
 #' @examples
 #' pl$DataFrame(iris)$select(pl$col("Species")$unique_counts())
-Expr_unique_counts = "use_extendr_wrapper"
+Expr_unique_counts = use_extendr_wrapper
 
 #' Compute the logarithm of elements
 #'
@@ -3262,7 +3217,7 @@ Expr_log = function(base = base::exp(1)) {
 #' @examples
 #' pl$DataFrame(a = c(1, 2, 3, exp(1)))$
 #'   with_columns(log10 = pl$col("a")$log10())
-Expr_log10 = "use_extendr_wrapper"
+Expr_log10 = use_extendr_wrapper
 
 #' Entropy
 #'
@@ -3336,7 +3291,7 @@ Expr_set_sorted = function(descending = FALSE) {
 #'   b = 4:6
 #' )
 #' df$select(pl$all()$implode())
-Expr_implode = "use_extendr_wrapper"
+Expr_implode = use_extendr_wrapper
 
 #' Shrink numeric columns to the minimal required datatype
 #'
@@ -3352,7 +3307,7 @@ Expr_implode = "use_extendr_wrapper"
 #' df
 #'
 #' df$with_columns(pl$all()$shrink_dtype()$name$suffix("_shrunk"))
-Expr_shrink_dtype = "use_extendr_wrapper"
+Expr_shrink_dtype = use_extendr_wrapper
 
 #' List related methods
 #'
@@ -3513,6 +3468,7 @@ Expr_peak_max = function() {
 #' column represents an index, it has to be either Int32 or Int64. Note that
 #' Int32 gets temporarily cast to Int64, so if performance matters use an Int64
 #' column.
+#' @param ... Ignored.
 #' @param period Length of the window, must be non-negative.
 #' @param offset Offset of the window. Default is `-period`.
 #' @param closed Define which sides of the temporal interval are closed
@@ -3575,8 +3531,11 @@ Expr_peak_max = function() {
 #' df$with_columns(
 #'   sum_a_offset1 = pl$sum("a")$rolling(index_column = "dt", period = "2d", offset = "1d")
 #' )
-Expr_rolling = function(index_column, period, offset = NULL,
-                        closed = "right", check_sorted = TRUE) {
+Expr_rolling = function(
+    index_column,
+    ...,
+    period, offset = NULL,
+    closed = "right", check_sorted = TRUE) {
   if (is.null(offset)) {
     offset = paste0("-", period)
   }
@@ -3638,4 +3597,33 @@ Expr_replace = function(old, new, default = NULL, return_dtype = NULL) {
   }
   .pr$Expr$replace(self, old, new, default, return_dtype) |>
     unwrap("in $replace():")
+}
+
+#' Get the lengths of runs of identical values
+#'
+#' @return Expr
+#'
+#' @examples
+#' df = pl$DataFrame(s = c(1, 1, 2, 1, NA, 1, 3, 3))
+#' df$select(pl$col("s")$rle())$unnest("s")
+Expr_rle = function() {
+  .pr$Expr$rle(self) |>
+    unwrap("in $rle():")
+}
+
+#' Map values to run IDs
+#'
+#' Similar to $rle(), but it maps each value to an ID corresponding to the run
+#' into which it falls. This is especially useful when you want to define groups
+#' by runs of identical values rather than the values themselves. Note that
+#' the ID is 0-indexed.
+#'
+#' @return Expr
+#'
+#' @examples
+#' df = pl$DataFrame(a = c(1, 2, 1, 1, 1, 4))
+#' df$with_columns(a_r = pl$col("a")$rle_id())
+Expr_rle_id = function() {
+  .pr$Expr$rle_id(self) |>
+    unwrap("in $rle_id():")
 }

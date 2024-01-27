@@ -4,8 +4,8 @@
 \alias{ExprDT_quarter}
 \alias{(Expr)$dt$quarter}
 \title{Quarter}
-\format{
-function
+\usage{
+ExprDT_quarter()
 }
 \value{
 Expr of quarter as UInt32

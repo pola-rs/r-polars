@@ -1,3 +1,30 @@
+#' Set some options
+#'
+#' This is done here because it is the first file run by devtools::load_all()
+#' (cf field 'Collate' in DESCRIPTION) and options are used in other internal
+#' functions so options have to be defined first.
+#'
+#' NOTE 1: I don't think values here actually matter because this is just used
+#' to build the package. Those values won't be exported in the user environment.
+#' Default options are specified in .onLoad().
+#'
+#' NOTE 2: options on "rpool" are not defined here because they require
+#' functions defined later in the process to be run. Also, they are not used in
+#' other internal functions.
+#'
+#' @noRd
+options(
+  polars.debug_polars = FALSE,
+  polars.df_knitr_print = "auto",
+  polars.do_not_repeat_call = FALSE,
+  polars.int64_conversion = "double",
+  polars.limit_max_threads = NULL,
+  polars.maintain_order = FALSE,
+  polars.no_messages = FALSE,
+  polars.strictly_immutable = TRUE
+)
+
+
 #' check_no_missing_args
 #' @description lifecycle: DEPRECATE
 #' @param fun target function to check incoming arguments for
@@ -35,7 +62,7 @@ check_no_missing_args = function(
 #' @noRd
 #' @return invisible(NULL)
 verify_method_call = function(Class_env, Method_name, call = sys.call(sys.nframe() - 2L), class_name = NULL) {
-  if (polars_optenv$debug_polars) {
+  if (polars_options()$debug_polars) {
     class_name = class_name %||% as.character(as.list(match.call())$Class_env)
     cat("[", format(subtimer_ms(), digits = 4), "ms]\n", class_name, "$", Method_name, "() -> ", sep = "")
   }
@@ -46,7 +73,7 @@ verify_method_call = function(Class_env, Method_name, call = sys.call(sys.nframe
         "syntax error:", Method_name, "is not a method/attribute of the class", class_name,
 
         # add call to error messages
-        if (!polars_optenv$do_not_repeat_call) {
+        if (!polars_options()$do_not_repeat_call) {
           paste(
             "\n when calling method:\n",
             paste(capture.output(print(call)), collapse = "\n")
@@ -217,13 +244,7 @@ replace_private_with_pub_methods = function(env, class_pattern, keep = c(), remo
   use_internal_bools = sapply(class_methods, function(method) {
     x = get(method)
 
-    if (is_string(x)) {
-      if (x == "use_extendr_wrapper") {
-        return(TRUE)
-      }
-      warning(paste("unknown flag for", method, x))
-    }
-    FALSE
+    isTRUE(all.equal(x, use_extendr_wrapper))
   })
 
   # keep internals flagged with "use_internal_method"
@@ -458,7 +479,7 @@ restruct_list = function(l) {
 #' # e$my_sub_ns$add2() #use the sub namespace
 #' # e$my_sub_ns$mul2()
 #'
-macro_new_subnamespace = function(class_pattern, subclass_env = NULL, remove_f = TRUE) {
+macro_new_subnamespace = function(class_pattern, subclass_env = NULL) {
   # get all methods within class
   class_methods = ls(parent.frame(), pattern = class_pattern)
   names(class_methods) = sub(class_pattern, "", class_methods)
@@ -478,10 +499,6 @@ macro_new_subnamespace = function(class_pattern, subclass_env = NULL, remove_f =
     "  env",
     "}"
   )
-
-  if (remove_f) {
-    rm(list = class_methods, envir = parent.frame())
-  }
 
   if (build_debug_print) cat("new subnamespace: ", class_pattern, "\n", string)
   eval(parse(text = string))
@@ -544,12 +561,6 @@ sub_name_space_accessor_function = function(self, name) {
 "%in_list%" = \(lhs_element, rhs_list) rhs_list |>
   sapply("==", lhs_element) |>
   any()
-
-
-# helper used to validate inputs passed to pl$set_options()
-is_bool = function(x) {
-  is.logical(x) && length(x) == 1 && !is.na(x)
-}
 
 # takes a list of dtypes (for example from $schema), returns a named vector
 # indicating which are Structs

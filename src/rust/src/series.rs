@@ -79,8 +79,9 @@ impl RPolarsSeries {
         panic!("somebody panicked on purpose");
     }
 
-    pub fn to_r(&self) -> std::result::Result<Robj, String> {
-        pl_series_to_list(&self.0, true, true).map_err(|err| format!("in to_r: {:?}", err))
+    pub fn to_r(&self, int64_conversion: &str) -> std::result::Result<Robj, String> {
+        pl_series_to_list(&self.0, true, int64_conversion)
+            .map_err(|err| format!("in to_r: {:?}", err))
     }
     //any mut method exposed in R suffixed _mut
     pub fn rename_mut(&mut self, name: &str) {
@@ -166,7 +167,7 @@ impl RPolarsSeries {
             "{}",
             self.0.get(index.try_into().expect("usize>u32")).unwrap()
         );
-        if let DataType::Utf8 | DataType::Categorical(_, _) = self.0.dtype() {
+        if let DataType::String | DataType::Categorical(_, _) = self.0.dtype() {
             let v_trunc = &val[..val
                 .char_indices()
                 .take(str_length.try_into().expect("usize>u32"))
@@ -222,7 +223,7 @@ impl RPolarsSeries {
             Int64 => comp!(self, other, i64, op),
             Float64 => comp!(self, other, f64, op),
             Boolean => comp!(self, other, bool, op),
-            Utf8 => comp!(self, other, utf8, op),
+            String => comp!(self, other, str, op),
             _ => Err(format!(
                 "oups this type: {} is not supported yet, but easily could be",
                 dtype
@@ -365,7 +366,7 @@ impl RPolarsSeries {
             Int32 => apply_input!(self.0, i32, rfun, na_fun),
             Int16 => apply_input!(self.0, i16, rfun, na_fun),
             Int8 => apply_input!(self.0, i8, rfun, na_fun),
-            Utf8 => apply_input!(self.0, utf8, rfun, na_fun),
+            String => apply_input!(self.0, str, rfun, na_fun),
             Boolean => apply_input!(self.0, bool, rfun, na_fun),
             //List(..) => apply_input!(self.0, list, rfun, na_fun),
             List(..) => {
@@ -388,11 +389,11 @@ impl RPolarsSeries {
         };
 
         //handle any return type from R and collect into Series
-        let s: extendr_api::Result<RPolarsSeries> = || -> extendr_api::Result<RPolarsSeries> {
+        let s: extendr_api::Result<RPolarsSeries> = {
             match out_type {
                 Float64 => apply_output!(r_iter, strict, allow_fail_eval, Doubles, Float64Chunked),
                 Int32 => apply_output!(r_iter, strict, allow_fail_eval, Integers, Int32Chunked),
-                Utf8 => apply_output!(r_iter, strict, allow_fail_eval, Strings, Utf8Chunked),
+                String => apply_output!(r_iter, strict, allow_fail_eval, Strings, StringChunked),
                 Boolean => apply_output!(r_iter, strict, allow_fail_eval, Logicals, BooleanChunked),
                 List(..) => {
                     //ierate over R return values, opt if never run (no values), err if fail
@@ -425,7 +426,7 @@ impl RPolarsSeries {
 
                 _ => todo!("this output type is not implemented"),
             }
-        }();
+        };
 
         let s = s.map(move |mut x| {
             x.rename_mut(&format!("{}_apply", &self.name()));
@@ -437,27 +438,27 @@ impl RPolarsSeries {
     }
 
     pub fn mean(&self) -> Result<Robj, String> {
-        RPolarsSeries(self.0.mean_as_series()).to_r()
+        RPolarsSeries(self.0.mean_as_series()).to_r("double")
     }
 
     pub fn median(&self) -> Result<Robj, String> {
         let s = self.0.median_as_series().map_err(polars_to_rpolars_err)?;
-        RPolarsSeries(s).to_r()
+        RPolarsSeries(s).to_r("double")
     }
 
     pub fn min(&self) -> Result<Robj, String> {
         let s = self.0.min_as_series().map_err(polars_to_rpolars_err)?;
-        RPolarsSeries(s).to_r()
+        RPolarsSeries(s).to_r("double")
     }
 
     pub fn max(&self) -> Result<Robj, String> {
         let s = self.0.max_as_series().map_err(polars_to_rpolars_err)?;
-        RPolarsSeries(s).to_r()
+        RPolarsSeries(s).to_r("double")
     }
 
     pub fn sum(&self) -> Result<Robj, String> {
         let s = self.0.sum_as_series().map_err(polars_to_rpolars_err)?;
-        RPolarsSeries(s).to_r()
+        RPolarsSeries(s).to_r("double")
     }
 
     pub fn std(&self, ddof: Robj) -> Result<Robj, String> {
@@ -465,7 +466,7 @@ impl RPolarsSeries {
             .0
             .std_as_series(robj_to!(u8, ddof)?)
             .map_err(polars_to_rpolars_err)?;
-        RPolarsSeries(s).to_r()
+        RPolarsSeries(s).to_r("double")
     }
 
     pub fn var(&self, ddof: Robj) -> Result<Robj, String> {
@@ -473,7 +474,7 @@ impl RPolarsSeries {
             .0
             .var_as_series(robj_to!(u8, ddof)?)
             .map_err(polars_to_rpolars_err)?;
-        RPolarsSeries(s).to_r()
+        RPolarsSeries(s).to_r("double")
     }
 
     pub fn ceil(&self) -> List {

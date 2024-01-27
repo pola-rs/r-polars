@@ -3,30 +3,40 @@
 \name{ExprList_eval}
 \alias{ExprList_eval}
 \alias{list_eval}
-\title{eval sublists (kinda like lapply)}
-\format{
-function
+\title{Run any polars expression on the list values}
+\usage{
+ExprList_eval(expr, parallel = FALSE)
 }
 \arguments{
-\item{Expr}{Expression to run. Note that you can select an element with \code{pl$first()}, or
-\code{pl$col()}}
+\item{expr}{Expression to run. Note that you can select an element with
+\code{pl$element()}, \code{pl$first()}, and more. See Examples.}
 
-\item{parallel}{bool
-Run all expression parallel. Don't activate this blindly.
-Parallelism is worth it if there is enough work to do per thread.
-This likely should not be use in the groupby context, because we already
-parallel execution per group}
+\item{parallel}{Run all expression parallel. Don't activate this blindly.
+Parallelism is worth it if there is enough work to do per thread. This
+likely should not be used in the \verb{$group_by()} context, because we already
+do parallel execution per group.}
 }
 \value{
 Expr
 }
 \description{
-Run any polars expression against the lists' elements.
+Run any polars expression on the list values
 }
 \examples{
-df = pl$DataFrame(a = c(1, 8, 3), b = c(4, 5, 2))
-df$select(pl$all()$cast(pl$dtypes$Int64))$with_columns(
-  pl$concat_list(c("a", "b"))$list$eval(pl$element()$rank())$alias("rank")
+df = pl$DataFrame(
+  a = list(c(1, 8, 3), c(3, 2), c(NA, NA, 1)),
+  b = list(c("R", "is", "amazing"), c("foo", "bar"), "text")
+)
+df$with_columns(
+  # standardize each value inside a list, using only the values in this list
+  a_stand = pl$col("a")$list$eval(
+    (pl$element() - pl$element()$mean()) / pl$element()$std()
+  ),
+
+  # count characters for each element in list. Since column "b" is list[str],
+  # we can apply all `$str` functions on elements in the list:
+  b_len_chars = pl$col("b")$list$eval(
+    pl$element()$str$len_chars()
+  )
 )
 }
-\keyword{ExprList}

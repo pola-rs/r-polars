@@ -2,10 +2,24 @@
 ## THIS FILE IS SOURCED IMMEDIATELY AFTER extendr-wrappers.R . THIS FILE EXTENDS THE BEHAVIOUR
 ## OF EXTENDR-CLASS-SYSTEM WITH:
 ## 1. SEPARATE PRIVATE (.pr$) AND PUBLIC (pl$) METHODS/FUNCTIONS
-## 2. ADD INTERNAL PROFILER, pl$set_options(debug_polars = TRUE)
+## 2. ADD INTERNAL PROFILER, options(polars.debug_polars = TRUE)
 ## 3. ADD build_debug_print TO DEBUG CLASS CONSTRUCTION DURING PACKAGE BUILDTIME (rarely used)
 ## 4. ADD BETTER METHOD LOOKUP ERR MSGS macro_add_syntax_check_to_class(), HELPS END USER
 ## 5. ADD OPTION TO FLAG A METHOD TO BEHAVE LIKE A PROPERTY method_as_property()
+
+
+#' A dummy function to mark a function to replace extendr-wrapper function
+#'
+#' Define a polars class method like `ClassName_method = use_extendr_wrapper`,
+#' then this method replaced to a function in the extendr-wrappers.R file.
+#'
+#' In the past, we used strings "use_extendr_wrapper" instead of this function,
+#' but in that case [roxygen2][roxygen2::roxygen2] recognized them as data
+#' instead of a function.
+#' @noRd
+use_extendr_wrapper = function() {
+  invisible(TRUE)
+}
 
 
 # Build time options
@@ -44,7 +58,7 @@ extendr_method_to_pure_functions = function(env, class_name = NULL) {
 #' @export
 "$.private_polars_env" = function(self, name) {
   # print called private class in debug mode
-  if (polars_optenv$debug_polars) {
+  if (polars_options()$debug_polars) {
     cat(
       "[", format(subtimer_ms("TIME? "), digits = 4), "ms]\n   .pr$",
       substr(class(self)[2], 4, 99), "$", name, "() -> ",
@@ -245,7 +259,9 @@ pl_show_all_public_methods = function(class_names = NULL) {
 #' @noRd
 "$.pl_polars_env" = function(self, name) {
   # print called private class in debug mode
-  if (polars_optenv$debug_polars) {
+  # Exception for pl$reset_options: we don't want to check for options validity
+  # because we're resetting options to their default anyway
+  if (!name %in% c("reset_options", "set_options") && polars_options()$debug_polars) {
     cat(
       "[", format(subtimer_ms("TIME? "), digits = 4), "ms]\npl$", name, "() -> ",
       sep = ""

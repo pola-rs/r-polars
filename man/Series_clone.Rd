@@ -4,7 +4,7 @@
 \alias{Series_clone}
 \title{Clone a Series}
 \usage{
-Series_clone
+Series_clone()
 }
 \value{
 Series

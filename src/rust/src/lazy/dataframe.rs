@@ -12,9 +12,9 @@ use crate::robj_to;
 use crate::rpolarserr::{polars_to_rpolars_err, RPolarsErr, RResult, WithRctx};
 use crate::utils::{r_result_list, try_f64_into_usize};
 use extendr_api::prelude::*;
+use pl::{AsOfOptions, Duration, RollingGroupOptions};
 use polars::frame::explode::MeltArgs;
 use polars::prelude as pl;
-use polars::prelude::AsOfOptions;
 
 use polars::io::csv::SerializeOptions;
 use polars_lazy::prelude::CsvWriterOptions;
@@ -169,6 +169,15 @@ impl RPolarsLazyFrame {
         self.0
             .clone()
             .sink_csv(robj_to!(String, path)?.into(), options)
+            .map_err(polars_to_rpolars_err)
+    }
+
+    fn sink_json(&self, path: Robj, maintain_order: Robj) -> RResult<()> {
+        let maintain_order = robj_to!(bool, maintain_order)?;
+        let options = pl::JsonWriterOptions { maintain_order };
+        self.0
+            .clone()
+            .sink_json(robj_to!(String, path)?.into(), options)
             .map_err(polars_to_rpolars_err)
     }
 
@@ -426,6 +435,8 @@ impl RPolarsLazyFrame {
         left_on: Robj,
         right_on: Robj,
         how: Robj,
+        validate: Robj,
+        join_nulls: Robj,
         suffix: Robj,
         allow_parallel: Robj,
         force_parallel: Robj,
@@ -441,6 +452,8 @@ impl RPolarsLazyFrame {
                 .force_parallel(robj_to!(bool, force_parallel)?)
                 .how(robj_to!(JoinType, how)?)
                 .suffix(robj_to!(str, suffix)?)
+                .join_nulls(robj_to!(bool, join_nulls)?)
+                .validate(robj_to!(JoinValidation, validate)?)
                 .finish(),
         ))
     }
@@ -590,6 +603,78 @@ impl RPolarsLazyFrame {
             .collect::<Vec<_>>();
         Ok(self.0.clone().with_context(contexts).into())
     }
+
+    pub fn rolling(
+        &self,
+        index_column: Robj,
+        period: Robj,
+        offset: Robj,
+        closed: Robj,
+        by: Robj,
+        check_sorted: Robj,
+    ) -> RResult<RPolarsLazyGroupBy> {
+        let index_column = robj_to!(PLExprCol, index_column)?;
+        let period = Duration::parse(robj_to!(str, period)?);
+        let offset = Duration::parse(robj_to!(str, offset)?);
+        let closed_window = robj_to!(ClosedWindow, closed)?;
+        let by = robj_to!(VecPLExprCol, by)?;
+        let check_sorted = robj_to!(bool, check_sorted)?;
+
+        let lazy_gb = self.0.clone().group_by_rolling(
+            index_column,
+            by,
+            RollingGroupOptions {
+                index_column: "".into(),
+                period,
+                offset,
+                closed_window,
+                check_sorted,
+            },
+        );
+
+        Ok(RPolarsLazyGroupBy {
+            lgb: lazy_gb,
+            opt_state: self.0.get_current_optimizations(),
+        })
+    }
+
+    pub fn group_by_dynamic(
+        &self,
+        index_column: Robj,
+        every: Robj,
+        period: Robj,
+        offset: Robj,
+        label: Robj,
+        include_boundaries: Robj,
+        closed: Robj,
+        by: Robj,
+        start_by: Robj,
+        check_sorted: Robj,
+    ) -> RResult<RPolarsLazyGroupBy> {
+        let closed_window = robj_to!(ClosedWindow, closed)?;
+        let by = robj_to!(VecPLExprCol, by)?;
+        let ldf = self.0.clone();
+        let lazy_gb = ldf.group_by_dynamic(
+            robj_to!(PLExprCol, index_column)?,
+            by,
+            pl::DynamicGroupOptions {
+                every: robj_to!(pl_duration, every)?,
+                period: robj_to!(pl_duration, period)?,
+                offset: robj_to!(pl_duration, offset)?,
+                label: robj_to!(Label, label)?,
+                include_boundaries: robj_to!(bool, include_boundaries)?,
+                closed_window,
+                start_by: robj_to!(StartBy, start_by)?,
+                check_sorted: robj_to!(bool, check_sorted)?,
+                ..Default::default()
+            },
+        );
+
+        Ok(RPolarsLazyGroupBy {
+            lgb: lazy_gb,
+            opt_state: self.0.get_current_optimizations(),
+        })
+    }
 }
 
 #[derive(Clone)]
@@ -610,8 +695,7 @@ impl RPolarsLazyGroupBy {
 
     fn ungroup(&self) -> RPolarsLazyFrame {
         RPolarsLazyFrame(
-            pl::LazyFrame::from(self.lgb.logical_plan.clone())
-                .with_optimizations(self.opt_state.clone()),
+            pl::LazyFrame::from(self.lgb.logical_plan.clone()).with_optimizations(self.opt_state),
         )
     }
 

@@ -1,6 +1,6 @@
 Package: polars
 Title: Lightning-Fast 'DataFrame' Library
-Version: 0.12.0.9000
+Version: 0.12.2.9000
 Depends: R (>= 4.2)
 Imports: utils, codetools
 Authors@R:
@@ -16,7 +16,7 @@ License: MIT + file LICENSE
 Language: en-US
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.0
 SystemRequirements: Cargo (rustc package manager), cmake
 URL: https://github.com/pola-rs/r-polars
     https://rpolars.r-universe.dev/polars
@@ -43,7 +43,7 @@ Suggests:
     vctrs,
     withr
 Config/Needs/website:
-    etiennebacher/altdoc@e9c7ee8,
+    etiennebacher/altdoc@7b5cec5,
     future.apply,
     here,
     magrittr,
@@ -91,8 +91,11 @@ Collate:
     'functions__lazy.R'
     'functions__whenthen.R'
     'group_by.R'
+    'group_by_dynamic.R'
+    'group_by_rolling.R'
     'info.R'
     'ipc.R'
+    'is_polars.R'
     'json.R'
     'lazyframe__group_by.R'
     'lazyframe__lazy.R'
@@ -112,5 +115,5 @@ Collate:
     'zzz.R'
 Config/rextendr/version: 0.3.1
 VignetteBuilder: knitr
-Config/polars/LibVersion: 0.35.1
+Config/polars/LibVersion: 0.36.1
 Config/polars/RustToolchainVersion: nightly-2023-12-23

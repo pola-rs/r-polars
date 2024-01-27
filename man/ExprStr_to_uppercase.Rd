@@ -3,8 +3,11 @@
 \name{ExprStr_to_uppercase}
 \alias{ExprStr_to_uppercase}
 \title{Convert a string to uppercase}
+\usage{
+ExprStr_to_uppercase()
+}
 \value{
-Expr of Utf8 uppercase chars
+Expr of String uppercase chars
 }
 \description{
 Transform to uppercase variant.

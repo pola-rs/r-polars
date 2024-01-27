@@ -1,57 +1,47 @@
-#' when-then-otherwise Expr
+#' Make a then-when-otherwise expression
+#'
+#' `when-then-otherwise` is similar to R [`ifelse()`]. This has to start with
+#' `pl$when(<condition>)$then(<value if condition>)`. From there, it can:
+#' * be chained to an `$otherwise()` statement that specifies the Expr to apply
+#'   to the rows where the condition is `FALSE`;
+#' * or be chained to other `$when()$then()` to specify more cases, and then use
+#'   `$otherwise()` when you arrive at the end of your chain.
+#' Note that one difference with the Python implementation is that we *must*
+#' end the chain with an `$otherwise()` statement.
+#'
+#' If you want to use the class of those `when-then-otherwise` statement, note
+#' that there are 6 different classes corresponding to the different steps:
+#'
+#' * `pl$when()`returns a `When` object,
+#' * `pl$then()`returns a `Then` object,
+#' * `<Then>$otherwise()`returns an [Expression][Expr_class] object,
+#' * `<Then>$when()`returns a `ChainedWhen` object,
+#' * `<ChainedWhen>$then()`returns a `ChainedThen` object,
+#' * `<ChainedThen>$otherwise()`returns an [Expression][Expr_class] object.
+#'
 #' @name Expr_when_then_otherwise
-#' @description Start a “when, then, otherwise” expression.
-#' @keywords Expr
-#' @param ... Into Expr into a boolean mask to branch by.
-#' @param statement Into Expr value to insert in when() or otherwise().
-#' Strings interpreted as column.
-#' @return Expr
+#' @param ... Expr or something coercible to an Expr into a boolean mask to
+#'   branch by.
+#' @param statement Expr or something coercible to an Expr value to insert in
+#'   when() or otherwise(). Strings interpreted as column.
+#' @return an polars object, see details.
 #' @aliases when then otherwise When Then ChainedWhen ChainedThen
-#' @details
-#'
-#' when-then-otherwise is similar to R `ifelse()`. `pl$when(condition)` takes a condition as input
-#' this will an polars `<Expr>` which renderes to a Boolean column. Then it is chained with a
-#' `$then(statement)` when arg statement is an `<Expr>` which produces a column with values if
-#' idealy all Boolean are true. Then finally an `$otherwise(statement)` with values if false.
-#' `$otherwise()` returns an `Expr` which will mix the `$then()` statement with the `$otherwise()`
-#' as given by the when-condition.
-#'
-#' State-machine details below. The state machine consists of 4 classes `<When>`, `<Then>`,
-#' `<ChainedWhen>` & `<ChainedThen>` and a starter function `pl$when()` and the final expression
-#' class  a polars `<Expr>`.
-#'
-#' `pl$when`return a `<When>` object.
-#' `pl$when(condition) -> <When>`
-#'
-#'  `<When>` has a single public method `$then(statement)`
-#'  `<When>$then(statement) -> <Then>`
-#'
-#'  #the follow objects and methods are
-#'  `<Then>$when(condition) -> <ChainedWhen>`
-#'  `<Then>$otherwise(statement) -> <Expr>`
-#'  `<ChainedWhen>$then(statement) -> <ChainedThen>`
-#'  `<ChainedThen>$when(condition) -> <Expr>`
-#'  `<ChainedThen>$otherwise(statement) -> <Expr>`
-#'
-#'  This statemachine ensures only syntacticly allowed methods are availble at any specific place in
-#'  a nested when-then-otherwise expression.
-#'
 #' @examples
 #' df = pl$DataFrame(foo = c(1, 3, 4), bar = c(3, 4, 0))
 #'
-#' # Add a column with the value 1, where column "foo" > 2 and the value -1 where it isn’t.
+#' # Add a column with the value 1, where column "foo" > 2 and the value -1
+#' # where it isn’t.
 #' df$with_columns(
-#'   pl$when(pl$col("foo") > 2)$then(1)$otherwise(-1)$alias("val")
+#'   val = pl$when(pl$col("foo") > 2)$then(1)$otherwise(-1)
 #' )
 #'
-#' # With multiple when, thens chained:
+#' # With multiple when-then chained:
 #' df$with_columns(
-#'   pl$when(pl$col("foo") > 2)
+#'   val = pl$when(pl$col("foo") > 2)
 #'   $then(1)
 #'   $when(pl$col("bar") > 2)
 #'   $then(4)
 #'   $otherwise(-1)
-#'   $alias("val")
 #' )
 #'
 #' # Pass multiple predicates, each of which must be met:

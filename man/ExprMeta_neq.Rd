@@ -4,6 +4,9 @@
 \alias{ExprMeta_neq}
 \alias{expr_meta_not_equal}
 \title{Meta Not Equal}
+\usage{
+ExprMeta_neq(other)
+}
 \arguments{
 \item{other}{Expr to compare with}
 }

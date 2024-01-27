@@ -3,18 +3,19 @@
 \name{ExprList_arg_min}
 \alias{ExprList_arg_min}
 \alias{list_arg_min}
-\title{Arg min sublists}
-\format{
-function
+\title{Get the index of the minimal value in list}
+\usage{
+ExprList_arg_min()
 }
 \value{
 Expr
 }
 \description{
-Retrieve the index of the minimal value in every sublist.
+Get the index of the minimal value in list
 }
 \examples{
 df = pl$DataFrame(list(s = list(1:2, 2:1)))
-df$select(pl$col("s")$list$arg_min())
+df$with_columns(
+  arg_min = pl$col("s")$list$arg_min()
+)
 }
-\keyword{ExprList}

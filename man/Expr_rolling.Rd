@@ -6,6 +6,7 @@
 \usage{
 Expr_rolling(
   index_column,
+  ...,
   period,
   offset = NULL,
   closed = "right",
@@ -18,6 +19,8 @@ type Date/Datetime. This column must be sorted in ascending order. If this
 column represents an index, it has to be either Int32 or Int64. Note that
 Int32 gets temporarily cast to Int64, so if performance matters use an Int64
 column.}
+
+\item{...}{Ignored.}
 
 \item{period}{Length of the window, must be non-negative.}
 

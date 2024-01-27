@@ -21,6 +21,7 @@ last \code{all()} in example is this Expr method, the first \code{pl$all()} refe
 to "all-columns" and is an expression constructor
 }
 \examples{
-pl$DataFrame(list(all = c(TRUE, TRUE), some = c(TRUE, FALSE)))$select(pl$all()$all())
+pl$DataFrame(all = c(TRUE, TRUE), some = c(TRUE, FALSE))$
+  select(pl$all()$all())
 }
 \keyword{Expr_new}

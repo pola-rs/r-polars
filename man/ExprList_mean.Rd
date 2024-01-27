@@ -3,18 +3,17 @@
 \name{ExprList_mean}
 \alias{ExprList_mean}
 \alias{list_mean}
-\title{Mean of lists}
-\format{
-function
+\title{Compute the mean value of a list}
+\usage{
+ExprList_mean()
 }
 \value{
 Expr
 }
 \description{
-Compute the mean value of the lists in the array.
+Compute the mean value of a list
 }
 \examples{
-df = pl$DataFrame(values = pl$Series(list(1L, 2:3)))
-df$select(pl$col("values")$list$mean())
+df = pl$DataFrame(list(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_)))
+df$with_columns(mean = pl$col("values")$list$mean())
 }
-\keyword{ExprList}

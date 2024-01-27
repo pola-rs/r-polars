@@ -1,4 +1,11 @@
-## ----- LazyGroupBy
+#' @title Operations on Polars grouped LazyFrame
+#' @return not applicable
+#' @details The LazyGroupBy class in R, is just another interface on top of the
+#'   LazyFrame (R wrapper class) in rust polars.
+#'
+#' @name LazyGroupBy_class
+NULL
+
 
 
 #' print LazyGroupBy
@@ -36,19 +43,11 @@ print.RPolarsLazyGroupBy = function(x, ...) {
 #'   pl$col("bar")$sum()$name$suffix("_sum"),
 #'   pl$col("bar")$mean()$alias("bar_tail_sum")
 #' )
-LazyGroupBy_agg = agg = function(...) {
+LazyGroupBy_agg = function(...) {
   .pr$LazyGroupBy$agg(self, unpack_list(..., .context = "in $agg():")) |>
     unwrap("in $agg():")
 }
 
-#' @title LazyGroupBy_apply
-#' @description
-#' one day this will apply
-#' @param f  R function to apply
-#' @return A new `LazyFrame` object.
-LazyGroupBy_apply = function(f) {
-  stop("this function is not yet implemented")
-}
 
 #' @title LazyGroupBy_head
 #' @description

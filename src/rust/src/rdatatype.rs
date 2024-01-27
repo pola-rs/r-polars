@@ -74,7 +74,7 @@ impl RPolarsDataType {
             "Float32" | "float32" | "double" => pl::DataType::Float32,
             "Float64" | "float64" => pl::DataType::Float64,
 
-            "Utf8" | "character" => pl::DataType::Utf8,
+            "Utf8" | "String" | "character" => pl::DataType::String,
             "Binary" | "binary" => pl::DataType::Binary,
             "Date" | "date" => pl::DataType::Date,
             "Time" | "time" => pl::DataType::Time,
@@ -143,7 +143,7 @@ impl RPolarsDataType {
             "Int64".into(),
             "Float32".into(),
             "Float64".into(),
-            "Utf8".into(),
+            "String".into(),
             "Binary".into(),
             "Date".into(),
             "Time".into(),
@@ -318,11 +318,11 @@ pub fn literal_to_any_value(litval: pl::LiteralValue) -> RResult<pl::AnyValue<'s
         lv::UInt64(x) => Ok(av::UInt64(x)),
         lv::UInt8(x) => Ok(av::UInt8(x)),
         // lv::Utf8(x) => Ok(av::Utf8(x.as_str())),
-        lv::Utf8(x) => {
+        lv::String(x) => {
             let mut s = SString::new();
 
             s.push_str(x.as_str());
-            Ok(av::Utf8Owned(s))
+            Ok(av::StringOwned(s))
         }
         x => rerr().bad_val(format!("cannot convert LiteralValue {:?} to AnyValue", x)),
     }
@@ -484,6 +484,62 @@ pub fn robj_to_closed_window(robj: Robj) -> RResult<pl::ClosedWindow> {
         "right" => Ok(CW::Right),
         s => rerr().bad_val(format!(
             "ClosedWindow choice ['{s}'] should be one of 'both', 'left', 'none', 'right'"
+        )),
+    }
+}
+
+pub fn robj_to_set_operation(robj: Robj) -> RResult<pl::SetOperation> {
+    use pl::SetOperation as SO;
+    match robj_to_rchoice(robj)?.as_str() {
+        "union" => Ok(SO::Union),
+        "intersection" => Ok(SO::Intersection),
+        "difference" => Ok(SO::Difference),
+        "symmetric_difference" => Ok(SO::SymmetricDifference),
+        s => rerr().bad_val(format!(
+            "SetOperation choice ['{s}'] should be one of 'union', 'intersection', 'difference', 'symmetric_difference'"
+        )),
+    }
+}
+
+pub fn robj_to_join_validation(robj: Robj) -> RResult<pl::JoinValidation> {
+    use pl::JoinValidation as JV;
+    match robj_to_rchoice(robj)?.as_str() {
+        "m:m" => Ok(JV::ManyToMany),
+        "1:m" => Ok(JV::OneToMany),
+        "1:1" => Ok(JV::OneToOne),
+        "m:1" => Ok(JV::ManyToOne),
+        s => rerr().bad_val(format!(
+            "JoinValidation choice ['{s}'] should be one of 'm:m', '1:m', '1:1', 'm:1'"
+        )),
+    }
+}
+
+pub fn robj_to_label(robj: Robj) -> RResult<pl::Label> {
+    use pl::Label;
+    match robj_to_rchoice(robj)?.as_str() {
+        "left" => Ok(Label::Left),
+        "right" => Ok(Label::Right),
+        "datapoint" => Ok(Label::DataPoint),
+        s => rerr().bad_val(format!(
+            "Label choice ['{s}'] should be one of 'left', 'right', 'datapoint'"
+        )),
+    }
+}
+
+pub fn robj_to_start_by(robj: Robj) -> RResult<pl::StartBy> {
+    use pl::StartBy as SB;
+    match robj_to_rchoice(robj)?.as_str() {
+        "window" => Ok(SB::WindowBound),
+        "datapoint" => Ok(SB::DataPoint),
+        "monday" => Ok(SB::Monday),
+        "tuesday" => Ok(SB::Tuesday),
+        "wednesday" => Ok(SB::Wednesday),
+        "thursday" => Ok(SB::Thursday),
+        "friday" => Ok(SB::Friday),
+        "saturday" => Ok(SB::Saturday),
+        "sunday" => Ok(SB::Sunday),
+        s => rerr().bad_val(format!(
+            "StartBy choice ['{s}'] should be one of 'window', 'datapoint', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'"
         )),
     }
 }

@@ -4,8 +4,8 @@
 \alias{ExprDT_day}
 \alias{(Expr)$dt$day}
 \title{Day}
-\format{
-function
+\usage{
+ExprDT_day()
 }
 \value{
 Expr of day as UInt32

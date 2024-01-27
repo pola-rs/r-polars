@@ -3,7 +3,7 @@ version: "3"
 env:
   NOT_CRAN: "true"
   LIBR_POLARS_BUILD: "true"
-  RPOLARS_FULL_FEATURES: "true"
+  LIBR_POLARS_FEATURES: "full_features"
 
 vars:
   PACKAGE_NAME: polars
@@ -29,11 +29,11 @@ tasks:
       - setup-python-tools
 
   setup-r-tools:
-    internal: true
     env:
       PKG_SYSREQS: FALSE
     desc: Install R packages for development.
     cmds:
+      - Rscript -e 'install.packages("pak", repos = sprintf("https://r-lib.github.io/p/pak/stable/%s/%s/%s", .Platform$pkgType, R.Version()$os, R.Version()$arch))'
       - Rscript -e
         'pak::repo_add("https://cloud.r-project.org/");
         pak::local_install_deps(dependencies = c("all", "Config/Needs/dev", "Config/Needs/website"))'
@@ -74,7 +74,6 @@ tasks:
       - python3 -m venv {{.VENV_DIR}}
 
   setup-python-tools:
-    internal: true
     desc: Install Python tools for development.
     deps:
       - setup-venv

@@ -3,6 +3,9 @@
 \name{ExprStr_contains}
 \alias{ExprStr_contains}
 \title{Check if string contains a regex}
+\usage{
+ExprStr_contains(pattern, literal = FALSE, strict = TRUE)
+}
 \arguments{
 \item{pattern}{String or Expr of a string, a valid regex pattern.}
 

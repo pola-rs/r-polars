@@ -3,13 +3,16 @@
 \name{ExprStr_splitn}
 \alias{ExprStr_splitn}
 \title{Split the string by a substring, restricted to returning at most \code{n} items}
+\usage{
+ExprStr_splitn(by, n)
+}
 \arguments{
 \item{by}{Substring to split by.}
 
 \item{n}{Number of splits to make.}
 }
 \value{
-Struct where each of \code{n} fields is of Utf8 type
+Struct where each of \code{n} fields is of String type
 }
 \description{
 If the number of possible splits is less than \code{n-1}, the remaining field
@@ -17,9 +20,11 @@ elements will be null. If the number of possible splits is \code{n-1} or greater
 the last (nth) substring will contain the remainder of the string.
 }
 \examples{
-df = pl$DataFrame(s = c("a_1", NA, "c", "d_4"))
-df$select(pl$col("s")$str$splitn(by = "_", 0))
-df$select(pl$col("s")$str$splitn(by = "_", 1))
-df$select(pl$col("s")$str$splitn(by = "_", 2))
+df = pl$DataFrame(s = c("a_1", NA, "c", "d_4_e"))
+df$with_columns(
+  s1 = pl$col("s")$str$splitn(by = "_", 1),
+  s2 = pl$col("s")$str$splitn(by = "_", 2),
+  s3 = pl$col("s")$str$splitn(by = "_", 3)
+)
 }
 \keyword{ExprStr}

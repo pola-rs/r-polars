@@ -36,7 +36,7 @@ identical(s_imut$to_vector(), s_imut_copy$to_vector())
 s_mut = pl$Series(1:3)
 s_mut_copy = s_mut
 # must deactivate this to allow to use immutable=FALSE
-pl$set_options(strictly_immutable = FALSE)
+options(polars.strictly_immutable = FALSE)
 s_new = s_mut$append(pl$Series(1:3), immutable = FALSE)
 identical(s_new$to_vector(), s_mut_copy$to_vector())
 }

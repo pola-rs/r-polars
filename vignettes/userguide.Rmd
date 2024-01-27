@@ -483,12 +483,12 @@ df = pl$DataFrame(
 )
 
 df$group_by("keys")$agg(
-        pl$col("values")$map(function(s) s$shift())$alias("shift_map"),
+        pl$col("values")$map_batches(function(s) s$shift())$alias("shift_map"),
         pl$col("values")$shift()$alias("shift_expression")
 )
 
 df$group_by("keys")$agg(
-        pl$col("values")$map(function(s) s$shift())$alias("shift_map"),
+        pl$col("values")$map_batches(function(s) s$shift())$alias("shift_map"),
         pl$col("values")$shift()$alias("shift_expression")
 )
 

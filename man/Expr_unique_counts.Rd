@@ -4,7 +4,7 @@
 \alias{Expr_unique_counts}
 \title{Count unique values}
 \usage{
-Expr_unique_counts
+Expr_unique_counts()
 }
 \value{
 Expr
@@ -17,4 +17,3 @@ the counts and it might be faster.
 \examples{
 pl$DataFrame(iris)$select(pl$col("Species")$unique_counts())
 }
-\keyword{datasets}

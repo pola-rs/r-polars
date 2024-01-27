@@ -3,6 +3,9 @@
 \name{ExprDT_time}
 \alias{ExprDT_time}
 \title{Extract time from a Datetime Series}
+\usage{
+ExprDT_time()
+}
 \value{
 A Time Expr
 }

@@ -3,18 +3,17 @@
 \name{ExprList_sum}
 \alias{ExprList_sum}
 \alias{list_sum}
-\title{Sum lists}
-\format{
-function
+\title{Sum all elements in a list}
+\usage{
+ExprList_sum()
 }
 \value{
 Expr
 }
 \description{
-Sum all the lists in the array.
+Sum all elements in a list
 }
 \examples{
-df = pl$DataFrame(values = pl$Series(list(1L, 2:3)))
-df$select(pl$col("values")$list$sum())
+df = pl$DataFrame(list(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_)))
+df$with_columns(sum = pl$col("values")$list$sum())
 }
-\keyword{ExprList}

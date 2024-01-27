@@ -22,6 +22,12 @@ replace_private_with_pub_methods(RPolarsLazyFrame, "^LazyFrame_")
 # LazyGroupBy
 replace_private_with_pub_methods(RPolarsLazyGroupBy, "^LazyGroupBy_")
 
+# RollingGroupBy
+replace_private_with_pub_methods(RPolarsRollingGroupBy, "^RollingGroupBy_")
+
+# DynamicGroupBy
+replace_private_with_pub_methods(RPolarsDynamicGroupBy, "^DynamicGroupBy_")
+
 # Expr
 replace_private_with_pub_methods(RPolarsExpr, "^Expr_")
 
@@ -110,12 +116,41 @@ move_env_elements(RPolarsExpr, pl, c("lit"), remove = FALSE)
 
 
 .onLoad = function(libname, pkgname) {
+  # Auto limit the max number of threads used by polars
+  if (
+    isFALSE(cargo_rpolars_feature_info()[["disable_limit_max_threads"]]) &&
+      !isFALSE(getOption("polars.limit_max_threads")) &&
+      Sys.getenv("POLARS_MAX_THREADS") == "") {
+    Sys.setenv(POLARS_MAX_THREADS = 2)
+    # Call polars to lock the pool size
+    invisible(threadpool_size())
+    Sys.unsetenv("POLARS_MAX_THREADS")
+  }
+
+  # Set options: this has to be done first because functions in the "pl"
+  # namespace (used later in .onLoad) will validate options internally.
+  # We use getOption() because the user could have set some options in .Rprofile.
+  # If the user didn't, then we use the default value.
+  # Note that the two options relative to rpool can't be set by the user in the
+  # .Rprofile because they call some Rust functions.
+  options(
+    polars.debug_polars = getOption("polars.debug_polars", FALSE),
+    polars.df_knitr_print = getOption("polars.df_knitr_print", "auto"),
+    polars.do_not_repeat_call = getOption("polars.do_not_repeat_call", FALSE),
+    polars.int64_conversion = getOption("polars.int64_conversion", "double"),
+    polars.maintain_order = getOption("polars.maintain_order", FALSE),
+    polars.no_messages = getOption("polars.no_messages", FALSE),
+    polars.rpool_active = unwrap(get_global_rpool_cap())$active,
+    polars.rpool_cap = unwrap(get_global_rpool_cap())$capacity,
+    polars.strictly_immutable = getOption("polars.strictly_immutable", TRUE)
+  )
+
   # instanciate one of each DataType (it's just an enum)
-  all_types = .pr$DataType$get_all_simple_type_names()
+  all_types = c(.pr$DataType$get_all_simple_type_names(), "Utf8") # Allow "Utf8" as an alias of "String"
   names(all_types) = all_types
   pl$dtypes = c(
     lapply(all_types, DataType_new), # instanciate all simple flag-like types
-    DataType_constructors # add function constructors for the remainders
+    DataType_constructors() # add function constructors for the remainders
   )
 
   # export dtypes directly into pl, because py-polars does that
@@ -129,32 +164,6 @@ move_env_elements(RPolarsExpr, pl, c("lit"), remove = FALSE)
   s3_register("knitr::knit_print", "RPolarsDataFrame")
 
   pl$numeric_dtypes = pl$dtypes[substr(names(pl$dtypes), 1, 3) %in% c("Int", "Flo")]
-
-  # create the binding for options on loading, otherwise its values are frozen
-  # to what the default values were at build time
-  makeActiveBinding("options", \() as.list(polars_optenv), env = pl)
-  makeActiveBinding(
-    "rpool_cap",
-    \(arg) {
-      if (missing(arg)) {
-        unwrap(get_global_rpool_cap())$capacity
-      } else {
-        unwrap(set_global_rpool_cap(arg))
-      }
-    },
-    env = polars_optenv
-  )
-  makeActiveBinding(
-    "rpool_active",
-    \(arg) {
-      if (missing(arg)) {
-        unwrap(get_global_rpool_cap())$active
-      } else {
-        unwrap(stop("internal error: polars_optenv$rpool_active cannot be set directly"))
-      }
-    },
-    env = polars_optenv
-  )
 
   setup_renv()
   lockEnvironment(pl, bindings = TRUE)

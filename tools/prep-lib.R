@@ -64,7 +64,11 @@ current_os = which_os()
 vendor_sys_abi = which_vendor_sys_abi(current_os)
 current_arch = which_arch()
 
-target_triple = paste0(current_arch, "-", vendor_sys_abi)
+target_triple = ifelse(
+  Sys.getenv("TARGET") != "",
+  Sys.getenv("TARGET"),
+  paste0(current_arch, "-", vendor_sys_abi)
+)
 
 lib_data = utils::read.table("tools/lib-sums.tsv", header = TRUE, stringsAsFactors = FALSE)
 

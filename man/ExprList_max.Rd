@@ -2,19 +2,18 @@
 % Please edit documentation in R/expr__list.R
 \name{ExprList_max}
 \alias{ExprList_max}
-\alias{Expr_list_max}
-\title{Max lists}
-\format{
-function
+\alias{list_max}
+\title{Find the maximum value in a list}
+\usage{
+ExprList_max()
 }
 \value{
 Expr
 }
 \description{
-Compute the max value of the lists in the array.
+Find the maximum value in a list
 }
 \examples{
-df = pl$DataFrame(values = pl$Series(list(1L, 2:3)))
-df$select(pl$col("values")$list$max())
+df = pl$DataFrame(list(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_)))
+df$with_columns(max = pl$col("values")$list$max())
 }
-\keyword{ExprList}

@@ -19,20 +19,14 @@
 #' as pure functions solved/simplified self-referential complications.
 #'
 #' `DataFrame` and `LazyFrame` can both be said to be a `Frame`. To convert use
-#' `DataFrame_object$lazy() -> LazyFrame_object` and `LazyFrame_object$collect() -> DataFrame_object`. You can also create a `LazyFrame` directly with `pl$LazyFrame()`.
-#' This is quite similar to the lazy-collect syntax of the dplyrpackage to
+#' [`<DataFrame>$lazy()`][DataFrame_lazy] and [`<LazyFrame>$collect()`][LazyFrame_collect].
+#' You can also create a `LazyFrame` directly with [`pl$LazyFrame()`][pl_LazyFrame].
+#' This is quite similar to the lazy-collect syntax of the `dplyr` package to
 #' interact with database connections such as SQL variants. Most SQL databases
-#' would be able to perform the same optimizations as polars such Predicate Pushdown
-#' and Projection. However polars can interact and optimize queries with both
-#' SQL DBs and other data sources such parquet files simultaneously. (#TODO
-#' implement r-polars SQL ;).
+#' would be able to perform the same optimizations as polars such predicate pushdown
+#' and projection pushdown. However polars can interact and optimize queries with both
+#' SQL DBs and other data sources such parquet files simultaneously.
 #'
-#' @details Check out the source code in R/LazyFrame__lazy.R how public methods
-#' are derived from private methods. Check out  extendr-wrappers.R to see the
-#' extendr-auto-generated methods. These are moved to `.pr` and converted into
-#' pure external functions in after-wrappers.R. In zzz.R (named zzz to be last
-#' file sourced) the extendr-methods are removed and replaced by any function
-#' prefixed `LazyFrame_`.
 #' @return not applicable
 #' @keywords LazyFrame
 #' @examples
@@ -144,7 +138,7 @@ NULL
 #' # custom schema
 #' pl$LazyFrame(
 #'   iris,
-#'   schema = list(Sepal.Length = pl$Float32, Species = pl$Utf8)
+#'   schema = list(Sepal.Length = pl$Float32, Species = pl$String)
 #' )$collect()
 pl_LazyFrame = function(...) {
   pl$DataFrame(...)$lazy()
@@ -177,9 +171,7 @@ print.RPolarsLazyFrame = function(x, ...) {
 #'
 #' @usage LazyFrame_print(x)
 #' @examples pl$LazyFrame(iris)$print()
-LazyFrame_print = "use_extendr_wrapper"
-
-# TODO write missing examples in this file
+LazyFrame_print = use_extendr_wrapper
 
 #' @title Print the optimized or non-optimized plans of `LazyFrame`
 #'
@@ -209,7 +201,7 @@ LazyFrame_describe_optimized_plan = function() {
 }
 
 #' @rdname LazyFrame_describe_plan
-LazyFrame_describe_plan = "use_extendr_wrapper"
+LazyFrame_describe_plan = use_extendr_wrapper
 
 #' @title Select and modify columns of a LazyFrame
 #' @inherit DataFrame_select description params
@@ -440,8 +432,8 @@ LazyFrame_collect = function(
 #' It is useful to not block the R session while query executes. If you use
 #' [`<Expr>$map_batches()`][Expr_map_batches] or
 #' [`<Expr>$map_elements()`][Expr_map_elements] to run R functions in the query,
-#' then you must pass `in_background = TRUE` in `$map_batches()` (or
-#' `$map_elements()`). Otherwise, `$collect_in_background()` will fail because
+#' then you must pass `in_background = TRUE` in [`$map_batches()`][Expr_map_batches] (or
+#' [`$map_elements()`][Expr_map_elements]). Otherwise, `$collect_in_background()` will fail because
 #' the main R session is not available for polars execution. See also examples
 #' below.
 #'
@@ -449,7 +441,7 @@ LazyFrame_collect = function(
 #' @return RThreadHandle, a future-like thread handle for the task
 #' @examples
 #' # Some expression which does contain a map
-#' expr = pl$col("mpg")$map(
+#' expr = pl$col("mpg")$map_batches(
 #'   \(x) {
 #'     Sys.sleep(.1)
 #'     x * 0.43
@@ -498,6 +490,7 @@ LazyFrame_collect_in_background = function() {
 #' smaller chunks may reduce memory pressure and improve writing speeds.
 #' @param data_pagesize_limit `NULL` or Integer. If `NULL` (default), the limit
 #' will be ~1MB.
+#' @inheritParams LazyFrame_group_by
 #' @inheritParams DataFrame_unique
 #' @inheritParams LazyFrame_collect
 #'
@@ -575,6 +568,7 @@ LazyFrame_sink_parquet = function(
 #' "lz4" or "zstd". Choose "zstd" for good compression performance. Choose "lz4"
 #' for fast compression/decompression.
 #' @inheritParams LazyFrame_collect
+#' @inheritParams LazyFrame_group_by
 #' @inheritParams DataFrame_unique
 #'
 #' @rdname IO_sink_ipc
@@ -641,6 +635,7 @@ LazyFrame_sink_ipc = function(
 #'
 #' @inheritParams DataFrame_write_csv
 #' @inheritParams LazyFrame_collect
+#' @inheritParams LazyFrame_group_by
 #' @inheritParams DataFrame_unique
 #'
 #' @rdname IO_sink_csv
@@ -721,6 +716,67 @@ LazyFrame_sink_csv = function(
 }
 
 
+#' @title Stream the output of a query to a JSON file
+#' @description
+#' This writes the output of a query directly to a JSON file without collecting
+#' it in the R session first. This is useful if the output of the query is still
+#' larger than RAM as it would crash the R session if it was collected into R.
+#'
+#' @inheritParams DataFrame_write_csv
+#' @inheritParams LazyFrame_collect
+#' @inheritParams LazyFrame_group_by
+#' @inheritParams DataFrame_unique
+#'
+#' @rdname IO_sink_ndjson
+#'
+#' @examples
+#' # sink table 'mtcars' from mem to JSON
+#' tmpf = tempfile(fileext = ".json")
+#' pl$LazyFrame(mtcars)$sink_ndjson(tmpf)
+#'
+#' # load parquet directly into a DataFrame / memory
+#' pl$scan_ndjson(tmpf)$collect()
+LazyFrame_sink_ndjson = function(
+    path,
+    maintain_order = TRUE,
+    type_coercion = TRUE,
+    predicate_pushdown = TRUE,
+    projection_pushdown = TRUE,
+    simplify_expression = TRUE,
+    slice_pushdown = TRUE,
+    no_optimization = FALSE,
+    inherit_optimization = FALSE) {
+  if (isTRUE(no_optimization)) {
+    predicate_pushdown = FALSE
+    projection_pushdown = FALSE
+    slice_pushdown = FALSE
+  }
+
+  lf = self
+
+  if (isFALSE(inherit_optimization)) {
+    lf = self$set_optimization_toggle(
+      type_coercion,
+      predicate_pushdown,
+      projection_pushdown,
+      simplify_expression,
+      slice_pushdown,
+      comm_subplan_elim = FALSE,
+      comm_subexpr_elim = FALSE,
+      streaming = FALSE
+    ) |> unwrap("in $sink_ndjson()")
+  }
+
+  lf |>
+    .pr$LazyFrame$sink_json(
+      path,
+      maintain_order
+    ) |>
+    unwrap("in $sink_ndjson()") |>
+    invisible()
+}
+
+
 #' @title Limit a LazyFrame
 #' @inherit DataFrame_limit description params details
 #' @return A `LazyFrame`
@@ -745,7 +801,7 @@ LazyFrame_head = function(n) {
 #' @docType NULL
 #' @format NULL
 #' @examples pl$LazyFrame(mtcars)$first()$collect()
-LazyFrame_first = "use_extendr_wrapper"
+LazyFrame_first = use_extendr_wrapper
 
 #' @title Get the last row of a LazyFrame
 #' @description Aggregate the columns in the LazyFrame to their maximum value.
@@ -754,7 +810,7 @@ LazyFrame_first = "use_extendr_wrapper"
 #' @docType NULL
 #' @format NULL
 #' @examples pl$LazyFrame(mtcars)$last()$collect()
-LazyFrame_last = "use_extendr_wrapper"
+LazyFrame_last = use_extendr_wrapper
 
 #' @title Max
 #' @description Aggregate the columns in the LazyFrame to their maximum value.
@@ -905,7 +961,7 @@ LazyFrame_drop = function(columns) {
 #' @keywords LazyFrame
 #' @return LazyFrame
 #' @examples pl$LazyFrame(mtcars)$reverse()$collect()
-LazyFrame_reverse = "use_extendr_wrapper"
+LazyFrame_reverse = use_extendr_wrapper
 
 #' @title Slice
 #' @description Get a slice of the LazyFrame.
@@ -976,7 +1032,10 @@ LazyFrame_unique = function(
 #' (`$agg()`, `$filter()`, etc.).
 #' @keywords LazyFrame
 #' @param ... Any Expr(s) or string(s) naming a column.
-#' @inheritParams DataFrame_unique
+#' @param maintain_order Keep the same order as the original `LazyFrame`. Setting
+#'  this to `TRUE` makes it more expensive to compute and blocks the possibility
+#'  to run on the streaming engine. The default value can be changed with
+#' `options(polars.maintain_order = TRUE)`.
 #' @return LazyGroupBy (a LazyFrame with special groupby methods like `$agg()`)
 #' @examples
 #' pl$LazyFrame(
@@ -989,14 +1048,45 @@ LazyFrame_unique = function(
 #'   pl$col("bar")$mean()$alias("bar_tail_sum")
 #' )$
 #'   collect()
-LazyFrame_group_by = function(..., maintain_order = pl$options$maintain_order) {
+LazyFrame_group_by = function(..., maintain_order = polars_options()$maintain_order) {
   .pr$LazyFrame$group_by(self, unpack_list(..., .context = "in $group_by():"), maintain_order) |>
     unwrap("in $group_by():")
 }
 
 #' Join LazyFrames
 #'
-#' @inherit DataFrame_join description params
+#' This function can do both mutating joins (adding columns based on matching
+#' observations, for example with `how = "left"`) and filtering joins (keeping
+#' observations based on matching observations, for example with `how =
+#' "inner"`).
+#'
+#' @param other LazyFrame to join with.
+#' @param on Either a vector of column names or a list of expressions and/or
+#'   strings. Use `left_on` and `right_on` if the column names to match on are
+#'   different between the two DataFrames.
+#' @param how One of the following methods: "inner", "left", "outer", "semi",
+#'   "anti", "cross", "outer_coalesce".
+#' @param left_on,right_on Same as `on` but only for the left or the right
+#'   DataFrame. They must have the same length.
+#' @param suffix Suffix to add to duplicated column names.
+#' @param validate Checks if join is of specified type:
+#' * `"m:m"` (default): many-to-many, doesn't perform any checks;
+#' * `"1:1"`: one-to-one, check if join keys are unique in both left and right
+#'   datasets;
+#' * `"1:m"`: one-to-many, check if join keys are unique in left dataset
+#' * `"m:1"`: many-to-one, check if join keys are unique in right dataset
+#'
+#' Note that this is currently not supported by the streaming engine, and is
+#' only supported when joining by single columns.
+#'
+#' @param join_nulls Join on null values. By default null values will never
+#'   produce matches.
+#' @param allow_parallel Allow the physical plan to optionally evaluate the
+#'   computation of both DataFrames up to the join in parallel.
+#' @param force_parallel Force the physical plan to evaluate the computation of
+#'   both DataFrames up to the join in parallel.
+#' @param ... Ignored.
+#'
 #' @return LazyFrame
 #' @examples
 #' # inner join by default
@@ -1008,19 +1098,33 @@ LazyFrame_group_by = function(..., maintain_order = pl$options$maintain_order) {
 #' df1 = pl$LazyFrame(x = letters[1:3])
 #' df2 = pl$LazyFrame(y = 1:4)
 #' df1$join(other = df2, how = "cross")
+#'
+#' # use "validate" to ensure join keys are not duplicated
+#' df1 = pl$LazyFrame(x = letters[1:5], y = 1:5)
+#' df2 = pl$LazyFrame(x = c("a", letters[1:4]), y2 = 6:10)
+#'
+#' # this throws an error because there are two keys in df2 that match the key
+#' # in df1
+#' tryCatch(
+#'   df1$join(df2, on = "x", validate = "1:1")$collect(),
+#'   error = function(e) print(e)
+#' )
 LazyFrame_join = function(
-    other, # : LazyFrame or DataFrame,
-    left_on = NULL, # : str | pli.RPolarsExpr | Sequence[str | pli.RPolarsExpr] | None = None,
-    right_on = NULL, # : str | pli.RPolarsExpr | Sequence[str | pli.RPolarsExpr] | None = None,
-    on = NULL, # : str | pli.RPolarsExpr | Sequence[str | pli.RPolarsExpr] | None = None,
-    how = c("inner", "left", "outer", "semi", "anti", "cross"),
+    other,
+    on = NULL,
+    how = c("inner", "left", "outer", "semi", "anti", "cross", "outer_coalesce"),
+    ...,
+    left_on = NULL,
+    right_on = NULL,
     suffix = "_right",
+    validate = "m:m",
+    join_nulls = FALSE,
     allow_parallel = TRUE,
     force_parallel = FALSE) {
   uw = \(res) unwrap(res, "in $join():")
 
-  if (inherits(other, "RPolarsDataFrame")) {
-    other = other$lazy()
+  if (!is_polars_lf(other)) {
+    Err_plain("`other` must be a LazyFrame.") |> uw()
   }
 
   if (!is.null(on)) {
@@ -1029,15 +1133,15 @@ LazyFrame_join = function(
     rexprs_left = as.list(left_on)
     rexprs_right = as.list(right_on)
   } else if (how != "cross") {
-    Err_plain("must specify `on` OR (  `left_on` AND `right_on` ) ") |> uw()
+    Err_plain("must specify either `on`, or `left_on` and `right_on`.") |> uw()
   } else {
     rexprs_left = as.list(self$columns)
     rexprs_right = as.list(other$columns)
   }
 
   .pr$LazyFrame$join(
-    self, other, rexprs_left, rexprs_right,
-    how, suffix, allow_parallel, force_parallel
+    self, other, rexprs_left, rexprs_right, how, validate, join_nulls, suffix,
+    allow_parallel, force_parallel
   ) |>
     uw()
 }
@@ -1052,6 +1156,7 @@ LazyFrame_join = function(
 #' either of length 1 or a logical vector of the same length as the number of
 #' Expr(s) specified in `by` and `...`.
 #' @param nulls_last Boolean. Place `NULL`s at the end? Default is `FALSE`.
+#' @inheritParams LazyFrame_group_by
 #' @inheritParams DataFrame_unique
 #' @return LazyFrame
 #' @keywords  LazyFrame
@@ -1505,7 +1610,7 @@ LazyFrame_profile = function(
 #' `"name"` is implicitly converted to `pl$col("name")`.
 #'
 #' @details
-#' Only columns of DataType `List` or `Utf8` can be exploded.
+#' Only columns of DataType `List` or `String` can be exploded.
 #'
 #' Named expressions like `$explode(a = pl$col("b"))` will not implicitly trigger
 #' `$alias("a")` here, due to only variant `Expr::Column` is supported in
@@ -1615,4 +1720,158 @@ LazyFrame_unnest = function(names = NULL) {
 LazyFrame_with_context = function(other) {
   .pr$LazyFrame$with_context(self, other) |>
     unwrap("in with_context():")
+}
+
+
+#' Create rolling groups based on a date/time or integer column
+#'
+#' @inherit Expr_rolling description details params
+#' @param index_column Column used to group based on the time window. Often of
+#' type Date/Datetime. This column must be sorted in ascending order (or, if `by`
+#' is specified, then it must be sorted in ascending order within each group). In
+#' case of a rolling group by on indices, dtype needs to be either Int32 or Int64.
+#' Note that Int32 gets temporarily cast to Int64, so if performance matters use
+#' an Int64 column.
+#' @param by Also group by this column/these columns.
+#'
+#' @return A [LazyGroupBy][LazyGroupBy_class] object
+#'
+#' @examples
+#' df = pl$LazyFrame(
+#'   dt = c("2020-01-01", "2020-01-01", "2020-01-01", "2020-01-02", "2020-01-03", "2020-01-08"),
+#'   a = c(3, 7, 5, 9, 2, 1)
+#' )$with_columns(
+#'   pl$col("dt")$str$strptime(pl$Date, format = NULL)$set_sorted()
+#' )
+#'
+#' df$collect()
+#'
+#' df$rolling(index_column = "dt", period = "2d")$agg(
+#'   pl$col("a"),
+#'   pl$sum("a")$alias("sum_a"),
+#'   pl$min("a")$alias("min_a"),
+#'   pl$max("a")$alias("max_a")
+#' )$collect()
+LazyFrame_rolling = function(
+    index_column, ..., period, offset = NULL, closed = "right", by = NULL, check_sorted = TRUE) {
+  if (is.null(offset)) {
+    offset = paste0("-", period)
+  }
+  .pr$LazyFrame$rolling(
+    self, index_column, period, offset, closed,
+    wrap_elist_result(by, str_to_lit = FALSE), check_sorted
+  ) |>
+    unwrap("in $rolling():")
+}
+
+
+#' Group based on a date/time or integer column
+#'
+#' @inherit LazyFrame_rolling description details params
+#'
+#' @param every Interval of the window.
+#' @param include_boundaries Add two columns `"_lower_boundary"` and
+#' `"_upper_boundary"` columns that show the boundaries of the window. This will
+#' impact performance because it’s harder to parallelize.
+#' @param label Define which label to use for the window:
+#' * `"left"`: lower boundary of the window
+#' * `"right"`: upper boundary of the window
+#' * `"datapoint"`: the first value of the index column in the given window. If
+#' you don’t need the label to be at one of the boundaries, choose this option
+#' for maximum performance.
+#' @param start_by The strategy to determine the start of the first window by:
+#' * `"window"`: start by taking the earliest timestamp, truncating it with `every`,
+#'   and then adding `offset`. Note that weekly windows start on Monday.
+#' * `"datapoint"`: start from the first encountered data point.
+#' * a day of the week (only takes effect if `every` contains `"w"`): `"monday"`
+#'   starts the window on the Monday before the first data point, etc.
+#'
+#' @return A [LazyGroupBy][LazyGroupBy_class] object
+#'
+#' @examples
+#' lf = pl$LazyFrame(
+#'   time = pl$date_range(
+#'     start = strptime("2021-12-16 00:00:00", format = "%Y-%m-%d %H:%M:%S", tz = "UTC"),
+#'     end = strptime("2021-12-16 03:00:00", format = "%Y-%m-%d %H:%M:%S", tz = "UTC"),
+#'     interval = "30m",
+#'     eager = TRUE,
+#'   ),
+#'   n = 0:6
+#' )
+#' lf$collect()
+#'
+#' # get the sum in the following hour relative to the "time" column
+#' lf$group_by_dynamic("time", every = "1h")$agg(
+#'   vals = pl$col("n"),
+#'   sum = pl$col("n")$sum()
+#' )$collect()
+#'
+#' # using "include_boundaries = TRUE" is helpful to see the period considered
+#' lf$group_by_dynamic("time", every = "1h", include_boundaries = TRUE)$agg(
+#'   vals = pl$col("n")
+#' )$collect()
+#'
+#' # in the example above, the values didn't include the one *exactly* 1h after
+#' # the start because "closed = 'left'" by default.
+#' # Changing it to "right" includes values that are exactly 1h after. Note that
+#' # the value at 00:00:00 now becomes included in the interval [23:00:00 - 00:00:00],
+#' # even if this interval wasn't there originally
+#' lf$group_by_dynamic("time", every = "1h", closed = "right")$agg(
+#'   vals = pl$col("n")
+#' )$collect()
+#' # To keep both boundaries, we use "closed = 'both'". Some values now belong to
+#' # several groups:
+#' lf$group_by_dynamic("time", every = "1h", closed = "both")$agg(
+#'   vals = pl$col("n")
+#' )$collect()
+#'
+#' # Dynamic group bys can also be combined with grouping on normal keys
+#' lf = lf$with_columns(groups = pl$Series(c("a", "a", "a", "b", "b", "a", "a")))
+#' lf$collect()
+#'
+#' lf$group_by_dynamic(
+#'   "time",
+#'   every = "1h",
+#'   closed = "both",
+#'   by = "groups",
+#'   include_boundaries = TRUE
+#' )$agg(pl$col("n"))$collect()
+#'
+#' # We can also create a dynamic group by based on an index column
+#' lf = pl$LazyFrame(
+#'   idx = 0:5,
+#'   A = c("A", "A", "B", "B", "B", "C")
+#' )$with_columns(pl$col("idx")$set_sorted())
+#' lf$collect()
+#'
+#' lf$group_by_dynamic(
+#'   "idx",
+#'   every = "2i",
+#'   period = "3i",
+#'   include_boundaries = TRUE,
+#'   closed = "right"
+#' )$agg(A_agg_list = pl$col("A"))$collect()
+LazyFrame_group_by_dynamic = function(
+    index_column,
+    ...,
+    every,
+    period = NULL,
+    offset = NULL,
+    include_boundaries = FALSE,
+    closed = "left",
+    label = "left",
+    by = NULL,
+    start_by = "window",
+    check_sorted = TRUE) {
+  if (is.null(offset)) {
+    offset = paste0("-", every)
+  }
+  if (is.null(period)) {
+    period = every
+  }
+  .pr$LazyFrame$group_by_dynamic(
+    self, index_column, every, period, offset, label, include_boundaries, closed,
+    wrap_elist_result(by, str_to_lit = FALSE), start_by, check_sorted
+  ) |>
+    unwrap("in $group_by_dynamic():")
 }

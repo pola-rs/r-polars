@@ -4,7 +4,7 @@
 \alias{Expr_sinh}
 \title{Compute hyperbolic sine}
 \usage{
-Expr_sinh
+Expr_sinh()
 }
 \value{
 Expr
@@ -16,4 +16,3 @@ Compute hyperbolic sine
 pl$DataFrame(a = c(-1, asinh(0.5), 0, 1, NA_real_))$
   with_columns(sinh = pl$col("a")$sinh())
 }
-\keyword{datasets}

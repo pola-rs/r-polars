@@ -1,29 +1,24 @@
 test_that("from r to series and reverse", {
+  skip_if_not_installed("bit64")
   # R to series
-  testthat::skip_if_not_installed("bit64")
   values = c(-1, 0, 1, NA, 2^61, -2^61)
   s_act = pl$Series(bit64::as.integer64(values))
   s_ref = pl$lit(values)$cast(pl$Int64)$to_series()
   expect_true(all((s_act == s_ref)$to_r(), na.rm = TRUE))
-  # sereis to R
-  r_act = s_act$to_r()
-  r_ref = bit64::as.integer64(values)
-  expect_identical(
-    r_act, r_ref
-  )
+  # series to R
+  expect_identical(s_act$to_r(), values)
 
   # lit scalar
-  expect_identical(pl$lit(bit64::as.integer64(5))$to_r(), bit64::as.integer64(5))
-  expect_identical(pl$lit(bit64::as.integer64(NA))$to_r(), bit64::as.integer64(NA))
+  expect_identical(pl$lit(5)$to_r(), 5)
+  expect_identical(pl$lit(NA)$to_r(), NA)
 
   # lit series
-  expect_identical(pl$lit(bit64::as.integer64(c(NA, 5)))$to_r(), bit64::as.integer64(c(NA, 5)))
+  expect_identical(pl$lit(c(NA, 5))$to_r(), c(NA, 5))
 })
 
 
 test_that("robj_to! from bit64", {
-  testthat::skip_if_not_installed("bit64")
-
+  skip_if_not_installed("bit64")
   expect_identical(
     unwrap(test_robj_to_f64(bit64::as.integer64(1))),
     "1.0"

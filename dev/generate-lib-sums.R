@@ -31,10 +31,13 @@ desc::desc_set(paste0("Config/", package_name, "/LibVersion"), current_lib_versi
 
 if (identical(current_lib_version, latest_released_lib_version)) {
   message("Current lib version is available via the binary release.")
-  write_bin_lib_data(
-    lib_data_file_path,
-    glue::glue("{base_url}{tag_prefix }{latest_released_lib_version}/sha256sums.txt"),
-    glue::glue("{base_url}{tag_prefix }{latest_released_lib_version}/")
+  try(
+    write_bin_lib_data(
+      lib_data_file_path,
+      glue::glue("{base_url}{tag_prefix }{latest_released_lib_version}/sha256sums.txt"),
+      glue::glue("{base_url}{tag_prefix }{latest_released_lib_version}/")
+    ),
+    silent = TRUE
   )
 } else {
   message("Current lib version is not available via binary releases.")

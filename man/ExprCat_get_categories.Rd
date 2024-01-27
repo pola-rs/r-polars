@@ -3,6 +3,9 @@
 \name{ExprCat_get_categories}
 \alias{ExprCat_get_categories}
 \title{Get the categories stored in this data type}
+\usage{
+ExprCat_get_categories()
+}
 \value{
 A polars DataFrame with the categories for each categorical Series.
 }

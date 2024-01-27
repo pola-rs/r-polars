@@ -4,7 +4,7 @@
 #' @return Expr
 #' @seealso
 #' [`$prefix()`][ExprName_prefix] to add a prefix
-#' @name ExprName_suffix
+#'
 #' @examples
 #' dat = pl$DataFrame(mtcars)
 #'
@@ -24,7 +24,7 @@ ExprName_suffix = function(suffix) {
 #' @return Expr
 #' @seealso
 #' [`$suffix()`][ExprName_suffix] to add a suffix
-#' @name ExprName_prefix
+#'
 #' @examples
 #' dat = pl$DataFrame(mtcars)
 #'
@@ -43,7 +43,7 @@ ExprName_prefix = function(prefix) {
 #' Keep the original root name of the expression.
 #'
 #' @return Expr
-#' @name ExprName_keep
+#'
 #' @examples
 #' pl$DataFrame(list(alice = 1:3))$select(pl$col("alice")$alias("bob")$name$keep())
 ExprName_keep = function() {
@@ -59,14 +59,14 @@ ExprName_keep = function() {
 #'
 #' @param fun an R function which takes a string as input and return a string
 #' @return Expr
-#' @name ExprName_map
+#'
 #' @examples
 #' pl$DataFrame(list(alice = 1:3))$select(
 #'   pl$col("alice")$alias("joe_is_not_root")$name$map(\(x) paste0(x, "_and_bob"))
 #' )
 ExprName_map = function(fun) {
   if (
-    !polars_optenv$no_messages &&
+    !polars_options()$no_messages &&
       !exists(".warn_map_alias", envir = runtime_state)
   ) {
     assign(".warn_map_alias", 1L, envir = runtime_state)
@@ -87,7 +87,7 @@ ExprName_map = function(fun) {
 #' expression in a chain.
 #'
 #' @return Expr
-#' @name ExprName_to_lowercase
+#'
 #' @examples
 #' pl$DataFrame(Alice = 1:3)$with_columns(pl$col("Alice")$name$to_lowercase())
 ExprName_to_lowercase = function() {
@@ -100,7 +100,7 @@ ExprName_to_lowercase = function() {
 #' @inherit ExprName_to_lowercase description
 #'
 #' @return Expr
-#' @name ExprName_to_uppercase
+#'
 #' @examples
 #' pl$DataFrame(Alice = 1:3)$with_columns(pl$col("Alice")$name$to_uppercase())
 ExprName_to_uppercase = function() {

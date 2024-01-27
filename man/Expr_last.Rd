@@ -4,7 +4,7 @@
 \alias{Expr_last}
 \title{Get the last value}
 \usage{
-Expr_last
+Expr_last()
 }
 \value{
 Expr
@@ -15,4 +15,3 @@ Get the last value
 \examples{
 pl$DataFrame(x = 3:1)$with_columns(last = pl$col("x")$last())
 }
-\keyword{datasets}

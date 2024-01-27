@@ -9,15 +9,15 @@
 #' Additional details...
 #'
 #' @return err as string
-#' @examples
-#' #
 when_calling = function(err, call) {
-  if (polars_optenv$do_not_repeat_call || is.null(call)) {
+  if (polars_options()$do_not_repeat_call || is.null(call)) {
     err
   } else {
     UseMethod("when_calling", err)
   }
 }
+
+#' @exportS3Method
 when_calling.default = function(err, call) {
   stop("internal error: an error-type was not fully implemented")
 }
@@ -32,8 +32,6 @@ call_to_string = function(call) paste(capture.output(print(call)), collapse = "\
 #' @param context calling context
 #' @noRd
 #' @return err as string
-#' @examples
-#' #
 where_in = function(err, context) {
   if (is.null(context)) {
     return(err)
@@ -48,6 +46,8 @@ where_in = function(err, context) {
   }
   UseMethod("where_in", err)
 }
+
+#' @exportS3Method
 where_in.default = function(err, context) {
   stop("internal error: an error-type was not fully implemented")
 }
@@ -62,6 +62,8 @@ where_in.default = function(err, context) {
 to_condition = function(err) {
   UseMethod("to_condition", err)
 }
+
+#' @exportS3Method
 to_condition.default = function(err) {
   errorCondition(
     paste(capture.output(print(err)), collapse = "\n"),
@@ -70,8 +72,6 @@ to_condition.default = function(err) {
     call = NULL
   )
 }
-
-
 
 #' Internal generic method to add plain text to error message
 #' @param err some error type object
@@ -84,6 +84,8 @@ plain = function(err, msg) {
   }
   UseMethod("plain", err)
 }
+
+#' @exportS3Method
 plain.default = function(err, msg) {
   paste0(msg, ": ", err)
 }
@@ -101,6 +103,8 @@ plain.default = function(err, msg) {
 upgrade_err = function(err) {
   UseMethod("upgrade_err", err)
 }
+
+#' @exportS3Method
 upgrade_err.default = function(err) {
   err # no upgrade found pass as is
 }

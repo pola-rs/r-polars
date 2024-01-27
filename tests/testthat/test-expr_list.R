@@ -1,6 +1,6 @@
-test_that("list$lengths", {
+test_that("list$len", {
   df = pl$DataFrame(list_of_strs = pl$Series(list(c("a", "b"), "c", character(), list(), NULL)))
-  l = df$with_columns(pl$col("list_of_strs")$list$lengths()$alias("list_of_strs_lengths"))$to_list()
+  l = df$with_columns(pl$col("list_of_strs")$list$len()$alias("list_of_strs_lengths"))$to_list()
 
   expect_identical(
     l |> lapply(\(x) if (inherits(x, "integer64")) as.numeric(x) else x),
@@ -402,12 +402,12 @@ test_that("to_struct", {
   df = pl$DataFrame(list(a = l))
   act_1 = df$select(pl$col("a")$list$to_struct(
     n_field_strategy = "first_non_null",
-    name_generator = \(idx) paste0("hello_you_", idx)
+    fields = \(idx) paste0("hello_you_", idx)
   ))$to_list()
 
   act_2 = df$select(pl$col("a")$list$to_struct(
     n_field_strategy = "max_width",
-    name_generator = \(idx) paste0("hello_you_", idx)
+    fields = \(idx) paste0("hello_you_", idx)
   ))$to_list()
 
 
@@ -446,3 +446,94 @@ test_that("eval", {
     )
   )
 })
+
+test_that("$list$all() works", {
+  df = pl$DataFrame(
+    list(a = list(c(TRUE, TRUE), c(FALSE, TRUE), c(FALSE, FALSE), NA, c()))
+  )
+  expect_identical(
+    df$select(all = pl$col("a")$list$all())$to_list(),
+    list(all = c(TRUE, FALSE, FALSE, TRUE, TRUE))
+  )
+})
+
+test_that("$list$any() works", {
+  df = pl$DataFrame(
+    list(a = list(c(TRUE, TRUE), c(FALSE, TRUE), c(FALSE, FALSE), NA, c()))
+  )
+  expect_identical(
+    df$select(any = pl$col("a")$list$any())$to_list(),
+    list(any = c(TRUE, TRUE, FALSE, FALSE, FALSE))
+  )
+})
+
+test_that("$list$set_*() work with integers", {
+  df = pl$DataFrame(
+    a = list(1:3, NA_integer_, c(NA_integer_, 3L), 5:7),
+    b = list(2:4, 3L, c(3L, 4L, NA_integer_), c(6L, 8L)),
+    schema = list(a = pl$List(pl$Int16), b = pl$List(pl$Int32))
+  )
+
+  expect_identical(
+    df$select(pl$col("a")$list$set_union("b"))$to_list(),
+    list(a = list(1:4, c(NA, 3L), c(NA, 3L, 4L), 5:8))
+  )
+  expect_identical(
+    df$select(pl$col("a")$list$set_intersection("b"))$to_list(),
+    list(a = list(2:3, integer(0), c(NA, 3L), 6L))
+  )
+  expect_identical(
+    df$select(pl$col("a")$list$set_difference("b"))$to_list(),
+    list(a = list(1L, NA_integer_, integer(0), c(5L, 7L)))
+  )
+  expect_identical(
+    df$select(pl$col("a")$list$set_symmetric_difference("b"))$to_list(),
+    list(a = list(c(1L, 4L), c(NA, 3L), 4L, c(5L, 7L, 8L)))
+  )
+})
+
+test_that("$list$set_*() work with strings", {
+  df = pl$DataFrame(
+    a = list(letters[1:3], NA_character_, c(NA_character_, letters[3]), letters[5:7]),
+    b = list(letters[2:4], letters[3], c(letters[3:4], NA_character_), letters[c(6, 8)])
+  )
+
+  expect_identical(
+    df$select(pl$col("a")$list$set_union("b"))$to_list(),
+    list(a = list(letters[1:4], c(NA, "c"), c(NA, "c", "d"), letters[5:8]))
+  )
+  expect_identical(
+    df$select(pl$col("a")$list$set_intersection("b"))$to_list(),
+    list(a = list(c("b", "c"), character(0), c(NA, "c"), "f"))
+  )
+  expect_identical(
+    df$select(pl$col("a")$list$set_difference("b"))$to_list(),
+    list(a = list("a", NA_character_, character(0), c("e", "g")))
+  )
+  expect_identical(
+    df$select(pl$col("a")$list$set_symmetric_difference("b"))$to_list(),
+    list(a = list(c("a", "d"), c(NA, "c"), "d", c("e", "g", "h")))
+  )
+})
+
+# TODO: currently (rs-0.36.2), this panicks, which leads to other tests failing
+# due to panicks
+# Uncomment when resolved upstream: https://github.com/pola-rs/polars/issues/13840
+# test_that("$list$set_*() errors if no common supertype", {
+#   df = pl$DataFrame(
+#     a = list(c(1, 2, 3), NA_real_, c(NA_real_, 3), c(5, 6, 7)),
+#     b = list(2:4, 3L, c(3L, 4L, NA_integer_), c(6L, 8L))
+#   )
+#   expect_error(
+#     df$select(pl$col("a")$list$set_union("b"))
+#   )
+#   expect_error(
+#     df$select(pl$col("a")$list$set_intersection("b"))
+#   )
+#   expect_error(
+#     df$select(pl$col("a")$list$set_difference("b"))
+#   )
+#   expect_error(
+#     df$select(pl$col("a")$list$set_symmetric_difference("b"))
+#   )
+# })

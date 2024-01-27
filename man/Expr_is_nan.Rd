@@ -5,7 +5,7 @@
 \alias{is_nan}
 \title{Check if elements are NaN}
 \usage{
-Expr_is_nan
+Expr_is_nan()
 }
 \value{
 Expr
@@ -17,4 +17,3 @@ Returns a boolean Series indicating which values are NaN.
 pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$
   with_columns(nan = pl$col("alice")$is_nan())
 }
-\keyword{datasets}

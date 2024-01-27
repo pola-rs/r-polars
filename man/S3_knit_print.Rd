@@ -24,8 +24,8 @@ and the document's \code{df_print} option is not \code{"default"} or \code{"tibb
 
 Or, the output format can be enforced with R's \code{options} function as follows:
 \itemize{
-\item \code{options(polars.df_print = "default")} for the default print method.
-\item \code{options(polars.df_print = "html")} for the HTML table.
+\item \code{options(polars.df_knitr_print  = "default")} for the default print method.
+\item \code{options(polars.df_knitr_print  = "html")} for the HTML table.
 }
 }
 \keyword{DataFrame}

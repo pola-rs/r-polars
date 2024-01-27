@@ -4,6 +4,9 @@
 \alias{ExprMeta_pop}
 \alias{expr_meta_pop}
 \title{Pop}
+\usage{
+ExprMeta_pop()
+}
 \value{
 R list of Expr(s) usually one, only multiple if top Expr took more Expr as input.
 }

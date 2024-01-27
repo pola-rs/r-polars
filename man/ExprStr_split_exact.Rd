@@ -3,6 +3,9 @@
 \name{ExprStr_split_exact}
 \alias{ExprStr_split_exact}
 \title{Split the string by a substring using \code{n} splits}
+\usage{
+ExprStr_split_exact(by, n, inclusive = FALSE)
+}
 \arguments{
 \item{by}{Substring to split by.}
 
@@ -11,7 +14,7 @@
 \item{inclusive}{If \code{TRUE}, include the split character/string in the results.}
 }
 \value{
-Struct where each of n+1 fields is of Utf8 type
+Struct where each of n+1 fields is of String type
 }
 \description{
 This results in a struct of \code{n+1} fields. If it cannot make \code{n}
@@ -19,6 +22,9 @@ splits, the remaining field elements will be null.
 }
 \examples{
 df = pl$DataFrame(s = c("a_1", NA, "c", "d_4"))
-df$select(pl$col("s")$str$split_exact(by = "_", 1))
+df$with_columns(
+  split = pl$col("s")$str$split_exact(by = "_", 1),
+  split_inclusive = pl$col("s")$str$split_exact(by = "_", 1, inclusive = TRUE)
+)
 }
 \keyword{ExprStr}

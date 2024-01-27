@@ -4,7 +4,7 @@
 \alias{Expr_null_count}
 \title{Count missing values}
 \usage{
-Expr_null_count
+Expr_null_count()
 }
 \value{
 Expr
@@ -16,4 +16,3 @@ Count missing values
 pl$DataFrame(x = c(NA, "a", NA, "b"))$
   with_columns(n_missing = pl$col("x")$null_count())
 }
-\keyword{datasets}

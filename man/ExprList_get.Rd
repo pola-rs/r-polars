@@ -2,35 +2,34 @@
 % Please edit documentation in R/expr__list.R
 \name{ExprList_get}
 \alias{ExprList_get}
-\alias{Expr_list_get}
-\alias{[.RPolarsExprListNameSpace}
-\title{Get list}
-\format{
-function
-}
+\alias{list_get}
+\title{Get the value by index in a list}
 \usage{
-\method{[}{RPolarsExprListNameSpace}(x, index)
+ExprList_get(index)
 }
 \arguments{
-\item{x}{RPolarsExprListNameSpace}
-
-\item{index}{value to get}
+\item{index}{An Expr or something coercible to an Expr, that must return a
+single index. Values are 0-indexed (so index 0 would return the first item
+of every sublist) and negative values start from the end (index \code{-1}
+returns the last item). If the index is out of bounds, it will return a
+\code{null}. Strings are parsed as column names.}
 }
 \value{
 Expr
 }
 \description{
-Get the value by index in the sublists.
-}
-\details{
-\verb{[.RPolarsExprListNameSpace} used as e.g. \code{pl$col("a")$arr[0]} same as \code{pl$col("a")$get(0)}
+This allows to extract one value per list only. To extract several values by
+index, use \code{\link[=ExprList_gather]{$list$gather()}}.
 }
 \examples{
-df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) # NULL or integer() or list()
-df$select(pl$col("a")$list$get(0))
-df$select(pl$col("a")$list$get(c(2, 0, -1)))
-df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) # NULL or integer() or list()
-df$select(pl$col("a")$list[0])
-df$select(pl$col("a")$list[c(2, 0, -1)])
+df = pl$DataFrame(
+  values = list(c(2, 2, NA), c(1, 2, 3), NA_real_, NULL),
+  idx = c(1, 2, NA, 3)
+)
+df$with_columns(
+  using_expr = pl$col("values")$list$get("idx"),
+  val_0 = pl$col("values")$list$get(0),
+  val_minus_1 = pl$col("values")$list$get(-1),
+  val_oob = pl$col("values")$list$get(10)
+)
 }
-\keyword{ExprList}

@@ -3,6 +3,9 @@
 \name{ExprStr_len_bytes}
 \alias{ExprStr_len_bytes}
 \title{Get the number of bytes in strings}
+\usage{
+ExprStr_len_bytes()
+}
 \value{
 Expr of u32
 }

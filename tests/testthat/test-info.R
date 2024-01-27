@@ -3,11 +3,11 @@ patrick::with_parameters_test_that("polars_info() features are logical",
     expect_type(feature, "logical")
     expect_length(feature, 1)
   },
-  feature = pl$polars_info()$features
+  feature = polars_info()$features
 )
 
-test_that("print pl$polars_info()", {
-  info = pl$polars_info()
+test_that("print polars_info()", {
+  info = polars_info()
 
   # Ensure static version for snapshot test
   info$version = package_version("999.999.999")

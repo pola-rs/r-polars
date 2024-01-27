@@ -39,12 +39,18 @@ test_that("Test sinking data to parquet file", {
       collect()$
       to_series()
   }
-  pl$set_options(rpool_cap = 4)
-  rdf_in_bg = pl$LazyFrame()$
-    select(pl$lit(tmpf)$map_batches(f_ipc_to_s, in_background = TRUE))$
-    collect()$
-    unnest()
-  expect_identical(rdf_in_bg$to_data_frame(), rdf)
+
+  skip_if_not_installed("withr")
+  withr::with_options(
+    list(polars.rpool_cap = 4),
+    {
+      rdf_in_bg = pl$LazyFrame()$
+        select(pl$lit(tmpf)$map_batches(f_ipc_to_s, in_background = TRUE))$
+        collect()$
+        unnest()
+      expect_identical(rdf_in_bg$to_data_frame(), rdf)
+    }
+  )
 })
 
 
@@ -221,4 +227,13 @@ test_that("sink_csv: float_precision works", {
     pl$read_csv(temp_out)$sort("x")$to_data_frame(),
     data.frame(x = c(1.234, 5.600))
   )
+})
+
+
+# sink_ndjson ---------------------------------------------------------
+
+test_that("sink_ndjson works", {
+  temp_out = tempfile(fileext = ".json")
+  pl$LazyFrame(mtcars)$head(15)$select(pl$col("drat", "mpg"))$sink_ndjson(temp_out)
+  expect_snapshot_file(temp_out)
 })

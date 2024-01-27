@@ -278,15 +278,44 @@ fn reduce(lambda: Robj, exprs: Robj) -> RResult<RPolarsExpr> {
     Ok(pl::reduce_exprs(f, robj_to!(Vec, PLExpr, exprs)?).into())
 }
 
+#[extendr]
+pub fn duration(
+    weeks: Robj,
+    days: Robj,
+    hours: Robj,
+    minutes: Robj,
+    seconds: Robj,
+    milliseconds: Robj,
+    microseconds: Robj,
+    nanoseconds: Robj,
+    time_unit: Robj,
+) -> RResult<RPolarsExpr> {
+    let args = pl::DurationArgs {
+        weeks: robj_to!(Option, PLExprCol, weeks)?.unwrap_or(polars::lazy::dsl::lit(0)),
+        days: robj_to!(Option, PLExprCol, days)?.unwrap_or(polars::lazy::dsl::lit(0)),
+        hours: robj_to!(Option, PLExprCol, hours)?.unwrap_or(polars::lazy::dsl::lit(0)),
+        minutes: robj_to!(Option, PLExprCol, minutes)?.unwrap_or(polars::lazy::dsl::lit(0)),
+        seconds: robj_to!(Option, PLExprCol, seconds)?.unwrap_or(polars::lazy::dsl::lit(0)),
+        milliseconds: robj_to!(Option, PLExprCol, milliseconds)?
+            .unwrap_or(polars::lazy::dsl::lit(0)),
+        microseconds: robj_to!(Option, PLExprCol, microseconds)?
+            .unwrap_or(polars::lazy::dsl::lit(0)),
+        nanoseconds: robj_to!(Option, PLExprCol, nanoseconds)?.unwrap_or(polars::lazy::dsl::lit(0)),
+        time_unit: robj_to!(timeunit, time_unit)?,
+    };
+    Ok(polars::lazy::dsl::duration(args).into())
+}
+
 extendr_module! {
     mod rlib;
 
     fn all_horizontal;
     fn any_horizontal;
+    fn coalesce_exprs;
+    fn duration;
     fn min_horizontal;
     fn max_horizontal;
     fn sum_horizontal;
-    fn coalesce_exprs;
 
     fn concat_list;
     fn concat_str;

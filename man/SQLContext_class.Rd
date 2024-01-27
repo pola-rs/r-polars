@@ -7,11 +7,11 @@
 Run SQL queries against DataFrame/LazyFrame data.
 }
 \details{
-Currently, only available when built with the \code{full} feature.
-See \code{\link[=polars_info]{polars_info()}} for more information.
+Currently, only available when built with the "sql" feature.
+See \link{polars_info} for more information.
 }
 \examples{
-\dontshow{if (pl$polars_info()$features$sql) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (polars_info()$features$sql) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 lf = pl$LazyFrame(a = 1:3, b = c("x", NA, "z"))
 res = pl$SQLContext(frame = lf)$execute(
   "SELECT b, a*2 AS two_a FROM frame WHERE b IS NOT NULL"
