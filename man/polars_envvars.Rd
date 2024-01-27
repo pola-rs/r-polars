@@ -74,6 +74,10 @@ is used. Enabling this setting may help avoid functionality that is still
 evolving, potentially reducing maintenance burden from API changes and bugs.
 Can be \code{"0"} or \code{"1"}.
 }
+
+The following configuration options are present in the Python API but
+currently cannot be changed in R: decimal separator, thousands separator,
+float precision, float formatting, trimming decimal zeros.
 }
 \examples{
 polars_envvars()

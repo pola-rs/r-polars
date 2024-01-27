@@ -5,8 +5,7 @@
     Output
       Environment variables:
       ========                                                                     
-      POLARS_ACTIVATE_DECIMAL                                              
-      POLARS_AUTO_STRUCTIFY                                                
+      POLARS_AUTO_STRUCTIFY                                               0
       POLARS_FMT_MAX_COLS                                                 5
       POLARS_FMT_MAX_ROWS                                                 8
       POLARS_FMT_NUM_DECIMAL                                               

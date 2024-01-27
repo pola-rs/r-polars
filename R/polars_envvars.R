@@ -58,6 +58,11 @@
 #'    evolving, potentially reducing maintenance burden from API changes and bugs.
 #'    Can be `"0"` or `"1"`.
 #'
+# See https://github.com/pola-rs/polars/blob/6913b16c255f38c8609ea11f1b2edab6482cedc5/py-polars/polars/config.py#L73
+#' The following configuration options are present in the Python API but
+#' currently cannot be changed in R: decimal separator, thousands separator,
+#' float precision, float formatting, trimming decimal zeros.
+#'
 #' @return `polars_envvars()` returns a named list where the names are the names
 #'   of environment variables and values are their values.
 #'
@@ -75,7 +80,6 @@
 #'
 polars_envvars = function() {
   envvars = rbind(
-    c("POLARS_ACTIVATE_DECIMAL", ""),
     c("POLARS_AUTO_STRUCTIFY", ""),
     c("POLARS_FMT_MAX_COLS", "5"),
     c("POLARS_FMT_MAX_ROWS", "8"),
