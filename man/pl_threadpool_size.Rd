@@ -12,9 +12,23 @@ The number of threads
 \description{
 The threadpool size can be overridden by setting the
 \code{POLARS_MAX_THREADS} environment variable before process start.
-(The thread pool is not behind a lock, so it cannot be modified once set).
+It cannot be modified once \code{polars} is loaded.
 It is strongly recommended not to override this value as it will be
 set automatically by the engine.
+}
+\details{
+For compatibility with CRAN, the threadpool size is set to 2 by default.
+To disable this behavior and let the engine determine the threadpool size,
+one of the following ways can be used:
+\itemize{
+\item Enable the \code{disable_limit_max_threads} feature of the library.
+This can be done by setting the feature flag when installing the package.
+See the installation vignette (\code{vignette("install", "polars")})
+for details.
+\item Set the \code{polars.limit_max_threads} option to \code{FALSE} with
+the \code{\link[=options]{options()}} function. Same as setting the \code{POLARS_MAX_THREADS} environment
+variable, this option must be set before loading the package.
+}
 }
 \examples{
 pl$threadpool_size()
