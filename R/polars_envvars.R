@@ -47,7 +47,7 @@
 #'   UTF8-styled tables (only applies to UTF8 formats).
 #' * `POLARS_MAX_THREADS` (`<variable>`): Maximum number of threads used to
 #'   initialize the thread pool. The thread pool is locked once polars is loaded,
-#'   so setting this envvar must be set before loading the package.
+#'   so this envvar must be set before loading the package.
 #' * `POLARS_STREAMING_CHUNK_SIZE` (`<variable>`): Chunk size used in the
 #'   streaming engine. Integer larger than 1. By default, the chunk size is
 #'   determined by the schema and size of the thread pool. For some datasets
