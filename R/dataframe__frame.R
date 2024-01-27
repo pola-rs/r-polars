@@ -394,20 +394,26 @@ DataFrame_drop_nulls = function(subset = NULL) {
 #' @return DataFrame
 #' @examples
 #' df = pl$DataFrame(
-#'   x = sample(10, 100, rep = TRUE),
-#'   y = sample(10, 100, rep = TRUE)
+#'   x = c(1:3, 1:3, 3:1, 1L),
+#'   y = c(1:3, 1:3, 1:3, 1L)
 #' )
 #' df$height
 #'
 #' df$unique()$height
-#' df$unique(subset = "x")$height
 #'
-#' df$unique(keep = "last")
+#' # subset to define unique, keep only last or first
+#' df$unique(subset = "x", keep = c("last"))
+#' df$unique(subset = "x", keep = c("first"))
 #'
 #' # only keep unique rows
 #' df$unique(keep = "none")
-DataFrame_unique = function(subset = NULL, keep = "first", maintain_order = FALSE) {
-  self$lazy()$unique(subset, keep, maintain_order)$collect()
+DataFrame_unique = function(
+    subset = NULL,
+    keep = c("first", "last", "none"),
+    maintain_order = FALSE) {
+  self$lazy()$unique(subset, keep, maintain_order) |>
+    .pr$LazyFrame$collect() |>
+    unwrap("in $unique():")
 }
 
 
@@ -1309,7 +1315,7 @@ DataFrame_join_asof = function(
     by_left = NULL,
     by_right = NULL,
     by = NULL,
-    strategy = "backward",
+    strategy = c("backward", "forward", "nearest"),
     suffix = "_right",
     tolerance = NULL,
     allow_parallel = TRUE,

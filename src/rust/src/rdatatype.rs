@@ -1,11 +1,12 @@
 use crate::robj_to;
+
+use crate::utils::robj_to_string;
 use crate::utils::wrappers::Wrap;
-use crate::utils::{r_result_list, robj_to_string};
 use extendr_api::prelude::*;
 use polars::prelude as pl;
 use polars_core::prelude::QuantileInterpolOptions;
 //expose polars DateType in R
-use crate::rpolarserr::{polars_to_rpolars_err, rerr, RResult, WithRctx};
+use crate::rpolarserr::{polars_to_rpolars_err, rerr, RPolarsErr, RResult, WithRctx};
 use crate::utils::collect_hinted_result;
 use crate::utils::wrappers::null_to_opt;
 use std::result::Result;
@@ -103,33 +104,30 @@ impl RPolarsDataType {
         todo!("object not implemented")
     }
 
-    pub fn new_struct(l: Robj) -> List {
-        let res = {
-            let len = l.len();
-
-            //iterate over R list and collect Fields and place in a Struct-datatype
-            l.as_list()
-                .ok_or_else(|| "argument [l] is not a list".to_string())
-                .map(|l| {
-                    l.into_iter().enumerate().map(|(i, (name, robj))| {
-                        let res: extendr_api::Result<ExternalPtr<RPolarsRField>> = robj.try_into();
-                        res.map_err(|err| {
-                            format!(
-                                "list element [[{}]] named {} is not a Field: {:?}",
-                                i + 1,
-                                name,
-                                err
-                            )
-                        })
-                        .map(|ok| ok.0.clone())
+    pub fn new_struct(l: Robj) -> RResult<RPolarsDataType> {
+        let len = l.len();
+        //iterate over R list and collect Fields and place in a Struct-datatype
+        l.as_list()
+            .ok_or_else(|| {
+                RPolarsErr::new()
+                    .bad_arg("l".into())
+                    .plain("is not a list".into())
+            })
+            .map(|l| {
+                l.into_iter().enumerate().map(|(i, (name, robj))| {
+                    let res: extendr_api::Result<ExternalPtr<RPolarsRField>> = robj.try_into();
+                    res.map_err(|extendr_err| {
+                        RPolarsErr::from(extendr_err).plain(format!(
+                            "list element [[{}]] named {} is not a Field.",
+                            i + 1,
+                            name,
+                        ))
                     })
+                    .map(|ok| ok.0.clone())
                 })
-                .and_then(|iter| collect_hinted_result(len, iter))
-                .map_err(|err| format!("in pl$Struct: {}", err))
-                .map(|v_field| RPolarsDataType(pl::DataType::Struct(v_field)))
-        };
-
-        r_result_list(res)
+            })
+            .and_then(|iter| collect_hinted_result(len, iter))
+            .map(|v_field| RPolarsDataType(pl::DataType::Struct(v_field)))
     }
 
     pub fn get_all_simple_type_names() -> Vec<String> {
@@ -220,23 +218,16 @@ impl RPolarsDataTypeVector {
         rprintln!("{:#?}", self.0);
     }
 
-    pub fn from_rlist(list: List) -> List {
+    pub fn from_rlist(list: List) -> RResult<RPolarsDataTypeVector> {
         let mut dtv = RPolarsDataTypeVector(Vec::with_capacity(list.len()));
-
-        let result: std::result::Result<(), String> = list.iter().try_for_each(|(name, robj)| {
-            if !robj.inherits("RPolarsDataType") || robj.rtype() != extendr_api::Rtype::ExternalPtr
-            {
-                return Err("Internal error: Object is not a RPolarsDataType".into());
-            }
-            //safety checks class and type before conversion
-            let dt: RPolarsDataType =
-                unsafe { &mut *robj.external_ptr_addr::<RPolarsDataType>() }.clone();
-            let name = extendr_api::Nullable::NotNull(name.to_string());
-            dtv.push(name, &dt);
-            Ok(())
-        });
-
-        r_result_list(result.map(|_| dtv))
+        list.iter().try_for_each(|(name, robj)| {
+            dtv.push(
+                extendr_api::Nullable::NotNull(name.into()),
+                &crate::utils::robj_to_datatype(robj)?,
+            );
+            RResult::Ok(())
+        })?;
+        Ok(dtv)
     }
 }
 
@@ -247,26 +238,25 @@ impl RPolarsDataTypeVector {
     }
 }
 
-pub fn new_asof_strategy(s: &str) -> Result<AsofStrategy, String> {
-    match s {
+pub fn robj_to_asof_strategy(robj: Robj) -> RResult<AsofStrategy> {
+    match robj_to_rchoice(robj)?.as_str() {
         "forward" => Ok(AsofStrategy::Forward),
         "backward" => Ok(AsofStrategy::Backward),
-        _ => Err(format!(
+        s => rerr().bad_val(format!(
             "asof strategy choice: [{}] is not any of 'forward' or 'backward'",
             s
         )),
     }
 }
 
-pub fn new_unique_keep_strategy(s: &str) -> std::result::Result<UniqueKeepStrategy, String> {
-    match s {
+pub fn robj_to_unique_keep_strategy(robj: Robj) -> RResult<UniqueKeepStrategy> {
+    match robj_to_rchoice(robj)?.to_lowercase().as_str() {
         // "any" => Ok(pl::UniqueKeepStrategy::Any),
         "first" => Ok(pl::UniqueKeepStrategy::First),
         "last" => Ok(pl::UniqueKeepStrategy::Last),
         "none" => Ok(pl::UniqueKeepStrategy::None),
-        _ => Err(format!(
-            "keep strategy choice: [{}] is not any of 'any', 'first', 'last', 'none'",
-            s
+        s => rerr().bad_val(format!(
+            "keep strategy choice: [{s}] is not any of 'any', 'first', 'last', 'none'"
         )),
     }
 }
@@ -280,25 +270,24 @@ pub fn new_quantile_interpolation_option(robj: Robj) -> RResult<QuantileInterpol
         "lower" => Ok(Lower),
         "midpoint" => Ok(Midpoint),
         "linear" => Ok(Linear),
-        _ => rerr()
-            .bad_val("interpolation choice is not any of 'nearest', 'higher', 'lower', 'midpoint', 'linear'")
-            .bad_robj(&robj),
+        s => rerr()
+            .bad_val(format!("interpolation choice [{s}] is not any of 'nearest', 'higher', 'lower', 'midpoint', 'linear'"))
+     ,
     }
 }
 
-pub fn new_rank_method(s: &str) -> std::result::Result<pl::RankMethod, String> {
+pub fn robj_to_rank_method(robj: Robj) -> RResult<pl::RankMethod> {
     use pl::RankMethod as RM;
-    let s_low = s.to_lowercase();
-    match s_low.as_str() {
+    match robj_to_rchoice(robj)?.to_lowercase().as_str() {
         "average" => Ok(RM::Average),
         "dense" => Ok(RM::Dense),
         "max" => Ok(RM::Max),
         "min" => Ok(RM::Min),
         "ordinal" => Ok(RM::Ordinal),
         "random" => Ok(RM::Random),
-        _ => Err(format!(
-            "RankMethod choice: [{}] is not any 'average','dense', 'min', 'max', 'ordinal', 'random'",
-            s_low.as_str()
+        s =>  rerr()
+        .bad_val(format!(
+            "RankMethod choice: [{s}] is not any 'average','dense', 'min', 'max', 'ordinal', 'random'"
         )),
     }
 }
