@@ -80,6 +80,8 @@
     -   `pl$set_options()` and `pl$reset_options()` are deprecated and will be
         removed in 0.14.0.
     -   The option `polars.df_print` has been renamed `polars.df_knitr_print`.
+-   New function `polars_envvars()` to print the list of environment variables
+    related to polars (#735). 
 
 ## polars 0.12.2
 
