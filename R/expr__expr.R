@@ -2621,8 +2621,7 @@ Expr_abs = use_extendr_wrapper
 Expr_rank = function(
     method = c("average", "min", "max", "dense", "ordinal", "random"),
     descending = FALSE,
-    seed = NULL
-    ) {
+    seed = NULL) {
   .pr$Expr$rank(self, method, descending, seed) |>
     unwrap("in $rank():")
 }

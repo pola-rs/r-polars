@@ -34,14 +34,14 @@ Drop duplicated rows
 }
 \examples{
 df = pl$DataFrame(
-  x = c(1:3,1:3,3:1,1L),
-  y = c(1:3,1:3,1:3,1L)
+  x = c(1:3, 1:3, 3:1, 1L),
+  y = c(1:3, 1:3, 1:3, 1L)
 )
 df$height
 
 df$unique()$height
 
-#s subset to define unique, keep only last or first
+# s subset to define unique, keep only last or first
 df$unique(subset = "x", keep = c("last"))
 df$unique(subset = "x", keep = c("first"))
 

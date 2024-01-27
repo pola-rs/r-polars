@@ -28,7 +28,7 @@ test_that("plStruct", {
   expect_error(
     pl$Struct(bin = pl$Binary, pl$Boolean, "abc"),
     "element [3] {name:'', value:abc}",
-    perl = TRUE
+    fixed = TRUE
   )
 })
 
