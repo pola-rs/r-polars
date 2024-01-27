@@ -1,107 +1,103 @@
-#' Get and reset polars options
+#' Get polars environment variables
 #'
-#' @description `polars_options()` returns a list of options for polars. Options
-#' can be set with [`options()`]. Note that **options must be prefixed with
-#' "polars."**, e.g to modify the option `strictly_immutable` you need to pass
-#' `options(polars.strictly_immutable =)`. See below for a description of all
-#' options.
-#'
-#' `polars_options_reset()` brings all polars options back to their default
-#' value.
-#'
-#' @details The following options are available (in alphabetical order, with the
+#' @details The following envvars are available (in alphabetical order, with the
 #'   default value in parenthesis):
 #'
-#' * `debug_polars` (`FALSE`): Print additional information to debug Polars.
+#' * `POLARS_FMT_MAX_COLS` (`5`): Set the number of columns that are visible when
+#'   displaying tables. If negative, all columns are displayed.
+#' * `POLARS_FMT_MAX_ROWS` (`8`): Set the number of rows that are visible when
+#'   displaying tables. If negative, all rows are displayed. This applies to both
+#'   [`DataFrame`][DataFrame_class] and [`Series`][Series_class].
+#' * `POLARS_FMT_STR_LEN` (`32`): Maximum number of characters to display;
+#' * `POLARS_FMT_TABLE_CELL_ALIGNMENT` (`"LEFT"`): set the table cell alignment.
+#'   Can be `"LEFT"`, `"CENTER"`, `"RIGHT"`;
+#' * `POLARS_FMT_TABLE_CELL_LIST_LEN` (`3`): Maximum number of elements of list
+#'   variables to display;
+#' * `POLARS_FMT_TABLE_CELL_NUMERIC_ALIGNMENT` (`"LEFT"`): Set the table cell
+#'   alignment for numeric columns. Can be `"LEFT"`, `"CENTER"`, `"RIGHT"`;
+#' * `POLARS_FMT_TABLE_DATAFRAME_SHAPE_BELOW` (`"0"`): print the DataFrame shape
+#'   information below the data when displaying tables. Can be `"0"` or `"1"`.
+#' * `POLARS_FMT_TABLE_FORMATTING` (`"UTF8_FULL_CONDENSED"`): Set table
+#'   formatting style. Possible values:
+#'    * `"ASCII_FULL"`: ASCII, with all borders and lines, including row dividers.
+#'    * `"ASCII_FULL_CONDENSED"`: Same as ASCII_FULL, but with dense row spacing.
+#'    * `"ASCII_NO_BORDERS"`: ASCII, no borders.
+#'    * `"ASCII_BORDERS_ONLY"`: ASCII, borders only.
+#'    * `"ASCII_BORDERS_ONLY_CONDENSED"`: ASCII, borders only, dense row spacing.
+#'    * `"ASCII_HORIZONTAL_ONLY"`: ASCII, horizontal lines only.
+#'    * `"ASCII_MARKDOWN"`: ASCII, Markdown compatible.
+#'    * `"UTF8_FULL"`: UTF8, with all borders and lines, including row dividers.
+#'    * `"UTF8_FULL_CONDENSED"`: Same as UTF8_FULL, but with dense row spacing.
+#'    * `"UTF8_NO_BORDERS"`: UTF8, no borders.
+#'    * `"UTF8_BORDERS_ONLY"`: UTF8, borders only.
+#'    * `"UTF8_HORIZONTAL_ONLY"`: UTF8, horizontal lines only.
+#'    * `"NOTHING"`: No borders or other lines.
+#' * `POLARS_FMT_TABLE_HIDE_COLUMN_DATA_TYPES` (`"0"`): Hide table column data
+#'   types (i64, f64, str etc.). Can be `"0"` or `"1"`.
+#' * `POLARS_FMT_TABLE_HIDE_COLUMN_NAMES` (`"0"`): Hide table column names. Can
+#'   be `"0"` or `"1"`.
+#' * `POLARS_FMT_TABLE_HIDE_COLUMN_SEPARATOR` (`"0"`): Hide the `"---"` separator
+#'    between the column names and column types. Can be `"0"` or `"1"`.
+#' * `POLARS_FMT_TABLE_HIDE_DATAFRAME_SHAPE_INFORMATION` (`"0"`): Hide the
+#'   DataFrame shape information when displaying tables. Can be `"0"` or `"1"`.
+#' * `POLARS_FMT_TABLE_INLINE_COLUMN_DATA_TYPE` (`"0"`): Moves the data type
+#'   inline with the column name (to the right, in parentheses). Can be `"0"`
+#'   or `"1"`.
+#' * `POLARS_FMT_TABLE_ROUNDED_CORNERS` (`"0"`): Apply rounded corners to
+#'   UTF8-styled tables (only applies to UTF8 formats).
+#' * `POLARS_STREAMING_CHUNK_SIZE` (`<variable>`): Chunk size used in the
+#'   streaming engine. Integer larger than 1. By default, the chunk size is
+#'   determined by the schema and size of the thread pool. For some datasets
+#'   (esp. when you have large string elements) this can be too optimistic and
+#'   lead to Out of Memory errors.
+#' * `POLARS_TABLE_WIDTH` (`<variable>`): Set the maximum width of a table in
+#'   characters.
+#' * `POLARS_VERBOSE` (`"0"`): Enable additional verbose/debug logging.
+#' * `POLARS_WARN_UNSTABLE` (`"0"`): Issue a warning when unstable functionality
+#'    is used. Enabling this setting may help avoid functionality that is still
+#'    evolving, potentially reducing maintenance burden from API changes and bugs.
+#'    Can be `"0"` or `"1"`.
 #'
-#' * `do_not_repeat_call` (`FALSE`): Do not print the call causing the error in
-#'   error messages. The default is to show them.
-#'
-#' * `int64_conversion` (`"double"`): How should Int64 values be handled when
-#'   converting a polars object to R?
-#'
-#'    * `"double"` converts the integer values to double.
-#'    * `"bit64"` uses `bit64::as.integer64()` to do the conversion (requires
-#'   the package `bit64` to be attached).
-#'    * `"string"` converts Int64 values to character.
-#'
-#' * `maintain_order` (`FALSE`): Default for all `maintain_order` options
-#'   (present in `$group_by()` or `$unique()` for example).
-#'
-#' * `no_messages` (`FALSE`): Hide messages.
-#'
-#' * `rpool_cap`: The maximum number of R sessions that can be used to process
-#'   R code in the background. See the section "About pool options" below.
-#'
-#' * `strictly_immutable` (`TRUE`): Keep polars strictly immutable. Polars/arrow
-#'   is in general pro "immutable objects". Immutability is also classic in R.
-#'   To mimic the Python-polars API, set this to `FALSE.`
-#'
-#' @section About pool options:
-#'
-#'   `polars_options()$rpool_active` indicates the number of R sessions already
-#'   spawned in pool. `polars_options()$rpool_cap` indicates the maximum number
-#'   of new R sessions that can be spawned. Anytime a polars thread worker needs
-#'   a background R session specifically to run R code embedded in a query via
-#'   [`$map_batches(..., in_background = TRUE)`][Expr_map_batches] or
-#'   [`$map_elements(..., in_background = TRUE)`][Expr_map_elements], it will
-#'   obtain any R session idling in rpool, or spawn a new R session (process)
-#'   and add it to the rpool if `rpool_cap` is not already reached. If
-#'   `rpool_cap` is already reached, the thread worker will sleep until an R
-#'   session is idling.
-#'
-#'   Background R sessions communicate via polars arrow IPC (series/vectors) or
-#'   R serialize + shared memory buffers via the rust crate `ipc-channel`.
-#'   Multi-process communication has overhead because all data must be
-#'   serialized/de-serialized and sent via buffers. Using multiple R sessions
-#'   will likely only give a speed-up in a `low io - high cpu` scenario. Native
-#'   polars query syntax runs in threads and have no overhead.
-#'
-#' @return
-#' `polars_options()` returns a named list where the names are option names and
-#' values are option values.
-#'
-#' `polars_options_reset()` doesn't return anything.
+#' @return `polars_envvars()` returns a named list where the names are the names
+#'   of environment variables and values are their values.
 #'
 #' @export
 #' @examples
-#' options(polars.maintain_order = TRUE, polars.strictly_immutable = FALSE)
-#' polars_options()
+#' polars_envvars()
 #'
-#' # option checks are run when calling polars_options(), not when setting
-#' # options
-#' options(polars.maintain_order = 42, polars.int64_conversion = "foobar")
-#' tryCatch(
-#'   polars_options(),
-#'   error = function(e) print(e)
-#' )
+#' pl$DataFrame(x = "This is a very very very long sentence.")
 #'
-#' # reset options to their default value
-#' polars_options_reset()
+#' Sys.setenv(POLARS_FMT_STR_LEN = 50)
+#' pl$DataFrame(x = "This is a very very very long sentence.")
+#'
+#' # back to default
+#' Sys.setenv(POLARS_FMT_STR_LEN = 32)
+#'
 polars_envvars = function() {
-  # removed from py-polars list: POLARS_VERBOSE
   envvars = rbind(
     c("POLARS_ACTIVATE_DECIMAL", ""),
     c("POLARS_AUTO_STRUCTIFY", ""),
-    c("POLARS_FMT_MAX_COLS", ""),
-    c("POLARS_FMT_MAX_ROWS", ""),
+    c("POLARS_FMT_MAX_COLS", "5"),
+    c("POLARS_FMT_MAX_ROWS", "8"),
     c("POLARS_FMT_NUM_DECIMAL", ""),
     c("POLARS_FMT_NUM_GROUP_SEPARATOR", ""),
     c("POLARS_FMT_NUM_LEN", ""),
-    c("POLARS_FMT_STR_LEN", 32),
-    c("POLARS_FMT_TABLE_CELL_ALIGNMENT", ""),
-    c("POLARS_FMT_TABLE_CELL_LIST_LEN", 3),
-    c("POLARS_FMT_TABLE_CELL_NUMERIC_ALIGNMENT", ""),
-    c("POLARS_FMT_TABLE_DATAFRAME_SHAPE_BELOW", ""),
+    c("POLARS_FMT_STR_LEN", "32"),
+    c("POLARS_FMT_TABLE_CELL_ALIGNMENT", "LEFT"),
+    c("POLARS_FMT_TABLE_CELL_LIST_LEN", "3"),
+    c("POLARS_FMT_TABLE_CELL_NUMERIC_ALIGNMENT", "LEFT"),
+    c("POLARS_FMT_TABLE_DATAFRAME_SHAPE_BELOW", "0"),
     c("POLARS_FMT_TABLE_FORMATTING", "UTF8_FULL_CONDENSED"),
-    c("POLARS_FMT_TABLE_HIDE_COLUMN_DATA_TYPES", ""),
-    c("POLARS_FMT_TABLE_HIDE_COLUMN_NAMES", ""),
-    c("POLARS_FMT_TABLE_HIDE_COLUMN_SEPARATOR", ""),
-    c("POLARS_FMT_TABLE_HIDE_DATAFRAME_SHAPE_INFORMATION", ""),
-    c("POLARS_FMT_TABLE_INLINE_COLUMN_DATA_TYPE", ""),
-    c("POLARS_FMT_TABLE_ROUNDED_CORNERS", ""),
-    c("POLARS_STREAMING_CHUNK_SIZE", ""),
-    c("POLARS_TABLE_WIDTH", "")
+    c("POLARS_FMT_TABLE_HIDE_COLUMN_DATA_TYPES", "0"),
+    c("POLARS_FMT_TABLE_HIDE_COLUMN_NAMES", "0"),
+    c("POLARS_FMT_TABLE_HIDE_COLUMN_SEPARATOR", "0"),
+    c("POLARS_FMT_TABLE_HIDE_DATAFRAME_SHAPE_INFORMATION", "0"),
+    c("POLARS_FMT_TABLE_INLINE_COLUMN_DATA_TYPE", "0"),
+    c("POLARS_FMT_TABLE_ROUNDED_CORNERS", "0"),
+    c("POLARS_STREAMING_CHUNK_SIZE", "variable"),
+    c("POLARS_TABLE_WIDTH", "variable"),
+    c("POLARS_VERBOSE", "0"),
+    c("POLARS_WARN_UNSTABLE", "0")
   ) |> as.data.frame()
   out = vector("list", length(envvars))
   for (i in 1:nrow(envvars)) {
