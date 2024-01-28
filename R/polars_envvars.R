@@ -102,7 +102,7 @@ polars_envvars = function() {
     c("POLARS_FMT_TABLE_HIDE_DATAFRAME_SHAPE_INFORMATION", "0"),
     c("POLARS_FMT_TABLE_INLINE_COLUMN_DATA_TYPE", "0"),
     c("POLARS_FMT_TABLE_ROUNDED_CORNERS", "0"),
-    c("POLARS_MAX_THREADS", unwrap(get_global_rpool_cap())$capacity),
+    c("POLARS_MAX_THREADS", threadpool_size()),
     c("POLARS_STREAMING_CHUNK_SIZE", "variable"),
     c("POLARS_TABLE_WIDTH", "variable"),
     c("POLARS_VERBOSE", "0"),
