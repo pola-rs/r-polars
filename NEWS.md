@@ -1,6 +1,6 @@
 # NEWS
 
-## polars (development version)
+## polars 0.13.0
 
 ### Breaking changes
 
