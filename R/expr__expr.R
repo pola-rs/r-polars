@@ -2608,6 +2608,7 @@ Expr_abs = use_extendr_wrapper
 #' - `"random"` : Like 'ordinal', but the rank for ties is not dependent on the
 #'   order that the values occur in the Series.
 #' @param descending Rank in descending order.
+#' @param seed string parsed or number converted into uint64. Used if method="random".
 #' @return  Expr
 #' @examples
 #' #  The 'average' method:
@@ -2617,8 +2618,12 @@ Expr_abs = use_extendr_wrapper
 #' #  The 'ordinal' method:
 #' pl$DataFrame(a = c(3, 6, 1, 1, 6))$
 #'   with_columns(rank = pl$col("a")$rank("ordinal"))
-Expr_rank = function(method = "average", descending = FALSE) {
-  unwrap(.pr$Expr$rank(self, method, descending))
+Expr_rank = function(
+    method = c("average", "min", "max", "dense", "ordinal", "random"),
+    descending = FALSE,
+    seed = NULL) {
+  .pr$Expr$rank(self, method, descending, seed) |>
+    unwrap("in $rank():")
 }
 
 

@@ -1019,7 +1019,10 @@ LazyFrame_drop_nulls = function(subset = NULL) {
 #'
 #' # only keep unique rows
 #' df$unique(keep = "none")
-LazyFrame_unique = function(subset = NULL, keep = "first", maintain_order = FALSE) {
+LazyFrame_unique = function(
+    subset = NULL,
+    keep = c("first", "last", "none"),
+    maintain_order = FALSE) {
   unwrap(.pr$LazyFrame$unique(self, subset, keep, maintain_order), "in unique():")
 }
 
@@ -1275,7 +1278,7 @@ LazyFrame_join_asof = function(
     by_left = NULL,
     by_right = NULL,
     by = NULL,
-    strategy = "backward",
+    strategy = c("backward", "forward", "nearest"),
     suffix = "_right",
     tolerance = NULL,
     allow_parallel = TRUE,

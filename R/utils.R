@@ -18,6 +18,7 @@ options(
   polars.df_knitr_print = "auto",
   polars.do_not_repeat_call = FALSE,
   polars.int64_conversion = "double",
+  polars.limit_max_threads = NULL,
   polars.maintain_order = FALSE,
   polars.no_messages = FALSE,
   polars.strictly_immutable = TRUE

@@ -4,7 +4,11 @@
 \alias{LazyFrame_unique}
 \title{Drop duplicated rows}
 \usage{
-LazyFrame_unique(subset = NULL, keep = "first", maintain_order = FALSE)
+LazyFrame_unique(
+  subset = NULL,
+  keep = c("first", "last", "none"),
+  maintain_order = FALSE
+)
 }
 \arguments{
 \item{subset}{A character vector with the names of the column(s) to use to
