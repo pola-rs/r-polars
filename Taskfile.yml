@@ -166,6 +166,7 @@ tasks:
   build-documents:
     desc: Build the R package and generate documents.
     sources:
+      - DESCRIPTION
       - "{{.R_SOURCE}}"
     generates:
       - man/*.Rd
