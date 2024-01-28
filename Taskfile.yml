@@ -221,6 +221,7 @@ tasks:
   install-package:
     desc: Install the R package.
     sources:
+      - DESCRIPTION
       - "{{.R_SOURCE}}"
       - src/Makevars*
       - configure*
