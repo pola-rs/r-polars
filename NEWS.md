@@ -28,7 +28,7 @@
 -   The S3 method `[` for the `$list` subnamespace is removed (#724).
 -   The option `polars.df_print` has been renamed `polars.df_knitr_print` (#726).
 
-### Deprications
+### Deprecations
 
 -   `$list$lengths()` is deprecated and will be removed in 0.14.0. Use
     `$list$len()` instead (#724).
