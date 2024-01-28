@@ -23,10 +23,10 @@ test_that("Snapshot test of knitr", {
     new = list("polars.df_knitr_print" = "html"),
     expect_snapshot(.knit_file("dataframe.Rmd"), cran = TRUE)
   )
-  expect_snapshot(.knit_file("dataframe.Rmd", use = "rmarkdown"), cran = TRUE)
+  expect_snapshot(.knit_file("dataframe.Rmd", use = "rmarkdown"), cran = FALSE)
   withr::with_options(
     new = list("polars.df_knitr_print" = "default"),
-    expect_snapshot(.knit_file("dataframe.Rmd", use = "rmarkdown"), cran = TRUE)
+    expect_snapshot(.knit_file("dataframe.Rmd", use = "rmarkdown"), cran = FALSE)
   )
   expect_snapshot(.knit_file("flights.Rmd"), cran = TRUE)
 })
