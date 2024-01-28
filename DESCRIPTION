@@ -18,7 +18,8 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.0
 SystemRequirements: Cargo (rustc package manager), cmake
-URL: https://github.com/pola-rs/r-polars
+URL: https://rpolars.github.io/,
+    https://github.com/pola-rs/r-polars,
     https://rpolars.r-universe.dev/polars
 Suggests:
     arrow,
