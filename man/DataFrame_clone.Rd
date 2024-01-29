@@ -19,25 +19,24 @@ but this can be useful when dealing with attributes (see examples).
 df1 = pl$DataFrame(iris)
 
 # Make a function to take a DataFrame, add an attribute, and return a DataFrame
-give_attr <- function(data) {
-  attr(data, "created_on") <- "2024-01-29"
+give_attr = function(data) {
+  attr(data, "created_on") = "2024-01-29"
   data
 }
-df2 <- give_attr(df1)
+df2 = give_attr(df1)
 
 # Problem: the original DataFrame also gets the attribute while it shouldn't!
 attributes(df1)
 
 # Use $clone() inside the function to avoid that
-give_attr <- function(data) {
-  data <- data$clone()
-  attr(data, "created_on") <- "2024-01-29"
+give_attr = function(data) {
+  data = data$clone()
+  attr(data, "created_on") = "2024-01-29"
   data
 }
 df1 = pl$DataFrame(iris)
-df2 <- give_attr(df1)
+df2 = give_attr(df1)
 
 # now, the original DataFrame doesn't get this attribute
 attributes(df1)
 }
-\keyword{DataFrame}
