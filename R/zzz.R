@@ -145,6 +145,13 @@ move_env_elements(RPolarsExpr, pl, c("lit"), remove = FALSE)
     polars.strictly_immutable = getOption("polars.strictly_immutable", TRUE)
   )
 
+  # activate improved code completion in RStudio only
+  if (is_rstudio()) {
+    message("Experimental RStudio code completion with polars methods.")
+    message("Deactivate with `pl$polars_code_completions(FALSE)`.")
+    pl$polars_code_completion(activate = TRUE, verbose = FALSE)
+  }
+
   # instanciate one of each DataType (it's just an enum)
   all_types = c(.pr$DataType$get_all_simple_type_names(), "Utf8") # Allow "Utf8" as an alias of "String"
   names(all_types) = all_types
