@@ -4,7 +4,11 @@
 \alias{Expr_rank}
 \title{Rank elements}
 \usage{
-Expr_rank(method = "average", descending = FALSE)
+Expr_rank(
+  method = c("average", "min", "max", "dense", "ordinal", "random"),
+  descending = FALSE,
+  seed = NULL
+)
 }
 \arguments{
 \item{method}{String, one of \code{"average"} (default), \code{"min"}, \code{"max"},
@@ -27,6 +31,8 @@ order that the values occur in the Series.
 }}
 
 \item{descending}{Rank in descending order.}
+
+\item{seed}{string parsed or number converted into uint64. Used if method="random".}
 }
 \value{
 Expr

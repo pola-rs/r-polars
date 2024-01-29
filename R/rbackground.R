@@ -38,7 +38,7 @@ print.RPolarsRThreadHandle = function(x, ...) as.character(x) |> cat("\n")
 
 
 #' @title The RPolarsRThreadHandle class
-#' @name RThreadHandle_RThreadHandle_class
+#' @name RThreadHandle_class
 #' @description A handle to some polars query running in a background thread.
 #' @details
 #' [`<LazyFrame>$collect_in_background()`][LazyFrame_collect_in_background] will execute a polars
@@ -48,11 +48,11 @@ print.RPolarsRThreadHandle = function(x, ...) as.character(x) |> cat("\n")
 #'
 #' NOTICE:
 #' The background thread cannot use the main R session, but can access the pool of extra R sessions
-#' to process R code embedded in polars query via `$map_batches(..., background = TRUE)` or
-#' `$map_elements(background=TRUE)`. Use [`pl$set_options(rpool_cap = XX)`][set_options] to limit number of
+#' to process R code embedded in polars query via [`$map_batches(..., in_background = TRUE)`][Expr_map_batches] or
+#' `$map_elements(background=TRUE)`. Use [`options(polars.rpool_cap = XX)`][polars_options] to limit number of
 #'  parallel R sessions.
 #' Starting polars  [`<LazyFrame>$collect_in_background()`][LazyFrame_collect_in_background] with
-#' e.g. some `$map_batches(..., background = FALSE)` will raise an Error as the main R session is not
+#' e.g. some [`$map_batches(..., in_background = FALSE)`][Expr_map_batches] will raise an Error as the main R session is not
 #' available to process the R part of the polars query. Native polars query does not need any R
 #' session.
 #' @return see methods:
@@ -81,7 +81,7 @@ NULL
 #' Calling `<RThreadHandle>$join()` a second time will raise an error because handle is already
 #' exhausted.
 #' @return return value from background thread
-#' @seealso [RThreadHandle_class][RThreadHandle_RThreadHandle_class]
+#' @seealso [RThreadHandle_class][RThreadHandle_class]
 RThreadHandle_join = function() {
   .pr$RThreadHandle$join(self) |> unwrap()
 }

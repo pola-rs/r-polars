@@ -3,20 +3,25 @@
 \name{ExprList_gather}
 \alias{ExprList_gather}
 \alias{list_gather}
-\title{take in sublists}
-\format{
-function
+\title{Get several values by index in a list}
+\usage{
+ExprList_gather(index, null_on_oob = FALSE)
 }
 \arguments{
-\item{index}{R list of integers for each sub-element or Expr or Series of type \code{List[usize]}}
+\item{index}{An Expr or something coercible to an Expr, that can return
+several single indices. Values are 0-indexed (so index 0 would return the
+first item of every sublist) and negative values start from the end (index
+\code{-1} returns the last item). If the index is out of bounds, it will return
+a \code{null}. Strings are parsed as column names.}
 
-\item{null_on_oob}{boolean}
+\item{null_on_oob}{Return a \code{null} value if index is out of bounds.}
 }
 \value{
 Expr
 }
 \description{
-Get the take value of the sublists.
+This allows to extract several values per list. To extract a single value by
+index, use \code{\link[=ExprList_get]{$list$get()}}.
 }
 \examples{
 df = pl$DataFrame(list(a = list(c(3, 2, 1), 1, c(1, 2)))) #
@@ -29,4 +34,3 @@ df$select(pl$col("a")$list$gather(list(0:1, integer(), c(1L, 999L)), null_on_oob
 # by some column name, must cast to an Int/Uint type to work
 df$select(pl$col("a")$list$gather(pl$col("a")$cast(pl$List(pl$UInt64)), null_on_oob = TRUE))
 }
-\keyword{ExprList}

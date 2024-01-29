@@ -3,6 +3,9 @@
 \name{pl_LazyFrame}
 \alias{pl_LazyFrame}
 \title{Create new LazyFrame}
+\usage{
+pl_LazyFrame(...)
+}
 \arguments{
 \item{...}{Anything that is accepted by \code{pl$DataFrame()}}
 }
@@ -33,7 +36,7 @@ pl$LazyFrame(list(
 # custom schema
 pl$LazyFrame(
   iris,
-  schema = list(Sepal.Length = pl$Float32, Species = pl$Utf8)
+  schema = list(Sepal.Length = pl$Float32, Species = pl$String)
 )$collect()
 }
 \keyword{LazyFrame_new}

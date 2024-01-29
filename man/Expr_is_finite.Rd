@@ -4,7 +4,7 @@
 \alias{Expr_is_finite}
 \title{Check if elements are finite}
 \usage{
-Expr_is_finite
+Expr_is_finite()
 }
 \value{
 Expr
@@ -16,4 +16,3 @@ Returns a boolean Series indicating which values are finite.
 pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$
   with_columns(finite = pl$col("alice")$is_finite())
 }
-\keyword{datasets}

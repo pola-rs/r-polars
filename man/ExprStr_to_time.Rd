@@ -2,7 +2,10 @@
 % Please edit documentation in R/expr__string.R
 \name{ExprStr_to_time}
 \alias{ExprStr_to_time}
-\title{Convert a Utf8 column into a Time column}
+\title{Convert a String column into a Time column}
+\usage{
+ExprStr_to_time(format = NULL, strict = TRUE, cache = TRUE)
+}
 \arguments{
 \item{format}{Format to use for conversion. See \code{?strptime} for possible
 values. Example: "\%H:\%M:\%S". If \code{NULL} (default), the format is
@@ -19,7 +22,7 @@ conversion.}
 Expr
 }
 \description{
-Convert a Utf8 column into a Time column
+Convert a String column into a Time column
 }
 \examples{
 pl$DataFrame(str_time = c("01:20:01", "28:00:02", "03:00:02"))$

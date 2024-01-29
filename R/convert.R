@@ -1,6 +1,8 @@
 #' from_arrow
-#' @description import Arrow Table or Array
-#' @name pl_from_arrow
+#'
+#' Import Arrow Table or Array.
+#' Deprecated in favor of [as_polars_df] and [as_polars_series].
+#' Will be removed in 0.14.0.
 #' @param data arrow Table or Array or ChunkedArray
 #' @param ... Ignored.
 #' @param rechunk bool rewrite in one array per column, Implemented for ChunkedArray
@@ -12,11 +14,10 @@
 #' Takes not effect for Array or ChunkedArray
 #' @return DataFrame or Series
 #' @aliases from_arrow
-#' @keywords pl
 #' @examples
 #' pl$from_arrow(
 #'   data = arrow::arrow_table(iris),
-#'   schema_overrides = list(Sepal.Length = pl$Float32, Species = pl$Utf8)
+#'   schema_overrides = list(Sepal.Length = pl$Float32, Species = pl$String)
 #' )
 #'
 #' char_schema = names(iris)
@@ -25,12 +26,14 @@
 #'   data = arrow::arrow_table(iris),
 #'   schema = char_schema
 #' )
-pl$from_arrow = function(
+pl_from_arrow = function(
     data,
     ...,
     rechunk = TRUE,
     schema = NULL,
     schema_overrides = NULL) {
+  warning("`pl$from_arrow()` is deprecated and will be removed in 0.14.0. Use `as_polars_df()` or `as_polars_series()` insead.")
+
   if (!requireNamespace("arrow", quietly = TRUE)) {
     stop("in pl$from_arrow: cannot import from arrow without R package arrow installed")
   }
@@ -42,16 +45,12 @@ pl$from_arrow = function(
       identical(class(data), c("Table", "ArrowTabular", "ArrowObject", "R6")) ||
         identical(class(data), c("RecordBatchReader", "ArrowObject", "R6"))
     ) {
-      df = arrow_to_rdf(
-        data,
-        rechunk = rechunk, schema = schema, schema_overrides = schema_overrides
-      )
-      return(df)
+      return(as_polars_df(data, rechunk = rechunk, schema = schema, schema_overrides = schema_overrides))
     }
 
     # 2 both Array and ChunkedArray
     if (identical(class(data)[-1L], c("ArrowDatum", "ArrowObject", "R6"))) {
-      return(unwrap(arrow_to_rseries_result("", data, rechunk = rechunk)))
+      return(as_polars_series(data, rechunk = rechunk))
     }
 
     # 0 no suitable method found, raise error

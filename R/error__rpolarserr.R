@@ -21,12 +21,17 @@ print.RPolarsErr = function(x, ...) cat(x$pretty_msg())
 
 
 ## RPolarsErr IPLEMENTS IPLEMENTS R-POLARS error_trait.R
+#' @exportS3Method
 when_calling.RPolarsErr = function(err, call) {
   err$rcall(call_to_string(call))
 }
+
+#' @exportS3Method
 where_in.RPolarsErr = function(err, context) {
   err$rinfo(context)
 }
+
+#' @exportS3Method
 to_condition.RPolarsErr = function(err) {
   errorCondition(
     err$pretty_msg(),
@@ -35,10 +40,13 @@ to_condition.RPolarsErr = function(err) {
     call = NULL
   )
 }
+
+#' @exportS3Method
 plain.RPolarsErr = function(err, msg) {
   err$plain(msg)
 }
 
+#' @exportS3Method
 upgrade_err.RPolarsErr = function(err) { # already RPolarsErr pass through
   err
 }
@@ -54,7 +62,7 @@ bad_robj = function(r) {
 }
 
 Err_plain = function(...) {
-  Err(.pr$Err$new()$plain(paste(..., collapse = " ")))
+  Err(.pr$Err$new()$plain(paste0(..., collapse = " ")))
 }
 
 # short hand for extracting an error context in unit testing, will raise error if not an RPolarsErr

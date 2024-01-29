@@ -4,7 +4,7 @@
 \alias{Expr_is_unique}
 \title{Check whether each value is unique}
 \usage{
-Expr_is_unique
+Expr_is_unique()
 }
 \value{
 Expr
@@ -16,4 +16,3 @@ Check whether each value is unique
 pl$DataFrame(head(mtcars[, 1:2]))$
   with_columns(is_unique = pl$col("mpg")$is_unique())
 }
-\keyword{datasets}

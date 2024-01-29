@@ -1,0 +1,8 @@
+articles:
+  polars: polars.html
+  install: install.html
+  userguide: userguide.html
+  performance: performance.html
+urls:
+  reference: https://rpolars.github.io/man
+  article: https://rpolars.github.io/vignettes

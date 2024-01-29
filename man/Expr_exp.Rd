@@ -4,7 +4,7 @@
 \alias{Expr_exp}
 \title{Compute the exponential of the elements}
 \usage{
-Expr_exp
+Expr_exp()
 }
 \value{
 Expr
@@ -15,4 +15,3 @@ Compute the exponential of the elements
 \examples{
 pl$DataFrame(a = -1:3)$with_columns(a_exp = pl$col("a")$exp())
 }
-\keyword{datasets}

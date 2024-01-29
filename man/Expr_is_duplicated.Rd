@@ -4,7 +4,7 @@
 \alias{Expr_is_duplicated}
 \title{Check whether each value is duplicated}
 \usage{
-Expr_is_duplicated
+Expr_is_duplicated()
 }
 \value{
 Expr
@@ -16,4 +16,3 @@ This is syntactic sugar for \verb{$is_unique()$not()}.
 pl$DataFrame(head(mtcars[, 1:2]))$
   with_columns(is_duplicated = pl$col("mpg")$is_duplicated())
 }
-\keyword{datasets}

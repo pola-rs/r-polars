@@ -4,7 +4,7 @@
 \alias{Expr_is_last_distinct}
 \title{Check whether each value is the last occurrence}
 \usage{
-Expr_is_last_distinct
+Expr_is_last_distinct()
 }
 \value{
 Expr
@@ -16,4 +16,3 @@ Check whether each value is the last occurrence
 pl$DataFrame(head(mtcars[, 1:2]))$
   with_columns(is_ulast = pl$col("mpg")$is_last_distinct())
 }
-\keyword{datasets}

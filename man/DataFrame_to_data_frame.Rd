@@ -4,10 +4,22 @@
 \alias{DataFrame_to_data_frame}
 \title{Return Polars DataFrame as R data.frame}
 \usage{
-DataFrame_to_data_frame(...)
+DataFrame_to_data_frame(
+  ...,
+  int64_conversion = polars_options()$int64_conversion
+)
 }
 \arguments{
 \item{...}{Any args pased to \code{as.data.frame()}.}
+
+\item{int64_conversion}{How should Int64 values be handled when converting a
+polars object to R?
+\itemize{
+\item \code{"double"} (default) converts the integer values to double.
+\item \code{"bit64"} uses \code{bit64::as.integer64()} to do the conversion (requires
+the package \code{bit64} to be attached).
+\item \code{"string"} converts Int64 values to character.
+}}
 }
 \value{
 An R data.frame

@@ -4,7 +4,7 @@
 \alias{Expr_arcsin}
 \title{Compute inverse sine}
 \usage{
-Expr_arcsin
+Expr_arcsin()
 }
 \value{
 Expr
@@ -16,4 +16,3 @@ Compute inverse sine
 pl$DataFrame(a = c(-1, sin(0.5), 0, 1, NA_real_))$
   with_columns(arcsin = pl$col("a")$arcsin())
 }
-\keyword{datasets}

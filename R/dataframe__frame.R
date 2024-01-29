@@ -141,11 +141,13 @@ NULL
 #' pl$DataFrame(mtcars)
 #'
 #' # custom schema
-#' pl$DataFrame(iris, schema = list(Sepal.Length = pl$Float32, Species = pl$Utf8))
-pl$DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
-  largs = unpack_list(...)
-
+#' pl$DataFrame(iris, schema = list(Sepal.Length = pl$Float32, Species = pl$String))
+pl_DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
   uw = \(res) unwrap(res, "in $DataFrame():")
+
+  largs = unpack_list(...) |>
+    result() |>
+    uw()
 
   if (!is.null(schema) && !all(names(schema) %in% names(largs))) {
     Err_plain("Some columns in `schema` are not in the DataFrame.") |>
@@ -175,7 +177,6 @@ pl$DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
     }
     return(key)
   })
-
 
   result({
     # check for conflicting names, to avoid silent overwrite
@@ -290,7 +291,7 @@ DataFrame.property_setters = new.env(parent = emptyenv())
     pstop(err = paste("no setter method for", name))
   }
 
-  if (polars_optenv$strictly_immutable) self = self$clone()
+  if (polars_options()$strictly_immutable) self = self$clone()
   func = DataFrame.property_setters[[name]]
   func(self, value)
   self
@@ -388,25 +389,31 @@ DataFrame_drop_nulls = function(subset = NULL) {
 #' @param maintain_order Keep the same order as the original `DataFrame`. Setting
 #'  this to `TRUE` makes it more expensive to compute and blocks the possibility
 #'  to run on the streaming engine. The default value can be changed with
-#' `pl$set_options(maintain_order = TRUE)`.
+#' `options(polars.maintain_order = TRUE)`.
 #'
 #' @return DataFrame
 #' @examples
 #' df = pl$DataFrame(
-#'   x = sample(10, 100, rep = TRUE),
-#'   y = sample(10, 100, rep = TRUE)
+#'   x = c(1:3, 1:3, 3:1, 1L),
+#'   y = c(1:3, 1:3, 1:3, 1L)
 #' )
 #' df$height
 #'
 #' df$unique()$height
-#' df$unique(subset = "x")$height
 #'
-#' df$unique(keep = "last")
+#' # subset to define unique, keep only last or first
+#' df$unique(subset = "x", keep = c("last"))
+#' df$unique(subset = "x", keep = c("first"))
 #'
 #' # only keep unique rows
 #' df$unique(keep = "none")
-DataFrame_unique = function(subset = NULL, keep = "first", maintain_order = FALSE) {
-  self$lazy()$unique(subset, keep, maintain_order)$collect()
+DataFrame_unique = function(
+    subset = NULL,
+    keep = c("first", "last", "none"),
+    maintain_order = FALSE) {
+  self$lazy()$unique(subset, keep, maintain_order) |>
+    .pr$LazyFrame$collect() |>
+    unwrap("in $unique():")
 }
 
 
@@ -483,7 +490,7 @@ DataFrame_dtypes = method_as_property(function() {
 #' @keywords DataFrame
 #' @examples
 #' pl$DataFrame(iris)$dtype_strings()
-DataFrame_dtype_strings = "use_extendr_wrapper"
+DataFrame_dtype_strings = use_extendr_wrapper
 
 #' @rdname DataFrame_dtypes
 
@@ -503,7 +510,7 @@ DataFrame_schema = method_as_property(function() {
 #' @keywords  DataFrame LazyFrame_new
 #' @examples
 #' pl$DataFrame(iris)$lazy()
-DataFrame_lazy = "use_extendr_wrapper"
+DataFrame_lazy = use_extendr_wrapper
 
 #' Clone a DataFrame
 #' @name DataFrame_clone
@@ -538,7 +545,7 @@ DataFrame_clone = function() {
 #' @examples
 #' df = pl$DataFrame(iris[1:2, ])
 #' df$get_columns()
-DataFrame_get_columns = "use_extendr_wrapper"
+DataFrame_get_columns = use_extendr_wrapper
 
 #' Get column (as one Series)
 #' @name DataFrame_get_column
@@ -588,6 +595,7 @@ DataFrame_to_series = function(idx = 0) {
 }
 
 #' Sort a DataFrame
+#' @inheritParams DataFrame_unique
 #' @inherit LazyFrame_sort details description params
 #' @return DataFrame
 #' @keywords  DataFrame
@@ -633,7 +641,7 @@ DataFrame_sort = function(
 #'   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
 #' )
 DataFrame_select = function(...) {
-  .pr$DataFrame$select(self, unpack_list(...)) |>
+  .pr$DataFrame$select(self, unpack_list(..., .context = "in $select()")) |>
     unwrap("in $select()")
 }
 
@@ -654,7 +662,7 @@ DataFrame_drop_in_place = function(name) {
 }
 
 #' Compare two DataFrames
-#' @name DataFrame_frame_equal
+#' @name DataFrame_equals
 #' @description Check if two DataFrames are equal.
 #'
 #' @param other DataFrame to compare with.
@@ -664,10 +672,10 @@ DataFrame_drop_in_place = function(name) {
 #' dat1 = pl$DataFrame(iris)
 #' dat2 = pl$DataFrame(iris)
 #' dat3 = pl$DataFrame(mtcars)
-#' dat1$frame_equal(dat2)
-#' dat1$frame_equal(dat3)
-DataFrame_frame_equal = function(other) {
-  .pr$DataFrame$frame_equal(self, other)
+#' dat1$equals(dat2)
+#' dat1$equals(dat3)
+DataFrame_equals = function(other) {
+  .pr$DataFrame$equals(self, other)
 }
 
 #' Shift a DataFrame
@@ -740,7 +748,7 @@ DataFrame_shift_and_fill = function(fill_value, periods = 1) {
 #'   SW_add_2 = (pl$col("Sepal.Width") + 2)
 #' )
 DataFrame_with_columns = function(...) {
-  .pr$DataFrame$with_columns(self, unpack_list(...)) |>
+  .pr$DataFrame$with_columns(self, unpack_list(..., .context = "in $with_columns()")) |>
     unwrap("in $with_columns()")
 }
 
@@ -814,6 +822,7 @@ DataFrame_filter = function(...) {
 }
 
 #' Group a DataFrame
+#' @inheritParams DataFrame_unique
 #' @inherit LazyFrame_group_by description params
 #' @keywords DataFrame
 #' @return GroupBy (a DataFrame with special groupby methods like `$agg()`)
@@ -829,24 +838,35 @@ DataFrame_filter = function(...) {
 #'   pl$col("bar")$sum()$name$suffix("_sum"),
 #'   pl$col("bar")$mean()$alias("bar_tail_sum")
 #' )
-DataFrame_group_by = function(..., maintain_order = pl$options$maintain_order) {
+DataFrame_group_by = function(..., maintain_order = polars_options()$maintain_order) {
   # clone the DataFrame, bundle args as attributes. Non fallible.
-  construct_group_by(self, groupby_input = unpack_list(...), maintain_order = maintain_order)
+  construct_group_by(
+    self,
+    groupby_input = unpack_list(..., .context = "$group_by()"),
+    maintain_order = maintain_order
+  )
 }
 
 
 #' Return Polars DataFrame as R data.frame
 #'
 #' @param ... Any args pased to `as.data.frame()`.
+#' @param int64_conversion How should Int64 values be handled when converting a
+#' polars object to R?
+#'
+#' * `"double"` (default) converts the integer values to double.
+#' * `"bit64"` uses `bit64::as.integer64()` to do the conversion (requires
+#'   the package `bit64` to be attached).
+#' * `"string"` converts Int64 values to character.
 #'
 #' @return An R data.frame
 #' @keywords DataFrame
 #' @examples
 #' df = pl$DataFrame(iris[1:3, ])
 #' df$to_data_frame()
-DataFrame_to_data_frame = function(...) {
+DataFrame_to_data_frame = function(..., int64_conversion = polars_options()$int64_conversion) {
   # do not unnest structs and mark with I to also preserve categoricals as is
-  l = lapply(self$to_list(unnest_structs = FALSE), I)
+  l = lapply(self$to_list(unnest_structs = FALSE, int64_conversion = int64_conversion), I)
 
   # similar to as.data.frame, but avoid checks, whcih would edit structs
   df = data.frame(seq_along(l[[1L]]), ...)
@@ -863,8 +883,7 @@ DataFrame_to_data_frame = function(...) {
 #'
 #' @param unnest_structs Boolean. If `TRUE` (default), then `$unnest()` is applied
 #' on any struct column.
-#'
-#' @name to_list
+#' @inheritParams DataFrame_to_data_frame
 #'
 #' @details
 #' For simplicity reasons, this implementation relies on unnesting all structs
@@ -876,31 +895,22 @@ DataFrame_to_data_frame = function(...) {
 #' @keywords DataFrame
 #' @examples
 #' pl$DataFrame(iris)$to_list()
-DataFrame_to_list = function(unnest_structs = TRUE) {
+DataFrame_to_list = function(unnest_structs = TRUE, ..., int64_conversion = polars_options()$int64_conversion) {
   if (unnest_structs) {
-    unwrap(.pr$DataFrame$to_list(self))
+    .pr$DataFrame$to_list(self, int64_conversion) |>
+      unwrap("in $to_list():")
   } else {
-    restruct_list(unwrap(.pr$DataFrame$to_list_tag_structs(self)))
+    .pr$DataFrame$to_list_tag_structs(self, int64_conversion) |>
+      unwrap("in $to_list():") |>
+      restruct_list()
   }
 }
 
 #' Join DataFrames
 #'
-#' This function can do both mutating joins (adding columns based on matching
-#' observations, for example with `how = "left"`) and filtering joins (keeping
-#' observations based on matching observations, for example with `how = "inner"`).
+#' @param other DataFrame to join with.
+#' @inherit LazyFrame_join description params
 #'
-#' @param other DataFrame
-#' @param on Either a vector of column names or a list of expressions and/or
-#' strings. Use `left_on` and `right_on` if the column names to match on are
-#' different between the two DataFrames.
-#' @param left_on,right_on Same as `on` but only for the left or the right
-#' DataFrame. They must have the same length.
-#' @param how One of the following methods: "inner", "left", "outer", "semi",
-#' "anti", "cross".
-#' @param suffix Suffix to add to duplicated column names.
-#' @param allow_parallel Boolean.
-#' @param force_parallel Boolean.
 #' @return DataFrame
 #' @keywords DataFrame
 #' @examples
@@ -914,14 +924,21 @@ DataFrame_to_list = function(unnest_structs = TRUE) {
 #' df2 = pl$DataFrame(y = 1:4)
 #' df1$join(other = df2, how = "cross")
 DataFrame_join = function(
-    other, # : LazyFrame or DataFrame,
-    left_on = NULL, # : str | pli.RPolarsExpr | Sequence[str | pli.RPolarsExpr] | None = None,
-    right_on = NULL, # : str | pli.RPolarsExpr | Sequence[str | pli.RPolarsExpr] | None = None,
-    on = NULL, # : str | pli.RPolarsExpr | Sequence[str | pli.RPolarsExpr] | None = None,
-    how = c("inner", "left", "outer", "semi", "anti", "cross"),
+    other,
+    on = NULL,
+    how = c("inner", "left", "outer", "semi", "anti", "cross", "outer_coalesce"),
+    ...,
+    left_on = NULL,
+    right_on = NULL,
     suffix = "_right",
+    validate = "m:m",
+    join_nulls = FALSE,
     allow_parallel = TRUE,
     force_parallel = FALSE) {
+  if (!is_polars_df(other)) {
+    Err_plain("`other` must be a DataFrame.") |>
+      unwrap("in $join():")
+  }
   .pr$DataFrame$lazy(self)$join(
     other = other$lazy(), left_on = left_on, right_on = right_on,
     on = on, how = how, suffix = suffix, allow_parallel = allow_parallel,
@@ -1155,8 +1172,7 @@ DataFrame_std = function(ddof = 1) {
 #' value. Use `$describe()` to specify several quantiles.
 #' @keywords DataFrame
 #' @param quantile Numeric of length 1 between 0 and 1.
-#' @param interpolation Interpolation method: "nearest", "higher", "lower",
-#' "midpoint", or "linear".
+#' @inheritParams Expr_quantile
 #' @return DataFrame
 #' @examples pl$DataFrame(mtcars)$quantile(.4)
 DataFrame_quantile = function(quantile, interpolation = "nearest") {
@@ -1235,7 +1251,7 @@ DataFrame_slice = function(offset, length = NULL) {
 #' x = mtcars
 #' x[1, 2:3] = NA
 #' pl$DataFrame(x)$null_count()
-DataFrame_null_count = "use_extendr_wrapper"
+DataFrame_null_count = use_extendr_wrapper
 
 
 #' @title Estimated size
@@ -1248,7 +1264,7 @@ DataFrame_null_count = "use_extendr_wrapper"
 #' @format function
 #' @examples
 #' pl$DataFrame(mtcars)$estimated_size()
-DataFrame_estimated_size = "use_extendr_wrapper"
+DataFrame_estimated_size = use_extendr_wrapper
 
 
 
@@ -1299,7 +1315,7 @@ DataFrame_join_asof = function(
     by_left = NULL,
     by_right = NULL,
     by = NULL,
-    strategy = "backward",
+    strategy = c("backward", "forward", "nearest"),
     suffix = "_right",
     tolerance = NULL,
     allow_parallel = TRUE,
@@ -1455,68 +1471,147 @@ DataFrame_rename = function(...) {
 #'
 #' @param percentiles One or more percentiles to include in the summary statistics.
 #' All values must be in the range `[0; 1]`.
+#' @param interpolation Interpolation method for computing quantiles. One of
+#'  `"nearest"`, `"higher"`, `"lower"`, `"midpoint"`, or `"linear"`.
 #' @keywords DataFrame
 #' @return DataFrame
 #' @examples
 #' pl$DataFrame(iris)$describe()
-DataFrame_describe = function(percentiles = c(.25, .75)) {
-  perc = percentiles
+#'
+#' # string, date, boolean columns are also supported:
+#' df = pl$DataFrame(
+#'   int = 1:3,
+#'   string = c(letters[1:2], NA),
+#'   date = c(as.Date("2024-01-20"), as.Date("2024-01-21"), NA),
+#'   cat = factor(c(letters[1:2], NA)),
+#'   bool = c(TRUE, FALSE, NA)
+#' )
+#' df
+#'
+#' df$describe()
+DataFrame_describe = function(percentiles = c(.25, .75), interpolation = "nearest") {
+  uw = \(res) unwrap(res, "in $describe():")
 
-  # guard input
-  # styler: off
-  pcase(
-    is.null(perc), Ok(numeric()),
-    !is.numeric(perc), Err(bad_robj(perc)$mistyped("numeric")),
-    isFALSE(all(perc > 0) && all(perc < 1)), {
-      Err(bad_robj(perc)$misvalued("has all vector elements within 0 and 1"))
-    },
-    or_else = Ok(perc)
-    # styler: on
-  ) |>
-    map_err(
-      \(err)  err$bad_arg("percentiles")
-    ) |>
-    and_then(
-      \(perc) {
-        # this polars query should always succeed else flag as ...
-        result(msg = "internal error", {
-          # make percentile expressions
-          perc_exprs = lapply(
-            perc, \(x) pl$all()$quantile(x)$name$prefix(paste0(as.character(x * 100), "pct:"))
-          )
+  if (length(self$columns) == 0) {
+    Err_plain("cannot describe a DataFrame without any columns") |>
+      uw()
+  }
 
-          # bundle all expressions
-          largs = c(
-            list(
-              pl$all()$count()$name$prefix("count:"),
-              pl$all()$null_count()$name$prefix("null_count:"),
-              pl$all()$mean()$name$prefix("mean:"),
-              pl$all()$std()$name$prefix("std:"),
-              pl$all()$min()$name$prefix("min:"),
-              pl$all()$max()$name$prefix("max:"),
-              pl$all()$median()$name$prefix("median:")
-            ),
-            perc_exprs
-          )
-
-          # compute aggregates
-          df_aggs = do.call(self$select, largs)
-          e_col_row_names = pl$lit(df_aggs$columns)$str$splitn(":", 2)
-
-          # pivotize
-          df_pivot = pl$select(
-            e_col_row_names$struct$field("field_0")$alias("rowname"),
-            e_col_row_names$struct$field("field_1")$alias("colname"),
-            pl$lit(unlist(as.data.frame(df_aggs)))$alias("value")
-          )$pivot(
-            values = "value", index = "rowname", columns = "colname"
-          )
-          df_pivot$columns[1] = "describe"
-          df_pivot
-        })
+  result(msg = "internal error", {
+    # Determine which columns should get std/mean/percentile statistics
+    stat_cols = lapply(self$schema, \(x) {
+      is_num = lapply(pl$numeric_dtypes, \(w) w == x) |>
+        unlist() |>
+        any()
+      if (!is_num) {
+        return()
+      } else {
+        is_num
       }
-    ) |>
-    unwrap("in $describe():")
+    }) |>
+      unlist() |>
+      names()
+
+    # separator used temporarily and used to split the column names later on
+    # It's voluntarily weird so that it doesn't match actual column names
+    custom_sep = "??-??"
+
+    # Determine metrics and optional/additional percentiles
+    if (!0.5 %in% percentiles) {
+      percentiles = c(percentiles, 0.5)
+    }
+    metrics = c("count", "null_count", "mean", "std", "min")
+    percentile_exprs = list()
+    for (p in sort(percentiles)) {
+      for (c in self$columns) {
+        expr = if (c %in% stat_cols) {
+          pl$col(c)$quantile(p, interpolation = interpolation)
+        } else {
+          pl$lit(NA)
+        }
+        expr = expr$alias(paste0(p, custom_sep, c))
+        percentile_exprs = append(percentile_exprs, expr)
+      }
+      metrics = append(metrics, paste0(p * 100, "%"))
+    }
+    metrics = append(metrics, "max")
+
+    mean_exprs = lapply(self$columns, function(x) {
+      expr = if (x %in% stat_cols) {
+        pl$col(x)$mean()
+      } else {
+        pl$lit(NA)
+      }
+      expr$alias(paste0("mean", custom_sep, x))
+    })
+
+    std_exprs = lapply(self$columns, function(x) {
+      expr = if (x %in% stat_cols) {
+        pl$col(x)$std()
+      } else {
+        pl$lit(NA)
+      }
+      expr$alias(paste0("std", custom_sep, x))
+    })
+
+    # accept all types but categorical
+    # TODO: add "Enum" to the list of non-accepted types when implemented
+    minmax_cols = lapply(self$schema, \(x) {
+      if (x != pl$Categorical) {
+        x
+      }
+    }) |>
+      unlist() |>
+      names()
+
+    min_exprs = lapply(self$columns, function(x) {
+      expr = if (x %in% minmax_cols) {
+        pl$col(x)$min()
+      } else {
+        pl$lit(NA)
+      }
+      expr$alias(paste0("min", custom_sep, x))
+    })
+
+    max_exprs = lapply(self$columns, function(x) {
+      expr = if (x %in% minmax_cols) {
+        pl$col(x)$max()
+      } else {
+        pl$lit(NA)
+      }
+      expr$alias(paste0("max", custom_sep, x))
+    })
+
+    # Calculate metrics in parallel
+    df_metrics = self$
+      select(
+      unlist(
+        list(
+          pl$all()$count()$name$prefix(paste0("count", custom_sep)),
+          pl$all()$null_count()$name$prefix(paste0("null_count", custom_sep)),
+          mean_exprs,
+          std_exprs,
+          min_exprs,
+          percentile_exprs,
+          max_exprs
+        ),
+        recursive = FALSE
+      )
+    )
+
+    df_metrics$
+      transpose(include_header = TRUE)$
+      with_columns(
+      pl$col("column")$str$split_exact(custom_sep, 1)$
+        struct$rename_fields(c("describe", "variable"))$
+        alias("fields")
+    )$
+      unnest("fields")$
+      drop("column")$
+      pivot(index = "describe", columns = "variable", values = "column_0")$
+      with_columns(describe = pl$lit(metrics))
+  }) |>
+    uw()
 }
 
 #' @title Glimpse values in a DataFrame
@@ -1529,7 +1624,7 @@ DataFrame_describe = function(percentiles = c(.25, .75)) {
 #' pl$DataFrame(iris)$glimpse()
 DataFrame_glimpse = function(..., return_as_string = FALSE) {
   # guard input
-  if (!is_bool(return_as_string)) {
+  if (!is_scalar_bool(return_as_string)) {
     RPolarsErr$new()$
       bad_robj(return_as_string)$
       mistyped("bool")$
@@ -1666,9 +1761,9 @@ DataFrame_sample = function(
 #' # simple use-case
 #' pl$DataFrame(mtcars)$transpose(include_header = TRUE, column_names = rownames(mtcars))
 #'
-#' # All rows must have one shared supertype, recast Categorical to Utf8 which is a supertype
+#' # All rows must have one shared supertype, recast Categorical to String which is a supertype
 #' # of f64, and then dataset "Iris" can be transposed
-#' pl$DataFrame(iris)$with_columns(pl$col("Species")$cast(pl$Utf8))$transpose()
+#' pl$DataFrame(iris)$with_columns(pl$col("Species")$cast(pl$String))$transpose()
 #'
 DataFrame_transpose = function(
     include_header = FALSE,
@@ -1803,4 +1898,116 @@ DataFrame_write_ndjson = function(file) {
   .pr$DataFrame$write_ndjson(self, file) |>
     unwrap("in $write_ndjson():") |>
     invisible()
+}
+
+#' @inherit LazyFrame_rolling title description params details
+#' @return A [GroupBy][GroupBy_class] object
+#'
+#' @examples
+#' df = pl$DataFrame(
+#'   dt = c("2020-01-01", "2020-01-01", "2020-01-01", "2020-01-02", "2020-01-03", "2020-01-08"),
+#'   a = c(3, 7, 5, 9, 2, 1)
+#' )$with_columns(
+#'   pl$col("dt")$str$strptime(pl$Date, format = NULL)$set_sorted()
+#' )
+#'
+#' df$rolling(index_column = "dt", period = "2d")$agg(
+#'   pl$col("a"),
+#'   pl$sum("a")$alias("sum_a"),
+#'   pl$min("a")$alias("min_a"),
+#'   pl$max("a")$alias("max_a")
+#' )
+DataFrame_rolling = function(index_column, period, offset = NULL, closed = "right", by = NULL, check_sorted = TRUE) {
+  if (is.null(offset)) {
+    offset = paste0("-", period)
+  }
+  construct_rolling_group_by(self, index_column, period, offset, closed, by, check_sorted)
+}
+
+#' @inherit LazyFrame_group_by_dynamic title description details params
+#' @return A [GroupBy][GroupBy_class] object
+#'
+#' @examples
+#' df = pl$DataFrame(
+#'   time = pl$date_range(
+#'     start = strptime("2021-12-16 00:00:00", format = "%Y-%m-%d %H:%M:%S", tz = "UTC"),
+#'     end = strptime("2021-12-16 03:00:00", format = "%Y-%m-%d %H:%M:%S", tz = "UTC"),
+#'     interval = "30m",
+#'     eager = TRUE,
+#'   ),
+#'   n = 0:6
+#' )
+#'
+#' # get the sum in the following hour relative to the "time" column
+#' df$group_by_dynamic("time", every = "1h")$agg(
+#'   vals = pl$col("n"),
+#'   sum = pl$col("n")$sum()
+#' )
+#'
+#' # using "include_boundaries = TRUE" is helpful to see the period considered
+#' df$group_by_dynamic("time", every = "1h", include_boundaries = TRUE)$agg(
+#'   vals = pl$col("n")
+#' )
+#'
+#' # in the example above, the values didn't include the one *exactly* 1h after
+#' # the start because "closed = 'left'" by default.
+#' # Changing it to "right" includes values that are exactly 1h after. Note that
+#' # the value at 00:00:00 now becomes included in the interval [23:00:00 - 00:00:00],
+#' # even if this interval wasn't there originally
+#' df$group_by_dynamic("time", every = "1h", closed = "right")$agg(
+#'   vals = pl$col("n")
+#' )
+#' # To keep both boundaries, we use "closed = 'both'". Some values now belong to
+#' # several groups:
+#' df$group_by_dynamic("time", every = "1h", closed = "both")$agg(
+#'   vals = pl$col("n")
+#' )
+#'
+#' # Dynamic group bys can also be combined with grouping on normal keys
+#' df = df$with_columns(groups = pl$Series(c("a", "a", "a", "b", "b", "a", "a")))
+#' df
+#'
+#' df$group_by_dynamic(
+#'   "time",
+#'   every = "1h",
+#'   closed = "both",
+#'   by = "groups",
+#'   include_boundaries = TRUE
+#' )$agg(pl$col("n"))
+#'
+#' # We can also create a dynamic group by based on an index column
+#' df = pl$LazyFrame(
+#'   idx = 0:5,
+#'   A = c("A", "A", "B", "B", "B", "C")
+#' )$with_columns(pl$col("idx")$set_sorted())
+#' df
+#'
+#' df$group_by_dynamic(
+#'   "idx",
+#'   every = "2i",
+#'   period = "3i",
+#'   include_boundaries = TRUE,
+#'   closed = "right"
+#' )$agg(A_agg_list = pl$col("A"))
+DataFrame_group_by_dynamic = function(
+    index_column,
+    every,
+    period = NULL,
+    offset = NULL,
+    include_boundaries = FALSE,
+    closed = "left",
+    label = "left",
+    by = NULL,
+    start_by = "window",
+    check_sorted = TRUE) {
+  if (is.null(offset)) {
+    offset = paste0("-", every)
+  }
+  if (is.null(period)) {
+    period = every
+  }
+  construct_group_by_dynamic(
+    self, index_column, every, period, offset, include_boundaries, closed, label,
+    by, start_by, check_sorted
+  )
 }

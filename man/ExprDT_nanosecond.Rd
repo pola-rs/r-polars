@@ -4,8 +4,8 @@
 \alias{ExprDT_nanosecond}
 \alias{(Expr)$dt$nanosecond}
 \title{Nanosecond}
-\format{
-function
+\usage{
+ExprDT_nanosecond()
 }
 \value{
 Expr of second as Int64

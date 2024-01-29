@@ -63,7 +63,7 @@ wrap_s = function(x) {
 #' @examples {
 #'   pl$Series(1:4)
 #' }
-pl$Series = function(x, name = NULL) {
+pl_Series = function(x, name = NULL) {
   .pr$Series$new(x, name) |>
     unwrap("in pl$Series()")
 }
@@ -181,7 +181,6 @@ Series_rem = function(other) {
   .pr$Series$rem(self, wrap_s(other))
 }
 
-# TODO contribute polars pl$Series(1) == pl$Series(c(NA_integer_)) yields FALSE, != yields TRUE, and =< => yields Null
 #' Compare Series
 #' @name Series_compare
 #' @description compare two Series
@@ -241,8 +240,9 @@ Series_shape = method_as_property(function() {
 
 #' Get r vector/list
 #' @description return R list (if polars Series is list)  or vector (any other polars Series type)
-#' @name Series_to_r
-#' @rdname Series_to_r
+#'
+#' @inheritParams DataFrame_to_data_frame
+#'
 #' @return R list or vector
 #' @keywords Series
 #' @details
@@ -251,11 +251,10 @@ Series_shape = method_as_property(function() {
 #'
 #' @examples
 #'
-#' # make polars Series_Utf8
 #' series_vec = pl$Series(letters[1:3])
 #'
 #' # Series_non_list
-#' series_vec$to_r() # as vector because Series DataType is not list (is Utf8)
+#' series_vec$to_r() # as vector because Series DataType is not list (is String)
 #' series_vec$to_r_list() # implicit call as.list(), convert to list
 #' series_vec$to_vector() # implicit call unlist(), same as to_r() as already vector
 #'
@@ -276,20 +275,21 @@ Series_shape = method_as_property(function() {
 #' series_list$to_r() # as list because Series DataType is list
 #' series_list$to_r_list() # implicit call as.list(), same as to_r() as already list
 #' series_list$to_vector() # implicit call unlist(), append into a vector
-Series_to_r = \() {
-  unwrap(.pr$Series$to_r(self), "in $to_r():")
+Series_to_r = \(int64_conversion = polars_options()$int64_conversion) {
+  unwrap(.pr$Series$to_r(self, int64_conversion), "in $to_r():")
 }
 # TODO replace list example with Series only syntax
 
 #' @rdname Series_to_r
 #' @name Series_to_vector
 #' @description return R vector (implicit unlist)
+#' @inheritParams DataFrame_to_data_frame
 #' @return R vector
 #' @keywords Series
 #' series_vec = pl$Series(letters[1:3])
 #' series_vec$to_vector()
-Series_to_vector = \() {
-  unlist(unwrap(.pr$Series$to_r(self)), "in $to_vector():")
+Series_to_vector = \(int64_conversion = polars_options()$int64_conversion) {
+  unlist(unwrap(.pr$Series$to_r(self, int64_conversion)), "in $to_vector():")
 }
 
 #' Alias to Series_to_vector (backward compatibility)
@@ -300,11 +300,12 @@ Series_to_r_vector = Series_to_vector
 #' @rdname Series_to_r
 #' @name Series_to_r_list
 #' @description return R list (implicit as.list)
+#' @inheritParams DataFrame_to_data_frame
 #' @return R list
 #' @keywords Series
 #' @examples #
-Series_to_r_list = \() {
-  as.list(unwrap(.pr$Series$to_r(self)), "in $to_r_list():")
+Series_to_r_list = \(int64_conversion = polars_options()$int64_conversion) {
+  as.list(unwrap(.pr$Series$to_r(self, int64_conversion)), "in $to_r_list():")
 }
 
 
@@ -354,7 +355,7 @@ Series_value_counts = function(sort = TRUE, parallel = FALSE) {
 #' @examples
 #' s = pl$Series(letters[1:5], "ltrs")
 #' f = \(x) paste(x, ":", as.integer(charToRaw(x)))
-#' s$map_elements(f, pl$Utf8)
+#' s$map_elements(f, pl$String)
 #'
 #' # same as
 #' pl$Series(sapply(s$to_r(), f), s$name)
@@ -365,14 +366,6 @@ Series_map_elements = function(
   ) |> unwrap("in $map_elements():")
 }
 
-Series_apply = function(f, datatype = NULL, strict_return_type = TRUE,
-                        allow_fail_eval = FALSE) {
-  warning("$apply() is deprecated and will be removed in 0.13.0. Use $map_elements() instead.")
-  Series_map_elements(f,
-    datatype = datatype, strict_return_type = strict_return_type,
-    allow_fail_eval = allow_fail_eval
-  )
-}
 
 #' Series_len
 #' @description Length of this Series.
@@ -387,7 +380,7 @@ Series_apply = function(f, datatype = NULL, strict_return_type = TRUE,
 #' @examples
 #' pl$Series(1:10)$len()
 #'
-Series_len = "use_extendr_wrapper"
+Series_len = use_extendr_wrapper
 
 #' Series_floor
 #' @description Floor of this Series
@@ -429,7 +422,7 @@ Series_ceil = function() {
 #' @examples
 #' chunked_series = c(pl$Series(1:3), pl$Series(1:10))
 #' chunked_series$chunk_lengths()
-Series_chunk_lengths = "use_extendr_wrapper"
+Series_chunk_lengths = use_extendr_wrapper
 
 #' append (default immutable)
 #' @description append two Series, see details for mutability
@@ -458,17 +451,17 @@ Series_chunk_lengths = "use_extendr_wrapper"
 #' s_mut = pl$Series(1:3)
 #' s_mut_copy = s_mut
 #' # must deactivate this to allow to use immutable=FALSE
-#' pl$set_options(strictly_immutable = FALSE)
+#' options(polars.strictly_immutable = FALSE)
 #' s_new = s_mut$append(pl$Series(1:3), immutable = FALSE)
 #' identical(s_new$to_vector(), s_mut_copy$to_vector())
 Series_append = function(other, immutable = TRUE) {
   if (!isFALSE(immutable)) {
     c(self, other)
   } else {
-    if (polars_optenv$strictly_immutable) {
+    if (polars_options()$strictly_immutable) {
       stop(paste(
         "append(other , immutable=FALSE) breaks immutability, to enable mutable features run:\n",
-        "`pl$set_options(strictly_immutable = FALSE)`"
+        "`options(polars.strictly_immutable = FALSE)`"
       ))
     }
     unwrap(.pr$Series$append_mut(self, other), "in $append():")
@@ -488,7 +481,7 @@ Series_append = function(other, immutable = TRUE) {
 #' @usage Series_alias(name)
 #' @examples
 #' pl$Series(1:3, name = "alice")$alias("bob")
-Series_alias = "use_extendr_wrapper"
+Series_alias = use_extendr_wrapper
 
 #' Property: Name
 #' @description Get name of Series
@@ -536,7 +529,7 @@ Series_all = function() {
 #' @name Series_arg_max
 #' @examples
 #' pl$Series(c(5, 1))$arg_max()
-Series_arg_max = "use_extendr_wrapper"
+Series_arg_max = use_extendr_wrapper
 
 #' idx to min value
 #'
@@ -547,7 +540,7 @@ Series_arg_max = "use_extendr_wrapper"
 #' @name Series_arg_min
 #' @examples
 #' pl$Series(c(5, 1))$arg_min()
-Series_arg_min = "use_extendr_wrapper"
+Series_arg_min = use_extendr_wrapper
 
 
 #' Clone a Series
@@ -567,7 +560,7 @@ Series_arg_min = "use_extendr_wrapper"
 #' pl$mem_address(s1) != pl$mem_address(s2)
 #' pl$mem_address(s1) == pl$mem_address(s3)
 #'
-Series_clone = "use_extendr_wrapper"
+Series_clone = use_extendr_wrapper
 
 #' Cumulative sum
 #' @description  Get an array with the cumulative sum computed at every element.
@@ -729,7 +722,7 @@ Series_is_sorted = function(descending = FALSE) {
 #' @keywords Series
 #' @param descending Sort the columns in descending order.
 #' @param in_place if TRUE, will set flag mutably and return NULL. Remember to use
-#' pl$set_options(strictly_immutable = FALSE) otherwise an error will be thrown. If FALSE
+#' options(polars.strictly_immutable = FALSE) otherwise an error will be thrown. If FALSE
 #' will return a cloned Series with set_flag which in the very most cases should be just fine.
 #' @return Series invisible
 #' @aliases Series_set_sorted
@@ -737,10 +730,10 @@ Series_is_sorted = function(descending = FALSE) {
 #' s = pl$Series(1:4)$set_sorted()
 #' s$flags
 Series_set_sorted = function(descending = FALSE, in_place = FALSE) {
-  if (in_place && polars_optenv$strictly_immutable) {
+  if (in_place && polars_options()$strictly_immutable) {
     stop(paste(
       "in_place set_sorted() breaks immutability, to enable mutable features run:\n",
-      "`pl$set_options(strictly_immutable = FALSE)`"
+      "`options(polars.strictly_immutable = FALSE)`"
     ))
   }
 
@@ -760,17 +753,17 @@ Series_set_sorted = function(descending = FALSE, in_place = FALSE) {
 #' @param descending Sort in descending order..
 #' @param in_place bool sort mutable in-place, breaks immutability
 #' If true will throw an error unless this option has been set:
-#' `pl$set_options(strictly_immutable = FALSE)`
+#' `options(polars.strictly_immutable = FALSE)`
 #'
 #' @return Series
 #'
 #' @examples
 #' pl$Series(c(1, NA, NaN, Inf, -Inf))$sort()
 Series_sort = function(descending = FALSE, in_place = FALSE) {
-  if (in_place && polars_optenv$strictly_immutable) {
+  if (in_place && polars_options()$strictly_immutable) {
     stop(paste(
       "in_place sort breaks immutability, to enable mutable features run:\n",
-      "`pl$set_options(strictly_immutable = FALSE)`"
+      "`options(polars.strictly_immutable = FALSE)`"
     ))
   }
   if (!in_place) {
@@ -802,16 +795,16 @@ Series_to_frame = function() {
 #' @param strict bool if TRUE, do not allow similar DataType comparison. Overrides null_equal.
 #'
 #' @description  Check if series is equal with another Series.
-#' @name Series_series_equal
+#' @name Series_equals
 #' @return bool
 #' @keywords Series
-#' @aliases series_equal
+#' @aliases equals
 #' @format method
 #'
 #' @examples
-#' pl$Series(1:4, "bob")$series_equal(pl$Series(1:4))
-Series_series_equal = function(other, null_equal = FALSE, strict = FALSE) {
-  .pr$Series$series_equal(self, other, null_equal, strict)
+#' pl$Series(1:4, "bob")$equals(pl$Series(1:4))
+Series_equals = function(other, null_equal = FALSE, strict = FALSE) {
+  .pr$Series$equals(self, other, null_equal, strict)
 }
 # TODO add Series_cast and show examples of strict and null_equals
 
@@ -822,7 +815,7 @@ Series_series_equal = function(other, null_equal = FALSE, strict = FALSE) {
 #' @param name string the new name
 #' @param in_place bool rename in-place, breaks immutability
 #' If true will throw an error unless this option has been set:
-#' `pl$set_options(strictly_immutable = FALSE)`
+#' `options(polars.strictly_immutable = FALSE)`
 #'
 #' @name Series_rename
 #' @return bool
@@ -836,10 +829,10 @@ Series_rename = function(name, in_place = FALSE) {
   if (identical(self$name, name)) {
     return(self)
   } # no change needed
-  if (in_place && polars_optenv$strictly_immutable) {
+  if (in_place && polars_options()$strictly_immutable) {
     stop(paste(
       "in_place breaks \"objects are immutable\" which is expected in R.",
-      "To enable mutable features run: `pl$set_options(strictly_immutable = FALSE)`"
+      "To enable mutable features run: `options(polars.strictly_immutable = FALSE)`"
     ))
   }
 
@@ -868,7 +861,7 @@ Series_rename = function(name, in_place = FALSE) {
 #' pl$Series(1:2, "bob")$rep(3)
 Series_rep = function(n, rechunk = TRUE) {
   if (!is.numeric(n)) stop("n must be numeric")
-  if (!is_bool(rechunk)) stop("rechunk must be a bool")
+  if (!is_scalar_bool(rechunk)) stop("rechunk must be a bool")
   unwrap(.pr$Series$rep(self, n, rechunk), "in $rep():")
 }
 
@@ -978,7 +971,7 @@ Series_expr = method_as_property(function() {
 #'   pl$Series(list(1:1, 1:2, 1:3, 1:4))
 #'   $print()
 #'   $to_lit()
-#'   $list$lengths()
+#'   $list$len()
 #'   $sum()
 #'   $cast(pl$dtypes$Int8)
 #'   $to_series()

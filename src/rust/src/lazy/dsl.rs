@@ -1,7 +1,7 @@
 use crate::concurrent::RFnSignature;
 use crate::rdatatype::{
-    literal_to_any_value, new_rank_method, new_rolling_cov_options, parse_fill_null_strategy,
-    robj_to_timeunit, RPolarsDataType, RPolarsDataTypeVector,
+    literal_to_any_value, new_rolling_cov_options, parse_fill_null_strategy, robj_to_timeunit,
+    RPolarsDataType, RPolarsDataTypeVector,
 };
 use crate::robj_to;
 use crate::rpolarserr::{
@@ -18,8 +18,8 @@ use crate::CONFIG;
 use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut, Rinternals};
 use pl::PolarsError as pl_error;
 use pl::{
-    BinaryNameSpaceImpl, Duration, DurationMethods, IntoSeries, RollingGroupOptions,
-    TemporalMethods, Utf8NameSpaceImpl,
+    BinaryNameSpaceImpl, Duration, DurationMethods, IntoSeries, RollingGroupOptions, SetOperation,
+    StringNameSpaceImpl, TemporalMethods,
 };
 use polars::lazy::dsl;
 use polars::prelude as pl;
@@ -133,7 +133,7 @@ impl RPolarsExpr {
             }
             (Rtype::Strings, 1) => {
                 if robj.is_na() {
-                    Ok(dsl::lit(pl::NULL).cast(pl::DataType::Utf8))
+                    Ok(dsl::lit(pl::NULL).cast(pl::DataType::String))
                 } else {
                     Ok(dsl::lit(robj.as_str().unwrap()))
                 }
@@ -299,7 +299,11 @@ impl RPolarsExpr {
     }
 
     pub fn gather(&self, idx: Robj) -> RResult<Self> {
-        Ok(self.clone().0.gather(robj_to!(PLExpr, idx)?).into())
+        Ok(self
+            .clone()
+            .0
+            .gather(robj_to!(PLExpr, idx)?.cast(pl::DataType::Int64))
+            .into())
     }
 
     pub fn sort_by(&self, by: Robj, descending: Robj) -> RResult<RPolarsExpr> {
@@ -436,16 +440,17 @@ impl RPolarsExpr {
         self.clone().0.explode().into()
     }
 
-    pub fn gather_every(&self, n: Robj) -> RResult<RPolarsExpr> {
+    pub fn gather_every(&self, n: Robj, offset: Robj) -> RResult<RPolarsExpr> {
         let n = robj_to!(usize, n).and_then(|n| match n {
             0 => rerr().bad_arg("n").bad_val("n can't be zero"),
             _ => Ok(n),
         })?;
+        let offset = robj_to!(usize, offset)?;
         Ok(self
             .0
             .clone()
             .map(
-                move |s: pl::Series| Ok(Some(s.gather_every(n))),
+                move |s: pl::Series| Ok(Some(s.gather_every(n, offset))),
                 pl::GetOutput::same_type(),
             )
             .with_fmt("gather_every")
@@ -491,6 +496,7 @@ impl RPolarsExpr {
         center: Robj,
         by_null: Robj,
         closed_null: Robj,
+        warn_if_unsorted: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
@@ -502,6 +508,7 @@ impl RPolarsExpr {
                 center,
                 by_null,
                 closed_null,
+                warn_if_unsorted,
             )?)
             .into())
     }
@@ -514,6 +521,7 @@ impl RPolarsExpr {
         center: Robj,
         by_null: Robj,
         closed_null: Robj,
+        warn_if_unsorted: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
@@ -525,6 +533,7 @@ impl RPolarsExpr {
                 center,
                 by_null,
                 closed_null,
+                warn_if_unsorted,
             )?)
             .into())
     }
@@ -537,6 +546,7 @@ impl RPolarsExpr {
         center: Robj,
         by_null: Robj,
         closed_null: Robj,
+        warn_if_unsorted: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
@@ -548,6 +558,7 @@ impl RPolarsExpr {
                 center,
                 by_null,
                 closed_null,
+                warn_if_unsorted,
             )?)
             .into())
     }
@@ -560,6 +571,7 @@ impl RPolarsExpr {
         center: Robj,
         by_null: Robj,
         closed_null: Robj,
+        warn_if_unsorted: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
@@ -571,6 +583,7 @@ impl RPolarsExpr {
                 center,
                 by_null,
                 closed_null,
+                warn_if_unsorted,
             )?)
             .into())
     }
@@ -583,6 +596,7 @@ impl RPolarsExpr {
         center: Robj,
         by_null: Robj,
         closed_null: Robj,
+        warn_if_unsorted: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
@@ -594,6 +608,7 @@ impl RPolarsExpr {
                 center,
                 by_null,
                 closed_null,
+                warn_if_unsorted,
             )?)
             .into())
     }
@@ -606,6 +621,7 @@ impl RPolarsExpr {
         center: Robj,
         by_null: Robj,
         closed_null: Robj,
+        warn_if_unsorted: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
@@ -617,6 +633,7 @@ impl RPolarsExpr {
                 center,
                 by_null,
                 closed_null,
+                warn_if_unsorted,
             )?)
             .into())
     }
@@ -629,6 +646,7 @@ impl RPolarsExpr {
         center: Robj,
         by_null: Robj,
         closed_null: Robj,
+        warn_if_unsorted: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
@@ -640,6 +658,7 @@ impl RPolarsExpr {
                 center,
                 by_null,
                 closed_null,
+                warn_if_unsorted,
             )?)
             .into())
     }
@@ -655,6 +674,7 @@ impl RPolarsExpr {
         center: Robj,
         by: Robj,
         closed: Robj,
+        warn_if_unsorted: Robj,
     ) -> RResult<Self> {
         let options = pl::RollingOptions {
             window_size: pl::Duration::parse(robj_to!(str, window_size)?),
@@ -663,13 +683,17 @@ impl RPolarsExpr {
             center: robj_to!(bool, center)?,
             by: robj_to!(Option, String, by)?,
             closed_window: robj_to!(Option, ClosedWindow, closed)?,
-            fn_params: Some(pl::Arc::new(pl::RollingQuantileParams {
-                prob: robj_to!(f64, quantile)?,
-                interpol: robj_to!(new_quantile_interpolation_option, interpolation)?,
-            }) as pl::Arc<dyn std::any::Any + Send + Sync>),
+            warn_if_unsorted: robj_to!(bool, warn_if_unsorted)?,
+            fn_params: None,
         };
+        let quantile = robj_to!(f64, quantile)?;
+        let interpolation = robj_to!(new_quantile_interpolation_option, interpolation)?;
 
-        Ok(self.0.clone().rolling_quantile(options).into())
+        Ok(self
+            .0
+            .clone()
+            .rolling_quantile(interpolation, quantile, options)
+            .into())
     }
 
     pub fn rolling_skew(&self, window_size_f: f64, bias: bool) -> List {
@@ -688,19 +712,13 @@ impl RPolarsExpr {
         self.0.clone().abs().into()
     }
 
-    // TODO: support seed option
-    fn rank(&self, method: &str, descending: bool) -> List {
-        let expr_res = new_rank_method(method)
-            .map(|rank_method| {
-                let options = pl::RankOptions {
-                    method: rank_method,
-                    descending: descending,
-                };
-                RPolarsExpr(self.0.clone().rank(options, Some(0u64)))
-            })
-            .map_err(|err| format!("rank: {}", err));
-
-        r_result_list(expr_res)
+    fn rank(&self, method: Robj, descending: Robj, seed: Robj) -> RResult<Self> {
+        let options = pl::RankOptions {
+            method: robj_to!(RankMethod, method)?,
+            descending: robj_to!(bool, descending)?,
+        };
+        let seed = robj_to!(Option, u64, seed)?;
+        Ok(self.0.clone().rank(options, seed).into())
     }
 
     fn diff(&self, n_float: Robj, null_behavior: Robj) -> RResult<RPolarsExpr> {
@@ -899,7 +917,7 @@ impl RPolarsExpr {
                     move |s| {
                         //swap owned inline string to str as only supported and if swapped here life time is long enough
                         let av = match &av {
-                            pl::AnyValue::Utf8Owned(x) => pl::AnyValue::Utf8(x.as_str()),
+                            pl::AnyValue::StringOwned(x) => pl::AnyValue::String(x.as_str()),
                             x => x.clone(),
                         };
                         s.extend_constant(av, n).map(Some)
@@ -970,9 +988,36 @@ impl RPolarsExpr {
         self.0.clone().peak_max().into()
     }
 
+    pub fn replace(
+        &self,
+        old: Robj,
+        new: Robj,
+        default: Robj,
+        return_dtype: Robj,
+    ) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .replace(
+                robj_to!(PLExpr, old)?,
+                robj_to!(PLExpr, new)?,
+                robj_to!(Option, PLExpr, default)?,
+                robj_to!(Option, PLPolarsDataType, return_dtype)?,
+            )
+            .into())
+    }
+
+    pub fn rle(&self) -> RResult<Self> {
+        Ok(self.0.clone().rle().into())
+    }
+
+    pub fn rle_id(&self) -> RResult<Self> {
+        Ok(self.0.clone().rle_id().into())
+    }
+
     //arr/list methods
 
-    fn list_lengths(&self) -> Self {
+    fn list_len(&self) -> Self {
         self.0.clone().list().len().into()
     }
 
@@ -1001,7 +1046,7 @@ impl RPolarsExpr {
             .clone()
             .list()
             .sort(SortOptions {
-                descending: descending,
+                descending,
                 ..Default::default()
             })
             .with_fmt("list.sort")
@@ -1085,11 +1130,11 @@ impl RPolarsExpr {
     fn list_to_struct(
         &self,
         n_field_strategy: Robj,
-        name_gen: Robj,
+        fields: Robj,
         upper_bound: Robj,
     ) -> RResult<Self> {
         let width_strat = robj_to!(ListToStructWidthStrategy, n_field_strategy)?;
-        let name_gen = robj_to!(Option, Robj, name_gen)?.map(|robj| {
+        let fields = robj_to!(Option, Robj, fields)?.map(|robj| {
             let par_fn: ParRObj = robj.into();
             let f: Arc<(dyn Fn(usize) -> SmartString<LazyCompact> + Send + Sync + 'static)> =
                 pl::Arc::new(move |idx: usize| {
@@ -1104,75 +1149,33 @@ impl RPolarsExpr {
         let ub = robj_to!(usize, upper_bound)?;
         Ok(RPolarsExpr(self.0.clone().list().to_struct(
             width_strat,
-            name_gen,
+            fields,
             ub,
         )))
     }
 
-    pub fn str_to_date(
-        &self,
-        format: Robj,
-        strict: Robj,
-        exact: Robj,
-        cache: Robj,
-    ) -> RResult<Self> {
-        Ok(self
-            .0
-            .clone()
-            .str()
-            .to_date(pl::StrptimeOptions {
-                format: robj_to!(Option, String, format)?,
-                strict: robj_to!(bool, strict)?,
-                exact: robj_to!(bool, exact)?,
-                cache: robj_to!(bool, cache)?,
-            })
-            .into())
+    fn list_all(&self) -> Self {
+        self.0.clone().list().all().into()
     }
 
-    #[allow(clippy::too_many_arguments)]
-    pub fn str_to_datetime(
-        &self,
-        format: Robj,
-        time_unit: Robj,
-        time_zone: Robj,
-        strict: Robj,
-        exact: Robj,
-        cache: Robj,
-        ambiguous: Robj,
-    ) -> RResult<Self> {
-        Ok(self
-            .0
-            .clone()
-            .str()
-            .to_datetime(
-                robj_to!(Option, timeunit, time_unit)?,
-                robj_to!(Option, String, time_zone)?,
-                pl::StrptimeOptions {
-                    format: robj_to!(Option, String, format)?,
-                    strict: robj_to!(bool, strict)?,
-                    exact: robj_to!(bool, exact)?,
-                    cache: robj_to!(bool, cache)?,
-                },
-                robj_to!(PLExpr, ambiguous)?,
-            )
-            .into())
+    fn list_any(&self) -> Self {
+        self.0.clone().list().any().into()
     }
 
-    pub fn str_to_time(&self, format: Robj, strict: Robj, cache: Robj) -> RResult<Self> {
-        Ok(self
-            .0
-            .clone()
-            .str()
-            .to_time(pl::StrptimeOptions {
-                format: robj_to!(Option, String, format)?,
-                strict: robj_to!(bool, strict)?,
-                cache: robj_to!(bool, cache)?,
-                exact: true,
-            })
-            .into())
+    fn list_set_operation(&self, other: Robj, operation: Robj) -> RResult<Self> {
+        let other = robj_to!(PLExprCol, other)?;
+        let operation = robj_to!(SetOperation, operation)?;
+        let e = self.0.clone().list();
+        Ok(match operation {
+            SetOperation::Intersection => e.set_intersection(other),
+            SetOperation::Difference => e.set_difference(other),
+            SetOperation::Union => e.union(other),
+            SetOperation::SymmetricDifference => e.set_symmetric_difference(other),
+        }
+        .into())
     }
 
-    //end list/arr methods
+    //datetime methods
 
     pub fn dt_truncate(&self, every: Robj, offset: Robj) -> RResult<Self> {
         Ok(self
@@ -1298,13 +1301,10 @@ impl RPolarsExpr {
     }
 
     pub fn dt_replace_time_zone(&self, tz: Nullable<String>, ambiguous: Robj) -> RResult<Self> {
-        Ok(RPolarsExpr(
-            self.0
-                .clone()
-                .dt()
-                .replace_time_zone(tz.into_option(), robj_to!(PLExpr, ambiguous)?)
-                .into(),
-        ))
+        Ok(RPolarsExpr(self.0.clone().dt().replace_time_zone(
+            tz.into_option(),
+            robj_to!(PLExpr, ambiguous)?,
+        )))
     }
 
     pub fn dt_total_days(&self) -> RResult<Self> {
@@ -1786,7 +1786,7 @@ impl RPolarsExpr {
     pub fn str_len_bytes(&self) -> Self {
         use pl::*;
         let function = |s: pl::Series| {
-            let ca = s.utf8()?;
+            let ca = s.str()?;
             Ok(Some(ca.str_len_bytes().into_series()))
         };
         self.clone()
@@ -1798,7 +1798,7 @@ impl RPolarsExpr {
 
     pub fn str_len_chars(&self) -> Self {
         let function = |s: pl::Series| {
-            let ca = s.utf8()?;
+            let ca = s.str()?;
             Ok(Some(ca.str_len_chars().into_series()))
         };
         self.clone()
@@ -1826,7 +1826,7 @@ impl RPolarsExpr {
     }
 
     pub fn str_to_titlecase(&self) -> RResult<Self> {
-        f_str_to_titlecase(&self)
+        f_str_to_titlecase(self)
     }
 
     pub fn str_strip_chars(&self, matches: Robj) -> RResult<Self> {
@@ -1903,7 +1903,7 @@ impl RPolarsExpr {
             use pl::*;
             let pat: String = robj_to!(String, pat, "in str$json_path_match: {}")?;
             let function = move |s: Series| {
-                let ca = s.utf8()?;
+                let ca = s.str()?;
                 match ca.json_path_match(&pat) {
                     Ok(ca) => Ok(Some(ca.into_series())),
                     Err(e) => Err(pl::PolarsError::ComputeError(format!("{e:?}").into())),
@@ -1912,83 +1912,56 @@ impl RPolarsExpr {
             Ok(RPolarsExpr(
                 self.0
                     .clone()
-                    .map(function, pl::GetOutput::from_type(pl::DataType::Utf8))
+                    .map(function, pl::GetOutput::from_type(pl::DataType::String))
                     .with_fmt("str.json_path_match"),
             ))
         }();
         r_result_list(res)
     }
 
-    pub fn str_json_extract(&self, dtype: Robj, infer_schema_len: Robj) -> RResult<Self> {
+    pub fn str_json_decode(&self, dtype: Robj, infer_schema_len: Robj) -> RResult<Self> {
         let dtype = robj_to!(Option, RPolarsDataType, dtype)?.map(|dty| dty.0);
         let infer_schema_len = robj_to!(Option, usize, infer_schema_len)?;
         Ok(self
             .0
             .clone()
             .str()
-            .json_extract(dtype, infer_schema_len)
+            .json_decode(dtype, infer_schema_len)
             .into())
     }
 
-    pub fn str_hex_encode(&self) -> Self {
-        use pl::*;
-        self.clone()
-            .0
-            .map(
-                move |s| s.utf8().map(|s| Some(s.hex_encode().into_series())),
-                pl::GetOutput::same_type(),
-            )
-            .with_fmt("str.hex_encode")
-            .into()
+    pub fn str_hex_encode(&self) -> RResult<Self> {
+        Ok(self.0.clone().str().hex_encode().into())
     }
 
-    pub fn str_hex_decode(&self, strict: bool) -> Self {
-        use pl::*;
-        self.clone()
+    pub fn str_hex_decode(&self, strict: Robj) -> RResult<Self> {
+        Ok(self
             .0
-            .map(
-                move |s| s.utf8()?.hex_decode(strict).map(|s| Some(s.into_series())),
-                pl::GetOutput::same_type(),
-            )
-            .with_fmt("str.hex_decode")
-            .into()
+            .clone()
+            .str()
+            .hex_decode(robj_to!(bool, strict)?)
+            .into())
     }
-    pub fn str_base64_encode(&self) -> Self {
-        use pl::*;
-        self.clone()
-            .0
-            .map(
-                move |s| s.utf8().map(|s| Some(s.base64_encode().into_series())),
-                pl::GetOutput::same_type(),
-            )
-            .with_fmt("str.base64_encode")
-            .into()
+    pub fn str_base64_encode(&self) -> RResult<Self> {
+        Ok(self.0.clone().str().base64_encode().into())
     }
 
-    pub fn str_base64_decode(&self, strict: bool) -> Self {
-        use pl::*;
-        self.clone()
+    pub fn str_base64_decode(&self, strict: Robj) -> RResult<Self> {
+        Ok(self
             .0
-            .map(
-                move |s| {
-                    s.utf8()?
-                        .base64_decode(strict)
-                        .map(|s| Some(s.into_series()))
-                },
-                pl::GetOutput::same_type(),
-            )
-            .with_fmt("str.base64_decode")
-            .into()
+            .clone()
+            .str()
+            .base64_decode(robj_to!(bool, strict)?)
+            .into())
     }
 
-    pub fn str_extract(&self, pattern: Robj, group_index: Robj) -> List {
-        let res = || -> Result<RPolarsExpr, String> {
-            let pat = robj_to!(String, pattern)?;
-            let gi = robj_to!(usize, group_index)?;
-            Ok(self.0.clone().str().extract(pat.as_str(), gi).into())
-        }()
-        .map_err(|err| format!("in str$extract: {}", err));
-        r_result_list(res)
+    pub fn str_extract(&self, pattern: Robj, group_index: Robj) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .str()
+            .extract(robj_to!(str, pattern)?, robj_to!(usize, group_index)?)
+            .into())
     }
 
     pub fn str_extract_all(&self, pattern: &RPolarsExpr) -> Self {
@@ -2004,7 +1977,69 @@ impl RPolarsExpr {
             .into())
     }
 
-    //NOTE SHOW CASE all R side argument handling
+    pub fn str_to_date(
+        &self,
+        format: Robj,
+        strict: Robj,
+        exact: Robj,
+        cache: Robj,
+    ) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .str()
+            .to_date(pl::StrptimeOptions {
+                format: robj_to!(Option, String, format)?,
+                strict: robj_to!(bool, strict)?,
+                exact: robj_to!(bool, exact)?,
+                cache: robj_to!(bool, cache)?,
+            })
+            .into())
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    pub fn str_to_datetime(
+        &self,
+        format: Robj,
+        time_unit: Robj,
+        time_zone: Robj,
+        strict: Robj,
+        exact: Robj,
+        cache: Robj,
+        ambiguous: Robj,
+    ) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .str()
+            .to_datetime(
+                robj_to!(Option, timeunit, time_unit)?,
+                robj_to!(Option, String, time_zone)?,
+                pl::StrptimeOptions {
+                    format: robj_to!(Option, String, format)?,
+                    strict: robj_to!(bool, strict)?,
+                    exact: robj_to!(bool, exact)?,
+                    cache: robj_to!(bool, cache)?,
+                },
+                robj_to!(PLExpr, ambiguous)?,
+            )
+            .into())
+    }
+
+    pub fn str_to_time(&self, format: Robj, strict: Robj, cache: Robj) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .str()
+            .to_time(pl::StrptimeOptions {
+                format: robj_to!(Option, String, format)?,
+                strict: robj_to!(bool, strict)?,
+                cache: robj_to!(bool, cache)?,
+                exact: true,
+            })
+            .into())
+    }
+
     pub fn str_split(&self, by: Robj, inclusive: Robj) -> Result<RPolarsExpr, String> {
         let by = robj_to!(PLExpr, by)?;
         let inclusive = robj_to!(bool, inclusive)?;
@@ -2015,8 +2050,6 @@ impl RPolarsExpr {
         }
     }
 
-    //NOTE SHOW CASE all rust side argument handling, n is usize and had to be
-    //handled on rust side anyways
     pub fn str_split_exact(
         &self,
         by: Robj,
@@ -2100,6 +2133,41 @@ impl RPolarsExpr {
             .into())
     }
 
+    pub fn str_reverse(&self) -> RResult<Self> {
+        Ok(self.0.clone().str().reverse().into())
+    }
+
+    pub fn str_contains_any(&self, patterns: Robj, ascii_case_insensitive: Robj) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .str()
+            .contains_any(
+                robj_to!(PLExpr, patterns)?,
+                robj_to!(bool, ascii_case_insensitive)?,
+            )
+            .into())
+    }
+
+    pub fn str_replace_many(
+        &self,
+        patterns: Robj,
+        replace_with: Robj,
+        ascii_case_insensitive: Robj,
+    ) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .str()
+            .replace_many(
+                robj_to!(PLExpr, patterns)?,
+                robj_to!(PLExpr, replace_with)?,
+                robj_to!(bool, ascii_case_insensitive)?,
+            )
+            .into())
+    }
+
+    //binary methods
     pub fn bin_contains(&self, lit: Robj) -> RResult<Self> {
         Ok(self
             .0
@@ -2256,7 +2324,11 @@ impl RPolarsExpr {
         let ordering = robj_to!(Map, str, ordering, |s| {
             Ok(crate::rdatatype::new_categorical_ordering(s).map_err(Rctx::Plain)?)
         })?;
-        Ok(self.0.clone().cat().set_ordering(ordering).into())
+        Ok(self
+            .0
+            .clone()
+            .cast(pl::DataType::Categorical(None, ordering))
+            .into())
     }
 
     fn cat_get_categories(&self) -> RPolarsExpr {
@@ -2367,10 +2439,7 @@ fn f_str_to_titlecase(expr: &RPolarsExpr) -> RResult<RPolarsExpr> {
     return (Ok(expr.0.clone().str().to_titlecase().into()));
 
     #[cfg(not(feature = "simd"))]
-    rerr().plain(
-        "$to_titlecase() is only available with 'simd' enabled. Try our github \
-    binary releases or compile with env var RPOLARS_FULL_FEATURES = 'true'",
-    )
+    rerr().plain("$to_titlecase() is only available with the 'simd' feature")
 }
 
 //allow proto expression that yet only are strings
@@ -2455,6 +2524,7 @@ pub fn make_rolling_options(
     center: Robj,
     by_null: Robj,
     closed_null: Robj,
+    warn_if_unsorted: Robj,
 ) -> RResult<pl::RollingOptions> {
     Ok(pl::RollingOptions {
         window_size: pl::Duration::parse(robj_to!(str, window_size)?),
@@ -2463,6 +2533,7 @@ pub fn make_rolling_options(
         center: robj_to!(bool, center)?,
         by: robj_to!(Option, String, by_null)?,
         closed_window: robj_to!(Option, ClosedWindow, closed_null)?,
+        warn_if_unsorted: robj_to!(bool, warn_if_unsorted)?,
         ..Default::default()
     })
 }
@@ -2568,7 +2639,7 @@ pub fn robj_to_col(name: Robj, dotdotdot: Robj) -> RResult<RPolarsExpr> {
 
         match () {
             _ if name.is_string() && name.len() == 1 && dotdotdot.len() == 0 => {
-                Ok(RPolarsExpr::col(name.as_str().unwrap_or(&"")))
+                Ok(RPolarsExpr::col(name.as_str().unwrap_or("")))
             }
             _ if name.inherits("RPolarsDataType")
                 //or if name is a list and first element is RPolarsDataType

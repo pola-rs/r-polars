@@ -114,6 +114,10 @@ impl<T, E: Into<RPolarsErr>> WithRctx<T> for core::result::Result<T, E> {
 
 #[extendr]
 impl RPolarsErr {
+    fn default() -> Self {
+        Self::new()
+    }
+
     pub fn new() -> Self {
         RPolarsErr::new_from_ctxs(VecDeque::new())
     }
@@ -238,12 +242,11 @@ impl std::fmt::Display for RPolarsErr {
         if let Some(c) = &self.rcall {
             writeln!(indented(f).ind(0), "During function call [{}]", c)?
         }
-        Ok(self
-            .contexts
+        self.contexts
             .iter()
             .rev()
             .enumerate()
-            .try_for_each(|(idx, ctx)| writeln!(indented(f).ind(idx + 1), "{}", ctx))?)
+            .try_for_each(|(idx, ctx)| writeln!(indented(f).ind(idx + 1), "{}", ctx))
     }
 }
 

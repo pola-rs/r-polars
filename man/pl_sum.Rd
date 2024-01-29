@@ -3,17 +3,16 @@
 \name{pl_sum}
 \alias{pl_sum}
 \title{Compute sum in one or several columns}
-\arguments{
-\item{...}{is a:
-If one arg:
-\itemize{
-\item Series or Expr, same as \code{column$sum()}
-\item string, same as \code{pl$col(column)$sum()}
-\item numeric, same as \code{pl$lit(column)$sum()}
-\item list of strings(column names) or expressions to add up as expr1 + expr2 + expr3 + ...
+\usage{
+pl_sum(...)
 }
-
-If several args, then wrapped in a list and handled as above.}
+\arguments{
+\item{...}{One or several elements. Each element can be:
+\itemize{
+\item Series or Expr
+\item string, that is parsed as columns
+\item numeric, that is parsed as literal
+}}
 }
 \value{
 Expr

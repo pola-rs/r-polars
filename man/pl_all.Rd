@@ -3,6 +3,13 @@
 \name{pl_all}
 \alias{pl_all}
 \title{New Expr referring to all columns}
+\usage{
+pl_all(name = NULL)
+}
+\arguments{
+\item{name}{Character vector indicating on which columns the AND operation
+should be applied.}
+}
 \value{
 Boolean literal
 }
@@ -14,6 +21,7 @@ last \code{all()} in example is this Expr method, the first \code{pl$all()} refe
 to "all-columns" and is an expression constructor
 }
 \examples{
-pl$DataFrame(list(all = c(TRUE, TRUE), some = c(TRUE, FALSE)))$select(pl$all()$all())
+pl$DataFrame(all = c(TRUE, TRUE), some = c(TRUE, FALSE))$
+  select(pl$all()$all())
 }
 \keyword{Expr_new}

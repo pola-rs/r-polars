@@ -3,9 +3,9 @@
 \name{ExprList_unique}
 \alias{ExprList_unique}
 \alias{list_unique}
-\title{Unique list}
-\format{
-function
+\title{Get unique values in a list}
+\usage{
+ExprList_unique()
 }
 \value{
 Expr
@@ -14,7 +14,6 @@ Expr
 Get the unique/distinct values in the list.
 }
 \examples{
-df = pl$DataFrame(list(a = list(1, 1, 2)))
-df$select(pl$col("a")$list$unique())
+df = pl$DataFrame(list(values = list(c(2, 2, NA), c(1, 2, 3), NA_real_)))
+df$with_columns(unique = pl$col("values")$list$unique())
 }
-\keyword{ExprList}

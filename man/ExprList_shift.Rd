@@ -3,21 +3,27 @@
 \name{ExprList_shift}
 \alias{ExprList_shift}
 \alias{list_shift}
-\title{Shift sublists}
-\format{
-function
+\title{Shift list values by \code{n} indices}
+\usage{
+ExprList_shift(periods = 1)
 }
 \arguments{
-\item{periods}{Value. Number of places to shift (may be negative).}
+\item{periods}{Number of places to shift (may be negative). Can be an Expr.
+Strings are \emph{not} parsed as columns.}
 }
 \value{
 Expr
 }
 \description{
-Shift values by the given period.
+Shift list values by \code{n} indices
 }
 \examples{
-df = pl$DataFrame(list(s = list(1:4, c(10L, 2L, 1L))))
-df$select(pl$col("s")$list$shift())
+df = pl$DataFrame(
+  s = list(1:4, c(10L, 2L, 1L)),
+  idx = 1:2
+)
+df$with_columns(
+  shift_by_expr = pl$col("s")$list$shift(pl$col("idx")),
+  shift_by_lit = pl$col("s")$list$shift(2)
+)
 }
-\keyword{ExprList}

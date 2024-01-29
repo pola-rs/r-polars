@@ -4,7 +4,7 @@
 \alias{Expr_nan_max}
 \title{Get maximum value with NaN}
 \usage{
-Expr_nan_max
+Expr_nan_max()
 }
 \value{
 Expr
@@ -16,4 +16,3 @@ Get maximum value, but returns \code{NaN} if there are any.
 pl$DataFrame(x = c(1, NA, 3, NaN, Inf))$
   with_columns(nan_max = pl$col("x")$nan_max())
 }
-\keyword{datasets}

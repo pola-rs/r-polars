@@ -1,14 +1,14 @@
 test_that("lazyframe join examples", {
-  df = pl$DataFrame(list(
+  df = pl$LazyFrame(
     foo = 1:3,
     bar = c(6, 7, 8),
     ham = c("a", "b", "c")
-  ))$lazy()
+  )
 
-  other_df = pl$DataFrame(list(
+  other_df = pl$LazyFrame(
     apple = c("x", "y", "z"),
     ham = c("a", "b", "d")
-  ))$lazy()
+  )
 
   # inner default join
   df_inner = df$join(other_df, on = "ham")$collect()
@@ -24,18 +24,23 @@ test_that("lazyframe join examples", {
     data.frame(
       foo = c(1L, 2L, NA, 3L),
       bar = c(6, 7, NA, 8),
-      ham = c("a", "b", "d", "c"),
-      apple = c("x", "y", "z", NA)
+      ham = c("a", "b", NA, "c"),
+      apple = c("x", "y", "z", NA),
+      ham_right = c("a", "b", "d", NA)
     )
   )
 
   # error on unknown how choice
-  ctx = df$join(other_df, on = "ham", how = "not a choice") |> get_err_ctx()
-  expect_true(startsWith(ctx$BadValue, "JoinType choice ['not a choice'] should be one of"))
+  expect_error(
+    df$join(other_df, on = "ham", how = "foobar"),
+    "should be one of"
+  )
 
   # error on invalid choice
-  ctx = df$join(other_df, on = "ham", how = 42) |> get_err_ctx()
-  expect_true("NotAChoice" %in% names(ctx))
+  expect_error(
+    df$join(other_df, on = "ham", how = 42),
+    "Not a valid R choice"
+  )
 })
 
 
@@ -124,5 +129,67 @@ test_that("cross join, DataFrame", {
       x = rep(letters[1:3], each = 3),
       x_right = rep(letters[1:3], 3)
     )
+  )
+})
+
+test_that("'other' must be a LazyFrame", {
+  expect_error(
+    pl$LazyFrame(x = letters[1:5], y = 1:5)$join(mtcars, on = "x"),
+    "`other` must be a LazyFrame"
+  )
+})
+
+test_that("argument 'validate' works", {
+  df1 = pl$LazyFrame(x = letters[1:5], y = 1:5)
+  df2 = pl$LazyFrame(x = c("a", letters[1:4]), y2 = 6:10)
+
+  # 1:1
+  expect_error(
+    df1$join(df2, on = "x", validate = "1:1")$collect(),
+    "join keys did not fulfil 1:1 validation"
+  )
+
+  # m:1
+  expect_error(
+    df1$join(df2, on = "x", validate = "m:1")$collect(),
+    "join keys did not fulfil m:1 validation"
+  )
+
+  # TODO: currently (rs-0.36.2) this should error but doesn't
+  # upstream issue: https://github.com/pola-rs/polars/issues/13852
+  #
+  # 1:m
+  # expect_error(
+  #   df2$join(df1, on = "x", validate = "1:m")$collect(),
+  #   "join keys did not fulfil 1:m validation"
+  # )
+
+  expect_error(
+    df2$join(df1, on = "x", validate = "foobar")$collect(),
+    "should be one of"
+  )
+})
+
+test_that("argument 'join_nulls' works", {
+  df1 = pl$LazyFrame(x = c(NA, letters[1:2]), y = 1:3)
+  df2 = pl$LazyFrame(x = c(NA, letters[2:3]), y2 = 4:6)
+
+  # discard nulls by default
+  expect_identical(
+    df1$join(df2, on = "x")$collect()$to_data_frame(),
+    data.frame(x = "b", y = 3L, y2 = 5L)
+  )
+
+  # consider nulls as a valid key
+  expect_identical(
+    df1$join(df2, on = "x", join_nulls = TRUE)$collect()$to_data_frame(),
+    data.frame(x = c(NA, "b"), y = c(1L, 3L), y2 = c(4L, 5L))
+  )
+
+  # several nulls
+  df2 = pl$LazyFrame(x = c(NA, letters[2:3], NA), y2 = 4:7)
+  expect_identical(
+    df1$join(df2, on = "x", join_nulls = TRUE)$collect()$to_data_frame(),
+    data.frame(x = c(NA, "b", NA), y = c(1L, 3L, 1L), y2 = c(4L, 5L, 7L))
   )
 })

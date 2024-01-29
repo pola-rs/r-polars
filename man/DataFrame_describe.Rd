@@ -4,11 +4,14 @@
 \alias{DataFrame_describe}
 \title{Summary statistics for a DataFrame}
 \usage{
-DataFrame_describe(percentiles = c(0.25, 0.75))
+DataFrame_describe(percentiles = c(0.25, 0.75), interpolation = "nearest")
 }
 \arguments{
 \item{percentiles}{One or more percentiles to include in the summary statistics.
 All values must be in the range \verb{[0; 1]}.}
+
+\item{interpolation}{Interpolation method for computing quantiles. One of
+\code{"nearest"}, \code{"higher"}, \code{"lower"}, \code{"midpoint"}, or \code{"linear"}.}
 }
 \value{
 DataFrame
@@ -20,5 +23,17 @@ specified in the argument \code{percentiles}.
 }
 \examples{
 pl$DataFrame(iris)$describe()
+
+# string, date, boolean columns are also supported:
+df = pl$DataFrame(
+  int = 1:3,
+  string = c(letters[1:2], NA),
+  date = c(as.Date("2024-01-20"), as.Date("2024-01-21"), NA),
+  cat = factor(c(letters[1:2], NA)),
+  bool = c(TRUE, FALSE, NA)
+)
+df
+
+df$describe()
 }
 \keyword{DataFrame}

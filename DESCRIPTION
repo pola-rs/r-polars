@@ -1,6 +1,6 @@
 Package: polars
 Title: Lightning-Fast 'DataFrame' Library
-Version: 0.11.0.9001
+Version: 0.13.0.9000
 Depends: R (>= 4.2)
 Imports: utils, codetools
 Authors@R:
@@ -16,9 +16,10 @@ License: MIT + file LICENSE
 Language: en-US
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.0
 SystemRequirements: Cargo (rustc package manager), cmake
-URL: https://github.com/pola-rs/r-polars
+URL: https://rpolars.github.io/,
+    https://github.com/pola-rs/r-polars,
     https://rpolars.r-universe.dev/polars
 Suggests:
     arrow,
@@ -43,7 +44,7 @@ Suggests:
     vctrs,
     withr
 Config/Needs/website:
-    etiennebacher/altdoc@5c69f3b,
+    etiennebacher/altdoc@7b5cec5,
     future.apply,
     here,
     magrittr,
@@ -74,6 +75,7 @@ Collate:
     'dataframe__frame.R'
     'datatype.R'
     'docs.R'
+    'dotdotdot.R'
     'error__rpolarserr.R'
     'error__string.R'
     'error__trait.R'
@@ -91,17 +93,21 @@ Collate:
     'functions__lazy.R'
     'functions__whenthen.R'
     'group_by.R'
-    'info.R'
+    'group_by_dynamic.R'
+    'group_by_rolling.R'
     'ipc.R'
+    'is_polars.R'
     'json.R'
     'lazyframe__group_by.R'
     'lazyframe__lazy.R'
     'namespace.R'
-    'options.R'
     'parquet.R'
     'pkg-knitr.R'
     'pkg-nanoarrow.R'
     'polars-package.R'
+    'polars_envvars.R'
+    'polars_info.R'
+    'polars_options.R'
     'rbackground.R'
     'rlang.R'
     'rust_result.R'
@@ -110,7 +116,7 @@ Collate:
     'sql.R'
     'vctrs.R'
     'zzz.R'
-Config/rextendr/version: 0.3.1
+Config/rextendr/version: 0.3.1.9000
 VignetteBuilder: knitr
-Config/polars/LibVersion: 0.35.1
-Config/polars/RustToolchainVersion: nightly-2023-10-12
+Config/polars/LibVersion: 0.36.1
+Config/polars/RustToolchainVersion: nightly-2023-12-23

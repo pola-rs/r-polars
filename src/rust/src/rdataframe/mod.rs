@@ -225,10 +225,12 @@ impl RPolarsDataFrame {
     //     self.0.compare
     // }
 
-    pub fn to_list(&self) -> List {
+    pub fn to_list(&self, int64_conversion: &str) -> List {
         let robj_vec_res: Result<Vec<Robj>, _> = collect_hinted_result(
             self.0.width(),
-            self.0.iter().map(|x| pl_series_to_list(x, false, true)),
+            self.0
+                .iter()
+                .map(|x| pl_series_to_list(x, false, int64_conversion)),
         );
 
         let robj_list_res = robj_vec_res
@@ -243,10 +245,12 @@ impl RPolarsDataFrame {
     }
 
     //this methods should only be used for benchmarking
-    pub fn to_list_unwind(&self) -> Robj {
+    pub fn to_list_unwind(&self, int64_conversion: &str) -> Robj {
         let robj_vec_res: Result<Vec<Robj>, _> = collect_hinted_result(
             self.0.width(),
-            self.0.iter().map(|x| pl_series_to_list(x, false, true)),
+            self.0
+                .iter()
+                .map(|x| pl_series_to_list(x, false, int64_conversion)),
         );
 
         let robj_list_res = robj_vec_res
@@ -262,11 +266,13 @@ impl RPolarsDataFrame {
 
     // to_list have this variant with set_structs = true at pl_series_to_list
     // does not expose this arg in to_list as it is quite niche and might be deprecated later
-    pub fn to_list_tag_structs(&self) -> List {
+    pub fn to_list_tag_structs(&self, int64_conversion: &str) -> List {
         //convert DataFrame to Result of to R vectors, error if DataType is not supported
         let robj_vec_res: Result<Vec<Robj>, _> = collect_hinted_result(
             self.0.width(),
-            self.0.iter().map(|x| pl_series_to_list(x, true, true)),
+            self.0
+                .iter()
+                .map(|x| pl_series_to_list(x, true, int64_conversion)),
         );
 
         //rewrap Ok(Vec<Robj>) as R list
@@ -281,17 +287,17 @@ impl RPolarsDataFrame {
         r_result_list(robj_list_res)
     }
 
-    pub fn frame_equal(&self, other: &RPolarsDataFrame) -> bool {
-        self.0.frame_equal(&other.0)
+    pub fn equals(&self, other: &RPolarsDataFrame) -> bool {
+        self.0.equals(&other.0)
     }
 
     pub fn select_at_idx(&self, idx: i32) -> List {
-        let expr_result = || -> Result<RPolarsSeries, String> {
+        let expr_result = {
             self.0
                 .select_at_idx(idx as usize)
                 .map(|s| RPolarsSeries(s.clone()))
                 .ok_or_else(|| format!("select_at_idx: no series found at idx {:?}", idx))
-        }();
+        };
         r_result_list(expr_result)
     }
 
@@ -305,25 +311,6 @@ impl RPolarsDataFrame {
 
     pub fn with_columns(&self, exprs: Robj) -> RResult<RPolarsDataFrame> {
         self.lazy().with_columns(exprs)?.collect()
-    }
-
-    //used in GroupBy, not DataFrame
-    pub fn by_agg(
-        &mut self,
-        group_exprs: Robj,
-        agg_exprs: Robj,
-        maintain_order: Robj,
-    ) -> RResult<RPolarsDataFrame> {
-        let group_exprs: Vec<pl::Expr> = robj_to!(VecPLExprCol, group_exprs)?;
-        let agg_exprs: Vec<pl::Expr> = robj_to!(VecPLExprColNamed, agg_exprs)?;
-        let maintain_order = robj_to!(Option, bool, maintain_order)?.unwrap_or(false);
-        let lazy_df = self.clone().0.lazy();
-        let lgb = if maintain_order {
-            lazy_df.group_by_stable(group_exprs)
-        } else {
-            lazy_df.group_by(group_exprs)
-        };
-        RPolarsLazyFrame(lgb.agg(agg_exprs)).collect()
     }
 
     pub fn to_struct(&self, name: Robj) -> RResult<RPolarsSeries> {
@@ -460,7 +447,7 @@ impl RPolarsDataFrame {
     pub fn transpose(&self, keep_names_as: Robj, new_col_names: Robj) -> RResult<Self> {
         let opt_s = robj_to!(Option, str, keep_names_as)?;
         let opt_vec_s = robj_to!(Option, Vec, String, new_col_names)?;
-        let opt_either_vec_s = opt_vec_s.map(|vec_s| Either::Right(vec_s));
+        let opt_either_vec_s = opt_vec_s.map(Either::Right);
         self.0
             .transpose(opt_s, opt_either_vec_s)
             .map_err(polars_to_rpolars_err)
@@ -527,12 +514,12 @@ impl RPolarsDataFrame {
 }
 
 impl RPolarsDataFrame {
-    pub fn to_list_result(&self) -> Result<Robj, pl::PolarsError> {
+    pub fn to_list_result(&self, int64_conversion: &str) -> Result<Robj, pl::PolarsError> {
         //convert DataFrame to Result of to R vectors, error if DataType is not supported
         let robj_vec_res: Result<Vec<Robj>, _> = self
             .0
             .iter()
-            .map(|s| pl_series_to_list(s, true, true))
+            .map(|s| pl_series_to_list(s, true, int64_conversion))
             .collect();
 
         //rewrap Ok(Vec<Robj>) as R list

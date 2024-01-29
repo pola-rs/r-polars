@@ -4,7 +4,7 @@
 \alias{Expr_drop_nans}
 \title{Drop NaN}
 \usage{
-Expr_drop_nans
+Expr_drop_nans()
 }
 \value{
 Expr
@@ -22,4 +22,3 @@ pl$DataFrame(list(x = c(1, 2, NaN, NA)))$select(pl$col("x")$drop_nans())
 \seealso{
 \code{drop_nulls()}
 }
-\keyword{datasets}

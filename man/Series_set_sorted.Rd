@@ -10,7 +10,7 @@ Series_set_sorted(descending = FALSE, in_place = FALSE)
 \item{descending}{Sort the columns in descending order.}
 
 \item{in_place}{if TRUE, will set flag mutably and return NULL. Remember to use
-pl$set_options(strictly_immutable = FALSE) otherwise an error will be thrown. If FALSE
+options(polars.strictly_immutable = FALSE) otherwise an error will be thrown. If FALSE
 will return a cloned Series with set_flag which in the very most cases should be just fine.}
 }
 \value{

@@ -4,6 +4,9 @@
 \alias{pl_Series}
 \alias{Series}
 \title{Create new Series}
+\usage{
+pl_Series(x, name = NULL)
+}
 \arguments{
 \item{x}{any vector}
 

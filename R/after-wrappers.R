@@ -2,10 +2,24 @@
 ## THIS FILE IS SOURCED IMMEDIATELY AFTER extendr-wrappers.R . THIS FILE EXTENDS THE BEHAVIOUR
 ## OF EXTENDR-CLASS-SYSTEM WITH:
 ## 1. SEPARATE PRIVATE (.pr$) AND PUBLIC (pl$) METHODS/FUNCTIONS
-## 2. ADD INTERNAL PROFILER, pl$set_options(debug_polars = TRUE)
+## 2. ADD INTERNAL PROFILER, options(polars.debug_polars = TRUE)
 ## 3. ADD build_debug_print TO DEBUG CLASS CONSTRUCTION DURING PACKAGE BUILDTIME (rarely used)
 ## 4. ADD BETTER METHOD LOOKUP ERR MSGS macro_add_syntax_check_to_class(), HELPS END USER
 ## 5. ADD OPTION TO FLAG A METHOD TO BEHAVE LIKE A PROPERTY method_as_property()
+
+
+#' A dummy function to mark a function to replace extendr-wrapper function
+#'
+#' Define a polars class method like `ClassName_method = use_extendr_wrapper`,
+#' then this method replaced to a function in the extendr-wrappers.R file.
+#'
+#' In the past, we used strings "use_extendr_wrapper" instead of this function,
+#' but in that case [roxygen2][roxygen2::roxygen2] recognized them as data
+#' instead of a function.
+#' @noRd
+use_extendr_wrapper = function() {
+  invisible(TRUE)
+}
 
 
 # Build time options
@@ -44,7 +58,7 @@ extendr_method_to_pure_functions = function(env, class_name = NULL) {
 #' @export
 "$.private_polars_env" = function(self, name) {
   # print called private class in debug mode
-  if (polars_optenv$debug_polars) {
+  if (polars_options()$debug_polars) {
     cat(
       "[", format(subtimer_ms("TIME? "), digits = 4), "ms]\n   .pr$",
       substr(class(self)[2], 4, 99), "$", name, "() -> ",
@@ -210,7 +224,7 @@ class(pl) = c("pl_polars_env", "environment")
 #' @keywords functions
 #' @examples
 #' pl$show_all_public_functions()
-pl$show_all_public_functions = function() {
+pl_show_all_public_functions = function() {
   print_env(pl, "polars public functions via pl$...")
 }
 
@@ -222,12 +236,12 @@ pl$show_all_public_functions = function() {
 #' @keywords functions
 #' @examples
 #' pl$show_all_public_methods()
-pl$show_all_public_methods = function(class_names = NULL) {
+pl_show_all_public_methods = function(class_names = NULL) {
   # subset classes to show
   show_this_env = if (!is.null(class_names)) {
-    as.environment(mget(class_names, envir = pl_pub_class_env))
+    as.environment(mget(class_names, envir = pub_class_env))
   } else {
-    pl_pub_class_env
+    pub_class_env
   }
 
   print_env(
@@ -246,7 +260,9 @@ pl$show_all_public_methods = function(class_names = NULL) {
 #' @noRd
 "$.pl_polars_env" = function(self, name) {
   # print called private class in debug mode
-  if (polars_optenv$debug_polars) {
+  # Exception for pl$reset_options: we don't want to check for options validity
+  # because we're resetting options to their default anyway
+  if (!name %in% c("reset_options", "set_options") && polars_options()$debug_polars) {
     cat(
       "[", format(subtimer_ms("TIME? "), digits = 4), "ms]\npl$", name, "() -> ",
       sep = ""
@@ -273,8 +289,37 @@ pl_class_names = sort(
   )
 ) # TODO discover all public class automatically
 
-pl_pub_env = as.environment(asNamespace("polars"))
-pl_pub_class_env = as.environment(mget(pl_class_names, envir = pl_pub_env))
+pub_env = as.environment(asNamespace("polars"))
+pub_class_env = as.environment(mget(pl_class_names, envir = pub_env))
+
+
+#' Select from an empty DataFrame
+#'
+#' `pl$select(...)` is a shorthand for `pl$DataFrame(list())$select(...)`
+#' @keywords DataFrame
+#' @param ... [Expressions][Expr_class]
+#' @return a [DataFrame][DataFrame_class]
+#' @examples
+#' pl$select(
+#'   pl$lit(1:4)$alias("ints"),
+#'   pl$lit(letters[1:4])$alias("letters")
+#' )
+pl_select = function(...) {
+  .pr$DataFrame$default()$select(...)
+}
+
+
+#' Get Memory Address
+#'
+#' Get underlying mem address a rust object (via ExtPtr). Expert use only.
+#'
+#' Does not give meaningful answers for regular R objects.
+#' @param robj an R object
+#' @return String of mem address
+#' @examples pl$mem_address(pl$Series(1:3))
+pl_mem_address = function(robj) {
+  mem_address(robj)
+}
 
 
 #' @title Any polars class object is made of this

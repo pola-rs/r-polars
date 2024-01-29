@@ -4,7 +4,7 @@
 \alias{Expr_ceil}
 \title{Ceiling}
 \usage{
-Expr_ceil
+Expr_ceil()
 }
 \value{
 Expr
@@ -17,4 +17,3 @@ pl$DataFrame(a = c(0.33, 0.5, 1.02, 1.5, NaN, NA, Inf, -Inf))$with_columns(
   ceiling = pl$col("a")$ceil()
 )
 }
-\keyword{datasets}

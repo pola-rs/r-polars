@@ -6,6 +6,8 @@
 \alias{as_polars_df.data.frame}
 \alias{as_polars_df.RPolarsDataFrame}
 \alias{as_polars_df.RPolarsGroupBy}
+\alias{as_polars_df.RPolarsRollingGroupBy}
+\alias{as_polars_df.RPolarsDynamicGroupBy}
 \alias{as_polars_df.RPolarsSeries}
 \alias{as_polars_df.RPolarsLazyFrame}
 \alias{as_polars_df.RPolarsLazyGroupBy}
@@ -21,6 +23,10 @@ as_polars_df(x, ...)
 \method{as_polars_df}{RPolarsDataFrame}(x, ...)
 
 \method{as_polars_df}{RPolarsGroupBy}(x, ...)
+
+\method{as_polars_df}{RPolarsRollingGroupBy}(x, ...)
+
+\method{as_polars_df}{RPolarsDynamicGroupBy}(x, ...)
 
 \method{as_polars_df}{RPolarsSeries}(x, ...)
 
@@ -98,15 +104,15 @@ regardless the settings specified in this function call.}
 Computation will start in background. Get a handle which later can be converted
 into the resulting DataFrame. Useful in interactive mode to not lock R session.}
 
-\item{rechunk}{bool rewrite in one array per column, Implemented for ChunkedArray
-Array is already contiguous. Not implemented for Table. C}
+\item{rechunk}{A logical flag (default \code{TRUE}).
+Make sure that all data of each column is in contiguous memory.}
 
-\item{schema}{named list of DataTypes or char vec of names. Same length as arrow table.
-If schema names or types do not match arrow table, the columns will be renamed/recast.
-NULL default is to import columns as is. Takes no effect for Array or ChunkedArray}
+\item{schema}{named list of DataTypes, or character vector of column names.
+Should be the same length as the number of columns of \code{x}.
+If schema names or types do not match \code{x}, the columns will be renamed/recast.
+If \code{NULL} (default), convert columns as is.}
 
-\item{schema_overrides}{named list of DataTypes. Name some columns to recast by the DataType.
-Takes not effect for Array or ChunkedArray}
+\item{schema_overrides}{named list of DataTypes. Cast some columns to the DataType.}
 }
 \value{
 a \link[=DataFrame_class]{DataFrame}
@@ -127,15 +133,35 @@ whether the number of rows to fetch is infinite or not.
 # Convert the row names of a data frame to a column
 as_polars_df(mtcars, rownames = "car")
 
-# Convert an arrow Table to a polars LazyFrame
-lf = as_polars_df(
-  arrow::as_arrow_table(mtcars)
-)$lazy()
+# Convert an arrow Table to a polars DataFrame
+at = arrow::arrow_table(x = 1:5, y = 6:10)
+as_polars_df(at)
 
-# Collect all rows
+# Convert an arrow Table, with renaming all columns
+as_polars_df(
+  at,
+  schema = c("a", "b")
+)
+
+# Convert an arrow Table, with renaming and casting all columns
+as_polars_df(
+  at,
+  schema = list(a = pl$Int64, b = pl$String)
+)
+
+# Convert an arrow Table, with renaming and casting some columns
+as_polars_df(
+  at,
+  schema_overrides = list(y = pl$String) # cast some columns
+)
+
+# Create a polars DataFrame from a data.frame
+lf = as_polars_df(mtcars)$lazy()
+
+# Collect all rows from the LazyFrame
 as_polars_df(lf)
 
-# Fetch 5 rows
+# Fetch 5 rows from the LazyFrame
 as_polars_df(lf, 5)
 \dontshow{\}) # examplesIf}
 }

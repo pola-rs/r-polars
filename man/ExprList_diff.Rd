@@ -2,24 +2,26 @@
 % Please edit documentation in R/expr__list.R
 \name{ExprList_diff}
 \alias{ExprList_diff}
-\alias{Expr_list_diff}
-\title{Diff sublists}
-\format{
-function
+\alias{list_diff}
+\title{Compute difference between list values}
+\usage{
+ExprList_diff(n = 1, null_behavior = c("ignore", "drop"))
 }
 \arguments{
-\item{n}{Number of slots to shift}
+\item{n}{Number of slots to shift.}
 
-\item{null_behavior}{choice "ignore"(default) "drop"}
+\item{null_behavior}{How to handle \code{null} values. Either \code{"ignore"} (default)
+or \code{"drop"}.}
 }
 \value{
 Expr
 }
 \description{
-Calculate the n-th discrete difference of every sublist.
+This computes the first discrete difference between shifted items of every
+list. The parameter \code{n} gives the interval between items to subtract, e.g \code{n = 2} the output will be the difference between the 1st and the 3rd value, the
+2nd and 4th value, etc.
 }
 \examples{
 df = pl$DataFrame(list(s = list(1:4, c(10L, 2L, 1L))))
-df$select(pl$col("s")$list$diff(1))
+df$with_columns(diff = pl$col("s")$list$diff(2))
 }
-\keyword{ExprList}

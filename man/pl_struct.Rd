@@ -4,6 +4,9 @@
 \alias{pl_struct}
 \alias{struct}
 \title{struct}
+\usage{
+pl_struct(exprs, eager = FALSE, schema = NULL)
+}
 \arguments{
 \item{exprs}{Columns/Expressions to collect into a Struct.}
 
@@ -51,13 +54,13 @@ print(df$schema) # returns a schema, a named list containing one element a Struc
 # wrap two columns in a struct and provide a schema to set all or some DataTypes by name
 e1 = pl$struct(
   pl$col(c("int", "str")),
-  schema = list(int = pl$Int64, str = pl$Utf8)
+  schema = list(int = pl$Int64, str = pl$String)
 )$alias("my_struct")
 # same result as e.g. wrapping the columns in a struct and casting afterwards
 e2 = pl$struct(
   list(pl$col("int"), pl$col("str"))
 )$cast(
-  pl$Struct(int = pl$Int64, str = pl$Utf8)
+  pl$Struct(int = pl$Int64, str = pl$String)
 )$alias("my_struct")
 
 df = pl$DataFrame(

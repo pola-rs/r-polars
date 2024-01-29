@@ -2,6 +2,7 @@
 % Please edit documentation in R/functions__whenthen.R
 \name{Expr_when_then_otherwise}
 \alias{Expr_when_then_otherwise}
+\alias{pl_when}
 \alias{when}
 \alias{then}
 \alias{otherwise}
@@ -9,63 +10,78 @@
 \alias{Then}
 \alias{ChainedWhen}
 \alias{ChainedThen}
-\title{when-then-otherwise Expr}
-\arguments{
-\item{...}{Into Expr into a boolean mask to branch by.}
+\alias{When_then}
+\alias{Then_when}
+\alias{Then_otherwise}
+\alias{ChainedWhen_then}
+\alias{ChainedThen_when}
+\alias{ChainedThen_otherwise}
+\title{Make a then-when-otherwise expression}
+\usage{
+pl_when(...)
 
-\item{statement}{Into Expr value to insert in when() or otherwise().
-Strings interpreted as column.}
+When_then(statement)
+
+Then_when(...)
+
+Then_otherwise(statement)
+
+ChainedWhen_then(statement)
+
+ChainedThen_when(...)
+
+ChainedThen_otherwise(statement)
+}
+\arguments{
+\item{...}{Expr or something coercible to an Expr into a boolean mask to
+branch by.}
+
+\item{statement}{Expr or something coercible to an Expr value to insert in
+when() or otherwise(). Strings interpreted as column.}
 }
 \value{
-Expr
+an polars object, see details.
 }
 \description{
-Start a “when, then, otherwise” expression.
+\code{when-then-otherwise} is similar to R \code{\link[=ifelse]{ifelse()}}. This has to start with
+\verb{pl$when(<condition>)$then(<value if condition>)}. From there, it can:
+\itemize{
+\item be chained to an \verb{$otherwise()} statement that specifies the Expr to apply
+to the rows where the condition is \code{FALSE};
+\item or be chained to other \verb{$when()$then()} to specify more cases, and then use
+\verb{$otherwise()} when you arrive at the end of your chain.
+Note that one difference with the Python implementation is that we \emph{must}
+end the chain with an \verb{$otherwise()} statement.
+}
 }
 \details{
-when-then-otherwise is similar to R \code{ifelse()}. \code{pl$when(condition)} takes a condition as input
-this will an polars \verb{<Expr>} which renderes to a Boolean column. Then it is chained with a
-\verb{$then(statement)} when arg statement is an \verb{<Expr>} which produces a column with values if
-idealy all Boolean are true. Then finally an \verb{$otherwise(statement)} with values if false.
-\verb{$otherwise()} returns an \code{Expr} which will mix the \verb{$then()} statement with the \verb{$otherwise()}
-as given by the when-condition.
-
-State-machine details below. The state machine consists of 4 classes \verb{<When>}, \verb{<Then>},
-\verb{<ChainedWhen>} & \verb{<ChainedThen>} and a starter function \code{pl$when()} and the final expression
-class  a polars \verb{<Expr>}.
-
-\code{pl$when}return a \verb{<When>} object.
-\verb{pl$when(condition) -> <When>}
-
-\verb{<When>} has a single public method \verb{$then(statement)}
-\verb{<When>$then(statement) -> <Then>}
-
-#the follow objects and methods are
-\verb{<Then>$when(condition) -> <ChainedWhen>}
-\verb{<Then>$otherwise(statement) -> <Expr>}
-\verb{<ChainedWhen>$then(statement) -> <ChainedThen>}
-\verb{<ChainedThen>$when(condition) -> <Expr>}
-\verb{<ChainedThen>$otherwise(statement) -> <Expr>}
-
-This statemachine ensures only syntacticly allowed methods are availble at any specific place in
-a nested when-then-otherwise expression.
+If you want to use the class of those \code{when-then-otherwise} statement, note
+that there are 6 different classes corresponding to the different steps:
+\itemize{
+\item \code{pl$when()}returns a \code{When} object,
+\item \code{pl$then()}returns a \code{Then} object,
+\item \verb{<Then>$otherwise()}returns an \link[=Expr_class]{Expression} object,
+\item \verb{<Then>$when()}returns a \code{ChainedWhen} object,
+\item \verb{<ChainedWhen>$then()}returns a \code{ChainedThen} object,
+\item \verb{<ChainedThen>$otherwise()}returns an \link[=Expr_class]{Expression} object.
+}
 }
 \examples{
 df = pl$DataFrame(foo = c(1, 3, 4), bar = c(3, 4, 0))
 
-# Add a column with the value 1, where column "foo" > 2 and the value -1 where it isn’t.
+# Add a column with the value 1, where column "foo" > 2 and the value -1
+# where it isn’t.
 df$with_columns(
-  pl$when(pl$col("foo") > 2)$then(1)$otherwise(-1)$alias("val")
+  val = pl$when(pl$col("foo") > 2)$then(1)$otherwise(-1)
 )
 
-# With multiple when, thens chained:
+# With multiple when-then chained:
 df$with_columns(
-  pl$when(pl$col("foo") > 2)
+  val = pl$when(pl$col("foo") > 2)
   $then(1)
   $when(pl$col("bar") > 2)
   $then(4)
   $otherwise(-1)
-  $alias("val")
 )
 
 # Pass multiple predicates, each of which must be met:
@@ -78,4 +94,3 @@ df$with_columns(
   $otherwise(-1)
 )
 }
-\keyword{Expr}

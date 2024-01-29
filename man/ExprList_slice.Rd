@@ -3,25 +3,33 @@
 \name{ExprList_slice}
 \alias{ExprList_slice}
 \alias{list_slice}
-\title{Slice sublists}
-\format{
-function
+\title{Slice list}
+\usage{
+ExprList_slice(offset, length = NULL)
 }
 \arguments{
-\item{offset}{value or Expr.  Start index. Negative indexing is supported.}
+\item{offset}{Start index. Negative indexing is supported. Can be an Expr.
+Strings are parsed as column names.}
 
-\item{length}{value or Expr.
-Length of the slice. If set to \code{None} (default), the slice is taken to the
-end of the list.}
+\item{length}{Length of the slice. If \code{NULL} (default), the slice is taken to
+the end of the list. Can be an Expr. Strings are parsed as column names.}
 }
 \value{
 Expr
 }
 \description{
-Slice every sublist.
+This extracts \code{length} values at most, starting at index \code{offset}. This can
+return less than \code{length} values if \code{length} is larger than the number of
+values.
 }
 \examples{
-df = pl$DataFrame(list(s = list(1:4, c(10L, 2L, 1L))))
-df$select(pl$col("s")$list$slice(2))
+df = pl$DataFrame(
+  s = list(1:4, c(10L, 2L, 1L)),
+  idx_off = 1:2,
+  len = c(4, 1)
+)
+df$with_columns(
+  slice_by_expr = pl$col("s")$list$slice("idx_off", "len"),
+  slice_by_lit = pl$col("s")$list$slice(2, 3)
+)
 }
-\keyword{ExprList}

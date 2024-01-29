@@ -4,7 +4,11 @@
 \alias{DataFrame_unique}
 \title{Drop duplicated rows}
 \usage{
-DataFrame_unique(subset = NULL, keep = "first", maintain_order = FALSE)
+DataFrame_unique(
+  subset = NULL,
+  keep = c("first", "last", "none"),
+  maintain_order = FALSE
+)
 }
 \arguments{
 \item{subset}{A character vector with the names of the column(s) to use to
@@ -20,7 +24,7 @@ identify duplicates. If \code{NULL} (default), use all columns.}
 \item{maintain_order}{Keep the same order as the original \code{DataFrame}. Setting
 this to \code{TRUE} makes it more expensive to compute and blocks the possibility
 to run on the streaming engine. The default value can be changed with
-\code{pl$set_options(maintain_order = TRUE)}.}
+\code{options(polars.maintain_order = TRUE)}.}
 }
 \value{
 DataFrame
@@ -30,15 +34,16 @@ Drop duplicated rows
 }
 \examples{
 df = pl$DataFrame(
-  x = sample(10, 100, rep = TRUE),
-  y = sample(10, 100, rep = TRUE)
+  x = c(1:3, 1:3, 3:1, 1L),
+  y = c(1:3, 1:3, 1:3, 1L)
 )
 df$height
 
 df$unique()$height
-df$unique(subset = "x")$height
 
-df$unique(keep = "last")
+# subset to define unique, keep only last or first
+df$unique(subset = "x", keep = c("last"))
+df$unique(subset = "x", keep = c("first"))
 
 # only keep unique rows
 df$unique(keep = "none")

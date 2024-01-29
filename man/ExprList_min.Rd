@@ -2,19 +2,18 @@
 % Please edit documentation in R/expr__list.R
 \name{ExprList_min}
 \alias{ExprList_min}
-\alias{Expr_list_min}
-\title{#' Min lists}
-\format{
-function
+\alias{list_min}
+\title{Find the minimum value in a list}
+\usage{
+ExprList_min()
 }
 \value{
 Expr
 }
 \description{
-Compute the min value of the lists in the array.
+Find the minimum value in a list
 }
 \examples{
-df = pl$DataFrame(values = pl$Series(list(1L, 2:3)))
-df$select(pl$col("values")$list$min())
+df = pl$DataFrame(list(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_)))
+df$with_columns(min = pl$col("values")$list$min())
 }
-\keyword{ExprList}

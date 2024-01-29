@@ -2,7 +2,11 @@
 % Please edit documentation in R/expr__list.R
 \name{ExprList_sort}
 \alias{ExprList_sort}
-\title{Sort an Expr}
+\alias{list_sort}
+\title{Sort values in a list}
+\usage{
+ExprList_sort(descending = FALSE)
+}
 \arguments{
 \item{descending}{Sort values in descending order}
 }
@@ -10,5 +14,9 @@
 Expr
 }
 \description{
-Sort this column. If used in a groupby context, the groups are sorted.
+Sort values in a list
+}
+\examples{
+df = pl$DataFrame(list(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_)))
+df$with_columns(sort = pl$col("values")$list$sort())
 }

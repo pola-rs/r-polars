@@ -4,8 +4,8 @@
 \alias{ExprDT_weekday}
 \alias{(Expr)$dt$weekday}
 \title{Weekday}
-\format{
-function
+\usage{
+ExprDT_weekday()
 }
 \value{
 Expr of weekday as UInt32

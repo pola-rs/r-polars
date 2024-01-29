@@ -3,20 +3,17 @@
 \name{ExprList_reverse}
 \alias{ExprList_reverse}
 \alias{list_reverse}
-\title{Reverse list}
-\format{
-function
+\title{Reverse values in a list}
+\usage{
+ExprList_reverse()
 }
 \value{
 Expr
 }
 \description{
-Reverse the arrays in the list.
+Reverse values in a list
 }
 \examples{
-df = pl$DataFrame(list(
-  values = list(3:1, c(9L, 1:2))
-))
-df$select(pl$col("values")$list$reverse())
+df = pl$DataFrame(list(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_)))
+df$with_columns(reverse = pl$col("values")$list$reverse())
 }
-\keyword{ExprList}

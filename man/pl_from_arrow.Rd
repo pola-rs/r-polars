@@ -4,6 +4,15 @@
 \alias{pl_from_arrow}
 \alias{from_arrow}
 \title{from_arrow}
+\usage{
+pl_from_arrow(
+  data,
+  ...,
+  rechunk = TRUE,
+  schema = NULL,
+  schema_overrides = NULL
+)
+}
 \arguments{
 \item{data}{arrow Table or Array or ChunkedArray}
 
@@ -23,12 +32,14 @@ Takes not effect for Array or ChunkedArray}
 DataFrame or Series
 }
 \description{
-import Arrow Table or Array
+Import Arrow Table or Array.
+Deprecated in favor of \link{as_polars_df} and \link{as_polars_series}.
+Will be removed in 0.14.0.
 }
 \examples{
 pl$from_arrow(
   data = arrow::arrow_table(iris),
-  schema_overrides = list(Sepal.Length = pl$Float32, Species = pl$Utf8)
+  schema_overrides = list(Sepal.Length = pl$Float32, Species = pl$String)
 )
 
 char_schema = names(iris)
@@ -38,4 +49,3 @@ pl$from_arrow(
   schema = char_schema
 )
 }
-\keyword{pl}

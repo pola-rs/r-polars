@@ -112,7 +112,7 @@ pub fn deserialize_dataframe(bits: &[u8]) -> RResult<polars::prelude::DataFrame>
 }
 
 pub fn serialize_series(series: PSeries) -> RResult<Vec<u8>> {
-    serialize_dataframe(&mut std::iter::once(series).into_iter().collect())
+    serialize_dataframe(&mut std::iter::once(series).collect())
 }
 
 pub fn deserialize_series(bits: &[u8]) -> RResult<PSeries> {
@@ -371,7 +371,7 @@ impl InnerRBackgroundPool {
 
     pub fn resize(&mut self, new_cap: usize) {
         self.cap = new_cap;
-        while (self.active > self.cap) & (self.pool.len() > 0) {
+        while (self.active > self.cap) & (!self.pool.is_empty()) {
             let handle = self
                 .pool
                 .pop_front()
@@ -426,10 +426,10 @@ impl RBackgroundPool {
                 drop(pool_guard); // avoid deadlock
                 #[cfg(feature = "rpolars_debug_print")]
                 println!("wait for freed handler");
-                let ok = Ok(rx.recv()?);
+
                 #[cfg(feature = "rpolars_debug_print")]
                 println!("thread was awoken queue and passed a handler");
-                ok
+                Ok(rx.recv()?)
             }
         }
         .when("trying to rent a R process from the global R process pool")
@@ -454,11 +454,11 @@ impl RBackgroundPool {
         Ok(())
     }
 
-    pub fn reval<'t>(
-        &'t self,
+    pub fn reval(
+        &self,
         raw_func: Vec<u8>,
         raw_arg: Vec<u8>,
-    ) -> RResult<impl FnOnce() -> RResult<Vec<u8>> + 't> {
+    ) -> RResult<impl FnOnce() -> RResult<Vec<u8>> + '_> {
         #[cfg(feature = "rpolars_debug_print")]
         dbg!("reval");
         let handler = self.lease()?;
@@ -477,11 +477,11 @@ impl RBackgroundPool {
         })
     }
 
-    pub fn rmap_series<'t>(
-        &'t self,
+    pub fn rmap_series(
+        &self,
         raw_func: Vec<u8>,
         series: PSeries,
-    ) -> RResult<impl FnOnce() -> RResult<PSeries> + 't> {
+    ) -> RResult<impl FnOnce() -> RResult<PSeries> + '_> {
         #[cfg(feature = "rpolars_debug_print")]
         dbg!("rmap_series");
         let handler = self.lease()?;

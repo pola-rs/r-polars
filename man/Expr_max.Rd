@@ -4,7 +4,7 @@
 \alias{Expr_max}
 \title{Get maximum value}
 \usage{
-Expr_max
+Expr_max()
 }
 \value{
 Expr
@@ -16,4 +16,3 @@ Get maximum value
 pl$DataFrame(x = c(1, NA, 3))$
   with_columns(max = pl$col("x")$max())
 }
-\keyword{datasets}

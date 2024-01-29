@@ -144,13 +144,13 @@ test_that("get set properties", {
 test_that("DataFrame, custom schema", {
   df = pl$DataFrame(
     iris,
-    schema = list(Sepal.Length = pl$Float32, Species = pl$Utf8)
+    schema = list(Sepal.Length = pl$Float32, Species = pl$String)
   )
   # dtypes from object are as expected
   expect_true(
     all(mapply(
       df$dtypes,
-      pl$dtypes[c("Float32", rep("Float64", 3), "Utf8")],
+      pl$dtypes[c("Float32", rep("Float64", 3), "String")],
       FUN = "=="
     ))
   )
@@ -278,23 +278,6 @@ test_that("map_batches unity", {
   expect_identical(x, iris[, 5, drop = FALSE])
 })
 
-test_that("$map() deprecated", {
-  expect_warning(
-    pl$DataFrame(iris)$select(
-      pl$col("Sepal.Length")$map(\(s) s)
-    ),
-    "map_batches"
-  )
-})
-
-test_that("$apply() deprecated", {
-  expect_warning(
-    pl$DataFrame(iris)$select(
-      pl$col("Sepal.Length")$apply(\(s) s)
-    ),
-    "map_elements"
-  )
-})
 
 test_that("map_batches type", {
   int_iris = iris
@@ -345,7 +328,7 @@ test_that("cloning", {
 # }
 # actual_list_of_series = df$get_columns()
 # for (i in 1:5) {
-#   is_equal = expected_list_of_series[[i]]$series_equal(actual_list_of_series[[i]])
+#   is_equal = expected_list_of_series[[i]]$equals(actual_list_of_series[[i]])
 #   if (!is_equal) {
 #     fail("series are not equal according to polars internal check")
 #   }
@@ -362,7 +345,7 @@ test_that("cloning", {
 
 test_that("get column", {
   expect_true(
-    pl$DataFrame(iris)$get_column("Sepal.Length")$series_equal(
+    pl$DataFrame(iris)$get_column("Sepal.Length")$equals(
       pl$Series(iris$Sepal.Length, "Sepal.Length")
     )
   )
@@ -544,8 +527,6 @@ test_that("simple translations", {
 
 
 test_that("null_count 64bit", {
-  skip_if_not_installed("bit64")
-  suppressPackageStartupMessages(library("bit64", quietly = TRUE))
   tmp = mtcars
   tmp[1:2, 1:2] = NA
   tmp[5, 3] = NA
@@ -585,11 +566,11 @@ test_that("shift   _and_fill", {
 })
 
 
-test_that("frame_equal", {
+test_that("equals", {
   dat1 = pl$DataFrame(iris)
   dat2 = pl$DataFrame(mtcars)
-  expect_true(dat1$frame_equal(dat1))
-  expect_false(dat1$frame_equal(dat2))
+  expect_true(dat1$equals(dat1))
+  expect_false(dat1$equals(dat2))
 })
 
 test_that("fill_nan", {
@@ -1023,13 +1004,16 @@ test_that("rename", {
 
 
 test_that("describe", {
+  df =  pl$DataFrame(
+    string = c(letters[1:2], NA),
+    date = c(as.Date("2024-01-20"), as.Date("2024-01-21"), NA),
+    cat = factor(c(letters[1:2], NA)),
+    bool = c(TRUE, FALSE, NA)
+  )
+  expect_snapshot(df$describe())
   expect_snapshot(pl$DataFrame(mtcars)$describe())
-
-  df = pl$DataFrame(mtcars)$describe()
+  expect_snapshot(pl$DataFrame(mtcars)$describe(interpolation = "linear"))
   expect_error(pl$DataFrame(mtcars)$describe("not a percentile"))
-  err_ctx = unwrap_err(result(pl$DataFrame(mtcars)$describe("not a percentile")))$contexts()
-  expect_identical(names(err_ctx), c("BadArgument", "TypeMismatch", "BadValue"))
-  expect_identical(unlist(err_ctx[1:2], use.names = FALSE), c("percentiles", "numeric"))
 
   # perc = NULL  is the same as numeric()
   expect_identical(
@@ -1124,15 +1108,17 @@ test_that("strictly_immutable = FALSE", {
   expect_true(all(names(df) != names(df_immutable_copy)))
 
   # setting and option returns the previous/state state as defualt
-  pl$set_options(strictly_immutable = FALSE)
-
-  # check change setting took effect
-  df = pl$DataFrame(iris)
-  df_mutable_copy = df
-  df_mutable_copy$columns = paste0(df_mutable_copy$columns, "_modified")
-  expect_true(all(names(df) == names(df_mutable_copy)))
-
-  pl$reset_options()
+  skip_if_not_installed("withr")
+  withr::with_options(
+    list(polars.strictly_immutable = FALSE),
+    {
+      # check change setting took effect
+      df = pl$DataFrame(iris)
+      df_mutable_copy = df
+      df_mutable_copy$columns = paste0(df_mutable_copy$columns, "_modified")
+      expect_true(all(names(df) == names(df_mutable_copy)))
+    }
+  )
 })
 
 test_that("sample", {
@@ -1217,7 +1203,7 @@ test_that("transpose", {
   expect_identical(
     pl$DataFrame(iris)$
       with_columns(pl$col("Species")$
-      cast(pl$Utf8))$
+      cast(pl$String))$
       transpose(FALSE)$
       to_data_frame(),
     df_expected
@@ -1236,4 +1222,45 @@ test_that("drop_all_in_place", {
   expect_identical(df_copy$shape, c(0, 0))
   expect_identical(df_clone$shape, c(32, 11))
   expect_identical(s$len(), 32)
+})
+
+test_that("rolling for DataFrame: basic example", {
+  # this is just to ensure that the DataFrame method calls the lazy method
+  # under the hood. See the tests on lazy for more.
+  df = pl$DataFrame(
+    dt = c(
+      "2020-01-01", "2020-01-01", "2020-01-01",
+      "2020-01-02", "2020-01-03", "2020-01-08"
+    ),
+    a = c(3, 7, 5, 9, 2, 1)
+  )$with_columns(
+    pl$col("dt")$str$strptime(pl$Date, format = NULL)$set_sorted()
+  )
+
+  actual = df$rolling(index_column = "dt", period = "2d")$agg(
+    pl$sum("a")$alias("sum_a"),
+    pl$min("a")$alias("min_a"),
+    pl$max("a")$alias("max_a")
+  )$to_data_frame()
+
+  expect_equal(
+    actual[, c("sum_a", "min_a", "max_a")],
+    data.frame(
+      sum_a = c(15, 15, 15, 24, 11, 1),
+      min_a = c(3, 3, 3, 3, 2, 1),
+      max_a = c(7, 7, 7, 9, 9, 1)
+    )
+  )
+})
+
+test_that("rolling for DataFrame: can be ungrouped", {
+  df = pl$DataFrame(
+    index = c(1:5, 6.0),
+    a = c(3, 7, 5, 9, 2, 1)
+  )$with_columns(pl$col("index")$set_sorted())
+
+  actual = df$rolling(index_column = "dt", period = "2i")$
+    ungroup()$
+    to_data_frame()
+  expect_equal(actual, df$to_data_frame())
 })

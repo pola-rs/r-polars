@@ -4,7 +4,7 @@
 \alias{DataFrame_dtype_strings}
 \title{Data types information}
 \usage{
-DataFrame_dtype_strings
+DataFrame_dtype_strings()
 }
 \value{
 A character vector with the data type of each column

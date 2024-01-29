@@ -25,11 +25,11 @@ test_that("pl$sum", {
   # for now
   l = list(a = 1:2, b = 3:4, c = 5:6)
   expect_identical(
-    pl$DataFrame(l)$with_columns(pl$sum("a", "c", verbose = FALSE)$shrink_dtype())$to_list(),
+    pl$DataFrame(l)$with_columns(pl$sum("a", "c")$shrink_dtype())$to_list(),
     list(a = c(3L, 3L), b = c(3L, 4L), c = c(11L, 11L))
   )
   expect_identical(
-    pl$DataFrame(l)$with_columns(pl$sum("*", verbose = FALSE)$shrink_dtype())$to_list(),
+    pl$DataFrame(l)$with_columns(pl$sum("*")$shrink_dtype())$to_list(),
     list(a = c(3L, 3L), b = c(7L, 7L), c = c(11L, 11L))
   )
 })
@@ -64,13 +64,13 @@ test_that("pl$min pl$max", {
   l = list(a = 1:2, b = 3:4, c = 5:6)
   expect_identical(
     pl$DataFrame(l)$
-      with_columns(pl$min("a", "c", verbose = FALSE))$
+      with_columns(pl$min("a", "c"))$
       to_list(),
     list(a = c(1L, 1L), b = c(3L, 4L), c = c(5L, 5L))
   )
   expect_identical(
     pl$DataFrame(l)$
-      with_columns(pl$max("a", "c", verbose = FALSE))$
+      with_columns(pl$max("a", "c"))$
       to_list(),
     list(a = c(2L, 2L), b = c(3L, 4L), c = c(6L, 6L))
   )
@@ -292,4 +292,88 @@ test_that("pl$cov pl$rolling_cov pl$corr pl$rolling_corr", {
   expect_identical(lf$select(pl$rolling_cov("mpg", "hp", window_size = 6))$collect()$to_data_frame()[nrow(mtcars), ] |> round(digits = 3), cov(tail(mtcars$mpg), tail(mtcars$hp)) |> round(digits = 3))
 
   expect_identical(lf$select(pl$rolling_corr("mpg", "hp", window_size = 6))$collect()$to_data_frame()[nrow(mtcars), ] |> round(digits = 3), cor(tail(mtcars$mpg), tail(mtcars$hp)) |> round(digits = 3))
+})
+
+
+test_that("pl$duration() works", {
+  test = pl$DataFrame(
+    dt = as.Date(c(
+      "2022-01-01",
+      "2022-01-02"
+    )),
+    add = 1:2
+  )
+
+  # classic
+  expect_equal(
+    test$select(
+      (pl$col("dt") + pl$duration(weeks = "add"))$alias("add_weeks"),
+      (pl$col("dt") + pl$duration(days = "add"))$alias("add_days")
+    )$to_data_frame(),
+    data.frame(
+      add_weeks = as.Date(c("2022-01-08", "2022-01-16")),
+      add_days = as.Date(c("2022-01-02", "2022-01-04"))
+    )
+  )
+
+  # with expression
+  expect_equal(
+    test$select(
+      (pl$col("dt") + pl$duration(weeks = pl$col("add") + 1))$alias("add_weeks"),
+      (pl$col("dt") + pl$duration(days = pl$col("add") + 1))$alias("add_days")
+    )$to_data_frame(),
+    data.frame(
+      add_weeks = as.Date(c("2022-01-15", "2022-01-23")),
+      add_days = as.Date(c("2022-01-03", "2022-01-05"))
+    )
+  )
+
+  # with R scalar
+  expect_equal(
+    test$select(
+      (pl$col("dt") + pl$duration(weeks = 1))$alias("add_weeks"),
+      (pl$col("dt") + pl$duration(days = 1))$alias("add_days")
+    )$to_data_frame(),
+    data.frame(
+      add_weeks = as.Date(c("2022-01-08", "2022-01-09")),
+      add_days = as.Date(c("2022-01-02", "2022-01-03"))
+    )
+  )
+})
+
+test_that("pl$from_epoch() works", {
+  df = pl$DataFrame(timestamp = c(12345, 12346))
+
+  # with expr
+  expect_identical(
+    df$select(
+      pl$from_epoch(pl$col("timestamp") + 1, time_unit = "d")
+    )$to_data_frame()$timestamp,
+    as.Date(c("2003-10-21", "2003-10-22"))
+  )
+
+  # with string
+  expect_identical(
+    df$select(
+      pl$from_epoch("timestamp", time_unit = "d")
+    )$to_data_frame()$timestamp,
+    as.Date(c("2003-10-20", "2003-10-21"))
+  )
+
+  # time_unit = "s"
+  df = pl$DataFrame(timestamp = c(1666683077, 1666683099))
+  expect_identical(
+    df$select(
+      pl$from_epoch("timestamp", time_unit = "s")$dt$replace_time_zone("UTC")
+    )$to_data_frame()$timestamp,
+    as.POSIXct(c("2022-10-25 07:31:17", "2022-10-25 07:31:39"), tz = "UTC")
+  )
+})
+
+test_that("pl$from_epoch() errors if wrong time unit", {
+  df = pl$DataFrame(timestamp = c(12345, 12346))
+  expect_error(
+    df$select(pl$from_epoch(pl$col("timestamp"), time_unit = "foobar")),
+    "one of"
+  )
 })

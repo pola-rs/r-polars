@@ -15,10 +15,8 @@
       │ one ┆ 4.0 │
       │ two ┆ 1.0 │
       └─────┴─────┘
-      groups: [[1]]
-      [1] "foo"
-      
-      maintain order:  TRUE
+      groups: foo
+      maintain order: TRUE
 
 # groupby print .name=POLARS_FMT_TABLE_CELL_ALIGNMENT, .value=RIGHT
 
@@ -37,10 +35,8 @@
       │ one ┆ 4.0 │
       │ two ┆ 1.0 │
       └─────┴─────┘
-      groups: [[1]]
-      [1] "foo"
-      
-      maintain order:  TRUE
+      groups: foo
+      maintain order: TRUE
 
 # groupby print .name=POLARS_FMT_TABLE_DATAFRAME_SHAPE_BELOW, .value=1
 
@@ -59,10 +55,8 @@
       │ two ┆ 1.0 │
       └─────┴─────┘
       shape: (5, 2)
-      groups: [[1]]
-      [1] "foo"
-      
-      maintain order:  TRUE
+      groups: foo
+      maintain order: TRUE
 
 # groupby print .name=POLARS_FMT_TABLE_FORMATTING, .value=ASCII_FULL
 
@@ -85,10 +79,8 @@
       |-----+-----|
       | two | 1.0 |
       +-----+-----+
-      groups: [[1]]
-      [1] "foo"
-      
-      maintain order:  TRUE
+      groups: foo
+      maintain order: TRUE
 
 # groupby print .name=POLARS_FMT_TABLE_FORMATTING, .value=ASCII_FULL_CONDENSED
 
@@ -107,10 +99,8 @@
       | one | 4.0 |
       | two | 1.0 |
       +-----+-----+
-      groups: [[1]]
-      [1] "foo"
-      
-      maintain order:  TRUE
+      groups: foo
+      maintain order: TRUE
 
 # groupby print .name=POLARS_FMT_TABLE_FORMATTING, .value=ASCII_NO_BORDERS
 
@@ -131,10 +121,8 @@
        one | 4.0 
       -----+-----
        two | 1.0 
-      groups: [[1]]
-      [1] "foo"
-      
-      maintain order:  TRUE
+      groups: foo
+      maintain order: TRUE
 
 # groupby print .name=POLARS_FMT_TABLE_FORMATTING, .value=ASCII_BORDERS_ONLY
 
@@ -157,10 +145,8 @@
       |           |
       | two   1.0 |
       +-----------+
-      groups: [[1]]
-      [1] "foo"
-      
-      maintain order:  TRUE
+      groups: foo
+      maintain order: TRUE
 
 # groupby print .name=POLARS_FMT_TABLE_FORMATTING, .value=ASCII_BORDERS_ONLY_CONDENSED
 
@@ -179,10 +165,8 @@
       | one   4.0 |
       | two   1.0 |
       +-----------+
-      groups: [[1]]
-      [1] "foo"
-      
-      maintain order:  TRUE
+      groups: foo
+      maintain order: TRUE
 
 # groupby print .name=POLARS_FMT_TABLE_FORMATTING, .value=ASCII_HORIZONTAL_ONLY
 
@@ -205,10 +189,8 @@
       -----------
        two   1.0 
       -----------
-      groups: [[1]]
-      [1] "foo"
-      
-      maintain order:  TRUE
+      groups: foo
+      maintain order: TRUE
 
 # groupby print .name=POLARS_FMT_TABLE_FORMATTING, .value=ASCII_MARKDOWN
 
@@ -225,10 +207,8 @@
       | two | 2.0 |
       | one | 4.0 |
       | two | 1.0 |
-      groups: [[1]]
-      [1] "foo"
-      
-      maintain order:  TRUE
+      groups: foo
+      maintain order: TRUE
 
 # groupby print .name=POLARS_FMT_TABLE_FORMATTING, .value=UTF8_FULL
 
@@ -251,10 +231,8 @@
       ├╌╌╌╌╌┼╌╌╌╌╌┤
       │ two ┆ 1.0 │
       └─────┴─────┘
-      groups: [[1]]
-      [1] "foo"
-      
-      maintain order:  TRUE
+      groups: foo
+      maintain order: TRUE
 
 # groupby print .name=POLARS_FMT_TABLE_FORMATTING, .value=UTF8_FULL_CONDENSED
 
@@ -273,10 +251,8 @@
       │ one ┆ 4.0 │
       │ two ┆ 1.0 │
       └─────┴─────┘
-      groups: [[1]]
-      [1] "foo"
-      
-      maintain order:  TRUE
+      groups: foo
+      maintain order: TRUE
 
 # groupby print .name=POLARS_FMT_TABLE_FORMATTING, .value=UTF8_NO_BORDERS
 
@@ -297,10 +273,8 @@
        one ┆ 4.0 
       ╌╌╌╌╌┼╌╌╌╌╌
        two ┆ 1.0 
-      groups: [[1]]
-      [1] "foo"
-      
-      maintain order:  TRUE
+      groups: foo
+      maintain order: TRUE
 
 # groupby print .name=POLARS_FMT_TABLE_FORMATTING, .value=UTF8_BORDERS_ONLY
 
@@ -319,10 +293,8 @@
       │ one   4.0 │
       │ two   1.0 │
       └───────────┘
-      groups: [[1]]
-      [1] "foo"
-      
-      maintain order:  TRUE
+      groups: foo
+      maintain order: TRUE
 
 # groupby print .name=POLARS_FMT_TABLE_FORMATTING, .value=UTF8_HORIZONTAL_ONLY
 
@@ -345,10 +317,8 @@
       ───────────
        two   1.0 
       ───────────
-      groups: [[1]]
-      [1] "foo"
-      
-      maintain order:  TRUE
+      groups: foo
+      maintain order: TRUE
 
 # groupby print .name=POLARS_FMT_TABLE_FORMATTING, .value=NOTHING
 
@@ -364,10 +334,8 @@
        two  2.0 
        one  4.0 
        two  1.0 
-      groups: [[1]]
-      [1] "foo"
-      
-      maintain order:  TRUE
+      groups: foo
+      maintain order: TRUE
 
 # groupby print .name=POLARS_FMT_TABLE_HIDE_COLUMN_DATA_TYPES, .value=1
 
@@ -384,10 +352,8 @@
       │ one ┆ 4.0 │
       │ two ┆ 1.0 │
       └─────┴─────┘
-      groups: [[1]]
-      [1] "foo"
-      
-      maintain order:  TRUE
+      groups: foo
+      maintain order: TRUE
 
 # groupby print .name=POLARS_FMT_TABLE_HIDE_COLUMN_NAMES, .value=1
 
@@ -404,10 +370,8 @@
       │ one ┆ 4.0 │
       │ two ┆ 1.0 │
       └─────┴─────┘
-      groups: [[1]]
-      [1] "foo"
-      
-      maintain order:  TRUE
+      groups: foo
+      maintain order: TRUE
 
 # groupby print .name=POLARS_FMT_TABLE_HIDE_COLUMN_SEPARATOR, .value=1
 
@@ -425,10 +389,8 @@
       │ one ┆ 4.0 │
       │ two ┆ 1.0 │
       └─────┴─────┘
-      groups: [[1]]
-      [1] "foo"
-      
-      maintain order:  TRUE
+      groups: foo
+      maintain order: TRUE
 
 # groupby print .name=POLARS_FMT_TABLE_HIDE_DATAFRAME_SHAPE_INFORMATION, .value=1
 
@@ -446,10 +408,8 @@
       │ one ┆ 4.0 │
       │ two ┆ 1.0 │
       └─────┴─────┘
-      groups: [[1]]
-      [1] "foo"
-      
-      maintain order:  TRUE
+      groups: foo
+      maintain order: TRUE
 
 # groupby print .name=POLARS_FMT_MAX_ROWS, .value=2
 
@@ -466,8 +426,24 @@
       │ …   ┆ …   │
       │ two ┆ 1.0 │
       └─────┴─────┘
-      groups: [[1]]
-      [1] "foo"
-      
-      maintain order:  TRUE
+      groups: foo
+      maintain order: TRUE
+
+# groupby print when several groups
+
+    Code
+      df
+    Output
+      shape: (3, 4)
+      ┌──────┬─────┬───────┬───────┐
+      │ mpg  ┆ cyl ┆ disp  ┆ hp    │
+      │ ---  ┆ --- ┆ ---   ┆ ---   │
+      │ f64  ┆ f64 ┆ f64   ┆ f64   │
+      ╞══════╪═════╪═══════╪═══════╡
+      │ 21.0 ┆ 6.0 ┆ 160.0 ┆ 110.0 │
+      │ 21.0 ┆ 6.0 ┆ 160.0 ┆ 110.0 │
+      │ 22.8 ┆ 4.0 ┆ 108.0 ┆ 93.0  │
+      └──────┴─────┴───────┴───────┘
+      groups: mpg, cyl, disp
+      maintain order: TRUE
 

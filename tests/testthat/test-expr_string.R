@@ -7,7 +7,7 @@ test_that("str$strptime datetime", {
 
   expect_error(
     pl$lit(txt_datetimes)$str$strptime(pl$Datetime(), format = "%Y-%m-%d %H:%M:%S")$to_series(),
-    "Conversion .* failed"
+    "conversion .* failed"
   )
 
   expect_identical(
@@ -185,7 +185,7 @@ test_that("to_uppercase, to_lowercase", {
 })
 
 test_that("to_titlecase - enabled via the simd feature", {
-  skip_if_not(pl$polars_info()$features$simd)
+  skip_if_not(polars_info()$features$simd)
   df2 = pl$DataFrame(foo = c("hi there", "HI, THERE", NA))
   expect_identical(
     df2$select(pl$col("foo")$str$to_titlecase())$to_list()$foo,
@@ -194,7 +194,7 @@ test_that("to_titlecase - enabled via the simd feature", {
 })
 
 test_that("to_titlecase - enabled via the simd feature", {
-  skip_if(pl$polars_info()$features$simd)
+  skip_if(polars_info()$features$simd)
   expect_error(pl$col("foo")$str$to_titlecase())
 })
 
@@ -369,7 +369,7 @@ test_that("str$starts_with str$ends_with", {
   )
 })
 
-test_that("str$json_path. json_extract", {
+test_that("str$json_path. json_decode", {
   df = pl$DataFrame(
     json_val = c('{"a":"1"}', NA, '{"a":2}', '{"a":2.1}', '{"a":true}')
   )
@@ -383,7 +383,7 @@ test_that("str$json_path. json_extract", {
     json_val = c('{"a":1, "b": true}', NA, '{"a":2, "b": false}')
   )
   dtype = pl$Struct(pl$Field("a", pl$Float64), pl$Field("b", pl$Boolean))
-  actual = df$select(pl$col("json_val")$str$json_extract(dtype))$to_list()
+  actual = df$select(pl$col("json_val")$str$json_decode(dtype))$to_list()
   expect_identical(
     actual,
     list(json_val = list(a = c(1, NA, 2), b = c(TRUE, NA, FALSE)))
@@ -400,15 +400,15 @@ test_that("encode decode", {
     pl$col("strings")$str$encode("base64")$alias("base64"), # notice DataType is not encoded
     pl$col("strings")$str$encode("hex")$alias("hex") # ... and must restored with cast
   )$with_columns(
-    pl$col("base64")$str$decode("base64")$alias("base64_decoded")$cast(pl$Utf8),
-    pl$col("hex")$str$decode("hex")$alias("hex_decoded")$cast(pl$Utf8)
+    pl$col("base64")$str$decode("base64")$alias("base64_decoded")$cast(pl$String),
+    pl$col("hex")$str$decode("hex")$alias("hex_decoded")$cast(pl$String)
   )$to_list()
 
   expect_identical(l$strings, l$base64_decoded)
   expect_identical(l$strings, l$hex_decoded)
 
   expect_identical(
-    pl$lit("?")$str$decode("base64", strict = FALSE)$cast(pl$Utf8)$to_r(),
+    pl$lit("?")$str$decode("base64", strict = FALSE)$cast(pl$String)$to_r(),
     NA_character_
   )
 
@@ -442,7 +442,7 @@ test_that("str$extract", {
 
   expect_grepl_error(
     pl$lit("abc")$str$extract(42, 42),
-    "String"
+    "str"
   )
 
   expect_true(
@@ -686,4 +686,75 @@ test_that("str$parse_int", {
   )
 
   expect_error(pl$lit("foo")$str$parse_int()$to_r(), "strict integer parsing failed for 1 value")
+})
+
+test_that("str$reverse()", {
+  expect_identical(
+    pl$lit(c("abc", "def", "mañana", NA))$str$reverse()$to_r(),
+    c("cba", "fed", "anañam", NA)
+  )
+})
+
+test_that("str$contains_any()", {
+  expect_identical(
+    pl$lit(c("HELLO there", "hi there", "good bye", NA))$
+      str$
+      contains_any(c("hi", "hello"))$
+      to_r(),
+    c(FALSE, TRUE, FALSE, NA)
+  )
+
+  # case insensitive
+  expect_identical(
+    pl$lit(c("HELLO there", "hi there", "good bye", NA))$
+      str$
+      contains_any(c("hi", "hello"), ascii_case_insensitive = TRUE)$
+      to_r(),
+    c(TRUE, TRUE, FALSE, NA)
+  )
+})
+
+test_that("str$replace_many()", {
+  expect_identical(
+    pl$lit(c("HELLO there", "hi there", "good bye", NA))$
+      str$
+      replace_many(c("hi", "hello"), "foo")$
+      to_r(),
+    c("HELLO there", "foo there", "good bye", NA)
+  )
+
+  # case insensitive
+  expect_identical(
+    pl$lit(c("HELLO there", "hi there", "good bye", NA))$
+      str$
+      replace_many(c("hi", "hello"), "foo", ascii_case_insensitive = TRUE)$
+      to_r(),
+    c("foo there", "foo there", "good bye", NA)
+  )
+
+  # identical lengths of patterns and replacements
+  expect_identical(
+    pl$lit(c("hello there", "hi there", "good bye", NA))$
+      str$
+      replace_many(c("hi", "hello"), c("foo", "bar"))$
+      to_r(),
+    c("bar there", "foo there", "good bye", NA)
+  )
+
+  # error if different lengths
+  expect_error(
+    pl$lit(c("hello there", "hi there", "good bye", NA))$
+      str$
+      replace_many(c("hi", "hello"), c("foo", "bar", "foo2"))$
+      to_r(),
+    "same amount of patterns as replacement"
+  )
+
+  expect_error(
+    pl$lit(c("hello there", "hi there", "good bye", NA))$
+      str$
+      replace_many(c("hi", "hello", "good morning"), c("foo", "bar"))$
+      to_r(),
+    "same amount of patterns as replacement"
+  )
 })

@@ -3,41 +3,63 @@
 \name{ExprList_to_struct}
 \alias{ExprList_to_struct}
 \alias{list_to_struct}
-\title{List to Struct}
-\format{
-function
+\title{Convert a Series of type \code{List} to \code{Struct}}
+\usage{
+ExprList_to_struct(
+  n_field_strategy = c("first_non_null", "max_width"),
+  fields = NULL,
+  upper_bound = 0
+)
 }
 \arguments{
-\item{n_field_strategy}{Strategy to determine the number of fields of the struct.
-default = "first_non_null": set number of fields equal to the length of the
-first non zero-length sublist. else 'max_width'; else  "max_width":
-set number of fields as max length of all sublists.}
+\item{n_field_strategy}{Strategy to determine the number of fields of the
+struct. If \code{"first_non_null"} (default), set number of fields equal to the
+length of the first non zero-length list. If \code{"max_width"}, the number of
+fields is the maximum length of a list.}
 
-\item{name_generator}{an R function that takes an R scalar double and outputs
-a string value. It is a f64 because i32 might not be a big enough enumerate all.
-The default (\code{NULL}) is equivalent to the R function
-\verb{\\(idx) paste0("field_", idx)}}
+\item{fields}{If the name and number of the desired fields is known in
+advance, a list of field names can be given, which will be assigned by
+index. Otherwise, to dynamically assign field names, a custom R function
+that takes an R scalar double and outputs a string value can be used. If
+\code{NULL} (default), fields will be \code{field_0}, \code{field_1} ... \code{field_n}.}
 
-\item{upper_bound}{upper_bound A polars \code{LazyFrame} needs to know the schema
-at all time. The caller therefore must provide an \code{upper_bound} of struct
-fields that will be set. If set incorrectly, downstream operation may fail.
-For instance an \code{all()$sum()} expression will look in the current schema to
-determine which columns to select. It is advised to set this value in a lazy
-query.}
+\item{upper_bound}{A \code{LazyFrame} needs to know the schema at all time. The
+caller therefore must provide an \code{upper_bound} of struct fields that will
+be set. If set incorrectly, downstream operation may fail. For instance an
+\code{all()$sum()} expression will look in the current schema to determine which
+columns to select. When operating on a \code{DataFrame}, the schema does not
+need to be tracked or pre-determined, as the result will be eagerly
+evaluated, so you can leave this parameter unset.}
 }
 \value{
 Expr
 }
 \description{
-List to Struct
+Convert a Series of type \code{List} to \code{Struct}
 }
 \examples{
-df = pl$DataFrame(list(a = list(1:3, 1:2)))
-df2 = df$select(pl$col("a")$list$to_struct(
-  name_generator = \(idx) paste0("hello_you_", idx)
-))
+df = pl$DataFrame(list(a = list(1:2, 1:3)))
+
+# this discards the third value of the second list as the struct length is
+# determined based on the length of the first non-empty list
+df$with_columns(
+  struct = pl$col("a")$list$to_struct()
+)
+
+# we can use "max_width" to keep all values
+df$with_columns(
+  struct = pl$col("a")$list$to_struct(n_field_strategy = "max_width")
+)
+
+# pass a custom function that will name all fields by adding a prefix
+df2 = df$with_columns(
+  pl$col("a")$list$to_struct(
+    fields = \(idx) paste0("col_", idx)
+  )
+)
+df2
+
 df2$unnest()
 
 df2$to_list()
 }
-\keyword{ExprList}

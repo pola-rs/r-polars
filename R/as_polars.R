@@ -16,15 +16,35 @@
 #' # Convert the row names of a data frame to a column
 #' as_polars_df(mtcars, rownames = "car")
 #'
-#' # Convert an arrow Table to a polars LazyFrame
-#' lf = as_polars_df(
-#'   arrow::as_arrow_table(mtcars)
-#' )$lazy()
+#' # Convert an arrow Table to a polars DataFrame
+#' at = arrow::arrow_table(x = 1:5, y = 6:10)
+#' as_polars_df(at)
 #'
-#' # Collect all rows
+#' # Convert an arrow Table, with renaming all columns
+#' as_polars_df(
+#'   at,
+#'   schema = c("a", "b")
+#' )
+#'
+#' # Convert an arrow Table, with renaming and casting all columns
+#' as_polars_df(
+#'   at,
+#'   schema = list(a = pl$Int64, b = pl$String)
+#' )
+#'
+#' # Convert an arrow Table, with renaming and casting some columns
+#' as_polars_df(
+#'   at,
+#'   schema_overrides = list(y = pl$String) # cast some columns
+#' )
+#'
+#' # Create a polars DataFrame from a data.frame
+#' lf = as_polars_df(mtcars)$lazy()
+#'
+#' # Collect all rows from the LazyFrame
 #' as_polars_df(lf)
 #'
-#' # Fetch 5 rows
+#' # Fetch 5 rows from the LazyFrame
 #' as_polars_df(lf, 5)
 #' @export
 as_polars_df = function(x, ...) {
@@ -102,6 +122,13 @@ as_polars_df.RPolarsGroupBy = function(x, ...) {
   x$ungroup()
 }
 
+#' @rdname as_polars_df
+#' @export
+as_polars_df.RPolarsRollingGroupBy = as_polars_df.RPolarsGroupBy
+
+#' @rdname as_polars_df
+#' @export
+as_polars_df.RPolarsDynamicGroupBy = as_polars_df.RPolarsGroupBy
 
 #' @rdname as_polars_df
 #' @export
@@ -154,8 +181,15 @@ as_polars_df.RPolarsLazyGroupBy = function(x, ...) {
 }
 
 
+# TODO: link to DataTypes documents
 #' @rdname as_polars_df
-#' @inheritParams pl_from_arrow
+#' @param rechunk A logical flag (default `TRUE`).
+#' Make sure that all data of each column is in contiguous memory.
+#' @param schema named list of DataTypes, or character vector of column names.
+#' Should be the same length as the number of columns of `x`.
+#' If schema names or types do not match `x`, the columns will be renamed/recast.
+#' If `NULL` (default), convert columns as is.
+#' @param schema_overrides named list of DataTypes. Cast some columns to the DataType.
 #' @export
 as_polars_df.ArrowTabular = function(
     x,
@@ -163,9 +197,8 @@ as_polars_df.ArrowTabular = function(
     rechunk = TRUE,
     schema = NULL,
     schema_overrides = NULL) {
-  pl$from_arrow(
+  arrow_to_rdf(
     x,
-    ...,
     rechunk = rechunk,
     schema = schema,
     schema_overrides = schema_overrides
@@ -276,3 +309,16 @@ as_polars_series.data.frame = function(x, name = NULL, ...) {
 #' @rdname as_polars_series
 #' @export
 as_polars_series.vctrs_rcrd = as_polars_series.data.frame
+
+
+#' @rdname as_polars_series
+#' @param rechunk A logical flag (default `TRUE`). Make sure that all data is in contiguous memory.
+#' @export
+as_polars_series.Array = function(x, name = NULL, ..., rechunk = TRUE) {
+  arrow_to_rseries_result(name = name %||% "", values = x, rechunk = rechunk) |>
+    unwrap()
+}
+
+#' @rdname as_polars_series
+#' @export
+as_polars_series.ChunkedArray = as_polars_series.Array

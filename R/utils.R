@@ -1,3 +1,30 @@
+#' Set some options
+#'
+#' This is done here because it is the first file run by devtools::load_all()
+#' (cf field 'Collate' in DESCRIPTION) and options are used in other internal
+#' functions so options have to be defined first.
+#'
+#' NOTE 1: I don't think values here actually matter because this is just used
+#' to build the package. Those values won't be exported in the user environment.
+#' Default options are specified in .onLoad().
+#'
+#' NOTE 2: options on "rpool" are not defined here because they require
+#' functions defined later in the process to be run. Also, they are not used in
+#' other internal functions.
+#'
+#' @noRd
+options(
+  polars.debug_polars = FALSE,
+  polars.df_knitr_print = "auto",
+  polars.do_not_repeat_call = FALSE,
+  polars.int64_conversion = "double",
+  polars.limit_max_threads = NULL,
+  polars.maintain_order = FALSE,
+  polars.no_messages = FALSE,
+  polars.strictly_immutable = TRUE
+)
+
+
 #' check_no_missing_args
 #' @description lifecycle: DEPRECATE
 #' @param fun target function to check incoming arguments for
@@ -34,8 +61,8 @@ check_no_missing_args = function(
 #' @param class_name NULLs
 #' @noRd
 #' @return invisible(NULL)
-verify_method_call = function(Class_env, Method_name, call = sys.call(1L), class_name = NULL) {
-  if (polars_optenv$debug_polars) {
+verify_method_call = function(Class_env, Method_name, call = sys.call(sys.nframe() - 2L), class_name = NULL) {
+  if (polars_options()$debug_polars) {
     class_name = class_name %||% as.character(as.list(match.call())$Class_env)
     cat("[", format(subtimer_ms(), digits = 4), "ms]\n", class_name, "$", Method_name, "() -> ", sep = "")
   }
@@ -57,83 +84,6 @@ verify_method_call = function(Class_env, Method_name, call = sys.call(1L), class
     ) |> unwrap(call = call)
   }
   invisible(NULL)
-}
-
-
-# #highly experimental work around to use list2 without rlang
-# ok.comma <- function(FUN, which=0) {
-#   function(...) {
-#     #browser()
-#     arg.list <- as.list(sys.call(which=which))[-1L]
-#     len <- length(arg.list)
-#     if (len > 1L) {
-#       last <- arg.list[[len]]
-#       if (missing(last)) {
-#         arg.list <- arg.list[-len]
-#       }
-#     }
-#     do.call(FUN, arg.list,envir=parent.frame(which+1))
-#   }
-# }
-# list2 = ok.comma(list)
-# list3 = ok.comma(list,which = 2)
-
-
-#' list2 - one day like rlang
-#' list2 placeholder for future rust-impl
-#' @noRd
-#' @return An R list
-#' @details rlang has this wonderful list2 implemented in c/c++, that is agnostic about trailing
-#' commas in ... params. One day r-polars will have a list2-impl written in rust, which also allows
-#' trailing commas.
-list2 = list
-
-#' Internal unpack list
-#' @noRd
-#' @param l any list
-#' @param skip_classes char vec, do not unpack list inherits skip_classes.
-#' @details py-polars syntax only allows e.g. `df.select([expr1, expr2,])` and not
-#' `df.select(expr1, expr2,)`. r-polars also allows user to directly write
-#' `df$select(expr1, expr2)` or `df$select(list(expr1,expr2))`. Unpack list
-#' checks whether first and only arg is a list and unpacks it, to bridge the
-#' allowed patterns of passing expr to methods with ... param input.
-#' @return a list
-#' @examples
-#' f = \(...) unpack_list(list(...))
-#' identical(f(list(1L, 2L, 3L)), f(1L, 2L, 3L)) # is TRUE
-#' identical(f(list(1L, 2L), 3L), f(1L, 2L, 3L)) # is FALSE
-unpack_list = function(..., skip_classes = NULL) {
-  l = list2(...)
-  if (
-    length(l) == 1L &&
-      is.list(l[[1L]]) &&
-      !(!is.null(skip_classes) && inherits(l[[1L]], skip_classes))
-  ) {
-    l[[1L]]
-  } else {
-    l
-  }
-}
-
-#' Convert dot-dot-dot to bool expression
-#' @noRd
-#' @return Result, a list has `ok` (RPolarsExpr class) and `err` (RPolarsErr class)
-#' @examples
-#' unpack_bool_expr(pl$lit(TRUE), pl$lit(FALSE))
-unpack_bool_expr = function(..., .msg = NULL) {
-  dots = list2(...)
-
-  if (!is.null(names(dots))) {
-    return(Err_plain(
-      "Detected a named input.",
-      "This usually means that you've used `=` instead of `==`."
-    ))
-  }
-
-  dots |>
-    Reduce(`&`, x = _) |>
-    result(msg = .msg) |>
-    suppressWarnings()
 }
 
 #' Simple SQL CASE WHEN implementation for R
@@ -293,13 +243,7 @@ replace_private_with_pub_methods = function(env, class_pattern, keep = c(), remo
   use_internal_bools = sapply(class_methods, function(method) {
     x = get(method)
 
-    if (is_string(x)) {
-      if (x == "use_extendr_wrapper") {
-        return(TRUE)
-      }
-      warning(paste("unknown flag for", method, x))
-    }
-    FALSE
+    isTRUE(all.equal(x, use_extendr_wrapper))
   })
 
   # keep internals flagged with "use_internal_method"
@@ -542,7 +486,7 @@ restruct_list = function(l) {
 #' # e$my_sub_ns$add2() #use the sub namespace
 #' # e$my_sub_ns$mul2()
 #'
-macro_new_subnamespace = function(class_pattern, subclass_env = NULL, remove_f = TRUE) {
+macro_new_subnamespace = function(class_pattern, subclass_env = NULL) {
   # get all methods within class
   class_methods = ls(parent.frame(), pattern = class_pattern)
   names(class_methods) = sub(class_pattern, "", class_methods)
@@ -562,10 +506,6 @@ macro_new_subnamespace = function(class_pattern, subclass_env = NULL, remove_f =
     "  env",
     "}"
   )
-
-  if (remove_f) {
-    rm(list = class_methods, envir = parent.frame())
-  }
 
   if (build_debug_print) cat("new subnamespace: ", class_pattern, "\n", string)
   eval(parse(text = string))
@@ -628,12 +568,6 @@ sub_name_space_accessor_function = function(self, name) {
 "%in_list%" = \(lhs_element, rhs_list) rhs_list |>
   sapply("==", lhs_element) |>
   any()
-
-
-# helper used to validate inputs passed to pl$set_options()
-is_bool = function(x) {
-  is.logical(x) && length(x) == 1 && !is.na(x)
-}
 
 # takes a list of dtypes (for example from $schema), returns a named vector
 # indicating which are Structs

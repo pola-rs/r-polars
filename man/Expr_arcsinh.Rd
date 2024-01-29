@@ -4,7 +4,7 @@
 \alias{Expr_arcsinh}
 \title{Compute inverse hyperbolic sine}
 \usage{
-Expr_arcsinh
+Expr_arcsinh()
 }
 \value{
 Expr
@@ -16,4 +16,3 @@ Compute inverse hyperbolic sine
 pl$DataFrame(a = c(-1, sinh(0.5), 0, 1, NA_real_))$
   with_columns(arcsinh = pl$col("a")$arcsinh())
 }
-\keyword{datasets}

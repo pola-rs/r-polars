@@ -4,7 +4,7 @@
 \alias{Expr_implode}
 \title{Wrap column in list}
 \usage{
-Expr_implode
+Expr_implode()
 }
 \value{
 Expr
@@ -22,4 +22,3 @@ df = pl$DataFrame(
 )
 df$select(pl$all()$implode())
 }
-\keyword{datasets}

@@ -3,11 +3,8 @@
 \name{Expr_shrink_dtype}
 \alias{Expr_shrink_dtype}
 \title{Shrink numeric columns to the minimal required datatype}
-\format{
-An object of class \code{character} of length 1.
-}
 \usage{
-Expr_shrink_dtype
+Expr_shrink_dtype()
 }
 \value{
 Expr
@@ -25,4 +22,3 @@ df
 
 df$with_columns(pl$all()$shrink_dtype()$name$suffix("_shrunk"))
 }
-\keyword{datasets}

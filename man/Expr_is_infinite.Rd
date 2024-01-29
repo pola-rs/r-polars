@@ -5,7 +5,7 @@
 \alias{is_infinite}
 \title{Check if elements are infinite}
 \usage{
-Expr_is_infinite
+Expr_is_infinite()
 }
 \value{
 Expr
@@ -17,4 +17,3 @@ Returns a boolean Series indicating which values are infinite.
 pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$
   with_columns(infinite = pl$col("alice")$is_infinite())
 }
-\keyword{datasets}

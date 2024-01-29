@@ -4,8 +4,8 @@
 \alias{ExprDT_convert_time_zone}
 \alias{(Expr)$dt$convert_time_zone}
 \title{With Time Zone}
-\format{
-function
+\usage{
+ExprDT_convert_time_zone(tz)
 }
 \arguments{
 \item{tz}{String time zone from base::OlsonNames()}

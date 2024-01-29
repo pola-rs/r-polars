@@ -4,7 +4,11 @@
 \alias{LazyFrame_unique}
 \title{Drop duplicated rows}
 \usage{
-LazyFrame_unique(subset = NULL, keep = "first", maintain_order = FALSE)
+LazyFrame_unique(
+  subset = NULL,
+  keep = c("first", "last", "none"),
+  maintain_order = FALSE
+)
 }
 \arguments{
 \item{subset}{A character vector with the names of the column(s) to use to
@@ -20,7 +24,7 @@ identify duplicates. If \code{NULL} (default), use all columns.}
 \item{maintain_order}{Keep the same order as the original \code{DataFrame}. Setting
 this to \code{TRUE} makes it more expensive to compute and blocks the possibility
 to run on the streaming engine. The default value can be changed with
-\code{pl$set_options(maintain_order = TRUE)}.}
+\code{options(polars.maintain_order = TRUE)}.}
 }
 \value{
 LazyFrame

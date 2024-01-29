@@ -4,7 +4,7 @@
 \alias{Expr_sum}
 \title{Get sum value}
 \usage{
-Expr_sum
+Expr_sum()
 }
 \value{
 Expr
@@ -20,4 +20,3 @@ prevent overflow issues.
 pl$DataFrame(x = c(1L, NA, 2L))$
   with_columns(sum = pl$col("x")$sum())
 }
-\keyword{datasets}

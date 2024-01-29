@@ -1,6 +1,6 @@
 [package]
 name = "r-polars"
-version = "0.35.1"
+version = "0.36.1"
 edition = "2021"
 rust-version = "1.73"
 publish = false
@@ -10,7 +10,8 @@ crate-type = ['staticlib']
 
 [features]
 default = []
-full_features = ["simd", "sql"]
+full_features = ["simd", "sql", "disable_limit_max_threads"]
+disable_limit_max_threads = []
 simd = ["polars/simd"]
 sql = ["polars/sql"]
 rpolars_debug_print = []
@@ -35,7 +36,7 @@ opt-level = 3 # was 1 to support 1.66, but since 1.70 is needed anyway it does n
 opt-level = 3
 
 [dependencies]
-extendr-api = { git = "https://github.com/extendr/extendr", rev = "0ac58377c50174818e02de54b1032c5f4cb75e4f", default-features = false, features = [
+extendr-api = { git = "https://github.com/extendr/extendr", rev = "b26adfedc20a979c5fcb164a4f7d2a0bd1721c18", default-features = false, features = [
   "result_list",
   "serde",
 ] }
@@ -43,14 +44,14 @@ flume = "0.11.0"
 indenter = "0.3.3"
 ipc-channel = "0.18.0"
 once_cell = "1.19.0"
-rayon = "1.6.1"
-serde = { version = "1.0.193", features = ["derive"] }
+rayon = "1.8.1"
+serde = { version = "1.0.195", features = ["derive"] }
 serde_json = "*"
 smartstring = "1.0.1"
 state = "0.6.0"
-thiserror = "1.0.51"
-polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "b13afbecac039205dacbaca766ecca4bf441b347", default-features = false }
-polars-lazy = { git = "https://github.com/pola-rs/polars.git", rev = "b13afbecac039205dacbaca766ecca4bf441b347", default-features = false }
+thiserror = "1.0.56"
+polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "fa59ffc1685043b44476dcb2a3f3804460ead5c5", default-features = false }
+polars-lazy = { git = "https://github.com/pola-rs/polars.git", rev = "fa59ffc1685043b44476dcb2a3f3804460ead5c5", default-features = false }
 either = "1"
 #features copied from node-polars
 
@@ -85,6 +86,7 @@ features = [
   "dynamic_group_by",
   "extract_jsonpath",
   "ewma",
+  "find_many",
   "fmt",
   "horizontal_concat",
   "interpolate",
@@ -97,8 +99,10 @@ features = [
   "lazy",
   "lazy_regex",
   #"list",
+  "list_any_all",
   "list_eval",
   "list_gather",
+  "list_sets",
   "list_to_struct",
   "log",
   "meta",
@@ -119,6 +123,8 @@ features = [
   "rank",
   "reinterpret",
   "repeat_by",
+  "replace",
+  "rle",
   "rolling_window",
   "round_series",
   "row_hash",
@@ -130,6 +136,7 @@ features = [
   "strings",
   "string_encoding",
   "string_pad",
+  "string_reverse",
   "string_to_integer",
   "temporal",
   "timezones",
@@ -141,4 +148,4 @@ features = [
   "zip_with",
 ]
 git = "https://github.com/pola-rs/polars.git"
-rev = "b13afbecac039205dacbaca766ecca4bf441b347"
+rev = "fa59ffc1685043b44476dcb2a3f3804460ead5c5"
