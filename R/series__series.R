@@ -544,22 +544,37 @@ Series_arg_min = use_extendr_wrapper
 
 
 #' Clone a Series
-#' @name Series_clone
-#' @description Rarely useful as Series are nearly 100% immutable
-#' Any modification of a Series should lead to a clone anyways.
+#'
+#' This makes a very cheap deep copy/clone of an existing
+#' [`Series`][Series_class]. Rarely useful as `Series` are nearly 100%
+#' immutable. Any modification of a `Series` should lead to a clone anyways, but
+#' this can be useful when dealing with attributes (see examples).
 #'
 #' @return Series
-#' @docType NULL
-#' @format NULL
-#' @aliases Series_clone
-#' @keywords  Series
 #' @examples
-#' s1 = pl$Series(1:3)
-#' s2 = s1$clone()
-#' s3 = s1
-#' pl$mem_address(s1) != pl$mem_address(s2)
-#' pl$mem_address(s1) == pl$mem_address(s3)
+#' df1 = pl$Series(1:10)
 #'
+#' # Make a function to take a Series, add an attribute, and return a Series
+#' give_attr = function(data) {
+#'   attr(data, "created_on") = "2024-01-29"
+#'   data
+#' }
+#' df2 = give_attr(df1)
+#'
+#' # Problem: the original Series also gets the attribute while it shouldn't!
+#' attributes(df1)
+#'
+#' # Use $clone() inside the function to avoid that
+#' give_attr = function(data) {
+#'   data = data$clone()
+#'   attr(data, "created_on") = "2024-01-29"
+#'   data
+#' }
+#' df1 = pl$Series(1:10)
+#' df2 = give_attr(df1)
+#'
+#' # now, the original Series doesn't get this attribute
+#' attributes(df1)
 Series_clone = use_extendr_wrapper
 
 #' Cumulative sum
