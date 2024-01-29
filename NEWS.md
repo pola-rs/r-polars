@@ -115,21 +115,6 @@ a large amount of documentation improvements.
 
 ### What's changed
 
-- The Extract function (`[`) for DataFrame can use columns not included in the
-  result for filtering (#547).
-- The Extract function (`[`) for LazyFrame can filter rows with Expressions (#547).
-- `as_polars_df()` for `data.frame` has a new argument `rownames` for to convert
-  the row.names attribute to a column.
-  This option is inspired by the `tibble::as_tibble()` function (#561).
-- `as_polars_df()` for `data.frame` has a new argument `make_names_unique` (#561).
-- New methods `$str$to_date()`, `$str$to_time()`, `$str$to_datetime()` as
-  alternatives to `$str$strptime()` (#558).
-- The `dim()` function for DataFrame and LazyFrame correctly returns integer instead of
-  double (#577).
-- The conversion of R's `POSIXct` class to Polars datetime now works correctly with millisecond
-  precision (#589).
-- `<LazyFrame>$filter()`, `<DataFrame>$filter()`, and `pl$when()` now allow multiple conditions
-  to be separated by commas, like `lf$filter(pl$col("foo") == 1, pl$col("bar") != 2)` (#598).
 -   New methods `$str$reverse()`, `$str$contains_any()`, and `$str$replace_many()`
     (#641).
 -   New methods `$rle()` and `$rle_id()` (#648).
