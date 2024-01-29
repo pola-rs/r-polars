@@ -104,6 +104,7 @@ make_as_polars_series_cases = function() {
     "arrow Array", arrow::arrow_array(1), "",
     "arrow ChunkedArray", arrow::chunked_array(1), "",
     "nanoarrow_array", nanoarrow::as_nanoarrow_array(1), "",
+    "nanoarrow_array_stream", nanoarrow::as_nanoarrow_array_stream(data.frame(x = 1)), "",
   )
 }
 
@@ -118,6 +119,14 @@ patrick::with_parameters_test_that("as_polars_series S3 methods",
 
     expect_identical(length(pl_series), 1L)
     expect_equal(pl_series$name, expected_name)
+
+    if (inherits(x, "nanoarrow_array_stream")) {
+      # The stream should be released after conversion
+      expect_error(x$get_next(), "already been released")
+
+      # Re-create the stream for the next test
+      x = nanoarrow::as_nanoarrow_array_stream(data.frame(x = 1))
+    }
 
     pl_series = as_polars_series(x, name = "bar")
     expect_equal(pl_series$name, "bar")
