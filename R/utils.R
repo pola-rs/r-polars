@@ -331,11 +331,15 @@ get_method_usages = function(env, pattern = "") {
     }
   }
 
-  suggestions = sort(c(
-    found_names[facts$is_property],
-    paste0_len(found_names[facts$is_setter], completion_symbols$setter),
-    paste0_len(found_names[facts$is_method], completion_symbols$method)
-  ))
+  if (length(facts$is_property) > 0) {
+    suggestions = sort(c(
+      found_names[facts$is_property],
+      paste0_len(found_names[facts$is_setter], completion_symbols$setter),
+      paste0_len(found_names[facts$is_method], completion_symbols$method)
+    ))
+  } else {
+    suggestions = NULL
+  }
 
   suggestions
 }
@@ -641,4 +645,9 @@ make_profile_plot = function(data, truncate_nodes) {
 # https://github.com/tidyverse/tibble/blob/e78ea46caea5e89cbffa5887c11050335ab23896/R/rownames.R#L116-L118
 raw_rownames = function(x) {
   .row_names_info(x, 0L) %||% .set_row_names(.row_names_info(x, 2L))
+}
+
+# from rstudioapi::isAvailable()
+is_rstudio = function() {
+  identical(.Platform$GUI, "RStudio")
 }
