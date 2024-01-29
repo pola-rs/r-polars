@@ -39,25 +39,28 @@
 #'
 #' # deactivate like this or restart R session
 #' pl$polars_code_completions(activate = FALSE)
-pl$polars_code_completion = function(
+pl_polars_code_completion = function(
     activate = TRUE,
     mode = c("auto", "rstudio", "nativeR"),
     verbose = TRUE) {
   # settle on mode
   mode = match.arg(mode[1], c("auto", "rstudio", "nativeR"))
-  is_rstudio = "tools:rstudio" %in% search()
   if (mode == "auto") {
-    if (is_rstudio) {
+    if (is_rstudio()) {
       mode = "rstudio"
-      if (activate) {
-        .dev$activate_polars_rstudio_completion()
-      } else {
-        .dev$deactivate_polars_rstudio_completion()
-      }
     } else {
       mode = "nativeR"
-      nativeR_completion(activate = activate)
     }
+  }
+
+  if (mode == "rstudio") {
+    if (activate) {
+      .dev$activate_polars_rstudio_completion()
+    } else {
+      .dev$deactivate_polars_rstudio_completion()
+    }
+  } else if (mode == "nativeR") {
+    nativeR_completion(activate = activate)
   }
 
   if (verbose && activate) {
@@ -126,15 +129,10 @@ nativeR_completion = function(activate = TRUE) {
       CE_frozen = as.list(CE)
       lb = CE$linebuffer
 
-
-
-
-
       # skip custom completion if token completion already yielded suggestions.
       if (length(CE$comps) >= 1L) {
         return(NULL)
       }
-
 
       ### your custom part###
       # generate a new completion or multiple...
