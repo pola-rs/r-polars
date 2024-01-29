@@ -41,25 +41,20 @@ impl RArrowArrayClass {
 }
 
 pub trait RPackage {
-    fn export_array_func(&self) -> Result<Function, String>;
+    fn get_export_array_func(&self) -> Result<Robj, Error>;
 }
 
 impl RPackage for ArrowRPackage {
-    fn export_array_func(&self) -> Result<Function, String> {
+    fn get_export_array_func(&self) -> Result<Robj, Error> {
         R!(r#"
         function(array, exportable_array, exportable_schema) {
             array$export_to_c(exportable_array, exportable_schema)
-        }"#)?
-        .as_function()
-        .ok_or_else(|| {
-            "Internal error: failed to create a function to export array from arrow::Array"
-                .to_string()
-        })
+        }"#)
     }
 }
 
 impl RPackage for NanoArrowRPackage {
-    fn export_array_func(&self) -> Result<Function, String> {
+    fn get_export_array_func(&self) -> Result<Robj, Error> {
         R!(r#"
         function(array, exportable_array, exportable_schema) {
             nanoarrow::nanoarrow_pointer_export(
@@ -68,12 +63,7 @@ impl RPackage for NanoArrowRPackage {
             )
             nanoarrow::nanoarrow_pointer_export(array, exportable_array)
         }
-        "#)?
-        .as_function()
-        .ok_or_else(|| {
-            "Internal error: failed to create a function to export array from nanoarrow_array"
-                .to_string()
-        })
+        "#)
     }
 }
 
@@ -90,7 +80,7 @@ pub fn arrow_array_to_rust(arrow_array: Robj) -> Result<ArrayRef, String> {
 
     RArrowArrayClass::from_robj(&arrow_array)?
         .get_package()
-        .export_array_func()?
+        .get_export_array_func()?
         .call(pairlist!(&arrow_array, ext_a, ext_s))?;
 
     let array = unsafe {
