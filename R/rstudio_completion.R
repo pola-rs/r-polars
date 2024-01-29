@@ -92,8 +92,7 @@
 #' Multiple wrappers can also co-exists, just keep the signature the same.
 #'
 #'
-#' @examples
-#' .dev$activate_polars_rstudio_completion()
+#' @noRd
 .dev$activate_polars_rstudio_completion = function() {
   # find rstudio tools
   rs = as.environment("tools:rstudio")

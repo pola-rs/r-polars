@@ -1,6 +1,5 @@
 #' Polars code completion
 #' @include rstudio_completion.R
-#' @name polars_code_completion
 #' @param activate bool, TRUE activates, FALSE deactivates
 #' @param mode choice either. "auto" picks "rstudio" if  "tools:rstudio" is found in search().
 #' "rstudio" modifies rstudio code internal .DollarNames and function args completion.
