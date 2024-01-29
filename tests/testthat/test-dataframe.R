@@ -308,10 +308,29 @@ test_that("cloning", {
   expect_identical(pl$mem_address(pf), pl$mem_address(pf2))
 
   # deep copy clone rust side object, hence not same mem address
-  # For some reason, expect_identical(pf, pf3) fails
   pf3 = pf$clone()
   expect_identical(pf$to_data_frame(), pf3$to_data_frame())
   expect_different(pl$mem_address(pf), pl$mem_address(pf3))
+})
+
+test_that("cloning to avoid giving attributes to original data", {
+  df1 = pl$DataFrame(iris)
+
+  give_attr = function(data) {
+    attr(data, "created_on") = "2024-01-29"
+    data
+  }
+  df2 = give_attr(df1)
+  expect_identical(attributes(df1)$created_on, "2024-01-29")
+
+  give_attr2 = function(data) {
+    data = data$clone()
+    attr(data, "created_on") = "2024-01-29"
+    data
+  }
+  df1 = pl$DataFrame(iris)
+  df2 = give_attr2(df1)
+  expect_null(attributes(df1)$created_on)
 })
 
 
