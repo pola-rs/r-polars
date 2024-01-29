@@ -1,5 +1,3 @@
-
-
 # storing autocompletion functions in an environment,
 # allows modification at run-time, without rebuilding package.
 # This is useful as rstudio to do fast trial&error experimentation.
@@ -52,7 +50,7 @@
   inherits(
     x,
     c(
-      "RPolarsLazyFrame",  "RPolarsLazyGroupBy",
+      "RPolarsLazyFrame", "RPolarsLazyGroupBy",
       "RPolarsDataFrame", "RPolarsGroupBy"
     )
   )
@@ -61,11 +59,17 @@
 # decide if some function/method recursively has the polars nameSpace as parant environment.
 .dev$is_polars_function = function(x, limit_search = 256) {
   pl_env = asNamespace("polars")
-  if(!is.function(x)) return(FALSE)
+  if (!is.function(x)) {
+    return(FALSE)
+  }
   f_env = environment(x)
-  for(i in seq_len(limit_search)) {
-    if(identical(pl_env, f_env)) return(TRUE)
-    if(identical(emptyenv(), f_env)) return(FALSE)
+  for (i in seq_len(limit_search)) {
+    if (identical(pl_env, f_env)) {
+      return(TRUE)
+    }
+    if (identical(emptyenv(), f_env)) {
+      return(FALSE)
+    }
     f_env = parent.env(f_env)
   }
   return(FALSE)
@@ -91,10 +95,11 @@
 #' @examples
 #' .dev$activate_polars_rstudio_completion()
 .dev$activate_polars_rstudio_completion = function() {
-
-  #find rstudio tools
+  # find rstudio tools
   tryCatch(
-    {rs = as.environment("tools:rstudio")},
+    {
+      rs = as.environment("tools:rstudio")
+    },
     error = function(err) stop("failed to find tools:rstudio, is this really the Rstudio IDE?")
   )
 
@@ -109,26 +114,25 @@
     {
       ## 1 - add completion to function arguments
       .rs.getCompletionsFunction_polars_orig = .rs.getCompletionsFunction # save original function here
-      .rs.getCompletionsFunction = function(
-        token, string, functionCall, numCommas, envir = parent.frame(),
-        object = .rs.resolveObjectFromFunctionCall(functionCall, envir)
-      ) {
-
+      .rs.getCompletionsFunction = function(token, string, functionCall, numCommas, envir = parent.frame(),
+                                            object = .rs.resolveObjectFromFunctionCall(functionCall, envir)) {
         # if Rstudio failed to immediately resolve the object, do a full evaluation of the entire
         # lhs line/section which creates the calling function
         col_results = NULL
         if (isFALSE(object)) {
           lhs = polars:::.dev$eval_lhs_string(string, envir)
-          if(is.null(lhs)) return(.rs.emptyCompletions())
-          if(polars:::.dev$is_polars_function(lhs)) {
+          if (is.null(lhs)) {
+            return(.rs.emptyCompletions())
+          }
+          if (polars:::.dev$is_polars_function(lhs)) {
             object = lhs
             object_self = environment(lhs)$self
 
 
-            if(polars:::.dev$has_columns(object_self)) {
+            if (polars:::.dev$has_columns(object_self)) {
               col_results = .rs.makeCompletions(
                 token = token,
-                results =  paste0("pl$col('",object_self$columns, "')"),
+                results = paste0("pl$col('", object_self$columns, "')"),
                 excludeOtherCompletions = FALSE,
                 quote = FALSE, helpHandler = FALSE,
                 context = .rs.acContextTypes$FUNCTION,
@@ -141,28 +145,31 @@
 
         # pass on to normal Rstudio completion
         results = .rs.getCompletionsFunction_polars_orig(
-          token, string, functionCall = NULL, numCommas,
+          token, string,
+          functionCall = NULL, numCommas,
           envir = envir
         )
-        results$excludeOtherArgumentCompletions  = FALSE
+        results$excludeOtherArgumentCompletions = FALSE
         .rs.appendCompletions(results, col_results)
       }
 
       ## 2 - completion for dollar lists
       .rs.getCompletionsFunction_polars_orig = .rs.getCompletionsDollar
       .rs.getCompletionsDollar = function(token, string, functionCall, envir, isAt) {
-
-        #perform evaluation of lhs
+        # perform evaluation of lhs
         lhs = polars:::.dev$eval_lhs_string(string, envir)
-        if(is.null(lhs)) return(.rs.emptyCompletions())
+        if (is.null(lhs)) {
+          return(.rs.emptyCompletions())
+        }
         if (!polars:::.dev$is_polars_related_type(lhs)) {
           results = .rs.getCompletionsFunction_polars_orig(
-            token, string, functionCall, envir = envir, isAt
+            token, string, functionCall,
+            envir = envir, isAt
           )
           return(results)
         }
 
-        string =  ""
+        string = ""
 
         # get method, attribute names and drop ()
         results = gsub("\\(|\\)", "", .DollarNames(lhs, token))
@@ -177,7 +184,9 @@
         types = sapply(
           results,
           function(x) {
-             if(endsWith(x,"<-")) return(.rs.acCompletionTypes$KEYWORD)
+            if (endsWith(x, "<-")) {
+              return(.rs.acCompletionTypes$KEYWORD)
+            }
             .rs.getCompletionType(eval(substitute(`$`(lhs, x), list(x = x))))
           }
         )
@@ -185,30 +194,29 @@
           token = token, results = results, excludeOtherCompletions = TRUE, packages = "polars",
           quote = FALSE, helpHandler = FALSE,
           context = .rs.acContextTypes$DOLLAR,
-          type = types , meta = "", cacheable = FALSE
+          type = types, meta = "", cacheable = FALSE
         )
-
       } # end new dollar f
     }
   ) # end local
 }
 
 .dev$deactivate_polars_rstudio_completion = function() {
-   #find rstudio tools
+  # find rstudio tools
   tryCatch(
-    {rs = as.environment("tools:rstudio")},
+    {
+      rs = as.environment("tools:rstudio")
+    },
     error = function(err) stop("failed to find tools:rstudio, is this really the Rstudio IDE?")
   )
 
-  if(!is.null( rs$.rs.getCompletionsFunction_polars_orig)) {
+  if (!is.null(rs$.rs.getCompletionsFunction_polars_orig)) {
     rs$.rs.getCompletionsFunction = rs$.rs.getCompletionsFunction_polars_orig
     rs$.rs.getCompletionsFunction_polars_orig = NULL
   }
 
-  if(!is.null(rs$.rs.getCompletionsFunction_polars_orig)) {
+  if (!is.null(rs$.rs.getCompletionsFunction_polars_orig)) {
     rs$.rs.getCompletionsDollar = rs$.rs.getCompletionsFunction_polars_orig
     rs$.rs.getCompletionsFunction_polars_orig = NULL
   }
-
 }
-

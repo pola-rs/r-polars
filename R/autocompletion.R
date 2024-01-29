@@ -41,17 +41,15 @@
 #' pl$polars_code_completions(activate = FALSE)
 pl$polars_code_completion = function(
     activate = TRUE,
-    mode = c("auto","rstudio", "nativeR"),
-    verbose = TRUE
-  ) {
-
+    mode = c("auto", "rstudio", "nativeR"),
+    verbose = TRUE) {
   # settle on mode
-  mode = match.arg(mode[1],  c("auto","rstudio", "nativeR"))
+  mode = match.arg(mode[1], c("auto", "rstudio", "nativeR"))
   is_rstudio = "tools:rstudio" %in% search()
-  if(mode == "auto") {
-    if(is_rstudio) {
+  if (mode == "auto") {
+    if (is_rstudio) {
       mode = "rstudio"
-      if(activate) {
+      if (activate) {
         .dev$activate_polars_rstudio_completion()
       } else {
         .dev$deactivate_polars_rstudio_completion()
@@ -62,11 +60,13 @@ pl$polars_code_completion = function(
     }
   }
 
-  if(verbose && activate) message(
-      "modify ",mode," code completions for better polars experience.",
+  if (verbose && activate) {
+    message(
+      "modify ", mode, " code completions for better polars experience.",
       "Deactivate with pl$polars_code_completions(FALSE) or restart session.",
       "These code completions are experimental."
-  )
+    )
+  }
 
   invisible(NULL)
 }
@@ -95,7 +95,7 @@ pl$polars_code_completion = function(
 #' pl$extra_auto_completion() # first activate feature (this will 'annoy' the Rstudio auto-completer)
 #' pl$lit(42)$to_series() # add a $ and press tab 1-3 times
 #' pl$extra_auto_completion(activate = FALSE) # deactivate
-pl$extra_auto_completion = pl$extra_auto_completion = function(activate =TRUE) {
+pl$extra_auto_completion = pl$extra_auto_completion = function(activate = TRUE) {
   warning("pl$extra_auto_completion is deprecated, use pl$polars_code_completion()")
   pl$polars_code_completions(activate = activate, mode = "nativeR")
 }
@@ -138,18 +138,17 @@ nativeR_completion = function(activate = TRUE) {
 
       ### your custom part###
       # generate a new completion or multiple...
-      lb_wo_token = sub(paste0("\\Q",CE_frozen$token,"\\E","$"), replacement = "",lb)
-      first_token_char = substr(CE_frozen$token,1L, 1L)
+      lb_wo_token = sub(paste0("\\Q", CE_frozen$token, "\\E", "$"), replacement = "", lb)
+      first_token_char = substr(CE_frozen$token, 1L, 1L)
       # if(!exists(".no_browse")) {
       #   browser()
       #   assign(".no_browse",value = 1,envir = .GlobalEnv)
       # }
       if (first_token_char == "$" && nchar(lb_wo_token) > 1L) {
-
-        #eval last expression prior to token
+        # eval last expression prior to token
         res = result(eval(tail(parse(text = lb_wo_token), 1)))
 
-        if(is_err(res)) {
+        if (is_err(res)) {
           message(
             "\nfailed to code complete because...\n",
             as.character(res$err),
@@ -160,8 +159,8 @@ nativeR_completion = function(activate = TRUE) {
           x = res$ok
         }
         if (inherits(x, c(pl_class_names, "method_environment", "pl_polars_env"))) {
-          token = substr(CE_frozen$token,2,.Machine$integer.max)
-          your_comps = paste0("$",.DollarNames(x, token))
+          token = substr(CE_frozen$token, 2, .Machine$integer.max)
+          your_comps = paste0("$", .DollarNames(x, token))
           # append your suggestions to the vanilla suggestions/completions
           CE$comps = c(your_comps, CE$comps)
         }
