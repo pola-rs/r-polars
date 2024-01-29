@@ -183,7 +183,6 @@ a large amount of documentation improvements.
 -   New function `pl$threadpool_size()` to get the number of threads used by Polars (#620).
     Thread pool size is also included in the output of `pl$polars_info()`.
 
-
 ## polars 0.11.0
 
 ### BREAKING CHANGES DUE TO RUST-POLARS UPDATE
