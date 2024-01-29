@@ -1643,18 +1643,37 @@ LazyFrame_explode = function(...) {
 
 #' Clone a LazyFrame
 #'
-#' @description This makes a very cheap deep copy/clone of an existing `LazyFrame`.
+#' This makes a very cheap deep copy/clone of an existing
+#' [`LazyFrame`][LazyFrame_class]. Rarely useful as `LazyFrame`s are nearly 100%
+#' immutable. Any modification of a `LazyFrame` should lead to a clone anyways,
+#' but this can be useful when dealing with attributes (see examples).
+#'
+#'
 #' @return A LazyFrame
 #' @examples
 #' df1 = pl$LazyFrame(iris)
-#' df2 = df1$clone()
-#' df3 = df1
 #'
-#' # the clone and the original don't have the same address...
-#' pl$mem_address(df1) != pl$mem_address(df2)
+#' # Make a function to take a LazyFrame, add an attribute, and return a LazyFrame
+#' give_attr = function(data) {
+#'   attr(data, "created_on") = "2024-01-29"
+#'   data
+#' }
+#' df2 = give_attr(df1)
 #'
-#' # ... but simply assigning df1 to df3 change the address anyway
-#' pl$mem_address(df1) == pl$mem_address(df3)
+#' # Problem: the original LazyFrame also gets the attribute while it shouldn't!
+#' attributes(df1)
+#'
+#' # Use $clone() inside the function to avoid that
+#' give_attr = function(data) {
+#'   data = data$clone()
+#'   attr(data, "created_on") = "2024-01-29"
+#'   data
+#' }
+#' df1 = pl$LazyFrame(iris)
+#' df2 = give_attr(df1)
+#'
+#' # now, the original LazyFrame doesn't get this attribute
+#' attributes(df1)
 LazyFrame_clone = function() {
   .pr$LazyFrame$clone_in_rust(self)
 }

@@ -737,6 +737,25 @@ test_that("cloning", {
   expect_different(pl$mem_address(pf), pl$mem_address(pf2))
 })
 
+test_that("cloning to avoid giving attributes to original data", {
+  df1 = pl$LazyFrame(iris)
+
+  give_attr = function(data) {
+    attr(data, "created_on") = "2024-01-29"
+    data
+  }
+  df2 = give_attr(df1)
+  expect_identical(attributes(df1)$created_on, "2024-01-29")
+
+  give_attr2 = function(data) {
+    data = data$clone()
+    attr(data, "created_on") = "2024-01-29"
+    data
+  }
+  df1 = pl$LazyFrame(iris)
+  df2 = give_attr2(df1)
+  expect_null(attributes(df1)$created_on)
+})
 
 
 test_that("fetch", {

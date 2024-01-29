@@ -198,6 +198,26 @@ test_that("clone", {
   expect_identical(pl$mem_address(s2), pl$mem_address(s3))
 })
 
+test_that("cloning to avoid giving attributes to original data", {
+  df1 = pl$Series(1:10)
+
+  give_attr = function(data) {
+    attr(data, "created_on") = "2024-01-29"
+    data
+  }
+  df2 = give_attr(df1)
+  expect_identical(attributes(df1)$created_on, "2024-01-29")
+
+  give_attr2 = function(data) {
+    data = data$clone()
+    attr(data, "created_on") = "2024-01-29"
+    data
+  }
+  df1 = pl$Series(1:10)
+  df2 = give_attr2(df1)
+  expect_null(attributes(df1)$created_on)
+})
+
 test_that("dtype and equality", {
   expect_true(pl$Series(1:3)$dtype == pl$dtypes$Int32)
   expect_false(pl$Series(1:3)$dtype == pl$dtypes$Float64)
