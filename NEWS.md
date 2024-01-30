@@ -2,6 +2,10 @@
 
 ## polars (development version)
 
+### Bug fixes
+
+-   `$sort()` no longer panicks when `descending = NULL` (#747).
+
 ## polars 0.13.0
 
 ### Breaking changes
