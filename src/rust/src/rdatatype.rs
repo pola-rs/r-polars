@@ -1,6 +1,5 @@
 use crate::robj_to;
 
-use crate::utils::robj_to_string;
 use crate::utils::wrappers::Wrap;
 use extendr_api::prelude::*;
 use polars::prelude as pl;
@@ -261,10 +260,9 @@ pub fn robj_to_unique_keep_strategy(robj: Robj) -> RResult<UniqueKeepStrategy> {
     }
 }
 
-pub fn new_quantile_interpolation_option(robj: Robj) -> RResult<QuantileInterpolOptions> {
-    let s = robj_to_string(robj.clone())?;
+pub fn robj_to_quantile_interpolation_option(robj: Robj) -> RResult<QuantileInterpolOptions> {
     use pl::QuantileInterpolOptions::*;
-    match s.as_ref() {
+    match robj_to_rchoice(robj)?.as_str() {
         "nearest" => Ok(Nearest),
         "higher" => Ok(Higher),
         "lower" => Ok(Lower),
@@ -273,6 +271,17 @@ pub fn new_quantile_interpolation_option(robj: Robj) -> RResult<QuantileInterpol
         s => rerr()
             .bad_val(format!("interpolation choice [{s}] is not any of 'nearest', 'higher', 'lower', 'midpoint', 'linear'"))
      ,
+    }
+}
+
+pub fn robj_to_interpolation_method(robj: Robj) -> RResult<pl::InterpolationMethod> {
+    use pl::InterpolationMethod as IM;
+    match robj_to_rchoice(robj)?.as_str() {
+        "linear" => Ok(IM::Linear),
+        "nearest" => Ok(IM::Nearest),
+        s => rerr().bad_val(format!(
+            "InterpolationMethod choice: ['{s}'] is not any of 'linear' or 'nearest'",
+        )),
     }
 }
 
@@ -343,19 +352,6 @@ pub fn expr_to_any_value(e: pl::Expr) -> std::result::Result<pl::AnyValue<'stati
         .ok_or_else(|| String::from("series had no first value"))?
         .into_static()
         .map_err(|err| err.to_string())
-}
-
-pub fn new_interpolation_method(s: &str) -> std::result::Result<pl::InterpolationMethod, String> {
-    use pl::InterpolationMethod as IM;
-    match s {
-        "linear" => Ok(IM::Linear),
-        "nearest" => Ok(IM::Nearest),
-
-        _ => Err(format!(
-            "InterpolationMethod choice: [{}] is not any of 'linear' or 'nearest'",
-            s
-        )),
-    }
 }
 
 pub fn robj_to_width_strategy(robj: Robj) -> RResult<pl::ListToStructWidthStrategy> {

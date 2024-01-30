@@ -240,7 +240,7 @@ impl RPolarsLazyFrame {
         let out = ldf
             .quantile(
                 robj_to!(PLExpr, quantile)?,
-                robj_to!(new_quantile_interpolation_option, interpolation)?,
+                robj_to!(quantile_interpolation_option, interpolation)?,
             )
             .map_err(polars_to_rpolars_err)?;
         Ok(out.into())
