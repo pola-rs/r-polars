@@ -470,6 +470,12 @@ impl RPolarsLazyFrame {
         let mut ddd = robj_to!(VecPLExprCol, dotdotdot)?;
         exprs.append(&mut ddd);
         let descending = robj_to!(Vec, bool, descending)?;
+
+        if descending.is_empty() {
+            return Err(RPolarsErr::new()
+                .plain("`descending` must be of length 1 or of the same length as `by`".into()));
+        };
+
         let nulls_last = robj_to!(bool, nulls_last)?;
         let maintain_order = robj_to!(bool, maintain_order)?;
         Ok(self
