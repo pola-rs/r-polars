@@ -165,7 +165,7 @@ test_that("sink_csv: date_format works", {
   dat$sink_csv(temp_out, date_format = "%Y")
   expect_equal(
     pl$read_csv(temp_out)$
-      with_columns(pl$col("date")$shrink_dtype())$
+      with_columns(pl$col("date"))$
       sort("date")$
       to_data_frame(),
     data.frame(date = 2020:2023)
