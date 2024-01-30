@@ -519,7 +519,15 @@ impl RPolarsSeries {
         };
     }
 
-    pub fn from_arrow_array_robj(name: &str, array: Robj) -> Result<Self, String> {
+    pub fn from_arrow_array_stream_str(name: Robj, robj_str: Robj) -> RResult<Robj> {
+        let name = robj_to!(str, name)?;
+        let s = crate::arrow_interop::to_rust::arrow_stream_to_series_internal(robj_str)?
+            .with_name(name);
+        Ok(RPolarsSeries(s).into_robj())
+    }
+
+    pub fn from_arrow_array_robj(name: Robj, array: Robj) -> Result<Self, String> {
+        let name = robj_to!(str, name)?;
         let arr = crate::arrow_interop::to_rust::arrow_array_to_rust(array)?;
 
         match arr.data_type() {

@@ -1252,6 +1252,8 @@ RPolarsSeries$to_frame <- function() .Call(wrap__RPolarsSeries__to_frame, self)
 
 RPolarsSeries$set_sorted_mut <- function(descending) invisible(.Call(wrap__RPolarsSeries__set_sorted_mut, self, descending))
 
+RPolarsSeries$from_arrow_array_stream_str <- function(name, robj_str) .Call(wrap__RPolarsSeries__from_arrow_array_stream_str, name, robj_str)
+
 RPolarsSeries$from_arrow_array_robj <- function(name, array) .Call(wrap__RPolarsSeries__from_arrow_array_robj, name, array)
 
 #' @export
