@@ -4,7 +4,7 @@
 
 ### Bug fixes
 
--   `$sort()` no longer panicks when `descending = NULL` (#747).
+-   `$sort()` no longer panicks when `descending = NULL` (#748).
 
 ## polars 0.13.0
 
