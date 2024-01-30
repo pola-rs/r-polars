@@ -328,6 +328,7 @@ as_polars_series.ChunkedArray = as_polars_series.Array
 #' @rdname as_polars_series
 #' @export
 as_polars_series.nanoarrow_array = function(x, name = NULL, ...) {
+  # TODO: support 0-length array
   .pr$Series$from_arrow_array_robj(name %||% "", x) |>
     unwrap()
 }
@@ -341,6 +342,7 @@ as_polars_series.nanoarrow_array_stream = function(x, name = NULL, ...) {
   list_of_arrays = nanoarrow::collect_array_stream(x, validate = FALSE)
 
   if (length(list_of_arrays) < 1L) {
+    # TODO: support 0-length array stream
     out = pl$Series(NULL, name = name)
   } else {
     out = as_polars_series.nanoarrow_array(list_of_arrays[[1L]], name = name)
