@@ -206,7 +206,43 @@ as_polars_df.ArrowTabular = function(
 }
 
 
-# TODO: as_polars_df.nanoarrow_array_stream
+#' @rdname as_polars_df
+#' @export
+as_polars_df.nanoarrow_array_stream = function(x, ...) {
+  on.exit(x$release())
+
+  if (!inherits(nanoarrow::infer_nanoarrow_ptype(x$get_schema()), "data.frame")) {
+    stop("Can't convert non-struct array stream to RPolarsDataFrame")
+  }
+
+  list_of_struct_arrays = nanoarrow::collect_array_stream(x, validate = FALSE)
+  if (length(list_of_struct_arrays)) {
+    data_cols = list()
+
+    struct_array = list_of_struct_arrays[[1L]]
+    list_of_arrays = struct_array$children
+    col_names = names(list_of_arrays)
+
+    for (i in seq_along(list_of_arrays)) {
+      data_cols[[col_names[i]]] = as_polars_series.nanoarrow_array(list_of_arrays[[i]])
+    }
+
+    for (struct_array in list_of_struct_arrays[-1L]) {
+      list_of_arrays = struct_array$children
+      col_names = names(list_of_arrays)
+      for (i in seq_along(list_of_arrays)) {
+        .pr$Series$append_mut(data_cols[[col_names[i]]], as_polars_series.nanoarrow_array(list_of_arrays[[i]])) |>
+          unwrap("in as_polars_df(<nanoarrow_array_stream>):")
+      }
+    }
+
+    out = do.call(pl$DataFrame, data_cols)
+  } else {
+    out = pl$DataFrame() # TODO: support creating 0-row DataFrame
+  }
+
+  out
+}
 
 
 #' To polars LazyFrame
@@ -319,6 +355,37 @@ as_polars_series.Array = function(x, name = NULL, ..., rechunk = TRUE) {
     unwrap()
 }
 
+
 #' @rdname as_polars_series
 #' @export
 as_polars_series.ChunkedArray = as_polars_series.Array
+
+
+#' @rdname as_polars_series
+#' @export
+as_polars_series.nanoarrow_array = function(x, name = NULL, ...) {
+  # TODO: support 0-length array
+  .pr$Series$from_arrow_array_robj(name %||% "", x) |>
+    unwrap()
+}
+
+
+#' @rdname as_polars_series
+#' @export
+as_polars_series.nanoarrow_array_stream = function(x, name = NULL, ...) {
+  on.exit(x$release())
+
+  list_of_arrays = nanoarrow::collect_array_stream(x, validate = FALSE)
+
+  if (length(list_of_arrays) < 1L) {
+    # TODO: support 0-length array stream
+    out = pl$Series(NULL, name = name)
+  } else {
+    out = as_polars_series.nanoarrow_array(list_of_arrays[[1L]], name = name)
+    for (array in list_of_arrays[-1L]) {
+      .pr$Series$append_mut(out, as_polars_series.nanoarrow_array(array))
+    }
+  }
+
+  out
+}
