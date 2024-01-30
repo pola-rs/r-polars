@@ -18,15 +18,22 @@ make_as_polars_df_cases = function() {
     "polars_lazy_group_by_dynamic", pl$LazyFrame(test_df)$group_by_dynamic("col_int", every = "1i"),
     "arrow Table", arrow::as_arrow_table(test_df),
     "arrow RecordBatch", arrow::as_record_batch(test_df),
+    "nanoarrow_array_stream", nanoarrow::as_nanoarrow_array_stream(test_df),
   )
 }
 
 patrick::with_parameters_test_that("as_polars_df S3 methods",
   {
     skip_if_not_installed("arrow")
+    skip_if_not_installed("nanoarrow")
 
     pl_df = as_polars_df(x)
     expect_s3_class(pl_df, "RPolarsDataFrame")
+
+    if (inherits(x, "nanoarrow_array_stream")) {
+      # The stream should be released after conversion
+      expect_error(x$get_next(), "already been released")
+    }
 
     actual = as.data.frame(pl_df)
     expected = as.data.frame(pl$DataFrame(test_df))
