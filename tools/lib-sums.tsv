@@ -1,6 +1,0 @@
-url	sha256sum
-https://github.com/pola-rs/r-polars/releases/download/lib-v0.36.1/libr_polars-0.36.1-aarch64-apple-darwin.tar.gz	8619f6ede47c7aec2b7d733c5742e253cb2317d3d39d9d6794d5e15bf7db30c8
-https://github.com/pola-rs/r-polars/releases/download/lib-v0.36.1/libr_polars-0.36.1-aarch64-unknown-linux-gnu.tar.gz	8d76ce10df688967a7a46b028efac08e7e54a0667070ec4d87a5285d473bf573
-https://github.com/pola-rs/r-polars/releases/download/lib-v0.36.1/libr_polars-0.36.1-x86_64-apple-darwin.tar.gz	42e6a7f18a210961a02ee9b2282d5c081fcd13bb7505404e60f97816efdb1180
-https://github.com/pola-rs/r-polars/releases/download/lib-v0.36.1/libr_polars-0.36.1-x86_64-pc-windows-gnu.tar.gz	596c92f98c73ff23648153ce31cef5caee4cefd61313a0b346d8c8a057f53d9f
-https://github.com/pola-rs/r-polars/releases/download/lib-v0.36.1/libr_polars-0.36.1-x86_64-unknown-linux-gnu.tar.gz	455cc005c21f92f6bcbc8c4b1e58b26215f38076d703205d09958b9dcf33eb58
