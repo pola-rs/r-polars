@@ -333,33 +333,30 @@ test_that("cloning to avoid giving attributes to original data", {
   expect_null(attributes(df1)$created_on)
 })
 
+test_that("get column(s)", {
+  df = pl$DataFrame(iris)
+  expected_list_of_series = {
+    expected = lapply(
+      1:5,
+      function(i) pl$Series(iris[[i]],names(iris)[i])
+    )
+    names(expected) = names(iris)
+    expected
+  }
+  actual_list_of_series = df$get_columns()
+  for (i in 1:5) {
+    is_equal = expected_list_of_series[[i]]$equals(actual_list_of_series[[i]])
+    if (!is_equal) {
+      fail("series are not equal according to polars internal check")
+    }
+  }
 
-# TODO figure out why this test fails. Expected and Actual do appear very much equal
-# test_that("get column(s)", {
-# df = pl$DataFrame(iris)
-# expected_list_of_series = {
-#   expected = lapply(
-#     1:5,
-#     function(i) pl$Series(iris[[i]],names(iris)[i])
-#   )
-#   names(expected) = names(iris)
-#   expected
-# }
-# actual_list_of_series = df$get_columns()
-# for (i in 1:5) {
-#   is_equal = expected_list_of_series[[i]]$equals(actual_list_of_series[[i]])
-#   if (!is_equal) {
-#     fail("series are not equal according to polars internal check")
-#   }
-# }
-
-
-# list_of_vectors = lapply(actual_list_of_series, function(x) x$to_vector())
-# expect_identical(
-#   list_of_vectors,
-#   as.list(iris)
-# )
-# })
+  list_of_vectors = lapply(actual_list_of_series, function(x) x$to_vector())
+  expect_identical(
+    list_of_vectors,
+    as.list(iris)
+  )
+})
 
 
 test_that("get column", {
