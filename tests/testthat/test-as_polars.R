@@ -312,3 +312,37 @@ test_that("can convert an arrow Table contains dictionary<large_string, uint32> 
     )
   )
 })
+
+make_nanoarrow_array_stream_cases = function() {
+  tibble::tribble(
+    ~.test_name, ~x,
+    "two chunks", nanoarrow::basic_array_stream(list(data.frame(a = 1, b = 2), data.frame(a = NA, b = 1))),
+    "nested", nanoarrow::as_nanoarrow_array_stream(tibble::tibble(a = 1, b = tibble::tibble(c = 3:4, d = 5:6))),
+  )
+}
+
+patrick::with_parameters_test_that("as_polars_df for nanoarrow_array_stream",
+  {
+    skip_if_not_installed("nanoarrow")
+
+    pl_df = as_polars_df(x)
+    expect_s3_class(pl_df, "RPolarsDataFrame")
+    expect_error(x$get_next(), "already been released")
+
+    expect_identical(dim(pl_df), c(2L, 2L))
+  },
+  .cases = make_nanoarrow_array_stream_cases()
+)
+
+patrick::with_parameters_test_that("as_polars_series for nanoarrow_array_stream",
+  {
+    skip_if_not_installed("nanoarrow")
+
+    pl_series = as_polars_series(x)
+    expect_s3_class(pl_series, "RPolarsSeries")
+    expect_error(x$get_next(), "already been released")
+
+    expect_identical(length(pl_series), 2L)
+  },
+  .cases = make_nanoarrow_array_stream_cases()
+)
