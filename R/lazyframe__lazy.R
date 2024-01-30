@@ -1172,9 +1172,9 @@ LazyFrame_join = function(
 #' df$sort(c("cyl", "mpg"), descending = c(TRUE, FALSE))$collect()
 #' df$sort(pl$col("cyl"), pl$col("mpg"))$collect()
 LazyFrame_sort = function(
-    by, # : IntoExpr | List[IntoExpr],
-    ..., # unnamed Into expr
-    descending = FALSE, #  bool | vector[bool] = False,
+    by,
+    ...,
+    descending = FALSE,
     nulls_last = FALSE,
     maintain_order = FALSE) {
   .pr$LazyFrame$sort_by_exprs(

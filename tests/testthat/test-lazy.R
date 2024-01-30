@@ -417,6 +417,16 @@ test_that("sort", {
   b = df$sort("mpg", nulls_last = FALSE, maintain_order = TRUE)$collect()$to_data_frame()
   expect_true(is.na(a$mpg[32]))
   expect_true(is.na(b$mpg[1]))
+
+  # error if descending is NULL
+  expect_error(
+    df$sort("mpg", descending = NULL),
+    "must be of length 1 or of the same length as `by`"
+  )
+  expect_error(
+    df$sort(c("mpg", "drat"), descending = NULL),
+    "must be of length 1 or of the same length as `by`"
+  )
 })
 
 
