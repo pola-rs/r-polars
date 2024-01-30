@@ -1,6 +1,6 @@
 # NEWS
 
-## polars (development version)
+## polars (development version) 
 
 ### Bug fixes
 
