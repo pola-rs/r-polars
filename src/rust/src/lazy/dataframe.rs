@@ -80,6 +80,7 @@ impl RPolarsLazyFrame {
         })
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn sink_parquet(
         &self,
         path: Robj,
@@ -114,6 +115,7 @@ impl RPolarsLazyFrame {
             .map_err(polars_to_rpolars_err)
     }
 
+    #[allow(clippy::too_many_arguments)]
     fn sink_csv(
         &self,
         path: Robj,
@@ -644,6 +646,7 @@ impl RPolarsLazyFrame {
         })
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn group_by_dynamic(
         &self,
         index_column: Robj,

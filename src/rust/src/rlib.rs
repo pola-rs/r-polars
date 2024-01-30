@@ -279,6 +279,7 @@ fn reduce(lambda: Robj, exprs: Robj) -> RResult<RPolarsExpr> {
 }
 
 #[extendr]
+#[allow(clippy::too_many_arguments)]
 pub fn duration(
     weeks: Robj,
     days: Robj,

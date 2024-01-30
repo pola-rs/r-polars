@@ -377,6 +377,7 @@ impl RPolarsDataFrame {
             .map(RPolarsDataFrame)
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn pivot_expr(
         &self,
         values: Robj,
@@ -454,6 +455,7 @@ impl RPolarsDataFrame {
             .map(RPolarsDataFrame)
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn write_csv(
         &self,
         path: Robj,
