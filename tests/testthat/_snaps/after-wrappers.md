@@ -510,7 +510,7 @@
        [7] "arg_max"                "arg_min"                "ceil"                  
       [10] "chunk_lengths"          "clone"                  "compare"               
       [13] "cum_sum"                "div"                    "dtype"                 
-      [16] "equals"                 "floor"                  "from_arrow"            
+      [16] "equals"                 "floor"                  "from_arrow_array_robj" 
       [19] "get_fmt"                "is_sorted"              "is_sorted_flag"        
       [22] "is_sorted_reverse_flag" "len"                    "map_elements"          
       [25] "max"                    "mean"                   "median"                

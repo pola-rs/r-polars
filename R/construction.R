@@ -169,25 +169,25 @@ arrow_to_rseries_result = function(name, values, rechunk = TRUE) {
   ) {
     res = Ok(pl$lit(c())$cast(pl$Categorical)$to_series())
   } else if (is.null(array$num_chunks)) {
-    res = .pr$Series$from_arrow(name, array)
+    res = .pr$Series$from_arrow_array_robj(name, array)
   } else {
     if (array$num_chunks > 1) {
       if (is_arrow_dictionary(array)) {
-        res = .pr$Series$from_arrow(name, arrow::as_arrow_array(array))
+        res = .pr$Series$from_arrow_array_robj(name, arrow::as_arrow_array(array))
       } else {
         chunks = array$chunks
-        res = .pr$Series$from_arrow(name, chunks[[1]])
+        res = .pr$Series$from_arrow_array_robj(name, chunks[[1]])
         for (chunk in chunks[-1L]) {
           res = and_then(res, \(s) {
-            .pr$Series$append_mut(s, unwrap(.pr$Series$from_arrow(name, chunk))) |> map(\(x) s)
+            .pr$Series$append_mut(s, unwrap(.pr$Series$from_arrow_array_robj(name, chunk))) |> map(\(x) s)
           })
         }
         res
       }
     } else if (array$num_chunks == 0L) {
-      res = .pr$Series$from_arrow(name, arrow::Array$create(NULL)$cast(array$type))
+      res = .pr$Series$from_arrow_array_robj(name, arrow::Array$create(NULL)$cast(array$type))
     } else {
-      res = .pr$Series$from_arrow(name, array$chunk(0L))
+      res = .pr$Series$from_arrow_array_robj(name, array$chunk(0L))
     }
   }
 

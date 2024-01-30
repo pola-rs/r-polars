@@ -1252,7 +1252,7 @@ RPolarsSeries$to_frame <- function() .Call(wrap__RPolarsSeries__to_frame, self)
 
 RPolarsSeries$set_sorted_mut <- function(descending) invisible(.Call(wrap__RPolarsSeries__set_sorted_mut, self, descending))
 
-RPolarsSeries$from_arrow <- function(name, array) .Call(wrap__RPolarsSeries__from_arrow, name, array)
+RPolarsSeries$from_arrow_array_robj <- function(name, array) .Call(wrap__RPolarsSeries__from_arrow_array_robj, name, array)
 
 #' @export
 `$.RPolarsSeries` <- function (self, name) { func <- RPolarsSeries[[name]]; environment(func) <- environment(); func }

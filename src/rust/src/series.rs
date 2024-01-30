@@ -519,7 +519,7 @@ impl RPolarsSeries {
         };
     }
 
-    pub fn from_arrow(name: &str, array: Robj) -> Result<Self, String> {
+    pub fn from_arrow_array_robj(name: &str, array: Robj) -> Result<Self, String> {
         let arr = crate::arrow_interop::to_rust::arrow_array_to_rust(array)?;
 
         match arr.data_type() {

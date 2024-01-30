@@ -328,7 +328,7 @@ as_polars_series.ChunkedArray = as_polars_series.Array
 #' @rdname as_polars_series
 #' @export
 as_polars_series.nanoarrow_array = function(x, name = NULL, ...) {
-  .pr$Series$from_arrow(name %||% "", x) |>
+  .pr$Series$from_arrow_array_robj(name %||% "", x) |>
     unwrap()
 }
 
