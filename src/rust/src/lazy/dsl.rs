@@ -488,6 +488,7 @@ impl RPolarsExpr {
             .into())
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn rolling_min(
         &self,
         window_size: Robj,
@@ -513,6 +514,7 @@ impl RPolarsExpr {
             .into())
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn rolling_max(
         &self,
         window_size: Robj,
@@ -538,6 +540,7 @@ impl RPolarsExpr {
             .into())
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn rolling_mean(
         &self,
         window_size: Robj,
@@ -563,6 +566,7 @@ impl RPolarsExpr {
             .into())
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn rolling_sum(
         &self,
         window_size: Robj,
@@ -588,6 +592,7 @@ impl RPolarsExpr {
             .into())
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn rolling_std(
         &self,
         window_size: Robj,
@@ -613,6 +618,7 @@ impl RPolarsExpr {
             .into())
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn rolling_var(
         &self,
         window_size: Robj,
@@ -638,6 +644,7 @@ impl RPolarsExpr {
             .into())
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn rolling_median(
         &self,
         window_size: Robj,
