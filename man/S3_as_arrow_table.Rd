@@ -6,6 +6,11 @@
 \usage{
 \method{as_arrow_table}{RPolarsDataFrame}(x, ...)
 }
+\arguments{
+\item{x}{\link[=DataFrame_class]{A Polars DataFrame}}
+
+\item{...}{Ignored}
+}
 \description{
 Create a arrow Table from a Polars object
 }

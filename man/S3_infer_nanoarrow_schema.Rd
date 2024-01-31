@@ -6,6 +6,17 @@
 \usage{
 \method{infer_nanoarrow_schema}{RPolarsDataFrame}(x, ...)
 }
+\arguments{
+\item{x}{\link[=DataFrame_class]{A Polars DataFrame}}
+
+\item{...}{Ignored}
+}
 \description{
 Infer nanoarrow schema from a Polars object
+}
+\examples{
+library(nanoarrow)
+pl_df = as_polars_df(mtcars)
+
+infer_nanoarrow_schema(pl_df)
 }

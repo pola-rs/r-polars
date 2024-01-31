@@ -1,5 +1,6 @@
 #' Create a nanoarrow_array_stream from a Polars object
 #'
+#' @inheritParams as_arrow_table.RPolarsDataFrame
 #' @param schema must stay at default value NULL
 #' @rdname S3_as_nanoarrow_array_stream
 #' @examples
@@ -20,9 +21,14 @@ as_nanoarrow_array_stream.RPolarsDataFrame = function(x, ..., schema = NULL) {
 
 #' Infer nanoarrow schema from a Polars object
 #'
+#' @inheritParams as_arrow_table.RPolarsDataFrame
 #' @rdname S3_infer_nanoarrow_schema
+#' @examples
+#' library(nanoarrow)
+#' pl_df = as_polars_df(mtcars)
+#'
+#' infer_nanoarrow_schema(pl_df)
 # exported in zzz.R
 infer_nanoarrow_schema.RPolarsDataFrame = function(x, ...) {
-  # TODO: we may not use `as_nanoarrow_array_stream` here
   as_nanoarrow_array_stream.RPolarsDataFrame(x)$get_schema()
 }

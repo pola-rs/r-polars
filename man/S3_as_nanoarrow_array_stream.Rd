@@ -7,6 +7,10 @@
 \method{as_nanoarrow_array_stream}{RPolarsDataFrame}(x, ..., schema = NULL)
 }
 \arguments{
+\item{x}{\link[=DataFrame_class]{A Polars DataFrame}}
+
+\item{...}{Ignored}
+
 \item{schema}{must stay at default value NULL}
 }
 \description{

@@ -1,5 +1,7 @@
 #' Create a arrow Table from a Polars object
 #'
+#' @param x [A Polars DataFrame][DataFrame_class]
+#' @param ... Ignored
 #' @rdname S3_as_arrow_table
 #' @examples
 #' library(arrow)
@@ -15,6 +17,7 @@ as_arrow_table.RPolarsDataFrame = function(x, ...) {
 
 #' Create a arrow RecordBatchReader from a Polars object
 #'
+#' @inheritParams as_arrow_table.RPolarsDataFrame
 #' @rdname S3_as_record_batch_reader
 #' @examples
 #' library(arrow)

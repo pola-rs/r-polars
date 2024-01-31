@@ -6,6 +6,11 @@
 \usage{
 \method{as_record_batch_reader}{RPolarsDataFrame}(x, ...)
 }
+\arguments{
+\item{x}{\link[=DataFrame_class]{A Polars DataFrame}}
+
+\item{...}{Ignored}
+}
 \description{
 Create a arrow RecordBatchReader from a Polars object
 }
