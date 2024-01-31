@@ -1,28 +1,14 @@
-#' polars to nanoarrow and arrow
-#' @description Conversion via native apache arrow array stream (fast), THIS REQUIRES ´nanoarrow´
-#' @name nanoarrow
-#' @param x a polars DataFrame
-#' @param ... not used right now
+#' Create a nanoarrow_array_stream from a Polars object
+#'
 #' @param schema must stay at default value NULL
-#' @keywords nanoarrow_interface
-#' @return - a nanoarrow array stream
-#' @details
-#'
-#' The following functions enable conversion to `nanoarrow` and `arrow`.
-#' Conversion kindly provided by "paleolimbot / Dewey Dunnington" Author of `nanoarrow`.
-#' Currently these conversions are the fastest way to convert from polars to R.
-#'
-#'
-#' @aliases array_stream arrow nanoarrow record_batch_reader arrow_table
-#' read more at \url{https://github.com/apache/arrow-nanoarrow/r}
-#'
-#'
+#' @rdname S3_as_nanoarrow_array_stream
 #' @examples
 #' library(nanoarrow)
-#' df = pl$DataFrame(mtcars)
-#' nanoarrow_array_stream = as_nanoarrow_array_stream(df)
-#' rdf = as.data.frame(nanoarrow_array_stream)
-#' print(head(rdf))
+#' pl_df = as_polars_df(mtcars)
+#'
+#' nanoarrow_array_stream = as_nanoarrow_array_stream(pl_df)
+#' as.data.frame(nanoarrow_array_stream)
+# exported in zzz.R
 as_nanoarrow_array_stream.RPolarsDataFrame = function(x, ..., schema = NULL) {
   # Don't support the schema argument yet
   stopifnot(is.null(schema))
@@ -31,11 +17,12 @@ as_nanoarrow_array_stream.RPolarsDataFrame = function(x, ..., schema = NULL) {
   stream
 }
 
-#' @rdname nanoarrow
-#' @return - a nanoarrow array schema
-#' @examples
-#' nanoarrow_array_schema = infer_nanoarrow_schema(df)
-#' print(nanoarrow_array_schema)
+
+#' Infer nanoarrow schema from a Polars object
+#'
+#' @rdname S3_infer_nanoarrow_schema
+# exported in zzz.R
 infer_nanoarrow_schema.RPolarsDataFrame = function(x, ...) {
+  # TODO: we may not use `as_nanoarrow_array_stream` here
   as_nanoarrow_array_stream.RPolarsDataFrame(x)$get_schema()
 }
