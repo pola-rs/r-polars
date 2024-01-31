@@ -955,8 +955,11 @@ macro_rules! robj_to_inner {
     (StartBy, $a:ident) => {
         $crate::rdatatype::robj_to_start_by($a)
     };
-    (new_quantile_interpolation_option, $a:ident) => {
-        $crate::rdatatype::new_quantile_interpolation_option($a)
+    (quantile_interpolation_option, $a:ident) => {
+        $crate::rdatatype::robj_to_quantile_interpolation_option($a)
+    };
+    (InterpolationMethod, $a:ident) => {
+        $crate::rdatatype::robj_to_interpolation_method($a)
     };
     (new_null_behavior, $a:ident) => {
         $crate::rdatatype::robj_new_null_behavior($a)

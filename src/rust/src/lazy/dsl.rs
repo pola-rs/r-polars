@@ -423,7 +423,7 @@ impl RPolarsExpr {
             .0
             .quantile(
                 robj_to!(PLExpr, quantile)?,
-                robj_to!(new_quantile_interpolation_option, interpolation)?,
+                robj_to!(quantile_interpolation_option, interpolation)?,
             )
             .into())
     }
@@ -480,12 +480,12 @@ impl RPolarsExpr {
             .into()
     }
 
-    pub fn interpolate(&self, method: &str) -> List {
-        use crate::rdatatype::new_interpolation_method;
-        let im_result = new_interpolation_method(method)
-            .map(|im| RPolarsExpr(self.0.clone().interpolate(im)))
-            .map_err(|err| format!("in interpolate(): {}", err));
-        r_result_list(im_result)
+    pub fn interpolate(&self, method: Robj) -> RResult<RPolarsExpr> {
+        Ok(self
+            .clone()
+            .0
+            .interpolate(robj_to!(InterpolationMethod, method)?)
+            .into())
     }
 
     #[allow(clippy::too_many_arguments)]
@@ -694,7 +694,7 @@ impl RPolarsExpr {
             fn_params: None,
         };
         let quantile = robj_to!(f64, quantile)?;
-        let interpolation = robj_to!(new_quantile_interpolation_option, interpolation)?;
+        let interpolation = robj_to!(quantile_interpolation_option, interpolation)?;
 
         Ok(self
             .0

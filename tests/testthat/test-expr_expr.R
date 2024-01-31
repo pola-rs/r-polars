@@ -644,15 +644,12 @@ test_that("$name$map()", {
       )
       lf = df$lazy()
       expect_identical(lf$collect()$columns, "alice_and_bob")
-
-
       expect_error(
         pl$DataFrame(list(alice = 1:3))$select(
           pl$col("alice")$name$map(\(x) 42) # wrong return
         ),
         "was not a string"
       )
-
 
       # expect_error(
       #   pl$DataFrame(list(alice=1:3))$select(
@@ -665,8 +662,7 @@ test_that("$name$map()", {
 })
 
 
-test_that("finite infinte is_nan is_not_nan", {
-  # TODO contribute polars NULL behavoir of is_nan and is_not_nan is not documented and not obvious
+test_that("finite infinite is_nan is_not_nan", {
   expect_identical(
     pl$DataFrame(list(a = c(0, NaN, NA, Inf, -Inf)))$select(
       pl$col("a")$is_finite()$alias("is_finite"),
@@ -1149,7 +1145,6 @@ test_that("fill_null  + forward backward _fill + fill_nan", {
     x
   }
 
-  # TODO let select and other ... functions accept trailing ','
   expect_identical(
     pl$DataFrame(l)$select(
       pl$col("a")$fill_null(strategy = "forward")$alias("forward"),
@@ -1506,7 +1501,6 @@ test_that("gather_every", {
   )
 })
 
-# TODO contribute polars, panics if start or stop expression has len > 1 or len!= col.len()
 test_that("is_between", {
   l = list(a = (1:5) * 1.0)
   df = pl$DataFrame(l)
