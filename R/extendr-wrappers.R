@@ -38,8 +38,6 @@ as_struct <- function(exprs) .Call(wrap__as_struct, exprs)
 
 struct_ <- function(exprs, eager, schema) .Call(wrap__struct_, exprs, eager, schema)
 
-rb_list_to_df <- function(r_batches, names) .Call(wrap__rb_list_to_df, r_batches, names)
-
 dtype_str_repr <- function(dtype) .Call(wrap__dtype_str_repr, dtype)
 
 new_arrow_stream <- function() .Call(wrap__new_arrow_stream)
