@@ -170,22 +170,6 @@ unsafe fn export_df_to_arrow_stream(robj_df: Robj, robj_str: Robj) -> RResult<Ro
 }
 
 #[extendr]
-fn rb_list_to_df(r_batches: List, names: Vec<String>) -> Result<RPolarsDataFrame, String> {
-    let mut iter = r_batches.into_iter().map(|(_, robj)| {
-        let robj = call!(r"\(x) x$columns", robj)?;
-        let l = robj.as_list().ok_or_else(|| "not a list!?".to_string())?;
-        crate::arrow_interop::to_rust::rb_to_rust_df(l, &names)
-    });
-    let mut df_acc = iter
-        .next()
-        .unwrap_or_else(|| Ok(pl::DataFrame::default()))?;
-    for df in iter {
-        df_acc.vstack_mut(&df?).map_err(|err| err.to_string())?;
-    }
-    Ok(RPolarsDataFrame(df_acc))
-}
-
-#[extendr]
 pub fn dtype_str_repr(dtype: Robj) -> RResult<String> {
     let dtype = robj_to!(RPolarsDataType, dtype)?.0;
     Ok(dtype.to_string())
@@ -328,10 +312,6 @@ extendr_module! {
     fn r_date_range_lazy;
     fn as_struct;
     fn struct_;
-    //fn field_to_rust2;
-    //fn series_from_arrow;
-    //fn rb_to_df;
-    fn rb_list_to_df;
 
     fn dtype_str_repr;
 
