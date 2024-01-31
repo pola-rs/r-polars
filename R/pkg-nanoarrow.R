@@ -39,23 +39,3 @@ as_nanoarrow_array_stream.RPolarsDataFrame = function(x, ..., schema = NULL) {
 infer_nanoarrow_schema.RPolarsDataFrame = function(x, ...) {
   as_nanoarrow_array_stream.RPolarsDataFrame(x)$get_schema()
 }
-
-#' @rdname nanoarrow
-#' @return  - an arrow table
-#' @examples
-#' library(arrow)
-#' arrow_table = as_arrow_table(df)
-#' print(arrow_table)
-as_arrow_table.RPolarsDataFrame = function(x, ...) {
-  reader = as_record_batch_reader.RPolarsDataFrame(x)
-  reader$read_table()
-}
-
-#' @rdname nanoarrow
-#' @return - an arrow record batch reader
-#' @examples
-#' arrow_record_batch_reader = as_record_batch_reader(df) # requires arrow
-#' print(arrow_record_batch_reader)
-as_record_batch_reader.RPolarsDataFrame = function(x, ..., schema = NULL) {
-  arrow::as_record_batch_reader(as_nanoarrow_array_stream.RPolarsDataFrame(x, schema = schema))
-}

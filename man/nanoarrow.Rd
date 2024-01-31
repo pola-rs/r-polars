@@ -12,17 +12,11 @@
 \alias{at}
 \alias{\url{https://github.com/apache/arrow-nanoarrow/r}}
 \alias{infer_nanoarrow_schema.RPolarsDataFrame}
-\alias{as_arrow_table.RPolarsDataFrame}
-\alias{as_record_batch_reader.RPolarsDataFrame}
 \title{polars to nanoarrow and arrow}
 \usage{
 \method{as_nanoarrow_array_stream}{RPolarsDataFrame}(x, ..., schema = NULL)
 
 \method{infer_nanoarrow_schema}{RPolarsDataFrame}(x, ...)
-
-\method{as_arrow_table}{RPolarsDataFrame}(x, ...)
-
-\method{as_record_batch_reader}{RPolarsDataFrame}(x, ..., schema = NULL)
 }
 \arguments{
 \item{x}{a polars DataFrame}
@@ -38,14 +32,6 @@
 
 \itemize{
 \item a nanoarrow array schema
-}
-
-\itemize{
-\item an arrow table
-}
-
-\itemize{
-\item an arrow record batch reader
 }
 }
 \description{
@@ -64,10 +50,5 @@ rdf = as.data.frame(nanoarrow_array_stream)
 print(head(rdf))
 nanoarrow_array_schema = infer_nanoarrow_schema(df)
 print(nanoarrow_array_schema)
-library(arrow)
-arrow_table = as_arrow_table(df)
-print(arrow_table)
-arrow_record_batch_reader = as_record_batch_reader(df) # requires arrow
-print(arrow_record_batch_reader)
 }
 \keyword{nanoarrow_interface}
