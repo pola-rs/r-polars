@@ -60,3 +60,17 @@ test_that("scan read parquet - parallel strategies", {
   ctx = pl$read_parquet(tmpf, parallel = 42) |> get_err_ctx()
   expect_identical(ctx$NotAChoice, "input is not a character vector")
 })
+
+
+test_that("write_paquet works", {
+  tmpf = tempfile()
+  on.exit(unlink(tmpf))
+  df_exp = pl$DataFrame(mtcars)
+  df_exp$write_parquet(tmpf)
+
+  expect_identical(
+    pl$read_parquet(tmpf)$to_data_frame(),
+    mtcars,
+    ignore_attr = TRUE
+  )
+})

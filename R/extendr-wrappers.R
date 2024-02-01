@@ -198,6 +198,8 @@ RPolarsDataFrame$transpose <- function(keep_names_as, new_col_names) .Call(wrap_
 
 RPolarsDataFrame$write_csv <- function(path, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style) .Call(wrap__RPolarsDataFrame__write_csv, self, path, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style)
 
+RPolarsDataFrame$write_parquet <- function(path, compression_method, compression_level, statistics, row_group_size, data_pagesize_limit) .Call(wrap__RPolarsDataFrame__write_parquet, self, path, compression_method, compression_level, statistics, row_group_size, data_pagesize_limit)
+
 RPolarsDataFrame$write_json <- function(file, pretty, row_oriented) .Call(wrap__RPolarsDataFrame__write_json, self, file, pretty, row_oriented)
 
 RPolarsDataFrame$write_ndjson <- function(file) .Call(wrap__RPolarsDataFrame__write_ndjson, self, file)
