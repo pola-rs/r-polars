@@ -48,14 +48,14 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - { os: macos-latest, r: "release" }
+          - { os: macos-14, r: "release" }
           - { os: windows-latest, r: "devel", rtools-version: "43" }
           - { os: windows-latest, r: "release", rtools-version: "" }
           - { os: ubuntu-latest, r: "devel", http-user-agent: "release" }
           - { os: ubuntu-latest, r: "release" }
           - { os: ubuntu-latest, r: "oldrel-1" }
         include:
-          - config: { os: macos-latest, r: "release", full-features: true }
+          - config: { os: macos-14, r: "release", full-features: true }
           - config: { os: windows-latest, r: "release", full-features: true }
           - config: { os: ubuntu-latest, r: "release", full-features: true }
 
@@ -139,7 +139,8 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - macos-latest
+          - macos-12
+          - macos-14
           - windows-latest
           - ubuntu-latest
         r:
@@ -147,9 +148,13 @@ jobs:
           - release
           - devel
         exclude:
-          - os: macos-latest
+          - os: macos-12
             r: devel
-          - os: macos-latest
+          - os: macos-12
+            r: oldrel-1
+          - os: macos-14
+            r: devel
+          - os: macos-14
             r: oldrel-1
 
     env:
