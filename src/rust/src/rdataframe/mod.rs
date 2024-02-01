@@ -8,7 +8,7 @@ pub mod read_parquet;
 use crate::conversion_r_to_s::robjname2series;
 use crate::lazy;
 use crate::rdatatype;
-use crate::rdatatype::RPolarsDataType;
+use crate::rdatatype::{new_parquet_compression, RPolarsDataType};
 use crate::robj_to;
 use crate::rpolarserr::*;
 use either::Either;
@@ -487,6 +487,30 @@ impl RPolarsDataFrame {
             .with_float_precision(robj_to!(Option, usize, float_precision)?)
             .with_null_value(robj_to!(String, null_value)?)
             .with_quote_style(robj_to!(QuoteStyle, quote_style)?)
+            .finish(&mut self.0.clone())
+            .map_err(polars_to_rpolars_err)
+    }
+
+    pub fn write_parquet(
+        &self,
+        path: Robj,
+        compression_method: Robj,
+        compression_level: Robj,
+        statistics: Robj,
+        row_group_size: Robj,
+        data_pagesize_limit: Robj,
+    ) -> RResult<u64> {
+        let path = robj_to!(str, path)?;
+        let f = std::fs::File::create(path)?;
+        pl::ParquetWriter::new(f)
+            .with_compression(new_parquet_compression(
+                compression_method,
+                compression_level,
+            )?)
+            .with_statistics(robj_to!(bool, statistics)?)
+            .with_row_group_size(robj_to!(Option, usize, row_group_size)?)
+            .with_data_page_size(robj_to!(Option, usize, data_pagesize_limit)?)
+            .set_parallel(true)
             .finish(&mut self.0.clone())
             .map_err(polars_to_rpolars_err)
     }
