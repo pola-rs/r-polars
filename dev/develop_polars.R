@@ -1,9 +1,20 @@
 #' load polars with environment variables and packages
+#' run rextendr::document() in a session and set envars and packages temporarily
 #'
-#' @param ALL_FEATURES bool, to compile with e.g. simd, only for nightly toolchain
-#' @param NOT_CRAN bool, do not delete compiled target objects. Next compilation much faster.
-#' @param RPOLARS_CARGO_CLEAN_DEPS bool, do clean up cargo cache. Slows down next compilation
+#' @param NOT_CRAN string if "true", Do not delete compiled target objects. Speeds up next
+#' compilation.
+#' @param RPOLARS_CARGO_CLEAN_DEPS string if "true" clean up cargo cache. Slows down next
+#' compilation.
+#' @param RPOLARS_FULL_FEATURES string if "true" will compile with polars with more rust-polars
+#'  side feature flags enabled
+#' @param RPOLARS_PROFILE string "release" (this is the preferred for development). For shipping
+#' polars via release channels use "release-optimized" is which enables full link time optimization.
+#' This will increase compilation time significantly,  but make the final binary smaller and faster.
+#'
+#' @param .packages char vec naming packages to load. If packages were not already loaded, they will
+#'  be  and then unloaded afterwards
 #' @param ... other environment args to add
+#'
 #' @details in general Makevars check if bool-like envvars are not 'true'.
 #'
 #' @return no return
@@ -33,11 +44,19 @@ load_polars = function(
 
 #' load polars with environment variables and packages
 #'
-#' @param ALL_FEATURES bool, to compile with e.g. simd, only for nightly toolchain
-#' @param NOT_CRAN bool, do not delete compiled target objects. Next compilation much faster.
-#' @param RPOLARS_CARGO_CLEAN_DEPS bool, do clean up cargo cache. Slows down next compilation
+#' @param NOT_CRAN string if "true", Do not delete compiled target objects. Speeds up next
+#' compilation.
+#' @param RPOLARS_CARGO_CLEAN_DEPS string if "true" clean up cargo cache. Slows down next
+#' compilation.
+#' @param RPOLARS_FULL_FEATURES string if "true" will compile with polars with more rust-polars
+#'  side feature flags enabled
+#' @param RPOLARS_PROFILE string "release" (this is the preferred for development). For shipping
+#' polars via release channels use "release-optimized" is which enables full link time optimization.
+#' This will increase compilation time significantly,  but make the final binary smaller and faster.
+#'
+#' @param .packages char vec naming packages to load. If packages were not already loaded, they will
+#'  be  and then unloaded afterwards
 #' @param ... other environment args to add
-#' @details in general Makevars check if bool-like envvars are not 'true'.
 #'
 #' @return no return
 #'
@@ -67,10 +86,21 @@ build_polars = function(
 #'
 #' @param RPOLARS_RUST_SOURCE where check can find precomiled target, set to '' if not use,
 #' DEFAULT is `paste0(getwd(),"/src/rust")`.
-#' @param ALL_FEATURES bool, to compile with e.g. simd, only for nightly toolchain
-#' @param NOT_CRAN bool, do not delete compiled target objects. Next compilation much faster.
-#' @param RPOLARS_CARGO_CLEAN_DEPS bool, do clean up cargo cache. Slows down next compilation
+#' @param NOT_CRAN string if "true", Do not delete compiled target objects. Speeds up next
+#' compilation.
+#' @param RPOLARS_CARGO_CLEAN_DEPS string if "true" clean up cargo cache. Slows down next
+#' compilation.
+#' @param RPOLARS_FULL_FEATURES string if "true" will compile with polars with more rust-polars
+#'  side feature flags enabled
+#' @param RPOLARS_PROFILE string "release" (this is the preferred for development). For shipping
+#' polars via release channels use "release-optimized" is which enables full link time optimization.
+#' This will increase compilation time significantly,  but make the final binary smaller and faster.
+#' @param FILTER_CHECK_NO_FILTER # disable filtering of well known warnings and errors, see
+#' ./inst/misc/filter_rcmdcheck.R
+#' @param check_dir
+#' @param .packages
 #' @param ... other environment args to add
+#'
 #' @details in general Makevars check if bool-like envvars are not 'true'.
 #'
 #' @return no return
@@ -118,75 +148,6 @@ check_polars = function(
   })
   source("./inst/misc/filter_rcmdcheck.R")
   print("check polars is done")
-}
-
-#' submit polars with environment variables, filter errors, symlink  precompiled target
-#'
-#' @param RPOLARS_RUST_SOURCE where check can find precomiled target, set to '' if not use,
-#' DEFAULT is `paste0(getwd(),"/src/rust")`.
-#' @param ALL_FEATURES bool, to compile with e.g. simd, only for nightly toolchain
-#' @param NOT_CRAN bool, do not delete compiled target objects. Next compilation much faster.
-#' @param RPOLARS_CARGO_CLEAN_DEPS bool, do clean up cargo cache. Slows down next compilation
-#' @param ... other environment args to add
-#' @details in general Makevars check if bool-like envvars are not 'true'.
-#'
-#' @return no return
-#'
-#' @examples load_polars(ALL_FEATURES = "", SOME_OTHER_ENVVAR = "true")
-submit_polars = function(
-    RPOLARS_RUST_SOURCE = paste0(getwd(), "/src/rust"),
-    RPOLARS_FULL_FEATURES = "false",
-    NOT_CRAN = "true",
-    RPOLARS_CARGO_CLEAN_DEPS = "false",
-    ...,
-    temp_dir = tempdir(check = TRUE),
-    .packages = character(),
-    unlink_temp = TRUE) {
-  # bundle all envvars
-  envvars = c(
-    list(
-      RPOLARS_RUST_SOURCE = RPOLARS_RUST_SOURCE,
-      RPOLARS_FULL_FEATURES = RPOLARS_FULL_FEATURES,
-      NOT_CRAN = NOT_CRAN,
-      RPOLARS_CARGO_CLEAN_DEPS = RPOLARS_CARGO_CLEAN_DEPS
-    ),
-    list(...)
-  )
-  not_cran = identical(NOT_CRAN, "true")
-  cat("in not_cran mode:", not_cran, "\n")
-  with_polars(
-    \() {
-      temp_dir = paste0(temp_dir, "/polars_submission")
-      unlink(temp_dir, recursive = TRUE, force = TRUE)
-      dir.create(temp_dir)
-      # copy repo except target folders
-      all_files = list.files(path = ".", full.names = TRUE, recursive = TRUE)
-      non_target_files = setdiff(all_files, grep("^\\./src/rust/target", all_files, value = TRUE))
-      non_target_dirs = gregexpr("/", non_target_files) |>
-        lapply(tail, 1) |>
-        substr(x = non_target_files, start = 1) |>
-        unique() |>
-        (\(x){
-          x[order(nchar(x))][-1]
-        })()
-      for (i in paste0(temp_dir, "/", non_target_dirs)) dir.create(i)
-      res = file.copy(non_target_files, paste0(temp_dir, "/", non_target_files))
-      if (!all(res)) warning("copy incomplete")
-
-      oldwd = getwd()
-      setwd(temp_dir)
-      on.exit({
-        setwd(oldwd)
-        if (unlink_temp) unlink(temp_dir, recursive = TRUE)
-      })
-      devtools::submit_cran()
-    },
-    RPOLARS_FULL_FEATURES = RPOLARS_FULL_FEATURES,
-    NOT_CRAN = NOT_CRAN,
-    RPOLARS_CARGO_CLEAN_DEPS = RPOLARS_CARGO_CLEAN_DEPS,
-    RPOLARS_RUST_SOURCE = RPOLARS_RUST_SOURCE,
-    ...
-  )
 }
 
 with_polars = function(
@@ -238,6 +199,7 @@ with_polars = function(
 
 
 #' find compiled *.Rd files for missing return value
+#' This can be used if ever submitting to cran again.
 #'
 #' @return char vec
 #'
@@ -272,10 +234,10 @@ find_missing_return = function() {
 
 
 #' run_all_examples collect error
-#' @details reloading polars can be slow. For faster development running all
-#'
+
 #' pass return $oks to skip_these to not rerun oks again
 #' @param skip_these names of doc files to skip, use for for not running non failed again
+#' @param time_examples bool, time examples
 #' @return list of errors: list of all captured errors + print, oks names of files with no errors
 #'
 #' @export
