@@ -4,7 +4,7 @@
 \alias{as_arrow_table.RPolarsDataFrame}
 \title{Create a arrow Table from a Polars object}
 \usage{
-\method{as_arrow_table}{RPolarsDataFrame}(x, ...)
+as_arrow_table.RPolarsDataFrame(x, ...)
 }
 \arguments{
 \item{x}{\link[=DataFrame_class]{A Polars DataFrame}}

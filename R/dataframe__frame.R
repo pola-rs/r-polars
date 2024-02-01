@@ -1859,7 +1859,7 @@ DataFrame_write_csv = function(
     invisible()
 }
 
-#' @title  Write to parquet file
+#' Write to parquet file
 #' @inheritParams LazyFrame_sink_parquet
 #'
 #' @rdname IO_write_parquet
@@ -1872,7 +1872,7 @@ DataFrame_write_csv = function(
 #' dat$write_parquet(destination)
 DataFrame_write_parquet = function(
     path,
-    compression_method = "zstd",
+    compression = "zstd",
     compression_level = 3,
     statistics = FALSE,
     row_group_size = NULL,
@@ -1880,7 +1880,7 @@ DataFrame_write_parquet = function(
   .pr$DataFrame$write_parquet(
     self,
     path,
-    compression_method,
+    compression,
     compression_level,
     statistics,
     row_group_size,

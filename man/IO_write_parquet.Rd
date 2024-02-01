@@ -6,7 +6,7 @@
 \usage{
 DataFrame_write_parquet(
   path,
-  compression_method = "zstd",
+  compression = "zstd",
   compression_level = 3,
   statistics = FALSE,
   row_group_size = NULL,
@@ -15,6 +15,18 @@ DataFrame_write_parquet(
 }
 \arguments{
 \item{path}{String. The path of the parquet file}
+
+\item{compression}{String. The compression method. One of:
+\itemize{
+\item "lz4": fast compression/decompression.
+\item "uncompressed"
+\item "snappy": this guarantees that the parquet file will be compatible with
+older parquet readers.
+\item "gzip"
+\item "lzo"
+\item "brotli"
+\item "zstd": good compression performance.
+}}
 
 \item{compression_level}{\code{NULL} or Integer. The level of compression to use.
 Only used if method is one of 'gzip', 'brotli', or 'zstd'. Higher compression
