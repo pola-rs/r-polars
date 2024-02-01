@@ -2,19 +2,17 @@
 % Please edit documentation in R/expr__meta.R
 \name{ExprMeta_is_regex_projection}
 \alias{ExprMeta_is_regex_projection}
-\alias{expr_is_regex_projection}
-\title{Is regex projection.}
+\title{Indicate if an expression uses a regex projection}
 \usage{
 ExprMeta_is_regex_projection()
 }
 \value{
-Bool
+Boolean
 }
 \description{
-Whether this expression expands to columns that match a regex pattern.
+Indicate if an expression uses a regex projection
 }
 \examples{
 pl$col("^Sepal.*$")$meta$is_regex_projection()
 pl$col("Sepal.Length")$meta$is_regex_projection()
 }
-\keyword{ExprMeta}
