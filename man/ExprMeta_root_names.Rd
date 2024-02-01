@@ -2,21 +2,19 @@
 % Please edit documentation in R/expr__meta.R
 \name{ExprMeta_root_names}
 \alias{ExprMeta_root_names}
-\alias{expr_meta_root_names}
-\title{Root Name}
+\title{Get the root column names}
 \usage{
 ExprMeta_root_names()
 }
 \value{
-R charvec of root names.
+A character vector
 }
 \description{
-Get a vector with the root column name
+This returns the names of input columns. Use
+\code{\link[=ExprMeta_output_name]{$meta$output_name()}} to get the name of output
+column.
 }
 \examples{
-e = pl$col("alice")$alias("bob")
-e$meta$root_names() == "alice"
-e$meta$output_name() == "bob"
-e$meta$undo_aliases()$meta$output_name() == "alice"
+e = (pl$col("alice") + pl$col("eve"))$alias("bob")
+e$meta$root_names()
 }
-\keyword{ExprMeta}

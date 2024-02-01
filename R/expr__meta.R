@@ -1,10 +1,10 @@
-#' Meta Equal
+#' Check if two expressions are equivalent
 #'
-#' @aliases expr_meta_equal
-#' @description Are two expressions on a meta level equal
-#' @keywords ExprMeta
+#' Indicate if this expression is the same as another expression. See also the
+#' counterpart [`$meta$neq()`][ExprMeta_neq].
+#'
 #' @param other Expr to compare with
-#' @return bool: TRUE if equal
+#' @return A boolean: `TRUE` if equal, `FALSE` otherwise
 #' @examples
 #' # three naive expression literals
 #' e1 = pl$lit(40) + 2
@@ -14,26 +14,23 @@
 #' # e1 and e3 are identical expressions
 #' e1$meta$eq(e3)
 #'
-#' # e_test is an expression testing whether e1 and e2 evaluates to the same value.
-#' e_test = e1 == e2 # or e_test = e1$eq(e2)
+#' # when evaluated, e1 and e2 are equal
+#' e1$eq(e2)$to_r()
 #'
-#' # direct evaluate e_test, possible because only made up of literals
-#' e_test$to_r()
-#'
-#' # e1 and e2 are on the meta-level NOT identical expressions
-#' e1$meta$neq(e2)
+#' # however, on the meta-level, e1 and e2 are NOT identical expressions
+#' e1$meta$eq(e2)
 ExprMeta_eq = function(other) {
   .pr$Expr$meta_eq(self, wrap_e_result(other)) |> unwrap("in $meta$eq")
 }
 
 
-#' Meta Not Equal
+#' Check if two expressions are different
 #'
-#' @aliases expr_meta_not_equal
-#' @description Are two expressions on a meta level NOT equal
-#' @keywords ExprMeta
-#' @param other Expr to compare with
-#' @return bool: TRUE if NOT equal
+#' Indicate if this expression is different from another expression. See also
+#' the counterpart [`$meta$eq()`][ExprMeta_eq].
+#'
+#' @inheritParams ExprMeta_eq
+#' @return A boolean: `TRUE` if different, `FALSE` otherwise
 #' @examples
 #' # three naive expression literals
 #' e1 = pl$lit(40) + 2
@@ -41,15 +38,12 @@ ExprMeta_eq = function(other) {
 #' e3 = pl$lit(40) + 2
 #'
 #' # e1 and e3 are identical expressions
-#' e1$meta$eq(e3)
+#' e1$meta$neq(e3)
 #'
-#' # e_test is an expression testing whether e1 and e2 evaluates to the same value.
-#' e_test = e1 == e2 # or e_test = e1$eq(e2)
+#' # when evaluated, e1 and e2 are equal
+#' e1$neq(e2)$to_r()
 #'
-#' # direct evaluate e_test, possible because only made up of literals
-#' e_test$to_r()
-#'
-#' # e1 and e2 are on the meta-level NOT identical expressions
+#' # however, on the meta-level, e1 and e2 are different
 #' e1$meta$neq(e2)
 ExprMeta_neq = function(other) {
   !(.pr$Expr$meta_eq(self, wrap_e_result(other)) |> unwrap("in $meta$neq"))
@@ -57,10 +51,11 @@ ExprMeta_neq = function(other) {
 
 #' Pop
 #'
-#' @aliases expr_meta_pop
-#' @description Pop the latest expression and return the input(s) of the popped expression.
-#' @keywords ExprMeta
-#' @return R list of Expr(s) usually one, only multiple if top Expr took more Expr as input.
+#' Pop the latest expression and return the input(s) of the popped expression.
+#'
+#' @return A list of expressions which in most cases will have a unit length.
+#'   This is not the case when an expression has multiple inputs, for instance
+#'   in a [`$fold()`][pl_fold] expression.
 #' @examples
 #' e1 = pl$lit(40) + 2
 #' e2 = pl$lit(42)$sum()
@@ -75,75 +70,69 @@ ExprMeta_pop = function() {
 }
 
 
-#' Root Name
+#' Get the root column names
 #'
-#' @aliases expr_meta_root_names
-#' @description Get a vector with the root column name
-#' @keywords ExprMeta
-#' @return R charvec of root names.
+#' This returns the names of input columns. Use
+#' [`$meta$output_name()`][ExprMeta_output_name] to get the name of output
+#' column.
+#'
+#' @return A character vector
 #' @examples
-#' e = pl$col("alice")$alias("bob")
-#' e$meta$root_names() == "alice"
-#' e$meta$output_name() == "bob"
-#' e$meta$undo_aliases()$meta$output_name() == "alice"
+#' e = (pl$col("alice") + pl$col("eve"))$alias("bob")
+#' e$meta$root_names()
 ExprMeta_root_names = function() {
   .pr$Expr$meta_roots(self)
 }
 
-#' Output Name
+#' Get the output column names
 #'
-#' @aliases expr_meta_output_names
-#' @description Get the column name that this expression would produce.
-#' It might not always be possible to determine the output name
-#' as it might depend on the schema of the context. In that case
-#' this will raise an error.
-#' @keywords ExprMeta
-#' @return R charvec of output names.
+#' Get the column name that this expression would produce. It might not always
+#' be possible to determine the output name as it might depend on the schema of
+#' the context. In that case this will raise an error. Use
+#' [`$meta$root_names()`][ExprMeta_root_names] to get the name of input column.
+#'
+#' @return A character vector
 #' @examples
-#' e = pl$col("alice")$alias("bob")
-#' e$meta$root_names() == "alice"
-#' e$meta$output_name() == "bob"
-#' e$meta$undo_aliases()$meta$output_name() == "alice"
+#' e = (pl$col("alice") + pl$col("eve"))$alias("bob")
+#' e$meta$output_name()
 ExprMeta_output_name = function() {
   .pr$Expr$meta_output_name(self) |> unwrap("in $meta$output_name")
 }
 
-#' Undo aliases
+#' Undo any renaming operation
 #'
-#' @aliases expr_meta_undo_aliases
-#' @description Undo any renaming operation like ``alias`` or ``keep_name``.
-#' @keywords ExprMeta
+#' This removes any renaming operation like [`$alias()`][Expr_alias] or
+#' [`$name$keep()`][ExprName_keep]. Polars uses the "leftmost rule" to determine
+#' naming, meaning that the first element of the expression will be used to
+#' name the output.
+#'
 #' @return Expr with aliases undone
 #' @examples
-#' e = pl$col("alice")$alias("bob")
-#' e$meta$root_names() == "alice"
-#' e$meta$output_name() == "bob"
-#' e$meta$undo_aliases()$meta$output_name() == "alice"
+#' e = (pl$col("alice") + pl$col("eve"))$alias("bob")
+#' e$meta$output_name()
+#' e$meta$undo_aliases()$meta$output_name()
 ExprMeta_undo_aliases = function() {
   .pr$Expr$meta_undo_aliases(self)
 }
 
 
-#' Has multiple outputs
+#' Indicate if an expression has multiple outputs
 #'
-#' @aliases expr_has_multiple_outputs
-#' @description Whether this expression expands into multiple expressions.
-#' @keywords ExprMeta
-#' @return Bool
+#' @return Boolean
 #' @examples
+#' e = (pl$col("alice") + pl$col("eve"))$alias("bob")
+#' e$meta$has_multiple_outputs()
+#'
+#' # pl$all() select multiple cols to modify them, so it has multiple outputs
 #' pl$all()$meta$has_multiple_outputs()
-#' pl$col("some_colname")$meta$has_multiple_outputs()
 ExprMeta_has_multiple_outputs = function() {
   .pr$Expr$meta_has_multiple_outputs(self)
 }
 
 
-#' Is regex projection.
+#' Indicate if an expression uses a regex projection
 #'
-#' @aliases expr_is_regex_projection
-#' @description Whether this expression expands to columns that match a regex pattern.
-#' @keywords ExprMeta
-#' @return Bool
+#' @return Boolean
 #' @examples
 #' pl$col("^Sepal.*$")$meta$is_regex_projection()
 #' pl$col("Sepal.Length")$meta$is_regex_projection()

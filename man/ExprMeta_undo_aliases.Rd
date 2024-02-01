@@ -2,8 +2,7 @@
 % Please edit documentation in R/expr__meta.R
 \name{ExprMeta_undo_aliases}
 \alias{ExprMeta_undo_aliases}
-\alias{expr_meta_undo_aliases}
-\title{Undo aliases}
+\title{Undo any renaming operation}
 \usage{
 ExprMeta_undo_aliases()
 }
@@ -11,12 +10,13 @@ ExprMeta_undo_aliases()
 Expr with aliases undone
 }
 \description{
-Undo any renaming operation like \code{alias} or \code{keep_name}.
+This removes any renaming operation like \code{\link[=Expr_alias]{$alias()}} or
+\code{\link[=ExprName_keep]{$name$keep()}}. Polars uses the "leftmost rule" to determine
+naming, meaning that the first element of the expression will be used to
+name the output.
 }
 \examples{
-e = pl$col("alice")$alias("bob")
-e$meta$root_names() == "alice"
-e$meta$output_name() == "bob"
-e$meta$undo_aliases()$meta$output_name() == "alice"
+e = (pl$col("alice") + pl$col("eve"))$alias("bob")
+e$meta$output_name()
+e$meta$undo_aliases()$meta$output_name()
 }
-\keyword{ExprMeta}
