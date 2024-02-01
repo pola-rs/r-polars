@@ -2,19 +2,20 @@
 % Please edit documentation in R/expr__meta.R
 \name{ExprMeta_has_multiple_outputs}
 \alias{ExprMeta_has_multiple_outputs}
-\alias{expr_has_multiple_outputs}
-\title{Has multiple outputs}
+\title{Indicate if an expression has multiple outputs}
 \usage{
 ExprMeta_has_multiple_outputs()
 }
 \value{
-Bool
+Boolean
 }
 \description{
-Whether this expression expands into multiple expressions.
+Indicate if an expression has multiple outputs
 }
 \examples{
+e = (pl$col("alice") + pl$col("eve"))$alias("bob")
+e$meta$has_multiple_outputs()
+
+# pl$all() select multiple cols to modify them, so it has multiple outputs
 pl$all()$meta$has_multiple_outputs()
-pl$col("some_colname")$meta$has_multiple_outputs()
 }
-\keyword{ExprMeta}

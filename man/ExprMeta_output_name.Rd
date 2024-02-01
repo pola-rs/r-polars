@@ -2,24 +2,20 @@
 % Please edit documentation in R/expr__meta.R
 \name{ExprMeta_output_name}
 \alias{ExprMeta_output_name}
-\alias{expr_meta_output_names}
-\title{Output Name}
+\title{Get the output column names}
 \usage{
 ExprMeta_output_name()
 }
 \value{
-R charvec of output names.
+A character vector
 }
 \description{
-Get the column name that this expression would produce.
-It might not always be possible to determine the output name
-as it might depend on the schema of the context. In that case
-this will raise an error.
+Get the column name that this expression would produce. It might not always
+be possible to determine the output name as it might depend on the schema of
+the context. In that case this will raise an error. Use
+\code{\link[=ExprMeta_root_names]{$meta$root_names()}} to get the name of input column.
 }
 \examples{
-e = pl$col("alice")$alias("bob")
-e$meta$root_names() == "alice"
-e$meta$output_name() == "bob"
-e$meta$undo_aliases()$meta$output_name() == "alice"
+e = (pl$col("alice") + pl$col("eve"))$alias("bob")
+e$meta$output_name()
 }
-\keyword{ExprMeta}

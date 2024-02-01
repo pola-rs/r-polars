@@ -2,13 +2,14 @@
 % Please edit documentation in R/expr__meta.R
 \name{ExprMeta_pop}
 \alias{ExprMeta_pop}
-\alias{expr_meta_pop}
 \title{Pop}
 \usage{
 ExprMeta_pop()
 }
 \value{
-R list of Expr(s) usually one, only multiple if top Expr took more Expr as input.
+A list of expressions which in most cases will have a unit length.
+This is not the case when an expression has multiple inputs, for instance
+in a \code{\link[=pl_fold]{$fold()}} expression.
 }
 \description{
 Pop the latest expression and return the input(s) of the popped expression.
@@ -23,4 +24,3 @@ e1$meta$pop()
 e2
 e2$meta$pop()
 }
-\keyword{ExprMeta}
