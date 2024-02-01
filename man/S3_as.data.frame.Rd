@@ -5,15 +5,82 @@
 \alias{as.data.frame.RPolarsLazyFrame}
 \title{Convert to a data.frame}
 \usage{
-\method{as.data.frame}{RPolarsDataFrame}(x, ...)
+\method{as.data.frame}{RPolarsDataFrame}(x, ..., int64_conversion = polars_options()$int64_conversion)
 
-\method{as.data.frame}{RPolarsLazyFrame}(x, ...)
+\method{as.data.frame}{RPolarsLazyFrame}(
+  x,
+  ...,
+  n_rows = Inf,
+  type_coercion = TRUE,
+  predicate_pushdown = TRUE,
+  projection_pushdown = TRUE,
+  simplify_expression = TRUE,
+  slice_pushdown = TRUE,
+  comm_subplan_elim = TRUE,
+  comm_subexpr_elim = TRUE,
+  streaming = FALSE,
+  no_optimization = FALSE,
+  inherit_optimization = FALSE,
+  collect_in_background = FALSE
+)
 }
 \arguments{
-\item{x}{A \link[=DataFrame_class]{DataFrame} or \link[=LazyFrame_class]{LazyFrame}}
+\item{x}{A object to convert to a \link{data.frame}.}
 
-\item{...}{Any arguments passed to \code{\link[=data.frame]{data.frame()}}.}
+\item{...}{Additional arguments passed to methods.}
+
+\item{int64_conversion}{How should Int64 values be handled when converting a
+polars object to R?
+\itemize{
+\item \code{"double"} (default) converts the integer values to double.
+\item \code{"bit64"} uses \code{bit64::as.integer64()} to do the conversion (requires
+the package \code{bit64} to be attached).
+\item \code{"string"} converts Int64 values to character.
+}}
+
+\item{n_rows}{Number of rows to fetch. Defaults to \code{Inf}, meaning all rows.}
+
+\item{type_coercion}{Boolean. Coerce types such that operations succeed and
+run on minimal required memory.}
+
+\item{predicate_pushdown}{Boolean. Applies filters as early as possible at
+scan level.}
+
+\item{projection_pushdown}{Boolean. Select only the columns that are needed
+at the scan level.}
+
+\item{simplify_expression}{Boolean. Various optimizations, such as constant
+folding and replacing expensive operations with faster alternatives.}
+
+\item{slice_pushdown}{Boolean. Only load the required slice from the scan
+level. Don't materialize sliced outputs (e.g. \code{join$head(10)}).}
+
+\item{comm_subplan_elim}{Boolean. Will try to cache branching subplans that
+occur on self-joins or unions.}
+
+\item{comm_subexpr_elim}{Boolean. Common subexpressions will be cached and
+reused.}
+
+\item{streaming}{Boolean. Run parts of the query in a streaming fashion
+(this is in an alpha state).}
+
+\item{no_optimization}{Boolean. Sets the following parameters to \code{FALSE}:
+\code{predicate_pushdown}, \code{projection_pushdown}, \code{slice_pushdown},
+\code{comm_subplan_elim}, \code{comm_subexpr_elim}.}
+
+\item{inherit_optimization}{Boolean. Use existing optimization settings
+regardless the settings specified in this function call.}
+
+\item{collect_in_background}{Boolean. Detach this query from R session.
+Computation will start in background. Get a handle which later can be converted
+into the resulting DataFrame. Useful in interactive mode to not lock R session.}
 }
 \description{
-Convert to a data.frame
+Equivalent to \code{as_polars_df(x, ...)$to_data_frame(...)}.
+}
+\seealso{
+\itemize{
+\item \code{\link[=as_polars_df]{as_polars_df()}}
+\item \code{\link[=DataFrame_to_data_frame]{<DataFrame>$to_data_frame()}}
+}
 }

@@ -229,17 +229,55 @@ dimnames.RPolarsLazyFrame = function(x) list(NULL, names(x))
 
 #' Convert to a data.frame
 #'
-#' @param x A [DataFrame][DataFrame_class] or [LazyFrame][LazyFrame_class]
-#' @param ... Any arguments passed to [data.frame()].
-#'
+#' Equivalent to `as_polars_df(x, ...)$to_data_frame(...)`.
+#' @param x A object to convert to a [data.frame].
+#' @param ... Additional arguments passed to methods.
+#' @inheritParams DataFrame_to_data_frame
+#' @seealso
+#' - [as_polars_df()]
+#' - [`<DataFrame>$to_data_frame()`][DataFrame_to_data_frame]
 #' @export
 #' @rdname S3_as.data.frame
-as.data.frame.RPolarsDataFrame = function(x, ...) x$to_data_frame(...)
+as.data.frame.RPolarsDataFrame = function(x, ..., int64_conversion = polars_options()$int64_conversion) {
+  x$to_data_frame(..., int64_conversion = int64_conversion)
+}
 
 
 #' @export
+#' @inheritParams as_polars_df.RPolarsLazyFrame
 #' @rdname S3_as.data.frame
-as.data.frame.RPolarsLazyFrame = function(x, ...) x$collect()$to_data_frame(...)
+as.data.frame.RPolarsLazyFrame = function(
+    x,
+    ...,
+    n_rows = Inf,
+    type_coercion = TRUE,
+    predicate_pushdown = TRUE,
+    projection_pushdown = TRUE,
+    simplify_expression = TRUE,
+    slice_pushdown = TRUE,
+    comm_subplan_elim = TRUE,
+    comm_subexpr_elim = TRUE,
+    streaming = FALSE,
+    no_optimization = FALSE,
+    inherit_optimization = FALSE,
+    collect_in_background = FALSE) {
+  as_polars_df.RPolarsLazyFrame(
+    x,
+    n_rows = n_rows,
+    type_coercion = type_coercion,
+    predicate_pushdown = predicate_pushdown,
+    projection_pushdown = projection_pushdown,
+    simplify_expression = simplify_expression,
+    slice_pushdown = slice_pushdown,
+    comm_subplan_elim = comm_subplan_elim,
+    comm_subexpr_elim = comm_subexpr_elim,
+    streaming = streaming,
+    no_optimization = no_optimization,
+    inherit_optimization = inherit_optimization,
+    collect_in_background = collect_in_background
+  ) |>
+    as.data.frame.RPolarsDataFrame(...)
+}
 
 #' Convert to a matrix
 #'
