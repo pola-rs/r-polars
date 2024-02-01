@@ -101,6 +101,7 @@ Collate:
     'lazyframe__lazy.R'
     'namespace.R'
     'parquet.R'
+    'pkg-arrow.R'
     'pkg-knitr.R'
     'pkg-nanoarrow.R'
     'polars-package.R'

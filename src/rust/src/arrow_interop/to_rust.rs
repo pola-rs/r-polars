@@ -8,66 +8,8 @@ use polars_core::utils::arrow::ffi;
 use polars_core::POOL;
 use std::result::Result;
 
-#[derive(Debug)]
-pub enum RArrowArrayClass {
-    ArrowArray,
-    NanoArrowArray,
-}
+use super::RArrowArrayClass;
 
-impl<'a> FromRobj<'a> for RArrowArrayClass {
-    fn from_robj(robj: &Robj) -> std::result::Result<Self, &'static str> {
-        if robj.inherits("nanoarrow_array") {
-            Ok(RArrowArrayClass::NanoArrowArray)
-        } else if robj.inherits("Array") {
-            Ok(RArrowArrayClass::ArrowArray)
-        } else {
-            Err("Robj does not inherit from Array or nanoarrow_array")
-        }
-    }
-}
-
-#[derive(Debug)]
-pub struct ArrowRPackage;
-#[derive(Debug)]
-pub struct NanoArrowRPackage;
-
-impl RArrowArrayClass {
-    pub fn get_package(&self) -> Box<dyn RPackage> {
-        match self {
-            RArrowArrayClass::ArrowArray => Box::new(ArrowRPackage),
-            RArrowArrayClass::NanoArrowArray => Box::new(NanoArrowRPackage),
-        }
-    }
-}
-
-pub trait RPackage {
-    fn get_export_array_func(&self) -> Result<Robj, Error>;
-}
-
-impl RPackage for ArrowRPackage {
-    fn get_export_array_func(&self) -> Result<Robj, Error> {
-        R!(r#"
-        function(array, exportable_array, exportable_schema) {
-            array$export_to_c(exportable_array, exportable_schema)
-        }"#)
-    }
-}
-
-impl RPackage for NanoArrowRPackage {
-    fn get_export_array_func(&self) -> Result<Robj, Error> {
-        R!(r#"
-        function(array, exportable_array, exportable_schema) {
-            nanoarrow::nanoarrow_pointer_export(
-                nanoarrow::infer_nanoarrow_schema(array),
-                exportable_schema
-            )
-            nanoarrow::nanoarrow_pointer_export(array, exportable_array)
-        }
-        "#)
-    }
-}
-
-//does not support chunked array
 pub fn arrow_array_to_rust(arrow_array: Robj) -> Result<ArrayRef, String> {
     let mut array = Box::new(ffi::ArrowArray::empty());
     let mut schema = Box::new(ffi::ArrowSchema::empty());
@@ -87,29 +29,11 @@ pub fn arrow_array_to_rust(arrow_array: Robj) -> Result<ArrayRef, String> {
         let field = ffi::import_field_from_c(schema.as_ref()).map_err(|err| err.to_string())?;
         ffi::import_array_from_c(*array, field.data_type).map_err(|err| err.to_string())?
     };
-    //dbg!(&array);
     Ok(array)
 }
 
 unsafe fn wrap_make_external_ptr<T>(t: &mut T) -> Robj {
-    //use extendr_api::{Integers, Rinternals};
     unsafe { <Integers>::make_external_ptr(t, r!(extendr_api::NULL)) }
-}
-
-pub fn rb_to_rust_df(r_rb_columns: List, names: &[String]) -> Result<pl::DataFrame, String> {
-    let n_col = r_rb_columns.len();
-    let col_iter = r_rb_columns
-        .into_iter()
-        .zip(names.iter())
-        .map(|((_, r_array), str)| {
-            let arr = arrow_array_to_rust(r_array)?;
-            let s = <polars::prelude::Series>::try_from((str.as_str(), arr))
-                .map_err(|err| err.to_string());
-            s
-        });
-    let s_vec_res = crate::utils::collect_hinted_result(n_col, col_iter);
-
-    Ok(pl::DataFrame::new_no_checks(s_vec_res?))
 }
 
 pub fn to_rust_df(rb: Robj) -> Result<pl::DataFrame, String> {
