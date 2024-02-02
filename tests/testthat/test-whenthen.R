@@ -71,7 +71,7 @@ test_that("when-then-otherwise", {
   expect_identical(
     df_act$to_list()[[1]],
     sapply(
-      df$to_list()$cyl, \(x){
+      df$to_list()$cyl, \(x) {
         if (x <= 4) {
           return("<=4cyl")
         }

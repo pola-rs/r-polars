@@ -80,7 +80,7 @@ test_that("Test sinking data to parquet file", {
 
 dat = head(mtcars, n = 15)
 dat[c(1, 3, 9, 12), c(3, 4, 5)] = NA
-dat$id = 1:nrow(dat)
+dat$id = seq_len(nrow(dat))
 dat_pl = pl$LazyFrame(dat)
 temp_out = tempfile(fileext = ".csv")
 
