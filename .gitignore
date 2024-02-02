@@ -16,6 +16,8 @@
 /*.Rcheck/
 # RStudio files
 .Rproj.user/
+# jetbrains .idea
+.idea/
 # produced vignettes
 vignettes/*.html
 vignettes/*.pdf

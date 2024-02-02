@@ -72,7 +72,7 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
                     .map(|x| {
                         //if x.is_na() { None } else { Some(x.0) }
                         let x = x.inner().to_bits() as i64;
-                        if x == crate::utils::BIT64_NA_ECODING {
+                        if x == crate::utils::BIT64_NA_ENCODING {
                             None
                         } else {
                             Some(x)

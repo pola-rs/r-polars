@@ -87,7 +87,7 @@
       [53] "to_data_frame"    "to_list"          "to_series"        "to_struct"       
       [57] "transpose"        "unique"           "unnest"           "var"             
       [61] "width"            "with_columns"     "with_row_count"   "write_csv"       
-      [65] "write_json"       "write_ndjson"    
+      [65] "write_json"       "write_ndjson"     "write_parquet"   
 
 ---
 
@@ -114,7 +114,7 @@
       [35] "transpose"                 "unnest"                   
       [37] "with_columns"              "with_row_count"           
       [39] "write_csv"                 "write_json"               
-      [41] "write_ndjson"             
+      [41] "write_ndjson"              "write_parquet"            
 
 # public and private methods of each class GroupBy
 

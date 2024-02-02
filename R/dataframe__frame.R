@@ -1859,6 +1859,36 @@ DataFrame_write_csv = function(
     invisible()
 }
 
+#' Write to parquet file
+#' @inheritParams LazyFrame_sink_parquet
+#'
+#' @rdname IO_write_parquet
+#'
+#' @examples
+#' # write table 'mtcars' from mem to parquet
+#' dat = pl$DataFrame(mtcars)
+#'
+#' destination = tempfile(fileext = ".parquet")
+#' dat$write_parquet(destination)
+DataFrame_write_parquet = function(
+    path,
+    compression = "zstd",
+    compression_level = 3,
+    statistics = FALSE,
+    row_group_size = NULL,
+    data_pagesize_limit = NULL) {
+  .pr$DataFrame$write_parquet(
+    self,
+    path,
+    compression,
+    compression_level,
+    statistics,
+    row_group_size,
+    data_pagesize_limit
+  ) |>
+    unwrap("in $write_parquet():") |>
+    invisible()
+}
 
 #' Write to JSON file
 #'

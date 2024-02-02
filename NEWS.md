@@ -2,6 +2,10 @@
 
 ## polars (development version)
 
+### New features
+
+-   New method `$write_parquet()` for DataFrame (#758).
+
 ### Bug fixes
 
 -   `$sort()` no longer panicks when `descending = NULL` (#748).
