@@ -112,7 +112,7 @@ impl RPolarsExpr {
                 let opt_val = robj.as_real();
                 if let Some(val) = opt_val {
                     let x = val.to_bits() as i64;
-                    if x == crate::utils::BIT64_NA_ECODING {
+                    if x == crate::utils::BIT64_NA_ENCODING {
                         Ok(dsl::lit(pl::NULL).cast(pl::DataType::Int64))
                     } else {
                         Ok(dsl::lit(x))

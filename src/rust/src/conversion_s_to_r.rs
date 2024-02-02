@@ -4,22 +4,6 @@ use pl::PolarsError as pl_error;
 use polars::prelude::{self as pl};
 use polars_core::datatypes::DataType;
 
-// #[extendr]
-// fn hello_bit64() -> Robj {
-//     let i64_vec = vec![1i64, 2, 3, 4, 14503599627370496];
-//     let robj = i64_vec
-//         .into_iter()
-//         .map(|x| {
-//             let x = unsafe { std::mem::transmute::<i64, f64>(x) };
-//             x
-//         })
-//         .collect_robj();
-
-//     robj.set_class(&["integer64"]).unwrap();
-
-//     robj
-// }
-
 //TODO throw a warning if i32 contains a lowerbound value which is the NA in R.
 pub fn pl_series_to_list(
     series: &pl::Series,
@@ -51,12 +35,12 @@ pub fn pl_series_to_list(
                 "bit64" => s.i64().map(|ca| {
                     ca.into_iter()
                         .map(|opt| match opt {
-                            Some(x) if x != crate::utils::BIT64_NA_ECODING => {
+                            Some(x) if x != crate::utils::BIT64_NA_ENCODING => {
                                 let x = f64::from_bits(x as u64);
                                 Some(x)
                             }
                             _ => {
-                                let x = crate::utils::BIT64_NA_ECODING;
+                                let x = crate::utils::BIT64_NA_ENCODING;
                                 let x = f64::from_bits(x as u64);
                                 Some(x)
                             }
@@ -87,7 +71,7 @@ pub fn pl_series_to_list(
             //                 Some(x)
             //             }
             //             _ => {
-            //                 let x = crate::utils::BIT64_NA_ECODING;
+            //                 let x = crate::utils::BIT64_NA_ENCODING;
             //                 let x = unsafe { std::mem::transmute::<i64, f64>(x) };
             //                 Some(x)
             //             }
