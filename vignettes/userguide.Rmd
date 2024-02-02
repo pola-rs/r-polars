@@ -448,7 +448,7 @@ df$sort("Type 1")$select(
 
 ````{comment}
 
-```{r}
+```
 grades = pl$DataFrame(
         "student" = c("bas", "laura", "tim", "jenny"),
         "arithmetic" = c(10, 5, 6, 8),
@@ -476,7 +476,7 @@ grades$with_columns(
 
 # Custom functions
 
-```{r}
+```
 df = pl$DataFrame(
   "keys" = c("a", "a", "b"),
   "values" = c(10, 7, 1)
@@ -521,7 +521,7 @@ print(out)
 
 # R examples
 
-```{r}
+```
 df = pl$DataFrame(
   "A" = c(1, 2, 3, 4, 5),
   "fruits" = c("banana", "banana", "apple", "apple", "banana"),

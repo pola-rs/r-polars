@@ -1066,7 +1066,7 @@ test_that("gather that", {
 })
 
 test_that("shift", {
-  R_shift = \(x, n){
+  R_shift = \(x, n) {
     idx = seq_along(x) - n
     idx[idx <= 0] = Inf
     x[idx]
@@ -1113,7 +1113,7 @@ test_that("fill_null  + forward backward _fill + fill_nan", {
   # fiil value
   expect_identical(
     pl$DataFrame(l)$select(pl$col("a")$fill_null(42L))$to_list()$a,
-    l$a |> (\(x){
+    l$a |> (\(x) {
       x[is.na(x)] = 42L
       x
     })()
@@ -1721,7 +1721,7 @@ test_that("Expr_diff", {
 test_that("Expr_pct_change", {
   l = list(a = c(10L, 11L, 12L, NA_integer_, NA_integer_, 12L))
 
-  R_shift = \(x, n){
+  R_shift = \(x, n) {
     idx = seq_along(x) - n
     idx[idx <= 0] = Inf
     x[idx]

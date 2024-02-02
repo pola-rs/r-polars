@@ -166,7 +166,7 @@ submit_polars = function(
         lapply(tail, 1) |>
         substr(x = non_target_files, start = 1) |>
         unique() |>
-        (\(x){
+        (\(x) {
           x[order(nchar(x))][-1]
         })()
       for (i in paste0(temp_dir, "/", non_target_dirs)) dir.create(i)
