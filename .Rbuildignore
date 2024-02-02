@@ -31,3 +31,4 @@
 ^Taskfile\.yml$
 ^\.editorconfig$
 ^rustfmt\.toml$
+^\.lintr$
