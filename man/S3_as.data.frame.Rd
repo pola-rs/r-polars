@@ -25,7 +25,7 @@
 )
 }
 \arguments{
-\item{x}{A object to convert to a \link{data.frame}.}
+\item{x}{An object to convert to a \link{data.frame}.}
 
 \item{...}{Additional arguments passed to methods.}
 

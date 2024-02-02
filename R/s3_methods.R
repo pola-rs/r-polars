@@ -230,7 +230,7 @@ dimnames.RPolarsLazyFrame = function(x) list(NULL, names(x))
 #' Convert to a data.frame
 #'
 #' Equivalent to `as_polars_df(x, ...)$to_data_frame(...)`.
-#' @param x A object to convert to a [data.frame].
+#' @param x An object to convert to a [data.frame].
 #' @param ... Additional arguments passed to methods.
 #' @inheritParams DataFrame_to_data_frame
 #' @seealso
