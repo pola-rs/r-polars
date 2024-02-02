@@ -10,10 +10,10 @@
 \method{as.matrix}{RPolarsLazyFrame}(x, ...)
 }
 \arguments{
-\item{x}{An object to convert to a \link{data.frame}.}
+\item{x}{An object to convert to a \link{matrix}.}
 
 \item{...}{Additional arguments passed to methods.}
 }
 \description{
-Convert to a matrix
+Equivalent to \code{as.data.frame(x, ...) |> as.matrix()}.
 }

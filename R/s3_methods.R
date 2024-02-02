@@ -281,6 +281,8 @@ as.data.frame.RPolarsLazyFrame = function(
 
 #' Convert to a matrix
 #'
+#' Equivalent to `as.data.frame(x, ...) |> as.matrix()`.
+#' @param x An object to convert to a [matrix].
 #' @inheritParams as.data.frame.RPolarsDataFrame
 #'
 #' @export
