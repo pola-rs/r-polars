@@ -28,7 +28,7 @@ These functions/methods are either missing, broken, or Vincent can't figure out 
 * `pl$fold`
 * `DataFrame.explode`
 * Custom R function in an agg on group_by
-  
+
 Requires new Polars version:
 
 * `df$sample()`
@@ -422,13 +422,13 @@ pl$sum("foo")$over("groups")
 # output type: -> Int32
 (pl$col("x")$sum() * pl$col("y"))$over("groups")
 
-# sum within a group and multiply with group elements 
+# sum within a group and multiply with group elements
 # and aggregate/implode the group to a list
 # output type: -> List(Int32)
 (pl$col("x")$sum() * pl$col("y"))$implode()$over("groups")
 
 # note that it will require an explicit `implode()` call
-# sum within a group and multiply with group elements 
+# sum within a group and multiply with group elements
 # and aggregate/implode the group to a list
 # the explode call unpack the list and combine inner elements to one column
 
@@ -521,7 +521,7 @@ print(out)
 
 # R examples
 
-```
+```{r}
 df = pl$DataFrame(
   "A" = c(1, 2, 3, 4, 5),
   "fruits" = c("banana", "banana", "apple", "apple", "banana"),
@@ -542,12 +542,12 @@ df$select(
 # We can use a list within select (example above) or a comma-separated list of expressions (this example)$
 df$select(
   pl$col("A"),
-  "B",      
+  "B",
   pl$lit("B")
 )
 
 # We can select columns with a regex if the regex starts with '^' and ends with '$'
-df$select(    
+df$select(
   pl$col("^A|B$")$sum()
 )
 
