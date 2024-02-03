@@ -5,10 +5,22 @@
 ### New features
 
 -   New method `$write_parquet()` for DataFrame (#758).
+-   S3 methods of `as.data.frame()` for `RPolarsDataFrame` and `RPolarsLazyFrame`
+    accepts more arguments of `as_polars_df()` and `<DataFrame>$to_data_frame()` (#762).
+-   S3 methods of `arrow::as_arrow_table()` and `arrow::as_record_batch_reader()` for
+    `RPolarsDataFrame` no longer need the `{nanoarrow}` package (#754).
+-   Some S3 methods for the `{nanoarrow}` package are added (#730).
+    -   `as_polars_df(<nanoarrow_array_stream>)`
+    -   `as_polars_series(<nanoarrow_array>)`
+    -   `as_polars_series(<nanoarrow_array_stream>)`
 
 ### Bug fixes
 
 -   `$sort()` no longer panicks when `descending = NULL` (#748).
+
+### Other enhancements
+
+-   `downlit::autolink()` now recognize the reference pages of this package (#739).
 
 ## polars 0.13.0
 
