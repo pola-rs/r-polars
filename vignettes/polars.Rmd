@@ -471,8 +471,11 @@ on disk. Let's see an example.
 ```{r}
 as_polars_df(airquality)$write_parquet("airquality.parquet")
 
-# aq = read_parquet("airquality.parquet) # eager version (okay)
-aq = pl$scan_parquet("airquality.parquet") # lazy version (better)
+# eager version (okay)
+aq_collected = pl$read_parquet("airquality.parquet")
+
+# lazy version (better)
+aq = pl$scan_parquet("airquality.parquet")
 
 aq$filter(
   pl$col("Month") <= 6
