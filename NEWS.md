@@ -1,6 +1,6 @@
 # NEWS
 
-## polars (development version)
+## Polars R Package 0.13.1
 
 ### New features
 
@@ -22,7 +22,7 @@
 
 -   `downlit::autolink()` now recognize the reference pages of this package (#739).
 
-## polars 0.13.0
+## Polars R Package 0.13.0
 
 ### Breaking changes
 
@@ -108,11 +108,11 @@
 -   New function `polars_envvars()` to print the list of environment variables
     related to polars (#735).
 
-## polars 0.12.2
+## Polars R Package 0.12.2
 
 This is a small release including a few documentation improvements and internal updates.
 
-## polars 0.12.1
+## Polars R Package 0.12.1
 
 This version includes a few additional features and
 a large amount of documentation improvements.
@@ -143,7 +143,7 @@ a large amount of documentation improvements.
 -   Remove the `Makefile` in favor of `Taskfile.yml`.
     Please use `task` instead of `make` as a task runner in the development (#654).
 
-## polars 0.12.0
+## Polars R Package 0.12.0
 
 ### BREAKING CHANGES DUE TO RUST-POLARS UPDATE
 
@@ -200,7 +200,7 @@ a large amount of documentation improvements.
 -   New function `pl$threadpool_size()` to get the number of threads used by Polars (#620).
     Thread pool size is also included in the output of `pl$polars_info()`.
 
-## polars 0.11.0
+## Polars R Package 0.11.0
 
 ### BREAKING CHANGES DUE TO RUST-POLARS UPDATE
 
@@ -270,7 +270,7 @@ a large amount of documentation improvements.
         Please check the upstream issue [pola-rs/polars#10570](https://github.com/pola-rs/polars/issues/10570).
 -   The extract function (`[`) for polars objects now behave more like for base R objects (#543).
 
-## polars 0.10.1
+## Polars R Package 0.10.1
 
 ### What's changed
 
@@ -281,7 +281,7 @@ a large amount of documentation improvements.
 -   S3 methods for base R functions are well documented (#494).
 -   A bug that failing `pl$SQLContext()$register()` without load the package was fixed (#496).
 
-## polars 0.10.0
+## Polars R Package 0.10.0
 
 ### BREAKING CHANGES DUE TO RUST-POLARS UPDATE
 
@@ -324,7 +324,7 @@ a large amount of documentation improvements.
 -   New method `$with_context()` for `LazyFrame` to have access to columns from
     other Data/LazyFrames during the computation (#475).
 
-## polars 0.9.0
+## Polars R Package 0.9.0
 
 ### BREAKING CHANGES DUE TO RUST-POLARS UPDATE
 
@@ -391,7 +391,7 @@ a large amount of documentation improvements.
     The URL and SHA256 hash of the available binaries are recorded in `tools/lib-sums.tsv`.
     (#435, #448, #450, #451)
 
-## polars 0.8.1
+## Polars R Package 0.8.1
 
 ### What's changed
 
@@ -402,7 +402,7 @@ a large amount of documentation improvements.
 -   Subnamespace name "arr" as in `<Expr>$arr$` & `<Series>$arr$` is deprecated
     in favor of "list". The subnamespace "arr" will be removed in polars 0.9.0 (#375).
 
-## polars 0.8.0
+## Polars R Package 0.8.0
 
 ### BREAKING CHANGES DUE TO RUST-POLARS UPDATE
 
@@ -489,7 +489,7 @@ features. Unrelated breaking changes and new features are put in separate sectio
     rust-polars. [See R package example here](https://github.com/rpolars/extendrpolarsexamples)
     (#326).
 
-## polars 0.7.0
+## Polars R Package 0.7.0
 
 ### BREAKING CHANGES
 
@@ -534,7 +534,7 @@ features. Unrelated breaking changes and new features are put in separate sectio
     -   New author accredited, SHIMA Tatsuya (@eitsupi).
     -   DESCRIPTION revised.
 
-## polars 0.6.1
+## Polars R Package 0.6.1
 
 ### What's changed
 
@@ -545,7 +545,7 @@ features. Unrelated breaking changes and new features are put in separate sectio
 -   Docs improvements. (#210, #213)
 -   Update nix flake. (#227)
 
-## polars 0.6.0
+## Polars R Package 0.6.0
 
 ### BREAKING CHANGES
 
@@ -563,7 +563,7 @@ features. Unrelated breaking changes and new features are put in separate sectio
 -   A new option `strict` of `parse_int`. (#183)
 -   Perform joins on nearest keys with method `join_asof`. (#172)
 
-## polars v0.5.0
+## Polars R Package v0.5.0
 
 ### BREAKING CHANGE
 
