@@ -60,11 +60,20 @@ install.packages(
 )
 ```
 
-#### macOS (x86_64)
+#### macOS (x86_64, a.k.a. Intel)
 
 ```r
 install.packages(
   "https://github.com/pola-rs/r-polars/releases/latest/download/polars__x86_64-apple-darwin20.tgz",
+  repos = NULL
+)
+```
+
+#### macOS (aarch64, a.k.a. Apple Silicon)
+
+```r
+install.packages(
+  "https://github.com/pola-rs/r-polars/releases/latest/download/polars__aarch64-apple-darwin20.tgz",
   repos = NULL
 )
 ```
