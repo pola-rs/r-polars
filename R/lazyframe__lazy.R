@@ -1610,7 +1610,7 @@ LazyFrame_profile = function(
 #' `"name"` is implicitly converted to `pl$col("name")`.
 #'
 #' @details
-#' Only columns of DataType `List` or `String` can be exploded.
+#' Only columns of DataType `List` or `Array` can be exploded.
 #'
 #' Named expressions like `$explode(a = pl$col("b"))` will not implicitly trigger
 #' `$alias("a")` here, due to only variant `Expr::Column` is supported in
@@ -1627,9 +1627,6 @@ LazyFrame_profile = function(
 #'
 #' # explode a single column, append others
 #' df$explode("numbers")$collect()
-#'
-#' # it is also possible to explode a character column to have one letter per row
-#' df$explode("letters")
 #'
 #' # explode two columns of same nesting structure, by names or the common dtype
 #' # "List(Float64)"
