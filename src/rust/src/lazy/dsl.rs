@@ -1091,12 +1091,12 @@ impl RPolarsExpr {
         self.0.clone().list().get(index.clone().0).into()
     }
 
-    fn list_join(&self, separator: Robj) -> RResult<Self> {
+    fn list_join(&self, separator: Robj, ignore_nulls: Robj) -> RResult<Self> {
         Ok(self
             .0
             .clone()
             .list()
-            .join(robj_to!(PLExpr, separator)?)
+            .join(robj_to!(PLExpr, separator)?, robj_to!(bool, ignore_nulls)?)
             .into())
     }
 
