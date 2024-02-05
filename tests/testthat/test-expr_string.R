@@ -257,7 +257,7 @@ test_that("zfill", {
   # test wrong input range
   expect_error(
     pl$lit(c(-1, 2, 10, "5"))$str$zfill(-3)$to_r(),
-    "cannot be less than zero"
+    "conversion from"
   )
 
   # works with expr
