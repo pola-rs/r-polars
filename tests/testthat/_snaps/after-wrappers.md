@@ -86,7 +86,7 @@
       [49] "sort"             "std"              "sum"              "tail"            
       [53] "to_data_frame"    "to_list"          "to_series"        "to_struct"       
       [57] "transpose"        "unique"           "unnest"           "var"             
-      [61] "width"            "with_columns"     "with_row_count"   "write_csv"       
+      [61] "width"            "with_columns"     "with_row_index"   "write_csv"       
       [65] "write_json"       "write_ndjson"     "write_parquet"   
 
 ---
@@ -112,7 +112,7 @@
       [31] "to_list"                   "to_list_tag_structs"      
       [33] "to_list_unwind"            "to_struct"                
       [35] "transpose"                 "unnest"                   
-      [37] "with_columns"              "with_row_count"           
+      [37] "with_columns"              "with_row_index"           
       [39] "write_csv"                 "write_json"               
       [41] "write_ndjson"              "write_parquet"            
 
@@ -158,7 +158,7 @@
       [49] "unique"                  "unnest"                 
       [51] "var"                     "width"                  
       [53] "with_columns"            "with_context"           
-      [55] "with_row_count"         
+      [55] "with_row_index"         
 
 ---
 
@@ -191,7 +191,7 @@
       [47] "tail"                    "unique"                 
       [49] "unnest"                  "var"                    
       [51] "with_columns"            "with_context"           
-      [53] "with_row_count"         
+      [53] "with_row_index"         
 
 # public and private methods of each class Expr
 
@@ -355,8 +355,8 @@
       [179] "name_to_lowercase"          "name_to_uppercase"         
       [181] "nan_max"                    "nan_min"                   
       [183] "neq"                        "neq_missing"               
-      [185] "new_count"                  "new_first"                 
-      [187] "new_last"                   "not"                       
+      [185] "new_first"                  "new_last"                  
+      [187] "new_len"                    "not"                       
       [189] "null_count"                 "or"                        
       [191] "over"                       "pct_change"                
       [193] "peak_max"                   "peak_min"                  

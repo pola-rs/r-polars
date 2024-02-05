@@ -205,12 +205,17 @@ test_that("join", {
   expect_identical(l_act, l_exp)
 
   df = pl$DataFrame(
-    s = list(c("a", "b", "c"), c("x", "y")),
-    separator = c("*", "_")
+    s = list(c("a", "b", "c"), c("x", "y"), c("foo", NA, "bar")),
+    separator = c("*", "_", "*")
   )
   expect_identical(
     df$select(pl$col("s")$list$join(pl$col("separator")))$to_list(),
-    list(s = c("a*b*c", "x_y"))
+    list(s = c("a*b*c", "x_y", NA))
+  )
+  # ignore_nulls
+  expect_identical(
+    df$select(pl$col("s")$list$join(pl$col("separator"), ignore_nulls = TRUE))$to_list(),
+    list(s = c("a*b*c", "x_y", "foo*bar"))
   )
 })
 

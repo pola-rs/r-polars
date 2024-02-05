@@ -761,17 +761,17 @@ test_that("Expr_rechunk Series_chunk_lengths", {
 test_that("cum_sum cum_prod cum_min cum_max cum_count", {
   l_actual = pl$DataFrame(list(a = 1:4))$select(
     pl$col("a")$cum_sum()$alias("cum_sum"),
-    pl$col("a")$cum_prod()$alias("cum_prod")$cast(pl$dtypes$Float64),
+    pl$col("a")$cum_prod()$alias("cum_prod")$cast(pl$Float64),
     pl$col("a")$cum_min()$alias("cum_min"),
     pl$col("a")$cum_max()$alias("cum_max"),
-    pl$col("a")$cum_count()$alias("cum_count")$cast(pl$Float64)
+    pl$col("a")$cum_count()$alias("cum_count")$cast(pl$Int32)
   )$to_list()
   l_reference = list(
     cum_sum = cumsum(1:4),
     cum_prod = cumprod(1:4),
     cum_min = cummin(1:4),
     cum_max = cummax(1:4),
-    cum_count = seq_along(1:4) - 1
+    cum_count = 1:4
   )
   expect_identical(
     l_actual, l_reference
@@ -779,10 +779,10 @@ test_that("cum_sum cum_prod cum_min cum_max cum_count", {
 
   l_actual_rev = pl$DataFrame(list(a = 1:4))$select(
     pl$col("a")$cum_sum(reverse = TRUE)$alias("cum_sum"),
-    pl$col("a")$cum_prod(reverse = TRUE)$alias("cum_prod")$cast(pl$dtypes$Float64),
+    pl$col("a")$cum_prod(reverse = TRUE)$alias("cum_prod")$cast(pl$Float64),
     pl$col("a")$cum_min(reverse = TRUE)$alias("cum_min"),
     pl$col("a")$cum_max(reverse = TRUE)$alias("cum_max"),
-    pl$col("a")$cum_count(reverse = TRUE)$alias("cum_count")$cast(pl$Float64)
+    pl$col("a")$cum_count(reverse = TRUE)$alias("cum_count")$cast(pl$Int32)
   )$to_list()
 
   expect_identical(
@@ -792,7 +792,7 @@ test_that("cum_sum cum_prod cum_min cum_max cum_count", {
       cum_prod = rev(cumprod(4:1)),
       cum_min = rev(cummin(4:1)),
       cum_max = rev(cummax(4:1)),
-      cum_count = rev(seq_along(4:1)) - 1
+      cum_count = rev(seq_along(4:1))
     )
   )
 })
@@ -2342,16 +2342,14 @@ test_that("implode", {
 
 test_that("concat_str", {
   df = pl$DataFrame(
-    a = c(1, 2, 3),
+    a = 1:3,
     b = c("dogs", "cats", NA),
     c = c("play", "swim", "walk")
   )
 
   out = df$with_columns(
     pl$concat_str(
-      pl$col("a") * 2,
-      "b",
-      pl$col("c"),
+      pl$col("a") * 2L, "b", pl$col("c"),
       separator = " "
     )$alias("full_sentence")
   )$to_data_frame()
@@ -2359,7 +2357,20 @@ test_that("concat_str", {
   expect_equal(dim(out), c(3, 4))
   expect_equal(
     out$full_sentence,
-    c("2.0 dogs play", "4.0 cats swim", NA)
+    c("2 dogs play", "4 cats swim", NA)
+  )
+
+  # ignore_nulls
+  out = df$with_columns(
+    pl$concat_str(
+      pl$col("a") * 2L, "b", pl$col("c"),
+      separator = " ", ignore_nulls = TRUE
+    )$alias("full_sentence")
+  )$to_data_frame()
+
+  expect_equal(
+    out$full_sentence,
+    c("2 dogs play", "4 cats swim", "6 walk")
   )
 
   # check error for something which cannot be turned into an Expression

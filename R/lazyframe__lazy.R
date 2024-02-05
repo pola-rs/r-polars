@@ -243,19 +243,19 @@ LazyFrame_with_columns = function(...) {
 }
 
 
-#' @inherit DataFrame_with_row_count title description params
+#' @inherit DataFrame_with_row_index title description params
 #' @return A new LazyFrame with a counter column in front
 #' @docType NULL
 #' @examples
 #' df = pl$LazyFrame(mtcars)
 #'
 #' # by default, the index starts at 0 (to mimic the behavior of Python Polars)
-#' df$with_row_count("idx")
+#' df$with_row_index("idx")
 #'
 #' # but in R, we use a 1-index
-#' df$with_row_count("idx", offset = 1)
-LazyFrame_with_row_count = function(name, offset = NULL) {
-  .pr$LazyFrame$with_row_count(self, name, offset) |> unwrap()
+#' df$with_row_index("idx", offset = 1)
+LazyFrame_with_row_index = function(name, offset = NULL) {
+  .pr$LazyFrame$with_row_index(self, name, offset) |> unwrap()
 }
 
 #' Apply filter to LazyFrame

@@ -308,12 +308,12 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 #' df = pl$DataFrame(mtcars)
 #'
 #' # by default, the index starts at 0 (to mimic the behavior of Python Polars)
-#' df$with_row_count("idx")
+#' df$with_row_index("idx")
 #'
 #' # but in R, we use a 1-index
-#' df$with_row_count("idx", offset = 1)
-DataFrame_with_row_count = function(name, offset = NULL) {
-  .pr$DataFrame$with_row_count(self, name, offset) |> unwrap()
+#' df$with_row_index("idx", offset = 1)
+DataFrame_with_row_index = function(name, offset = NULL) {
+  .pr$DataFrame$with_row_index(self, name, offset) |> unwrap()
 }
 
 #' Get and set column names of a DataFrame

@@ -733,9 +733,9 @@ test_that("width", {
   expect_equal(ncol(dat), 11)
 })
 
-test_that("with_row_count", {
+test_that("with_row_index", {
   lf = pl$LazyFrame(mtcars)
-  expect_identical(lf$with_row_count("idx", 42)$select(pl$col("idx"))$collect()$to_data_frame()$idx, as.double(42:(41 + nrow(mtcars))))
+  expect_identical(lf$with_row_index("idx", 42)$select(pl$col("idx"))$collect()$to_data_frame()$idx, as.double(42:(41 + nrow(mtcars))))
 })
 
 test_that("cloning", {

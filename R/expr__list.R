@@ -207,6 +207,7 @@ ExprList_contains = function(item) .pr$Expr$list_contains(self, wrap_e(item))
 #'
 #' @param separator String to separate the items with. Can be an Expr. Strings
 #'   are *not* parsed as columns.
+#' @inheritParams pl_concat_str
 #'
 #' @return Expr
 #' @aliases list_join
@@ -219,8 +220,8 @@ ExprList_contains = function(item) .pr$Expr$list_contains(self, wrap_e(item))
 #'   join_with_expr = pl$col("s")$list$join(pl$col("separator")),
 #'   join_with_lit = pl$col("s")$list$join(" ")
 #' )
-ExprList_join = function(separator) {
-  .pr$Expr$list_join(self, separator) |>
+ExprList_join = function(separator, ignore_nulls = FALSE) {
+  .pr$Expr$list_join(self, separator, ignore_nulls) |>
     unwrap("in $list$join():")
 }
 
