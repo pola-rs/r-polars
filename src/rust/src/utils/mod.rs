@@ -894,6 +894,10 @@ macro_rules! robj_to_inner {
         $crate::utils::robj_to_usize($a)
     };
 
+    (nonzero_usize, $a:ident) => {
+        $crate::rdatatype::robj_to_nonzero_usize($a)
+    };
+
     (f64, $a:ident) => {
         $crate::utils::robj_to_f64($a)
     };

@@ -146,7 +146,7 @@ impl RPolarsLazyFrame {
         let include_header = robj_to!(bool, include_header)?;
         let include_bom = robj_to!(bool, include_bom)?;
         let maintain_order = robj_to!(bool, maintain_order)?;
-        let batch_size = robj_to!(usize, batch_size)?;
+        let batch_size = robj_to!(nonzero_usize, batch_size)?;
 
         let serialize_options = SerializeOptions {
             date_format,

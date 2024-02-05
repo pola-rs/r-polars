@@ -15,6 +15,7 @@ use pl::UniqueKeepStrategy;
 use polars::prelude::AsofStrategy;
 
 use crate::utils::robj_to_rchoice;
+use std::num::NonZeroUsize;
 
 #[extendr]
 impl RPolarsRField {
@@ -246,6 +247,10 @@ pub fn robj_to_asof_strategy(robj: Robj) -> RResult<AsofStrategy> {
             s
         )),
     }
+}
+
+pub fn robj_to_nonzero_usize(robj: Robj) -> RResult<NonZeroUsize> {
+    Ok(NonZeroUsize::new(robj_to!(usize, robj)?.into()).unwrap())
 }
 
 pub fn robj_to_unique_keep_strategy(robj: Robj) -> RResult<UniqueKeepStrategy> {

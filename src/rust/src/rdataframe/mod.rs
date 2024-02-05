@@ -484,7 +484,7 @@ impl RPolarsDataFrame {
             .with_separator(robj_to!(Utf8Byte, separator)?)
             .with_line_terminator(robj_to!(String, line_terminator)?)
             .with_quote_char(robj_to!(Utf8Byte, quote)?)
-            .with_batch_size(robj_to!(usize, batch_size)?)
+            .with_batch_size(robj_to!(nonzero_usize, batch_size)?)
             .with_datetime_format(robj_to!(Option, String, datetime_format)?)
             .with_date_format(robj_to!(Option, String, date_format)?)
             .with_time_format(robj_to!(Option, String, time_format)?)

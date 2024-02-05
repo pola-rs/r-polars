@@ -36,7 +36,7 @@ pub fn new_from_ndjson(
 
     linereader
         .with_infer_schema_length(robj_to!(Option, usize, infer_schema_length)?)
-        .with_batch_size(robj_to!(Option, usize, batch_size)?)
+        .with_batch_size(robj_to!(Option, nonzero_usize, batch_size)?)
         .with_n_rows(robj_to!(Option, usize, n_rows)?)
         .low_memory(robj_to!(bool, low_memory)?)
         .with_row_index(opt_rowindex)
