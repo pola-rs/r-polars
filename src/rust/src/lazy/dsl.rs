@@ -1868,7 +1868,7 @@ impl RPolarsExpr {
             .clone()
             .0
             .str()
-            .zfill(robj_to!(PLColExpr, alignment)?)
+            .zfill(robj_to!(PLExprCol, alignment)?)
             .into())
     }
 
@@ -1967,7 +1967,7 @@ impl RPolarsExpr {
             .0
             .clone()
             .str()
-            .extract(robj_to!(PLColExpr, pattern)?, robj_to!(usize, group_index)?)
+            .extract(robj_to!(PLExprCol, pattern)?, robj_to!(usize, group_index)?)
             .into())
     }
 
@@ -2120,8 +2120,8 @@ impl RPolarsExpr {
     }
 
     pub fn str_slice(&self, offset: Robj, length: Robj) -> Result<RPolarsExpr, String> {
-        let offset = robj_to!(PLColExpr, offset)?;
-        let length = robj_to!(PLColExpr, length)?;
+        let offset = robj_to!(PLExprCol, offset)?;
+        let length = robj_to!(PLExprCol, length)?;
 
         Ok(self.clone().0.str().slice(offset, length).into())
     }
