@@ -70,10 +70,11 @@ fn concat_list(exprs: Robj) -> RResult<RPolarsExpr> {
 }
 
 #[extendr]
-fn concat_str(dotdotdot: Robj, separator: Robj) -> RResult<RPolarsExpr> {
+fn concat_str(dotdotdot: Robj, separator: Robj, ignore_nulls: Robj) -> RResult<RPolarsExpr> {
     Ok(pl::concat_str(
         robj_to!(VecPLExprCol, dotdotdot)?,
         robj_to!(str, separator)?,
+        robj_to!(bool, ignore_nulls)?,
     )
     .into())
 }
