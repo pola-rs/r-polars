@@ -22,6 +22,7 @@ pub fn new_from_ndjson(
     rechunk: Robj,
     row_index_name: Robj,
     row_index_offset: Robj,
+    ignore_errors: Robj,
 ) -> RResult<RPolarsLazyFrame> {
     let offset = robj_to!(Option, u32, row_index_offset)?.unwrap_or(0);
     let opt_rowindex =
@@ -41,6 +42,7 @@ pub fn new_from_ndjson(
         .low_memory(robj_to!(bool, low_memory)?)
         .with_row_index(opt_rowindex)
         .with_rechunk(robj_to!(bool, rechunk)?)
+        .with_ignore_errors(robj_to!(bool, ignore_errors)?)
         .finish()
         .map_err(polars_to_rpolars_err)
         .map(RPolarsLazyFrame)

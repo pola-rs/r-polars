@@ -82,7 +82,7 @@ new_from_csv <- function(path, has_header, separator, comment_prefix, quote_char
 
 import_arrow_ipc <- function(path, n_rows, cache, rechunk, row_name, row_index, memmap) .Call(wrap__import_arrow_ipc, path, n_rows, cache, rechunk, row_name, row_index, memmap)
 
-new_from_ndjson <- function(path, infer_schema_length, batch_size, n_rows, low_memory, rechunk, row_index_name, row_index_offset) .Call(wrap__new_from_ndjson, path, infer_schema_length, batch_size, n_rows, low_memory, rechunk, row_index_name, row_index_offset)
+new_from_ndjson <- function(path, infer_schema_length, batch_size, n_rows, low_memory, rechunk, row_index_name, row_index_offset, ignore_errors) .Call(wrap__new_from_ndjson, path, infer_schema_length, batch_size, n_rows, low_memory, rechunk, row_index_name, row_index_offset, ignore_errors)
 
 new_from_parquet <- function(path, n_rows, cache, parallel, rechunk, row_name, row_index, use_statistics, low_memory, hive_partitioning) .Call(wrap__new_from_parquet, path, n_rows, cache, parallel, rechunk, row_name, row_index, use_statistics, low_memory, hive_partitioning)
 

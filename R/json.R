@@ -15,12 +15,14 @@
 #' @param low_memory Reduce memory usage (will yield a lower performance).
 #' @param rechunk Reallocate to contiguous memory when all chunks / files are
 #' parsed.
-#' @param row_count_name If not `NULL`, this will insert a row count column with
+#' @param row_index_name If not `NULL`, this will insert a row count column with
 #' the given name into the DataFrame.
-#' @param row_count_offset Offset to start the row_count column (only used if
+#' @param row_index_offset Offset to start the row_count column (only used if
 #' the name is set).
 #' @param reuse_downloaded If `TRUE`(default) and a URL was provided, cache the
 #' downloaded files in session for an easy reuse.
+#' @param ignore_errors If `TRUE`, do not error if parsing fails because of
+#' schema mismatches.
 #' @return A LazyFrame
 #'
 # we should use @examplesIf but altdoc doesn't know how to parse it yet
@@ -36,10 +38,11 @@ pl_scan_ndjson = function(
     batch_size = NULL,
     n_rows = NULL,
     low_memory = FALSE,
-    rechunk = TRUE,
-    row_count_name = NULL,
-    row_count_offset = 0,
-    reuse_downloaded = TRUE) {
+    rechunk = FALSE,
+    row_index_name = NULL,
+    row_index_offset = 0,
+    reuse_downloaded = TRUE,
+    ignore_errors = FALSE) {
   # capture all args and modify some to match lower level function
   args = as.list(environment())
 
@@ -81,9 +84,10 @@ pl_read_ndjson = function(
     batch_size = NULL,
     n_rows = NULL,
     low_memory = FALSE,
-    rechunk = TRUE,
-    row_count_name = NULL,
-    row_count_offset = 0) {
+    rechunk = FALSE,
+    row_index_name = NULL,
+    row_index_offset = 0,
+    ignore_errors = FALSE) {
   mc = match.call()
   mc[[1]] = get("pl", envir = asNamespace("polars"))$scan_ndjson
   eval.parent(mc)$collect()
