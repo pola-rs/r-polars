@@ -21,7 +21,7 @@ Explode columns containing a list of values
 }
 \examples{
 df = pl$DataFrame(
-  letters = c("aa", "aa", "bb", "cc"),
+  letters = letters[1:4],
   numbers = list(1, c(2, 3), c(4, 5), c(6, 7, 8)),
   numbers_2 = list(0, c(1, 2), c(3, 4), c(5, 6, 7)) # same structure as numbers
 )
@@ -29,9 +29,6 @@ df
 
 # explode a single column, append others
 df$explode("numbers")
-
-# it is also possible to explode a character column to have one letter per row
-df$explode("letters")
 
 # explode two columns of same nesting structure, by names or the common dtype
 # "List(Float64)"

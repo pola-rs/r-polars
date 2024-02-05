@@ -8,7 +8,8 @@
 ExprStr_zfill(alignment)
 }
 \arguments{
-\item{alignment}{Fill the value up to this length.}
+\item{alignment}{Fill the value up to this length. This can be an Expr or
+something coercible to an Expr. Strings are parsed as column names.}
 }
 \value{
 Expr

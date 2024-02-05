@@ -10,10 +10,11 @@ pl_scan_ndjson(
   batch_size = NULL,
   n_rows = NULL,
   low_memory = FALSE,
-  rechunk = TRUE,
-  row_count_name = NULL,
-  row_count_offset = 0,
-  reuse_downloaded = TRUE
+  rechunk = FALSE,
+  row_index_name = NULL,
+  row_index_offset = 0,
+  reuse_downloaded = TRUE,
+  ignore_errors = FALSE
 )
 }
 \arguments{
@@ -34,14 +35,17 @@ table scan will be done (slow).}
 \item{rechunk}{Reallocate to contiguous memory when all chunks / files are
 parsed.}
 
-\item{row_count_name}{If not \code{NULL}, this will insert a row count column with
+\item{row_index_name}{If not \code{NULL}, this will insert a row count column with
 the given name into the DataFrame.}
 
-\item{row_count_offset}{Offset to start the row_count column (only used if
+\item{row_index_offset}{Offset to start the row_count column (only used if
 the name is set).}
 
 \item{reuse_downloaded}{If \code{TRUE}(default) and a URL was provided, cache the
 downloaded files in session for an easy reuse.}
+
+\item{ignore_errors}{If \code{TRUE}, do not error if parsing fails because of
+schema mismatches.}
 }
 \value{
 A LazyFrame
