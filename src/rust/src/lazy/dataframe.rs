@@ -265,11 +265,7 @@ impl RPolarsLazyFrame {
     }
 
     fn drop(&self, columns: Robj) -> Result<RPolarsLazyFrame, String> {
-        Ok(self
-            .0
-            .clone()
-            .drop_columns(robj_to!(Vec, String, columns)?)
-            .into())
+        Ok(self.0.clone().drop(robj_to!(Vec, String, columns)?).into())
     }
 
     fn fill_nan(&self, fill_value: Robj) -> Result<Self, String> {
