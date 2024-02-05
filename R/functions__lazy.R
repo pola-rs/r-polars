@@ -100,19 +100,24 @@ pl_element = function() pl$col("")
 #'   b = c(4, 5, 2),
 #'   c = c("foo", "bar", "foo")
 #' )
-#' df$select(pl$count())
+#' df$select(pl$len())
 #'
 #'
-#' df$group_by("c", maintain_order = TRUE)$agg(pl$count())
-pl_count = function(column = NULL) { # -> Expr | int:
+#' df$group_by("c", maintain_order = TRUE)$agg(pl$len())
+pl_len = function(column = NULL) {
   if (is.null(column)) {
-    return(.pr$Expr$new_count())
+    return(.pr$Expr$new_len())
   }
   if (inherits(column, "RPolarsSeries")) {
     return(column$len())
   }
   # add context to any error from pl$col
-  unwrap(result(pl$col(column)$count()), "in pl$count():")
+  unwrap(result(pl$col(column)$len()), "in pl$len():")
+}
+
+pl_count = function(column = NULL) {
+  warning("`pl$count()` is deprecated and will be removed in 0.15.0. Use `pl$len()` instead.")
+  pl$len(column)
 }
 
 #' Aggregate all column values into a list.

@@ -149,7 +149,7 @@ test_that("pl$first pl$last", {
 })
 
 
-test_that("pl$count", {
+test_that("pl$len", {
   l = list(
     a = c(1, 8, 3),
     b = c(4:6),
@@ -158,12 +158,12 @@ test_that("pl$count", {
   df = pl$DataFrame(l)
   s = pl$Series(1:3)
 
-  expect_identical(df$select(pl$count("b"))$to_list(), list(b = 3))
-  expect_identical(df$select(pl$count())$to_list(), list(count = 3))
-  expect_identical(pl$count(s), s$len())
+  expect_identical(df$select(pl$len("b"))$to_list(), list(b = 3))
+  expect_identical(df$select(pl$len())$to_list(), list(len = 3))
+  expect_identical(pl$len(s), s$len())
 
   # pass invalid column name type to pl$col
-  expect_error(pl$count(1))
+  expect_error(pl$len(1))
 })
 
 

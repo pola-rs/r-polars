@@ -250,7 +250,7 @@ test_that("zfill", {
 
   # test wrong input type
   expect_error(
-    pl$lit(c(-1, 2, 10, "5"))$str$zfill("a")$to_r(),
+    pl$lit(c(-1, 2, 10, "5"))$str$zfill(pl$lit("a"))$to_r(),
     "u64"
   )
 
