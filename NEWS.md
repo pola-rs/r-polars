@@ -17,7 +17,7 @@
     -   All `row_count_*` args in reading/scanning functions are renamed 
         `row_index_*`.
     -   `$sort()` for `Series` gains an argument `nulls_last`.
-    -   `$str$extract()` and `$str$zfill()` now accepts an `Expr` and parse
+    -   `$str$extract()` and `$str$zfill()` now accept an `Expr` and parse
         strings as column names. Use `pl$lit()` to recover the old behavior.
     -   `$cum_count()` now starts from 1 instead of 0.
 

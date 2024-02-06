@@ -87,8 +87,8 @@
       [49] "sort"             "std"              "sum"              "tail"            
       [53] "to_data_frame"    "to_list"          "to_series"        "to_struct"       
       [57] "transpose"        "unique"           "unnest"           "var"             
-      [61] "width"            "with_columns"     "with_row_index"   "write_csv"       
-      [65] "write_json"       "write_ndjson"     "write_parquet"   
+      [61] "width"            "with_columns"     "with_row_count"   "with_row_index"  
+      [65] "write_csv"        "write_json"       "write_ndjson"     "write_parquet"   
 
 ---
 
@@ -159,7 +159,7 @@
       [49] "unique"                  "unnest"                 
       [51] "var"                     "width"                  
       [53] "with_columns"            "with_context"           
-      [55] "with_row_index"         
+      [55] "with_row_count"          "with_row_index"         
 
 ---
 
