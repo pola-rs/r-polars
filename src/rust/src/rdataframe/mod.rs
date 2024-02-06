@@ -37,7 +37,7 @@ pub struct OwnedDataFrameIterator {
 
 impl OwnedDataFrameIterator {
     pub fn new(df: polars::frame::DataFrame) -> Self {
-        let schema = df.schema().to_arrow(true);
+        let schema = df.schema().to_arrow(false);
         let data_type = ArrowDataType::Struct(schema.fields);
         let vs = df.get_columns().to_vec();
         Self {
@@ -60,7 +60,7 @@ impl Iterator for OwnedDataFrameIterator {
             let batch_cols = self
                 .columns
                 .iter()
-                .map(|s| s.to_arrow(self.idx, true))
+                .map(|s| s.to_arrow(self.idx, false))
                 .collect();
             self.idx += 1;
 
@@ -329,7 +329,7 @@ impl RPolarsDataFrame {
     }
 
     pub fn export_stream(&self, stream_ptr: &str) {
-        let schema = self.0.schema().to_arrow(true);
+        let schema = self.0.schema().to_arrow(false);
         let data_type = ArrowDataType::Struct(schema.fields);
         let field = ArrowField::new("", data_type, false);
 
