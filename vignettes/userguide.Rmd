@@ -242,10 +242,10 @@ dataset$
   lazy()$
   group_by("first_name")$
   agg(
-    pl$count(),
+    pl$len(),
     pl$col("gender"),
     pl$first("last_name"))$
-  sort("count", descending = TRUE)$
+  sort("len", descending = TRUE)$
   limit(5)$
   collect()
 
