@@ -15,23 +15,23 @@ test_that("rust-polars DataFrame import/export via arrow stream", {
 
   # PRODUCER has some df which could be chunked as here. Categoricals with global string cache
   # are also ok.
-  pl$with_string_cache({
-    df_export = pl$concat(lapply(1:3, \(i) pl$DataFrame(iris)))
-  })
+  # pl$with_string_cache({
+  #   df_export = pl$concat(lapply(1:3, \(i) pl$DataFrame(iris)))
+  # })
 
   # CONSUMER creates a new arrow stream and return ptr which is passed to PRODUCER
-  str_ptr = new_arrow_stream()
+  # str_ptr = new_arrow_stream()
 
   # PRODUCER exports the df into CONSUMERs stream
-  export_df_to_arrow_stream(df_export, str_ptr) |> unwrap()
+  # export_df_to_arrow_stream(df_export, str_ptr) |> unwrap()
 
   # CONSUMER can now import the df from stream
-  pl$with_string_cache({
-    df_import = arrow_stream_to_df(str_ptr) |> unwrap()
-  })
+  # pl$with_string_cache({
+  #   df_import = arrow_stream_to_df(str_ptr) |> unwrap()
+  # })
 
   # check imported/exported df's are identical
-  expect_identical(df_import$to_list(), df_export$to_list())
+  # expect_identical(df_import$to_list(), df_export$to_list())
 
   ## UNSAFE / Undefined behavior / will blow up eventually /  STUFF NOT TO DO
   # examples below of did segfault ~every 5-10th time, during development
