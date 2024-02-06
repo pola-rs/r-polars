@@ -60,7 +60,7 @@ impl Iterator for OwnedDataFrameIterator {
             let batch_cols = self
                 .columns
                 .iter()
-                .map(|s| s.to_arrow(self.idx, true))
+                .map(|s| s.to_arrow(self.idx, false))
                 .collect();
             self.idx += 1;
 
