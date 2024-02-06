@@ -2,7 +2,7 @@ use crate::lazy::dataframe::RPolarsLazyFrame as RLazyFrame;
 use crate::robj_to;
 use crate::rpolarserr::RResult;
 use extendr_api::prelude::*;
-use polars::io::RowCount;
+use polars::io::RowIndex;
 use polars::prelude::{LazyFrame, ScanArgsIpc};
 
 #[extendr]
@@ -12,15 +12,15 @@ pub fn import_arrow_ipc(
     cache: Robj,
     rechunk: Robj,
     row_name: Robj,
-    row_count: Robj,
+    row_index: Robj,
     memmap: Robj,
 ) -> RResult<RLazyFrame> {
     let args = ScanArgsIpc {
         n_rows: robj_to!(Option, usize, n_rows)?,
         cache: robj_to!(bool, cache)?,
         rechunk: robj_to!(bool, rechunk)?,
-        row_count: robj_to!(Option, String, row_name)?
-            .map(|name| robj_to!(u32, row_count).map(|offset| RowCount { name, offset }))
+        row_index: robj_to!(Option, String, row_name)?
+            .map(|name| robj_to!(u32, row_index).map(|offset| RowIndex { name, offset }))
             .transpose()?,
         memmap: robj_to!(bool, memmap)?,
     };

@@ -308,12 +308,19 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 #' df = pl$DataFrame(mtcars)
 #'
 #' # by default, the index starts at 0 (to mimic the behavior of Python Polars)
-#' df$with_row_count("idx")
+#' df$with_row_index("idx")
 #'
 #' # but in R, we use a 1-index
-#' df$with_row_count("idx", offset = 1)
+#' df$with_row_index("idx", offset = 1)
+DataFrame_with_row_index = function(name, offset = NULL) {
+  .pr$DataFrame$with_row_index(self, name, offset) |>
+    unwrap("in $with_row_index():")
+}
+
 DataFrame_with_row_count = function(name, offset = NULL) {
-  .pr$DataFrame$with_row_count(self, name, offset) |> unwrap()
+  warning("`$with_row_count()` is deprecated and will be removed in 0.15.0. Use `with_row_index()` instead.")
+  .pr$DataFrame$with_row_index(self, name, offset) |>
+    unwrap("in $with_row_count():")
 }
 
 #' Get and set column names of a DataFrame
@@ -1700,7 +1707,7 @@ DataFrame_glimpse = function(..., return_as_string = FALSE) {
 #' @return DataFrame
 #' @examples
 #' df = pl$DataFrame(
-#'   letters = c("aa", "aa", "bb", "cc"),
+#'   letters = letters[1:4],
 #'   numbers = list(1, c(2, 3), c(4, 5), c(6, 7, 8)),
 #'   numbers_2 = list(0, c(1, 2), c(3, 4), c(5, 6, 7)) # same structure as numbers
 #' )
@@ -1708,9 +1715,6 @@ DataFrame_glimpse = function(..., return_as_string = FALSE) {
 #'
 #' # explode a single column, append others
 #' df$explode("numbers")
-#'
-#' # it is also possible to explode a character column to have one letter per row
-#' df$explode("letters")
 #'
 #' # explode two columns of same nesting structure, by names or the common dtype
 #' # "List(Float64)"

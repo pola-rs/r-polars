@@ -5,11 +5,14 @@
 \alias{list_join}
 \title{Join elements of a list}
 \usage{
-ExprList_join(separator)
+ExprList_join(separator, ignore_nulls = FALSE)
 }
 \arguments{
 \item{separator}{String to separate the items with. Can be an Expr. Strings
 are \emph{not} parsed as columns.}
+
+\item{ignore_nulls}{If \code{FALSE} (default), null values are propagated: if the
+row contains any null values, the output is null.}
 }
 \value{
 Expr
@@ -25,6 +28,7 @@ df = pl$DataFrame(
 )
 df$with_columns(
   join_with_expr = pl$col("s")$list$join(pl$col("separator")),
-  join_with_lit = pl$col("s")$list$join(" ")
+  join_with_lit = pl$col("s")$list$join(" "),
+  join_ignore_null = pl$col("s")$list$join(" ", ignore_nulls = TRUE)
 )
 }

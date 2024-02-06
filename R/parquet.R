@@ -9,9 +9,9 @@
 #' or `"rowgroups"`,
 #' @param rechunk In case of reading multiple files via a glob pattern, rechunk
 #' the final DataFrame into contiguous memory chunks.
-#' @param row_count_name If not `NULL`, this will insert a row count column with
+#' @param row_index_name If not `NULL`, this will insert a row count column with
 #' the given name into the DataFrame.
-#' @param row_count_offset Offset to start the row_count column (only used if
+#' @param row_index_offset Offset to start the row_index column (only used if
 #' the name is set).
 #' @param low_memory Reduce memory usage (will yield a lower performance).
 #' @param hive_partitioning Infer statistics and schema from hive partitioned URL
@@ -49,8 +49,8 @@ pl_scan_parquet = function(
       "RowGroups"
     ),
     rechunk = TRUE,
-    row_count_name = NULL,
-    row_count_offset = 0L,
+    row_index_name = NULL,
+    row_index_offset = 0L,
     low_memory = FALSE,
     use_statistics = TRUE,
     hive_partitioning = TRUE) {
@@ -60,8 +60,8 @@ pl_scan_parquet = function(
     cache = cache,
     parallel = parallel,
     rechunk = rechunk,
-    row_name = row_count_name,
-    row_count = row_count_offset,
+    row_name = row_index_name,
+    row_index = row_index_offset,
     # storage_options = storage_options, # not supported yet
     low_memory = low_memory,
     use_statistics = use_statistics,
@@ -86,8 +86,8 @@ pl_read_parquet = function(
       "RowGroups"
     ),
     rechunk = TRUE,
-    row_count_name = NULL,
-    row_count_offset = 0L,
+    row_index_name = NULL,
+    row_index_offset = 0L,
     low_memory = FALSE,
     use_statistics = TRUE,
     hive_partitioning = TRUE) {

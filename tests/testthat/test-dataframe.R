@@ -1106,24 +1106,14 @@ test_that("explode", {
       numbers2 = c(1, NA, 4:8)
     )
   )
-
-  # explode character columns
-  df = pl$DataFrame(
-    letters = c("aa", "bbb", "cccc"),
-    numbers = c(1, 2, 3)
-  )
-  expect_equal(
-    df$explode("letters")$to_data_frame(),
-    data.frame(
-      letters = c(rep("a", 2), rep("b", 3), rep("c", 4)),
-      numbers = c(rep(1, 2), rep(2, 3), rep(3, 4))
-    )
-  )
 })
 
-test_that("with_row_count", {
+test_that("with_row_index", {
   df = pl$DataFrame(mtcars)
-  expect_identical(df$with_row_count("idx", 42)$select(pl$col("idx"))$to_data_frame()$idx, as.double(42:(41 + nrow(mtcars))))
+  expect_identical(
+    df$with_row_index("idx", 42)$select(pl$col("idx"))$to_data_frame()$idx,
+    as.double(42:(41 + nrow(mtcars)))
+  )
 })
 
 test_that("strictly_immutable = FALSE", {

@@ -32,25 +32,26 @@
       [53] "from_epoch"                "get_global_rpool_cap"     
       [55] "head"                      "implode"                  
       [57] "is_schema"                 "last"                     
-      [59] "lit"                       "max"                      
-      [61] "max_horizontal"            "mean"                     
-      [63] "median"                    "mem_address"              
-      [65] "min"                       "min_horizontal"           
-      [67] "n_unique"                  "numeric_dtypes"           
-      [69] "raw_list"                  "read_csv"                 
-      [71] "read_ndjson"               "read_parquet"             
-      [73] "reduce"                    "reset_options"            
-      [75] "rolling_corr"              "rolling_cov"              
-      [77] "same_outer_dt"             "scan_csv"                 
-      [79] "scan_ipc"                  "scan_ndjson"              
-      [81] "scan_parquet"              "select"                   
-      [83] "set_global_rpool_cap"      "set_options"              
-      [85] "show_all_public_functions" "show_all_public_methods"  
-      [87] "std"                       "struct"                   
-      [89] "sum"                       "sum_horizontal"           
-      [91] "tail"                      "threadpool_size"          
-      [93] "using_string_cache"        "var"                      
-      [95] "when"                      "with_string_cache"        
+      [59] "len"                       "lit"                      
+      [61] "max"                       "max_horizontal"           
+      [63] "mean"                      "median"                   
+      [65] "mem_address"               "min"                      
+      [67] "min_horizontal"            "n_unique"                 
+      [69] "numeric_dtypes"            "raw_list"                 
+      [71] "read_csv"                  "read_ndjson"              
+      [73] "read_parquet"              "reduce"                   
+      [75] "reset_options"             "rolling_corr"             
+      [77] "rolling_cov"               "same_outer_dt"            
+      [79] "scan_csv"                  "scan_ipc"                 
+      [81] "scan_ndjson"               "scan_parquet"             
+      [83] "select"                    "set_global_rpool_cap"     
+      [85] "set_options"               "show_all_public_functions"
+      [87] "show_all_public_methods"   "std"                      
+      [89] "struct"                    "sum"                      
+      [91] "sum_horizontal"            "tail"                     
+      [93] "threadpool_size"           "using_string_cache"       
+      [95] "var"                       "when"                     
+      [97] "with_string_cache"        
 
 ---
 
@@ -86,8 +87,8 @@
       [49] "sort"             "std"              "sum"              "tail"            
       [53] "to_data_frame"    "to_list"          "to_series"        "to_struct"       
       [57] "transpose"        "unique"           "unnest"           "var"             
-      [61] "width"            "with_columns"     "with_row_count"   "write_csv"       
-      [65] "write_json"       "write_ndjson"     "write_parquet"   
+      [61] "width"            "with_columns"     "with_row_count"   "with_row_index"  
+      [65] "write_csv"        "write_json"       "write_ndjson"     "write_parquet"   
 
 ---
 
@@ -112,7 +113,7 @@
       [31] "to_list"                   "to_list_tag_structs"      
       [33] "to_list_unwind"            "to_struct"                
       [35] "transpose"                 "unnest"                   
-      [37] "with_columns"              "with_row_count"           
+      [37] "with_columns"              "with_row_index"           
       [39] "write_csv"                 "write_json"               
       [41] "write_ndjson"              "write_parquet"            
 
@@ -158,7 +159,7 @@
       [49] "unique"                  "unnest"                 
       [51] "var"                     "width"                  
       [53] "with_columns"            "with_context"           
-      [55] "with_row_count"         
+      [55] "with_row_count"          "with_row_index"         
 
 ---
 
@@ -191,7 +192,7 @@
       [47] "tail"                    "unique"                 
       [49] "unnest"                  "var"                    
       [51] "with_columns"            "with_context"           
-      [53] "with_row_count"         
+      [53] "with_row_index"         
 
 # public and private methods of each class Expr
 
@@ -355,8 +356,8 @@
       [179] "name_to_lowercase"          "name_to_uppercase"         
       [181] "nan_max"                    "nan_min"                   
       [183] "neq"                        "neq_missing"               
-      [185] "new_count"                  "new_first"                 
-      [187] "new_last"                   "not"                       
+      [185] "new_first"                  "new_last"                  
+      [187] "new_len"                    "not"                       
       [189] "null_count"                 "or"                        
       [191] "over"                       "pct_change"                
       [193] "peak_max"                   "peak_min"                  

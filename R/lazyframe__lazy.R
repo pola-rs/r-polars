@@ -243,19 +243,26 @@ LazyFrame_with_columns = function(...) {
 }
 
 
-#' @inherit DataFrame_with_row_count title description params
+#' @inherit DataFrame_with_row_index title description params
 #' @return A new LazyFrame with a counter column in front
 #' @docType NULL
 #' @examples
 #' df = pl$LazyFrame(mtcars)
 #'
 #' # by default, the index starts at 0 (to mimic the behavior of Python Polars)
-#' df$with_row_count("idx")
+#' df$with_row_index("idx")
 #'
 #' # but in R, we use a 1-index
-#' df$with_row_count("idx", offset = 1)
+#' df$with_row_index("idx", offset = 1)
+LazyFrame_with_row_index = function(name, offset = NULL) {
+  .pr$LazyFrame$with_row_index(self, name, offset) |>
+    unwrap("in $with_row_index():")
+}
+
 LazyFrame_with_row_count = function(name, offset = NULL) {
-  .pr$LazyFrame$with_row_count(self, name, offset) |> unwrap()
+  warning("`$with_row_count()` is deprecated and will be removed in 0.15.0. Use `with_row_index()` instead.")
+  .pr$LazyFrame$with_row_index(self, name, offset) |>
+    unwrap("in $with_row_count():")
 }
 
 #' Apply filter to LazyFrame
@@ -1610,7 +1617,7 @@ LazyFrame_profile = function(
 #' `"name"` is implicitly converted to `pl$col("name")`.
 #'
 #' @details
-#' Only columns of DataType `List` or `String` can be exploded.
+#' Only columns of DataType `List` or `Array` can be exploded.
 #'
 #' Named expressions like `$explode(a = pl$col("b"))` will not implicitly trigger
 #' `$alias("a")` here, due to only variant `Expr::Column` is supported in
@@ -1627,9 +1634,6 @@ LazyFrame_profile = function(
 #'
 #' # explode a single column, append others
 #' df$explode("numbers")$collect()
-#'
-#' # it is also possible to explode a character column to have one letter per row
-#' df$explode("letters")
 #'
 #' # explode two columns of same nesting structure, by names or the common dtype
 #' # "List(Float64)"

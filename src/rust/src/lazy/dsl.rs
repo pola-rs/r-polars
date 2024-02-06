@@ -1091,12 +1091,12 @@ impl RPolarsExpr {
         self.0.clone().list().get(index.clone().0).into()
     }
 
-    fn list_join(&self, separator: Robj) -> RResult<Self> {
+    fn list_join(&self, separator: Robj, ignore_nulls: Robj) -> RResult<Self> {
         Ok(self
             .0
             .clone()
             .list()
-            .join(robj_to!(PLExpr, separator)?)
+            .join(robj_to!(PLExpr, separator)?, robj_to!(bool, ignore_nulls)?)
             .into())
     }
 
@@ -1868,7 +1868,7 @@ impl RPolarsExpr {
             .clone()
             .0
             .str()
-            .zfill(robj_to!(usize, alignment)?)
+            .zfill(robj_to!(PLExprCol, alignment)?)
             .into())
     }
 
@@ -1967,7 +1967,7 @@ impl RPolarsExpr {
             .0
             .clone()
             .str()
-            .extract(robj_to!(str, pattern)?, robj_to!(usize, group_index)?)
+            .extract(robj_to!(PLExprCol, pattern)?, robj_to!(usize, group_index)?)
             .into())
     }
 
@@ -2120,8 +2120,8 @@ impl RPolarsExpr {
     }
 
     pub fn str_slice(&self, offset: Robj, length: Robj) -> Result<RPolarsExpr, String> {
-        let offset = robj_to!(i64, offset)?;
-        let length = robj_to!(Option, u64, length)?;
+        let offset = robj_to!(PLExprCol, offset)?;
+        let length = robj_to!(PLExprCol, length)?;
 
         Ok(self.clone().0.str().slice(offset, length).into())
     }
@@ -2345,8 +2345,8 @@ impl RPolarsExpr {
     // external expression function which typically starts a new expression chain
     // to avoid name space collisions in R, these static methods are not free functions
     // as in py-polars. prefix with new_ to not collide with other methods in class
-    pub fn new_count() -> RPolarsExpr {
-        dsl::count().into()
+    pub fn new_len() -> RPolarsExpr {
+        dsl::len().into()
     }
 
     pub fn new_first() -> RPolarsExpr {

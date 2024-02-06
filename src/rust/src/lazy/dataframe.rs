@@ -146,7 +146,7 @@ impl RPolarsLazyFrame {
         let include_header = robj_to!(bool, include_header)?;
         let include_bom = robj_to!(bool, include_bom)?;
         let maintain_order = robj_to!(bool, maintain_order)?;
-        let batch_size = robj_to!(usize, batch_size)?;
+        let batch_size = robj_to!(nonzero_usize, batch_size)?;
 
         let serialize_options = SerializeOptions {
             date_format,
@@ -265,11 +265,7 @@ impl RPolarsLazyFrame {
     }
 
     fn drop(&self, columns: Robj) -> Result<RPolarsLazyFrame, String> {
-        Ok(self
-            .0
-            .clone()
-            .drop_columns(robj_to!(Vec, String, columns)?)
-            .into())
+        Ok(self.0.clone().drop(robj_to!(Vec, String, columns)?).into())
     }
 
     fn fill_nan(&self, fill_value: Robj) -> Result<Self, String> {
@@ -366,11 +362,11 @@ impl RPolarsLazyFrame {
         }
     }
 
-    fn with_row_count(&self, name: Robj, offset: Robj) -> RResult<Self> {
+    fn with_row_index(&self, name: Robj, offset: Robj) -> RResult<Self> {
         Ok(self
             .0
             .clone()
-            .with_row_count(
+            .with_row_index(
                 robj_to!(String, name)?.as_str(),
                 robj_to!(Option, u32, offset)?,
             )

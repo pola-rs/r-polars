@@ -249,18 +249,22 @@ test_that("zfill", {
   )
 
   # test wrong input type
-  expect_grepl_error(
-    expect_identical(
-      pl$lit(c(-1, 2, 10, "5"))$str$zfill("a")$to_r(),
-      "something"
-    ),
-    "i64"
+  expect_error(
+    pl$lit(c(-1, 2, 10, "5"))$str$zfill(pl$lit("a"))$to_r(),
+    "u64"
   )
 
   # test wrong input range
-  expect_grepl_error(
+  expect_error(
     pl$lit(c(-1, 2, 10, "5"))$str$zfill(-3)$to_r(),
-    "cannot be less than zero"
+    "conversion from"
+  )
+
+  # works with expr
+  df = pl$DataFrame(a = c(-1L, 123L, 999999L, NA), val = 4:7)
+  expect_identical(
+    df$select(zfill = pl$col("a")$cast(pl$String)$str$zfill("val"))$to_list(),
+    list(zfill = c("-001", "00123", "999999", NA))
   )
 })
 
@@ -437,16 +441,18 @@ test_that("str$extract", {
       "http://vote.com/ballon_dor?candidat=jorginho&ref=polars",
       "http://vote.com/ballon_dor?candidate=ronaldo&ref=polars"
     )
-  )$str$extract(r"(candidate=(\w+))", 1)$to_r()
+  )$str$extract(pl$lit(r"(candidate=(\w+))"), 1)$to_r()
   expect_identical(actual, c("messi", NA, "ronaldo"))
 
-  expect_grepl_error(
-    pl$lit("abc")$str$extract(42, 42),
-    "str"
+  # wrong input
+  expect_identical(
+    pl$lit("abc")$str$extract(42, 42)$to_r(),
+    NA_character_
   )
 
-  expect_true(
-    pl$lit("abc")$str$extract("a", "2")$meta$eq(pl$lit("abc")$str$extract("a", 2))
+  expect_identical(
+    pl$lit("abc")$str$extract(pl$lit("a"), "2")$to_r(),
+    pl$lit("abc")$str$extract(pl$lit("a"), 2)$to_r()
   )
 
   expect_grepl_error(

@@ -81,7 +81,8 @@ series
 df = pl$DataFrame(
   "integer" = c(1, 2, 3),
   "date" = as.Date(c("2022-1-1", "2022-1-2", "2022-1-3")),
-  "float" = c(4.0, 5.0, 6.0))
+  "float" = c(4.0, 5.0, 6.0)
+)
 df
 
 # df$write_csv('output.csv')
@@ -123,7 +124,7 @@ df$select(pl$col("a"), pl$col("b"))$limit(3)
 df$select(pl$all()$exclude("a"))
 
 df$filter(
-    pl$col("c")$is_between(as.Date("2022-12-2"), as.Date("2022-12-8"))
+  pl$col("c")$is_between(as.Date("2022-12-2"), as.Date("2022-12-8"))
 )
 
 df$filter((pl$col("a") <= 3) & (pl$col("d")$is_not_nan()))
@@ -137,9 +138,9 @@ df = pl$DataFrame("x" = 0:7, "y" = c("A", "A", "A", "B", "B", "C", "X", "X"))
 df$
   group_by("y", maintain_order = FALSE)$
   agg(
-    pl$col("*")$count()$alias("count"),
-    pl$col("*")$sum()$alias("sum")
-  )
+  pl$col("*")$count()$alias("count"),
+  pl$col("*")$sum()$alias("sum")
+)
 
 df1 = pl$DataFrame(
   "a" = 0:7,
@@ -192,7 +193,7 @@ df$select(
 )
 
 df$select(
-  pl$col("*"),  # select all
+  pl$col("*"), # select all
   pl$col("random")$sum()$over("groups")$alias("sumc(random)/groups"),
   pl$col("random")$implode()$over("names")$alias("random/name")
 )
@@ -214,8 +215,8 @@ df$with_columns(
 )
 
 df$group_by("groups")$agg(
-  pl$sum("nrs"),  # sum nrs by groups
-  pl$col("random")$count()$alias("count"),  # count group members
+  pl$sum("nrs"), # sum nrs by groups
+  pl$col("random")$count()$alias("count"), # count group members
   # sum random where name != null
   pl$col("random")$filter(pl$col("names")$is_not_null())$sum()$name$suffix("_sum"),
   pl$col("names")$reverse()$alias(("reversed names"))
@@ -228,11 +229,11 @@ df$group_by("groups")$agg(
 url = "https://theunitedstates.io/congress-legislators/legislators-historical.csv"
 
 dtypes = list(
-    "first_name" = pl$Categorical,
-    "gender" = pl$Categorical,
-    "type" = pl$Categorical,
-    "state" = pl$Categorical,
-    "party" = pl$Categorical
+  "first_name" = pl$Categorical,
+  "gender" = pl$Categorical,
+  "type" = pl$Categorical,
+  "state" = pl$Categorical,
+  "party" = pl$Categorical
 )
 
 # dtypes argument
@@ -242,18 +243,20 @@ dataset$
   lazy()$
   group_by("first_name")$
   agg(
-    pl$count(),
-    pl$col("gender"),
-    pl$first("last_name"))$
-  sort("count", descending = TRUE)$
+  pl$len(),
+  pl$col("gender"),
+  pl$first("last_name")
+)$
+  sort("len", descending = TRUE)$
   limit(5)$
   collect()
 
 dataset$lazy()$
   group_by("state")$
   agg(
-    (pl$col("party") == "Anti-Administration")$sum()$alias("anti"),
-    (pl$col("party") == "Pro-Administration")$sum()$alias("pro"))$
+  (pl$col("party") == "Anti-Administration")$sum()$alias("anti"),
+  (pl$col("party") == "Pro-Administration")$sum()$alias("pro")
+)$
   sort("pro", descending = TRUE)$
   limit(5)$
   collect()
@@ -273,17 +276,18 @@ dataset$
 compute_age = function() 2021 - pl$col("birthday")$dt$year()
 
 avg_birthday = function(gender) {
-    compute_age()$filter(pl$col("gender") == gender)$mean()$alias(sprintf("avg %s birthday", gender))
+  compute_age()$filter(pl$col("gender") == gender)$mean()$alias(sprintf("avg %s birthday", gender))
 }
 
 q = (
-    dataset$lazy()$
+  dataset$lazy()$
     group_by("state")$
-    agg(avg_birthday("M"),
-        avg_birthday("F"),
-        (pl$col("gender") == "M")$sum()$alias("# male"),
-        (pl$col("gender") == "F")$sum()$alias("# female")
-    )$
+    agg(
+    avg_birthday("M"),
+    avg_birthday("F"),
+    (pl$col("gender") == "M")$sum()$alias("# male"),
+    (pl$col("gender") == "F")$sum()$alias("# female")
+  )$
     limit(5)
 )
 q$collect()
@@ -535,8 +539,8 @@ df
 # If we are not applying any function to the column, we can also use the column name as a string$
 df$select(
   pl$col("A"),
-  "B",         # the col part is inferred
-  pl$lit("B")  # the pl$lit functions tell polars we mean the literal "B"
+  "B", # the col part is inferred
+  pl$lit("B") # the pl$lit functions tell polars we mean the literal "B"
 )
 
 # We can use a list within select (example above) or a comma-separated list of expressions (this example)$
@@ -604,19 +608,19 @@ df$select(
 
 df$group_by("fruits")$
   agg(
-    pl$col("B")$count()$alias("B_count"),
-    pl$col("B")$sum()$alias("B_sum")
-  )
+  pl$col("B")$count()$alias("B_count"),
+  pl$col("B")$sum()$alias("B_sum")
+)
 
 # We can aggregate many expressions at once
 df$group_by("fruits")$
   agg(
-            pl$col("B")$sum()$alias("B_sum"),# Sum of B
-            # pl$first("fruits")$alias("fruits_first"),# First value of fruits
-            # pl$count("A")$alias("count"),# Count of A
-            pl$col("cars")$reverse() # Reverse the cars column - not an aggregation
-            # so the output is a pl$List
-  )
+  pl$col("B")$sum()$alias("B_sum"), # Sum of B
+  # pl$first("fruits")$alias("fruits_first"),# First value of fruits
+  # pl$count("A")$alias("count"),# Count of A
+  pl$col("cars")$reverse() # Reverse the cars column - not an aggregation
+  # so the output is a pl$List
+)
 ```
 
 
@@ -654,24 +658,27 @@ df$
 # Here we add a new column with the sum of B grouped by fruits
 df$
   select(
-    "fruits",
-    "cars",
-    "B",
-    pl$col("B")$sum()$over("fruits")$alias("B_sum_by_fruits"))
+  "fruits",
+  "cars",
+  "B",
+  pl$col("B")$sum()$over("fruits")$alias("B_sum_by_fruits")
+)
 
 # We can also use window functions to do group_by over multiple columns
 df$
   select(
-    "fruits",
-    "cars",
-    "B",
-    pl$col("B")$sum()$over("fruits")$alias("B_sum_by_fruits"),
-    pl$col("B")$sum()$over("cars")$alias("B_sum_by_cars"))
+  "fruits",
+  "cars",
+  "B",
+  pl$col("B")$sum()$over("fruits")$alias("B_sum_by_fruits"),
+  pl$col("B")$sum()$over("cars")$alias("B_sum_by_cars")
+)
 
 # Here we use a window function to lag column B within "fruits"
 df$
   select(
-    "fruits",
-    "B",
-    pl$col("B")$shift()$over("fruits")$alias("lag_B_by_fruits"))
+  "fruits",
+  "B",
+  pl$col("B")$shift()$over("fruits")$alias("lag_B_by_fruits")
+)
 ```

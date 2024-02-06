@@ -2,6 +2,25 @@
 
 ## Polars R Package (development version)
 
+### BREAKING CHANGES DUE TO RUST-POLARS UPDATE
+
+-   rust-polars is updated to 0.37.0 (#776). 
+    -   `$with_row_count()` for `DataFrame` and `LazyFrame` is deprecated and 
+        will be removed in 0.15.0. It is replaced by `$with_row_index()`. 
+    -   `pl$count()` is deprecated and will be removed in 0.15.0. It is replaced
+        by `pl$len()`. 
+    -   `$explode()` for `DataFrame` and `LazyFrame` doesn't work anymore on 
+        string columns. 
+    -   `$list$join()` and `pl$concat_str()` gain an argument `ignore_nulls`. 
+        The current behavior is to return a `null` if the row contains any `null`.
+        Setting `ignore_nulls = TRUE` changes that.
+    -   All `row_count_*` args in reading/scanning functions are renamed 
+        `row_index_*`.
+    -   `$sort()` for `Series` gains an argument `nulls_last`.
+    -   `$str$extract()` and `$str$zfill()` now accept an `Expr` and parse
+        strings as column names. Use `pl$lit()` to recover the old behavior.
+    -   `$cum_count()` now starts from 1 instead of 0.
+
 ## Polars R Package 0.13.1
 
 ### New features

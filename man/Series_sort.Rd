@@ -4,10 +4,12 @@
 \alias{Series_sort}
 \title{Sort this Series}
 \usage{
-Series_sort(descending = FALSE, in_place = FALSE)
+Series_sort(descending = FALSE, nulls_last = FALSE, in_place = FALSE)
 }
 \arguments{
-\item{descending}{Sort in descending order..}
+\item{descending}{Sort in descending order.}
+
+\item{nulls_last}{Place null values last instead of first.}
 
 \item{in_place}{bool sort mutable in-place, breaks immutability
 If true will throw an error unless this option has been set:

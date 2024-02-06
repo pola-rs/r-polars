@@ -107,8 +107,8 @@ impl RPolarsSeries {
         self.0.name()
     }
 
-    pub fn sort_mut(&mut self, descending: bool) -> Self {
-        RPolarsSeries(self.0.sort(descending))
+    pub fn sort_mut(&mut self, descending: bool, nulls_last: bool) -> Self {
+        RPolarsSeries(self.0.sort(descending, nulls_last))
     }
 
     pub fn value_counts(

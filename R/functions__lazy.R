@@ -100,19 +100,24 @@ pl_element = function() pl$col("")
 #'   b = c(4, 5, 2),
 #'   c = c("foo", "bar", "foo")
 #' )
-#' df$select(pl$count())
+#' df$select(pl$len())
 #'
 #'
-#' df$group_by("c", maintain_order = TRUE)$agg(pl$count())
-pl_count = function(column = NULL) { # -> Expr | int:
+#' df$group_by("c", maintain_order = TRUE)$agg(pl$len())
+pl_len = function(column = NULL) {
   if (is.null(column)) {
-    return(.pr$Expr$new_count())
+    return(.pr$Expr$new_len())
   }
   if (inherits(column, "RPolarsSeries")) {
     return(column$len())
   }
   # add context to any error from pl$col
-  unwrap(result(pl$col(column)$count()), "in pl$count():")
+  unwrap(result(pl$col(column)$len()), "in pl$len():")
+}
+
+pl_count = function(column = NULL) {
+  warning("`pl$count()` is deprecated and will be removed in 0.15.0. Use `pl$len()` instead.")
+  pl$len(column)
 }
 
 #' Aggregate all column values into a list.
@@ -743,26 +748,32 @@ pl_struct = function(
 #' are parsed as literals. Non-String columns are cast to String
 #' @param separator String that will be used to separate the values of each
 #' column.
+#' @param ignore_nulls If `FALSE` (default), null values are propagated: if the
+#' row contains any null values, the output is null.
 #' @return Expr
 #' @examples
 #' df = pl$DataFrame(
-#'   a = c(1, 2, 3),
+#'   a = 1:3,
 #'   b = c("dogs", "cats", NA),
 #'   c = c("play", "swim", "walk")
 #' )
 #'
 #' df$with_columns(
 #'   pl$concat_str(
-#'     pl$col("a") * 2,
-#'     "b",
-#'     "c",
-#'     pl$lit("!"),
+#'     pl$col("a") * 2L, "b", "c", pl$lit("!"),
 #'     separator = " "
 #'   )$alias("full_sentence")
 #' )
 #'
-pl_concat_str = function(..., separator = "") {
-  concat_str(list2(...), separator) |> unwrap("in $concat_str()")
+#' df$with_columns(
+#'   pl$concat_str(
+#'     pl$col("a") * 2L, "b", "c", pl$lit("!"),
+#'     separator = " ",
+#'     ignore_nulls = TRUE
+#'   )$alias("full_sentence")
+#' )
+pl_concat_str = function(..., separator = "", ignore_nulls = FALSE) {
+  concat_str(list2(...), separator, ignore_nulls) |> unwrap("in $concat_str()")
 }
 
 #' Covariance

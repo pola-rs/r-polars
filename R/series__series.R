@@ -765,7 +765,8 @@ Series_set_sorted = function(descending = FALSE, in_place = FALSE) {
 #' Sort this Series
 #' @keywords Series
 #' @aliases Series_sort
-#' @param descending Sort in descending order..
+#' @param descending Sort in descending order.
+#' @param nulls_last Place null values last instead of first.
 #' @param in_place bool sort mutable in-place, breaks immutability
 #' If true will throw an error unless this option has been set:
 #' `options(polars.strictly_immutable = FALSE)`
@@ -774,7 +775,7 @@ Series_set_sorted = function(descending = FALSE, in_place = FALSE) {
 #'
 #' @examples
 #' pl$Series(c(1, NA, NaN, Inf, -Inf))$sort()
-Series_sort = function(descending = FALSE, in_place = FALSE) {
+Series_sort = function(descending = FALSE, nulls_last = FALSE, in_place = FALSE) {
   if (in_place && polars_options()$strictly_immutable) {
     stop(paste(
       "in_place sort breaks immutability, to enable mutable features run:\n",
@@ -785,7 +786,7 @@ Series_sort = function(descending = FALSE, in_place = FALSE) {
     self = self$clone()
   }
 
-  .pr$Series$sort_mut(self, descending)
+  .pr$Series$sort_mut(self, descending, nulls_last)
 }
 
 
