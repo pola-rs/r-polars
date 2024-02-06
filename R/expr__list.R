@@ -218,7 +218,8 @@ ExprList_contains = function(item) .pr$Expr$list_contains(self, wrap_e(item))
 #' )
 #' df$with_columns(
 #'   join_with_expr = pl$col("s")$list$join(pl$col("separator")),
-#'   join_with_lit = pl$col("s")$list$join(" ")
+#'   join_with_lit = pl$col("s")$list$join(" "),
+#'   join_ignore_null = pl$col("s")$list$join(" ", ignore_nulls = TRUE)
 #' )
 ExprList_join = function(separator, ignore_nulls = FALSE) {
   .pr$Expr$list_join(self, separator, ignore_nulls) |>

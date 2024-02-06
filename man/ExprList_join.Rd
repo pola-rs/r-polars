@@ -28,6 +28,7 @@ df = pl$DataFrame(
 )
 df$with_columns(
   join_with_expr = pl$col("s")$list$join(pl$col("separator")),
-  join_with_lit = pl$col("s")$list$join(" ")
+  join_with_lit = pl$col("s")$list$join(" "),
+  join_ignore_null = pl$col("s")$list$join(" ", ignore_nulls = TRUE)
 )
 }
