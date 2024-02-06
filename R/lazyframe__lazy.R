@@ -255,7 +255,14 @@ LazyFrame_with_columns = function(...) {
 #' # but in R, we use a 1-index
 #' df$with_row_index("idx", offset = 1)
 LazyFrame_with_row_index = function(name, offset = NULL) {
-  .pr$LazyFrame$with_row_index(self, name, offset) |> unwrap()
+  .pr$LazyFrame$with_row_index(self, name, offset) |>
+    unwrap("in $with_row_index():")
+}
+
+LazyFrame_with_row_count = function(name, offset = NULL) {
+  warning("`$with_row_count()` is deprecated and will be removed in 0.15.0. Use `with_row_index()` instead.")
+  .pr$LazyFrame$with_row_index(self, name, offset) |>
+    unwrap("in $with_row_count():")
 }
 
 #' Apply filter to LazyFrame

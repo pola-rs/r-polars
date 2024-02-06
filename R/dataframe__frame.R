@@ -313,7 +313,14 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 #' # but in R, we use a 1-index
 #' df$with_row_index("idx", offset = 1)
 DataFrame_with_row_index = function(name, offset = NULL) {
-  .pr$DataFrame$with_row_index(self, name, offset) |> unwrap()
+  .pr$DataFrame$with_row_index(self, name, offset) |>
+    unwrap("in $with_row_index():")
+}
+
+DataFrame_with_row_count = function(name, offset = NULL) {
+  warning("`$with_row_count()` is deprecated and will be removed in 0.15.0. Use `with_row_index()` instead.")
+  .pr$DataFrame$with_row_index(self, name, offset) |>
+    unwrap("in $with_row_count():")
 }
 
 #' Get and set column names of a DataFrame
