@@ -2,7 +2,7 @@
 #'
 #' This function reports the following information:
 #' - Package versions (the R package version and the dependent Rust Polars version)
-#' - [Number of threads used by Polars][pl_threadpool_size]
+#' - [Number of threads used by Polars][pl_thread_pool_size]
 #' - Rust feature flags (See `vignette("install", "polars")` for details)
 #' @return A list with information of the package
 #' @export
@@ -17,7 +17,7 @@ polars_info = function() {
   out = list(
     version = utils::packageVersion("polars"),
     rust_polars = rust_polars_version(),
-    threadpool_size = threadpool_size(),
+    thread_pool_size = thread_pool_size(),
     features = cargo_rpolars_feature_info()
   )
   structure(out, class = "polars_info")
@@ -41,7 +41,7 @@ print.polars_info = function(x, ...) {
   cat("r-polars package version : ", format(x$version), "\n", sep = "")
   cat("rust-polars crate version: ", format(x$rust_polars), "\n", sep = "")
   cat("\n")
-  cat("Thread pool size:", x$threadpool_size, "\n")
+  cat("Thread pool size:", x$thread_pool_size, "\n")
   cat("\n")
   print_key_values("Features", unlist(x$features))
 }
@@ -99,5 +99,11 @@ check_feature = function(feature_name, context = NULL, call = sys.call(1L)) {
 #'
 #' @return The number of threads
 #' @examples
-#' pl$threadpool_size()
-pl_threadpool_size = function() threadpool_size()
+#' pl$thread_pool_size()
+pl_thread_pool_size = function() thread_pool_size()
+
+#' @rdname pl_thread_pool_size
+pl_threadpool_size = function() {
+  warning("`pl$threadpool_size()` is deprecated and will be removed in 0.15.0. Use `pl$thread_pool_size()` instead.")
+  thread_pool_size()
+}
