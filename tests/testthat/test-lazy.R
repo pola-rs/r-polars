@@ -4,6 +4,8 @@ test_that("lazy prints", {
   df = pl$DataFrame(list(a = 1:3, b = c(T, T, F)))
   ldf = df$lazy()$filter(pl$col("a") == 2L)
 
+  expect_snapshot(print(ldf))
+
   # generic and internal 'print'-methods return self (invisibly likely)
   print_generic = capture_output_lines({
     ret_val = print(ldf)
@@ -13,7 +15,6 @@ test_that("lazy prints", {
     ret_val2 = ldf$print()
   })
   expect_equal(getprint(ret_val2), getprint(ldf))
-
 
   # described plan is not equal to optimized plan
   expect_true(
