@@ -110,7 +110,7 @@ cargo_rpolars_feature_info <- function() .Call(wrap__cargo_rpolars_feature_info)
 
 rust_polars_version <- function() .Call(wrap__rust_polars_version)
 
-threadpool_size <- function() .Call(wrap__threadpool_size)
+thread_pool_size <- function() .Call(wrap__thread_pool_size)
 
 enable_string_cache <- function() .Call(wrap__enable_string_cache)
 

@@ -41,7 +41,7 @@ the package \code{bit64} to be attached).
 \item \code{"string"} converts Int64 values to character.
 }
 \item \code{limit_max_threads} (\code{\link[=polars_info]{!polars_info()$features$disable_limit_max_threads}}):
-See \code{\link[=pl_threadpool_size]{?pl_threadpool_size}} for details.
+See \code{\link[=pl_thread_pool_size]{?pl_thread_pool_size}} for details.
 This option should be set before the package is loaded.
 \item \code{maintain_order} (\code{FALSE}): Default for all \code{maintain_order} options
 (present in \verb{$group_by()} or \verb{$unique()} for example).
