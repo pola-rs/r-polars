@@ -156,7 +156,7 @@ pl_LazyFrame = function(...) {
 #'
 #' @examples pl$LazyFrame(iris)
 print.RPolarsLazyFrame = function(x, ...) {
-  print("polars LazyFrame naive plan: (run ldf$describe_optimized_plan() to see the optimized plan)")
+  cat("polars LazyFrame:\n")
   cloned_x = .pr$LazyFrame$print(x)
   invisible(cloned_x)
 }
