@@ -123,7 +123,7 @@ move_env_elements(RPolarsExpr, pl, c("lit"), remove = FALSE)
       Sys.getenv("POLARS_MAX_THREADS") == "") {
     Sys.setenv(POLARS_MAX_THREADS = 2)
     # Call polars to lock the pool size
-    invisible(threadpool_size())
+    invisible(thread_pool_size())
     Sys.unsetenv("POLARS_MAX_THREADS")
   }
 
