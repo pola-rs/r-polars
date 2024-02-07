@@ -1,3 +1,5 @@
+skip_if_not_installed("arrow")
+
 make_arrow_dict_array_cases = function() {
   da_string = arrow::Array$create(
     factor(c("x", "y", "z"))
@@ -23,8 +25,6 @@ make_arrow_dict_array_cases = function() {
 
 patrick::with_parameters_test_that("dictionary type array and chunked array's handling",
   {
-    skip_if_not_installed("arrow")
-
     expect_true(is_arrow_dictionary(arrow_object))
     expect_false(is_arrow_dictionary(arrow_object$cast(arrow::utf8())))
 

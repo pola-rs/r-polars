@@ -15,8 +15,10 @@
 Create a arrow RecordBatchReader from a Polars object
 }
 \examples{
+\dontshow{if (requireNamespace("arrow", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(arrow)
 
 pl_df = as_polars_df(mtcars)
 as_record_batch_reader(pl_df)
+\dontshow{\}) # examplesIf}
 }

@@ -3,7 +3,7 @@
 #' @param x [A Polars DataFrame][DataFrame_class]
 #' @param ... Ignored
 #' @rdname S3_as_arrow_table
-#' @examples
+#' @examplesIf requireNamespace("arrow", quietly = TRUE)
 #' library(arrow)
 #'
 #' pl_df = as_polars_df(mtcars)
@@ -19,7 +19,7 @@ as_arrow_table.RPolarsDataFrame = function(x, ...) {
 #'
 #' @inheritParams as_arrow_table.RPolarsDataFrame
 #' @rdname S3_as_record_batch_reader
-#' @examples
+#' @examplesIf requireNamespace("arrow", quietly = TRUE)
 #' library(arrow)
 #'
 #' pl_df = as_polars_df(mtcars)
