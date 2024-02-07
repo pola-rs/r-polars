@@ -24,7 +24,7 @@ make_as_polars_df_cases = function() {
 
 patrick::with_parameters_test_that("as_polars_df S3 methods",
   {
-    skip_if_not_installed("arrow")
+    skip_if_not_installed("arrow") # TODO: is called after make_as_polars_df_cases()
     skip_if_not_installed("nanoarrow")
 
     pl_df = as_polars_df(x)

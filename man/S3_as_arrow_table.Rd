@@ -4,7 +4,7 @@
 \alias{as_arrow_table.RPolarsDataFrame}
 \title{Create a arrow Table from a Polars object}
 \usage{
-\method{as_arrow_table}{RPolarsDataFrame}(x, ...)
+as_arrow_table.RPolarsDataFrame(x, ...)
 }
 \arguments{
 \item{x}{\link[=DataFrame_class]{A Polars DataFrame}}
@@ -15,8 +15,10 @@
 Create a arrow Table from a Polars object
 }
 \examples{
+\dontshow{if (requireNamespace("arrow", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(arrow)
 
 pl_df = as_polars_df(mtcars)
 as_arrow_table(pl_df)
+\dontshow{\}) # examplesIf}
 }

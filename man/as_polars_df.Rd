@@ -124,7 +124,7 @@ a \link[=DataFrame_class]{DataFrame}
 \code{\link[=as_polars_df]{as_polars_df()}} is a generic function that converts an R object to a
 polars DataFrame. It is basically a wrapper for \link[=pl_DataFrame]{pl$DataFrame()},
 but has special implementations for Apache Arrow-based objects such as
-polars \link[=LazyFrame_class]{LazyFrame} and \link[arrow:Table-class]{arrow::Table}.
+polars \link[=LazyFrame_class]{LazyFrame} and \link[arrow:Table]{arrow::Table}.
 }
 \details{
 For \link[=LazyFrame_class]{LazyFrame} objects, this function is a shortcut for
