@@ -20,6 +20,15 @@
     -   `$str$extract()` and `$str$zfill()` now accept an `Expr` and parse
         strings as column names. Use `pl$lit()` to recover the old behavior.
     -   `$cum_count()` now starts from 1 instead of 0.
+    
+
+### Removed functions
+
+-   The following functions were deprecated in 0.13.0 and are now removed:
+    -   `$list$lengths()` -> `$list$len()` 
+    -   `pl$from_arrow()` -> `as_polars_df()` or `as_polars_series()`
+    -   `pl$set_options()` and `pl$reset_options()` -> `polars_options()` 
+
 
 ## Polars R Package 0.13.1
 
