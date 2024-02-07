@@ -13,13 +13,6 @@ test_that("options are validated", {
   polars_options_reset()
 })
 
-# TODO: remove before 0.14.0
-test_that("$set_options() and $reset_options() work", {
-  expect_warning(pl$set_options(strictly_immutable = FALSE), "deprecated")
-  expect_warning(pl$reset_options(), "deprecated")
-  expect_true(getOption("polars.strictly_immutable"))
-})
-
 test_that("polars_options() read-write", {
   polars_options_reset()
 

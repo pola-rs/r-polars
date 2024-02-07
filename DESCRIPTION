@@ -69,7 +69,6 @@ Collate:
     'as_polars.R'
     'autocompletion.R'
     'construction.R'
-    'convert.R'
     'csv.R'
     'dataframe__frame.R'
     'datatype.R'

@@ -10,12 +10,6 @@
 #' df$with_columns(len_list = pl$col("list_of_strs")$list$len())
 ExprList_len = function() .pr$Expr$list_len(self)
 
-#' @rdname ExprList_len
-ExprList_lengths = function() {
-  warning("`$list$lengths()` is deprecated and will be removed in 0.14.0. Use `$list$len()` instead")
-  .pr$Expr$list_len(self)
-}
-
 #' Sum all elements in a list
 #'
 #' @return Expr

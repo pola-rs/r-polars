@@ -3,12 +3,9 @@
 \name{ExprList_len}
 \alias{ExprList_len}
 \alias{list_len}
-\alias{ExprList_lengths}
 \title{Get the length of each list}
 \usage{
 ExprList_len()
-
-ExprList_lengths()
 }
 \value{
 Expr

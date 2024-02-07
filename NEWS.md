@@ -2,7 +2,7 @@
 
 ## Polars R Package (development version)
 
-### BREAKING CHANGES DUE TO RUST-POLARS UPDATE
+### Breaking changes due to Rust-polars update
 
 -   rust-polars is updated to 0.37.0 (#776). 
     -   `$with_row_count()` for `DataFrame` and `LazyFrame` is deprecated and 
@@ -20,6 +20,13 @@
     -   `$str$extract()` and `$str$zfill()` now accept an `Expr` and parse
         strings as column names. Use `pl$lit()` to recover the old behavior.
     -   `$cum_count()` now starts from 1 instead of 0.
+
+### Other breaking changes
+
+-   The following functions were deprecated in 0.13.0 and are now removed (#783):
+    -   `$list$lengths()` -> `$list$len()` 
+    -   `pl$from_arrow()` -> `as_polars_df()` or `as_polars_series()`
+    -   `pl$set_options()` and `pl$reset_options()` -> `polars_options()` 
 
 ### Deprecations
 
