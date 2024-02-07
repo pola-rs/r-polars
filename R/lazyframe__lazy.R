@@ -156,7 +156,10 @@ pl_LazyFrame = function(...) {
 #'
 #' @examples pl$LazyFrame(iris)
 print.RPolarsLazyFrame = function(x, ...) {
-  cat("polars LazyFrame:\n")
+  cat("polars LazyFrame\n")
+  cat(" $describe_optimized_plan() : Show the optimized query plan.\n")
+  cat("\n")
+  cat("Naive plan:\n")
   cloned_x = .pr$LazyFrame$print(x)
   invisible(cloned_x)
 }
