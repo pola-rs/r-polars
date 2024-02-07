@@ -22,7 +22,7 @@
 #'   the package `bit64` to be attached).
 #'    * `"string"` converts Int64 values to character.
 #' * `limit_max_threads` ([`!polars_info()$features$disable_limit_max_threads`][polars_info]):
-#'   See [`?pl_threadpool_size`][pl_threadpool_size] for details.
+#'   See [`?pl_thread_pool_size`][pl_thread_pool_size] for details.
 #'   This option should be set before the package is loaded.
 #' * `maintain_order` (`FALSE`): Default for all `maintain_order` options
 #'   (present in `$group_by()` or `$unique()` for example).

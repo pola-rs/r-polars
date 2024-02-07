@@ -30,6 +30,11 @@
     -   `pl$set_options()` and `pl$reset_options()` -> `polars_options()` 
 
 
+### Deprecations
+
+-   `pl$threadpool_size()` is deprecated and will be removed in 0.15.0. Use 
+    `pl$thread_pool_size()` instead (#784).
+
 ## Polars R Package 0.13.1
 
 ### New features
