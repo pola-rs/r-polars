@@ -1501,21 +1501,79 @@ test_that("gather_every", {
   )
 })
 
-test_that("is_between", {
-  l = list(a = (1:5) * 1.0)
-  df = pl$DataFrame(l)
+test_that("is_between with literals", {
+  df = pl$DataFrame(a = (1:5) * 1.0)
 
-  expect_identical(df$select(pl$col("a")$is_between(2, 4))$to_list()[[1L]], c(F, F, T, F, F))
-  expect_identical(df$select(pl$col("a")$is_between(2, 4, T))$to_list()[[1L]], c(F, T, T, T, F))
-  expect_identical(df$select(pl$col("a")$is_between(2, 4, c(T, F)))$to_list()[[1L]], c(F, T, T, F, F))
-  expect_identical(df$select(pl$col("a")$is_between(2, 4, c(F, T)))$to_list()[[1L]], c(F, F, T, T, F))
-  expect_identical(df$select(pl$col("a")$is_between(1.9, 4.1, F))$to_list()[[1L]], c(F, T, T, T, F))
-
-  expect_error(pl$col("a")$is_between(1, 2, logical()))
-  expect_error(pl$col("a")$is_between(1, 2, logical(3)))
-  expect_error(pl$col("a")$is_between(1, 2, NA))
+  expect_identical(
+    df$select(pl$col("a")$is_between(2, 4))$to_list()[[1L]],
+    c(FALSE, TRUE, TRUE, TRUE, FALSE)
+  )
+  expect_identical(
+    df$select(pl$col("a")$is_between(2, 4, "left"))$to_list()[[1L]],
+    c(FALSE, TRUE, TRUE, FALSE, FALSE)
+  )
+  expect_identical(
+    df$select(pl$col("a")$is_between(2, 4, "right"))$to_list()[[1L]],
+    c(FALSE, FALSE, TRUE, TRUE, FALSE)
+  )
+  expect_identical(
+    df$select(pl$col("a")$is_between(2, 4, "none"))$to_list()[[1L]],
+    c(FALSE, FALSE, TRUE, FALSE, FALSE)
+  )
 })
 
+test_that("is_between with expr", {
+  df = pl$DataFrame(
+    var = c(1, 2, 3, 4, 5),
+    low = c(2, 2, 6, 2, 1),
+    upp = c(1, 3, 8, 2, NA)
+  )
+
+  # strings parsed as columns
+  expect_identical(
+    df$select(pl$col("var")$is_between("low", "upp"))$to_list()[[1L]],
+    c(FALSE, TRUE, FALSE, FALSE, NA)
+  )
+  expect_identical(
+    df$select(pl$col("var")$is_between("low", "upp", "right"))$to_list()[[1L]],
+    c(FALSE, FALSE, FALSE, FALSE, NA)
+  )
+
+  # expression
+  expect_identical(
+    df$select(pl$col("var")$is_between(pl$col("low") - 3, "upp"))$to_list()[[1L]],
+    c(TRUE, TRUE, TRUE, FALSE, NA)
+  )
+
+  # expression + literal
+  expect_identical(
+    df$select(pl$col("var")$is_between(pl$col("low") - 3, 4))$to_list()[[1L]],
+    c(TRUE, TRUE, TRUE, TRUE, FALSE)
+  )
+})
+
+test_that("is_between with Inf/NaN", {
+  df = pl$DataFrame(var = c(1, 2, 3, 4, 5))
+
+  expect_identical(
+    df$select(pl$col("var")$is_between(2, Inf))$to_list()[[1L]],
+    c(FALSE, TRUE, TRUE, TRUE, TRUE)
+  )
+  expect_identical(
+    df$select(pl$col("var")$is_between(-Inf, 3))$to_list()[[1L]],
+    c(TRUE, TRUE, TRUE, FALSE, FALSE)
+  )
+  expect_identical(
+    df$select(pl$col("var")$is_between(NaN, 3))$to_list()[[1L]],
+    rep(FALSE, 5)
+  )
+  # in polars, NaN is always greater than any non-NaN value
+  # https://docs.pola.rs/user-guide/concepts/data-types/overview/#floating-point
+  expect_identical(
+    df$select(pl$col("var")$is_between(3, NaN))$to_list()[[1L]],
+    rep(FALSE, FALSE, TRUE, TRUE, TRUE)
+  )
+})
 
 test_that("hash + reinterpret", {
   df = pl$DataFrame(iris)
