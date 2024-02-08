@@ -1196,7 +1196,8 @@ impl RPolarsExpr {
         self.0.clone().arr().sum().into()
     }
 
-    // TODO: https://github.com/pola-rs/polars/issues/14355
+    // TODO: implement those in 0.38.0. They were wrongly included in the changelog of 0.37.0
+    // https://github.com/pola-rs/polars/issues/14355
     // fn arr_std(&self, ddof: u8) -> Self {
     //     self.0.clone().arr().std(ddof).into()
     // }

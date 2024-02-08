@@ -10,7 +10,7 @@ ExprArr_get(index)
 \arguments{
 \item{index}{An Expr or something coercible to an Expr, that must return a
 single index. Values are 0-indexed (so index 0 would return the first item
-of every subarray) and negative values start from the end (index \code{-1}
+of every sub-array) and negative values start from the end (index \code{-1}
 returns the last item). If the index is out of bounds, it will return a
 \code{null}. Strings are parsed as column names.}
 }

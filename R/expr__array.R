@@ -84,7 +84,7 @@ ExprArr_unique = function(maintain_order = polars_options()$maintain_order) .pr$
 #'
 #' @param index An Expr or something coercible to an Expr, that must return a
 #'   single index. Values are 0-indexed (so index 0 would return the first item
-#'   of every subarray) and negative values start from the end (index `-1`
+#'   of every sub-array) and negative values start from the end (index `-1`
 #'   returns the last item). If the index is out of bounds, it will return a
 #'   `null`. Strings are parsed as column names.
 #'
@@ -125,7 +125,7 @@ ExprArr_contains = function(item) .pr$Expr$arr_contains(self, wrap_e(item))
 
 #' Join elements of an array
 #'
-#' Join all string items in a subarray and place a separator between them. This
+#' Join all string items in a sub-array and place a separator between them. This
 #' only works on columns of type `list[str]`.
 #'
 #' @param separator String to separate the items with. Can be an Expr. Strings

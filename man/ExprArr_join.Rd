@@ -18,7 +18,7 @@ row contains any null values, the output is null.}
 Expr
 }
 \description{
-Join all string items in a subarray and place a separator between them. This
+Join all string items in a sub-array and place a separator between them. This
 only works on columns of type \code{list[str]}.
 }
 \examples{
