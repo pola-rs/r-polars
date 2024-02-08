@@ -102,7 +102,10 @@ ExprArr_unique = function(maintain_order = polars_options()$maintain_order) .pr$
 #'   val_minus_1 = pl$col("values")$arr$get(-1),
 #'   val_oob = pl$col("values")$arr$get(10)
 #' )
-ExprArr_get = function(index) .pr$Expr$arr_get(self, wrap_e(index, str_to_lit = FALSE))
+ExprArr_get = function(index) {
+  .pr$Expr$arr_get(self, index) |>
+    unwrap("in $arr$get():")
+}
 
 #' Check if array contains a given value
 #'

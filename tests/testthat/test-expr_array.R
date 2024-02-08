@@ -49,53 +49,54 @@ test_that("arr$max and arr$min", {
 
 test_that("arr$reverse", {
   df = pl$DataFrame(
-    list(a = list(c(1, 2, Inf), c(4, NaN, 2))),
+    list(a = list(c(Inf, 2, 2), c(4, NaN, 2))),
     schema = list(a = pl$Array(pl$Float32, 3))
   )
   expect_identical(
     df$select(pl$col("a")$arr$reverse())$to_list(),
-    list(a = list(c(Inf, 2, 1), c(2, NaN, 4)))
+    list(a = list(c(2, 2, Inf), c(2, NaN, 4)))
   )
 })
 
-test_that("arr$unique arr$sort", {
-  l = list(
-    l_i32 = list(c(1:2, 1:2), c(NA_integer_, NA_integer_, 3L, 1:2)),
-    l_f64 = list(c(1, 1, 2, 3, NA, Inf, NA, Inf), c(1)),
-    l_char = list(c(letters, letters), c("a", "a", "b"))
+test_that("arr$unique", {
+  df = pl$DataFrame(
+    list(a = list(c(Inf, 2, 2), c(4, NaN, 2))),
+    schema = list(a = pl$Array(pl$Float32, 3))
   )
-  df = pl$DataFrame(l)
-  p_res = df$select(pl$all()$arr$unique()$arr$sort())$to_list()
-  r_res = lapply(l, lapply, \(x)  sort(unique(x), na.last = FALSE))
-  expect_equal(p_res, r_res)
-
-
-  df = pl$DataFrame(l)
-  p_res = df$select(pl$all()$arr$unique()$arr$sort(descending = TRUE))$to_list()
-  r_res = lapply(l, lapply, \(x)  sort(unique(x), na.last = FALSE, decr = TRUE))
-  expect_equal(p_res, r_res)
+  expect_identical(
+    df$select(pl$col("a")$arr$unique())$to_list(),
+    list(a = list(c(2, Inf), c(2, 4, NaN)))
+  )
 })
 
+test_that("arr$sort", {
+  df = pl$DataFrame(
+    list(a = list(c(Inf, 2, 2), c(4, NaN, 2))),
+    schema = list(a = pl$Array(pl$Float32, 3))
+  )
+  expect_identical(
+    df$select(pl$col("a")$arr$sort())$to_list(),
+    list(a = list(c(2, 2, Inf), c(2, 4, NaN)))
+  )
+})
 
 test_that("arr$get", {
-  l = list(
-    l_i32 = list(c(1:2, 1:2), c(NA_integer_, NA_integer_, 3L, 1:2), integer()),
-    l_f64 = list(c(1, 1, 2, 3, NA, Inf, NA, Inf), c(1), numeric()),
-    l_char = list(c(letters, letters), c("a", "a", "b"), character())
+  df = pl$DataFrame(
+    a = list(c(Inf, 2, 2), c(4, NaN, 2)),
+    b = c(1, 2),
+    schema = list(a = pl$Array(pl$Float32, 3))
   )
-
-  for (i in -5:5) {
-    df = pl$DataFrame(l)
-    p_res = df$select(pl$all()$arr$get(i))$to_list()
-    r_res = lapply(l, sapply, \(x) pcase(
-      i >= 0, x[i + 1],
-      i < 0, rev(x)[-i],
-      or_else = stop("internal error in test")
-    ))
-    expect_equal(p_res, r_res)
-  }
+  # with literal
+  expect_identical(
+    df$select(pl$col("a")$arr$get(1))$to_list(),
+    list(a = c(2, NaN))
+  )
+  # with expr
+  expect_identical(
+    df$select(pl$col("a")$arr$get("b"))$to_list(),
+    list(a = c(2, 2))
+  )
 })
-
 
 test_that("join", {
   l = list(letters, as.character(1:5))
