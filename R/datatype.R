@@ -155,6 +155,7 @@ DataType_new = function(str) {
 DataType_constructors = function() {
   list(
     Datetime = DataType_Datetime,
+    Array = DataType_Array,
     List = DataType_List,
     Struct = DataType_Struct
 
@@ -228,6 +229,32 @@ DataType_Struct = function(...) {
   }) |>
     and_then(DataType$new_struct) |>
     unwrap("in pl$Struct:")
+}
+
+#' Create Array DataType
+#' @keywords pl
+#' @param datatype an inner DataType, default is "Unknown" (placeholder for when inner DataType
+#' does not matter, e.g. as used in example)
+#' @param width The length of the arrays
+#' @return an array DataType with an inner DataType
+#' @format function
+#' @examples
+#' # basic Array
+#' pl$Array(pl$Int32, 4)
+#' # some nested Array
+#' pl$Array(pl$Array(pl$Boolean, 3), 2)
+DataType_Array = function(datatype = "unknown", width) {
+  if (is.character(datatype) && length(datatype) == 1) {
+    datatype = .pr$DataType$new(datatype)
+  }
+  if (!inherits(datatype, "RPolarsDataType")) {
+    stop(paste(
+      "input for generating a array DataType must be another DataType",
+      "or an interpretable name thereof."
+    ))
+  }
+  .pr$DataType$new_array(datatype, width) |>
+    unwrap("in pl$Array():")
 }
 
 #' Create List DataType

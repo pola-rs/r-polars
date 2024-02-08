@@ -14,8 +14,11 @@ Expr
 Get the index of the minimal value in an array
 }
 \examples{
-df = pl$DataFrame(list(s = list(1:2, 2:1)))
+df = pl$DataFrame(
+  list(values = list(1:2, 2:1)),
+  schema = list(values = pl$Array(pl$Int32, 2))
+)
 df$with_columns(
-  arg_min = pl$col("s")$arr$arg_min()
+  arg_min = pl$col("values")$arr$arg_min()
 )
 }

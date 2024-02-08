@@ -100,6 +100,13 @@ impl RPolarsDataType {
         RPolarsDataType(pl::DataType::List(Box::new(inner.0.clone())))
     }
 
+    pub fn new_array(inner: &RPolarsDataType, width: Robj) -> RResult<RPolarsDataType> {
+        Ok(RPolarsDataType(pl::DataType::Array(
+            Box::new(inner.0.clone()),
+            robj_to!(usize, width)?,
+        )))
+    }
+
     pub fn new_object() -> RPolarsDataType {
         todo!("object not implemented")
     }

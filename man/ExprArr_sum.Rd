@@ -14,6 +14,9 @@ Expr
 Sum all elements in an array
 }
 \examples{
-df = pl$DataFrame(list(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_)))
+df = pl$DataFrame(
+  list(values = list(c(1, 2), c(3, 4), c(NA_real_, 6))),
+  schema = list(values = pl$Array(pl$Float64, 2))
+)
 df$with_columns(sum = pl$col("values")$arr$sum())
 }

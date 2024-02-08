@@ -19,11 +19,12 @@ Check if array contains a given value
 }
 \examples{
 df = pl$DataFrame(
-  a = list(3:1, NULL, 1:2),
-  item = 0:2
+  values = list(0:2, 4:6, c(NA_integer_, NA_integer_, NA_integer_)),
+  item = 0:2,
+  schema = list(values = pl$Array(pl$Float64, 3))
 )
 df$with_columns(
-  with_expr = pl$col("a")$arr$contains(pl$col("item")),
-  with_lit = pl$col("a")$arr$contains(1)
+  with_expr = pl$col("values")$arr$contains(pl$col("item")),
+  with_lit = pl$col("values")$arr$contains(1)
 )
 }

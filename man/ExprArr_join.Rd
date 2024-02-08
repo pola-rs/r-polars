@@ -23,12 +23,13 @@ only works on columns of type \code{list[str]}.
 }
 \examples{
 df = pl$DataFrame(
-  s = list(c("a", "b", "c"), c("x", "y"), c("e", NA)),
-  separator = c("-", "+", "/")
+  values = list(c("a", "b", "c"), c("x", "y", "z"), c("e", NA, NA)),
+  separator = c("-", "+", "/"),
+  schema = list(values = pl$Array(pl$String, 3))
 )
 df$with_columns(
-  join_with_expr = pl$col("s")$arr$join(pl$col("separator")),
-  join_with_lit = pl$col("s")$arr$join(" "),
-  join_ignore_null = pl$col("s")$arr$join(" ", ignore_nulls = TRUE)
+  join_with_expr = pl$col("values")$arr$join(pl$col("separator")),
+  join_with_lit = pl$col("values")$arr$join(pl$lit(" ")),
+  join_ignore_null = pl$col("values")$arr$join(pl$lit(" "), ignore_nulls = TRUE)
 )
 }

@@ -5,7 +5,11 @@
 \alias{arr_unique}
 \title{Get unique values in an array}
 \usage{
-ExprArr_unique()
+ExprArr_unique(maintain_order = polars_options()$maintain_order)
+}
+\arguments{
+\item{maintain_order}{If \code{TRUE}, the unique values are returned in order of
+appearance.}
 }
 \value{
 Expr
@@ -14,6 +18,9 @@ Expr
 Get unique values in an array
 }
 \examples{
-df = pl$DataFrame(list(values = list(c(2, 2, NA), c(1, 2, 3), NA_real_)))
+df = pl$DataFrame(
+  list(values = list(c(1, 1, 2), c(4, 4, 4), c(NA_real_, 6, 7))),
+  schema = list(values = pl$Array(pl$Float64, 3))
+)
 df$with_columns(unique = pl$col("values")$arr$unique())
 }

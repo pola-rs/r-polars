@@ -3,55 +3,79 @@
 #' @return Expr
 #' @aliases arr_sum
 #' @examples
-#' df = pl$DataFrame(list(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_)))
+#' df = pl$DataFrame(
+#'   list(values = list(c(1, 2), c(3, 4), c(NA_real_, 6))),
+#'   schema = list(values = pl$Array(pl$Float64, 2))
+#' )
 #' df$with_columns(sum = pl$col("values")$arr$sum())
 ExprArr_sum = function() .pr$Expr$arr_sum(self)
+
+# TODO: add example with NA when this is fixed:
+# https://github.com/pola-rs/polars/issues/14359
 
 #' Find the maximum value in an array
 #'
 #' @return Expr
 #' @aliases arr_max
 #' @examples
-#' df = pl$DataFrame(list(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_)))
+#' df = pl$DataFrame(
+#'   list(values = list(c(1, 2), c(3, 4), c(5, 6))),
+#'   schema = list(values = pl$Array(pl$Float64, 2))
+#' )
 #' df$with_columns(max = pl$col("values")$arr$max())
 ExprArr_max = function() .pr$Expr$arr_max(self)
+
+# TODO: add example with NA when this is fixed:
+# https://github.com/pola-rs/polars/issues/14359
 
 #' Find the minimum value in an array
 #'
 #' @return Expr
 #' @aliases arr_min
 #' @examples
-#' df = pl$DataFrame(list(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_)))
+#' df = pl$DataFrame(
+#'   list(values = list(c(1, 2), c(3, 4), c(5, 6))),
+#'   schema = list(values = pl$Array(pl$Float64, 2))
+#' )
 #' df$with_columns(min = pl$col("values")$arr$min())
 ExprArr_min = function() .pr$Expr$arr_min(self)
 
 #' Sort values in an array
 #'
-#' @param descending Sort values in descending order
-#' @return Expr
+#' @inheritParams Expr_sort
 #' @aliases arr_sort
 #' @examples
-#' df = pl$DataFrame(list(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_)))
-#' df$with_columns(sort = pl$col("values")$arr$sort())
-ExprArr_sort = function(descending = FALSE) .pr$Expr$arr_sort(self, descending)
+#' df = pl$DataFrame(
+#'   list(values = list(c(2, 1), c(3, 4), c(NA_real_, 6))),
+#'   schema = list(values = pl$Array(pl$Float64, 2))
+#' )
+#' df$with_columns(sort = pl$col("values")$arr$sort(nulls_last = TRUE))
+ExprArr_sort = function(descending = FALSE, nulls_last = FALSE) .pr$Expr$arr_sort(self, descending, nulls_last)
 
 #' Reverse values in an array
 #'
 #' @return Expr
 #' @aliases arr_reverse
 #' @examples
-#' df = pl$DataFrame(list(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_)))
+#' df = pl$DataFrame(
+#'   list(values = list(c(1, 2), c(3, 4), c(NA_real_, 6))),
+#'   schema = list(values = pl$Array(pl$Float64, 2))
+#' )
 #' df$with_columns(reverse = pl$col("values")$arr$reverse())
 ExprArr_reverse = function() .pr$Expr$arr_reverse(self)
 
 #' Get unique values in an array
 #'
+#' @inheritParams Expr_unique
 #' @return Expr
 #' @aliases arr_unique
 #' @examples
-#' df = pl$DataFrame(list(values = list(c(2, 2, NA), c(1, 2, 3), NA_real_)))
+#' df = pl$DataFrame(
+#'   list(values = list(c(1, 1, 2), c(4, 4, 4), c(NA_real_, 6, 7))),
+#'   schema = list(values = pl$Array(pl$Float64, 3))
+#' )
 #' df$with_columns(unique = pl$col("values")$arr$unique())
-ExprArr_unique = function() .pr$Expr$arr_unique(self)
+ExprArr_unique = function(maintain_order = polars_options()$maintain_order) .pr$Expr$arr_unique(self, maintain_order)
 
 
 #' Get the value by index in an array
@@ -68,8 +92,9 @@ ExprArr_unique = function() .pr$Expr$arr_unique(self)
 #' @aliases arr_get
 #' @examples
 #' df = pl$DataFrame(
-#'   values = list(c(2, 2, NA), c(1, 2, 3), NA_real_, NULL),
-#'   idx = c(1, 2, NA, 3)
+#'   values = list(c(1, 2), c(3, 4), c(NA_real_, 6)),
+#'   idx = c(1, NA, 3),
+#'   schema = list(values = pl$Array(pl$Float64, 2))
 #' )
 #' df$with_columns(
 #'   using_expr = pl$col("values")$arr$get("idx"),
@@ -88,12 +113,13 @@ ExprArr_get = function(index) .pr$Expr$arr_get(self, wrap_e(index, str_to_lit = 
 #' @aliases arr_contains
 #' @examples
 #' df = pl$DataFrame(
-#'   a = list(3:1, NULL, 1:2),
-#'   item = 0:2
+#'   values = list(0:2, 4:6, c(NA_integer_, NA_integer_, NA_integer_)),
+#'   item = 0:2,
+#'   schema = list(values = pl$Array(pl$Float64, 3))
 #' )
 #' df$with_columns(
-#'   with_expr = pl$col("a")$arr$contains(pl$col("item")),
-#'   with_lit = pl$col("a")$arr$contains(1)
+#'   with_expr = pl$col("values")$arr$contains(pl$col("item")),
+#'   with_lit = pl$col("values")$arr$contains(1)
 #' )
 ExprArr_contains = function(item) .pr$Expr$arr_contains(self, wrap_e(item))
 
@@ -110,13 +136,14 @@ ExprArr_contains = function(item) .pr$Expr$arr_contains(self, wrap_e(item))
 #' @aliases arr_join
 #' @examples
 #' df = pl$DataFrame(
-#'   s = list(c("a", "b", "c"), c("x", "y"), c("e", NA)),
-#'   separator = c("-", "+", "/")
+#'   values = list(c("a", "b", "c"), c("x", "y", "z"), c("e", NA, NA)),
+#'   separator = c("-", "+", "/"),
+#'   schema = list(values = pl$Array(pl$String, 3))
 #' )
 #' df$with_columns(
-#'   join_with_expr = pl$col("s")$arr$join(pl$col("separator")),
-#'   join_with_lit = pl$col("s")$arr$join(" "),
-#'   join_ignore_null = pl$col("s")$arr$join(" ", ignore_nulls = TRUE)
+#'   join_with_expr = pl$col("values")$arr$join(pl$col("separator")),
+#'   join_with_lit = pl$col("values")$arr$join(pl$lit(" ")),
+#'   join_ignore_null = pl$col("values")$arr$join(pl$lit(" "), ignore_nulls = TRUE)
 #' )
 ExprArr_join = function(separator, ignore_nulls = FALSE) {
   .pr$Expr$arr_join(self, separator, ignore_nulls) |>
@@ -128,9 +155,12 @@ ExprArr_join = function(separator, ignore_nulls = FALSE) {
 #' @return Expr
 #' @aliases arr_arg_min
 #' @examples
-#' df = pl$DataFrame(list(s = list(1:2, 2:1)))
+#' df = pl$DataFrame(
+#'   list(values = list(1:2, 2:1)),
+#'   schema = list(values = pl$Array(pl$Int32, 2))
+#' )
 #' df$with_columns(
-#'   arg_min = pl$col("s")$arr$arg_min()
+#'   arg_min = pl$col("values")$arr$arg_min()
 #' )
 ExprArr_arg_min = function() .pr$Expr$arr_arg_min(self)
 
@@ -139,9 +169,12 @@ ExprArr_arg_min = function() .pr$Expr$arr_arg_min(self)
 #' @return Expr
 #' @aliases arr_arg_max
 #' @examples
-#' df = pl$DataFrame(list(s = list(1:2, 2:1)))
+#' df = pl$DataFrame(
+#'   list(values = list(1:2, 2:1)),
+#'   schema = list(values = pl$Array(pl$Int32, 2))
+#' )
 #' df$with_columns(
-#'   arg_max = pl$col("s")$arr$arg_max()
+#'   arg_max = pl$col("values")$arr$arg_max()
 #' )
 ExprArr_arg_max = function() .pr$Expr$arr_arg_max(self)
 
@@ -150,9 +183,10 @@ ExprArr_arg_max = function() .pr$Expr$arr_arg_max(self)
 #' @return Expr
 #' @examples
 #' df = pl$DataFrame(
-#'   list(a = list(c(TRUE, TRUE), c(FALSE, TRUE), c(FALSE, FALSE), NA, c()))
+#'   list(values = list(c(TRUE, TRUE), c(FALSE, TRUE), c(FALSE, FALSE), c(NA, NA))),
+#'   schema = list(values = pl$Array(pl$Boolean, 2))
 #' )
-#' df$with_columns(all = pl$col("a")$arr$all())
+#' df$with_columns(all = pl$col("values")$arr$all())
 ExprArr_all = function() .pr$Expr$arr_all(self)
 
 #' Evaluate whether any boolean values in an array are true
@@ -160,7 +194,8 @@ ExprArr_all = function() .pr$Expr$arr_all(self)
 #' @return Expr
 #' @examples
 #' df = pl$DataFrame(
-#'   list(a = list(c(TRUE, TRUE), c(FALSE, TRUE), c(FALSE, FALSE), NA, c()))
+#'   list(values = list(c(TRUE, TRUE), c(FALSE, TRUE), c(FALSE, FALSE), c(NA, NA))),
+#'   schema = list(values = pl$Array(pl$Boolean, 2))
 #' )
-#' df$with_columns(any = pl$col("a")$arr$any())
+#' df$with_columns(any = pl$col("values")$arr$any())
 ExprArr_any = function() .pr$Expr$arr_any(self)

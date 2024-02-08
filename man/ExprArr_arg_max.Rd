@@ -14,8 +14,11 @@ Expr
 Get the index of the maximal value in an array
 }
 \examples{
-df = pl$DataFrame(list(s = list(1:2, 2:1)))
+df = pl$DataFrame(
+  list(values = list(1:2, 2:1)),
+  schema = list(values = pl$Array(pl$Int32, 2))
+)
 df$with_columns(
-  arg_max = pl$col("s")$arr$arg_max()
+  arg_max = pl$col("values")$arr$arg_max()
 )
 }

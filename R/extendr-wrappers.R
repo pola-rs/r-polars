@@ -248,6 +248,8 @@ RPolarsDataType$new_duration <- function() .Call(wrap__RPolarsDataType__new_dura
 
 RPolarsDataType$new_list <- function(inner) .Call(wrap__RPolarsDataType__new_list, inner)
 
+RPolarsDataType$new_array <- function(inner, width) .Call(wrap__RPolarsDataType__new_array, inner, width)
+
 RPolarsDataType$new_object <- function() .Call(wrap__RPolarsDataType__new_object)
 
 RPolarsDataType$new_struct <- function(l) .Call(wrap__RPolarsDataType__new_struct, l)
