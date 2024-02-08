@@ -232,12 +232,15 @@ DataType_Struct = function(...) {
 }
 
 #' Create Array DataType
-#' @keywords pl
-#' @param datatype an inner DataType, default is "Unknown" (placeholder for when inner DataType
-#' does not matter, e.g. as used in example)
-#' @param width The length of the arrays
-#' @return an array DataType with an inner DataType
-#' @format function
+#'
+#' The Array and List datatypes are very similar. The only difference is that
+#' sub-arrays all have the same length while sublists can have different lengths.
+#' Array methods can be accessed via the `$arr` subnamespace.
+#'
+#' @param datatype An inner DataType. The default is `"Unknown"` and is only a
+#' placeholder for when inner DataType does not matter, e.g. as used in example.
+#' @param width The length of the arrays.
+#' @return An array DataType with an inner DataType
 #' @examples
 #' # basic Array
 #' pl$Array(pl$Int32, 4)

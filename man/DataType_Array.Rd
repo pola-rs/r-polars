@@ -3,23 +3,22 @@
 \name{DataType_Array}
 \alias{DataType_Array}
 \title{Create Array DataType}
-\format{
-function
-}
 \usage{
 DataType_Array(datatype = "unknown", width)
 }
 \arguments{
-\item{datatype}{an inner DataType, default is "Unknown" (placeholder for when inner DataType
-does not matter, e.g. as used in example)}
+\item{datatype}{An inner DataType. The default is \code{"Unknown"} and is only a
+placeholder for when inner DataType does not matter, e.g. as used in example.}
 
-\item{width}{The length of the arrays}
+\item{width}{The length of the arrays.}
 }
 \value{
-an array DataType with an inner DataType
+An array DataType with an inner DataType
 }
 \description{
-Create Array DataType
+The Array and List datatypes are very similar. The only difference is that
+sub-arrays all have the same length while sublists can have different lengths.
+Array methods can be accessed via the \verb{$arr} subnamespace.
 }
 \examples{
 # basic Array
@@ -27,4 +26,3 @@ pl$Array(pl$Int32, 4)
 # some nested Array
 pl$Array(pl$Array(pl$Boolean, 3), 2)
 }
-\keyword{pl}
