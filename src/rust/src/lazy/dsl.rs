@@ -1285,19 +1285,22 @@ impl RPolarsExpr {
             .into())
     }
 
-    // TODO:
-    // fn arr_to_struct(&self, name_gen: Option<PyObject>) -> PyResult<Self> {
-    //     let name_gen = name_gen.map(|lambda| {
-    //         Arc::new(move |idx: usize| {
-    //             Python::with_gil(|py| {
-    //                 let out = lambda.call1(py, (idx,)).unwrap();
-    //                 let out: SmartString = out.extract::<&str>(py).unwrap().into();
-    //                 out
-    //             })
-    //         }) as ArrToStructNameGenerator
+    // TODO: implement those in 0.38.0. They were wrongly included in the changelog of 0.37.0
+    // https://github.com/pola-rs/polars/issues/14355
+    // fn arr_to_struct(&self, fields: Robj, upper_bound: Robj) -> RResult<Self> {
+    //     let fields = robj_to!(Option, Robj, fields)?.map(|robj| {
+    //         let par_fn: ParRObj = robj.into();
+    //         let f: Arc<(dyn Fn(usize) -> SmartString<LazyCompact> + Send + Sync + 'static)> =
+    //             pl::Arc::new(move |idx: usize| {
+    //                 let thread_com = ThreadCom::from_global(&CONFIG);
+    //                 thread_com.send(RFnSignature::FnF64ToString(par_fn.clone(), idx as f64));
+    //                 let s = thread_com.recv().unwrap_string();
+    //                 let s: SmartString<LazyCompact> = s.into();
+    //                 s
+    //             });
+    //         f
     //     });
-
-    //     Ok(self.0.clone().arr().to_struct(name_gen).into())
+    //     Ok(RPolarsExpr(self.0.clone().arr().to_struct(fields)))
     // }
 
     // TODO: implement when bumping to rs-0.38.0
