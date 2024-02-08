@@ -140,6 +140,30 @@ pub fn pl_series_to_list(
                 let l = extendr_api::List::from_iter(v.iter());
                 Ok(l.into_robj())
             }
+            Array(_, _) => {
+                let mut v: Vec<extendr_api::Robj> = Vec::with_capacity(s.len());
+                let ca = s.array().unwrap();
+
+                for opt_s in ca.amortized_iter() {
+                    match opt_s {
+                        Some(s) => {
+                            let s_ref = s.as_ref();
+                            // is safe because s is read to generate new Robj, then discarded.
+                            let inner_val =
+                                to_list_recursive(s_ref, tag_structs, int64_conversion)?;
+                            v.push(inner_val);
+                        }
+
+                        None => {
+                            v.push(r!(extendr_api::NULL));
+                        }
+                    }
+                }
+                //TODO let l = extendr_api::List::from_values(v); or see if possible to skip vec allocation
+                //or take ownership of vector
+                let l = extendr_api::List::from_iter(v.iter());
+                Ok(l.into_robj())
+            }
             Struct(_) => {
                 let df = s.clone().into_frame().unnest([s.name()]).unwrap();
                 let mut l = RPolarsDataFrame(df).to_list_result(int64_conversion)?;
