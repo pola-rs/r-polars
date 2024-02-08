@@ -1633,7 +1633,17 @@ impl RPolarsExpr {
         Ok(self.0.clone().any(robj_to!(bool, drop_nulls)?).into())
     }
 
-    // TODO: is_between
+    fn is_between(&self, lower: Robj, upper: Robj, closed: Robj) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .is_between(
+                robj_to!(PLExprCol, lower)?,
+                robj_to!(PLExprCol, upper)?,
+                robj_to!(ClosedInterval, closed)?,
+            )
+            .into())
+    }
 
     pub fn is_duplicated(&self) -> Self {
         self.clone().0.is_duplicated().into()
