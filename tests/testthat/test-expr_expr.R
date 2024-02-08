@@ -1571,7 +1571,7 @@ test_that("is_between with Inf/NaN", {
   # https://docs.pola.rs/user-guide/concepts/data-types/overview/#floating-point
   expect_identical(
     df$select(pl$col("var")$is_between(3, NaN))$to_list()[[1L]],
-    rep(FALSE, FALSE, TRUE, TRUE, TRUE)
+    c(FALSE, FALSE, TRUE, TRUE, TRUE)
   )
 })
 
