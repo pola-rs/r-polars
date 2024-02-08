@@ -2143,6 +2143,11 @@ Expr_repeat_by = function(by) {
 #' @param closed Define which sides of the interval are closed (inclusive). This
 #' can be either `"left"`, `"right"`, `"both"` or `"none"`.
 #'
+#' @details
+#' Note that in polars, `NaN` are equal to other `NaN`s, and greater than any
+#' non-`NaN` value.
+#'
+#'
 #' @return Expr
 #' @examples
 #' df = pl$DataFrame(num = 1:5)

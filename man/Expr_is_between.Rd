@@ -22,6 +22,10 @@ Expr
 \description{
 Check if an expression is between the given lower and upper bounds
 }
+\details{
+Note that in polars, \code{NaN} are equal to other \code{NaN}s, and greater than any
+non-\code{NaN} value.
+}
 \examples{
 df = pl$DataFrame(num = 1:5)
 df$with_columns(
