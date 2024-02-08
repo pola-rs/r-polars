@@ -4,17 +4,17 @@
 
 ### Breaking changes due to Rust-polars update
 
--   rust-polars is updated to 0.37.0 (#776). 
-    -   `$with_row_count()` for `DataFrame` and `LazyFrame` is deprecated and 
-        will be removed in 0.15.0. It is replaced by `$with_row_index()`. 
+-   rust-polars is updated to 0.37.0 (#776).
+    -   `$with_row_count()` for `DataFrame` and `LazyFrame` is deprecated and
+        will be removed in 0.15.0. It is replaced by `$with_row_index()`.
     -   `pl$count()` is deprecated and will be removed in 0.15.0. It is replaced
-        by `pl$len()`. 
-    -   `$explode()` for `DataFrame` and `LazyFrame` doesn't work anymore on 
-        string columns. 
-    -   `$list$join()` and `pl$concat_str()` gain an argument `ignore_nulls`. 
+        by `pl$len()`.
+    -   `$explode()` for `DataFrame` and `LazyFrame` doesn't work anymore on
+        string columns.
+    -   `$list$join()` and `pl$concat_str()` gain an argument `ignore_nulls`.
         The current behavior is to return a `null` if the row contains any `null`.
         Setting `ignore_nulls = TRUE` changes that.
-    -   All `row_count_*` args in reading/scanning functions are renamed 
+    -   All `row_count_*` args in reading/scanning functions are renamed
         `row_index_*`.
     -   `$sort()` for `Series` gains an argument `nulls_last`.
     -   `$str$extract()` and `$str$zfill()` now accept an `Expr` and parse
@@ -24,18 +24,18 @@
 ### Other breaking changes
 
 -   The following functions were deprecated in 0.13.0 and are now removed (#783):
-    -   `$list$lengths()` -> `$list$len()` 
+    -   `$list$lengths()` -> `$list$len()`
     -   `pl$from_arrow()` -> `as_polars_df()` or `as_polars_series()`
-    -   `pl$set_options()` and `pl$reset_options()` -> `polars_options()` 
+    -   `pl$set_options()` and `pl$reset_options()` -> `polars_options()`
 -   `$is_between()` had several changes (#788):
     -   arguments `start` and `end` are renamed `lower_bound` and `upper_bound`.
-        Their behaviour doesn't change. 
-    -   `include_bounds` is renamed `closed` and must be one of `"left"`, 
+        Their behaviour doesn't change.
+    -   `include_bounds` is renamed `closed` and must be one of `"left"`,
         `"right"`, `"both"`, or `"none"`.
 
 ### Deprecations
 
--   `pl$threadpool_size()` is deprecated and will be removed in 0.15.0. Use 
+-   `pl$threadpool_size()` is deprecated and will be removed in 0.15.0. Use
     `pl$thread_pool_size()` instead (#784).
 
 ## Polars R Package 0.13.1
