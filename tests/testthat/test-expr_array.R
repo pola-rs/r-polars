@@ -99,77 +99,63 @@ test_that("arr$get", {
 })
 
 test_that("join", {
-  l = list(letters, as.character(1:5))
-  s = pl$Series(l)
-  l_act = pl$select(s$to_lit()$arr$join("-"))$to_list()
-  l_exp = list(sapply(l, paste, collapse = "-"))
-  names(l_exp) = ""
-  expect_identical(l_act, l_exp)
-
   df = pl$DataFrame(
-    s = list(c("a", "b", "c"), c("x", "y"), c("foo", NA, "bar")),
-    separator = c("*", "_", "*")
+    values = list(c("a", "b", "c"), c("x", "y", "z"), c("e", NA, NA)),
+    separator = c("-", "+", "/"),
+    schema = list(values = pl$Array(pl$String, 3))
   )
-  expect_identical(
-    df$select(pl$col("s")$arr$join(pl$col("separator")))$to_list(),
-    list(s = c("a*b*c", "x_y", NA))
-  )
-  # ignore_nulls
-  expect_identical(
-    df$select(pl$col("s")$arr$join(pl$col("separator"), ignore_nulls = TRUE))$to_list(),
-    list(s = c("a*b*c", "x_y", "foo*bar"))
-  )
-})
-
-test_that("arg_min arg_max", {
-  l = list(
-    l_i32 = list(1:5, 1:3, 1:10),
-    l_f64 = list(c(1, 1, 2, 3, NA, Inf, NA, Inf), c(1), numeric()),
-    l_char = list(letters, c("a", "a", "b"), character())
-  )
-  df = pl$DataFrame(l)
-
-  l_act_arg_min = df$select(pl$all()$arr$arg_min())$to_list()
-  l_act_arg_max = df$select(pl$all()$arr$arg_max())$to_list()
-
-  # not the same as R NA is min
-  l_exp_arg_min = list(
-    l_i32 = c(0, 0, 0),
-    l_f64 = c(0, 0, NA),
-    l_char = c(0, 0, NA)
-  )
-  l_exp_arg_max = list(
-    l_i32 = c(4, 2, 9),
-    l_f64 = c(5, 0, NA),
-    l_char = c(25, 2, NA)
-  )
-
-  expect_identical(l_act_arg_min |> lapply(as.numeric), l_exp_arg_min)
-  expect_identical(l_act_arg_max |> lapply(as.numeric), l_exp_arg_max)
-})
-
-
-test_that("contains", {
-  l = list(
-    i32 = list(1:4, 1:3, 1:1),
-    f64 = list(c(1, 2, 3, NaN), c(NaN, 1, NA), c(Inf)),
-    utf = list(letters, LETTERS, c(NA_character_, "a"))
-  )
-  df = pl$DataFrame(l)
-
-  l_act = df$select(
-    pl$col("i32")$arr$contains(2L),
-    pl$col("f64")$arr$contains(Inf),
-    pl$col("utf")$arr$contains("a")
+  out = df$select(
+    join_with_expr = pl$col("values")$arr$join(pl$col("separator")),
+    join_with_lit = pl$col("values")$arr$join(pl$lit(" ")),
+    join_ignore_null = pl$col("values")$arr$join(pl$lit(" "), ignore_nulls = TRUE)
   )$to_list()
 
-  l_exp = list(
-    i32 = sapply(l$i32, \(x) 2L %in% x),
-    f64 = sapply(l$f64, \(x) Inf %in% x),
-    utf = sapply(l$utf, \(x) "a" %in% x)
+  expect_identical(
+    out,
+    list(
+      join_with_expr = c("a-b-c", "x+y+z", NA),
+      join_with_lit = c("a b c", "x y z", NA),
+      join_ignore_null = c("a b c", "x y z", "e")
+    )
+  )
+})
+
+test_that("arr$arg_max and arr$arg_min", {
+  df = pl$DataFrame(
+    list(a = list(c(1, 2), c(1, NA_real_), c(NA_real_, NA_real_))),
+    schema = list(a = pl$Array(pl$Float32, 2))
+  )
+  # arg_max ---
+  expect_identical(
+    df$select(pl$col("a")$arr$arg_max())$to_list(),
+    list(a = c(1, 0, NA_integer_))
   )
 
-  expect_identical(l_act, l_exp)
+  # arg_min ---
+  expect_identical(
+    df$select(pl$col("a")$arr$arg_min())$to_list(),
+    list(a = c(0, 0, NA_real_))
+  )
+})
+
+
+test_that("arr$contains", {
+  df = pl$DataFrame(
+    values = list(0:2, 4:6, c(NA_integer_, NA_integer_, NA_integer_)),
+    item = 0:2,
+    schema = list(values = pl$Array(pl$Float64, 3))
+  )
+  out = df$select(
+    with_expr = pl$col("values")$arr$contains(pl$col("item")),
+    with_lit = pl$col("values")$arr$contains(4)
+  )$to_list()
+  expect_identical(
+    out,
+    list(
+      with_expr = c(TRUE, FALSE, FALSE),
+      with_lit = c(FALSE, TRUE, FALSE)
+    )
+  )
 })
 
 
@@ -209,20 +195,22 @@ test_that("contains", {
 
 test_that("$arr$all() works", {
   df = pl$DataFrame(
-    list(a = list(c(TRUE, TRUE), c(FALSE, TRUE), c(FALSE, FALSE), NA, c()))
+    list(a = list(c(TRUE, TRUE), c(FALSE, TRUE), c(FALSE, FALSE), c(NA, NA))),
+    schema = list(a = pl$Array(pl$Boolean, 2))
   )
   expect_identical(
     df$select(all = pl$col("a")$arr$all())$to_list(),
-    list(all = c(TRUE, FALSE, FALSE, TRUE, TRUE))
+    list(all = c(TRUE, FALSE, FALSE, TRUE))
   )
 })
 
 test_that("$arr$any() works", {
   df = pl$DataFrame(
-    list(a = list(c(TRUE, TRUE), c(FALSE, TRUE), c(FALSE, FALSE), NA, c()))
+    list(a = list(c(TRUE, TRUE), c(FALSE, TRUE), c(FALSE, FALSE), c(NA, NA))),
+    schema = list(a = pl$Array(pl$Boolean, 2))
   )
   expect_identical(
     df$select(any = pl$col("a")$arr$any())$to_list(),
-    list(any = c(TRUE, TRUE, FALSE, FALSE, FALSE))
+    list(any = c(TRUE, TRUE, FALSE, FALSE))
   )
 })
