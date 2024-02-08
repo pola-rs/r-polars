@@ -44,7 +44,7 @@ test_that("list$sum max min mean", {
     c(-Inf)
   )
 
-  df = pl$DataFrame(list(x = ints))
+  df = pl$DataFrame(x = ints)
   p_res = df$select(
     pl$col("x")$list$sum()$alias("sum"),
     pl$col("x")$list$max()$alias("max"),
@@ -63,7 +63,7 @@ test_that("list$sum max min mean", {
     r_res
   )
 
-  df = pl$DataFrame(list(x = floats))
+  df = pl$DataFrame(x = floats)
   p_res = df$select(
     pl$col("x")$list$sum()$alias("sum"),
     pl$col("x")$list$max()$alias("max"),
@@ -404,7 +404,7 @@ test_that("concat", {
 
 test_that("to_struct", {
   l = list(integer(), 1:2, 1:3, 1:2)
-  df = pl$DataFrame(list(a = l))
+  df = pl$DataFrame(a = l)
   act_1 = df$select(pl$col("a")$list$to_struct(
     n_field_strategy = "first_non_null",
     fields = \(idx) paste0("hello_you_", idx)
@@ -438,7 +438,7 @@ test_that("to_struct", {
 
 
 test_that("eval", {
-  df = pl$DataFrame(a = list(a = c(1, 8, 3), b = c(4, 5, 2)))
+  df = pl$DataFrame(a = c(1, 8, 3), b = c(4, 5, 2))
   l_act = df$with_columns(
     pl$concat_list(list("a", "b"))$list$eval(pl$element()$rank())$alias("rank")
   )$to_list()
@@ -454,7 +454,7 @@ test_that("eval", {
 
 test_that("$list$all() works", {
   df = pl$DataFrame(
-    list(a = list(c(TRUE, TRUE), c(FALSE, TRUE), c(FALSE, FALSE), NA, c()))
+    a = list(c(TRUE, TRUE), c(FALSE, TRUE), c(FALSE, FALSE), NA, c())
   )
   expect_identical(
     df$select(all = pl$col("a")$list$all())$to_list(),
@@ -464,7 +464,7 @@ test_that("$list$all() works", {
 
 test_that("$list$any() works", {
   df = pl$DataFrame(
-    list(a = list(c(TRUE, TRUE), c(FALSE, TRUE), c(FALSE, FALSE), NA, c()))
+    a = list(c(TRUE, TRUE), c(FALSE, TRUE), c(FALSE, FALSE), NA, c())
   )
   expect_identical(
     df$select(any = pl$col("a")$list$any())$to_list(),
