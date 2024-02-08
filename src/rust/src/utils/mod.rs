@@ -947,6 +947,9 @@ macro_rules! robj_to_inner {
     (ClosedWindow, $a:ident) => {
         $crate::rdatatype::robj_to_closed_window($a)
     };
+    (ClosedInterval, $a:ident) => {
+        $crate::rdatatype::robj_to_closed_interval($a)
+    };
     (SetOperation, $a:ident) => {
         $crate::rdatatype::robj_to_set_operation($a)
     };

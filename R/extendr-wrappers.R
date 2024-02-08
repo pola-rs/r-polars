@@ -796,6 +796,8 @@ RPolarsExpr$all <- function(drop_nulls) .Call(wrap__RPolarsExpr__all, self, drop
 
 RPolarsExpr$any <- function(drop_nulls) .Call(wrap__RPolarsExpr__any, self, drop_nulls)
 
+RPolarsExpr$is_between <- function(lower, upper, closed) .Call(wrap__RPolarsExpr__is_between, self, lower, upper, closed)
+
 RPolarsExpr$is_duplicated <- function() .Call(wrap__RPolarsExpr__is_duplicated, self)
 
 RPolarsExpr$is_finite <- function() .Call(wrap__RPolarsExpr__is_finite, self)

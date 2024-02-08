@@ -2,31 +2,42 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_is_between}
 \alias{Expr_is_between}
-\title{Check whether a value is between two values}
+\title{Check if an expression is between the given lower and upper bounds}
 \usage{
-Expr_is_between(start, end, include_bounds = FALSE)
+Expr_is_between(lower_bound, upper_bound, closed = "both")
 }
 \arguments{
-\item{start}{Lower bound, an Expr that is either numeric or datetime.}
+\item{lower_bound}{Lower bound, can be an Expr. Strings are parsed as column
+names.}
 
-\item{end}{Upper bound, an Expr that is either numeric or datetime.}
+\item{upper_bound}{Upper bound, can be an Expr. Strings are parsed as column
+names.}
 
-\item{include_bounds}{If \code{FALSE} (default), exclude start and end. This can
-also be a vector of two booleans indicating whether to include the start
-and/or the end.}
+\item{closed}{Define which sides of the interval are closed (inclusive). This
+can be either \code{"left"}, \code{"right"}, \code{"both"} or \code{"none"}.}
 }
 \value{
 Expr
 }
 \description{
-This is syntactic sugar for \code{x > start & x < end} (or \code{x >= start & x <= end}).
+Check if an expression is between the given lower and upper bounds
 }
 \examples{
-df = pl$DataFrame(num = 1:5, y = c(0, 2, 3, 3, 3))
+df = pl$DataFrame(num = 1:5)
 df$with_columns(
-  bet_2_4_no_bounds = pl$col("num")$is_between(2, 4),
-  bet_2_4_with_bounds = pl$col("num")$is_between(2, 4, TRUE),
-  bet_2_4_upper_bound = pl$col("num")$is_between(2, 4, c(FALSE, TRUE)),
-  between_y_4 = pl$col("num")$is_between(pl$col("y"), 6)
+  is_between = pl$col("num")$is_between(2, 4),
+  is_between_excl_upper = pl$col("num")$is_between(2, 4, closed = "left"),
+  is_between_excl_both = pl$col("num")$is_between(2, 4, closed = "none")
+)
+
+# lower and upper bounds can also be column names or expr
+df = pl$DataFrame(
+  num = 1:5,
+  lower = c(0, 2, 3, 3, 3),
+  upper = c(6, 4, 4, 8, 3.5)
+)
+df$with_columns(
+  is_between_cols = pl$col("num")$is_between("lower", "upper"),
+  is_between_expr = pl$col("num")$is_between(pl$col("lower") / 2, "upper")
 )
 }
