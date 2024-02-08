@@ -58,7 +58,7 @@ for (i in to_modify) {
       orig
     )
   } else if (which_class %in% c(
-    "ExprBin", "ExprCat", "ExprDT", "ExprList",
+    "ExprArr", "ExprBin", "ExprCat", "ExprDT", "ExprList",
     "ExprMeta", "ExprName", "ExprStr", "ExprStruct"
   )) {
     subns = tolower(gsub("Expr", "", which_class))

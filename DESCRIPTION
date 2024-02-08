@@ -78,6 +78,7 @@ Collate:
     'error__string.R'
     'error__trait.R'
     'error_conversion.R'
+    'expr__array.R'
     'expr__binary.R'
     'expr__categorical.R'
     'expr__datetime.R'

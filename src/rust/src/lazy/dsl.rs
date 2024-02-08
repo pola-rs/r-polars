@@ -1182,7 +1182,129 @@ impl RPolarsExpr {
         .into())
     }
 
-    //datetime methods
+    // array methods
+
+    fn arr_max(&self) -> Self {
+        self.0.clone().arr().max().into()
+    }
+
+    fn arr_min(&self) -> Self {
+        self.0.clone().arr().min().into()
+    }
+
+    fn arr_sum(&self) -> Self {
+        self.0.clone().arr().sum().into()
+    }
+
+    // TODO: https://github.com/pola-rs/polars/issues/14355
+    // fn arr_std(&self, ddof: u8) -> Self {
+    //     self.0.clone().arr().std(ddof).into()
+    // }
+
+    // fn arr_var(&self, ddof: u8) -> Self {
+    //     self.0.clone().arr().var(ddof).into()
+    // }
+
+    // fn arr_median(&self) -> Self {
+    //     self.0.clone().arr().median().into()
+    // }
+
+    fn arr_unique(&self, maintain_order: bool) -> Self {
+        if maintain_order {
+            self.0.clone().arr().unique_stable().into()
+        } else {
+            self.0.clone().arr().unique().into()
+        }
+    }
+
+    fn arr_to_list(&self) -> Self {
+        self.0.clone().arr().to_list().into()
+    }
+
+    fn arr_all(&self) -> Self {
+        self.0.clone().arr().all().into()
+    }
+
+    fn arr_any(&self) -> Self {
+        self.0.clone().arr().any().into()
+    }
+
+    fn arr_sort(&self, descending: bool, nulls_last: bool) -> Self {
+        self.0
+            .clone()
+            .arr()
+            .sort(SortOptions {
+                descending,
+                nulls_last,
+                ..Default::default()
+            })
+            .into()
+    }
+
+    fn arr_reverse(&self) -> Self {
+        self.0.clone().arr().reverse().into()
+    }
+
+    fn arr_arg_min(&self) -> Self {
+        self.0.clone().arr().arg_min().into()
+    }
+
+    fn arr_arg_max(&self) -> Self {
+        self.0.clone().arr().arg_max().into()
+    }
+
+    fn arr_get(&self, index: Robj) -> RResult<Self> {
+        Ok(self.0.clone().arr().get(robj_to!(PLExprCol, index)?).into())
+    }
+
+    fn arr_join(&self, separator: Robj, ignore_nulls: bool) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .arr()
+            .join(robj_to!(PLExprCol, separator)?, ignore_nulls)
+            .into())
+    }
+
+    fn arr_contains(&self, other: Robj) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .arr()
+            .contains(robj_to!(PLExprCol, other)?)
+            .into())
+    }
+
+    fn arr_count_matches(&self, expr: Robj) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .arr()
+            .count_matches(robj_to!(PLExprCol, expr)?)
+            .into())
+    }
+
+    // TODO:
+    // fn arr_to_struct(&self, name_gen: Option<PyObject>) -> PyResult<Self> {
+    //     let name_gen = name_gen.map(|lambda| {
+    //         Arc::new(move |idx: usize| {
+    //             Python::with_gil(|py| {
+    //                 let out = lambda.call1(py, (idx,)).unwrap();
+    //                 let out: SmartString = out.extract::<&str>(py).unwrap().into();
+    //                 out
+    //             })
+    //         }) as ArrToStructNameGenerator
+    //     });
+
+    //     Ok(self.0.clone().arr().to_struct(name_gen).into())
+    // }
+
+    // TODO: implement when bumping to rs-0.38.0
+    // fn arr_shift(&self, n: Robj) -> RResult<Self> {
+    //     Ok(self.0.clone().arr().shift(robj_to!(PLExprCol, n)?).into())
+    // }
+
+    // datetime methods
 
     pub fn dt_truncate(&self, every: Robj, offset: Robj) -> RResult<Self> {
         Ok(self
