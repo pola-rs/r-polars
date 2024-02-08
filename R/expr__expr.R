@@ -3316,6 +3316,16 @@ Expr_list = method_as_property(function() {
   expr_list_make_sub_ns(self)
 })
 
+#' Array related methods
+#'
+#' Create an object namespace of all array related methods. See the individual
+#' method pages for full details.
+#' @return Expr
+#' @noRd
+Expr_arr = method_as_property(function() {
+  expr_arr_make_sub_ns(self)
+})
+
 #' String related methods
 #'
 #' Create an object namespace of all string related methods. See the individual
