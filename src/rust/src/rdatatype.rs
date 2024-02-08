@@ -489,6 +489,19 @@ pub fn robj_to_closed_window(robj: Robj) -> RResult<pl::ClosedWindow> {
     }
 }
 
+pub fn robj_to_closed_interval(robj: Robj) -> RResult<pl::ClosedInterval> {
+    use pl::ClosedInterval as CI;
+    match robj_to_rchoice(robj)?.as_str() {
+        "both" => Ok(CI::Both),
+        "left" => Ok(CI::Left),
+        "none" => Ok(CI::None),
+        "right" => Ok(CI::Right),
+        s => rerr().bad_val(format!(
+            "ClosedInterval choice ['{s}'] should be one of 'both', 'left', 'none', 'right'"
+        )),
+    }
+}
+
 pub fn robj_to_set_operation(robj: Robj) -> RResult<pl::SetOperation> {
     use pl::SetOperation as SO;
     match robj_to_rchoice(robj)?.as_str() {

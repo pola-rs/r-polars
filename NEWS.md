@@ -27,6 +27,11 @@
     -   `$list$lengths()` -> `$list$len()` 
     -   `pl$from_arrow()` -> `as_polars_df()` or `as_polars_series()`
     -   `pl$set_options()` and `pl$reset_options()` -> `polars_options()` 
+-   `$is_between()` had several changes (#788):
+    -   arguments `start` and `end` are renamed `lower_bound` and `upper_bound`.
+        Their behaviour doesn't change. 
+    -   `include_bounds` is renamed `closed` and must be one of `"left"`, 
+        `"right"`, `"both"`, or `"none"`.
 
 ### Deprecations
 

@@ -90,6 +90,7 @@ features = [
   "fmt",
   "interpolate",
   "ipc",
+  "is_between",
   "is_first_distinct",
   "is_last_distinct",
   "is_in",
