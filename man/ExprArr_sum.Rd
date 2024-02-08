@@ -3,7 +3,7 @@
 \name{ExprArr_sum}
 \alias{ExprArr_sum}
 \alias{arr_sum}
-\title{Sum all elements in a list}
+\title{Sum all elements in an array}
 \usage{
 ExprArr_sum()
 }
@@ -11,7 +11,7 @@ ExprArr_sum()
 Expr
 }
 \description{
-Sum all elements in a list
+Sum all elements in an array
 }
 \examples{
 df = pl$DataFrame(list(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_)))

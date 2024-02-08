@@ -12,7 +12,7 @@ Expr
 }
 \description{
 Return the number of elements in each list. Null values are counted in the
-total. \verb{$list$lengths()} is deprecated.
+total.
 }
 \examples{
 df = pl$DataFrame(list(list_of_strs = list(c("a", "b", NA), "c")))

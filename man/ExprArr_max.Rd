@@ -3,7 +3,7 @@
 \name{ExprArr_max}
 \alias{ExprArr_max}
 \alias{arr_max}
-\title{Find the maximum value in a list}
+\title{Find the maximum value in an array}
 \usage{
 ExprArr_max()
 }
@@ -11,7 +11,7 @@ ExprArr_max()
 Expr
 }
 \description{
-Find the maximum value in a list
+Find the maximum value in an array
 }
 \examples{
 df = pl$DataFrame(list(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_)))

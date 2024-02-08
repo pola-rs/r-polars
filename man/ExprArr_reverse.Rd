@@ -3,7 +3,7 @@
 \name{ExprArr_reverse}
 \alias{ExprArr_reverse}
 \alias{arr_reverse}
-\title{Reverse values in a list}
+\title{Reverse values in an array}
 \usage{
 ExprArr_reverse()
 }
@@ -11,7 +11,7 @@ ExprArr_reverse()
 Expr
 }
 \description{
-Reverse values in a list
+Reverse values in an array
 }
 \examples{
 df = pl$DataFrame(list(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_)))

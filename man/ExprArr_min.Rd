@@ -3,7 +3,7 @@
 \name{ExprArr_min}
 \alias{ExprArr_min}
 \alias{arr_min}
-\title{Find the minimum value in a list}
+\title{Find the minimum value in an array}
 \usage{
 ExprArr_min()
 }
@@ -11,7 +11,7 @@ ExprArr_min()
 Expr
 }
 \description{
-Find the minimum value in a list
+Find the minimum value in an array
 }
 \examples{
 df = pl$DataFrame(list(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_)))

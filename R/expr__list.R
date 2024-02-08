@@ -1,7 +1,7 @@
 #' Get the length of each list
 #'
 #' Return the number of elements in each list. Null values are counted in the
-#' total. `$list$lengths()` is deprecated.
+#' total.
 #'
 #' @return Expr
 #' @aliases list_len

@@ -1,4 +1,4 @@
-#' Sum all elements in a list
+#' Sum all elements in an array
 #'
 #' @return Expr
 #' @aliases arr_sum
@@ -7,7 +7,7 @@
 #' df$with_columns(sum = pl$col("values")$arr$sum())
 ExprArr_sum = function() .pr$Expr$arr_sum(self)
 
-#' Find the maximum value in a list
+#' Find the maximum value in an array
 #'
 #' @return Expr
 #' @aliases arr_max
@@ -16,7 +16,7 @@ ExprArr_sum = function() .pr$Expr$arr_sum(self)
 #' df$with_columns(max = pl$col("values")$arr$max())
 ExprArr_max = function() .pr$Expr$arr_max(self)
 
-#' Find the minimum value in a list
+#' Find the minimum value in an array
 #'
 #' @return Expr
 #' @aliases arr_min
@@ -25,7 +25,7 @@ ExprArr_max = function() .pr$Expr$arr_max(self)
 #' df$with_columns(min = pl$col("values")$arr$min())
 ExprArr_min = function() .pr$Expr$arr_min(self)
 
-#' Sort values in a list
+#' Sort values in an array
 #'
 #' @param descending Sort values in descending order
 #' @return Expr
@@ -35,7 +35,7 @@ ExprArr_min = function() .pr$Expr$arr_min(self)
 #' df$with_columns(sort = pl$col("values")$arr$sort())
 ExprArr_sort = function(descending = FALSE) .pr$Expr$arr_sort(self, descending)
 
-#' Reverse values in a list
+#' Reverse values in an array
 #'
 #' @return Expr
 #' @aliases arr_reverse
@@ -44,10 +44,7 @@ ExprArr_sort = function(descending = FALSE) .pr$Expr$arr_sort(self, descending)
 #' df$with_columns(reverse = pl$col("values")$arr$reverse())
 ExprArr_reverse = function() .pr$Expr$arr_reverse(self)
 
-#' Get unique values in a list
-#'
-#' @description
-#' Get the unique/distinct values in the list.
+#' Get unique values in an array
 #'
 #' @return Expr
 #' @aliases arr_unique
@@ -57,14 +54,13 @@ ExprArr_reverse = function() .pr$Expr$arr_reverse(self)
 ExprArr_unique = function() .pr$Expr$arr_unique(self)
 
 
-#' Get the value by index in a list
+#' Get the value by index in an array
 #'
-#' This allows to extract one value per list only. To extract several values by
-#' index, use [`$arr$gather()`][ExprArr_gather].
+#' This allows to extract one value per array only.
 #'
 #' @param index An Expr or something coercible to an Expr, that must return a
 #'   single index. Values are 0-indexed (so index 0 would return the first item
-#'   of every sublist) and negative values start from the end (index `-1`
+#'   of every subarray) and negative values start from the end (index `-1`
 #'   returns the last item). If the index is out of bounds, it will return a
 #'   `null`. Strings are parsed as column names.
 #'
@@ -83,7 +79,7 @@ ExprArr_unique = function() .pr$Expr$arr_unique(self)
 #' )
 ExprArr_get = function(index) .pr$Expr$arr_get(self, wrap_e(index, str_to_lit = FALSE))
 
-#' Check if list contains a given value
+#' Check if array contains a given value
 #'
 #' @param item Expr or something coercible to an Expr. Strings are *not* parsed
 #' as columns.
@@ -101,9 +97,9 @@ ExprArr_get = function(index) .pr$Expr$arr_get(self, wrap_e(index, str_to_lit = 
 #' )
 ExprArr_contains = function(item) .pr$Expr$arr_contains(self, wrap_e(item))
 
-#' Join elements of a list
+#' Join elements of an array
 #'
-#' Join all string items in a sublist and place a separator between them. This
+#' Join all string items in a subarray and place a separator between them. This
 #' only works on columns of type `list[str]`.
 #'
 #' @param separator String to separate the items with. Can be an Expr. Strings
@@ -127,7 +123,7 @@ ExprArr_join = function(separator, ignore_nulls = FALSE) {
     unwrap("in $arr$join():")
 }
 
-#' Get the index of the minimal value in list
+#' Get the index of the minimal value in an array
 #'
 #' @return Expr
 #' @aliases arr_arg_min
@@ -138,7 +134,7 @@ ExprArr_join = function(separator, ignore_nulls = FALSE) {
 #' )
 ExprArr_arg_min = function() .pr$Expr$arr_arg_min(self)
 
-#' Get the index of the maximal value in list
+#' Get the index of the maximal value in an array
 #'
 #' @return Expr
 #' @aliases arr_arg_max
@@ -149,7 +145,7 @@ ExprArr_arg_min = function() .pr$Expr$arr_arg_min(self)
 #' )
 ExprArr_arg_max = function() .pr$Expr$arr_arg_max(self)
 
-#' Evaluate whether all boolean values in a list are true
+#' Evaluate whether all boolean values in an array are true
 #'
 #' @return Expr
 #' @examples
@@ -159,7 +155,7 @@ ExprArr_arg_max = function() .pr$Expr$arr_arg_max(self)
 #' df$with_columns(all = pl$col("a")$arr$all())
 ExprArr_all = function() .pr$Expr$arr_all(self)
 
-#' Evaluate whether any boolean values in a list are true
+#' Evaluate whether any boolean values in an array are true
 #'
 #' @return Expr
 #' @examples

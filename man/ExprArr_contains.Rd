@@ -3,7 +3,7 @@
 \name{ExprArr_contains}
 \alias{ExprArr_contains}
 \alias{arr_contains}
-\title{Check if list contains a given value}
+\title{Check if array contains a given value}
 \usage{
 ExprArr_contains(item)
 }
@@ -15,7 +15,7 @@ as columns.}
 Expr
 }
 \description{
-Check if list contains a given value
+Check if array contains a given value
 }
 \examples{
 df = pl$DataFrame(

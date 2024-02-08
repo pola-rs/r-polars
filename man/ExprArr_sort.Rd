@@ -3,7 +3,7 @@
 \name{ExprArr_sort}
 \alias{ExprArr_sort}
 \alias{arr_sort}
-\title{Sort values in a list}
+\title{Sort values in an array}
 \usage{
 ExprArr_sort(descending = FALSE)
 }
@@ -14,7 +14,7 @@ ExprArr_sort(descending = FALSE)
 Expr
 }
 \description{
-Sort values in a list
+Sort values in an array
 }
 \examples{
 df = pl$DataFrame(list(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_)))

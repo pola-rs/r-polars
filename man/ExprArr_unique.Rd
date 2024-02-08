@@ -3,7 +3,7 @@
 \name{ExprArr_unique}
 \alias{ExprArr_unique}
 \alias{arr_unique}
-\title{Get unique values in a list}
+\title{Get unique values in an array}
 \usage{
 ExprArr_unique()
 }
@@ -11,7 +11,7 @@ ExprArr_unique()
 Expr
 }
 \description{
-Get the unique/distinct values in the list.
+Get unique values in an array
 }
 \examples{
 df = pl$DataFrame(list(values = list(c(2, 2, NA), c(1, 2, 3), NA_real_)))

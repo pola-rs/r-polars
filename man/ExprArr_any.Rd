@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr__array.R
 \name{ExprArr_any}
 \alias{ExprArr_any}
-\title{Evaluate whether any boolean values in a list are true}
+\title{Evaluate whether any boolean values in an array are true}
 \usage{
 ExprArr_any()
 }
@@ -10,7 +10,7 @@ ExprArr_any()
 Expr
 }
 \description{
-Evaluate whether any boolean values in a list are true
+Evaluate whether any boolean values in an array are true
 }
 \examples{
 df = pl$DataFrame(

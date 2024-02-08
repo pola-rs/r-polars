@@ -3,7 +3,7 @@
 \name{ExprArr_join}
 \alias{ExprArr_join}
 \alias{arr_join}
-\title{Join elements of a list}
+\title{Join elements of an array}
 \usage{
 ExprArr_join(separator, ignore_nulls = FALSE)
 }
@@ -18,7 +18,7 @@ row contains any null values, the output is null.}
 Expr
 }
 \description{
-Join all string items in a sublist and place a separator between them. This
+Join all string items in a subarray and place a separator between them. This
 only works on columns of type \code{list[str]}.
 }
 \examples{

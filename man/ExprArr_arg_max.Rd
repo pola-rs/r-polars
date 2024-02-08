@@ -3,7 +3,7 @@
 \name{ExprArr_arg_max}
 \alias{ExprArr_arg_max}
 \alias{arr_arg_max}
-\title{Get the index of the maximal value in list}
+\title{Get the index of the maximal value in an array}
 \usage{
 ExprArr_arg_max()
 }
@@ -11,7 +11,7 @@ ExprArr_arg_max()
 Expr
 }
 \description{
-Get the index of the maximal value in list
+Get the index of the maximal value in an array
 }
 \examples{
 df = pl$DataFrame(list(s = list(1:2, 2:1)))
