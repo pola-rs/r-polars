@@ -489,7 +489,7 @@ aq$filter(
 Finally, we can read/scan multiple files in the same directory through pattern
 globbing.
 
-```{r}
+```{r, eval=requireNamespace("arrow", quietly = TRUE)}
 dir.create("airquality-ds")
 
 # Create a hive-partitioned dataset with the function from the arrow package
