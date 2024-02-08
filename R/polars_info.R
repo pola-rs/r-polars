@@ -1,7 +1,7 @@
 #' Report information of the package
 #'
 #' This function reports the following information:
-#' - Package versions (the R package version and the dependent Rust Polars version)
+#' - Package versions (the Polars R package version and the dependent Rust Polars crate version)
 #' - [Number of threads used by Polars][pl_thread_pool_size]
 #' - Rust feature flags (See `vignette("install", "polars")` for details)
 #' @return A list with information of the package
@@ -15,8 +15,10 @@
 polars_info = function() {
   # Similar to arrow::arrow_info()
   out = list(
-    version = utils::packageVersion("polars"),
-    rust_polars = rust_polars_version(),
+    versions = list(
+      r_package = utils::packageVersion("polars"),
+      rust_crate = rust_polars_version()
+    ),
     thread_pool_size = thread_pool_size(),
     features = cargo_rpolars_feature_info()
   )
@@ -38,8 +40,8 @@ print.polars_info = function(x, ...) {
     cat("\n")
   }
 
-  cat("r-polars package version : ", format(x$version), "\n", sep = "")
-  cat("rust-polars crate version: ", format(x$rust_polars), "\n", sep = "")
+  cat("Polars R package version : ", format(x$versions$r_package), "\n", sep = "")
+  cat("Rust Polars crate version: ", format(x$versions$rust_crate), "\n", sep = "")
   cat("\n")
   cat("Thread pool size:", x$thread_pool_size, "\n")
   cat("\n")

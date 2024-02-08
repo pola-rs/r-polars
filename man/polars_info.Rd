@@ -12,7 +12,7 @@ A list with information of the package
 \description{
 This function reports the following information:
 \itemize{
-\item Package versions (the R package version and the dependent Rust Polars version)
+\item Package versions (the Polars R package version and the dependent Rust Polars crate version)
 \item \link[=pl_thread_pool_size]{Number of threads used by Polars}
 \item Rust feature flags (See \code{vignette("install", "polars")} for details)
 }

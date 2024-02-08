@@ -32,6 +32,13 @@
         Their behaviour doesn't change.
     -   `include_bounds` is renamed `closed` and must be one of `"left"`,
         `"right"`, `"both"`, or `"none"`.
+-   `polars_info()` returns a slightly changed list.
+    -   `$threadpool_size`, which means the number of threads used by Polars,
+        is changed to `$thread_pool_size` (#784)
+    -   `$version`, which indicates the version of this package,
+        is changed to `$versions$r_package` (#791).
+    -   `$rust_polars`, which indicates the version of the dependent Rust Polars,
+        is changed to `$versions$rust_crate` (#791).
 
 ### Deprecations
 
