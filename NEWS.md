@@ -5,6 +5,7 @@
 ### Breaking changes due to Rust-polars update
 
 -   rust-polars is updated to 0.37.0 (#776).
+    -   Minimum supported Rust version (MSRV) is now 1.74.1.
     -   `$with_row_count()` for `DataFrame` and `LazyFrame` is deprecated and
         will be removed in 0.15.0. It is replaced by `$with_row_index()`.
     -   `pl$count()` is deprecated and will be removed in 0.15.0. It is replaced
@@ -331,6 +332,7 @@ a large amount of documentation improvements.
 ### BREAKING CHANGES DUE TO RUST-POLARS UPDATE
 
 -   rust-polars is updated to 2023-10-25 unreleased version (#442)
+    -   Minimum supported Rust version (MSRV) is now 1.73.
     -   New subnamespace `"name"` that contains methods `$prefix()`, `$suffix()`
         `keep()` (renamed from `keep_name()`) and `map()` (renamed from `map_alias()`).
     -   `$dt$round()` gains an argument `ambiguous`.
