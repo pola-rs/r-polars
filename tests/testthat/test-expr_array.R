@@ -49,7 +49,7 @@ test_that("arr$max and arr$min", {
 
 test_that("arr$reverse", {
   df = pl$DataFrame(
-    list(a = list(c(Inf, 2, 2), c(4, NaN, 2))),
+    a = list(c(Inf, 2, 2), c(4, NaN, 2)),
     schema = list(a = pl$Array(pl$Float32, 3))
   )
   expect_identical(
@@ -60,7 +60,7 @@ test_that("arr$reverse", {
 
 test_that("arr$unique", {
   df = pl$DataFrame(
-    list(a = list(c(Inf, 2, 2), c(4, NaN, 2))),
+    a = list(c(Inf, 2, 2), c(4, NaN, 2)),
     schema = list(a = pl$Array(pl$Float32, 3))
   )
   expect_identical(
@@ -71,7 +71,7 @@ test_that("arr$unique", {
 
 test_that("arr$sort", {
   df = pl$DataFrame(
-    list(a = list(c(Inf, 2, 2), c(4, NaN, 2))),
+    a = list(c(Inf, 2, 2), c(4, NaN, 2)),
     schema = list(a = pl$Array(pl$Float32, 3))
   )
   expect_identical(
@@ -122,7 +122,7 @@ test_that("join", {
 
 test_that("arr$arg_max and arr$arg_min", {
   df = pl$DataFrame(
-    list(a = list(c(1, 2), c(1, NA_real_), c(NA_real_, NA_real_))),
+    a = list(c(1, 2), c(1, NA_real_), c(NA_real_, NA_real_)),
     schema = list(a = pl$Array(pl$Float32, 2))
   )
   # arg_max ---
@@ -160,7 +160,7 @@ test_that("arr$contains", {
 
 test_that("$arr$all() works", {
   df = pl$DataFrame(
-    list(a = list(c(TRUE, TRUE), c(FALSE, TRUE), c(FALSE, FALSE), c(NA, NA))),
+    a = list(c(TRUE, TRUE), c(FALSE, TRUE), c(FALSE, FALSE), c(NA, NA)),
     schema = list(a = pl$Array(pl$Boolean, 2))
   )
   expect_identical(
@@ -171,7 +171,7 @@ test_that("$arr$all() works", {
 
 test_that("$arr$any() works", {
   df = pl$DataFrame(
-    list(a = list(c(TRUE, TRUE), c(FALSE, TRUE), c(FALSE, FALSE), c(NA, NA))),
+    a = list(c(TRUE, TRUE), c(FALSE, TRUE), c(FALSE, FALSE), c(NA, NA)),
     schema = list(a = pl$Array(pl$Boolean, 2))
   )
   expect_identical(
