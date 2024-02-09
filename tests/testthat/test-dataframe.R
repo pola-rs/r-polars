@@ -225,6 +225,22 @@ test_that("select with list of exprs", {
   expect_equal(x6$columns, c("mpg", "hp"))
 })
 
+test_that("select: create a list variable", {
+  test = pl$DataFrame(x = 1:2)
+
+  # create one column
+  expect_identical(
+    test$select(y = list(1:2, 3:4))$to_list(),
+    list(y = list(1:2, 3:4))
+  )
+
+  # create several column
+  expect_identical(
+    test$select(y = list(1:2, 3:4), z = list(c("a", "b"), c("c", "d")))$to_list(),
+    list(y = list(1:2, 3:4), z = list(c("a", "b"), c("c", "d")))
+  )
+})
+
 test_that("map_batches unity", {
   x = pl$
     DataFrame(iris)$
@@ -388,6 +404,22 @@ test_that("with_columns: list or unlisted input", {
   expect_identical(
     test$with_columns(list(a = 1, b = mtcars$drat))$to_data_frame(),
     test$with_columns(a = 1, b = mtcars$drat)$to_data_frame()
+  )
+})
+
+test_that("with_columns: create a list variable", {
+  test = pl$DataFrame(x = 1:2)
+
+  # create one column
+  expect_identical(
+    test$with_columns(y = list(1:2, 3:4))$to_list(),
+    list(x = 1:2, y = list(1:2, 3:4))
+  )
+
+  # create several column
+  expect_identical(
+    test$with_columns(y = list(1:2, 3:4), z = list(c("a", "b"), c("c", "d")))$to_list(),
+    list(x = 1:2, y = list(1:2, 3:4), z = list(c("a", "b"), c("c", "d")))
   )
 })
 
