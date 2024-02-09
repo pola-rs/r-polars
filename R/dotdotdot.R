@@ -45,8 +45,9 @@ unpack_list = function(..., .context = NULL, .call = sys.call(1L), skip_classes 
   l = list2(..., .context = .context, .call = .call)
   if (
     length(l) == 1L &&
-      is.list(l[[1L]]) &&
-      !(!is.null(skip_classes) && inherits(l[[1L]], skip_classes))
+    is.list(l[[1L]]) &&
+    !(!is.null(skip_classes) && inherits(l[[1L]], skip_classes)) &&
+    is.null(names(l))
   ) {
     l[[1L]]
   } else {

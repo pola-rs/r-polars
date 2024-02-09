@@ -40,6 +40,11 @@
         is changed to `$versions$r_package` (#791).
     -   `$rust_polars`, which indicates the version of the dependent Rust Polars,
         is changed to `$versions$rust_crate` (#791).
+-   New behavior when creating a `DataFrame` with a single list-variable.
+    `pl$DataFrame(x = list(1:2, 3:4))` used to create a `DataFrame` with two
+    columns named "new_column" and "new_column_1", which was unexpected. It now
+    produces a `DataFrame` with a single `list` variable. This also applies to
+    list-column created in `$with_columns()` and `$select()` (#794).
 
 ### Deprecations
 
