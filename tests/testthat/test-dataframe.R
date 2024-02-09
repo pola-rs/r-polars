@@ -375,6 +375,21 @@ test_that("get column", {
 
 # TODO implement series cast and test Series_equal
 
+test_that("with_columns: list or unlisted input", {
+  test = pl$DataFrame(mtcars)
+
+  # one element in $with_columns()
+  expect_identical(
+    test$with_columns(list(a = mtcars$drat))$to_data_frame(),
+    test$with_columns(a = mtcars$drat)$to_data_frame()
+  )
+
+  # several elements
+  expect_identical(
+    test$with_columns(list(a = 1, b = mtcars$drat))$to_data_frame(),
+    test$with_columns(a = 1, b = mtcars$drat)$to_data_frame()
+  )
+})
 
 test_that("with_columns lazy/eager", {
   l = list(
