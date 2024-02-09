@@ -4,7 +4,7 @@
 #' @aliases arr_sum
 #' @examples
 #' df = pl$DataFrame(
-#'   list(values = list(c(1, 2), c(3, 4), c(NA_real_, 6))),
+#'   values = list(c(1, 2), c(3, 4), c(NA_real_, 6)),
 #'   schema = list(values = pl$Array(pl$Float64, 2))
 #' )
 #' df$with_columns(sum = pl$col("values")$arr$sum())
@@ -19,7 +19,7 @@ ExprArr_sum = function() .pr$Expr$arr_sum(self)
 #' @aliases arr_max
 #' @examples
 #' df = pl$DataFrame(
-#'   list(values = list(c(1, 2), c(3, 4), c(5, 6))),
+#'   values = list(c(1, 2), c(3, 4), c(5, 6)),
 #'   schema = list(values = pl$Array(pl$Float64, 2))
 #' )
 #' df$with_columns(max = pl$col("values")$arr$max())
@@ -34,7 +34,7 @@ ExprArr_max = function() .pr$Expr$arr_max(self)
 #' @aliases arr_min
 #' @examples
 #' df = pl$DataFrame(
-#'   list(values = list(c(1, 2), c(3, 4), c(5, 6))),
+#'   values = list(c(1, 2), c(3, 4), c(5, 6)),
 #'   schema = list(values = pl$Array(pl$Float64, 2))
 #' )
 #' df$with_columns(min = pl$col("values")$arr$min())
@@ -46,7 +46,7 @@ ExprArr_min = function() .pr$Expr$arr_min(self)
 #' @aliases arr_sort
 #' @examples
 #' df = pl$DataFrame(
-#'   list(values = list(c(2, 1), c(3, 4), c(NA_real_, 6))),
+#'   values = list(c(2, 1), c(3, 4), c(NA_real_, 6)),
 #'   schema = list(values = pl$Array(pl$Float64, 2))
 #' )
 #' df$with_columns(sort = pl$col("values")$arr$sort(nulls_last = TRUE))
@@ -58,7 +58,7 @@ ExprArr_sort = function(descending = FALSE, nulls_last = FALSE) .pr$Expr$arr_sor
 #' @aliases arr_reverse
 #' @examples
 #' df = pl$DataFrame(
-#'   list(values = list(c(1, 2), c(3, 4), c(NA_real_, 6))),
+#'   values = list(c(1, 2), c(3, 4), c(NA_real_, 6)),
 #'   schema = list(values = pl$Array(pl$Float64, 2))
 #' )
 #' df$with_columns(reverse = pl$col("values")$arr$reverse())
@@ -71,7 +71,7 @@ ExprArr_reverse = function() .pr$Expr$arr_reverse(self)
 #' @aliases arr_unique
 #' @examples
 #' df = pl$DataFrame(
-#'   list(values = list(c(1, 1, 2), c(4, 4, 4), c(NA_real_, 6, 7))),
+#'   values = list(c(1, 1, 2), c(4, 4, 4), c(NA_real_, 6, 7)),
 #'   schema = list(values = pl$Array(pl$Float64, 3))
 #' )
 #' df$with_columns(unique = pl$col("values")$arr$unique())
@@ -159,7 +159,7 @@ ExprArr_join = function(separator, ignore_nulls = FALSE) {
 #' @aliases arr_arg_min
 #' @examples
 #' df = pl$DataFrame(
-#'   list(values = list(1:2, 2:1)),
+#'   values = list(1:2, 2:1),
 #'   schema = list(values = pl$Array(pl$Int32, 2))
 #' )
 #' df$with_columns(
@@ -173,7 +173,7 @@ ExprArr_arg_min = function() .pr$Expr$arr_arg_min(self)
 #' @aliases arr_arg_max
 #' @examples
 #' df = pl$DataFrame(
-#'   list(values = list(1:2, 2:1)),
+#'   values = list(1:2, 2:1),
 #'   schema = list(values = pl$Array(pl$Int32, 2))
 #' )
 #' df$with_columns(
@@ -186,7 +186,7 @@ ExprArr_arg_max = function() .pr$Expr$arr_arg_max(self)
 #' @return Expr
 #' @examples
 #' df = pl$DataFrame(
-#'   list(values = list(c(TRUE, TRUE), c(FALSE, TRUE), c(FALSE, FALSE), c(NA, NA))),
+#'   values = list(c(TRUE, TRUE), c(FALSE, TRUE), c(FALSE, FALSE), c(NA, NA)),
 #'   schema = list(values = pl$Array(pl$Boolean, 2))
 #' )
 #' df$with_columns(all = pl$col("values")$arr$all())
@@ -197,7 +197,7 @@ ExprArr_all = function() .pr$Expr$arr_all(self)
 #' @return Expr
 #' @examples
 #' df = pl$DataFrame(
-#'   list(values = list(c(TRUE, TRUE), c(FALSE, TRUE), c(FALSE, FALSE), c(NA, NA))),
+#'   values = list(c(TRUE, TRUE), c(FALSE, TRUE), c(FALSE, FALSE), c(NA, NA)),
 #'   schema = list(values = pl$Array(pl$Boolean, 2))
 #' )
 #' df$with_columns(any = pl$col("values")$arr$any())

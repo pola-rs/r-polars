@@ -18,7 +18,7 @@ Sort values in an array
 }
 \examples{
 df = pl$DataFrame(
-  list(values = list(c(2, 1), c(3, 4), c(NA_real_, 6))),
+  values = list(c(2, 1), c(3, 4), c(NA_real_, 6)),
   schema = list(values = pl$Array(pl$Float64, 2))
 )
 df$with_columns(sort = pl$col("values")$arr$sort(nulls_last = TRUE))

@@ -19,7 +19,7 @@ Get unique values in an array
 }
 \examples{
 df = pl$DataFrame(
-  list(values = list(c(1, 1, 2), c(4, 4, 4), c(NA_real_, 6, 7))),
+  values = list(c(1, 1, 2), c(4, 4, 4), c(NA_real_, 6, 7)),
   schema = list(values = pl$Array(pl$Float64, 3))
 )
 df$with_columns(unique = pl$col("values")$arr$unique())

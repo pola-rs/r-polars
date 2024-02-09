@@ -15,7 +15,7 @@ Find the maximum value in an array
 }
 \examples{
 df = pl$DataFrame(
-  list(values = list(c(1, 2), c(3, 4), c(5, 6))),
+  values = list(c(1, 2), c(3, 4), c(5, 6)),
   schema = list(values = pl$Array(pl$Float64, 2))
 )
 df$with_columns(max = pl$col("values")$arr$max())
