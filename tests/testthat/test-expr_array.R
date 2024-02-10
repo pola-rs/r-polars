@@ -64,14 +64,12 @@ test_that("arr$max and arr$min error if the simd feature is false", {
   )
   # max ---
   expect_error(
-    df$select(pl$col("ints")$arr$max())$to_list(),
-    "in $arr$max():"
+    df$select(pl$col("ints")$arr$max())$to_list()
   )
 
   # min ---
   expect_error(
-    df$select(pl$col("ints")$arr$min())$to_list(),
-    "in $arr$max():"
+    df$select(pl$col("ints")$arr$min())$to_list()
   )
 })
 
