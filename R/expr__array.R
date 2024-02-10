@@ -16,29 +16,43 @@ ExprArr_sum = function() .pr$Expr$arr_sum(self)
 #' Find the maximum value in an array
 #'
 #' @return Expr
+#' @details
+#' This method is only available with the "simd" feature.
+#' See [polars_info] for more details.
 #' @aliases arr_max
-#' @examples
+#' @examplesIf polars_info()$features$simd
 #' df = pl$DataFrame(
 #'   values = list(c(1, 2), c(3, 4), c(5, 6)),
 #'   schema = list(values = pl$Array(pl$Float64, 2))
 #' )
 #' df$with_columns(max = pl$col("values")$arr$max())
-ExprArr_max = function() .pr$Expr$arr_max(self)
+ExprArr_max = function() {
+  # TODO: not to check simd here
+  check_feature("simd", "in $arr$max():")
+
+  .pr$Expr$arr_max(self)
+}
 
 # TODO: add example with NA when this is fixed:
 # https://github.com/pola-rs/polars/issues/14359
 
 #' Find the minimum value in an array
 #'
+#' @inherit ExprArr_max details
 #' @return Expr
 #' @aliases arr_min
-#' @examples
+#' @examplesIf polars_info()$features$simd
 #' df = pl$DataFrame(
 #'   values = list(c(1, 2), c(3, 4), c(5, 6)),
 #'   schema = list(values = pl$Array(pl$Float64, 2))
 #' )
 #' df$with_columns(min = pl$col("values")$arr$min())
-ExprArr_min = function() .pr$Expr$arr_min(self)
+ExprArr_min = function() {
+  # TODO: not to check simd here
+  check_feature("simd", "in $arr$min():")
+
+  .pr$Expr$arr_min(self)
+}
 
 #' Sort values in an array
 #'
