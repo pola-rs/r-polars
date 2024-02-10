@@ -95,6 +95,7 @@ tasks:
       - Rscript dev/generate-lib-sums.R
 
   build-all:
+    aliases: [ba]
     desc: Build the R package, generate documents, run all tests, and update files.
     deps:
       - build-lib-sums
@@ -104,6 +105,7 @@ tasks:
       - task: build-readme
 
   test-all:
+    aliases: [ta]
     desc: Run all tests.
     cmds:
       - task: test-source
@@ -164,6 +166,7 @@ tasks:
           rmarkdown::render("{{.ITEM}}", output_dir = tempdir())'
 
   build-documents:
+    aliases: [bd]
     desc: Build the R package and generate documents.
     sources:
       - DESCRIPTION
@@ -181,6 +184,7 @@ tasks:
         devtools::document()'
 
   build-rust:
+    aliases: [br]
     desc: Build the Rust library and generate the `extendr-wrappers.R` file.
     sources:
       - src/Makevars*
