@@ -18,6 +18,9 @@ test_that("arr$sum", {
 })
 
 test_that("arr$max and arr$min", {
+  # TODO: not to check simd here
+  skip_if_not(polars_info()$features$simd)
+
   df = pl$DataFrame(
     ints = list(1:2, c(1L, NA_integer_), c(NA_integer_, NA_integer_)),
     floats = list(c(1, 2), c(1, NA_real_), c(NA_real_, NA_real_)),
@@ -44,6 +47,29 @@ test_that("arr$max and arr$min", {
   expect_identical(
     df$select(pl$col("floats")$arr$min())$to_list(),
     list(floats = c(1, 1, NA_real_))
+  )
+})
+
+test_that("arr$max and arr$min error if the simd feature is false", {
+  # TODO: not to check simd here
+  skip_if(polars_info()$features$simd)
+
+  df = pl$DataFrame(
+    ints = list(1:2, c(1L, NA_integer_), c(NA_integer_, NA_integer_)),
+    floats = list(c(1, 2), c(1, NA_real_), c(NA_real_, NA_real_)),
+    schema = list(
+      ints = pl$Array(pl$Int32, 2),
+      floats = pl$Array(pl$Float32, 2)
+    )
+  )
+  # max ---
+  expect_error(
+    df$select(pl$col("ints")$arr$max())$to_list()
+  )
+
+  # min ---
+  expect_error(
+    df$select(pl$col("ints")$arr$min())$to_list()
   )
 })
 

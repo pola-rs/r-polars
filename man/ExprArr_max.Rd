@@ -13,10 +13,16 @@ Expr
 \description{
 Find the maximum value in an array
 }
+\details{
+This method is only available with the "simd" feature.
+See \link{polars_info} for more details.
+}
 \examples{
+\dontshow{if (polars_info()$features$simd) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 df = pl$DataFrame(
   values = list(c(1, 2), c(3, 4), c(5, 6)),
   schema = list(values = pl$Array(pl$Float64, 2))
 )
 df$with_columns(max = pl$col("values")$arr$max())
+\dontshow{\}) # examplesIf}
 }
