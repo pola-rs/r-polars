@@ -500,6 +500,8 @@ LazyFrame_collect_in_background = function() {
 #' smaller chunks may reduce memory pressure and improve writing speeds.
 #' @param data_pagesize_limit `NULL` or Integer. If `NULL` (default), the limit
 #' will be ~1MB.
+#' @param maintain_order Maintain the order in which data is processed. Setting
+#' this to `FALSE` will be slightly faster.
 #' @inheritParams LazyFrame_group_by
 #' @inheritParams DataFrame_unique
 #' @inheritParams LazyFrame_collect
@@ -577,6 +579,7 @@ LazyFrame_sink_parquet = function(
 #' @param compression `NULL` or string, the compression method. One of `NULL`,
 #' "lz4" or "zstd". Choose "zstd" for good compression performance. Choose "lz4"
 #' for fast compression/decompression.
+#' @inheritParams LazyFrame_sink_parquet
 #' @inheritParams LazyFrame_collect
 #' @inheritParams LazyFrame_group_by
 #' @inheritParams DataFrame_unique
@@ -644,6 +647,7 @@ LazyFrame_sink_ipc = function(
 #' larger than RAM as it would crash the R session if it was collected into R.
 #'
 #' @inheritParams DataFrame_write_csv
+#' @inheritParams LazyFrame_sink_parquet
 #' @inheritParams LazyFrame_collect
 #' @inheritParams LazyFrame_group_by
 #' @inheritParams DataFrame_unique
@@ -733,6 +737,7 @@ LazyFrame_sink_csv = function(
 #' larger than RAM as it would crash the R session if it was collected into R.
 #'
 #' @inheritParams DataFrame_write_csv
+#' @inheritParams LazyFrame_sink_parquet
 #' @inheritParams LazyFrame_collect
 #' @inheritParams LazyFrame_group_by
 #' @inheritParams DataFrame_unique
@@ -1042,10 +1047,11 @@ LazyFrame_unique = function(
 #' (`$agg()`, `$filter()`, etc.).
 #' @keywords LazyFrame
 #' @param ... Any Expr(s) or string(s) naming a column.
-#' @param maintain_order Keep the same order as the original `LazyFrame`. Setting
-#'  this to `TRUE` makes it more expensive to compute and blocks the possibility
-#'  to run on the streaming engine. The default value can be changed with
-#' `options(polars.maintain_order = TRUE)`.
+#' @param maintain_order Keep the same group order as the original `LazyFrame`.
+#' Within each group, the order of rows is always preserved, regardless of this
+#' argument. Setting this to `TRUE` makes it more expensive to compute and
+#' blocks the possibility to run on the streaming engine. The default value can
+#' be changed with `options(polars.maintain_order = TRUE)`.
 #' @return LazyGroupBy (a LazyFrame with special groupby methods like `$agg()`)
 #' @examples
 #' pl$LazyFrame(
