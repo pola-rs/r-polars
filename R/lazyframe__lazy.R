@@ -1047,11 +1047,11 @@ LazyFrame_unique = function(
 #'   (`$agg()`, `$filter()`, etc.).
 #' @keywords LazyFrame
 #' @param ... Any Expr(s) or string(s) naming a column.
-#' @param maintain_order Keep the same group order as the original data. Within
-#'   each group, the order of rows is always preserved, regardless of this
-#'   argument. Setting this to `TRUE` makes it more expensive to compute and
-#'   blocks the possibility to run on the streaming engine. The default value
-#'   can be changed with `options(polars.maintain_order = TRUE)`.
+#' @param maintain_order Keep the same group order as in the original data.
+#'   Within each group, the order of rows is always preserved, regardless of
+#'   this argument. Setting this to `TRUE` makes it more expensive to compute
+#'   and blocks the possibility to run on the streaming engine. The default
+#'   value can be changed with `options(polars.maintain_order = TRUE)`.
 #' @return LazyGroupBy (a LazyFrame with special groupby methods like `$agg()`)
 #' @examples
 #' pl$LazyFrame(
