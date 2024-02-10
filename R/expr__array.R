@@ -23,7 +23,10 @@ ExprArr_sum = function() .pr$Expr$arr_sum(self)
 #'   schema = list(values = pl$Array(pl$Float64, 2))
 #' )
 #' df$with_columns(max = pl$col("values")$arr$max())
-ExprArr_max = function() .pr$Expr$arr_max(self)
+ExprArr_max = function() {
+  .pr$Expr$arr_max(self) |>
+    unwrap("in $arr$max():")
+}
 
 # TODO: add example with NA when this is fixed:
 # https://github.com/pola-rs/polars/issues/14359
@@ -38,7 +41,10 @@ ExprArr_max = function() .pr$Expr$arr_max(self)
 #'   schema = list(values = pl$Array(pl$Float64, 2))
 #' )
 #' df$with_columns(min = pl$col("values")$arr$min())
-ExprArr_min = function() .pr$Expr$arr_min(self)
+ExprArr_min = function() {
+  .pr$Expr$arr_min(self) |>
+    unwrap("in $arr$min():")
+}
 
 #' Sort values in an array
 #'
