@@ -393,10 +393,9 @@ DataFrame_drop_nulls = function(subset = NULL) {
 #' * "first": Keep first unique row.
 #' * "last": Keep last unique row.
 #' * "none": Don’t keep duplicate rows.
-#' @param maintain_order Keep the same order as the original `DataFrame`. Setting
+#' @param maintain_order Keep the same order as the original data. Setting
 #'  this to `TRUE` makes it more expensive to compute and blocks the possibility
-#'  to run on the streaming engine. The default value can be changed with
-#' `options(polars.maintain_order = TRUE)`.
+#'  to run on the streaming engine.
 #'
 #' @return DataFrame
 #' @examples
@@ -616,8 +615,8 @@ DataFrame_to_series = function(idx = 0) {
 }
 
 #' Sort a DataFrame
-#' @inheritParams DataFrame_unique
 #' @inherit LazyFrame_sort details description params
+#' @inheritParams DataFrame_unique
 #' @return DataFrame
 #' @keywords  DataFrame
 #' @examples
@@ -843,7 +842,7 @@ DataFrame_filter = function(...) {
 }
 
 #' Group a DataFrame
-#' @inheritParams DataFrame_unique
+#' @inheritParams LazyFrame_group_by
 #' @inherit LazyFrame_group_by description params
 #' @keywords DataFrame
 #' @return GroupBy (a DataFrame with special groupby methods like `$agg()`)
@@ -1404,7 +1403,8 @@ DataFrame_melt = function(
 #'   - string indicating the expressions to aggregate with, such as 'first',
 #'     'sum', 'max', 'min', 'mean', 'median', 'last', 'count'),
 #'   - an Expr e.g. `pl$element()$sum()`
-#' @inheritParams DataFrame_unique
+#' @param maintain_order Sort the grouped keys so that the output order is
+#' predictable.
 #' @param sort_columns Sort the transposed columns by name. Default is by order
 #' of discovery.
 #' @param separator Used as separator/delimiter in generated column names.

@@ -76,10 +76,8 @@ then quotes will be used even if they aren`t strictly necessary.
 invalid CSV data (e.g. by not quoting strings containing the separator).
 }}
 
-\item{maintain_order}{Keep the same order as the original \code{LazyFrame}. Setting
-this to \code{TRUE} makes it more expensive to compute and blocks the possibility
-to run on the streaming engine. The default value can be changed with
-\code{options(polars.maintain_order = TRUE)}.}
+\item{maintain_order}{Maintain the order in which data is processed. Setting
+this to \code{FALSE} will be slightly faster.}
 
 \item{type_coercion}{Boolean. Coerce types such that operations succeed and
 run on minimal required memory.}
