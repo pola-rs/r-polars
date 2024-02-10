@@ -24,7 +24,9 @@
 #' * `limit_max_threads` ([`!polars_info()$features$disable_limit_max_threads`][polars_info]):
 #'   See [`?pl_thread_pool_size`][pl_thread_pool_size] for details.
 #'   This option should be set before the package is loaded.
-#' * `maintain_order` (`FALSE`): Default for all `maintain_order` options
+#' * `maintain_order` (`FALSE`): Default for the `maintain_order` argument in
+#'   [`<LazyFrame>$group_by()`][LazyFrame_group_by] and
+#'   [`<DataFrame>$group_by()`][DataFrame_group_by]
 #'   (present in `$group_by()` or `$unique()` for example).
 #' * `no_messages` (`FALSE`): Hide messages.
 #' * `rpool_cap`: The maximum number of R sessions that can be used to process

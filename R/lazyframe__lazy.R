@@ -1043,15 +1043,15 @@ LazyFrame_unique = function(
 
 #' Group a LazyFrame
 #' @description This doesn't modify the data but only stores information about
-#' the group structure. This structure can then be used by several functions
-#' (`$agg()`, `$filter()`, etc.).
+#'   the group structure. This structure can then be used by several functions
+#'   (`$agg()`, `$filter()`, etc.).
 #' @keywords LazyFrame
 #' @param ... Any Expr(s) or string(s) naming a column.
-#' @param maintain_order Keep the same group order as the original `LazyFrame`.
-#' Within each group, the order of rows is always preserved, regardless of this
-#' argument. Setting this to `TRUE` makes it more expensive to compute and
-#' blocks the possibility to run on the streaming engine. The default value can
-#' be changed with `options(polars.maintain_order = TRUE)`.
+#' @param maintain_order Keep the same group order as the original data. Within
+#'   each group, the order of rows is always preserved, regardless of this
+#'   argument. Setting this to `TRUE` makes it more expensive to compute and
+#'   blocks the possibility to run on the streaming engine. The default value
+#'   can be changed with `options(polars.maintain_order = TRUE)`.
 #' @return LazyGroupBy (a LazyFrame with special groupby methods like `$agg()`)
 #' @examples
 #' pl$LazyFrame(
@@ -1172,8 +1172,9 @@ LazyFrame_join = function(
 #' either of length 1 or a logical vector of the same length as the number of
 #' Expr(s) specified in `by` and `...`.
 #' @param nulls_last Boolean. Place `NULL`s at the end? Default is `FALSE`.
-#' @inheritParams LazyFrame_group_by
-#' @inheritParams DataFrame_unique
+#' @param maintain_order Whether the order should be maintained if elements are
+#' equal. If `TRUE`, streaming is not possible and performance might be worse
+#' since this requires a stable search.
 #' @return LazyFrame
 #' @keywords  LazyFrame
 #' @examples

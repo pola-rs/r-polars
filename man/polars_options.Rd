@@ -43,7 +43,9 @@ the package \code{bit64} to be attached).
 \item \code{limit_max_threads} (\code{\link[=polars_info]{!polars_info()$features$disable_limit_max_threads}}):
 See \code{\link[=pl_thread_pool_size]{?pl_thread_pool_size}} for details.
 This option should be set before the package is loaded.
-\item \code{maintain_order} (\code{FALSE}): Default for all \code{maintain_order} options
+\item \code{maintain_order} (\code{FALSE}): Default for the \code{maintain_order} argument in
+\code{\link[=LazyFrame_group_by]{<LazyFrame>$group_by()}} and
+\code{\link[=DataFrame_group_by]{<DataFrame>$group_by()}}
 (present in \verb{$group_by()} or \verb{$unique()} for example).
 \item \code{no_messages} (\code{FALSE}): Hide messages.
 \item \code{rpool_cap}: The maximum number of R sessions that can be used to process

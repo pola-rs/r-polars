@@ -24,11 +24,9 @@ Expr(s) specified in \code{by} and \code{...}.}
 
 \item{nulls_last}{Boolean. Place \code{NULL}s at the end? Default is \code{FALSE}.}
 
-\item{maintain_order}{Keep the same group order as the original \code{LazyFrame}.
-Within each group, the order of rows is always preserved, regardless of this
-argument. Setting this to \code{TRUE} makes it more expensive to compute and
-blocks the possibility to run on the streaming engine. The default value can
-be changed with \code{options(polars.maintain_order = TRUE)}.}
+\item{maintain_order}{Whether the order should be maintained if elements are
+equal. If \code{TRUE}, streaming is not possible and performance might be worse
+since this requires a stable search.}
 }
 \value{
 LazyFrame
