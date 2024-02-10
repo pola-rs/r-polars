@@ -45,8 +45,7 @@ See \code{\link[=pl_thread_pool_size]{?pl_thread_pool_size}} for details.
 This option should be set before the package is loaded.
 \item \code{maintain_order} (\code{FALSE}): Default for the \code{maintain_order} argument in
 \code{\link[=LazyFrame_group_by]{<LazyFrame>$group_by()}} and
-\code{\link[=DataFrame_group_by]{<DataFrame>$group_by()}}
-(present in \verb{$group_by()} or \verb{$unique()} for example).
+\code{\link[=DataFrame_group_by]{<DataFrame>$group_by()}}.
 \item \code{no_messages} (\code{FALSE}): Hide messages.
 \item \code{rpool_cap}: The maximum number of R sessions that can be used to process
 R code in the background. See the section "About pool options" below.

@@ -26,8 +26,7 @@
 #'   This option should be set before the package is loaded.
 #' * `maintain_order` (`FALSE`): Default for the `maintain_order` argument in
 #'   [`<LazyFrame>$group_by()`][LazyFrame_group_by] and
-#'   [`<DataFrame>$group_by()`][DataFrame_group_by]
-#'   (present in `$group_by()` or `$unique()` for example).
+#'   [`<DataFrame>$group_by()`][DataFrame_group_by].
 #' * `no_messages` (`FALSE`): Hide messages.
 #' * `rpool_cap`: The maximum number of R sessions that can be used to process
 #'   R code in the background. See the section "About pool options" below.
