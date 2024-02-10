@@ -1184,20 +1184,12 @@ impl RPolarsExpr {
 
     // array methods
 
-    fn arr_max(&self) -> RResult<RPolarsExpr> {
-        #[cfg(feature = "simd")]
-        return (Ok(self.0.clone().arr().max().into()));
-
-        #[cfg(not(feature = "simd"))]
-        rerr().plain("$arr$max() is only available with the 'simd' feature")
+    fn arr_max(&self) -> Self {
+        self.0.clone().arr().max().into()
     }
 
-    fn arr_min(&self) -> RResult<RPolarsExpr> {
-        #[cfg(feature = "simd")]
-        return (Ok(self.0.clone().arr().min().into()));
-
-        #[cfg(not(feature = "simd"))]
-        rerr().plain("$arr$min() is only available with the 'simd' feature")
+    fn arr_min(&self) -> Self {
+        self.0.clone().arr().min().into()
     }
 
     fn arr_sum(&self) -> Self {
