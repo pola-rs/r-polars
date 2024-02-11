@@ -22,5 +22,5 @@ polars_info()
 
 polars_info()$rust_polars
 
-polars_info()$features$simd
+polars_info()$features$nightly
 }

@@ -2573,16 +2573,16 @@ impl RPolarsExpr {
     }
 }
 
-// handle varition in implementation if not simd
+// handle varition in implementation if not the nightly feature
 // could not get cfg feature flags conditions to work inside extendr macro
 // Therefore place it outside here instead
 #[allow(unused)]
 fn f_str_to_titlecase(expr: &RPolarsExpr) -> RResult<RPolarsExpr> {
-    #[cfg(feature = "simd")]
+    #[cfg(feature = "nightly")]
     return (Ok(expr.0.clone().str().to_titlecase().into()));
 
-    #[cfg(not(feature = "simd"))]
-    rerr().plain("$to_titlecase() is only available with the 'simd' feature")
+    #[cfg(not(feature = "nightly"))]
+    rerr().plain("$to_titlecase() is only available with the 'nightly' feature")
 }
 
 //allow proto expression that yet only are strings

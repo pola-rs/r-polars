@@ -16,19 +16,16 @@ ExprArr_sum = function() .pr$Expr$arr_sum(self)
 #' Find the maximum value in an array
 #'
 #' @return Expr
-#' @details
-#' This method is only available with the "simd" feature.
-#' See [polars_info] for more details.
+#' @inherit ExprStr_to_titlecase details
 #' @aliases arr_max
-#' @examplesIf polars_info()$features$simd
+#' @examplesIf polars_info()$features$nightly
 #' df = pl$DataFrame(
 #'   values = list(c(1, 2), c(3, 4), c(5, 6)),
 #'   schema = list(values = pl$Array(pl$Float64, 2))
 #' )
 #' df$with_columns(max = pl$col("values")$arr$max())
 ExprArr_max = function() {
-  # TODO: not to check simd here
-  check_feature("simd", "in $arr$max():")
+  check_feature("nightly", "in $arr$max():")
 
   .pr$Expr$arr_max(self)
 }
@@ -38,18 +35,17 @@ ExprArr_max = function() {
 
 #' Find the minimum value in an array
 #'
-#' @inherit ExprArr_max details
+#' @inherit ExprStr_to_titlecase details
 #' @return Expr
 #' @aliases arr_min
-#' @examplesIf polars_info()$features$simd
+#' @examplesIf polars_info()$features$nightly
 #' df = pl$DataFrame(
 #'   values = list(c(1, 2), c(3, 4), c(5, 6)),
 #'   schema = list(values = pl$Array(pl$Float64, 2))
 #' )
 #' df$with_columns(min = pl$col("values")$arr$min())
 ExprArr_min = function() {
-  # TODO: not to check simd here
-  check_feature("simd", "in $arr$min():")
+  check_feature("nightly", "in $arr$min():")
 
   .pr$Expr$arr_min(self)
 }

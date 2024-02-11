@@ -18,8 +18,7 @@ test_that("arr$sum", {
 })
 
 test_that("arr$max and arr$min", {
-  # TODO: not to check simd here
-  skip_if_not(polars_info()$features$simd)
+  skip_if_not(polars_info()$features$nightly)
 
   df = pl$DataFrame(
     ints = list(1:2, c(1L, NA_integer_), c(NA_integer_, NA_integer_)),
@@ -50,9 +49,8 @@ test_that("arr$max and arr$min", {
   )
 })
 
-test_that("arr$max and arr$min error if the simd feature is false", {
-  # TODO: not to check simd here
-  skip_if(polars_info()$features$simd)
+test_that("arr$max and arr$min error if the nightly feature is false", {
+  skip_if(polars_info()$features$nightly)
 
   df = pl$DataFrame(
     ints = list(1:2, c(1L, NA_integer_), c(NA_integer_, NA_integer_)),
