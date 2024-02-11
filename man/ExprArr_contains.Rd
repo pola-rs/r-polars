@@ -20,7 +20,7 @@ Check if array contains a given value
 \examples{
 df = pl$DataFrame(
   values = list(0:2, 4:6, c(NA_integer_, NA_integer_, NA_integer_)),
-  item = 0:2,
+  item = c(0L, 4L, 2L),
   schema = list(values = pl$Array(pl$Float64, 3))
 )
 df$with_columns(

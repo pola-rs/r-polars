@@ -1263,7 +1263,7 @@ impl RPolarsExpr {
             .0
             .clone()
             .arr()
-            .join(robj_to!(PLExprCol, separator)?, ignore_nulls)
+            .join(robj_to!(PLExpr, separator)?, ignore_nulls)
             .into())
     }
 
@@ -1272,7 +1272,7 @@ impl RPolarsExpr {
             .0
             .clone()
             .arr()
-            .contains(robj_to!(PLExprCol, other)?)
+            .contains(robj_to!(PLExpr, other)?)
             .into())
     }
 

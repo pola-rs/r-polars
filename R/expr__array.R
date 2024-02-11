@@ -89,7 +89,7 @@ ExprArr_reverse = function() .pr$Expr$arr_reverse(self)
 #'   schema = list(values = pl$Array(pl$Float64, 3))
 #' )
 #' df$with_columns(unique = pl$col("values")$arr$unique())
-ExprArr_unique = function(maintain_order = polars_options()$maintain_order) .pr$Expr$arr_unique(self, maintain_order)
+ExprArr_unique = function(maintain_order = FALSE) .pr$Expr$arr_unique(self, maintain_order)
 
 
 #' Get the value by index in an array
@@ -131,14 +131,14 @@ ExprArr_get = function(index) {
 #' @examples
 #' df = pl$DataFrame(
 #'   values = list(0:2, 4:6, c(NA_integer_, NA_integer_, NA_integer_)),
-#'   item = 0:2,
+#'   item = c(0L, 4L, 2L),
 #'   schema = list(values = pl$Array(pl$Float64, 3))
 #' )
 #' df$with_columns(
 #'   with_expr = pl$col("values")$arr$contains(pl$col("item")),
 #'   with_lit = pl$col("values")$arr$contains(1)
 #' )
-ExprArr_contains = function(item) .pr$Expr$arr_contains(self, wrap_e(item))
+ExprArr_contains = function(item) .pr$Expr$arr_contains(self, item)
 
 #' Join elements of an array
 #'
@@ -159,8 +159,8 @@ ExprArr_contains = function(item) .pr$Expr$arr_contains(self, wrap_e(item))
 #' )
 #' df$with_columns(
 #'   join_with_expr = pl$col("values")$arr$join(pl$col("separator")),
-#'   join_with_lit = pl$col("values")$arr$join(pl$lit(" ")),
-#'   join_ignore_null = pl$col("values")$arr$join(pl$lit(" "), ignore_nulls = TRUE)
+#'   join_with_lit = pl$col("values")$arr$join(" "),
+#'   join_ignore_null = pl$col("values")$arr$join(" ", ignore_nulls = TRUE)
 #' )
 ExprArr_join = function(separator, ignore_nulls = FALSE) {
   .pr$Expr$arr_join(self, separator, ignore_nulls) |>

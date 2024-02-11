@@ -29,7 +29,7 @@ df = pl$DataFrame(
 )
 df$with_columns(
   join_with_expr = pl$col("values")$arr$join(pl$col("separator")),
-  join_with_lit = pl$col("values")$arr$join(pl$lit(" ")),
-  join_ignore_null = pl$col("values")$arr$join(pl$lit(" "), ignore_nulls = TRUE)
+  join_with_lit = pl$col("values")$arr$join(" "),
+  join_ignore_null = pl$col("values")$arr$join(" ", ignore_nulls = TRUE)
 )
 }
