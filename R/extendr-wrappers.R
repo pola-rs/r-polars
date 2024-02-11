@@ -248,6 +248,8 @@ RPolarsDataType$new_duration <- function() .Call(wrap__RPolarsDataType__new_dura
 
 RPolarsDataType$new_list <- function(inner) .Call(wrap__RPolarsDataType__new_list, inner)
 
+RPolarsDataType$new_array <- function(inner, width) .Call(wrap__RPolarsDataType__new_array, inner, width)
+
 RPolarsDataType$new_object <- function() .Call(wrap__RPolarsDataType__new_object)
 
 RPolarsDataType$new_struct <- function(l) .Call(wrap__RPolarsDataType__new_struct, l)
@@ -673,6 +675,36 @@ RPolarsExpr$list_all <- function() .Call(wrap__RPolarsExpr__list_all, self)
 RPolarsExpr$list_any <- function() .Call(wrap__RPolarsExpr__list_any, self)
 
 RPolarsExpr$list_set_operation <- function(other, operation) .Call(wrap__RPolarsExpr__list_set_operation, self, other, operation)
+
+RPolarsExpr$arr_max <- function() .Call(wrap__RPolarsExpr__arr_max, self)
+
+RPolarsExpr$arr_min <- function() .Call(wrap__RPolarsExpr__arr_min, self)
+
+RPolarsExpr$arr_sum <- function() .Call(wrap__RPolarsExpr__arr_sum, self)
+
+RPolarsExpr$arr_unique <- function(maintain_order) .Call(wrap__RPolarsExpr__arr_unique, self, maintain_order)
+
+RPolarsExpr$arr_to_list <- function() .Call(wrap__RPolarsExpr__arr_to_list, self)
+
+RPolarsExpr$arr_all <- function() .Call(wrap__RPolarsExpr__arr_all, self)
+
+RPolarsExpr$arr_any <- function() .Call(wrap__RPolarsExpr__arr_any, self)
+
+RPolarsExpr$arr_sort <- function(descending, nulls_last) .Call(wrap__RPolarsExpr__arr_sort, self, descending, nulls_last)
+
+RPolarsExpr$arr_reverse <- function() .Call(wrap__RPolarsExpr__arr_reverse, self)
+
+RPolarsExpr$arr_arg_min <- function() .Call(wrap__RPolarsExpr__arr_arg_min, self)
+
+RPolarsExpr$arr_arg_max <- function() .Call(wrap__RPolarsExpr__arr_arg_max, self)
+
+RPolarsExpr$arr_get <- function(index) .Call(wrap__RPolarsExpr__arr_get, self, index)
+
+RPolarsExpr$arr_join <- function(separator, ignore_nulls) .Call(wrap__RPolarsExpr__arr_join, self, separator, ignore_nulls)
+
+RPolarsExpr$arr_contains <- function(other) .Call(wrap__RPolarsExpr__arr_contains, self, other)
+
+RPolarsExpr$arr_count_matches <- function(expr) .Call(wrap__RPolarsExpr__arr_count_matches, self, expr)
 
 RPolarsExpr$dt_truncate <- function(every, offset) .Call(wrap__RPolarsExpr__dt_truncate, self, every, offset)
 

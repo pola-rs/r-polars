@@ -59,6 +59,8 @@ either = "1"
 features = [
   "abs",
   "approx_unique",
+  "array_any_all",
+  "array_count",
   "arg_where",
   "asof_join",
   "avro",
@@ -76,6 +78,7 @@ features = [
   "diff",
   "dot_diagram",
   "dot_product",
+  "dtype-array",
   "dtype-categorical",
   "dtype-date",
   "dtype-datetime",
