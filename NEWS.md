@@ -50,6 +50,12 @@
 
 -   `pl$threadpool_size()` is deprecated and will be removed in 0.15.0. Use
     `pl$thread_pool_size()` instead (#784).
+    
+### New features
+
+-   Implementation of the subnamespace `arr` for `array`-type columns. An `array`
+    column is similar to a `list` column, but is stricter as each sub-array
+    must have the same number of elements (#790). 
 
 ## Polars R Package 0.13.1
 
