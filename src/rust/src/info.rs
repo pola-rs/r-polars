@@ -5,12 +5,11 @@ use polars;
 fn cargo_rpolars_feature_info() -> List {
     list!(
         default = cfg!(feature = "default"),
-        // `full_features` is a combination of `simd` and `sql` features
-        full_features = cfg!(feature = "simd")
+        full_features = cfg!(feature = "nightly")
             & cfg!(feature = "sql")
             & cfg!(feature = "disable_limit_max_threads"),
         disable_limit_max_threads = cfg!(feature = "disable_limit_max_threads"),
-        simd = cfg!(feature = "simd"),
+        nightly = cfg!(feature = "nightly"),
         sql = cfg!(feature = "sql"),
         rpolars_debug_print = cfg!(feature = "rpolars_debug_print"),
     )

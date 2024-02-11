@@ -11,7 +11,7 @@
 #'
 #' polars_info()$rust_polars
 #'
-#' polars_info()$features$simd
+#' polars_info()$features$nightly
 polars_info = function() {
   # Similar to arrow::arrow_info()
   out = list(
@@ -58,7 +58,7 @@ print.polars_info = function(x, ...) {
 #' @return TRUE invisibly if the feature is enabled
 #' @examples
 #' tryCatch(
-#'   check_feature("simd", "in example"),
+#'   check_feature("nightly", "in example"),
 #'   error = \(e) cat(as.character(e))
 #' )
 #' tryCatch(

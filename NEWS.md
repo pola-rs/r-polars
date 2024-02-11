@@ -24,6 +24,8 @@
 
 ### Other breaking changes
 
+-   The `simd` feature of the Rust library is removed in favor of
+    the new `nightly` feature (#800).
 -   The following functions were deprecated in 0.13.0 and are now removed (#783):
     -   `$list$lengths()` -> `$list$len()`
     -   `pl$from_arrow()` -> `as_polars_df()` or `as_polars_series()`
@@ -50,6 +52,10 @@
 
 -   `pl$threadpool_size()` is deprecated and will be removed in 0.15.0. Use
     `pl$thread_pool_size()` instead (#784).
+
+### Other improvements
+
+-   The `sql` feature is included in the default feature (#800).
 
 ## Polars R Package 0.13.1
 

@@ -9,11 +9,13 @@ publish = false
 crate-type = ['staticlib']
 
 [features]
-default = []
-full_features = ["simd", "sql", "disable_limit_max_threads"]
+default = ["sql"]
+full_features = ["default", "nightly", "disable_limit_max_threads"]
 disable_limit_max_threads = []
-simd = ["polars/simd"]
 sql = ["polars/sql"]
+# also includes simd, requires nightly
+nightly = ["polars/nightly"]
+
 rpolars_debug_print = []
 
 [workspace]
