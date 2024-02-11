@@ -266,12 +266,12 @@ ExprStr_to_lowercase = function() {
 #' @keywords ExprStr
 #' @return Expr of String titlecase chars
 #' @details
-#' This method is only available with the "simd" feature.
-#' See [polars_info] for more details.
-#' @examplesIf polars_info()$features$simd
+#' This method is only available with the "nightly" feature.
+#' See [polars_info()] for more details.
+#' @examplesIf polars_info()$features$nightly
 #' pl$lit(c("hello there", "HI, THERE", NA))$str$to_titlecase()$to_series()
 ExprStr_to_titlecase = function() {
-  check_feature("simd", "in $to_titlecase():")
+  check_feature("nightly", "in $to_titlecase():")
 
   .pr$Expr$str_to_titlecase(self) |>
     unwrap("in $to_titlecase():")

@@ -12,7 +12,7 @@
       default                   FALSE
       full_features             FALSE
       disable_limit_max_threads FALSE
-      simd                      FALSE
+      nightly                   FALSE
       sql                       FALSE
       rpolars_debug_print       FALSE
       

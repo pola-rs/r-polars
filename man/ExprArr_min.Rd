@@ -14,11 +14,11 @@ Expr
 Find the minimum value in an array
 }
 \details{
-This method is only available with the "simd" feature.
-See \link{polars_info} for more details.
+This method is only available with the "nightly" feature.
+See \code{\link[=polars_info]{polars_info()}} for more details.
 }
 \examples{
-\dontshow{if (polars_info()$features$simd) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (polars_info()$features$nightly) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 df = pl$DataFrame(
   values = list(c(1, 2), c(3, 4), c(5, 6)),
   schema = list(values = pl$Array(pl$Float64, 2))

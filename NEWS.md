@@ -24,6 +24,8 @@
 
 ### Other breaking changes
 
+-   The `simd` feature of the Rust library is removed in favor of
+    the new `nightly` feature (#800).
 -   The following functions were deprecated in 0.13.0 and are now removed (#783):
     -   `$list$lengths()` -> `$list$len()`
     -   `pl$from_arrow()` -> `as_polars_df()` or `as_polars_series()`
@@ -56,6 +58,10 @@
 -   Implementation of the subnamespace `arr` for `array`-type columns. An `array`
     column is similar to a `list` column, but is stricter as each sub-array
     must have the same number of elements (#790). 
+
+### Other improvements
+
+-   The `sql` feature is included in the default feature (#800).
 
 ## Polars R Package 0.13.1
 
