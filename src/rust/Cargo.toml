@@ -9,7 +9,7 @@ publish = false
 crate-type = ['staticlib']
 
 [features]
-default = []
+default = ["sql"]
 full_features = ["nightly", "sql", "disable_limit_max_threads"]
 disable_limit_max_threads = []
 # also includes simd, requires nightly
