@@ -142,7 +142,6 @@ Currently `full_features` would work as a combination of the following features.
     See `?pl_thread_pool_size` for details.
 - Features for nightly toolchain
   - `nightly` for nightly toolchain features and SIMD.
-  - `sql` for enable `pl$SQLContext()`.
 
 Note that nightly features requires the Rust nightly toolchain `r rust_toolchain_version`.
 
