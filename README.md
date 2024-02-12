@@ -108,9 +108,11 @@ While one can use **polars** as-is, other packages build on it to
 provide different syntaxes:
 
 - [polarssql](https://rpolars.github.io/r-polarssql/) provides a
-  **polars** backend for `DBI` and `dbplyr`.
+  **polars** backend for [DBI](https://dbi.r-dbi.org/) and
+  [dbplyr](https://dbplyr.tidyverse.org/).
 - [tidypolars](https://tidypolars.etiennebacher.com/) allows one to use
-  the `tidyverse` syntax while using the power of **polars**.
+  the [tidyverse](https://www.tidyverse.org/) syntax while using the
+  power of **polars**.
 
 ## Getting help
 
