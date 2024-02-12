@@ -55,9 +55,9 @@
     
 ### New features
 
--   Implementation of the subnamespace `arr` for `array`-type columns. An `array`
-    column is similar to a `list` column, but is stricter as each sub-array
-    must have the same number of elements (#790). 
+-   Implementation of the subnamespace `$arr` for expressions on `array`-type
+    columns. An `array` column is similar to a `list` column, but is stricter as
+    each sub-array must have the same number of elements (#790).
 
 ### Other improvements
 
