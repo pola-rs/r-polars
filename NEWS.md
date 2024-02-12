@@ -26,6 +26,10 @@
 
 -   The `simd` feature of the Rust library is removed in favor of
     the new `nightly` feature (#800).
+    If you specified `simd` via the  `LIBR_POLARS_FEATURES` environment variable
+    during source installations, please use `nightly` instead;
+    there is no change if you specified `full_features` because
+    it now contains `nightly` instead of `simd`.
 -   The following functions were deprecated in 0.13.0 and are now removed (#783):
     -   `$list$lengths()` -> `$list$len()`
     -   `pl$from_arrow()` -> `as_polars_df()` or `as_polars_series()`
@@ -56,6 +60,8 @@
 ### Other improvements
 
 -   The `sql` feature is included in the default feature (#800).
+    This means that functionality related to the `RPolarsSQLContext` class
+    is now always included in the binary package.
 
 ## Polars R Package 0.13.1
 
