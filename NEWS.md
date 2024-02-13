@@ -2,6 +2,12 @@
 
 ## Polars R Package (development version)
 
+### New features
+
+-   New method `flags` for `DataFrame` to show the flags used internally for 
+    each column. The output of `flags` for `Series` was also improved and now
+    contains `FAST_EXPLODE` for `Series` of type `list` and `array`.
+
 ## Polars R Package 0.14.0
 
 ### Breaking changes due to Rust-polars update

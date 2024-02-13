@@ -265,15 +265,27 @@ test_that("to_frame", {
   )
 })
 
-
-test_that("sorted flags, sort", {
+test_that("flags work", {
   s = pl$Series(c(2, 1, 3))
-  expect_true(s$sort(descending = FALSE)$flags$SORTED_ASC)
-  expect_true(s$sort(descending = TRUE)$flags$SORTED_DESC)
-  expect_false(any(unlist(pl$Series(1:4)$flags)))
+  expect_identical(
+    s$sort()$flags,
+    list(SORTED_ASC = TRUE, SORTED_DESC = FALSE)
+  )
+  expect_identical(
+    s$sort(descending = TRUE)$flags,
+    list(SORTED_ASC = FALSE, SORTED_DESC = TRUE)
+  )
 
+  s = pl$Series(list(1, 2, 3))
+  expect_identical(
+    s$flags,
+    list(SORTED_ASC = FALSE, SORTED_DESC = FALSE, FAST_EXPLODE = TRUE)
+  )
+})
 
-  # Compare performance with Expr
+test_that("sort on Series and Expr gives same results", {
+  s = pl$Series(c(2, 1, 3))
+
   l = list(a = c(6, 1, 0, NA, Inf, -Inf, NaN))
   s = pl$Series(l$a, "a")
   l_actual_expr_sort = pl$DataFrame(l)$select(

@@ -1216,6 +1216,8 @@ RPolarsSeries$arg_min <- function() .Call(wrap__RPolarsSeries__arg_min, self)
 
 RPolarsSeries$arg_max <- function() .Call(wrap__RPolarsSeries__arg_max, self)
 
+RPolarsSeries$fast_explode_flag <- function() .Call(wrap__RPolarsSeries__fast_explode_flag, self)
+
 RPolarsSeries$is_sorted_flag <- function() .Call(wrap__RPolarsSeries__is_sorted_flag, self)
 
 RPolarsSeries$is_sorted_reverse_flag <- function() .Call(wrap__RPolarsSeries__is_sorted_reverse_flag, self)

@@ -2059,3 +2059,29 @@ DataFrame_group_by_dynamic = function(
     by, start_by, check_sorted
   )
 }
+
+#' Get flags for each column
+#'
+#' @description
+#' Flags are used internally to avoid doing unnecessary computations, such as
+#' sorting a variable that we know is already sorted. The number of flags varies
+#' depending on the column type: columns of type `array` and `list` have the
+#' flags `SORTED_ASC`, `SORTED_DESC`, and `FAST_EXPLODE`, while other column
+#' types only have the former two.
+#'
+#' `SORTED_ASC` is set to `TRUE` when we sort a column in increasing order, so
+#' that we can use this information later on to avoid re-sorting it. `SORTED_DESC`
+#' is similar but applies to sort in decreasing order.
+#'
+#' @return A nested list with column names at the top level and column flags
+#' in each sublist.
+#'
+#' @examples
+#' pl$DataFrame(a = c(2, 1), b = c(3, 4), c = list(c(1, 2), 4))$sort("a")$flags
+DataFrame_flags = method_as_property(function() {
+  out = lapply(self$columns, \(x) {
+    self[x]$to_series()$flags
+  })
+  names(out) = self$columns
+  out
+})

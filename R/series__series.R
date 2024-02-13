@@ -711,10 +711,17 @@ Series_dtype = method_as_property(function() {
 #' @examples
 #' pl$Series(1:4)$sort()$flags
 Series_flags = method_as_property(function() {
-  list(
+  out = list(
     "SORTED_ASC" = .pr$Series$is_sorted_flag(self),
     "SORTED_DESC" = .pr$Series$is_sorted_reverse_flag(self)
   )
+
+  # the width value given here doesn't matter, but pl$Array() must have one
+  if (pl$same_outer_dt(self$dtype, pl$List()) ||
+      pl$same_outer_dt(self$dtype, pl$Array(width = 1))) {
+    out[["FAST_EXPLODE"]] = .pr$Series$fast_explode_flag(self)
+  }
+  out
 })
 
 
