@@ -6,6 +6,7 @@ use extendr_api::prelude::*;
 use polars::prelude as pl;
 use polars::prelude::IntoSeries;
 use polars::prelude::NamedFrom;
+use polars::time::series;
 // Internal tree structure to contain Series of fully parsed nested Robject.
 // It is easier to resolve concatenated datatype after all elements have been parsed
 // because empty lists have no type in R, but the corrosponding polars type must be known before
@@ -286,20 +287,56 @@ fn concat_series_tree(
 
 
             // boubble any errors
-            let series_vec = series_vec_result?;
+            let mut series_vec = series_vec_result?;
 
+            rprintln!("{:?}", series_vec);
+            
             //TODO cast leafs type to any shared see polars_core::utils::get_supertype()
             // check for any type mismatch to avoid polars panics
-            let mut s_iter = series_vec.iter();
-            let first_s = s_iter.next();
-            for s_ref in s_iter {
-                if s_ref.dtype() != first_s.expect("could not loop if none first_s").dtype() {
-                    Err(pl::PolarsError::SchemaMismatch(format!(
-                        "When building series from R list; some parsed sub-elements did not match: One element was {} and another was {}",
-                        first_s.expect("dont worry about it").dtype(),s_ref.dtype()
-                    ).into()))?;
-                }
-            }
+            let first_s = series_vec.into_iter().nth(0).as_ref();
+            for x in series_vec.iter_mut() {
+                let cst = polars_core::utils::get_supertype(x.dtype(), first_s.expect("foo").dtype());
+                match cst {
+                    Some(dtype) => {
+                        x.cast(&dtype).unwrap()
+                    },
+                    _ => Err(pl::PolarsError::InvalidOperation(
+                        "`int64_conversion ` must be one of 'float', 'string', 'bit64'".into(),
+                    )).unwrap()
+                };
+                
+                // if cst.is_some() {
+                //     x.cast(&cst.unwrap()).unwrap()
+                // } else {
+                //     Err(pl::PolarsError::SchemaMismatch(format!(
+                //         "When building series from R list; some parsed sub-elements did not match and don't have a common supertype: One element was {} and another was {}",
+                //         first_s.expect("dont worry about it").dtype(), x.dtype()
+                //     ).into()))?;
+                // };
+                // *x
+            };
+
+
+            // series_vec.iter_mut().for_each(|i| {
+            //     let x = polars_core::utils::get_supertype(i.dtype(), first_s.expect("foo").dtype());
+            //     if x.is_some() {
+            //         i.cast(&x.unwrap()).unwrap()
+            //     } else {
+            //         Err(pl::PolarsError::SchemaMismatch(format!(
+            //             "When building series from R list; some parsed sub-elements did not match and don't have a common supertype: One element was {} and another was {}",
+            //             first_s.expect("dont worry about it").dtype(),i.dtype()
+            //         ).into()))?;
+            //     };
+            //     *i
+            // });
+            // for s_ref in s_iter {
+            //     let x = polars_core::utils::get_supertype(s_ref.dtype(), first_s.expect("foo").dtype());
+            //     if Some(x) {
+            //         s_iter 
+            //     } else {
+                    
+            //     }
+            // }
 
             // use polars new method to concat concatenated series
             Ok(pl::Series::new(name, series_vec))
