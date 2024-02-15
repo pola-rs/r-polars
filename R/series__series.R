@@ -2,23 +2,44 @@
 #'
 #' @name Series_class
 #' @description The `Series`-class is simply two environments of respectively
-#' the public and private methods/function calls to the polars rust side. The instantiated
-#' `Series`-object is an `externalptr` to a lowlevel rust polars Series  object. The pointer address
-#' is the only statefullness of the Series object on the R side. Any other state resides on the
-#' rust side. The S3 method `.DollarNames.RPolarsSeries` exposes all public `$foobar()`-methods which are callable onto the object.
-#' Most methods return another `Series`-class instance or similar which allows for method chaining.
-#' This class system in lack of a better name could be called "environment classes" and is the same class
-#' system extendr provides, except here there is both a public and private set of methods. For implementation
-#' reasons, the private methods are external and must be called from `.pr$Series$methodname()`, also
-#' all private methods must take any self as an argument, thus they are pure functions. Having the private methods
-#' as pure functions solved/simplified self-referential complications.
+#'   the public and private methods/function calls to the polars rust side. The
+#'   instantiated `Series`-object is an `externalptr` to a lowlevel rust polars
+#'   Series  object. The pointer address is the only statefullness of the Series
+#'   object on the R side. Any other state resides on the rust side. The S3
+#'   method `.DollarNames.RPolarsSeries` exposes all public `$foobar()`-methods
+#'   which are callable onto the object. Most methods return another
+#'   `Series`-class instance or similar which allows for method chaining. This
+#'   class system in lack of a better name could be called "environment classes"
+#'   and is the same class system extendr provides, except here there is both a
+#'   public and private set of methods. For implementation reasons, the private
+#'   methods are external and must be called from `.pr$Series$methodname()`,
+#'   also all private methods must take any self as an argument, thus they are
+#'   pure functions. Having the private methods as pure functions
+#'   solved/simplified self-referential complications.
 #'
-#' @details Check out the source code in R/Series_frame.R how public methods are derived from private methods.
-#' Check out  extendr-wrappers.R to see the extendr-auto-generated methods. These are moved to .pr and converted
-#' into pure external functions in after-wrappers.R. In zzz.R (named zzz to be last file sourced) the extendr-methods
-#' are removed and replaced by any function prefixed `Series_`.
+#' @details Check out the source code in R/Series_frame.R how public methods are
+#'   derived from private methods. Check out  extendr-wrappers.R to see the
+#'   extendr-auto-generated methods. These are moved to .pr and converted into
+#'   pure external functions in after-wrappers.R. In zzz.R (named zzz to be last
+#'   file sourced) the extendr-methods are removed and replaced by any function
+#'   prefixed `Series_`.
+#'
+#' @section Flags:
+#'
+#'   Flags are used internally to avoid doing unnecessary computations, such as
+#'   sorting a variable that we know is already sorted. The number of flags
+#'   varies depending on the column type: columns of type `array` and `list`
+#'   have the flags `SORTED_ASC`, `SORTED_DESC`, and `FAST_EXPLODE`, while other
+#'   column types only have the former two.
+#'
+#'   `SORTED_ASC` is set to `TRUE` when we sort a column in increasing order, so
+#'   that we can use this information later on to avoid re-sorting it.
+#'   `SORTED_DESC` is similar but applies to sort in decreasing order.
 #'
 #' @keywords Series
+#'
+#' @return `$flags` returns a named list with flag names and their values.
+#'
 #' @examples
 #' pl$show_all_public_methods("RPolarsSeries")
 #'
@@ -26,11 +47,13 @@
 #' ls(.pr$Series)
 #'
 #' # make an object
-#' s = pl$Series(1:3)
+#' s = pl$Series(c(1:3, 1L))
 #'
 #' # use a public method/property
 #' s$shape
 #'
+#' # show flags
+#' s$sort()$flags
 #'
 #' # use a private method (mutable append not allowed in public api)
 #' s_copy = s
@@ -38,7 +61,20 @@
 #' identical(s_copy$to_r(), s$to_r()) # s_copy was modified when s was modified
 NULL
 
+#' @rdname Series_class
+Series_flags = method_as_property(function() {
+  out = list(
+    "SORTED_ASC" = .pr$Series$is_sorted_flag(self),
+    "SORTED_DESC" = .pr$Series$is_sorted_reverse_flag(self)
+  )
 
+  # the width value given here doesn't matter, but pl$Array() must have one
+  if (pl$same_outer_dt(self$dtype, pl$List()) ||
+    pl$same_outer_dt(self$dtype, pl$Array(width = 1))) {
+    out[["FAST_EXPLODE"]] = .pr$Series$fast_explode_flag(self)
+  }
+  out
+})
 
 
 #' Wrap as Series
@@ -701,29 +737,6 @@ Series_std = function(ddof = 1) {
 Series_dtype = method_as_property(function() {
   .pr$Series$dtype(self)
 })
-
-#' Get data type of Series
-#' @keywords Series
-#' @return DataType
-#' @aliases Series_flags
-#' @name Series_flags
-#' @details property sorted flags are not settable, use set_sorted
-#' @examples
-#' pl$Series(1:4)$sort()$flags
-Series_flags = method_as_property(function() {
-  out = list(
-    "SORTED_ASC" = .pr$Series$is_sorted_flag(self),
-    "SORTED_DESC" = .pr$Series$is_sorted_reverse_flag(self)
-  )
-
-  # the width value given here doesn't matter, but pl$Array() must have one
-  if (pl$same_outer_dt(self$dtype, pl$List()) ||
-      pl$same_outer_dt(self$dtype, pl$Array(width = 1))) {
-    out[["FAST_EXPLODE"]] = .pr$Series$fast_explode_flag(self)
-  }
-  out
-})
-
 
 ## wait until in included in next py-polars release
 ### contribute polars, exposee nulls_last option
