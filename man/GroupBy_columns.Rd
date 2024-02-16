@@ -13,7 +13,7 @@ A character vector with the column names.
 Get and set column names of a GroupBy
 }
 \examples{
-gb = pl$GroupBy(iris)$group_by("Species")
+gb = pl$DataFrame(iris)$group_by("Species")
 
 # get values
 gb$columns

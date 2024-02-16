@@ -79,7 +79,7 @@ print.RPolarsGroupBy = function(x, ...) {
 #' @keywords GroupBy
 #'
 #' @examples
-#' gb = pl$GroupBy(iris)$group_by("Species")
+#' gb = pl$DataFrame(iris)$group_by("Species")
 #'
 #' # get values
 #' gb$columns

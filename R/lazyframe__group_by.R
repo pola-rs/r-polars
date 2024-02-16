@@ -62,7 +62,7 @@ DataFrame_columns = method_as_property(function() {
 #' @keywords LazyGroupBy
 #'
 #' @examples
-#' lgb = pl$LazyGroupBy(iris)$lazy()$group_by("Species")
+#' lgb = pl$LazyFrame(iris)$group_by("Species")
 #'
 #' # get values
 #' lgb$columns

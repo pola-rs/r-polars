@@ -13,7 +13,7 @@ A character vector with the column names.
 Get and set column names of a LazyGroupBy
 }
 \examples{
-lgb = pl$LazyGroupBy(iris)$lazy()$group_by("Species")
+lgb = pl$LazyFrame(iris)$group_by("Species")
 
 # get values
 lgb$columns
