@@ -93,7 +93,7 @@ NULL
 #' @rdname DataFrame_class
 DataFrame_flags = method_as_property(function() {
   out = lapply(self$columns, \(x) {
-    self[x]$to_series()$flags
+    self[, x]$flags
   })
   names(out) = self$columns
   out
