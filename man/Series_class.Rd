@@ -2,14 +2,7 @@
 % Please edit documentation in R/series__series.R
 \name{Series_class}
 \alias{Series_class}
-\alias{Series_flags}
 \title{Inner workings of the Series-class}
-\usage{
-Series_flags()
-}
-\value{
-\verb{$flags} returns a named list with flag names and their values.
-}
 \description{
 The \code{Series}-class is simply two environments of respectively
 the public and private methods/function calls to the polars rust side. The
@@ -35,18 +28,23 @@ pure external functions in after-wrappers.R. In zzz.R (named zzz to be last
 file sourced) the extendr-methods are removed and replaced by any function
 prefixed \code{Series_}.
 }
-\section{Flags}{
+\section{Active bindings}{
 
+\subsection{flags}{
+
+\verb{$flags} returns a named list with flag names and their values.
 
 Flags are used internally to avoid doing unnecessary computations, such as
 sorting a variable that we know is already sorted. The number of flags
 varies depending on the column type: columns of type \code{array} and \code{list}
 have the flags \code{SORTED_ASC}, \code{SORTED_DESC}, and \code{FAST_EXPLODE}, while other
 column types only have the former two.
-
-\code{SORTED_ASC} is set to \code{TRUE} when we sort a column in increasing order, so
+\itemize{
+\item \code{SORTED_ASC} is set to \code{TRUE} when we sort a column in increasing order, so
 that we can use this information later on to avoid re-sorting it.
-\code{SORTED_DESC} is similar but applies to sort in decreasing order.
+\item \code{SORTED_DESC} is similar but applies to sort in decreasing order.
+}
+}
 }
 
 \examples{

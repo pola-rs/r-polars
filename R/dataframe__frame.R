@@ -17,7 +17,12 @@
 #' `self` as an argument, thus they are pure functions. Having the private
 #' methods as pure functions solved/simplified self-referential complications.
 #'
-#' @section Flags:
+#' @section Active bindings:
+#'
+#' ## flags
+#'
+#' `$flags` returns a nested list with column names at the top level and
+#' column flags in each sublist.
 #'
 #' Flags are used internally to avoid doing unnecessary computations, such as
 #' sorting a variable that we know is already sorted. The number of flags
@@ -25,9 +30,9 @@
 #' have the flags `SORTED_ASC`, `SORTED_DESC`, and `FAST_EXPLODE`, while other
 #' column types only have the former two.
 #'
-#' `SORTED_ASC` is set to `TRUE` when we sort a column in increasing order, so
-#' that we can use this information later on to avoid re-sorting it.
-#' `SORTED_DESC` is similar but applies to sort in decreasing order.
+#' - `SORTED_ASC` is set to `TRUE` when we sort a column in increasing order, so
+#'   that we can use this information later on to avoid re-sorting it.
+#' - `SORTED_DESC` is similar but applies to sort in decreasing order.
 #'
 #' @details Check out the source code in
 #' [R/dataframe_frame.R](https://github.com/pola-rs/r-polars/blob/main/R/dataframe__frame.R)
@@ -41,8 +46,6 @@
 #' replaced by any function prefixed `DataFrame_`.
 #'
 #' @keywords DataFrame
-#' @return `$flags` returns a nested list with column names at the top level and
-#' column flags in each sublist.
 #'
 #' @examples
 #' # see all public exported method names (normally accessed via a class
@@ -90,7 +93,7 @@
 #' tryCatch(unwrap(err_result, call = NULL), error = \(e) cat(as.character(e)))
 NULL
 
-#' @rdname DataFrame_class
+
 DataFrame_flags = method_as_property(function() {
   out = lapply(self$columns, \(x) {
     self[x]$to_series()$flags
@@ -98,8 +101,6 @@ DataFrame_flags = method_as_property(function() {
   names(out) = self$columns
   out
 })
-
-
 
 
 #' @title auto complete $-access into a polars object

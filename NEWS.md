@@ -4,7 +4,7 @@
 
 ### New features
 
--   New attribute `flags` for `DataFrame` to show the flags used internally for 
+-   New active bindings `$flags` for `DataFrame` to show the flags used internally for
     each column. The output of `flags` for `Series` was also improved and now
     contains `FAST_EXPLODE` for `Series` of type `list` and `array`.
 

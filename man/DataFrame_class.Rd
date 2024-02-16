@@ -2,15 +2,7 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_class}
 \alias{DataFrame_class}
-\alias{DataFrame_flags}
 \title{Inner workings of the DataFrame-class}
-\usage{
-DataFrame_flags()
-}
-\value{
-\verb{$flags} returns a nested list with column names at the top level and
-column flags in each sublist.
-}
 \description{
 The \code{DataFrame}-class is simply two environments of respectively
 the public and private methods/function calls to the polars Rust side. The
@@ -40,18 +32,24 @@ In \href{https://github.com/pola-rs/r-polars/blob/main/R/zzz.R}{zzz.R} (named
 \code{zzz} to be last file sourced) the \code{extendr}-methods are removed and
 replaced by any function prefixed \code{DataFrame_}.
 }
-\section{Flags}{
+\section{Active bindings}{
 
+\subsection{flags}{
+
+\verb{$flags} returns a nested list with column names at the top level and
+column flags in each sublist.
 
 Flags are used internally to avoid doing unnecessary computations, such as
 sorting a variable that we know is already sorted. The number of flags
 varies depending on the column type: columns of type \code{array} and \code{list}
 have the flags \code{SORTED_ASC}, \code{SORTED_DESC}, and \code{FAST_EXPLODE}, while other
 column types only have the former two.
-
-\code{SORTED_ASC} is set to \code{TRUE} when we sort a column in increasing order, so
+\itemize{
+\item \code{SORTED_ASC} is set to \code{TRUE} when we sort a column in increasing order, so
 that we can use this information later on to avoid re-sorting it.
-\code{SORTED_DESC} is similar but applies to sort in decreasing order.
+\item \code{SORTED_DESC} is similar but applies to sort in decreasing order.
+}
+}
 }
 
 \examples{

@@ -24,7 +24,11 @@
 #' file sourced) the extendr-methods are removed and replaced by any function
 #' prefixed `Series_`.
 #'
-#' @section Flags:
+#' @section Active bindings:
+#'
+#' ## flags
+#'
+#' `$flags` returns a named list with flag names and their values.
 #'
 #' Flags are used internally to avoid doing unnecessary computations, such as
 #' sorting a variable that we know is already sorted. The number of flags
@@ -32,13 +36,11 @@
 #' have the flags `SORTED_ASC`, `SORTED_DESC`, and `FAST_EXPLODE`, while other
 #' column types only have the former two.
 #'
-#' `SORTED_ASC` is set to `TRUE` when we sort a column in increasing order, so
-#' that we can use this information later on to avoid re-sorting it.
-#' `SORTED_DESC` is similar but applies to sort in decreasing order.
+#' - `SORTED_ASC` is set to `TRUE` when we sort a column in increasing order, so
+#'   that we can use this information later on to avoid re-sorting it.
+#' - `SORTED_DESC` is similar but applies to sort in decreasing order.
 #'
 #' @keywords Series
-#'
-#' @return `$flags` returns a named list with flag names and their values.
 #'
 #' @examples
 #' pl$show_all_public_methods("RPolarsSeries")
@@ -61,7 +63,7 @@
 #' identical(s_copy$to_r(), s$to_r()) # s_copy was modified when s was modified
 NULL
 
-#' @rdname Series_class
+
 Series_flags = method_as_property(function() {
   out = list(
     "SORTED_ASC" = .pr$Series$is_sorted_flag(self),
