@@ -130,14 +130,22 @@ impl RPolarsSeries {
         self.0.arg_max()
     }
 
-    pub fn is_sorted_flag(&self) -> bool {
-        matches!(self.0.is_sorted_flag(), polars::series::IsSorted::Ascending)
+    pub fn fast_explode_flag(&self) -> bool {
+        self.0
+            .get_flags()
+            .contains(polars::chunked_array::Settings::FAST_EXPLODE_LIST)
     }
+
+    pub fn is_sorted_flag(&self) -> bool {
+        self.0
+            .get_flags()
+            .contains(polars::chunked_array::Settings::SORTED_ASC)
+    }
+
     pub fn is_sorted_reverse_flag(&self) -> bool {
-        matches!(
-            self.0.is_sorted_flag(),
-            polars::series::IsSorted::Descending
-        )
+        self.0
+            .get_flags()
+            .contains(polars::chunked_array::Settings::SORTED_DSC)
     }
 
     pub fn is_sorted(&self, descending: Robj) -> RResult<bool> {

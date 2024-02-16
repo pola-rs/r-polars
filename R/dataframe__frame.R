@@ -1,34 +1,52 @@
 #' @title Inner workings of the DataFrame-class
 #'
 #' @name DataFrame_class
-#' @description
-#' The `DataFrame`-class is simply two environments of respectively the public
-#' and private methods/function calls to the polars Rust side. The instantiated
-#' `DataFrame`-object is an `externalptr` to a low-level Rust polars DataFrame
-#' object.
+#' @description The `DataFrame`-class is simply two environments of respectively
+#' the public and private methods/function calls to the polars Rust side. The
+#' instantiated `DataFrame`-object is an `externalptr` to a low-level Rust
+#' polars DataFrame object.
 #'
-#' The S3 method `.DollarNames.RPolarsDataFrame` exposes all public `$foobar()`-methods
-#' which are callable onto the object. Most methods return another `DataFrame`-
-#' class instance or similar which allows for method chaining. This class system
-#' could be called "environment classes" (in lack of a better name) and is the
-#' same class system `extendr` provides, except here there are both a public and
-#' private set of methods. For implementation reasons, the private methods are
-#' external and must be called from `.pr$DataFrame$methodname()`. Also, all
-#' private methods must take any `self` as an argument, thus they are pure
-#' functions. Having the private methods as pure functions solved/simplified
-#' self-referential complications.
+#' The S3 method `.DollarNames.RPolarsDataFrame` exposes all public
+#' `$foobar()`-methods which are callable onto the object. Most methods return
+#' another `DataFrame`- class instance or similar which allows for method
+#' chaining. This class system could be called "environment classes" (in lack
+#' of a better name) and is the same class system `extendr` provides, except
+#' here there are both a public and private set of methods. For implementation
+#' reasons, the private methods are external and must be called from
+#' `.pr$DataFrame$methodname()`. Also, all private methods must take any
+#' `self` as an argument, thus they are pure functions. Having the private
+#' methods as pure functions solved/simplified self-referential complications.
 #'
-#' @details
-#' Check out the source code in [R/dataframe_frame.R](https://github.com/pola-rs/r-polars/blob/main/R/dataframe__frame.R)
+#' @section Active bindings:
+#'
+#' ## flags
+#'
+#' `$flags` returns a nested list with column names at the top level and
+#' column flags in each sublist.
+#'
+#' Flags are used internally to avoid doing unnecessary computations, such as
+#' sorting a variable that we know is already sorted. The number of flags
+#' varies depending on the column type: columns of type `array` and `list`
+#' have the flags `SORTED_ASC`, `SORTED_DESC`, and `FAST_EXPLODE`, while other
+#' column types only have the former two.
+#'
+#' - `SORTED_ASC` is set to `TRUE` when we sort a column in increasing order, so
+#'   that we can use this information later on to avoid re-sorting it.
+#' - `SORTED_DESC` is similar but applies to sort in decreasing order.
+#'
+#' @details Check out the source code in
+#' [R/dataframe_frame.R](https://github.com/pola-rs/r-polars/blob/main/R/dataframe__frame.R)
 #' to see how public methods are derived from private methods. Check out
 #' [extendr-wrappers.R](https://github.com/pola-rs/r-polars/blob/main/R/extendr-wrappers.R)
 #' to see the `extendr`-auto-generated methods. These are moved to `.pr` and
-#' converted into pure external functions in [after-wrappers.R](https://github.com/pola-rs/r-polars/blob/main/R/after-wrappers.R). In [zzz.R](https://github.com/pola-rs/r-polars/blob/main/R/zzz.R)
-#' (named `zzz` to be last file sourced) the `extendr`-methods are removed and
+#' converted into pure external functions in
+#' [after-wrappers.R](https://github.com/pola-rs/r-polars/blob/main/R/after-wrappers.R).
+#' In [zzz.R](https://github.com/pola-rs/r-polars/blob/main/R/zzz.R) (named
+#' `zzz` to be last file sourced) the `extendr`-methods are removed and
 #' replaced by any function prefixed `DataFrame_`.
 #'
 #' @keywords DataFrame
-#' @return Not applicable
+#'
 #' @examples
 #' # see all public exported method names (normally accessed via a class
 #' # instance with $)
@@ -40,7 +58,6 @@
 #'
 #' # make an object
 #' df = pl$DataFrame(iris)
-#'
 #'
 #' # use a public method/property
 #' df$shape
@@ -54,6 +71,9 @@
 #' # There are no public methods with mutability.
 #' df$columns
 #' df2$columns
+#'
+#' # Show flags
+#' df$sort("Sepal.Length")$flags
 #'
 #' # set_column_from_robj-method is fallible and returned a result which could
 #' # be "ok" or an error.
@@ -72,6 +92,15 @@
 #' err_result = .pr$DataFrame$set_column_from_robj(df, 1:10000, "wrong_length")
 #' tryCatch(unwrap(err_result, call = NULL), error = \(e) cat(as.character(e)))
 NULL
+
+
+DataFrame_flags = method_as_property(function() {
+  out = lapply(self$columns, \(x) {
+    self[, x]$flags
+  })
+  names(out) = self$columns
+  out
+})
 
 
 #' @title auto complete $-access into a polars object
@@ -1400,9 +1429,9 @@ DataFrame_melt = function(
 #' @param columns  Name of the column(s) whose values will be used as the header
 #' of the output DataFrame.
 #' @param aggregate_function One of:
-#'   - string indicating the expressions to aggregate with, such as 'first',
-#'     'sum', 'max', 'min', 'mean', 'median', 'last', 'count'),
-#'   - an Expr e.g. `pl$element()$sum()`
+#' - string indicating the expressions to aggregate with, such as 'first',
+#'   'sum', 'max', 'min', 'mean', 'median', 'last', 'count'),
+#' - an Expr e.g. `pl$element()$sum()`
 #' @param maintain_order Sort the grouped keys so that the output order is
 #' predictable.
 #' @param sort_columns Sort the transposed columns by name. Default is by order

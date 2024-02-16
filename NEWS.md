@@ -2,6 +2,11 @@
 
 ## Polars R Package (development version)
 
+### New features
+
+-   New active bindings `$flags` for `DataFrame` to show the flags used internally for
+    each column. The output of `$flags` for `Series` was also improved and now
+    contains `FAST_EXPLODE` for `Series` of type `list` and `array` (#809).
 -   Use `pl$code_completion(activate = TRUE)` to enable code suggestions and
     autocompletion after `$` on polars objects. This is an experimental feature
     that is disabled by default. For now, it is only supported in the native R 
