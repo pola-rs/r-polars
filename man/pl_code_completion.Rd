@@ -14,12 +14,11 @@ pl_code_completion(
 \item{activate}{Activate or deactivate the RStudio code completion}
 
 \item{mode}{One of \code{"auto"}, \code{"rstudio"}, or \code{"native"}. Automatic mode picks
-\code{"rstudio"} if  \code{"tools:rstudio"} is found in \code{search()}. \code{"rstudio"} modifies
-rstudio code internal \code{.DollarNames} and function args completion. \code{"native"}
-registers a custom line buffer completer with
-\code{utils:::rc.getOption("custom.completer")}. Rstudio IDE does not behave well
-with \code{utils:::rc.getOption("custom.completer")} and therefore has its own
-custom completion.}
+\code{"rstudio"} if \code{.Platform$GUI} is \code{"RStudio"}. \code{"native"} registers a custom
+line buffer completer with \code{utils:::rc.getOption("custom.completer")}.
+\code{"rstudio"} modifies RStudio code internal \code{.DollarNames} and function args
+completion, as the IDE does not behave well with
+\code{utils:::rc.getOption("custom.completer")}.}
 
 \item{verbose}{Print message of what mode is started.}
 }
@@ -31,24 +30,25 @@ Polars code completion has one implementation for an native terminal via
 \code{utils:::rc.getOption("custom.completer")} and one for Rstudio by intercepting
 Rstudio internal functions \code{.rs.getCompletionsFunction} &
 \code{.rs.getCompletionsDollar} in the loaded session environment \code{tools:rstudio}.
-Any blame for sluggishness or errors should be directed to r-polars.
+Therefore, any error or slowness in the completion is likely to come from
+r-polars implementation.
 
 Either completers will evaluate the full line-buffer to decide what methods
 are available. Pressing tab will literally evaluate left-hand-side with any
-following side. This works swiftly for the polars lazy API. For the eager API
-any table transformation is literally envoked. For large DataFrame and Series
-this could be slow.
+following side. This works swiftly for the polars lazy API, but it can take
+some time for the eager API depending on the size of the data and of the
+query.
 }
 \examples{
 \dontrun{
 # activate completion
 pl$code_completion()
 
-pl$DataFrame(iris)$lazy() # add a $ and press tab to see methods of LazyFrame
+pl$LazyFrame(iris)
 
-# Arg + column-name completion. Rstudio only for now
-pl$DataFrame(iris)$lazy()$group_by() # press tab inside group_by() to see args and/or column
-names.
+# Arg + column-name completion
+# press tab inside group_by() to see args and/or column names.
+pl$LazyFrame(iris)$group_by()
 
 # deactivate like this or restart R session
 pl$code_completion(activate = FALSE)

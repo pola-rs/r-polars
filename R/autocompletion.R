@@ -2,27 +2,26 @@
 #'
 #' @param activate Activate or deactivate the RStudio code completion
 #' @param mode One of `"auto"`, `"rstudio"`, or `"native"`. Automatic mode picks
-#' `"rstudio"` if  `"tools:rstudio"` is found in `search()`. `"rstudio"` modifies
-#' rstudio code internal `.DollarNames` and function args completion. `"native"`
-#' registers a custom line buffer completer with
-#' `utils:::rc.getOption("custom.completer")`. Rstudio IDE does not behave well
-#' with `utils:::rc.getOption("custom.completer")` and therefore has its own
-#' custom completion.
-#'
+#' `"rstudio"` if `.Platform$GUI` is `"RStudio"`. `"native"` registers a custom
+#' line buffer completer with `utils:::rc.getOption("custom.completer")`.
+#' `"rstudio"` modifies RStudio code internal `.DollarNames` and function args
+#' completion, as the IDE does not behave well with
+#' `utils:::rc.getOption("custom.completer")`.
 #' @param verbose Print message of what mode is started.
-#' @details
 #'
+#' @details
 #' Polars code completion has one implementation for an native terminal via
 #' `utils:::rc.getOption("custom.completer")` and one for Rstudio by intercepting
 #' Rstudio internal functions `.rs.getCompletionsFunction` &
 #' `.rs.getCompletionsDollar` in the loaded session environment `tools:rstudio`.
-#' Any blame for sluggishness or errors should be directed to r-polars.
+#' Therefore, any error or slowness in the completion is likely to come from
+#' r-polars implementation.
 #'
 #' Either completers will evaluate the full line-buffer to decide what methods
 #' are available. Pressing tab will literally evaluate left-hand-side with any
-#' following side. This works swiftly for the polars lazy API. For the eager API
-#' any table transformation is literally envoked. For large DataFrame and Series
-#' this could be slow.
+#' following side. This works swiftly for the polars lazy API, but it can take
+#' some time for the eager API depending on the size of the data and of the
+#' query.
 #'
 #' @return NULL
 #'
@@ -32,11 +31,12 @@
 #' pl$code_completion()
 #'
 #  # method / property completion for chained expressions
-#' pl$DataFrame(iris)$lazy() # add a $ and press tab to see methods of LazyFrame
+#  # add a $ and press tab to see methods of LazyFrame
+#' pl$LazyFrame(iris)
 #'
-#' # Arg + column-name completion. Rstudio only for now
-#' pl$DataFrame(iris)$lazy()$group_by() # press tab inside group_by() to see args and/or column
-#' names.
+#' # Arg + column-name completion
+#' # press tab inside group_by() to see args and/or column names.
+#' pl$LazyFrame(iris)$group_by()
 #'
 #' # deactivate like this or restart R session
 #' pl$code_completion(activate = FALSE)
@@ -105,10 +105,6 @@ native_completion = function(activate = TRUE) {
       # generate a new completion or multiple...
       lb_wo_token = sub(paste0("\\Q", CE_frozen$token, "\\E", "$"), replacement = "", lb)
       first_token_char = substr(CE_frozen$token, 1L, 1L)
-      # if(!exists(".no_browse")) {
-      #   browser()
-      #   assign(".no_browse",value = 1,envir = .GlobalEnv)
-      # }
       if (first_token_char == "$" && nchar(lb_wo_token) > 1L) {
         # eval last expression prior to token
         res = result(eval(tail(parse(text = lb_wo_token), 1)))

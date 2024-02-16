@@ -15,7 +15,7 @@
       TRUE
     },
     error = function(e) {
-      message("could no auto complete syntax because:")
+      message("Couldn't auto complete syntax because:")
       if (inherits(e, "RPolarsErr_error")) {
         message(result(stop(e))$err$rcall(string))
       } else if (
@@ -38,6 +38,7 @@
     x,
     c(
       "RPolarsLazyFrame", "RPolarsSeries", "RPolarsLazyGroupBy", "RPolarsDataType",
+      "RPolarsRollingGroupBy", "RPolarsDynamicGroupBy",
       "RPolarsExpr", "RPolarsDataFrame", "RPolarsWhen", "RPolarsThen",
       "RPolarsChainedWhen", "RPolarsChainedThen", "RPolarsSQLContext",
       "method_environment", "RPolarsGroupBy"
@@ -56,7 +57,8 @@
   )
 }
 
-# decide if some function/method recursively has the polars nameSpace as parant environment.
+# decide if some function/method recursively has the polars namespace as parent
+# environment.
 .rs_complete$is_polars_function = function(x, limit_search = 256) {
   pl_env = asNamespace("polars")
   if (!is.function(x)) {
@@ -82,15 +84,14 @@
 }
 
 
-#' activate_polars_rstudio_completion
-#' @name activate_polars_rstudio_completion
+#' Activate_polars_rstudio_completion
+#'
 #' @return NULL
 #' @details
 #' Modifies rstudio auto-completion functions by wrapping them.
 #'
 #' Any other package can also wrap these or other completion functions.
 #' Multiple wrappers can also co-exists, just keep the signature the same.
-#'
 #'
 #' @noRd
 .rs_complete$activate = function() {

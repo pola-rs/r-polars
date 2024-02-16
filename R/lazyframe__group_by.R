@@ -33,27 +33,6 @@ print.RPolarsLazyGroupBy = function(x, ...) {
   paste0(ls(RPolarsLazyGroupBy, pattern = pattern), completion_symbols$method)
 }
 
-#' Get and set column names of a DataFrame
-#' @name DataFrame_columns
-#' @rdname DataFrame_columns
-#'
-#' @return A character vector with the column names.
-#' @keywords DataFrame
-#'
-#' @examples
-#' df = pl$DataFrame(iris)
-#'
-#' # get values
-#' df$columns
-#'
-#' # set + get values
-#' df$columns = letters[1:5] # <- is fine too
-#' df$columns
-DataFrame_columns = method_as_property(function() {
-  .pr$DataFrame$columns(self)
-}, setter = TRUE)
-
-
 #' Get and set column names of a LazyGroupBy
 #' @name LazyGroupBy_columns
 #' @rdname LazyGroupBy_columns
@@ -69,8 +48,6 @@ DataFrame_columns = method_as_property(function() {
 LazyGroupBy_columns = method_as_property(function() {
   self$ungroup()$columns
 })
-
-
 
 
 #' @title LazyGroupBy_agg
