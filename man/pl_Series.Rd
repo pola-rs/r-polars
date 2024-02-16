@@ -19,8 +19,6 @@ Series
 found in api as pl$Series named Series_constructor internally
 }
 \examples{
-{
-  pl$Series(1:4)
-}
+pl$Series(1:4)
 }
 \keyword{Series_new}
