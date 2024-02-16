@@ -151,9 +151,9 @@ move_env_elements(RPolarsExpr, pl, c("lit"), remove = FALSE)
 
   # activate improved code completion in RStudio only
   if (is_rstudio()) {
-    message("Experimental RStudio code completion with polars methods.")
-    message("Deactivate with `pl$polars_code_completions(FALSE)`.")
-    pl$polars_code_completion(activate = TRUE, verbose = FALSE)
+    packageStartupMessage("Experimental RStudio code completion with polars methods is available.")
+    packageStartupMessage("Activate it with `pl$code_completion(activate = TRUE)`.")
+    pl$code_completion(activate = FALSE)
   }
 
   # instanciate one of each DataType (it's just an enum)
