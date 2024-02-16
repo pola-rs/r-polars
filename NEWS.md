@@ -2,12 +2,11 @@
 
 ## Polars R Package (development version)
 
-<<<<<<< HEAD
--   Use `pl$polars_code_completion()` to assist writing polars syntax. Support 
-    for native R terminal and Rstudio. (#597).
+-   Use `pl$code_completion(activate = TRUE)` to enable code suggestions and
+    autocompletion after `$` on polars objects. This is an experimental feature
+    that is disabled by default. For now, it is only supported in the native R 
+    terminal and in RStudio (#597).
 
-## polars 0.13.0
-=======
 ## Polars R Package 0.14.0
 
 ### Breaking changes due to Rust-polars update
@@ -100,7 +99,6 @@
 -   `downlit::autolink()` now recognize the reference pages of this package (#739).
 
 ## Polars R Package 0.13.0
->>>>>>> main
 
 ### Breaking changes
 
