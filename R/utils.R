@@ -71,15 +71,6 @@ verify_method_call = function(Class_env, Method_name, call = sys.call(sys.nframe
     Err_plain(
       paste(
         "$ - syntax error:", Method_name, "is not a method/attribute of the class", class_name
-        # ,
-        #
-        #         # add call to error messages
-        #         if (!polars_optenv$do_not_repeat_call) {
-        #           paste(
-        #             "\n when calling method:\n",
-        #             paste(capture.output(print(call)), collapse = "\n")
-        #           )
-        #         }
       )
     ) |> unwrap(call = call)
   }
