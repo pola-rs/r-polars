@@ -82,7 +82,7 @@ Series_flags = method_as_property(function() {
 #'
 #' Create an object namespace of all string related methods. See the individual
 #' method pages for full details.
-#' @return Expr
+#' @return Series
 #' @noRd
 Series_str = method_as_property(function() {
   series_str_make_sub_ns(self)
