@@ -308,12 +308,19 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 #' df = pl$DataFrame(mtcars)
 #'
 #' # by default, the index starts at 0 (to mimic the behavior of Python Polars)
-#' df$with_row_count("idx")
+#' df$with_row_index("idx")
 #'
 #' # but in R, we use a 1-index
-#' df$with_row_count("idx", offset = 1)
+#' df$with_row_index("idx", offset = 1)
+DataFrame_with_row_index = function(name, offset = NULL) {
+  .pr$DataFrame$with_row_index(self, name, offset) |>
+    unwrap("in $with_row_index():")
+}
+
 DataFrame_with_row_count = function(name, offset = NULL) {
-  .pr$DataFrame$with_row_count(self, name, offset) |> unwrap()
+  warning("`$with_row_count()` is deprecated and will be removed in 0.15.0. Use `with_row_index()` instead.")
+  .pr$DataFrame$with_row_index(self, name, offset) |>
+    unwrap("in $with_row_count():")
 }
 
 #' Get and set column names of a DataFrame
@@ -386,10 +393,9 @@ DataFrame_drop_nulls = function(subset = NULL) {
 #' * "first": Keep first unique row.
 #' * "last": Keep last unique row.
 #' * "none": Don’t keep duplicate rows.
-#' @param maintain_order Keep the same order as the original `DataFrame`. Setting
+#' @param maintain_order Keep the same order as the original data. Setting
 #'  this to `TRUE` makes it more expensive to compute and blocks the possibility
-#'  to run on the streaming engine. The default value can be changed with
-#' `options(polars.maintain_order = TRUE)`.
+#'  to run on the streaming engine.
 #'
 #' @return DataFrame
 #' @examples
@@ -609,8 +615,8 @@ DataFrame_to_series = function(idx = 0) {
 }
 
 #' Sort a DataFrame
-#' @inheritParams DataFrame_unique
 #' @inherit LazyFrame_sort details description params
+#' @inheritParams DataFrame_unique
 #' @return DataFrame
 #' @keywords  DataFrame
 #' @examples
@@ -836,7 +842,7 @@ DataFrame_filter = function(...) {
 }
 
 #' Group a DataFrame
-#' @inheritParams DataFrame_unique
+#' @inheritParams LazyFrame_group_by
 #' @inherit LazyFrame_group_by description params
 #' @keywords DataFrame
 #' @return GroupBy (a DataFrame with special groupby methods like `$agg()`)
@@ -1397,7 +1403,8 @@ DataFrame_melt = function(
 #'   - string indicating the expressions to aggregate with, such as 'first',
 #'     'sum', 'max', 'min', 'mean', 'median', 'last', 'count'),
 #'   - an Expr e.g. `pl$element()$sum()`
-#' @inheritParams DataFrame_unique
+#' @param maintain_order Sort the grouped keys so that the output order is
+#' predictable.
 #' @param sort_columns Sort the transposed columns by name. Default is by order
 #' of discovery.
 #' @param separator Used as separator/delimiter in generated column names.
@@ -1700,7 +1707,7 @@ DataFrame_glimpse = function(..., return_as_string = FALSE) {
 #' @return DataFrame
 #' @examples
 #' df = pl$DataFrame(
-#'   letters = c("aa", "aa", "bb", "cc"),
+#'   letters = letters[1:4],
 #'   numbers = list(1, c(2, 3), c(4, 5), c(6, 7, 8)),
 #'   numbers_2 = list(0, c(1, 2), c(3, 4), c(5, 6, 7)) # same structure as numbers
 #' )
@@ -1708,9 +1715,6 @@ DataFrame_glimpse = function(..., return_as_string = FALSE) {
 #'
 #' # explode a single column, append others
 #' df$explode("numbers")
-#'
-#' # it is also possible to explode a character column to have one letter per row
-#' df$explode("letters")
 #'
 #' # explode two columns of same nesting structure, by names or the common dtype
 #' # "List(Float64)"
@@ -1859,6 +1863,36 @@ DataFrame_write_csv = function(
     invisible()
 }
 
+#' Write to parquet file
+#' @inheritParams LazyFrame_sink_parquet
+#'
+#' @rdname IO_write_parquet
+#'
+#' @examples
+#' # write table 'mtcars' from mem to parquet
+#' dat = pl$DataFrame(mtcars)
+#'
+#' destination = tempfile(fileext = ".parquet")
+#' dat$write_parquet(destination)
+DataFrame_write_parquet = function(
+    path,
+    compression = "zstd",
+    compression_level = 3,
+    statistics = FALSE,
+    row_group_size = NULL,
+    data_pagesize_limit = NULL) {
+  .pr$DataFrame$write_parquet(
+    self,
+    path,
+    compression,
+    compression_level,
+    statistics,
+    row_group_size,
+    data_pagesize_limit
+  ) |>
+    unwrap("in $write_parquet():") |>
+    invisible()
+}
 
 #' Write to JSON file
 #'

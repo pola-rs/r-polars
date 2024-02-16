@@ -80,7 +80,7 @@ test_that("Test sinking data to parquet file", {
 
 dat = head(mtcars, n = 15)
 dat[c(1, 3, 9, 12), c(3, 4, 5)] = NA
-dat$id = 1:nrow(dat)
+dat$id = seq_len(nrow(dat))
 dat_pl = pl$LazyFrame(dat)
 temp_out = tempfile(fileext = ".csv")
 
@@ -165,7 +165,7 @@ test_that("sink_csv: date_format works", {
   dat$sink_csv(temp_out, date_format = "%Y")
   expect_equal(
     pl$read_csv(temp_out)$
-      with_columns(pl$col("date")$shrink_dtype())$
+      with_columns(pl$col("date"))$
       sort("date")$
       to_data_frame(),
     data.frame(date = 2020:2023)

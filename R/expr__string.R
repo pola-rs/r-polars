@@ -266,12 +266,12 @@ ExprStr_to_lowercase = function() {
 #' @keywords ExprStr
 #' @return Expr of String titlecase chars
 #' @details
-#' This method is only available with the "simd" feature.
-#' See [polars_info] for more details.
-#' @examplesIf polars_info()$features$simd
+#' This method is only available with the "nightly" feature.
+#' See [polars_info()] for more details.
+#' @examplesIf polars_info()$features$nightly
 #' pl$lit(c("hello there", "HI, THERE", NA))$str$to_titlecase()$to_series()
 ExprStr_to_titlecase = function() {
-  check_feature("simd", "in $to_titlecase():")
+  check_feature("nightly", "in $to_titlecase():")
 
   .pr$Expr$str_to_titlecase(self) |>
     unwrap("in $to_titlecase():")
@@ -360,7 +360,8 @@ ExprStr_strip_chars_end = function(matches = NULL) {
 #' @description Add zeroes to a string until it reaches `n` characters. If the
 #' number of characters is already greater than `n`, the string is not modified.
 #' @keywords ExprStr
-#' @param alignment Fill the value up to this length.
+#' @param alignment Fill the value up to this length. This can be an Expr or
+#' something coercible to an Expr. Strings are parsed as column names.
 #' @details
 #' Return a copy of the string left filled with ASCII '0' digits to make a string
 #' of length width.
@@ -584,7 +585,8 @@ ExprStr_encode = function(encoding) {
 #' Extract the target capture group from provided patterns
 #'
 #' @keywords ExprStr
-#' @param pattern A valid regex pattern
+#' @param pattern A valid regex pattern. Can be an Expr or something coercible
+#' to an Expr. Strings are parsed as column names.
 #' @param group_index Index of the targeted capture group. Group 0 means the whole
 #' pattern, first group begin at index 1 (default).
 #'
@@ -599,8 +601,8 @@ ExprStr_encode = function(encoding) {
 #'     "http://vote.com/ballon_dor?candidate=ronaldo&ref=polars"
 #'   )
 #' )
-#' df$select(
-#'   pl$col("a")$str$extract(r"(candidate=(\w+))", 1)
+#' df$with_columns(
+#'   extracted = pl$col("a")$str$extract(pl$lit(r"(candidate=(\w+))"), 1)
 #' )
 ExprStr_extract = function(pattern, group_index) {
   .pr$Expr$str_extract(self, pattern, group_index) |>

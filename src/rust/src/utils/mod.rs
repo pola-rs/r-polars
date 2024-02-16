@@ -260,7 +260,7 @@ const USIZE_MAX_INTO_F64: f64 = usize::MAX as f64;
 const U32_MAX_INTO_F64: f64 = u32::MAX as f64;
 const I32_MIN_INTO_F64: f64 = i32::MIN as f64;
 const I32_MAX_INTO_F64: f64 = i32::MAX as f64;
-pub const BIT64_NA_ECODING: i64 = -9223372036854775808i64;
+pub const BIT64_NA_ENCODING: i64 = -9223372036854775808i64;
 
 const WITHIN_INT_MAX: &str =
     "cannot exceeds double->integer unambigious conversion bound of 2^52 = 4503599627370496.0";
@@ -491,7 +491,7 @@ pub fn unpack_r_result_list(robj: extendr_api::Robj) -> RResult<Robj> {
 pub fn robj_bit64_to_opt_i64(robj: Robj) -> Option<i64> {
     robj.as_real()
         .and_then(|v| i64::try_from(v.to_bits()).ok())
-        .filter(|val| *val != crate::utils::BIT64_NA_ECODING)
+        .filter(|val| *val != crate::utils::BIT64_NA_ENCODING)
 }
 
 pub fn robj_parse_str_to_t<T>(robj: Robj) -> RResult<T>
@@ -894,6 +894,10 @@ macro_rules! robj_to_inner {
         $crate::utils::robj_to_usize($a)
     };
 
+    (nonzero_usize, $a:ident) => {
+        $crate::rdatatype::robj_to_nonzero_usize($a)
+    };
+
     (f64, $a:ident) => {
         $crate::utils::robj_to_f64($a)
     };
@@ -943,6 +947,9 @@ macro_rules! robj_to_inner {
     (ClosedWindow, $a:ident) => {
         $crate::rdatatype::robj_to_closed_window($a)
     };
+    (ClosedInterval, $a:ident) => {
+        $crate::rdatatype::robj_to_closed_interval($a)
+    };
     (SetOperation, $a:ident) => {
         $crate::rdatatype::robj_to_set_operation($a)
     };
@@ -955,8 +962,11 @@ macro_rules! robj_to_inner {
     (StartBy, $a:ident) => {
         $crate::rdatatype::robj_to_start_by($a)
     };
-    (new_quantile_interpolation_option, $a:ident) => {
-        $crate::rdatatype::new_quantile_interpolation_option($a)
+    (quantile_interpolation_option, $a:ident) => {
+        $crate::rdatatype::robj_to_quantile_interpolation_option($a)
+    };
+    (InterpolationMethod, $a:ident) => {
+        $crate::rdatatype::robj_to_interpolation_method($a)
     };
     (new_null_behavior, $a:ident) => {
         $crate::rdatatype::robj_new_null_behavior($a)

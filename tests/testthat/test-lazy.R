@@ -4,6 +4,8 @@ test_that("lazy prints", {
   df = pl$DataFrame(list(a = 1:3, b = c(T, T, F)))
   ldf = df$lazy()$filter(pl$col("a") == 2L)
 
+  expect_snapshot(print(ldf))
+
   # generic and internal 'print'-methods return self (invisibly likely)
   print_generic = capture_output_lines({
     ret_val = print(ldf)
@@ -13,7 +15,6 @@ test_that("lazy prints", {
     ret_val2 = ldf$print()
   })
   expect_equal(getprint(ret_val2), getprint(ldf))
-
 
   # described plan is not equal to optimized plan
   expect_true(
@@ -417,6 +418,16 @@ test_that("sort", {
   b = df$sort("mpg", nulls_last = FALSE, maintain_order = TRUE)$collect()$to_data_frame()
   expect_true(is.na(a$mpg[32]))
   expect_true(is.na(b$mpg[1]))
+
+  # error if descending is NULL
+  expect_error(
+    df$sort("mpg", descending = NULL),
+    "must be of length 1 or of the same length as `by`"
+  )
+  expect_error(
+    df$sort(c("mpg", "drat"), descending = NULL),
+    "must be of length 1 or of the same length as `by`"
+  )
 })
 
 
@@ -702,19 +713,6 @@ test_that("explode", {
       numbers2 = c(1, NA, 4:8)
     )
   )
-
-  # explode character columns
-  df = pl$LazyFrame(
-    letters = c("aa", "bbb", "cccc"),
-    numbers = c(1, 2, 3)
-  )
-  expect_equal(
-    df$explode("letters")$collect()$to_data_frame(),
-    data.frame(
-      letters = c(rep("a", 2), rep("b", 3), rep("c", 4)),
-      numbers = c(rep(1, 2), rep(2, 3), rep(3, 4))
-    )
-  )
 })
 
 test_that("width", {
@@ -723,9 +721,9 @@ test_that("width", {
   expect_equal(ncol(dat), 11)
 })
 
-test_that("with_row_count", {
+test_that("with_row_index", {
   lf = pl$LazyFrame(mtcars)
-  expect_identical(lf$with_row_count("idx", 42)$select(pl$col("idx"))$collect()$to_data_frame()$idx, as.double(42:(41 + nrow(mtcars))))
+  expect_identical(lf$with_row_index("idx", 42)$select(pl$col("idx"))$collect()$to_data_frame()$idx, as.double(42:(41 + nrow(mtcars))))
 })
 
 test_that("cloning", {

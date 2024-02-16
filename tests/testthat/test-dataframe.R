@@ -225,6 +225,22 @@ test_that("select with list of exprs", {
   expect_equal(x6$columns, c("mpg", "hp"))
 })
 
+test_that("select: create a list variable", {
+  test = pl$DataFrame(x = 1:2)
+
+  # create one column
+  expect_identical(
+    test$select(y = list(1:2, 3:4))$to_list(),
+    list(y = list(1:2, 3:4))
+  )
+
+  # create several column
+  expect_identical(
+    test$select(y = list(1:2, 3:4), z = list(c("a", "b"), c("c", "d")))$to_list(),
+    list(y = list(1:2, 3:4), z = list(c("a", "b"), c("c", "d")))
+  )
+})
+
 test_that("map_batches unity", {
   x = pl$
     DataFrame(iris)$
@@ -333,33 +349,30 @@ test_that("cloning to avoid giving attributes to original data", {
   expect_null(attributes(df1)$created_on)
 })
 
+test_that("get column(s)", {
+  df = pl$DataFrame(iris)
+  expected_list_of_series = {
+    expected = lapply(
+      1:5,
+      function(i) pl$Series(iris[[i]],names(iris)[i])
+    )
+    names(expected) = names(iris)
+    expected
+  }
+  actual_list_of_series = df$get_columns()
+  for (i in 1:5) {
+    is_equal = expected_list_of_series[[i]]$equals(actual_list_of_series[[i]])
+    if (!is_equal) {
+      fail("series are not equal according to polars internal check")
+    }
+  }
 
-# TODO figure out why this test fails. Expected and Actual do appear very much equal
-# test_that("get column(s)", {
-# df = pl$DataFrame(iris)
-# expected_list_of_series = {
-#   expected = lapply(
-#     1:5,
-#     function(i) pl$Series(iris[[i]],names(iris)[i])
-#   )
-#   names(expected) = names(iris)
-#   expected
-# }
-# actual_list_of_series = df$get_columns()
-# for (i in 1:5) {
-#   is_equal = expected_list_of_series[[i]]$equals(actual_list_of_series[[i]])
-#   if (!is_equal) {
-#     fail("series are not equal according to polars internal check")
-#   }
-# }
-
-
-# list_of_vectors = lapply(actual_list_of_series, function(x) x$to_vector())
-# expect_identical(
-#   list_of_vectors,
-#   as.list(iris)
-# )
-# })
+  list_of_vectors = lapply(actual_list_of_series, function(x) x$to_vector())
+  expect_identical(
+    list_of_vectors,
+    as.list(iris)
+  )
+})
 
 
 test_that("get column", {
@@ -378,6 +391,37 @@ test_that("get column", {
 
 # TODO implement series cast and test Series_equal
 
+test_that("with_columns: list or unlisted input", {
+  test = pl$DataFrame(mtcars)
+
+  # one element in $with_columns()
+  expect_identical(
+    test$with_columns(list(a = mtcars$drat))$to_data_frame(),
+    test$with_columns(a = mtcars$drat)$to_data_frame()
+  )
+
+  # several elements
+  expect_identical(
+    test$with_columns(list(a = 1, b = mtcars$drat))$to_data_frame(),
+    test$with_columns(a = 1, b = mtcars$drat)$to_data_frame()
+  )
+})
+
+test_that("with_columns: create a list variable", {
+  test = pl$DataFrame(x = 1:2)
+
+  # create one column
+  expect_identical(
+    test$with_columns(y = list(1:2, 3:4))$to_list(),
+    list(x = 1:2, y = list(1:2, 3:4))
+  )
+
+  # create several column
+  expect_identical(
+    test$with_columns(y = list(1:2, 3:4), z = list(c("a", "b"), c("c", "d")))$to_list(),
+    list(x = 1:2, y = list(1:2, 3:4), z = list(c("a", "b"), c("c", "d")))
+  )
+})
 
 test_that("with_columns lazy/eager", {
   l = list(
@@ -735,6 +779,16 @@ test_that("sort", {
   b = df$sort("mpg", nulls_last = FALSE)$to_data_frame()
   expect_true(is.na(a$mpg[32]))
   expect_true(is.na(b$mpg[1]))
+
+  # error if descending is NULL
+  expect_error(
+    df$sort("mpg", descending = NULL),
+    "must be of length 1 or of the same length as `by`"
+  )
+  expect_error(
+    df$sort(c("mpg", "drat"), descending = NULL),
+    "must be of length 1 or of the same length as `by`"
+  )
 })
 
 test_that("dtype_strings", {
@@ -1099,24 +1153,14 @@ test_that("explode", {
       numbers2 = c(1, NA, 4:8)
     )
   )
-
-  # explode character columns
-  df = pl$DataFrame(
-    letters = c("aa", "bbb", "cccc"),
-    numbers = c(1, 2, 3)
-  )
-  expect_equal(
-    df$explode("letters")$to_data_frame(),
-    data.frame(
-      letters = c(rep("a", 2), rep("b", 3), rep("c", 4)),
-      numbers = c(rep(1, 2), rep(2, 3), rep(3, 4))
-    )
-  )
 })
 
-test_that("with_row_count", {
+test_that("with_row_index", {
   df = pl$DataFrame(mtcars)
-  expect_identical(df$with_row_count("idx", 42)$select(pl$col("idx"))$to_data_frame()$idx, as.double(42:(41 + nrow(mtcars))))
+  expect_identical(
+    df$with_row_index("idx", 42)$select(pl$col("idx"))$to_data_frame()$idx,
+    as.double(42:(41 + nrow(mtcars)))
+  )
 })
 
 test_that("strictly_immutable = FALSE", {

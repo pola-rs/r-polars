@@ -7,7 +7,8 @@
 ExprStr_extract(pattern, group_index)
 }
 \arguments{
-\item{pattern}{A valid regex pattern}
+\item{pattern}{A valid regex pattern. Can be an Expr or something coercible
+to an Expr. Strings are parsed as column names.}
 
 \item{group_index}{Index of the targeted capture group. Group 0 means the whole
 pattern, first group begin at index 1 (default).}
@@ -26,8 +27,8 @@ df = pl$DataFrame(
     "http://vote.com/ballon_dor?candidate=ronaldo&ref=polars"
   )
 )
-df$select(
-  pl$col("a")$str$extract(r"(candidate=(\w+))", 1)
+df$with_columns(
+  extracted = pl$col("a")$str$extract(pl$lit(r"(candidate=(\w+))"), 1)
 )
 }
 \keyword{ExprStr}

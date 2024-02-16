@@ -112,7 +112,7 @@ impl RPolarsExpr {
                 let opt_val = robj.as_real();
                 if let Some(val) = opt_val {
                     let x = val.to_bits() as i64;
-                    if x == crate::utils::BIT64_NA_ECODING {
+                    if x == crate::utils::BIT64_NA_ENCODING {
                         Ok(dsl::lit(pl::NULL).cast(pl::DataType::Int64))
                     } else {
                         Ok(dsl::lit(x))
@@ -423,7 +423,7 @@ impl RPolarsExpr {
             .0
             .quantile(
                 robj_to!(PLExpr, quantile)?,
-                robj_to!(new_quantile_interpolation_option, interpolation)?,
+                robj_to!(quantile_interpolation_option, interpolation)?,
             )
             .into())
     }
@@ -480,14 +480,15 @@ impl RPolarsExpr {
             .into()
     }
 
-    pub fn interpolate(&self, method: &str) -> List {
-        use crate::rdatatype::new_interpolation_method;
-        let im_result = new_interpolation_method(method)
-            .map(|im| RPolarsExpr(self.0.clone().interpolate(im)))
-            .map_err(|err| format!("in interpolate(): {}", err));
-        r_result_list(im_result)
+    pub fn interpolate(&self, method: Robj) -> RResult<RPolarsExpr> {
+        Ok(self
+            .clone()
+            .0
+            .interpolate(robj_to!(InterpolationMethod, method)?)
+            .into())
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn rolling_min(
         &self,
         window_size: Robj,
@@ -513,6 +514,7 @@ impl RPolarsExpr {
             .into())
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn rolling_max(
         &self,
         window_size: Robj,
@@ -538,6 +540,7 @@ impl RPolarsExpr {
             .into())
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn rolling_mean(
         &self,
         window_size: Robj,
@@ -563,6 +566,7 @@ impl RPolarsExpr {
             .into())
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn rolling_sum(
         &self,
         window_size: Robj,
@@ -588,6 +592,7 @@ impl RPolarsExpr {
             .into())
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn rolling_std(
         &self,
         window_size: Robj,
@@ -613,6 +618,7 @@ impl RPolarsExpr {
             .into())
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn rolling_var(
         &self,
         window_size: Robj,
@@ -638,6 +644,7 @@ impl RPolarsExpr {
             .into())
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn rolling_median(
         &self,
         window_size: Robj,
@@ -687,7 +694,7 @@ impl RPolarsExpr {
             fn_params: None,
         };
         let quantile = robj_to!(f64, quantile)?;
-        let interpolation = robj_to!(new_quantile_interpolation_option, interpolation)?;
+        let interpolation = robj_to!(quantile_interpolation_option, interpolation)?;
 
         Ok(self
             .0
@@ -1084,12 +1091,12 @@ impl RPolarsExpr {
         self.0.clone().list().get(index.clone().0).into()
     }
 
-    fn list_join(&self, separator: Robj) -> RResult<Self> {
+    fn list_join(&self, separator: Robj, ignore_nulls: Robj) -> RResult<Self> {
         Ok(self
             .0
             .clone()
             .list()
-            .join(robj_to!(PLExpr, separator)?)
+            .join(robj_to!(PLExpr, separator)?, robj_to!(bool, ignore_nulls)?)
             .into())
     }
 
@@ -1175,7 +1182,133 @@ impl RPolarsExpr {
         .into())
     }
 
-    //datetime methods
+    // array methods
+
+    fn arr_max(&self) -> Self {
+        self.0.clone().arr().max().into()
+    }
+
+    fn arr_min(&self) -> Self {
+        self.0.clone().arr().min().into()
+    }
+
+    fn arr_sum(&self) -> Self {
+        self.0.clone().arr().sum().into()
+    }
+
+    // TODO: implement those in 0.38.0. They were wrongly included in the changelog of 0.37.0
+    // https://github.com/pola-rs/polars/issues/14355
+    // fn arr_std(&self, ddof: u8) -> Self {
+    //     self.0.clone().arr().std(ddof).into()
+    // }
+
+    // fn arr_var(&self, ddof: u8) -> Self {
+    //     self.0.clone().arr().var(ddof).into()
+    // }
+
+    // fn arr_median(&self) -> Self {
+    //     self.0.clone().arr().median().into()
+    // }
+
+    fn arr_unique(&self, maintain_order: bool) -> Self {
+        if maintain_order {
+            self.0.clone().arr().unique_stable().into()
+        } else {
+            self.0.clone().arr().unique().into()
+        }
+    }
+
+    fn arr_to_list(&self) -> Self {
+        self.0.clone().arr().to_list().into()
+    }
+
+    fn arr_all(&self) -> Self {
+        self.0.clone().arr().all().into()
+    }
+
+    fn arr_any(&self) -> Self {
+        self.0.clone().arr().any().into()
+    }
+
+    fn arr_sort(&self, descending: bool, nulls_last: bool) -> Self {
+        self.0
+            .clone()
+            .arr()
+            .sort(SortOptions {
+                descending,
+                nulls_last,
+                ..Default::default()
+            })
+            .into()
+    }
+
+    fn arr_reverse(&self) -> Self {
+        self.0.clone().arr().reverse().into()
+    }
+
+    fn arr_arg_min(&self) -> Self {
+        self.0.clone().arr().arg_min().into()
+    }
+
+    fn arr_arg_max(&self) -> Self {
+        self.0.clone().arr().arg_max().into()
+    }
+
+    fn arr_get(&self, index: Robj) -> RResult<Self> {
+        Ok(self.0.clone().arr().get(robj_to!(PLExprCol, index)?).into())
+    }
+
+    fn arr_join(&self, separator: Robj, ignore_nulls: bool) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .arr()
+            .join(robj_to!(PLExpr, separator)?, ignore_nulls)
+            .into())
+    }
+
+    fn arr_contains(&self, other: Robj) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .arr()
+            .contains(robj_to!(PLExpr, other)?)
+            .into())
+    }
+
+    fn arr_count_matches(&self, expr: Robj) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .arr()
+            .count_matches(robj_to!(PLExprCol, expr)?)
+            .into())
+    }
+
+    // TODO: implement those in 0.38.0. They were wrongly included in the changelog of 0.37.0
+    // https://github.com/pola-rs/polars/issues/14355
+    // fn arr_to_struct(&self, fields: Robj, upper_bound: Robj) -> RResult<Self> {
+    //     let fields = robj_to!(Option, Robj, fields)?.map(|robj| {
+    //         let par_fn: ParRObj = robj.into();
+    //         let f: Arc<(dyn Fn(usize) -> SmartString<LazyCompact> + Send + Sync + 'static)> =
+    //             pl::Arc::new(move |idx: usize| {
+    //                 let thread_com = ThreadCom::from_global(&CONFIG);
+    //                 thread_com.send(RFnSignature::FnF64ToString(par_fn.clone(), idx as f64));
+    //                 let s = thread_com.recv().unwrap_string();
+    //                 let s: SmartString<LazyCompact> = s.into();
+    //                 s
+    //             });
+    //         f
+    //     });
+    //     Ok(RPolarsExpr(self.0.clone().arr().to_struct(fields)))
+    // }
+
+    // TODO: implement when bumping to rs-0.38.0
+    // fn arr_shift(&self, n: Robj) -> RResult<Self> {
+    //     Ok(self.0.clone().arr().shift(robj_to!(PLExprCol, n)?).into())
+    // }
+
+    // datetime methods
 
     pub fn dt_truncate(&self, every: Robj, offset: Robj) -> RResult<Self> {
         Ok(self
@@ -1504,7 +1637,17 @@ impl RPolarsExpr {
         Ok(self.0.clone().any(robj_to!(bool, drop_nulls)?).into())
     }
 
-    // TODO: is_between
+    fn is_between(&self, lower: Robj, upper: Robj, closed: Robj) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .is_between(
+                robj_to!(PLExprCol, lower)?,
+                robj_to!(PLExprCol, upper)?,
+                robj_to!(ClosedInterval, closed)?,
+            )
+            .into())
+    }
 
     pub fn is_duplicated(&self) -> Self {
         self.clone().0.is_duplicated().into()
@@ -1861,7 +2004,7 @@ impl RPolarsExpr {
             .clone()
             .0
             .str()
-            .zfill(robj_to!(usize, alignment)?)
+            .zfill(robj_to!(PLExprCol, alignment)?)
             .into())
     }
 
@@ -1960,7 +2103,7 @@ impl RPolarsExpr {
             .0
             .clone()
             .str()
-            .extract(robj_to!(str, pattern)?, robj_to!(usize, group_index)?)
+            .extract(robj_to!(PLExprCol, pattern)?, robj_to!(usize, group_index)?)
             .into())
     }
 
@@ -2113,8 +2256,8 @@ impl RPolarsExpr {
     }
 
     pub fn str_slice(&self, offset: Robj, length: Robj) -> Result<RPolarsExpr, String> {
-        let offset = robj_to!(i64, offset)?;
-        let length = robj_to!(Option, u64, length)?;
+        let offset = robj_to!(PLExprCol, offset)?;
+        let length = robj_to!(PLExprCol, length)?;
 
         Ok(self.clone().0.str().slice(offset, length).into())
     }
@@ -2338,8 +2481,8 @@ impl RPolarsExpr {
     // external expression function which typically starts a new expression chain
     // to avoid name space collisions in R, these static methods are not free functions
     // as in py-polars. prefix with new_ to not collide with other methods in class
-    pub fn new_count() -> RPolarsExpr {
-        dsl::count().into()
+    pub fn new_len() -> RPolarsExpr {
+        dsl::len().into()
     }
 
     pub fn new_first() -> RPolarsExpr {
@@ -2430,16 +2573,16 @@ impl RPolarsExpr {
     }
 }
 
-// handle varition in implementation if not simd
+// handle varition in implementation if not the nightly feature
 // could not get cfg feature flags conditions to work inside extendr macro
 // Therefore place it outside here instead
 #[allow(unused)]
 fn f_str_to_titlecase(expr: &RPolarsExpr) -> RResult<RPolarsExpr> {
-    #[cfg(feature = "simd")]
+    #[cfg(feature = "nightly")]
     return (Ok(expr.0.clone().str().to_titlecase().into()));
 
-    #[cfg(not(feature = "simd"))]
-    rerr().plain("$to_titlecase() is only available with the 'simd' feature")
+    #[cfg(not(feature = "nightly"))]
+    rerr().plain("$to_titlecase() is only available with the 'nightly' feature")
 }
 
 //allow proto expression that yet only are strings

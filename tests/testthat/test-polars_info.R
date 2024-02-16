@@ -10,11 +10,11 @@ test_that("print polars_info()", {
   info = polars_info()
 
   # Ensure static version for snapshot test
-  info$version = package_version("999.999.999")
-  info$rust_polars = package_version("999.999.999")
+  info$versions$r_package = package_version("999.999.999")
+  info$versions$rust_crate = package_version("999.999.999")
 
-  # Ensure the threadpool_size is 1 for snapshot test
-  info$threadpool_size = 1
+  # Ensure the thread_pool_size is 1 for snapshot test
+  info$thread_pool_size = 1
 
   # Ensure all features are FALSE for snapshot test
   for (feature in names(info$features)) {

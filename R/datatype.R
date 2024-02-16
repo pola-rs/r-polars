@@ -155,6 +155,7 @@ DataType_new = function(str) {
 DataType_constructors = function() {
   list(
     Datetime = DataType_Datetime,
+    Array = DataType_Array,
     List = DataType_List,
     Struct = DataType_Struct
 
@@ -228,6 +229,35 @@ DataType_Struct = function(...) {
   }) |>
     and_then(DataType$new_struct) |>
     unwrap("in pl$Struct:")
+}
+
+#' Create Array DataType
+#'
+#' The Array and List datatypes are very similar. The only difference is that
+#' sub-arrays all have the same length while sublists can have different lengths.
+#' Array methods can be accessed via the `$arr` subnamespace.
+#'
+#' @param datatype An inner DataType. The default is `"Unknown"` and is only a
+#' placeholder for when inner DataType does not matter, e.g. as used in example.
+#' @param width The length of the arrays.
+#' @return An array DataType with an inner DataType
+#' @examples
+#' # basic Array
+#' pl$Array(pl$Int32, 4)
+#' # some nested Array
+#' pl$Array(pl$Array(pl$Boolean, 3), 2)
+DataType_Array = function(datatype = "unknown", width) {
+  if (is.character(datatype) && length(datatype) == 1) {
+    datatype = .pr$DataType$new(datatype)
+  }
+  if (!inherits(datatype, "RPolarsDataType")) {
+    stop(paste(
+      "input for generating a array DataType must be another DataType",
+      "or an interpretable name thereof."
+    ))
+  }
+  .pr$DataType$new_array(datatype, width) |>
+    unwrap("in pl$Array():")
 }
 
 #' Create List DataType

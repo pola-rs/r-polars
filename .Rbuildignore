@@ -30,3 +30,5 @@
 ^\.venv_altdoc$
 ^Taskfile\.yml$
 ^\.editorconfig$
+^rustfmt\.toml$
+^\.lintr\.R$

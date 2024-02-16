@@ -8,7 +8,7 @@ pub mod read_parquet;
 use crate::conversion_r_to_s::robjname2series;
 use crate::lazy;
 use crate::rdatatype;
-use crate::rdatatype::RPolarsDataType;
+use crate::rdatatype::{new_parquet_compression, RPolarsDataType};
 use crate::robj_to;
 use crate::rpolarserr::*;
 use either::Either;
@@ -37,7 +37,7 @@ pub struct OwnedDataFrameIterator {
 
 impl OwnedDataFrameIterator {
     pub fn new(df: polars::frame::DataFrame) -> Self {
-        let schema = df.schema().to_arrow();
+        let schema = df.schema().to_arrow(false);
         let data_type = ArrowDataType::Struct(schema.fields);
         let vs = df.get_columns().to_vec();
         Self {
@@ -57,7 +57,11 @@ impl Iterator for OwnedDataFrameIterator {
             None
         } else {
             // create a batch of the columns with the same chunk no.
-            let batch_cols = self.columns.iter().map(|s| s.to_arrow(self.idx)).collect();
+            let batch_cols = self
+                .columns
+                .iter()
+                .map(|s| s.to_arrow(self.idx, false))
+                .collect();
             self.idx += 1;
 
             let chunk = polars::frame::ArrowChunk::new(batch_cols);
@@ -150,11 +154,11 @@ impl RPolarsDataFrame {
             .map_err(|err| format!("in set_column_from_series: {:?}", err))
     }
 
-    pub fn with_row_count(&self, name: Robj, offset: Robj) -> RResult<Self> {
+    pub fn with_row_index(&self, name: Robj, offset: Robj) -> RResult<Self> {
         Ok(self
             .0
             .clone()
-            .with_row_count(
+            .with_row_index(
                 robj_to!(String, name)?.as_str(),
                 robj_to!(Option, u32, offset)?,
             )
@@ -325,7 +329,7 @@ impl RPolarsDataFrame {
     }
 
     pub fn export_stream(&self, stream_ptr: &str) {
-        let schema = self.0.schema().to_arrow();
+        let schema = self.0.schema().to_arrow(false);
         let data_type = ArrowDataType::Struct(schema.fields);
         let field = ArrowField::new("", data_type, false);
 
@@ -377,6 +381,7 @@ impl RPolarsDataFrame {
             .map(RPolarsDataFrame)
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn pivot_expr(
         &self,
         values: Robj,
@@ -454,6 +459,7 @@ impl RPolarsDataFrame {
             .map(RPolarsDataFrame)
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn write_csv(
         &self,
         path: Robj,
@@ -478,13 +484,37 @@ impl RPolarsDataFrame {
             .with_separator(robj_to!(Utf8Byte, separator)?)
             .with_line_terminator(robj_to!(String, line_terminator)?)
             .with_quote_char(robj_to!(Utf8Byte, quote)?)
-            .with_batch_size(robj_to!(usize, batch_size)?)
+            .with_batch_size(robj_to!(nonzero_usize, batch_size)?)
             .with_datetime_format(robj_to!(Option, String, datetime_format)?)
             .with_date_format(robj_to!(Option, String, date_format)?)
             .with_time_format(robj_to!(Option, String, time_format)?)
             .with_float_precision(robj_to!(Option, usize, float_precision)?)
             .with_null_value(robj_to!(String, null_value)?)
             .with_quote_style(robj_to!(QuoteStyle, quote_style)?)
+            .finish(&mut self.0.clone())
+            .map_err(polars_to_rpolars_err)
+    }
+
+    pub fn write_parquet(
+        &self,
+        path: Robj,
+        compression_method: Robj,
+        compression_level: Robj,
+        statistics: Robj,
+        row_group_size: Robj,
+        data_pagesize_limit: Robj,
+    ) -> RResult<u64> {
+        let path = robj_to!(str, path)?;
+        let f = std::fs::File::create(path)?;
+        pl::ParquetWriter::new(f)
+            .with_compression(new_parquet_compression(
+                compression_method,
+                compression_level,
+            )?)
+            .with_statistics(robj_to!(bool, statistics)?)
+            .with_row_group_size(robj_to!(Option, usize, row_group_size)?)
+            .with_data_page_size(robj_to!(Option, usize, data_pagesize_limit)?)
+            .set_parallel(true)
             .finish(&mut self.0.clone())
             .map_err(polars_to_rpolars_err)
     }

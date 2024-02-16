@@ -1,7 +1,7 @@
 #' Get the length of each list
 #'
 #' Return the number of elements in each list. Null values are counted in the
-#' total. `$list$lengths()` is deprecated.
+#' total.
 #'
 #' @return Expr
 #' @aliases list_len
@@ -9,12 +9,6 @@
 #' df = pl$DataFrame(list(list_of_strs = list(c("a", "b", NA), "c")))
 #' df$with_columns(len_list = pl$col("list_of_strs")$list$len())
 ExprList_len = function() .pr$Expr$list_len(self)
-
-#' @rdname ExprList_len
-ExprList_lengths = function() {
-  warning("`$list$lengths()` is deprecated and will be removed in 0.14.0. Use `$list$len()` instead")
-  .pr$Expr$list_len(self)
-}
 
 #' Sum all elements in a list
 #'
@@ -207,6 +201,7 @@ ExprList_contains = function(item) .pr$Expr$list_contains(self, wrap_e(item))
 #'
 #' @param separator String to separate the items with. Can be an Expr. Strings
 #'   are *not* parsed as columns.
+#' @inheritParams pl_concat_str
 #'
 #' @return Expr
 #' @aliases list_join
@@ -217,10 +212,11 @@ ExprList_contains = function(item) .pr$Expr$list_contains(self, wrap_e(item))
 #' )
 #' df$with_columns(
 #'   join_with_expr = pl$col("s")$list$join(pl$col("separator")),
-#'   join_with_lit = pl$col("s")$list$join(" ")
+#'   join_with_lit = pl$col("s")$list$join(" "),
+#'   join_ignore_null = pl$col("s")$list$join(" ", ignore_nulls = TRUE)
 #' )
-ExprList_join = function(separator) {
-  .pr$Expr$list_join(self, separator) |>
+ExprList_join = function(separator, ignore_nulls = FALSE) {
+  .pr$Expr$list_join(self, separator, ignore_nulls) |>
     unwrap("in $list$join():")
 }
 

@@ -8,11 +8,9 @@ use polars_core::utils::arrow::ffi;
 use polars_core::POOL;
 use std::result::Result;
 
-//does not support chunked array
-pub fn arrow_array_to_rust(
-    arrow_array: Robj,
-    opt_f: Option<&Function>,
-) -> Result<ArrayRef, String> {
+use super::RArrowArrayClass;
+
+pub fn arrow_array_to_rust(arrow_array: Robj) -> Result<ArrayRef, String> {
     let mut array = Box::new(ffi::ArrowArray::empty());
     let mut schema = Box::new(ffi::ArrowSchema::empty());
     let (ext_a, ext_s) = unsafe {
@@ -22,51 +20,24 @@ pub fn arrow_array_to_rust(
         )
     };
 
-    if let Some(f) = opt_f {
-        f.call(pairlist!(arrow_array, ext_a, ext_s))?;
-    } else {
-        call!("arrow:::ExportArray", arrow_array, ext_a, ext_s)?;
-    };
+    RArrowArrayClass::from_robj(&arrow_array)?
+        .get_package()
+        .get_export_array_func()?
+        .call(pairlist!(&arrow_array, ext_a, ext_s))?;
 
     let array = unsafe {
         let field = ffi::import_field_from_c(schema.as_ref()).map_err(|err| err.to_string())?;
         ffi::import_array_from_c(*array, field.data_type).map_err(|err| err.to_string())?
     };
-    //dbg!(&array);
     Ok(array)
 }
 
 unsafe fn wrap_make_external_ptr<T>(t: &mut T) -> Robj {
-    //use extendr_api::{Integers, Rinternals};
     unsafe { <Integers>::make_external_ptr(t, r!(extendr_api::NULL)) }
-}
-
-pub fn rb_to_rust_df(r_rb_columns: List, names: &[String]) -> Result<pl::DataFrame, String> {
-    let n_col = r_rb_columns.len();
-    let f = R!("arrow:::ExportArray")?
-        .as_function()
-        .expect("could not find Arrow");
-    let col_iter = r_rb_columns
-        .into_iter()
-        .zip(names.iter())
-        .map(|((_, r_array), str)| {
-            let arr = arrow_array_to_rust(r_array, Some(&f))?;
-            let s = <polars::prelude::Series>::try_from((str.as_str(), arr))
-                .map_err(|err| err.to_string());
-            s
-        });
-    let s_vec_res = crate::utils::collect_hinted_result(n_col, col_iter);
-
-    Ok(pl::DataFrame::new_no_checks(s_vec_res?))
 }
 
 pub fn to_rust_df(rb: Robj) -> Result<pl::DataFrame, String> {
     let rb = rb.as_list().ok_or("arrow record batches is not a List")?;
-
-    //prepare function calls to R package arrow
-    let export_array_f = R!("arrow:::ExportArray")?.as_function().ok_or_else(|| {
-        "could not find arrow:::ExportArray is R package arrow installed?".to_string()
-    })?;
     let get_columns_f = R!(r"\(x) x$columns")?.as_function().unwrap();
 
     //read columns names of first batch, if not any batches return empty DataFrame
@@ -94,7 +65,7 @@ pub fn to_rust_df(rb: Robj) -> Result<pl::DataFrame, String> {
 
         //collect vector of exported arrow arrays, one for each column
         let array_iter = columns_list.into_iter().map(|(_, column)| {
-            let arr = arrow_array_to_rust(column, Some(&export_array_f))?;
+            let arr = arrow_array_to_rust(column)?;
             run_parallel |= matches!(
                 arr.data_type(),
                 ArrowDataType::Utf8 | ArrowDataType::Dictionary(_, _, _)
@@ -187,7 +158,7 @@ fn consume_arrow_stream_to_series(boxed_stream: Box<ffi::ArrowArrayStream>) -> R
 pub unsafe fn export_df_as_stream(df: pl::DataFrame, robj_str_ref: &Robj) -> RResult<()> {
     let stream_ptr =
         crate::utils::robj_str_ptr_to_usize(robj_str_ref)? as *mut ffi::ArrowArrayStream;
-    let schema = df.schema().to_arrow();
+    let schema = df.schema().to_arrow(true);
     let data_type = pl::ArrowDataType::Struct(schema.fields);
     let field = pl::ArrowField::new("", data_type, false);
     let iter_boxed = Box::new(crate::rdataframe::OwnedDataFrameIterator::new(df));

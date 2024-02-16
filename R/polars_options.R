@@ -1,85 +1,3 @@
-#' Set polars options
-#'
-#' \[DEPRECATED] Please use `options()` to set options, `polars_options()` to
-#' get them, and `polars_options_reset()` to reset them. See the documentation
-#' of [`polars_options()`] for details.
-#'
-#' @param ... Ignored.
-#' @param strictly_immutable Keep polars strictly immutable. Polars/arrow is in
-#' general pro "immutable objects". Immutability is also classic in R. To mimic
-#' the Python-polars API, set this to `FALSE.`
-#' @param maintain_order Default for all `maintain_order` options (present in
-#' `$group_by()` or `$unique()` for example).
-#' @param do_not_repeat_call Do not print the call causing the error in error
-#' messages. The default (`FALSE`) is to show them.
-#' @param debug_polars Print additional information to debug Polars.
-#' @param no_messages Hide messages.
-#' @param rpool_cap The maximum number of R sessions that can be used to process
-#' R code in the background. See Details.
-#' @param int64_conversion  How should Int64 values be handled when converting a
-#' polars object to R?
-#'
-#' * `"double"` (default) converts the integer values to double.
-#' * `"bit64"` uses `bit64::as.integer64()` to do the conversion (requires
-#'   the package `bit64` to be attached).
-#' * `"string"` converts Int64 values to character.
-#'
-#' @rdname pl_options
-#'
-#' @return
-#' `polars_options()` returns a named list with the value (`TRUE` or `FALSE`) of
-#' each option.
-#'
-#' `pl$set_options()` silently modifies the options values.
-#'
-#' `pl$reset_options()` silently resets the options to their default values.
-pl_set_options = function(
-    ...,
-    strictly_immutable = TRUE,
-    maintain_order = FALSE,
-    do_not_repeat_call = FALSE,
-    debug_polars = FALSE,
-    no_messages = FALSE,
-    rpool_cap = 4,
-    int64_conversion = c("bit64", "double", "string")) {
-  warning(
-    "`pl$set_options()` is deprecated and will be removed in 0.14.0",
-    "Use `options()` to set options instead. See `?polars_options` for more info."
-  )
-  # only modify arguments that were explicitly written in the function call
-  # (otherwise calling set_options() twice in a row would reset the args
-  # modified in the first call)
-  args_modified = names(as.list(sys.call()[-1]))
-
-  if (is.null(args_modified) || any(nchar(args_modified) == 0L)) {
-    Err_plain("all args must be named") |>
-      unwrap("in pl$set_options")
-  }
-
-  for (i in seq_along(args_modified)) {
-    value = result(get(args_modified[i])) |>
-      map_err(\(rp_err) {
-        rp_err$
-          hint("arg-name does not match any defined args of `?set_options`")$
-          bad_arg(args_modified[i])
-      }) |>
-      unwrap("in pl$set_options")
-
-    op = list(value)
-    names(op) = paste0("polars.", args_modified[i])
-    options(op)
-  }
-}
-
-#' @rdname pl_options
-pl_reset_options = function() {
-  warning(
-    "`pl$reset_options()` is deprecated and will be removed in 0.14.0",
-    "Use `polars_options_reset()` instead. See `?polars_options` for more info."
-  )
-  polars_options_reset()
-}
-
 #' Get and reset polars options
 #'
 #' @description `polars_options()` returns a list of options for polars. Options
@@ -104,10 +22,11 @@ pl_reset_options = function() {
 #'   the package `bit64` to be attached).
 #'    * `"string"` converts Int64 values to character.
 #' * `limit_max_threads` ([`!polars_info()$features$disable_limit_max_threads`][polars_info]):
-#'   See [`?pl_threadpool_size`][pl_threadpool_size] for details.
+#'   See [`?pl_thread_pool_size`][pl_thread_pool_size] for details.
 #'   This option should be set before the package is loaded.
-#' * `maintain_order` (`FALSE`): Default for all `maintain_order` options
-#'   (present in `$group_by()` or `$unique()` for example).
+#' * `maintain_order` (`FALSE`): Default for the `maintain_order` argument in
+#'   [`<LazyFrame>$group_by()`][LazyFrame_group_by] and
+#'   [`<DataFrame>$group_by()`][DataFrame_group_by].
 #' * `no_messages` (`FALSE`): Hide messages.
 #' * `rpool_cap`: The maximum number of R sessions that can be used to process
 #'   R code in the background. See the section "About pool options" below.

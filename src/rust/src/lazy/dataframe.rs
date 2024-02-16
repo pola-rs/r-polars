@@ -80,6 +80,7 @@ impl RPolarsLazyFrame {
         })
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn sink_parquet(
         &self,
         path: Robj,
@@ -114,6 +115,7 @@ impl RPolarsLazyFrame {
             .map_err(polars_to_rpolars_err)
     }
 
+    #[allow(clippy::too_many_arguments)]
     fn sink_csv(
         &self,
         path: Robj,
@@ -144,7 +146,7 @@ impl RPolarsLazyFrame {
         let include_header = robj_to!(bool, include_header)?;
         let include_bom = robj_to!(bool, include_bom)?;
         let maintain_order = robj_to!(bool, maintain_order)?;
-        let batch_size = robj_to!(usize, batch_size)?;
+        let batch_size = robj_to!(nonzero_usize, batch_size)?;
 
         let serialize_options = SerializeOptions {
             date_format,
@@ -240,7 +242,7 @@ impl RPolarsLazyFrame {
         let out = ldf
             .quantile(
                 robj_to!(PLExpr, quantile)?,
-                robj_to!(new_quantile_interpolation_option, interpolation)?,
+                robj_to!(quantile_interpolation_option, interpolation)?,
             )
             .map_err(polars_to_rpolars_err)?;
         Ok(out.into())
@@ -263,11 +265,7 @@ impl RPolarsLazyFrame {
     }
 
     fn drop(&self, columns: Robj) -> Result<RPolarsLazyFrame, String> {
-        Ok(self
-            .0
-            .clone()
-            .drop_columns(robj_to!(Vec, String, columns)?)
-            .into())
+        Ok(self.0.clone().drop(robj_to!(Vec, String, columns)?).into())
     }
 
     fn fill_nan(&self, fill_value: Robj) -> Result<Self, String> {
@@ -364,11 +362,11 @@ impl RPolarsLazyFrame {
         }
     }
 
-    fn with_row_count(&self, name: Robj, offset: Robj) -> RResult<Self> {
+    fn with_row_index(&self, name: Robj, offset: Robj) -> RResult<Self> {
         Ok(self
             .0
             .clone()
-            .with_row_count(
+            .with_row_index(
                 robj_to!(String, name)?.as_str(),
                 robj_to!(Option, u32, offset)?,
             )
@@ -470,6 +468,12 @@ impl RPolarsLazyFrame {
         let mut ddd = robj_to!(VecPLExprCol, dotdotdot)?;
         exprs.append(&mut ddd);
         let descending = robj_to!(Vec, bool, descending)?;
+
+        if descending.is_empty() {
+            return Err(RPolarsErr::new()
+                .plain("`descending` must be of length 1 or of the same length as `by`".into()));
+        };
+
         let nulls_last = robj_to!(bool, nulls_last)?;
         let maintain_order = robj_to!(bool, maintain_order)?;
         Ok(self
@@ -638,6 +642,7 @@ impl RPolarsLazyFrame {
         })
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn group_by_dynamic(
         &self,
         index_column: Robj,

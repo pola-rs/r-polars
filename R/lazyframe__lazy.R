@@ -156,7 +156,10 @@ pl_LazyFrame = function(...) {
 #'
 #' @examples pl$LazyFrame(iris)
 print.RPolarsLazyFrame = function(x, ...) {
-  print("polars LazyFrame naive plan: (run ldf$describe_optimized_plan() to see the optimized plan)")
+  cat("polars LazyFrame\n")
+  cat(" $describe_optimized_plan() : Show the optimized query plan.\n")
+  cat("\n")
+  cat("Naive plan:\n")
   cloned_x = .pr$LazyFrame$print(x)
   invisible(cloned_x)
 }
@@ -243,19 +246,26 @@ LazyFrame_with_columns = function(...) {
 }
 
 
-#' @inherit DataFrame_with_row_count title description params
+#' @inherit DataFrame_with_row_index title description params
 #' @return A new LazyFrame with a counter column in front
 #' @docType NULL
 #' @examples
 #' df = pl$LazyFrame(mtcars)
 #'
 #' # by default, the index starts at 0 (to mimic the behavior of Python Polars)
-#' df$with_row_count("idx")
+#' df$with_row_index("idx")
 #'
 #' # but in R, we use a 1-index
-#' df$with_row_count("idx", offset = 1)
+#' df$with_row_index("idx", offset = 1)
+LazyFrame_with_row_index = function(name, offset = NULL) {
+  .pr$LazyFrame$with_row_index(self, name, offset) |>
+    unwrap("in $with_row_index():")
+}
+
 LazyFrame_with_row_count = function(name, offset = NULL) {
-  .pr$LazyFrame$with_row_count(self, name, offset) |> unwrap()
+  warning("`$with_row_count()` is deprecated and will be removed in 0.15.0. Use `with_row_index()` instead.")
+  .pr$LazyFrame$with_row_index(self, name, offset) |>
+    unwrap("in $with_row_count():")
 }
 
 #' Apply filter to LazyFrame
@@ -490,6 +500,8 @@ LazyFrame_collect_in_background = function() {
 #' smaller chunks may reduce memory pressure and improve writing speeds.
 #' @param data_pagesize_limit `NULL` or Integer. If `NULL` (default), the limit
 #' will be ~1MB.
+#' @param maintain_order Maintain the order in which data is processed. Setting
+#' this to `FALSE` will be slightly faster.
 #' @inheritParams LazyFrame_group_by
 #' @inheritParams DataFrame_unique
 #' @inheritParams LazyFrame_collect
@@ -567,6 +579,7 @@ LazyFrame_sink_parquet = function(
 #' @param compression `NULL` or string, the compression method. One of `NULL`,
 #' "lz4" or "zstd". Choose "zstd" for good compression performance. Choose "lz4"
 #' for fast compression/decompression.
+#' @inheritParams LazyFrame_sink_parquet
 #' @inheritParams LazyFrame_collect
 #' @inheritParams LazyFrame_group_by
 #' @inheritParams DataFrame_unique
@@ -634,6 +647,7 @@ LazyFrame_sink_ipc = function(
 #' larger than RAM as it would crash the R session if it was collected into R.
 #'
 #' @inheritParams DataFrame_write_csv
+#' @inheritParams LazyFrame_sink_parquet
 #' @inheritParams LazyFrame_collect
 #' @inheritParams LazyFrame_group_by
 #' @inheritParams DataFrame_unique
@@ -723,6 +737,7 @@ LazyFrame_sink_csv = function(
 #' larger than RAM as it would crash the R session if it was collected into R.
 #'
 #' @inheritParams DataFrame_write_csv
+#' @inheritParams LazyFrame_sink_parquet
 #' @inheritParams LazyFrame_collect
 #' @inheritParams LazyFrame_group_by
 #' @inheritParams DataFrame_unique
@@ -1032,10 +1047,11 @@ LazyFrame_unique = function(
 #' (`$agg()`, `$filter()`, etc.).
 #' @keywords LazyFrame
 #' @param ... Any Expr(s) or string(s) naming a column.
-#' @param maintain_order Keep the same order as the original `LazyFrame`. Setting
-#'  this to `TRUE` makes it more expensive to compute and blocks the possibility
-#'  to run on the streaming engine. The default value can be changed with
-#' `options(polars.maintain_order = TRUE)`.
+#' @param maintain_order Keep the same group order as in the original data.
+#' Within each group, the order of rows is always preserved, regardless of
+#' this argument. Setting this to `TRUE` makes it more expensive to compute
+#' and blocks the possibility to run on the streaming engine. The default
+#' value can be changed with `options(polars.maintain_order = TRUE)`.
 #' @return LazyGroupBy (a LazyFrame with special groupby methods like `$agg()`)
 #' @examples
 #' pl$LazyFrame(
@@ -1156,8 +1172,9 @@ LazyFrame_join = function(
 #' either of length 1 or a logical vector of the same length as the number of
 #' Expr(s) specified in `by` and `...`.
 #' @param nulls_last Boolean. Place `NULL`s at the end? Default is `FALSE`.
-#' @inheritParams LazyFrame_group_by
-#' @inheritParams DataFrame_unique
+#' @param maintain_order Whether the order should be maintained if elements are
+#' equal. If `TRUE`, streaming is not possible and performance might be worse
+#' since this requires a stable search.
 #' @return LazyFrame
 #' @keywords  LazyFrame
 #' @examples
@@ -1172,9 +1189,9 @@ LazyFrame_join = function(
 #' df$sort(c("cyl", "mpg"), descending = c(TRUE, FALSE))$collect()
 #' df$sort(pl$col("cyl"), pl$col("mpg"))$collect()
 LazyFrame_sort = function(
-    by, # : IntoExpr | List[IntoExpr],
-    ..., # unnamed Into expr
-    descending = FALSE, #  bool | vector[bool] = False,
+    by,
+    ...,
+    descending = FALSE,
     nulls_last = FALSE,
     maintain_order = FALSE) {
   .pr$LazyFrame$sort_by_exprs(
@@ -1610,7 +1627,7 @@ LazyFrame_profile = function(
 #' `"name"` is implicitly converted to `pl$col("name")`.
 #'
 #' @details
-#' Only columns of DataType `List` or `String` can be exploded.
+#' Only columns of DataType `List` or `Array` can be exploded.
 #'
 #' Named expressions like `$explode(a = pl$col("b"))` will not implicitly trigger
 #' `$alias("a")` here, due to only variant `Expr::Column` is supported in
@@ -1627,9 +1644,6 @@ LazyFrame_profile = function(
 #'
 #' # explode a single column, append others
 #' df$explode("numbers")$collect()
-#'
-#' # it is also possible to explode a character column to have one letter per row
-#' df$explode("letters")
 #'
 #' # explode two columns of same nesting structure, by names or the common dtype
 #' # "List(Float64)"

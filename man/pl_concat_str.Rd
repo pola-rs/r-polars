@@ -4,7 +4,7 @@
 \alias{pl_concat_str}
 \title{Horizontally concatenate columns into a single string column}
 \usage{
-pl_concat_str(..., separator = "")
+pl_concat_str(..., separator = "", ignore_nulls = FALSE)
 }
 \arguments{
 \item{...}{Columns to concatenate into a single string column. Accepts
@@ -13,6 +13,9 @@ are parsed as literals. Non-String columns are cast to String}
 
 \item{separator}{String that will be used to separate the values of each
 column.}
+
+\item{ignore_nulls}{If \code{FALSE} (default), null values are propagated: if the
+row contains any null values, the output is null.}
 }
 \value{
 Expr
@@ -22,19 +25,23 @@ Horizontally concatenate columns into a single string column
 }
 \examples{
 df = pl$DataFrame(
-  a = c(1, 2, 3),
+  a = 1:3,
   b = c("dogs", "cats", NA),
   c = c("play", "swim", "walk")
 )
 
 df$with_columns(
   pl$concat_str(
-    pl$col("a") * 2,
-    "b",
-    "c",
-    pl$lit("!"),
+    pl$col("a") * 2L, "b", "c", pl$lit("!"),
     separator = " "
   )$alias("full_sentence")
 )
 
+df$with_columns(
+  pl$concat_str(
+    pl$col("a") * 2L, "b", "c", pl$lit("!"),
+    separator = " ",
+    ignore_nulls = TRUE
+  )$alias("full_sentence")
+)
 }

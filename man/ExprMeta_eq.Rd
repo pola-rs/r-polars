@@ -2,8 +2,7 @@
 % Please edit documentation in R/expr__meta.R
 \name{ExprMeta_eq}
 \alias{ExprMeta_eq}
-\alias{expr_meta_equal}
-\title{Meta Equal}
+\title{Check if two expressions are equivalent}
 \usage{
 ExprMeta_eq(other)
 }
@@ -11,10 +10,11 @@ ExprMeta_eq(other)
 \item{other}{Expr to compare with}
 }
 \value{
-bool: TRUE if equal
+A boolean: \code{TRUE} if equal, \code{FALSE} otherwise
 }
 \description{
-Are two expressions on a meta level equal
+Indicate if this expression is the same as another expression. See also the
+counterpart \code{\link[=ExprMeta_neq]{$meta$neq()}}.
 }
 \examples{
 # three naive expression literals
@@ -25,13 +25,9 @@ e3 = pl$lit(40) + 2
 # e1 and e3 are identical expressions
 e1$meta$eq(e3)
 
-# e_test is an expression testing whether e1 and e2 evaluates to the same value.
-e_test = e1 == e2 # or e_test = e1$eq(e2)
+# when evaluated, e1 and e2 are equal
+e1$eq(e2)$to_r()
 
-# direct evaluate e_test, possible because only made up of literals
-e_test$to_r()
-
-# e1 and e2 are on the meta-level NOT identical expressions
-e1$meta$neq(e2)
+# however, on the meta-level, e1 and e2 are NOT identical expressions
+e1$meta$eq(e2)
 }
-\keyword{ExprMeta}

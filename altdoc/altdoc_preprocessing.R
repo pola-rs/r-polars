@@ -36,9 +36,9 @@ out = list()
 # order determines order in sidebar
 classes = c(
   "pl", "Series", "DataFrame", "LazyFrame", "GroupBy",
-  "LazyGroupBy", "RollingGroupBy", "ExprList", "ExprBin", "ExprCat", "ExprDT",
-  "ExprMeta", "ExprName", "ExprStr", "ExprStruct",
-  "Expr", "IO", "RField", "RThreadHandle", "SQLContext", "S3"
+  "LazyGroupBy", "RollingGroupBy", "DynamicGroupBy", "ExprList", "ExprBin",
+  "ExprCat", "ExprDT", "ExprMeta", "ExprName", "ExprStr", "ExprStruct",
+  "ExprArr", "Expr", "IO", "RField", "RThreadHandle", "SQLContext", "S3"
 )
 for (cl in classes) {
   files = grep(paste0("^", cl, "_"), other, value = TRUE)
@@ -52,6 +52,7 @@ for (cl in classes) {
 # expr: nested
 nam = c(
   "Expr" = "All others",
+  "ExprArr" = "Array",
   "ExprList" = "List",
   "ExprBin" = "Binary",
   "ExprCat" = "Categorical",

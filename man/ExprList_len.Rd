@@ -3,19 +3,16 @@
 \name{ExprList_len}
 \alias{ExprList_len}
 \alias{list_len}
-\alias{ExprList_lengths}
 \title{Get the length of each list}
 \usage{
 ExprList_len()
-
-ExprList_lengths()
 }
 \value{
 Expr
 }
 \description{
 Return the number of elements in each list. Null values are counted in the
-total. \verb{$list$lengths()} is deprecated.
+total.
 }
 \examples{
 df = pl$DataFrame(list(list_of_strs = list(c("a", "b", NA), "c")))

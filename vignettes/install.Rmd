@@ -60,11 +60,20 @@ install.packages(
 )
 ```
 
-#### macOS (x86_64)
+#### macOS (x86_64, a.k.a. Intel)
 
 ```r
 install.packages(
   "https://github.com/pola-rs/r-polars/releases/latest/download/polars__x86_64-apple-darwin20.tgz",
+  repos = NULL
+)
+```
+
+#### macOS (aarch64, a.k.a. Apple Silicon)
+
+```r
+install.packages(
+  "https://github.com/pola-rs/r-polars/releases/latest/download/polars__aarch64-apple-darwin20.tgz",
   repos = NULL
 )
 ```
@@ -127,13 +136,14 @@ For example, to enable the `full_features` feature, set the environment variable
 
 Currently `full_features` would work as a combination of the following features.
 
+- The `default` feature
+  - `sql` for enable `pl$SQLContext()`.
 - Features for CRAN compatibility
   - `disable_limit_max_threads`, this feature disables the automatic limit of the maximum number of threads to 2 for CRAN compatibility,
     and the maximum number of threads is used by default.
-    See `?pl_threadpool_size` for details.
+    See `?pl_thread_pool_size` for details.
 - Features for nightly toolchain
-  - `simd` for SIMD support.
-  - `sql` for enable `pl$SQLContext()`.
+  - `nightly` for nightly toolchain features and SIMD.
 
 Note that nightly features requires the Rust nightly toolchain `r rust_toolchain_version`.
 

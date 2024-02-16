@@ -3,8 +3,8 @@
     Code
       info
     Output
-      r-polars package version : 999.999.999
-      rust-polars crate version: 999.999.999
+      Polars R package version : 999.999.999
+      Rust Polars crate version: 999.999.999
       
       Thread pool size: 1 
       
@@ -12,7 +12,7 @@
       default                   FALSE
       full_features             FALSE
       disable_limit_max_threads FALSE
-      simd                      FALSE
+      nightly                   FALSE
       sql                       FALSE
       rpolars_debug_print       FALSE
       

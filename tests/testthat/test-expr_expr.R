@@ -644,15 +644,12 @@ test_that("$name$map()", {
       )
       lf = df$lazy()
       expect_identical(lf$collect()$columns, "alice_and_bob")
-
-
       expect_error(
         pl$DataFrame(list(alice = 1:3))$select(
           pl$col("alice")$name$map(\(x) 42) # wrong return
         ),
         "was not a string"
       )
-
 
       # expect_error(
       #   pl$DataFrame(list(alice=1:3))$select(
@@ -665,8 +662,7 @@ test_that("$name$map()", {
 })
 
 
-test_that("finite infinte is_nan is_not_nan", {
-  # TODO contribute polars NULL behavoir of is_nan and is_not_nan is not documented and not obvious
+test_that("finite infinite is_nan is_not_nan", {
   expect_identical(
     pl$DataFrame(list(a = c(0, NaN, NA, Inf, -Inf)))$select(
       pl$col("a")$is_finite()$alias("is_finite"),
@@ -765,17 +761,17 @@ test_that("Expr_rechunk Series_chunk_lengths", {
 test_that("cum_sum cum_prod cum_min cum_max cum_count", {
   l_actual = pl$DataFrame(list(a = 1:4))$select(
     pl$col("a")$cum_sum()$alias("cum_sum"),
-    pl$col("a")$cum_prod()$alias("cum_prod")$cast(pl$dtypes$Float64),
+    pl$col("a")$cum_prod()$alias("cum_prod")$cast(pl$Float64),
     pl$col("a")$cum_min()$alias("cum_min"),
     pl$col("a")$cum_max()$alias("cum_max"),
-    pl$col("a")$cum_count()$alias("cum_count")$cast(pl$Float64)
+    pl$col("a")$cum_count()$alias("cum_count")$cast(pl$Int32)
   )$to_list()
   l_reference = list(
     cum_sum = cumsum(1:4),
     cum_prod = cumprod(1:4),
     cum_min = cummin(1:4),
     cum_max = cummax(1:4),
-    cum_count = seq_along(1:4) - 1
+    cum_count = 1:4
   )
   expect_identical(
     l_actual, l_reference
@@ -783,10 +779,10 @@ test_that("cum_sum cum_prod cum_min cum_max cum_count", {
 
   l_actual_rev = pl$DataFrame(list(a = 1:4))$select(
     pl$col("a")$cum_sum(reverse = TRUE)$alias("cum_sum"),
-    pl$col("a")$cum_prod(reverse = TRUE)$alias("cum_prod")$cast(pl$dtypes$Float64),
+    pl$col("a")$cum_prod(reverse = TRUE)$alias("cum_prod")$cast(pl$Float64),
     pl$col("a")$cum_min(reverse = TRUE)$alias("cum_min"),
     pl$col("a")$cum_max(reverse = TRUE)$alias("cum_max"),
-    pl$col("a")$cum_count(reverse = TRUE)$alias("cum_count")$cast(pl$Float64)
+    pl$col("a")$cum_count(reverse = TRUE)$alias("cum_count")$cast(pl$Int32)
   )$to_list()
 
   expect_identical(
@@ -796,7 +792,7 @@ test_that("cum_sum cum_prod cum_min cum_max cum_count", {
       cum_prod = rev(cumprod(4:1)),
       cum_min = rev(cummin(4:1)),
       cum_max = rev(cummax(4:1)),
-      cum_count = rev(seq_along(4:1)) - 1
+      cum_count = rev(seq_along(4:1))
     )
   )
 })
@@ -1070,7 +1066,7 @@ test_that("gather that", {
 })
 
 test_that("shift", {
-  R_shift = \(x, n){
+  R_shift = \(x, n) {
     idx = seq_along(x) - n
     idx[idx <= 0] = Inf
     x[idx]
@@ -1117,7 +1113,7 @@ test_that("fill_null  + forward backward _fill + fill_nan", {
   # fiil value
   expect_identical(
     pl$DataFrame(l)$select(pl$col("a")$fill_null(42L))$to_list()$a,
-    l$a |> (\(x){
+    l$a |> (\(x) {
       x[is.na(x)] = 42L
       x
     })()
@@ -1149,7 +1145,6 @@ test_that("fill_null  + forward backward _fill + fill_nan", {
     x
   }
 
-  # TODO let select and other ... functions accept trailing ','
   expect_identical(
     pl$DataFrame(l)$select(
       pl$col("a")$fill_null(strategy = "forward")$alias("forward"),
@@ -1506,22 +1501,87 @@ test_that("gather_every", {
   )
 })
 
-# TODO contribute polars, panics if start or stop expression has len > 1 or len!= col.len()
-test_that("is_between", {
-  l = list(a = (1:5) * 1.0)
-  df = pl$DataFrame(l)
+test_that("is_between with literals", {
+  df = pl$DataFrame(a = (1:5) * 1.0)
 
-  expect_identical(df$select(pl$col("a")$is_between(2, 4))$to_list()[[1L]], c(F, F, T, F, F))
-  expect_identical(df$select(pl$col("a")$is_between(2, 4, T))$to_list()[[1L]], c(F, T, T, T, F))
-  expect_identical(df$select(pl$col("a")$is_between(2, 4, c(T, F)))$to_list()[[1L]], c(F, T, T, F, F))
-  expect_identical(df$select(pl$col("a")$is_between(2, 4, c(F, T)))$to_list()[[1L]], c(F, F, T, T, F))
-  expect_identical(df$select(pl$col("a")$is_between(1.9, 4.1, F))$to_list()[[1L]], c(F, T, T, T, F))
-
-  expect_error(pl$col("a")$is_between(1, 2, logical()))
-  expect_error(pl$col("a")$is_between(1, 2, logical(3)))
-  expect_error(pl$col("a")$is_between(1, 2, NA))
+  expect_identical(
+    df$select(pl$col("a")$is_between(2, 4))$to_list()[[1L]],
+    c(FALSE, TRUE, TRUE, TRUE, FALSE)
+  )
+  expect_identical(
+    df$select(pl$col("a")$is_between(2, 4, "left"))$to_list()[[1L]],
+    c(FALSE, TRUE, TRUE, FALSE, FALSE)
+  )
+  expect_identical(
+    df$select(pl$col("a")$is_between(2, 4, "right"))$to_list()[[1L]],
+    c(FALSE, FALSE, TRUE, TRUE, FALSE)
+  )
+  expect_identical(
+    df$select(pl$col("a")$is_between(2, 4, "none"))$to_list()[[1L]],
+    c(FALSE, FALSE, TRUE, FALSE, FALSE)
+  )
 })
 
+test_that("is_between with expr", {
+  df = pl$DataFrame(
+    var = c(1, 2, 3, 4, 5),
+    low = c(2, 2, 6, 2, 1),
+    upp = c(1, 3, 8, 2, NA)
+  )
+
+  # strings parsed as columns
+  expect_identical(
+    df$select(pl$col("var")$is_between("low", "upp"))$to_list()[[1L]],
+    c(FALSE, TRUE, FALSE, FALSE, NA)
+  )
+  expect_identical(
+    df$select(pl$col("var")$is_between("low", "upp", "right"))$to_list()[[1L]],
+    c(FALSE, FALSE, FALSE, FALSE, NA)
+  )
+
+  # expression
+  expect_identical(
+    df$select(pl$col("var")$is_between(pl$col("low") - 3, "upp"))$to_list()[[1L]],
+    c(TRUE, TRUE, TRUE, FALSE, NA)
+  )
+
+  # expression + literal
+  expect_identical(
+    df$select(pl$col("var")$is_between(pl$col("low") - 3, 4))$to_list()[[1L]],
+    c(TRUE, TRUE, TRUE, TRUE, FALSE)
+  )
+})
+
+test_that("is_between with Inf/NaN", {
+  df = pl$DataFrame(var = c(1, 2, 3, 4, 5))
+
+  expect_identical(
+    df$select(pl$col("var")$is_between(2, Inf))$to_list()[[1L]],
+    c(FALSE, TRUE, TRUE, TRUE, TRUE)
+  )
+  expect_identical(
+    df$select(pl$col("var")$is_between(-Inf, 3))$to_list()[[1L]],
+    c(TRUE, TRUE, TRUE, FALSE, FALSE)
+  )
+  expect_identical(
+    df$select(pl$col("var")$is_between(NaN, 3))$to_list()[[1L]],
+    rep(FALSE, 5)
+  )
+  # in polars, NaN is always greater than any non-NaN value
+  # https://docs.pola.rs/user-guide/concepts/data-types/overview/#floating-point
+  expect_identical(
+    df$select(pl$col("var")$is_between(3, NaN))$to_list()[[1L]],
+    c(FALSE, FALSE, TRUE, TRUE, TRUE)
+  )
+})
+
+test_that("is_between errors if wrong 'closed' arg", {
+  df = pl$DataFrame(var = c(1, 2, 3, 4, 5))
+  expect_error(
+    df$select(pl$col("var")$is_between(1, 2, "foo")),
+    "should be one of"
+  )
+})
 
 test_that("hash + reinterpret", {
   df = pl$DataFrame(iris)
@@ -1727,7 +1787,7 @@ test_that("Expr_diff", {
 test_that("Expr_pct_change", {
   l = list(a = c(10L, 11L, 12L, NA_integer_, NA_integer_, 12L))
 
-  R_shift = \(x, n){
+  R_shift = \(x, n) {
     idx = seq_along(x) - n
     idx[idx <= 0] = Inf
     x[idx]
@@ -2348,16 +2408,14 @@ test_that("implode", {
 
 test_that("concat_str", {
   df = pl$DataFrame(
-    a = c(1, 2, 3),
+    a = 1:3,
     b = c("dogs", "cats", NA),
     c = c("play", "swim", "walk")
   )
 
   out = df$with_columns(
     pl$concat_str(
-      pl$col("a") * 2,
-      "b",
-      pl$col("c"),
+      pl$col("a") * 2L, "b", pl$col("c"),
       separator = " "
     )$alias("full_sentence")
   )$to_data_frame()
@@ -2365,7 +2423,20 @@ test_that("concat_str", {
   expect_equal(dim(out), c(3, 4))
   expect_equal(
     out$full_sentence,
-    c("2.0 dogs play", "4.0 cats swim", NA)
+    c("2 dogs play", "4 cats swim", NA)
+  )
+
+  # ignore_nulls
+  out = df$with_columns(
+    pl$concat_str(
+      pl$col("a") * 2L, "b", pl$col("c"),
+      separator = " ", ignore_nulls = TRUE
+    )$alias("full_sentence")
+  )$to_data_frame()
+
+  expect_equal(
+    out$full_sentence,
+    c("2 dogs play", "4 cats swim", "6 walk")
   )
 
   # check error for something which cannot be turned into an Expression

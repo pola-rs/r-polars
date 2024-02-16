@@ -2134,44 +2134,42 @@ Expr_repeat_by = function(by) {
   .pr$Expr$repeat_by(self, wrap_e(by, FALSE))
 }
 
-#' Check whether a value is between two values
+#' Check if an expression is between the given lower and upper bounds
 #'
-#' This is syntactic sugar for `x > start & x < end` (or `x >= start & x <=
-#' end`).
-#' @param start Lower bound, an Expr that is either numeric or datetime.
-#' @param end Upper bound, an Expr that is either numeric or datetime.
-#' @param include_bounds If `FALSE` (default), exclude start and end. This can
-#' also be a vector of two booleans indicating whether to include the start
-#' and/or the end.
+#' @param lower_bound Lower bound, can be an Expr. Strings are parsed as column
+#' names.
+#' @param upper_bound Upper bound, can be an Expr. Strings are parsed as column
+#' names.
+#' @param closed Define which sides of the interval are closed (inclusive). This
+#' can be either `"left"`, `"right"`, `"both"` or `"none"`.
+#'
+#' @details
+#' Note that in polars, `NaN` are equal to other `NaN`s, and greater than any
+#' non-`NaN` value.
+#'
 #'
 #' @return Expr
 #' @examples
-#' df = pl$DataFrame(num = 1:5, y = c(0, 2, 3, 3, 3))
+#' df = pl$DataFrame(num = 1:5)
 #' df$with_columns(
-#'   bet_2_4_no_bounds = pl$col("num")$is_between(2, 4),
-#'   bet_2_4_with_bounds = pl$col("num")$is_between(2, 4, TRUE),
-#'   bet_2_4_upper_bound = pl$col("num")$is_between(2, 4, c(FALSE, TRUE)),
-#'   between_y_4 = pl$col("num")$is_between(pl$col("y"), 6)
+#'   is_between = pl$col("num")$is_between(2, 4),
+#'   is_between_excl_upper = pl$col("num")$is_between(2, 4, closed = "left"),
+#'   is_between_excl_both = pl$col("num")$is_between(2, 4, closed = "none")
 #' )
-Expr_is_between = function(start, end, include_bounds = FALSE) {
-  if (
-    !length(include_bounds) %in% 1:2 ||
-      !is.logical(include_bounds) ||
-      any(is.na(include_bounds))
-  ) {
-    stop("in is_between: inlcude_bounds must be boolean of length 1 or 2, with no NAs")
-  }
-
-  # prepare args
-  start_e = wrap_e(start)
-  end_e = wrap_e(end)
-  with_start = include_bounds[1L]
-  with_end = if (length(include_bounds) == 1) include_bounds else include_bounds[2]
-
-  # build and return boolean expression
-  within_start_e = if (with_start) self >= start_e else self > start_e
-  within_end_e = if (with_end) self <= end_e else self < end_e
-  (within_start_e & within_end_e)$alias("is_between")
+#'
+#' # lower and upper bounds can also be column names or expr
+#' df = pl$DataFrame(
+#'   num = 1:5,
+#'   lower = c(0, 2, 3, 3, 3),
+#'   upper = c(6, 4, 4, 8, 3.5)
+#' )
+#' df$with_columns(
+#'   is_between_cols = pl$col("num")$is_between("lower", "upper"),
+#'   is_between_expr = pl$col("num")$is_between(pl$col("lower") / 2, "upper")
+#' )
+Expr_is_between = function(lower_bound, upper_bound, closed = "both") {
+  .pr$Expr$is_between(self, lower_bound, upper_bound, closed) |>
+    unwrap("in $is_between():")
 }
 
 #' Hash elements
@@ -3316,6 +3314,16 @@ Expr_shrink_dtype = use_extendr_wrapper
 #' @noRd
 Expr_list = method_as_property(function() {
   expr_list_make_sub_ns(self)
+})
+
+#' Array related methods
+#'
+#' Create an object namespace of all array related methods. See the individual
+#' method pages for full details.
+#' @return Expr
+#' @noRd
+Expr_arr = method_as_property(function() {
+  expr_arr_make_sub_ns(self)
 })
 
 #' String related methods

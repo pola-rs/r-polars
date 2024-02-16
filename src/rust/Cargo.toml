@@ -1,19 +1,21 @@
 [package]
 name = "r-polars"
-version = "0.36.1"
+version = "0.37.0"
 edition = "2021"
-rust-version = "1.73"
+rust-version = "1.74.1"
 publish = false
 
 [lib]
 crate-type = ['staticlib']
 
 [features]
-default = []
-full_features = ["simd", "sql", "disable_limit_max_threads"]
+default = ["sql"]
+full_features = ["default", "nightly", "disable_limit_max_threads"]
 disable_limit_max_threads = []
-simd = ["polars/simd"]
 sql = ["polars/sql"]
+# also includes simd, requires nightly
+nightly = ["polars/nightly"]
+
 rpolars_debug_print = []
 
 [workspace]
@@ -49,9 +51,9 @@ serde = { version = "1.0.196", features = ["derive"] }
 serde_json = "*"
 smartstring = "1.0.1"
 state = "0.6.0"
-thiserror = "1.0.56"
-polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "fa59ffc1685043b44476dcb2a3f3804460ead5c5", default-features = false }
-polars-lazy = { git = "https://github.com/pola-rs/polars.git", rev = "fa59ffc1685043b44476dcb2a3f3804460ead5c5", default-features = false }
+thiserror = "1.0.57"
+polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "f3c4cc5ba746cb858cda9a9071865fd24b656a17", default-features = false }
+polars-lazy = { git = "https://github.com/pola-rs/polars.git", rev = "f3c4cc5ba746cb858cda9a9071865fd24b656a17", default-features = false }
 either = "1"
 #features copied from node-polars
 
@@ -59,6 +61,8 @@ either = "1"
 features = [
   "abs",
   "approx_unique",
+  "array_any_all",
+  "array_count",
   "arg_where",
   "asof_join",
   "avro",
@@ -76,6 +80,7 @@ features = [
   "diff",
   "dot_diagram",
   "dot_product",
+  "dtype-array",
   "dtype-categorical",
   "dtype-date",
   "dtype-datetime",
@@ -88,17 +93,16 @@ features = [
   "ewma",
   "find_many",
   "fmt",
-  "horizontal_concat",
   "interpolate",
   "ipc",
+  "is_between",
   "is_first_distinct",
   "is_last_distinct",
   "is_in",
   "is_unique",
   "json",
   "lazy",
-  "lazy_regex",
-  #"list",
+  # "list",
   "list_any_all",
   "list_eval",
   "list_gather",
@@ -148,4 +152,4 @@ features = [
   "zip_with",
 ]
 git = "https://github.com/pola-rs/polars.git"
-rev = "fa59ffc1685043b44476dcb2a3f3804460ead5c5"
+rev = "f3c4cc5ba746cb858cda9a9071865fd24b656a17"

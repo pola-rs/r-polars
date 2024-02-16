@@ -19,7 +19,7 @@ test_that("plain scan read parquet", {
 })
 
 
-test_that("scan read parquet - test arg rowcount", {
+test_that("scan read parquet - test arg row_index", {
   tmpf = tempfile()
   on.exit(unlink(tmpf))
   lf_exp = pl$LazyFrame(mtcars)
@@ -27,12 +27,12 @@ test_that("scan read parquet - test arg rowcount", {
   df_exp = lf_exp$collect()$to_data_frame()
 
   expect_identical(
-    pl$scan_parquet(tmpf, row_count_name = "rc", row_count_offset = 5)$collect()$to_data_frame(),
+    pl$scan_parquet(tmpf, row_index_name = "rc", row_index_offset = 5)$collect()$to_data_frame(),
     data.frame(rc = as.numeric(5:36), df_exp)
   )
 
   expect_identical(
-    pl$read_parquet(tmpf, row_count_name = "rc", row_count_offset = 5)$to_data_frame(),
+    pl$read_parquet(tmpf, row_index_name = "rc", row_index_offset = 5)$to_data_frame(),
     data.frame(rc = as.numeric(5:36), df_exp)
   )
 })
@@ -59,4 +59,28 @@ test_that("scan read parquet - parallel strategies", {
   expect_identical(ctx$BadArgument, "parallel")
   ctx = pl$read_parquet(tmpf, parallel = 42) |> get_err_ctx()
   expect_identical(ctx$NotAChoice, "input is not a character vector")
+})
+
+
+test_that("write_paquet works", {
+  tmpf = tempfile()
+  on.exit(unlink(tmpf))
+  df_exp = pl$DataFrame(mtcars)
+  df_exp$write_parquet(tmpf)
+
+  expect_identical(
+    pl$read_parquet(tmpf)$to_data_frame(),
+    mtcars,
+    ignore_attr = TRUE
+  )
+})
+
+test_that("throw error if invalid compression is passed", {
+  tmpf = tempfile()
+  on.exit(unlink(tmpf))
+  df_exp = pl$DataFrame(mtcars)
+  expect_error(
+    df_exp$write_parquet(tmpf, compression = "invalid"),
+    "Failed to set parquet compression method"
+  )
 })

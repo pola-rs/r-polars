@@ -21,10 +21,9 @@ identify duplicates. If \code{NULL} (default), use all columns.}
 \item "none": Don’t keep duplicate rows.
 }}
 
-\item{maintain_order}{Keep the same order as the original \code{DataFrame}. Setting
+\item{maintain_order}{Keep the same order as the original data. Setting
 this to \code{TRUE} makes it more expensive to compute and blocks the possibility
-to run on the streaming engine. The default value can be changed with
-\code{options(polars.maintain_order = TRUE)}.}
+to run on the streaming engine.}
 }
 \value{
 DataFrame

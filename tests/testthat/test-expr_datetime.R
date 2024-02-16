@@ -123,13 +123,13 @@ test_that("pl$date_range lazy ", {
   )$select(
     pl$date_range("t1", "t2", "6h")$alias("s1"),
     pl$date_range("t1", "t2", "6h", eager = FALSE)$alias("s2"),
-    pl$date_range(pl$col("t1"), pl$col("t2"), "6h", eager = FALSE)$alias("s3")
-    # pl$date_range(t1, t2, "6h")$alias("s4") # TODO make behavior the same as above
+    pl$date_range(pl$col("t1"), pl$col("t2"), "6h", eager = FALSE)$alias("s3"),
+    pl$date_range(t1, t2, "6h")$alias("s4")
   )
   l = df$to_list()
-  for (i in length(l) - 1) {
-    expect_identical(l[[i]], l[[i + 1]])
-  }
+  expect_identical(l$s1, l$s2)
+  expect_identical(l$s1, l$s3)
+  expect_identical(l$s1, l$s4)
 })
 
 

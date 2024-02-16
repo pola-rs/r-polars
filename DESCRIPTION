@@ -1,6 +1,6 @@
 Package: polars
 Title: Lightning-Fast 'DataFrame' Library
-Version: 0.13.0.9000
+Version: 0.14.0.9000
 Depends: R (>= 4.2)
 Imports: utils, codetools
 Authors@R:
@@ -70,7 +70,6 @@ Collate:
     'rstudio_completion.R'
     'autocompletion.R'
     'construction.R'
-    'convert.R'
     'csv.R'
     'dataframe__frame.R'
     'datatype.R'
@@ -80,6 +79,7 @@ Collate:
     'error__string.R'
     'error__trait.R'
     'error_conversion.R'
+    'expr__array.R'
     'expr__binary.R'
     'expr__categorical.R'
     'expr__datetime.R'
@@ -102,6 +102,7 @@ Collate:
     'lazyframe__lazy.R'
     'namespace.R'
     'parquet.R'
+    'pkg-arrow.R'
     'pkg-knitr.R'
     'pkg-nanoarrow.R'
     'polars-package.R'
@@ -118,5 +119,5 @@ Collate:
     'zzz.R'
 Config/rextendr/version: 0.3.1.9000
 VignetteBuilder: knitr
-Config/polars/LibVersion: 0.36.1
-Config/polars/RustToolchainVersion: nightly-2023-12-23
+Config/polars/LibVersion: 0.37.0
+Config/polars/RustToolchainVersion: nightly-2024-02-03

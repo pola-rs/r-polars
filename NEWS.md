@@ -1,11 +1,106 @@
 # NEWS
 
-## polars (development version)
+## Polars R Package (development version)
 
+<<<<<<< HEAD
 -   Use `pl$polars_code_completion()` to assist writing polars syntax. Support 
     for native R terminal and Rstudio. (#597).
 
 ## polars 0.13.0
+=======
+## Polars R Package 0.14.0
+
+### Breaking changes due to Rust-polars update
+
+-   rust-polars is updated to 0.37.0 (#776).
+    -   Minimum supported Rust version (MSRV) is now 1.74.1.
+    -   `$with_row_count()` for `DataFrame` and `LazyFrame` is deprecated and
+        will be removed in 0.15.0. It is replaced by `$with_row_index()`.
+    -   `pl$count()` is deprecated and will be removed in 0.15.0. It is replaced
+        by `pl$len()`.
+    -   `$explode()` for `DataFrame` and `LazyFrame` doesn't work anymore on
+        string columns.
+    -   `$list$join()` and `pl$concat_str()` gain an argument `ignore_nulls`.
+        The current behavior is to return a `null` if the row contains any `null`.
+        Setting `ignore_nulls = TRUE` changes that.
+    -   All `row_count_*` args in reading/scanning functions are renamed
+        `row_index_*`.
+    -   `$sort()` for `Series` gains an argument `nulls_last`.
+    -   `$str$extract()` and `$str$zfill()` now accept an `Expr` and parse
+        strings as column names. Use `pl$lit()` to recover the old behavior.
+    -   `$cum_count()` now starts from 1 instead of 0.
+
+### Other breaking changes
+
+-   The `simd` feature of the Rust library is removed in favor of
+    the new `nightly` feature (#800).
+    If you specified `simd` via the `LIBR_POLARS_FEATURES` environment variable
+    during source installations, please use `nightly` instead;
+    there is no change if you specified `full_features` because
+    it now contains `nightly` instead of `simd`.
+-   The following functions were deprecated in 0.13.0 and are now removed (#783):
+    -   `$list$lengths()` -> `$list$len()`
+    -   `pl$from_arrow()` -> `as_polars_df()` or `as_polars_series()`
+    -   `pl$set_options()` and `pl$reset_options()` -> `polars_options()`
+-   `$is_between()` had several changes (#788):
+    -   arguments `start` and `end` are renamed `lower_bound` and `upper_bound`.
+        Their behaviour doesn't change.
+    -   `include_bounds` is renamed `closed` and must be one of `"left"`,
+        `"right"`, `"both"`, or `"none"`.
+-   `polars_info()` returns a slightly changed list.
+    -   `$threadpool_size`, which means the number of threads used by Polars,
+        is changed to `$thread_pool_size` (#784)
+    -   `$version`, which indicates the version of this package,
+        is changed to `$versions$r_package` (#791).
+    -   `$rust_polars`, which indicates the version of the dependent Rust Polars,
+        is changed to `$versions$rust_crate` (#791).
+-   New behavior when creating a `DataFrame` with a single list-variable.
+    `pl$DataFrame(x = list(1:2, 3:4))` used to create a `DataFrame` with two
+    columns named "new_column" and "new_column_1", which was unexpected. It now
+    produces a `DataFrame` with a single `list` variable. This also applies to
+    list-column created in `$with_columns()` and `$select()` (#794).
+
+### Deprecations
+
+-   `pl$threadpool_size()` is deprecated and will be removed in 0.15.0. Use
+    `pl$thread_pool_size()` instead (#784).
+
+### New features
+
+-   Implementation of the subnamespace `$arr` for expressions on `array`-type
+    columns. An `array` column is similar to a `list` column, but is stricter as
+    each sub-array must have the same number of elements (#790).
+
+### Other improvements
+
+-   The `sql` feature is included in the default feature (#800).
+    This means that functionality related to the `RPolarsSQLContext` class
+    is now always included in the binary package.
+
+## Polars R Package 0.13.1
+
+### New features
+
+-   New method `$write_parquet()` for DataFrame (#758).
+-   S3 methods of `as.data.frame()` for `RPolarsDataFrame` and `RPolarsLazyFrame`
+    accepts more arguments of `as_polars_df()` and `<DataFrame>$to_data_frame()` (#762).
+-   S3 methods of `arrow::as_arrow_table()` and `arrow::as_record_batch_reader()` for
+    `RPolarsDataFrame` no longer need the `{nanoarrow}` package (#754).
+-   Some S3 methods for the `{nanoarrow}` package are added (#730).
+    -   `as_polars_df(<nanoarrow_array_stream>)`
+    -   `as_polars_series(<nanoarrow_array>)`
+    -   `as_polars_series(<nanoarrow_array_stream>)`
+
+### Bug fixes
+
+-   `$sort()` no longer panicks when `descending = NULL` (#748).
+
+### Other enhancements
+
+-   `downlit::autolink()` now recognize the reference pages of this package (#739).
+
+## Polars R Package 0.13.0
+>>>>>>> main
 
 ### Breaking changes
 
@@ -91,11 +186,11 @@
 -   New function `polars_envvars()` to print the list of environment variables
     related to polars (#735).
 
-## polars 0.12.2
+## Polars R Package 0.12.2
 
 This is a small release including a few documentation improvements and internal updates.
 
-## polars 0.12.1
+## Polars R Package 0.12.1
 
 This version includes a few additional features and
 a large amount of documentation improvements.
@@ -126,7 +221,7 @@ a large amount of documentation improvements.
 -   Remove the `Makefile` in favor of `Taskfile.yml`.
     Please use `task` instead of `make` as a task runner in the development (#654).
 
-## polars 0.12.0
+## Polars R Package 0.12.0
 
 ### BREAKING CHANGES DUE TO RUST-POLARS UPDATE
 
@@ -183,7 +278,7 @@ a large amount of documentation improvements.
 -   New function `pl$threadpool_size()` to get the number of threads used by Polars (#620).
     Thread pool size is also included in the output of `pl$polars_info()`.
 
-## polars 0.11.0
+## Polars R Package 0.11.0
 
 ### BREAKING CHANGES DUE TO RUST-POLARS UPDATE
 
@@ -253,7 +348,7 @@ a large amount of documentation improvements.
         Please check the upstream issue [pola-rs/polars#10570](https://github.com/pola-rs/polars/issues/10570).
 -   The extract function (`[`) for polars objects now behave more like for base R objects (#543).
 
-## polars 0.10.1
+## Polars R Package 0.10.1
 
 ### What's changed
 
@@ -264,11 +359,12 @@ a large amount of documentation improvements.
 -   S3 methods for base R functions are well documented (#494).
 -   A bug that failing `pl$SQLContext()$register()` without load the package was fixed (#496).
 
-## polars 0.10.0
+## Polars R Package 0.10.0
 
 ### BREAKING CHANGES DUE TO RUST-POLARS UPDATE
 
 -   rust-polars is updated to 2023-10-25 unreleased version (#442)
+    -   Minimum supported Rust version (MSRV) is now 1.73.
     -   New subnamespace `"name"` that contains methods `$prefix()`, `$suffix()`
         `keep()` (renamed from `keep_name()`) and `map()` (renamed from `map_alias()`).
     -   `$dt$round()` gains an argument `ambiguous`.
@@ -307,7 +403,7 @@ a large amount of documentation improvements.
 -   New method `$with_context()` for `LazyFrame` to have access to columns from
     other Data/LazyFrames during the computation (#475).
 
-## polars 0.9.0
+## Polars R Package 0.9.0
 
 ### BREAKING CHANGES DUE TO RUST-POLARS UPDATE
 
@@ -374,7 +470,7 @@ a large amount of documentation improvements.
     The URL and SHA256 hash of the available binaries are recorded in `tools/lib-sums.tsv`.
     (#435, #448, #450, #451)
 
-## polars 0.8.1
+## Polars R Package 0.8.1
 
 ### What's changed
 
@@ -385,7 +481,7 @@ a large amount of documentation improvements.
 -   Subnamespace name "arr" as in `<Expr>$arr$` & `<Series>$arr$` is deprecated
     in favor of "list". The subnamespace "arr" will be removed in polars 0.9.0 (#375).
 
-## polars 0.8.0
+## Polars R Package 0.8.0
 
 ### BREAKING CHANGES DUE TO RUST-POLARS UPDATE
 
@@ -472,7 +568,7 @@ features. Unrelated breaking changes and new features are put in separate sectio
     rust-polars. [See R package example here](https://github.com/rpolars/extendrpolarsexamples)
     (#326).
 
-## polars 0.7.0
+## Polars R Package 0.7.0
 
 ### BREAKING CHANGES
 
@@ -517,7 +613,7 @@ features. Unrelated breaking changes and new features are put in separate sectio
     -   New author accredited, SHIMA Tatsuya (@eitsupi).
     -   DESCRIPTION revised.
 
-## polars 0.6.1
+## Polars R Package 0.6.1
 
 ### What's changed
 
@@ -528,7 +624,7 @@ features. Unrelated breaking changes and new features are put in separate sectio
 -   Docs improvements. (#210, #213)
 -   Update nix flake. (#227)
 
-## polars 0.6.0
+## Polars R Package 0.6.0
 
 ### BREAKING CHANGES
 
@@ -546,7 +642,7 @@ features. Unrelated breaking changes and new features are put in separate sectio
 -   A new option `strict` of `parse_int`. (#183)
 -   Perform joins on nearest keys with method `join_asof`. (#172)
 
-## polars v0.5.0
+## Polars R Package v0.5.0
 
 ### BREAKING CHANGE
 

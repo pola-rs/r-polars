@@ -568,11 +568,6 @@ sub_name_space_accessor_function = function(self, name) {
   func
 }
 
-# as %in% but supports lists also
-"%in_list%" = \(lhs_element, rhs_list) rhs_list |>
-  sapply("==", lhs_element) |>
-  any()
-
 # takes a list of dtypes (for example from $schema), returns a named vector
 # indicating which are Structs
 dtypes_are_struct = function(dtypes) {

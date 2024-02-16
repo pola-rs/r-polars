@@ -37,6 +37,10 @@ replace_private_with_pub_methods(RPolarsExpr, "^Expr_")
 expr_list_make_sub_ns = macro_new_subnamespace("^ExprList_", "RPolarsExprListNameSpace")
 
 #' @export
+`$.RPolarsExprArrNameSpace` = sub_name_space_accessor_function
+expr_arr_make_sub_ns = macro_new_subnamespace("^ExprArr_", "RPolarsExprArrNameSpace")
+
+#' @export
 `$.RPolarsExprStrNameSpace` = sub_name_space_accessor_function
 expr_str_make_sub_ns = macro_new_subnamespace("^ExprStr_", "RPolarsExprStrNameSpace")
 
@@ -123,7 +127,7 @@ move_env_elements(RPolarsExpr, pl, c("lit"), remove = FALSE)
       Sys.getenv("POLARS_MAX_THREADS") == "") {
     Sys.setenv(POLARS_MAX_THREADS = 2)
     # Call polars to lock the pool size
-    invisible(threadpool_size())
+    invisible(thread_pool_size())
     Sys.unsetenv("POLARS_MAX_THREADS")
   }
 
