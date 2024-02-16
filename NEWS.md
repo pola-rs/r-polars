@@ -4,9 +4,9 @@
 
 ### New features
 
--   New attribute `flags` for `DataFrame` to show the flags used internally for 
-    each column. The output of `flags` for `Series` was also improved and now
-    contains `FAST_EXPLODE` for `Series` of type `list` and `array`.
+-   New active bindings `$flags` for `DataFrame` to show the flags used internally for
+    each column. The output of `$flags` for `Series` was also improved and now
+    contains `FAST_EXPLODE` for `Series` of type `list` and `array` (#809).
 
 ## Polars R Package 0.14.0
 

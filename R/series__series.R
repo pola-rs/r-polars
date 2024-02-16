@@ -2,43 +2,45 @@
 #'
 #' @name Series_class
 #' @description The `Series`-class is simply two environments of respectively
-#'   the public and private methods/function calls to the polars rust side. The
-#'   instantiated `Series`-object is an `externalptr` to a lowlevel rust polars
-#'   Series  object. The pointer address is the only statefullness of the Series
-#'   object on the R side. Any other state resides on the rust side. The S3
-#'   method `.DollarNames.RPolarsSeries` exposes all public `$foobar()`-methods
-#'   which are callable onto the object. Most methods return another
-#'   `Series`-class instance or similar which allows for method chaining. This
-#'   class system in lack of a better name could be called "environment classes"
-#'   and is the same class system extendr provides, except here there is both a
-#'   public and private set of methods. For implementation reasons, the private
-#'   methods are external and must be called from `.pr$Series$methodname()`,
-#'   also all private methods must take any self as an argument, thus they are
-#'   pure functions. Having the private methods as pure functions
-#'   solved/simplified self-referential complications.
+#' the public and private methods/function calls to the polars rust side. The
+#' instantiated `Series`-object is an `externalptr` to a lowlevel rust polars
+#' Series  object. The pointer address is the only statefullness of the Series
+#' object on the R side. Any other state resides on the rust side. The S3
+#' method `.DollarNames.RPolarsSeries` exposes all public `$foobar()`-methods
+#' which are callable onto the object. Most methods return another
+#' `Series`-class instance or similar which allows for method chaining. This
+#' class system in lack of a better name could be called "environment classes"
+#' and is the same class system extendr provides, except here there is both a
+#' public and private set of methods. For implementation reasons, the private
+#' methods are external and must be called from `.pr$Series$methodname()`,
+#' also all private methods must take any self as an argument, thus they are
+#' pure functions. Having the private methods as pure functions
+#' solved/simplified self-referential complications.
 #'
 #' @details Check out the source code in R/Series_frame.R how public methods are
-#'   derived from private methods. Check out  extendr-wrappers.R to see the
-#'   extendr-auto-generated methods. These are moved to .pr and converted into
-#'   pure external functions in after-wrappers.R. In zzz.R (named zzz to be last
-#'   file sourced) the extendr-methods are removed and replaced by any function
-#'   prefixed `Series_`.
+#' derived from private methods. Check out  extendr-wrappers.R to see the
+#' extendr-auto-generated methods. These are moved to .pr and converted into
+#' pure external functions in after-wrappers.R. In zzz.R (named zzz to be last
+#' file sourced) the extendr-methods are removed and replaced by any function
+#' prefixed `Series_`.
 #'
-#' @section Flags:
+#' @section Active bindings:
 #'
-#'   Flags are used internally to avoid doing unnecessary computations, such as
-#'   sorting a variable that we know is already sorted. The number of flags
-#'   varies depending on the column type: columns of type `array` and `list`
-#'   have the flags `SORTED_ASC`, `SORTED_DESC`, and `FAST_EXPLODE`, while other
-#'   column types only have the former two.
+#' ## flags
 #'
-#'   `SORTED_ASC` is set to `TRUE` when we sort a column in increasing order, so
+#' `$flags` returns a named list with flag names and their values.
+#'
+#' Flags are used internally to avoid doing unnecessary computations, such as
+#' sorting a variable that we know is already sorted. The number of flags
+#' varies depending on the column type: columns of type `array` and `list`
+#' have the flags `SORTED_ASC`, `SORTED_DESC`, and `FAST_EXPLODE`, while other
+#' column types only have the former two.
+#'
+#' - `SORTED_ASC` is set to `TRUE` when we sort a column in increasing order, so
 #'   that we can use this information later on to avoid re-sorting it.
-#'   `SORTED_DESC` is similar but applies to sort in decreasing order.
+#' - `SORTED_DESC` is similar but applies to sort in decreasing order.
 #'
 #' @keywords Series
-#'
-#' @return `$flags` returns a named list with flag names and their values.
 #'
 #' @examples
 #' pl$show_all_public_methods("RPolarsSeries")
@@ -61,7 +63,7 @@
 #' identical(s_copy$to_r(), s$to_r()) # s_copy was modified when s was modified
 NULL
 
-#' @rdname Series_class
+
 Series_flags = method_as_property(function() {
   out = list(
     "SORTED_ASC" = .pr$Series$is_sorted_flag(self),
@@ -96,9 +98,8 @@ wrap_s = function(x) {
 #' @return Series
 #' @aliases Series
 #'
-#' @examples {
-#'   pl$Series(1:4)
-#' }
+#' @examples
+#' pl$Series(1:4)
 pl_Series = function(x, name = NULL) {
   .pr$Series$new(x, name) |>
     unwrap("in pl$Series()")
@@ -1003,15 +1004,13 @@ Series_expr = method_as_property(function() {
 #' @return Expr
 #' @aliases to_lit
 #' @examples
-#' (
-#'   pl$Series(list(1:1, 1:2, 1:3, 1:4))
-#'   $print()
-#'   $to_lit()
-#'   $list$len()
-#'   $sum()
-#'   $cast(pl$dtypes$Int8)
-#'   $to_series()
-#' )
+#' pl$Series(list(1:1, 1:2, 1:3, 1:4))$
+#'   print()$
+#'   to_lit()$
+#'   list$len()$
+#'   sum()$
+#'   cast(pl$dtypes$Int8)$
+#'   to_series()
 Series_to_lit = function() {
   pl$lit(self)
 }
