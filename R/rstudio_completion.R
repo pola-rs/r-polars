@@ -1,23 +1,23 @@
 # storing autocompletion functions in an environment,
 # allows modification at run-time, without rebuilding package.
 # This is useful as rstudio to do fast trial&error experimentation.
-.dev = new.env(parent = emptyenv())
+.rs_complete = new.env(parent = emptyenv())
 
 
 # function to parse eval left-hand-side string
 # timelimit: will stop eval attempt and throw error
-.dev$eval_lhs_string = function(string, envir, timelimit = 3) {
+.rs_complete$eval_lhs_string = function(string, envir, timelimit = 3) {
   lhs = NULL
   tryCatch(
     {
-      base::setTimeLimit(elapsed = timelimit)
+      setTimeLimit(elapsed = timelimit)
       lhs = eval(parse(text = string), envir = envir)
       TRUE
     },
     error = function(e) {
       message("could no auto complete syntax because:")
       if (inherits(e, "RPolarsErr_error")) {
-        message(polars:::result(stop(e))$err$rcall(string))
+        message(result(stop(e))$err$rcall(string))
       } else if (
         inherits(e, "simpleError") &&
           identical(e$message, "reached elapsed time limit")
@@ -28,12 +28,12 @@
       }
     }
   )
-  base::setTimeLimit(elapsed = Inf)
+  setTimeLimit(elapsed = Inf)
   lhs
 }
 
 # types/classes where completion behavior should change
-.dev$is_polars_related_type = function(x) {
+.rs_complete$is_polars_related_type = function(x) {
   inherits(
     x,
     c(
@@ -46,7 +46,7 @@
 }
 
 # classes that have the method $columns() and implement names()
-.dev$has_columns = function(x) {
+.rs_complete$has_columns = function(x) {
   inherits(
     x,
     c(
@@ -57,7 +57,7 @@
 }
 
 # decide if some function/method recursively has the polars nameSpace as parant environment.
-.dev$is_polars_function = function(x, limit_search = 256) {
+.rs_complete$is_polars_function = function(x, limit_search = 256) {
   pl_env = asNamespace("polars")
   if (!is.function(x)) {
     return(FALSE)
@@ -75,9 +75,9 @@
   return(FALSE)
 }
 
-# TODO this function will hopefully one day find and compile helpsection
+# TODO this function will hopefully one day find and compile help section
 # for any selected method
-.dev$helpHandler = function(type = "completion", topic, source, ...) {
+.rs_complete$help_handler = function(type = "completion", topic, source, ...) {
   print("hello helper")
 }
 
@@ -93,7 +93,7 @@
 #'
 #'
 #' @noRd
-.dev$activate_polars_rstudio_completion = function() {
+.rs_complete$activate = function() {
   # find rstudio tools
   rs = as.environment("tools:rstudio")
 
@@ -118,15 +118,15 @@
       # function
       col_results = NULL
       if (isFALSE(object)) {
-        lhs = polars:::.dev$eval_lhs_string(string, envir)
+        lhs = .rs_complete$eval_lhs_string(string, envir)
         if (is.null(lhs)) {
           return(.rs.emptyCompletions())
         }
-        if (polars:::.dev$is_polars_function(lhs)) {
+        if (.rs_complete$is_polars_function(lhs)) {
           object = lhs
           object_self = environment(lhs)$self
 
-          if (polars:::.dev$has_columns(object_self)) {
+          if (.rs_complete$has_columns(object_self)) {
             col_results = .rs.makeCompletions(
               token = token,
               results = paste0("pl$col('", object_self$columns, "')"),
@@ -157,11 +157,11 @@
     .rs.getCompletionsFunction_polars_orig = .rs.getCompletionsDollar
     .rs.getCompletionsDollar = function(token, string, functionCall, envir, isAt) {
       # perform evaluation of lhs
-      lhs = polars:::.dev$eval_lhs_string(string, envir)
+      lhs = .rs_complete$eval_lhs_string(string, envir)
       if (is.null(lhs)) {
         return(.rs.emptyCompletions())
       }
-      if (!polars:::.dev$is_polars_related_type(lhs)) {
+      if (!.rs_complete$is_polars_related_type(lhs)) {
         results = .rs.getCompletionsFunction_polars_orig(
           token, string, functionCall,
           envir = envir, isAt
@@ -206,7 +206,7 @@
   }) # end local
 }
 
-.dev$deactivate_polars_rstudio_completion = function() {
+.rs_complete$deactivate = function() {
   # find rstudio tools
   rs = as.environment("tools:rstudio")
 
