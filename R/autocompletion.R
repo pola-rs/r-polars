@@ -27,7 +27,7 @@
 #' @return NULL
 #'
 #' @examples
-#'
+#' \dontrun{
 #' # activate completion
 #' pl$code_completion()
 #'
@@ -40,6 +40,7 @@
 #'
 #' # deactivate like this or restart R session
 #' pl$code_completion(activate = FALSE)
+#' }
 pl_code_completion = function(
     activate = TRUE,
     mode = c("auto", "rstudio", "native"),

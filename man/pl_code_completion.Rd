@@ -40,7 +40,7 @@ any table transformation is literally envoked. For large DataFrame and Series
 this could be slow.
 }
 \examples{
-
+\dontrun{
 # activate completion
 pl$code_completion()
 
@@ -52,4 +52,5 @@ names.
 
 # deactivate like this or restart R session
 pl$code_completion(activate = FALSE)
+}
 }

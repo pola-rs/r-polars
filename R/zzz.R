@@ -151,8 +151,10 @@ move_env_elements(RPolarsExpr, pl, c("lit"), remove = FALSE)
 
   # activate improved code completion in RStudio only
   if (is_rstudio()) {
-    packageStartupMessage("Experimental RStudio code completion with polars methods is available.")
-    packageStartupMessage("Activate it with `pl$code_completion(activate = TRUE)`.")
+    packageStartupMessage(
+      "Experimental RStudio code completion with polars methods is available.\n",
+      "Activate it with `pl$code_completion(activate = TRUE)`."
+    )
     pl$code_completion(activate = FALSE)
   }
 
