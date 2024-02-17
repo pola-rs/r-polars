@@ -197,7 +197,7 @@ as_polars_df.ArrowTabular = function(
     rechunk = TRUE,
     schema = NULL,
     schema_overrides = NULL) {
-  arrow_to_rdf(
+  arrow_to_rpldf(
     x,
     rechunk = rechunk,
     schema = schema,

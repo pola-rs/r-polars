@@ -11,7 +11,7 @@
 #' @param schema_overrides named list of DataTypes. Cast some columns to the DataType.
 #' @noRd
 #' @return RPolarsDataFrame
-arrow_to_rdf = function(at, schema = NULL, schema_overrides = NULL, rechunk = TRUE) {
+arrow_to_rpldf = function(at, schema = NULL, schema_overrides = NULL, rechunk = TRUE) {
   # new column names by schema, #todo get names if schema not NULL
   n_cols = at$num_columns
 
