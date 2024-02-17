@@ -1,9 +1,7 @@
 #' To polars DataFrame
 #'
 #' [as_polars_df()] is a generic function that converts an R object to a
-#' polars DataFrame. It is basically a wrapper for [pl$DataFrame()][pl_DataFrame],
-#' but has special implementations for Apache Arrow-based objects such as
-#' polars [LazyFrame][LazyFrame_class] and [arrow::Table].
+#' [polars DataFrame][DataFrame_class].
 #'
 #' For [LazyFrame][LazyFrame_class] objects, this function is a shortcut for
 #' [$collect()][LazyFrame_collect] or [$fetch()][LazyFrame_fetch], depending on
