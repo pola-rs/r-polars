@@ -179,7 +179,7 @@ test_that("tests for vctrs_rcrd", {
 
   expect_identical(length(as_polars_series(vec)), 2L)
 
-  pl$DataFrame(foo = vec)
+  expect_snapshot(pl$DataFrame(foo = vec)$dtypes, cran = TRUE)
 
   expect_identical(
     dim(as_polars_df(tibble::tibble(foo = vec))),
