@@ -74,25 +74,26 @@ as_polars_df.data.frame = function(
     make_names_unique = TRUE,
     schema = NULL,
     schema_overrides = NULL) {
+  uw = \(res) unwrap(res, "in as_polars_df():")
+
   if (anyDuplicated(names(x)) > 0) {
     col_names_orig = names(x)
     if (make_names_unique) {
       names(x) = make.unique(col_names_orig, sep = "_")
     } else {
-      stop(
+      Err_plain(
         paste(
           "conflicting column names not allowed:",
           paste(unique(col_names_orig[duplicated(col_names_orig)]), collapse = ", ")
         )
-      )
+      ) |>
+        uw()
     }
   }
 
   if (is.null(rownames)) {
     df_to_rpldf(x, schema = schema, schema_overrides = schema_overrides)
   } else {
-    uw = \(res) unwrap(res, "in as_polars_df():")
-
     if (length(rownames) != 1L || !is.character(rownames) || is.na(rownames)) {
       Err_plain("`rownames` must be a single string, or `NULL`") |>
         uw()

@@ -142,7 +142,6 @@ if (requireNamespace("arrow", quietly = TRUE) && requireNamespace("nanoarrow", q
   patrick::with_parameters_test_that(
     "as_polars_series S3 methods",
     {
-
       pl_series = as_polars_series(x)
       expect_s3_class(pl_series, "RPolarsSeries")
 

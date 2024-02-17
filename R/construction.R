@@ -21,7 +21,10 @@ arrow_to_rpldf = function(at, schema = NULL, schema_overrides = NULL, rechunk = 
   )
   col_names = names(new_schema)
 
-  if (length(col_names) != n_cols) stop("schema length does not match column length")
+  if (length(col_names) != n_cols) {
+    Err_plain("schema length does not match column length") |>
+      unwrap()
+  }
 
   data_cols = list()
   # dictionaries cannot be built in different batches (categorical does not allow
@@ -215,7 +218,10 @@ df_to_rpldf = function(x, ..., schema = NULL, schema_overrides = NULL) {
   )
   col_names = names(new_schema)
 
-  if (length(col_names) != n_cols) stop("schema length does not match column length")
+  if (length(col_names) != n_cols) {
+    Err_plain("schema length does not match column length") |>
+      unwrap()
+  }
 
   data_cols = list()
 
