@@ -128,11 +128,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/download-artifact@v3
-        with:
-          name: libs
-          path: libs
-
       - name: prep Rust
         working-directory: src/rust
         run: |
@@ -144,6 +139,11 @@ jobs:
             echo "LIB_TARGET=$(rustc -vV | grep host | cut -d' ' -f2)" >>"$GITHUB_ENV"
           fi
           rm "$(rustup which cargo)"
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: libs-${{ env.LIB_TARGET }}
+          path: libs
 
       - name: prep lib
         run: |
@@ -186,10 +186,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: libs
           path: libs
+          pattern: libs-*
+          merge-multiple: true
 
       - name: create checksums
         working-directory: libs
