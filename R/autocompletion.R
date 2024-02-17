@@ -83,6 +83,16 @@ native_completion = function(activate = TRUE) {
       # rstudio auto completion is not entirely the same as utils
       f = utils::rc.getOption("custom.completer")
       utils::rc.options("custom.completer" = NULL)
+
+      # This is used in tests where we don't actually type anything but rather we
+      # directly call utils:::.completeToken(). Therefore, the "start" element
+      # (= the number of characters written when autocompletion is triggered)
+      # is missing.
+      .CompletionEnv = utils::getFromNamespace(".CompletionEnv", "utils")
+      if (is.null(.CompletionEnv$start)) {
+        .CompletionEnv$start = 0
+      }
+
       # function running  base auto complete.
       # It will dump suggestion into mutable .CompletionEnv$comps
       .completeToken = utils::getFromNamespace(".completeToken", "utils")

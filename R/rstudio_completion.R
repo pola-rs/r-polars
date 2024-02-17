@@ -100,6 +100,7 @@
 
   # check if mod already has been done
   if (!is.null(rs$.rs.getCompletionsFunction_polars_orig)) {
+    message("Custom completion already activated")
     return(invisible())
   }
 
@@ -119,15 +120,15 @@
       # function
       col_results = NULL
       if (isFALSE(object)) {
-        lhs = .rs_complete$eval_lhs_string(string, envir)
+        lhs = polars:::.rs_complete$eval_lhs_string(string, envir)
         if (is.null(lhs)) {
           return(.rs.emptyCompletions())
         }
-        if (.rs_complete$is_polars_function(lhs)) {
+        if (polars:::.rs_complete$is_polars_function(lhs)) {
           object = lhs
           object_self = environment(lhs)$self
 
-          if (.rs_complete$has_columns(object_self)) {
+          if (polars:::.rs_complete$has_columns(object_self)) {
             col_results = .rs.makeCompletions(
               token = token,
               results = paste0("pl$col('", object_self$columns, "')"),
@@ -158,11 +159,11 @@
     .rs.getCompletionsFunction_polars_orig = .rs.getCompletionsDollar
     .rs.getCompletionsDollar = function(token, string, functionCall, envir, isAt) {
       # perform evaluation of lhs
-      lhs = .rs_complete$eval_lhs_string(string, envir)
+      lhs = polars:::.rs_complete$eval_lhs_string(string, envir)
       if (is.null(lhs)) {
         return(.rs.emptyCompletions())
       }
-      if (!.rs_complete$is_polars_related_type(lhs)) {
+      if (!polars:::.rs_complete$is_polars_related_type(lhs)) {
         results = .rs.getCompletionsFunction_polars_orig(
           token, string, functionCall,
           envir = envir, isAt
