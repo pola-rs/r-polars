@@ -67,14 +67,31 @@ as_polars_df.default = function(x, ...) {
 #' @param make_names_unique A logical flag to replace duplicated column names
 #' with unique names. If `FALSE` and there are duplicated column names, an
 #' error is thrown.
+#' @inheritParams as_polars_df.ArrowTabular
 #' @export
-as_polars_df.data.frame = function(x, ..., rownames = NULL, make_names_unique = TRUE) {
-  if ((anyDuplicated(names(x)) > 0) && make_names_unique) {
-    names(x) = make.unique(names(x), sep = "_")
+as_polars_df.data.frame = function(
+    x,
+    ...,
+    rownames = NULL,
+    make_names_unique = TRUE,
+    schema = NULL,
+    schema_overrides = NULL) {
+  if (anyDuplicated(names(x)) > 0) {
+    col_names_orig = names(x)
+    if (make_names_unique) {
+      names(x) = make.unique(col_names_orig, sep = "_")
+    } else {
+      stop(
+        paste(
+          "conflicting column names not allowed:",
+          paste(unique(col_names_orig[duplicated(col_names_orig)]), collapse = ", ")
+        )
+      )
+    }
   }
 
   if (is.null(rownames)) {
-    pl$DataFrame(x, make_names_unique = FALSE)
+    df_to_rpldf(x, schema = schema, schema_overrides = schema_overrides)
   } else {
     uw = \(res) unwrap(res, "in as_polars_df():")
 
@@ -102,7 +119,7 @@ as_polars_df.data.frame = function(x, ..., rownames = NULL, make_names_unique = 
 
     pl$concat(
       pl$Series(old_rownames, name = rownames),
-      pl$DataFrame(x, make_names_unique = FALSE),
+      df_to_rpldf(x, schema = schema, schema_overrides = schema_overrides),
       how = "horizontal"
     )
   }
@@ -133,7 +150,7 @@ as_polars_df.RPolarsDynamicGroupBy = as_polars_df.RPolarsGroupBy
 #' @rdname as_polars_df
 #' @export
 as_polars_df.RPolarsSeries = function(x, ...) {
-  pl$DataFrame(x)
+  pl$select(x)
 }
 
 
@@ -236,7 +253,7 @@ as_polars_df.nanoarrow_array_stream = function(x, ...) {
       }
     }
 
-    out = do.call(pl$DataFrame, data_cols)
+    out = do.call(pl$select, data_cols)
   } else {
     out = pl$DataFrame() # TODO: support creating 0-row DataFrame
   }

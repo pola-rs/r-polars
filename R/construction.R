@@ -199,3 +199,58 @@ arrow_to_rseries_result = function(name, values, rechunk = TRUE) {
 
   res
 }
+
+
+#' Internal function of `as_polars_df()` for `data.frame` class objects.
+#'
+#' This is a copy of `arrow_to_rpldf`
+#' @noRd
+#' @return RPolarsDataFrame
+df_to_rpldf = function(x, ..., schema = NULL, schema_overrides = NULL) {
+  n_cols = ncol(x)
+
+  new_schema = unpack_schema(
+    schema = schema %||% names(x),
+    schema_overrides = schema_overrides
+  )
+  col_names = names(new_schema)
+
+  if (length(col_names) != n_cols) stop("schema length does not match column length")
+
+  data_cols = list()
+
+  for (i in seq_len(n_cols)) {
+    column = as_polars_series(x[[i]])
+    col_name = col_names[i]
+
+    data_cols[[col_name]] = column
+  }
+
+  if (length(data_cols)) {
+    out = do.call(pl$select, data_cols)
+  } else {
+    out = pl$DataFrame()
+  }
+
+  cast_these_fields = mapply(
+    new_schema,
+    out$schema,
+    FUN = \(new_field, df_field)  {
+      if (is.null(new_field) || new_field == df_field) NULL else new_field
+    },
+    SIMPLIFY = FALSE
+  ) |> (\(l) l[!sapply(l, is.null)])()
+
+  if (length(cast_these_fields)) {
+    out = out$with_columns(
+      mapply(
+        cast_these_fields,
+        names(cast_these_fields),
+        FUN = \(dtype, name) pl$col(name)$cast(dtype),
+        SIMPLIFY = FALSE
+      ) |> unname()
+    )
+  }
+
+  out
+}
