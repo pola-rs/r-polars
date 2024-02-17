@@ -119,7 +119,6 @@ if (requireNamespace("arrow", quietly = TRUE) && requireNamespace("nanoarrow", q
   patrick::with_parameters_test_that(
     "as_polars_series S3 methods",
     {
-
       pl_series = as_polars_series(x)
       expect_s3_class(pl_series, "RPolarsSeries")
 
@@ -180,9 +179,7 @@ test_that("tests for vctrs_rcrd", {
 
   expect_identical(length(as_polars_series(vec)), 2L)
 
-  # TODO: this should work
-  # https://github.com/pola-rs/r-polars/issues/575
-  # pl$DataFrame(foo = vec)
+  pl$DataFrame(foo = vec)
 
   expect_identical(
     dim(as_polars_df(tibble::tibble(foo = vec))),
