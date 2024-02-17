@@ -99,6 +99,29 @@ test_that("as_polars_df throws error when make_names_unique = FALSE and there ar
 })
 
 
+test_that("schema option and schema_overrides for as_polars_df.data.frame", {
+  df = data.frame(a = 1:3, b = 4:6)
+  pl_df_1 = as_polars_df(df, schema = list(a = pl$String, b = pl$Int32))
+  pl_df_2 = as_polars_df(df, schema = c("x", "y"))
+  pl_df_3 = as_polars_df(df, schema_overrides = list(a = pl$String))
+
+  expect_equal(
+    pl_df_1$to_data_frame(),
+    data.frame(a = as.character(1:3), b = 4L:6L)
+  )
+  expect_equal(
+    pl_df_2$to_data_frame(),
+    data.frame(x = 1:3, y = 4:6)
+  )
+  expect_equal(
+    pl_df_3$to_data_frame(),
+    data.frame(a = as.character(1:3), b = 4:6)
+  )
+
+  expect_error(as_polars_df(mtcars, schema = "cyl"), "schema length does not match")
+})
+
+
 if (requireNamespace("arrow", quietly = TRUE) && requireNamespace("nanoarrow", quietly = TRUE)) {
   make_as_polars_series_cases = function() {
     tibble::tribble(
