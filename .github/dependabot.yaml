@@ -7,9 +7,21 @@ updates:
     commit-message:
       prefix: "ci: "
 
+  - package-ecosystem: "github-actions"
+    directory: ".github/actions/setup"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "ci: "
+
   - package-ecosystem: "cargo"
     directory: "/src/rust"
     schedule:
       interval: "daily"
     commit-message:
       prefix: "chore: "
+
+  - package-ecosystem: "devcontainers"
+    directory: "/"
+    schedule:
+      interval: daily
