@@ -68,6 +68,10 @@
 #'
 #' `$list` calls functions in `<Expr>$list`.
 #'
+#' ## str
+#'
+#' `$str` calls functions in `<Expr>$str`.
+#'
 #' @keywords Series
 #'
 #' @examples
@@ -94,6 +98,8 @@
 #' pl$Series(c(1:3))$expr$add(1)
 #'
 #' pl$Series(list(3:1, 1:2, NULL))$list$first()
+#'
+#' pl$Series(c(1, NA, 2))$str$concat("-")
 NULL
 
 
@@ -165,7 +171,7 @@ Series_expr = method_as_active_binding(function() {
 
 Series_list = method_as_active_binding(
   \() {
-    df = pl$DataFrame(self)
+    df = pl$select(self)
     arr = expr_list_make_sub_ns(pl$col(self$name))
     lapply(arr, \(f) {
       \(...) df$select(f(...))
@@ -174,8 +180,15 @@ Series_list = method_as_active_binding(
 )
 
 
-# TODO: write this <https://github.com/pola-rs/r-polars/issues/255>
-Series_str = method_as_active_binding(\() series_str_make_sub_ns(self))
+Series_str = method_as_active_binding(
+  \() {
+    df = pl$select(self)
+    arr = expr_str_make_sub_ns(pl$col(self$name))
+    lapply(arr, \(f) {
+      \(...) df$select(f(...))
+    })
+  }
+)
 
 
 #' Wrap as Series

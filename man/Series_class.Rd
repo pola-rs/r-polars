@@ -79,6 +79,11 @@ This subnamespace is experimental.
 
 \verb{$list} calls functions in \verb{<Expr>$list}.
 }
+
+\subsection{str}{
+
+\verb{$str} calls functions in \verb{<Expr>$str}.
+}
 }
 
 \examples{
@@ -105,5 +110,7 @@ identical(s_copy$to_r(), s$to_r()) # s_copy was modified when s was modified
 pl$Series(c(1:3))$expr$add(1)
 
 pl$Series(list(3:1, 1:2, NULL))$list$first()
+
+pl$Series(c(1, NA, 2))$str$concat("-")
 }
 \keyword{Series}
