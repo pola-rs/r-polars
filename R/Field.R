@@ -76,7 +76,7 @@ RField.property_setters = new.env(parent = emptyenv())
 #'
 #' field$name = "CityPoPulations" #<- is fine too
 #' field
-RField_name = method_as_property(function() {
+RField_name = method_as_active_binding(function() {
   .pr$RField$get_name(self)
 }, setter = TRUE)
 
@@ -95,7 +95,7 @@ RField.property_setters$name = function(self, value) {
 #'
 #' field$datatype = pl$Categorical #<- is fine too
 #' field$datatype
-RField_datatype = method_as_property(function() {
+RField_datatype = method_as_active_binding(function() {
   .pr$RField$get_datatype(self)
 }, setter = TRUE)
 

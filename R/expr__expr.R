@@ -3312,7 +3312,7 @@ Expr_shrink_dtype = use_extendr_wrapper
 #' method pages for full details.
 #' @return Expr
 #' @noRd
-Expr_list = method_as_property(function() {
+Expr_list = method_as_active_binding(function() {
   expr_list_make_sub_ns(self)
 })
 
@@ -3322,7 +3322,7 @@ Expr_list = method_as_property(function() {
 #' method pages for full details.
 #' @return Expr
 #' @noRd
-Expr_arr = method_as_property(function() {
+Expr_arr = method_as_active_binding(function() {
   expr_arr_make_sub_ns(self)
 })
 
@@ -3332,7 +3332,7 @@ Expr_arr = method_as_property(function() {
 #' method pages for full details.
 #' @return Expr
 #' @noRd
-Expr_str = method_as_property(function() {
+Expr_str = method_as_active_binding(function() {
   expr_str_make_sub_ns(self)
 })
 
@@ -3343,7 +3343,7 @@ Expr_str = method_as_property(function() {
 #' method pages for full details.
 #' @return Expr
 #' @noRd
-Expr_bin = method_as_property(function() {
+Expr_bin = method_as_active_binding(function() {
   expr_bin_make_sub_ns(self)
 })
 
@@ -3353,7 +3353,7 @@ Expr_bin = method_as_property(function() {
 #' method pages for full details.
 #' @return Expr
 #' @noRd
-Expr_dt = method_as_property(function() {
+Expr_dt = method_as_active_binding(function() {
   expr_dt_make_sub_ns(self)
 })
 
@@ -3363,7 +3363,7 @@ Expr_dt = method_as_property(function() {
 #' method pages for full details.
 #' @return Expr
 #' @noRd
-Expr_meta = method_as_property(function() {
+Expr_meta = method_as_active_binding(function() {
   expr_meta_make_sub_ns(self)
 })
 
@@ -3373,7 +3373,7 @@ Expr_meta = method_as_property(function() {
 #' method pages for full details.
 #' @return Expr
 #' @noRd
-Expr_name = method_as_property(function() {
+Expr_name = method_as_active_binding(function() {
   expr_name_make_sub_ns(self)
 })
 
@@ -3383,7 +3383,7 @@ Expr_name = method_as_property(function() {
 #' individual method pages for full details.
 #' @return Expr
 #' @noRd
-Expr_cat = method_as_property(function() {
+Expr_cat = method_as_active_binding(function() {
   expr_cat_make_sub_ns(self)
 })
 
@@ -3393,7 +3393,7 @@ Expr_cat = method_as_property(function() {
 #' method pages for full details.
 #' @return Expr
 #' @noRd
-Expr_struct = method_as_property(function() {
+Expr_struct = method_as_active_binding(function() {
   expr_struct_make_sub_ns(self)
 })
 

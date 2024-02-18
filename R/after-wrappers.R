@@ -5,7 +5,7 @@
 ## 2. ADD INTERNAL PROFILER, options(polars.debug_polars = TRUE)
 ## 3. ADD build_debug_print TO DEBUG CLASS CONSTRUCTION DURING PACKAGE BUILDTIME (rarely used)
 ## 4. ADD BETTER METHOD LOOKUP ERR MSGS macro_add_syntax_check_to_class(), HELPS END USER
-## 5. ADD OPTION TO FLAG A METHOD TO BEHAVE LIKE A PROPERTY method_as_property()
+## 5. ADD OPTION TO FLAG A METHOD TO BEHAVE LIKE A PROPERTY method_as_active_binding()
 
 
 #' A dummy function to mark a function to replace extendr-wrapper function
@@ -181,7 +181,7 @@ if (build_debug_print) cat("\n")
 #' @param f a function
 #' @param setter bool, if true a property method can be modified by user
 #' @return function subclassed into c("property","function") or c("setter","property","function")
-method_as_property = function(f, setter = FALSE) {
+method_as_active_binding = function(f, setter = FALSE) {
   class(f) = if (setter) {
     c("setter", "property", "function")
   } else {

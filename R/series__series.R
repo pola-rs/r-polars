@@ -64,7 +64,7 @@
 NULL
 
 
-Series_flags = method_as_property(function() {
+Series_flags = method_as_active_binding(function() {
   out = list(
     "SORTED_ASC" = .pr$Series$is_sorted_flag(self),
     "SORTED_DESC" = .pr$Series$is_sorted_reverse_flag(self)
@@ -84,7 +84,7 @@ Series_flags = method_as_property(function() {
 #' method pages for full details.
 #' @return Series
 #' @noRd
-Series_str = method_as_property(function() {
+Series_str = method_as_active_binding(function() {
   series_str_make_sub_ns(self)
 })
 
@@ -280,7 +280,7 @@ Series_compare = function(other, op) {
 #' @name Series_shape
 #'
 #' @examples identical(pl$Series(1:2)$shape, 2:1)
-Series_shape = method_as_property(function() {
+Series_shape = method_as_active_binding(function() {
   .pr$Series$shape(self)
 })
 
@@ -539,7 +539,7 @@ Series_alias = use_extendr_wrapper
 #' @name Series_name
 #' @examples
 #' pl$Series(1:3, name = "alice")$name
-Series_name = method_as_property(function() {
+Series_name = method_as_active_binding(function() {
   .pr$Series$name(self)
 })
 
@@ -745,7 +745,7 @@ Series_std = function(ddof = 1) {
 #' pl$Series(1:4)$dtype
 #' pl$Series(c(1, 2))$dtype
 #' pl$Series(letters)$dtype
-Series_dtype = method_as_property(function() {
+Series_dtype = method_as_active_binding(function() {
   .pr$Series$dtype(self)
 })
 
@@ -945,7 +945,7 @@ Series_is_numeric = function() {
 #' s = pl$Series(list(1:3, 1:2, NULL))
 #' s
 #' s$list$first()
-Series_list = method_as_property(function() {
+Series_list = method_as_active_binding(function() {
   df = pl$DataFrame(self)
   arr = expr_list_make_sub_ns(pl$col(self$name))
   lapply(arr, \(f) {
@@ -972,7 +972,7 @@ Series_list = method_as_property(function() {
 #' s = pl$Series(list(1:3, 1:2, NULL))
 #' s$expr$first()
 #' s$expr$alias("alice")
-Series_expr = method_as_property(function() {
+Series_expr = method_as_active_binding(function() {
   df = pl$DataFrame(self) # make a DataFrame from Series
   self = pl$col(self$name) # override self to column named by series
 

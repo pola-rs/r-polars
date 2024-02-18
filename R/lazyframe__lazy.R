@@ -1386,7 +1386,7 @@ LazyFrame_rename = function(...) {
 
 #' @rdname LazyFrame_dtypes
 
-LazyFrame_schema = method_as_property(function() {
+LazyFrame_schema = method_as_active_binding(function() {
   .pr$LazyFrame$schema(self) |>
     unwrap("in $schema():")
 })
@@ -1396,7 +1396,7 @@ LazyFrame_schema = method_as_property(function() {
 #' @return A vector of column names
 #' @examples
 #' pl$LazyFrame(mtcars)$columns
-LazyFrame_columns = method_as_property(function() {
+LazyFrame_columns = method_as_active_binding(function() {
   self$schema |>
     names() |>
     result() |>
@@ -1410,7 +1410,7 @@ LazyFrame_columns = method_as_property(function() {
 #' @examples
 #' pl$LazyFrame(mtcars)$width
 #'
-LazyFrame_width = method_as_property(function() {
+LazyFrame_width = method_as_active_binding(function() {
   length(self$schema)
 })
 
@@ -1422,7 +1422,7 @@ LazyFrame_width = method_as_property(function() {
 #' pl$LazyFrame(iris)$dtypes
 #'
 #' pl$LazyFrame(iris)$schema
-LazyFrame_dtypes = method_as_property(function() {
+LazyFrame_dtypes = method_as_active_binding(function() {
   self$schema |>
     unlist() |>
     unname() |>

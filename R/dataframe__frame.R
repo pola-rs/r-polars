@@ -94,7 +94,7 @@
 NULL
 
 
-DataFrame_flags = method_as_property(function() {
+DataFrame_flags = method_as_active_binding(function() {
   out = lapply(self$columns, \(x) {
     self[, x]$flags
   })
@@ -368,7 +368,7 @@ DataFrame_with_row_count = function(name, offset = NULL) {
 #' # set + get values
 #' df$columns = letters[1:5] # <- is fine too
 #' df$columns
-DataFrame_columns = method_as_property(function() {
+DataFrame_columns = method_as_active_binding(function() {
   .pr$DataFrame$columns(self)
 }, setter = TRUE)
 
@@ -461,7 +461,7 @@ DataFrame_unique = function(
 #' @keywords DataFrame
 #' @examples
 #' pl$DataFrame(iris)$shape
-DataFrame_shape = method_as_property(function() {
+DataFrame_shape = method_as_active_binding(function() {
   .pr$DataFrame$shape(self)
 })
 
@@ -476,7 +476,7 @@ DataFrame_shape = method_as_property(function() {
 #' @keywords DataFrame
 #' @examples
 #' pl$DataFrame(iris)$height
-DataFrame_height = method_as_property(function() {
+DataFrame_height = method_as_active_binding(function() {
   .pr$DataFrame$shape(self)[1L]
 })
 
@@ -489,7 +489,7 @@ DataFrame_height = method_as_property(function() {
 #' @keywords DataFrame
 #' @examples
 #' pl$DataFrame(iris)$width
-DataFrame_width = method_as_property(function() {
+DataFrame_width = method_as_active_binding(function() {
   .pr$DataFrame$shape(self)[2L]
 })
 
@@ -509,7 +509,7 @@ DataFrame_width = method_as_property(function() {
 #' pl$DataFrame(iris)$dtypes
 #'
 #' pl$DataFrame(iris)$schema
-DataFrame_dtypes = method_as_property(function() {
+DataFrame_dtypes = method_as_active_binding(function() {
   .pr$DataFrame$dtypes(self)
 })
 
@@ -529,7 +529,7 @@ DataFrame_dtype_strings = use_extendr_wrapper
 
 #' @rdname DataFrame_dtypes
 
-DataFrame_schema = method_as_property(function() {
+DataFrame_schema = method_as_active_binding(function() {
   .pr$DataFrame$schema(self)
 })
 
