@@ -16,4 +16,5 @@
       sql                       FALSE
       rpolars_debug_print       FALSE
       
+      Code completion: deactivated 
 

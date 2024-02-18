@@ -37,7 +37,7 @@ RPolarsGroupBy = new.env(parent = emptyenv())
 #' @export
 #' @noRd
 .DollarNames.RPolarsGroupBy = function(x, pattern = "") {
-  paste0(ls(RPolarsGroupBy, pattern = pattern), "()")
+  paste0(ls(RPolarsGroupBy, pattern = pattern), completion_symbols$method)
 }
 
 #' The internal GroupBy constructor
@@ -78,6 +78,24 @@ print.RPolarsGroupBy = function(x, ...) {
   cat("\nmaintain order:", prv$maintain_order)
   invisible(x)
 }
+
+
+
+#' Get and set column names of a GroupBy
+#' @name GroupBy_columns
+#' @rdname GroupBy_columns
+#'
+#' @return A character vector with the column names.
+#' @keywords GroupBy
+#'
+#' @examples
+#' gb = pl$DataFrame(iris)$group_by("Species")
+#'
+#' # get values
+#' gb$columns
+GroupBy_columns = method_as_property(function() {
+  self$ungroup()$columns
+})
 
 
 #' Aggregate over a GroupBy

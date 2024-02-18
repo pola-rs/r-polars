@@ -110,6 +110,7 @@ Collate:
     'polars_options.R'
     'rbackground.R'
     'rlang.R'
+    'rstudio_completion.R'
     'rust_result.R'
     's3_methods.R'
     'series__series.R'

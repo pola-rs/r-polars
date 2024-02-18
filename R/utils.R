@@ -68,21 +68,11 @@ verify_method_call = function(Class_env, Method_name, call = sys.call(sys.nframe
   }
   if (!Method_name %in% names(Class_env)) {
     class_name = class_name %||% as.character(as.list(match.call())$Class_env)
-    stop(
+    Err_plain(
       paste(
-        "syntax error:", Method_name, "is not a method/attribute of the class", class_name,
-
-        # add call to error messages
-        if (!polars_options()$do_not_repeat_call) {
-          paste(
-            "\n when calling method:\n",
-            paste(capture.output(print(call)), collapse = "\n")
-          )
-        }
-      ),
-      domain = NA,
-      call. = FALSE
-    )
+        "$ - syntax error:", Method_name, "is not a method/attribute of the class", class_name
+      )
+    ) |> unwrap(call = call)
   }
   invisible(NULL)
 }
@@ -295,6 +285,14 @@ construct_DataTypeVector = function(l) {
   dtv
 }
 
+
+# completion symbols to method/property names.
+# Can be altered to "" at session time to support e.g. vscode autocomplete which will literally
+# evaluate these symbols and cause error and abort.
+completion_symbols = new.env(parent = emptyenv())
+completion_symbols$method = "()"
+completion_symbols$setter = "<-"
+
 #' Generate autocompletion suggestions for object
 #'
 #' @param env environment to extract usages from
@@ -324,11 +322,15 @@ get_method_usages = function(env, pattern = "") {
     }
   }
 
-  suggestions = sort(c(
-    found_names[facts$is_property],
-    paste0_len(found_names[facts$is_setter], "<-"),
-    paste0_len(found_names[facts$is_method], "()")
-  ))
+  if (length(facts$is_property) > 0) {
+    suggestions = sort(c(
+      found_names[facts$is_property],
+      paste0_len(found_names[facts$is_setter], completion_symbols$setter),
+      paste0_len(found_names[facts$is_method], completion_symbols$method)
+    ))
+  } else {
+    suggestions = NULL
+  }
 
   suggestions
 }
@@ -629,4 +631,9 @@ make_profile_plot = function(data, truncate_nodes) {
 # https://github.com/tidyverse/tibble/blob/e78ea46caea5e89cbffa5887c11050335ab23896/R/rownames.R#L116-L118
 raw_rownames = function(x) {
   .row_names_info(x, 0L) %||% .set_row_names(.row_names_info(x, 2L))
+}
+
+# from rstudioapi::isAvailable()
+is_rstudio = function() {
+  identical(.Platform$GUI, "RStudio")
 }
