@@ -7,6 +7,14 @@
 \description{
 This class comes from \code{\link[=LazyFrame_group_by]{<LazyFrame>$group_by()}}, etc.
 }
+\section{Active bindings}{
+
+\subsection{columns}{
+
+\verb{$columns} returns a character vector with the column names.
+}
+}
+
 \examples{
 as_polars_lf(mtcars)$group_by("cyl")$agg(
   pl$col("mpg")$sum()

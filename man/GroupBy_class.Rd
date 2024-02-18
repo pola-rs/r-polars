@@ -19,6 +19,14 @@ Instead the inputs for the \code{group_by} are just stored on R side, until also
 Which will end up in a self-owned DataFrame object and all is fine. groupby aggs are performed
 via the rust polars LazyGroupBy methods, see DataFrame.groupby_agg method.
 }
+\section{Active bindings}{
+
+\subsection{columns}{
+
+\verb{$columns} returns a character vector with the column names.
+}
+}
+
 \examples{
 as_polars_df(mtcars)$group_by("cyl")$agg(
   pl$col("mpg")$sum()

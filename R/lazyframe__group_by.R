@@ -2,6 +2,12 @@
 #'
 #' This class comes from [`<LazyFrame>$group_by()`][LazyFrame_group_by], etc.
 #'
+#' @section Active bindings:
+#'
+#' ## columns
+#'
+#' `$columns` returns a character vector with the column names.
+#'
 #' @name LazyGroupBy_class
 #' @aliases RPolarsLazyGroupBy
 #' @examples
@@ -9,6 +15,11 @@
 #'   pl$col("mpg")$sum()
 #' )
 NULL
+
+
+# Active bindings
+
+LazyGroupBy_columns = method_as_active_binding(\() self$ungroup()$columns)
 
 
 #' print LazyGroupBy
@@ -35,22 +46,6 @@ print.RPolarsLazyGroupBy = function(x, ...) {
 .DollarNames.RPolarsLazyGroupBy = function(x, pattern = "") {
   paste0(ls(RPolarsLazyGroupBy, pattern = pattern), completion_symbols$method)
 }
-
-#' Get and set column names of a LazyGroupBy
-#' @name LazyGroupBy_columns
-#' @rdname LazyGroupBy_columns
-#'
-#' @return A character vector with the column names.
-#' @keywords LazyGroupBy
-#'
-#' @examples
-#' lgb = pl$LazyFrame(iris)$group_by("Species")
-#'
-#' # get values
-#' lgb$columns
-LazyGroupBy_columns = method_as_property(function() {
-  self$ungroup()$columns
-})
 
 
 #' @title LazyGroupBy_agg

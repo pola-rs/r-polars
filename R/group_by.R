@@ -13,6 +13,12 @@
 #' Which will end up in a self-owned DataFrame object and all is fine. groupby aggs are performed
 #' via the rust polars LazyGroupBy methods, see DataFrame.groupby_agg method.
 #'
+#' @section Active bindings:
+#'
+#' ## columns
+#'
+#' `$columns` returns a character vector with the column names.
+#'
 #' @name GroupBy_class
 #' @aliases RPolarsGroupBy
 #' @examples
@@ -23,6 +29,12 @@ NULL
 
 
 RPolarsGroupBy = new.env(parent = emptyenv())
+
+
+# Active bindings
+
+GroupBy_columns = method_as_active_binding(\() self$ungroup()$columns)
+
 
 #' @export
 `$.RPolarsGroupBy` = function(self, name) {
@@ -78,24 +90,6 @@ print.RPolarsGroupBy = function(x, ...) {
   cat("\nmaintain order:", prv$maintain_order)
   invisible(x)
 }
-
-
-
-#' Get and set column names of a GroupBy
-#' @name GroupBy_columns
-#' @rdname GroupBy_columns
-#'
-#' @return A character vector with the column names.
-#' @keywords GroupBy
-#'
-#' @examples
-#' gb = pl$DataFrame(iris)$group_by("Species")
-#'
-#' # get values
-#' gb$columns
-GroupBy_columns = method_as_property(function() {
-  self$ungroup()$columns
-})
 
 
 #' Aggregate over a GroupBy
