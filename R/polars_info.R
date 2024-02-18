@@ -5,7 +5,7 @@
 #' - [Number of threads used by Polars][pl_thread_pool_size]
 #' - Rust feature flags (See `vignette("install", "polars")` for details)
 #' - Code completion mode: either `"deactivated"`, `"rstudio"`, or `"native"`.
-#'   See [polars_activate_code_completion()].
+#'   See [polars_code_completion_activate()].
 #' @return A list with information of the package
 #' @export
 #' @examples

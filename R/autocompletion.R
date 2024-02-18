@@ -31,7 +31,7 @@
 #' @examples
 #' if (interactive()) {
 #'   # activate completion
-#'   polars_activate_code_completion()
+#'   polars_code_completion_activate()
 #'
 #'   # method / property completion for chained expressions
 #'   # add a $ and press tab to see methods of LazyFrame
@@ -42,9 +42,9 @@
 #'   pl$LazyFrame(iris)$group_by()
 #'
 #'   # deactivate like this or restart R session
-#'   polars_deactivate_code_completion()
+#'   polars_code_completion_deactivate()
 #' }
-polars_activate_code_completion = function(
+polars_code_completion_activate = function(
     mode = c("auto", "rstudio", "native"),
     verbose = TRUE) {
   mode = match.arg(mode[1], c("auto", "rstudio", "native"))
@@ -72,8 +72,8 @@ polars_activate_code_completion = function(
 }
 
 #' @export
-#' @rdname polars_activate_code_completion
-polars_deactivate_code_completion = function() {
+#' @rdname polars_code_completion_activate
+polars_code_completion_deactivate = function() {
   mode = .polars_autocompletion$mode
   if (is.null(mode)) {
     message("Autocompletion wasn't already enabled")

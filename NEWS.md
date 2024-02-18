@@ -10,7 +10,7 @@
 -   Add string methods `to_lowercase()` and `to_uppercase()` for `Series` (#810).
 -   `as_polars_df()` for `data.frame` is more memory-efficient and new arguments
     `schema` and `schema_overrides` are added (#817).
--   Use `polars_activate_code_completion()` to enable code suggestions and
+-   Use `polars_code_completion_activate()` to enable code suggestions and
     autocompletion after `$` on polars objects. This is an experimental feature
     that is disabled by default. For now, it is only supported in the native R 
     terminal and in RStudio (#597).

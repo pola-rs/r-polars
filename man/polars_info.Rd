@@ -16,7 +16,7 @@ This function reports the following information:
 \item \link[=pl_thread_pool_size]{Number of threads used by Polars}
 \item Rust feature flags (See \code{vignette("install", "polars")} for details)
 \item Code completion mode: either \code{"deactivated"}, \code{"rstudio"}, or \code{"native"}.
-See \code{\link[=polars_activate_code_completion]{polars_activate_code_completion()}}.
+See \code{\link[=polars_code_completion_activate]{polars_code_completion_activate()}}.
 }
 }
 \examples{
