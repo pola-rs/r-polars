@@ -3,11 +3,17 @@
 \name{names.RPolarsDataFrame}
 \alias{names.RPolarsDataFrame}
 \alias{names.RPolarsLazyFrame}
+\alias{names.RPolarsLazyGroupBy}
+\alias{names.RPolarsGroupBy}
 \title{Get the column names}
 \usage{
 \method{names}{RPolarsDataFrame}(x)
 
 \method{names}{RPolarsLazyFrame}(x)
+
+\method{names}{RPolarsLazyGroupBy}(x)
+
+\method{names}{RPolarsGroupBy}(x)
 }
 \arguments{
 \item{x}{A \link[=DataFrame_class]{DataFrame} or \link[=LazyFrame_class]{LazyFrame}}

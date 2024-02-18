@@ -5,7 +5,7 @@
 #' @export
 #' @noRd
 .DollarNames.RPolarsRThreadHandle = function(x, pattern = "") {
-  paste0(ls(RPolarsRThreadHandle, pattern = pattern), "()")
+  paste0(ls(RPolarsRThreadHandle, pattern = pattern), completion_symbols$method)
 }
 
 

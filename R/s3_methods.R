@@ -207,6 +207,14 @@ names.RPolarsDataFrame = function(x) x$columns
 #' @rdname S3_names
 names.RPolarsLazyFrame = function(x) x$columns
 
+#' @export
+#' @rdname S3_names
+names.RPolarsLazyGroupBy = function(x) x$columns
+
+#' @export
+#' @rdname S3_names
+names.RPolarsGroupBy = function(x) x$columns
+
 #' Get the row names
 #'
 #' @param x A Polars DataFrame

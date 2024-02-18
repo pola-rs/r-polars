@@ -103,7 +103,7 @@ NULL
 #' @noRd
 
 .DollarNames.RPolarsLazyFrame = function(x, pattern = "") {
-  paste0(ls(RPolarsLazyFrame, pattern = pattern), "()")
+  paste0(ls(RPolarsLazyFrame, pattern = pattern), completion_symbols$method)
 }
 
 #' Create new LazyFrame

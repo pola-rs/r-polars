@@ -123,6 +123,17 @@ move_env_elements(RPolarsExpr, pl, c("lit"), remove = FALSE)
 # tell testthat data.table is suggested
 .datatable.aware = TRUE
 
+# Package startup messages must be in .onAttach(), not in .onLoad() otherwise
+# R CMD check throws a NOTE. See also: https://r-pkgs.org/r-cmd-check.html#r-code
+.onAttach = function(libname, pkgname) {
+  # activate improved code completion in RStudio only
+  if (is_rstudio()) {
+    packageStartupMessage(
+      "Experimental RStudio code completion with polars methods is available.\n",
+      "Activate it with `polars_code_completion_activate()`."
+    )
+  }
+}
 
 .onLoad = function(libname, pkgname) {
   # Auto limit the max number of threads used by polars

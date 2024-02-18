@@ -21,6 +21,35 @@ print.RPolarsLazyGroupBy = function(x, ...) {
   x$print()
 }
 
+
+#' @title auto complete $-access into a polars object
+#' @description called by the interactive R session internally
+#' @param x GroupBy
+#' @param pattern token as string to filter methods by
+#' @return char vec
+#' @export
+#' @noRd
+.DollarNames.RPolarsLazyGroupBy = function(x, pattern = "") {
+  paste0(ls(RPolarsLazyGroupBy, pattern = pattern), completion_symbols$method)
+}
+
+#' Get and set column names of a LazyGroupBy
+#' @name LazyGroupBy_columns
+#' @rdname LazyGroupBy_columns
+#'
+#' @return A character vector with the column names.
+#' @keywords LazyGroupBy
+#'
+#' @examples
+#' lgb = pl$LazyFrame(iris)$group_by("Species")
+#'
+#' # get values
+#' lgb$columns
+LazyGroupBy_columns = method_as_property(function() {
+  self$ungroup()$columns
+})
+
+
 #' @title LazyGroupBy_agg
 #' @description
 #' aggregate a polar_lazy_group_by
