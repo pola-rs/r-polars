@@ -1,25 +1,86 @@
 #' Polars Expressions
 #'
-#' Expressions are all the functions and methods that are applicable to a Polars
-#' DataFrame or LazyFrame. They can be split into the following categories
-#' (following the [Py-Polars classification](https://pola-rs.github.io/polars/py-polars/html/reference/expressions/)):
-#'  * Aggregate
-#'  * Binary
-#'  * Categorical
-#'  * Computation
-#'  * Functions
-#'  * List
-#'  * Meta
-#'  * Name
-#'  * String
-#'  * Struct
-#'  * Temporal
+#' Expressions are all the functions and methods that are applicable to
+#' a Polars [DataFrame][DataFrame_class] or [LazyFrame][LazyFrame_class] object.
+#' Some methods are under the sub-namespaces.
 #'
+#' @section Sub-namespaces:
+#'
+#' ## arr
+#'
+#' `$arr` stores all array related methods.
+#'
+#' ## bin
+#'
+#' `$bin` stores all binary related methods.
+#'
+#' ## cat
+#'
+#' `$cat` stores all categorical related methods.
+#'
+#' ## list
+#'
+#' `$list` stores all list related methods.
+#'
+#' ## meta
+#'
+#' `$meta` stores all methods for working with the meta data.
+#'
+#' ## name
+#'
+#' `$name` stores all name related methods.
+#'
+#' ## str
+#'
+#' `$str` stores all string related methods.
+#'
+#' ## struct
+#'
+#' `$struct` stores all struct related methods.
+#'
+#' ## dt
+#'
+#' `$dt` stores all temporal related methods.
 #' @name Expr_class
-#' @rdname Expr_class
+#' @aliases RPolarsExpr
+#' @examples
+#' df = pl$DataFrame(
+#'   a = 1:2,
+#'   b = list(1:2, 3:4),
+#'   schema = list(a = pl$Int64, b = pl$Array(pl$Int64, 2))
+#' )
 #'
-#' @return not applicable
+#' df$select(pl$col("a")$first())
+#'
+#' df$select(pl$col("b")$arr$max())
 NULL
+
+
+Expr_arr = method_as_active_binding(\() expr_arr_make_sub_ns(self))
+
+
+Expr_bin = method_as_active_binding(\() expr_bin_make_sub_ns(self))
+
+
+Expr_cat = method_as_active_binding(\() expr_cat_make_sub_ns(self))
+
+
+Expr_list = method_as_active_binding(\() expr_list_make_sub_ns(self))
+
+
+Expr_meta = method_as_active_binding(\() expr_meta_make_sub_ns(self))
+
+
+Expr_name = method_as_active_binding(\() expr_name_make_sub_ns(self))
+
+
+Expr_str = method_as_active_binding(\() expr_str_make_sub_ns(self))
+
+
+Expr_struct = method_as_active_binding(\() expr_struct_make_sub_ns(self))
+
+
+Expr_dt = method_as_active_binding(\() expr_dt_make_sub_ns(self))
 
 
 #' S3 method to print an Expr
@@ -3306,96 +3367,6 @@ Expr_implode = use_extendr_wrapper
 #' df$with_columns(pl$all()$shrink_dtype()$name$suffix("_shrunk"))
 Expr_shrink_dtype = use_extendr_wrapper
 
-#' List related methods
-#'
-#' Create an object namespace of all list related methods. See the individual
-#' method pages for full details.
-#' @return Expr
-#' @noRd
-Expr_list = method_as_active_binding(function() {
-  expr_list_make_sub_ns(self)
-})
-
-#' Array related methods
-#'
-#' Create an object namespace of all array related methods. See the individual
-#' method pages for full details.
-#' @return Expr
-#' @noRd
-Expr_arr = method_as_active_binding(function() {
-  expr_arr_make_sub_ns(self)
-})
-
-#' String related methods
-#'
-#' Create an object namespace of all string related methods. See the individual
-#' method pages for full details.
-#' @return Expr
-#' @noRd
-Expr_str = method_as_active_binding(function() {
-  expr_str_make_sub_ns(self)
-})
-
-
-#' Binary related methods
-#'
-#' Create an object namespace of all binary related methods. See the individual
-#' method pages for full details.
-#' @return Expr
-#' @noRd
-Expr_bin = method_as_active_binding(function() {
-  expr_bin_make_sub_ns(self)
-})
-
-#' Datetime related methods
-#'
-#' Create an object namespace of all datetime related methods. See the individual
-#' method pages for full details.
-#' @return Expr
-#' @noRd
-Expr_dt = method_as_active_binding(function() {
-  expr_dt_make_sub_ns(self)
-})
-
-#' Meta related methods
-#'
-#' Create an object namespace of all meta related methods. See the individual
-#' method pages for full details.
-#' @return Expr
-#' @noRd
-Expr_meta = method_as_active_binding(function() {
-  expr_meta_make_sub_ns(self)
-})
-
-#' Name related methods
-#'
-#' Create an object namespace of all name related methods. See the individual
-#' method pages for full details.
-#' @return Expr
-#' @noRd
-Expr_name = method_as_active_binding(function() {
-  expr_name_make_sub_ns(self)
-})
-
-#' Categorical related methods
-#'
-#' Create an object namespace of all categorical related methods. See the
-#' individual method pages for full details.
-#' @return Expr
-#' @noRd
-Expr_cat = method_as_active_binding(function() {
-  expr_cat_make_sub_ns(self)
-})
-
-#' Struct related methods
-#'
-#' Create an object namespace of all struct related methods. See the individual
-#' method pages for full details.
-#' @return Expr
-#' @noRd
-Expr_struct = method_as_active_binding(function() {
-  expr_struct_make_sub_ns(self)
-})
 
 #' Convert an Expr to a Struct
 #' @return Expr
