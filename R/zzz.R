@@ -103,11 +103,6 @@ replace_private_with_pub_methods(RPolarsRField, "^RField_")
 # Series
 replace_private_with_pub_methods(RPolarsSeries, "^Series_")
 
-# configure subnames spaces of Expr
-#' @export
-`$.RPolarsSeriesStrNameSpace` = sub_name_space_accessor_function
-series_str_make_sub_ns = macro_new_subnamespace("^SeriesStr_", "RPolarsSeriesStrNameSpace")
-
 # RThreadHandle
 replace_private_with_pub_methods(RPolarsRThreadHandle, "^RThreadHandle_")
 

@@ -113,7 +113,6 @@ Collate:
     'rust_result.R'
     's3_methods.R'
     'series__series.R'
-    'series__string.R'
     'sql.R'
     'vctrs.R'
     'zzz.R'

@@ -505,10 +505,10 @@
       [25] "max"           "mean"          "median"        "min"          
       [29] "mul"           "n_unique"      "name"          "print"        
       [33] "rem"           "rename"        "rep"           "set_sorted"   
-      [37] "shape"         "sort"          "std"           "str"          
-      [41] "sub"           "sum"           "to_frame"      "to_lit"       
-      [45] "to_r"          "to_r_list"     "to_r_vector"   "to_vector"    
-      [49] "value_counts"  "var"          
+      [37] "shape"         "sort"          "std"           "sub"          
+      [41] "sum"           "to_frame"      "to_lit"        "to_r"         
+      [45] "to_r_list"     "to_r_vector"   "to_vector"     "value_counts" 
+      [49] "var"          
 
 ---
 
