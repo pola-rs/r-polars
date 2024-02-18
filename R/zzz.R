@@ -130,9 +130,8 @@ move_env_elements(RPolarsExpr, pl, c("lit"), remove = FALSE)
   if (is_rstudio()) {
     packageStartupMessage(
       "Experimental RStudio code completion with polars methods is available.\n",
-      "Activate it with `pl$code_completion(activate = TRUE)`."
+      "Activate it with `polars_activate_code_completion()`."
     )
-    pl$code_completion(activate = FALSE)
   }
 }
 

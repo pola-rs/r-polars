@@ -4,6 +4,8 @@
 #' - Package versions (the Polars R package version and the dependent Rust Polars crate version)
 #' - [Number of threads used by Polars][pl_thread_pool_size]
 #' - Rust feature flags (See `vignette("install", "polars")` for details)
+#' - Code completion mode: either `"deactivated"`, `"rstudio"`, or `"native"`.
+#'   See [polars_activate_code_completion()].
 #' @return A list with information of the package
 #' @export
 #' @examples
@@ -20,7 +22,8 @@ polars_info = function() {
       rust_crate = rust_polars_version()
     ),
     thread_pool_size = thread_pool_size(),
-    features = cargo_rpolars_feature_info()
+    features = cargo_rpolars_feature_info(),
+    code_completion = .polars_autocompletion$mode %||% "deactivated"
   )
   structure(out, class = "polars_info")
 }
@@ -46,6 +49,7 @@ print.polars_info = function(x, ...) {
   cat("Thread pool size:", x$thread_pool_size, "\n")
   cat("\n")
   print_key_values("Features", unlist(x$features))
+  cat("Code completion:", x$code_completion, "\n")
 }
 
 

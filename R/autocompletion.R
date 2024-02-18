@@ -1,6 +1,8 @@
+# Internal bookkeeping of the autocompletion mode ("rstudio" or "native")
+.polars_autocompletion = new.env(parent = emptyenv())
+
 #' Polars code completion
 #'
-#' @param activate Activate or deactivate the RStudio code completion
 #' @param mode One of `"auto"`, `"rstudio"`, or `"native"`. Automatic mode picks
 #' `"rstudio"` if `.Platform$GUI` is `"RStudio"`. `"native"` registers a custom
 #' line buffer completer with `utils:::rc.getOption("custom.completer")`.
@@ -10,7 +12,7 @@
 #' @param verbose Print message of what mode is started.
 #'
 #' @details
-#' Polars code completion has one implementation for an native terminal via
+#' Polars code completion has one implementation for a native terminal via
 #' `utils:::rc.getOption("custom.completer")` and one for Rstudio by intercepting
 #' Rstudio internal functions `.rs.getCompletionsFunction` &
 #' `.rs.getCompletionsDollar` in the loaded session environment `tools:rstudio`.
@@ -24,25 +26,25 @@
 #' query.
 #'
 #' @return NULL
+#' @export
 #'
 #' @examples
-#' \dontrun{
-#' # activate completion
-#' pl$code_completion()
+#' if (interactive()) {
+#'   # activate completion
+#'   polars_activate_code_completion()
 #'
-#  # method / property completion for chained expressions
-#  # add a $ and press tab to see methods of LazyFrame
-#' pl$LazyFrame(iris)
+#'   # method / property completion for chained expressions
+#'   # add a $ and press tab to see methods of LazyFrame
+#'   pl$LazyFrame(iris)
 #'
-#' # Arg + column-name completion
-#' # press tab inside group_by() to see args and/or column names.
-#' pl$LazyFrame(iris)$group_by()
+#'   # Arg + column-name completion
+#'   # press tab inside group_by() to see args and/or column names.
+#'   pl$LazyFrame(iris)$group_by()
 #'
-#' # deactivate like this or restart R session
-#' pl$code_completion(activate = FALSE)
+#'   # deactivate like this or restart R session
+#'   polars_deactivate_code_completion()
 #' }
-pl_code_completion = function(
-    activate = TRUE,
+polars_activate_code_completion = function(
     mode = c("auto", "rstudio", "native"),
     verbose = TRUE) {
   mode = match.arg(mode[1], c("auto", "rstudio", "native"))
@@ -54,22 +56,40 @@ pl_code_completion = function(
     }
   }
 
+  .polars_autocompletion$mode = mode
+
   if (mode == "rstudio") {
-    if (activate) {
-      .rs_complete$activate()
-    } else {
-      .rs_complete$deactivate()
-    }
+    .rs_complete$activate()
   } else if (mode == "native") {
-    native_completion(activate = activate)
+    native_completion(activate = TRUE)
   }
 
-  if (verbose && activate) {
+  if (verbose) {
     message("Using code completion in '", mode, "' mode.")
   }
 
   invisible(NULL)
 }
+
+#' @export
+#' @rdname polars_activate_code_completion
+polars_deactivate_code_completion = function() {
+  mode = .polars_autocompletion$mode
+  if (is.null(mode)) {
+    message("Autocompletion wasn't already enabled")
+  }
+
+  if (mode == "rstudio") {
+    .rs_complete$deactivate()
+  } else if (mode == "native") {
+    native_completion(activate = FALSE)
+  }
+
+  .polars_autocompletion$mode = NULL
+
+  invisible(NULL)
+}
+
 
 
 native_completion = function(activate = TRUE) {
