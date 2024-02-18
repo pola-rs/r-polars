@@ -2,10 +2,8 @@
 % Please edit documentation in R/lazyframe__lazy.R
 \name{LazyFrame_class}
 \alias{LazyFrame_class}
+\alias{RPolarsLazyFrame}
 \title{Inner workings of the LazyFrame-class}
-\value{
-not applicable
-}
 \description{
 The \code{LazyFrame}-class is simply two environments of respectively
 the public and private methods/function calls to the polars rust side. The
@@ -33,6 +31,29 @@ would be able to perform the same optimizations as polars such predicate pushdow
 and projection pushdown. However polars can interact and optimize queries with both
 SQL DBs and other data sources such parquet files simultaneously.
 }
+\section{Active bindings}{
+
+\subsection{columns}{
+
+\verb{$columns} returns a character vector with the column names.
+}
+
+\subsection{dtypes}{
+
+\verb{$dtypes} returns a unnamed list with the \link[=pl_dtypes]{data type} of each column.
+}
+
+\subsection{schema}{
+
+\verb{$schema} returns a named list with the \link[=pl_dtypes]{data type} of each column.
+}
+
+\subsection{width}{
+
+\verb{$width} returns the number of columns in the LazyFrame.
+}
+}
+
 \examples{
 # see all exported methods
 ls(.pr$env$RPolarsLazyFrame)
@@ -54,7 +75,7 @@ write.csv(iris, temp_filepath, row.names = FALSE)
 Rdf = read.csv(temp_filepath)
 
 # eager in-mem polars DataFrame
-Pdf = pl$DataFrame(Rdf)
+Pdf = as_polars_df(Rdf)
 
 # lazy frame starting from in-mem DataFrame
 Ldf_okay = Pdf$lazy()

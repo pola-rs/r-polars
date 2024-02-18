@@ -1,4 +1,4 @@
-#' @title Inner workings of the DataFrame-class
+#' Inner workings of the DataFrame-class
 #'
 #' @name DataFrame_class
 #' @aliases RPolarsDataFrame
