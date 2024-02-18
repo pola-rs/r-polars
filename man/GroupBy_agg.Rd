@@ -21,9 +21,7 @@ Aggregate a DataFrame over a groupby
 pl$DataFrame(
   foo = c("one", "two", "two", "one", "two"),
   bar = c(5, 3, 2, 4, 1)
-)$
-  group_by("foo")$
-  agg(
+)$group_by("foo")$agg(
   pl$col("bar")$sum()$name$suffix("_sum"),
   pl$col("bar")$mean()$alias("bar_tail_sum")
 )

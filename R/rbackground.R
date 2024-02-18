@@ -37,16 +37,16 @@ as.character.RPolarsRThreadHandle = function(x, ...) {
 print.RPolarsRThreadHandle = function(x, ...) as.character(x) |> cat("\n")
 
 
-#' @title The RPolarsRThreadHandle class
-#' @name RThreadHandle_class
-#' @description A handle to some polars query running in a background thread.
-#' @details
+#' The RPolarsRThreadHandle class
+#'
+#' A handle to some polars query running in a background thread.
+#'
 #' [`<LazyFrame>$collect_in_background()`][LazyFrame_collect_in_background] will execute a polars
 #' query detached from the R session and return an `RPolarsRThreadHandle` immediately. This
 #' `RPolarsRThreadHandle`-class has the methods [`is_finished()`][RThreadHandle_is_finished] and
 #' [`join()`][RThreadHandle_join].
 #'
-#' NOTICE:
+#' @section NOTICE:
 #' The background thread cannot use the main R session, but can access the pool of extra R sessions
 #' to process R code embedded in polars query via [`$map_batches(..., in_background = TRUE)`][Expr_map_batches] or
 #' `$map_elements(background=TRUE)`. Use [`options(polars.rpool_cap = XX)`][polars_options] to limit number of
@@ -55,14 +55,12 @@ print.RPolarsRThreadHandle = function(x, ...) as.character(x) |> cat("\n")
 #' e.g. some [`$map_batches(..., in_background = FALSE)`][Expr_map_batches] will raise an Error as the main R session is not
 #' available to process the R part of the polars query. Native polars query does not need any R
 #' session.
-#' @return see methods:
-#' [`is_finished()`][RThreadHandle_is_finished]
-#' [`join()`][RThreadHandle_join]
-#' @keywords RThreadHandle
+#' @name RThreadHandle_class
+#' @aliases RPolarsRThreadHandle
 #' @seealso
-#' [`<LazyFrame>$collect_in_background()`][LazyFrame_collect_in_background]
-#' [`<Expr>$map_batches()`][Expr_map_batches]
-#' [`<Expr>$map_elements()`][Expr_map_elements]
+#' - [`<LazyFrame>$collect_in_background()`][LazyFrame_collect_in_background]
+#' - [`<Expr>$map_batches()`][Expr_map_batches]
+#' - [`<Expr>$map_elements()`][Expr_map_elements]
 #' @examples
 #' prexpr = pl$col("mpg")$map_batches(\(x) {
 #'   Sys.sleep(.1)

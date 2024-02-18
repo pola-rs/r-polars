@@ -2,12 +2,8 @@
 % Please edit documentation in R/rbackground.R
 \name{RThreadHandle_class}
 \alias{RThreadHandle_class}
+\alias{RPolarsRThreadHandle}
 \title{The RPolarsRThreadHandle class}
-\value{
-see methods:
-\code{\link[=RThreadHandle_is_finished]{is_finished()}}
-\code{\link[=RThreadHandle_join]{join()}}
-}
 \description{
 A handle to some polars query running in a background thread.
 }
@@ -16,8 +12,9 @@ A handle to some polars query running in a background thread.
 query detached from the R session and return an \code{RPolarsRThreadHandle} immediately. This
 \code{RPolarsRThreadHandle}-class has the methods \code{\link[=RThreadHandle_is_finished]{is_finished()}} and
 \code{\link[=RThreadHandle_join]{join()}}.
+}
+\section{NOTICE}{
 
-NOTICE:
 The background thread cannot use the main R session, but can access the pool of extra R sessions
 to process R code embedded in polars query via \code{\link[=Expr_map_batches]{$map_batches(..., in_background = TRUE)}} or
 \verb{$map_elements(background=TRUE)}. Use \code{\link[=polars_options]{options(polars.rpool_cap = XX)}} to limit number of
@@ -27,6 +24,7 @@ e.g. some \code{\link[=Expr_map_batches]{$map_batches(..., in_background = FALSE
 available to process the R part of the polars query. Native polars query does not need any R
 session.
 }
+
 \examples{
 prexpr = pl$col("mpg")$map_batches(\(x) {
   Sys.sleep(.1)
@@ -38,8 +36,9 @@ df = handle$join() # get result
 df
 }
 \seealso{
-\code{\link[=LazyFrame_collect_in_background]{<LazyFrame>$collect_in_background()}}
-\code{\link[=Expr_map_batches]{<Expr>$map_batches()}}
-\code{\link[=Expr_map_elements]{<Expr>$map_elements()}}
+\itemize{
+\item \code{\link[=LazyFrame_collect_in_background]{<LazyFrame>$collect_in_background()}}
+\item \code{\link[=Expr_map_batches]{<Expr>$map_batches()}}
+\item \code{\link[=Expr_map_elements]{<Expr>$map_elements()}}
 }
-\keyword{RThreadHandle}
+}

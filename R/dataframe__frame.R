@@ -1945,7 +1945,7 @@ DataFrame_write_ndjson = function(file) {
 }
 
 #' @inherit LazyFrame_rolling title description params details
-#' @return A [GroupBy][GroupBy_class] object
+#' @return A [RollingGroupBy][RollingGroupBy_class] object
 #'
 #' @examples
 #' df = pl$DataFrame(
