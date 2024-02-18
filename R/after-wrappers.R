@@ -69,7 +69,6 @@ extendr_method_to_pure_functions = function(env, class_name = NULL) {
 }
 
 
-#' @include extendr-wrappers.R
 #' @title polars-API: private calls to rust-polars
 #' @description `.pr`
 #' Original extendr bindings converted into pure functions
@@ -124,7 +123,6 @@ extendr_method_to_pure_functions = function(env, class_name = NULL) {
 ##### -----  MACROS used at package build time
 
 #' @title add syntax verification to a class
-#' @include utils.R
 #' @param Class_name string name of env class
 #' @rdname macro_add_syntax_check_to
 #' @noRd

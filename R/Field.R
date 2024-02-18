@@ -1,22 +1,61 @@
 #' Create Field
 #'
-#' A Field is composed of a name and a DataType. Fields are used in Structs-
-#' datatypes and Schemas to represent everything of the Series/Column except the
-#' raw values.
+#' A Field is composed of a name and a data type.
+#' Fields are used in Structs-datatypes and Schemas to represent everything of
+#' the Series/Column except the raw values.
 #'
-#' @name RField_class
+#' @section Active Bindings:
+#'
+#' ## datatype
+#'
+#' `$datatype` returns the [data type][pl_dtypes] of the Field.
+#'
+#' `$datatype = <RPolarsDataType>` sets the [data type][pl_dtypes] of the Field.
+#'
+#' ## name
+#'
+#' `$name` returns the name of the Field.
+#'
+#' `$name = "new_name"` sets the name of the Field.
+#'
+#' @aliases RField_class RPolarsRField
 #'
 #' @param name Field name
-#' @param datatype DataType
+#' @param datatype [DataType][pl_dtypes]
 #'
-#' @include after-wrappers.R
-#' @return A object of with DataType `"RField"` containing its name and its
-#' DataType.
+#' @return A object of with the data type `"Field"` containing its name and its
+#' [data type][pl_dtypes].
 #' @examples
-#' pl$Field("city_names", pl$String)
+#' field = pl$Field("city_names", pl$String)
+#'
+#' field
+#' field$datatype
+#' field$name
+#'
+#' # Set the new data type
+#' field$datatype = pl$Categorical
+#' field$datatype
+#'
+#' # Set the new name
+#' field$name = "CityPoPulations"
+#' field
 pl_Field = function(name, datatype) {
   .pr$RField$new(name, datatype)
 }
+
+
+# Active bindings
+
+RField_name = method_as_active_binding(
+  \() .pr$RField$get_name(self),
+  setter = TRUE
+)
+
+
+RField_datatype = method_as_active_binding(
+  \() .pr$RField$get_datatype(self),
+  setter = TRUE
+)
 
 
 #' S3 method to print a Field
@@ -67,41 +106,15 @@ RField_print = function() {
 RField.property_setters = new.env(parent = emptyenv())
 
 
-#' Get/set Field name
-#'
-#' @rdname RField_name
-#' @examples
-#' field = pl$Field("Cities", pl$String)
-#' field$name
-#'
-#' field$name = "CityPoPulations" #<- is fine too
-#' field
-RField_name = method_as_active_binding(function() {
-  .pr$RField$get_name(self)
-}, setter = TRUE)
-
 RField.property_setters$name = function(self, value) {
   .pr$RField$set_name_mut(self, value)
 }
 
-#' Get/set Field datatype
-#'
-#' @rdname RField_datatype
-#'
-#' @keywords DataFrame
-#' @examples
-#' field = pl$Field("Cities", pl$String)
-#' field$datatype
-#'
-#' field$datatype = pl$Categorical #<- is fine too
-#' field$datatype
-RField_datatype = method_as_active_binding(function() {
-  .pr$RField$get_datatype(self)
-}, setter = TRUE)
 
 RField.property_setters$datatype = function(self, value) {
   .pr$RField$set_datatype_mut(self, value)
 }
+
 
 #' @export
 "$<-.RPolarsRField" = function(self, name, value) {

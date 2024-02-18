@@ -10,7 +10,7 @@ list_man_html = list.files("docs/man",
 
 classes = c(
   "Series", "DataFrame", "LazyFrame", "GroupBy",
-  "LazyGroupBy", "IO", "RField", "RThreadHandle", "SQLContext", "S3",
+  "LazyGroupBy", "IO", "RThreadHandle", "SQLContext", "S3",
   "Expr", "pl"
 )
 
