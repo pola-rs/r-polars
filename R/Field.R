@@ -23,7 +23,7 @@
 #' @param name Field name
 #' @param datatype [DataType][pl_dtypes]
 #'
-#' @return A object of with the data type `"Field"` containing its name and its
+#' @return An [RPolarsRField] object containing its name and its
 #' [data type][pl_dtypes].
 #' @examples
 #' field = pl$Field("city_names", pl$String)
