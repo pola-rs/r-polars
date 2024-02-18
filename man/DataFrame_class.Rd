@@ -2,6 +2,7 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_class}
 \alias{DataFrame_class}
+\alias{RPolarsDataFrame}
 \title{Inner workings of the DataFrame-class}
 \description{
 The \code{DataFrame}-class is simply two environments of respectively
@@ -34,6 +35,16 @@ replaced by any function prefixed \code{DataFrame_}.
 }
 \section{Active bindings}{
 
+\subsection{columns}{
+
+\verb{$columns} returns a character vector with the column names.
+}
+
+\subsection{dtypes}{
+
+\verb{$dtypes} returns a unnamed list with the \link[=pl_dtypes]{data type} of each column.
+}
+
 \subsection{flags}{
 
 \verb{$flags} returns a nested list with column names at the top level and
@@ -50,6 +61,27 @@ that we can use this information later on to avoid re-sorting it.
 \item \code{SORTED_DESC} is similar but applies to sort in decreasing order.
 }
 }
+
+\subsection{height}{
+
+\verb{$height} returns the number of rows in the DataFrame.
+}
+
+\subsection{schema}{
+
+\verb{$schema} returns a named list with the \link[=pl_dtypes]{data type} of each column.
+}
+
+\subsection{shape}{
+
+\verb{$shape} returns a numeric vector of length two with the number of rows and
+the number of columns.
+}
+
+\subsection{width}{
+
+\verb{$width} returns the number of columns in the DataFrame.
+}
 }
 
 \examples{
@@ -60,13 +92,11 @@ ls(.pr$env$RPolarsDataFrame)
 # see all private methods (not intended for regular use)
 ls(.pr$DataFrame)
 
-
 # make an object
-df = pl$DataFrame(iris)
+df = as_polars_df(iris)
 
-# use a public method/property
+# call a active binding
 df$shape
-df2 = df
 
 # use a private method, which has mutability
 result = .pr$DataFrame$set_column_from_robj(df, 150:1, "some_ints")
@@ -74,6 +104,8 @@ result = .pr$DataFrame$set_column_from_robj(df, 150:1, "some_ints")
 # Column exists in both dataframes-objects now, as they are just pointers to
 # the same object
 # There are no public methods with mutability.
+df2 = df
+
 df$columns
 df2$columns
 
