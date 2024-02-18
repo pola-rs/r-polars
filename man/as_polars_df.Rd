@@ -19,7 +19,14 @@ as_polars_df(x, ...)
 
 \method{as_polars_df}{default}(x, ...)
 
-\method{as_polars_df}{data.frame}(x, ..., rownames = NULL, make_names_unique = TRUE)
+\method{as_polars_df}{data.frame}(
+  x,
+  ...,
+  rownames = NULL,
+  make_names_unique = TRUE,
+  schema = NULL,
+  schema_overrides = NULL
+)
 
 \method{as_polars_df}{RPolarsDataFrame}(x, ...)
 
@@ -70,6 +77,13 @@ If \code{x} already has a column with that name, an error is thrown.
 with unique names. If \code{FALSE} and there are duplicated column names, an
 error is thrown.}
 
+\item{schema}{named list of DataTypes, or character vector of column names.
+Should be the same length as the number of columns of \code{x}.
+If schema names or types do not match \code{x}, the columns will be renamed/recast.
+If \code{NULL} (default), convert columns as is.}
+
+\item{schema_overrides}{named list of DataTypes. Cast some columns to the DataType.}
+
 \item{n_rows}{Number of rows to fetch. Defaults to \code{Inf}, meaning all rows.}
 
 \item{type_coercion}{Boolean. Coerce types such that operations succeed and
@@ -109,22 +123,13 @@ into the resulting DataFrame. Useful in interactive mode to not lock R session.}
 
 \item{rechunk}{A logical flag (default \code{TRUE}).
 Make sure that all data of each column is in contiguous memory.}
-
-\item{schema}{named list of DataTypes, or character vector of column names.
-Should be the same length as the number of columns of \code{x}.
-If schema names or types do not match \code{x}, the columns will be renamed/recast.
-If \code{NULL} (default), convert columns as is.}
-
-\item{schema_overrides}{named list of DataTypes. Cast some columns to the DataType.}
 }
 \value{
 a \link[=DataFrame_class]{DataFrame}
 }
 \description{
 \code{\link[=as_polars_df]{as_polars_df()}} is a generic function that converts an R object to a
-polars DataFrame. It is basically a wrapper for \link[=pl_DataFrame]{pl$DataFrame()},
-but has special implementations for Apache Arrow-based objects such as
-polars \link[=LazyFrame_class]{LazyFrame} and \link[arrow:Table-class]{arrow::Table}.
+\link[=DataFrame_class]{polars DataFrame}.
 }
 \details{
 For \link[=LazyFrame_class]{LazyFrame} objects, this function is a shortcut for

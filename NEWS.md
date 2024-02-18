@@ -8,6 +8,8 @@
     for each column. The output of `$flags` for `Series` was also improved and now
     contains `FAST_EXPLODE` for `Series` of type `list` and `array` (#809).
 -   Add string methods `to_lowercase()` and `to_uppercase()` for `Series` (#810).
+-   `as_polars_df()` for `data.frame` is more memory-efficient and new arguments
+    `schema` and `schema_overrides` are added (#817).
 -   Use `polars_activate_code_completion()` to enable code suggestions and
     autocompletion after `$` on polars objects. This is an experimental feature
     that is disabled by default. For now, it is only supported in the native R 

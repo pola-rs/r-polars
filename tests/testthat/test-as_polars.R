@@ -99,6 +99,29 @@ test_that("as_polars_df throws error when make_names_unique = FALSE and there ar
 })
 
 
+test_that("schema option and schema_overrides for as_polars_df.data.frame", {
+  df = data.frame(a = 1:3, b = 4:6)
+  pl_df_1 = as_polars_df(df, schema = list(a = pl$String, b = pl$Int32))
+  pl_df_2 = as_polars_df(df, schema = c("x", "y"))
+  pl_df_3 = as_polars_df(df, schema_overrides = list(a = pl$String))
+
+  expect_equal(
+    pl_df_1$to_data_frame(),
+    data.frame(a = as.character(1:3), b = 4L:6L)
+  )
+  expect_equal(
+    pl_df_2$to_data_frame(),
+    data.frame(x = 1:3, y = 4:6)
+  )
+  expect_equal(
+    pl_df_3$to_data_frame(),
+    data.frame(a = as.character(1:3), b = 4:6)
+  )
+
+  expect_error(as_polars_df(mtcars, schema = "cyl"), "schema length does not match")
+})
+
+
 if (requireNamespace("arrow", quietly = TRUE) && requireNamespace("nanoarrow", quietly = TRUE)) {
   make_as_polars_series_cases = function() {
     tibble::tribble(
@@ -119,7 +142,6 @@ if (requireNamespace("arrow", quietly = TRUE) && requireNamespace("nanoarrow", q
   patrick::with_parameters_test_that(
     "as_polars_series S3 methods",
     {
-
       pl_series = as_polars_series(x)
       expect_s3_class(pl_series, "RPolarsSeries")
 
@@ -180,9 +202,7 @@ test_that("tests for vctrs_rcrd", {
 
   expect_identical(length(as_polars_series(vec)), 2L)
 
-  # TODO: this should work
-  # https://github.com/pola-rs/r-polars/issues/575
-  # pl$DataFrame(foo = vec)
+  expect_snapshot(pl$DataFrame(foo = vec)$dtypes, cran = TRUE)
 
   expect_identical(
     dim(as_polars_df(tibble::tibble(foo = vec))),
