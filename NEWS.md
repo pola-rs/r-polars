@@ -7,7 +7,7 @@
 -   New active bindings `$flags` for `DataFrame` to show the flags used internally for
     each column. The output of `$flags` for `Series` was also improved and now
     contains `FAST_EXPLODE` for `Series` of type `list` and `array` (#809).
--   Add string methods `to_lowercase()` and `to_uppercase()` for `Series` (#810).
+-   `$str` sub namespace is added to `Series` (#819).
 -   `as_polars_df()` for `data.frame` is more memory-efficient and new arguments
     `schema` and `schema_overrides` are added (#817).
 
