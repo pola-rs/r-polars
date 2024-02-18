@@ -52,7 +52,7 @@
 #'
 #' df$select(pl$col("a")$first())
 #'
-#' df$select(pl$col("b")$arr$max())
+#' df$select(pl$col("b")$arr$sum())
 NULL
 
 
