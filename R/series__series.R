@@ -169,26 +169,21 @@ Series_expr = method_as_active_binding(function() {
 })
 
 
-Series_list = method_as_active_binding(
-  \() {
-    df = pl$select(self)
-    arr = expr_list_make_sub_ns(pl$col(self$name))
-    lapply(arr, \(f) {
-      \(...) df$select(f(...))$to_series(0)
-    })
-  }
-)
+#' Make sub namespace of Series from Expr sub namespace
+#' @noRd
+series_make_sub_ns = function(pl_series, .expr_make_sub_ns_fn) {
+  df = pl$select(pl_series)
+  arr = .expr_make_sub_ns_fn(pl$col(pl_series$name))
+  lapply(arr, \(f) {
+    \(...) df$select(f(...))$to_series(0)
+  })
+}
 
 
-Series_str = method_as_active_binding(
-  \() {
-    df = pl$select(self)
-    arr = expr_str_make_sub_ns(pl$col(self$name))
-    lapply(arr, \(f) {
-      \(...) df$select(f(...))$to_series(0)
-    })
-  }
-)
+Series_list = method_as_active_binding(\() series_make_sub_ns(self, expr_list_make_sub_ns))
+
+
+Series_str = method_as_active_binding(\() series_make_sub_ns(self, expr_str_make_sub_ns))
 
 
 #' Wrap as Series
