@@ -174,7 +174,7 @@ Series_list = method_as_active_binding(
     df = pl$select(self)
     arr = expr_list_make_sub_ns(pl$col(self$name))
     lapply(arr, \(f) {
-      \(...) df$select(f(...))
+      \(...) df$select(f(...))$to_series(0)
     })
   }
 )
@@ -185,7 +185,7 @@ Series_str = method_as_active_binding(
     df = pl$select(self)
     arr = expr_str_make_sub_ns(pl$col(self$name))
     lapply(arr, \(f) {
-      \(...) df$select(f(...))
+      \(...) df$select(f(...))$to_series(0)
     })
   }
 )
