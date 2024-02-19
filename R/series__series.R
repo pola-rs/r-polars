@@ -60,8 +60,9 @@
 #'
 #' ## expr
 #'
-#' `$expr` is a shorthand of writing something like
-#' `pl$select(s)$select(pl$col(<name>)$<Expr>)$to_series(0)`.
+#' `$expr` works as a workaround for applying arbitrary [Expr][Expr_class] methods
+#' to the Series class object, which means that this is a shortcut
+#' works like `pl$select(s)$select(pl$col(s$name)$<Expr method>)$to_series(0)`.
 #' This subnamespace is experimental.
 #'
 #' ## list

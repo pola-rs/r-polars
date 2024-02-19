@@ -70,8 +70,9 @@ of the Series and width of the Series (always 1).
 Some functions are stored under active bindings, so it works like a sub-namespaces.
 \subsection{expr}{
 
-\verb{$expr} is a shorthand of writing something like
-\verb{pl$select(s)$select(pl$col(<name>)$<Expr>)$to_series(0)}.
+\verb{$expr} works as a workaround for applying arbitrary \link[=Expr_class]{Expr} methods
+to the Series class object, which means that this is a shortcut
+works like \verb{pl$select(s)$select(pl$col(s$name)$<Expr method>)$to_series(0)}.
 This subnamespace is experimental.
 }
 
