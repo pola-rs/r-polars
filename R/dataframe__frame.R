@@ -84,7 +84,7 @@
 #' # make an object
 #' df = as_polars_df(iris)
 #'
-#' # call a active binding
+#' # call an active binding
 #' df$shape
 #'
 #' # use a private method, which has mutability

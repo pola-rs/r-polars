@@ -83,7 +83,7 @@
 #' # make an object
 #' s = pl$Series(c(1:3, 1L))
 #'
-#' # call a active binding
+#' # call an active binding
 #' s$shape
 #'
 #' # show flags
