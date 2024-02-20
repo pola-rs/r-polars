@@ -101,6 +101,14 @@
 #' pl$Series(list(3:1, 1:2, NULL))$list$first()
 #'
 #' pl$Series(c(1, NA, 2))$str$concat("-")
+#'
+#' s = pl$date_range(
+#'   as.Date("2024-02-18"), as.Date("2024-02-24"),
+#'   interval = "1d"
+#' )$to_series()
+#' s
+#'
+#' s$dt$day()
 NULL
 
 
@@ -180,11 +188,19 @@ series_make_sub_ns = function(pl_series, .expr_make_sub_ns_fn) {
   })
 }
 
+Series_arr = method_as_active_binding(\() series_make_sub_ns(self, expr_arr_make_sub_ns))
+
+Series_bin = method_as_active_binding(\() series_make_sub_ns(self, expr_bin_make_sub_ns))
+
+Series_cat = method_as_active_binding(\() series_make_sub_ns(self, expr_cat_make_sub_ns))
+
+Series_dt = method_as_active_binding(\() series_make_sub_ns(self, expr_dt_make_sub_ns))
 
 Series_list = method_as_active_binding(\() series_make_sub_ns(self, expr_list_make_sub_ns))
 
-
 Series_str = method_as_active_binding(\() series_make_sub_ns(self, expr_str_make_sub_ns))
+
+Series_struct = method_as_active_binding(\() series_make_sub_ns(self, expr_struct_make_sub_ns))
 
 
 #' Wrap as Series

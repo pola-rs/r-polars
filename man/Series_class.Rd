@@ -113,5 +113,13 @@ pl$Series(c(1:3))$expr$add(1)
 pl$Series(list(3:1, 1:2, NULL))$list$first()
 
 pl$Series(c(1, NA, 2))$str$concat("-")
+
+s = pl$date_range(
+  as.Date("2024-02-18"), as.Date("2024-02-24"),
+  interval = "1d"
+)$to_series()
+s
+
+s$dt$day()
 }
 \keyword{Series}
