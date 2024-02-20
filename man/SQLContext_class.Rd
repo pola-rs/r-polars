@@ -2,21 +2,18 @@
 % Please edit documentation in R/sql.R
 \name{SQLContext_class}
 \alias{SQLContext_class}
+\alias{RPolarsSQLContext}
 \title{Run SQL queries against DataFrame/LazyFrame data.}
 \description{
-Run SQL queries against DataFrame/LazyFrame data.
-}
-\details{
-Currently, only available when built with the "sql" feature.
-See \link{polars_info} for more information.
+Run SQL queries against \link[=DataFrame_class]{DataFrame}/\link[=LazyFrame_class]{LazyFrame} data.
 }
 \examples{
 \dontshow{if (polars_info()$features$sql) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 lf = pl$LazyFrame(a = 1:3, b = c("x", NA, "z"))
+
 res = pl$SQLContext(frame = lf)$execute(
   "SELECT b, a*2 AS two_a FROM frame WHERE b IS NOT NULL"
 )
 res$collect()
 \dontshow{\}) # examplesIf}
 }
-\keyword{SQLContext}

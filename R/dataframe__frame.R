@@ -1,6 +1,7 @@
-#' @title Inner workings of the DataFrame-class
+#' Inner workings of the DataFrame-class
 #'
 #' @name DataFrame_class
+#' @aliases RPolarsDataFrame
 #' @description The `DataFrame`-class is simply two environments of respectively
 #' the public and private methods/function calls to the polars Rust side. The
 #' instantiated `DataFrame`-object is an `externalptr` to a low-level Rust
@@ -19,6 +20,14 @@
 #'
 #' @section Active bindings:
 #'
+#' ## columns
+#'
+#' `$columns` returns a character vector with the column names.
+#'
+#' ## dtypes
+#'
+#' `$dtypes` returns a unnamed list with the [data type][pl_dtypes] of each column.
+#'
 #' ## flags
 #'
 #' `$flags` returns a nested list with column names at the top level and
@@ -33,6 +42,23 @@
 #' - `SORTED_ASC` is set to `TRUE` when we sort a column in increasing order, so
 #'   that we can use this information later on to avoid re-sorting it.
 #' - `SORTED_DESC` is similar but applies to sort in decreasing order.
+#'
+#' ## height
+#'
+#' `$height` returns the number of rows in the DataFrame.
+#'
+#' ## schema
+#'
+#' `$schema` returns a named list with the [data type][pl_dtypes] of each column.
+#'
+#' ## shape
+#'
+#' `$shape` returns a numeric vector of length two with the number of rows and
+#' the number of columns.
+#'
+#' ## width
+#'
+#' `$width` returns the number of columns in the DataFrame.
 #'
 #' @details Check out the source code in
 #' [R/dataframe_frame.R](https://github.com/pola-rs/r-polars/blob/main/R/dataframe__frame.R)
@@ -55,13 +81,11 @@
 #' # see all private methods (not intended for regular use)
 #' ls(.pr$DataFrame)
 #'
-#'
 #' # make an object
-#' df = pl$DataFrame(iris)
+#' df = as_polars_df(iris)
 #'
-#' # use a public method/property
+#' # call an active binding
 #' df$shape
-#' df2 = df
 #'
 #' # use a private method, which has mutability
 #' result = .pr$DataFrame$set_column_from_robj(df, 150:1, "some_ints")
@@ -69,6 +93,8 @@
 #' # Column exists in both dataframes-objects now, as they are just pointers to
 #' # the same object
 #' # There are no public methods with mutability.
+#' df2 = df
+#'
 #' df$columns
 #' df2$columns
 #'
@@ -94,13 +120,40 @@
 NULL
 
 
-DataFrame_flags = method_as_property(function() {
-  out = lapply(self$columns, \(x) {
-    self[, x]$flags
-  })
-  names(out) = self$columns
-  out
-})
+## Active bindings
+
+DataFrame_columns = method_as_active_binding(
+  \() .pr$DataFrame$columns(self),
+  setter = TRUE
+)
+
+
+DataFrame_dtypes = method_as_active_binding(\() .pr$DataFrame$dtypes(self))
+
+
+DataFrame_flags = method_as_active_binding(
+  function() {
+    out = lapply(
+      self$columns,
+      \(x) self[, x]$flags
+    )
+    names(out) = self$columns
+
+    out
+  }
+)
+
+
+DataFrame_height = method_as_active_binding(\() .pr$DataFrame$shape(self)[1L])
+
+
+DataFrame_schema = method_as_active_binding(\() .pr$DataFrame$schema(self))
+
+
+DataFrame_shape = method_as_active_binding(\() .pr$DataFrame$shape(self))
+
+
+DataFrame_width = method_as_active_binding(\() .pr$DataFrame$shape(self)[2L])
 
 
 #' @title auto complete $-access into a polars object
@@ -352,25 +405,6 @@ DataFrame_with_row_count = function(name, offset = NULL) {
     unwrap("in $with_row_count():")
 }
 
-#' Get and set column names of a DataFrame
-#' @name DataFrame_columns
-#' @rdname DataFrame_columns
-#'
-#' @return A character vector with the column names.
-#' @keywords DataFrame
-#'
-#' @examples
-#' df = pl$DataFrame(iris)
-#'
-#' # get values
-#' df$columns
-#'
-#' # set + get values
-#' df$columns = letters[1:5] # <- is fine too
-#' df$columns
-DataFrame_columns = method_as_property(function() {
-  .pr$DataFrame$columns(self)
-}, setter = TRUE)
 
 # define setter function
 DataFrame.property_setters$columns = function(self, names) {
@@ -452,67 +486,6 @@ DataFrame_unique = function(
 }
 
 
-#' Dimensions of a DataFrame
-#' @name DataFrame_shape
-#' @description Get shape/dimensions of DataFrame
-#'
-#' @return Numeric vector of length two with the number of rows and the number
-#' of columns.
-#' @keywords DataFrame
-#' @examples
-#' pl$DataFrame(iris)$shape
-DataFrame_shape = method_as_property(function() {
-  .pr$DataFrame$shape(self)
-})
-
-
-
-#' Number of rows of a DataFrame
-#' @name DataFrame_height
-#' @description Get the number of rows (height) of a DataFrame
-#'
-#' @return The number of rows of the DataFrame
-#' @aliases height nrow
-#' @keywords DataFrame
-#' @examples
-#' pl$DataFrame(iris)$height
-DataFrame_height = method_as_property(function() {
-  .pr$DataFrame$shape(self)[1L]
-})
-
-
-#' Number of columns of a DataFrame
-#' @name DataFrame_width
-#' @description Get the number of columns (width) of a DataFrame
-#'
-#' @return The number of columns of a DataFrame
-#' @keywords DataFrame
-#' @examples
-#' pl$DataFrame(iris)$width
-DataFrame_width = method_as_property(function() {
-  .pr$DataFrame$shape(self)[2L]
-})
-
-
-#' Data types information
-#' @name DataFrame_dtypes
-#' @description Get the data type of all columns. You can see all available
-#' types with `names(pl$dtypes)`. The data type of each column is also shown
-#' when printing the DataFrame.
-#'
-#' @return
-#' `$dtypes` returns an unnamed list with the data type of each column.
-#' `$schema` returns a named list with the column names and the data type of
-#' each column.
-#' @keywords DataFrame
-#' @examples
-#' pl$DataFrame(iris)$dtypes
-#'
-#' pl$DataFrame(iris)$schema
-DataFrame_dtypes = method_as_property(function() {
-  .pr$DataFrame$dtypes(self)
-})
-
 #' Data types information
 #' @name DataFrame_dtype_strings
 #' @description Get the data type of all columns as strings. You can see all
@@ -526,12 +499,6 @@ DataFrame_dtypes = method_as_property(function() {
 #' @examples
 #' pl$DataFrame(iris)$dtype_strings()
 DataFrame_dtype_strings = use_extendr_wrapper
-
-#' @rdname DataFrame_dtypes
-
-DataFrame_schema = method_as_property(function() {
-  .pr$DataFrame$schema(self)
-})
 
 
 #' Convert an existing DataFrame to a LazyFrame
@@ -1978,7 +1945,7 @@ DataFrame_write_ndjson = function(file) {
 }
 
 #' @inherit LazyFrame_rolling title description params details
-#' @return A [GroupBy][GroupBy_class] object
+#' @return A [RollingGroupBy][RollingGroupBy_class] object
 #'
 #' @examples
 #' df = pl$DataFrame(

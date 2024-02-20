@@ -2,10 +2,22 @@
 % Please edit documentation in R/group_by_dynamic.R
 \name{DynamicGroupBy_class}
 \alias{DynamicGroupBy_class}
+\alias{RPolarsDynamicGroupBy}
 \title{Operations on Polars DataFrame grouped on time or integer values}
-\value{
-not applicable
-}
 \description{
-Operations on Polars DataFrame grouped on time or integer values
+This class comes from \code{\link[=DataFrame_group_by_dynamic]{<DataFrame>$group_by_dynamic()}}.
+}
+\examples{
+df = pl$DataFrame(
+  time = pl$date_range(
+    start = strptime("2021-12-16 00:00:00", format = "\%Y-\%m-\%d \%H:\%M:\%S", tz = "UTC"),
+    end = strptime("2021-12-16 03:00:00", format = "\%Y-\%m-\%d \%H:\%M:\%S", tz = "UTC"),
+    interval = "30m",
+    eager = TRUE,
+  ),
+  n = 0:6
+)
+
+# get the sum in the following hour relative to the "time" column
+df$group_by_dynamic("time", every = "1h")
 }

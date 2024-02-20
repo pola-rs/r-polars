@@ -1,6 +1,7 @@
-#' @title Inner workings of the LazyFrame-class
+#' Inner workings of the LazyFrame-class
 #'
 #' @name LazyFrame_class
+#' @aliases RPolarsLazyFrame
 #' @description The `LazyFrame`-class is simply two environments of respectively
 #' the public and private methods/function calls to the polars rust side. The
 #' instantiated `LazyFrame`-object is an `externalptr` to a lowlevel rust polars
@@ -27,7 +28,24 @@
 #' and projection pushdown. However polars can interact and optimize queries with both
 #' SQL DBs and other data sources such parquet files simultaneously.
 #'
-#' @return not applicable
+#' @section Active bindings:
+#'
+#' ## columns
+#'
+#' `$columns` returns a character vector with the column names.
+#'
+#' ## dtypes
+#'
+#' `$dtypes` returns a unnamed list with the [data type][pl_dtypes] of each column.
+#'
+#' ## schema
+#'
+#' `$schema` returns a named list with the [data type][pl_dtypes] of each column.
+#'
+#' ## width
+#'
+#' `$width` returns the number of columns in the LazyFrame.
+#'
 #' @keywords LazyFrame
 #' @examples
 #' # see all exported methods
@@ -50,7 +68,7 @@
 #' Rdf = read.csv(temp_filepath)
 #'
 #' # eager in-mem polars DataFrame
-#' Pdf = pl$DataFrame(Rdf)
+#' Pdf = as_polars_df(Rdf)
 #'
 #' # lazy frame starting from in-mem DataFrame
 #' Ldf_okay = Pdf$lazy()
@@ -91,6 +109,40 @@
 #' # a user might write it as a one-liner like so:
 #' Pdf_best2 = pl$scan_csv(temp_filepath)$filter(pl$col("Species") == "setosa")
 NULL
+
+
+# Active bindings
+
+LazyFrame_columns = method_as_active_binding(
+  \() {
+    self$schema |>
+      names() |>
+      result() |>
+      unwrap("in $columns")
+  }
+)
+
+
+LazyFrame_dtypes = method_as_active_binding(
+  \() {
+    self$schema |>
+      unlist() |>
+      unname() |>
+      result() |>
+      unwrap("in $dtypes")
+  }
+)
+
+
+LazyFrame_schema = method_as_active_binding(
+  \() {
+    .pr$LazyFrame$schema(self) |>
+      unwrap("in $schema:")
+  }
+)
+
+
+LazyFrame_width = method_as_active_binding(\() length(self$schema))
 
 
 #' @title auto complete $-access into a polars object
@@ -1383,52 +1435,6 @@ LazyFrame_rename = function(...) {
   new = names(mapping)
   unwrap(.pr$LazyFrame$rename(self, existing, new), "in $rename():")
 }
-
-#' @rdname LazyFrame_dtypes
-
-LazyFrame_schema = method_as_property(function() {
-  .pr$LazyFrame$schema(self) |>
-    unwrap("in $schema():")
-})
-
-#' Get the column names of a LazyFrame
-#' @keywords LazyFrame
-#' @return A vector of column names
-#' @examples
-#' pl$LazyFrame(mtcars)$columns
-LazyFrame_columns = method_as_property(function() {
-  self$schema |>
-    names() |>
-    result() |>
-    unwrap("in $columns()")
-})
-
-#' @title Number of columns of a LazyFrame
-#' @description Get the number of columns (width) of a LazyFrame
-#' @keywords LazyFrame
-#' @return The number of columns of a DataFrame
-#' @examples
-#' pl$LazyFrame(mtcars)$width
-#'
-LazyFrame_width = method_as_property(function() {
-  length(self$schema)
-})
-
-#' Data types information
-#' @name LazyFrame_dtypes
-#' @inherit DataFrame_dtypes description return
-#' @keywords LazyFrame
-#' @examples
-#' pl$LazyFrame(iris)$dtypes
-#'
-#' pl$LazyFrame(iris)$schema
-LazyFrame_dtypes = method_as_property(function() {
-  self$schema |>
-    unlist() |>
-    unname() |>
-    result() |>
-    unwrap("in $dtypes()")
-})
 
 
 #' Fetch `n` rows of a LazyFrame

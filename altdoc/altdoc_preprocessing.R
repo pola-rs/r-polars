@@ -38,7 +38,7 @@ classes = c(
   "pl", "Series", "DataFrame", "LazyFrame", "GroupBy",
   "LazyGroupBy", "RollingGroupBy", "DynamicGroupBy", "ExprList", "ExprBin",
   "ExprCat", "ExprDT", "ExprMeta", "ExprName", "ExprStr", "ExprStruct",
-  "ExprArr", "Expr", "IO", "RField", "RThreadHandle", "SQLContext", "S3"
+  "ExprArr", "Expr", "IO", "RThreadHandle", "SQLContext", "S3"
 )
 for (cl in classes) {
   files = grep(paste0("^", cl, "_"), other, value = TRUE)

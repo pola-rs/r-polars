@@ -1,7 +1,6 @@
-#' @title Inner workings of the Series-class
+#' Inner workings of the Series-class
 #'
-#' @name Series_class
-#' @description The `Series`-class is simply two environments of respectively
+#' The `Series`-class is simply two environments of respectively
 #' the public and private methods/function calls to the polars rust side. The
 #' instantiated `Series`-object is an `externalptr` to a lowlevel rust polars
 #' Series  object. The pointer address is the only statefullness of the Series
@@ -17,14 +16,20 @@
 #' pure functions. Having the private methods as pure functions
 #' solved/simplified self-referential complications.
 #'
-#' @details Check out the source code in R/Series_frame.R how public methods are
+#' Check out the source code in R/Series_frame.R how public methods are
 #' derived from private methods. Check out  extendr-wrappers.R to see the
 #' extendr-auto-generated methods. These are moved to .pr and converted into
 #' pure external functions in after-wrappers.R. In zzz.R (named zzz to be last
 #' file sourced) the extendr-methods are removed and replaced by any function
 #' prefixed `Series_`.
 #'
+#' @name Series_class
+#' @aliases RPolarsSeries
 #' @section Active bindings:
+#'
+#' ## dtype
+#'
+#' `$dtype` returns the [data type][pl_dtypes] of the Series.
 #'
 #' ## flags
 #'
@@ -40,6 +45,34 @@
 #'   that we can use this information later on to avoid re-sorting it.
 #' - `SORTED_DESC` is similar but applies to sort in decreasing order.
 #'
+#' ## name
+#'
+#' `$name` returns the name of the Series.
+#'
+#' ## shape
+#'
+#' `$shape` returns a numeric vector of length two with the number of length
+#' of the Series and width of the Series (always 1).
+#'
+#' @section Sub-namespaces:
+#'
+#' Some functions are stored under active bindings, so it works like a sub-namespaces.
+#'
+#' ## expr
+#'
+#' `$expr` works as a workaround for applying arbitrary [Expr][Expr_class] methods
+#' to the Series class object, which means that this is a shortcut
+#' works like `pl$select(s)$select(pl$col(s$name)$<Expr method>)$to_series(0)`.
+#' This subnamespace is experimental.
+#'
+#' ## list
+#'
+#' `$list` calls functions in `<Expr>$list`.
+#'
+#' ## str
+#'
+#' `$str` calls functions in `<Expr>$str`.
+#'
 #' @keywords Series
 #'
 #' @examples
@@ -51,7 +84,7 @@
 #' # make an object
 #' s = pl$Series(c(1:3, 1L))
 #'
-#' # use a public method/property
+#' # call an active binding
 #' s$shape
 #'
 #' # show flags
@@ -61,32 +94,97 @@
 #' s_copy = s
 #' .pr$Series$append_mut(s, pl$Series(5:1))
 #' identical(s_copy$to_r(), s$to_r()) # s_copy was modified when s was modified
+#'
+#' # call functions via sub-namespaces
+#' pl$Series(c(1:3))$expr$add(1)
+#'
+#' pl$Series(list(3:1, 1:2, NULL))$list$first()
+#'
+#' pl$Series(c(1, NA, 2))$str$concat("-")
 NULL
 
 
-Series_flags = method_as_property(function() {
-  out = list(
-    "SORTED_ASC" = .pr$Series$is_sorted_flag(self),
-    "SORTED_DESC" = .pr$Series$is_sorted_reverse_flag(self)
-  )
+# Active bindings
 
-  # the width value given here doesn't matter, but pl$Array() must have one
-  if (pl$same_outer_dt(self$dtype, pl$List()) ||
-    pl$same_outer_dt(self$dtype, pl$Array(width = 1))) {
-    out[["FAST_EXPLODE"]] = .pr$Series$fast_explode_flag(self)
+Series_dtype = method_as_active_binding(\() .pr$Series$dtype(self))
+
+
+Series_flags = method_as_active_binding(
+  \() {
+    out = list(
+      "SORTED_ASC" = .pr$Series$is_sorted_flag(self),
+      "SORTED_DESC" = .pr$Series$is_sorted_reverse_flag(self)
+    )
+
+    # the width value given here doesn't matter, but pl$Array() must have one
+    if (pl$same_outer_dt(self$dtype, pl$List()) ||
+      pl$same_outer_dt(self$dtype, pl$Array(width = 1))) {
+      out[["FAST_EXPLODE"]] = .pr$Series$fast_explode_flag(self)
+    }
+
+    out
   }
-  out
+)
+
+
+Series_name = method_as_active_binding(\() .pr$Series$name(self))
+
+
+Series_shape = method_as_active_binding(\() .pr$Series$shape(self))
+
+
+# Sub-namespaces
+
+Series_expr = method_as_active_binding(function() {
+  df = pl$select(self) # make a DataFrame from Series
+  self = pl$col(self$name) # override self to column named by series
+
+  # loop over each expression function
+  lapply(
+    RPolarsExpr,
+    \(f) { # f is orignial Expr method
+
+      # point back to env with above defined 'df' and 'self'
+      environment(f) = parent.frame(2L)
+
+      # make a modified Expr function
+      new_f = \() {
+        # get the future args the new function will be called with
+        # not using ... as this will erase tooltips and defaults
+        # instead using sys.call/do.call
+        scall = as.list(sys.call()[-1])
+
+        x = do.call(f, scall)
+        pcase(
+          inherits(x, "RPolarsExpr"), df$select(x)$to_series(0),
+          or_else = x
+        )
+      }
+
+      # set new_f to have the same formals arguments
+      formals(new_f) = formals(f)
+      class(new_f) = c("SeriesExpr", "function") #
+      new_f
+    }
+  )
 })
 
-#' String related methods
-#'
-#' Create an object namespace of all string related methods. See the individual
-#' method pages for full details.
-#' @return Series
+
+#' Make sub namespace of Series from Expr sub namespace
 #' @noRd
-Series_str = method_as_property(function() {
-  series_str_make_sub_ns(self)
-})
+series_make_sub_ns = function(pl_series, .expr_make_sub_ns_fn) {
+  df = pl$select(pl_series)
+  arr = .expr_make_sub_ns_fn(pl$col(pl_series$name))
+  lapply(arr, \(f) {
+    \(...) df$select(f(...))$to_series(0)
+  })
+}
+
+
+Series_list = method_as_active_binding(\() series_make_sub_ns(self, expr_list_make_sub_ns))
+
+
+Series_str = method_as_active_binding(\() series_make_sub_ns(self, expr_str_make_sub_ns))
 
 
 #' Wrap as Series
@@ -271,18 +369,6 @@ Series_compare = function(other, op) {
 #' @export
 #' @rdname Series_compare
 ">=.RPolarsSeries" = function(s1, s2) unwrap(wrap_s(s1)$compare(s2, "gt_eq"))
-
-
-#' Shape of series
-#'
-#' @return dimension vector of Series
-#' @keywords Series
-#' @name Series_shape
-#'
-#' @examples identical(pl$Series(1:2)$shape, 2:1)
-Series_shape = method_as_property(function() {
-  .pr$Series$shape(self)
-})
 
 
 #' Get r vector/list
@@ -530,18 +616,6 @@ Series_append = function(other, immutable = TRUE) {
 #' pl$Series(1:3, name = "alice")$alias("bob")
 Series_alias = use_extendr_wrapper
 
-#' Property: Name
-#' @description Get name of Series
-#'
-#' @return String the name
-#' @keywords Series
-#' @aliases name
-#' @name Series_name
-#' @examples
-#' pl$Series(1:3, name = "alice")$name
-Series_name = method_as_property(function() {
-  .pr$Series$name(self)
-})
 
 #' Reduce Boolean Series with ANY
 #'
@@ -736,18 +810,6 @@ Series_std = function(ddof = 1) {
   unwrap(.pr$Series$std(self, ddof), "in $std():")
 }
 
-#' Get data type of Series
-#' @keywords Series
-#' @return DataType
-#' @aliases Series_dtype
-#' @name Series_dtype
-#' @examples
-#' pl$Series(1:4)$dtype
-#' pl$Series(c(1, 2))$dtype
-#' pl$Series(letters)$dtype
-Series_dtype = method_as_property(function() {
-  .pr$Series$dtype(self)
-})
 
 ## wait until in included in next py-polars release
 ### contribute polars, exposee nulls_last option
@@ -933,78 +995,6 @@ in_DataType = function(l, rs) any(sapply(rs, function(r) l == r))
 Series_is_numeric = function() {
   in_DataType(self$dtype, pl$numeric_dtypes)
 }
-
-#' list: list related methods on Series of dtype List
-#' @description
-#' Create an object namespace of all list related methods.
-#' See the individual method pages for full details
-#' @keywords Series
-#' @return Series
-#' @aliases Series_list
-#' @examples
-#' s = pl$Series(list(1:3, 1:2, NULL))
-#' s
-#' s$list$first()
-Series_list = method_as_property(function() {
-  df = pl$DataFrame(self)
-  arr = expr_list_make_sub_ns(pl$col(self$name))
-  lapply(arr, \(f) {
-    \(...) df$select(f(...))
-  })
-})
-
-#' Any expr method on a Series
-#' @description
-#' Call an expression on a Series
-#' See the individual Expr method pages for full details
-#'
-#' @details
-#' This is a shorthand of writing  something like
-#' `pl$DataFrame(s)$select(pl$col("sname")$expr)$to_series(0)`
-#'
-#' This subnamespace is experimental. Submit an issue if anything
-#' unexpected happened.
-#'
-#' @keywords Series
-#' @return Expr
-#' @aliases Series_expr
-#' @examples
-#' s = pl$Series(list(1:3, 1:2, NULL))
-#' s$expr$first()
-#' s$expr$alias("alice")
-Series_expr = method_as_property(function() {
-  df = pl$DataFrame(self) # make a DataFrame from Series
-  self = pl$col(self$name) # override self to column named by series
-
-  # loop over each expression function
-  lapply(
-    RPolarsExpr,
-    \(f) { # f is orignial Expr method
-
-      # point back to env with above defined 'df' and 'self'
-      environment(f) = parent.frame(2L)
-
-      # make a modified Expr function
-      new_f = \() {
-        # get the future args the new function will be called with
-        # not using ... as this will erase tooltips and defaults
-        # instead using sys.call/do.call
-        scall = as.list(sys.call()[-1])
-
-        x = do.call(f, scall)
-        pcase(
-          inherits(x, "RPolarsExpr"), df$select(x)$to_series(0),
-          or_else = x
-        )
-      }
-
-      # set new_f to have the same formals arguments
-      formals(new_f) = formals(f)
-      class(new_f) = c("SeriesExpr", "function") #
-      new_f
-    }
-  )
-})
 
 
 #' Series to Literal

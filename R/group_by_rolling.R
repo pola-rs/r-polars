@@ -1,7 +1,18 @@
 #' Operations on Polars DataFrame grouped by rolling windows
 #'
-#' @return not applicable
+#' This class comes from [`<DataFrame>$rolling()`][DataFrame_rolling].
+#'
 #' @name RollingGroupBy_class
+#' @aliases RPolarsRollingGroupBy
+#' @examples
+#' df = pl$DataFrame(
+#'   dt = c("2020-01-01", "2020-01-01", "2020-01-01", "2020-01-02", "2020-01-03", "2020-01-08"),
+#'   a = c(3, 7, 5, 9, 2, 1)
+#' )$with_columns(
+#'   pl$col("dt")$str$strptime(pl$Date, format = NULL)$set_sorted()
+#' )
+#'
+#' df$rolling(index_column = "dt", period = "2d")
 NULL
 
 RPolarsRollingGroupBy = new.env(parent = emptyenv())
@@ -46,23 +57,9 @@ construct_rolling_group_by = function(df, index_column, period, offset, closed, 
   out
 }
 
-#' print RollingGroupBy
-#'
-#' @param x DataFrame
-#' @param ... not used
+
 #' @noRd
-#' @return self
 #' @export
-#'
-#' @examples
-#' df = pl$DataFrame(
-#'   dt = c("2020-01-01", "2020-01-01", "2020-01-01", "2020-01-02", "2020-01-03", "2020-01-08"),
-#'   a = c(3, 7, 5, 9, 2, 1)
-#' )$with_columns(
-#'   pl$col("dt")$str$strptime(pl$Date, format = NULL)$set_sorted()
-#' )
-#'
-#' df$rolling(index_column = "dt", period = "2d")
 print.RPolarsRollingGroupBy = function(x, ...) {
   .pr$DataFrame$print(attr(x, "private")$dat)
 }

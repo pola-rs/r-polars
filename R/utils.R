@@ -463,7 +463,7 @@ restruct_list = function(l) {
 #' # which only is for this demo.
 #' # instead sourced method like Expr_arr() at package build time instead
 #' # env = .pr$env$Expr #get env of the Expr Class
-#' # env$my_sub_ns = method_as_property(function() { #add a property/method
+#' # env$my_sub_ns = method_as_active_binding(function() { #add a property/method
 #' # my_class_sub_ns(self)
 #' # })
 #' # rm(env) #optional clean up

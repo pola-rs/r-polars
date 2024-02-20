@@ -11,3 +11,10 @@ test_that("Series to upper case", {
     c("A", "B", NA, "D")
   )
 })
+
+test_that("List sub namespace", {
+  expect_identical(
+    pl$Series(list(3:1, 1:2, NULL))$list$first()$to_r(),
+    c(3L, 1L, NA)
+  )
+})

@@ -18,8 +18,6 @@ time_unit_conv_factor = c(
 
 #' Store Time in R
 #'
-#' @include after-wrappers.R
-#'
 #' @param x an integer or double vector of n epochs since midnight OR a char vector of char times
 #' passed to as.POSIXct converted to seconds.
 #' @param tu timeunit either "s","ms","us","ns"

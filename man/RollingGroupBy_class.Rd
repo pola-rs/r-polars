@@ -2,10 +2,18 @@
 % Please edit documentation in R/group_by_rolling.R
 \name{RollingGroupBy_class}
 \alias{RollingGroupBy_class}
+\alias{RPolarsRollingGroupBy}
 \title{Operations on Polars DataFrame grouped by rolling windows}
-\value{
-not applicable
-}
 \description{
-Operations on Polars DataFrame grouped by rolling windows
+This class comes from \code{\link[=DataFrame_rolling]{<DataFrame>$rolling()}}.
+}
+\examples{
+df = pl$DataFrame(
+  dt = c("2020-01-01", "2020-01-01", "2020-01-01", "2020-01-02", "2020-01-03", "2020-01-08"),
+  a = c(3, 7, 5, 9, 2, 1)
+)$with_columns(
+  pl$col("dt")$str$strptime(pl$Date, format = NULL)$set_sorted()
+)
+
+df$rolling(index_column = "dt", period = "2d")
 }

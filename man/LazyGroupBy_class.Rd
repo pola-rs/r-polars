@@ -2,14 +2,21 @@
 % Please edit documentation in R/lazyframe__group_by.R
 \name{LazyGroupBy_class}
 \alias{LazyGroupBy_class}
+\alias{RPolarsLazyGroupBy}
 \title{Operations on Polars grouped LazyFrame}
-\value{
-not applicable
-}
 \description{
-Operations on Polars grouped LazyFrame
+This class comes from \code{\link[=LazyFrame_group_by]{<LazyFrame>$group_by()}}, etc.
 }
-\details{
-The LazyGroupBy class in R, is just another interface on top of the
-LazyFrame (R wrapper class) in rust polars.
+\section{Active bindings}{
+
+\subsection{columns}{
+
+\verb{$columns} returns a character vector with the column names.
+}
+}
+
+\examples{
+as_polars_lf(mtcars)$group_by("cyl")$agg(
+  pl$col("mpg")$sum()
+)
 }

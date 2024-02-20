@@ -7,13 +7,17 @@
 -   New active bindings `$flags` for `DataFrame` to show the flags used internally
     for each column. The output of `$flags` for `Series` was also improved and now
     contains `FAST_EXPLODE` for `Series` of type `list` and `array` (#809).
--   Add string methods `to_lowercase()` and `to_uppercase()` for `Series` (#810).
+-   `$str` sub namespace is added to `Series` (#819).
 -   `as_polars_df()` for `data.frame` is more memory-efficient and new arguments
     `schema` and `schema_overrides` are added (#817).
 -   Use `polars_code_completion_activate()` to enable code suggestions and
     autocompletion after `$` on polars objects. This is an experimental feature
     that is disabled by default. For now, it is only supported in the native R
     terminal and in RStudio (#597).
+
+### Bug fixes
+
+-   `<Series>$list` sub namespace methods returns `Series` class object correctly (#819).
 
 ## Polars R Package 0.14.0
 

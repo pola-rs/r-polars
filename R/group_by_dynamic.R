@@ -1,7 +1,21 @@
 #' Operations on Polars DataFrame grouped on time or integer values
 #'
-#' @return not applicable
+#' This class comes from [`<DataFrame>$group_by_dynamic()`][DataFrame_group_by_dynamic].
 #' @name DynamicGroupBy_class
+#' @aliases RPolarsDynamicGroupBy
+#' @examples
+#' df = pl$DataFrame(
+#'   time = pl$date_range(
+#'     start = strptime("2021-12-16 00:00:00", format = "%Y-%m-%d %H:%M:%S", tz = "UTC"),
+#'     end = strptime("2021-12-16 03:00:00", format = "%Y-%m-%d %H:%M:%S", tz = "UTC"),
+#'     interval = "30m",
+#'     eager = TRUE,
+#'   ),
+#'   n = 0:6
+#' )
+#'
+#' # get the sum in the following hour relative to the "time" column
+#' df$group_by_dynamic("time", every = "1h")
 NULL
 
 RPolarsDynamicGroupBy = new.env(parent = emptyenv())
@@ -52,27 +66,9 @@ construct_group_by_dynamic = function(
   out
 }
 
-#' print DynamicGroupBy
-#'
-#' @param x DataFrame
-#' @param ... not used
+
 #' @noRd
-#' @return self
 #' @export
-#'
-#' @examples
-#' df = pl$DataFrame(
-#'   time = pl$date_range(
-#'     start = strptime("2021-12-16 00:00:00", format = "%Y-%m-%d %H:%M:%S", tz = "UTC"),
-#'     end = strptime("2021-12-16 03:00:00", format = "%Y-%m-%d %H:%M:%S", tz = "UTC"),
-#'     interval = "30m",
-#'     eager = TRUE,
-#'   ),
-#'   n = 0:6
-#' )
-#'
-#' # get the sum in the following hour relative to the "time" column
-#' df$group_by_dynamic("time", every = "1h")
 print.RPolarsDynamicGroupBy = function(x, ...) {
   .pr$DataFrame$print(attr(x, "private")$dat)
 }

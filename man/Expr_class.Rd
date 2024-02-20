@@ -2,25 +2,69 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_class}
 \alias{Expr_class}
+\alias{RPolarsExpr}
 \title{Polars Expressions}
-\value{
-not applicable
-}
 \description{
-Expressions are all the functions and methods that are applicable to a Polars
-DataFrame or LazyFrame. They can be split into the following categories
-(following the \href{https://pola-rs.github.io/polars/py-polars/html/reference/expressions/}{Py-Polars classification}):
-\itemize{
-\item Aggregate
-\item Binary
-\item Categorical
-\item Computation
-\item Functions
-\item List
-\item Meta
-\item Name
-\item String
-\item Struct
-\item Temporal
+Expressions are all the functions and methods that are applicable to
+a Polars \link[=DataFrame_class]{DataFrame} or \link[=LazyFrame_class]{LazyFrame} object.
+Some methods are under the sub-namespaces.
 }
+\section{Sub-namespaces}{
+
+\subsection{arr}{
+
+\verb{$arr} stores all array related methods.
+}
+
+\subsection{bin}{
+
+\verb{$bin} stores all binary related methods.
+}
+
+\subsection{cat}{
+
+\verb{$cat} stores all categorical related methods.
+}
+
+\subsection{list}{
+
+\verb{$list} stores all list related methods.
+}
+
+\subsection{meta}{
+
+\verb{$meta} stores all methods for working with the meta data.
+}
+
+\subsection{name}{
+
+\verb{$name} stores all name related methods.
+}
+
+\subsection{str}{
+
+\verb{$str} stores all string related methods.
+}
+
+\subsection{struct}{
+
+\verb{$struct} stores all struct related methods.
+}
+
+\subsection{dt}{
+
+\verb{$dt} stores all temporal related methods.
+}
+}
+
+\examples{
+df = pl$DataFrame(
+  a = 1:2,
+  b = list(1:2, 3:4),
+  schema = list(a = pl$Int64, b = pl$Array(pl$Int64, 2))
+)
+
+df$select(pl$col("a")$first())
+
+df$select(pl$col("b")$arr$sum())
 }

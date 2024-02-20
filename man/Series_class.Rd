@@ -2,6 +2,7 @@
 % Please edit documentation in R/series__series.R
 \name{Series_class}
 \alias{Series_class}
+\alias{RPolarsSeries}
 \title{Inner workings of the Series-class}
 \description{
 The \code{Series}-class is simply two environments of respectively
@@ -30,6 +31,11 @@ prefixed \code{Series_}.
 }
 \section{Active bindings}{
 
+\subsection{dtype}{
+
+\verb{$dtype} returns the \link[=pl_dtypes]{data type} of the Series.
+}
+
 \subsection{flags}{
 
 \verb{$flags} returns a named list with flag names and their values.
@@ -45,6 +51,40 @@ that we can use this information later on to avoid re-sorting it.
 \item \code{SORTED_DESC} is similar but applies to sort in decreasing order.
 }
 }
+
+\subsection{name}{
+
+\verb{$name} returns the name of the Series.
+}
+
+\subsection{shape}{
+
+\verb{$shape} returns a numeric vector of length two with the number of length
+of the Series and width of the Series (always 1).
+}
+}
+
+\section{Sub-namespaces}{
+
+
+Some functions are stored under active bindings, so it works like a sub-namespaces.
+\subsection{expr}{
+
+\verb{$expr} works as a workaround for applying arbitrary \link[=Expr_class]{Expr} methods
+to the Series class object, which means that this is a shortcut
+works like \verb{pl$select(s)$select(pl$col(s$name)$<Expr method>)$to_series(0)}.
+This subnamespace is experimental.
+}
+
+\subsection{list}{
+
+\verb{$list} calls functions in \verb{<Expr>$list}.
+}
+
+\subsection{str}{
+
+\verb{$str} calls functions in \verb{<Expr>$str}.
+}
 }
 
 \examples{
@@ -56,7 +96,7 @@ ls(.pr$Series)
 # make an object
 s = pl$Series(c(1:3, 1L))
 
-# use a public method/property
+# call an active binding
 s$shape
 
 # show flags
@@ -66,5 +106,12 @@ s$sort()$flags
 s_copy = s
 .pr$Series$append_mut(s, pl$Series(5:1))
 identical(s_copy$to_r(), s$to_r()) # s_copy was modified when s was modified
+
+# call functions via sub-namespaces
+pl$Series(c(1:3))$expr$add(1)
+
+pl$Series(list(3:1, 1:2, NULL))$list$first()
+
+pl$Series(c(1, NA, 2))$str$concat("-")
 }
 \keyword{Series}
