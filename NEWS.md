@@ -15,6 +15,10 @@
     that is disabled by default. For now, it is only supported in the native R
     terminal and in RStudio (#597).
 
+### Bug fixes
+
+-   `<Series>$list` sub namespace methods returns `Series` class object correctly (#819).
+
 ## Polars R Package 0.14.0
 
 ### Breaking changes due to Rust-polars update
