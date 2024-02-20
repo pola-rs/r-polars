@@ -23,7 +23,8 @@
 ### Other
 
 -   The experimental subnamespace `$expr` on `Series` is removed as it was 
-    barely documented and doesn't add anything (#827).
+    barely documented and doesn't have additional value compared to applying
+    methods directly on `Series` (#827).
 
 ## Polars R Package 0.14.0
 
