@@ -58,13 +58,6 @@
 #'
 #' Some functions are stored under active bindings, so it works like a sub-namespaces.
 #'
-#' ## expr
-#'
-#' `$expr` works as a workaround for applying arbitrary [Expr][Expr_class] methods
-#' to the Series class object, which means that this is a shortcut
-#' works like `pl$select(s)$select(pl$col(s$name)$<Expr method>)$to_series(0)`.
-#' This subnamespace is experimental.
-#'
 #' ## list
 #'
 #' `$list` calls functions in `<Expr>$list`.
@@ -96,7 +89,7 @@
 #' identical(s_copy$to_r(), s$to_r()) # s_copy was modified when s was modified
 #'
 #' # call functions via sub-namespaces
-#' pl$Series(c(1:3))$expr$add(1)
+#' pl$Series(c(1:3))$add(1)
 #'
 #' pl$Series(list(3:1, 1:2, NULL))$list$first()
 #'

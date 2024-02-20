@@ -17,7 +17,13 @@
 
 ### Bug fixes
 
--   `<Series>$list` sub namespace methods returns `Series` class object correctly (#819).
+-   `<Series>$list` sub namespace methods returns `Series` class object correctly 
+    (#819).
+
+### Other
+
+-   The experimental subnamespace `$expr` on `Series` is removed as it was 
+    barely documented and doesn't add anything (#827).
 
 ## Polars R Package 0.14.0
 
