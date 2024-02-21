@@ -18,6 +18,10 @@
 #'
 #' `$cat` stores all categorical related methods.
 #'
+#' ## dt
+#'
+#' `$dt` stores all temporal related methods.
+#'
 #' ## list
 #'
 #' `$list` stores all list related methods.
@@ -38,11 +42,9 @@
 #'
 #' `$struct` stores all struct related methods.
 #'
-#' ## dt
-#'
-#' `$dt` stores all temporal related methods.
 #' @name Expr_class
 #' @aliases RPolarsExpr
+#'
 #' @examples
 #' df = pl$DataFrame(
 #'   a = 1:2,

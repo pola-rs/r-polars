@@ -66,8 +66,26 @@ of the Series and width of the Series (always 1).
 
 \section{Sub-namespaces}{
 
+\subsection{arr}{
 
-Some functions are stored under active bindings, so it works like a sub-namespaces.
+\verb{$arr} stores all array related methods.
+}
+
+\subsection{bin}{
+
+\verb{$bin} stores all binary related methods.
+}
+
+\subsection{cat}{
+
+\verb{$cat} stores all categorical related methods.
+}
+
+\subsection{dt}{
+
+\verb{$dt} stores all temporal related methods.
+}
+
 \subsection{expr}{
 
 \verb{$expr} works as a workaround for applying arbitrary \link[=Expr_class]{Expr} methods
@@ -78,22 +96,22 @@ This subnamespace is experimental.
 
 \subsection{list}{
 
-\verb{$list} calls functions in \verb{<Expr>$list}.
+\verb{$list} stores all list related methods.
 }
 
 \subsection{str}{
 
-\verb{$str} calls functions in \verb{<Expr>$str}.
+\verb{$str} stores all string related methods.
+}
+
+\subsection{struct}{
+
+\verb{$struct} stores all struct related methods.
 }
 }
 
 \examples{
-pl$show_all_public_methods("RPolarsSeries")
-
-# see all private methods (not intended for regular use)
-ls(.pr$Series)
-
-# make an object
+# make a Series
 s = pl$Series(c(1:3, 1L))
 
 # call an active binding
@@ -102,16 +120,19 @@ s$shape
 # show flags
 s$sort()$flags
 
-# use a private method (mutable append not allowed in public api)
-s_copy = s
-.pr$Series$append_mut(s, pl$Series(5:1))
-identical(s_copy$to_r(), s$to_r()) # s_copy was modified when s was modified
-
-# call functions via sub-namespaces
-pl$Series(c(1:3))$expr$add(1)
-
+# use subnamespaces
 pl$Series(list(3:1, 1:2, NULL))$list$first()
-
 pl$Series(c(1, NA, 2))$str$concat("-")
+
+s = pl$date_range(
+  as.Date("2024-02-18"), as.Date("2024-02-24"),
+  interval = "1d"
+)$to_series()
+s
+s$dt$day()
+
+# show all available methods for Series
+pl$show_all_public_methods("RPolarsSeries")
+
 }
 \keyword{Series}
