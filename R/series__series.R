@@ -54,9 +54,24 @@
 #' `$shape` returns a numeric vector of length two with the number of length
 #' of the Series and width of the Series (always 1).
 #'
+#'
 #' @section Sub-namespaces:
 #'
-#' Some functions are stored under active bindings, so it works like a sub-namespaces.
+#' ## arr
+#'
+#' `$arr` stores all array related methods.
+#'
+#' ## bin
+#'
+#' `$bin` stores all binary related methods.
+#'
+#' ## cat
+#'
+#' `$cat` stores all categorical related methods.
+#'
+#' ## dt
+#'
+#' `$dt` stores all temporal related methods.
 #'
 #' ## expr
 #'
@@ -67,21 +82,20 @@
 #'
 #' ## list
 #'
-#' `$list` calls functions in `<Expr>$list`.
+#' `$list` stores all list related methods.
 #'
 #' ## str
 #'
-#' `$str` calls functions in `<Expr>$str`.
+#' `$str` stores all string related methods.
+#'
+#' ## struct
+#'
+#' `$struct` stores all struct related methods.
 #'
 #' @keywords Series
 #'
 #' @examples
-#' pl$show_all_public_methods("RPolarsSeries")
-#'
-#' # see all private methods (not intended for regular use)
-#' ls(.pr$Series)
-#'
-#' # make an object
+#' # make a Series
 #' s = pl$Series(c(1:3, 1L))
 #'
 #' # call an active binding
@@ -90,16 +104,8 @@
 #' # show flags
 #' s$sort()$flags
 #'
-#' # use a private method (mutable append not allowed in public api)
-#' s_copy = s
-#' .pr$Series$append_mut(s, pl$Series(5:1))
-#' identical(s_copy$to_r(), s$to_r()) # s_copy was modified when s was modified
-#'
-#' # call functions via sub-namespaces
-#' pl$Series(c(1:3))$expr$add(1)
-#'
+#' # use subnamespaces
 #' pl$Series(list(3:1, 1:2, NULL))$list$first()
-#'
 #' pl$Series(c(1, NA, 2))$str$concat("-")
 #'
 #' s = pl$date_range(
@@ -107,8 +113,11 @@
 #'   interval = "1d"
 #' )$to_series()
 #' s
-#'
 #' s$dt$day()
+#'
+#' # show all available methods for Series
+#' pl$show_all_public_methods("RPolarsSeries")
+#'
 NULL
 
 

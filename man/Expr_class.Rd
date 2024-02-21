@@ -26,6 +26,11 @@ Some methods are under the sub-namespaces.
 \verb{$cat} stores all categorical related methods.
 }
 
+\subsection{dt}{
+
+\verb{$dt} stores all temporal related methods.
+}
+
 \subsection{list}{
 
 \verb{$list} stores all list related methods.
@@ -49,11 +54,6 @@ Some methods are under the sub-namespaces.
 \subsection{struct}{
 
 \verb{$struct} stores all struct related methods.
-}
-
-\subsection{dt}{
-
-\verb{$dt} stores all temporal related methods.
 }
 }
 
