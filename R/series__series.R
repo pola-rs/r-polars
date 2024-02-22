@@ -188,12 +188,13 @@ Series_expr = method_as_active_binding(function() {
 
 
 add_expr_methods_to_series = function() {
-  methods_to_ignore = c(
-    "agg_groups"
+  methods_exclude = c(
+    "agg_groups",
+    "to_series"
   )
   methods_diff = setdiff(ls(RPolarsExpr), ls(RPolarsSeries))
 
-  for (method in setdiff(methods_diff, methods_to_ignore)) {
+  for (method in setdiff(methods_diff, methods_exclude)) {
     # make a modified Expr function
     new_f = eval(parse(text = paste0(r"(function() {
       f = RPolarsExpr$)", method, r"(
@@ -203,10 +204,10 @@ add_expr_methods_to_series = function() {
       # instead using sys.call/do.call
       scall = as.list(sys.call()[-1])
 
-      # Override `self` in `$.RPolarsExpr`
       df = self$to_frame()
       col_name = self$name
       self = pl$col(col_name)
+      # Override `self` in `$.RPolarsExpr`
       environment(f) = environment()
       expr = do.call(f, scall)
 

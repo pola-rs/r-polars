@@ -557,10 +557,10 @@
       [175] "sum"               "tail"              "tan"              
       [178] "tanh"              "to_frame"          "to_lit"           
       [181] "to_physical"       "to_r"              "to_r_list"        
-      [184] "to_r_vector"       "to_series"         "to_struct"        
-      [187] "to_vector"         "top_k"             "unique"           
-      [190] "unique_counts"     "upper_bound"       "value_counts"     
-      [193] "var"               "xor"              
+      [184] "to_r_vector"       "to_struct"         "to_vector"        
+      [187] "top_k"             "unique"            "unique_counts"    
+      [190] "upper_bound"       "value_counts"      "var"              
+      [193] "xor"              
 
 ---
 
