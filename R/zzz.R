@@ -106,7 +106,6 @@ replace_private_with_pub_methods(RPolarsSeries, "^Series_")
 ## Add methods from Expr
 add_expr_methods_to_series()
 
-
 # RThreadHandle
 replace_private_with_pub_methods(RPolarsRThreadHandle, "^RThreadHandle_")
 

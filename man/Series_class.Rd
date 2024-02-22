@@ -64,8 +64,12 @@ of the Series and width of the Series (always 1).
 }
 }
 
-\section{Sub-namespaces}{
+\section{Expression methods}{
 
+
+Series stores most of all \link[=Expr_class]{Expr} methods.
+
+Some of these are stored in sub-namespaces.
 \subsection{arr}{
 
 \verb{$arr} stores all array related methods.
@@ -84,14 +88,6 @@ of the Series and width of the Series (always 1).
 \subsection{dt}{
 
 \verb{$dt} stores all temporal related methods.
-}
-
-\subsection{expr}{
-
-\verb{$expr} works as a workaround for applying arbitrary \link[=Expr_class]{Expr} methods
-to the Series class object, which means that this is a shortcut
-works like \verb{pl$select(s)$select(pl$col(s$name)$<Expr method>)$to_series(0)}.
-This subnamespace is experimental.
 }
 
 \subsection{list}{
@@ -120,7 +116,10 @@ s$shape
 # show flags
 s$sort()$flags
 
-# use subnamespaces
+# use Expr method
+s$cos()
+
+# use Expr method in subnamespaces
 pl$Series(list(3:1, 1:2, NULL))$list$first()
 pl$Series(c(1, NA, 2))$str$concat("-")
 
