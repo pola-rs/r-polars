@@ -568,3 +568,8 @@ test_that("n_unique", {
   expect_identical(pl$Series(x)$n_unique(), 6)
   expect_identical(pl$Series(c())$n_unique(), 0)
 })
+
+
+test_that("method from Expr", {
+  expect_equal(pl$Series(1:3)$cos()$to_r(), cos(1:3))
+})

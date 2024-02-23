@@ -54,8 +54,11 @@
 #' `$shape` returns a numeric vector of length two with the number of length
 #' of the Series and width of the Series (always 1).
 #'
+#' @section Expression methods:
 #'
-#' @section Sub-namespaces:
+#' Series stores most of all [Expr][Expr_class] methods.
+#'
+#' Some of these are stored in sub-namespaces.
 #'
 #' ## arr
 #'
@@ -72,13 +75,6 @@
 #' ## dt
 #'
 #' `$dt` stores all temporal related methods.
-#'
-#' ## expr
-#'
-#' `$expr` works as a workaround for applying arbitrary [Expr][Expr_class] methods
-#' to the Series class object, which means that this is a shortcut
-#' works like `pl$select(s)$select(pl$col(s$name)$<Expr method>)$to_series(0)`.
-#' This subnamespace is experimental.
 #'
 #' ## list
 #'
@@ -104,7 +100,10 @@
 #' # show flags
 #' s$sort()$flags
 #'
-#' # use subnamespaces
+#' # use Expr method
+#' s$cos()
+#'
+#' # use Expr method in subnamespaces
 #' pl$Series(list(3:1, 1:2, NULL))$list$first()
 #' pl$Series(c(1, NA, 2))$str$concat("-")
 #'
@@ -150,50 +149,73 @@ Series_name = method_as_active_binding(\() .pr$Series$name(self))
 Series_shape = method_as_active_binding(\() .pr$Series$shape(self))
 
 
-# Sub-namespaces
+## Methods from Expr
 
-Series_expr = method_as_active_binding(function() {
-  df = pl$select(self) # make a DataFrame from Series
-  self = pl$col(self$name) # override self to column named by series
+#' Function to add Expr methods to Series
+#'
+#' Executed in zzz.R
+#' @noRd
+add_expr_methods_to_series = function() {
+  methods_exclude = c(
+    "agg_groups",
+    "to_series"
+  )
+  methods_diff = setdiff(ls(RPolarsExpr), ls(RPolarsSeries))
 
-  # loop over each expression function
-  lapply(
-    RPolarsExpr,
-    \(f) { # f is orignial Expr method
-
-      # point back to env with above defined 'df' and 'self'
-      environment(f) = parent.frame(2L)
-
+  for (method in setdiff(methods_diff, methods_exclude)) {
+    if (!inherits(RPolarsExpr[[method]], "property")) {
       # make a modified Expr function
-      new_f = \() {
+      new_f = eval(parse(text = paste0(r"(function() {
+        f = RPolarsExpr$)", method, r"(
+
         # get the future args the new function will be called with
         # not using ... as this will erase tooltips and defaults
         # instead using sys.call/do.call
         scall = as.list(sys.call()[-1])
 
-        x = do.call(f, scall)
+        df = self$to_frame()
+        col_name = self$name
+        self = pl$col(col_name)
+        # Override `self` in `$.RPolarsExpr`
+        environment(f) = environment()
+        expr = do.call(f, scall)
+
         pcase(
-          inherits(x, "RPolarsExpr"), df$select(x)$to_series(0),
-          or_else = x
+          inherits(expr, "RPolarsExpr"), df$select(expr)$to_series(0),
+          or_else = expr
         )
-      }
-
-      # set new_f to have the same formals arguments
-      formals(new_f) = formals(f)
-      class(new_f) = c("SeriesExpr", "function") #
-      new_f
+      })")))
+      # set new_method to have the same formals arguments
+      formals(new_f) = formals(method, RPolarsExpr)
+      RPolarsSeries[[method]] <<- new_f
     }
-  )
-})
+  }
+}
 
+
+## Sub-namespaces
 
 #' Make sub namespace of Series from Expr sub namespace
 #' @noRd
 series_make_sub_ns = function(pl_series, .expr_make_sub_ns_fn) {
-  df = pl$select(pl_series)
-  arr = .expr_make_sub_ns_fn(pl$col(pl_series$name))
-  lapply(arr, \(f) {
-    \(...) df$select(f(...))$to_series(0)
+  df = pl_series$to_frame()
+  # Override `self` in `$.RPolarsExpr`
+  self = pl$col(pl_series$name) # nolint: object_usage_linter
+
+  fns = .expr_make_sub_ns_fn(pl$col(pl_series$name))
+  lapply(fns, \(f) {
+    environment(f) = parent.frame(2L)
+    new_f = function() {
+      scall = as.list(sys.call()[-1])
+      expr = do.call(f, scall)
+      pcase(
+        inherits(expr, "RPolarsExpr"), df$select(expr)$to_series(0),
+        or_else = expr
+      )
+    }
+
+    formals(new_f) = formals(f)
+    new_f
   })
 }
 

@@ -236,7 +236,7 @@ pl_last = function(column = NULL) { #-> Expr | Any:
 #' pl$head(df$get_column("a"), 2)
 pl_head = function(column, n = 10) { #-> Expr | Any:
   pcase(
-    inherits(column, "RPolarsSeries"), result(column$expr$head(n)),
+    inherits(column, "RPolarsSeries"), result(column$head(n)),
     is.character(column), result(pl$col(column)$head(n)),
     inherits(column, "RPolarsExpr"), result(column$head(n)),
     or_else = Err(paste0(
@@ -271,7 +271,7 @@ pl_head = function(column, n = 10) { #-> Expr | Any:
 #' pl$tail(df$get_column("a"), 2)
 pl_tail = function(column, n = 10) { #-> Expr | Any:
   pcase(
-    inherits(column, "RPolarsSeries"), result(column$expr$tail(n)),
+    inherits(column, "RPolarsSeries"), result(column$tail(n)),
     is.character(column), result(pl$col(column)$tail(n)),
     inherits(column, "RPolarsExpr"), result(column$tail(n)),
     or_else = Err(paste0(
