@@ -101,58 +101,99 @@ ChainedThen_otherwise = function(statement) {
 }
 
 
+## Methods from Expr
+
+#' Function to add Expr methods to Then and ChainedThen
+#'
+#' Executed in zzz.R
+#' @noRd
+add_expr_methods_to_then = function(then_like_class) {
+  methods_exclude = c()
+  methods_diff = setdiff(ls(RPolarsExpr), ls(then_like_class))
+
+  for (method in setdiff(methods_diff, methods_exclude)) {
+    if (!inherits(RPolarsExpr[[method]], "property")) {
+      # make a modified Expr function
+      new_f = eval(parse(text = paste0(r"(function() {
+        f = RPolarsExpr$)", method, r"(
+
+        # get the future args the new function will be called with
+        # not using ... as this will erase tooltips and defaults
+        # instead using sys.call/do.call
+        scall = as.list(sys.call()[-1])
+
+        self = self$otherwise(pl$lit(NULL))
+        # Override `self` in `$.RPolarsExpr`
+        environment(f) = environment()
+
+        do.call(f, scall)
+      })")))
+      # set new_method to have the same formals arguments
+      formals(new_f) = formals(method, RPolarsExpr)
+      then_like_class[[method]] = new_f
+    }
+  }
+}
+
+### Sub namespaces
+
+#' Make sub namespace of Then from Expr sub namespace
+#' @noRd
+then_make_sub_ns = function(then_like_object, .expr_make_sub_ns_fn) {
+  arr = .expr_make_sub_ns_fn(then_like_object$otherwise(pl$lit(NULL)))
+  lapply(arr, \(f) {
+    \(...) f(...)
+  })
+}
+
+
+Then_arr = ChainedThen_arr = method_as_active_binding(\() then_make_sub_ns(self, expr_arr_make_sub_ns))
+
+Then_bin = ChainedThen_bin = method_as_active_binding(\() then_make_sub_ns(self, expr_bin_make_sub_ns))
+
+Then_cat = ChainedThen_cat = method_as_active_binding(\() then_make_sub_ns(self, expr_cat_make_sub_ns))
+
+Then_dt = ChainedThen_dt = method_as_active_binding(\() then_make_sub_ns(self, expr_dt_make_sub_ns))
+
+Then_list = ChainedThen_list = method_as_active_binding(\() then_make_sub_ns(self, expr_list_make_sub_ns))
+
+Then_meta = ChainedThen_meta = method_as_active_binding(\() then_make_sub_ns(self, expr_meta_make_sub_ns))
+
+Then_name = ChainedThen_name = method_as_active_binding(\() then_make_sub_ns(self, expr_name_make_sub_ns))
+
+Then_str = ChainedThen_str = method_as_active_binding(\() then_make_sub_ns(self, expr_str_make_sub_ns))
+
+Then_struct = ChainedThen_struct = method_as_active_binding(\() then_make_sub_ns(self, expr_struct_make_sub_ns))
+
+
 ##  -------- print methods ---------
 
-#' print When
-#' @param x When object
-#' @param ... not used
 #' @noRd
-#'
-#' @return self
 #' @export
-#' @examples
-#' print(pl$when(pl$col("a") > 2))
 print.RPolarsWhen = function(x, ...) {
   print("When")
   invisible(x)
 }
 
-#' print Then
-#' @param x When object
-#' @param ... not used
-#' @keywords WhenThen internal
-#' @return self
+
+#' @noRd
 #' @export
-#' @examples
-#' print(pl$when(pl$col("a") > 2)$then(pl$lit("more than two")))
 print.RPolarsThen = function(x, ...) {
   print("Then")
   invisible(x)
 }
 
 
-#' print ChainedWhen
-#' @param x ChainedWhen object
-#' @param ... not used
-#' @keywords WhenThen internal
-#' @return self
+#' @noRd
 #' @export
-#' @examples
-#' #
-#' print(pl$when(pl$col("a") > 2)$then(pl$lit("more than two"))$when(pl$col("b") < 5))
 print.RPolarsChainedWhen = function(x, ...) {
   print("ChainedWhen")
   invisible(x)
 }
 
-#' print ChainedThen
-#' @param x ChainedThen object
-#' @param ... not used
-#' @keywords WhenThen internal
-#' @return self
+
+#' @noRd
 #' @export
-#' @examples
-#' print(pl$when(pl$col("a") > 2)$then(pl$lit("more than two"))$when(pl$col("b") < 5))
 print.RPolarsChainedThen = function(x, ...) {
   print("ChainedThen")
   invisible(x)
@@ -161,49 +202,28 @@ print.RPolarsChainedThen = function(x, ...) {
 
 ##  -------- DollarNames methods ---------
 
-#' @title auto complete $-access into a polars object
-#' @description called by the interactive R session internally
-#' @param x When
-#' @param pattern code-stump as string to auto-complete
-#' @return char vec
 #' @export
-#' @inherit .DollarNames.RPolarsDataFrame return
 #' @noRd
 .DollarNames.RPolarsWhen = function(x, pattern = "") {
   paste0(ls(RPolarsWhen, pattern = pattern), completion_symbols$method)
 }
 
-#' @title auto complete $-access into a polars object
-#' @description called by the interactive R session internally
-#' @param x Then
-#' @param pattern code-stump as string to auto-complete
-#' @return char vec
+
 #' @export
-#' @inherit .DollarNames.RPolarsDataFrame return
 #' @noRd
 .DollarNames.RPolarsThen = function(x, pattern = "") {
   paste0(ls(RPolarsThen, pattern = pattern), completion_symbols$method)
 }
 
-#' @title auto complete $-access into a polars object
-#' @description called by the interactive R session internally
-#' @param x ChainedWhen
-#' @param pattern code-stump as string to auto-complete
-#' @return char vec
+
 #' @export
-#' @inherit .DollarNames.RPolarsDataFrame return
 #' @noRd
 .DollarNames.RPolarsChainedThen = function(x, pattern = "") {
   paste0(ls(RPolarsChainedThen, pattern = pattern), completion_symbols$method)
 }
 
-#' @title auto complete $-access into a polars object
-#' @description called by the interactive R session internally
-#' @param x ChainedWhen
-#' @param pattern code-stump as string to auto-complete
-#' @return char vec
+
 #' @export
-#' @inherit .DollarNames.RPolarsDataFrame return
 #' @noRd
 .DollarNames.RPolarsChainedWhen = function(x, pattern = "") {
   paste0(ls(RPolarsChainedWhen, pattern = pattern), completion_symbols$method)
