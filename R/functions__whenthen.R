@@ -1,31 +1,35 @@
-#' Make a then-when-otherwise expression
+#' Make a when-then-otherwise expression
 #'
-#' `when-then-otherwise` is similar to R [`ifelse()`]. This has to start with
-#' `pl$when(<condition>)$then(<value if condition>)`. From there, it can:
-#' * be chained to an `$otherwise()` statement that specifies the Expr to apply
-#'   to the rows where the condition is `FALSE`;
-#' * or be chained to other `$when()$then()` to specify more cases, and then use
-#'   `$otherwise()` when you arrive at the end of your chain.
-#' Note that one difference with the Python implementation is that we *must*
-#' end the chain with an `$otherwise()` statement.
+#' `when-then-otherwise` is similar to R [`ifelse()`]. Always initiated by a
+#' `pl$when(<condition>)$then(<value if condition>)`, and optionally followed
+#' by chaining one or more `$when(<condition>)$then(<value if condition>)`
+#' statements.
 #'
-#' If you want to use the class of those `when-then-otherwise` statement, note
-#' that there are 6 different classes corresponding to the different steps:
+#' Chained when-then operations should be read like `if, else if, else if, ...` in R,
+#' not as `if, if, if, ...`, i.e. the first condition that evaluates to `true` will
+#' be picked.
 #'
-#' * `pl$when()`returns a `When` object,
-#' * `pl$then()`returns a `Then` object,
-#' * `<Then>$otherwise()`returns an [Expression][Expr_class] object,
-#' * `<Then>$when()`returns a `ChainedWhen` object,
-#' * `<ChainedWhen>$then()`returns a `ChainedThen` object,
-#' * `<ChainedThen>$otherwise()`returns an [Expression][Expr_class] object.
+#' If none of the conditions are `true`, an optional
+#' `$otherwise(<value if all statements are false>)` can be appended at the end.
+#' If not appended, and none of the conditions are `true`, `null` will be returned.
 #'
+#' @section Expression methods:
+#' `RPolarsThen` objects and `RPolarsChainedThen` objects (returned by `$then`)
+#' stores the same methods as [Expr][Expr_class].
 #' @name Expr_when_then_otherwise
-#' @param ... Expr or something coercible to an Expr into a boolean mask to
-#'   branch by.
-#' @param statement Expr or something coercible to an Expr value to insert in
-#'   when() or otherwise(). Strings interpreted as column.
-#' @return an polars object, see details.
+#' @param ... [Expr][Expr_class] or something coercible to an Expr into a boolean mask to
+#' branch by.
+#' @param statement [Expr][Expr_class] or something coercible to
+#' an [Expr][Expr_class] value to insert in `then()` or `otherwise()`.
+#' Strings interpreted as column.
+#' @return
+#' - `pl$when()` returns a `When` object
+#' - `<When>$then()` returns a `Then` object
+#' - `<Then>$when()` returns a `ChainedWhen` object
+#' - `<ChainedWhen>$then()` returns a `ChainedThen` object
+#' - `$otherwise()` returns an [Expr][Expr_class] object.
 #' @aliases when then otherwise When Then ChainedWhen ChainedThen
+#' RPolarsWhen RPolarsThen RPolarsChainedWhen RPolarsChainedThen
 #' @examples
 #' df = pl$DataFrame(foo = c(1, 3, 4), bar = c(3, 4, 0))
 #'
@@ -42,6 +46,13 @@
 #'   $when(pl$col("bar") > 2)
 #'   $then(4)
 #'   $otherwise(-1)
+#' )
+#'
+#' # The `$otherwise` at the end is optional.
+#' # If left out, any rows where none of the `$when` expressions are evaluate to `true`,
+#' # are set to `null`
+#' df$with_columns(
+#'   val = pl$when(pl$col("foo") > 2)$then(1)
 #' )
 #'
 #' # Pass multiple predicates, each of which must be met:
@@ -168,7 +179,6 @@ Then_struct = ChainedThen_struct = method_as_active_binding(\() then_make_sub_ns
 
 ##  -------- print methods ---------
 
-#' @noRd
 #' @export
 print.RPolarsWhen = function(x, ...) {
   print("When")
@@ -176,7 +186,6 @@ print.RPolarsWhen = function(x, ...) {
 }
 
 
-#' @noRd
 #' @export
 print.RPolarsThen = function(x, ...) {
   print("Then")
@@ -184,7 +193,6 @@ print.RPolarsThen = function(x, ...) {
 }
 
 
-#' @noRd
 #' @export
 print.RPolarsChainedWhen = function(x, ...) {
   print("ChainedWhen")
@@ -192,7 +200,6 @@ print.RPolarsChainedWhen = function(x, ...) {
 }
 
 
-#' @noRd
 #' @export
 print.RPolarsChainedThen = function(x, ...) {
   print("ChainedThen")
@@ -203,28 +210,24 @@ print.RPolarsChainedThen = function(x, ...) {
 ##  -------- DollarNames methods ---------
 
 #' @export
-#' @noRd
 .DollarNames.RPolarsWhen = function(x, pattern = "") {
   paste0(ls(RPolarsWhen, pattern = pattern), completion_symbols$method)
 }
 
 
 #' @export
-#' @noRd
 .DollarNames.RPolarsThen = function(x, pattern = "") {
   paste0(ls(RPolarsThen, pattern = pattern), completion_symbols$method)
 }
 
 
 #' @export
-#' @noRd
 .DollarNames.RPolarsChainedThen = function(x, pattern = "") {
   paste0(ls(RPolarsChainedThen, pattern = pattern), completion_symbols$method)
 }
 
 
 #' @export
-#' @noRd
 .DollarNames.RPolarsChainedWhen = function(x, pattern = "") {
   paste0(ls(RPolarsChainedWhen, pattern = pattern), completion_symbols$method)
 }
