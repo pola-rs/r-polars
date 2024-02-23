@@ -2,6 +2,8 @@
 
 ## Polars R Package (development version)
 
+## Polars R Package 0.14.1
+
 ### Breaking changes
 
 -   Since most of the methods of `Expr` are now available for `Series`, the
