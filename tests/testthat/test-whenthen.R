@@ -112,3 +112,31 @@ test_that("when-then multiple predicates", {
 test_that("named input is not allowed in when", {
   expect_error(pl$when(foo = 1), "Detected a named input")
 })
+
+test_that("$otherwise is optional", {
+  expect_s3_class(
+    pl$when("a")$then("b")$alias("foo"),
+    "RPolarsExpr"
+  )
+  expect_s3_class(
+    pl$when("a")$then("b")$when("c")$then("d")$alias("foo"),
+    "RPolarsExpr"
+  )
+
+  df = pl$DataFrame(a = 1L:4L)
+
+  expect_equal(
+    df$select(
+      b = pl$when(pl$col("a") > 2)$then(pl$lit("big"))
+    ) |>
+      as.data.frame(),
+    data.frame(b = c(NA, NA, "big", "big"))
+  )
+  expect_equal(
+    df$select(
+      b = pl$when(pl$col("a") > 3)$then(pl$lit("bigger"))$when(pl$col("a") > 2)$then(pl$lit("big"))
+    ) |>
+      as.data.frame(),
+    data.frame(b = c(NA, NA, "big", "bigger"))
+  )
+})
