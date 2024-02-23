@@ -149,7 +149,7 @@ Series_name = method_as_active_binding(\() .pr$Series$name(self))
 Series_shape = method_as_active_binding(\() .pr$Series$shape(self))
 
 
-# Sub-namespaces
+## Methods from Expr
 
 #' Function to add Expr methods to Series
 #'
@@ -193,13 +193,29 @@ add_expr_methods_to_series = function() {
 }
 
 
+## Sub-namespaces
+
 #' Make sub namespace of Series from Expr sub namespace
 #' @noRd
 series_make_sub_ns = function(pl_series, .expr_make_sub_ns_fn) {
   df = pl_series$to_frame()
-  arr = .expr_make_sub_ns_fn(pl$col(pl_series$name))
-  lapply(arr, \(f) {
-    \(...) df$select(f(...))$to_series(0)
+  # Override `self` in `$.RPolarsExpr`
+  self = pl$col(pl_series$name) # nolint: object_usage_linter
+
+  fns = .expr_make_sub_ns_fn(pl$col(pl_series$name))
+  lapply(fns, \(f) {
+    environment(f) = parent.frame(2L)
+    new_f = function() {
+      scall = as.list(sys.call()[-1])
+      expr = do.call(f, scall)
+      pcase(
+        inherits(expr, "RPolarsExpr"), df$select(expr)$to_series(0),
+        or_else = expr
+      )
+    }
+
+    formals(new_f) = formals(f)
+    new_f
   })
 }
 
