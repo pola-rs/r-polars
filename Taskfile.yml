@@ -4,6 +4,7 @@ env:
   NOT_CRAN: "true"
   LIBR_POLARS_BUILD: "true"
   LIBR_POLARS_FEATURES: "full_features"
+  VIRTUAL_ENV: "{{.VENV_DIR}}"
 
 vars:
   PACKAGE_NAME: polars
@@ -78,9 +79,9 @@ tasks:
     deps:
       - setup-venv
     cmds:
-      - "{{.VENV_BIN}}/python -m pip install --upgrade pip"
-      - "{{.VENV_BIN}}/python -m pip install --upgrade mkdocs"
-      - "{{.VENV_BIN}}/python -m pip install --upgrade mkdocs-material"
+      - "{{.VENV_BIN}}/python -m pip install --upgrade uv"
+      - "{{.VENV_BIN}}/uv pip install --upgrade mkdocs"
+      - "{{.VENV_BIN}}/uv pip install --upgrade mkdocs-material"
 
   build-lib-sums:
     desc: Build lib-sums.tsv.
