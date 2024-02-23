@@ -1,7 +1,7 @@
 test_that("When-class", {
-  expect_true(inherits(pl$when("columnname"), "RPolarsWhen"))
-  expect_true(inherits(pl$when(TRUE), "RPolarsWhen"))
-  expect_true(inherits(pl$when(1:4), "RPolarsWhen"))
+  expect_s3_class(pl$when("columnname"), "RPolarsWhen")
+  expect_s3_class(pl$when(TRUE), "RPolarsWhen")
+  expect_s3_class(pl$when(1:4), "RPolarsWhen")
 
   # string "a" is interpreted as column
   e_actual = pl$when("a")$then("b")$otherwise("c")
@@ -24,10 +24,10 @@ test_that("When-class", {
 
 
 test_that("Then-class", {
-  expect_true(inherits(pl$when("a")$then("b"), "RPolarsThen"))
-  expect_true(inherits(pl$when(TRUE)$then(FALSE), "RPolarsThen"))
-  expect_true(inherits(pl$when(TRUE)$then(FALSE)$when(NA), "RPolarsChainedWhen"))
-  expect_true(inherits(pl$when(TRUE)$then(FALSE)$otherwise(NA), "RPolarsExpr"))
+  expect_s3_class(pl$when("a")$then("b"), "RPolarsThen")
+  expect_s3_class(pl$when(TRUE)$then(FALSE), "RPolarsThen")
+  expect_s3_class(pl$when(TRUE)$then(FALSE)$when(NA), "RPolarsChainedWhen")
+  expect_s3_class(pl$when(TRUE)$then(FALSE)$otherwise(NA), "RPolarsExpr")
 
   ctx = result(pl$when("a")$then(complex(2)))$err$contexts()
   expect_identical(
@@ -42,11 +42,11 @@ test_that("Then-class", {
 
 
 test_that("Chained", {
-  expect_true(inherits(pl$when("a")$then("b")$when("c"), "RPolarsChainedWhen"))
-  expect_true(inherits(pl$when(TRUE)$then(FALSE)$when(TRUE), "RPolarsChainedWhen"))
+  expect_s3_class(pl$when("a")$then("b")$when("c"), "RPolarsChainedWhen")
+  expect_s3_class(pl$when(TRUE)$then(FALSE)$when(TRUE), "RPolarsChainedWhen")
   cw = pl$when("a")$then("b")$when("c")
-  expect_true(inherits(cw$then("a"), "RPolarsChainedThen"))
-  expect_true(inherits(cw$then("d")$otherwise("e"), "RPolarsExpr"))
+  expect_s3_class(cw$then("a"), "RPolarsChainedThen")
+  expect_s3_class(cw$then("d")$otherwise("e"), "RPolarsExpr")
 })
 
 
