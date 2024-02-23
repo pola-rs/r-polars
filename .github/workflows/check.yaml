@@ -18,6 +18,7 @@ on:
     branches:
       - main
     paths:
+      - .github/actions/setup/action.yaml
       - .github/workflows/check.yaml
       - .Rbuildignore
       - R/**
