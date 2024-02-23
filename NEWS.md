@@ -2,6 +2,11 @@
 
 ## Polars R Package (development version)
 
+### New features
+
+-   In the when-then-otherwise expressions, the last `$otherwise()` is now optional,
+    as in Python Polars (#836).
+
 ## Polars R Package 0.14.1
 
 ### Breaking changes
