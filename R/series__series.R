@@ -163,30 +163,32 @@ add_expr_methods_to_series = function() {
   methods_diff = setdiff(ls(RPolarsExpr), ls(RPolarsSeries))
 
   for (method in setdiff(methods_diff, methods_exclude)) {
-    # make a modified Expr function
-    new_f = eval(parse(text = paste0(r"(function() {
-      f = RPolarsExpr$)", method, r"(
+    if (!inherits(RPolarsExpr[[method]], "property")) {
+      # make a modified Expr function
+      new_f = eval(parse(text = paste0(r"(function() {
+        f = RPolarsExpr$)", method, r"(
 
-      # get the future args the new function will be called with
-      # not using ... as this will erase tooltips and defaults
-      # instead using sys.call/do.call
-      scall = as.list(sys.call()[-1])
+        # get the future args the new function will be called with
+        # not using ... as this will erase tooltips and defaults
+        # instead using sys.call/do.call
+        scall = as.list(sys.call()[-1])
 
-      df = self$to_frame()
-      col_name = self$name
-      self = pl$col(col_name)
-      # Override `self` in `$.RPolarsExpr`
-      environment(f) = environment()
-      expr = do.call(f, scall)
+        df = self$to_frame()
+        col_name = self$name
+        self = pl$col(col_name)
+        # Override `self` in `$.RPolarsExpr`
+        environment(f) = environment()
+        expr = do.call(f, scall)
 
-      pcase(
-        inherits(expr, "RPolarsExpr"), df$select(expr)$to_series(0),
-        or_else = expr
-      )
-    })")))
-    # set new_method to have the same formals arguments
-    formals(new_f) = formals(method, RPolarsExpr)
-    RPolarsSeries[[method]] <<- new_f
+        pcase(
+          inherits(expr, "RPolarsExpr"), df$select(expr)$to_series(0),
+          or_else = expr
+        )
+      })")))
+      # set new_method to have the same formals arguments
+      formals(new_f) = formals(method, RPolarsExpr)
+      RPolarsSeries[[method]] <<- new_f
+    }
   }
 }
 
