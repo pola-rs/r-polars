@@ -5,6 +5,8 @@
 \alias{as_polars_series.default}
 \alias{as_polars_series.RPolarsSeries}
 \alias{as_polars_series.RPolarsExpr}
+\alias{as_polars_series.RPolarsThen}
+\alias{as_polars_series.RPolarsChainedThen}
 \alias{as_polars_series.POSIXlt}
 \alias{as_polars_series.data.frame}
 \alias{as_polars_series.vctrs_rcrd}
@@ -21,6 +23,10 @@ as_polars_series(x, name = NULL, ...)
 \method{as_polars_series}{RPolarsSeries}(x, name = NULL, ...)
 
 \method{as_polars_series}{RPolarsExpr}(x, name = NULL, ...)
+
+\method{as_polars_series}{RPolarsThen}(x, name = NULL, ...)
+
+\method{as_polars_series}{RPolarsChainedThen}(x, name = NULL, ...)
 
 \method{as_polars_series}{POSIXlt}(x, name = NULL, ...)
 

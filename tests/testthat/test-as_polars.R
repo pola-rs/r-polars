@@ -129,6 +129,8 @@ if (requireNamespace("arrow", quietly = TRUE) && requireNamespace("nanoarrow", q
       "vector", 1, "",
       "Series", pl$Series(1, "foo"), "foo",
       "Expr", pl$lit(1)$alias("foo"), "foo",
+      "Then", pl$when(TRUE)$then(1), "literal",
+      "ChainedThen", pl$when(FALSE)$then(0)$when(TRUE)$then(1), "literal",
       "list", list(1:4), "",
       "data.frame", data.frame(x = 1, y = letters[1]), "",
       "POSIXlt", as.POSIXlt("1900-01-01"), "",
