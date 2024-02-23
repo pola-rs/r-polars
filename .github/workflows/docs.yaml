@@ -24,6 +24,7 @@ on:
     branches:
       - main
     paths:
+      - .github/actions/setup/action.yaml
       - .github/workflows/docs.yaml
       - altdoc/**
       - man/**
