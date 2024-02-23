@@ -7,6 +7,7 @@ on:
     branches:
       - main
     paths:
+      - .github/actions/setup/action.yaml
       - .github/workflows/release-lib.yaml
       - src/rust/**
       - src/Makevars*

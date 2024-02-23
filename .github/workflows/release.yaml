@@ -8,6 +8,7 @@ on:
     branches:
       - main
     paths:
+      - .github/actions/setup/action.yaml
       - .github/workflows/release.yaml
       - src/Makevars*
   workflow_dispatch:
