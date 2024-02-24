@@ -11,7 +11,7 @@
 #' @examples
 #' polars_info()
 #'
-#' polars_info()$rust_polars
+#' polars_info()$versions
 #'
 #' polars_info()$features$nightly
 polars_info = function() {
