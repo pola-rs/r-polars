@@ -312,10 +312,6 @@ impl RPolarsLazyFrame {
         Ok(RPolarsLazyFrame(self.clone().0.select(exprs)))
     }
 
-    fn limit(&self, n: Robj) -> Result<Self, String> {
-        Ok(self.0.clone().limit(robj_to!(u32, n)?).into())
-    }
-
     fn tail(&self, n: Robj) -> Result<RPolarsLazyFrame, String> {
         Ok(RPolarsLazyFrame(self.0.clone().tail(robj_to!(u32, n)?)))
     }

@@ -2,22 +2,29 @@
 % Please edit documentation in R/lazyframe__lazy.R
 \name{LazyFrame_head}
 \alias{LazyFrame_head}
-\title{Head of a LazyFrame}
+\title{Get the first \code{n} rows.}
 \usage{
-LazyFrame_head(n)
+LazyFrame_head(n = 5L)
 }
 \arguments{
-\item{n}{Positive number not larger than 2^32.}
+\item{n}{Number of rows to return.}
 }
 \value{
 A new \code{LazyFrame} object with applied filter.
 }
 \description{
-Get the first \code{n} rows of the query.
+A shortcut for \code{\link[=LazyFrame_slice]{$slice(0, n)}}.
+Consider using the \code{\link[=LazyFrame_fetch]{$fetch()}} method if you want to test your query.
+The \code{\link[=LazyFrame_fetch]{$fetch()}} operation will load the first \code{n} rows at
+the scan level, whereas \verb{$head()} is applied at the end.
 }
 \details{
-Any number will converted to u32. Negative raises error.
+\verb{$limit()} is an alias for \verb{$head()}.
 }
 \examples{
-pl$LazyFrame(mtcars)$head(4)$collect()
+lf = pl$LazyFrame(a = 1:6, b = 7:12)
+
+lf$head()$collect()
+
+lf$head(2)$collect()
 }

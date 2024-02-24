@@ -844,23 +844,30 @@ LazyFrame_sink_ndjson = function(
 }
 
 
-#' @title Limit a LazyFrame
-#' @inherit DataFrame_limit description params details
-#' @return A `LazyFrame`
-#' @examples pl$LazyFrame(mtcars)$limit(4)$collect()
-LazyFrame_limit = function(n) {
-  unwrap(.pr$LazyFrame$limit(self, n), "in $limit():")
-}
-
-#' @title Head of a LazyFrame
-#' @inherit DataFrame_head description params details
+#' Get the first `n` rows.
 #'
-#' @examples pl$LazyFrame(mtcars)$head(4)$collect()
+#' A shortcut for [`$slice(0, n)`][LazyFrame_slice].
+#' Consider using the [`$fetch()`][LazyFrame_fetch] method if you want to test your query.
+#' The [`$fetch()`][LazyFrame_fetch] operation will load the first `n` rows at
+#' the scan level, whereas `$head()` is applied at the end.
+#'
+#' `$limit()` is an alias for `$head()`.
+#' @param n Number of rows to return.
+#' @inherit LazyFrame_slice return
+#' @examples
+#' lf = pl$LazyFrame(a = 1:6, b = 7:12)
+#'
+#' lf$head()$collect()
+#'
+#' lf$head(2)$collect()
 #' @return A new `LazyFrame` object with applied filter.
-
-LazyFrame_head = function(n) {
-  unwrap(.pr$LazyFrame$limit(self, n), "in $head():")
+LazyFrame_head = function(n = 5L) {
+  result(self$slice(0, n)) |>
+    unwrap("in $head():")
 }
+
+LazyFrame_limit = LazyFrame_head
+
 
 #' @title Get the first row of a LazyFrame
 #' @keywords DataFrame
@@ -1033,6 +1040,7 @@ LazyFrame_reverse = use_extendr_wrapper
 #' @title Slice
 #' @description Get a slice of the LazyFrame.
 #' @inheritParams DataFrame_slice
+#' @return A [LazyFrame][LazyFrame_class]
 #' @examples
 #' pl$LazyFrame(mtcars)$slice(2, 4)$collect()
 #' pl$LazyFrame(mtcars)$slice(30)$collect()
@@ -1041,11 +1049,18 @@ LazyFrame_slice = function(offset, length = NULL) {
   unwrap(.pr$LazyFrame$slice(self, offset, length), "in $slice():")
 }
 
-#' @title Tail of a DataFrame
-#' @inherit DataFrame_tail description params details
-#' @return A LazyFrame
-#' @examples pl$LazyFrame(mtcars)$tail(2)$collect()
-LazyFrame_tail = function(n) {
+#' Get the last `n` rows.
+#'
+#' @inherit LazyFrame_head return params
+#' @inheritParams LazyFrame_head
+#' @seealso [`<LazyFrame>$head()`][LazyFrame_head]
+#' @examples
+#' lf = pl$LazyFrame(a = 1:6, b = 7:12)
+#'
+#' lf$tail()$collect()
+#'
+#' lf$tail(2)$collect()
+LazyFrame_tail = function(n = 5L) {
   unwrap(.pr$LazyFrame$tail(self, n), "in $tail():")
 }
 

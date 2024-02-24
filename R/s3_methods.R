@@ -138,32 +138,46 @@
   pl$select(x)[i, , drop = TRUE]
 }
 
-#' Take the first n rows
+#' Return the first or the last `n` parts of an object
 #'
-#' @param x A [DataFrame][DataFrame_class] or [LazyFrame][LazyFrame_class]
-#' @param n Number of rows
-#' @param ... Not used
-#'
+#' They are equivalent to `$head()` and `$tail()` methods.
+#' @param x A polars object
+#' @param n An integer vector of length 1.
+#' Note that negative values are not supported for if `x` is a [LazyFrame][LazyFrame_class].
+#' @param ... Ignored
+#' @return A polars object of the same class as `x`
+#' @seealso
+#' - [`<DataFrame>$head()`][DataFrame_head]
+#' - [`<LazyFrame>$head()`][LazyFrame_head]
+#' - [`<DataFrame>$tail()`][DataFrame_tail]
+#' - [`<LazyFrame>$tail()`][LazyFrame_tail]
+#' - [`<LazyFrame>$fetch()`][LazyFrame_fetch]
 #' @export
 #' @rdname S3_head
-head.RPolarsDataFrame = function(x, n = 6L, ...) x$limit(n = n)
+#' @examples
+#' df = pl$DataFrame(foo = 1:5, bar = 6:10, ham = letters[1:5])
+#' lf = df$lazy()
+#'
+#' head(df, 2)
+#' tail(df, 2)
+#'
+#' head(lf, 2)
+#' tail(lf, 2)
+#'
+#' head(df, -2)
+#' tail(df, -2)
+head.RPolarsDataFrame = function(x, n = 6L, ...) x$head(n = n)
 
 #' @export
 #' @rdname S3_head
 head.RPolarsLazyFrame = head.RPolarsDataFrame
 
-#' Take the last n rows
-#'
-#' @param x A [DataFrame][DataFrame_class] or [LazyFrame][LazyFrame_class]
-#' @param n Number of rows
-#' @param ... Not used
-#'
 #' @export
-#' @rdname S3_tail
+#' @rdname S3_head
 tail.RPolarsDataFrame = function(x, n = 6L, ...) x$tail(n = n)
 
 #' @export
-#' @rdname S3_tail
+#' @rdname S3_head
 tail.RPolarsLazyFrame = tail.RPolarsDataFrame
 
 #' Get the dimensions

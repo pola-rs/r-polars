@@ -12,6 +12,8 @@
 -   In the when-then-otherwise expressions, the last `$otherwise()` is now optional,
     as in Python Polars. If `$otherwise()` is not specified, rows that don't respect
     the condition set in `$when()` will be filled with `null` (#836).
+-   `<DataFrame>$head()` and `<DataFrame>$tail()` methods now support negative
+    row numbers (#840).
 
 ## Polars R Package 0.14.1
 
