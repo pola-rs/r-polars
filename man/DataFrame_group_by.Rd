@@ -25,7 +25,7 @@ the group structure. This structure can then be used by several functions
 }
 \details{
 Within each group, the order of the rows is always preserved,
-regerdless of the \code{maintain_order} argument.
+regardless of the \code{maintain_order} argument.
 }
 \examples{
 df = pl$DataFrame(
@@ -45,6 +45,11 @@ df$group_by(c("a", "b"))$agg(pl$max("c"))
 # Or pass some arguments to group by multiple columns in the same way.
 # Expressions are also accepted.
 df$group_by("a", pl$col("b") \%/\% 2)$agg(
+  pl$col("c")$mean()
+)
+
+# The columns will be renamed to the argument names.
+df$group_by(d = "a", e = pl$col("b") \%/\% 2)$agg(
   pl$col("c")$mean()
 )
 }

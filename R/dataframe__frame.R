@@ -836,7 +836,7 @@ DataFrame_filter = function(...) {
 #' @inheritParams LazyFrame_group_by
 #' @inherit LazyFrame_group_by description params
 #' @details Within each group, the order of the rows is always preserved,
-#' regerdless of the `maintain_order` argument.
+#' regardless of the `maintain_order` argument.
 #' @return [GroupBy][GroupBy_class] (a DataFrame with special groupby methods like `$agg()`)
 #' @examples
 #' df = pl$DataFrame(
@@ -856,6 +856,11 @@ DataFrame_filter = function(...) {
 #' # Or pass some arguments to group by multiple columns in the same way.
 #' # Expressions are also accepted.
 #' df$group_by("a", pl$col("b") %/% 2)$agg(
+#'   pl$col("c")$mean()
+#' )
+#'
+#' # The columns will be renamed to the argument names.
+#' df$group_by(d = "a", e = pl$col("b") %/% 2)$agg(
 #'   pl$col("c")$mean()
 #' )
 DataFrame_group_by = function(..., maintain_order = polars_options()$maintain_order) {

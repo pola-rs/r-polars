@@ -43,5 +43,10 @@ lf$group_by(c("a", "b"))$agg(pl$max("c"))$collect()
 lf$group_by("a", pl$col("b") \%/\% 2)$agg(
   pl$col("c")$mean()
 )$collect()
+
+# The columns will be renamed to the argument names.
+lf$group_by(d = "a", e = pl$col("b") \%/\% 2)$agg(
+  pl$col("c")$mean()
+)$collect()
 }
 \keyword{LazyFrame}

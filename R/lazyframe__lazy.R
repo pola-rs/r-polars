@@ -1140,6 +1140,11 @@ LazyFrame_unique = function(
 #' lf$group_by("a", pl$col("b") %/% 2)$agg(
 #'   pl$col("c")$mean()
 #' )$collect()
+#'
+#' # The columns will be renamed to the argument names.
+#' lf$group_by(d = "a", e = pl$col("b") %/% 2)$agg(
+#'   pl$col("c")$mean()
+#' )$collect()
 LazyFrame_group_by = function(..., maintain_order = polars_options()$maintain_order) {
   .pr$LazyFrame$group_by(self, unpack_list(..., .context = "in $group_by():"), maintain_order) |>
     unwrap("in $group_by():")
