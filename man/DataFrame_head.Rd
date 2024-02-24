@@ -2,20 +2,31 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_head}
 \alias{DataFrame_head}
-\title{Head of a DataFrame}
+\alias{DataFrame_limit}
+\title{Get the first \code{n} rows.}
 \usage{
-DataFrame_head(n)
+DataFrame_head(n = 5L)
+
+DataFrame_limit(n = 5L)
 }
 \arguments{
-\item{n}{Positive number not larger than 2^32.}
+\item{n}{Number of rows to return. If a negative value is passed,
+return all rows except the last \code{\link[=abs]{abs(n)}}.}
 }
 \value{
-DataFrame
+A \link[=DataFrame_class]{DataFrame}
 }
 \description{
-Get the first \code{n} rows of the query.
+Get the first \code{n} rows.
 }
 \details{
-Any number will converted to u32. Negative raises error.
+\verb{$limit()} is an alias for \verb{$head()}.
 }
-\keyword{DataFrame}
+\examples{
+df = pl$DataFrame(foo = 1:5, bar = 6:10, ham = letters[1:5])
+
+df$head(3)
+
+# Pass a negative value to get all rows except the last `abs(n)`.
+df$head(-3)
+}

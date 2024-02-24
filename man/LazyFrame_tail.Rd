@@ -2,22 +2,26 @@
 % Please edit documentation in R/lazyframe__lazy.R
 \name{LazyFrame_tail}
 \alias{LazyFrame_tail}
-\title{Tail of a DataFrame}
+\title{Get the last \code{n} rows.}
 \usage{
-LazyFrame_tail(n)
+LazyFrame_tail(n = 5L)
 }
 \arguments{
-\item{n}{Positive number not larger than 2^32.}
+\item{n}{Number of rows to return.}
 }
 \value{
-A LazyFrame
+A new \code{LazyFrame} object with applied filter.
 }
 \description{
 Get the last \code{n} rows.
 }
-\details{
-Any number will converted to u32. Negative raises error.
-}
 \examples{
-pl$LazyFrame(mtcars)$tail(2)$collect()
+lf = pl$LazyFrame(a = 1:6, b = 7:12)
+
+lf$tail()$collect()
+
+lf$tail(2)$collect()
+}
+\seealso{
+\code{\link[=LazyFrame_head]{<LazyFrame>$head()}}
 }

@@ -472,7 +472,7 @@ test_that("with_columns lazy/eager", {
 })
 
 
-test_that("limit lazy/eager", {
+test_that("head lazy/eager", {
   l = list(
     a = 1:4,
     b = c(.5, 4, 10, 13),
@@ -483,26 +483,30 @@ test_that("limit lazy/eager", {
   rdf = df$to_data_frame()
 
   expect_identical(
-    df$limit(2)$to_data_frame(),
-    rdf[1:2, ]
+    df$head(2)$to_data_frame(),
+    head(rdf, 2)
   )
 
   expect_identical(
-    ldf$limit(2)$collect()$to_data_frame(),
-    rdf[1:2, ]
+    ldf$head(2)$collect()$to_data_frame(),
+    head(rdf, 2)
+  )
+
+  expect_identical(
+    df$head(-1)$to_data_frame(),
+    head(rdf, -1)
   )
 
   # lazy bounds
-  expect_identical(df$limit(0)$to_data_frame(), rdf[integer(), ])
-  expect_error(ldf$limit(-1))
-  expect_error(ldf$limit(2^32))
-  expect_identical(ldf$limit(2^32 - 1)$collect()$to_data_frame(), rdf)
+  expect_identical(df$head(0)$to_data_frame(), rdf[integer(), ])
+  expect_error(ldf$head(-1))
+  expect_error(ldf$head(2^32))
+  expect_identical(ldf$head(2^32 - 1)$collect()$to_data_frame(), rdf)
 
   # eager bounds
-  expect_identical(ldf$limit(0)$collect()$to_data_frame(), rdf[integer(), ])
-  expect_error(df$limit(-1))
-  expect_error(df$limit(2^32))
-  expect_identical(df$limit(2^32 - 1)$to_data_frame(), rdf)
+  expect_identical(ldf$head(0)$collect()$to_data_frame(), rdf[integer(), ])
+  expect_error(df$head(2^32))
+  expect_identical(df$head(2^32 - 1)$to_data_frame(), rdf)
 })
 
 
@@ -618,11 +622,11 @@ test_that("drop_in_place", {
 
 
 test_that("shift   _and_fill", {
-  a = pl$DataFrame(mtcars)$shift(2)$limit(3)$to_data_frame()
+  a = pl$DataFrame(mtcars)$shift(2)$head(3)$to_data_frame()
   for (i in seq_along(a)) {
     expect_equal(is.na(a[[i]]), c(TRUE, TRUE, FALSE))
   }
-  a = pl$DataFrame(mtcars)$shift_and_fill(0., 2.)$limit(3)$to_data_frame()
+  a = pl$DataFrame(mtcars)$shift_and_fill(0., 2.)$head(3)$to_data_frame()
   for (i in seq_along(a)) {
     expect_equal(a[[i]], c(0, 0, mtcars[[i]][1]))
   }

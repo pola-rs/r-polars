@@ -2,20 +2,25 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_tail}
 \alias{DataFrame_tail}
-\title{Tail of a DataFrame}
+\title{Get the last \code{n} rows.}
 \usage{
-DataFrame_tail(n)
+DataFrame_tail(n = 5L)
 }
 \arguments{
-\item{n}{Positive number not larger than 2^32.}
+\item{n}{Number of rows to return. If a negative value is passed,
+return all rows except the first \code{\link[=abs]{abs(n)}}.}
 }
 \value{
-DataFrame
+A \link[=DataFrame_class]{DataFrame}
 }
 \description{
 Get the last \code{n} rows.
 }
-\details{
-Any number will converted to u32. Negative raises error.
+\examples{
+df = pl$DataFrame(foo = 1:5, bar = 6:10, ham = letters[1:5])
+
+df$tail(3)
+
+# Pass a negative value to get all rows except the first `abs(n)`.
+df$tail(-3)
 }
-\keyword{DataFrame}

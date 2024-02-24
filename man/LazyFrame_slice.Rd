@@ -13,6 +13,9 @@ LazyFrame_slice(offset, length = NULL)
 \item{length}{Length of the slice. If \code{NULL} (default), all rows starting at
 the offset will be selected.}
 }
+\value{
+A \link[=LazyFrame_class]{LazyFrame}
+}
 \description{
 Get a slice of the LazyFrame.
 }
