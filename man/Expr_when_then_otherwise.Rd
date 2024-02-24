@@ -90,7 +90,7 @@ df$with_columns(
 )
 
 # The `$otherwise` at the end is optional.
-# If left out, any rows where none of the `$when()` expressions are evaluate to `true`,
+# If left out, any rows where none of the `$when()` expressions are evaluated to `true`,
 # are set to `null`
 df$with_columns(
   val = pl$when(pl$col("foo") > 2)$then(1)
