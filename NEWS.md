@@ -2,6 +2,11 @@
 
 ## Polars R Package (development version)
 
+### Breaking changes
+
+-   Removed `as.list()` for class `RPolarsExpr` as it is a simple wrapper around
+    `list()` (#843).
+
 ### New features
 
 -   In the when-then-otherwise expressions, the last `$otherwise()` is now optional,

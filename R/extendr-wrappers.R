@@ -1238,13 +1238,13 @@ RPolarsSeries$len <- function() .Call(wrap__RPolarsSeries__len, self)
 
 RPolarsSeries$chunk_lengths <- function() .Call(wrap__RPolarsSeries__chunk_lengths, self)
 
-RPolarsSeries$abs <- function() .Call(wrap__RPolarsSeries__abs, self)
-
 RPolarsSeries$alias <- function(name) .Call(wrap__RPolarsSeries__alias, self, name)
 
 RPolarsSeries$all <- function() .Call(wrap__RPolarsSeries__all, self)
 
 RPolarsSeries$any <- function() .Call(wrap__RPolarsSeries__any, self)
+
+RPolarsSeries$append_mut <- function(other) .Call(wrap__RPolarsSeries__append_mut, self, other)
 
 RPolarsSeries$add <- function(other) .Call(wrap__RPolarsSeries__add, self, other)
 
@@ -1255,8 +1255,6 @@ RPolarsSeries$mul <- function(other) .Call(wrap__RPolarsSeries__mul, self, other
 RPolarsSeries$div <- function(other) .Call(wrap__RPolarsSeries__div, self, other)
 
 RPolarsSeries$rem <- function(other) .Call(wrap__RPolarsSeries__rem, self, other)
-
-RPolarsSeries$append_mut <- function(other) .Call(wrap__RPolarsSeries__append_mut, self, other)
 
 RPolarsSeries$map_elements <- function(robj, rdatatype, strict, allow_fail_eval) .Call(wrap__RPolarsSeries__map_elements, self, robj, rdatatype, strict, allow_fail_eval)
 
@@ -1274,13 +1272,7 @@ RPolarsSeries$std <- function(ddof) .Call(wrap__RPolarsSeries__std, self, ddof)
 
 RPolarsSeries$var <- function(ddof) .Call(wrap__RPolarsSeries__var, self, ddof)
 
-RPolarsSeries$ceil <- function() .Call(wrap__RPolarsSeries__ceil, self)
-
-RPolarsSeries$floor <- function() .Call(wrap__RPolarsSeries__floor, self)
-
 RPolarsSeries$print <- function() invisible(.Call(wrap__RPolarsSeries__print, self))
-
-RPolarsSeries$cum_sum <- function(reverse) .Call(wrap__RPolarsSeries__cum_sum, self, reverse)
 
 RPolarsSeries$to_frame <- function() .Call(wrap__RPolarsSeries__to_frame, self)
 
