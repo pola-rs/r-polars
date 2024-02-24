@@ -1118,8 +1118,6 @@ RPolarsLazyFrame$select <- function(exprs) .Call(wrap__RPolarsLazyFrame__select,
 
 RPolarsLazyFrame$select_str_as_lit <- function(exprs) .Call(wrap__RPolarsLazyFrame__select_str_as_lit, self, exprs)
 
-RPolarsLazyFrame$limit <- function(n) .Call(wrap__RPolarsLazyFrame__limit, self, n)
-
 RPolarsLazyFrame$tail <- function(n) .Call(wrap__RPolarsLazyFrame__tail, self, n)
 
 RPolarsLazyFrame$filter <- function(expr) .Call(wrap__RPolarsLazyFrame__filter, self, expr)

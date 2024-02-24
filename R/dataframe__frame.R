@@ -769,44 +769,39 @@ DataFrame_with_columns = function(...) {
 }
 
 
-
-#' Limit a DataFrame
-#' @name DataFrame_limit
-#' @description Take some maximum number of rows.
-#' @param n Positive number not larger than 2^32.
-#'
-#' @details Any number will converted to u32. Negative raises error.
-#' @keywords  DataFrame
-#' @return DataFrame
+#' @inherit LazyFrame_head title details
+#' @param n Number of rows to return. If a negative value is passed,
+#' return all rows except the last [`abs(n)`][abs].
+#' @return A [DataFrame][DataFrame_class]
 #' @examples
-#' pl$DataFrame(iris)$limit(6)
-DataFrame_limit = function(n) {
-  self$lazy()$limit(n)$collect()
-}
-
-#' Head of a DataFrame
-#' @name DataFrame_head
-#' @description Get the first `n` rows of the query.
-#' @param n Positive number not larger than 2^32.
+#' df = pl$DataFrame(foo = 1:5, bar = 6:10, ham = letters[1:5])
 #'
-#' @inherit DataFrame_limit details
-#' @keywords  DataFrame
-#' @return DataFrame
-
-DataFrame_head = function(n) {
+#' df$head(3)
+#'
+#' # Pass a negative value to get all rows except the last `abs(n)`.
+#' df$head(-3)
+DataFrame_head = function(n = 5L) {
+  if (isTRUE(n < 0)) n = max(0, self$height + n)
   self$lazy()$head(n)$collect()
 }
 
-#' Tail of a DataFrame
-#' @name DataFrame_tail
-#' @description Get the last `n` rows.
-#' @param n Positive number not larger than 2^32.
-#'
-#' @inherit DataFrame_limit details
-#' @keywords  DataFrame
-#' @return DataFrame
+#' @rdname DataFrame_head
+DataFrame_limit = DataFrame_head
 
-DataFrame_tail = function(n) {
+
+#' @inherit LazyFrame_tail title
+#' @param n Number of rows to return. If a negative value is passed,
+#' return all rows except the first [`abs(n)`][abs].
+#' @inherit DataFrame_head return
+#' @examples
+#' df = pl$DataFrame(foo = 1:5, bar = 6:10, ham = letters[1:5])
+#'
+#' df$tail(3)
+#'
+#' # Pass a negative value to get all rows except the first `abs(n)`.
+#' df$tail(-3)
+DataFrame_tail = function(n = 5L) {
+  if (isTRUE(n < 0)) n = max(0, self$height + n)
   self$lazy()$tail(n)$collect()
 }
 
