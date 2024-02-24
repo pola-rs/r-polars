@@ -22,7 +22,7 @@ See \code{\link[=polars_code_completion_activate]{polars_code_completion_activat
 \examples{
 polars_info()
 
-polars_info()$rust_polars
+polars_info()$versions
 
 polars_info()$features$nightly
 }
