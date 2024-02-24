@@ -14,9 +14,9 @@ A new \code{LazyFrame} object with applied filter.
 }
 \description{
 A shortcut for \code{\link[=LazyFrame_slice]{$slice(0, n)}}.
-Conider using the \code{\link[=LazyFrame_fetch]{$fetch()}} method if you want to test your query.
+Consider using the \code{\link[=LazyFrame_fetch]{$fetch()}} method if you want to test your query.
 The \code{\link[=LazyFrame_fetch]{$fetch()}} operation will load the first \code{n} rows at
-the scan level, whereas \verb{$head()} are applied at the end.
+the scan level, whereas \verb{$head()} is applied at the end.
 }
 \details{
 \verb{$limit()} is an alias for \verb{$head()}.

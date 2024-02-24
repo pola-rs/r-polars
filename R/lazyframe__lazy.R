@@ -847,9 +847,9 @@ LazyFrame_sink_ndjson = function(
 #' Get the first `n` rows.
 #'
 #' A shortcut for [`$slice(0, n)`][LazyFrame_slice].
-#' Conider using the [`$fetch()`][LazyFrame_fetch] method if you want to test your query.
+#' Consider using the [`$fetch()`][LazyFrame_fetch] method if you want to test your query.
 #' The [`$fetch()`][LazyFrame_fetch] operation will load the first `n` rows at
-#' the scan level, whereas `$head()` are applied at the end.
+#' the scan level, whereas `$head()` is applied at the end.
 #'
 #' `$limit()` is an alias for `$head()`.
 #' @param n Number of rows to return.
