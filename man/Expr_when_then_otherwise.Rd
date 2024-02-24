@@ -37,12 +37,12 @@ ChainedThen_when(...)
 ChainedThen_otherwise(statement)
 }
 \arguments{
-\item{...}{\link[=Expr_class]{Expr} or something coercible to an Expr into a boolean mask to
-branch by.}
+\item{...}{\link[=Expr_class]{Expr} or something coercible to an Expr that returns a
+boolian each row.}
 
 \item{statement}{\link[=Expr_class]{Expr} or something coercible to
-an \link[=Expr_class]{Expr} value to insert in \code{then()} or \code{otherwise()}.
-Strings interpreted as column.}
+an \link[=Expr_class]{Expr} value to insert in \verb{$then()} or \verb{$otherwise()}.
+A character vector is parsed as column names.}
 }
 \value{
 \itemize{
@@ -67,13 +67,10 @@ be picked.
 If none of the conditions are \code{true}, an optional
 \verb{$otherwise(<value if all statements are false>)} can be appended at the end.
 If not appended, and none of the conditions are \code{true}, \code{null} will be returned.
-}
-\section{Expression methods}{
 
-\code{RPolarsThen} objects and \code{RPolarsChainedThen} objects (returned by \verb{$then})
+\code{RPolarsThen} objects and \code{RPolarsChainedThen} objects (returned by \verb{$then()})
 stores the same methods as \link[=Expr_class]{Expr}.
 }
-
 \examples{
 df = pl$DataFrame(foo = c(1, 3, 4), bar = c(3, 4, 0))
 
@@ -93,7 +90,7 @@ df$with_columns(
 )
 
 # The `$otherwise` at the end is optional.
-# If left out, any rows where none of the `$when` expressions are evaluate to `true`,
+# If left out, any rows where none of the `$when()` expressions are evaluate to `true`,
 # are set to `null`
 df$with_columns(
   val = pl$when(pl$col("foo") > 2)$then(1)
@@ -108,4 +105,10 @@ df$with_columns(
   $then(99)
   $otherwise(-1)
 )
+
+# In `$then()`, a character vector is parsed as column names
+df$with_columns(baz = pl$when(pl$col("foo") \%\% 2 == 1)$then("bar"))
+
+# So use `pl$lit()` to insert a string
+df$with_columns(baz = pl$when(pl$col("foo") \%\% 2 == 1)$then(pl$lit("bar")))
 }

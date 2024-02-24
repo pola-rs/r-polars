@@ -5,7 +5,8 @@
 ### New features
 
 -   In the when-then-otherwise expressions, the last `$otherwise()` is now optional,
-    as in Python Polars (#836).
+    as in Python Polars. If `$otherwise()` is not specified, rows that don't respect
+    the condition set in `$when()` will be filled with `null` (#836).
 
 ## Polars R Package 0.14.1
 

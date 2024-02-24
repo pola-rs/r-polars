@@ -13,15 +13,14 @@
 #' `$otherwise(<value if all statements are false>)` can be appended at the end.
 #' If not appended, and none of the conditions are `true`, `null` will be returned.
 #'
-#' @section Expression methods:
-#' `RPolarsThen` objects and `RPolarsChainedThen` objects (returned by `$then`)
+#' `RPolarsThen` objects and `RPolarsChainedThen` objects (returned by `$then()`)
 #' stores the same methods as [Expr][Expr_class].
 #' @name Expr_when_then_otherwise
-#' @param ... [Expr][Expr_class] or something coercible to an Expr into a boolean mask to
-#' branch by.
+#' @param ... [Expr][Expr_class] or something coercible to an Expr that returns a
+#' boolian each row.
 #' @param statement [Expr][Expr_class] or something coercible to
-#' an [Expr][Expr_class] value to insert in `then()` or `otherwise()`.
-#' Strings interpreted as column.
+#' an [Expr][Expr_class] value to insert in `$then()` or `$otherwise()`.
+#' A character vector is parsed as column names.
 #' @return
 #' - `pl$when()` returns a `When` object
 #' - `<When>$then()` returns a `Then` object
@@ -49,7 +48,7 @@
 #' )
 #'
 #' # The `$otherwise` at the end is optional.
-#' # If left out, any rows where none of the `$when` expressions are evaluate to `true`,
+#' # If left out, any rows where none of the `$when()` expressions are evaluate to `true`,
 #' # are set to `null`
 #' df$with_columns(
 #'   val = pl$when(pl$col("foo") > 2)$then(1)
@@ -64,6 +63,12 @@
 #'   $then(99)
 #'   $otherwise(-1)
 #' )
+#'
+#' # In `$then()`, a character vector is parsed as column names
+#' df$with_columns(baz = pl$when(pl$col("foo") %% 2 == 1)$then("bar"))
+#'
+#' # So use `pl$lit()` to insert a string
+#' df$with_columns(baz = pl$when(pl$col("foo") %% 2 == 1)$then(pl$lit("bar")))
 pl_when = function(...) {
   unpack_bool_expr_result(...) |>
     and_then(.pr$When$new) |>
