@@ -25,7 +25,6 @@ use polars::prelude::ArgAgg;
 use polars::prelude::IntoSeries;
 pub const R_INT_NA_ENC: i32 = -2147483648;
 use crate::rpolarserr::polars_to_rpolars_err;
-use polars::prelude::RoundSeries;
 use std::convert::TryInto;
 use std::result::Result;
 
@@ -259,12 +258,6 @@ impl RPolarsSeries {
         self.0.chunk_lengths().map(|val| val as f64).collect()
     }
 
-    pub fn abs(&self) -> RResult<RPolarsSeries> {
-        pl::abs(&self.0)
-            .map_err(polars_to_rpolars_err)
-            .map(RPolarsSeries)
-    }
-
     pub fn alias(&self, name: &str) -> RPolarsSeries {
         let mut s = self.0.clone();
         s.rename(name);
@@ -309,6 +302,15 @@ impl RPolarsSeries {
         }
     }
 
+    pub fn append_mut(&mut self, other: &RPolarsSeries) -> List {
+        r_result_list(
+            self.0
+                .append(&other.0)
+                .map(|_| ())
+                .map_err(|err| format!("{:?}", err)),
+        )
+    }
+
     pub fn add(&self, other: &RPolarsSeries) -> Self {
         (&self.0 + &other.0).into()
     }
@@ -327,15 +329,6 @@ impl RPolarsSeries {
 
     pub fn rem(&self, other: &RPolarsSeries) -> Self {
         (&self.0 % &other.0).into()
-    }
-
-    pub fn append_mut(&mut self, other: &RPolarsSeries) -> List {
-        r_result_list(
-            self.0
-                .append(&other.0)
-                .map(|_| ())
-                .map_err(|err| format!("{:?}", err)),
-        )
     }
 
     pub fn map_elements(
@@ -485,32 +478,8 @@ impl RPolarsSeries {
         RPolarsSeries(s).to_r("double")
     }
 
-    pub fn ceil(&self) -> List {
-        r_result_list(
-            self.0
-                .ceil()
-                .map(RPolarsSeries)
-                .map_err(|err| format!("{:?}", err)),
-        )
-    }
-
-    pub fn floor(&self) -> List {
-        r_result_list(
-            self.0
-                .floor()
-                .map(RPolarsSeries)
-                .map_err(|err| format!("{:?}", err)),
-        )
-    }
-
     pub fn print(&self) {
         rprintln!("{:#?}", self.0);
-    }
-
-    pub fn cum_sum(&self, reverse: bool) -> RResult<RPolarsSeries> {
-        pl::cum_sum(&self.0, reverse)
-            .map_err(polars_to_rpolars_err)
-            .map(RPolarsSeries)
     }
 
     pub fn to_frame(&self) -> std::result::Result<RPolarsDataFrame, String> {

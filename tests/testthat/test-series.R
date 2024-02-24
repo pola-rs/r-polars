@@ -573,3 +573,7 @@ test_that("n_unique", {
 test_that("method from Expr", {
   expect_equal(pl$Series(1:3)$cos()$to_r(), cos(1:3))
 })
+
+test_that("cum_sum", {
+  expect_equal(pl$Series(c(1, 2, NA, 3))$cum_sum()$to_r(), c(1, 3, NA, 6))
+})

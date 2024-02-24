@@ -121,21 +121,6 @@ Expr_print = function() {
   paste0(ls(RPolarsExpr, pattern = pattern), completion_symbols$method)
 }
 
-
-# TODO: is this needed?
-#' S3 method to convert an Expr to a list
-#'
-#' @param x Expr
-#' @param ... Not used.
-#'
-#' @return One Expr wrapped in a list
-#' @export
-#' @noRd
-as.list.RPolarsExpr = function(x, ...) {
-  list(x)
-}
-
-
 #' wrap as literal
 #' @description use robj_to!(Expr) on rust side or rarely wrap_e on R-side
 #' This function is only kept for reference

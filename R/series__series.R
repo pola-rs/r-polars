@@ -489,19 +489,6 @@ Series_to_r_list = \(int64_conversion = polars_options()$int64_conversion) {
 }
 
 
-#' Take absolute value of Series
-#'
-#' @return Series
-#' @keywords Series
-#' @aliases abs
-#' @name Series_abs
-#' @examples
-#' pl$Series(-2:2)$abs()
-Series_abs = function() {
-  unwrap(.pr$Series$abs(self), "in $abs():")
-}
-
-
 #' Value Counts as DataFrame
 #'
 #' @param sort bool, default TRUE: sort table by value; FALSE: random
@@ -561,35 +548,6 @@ Series_map_elements = function(
 #' pl$Series(1:10)$len()
 #'
 Series_len = use_extendr_wrapper
-
-#' Series_floor
-#' @description Floor of this Series
-#'
-#' @return numeric
-#' @keywords Series
-#' @aliases Series_floor
-#' @name Series_floor
-#' @examples
-#' pl$Series(c(.5, 1.999))$floor()
-#'
-Series_floor = function() {
-  unwrap(.pr$Series$floor(self), "in $floor():")
-}
-
-
-#' Series_ceil
-#' @description Ceil of this Series
-#'
-#' @return bool
-#' @keywords Series
-#' @aliases Series_ceil
-#' @name Series_ceil
-#' @examples
-#' pl$Series(c(.5, 1.999))$ceil()
-#'
-Series_ceil = function() {
-  unwrap(.pr$Series$ceil(self), "in $ceil():")
-}
 
 #' Lengths of Series memory chunks
 #' @description Get the Lengths of Series memory chunks as vector.
@@ -745,22 +703,6 @@ Series_arg_min = use_extendr_wrapper
 #' attributes(df1)
 Series_clone = use_extendr_wrapper
 
-#' Cumulative sum
-#' @description  Get an array with the cumulative sum computed at every element.
-#' @param reverse bool, default FALSE, if true roll over vector from back to forth
-#' @return Series
-#' @keywords Series
-#' @aliases Series_cumsum
-#' @name Series_cumsum
-#' @details
-#' The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
-#' Int64 before summing to prevent overflow issues.
-#' @examples
-#' pl$Series(c(1:2, NA, 3, NaN, 4, Inf))$cum_sum()
-#' pl$Series(c(1:2, NA, 3, Inf, 4, -Inf, 5))$cum_sum()
-Series_cum_sum = function(reverse = FALSE) {
-  .pr$Series$cum_sum(self, reverse) |> unwrap("in $cum_sum()")
-}
 
 #' Sum
 #' @description  Reduce Series with sum
