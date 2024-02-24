@@ -9,9 +9,12 @@ patrick::with_parameters_test_that("polars_info() features are logical",
 test_that("print polars_info()", {
   info = polars_info()
 
+  expect_type(info$versions$r_package, "character")
+  expect_type(info$versions$rust_crate, "character")
+
   # Ensure static version for snapshot test
-  info$versions$r_package = package_version("999.999.999")
-  info$versions$rust_crate = package_version("999.999.999")
+  info$versions$r_package = "999.999.999"
+  info$versions$rust_crate = "999.999.999"
 
   # Ensure the thread_pool_size is 1 for snapshot test
   info$thread_pool_size = 1
