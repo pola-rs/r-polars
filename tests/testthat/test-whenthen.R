@@ -114,12 +114,27 @@ test_that("named input is not allowed in when", {
 })
 
 test_that("$otherwise is optional", {
+  when_1 = pl$when("a")$then("b")
+  chained_when_1 = pl$when("a")$then("b")$when("c")$then("d")
+
   expect_s3_class(
-    pl$when("a")$then("b")$alias("foo"),
+    when_1,
+    "RPolarsThen"
+  )
+  expect_s3_class(
+    chained_when_1,
+    "RPolarsChainedThen"
+  )
+  expect_s3_class(
+    when_1$alias("foo"),
     "RPolarsExpr"
   )
   expect_s3_class(
-    pl$when("a")$then("b")$when("c")$then("d")$alias("foo"),
+    chained_when_1$alias("foo"),
+    "RPolarsExpr"
+  )
+  expect_s3_class(
+    when_1 + chained_when_1,
     "RPolarsExpr"
   )
 
@@ -138,5 +153,20 @@ test_that("$otherwise is optional", {
     ) |>
       as.data.frame(),
     data.frame(b = c(NA, NA, "big", "bigger"))
+  )
+})
+
+test_that("Charactor vector in `$then()` is parsed as column names", {
+  df = pl$DataFrame(a = 1L:3L, b = "foo", c = "bar")
+
+  expect_equal(
+    df$select(d = pl$when(pl$col("a") < 2)$then("b")$otherwise(NA)) |>
+      as.data.frame(),
+    data.frame(d = c("foo", NA, NA))
+  )
+  expect_equal(
+    df$select(d = pl$when(pl$col("a") < 2)$then("b")$when(pl$col("a") < 3)$then("c")$otherwise(NA)) |>
+      as.data.frame(),
+    data.frame(d = c("foo", "bar", NA))
   )
 })
