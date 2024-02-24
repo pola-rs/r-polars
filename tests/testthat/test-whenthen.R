@@ -1,7 +1,7 @@
 test_that("When-class", {
-  expect_true(inherits(pl$when("columnname"), "RPolarsWhen"))
-  expect_true(inherits(pl$when(TRUE), "RPolarsWhen"))
-  expect_true(inherits(pl$when(1:4), "RPolarsWhen"))
+  expect_s3_class(pl$when("columnname"), "RPolarsWhen")
+  expect_s3_class(pl$when(TRUE), "RPolarsWhen")
+  expect_s3_class(pl$when(1:4), "RPolarsWhen")
 
   # string "a" is interpreted as column
   e_actual = pl$when("a")$then("b")$otherwise("c")
@@ -24,10 +24,10 @@ test_that("When-class", {
 
 
 test_that("Then-class", {
-  expect_true(inherits(pl$when("a")$then("b"), "RPolarsThen"))
-  expect_true(inherits(pl$when(TRUE)$then(FALSE), "RPolarsThen"))
-  expect_true(inherits(pl$when(TRUE)$then(FALSE)$when(NA), "RPolarsChainedWhen"))
-  expect_true(inherits(pl$when(TRUE)$then(FALSE)$otherwise(NA), "RPolarsExpr"))
+  expect_s3_class(pl$when("a")$then("b"), "RPolarsThen")
+  expect_s3_class(pl$when(TRUE)$then(FALSE), "RPolarsThen")
+  expect_s3_class(pl$when(TRUE)$then(FALSE)$when(NA), "RPolarsChainedWhen")
+  expect_s3_class(pl$when(TRUE)$then(FALSE)$otherwise(NA), "RPolarsExpr")
 
   ctx = result(pl$when("a")$then(complex(2)))$err$contexts()
   expect_identical(
@@ -42,11 +42,11 @@ test_that("Then-class", {
 
 
 test_that("Chained", {
-  expect_true(inherits(pl$when("a")$then("b")$when("c"), "RPolarsChainedWhen"))
-  expect_true(inherits(pl$when(TRUE)$then(FALSE)$when(TRUE), "RPolarsChainedWhen"))
+  expect_s3_class(pl$when("a")$then("b")$when("c"), "RPolarsChainedWhen")
+  expect_s3_class(pl$when(TRUE)$then(FALSE)$when(TRUE), "RPolarsChainedWhen")
   cw = pl$when("a")$then("b")$when("c")
-  expect_true(inherits(cw$then("a"), "RPolarsChainedThen"))
-  expect_true(inherits(cw$then("d")$otherwise("e"), "RPolarsExpr"))
+  expect_s3_class(cw$then("a"), "RPolarsChainedThen")
+  expect_s3_class(cw$then("d")$otherwise("e"), "RPolarsExpr")
 })
 
 
@@ -111,4 +111,62 @@ test_that("when-then multiple predicates", {
 
 test_that("named input is not allowed in when", {
   expect_error(pl$when(foo = 1), "Detected a named input")
+})
+
+test_that("$otherwise is optional", {
+  when_1 = pl$when("a")$then("b")
+  chained_when_1 = pl$when("a")$then("b")$when("c")$then("d")
+
+  expect_s3_class(
+    when_1,
+    "RPolarsThen"
+  )
+  expect_s3_class(
+    chained_when_1,
+    "RPolarsChainedThen"
+  )
+  expect_s3_class(
+    when_1$alias("foo"),
+    "RPolarsExpr"
+  )
+  expect_s3_class(
+    chained_when_1$alias("foo"),
+    "RPolarsExpr"
+  )
+  expect_s3_class(
+    when_1 + chained_when_1,
+    "RPolarsExpr"
+  )
+
+  df = pl$DataFrame(a = 1L:4L)
+
+  expect_equal(
+    df$select(
+      b = pl$when(pl$col("a") > 2)$then(pl$lit("big"))
+    ) |>
+      as.data.frame(),
+    data.frame(b = c(NA, NA, "big", "big"))
+  )
+  expect_equal(
+    df$select(
+      b = pl$when(pl$col("a") > 3)$then(pl$lit("bigger"))$when(pl$col("a") > 2)$then(pl$lit("big"))
+    ) |>
+      as.data.frame(),
+    data.frame(b = c(NA, NA, "big", "bigger"))
+  )
+})
+
+test_that("Charactor vector in `$then()` is parsed as column names", {
+  df = pl$DataFrame(a = 1L:3L, b = "foo", c = "bar")
+
+  expect_equal(
+    df$select(d = pl$when(pl$col("a") < 2)$then("b")$otherwise(NA)) |>
+      as.data.frame(),
+    data.frame(d = c("foo", NA, NA))
+  )
+  expect_equal(
+    df$select(d = pl$when(pl$col("a") < 2)$then("b")$when(pl$col("a") < 3)$then("c")$otherwise(NA)) |>
+      as.data.frame(),
+    data.frame(d = c("foo", "bar", NA))
+  )
 })

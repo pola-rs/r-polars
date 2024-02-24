@@ -346,6 +346,16 @@ as_polars_series.RPolarsExpr = function(x, name = NULL, ...) {
 
 #' @rdname as_polars_series
 #' @export
+as_polars_series.RPolarsThen = as_polars_series.RPolarsExpr
+
+
+#' @rdname as_polars_series
+#' @export
+as_polars_series.RPolarsChainedThen = as_polars_series.RPolarsExpr
+
+
+#' @rdname as_polars_series
+#' @export
 as_polars_series.POSIXlt = function(x, name = NULL, ...) {
   as_polars_series(as.POSIXct(x), name = name)
 }

@@ -1,31 +1,34 @@
-#' Make a then-when-otherwise expression
+#' Make a when-then-otherwise expression
 #'
-#' `when-then-otherwise` is similar to R [`ifelse()`]. This has to start with
-#' `pl$when(<condition>)$then(<value if condition>)`. From there, it can:
-#' * be chained to an `$otherwise()` statement that specifies the Expr to apply
-#'   to the rows where the condition is `FALSE`;
-#' * or be chained to other `$when()$then()` to specify more cases, and then use
-#'   `$otherwise()` when you arrive at the end of your chain.
-#' Note that one difference with the Python implementation is that we *must*
-#' end the chain with an `$otherwise()` statement.
+#' `when-then-otherwise` is similar to R [`ifelse()`]. Always initiated by a
+#' `pl$when(<condition>)$then(<value if condition>)`, and optionally followed
+#' by chaining one or more `$when(<condition>)$then(<value if condition>)`
+#' statements.
 #'
-#' If you want to use the class of those `when-then-otherwise` statement, note
-#' that there are 6 different classes corresponding to the different steps:
+#' Chained when-then operations should be read like `if, else if, else if, ...` in R,
+#' not as `if, if, if, ...`, i.e. the first condition that evaluates to `true` will
+#' be picked.
 #'
-#' * `pl$when()`returns a `When` object,
-#' * `pl$then()`returns a `Then` object,
-#' * `<Then>$otherwise()`returns an [Expression][Expr_class] object,
-#' * `<Then>$when()`returns a `ChainedWhen` object,
-#' * `<ChainedWhen>$then()`returns a `ChainedThen` object,
-#' * `<ChainedThen>$otherwise()`returns an [Expression][Expr_class] object.
+#' If none of the conditions are `true`, an optional
+#' `$otherwise(<value if all statements are false>)` can be appended at the end.
+#' If not appended, and none of the conditions are `true`, `null` will be returned.
 #'
+#' `RPolarsThen` objects and `RPolarsChainedThen` objects (returned by `$then()`)
+#' stores the same methods as [Expr][Expr_class].
 #' @name Expr_when_then_otherwise
-#' @param ... Expr or something coercible to an Expr into a boolean mask to
-#'   branch by.
-#' @param statement Expr or something coercible to an Expr value to insert in
-#'   when() or otherwise(). Strings interpreted as column.
-#' @return an polars object, see details.
+#' @param ... [Expr][Expr_class] or something coercible to an Expr that returns a
+#' boolian each row.
+#' @param statement [Expr][Expr_class] or something coercible to
+#' an [Expr][Expr_class] value to insert in `$then()` or `$otherwise()`.
+#' A character vector is parsed as column names.
+#' @return
+#' - `pl$when()` returns a `When` object
+#' - `<When>$then()` returns a `Then` object
+#' - `<Then>$when()` returns a `ChainedWhen` object
+#' - `<ChainedWhen>$then()` returns a `ChainedThen` object
+#' - `$otherwise()` returns an [Expr][Expr_class] object.
 #' @aliases when then otherwise When Then ChainedWhen ChainedThen
+#' RPolarsWhen RPolarsThen RPolarsChainedWhen RPolarsChainedThen
 #' @examples
 #' df = pl$DataFrame(foo = c(1, 3, 4), bar = c(3, 4, 0))
 #'
@@ -44,6 +47,13 @@
 #'   $otherwise(-1)
 #' )
 #'
+#' # The `$otherwise` at the end is optional.
+#' # If left out, any rows where none of the `$when()` expressions are evaluated to `true`,
+#' # are set to `null`
+#' df$with_columns(
+#'   val = pl$when(pl$col("foo") > 2)$then(1)
+#' )
+#'
 #' # Pass multiple predicates, each of which must be met:
 #' df$with_columns(
 #'   val = pl$when(
@@ -53,6 +63,12 @@
 #'   $then(99)
 #'   $otherwise(-1)
 #' )
+#'
+#' # In `$then()`, a character vector is parsed as column names
+#' df$with_columns(baz = pl$when(pl$col("foo") %% 2 == 1)$then("bar"))
+#'
+#' # So use `pl$lit()` to insert a string
+#' df$with_columns(baz = pl$when(pl$col("foo") %% 2 == 1)$then(pl$lit("bar")))
 pl_when = function(...) {
   unpack_bool_expr_result(...) |>
     and_then(.pr$When$new) |>
@@ -101,58 +117,95 @@ ChainedThen_otherwise = function(statement) {
 }
 
 
+## Methods from Expr
+
+#' Function to add Expr methods to Then and ChainedThen
+#'
+#' Executed in zzz.R
+#' @noRd
+add_expr_methods_to_then = function(then_like_class) {
+  methods_exclude = c()
+  methods_diff = setdiff(ls(RPolarsExpr), ls(then_like_class))
+
+  for (method in setdiff(methods_diff, methods_exclude)) {
+    if (!inherits(RPolarsExpr[[method]], "property")) {
+      # make a modified Expr function
+      new_f = eval(parse(text = paste0(r"(function() {
+        f = RPolarsExpr$)", method, r"(
+
+        # get the future args the new function will be called with
+        # not using ... as this will erase tooltips and defaults
+        # instead using sys.call/do.call
+        scall = as.list(sys.call()[-1])
+
+        self = self$otherwise(pl$lit(NULL))
+        # Override `self` in `$.RPolarsExpr`
+        environment(f) = environment()
+
+        do.call(f, scall)
+      })")))
+      # set new_method to have the same formals arguments
+      formals(new_f) = formals(method, RPolarsExpr)
+      then_like_class[[method]] = new_f
+    }
+  }
+}
+
+### Sub namespaces
+
+#' Make sub namespace of Then from Expr sub namespace
+#' @noRd
+then_make_sub_ns = function(then_like_object, .expr_make_sub_ns_fn) {
+  arr = .expr_make_sub_ns_fn(then_like_object$otherwise(pl$lit(NULL)))
+  lapply(arr, \(f) {
+    \(...) f(...)
+  })
+}
+
+
+Then_arr = ChainedThen_arr = method_as_active_binding(\() then_make_sub_ns(self, expr_arr_make_sub_ns))
+
+Then_bin = ChainedThen_bin = method_as_active_binding(\() then_make_sub_ns(self, expr_bin_make_sub_ns))
+
+Then_cat = ChainedThen_cat = method_as_active_binding(\() then_make_sub_ns(self, expr_cat_make_sub_ns))
+
+Then_dt = ChainedThen_dt = method_as_active_binding(\() then_make_sub_ns(self, expr_dt_make_sub_ns))
+
+Then_list = ChainedThen_list = method_as_active_binding(\() then_make_sub_ns(self, expr_list_make_sub_ns))
+
+Then_meta = ChainedThen_meta = method_as_active_binding(\() then_make_sub_ns(self, expr_meta_make_sub_ns))
+
+Then_name = ChainedThen_name = method_as_active_binding(\() then_make_sub_ns(self, expr_name_make_sub_ns))
+
+Then_str = ChainedThen_str = method_as_active_binding(\() then_make_sub_ns(self, expr_str_make_sub_ns))
+
+Then_struct = ChainedThen_struct = method_as_active_binding(\() then_make_sub_ns(self, expr_struct_make_sub_ns))
+
+
 ##  -------- print methods ---------
 
-#' print When
-#' @param x When object
-#' @param ... not used
-#' @noRd
-#'
-#' @return self
 #' @export
-#' @examples
-#' print(pl$when(pl$col("a") > 2))
 print.RPolarsWhen = function(x, ...) {
   print("When")
   invisible(x)
 }
 
-#' print Then
-#' @param x When object
-#' @param ... not used
-#' @keywords WhenThen internal
-#' @return self
+
 #' @export
-#' @examples
-#' print(pl$when(pl$col("a") > 2)$then(pl$lit("more than two")))
 print.RPolarsThen = function(x, ...) {
   print("Then")
   invisible(x)
 }
 
 
-#' print ChainedWhen
-#' @param x ChainedWhen object
-#' @param ... not used
-#' @keywords WhenThen internal
-#' @return self
 #' @export
-#' @examples
-#' #
-#' print(pl$when(pl$col("a") > 2)$then(pl$lit("more than two"))$when(pl$col("b") < 5))
 print.RPolarsChainedWhen = function(x, ...) {
   print("ChainedWhen")
   invisible(x)
 }
 
-#' print ChainedThen
-#' @param x ChainedThen object
-#' @param ... not used
-#' @keywords WhenThen internal
-#' @return self
+
 #' @export
-#' @examples
-#' print(pl$when(pl$col("a") > 2)$then(pl$lit("more than two"))$when(pl$col("b") < 5))
 print.RPolarsChainedThen = function(x, ...) {
   print("ChainedThen")
   invisible(x)
@@ -161,50 +214,25 @@ print.RPolarsChainedThen = function(x, ...) {
 
 ##  -------- DollarNames methods ---------
 
-#' @title auto complete $-access into a polars object
-#' @description called by the interactive R session internally
-#' @param x When
-#' @param pattern code-stump as string to auto-complete
-#' @return char vec
 #' @export
-#' @inherit .DollarNames.RPolarsDataFrame return
-#' @noRd
 .DollarNames.RPolarsWhen = function(x, pattern = "") {
   paste0(ls(RPolarsWhen, pattern = pattern), completion_symbols$method)
 }
 
-#' @title auto complete $-access into a polars object
-#' @description called by the interactive R session internally
-#' @param x Then
-#' @param pattern code-stump as string to auto-complete
-#' @return char vec
+
 #' @export
-#' @inherit .DollarNames.RPolarsDataFrame return
-#' @noRd
 .DollarNames.RPolarsThen = function(x, pattern = "") {
   paste0(ls(RPolarsThen, pattern = pattern), completion_symbols$method)
 }
 
-#' @title auto complete $-access into a polars object
-#' @description called by the interactive R session internally
-#' @param x ChainedWhen
-#' @param pattern code-stump as string to auto-complete
-#' @return char vec
+
 #' @export
-#' @inherit .DollarNames.RPolarsDataFrame return
-#' @noRd
 .DollarNames.RPolarsChainedThen = function(x, pattern = "") {
   paste0(ls(RPolarsChainedThen, pattern = pattern), completion_symbols$method)
 }
 
-#' @title auto complete $-access into a polars object
-#' @description called by the interactive R session internally
-#' @param x ChainedWhen
-#' @param pattern code-stump as string to auto-complete
-#' @return char vec
+
 #' @export
-#' @inherit .DollarNames.RPolarsDataFrame return
-#' @noRd
 .DollarNames.RPolarsChainedWhen = function(x, pattern = "") {
   paste0(ls(RPolarsChainedWhen, pattern = pattern), completion_symbols$method)
 }

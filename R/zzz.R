@@ -73,6 +73,9 @@ replace_private_with_pub_methods(RPolarsThen, "^Then_")
 replace_private_with_pub_methods(RPolarsChainedWhen, "^ChainedWhen_")
 replace_private_with_pub_methods(RPolarsChainedThen, "^ChainedThen_")
 
+add_expr_methods_to_then(RPolarsThen)
+add_expr_methods_to_then(RPolarsChainedThen)
+
 # any sub-namespace inherits 'method_environment'
 # This s3 method performs auto-completion
 #' @title auto complete $-access into a polars object

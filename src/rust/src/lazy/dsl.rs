@@ -161,13 +161,13 @@ impl RPolarsExpr {
                     Ok(expr.0)
                 }
 
-                _ if robj_inherits(&robj, ["Then", "ChainedThen"]) => unpack_r_eval(R!(
-                    "polars:::result({{robj}}$otherwise(polars::pl$lit(NULL)))"
-                ))
+                _ if robj_inherits(&robj, ["RPolarsThen", "RPolarsChainedThen"]) => unpack_r_eval(
+                    R!("polars:::result({{robj}}$otherwise(polars::pl$lit(NULL)))"),
+                )
                 .and_then(r_expr_to_rust_expr)
                 .map(|expr| expr.0),
 
-                _ if robj_inherits(&robj, ["When", "ChainedWhen"]) => rerr()
+                _ if robj_inherits(&robj, ["RPolarsWhen", "RPolarsChainedWhen"]) => rerr()
                     .plain("Cannot use a When or ChainedWhen-statement as Expr without a $then()"),
 
                 _ => rerr()
