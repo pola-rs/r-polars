@@ -21,5 +21,8 @@ test_that("print polars_info()", {
     info$features[[feature]] = FALSE
   }
 
+  # Ensure code_completion is deactivated for snapshot test
+  info$code_completion = "deactivated"
+
   expect_snapshot(info)
 })
