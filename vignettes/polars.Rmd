@@ -191,7 +191,7 @@ instance,
 - Etc.
 
 In **polars** our method chaining syntax takes the form `object$m1()$m2()`,
-where `object` is our data object, and `m1()` and `m2()` are appropriate
+where `object` is our data object, and `$m1()` and `$m2()` are appropriate
 methods, like subsetting or aggregation expressions.
 
 This might all seem a little abstract, so let's walk through some quick
@@ -202,14 +202,14 @@ polars operations on objects that have been converted to an appropriate
 **polars** class. Later on, we'll see how to read data from disk directly in Polars format.]
 
 To start, say we compute the maximum value in each column. We can use the
-`max()` method:
+`$max()` method:
 
 ```{r}
 dat$max()
 ```
 
-Now, we first use the `$tail` method to select the last 10 rows of the dataset,
-and then use the `$max` method to compute the maximums in those 10 rows:
+Now, we first use the `$tail()` method to select the last 10 rows of the dataset,
+and then use the `$max()` method to compute the maximums in those 10 rows:
 
 ```{r}
 dat$tail(10)$max()
@@ -222,8 +222,8 @@ dat$tail(10)$max() |>
   as.data.frame()
 ```
 
-Below, we will introduce several other methods, including `$select`, `$filter`,
-and `$group_by` which allow us to do powerful data manipulations easily. To give
+Below, we will introduce several other methods, including `$select()`, `$filter()`,
+and `$group_by()` which allow us to do powerful data manipulations easily. To give
 you a small taste, we now take group-wise means:
 
 ```{r}
@@ -234,9 +234,9 @@ dat$group_by("cyl")$mean()
 
 We can now start chaining together various methods (expressions) to manipulate
 it in different ways. For example, we can subset the data by rows
-([`filter()`](https://rpolars.github.io/man/DataFrame_filter.html))
+([`$filter()`](https://rpolars.github.io/man/DataFrame_filter.html))
 and also columns
-([`select()`](https://rpolars.github.io/man/DataFrame_select.html)):
+([`$select()`](https://rpolars.github.io/man/DataFrame_select.html)):
 
 ```{r}
 dat$filter(pl$col("cyl") == 6)
@@ -258,14 +258,14 @@ dat$filter(
 
 ## Aggregate and modify
 
-The `select()` method that we introduced above also supports data modification,
+The `$select()` method that we introduced above also supports data modification,
 so you can simultaneously transform it while you are subsetting. However, the
 result will exclude any columns that weren't specified as part of the
 expression. To modify or add some columns---whilst preserving all others in the
 dataset---it is therefore better to use the
-[`with_columns()`](https://rpolars.github.io/man/DataFrame_with_columns.html)
+[`$with_columns()`](https://rpolars.github.io/man/DataFrame_with_columns.html)
 method. This next code chunk is equivalent to `mtcars |>
-dplyr::mutate(sum_mpg=sum(mpg), sum_hp=sum(hp), .by = cyl)`.
+dplyr::mutate(sum_mpg = sum(mpg), sum_hp = sum(hp), .by = cyl)`.
 
 ```{r}
 # Add the grouped sums of some selected columns.
@@ -284,8 +284,8 @@ dat$with_columns(
 ```
 
 Similarly, here's how we could have aggregated (i.e., collapsed) the dataset
-by groups instead of modifying them. We need simply invoke the `group_by()` and
-[`agg()`](https://rpolars.github.io/man/Expr_agg_groups.html) methods.
+by groups instead of modifying them. We need simply invoke the `$group_by()` and
+[`$agg()`](https://rpolars.github.io/man/Expr_agg_groups.html) methods.
 
 ```{r}
 dat$group_by(
@@ -306,41 +306,44 @@ multiple variables and aggregation types.
 ```{r}
 dat$group_by(
   "cyl",
-  pl$col("am")$cast(pl$Boolean)$alias("manual")
+  manual = pl$col("am")$cast(pl$Boolean)
 )$agg(
-  pl$col("mpg")$mean()$alias("mean_mpg"),
-  pl$col("hp")$median()$alias("med_hp")
+  mean_mpg = pl$col("mpg")$mean(),
+  med_hp = pl$col("hp")$median()
 )
 ```
 
-Note that we used the `cast` method to convert the data type of the `am`
+Note that we used the `$cast()` method to convert the data type of the `am`
 column. See the section below for more details on data types.
 
 ## Reshape
 
-Polars supports data reshaping, going from both long to wide ("pivot") and wide
-to long ("melt"). Let's switch to the `Indometh` dataset to demonstrate some
-basic examples. Note that the data are currently in long format.
+Polars supports data reshaping, going from both long to wide (a.k.a. "pivot", "pivot longer")
+, and wide to long (a.k.a. "unpivot", "pivot wider", "melt").
+Let's switch to the `Indometh` dataset to demonstrate some basic examples.
+Note that the data are currently in long format.
 
 ```{r}
 indo = as_polars_df(Indometh)
+indo
 ```
 
-To go from long to wide, we use the `pivot` method.
+To go from long to wide, we use the `$pivot()` method.
 Here we pivot the data so that every subject takes its own column.
 
 ```{r}
 indo_wide = indo$pivot(values = "conc", index = "time", columns = "Subject")
+indo_wide
 ```
 
-To go from wide to long, we use the `melt` method.
+To go from wide to long, we use the `$melt()` method.
 
 ```{r}
 # indo_wide$melt(id_vars = "time") # default column names are "variable" and "value"
 indo_wide$melt(id_vars = "time", variable_name = "subject", value_name = "conc")
 ```
 
-Basic functionality aside, it should be noted that `pivot` can perform
+Basic functionality aside, it should be noted that `$pivot()` can perform
 aggregations as part of the reshaping operation. This is useful when you have
 multiple observations per ID variable that need to be collapsed into unique
 values. The aggregating functions can be arbitrarily complex, but let's
@@ -358,8 +361,8 @@ dat$pivot(
 ```
 
 Here, `"median"` is a convenience string that is equivalent to the more verbose
-`pl$element()$median()`. Other convenience strings include "first", "last",
-"min", "max", "mean", "sum", and "count".
+`pl$element()$median()`. Other convenience strings include `"first"`, `"last"`,
+`"min"`, `"max"`, `"mean"`, `"sum"`, and `"count"`.
 
 ## Join
 
@@ -397,7 +400,7 @@ apply automatic optimization to every query. Let's take a quick look.
 
 To create a so-called
 "[LazyFrame](https://rpolars.github.io/man/LazyFrame_class.html)" from an
-existing object in memory, we can invoke the `lazy()` constructor.
+existing object in memory, we can invoke the `$lazy()` method.
 
 ```{r}
 ldat = dat$lazy()
@@ -438,7 +441,7 @@ memory overhead of the overall query and leads to a downstream speedup. Of
 course, you would hardly notice a difference for this small dataset. But the
 same principles carry over to much bigger datasets and more complex queries.
 
-To actually execute the plan, we just need to invoke the `collect()` method.
+To actually execute the plan, we just need to invoke the `$collect()` method.
 This should feel very familiar if you have previously used other lazy execution
 engines like those provided by **arrow** or **dbplyr**.
 
@@ -498,8 +501,8 @@ arrow::write_dataset(airquality, "airquality-ds", partitioning = "Month")
 # Use pattern globbing to scan all parquet files in the folder
 aq2 = pl$scan_parquet("airquality-ds/**/*.parquet")
 
-# Just print the first two rows.
-aq2$limit(2)$collect()
+# Scan the first two rows
+aq2$fetch(2)
 ```
 
 Before continuing, don't forget to clean up by removing the newly created temp files
@@ -520,7 +523,7 @@ and expressions wherever possible.
 ```{r}
 as_polars_df(iris)$select(
   pl$col("Sepal.Length")$map_batches(\(s) { # map with a R function
-    x = s$to_vector() # convert from Polars Series to a native R vector
+    x = as.vector(s) # convert from Polars Series to a native R vector
     x[x >= 5] = 10
     x[1:10] # if return is R vector, it will automatically be converted to Polars Series again
   })
