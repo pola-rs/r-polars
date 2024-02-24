@@ -44,7 +44,7 @@ Suggests:
     vctrs,
     withr
 Config/Needs/website:
-    etiennebacher/altdoc@7b5cec5,
+    altdoc,
     future.apply,
     here,
     magrittr,
