@@ -483,3 +483,22 @@ test_that("group_by_dynamic for LazyFrame: can be ungrouped", {
     to_data_frame()
   expect_equal(actual, df$collect()$to_data_frame())
 })
+
+test_that("group_by with named expr", {
+  df = pl$DataFrame(a = c(rep(1, 3), rep(2, 3)), b = 1:6)
+
+  expect_equal(
+    df$group_by(group = "a")$agg(
+      b = pl$col("b")$sum()
+    )$sort("group") |>
+      as.data.frame(),
+    data.frame(group = c(1, 2), b = c(6, 15))
+  )
+  expect_equal(
+    df$lazy()$group_by(group = "a")$agg(
+      b = pl$col("b")$sum()
+    )$sort("group") |>
+      as.data.frame(),
+    data.frame(group = c(1, 2), b = c(6, 15))
+  )
+})

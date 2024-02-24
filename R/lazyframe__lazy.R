@@ -1113,24 +1113,38 @@ LazyFrame_unique = function(
 #' the group structure. This structure can then be used by several functions
 #' (`$agg()`, `$filter()`, etc.).
 #' @keywords LazyFrame
-#' @param ... Any Expr(s) or string(s) naming a column.
-#' @param maintain_order Keep the same group order as in the original data.
-#' Within each group, the order of rows is always preserved, regardless of
-#' this argument. Setting this to `TRUE` makes it more expensive to compute
-#' and blocks the possibility to run on the streaming engine. The default
-#' value can be changed with `options(polars.maintain_order = TRUE)`.
-#' @return LazyGroupBy (a LazyFrame with special groupby methods like `$agg()`)
+#' @param ... Column(s) to group by.
+#' Accepts [expression][Expr_class] input. Characters are parsed as column names.
+#' @param maintain_order Ensure that the order of the groups is consistent with the input data.
+#' This is slower than a default group by.
+#' Setting this to `TRUE` blocks the possibility to run on the streaming engine.
+#' The default value can be changed with `options(polars.maintain_order = TRUE)`.
+#' @return [LazyGroupBy][LazyGroupBy_class] (a LazyFrame with special groupby methods like `$agg()`)
 #' @examples
-#' pl$LazyFrame(
-#'   foo = c("one", "two", "two", "one", "two"),
-#'   bar = c(5, 3, 2, 4, 1)
-#' )$
-#'   group_by("foo")$
-#'   agg(
-#'   pl$col("bar")$sum()$name$suffix("_sum"),
-#'   pl$col("bar")$mean()$alias("bar_tail_sum")
-#' )$
-#'   collect()
+#' lf = pl$LazyFrame(
+#'   a = c("a", "b", "a", "b", "c"),
+#'   b = c(1, 2, 1, 3, 3),
+#'   c = c(5, 4, 3, 2, 1)
+#' )
+#'
+#' lf$group_by("a")$agg(pl$col("b")$sum())$collect()
+#'
+#' # Set `maintain_order = TRUE` to ensure the order of the groups is consistent with the input.
+#' lf$group_by("a", maintain_order = TRUE)$agg(pl$col("c"))$collect()
+#'
+#' # Group by multiple columns by passing a list of column names.
+#' lf$group_by(c("a", "b"))$agg(pl$max("c"))$collect()
+#'
+#' # Or pass some arguments to group by multiple columns in the same way.
+#' # Expressions are also accepted.
+#' lf$group_by("a", pl$col("b") %/% 2)$agg(
+#'   pl$col("c")$mean()
+#' )$collect()
+#'
+#' # The columns will be renamed to the argument names.
+#' lf$group_by(d = "a", e = pl$col("b") %/% 2)$agg(
+#'   pl$col("c")$mean()
+#' )$collect()
 LazyFrame_group_by = function(..., maintain_order = polars_options()$maintain_order) {
   .pr$LazyFrame$group_by(self, unpack_list(..., .context = "in $group_by():"), maintain_order) |>
     unwrap("in $group_by():")

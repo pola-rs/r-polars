@@ -14,6 +14,7 @@
     the condition set in `$when()` will be filled with `null` (#836).
 -   `<DataFrame>$head()` and `<DataFrame>$tail()` methods now support negative
     row numbers (#840).
+-   `$group_by()` now works with named expressions (#846).
 
 ## Polars R Package 0.14.1
 
