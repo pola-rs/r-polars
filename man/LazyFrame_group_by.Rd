@@ -7,16 +7,16 @@
 LazyFrame_group_by(..., maintain_order = polars_options()$maintain_order)
 }
 \arguments{
-\item{...}{Any Expr(s) or string(s) naming a column.}
+\item{...}{Column(s) to group by.
+Accepts \link[=Expr_class]{expression} input. Characters are parsed as column names.}
 
-\item{maintain_order}{Keep the same group order as in the original data.
-Within each group, the order of rows is always preserved, regardless of
-this argument. Setting this to \code{TRUE} makes it more expensive to compute
-and blocks the possibility to run on the streaming engine. The default
-value can be changed with \code{options(polars.maintain_order = TRUE)}.}
+\item{maintain_order}{Ensure that the order of the groups is consistent with the input data.
+This is slower than a default group by.
+Setting this to \code{TRUE} blocks the possibility to run on the streaming engine.
+The default value can be changed with \code{options(polars.maintain_order = TRUE)}.}
 }
 \value{
-LazyGroupBy (a LazyFrame with special groupby methods like \verb{$agg()})
+\link[=LazyGroupBy_class]{LazyGroupBy} (a LazyFrame with special groupby methods like \verb{$agg()})
 }
 \description{
 This doesn't modify the data but only stores information about
@@ -24,15 +24,24 @@ the group structure. This structure can then be used by several functions
 (\verb{$agg()}, \verb{$filter()}, etc.).
 }
 \examples{
-pl$LazyFrame(
-  foo = c("one", "two", "two", "one", "two"),
-  bar = c(5, 3, 2, 4, 1)
-)$
-  group_by("foo")$
-  agg(
-  pl$col("bar")$sum()$name$suffix("_sum"),
-  pl$col("bar")$mean()$alias("bar_tail_sum")
-)$
-  collect()
+lf = pl$LazyFrame(
+  a = c("a", "b", "a", "b", "c"),
+  b = c(1, 2, 1, 3, 3),
+  c = c(5, 4, 3, 2, 1)
+)
+
+lf$group_by("a")$agg(pl$col("b")$sum())$collect()
+
+# Set `maintain_order = TRUE` to ensure the order of the groups is consistent with the input.
+lf$group_by("a", maintain_order = TRUE)$agg(pl$col("c"))$collect()
+
+# Group by multiple columns by passing a list of column names.
+lf$group_by(c("a", "b"))$agg(pl$max("c"))$collect()
+
+# Or pass some arguments to group by multiple columns in the same way.
+# Expressions are also accepted.
+lf$group_by("a", pl$col("b") \%/\% 2)$agg(
+  pl$col("c")$mean()
+)$collect()
 }
 \keyword{LazyFrame}

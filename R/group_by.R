@@ -65,7 +65,7 @@ construct_group_by = function(df, groupby_input, maintain_order) {
   out = c(" ")
   attr(out, "private") = list(
     dat = df$clone(),
-    groupby_input = unlist(groupby_input),
+    groupby_input = unpack_list(groupby_input),
     maintain_order = maintain_order
   )
   class(out) = "RPolarsGroupBy"

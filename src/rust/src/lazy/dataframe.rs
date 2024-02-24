@@ -343,7 +343,7 @@ impl RPolarsLazyFrame {
     }
 
     fn group_by(&self, exprs: Robj, maintain_order: Robj) -> RResult<RPolarsLazyGroupBy> {
-        let expr_vec = robj_to!(VecPLExprCol, exprs)?;
+        let expr_vec = robj_to!(VecPLExprColNamed, exprs)?;
         let maintain_order = robj_to!(Option, bool, maintain_order)?.unwrap_or(false);
         if maintain_order {
             Ok(RPolarsLazyGroupBy {

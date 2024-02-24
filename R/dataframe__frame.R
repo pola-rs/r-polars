@@ -835,25 +835,34 @@ DataFrame_filter = function(...) {
 #' Group a DataFrame
 #' @inheritParams LazyFrame_group_by
 #' @inherit LazyFrame_group_by description params
-#' @keywords DataFrame
-#' @return GroupBy (a DataFrame with special groupby methods like `$agg()`)
+#' @details Within each group, the order of the rows is always preserved,
+#' regerdless of the `maintain_order` argument.
+#' @return [GroupBy][GroupBy_class] (a DataFrame with special groupby methods like `$agg()`)
 #' @examples
-#' gb = pl$DataFrame(
-#'   foo = c("one", "two", "two", "one", "two"),
-#'   bar = c(5, 3, 2, 4, 1)
-#' )$group_by("foo", maintain_order = TRUE)
+#' df = pl$DataFrame(
+#'   a = c("a", "b", "a", "b", "c"),
+#'   b = c(1, 2, 1, 3, 3),
+#'   c = c(5, 4, 3, 2, 1)
+#' )
 #'
-#' gb
+#' df$group_by("a")$agg(pl$col("b")$sum())
 #'
-#' gb$agg(
-#'   pl$col("bar")$sum()$name$suffix("_sum"),
-#'   pl$col("bar")$mean()$alias("bar_tail_sum")
+#' # Set `maintain_order = TRUE` to ensure the order of the groups is consistent with the input.
+#' df$group_by("a", maintain_order = TRUE)$agg(pl$col("c"))
+#'
+#' # Group by multiple columns by passing a list of column names.
+#' df$group_by(c("a", "b"))$agg(pl$max("c"))
+#'
+#' # Or pass some arguments to group by multiple columns in the same way.
+#' # Expressions are also accepted.
+#' df$group_by("a", pl$col("b") %/% 2)$agg(
+#'   pl$col("c")$mean()
 #' )
 DataFrame_group_by = function(..., maintain_order = polars_options()$maintain_order) {
   # clone the DataFrame, bundle args as attributes. Non fallible.
   construct_group_by(
     self,
-    groupby_input = unpack_list(..., .context = "$group_by()"),
+    groupby_input = unpack_list(..., .context = "$group_by():"),
     maintain_order = maintain_order
   )
 }
