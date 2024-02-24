@@ -11,14 +11,14 @@
 #' @examples
 #' polars_info()
 #'
-#' polars_info()$rust_polars
+#' polars_info()$versions
 #'
 #' polars_info()$features$nightly
 polars_info = function() {
   # Similar to arrow::arrow_info()
   out = list(
     versions = list(
-      r_package = utils::packageVersion("polars"),
+      r_package = as.character(utils::packageVersion("polars")),
       rust_crate = rust_polars_version()
     ),
     thread_pool_size = thread_pool_size(),
