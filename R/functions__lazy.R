@@ -100,7 +100,7 @@ pl_len = function() .pr$Expr$new_len()
 
 #' Return the number of non-null values in the column.
 #'
-#' This function is syntactic sugar for `col(columns).count()`.
+#' This function is syntactic sugar for `pl$col(columns)$count()`.
 #'
 #' Calling this function without any arguments returns the number of rows in the context.
 #' This way of using the function is deprecated.

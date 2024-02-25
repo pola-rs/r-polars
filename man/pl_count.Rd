@@ -13,7 +13,7 @@ pl_count(columns = NULL)
 \link[=Expr_class]{Expression} of data type \link[=pl_dtypes]{UInt32}
 }
 \description{
-This function is syntactic sugar for \verb{col(columns).count()}.
+This function is syntactic sugar for \code{pl$col(columns)$count()}.
 }
 \details{
 Calling this function without any arguments returns the number of rows in the context.
