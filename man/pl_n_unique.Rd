@@ -2,34 +2,32 @@
 % Please edit documentation in R/functions__lazy.R
 \name{pl_n_unique}
 \alias{pl_n_unique}
-\title{Count \code{n} unique values}
+\title{Count unique values.}
 \usage{
-pl_n_unique(column)
+pl_n_unique(columns)
 }
 \arguments{
-\item{column}{if dtype is:
-\itemize{
-\item Series: call method n_unique() to return value of unique values.
-\item String: syntactic sugar for \code{pl$col(column)$n_unique()}, returns Expr
-\item Expr: syntactic sugar for \code{column$n_unique()}, returns Expr
-}}
+\item{columns}{A character vector indicating the column names.}
 }
 \value{
-Expr or value
+\link[=Expr_class]{Expr}
 }
 \description{
-Depending on the input type this function does different things:
+This function is syntactic sugar for \code{pl$col(columns)$n_unique()}.
 }
 \examples{
-# column as Series
-pl$n_unique(pl$Series(1:4)) == 4
+df = pl$DataFrame(
+  a = c(1, 8, 1),
+  b = c(4, 5, 2),
+  c = c("foo", "bar", "foo")
+)
 
-# column as String
-expr = pl$n_unique("bob")
-print(expr)
-pl$DataFrame(bob = 1:4)$select(expr)
+df$select(pl$n_unique("a"))
 
-# colum as Expr
-pl$DataFrame(bob = 1:4)$select(pl$n_unique(pl$col("bob")))
+df$select(pl$n_unique(c("b", "c")))
 }
-\keyword{Expr_new}
+\seealso{
+\itemize{
+\item \code{\link[=Expr_n_unique]{<Expr>$n_unique()}}
+}
+}

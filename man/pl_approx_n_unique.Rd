@@ -2,43 +2,33 @@
 % Please edit documentation in R/functions__lazy.R
 \name{pl_approx_n_unique}
 \alias{pl_approx_n_unique}
-\title{Approximate count of unique values.}
+\title{Approximate count of unique values}
 \usage{
-pl_approx_n_unique(column)
+pl_approx_n_unique(columns)
 }
 \arguments{
-\item{column}{if dtype is:
-\itemize{
-\item String: syntactic sugar for \code{pl$col(column)$approx_n_unique()}, returns Expr
-\item Expr: syntactic sugar for \code{column$approx_n_unique()}, returns Expr
-}}
+\item{columns}{A character vector indicating the column names.}
 }
 \value{
-Expr
+\link[=Expr_class]{Expr}
 }
 \description{
-This is done using the HyperLogLog++ algorithm for cardinality estimation.
-}
-\details{
-The approx_n_unique is likely only warranted for large columns. See example.
-It appears approx_n_unique scales better than n_unique, such that the relative performance
-difference increases with column size.
+This function is syntactic sugar for \code{pl$col(columns)$approx_n_unique()},
+and uses the HyperLogLog++ algorithm for cardinality estimation.
 }
 \examples{
-# column as Series
-pl$approx_n_unique(pl$lit(1:4)) == 4
+df = pl$DataFrame(
+  a = c(1, 8, 1),
+  b = c(4, 5, 2),
+  c = c("foo", "bar", "foo")
+)
 
-# column as String
-expr = pl$approx_n_unique("bob")
-print(expr)
-pl$DataFrame(bob = 1:80)$select(expr)
+df$select(pl$approx_n_unique("a"))
 
-# colum as Expr
-pl$DataFrame(bob = 1:4)$select(pl$approx_n_unique(pl$col("bob")))
-
-# comparison with n_unique for 2 million integers. (try change example to 20 million ints)
-lit_series = pl$lit(c(1:1E6, 1E6:1, 1:1E6))
-system.time(pl$approx_n_unique(lit_series)$to_series()$print())
-system.time(pl$n_unique(lit_series)$to_series()$print())
+df$select(pl$approx_n_unique(c("b", "c")))
 }
-\keyword{Expr_new}
+\seealso{
+\itemize{
+\item \code{\link[=Expr_approx_n_unique]{<Expr>$approx_n_unique()}}
+}
+}
