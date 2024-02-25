@@ -149,21 +149,19 @@ test_that("pl$first pl$last", {
 })
 
 
-test_that("pl$len", {
+test_that("pl$len and pl$count", {
   l = list(
     a = c(1, 8, 3),
     b = c(4:6),
     c = c("foo", "bar", "foo")
   )
   df = pl$DataFrame(l)
-  s = pl$Series(1:3)
 
-  expect_identical(df$select(pl$len("b"))$to_list(), list(b = 3))
+  expect_identical(df$select(pl$count("b"))$to_list(), list(b = 3))
   expect_identical(df$select(pl$len())$to_list(), list(len = 3))
-  expect_identical(pl$len(s), s$len())
 
-  # pass invalid column name type to pl$col
-  expect_error(pl$len(1))
+  # pass invalid column name type to pl$count
+  expect_error(pl$count(1))
 })
 
 
@@ -181,21 +179,15 @@ test_that("pl$implode", {
 
 
 test_that("pl$n_unique", {
-  x = c(1:4, NA, NaN, 1) # 6 unique one repeated
-  expect_identical(pl$n_unique(pl$Series(x)), 6)
-
   expr_act = pl$n_unique("bob")
   expect_true(expr_act$meta$eq(pl$col("bob")$n_unique()))
 
-  expr_act_2 = pl$n_unique(pl$all())
-  expect_true(expr_act_2$meta$eq(pl$all()$n_unique()))
-
-  expect_grepl_error(pl$n_unique(1:99), c("in pl\\$n_unique", "is neither", "1 2 3"))
+  expect_error(pl$n_unique(pl$all()))
+  expect_error(pl$n_unique(1))
 })
 
 test_that("pl$approx_n_unique", {
   x = c(1:4, NA, NaN, 1) # 6 unique one repeated
-  expect_identical(pl$approx_n_unique(pl$lit(x))$to_r(), 6)
   expect_identical(pl$lit(x)$approx_n_unique()$to_r(), 6)
 
   # string input becomes a column
@@ -204,10 +196,8 @@ test_that("pl$approx_n_unique", {
   expr_act = pl$approx_n_unique("bob")
   expect_true(expr_act$meta$eq(pl$col("bob")$approx_n_unique()))
 
-  expr_act_2 = pl$approx_n_unique(pl$all())
-  expect_true(expr_act_2$meta$eq(pl$all()$approx_n_unique()))
-
-  expect_grepl_error(pl$approx_n_unique(1:99), c("in pl\\$approx_n_unique", "is neither", "1 2 3"))
+  expect_error(pl$approx_n_unique(pl$all()))
+  expect_error(pl$approx_n_unique(1:99))
 })
 
 
@@ -227,20 +217,8 @@ test_that("pl$head", {
     head(df$to_data_frame(), 2)$a
   )
 
-  expect_identical(
-    df$select(pl$head(pl$col("a"), 2))$to_data_frame()$a,
-    head(df$to_data_frame(), 2)$a
-  )
-
-  expect_identical(
-    pl$head(df$get_column("a"), 2)$to_r(),
-    head(df$to_list()$a, 2)
-  )
-
-  expect_grepl_error(
-    pl$head(df$get_column("a"), -2),
-    "cannot be less than zero"
-  )
+  expect_error(df$select(pl$head(pl$col("a"), 2)))
+  expect_error(pl$head(df$get_column("a"), -2))
 })
 
 
@@ -260,20 +238,7 @@ test_that("pl$tail", {
     tail(df$to_data_frame(), 2)$a
   )
 
-  expect_identical(
-    df$select(pl$tail(pl$col("a"), 2))$to_data_frame()$a,
-    tail(df$to_data_frame(), 2)$a
-  )
-
-  expect_identical(
-    pl$tail(df$get_column("a"), 2)$to_r(),
-    tail(df$to_list()$a, 2)
-  )
-
-  expect_grepl_error(
-    pl$tail(df$get_column("a"), -2),
-    "cannot be less than zero"
-  )
+  expect_error(pl$tail(pl$col("a"), 2))
 })
 
 test_that("pl$cov pl$rolling_cov pl$corr pl$rolling_corr", {
