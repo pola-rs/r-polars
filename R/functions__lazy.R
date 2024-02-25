@@ -256,85 +256,48 @@ pl_tail = function(columns, n = 10) {
     unwrap("in pl$tail():")
 }
 
-#' pl$mean
-#' @description Depending on the input type this function does different things:
-#' @param ... One or several elements:
-#' - Series: Take mean value in `Series`
-#' - DataFrame or LazyFrame: Take mean value of each column
-#' - character vector: parsed as column names
-#' - NULL: expression to take mean column of a context.
+# TODO: add pl_mean_horizontal
+#' Get the mean value.
 #'
-#' @keywords Expr_new
-#'
-#' @return Expr or mean value of input Series
-#'
+#' This function is syntactic sugar for `pl$col(columns)$mean()`.
+#' @inheritParams pl_head
+#' @inherit pl_head return
+#' @seealso
+#' - [`<Expr>$mean()`][Expr_mean]
 #' @examples
-#'
 #' df = pl$DataFrame(
 #'   a = c(1, 8, 3),
 #'   b = c(4, 5, 2),
 #'   c = c("foo", "bar", "foo")
 #' )
+#'
 #' df$select(pl$mean("a"))
 #'
-#' df$select(pl$mean("a", "b"))
-#'
-pl_mean = function(...) { #-> Expr | Any:
-  column = list2(...)
-  lc = length(column)
-  stringflag = all(sapply(column, is_string))
-  pcase(
-    lc == 0L,
-    Err("pl$mean() needs at least one argument."),
-    lc > 1L && !stringflag,
-    Err("When there are more than one arguments in pl$mean(), all arguments must be strings."),
-    lc > 1L && stringflag,
-    Ok(pl$col(unlist(column))$mean()),
-    lc == 1L && inherits(column[[1]], "RPolarsSeries") && column[[1]]$len() == 0,
-    Err("The series is empty, so no mean value can be returned."),
-    lc == 1L && inherits(column[[1]], c("RPolarsSeries", "RPolarsLazyFrame", "RPolarsDataFrame")),
-    Ok(column[[1]]$mean()),
-    or_else = Ok(pl$col(column[[1]])$mean())
-  ) |>
+#' df$select(pl$mean(c("a", "b")))
+pl_mean = function(columns) {
+  result(pl$col(columns)$mean()) |>
     unwrap("in pl$mean():")
 }
 
-#' pl$median
-#' @description Depending on the input type this function does different things:
-#' @inheritParams pl_mean
+#' Get the median value.
 #'
-#' @keywords Expr_new
-#'
-#' @return Expr or median value of input Series
-#'
+#' This function is syntactic sugar for `pl$col(columns)$median()`.
+#' @inheritParams pl_head
+#' @inherit pl_head return
+#' @seealso
+#' - [`<Expr>$median()`][Expr_median]
 #' @examples
-#'
 #' df = pl$DataFrame(
 #'   a = c(1, 8, 3),
 #'   b = c(4, 5, 2),
 #'   c = c("foo", "bar", "foo")
 #' )
+#'
 #' df$select(pl$median("a"))
 #'
-#' df$select(pl$median("a", "b"))
-#'
-pl_median = function(...) { #-> Expr | Any:
-  column = list2(...)
-  lc = length(column)
-  stringflag = all(sapply(column, is_string))
-  pcase(
-    lc == 0L,
-    Err("pl$median() needs at least one argument."),
-    lc > 1L && !stringflag,
-    Err("When there are more than one arguments in pl$median(), all arguments must be strings."),
-    lc > 1L && stringflag,
-    Ok(pl$col(unlist(column))$median()),
-    lc == 1L && inherits(column[[1]], "RPolarsSeries") && column[[1]]$len() == 0,
-    Err("The series is empty, so no median value can be returned."),
-    lc == 1L && inherits(column[[1]], c("RPolarsSeries", "RPolarsLazyFrame", "RPolarsDataFrame")),
-    Ok(column[[1]]$median()),
-    or_else = Ok(pl$col(column[[1]])$median())
-  ) |>
+#' df$select(pl$median(c("a", "b")))
+pl_median = function(columns) {
+  result(pl$col(columns)$median()) |>
     unwrap("in pl$median():")
 }
 

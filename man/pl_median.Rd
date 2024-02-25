@@ -2,35 +2,32 @@
 % Please edit documentation in R/functions__lazy.R
 \name{pl_median}
 \alias{pl_median}
-\title{pl$median}
+\title{Get the median value.}
 \usage{
-pl_median(...)
+pl_median(columns)
 }
 \arguments{
-\item{...}{One or several elements:
-\itemize{
-\item Series: Take mean value in \code{Series}
-\item DataFrame or LazyFrame: Take mean value of each column
-\item character vector: parsed as column names
-\item NULL: expression to take mean column of a context.
-}}
+\item{columns}{A character vector indicating the column names.}
 }
 \value{
-Expr or median value of input Series
+\link[=Expr_class]{Expr}
 }
 \description{
-Depending on the input type this function does different things:
+This function is syntactic sugar for \code{pl$col(columns)$median()}.
 }
 \examples{
-
 df = pl$DataFrame(
   a = c(1, 8, 3),
   b = c(4, 5, 2),
   c = c("foo", "bar", "foo")
 )
+
 df$select(pl$median("a"))
 
-df$select(pl$median("a", "b"))
-
+df$select(pl$median(c("a", "b")))
 }
-\keyword{Expr_new}
+\seealso{
+\itemize{
+\item \code{\link[=Expr_median]{<Expr>$median()}}
+}
+}
