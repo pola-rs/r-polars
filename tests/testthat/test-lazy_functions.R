@@ -1,29 +1,14 @@
 test_that("pl$sum", {
-  # from series
-  r_val = pl$sum(pl$Series(1:5))
-  expect_true(is.numeric(r_val))
-  expect_identical(r_val, 15L)
-
   # from string
   df = pl$DataFrame(a = 1:5)$select(pl$sum("a"))
   expect_true(inherits(df, "RPolarsDataFrame"))
   expect_identical(df$to_list()$a, 15L)
 
-  # from numeric vector
-  df = pl$DataFrame()$select(pl$sum(1:5))
-  expect_true(inherits(df, "RPolarsDataFrame"))
-  expect_identical(df$to_list()[[1L]], 15L)
-
-  # from numeric scalar
-  df = pl$DataFrame()$select(pl$sum(1L))
-  expect_true(inherits(df, "RPolarsDataFrame"))
-  expect_identical(df$to_list()[[1L]], 1L)
-
 
   # support sum over list of expressions, wildcards or strings
   l = list(a = 1:2, b = 3:4, c = 5:6)
   expect_identical(
-    pl$DataFrame(l)$with_columns(pl$sum("a", "c"))$to_list(),
+    pl$DataFrame(l)$with_columns(pl$sum(c("a", "c")))$to_list(),
     list(a = c(3L, 3L), b = c(3L, 4L), c = c(11L, 11L))
   )
   expect_identical(
@@ -33,50 +18,34 @@ test_that("pl$sum", {
 })
 
 test_that("pl$min pl$max", {
-  # from series
-  s = pl$min(pl$Series(1:5))
-  expect_identical(s, 1L)
-  s = pl$max(pl$Series(1:5))
-  expect_identical(s, 5L)
-
-  # from string
   df = pl$DataFrame(a = 1:5)$select(pl$min("a"))
   expect_identical(df$to_list()$a, 1L)
   df = pl$DataFrame(a = 1:5)$select(pl$max("a"))
   expect_identical(df$to_list()$a, 5L)
 
-  # from numeric vector
-  df = pl$DataFrame()$select(pl$min(1:5))
-  expect_identical(df$to_list()[[1L]], 1L)
-  df = pl$DataFrame()$select(pl$max(1:5))
-  expect_identical(df$to_list()[[1L]], 5L)
-
-  # from numeric scalar
-  df = pl$DataFrame()$select(pl$min(1L))
-  expect_identical(df$to_list()[[1L]], 1L)
-  df = pl$DataFrame()$select(pl$max(1L))
-  expect_identical(df$to_list()[[1L]], 1L)
-
-
   # support operation over list of expressions, wildcards or strings
   l = list(a = 1:2, b = 3:4, c = 5:6)
   expect_identical(
     pl$DataFrame(l)$
-      with_columns(pl$min("a", "c"))$
+      with_columns(pl$min(c("a", "c")))$
       to_list(),
     list(a = c(1L, 1L), b = c(3L, 4L), c = c(5L, 5L))
   )
   expect_identical(
     pl$DataFrame(l)$
-      with_columns(pl$max("a", "c"))$
+      with_columns(pl$max(c("a", "c")))$
       to_list(),
     list(a = c(2L, 2L), b = c(3L, 4L), c = c(6L, 6L))
   )
 
-
-  ## TODO polars cannot handle wildcards hey wait with testing until after PR
-  # expect_identical(pl$DataFrame(l)$with_columns(pl$max(list("*")))$to_list(),c(l,list(min=c(1:2))))
-  # expect_identical(pl$DataFrame(l)$with_columns(pl$min(list("*")))$to_list(),c(l,list(min=c(1:2))))
+  expect_identical(
+    pl$DataFrame(l)$select(pl$max("*"))$to_list(),
+    list(a = 2L, b = 4L, c = 6L)
+  )
+  expect_identical(
+    pl$DataFrame(l)$select(pl$min("*"))$to_list(),
+    list(a = 1L, b = 3L, c = 5L)
+  )
 })
 
 
@@ -130,20 +99,6 @@ test_that("pl$first pl$last", {
   expect_identical(df$select(pl$first("b"))$to_list(), list(b = 4L))
   expect_identical(df$select(pl$last("b"))$to_list(), list(b = 6L))
 
-
-  # take from Series
-  expect_identical(pl$first(pl$Series(1:3)), 1L)
-  expect_identical(pl$last(pl$Series(1:3)), 3L)
-
-
-  expect_grepl_error(
-    pl$first(pl$Series(integer())),
-    c("first()", "The series is empty, so no first value can be returned")
-  )
-  expect_grepl_error(
-    pl$last(pl$Series(integer())),
-    c("last()", "The series is empty, so no last value can be returned")
-  )
   expect_error(pl$first(1))
   expect_error(pl$last(1))
 })
