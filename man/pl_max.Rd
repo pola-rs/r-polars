@@ -2,35 +2,36 @@
 % Please edit documentation in R/functions__lazy.R
 \name{pl_max}
 \alias{pl_max}
-\title{Find maximum value in one or several columns}
+\title{Get the maximum value.}
 \usage{
-pl_max(...)
+pl_max(columns)
 }
 \arguments{
-\item{...}{is a:
-If one arg:
-\itemize{
-\item Series or Expr, same as \code{column$sum()}
-\item string, same as \code{pl$col(column)$sum()}
-\item numeric, same as \code{pl$lit(column)$sum()}
-\item list of strings(column names) or expressions to add up as expr1 + expr2 + expr3 + ...
-}
-
-If several args, then wrapped in a list and handled as above.}
+\item{columns}{A character vector indicating the column names.}
 }
 \value{
-Expr
+\link[=Expr_class]{Expr}
 }
 \description{
-This is syntactic sugar for \code{pl$col(...)$max()}.
+Syntactic sugar for \code{pl$col(columns)$max()}.
 }
 \examples{
 df = pl$DataFrame(
-  a = NA_real_,
-  b = c(1:2, NA_real_, NA_real_),
-  c = c(1:4)
+  a = c(1, 8, 3),
+  b = c(4, 5, 2),
+  c = c("foo", "bar", "foo")
 )
-df
 
+df$select(pl$max("a"))
+
+# Get the maximum value of multiple columns.
+df$select(pl$max("^a|b$"))
+
+df$select(pl$max(c("a", "b")))
 }
-\keyword{Expr_new}
+\seealso{
+\itemize{
+\item \code{\link[=Expr_max]{<Expr>$max()}}
+\item \code{\link[=pl_max_horizontal]{pl$max_horizontal()}}
+}
+}

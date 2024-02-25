@@ -2,36 +2,40 @@
 % Please edit documentation in R/functions__lazy.R
 \name{pl_last}
 \alias{pl_last}
-\title{pl$last}
+\title{Get the last value.}
 \usage{
-pl_last(column = NULL)
+pl_last(columns = NULL)
 }
 \arguments{
-\item{column}{if dtype is:
-\itemize{
-\item Series: Take last value in \code{Series}
-\item str: syntactic sugar for \verb{pl.col(..).last()}
-\item NULL: expression to take last column of a context.
-}}
+\item{columns}{A character vector indicating the column names or \code{NULL}.
+If \code{NULL} (default), returns an expression to take the last column
+of the context instead.}
 }
 \value{
-Expr or last value of input Series
+\link[=Expr_class]{Expr}
 }
 \description{
-Depending on the input type this function does different things:
+This function has different behavior depending on the input type:
+\itemize{
+\item \code{NULL} -> Takes last column of a context.
+\item A character vector -> Syntactic sugar for \code{pl$col(columns)$last()}.
+}
 }
 \examples{
-
 df = pl$DataFrame(
   a = c(1, 8, 3),
   b = c(4, 5, 2),
-  c = c("foo", "bar", "foo")
+  c = c("foo", "bar", "baz")
 )
+
 df$select(pl$last())
 
 df$select(pl$last("a"))
 
-pl$last(df$get_column("a"))
-
+df$select(pl$last(c("b", "c")))
 }
-\keyword{Expr_new}
+\seealso{
+\itemize{
+\item \code{\link[=Expr_last]{<Expr>$last()}}
+}
+}

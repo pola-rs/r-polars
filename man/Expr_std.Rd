@@ -7,7 +7,9 @@
 Expr_std(ddof = 1)
 }
 \arguments{
-\item{ddof}{Degrees of freedom, must be an integer between 0 and 255}
+\item{ddof}{An integer representing "Delta Degrees of Freedom":
+the divisor used in the calculation is \code{N - ddof},
+where \code{N} represents the number of elements. By default ddof is \code{1}.}
 }
 \value{
 Expr

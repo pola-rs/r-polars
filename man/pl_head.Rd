@@ -15,7 +15,7 @@ pl_head(columns, n = 10)
 \link[=Expr_class]{Expr}
 }
 \description{
-This function is syntactic sugar for \code{pl$col(column)$head(n)}.
+This function is syntactic sugar for \code{pl$col(columns)$head(n)}.
 }
 \examples{
 df = pl$DataFrame(

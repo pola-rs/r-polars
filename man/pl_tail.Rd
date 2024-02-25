@@ -15,7 +15,7 @@ pl_tail(columns, n = 10)
 \link[=Expr_class]{Expr}
 }
 \description{
-This function is syntactic sugar for \code{pl$col(column)$tail(n)}.
+This function is syntactic sugar for \code{pl$col(columns)$tail(n)}.
 }
 \examples{
 df = pl$DataFrame(

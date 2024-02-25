@@ -2,36 +2,40 @@
 % Please edit documentation in R/functions__lazy.R
 \name{pl_first}
 \alias{pl_first}
-\title{pl$first}
+\title{Get the first value.}
 \usage{
-pl_first(column = NULL)
+pl_first(columns = NULL)
 }
 \arguments{
-\item{column}{if dtype is:
-\itemize{
-\item Series: Take first value in \code{Series}
-\item str: syntactic sugar for \verb{pl.col(..).first()}
-\item NULL: expression to take first column of a context.
-}}
+\item{columns}{A character vector indicating the column names or \code{NULL}.
+If \code{NULL} (default), returns an expression to take the first column
+of the context instead.}
 }
 \value{
-Expr or first value of input Series
+\link[=Expr_class]{Expr}
 }
 \description{
-Depending on the input type this function does different things:
+This function has different behavior depending on the column argument:
+\itemize{
+\item \code{NULL} -> Takes first column of a context.
+\item A character vector -> Syntactic sugar for \code{pl$col(columns)$first()}.
+}
 }
 \examples{
-
 df = pl$DataFrame(
   a = c(1, 8, 3),
   b = c(4, 5, 2),
   c = c("foo", "bar", "foo")
 )
+
 df$select(pl$first())
 
-df$select(pl$first("a"))
+df$select(pl$first("b"))
 
-pl$first(df$get_column("a"))
-
+df$select(pl$first(c("a", "c")))
 }
-\keyword{Expr_new}
+\seealso{
+\itemize{
+\item \code{\link[=Expr_first]{<Expr>$first()}}
+}
+}
