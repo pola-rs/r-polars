@@ -4,10 +4,10 @@
 \alias{pl_tail}
 \title{Get the last \code{n} rows.}
 \usage{
-pl_tail(columns, n = 10)
+pl_tail(..., n = 10)
 }
 \arguments{
-\item{columns}{A character vector indicating the column names.}
+\item{...}{Characters indicating the column names.}
 
 \item{n}{Number of rows to return.}
 }
@@ -15,7 +15,7 @@ pl_tail(columns, n = 10)
 \link[=Expr_class]{Expr}
 }
 \description{
-This function is syntactic sugar for \code{pl$col(columns)$tail(n)}.
+This function is syntactic sugar for \code{pl$col(...)$tail(n)}.
 }
 \examples{
 df = pl$DataFrame(
@@ -26,7 +26,7 @@ df = pl$DataFrame(
 
 df$select(pl$tail("a"))
 
-df$select(pl$tail(c("a", "b"), 2))
+df$select(pl$tail("a", "b", n = 2))
 }
 \seealso{
 \itemize{

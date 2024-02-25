@@ -4,11 +4,11 @@
 \alias{pl_last}
 \title{Get the last value.}
 \usage{
-pl_last(columns = NULL)
+pl_last(...)
 }
 \arguments{
-\item{columns}{A character vector indicating the column names or \code{NULL}.
-If \code{NULL} (default), returns an expression to take the last column
+\item{...}{Characters indicating the column names.
+If missing (default), returns an expression to take the last column
 of the context instead.}
 }
 \value{
@@ -17,8 +17,8 @@ of the context instead.}
 \description{
 This function has different behavior depending on the input type:
 \itemize{
-\item \code{NULL} -> Takes last column of a context.
-\item A character vector -> Syntactic sugar for \code{pl$col(columns)$last()}.
+\item Missing -> Takes last column of a context.
+\item Character vectors -> Syntactic sugar for \code{pl$col(...)$last()}.
 }
 }
 \examples{

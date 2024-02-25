@@ -4,16 +4,16 @@
 \alias{pl_approx_n_unique}
 \title{Approximate count of unique values}
 \usage{
-pl_approx_n_unique(columns)
+pl_approx_n_unique(...)
 }
 \arguments{
-\item{columns}{A character vector indicating the column names.}
+\item{...}{Characters indicating the column names.}
 }
 \value{
 \link[=Expr_class]{Expr}
 }
 \description{
-This function is syntactic sugar for \code{pl$col(columns)$approx_n_unique()},
+This function is syntactic sugar for \code{pl$col(...)$approx_n_unique()},
 and uses the HyperLogLog++ algorithm for cardinality estimation.
 }
 \examples{
@@ -25,7 +25,7 @@ df = pl$DataFrame(
 
 df$select(pl$approx_n_unique("a"))
 
-df$select(pl$approx_n_unique(c("b", "c")))
+df$select(pl$approx_n_unique("b", "c"))
 }
 \seealso{
 \itemize{

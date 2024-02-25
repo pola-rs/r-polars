@@ -4,10 +4,10 @@
 \alias{pl_var}
 \title{Get the variance.}
 \usage{
-pl_var(columns, ddof = 1)
+pl_var(..., ddof = 1)
 }
 \arguments{
-\item{columns}{A character vector indicating the column names.}
+\item{...}{Characters indicating the column names.}
 
 \item{ddof}{An integer representing "Delta Degrees of Freedom":
 the divisor used in the calculation is \code{N - ddof},
@@ -17,7 +17,7 @@ where \code{N} represents the number of elements. By default ddof is \code{1}.}
 \link[=Expr_class]{Expr}
 }
 \description{
-This function is syntactic sugar for \code{pl$col(columns)$var(ddof)}.
+This function is syntactic sugar for \code{pl$col(...)$var(ddof)}.
 }
 \examples{
 df = pl$DataFrame(
@@ -28,7 +28,7 @@ df = pl$DataFrame(
 
 df$select(pl$var("a"))
 
-df$select(pl$var(c("a", "b")))
+df$select(pl$var("a", "b"))
 }
 \seealso{
 \itemize{

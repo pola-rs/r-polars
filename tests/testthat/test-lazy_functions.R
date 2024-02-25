@@ -8,7 +8,7 @@ test_that("pl$sum", {
   # support sum over list of expressions, wildcards or strings
   l = list(a = 1:2, b = 3:4, c = 5:6)
   expect_identical(
-    pl$DataFrame(l)$with_columns(pl$sum(c("a", "c")))$to_list(),
+    pl$DataFrame(l)$with_columns(pl$sum("a", "c"))$to_list(),
     list(a = c(3L, 3L), b = c(3L, 4L), c = c(11L, 11L))
   )
   expect_identical(
@@ -27,13 +27,13 @@ test_that("pl$min pl$max", {
   l = list(a = 1:2, b = 3:4, c = 5:6)
   expect_identical(
     pl$DataFrame(l)$
-      with_columns(pl$min(c("a", "c")))$
+      with_columns(pl$min("a", "c"))$
       to_list(),
     list(a = c(1L, 1L), b = c(3L, 4L), c = c(5L, 5L))
   )
   expect_identical(
     pl$DataFrame(l)$
-      with_columns(pl$max(c("a", "c")))$
+      with_columns(pl$max("a", "c"))$
       to_list(),
     list(a = c(2L, 2L), b = c(3L, 4L), c = c(6L, 6L))
   )
@@ -62,7 +62,7 @@ test_that("pl$std pl$var", {
     var(x, na.rm = TRUE)
   )
 
-  expect_false(pl$DataFrame(x = x)$select(pl$var("x", 2))$to_list()[[1]] == var(x, na.rm = TRUE))
+  expect_false(pl$DataFrame(x = x)$select(pl$var("x", ddof = 2))$to_list()[[1]] == var(x, na.rm = TRUE))
 })
 
 
@@ -168,7 +168,7 @@ test_that("pl$head", {
   )
 
   expect_identical(
-    df$select(pl$head("a", 2))$to_data_frame()$a,
+    df$select(pl$head("a", n = 2))$to_data_frame()$a,
     head(df$to_data_frame(), 2)$a
   )
 
@@ -189,7 +189,7 @@ test_that("pl$tail", {
   )
 
   expect_identical(
-    df$select(pl$tail("a", 2))$to_data_frame()$a,
+    df$select(pl$tail("a", n = 2))$to_data_frame()$a,
     tail(df$to_data_frame(), 2)$a
   )
 

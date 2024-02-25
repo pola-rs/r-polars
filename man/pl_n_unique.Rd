@@ -4,16 +4,16 @@
 \alias{pl_n_unique}
 \title{Count unique values.}
 \usage{
-pl_n_unique(columns)
+pl_n_unique(...)
 }
 \arguments{
-\item{columns}{A character vector indicating the column names.}
+\item{...}{Characters indicating the column names.}
 }
 \value{
 \link[=Expr_class]{Expr}
 }
 \description{
-This function is syntactic sugar for \code{pl$col(columns)$n_unique()}.
+This function is syntactic sugar for \code{pl$col(...)$n_unique()}.
 }
 \examples{
 df = pl$DataFrame(
@@ -24,7 +24,7 @@ df = pl$DataFrame(
 
 df$select(pl$n_unique("a"))
 
-df$select(pl$n_unique(c("b", "c")))
+df$select(pl$n_unique("b", "c"))
 }
 \seealso{
 \itemize{

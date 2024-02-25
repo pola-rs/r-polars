@@ -4,10 +4,10 @@
 \alias{pl_std}
 \title{Get the standard deviation.}
 \usage{
-pl_std(columns, ddof = 1)
+pl_std(..., ddof = 1)
 }
 \arguments{
-\item{columns}{A character vector indicating the column names.}
+\item{...}{Characters indicating the column names.}
 
 \item{ddof}{An integer representing "Delta Degrees of Freedom":
 the divisor used in the calculation is \code{N - ddof},
@@ -17,7 +17,7 @@ where \code{N} represents the number of elements. By default ddof is \code{1}.}
 \link[=Expr_class]{Expr}
 }
 \description{
-This function is syntactic sugar for \code{pl$col(columns)$std(ddof)}.
+This function is syntactic sugar for \code{pl$col(...)$std(ddof)}.
 }
 \examples{
 df = pl$DataFrame(

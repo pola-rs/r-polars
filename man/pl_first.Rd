@@ -4,21 +4,21 @@
 \alias{pl_first}
 \title{Get the first value.}
 \usage{
-pl_first(columns = NULL)
+pl_first(...)
 }
 \arguments{
-\item{columns}{A character vector indicating the column names or \code{NULL}.
-If \code{NULL} (default), returns an expression to take the first column
+\item{...}{Characters indicating the column names.
+If missing (default), returns an expression to take the first column
 of the context instead.}
 }
 \value{
 \link[=Expr_class]{Expr}
 }
 \description{
-This function has different behavior depending on the column argument:
+This function has different behavior depending on arguments:
 \itemize{
-\item \code{NULL} -> Takes first column of a context.
-\item A character vector -> Syntactic sugar for \code{pl$col(columns)$first()}.
+\item Missing -> Takes first column of a context.
+\item Character vectors -> Syntactic sugar for \code{pl$col(...)$first()}.
 }
 }
 \examples{

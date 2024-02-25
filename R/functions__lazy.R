@@ -100,7 +100,7 @@ pl_len = function() .pr$Expr$new_len()
 
 #' Return the number of non-null values in the column.
 #'
-#' This function is syntactic sugar for `pl$col(columns)$count()`.
+#' This function is syntactic sugar for `pl$col(...)$count()`.
 #'
 #' Calling this function without any arguments returns the number of rows in the context.
 #' This way of using the function is deprecated.
@@ -121,13 +121,13 @@ pl_len = function() .pr$Expr$new_len()
 #' df$select(pl$count("a"))
 #'
 #' df$select(pl$count(c("b", "c")))
-pl_count = function(columns = NULL) {
-  if (missing(columns)) {
+pl_count = function(...) {
+  if (missing(...)) {
     warning("`pl$count()` is deprecated and will be removed in 0.15.0. Use `pl$len()` instead.")
     return(pl$len()$alias("count"))
   }
 
-  pl$col(columns)$count()
+  pl$col(...)$count()
 }
 
 #' Aggregate all column values into a list.
@@ -144,11 +144,11 @@ pl_implode = function(name) { # -> Expr
 
 #' Get the first value.
 #'
-#' This function has different behavior depending on the column argument:
-#' - `NULL` -> Takes first column of a context.
-#' - A character vector -> Syntactic sugar for `pl$col(columns)$first()`.
-#' @param columns A character vector indicating the column names or `NULL`.
-#' If `NULL` (default), returns an expression to take the first column
+#' This function has different behavior depending on arguments:
+#' - Missing -> Takes first column of a context.
+#' - Character vectors -> Syntactic sugar for `pl$col(...)$first()`.
+#' @param ... Characters indicating the column names.
+#' If missing (default), returns an expression to take the first column
 #' of the context instead.
 #' @inherit pl_head return
 #' @seealso
@@ -165,11 +165,11 @@ pl_implode = function(name) { # -> Expr
 #' df$select(pl$first("b"))
 #'
 #' df$select(pl$first(c("a", "c")))
-pl_first = function(columns = NULL) {
-  if (is.null(columns)) {
+pl_first = function(...) {
+  if (missing(...)) {
     res = result(.pr$Expr$new_first())
   } else {
-    res = result(pl$col(columns)$first())
+    res = result(pl$col(...)$first())
   }
 
   res |>
@@ -179,10 +179,10 @@ pl_first = function(columns = NULL) {
 #' Get the last value.
 #'
 #' This function has different behavior depending on the input type:
-#' - `NULL` -> Takes last column of a context.
-#' - A character vector -> Syntactic sugar for `pl$col(columns)$last()`.
-#' @param columns A character vector indicating the column names or `NULL`.
-#' If `NULL` (default), returns an expression to take the last column
+#' - Missing -> Takes last column of a context.
+#' - Character vectors -> Syntactic sugar for `pl$col(...)$last()`.
+#' @param ... Characters indicating the column names.
+#' If missing (default), returns an expression to take the last column
 #' of the context instead.
 #' @inherit pl_first return
 #' @seealso
@@ -199,11 +199,11 @@ pl_first = function(columns = NULL) {
 #' df$select(pl$last("a"))
 #'
 #' df$select(pl$last(c("b", "c")))
-pl_last = function(columns = NULL) {
-  if (is.null(columns)) {
+pl_last = function(...) {
+  if (missing(...)) {
     res = result(.pr$Expr$new_last())
   } else {
-    res = result(pl$col(columns)$last())
+    res = result(pl$col(...)$last())
   }
 
   res |>
@@ -212,8 +212,8 @@ pl_last = function(columns = NULL) {
 
 #' Get the first `n` rows.
 #'
-#' This function is syntactic sugar for `pl$col(columns)$head(n)`.
-#' @param columns A character vector indicating the column names.
+#' This function is syntactic sugar for `pl$col(...)$head(n)`.
+#' @param ... Characters indicating the column names.
 #' @param n Number of rows to return.
 #' @return [Expr][Expr_class]
 #' @seealso
@@ -227,16 +227,16 @@ pl_last = function(columns = NULL) {
 #'
 #' df$select(pl$head("a"))
 #'
-#' df$select(pl$head(c("a", "b"), 2))
-pl_head = function(columns, n = 10) {
-  result(pl$col(columns)$head(n)) |>
+#' df$select(pl$head("a", "b", n = 2))
+pl_head = function(..., n = 10) {
+  result(pl$col(...)$head(n)) |>
     unwrap("in pl$head():")
 }
 
 
 #' Get the last `n` rows.
 #'
-#' This function is syntactic sugar for `pl$col(columns)$tail(n)`.
+#' This function is syntactic sugar for `pl$col(...)$tail(n)`.
 #' @inheritParams pl_head
 #' @inherit pl_head return
 #' @seealso
@@ -250,16 +250,16 @@ pl_head = function(columns, n = 10) {
 #'
 #' df$select(pl$tail("a"))
 #'
-#' df$select(pl$tail(c("a", "b"), 2))
-pl_tail = function(columns, n = 10) {
-  result(pl$col(columns)$tail(n)) |>
+#' df$select(pl$tail("a", "b", n = 2))
+pl_tail = function(..., n = 10) {
+  result(pl$col(...)$tail(n)) |>
     unwrap("in pl$tail():")
 }
 
 # TODO: add pl_mean_horizontal
 #' Get the mean value.
 #'
-#' This function is syntactic sugar for `pl$col(columns)$mean()`.
+#' This function is syntactic sugar for `pl$col(...)$mean()`.
 #' @inheritParams pl_head
 #' @inherit pl_head return
 #' @seealso
@@ -273,15 +273,15 @@ pl_tail = function(columns, n = 10) {
 #'
 #' df$select(pl$mean("a"))
 #'
-#' df$select(pl$mean(c("a", "b")))
-pl_mean = function(columns) {
-  result(pl$col(columns)$mean()) |>
+#' df$select(pl$mean("a", "b"))
+pl_mean = function(...) {
+  result(pl$col(...)$mean()) |>
     unwrap("in pl$mean():")
 }
 
 #' Get the median value.
 #'
-#' This function is syntactic sugar for `pl$col(columns)$median()`.
+#' This function is syntactic sugar for `pl$col(...)$median()`.
 #' @inheritParams pl_head
 #' @inherit pl_head return
 #' @seealso
@@ -295,15 +295,15 @@ pl_mean = function(columns) {
 #'
 #' df$select(pl$median("a"))
 #'
-#' df$select(pl$median(c("a", "b")))
-pl_median = function(columns) {
-  result(pl$col(columns)$median()) |>
+#' df$select(pl$median("a", "b"))
+pl_median = function(...) {
+  result(pl$col(...)$median()) |>
     unwrap("in pl$median():")
 }
 
 #' Count unique values.
 #'
-#' This function is syntactic sugar for `pl$col(columns)$n_unique()`.
+#' This function is syntactic sugar for `pl$col(...)$n_unique()`.
 #' @inheritParams pl_head
 #' @inherit pl_head return
 #' @seealso
@@ -317,15 +317,15 @@ pl_median = function(columns) {
 #'
 #' df$select(pl$n_unique("a"))
 #'
-#' df$select(pl$n_unique(c("b", "c")))
-pl_n_unique = function(columns) {
-  result(pl$col(columns)$n_unique()) |>
+#' df$select(pl$n_unique("b", "c"))
+pl_n_unique = function(...) {
+  result(pl$col(...)$n_unique()) |>
     unwrap("in pl$n_unique():")
 }
 
 #' Approximate count of unique values
 #'
-#' This function is syntactic sugar for `pl$col(columns)$approx_n_unique()`,
+#' This function is syntactic sugar for `pl$col(...)$approx_n_unique()`,
 #' and uses the HyperLogLog++ algorithm for cardinality estimation.
 #' @inheritParams pl_head
 #' @inherit pl_head return
@@ -340,15 +340,15 @@ pl_n_unique = function(columns) {
 #'
 #' df$select(pl$approx_n_unique("a"))
 #'
-#' df$select(pl$approx_n_unique(c("b", "c")))
-pl_approx_n_unique = function(columns) {
-  result(pl$col(columns)$approx_n_unique()) |>
+#' df$select(pl$approx_n_unique("b", "c"))
+pl_approx_n_unique = function(...) {
+  result(pl$col(...)$approx_n_unique()) |>
     unwrap("in pl$approx_n_unique():")
 }
 
 #' Sum all values.
 #'
-#' Syntactic sugar for `pl$col(coumns)$sum()`.
+#' Syntactic sugar for `pl$col(...)$sum()`.
 #' @inheritParams pl_head
 #' @inherit pl_head return
 #' @seealso
@@ -360,18 +360,18 @@ pl_approx_n_unique = function(columns) {
 #' df$select(pl$sum("a"))
 #'
 #' # Sum multiple columns
-#' df$select(pl$sum(c("a", "c")))
+#' df$select(pl$sum("a", "c"))
 #'
 #' df$select(pl$sum("^.*[bc]$"))
-pl_sum = function(columns) {
-  result(pl$col(columns)$sum()) |>
+pl_sum = function(...) {
+  result(pl$col(...)$sum()) |>
     unwrap("in pl$sum():")
 }
 
 
 #' Get the minimum value.
 #'
-#' Syntactic sugar for `pl$col(columns)$min()`.
+#' Syntactic sugar for `pl$col(...)$min()`.
 #' @inheritParams pl_sum
 #' @inherit pl_sum return
 #' @seealso
@@ -389,15 +389,15 @@ pl_sum = function(columns) {
 #' # Get the minimum value of multiple columns.
 #' df$select(pl$min("^a|b$"))
 #'
-#' df$select(pl$min(c("a", "b")))
-pl_min = function(columns) {
-  result(pl$col(columns)$min()) |>
+#' df$select(pl$min("a", "b"))
+pl_min = function(...) {
+  result(pl$col(...)$min()) |>
     unwrap("in pl$min():")
 }
 
 #' Get the maximum value.
 #'
-#' Syntactic sugar for `pl$col(columns)$max()`.
+#' Syntactic sugar for `pl$col(...)$max()`.
 #' @inheritParams pl_sum
 #' @inherit pl_sum return
 #' @seealso
@@ -415,9 +415,9 @@ pl_min = function(columns) {
 #' # Get the maximum value of multiple columns.
 #' df$select(pl$max("^a|b$"))
 #'
-#' df$select(pl$max(c("a", "b")))
-pl_max = function(columns) {
-  result(pl$col(columns)$max()) |>
+#' df$select(pl$max("a", "b"))
+pl_max = function(...) {
+  result(pl$col(...)$max()) |>
     unwrap("in pl$max():")
 }
 
@@ -454,7 +454,7 @@ pl_coalesce = function(...) {
 
 #' Get the standard deviation.
 #'
-#' This function is syntactic sugar for `pl$col(columns)$std(ddof)`.
+#' This function is syntactic sugar for `pl$col(...)$std(ddof)`.
 #' @inheritParams pl_sum
 #' @param ddof An integer representing "Delta Degrees of Freedom":
 #' the divisor used in the calculation is `N - ddof`,
@@ -472,14 +472,14 @@ pl_coalesce = function(...) {
 #' df$select(pl$std("a"))
 #'
 #' df$select(pl$std(c("a", "b")))
-pl_std = function(columns, ddof = 1) {
-  result(pl$col(columns)$std(ddof)) |>
+pl_std = function(..., ddof = 1) {
+  result(pl$col(...)$std(ddof)) |>
     unwrap("in pl$std():")
 }
 
 #' Get the variance.
 #'
-#' This function is syntactic sugar for `pl$col(columns)$var(ddof)`.
+#' This function is syntactic sugar for `pl$col(...)$var(ddof)`.
 #' @inheritParams pl_std
 #' @inherit pl_sum return
 #' @seealso
@@ -493,9 +493,9 @@ pl_std = function(columns, ddof = 1) {
 #'
 #' df$select(pl$var("a"))
 #'
-#' df$select(pl$var(c("a", "b")))
-pl_var = function(columns, ddof = 1) {
-  result(pl$col(columns)$var(ddof)) |>
+#' df$select(pl$var("a", "b"))
+pl_var = function(..., ddof = 1) {
+  result(pl$col(...)$var(ddof)) |>
     unwrap("in pl$var():")
 }
 

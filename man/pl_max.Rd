@@ -4,16 +4,16 @@
 \alias{pl_max}
 \title{Get the maximum value.}
 \usage{
-pl_max(columns)
+pl_max(...)
 }
 \arguments{
-\item{columns}{A character vector indicating the column names.}
+\item{...}{Characters indicating the column names.}
 }
 \value{
 \link[=Expr_class]{Expr}
 }
 \description{
-Syntactic sugar for \code{pl$col(columns)$max()}.
+Syntactic sugar for \code{pl$col(...)$max()}.
 }
 \examples{
 df = pl$DataFrame(
@@ -27,7 +27,7 @@ df$select(pl$max("a"))
 # Get the maximum value of multiple columns.
 df$select(pl$max("^a|b$"))
 
-df$select(pl$max(c("a", "b")))
+df$select(pl$max("a", "b"))
 }
 \seealso{
 \itemize{

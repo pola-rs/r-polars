@@ -10,10 +10,9 @@
     -   `pl$head()`, `pl$tail()`, `pl$count()`, `pl$first()`, `pl$last()`, `pl$max()`,
         `pl$min()`, `pl$mean()`, `pl$media()`, `pl$std()`, `pl$sum()`, `pl$var()`,
         `pl$n_unique()`, and `pl$approx_n_unique()` are syntactic sugar for
-        `pl$col(columns)$<method()>`. The argument `columns` accepts only a
-        character vector (#852).
+        `pl$col(...)$<method()>`. The argument `...` accepts charactors (#852).
     -   There is no argument for `pl$len()`. If you want to measure the length of
-        specific columns, should use `pl$count(columns)` (#852).
+        specific columns, should use `pl$count(...)` (#852).
 
 ### New features
 

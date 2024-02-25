@@ -4,16 +4,16 @@
 \alias{pl_median}
 \title{Get the median value.}
 \usage{
-pl_median(columns)
+pl_median(...)
 }
 \arguments{
-\item{columns}{A character vector indicating the column names.}
+\item{...}{Characters indicating the column names.}
 }
 \value{
 \link[=Expr_class]{Expr}
 }
 \description{
-This function is syntactic sugar for \code{pl$col(columns)$median()}.
+This function is syntactic sugar for \code{pl$col(...)$median()}.
 }
 \examples{
 df = pl$DataFrame(
@@ -24,7 +24,7 @@ df = pl$DataFrame(
 
 df$select(pl$median("a"))
 
-df$select(pl$median(c("a", "b")))
+df$select(pl$median("a", "b"))
 }
 \seealso{
 \itemize{

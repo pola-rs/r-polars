@@ -4,16 +4,16 @@
 \alias{pl_sum}
 \title{Sum all values.}
 \usage{
-pl_sum(columns)
+pl_sum(...)
 }
 \arguments{
-\item{columns}{A character vector indicating the column names.}
+\item{...}{Characters indicating the column names.}
 }
 \value{
 \link[=Expr_class]{Expr}
 }
 \description{
-Syntactic sugar for \code{pl$col(coumns)$sum()}.
+Syntactic sugar for \code{pl$col(...)$sum()}.
 }
 \examples{
 df = pl$DataFrame(a = 1:2, b = 3:4, c = 5:6)
@@ -21,7 +21,7 @@ df = pl$DataFrame(a = 1:2, b = 3:4, c = 5:6)
 df$select(pl$sum("a"))
 
 # Sum multiple columns
-df$select(pl$sum(c("a", "c")))
+df$select(pl$sum("a", "c"))
 
 df$select(pl$sum("^.*[bc]$"))
 }

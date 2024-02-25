@@ -4,16 +4,16 @@
 \alias{pl_min}
 \title{Get the minimum value.}
 \usage{
-pl_min(columns)
+pl_min(...)
 }
 \arguments{
-\item{columns}{A character vector indicating the column names.}
+\item{...}{Characters indicating the column names.}
 }
 \value{
 \link[=Expr_class]{Expr}
 }
 \description{
-Syntactic sugar for \code{pl$col(columns)$min()}.
+Syntactic sugar for \code{pl$col(...)$min()}.
 }
 \examples{
 df = pl$DataFrame(
@@ -27,7 +27,7 @@ df$select(pl$min("a"))
 # Get the minimum value of multiple columns.
 df$select(pl$min("^a|b$"))
 
-df$select(pl$min(c("a", "b")))
+df$select(pl$min("a", "b"))
 }
 \seealso{
 \itemize{

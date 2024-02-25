@@ -4,16 +4,16 @@
 \alias{pl_mean}
 \title{Get the mean value.}
 \usage{
-pl_mean(columns)
+pl_mean(...)
 }
 \arguments{
-\item{columns}{A character vector indicating the column names.}
+\item{...}{Characters indicating the column names.}
 }
 \value{
 \link[=Expr_class]{Expr}
 }
 \description{
-This function is syntactic sugar for \code{pl$col(columns)$mean()}.
+This function is syntactic sugar for \code{pl$col(...)$mean()}.
 }
 \examples{
 df = pl$DataFrame(
@@ -24,7 +24,7 @@ df = pl$DataFrame(
 
 df$select(pl$mean("a"))
 
-df$select(pl$mean(c("a", "b")))
+df$select(pl$mean("a", "b"))
 }
 \seealso{
 \itemize{

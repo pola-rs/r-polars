@@ -4,16 +4,16 @@
 \alias{pl_count}
 \title{Return the number of non-null values in the column.}
 \usage{
-pl_count(columns = NULL)
+pl_count(...)
 }
 \arguments{
-\item{columns}{A character vector indicating the column names.}
+\item{...}{Characters indicating the column names.}
 }
 \value{
 \link[=Expr_class]{Expression} of data type \link[=pl_dtypes]{UInt32}
 }
 \description{
-This function is syntactic sugar for \code{pl$col(columns)$count()}.
+This function is syntactic sugar for \code{pl$col(...)$count()}.
 }
 \details{
 Calling this function without any arguments returns the number of rows in the context.

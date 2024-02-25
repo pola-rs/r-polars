@@ -4,10 +4,10 @@
 \alias{pl_head}
 \title{Get the first \code{n} rows.}
 \usage{
-pl_head(columns, n = 10)
+pl_head(..., n = 10)
 }
 \arguments{
-\item{columns}{A character vector indicating the column names.}
+\item{...}{Characters indicating the column names.}
 
 \item{n}{Number of rows to return.}
 }
@@ -15,7 +15,7 @@ pl_head(columns, n = 10)
 \link[=Expr_class]{Expr}
 }
 \description{
-This function is syntactic sugar for \code{pl$col(columns)$head(n)}.
+This function is syntactic sugar for \code{pl$col(...)$head(n)}.
 }
 \examples{
 df = pl$DataFrame(
@@ -26,7 +26,7 @@ df = pl$DataFrame(
 
 df$select(pl$head("a"))
 
-df$select(pl$head(c("a", "b"), 2))
+df$select(pl$head("a", "b", n = 2))
 }
 \seealso{
 \itemize{
