@@ -7,7 +7,8 @@
 -   Removed `as.list()` for class `RPolarsExpr` as it is a simple wrapper around
     `list()` (#843).
 -   Several functions have been rewritten to match the behavior of Python Polars.
-    -   `pl$head()`, `pl$tail()`, `pl$count()`, `pl$n_unique()`, and
+    -   `pl$head()`, `pl$tail()`, `pl$count()`, `pl$first()`, `pl$last()`, `pl$max()`,
+    -   `pl$min()`, `pl$std()`, `pl$sum()`, `pl$var()`, `pl$n_unique()`, and
         `pl$approx_n_unique()` are syntactic sugar for `pl$col(columns)$<method()>`.
         The argument `columns` accepts only a character vector (#852).
     -   There is no argument for `pl$len()`. If you want to measure the length of
