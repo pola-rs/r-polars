@@ -18,17 +18,17 @@ Syntactic sugar for \code{pl$col(...)$min()}.
 }
 \examples{
 df = pl$DataFrame(
-  a = c(1, 8, 3),
-  b = c(4, 5, 2),
-  c = c("foo", "bar", "foo")
+  num_1 = c(1, 8, 3),
+  num_2 = c(4, 5, 2),
+  chr_1 = c("foo", "bar", "foo")
 )
 
-df$select(pl$min("a"))
+df$select(pl$min("num_1"))
 
 # Get the minimum value of multiple columns.
-df$select(pl$min("^a|b$"))
+df$select(pl$min(r"(^num_\d+$)"))
 
-df$select(pl$min("a", "b"))
+df$select(pl$min("num_1", "num_2"))
 }
 \seealso{
 \itemize{

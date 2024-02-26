@@ -359,14 +359,14 @@ pl_approx_n_unique = function(...) {
 #' - [`<Expr>$sum()`][Expr_sum]
 #' - [`pl$sum_horizontal()`][pl_sum_horizontal]
 #' @examples
-#' df = pl$DataFrame(a = 1:2, b = 3:4, c = 5:6)
+#' df = pl$DataFrame(col_a = 1:2, col_b = 3:4, c = 5:6)
 #'
-#' df$select(pl$sum("a"))
+#' df$select(pl$sum("col_a"))
 #'
 #' # Sum multiple columns
-#' df$select(pl$sum("a", "c"))
+#' df$select(pl$sum("col_a", "col_b"))
 #'
-#' df$select(pl$sum("^.*[bc]$"))
+#' df$select(pl$sum("^col_.*$"))
 pl_sum = function(...) {
   result(pl$col(...)$sum()) |>
     unwrap("in pl$sum():")
@@ -383,17 +383,17 @@ pl_sum = function(...) {
 #' - [`pl$min_horizontal()`][pl_min_horizontal]
 #' @examples
 #' df = pl$DataFrame(
-#'   a = c(1, 8, 3),
-#'   b = c(4, 5, 2),
-#'   c = c("foo", "bar", "foo")
+#'   num_1 = c(1, 8, 3),
+#'   num_2 = c(4, 5, 2),
+#'   chr_1 = c("foo", "bar", "foo")
 #' )
 #'
-#' df$select(pl$min("a"))
+#' df$select(pl$min("num_1"))
 #'
 #' # Get the minimum value of multiple columns.
-#' df$select(pl$min("^a|b$"))
+#' df$select(pl$min(r"(^num_\d+$)"))
 #'
-#' df$select(pl$min("a", "b"))
+#' df$select(pl$min("num_1", "num_2"))
 pl_min = function(...) {
   result(pl$col(...)$min()) |>
     unwrap("in pl$min():")
@@ -409,17 +409,17 @@ pl_min = function(...) {
 #' - [`pl$max_horizontal()`][pl_max_horizontal]
 #' @examples
 #' df = pl$DataFrame(
-#'   a = c(1, 8, 3),
-#'   b = c(4, 5, 2),
-#'   c = c("foo", "bar", "foo")
+#'   num_1 = c(1, 8, 3),
+#'   num_2 = c(4, 5, 2),
+#'   chr_1 = c("foo", "bar", "foo")
 #' )
 #'
-#' df$select(pl$max("a"))
+#' df$select(pl$max("num_1"))
 #'
 #' # Get the maximum value of multiple columns.
-#' df$select(pl$max("^a|b$"))
+#' df$select(pl$max(r"(^num_\d+$)"))
 #'
-#' df$select(pl$max("a", "b"))
+#' df$select(pl$max("num_1", "num_2"))
 pl_max = function(...) {
   result(pl$col(...)$max()) |>
     unwrap("in pl$max():")

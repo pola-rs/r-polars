@@ -18,17 +18,17 @@ Syntactic sugar for \code{pl$col(...)$max()}.
 }
 \examples{
 df = pl$DataFrame(
-  a = c(1, 8, 3),
-  b = c(4, 5, 2),
-  c = c("foo", "bar", "foo")
+  num_1 = c(1, 8, 3),
+  num_2 = c(4, 5, 2),
+  chr_1 = c("foo", "bar", "foo")
 )
 
-df$select(pl$max("a"))
+df$select(pl$max("num_1"))
 
 # Get the maximum value of multiple columns.
-df$select(pl$max("^a|b$"))
+df$select(pl$max(r"(^num_\d+$)"))
 
-df$select(pl$max("a", "b"))
+df$select(pl$max("num_1", "num_2"))
 }
 \seealso{
 \itemize{

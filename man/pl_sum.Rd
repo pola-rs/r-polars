@@ -17,14 +17,14 @@ See \code{\link[=pl_col]{?pl_col}} for details.}
 Syntactic sugar for \code{pl$col(...)$sum()}.
 }
 \examples{
-df = pl$DataFrame(a = 1:2, b = 3:4, c = 5:6)
+df = pl$DataFrame(col_a = 1:2, col_b = 3:4, c = 5:6)
 
-df$select(pl$sum("a"))
+df$select(pl$sum("col_a"))
 
 # Sum multiple columns
-df$select(pl$sum("a", "c"))
+df$select(pl$sum("col_a", "col_b"))
 
-df$select(pl$sum("^.*[bc]$"))
+df$select(pl$sum("^col_.*$"))
 }
 \seealso{
 \itemize{
