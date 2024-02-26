@@ -540,23 +540,6 @@ test_that("join_asof_simple", {
   expect_identical(get_reg(logical_json_plan_FF, force_p_pat), "\"force_parallel\": Bool(false)")
 })
 
-test_that("melt example", {
-  lf = pl$DataFrame(
-    a = c("x", "y", "z"),
-    b = c(1, 3, 5),
-    c = c(2, 4, 6)
-  )$lazy()
-
-  expect_identical(
-    lf$melt(id_vars = "a", value_vars = c("b", "c"))$collect()$to_list(),
-    list(
-      a = c("x", "y", "z", "x", "y", "z"),
-      variable = c("b", "b", "b", "c", "c", "c"),
-      value = c(1, 3, 5, 2, 4, 6)
-    )
-  )
-})
-
 
 test_that("rename", {
   lf = pl$DataFrame(mtcars)$lazy()

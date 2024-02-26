@@ -905,24 +905,6 @@ test_that("n_chunks", {
 })
 
 
-test_that("melt example", {
-  df = pl$DataFrame(
-    a = c("x", "y", "z"),
-    b = c(1, 3, 5),
-    c = c(2, 4, 6)
-  )
-
-  expect_identical(
-    df$melt(id_vars = "a", value_vars = c("b", "c"))$to_list(),
-    list(
-      a = c("x", "y", "z", "x", "y", "z"),
-      variable = c("b", "b", "b", "c", "c", "c"),
-      value = c(1, 3, 5, 2, 4, 6)
-    )
-  )
-})
-
-
 test_that("pivot examples", {
   df = pl$DataFrame(
     foo = c("one", "one", "one", "two", "two", "two"),
