@@ -1,3 +1,38 @@
+# TODO: rewrite with generic function `as_polars_lit`
+#' Create a literal value
+#'
+#' @param x A vector of any length
+#'
+#' @return Expr
+#'
+#' @details
+#' `pl$lit(NULL)` translates into a polars `null`.
+#'
+#' @examples
+#' # scalars to literal, explicit `pl$lit(42)` implicit `+ 2`
+#' pl$col("some_column") / pl$lit(42) + 2
+#'
+#' # vector to literal explicitly via Series and back again
+#' # R vector to expression and back again
+#' pl$select(pl$lit(pl$Series(1:4)))$to_list()[[1L]]
+#'
+#' # r vector to literal and back r vector
+#' pl$lit(1:4)$to_r()
+#'
+#' # r vector to literal to dataframe
+#' pl$select(pl$lit(1:4))
+#'
+#' # r vector to literal to Series
+#' pl$lit(1:4)$to_series()
+#'
+#' # vectors to literal implicitly
+#' (pl$lit(2) + 1:4) / 4:1
+pl_lit = function(x) {
+  .pr$Expr$lit(x) |>
+    unwrap("in pl$lit():")
+}
+
+
 #' New Expr referring to all columns
 #' @description
 #' Not to mix up with `Expr_object$all()` which is a 'reduce Boolean columns by AND' method.
@@ -1103,7 +1138,7 @@ pl_duration = function(
 #' @param column An Expr from which integers will be parsed. If this is a float
 #' column, then the decimal part of the float will be ignored. Character are
 #' parsed as column names, but other literal values must be passed to
-#' [`pl$lit()`][Expr_lit].
+#' [`pl$lit()`][pl_lit].
 #' @param time_unit One of `"ns"`, `"us"`, `"ms"`, `"s"`, `"d"`
 #'
 #' @return Expr as Date or [Datetime][DataType_Datetime] depending on the
