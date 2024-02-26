@@ -557,50 +557,6 @@ test_that("melt example", {
   )
 })
 
-test_that("melt vs data.table::melt", {
-  skip_if_not_installed("data.table")
-  plf = pl$DataFrame(
-    a = c("x", "y", "z"),
-    b = c(1, 3, 5),
-    c = c(2, 4, 6)
-  )$lazy()
-
-  rdf = plf$collect()$to_data_frame()
-  dtt = data.table::data.table(rdf)
-
-  melt_mod = \(...) {
-    data.table::melt(variable.factor = FALSE, value.factor = FALSE, ...)
-  }
-
-  expect_identical(
-    plf$melt(id_vars = "a", value_vars = c("b", "c"))$collect()$to_list(),
-    as.list(melt_mod(dtt, id.vars = "a", value_vars = c("b", "c")))
-  )
-  expect_identical(
-    plf$melt(id_vars = c("c", "b"), value_vars = c("a"))$collect()$to_list(),
-    as.list(melt_mod(dtt, id.vars = c("c", "b"), value_vars = c("a")))
-  )
-  expect_identical(
-    plf$melt(id_vars = c("a", "b"), value_vars = c("c"))$collect()$to_list(),
-    as.list(melt_mod(dtt, id.vars = c("a", "b"), value_vars = c("b", "c")))
-  )
-
-  expect_identical(
-    plf$melt(
-      id_vars = c("a", "b"), value_vars = c("c"), value_name = "alice", variable_name = "bob"
-    )$collect()$to_list(),
-    as.list(melt_mod(
-      dtt,
-      id.vars = c("a", "b"), value_vars = c("b", "c"), value.name = "alice", variable.name = "bob"
-    ))
-  )
-
-  # check the check, this should not be equal
-  expect_error(expect_equal(
-    plf$melt(id_vars = c("c", "b"), value_vars = c("a"))$collect()$to_list(),
-    as.list(melt_mod(dtt, id.vars = c("a", "b"), value_vars = c("c")))
-  ))
-})
 
 test_that("rename", {
   lf = pl$DataFrame(mtcars)$lazy()

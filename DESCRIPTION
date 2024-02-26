@@ -27,7 +27,6 @@ Suggests:
     bit64,
     callr,
     curl,
-    data.table,
     ggplot2,
     jsonlite,
     knitr,
