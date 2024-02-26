@@ -16,25 +16,8 @@ patrick::with_parameters_test_that("melt example",
         value = c(1, 3, 5, 2, 4, 6)
       )
     )
-
-    df_2 = pl[[create_func]](
-      a = c("x", "y", "z"),
-      b = c(1, 3, 5),
-      c = c(2, 4, 6)
-    )
-
-    expect_true(is_func(df_2))
-
     expect_identical(
-      df_2$melt(id_vars = "a", value_vars = c("b", "c")) |> as.data.frame(),
-      data.frame(
-        a = c("x", "y", "z", "x", "y", "z"),
-        variable = c("b", "b", "b", "c", "c", "c"),
-        value = c(1, 3, 5, 2, 4, 6)
-      )
-    )
-    expect_identical(
-      df_2$melt(id_vars = c("c", "b"), value_vars = "a") |> as.data.frame(),
+      df_1$melt(id_vars = c("c", "b"), value_vars = "a") |> as.data.frame(),
       data.frame(
         c = c(2, 4, 6),
         b = c(1, 3, 5),
@@ -43,7 +26,7 @@ patrick::with_parameters_test_that("melt example",
       )
     )
     expect_identical(
-      df_2$melt(id_vars = c("a", "b"), value_vars = "c") |> as.data.frame(),
+      df_1$melt(id_vars = c("a", "b"), value_vars = "c") |> as.data.frame(),
       data.frame(
         a = c("x", "y", "z"),
         b = c(1, 3, 5),
@@ -53,7 +36,7 @@ patrick::with_parameters_test_that("melt example",
     )
 
     expect_identical(
-      df_2$melt(
+      df_1$melt(
         id_vars = c("a", "b"),
         value_vars = c("c"),
         value_name = "alice",
@@ -66,8 +49,6 @@ patrick::with_parameters_test_that("melt example",
         alice = c(2, 4, 6)
       )
     )
-
-    expect_error
   },
   create_func = c("DataFrame", "LazyFrame"),
   is_func = list(is_polars_df, is_polars_lf),
