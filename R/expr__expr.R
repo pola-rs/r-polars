@@ -1020,38 +1020,6 @@ Expr_map_elements = function(f, return_type = NULL, strict_return_type = TRUE, a
     unwrap("in $map_elements():")
 }
 
-#' Create a literal value
-#'
-#' @param x A vector of any length
-#'
-#' @return Expr
-#'
-#' @details
-#' `pl$lit(NULL)` translates into a polars `null`.
-#'
-#' @examples
-#' # scalars to literal, explicit `pl$lit(42)` implicit `+ 2`
-#' pl$col("some_column") / pl$lit(42) + 2
-#'
-#' # vector to literal explicitly via Series and back again
-#' # R vector to expression and back again
-#' pl$select(pl$lit(pl$Series(1:4)))$to_list()[[1L]]
-#'
-#' # r vector to literal and back r vector
-#' pl$lit(1:4)$to_r()
-#'
-#' # r vector to literal to dataframe
-#' pl$select(pl$lit(1:4))
-#'
-#' # r vector to literal to Series
-#' pl$lit(1:4)$to_series()
-#'
-#' # vectors to literal implicitly
-#' (pl$lit(2) + 1:4) / 4:1
-Expr_lit = function(x) {
-  .Call(wrap__RPolarsExpr__lit, x) |>
-    unwrap("in $lit()")
-}
 
 #' Reverse a variable
 #' @return Expr

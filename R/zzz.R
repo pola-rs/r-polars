@@ -118,9 +118,6 @@ replace_private_with_pub_methods(RPolarsSQLContext, "^SQLContext_")
 # pl top level functions
 replace_private_with_pub_methods(pl, "^pl_")
 
-# expression constructors, why not just pl$lit = Expr_lit?
-move_env_elements(RPolarsExpr, pl, c("lit"), remove = FALSE)
-
 # tell testthat data.table is suggested
 .datatable.aware = TRUE
 

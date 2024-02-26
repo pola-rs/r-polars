@@ -10,7 +10,7 @@ pl_from_epoch(column, time_unit = "s")
 \item{column}{An Expr from which integers will be parsed. If this is a float
 column, then the decimal part of the float will be ignored. Character are
 parsed as column names, but other literal values must be passed to
-\code{\link[=Expr_lit]{pl$lit()}}.}
+\code{\link[=pl_lit]{pl$lit()}}.}
 
 \item{time_unit}{One of \code{"ns"}, \code{"us"}, \code{"ms"}, \code{"s"}, \code{"d"}}
 }
