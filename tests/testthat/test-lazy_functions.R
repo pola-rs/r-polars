@@ -1,3 +1,9 @@
+# TODO: more tests
+test_that("pl$col", {
+  expect_error(pl$col(), "requires at least one argument")
+})
+
+
 test_that("pl$sum", {
   # from string
   df = pl$DataFrame(a = 1:5)$select(pl$sum("a"))

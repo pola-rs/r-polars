@@ -23,6 +23,7 @@ pl_all = function(name = NULL) {
   # https://github.com/pola-rs/polars/blob/589f36432de6e95e81d9715a77d6fe78360512e5/py-polars/polars/internals/lazy_functions.py#L1095
 }
 
+# TODO: rewrite to simplify
 #' Start Expression with a column
 #' @description
 #' Return an expression representing a column in a DataFrame.
@@ -68,6 +69,10 @@ pl_all = function(name = NULL) {
 #' # from Series of names
 #' df$select(pl$col(pl$Series(c("bar", "foobar"))))
 pl_col = function(name = "", ...) {
+  if (!nargs()) {
+    Err_plain("pl$col() requires at least one argument.") |>
+      unwrap("in pl$col():")
+  }
   robj_to_col(name, list2(...)) |>
     unwrap("in pl$col()")
 }
@@ -122,12 +127,8 @@ pl_len = function() .pr$Expr$new_len()
 #'
 #' df$select(pl$count(c("b", "c")))
 pl_count = function(...) {
-  if (missing(...)) {
-    warning("`pl$count()` is deprecated and will be removed in 0.15.0. Use `pl$len()` instead.")
-    return(pl$len()$alias("count"))
-  }
-
-  pl$col(...)$count()
+  result(pl$col(...)$count()) |>
+    unwrap("in pl$count():")
 }
 
 #' Aggregate all column values into a list.
