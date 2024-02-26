@@ -148,8 +148,9 @@ pl_implode = function(name) { # -> Expr
 #' This function has different behavior depending on arguments:
 #' - Missing -> Takes first column of a context.
 #' - Character vectors -> Syntactic sugar for `pl$col(...)$first()`.
-#' @param ... Characters indicating the column names.
-#' If missing (default), returns an expression to take the first column
+#' @param ... Characters indicating the column names
+#' (passed to [`pl$col()`][pl_col], see [`?pl_col`][pl_col] for details),
+#' or empty. If empty (default), returns an expression to take the first column
 #' of the context instead.
 #' @inherit pl_head return
 #' @seealso
@@ -167,7 +168,7 @@ pl_implode = function(name) { # -> Expr
 #'
 #' df$select(pl$first(c("a", "c")))
 pl_first = function(...) {
-  if (missing(...)) {
+  if (!nargs()) {
     res = result(.pr$Expr$new_first())
   } else {
     res = result(pl$col(...)$first())
@@ -182,8 +183,9 @@ pl_first = function(...) {
 #' This function has different behavior depending on the input type:
 #' - Missing -> Takes last column of a context.
 #' - Character vectors -> Syntactic sugar for `pl$col(...)$last()`.
-#' @param ... Characters indicating the column names.
-#' If missing (default), returns an expression to take the last column
+#' @param ... Characters indicating the column names
+#' (passed to [`pl$col()`][pl_col], see [`?pl_col`][pl_col] for details),
+#' or empty. If empty (default), returns an expression to take the last column
 #' of the context instead.
 #' @inherit pl_first return
 #' @seealso
@@ -201,7 +203,7 @@ pl_first = function(...) {
 #'
 #' df$select(pl$last(c("b", "c")))
 pl_last = function(...) {
-  if (missing(...)) {
+  if (!nargs()) {
     res = result(.pr$Expr$new_last())
   } else {
     res = result(pl$col(...)$last())
@@ -214,7 +216,8 @@ pl_last = function(...) {
 #' Get the first `n` rows.
 #'
 #' This function is syntactic sugar for `pl$col(...)$head(n)`.
-#' @param ... Characters indicating the column names.
+#' @param ... Characters indicating the column names, passed to [`pl$col()`][pl_col].
+#' See [`?pl_col`][pl_col] for details.
 #' @param n Number of rows to return.
 #' @return [Expr][Expr_class]
 #' @seealso

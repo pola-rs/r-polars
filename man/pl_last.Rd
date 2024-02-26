@@ -7,8 +7,9 @@
 pl_last(...)
 }
 \arguments{
-\item{...}{Characters indicating the column names.
-If missing (default), returns an expression to take the last column
+\item{...}{Characters indicating the column names
+(passed to \code{\link[=pl_col]{pl$col()}}, see \code{\link[=pl_col]{?pl_col}} for details),
+or empty. If empty (default), returns an expression to take the last column
 of the context instead.}
 }
 \value{

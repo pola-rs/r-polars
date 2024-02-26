@@ -7,7 +7,8 @@
 pl_var(..., ddof = 1)
 }
 \arguments{
-\item{...}{Characters indicating the column names.}
+\item{...}{Characters indicating the column names, passed to \code{\link[=pl_col]{pl$col()}}.
+See \code{\link[=pl_col]{?pl_col}} for details.}
 
 \item{ddof}{An integer representing "Delta Degrees of Freedom":
 the divisor used in the calculation is \code{N - ddof},

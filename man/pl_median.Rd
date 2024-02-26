@@ -7,7 +7,8 @@
 pl_median(...)
 }
 \arguments{
-\item{...}{Characters indicating the column names.}
+\item{...}{Characters indicating the column names, passed to \code{\link[=pl_col]{pl$col()}}.
+See \code{\link[=pl_col]{?pl_col}} for details.}
 }
 \value{
 \link[=Expr_class]{Expr}
