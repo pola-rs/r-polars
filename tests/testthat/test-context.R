@@ -19,7 +19,7 @@ patrick::with_parameters_test_that("lazy functions in context",
     y = data.frame(lapply(mtcars[, c("mpg", "hp")], base))
     expect_equal(x, y, ignore_attr = TRUE)
     expect_error(df$select(pl[[pola]]()))
-    expect_error(df$select(pl[[pola]]("mpg", pl$col("hp")))$to_data_frame())
+    expect_error(df$select(pl[[pola]]("mpg", pl$col("hp"))))
   },
   .cases = make_cases()
 )
