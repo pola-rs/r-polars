@@ -54,7 +54,7 @@ test_that("expr struct$rename_fields", {
     df_too_few$unnest()$to_list()
   )
 
-  err_state = result(pl$col()$struct$rename_fields(42))
+  err_state = result(pl$col("")$struct$rename_fields(42))
   expect_grepl_error(unwrap(err_state), "str")
   expect_grepl_error(unwrap(err_state), "\\[names\\]")
   expect_grepl_error(unwrap(err_state), "in struct\\$rename_fields:")

@@ -1,8 +1,8 @@
 test_that("code completion: method names are found", {
   polars_code_completion_activate(mode = "native", verbose = FALSE)
-  utils:::.assignToken("pl$col()$a")
+  utils:::.assignToken("pl$all()$a")
   utils:::.completeToken()
-  expect_true("pl$col()$abs()" %in% utils:::.retrieveCompletions())
+  expect_true("pl$all()$abs()" %in% utils:::.retrieveCompletions())
   polars_code_completion_deactivate()
 })
 

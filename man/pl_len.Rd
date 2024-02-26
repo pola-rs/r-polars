@@ -2,34 +2,27 @@
 % Please edit documentation in R/functions__lazy.R
 \name{pl_len}
 \alias{pl_len}
-\title{pl$count}
+\title{Return the number of rows in the context.}
 \usage{
-pl_len(column = NULL)
-}
-\arguments{
-\item{column}{if dtype is:
-\itemize{
-\item Series: count length of Series
-\item str: count values of this column
-\item NULL: count the number of value in this context.
-}}
+pl_len()
 }
 \value{
-Expr or value-count in case Series
+\link[=Expr_class]{Expression} of data type \link[=pl_dtypes]{UInt32}
 }
 \description{
-Count the number of values in this column/context.
+This is similar to \verb{COUNT(*)} in SQL.
 }
 \examples{
-
 df = pl$DataFrame(
-  a = c(1, 8, 3),
-  b = c(4, 5, 2),
+  a = c(1, 2, NA),
+  b = c(3, NA, NA),
   c = c("foo", "bar", "foo")
 )
+
 df$select(pl$len())
-
-
-df$group_by("c", maintain_order = TRUE)$agg(pl$len())
 }
-\keyword{Expr_new}
+\seealso{
+\itemize{
+\item \code{\link[=Expr_count]{<Expr>$count()}}
+}
+}

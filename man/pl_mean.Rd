@@ -2,35 +2,33 @@
 % Please edit documentation in R/functions__lazy.R
 \name{pl_mean}
 \alias{pl_mean}
-\title{pl$mean}
+\title{Get the mean value.}
 \usage{
 pl_mean(...)
 }
 \arguments{
-\item{...}{One or several elements:
-\itemize{
-\item Series: Take mean value in \code{Series}
-\item DataFrame or LazyFrame: Take mean value of each column
-\item character vector: parsed as column names
-\item NULL: expression to take mean column of a context.
-}}
+\item{...}{Characters indicating the column names, passed to \code{\link[=pl_col]{pl$col()}}.
+See \code{\link[=pl_col]{?pl_col}} for details.}
 }
 \value{
-Expr or mean value of input Series
+\link[=Expr_class]{Expr}
 }
 \description{
-Depending on the input type this function does different things:
+This function is syntactic sugar for \code{pl$col(...)$mean()}.
 }
 \examples{
-
 df = pl$DataFrame(
   a = c(1, 8, 3),
   b = c(4, 5, 2),
   c = c("foo", "bar", "foo")
 )
+
 df$select(pl$mean("a"))
 
 df$select(pl$mean("a", "b"))
-
 }
-\keyword{Expr_new}
+\seealso{
+\itemize{
+\item \code{\link[=Expr_mean]{<Expr>$mean()}}
+}
+}

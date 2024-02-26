@@ -4,22 +4,19 @@
 \alias{pl_head}
 \title{Get the first \code{n} rows.}
 \usage{
-pl_head(column, n = 10)
+pl_head(..., n = 10)
 }
 \arguments{
-\item{column}{if dtype is:
-\itemize{
-\item Series: Take head value in \code{Series}
-\item str or int: syntactic sugar for \verb{pl.col(..).head()}
-}}
+\item{...}{Characters indicating the column names, passed to \code{\link[=pl_col]{pl$col()}}.
+See \code{\link[=pl_col]{?pl_col}} for details.}
 
-\item{n}{Number of rows to take}
+\item{n}{Number of rows to return.}
 }
 \value{
-Expr or head value of input Series
+\link[=Expr_class]{Expr}
 }
 \description{
-Get the first \code{n} rows.
+This function is syntactic sugar for \code{pl$col(...)$head(n)}.
 }
 \examples{
 df = pl$DataFrame(
@@ -28,11 +25,12 @@ df = pl$DataFrame(
   c = c("foo", "bar", "foo")
 )
 
-expr_head = pl$head("a")
-print(expr_head)
-df$select(expr_head)
+df$select(pl$head("a"))
 
-df$select(pl$head("a", 2))
-pl$head(df$get_column("a"), 2)
+df$select(pl$head("a", "b", n = 2))
 }
-\keyword{Expr_new}
+\seealso{
+\itemize{
+\item \code{\link[=Expr_head]{<Expr>$head()}}
+}
+}

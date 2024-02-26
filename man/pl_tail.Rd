@@ -4,22 +4,19 @@
 \alias{pl_tail}
 \title{Get the last \code{n} rows.}
 \usage{
-pl_tail(column, n = 10)
+pl_tail(..., n = 10)
 }
 \arguments{
-\item{column}{if dtype is:
-\itemize{
-\item Series: Take tail value in \code{Series}
-\item str or in: syntactic sugar for \verb{pl.col(..).tail()}
-}}
+\item{...}{Characters indicating the column names, passed to \code{\link[=pl_col]{pl$col()}}.
+See \code{\link[=pl_col]{?pl_col}} for details.}
 
-\item{n}{Number of rows to take}
+\item{n}{Number of rows to return.}
 }
 \value{
-Expr or tail value of input Series
+\link[=Expr_class]{Expr}
 }
 \description{
-Get the last \code{n} rows.
+This function is syntactic sugar for \code{pl$col(...)$tail(n)}.
 }
 \examples{
 df = pl$DataFrame(
@@ -28,11 +25,12 @@ df = pl$DataFrame(
   c = c("foo", "bar", "foo")
 )
 
-expr_tail = pl$head("a")
-print(expr_tail)
-df$select(expr_tail)
+df$select(pl$tail("a"))
 
-df$select(pl$tail("a", 2))
-
-pl$tail(df$get_column("a"), 2)
+df$select(pl$tail("a", "b", n = 2))
+}
+\seealso{
+\itemize{
+\item \code{\link[=Expr_tail]{<Expr>$tail()}}
+}
 }

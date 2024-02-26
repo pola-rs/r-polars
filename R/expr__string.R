@@ -232,7 +232,7 @@ ExprStr_len_chars = function() {
 #'
 #' # Series list of strings to Series of concatenated strings
 #' df = pl$DataFrame(list(bar = list(c("a", "b", "c"), c("1", "2", NA))))
-#' df$select(pl$col("bar")$list$eval(pl$col()$str$concat())$list$first())
+#' df$select(pl$col("bar")$list$eval(pl$col("")$str$concat("-"))$list$first())
 ExprStr_concat = function(delimiter = "-", ignore_nulls = TRUE) {
   .pr$Expr$str_concat(self, delimiter, ignore_nulls) |>
     unwrap("in $concat():")

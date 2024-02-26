@@ -2,34 +2,33 @@
 % Please edit documentation in R/functions__lazy.R
 \name{pl_sum}
 \alias{pl_sum}
-\title{Compute sum in one or several columns}
+\title{Sum all values.}
 \usage{
 pl_sum(...)
 }
 \arguments{
-\item{...}{One or several elements. Each element can be:
-\itemize{
-\item Series or Expr
-\item string, that is parsed as columns
-\item numeric, that is parsed as literal
-}}
+\item{...}{Characters indicating the column names, passed to \code{\link[=pl_col]{pl$col()}}.
+See \code{\link[=pl_col]{?pl_col}} for details.}
 }
 \value{
-Expr
+\link[=Expr_class]{Expr}
 }
 \description{
-This is syntactic sugar for \code{pl$col(...)$sum()}.
+Syntactic sugar for \code{pl$col(...)$sum()}.
 }
 \examples{
-# column as string
-pl$DataFrame(iris)$select(pl$sum("Petal.Width"))
+df = pl$DataFrame(col_a = 1:2, col_b = 3:4, c = 5:6)
 
-# column as Expr (prefer pl$col("Petal.Width")$sum())
-pl$DataFrame(iris)$select(pl$sum(pl$col("Petal.Width")))
+df$select(pl$sum("col_a"))
 
-df = pl$DataFrame(a = 1:2, b = 3:4, c = 5:6)
+# Sum multiple columns
+df$select(pl$sum("col_a", "col_b"))
 
-# Compute sum in several columns
-df$with_columns(pl$sum("*"))
+df$select(pl$sum("^col_.*$"))
 }
-\keyword{Expr_new}
+\seealso{
+\itemize{
+\item \code{\link[=Expr_sum]{<Expr>$sum()}}
+\item \code{\link[=pl_sum_horizontal]{pl$sum_horizontal()}}
+}
+}

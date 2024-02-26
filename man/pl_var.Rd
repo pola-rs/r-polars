@@ -2,19 +2,37 @@
 % Please edit documentation in R/functions__lazy.R
 \name{pl_var}
 \alias{pl_var}
-\title{Variance}
+\title{Get the variance.}
 \usage{
-pl_var(column, ddof = 1)
+pl_var(..., ddof = 1)
 }
 \arguments{
-\item{column}{Column name.}
+\item{...}{Characters indicating the column names, passed to \code{\link[=pl_col]{pl$col()}}.
+See \code{\link[=pl_col]{?pl_col}} for details.}
 
-\item{ddof}{Delta Degrees of Freedom: the divisor used in the calculation is
-N - ddof, where N represents the number of elements. By default ddof is 1.}
+\item{ddof}{An integer representing "Delta Degrees of Freedom":
+the divisor used in the calculation is \code{N - ddof},
+where \code{N} represents the number of elements. By default ddof is \code{1}.}
 }
 \value{
-Expr or Series matching type of input column
+\link[=Expr_class]{Expr}
 }
 \description{
-syntactic sugar for starting a expression with var
+This function is syntactic sugar for \code{pl$col(...)$var(ddof)}.
+}
+\examples{
+df = pl$DataFrame(
+  a = c(1, 8, 3),
+  b = c(4, 5, 2),
+  c = c("foo", "bar", "foo")
+)
+
+df$select(pl$var("a"))
+
+df$select(pl$var("a", "b"))
+}
+\seealso{
+\itemize{
+\item \code{\link[=Expr_var]{<Expr>$var()}}
+}
 }

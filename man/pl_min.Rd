@@ -2,34 +2,37 @@
 % Please edit documentation in R/functions__lazy.R
 \name{pl_min}
 \alias{pl_min}
-\title{Find minimum value in one or several columns}
+\title{Get the minimum value.}
 \usage{
 pl_min(...)
 }
 \arguments{
-\item{...}{is a:
-If one arg:
-\itemize{
-\item Series or Expr, same as \code{column$sum()}
-\item string, same as \code{pl$col(column)$sum()}
-\item numeric, same as \code{pl$lit(column)$sum()}
-\item list of strings(column names) or expressions to add up as expr1 + expr2 + expr3 + ...
-If several args, then wrapped in a list and handled as above.
-}}
+\item{...}{Characters indicating the column names, passed to \code{\link[=pl_col]{pl$col()}}.
+See \code{\link[=pl_col]{?pl_col}} for details.}
 }
 \value{
-Expr
+\link[=Expr_class]{Expr}
 }
 \description{
-This is syntactic sugar for \code{pl$col(...)$min()}.
+Syntactic sugar for \code{pl$col(...)$min()}.
 }
 \examples{
 df = pl$DataFrame(
-  a = NA_real_,
-  b = c(1:2, NA_real_, NA_real_),
-  c = c(1:4)
+  num_1 = c(1, 8, 3),
+  num_2 = c(4, 5, 2),
+  chr_1 = c("foo", "bar", "foo")
 )
-df
 
+df$select(pl$min("num_1"))
+
+# Get the minimum value of multiple columns.
+df$select(pl$min(r"(^num_\d+$)"))
+
+df$select(pl$min("num_1", "num_2"))
 }
-\keyword{Expr_new}
+\seealso{
+\itemize{
+\item \code{\link[=Expr_min]{<Expr>$min()}}
+\item \code{\link[=pl_min_horizontal]{pl$min_horizontal()}}
+}
+}

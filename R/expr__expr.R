@@ -1804,7 +1804,7 @@ Expr_fill_nan = function(expr = NULL) {
 
 #' Get standard deviation
 #'
-#' @param ddof Degrees of freedom, must be an integer between 0 and 255
+#' @inheritParams pl_std
 #' @return Expr
 #'
 #' @examples

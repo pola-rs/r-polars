@@ -6,6 +6,15 @@
 
 -   Removed `as.list()` for class `RPolarsExpr` as it is a simple wrapper around
     `list()` (#843).
+-   Several functions have been rewritten to match the behavior of Python Polars.
+    -   `pl$col(...)` requires at least one argument. (#852)
+    -   `pl$head()`, `pl$tail()`, `pl$count()`, `pl$first()`, `pl$last()`, `pl$max()`,
+        `pl$min()`, `pl$mean()`, `pl$media()`, `pl$std()`, `pl$sum()`, `pl$var()`,
+        `pl$n_unique()`, and `pl$approx_n_unique()` are syntactic sugar for
+        `pl$col(...)$<method()>`. The argument `...` now only accepts characters,
+        that are either column names or regular expressions (#852).
+    -   There is no argument for `pl$len()`. If you want to measure the length of
+        specific columns, you should use `pl$count(...)` (#852).
 
 ### New features
 
