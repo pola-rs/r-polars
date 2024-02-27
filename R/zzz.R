@@ -118,8 +118,6 @@ replace_private_with_pub_methods(RPolarsSQLContext, "^SQLContext_")
 # pl top level functions
 replace_private_with_pub_methods(pl, "^pl_")
 
-# tell testthat data.table is suggested
-.datatable.aware = TRUE
 
 # Package startup messages must be in .onAttach(), not in .onLoad() otherwise
 # R CMD check throws a NOTE. See also: https://r-pkgs.org/r-cmd-check.html#r-code

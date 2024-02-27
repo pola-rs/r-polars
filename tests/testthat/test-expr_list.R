@@ -249,58 +249,69 @@ test_that("arg_min arg_max", {
 
 
 test_that("diff", {
-  skip_if_not_installed("data.table")
   l = list(
     l_i32 = list(1:5, 1:3, c(4L, 2L, 1L, 7L, 42L)),
     l_f64 = list(c(1, 1, 2, 3, NA, Inf, NA, Inf), c(1), numeric())
   )
   df = pl$DataFrame(l)
 
-  r_diff = function(x, n = 1L) {
-    x - data.table::shift(x, n)
-  }
-
   l_act_diff_1 = df$select(pl$all()$list$diff())$to_list()
-  l_exp_diff_1 = lapply(l, sapply, r_diff)
+  l_exp_diff_1 = list(
+    l_i32 = list(c(NA, rep(1L, 4)), c(NA, 1L, 1L), c(NA, -2L, -1L, 6L, 35L)),
+    l_f64 = list(c(NA, 0, 1, 1, NA, NA, NA, NA), NA_real_, numeric())
+  )
   expect_identical(l_act_diff_1, l_exp_diff_1)
 
   l_act_diff_2 = df$select(pl$all()$list$diff(n = 2))$to_list()
-  l_exp_diff_2 = lapply(l, sapply, r_diff, n = 2)
+  l_exp_diff_2 = list(
+    l_i32 = list(c(NA, NA, rep(2L, 3)), c(NA, NA, 2L), c(NA, NA, -3L, 5L, 41L)),
+    l_f64 = list(c(NA, NA, 1, 2, NA, Inf, NA, NaN), NA_real_, numeric())
+  )
   expect_identical(l_act_diff_2, l_exp_diff_2)
 
   l_act_diff_0 = df$select(pl$all()$list$diff(n = 0))$to_list()
-  l_exp_diff_0 = lapply(l, sapply, r_diff, n = 0)
+  l_exp_diff_0 = list(
+    l_i32 = list(rep(0L, 5), rep(0L, 3), rep(0L, 5)),
+    l_f64 = list(c(rep(0, 4), NA, NaN, NA, NaN), 0, numeric())
+  )
   expect_identical(l_act_diff_0, l_exp_diff_0)
 })
 
 
 
 test_that("shift", {
-  skip_if_not_installed("data.table")
   l = list(
     l_i32 = list(1:5, 1:3, c(4L, 2L, 1L, 7L, 42L)),
     l_f64 = list(c(1, 1, 2, 3, NA, Inf, NA, Inf), c(1), numeric())
   )
   df = pl$DataFrame(l)
 
-  r_shift = function(x, n = 1L) {
-    data.table::shift(x, n) # <3 data.table
-  }
-
   l_act_diff_1 = df$select(pl$all()$list$shift())$to_list()
-  l_exp_diff_1 = lapply(l, sapply, r_shift)
+  l_exp_diff_1 = list(
+    l_i32 = list(c(NA, 1L:4L), c(NA, 1L, 2L), c(NA, 4L, 2L, 1L, 7L)),
+    l_f64 = list(c(NA, 1, 1, 2, 3, NA, Inf, NA), NA_real_, numeric())
+  )
   expect_identical(l_act_diff_1, l_exp_diff_1)
 
   l_act_diff_2 = df$select(pl$all()$list$shift(2))$to_list()
-  l_exp_diff_2 = lapply(l, sapply, r_shift, 2)
+  l_exp_diff_2 = list(
+    l_i32 = list(c(NA, NA, 1L:3L), c(NA, NA, 1L), c(NA, NA, 4L, 2L, 1L)),
+    l_f64 = list(c(NA, NA, 1, 1, 2, 3, NA, Inf), NA_real_, numeric())
+  )
   expect_identical(l_act_diff_2, l_exp_diff_2)
 
   l_act_diff_0 = df$select(pl$all()$list$shift(0))$to_list()
-  l_exp_diff_0 = lapply(l, sapply, r_shift, 0)
+  l_exp_diff_0 = list(
+    l_i32 = list(1L:5L, 1L:3L, c(4L, 2L, 1L, 7L, 42L)),
+    l_f64 = list(c(1, 1, 2, 3, NA, Inf, NA, Inf), 1, numeric())
+  )
   expect_identical(l_act_diff_0, l_exp_diff_0)
 
   l_act_diff_m1 = df$select(pl$all()$list$shift(-1))$to_list()
-  l_exp_diff_m1 = lapply(l, sapply, r_shift, -1)
+  l_exp_diff_m1 = list(
+    l_i32 = list(c(2L:5L, NA), c(2L, 3L, NA), c(2L, 1L, 7L, 42L, NA)),
+    l_f64 = list(c(1, 2, 3, NA, Inf, NA, Inf, NA), NA_real_, numeric())
+  )
   expect_identical(l_act_diff_m1, l_exp_diff_m1)
 })
 

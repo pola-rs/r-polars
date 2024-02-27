@@ -1663,25 +1663,18 @@ test_that("interpolate", {
 
 
 test_that("Expr_rolling_", {
-  skip_if_not_installed("data.table")
-  suppressMessages(library(data.table))
-  # check all examples
-  df = pl$DataFrame(list(a = 1:6))
-  dt = data.table(a = 1:6)
+  df = pl$DataFrame(a = 1:6)
 
-  df_expected = dt[
-    ,
-    .(
-      min = as.integer(frollapply(a, 2, min)),
-      max = as.integer(frollapply(a, 2, max)),
-      mean = frollmean(a, 2),
-      sum = as.integer(frollsum(a, 2)),
-      std = frollapply(a, 2, sd),
-      var = frollapply(a, 2, var),
-      median = frollapply(a, 2, median),
-      quantile_linear = frollapply(a, 2, quantile, probs = .33)
-    )
-  ] |> as.data.frame()
+  expected = data.frame(
+    min = c(NA_integer_, 1L:5L),
+    max = c(NA_integer_, 2L:6L),
+    mean = c(NA, 1.5, 2.5, 3.5, 4.5, 5.5),
+    sum = c(NA_integer_, 3L, 5L, 7L, 9L, 11L),
+    std = c(NA, rep(0.7071067811865476, 5)),
+    var = c(NA, rep(0.5, 5)),
+    median = c(NA, 1.5, 2.5, 3.5, 4.5, 5.5),
+    quantile_linear = c(NA, 1.33, 2.33, 3.33, 4.33, 5.33)
+  )
 
   expect_identical(
     df$select(
@@ -1696,11 +1689,11 @@ test_that("Expr_rolling_", {
         quantile = .33, window_size = 2, interpolation = "linear"
       )$alias("quantile_linear")
     )$to_data_frame(),
-    df_expected
+    expected
   )
 
   # check skewness
-  df_actual_skew = pl$DataFrame(list(a = iris$Sepal.Length))$select(pl$col("a")$rolling_skew(window_size = 4)$head(10))
+  df_actual_skew = pl$DataFrame(a = iris$Sepal.Length)$select(pl$col("a")$rolling_skew(window_size = 4)$head(10))
   expect_equal(
     df_actual_skew$to_list()[[1L]],
     c(
