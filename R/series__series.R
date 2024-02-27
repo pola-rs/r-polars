@@ -842,8 +842,6 @@ Series_set_sorted = function(descending = FALSE, in_place = FALSE) {
   if (in_place) invisible(NULL) else invisible(self)
 }
 
-# TODO contribute polars, Series.sort() has an * arg input which is unused
-# TODO contribute polars, Series.sort() is missing nulls_last option, that Expr_sort has
 #' Sort this Series
 #' @keywords Series
 #' @aliases Series_sort
@@ -904,9 +902,6 @@ Series_to_frame = function() {
 Series_equals = function(other, null_equal = FALSE, strict = FALSE) {
   .pr$Series$equals(self, other, null_equal, strict)
 }
-# TODO add Series_cast and show examples of strict and null_equals
-
-
 
 #' Rename a series
 #'
@@ -962,9 +957,6 @@ Series_rep = function(n, rechunk = TRUE) {
   if (!is_scalar_bool(rechunk)) stop("rechunk must be a bool")
   unwrap(.pr$Series$rep(self, n, rechunk), "in $rep():")
 }
-
-
-# TODO contribute polars suprisingly pl$Series(1:3,"bob")$std(3) yields Inf
 
 in_DataType = function(l, rs) any(sapply(rs, function(r) l == r))
 
