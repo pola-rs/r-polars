@@ -170,7 +170,7 @@ arrow_to_rseries_result = function(name, values, rechunk = TRUE) {
       is_arrow_dictionary(array) &&
       array$type$value_type$ToString() %in% c("string", "large_string")
   ) {
-    res = Ok(pl$lit(c())$cast(pl$Categorical)$to_series())
+    res = Ok(pl$lit(c())$cast(pl$Categorical())$to_series())
   } else if (is.null(array$num_chunks)) {
     res = .pr$Series$from_arrow_array_robj(name, array)
   } else {

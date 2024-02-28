@@ -18,7 +18,7 @@ test_that("plStruct", {
   )
   expect_false(
     pl$Struct(bin = pl$Binary, pl$Field("bool", pl$Boolean)) ==
-      pl$Struct(list(bin = pl$Categorical, bool = pl$Boolean))
+      pl$Struct(list(bin = pl$Categorical(), bool = pl$Boolean))
   )
 
   # this would likely cause an error at query time though

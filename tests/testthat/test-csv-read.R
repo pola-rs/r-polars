@@ -38,7 +38,7 @@ test_that("args separator and eol work", {
   write.table(dat, tmpf, row.names = FALSE, sep = "|", eol = "#")
 
   out = pl$read_csv(tmpf, separator = "|", eol_char = "#")$
-    with_columns(pl$col("Species")$cast(pl$Categorical))$
+    with_columns(pl$col("Species")$cast(pl$Categorical()))$
     to_data_frame()
   expect_identical(out, iris, ignore_attr = TRUE)
 })
@@ -76,7 +76,7 @@ test_that("arg dtypes work", {
 
   out = pl$read_csv(path = tmpf, dtypes = list(Sepal.Length = "Float32", Species = "factor"))
   expect_true(out$schema$Sepal.Length == pl$Float32)
-  expect_true(out$schema$Species == pl$Categorical)
+  expect_true(out$schema$Species == pl$Categorical())
 })
 
 test_that("arg raise_if_empty works", {
@@ -151,7 +151,7 @@ test_that("multiple files works correctly if same schema", {
   write.csv(dat2, tmpf2, row.names = FALSE)
 
   read = pl$read_csv(path = c(tmpf1, tmpf2))$
-    with_columns(pl$col("Species")$cast(pl$Categorical))$
+    with_columns(pl$col("Species")$cast(pl$Categorical()))$
     to_data_frame()
   expect_identical(read, iris, ignore_attr = TRUE)
 })

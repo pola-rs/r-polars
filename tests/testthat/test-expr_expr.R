@@ -318,7 +318,7 @@ test_that("col DataType + col(s) + col regex", {
 
   # multiple
   expect_equal(
-    pl$DataFrame(iris)$select(pl$col(list(pl$Float64, pl$Categorical)))$to_data_frame(),
+    pl$DataFrame(iris)$select(pl$col(list(pl$Float64, pl$Categorical())))$to_data_frame(),
     iris
   )
 
@@ -482,9 +482,9 @@ test_that("to_physical + cast", {
   df = pl$DataFrame(
     list(vals = c("a", "x", NA, "a"))
   )$with_columns(
-    pl$col("vals")$cast(pl$Categorical),
+    pl$col("vals")$cast(pl$Categorical()),
     pl$col("vals")
-    $cast(pl$Categorical)
+    $cast(pl$Categorical())
     $to_physical()
     $alias("vals_physical")
   )
@@ -598,7 +598,7 @@ test_that("exclude", {
 
   # single DataType
   expect_identical(
-    df$select(pl$all()$exclude(pl$Categorical))$columns,
+    df$select(pl$all()$exclude(pl$Categorical()))$columns,
     names(iris)[1:4]
   )
   expect_identical(
@@ -608,16 +608,16 @@ test_that("exclude", {
 
   # list DataType
   expect_identical(
-    df$select(pl$all()$exclude(list(pl$Float64, pl$Categorical)))$columns,
+    df$select(pl$all()$exclude(list(pl$Float64, pl$Categorical())))$columns,
     names(iris)[c()]
   )
 
   # wrong cast is not possible
   expect_error(
-    unwrap(.pr$DataTypeVector$from_rlist(list(pl$Float64, pl$Categorical, "imNoYourType")))
+    unwrap(.pr$DataTypeVector$from_rlist(list(pl$Float64, pl$Categorical(), "imNoYourType")))
   )
   expect_error(
-    df$select(pl$all()$exclude(list(pl$Float64, pl$Categorical, "bob")))$columns
+    df$select(pl$all()$exclude(list(pl$Float64, pl$Categorical(), "bob")))$columns
   )
 })
 

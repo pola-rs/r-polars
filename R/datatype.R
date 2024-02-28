@@ -154,12 +154,11 @@ DataType_new = function(str) {
 #' pl$List(pl$List(pl$Int64))
 DataType_constructors = function() {
   list(
-    Datetime = DataType_Datetime,
     Array = DataType_Array,
+    Categorical = DataType_Categorical,
+    Datetime = DataType_Datetime,
     List = DataType_List,
     Struct = DataType_Struct
-
-    # TODO: Categorical https://github.com/pola-rs/polars/pull/12911
   )
 }
 
@@ -284,4 +283,31 @@ DataType_List = function(datatype = "unknown") {
     ))
   }
   .pr$DataType$new_list(datatype)
+}
+
+#' Create Categorical DataType
+#'
+#' @param ordering Either `"physical"` (default) or `"lexical"`.
+#'
+#' @details
+#' When a
+#' categorical variable is created, its string values (or "lexical" values) are
+#' stored and encoded as integers ("physical" values) by order of appearance.
+#'
+#' For example, suppose we have a categorical variable whose first values are
+#' `"Peach"`, `"Apple"`, and "`Pear"`. When this categorical variable is read,
+#' it each unique value will be mapped to an integer by order of appearance:
+#' `"Peach"` will be mapped to 0, `"Apple"` to 1, and `"Pear"` to 2.
+#'
+#' If we order by `"lexical"` values, we look at the string... TODO
+#'
+#'
+#' @format function
+#' @return A Categorical DataType
+#' @examples
+#' pl$Categorical()
+#'
+#' pl$Categorical(ordering = "lexical")
+DataType_Categorical = function(ordering = "physical") {
+  .pr$DataType$new_categorical(ordering) |> unwrap()
 }

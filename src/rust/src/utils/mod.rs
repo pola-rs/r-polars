@@ -944,6 +944,9 @@ macro_rules! robj_to_inner {
     (timeunit, $a:ident) => {
         $crate::rdatatype::robj_to_timeunit($a)
     };
+    (CategoricalOrdering, $a:ident) => {
+        $crate::rdatatype::robj_to_categorical_ordering($a)
+    };
     (ClosedWindow, $a:ident) => {
         $crate::rdatatype::robj_to_closed_window($a)
     };

@@ -4,9 +4,7 @@ use crate::rdatatype::{
     RPolarsDataType, RPolarsDataTypeVector,
 };
 use crate::robj_to;
-use crate::rpolarserr::{
-    polars_to_rpolars_err, rerr, rpolars_to_polars_err, RResult, Rctx, WithRctx,
-};
+use crate::rpolarserr::{polars_to_rpolars_err, rerr, rpolars_to_polars_err, RResult, WithRctx};
 use crate::series::RPolarsSeries;
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::utils::extendr_helpers::robj_inherits;
@@ -2463,10 +2461,8 @@ impl RPolarsExpr {
         Ok(format!("{e}"))
     }
 
-    fn cat_set_ordering(&self, ordering: Robj) -> Result<RPolarsExpr, String> {
-        let ordering = robj_to!(Map, str, ordering, |s| {
-            Ok(crate::rdatatype::new_categorical_ordering(s).map_err(Rctx::Plain)?)
-        })?;
+    fn cat_set_ordering(&self, ordering: Robj) -> RResult<RPolarsExpr> {
+        let ordering = robj_to!(CategoricalOrdering, ordering)?;
         Ok(self
             .0
             .clone()
