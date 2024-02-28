@@ -215,25 +215,24 @@ ExprStr_len_chars = function() {
   .pr$Expr$str_len_chars(self)
 }
 
-#' Vertically concatenate values of a Series
+#' Vertically concatenate the string values in the column to a single string value.
 #'
-#' @description Vertically concatenate the values in the Series to a single
-#' string value.
 #' @param delimiter The delimiter to insert between consecutive string values.
-#' @param ignore_nulls Ignore null values. If `FALSE`, null values will be
+#' @param ... Ignored.
+#' @param ignore_nulls Ignore null values (default). If `FALSE`, null values will be
 #' propagated: if the column contains any null values, the output is null.
-#' @keywords ExprStr
 #' @return Expr of String concatenated
 #' @examples
 #' # concatenate a Series of strings to a single string
-#' df = pl$DataFrame(foo = c("1", NA, 2))
-#' df$select(pl$col("foo")$str$concat("-"))
-#' df$select(pl$col("foo")$str$concat("-", ignore_nulls = FALSE))
+#' df = pl$DataFrame(foo = c(1, NA, 2))
 #'
-#' # Series list of strings to Series of concatenated strings
-#' df = pl$DataFrame(list(bar = list(c("a", "b", "c"), c("1", "2", NA))))
-#' df$select(pl$col("bar")$list$eval(pl$col("")$str$concat("-"))$list$first())
-ExprStr_concat = function(delimiter = "-", ignore_nulls = TRUE) {
+#' df$select(pl$col("foo")$str$concat("-"))
+#'
+#' df$select(pl$col("foo")$str$concat("-", ignore_nulls = FALSE))
+ExprStr_concat = function(
+    delimiter = "",
+    ...,
+    ignore_nulls = TRUE) {
   .pr$Expr$str_concat(self, delimiter, ignore_nulls) |>
     unwrap("in $concat():")
 }
