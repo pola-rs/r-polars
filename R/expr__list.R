@@ -431,17 +431,27 @@ ExprList_to_struct = function(
 #'   a = list(c(1, 8, 3), c(3, 2), c(NA, NA, 1)),
 #'   b = list(c("R", "is", "amazing"), c("foo", "bar"), "text")
 #' )
-#' df$with_columns(
-#'   # standardize each value inside a list, using only the values in this list
+#'
+#' df
+#'
+#' # standardize each value inside a list, using only the values in this list
+#' df$select(
 #'   a_stand = pl$col("a")$list$eval(
 #'     (pl$element() - pl$element()$mean()) / pl$element()$std()
-#'   ),
+#'   )
+#' )
 #'
-#'   # count characters for each element in list. Since column "b" is list[str],
-#'   # we can apply all `$str` functions on elements in the list:
+#' # count characters for each element in list. Since column "b" is list[str],
+#' # we can apply all `$str` functions on elements in the list:
+#' df$select(
 #'   b_len_chars = pl$col("b")$list$eval(
 #'     pl$element()$str$len_chars()
 #'   )
+#' )
+#'
+#' # concat strings in each list
+#' df$select(
+#'   pl$col("b")$list$eval(pl$element()$str$concat(" "))$list$first()
 #' )
 ExprList_eval = function(expr, parallel = FALSE) {
   .pr$Expr$list_eval(self, expr, parallel)
