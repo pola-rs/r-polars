@@ -34,6 +34,14 @@ runs:
           use-public-rspm: true
           Ncpus: 2
 
+      - name: Set cmake build threads for macOS
+        # Workaround for build error on macos-14
+        # Same as https://github.com/pola-rs/polars/pull/14715
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          echo "CMAKE_BUILD_PARALLEL_LEVEL=10" >>"$GITHUB_ENV"
+
       - name: Set up Rust nightly toolchain
         if: inputs.rust-nightly == 'true' || env.LIBR_POLARS_FEATURES == 'full_features'
         shell: bash
