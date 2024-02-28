@@ -70,3 +70,18 @@ test_that("String and Utf8 are identical", {
   utf8 = pl$DataFrame(x = "a", schema = list(x = pl$Utf8))$to_data_frame()
   expect_identical(string, utf8)
 })
+
+test_that("Categorical", {
+  expect_identical(
+    pl$Series(c("z", "z", "k", "a"))$cast(pl$Categorical())$sort()$to_r(),
+    factor(c("z", "z", "k", "a"))
+  )
+  expect_identical(
+    pl$Series(c("z", "z", "k", "a"))$cast(pl$Categorical("lexical"))$sort()$to_r(),
+    factor(c("a", "k", "z", "z"))
+  )
+  expect_error(
+    pl$Series(c("z", "z", "k", "a"))$cast(pl$Categorical("foobar"))
+  )
+})
+
