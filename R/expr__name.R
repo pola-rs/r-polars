@@ -38,8 +38,6 @@ ExprName_prefix = function(prefix) {
     unwrap("in $name$prefix():")
 }
 
-# TODO contribute pypolars keep_name example does not showcase an example where the name changes
-
 #' Keep the original root name of the expression.
 #'
 #' @return Expr
@@ -50,8 +48,6 @@ ExprName_keep = function() {
   .pr$Expr$name_keep(self) |>
     unwrap("in $name$keep():")
 }
-
-# TODO contribute polars, $name$map unwrap user function errors instead of passing them back
 
 #' Map alias of expression with an R function
 #'

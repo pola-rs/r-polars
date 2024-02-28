@@ -8,7 +8,7 @@
 ExprList_diff(n = 1, null_behavior = c("ignore", "drop"))
 }
 \arguments{
-\item{n}{Number of slots to shift.}
+\item{n}{Number of slots to shift. If negative, then it starts from the end.}
 
 \item{null_behavior}{How to handle \code{null} values. Either \code{"ignore"} (default)
 or \code{"drop"}.}
@@ -24,4 +24,7 @@ list. The parameter \code{n} gives the interval between items to subtract, e.g \
 \examples{
 df = pl$DataFrame(list(s = list(1:4, c(10L, 2L, 1L))))
 df$with_columns(diff = pl$col("s")$list$diff(2))
+
+# negative value starts shifting from the end
+df$with_columns(diff = pl$col("s")$list$diff(-2))
 }

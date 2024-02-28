@@ -7,18 +7,18 @@
 Expr_search_sorted(element)
 }
 \arguments{
-\item{element}{Expr or scalar value.}
+\item{element}{Element to insert. Can be an Expr or something coercible to
+an Expr.}
 }
 \value{
 Expr
 }
 \description{
-Find the index in self where the element should be inserted so that it doesn't
-break sortedness.
+Find indices where elements should be inserted to maintain order.
 }
 \details{
 This function looks up where to insert element to keep self column sorted.
-It is assumed the self column is already sorted in ascending order (otherwise
+It is assumed the column is already sorted in ascending order (otherwise
 this leads to wrong results).
 }
 \examples{
@@ -27,5 +27,9 @@ df
 
 # in which row should 5 be inserted in order to not break the sort?
 # (value is 0-indexed)
-df$select(pl$col("a")$search_sorted(5))
+df$select(
+  zero = pl$col("a")$search_sorted(0),
+  three = pl$col("a")$search_sorted(3),
+  five = pl$col("a")$search_sorted(5)
+)
 }

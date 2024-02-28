@@ -243,8 +243,6 @@ ExprList_arg_min = function() .pr$Expr$list_arg_min(self)
 ExprList_arg_max = function() .pr$Expr$list_arg_max(self)
 
 
-## TODO contribute polars support negative n values for Diff sublist
-
 #' Compute difference between list values
 #'
 #' This computes the first discrete difference between shifted items of every
@@ -252,7 +250,7 @@ ExprList_arg_max = function() .pr$Expr$list_arg_max(self)
 #' = 2` the output will be the difference between the 1st and the 3rd value, the
 #' 2nd and 4th value, etc.
 #'
-#' @param n Number of slots to shift.
+#' @param n Number of slots to shift. If negative, then it starts from the end.
 #' @param null_behavior How to handle `null` values. Either `"ignore"` (default)
 #'   or `"drop"`.
 #'
@@ -261,6 +259,9 @@ ExprList_arg_max = function() .pr$Expr$list_arg_max(self)
 #' @examples
 #' df = pl$DataFrame(list(s = list(1:4, c(10L, 2L, 1L))))
 #' df$with_columns(diff = pl$col("s")$list$diff(2))
+#'
+#' # negative value starts shifting from the end
+#' df$with_columns(diff = pl$col("s")$list$diff(-2))
 ExprList_diff = function(n = 1, null_behavior = c("ignore", "drop")) {
   .pr$Expr$list_diff(self, n, null_behavior) |>
     unwrap("in $list$diff()")
@@ -314,9 +315,6 @@ ExprList_slice = function(offset, length = NULL) {
   }
   .pr$Expr$list_slice(self, offset, length)
 }
-
-
-# TODO contribute polars let head and tail support negative indicies also regular head tail
 
 #' Get the first `n` values of a list
 #'
