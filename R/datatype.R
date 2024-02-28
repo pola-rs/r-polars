@@ -1,7 +1,6 @@
 #' check if schema
 #' @param x object to test if schema
 #' @return bool
-#' @format function
 #' @keywords functions
 #' @examples
 #' pl$is_schema(pl$DataFrame(iris)$schema)
@@ -19,7 +18,6 @@ pl_is_schema = \(x) {
 #' or schema is just char vec, implicitly the same as if all DataType are NULL,
 #' mean undefined.
 #' @return bool
-#' @format function
 #' @examples
 #' .pr$env$wrap_proto_schema(c("alice", "bob"))
 #' .pr$env$wrap_proto_schema(list("alice" = pl$Int64, "bob" = NULL))
@@ -154,12 +152,11 @@ DataType_new = function(str) {
 #' pl$List(pl$List(pl$Int64))
 DataType_constructors = function() {
   list(
-    Datetime = DataType_Datetime,
     Array = DataType_Array,
+    Categorical = DataType_Categorical,
+    Datetime = DataType_Datetime,
     List = DataType_List,
     Struct = DataType_Struct
-
-    # TODO: Categorical https://github.com/pola-rs/polars/pull/12911
   )
 }
 
@@ -169,7 +166,6 @@ DataType_constructors = function() {
 #' @param tz string the Time Zone, see details
 #' @details all allowed TimeZone designations can be found in `base::OlsonNames()`
 #' @keywords pl
-#' @format function
 #' @return Datetime DataType
 #' @examples
 #' pl$Datetime("ns", "Pacific/Samoa")
@@ -185,7 +181,6 @@ DataType_Datetime = function(tu = "us", tz = NULL) {
 #' Struct DataType Constructor
 #' @param ... RPolarsDataType objects
 #' @return a list DataType with an inner DataType
-#' @format function
 #' @examples
 #' # create a Struct-DataType
 #' pl$Struct(pl$Boolean)
@@ -265,7 +260,6 @@ DataType_Array = function(datatype = "unknown", width) {
 #' @param datatype an inner DataType, default is "Unknown" (placeholder for when inner DataType
 #' does not matter, e.g. as used in example)
 #' @return a list DataType with an inner DataType
-#' @format function
 #' @examples
 #' # some nested List
 #' pl$List(pl$List(pl$Boolean))
@@ -284,4 +278,31 @@ DataType_List = function(datatype = "unknown") {
     ))
   }
   .pr$DataType$new_list(datatype)
+}
+
+#' Create Categorical DataType
+#'
+#' @param ordering Either `"physical"` (default) or `"lexical"`.
+#'
+#' @details
+#' When a categorical variable is created, its string values (or "lexical"
+#' values) are stored and encoded as integers ("physical" values) by
+#' order of appearance. Therefore, sorting a categorical value can be done
+#' either on the lexical or on the physical values. See Examples.
+#'
+#'
+#' @return A Categorical DataType
+#' @examples
+#' # default is to order by physical values
+#' df = pl$DataFrame(x = c("z", "z", "k", "a", "z"), schema = list(x = pl$Categorical()))
+#' df$sort("x")
+#'
+#' # when setting ordering = "lexical", sorting will be based on the strings
+#' df_lex = pl$DataFrame(
+#'   x = c("z", "z", "k", "a", "z"),
+#'   schema = list(x = pl$Categorical("lexical"))
+#' )
+#' df_lex$sort("x")
+DataType_Categorical = function(ordering = "physical") {
+  .pr$DataType$new_categorical(ordering) |> unwrap()
 }

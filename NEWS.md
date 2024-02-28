@@ -19,6 +19,10 @@
         changed from `"-"` to `""` (#853).
     -   `<Expr>$str$concat()` method's `ignore_nulls` argument must be a
         named argument (#853).
+-   `pl$Categorical()` has been improved to allow specifying the `ordering` type
+    (either lexical or physical). This also means that calling `pl$Categorical`
+    doesn't create a `DataType` anymore. All calls to `pl$Categorical` must be
+    replaced by `pl$Categorical()` (#860).
 
 ### New features
 

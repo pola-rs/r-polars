@@ -47,7 +47,7 @@ field$datatype
 field$name
 
 # Set the new data type
-field$datatype = pl$Categorical
+field$datatype = pl$Categorical()
 field$datatype
 
 # Set the new name

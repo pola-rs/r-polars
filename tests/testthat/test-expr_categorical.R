@@ -1,5 +1,5 @@
 test_that("set_ordering", {
-  e = pl$lit(c("z", "z", "k", "a", "b"))$cast(pl$Categorical)
+  e = pl$lit(c("z", "z", "k", "a", "b"))$cast(pl$Categorical())
   e$to_r()
   expect_identical(
     e$cat$set_ordering("physical")$sort()$to_r(),

@@ -3,9 +3,6 @@
 \name{DataType_Struct}
 \alias{DataType_Struct}
 \title{Create Struct DataType}
-\format{
-function
-}
 \usage{
 DataType_Struct(...)
 }

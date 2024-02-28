@@ -1583,7 +1583,7 @@ DataFrame_describe = function(percentiles = c(.25, .75), interpolation = "neares
     # accept all types but categorical
     # TODO: add "Enum" to the list of non-accepted types when implemented
     minmax_cols = lapply(self$schema, \(x) {
-      if (x != pl$Categorical) {
+      if (x != pl$Categorical()) {
         x
       }
     }) |>

@@ -1110,9 +1110,9 @@ Expr_xor = function(other) {
 #' pl$DataFrame(
 #'   list(vals = c("a", "x", NA, "a", "b"))
 #' )$with_columns(
-#'   pl$col("vals")$cast(pl$Categorical),
+#'   pl$col("vals")$cast(pl$Categorical()),
 #'   pl$col("vals")
-#'   $cast(pl$Categorical)
+#'   $cast(pl$Categorical())
 #'   $to_physical()
 #'   $alias("vals_physical")
 #' )
@@ -1184,8 +1184,8 @@ Expr_exp = use_extendr_wrapper
 #' df$select(pl$all()$exclude("Species"))
 #'
 #' # by type
-#' df$select(pl$all()$exclude(pl$Categorical))
-#' df$select(pl$all()$exclude(list(pl$Categorical, pl$Float64)))
+#' df$select(pl$all()$exclude(pl$Categorical()))
+#' df$select(pl$all()$exclude(list(pl$Categorical(), pl$Float64)))
 #'
 #' # by regex
 #' df$select(pl$all()$exclude("^Sepal.*$"))

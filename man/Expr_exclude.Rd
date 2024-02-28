@@ -31,8 +31,8 @@ df = pl$DataFrame(iris)
 df$select(pl$all()$exclude("Species"))
 
 # by type
-df$select(pl$all()$exclude(pl$Categorical))
-df$select(pl$all()$exclude(list(pl$Categorical, pl$Float64)))
+df$select(pl$all()$exclude(pl$Categorical()))
+df$select(pl$all()$exclude(list(pl$Categorical(), pl$Float64)))
 
 # by regex
 df$select(pl$all()$exclude("^Sepal.*$"))

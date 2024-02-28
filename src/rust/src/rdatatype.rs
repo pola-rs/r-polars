@@ -8,7 +8,6 @@ use polars_core::prelude::QuantileInterpolOptions;
 use crate::rpolarserr::{polars_to_rpolars_err, rerr, RPolarsErr, RResult, WithRctx};
 use crate::utils::collect_hinted_result;
 use crate::utils::wrappers::null_to_opt;
-use std::result::Result;
 #[derive(Debug, Clone, PartialEq)]
 pub struct RPolarsRField(pub pl::Field);
 use pl::UniqueKeepStrategy;
@@ -87,6 +86,11 @@ impl RPolarsDataType {
         RPolarsDataType(pl_datatype)
     }
 
+    pub fn new_categorical(ordering: Robj) -> RResult<RPolarsDataType> {
+        let ordering = robj_to!(CategoricalOrdering, ordering)?;
+        Ok(RPolarsDataType(pl::DataType::Categorical(None, ordering)))
+    }
+
     pub fn new_datetime(tu: Robj, tz: Nullable<String>) -> RResult<RPolarsDataType> {
         robj_to!(timeunit, tu)
             .map(|dt| RPolarsDataType(pl::DataType::Datetime(dt, null_to_opt(tz))))
@@ -155,7 +159,6 @@ impl RPolarsDataType {
             "Date".into(),
             "Time".into(),
             "Null".into(),
-            "Categorical".into(),
             "Unknown".into(),
         ]
     }
@@ -401,12 +404,13 @@ pub fn time_unit_converson(tu: pl::TimeUnit) -> i64 {
     tu_i64
 }
 
-pub fn new_categorical_ordering(s: &str) -> Result<pl::CategoricalOrdering, String> {
+pub fn robj_to_categorical_ordering(robj: Robj) -> RResult<pl::CategoricalOrdering> {
     use pl::CategoricalOrdering as CO;
-    match s {
+    let s = robj_to_rchoice(robj)?;
+    match s.as_str() {
         "physical" => Ok(CO::Physical),
         "lexical" => Ok(CO::Lexical),
-        _ => Err(format!(
+        _ => rerr().bad_val(format!(
             "CategoricalOrdering: [{}] is not any of 'physical' or 'lexical'",
             s
         )),

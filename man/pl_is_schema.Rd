@@ -3,9 +3,6 @@
 \name{pl_is_schema}
 \alias{pl_is_schema}
 \title{check if schema}
-\format{
-function
-}
 \usage{
 pl_is_schema(x)
 }

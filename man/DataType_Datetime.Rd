@@ -3,9 +3,6 @@
 \name{DataType_Datetime}
 \alias{DataType_Datetime}
 \title{Create Datetime DataType}
-\format{
-function
-}
 \usage{
 DataType_Datetime(tu = "us", tz = NULL)
 }

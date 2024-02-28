@@ -229,11 +229,11 @@ df$group_by("groups")$agg(
 url = "https://theunitedstates.io/congress-legislators/legislators-historical.csv"
 
 dtypes = list(
-  "first_name" = pl$Categorical,
-  "gender" = pl$Categorical,
-  "type" = pl$Categorical,
-  "state" = pl$Categorical,
-  "party" = pl$Categorical
+  "first_name" = pl$Categorical(),
+  "gender" = pl$Categorical(),
+  "type" = pl$Categorical(),
+  "state" = pl$Categorical(),
+  "party" = pl$Categorical()
 )
 
 # dtypes argument
