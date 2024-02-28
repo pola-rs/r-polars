@@ -221,7 +221,6 @@ ExprStr_len_chars = function() {
 #' @param ... Ignored.
 #' @param ignore_nulls Ignore null values (default). If `FALSE`, null values will be
 #' propagated: if the column contains any null values, the output is null.
-#' @keywords ExprStr
 #' @return Expr of String concatenated
 #' @examples
 #' # concatenate a Series of strings to a single string

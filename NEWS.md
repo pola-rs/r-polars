@@ -17,7 +17,7 @@
         specific columns, you should use `pl$count(...)` (#852).
     -   `<Expr>$str$concat()` method's `delimiter` argument's default value is
         changed from `"-"` to `""` (#853).
-    -   `<Expr>$str$concat()` method's `ignore_nulls` argument should be a
+    -   `<Expr>$str$concat()` method's `ignore_nulls` argument must be a
         named argument (#853).
 
 ### New features
