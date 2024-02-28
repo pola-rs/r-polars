@@ -12,19 +12,11 @@
 #' res$collect()
 NULL
 
-
-#' @title auto complete $-access into a polars object
-#' @description called by the interactive R session internally
-#' @param x RPolarsSQLContext
-#' @param pattern code-stump as string to auto-complete
-#' @return char vec
 #' @export
 #' @noRd
-#' @inherit .DollarNames.RPolarsDataFrame return
 .DollarNames.RPolarsSQLContext = function(x, pattern = "") {
   get_method_usages(RPolarsSQLContext, pattern = pattern)
 }
-
 
 #' @noRd
 #' @export

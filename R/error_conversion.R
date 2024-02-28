@@ -94,37 +94,3 @@ result = function(expr, msg = NULL) {
     }
   )
 }
-
-
-#' Capture any R error and return a rust-like Result (Minimal)
-#' @description use sparingly internally for speed optimization where the error is not important.
-#' @noRd
-#' @param expr code to capture any error from and wrap as Result
-#' @return Result
-#' @examples
-#' # get user internal functions
-#' result = .pr$env$result
-#' unwrap_err = .pr$env$unwrap_err
-#' unwrap = .pr$env$unwrap
-#' Err = .pr$env$Err
-#'
-#' # capture regular R errors or RPolarsErr
-#' throw_simpleError = \() stop("Imma simple error")
-#' result_minimal(throw_simpleError())
-result_minimal = function(expr) {
-  tryCatch(
-    Ok(expr),
-    error = \(cond) Err(cond$value %||% cond$message)
-  )
-}
-
-
-raw_result = function(expr) {
-  tryCatch(
-    Ok(expr),
-    error = \(cond) {
-      cond$value %||% cond$message |>
-        Err()
-    }
-  )
-}
