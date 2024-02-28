@@ -14,14 +14,14 @@ should be applied.}
 Boolean literal
 }
 \description{
-Not to mix up with \code{Expr_object$all()} which is a 'reduce Boolean columns by AND' method.
-}
-\details{
-last \code{all()} in example is this Expr method, the first \code{pl$all()} refers
-to "all-columns" and is an expression constructor
+Not to mix up with \code{Expr_object$all()} which is a 'reduce Boolean columns by
+AND' method.
 }
 \examples{
-pl$DataFrame(all = c(TRUE, TRUE), some = c(TRUE, FALSE))$
-  select(pl$all()$all())
+test = pl$DataFrame(col_1 = c(TRUE, TRUE), col_2 = c(TRUE, FALSE))
+test
+
+# here, the first `$all()` selects all columns, and the second `$all()` checks
+# whether all values are true in each column
+test$with_columns(pl$all()$all())
 }
-\keyword{Expr_new}

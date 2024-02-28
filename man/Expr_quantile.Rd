@@ -24,5 +24,6 @@ Null values are ignored and \code{NaN}s are ranked as the largest value.
 For linear interpolation \code{NaN} poisons \code{Inf}, that poisons any other value.
 }
 \examples{
-pl$select(pl$lit(-5:5)$quantile(.5))
+pl$DataFrame(x = -5:5)$
+  select(pl$col("x")$quantile(0.5))
 }

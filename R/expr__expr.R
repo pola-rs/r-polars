@@ -373,8 +373,6 @@ Expr_mul = Expr_mul = function(other) {
 #' Negate a boolean expression
 #'
 #' @inherit Expr_add description return
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' # two syntaxes same result
 #' pl$lit(TRUE)$not()
@@ -574,8 +572,6 @@ Expr_gt_eq = function(other) {
 #' Get the group indexes of the group by operation. Should be used in aggregation
 #' context only.
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' df = pl$DataFrame(list(
 #'   group = c("one", "one", "one", "two", "two", "two"),
@@ -591,8 +587,6 @@ Expr_agg_groups = use_extendr_wrapper
 #'
 #' @param name New name of output
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @usage Expr_alias(name)
 #' @examples pl$col("bob")$alias("alice")
 Expr_alias = use_extendr_wrapper
@@ -604,8 +598,6 @@ Expr_alias = use_extendr_wrapper
 #' all columns.
 #' @param drop_nulls Boolean. Default TRUE, as name says.
 #' @return Boolean literal
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(
 #'   all = c(TRUE, TRUE),
@@ -626,8 +618,6 @@ Expr_all = function(drop_nulls = TRUE) {
 #' Check if any boolean value in a Boolean column is `TRUE`.
 #' @param drop_nulls Boolean. Default TRUE, as name says.
 #' @return Boolean literal
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(
 #'   all = c(TRUE, TRUE),
@@ -647,8 +637,6 @@ Expr_any = function(drop_nulls = TRUE) {
 #' also counted. `$len()` is an alias.
 #' @rdname Expr_count
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(
 #'   all = c(TRUE, TRUE),
@@ -667,8 +655,6 @@ Expr_len = use_extendr_wrapper
 #' @seealso
 #' `drop_nans()`
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(list(x = c(1, 2, NaN, NA)))$select(pl$col("x")$drop_nulls())
 Expr_drop_nulls = use_extendr_wrapper
@@ -683,8 +669,6 @@ Expr_drop_nulls = use_extendr_wrapper
 #' `drop_nulls()`
 #'
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(list(x = c(1, 2, NaN, NA)))$select(pl$col("x")$drop_nans())
 Expr_drop_nans = use_extendr_wrapper
@@ -693,8 +677,6 @@ Expr_drop_nans = use_extendr_wrapper
 #'
 #' Returns a boolean Series indicating which values are null.
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(list(x = c(1, NA, 3)))$select(pl$col("x")$is_null())
 Expr_is_null = use_extendr_wrapper
@@ -704,8 +686,6 @@ Expr_is_null = use_extendr_wrapper
 #' Returns a boolean Series indicating which values are not null. Syntactic sugar
 #' for `$is_null()$not()`.
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(list(x = c(1, NA, 3)))$select(pl$col("x")$is_not_null())
 Expr_is_not_null = use_extendr_wrapper
@@ -1036,8 +1016,6 @@ Expr_reverse = function() {
 #'
 #' Combine two boolean expressions with AND.
 #' @inherit Expr_add params return
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$lit(TRUE) & TRUE
 #' pl$lit(TRUE)$and(pl$lit(TRUE))
@@ -1060,8 +1038,6 @@ Expr_and = function(other) {
 #' Combine two boolean expressions with OR.
 #'
 #' @inherit Expr_add params return
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$lit(TRUE) | FALSE
 #' pl$lit(TRUE)$or(pl$lit(TRUE))
@@ -1083,8 +1059,6 @@ Expr_or = function(other) {
 #'
 #' Combine two boolean expressions with XOR.
 #' @inherit Expr_add params return
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$lit(TRUE)$xor(pl$lit(FALSE))
 Expr_xor = function(other) {
@@ -1102,8 +1076,6 @@ Expr_xor = function(other) {
 #' * List(inner) -> List(physical of inner)
 #' Other data types will be left unchanged.
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @aliases to_physical
 #' @name Expr_to_physical
 #' @examples
@@ -1157,8 +1129,6 @@ Expr_sqrt = function() {
 
 #' Compute the exponential of the elements
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(a = -1:3)$with_columns(a_exp = pl$col("a")$exp())
 Expr_exp = use_extendr_wrapper
@@ -1211,8 +1181,6 @@ Expr_exclude = function(columns) {
 #'
 #' Returns a boolean Series indicating which values are finite.
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$
 #'   with_columns(finite = pl$col("alice")$is_finite())
@@ -1223,8 +1191,6 @@ Expr_is_finite = use_extendr_wrapper
 #'
 #' Returns a boolean Series indicating which values are infinite.
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @aliases is_infinite
 #' @name Expr_is_infinite
 #' @format NULL
@@ -1238,8 +1204,6 @@ Expr_is_infinite = use_extendr_wrapper
 #'
 #' Returns a boolean Series indicating which values are NaN.
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @aliases is_nan
 #' @name Expr_is_nan
 #'
@@ -1255,8 +1219,6 @@ Expr_is_nan = use_extendr_wrapper
 #' Returns a boolean Series indicating which values are not NaN. Syntactic sugar
 #' for `$is_nan()$not()`.
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @aliases is_not_nan
 #' @name Expr_is_not_nan
 #' @format NULL
@@ -1331,8 +1293,6 @@ Expr_append = function(other, upcast = TRUE) {
 #' Create a single chunk of memory for this Series.
 #'
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @details
 #' See rechunk() explained here \code{\link[polars]{docs_translations}}.
 #' @examples
@@ -1441,8 +1401,6 @@ Expr_cum_count = function(reverse = FALSE) {
 #'
 #' Rounds down to the nearest integer value. Only works on floating point Series.
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(a = c(0.33, 0.5, 1.02, 1.5, NaN, NA, Inf, -Inf))$with_columns(
 #'   floor = pl$col("a")$floor()
@@ -1453,8 +1411,6 @@ Expr_floor = use_extendr_wrapper
 #'
 #' Rounds up to the nearest integer value. Only works on floating point Series.
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(a = c(0.33, 0.5, 1.02, 1.5, NaN, NA, Inf, -Inf))$with_columns(
 #'   ceiling = pl$col("a")$ceil()
@@ -1500,8 +1456,6 @@ Expr_dot = function(other) {
 #' ties.
 #'
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' df = pl$DataFrame(a = 1:6, b = c(1L, 1L, 3L, 3L, 5L, 6L), c = c(1L, 1L, 2L, 2L, 3L, 3L))
 #' df$select(pl$col("a")$mode())
@@ -1525,9 +1479,6 @@ Expr_sort = function(descending = FALSE, nulls_last = FALSE) {
   .pr$Expr$sort(self, descending, nulls_last)
 }
 
-
-# TODO contribute polars, add arguments for Null/NaN/inf last/first, top_k unwraps k> len column
-
 #' Top k values
 #'
 #' Return the `k` largest elements. This has time complexity: \eqn{ O(n + k
@@ -1542,8 +1493,6 @@ Expr_top_k = function(k) {
   .pr$Expr$top_k(self, k) |>
     unwrap("in $top_k():")
 }
-
-# TODO contribute polars, add arguments for Null/NaN/inf last/first, bottom_k unwraps k> len column
 
 #' Bottom k values
 #'
@@ -1580,8 +1529,6 @@ Expr_argsort = Expr_arg_sort
 #'
 #' Get the index of the minimal value.
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(
 #'   a = c(6, 1, 0, NA, Inf, NaN)
@@ -1592,26 +1539,21 @@ Expr_arg_min = use_extendr_wrapper
 #'
 #' Get the index of the maximal value.
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(
 #'   a = c(6, 1, 0, NA, Inf, NaN)
 #' )$with_columns(arg_max = pl$col("a")$arg_max())
 Expr_arg_max = use_extendr_wrapper
 
-
-# TODO contribute pypolars search_sorted behavior is under-documented, does multiple elements work?
-
 #' Where to inject element(s) to maintain sorting
 #'
-#' Find the index in self where the element should be inserted so that it doesn't
-#' break sortedness.
-#' @param element Expr or scalar value.
+#' Find indices where elements should be inserted to maintain order.
+#' @param element Element to insert. Can be an Expr or something coercible to
+#' an Expr.
 #' @return Expr
 #' @details
 #' This function looks up where to insert element to keep self column sorted.
-#' It is assumed the self column is already sorted in ascending order (otherwise
+#' It is assumed the column is already sorted in ascending order (otherwise
 #' this leads to wrong results).
 #' @examples
 #' df = pl$DataFrame(a = c(1, 3, 4, 4, 6))
@@ -1619,7 +1561,11 @@ Expr_arg_max = use_extendr_wrapper
 #'
 #' # in which row should 5 be inserted in order to not break the sort?
 #' # (value is 0-indexed)
-#' df$select(pl$col("a")$search_sorted(5))
+#' df$select(
+#'   zero = pl$col("a")$search_sorted(0),
+#'   three = pl$col("a")$search_sorted(3),
+#'   five = pl$col("a")$search_sorted(5)
+#' )
 Expr_search_sorted = function(element) {
   .pr$Expr$search_sorted(self, wrap_e(element))
 }
@@ -1664,12 +1610,6 @@ Expr_sort_by = function(by, descending = FALSE) {
     result(descending)
   ) |> unwrap("in $sort_by:")
 }
-
-# TODO coontribute pyPolars, if exceeding u32 return Null, if exceeding column return Error
-# either it should be error or Null.
-# pl.RPolarsDataFrame({"a":[0,1,2,3,4],"b":[4,3,2,1,0]}).select(pl.col("a").take(5294967296.0)) #return Null
-# pl.RPolarsDataFrame({"a":[0,1,2,3,4],"b":[4,3,2,1,0]}).select(pl.col("a").take(-3)) #return Null
-# pl.RPolarsDataFrame({"a":[0,1,2,3,4],"b":[4,3,2,1,0]}).select(pl.col("a").take(7)) #return Error
 
 #' Gather values by index
 #'
@@ -1828,8 +1768,6 @@ Expr_var = function(ddof = 1) {
 #' Get maximum value
 #'
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(x = c(1, NA, 3))$
 #'   with_columns(max = pl$col("x")$max())
@@ -1838,25 +1776,15 @@ Expr_max = use_extendr_wrapper
 #' Get minimum value
 #'
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(x = c(1, NA, 3))$
 #'   with_columns(min = pl$col("x")$min())
 Expr_min = use_extendr_wrapper
 
-
-
-# TODO Contribute polars, nan_max and nan_min poison on NaN. But no method poison on `Null`
-# In R both NA and NaN poisons, but NA has priority which is meaningful, as NA is even less information
-# then NaN.
-
 #' Get maximum value with NaN
 #'
 #' Get maximum value, but returns `NaN` if there are any.
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(x = c(1, NA, 3, NaN, Inf))$
 #'   with_columns(nan_max = pl$col("x")$nan_max())
@@ -1866,8 +1794,6 @@ Expr_nan_max = use_extendr_wrapper
 #'
 #' Get minimum value, but returns `NaN` if there are any.
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(x = c(1, NA, 3, NaN, Inf))$
 #'   with_columns(nan_min = pl$col("x")$nan_min())
@@ -1880,8 +1806,6 @@ Expr_nan_min = use_extendr_wrapper
 #' prevent overflow issues.
 #'
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(x = c(1L, NA, 2L))$
 #'   with_columns(sum = pl$col("x")$sum())
@@ -1890,8 +1814,6 @@ Expr_sum = use_extendr_wrapper
 #' Get mean value
 #'
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(x = c(1L, NA, 2L))$
 #'   with_columns(mean = pl$col("x")$mean())
@@ -1900,8 +1822,6 @@ Expr_mean = use_extendr_wrapper
 #' Get median value
 #'
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(x = c(1L, NA, 2L))$
 #'   with_columns(median = pl$col("x")$median())
@@ -1911,8 +1831,6 @@ Expr_median = use_extendr_wrapper
 #'
 #' Compute the product of an expression.
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(x = c(2L, NA, 2L))$
 #'   with_columns(product = pl$col("x")$product())
@@ -1921,8 +1839,6 @@ Expr_product = use_extendr_wrapper
 #' Count number of unique values
 #'
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(iris[, 4:5])$with_columns(count = pl$col("Species")$n_unique())
 Expr_n_unique = use_extendr_wrapper
@@ -1931,8 +1847,6 @@ Expr_n_unique = use_extendr_wrapper
 #'
 #' This is done using the HyperLogLog++ algorithm for cardinality estimation.
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(iris[, 4:5])$
 #'   with_columns(count = pl$col("Species")$approx_n_unique())
@@ -1941,8 +1855,6 @@ Expr_approx_n_unique = use_extendr_wrapper
 #' Count missing values
 #'
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(x = c(NA, "a", NA, "b"))$
 #'   with_columns(n_missing = pl$col("x")$null_count())
@@ -1953,8 +1865,6 @@ Expr_null_count = use_extendr_wrapper
 #' This finds the position of first occurrence of each unique value.
 #' @aliases arg_unique
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$select(pl$lit(c(1:2, 1:3))$arg_unique())
 Expr_arg_unique = use_extendr_wrapper
@@ -1978,8 +1888,6 @@ Expr_unique = function(maintain_order = FALSE) {
 #' Get the first value.
 #'
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(x = 3:1)$with_columns(first = pl$col("x")$first())
 Expr_first = use_extendr_wrapper
@@ -1987,8 +1895,6 @@ Expr_first = use_extendr_wrapper
 #' Get the last value
 #'
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(x = 3:1)$with_columns(last = pl$col("x")$last())
 Expr_last = use_extendr_wrapper
@@ -2026,8 +1932,6 @@ Expr_over = function(...) {
 #' Check whether each value is unique
 #'
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #'
 #' @examples
 #' pl$DataFrame(head(mtcars[, 1:2]))$
@@ -2037,8 +1941,6 @@ Expr_is_unique = use_extendr_wrapper
 #' Check whether each value is the first occurrence
 #'
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #'
 #' @examples
 #' pl$DataFrame(head(mtcars[, 1:2]))$
@@ -2048,8 +1950,6 @@ Expr_is_first_distinct = use_extendr_wrapper
 #' Check whether each value is the last occurrence
 #'
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #'
 #' @examples
 #' pl$DataFrame(head(mtcars[, 1:2]))$
@@ -2061,16 +1961,11 @@ Expr_is_last_distinct = use_extendr_wrapper
 #'
 #' This is syntactic sugar for `$is_unique()$not()`.
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #'
 #' @examples
 #' pl$DataFrame(head(mtcars[, 1:2]))$
 #'   with_columns(is_duplicated = pl$col("mpg")$is_duplicated())
 Expr_is_duplicated = use_extendr_wrapper
-
-
-# TODO contribute polars, example of where NA/Null is omitted and the smallest value
 
 #' Get quantile value.
 #'
@@ -2086,7 +1981,8 @@ Expr_is_duplicated = use_extendr_wrapper
 #' For linear interpolation `NaN` poisons `Inf`, that poisons any other value.
 #'
 #' @examples
-#' pl$select(pl$lit(-5:5)$quantile(.5))
+#' pl$DataFrame(x = -5:5)$
+#'   select(pl$col("x")$quantile(0.5))
 Expr_quantile = function(quantile, interpolation = "nearest") {
   unwrap(.pr$Expr$quantile(self, wrap_e(quantile), interpolation))
 }
@@ -2121,8 +2017,6 @@ Expr_filter = function(predicate) {
 #' This means that every item is expanded to a new row.
 #'
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #'
 #' @details
 #' Categorical values are not supported.
@@ -2427,12 +2321,6 @@ prepare_rolling_window_args = function(
 }
 
 
-## TODO impl datatime in rolling expr
-## TODO contribute polars rolling _min _max _sum _mean do no behave as the aggregation counterparts
-## as NULLs are not omitted. Maybe the best resolution is to implement skipnull option in all function
-## and check if it wont mess up optimzation (maybe it is tested for).
-
-
 #' Rolling minimum
 #'
 #' Compute the rolling (= moving) min over the values in this array. A window of
@@ -2651,9 +2539,6 @@ Expr_rolling_median = function(
   ) |> unwrap("in $rolling_median():")
 }
 
-
-## TODO contribute polars arg center only allows center + right alignment, also implement left
-
 #' Rolling quantile
 #'
 #' Compute the rolling (= moving) quantile over the values in this array. A
@@ -2710,8 +2595,6 @@ Expr_rolling_skew = function(window_size, bias = TRUE) {
 #' Compute the absolute values
 #'
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(a = -1:1)$
 #'   with_columns(abs = pl$col("a")$abs())
@@ -2870,8 +2753,6 @@ Expr_clip_max = function(max) {
 #' Find the upper bound of a DataType
 #'
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(
 #'   x = c(1, 2, 3), y = -2:0,
@@ -2883,8 +2764,6 @@ Expr_upper_bound = use_extendr_wrapper
 #' Find the lower bound of a DataType
 #'
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(
 #'   x = 1:3, y = 1:3,
@@ -2896,8 +2775,6 @@ Expr_lower_bound = use_extendr_wrapper
 #' Get the sign of elements
 #'
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(a = c(.9, -3, -0, 0, 4, NA_real_))$
 #'   with_columns(sign = pl$col("a")$sign())
@@ -2906,8 +2783,6 @@ Expr_sign = use_extendr_wrapper
 #' Compute sine
 #'
 #' @return  Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(a = c(0, pi / 2, pi, NA_real_))$
 #'   with_columns(sine = pl$col("a")$sin())
@@ -2916,8 +2791,6 @@ Expr_sin = use_extendr_wrapper
 #' Compute cosine
 #'
 #' @return  Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(a = c(0, pi / 2, pi, NA_real_))$
 #'   with_columns(cosine = pl$col("a")$cos())
@@ -2926,8 +2799,6 @@ Expr_cos = use_extendr_wrapper
 #' Compute tangent
 #'
 #' @return  Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(a = c(0, pi / 2, pi, NA_real_))$
 #'   with_columns(tangent = pl$col("a")$tan())
@@ -2936,8 +2807,6 @@ Expr_tan = use_extendr_wrapper
 #' Compute inverse sine
 #'
 #' @return  Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(a = c(-1, sin(0.5), 0, 1, NA_real_))$
 #'   with_columns(arcsin = pl$col("a")$arcsin())
@@ -2946,8 +2815,6 @@ Expr_arcsin = use_extendr_wrapper
 #' Compute inverse cosine
 #'
 #' @return  Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(a = c(-1, cos(0.5), 0, 1, NA_real_))$
 #'   with_columns(arccos = pl$col("a")$arccos())
@@ -2956,8 +2823,6 @@ Expr_arccos = use_extendr_wrapper
 #' Compute inverse tangent
 #'
 #' @return  Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(a = c(-1, tan(0.5), 0, 1, NA_real_))$
 #'   with_columns(arctan = pl$col("a")$arctan())
@@ -2966,8 +2831,6 @@ Expr_arctan = use_extendr_wrapper
 #' Compute hyperbolic sine
 #'
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(a = c(-1, asinh(0.5), 0, 1, NA_real_))$
 #'   with_columns(sinh = pl$col("a")$sinh())
@@ -2976,8 +2839,6 @@ Expr_sinh = use_extendr_wrapper
 #' Compute hyperbolic cosine
 #'
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(a = c(-1, acosh(0.5), 0, 1, NA_real_))$
 #'   with_columns(cosh = pl$col("a")$cosh())
@@ -2986,8 +2847,6 @@ Expr_cosh = use_extendr_wrapper
 #' Compute hyperbolic tangent
 #'
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(a = c(-1, atanh(0.5), 0, 1, NA_real_))$
 #'   with_columns(tanh = pl$col("a")$tanh())
@@ -2996,8 +2855,6 @@ Expr_tanh = use_extendr_wrapper
 #' Compute inverse hyperbolic sine
 #'
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(a = c(-1, sinh(0.5), 0, 1, NA_real_))$
 #'   with_columns(arcsinh = pl$col("a")$arcsinh())
@@ -3006,8 +2863,6 @@ Expr_arcsinh = use_extendr_wrapper
 #' Compute inverse hyperbolic cosine
 #'
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(a = c(-1, cosh(0.5), 0, 1, NA_real_))$
 #'   with_columns(arccosh = pl$col("a")$arccosh())
@@ -3016,8 +2871,6 @@ Expr_arccosh = use_extendr_wrapper
 #' Compute inverse hyperbolic tangent
 #'
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(a = c(-1, tanh(0.5), 0, 1, NA_real_))$
 #'   with_columns(arctanh = pl$col("a")$arctanh())
@@ -3320,8 +3173,6 @@ Expr_value_counts = function(sort = FALSE, parallel = FALSE) {
 #' differs from `$value_counts()` in that it does not return the values, only
 #' the counts and it might be faster.
 #' @return  Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(iris)$select(pl$col("Species")$unique_counts())
 Expr_unique_counts = use_extendr_wrapper
@@ -3330,8 +3181,6 @@ Expr_unique_counts = use_extendr_wrapper
 #'
 #' @param base Numeric base value for logarithm, default is `exp(1)`.
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(a = c(1, 2, 3, exp(1)))$
 #'   with_columns(log = pl$col("a")$log())
@@ -3341,8 +3190,6 @@ Expr_log = function(base = base::exp(1)) {
 
 #' Compute the base-10 logarithm of elements
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(a = c(1, 2, 3, exp(1)))$
 #'   with_columns(log10 = pl$col("a")$log10())
@@ -3410,8 +3257,6 @@ Expr_set_sorted = function(descending = FALSE) {
 #'
 #' Aggregate values into a list.
 #' @return Expr
-#' @docType NULL
-#' @format NULL
 #' @details
 #' Use `$to_struct()` to wrap a DataFrame.
 #' @examples
