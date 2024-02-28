@@ -154,17 +154,25 @@ test_that("str$len_bytes str$len_chars", {
 
 test_that("str$concat", {
   # concatenate a Series of strings to a single string
-  df = pl$DataFrame(foo = c("1", "a", 2))
+  df = pl$DataFrame(foo = c("1", "a", NA))
   expect_identical(
-    df$select(pl$col("foo")$str$concat())$to_list(),
-    lapply(df$to_list(), paste, collapse = "-")
+    df$select(pl$col("foo")$str$concat())$to_list()[[1]],
+    "1a"
+  )
+  expect_identical(
+    df$select(pl$col("foo")$str$concat("-"))$to_list()[[1]],
+    "1-a"
+  )
+  expect_identical(
+    df$select(pl$col("foo")$str$concat(ignore_nulls = FALSE))$to_list()[[1]],
+    NA_character_
   )
 
   # Series list of strings to Series of concatenated strings
   df = pl$DataFrame(list(bar = list(c("a", "b", "c"), c("1", "2", "æ"))))
   expect_identical(
-    df$select(pl$col("bar")$list$eval(pl$col("")$str$concat())$list$first())$to_list()$bar,
-    sapply(df$to_list()[[1]], paste, collapse = "-")
+    df$select(pl$col("bar")$list$eval(pl$element()$str$concat())$list$first())$to_list()$bar,
+    sapply(df$to_list()[[1]], paste, collapse = "")
   )
 })
 

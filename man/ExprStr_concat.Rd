@@ -2,31 +2,38 @@
 % Please edit documentation in R/expr__string.R
 \name{ExprStr_concat}
 \alias{ExprStr_concat}
-\title{Vertically concatenate values of a Series}
+\title{Vertically concatenate the string values in the column to a single string value.}
 \usage{
-ExprStr_concat(delimiter = "-", ignore_nulls = TRUE)
+ExprStr_concat(delimiter = "", ..., ignore_nulls = TRUE)
 }
 \arguments{
 \item{delimiter}{The delimiter to insert between consecutive string values.}
 
-\item{ignore_nulls}{Ignore null values. If \code{FALSE}, null values will be
+\item{...}{Ignored.}
+
+\item{ignore_nulls}{Ignore null values (default). If \code{FALSE}, null values will be
 propagated: if the column contains any null values, the output is null.}
 }
 \value{
 Expr of String concatenated
 }
 \description{
-Vertically concatenate the values in the Series to a single
-string value.
+Vertically concatenate the string values in the column to a single string value.
 }
 \examples{
 # concatenate a Series of strings to a single string
-df = pl$DataFrame(foo = c("1", NA, 2))
+df = pl$DataFrame(foo = c(1, NA, 2))
+
 df$select(pl$col("foo")$str$concat("-"))
+
 df$select(pl$col("foo")$str$concat("-", ignore_nulls = FALSE))
 
 # Series list of strings to Series of concatenated strings
-df = pl$DataFrame(list(bar = list(c("a", "b", "c"), c("1", "2", NA))))
-df$select(pl$col("bar")$list$eval(pl$col("")$str$concat("-"))$list$first())
+df = pl$DataFrame(bar = list(c("a", "b", "c"), c("d", "f", NA)))
+df
+
+df$select(
+  pl$col("bar")$list$eval(pl$element()$str$concat("-"))$list$first()
+)
 }
 \keyword{ExprStr}
