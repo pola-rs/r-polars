@@ -260,7 +260,7 @@ pub fn robj_to_asof_strategy(robj: Robj) -> RResult<AsofStrategy> {
 }
 
 pub fn robj_to_nonzero_usize(robj: Robj) -> RResult<NonZeroUsize> {
-    Ok(NonZeroUsize::new(robj_to!(usize, robj)?.into()).unwrap())
+    Ok(NonZeroUsize::new(robj_to!(usize, robj)?).unwrap())
 }
 
 pub fn robj_to_unique_keep_strategy(robj: Robj) -> RResult<UniqueKeepStrategy> {

@@ -33,11 +33,11 @@ impl RPolarsSQLContext {
     pub fn register(&mut self, name: Robj, lf: Robj) -> RResult<()> {
         Ok(self
             .context
-            .register(&robj_to!(str, name)?, robj_to!(LazyFrame, lf)?.0))
+            .register(robj_to!(str, name)?, robj_to!(LazyFrame, lf)?.0))
     }
 
     pub fn unregister(&mut self, name: Robj) -> RResult<()> {
-        Ok(self.context.unregister(&robj_to!(str, name)?))
+        Ok(self.context.unregister(robj_to!(str, name)?))
     }
 }
 
