@@ -3,9 +3,6 @@
 \name{DataType_Categorical}
 \alias{DataType_Categorical}
 \title{Create Categorical DataType}
-\format{
-function
-}
 \usage{
 DataType_Categorical(ordering = "physical")
 }
@@ -19,19 +16,20 @@ A Categorical DataType
 Create Categorical DataType
 }
 \details{
-When a
-categorical variable is created, its string values (or "lexical" values) are
-stored and encoded as integers ("physical" values) by order of appearance.
-
-For example, suppose we have a categorical variable whose first values are
-\code{"Peach"}, \code{"Apple"}, and "\verb{Pear"}. When this categorical variable is read,
-it each unique value will be mapped to an integer by order of appearance:
-\code{"Peach"} will be mapped to 0, \code{"Apple"} to 1, and \code{"Pear"} to 2.
-
-If we order by \code{"lexical"} values, we look at the string... TODO
+When a categorical variable is created, its string values (or "lexical"
+values) are stored and encoded as integers ("physical" values) by
+order of appearance. Therefore, sorting a categorical value can be done
+either on the lexical or on the physical values. See Examples.
 }
 \examples{
-pl$Categorical()
+# default is to order by physical values
+df = pl$DataFrame(x = c("z", "z", "k", "a", "z"), schema = list(x = pl$Categorical()))
+df$sort("x")
 
-pl$Categorical(ordering = "lexical")
+# when setting ordering = "lexical", sorting will be based on the strings
+df_lex = pl$DataFrame(
+  x = c("z", "z", "k", "a", "z"),
+  schema = list(x = pl$Categorical("lexical"))
+)
+df_lex$sort("x")
 }

@@ -84,4 +84,3 @@ test_that("Categorical", {
     pl$Series(c("z", "z", "k", "a"))$cast(pl$Categorical("foobar"))
   )
 })
-

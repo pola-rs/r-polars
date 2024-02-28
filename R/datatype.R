@@ -1,7 +1,6 @@
 #' check if schema
 #' @param x object to test if schema
 #' @return bool
-#' @format function
 #' @keywords functions
 #' @examples
 #' pl$is_schema(pl$DataFrame(iris)$schema)
@@ -19,7 +18,6 @@ pl_is_schema = \(x) {
 #' or schema is just char vec, implicitly the same as if all DataType are NULL,
 #' mean undefined.
 #' @return bool
-#' @format function
 #' @examples
 #' .pr$env$wrap_proto_schema(c("alice", "bob"))
 #' .pr$env$wrap_proto_schema(list("alice" = pl$Int64, "bob" = NULL))
@@ -168,7 +166,6 @@ DataType_constructors = function() {
 #' @param tz string the Time Zone, see details
 #' @details all allowed TimeZone designations can be found in `base::OlsonNames()`
 #' @keywords pl
-#' @format function
 #' @return Datetime DataType
 #' @examples
 #' pl$Datetime("ns", "Pacific/Samoa")
@@ -184,7 +181,6 @@ DataType_Datetime = function(tu = "us", tz = NULL) {
 #' Struct DataType Constructor
 #' @param ... RPolarsDataType objects
 #' @return a list DataType with an inner DataType
-#' @format function
 #' @examples
 #' # create a Struct-DataType
 #' pl$Struct(pl$Boolean)
@@ -264,7 +260,6 @@ DataType_Array = function(datatype = "unknown", width) {
 #' @param datatype an inner DataType, default is "Unknown" (placeholder for when inner DataType
 #' does not matter, e.g. as used in example)
 #' @return a list DataType with an inner DataType
-#' @format function
 #' @examples
 #' # some nested List
 #' pl$List(pl$List(pl$Boolean))
@@ -290,24 +285,24 @@ DataType_List = function(datatype = "unknown") {
 #' @param ordering Either `"physical"` (default) or `"lexical"`.
 #'
 #' @details
-#' When a
-#' categorical variable is created, its string values (or "lexical" values) are
-#' stored and encoded as integers ("physical" values) by order of appearance.
-#'
-#' For example, suppose we have a categorical variable whose first values are
-#' `"Peach"`, `"Apple"`, and "`Pear"`. When this categorical variable is read,
-#' it each unique value will be mapped to an integer by order of appearance:
-#' `"Peach"` will be mapped to 0, `"Apple"` to 1, and `"Pear"` to 2.
-#'
-#' If we order by `"lexical"` values, we look at the string... TODO
+#' When a categorical variable is created, its string values (or "lexical"
+#' values) are stored and encoded as integers ("physical" values) by
+#' order of appearance. Therefore, sorting a categorical value can be done
+#' either on the lexical or on the physical values. See Examples.
 #'
 #'
-#' @format function
 #' @return A Categorical DataType
 #' @examples
-#' pl$Categorical()
+#' # default is to order by physical values
+#' df = pl$DataFrame(x = c("z", "z", "k", "a", "z"), schema = list(x = pl$Categorical()))
+#' df$sort("x")
 #'
-#' pl$Categorical(ordering = "lexical")
+#' # when setting ordering = "lexical", sorting will be based on the strings
+#' df_lex = pl$DataFrame(
+#'   x = c("z", "z", "k", "a", "z"),
+#'   schema = list(x = pl$Categorical("lexical"))
+#' )
+#' df_lex$sort("x")
 DataType_Categorical = function(ordering = "physical") {
   .pr$DataType$new_categorical(ordering) |> unwrap()
 }

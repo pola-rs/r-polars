@@ -3,9 +3,6 @@
 \name{DataType_List}
 \alias{DataType_List}
 \title{Create List DataType}
-\format{
-function
-}
 \usage{
 DataType_List(datatype = "unknown")
 }
