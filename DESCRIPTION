@@ -63,7 +63,7 @@ Collate:
     'utils.R'
     'extendr-wrappers.R'
     'after-wrappers.R'
-    'field.R'
+    'Field.R'
     'PTime.R'
     'as_polars.R'
     'autocompletion.R'
