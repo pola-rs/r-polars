@@ -347,9 +347,9 @@ impl RPolarsDataFrame {
     }
 
     pub fn from_arrow_record_batches(rbr: Robj) -> Result<RPolarsDataFrame, String> {
-        Ok(RPolarsDataFrame(crate::arrow_interop::to_rust::to_rust_df(
-            rbr,
-        )?))
+        Ok(RPolarsDataFrame(unsafe {
+            crate::arrow_interop::to_rust::to_rust_df(rbr)
+        }?))
     }
 
     pub fn estimated_size(&self) -> f64 {
@@ -384,9 +384,9 @@ impl RPolarsDataFrame {
     #[allow(clippy::too_many_arguments)]
     pub fn pivot_expr(
         &self,
-        values: Robj,
         index: Robj,
         columns: Robj,
+        values: Robj,
         maintain_order: Robj,
         sort_columns: Robj,
         aggregate_expr: Robj,
@@ -400,9 +400,9 @@ impl RPolarsDataFrame {
 
         fun(
             &self.0,
-            robj_to!(Vec, String, values)?,
             robj_to!(Vec, String, index)?,
             robj_to!(Vec, String, columns)?,
+            robj_to!(Option, Vec, String, values)?,
             robj_to!(bool, sort_columns)?,
             robj_to!(Option, PLExpr, aggregate_expr)?,
             robj_to!(Option, str, separator)?,
@@ -449,7 +449,7 @@ impl RPolarsDataFrame {
             .map(RPolarsDataFrame)
     }
 
-    pub fn transpose(&self, keep_names_as: Robj, new_col_names: Robj) -> RResult<Self> {
+    pub fn transpose(&mut self, keep_names_as: Robj, new_col_names: Robj) -> RResult<Self> {
         let opt_s = robj_to!(Option, str, keep_names_as)?;
         let opt_vec_s = robj_to!(Option, Vec, String, new_col_names)?;
         let opt_either_vec_s = opt_vec_s.map(Either::Right);

@@ -37,22 +37,21 @@ test_that("expression boolean operators", {
 
 test_that("expression Arithmetics", {
   check_list = pl$DataFrame(list())$with_columns(
-    (pl$lit(1) / 2 == (1 / 2))$alias("1 /2 == (1/2)"),
-    (pl$lit(1) + 2 == (1 + 2))$alias("1 +2 == (1+2)"),
-    (pl$lit(1) * 2 == (1 * 2))$alias("1 *2 == (1*2)"),
-    (pl$lit(1) - 2 == (1 - 2))$alias("1 -2 == (1-2)"),
+    (pl$lit(1) / 2 == (1 / 2))$alias("1 / 2 == (1/2)"),
+    (pl$lit(1) + 2 == (1 + 2))$alias("1 + 2 == (1+2)"),
+    (pl$lit(1) * 2 == (1 * 2))$alias("1 * 2 == (1*2)"),
+    (pl$lit(1) - 2 == (1 - 2))$alias("1 - 2 == (1-2)"),
     (pl$lit(1)$div(pl$lit(2)) == (1 / 2))$alias("1$div(2) == (1/2)"),
     (pl$lit(1)$floor_div(pl$lit(2)) == (1 %/% 2))$alias("1$floor_div(2) == (1%/%2)"),
     (pl$lit(1)$mod(pl$lit(2)) == (1 %% 2))$alias("1$mod(2) == (1%%2)"),
-    (pl$lit(1)$mod(pl$lit(-2)) != (1 %% -2))$alias("1$mod(2) != (1%%-2)"), # https://github.com/pola-rs/polars/issues/10570
+    (pl$lit(1)$mod(pl$lit(-2)) == (1 %% -2))$alias("1$mod(2) != (1%%-2)"),
     (pl$lit(1)$add(pl$lit(2)) == (1 + 2))$alias("1$add(2) == (1+2)"),
     (pl$lit(1)$mul(pl$lit(2)) == (1 * 2))$alias("1$mul(2) == (1*2)"),
     (pl$lit(1)$sub(pl$lit(2)) == (1 - 2))$alias("1$sub(2) == (1-2)")
   )$to_data_frame(check.names = FALSE)
 
   results = unlist(check_list)
-  fails = results[!unlist(results)]
-  expect_equal(names(fails), character())
+  expect_true(all(results))
 })
 
 make_cases = function() {
@@ -1036,8 +1035,8 @@ test_that("sort_by", {
   )
 
   expect_grepl_error(pl$lit(1:4)$sort_by(1)$to_r(), "different length")
-  expect_grepl_error(pl$lit(1:4)$sort_by("blop")$to_r(), "column 'blop' not available in schema")
-  expect_grepl_error(pl$lit(1:4)$sort_by("blop")$to_r(), "column 'blop' not available in schema")
+  expect_grepl_error(pl$lit(1:4)$sort_by("blop")$to_r(), "column 'blop' not available in 'DataFrame'")
+  expect_grepl_error(pl$lit(1:4)$sort_by("blop")$to_r(), "column 'blop' not available in 'DataFrame'")
   expect_grepl_error(pl$lit(1:4)$sort_by(df)$to_r(), "not convertible into.* Expr")
   expect_grepl_error(pl$lit(1:4)$sort_by(df)$to_r(), "not convertible into.* Expr")
 

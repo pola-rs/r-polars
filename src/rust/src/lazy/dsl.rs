@@ -1081,7 +1081,7 @@ impl RPolarsExpr {
             .0
             .clone()
             .list()
-            .take(robj_to!(PLExprCol, index)?, robj_to!(bool, null_on_oob)?)
+            .gather(robj_to!(PLExprCol, index)?, robj_to!(bool, null_on_oob)?)
             .into())
     }
 

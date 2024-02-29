@@ -7,7 +7,7 @@ Authors@R:
   c(person("Ritchie", "Vink", , "ritchie46@gmail.com", role = c("aut")),
     person("Soren", "Welling", , "sorhawell@gmail.com", role = c("aut", "cre")),
     person("Tatsuya", "Shima", , "ts1s1andn@gmail.com", role = c("aut")),
-    person("Etienne", "Bacher", , "etienne.bacher@protonmail.com", role = c("aut")))
+    person("Etienne", "Bacher", , "etienne.bacher@protonmail.com", role = c("aut"), comment = c(ORCID = "0000-0002-9271-5075")))
 Description: Lightning-fast 'DataFrame' library written in 'Rust'. Convert R data
   to 'Polars' data and vice versa. Perform fast, lazy, larger-than-memory and
   optimized data queries. 'Polars' is interoperable with the package 'arrow',
@@ -118,5 +118,5 @@ Collate:
     'zzz.R'
 Config/rextendr/version: 0.3.1
 VignetteBuilder: knitr
-Config/polars/LibVersion: 0.37.2
+Config/polars/LibVersion: 0.38.0
 Config/polars/RustToolchainVersion: nightly-2024-02-03

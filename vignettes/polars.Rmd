@@ -318,8 +318,9 @@ column. See the section below for more details on data types.
 
 ## Reshape
 
-Polars supports data reshaping, going from both long to wide (a.k.a. "pivot", "pivot longer")
-, and wide to long (a.k.a. "unpivot", "pivot wider", "melt").
+Polars supports data reshaping, going from both long to wide (a.k.a. "pivotting",
+or `pivot_wider()` in `tidyr`), and from wide to long (a.k.a. "unpivotting", 
+"melting", or `pivot_longer()` in `tidyr`).
 Let's switch to the `Indometh` dataset to demonstrate some basic examples.
 Note that the data are currently in long format.
 
@@ -356,7 +357,7 @@ dat$pivot(
   values = "mpg",
   index = c("am", "vs"),
   columns = "cyl",
-  aggregate_fun = "median" # aggregating function
+  aggregate_function = "median" # aggregating function
 )
 ```
 

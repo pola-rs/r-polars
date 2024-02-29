@@ -964,23 +964,35 @@ test_that("pivot args works", {
 
   # aggr functions
   expect_identical(
-    df$pivot("cat", "ann", "bob", "mean")$to_list(),
+    df$pivot("cat", "ann", "bob", aggregate_function = "mean")$to_list(),
     list(ann = c("one", "two"), A = c(2, 5), B = c(2, 5))
   )
   expect_identical(
-    df$pivot("cat", "ann", "bob", pl$element()$mean())$to_list(),
-    df$pivot("cat", "ann", "bob", "mean")$to_list()
+    df$pivot("cat", "ann", "bob", aggregate_function = pl$element()$mean())$to_list(),
+    df$pivot("cat", "ann", "bob", aggregate_function = "mean")$to_list()
   )
-  expect_grepl_error(df$pivot("cat", "ann", "bob", 42), c("pivot", "param", "aggregate_function", "42"))
-  expect_grepl_error(df$pivot("cat", "ann", "bob", "dummy"), c("pivot", "dummy is not a method"))
+  expect_grepl_error(
+    df$pivot("ann", "bob", "cat", aggregate_function = 42),
+    c("pivot", "param", "aggregate_function", "42")
+  )
+  expect_grepl_error(
+    df$pivot("ann", "bob", "cat", aggregate_function = "dummy"),
+    c("pivot", "dummy is not a method")
+  )
 
   # maintain_order sort_columns
-  expect_grepl_error(df$pivot("cat", "ann", "bob", "mean", 42), c("pivot", "maintain_order", "bool"))
-  expect_grepl_error(df$pivot("cat", "ann", "bob", "mean", TRUE, 42), c("pivot", "sort_columns", "bool"))
+  expect_grepl_error(
+    df$pivot("ann", "bob", "cat", aggregate_function = "mean", maintain_order = 42),
+    c("pivot", "maintain_order", "bool")
+  )
+  expect_grepl_error(
+    df$pivot("ann", "bob", "cat", aggregate_function = "mean", sort_columns = 42),
+    c("pivot", "sort_columns", "bool")
+  )
 
   # separator
-  expect_identical(
-    names(df$pivot(c("ann", "bob"), "ann", "cat", "mean", sep = ".")),
+  expect_named(
+    df$pivot(c("ann", "bob"), "ann", "cat", aggregate_function = "mean", separator = "."),
     c(
       "ann", "ann.cat.1.0", "ann.cat.2.0", "ann.cat.3.0", "ann.cat.4.0",
       "ann.cat.5.0", "ann.cat.6.0", "bob.cat.1.0", "bob.cat.2.0", "bob.cat.3.0",
@@ -1012,7 +1024,7 @@ test_that("rename", {
 
 
 test_that("describe", {
-  df =  pl$DataFrame(
+  df = pl$DataFrame(
     string = c(letters[1:2], NA),
     date = c(as.Date("2024-01-20"), as.Date("2024-01-21"), NA),
     cat = factor(c(letters[1:2], NA)),
@@ -1033,7 +1045,7 @@ test_that("describe", {
   df = pl$DataFrame("foo:bar:jazz" = 1, pl$Series(2, name = ""), "foobar" = 3)
   expect_identical(
     df$describe()$columns,
-    c("describe", df$columns)
+    c("statistic", df$columns)
   )
 })
 
