@@ -2,7 +2,12 @@
 
 ## Polars R Package (development version)
 
-### Breaking changes
+### Breaking changes due to Rust-polars update
+
+-   rust-polars is updated to 0.38.0 (#865).
+    -   TODO
+
+### Other breaking changes
 
 -   Removed `as.list()` for class `RPolarsExpr` as it is a simple wrapper around
     `list()` (#843).
