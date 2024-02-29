@@ -347,9 +347,9 @@ impl RPolarsDataFrame {
     }
 
     pub fn from_arrow_record_batches(rbr: Robj) -> Result<RPolarsDataFrame, String> {
-        Ok(RPolarsDataFrame(crate::arrow_interop::to_rust::to_rust_df(
-            rbr,
-        )?))
+        Ok(RPolarsDataFrame(unsafe {
+            crate::arrow_interop::to_rust::to_rust_df(rbr)
+        }?))
     }
 
     pub fn estimated_size(&self) -> f64 {

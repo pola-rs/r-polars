@@ -577,8 +577,8 @@ impl RPolarsSeries {
         Ok(RPolarsSeries(s))
     }
 
-    pub fn into_frame(&self) -> RPolarsDataFrame {
-        RPolarsDataFrame(pl::DataFrame::new(vec![self.0.clone()]).unwrap())
+    pub unsafe fn into_frame(&self) -> RPolarsDataFrame {
+        RPolarsDataFrame(pl::DataFrame::new_no_checks(vec![self.0.clone()]))
     }
 }
 

@@ -36,7 +36,7 @@ unsafe fn wrap_make_external_ptr<T>(t: &mut T) -> Robj {
     unsafe { <Integers>::make_external_ptr(t, r!(extendr_api::NULL)) }
 }
 
-pub fn to_rust_df(rb: Robj) -> Result<pl::DataFrame, String> {
+pub unsafe fn to_rust_df(rb: Robj) -> Result<pl::DataFrame, String> {
     let rb = rb.as_list().ok_or("arrow record batches is not a List")?;
     let get_columns_f = R!(r"\(x) x$columns")?.as_function().unwrap();
 
@@ -99,7 +99,7 @@ pub fn to_rust_df(rb: Robj) -> Result<pl::DataFrame, String> {
         }?;
 
         // no need to check as a record batch has the same guarantees
-        let df_res: Result<_, String> = Ok(DataFrame::new(series_vec).unwrap());
+        let df_res: Result<_, String> = Ok(DataFrame::new_no_checks(series_vec));
         df_res
     });
     let dfs = crate::utils::collect_hinted_result(rb_len, dfs_iter)?;
