@@ -644,10 +644,6 @@ is_rstudio = function() {
   if (is.null(x)) y else x
 }
 
-`%|||%` = function(x, y) {
-  if (!length(x)) y else x
-}
-
 is_scalar_bool = function(x) {
   length(x) == 1 && !is.na(x) && is.logical(x)
 }
