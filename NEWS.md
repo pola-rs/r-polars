@@ -42,7 +42,7 @@
     row numbers (#840).
 -   `$group_by()` now works with named expressions (#846).
 -   New methods for the `arr` subnamespace: `$median()`, `$var()`, `$std()`, 
-    `$shift()`, `$to_struct()` (#866).
+    `$shift()`, `$to_struct()` (#867).
 
 ## Polars R Package 0.14.1
 
