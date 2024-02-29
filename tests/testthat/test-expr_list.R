@@ -592,24 +592,25 @@ test_that("$list$set_*() work with strings", {
   )
 })
 
-# TODO: currently (rs-0.36.2), this panicks, which leads to other tests failing
-# due to panicks
-# Uncomment when resolved upstream: https://github.com/pola-rs/polars/issues/13840
-# test_that("$list$set_*() errors if no common supertype", {
-#   df = pl$DataFrame(
-#     a = list(c(1, 2, 3), NA_real_, c(NA_real_, 3), c(5, 6, 7)),
-#     b = list(2:4, 3L, c(3L, 4L, NA_integer_), c(6L, 8L))
-#   )
-#   expect_error(
-#     df$select(pl$col("a")$list$set_union("b"))
-#   )
-#   expect_error(
-#     df$select(pl$col("a")$list$set_intersection("b"))
-#   )
-#   expect_error(
-#     df$select(pl$col("a")$list$set_difference("b"))
-#   )
-#   expect_error(
-#     df$select(pl$col("a")$list$set_symmetric_difference("b"))
-#   )
-# })
+test_that("$list$set_*() casts to common supertype", {
+  df = pl$DataFrame(
+    a = list(c(1, 2), NA_real_),
+    b = list(c("a", "b"), NA_character_)
+  )
+  expect_identical(
+    df$select(pl$col("a")$list$set_union("b"))$to_list(),
+    list(a = list(c("1.0", "2.0", "a", "b"), NA_character_))
+  )
+  expect_identical(
+    df$select(pl$col("a")$list$set_intersection("b"))$to_list(),
+    list(a = list(character(0), NA_character_))
+  )
+  expect_identical(
+    df$select(pl$col("a")$list$set_difference("b"))$to_list(),
+    list(a = list(c("1.0", "2.0"), character(0)))
+  )
+  expect_identical(
+    df$select(pl$col("a")$list$set_symmetric_difference("b"))$to_list(),
+    list(a = list(c("1.0", "2.0", "a", "b"), character(0)))
+  )
+})

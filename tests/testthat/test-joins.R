@@ -155,14 +155,11 @@ test_that("argument 'validate' works", {
     "join keys did not fulfil m:1 validation"
   )
 
-  # TODO: currently (rs-0.36.2) this should error but doesn't
-  # upstream issue: https://github.com/pola-rs/polars/issues/13852
-  #
   # 1:m
-  # expect_error(
-  #   df2$join(df1, on = "x", validate = "1:m")$collect(),
-  #   "join keys did not fulfil 1:m validation"
-  # )
+  expect_error(
+    df2$join(df1, on = "x", validate = "1:m")$collect(),
+    "join keys did not fulfil 1:m validation"
+  )
 
   expect_error(
     df2$join(df1, on = "x", validate = "foobar")$collect(),
