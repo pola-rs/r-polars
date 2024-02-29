@@ -160,6 +160,7 @@ DataType_constructors = function() {
   )
 }
 
+# TODO: change the argument name from `tz` to `time_zone`
 #' Create Datetime DataType
 #' @description Datetime DataType constructor
 #' @param tu string option either "ms", "us" or "ns"
@@ -170,8 +171,13 @@ DataType_constructors = function() {
 #' @examples
 #' pl$Datetime("ns", "Pacific/Samoa")
 DataType_Datetime = function(tu = "us", tz = NULL) {
-  if (!is.null(tz) && (!is_string(tz) || !tz %in% base::OlsonNames())) {
-    stop("Datetime: the tz '%s' is not a valid timezone string, see base::OlsonNames()", tz)
+  if (!is.null(tz) && !isTRUE(tz %in% base::OlsonNames())) {
+    sprintf(
+      "The time zone '%s' is not supported in polars. See `base::OlsonNames()` for supported time zones.",
+      tz
+    ) |>
+      Err_plain() |>
+      unwrap("in $Datetime():")
   }
   unwrap(.pr$DataType$new_datetime(tu, tz))
 }

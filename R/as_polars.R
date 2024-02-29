@@ -494,3 +494,27 @@ as_polars_series.clock_time_point = function(x, name = NULL, ...) {
 as_polars_series.clock_sys_time = function(x, name = NULL, ...) {
   as_polars_series.clock_time_point(x, name = name, ...)$dt$replace_time_zone("UTC")
 }
+
+
+#' @rdname as_polars_series
+#' @export
+as_polars_series.clock_zoned_time = function(x, name = NULL, ...) {
+  tz = clock::zoned_time_zone(x)
+
+  # TODO: support `as_polars_series(clock::zoned_time_now(""))`
+  # https://github.com/r-lib/clock/issues/366
+  if (!isTRUE(tz %in% base::OlsonNames())) {
+    sprintf(
+      "The time zone '%s' is not supported in polars. See 'base::OlsonNames()' for supported time zones.",
+      tz
+    ) |>
+      Err_plain() |>
+      unwrap("in as_polars_series(<clock_zoned_time>):")
+  }
+
+  as_polars_series.clock_time_point(
+    clock::as_naive_time(x),
+    name = name,
+    ...
+  )$dt$replace_time_zone(tz)
+}
