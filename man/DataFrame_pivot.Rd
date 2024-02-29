@@ -8,6 +8,7 @@ DataFrame_pivot(
   values,
   index,
   columns,
+  ...,
   aggregate_function = NULL,
   maintain_order = TRUE,
   sort_columns = FALSE,
@@ -22,6 +23,8 @@ DataFrame_pivot(
 
 \item{columns}{Name of the column(s) whose values will be used as the header
 of the output DataFrame.}
+
+\item{...}{Not used.}
 
 \item{aggregate_function}{One of:
 \itemize{
