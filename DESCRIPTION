@@ -26,6 +26,7 @@ Suggests:
     bench,
     bit64,
     callr,
+    clock,
     curl,
     ggplot2,
     jsonlite,

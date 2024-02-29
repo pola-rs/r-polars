@@ -415,3 +415,75 @@ as_polars_series.nanoarrow_array_stream = function(x, name = NULL, ...) {
 
   out
 }
+
+
+#' @rdname as_polars_series
+#' @export
+as_polars_series.clock_time_point = function(x, name = NULL, ...) {
+  from_precision = clock::time_point_precision(x)
+
+  # Polars' datetime type only include ns, us, ms
+  if (
+    !from_precision %in% c(
+      "nanosecond", "microsecond", "millisecond", "second", "minute", "hour", "day"
+    )
+  ) {
+    x = clock::time_point_cast(x, "millisecond")
+    from_precision = clock::time_point_precision(x)
+  }
+
+  # https://github.com/r-lib/clock/blob/adc01b61670b18463cc3087f1e58acf59ddc3915/R/precision.R#L37-L51
+  target_precision = pcase(
+    from_precision == "nanosecond", "ns",
+    from_precision == "microsecond", "us",
+    from_precision == "millisecond", "ms",
+    or_else = "ms" # second, minute, hour, day
+  )
+
+  n_multiply_to_ms = pcase(
+    from_precision == "second", 1000L,
+    from_precision == "minute", 1000L * 60L,
+    from_precision == "hour", 1000L * 60L * 60L,
+    from_precision == "day", 1000L * 60L * 60L * 24L,
+    or_else = 1L # ns, us, ms
+  )
+
+  unclassed_x = unclass(x)
+  df_in = pl$DataFrame(unclassed_x)
+
+  # https://github.com/r-lib/clock/blob/adc01b61670b18463cc3087f1e58acf59ddc3915/src/duration.h#L174-L184
+  df_in$select(
+    pl$col("lower")$cast(pl$UInt64),
+    pl$col("upper")$cast(pl$UInt64)
+  )$select(
+    pl$col("lower")$mul(pl$lit(4294967296)$cast(pl$UInt64))$or(
+      pl$col("upper")
+    )
+  )$with_columns(
+    diff_1 = pl$when(
+      pl$col("lower")$gt(
+        pl$lit(2L)$cast(pl$UInt64)$pow(pl$lit(63L)$cast(pl$UInt8))
+      )
+    )$then(
+      pl$col("lower")$sub(
+        pl$lit(2L)$cast(pl$UInt64)$pow(pl$lit(63L)$cast(pl$UInt8))
+      )
+    )$otherwise(NULL)
+  )$with_columns(
+    diff_2 = pl$when(
+      pl$col("diff_1")$is_null()
+    )$then(
+      pl$lit(2L)$cast(pl$UInt64)$pow(pl$lit(63L)$cast(pl$UInt8))$sub(
+        pl$col("lower")
+      )
+    )$otherwise(NULL)
+  )$select(
+    out = pl$when(pl$col("diff_1")$is_null())$then(
+      pl$lit(0L)$cast(pl$Int64)$sub(pl$col("diff_2")$cast(pl$Int64))
+    )$otherwise(
+      pl$col("diff_1")$cast(pl$Int64)
+    )$mul(
+      pl$lit(n_multiply_to_ms)$cast(pl$UInt32)
+    )$cast(pl$Datetime(tu = target_precision))
+  )$get_column("out")$alias(name %||% "")
+}

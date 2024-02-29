@@ -14,6 +14,7 @@
 \alias{as_polars_series.ChunkedArray}
 \alias{as_polars_series.nanoarrow_array}
 \alias{as_polars_series.nanoarrow_array_stream}
+\alias{as_polars_series.clock_time_point}
 \title{To polars Series}
 \usage{
 as_polars_series(x, name = NULL, ...)
@@ -41,6 +42,8 @@ as_polars_series(x, name = NULL, ...)
 \method{as_polars_series}{nanoarrow_array}(x, name = NULL, ...)
 
 \method{as_polars_series}{nanoarrow_array_stream}(x, name = NULL, ...)
+
+\method{as_polars_series}{clock_time_point}(x, name = NULL, ...)
 }
 \arguments{
 \item{x}{Object to convert into a polars Series}
