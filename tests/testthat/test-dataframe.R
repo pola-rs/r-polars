@@ -964,12 +964,12 @@ test_that("pivot args works", {
 
   # aggr functions
   expect_identical(
-    df$pivot(index = "ann", columns = "bob", values = "cat", aggregate_function = "mean")$to_list(),
+    df$pivot("cat", "ann", "bob", aggregate_function = "mean")$to_list(),
     list(ann = c("one", "two"), A = c(2, 5), B = c(2, 5))
   )
   expect_identical(
-    df$pivot(index = "ann", columns = "bob", values = "cat", aggregate_function = pl$element()$mean())$to_list(),
-    df$pivot(index = "ann", columns = "bob", values = "cat", aggregate_function = "mean")$to_list()
+    df$pivot("cat", "ann", "bob", aggregate_function = pl$element()$mean())$to_list(),
+    df$pivot("cat", "ann", "bob", aggregate_function = "mean")$to_list()
   )
   expect_grepl_error(
     df$pivot("ann", "bob", "cat", aggregate_function = 42),
@@ -991,8 +991,8 @@ test_that("pivot args works", {
   )
 
   # separator
-  expect_identical(
-    names(df$pivot("ann", "cat", values = c("ann", "bob"), aggregate_function = "mean", separator = ".")),
+  expect_named(
+    df$pivot(c("ann", "bob"), "ann", "cat", aggregate_function = "mean", separator = "."),
     c(
       "ann", "ann.cat.1.0", "ann.cat.2.0", "ann.cat.3.0", "ann.cat.4.0",
       "ann.cat.5.0", "ann.cat.6.0", "bob.cat.1.0", "bob.cat.2.0", "bob.cat.3.0",
