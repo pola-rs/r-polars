@@ -1035,8 +1035,8 @@ test_that("sort_by", {
   )
 
   expect_grepl_error(pl$lit(1:4)$sort_by(1)$to_r(), "different length")
-  expect_grepl_error(pl$lit(1:4)$sort_by("blop")$to_r(), "column 'blop' not available in schema")
-  expect_grepl_error(pl$lit(1:4)$sort_by("blop")$to_r(), "column 'blop' not available in schema")
+  expect_grepl_error(pl$lit(1:4)$sort_by("blop")$to_r(), "column 'blop' not available in 'DataFrame'")
+  expect_grepl_error(pl$lit(1:4)$sort_by("blop")$to_r(), "column 'blop' not available in 'DataFrame'")
   expect_grepl_error(pl$lit(1:4)$sort_by(df)$to_r(), "not convertible into.* Expr")
   expect_grepl_error(pl$lit(1:4)$sort_by(df)$to_r(), "not convertible into.* Expr")
 
