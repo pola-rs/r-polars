@@ -684,6 +684,12 @@ RPolarsExpr$arr_min <- function() .Call(wrap__RPolarsExpr__arr_min, self)
 
 RPolarsExpr$arr_sum <- function() .Call(wrap__RPolarsExpr__arr_sum, self)
 
+RPolarsExpr$arr_std <- function(ddof) .Call(wrap__RPolarsExpr__arr_std, self, ddof)
+
+RPolarsExpr$arr_var <- function(ddof) .Call(wrap__RPolarsExpr__arr_var, self, ddof)
+
+RPolarsExpr$arr_median <- function() .Call(wrap__RPolarsExpr__arr_median, self)
+
 RPolarsExpr$arr_unique <- function(maintain_order) .Call(wrap__RPolarsExpr__arr_unique, self, maintain_order)
 
 RPolarsExpr$arr_to_list <- function() .Call(wrap__RPolarsExpr__arr_to_list, self)
@@ -707,6 +713,10 @@ RPolarsExpr$arr_join <- function(separator, ignore_nulls) .Call(wrap__RPolarsExp
 RPolarsExpr$arr_contains <- function(other) .Call(wrap__RPolarsExpr__arr_contains, self, other)
 
 RPolarsExpr$arr_count_matches <- function(expr) .Call(wrap__RPolarsExpr__arr_count_matches, self, expr)
+
+RPolarsExpr$arr_to_struct <- function(fields) .Call(wrap__RPolarsExpr__arr_to_struct, self, fields)
+
+RPolarsExpr$arr_shift <- function(n) .Call(wrap__RPolarsExpr__arr_shift, self, n)
 
 RPolarsExpr$dt_truncate <- function(every, offset) .Call(wrap__RPolarsExpr__dt_truncate, self, every, offset)
 
