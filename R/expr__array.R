@@ -50,6 +50,50 @@ ExprArr_min = function() {
   .pr$Expr$arr_min(self)
 }
 
+#' Find the median in an array
+#'
+#' @return Expr
+#' @aliases arr_median
+#' @examples
+#' df = pl$DataFrame(
+#'   values = list(c(2, 1, 4), c(8.4, 3.2, 1)),
+#'   schema = list(values = pl$Array(pl$Float64, 3))
+#' )
+#' df$with_columns(median = pl$col("values")$arr$median())
+ExprArr_median = function() {
+  .pr$Expr$arr_median(self)
+}
+
+#' Find the standard deviation in an array
+#'
+#' @inheritParams DataFrame_std
+#' @return Expr
+#' @aliases arr_std
+#' @examples
+#' df = pl$DataFrame(
+#'   values = list(c(2, 1, 4), c(8.4, 3.2, 1)),
+#'   schema = list(values = pl$Array(pl$Float64, 3))
+#' )
+#' df$with_columns(std = pl$col("values")$arr$std())
+ExprArr_std = function(ddof = 1) {
+  .pr$Expr$arr_std(self, ddof)
+}
+
+#' Find the variance in an array
+#'
+#' @inheritParams DataFrame_var
+#' @return Expr
+#' @aliases arr_var
+#' @examples
+#' df = pl$DataFrame(
+#'   values = list(c(2, 1, 4), c(8.4, 3.2, 1)),
+#'   schema = list(values = pl$Array(pl$Float64, 3))
+#' )
+#' df$with_columns(var = pl$col("values")$arr$var())
+ExprArr_var = function(ddof = 1) {
+  .pr$Expr$arr_var(self, ddof)
+}
+
 #' Sort values in an array
 #'
 #' @inheritParams Expr_sort
@@ -212,3 +256,53 @@ ExprArr_all = function() .pr$Expr$arr_all(self)
 #' )
 #' df$with_columns(any = pl$col("values")$arr$any())
 ExprArr_any = function() .pr$Expr$arr_any(self)
+
+#' Shift array values by `n` indices
+#'
+#' @inheritParams ExprList_shift
+#'
+#' @return Expr
+#' @aliases arr_shift
+#' @examples
+#' df = pl$DataFrame(
+#'   values = list(1:3, c(2L, NA_integer_, 5L)),
+#'   idx = 1:2,
+#'   schema = list(values = pl$Array(pl$Int32, 3))
+#' )
+#' df$with_columns(
+#'   shift_by_expr = pl$col("values")$arr$shift(pl$col("idx")),
+#'   shift_by_lit = pl$col("values")$arr$shift(2)
+#' )
+ExprArr_shift = function(periods = 1) {
+  .pr$Expr$arr_shift(self, periods) |>
+    unwrap("in $arr$shift():")
+}
+
+#' Convert array to struct
+#'
+#' @inheritParams ExprList_to_struct
+#'
+#' @return Expr
+#' @aliases arr_to_struct
+#' @examples
+#' df = pl$DataFrame(
+#'   values = list(1:3, c(2L, NA_integer_, 5L)),
+#'   schema = list(values = pl$Array(pl$Int32, 3))
+#' )
+#' df$with_columns(
+#'   struct = pl$col("values")$arr$to_struct()
+#' )
+#'
+#' # pass a custom function that will name all fields by adding a prefix
+#' df2 = df$with_columns(
+#'   pl$col("values")$arr$to_struct(
+#'     fields = \(idx) paste0("col_", idx)
+#'   )
+#' )
+#' df2
+#'
+#' df2$unnest()
+ExprArr_to_struct = function(fields = NULL) {
+  .pr$Expr$arr_to_struct(self, fields) |>
+    unwrap("in $arr$to_struct():")
+}

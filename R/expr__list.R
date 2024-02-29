@@ -410,7 +410,7 @@ ExprList_to_struct = function(
     fields = NULL,
     upper_bound = 0) {
   .pr$Expr$list_to_struct(self, n_field_strategy, fields, upper_bound) |>
-    unwrap("in <List>$to_struct():")
+    unwrap("in $list$to_struct():")
 }
 
 #' Run any polars expression on the list values
