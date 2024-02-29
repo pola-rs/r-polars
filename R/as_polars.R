@@ -501,11 +501,13 @@ as_polars_series.clock_sys_time = function(x, name = NULL, ...) {
 as_polars_series.clock_zoned_time = function(x, name = NULL, ...) {
   tz = clock::zoned_time_zone(x)
 
-  # TODO: support `as_polars_series(clock::zoned_time_now(""))`
-  # https://github.com/r-lib/clock/issues/366
+  if (isTRUE(tz == "")) {
+    # https://github.com/r-lib/clock/issues/366
+    tz = Sys.timezone()
+  }
   if (!isTRUE(tz %in% base::OlsonNames())) {
     sprintf(
-      "The time zone '%s' is not supported in polars. See 'base::OlsonNames()' for supported time zones.",
+      "The time zone '%s' is not supported in polars. See `base::OlsonNames()` for supported time zones.",
       tz
     ) |>
       Err_plain() |>

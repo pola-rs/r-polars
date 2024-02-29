@@ -370,14 +370,6 @@ patrick::with_parameters_test_that("as_polars_series for nanoarrow_array_stream"
 )
 
 
-make_clock_datetime_cases = function() {
-  naive_time_chr = c(
-    "1900-01-01T12:34:56.123456789",
-    "2012-01-01T12:34:56.123456789",
-    "2212-01-01T12:34:56.123456789"
-  )
-}
-
 patrick::with_parameters_test_that("clock package class support",
   {
     skip_if_not_installed("clock")
@@ -419,3 +411,10 @@ patrick::with_parameters_test_that("clock package class support",
   precision = c("nanosecond", "microsecond", "millisecond", "second", "minute", "hour", "day"),
   .test_name = precision
 )
+
+
+test_that("clock_zoned_time may returns empty time zone", {
+  skip_if_not_installed("clock")
+
+  expect_s3_class(as_polars_series(clock::zoned_time_now(zone = "")), "RPolarsSeries")
+})
