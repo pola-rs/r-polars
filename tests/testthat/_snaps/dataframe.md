@@ -402,11 +402,11 @@
       │ null_count ┆ 1      ┆ 1          ┆ 1    ┆ 1     │
       │ mean       ┆ null   ┆ null       ┆ null ┆ null  │
       │ std        ┆ null   ┆ null       ┆ null ┆ null  │
-      │ min        ┆ a      ┆ 2024-01-20 ┆ null ┆ false │
+      │ min        ┆ a      ┆ 2024-01-20 ┆ zz   ┆ false │
       │ 25%        ┆ null   ┆ null       ┆ null ┆ null  │
       │ 50%        ┆ null   ┆ null       ┆ null ┆ null  │
       │ 75%        ┆ null   ┆ null       ┆ null ┆ null  │
-      │ max        ┆ b      ┆ 2024-01-21 ┆ null ┆ true  │
+      │ max        ┆ b      ┆ 2024-01-21 ┆ a    ┆ true  │
       └────────────┴────────┴────────────┴──────┴───────┘
 
 ---
@@ -452,6 +452,28 @@
       │ 75%        ┆ 22.8      ┆ 8.0      ┆ 326.0      ┆ … ┆ 1.0      ┆ 1.0      ┆ 4.0      ┆ 4.0    │
       │ max        ┆ 33.9      ┆ 8.0      ┆ 472.0      ┆ … ┆ 1.0      ┆ 1.0      ┆ 5.0      ┆ 8.0    │
       └────────────┴───────────┴──────────┴────────────┴───┴──────────┴──────────┴──────────┴────────┘
+
+---
+
+    Code
+      df$select(pl$col("cat")$cast(pl$Categorical("lexical")))$describe()
+    Output
+      shape: (9, 2)
+      ┌────────────┬──────┐
+      │ statistic  ┆ cat  │
+      │ ---        ┆ ---  │
+      │ str        ┆ str  │
+      ╞════════════╪══════╡
+      │ count      ┆ 2    │
+      │ null_count ┆ 1    │
+      │ mean       ┆ null │
+      │ std        ┆ null │
+      │ min        ┆ a    │
+      │ 25%        ┆ null │
+      │ 50%        ┆ null │
+      │ 75%        ┆ null │
+      │ max        ┆ zz   │
+      └────────────┴──────┘
 
 # glimpse
 

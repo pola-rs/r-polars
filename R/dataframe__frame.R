@@ -1582,32 +1582,12 @@ DataFrame_describe = function(percentiles = c(.25, .75), interpolation = "neares
       expr$alias(paste0("std", custom_sep, x))
     })
 
-    # accept all types but categorical
-    # TODO: add "Enum" to the list of non-accepted types when implemented
-    minmax_cols = lapply(self$schema, \(x) {
-      if (x != pl$Categorical()) {
-        x
-      }
-    }) |>
-      unlist() |>
-      names()
-
     min_exprs = lapply(self$columns, function(x) {
-      expr = if (x %in% minmax_cols) {
-        pl$col(x)$min()
-      } else {
-        pl$lit(NA)
-      }
-      expr$alias(paste0("min", custom_sep, x))
+      pl$col(x)$min()$alias(paste0("min", custom_sep, x))
     })
 
     max_exprs = lapply(self$columns, function(x) {
-      expr = if (x %in% minmax_cols) {
-        pl$col(x)$max()
-      } else {
-        pl$lit(NA)
-      }
-      expr$alias(paste0("max", custom_sep, x))
+      pl$col(x)$max()$alias(paste0("max", custom_sep, x))
     })
 
     # Calculate metrics in parallel
