@@ -1076,12 +1076,30 @@ impl RPolarsExpr {
             .into()
     }
 
+    fn list_n_unique(&self) -> Self {
+        self.0
+            .clone()
+            .list()
+            .n_unique()
+            .with_fmt("list.n_unique")
+            .into()
+    }
+
     fn list_gather(&self, index: Robj, null_on_oob: Robj) -> RResult<Self> {
         Ok(self
             .0
             .clone()
             .list()
             .gather(robj_to!(PLExprCol, index)?, robj_to!(bool, null_on_oob)?)
+            .into())
+    }
+
+    fn list_gather_every(&self, n: Robj, offset: Robj) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .list()
+            .gather_every(robj_to!(PLExprCol, n)?, robj_to!(PLExprCol, offset)?)
             .into())
     }
 

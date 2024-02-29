@@ -11,9 +11,9 @@ ExprList_unique()
 Expr
 }
 \description{
-Get the unique/distinct values in the list.
+Get unique values in a list
 }
 \examples{
-df = pl$DataFrame(list(values = list(c(2, 2, NA), c(1, 2, 3), NA_real_)))
+df = pl$DataFrame(values = list(c(2, 2, NA), c(1, 2, 3), NA_real_))
 df$with_columns(unique = pl$col("values")$list$unique())
 }
