@@ -368,3 +368,54 @@ patrick::with_parameters_test_that("as_polars_series for nanoarrow_array_stream"
   },
   .cases = make_nanoarrow_array_stream_cases()
 )
+
+
+make_clock_datetime_cases = function() {
+  naive_time_chr = c(
+    "1900-01-01T12:34:56.123456789",
+    "2012-01-01T12:34:56.123456789",
+    "2212-01-01T12:34:56.123456789"
+  )
+}
+
+patrick::with_parameters_test_that("clock package class support",
+  {
+    skip_if_not_installed("clock")
+
+    naive_time_chr = c(
+      "1900-01-01T12:34:56.123456789",
+      "2012-01-01T12:34:56.123456789",
+      "2212-01-01T12:34:56.123456789"
+    )
+
+    clock_naive_time = clock::naive_time_parse(naive_time_chr, precision = precision)
+    clock_sys_time = clock::sys_time_parse(naive_time_chr, precision = precision)
+    clock_zoned_time_1 = clock::as_zoned_time(clock_naive_time, "America/New_York")
+
+    pl_naive_time = as_polars_series(clock_naive_time)
+    pl_sys_time = as_polars_series(clock_sys_time)
+    pl_zoned_time_1 = as_polars_series(clock_zoned_time_1)
+
+    expect_s3_class(pl_naive_time, "RPolarsSeries")
+    expect_s3_class(pl_sys_time, "RPolarsSeries")
+    expect_s3_class(pl_zoned_time_1, "RPolarsSeries")
+
+    expect_equal(as.POSIXct(as.vector(pl_naive_time)), as.POSIXct(clock_naive_time))
+    expect_equal(as.POSIXct(as.vector(pl_sys_time)), as.POSIXct(clock_sys_time, tz = "UTC"))
+    expect_equal(
+      as.POSIXct(as.vector(pl_sys_time), tz = "Asia/Kolkata"),
+      as.POSIXct(clock_sys_time, tz = "Asia/Kolkata")
+    )
+    expect_equal(as.POSIXct(as.vector(pl_zoned_time_1)), as.POSIXct(clock_zoned_time_1))
+
+    expect_snapshot(
+      pl$DataFrame(
+        naive_time = clock_naive_time,
+        sys_time = clock_sys_time,
+        zoned_time_1 = clock_zoned_time_1
+      )
+    )
+  },
+  precision = c("nanosecond", "microsecond", "millisecond", "second", "minute", "hour", "day"),
+  .test_name = precision
+)
