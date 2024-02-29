@@ -15,7 +15,7 @@ ExprList_len = function() .pr$Expr$list_len(self)
 #' @return Expr
 #' @aliases list_sum
 #' @examples
-#' df = pl$DataFrame(list(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_)))
+#' df = pl$DataFrame(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_))
 #' df$with_columns(sum = pl$col("values")$list$sum())
 ExprList_sum = function() .pr$Expr$list_sum(self)
 
@@ -24,7 +24,7 @@ ExprList_sum = function() .pr$Expr$list_sum(self)
 #' @return Expr
 #' @aliases list_max
 #' @examples
-#' df = pl$DataFrame(list(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_)))
+#' df = pl$DataFrame(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_))
 #' df$with_columns(max = pl$col("values")$list$max())
 ExprList_max = function() .pr$Expr$list_max(self)
 
@@ -33,7 +33,7 @@ ExprList_max = function() .pr$Expr$list_max(self)
 #' @return Expr
 #' @aliases list_min
 #' @examples
-#' df = pl$DataFrame(list(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_)))
+#' df = pl$DataFrame(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_))
 #' df$with_columns(min = pl$col("values")$list$min())
 ExprList_min = function() .pr$Expr$list_min(self)
 
@@ -42,7 +42,7 @@ ExprList_min = function() .pr$Expr$list_min(self)
 #' @return Expr
 #' @aliases list_mean
 #' @examples
-#' df = pl$DataFrame(list(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_)))
+#' df = pl$DataFrame(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_))
 #' df$with_columns(mean = pl$col("values")$list$mean())
 ExprList_mean = function() .pr$Expr$list_mean(self)
 
@@ -52,7 +52,7 @@ ExprList_mean = function() .pr$Expr$list_mean(self)
 #' @return Expr
 #' @aliases list_sort
 #' @examples
-#' df = pl$DataFrame(list(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_)))
+#' df = pl$DataFrame(values = list(c(NA, 2, 1, 3), c(Inf, 2, 3, NaN), NA_real_))
 #' df$with_columns(sort = pl$col("values")$list$sort())
 ExprList_sort = function(descending = FALSE) .pr$Expr$list_sort(self, descending)
 
@@ -61,7 +61,7 @@ ExprList_sort = function(descending = FALSE) .pr$Expr$list_sort(self, descending
 #' @return Expr
 #' @aliases list_reverse
 #' @examples
-#' df = pl$DataFrame(list(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_)))
+#' df = pl$DataFrame(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_))
 #' df$with_columns(reverse = pl$col("values")$list$reverse())
 ExprList_reverse = function() .pr$Expr$list_reverse(self)
 

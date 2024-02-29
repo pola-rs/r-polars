@@ -17,6 +17,6 @@ Expr
 Sort values in a list
 }
 \examples{
-df = pl$DataFrame(list(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_)))
+df = pl$DataFrame(values = list(c(NA, 2, 1, 3), c(Inf, 2, 3, NaN), NA_real_))
 df$with_columns(sort = pl$col("values")$list$sort())
 }

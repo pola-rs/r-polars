@@ -14,6 +14,6 @@ Expr
 Reverse values in a list
 }
 \examples{
-df = pl$DataFrame(list(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_)))
+df = pl$DataFrame(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_))
 df$with_columns(reverse = pl$col("values")$list$reverse())
 }
