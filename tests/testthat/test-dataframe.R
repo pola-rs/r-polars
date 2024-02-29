@@ -949,7 +949,7 @@ test_that("pivot args works", {
     jaz = 6:1
   )
   expect_identical(
-    df$pivot(index = "bar", columns = "baz", values = "foo")$to_list(),
+    df$pivot("foo", "bar", "baz")$to_list(),
     list(bar = c("A", "B", "C"), `1.0` = c("one", NA, NA), `2.0` = c(
       NA,
       "one", NA
