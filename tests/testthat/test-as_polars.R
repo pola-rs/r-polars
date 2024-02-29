@@ -400,13 +400,12 @@ patrick::with_parameters_test_that("clock package class support",
     )
     expect_equal(as.POSIXct(as.vector(pl_zoned_time_1)), as.POSIXct(clock_zoned_time_1))
 
-    expect_snapshot(
-      pl$DataFrame(
-        naive_time = clock_naive_time,
-        sys_time = clock_sys_time,
-        zoned_time_1 = clock_zoned_time_1
-      )
+    df = pl$DataFrame(
+      naive_time = clock_naive_time,
+      sys_time = clock_sys_time,
+      zoned_time_1 = clock_zoned_time_1
     )
+    expect_snapshot(print(df))
   },
   precision = c("nanosecond", "microsecond", "millisecond", "second", "minute", "hour", "day"),
   .test_name = precision

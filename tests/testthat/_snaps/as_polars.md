@@ -21,8 +21,7 @@
 # clock package class support precision=nanosecond
 
     Code
-      pl$DataFrame(naive_time = clock_naive_time, sys_time = clock_sys_time,
-        zoned_time_1 = clock_zoned_time_1)
+      print(df)
     Output
       shape: (3, 3)
       ┌───────────────────────────────┬───────────────────────────────────┬───────────────────────────────────┐
@@ -38,8 +37,7 @@
 # clock package class support precision=microsecond
 
     Code
-      pl$DataFrame(naive_time = clock_naive_time, sys_time = clock_sys_time,
-        zoned_time_1 = clock_zoned_time_1)
+      print(df)
     Output
       shape: (3, 3)
       ┌────────────────────────────┬────────────────────────────────┬────────────────────────────────┐
@@ -55,8 +53,7 @@
 # clock package class support precision=millisecond
 
     Code
-      pl$DataFrame(naive_time = clock_naive_time, sys_time = clock_sys_time,
-        zoned_time_1 = clock_zoned_time_1)
+      print(df)
     Output
       shape: (3, 3)
       ┌─────────────────────────┬─────────────────────────────┬────────────────────────────────┐
@@ -72,8 +69,7 @@
 # clock package class support precision=second
 
     Code
-      pl$DataFrame(naive_time = clock_naive_time, sys_time = clock_sys_time,
-        zoned_time_1 = clock_zoned_time_1)
+      print(df)
     Output
       shape: (3, 3)
       ┌─────────────────────┬─────────────────────────┬────────────────────────────────┐
@@ -89,8 +85,7 @@
 # clock package class support precision=minute
 
     Code
-      pl$DataFrame(naive_time = clock_naive_time, sys_time = clock_sys_time,
-        zoned_time_1 = clock_zoned_time_1)
+      print(df)
     Output
       shape: (3, 3)
       ┌─────────────────────┬─────────────────────────┬────────────────────────────────┐
@@ -106,8 +101,7 @@
 # clock package class support precision=hour
 
     Code
-      pl$DataFrame(naive_time = clock_naive_time, sys_time = clock_sys_time,
-        zoned_time_1 = clock_zoned_time_1)
+      print(df)
     Output
       shape: (3, 3)
       ┌─────────────────────┬─────────────────────────┬────────────────────────────────┐
@@ -123,8 +117,7 @@
 # clock package class support precision=day
 
     Code
-      pl$DataFrame(naive_time = clock_naive_time, sys_time = clock_sys_time,
-        zoned_time_1 = clock_zoned_time_1)
+      print(df)
     Output
       shape: (3, 3)
       ┌─────────────────────┬─────────────────────────┬────────────────────────────────┐
