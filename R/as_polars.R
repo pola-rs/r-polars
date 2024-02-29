@@ -487,3 +487,10 @@ as_polars_series.clock_time_point = function(x, name = NULL, ...) {
     )$cast(pl$Datetime(tu = target_precision))
   )$get_column("out")$alias(name %||% "")
 }
+
+
+#' @rdname as_polars_series
+#' @export
+as_polars_series.clock_sys_time = function(x, name = NULL, ...) {
+  as_polars_series.clock_time_point(x, name = name, ...)$dt$replace_time_zone("UTC")
+}
