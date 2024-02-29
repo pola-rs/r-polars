@@ -434,6 +434,20 @@ test_that("contains", {
   expect_identical(l_act, l_exp)
 })
 
+test_that("contains with categorical", {
+  df = pl$DataFrame(
+    a = list(factor(c("a", "b")), factor(c("c", "d"))),
+    item = c("a", "a")
+  )
+  expect_identical(
+    df$select(
+      with_expr = pl$col("a")$list$contains(pl$col("item")),
+      with_lit = pl$col("a")$list$contains("e")
+    )$to_list(),
+    list(with_expr = c(TRUE, FALSE), with_lit = c(FALSE, FALSE))
+  )
+})
+
 
 test_that("concat", {
   df = pl$DataFrame(

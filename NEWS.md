@@ -43,6 +43,7 @@
 -   `$group_by()` now works with named expressions (#846).
 -   New methods for the `arr` subnamespace: `$median()`, `$var()`, `$std()`, 
     `$shift()`, `$to_struct()` (#867).
+-   `$min()` and `max()` now work on categorical variables (#868).
 -   New methods for the `list` subnamespace: `$n_unique()`, `$gather_every()` 
     (#869).
 
