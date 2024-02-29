@@ -350,16 +350,13 @@ test_that("str$contains", {
     )
   )
 
-  # TODO seem strict does not work, raised issue https://github.com/pola-rs/polars/issues/6901
-  # expect_grepl_error(
-  #   df$select(
-  #     pl$col("a")$str$contains(
-  #       "($INVALIDREGEX$", literal=FALSE, strict=FALSE
-  #     )$alias("literal")
-  #   )
-  # )
-
-  # )
+  # not strict
+  expect_identical(
+    df$select(
+      pl$col("a")$str$contains("($INVALIDREGEX$", literal = FALSE, strict = FALSE)
+    )$to_list(),
+    list(a = rep(NA, 4))
+  )
 })
 
 

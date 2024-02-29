@@ -449,9 +449,6 @@ test_that("and or is_in xor", {
     c(rep(FALSE, 4), NA)
   )
 
-
-
-
   expect_true(
     pl$select(
       # nothing is nothing
@@ -474,7 +471,6 @@ test_that("and or is_in xor", {
     )$to_data_frame() |> unlist() |> all(na.rm = TRUE)
   )
 })
-
 
 test_that("to_physical + cast", {
   # to_physical and some casting
