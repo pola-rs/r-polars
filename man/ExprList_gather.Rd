@@ -24,13 +24,20 @@ This allows to extract several values per list. To extract a single value by
 index, use \code{\link[=ExprList_get]{$list$get()}}.
 }
 \examples{
-df = pl$DataFrame(list(a = list(c(3, 2, 1), 1, c(1, 2)))) #
-idx = pl$Series(list(0:1, integer(), c(1L, 999L)))
-df$select(pl$col("a")$list$gather(pl$lit(idx), null_on_oob = TRUE))
+df = pl$DataFrame(
+  a = list(c(3, 2, 1), 1, c(1, 2)),
+  idx = list(0:1, integer(), c(1L, 999L))
+)
+df$with_columns(
+  gathered = pl$col("a")$list$gather("idx", null_on_oob = TRUE)
+)
 
-# with implicit conversion to Expr
-df$select(pl$col("a")$list$gather(list(0:1, integer(), c(1L, 999L)), null_on_oob = TRUE))
+df$with_columns(
+  gathered = pl$col("a")$list$gather(2, null_on_oob = TRUE)
+)
 
 # by some column name, must cast to an Int/Uint type to work
-df$select(pl$col("a")$list$gather(pl$col("a")$cast(pl$List(pl$UInt64)), null_on_oob = TRUE))
+df$with_columns(
+  gathered = pl$col("a")$list$gather(pl$col("a")$cast(pl$List(pl$UInt64)), null_on_oob = TRUE)
+)
 }
