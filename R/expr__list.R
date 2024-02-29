@@ -67,15 +67,21 @@ ExprList_reverse = function() .pr$Expr$list_reverse(self)
 
 #' Get unique values in a list
 #'
-#' @description
-#' Get the unique/distinct values in the list.
-#'
 #' @return Expr
 #' @aliases list_unique
 #' @examples
-#' df = pl$DataFrame(list(values = list(c(2, 2, NA), c(1, 2, 3), NA_real_)))
+#' df = pl$DataFrame(values = list(c(2, 2, NA), c(1, 2, 3), NA_real_))
 #' df$with_columns(unique = pl$col("values")$list$unique())
 ExprList_unique = function() .pr$Expr$list_unique(self)
+
+#' Get the number of unique values in a list
+#'
+#' @return Expr
+#' @aliases list_n_unique
+#' @examples
+#' df = pl$DataFrame(values = list(c(2, 2, NA), c(1, 2, 3), NA_real_))
+#' df$with_columns(unique = pl$col("values")$list$n_unique())
+ExprList_n_unique = function() .pr$Expr$list_n_unique(self)
 
 #' Concat two list variables
 #'
@@ -139,19 +145,46 @@ ExprList_get = function(index) .pr$Expr$list_get(self, wrap_e(index, str_to_lit 
 #' @return Expr
 #' @aliases list_gather
 #' @examples
-#' df = pl$DataFrame(list(a = list(c(3, 2, 1), 1, c(1, 2)))) #
-#' idx = pl$Series(list(0:1, integer(), c(1L, 999L)))
-#' df$select(pl$col("a")$list$gather(pl$lit(idx), null_on_oob = TRUE))
+#' df = pl$DataFrame(
+#'   a = list(c(3, 2, 1), 1, c(1, 2)),
+#'   idx = list(0:1, integer(), c(1L, 999L))
+#' )
+#' df$with_columns(
+#'   gathered = pl$col("a")$list$gather("idx", null_on_oob = TRUE)
+#' )
 #'
-#' # with implicit conversion to Expr
-#' df$select(pl$col("a")$list$gather(list(0:1, integer(), c(1L, 999L)), null_on_oob = TRUE))
+#' df$with_columns(
+#'   gathered = pl$col("a")$list$gather(2, null_on_oob = TRUE)
+#' )
 #'
 #' # by some column name, must cast to an Int/Uint type to work
-#' df$select(pl$col("a")$list$gather(pl$col("a")$cast(pl$List(pl$UInt64)), null_on_oob = TRUE))
+#' df$with_columns(
+#'   gathered = pl$col("a")$list$gather(pl$col("a")$cast(pl$List(pl$UInt64)), null_on_oob = TRUE)
+#' )
 ExprList_gather = function(index, null_on_oob = FALSE) {
-  expr = wrap_e(index, str_to_lit = FALSE)
-  .pr$Expr$list_gather(self, expr, null_on_oob) |>
+  .pr$Expr$list_gather(self, index, null_on_oob) |>
     unwrap("in $gather()")
+}
+
+#' Gather every nth element in a list
+#'
+#' @inheritParams Expr_gather_every
+#'
+#' @return Expr
+#'
+#' @examples
+#' df = pl$DataFrame(
+#'   a = list(1:5, 6:8, 9:12),
+#'   n = c(2, 1, 3),
+#'   offset = c(0, 1, 0)
+#' )
+#'
+#' df$with_columns(
+#'   gather_every = pl$col("a")$list$gather_every(pl$col("n"), offset = pl$col("offset"))
+#' )
+ExprList_gather_every = function(n, offset = 0) {
+  .pr$Expr$list_gather_every(self, n, offset) |>
+    unwrap("in $gather_every()")
 }
 
 #' Get the first value in a list

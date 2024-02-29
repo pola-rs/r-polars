@@ -652,7 +652,11 @@ RPolarsExpr$list_reverse <- function() .Call(wrap__RPolarsExpr__list_reverse, se
 
 RPolarsExpr$list_unique <- function() .Call(wrap__RPolarsExpr__list_unique, self)
 
+RPolarsExpr$list_n_unique <- function() .Call(wrap__RPolarsExpr__list_n_unique, self)
+
 RPolarsExpr$list_gather <- function(index, null_on_oob) .Call(wrap__RPolarsExpr__list_gather, self, index, null_on_oob)
+
+RPolarsExpr$list_gather_every <- function(n, offset) .Call(wrap__RPolarsExpr__list_gather_every, self, n, offset)
 
 RPolarsExpr$list_get <- function(index) .Call(wrap__RPolarsExpr__list_get, self, index)
 

@@ -97,9 +97,7 @@ test_that("list$reverse", {
 })
 
 
-
-
-test_that("list$unique arr$sort", {
+test_that("list$unique list$sort", {
   l = list(
     l_i32 = list(c(1:2, 1:2), c(NA_integer_, NA_integer_, 3L, 1:2)),
     l_f64 = list(c(1, 1, 2, 3, NA, Inf, NA, Inf), c(1)),
@@ -115,6 +113,18 @@ test_that("list$unique arr$sort", {
   p_res = df$select(pl$all()$list$unique()$list$sort(descending = TRUE))$to_list()
   r_res = lapply(l, lapply, \(x)  sort(unique(x), na.last = FALSE, decr = TRUE))
   expect_equal(p_res, r_res)
+})
+
+test_that("list$n_unique", {
+  df = pl$DataFrame(
+    l_i32 = list(c(1:2, 1:2), c(NA_integer_, NA_integer_, 3L, 1:2)),
+    l_f64 = list(c(1, 1, 2, 3, NA, Inf, NA, Inf), c(1)),
+    l_char = list(c(letters, letters), c("a", "a", "b"))
+  )
+  expect_equal(
+    df$select(pl$all()$list$n_unique())$to_list(),
+    list(l_i32 = c(2, 4), l_f64 = c(5, 1), l_char = c(26, 2))
+  )
 })
 
 
@@ -152,6 +162,42 @@ test_that("gather", {
   expect_error(
     pl$lit(l)$list$gather(list(c(0:3), 0L, 0L))$to_r(),
     "gather indices are out of bounds"
+  )
+})
+
+test_that("gather_every", {
+  df = pl$DataFrame(
+    a = list(1:5, 6:8, 9:12),
+    n = c(2, 1, 3),
+    offset = c(0, 1, 0)
+  )
+
+  expect_identical(
+    df$select(
+      out = pl$col("a")$list$gather_every("n", offset = pl$col("offset"))
+    )$to_list(),
+    list(out = list(c(1L, 3L, 5L), c(7L, 8L), c(9L, 12L)))
+  )
+
+  # wrong n
+  expect_error(
+    df$select(
+      out = pl$col("a")$list$gather_every(-1)
+    )
+  )
+
+  # missing n
+  expect_error(
+    df$select(
+      out = pl$col("a")$list$gather_every()
+    )
+  )
+
+  # wrong offset
+  expect_error(
+    df$select(
+      out = pl$col("a")$list$gather_every(n = 2, offset = -1)
+    )
   )
 })
 

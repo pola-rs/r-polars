@@ -43,6 +43,8 @@
 -   `$group_by()` now works with named expressions (#846).
 -   New methods for the `arr` subnamespace: `$median()`, `$var()`, `$std()`, 
     `$shift()`, `$to_struct()` (#867).
+-   New methods for the `list` subnamespace: `$n_unique()`, `$gather_every()` 
+    (#869).
 
 ## Polars R Package 0.14.1
 
