@@ -99,7 +99,7 @@ pub fn to_rust_df(rb: Robj) -> Result<pl::DataFrame, String> {
         }?;
 
         // no need to check as a record batch has the same guarantees
-        let df_res: Result<_, String> = Ok(DataFrame::new_no_checks(series_vec));
+        let df_res: Result<_, String> = Ok(DataFrame::new(series_vec).unwrap());
         df_res
     });
     let dfs = crate::utils::collect_hinted_result(rb_len, dfs_iter)?;

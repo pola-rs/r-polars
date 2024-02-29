@@ -188,7 +188,7 @@ RPolarsDataFrame$null_count <- function() .Call(wrap__RPolarsDataFrame__null_cou
 
 RPolarsDataFrame$melt <- function(id_vars, value_vars, value_name, variable_name) .Call(wrap__RPolarsDataFrame__melt, self, id_vars, value_vars, value_name, variable_name)
 
-RPolarsDataFrame$pivot_expr <- function(values, index, columns, maintain_order, sort_columns, aggregate_expr, separator) .Call(wrap__RPolarsDataFrame__pivot_expr, self, values, index, columns, maintain_order, sort_columns, aggregate_expr, separator)
+RPolarsDataFrame$pivot_expr <- function(index, columns, values, maintain_order, sort_columns, aggregate_expr, separator) .Call(wrap__RPolarsDataFrame__pivot_expr, self, index, columns, values, maintain_order, sort_columns, aggregate_expr, separator)
 
 RPolarsDataFrame$sample_n <- function(n, with_replacement, shuffle, seed) .Call(wrap__RPolarsDataFrame__sample_n, self, n, with_replacement, shuffle, seed)
 
