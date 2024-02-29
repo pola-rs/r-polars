@@ -6,7 +6,6 @@
 #' @return bool if is a result object
 is_result = function(x) {
   identical(class(x), "extendr_result")
-  # is.list(x) && identical(names(x), c("ok","err")) && (is.null(x[[1L]]) || is.null(x[[2L]]))
 }
 
 guard_result = function(x, msg = "") {

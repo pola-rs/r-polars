@@ -637,3 +637,36 @@ raw_rownames = function(x) {
 is_rstudio = function() {
   identical(.Platform$GUI, "RStudio")
 }
+
+
+# Adapted (or copied) functions from {rlang}
+`%||%` = function(x, y) {
+  if (is.null(x)) y else x
+}
+
+is_scalar_bool = function(x) {
+  length(x) == 1 && !is.na(x) && is.logical(x)
+}
+
+is_scalar_numeric = function(x) {
+  length(x) == 1 && !is.na(x) && is.numeric(x)
+}
+
+is_string = function(x) {
+  is.character(x) && length(x) == 1L && !is.na(x)
+}
+
+detect_void_name = function(x) {
+  x == "" | is.na(x)
+}
+
+is_named = function(x) {
+  nms = names(x)
+  if (is.null(nms)) {
+    return(FALSE)
+  }
+  if (any(detect_void_name(nms))) {
+    return(FALSE)
+  }
+  TRUE
+}
