@@ -451,6 +451,8 @@ as_polars_series.clock_time_point = function(x, name = NULL, ...) {
   unclassed_x = unclass(x)
   df_in = pl$DataFrame(unclassed_x)
 
+  pl_lit_half_of_u64 = pl$lit(2L)$cast(pl$UInt64)$pow(pl$lit(63L)$cast(pl$UInt8))
+
   # https://github.com/r-lib/clock/blob/adc01b61670b18463cc3087f1e58acf59ddc3915/src/duration.h#L174-L184
   df_in$select(
     pl$col("lower")$cast(pl$UInt64),
@@ -461,22 +463,14 @@ as_polars_series.clock_time_point = function(x, name = NULL, ...) {
     )
   )$with_columns(
     diff_1 = pl$when(
-      pl$col("lower")$gt(
-        pl$lit(2L)$cast(pl$UInt64)$pow(pl$lit(63L)$cast(pl$UInt8))
-      )
+      pl$col("lower")$gt(pl_lit_half_of_u64)
     )$then(
-      pl$col("lower")$sub(
-        pl$lit(2L)$cast(pl$UInt64)$pow(pl$lit(63L)$cast(pl$UInt8))
-      )
+      pl$col("lower")$sub(pl_lit_half_of_u64)
     )$otherwise(NULL)
   )$with_columns(
     diff_2 = pl$when(
       pl$col("diff_1")$is_null()
-    )$then(
-      pl$lit(2L)$cast(pl$UInt64)$pow(pl$lit(63L)$cast(pl$UInt8))$sub(
-        pl$col("lower")
-      )
-    )$otherwise(NULL)
+    )$then(pl_lit_half_of_u64$sub(pl$col("lower")))$otherwise(NULL)
   )$select(
     out = pl$when(pl$col("diff_1")$is_null())$then(
       pl$lit(0L)$cast(pl$Int64)$sub(pl$col("diff_2")$cast(pl$Int64))
