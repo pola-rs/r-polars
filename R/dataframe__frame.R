@@ -1404,6 +1404,7 @@ DataFrame_melt = function(
 #' @param index  One or multiple keys to group by.
 #' @param columns  Name of the column(s) whose values will be used as the header
 #' of the output DataFrame.
+#' @param ... Not used.
 #' @param aggregate_function One of:
 #' - string indicating the expressions to aggregate with, such as 'first',
 #'   'sum', 'max', 'min', 'mean', 'median', 'last', 'count'),
@@ -1446,6 +1447,7 @@ DataFrame_pivot = function(
     values,
     index,
     columns,
+    ...,
     aggregate_function = NULL,
     maintain_order = TRUE,
     sort_columns = FALSE,
@@ -1466,7 +1468,7 @@ DataFrame_pivot = function(
     )) |>
     # run pivot when valid aggregate_expr
     and_then(\(aggregate_expr) .pr$DataFrame$pivot_expr(
-      self, values, index, columns, maintain_order, sort_columns, aggregate_expr, separator
+      self, index, columns, values, maintain_order, sort_columns, aggregate_expr, separator
     )) |>
     # unwrap and add method context name
     unwrap("in $pivot():")
@@ -1629,13 +1631,13 @@ DataFrame_describe = function(percentiles = c(.25, .75), interpolation = "neares
       transpose(include_header = TRUE)$
       with_columns(
       pl$col("column")$str$split_exact(custom_sep, 1)$
-        struct$rename_fields(c("describe", "variable"))$
+        struct$rename_fields(c("statistic", "variable"))$
         alias("fields")
     )$
       unnest("fields")$
       drop("column")$
-      pivot(index = "describe", columns = "variable", values = "column_0")$
-      with_columns(describe = pl$lit(metrics))
+      pivot(index = "statistic", columns = "variable", values = "column_0")$
+      with_columns(statistic = pl$lit(metrics))
   }) |>
     uw()
 }
