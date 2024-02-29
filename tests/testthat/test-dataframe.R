@@ -1027,13 +1027,16 @@ test_that("describe", {
   df = pl$DataFrame(
     string = c(letters[1:2], NA),
     date = c(as.Date("2024-01-20"), as.Date("2024-01-21"), NA),
-    cat = factor(c(letters[1:2], NA)),
+    cat = factor(c("zz", "a", NA)),
     bool = c(TRUE, FALSE, NA)
   )
   expect_snapshot(df$describe())
   expect_snapshot(pl$DataFrame(mtcars)$describe())
   expect_snapshot(pl$DataFrame(mtcars)$describe(interpolation = "linear"))
   expect_error(pl$DataFrame(mtcars)$describe("not a percentile"))
+
+  # min/max different depending on categorical ordering
+  expect_snapshot(df$select(pl$col("cat")$cast(pl$Categorical("lexical")))$describe())
 
   # perc = NULL  is the same as numeric()
   expect_identical(
