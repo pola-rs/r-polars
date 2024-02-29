@@ -203,3 +203,118 @@ test_that("$arr$any() works", {
     list(any = c(TRUE, TRUE, FALSE, FALSE))
   )
 })
+
+test_that("arr$var", {
+  df = pl$DataFrame(
+    ints = list(1:3, c(3L, 5L, 8L), c(1L, NA_integer_, NA_integer_)),
+    floats = list(c(1, 2, 3), c(3, 5, 8), c(1, NA_real_, NA_real_)),
+    strings = list(c("a", "b"), c("c", "d"), c("e", "f")),
+    schema = list(
+      ints = pl$Array(pl$Int32, 3),
+      floats = pl$Array(pl$Float32, 3),
+      strings = pl$Array(pl$String, 2)
+    )
+  )
+  expect_identical(
+    df$select(pl$col("ints")$arr$var())$to_list(),
+    list(ints = c(1, 6.3333, NA)),
+    tolerance = 0.0001
+  )
+  expect_identical(
+    df$select(pl$col("floats")$arr$var())$to_list(),
+    list(floats = c(1, 6.3333, NA)),
+    tolerance = 0.0001
+  )
+  expect_identical(
+    df$select(pl$col("strings")$arr$median())$to_list(),
+    list(strings = c(NA_real_, NA_real_, NA_real_))
+  )
+})
+
+test_that("arr$std", {
+  df = pl$DataFrame(
+    ints = list(1:3, c(3L, 5L, 8L), c(1L, NA_integer_, NA_integer_)),
+    floats = list(c(1, 2, 3), c(3, 5, 8), c(1, NA_real_, NA_real_)),
+    strings = list(c("a", "b"), c("c", "d"), c("e", "f")),
+    schema = list(
+      ints = pl$Array(pl$Int32, 3),
+      floats = pl$Array(pl$Float32, 3),
+      strings = pl$Array(pl$String, 2)
+    )
+  )
+  expect_identical(
+    df$select(pl$col("ints")$arr$std())$to_list(),
+    list(ints = c(1, 2.5166, NA)),
+    tolerance = 0.0001
+  )
+  expect_identical(
+    df$select(pl$col("floats")$arr$std())$to_list(),
+    list(floats = c(1, 2.5166, NA)),
+    tolerance = 0.0001
+  )
+  expect_identical(
+    df$select(pl$col("strings")$arr$median())$to_list(),
+    list(strings = c(NA_real_, NA_real_, NA_real_))
+  )
+})
+
+test_that("arr$median", {
+  df = pl$DataFrame(
+    ints = list(1:3, c(3L, 5L, 8L), c(1L, NA_integer_, NA_integer_)),
+    floats = list(c(1, 2, 3), c(3, 5, 8), c(1, NA_real_, NA_real_)),
+    strings = list(c("a", "b"), c("c", "d"), c("e", "f")),
+    schema = list(
+      ints = pl$Array(pl$Int32, 3),
+      floats = pl$Array(pl$Float32, 3),
+      strings = pl$Array(pl$String, 2)
+    )
+  )
+  expect_identical(
+    df$select(pl$col("ints")$arr$median())$to_list(),
+    list(ints = c(2, 5, 1)),
+    tolerance = 0.0001
+  )
+  expect_identical(
+    df$select(pl$col("floats")$arr$median())$to_list(),
+    list(floats = c(2, 5, 1)),
+    tolerance = 0.0001
+  )
+  expect_identical(
+    df$select(pl$col("strings")$arr$median())$to_list(),
+    list(strings = c(NA_real_, NA_real_, NA_real_))
+  )
+})
+
+test_that("arr$shift", {
+  df = pl$DataFrame(
+    strings = list(c("a", "b"), c("c", "d")),
+    schema = list(strings = pl$Array(pl$String, 2))
+  )
+  expect_identical(
+    df$select(pl$col("strings")$arr$shift())$to_list(),
+    list(strings = list(c(NA, "a"), c(NA, "c")))
+  )
+  expect_identical(
+    df$select(pl$col("strings")$arr$shift(-1))$to_list(),
+    list(strings = list(c("b", NA), c("d", NA)))
+  )
+})
+
+test_that("arr$to_struct", {
+  df = pl$DataFrame(
+    strings = list(c("a", "b"), c("c", "d")),
+    schema = list(strings = pl$Array(pl$String, 2))
+  )
+
+  expect_identical(
+    df$select(pl$col("strings")$arr$to_struct())$to_list(),
+    list(strings = list(field_0 = c("a", "c"), field_1 = c("b", "d")))
+  )
+
+  expect_identical(
+    df$select(pl$col("strings")$arr$to_struct(
+      fields = \(idx) paste0("col_", idx)
+    ))$to_list(),
+    list(strings = list(col_0 = c("a", "c"), col_1 = c("b", "d")))
+  )
+})

@@ -41,6 +41,8 @@
 -   `<DataFrame>$head()` and `<DataFrame>$tail()` methods now support negative
     row numbers (#840).
 -   `$group_by()` now works with named expressions (#846).
+-   New methods for the `arr` subnamespace: `$median()`, `$var()`, `$std()`, 
+    `$shift()`, `$to_struct()` (#866).
 
 ## Polars R Package 0.14.1
 
