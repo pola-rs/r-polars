@@ -117,4 +117,4 @@ Collate:
 Config/rextendr/version: 0.3.1
 VignetteBuilder: knitr
 Config/polars/LibVersion: 0.38.0
-Config/polars/RustToolchainVersion: nightly-2024-02-03
+Config/polars/RustToolchainVersion: nightly-2024-02-23
