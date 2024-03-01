@@ -4,7 +4,7 @@
 
 ### Breaking changes due to Rust-polars update
 
--   rust-polars is updated to 0.38.0 (#865).
+-   rust-polars is updated to 0.38.1 (#865, #872).
     -   in `$pivot()`, arguments `aggregate_function`, `maintain_order`, 
         `sort_columns` and `separator` must be named. Values that are passed
         by position are ignored.
