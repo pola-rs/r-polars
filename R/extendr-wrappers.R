@@ -912,6 +912,10 @@ RPolarsExpr$name_suffix <- function(suffix) .Call(wrap__RPolarsExpr__name_suffix
 
 RPolarsExpr$name_prefix <- function(prefix) .Call(wrap__RPolarsExpr__name_prefix, self, prefix)
 
+RPolarsExpr$name_prefix_fields <- function(prefix) .Call(wrap__RPolarsExpr__name_prefix_fields, self, prefix)
+
+RPolarsExpr$name_suffix_fields <- function(suffix) .Call(wrap__RPolarsExpr__name_suffix_fields, self, suffix)
+
 RPolarsExpr$name_to_lowercase <- function() .Call(wrap__RPolarsExpr__name_to_lowercase, self)
 
 RPolarsExpr$name_to_uppercase <- function() .Call(wrap__RPolarsExpr__name_to_uppercase, self)

@@ -616,45 +616,6 @@ test_that("exclude", {
   )
 })
 
-test_that("keep_name", {
-  expect_identical(
-    pl$DataFrame(list(alice = 1:3))$select(
-      pl$col("alice")$alias("bob")$name$keep(),
-      pl$col("alice")$alias("bob")
-    )$columns,
-    c("alice", "bob")
-  )
-})
-
-
-# TODO find alternative to thread panic test
-test_that("$name$map()", {
-  # skip map_alias thread-guard message
-  skip_if_not_installed("withr")
-  withr::with_options(
-    list(polars.no_messages = TRUE),
-    {
-      df = pl$DataFrame(list(alice = 1:3))$select(
-        pl$col("alice")$alias("joe_is_not_root")$name$map(\(x) paste0(x, "_and_bob"))
-      )
-      lf = df$lazy()
-      expect_identical(lf$collect()$columns, "alice_and_bob")
-      expect_error(
-        pl$DataFrame(list(alice = 1:3))$select(
-          pl$col("alice")$name$map(\(x) 42) # wrong return
-        ),
-        "was not a string"
-      )
-
-      # expect_error(
-      #   pl$DataFrame(list(alice=1:3))$select(
-      #     pl$col("alice")$name$map(\(x) stop()) #wrong return
-      #   ),
-      #   "^when calling"
-      # )
-    }
-  )
-})
 
 
 test_that("finite infinite is_nan is_not_nan", {

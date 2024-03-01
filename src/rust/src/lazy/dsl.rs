@@ -1877,6 +1877,14 @@ impl RPolarsExpr {
         Ok(self.0.clone().name().prefix(prefix.as_str()).into())
     }
 
+    fn name_prefix_fields(&self, prefix: String) -> RResult<Self> {
+        Ok(self.0.clone().name().prefix_fields(prefix.as_str()).into())
+    }
+
+    fn name_suffix_fields(&self, suffix: String) -> RResult<Self> {
+        Ok(self.0.clone().name().suffix_fields(suffix.as_str()).into())
+    }
+
     fn name_to_lowercase(&self) -> RResult<Self> {
         Ok(self.0.clone().name().to_lowercase().into())
     }
