@@ -49,7 +49,34 @@ check_no_missing_args = function(
 }
 
 
+# https://stackoverflow.com/a/27350487/3297472
+is_null_external_pointer = function(pointer) {
+  a = attributes(pointer)
+  attributes(pointer) = NULL
+  out = identical(pointer, new("externalptr"))
+  attributes(pointer) = a
+  out
+}
 
+
+verify_not_null_pointer = function(pointer, context = NULL) {
+  valid = FALSE
+  tryCatch(
+    {
+      valid = !is_null_external_pointer(pointer)
+    },
+    error = function(c) {}
+  )
+
+  if (!valid) {
+    Err_plain(
+      "This Polars object is not valid. Execute `rm(<object>)` to remove the object or restart the R session."
+    ) |>
+      unwrap(context = context)
+  }
+
+  invisible(NULL)
+}
 
 
 #' Verify user selected method/attribute exists

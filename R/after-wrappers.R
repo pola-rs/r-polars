@@ -142,10 +142,11 @@ extendr_method_to_pure_functions = function(env, class_name = NULL) {
 macro_add_syntax_check_to_class = function(Class_name) {
   tokens = paste0(
     "`$.", Class_name, "` <- function (self, name) {\n",
-    "  verify_method_call(", Class_name, ",name)\n",
+    "  verify_not_null_pointer(self, 'in `$.", Class_name, "`')\n",
+    "  verify_method_call(", Class_name, ", name)\n",
     "  func <- ", Class_name, "[[name]]\n",
     "  environment(func) <- environment()\n",
-    "  if(inherits(func,'property')) {\n",
+    "  if(inherits(func, 'property')) {\n",
     "    func()\n",
     "  } else {\n",
     "   func\n",
