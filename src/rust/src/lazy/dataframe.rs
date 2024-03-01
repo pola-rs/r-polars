@@ -3,7 +3,6 @@ use crate::concurrent::{
 };
 use crate::conversion::strings_to_smartstrings;
 
-use crate::lazy::dsl::RPolarsExpr;
 use crate::lazy::dsl::*;
 
 use crate::rdataframe::RPolarsDataFrame as RDF;

@@ -4,7 +4,6 @@ use extendr_api::prelude::*;
 use std::sync::RwLock;
 use std::thread;
 
-use flume;
 use flume::{Receiver, Sender};
 
 pub use state::InitCell;
