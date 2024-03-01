@@ -393,12 +393,14 @@ patrick::with_parameters_test_that("clock package class support",
     expect_s3_class(pl_zoned_time_1, "RPolarsSeries")
 
     expect_equal(as.POSIXct(as.vector(pl_naive_time)), as.POSIXct(clock_naive_time))
+    expect_equal(as.POSIXct(as.vector(pl_zoned_time_1)), as.POSIXct(clock_zoned_time_1))
+
+    skip_if(getRversion() < "4.3.0") # The bug of `as.POSIXct(<POSIXct>)` in R 4.2
     expect_equal(as.POSIXct(as.vector(pl_sys_time)), as.POSIXct(clock_sys_time, tz = "UTC"))
     expect_equal(
       as.POSIXct(as.vector(pl_sys_time), tz = "Asia/Kolkata"),
       as.POSIXct(clock_sys_time, tz = "Asia/Kolkata")
     )
-    expect_equal(as.POSIXct(as.vector(pl_zoned_time_1)), as.POSIXct(clock_zoned_time_1))
   },
   precision = c("nanosecond", "microsecond", "millisecond", "second", "minute", "hour", "day"),
   .test_name = precision
