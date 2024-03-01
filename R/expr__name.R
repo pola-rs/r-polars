@@ -103,3 +103,37 @@ ExprName_to_uppercase = function() {
   .pr$Expr$name_to_uppercase(self) |>
     unwrap("in $name$to_uppercase():")
 }
+
+#' Add a prefix to all fields name of a struct
+#'
+#' @param prefix Prefix to add to the field name.
+#'
+#' @return Expr
+#'
+#' @examples
+#' df = pl$DataFrame(a = 1, b = 2)$select(
+#'   pl$struct(pl$all())$alias("my_struct")
+#' )
+#'
+#' df$with_columns(pl$col("my_struct")$name$prefix_fields("col_"))$unnest()
+ExprName_prefix_fields = function(prefix) {
+  .pr$Expr$name_prefix_fields(self, prefix) |>
+    unwrap("in $name$prefix_fields():")
+}
+
+#' Add a suffix to all fields name of a struct
+#'
+#' @param suffix Suffix to add to the field name.
+#'
+#' @return Expr
+#'
+#' @examples
+#' df = pl$DataFrame(a = 1, b = 2)$select(
+#'   pl$struct(pl$all())$alias("my_struct")
+#' )
+#'
+#' df$with_columns(pl$col("my_struct")$name$suffix_fields("_post"))$unnest()
+ExprName_suffix_fields = function(suffix) {
+  .pr$Expr$name_suffix_fields(self, suffix) |>
+    unwrap("in $name$suffix_fields():")
+}
