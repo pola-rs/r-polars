@@ -46,6 +46,8 @@
 -   `$min()` and `max()` now work on categorical variables (#868).
 -   New methods for the `list` subnamespace: `$n_unique()`, `$gather_every()` 
     (#869).
+-   Converts `clock_time_point` and `clock_zoned_time` objects from
+    the `{clock}` package to Polars datetime type (#861).
 
 ## Polars R Package 0.14.1
 
