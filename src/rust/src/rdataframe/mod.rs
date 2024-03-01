@@ -1,4 +1,4 @@
-use extendr_api::{extendr, prelude::*, rprintln, Rinternals};
+use extendr_api::{extendr, prelude::*, rprintln};
 use polars::prelude::{self as pl, IntoLazy, SerWriter};
 use std::result::Result;
 pub mod read_csv;

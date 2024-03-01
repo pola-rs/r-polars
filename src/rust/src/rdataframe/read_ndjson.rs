@@ -6,7 +6,7 @@ use crate::rpolarserr::*;
 use polars::io::RowIndex;
 
 //use crate::utils::wrappers::*;
-use extendr_api::{extendr, prelude::*, Rinternals};
+use extendr_api::{extendr, prelude::*};
 use polars::prelude as pl;
 use polars::prelude::LazyFileListReader;
 use std::result::Result;
