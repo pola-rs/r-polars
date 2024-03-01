@@ -8,7 +8,6 @@ use polars::prelude as pl;
 use crate::rdataframe::RPolarsSeries;
 use crate::rpolarserr::*;
 use extendr_api::prelude::*;
-use extendr_api::Conversions;
 use std::result::Result;
 
 // define any possible signature of R lambdas

@@ -5,7 +5,6 @@ use crate::series::RPolarsSeries;
 use extendr_api::prelude::*;
 use polars::lazy::dsl;
 use polars::prelude as pl;
-use polars_core;
 use polars_core::functions as pl_functions;
 use std::result::Result;
 

@@ -17,7 +17,7 @@ use crate::rpolarserr::RResult;
 use crate::utils::wrappers::null_to_opt;
 use crate::utils::{r_error_list, r_result_list};
 
-use extendr_api::{extendr, prelude::*, rprintln, Rinternals};
+use extendr_api::{extendr, prelude::*, rprintln};
 use pl::SeriesMethods;
 use polars::datatypes::*;
 use polars::prelude as pl;
@@ -25,7 +25,6 @@ use polars::prelude::ArgAgg;
 use polars::prelude::IntoSeries;
 pub const R_INT_NA_ENC: i32 = -2147483648;
 use crate::rpolarserr::polars_to_rpolars_err;
-use std::convert::TryInto;
 use std::result::Result;
 
 #[derive(Debug, Clone)]

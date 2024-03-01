@@ -1,5 +1,4 @@
 use extendr_api::prelude::*;
-use polars;
 
 #[extendr]
 fn cargo_rpolars_feature_info() -> List {

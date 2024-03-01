@@ -9,7 +9,7 @@ use polars::io::RowIndex;
 
 //use crate::utils::wrappers::*;
 use crate::utils::wrappers::{null_to_opt, Wrap};
-use extendr_api::{extendr, prelude::*, Rinternals};
+use extendr_api::{extendr, prelude::*};
 use polars::prelude as pl;
 use std::result::Result;
 

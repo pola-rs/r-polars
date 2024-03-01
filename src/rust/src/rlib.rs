@@ -1,7 +1,6 @@
 use crate::lazy::dsl::{RPolarsExpr, RPolarsProtoExprArray};
 use crate::rdataframe::RPolarsDataFrame;
 use crate::robj_to;
-use crate::rpolarserr::{rdbg, RResult};
 use crate::series::RPolarsSeries;
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::utils::robj_to_rchoice;
