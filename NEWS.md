@@ -48,7 +48,7 @@
     (#869).
 -   Converts `clock_time_point` and `clock_zoned_time` objects from
     the `{clock}` package to Polars datetime type (#861).
--   New methods for the `name` subnamespace: `$prefix_fields()` and 
+-   New methods for the `name` subnamespace: `$prefix_fields()` and
     `suffix_fields()` (#873).
 
 ## Polars R Package 0.14.1
