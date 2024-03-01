@@ -2,7 +2,9 @@
 "_PACKAGE"
 
 ## usethis namespace: start
-#' @importFrom utils globalVariables head tail download.file capture.output str
+#' @importFrom stats na.omit median
+#' @importFrom utils .DollarNames globalVariables getFromNamespace head tail download.file capture.output str
+#' @importFrom methods new
 ## usethis namespace: end
 NULL
 

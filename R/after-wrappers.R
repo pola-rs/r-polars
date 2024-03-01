@@ -330,8 +330,6 @@ pl_mem_address = function(robj) {
 #'  - Code completion is facilitated by `.DollarNames.ClassName`-s3method see e.g. 'R/dataframe__frame.R'
 #'  - Implementation of property-methods as DataFrame_columns() and syntax checking is an extension to `$.ClassName`
 #'  See function macro_add_syntax_check_to_class().
-#'
-#' @importFrom utils .DollarNames
 #' @return not applicable
 #' @examples
 #' # all a polars object is only made of:
