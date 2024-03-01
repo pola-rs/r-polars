@@ -2,7 +2,7 @@ Package: polars
 Title: Lightning-Fast 'DataFrame' Library
 Version: 0.14.1.9000
 Depends: R (>= 4.2)
-Imports: utils, codetools
+Imports: utils, codetools, methods
 Authors@R:
   c(person("Ritchie", "Vink", , "ritchie46@gmail.com", role = c("aut")),
     person("Soren", "Welling", , "sorhawell@gmail.com", role = c("aut", "cre")),

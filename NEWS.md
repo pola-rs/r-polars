@@ -51,6 +51,12 @@
 -   New methods for the `name` subnamespace: `$prefix_fields()` and
     `suffix_fields()` (#873).
 
+### Bug fixes
+
+-   R no longer crashes when calling an invalid Polars object that points
+    to a null pointer (#874). This was occurring, such as when a Polars object
+    was saved in an RDS file and loaded from another session.
+
 ## Polars R Package 0.14.1
 
 ### Breaking changes

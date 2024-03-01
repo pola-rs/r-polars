@@ -32,3 +32,10 @@ patrick::with_parameters_test_that("public and private methods of each class",
   },
   .cases = make_class_cases()
 )
+
+
+test_that("check the polars object is valid", {
+  raw = as_polars_df(mtcars) |>
+    serialize(connection = NULL)
+  expect_error(print(unserialize(raw)), "restart the R session")
+})

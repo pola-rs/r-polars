@@ -341,16 +341,13 @@ mean.RPolarsSeries = function(x, ...) x$mean()
 #'
 #' @export
 #' @rdname S3_median
-#' @importFrom stats median
 median.RPolarsDataFrame = function(x, ...) x$median()
 
 #' @export
-#' @importFrom stats median
 #' @rdname S3_median
 median.RPolarsLazyFrame = function(x, ...) x$median()
 
 #' @export
-#' @importFrom stats median
 #' @rdname S3_median
 median.RPolarsSeries = function(x, ...) x$median()
 
@@ -494,8 +491,6 @@ c.RPolarsSeries = \(x, ...) {
 #' @param object A [DataFrame][DataFrame_class] or [LazyFrame][LazyFrame_class]
 #' @param subset Character vector of column names to drop missing values from.
 #' @param ... Not used.
-#'
-#' @importFrom stats na.omit
 #' @export
 #' @rdname S3_na.omit
 #' @examples
