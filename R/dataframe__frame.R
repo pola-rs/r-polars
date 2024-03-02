@@ -61,21 +61,19 @@
 #' `$width` returns the number of columns in the DataFrame.
 #'
 #' @section Conversion to R data types considerations:
-#' Polars objects, such as [the DataFrame class object][DataFrame_class]
-#' can be converted to R objects via some way. For example, using the
-#' [`as.data.frame()`][S3_as.data.frame] generic function.
-#' When converting Polars objects to R objects, each type in the Polars object is
-#' converted to an R type.
+#' When converting Polars objects, such as [DataFrames][DataFrame_class]
+#' to R objects, for example via the [`as.data.frame()`][as.data.frame.RPolarsDataFrame] generic function,
+#' each type in the Polars object is converted to an R type.
 #' In some cases, an error may occur because the conversion is not appropriate.
 #' In particular, there is a high possibility of an error when converting
 #' a [Datetime][DataType_Datetime] type without a time zone.
 #' A [Datetime][DataType_Datetime] type without a time zone in Polars is converted
-#' to the [POSIXct] type in R, with taking into account the time zone in which
+#' to the [POSIXct] type in R, which takes into account the time zone in which
 #' the R session is running (which can be checked with the [Sys.timezone()]
 #' function). In this case, if ambiguous times are included, a conversion error
 #' will occur. In such cases, change the session time zone using
 #' [`Sys.setenv(TZ = "UTC")`][base::Sys.setenv] and then perform the conversion, or use the
-#' [`$dt$replace_time_zone()`][ExprDT_replace_time_zone] method on the time type column to
+#' [`$dt$replace_time_zone()`][ExprDT_replace_time_zone] method on the Datetime type column to
 #' explicitly specify the time zone before conversion.
 #' @details Check out the source code in
 #' [R/dataframe_frame.R](https://github.com/pola-rs/r-polars/blob/main/R/dataframe__frame.R)
