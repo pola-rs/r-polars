@@ -112,32 +112,24 @@ test_that("dt$truncate", {
 })
 
 
-test_that("pl$date_range lazy ", {
+test_that("pl$date_range", {
   t1 = ISOdate(2022, 1, 1, 0)
   t2 = ISOdate(2022, 1, 2, 0)
 
-  expect_identical(
-    pl$date_range(start = t1, end = t2, interval = "6h", time_zone = "GMT")$to_r(),
-    pl$date_range(start = t1, end = t2, interval = "6h", time_zone = "GMT")$to_r()
-  )
-
-  # check variations of lazy input gives same result
   df = pl$DataFrame(
     t1 = t1, t2 = t2
   )$select(
     pl$date_range("t1", "t2", "6h")$alias("s1"),
-    pl$date_range("t1", "t2", "6h")$alias("s2"),
-    pl$date_range(pl$col("t1"), pl$col("t2"), "6h")$alias("s3"),
-    pl$date_range(t1, t2, "6h")$alias("s4")
+    pl$date_range(pl$col("t1"), pl$col("t2"), "6h")$alias("s2"),
+    pl$date_range(t1, t2, "6h")$alias("s3")
   )
   l = df$to_list()
   expect_identical(l$s1, l$s2)
   expect_identical(l$s1, l$s3)
-  expect_identical(l$s1, l$s4)
 })
 
 
-test_that("pl$date_range Date lazy/eager", {
+test_that("pl$date_range Date", {
   d_chr = "2022-01-01"
   d_plus1_chr = "2022-01-02"
   d_date = as.Date(d_chr)
@@ -149,11 +141,7 @@ test_that("pl$date_range Date lazy/eager", {
 
   expect_identical(dr_e$to_r()[1], s_dt$to_r())
   expect_identical(rev(dr_e$to_r())[1], as.POSIXct(d_plus1_chr))
-  expect_identical(dr_e$len(), 5)
-
-  expect_identical(dr_l$to_r()[1], s_dt$to_r())
-  expect_identical(rev(dr_l$to_r())[1], as.POSIXct(d_plus1_chr))
-  expect_identical(dr_l$to_series()$len(), 5)
+  expect_identical(dr_e$to_series()$len(), 5)
 })
 
 
