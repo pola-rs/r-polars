@@ -8,7 +8,6 @@ pl_date_range(
   start,
   end,
   interval,
-  eager = FALSE,
   closed = "both",
   time_unit = "us",
   time_zone = NULL,
@@ -23,9 +22,6 @@ pl_date_range(
 
 \item{interval}{String, a Polars \code{duration} or R \code{\link[=difftime]{difftime()}}. Can be missing
 if \code{end} is missing also.}
-
-\item{eager}{If \code{FALSE} (default), return an \code{Expr}. Otherwise, returns a
-\code{Series}.}
 
 \item{closed}{One of \code{"both"} (default), \code{"left"}, \code{"none"} or \code{"right"}.}
 
@@ -53,6 +49,10 @@ timezone, R and polars.
 
 In R/r-polars it is perfectly fine to mix timezones of params \code{time_zone},
 \code{start} and \code{end}.
+
+Compared to the Python implementation, \code{pl$date_range()} doesn't have the
+argument \code{eager} and always returns an Expr. Use \verb{$to_series()} to return a
+Series.
 }
 \examples{
 # All in GMT, straight forward, no mental confusion

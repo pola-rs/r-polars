@@ -16,8 +16,7 @@ This only works on Datetime Series, it will error on Date Series.
 df = pl$DataFrame(dates = pl$date_range(
   as.Date("2000-1-1"),
   as.Date("2000-1-2"),
-  "1h",
-  eager = TRUE
+  "1h"
 ))
 
 df$with_columns(times = pl$col("dates")$dt$time())

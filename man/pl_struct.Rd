@@ -2,37 +2,31 @@
 % Please edit documentation in R/functions__lazy.R
 \name{pl_struct}
 \alias{pl_struct}
-\alias{struct}
-\title{struct}
+\title{Collect columns into a struct column}
 \usage{
-pl_struct(exprs, eager = FALSE, schema = NULL)
+pl_struct(exprs, schema = NULL)
 }
 \arguments{
 \item{exprs}{Columns/Expressions to collect into a Struct.}
 
-\item{eager}{Evaluate immediately.}
-
-\item{schema}{Optional schema named list that explicitly defines the struct field dtypes.
-Each name must match a column name wrapped in the struct. Can only be used to cast some or all
-dtypes, not to change the names. NULL means to include keep columns into the struct by their
-current DataType. If a column is not included in the schema it is removed from the final struct.}
+\item{schema}{Optional schema named list that explicitly defines the struct
+field dtypes. Each name must match a column name wrapped in the struct. Can
+only be used to cast some or all dtypes, not to change the names. If \code{NULL}
+(default), columns datatype are not modified. Columns that do not exist are
+silently ignored and not included in the final struct.}
 }
 \value{
-Eager=FALSE: Expr of Series with dtype Struct | Eager=TRUE: Series with dtype Struct
+Expr with dtype Struct
 }
 \description{
-Collect several columns into a Series of dtype Struct.
+Collect columns into a struct column
 }
 \details{
-pl$struct creates Expr or Series of DataType Struct()
-pl$Struct creates the DataType Struct()
-In polars a schema is a named list of DataTypes. #' A schema describes e.g. a DataFrame.
-More formally schemas consist of Fields.
-A Field is an object describing the name and DataType of a column/Series, but same same.
-A struct is a DataFrame wrapped into a Series, the DataType is Struct, and each
-sub-datatype within are Fields.
-In a dynamic language schema and a Struct (the DataType) are quite the same, except
-schemas describe DataFrame and Struct's describe some Series.
+\code{pl$struct()} creates an Expr of DataType \code{\link[=DataType_Struct]{Struct()}}.
+
+Compared to the Python implementation, \code{pl$struct()} doesn't have the
+argument \code{eager} and always returns an Expr. Use \verb{$to_series()} to return a
+Series.
 }
 \examples{
 # isolated expression to wrap all columns in a struct aliased 'my_struct'

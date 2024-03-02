@@ -2840,7 +2840,7 @@ Expr_sinh = use_extendr_wrapper
 #'
 #' @return Expr
 #' @examples
-#' pl$DataFrame(a = c(-1, acosh(0.5), 0, 1, NA_real_))$
+#' pl$DataFrame(a = c(-1, acosh(2), 0, 1, NA_real_))$
 #'   with_columns(cosh = pl$col("a")$cosh())
 Expr_cosh = use_extendr_wrapper
 

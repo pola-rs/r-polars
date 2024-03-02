@@ -163,13 +163,12 @@ pl_concat = function(
 
 
 #' New date range
+#'
 #' @param start POSIXt or Date preferably with time_zone or double or integer
 #' @param end POSIXt or Date preferably with time_zone or double or integer. If
 #' `end` and `interval` are missing, then a single datetime is constructed.
 #' @param interval String, a Polars `duration` or R [difftime()]. Can be missing
 #' if `end` is missing also.
-#' @param eager If `FALSE` (default), return an `Expr`. Otherwise, returns a
-#' `Series`.
 #' @param closed One of `"both"` (default), `"left"`, `"none"` or `"right"`.
 #' @param time_unit String (`"ns"`, `"us"`, `"ms"`) or integer.
 #' @param time_zone String describing a timezone. If `NULL` (default), `"GMT` is
@@ -187,6 +186,10 @@ pl_concat = function(
 #'
 #' In R/r-polars it is perfectly fine to mix timezones of params `time_zone`,
 #' `start` and `end`.
+#'
+#' Compared to the Python implementation, `pl$date_range()` doesn't have the
+#' argument `eager` and always returns an Expr. Use `$to_series()` to return a
+#' Series.
 #'
 #' @return A datetime
 #'
@@ -218,7 +221,6 @@ pl_date_range = function(
     start,
     end,
     interval,
-    eager = FALSE,
     closed = "both",
     time_unit = "us",
     time_zone = NULL,
@@ -227,20 +229,10 @@ pl_date_range = function(
     end = start
     interval = "1h"
   }
-
-  f_eager_eval = \(lit) {
-    if (isTRUE(eager)) {
-      result(lit$to_series())
-    } else {
-      Ok(lit)
-    }
-  }
-
   start = cast_naive_value_to_datetime_expr(start)
   end = cast_naive_value_to_datetime_expr(end)
 
   r_date_range_lazy(start, end, interval, closed, time_unit, time_zone, explode) |>
-    and_then(f_eager_eval) |>
     unwrap("in pl$date_range()")
 }
 
