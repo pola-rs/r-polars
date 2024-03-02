@@ -583,7 +583,7 @@ pl_concat_list = function(exprs) {
 #'
 #' @details
 #'
-#' `pl$struct()` creates an Expr of DataType [`Struct()`][pl_Struct].
+#' `pl$struct()` creates an Expr of DataType [`Struct()`][DataType_Struct].
 #'
 #' Compared to the Python implementation, `pl$struct()` doesn't have the
 #' argument `eager` and always returns an Expr. Use `$to_series()` to return a

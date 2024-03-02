@@ -22,7 +22,7 @@ Expr with dtype Struct
 Collect columns into a struct column
 }
 \details{
-\code{pl$struct()} creates an Expr of DataType \code{\link[=pl_Struct]{Struct()}}.
+\code{pl$struct()} creates an Expr of DataType \code{\link[=DataType_Struct]{Struct()}}.
 
 Compared to the Python implementation, \code{pl$struct()} doesn't have the
 argument \code{eager} and always returns an Expr. Use \verb{$to_series()} to return a
