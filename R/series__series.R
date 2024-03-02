@@ -88,6 +88,7 @@
 #'
 #' `$struct` stores all struct related methods.
 #'
+#' @inheritSection DataFrame_class Conversion to R data types considerations
 #' @keywords Series
 #'
 #' @examples
@@ -428,7 +429,7 @@ Series_compare = function(other, op) {
 #' @details
 #' Fun fact: Nested polars Series list must have same inner type, e.g. List(List(Int32))
 #' Thus every leaf(non list type) will be placed on the same depth of the tree, and be the same type.
-#'
+#' @inheritSection DataFrame_class Conversion to R data types considerations
 #' @examples
 #'
 #' series_vec = pl$Series(letters[1:3])

@@ -22,18 +22,51 @@ corresponds to in R manually modifying the tzone attribute of POSIXt objects
 }
 \examples{
 df = pl$DataFrame(
-  date = pl$date_range(
-    start = as.Date("2001-3-1"),
-    end = as.Date("2001-5-1"),
-    interval = "1mo12m34s"
+  london_timezone = pl$date_range(
+    as.POSIXct("2020-03-01", tz = "UTC"),
+    as.POSIXct("2020-07-01", tz = "UTC"),
+    "1mo",
+    time_zone = "UTC"
+  )$dt$convert_time_zone("Europe/London")
+)
+
+df$select(
+  "london_timezone",
+  London_to_Amsterdam = pl$col(
+    "london_timezone"
+  )$dt$replace_time_zone("Europe/Amsterdam")
+)
+
+# You can use `ambiguous` to deal with ambiguous datetimes:
+dates = c(
+  "2018-10-28 01:30",
+  "2018-10-28 02:00",
+  "2018-10-28 02:30",
+  "2018-10-28 02:00"
+)
+
+df = pl$DataFrame(
+  ts = pl$Series(dates)$str$strptime(pl$Datetime("us"), "\%F \%H:\%M"),
+  ambiguous = c("earliest", "earliest", "latest", "latest")
+)
+
+df$with_columns(
+  ts_localized = pl$col("ts")$dt$replace_time_zone(
+    "Europe/Brussels",
+    ambiguous = pl$col("ambiguous")
   )
 )
-df$select(
-  pl$col("date"),
-  pl$col("date")
-  $dt$replace_time_zone("Europe/Amsterdam")
-  $dt$convert_time_zone("Europe/London")
-  $alias("London_with")
-)
+
+# Polars Datetime type without a time zone will be converted to R
+# with respect to the session time zone. If ambiguous times are present
+# an error will be raised. It is recommended to add a time zone before
+# converting to R.
+s_without_tz = pl$Series(dates)$str$strptime(pl$Datetime("us"), "\%F \%H:\%M")
+s_without_tz
+
+s_with_tz = s_without_tz$dt$replace_time_zone("UTC")
+s_with_tz
+
+as.vector(s_with_tz)
 }
 \keyword{ExprDT}

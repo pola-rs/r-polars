@@ -54,6 +54,26 @@ SQL DBs and other data sources such parquet files simultaneously.
 }
 }
 
+\section{Conversion to R data types considerations}{
+
+Polars objects, such as \link[=DataFrame_class]{the DataFrame class object}
+can be converted to R objects via some way. For example, using the
+\code{\link[=S3_as.data.frame]{as.data.frame()}} generic function.
+When converting Polars objects to R objects, each type in the Polars object is
+converted to an R type.
+In some cases, an error may occur because the conversion is not appropriate.
+In particular, there is a high possibility of an error when converting
+a \link[=DataType_Datetime]{Datetime} type without a time zone.
+A \link[=DataType_Datetime]{Datetime} type without a time zone in Polars is converted
+to the \link{POSIXct} type in R, with taking into account the time zone in which
+the R session is running (which can be checked with the \code{\link[=Sys.timezone]{Sys.timezone()}}
+function). In this case, if ambiguous times are included, a conversion error
+will occur. In such cases, change the session time zone using
+\code{\link[base:Sys.setenv]{Sys.setenv(TZ = "UTC")}} and then perform the conversion, or use the
+\code{\link[=ExprDT_replace_time_zone]{$dt$replace_time_zone()}} method on the time type column to
+explicitly specify the time zone before conversion.
+}
+
 \examples{
 # see all exported methods
 ls(.pr$env$RPolarsLazyFrame)

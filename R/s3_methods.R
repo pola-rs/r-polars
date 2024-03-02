@@ -255,6 +255,7 @@ dimnames.RPolarsLazyFrame = function(x) list(NULL, names(x))
 #' @param x An object to convert to a [data.frame].
 #' @param ... Additional arguments passed to methods.
 #' @inheritParams DataFrame_to_data_frame
+#' @inheritSection DataFrame_class Conversion to R data types considerations
 #' @seealso
 #' - [as_polars_df()]
 #' - [`<DataFrame>$to_data_frame()`][DataFrame_to_data_frame]
@@ -409,6 +410,7 @@ sum.RPolarsSeries = function(x, ...) x$sum()
 #'
 #' @param x A Polars Series
 #' @param mode Not used.
+#' @inheritSection DataFrame_class Conversion to R data types considerations
 #' @export
 #' @rdname S3_as.vector
 as.vector.RPolarsSeries = function(x, mode) x$to_vector()
