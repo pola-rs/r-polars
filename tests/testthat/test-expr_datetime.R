@@ -12,7 +12,11 @@ test_that("pl$date_range", {
   )
   expect_identical(
     pl$date_range(start = t1, end = t2, interval = "6h", time_zone = "GMT")$to_r(),
-    seq(t1, t2, by = as.difftime(6, units = "hours")) |> "attr<-"("tzone", "GMT")
+    seq(
+      as.POSIXct("2022-01-01", tz = "GMT"),
+      as.POSIXct("2022-01-02", tz = "GMT"),
+      by = as.difftime(6, units = "hours")
+    )
   )
   expect_identical(
     pl$date_range(start = t1, end = t2, interval = "3h", time_unit = "ms")$to_r(),
