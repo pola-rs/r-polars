@@ -32,6 +32,9 @@
     (either lexical or physical). This also means that calling `pl$Categorical`
     doesn't create a `DataType` anymore. All calls to `pl$Categorical` must be
     replaced by `pl$Categorical()` (#860).
+-   Removed argument `eager` in `pl$date_range()` and `pl$struct()` for more
+    consistency of output. It is possible to replace `eager = TRUE` by calling
+    `$to_series()` (#880).
 
 ### New features
 
