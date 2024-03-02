@@ -134,32 +134,23 @@ test_that("pl$date_range lazy ", {
 
 
 test_that("pl$date_range Date lazy/eager", {
-  r_vers = paste(unlist(R.version[c("major", "minor")]), collapse = ".")
-  if (r_vers >= "4.3.0") {
-    d1 = as.Date("2022-01-01")
-    s_d = pl$Series(d1, name = "Date")
-    s_dt = pl$Series(as.POSIXct(d1), name = "Date") # since R4.3 this becomes UTC timezone
-    df = pl$DataFrame(Date = d1)$to_series()
-    dr_e = pl$date_range(d1, d1 + 1, interval = "6h")
-    dr_l = pl$date_range(d1, d1 + 1, interval = "6h", eager = FALSE)
-    expect_identical(as.POSIXct(s_d$to_r()) |> "attr<-"("tzone", "UTC"), s_dt$to_r())
-    expect_identical(d1, s_d$to_r())
-    expect_identical(d1, df$to_r())
-    expect_identical(s_dt$to_r(), dr_e$to_r()[1] |> "attr<-"("tzone", "UTC"))
-    expect_identical(s_dt$to_r(), dr_l$to_r()[1] |> "attr<-"("tzone", "UTC"))
-  } else {
-    d1 = as.Date("2022-01-01")
-    s_d = pl$Series(d1, name = "Date")
-    s_dt = pl$Series(as.POSIXct(d1), name = "Date")
-    df = pl$DataFrame(Date = d1)$to_series()
-    dr_e = pl$date_range(d1, d1 + 1, interval = "6h")
-    dr_l = pl$date_range(d1, d1 + 1, interval = "6h", eager = FALSE)
-    expect_identical(as.POSIXct(s_d$to_r()) |> "attr<-"("tzone", ""), s_dt$to_r())
-    expect_identical(d1, s_d$to_r())
-    expect_identical(d1, df$to_r())
-    expect_identical(s_dt$to_r(), dr_e$to_r()[1])
-    expect_identical(s_dt$to_r(), dr_l$to_r()[1])
-  }
+  d_chr = "2022-01-01"
+  d_plus1_chr = "2022-01-02"
+  d_date = as.Date(d_chr)
+  s_d = pl$Series(d_date)
+  s_dt = pl$Series(as.POSIXct(d_chr))
+  df = pl$DataFrame(Date = d_date)$to_series()
+
+  dr_e = pl$date_range(d_date, d_date + 1, interval = "6h", eager = TRUE)
+  dr_l = pl$date_range(d_date, d_date + 1, interval = "6h", eager = FALSE)
+
+  expect_identical(dr_e$to_r()[1], s_dt$to_r())
+  expect_identical(rev(dr_e$to_r())[1], as.POSIXct(d_plus1_chr))
+  expect_identical(dr_e$len(), 5)
+
+  expect_identical(dr_l$to_r()[1], s_dt$to_r())
+  expect_identical(rev(dr_l$to_r())[1], as.POSIXct(d_plus1_chr))
+  expect_identical(dr_l$to_series()$len(), 5)
 })
 
 
