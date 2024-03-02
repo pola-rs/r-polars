@@ -38,6 +38,26 @@ test_that("POSIXct data conversion", {
     as.POSIXct("2022-01-01")
   )
 
+  withr::with_envvar(
+    new = c(TZ = "America/New_York"),
+    {
+      non_exsitent_time_chr = "2020-03-08 02:00:00"
+      ambiguous_time_chr = "2020-11-01 01:00:00"
+      expect_identical(
+        pl$lit(as.POSIXct(non_exsitent_time_chr))$to_r(),
+        as.POSIXct(non_exsitent_time_chr)
+      )
+      expect_error(
+        pl$lit(non_exsitent_time_chr)$str$strptime(pl$Datetime(), "%F %T")$to_r(),
+        "non-existent"
+      )
+      expect_error(
+        pl$lit(ambiguous_time_chr)$str$strptime(pl$Datetime(), "%F %T")$to_r(),
+        "ambiguous"
+      )
+    }
+  )
+
   expect_identical(
     pl$lit(as.POSIXct("2022-01-01", tz = "GMT"))$to_r(),
     as.POSIXct("2022-01-01", tz = "GMT")
