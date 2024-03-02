@@ -17,8 +17,7 @@ df = pl$DataFrame(
   date = pl$date_range(
     start = as.Date("2020-1-1"),
     end = as.Date("2020-1-4"),
-    interval = "1d",
-    eager = TRUE
+    interval = "1d"
   )
 )
 df$select(

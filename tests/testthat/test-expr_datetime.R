@@ -87,7 +87,7 @@ test_that("dt$truncate", {
   # make a datetime
   t1 = as.POSIXct("3040-01-01", tz = "GMT")
   t2 = t1 + as.difftime(25, units = "secs")
-  s = pl$date_range(t1, t2, interval = "2s", time_unit = "ms", eager = TRUE)
+  s = pl$date_range(t1, t2, interval = "2s", time_unit = "ms")
 
   # use a dt namespace function
   df = pl$DataFrame(datetime = s)$with_columns(
@@ -118,7 +118,7 @@ test_that("pl$date_range lazy ", {
 
   expect_identical(
     pl$date_range(start = t1, end = t2, interval = "6h", time_zone = "GMT")$to_r(),
-    pl$date_range(start = t1, end = t2, interval = "6h", time_zone = "GMT", eager = FALSE)$to_r()
+    pl$date_range(start = t1, end = t2, interval = "6h", time_zone = "GMT")$to_r()
   )
 
   # check variations of lazy input gives same result
@@ -126,8 +126,8 @@ test_that("pl$date_range lazy ", {
     t1 = t1, t2 = t2
   )$select(
     pl$date_range("t1", "t2", "6h")$alias("s1"),
-    pl$date_range("t1", "t2", "6h", eager = FALSE)$alias("s2"),
-    pl$date_range(pl$col("t1"), pl$col("t2"), "6h", eager = FALSE)$alias("s3"),
+    pl$date_range("t1", "t2", "6h")$alias("s2"),
+    pl$date_range(pl$col("t1"), pl$col("t2"), "6h")$alias("s3"),
     pl$date_range(t1, t2, "6h")$alias("s4")
   )
   l = df$to_list()
@@ -145,8 +145,7 @@ test_that("pl$date_range Date lazy/eager", {
   s_dt = pl$Series(as.POSIXct(d_chr))
   df = pl$DataFrame(Date = d_date)$to_series()
 
-  dr_e = pl$date_range(d_date, d_date + 1, interval = "6h", eager = TRUE)
-  dr_l = pl$date_range(d_date, d_date + 1, interval = "6h", eager = FALSE)
+  dr_e = pl$date_range(d_date, d_date + 1, interval = "6h")
 
   expect_identical(dr_e$to_r()[1], s_dt$to_r())
   expect_identical(rev(dr_e$to_r())[1], as.POSIXct(d_plus1_chr))
@@ -162,7 +161,7 @@ test_that("dt$round", {
   # make a datetime
   t1 = as.POSIXct("3040-01-01", tz = "GMT")
   t2 = t1 + as.difftime(24, units = "secs")
-  s = pl$date_range(t1, t2, interval = "2s", time_unit = "ms", eager = TRUE)
+  s = pl$date_range(t1, t2, interval = "2s", time_unit = "ms")
 
   # use a dt namespace function
   ## TODO contribute POLARS, offset makes little sense, it should be implemented
@@ -259,8 +258,7 @@ test_that("dt$year iso_year", {
       as.Date("2020-12-25"),
       as.Date("2021-1-05"),
       interval = "1d",
-      time_zone = "GMT",
-      eager = TRUE
+      time_zone = "GMT"
     )
   )$with_columns(
     pl$col("date")$dt$year()$alias("year"),
@@ -289,8 +287,7 @@ test_that("dt$quarter, month, day", {
       as.Date("2020-12-25"),
       as.Date("2021-1-05"),
       interval = "1d",
-      time_zone = "GMT",
-      eager = TRUE
+      time_zone = "GMT"
     )
   )$with_columns(
     pl$col("date")$dt$quarter()$alias("quarter"),
@@ -323,8 +320,7 @@ test_that("hour minute", {
       as.Date("2020-12-25"),
       as.Date("2021-05-05"),
       interval = "1d2h3m4s",
-      time_zone = "GMT",
-      eager = TRUE
+      time_zone = "GMT"
     )
   )$with_columns(
     pl$col("date")$dt$hour()$alias("hour"),
@@ -423,7 +419,7 @@ test_that("offset_by", {
   df = pl$DataFrame(
     dates = pl$date_range(
       as.Date("2000-1-1"), as.Date("2005-1-1"), "1y",
-      time_zone = "GMT", eager = TRUE
+      time_zone = "GMT"
     )
   )
   l_actual = df$with_columns(
@@ -498,11 +494,11 @@ test_that("offset_by", {
 
 test_that("dt$epoch", {
   df = pl$select(
-    pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$epoch("ns")$alias("e_ns"),
-    pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$epoch("us")$alias("e_us"),
-    pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$epoch("ms")$alias("e_ms"),
-    pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$epoch("s")$alias("e_s"),
-    pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$epoch("d")$alias("e_d")
+    pl$date_range(as.Date("2022-1-1"))$dt$epoch("ns")$alias("e_ns"),
+    pl$date_range(as.Date("2022-1-1"))$dt$epoch("us")$alias("e_us"),
+    pl$date_range(as.Date("2022-1-1"))$dt$epoch("ms")$alias("e_ms"),
+    pl$date_range(as.Date("2022-1-1"))$dt$epoch("s")$alias("e_s"),
+    pl$date_range(as.Date("2022-1-1"))$dt$epoch("d")$alias("e_d")
   )
   l_act = df$to_list()
 
@@ -516,11 +512,11 @@ test_that("dt$epoch", {
   expect_identical(l_act$e_d, base_r_d_epochs)
 
   expect_grepl_error(
-    pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$epoch("bob"),
+    pl$date_range(as.Date("2022-1-1"))$dt$epoch("bob"),
     "epoch: tu must be one of 'ns', 'us', 'ms', 's', 'd'"
   )
   expect_grepl_error(
-    pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$epoch(42),
+    pl$date_range(as.Date("2022-1-1"))$dt$epoch(42),
     "epoch: tu must be a string"
   )
 })
@@ -529,7 +525,7 @@ test_that("dt$epoch", {
 test_that("dt$timestamp", {
   df = pl$DataFrame(
     date = pl$date_range(
-      start = as.Date("2001-1-1"), end = as.Date("2001-1-3"), interval = "1d", eager = TRUE
+      start = as.Date("2001-1-1"), end = as.Date("2001-1-3"), interval = "1d"
     )
   )
   l_exp = df$select(
@@ -551,11 +547,11 @@ test_that("dt$timestamp", {
   expect_identical(suppressWarnings(as.numeric(l_exp$timestamp_ns)), base_r_s_timestamp * 1E9)
 
   expect_error(
-    pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$timestamp("bob")
+    pl$date_range(as.Date("2022-1-1"))$dt$timestamp("bob")
   )
 
   expect_error(
-    pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$timestamp(42)
+    pl$date_range(as.Date("2022-1-1"))$dt$timestamp(42)
   )
 })
 
@@ -563,8 +559,7 @@ test_that("dt$timestamp", {
 test_that("dt$with_time_unit cast_time_unit", {
   df_time = pl$DataFrame(
     date = pl$date_range(
-      start = as.POSIXct("2001-1-1"), end = as.POSIXct("2001-1-3"), interval = "1d", time_unit = "us",
-      eager = TRUE
+      start = as.POSIXct("2001-1-1"), end = as.POSIXct("2001-1-3"), interval = "1d", time_unit = "us"
     )
   )$select(
     pl$col("date"),
@@ -603,22 +598,22 @@ test_that("dt$with_time_unit cast_time_unit", {
 
 
   expect_grepl_error(
-    pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$cast_time_unit("bob"),
+    pl$date_range(as.Date("2022-1-1"))$dt$cast_time_unit("bob"),
     r"{The argument \[tu\] caused an error}"
   )
   expect_grepl_error(
-    pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$cast_time_unit(42),
+    pl$date_range(as.Date("2022-1-1"))$dt$cast_time_unit(42),
     r"{Expected a value of type \[\&str\]}"
   )
 
   # with wrong inputs
   expect_grepl_error(
-    pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$with_time_unit("bob"),
+    pl$date_range(as.Date("2022-1-1"))$dt$with_time_unit("bob"),
     r"{The argument \[tu\] caused an error}"
   )
 
   expect_grepl_error(
-    pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$with_time_unit(42),
+    pl$date_range(as.Date("2022-1-1"))$dt$with_time_unit(42),
     r"{Expected a value of type \[\&str\]}"
   )
 })
@@ -678,7 +673,7 @@ test_that("dt$replace_time_zone", {
   df = pl$DataFrame(
     london_timezone = pl$date_range(
       start = as.POSIXct("2001-3-1"), end = as.POSIXct("2001-7-1"),
-      interval = "1mo", time_zone = "Europe/London", eager = TRUE
+      interval = "1mo", time_zone = "Europe/London"
     )
   )
 
@@ -733,7 +728,7 @@ test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
   diffy = \(x, units) as.numeric(diff(x), units = units)
   # days
   df = pl$DataFrame(date = pl$date_range(
-    start = as.Date("2020-3-1"), end = as.Date("2020-5-1"), interval = "1mo", eager = TRUE
+    start = as.Date("2020-3-1"), end = as.Date("2020-5-1"), interval = "1mo"
   ))$with_columns(
     pl$col("date")$diff()$dt$total_days()$alias("diff")
   )$to_list()
@@ -741,7 +736,7 @@ test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
 
   # hours
   df = pl$DataFrame(date = pl$date_range(
-    start = as.Date("2020-1-1"), end = as.Date("2020-1-4"), interval = "1d", eager = TRUE
+    start = as.Date("2020-1-1"), end = as.Date("2020-1-4"), interval = "1d"
   ))$with_columns(
     pl$col("date")$diff()$dt$total_hours()$alias("diff")
   )$to_list()
@@ -749,7 +744,7 @@ test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
 
   # minutes
   df = pl$DataFrame(date = pl$date_range(
-    start = as.Date("2020-1-1"), end = as.Date("2020-1-4"), interval = "1d", eager = TRUE
+    start = as.Date("2020-1-1"), end = as.Date("2020-1-4"), interval = "1d"
   ))$with_columns(
     pl$col("date")$diff()$dt$total_minutes()$alias("diff")
   )$to_list()
@@ -758,7 +753,7 @@ test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
   # seconds
   df = pl$DataFrame(date = pl$date_range(
     start = as.Date("2020-1-1"), end = as.POSIXct("2020-1-1 00:04:00", tz = "GMT"),
-    interval = "1m", eager = TRUE
+    interval = "1m"
   ))$with_columns(
     pl$col("date")$diff()$dt$total_seconds()$alias("diff")
   )$to_list()
@@ -768,7 +763,7 @@ test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
   # milliseconds
   df = pl$DataFrame(date = pl$date_range(
     start = as.Date("2020-1-1"), end = as.POSIXct("2020-1-1 00:04:00", tz = "GMT"),
-    interval = "1m", eager = TRUE
+    interval = "1m"
   ))$with_columns(
     pl$col("date")$diff()$dt$total_milliseconds()$alias("diff")
   )$to_list()
@@ -777,7 +772,7 @@ test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
   # microseconds
   df = pl$DataFrame(date = pl$date_range(
     start = as.Date("2020-1-1"), end = as.POSIXct("2020-1-1 00:04:00", tz = "GMT"),
-    interval = "1m", eager = TRUE
+    interval = "1m"
   ))$with_columns(
     pl$col("date")$diff()$dt$total_microseconds()$alias("diff")
   )$to_list()
@@ -786,7 +781,7 @@ test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
   # nanoseconds
   df = pl$DataFrame(date = pl$date_range(
     start = as.Date("2020-1-1"), end = as.POSIXct("2020-1-1 00:04:00", tz = "GMT"),
-    interval = "1m", eager = TRUE
+    interval = "1m"
   ))$with_columns(
     pl$col("date")$diff()$dt$total_nanoseconds()$alias("diff")
   )$to_list()
@@ -798,8 +793,7 @@ test_that("$dt$time()", {
     dates = pl$date_range(
       as.Date("2000-1-1"),
       as.Date("2000-1-2"),
-      "6h",
-      eager = TRUE
+      "6h"
     )
   )
   expect_identical(

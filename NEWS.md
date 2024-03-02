@@ -103,6 +103,9 @@
     pls$dt$replace_time_zone("UTC") |> as.vector()
     #> [1] "2020-11-01 01:00:00 UTC"
     ```
+-   Removed argument `eager` in `pl$date_range()` and `pl$struct()` for more
+    consistency of output. It is possible to replace `eager = TRUE` by calling
+    `$to_series()` (#882).
 
 ### New features
 
