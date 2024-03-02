@@ -25,7 +25,7 @@ $(STATLIB):
 		export CARGO_BUILD_JOBS=2; \
 	fi && \
 		export PATH="$(PATH):$(HOME)/.cargo/bin" && \
-		cargo build --lib --manifest-path="$(CURDIR)/rust/Cargo.toml" --target-dir "$(TARGET_DIR)" --target="$(TARGET)" \
+		cargo build --verbose --lib --manifest-path="$(CURDIR)/rust/Cargo.toml" --target-dir "$(TARGET_DIR)" --target="$(TARGET)" \
 			--profile="$(LIBR_POLARS_PROFILE)" --features="$(LIBR_POLARS_FEATURES)"
 
 	if [ "true" != "true" ]; then \

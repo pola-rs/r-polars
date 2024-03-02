@@ -39,7 +39,7 @@ $(STATLIB):
 	fi && \
 		export CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER="$(CARGO_LINKER)" && \
 		export LIBRARY_PATH="$${LIBRARY_PATH};$(TARGET_DIR)/libgcc_mock" && \
-		cargo build --lib --manifest-path="$(CURDIR)/rust/Cargo.toml" --target-dir "$(TARGET_DIR)" --target="$(TARGET)" \
+		cargo build --verbose --lib --manifest-path="$(CURDIR)/rust/Cargo.toml" --target-dir "$(TARGET_DIR)" --target="$(TARGET)" \
 			--profile="$(LIBR_POLARS_PROFILE)" --features="$(LIBR_POLARS_FEATURES)"
 
 	if [ "true" != "true" ]; then \
