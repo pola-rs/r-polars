@@ -133,8 +133,7 @@ df = pl$DataFrame(
   date = pl$date_range(
     as.Date("2020-01-01"),
     as.Date("2023-01-02"),
-    interval = "1y",
-    eager = TRUE
+    interval = "1y"
   )
 )
 df
