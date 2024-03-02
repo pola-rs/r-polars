@@ -34,7 +34,7 @@
     replaced by `pl$Categorical()` (#860).
 -   Removed argument `eager` in `pl$date_range()` and `pl$struct()` for more
     consistency of output. It is possible to replace `eager = TRUE` by calling
-    `$to_series()` (#880).
+    `$to_series()` (#882).
 
 ### New features
 
