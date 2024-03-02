@@ -75,6 +75,29 @@
 #' [`Sys.setenv(TZ = "UTC")`][base::Sys.setenv] and then perform the conversion, or use the
 #' [`$dt$replace_time_zone()`][ExprDT_replace_time_zone] method on the Datetime type column to
 #' explicitly specify the time zone before conversion.
+#'
+#' ```{r}
+#' non_existent_time = pl$Series("2020-03-08 02:00:00")$str$strptime(pl$Datetime(), "%F %T")
+#'
+#' withr::with_envvar(
+#'   new = c(TZ = "America/New_York"),
+#'   {
+#'     tryCatch(
+#'       # This causes an error due to the time zone (the `TZ` env var is affected).
+#'       as.vector(non_existent_time),
+#'       error = function(e) e
+#'     )
+#'   }
+#' )
+#'
+#' withr::with_envvar(
+#'   new = c(TZ = "America/New_York"),
+#'   {
+#'     # This is safe.
+#'     as.vector(non_existent_time$dt$replace_time_zone("UTC"))
+#'   }
+#' )
+#' ```
 #' @details Check out the source code in
 #' [R/dataframe_frame.R](https://github.com/pola-rs/r-polars/blob/main/R/dataframe__frame.R)
 #' to see how public methods are derived from private methods. Check out
