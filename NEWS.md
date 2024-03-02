@@ -32,6 +32,77 @@
     (either lexical or physical). This also means that calling `pl$Categorical`
     doesn't create a `DataType` anymore. All calls to `pl$Categorical` must be
     replaced by `pl$Categorical()` (#860).
+-   The conversion strategy between the POSIXct type without time zone attribute
+    and Polars datetime has been changed (#878).
+    `POSIXct` class vectors without a time zone attribute have UTC time internally
+    and is displayed based on the system's time zone. Previous versions of `polars`
+    only considered the internal value and interpreted it as UTC time, so the
+    time displayed as `POSIXct` and in Polars was different.
+
+    ```r
+    # polars 0.14.1
+    Sys.setenv(TZ = "Europe/Paris")
+    datetime = as.POSIXct("1900-01-01")
+    datetime
+    #> [1] "1900-01-01 PMT"
+
+    s = polars::as_polars_series(datetime)
+    s
+    #> polars Series: shape: (1,)
+    #> Series: '' [datetime[ms]]
+    #> [
+    #>  1899-12-31 23:50:39
+    #> ]
+
+    as.vector(s)
+    #> [1] "1900-01-01 PMT"
+    ```
+
+    Now the internal value is updated to match the displayed value.
+
+    ```r
+    # polars 0.15.0
+    Sys.setenv(TZ = "Europe/Paris")
+    datetime = as.POSIXct("1900-01-01")
+    datetime
+    #> [1] "1900-01-01 PMT"
+
+    s = polars::as_polars_series(datetime)
+    s
+    #> polars Series: shape: (1,)
+    #> Series: '' [datetime[ms]]
+    #> [
+    #>  1900-01-01 00:00:00
+    #> ]
+
+    as.vector(s)
+    #> [1] "1900-01-01 PMT"
+    ```
+
+    This update may cause errors when converting from Polars to `POSIXct` for non-existent
+    or ambiguous times. It is recommended to explicitly add a time zone before converting
+    from Polars to R.
+
+    ```r
+    Sys.setenv(TZ = "America/New_York")
+    ambiguous_time = as.POSIXct("2020-11-01 01:00:00")
+    ambiguous_time
+    #> [1] "2020-11-01 01:00:00 EDT"
+
+    pls = polars::as_polars_series(ambiguous_time)
+    pls
+    #> polars Series: shape: (1,)
+    #> Series: '' [datetime[ms]]
+    #> [
+    #>  2020-11-01 01:00:00
+    #> ]
+
+    ## This will be error!
+    # pls |> as.vector()
+
+    pls$dt$replace_time_zone("UTC") |> as.vector()
+    #> [1] "2020-11-01 01:00:00 UTC"
+    ```
 -   Removed argument `eager` in `pl$date_range()` and `pl$struct()` for more
     consistency of output. It is possible to replace `eager = TRUE` by calling
     `$to_series()` (#882).

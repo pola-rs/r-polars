@@ -46,6 +46,7 @@
 #'
 #' `$width` returns the number of columns in the LazyFrame.
 #'
+#' @inheritSection DataFrame_class Conversion to R data types considerations
 #' @keywords LazyFrame
 #' @examples
 #' # see all exported methods

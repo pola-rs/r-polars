@@ -39,6 +39,48 @@ test_that("POSIXct data conversion", {
   )
 
   expect_identical(
+    pl$lit("2022-01-01")$str$strptime(pl$Datetime(), "%F")$to_r(),
+    as.POSIXct("2022-01-01")
+  )
+  # TODO: infer timezone from string, change the arugment name from `tz`
+  expect_true(
+    pl$Series("2022-01-01 UTC")$str$strptime(pl$Datetime(tz = "UTC"), "%F %Z")$eq(
+      pl$Series(as.POSIXct("2022-01-01", tz = "UTC"))
+    )$to_r()
+  )
+
+  withr::with_envvar(
+    new = c(TZ = "America/New_York"),
+    {
+      expect_identical(
+        pl$lit("2022-01-01")$str$strptime(pl$Datetime(), "%F")$to_r(),
+        as.POSIXct("2022-01-01")
+      )
+      # TODO: infer timezone from string, change the arugment name from `tz`
+      expect_true(
+        pl$Series("2022-01-01 UTC")$str$strptime(pl$Datetime(tz = "UTC"), "%F %Z")$eq(
+          pl$Series(as.POSIXct("2022-01-01", tz = "UTC"))
+        )$to_r()
+      )
+
+      non_exsitent_time_chr = "2020-03-08 02:00:00"
+      ambiguous_time_chr = "2020-11-01 01:00:00"
+      expect_identical(
+        pl$lit(as.POSIXct(non_exsitent_time_chr))$to_r(),
+        as.POSIXct(non_exsitent_time_chr)
+      )
+      expect_error(
+        pl$lit(non_exsitent_time_chr)$str$strptime(pl$Datetime(), "%F %T")$to_r(),
+        "non-existent"
+      )
+      expect_error(
+        pl$lit(ambiguous_time_chr)$str$strptime(pl$Datetime(), "%F %T")$to_r(),
+        "ambiguous"
+      )
+    }
+  )
+
+  expect_identical(
     pl$lit(as.POSIXct("2022-01-01", tz = "GMT"))$to_r(),
     as.POSIXct("2022-01-01", tz = "GMT")
   )
@@ -48,21 +90,17 @@ test_that("POSIXct data conversion", {
     as.POSIXct("2022-01-01", tz = "HST")
   )
 
-  expect_identical(
-    pl$lit(as.POSIXct("2022-01-01", tz = "GMT"))$to_r(),
-    as.POSIXct("2022-01-01", tz = "GMT")
-  )
-
-
-  x = as.POSIXct(
-    c(
-      "2020-01-01 13:45:48.343",
-      "2020-01-01 13:45:48.343999"
-    ),
-    tz = "UTC"
-  )
   # POSIXct is converted to datetime[ms], so sub-ms precision is lost
-  expect_identical(pl$lit(x)$to_r(), as.POSIXct(c("2020-01-01 13:45:48.343", "2020-01-01 13:45:48.343"), tz = "UTC"))
+  expect_identical(
+    pl$lit(as.POSIXct(
+      c(
+        "2020-01-01 13:45:48.343",
+        "2020-01-01 13:45:48.343999"
+      ),
+      tz = "UTC"
+    ))$to_r(),
+    as.POSIXct(c("2020-01-01 13:45:48.343", "2020-01-01 13:45:48.343"), tz = "UTC")
+  )
 })
 
 test_that("String and Utf8 are identical", {

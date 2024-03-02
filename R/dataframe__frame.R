@@ -60,6 +60,46 @@
 #'
 #' `$width` returns the number of columns in the DataFrame.
 #'
+#' @section Conversion to R data types considerations:
+#' When converting Polars objects, such as [DataFrames][DataFrame_class]
+#' to R objects, for example via the [`as.data.frame()`][as.data.frame.RPolarsDataFrame] generic function,
+#' each type in the Polars object is converted to an R type.
+#' In some cases, an error may occur because the conversion is not appropriate.
+#' In particular, there is a high possibility of an error when converting
+#' a [Datetime][DataType_Datetime] type without a time zone.
+#' A [Datetime][DataType_Datetime] type without a time zone in Polars is converted
+#' to the [POSIXct] type in R, which takes into account the time zone in which
+#' the R session is running (which can be checked with the [Sys.timezone()]
+#' function). In this case, if ambiguous times are included, a conversion error
+#' will occur. In such cases, change the session time zone using
+#' [`Sys.setenv(TZ = "UTC")`][base::Sys.setenv] and then perform the conversion, or use the
+#' [`$dt$replace_time_zone()`][ExprDT_replace_time_zone] method on the Datetime type column to
+#' explicitly specify the time zone before conversion.
+#'
+#' ```{r}
+#' # Due to daylight savings, clocks were turned forward 1 hour on Sunday, March 8, 2020, 2:00:00 am
+#' # so this particular date-time doesn't exist
+#' non_existent_time = pl$Series("2020-03-08 02:00:00")$str$strptime(pl$Datetime(), "%F %T")
+#'
+#' withr::with_envvar(
+#'   new = c(TZ = "America/New_York"),
+#'   {
+#'     tryCatch(
+#'       # This causes an error due to the time zone (the `TZ` env var is affected).
+#'       as.vector(non_existent_time),
+#'       error = function(e) e
+#'     )
+#'   }
+#' )
+#'
+#' withr::with_envvar(
+#'   new = c(TZ = "America/New_York"),
+#'   {
+#'     # This is safe.
+#'     as.vector(non_existent_time$dt$replace_time_zone("UTC"))
+#'   }
+#' )
+#' ```
 #' @details Check out the source code in
 #' [R/dataframe_frame.R](https://github.com/pola-rs/r-polars/blob/main/R/dataframe__frame.R)
 #' to see how public methods are derived from private methods. Check out
@@ -885,6 +925,7 @@ DataFrame_group_by = function(..., maintain_order = polars_options()$maintain_or
 #' * `"string"` converts Int64 values to character.
 #'
 #' @return An R data.frame
+#' @inheritSection DataFrame_class Conversion to R data types considerations
 #' @keywords DataFrame
 #' @examples
 #' df = pl$DataFrame(iris[1:3, ])
@@ -917,6 +958,7 @@ DataFrame_to_data_frame = function(..., int64_conversion = polars_options()$int6
 #' structure is not very typical or efficient in R.
 #'
 #' @return R list of vectors
+#' @inheritSection DataFrame_class Conversion to R data types considerations
 #' @keywords DataFrame
 #' @examples
 #' pl$DataFrame(iris)$to_list()

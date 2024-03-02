@@ -12,7 +12,11 @@ test_that("pl$date_range", {
   )
   expect_identical(
     pl$date_range(start = t1, end = t2, interval = "6h", time_zone = "GMT")$to_r(),
-    seq(t1, t2, by = as.difftime(6, units = "hours")) |> "attr<-"("tzone", "GMT")
+    seq(
+      as.POSIXct("2022-01-01", tz = "GMT"),
+      as.POSIXct("2022-01-02", tz = "GMT"),
+      by = as.difftime(6, units = "hours")
+    )
   )
   expect_identical(
     pl$date_range(start = t1, end = t2, interval = "3h", time_unit = "ms")$to_r(),
@@ -108,58 +112,36 @@ test_that("dt$truncate", {
 })
 
 
-test_that("pl$date_range lazy ", {
+test_that("pl$date_range", {
   t1 = ISOdate(2022, 1, 1, 0)
   t2 = ISOdate(2022, 1, 2, 0)
 
-  expect_identical(
-    pl$date_range(start = t1, end = t2, interval = "6h", time_zone = "GMT")$to_r(),
-    pl$date_range(start = t1, end = t2, interval = "6h", time_zone = "GMT")$to_r()
-  )
-
-  # check variations of lazy input gives same result
   df = pl$DataFrame(
     t1 = t1, t2 = t2
   )$select(
     pl$date_range("t1", "t2", "6h")$alias("s1"),
-    pl$date_range("t1", "t2", "6h")$alias("s2"),
-    pl$date_range(pl$col("t1"), pl$col("t2"), "6h")$alias("s3"),
-    pl$date_range(t1, t2, "6h")$alias("s4")
+    pl$date_range(pl$col("t1"), pl$col("t2"), "6h")$alias("s2"),
+    pl$date_range(t1, t2, "6h")$alias("s3")
   )
   l = df$to_list()
   expect_identical(l$s1, l$s2)
   expect_identical(l$s1, l$s3)
-  expect_identical(l$s1, l$s4)
 })
 
 
-test_that("pl$date_range Date lazy/eager", {
-  r_vers = paste(unlist(R.version[c("major", "minor")]), collapse = ".")
-  if (r_vers >= "4.3.0") {
-    d1 = as.Date("2022-01-01")
-    s_d = pl$Series(d1, name = "Date")
-    s_dt = pl$Series(as.POSIXct(d1), name = "Date") # since R4.3 this becomes UTC timezone
-    df = pl$DataFrame(Date = d1)$to_series()
-    dr_e = pl$date_range(d1, d1 + 1, interval = "6h")
-    dr_l = pl$date_range(d1, d1 + 1, interval = "6h")
-    expect_identical(as.POSIXct(s_d$to_r()) |> "attr<-"("tzone", "UTC"), s_dt$to_r())
-    expect_identical(d1, s_d$to_r())
-    expect_identical(d1, df$to_r())
-    expect_identical(s_dt$to_r(), dr_e$to_r()[1] |> "attr<-"("tzone", "UTC"))
-    expect_identical(s_dt$to_r(), dr_l$to_r()[1] |> "attr<-"("tzone", "UTC"))
-  } else {
-    d1 = as.Date("2022-01-01")
-    s_d = pl$Series(d1, name = "Date")
-    s_dt = pl$Series(as.POSIXct(d1), name = "Date")
-    df = pl$DataFrame(Date = d1)$to_series()
-    dr_e = pl$date_range(d1, d1 + 1, interval = "6h")
-    dr_l = pl$date_range(d1, d1 + 1, interval = "6h")
-    expect_identical(as.POSIXct(s_d$to_r()) |> "attr<-"("tzone", ""), s_dt$to_r())
-    expect_identical(d1, s_d$to_r())
-    expect_identical(d1, df$to_r())
-    expect_identical(s_dt$to_r(), dr_e$to_r()[1])
-    expect_identical(s_dt$to_r(), dr_l$to_r()[1])
-  }
+test_that("pl$date_range Date", {
+  d_chr = "2022-01-01"
+  d_plus1_chr = "2022-01-02"
+  d_date = as.Date(d_chr)
+  s_d = pl$Series(d_date)
+  s_dt = pl$Series(as.POSIXct(d_chr))
+  df = pl$DataFrame(Date = d_date)$to_series()
+
+  dr_e = pl$date_range(d_date, d_date + 1, interval = "6h")
+
+  expect_identical(dr_e$to_r()[1], s_dt$to_r())
+  expect_identical(rev(dr_e$to_r())[1], as.POSIXct(d_plus1_chr))
+  expect_identical(dr_e$to_series()$len(), 5)
 })
 
 

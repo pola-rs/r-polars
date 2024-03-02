@@ -1,3 +1,4 @@
+use crate::robj_to;
 use crate::series::RPolarsSeries;
 use crate::utils::collect_hinted_result;
 use extendr_api::prelude::*;
@@ -6,6 +7,8 @@ use extendr_api::prelude::*;
 use polars::prelude as pl;
 use polars::prelude::IntoSeries;
 use polars::prelude::NamedFrom;
+use polars_lazy::dsl::col;
+use polars_lazy::frame::IntoLazy;
 // Internal tree structure to contain Series of fully parsed nested Robject.
 // It is easier to resolve concatenated datatype after all elements have been parsed
 // because empty lists have no type in R, but the corrosponding polars type must be known before
@@ -210,10 +213,42 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
                 })
                 .flatten();
             //todo this could probably in fewer allocations
-            let dt = pl::DataType::Datetime(pl::TimeUnit::Milliseconds, tz);
-            Ok(SeriesTree::Series(
-                ((s * 1000f64).cast(&pl::DataType::Int64)?).cast(&dt)?,
-            ))
+            match tz {
+                // zoned time
+                Some(tz) => {
+                    Ok(SeriesTree::Series(
+                        (s * 1_000f64).cast(&pl::DataType::Int64)?.cast(
+                            &pl::DataType::Datetime(pl::TimeUnit::Milliseconds, Some(tz)),
+                        )?,
+                    ))
+                }
+                // sys time
+                None => {
+                    let sys_tz_robj = R!("Sys.timezone()")
+                        .map_err(|err| pl::PolarsError::ComputeError(err.to_string().into()))?;
+                    let sys_tz = robj_to!(String, sys_tz_robj)
+                        .map_err(|err| pl::PolarsError::ComputeError(err.to_string().into()))?;
+                    let s_name = s.name();
+                    let utc_s = (s.clone() * 1_000f64).cast(&pl::DataType::Int64)?.cast(
+                        &pl::DataType::Datetime(
+                            pl::TimeUnit::Milliseconds,
+                            Some("UTC".to_string()),
+                        ),
+                    )?;
+                    Ok(SeriesTree::Series(
+                        pl::DataFrame::new(vec![utc_s.clone()])?
+                            .lazy()
+                            .select([col(s_name)
+                                .dt()
+                                .convert_time_zone(sys_tz)
+                                .dt()
+                                .replace_time_zone(None, pl::lit("raise"))])
+                            .collect()?
+                            .column(s_name)?
+                            .clone(),
+                    ))
+                }
+            }
         }
         Ok(SeriesTree::Series(s)) if x.inherits("Date") => {
             Ok(SeriesTree::Series(s.cast(&pl::DataType::Date)?))
