@@ -18,7 +18,7 @@ Convert to a vector
 
 Polars objects, such as \link[=DataFrame_class]{the DataFrame class object}
 can be converted to R objects via some way. For example, using the
-\code{\link[=S3_as.data.frame]{as.data.frame()}} generic function.
+\code{\link[=as.data.frame.RPolarsDataFrame]{as.data.frame()}} generic function.
 When converting Polars objects to R objects, each type in the Polars object is
 converted to an R type.
 In some cases, an error may occur because the conversion is not appropriate.
