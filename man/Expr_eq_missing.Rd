@@ -7,14 +7,13 @@
 Expr_eq_missing(other)
 }
 \arguments{
-\item{other}{Literal or object that can be converted to a literal}
+\item{other}{numeric or string value; accepts expression input.}
 }
 \value{
-Expr
+\link[=Expr_class]{Expr}
 }
 \description{
-The RHS can either be an Expr or an object that can be converted to a literal
-(e.g an integer).
+Method equivalent of addition operator \code{expr + other}.
 }
 \examples{
 df = pl$DataFrame(x = c(NA, FALSE, TRUE), y = c(TRUE, TRUE, TRUE))

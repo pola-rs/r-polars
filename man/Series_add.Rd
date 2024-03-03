@@ -2,32 +2,29 @@
 % Please edit documentation in R/series__series.R
 \name{Series_add}
 \alias{Series_add}
-\alias{add}
-\alias{+.RPolarsSeries}
-\title{add Series}
+\title{Add Series}
 \usage{
 Series_add(other)
-
-\method{+}{RPolarsSeries}(s1, s2)
 }
 \arguments{
-\item{other}{Series or into Series}
-
-\item{s1}{lhs Series}
-
-\item{s2}{rhs Series or any into Series}
+\item{other}{\link[=Series_class]{Series} like object of numeric or string values.
+Converted to \link[=Series_class]{Series} by \code{\link[=as_polars_series]{as_polars_series()}} in this method.}
 }
 \value{
-Series
+\link[=Series_class]{Series}
 }
 \description{
-Series arithmetics
+Method equivalent of addition operator \code{series + other}.
 }
 \examples{
-pl$Series(1:3)$add(11:13)
 pl$Series(1:3)$add(pl$Series(11:13))
+pl$Series(1:3)$add(11:13)
 pl$Series(1:3)$add(1L)
-1L + pl$Series(1:3)
-pl$Series(1:3) + 1L
+
+pl$Series("a")$add("-z")
 }
-\keyword{Series}
+\seealso{
+\itemize{
+\item \link[=S3_arithmetic]{Arithmetic operators}
+}
+}

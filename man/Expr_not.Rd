@@ -2,22 +2,15 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_not}
 \alias{Expr_not}
-\alias{!.RPolarsExpr}
 \title{Negate a boolean expression}
 \usage{
 Expr_not()
-
-\method{!}{RPolarsExpr}(x)
-}
-\arguments{
-\item{x}{Expr}
 }
 \value{
-Expr
+\link[=Expr_class]{Expr}
 }
 \description{
-The RHS can either be an Expr or an object that can be converted to a literal
-(e.g an integer).
+Method equivalent of negation operator \code{!expr}.
 }
 \examples{
 # two syntaxes same result

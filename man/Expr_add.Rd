@@ -2,30 +2,39 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_add}
 \alias{Expr_add}
-\alias{+.RPolarsExpr}
 \title{Add two expressions}
 \usage{
 Expr_add(other)
-
-\method{+}{RPolarsExpr}(e1, e2)
 }
 \arguments{
-\item{other}{Literal or object that can be converted to a literal}
-
-\item{e1}{Expr only}
-
-\item{e2}{Expr or anything that can be converted to a literal}
+\item{other}{numeric or string value; accepts expression input.}
 }
 \value{
-Expr
+\link[=Expr_class]{Expr}
 }
 \description{
-The RHS can either be an Expr or an object that can be converted to a literal
-(e.g an integer).
+Method equivalent of addition operator \code{expr + other}.
 }
 \examples{
-pl$lit(5) + 10
-pl$lit(5) + pl$lit(10)
-pl$lit(5)$add(pl$lit(10))
-+pl$lit(5) # unary use resolves to same as pl$lit(5)
+df = pl$DataFrame(x = 1:5)
+
+df$with_columns(
+  `x+int` = pl$col("x")$add(2L),
+  `x+expr` = pl$col("x")$add(pl$col("x")$cum_prod())
+)
+
+df = pl$DataFrame(
+  x = c("a", "d", "g"),
+  y = c("b", "e", "h"),
+  z = c("c", "f", "i")
+)
+
+df$with_columns(
+  pl$col("x")$add(pl$col("y"))$add(pl$col("z"))$alias("xyz")
+)
+}
+\seealso{
+\itemize{
+\item \link[=S3_arithmetic]{Arithmetic operators}
+}
 }

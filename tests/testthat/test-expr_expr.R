@@ -35,41 +35,15 @@ test_that("expression boolean operators", {
   expect_equal(names(fails), character())
 })
 
-test_that("expression Arithmetics", {
-  check_list = pl$DataFrame(list())$with_columns(
-    (pl$lit(1) / 2 == (1 / 2))$alias("1 / 2 == (1/2)"),
-    (pl$lit(1) + 2 == (1 + 2))$alias("1 + 2 == (1+2)"),
-    (pl$lit(1) * 2 == (1 * 2))$alias("1 * 2 == (1*2)"),
-    (pl$lit(1) - 2 == (1 - 2))$alias("1 - 2 == (1-2)"),
-    (pl$lit(1)$div(pl$lit(2)) == (1 / 2))$alias("1$div(2) == (1/2)"),
-    (pl$lit(1)$floor_div(pl$lit(2)) == (1 %/% 2))$alias("1$floor_div(2) == (1%/%2)"),
-    (pl$lit(1)$mod(pl$lit(2)) == (1 %% 2))$alias("1$mod(2) == (1%%2)"),
-    (pl$lit(1)$mod(pl$lit(-2)) == (1 %% -2))$alias("1$mod(2) != (1%%-2)"),
-    (pl$lit(1)$add(pl$lit(2)) == (1 + 2))$alias("1$add(2) == (1+2)"),
-    (pl$lit(1)$mul(pl$lit(2)) == (1 * 2))$alias("1$mul(2) == (1*2)"),
-    (pl$lit(1)$sub(pl$lit(2)) == (1 - 2))$alias("1$sub(2) == (1-2)")
-  )$to_data_frame(check.names = FALSE)
-
-  results = unlist(check_list)
-  expect_true(all(results))
-})
-
 make_cases = function() {
   tibble::tribble(
     ~.test_name, ~fn,
-    "mul", "*",
-    "add", "+",
-    "sub", "-",
-    "div", "/",
-    "floor_div", "%/%",
-    "mod", "%%",
     "gt", ">",
     "gte", ">=",
     "lt", "<",
     "lte", "<=",
     "eq", "==",
     "neq", "!=",
-    "pow", "^",
   )
 }
 
