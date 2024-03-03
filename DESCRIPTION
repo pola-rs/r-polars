@@ -1,6 +1,6 @@
 Package: polars
 Title: Lightning-Fast 'DataFrame' Library
-Version: 0.14.1.9000
+Version: 0.15.0
 Depends: R (>= 4.2)
 Imports: utils, codetools, methods
 Authors@R:
