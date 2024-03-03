@@ -10,6 +10,8 @@
         by position are ignored.
     -   in `$describe()`, the name of the first column changed from `"describe"`
         to `"statistic"`.
+    -   `$mod()` methods and `%%` works correctly to grantee
+        `x == (x %% y) + y * (x %/% y)`.
 
 ### Other breaking changes
 
@@ -32,6 +34,7 @@
     (either lexical or physical). This also means that calling `pl$Categorical`
     doesn't create a `DataType` anymore. All calls to `pl$Categorical` must be
     replaced by `pl$Categorical()` (#860).
+-   `<Series>$rem()` is removed. Use `<Series>$mod()` instead (#886).
 -   The conversion strategy between the POSIXct type without time zone attribute
     and Polars datetime has been changed (#878).
     `POSIXct` class vectors without a time zone attribute have UTC time internally
