@@ -5,11 +5,13 @@
 ### Breaking changes due to Rust-polars update
 
 -   rust-polars is updated to 0.38.1 (#865, #872).
-    -   in `$pivot()`, arguments `aggregate_function`, `maintain_order`, 
+    -   in `$pivot()`, arguments `aggregate_function`, `maintain_order`,
         `sort_columns` and `separator` must be named. Values that are passed
         by position are ignored.
     -   in `$describe()`, the name of the first column changed from `"describe"`
         to `"statistic"`.
+    -   `$mod()` methods and `%%` works correctly to guarantee
+        `x == (x %% y) + y * (x %/% y)`.
 
 ### Other breaking changes
 
@@ -34,6 +36,7 @@
     (either lexical or physical). This also means that calling `pl$Categorical`
     doesn't create a `DataType` anymore. All calls to `pl$Categorical` must be
     replaced by `pl$Categorical()` (#860).
+-   `<Series>$rem()` is removed. Use `<Series>$mod()` instead (#886).
 -   The conversion strategy between the POSIXct type without time zone attribute
     and Polars datetime has been changed (#878).
     `POSIXct` class vectors without a time zone attribute have UTC time internally
@@ -105,6 +108,7 @@
     pls$dt$replace_time_zone("UTC") |> as.vector()
     #> [1] "2020-11-01 01:00:00 UTC"
     ```
+
 -   Removed argument `eager` in `pl$date_range()` and `pl$struct()` for more
     consistency of output. It is possible to replace `eager = TRUE` by calling
     `$to_series()` (#882).
@@ -117,10 +121,10 @@
 -   `<DataFrame>$head()` and `<DataFrame>$tail()` methods now support negative
     row numbers (#840).
 -   `$group_by()` now works with named expressions (#846).
--   New methods for the `arr` subnamespace: `$median()`, `$var()`, `$std()`, 
+-   New methods for the `arr` subnamespace: `$median()`, `$var()`, `$std()`,
     `$shift()`, `$to_struct()` (#867).
 -   `$min()` and `max()` now work on categorical variables (#868).
--   New methods for the `list` subnamespace: `$n_unique()`, `$gather_every()` 
+-   New methods for the `list` subnamespace: `$n_unique()`, `$gather_every()`
     (#869).
 -   Converts `clock_time_point` and `clock_zoned_time` objects from
     the `{clock}` package to Polars datetime type (#861).

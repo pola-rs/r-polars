@@ -2,26 +2,18 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_neq}
 \alias{Expr_neq}
-\alias{!=.RPolarsExpr}
 \title{Check inequality}
 \usage{
 Expr_neq(other)
-
-\method{!=}{RPolarsExpr}(e1, e2)
 }
 \arguments{
-\item{other}{Literal or object that can be converted to a literal}
-
-\item{e1}{Expr only}
-
-\item{e2}{Expr or anything that can be converted to a literal}
+\item{other}{numeric or string value; accepts expression input.}
 }
 \value{
-Expr
+\link[=Expr_class]{Expr}
 }
 \description{
-The RHS can either be an Expr or an object that can be converted to a literal
-(e.g an integer).
+Method equivalent of addition operator \code{expr + other}.
 }
 \examples{
 pl$lit(1) != 2

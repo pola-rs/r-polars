@@ -2,29 +2,31 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_floor_div}
 \alias{Expr_floor_div}
-\alias{\%/\%.RPolarsExpr}
 \title{Floor divide two expressions}
 \usage{
 Expr_floor_div(other)
-
-\method{\%/\%}{RPolarsExpr}(e1, e2)
 }
 \arguments{
-\item{other}{Literal or object that can be converted to a literal}
-
-\item{e1}{Expr only}
-
-\item{e2}{Expr or anything that can be converted to a literal}
+\item{other}{Numeric literal or expression value.}
 }
 \value{
-Expr
+\link[=Expr_class]{Expr}
 }
 \description{
-The RHS can either be an Expr or an object that can be converted to a literal
-(e.g an integer).
+Method equivalent of floor division operator \code{expr \%/\% other}.
 }
 \examples{
-pl$lit(5) \%/\% 10
-pl$lit(5) \%/\% pl$lit(10)
-pl$lit(5)$floor_div(pl$lit(10))
+df = pl$DataFrame(x = 1:5)
+
+df$with_columns(
+  `x/2` = pl$col("x")$div(2),
+  `x\%/\%2` = pl$col("x")$floor_div(2)
+)
+}
+\seealso{
+\itemize{
+\item \link[=S3_arithmetic]{Arithmetic operators}
+\item \code{\link[=Expr_div]{<Expr>$div()}}
+\item \code{\link[=Expr_mod]{<Expr>$mod()}}
+}
 }

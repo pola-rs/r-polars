@@ -2,32 +2,27 @@
 % Please edit documentation in R/series__series.R
 \name{Series_mul}
 \alias{Series_mul}
-\alias{mul}
-\alias{*.RPolarsSeries}
-\title{mul Series}
+\title{Multiply Series}
 \usage{
 Series_mul(other)
-
-\method{*}{RPolarsSeries}(s1, s2)
 }
 \arguments{
-\item{other}{Series or into Series}
-
-\item{s1}{lhs Series}
-
-\item{s2}{rhs Series or any into Series}
+\item{other}{\link[=Series_class]{Series} like object of numeric.
+Converted to \link[=Series_class]{Series} by \code{\link[=as_polars_series]{as_polars_series()}} in this method.}
 }
 \value{
-Series
+\link[=Series_class]{Series}
 }
 \description{
-Series arithmetics
+Method equivalent of multiplication operator \code{series * other}.
 }
 \examples{
 pl$Series(1:3)$mul(11:13)
 pl$Series(1:3)$mul(pl$Series(11:13))
 pl$Series(1:3)$mul(1L)
-2L * pl$Series(1:3)
-pl$Series(1:3) * 2L
 }
-\keyword{Series}
+\seealso{
+\itemize{
+\item \link[=S3_arithmetic]{Arithmetic operators}
+}
+}

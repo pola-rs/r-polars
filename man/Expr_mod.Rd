@@ -2,40 +2,29 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_mod}
 \alias{Expr_mod}
-\alias{\%\%.RPolarsExpr}
 \title{Modulo two expressions}
 \usage{
 Expr_mod(other)
-
-\method{\%\%}{RPolarsExpr}(e1, e2)
 }
 \arguments{
-\item{other}{Literal or object that can be converted to a literal}
-
-\item{e1}{Expr only}
-
-\item{e2}{Expr or anything that can be converted to a literal}
+\item{other}{Numeric literal or expression value.}
 }
 \value{
-Expr
+\link[=Expr_class]{Expr}
 }
 \description{
-The RHS can either be an Expr or an object that can be converted to a literal
-(e.g an integer).
-}
-\details{
-Currently, the modulo operator behaves differently than in R,
-and not guaranteed \code{x == (x \%\% y) + y * (x \%/\% y)}.
+Method equivalent of modulus operator \code{expr \%\% other}.
 }
 \examples{
-pl$select(pl$lit(-1:12) \%\% 3)$to_series()$to_vector()
+df = pl$DataFrame(x = -5L:5L)
 
-# The example is **NOT** equivalent to the followings:
--1:12 \%\% 3
-pl$select(-1:12 \%\% 3)$to_series()$to_vector()
-
-# Not guaranteed `x == (x \%\% y) + y * (x \%/\% y)`
-x = pl$lit(-1:12)
-y = pl$lit(3)
-pl$select(x == (x \%\% y) + y * (x \%/\% y))
+df$with_columns(
+  `x\%\%2` = pl$col("x")$mod(2)
+)
+}
+\seealso{
+\itemize{
+\item \link[=S3_arithmetic]{Arithmetic operators}
+\item \code{\link[=Expr_floor_div]{<Expr>$floor_div()}}
+}
 }
