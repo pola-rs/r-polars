@@ -478,7 +478,7 @@ as_polars_series.clock_time_point = function(x, name = NULL, ...) {
       pl$col("diff_1")$cast(pl$Int64)
     )$mul(
       pl$lit(n_multiply_to_ms)$cast(pl$UInt32)
-    )$cast(pl$Datetime(tu = target_precision))
+    )$cast(pl$Datetime(target_precision))
   )$get_column("out")$alias(name %||% "")
 }
 

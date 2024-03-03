@@ -43,6 +43,6 @@ pl$lit(as.Date("2021-01-01"))$dt$combine(3600 * 1.5E6 + 123, tu = "us")$to_serie
 
 # if needed to convert back to R it is more intuitive to set a specific time zone
 expr = pl$lit(as.Date("2021-01-01"))$dt$combine(3600 * 1.5E6 + 123, tu = "us")
-expr$cast(pl$Datetime(tu = "us", tz = "GMT"))$to_r()
+expr$cast(pl$Datetime("us", "GMT"))$to_r()
 }
 \keyword{ExprDT}

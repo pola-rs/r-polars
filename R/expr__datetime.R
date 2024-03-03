@@ -122,7 +122,7 @@ ExprDT_round = function(every, offset = NULL) {
 #'
 #' # if needed to convert back to R it is more intuitive to set a specific time zone
 #' expr = pl$lit(as.Date("2021-01-01"))$dt$combine(3600 * 1.5E6 + 123, tu = "us")
-#' expr$cast(pl$Datetime(tu = "us", tz = "GMT"))$to_r()
+#' expr$cast(pl$Datetime("us", "GMT"))$to_r()
 ExprDT_combine = function(tm, tu = "us") {
   if (inherits(tm, "PTime")) tu = "ns" # PTime implicitly gets converted to "ns"
   if (!is_string(tu)) stop("combine: input tu is not a string, [%s ]", str_string(tu))
