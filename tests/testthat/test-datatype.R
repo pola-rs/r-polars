@@ -44,7 +44,7 @@ test_that("POSIXct data conversion", {
   )
   # TODO: infer timezone from string, change the arugment name from `tz`
   expect_true(
-    pl$Series("2022-01-01 UTC")$str$strptime(pl$Datetime(tz = "UTC"), "%F %Z")$eq(
+    pl$Series("2022-01-01 UTC")$str$strptime(pl$Datetime(time_zone = "UTC"), "%F %Z")$eq(
       pl$Series(as.POSIXct("2022-01-01", tz = "UTC"))
     )$to_r()
   )
@@ -58,7 +58,7 @@ test_that("POSIXct data conversion", {
       )
       # TODO: infer timezone from string, change the arugment name from `tz`
       expect_true(
-        pl$Series("2022-01-01 UTC")$str$strptime(pl$Datetime(tz = "UTC"), "%F %Z")$eq(
+        pl$Series("2022-01-01 UTC")$str$strptime(pl$Datetime(time_zone = "UTC"), "%F %Z")$eq(
           pl$Series(as.POSIXct("2022-01-01", tz = "UTC"))
         )$to_r()
       )
@@ -121,4 +121,14 @@ test_that("Categorical", {
   expect_error(
     pl$Series(c("z", "z", "k", "a"))$cast(pl$Categorical("foobar"))
   )
+})
+
+
+test_that("allow '*' for time_zone", {
+  df = pl$DataFrame(
+    naive_time = as.POSIXct("1900-01-01"),
+    zoned_time = as.POSIXct("1900-01-01", "UTC")
+  )
+
+  expect_identical(df$select(pl$col(pl$Datetime("ms", "*")))$width, 1)
 })

@@ -190,7 +190,7 @@ test_that("dt$combine", {
     (
       pl$lit(as.Date("2021-01-01"))
       $dt$combine(pl$PTime("02:34:12"))
-      $cast(pl$Datetime(tu = "us", tz = "GMT"))
+      $cast(pl$Datetime("us", "GMT"))
       $to_r()
     ),
     as.POSIXct("2021-01-01 02:34:12", tz = "GMT")
@@ -200,7 +200,7 @@ test_that("dt$combine", {
     (
       pl$lit(as.Date("2021-01-01"))
       $dt$combine(pl$PTime(3600 * 1.5E3, tu = "ms"))
-      $cast(pl$Datetime(tu = "us", tz = "GMT"))
+      $cast(pl$Datetime("us", "GMT"))
       $to_r()
     ),
     as.POSIXct("2021-01-01 01:30:00", tz = "GMT")
@@ -210,7 +210,7 @@ test_that("dt$combine", {
     (
       pl$lit(as.Date("2021-01-01"))
       $dt$combine(3600 * 1.5E9, tu = "ns")
-      $cast(pl$Datetime(tu = "us", tz = "GMT"))
+      $cast(pl$Datetime("us", "GMT"))
       $to_r()
     ),
     as.POSIXct("2021-01-01 01:30:00", tz = "GMT")
@@ -220,7 +220,7 @@ test_that("dt$combine", {
     (
       pl$lit(as.Date("2021-01-01"))
       $dt$combine(-3600 * 1.5E9, tu = "ns")
-      $cast(pl$Datetime(tu = "us", tz = "GMT"))
+      $cast(pl$Datetime("us", "GMT"))
       $to_r()
     ),
     as.POSIXct("2020-12-31 22:30:00", tz = "GMT")

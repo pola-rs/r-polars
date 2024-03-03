@@ -2,25 +2,33 @@
 % Please edit documentation in R/datatype.R
 \name{DataType_Datetime}
 \alias{DataType_Datetime}
-\title{Create Datetime DataType}
+\title{Data type representing a calendar date and time of day.}
 \usage{
-DataType_Datetime(tu = "us", tz = NULL)
+DataType_Datetime(time_unit = "us", time_zone = NULL)
 }
 \arguments{
-\item{tu}{string option either "ms", "us" or "ns"}
+\item{time_unit}{Unit of time. One of \code{"ms"}, \code{"us"} (default) or \code{"ns"}.}
 
-\item{tz}{string the Time Zone, see details}
+\item{time_zone}{Time zone string, as defined in \code{\link[=OlsonNames]{OlsonNames()}}.
+Setting \code{timezone = "*"} will match any timezone, which can be useful to
+select all Datetime columns containing a timezone.}
 }
 \value{
 Datetime DataType
 }
 \description{
-Datetime DataType constructor
-}
-\details{
-all allowed TimeZone designations can be found in \code{base::OlsonNames()}
+The underlying representation of this type is a 64-bit signed integer.
+The integer indicates the number of time units since the Unix epoch (1970-01-01 00:00:00).
+The number can be negative to indicate datetimes before the epoch.
 }
 \examples{
 pl$Datetime("ns", "Pacific/Samoa")
+
+df = pl$DataFrame(
+  naive_time = as.POSIXct("1900-01-01"),
+  zoned_time = as.POSIXct("1900-01-01", "UTC")
+)
+df
+
+df$select(pl$col(pl$Datetime("us", "*")))
 }
-\keyword{pl}

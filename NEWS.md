@@ -30,6 +30,8 @@
         changed from `"-"` to `""` (#853).
     -   `<Expr>$str$concat()` method's `ignore_nulls` argument must be a
         named argument (#853).
+    -   `pl$Datetime()`'s arguments are renamed: `tu` to `time_unit`,
+        and `tz` to `time_zone` (#887).
 -   `pl$Categorical()` has been improved to allow specifying the `ordering` type
     (either lexical or physical). This also means that calling `pl$Categorical`
     doesn't create a `DataType` anymore. All calls to `pl$Categorical` must be
@@ -128,6 +130,8 @@
     the `{clock}` package to Polars datetime type (#861).
 -   New methods for the `name` subnamespace: `$prefix_fields()` and
     `suffix_fields()` (#873).
+-   `pl$Datetime()`'s `time_zone` argument now accepts `"*"` to match
+    any time zone (#887).
 
 ### Bug fixes
 

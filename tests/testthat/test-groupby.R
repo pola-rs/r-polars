@@ -336,7 +336,7 @@ test_that("group_by_dynamic for LazyFrame: arg 'start_by' works", {
     ),
     n = 0:6
   )$with_columns(
-    pl$col("dt")$str$strptime(pl$Datetime("ms", tz = "UTC"), format = NULL)$set_sorted()
+    pl$col("dt")$str$strptime(pl$Datetime("ms", "UTC"), format = NULL)$set_sorted()
   )
 
   # TODO: any weekday should return the same since it is ignored when there's no
