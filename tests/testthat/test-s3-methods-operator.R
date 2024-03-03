@@ -28,6 +28,18 @@ patrick::with_parameters_test_that(
 )
 
 
+test_that("`+` and `-` works without y", {
+  vec = -5:5
+  e = pl$lit(vec)
+  s = as_polars_series(vec)
+
+  expect_equal((+e)$to_series()$to_r(), +vec)
+  expect_equal((-e)$to_series()$to_r(), -vec)
+  expect_equal((+s)$to_r(), +vec)
+  expect_equal((-s)$to_r(), -vec)
+})
+
+
 test_that("`+` works for strings", {
   chr_vec = c("a", "b", "c")
 
