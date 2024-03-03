@@ -85,12 +85,12 @@ pl$Series(5) + 10
 \item \code{\link[=Expr_sub]{<Expr>$sub()}}
 \item \code{\link[=Expr_mul]{<Expr>$mul()}}
 \item \code{\link[=Expr_pow]{<Expr>$pow()}}
-\item \code{\link[=Series_add]{<Series$add()}}
-\item \code{\link[=Series_div]{<Series$div()}}
-\item \code{\link[=Series_floor_div]{<Series$floor_div()}}
-\item \code{\link[=Series_mod]{<Series$mod()}}
-\item \code{\link[=Series_sub]{<Series$sub()}}
-\item \code{\link[=Series_mul]{<Series$mul()}}
-\item \code{\link[=Series_pow]{<Series$pow()}}
+\item \code{\link[=Series_add]{<Series>$add()}}
+\item \code{\link[=Series_div]{<Series>$div()}}
+\item \code{\link[=Series_floor_div]{<Series>$floor_div()}}
+\item \code{\link[=Series_mod]{<Series>$mod()}}
+\item \code{\link[=Series_sub]{<Series>$sub()}}
+\item \code{\link[=Series_mul]{<Series>$mul()}}
+\item \code{\link[=Series_pow]{<Series>$pow()}}
 }
 }

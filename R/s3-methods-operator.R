@@ -12,13 +12,13 @@
 #' - [`<Expr>$sub()`][Expr_sub]
 #' - [`<Expr>$mul()`][Expr_mul]
 #' - [`<Expr>$pow()`][Expr_pow]
-#' - [`<Series$add()`][Series_add]
-#' - [`<Series$div()`][Series_div]
-#' - [`<Series$floor_div()`][Series_floor_div]
-#' - [`<Series$mod()`][Series_mod]
-#' - [`<Series$sub()`][Series_sub]
-#' - [`<Series$mul()`][Series_mul]
-#' - [`<Series$pow()`][Series_pow]
+#' - [`<Series>$add()`][Series_add]
+#' - [`<Series>$div()`][Series_div]
+#' - [`<Series>$floor_div()`][Series_floor_div]
+#' - [`<Series>$mod()`][Series_mod]
+#' - [`<Series>$sub()`][Series_sub]
+#' - [`<Series>$mul()`][Series_mul]
+#' - [`<Series>$pow()`][Series_pow]
 #' @examples
 #' pl$lit(5) + 10
 #' 5 + pl$lit(10)
