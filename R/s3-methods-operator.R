@@ -6,19 +6,19 @@
 #' @return A Polars object the same type as the input.
 #' @seealso
 #' - [`<Expr>$add()`][Expr_add]
-#' - [`<Expr>$div()`][Expr_div]
-#' - [`<Expr>$floor_div()`][Expr_floor_div]
-#' - [`<Expr>$mod()`][Expr_mod]
 #' - [`<Expr>$sub()`][Expr_sub]
 #' - [`<Expr>$mul()`][Expr_mul]
+#' - [`<Expr>$div()`][Expr_div]
 #' - [`<Expr>$pow()`][Expr_pow]
+#' - [`<Expr>$mod()`][Expr_mod]
+#' - [`<Expr>$floor_div()`][Expr_floor_div]
 #' - [`<Series>$add()`][Series_add]
-#' - [`<Series>$div()`][Series_div]
-#' - [`<Series>$floor_div()`][Series_floor_div]
-#' - [`<Series>$mod()`][Series_mod]
 #' - [`<Series>$sub()`][Series_sub]
 #' - [`<Series>$mul()`][Series_mul]
+#' - [`<Series>$div()`][Series_div]
 #' - [`<Series>$pow()`][Series_pow]
+#' - [`<Series>$mod()`][Series_mod]
+#' - [`<Series>$floor_div()`][Series_floor_div]
 #' @examples
 #' pl$lit(5) + 10
 #' 5 + pl$lit(10)
@@ -60,48 +60,6 @@ NULL
 
 #' @export
 #' @rdname S3_arithmetic
-`/.RPolarsExpr` = function(x, y) {
-  result(wrap_e(x)$div(y)) |>
-    unwrap("using the `/`-operator")
-}
-
-#' @export
-`/.RPolarsThen` = `/.RPolarsExpr`
-
-#' @export
-`/.RPolarsChainedThen` = `/.RPolarsExpr`
-
-
-#' @export
-#' @rdname S3_arithmetic
-`%/%.RPolarsExpr` = function(x, y) {
-  result(wrap_e(x)$floor_div(y)) |>
-    unwrap("using the `%/%`-operator")
-}
-
-#' @export
-`%/%.RPolarsThen` = `%/%.RPolarsExpr`
-
-#' @export
-`%/%.RPolarsChainedThen` = `%/%.RPolarsExpr`
-
-
-#' @export
-#' @rdname S3_arithmetic
-`%%.RPolarsExpr` = function(x, y) {
-  result(wrap_e(x)$mod(y)) |>
-    unwrap("using the `%%`-operator")
-}
-
-#' @export
-`%%.RPolarsThen` = `%%.RPolarsExpr`
-
-#' @export
-`%%.RPolarsChainedThen` = `%%.RPolarsExpr`
-
-
-#' @export
-#' @rdname S3_arithmetic
 `-.RPolarsExpr` = function(x, y) {
   result(
     if (missing(y)) wrap_e(0L)$sub(x) else wrap_e(x)$sub(y)
@@ -131,6 +89,20 @@ NULL
 
 #' @export
 #' @rdname S3_arithmetic
+`/.RPolarsExpr` = function(x, y) {
+  result(wrap_e(x)$div(y)) |>
+    unwrap("using the `/`-operator")
+}
+
+#' @export
+`/.RPolarsThen` = `/.RPolarsExpr`
+
+#' @export
+`/.RPolarsChainedThen` = `/.RPolarsExpr`
+
+
+#' @export
+#' @rdname S3_arithmetic
 `^.RPolarsExpr` = function(x, y) {
   result(wrap_e(x)$pow(y)) |>
     unwrap("using `^`-operator")
@@ -141,6 +113,34 @@ NULL
 
 #' @export
 `^.RPolarsChainedThen` = `^.RPolarsExpr`
+
+
+#' @export
+#' @rdname S3_arithmetic
+`%%.RPolarsExpr` = function(x, y) {
+  result(wrap_e(x)$mod(y)) |>
+    unwrap("using the `%%`-operator")
+}
+
+#' @export
+`%%.RPolarsThen` = `%%.RPolarsExpr`
+
+#' @export
+`%%.RPolarsChainedThen` = `%%.RPolarsExpr`
+
+
+#' @export
+#' @rdname S3_arithmetic
+`%/%.RPolarsExpr` = function(x, y) {
+  result(wrap_e(x)$floor_div(y)) |>
+    unwrap("using the `%/%`-operator")
+}
+
+#' @export
+`%/%.RPolarsThen` = `%/%.RPolarsExpr`
+
+#' @export
+`%/%.RPolarsChainedThen` = `%/%.RPolarsExpr`
 
 
 #' @export
@@ -168,6 +168,14 @@ NULL
 
 #' @export
 #' @rdname S3_arithmetic
+`*.RPolarsSeries` = function(x, y) {
+  result(as_polars_series(x)$mul(y)) |>
+    unwrap("using the `*`-operator")
+}
+
+
+#' @export
+#' @rdname S3_arithmetic
 `/.RPolarsSeries` = function(x, y) {
   result(as_polars_series(x)$div(y)) |>
     unwrap("using the `/`-operator")
@@ -176,17 +184,9 @@ NULL
 
 #' @export
 #' @rdname S3_arithmetic
-`%/%.RPolarsSeries` = function(x, y) {
-  result(as_polars_series(x)$floor_div(y)) |>
-    unwrap("using the `%/%`-operator")
-}
-
-
-#' @export
-#' @rdname S3_arithmetic
-`*.RPolarsSeries` = function(x, y) {
-  result(as_polars_series(x)$mul(y)) |>
-    unwrap("using the `*`-operator")
+`^.RPolarsSeries` = function(x, y) {
+  result(as_polars_series(x)$pow(y)) |>
+    unwrap("using the `^`-operator")
 }
 
 
@@ -200,7 +200,7 @@ NULL
 
 #' @export
 #' @rdname S3_arithmetic
-`^.RPolarsSeries` = function(x, y) {
-  result(as_polars_series(x)$pow(y)) |>
-    unwrap("using the `^`-operator")
+`%/%.RPolarsSeries` = function(x, y) {
+  result(as_polars_series(x)$floor_div(y)) |>
+    unwrap("using the `%/%`-operator")
 }

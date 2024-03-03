@@ -3,48 +3,48 @@
 \name{S3_arithmetic}
 \alias{S3_arithmetic}
 \alias{+.RPolarsExpr}
-\alias{/.RPolarsExpr}
-\alias{\%/\%.RPolarsExpr}
-\alias{\%\%.RPolarsExpr}
 \alias{-.RPolarsExpr}
 \alias{*.RPolarsExpr}
+\alias{/.RPolarsExpr}
 \alias{^.RPolarsExpr}
+\alias{\%\%.RPolarsExpr}
+\alias{\%/\%.RPolarsExpr}
 \alias{+.RPolarsSeries}
 \alias{-.RPolarsSeries}
-\alias{/.RPolarsSeries}
-\alias{\%/\%.RPolarsSeries}
 \alias{*.RPolarsSeries}
-\alias{\%\%.RPolarsSeries}
+\alias{/.RPolarsSeries}
 \alias{^.RPolarsSeries}
+\alias{\%\%.RPolarsSeries}
+\alias{\%/\%.RPolarsSeries}
 \title{Arithmetic operators for RPolars objects}
 \usage{
 \method{+}{RPolarsExpr}(x, y)
-
-\method{/}{RPolarsExpr}(x, y)
-
-\method{\%/\%}{RPolarsExpr}(x, y)
-
-\method{\%\%}{RPolarsExpr}(x, y)
 
 \method{-}{RPolarsExpr}(x, y)
 
 \method{*}{RPolarsExpr}(x, y)
 
+\method{/}{RPolarsExpr}(x, y)
+
 \method{^}{RPolarsExpr}(x, y)
+
+\method{\%\%}{RPolarsExpr}(x, y)
+
+\method{\%/\%}{RPolarsExpr}(x, y)
 
 \method{+}{RPolarsSeries}(x, y)
 
 \method{-}{RPolarsSeries}(x, y)
 
+\method{*}{RPolarsSeries}(x, y)
+
 \method{/}{RPolarsSeries}(x, y)
 
-\method{\%/\%}{RPolarsSeries}(x, y)
-
-\method{*}{RPolarsSeries}(x, y)
+\method{^}{RPolarsSeries}(x, y)
 
 \method{\%\%}{RPolarsSeries}(x, y)
 
-\method{^}{RPolarsSeries}(x, y)
+\method{\%/\%}{RPolarsSeries}(x, y)
 }
 \arguments{
 \item{x, y}{numeric type of RPolars objects or objects that can be coerced such.
@@ -79,18 +79,18 @@ pl$Series(5) + 10
 \seealso{
 \itemize{
 \item \code{\link[=Expr_add]{<Expr>$add()}}
-\item \code{\link[=Expr_div]{<Expr>$div()}}
-\item \code{\link[=Expr_floor_div]{<Expr>$floor_div()}}
-\item \code{\link[=Expr_mod]{<Expr>$mod()}}
 \item \code{\link[=Expr_sub]{<Expr>$sub()}}
 \item \code{\link[=Expr_mul]{<Expr>$mul()}}
+\item \code{\link[=Expr_div]{<Expr>$div()}}
 \item \code{\link[=Expr_pow]{<Expr>$pow()}}
+\item \code{\link[=Expr_mod]{<Expr>$mod()}}
+\item \code{\link[=Expr_floor_div]{<Expr>$floor_div()}}
 \item \code{\link[=Series_add]{<Series>$add()}}
-\item \code{\link[=Series_div]{<Series>$div()}}
-\item \code{\link[=Series_floor_div]{<Series>$floor_div()}}
-\item \code{\link[=Series_mod]{<Series>$mod()}}
 \item \code{\link[=Series_sub]{<Series>$sub()}}
 \item \code{\link[=Series_mul]{<Series>$mul()}}
+\item \code{\link[=Series_div]{<Series>$div()}}
 \item \code{\link[=Series_pow]{<Series>$pow()}}
+\item \code{\link[=Series_mod]{<Series>$mod()}}
+\item \code{\link[=Series_floor_div]{<Series>$floor_div()}}
 }
 }
