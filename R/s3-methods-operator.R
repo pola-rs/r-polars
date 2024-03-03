@@ -1,8 +1,9 @@
 #' Arithmetic operators for RPolars objects
 #'
 #' @name S3_arithmetic
-#' @param e1 Expr only
-#' @param e2 Expr or anything that can be converted to a literal
+#' @param x,y numeric type of RPolars objects or objects that can be coerced such.
+#' Only `+` can take strings.
+#' @return A Polars object the same type as the input.
 #' @seealso
 #' - [`<Expr>$add()`][Expr_add]
 #' - [`<Expr>$div()`][Expr_div]
@@ -11,6 +12,13 @@
 #' - [`<Expr>$sub()`][Expr_sub]
 #' - [`<Expr>$mul()`][Expr_mul]
 #' - [`<Expr>$pow()`][Expr_pow]
+#' - [`<Series$add()`][Series_add]
+#' - [`<Series$div()`][Series_div]
+#' - [`<Series$floor_div()`][Series_floor_div]
+#' - [`<Series$mod()`][Series_mod]
+#' - [`<Series$sub()`][Series_sub]
+#' - [`<Series$mul()`][Series_mul]
+#' - [`<Series$pow()`][Series_pow]
 #' @examples
 #' pl$lit(5) + 10
 #' 5 + pl$lit(10)
@@ -26,16 +34,20 @@
 #'   expr$to_series(),
 #'   error = function(e) e
 #' )
+#'
+#' pl$Series(5) + 10
+#' +pl$Series(5)
+#' -pl$Series(5)
 NULL
 
 
 #' @export
 #' @rdname S3_arithmetic
-`+.RPolarsExpr` = function(e1, e2) {
-  if (missing(e2)) {
-    return(e1)
+`+.RPolarsExpr` = function(x, y) {
+  if (missing(y)) {
+    return(x)
   }
-  result(wrap_e(e1)$add(e2)) |>
+  result(wrap_e(x)$add(y)) |>
     unwrap("using the `+`-operator")
 }
 
@@ -48,8 +60,8 @@ NULL
 
 #' @export
 #' @rdname S3_arithmetic
-`/.RPolarsExpr` = function(e1, e2) {
-  result(wrap_e(e1)$div(e2)) |>
+`/.RPolarsExpr` = function(x, y) {
+  result(wrap_e(x)$div(y)) |>
     unwrap("using the `/`-operator")
 }
 
@@ -62,8 +74,8 @@ NULL
 
 #' @export
 #' @rdname S3_arithmetic
-`%/%.RPolarsExpr` = function(e1, e2) {
-  result(wrap_e(e1)$floor_div(e2)) |>
+`%/%.RPolarsExpr` = function(x, y) {
+  result(wrap_e(x)$floor_div(y)) |>
     unwrap("using the `%/%`-operator")
 }
 
@@ -76,8 +88,8 @@ NULL
 
 #' @export
 #' @rdname S3_arithmetic
-`%%.RPolarsExpr` = function(e1, e2) {
-  result(wrap_e(e1)$mod(e2)) |>
+`%%.RPolarsExpr` = function(x, y) {
+  result(wrap_e(x)$mod(y)) |>
     unwrap("using the `%%`-operator")
 }
 
@@ -90,9 +102,9 @@ NULL
 
 #' @export
 #' @rdname S3_arithmetic
-`-.RPolarsExpr` = function(e1, e2) {
+`-.RPolarsExpr` = function(x, y) {
   result(
-    if (missing(e2)) wrap_e(0L)$sub(e1) else wrap_e(e1)$sub(e2)
+    if (missing(y)) wrap_e(0L)$sub(x) else wrap_e(x)$sub(y)
   ) |> unwrap("using the '-'-operator")
 }
 
@@ -105,8 +117,8 @@ NULL
 
 #' @export
 #' @rdname S3_arithmetic
-`*.RPolarsExpr` = function(e1, e2) {
-  result(wrap_e(e1)$mul(e2)) |>
+`*.RPolarsExpr` = function(x, y) {
+  result(wrap_e(x)$mul(y)) |>
     unwrap("using the `*`-operator")
 }
 
@@ -119,8 +131,8 @@ NULL
 
 #' @export
 #' @rdname S3_arithmetic
-`^.RPolarsExpr` = function(e1, e2) {
-  result(wrap_e(e1)$pow(e2)) |>
+`^.RPolarsExpr` = function(x, y) {
+  result(wrap_e(x)$pow(y)) |>
     unwrap("using `^`-operator")
 }
 
@@ -129,3 +141,66 @@ NULL
 
 #' @export
 `^.RPolarsChainedThen` = `^.RPolarsExpr`
+
+
+#' @export
+#' @rdname S3_arithmetic
+`+.RPolarsSeries` = function(x, y) {
+  if (missing(y)) {
+    return(x)
+  }
+  result(as_polars_series(x)$add(y)) |>
+    unwrap("using the `+`-operator")
+}
+
+
+#' @export
+#' @rdname S3_arithmetic
+`-.RPolarsSeries` = function(x, y) {
+  result(if (missing(y)) {
+    pl$Series(0L)$sub(as_polars_series(x))
+  } else {
+    as_polars_series(x)$sub(y)
+  }) |>
+    unwrap("using the `-`-operator")
+}
+
+
+#' @export
+#' @rdname S3_arithmetic
+`/.RPolarsSeries` = function(x, y) {
+  result(as_polars_series(x)$div(y)) |>
+    unwrap("using the `/`-operator")
+}
+
+
+#' @export
+#' @rdname S3_arithmetic
+`%/%.RPolarsSeries` = function(x, y) {
+  result(as_polars_series(x)$floor_div(y)) |>
+    unwrap("using the `%/%`-operator")
+}
+
+
+#' @export
+#' @rdname S3_arithmetic
+`*.RPolarsSeries` = function(x, y) {
+  result(as_polars_series(x)$mul(y)) |>
+    unwrap("using the `*`-operator")
+}
+
+
+#' @export
+#' @rdname S3_arithmetic
+`%%.RPolarsSeries` = function(x, y) {
+  result(as_polars_series(x)$mod(y)) |>
+    unwrap("using the `%%`-operator")
+}
+
+
+#' @export
+#' @rdname S3_arithmetic
+`^.RPolarsSeries` = function(x, y) {
+  result(as_polars_series(x)$pow(y)) |>
+    unwrap("using the `^`-operator")
+}

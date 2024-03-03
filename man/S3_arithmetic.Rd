@@ -9,26 +9,49 @@
 \alias{-.RPolarsExpr}
 \alias{*.RPolarsExpr}
 \alias{^.RPolarsExpr}
+\alias{+.RPolarsSeries}
+\alias{-.RPolarsSeries}
+\alias{/.RPolarsSeries}
+\alias{\%/\%.RPolarsSeries}
+\alias{*.RPolarsSeries}
+\alias{\%\%.RPolarsSeries}
+\alias{^.RPolarsSeries}
 \title{Arithmetic operators for RPolars objects}
 \usage{
-\method{+}{RPolarsExpr}(e1, e2)
+\method{+}{RPolarsExpr}(x, y)
 
-\method{/}{RPolarsExpr}(e1, e2)
+\method{/}{RPolarsExpr}(x, y)
 
-\method{\%/\%}{RPolarsExpr}(e1, e2)
+\method{\%/\%}{RPolarsExpr}(x, y)
 
-\method{\%\%}{RPolarsExpr}(e1, e2)
+\method{\%\%}{RPolarsExpr}(x, y)
 
-\method{-}{RPolarsExpr}(e1, e2)
+\method{-}{RPolarsExpr}(x, y)
 
-\method{*}{RPolarsExpr}(e1, e2)
+\method{*}{RPolarsExpr}(x, y)
 
-\method{^}{RPolarsExpr}(e1, e2)
+\method{^}{RPolarsExpr}(x, y)
+
+\method{+}{RPolarsSeries}(x, y)
+
+\method{-}{RPolarsSeries}(x, y)
+
+\method{/}{RPolarsSeries}(x, y)
+
+\method{\%/\%}{RPolarsSeries}(x, y)
+
+\method{*}{RPolarsSeries}(x, y)
+
+\method{\%\%}{RPolarsSeries}(x, y)
+
+\method{^}{RPolarsSeries}(x, y)
 }
 \arguments{
-\item{e1}{Expr only}
-
-\item{e2}{Expr or anything that can be converted to a literal}
+\item{x, y}{numeric type of RPolars objects or objects that can be coerced such.
+Only \code{+} can take strings.}
+}
+\value{
+A Polars object the same type as the input.
 }
 \description{
 Arithmetic operators for RPolars objects
@@ -48,6 +71,10 @@ tryCatch(
   expr$to_series(),
   error = function(e) e
 )
+
+pl$Series(5) + 10
++pl$Series(5)
+-pl$Series(5)
 }
 \seealso{
 \itemize{
@@ -58,5 +85,12 @@ tryCatch(
 \item \code{\link[=Expr_sub]{<Expr>$sub()}}
 \item \code{\link[=Expr_mul]{<Expr>$mul()}}
 \item \code{\link[=Expr_pow]{<Expr>$pow()}}
+\item \code{\link[=Series_add]{<Series$add()}}
+\item \code{\link[=Series_div]{<Series$div()}}
+\item \code{\link[=Series_floor_div]{<Series$floor_div()}}
+\item \code{\link[=Series_mod]{<Series$mod()}}
+\item \code{\link[=Series_sub]{<Series$sub()}}
+\item \code{\link[=Series_mul]{<Series$mul()}}
+\item \code{\link[=Series_pow]{<Series$pow()}}
 }
 }
