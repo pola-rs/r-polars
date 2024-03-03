@@ -168,8 +168,8 @@ DataType_constructors = function() {
 #' The number can be negative to indicate datetimes before the epoch.
 #' @param time_unit Unit of time. One of `"ms"`, `"us"` (default) or `"ns"`.
 #' @param time_zone Time zone string, as defined in [OlsonNames()].
-#' When using to match dtypes, can use `"*"` to check for Datetime columns that
-#' have any timezone.
+#' Setting `timezone = "*"` will match any timezone, which can be useful to
+#' select all Datetime columns containing a timezone.
 #' @return Datetime DataType
 #' @examples
 #' pl$Datetime("ns", "Pacific/Samoa")
