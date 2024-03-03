@@ -363,8 +363,6 @@ Expr_not = use_extendr_wrapper
 
 # TODO: move to another file and create `S3_logic.Rd`
 #' @export
-#' @rdname Expr_not
-#' @param x Expr
 `!.RPolarsExpr` = function(x) x$not()
 
 #' @export
@@ -386,8 +384,6 @@ Expr_lt = function(other) {
   .pr$Expr$lt(self, other) |> unwrap("in $lt()")
 }
 #' @export
-#' @inheritParams Expr_add
-#' @rdname Expr_lt
 `<.RPolarsExpr` = function(e1, e2) result(wrap_e(e1)$lt(e2)) |> unwrap("using the '<'-operator")
 
 #' @export
@@ -410,8 +406,6 @@ Expr_gt = function(other) {
 }
 
 #' @export
-#' @inheritParams Expr_add
-#' @rdname Expr_gt
 `>.RPolarsExpr` = function(e1, e2) result(wrap_e(e1)$gt(e2)) |> unwrap("using the '>'-operator")
 
 #' @export
@@ -435,8 +429,6 @@ Expr_eq = function(other) {
 }
 
 #' @export
-#' @inheritParams Expr_add
-#' @rdname Expr_eq
 `==.RPolarsExpr` = function(e1, e2) result(wrap_e(e1)$eq(e2)) |> unwrap("using the '=='-operator")
 
 #' @export
@@ -476,8 +468,6 @@ Expr_neq = function(other) {
 }
 
 #' @export
-#' @inheritParams Expr_add
-#' @rdname Expr_neq
 `!=.RPolarsExpr` = function(e1, e2) result(wrap_e(e1)$neq(e2)) |> unwrap("using the '!='-operator")
 
 #' @export
@@ -516,8 +506,6 @@ Expr_lt_eq = function(other) {
 }
 
 #' @export
-#' @inheritParams Expr_add
-#' @rdname Expr_lt_eq
 `<=.RPolarsExpr` = function(e1, e2) result(wrap_e(e1)$lt_eq(e2)) |> unwrap("using the '<='-operator")
 
 #' @export
@@ -540,8 +528,6 @@ Expr_gt_eq = function(other) {
 }
 
 #' @export
-#' @inheritParams Expr_add
-#' @rdname Expr_gt_eq
 `>=.RPolarsExpr` = function(e1, e2) result(wrap_e(e1)$gt_eq(e2)) |> unwrap("using the '>='-operator")
 
 #' @export

@@ -2,12 +2,9 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_eq}
 \alias{Expr_eq}
-\alias{==.RPolarsExpr}
 \title{Check equality}
 \usage{
 Expr_eq(other)
-
-\method{==}{RPolarsExpr}(e1, e2)
 }
 \arguments{
 \item{other}{numeric or string value; accepts expression input.}

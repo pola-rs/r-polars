@@ -2,12 +2,9 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_gt}
 \alias{Expr_gt}
-\alias{>.RPolarsExpr}
 \title{Check strictly greater inequality}
 \usage{
 Expr_gt(other)
-
-\method{>}{RPolarsExpr}(e1, e2)
 }
 \arguments{
 \item{other}{numeric or string value; accepts expression input.}

@@ -2,15 +2,9 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_not}
 \alias{Expr_not}
-\alias{!.RPolarsExpr}
 \title{Negate a boolean expression}
 \usage{
 Expr_not()
-
-\method{!}{RPolarsExpr}(x)
-}
-\arguments{
-\item{x}{Expr}
 }
 \value{
 \link[=Expr_class]{Expr}

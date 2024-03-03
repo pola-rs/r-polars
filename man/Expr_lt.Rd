@@ -2,12 +2,9 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_lt}
 \alias{Expr_lt}
-\alias{<.RPolarsExpr}
 \title{Check strictly lower inequality}
 \usage{
 Expr_lt(other)
-
-\method{<}{RPolarsExpr}(e1, e2)
 }
 \arguments{
 \item{other}{numeric or string value; accepts expression input.}
