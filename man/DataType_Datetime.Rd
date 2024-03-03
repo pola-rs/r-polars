@@ -10,8 +10,8 @@ DataType_Datetime(time_unit = "us", time_zone = NULL)
 \item{time_unit}{Unit of time. One of \code{"ms"}, \code{"us"} (default) or \code{"ns"}.}
 
 \item{time_zone}{Time zone string, as defined in \code{\link[=OlsonNames]{OlsonNames()}}.
-When using to match dtypes, can use \code{"*"} to check for Datetime columns that
-have any timezone.}
+Setting \code{timezone = "*"} will match any timezone, which can be useful to
+select all Datetime columns containing a timezone.}
 }
 \value{
 Datetime DataType
