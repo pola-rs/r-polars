@@ -1,5 +1,7 @@
 # NEWS
 
+## Polars R Package (development version)
+
 ## Polars R Package 0.15.0
 
 ### Breaking changes due to Rust-polars update
