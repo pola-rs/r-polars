@@ -10,7 +10,7 @@
         by position are ignored.
     -   in `$describe()`, the name of the first column changed from `"describe"`
         to `"statistic"`.
-    -   `$mod()` methods and `%%` works correctly to grantee
+    -   `$mod()` methods and `%%` works correctly to guarantee
         `x == (x %% y) + y * (x %/% y)`.
 
 ### Other breaking changes
