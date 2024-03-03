@@ -7,7 +7,7 @@
 Expr_is_in(other)
 }
 \arguments{
-\item{other}{Literal or object that can be converted to a literal}
+\item{other}{numeric or string value; accepts expression input.}
 }
 \value{
 Expr

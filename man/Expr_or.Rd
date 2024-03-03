@@ -7,10 +7,10 @@
 Expr_or(other)
 }
 \arguments{
-\item{other}{Literal or object that can be converted to a literal}
+\item{other}{numeric or string value; accepts expression input.}
 }
 \value{
-Expr
+\link[=Expr_class]{Expr}
 }
 \description{
 Combine two boolean expressions with OR.

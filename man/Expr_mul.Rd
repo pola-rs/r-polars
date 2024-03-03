@@ -2,29 +2,29 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_mul}
 \alias{Expr_mul}
-\alias{*.RPolarsExpr}
 \title{Multiply two expressions}
 \usage{
 Expr_mul(other)
-
-\method{*}{RPolarsExpr}(e1, e2)
 }
 \arguments{
-\item{other}{Literal or object that can be converted to a literal}
-
-\item{e1}{Expr only}
-
-\item{e2}{Expr or anything that can be converted to a literal}
+\item{other}{Numeric literal or expression value.}
 }
 \value{
-Expr
+\link[=Expr_class]{Expr}
 }
 \description{
-The RHS can either be an Expr or an object that can be converted to a literal
-(e.g an integer).
+Method equivalent of multiplication operator \code{expr * other}.
 }
 \examples{
-pl$lit(5) * 10
-pl$lit(5) * pl$lit(10)
-pl$lit(5)$mul(pl$lit(10))
+df = pl$DataFrame(x = c(1, 2, 4, 8, 16))
+
+df$with_columns(
+  `x*2` = pl$col("x")$mul(2),
+  `x * xlog2` = pl$col("x")$mul(pl$col("x")$log(2))
+)
+}
+\seealso{
+\itemize{
+\item \link[=S3_arithmetic]{Arithmetic operators}
+}
 }

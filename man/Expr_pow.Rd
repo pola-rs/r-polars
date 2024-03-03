@@ -2,23 +2,29 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_pow}
 \alias{Expr_pow}
-\title{Exponentiation}
+\title{Exponentiation two expressions}
 \usage{
 Expr_pow(exponent)
 }
 \arguments{
-\item{exponent}{Exponent value.}
+\item{exponent}{Numeric literal or expression value.}
 }
 \value{
-Expr
+\link[=Expr_class]{Expr}
 }
 \description{
-Raise expression to the power of exponent.
+Method equivalent of exponentiation operator \code{expr ^ exponent}.
 }
 \examples{
-# use via `pow`-method and the `^`-operator
-pl$DataFrame(a = -1:3, b = 2:6)$with_columns(
-  x = pl$col("a")$pow(2),
-  y = pl$col("a")^3
+df = pl$DataFrame(x = c(1, 2, 4, 8))
+
+df$with_columns(
+  cube = pl$col("x")$pow(3),
+  `x^xlog2` = pl$col("x")$pow(pl$col("x")$log(2))
 )
+}
+\seealso{
+\itemize{
+\item \link[=S3_arithmetic]{Arithmetic operators}
+}
 }
