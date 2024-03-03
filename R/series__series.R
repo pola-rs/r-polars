@@ -235,15 +235,6 @@ Series_str = method_as_active_binding(\() series_make_sub_ns(self, expr_str_make
 Series_struct = method_as_active_binding(\() series_make_sub_ns(self, expr_struct_make_sub_ns))
 
 
-#' Wrap as Series
-#' @noRd
-#' @description input is either already a Series of will be passed to the Series constructor
-#' @param x a Series or something-turned-into-Series
-#' @return Series
-wrap_s = function(x) {
-  if (inherits(x, "RPolarsSeries")) x else pl$Series(x)
-}
-
 #' Create new Series
 #' @description found in api as pl$Series named Series_constructor internally
 #'
@@ -285,13 +276,13 @@ Series_print = function() {
 #' 1L + pl$Series(1:3)
 #' pl$Series(1:3) + 1L
 Series_add = function(other) {
-  .pr$Series$add(self, wrap_s(other))
+  .pr$Series$add(self, as_polars_series(other))
 }
 #' @export
 #' @rdname Series_add
 #' @param s1 lhs Series
 #' @param s2 rhs Series or any into Series
-"+.RPolarsSeries" = function(s1, s2) wrap_s(s1)$add(s2)
+"+.RPolarsSeries" = function(s1, s2) as_polars_series(s1)$add(s2)
 
 #' sub Series
 #' @name Series_sub
@@ -307,13 +298,13 @@ Series_add = function(other) {
 #' 1L - pl$Series(1:3)
 #' pl$Series(1:3) - 1L
 Series_sub = function(other) {
-  .pr$Series$sub(self, wrap_s(other))
+  .pr$Series$sub(self, as_polars_series(other))
 }
 #' @export
 #' @rdname Series_sub
 #' @param s1 lhs Series
 #' @param s2 rhs Series or any into Series
-"-.RPolarsSeries" = function(s1, s2) wrap_s(s1)$sub(s2)
+"-.RPolarsSeries" = function(s1, s2) as_polars_series(s1)$sub(s2)
 
 #' div Series
 #' @name Series_div
@@ -329,13 +320,13 @@ Series_sub = function(other) {
 #' 2L / pl$Series(1:3)
 #' pl$Series(1:3) / 2L
 Series_div = function(other) {
-  .pr$Series$div(self, wrap_s(other))
+  .pr$Series$div(self, as_polars_series(other))
 }
 #' @export
 #' @rdname Series_div
 #' @param s1 lhs Series
 #' @param s2 rhs Series or any into Series
-"/.RPolarsSeries" = function(s1, s2) wrap_s(s1)$div(s2)
+"/.RPolarsSeries" = function(s1, s2) as_polars_series(s1)$div(s2)
 
 #' mul Series
 #' @name Series_mul
@@ -351,13 +342,13 @@ Series_div = function(other) {
 #' 2L * pl$Series(1:3)
 #' pl$Series(1:3) * 2L
 Series_mul = function(other) {
-  .pr$Series$mul(self, wrap_s(other))
+  .pr$Series$mul(self, as_polars_series(other))
 }
 #' @export
 #' @rdname Series_mul
 #' @param s1 lhs Series
 #' @param s2 rhs Series or any into Series
-"*.RPolarsSeries" = function(s1, s2) wrap_s(s1)$mul(s2)
+"*.RPolarsSeries" = function(s1, s2) as_polars_series(s1)$mul(s2)
 
 #' rem Series
 #' @description Series arithmetics, remainder
@@ -371,7 +362,7 @@ Series_mul = function(other) {
 #' pl$Series(1:3)$rem(pl$Series(11:13))
 #' pl$Series(1:3)$rem(1L)
 Series_rem = function(other) {
-  .pr$Series$rem(self, wrap_s(other))
+  .pr$Series$rem(self, as_polars_series(other))
 }
 
 #' Compare Series
@@ -385,7 +376,7 @@ Series_rem = function(other) {
 #' @examples
 #' pl$Series(1:5) == pl$Series(c(1:3, NA_integer_, 10L))
 Series_compare = function(other, op) {
-  other_s = wrap_s(other)
+  other_s = as_polars_series(other)
   s_len = self$len()
   o_len = other_s$len()
   if (
@@ -395,28 +386,28 @@ Series_compare = function(other, op) {
   ) {
     stop("in compare Series: not same length or either of length 1.")
   }
-  .pr$Series$compare(self, wrap_s(other), op)
+  .pr$Series$compare(self, as_polars_series(other), op)
 }
 #' @export
 #' @rdname Series_compare
 #' @param s1 lhs Series
 #' @param s2 rhs Series or any into Series
-"==.RPolarsSeries" = function(s1, s2) unwrap(wrap_s(s1)$compare(s2, "equal"))
+"==.RPolarsSeries" = function(s1, s2) unwrap(as_polars_series(s1)$compare(s2, "equal"))
 #' @export
 #' @rdname Series_compare
-"!=.RPolarsSeries" = function(s1, s2) unwrap(wrap_s(s1)$compare(s2, "not_equal"))
+"!=.RPolarsSeries" = function(s1, s2) unwrap(as_polars_series(s1)$compare(s2, "not_equal"))
 #' @export
 #' @rdname Series_compare
-"<.RPolarsSeries" = function(s1, s2) unwrap(wrap_s(s1)$compare(s2, "lt"))
+"<.RPolarsSeries" = function(s1, s2) unwrap(as_polars_series(s1)$compare(s2, "lt"))
 #' @export
 #' @rdname Series_compare
-">.RPolarsSeries" = function(s1, s2) unwrap(wrap_s(s1)$compare(s2, "gt"))
+">.RPolarsSeries" = function(s1, s2) unwrap(as_polars_series(s1)$compare(s2, "gt"))
 #' @export
 #' @rdname Series_compare
-"<=.RPolarsSeries" = function(s1, s2) unwrap(wrap_s(s1)$compare(s2, "lt_eq"))
+"<=.RPolarsSeries" = function(s1, s2) unwrap(as_polars_series(s1)$compare(s2, "lt_eq"))
 #' @export
 #' @rdname Series_compare
-">=.RPolarsSeries" = function(s1, s2) unwrap(wrap_s(s1)$compare(s2, "gt_eq"))
+">=.RPolarsSeries" = function(s1, s2) unwrap(as_polars_series(s1)$compare(s2, "gt_eq"))
 
 
 #' Get r vector/list

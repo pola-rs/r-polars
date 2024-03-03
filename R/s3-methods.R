@@ -483,7 +483,7 @@ c.RPolarsSeries = \(x, ...) {
   l = list2(...)
   x = x$clone() # clone to retain an immutable api, append_mut is not immutable
   for (i in seq_along(l)) { # append each element of i being either Series or Into<Series>
-    unwrap(.pr$Series$append_mut(x, wrap_s(l[[i]])), "in $c:")
+    unwrap(.pr$Series$append_mut(x, as_polars_series(l[[i]])), "in $c():")
   }
   x
 }
