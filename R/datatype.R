@@ -41,6 +41,7 @@ wrap_proto_schema = function(x) {
 #' @title DataTypes (RPolarsDataType)
 #'
 #' @name pl_dtypes
+#' @aliases RPolarsDataType
 #' @description `DataType` any polars type (ported so far)
 #' @return not applicable
 #' @examples
@@ -166,6 +167,7 @@ DataType_constructors = function() {
 #' The underlying representation of this type is a 64-bit signed integer.
 #' The integer indicates the number of time units since the Unix epoch (1970-01-01 00:00:00).
 #' The number can be negative to indicate datetimes before the epoch.
+#' @aliases pl_Datetime
 #' @param time_unit Unit of time. One of `"ms"`, `"us"` (default) or `"ns"`.
 #' @param time_zone Time zone string, as defined in [OlsonNames()].
 #' Setting `timezone = "*"` will match any timezone, which can be useful to

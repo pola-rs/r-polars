@@ -19,7 +19,7 @@ Method equivalent of float division operator \code{expr / other}.
 Zero-division behaviour follows IEEE-754:
 \itemize{
 \item \code{0/0}: Invalid operation - mathematically undefined, returns \code{NaN}.
-\item \code{n/0}: On finite operands gives an exact infinite result, eg: ±infinity.
+\item \code{n/0}: On finite operands gives an exact infinite result, e.g.: ±infinity.
 }
 }
 \examples{
