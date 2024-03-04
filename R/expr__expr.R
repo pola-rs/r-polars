@@ -236,7 +236,7 @@ Expr_add = function(other) {
 #'
 #' Zero-division behaviour follows IEEE-754:
 #' - `0/0`: Invalid operation - mathematically undefined, returns `NaN`.
-#' - `n/0`: On finite operands gives an exact infinite result, eg: ±infinity.
+#' - `n/0`: On finite operands gives an exact infinite result, e.g.: ±infinity.
 #' @inherit Expr_add return
 #' @param other Numeric literal or expression value.
 #' @seealso
