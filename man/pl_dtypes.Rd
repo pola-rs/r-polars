@@ -2,6 +2,7 @@
 % Please edit documentation in R/datatype.R
 \name{pl_dtypes}
 \alias{pl_dtypes}
+\alias{RPolarsDataType}
 \title{DataTypes (RPolarsDataType)}
 \value{
 not applicable

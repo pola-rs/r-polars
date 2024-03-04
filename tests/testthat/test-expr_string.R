@@ -769,3 +769,29 @@ test_that("str$replace_many()", {
     "same amount of patterns as replacement"
   )
 })
+
+
+make_datetime_format_cases = function() {
+  tibble::tribble(
+    ~.test_name, ~time_str, ~datatype, ~type_expected,
+    "utc-example", "2020-01-01 01:00Z", pl$Datetime(), pl$Datetime("us", "UTC"),
+    "iso8602_1", "2020-01-01T01:00:00", pl$Datetime(), pl$Datetime("us"),
+    "iso8602_2", "2020-01-01T01:00", pl$Datetime(), pl$Datetime("us"),
+    "iso8602_3", "2020-01-01T01:00:00.000000001Z", pl$Datetime("ns"), pl$Datetime("ns", "UTC"),
+    "iso8602_4", "2020-01-01T01:00:00+09:00", pl$Datetime(), pl$Datetime("us", "UTC"),
+    "date_1", "2020-01-01", pl$Date, pl$Date,
+    "date_2", "2020/01/01", pl$Date, pl$Date,
+    "time_1", "01:00:00", pl$Time, pl$Time,
+    "time_2", "1:00:00", pl$Time, pl$Time,
+    "time_3", "13:00:00", pl$Time, pl$Time,
+  )
+}
+
+patrick::with_parameters_test_that(
+  "parse time without format specified",
+  {
+    s = pl$Series(time_str)$str$strptime(datatype)
+    expect_true(s$dtype == type_expected)
+  },
+  .cases = make_datetime_format_cases()
+)

@@ -2,6 +2,7 @@
 % Please edit documentation in R/datatype.R
 \name{DataType_Datetime}
 \alias{DataType_Datetime}
+\alias{pl_Datetime}
 \title{Data type representing a calendar date and time of day.}
 \usage{
 DataType_Datetime(time_unit = "us", time_zone = NULL)
