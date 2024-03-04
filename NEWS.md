@@ -4,7 +4,7 @@
 
 ### Bug fixes
 
-- The default value of the `format` of `$str$strptime()` is now correctly set (#892).
+-   The default value of the `format` of `$str$strptime()` is now correctly set (#892).
 
 ## Polars R Package 0.15.0
 
