@@ -51,7 +51,7 @@ Similar to the \code{\link[=strptime]{strptime()}} function.
 }
 \details{
 When parsing a Datetime the column precision will be inferred from the format
-string, if given, eg: \code{"\%F \%T\%.3f"} => \code{\link[=pl_Datetime]{pl$Datetime("ms")}}.
+string, if given, e.g.: \code{"\%F \%T\%.3f"} => \code{\link[=pl_Datetime]{pl$Datetime("ms")}}.
 If no fractional second component is found then the default is \code{"us"} (microsecond).
 }
 \examples{
