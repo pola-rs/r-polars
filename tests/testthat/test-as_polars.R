@@ -19,6 +19,7 @@ if (requireNamespace("arrow", quietly = TRUE) && requireNamespace("nanoarrow", q
       "polars_lazy_group_by_dynamic", pl$LazyFrame(test_df)$group_by_dynamic("col_int", every = "1i"),
       "arrow Table", arrow::as_arrow_table(test_df),
       "arrow RecordBatch", arrow::as_record_batch(test_df),
+      "nanoarrow_array", nanoarrow::as_nanoarrow_array(test_df),
       "nanoarrow_array_stream", nanoarrow::as_nanoarrow_array_stream(test_df),
     )
   }

@@ -12,6 +12,7 @@
 \alias{as_polars_df.RPolarsLazyFrame}
 \alias{as_polars_df.RPolarsLazyGroupBy}
 \alias{as_polars_df.ArrowTabular}
+\alias{as_polars_df.nanoarrow_array}
 \alias{as_polars_df.nanoarrow_array_stream}
 \title{To polars DataFrame}
 \usage{
@@ -58,6 +59,8 @@ as_polars_df(x, ...)
 \method{as_polars_df}{RPolarsLazyGroupBy}(x, ...)
 
 \method{as_polars_df}{ArrowTabular}(x, ..., rechunk = TRUE, schema = NULL, schema_overrides = NULL)
+
+\method{as_polars_df}{nanoarrow_array}(x, ...)
 
 \method{as_polars_df}{nanoarrow_array_stream}(x, ...)
 }
