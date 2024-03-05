@@ -102,13 +102,13 @@ test_that("as_polars_df throws error when make_names_unique = FALSE and there ar
 
 test_that("schema option and schema_overrides for as_polars_df.data.frame", {
   df = data.frame(a = 1:3, b = 4:6)
-  pl_df_1 = as_polars_df(df, schema = list(a = pl$String, b = pl$Int32))
+  pl_df_1 = as_polars_df(df, schema = list(b = pl$String, y = pl$Int32))
   pl_df_2 = as_polars_df(df, schema = c("x", "y"))
   pl_df_3 = as_polars_df(df, schema_overrides = list(a = pl$String))
 
   expect_equal(
     pl_df_1$to_data_frame(),
-    data.frame(a = as.character(1:3), b = 4L:6L)
+    data.frame(b = as.character(1:3), y = 4L:6L)
   )
   expect_equal(
     pl_df_2$to_data_frame(),

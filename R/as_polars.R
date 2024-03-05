@@ -27,10 +27,10 @@
 #' # Convert an arrow Table, with renaming and casting all columns
 #' as_polars_df(
 #'   at,
-#'   schema = list(a = pl$Int64, b = pl$String)
+#'   schema = list(b = pl$Int64, a = pl$String)
 #' )
 #'
-#' # Convert an arrow Table, with renaming and casting some columns
+#' # Convert an arrow Table, with casting some columns
 #' as_polars_df(
 #'   at,
 #'   schema_overrides = list(y = pl$String) # cast some columns
@@ -202,8 +202,8 @@ as_polars_df.RPolarsLazyGroupBy = function(x, ...) {
 #' @param rechunk A logical flag (default `TRUE`).
 #' Make sure that all data of each column is in contiguous memory.
 #' @param schema named list of DataTypes, or character vector of column names.
-#' Should be the same length as the number of columns of `x`.
-#' If schema names or types do not match `x`, the columns will be renamed/recast.
+#' Should match the number of columns in `x` and correspond to each column in `x` by position.
+#' If a column in `x` does not match the name or type at the same position, it will be renamed/recast.
 #' If `NULL` (default), convert columns as is.
 #' @param schema_overrides named list of DataTypes. Cast some columns to the DataType.
 #' @export

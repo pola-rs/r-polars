@@ -81,8 +81,8 @@ with unique names. If \code{FALSE} and there are duplicated column names, an
 error is thrown.}
 
 \item{schema}{named list of DataTypes, or character vector of column names.
-Should be the same length as the number of columns of \code{x}.
-If schema names or types do not match \code{x}, the columns will be renamed/recast.
+Should match the number of columns in \code{x} and correspond to each column in \code{x} by position.
+If a column in \code{x} does not match the name or type at the same position, it will be renamed/recast.
 If \code{NULL} (default), convert columns as is.}
 
 \item{schema_overrides}{named list of DataTypes. Cast some columns to the DataType.}
@@ -157,10 +157,10 @@ as_polars_df(
 # Convert an arrow Table, with renaming and casting all columns
 as_polars_df(
   at,
-  schema = list(a = pl$Int64, b = pl$String)
+  schema = list(b = pl$Int64, a = pl$String)
 )
 
-# Convert an arrow Table, with renaming and casting some columns
+# Convert an arrow Table, with casting some columns
 as_polars_df(
   at,
   schema_overrides = list(y = pl$String) # cast some columns
