@@ -2,9 +2,17 @@
 
 ## Polars R Package (development version)
 
+### New features
+
+-   `as_polars_df(<nanoarrow_array>)` is added (#893).
+
 ### Bug fixes
 
 -   The default value of the `format` of `$str$strptime()` is now correctly set (#892).
+
+### Other improvements
+
+-   Performance of `as_polars_df(<nanoarrow_array_stream>)` is improved (#896).
 
 ## Polars R Package 0.15.0
 
