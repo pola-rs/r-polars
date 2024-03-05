@@ -19,6 +19,7 @@ if (requireNamespace("arrow", quietly = TRUE) && requireNamespace("nanoarrow", q
       "polars_lazy_group_by_dynamic", pl$LazyFrame(test_df)$group_by_dynamic("col_int", every = "1i"),
       "arrow Table", arrow::as_arrow_table(test_df),
       "arrow RecordBatch", arrow::as_record_batch(test_df),
+      "nanoarrow_array", nanoarrow::as_nanoarrow_array(test_df),
       "nanoarrow_array_stream", nanoarrow::as_nanoarrow_array_stream(test_df),
     )
   }
@@ -101,13 +102,13 @@ test_that("as_polars_df throws error when make_names_unique = FALSE and there ar
 
 test_that("schema option and schema_overrides for as_polars_df.data.frame", {
   df = data.frame(a = 1:3, b = 4:6)
-  pl_df_1 = as_polars_df(df, schema = list(a = pl$String, b = pl$Int32))
+  pl_df_1 = as_polars_df(df, schema = list(b = pl$String, y = pl$Int32))
   pl_df_2 = as_polars_df(df, schema = c("x", "y"))
   pl_df_3 = as_polars_df(df, schema_overrides = list(a = pl$String))
 
   expect_equal(
     pl_df_1$to_data_frame(),
-    data.frame(a = as.character(1:3), b = 4L:6L)
+    data.frame(b = as.character(1:3), y = 4L:6L)
   )
   expect_equal(
     pl_df_2$to_data_frame(),

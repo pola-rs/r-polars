@@ -223,20 +223,10 @@ df_to_rpldf = function(x, ..., schema = NULL, schema_overrides = NULL) {
       unwrap()
   }
 
-  data_cols = list()
+  out = lapply(x, as_polars_series) |>
+    pl$select()
 
-  for (i in seq_len(n_cols)) {
-    column = as_polars_series(x[[i]])
-    col_name = col_names[i]
-
-    data_cols[[col_name]] = column
-  }
-
-  if (length(data_cols)) {
-    out = do.call(pl$select, data_cols)
-  } else {
-    out = pl$DataFrame()
-  }
+  out$columns = col_names
 
   cast_these_fields = mapply(
     new_schema,
