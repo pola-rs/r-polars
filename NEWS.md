@@ -5,6 +5,8 @@
 ### New features
 
 -   `as_polars_df(<nanoarrow_array>)` is added (#893).
+-   It is now possible to create an empty `DataFrame` with a specific schema
+    with `pl$DataFrame(schema = my_schema)` (#901).
 
 ### Bug fixes
 
