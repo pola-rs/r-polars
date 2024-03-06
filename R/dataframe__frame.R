@@ -271,14 +271,22 @@ pl_DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
     result() |>
     uw()
 
-  if (!is.null(schema) && !all(names(schema) %in% names(largs))) {
+  if (length(largs) > 0 && !is.null(schema) && !all(names(schema) %in% names(largs))) {
     Err_plain("Some columns in `schema` are not in the DataFrame.") |>
       uw()
   }
 
-  # no args crete empty DataFrame
+  # no args create empty DataFrame
   if (length(largs) == 0L) {
-    return(.pr$DataFrame$default())
+    if (!is.null(schema)) {
+      largs <- lapply(seq_along(schema), \(x) {
+        pl$lit(numeric(0))$cast(schema[[x]])$alias(names(schema)[x])
+      })
+      out <- pl$select(largs)
+    } else {
+      out <- .pr$DataFrame$default()
+    }
+    return(out)
   }
 
   # pass through if already a DataFrame

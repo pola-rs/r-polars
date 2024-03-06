@@ -172,7 +172,13 @@ test_that("DataFrame, custom schema", {
   )
 })
 
-
+test_that("construct an empty DataFrame with schema only", {
+  s <- as_polars_df(iris[, c(1, 2, 5)])$schema
+  expect_identical(
+    pl$DataFrame(schema = s)$to_list(),
+    list(Sepal.Length = numeric(0), Sepal.Width = numeric(0), Species = factor())
+  )
+})
 
 test_that("DataFrame, select sum over", {
   df = pl$DataFrame(iris)$select(
