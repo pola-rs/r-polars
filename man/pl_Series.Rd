@@ -10,7 +10,7 @@ pl_Series(x, name = NULL, dtype = NULL, ..., nan_to_null = FALSE)
 \arguments{
 \item{x}{any vector}
 
-\item{name}{A character of the name of the Series. If \code{NULL}, name is set to an empty string.}
+\item{name}{Name of the Series. If \code{NULL}, an empty string is used.}
 
 \item{dtype}{One of \link[=pl_dtypes]{polars data type} or \code{NULL}.
 If not \code{NULL}, that data type is used to \link[=Expr_cast]{cast} the Series created from the vector
