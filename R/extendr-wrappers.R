@@ -178,6 +178,8 @@ RPolarsDataFrame$to_struct <- function(name) .Call(wrap__RPolarsDataFrame__to_st
 
 RPolarsDataFrame$unnest <- function(names) .Call(wrap__RPolarsDataFrame__unnest, self, names)
 
+RPolarsDataFrame$partition_by <- function(by, maintain_order, include_keys) .Call(wrap__RPolarsDataFrame__partition_by, self, by, maintain_order, include_keys)
+
 RPolarsDataFrame$export_stream <- function(stream_ptr) invisible(.Call(wrap__RPolarsDataFrame__export_stream, self, stream_ptr))
 
 RPolarsDataFrame$from_arrow_record_batches <- function(rbr) .Call(wrap__RPolarsDataFrame__from_arrow_record_batches, rbr)

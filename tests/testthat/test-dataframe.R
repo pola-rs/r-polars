@@ -1324,3 +1324,85 @@ test_that("flags work", {
     )
   )
 })
+
+test_that("partition_by", {
+  df = pl$DataFrame(
+    col1 = 1:5,
+    col2 = c("a", "a", "b", "b", "b"),
+    col3 = c(rep_len("c", 3), rep_len("d", 2))
+  )
+
+  # Test `maintain_order = TRUE`
+  expect_true(
+    df$equals(pl$concat(df$partition_by("col2")))
+  )
+  expect_true(
+    df$equals(pl$concat(df$partition_by("col2", "col3")))
+  )
+  expect_true(
+    df$drop("col3")$equals(pl$concat(df$partition_by("col3", include_key = FALSE)))
+  )
+
+  # Test `maintain_order = FALSE`
+  df_sorted = df$sort(pl$all())
+  expect_true(
+    df_sorted$equals(pl$concat(df$partition_by("col2"))$sort(pl$all()))
+  )
+  expect_true(
+    df_sorted$equals(pl$concat(df$partition_by("col2", "col3"))$sort(pl$all()))
+  )
+  expect_true(
+    df$drop("col3")$sort(pl$all())$equals(
+      pl$concat(df$partition_by("col3", include_key = FALSE, maintain_order = FALSE))$sort(pl$all())
+    )
+  )
+
+  # Test selecting columns by data type
+  expect_true(
+    mapply(
+      df$partition_by("col2", "col3"),
+      df$partition_by(pl$String),
+      FUN = \(x, y) x$equals(y)
+    ) |>
+      all()
+  )
+
+
+  # Test errors
+  expect_error(df$partition_by("foo"), "not found: foo")
+  expect_error(df$partition_by(pl$Int8), "There is no column to partition by")
+
+  # Test `as_nested_list`
+  expect_true(
+    mapply(
+      df$partition_by("col2", "col3"),
+      df$partition_by("col2", "col3", as_nested_list = TRUE),
+      FUN = \(x, y) x$equals(y$data)
+    ) |>
+      all()
+  )
+  expect_true(
+    mapply(
+      df$partition_by("col2", "col3", include_key = FALSE),
+      df$partition_by("col2", "col3", as_nested_list = TRUE, include_key = FALSE),
+      FUN = \(x, y) x$equals(y$data)
+    ) |>
+      all()
+  )
+  expect_true(
+    df$partition_by("col2", "col3", as_nested_list = TRUE, include_key = FALSE) |>
+      lapply(\(x) x$data$with_columns(col2 = pl$lit(x$key$col2), col3 =pl$lit(x$key$col3))) |>
+      pl$concat() |>
+      df$equals()
+  )
+  expect_true(
+    df$partition_by("col2", "col3", as_nested_list = TRUE, maintain_order = FALSE) |>
+      lapply(\(x) x$data) |>
+      pl$concat() |>
+      (\(x) df$equals(x$sort(pl$all())))()
+  )
+
+  expect_warning(
+    df$partition_by("col2", maintain_order = FALSE, include_key = FALSE, as_nested_list = TRUE)
+  )
+})

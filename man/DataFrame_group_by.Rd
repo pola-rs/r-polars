@@ -53,3 +53,8 @@ df$group_by(d = "a", e = pl$col("b") \%/\% 2)$agg(
   pl$col("c")$mean()
 )
 }
+\seealso{
+\itemize{
+\item \code{\link[=DataFrame_partition_by]{<DataFrame>$partition_by()}}
+}
+}

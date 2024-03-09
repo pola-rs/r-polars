@@ -328,6 +328,26 @@ impl RPolarsDataFrame {
         self.lazy().unnest(names)?.collect()
     }
 
+    pub fn partition_by(
+        &self,
+        by: Robj,
+        maintain_order: Robj,
+        include_keys: Robj,
+    ) -> RResult<List> {
+        let by = robj_to!(Vec, String, by)?;
+        let maintain_order = robj_to!(bool, maintain_order)?;
+        let include_keys = robj_to!(bool, include_keys)?;
+        let out = if maintain_order {
+            self.0.clone().partition_by_stable(by, include_keys)
+        } else {
+            self.0.partition_by(by, include_keys)
+        }
+        .map_err(polars_to_rpolars_err)?;
+
+        let vec = unsafe { std::mem::transmute::<Vec<pl::DataFrame>, Vec<RPolarsDataFrame>>(out) };
+        Ok(List::from_values(vec))
+    }
+
     pub fn export_stream(&self, stream_ptr: &str) {
         let schema = self.0.schema().to_arrow(false);
         let data_type = ArrowDataType::Struct(schema.fields);
