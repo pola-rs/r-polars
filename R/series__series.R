@@ -242,7 +242,7 @@ Series_struct = method_as_active_binding(\() series_make_sub_ns(self, expr_struc
 #' [the Series class object][Series_class].
 #' For converting more types properly, use the generic function [as_polars_series()].
 #' @param x any vector
-#' @param name A character of the name of the Series. If `NULL`, name is set to an empty string.
+#' @param name Name of the Series. If `NULL`, an empty string is used.
 #' @param dtype One of [polars data type][pl_dtypes] or `NULL`.
 #' If not `NULL`, that data type is used to [cast][Expr_cast] the Series created from the vector
 #' to a specific data type internally.
