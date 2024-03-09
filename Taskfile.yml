@@ -81,7 +81,7 @@ tasks:
     cmds:
       - "{{.VENV_BIN}}/python -m pip install --upgrade uv"
       - "{{.VENV_BIN}}/uv pip install --upgrade mkdocs"
-      - "{{.VENV_BIN}}/uv pip install --upgrade mkdocs-material"
+      - "{{.VENV_BIN}}/uv pip install --upgrade mkdocs-material@git+https://github.com/squidfunk/mkdocs-material.git@spike/search-preview-2"
 
   build-lib-sums:
     desc: Build lib-sums.tsv.
