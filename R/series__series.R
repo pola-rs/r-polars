@@ -235,21 +235,62 @@ Series_str = method_as_active_binding(\() series_make_sub_ns(self, expr_str_make
 Series_struct = method_as_active_binding(\() series_make_sub_ns(self, expr_struct_make_sub_ns))
 
 
+# TODO: change the arguments to be match to Python Polars before 0.16.0
 #' Create new Series
-#' @description found in api as pl$Series named Series_constructor internally
 #'
+#' This function is a simple way to convert basic types of vectors provided by base R to
+#' [the Series class object][Series_class].
+#' For converting more types properly, use the generic function [as_polars_series()].
 #' @param x any vector
-#' @param name string
-#' @name pl_Series
-#' @keywords Series_new
-#' @return Series
+#' @param name Name of the Series. If `NULL`, an empty string is used.
+#' @param dtype One of [polars data type][pl_dtypes] or `NULL`.
+#' If not `NULL`, that data type is used to [cast][Expr_cast] the Series created from the vector
+#' to a specific data type internally.
+#' @param ... Ignored.
+#' @param nan_to_null If `TRUE`, `NaN` values contained in the Series are replaced to `null`.
+#' Using the [`$fill_nan()`][Expr_fill_nan] method internally.
+#' @return [Series][Series_class]
 #' @aliases Series
-#'
+#' @seealso
+#' - [as_polars_series()]
 #' @examples
-#' pl$Series(1:4)
-pl_Series = function(x, name = NULL) {
-  .pr$Series$new(x, name) |>
-    unwrap("in pl$Series()")
+#' # Constructing a Series by specifying name and values positionally:
+#' s = pl$Series(1:3, "a")
+#' s
+#'
+#' # Notice that the dtype is automatically inferred as a polars Int32:
+#' s$dtype
+#'
+#' # Constructing a Series with a specific dtype:
+#' s2 = pl$Series(1:3, "a", dtype = pl$Float32)
+#' s2
+pl_Series = function(
+    x,
+    name = NULL,
+    dtype = NULL,
+    ...,
+    nan_to_null = FALSE) {
+  uw = function(x) unwrap(x, "in pl$Series():")
+
+  if (!is.null(dtype) && !isTRUE(is_polars_dtype(dtype))) {
+    Err_plain("The dtype argument is not a valid Polars data type and cannot be converted into one.") |>
+      uw()
+  }
+
+  out = .pr$Series$new(x, name) |>
+    uw()
+
+  if (!is.null(dtype)) {
+    out = result(out$cast(dtype)) |>
+      uw()
+  }
+
+  if (isTRUE(nan_to_null)) {
+    out = result(out$fill_nan(NULL)) |>
+      uw()
+  }
+
+  out
 }
 
 #' Print Series

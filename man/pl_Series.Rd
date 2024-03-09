@@ -5,20 +5,44 @@
 \alias{Series}
 \title{Create new Series}
 \usage{
-pl_Series(x, name = NULL)
+pl_Series(x, name = NULL, dtype = NULL, ..., nan_to_null = FALSE)
 }
 \arguments{
 \item{x}{any vector}
 
-\item{name}{string}
+\item{name}{Name of the Series. If \code{NULL}, an empty string is used.}
+
+\item{dtype}{One of \link[=pl_dtypes]{polars data type} or \code{NULL}.
+If not \code{NULL}, that data type is used to \link[=Expr_cast]{cast} the Series created from the vector
+to a specific data type internally.}
+
+\item{...}{Ignored.}
+
+\item{nan_to_null}{If \code{TRUE}, \code{NaN} values contained in the Series are replaced to \code{null}.
+Using the \code{\link[=Expr_fill_nan]{$fill_nan()}} method internally.}
 }
 \value{
-Series
+\link[=Series_class]{Series}
 }
 \description{
-found in api as pl$Series named Series_constructor internally
+This function is a simple way to convert basic types of vectors provided by base R to
+\link[=Series_class]{the Series class object}.
+For converting more types properly, use the generic function \code{\link[=as_polars_series]{as_polars_series()}}.
 }
 \examples{
-pl$Series(1:4)
+# Constructing a Series by specifying name and values positionally:
+s = pl$Series(1:3, "a")
+s
+
+# Notice that the dtype is automatically inferred as a polars Int32:
+s$dtype
+
+# Constructing a Series with a specific dtype:
+s2 = pl$Series(1:3, "a", dtype = pl$Float32)
+s2
 }
-\keyword{Series_new}
+\seealso{
+\itemize{
+\item \code{\link[=as_polars_series]{as_polars_series()}}
+}
+}
