@@ -173,11 +173,21 @@ test_that("DataFrame, custom schema", {
 })
 
 test_that("construct an empty DataFrame with schema only", {
-  s <- as_polars_df(iris[, c(1, 2, 5)])$schema
-  expect_identical(
-    pl$DataFrame(schema = s)$to_list(),
-    list(Sepal.Length = numeric(0), Sepal.Width = numeric(0), Species = factor())
+  df = pl$select(
+    int = 1L,
+    string = pl$lit("a"),
+    list = list(1),
+    struct = data.frame(a = 1L, b = "a"),
+    datetime = as.POSIXct("2021-01-01 00:00:00", tz = "UTC")
   )
+  expected_dtypes = df$dtypes
+
+  df_out = pl$DataFrame(
+    schema = df$schema
+  )
+
+  expect_identical(df_out$shape, c(0, 5))
+  expect_true(mapply(`==`, df_out$dtypes, expected_dtypes) |> all())
 })
 
 test_that("DataFrame, select sum over", {
