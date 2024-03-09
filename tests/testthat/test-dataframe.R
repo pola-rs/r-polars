@@ -1346,10 +1346,10 @@ test_that("partition_by", {
   # Test `maintain_order = FALSE`
   df_sorted = df$sort(pl$all())
   expect_true(
-    df_sorted$equals(pl$concat(df$partition_by("col2"))$sort(pl$all()))
+    df_sorted$equals(pl$concat(df$partition_by("col2", maintain_order = FALSE))$sort(pl$all()))
   )
   expect_true(
-    df_sorted$equals(pl$concat(df$partition_by("col2", "col3"))$sort(pl$all()))
+    df_sorted$equals(pl$concat(df$partition_by("col2", "col3", maintain_order = FALSE))$sort(pl$all()))
   )
   expect_true(
     df$drop("col3")$sort(pl$all())$equals(
@@ -1367,12 +1367,11 @@ test_that("partition_by", {
       all()
   )
 
-
   # Test errors
   expect_error(df$partition_by("foo"), "not found: foo")
   expect_error(df$partition_by(pl$Int8), "There is no column to partition by")
 
-  # Test `as_nested_list`
+  # Test `as_nested_list = TRUE`
   expect_true(
     mapply(
       df$partition_by("col2", "col3"),
@@ -1391,7 +1390,7 @@ test_that("partition_by", {
   )
   expect_true(
     df$partition_by("col2", "col3", as_nested_list = TRUE, include_key = FALSE) |>
-      lapply(\(x) x$data$with_columns(col2 = pl$lit(x$key$col2), col3 =pl$lit(x$key$col3))) |>
+      lapply(\(x) x$data$with_columns(col2 = pl$lit(x$key$col2), col3 = pl$lit(x$key$col3))) |>
       pl$concat() |>
       df$equals()
   )
