@@ -2144,9 +2144,8 @@ DataFrame_group_by_dynamic = function(
 #' # Example of using with lapply(), and printing the key and the data summary
 #' df$partition_by("a", "b", maintain_order = FALSE, as_nested_list = TRUE) |>
 #'   lapply(\(x) {
-#'     sprintf("The key value of `a` is %s and the key value of `b` is %s", x$key$a, x$key$b) |>
+#'     sprintf("\nThe key value of `a` is %s and the key value of `b` is %s\n", x$key$a, x$key$b) |>
 #'       cat()
-#'     cat("\n")
 #'     x$data$drop(names(x$key))$describe() |>
 #'       print()
 #'     invisible(NULL)
