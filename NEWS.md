@@ -8,6 +8,7 @@
 -   It is now possible to create an empty `DataFrame` with a specific schema
     with `pl$DataFrame(schema = my_schema)` (#901).
 -   New arguments `dtype` and `nan_to_null` for `pl$Series()` (#902).
+-   New method `<DataFrame>$partition_by()` (#898).
 
 ### Bug fixes
 
