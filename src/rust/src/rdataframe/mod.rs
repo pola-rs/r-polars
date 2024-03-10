@@ -328,19 +328,14 @@ impl RPolarsDataFrame {
         self.lazy().unnest(names)?.collect()
     }
 
-    pub fn partition_by(
-        &self,
-        by: Robj,
-        maintain_order: Robj,
-        include_keys: Robj,
-    ) -> RResult<List> {
+    pub fn partition_by(&self, by: Robj, maintain_order: Robj, include_key: Robj) -> RResult<List> {
         let by = robj_to!(Vec, String, by)?;
         let maintain_order = robj_to!(bool, maintain_order)?;
-        let include_keys = robj_to!(bool, include_keys)?;
+        let include_key = robj_to!(bool, include_key)?;
         let out = if maintain_order {
-            self.0.clone().partition_by_stable(by, include_keys)
+            self.0.clone().partition_by_stable(by, include_key)
         } else {
-            self.0.partition_by(by, include_keys)
+            self.0.partition_by(by, include_key)
         }
         .map_err(polars_to_rpolars_err)?;
 
