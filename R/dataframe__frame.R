@@ -2097,7 +2097,6 @@ DataFrame_group_by_dynamic = function(
 }
 
 
-# TODO: support selectors
 #' Split a DataFrame into multiple DataFrames
 #'
 #' Similar to [`$group_by()`][DataFrame_group_by].
@@ -2110,7 +2109,7 @@ DataFrame_group_by_dynamic = function(
 #' @param as_nested_list This affects the format of the output.
 #' If `FALSE` (default), the output is a flat [list] of [DataFrames][DataFrame_class].
 #' IF `TRUE` and one of the `maintain_order` or `include_key` argument is `TRUE`,
-#' and the each elements of the output has two children: `key` and `data`.
+#' then each element of the output has two children: `key` and `data`.
 #' See the examples for more details.
 #' @return A list of [DataFrames][DataFrame_class]. See the examples for details.
 #' @seealso
@@ -2142,7 +2141,7 @@ DataFrame_group_by_dynamic = function(
 #'   warning = function(w) w
 #' )
 #'
-#' # Example of using with lapply(), and printing the key and the data sammary
+#' # Example of using with lapply(), and printing the key and the data summary
 #' df$partition_by("a", "b", maintain_order = FALSE, as_nested_list = TRUE) |>
 #'   lapply(\(x) {
 #'     sprintf("The key value of `a` is %s and the key value of `b` is %s", x$key$a, x$key$b) |>
@@ -2193,7 +2192,7 @@ DataFrame_partition_by = function(
       return(out)
     } else {
       warning(
-        "can not use `$partition_by` with ",
+        "cannot use `$partition_by` with ",
         "`maintain_order = FALSE, include_key = FALSE, as_nested_list = TRUE`. ",
         "Fall back to a flat list."
       )
