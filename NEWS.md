@@ -2,6 +2,8 @@
 
 ## Polars R Package (development version)
 
+## Polars R Package 0.15.1
+
 ### New features
 
 - rust-polars is updated to 0.38.2 (#907).
