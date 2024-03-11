@@ -1,6 +1,6 @@
 # NEWS
 
-## Polars R Package (development version)
+## Polars R Package 0.15.1
 
 ### New features
 
