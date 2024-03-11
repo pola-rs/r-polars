@@ -577,3 +577,12 @@ test_that("method from Expr", {
 test_that("cum_sum", {
   expect_equal(pl$Series(c(1, 2, NA, 3))$cum_sum()$to_r(), c(1, 3, NA, 6))
 })
+
+test_that("the dtype argument of pl$Series", {
+  expect_identical(pl$Series(1, dtype = pl$String)$to_r(), "1.0")
+  expect_error(pl$Series("foo", dtype = pl$Int32), "conversion from `str` to `i32`")
+})
+
+test_that("the nan_to_null argument of pl$Series", {
+  expect_identical(pl$Series(c(1, 2, NA, NaN), nan_to_null = TRUE)$to_r(), c(1, 2, NA, NA))
+})

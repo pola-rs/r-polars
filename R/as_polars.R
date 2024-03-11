@@ -27,10 +27,10 @@
 #' # Convert an arrow Table, with renaming and casting all columns
 #' as_polars_df(
 #'   at,
-#'   schema = list(a = pl$Int64, b = pl$String)
+#'   schema = list(b = pl$Int64, a = pl$String)
 #' )
 #'
-#' # Convert an arrow Table, with renaming and casting some columns
+#' # Convert an arrow Table, with casting some columns
 #' as_polars_df(
 #'   at,
 #'   schema_overrides = list(y = pl$String) # cast some columns
@@ -202,8 +202,8 @@ as_polars_df.RPolarsLazyGroupBy = function(x, ...) {
 #' @param rechunk A logical flag (default `TRUE`).
 #' Make sure that all data of each column is in contiguous memory.
 #' @param schema named list of DataTypes, or character vector of column names.
-#' Should be the same length as the number of columns of `x`.
-#' If schema names or types do not match `x`, the columns will be renamed/recast.
+#' Should match the number of columns in `x` and correspond to each column in `x` by position.
+#' If a column in `x` does not match the name or type at the same position, it will be renamed/recast.
 #' If `NULL` (default), convert columns as is.
 #' @param schema_overrides named list of DataTypes. Cast some columns to the DataType.
 #' @export
@@ -224,40 +224,43 @@ as_polars_df.ArrowTabular = function(
 
 #' @rdname as_polars_df
 #' @export
-as_polars_df.nanoarrow_array_stream = function(x, ...) {
-  on.exit(x$release())
+as_polars_df.nanoarrow_array = function(x, ...) {
+  array_type = nanoarrow::infer_nanoarrow_schema(x) |>
+    nanoarrow::nanoarrow_schema_parse() |>
+    (\(x) x$type)()
 
-  if (!inherits(nanoarrow::infer_nanoarrow_ptype(x$get_schema()), "data.frame")) {
-    stop("Can't convert non-struct array stream to RPolarsDataFrame")
+  if (array_type != "struct") {
+    Err_plain("Can't convert non-struct array to RPolarsDataFrame") |>
+      unwrap("in as_polars_df(<nanoarrow_array>):")
   }
 
-  list_of_struct_arrays = nanoarrow::collect_array_stream(x, validate = FALSE)
-  if (length(list_of_struct_arrays)) {
-    data_cols = list()
+  series = as_polars_series.nanoarrow_array(x, name = NULL)
 
-    struct_array = list_of_struct_arrays[[1L]]
-    list_of_arrays = struct_array$children
-    col_names = names(list_of_arrays)
-
-    for (i in seq_along(list_of_arrays)) {
-      data_cols[[col_names[i]]] = as_polars_series.nanoarrow_array(list_of_arrays[[i]])
-    }
-
-    for (struct_array in list_of_struct_arrays[-1L]) {
-      list_of_arrays = struct_array$children
-      col_names = names(list_of_arrays)
-      for (i in seq_along(list_of_arrays)) {
-        .pr$Series$append_mut(data_cols[[col_names[i]]], as_polars_series.nanoarrow_array(list_of_arrays[[i]])) |>
-          unwrap("in as_polars_df(<nanoarrow_array_stream>):")
-      }
-    }
-
-    out = do.call(pl$select, data_cols)
+  if (length(series)) {
+    series$to_frame()$unnest("")
   } else {
-    out = pl$DataFrame() # TODO: support creating 0-row DataFrame
+    # TODO: support 0-length array
+    pl$DataFrame()
+  }
+}
+
+
+#' @rdname as_polars_df
+#' @export
+as_polars_df.nanoarrow_array_stream = function(x, ...) {
+  if (!inherits(nanoarrow::infer_nanoarrow_ptype(x$get_schema()), "data.frame")) {
+    Err_plain("Can't convert non-struct array stream to RPolarsDataFrame") |>
+      unwrap("in as_polars_df(<nanoarrow_array_stream>):")
   }
 
-  out
+  series = as_polars_series.nanoarrow_array_stream(x, name = NULL)
+
+  if (length(series)) {
+    series$to_frame()$unnest("")
+  } else {
+    # TODO: support 0-length array stream
+    pl$DataFrame()
+  }
 }
 
 
@@ -408,9 +411,11 @@ as_polars_series.nanoarrow_array_stream = function(x, name = NULL, ...) {
     out = pl$Series(NULL, name = name)
   } else {
     out = as_polars_series.nanoarrow_array(list_of_arrays[[1L]], name = name)
-    for (array in list_of_arrays[-1L]) {
-      .pr$Series$append_mut(out, as_polars_series.nanoarrow_array(array))
-    }
+    lapply(
+      list_of_arrays[-1L],
+      \(array) .pr$Series$append_mut(out, as_polars_series.nanoarrow_array(array))
+    ) |>
+      invisible()
   }
 
   out
@@ -478,7 +483,7 @@ as_polars_series.clock_time_point = function(x, name = NULL, ...) {
       pl$col("diff_1")$cast(pl$Int64)
     )$mul(
       pl$lit(n_multiply_to_ms)$cast(pl$UInt32)
-    )$cast(pl$Datetime(tu = target_precision))
+    )$cast(pl$Datetime(target_precision))
   )$get_column("out")$alias(name %||% "")
 }
 

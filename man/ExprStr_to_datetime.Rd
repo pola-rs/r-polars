@@ -15,21 +15,26 @@ ExprStr_to_datetime(
 )
 }
 \arguments{
-\item{format}{Format to use for conversion. See \code{?strptime} for possible
-values. Example: "\%Y-\%m-\%d \%H:\%M:\%S". If \code{NULL} (default), the format is
-inferred from the data. Notice that time zone \verb{\%Z} is not supported and will
-just ignore timezones. Numeric time zones like \verb{\%z} or \verb{\%:z}  are supported.}
+\item{format}{Format to use for conversion. Refer to
+\href{https://docs.rs/chrono/latest/chrono/format/strftime/index.html}{the chrono crate documentation}
+for the full specification. Example: \code{"\%Y-\%m-\%d \%H:\%M:\%S"}.
+If \code{NULL} (default), the format is inferred from the data.
+Notice that time zone \verb{\%Z} is not supported and will just ignore timezones.
+Numeric time zones like \verb{\%z} or \verb{\%:z} are supported.}
 
-\item{time_unit}{String (\code{"ns"}, \code{"us"}, \code{"ms"}) or integer.}
+\item{time_unit}{Unit of time for the resulting Datetime column. If \code{NULL} (default),
+the time unit is inferred from the format string if given,
+e.g.: \code{"\%F \%T\%.3f"} => \code{\link[=pl_Datetime]{pl$Datetime("ms")}}.
+If no fractional second component is found, the default is \code{"us"} (microsecond).}
 
-\item{time_zone}{String describing a timezone. If \code{NULL} (default), \verb{"GMT} is
-used.}
+\item{time_zone}{for the resulting \link[=pl_Datetime]{Datetime} column.}
 
 \item{strict}{If \code{TRUE} (default), raise an error if a single string cannot
-be parsed. If \code{FALSE}, parsing failure will produce a polars \code{null}.}
+be parsed. If \code{FALSE}, produce a polars \code{null}.}
 
-\item{exact}{If \code{TRUE} (default), require an exact format match. Otherwise,
-allow the format to match anywhere in the target string.}
+\item{exact}{If \code{TRUE} (default), require an exact format match. If \code{FALSE}, allow the format to match
+anywhere in the target string. Note that using \code{exact = FALSE} introduces a performance
+penalty - cleaning your data beforehand will almost certainly be more performant.}
 
 \item{cache}{Use a cache of unique, converted dates to apply the datetime
 conversion.}
@@ -42,12 +47,19 @@ conversion.}
 }}
 }
 \value{
-Expr
+\link[=Expr_class]{Expr} of \link[=pl_Datetime]{Datetime} type
 }
 \description{
 Convert a String column into a Datetime column
 }
 \examples{
-pl$DataFrame(str_date = c("2009-01-02 01:00", "2009-01-03 02:00", "2009-1-4 3:00"))$
-  with_columns(datetime = pl$col("str_date")$str$to_datetime(strict = FALSE))
+s = pl$Series(c("2020-01-01 01:00Z", "2020-01-01 02:00Z"))
+
+s$str$to_datetime("\%Y-\%m-\%d \%H:\%M\%#z")
+s$str$to_datetime(time_unit = "ms")
+}
+\seealso{
+\itemize{
+\item \code{\link[=ExprStr_strptime]{<Expr>$str$strptime()}}
+}
 }

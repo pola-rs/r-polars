@@ -2,30 +2,29 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_sub}
 \alias{Expr_sub}
-\alias{-.RPolarsExpr}
 \title{Substract two expressions}
 \usage{
 Expr_sub(other)
-
-\method{-}{RPolarsExpr}(e1, e2)
 }
 \arguments{
-\item{other}{Literal or object that can be converted to a literal}
-
-\item{e1}{Expr only}
-
-\item{e2}{Expr or anything that can be converted to a literal}
+\item{other}{Numeric literal or expression value.}
 }
 \value{
-Expr
+\link[=Expr_class]{Expr}
 }
 \description{
-The RHS can either be an Expr or an object that can be converted to a literal
-(e.g an integer).
+Method equivalent of subtraction operator \code{expr - other}.
 }
 \examples{
-pl$lit(5) - 10
-pl$lit(5) - pl$lit(10)
-pl$lit(5)$sub(pl$lit(10))
--pl$lit(5)
+df = pl$DataFrame(x = 0:4)
+
+df$with_columns(
+  `x-2` = pl$col("x")$sub(2),
+  `x-expr` = pl$col("x")$sub(pl$col("x")$cum_sum())
+)
+}
+\seealso{
+\itemize{
+\item \link[=S3_arithmetic]{Arithmetic operators}
+}
 }

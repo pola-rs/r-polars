@@ -60,6 +60,46 @@
 #'
 #' `$width` returns the number of columns in the DataFrame.
 #'
+#' @section Conversion to R data types considerations:
+#' When converting Polars objects, such as [DataFrames][DataFrame_class]
+#' to R objects, for example via the [`as.data.frame()`][as.data.frame.RPolarsDataFrame] generic function,
+#' each type in the Polars object is converted to an R type.
+#' In some cases, an error may occur because the conversion is not appropriate.
+#' In particular, there is a high possibility of an error when converting
+#' a [Datetime][DataType_Datetime] type without a time zone.
+#' A [Datetime][DataType_Datetime] type without a time zone in Polars is converted
+#' to the [POSIXct] type in R, which takes into account the time zone in which
+#' the R session is running (which can be checked with the [Sys.timezone()]
+#' function). In this case, if ambiguous times are included, a conversion error
+#' will occur. In such cases, change the session time zone using
+#' [`Sys.setenv(TZ = "UTC")`][base::Sys.setenv] and then perform the conversion, or use the
+#' [`$dt$replace_time_zone()`][ExprDT_replace_time_zone] method on the Datetime type column to
+#' explicitly specify the time zone before conversion.
+#'
+#' ```{r}
+#' # Due to daylight savings, clocks were turned forward 1 hour on Sunday, March 8, 2020, 2:00:00 am
+#' # so this particular date-time doesn't exist
+#' non_existent_time = pl$Series("2020-03-08 02:00:00")$str$strptime(pl$Datetime(), "%F %T")
+#'
+#' withr::with_envvar(
+#'   new = c(TZ = "America/New_York"),
+#'   {
+#'     tryCatch(
+#'       # This causes an error due to the time zone (the `TZ` env var is affected).
+#'       as.vector(non_existent_time),
+#'       error = function(e) e
+#'     )
+#'   }
+#' )
+#'
+#' withr::with_envvar(
+#'   new = c(TZ = "America/New_York"),
+#'   {
+#'     # This is safe.
+#'     as.vector(non_existent_time$dt$replace_time_zone("UTC"))
+#'   }
+#' )
+#' ```
 #' @details Check out the source code in
 #' [R/dataframe_frame.R](https://github.com/pola-rs/r-polars/blob/main/R/dataframe__frame.R)
 #' to see how public methods are derived from private methods. Check out
@@ -231,14 +271,20 @@ pl_DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
     result() |>
     uw()
 
-  if (!is.null(schema) && !all(names(schema) %in% names(largs))) {
+  if (length(largs) > 0 && !is.null(schema) && !all(names(schema) %in% names(largs))) {
     Err_plain("Some columns in `schema` are not in the DataFrame.") |>
       uw()
   }
 
-  # no args crete empty DataFrame
+  # no args create empty DataFrame
   if (length(largs) == 0L) {
-    return(.pr$DataFrame$default())
+    if (!is.null(schema)) {
+      out = lapply(schema, \(dtype) pl$Series(NULL)$cast(dtype)) |>
+        pl$select()
+    } else {
+      out = .pr$DataFrame$default()
+    }
+    return(out)
   }
 
   # pass through if already a DataFrame
@@ -838,6 +884,8 @@ DataFrame_filter = function(...) {
 #' @details Within each group, the order of the rows is always preserved,
 #' regardless of the `maintain_order` argument.
 #' @return [GroupBy][GroupBy_class] (a DataFrame with special groupby methods like `$agg()`)
+#' @seealso
+#' - [`<DataFrame>$partition_by()`][DataFrame_partition_by]
 #' @examples
 #' df = pl$DataFrame(
 #'   a = c("a", "b", "a", "b", "c"),
@@ -885,6 +933,7 @@ DataFrame_group_by = function(..., maintain_order = polars_options()$maintain_or
 #' * `"string"` converts Int64 values to character.
 #'
 #' @return An R data.frame
+#' @inheritSection DataFrame_class Conversion to R data types considerations
 #' @keywords DataFrame
 #' @examples
 #' df = pl$DataFrame(iris[1:3, ])
@@ -917,6 +966,7 @@ DataFrame_to_data_frame = function(..., int64_conversion = polars_options()$int6
 #' structure is not very typical or efficient in R.
 #'
 #' @return R list of vectors
+#' @inheritSection DataFrame_class Conversion to R data types considerations
 #' @keywords DataFrame
 #' @examples
 #' pl$DataFrame(iris)$to_list()
@@ -1967,8 +2017,7 @@ DataFrame_rolling = function(index_column, period, offset = NULL, closed = "righ
 #'   time = pl$date_range(
 #'     start = strptime("2021-12-16 00:00:00", format = "%Y-%m-%d %H:%M:%S", tz = "UTC"),
 #'     end = strptime("2021-12-16 03:00:00", format = "%Y-%m-%d %H:%M:%S", tz = "UTC"),
-#'     interval = "30m",
-#'     eager = TRUE,
+#'     interval = "30m"
 #'   ),
 #'   n = 0:6
 #' )
@@ -2045,4 +2094,109 @@ DataFrame_group_by_dynamic = function(
     self, index_column, every, period, offset, include_boundaries, closed, label,
     by, start_by, check_sorted
   )
+}
+
+
+#' Split a DataFrame into multiple DataFrames
+#'
+#' Similar to [`$group_by()`][DataFrame_group_by].
+#' Group by the given columns and return the groups as separate [DataFrames][DataFrame_class].
+#' It is useful to use this in combination with functions like [lapply()] or `purrr::map()`.
+#' @param ... Characters of column names to group by. Passed to [`pl$col()`][pl_col].
+#' @param maintain_order If `TRUE`, ensure that the order of the groups is consistent with the input data.
+#' This is slower than a default partition by operation.
+#' @param include_key If `TRUE`, include the columns used to partition the DataFrame in the output.
+#' @param as_nested_list This affects the format of the output.
+#' If `FALSE` (default), the output is a flat [list] of [DataFrames][DataFrame_class].
+#' IF `TRUE` and one of the `maintain_order` or `include_key` argument is `TRUE`,
+#' then each element of the output has two children: `key` and `data`.
+#' See the examples for more details.
+#' @return A list of [DataFrames][DataFrame_class]. See the examples for details.
+#' @seealso
+#' - [`<DataFrame>$group_by()`][DataFrame_group_by]
+#' @examples
+#' df = pl$DataFrame(
+#'   a = c("a", "b", "a", "b", "c"),
+#'   b = c(1, 2, 1, 3, 3),
+#'   c = c(5, 4, 3, 2, 1)
+#' )
+#' df
+#'
+#' # Pass a single column name to partition by that column.
+#' df$partition_by("a")
+#'
+#' # Partition by multiple columns.
+#' df$partition_by("a", "b")
+#'
+#' # Partition by column data type
+#' df$partition_by(pl$String)
+#'
+#' # If `as_nested_list = TRUE`, the output is a list whose elements have a `key` and a `data` field.
+#' # The `key` is a named list of the key values, and the `data` is the DataFrame.
+#' df$partition_by("a", "b", as_nested_list = TRUE)
+#'
+#' # `as_nested_list = TRUE` should be used with `maintain_order = TRUE` or `include_key = TRUE`.
+#' tryCatch(
+#'   df$partition_by("a", "b", maintain_order = FALSE, include_key = FALSE, as_nested_list = TRUE),
+#'   warning = function(w) w
+#' )
+#'
+#' # Example of using with lapply(), and printing the key and the data summary
+#' df$partition_by("a", "b", maintain_order = FALSE, as_nested_list = TRUE) |>
+#'   lapply(\(x) {
+#'     sprintf("\nThe key value of `a` is %s and the key value of `b` is %s\n", x$key$a, x$key$b) |>
+#'       cat()
+#'     x$data$drop(names(x$key))$describe() |>
+#'       print()
+#'     invisible(NULL)
+#'   }) |>
+#'   invisible()
+DataFrame_partition_by = function(
+    ...,
+    maintain_order = TRUE,
+    include_key = TRUE,
+    as_nested_list = FALSE) {
+  uw = \(res) unwrap(res, "in $partition_by():")
+
+  by = result(dots_to_colnames(self, ...)) |>
+    uw()
+
+  if (!length(by)) {
+    Err_plain("There is no column to partition by.") |>
+      uw()
+  }
+
+  partitions = .pr$DataFrame$partition_by(self, by, maintain_order, include_key) |>
+    uw()
+
+  if (isTRUE(as_nested_list)) {
+    if (include_key) {
+      out = lapply(seq_along(partitions), \(index) {
+        data = partitions[[index]]
+        key = data$select(by)$head(1)$to_list()
+
+        list(key = key, data = data)
+      })
+
+      return(out)
+    } else if (maintain_order) {
+      key_df = self$select(by)$unique(maintain_order = TRUE)
+      out = lapply(seq_along(partitions), \(index) {
+        data = partitions[[index]]
+        key = key_df$slice(index - 1, 1)$to_list()
+
+        list(key = key, data = data)
+      })
+
+      return(out)
+    } else {
+      warning(
+        "cannot use `$partition_by` with ",
+        "`maintain_order = FALSE, include_key = FALSE, as_nested_list = TRUE`. ",
+        "Fall back to a flat list."
+      )
+    }
+  }
+
+  partitions
 }

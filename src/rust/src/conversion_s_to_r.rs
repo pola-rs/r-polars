@@ -1,8 +1,9 @@
-use crate::rdataframe::RPolarsDataFrame;
+use crate::{rdataframe::RPolarsDataFrame, robj_to};
 use extendr_api::prelude::*;
 use pl::PolarsError as pl_error;
 use polars::prelude::{self as pl};
 use polars_core::datatypes::DataType;
+use polars_lazy::{dsl::col, frame::IntoLazy};
 
 //TODO throw a warning if i32 contains a lowerbound value which is the NA in R.
 pub fn pl_series_to_list(
@@ -212,9 +213,31 @@ pub fn pl_series_to_list(
                     pl::TimeUnit::Milliseconds => 1_000.0,
                 };
 
-                //resolve timezone
-                let tz = opt_tz.as_ref().map(|s| s.as_str()).unwrap_or("");
-                s.cast(&Float64)?
+                let zoned_s: pl::Series = match opt_tz {
+                    Some(_tz) => {
+                        // zoned time
+                        s.clone()
+                    }
+                    None => {
+                        // naive time
+                        let sys_tz_robj = R!("Sys.timezone()")
+                            .map_err(|err| pl::PolarsError::ComputeError(err.to_string().into()))?;
+                        let sys_tz = robj_to!(String, sys_tz_robj)
+                            .map_err(|err| pl::PolarsError::ComputeError(err.to_string().into()))?;
+                        let s_name = s.name();
+                        pl::DataFrame::new(vec![s.clone()])?
+                            .lazy()
+                            .select([col(s_name)
+                                .dt()
+                                .replace_time_zone(Some(sys_tz), pl::lit("raise"))])
+                            .collect()?
+                            .column(s_name)?
+                            .clone()
+                    }
+                };
+
+                zoned_s
+                    .cast(&Float64)?
                     .f64()
                     .map(|ca| {
                         ca.into_iter()
@@ -226,7 +249,9 @@ pub fn pl_series_to_list(
                         robj.set_class(&["POSIXct", "POSIXt"])
                             .expect("internal error: class POSIXct label failed")
                     })
-                    .map(|mut robj| robj.set_attrib("tzone", tz))
+                    .map(|mut robj| {
+                        robj.set_attrib("tzone", opt_tz.as_ref().map(|s| s.as_str()).unwrap_or(""))
+                    })
                     .expect("internal error: attr tzone failed")
                     .map_err(|err| {
                         pl_error::ComputeError(

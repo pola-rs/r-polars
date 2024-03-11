@@ -44,6 +44,8 @@ env:
   LIBR_POLARS_BUILD: "true"
   LIBR_POLARS_PROFILE: release
 
+permissions: read-all
+
 jobs:
   documentation:
     runs-on: ubuntu-latest
@@ -63,9 +65,9 @@ jobs:
         id: rust-target
         run: |
           if [ "${{ runner.os }}" == "Windows" ]; then
-            echo "TARGET=x86_64-pc-windows-gnu" >>$GITHUB_OUTPUT
+            echo "TARGET=x86_64-pc-windows-gnu" >>"$GITHUB_OUTPUT"
           else
-            echo "TARGET=$(rustc -vV | grep host | cut -d' ' -f2)" >>$GITHUB_OUTPUT
+            echo "TARGET=$(rustc -vV | grep host | cut -d' ' -f2)" >>"$GITHUB_OUTPUT"
           fi
 
       - uses: ./.github/actions/setup

@@ -41,6 +41,7 @@ wrap_proto_schema = function(x) {
 #' @title DataTypes (RPolarsDataType)
 #'
 #' @name pl_dtypes
+#' @aliases RPolarsDataType
 #' @description `DataType` any polars type (ported so far)
 #' @return not applicable
 #' @examples
@@ -160,26 +161,38 @@ DataType_constructors = function() {
   )
 }
 
-# TODO: change the argument name from `tz` to `time_zone`
-#' Create Datetime DataType
-#' @description Datetime DataType constructor
-#' @param tu string option either "ms", "us" or "ns"
-#' @param tz string the Time Zone, see details
-#' @details all allowed TimeZone designations can be found in `base::OlsonNames()`
-#' @keywords pl
+
+#' Data type representing a calendar date and time of day.
+#'
+#' The underlying representation of this type is a 64-bit signed integer.
+#' The integer indicates the number of time units since the Unix epoch (1970-01-01 00:00:00).
+#' The number can be negative to indicate datetimes before the epoch.
+#' @aliases pl_Datetime
+#' @param time_unit Unit of time. One of `"ms"`, `"us"` (default) or `"ns"`.
+#' @param time_zone Time zone string, as defined in [OlsonNames()].
+#' Setting `timezone = "*"` will match any timezone, which can be useful to
+#' select all Datetime columns containing a timezone.
 #' @return Datetime DataType
 #' @examples
 #' pl$Datetime("ns", "Pacific/Samoa")
-DataType_Datetime = function(tu = "us", tz = NULL) {
-  if (!is.null(tz) && !isTRUE(tz %in% base::OlsonNames())) {
+#'
+#' df = pl$DataFrame(
+#'   naive_time = as.POSIXct("1900-01-01"),
+#'   zoned_time = as.POSIXct("1900-01-01", "UTC")
+#' )
+#' df
+#'
+#' df$select(pl$col(pl$Datetime("us", "*")))
+DataType_Datetime = function(time_unit = "us", time_zone = NULL) {
+  if (!is.null(time_zone) && !isTRUE(time_zone %in% c(base::OlsonNames(), "*"))) {
     sprintf(
       "The time zone '%s' is not supported in polars. See `base::OlsonNames()` for supported time zones.",
-      tz
+      time_zone
     ) |>
       Err_plain() |>
       unwrap("in $Datetime():")
   }
-  unwrap(.pr$DataType$new_datetime(tu, tz))
+  unwrap(.pr$DataType$new_datetime(time_unit, time_zone))
 }
 
 #' Create Struct DataType

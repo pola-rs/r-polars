@@ -45,9 +45,9 @@ unpack_list = function(..., .context = NULL, .call = sys.call(1L), skip_classes 
   l = list2(..., .context = .context, .call = .call)
   if (
     length(l) == 1L &&
-    is.list(l[[1L]]) &&
-    !(!is.null(skip_classes) && inherits(l[[1L]], skip_classes)) &&
-    is.null(names(l))
+      is.list(l[[1L]]) &&
+      !(!is.null(skip_classes) && inherits(l[[1L]], skip_classes)) &&
+      is.null(names(l))
   ) {
     l[[1L]]
   } else {
@@ -78,4 +78,14 @@ unpack_bool_expr_result = function(...) {
           suppressWarnings()
       }
     })
+}
+
+
+#' Convert dots to a character vector of column names
+#' @param .df [RPolarsDataFrame]
+#' @param ... Arguments to pass to [`pl$col()`][pl_col]
+#' @noRd
+dots_to_colnames = function(.df, ..., .call = sys.call(1L)) {
+  result(pl$DataFrame(schema = .df$schema)$select(pl$col(...))$columns) |>
+    unwrap(call = .call)
 }

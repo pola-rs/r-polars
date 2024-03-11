@@ -3,28 +3,42 @@
 \name{ExprStr_to_time}
 \alias{ExprStr_to_time}
 \title{Convert a String column into a Time column}
+\format{
+Format to use for conversion. Refer to
+\href{https://docs.rs/chrono/latest/chrono/format/strftime/index.html}{the chrono crate documentation}
+for the full specification. Example: \code{"\%H:\%M:\%S"}.
+If \code{NULL} (default), the format is inferred from the data.
+}
 \usage{
 ExprStr_to_time(format = NULL, strict = TRUE, cache = TRUE)
 }
 \arguments{
-\item{format}{Format to use for conversion. See \code{?strptime} for possible
-values. Example: "\%H:\%M:\%S". If \code{NULL} (default), the format is
-inferred from the data. Notice that time zone \verb{\%Z} is not supported and will
-just ignore timezones. Numeric time zones like \verb{\%z} or \verb{\%:z}  are supported.}
+\item{format}{Format to use for conversion. Refer to
+\href{https://docs.rs/chrono/latest/chrono/format/strftime/index.html}{the chrono crate documentation}
+for the full specification. Example: \code{"\%Y-\%m-\%d \%H:\%M:\%S"}.
+If \code{NULL} (default), the format is inferred from the data.
+Notice that time zone \verb{\%Z} is not supported and will just ignore timezones.
+Numeric time zones like \verb{\%z} or \verb{\%:z} are supported.}
 
 \item{strict}{If \code{TRUE} (default), raise an error if a single string cannot
-be parsed. If \code{FALSE}, parsing failure will produce a polars \code{null}.}
+be parsed. If \code{FALSE}, produce a polars \code{null}.}
 
 \item{cache}{Use a cache of unique, converted dates to apply the datetime
 conversion.}
 }
 \value{
-Expr
+\link[=Expr_class]{Expr} of Time type
 }
 \description{
 Convert a String column into a Time column
 }
 \examples{
-pl$DataFrame(str_time = c("01:20:01", "28:00:02", "03:00:02"))$
-  with_columns(time = pl$col("str_time")$str$to_time(strict = FALSE))
+s = pl$Series(c("01:00", "02:00", "03:00"))
+
+s$str$to_time("\%H:\%M")
+}
+\seealso{
+\itemize{
+\item \code{\link[=ExprStr_strptime]{<Expr>$str$strptime()}}
+}
 }

@@ -32,3 +32,7 @@
 ^\.editorconfig$
 ^rustfmt\.toml$
 ^\.lintr\.R$
+^\.mega-linter\.yml$
+^\.lycheeignore$
+^\.yamllint\.yml$
+^\.ecrc$

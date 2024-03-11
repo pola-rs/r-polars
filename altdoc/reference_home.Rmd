@@ -26,11 +26,11 @@ to choose between eager and lazy evaluation, that require respectively a
 for grouped data).
 
 We can apply functions directly on a `DataFrame` or `LazyFrame`, such as `rename()`
-or `drop()`. Most functions that can be applied to `DataFrame`s can also be used 
-on `LazyFrame`s, but some are specific to one or the other. For example: 
+or `drop()`. Most functions that can be applied to `DataFrame`s can also be used
+on `LazyFrame`s, but some are specific to one or the other. For example:
 
 * `$equals()` exists for `DataFrame` but not for `LazyFrame`;
-* `$collect()` executes a lazy query, which means it can only be applied on 
+* `$collect()` executes a lazy query, which means it can only be applied on
   a `LazyFrame`.
 
 Another common data structure is the `Series`, which can be considered as the
@@ -89,7 +89,7 @@ test$group_by(pl$col("cyl"))$agg(
 ## Expressions
 
 Expressions are the building blocks that give all the flexibility we need to
-modify or create new columns. 
+modify or create new columns.
 
 Two important expressions starters are `pl$col()` (names a column in the context)
 and `pl$lit()` (wraps a literal value or vector/series in an Expr). Most other
@@ -118,7 +118,7 @@ when it is applied on binary data or on string data.
 To be able to distinguish those usages and to check the validity of a query,
 `polars` stores methods in subnamespaces. For each datatype other than numeric
 (floats and integers), there is a subnamespace containing the available methods:
-`dt` (datetime), `list` (list), `str` (strings), `struct` (structs), `cat` 
+`dt` (datetime), `list` (list), `str` (strings), `struct` (structs), `cat`
 (categoricals) and `bin` (binary). As a sidenote, there is also an exotic
 subnamespace called `meta` which is rarely used to manipulate the expressions
 themselves. Each subsection in the "Expressions" section lists all operations
@@ -133,8 +133,7 @@ df = pl$DataFrame(
   date = pl$date_range(
     as.Date("2020-01-01"),
     as.Date("2023-01-02"),
-    interval = "1y",
-    eager = TRUE
+    interval = "1y"
   )
 )
 df
@@ -149,7 +148,7 @@ df$with_columns(
 )
 ```
 
-Similarly, to convert a string column to uppercase, we use the `str` prefix 
+Similarly, to convert a string column to uppercase, we use the `str` prefix
 before using `to_uppercase()`:
 
 ```{r}

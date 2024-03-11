@@ -45,8 +45,7 @@ df = pl$DataFrame(
   dates = pl$date_range(
     as.Date("2000-1-1"),
     as.Date("2005-1-1"),
-    "1y",
-    eager = TRUE
+    "1y"
   )
 )
 df$select(

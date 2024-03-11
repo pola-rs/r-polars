@@ -6,7 +6,7 @@
 \usage{
 ExprStr_strptime(
   datatype,
-  format,
+  format = NULL,
   strict = TRUE,
   exact = TRUE,
   cache = TRUE,
@@ -17,16 +17,21 @@ ExprStr_strptime(
 \item{datatype}{The data type to convert into. Can be either Date, Datetime,
 or Time.}
 
-\item{format}{Format to use for conversion. See \code{?strptime} for possible
-values. Example: "\%Y-\%m-\%d \%H:\%M:\%S". If \code{NULL} (default), the format is
-inferred from the data. Notice that time zone \verb{\%Z} is not supported and will
-just ignore timezones. Numeric time zones like \verb{\%z} or \verb{\%:z}  are supported.}
+\item{format}{Format to use for conversion. Refer to
+\href{https://docs.rs/chrono/latest/chrono/format/strftime/index.html}{the chrono crate documentation}
+for the full specification. Example: \code{"\%Y-\%m-\%d \%H:\%M:\%S"}.
+If \code{NULL} (default), the format is inferred from the data.
+Notice that time zone \verb{\%Z} is not supported and will just ignore timezones.
+Numeric time zones like \verb{\%z} or \verb{\%:z} are supported.}
 
 \item{strict}{If \code{TRUE} (default), raise an error if a single string cannot
-be parsed. Otherwise, produce a polars \code{null}.}
+be parsed. If \code{FALSE}, produce a polars \code{null}.}
 
-\item{exact}{If \code{TRUE} (default), require an exact format match. Otherwise,
-allow the format to match anywhere in the target string.}
+\item{exact}{If \code{TRUE} (default), require an exact format match. If \code{FALSE},
+allow the format to match anywhere in the target string.
+Conversion to the Time type is always exact.
+Note that using \code{exact = FALSE} introduces a performance penalty -
+cleaning your data beforehand will almost certainly be more performant.}
 
 \item{cache}{Use a cache of unique, converted dates to apply the datetime
 conversion.}
@@ -39,17 +44,29 @@ conversion.}
 }}
 }
 \value{
-Expr of a Date, Datetime or Time Series
+\link[=Expr_class]{Expr} of Date, Datetime or Time type
 }
 \description{
-Convert a String column into a Date/Datetime/Time column.
+Similar to the \code{\link[=strptime]{strptime()}} function.
 }
 \details{
 When parsing a Datetime the column precision will be inferred from the format
-string, if given, eg: “\%F \%T\%.3f" => Datetime("ms"). If no fractional second
-component is found then the default is "us" (microsecond).
+string, if given, e.g.: \code{"\%F \%T\%.3f"} => \code{\link[=pl_Datetime]{pl$Datetime("ms")}}.
+If no fractional second component is found then the default is \code{"us"} (microsecond).
 }
 \examples{
+# Dealing with a consistent format
+s = pl$Series(c("2020-01-01 01:00Z", "2020-01-01 02:00Z"))
+
+s$str$strptime(pl$Datetime(), "\%Y-\%m-\%d \%H:\%M\%#z")
+
+# Auto infer format
+s$str$strptime(pl$Datetime())
+
+# Datetime with timezone is interpreted as UTC timezone
+pl$Series("2020-01-01T01:00:00+09:00")$str$strptime(pl$Datetime())
+
+# Dealing with different formats.
 s = pl$Series(
   c(
     "2021-04-22",
@@ -59,24 +76,35 @@ s = pl$Series(
   ),
   "date"
 )
-#' #join multiple passes with different format
-s$to_frame()$with_columns(
-  pl$col("date")
-  $str$strptime(pl$Date, "\%F", strict = FALSE)
-  $fill_null(pl$col("date")$str$strptime(pl$Date, "\%F \%T", strict = FALSE))
-  $fill_null(pl$col("date")$str$strptime(pl$Date, "\%D", strict = FALSE))
-  $fill_null(pl$col("date")$str$strptime(pl$Date, "\%c", strict = FALSE))
+
+s$to_frame()$select(
+  pl$coalesce(
+    pl$col("date")$str$strptime(pl$Date, "\%F", strict = FALSE),
+    pl$col("date")$str$strptime(pl$Date, "\%F \%T", strict = FALSE),
+    pl$col("date")$str$strptime(pl$Date, "\%D", strict = FALSE),
+    pl$col("date")$str$strptime(pl$Date, "\%c", strict = FALSE)
+  )
 )
 
-txt_datetimes = c(
-  "2023-01-01 11:22:33 -0100",
-  "2023-01-01 11:22:33 +0300",
-  "invalid time"
+# Ignore invalid time
+s = pl$Series(
+  c(
+    "2023-01-01 11:22:33 -0100",
+    "2023-01-01 11:22:33 +0300",
+    "invalid time"
+  )
 )
 
-pl$lit(txt_datetimes)$str$strptime(
+s$str$strptime(
   pl$Datetime("ns"),
-  format = "\%Y-\%m-\%d \%H:\%M:\%S \%z", strict = FALSE,
-)$to_series()
+  format = "\%Y-\%m-\%d \%H:\%M:\%S \%z",
+  strict = FALSE,
+)
 }
-\keyword{ExprStr}
+\seealso{
+\itemize{
+\item \code{\link[=ExprStr_to_date]{<Expr>$str$to_date()}}
+\item \code{\link[=ExprStr_to_datetime]{<Expr>$str$to_datetime()}}
+\item \code{\link[=ExprStr_to_time]{<Expr>$str$to_time()}}
+}
+}

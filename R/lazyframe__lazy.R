@@ -46,6 +46,7 @@
 #'
 #' `$width` returns the number of columns in the LazyFrame.
 #'
+#' @inheritSection DataFrame_class Conversion to R data types considerations
 #' @keywords LazyFrame
 #' @examples
 #' # see all exported methods
@@ -1861,8 +1862,7 @@ LazyFrame_rolling = function(
 #'   time = pl$date_range(
 #'     start = strptime("2021-12-16 00:00:00", format = "%Y-%m-%d %H:%M:%S", tz = "UTC"),
 #'     end = strptime("2021-12-16 03:00:00", format = "%Y-%m-%d %H:%M:%S", tz = "UTC"),
-#'     interval = "30m",
-#'     eager = TRUE,
+#'     interval = "30m"
 #'   ),
 #'   n = 0:6
 #' )

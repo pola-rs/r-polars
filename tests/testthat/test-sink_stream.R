@@ -158,8 +158,7 @@ test_that("sink_csv: date_format works", {
     date = pl$date_range(
       as.Date("2020-01-01"),
       as.Date("2023-01-02"),
-      interval = "1y",
-      eager = TRUE
+      interval = "1y"
     )
   )
   dat$sink_csv(temp_out, date_format = "%Y")
@@ -182,8 +181,7 @@ test_that("sink_csv: datetime_format works", {
     date = pl$date_range(
       as.Date("2020-01-01"),
       as.Date("2020-01-02"),
-      interval = "6h",
-      eager = TRUE
+      interval = "6h"
     )
   )
   dat$sink_csv(temp_out, datetime_format = "%Hh%Mm - %d/%m/%Y")
@@ -202,8 +200,7 @@ test_that("sink_csv: time_format works", {
     date = pl$date_range(
       as.Date("2020-10-17"),
       as.Date("2020-10-18"),
-      "8h",
-      eager = TRUE
+      "8h"
     )
   )$with_columns(pl$col("date")$dt$time())
   dat$sink_csv(temp_out, time_format = "%Hh%Mm%Ss")

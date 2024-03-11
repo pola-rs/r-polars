@@ -2,29 +2,40 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_div}
 \alias{Expr_div}
-\alias{/.RPolarsExpr}
 \title{Divide two expressions}
 \usage{
 Expr_div(other)
-
-\method{/}{RPolarsExpr}(e1, e2)
 }
 \arguments{
-\item{other}{Literal or object that can be converted to a literal}
-
-\item{e1}{Expr only}
-
-\item{e2}{Expr or anything that can be converted to a literal}
+\item{other}{Numeric literal or expression value.}
 }
 \value{
-Expr
+\link[=Expr_class]{Expr}
 }
 \description{
-The RHS can either be an Expr or an object that can be converted to a literal
-(e.g an integer).
+Method equivalent of float division operator \code{expr / other}.
+}
+\details{
+Zero-division behaviour follows IEEE-754:
+\itemize{
+\item \code{0/0}: Invalid operation - mathematically undefined, returns \code{NaN}.
+\item \code{n/0}: On finite operands gives an exact infinite result, e.g.: ±infinity.
+}
 }
 \examples{
-pl$lit(5) / 10
-pl$lit(5) / pl$lit(10)
-pl$lit(5)$div(pl$lit(10))
+df = pl$DataFrame(
+  x = -2:2,
+  y = c(0.5, 0, 0, -4, -0.5)
+)
+
+df$with_columns(
+  `x/2` = pl$col("x")$div(2),
+  `x/y` = pl$col("x")$div(pl$col("y"))
+)
+}
+\seealso{
+\itemize{
+\item \link[=S3_arithmetic]{Arithmetic operators}
+\item \code{\link[=Expr_floor_div]{<Expr>$floor_div()}}
+}
 }

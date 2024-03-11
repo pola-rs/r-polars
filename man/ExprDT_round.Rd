@@ -48,7 +48,7 @@ change without it being considered a breaking change.
 \examples{
 t1 = as.POSIXct("3040-01-01", tz = "GMT")
 t2 = t1 + as.difftime(25, units = "secs")
-s = pl$date_range(t1, t2, interval = "2s", time_unit = "ms", eager = TRUE)
+s = pl$date_range(t1, t2, interval = "2s", time_unit = "ms")
 
 # use a dt namespace function
 df = pl$DataFrame(datetime = s)$with_columns(

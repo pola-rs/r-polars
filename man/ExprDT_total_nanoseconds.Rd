@@ -16,8 +16,7 @@ Extract the nanoseconds from a Duration type.
 df = pl$DataFrame(date = pl$date_range(
   start = as.POSIXct("2020-1-1", tz = "GMT"),
   end = as.POSIXct("2020-1-1 00:00:01", tz = "GMT"),
-  interval = "1ms",
-  eager = TRUE
+  interval = "1ms"
 ))
 df$select(
   pl$col("date"),

@@ -203,184 +203,166 @@ wrap_elist_result = function(elist, str_to_lit = TRUE) {
 
 #' Add two expressions
 #'
-#' The RHS can either be an Expr or an object that can be converted to a literal
-#' (e.g an integer).
-#'
-#' @param other Literal or object that can be converted to a literal
-#' @return Expr
+#' Method equivalent of addition operator `expr + other`.
+#' @param other numeric or string value; accepts expression input.
+#' @return [Expr][Expr_class]
+#' @seealso
+#' - [Arithmetic operators][S3_arithmetic]
 #' @examples
-#' pl$lit(5) + 10
-#' pl$lit(5) + pl$lit(10)
-#' pl$lit(5)$add(pl$lit(10))
-#' +pl$lit(5) # unary use resolves to same as pl$lit(5)
+#' df = pl$DataFrame(x = 1:5)
+#'
+#' df$with_columns(
+#'   `x+int` = pl$col("x")$add(2L),
+#'   `x+expr` = pl$col("x")$add(pl$col("x")$cum_prod())
+#' )
+#'
+#' df = pl$DataFrame(
+#'   x = c("a", "d", "g"),
+#'   y = c("b", "e", "h"),
+#'   z = c("c", "f", "i")
+#' )
+#'
+#' df$with_columns(
+#'   pl$col("x")$add(pl$col("y"))$add(pl$col("z"))$alias("xyz")
+#' )
 Expr_add = function(other) {
   .pr$Expr$add(self, other) |> unwrap("in $add()")
 }
 
-# TODO: move S3 methods to other documents
-#' @export
-#' @rdname Expr_add
-#' @param e1 Expr only
-#' @param e2 Expr or anything that can be converted to a literal
-`+.RPolarsExpr` = function(e1, e2) {
-  if (missing(e2)) {
-    return(e1)
-  }
-  result(wrap_e(e1)$add(e2)) |> unwrap("using the '+'-operator")
-}
-
-#' @export
-`+.RPolarsThen` = `+.RPolarsExpr`
-
-#' @export
-`+.RPolarsChainedThen` = `+.RPolarsExpr`
-
 
 #' Divide two expressions
 #'
-#' @inherit Expr_add description params return
+#' Method equivalent of float division operator `expr / other`.
 #'
+#' Zero-division behaviour follows IEEE-754:
+#' - `0/0`: Invalid operation - mathematically undefined, returns `NaN`.
+#' - `n/0`: On finite operands gives an exact infinite result, e.g.: ±infinity.
+#' @inherit Expr_add return
+#' @param other Numeric literal or expression value.
+#' @seealso
+#' - [Arithmetic operators][S3_arithmetic]
+#' - [`<Expr>$floor_div()`][Expr_floor_div]
 #' @examples
-#' pl$lit(5) / 10
-#' pl$lit(5) / pl$lit(10)
-#' pl$lit(5)$div(pl$lit(10))
+#' df = pl$DataFrame(
+#'   x = -2:2,
+#'   y = c(0.5, 0, 0, -4, -0.5)
+#' )
+#'
+#' df$with_columns(
+#'   `x/2` = pl$col("x")$div(2),
+#'   `x/y` = pl$col("x")$div(pl$col("y"))
+#' )
 Expr_div = function(other) {
   .pr$Expr$div(self, other) |> unwrap("in $div()")
 }
 
-#' @export
-#' @rdname Expr_div
-#' @inheritParams Expr_add
-`/.RPolarsExpr` = function(e1, e2) result(wrap_e(e1)$div(e2)) |> unwrap("using the '/'-operator")
-
-#' @export
-`/.RPolarsThen` = `/.RPolarsExpr`
-
-#' @export
-`/.RPolarsChainedThen` = `/.RPolarsExpr`
-
 
 #' Floor divide two expressions
 #'
-#' @inherit Expr_add description params return
-#'
+#' Method equivalent of floor division operator `expr %/% other`.
+#' @inherit Expr_div params return
+#' @seealso
+#' - [Arithmetic operators][S3_arithmetic]
+#' - [`<Expr>$div()`][Expr_div]
+#' - [`<Expr>$mod()`][Expr_mod]
 #' @examples
-#' pl$lit(5) %/% 10
-#' pl$lit(5) %/% pl$lit(10)
-#' pl$lit(5)$floor_div(pl$lit(10))
+#' df = pl$DataFrame(x = 1:5)
+#'
+#' df$with_columns(
+#'   `x/2` = pl$col("x")$div(2),
+#'   `x%/%2` = pl$col("x")$floor_div(2)
+#' )
 Expr_floor_div = function(other) {
   .pr$Expr$floor_div(self, other) |> unwrap("in $floor_div()")
 }
 
-#' @export
-#' @rdname Expr_floor_div
-#' @inheritParams Expr_add
-`%/%.RPolarsExpr` = function(e1, e2) result(wrap_e(e1)$floor_div(e2)) |> unwrap("using the '%/%'-operator")
-
-#' @export
-`%/%.RPolarsThen` = `%/%.RPolarsExpr`
-
-#' @export
-`%/%.RPolarsChainedThen` = `%/%.RPolarsExpr`
-
 
 #' Modulo two expressions
 #'
-#' @inherit Expr_add description params return
-#'
-#' @details Currently, the modulo operator behaves differently than in R,
-#' and not guaranteed `x == (x %% y) + y * (x %/% y)`.
+#' Method equivalent of modulus operator `expr %% other`.
+#' @inherit Expr_div params return
+#' @seealso
+#' - [Arithmetic operators][S3_arithmetic]
+#' - [`<Expr>$floor_div()`][Expr_floor_div]
 #' @examples
-#' pl$select(pl$lit(-1:12) %% 3)$to_series()$to_vector()
+#' df = pl$DataFrame(x = -5L:5L)
 #'
-#' # The example is **NOT** equivalent to the followings:
-#' -1:12 %% 3
-#' pl$select(-1:12 %% 3)$to_series()$to_vector()
-#'
-#' # Not guaranteed `x == (x %% y) + y * (x %/% y)`
-#' x = pl$lit(-1:12)
-#' y = pl$lit(3)
-#' pl$select(x == (x %% y) + y * (x %/% y))
+#' df$with_columns(
+#'   `x%%2` = pl$col("x")$mod(2)
+#' )
 Expr_mod = function(other) {
   .pr$Expr$rem(self, other) |> unwrap("in $mod()")
 }
 
-#' @export
-#' @rdname Expr_mod
-#' @inheritParams Expr_add
-`%%.RPolarsExpr` = function(e1, e2) result(wrap_e(e1)$mod(e2)) |> unwrap("using the '%%'-operator")
-
-#' @export
-`%%.RPolarsThen` = `%%.RPolarsExpr`
-
-#' @export
-`%%.RPolarsChainedThen` = `%%.RPolarsExpr`
-
 
 #' Substract two expressions
 #'
-#' @inherit Expr_add description params return
-#'
+#' Method equivalent of subtraction operator `expr - other`.
+#' @inherit Expr_div params return
+#' @seealso
+#' - [Arithmetic operators][S3_arithmetic]
 #' @examples
-#' pl$lit(5) - 10
-#' pl$lit(5) - pl$lit(10)
-#' pl$lit(5)$sub(pl$lit(10))
-#' -pl$lit(5)
+#' df = pl$DataFrame(x = 0:4)
+#'
+#' df$with_columns(
+#'   `x-2` = pl$col("x")$sub(2),
+#'   `x-expr` = pl$col("x")$sub(pl$col("x")$cum_sum())
+#' )
 Expr_sub = function(other) {
   .pr$Expr$sub(self, other) |> unwrap("in $sub()")
 }
 
-#' @export
-#' @rdname Expr_sub
-#' @inheritParams Expr_add
-`-.RPolarsExpr` = function(e1, e2) {
-  result(
-    if (missing(e2)) wrap_e(0L)$sub(e1) else wrap_e(e1)$sub(e2)
-  ) |> unwrap("using the '-'-operator")
-}
-
-#' @export
-`-.RPolarsThen` = `-.RPolarsExpr`
-
-#' @export
-`-.RPolarsChainedThen` = `-.RPolarsExpr`
-
 
 #' Multiply two expressions
 #'
-#' @inherit Expr_add description params return
-#'
+#' Method equivalent of multiplication operator `expr * other`.
+#' @inherit Expr_div params return
+#' @seealso
+#' - [Arithmetic operators][S3_arithmetic]
 #' @examples
-#' pl$lit(5) * 10
-#' pl$lit(5) * pl$lit(10)
-#' pl$lit(5)$mul(pl$lit(10))
+#' df = pl$DataFrame(x = c(1, 2, 4, 8, 16))
+#'
+#' df$with_columns(
+#'   `x*2` = pl$col("x")$mul(2),
+#'   `x * xlog2` = pl$col("x")$mul(pl$col("x")$log(2))
+#' )
 Expr_mul = Expr_mul = function(other) {
   .pr$Expr$mul(self, other) |> unwrap("in $mul()")
 }
 
-#' @export
-#' @rdname Expr_mul
-#' @inheritParams Expr_add
-`*.RPolarsExpr` = function(e1, e2) result(wrap_e(e1)$mul(e2)) |> unwrap("using the '*'-operator")
 
-#' @export
-`*.RPolarsThen` = `*.RPolarsExpr`
-
-#' @export
-`*.RPolarsChainedThen` = `*.RPolarsExpr`
+#' Exponentiation two expressions
+#'
+#' Method equivalent of exponentiation operator `expr ^ exponent`.
+#'
+#' @param exponent Numeric literal or expression value.
+#' @inherit Expr_div return
+#' @seealso
+#' - [Arithmetic operators][S3_arithmetic]
+#' @examples
+#' df = pl$DataFrame(x = c(1, 2, 4, 8))
+#'
+#' df$with_columns(
+#'   cube = pl$col("x")$pow(3),
+#'   `x^xlog2` = pl$col("x")$pow(pl$col("x")$log(2))
+#' )
+Expr_pow = function(exponent) {
+  .pr$Expr$pow(self, exponent) |> unwrap("in $pow()")
+}
 
 
 #' Negate a boolean expression
 #'
-#' @inherit Expr_add description return
+#' Method equivalent of negation operator `!expr`.
+#' @inherit Expr_add return
 #' @examples
 #' # two syntaxes same result
 #' pl$lit(TRUE)$not()
 #' !pl$lit(TRUE)
 Expr_not = use_extendr_wrapper
+
+# TODO: move to another file and create `S3_logic.Rd`
 #' @export
-#' @rdname Expr_not
-#' @param x Expr
 `!.RPolarsExpr` = function(x) x$not()
 
 #' @export
@@ -402,8 +384,6 @@ Expr_lt = function(other) {
   .pr$Expr$lt(self, other) |> unwrap("in $lt()")
 }
 #' @export
-#' @inheritParams Expr_add
-#' @rdname Expr_lt
 `<.RPolarsExpr` = function(e1, e2) result(wrap_e(e1)$lt(e2)) |> unwrap("using the '<'-operator")
 
 #' @export
@@ -426,8 +406,6 @@ Expr_gt = function(other) {
 }
 
 #' @export
-#' @inheritParams Expr_add
-#' @rdname Expr_gt
 `>.RPolarsExpr` = function(e1, e2) result(wrap_e(e1)$gt(e2)) |> unwrap("using the '>'-operator")
 
 #' @export
@@ -451,8 +429,6 @@ Expr_eq = function(other) {
 }
 
 #' @export
-#' @inheritParams Expr_add
-#' @rdname Expr_eq
 `==.RPolarsExpr` = function(e1, e2) result(wrap_e(e1)$eq(e2)) |> unwrap("using the '=='-operator")
 
 #' @export
@@ -492,8 +468,6 @@ Expr_neq = function(other) {
 }
 
 #' @export
-#' @inheritParams Expr_add
-#' @rdname Expr_neq
 `!=.RPolarsExpr` = function(e1, e2) result(wrap_e(e1)$neq(e2)) |> unwrap("using the '!='-operator")
 
 #' @export
@@ -532,8 +506,6 @@ Expr_lt_eq = function(other) {
 }
 
 #' @export
-#' @inheritParams Expr_add
-#' @rdname Expr_lt_eq
 `<=.RPolarsExpr` = function(e1, e2) result(wrap_e(e1)$lt_eq(e2)) |> unwrap("using the '<='-operator")
 
 #' @export
@@ -556,8 +528,6 @@ Expr_gt_eq = function(other) {
 }
 
 #' @export
-#' @inheritParams Expr_add
-#' @rdname Expr_gt_eq
 `>=.RPolarsExpr` = function(e1, e2) result(wrap_e(e1)$gt_eq(e2)) |> unwrap("using the '>='-operator")
 
 #' @export
@@ -2090,32 +2060,6 @@ Expr_limit = function(n = 10) {
 }
 
 
-
-#' Exponentiation
-#'
-#' Raise expression to the power of exponent.
-#'
-#' @param exponent Exponent value.
-#' @return Expr
-#' @examples
-#' # use via `pow`-method and the `^`-operator
-#' pl$DataFrame(a = -1:3, b = 2:6)$with_columns(
-#'   x = pl$col("a")$pow(2),
-#'   y = pl$col("a")^3
-#' )
-Expr_pow = function(exponent) {
-  .pr$Expr$pow(self, exponent) |> unwrap("in $pow()")
-}
-
-#' @export
-`^.RPolarsExpr` = function(e1, e2) result(wrap_e(e1)$pow(e2)) |> unwrap("using '^'-operator")
-
-#' @export
-`^.RPolarsThen` = `^.RPolarsExpr`
-
-#' @export
-`^.RPolarsChainedThen` = `^.RPolarsExpr`
-
 #' Check whether a value is in a vector
 #'
 #' Notice that to check whether a factor value is in a vector of strings, you
@@ -2840,7 +2784,7 @@ Expr_sinh = use_extendr_wrapper
 #'
 #' @return Expr
 #' @examples
-#' pl$DataFrame(a = c(-1, acosh(0.5), 0, 1, NA_real_))$
+#' pl$DataFrame(a = c(-1, acosh(2), 0, 1, NA_real_))$
 #'   with_columns(cosh = pl$col("a")$cosh())
 Expr_cosh = use_extendr_wrapper
 
@@ -3410,7 +3354,7 @@ Expr_peak_max = function() {
 #'
 #' df = pl$DataFrame(dt = dates, a = c(3, 7, 5, 9, 2, 1))$
 #'   with_columns(
-#'   pl$col("dt")$str$strptime(pl$Datetime(tu = "us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
+#'   pl$col("dt")$str$strptime(pl$Datetime("us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
 #' )
 #'
 #' df$with_columns(

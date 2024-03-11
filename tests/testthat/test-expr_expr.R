@@ -35,41 +35,15 @@ test_that("expression boolean operators", {
   expect_equal(names(fails), character())
 })
 
-test_that("expression Arithmetics", {
-  check_list = pl$DataFrame(list())$with_columns(
-    (pl$lit(1) / 2 == (1 / 2))$alias("1 / 2 == (1/2)"),
-    (pl$lit(1) + 2 == (1 + 2))$alias("1 + 2 == (1+2)"),
-    (pl$lit(1) * 2 == (1 * 2))$alias("1 * 2 == (1*2)"),
-    (pl$lit(1) - 2 == (1 - 2))$alias("1 - 2 == (1-2)"),
-    (pl$lit(1)$div(pl$lit(2)) == (1 / 2))$alias("1$div(2) == (1/2)"),
-    (pl$lit(1)$floor_div(pl$lit(2)) == (1 %/% 2))$alias("1$floor_div(2) == (1%/%2)"),
-    (pl$lit(1)$mod(pl$lit(2)) == (1 %% 2))$alias("1$mod(2) == (1%%2)"),
-    (pl$lit(1)$mod(pl$lit(-2)) == (1 %% -2))$alias("1$mod(2) != (1%%-2)"),
-    (pl$lit(1)$add(pl$lit(2)) == (1 + 2))$alias("1$add(2) == (1+2)"),
-    (pl$lit(1)$mul(pl$lit(2)) == (1 * 2))$alias("1$mul(2) == (1*2)"),
-    (pl$lit(1)$sub(pl$lit(2)) == (1 - 2))$alias("1$sub(2) == (1-2)")
-  )$to_data_frame(check.names = FALSE)
-
-  results = unlist(check_list)
-  expect_true(all(results))
-})
-
 make_cases = function() {
   tibble::tribble(
     ~.test_name, ~fn,
-    "mul", "*",
-    "add", "+",
-    "sub", "-",
-    "div", "/",
-    "floor_div", "%/%",
-    "mod", "%%",
     "gt", ">",
     "gte", ">=",
     "lt", "<",
     "lte", "<=",
     "eq", "==",
     "neq", "!=",
-    "pow", "^",
   )
 }
 
@@ -2486,7 +2460,7 @@ test_that("rolling, basic", {
 
   df = pl$DataFrame(dt = dates, a = c(3, 7, 5, 9, 2, 1))$
     with_columns(
-    pl$col("dt")$str$strptime(pl$Datetime(tu = "us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
+    pl$col("dt")$str$strptime(pl$Datetime("us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
   )
 
   out = df$with_columns(
@@ -2515,7 +2489,7 @@ test_that("rolling, arg closed", {
 
   df = pl$DataFrame(dt = dates, a = c(3, 7, 5, 9, 2, 1))$
     with_columns(
-    pl$col("dt")$str$strptime(pl$Datetime(tu = "us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
+    pl$col("dt")$str$strptime(pl$Datetime("us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
   )
 
   out = df$with_columns(
@@ -2544,7 +2518,7 @@ test_that("rolling, arg offset", {
 
   df = pl$DataFrame(dt = dates, a = c(3, 7, 5, 9, 2, 1))$
     with_columns(
-    pl$col("dt")$str$strptime(pl$Datetime(tu = "us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
+    pl$col("dt")$str$strptime(pl$Datetime("us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
   )
 
   # with offset = "1d", we start the window at one or two days after the value
@@ -2571,7 +2545,7 @@ test_that("rolling, arg check_sorted", {
 
   df = pl$DataFrame(dt = dates, a = c(3, 7, 5, 9, 2, 1))$
     with_columns(
-    pl$col("dt")$str$strptime(pl$Datetime(tu = "us"), format = "%Y-%m-%d %H:%M:%S")
+    pl$col("dt")$str$strptime(pl$Datetime("us"), format = "%Y-%m-%d %H:%M:%S")
   )
 
   expect_error(

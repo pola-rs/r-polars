@@ -4,32 +4,53 @@
 # expr_str_make_sub_ns = macro_new_subnamespace("^ExprStr_", "RPolarsExprStrNameSpace")
 
 
+# TODO for 0.16.0: rename arguments, should not allow positional arguments except for the first two
 #' Convert a String column into a Date/Datetime/Time column.
 #'
+#' Similar to the [strptime()] function.
 #'
+#' When parsing a Datetime the column precision will be inferred from the format
+#' string, if given, e.g.: `"%F %T%.3f"` => [`pl$Datetime("ms")`][pl_Datetime].
+#' If no fractional second component is found then the default is `"us"` (microsecond).
 #' @param datatype The data type to convert into. Can be either Date, Datetime,
 #' or Time.
-#' @param format Format to use for conversion. See `?strptime` for possible
-#' values. Example: "%Y-%m-%d %H:%M:%S". If `NULL` (default), the format is
-#' inferred from the data. Notice that time zone `%Z` is not supported and will
-#' just ignore timezones. Numeric time zones like `%z` or `%:z`  are supported.
+#' @param format Format to use for conversion. Refer to
+#' [the chrono crate documentation](https://docs.rs/chrono/latest/chrono/format/strftime/index.html)
+#' for the full specification. Example: `"%Y-%m-%d %H:%M:%S"`.
+#' If `NULL` (default), the format is inferred from the data.
+#' Notice that time zone `%Z` is not supported and will just ignore timezones.
+#' Numeric time zones like `%z` or `%:z` are supported.
 #' @param strict If `TRUE` (default), raise an error if a single string cannot
-#' be parsed. Otherwise, produce a polars `null`.
-#' @param exact If `TRUE` (default), require an exact format match. Otherwise,
+#' be parsed. If `FALSE`, produce a polars `null`.
+#' @param exact If `TRUE` (default), require an exact format match. If `FALSE`,
 #' allow the format to match anywhere in the target string.
+#' Conversion to the Time type is always exact.
+#' Note that using `exact = FALSE` introduces a performance penalty -
+#' cleaning your data beforehand will almost certainly be more performant.
 #' @param cache Use a cache of unique, converted dates to apply the datetime
 #' conversion.
 #' @param ambiguous Determine how to deal with ambiguous datetimes:
 #' * `"raise"` (default): raise
 #' * `"earliest"`: use the earliest datetime
 #' * `"latest"`: use the latest datetime
-#' @details
-#' When parsing a Datetime the column precision will be inferred from the format
-#' string, if given, eg: “%F %T%.3f" => Datetime("ms"). If no fractional second
-#' component is found then the default is "us" (microsecond).
-#' @keywords ExprStr
-#' @return Expr of a Date, Datetime or Time Series
+#' @return [Expr][Expr_class] of Date, Datetime or Time type
+#' @seealso
+#' - [`<Expr>$str$to_date()`][ExprStr_to_date]
+#' - [`<Expr>$str$to_datetime()`][ExprStr_to_datetime]
+#' - [`<Expr>$str$to_time()`][ExprStr_to_time]
 #' @examples
+#' # Dealing with a consistent format
+#' s = pl$Series(c("2020-01-01 01:00Z", "2020-01-01 02:00Z"))
+#'
+#' s$str$strptime(pl$Datetime(), "%Y-%m-%d %H:%M%#z")
+#'
+#' # Auto infer format
+#' s$str$strptime(pl$Datetime())
+#'
+#' # Datetime with timezone is interpreted as UTC timezone
+#' pl$Series("2020-01-01T01:00:00+09:00")$str$strptime(pl$Datetime())
+#'
+#' # Dealing with different formats.
 #' s = pl$Series(
 #'   c(
 #'     "2021-04-22",
@@ -39,38 +60,41 @@
 #'   ),
 #'   "date"
 #' )
-#' #' #join multiple passes with different format
-#' s$to_frame()$with_columns(
-#'   pl$col("date")
-#'   $str$strptime(pl$Date, "%F", strict = FALSE)
-#'   $fill_null(pl$col("date")$str$strptime(pl$Date, "%F %T", strict = FALSE))
-#'   $fill_null(pl$col("date")$str$strptime(pl$Date, "%D", strict = FALSE))
-#'   $fill_null(pl$col("date")$str$strptime(pl$Date, "%c", strict = FALSE))
+#'
+#' s$to_frame()$select(
+#'   pl$coalesce(
+#'     pl$col("date")$str$strptime(pl$Date, "%F", strict = FALSE),
+#'     pl$col("date")$str$strptime(pl$Date, "%F %T", strict = FALSE),
+#'     pl$col("date")$str$strptime(pl$Date, "%D", strict = FALSE),
+#'     pl$col("date")$str$strptime(pl$Date, "%c", strict = FALSE)
+#'   )
 #' )
 #'
-#' txt_datetimes = c(
-#'   "2023-01-01 11:22:33 -0100",
-#'   "2023-01-01 11:22:33 +0300",
-#'   "invalid time"
+#' # Ignore invalid time
+#' s = pl$Series(
+#'   c(
+#'     "2023-01-01 11:22:33 -0100",
+#'     "2023-01-01 11:22:33 +0300",
+#'     "invalid time"
+#'   )
 #' )
 #'
-#' pl$lit(txt_datetimes)$str$strptime(
+#' s$str$strptime(
 #'   pl$Datetime("ns"),
-#'   format = "%Y-%m-%d %H:%M:%S %z", strict = FALSE,
-#' )$to_series()
+#'   format = "%Y-%m-%d %H:%M:%S %z",
+#'   strict = FALSE,
+#' )
 ExprStr_strptime = function(
     datatype,
-    format,
+    format = NULL,
     strict = TRUE,
     exact = TRUE,
     cache = TRUE,
     ambiguous = "raise") {
   pcase(
-
     # not a datatype
     !is_polars_dtype(datatype),
     Err_plain("arg datatype is not an RPolarsDataType"),
-
     # Datetime
     pl$same_outer_dt(datatype, pl$Datetime()),
     {
@@ -81,93 +105,78 @@ ExprStr_strptime = function(
         \(expr) .pr$Expr$dt_cast_time_unit(expr, datetime_type$tu) # cast if not an err
       )
     },
-
     # Date
     datatype == pl$Date,
     .pr$Expr$str_to_date(self, format, strict, exact, cache),
-
     # Time
     datatype == pl$Time,
     .pr$Expr$str_to_time(self, format, strict, cache),
-
     # Other
     or_else = Err_plain("datatype should be of type {Date, Datetime, Time}")
   ) |>
     unwrap("in str$strptime():")
 }
 
+# TODO for 0.16.0: should not allow positional arguments except for the first one
 #' Convert a String column into a Date column
 #'
-#' @param format Format to use for conversion. See `?strptime` for possible
-#' values. Example: "%Y-%m-%d". If `NULL` (default), the format is
-#' inferred from the data. Notice that time zone `%Z` is not supported and will
-#' just ignore timezones. Numeric time zones like `%z` or `%:z`  are supported.
-#' @param strict If `TRUE` (default), raise an error if a single string cannot
-#' be parsed. If `FALSE`, parsing failure will produce a polars `null`.
-#' @param exact If `TRUE` (default), require an exact format match. Otherwise,
-#' allow the format to match anywhere in the target string.
-#' @param cache Use a cache of unique, converted dates to apply the datetime
-#' conversion.
-#'
-#' @return Expr
-#'
-#'
+#' @inheritParams ExprStr_strptime
+#' @format Format to use for conversion. Refer to
+#' [the chrono crate documentation](https://docs.rs/chrono/latest/chrono/format/strftime/index.html)
+#' for the full specification. Example: `"%Y-%m-%d"`.
+#' If `NULL` (default), the format is inferred from the data.
+#' @return [Expr][Expr_class] of Date type
+#' @seealso
+#' - [`<Expr>$str$strptime()`][ExprStr_strptime]
 #' @examples
-#' pl$DataFrame(str_date = c("2009-01-02", "2009-01-03", "2009-1-4", "2009 05 01"))$
-#'   with_columns(date = pl$col("str_date")$str$to_date(strict = FALSE))
+#' s = pl$Series(c("2020/01/01", "2020/02/01", "2020/03/01"))
+#'
+#' s$str$to_date()
 ExprStr_to_date = function(format = NULL, strict = TRUE, exact = TRUE, cache = TRUE) {
   .pr$Expr$str_to_date(self, format, strict, exact, cache) |>
     unwrap("in $str$to_date():")
 }
 
+# TODO for 0.16.0: should not allow positional arguments except for the first one
 #' Convert a String column into a Time column
 #'
-#' @param format Format to use for conversion. See `?strptime` for possible
-#' values. Example: "%H:%M:%S". If `NULL` (default), the format is
-#' inferred from the data. Notice that time zone `%Z` is not supported and will
-#' just ignore timezones. Numeric time zones like `%z` or `%:z`  are supported.
-#' @param strict If `TRUE` (default), raise an error if a single string cannot
-#' be parsed. If `FALSE`, parsing failure will produce a polars `null`.
-#' @param cache Use a cache of unique, converted dates to apply the datetime
-#' conversion.
-#'
-#' @return Expr
-#'
-#'
+#' @inheritParams ExprStr_strptime
+#' @format Format to use for conversion. Refer to
+#' [the chrono crate documentation](https://docs.rs/chrono/latest/chrono/format/strftime/index.html)
+#' for the full specification. Example: `"%H:%M:%S"`.
+#' If `NULL` (default), the format is inferred from the data.
+#' @return [Expr][Expr_class] of Time type
+#' @seealso
+#' - [`<Expr>$str$strptime()`][ExprStr_strptime]
 #' @examples
-#' pl$DataFrame(str_time = c("01:20:01", "28:00:02", "03:00:02"))$
-#'   with_columns(time = pl$col("str_time")$str$to_time(strict = FALSE))
+#' s = pl$Series(c("01:00", "02:00", "03:00"))
+#'
+#' s$str$to_time("%H:%M")
 ExprStr_to_time = function(format = NULL, strict = TRUE, cache = TRUE) {
   .pr$Expr$str_to_time(self, format, strict, cache) |>
     unwrap("in $str$to_time():")
 }
 
+# TODO for 0.16.0: should not allow positional arguments except for the first one
 #' Convert a String column into a Datetime column
 #'
-#' @param format Format to use for conversion. See `?strptime` for possible
-#' values. Example: "%Y-%m-%d %H:%M:%S". If `NULL` (default), the format is
-#' inferred from the data. Notice that time zone `%Z` is not supported and will
-#' just ignore timezones. Numeric time zones like `%z` or `%:z`  are supported.
-#' @param time_unit String (`"ns"`, `"us"`, `"ms"`) or integer.
-#' @param time_zone String describing a timezone. If `NULL` (default), `"GMT` is
-#' used.
-#' @param strict If `TRUE` (default), raise an error if a single string cannot
-#' be parsed. If `FALSE`, parsing failure will produce a polars `null`.
-#' @param exact If `TRUE` (default), require an exact format match. Otherwise,
-#' allow the format to match anywhere in the target string.
-#' @param cache Use a cache of unique, converted dates to apply the datetime
-#' conversion.
-#' @param ambiguous Determine how to deal with ambiguous datetimes:
-#' * `"raise"` (default): raise
-#' * `"earliest"`: use the earliest datetime
-#' * `"latest"`: use the latest datetime
-#'
-#' @return Expr
-#'
-#'
+#' @inheritParams ExprStr_strptime
+#' @param time_unit Unit of time for the resulting Datetime column. If `NULL` (default),
+#' the time unit is inferred from the format string if given,
+#' e.g.: `"%F %T%.3f"` => [`pl$Datetime("ms")`][pl_Datetime].
+#' If no fractional second component is found, the default is `"us"` (microsecond).
+#' @param time_zone for the resulting [Datetime][pl_Datetime] column.
+#' @param exact If `TRUE` (default), require an exact format match. If `FALSE`, allow the format to match
+#' anywhere in the target string. Note that using `exact = FALSE` introduces a performance
+#' penalty - cleaning your data beforehand will almost certainly be more performant.
+#' @return [Expr][Expr_class] of [Datetime][pl_Datetime] type
+#' @seealso
+#' - [`<Expr>$str$strptime()`][ExprStr_strptime]
 #' @examples
-#' pl$DataFrame(str_date = c("2009-01-02 01:00", "2009-01-03 02:00", "2009-1-4 3:00"))$
-#'   with_columns(datetime = pl$col("str_date")$str$to_datetime(strict = FALSE))
+#' s = pl$Series(c("2020-01-01 01:00Z", "2020-01-01 02:00Z"))
+#'
+#' s$str$to_datetime("%Y-%m-%d %H:%M%#z")
+#' s$str$to_datetime(time_unit = "ms")
 ExprStr_to_datetime = function(
     format = NULL,
     time_unit = NULL,

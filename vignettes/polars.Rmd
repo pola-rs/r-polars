@@ -319,7 +319,7 @@ column. See the section below for more details on data types.
 ## Reshape
 
 Polars supports data reshaping, going from both long to wide (a.k.a. "pivotting",
-or `pivot_wider()` in `tidyr`), and from wide to long (a.k.a. "unpivotting", 
+or `pivot_wider()` in `tidyr`), and from wide to long (a.k.a. "unpivotting",
 "melting", or `pivot_longer()` in `tidyr`).
 Let's switch to the `Indometh` dataset to demonstrate some basic examples.
 Note that the data are currently in long format.
