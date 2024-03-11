@@ -7,7 +7,7 @@
 DataFrame_drop(...)
 }
 \arguments{
-\item{...}{Characters of column names to group by. Passed to \code{\link[=pl_col]{pl$col()}}.}
+\item{...}{Characters of column names to drop. Passed to \code{\link[=pl_col]{pl$col()}}.}
 }
 \value{
 DataFrame

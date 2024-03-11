@@ -460,7 +460,7 @@ DataFrame.property_setters$columns = function(self, names) {
 
 #' Drop columns of a DataFrame
 #'
-#' @inheritParams DataFrame_partition_by
+#' @param ... Characters of column names to drop. Passed to [`pl$col()`][pl_col].
 #'
 #' @return DataFrame
 #' @examples
