@@ -248,6 +248,10 @@ test_that("drop", {
   a = pl$DataFrame(mtcars)$lazy()$drop(c("mpg", "hp"))$collect()$columns
   expect_false("hp" %in% a)
   expect_false("mpg" %in% a)
+  a = pl$DataFrame(mtcars)$lazy()$drop(c("mpg", "drat"), "hp")$collect()$columns
+  expect_false("hp" %in% a)
+  expect_false("mpg" %in% a)
+  expect_false("drat" %in% a)
   a = pl$DataFrame(mtcars)$lazy()$drop("mpg")$collect()$columns
   expect_true("hp" %in% a)
   expect_false("mpg" %in% a)

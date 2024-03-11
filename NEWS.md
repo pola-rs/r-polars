@@ -2,6 +2,11 @@
 
 ## Polars R Package (development version)
 
+### New features
+
+- `$drop()` now accepts several character vectors, such as `$drop("a", "b")` 
+  (#912).
+
 ## Polars R Package 0.15.1
 
 ### New features
