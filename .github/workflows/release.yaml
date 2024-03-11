@@ -54,6 +54,7 @@ jobs:
       - uses: ./.github/actions/setup
         with:
           rust-nightly: true
+          target: ''
           token: "${{ secrets.GITHUB_TOKEN }}"
 
       - uses: r-lib/actions/setup-pandoc@v2
