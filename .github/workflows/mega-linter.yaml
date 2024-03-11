@@ -7,11 +7,16 @@ on:
   pull_request:
     branches:
       - main
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 concurrency:
   group: ${{ github.ref }}-${{ github.workflow }}
   cancel-in-progress: true
+
+permissions: read-all
 
 jobs:
   megalinter:
@@ -30,11 +35,11 @@ jobs:
         id: ml
         # You can override MegaLinter flavor used to have faster performances
         # More info at https://megalinter.io/flavors/
-        uses: oxsecurity/megalinter/flavors/cupcake@v7.9.0
+        uses: oxsecurity/megalinter/flavors/cupcake@v7.10.0
         env:
           # All available variables are described in documentation
           # https://megalinter.io/configuration/
-          VALIDATE_ALL_CODEBASE: true
+          VALIDATE_ALL_CODEBASE: ${{ github.event_name != 'pull_request' }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # ADD YOUR CUSTOM ENV VARIABLES HERE OR DEFINE THEM IN A FILE .mega-linter.yml AT THE ROOT OF YOUR REPOSITORY
           # DISABLE: COPYPASTE,SPELL # Uncomment to disable copy-paste and spell checks

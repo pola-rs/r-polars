@@ -41,6 +41,8 @@ defaults:
   run:
     shell: bash
 
+permissions: read-all
+
 jobs:
   R-CMD-check:
     runs-on: ${{ matrix.config.os }}
@@ -72,16 +74,16 @@ jobs:
         id: rust-target
         run: |
           if [ "${{ runner.os }}" == "Windows" ]; then
-            echo "TARGET=x86_64-pc-windows-gnu" >>$GITHUB_OUTPUT
+            echo "TARGET=x86_64-pc-windows-gnu" >>"$GITHUB_OUTPUT"
           else
-            echo "TARGET=$(rustc -vV | grep host | cut -d' ' -f2)" >>$GITHUB_OUTPUT
+            echo "TARGET=$(rustc -vV | grep host | cut -d' ' -f2)" >>"$GITHUB_OUTPUT"
           fi
 
       - name: Set env vars for build option
         if: matrix.config.full-features
         run: |
-          echo "LIBR_POLARS_FEATURES=full_features" >>$GITHUB_ENV
-          echo "LIBR_POLARS_PROFILE=release" >>$GITHUB_ENV
+          echo "LIBR_POLARS_FEATURES=full_features" >>"$GITHUB_ENV"
+          echo "LIBR_POLARS_PROFILE=release" >>"$GITHUB_ENV"
 
       - uses: ./.github/actions/setup
         with:
@@ -109,7 +111,7 @@ jobs:
           NOT_CRAN: "true"
         run: |
           Rscript -e 'pkgbuild::compile_dll()'
-          echo "LIBR_POLARS_PATH=$(pwd)/src/rust/target/${{ steps.rust-target.outputs.TARGET }}/release/libr_polars.a" >>$GITHUB_ENV
+          echo "LIBR_POLARS_PATH=$(pwd)/src/rust/target/${{ steps.rust-target.outputs.TARGET }}/release/libr_polars.a" >>"$GITHUB_ENV"
 
       - uses: r-lib/actions/check-r-package@v2
         env:

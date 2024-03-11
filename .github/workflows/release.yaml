@@ -28,6 +28,8 @@ env:
   LIBR_POLARS_PROFILE: release-optimized
   NOT_CRAN: "true"
 
+permissions: read-all
+
 jobs:
   build:
     runs-on: ${{ matrix.config.os }}
@@ -52,6 +54,7 @@ jobs:
       - uses: ./.github/actions/setup
         with:
           rust-nightly: true
+          target: ''
           token: "${{ secrets.GITHUB_TOKEN }}"
 
       - uses: r-lib/actions/setup-pandoc@v2
@@ -68,7 +71,6 @@ jobs:
           needs: dev
 
       - name: Build lib
-        if: matrix.config.target == ''
         run: |
           if [ "${{ runner.os }}" == "Windows" ]; then
             TARGET=x86_64-pc-windows-gnu
@@ -76,10 +78,9 @@ jobs:
             TARGET="$(rustc -vV | grep host | cut -d' ' -f2)"
           fi
           Rscript -e 'pkgbuild::compile_dll()'
-          echo "LIBR_POLARS_PATH=$(pwd)/src/rust/target/${TARGET}/${{ env.LIBR_POLARS_PROFILE }}/libr_polars.a" >>$GITHUB_ENV
+          echo "LIBR_POLARS_PATH=$(pwd)/src/rust/target/${TARGET}/${{ env.LIBR_POLARS_PROFILE }}/libr_polars.a" >>"$GITHUB_ENV"
 
       - name: make binary R package + test on host arch
-        if: matrix.config.target == ''
         run: |
           devtools::install(quick = TRUE)
           devtools::test(stop_on_failure = TRUE)

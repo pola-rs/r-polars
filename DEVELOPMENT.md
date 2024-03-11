@@ -91,10 +91,10 @@ When updating the Rust Polars crate that the R package depends on,
 the following steps are required:
 
 1. Since the version of the Polars crate is specified by the Git revision,
-   update the `rev` of all `polars-*` crates in the `src/rust/Cargo.toml` file.
+  update the `rev` of all `polars-*` crates in the `src/rust/Cargo.toml` file.
 2. Update the `Config/polars/RustToolchainVersion` field in the `DESCRIPTION`
-   file to the version of the Rust toolchain specified in the `toolchain.channel`
-   field of the `rust-toolchain.toml` file in the Polars crate Git repository.
+  file to the version of the Rust toolchain specified in the `toolchain.channel`
+  field of the `rust-toolchain.toml` file in the Polars crate Git repository.
 3. Update the toolchain to the version specified in the `DESCRIPTION` file.
 4. Repeat the build, test, and bug fixes of the R package.
 
@@ -127,7 +127,7 @@ Rscript dev/generate-lib-sums.R
 The R package releases are done on GitHub pull requests.
 
 1. Create a local branch for the release, push it to the remote repository (main
-   repository), then open a pull request to the `main` branch.
+  repository), then open a pull request to the `main` branch.
 2. Bump the R package version with the `usethis` package.
 
 ```r
@@ -137,9 +137,9 @@ usethis::use_version()
 
 3. Check the CI status of the pull request.
 4. Push a tag named starting with `v` (e.g. `v0.10.0`). It triggers the GitHub
-   action to build the website and create a GitHub release.
+  action to build the website and create a GitHub release.
 5. Bump the R package version to "dev version" with the `usethis` package
-   before merging the pull request.
+  before merging the pull request.
 
 ```r
 usethis::use_dev_version()

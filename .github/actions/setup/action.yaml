@@ -5,7 +5,7 @@ inputs:
     description: Set up Rust nightly toolchain?
     required: false
   target:
-    description: Rust target triple to use
+    description: Rust target triple to use. If empty, the default target is used.
     required: true
   token:
     description: GitHub token

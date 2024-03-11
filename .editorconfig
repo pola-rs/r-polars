@@ -9,6 +9,3 @@ trim_trailing_whitespace = true
 [*.md]
 indent_style = space
 indent_size = 2
-
-[NEWS.md]
-indent_size = 4

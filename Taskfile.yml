@@ -80,8 +80,7 @@ tasks:
       - setup-venv
     cmds:
       - "{{.VENV_BIN}}/python -m pip install --upgrade uv"
-      - "{{.VENV_BIN}}/uv pip install --upgrade mkdocs"
-      - "{{.VENV_BIN}}/uv pip install --upgrade mkdocs-material"
+      - "{{.VENV_BIN}}/uv pip install --upgrade mkdocs-material mdx_truly_sane_lists"
 
   build-lib-sums:
     desc: Build lib-sums.tsv.
