@@ -5,6 +5,8 @@ rules:
     max-spaces-inside: 1
   comments-indentation: disable
   document-start: disable
+  empty-lines:
+    level: warning
   line-length:
     max: 120
     level: warning
