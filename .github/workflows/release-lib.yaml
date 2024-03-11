@@ -208,8 +208,8 @@ jobs:
       - name: create checksums
         working-directory: libs
         run: |
-          sha256sum * >"../sha256sums.txt"
-          md5sum * >"../md5sums.txt"
+          sha256sum -- * >"../sha256sums.txt"
+          md5sum -- * >"../md5sums.txt"
 
       - name: create release
         uses: softprops/action-gh-release@v2
