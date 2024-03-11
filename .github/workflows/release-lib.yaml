@@ -28,6 +28,8 @@ env:
   LIBR_POLARS_FEATURES: "full_features"
   LIBR_POLARS_PROFILE: release-optimized
 
+permissions: read-all
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}

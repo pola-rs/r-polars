@@ -44,6 +44,8 @@ env:
   LIBR_POLARS_BUILD: "true"
   LIBR_POLARS_PROFILE: release
 
+permissions: read-all
+
 jobs:
   documentation:
     runs-on: ubuntu-latest

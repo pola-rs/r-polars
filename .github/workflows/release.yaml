@@ -28,6 +28,8 @@ env:
   LIBR_POLARS_PROFILE: release-optimized
   NOT_CRAN: "true"
 
+permissions: read-all
+
 jobs:
   build:
     runs-on: ${{ matrix.config.os }}

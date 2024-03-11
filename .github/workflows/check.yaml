@@ -41,6 +41,8 @@ defaults:
   run:
     shell: bash
 
+permissions: read-all
+
 jobs:
   R-CMD-check:
     runs-on: ${{ matrix.config.os }}
