@@ -4,6 +4,8 @@
 
 ### New features
 
+-   rust-polars is updated to 0.38.2 (#907).
+    -   Minimum supported Rust version (MSRV) is now 1.76.0.
 -   `as_polars_df(<nanoarrow_array>)` is added (#893).
 -   It is now possible to create an empty `DataFrame` with a specific schema
     with `pl$DataFrame(schema = my_schema)` (#901).

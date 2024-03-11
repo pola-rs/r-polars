@@ -564,6 +564,7 @@ impl RPolarsLazyFrame {
             comm_subexpr_elim,
             streaming,
             fast_projection: _,
+            row_estimate: _,
             eager,
         } = self.0.get_current_optimizations();
         list!(
