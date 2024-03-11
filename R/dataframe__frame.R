@@ -884,6 +884,8 @@ DataFrame_filter = function(...) {
 #' @details Within each group, the order of the rows is always preserved,
 #' regardless of the `maintain_order` argument.
 #' @return [GroupBy][GroupBy_class] (a DataFrame with special groupby methods like `$agg()`)
+#' @seealso
+#' - [`<DataFrame>$partition_by()`][DataFrame_partition_by]
 #' @examples
 #' df = pl$DataFrame(
 #'   a = c("a", "b", "a", "b", "c"),
@@ -2092,4 +2094,109 @@ DataFrame_group_by_dynamic = function(
     self, index_column, every, period, offset, include_boundaries, closed, label,
     by, start_by, check_sorted
   )
+}
+
+
+#' Split a DataFrame into multiple DataFrames
+#'
+#' Similar to [`$group_by()`][DataFrame_group_by].
+#' Group by the given columns and return the groups as separate [DataFrames][DataFrame_class].
+#' It is useful to use this in combination with functions like [lapply()] or `purrr::map()`.
+#' @param ... Characters of column names to group by. Passed to [`pl$col()`][pl_col].
+#' @param maintain_order If `TRUE`, ensure that the order of the groups is consistent with the input data.
+#' This is slower than a default partition by operation.
+#' @param include_key If `TRUE`, include the columns used to partition the DataFrame in the output.
+#' @param as_nested_list This affects the format of the output.
+#' If `FALSE` (default), the output is a flat [list] of [DataFrames][DataFrame_class].
+#' IF `TRUE` and one of the `maintain_order` or `include_key` argument is `TRUE`,
+#' then each element of the output has two children: `key` and `data`.
+#' See the examples for more details.
+#' @return A list of [DataFrames][DataFrame_class]. See the examples for details.
+#' @seealso
+#' - [`<DataFrame>$group_by()`][DataFrame_group_by]
+#' @examples
+#' df = pl$DataFrame(
+#'   a = c("a", "b", "a", "b", "c"),
+#'   b = c(1, 2, 1, 3, 3),
+#'   c = c(5, 4, 3, 2, 1)
+#' )
+#' df
+#'
+#' # Pass a single column name to partition by that column.
+#' df$partition_by("a")
+#'
+#' # Partition by multiple columns.
+#' df$partition_by("a", "b")
+#'
+#' # Partition by column data type
+#' df$partition_by(pl$String)
+#'
+#' # If `as_nested_list = TRUE`, the output is a list whose elements have a `key` and a `data` field.
+#' # The `key` is a named list of the key values, and the `data` is the DataFrame.
+#' df$partition_by("a", "b", as_nested_list = TRUE)
+#'
+#' # `as_nested_list = TRUE` should be used with `maintain_order = TRUE` or `include_key = TRUE`.
+#' tryCatch(
+#'   df$partition_by("a", "b", maintain_order = FALSE, include_key = FALSE, as_nested_list = TRUE),
+#'   warning = function(w) w
+#' )
+#'
+#' # Example of using with lapply(), and printing the key and the data summary
+#' df$partition_by("a", "b", maintain_order = FALSE, as_nested_list = TRUE) |>
+#'   lapply(\(x) {
+#'     sprintf("\nThe key value of `a` is %s and the key value of `b` is %s\n", x$key$a, x$key$b) |>
+#'       cat()
+#'     x$data$drop(names(x$key))$describe() |>
+#'       print()
+#'     invisible(NULL)
+#'   }) |>
+#'   invisible()
+DataFrame_partition_by = function(
+    ...,
+    maintain_order = TRUE,
+    include_key = TRUE,
+    as_nested_list = FALSE) {
+  uw = \(res) unwrap(res, "in $partition_by():")
+
+  by = result(dots_to_colnames(self, ...)) |>
+    uw()
+
+  if (!length(by)) {
+    Err_plain("There is no column to partition by.") |>
+      uw()
+  }
+
+  partitions = .pr$DataFrame$partition_by(self, by, maintain_order, include_key) |>
+    uw()
+
+  if (isTRUE(as_nested_list)) {
+    if (include_key) {
+      out = lapply(seq_along(partitions), \(index) {
+        data = partitions[[index]]
+        key = data$select(by)$head(1)$to_list()
+
+        list(key = key, data = data)
+      })
+
+      return(out)
+    } else if (maintain_order) {
+      key_df = self$select(by)$unique(maintain_order = TRUE)
+      out = lapply(seq_along(partitions), \(index) {
+        data = partitions[[index]]
+        key = key_df$slice(index - 1, 1)$to_list()
+
+        list(key = key, data = data)
+      })
+
+      return(out)
+    } else {
+      warning(
+        "cannot use `$partition_by` with ",
+        "`maintain_order = FALSE, include_key = FALSE, as_nested_list = TRUE`. ",
+        "Fall back to a flat list."
+      )
+    }
+  }
+
+  partitions
 }
