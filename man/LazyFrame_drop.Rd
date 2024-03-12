@@ -4,10 +4,10 @@
 \alias{LazyFrame_drop}
 \title{Drop columns of a LazyFrame}
 \usage{
-LazyFrame_drop(columns)
+LazyFrame_drop(...)
 }
 \arguments{
-\item{columns}{A character vector with the names of the column(s) to remove.}
+\item{...}{Characters of column names to drop. Passed to \code{\link[=pl_col]{pl$col()}}.}
 }
 \value{
 LazyFrame
@@ -16,6 +16,8 @@ LazyFrame
 Drop columns of a LazyFrame
 }
 \examples{
-pl$LazyFrame(mtcars)$drop(c("mpg", "hp"))
+pl$LazyFrame(mtcars)$drop(c("mpg", "hp"))$collect()
+
+# equivalent
+pl$LazyFrame(mtcars)$drop("mpg", "hp")$collect()
 }
-\keyword{LazyFrame}

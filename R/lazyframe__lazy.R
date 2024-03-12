@@ -1022,13 +1022,22 @@ LazyFrame_shift_and_fill = function(fill_value, periods = 1) {
   unwrap(.pr$LazyFrame$shift_and_fill(self, wrap_e(fill_value), periods), "in $shift_and_fill():")
 }
 
-#' @title Drop columns of a LazyFrame
-#' @keywords LazyFrame
+#' Drop columns of a LazyFrame
+#'
 #' @inheritParams DataFrame_drop
+#'
 #' @return LazyFrame
-#' @examples pl$LazyFrame(mtcars)$drop(c("mpg", "hp"))
-LazyFrame_drop = function(columns) {
-  unwrap(.pr$LazyFrame$drop(self, columns), "in $drop():")
+#' @examples
+#' pl$LazyFrame(mtcars)$drop(c("mpg", "hp"))$collect()
+#'
+#' # equivalent
+#' pl$LazyFrame(mtcars)$drop("mpg", "hp")$collect()
+LazyFrame_drop = function(...) {
+  uw = \(res) unwrap(res, "in $drop():")
+  cols = result(dots_to_colnames(self, ...)) |>
+    uw()
+  .pr$LazyFrame$drop(self, cols) |>
+    uw()
 }
 
 #' @title Reverse

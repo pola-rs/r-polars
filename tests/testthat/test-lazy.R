@@ -248,6 +248,10 @@ test_that("drop", {
   a = pl$DataFrame(mtcars)$lazy()$drop(c("mpg", "hp"))$collect()$columns
   expect_false("hp" %in% a)
   expect_false("mpg" %in% a)
+  a = pl$DataFrame(mtcars)$lazy()$drop(c("mpg", "drat"), "hp")$collect()$columns
+  expect_false("hp" %in% a)
+  expect_false("mpg" %in% a)
+  expect_false("drat" %in% a)
   a = pl$DataFrame(mtcars)$lazy()$drop("mpg")$collect()$columns
   expect_true("hp" %in% a)
   expect_false("mpg" %in% a)
@@ -534,7 +538,7 @@ test_that("join_asof_simple", {
 
   # test if setting was as expected in LogicalPlan
   expect_identical(get_reg(logical_json_plan_TT, allow_p_pat), "\"allow_parallel\": Bool(true)")
-  expect_identical(get_reg(logical_json_plan_TT,force_p_pat),"\"force_parallel\": Bool(true)")
+  expect_identical(get_reg(logical_json_plan_TT, force_p_pat), "\"force_parallel\": Bool(true)")
   expect_identical(get_reg(logical_json_plan_FF, allow_p_pat), "\"allow_parallel\": Bool(false)")
   expect_identical(get_reg(logical_json_plan_FF, force_p_pat), "\"force_parallel\": Bool(false)")
 })

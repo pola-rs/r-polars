@@ -458,13 +458,18 @@ DataFrame.property_setters$columns = function(self, names) {
 }
 
 
-#' @title Drop columns of a DataFrame
-#' @keywords DataFrame
-#' @param columns A character vector with the names of the column(s) to remove.
+#' Drop columns of a DataFrame
+#'
+#' @param ... Characters of column names to drop. Passed to [`pl$col()`][pl_col].
+#'
 #' @return DataFrame
-#' @examples pl$DataFrame(mtcars)$drop(c("mpg", "hp"))
-DataFrame_drop = function(columns) {
-  self$lazy()$drop(columns)$collect()
+#' @examples
+#' pl$DataFrame(mtcars)$drop(c("mpg", "hp"))
+#'
+#' # equivalent
+#' pl$DataFrame(mtcars)$drop("mpg", "hp")
+DataFrame_drop = function(...) {
+  self$lazy()$drop(...)$collect()
 }
 
 

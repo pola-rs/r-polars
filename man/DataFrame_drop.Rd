@@ -4,10 +4,10 @@
 \alias{DataFrame_drop}
 \title{Drop columns of a DataFrame}
 \usage{
-DataFrame_drop(columns)
+DataFrame_drop(...)
 }
 \arguments{
-\item{columns}{A character vector with the names of the column(s) to remove.}
+\item{...}{Characters of column names to drop. Passed to \code{\link[=pl_col]{pl$col()}}.}
 }
 \value{
 DataFrame
@@ -17,5 +17,7 @@ Drop columns of a DataFrame
 }
 \examples{
 pl$DataFrame(mtcars)$drop(c("mpg", "hp"))
+
+# equivalent
+pl$DataFrame(mtcars)$drop("mpg", "hp")
 }
-\keyword{DataFrame}
