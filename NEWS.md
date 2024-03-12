@@ -2,10 +2,11 @@
 
 ## Polars R Package (development version)
 
-### New features
+### Breaking changes
 
-- `$drop()` now accepts several character vectors, such as `$drop("a", "b")` 
-  (#912).
+- The argument `columns` in `$drop()` is removed. `$drop()` now accepts several 
+  character scalars, such as `$drop("a", "b", "c")`. Explicitly using the 
+  `columns` argument now errors (#912).
 
 ## Polars R Package 0.15.1
 
