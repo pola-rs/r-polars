@@ -1047,3 +1047,133 @@ pl_from_epoch = function(column, time_unit = "s") {
     column$cast(pl$Datetime(time_unit))
   )
 }
+
+#' Create a Datetime expression
+#'
+#' @param year An Expr or something coercible to an Expr, that must return an
+#'   integer. Strings are parsed as column names. Floats are cast to integers.
+#' @param month An Expr or something coercible to an Expr, that must return an
+#'   integer between 1 and 12. Strings are parsed as column names. Floats are
+#'   cast to integers.
+#' @param day An Expr or something coercible to an Expr, that must return an
+#'   integer between 1 and 31. Strings are parsed as column names. Floats are
+#'   cast to integers.
+#' @param hour An Expr or something coercible to an Expr, that must return an
+#'   integer between 0 and 23. Strings are parsed as column names. Floats are
+#'   cast to integers.
+#' @param minute An Expr or something coercible to an Expr, that must return an
+#'   integer between 0 and 59. Strings are parsed as column names. Floats are
+#'   cast to integers.
+#' @param second An Expr or something coercible to an Expr, that must return an
+#'   integer between 0 and 59. Strings are parsed as column names. Floats are
+#'   cast to integers.
+#' @param microsecond An Expr or something coercible to an Expr, that must
+#'   return an integer between 0 and 999,999. Strings are parsed as column
+#'   names. Floats are cast to integers.
+#' @param ... Not used.
+#' @inheritParams DataType_Datetime
+#' @inheritParams ExprDT_replace_time_zone
+#'
+#' @return An Expr of type Datetime
+#' @seealso
+#' - [`pl$date()`][pl_date]
+#' - [`pl$time()`][pl_time]
+#'
+#' @examples
+#' df = pl$DataFrame(
+#'   year = 2019:2021,
+#'   month = 9:11,
+#'   day = 10:12,
+#'   min = 55:57
+#' )
+#'
+#' df$with_columns(
+#'   dt_from_cols = pl$datetime("year", "month", "day", minute = "min"),
+#'   dt_from_lit = pl$datetime(2020, 3, 5, hour = 20:22),
+#'   dt_from_mix = pl$datetime("year", 3, 5, second = 1)
+#' )
+#'
+#' # floats are coerced to integers
+#' df$with_columns(
+#'   dt_floats = pl$datetime(2018.8, 5.3, 1, second = 2.1)
+#' )
+#'
+#' # if datetime can't be constructed, it returns null
+#' df$with_columns(
+#'   dt_floats = pl$datetime(pl$lit("abc"), -2, 1)
+#' )
+#'
+#' # can control the time_unit
+#' df$with_columns(
+#'   dt_from_cols = pl$datetime("year", "month", "day", minute = "min", time_unit = "ms")
+#' )
+pl_datetime = function(year, month, day, hour = NULL, minute = NULL, second = NULL, microsecond = NULL, ..., time_unit = "us", time_zone = NULL, ambiguous = "raise") {
+  datetime(year, month, day, hour, minute, second, microsecond, time_unit, time_zone, ambiguous) |>
+    unwrap("in pl$datetime():")
+}
+
+#' Create a Date expression
+#'
+#' @inheritParams pl_datetime
+#'
+#' @return An Expr of type Date
+#' @seealso
+#' - [`pl$datetime()`][pl_datetime]
+#' - [`pl$time()`][pl_time]
+#'
+#' @examples
+#' df = pl$DataFrame(year = 2019:2021, month = 9:11, day = 10:12)
+#'
+#' df$with_columns(
+#'   date_from_cols = pl$date("year", "month", "day"),
+#'   date_from_lit = pl$date(2020, 3, 5),
+#'   date_from_mix = pl$date("year", 3, 5)
+#' )
+#'
+#' # floats are coerced to integers
+#' df$with_columns(
+#'   date_floats = pl$date(2018.8, 5.3, 1)
+#' )
+#'
+#' # if date can't be constructed, it returns null
+#' df$with_columns(
+#'   date_floats = pl$date(pl$lit("abc"), -2, 1)
+#' )
+pl_date = function(year, month, day) {
+  pl$datetime(year, month, day)$cast(pl$Date)$alias("date") |>
+    result() |>
+    unwrap("in pl$date():")
+}
+
+#' Create a Time expression
+#'
+#' @inheritParams pl_datetime
+#'
+#' @return An Expr of type Time
+#' @seealso
+#' - [`pl$datetime()`][pl_datetime]
+#' - [`pl$date()`][pl_date]
+#'
+#' @examples
+#' df = pl$DataFrame(hour = 19:21, min = 9:11, sec = 10:12, micro = 1)
+#'
+#' df$with_columns(
+#'   time_from_cols = pl$time("hour", "min", "sec", "micro"),
+#'   time_from_lit = pl$time(12, 3, 5),
+#'   time_from_mix = pl$time("hour", 3, 5)
+#' )
+#'
+#' # floats are coerced to integers
+#' df$with_columns(
+#'   time_floats = pl$time(12.5, 5.3, 1)
+#' )
+#'
+#' # if time can't be constructed, it returns null
+#' df$with_columns(
+#'   time_floats = pl$time(pl$lit("abc"), -2, 1)
+#' )
+pl_time = function(hour = NULL, minute = NULL, second = NULL, microsecond = NULL) {
+  pl$datetime(year = 1970, month = 1, day = 1, hour, minute, second, microsecond)$cast(pl$Time)$alias("time") |>
+    result() |>
+    unwrap("in pl$time():")
+}

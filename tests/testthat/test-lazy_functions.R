@@ -301,3 +301,105 @@ test_that("pl$from_epoch() errors if wrong time unit", {
     "one of"
   )
 })
+
+test_that("pl$datetime() works", {
+  df = pl$DataFrame(
+    year = 2019:2020,
+    month = 9:10,
+    day = 10:11,
+    min = 55:56
+  )
+
+  expect_identical(
+    df$select(
+      dt_from_cols = pl$datetime("year", "month", "day", minute = "min", time_zone = "UTC"),
+      dt_from_lit = pl$datetime(2020, 3, 5, hour = 20:21, time_zone = "UTC"),
+      dt_from_mix = pl$datetime("year", 3, 5, second = 1, time_zone = "UTC")
+    )$to_list(),
+    list(
+      dt_from_cols = ISOdatetime(2019:2020, 9:10, 10:11, min = 55:56, 0, 0, tz = "UTC"),
+      dt_from_lit = ISOdatetime(2020, 3, 5, hour = 20:21, 0, 0, tz = "UTC"),
+      dt_from_mix = ISOdatetime(2019:2020, 3, 5, sec = 1, 0, 0, tz = "UTC")
+    )
+  )
+
+  # floats are coerced to integers
+  expect_identical(
+    df$select(dt_floats = pl$datetime(2018.8, 5.3, 1, second = 2.1))$to_list(),
+    df$select(dt_floats = pl$datetime(2018, 5, 1, second = 2))$to_list()
+  )
+
+  # if datetime can't be constructed, it returns null
+  expect_identical(
+    df$select(dt_floats = pl$datetime(pl$lit("abc"), -2, 1))$to_list(),
+    list(dt_floats = as.POSIXct(NA))
+  )
+
+  # can control the time_unit
+  # TODO: how can I test that?
+  expect_identical(
+    df$select(
+      dt_from_cols = pl$datetime("year", "month", "day", minute = "min", time_unit = "ms", time_zone = "UTC")
+    )$to_list(),
+    list(
+      dt_from_cols = ISOdatetime(2019:2020, 9:10, 10:11, min = 55:56, 0, 0, tz = "UTC")
+    )
+  )
+})
+
+test_that("pl$date() works", {
+  df = pl$DataFrame(
+    year = 2019:2020,
+    month = 9:10,
+    day = 10:11
+  )
+
+  expect_identical(
+    df$select(
+      dt_from_cols = pl$date("year", "month", "day"),
+      dt_from_lit = pl$date(2020, 3, 5),
+      dt_from_mix = pl$date("year", 3, 5)
+    )$to_list(),
+    list(
+      dt_from_cols = as.Date(c("2019-09-10", "2020-10-11")),
+      dt_from_lit = as.Date(c("2020-3-5", "2020-3-5")),
+      dt_from_mix = as.Date(c("2019-3-5", "2020-3-5"))
+    )
+  )
+
+  # floats are coerced to integers
+  expect_identical(
+    df$select(dt_floats = pl$date(2018.8, 5.3, 1))$to_list(),
+    df$select(dt_floats = pl$date(2018, 5, 1))$to_list()
+  )
+
+  # if datetime can't be constructed, it returns null
+  expect_identical(
+    df$select(dt_floats = pl$date(pl$lit("abc"), -2, 1))$to_list(),
+    list(dt_floats = as.Date(NA))
+  )
+})
+
+# TODO: I don't know if we can have an object with just "time" (without date) in
+# base R
+# test_that("pl$time() works", {
+#   df = pl$DataFrame(hour = 19:21, min = 9:11, sec = 10:12, micro = 1)
+#
+#   expect_identical(
+#     df$select(
+#       time_from_cols = pl$time("hour", "min", "sec", "micro"),
+#       time_from_lit = pl$time(12, 3, 5),
+#       time_from_mix = pl$time("hour", 3, 5)
+#     )$to_list()
+#   )
+#
+#   # floats are coerced to integers
+#   df$select(
+#     time_floats = pl$time(12.5, 5.3, 1)
+#   )
+#
+#   # if time can't be constructed, it returns null
+#   df$select(
+#     time_floats = pl$time(pl$lit("abc"), -2, 1)
+#   )
+# })

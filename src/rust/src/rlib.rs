@@ -291,12 +291,42 @@ pub fn duration(
     Ok(polars::lazy::dsl::duration(args).into())
 }
 
+#[extendr]
+#[allow(clippy::too_many_arguments)]
+pub fn datetime(
+    year: Robj,
+    month: Robj,
+    day: Robj,
+    hour: Robj,
+    minute: Robj,
+    second: Robj,
+    microsecond: Robj,
+    time_unit: Robj,
+    time_zone: Robj,
+    ambiguous: Robj,
+) -> RResult<RPolarsExpr> {
+    let args = pl::DatetimeArgs {
+        year: robj_to!(PLExprCol, year)?,
+        month: robj_to!(PLExprCol, month)?,
+        day: robj_to!(PLExprCol, day)?,
+        hour: robj_to!(Option, PLExprCol, hour)?.unwrap_or(polars::lazy::dsl::lit(0)),
+        minute: robj_to!(Option, PLExprCol, minute)?.unwrap_or(polars::lazy::dsl::lit(0)),
+        second: robj_to!(Option, PLExprCol, second)?.unwrap_or(polars::lazy::dsl::lit(0)),
+        microsecond: robj_to!(Option, PLExprCol, microsecond)?.unwrap_or(polars::lazy::dsl::lit(0)),
+        time_unit: robj_to!(timeunit, time_unit)?,
+        time_zone: robj_to!(Option, String, time_zone)?,
+        ambiguous: robj_to!(PLExpr, ambiguous)?,
+    };
+    Ok(polars::lazy::dsl::datetime(args).into())
+}
+
 extendr_module! {
     mod rlib;
 
     fn all_horizontal;
     fn any_horizontal;
     fn coalesce_exprs;
+    fn datetime;
     fn duration;
     fn min_horizontal;
     fn max_horizontal;

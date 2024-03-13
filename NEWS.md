@@ -8,6 +8,11 @@
   character scalars, such as `$drop("a", "b", "c")`. Explicitly using the
   `columns` argument now errors (#912).
 
+### New features
+
+- New functions `pl$datetime()`, `pl$date()`, and `pl$time()` to easily create
+  Expr of class datetime, date, and time via columns and literals (#918).
+
 ## Polars R Package 0.15.1
 
 ### New features
