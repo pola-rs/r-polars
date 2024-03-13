@@ -16,6 +16,8 @@ any_horizontal <- function(dotdotdot) .Call(wrap__any_horizontal, dotdotdot)
 
 coalesce_exprs <- function(exprs) .Call(wrap__coalesce_exprs, exprs)
 
+datetime <- function(year, month, day, hour, minute, second, microsecond, time_unit, time_zone, ambiguous) .Call(wrap__datetime, year, month, day, hour, minute, second, microsecond, time_unit, time_zone, ambiguous)
+
 duration <- function(weeks, days, hours, minutes, seconds, milliseconds, microseconds, nanoseconds, time_unit) .Call(wrap__duration, weeks, days, hours, minutes, seconds, milliseconds, microseconds, nanoseconds, time_unit)
 
 min_horizontal <- function(dotdotdot) .Call(wrap__min_horizontal, dotdotdot)
