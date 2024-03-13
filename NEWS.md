@@ -7,7 +7,7 @@
 - The argument `columns` in `$drop()` is removed. `$drop()` now accepts several
   character scalars, such as `$drop("a", "b", "c")`. Explicitly using the
   `columns` argument now errors (#912).
-  
+
 ### New features
 
 - New functions `pl$datetime()`, `pl$date()`, and `pl$time()` to easily create
