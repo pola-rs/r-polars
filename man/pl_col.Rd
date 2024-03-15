@@ -50,8 +50,5 @@ df$select(pl$col(pl$dtypes$Float64))
 
 # ... or an R list of DataTypes, select any column of any such DataType
 df$select(pl$col(list(pl$dtypes$Float64, pl$dtypes$String)))
-
-# from Series of names
-df$select(pl$col(pl$Series(c("bar", "foobar"))))
 }
 \keyword{Expr_new}
