@@ -2,17 +2,16 @@
 % Please edit documentation in R/series__series.R
 \name{Series_any}
 \alias{Series_any}
-\title{Reduce Boolean Series with ANY}
+\title{Reduce boolean Series with ANY}
 \usage{
 Series_any()
 }
 \value{
-bool
+A boolean scalar
 }
 \description{
-Reduce Boolean Series with ANY
+Reduce boolean Series with ANY
 }
 \examples{
 pl$Series(c(TRUE, FALSE, NA))$any()
 }
-\keyword{Series}

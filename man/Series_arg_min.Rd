@@ -2,17 +2,16 @@
 % Please edit documentation in R/series__series.R
 \name{Series_arg_min}
 \alias{Series_arg_min}
-\title{idx to min value}
+\title{Index of min value}
 \usage{
 Series_arg_min()
 }
 \value{
-bool
+A numeric scalar
 }
 \description{
-idx to min value
+Note that this is 0-indexed.
 }
 \examples{
 pl$Series(c(5, 1))$arg_min()
 }
-\keyword{Series}

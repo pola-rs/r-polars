@@ -7,12 +7,11 @@
 Series_n_unique()
 }
 \value{
-Expr
+A numeric scalar
 }
 \description{
-Return count of unique values in Series
+Count unique values in Series
 }
 \examples{
-pl$Series(1:4)$n_unique()
+pl$Series(c(1, 2, 1, 4, 4, 1, 5))$n_unique()
 }
-\keyword{Series}

@@ -2,42 +2,53 @@
 % Please edit documentation in R/series__series.R
 \name{Series_append}
 \alias{Series_append}
-\title{append (default immutable)}
+\title{Append two Series}
 \usage{
 Series_append(other, immutable = TRUE)
 }
 \arguments{
-\item{other}{Series to append}
+\item{other}{Series to append.}
 
-\item{immutable}{bool should append be immutable, default TRUE as mutable operations should
-be avoided in plain R API's.}
+\item{immutable}{Should the \code{other} Series be immutable? Default is \code{TRUE}.}
 }
 \value{
-Series
+\link[=Series_class]{Series}
 }
 \description{
-append two Series, see details for mutability
+Append two Series
 }
 \details{
-if immutable = FLASE, the Series object will not behave as immutable. This mean
-appending to this Series will affect any variable pointing to this memory location. This will break
-normal scoping rules of R. Polars-clones are cheap. Mutable operations are likely never needed in
-any sense.
+If \code{immutable = FALSE}, the Series object will not behave as immutable. This
+means that appending to this Series will affect any variable pointing to this
+memory location. This will break normal scoping rules of R. Setting
+\code{immutable = FALSE} is discouraged as it can have undesirable side effects
+and cloning Polars Series is a cheap operation.
 }
 \examples{
-
+\dontshow{if (requireNamespace("withr", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 # default immutable behavior, s_imut and s_imut_copy stay the same
 s_imut = pl$Series(1:3)
 s_imut_copy = s_imut
 s_new = s_imut$append(pl$Series(1:3))
-identical(s_imut$to_vector(), s_imut_copy$to_vector())
+s_new
 
-# pypolars-like mutable behavior,s_mut_copy become the same as s_new
-s_mut = pl$Series(1:3)
-s_mut_copy = s_mut
-# must deactivate this to allow to use immutable=FALSE
-options(polars.strictly_immutable = FALSE)
-s_new = s_mut$append(pl$Series(1:3), immutable = FALSE)
-identical(s_new$to_vector(), s_mut_copy$to_vector())
+# the original Series didn't change
+s_imut
+s_imut_copy
+
+# enabling mutable behavior requires setting a global option
+withr::with_options(
+  list(polars.strictly_immutable = FALSE),
+  {
+    s_mut = pl$Series(1:3)
+    s_mut_copy = s_mut
+    s_new = s_mut$append(pl$Series(1:3), immutable = FALSE)
+    print(s_new)
+
+    # the original Series also changed since it's mutable
+    print(s_mut)
+    print(s_mut_copy)
+  }
+)
+\dontshow{\}) # examplesIf}
 }
-\keyword{Series}

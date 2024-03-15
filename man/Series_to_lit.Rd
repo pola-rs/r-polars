@@ -2,16 +2,15 @@
 % Please edit documentation in R/series__series.R
 \name{Series_to_lit}
 \alias{Series_to_lit}
-\alias{to_lit}
-\title{Series to Literal}
+\title{Convert a Series to literal}
 \usage{
 Series_to_lit()
 }
 \value{
-Expr
+\link[=Expr_class]{Expr}
 }
 \description{
-convert Series to literal to perform modification and return
+Convert a Series to literal
 }
 \examples{
 pl$Series(list(1:1, 1:2, 1:3, 1:4))$
@@ -22,4 +21,3 @@ pl$Series(list(1:1, 1:2, 1:3, 1:4))$
   cast(pl$dtypes$Int8)$
   to_series()
 }
-\keyword{Series}

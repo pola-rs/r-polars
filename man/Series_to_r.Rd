@@ -4,7 +4,7 @@
 \alias{Series_to_r}
 \alias{Series_to_vector}
 \alias{Series_to_r_list}
-\title{Get r vector/list}
+\title{Convert Series to R vector or list}
 \usage{
 Series_to_r(int64_conversion = polars_options()$int64_conversion)
 
@@ -24,21 +24,11 @@ the package \code{bit64} to be attached).
 }
 \value{
 R list or vector
-
-R vector
-
-R list
 }
 \description{
-return R list (if polars Series is list)  or vector (any other polars Series type)
-
-return R vector (implicit unlist)
-
-return R list (implicit as.list)
-}
-\details{
-Fun fact: Nested polars Series list must have same inner type, e.g. List(List(Int32))
-Thus every leaf(non list type) will be placed on the same depth of the tree, and be the same type.
+\verb{$to_r()} automatically returns an R vector or list based on the Polars
+DataType. It is possible to force the output type by using \verb{$to_vector()} or
+\verb{$to_r_list()}.
 }
 \section{Conversion to R data types considerations}{
 
@@ -85,35 +75,24 @@ withr::with_envvar(
 }
 
 \examples{
-
+# Series with non-list type
 series_vec = pl$Series(letters[1:3])
 
-# Series_non_list
 series_vec$to_r() # as vector because Series DataType is not list (is String)
 series_vec$to_r_list() # implicit call as.list(), convert to list
 series_vec$to_vector() # implicit call unlist(), same as to_r() as already vector
 
 
-# make nested Series_list of Series_list of Series_Int32
-# using Expr syntax because currently more complete translated
-series_list = pl$DataFrame(list(a = c(1:5, NA_integer_)))$select(
-  pl$col("a")$implode()$implode()$append(
-    (
-      pl$col("a")$head(2)$implode()$append(
-        pl$col("a")$tail(1)$implode()
-      )
-    )$implode()
+# make a Series with nested lists
+series_list = pl$Series(
+  list(
+    list(c(1:5, NA_integer_)),
+    list(1:2, NA_integer_)
   )
-)$get_column("a") # get series from DataFrame
+)
+series_list
 
-# Series_list
 series_list$to_r() # as list because Series DataType is list
 series_list$to_r_list() # implicit call as.list(), same as to_r() as already list
 series_list$to_vector() # implicit call unlist(), append into a vector
-#
 }
-\keyword{=}
-\keyword{Series}
-\keyword{pl$Series(letters[1:3])}
-\keyword{series_vec}
-\keyword{series_vec$to_vector()}

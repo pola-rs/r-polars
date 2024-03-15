@@ -2,22 +2,20 @@
 % Please edit documentation in R/series__series.R
 \name{Series_var}
 \alias{Series_var}
-\title{Var}
+\title{Compute the variance of a Series}
 \usage{
 Series_var(ddof = 1)
 }
 \arguments{
-\item{ddof}{integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.}
+\item{ddof}{Delta Degrees of Freedom: the divisor used in the calculation is
+N - ddof, where N represents the number of elements. By default ddof is 1.}
 }
 \value{
-A new \code{Series} object with applied aggregation.
+A numeric scalar
 }
 \description{
-Aggregate the columns of this Series to their variance values.
+Compute the variance of a Series
 }
 \examples{
 pl$Series(1:10)$var()
 }
-\keyword{R}
-\keyword{scalar}
-\keyword{value}

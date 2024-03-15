@@ -7,7 +7,7 @@
 Series_all()
 }
 \value{
-bool
+A boolean scalar
 }
 \description{
 Reduce Boolean Series with ALL
@@ -15,4 +15,3 @@ Reduce Boolean Series with ALL
 \examples{
 pl$Series(c(TRUE, TRUE, NA))$all()
 }
-\keyword{Series}

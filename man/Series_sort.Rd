@@ -2,26 +2,27 @@
 % Please edit documentation in R/series__series.R
 \name{Series_sort}
 \alias{Series_sort}
-\title{Sort this Series}
+\title{Sort a Series}
 \usage{
 Series_sort(descending = FALSE, nulls_last = FALSE, in_place = FALSE)
 }
 \arguments{
 \item{descending}{Sort in descending order.}
 
-\item{nulls_last}{Place null values last instead of first.}
+\item{nulls_last}{If \code{TRUE}, place nulls values last.}
 
-\item{in_place}{bool sort mutable in-place, breaks immutability
-If true will throw an error unless this option has been set:
-\code{options(polars.strictly_immutable = FALSE)}}
+\item{in_place}{If \code{TRUE}, this will set the flag mutably and return NULL.
+Remember to use \code{options(polars.strictly_immutable = FALSE)} before using
+this parameter, otherwise an error will occur. If \code{FALSE} (default), it will
+return a cloned Series with the flag.}
 }
 \value{
-Series
+\link[=Series_class]{Series}
 }
 \description{
-Sort this Series
+Sort a Series
 }
 \examples{
-pl$Series(c(1, NA, NaN, Inf, -Inf))$sort()
+pl$Series(c(1.5, NA, 1, NaN, Inf, -Inf))$sort()
+pl$Series(c(1.5, NA, 1, NaN, Inf, -Inf))$sort(nulls_last = TRUE)
 }
-\keyword{Series}
