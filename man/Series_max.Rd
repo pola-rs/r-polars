@@ -2,23 +2,22 @@
 % Please edit documentation in R/series__series.R
 \name{Series_max}
 \alias{Series_max}
-\title{max}
+\title{Find the max of a Series}
 \usage{
 Series_max()
 }
 \value{
-R scalar value
+A numeric scalar
 }
 \description{
-Reduce Series with max
+Find the max of a Series
 }
 \details{
-The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
-Int64 before maxming to prevent overflow issues.
+The Dtypes Int8, UInt8, Int16 and UInt16 are cast to Int64 before summing to
+prevent overflow issues.
 }
 \examples{
 pl$Series(c(1:2, NA, 3, 5))$max() # a NA is dropped always
 pl$Series(c(1:2, NA, 3, NaN, 4, Inf))$max() # NaN carries / poisons
 pl$Series(c(1:2, 3, Inf, 4, -Inf, 5))$max() # Inf-Inf is NaN
 }
-\keyword{Series}

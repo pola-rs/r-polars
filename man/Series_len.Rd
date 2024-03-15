@@ -2,18 +2,16 @@
 % Please edit documentation in R/series__series.R
 \name{Series_len}
 \alias{Series_len}
-\title{Series_len}
+\title{Length of a Series}
 \usage{
 Series_len()
 }
 \value{
-numeric
+A numeric value
 }
 \description{
-Length of this Series.
+Length of a Series
 }
 \examples{
 pl$Series(1:10)$len()
-
 }
-\keyword{Series}

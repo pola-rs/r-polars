@@ -2,30 +2,23 @@
 % Please edit documentation in R/series__series.R
 \name{Series_rep}
 \alias{Series_rep}
-\alias{rep}
-\title{duplicate and concatenate a series}
-\format{
-method
-}
+\title{Duplicate and concatenate a series}
 \usage{
 Series_rep(n, rechunk = TRUE)
 }
 \arguments{
-\item{n}{number of times to repeat}
+\item{n}{Number of times to repeat}
 
-\item{rechunk}{bool default true, reallocate object in memory.
-If FALSE the Series will take up less space, If TRUE calculations might be faster.}
+\item{rechunk}{If \code{TRUE} (default), reallocate object in memory which can
+speed up some calculations. If \code{FALSE}, the Series will take less space in
+memory.}
 }
 \value{
-bool
+Series
 }
 \description{
-duplicate and concatenate a series
-}
-\details{
-This function in not implemented in pypolars
+Note that this function doesn't exist in Python Polars.
 }
 \examples{
 pl$Series(1:2, "bob")$rep(3)
 }
-\keyword{Series}

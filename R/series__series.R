@@ -420,14 +420,18 @@ Series_pow = function(exponent) {
 
 
 #' Compare Series
-#' @name Series_compare
-#' @description compare two Series
+#'
+#' Check the (in)equality of two Series.
+#'
 #' @param other A Series or something a Series can be created from
-#' @param op the chosen operator a String either: 'equal', 'not_equal', 'lt', 'gt', 'lt_eq' or 'gt_eq'
+#' @param op The chosen operator, must be one of `"equal"`, `"not_equal"`,
+#' `"lt"`, `"gt"`, `"lt_eq"` or `"gt_eq"`
 #' @return Series
-#' @aliases compare
-#' @keywords  Series
 #' @examples
+#' # We can either use `compare()`...
+#' pl$Series(1:5)$compare(pl$Series(c(1:3, NA_integer_, 10L)), op = "equal")
+#'
+#' # ... or the more classic way
 #' pl$Series(1:5) == pl$Series(c(1:3, NA_integer_, 10L))
 Series_compare = function(other, op) {
   other_s = as_polars_series(other)
@@ -440,7 +444,8 @@ Series_compare = function(other, op) {
   ) {
     stop("in compare Series: not same length or either of length 1.")
   }
-  .pr$Series$compare(self, as_polars_series(other), op)
+  .pr$Series$compare(self, as_polars_series(other), op) |>
+    unwrap(paste0("in $compare() with operator `", op, "`:"))
 }
 
 
@@ -449,74 +454,61 @@ Series_compare = function(other, op) {
 #' @rdname Series_compare
 #' @param s1 lhs Series
 #' @param s2 rhs Series or any into Series
-"==.RPolarsSeries" = function(s1, s2) unwrap(as_polars_series(s1)$compare(s2, "equal"))
+"==.RPolarsSeries" = function(s1, s2) as_polars_series(s1)$compare(s2, "equal")
 #' @export
 #' @rdname Series_compare
-"!=.RPolarsSeries" = function(s1, s2) unwrap(as_polars_series(s1)$compare(s2, "not_equal"))
+"!=.RPolarsSeries" = function(s1, s2) as_polars_series(s1)$compare(s2, "not_equal")
 #' @export
 #' @rdname Series_compare
-"<.RPolarsSeries" = function(s1, s2) unwrap(as_polars_series(s1)$compare(s2, "lt"))
+"<.RPolarsSeries" = function(s1, s2) as_polars_series(s1)$compare(s2, "lt")
 #' @export
 #' @rdname Series_compare
-">.RPolarsSeries" = function(s1, s2) unwrap(as_polars_series(s1)$compare(s2, "gt"))
+">.RPolarsSeries" = function(s1, s2) as_polars_series(s1)$compare(s2, "gt")
 #' @export
 #' @rdname Series_compare
-"<=.RPolarsSeries" = function(s1, s2) unwrap(as_polars_series(s1)$compare(s2, "lt_eq"))
+"<=.RPolarsSeries" = function(s1, s2) as_polars_series(s1)$compare(s2, "lt_eq")
 #' @export
 #' @rdname Series_compare
-">=.RPolarsSeries" = function(s1, s2) unwrap(as_polars_series(s1)$compare(s2, "gt_eq"))
+">=.RPolarsSeries" = function(s1, s2) as_polars_series(s1)$compare(s2, "gt_eq")
 
 
-#' Get r vector/list
-#' @description return R list (if polars Series is list)  or vector (any other polars Series type)
+#' Convert Series to R vector or list
+#'
+#' `$to_r()` automatically returns an R vector or list based on the Polars
+#' DataType. It is possible to force the output type by using `$to_vector()` or
+#' `$to_r_list()`.
 #'
 #' @inheritParams DataFrame_to_data_frame
 #'
 #' @return R list or vector
-#' @keywords Series
-#' @details
-#' Fun fact: Nested polars Series list must have same inner type, e.g. List(List(Int32))
-#' Thus every leaf(non list type) will be placed on the same depth of the tree, and be the same type.
 #' @inheritSection DataFrame_class Conversion to R data types considerations
 #' @examples
-#'
+#' # Series with non-list type
 #' series_vec = pl$Series(letters[1:3])
 #'
-#' # Series_non_list
 #' series_vec$to_r() # as vector because Series DataType is not list (is String)
 #' series_vec$to_r_list() # implicit call as.list(), convert to list
 #' series_vec$to_vector() # implicit call unlist(), same as to_r() as already vector
 #'
 #'
-#' # make nested Series_list of Series_list of Series_Int32
-#' # using Expr syntax because currently more complete translated
-#' series_list = pl$DataFrame(list(a = c(1:5, NA_integer_)))$select(
-#'   pl$col("a")$implode()$implode()$append(
-#'     (
-#'       pl$col("a")$head(2)$implode()$append(
-#'         pl$col("a")$tail(1)$implode()
-#'       )
-#'     )$implode()
+#' # make a Series with nested lists
+#' series_list = pl$Series(
+#'   list(
+#'     list(c(1:5, NA_integer_)),
+#'     list(1:2, NA_integer_)
 #'   )
-#' )$get_column("a") # get series from DataFrame
+#' )
+#' series_list
 #'
-#' # Series_list
 #' series_list$to_r() # as list because Series DataType is list
 #' series_list$to_r_list() # implicit call as.list(), same as to_r() as already list
 #' series_list$to_vector() # implicit call unlist(), append into a vector
 Series_to_r = \(int64_conversion = polars_options()$int64_conversion) {
   unwrap(.pr$Series$to_r(self, int64_conversion), "in $to_r():")
 }
-# TODO replace list example with Series only syntax
 
 #' @rdname Series_to_r
-#' @name Series_to_vector
-#' @description return R vector (implicit unlist)
 #' @inheritParams DataFrame_to_data_frame
-#' @return R vector
-#' @keywords Series
-#' series_vec = pl$Series(letters[1:3])
-#' series_vec$to_vector()
 Series_to_vector = \(int64_conversion = polars_options()$int64_conversion) {
   unlist(unwrap(.pr$Series$to_r(self, int64_conversion)), "in $to_vector():")
 }
@@ -527,35 +519,21 @@ Series_to_vector = \(int64_conversion = polars_options()$int64_conversion) {
 Series_to_r_vector = Series_to_vector
 
 #' @rdname Series_to_r
-#' @name Series_to_r_list
-#' @description return R list (implicit as.list)
 #' @inheritParams DataFrame_to_data_frame
-#' @return R list
-#' @keywords Series
-#' @examples #
 Series_to_r_list = \(int64_conversion = polars_options()$int64_conversion) {
   as.list(unwrap(.pr$Series$to_r(self, int64_conversion)), "in $to_r_list():")
 }
 
-
-#' Value Counts as DataFrame
+#' Count the occurrences of unique values
 #'
-#' @param sort bool, default TRUE: sort table by value; FALSE: random
-#' @param parallel bool, default FALSE, process multithreaded. Likely faster
-#' to have TRUE for a big Series. If called within an already multithreaded context
-#' such calling apply on a GroupBy with many groups, then likely slightly faster to leave FALSE.
+#' @inheritParams Expr_value_counts
 #'
 #' @return DataFrame
-#' @keywords Series
-#' @name Series_value_count
 #' @examples
-#' pl$Series(iris$Species, "flower species")$value_counts()
+#' pl$Series(iris$Species, name = "flower species")$value_counts()
 Series_value_counts = function(sort = TRUE, parallel = FALSE) {
   unwrap(.pr$Series$value_counts(self, sort, parallel), "in $value_counts():")
 }
-
-
-
 
 #' Apply every value with an R fun
 #' @description About as slow as regular non-vectorized R. Similar to using R sapply on a vector.
@@ -583,71 +561,68 @@ Series_map_elements = function(
 }
 
 
-#' Series_len
-#' @description Length of this Series.
+#' Length of a Series
 #'
-#' @return numeric
-#' @docType NULL
-#' @format NULL
-#' @keywords Series
-#' @aliases Series_len
-#' @name Series_len
-#'
+#' @return A numeric value
 #' @examples
 #' pl$Series(1:10)$len()
-#'
 Series_len = use_extendr_wrapper
 
 #' Lengths of Series memory chunks
-#' @description Get the Lengths of Series memory chunks as vector.
 #'
-#' @return numeric vector. Length is number of chunks. Sum of lengths is equal to size of Series.
-#' @keywords Series
-#' @aliases chunk_lengths
-#' @name Series_chunk_lengths
+#' @return Numeric vector. Output length is the number of chunks, and the sum of
+#' the output is equal to the length of the full Series.
 #'
 #' @examples
 #' chunked_series = c(pl$Series(1:3), pl$Series(1:10))
 #' chunked_series$chunk_lengths()
 Series_chunk_lengths = use_extendr_wrapper
 
-#' append (default immutable)
-#' @description append two Series, see details for mutability
-#' @param other Series to append
-#' @param immutable bool should append be immutable, default TRUE as mutable operations should
-#' be avoided in plain R API's.
+#' Append two Series
 #'
-#' @details if immutable = FLASE, the Series object will not behave as immutable. This mean
-#' appending to this Series will affect any variable pointing to this memory location. This will break
-#' normal scoping rules of R. Polars-clones are cheap. Mutable operations are likely never needed in
-#' any sense.
+#' @param other Series to append.
+#' @param immutable Should the `other` Series be immutable? Default is `TRUE`.
+#'
+#' @details
+#' If `immutable = FALSE`, the Series object will not behave as immutable. This
+#' means that appending to this Series will affect any variable pointing to this
+#' memory location. This will break normal scoping rules of R. Setting
+#' `immutable = FALSE` is discouraged as it can have undesirable side effects
+#' and cloning Polars Series is a cheap operation.
 #'
 #' @return Series
-#' @keywords Series
-#' @aliases Series_append
-#' @name Series_append
-#' @examples
-#'
+#' @examplesIf requireNamespace("withr", quietly = TRUE)
 #' # default immutable behavior, s_imut and s_imut_copy stay the same
 #' s_imut = pl$Series(1:3)
 #' s_imut_copy = s_imut
 #' s_new = s_imut$append(pl$Series(1:3))
-#' identical(s_imut$to_vector(), s_imut_copy$to_vector())
+#' s_new
 #'
-#' # pypolars-like mutable behavior,s_mut_copy become the same as s_new
-#' s_mut = pl$Series(1:3)
-#' s_mut_copy = s_mut
-#' # must deactivate this to allow to use immutable=FALSE
-#' options(polars.strictly_immutable = FALSE)
-#' s_new = s_mut$append(pl$Series(1:3), immutable = FALSE)
-#' identical(s_new$to_vector(), s_mut_copy$to_vector())
+#' # the original Series didn't change
+#' s_imut
+#' s_imut_copy
+#'
+#' # enabling mutable behavior requires setting a global option
+#' withr::with_options(
+#'   list(polars.strictly_immutable = FALSE),
+#'   {
+#'     s_mut = pl$Series(1:3)
+#'     s_mut_copy = s_mut
+#'     s_new = s_mut$append(pl$Series(1:3), immutable = FALSE)
+#'     print(s_new)
+#'
+#'     # the original Series also changed since it's mutable
+#'     print(s_mut)
+#'     print(s_mut_copy)
+#'   }
+#' )
 Series_append = function(other, immutable = TRUE) {
   if (!isFALSE(immutable)) {
     c(self, other)
   } else {
     if (polars_options()$strictly_immutable) {
       stop(paste(
-        "append(other , immutable=FALSE) breaks immutability, to enable mutable features run:\n",
+        "`append(other, immutable = FALSE)` breaks immutability. To enable mutable features run:\n",
         "`options(polars.strictly_immutable = FALSE)`"
       ))
     }
@@ -656,26 +631,17 @@ Series_append = function(other, immutable = TRUE) {
   }
 }
 
-#' Alias
-#' @description Change name of Series
-#' @param name a String as the new name
+#' Change name of Series
+#'
+#' @param name New name.
 #' @return Series
-#' @docType NULL
-#' @format NULL
-#' @keywords Series
-#' @aliases alias
-#' @name Series_alias
-#' @usage Series_alias(name)
 #' @examples
 #' pl$Series(1:3, name = "alice")$alias("bob")
 Series_alias = use_extendr_wrapper
 
-
-#' Reduce Boolean Series with ANY
+#' Reduce boolean Series with ANY
 #'
-#' @return bool
-#' @keywords Series
-#' @name Series_any
+#' @return A boolean scalar
 #' @examples
 #' pl$Series(c(TRUE, FALSE, NA))$any()
 Series_any = function() {
@@ -684,35 +650,27 @@ Series_any = function() {
 
 #' Reduce Boolean Series with ALL
 #'
-#' @return bool
-#' @keywords Series
-#' @aliases Series_all
-#' @name Series_all
+#' @return A boolean scalar
 #' @examples
 #' pl$Series(c(TRUE, TRUE, NA))$all()
 Series_all = function() {
   unwrap(.pr$Series$all(self), "in $all():")
 }
 
-#' idx to max value
+#' Index of max value
 #'
-#' @return bool
-#' @docType NULL
-#' @format NULL
-#' @keywords Series
-#' @aliases Series_arg_max
-#' @name Series_arg_max
+#' Note that this is 0-indexed.
+#'
+#' @return A numeric scalar
 #' @examples
 #' pl$Series(c(5, 1))$arg_max()
 Series_arg_max = use_extendr_wrapper
 
-#' idx to min value
+#' Index of min value
 #'
-#' @return bool
-#' @docType NULL
-#' @format NULL
-#' @keywords Series
-#' @name Series_arg_min
+#' Note that this is 0-indexed.
+#'
+#' @return A numeric scalar
 #' @examples
 #' pl$Series(c(5, 1))$arg_min()
 Series_arg_min = use_extendr_wrapper
@@ -753,110 +711,91 @@ Series_arg_min = use_extendr_wrapper
 Series_clone = use_extendr_wrapper
 
 
-#' Sum
-#' @description  Reduce Series with sum
-#' @return R scalar value
-#' @keywords Series
+#' Compute the sum of a Series
+#'
+#' @return A numeric scalar
 #' @details
-#' The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
-#' Int64 before summing to prevent overflow issues.
+#' The Dtypes Int8, UInt8, Int16 and UInt16 are cast to Int64 before summing to
+#' prevent overflow issues.
 #' @examples
 #' pl$Series(c(1:2, NA, 3, 5))$sum() # a NA is dropped always
-#' pl$Series(c(1:2, NA, 3, NaN, 4, Inf))$sum() # NaN carries / poisons
+#' pl$Series(c(1:2, NA, 3, NaN, 4, Inf))$sum() # NaN poisons the result
 #' pl$Series(c(1:2, 3, Inf, 4, -Inf, 5))$sum() # Inf-Inf is NaN
 Series_sum = function() {
-  unwrap(.pr$Series$sum(self), "in $sum()")
+  unwrap(.pr$Series$sum(self), "in $sum():")
 }
 
-#' Mean
-#' @description  Reduce Series with mean
-#' @return R scalar value
-#' @keywords Series
-#' @details
-#' The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
-#' Int64 before meanming to prevent overflow issues.
+#' Compute the mean of a Series
+#'
+#' @inherit Series_sum details return
 #' @examples
 #' pl$Series(c(1:2, NA, 3, 5))$mean() # a NA is dropped always
 #' pl$Series(c(1:2, NA, 3, NaN, 4, Inf))$mean() # NaN carries / poisons
 #' pl$Series(c(1:2, 3, Inf, 4, -Inf, 5))$mean() # Inf-Inf is NaN
 Series_mean = function() {
-  unwrap(.pr$Series$mean(self), "in $mean()")
+  unwrap(.pr$Series$mean(self), "in $mean():")
 }
 
-#' Median
-#' @description  Reduce Series with median
-#' @return  R scalar value
-#' @keywords Series
-#' @details
-#' The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
-#' Int64 before medianming to prevent overflow issues.
+#' Compute the median of a Series
+#'
+#' @inherit Series_sum details return
 #' @examples
 #' pl$Series(c(1:2, NA, 3, 5))$median() # a NA is dropped always
 #' pl$Series(c(1:2, NA, 3, NaN, 4, Inf))$median() # NaN carries / poisons
 #' pl$Series(c(1:2, 3, Inf, 4, -Inf, 5))$median() # Inf-Inf is NaN
 Series_median = function() {
-  unwrap(.pr$Series$median(self), "in $median()")
+  unwrap(.pr$Series$median(self), "in $median():")
 }
 
-#' max
-#' @description  Reduce Series with max
-#' @return R scalar value
-#' @keywords Series
-#' @details
-#' The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
-#' Int64 before maxming to prevent overflow issues.
+#' Find the max of a Series
+#'
+#' @inherit Series_sum details return
 #' @examples
 #' pl$Series(c(1:2, NA, 3, 5))$max() # a NA is dropped always
 #' pl$Series(c(1:2, NA, 3, NaN, 4, Inf))$max() # NaN carries / poisons
 #' pl$Series(c(1:2, 3, Inf, 4, -Inf, 5))$max() # Inf-Inf is NaN
 Series_max = function() {
-  unwrap(.pr$Series$max(self), "in $max()")
+  unwrap(.pr$Series$max(self), "in $max():")
 }
 
-#' min
-#' @description  Reduce Series with min
-#' @return R scalar value
-#' @keywords Series
-#' @details
-#' The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
-#' Int64 before taking the min to prevent overflow issues.
+#' Find the min of a Series
+#'
+#' @inherit Series_sum details return
 #' @examples
 #' pl$Series(c(1:2, NA, 3, 5))$min() # a NA is dropped always
 #' pl$Series(c(1:2, NA, 3, NaN, 4, Inf))$min() # NaN carries / poisons
 #' pl$Series(c(1:2, 3, Inf, 4, -Inf, 5))$min() # Inf-Inf is NaN
 Series_min = function() {
-  unwrap(.pr$Series$min(self), "in $min()")
+  unwrap(.pr$Series$min(self), "in $min():")
 }
 
-#' @title Var
-#' @description Aggregate the columns of this Series to their variance values.
-#' @keywords R scalar value
-#' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
+#' Compute the variance of a Series
+#'
+#' @inheritParams DataFrame_var
+#' @inherit Series_sum return
 #' @return A new `Series` object with applied aggregation.
-#' @examples pl$Series(1:10)$var()
+#' @examples
+#' pl$Series(1:10)$var()
 Series_var = function(ddof = 1) {
   unwrap(.pr$Series$var(self, ddof), "in $var():")
 }
 
-#' @title Std
-#' @description Aggregate the columns of this Series to their standard deviation.
-#' @keywords R scalar value
-#' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
-#' @return A new `Series` object with applied aggregation.
-#' @examples pl$Series(1:10)$std()
+#' Compute the standard deviation of a Series
+#'
+#' @inheritParams DataFrame_var
+#' @inherit Series_sum return
+#' @examples
+#' pl$Series(1:10)$std()
 Series_std = function(ddof = 1) {
   unwrap(.pr$Series$std(self, ddof), "in $std():")
 }
 
-
-## wait until in included in next py-polars release
-### contribute polars, exposee nulls_last option
-#' is_sorted
-#' @keywords Series
+#' Check if the Series is sorted
 #' @param descending Check if the Series is sorted in descending order.
-#' @return DataType
-#' @aliases is_sorted
-#' @details property sorted flags are not settable, use set_sorted
+#' @return A boolean scalar
+#' @seealso
+#' Use [`$set_sorted()`][Series_set_sorted] to add a "sorted" flag to the Series
+#' that could be used for faster operations later on.
 #' @examples
 #' pl$Series(1:4)$sort()$is_sorted()
 Series_is_sorted = function(descending = FALSE) {
@@ -864,13 +803,18 @@ Series_is_sorted = function(descending = FALSE) {
 }
 
 
-#' Set sorted
-#' @keywords Series
-#' @param descending Sort the columns in descending order.
-#' @param in_place if TRUE, will set flag mutably and return NULL. Remember to use
-#' options(polars.strictly_immutable = FALSE) otherwise an error will be thrown. If FALSE
-#' will return a cloned Series with set_flag which in the very most cases should be just fine.
-#' @return Series invisible
+#' Set a sorted flag on a Series
+#'
+#' @inheritParams Expr_set_sorted
+#' @param in_place If `TRUE`, this will set the flag mutably and return NULL.
+#' Remember to use `options(polars.strictly_immutable = FALSE)` before using
+#' this parameter, otherwise an error will occur. If `FALSE` (default), it will
+#' return a cloned Series with the flag.
+#'
+#' @details
+#' Use [`$flags`][Series_class] to see the values of the sorted flags.
+#'
+#' @return A Series with a flag
 #' @aliases Series_set_sorted
 #' @examples
 #' s = pl$Series(1:4)$set_sorted()
@@ -878,7 +822,7 @@ Series_is_sorted = function(descending = FALSE) {
 Series_set_sorted = function(descending = FALSE, in_place = FALSE) {
   if (in_place && polars_options()$strictly_immutable) {
     stop(paste(
-      "in_place set_sorted() breaks immutability, to enable mutable features run:\n",
+      "Using `in_place = TRUE` in `set_sorted()` breaks immutability. To enable mutable features run:\n",
       "`options(polars.strictly_immutable = FALSE)`"
     ))
   }
@@ -891,19 +835,17 @@ Series_set_sorted = function(descending = FALSE, in_place = FALSE) {
   if (in_place) invisible(NULL) else invisible(self)
 }
 
-#' Sort this Series
-#' @keywords Series
-#' @aliases Series_sort
+#' Sort a Series
+#'
 #' @param descending Sort in descending order.
-#' @param nulls_last Place null values last instead of first.
-#' @param in_place bool sort mutable in-place, breaks immutability
-#' If true will throw an error unless this option has been set:
-#' `options(polars.strictly_immutable = FALSE)`
+#' @inheritParams Expr_sort
+#' @inheritParams Series_set_sorted
 #'
 #' @return Series
 #'
 #' @examples
-#' pl$Series(c(1, NA, NaN, Inf, -Inf))$sort()
+#' pl$Series(c(1.5, NA, 1, NaN, Inf, -Inf))$sort()
+#' pl$Series(c(1.5, NA, 1, NaN, Inf, -Inf))$sort(nulls_last = TRUE)
 Series_sort = function(descending = FALSE, nulls_last = FALSE, in_place = FALSE) {
   if (in_place && polars_options()$strictly_immutable) {
     stop(paste(
@@ -918,53 +860,54 @@ Series_sort = function(descending = FALSE, nulls_last = FALSE, in_place = FALSE)
   .pr$Series$sort_mut(self, descending, nulls_last)
 }
 
-
-#' Series to DataFrame
-#' @name Series_to_frames
-#' @return Series
-#' @keywords Series
-#' @aliases Series_to_frame
-#' @format method
+#' Convert Series to DataFrame
+#' @return DataFrame
 #'
 #' @examples
+#' # default will be a DataFrame with empty name
+#' pl$Series(1:4)$to_frame()
+#'
 #' pl$Series(1:4, "bob")$to_frame()
 Series_to_frame = function() {
   unwrap(.pr$Series$to_frame(self), "in $to_frame():")
 }
 
-
-#' Are Series's equal?
+#' Are two Series equal?
 #'
-#' @param other Series to compare with
-#' @param null_equal bool if TRUE, (Null==Null) is true and not Null/NA. Overridden by strict.
-#' @param strict bool if TRUE, do not allow similar DataType comparison. Overrides null_equal.
+#' This checks whether two Series are equal in values and in their name.
 #'
-#' @description  Check if series is equal with another Series.
-#' @name Series_equals
-#' @return bool
-#' @keywords Series
-#' @aliases equals
-#' @format method
+#' @param other Series to compare with.
+#' @param null_equal If `TRUE`, consider that null values are equal. Overridden
+#' by `strict`.
+#' @param strict If `TRUE`, do not allow similar DataType comparison. Overrides
+#' `null_equal`.
 #'
+#' @return A boolean scalar
 #' @examples
+#' pl$Series(1:4)$equals(pl$Series(1:4))
+#'
+#' # names are different
 #' pl$Series(1:4, "bob")$equals(pl$Series(1:4))
+#'
+#' # nulls are different by default
+#' pl$Series(c(1:4, NA))$equals(pl$Series(c(1:4, NA)))
+#' pl$Series(c(1:4, NA))$equals(pl$Series(c(1:4, NA)), null_equal = TRUE)
+#'
+#' # datatypes are ignored by default
+#' pl$Series(1:4)$cast(pl$Int16)$equals(pl$Series(1:4))
+#' pl$Series(1:4)$cast(pl$Int16)$equals(pl$Series(1:4), strict = TRUE)
 Series_equals = function(other, null_equal = FALSE, strict = FALSE) {
   .pr$Series$equals(self, other, null_equal, strict)
 }
 
 #' Rename a series
 #'
-#' @param name string the new name
-#' @param in_place bool rename in-place, breaks immutability
-#' If true will throw an error unless this option has been set:
-#' `options(polars.strictly_immutable = FALSE)`
+#' @param name New name.
+#' @param in_place Rename in-place, which breaks immutability. If `TRUE`, you
+#'   need to run `options(polars.strictly_immutable = FALSE)` before, otherwise
+#'   it will throw an error.
 #'
-#' @name Series_rename
-#' @return bool
-#' @keywords Series
-#' @aliases rename
-#' @format method
-#'
+#' @return Series
 #' @examples
 #' pl$Series(1:4, "bob")$rename("alice")
 Series_rename = function(name, in_place = FALSE) {
@@ -987,17 +930,15 @@ Series_rename = function(name, in_place = FALSE) {
 }
 
 
-#' duplicate and concatenate a series
+#' Duplicate and concatenate a series
 #'
-#' @param n number of times to repeat
-#' @param rechunk bool default true, reallocate object in memory.
-#' If FALSE the Series will take up less space, If TRUE calculations might be faster.
-#' @name Series_rep
-#' @return bool
-#' @keywords Series
-#' @aliases rep
-#' @format method
-#' @details  This function in not implemented in pypolars
+#' Note that this function doesn't exist in Python Polars.
+#'
+#' @param n Number of times to repeat
+#' @param rechunk If `TRUE` (default), reallocate object in memory which can
+#'   speed up some calculations. If `FALSE`, the Series will take less space in
+#'   memory.
+#' @return Series
 #'
 #' @examples
 #' pl$Series(1:2, "bob")$rep(3)
@@ -1009,14 +950,11 @@ Series_rep = function(n, rechunk = TRUE) {
 
 in_DataType = function(l, rs) any(sapply(rs, function(r) l == r))
 
-#' is_numeric
-#' @description return bool whether series is numeric
+#' Check if the Series is numeric
 #'
-#' @return bool
-#' @keywords Series
-#' @aliases is_numeric
-#' @format method
-#' @details  true of series dtype is member of pl$numeric_dtypes
+#' This checks whether the Series DataType is in `pl$numeric_dtypes`.
+#'
+#' @return A boolean scalar
 #'
 #' @examples
 #' pl$Series(1:4)$is_numeric()
@@ -1027,12 +965,9 @@ Series_is_numeric = function() {
 }
 
 
-#' Series to Literal
-#' @description
-#' convert Series to literal to perform modification and return
-#' @keywords Series
+#' Convert a Series to literal
+#'
 #' @return Expr
-#' @aliases to_lit
 #' @examples
 #' pl$Series(list(1:1, 1:2, 1:3, 1:4))$
 #'   print()$
@@ -1046,11 +981,10 @@ Series_to_lit = function() {
 }
 
 #' Count unique values in Series
-#' @description Return count of unique values in Series
-#' @keywords Series
-#' @return Expr
+#'
+#' @return A numeric scalar
 #' @examples
-#' pl$Series(1:4)$n_unique()
+#' pl$Series(c(1, 2, 1, 4, 4, 1, 5))$n_unique()
 Series_n_unique = function() {
   unwrap(.pr$Series$n_unique(self), "in $n_unique():")
 }

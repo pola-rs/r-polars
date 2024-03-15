@@ -2,23 +2,19 @@
 % Please edit documentation in R/series__series.R
 \name{Series_rename}
 \alias{Series_rename}
-\alias{rename}
 \title{Rename a series}
-\format{
-method
-}
 \usage{
 Series_rename(name, in_place = FALSE)
 }
 \arguments{
-\item{name}{string the new name}
+\item{name}{New name.}
 
-\item{in_place}{bool rename in-place, breaks immutability
-If true will throw an error unless this option has been set:
-\code{options(polars.strictly_immutable = FALSE)}}
+\item{in_place}{Rename in-place, which breaks immutability. If \code{TRUE}, you
+need to run \code{options(polars.strictly_immutable = FALSE)} before, otherwise
+it will throw an error.}
 }
 \value{
-bool
+Series
 }
 \description{
 Rename a series
@@ -26,4 +22,3 @@ Rename a series
 \examples{
 pl$Series(1:4, "bob")$rename("alice")
 }
-\keyword{Series}

@@ -2,25 +2,28 @@
 % Please edit documentation in R/series__series.R
 \name{Series_set_sorted}
 \alias{Series_set_sorted}
-\title{Set sorted}
+\title{Set a sorted flag on a Series}
 \usage{
 Series_set_sorted(descending = FALSE, in_place = FALSE)
 }
 \arguments{
 \item{descending}{Sort the columns in descending order.}
 
-\item{in_place}{if TRUE, will set flag mutably and return NULL. Remember to use
-options(polars.strictly_immutable = FALSE) otherwise an error will be thrown. If FALSE
-will return a cloned Series with set_flag which in the very most cases should be just fine.}
+\item{in_place}{If \code{TRUE}, this will set the flag mutably and return NULL.
+Remember to use \code{options(polars.strictly_immutable = FALSE)} before using
+this parameter, otherwise an error will occur. If \code{FALSE} (default), it will
+return a cloned Series with the flag.}
 }
 \value{
-Series invisible
+A Series with a flag
 }
 \description{
-Set sorted
+Set a sorted flag on a Series
+}
+\details{
+Use \code{\link[=Series_class]{$flags}} to see the values of the sorted flags.
 }
 \examples{
 s = pl$Series(1:4)$set_sorted()
 s$flags
 }
-\keyword{Series}

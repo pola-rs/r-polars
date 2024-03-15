@@ -158,9 +158,10 @@ impl RPolarsSeries {
     }
 
     pub fn equals(&self, other: &RPolarsSeries, null_equal: bool, strict: bool) -> bool {
-        if strict {
-            self.0.eq(&other.0)
-        } else if null_equal {
+        if strict && (self.0.dtype() != other.0.dtype()) {
+            return false;
+        }
+        if null_equal {
             self.0.equals_missing(&other.0)
         } else {
             self.0.equals(&other.0)

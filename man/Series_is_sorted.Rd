@@ -2,8 +2,7 @@
 % Please edit documentation in R/series__series.R
 \name{Series_is_sorted}
 \alias{Series_is_sorted}
-\alias{is_sorted}
-\title{is_sorted}
+\title{Check if the Series is sorted}
 \usage{
 Series_is_sorted(descending = FALSE)
 }
@@ -11,15 +10,15 @@ Series_is_sorted(descending = FALSE)
 \item{descending}{Check if the Series is sorted in descending order.}
 }
 \value{
-DataType
+A boolean scalar
 }
 \description{
-is_sorted
-}
-\details{
-property sorted flags are not settable, use set_sorted
+Check if the Series is sorted
 }
 \examples{
 pl$Series(1:4)$sort()$is_sorted()
 }
-\keyword{Series}
+\seealso{
+Use \code{\link[=Series_set_sorted]{$set_sorted()}} to add a "sorted" flag to the Series
+that could be used for faster operations later on.
+}

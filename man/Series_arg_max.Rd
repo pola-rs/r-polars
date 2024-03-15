@@ -2,17 +2,16 @@
 % Please edit documentation in R/series__series.R
 \name{Series_arg_max}
 \alias{Series_arg_max}
-\title{idx to max value}
+\title{Index of max value}
 \usage{
 Series_arg_max()
 }
 \value{
-bool
+A numeric scalar
 }
 \description{
-idx to max value
+Note that this is 0-indexed.
 }
 \examples{
 pl$Series(c(5, 1))$arg_max()
 }
-\keyword{Series}

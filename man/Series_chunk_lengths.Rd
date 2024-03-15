@@ -2,19 +2,18 @@
 % Please edit documentation in R/series__series.R
 \name{Series_chunk_lengths}
 \alias{Series_chunk_lengths}
-\alias{chunk_lengths}
 \title{Lengths of Series memory chunks}
 \usage{
 Series_chunk_lengths()
 }
 \value{
-numeric vector. Length is number of chunks. Sum of lengths is equal to size of Series.
+Numeric vector. Output length is the number of chunks, and the sum of
+the output is equal to the length of the full Series.
 }
 \description{
-Get the Lengths of Series memory chunks as vector.
+Lengths of Series memory chunks
 }
 \examples{
 chunked_series = c(pl$Series(1:3), pl$Series(1:10))
 chunked_series$chunk_lengths()
 }
-\keyword{Series}

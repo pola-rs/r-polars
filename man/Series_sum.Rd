@@ -2,23 +2,22 @@
 % Please edit documentation in R/series__series.R
 \name{Series_sum}
 \alias{Series_sum}
-\title{Sum}
+\title{Compute the sum of a Series}
 \usage{
 Series_sum()
 }
 \value{
-R scalar value
+A numeric scalar
 }
 \description{
-Reduce Series with sum
+Compute the sum of a Series
 }
 \details{
-The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
-Int64 before summing to prevent overflow issues.
+The Dtypes Int8, UInt8, Int16 and UInt16 are cast to Int64 before summing to
+prevent overflow issues.
 }
 \examples{
 pl$Series(c(1:2, NA, 3, 5))$sum() # a NA is dropped always
-pl$Series(c(1:2, NA, 3, NaN, 4, Inf))$sum() # NaN carries / poisons
+pl$Series(c(1:2, NA, 3, NaN, 4, Inf))$sum() # NaN poisons the result
 pl$Series(c(1:2, 3, Inf, 4, -Inf, 5))$sum() # Inf-Inf is NaN
 }
-\keyword{Series}

@@ -2,26 +2,18 @@
 % Please edit documentation in R/series__series.R
 \name{Series_is_numeric}
 \alias{Series_is_numeric}
-\alias{is_numeric}
-\title{is_numeric}
-\format{
-method
-}
+\title{Check if the Series is numeric}
 \usage{
 Series_is_numeric()
 }
 \value{
-bool
+A boolean scalar
 }
 \description{
-return bool whether series is numeric
-}
-\details{
-true of series dtype is member of pl$numeric_dtypes
+This checks whether the Series DataType is in \code{pl$numeric_dtypes}.
 }
 \examples{
 pl$Series(1:4)$is_numeric()
 pl$Series(c("a", "b", "c"))$is_numeric()
 pl$numeric_dtypes
 }
-\keyword{Series}

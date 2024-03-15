@@ -2,28 +2,36 @@
 % Please edit documentation in R/series__series.R
 \name{Series_equals}
 \alias{Series_equals}
-\alias{equals}
-\title{Are Series's equal?}
-\format{
-method
-}
+\title{Are two Series equal?}
 \usage{
 Series_equals(other, null_equal = FALSE, strict = FALSE)
 }
 \arguments{
-\item{other}{Series to compare with}
+\item{other}{Series to compare with.}
 
-\item{null_equal}{bool if TRUE, (Null==Null) is true and not Null/NA. Overridden by strict.}
+\item{null_equal}{If \code{TRUE}, consider that null values are equal. Overridden
+by \code{strict}.}
 
-\item{strict}{bool if TRUE, do not allow similar DataType comparison. Overrides null_equal.}
+\item{strict}{If \code{TRUE}, do not allow similar DataType comparison. Overrides
+\code{null_equal}.}
 }
 \value{
-bool
+A boolean scalar
 }
 \description{
-Check if series is equal with another Series.
+This checks whether two Series are equal in values and in their name.
 }
 \examples{
+pl$Series(1:4)$equals(pl$Series(1:4))
+
+# names are different
 pl$Series(1:4, "bob")$equals(pl$Series(1:4))
+
+# nulls are different by default
+pl$Series(c(1:4, NA))$equals(pl$Series(c(1:4, NA)))
+pl$Series(c(1:4, NA))$equals(pl$Series(c(1:4, NA)), null_equal = TRUE)
+
+# datatypes are ignored by default
+pl$Series(1:4)$cast(pl$Int16)$equals(pl$Series(1:4))
+pl$Series(1:4)$cast(pl$Int16)$equals(pl$Series(1:4), strict = TRUE)
 }
-\keyword{Series}

@@ -2,7 +2,6 @@
 % Please edit documentation in R/series__series.R
 \name{Series_compare}
 \alias{Series_compare}
-\alias{compare}
 \alias{==.RPolarsSeries}
 \alias{!=.RPolarsSeries}
 \alias{<.RPolarsSeries}
@@ -28,7 +27,8 @@ Series_compare(other, op)
 \arguments{
 \item{other}{A Series or something a Series can be created from}
 
-\item{op}{the chosen operator a String either: 'equal', 'not_equal', 'lt', 'gt', 'lt_eq' or 'gt_eq'}
+\item{op}{The chosen operator, must be one of \code{"equal"}, \code{"not_equal"},
+\code{"lt"}, \code{"gt"}, \code{"lt_eq"} or \code{"gt_eq"}}
 
 \item{s1}{lhs Series}
 
@@ -38,9 +38,12 @@ Series_compare(other, op)
 Series
 }
 \description{
-compare two Series
+Check the (in)equality of two Series.
 }
 \examples{
+# We can either use `compare()`...
+pl$Series(1:5)$compare(pl$Series(c(1:3, NA_integer_, 10L)), op = "equal")
+
+# ... or the more classic way
 pl$Series(1:5) == pl$Series(c(1:3, NA_integer_, 10L))
 }
-\keyword{Series}

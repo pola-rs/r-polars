@@ -2,13 +2,12 @@
 % Please edit documentation in R/series__series.R
 \name{Series_alias}
 \alias{Series_alias}
-\alias{alias}
-\title{Alias}
+\title{Change name of Series}
 \usage{
-Series_alias(name)
+Series_alias()
 }
 \arguments{
-\item{name}{a String as the new name}
+\item{name}{New name.}
 }
 \value{
 Series
@@ -19,4 +18,3 @@ Change name of Series
 \examples{
 pl$Series(1:3, name = "alice")$alias("bob")
 }
-\keyword{Series}
