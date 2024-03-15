@@ -7,7 +7,7 @@
 Series_to_lit()
 }
 \value{
-Expr
+\link[=Expr_class]{Expr}
 }
 \description{
 Convert a Series to literal

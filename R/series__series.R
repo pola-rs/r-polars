@@ -774,7 +774,6 @@ Series_min = function() {
 #'
 #' @inheritParams DataFrame_var
 #' @inherit Series_sum return
-#' @return A new `Series` object with applied aggregation.
 #' @examples
 #' pl$Series(1:10)$var()
 Series_var = function(ddof = 1) {
@@ -967,7 +966,7 @@ Series_is_numeric = function() {
 
 #' Convert a Series to literal
 #'
-#' @return Expr
+#' @return [Expr][Expr_class]
 #' @examples
 #' pl$Series(list(1:1, 1:2, 1:3, 1:4))$
 #'   print()$
