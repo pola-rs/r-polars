@@ -191,17 +191,19 @@ pl_count = function(...) {
     unwrap("in pl$count():")
 }
 
+
 #' Aggregate all column values into a list.
-#' @param name Name of the column(s) that should be imploded, passed to pl$col()
-#' @keywords Expr
-#' @return Expr
+#'
+#' This function is syntactic sugar for `pl$col(...)$implode()`.
+#' @inheritParams pl_head
+#' @inherit pl_head return
 #' @examples
 #' pl$DataFrame(iris)$select(pl$implode("Species"))
-pl_implode = function(name) { # -> Expr
-  result(pl$col(name)) |>
-    map(.pr$Expr$implode) |>
+pl_implode = function(...) {
+  result(pl$col(...)$implode()) |>
     unwrap("in pl$implode():")
 }
+
 
 #' Get the first value.
 #'
