@@ -112,13 +112,15 @@ pl_col = function(...) {
 
   dots = list2(...)
 
-  if (length(dots) == 1L && length(dots[[1]]) == 1L && is.character(dots[[1]])) {
-    res = create_col(dots[[1]])
-  } else if (lapply(dots, is.character) |> Reduce(`&&`, x = _)) {
-    res = create_cols_from_strs(unlist(dots))
+  if (lapply(dots, is.character) |> Reduce(`&&`, x = _)) {
+    if (length(dots) == 1L && length(dots[[1]]) == 1L) {
+      res = create_col(dots[[1]])
+    } else {
+      res = create_cols_from_strs(unlist(dots))
+    }
   } else if (lapply(dots, is_polars_dtype) |> Reduce(`&&`, x = _)) {
     res = create_cols_from_datatypes(dots)
-  } else if (is.list(dots[[1]]) && lapply(dots[[1]], is_polars_dtype) |> Reduce(`&&`, x = _)) {
+  } else if (length(dots) == 1L && is.list(dots[[1]]) && lapply(dots[[1]], is_polars_dtype) |> Reduce(`&&`, x = _)) {
     res = create_cols_from_datatypes(dots[[1]])
   } else {
     Err_plain(
