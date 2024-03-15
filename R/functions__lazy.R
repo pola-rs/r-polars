@@ -102,9 +102,6 @@ pl_all = function(name = NULL) {
 #'
 #' # ... or an R list of DataTypes, select any column of any such DataType
 #' df$select(pl$col(list(pl$dtypes$Float64, pl$dtypes$String)))
-#'
-#' # from Series of names
-#' df$select(pl$col(pl$Series(c("bar", "foobar"))))
 pl_col = function(...) {
   uw = \(x) unwrap(x, "in pl$col():")
 
