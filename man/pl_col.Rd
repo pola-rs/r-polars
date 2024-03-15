@@ -2,53 +2,46 @@
 % Please edit documentation in R/functions__lazy.R
 \name{pl_col}
 \alias{pl_col}
-\title{Start Expression with a column}
+\title{Create an expression representing column(s) in a dataframe}
 \usage{
 pl_col(...)
 }
 \arguments{
-\item{...}{Additional column names can be passed as strings, separated by commas.}
-
-\item{name}{\itemize{
-\item a single column by a string
-\item all columns by using a wildcard \code{"*"}
-\item multiple columns as vector of strings
-\item column by regular expression if the regex starts with \code{^} and ends with \code{$}
-e.g. pl$DataFrame(iris)$select(pl$col(c("^Sepal.*$")))
-\item a single DataType or an R list of DataTypes, select any column of any such DataType
-\item Series of utf8 strings abiding to above options
+\item{...}{One of the following:
+\itemize{
+\item character vectors
+\item \link[=pl_dtypes]{RPolarsDataTypes}
+\item a list of \link[=pl_dtypes]{RPolarsDataTypes}
 }}
 }
 \value{
-Column Expression
+\link[=Expr_class]{Expr} of a column or columns
 }
 \description{
-Return an expression representing a column in a DataFrame.
+Create an expression representing column(s) in a dataframe
 }
 \examples{
+# a single column by a character
+pl$col("foo")
 
-df = pl$DataFrame(list(foo = 1, bar = 2L, foobar = "3"))
+# multiple columns by characters
+pl$col("foo", "bar")
 
-# a single column by a string
-df$select(pl$col("foo"))
+# multiple columns by RPolarsDataTypes
+pl$col(pl$dtypes$Float64, pl$dtypes$String)
 
-# two columns as strings separated by commas
-df$select(pl$col("foo", "bar"))
+# multiple character vectors and a list of RPolarsDataTypes are also allowed
+pl$col(c("foo", "bar"), "baz")
+pl$col("foo", c("bar", "baz"))
+pl$col(list(pl$dtypes$Float64, pl$dtypes$String))
 
-# all columns by wildcard
+# there are some special notations for selecting columns
+df = pl$DataFrame(foo = 1:3, bar = 4:6, baz = 7:9)
+
+## select all columns with a wildcard `"*"`
 df$select(pl$col("*"))
-df$select(pl$all())
 
-# multiple columns as vector of strings
-df$select(pl$col(c("foo", "bar")))
-
-# column by regular expression if the regex starts with `^` and ends with `$`
-df$select(pl$col("^foo.*$"))
-
-# a single DataType
-df$select(pl$col(pl$dtypes$Float64))
-
-# ... or an R list of DataTypes, select any column of any such DataType
-df$select(pl$col(list(pl$dtypes$Float64, pl$dtypes$String)))
+## select multiple columns by a regular expression
+## starts with `^` and ends with `$`
+df$select(pl$col(c("^ba.*$")))
 }
-\keyword{Expr_new}
