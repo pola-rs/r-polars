@@ -105,13 +105,36 @@ pl_all = function(name = NULL) {
 #'
 #' # from Series of names
 #' df$select(pl$col(pl$Series(c("bar", "foobar"))))
-pl_col = function(name = "", ...) {
+pl_col = function(...) {
+  uw = \(x) unwrap(x, "in pl$col():")
+
   if (!nargs()) {
     Err_plain("pl$col() requires at least one argument.") |>
-      unwrap("in pl$col():")
+      uw()
   }
-  robj_to_col(name, list2(...)) |>
-    unwrap("in pl$col()")
+
+  dots = list2(...)
+
+  if (length(dots) == 1L && length(dots[[1]]) == 1L && is.character(dots[[1]])) {
+    res = create_col(dots[[1]])
+  } else if (lapply(dots, is.character) |> Reduce(`&&`, x = _)) {
+    res = create_cols_from_strs(unlist(dots))
+  } else if (lapply(dots, is_polars_dtype) |> Reduce(`&&`, x = _)) {
+    res = create_cols_from_datatypes(dots)
+  } else if (is.list(dots[[1]]) && lapply(dots[[1]], is_polars_dtype) |> Reduce(`&&`, x = _)) {
+    res = create_cols_from_datatypes(dots[[1]])
+  } else {
+    Err_plain(
+      "pl$col()'s arguments must be one of the following:\n",
+      "- character vectors\n",
+      "- RPolarsDataTypes\n",
+      "- a list of RPolarsDataTypes"
+    ) |>
+      uw()
+  }
+
+  res |>
+    uw()
 }
 
 #' an element in 'eval'-expr

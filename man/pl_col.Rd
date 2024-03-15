@@ -4,9 +4,11 @@
 \alias{pl_col}
 \title{Start Expression with a column}
 \usage{
-pl_col(name = "", ...)
+pl_col(...)
 }
 \arguments{
+\item{...}{Additional column names can be passed as strings, separated by commas.}
+
 \item{name}{\itemize{
 \item a single column by a string
 \item all columns by using a wildcard \code{"*"}
@@ -16,8 +18,6 @@ e.g. pl$DataFrame(iris)$select(pl$col(c("^Sepal.*$")))
 \item a single DataType or an R list of DataTypes, select any column of any such DataType
 \item Series of utf8 strings abiding to above options
 }}
-
-\item{...}{Additional column names can be passed as strings, separated by commas.}
 }
 \value{
 Column Expression
