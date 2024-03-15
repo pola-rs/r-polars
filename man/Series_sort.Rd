@@ -17,7 +17,7 @@ this parameter, otherwise an error will occur. If \code{FALSE} (default), it wil
 return a cloned Series with the flag.}
 }
 \value{
-Series
+\link[=Series_class]{Series}
 }
 \description{
 Sort a Series

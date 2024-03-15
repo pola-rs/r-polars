@@ -426,7 +426,7 @@ Series_pow = function(exponent) {
 #' @param other A Series or something a Series can be created from
 #' @param op The chosen operator, must be one of `"equal"`, `"not_equal"`,
 #' `"lt"`, `"gt"`, `"lt_eq"` or `"gt_eq"`
-#' @return Series
+#' @return [Series][Series_class]
 #' @examples
 #' # We can either use `compare()`...
 #' pl$Series(1:5)$compare(pl$Series(c(1:3, NA_integer_, 10L)), op = "equal")
@@ -542,7 +542,7 @@ Series_value_counts = function(sort = TRUE, parallel = FALSE) {
 #' @param strict_return_type bool, default TRUE: fail on wrong return type, FALSE: convert to polars Null
 #' @param allow_fail_eval bool, default FALSE: raise R fun error, TRUE: convert to polars Null
 #'
-#' @return Series
+#' @return [Series][Series_class]
 #' @keywords Series
 #' @aliases apply
 #'
@@ -590,7 +590,7 @@ Series_chunk_lengths = use_extendr_wrapper
 #' `immutable = FALSE` is discouraged as it can have undesirable side effects
 #' and cloning Polars Series is a cheap operation.
 #'
-#' @return Series
+#' @return [Series][Series_class]
 #' @examplesIf requireNamespace("withr", quietly = TRUE)
 #' # default immutable behavior, s_imut and s_imut_copy stay the same
 #' s_imut = pl$Series(1:3)
@@ -635,7 +635,7 @@ Series_append = function(other, immutable = TRUE) {
 #'
 #' @param name New name.
 #' @usage Series_alias(name)
-#' @return Series
+#' @return [Series][Series_class]
 #' @examples
 #' pl$Series(1:3, name = "alice")$alias("bob")
 Series_alias = use_extendr_wrapper
@@ -684,7 +684,7 @@ Series_arg_min = use_extendr_wrapper
 #' immutable. Any modification of a `Series` should lead to a clone anyways, but
 #' this can be useful when dealing with attributes (see examples).
 #'
-#' @return Series
+#' @return [Series][Series_class]
 #' @examples
 #' df1 = pl$Series(1:10)
 #'
@@ -815,8 +815,7 @@ Series_is_sorted = function(descending = FALSE) {
 #' @details
 #' Use [`$flags`][Series_class] to see the values of the sorted flags.
 #'
-#' @return A Series with a flag
-#' @aliases Series_set_sorted
+#' @return A [Series][Series_class] with a flag
 #' @examples
 #' s = pl$Series(1:4)$set_sorted()
 #' s$flags
@@ -842,7 +841,7 @@ Series_set_sorted = function(descending = FALSE, in_place = FALSE) {
 #' @inheritParams Expr_sort
 #' @inheritParams Series_set_sorted
 #'
-#' @return Series
+#' @return [Series][Series_class]
 #'
 #' @examples
 #' pl$Series(c(1.5, NA, 1, NaN, Inf, -Inf))$sort()
@@ -908,7 +907,7 @@ Series_equals = function(other, null_equal = FALSE, strict = FALSE) {
 #'   need to run `options(polars.strictly_immutable = FALSE)` before, otherwise
 #'   it will throw an error.
 #'
-#' @return Series
+#' @return [Series][Series_class]
 #' @examples
 #' pl$Series(1:4, "bob")$rename("alice")
 Series_rename = function(name, in_place = FALSE) {
@@ -939,7 +938,7 @@ Series_rename = function(name, in_place = FALSE) {
 #' @param rechunk If `TRUE` (default), reallocate object in memory which can
 #'   speed up some calculations. If `FALSE`, the Series will take less space in
 #'   memory.
-#' @return Series
+#' @return [Series][Series_class]
 #'
 #' @examples
 #' pl$Series(1:2, "bob")$rep(3)

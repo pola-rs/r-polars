@@ -7,7 +7,7 @@
 Series_clone()
 }
 \value{
-Series
+\link[=Series_class]{Series}
 }
 \description{
 This makes a very cheap deep copy/clone of an existing

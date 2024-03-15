@@ -35,7 +35,7 @@ Series_compare(other, op)
 \item{s2}{rhs Series or any into Series}
 }
 \value{
-Series
+\link[=Series_class]{Series}
 }
 \description{
 Check the (in)equality of two Series.

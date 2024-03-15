@@ -22,7 +22,7 @@ Series_map_elements(
 \item{allow_fail_eval}{bool, default FALSE: raise R fun error, TRUE: convert to polars Null}
 }
 \value{
-Series
+\link[=Series_class]{Series}
 }
 \description{
 About as slow as regular non-vectorized R. Similar to using R sapply on a vector.

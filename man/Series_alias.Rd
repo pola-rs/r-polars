@@ -10,7 +10,7 @@ Series_alias(name)
 \item{name}{New name.}
 }
 \value{
-Series
+\link[=Series_class]{Series}
 }
 \description{
 Change name of Series

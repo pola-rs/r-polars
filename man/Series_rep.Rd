@@ -14,7 +14,7 @@ speed up some calculations. If \code{FALSE}, the Series will take less space in
 memory.}
 }
 \value{
-Series
+\link[=Series_class]{Series}
 }
 \description{
 Note that this function doesn't exist in Python Polars.

@@ -14,7 +14,7 @@ need to run \code{options(polars.strictly_immutable = FALSE)} before, otherwise
 it will throw an error.}
 }
 \value{
-Series
+\link[=Series_class]{Series}
 }
 \description{
 Rename a series

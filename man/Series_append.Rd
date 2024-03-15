@@ -12,7 +12,7 @@ Series_append(other, immutable = TRUE)
 \item{immutable}{Should the \code{other} Series be immutable? Default is \code{TRUE}.}
 }
 \value{
-Series
+\link[=Series_class]{Series}
 }
 \description{
 Append two Series

@@ -15,7 +15,7 @@ this parameter, otherwise an error will occur. If \code{FALSE} (default), it wil
 return a cloned Series with the flag.}
 }
 \value{
-A Series with a flag
+A \link[=Series_class]{Series} with a flag
 }
 \description{
 Set a sorted flag on a Series
