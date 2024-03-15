@@ -1177,3 +1177,19 @@ pl_time = function(hour = NULL, minute = NULL, second = NULL, microsecond = NULL
     result() |>
     unwrap("in pl$time():")
 }
+
+#' Return indices that match a condition
+#'
+#' @param condition An Expr that gives a boolean.
+#'
+#' @return Expr
+#'
+#' @examples
+#' df = pl$DataFrame(a = c(1, 2, 3, 4, 5))
+#' df$select(
+#'   pl$arg_where(pl$col("a") %% 2 == 0)
+#' )
+pl_arg_where = function(condition) {
+  arg_where(condition) |>
+    unwrap("in $arg_where():")
+}
