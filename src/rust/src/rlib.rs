@@ -320,11 +320,17 @@ pub fn datetime(
     Ok(polars::lazy::dsl::datetime(args).into())
 }
 
+#[extendr]
+fn arg_where(condition: Robj) -> RResult<RPolarsExpr> {
+    Ok(pl::arg_where(robj_to!(PLExpr, condition)?).into())
+}
+
 extendr_module! {
     mod rlib;
 
     fn all_horizontal;
     fn any_horizontal;
+    fn arg_where;
     fn coalesce_exprs;
     fn datetime;
     fn duration;

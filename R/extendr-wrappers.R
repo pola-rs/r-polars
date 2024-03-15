@@ -14,6 +14,8 @@ all_horizontal <- function(dotdotdot) .Call(wrap__all_horizontal, dotdotdot)
 
 any_horizontal <- function(dotdotdot) .Call(wrap__any_horizontal, dotdotdot)
 
+arg_where <- function(condition) .Call(wrap__arg_where, condition)
+
 coalesce_exprs <- function(exprs) .Call(wrap__coalesce_exprs, exprs)
 
 datetime <- function(year, month, day, hour, minute, second, microsecond, time_unit, time_zone, ambiguous) .Call(wrap__datetime, year, month, day, hour, minute, second, microsecond, time_unit, time_zone, ambiguous)

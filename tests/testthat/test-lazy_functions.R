@@ -403,3 +403,17 @@ test_that("pl$date() works", {
 #     time_floats = pl$time(pl$lit("abc"), -2, 1)
 #   )
 # })
+
+test_that("pl$arg_where() works", {
+  df = pl$DataFrame(a = c(1, 2, 3, 4, 5))
+  expect_identical(
+    df$select(pl$arg_where(pl$col("a") %% 2 == 0))$to_list(),
+    list(a = c(1, 3))
+  )
+
+  # no matches
+  expect_identical(
+    df$select(pl$arg_where(pl$col("a") %% 10 == 0))$to_list(),
+    list(a = numeric(0))
+  )
+})
