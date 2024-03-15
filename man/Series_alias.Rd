@@ -4,7 +4,7 @@
 \alias{Series_alias}
 \title{Change name of Series}
 \usage{
-Series_alias()
+Series_alias(name)
 }
 \arguments{
 \item{name}{New name.}

@@ -634,6 +634,7 @@ Series_append = function(other, immutable = TRUE) {
 #' Change name of Series
 #'
 #' @param name New name.
+#' @usage Series_alias(name)
 #' @return Series
 #' @examples
 #' pl$Series(1:3, name = "alice")$alias("bob")
