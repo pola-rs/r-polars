@@ -1952,3 +1952,58 @@ LazyFrame_group_by_dynamic = function(
   ) |>
     unwrap("in $group_by_dynamic():")
 }
+
+#' Plot the query plan
+#'
+#' Note that this requires to have the package `DiagrammeR` installed. Use
+#' `raw_output = TRUE` to obtain the raw GraphViz code without plotting it.
+#'
+#' @param optimized Optimize the query plan.
+#' @param raw_output Return the raw GraphViz code only, does not print the plot.
+#' @inheritParams LazyFrame_set_optimization_toggle
+#'
+#' @return If `raw_output = TRUE`, a character vector. Otherwise, an object of
+#' class `"grViz"`.
+#'
+#' @examplesIf requireNamespace("DiagrammeR", quietly = TRUE)
+#' query = pl$LazyFrame(mtcars)$
+#'   filter(pl$col("drat") > 3)$
+#'   with_columns(foo = pl$col("mpg") + pl$col("cyl"), bar = pl$mean("mpg"))
+#'
+#' query$show_graph(raw_output = TRUE)
+#'
+#' query$show_graph()
+LazyFrame_show_graph = function(
+    optimized = TRUE,
+    raw_output = FALSE,
+    type_coercion = TRUE,
+    predicate_pushdown = TRUE,
+    projection_pushdown = TRUE,
+    simplify_expression = TRUE,
+    slice_pushdown = TRUE,
+    comm_subplan_elim = TRUE,
+    comm_subexpr_elim = TRUE,
+    streaming = FALSE) {
+  lf = self$set_optimization_toggle(
+    type_coercion,
+    predicate_pushdown,
+    projection_pushdown,
+    simplify_expression,
+    slice_pushdown,
+    comm_subplan_elim,
+    comm_subexpr_elim,
+    streaming
+  ) |> unwrap("in $show_graph():")
+
+  graph = .pr$LazyFrame$to_dot(self, optimized) |>
+    unwrap("in $show_graph():")
+
+  if (isTRUE(raw_output)) {
+    return(graph)
+  }
+
+  if (!requireNamespace("DiagrammeR", quietly = TRUE)) {
+    stop('The package "DiagrammeR" is required.')
+  }
+  DiagrammeR::grViz(graph)
+}

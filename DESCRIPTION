@@ -28,6 +28,7 @@ Suggests:
     callr,
     clock (>= 0.7.0),
     curl,
+    DiagrammeR,
     ggplot2,
     jsonlite,
     knitr,
@@ -42,6 +43,7 @@ Suggests:
     tibble,
     tools,
     vctrs,
+    vdiffr,
     withr
 Config/Needs/website:
     altdoc,

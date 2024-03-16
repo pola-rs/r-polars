@@ -47,3 +47,18 @@ test_that("profile: show_plot returns a plot in the list of outputs", {
 
   expect_length(p1, 3)
 })
+
+test_that("$show_graph() works", {
+  query = pl$LazyFrame(mtcars)$
+    filter(pl$col("drat") > 3)$
+    with_columns(foo = pl$col("mpg") + pl$col("cyl"), bar = pl$mean("mpg"))
+
+  expect_snapshot(query$show_graph(raw_output = TRUE))
+
+  skip_if_not_installed("DiagrammeR")
+  skip_if_not_installed("vdiffr")
+  vdiffr::expect_doppelganger(
+    "Basic query graph",
+    query$show_graph()
+  )
+})
