@@ -10,6 +10,9 @@ pl_col(...)
 \item{...}{One of the following:
 \itemize{
 \item character vectors
+\itemize{
+\item Single wildcard \code{"*"} has a special meaning: check the examples.
+}
 \item \link[=pl_dtypes]{RPolarsDataTypes}
 \item a list of \link[=pl_dtypes]{RPolarsDataTypes}
 }}
@@ -29,6 +32,9 @@ pl$col("foo", "bar")
 
 # multiple columns by RPolarsDataTypes
 pl$col(pl$dtypes$Float64, pl$dtypes$String)
+
+# Single `"*"` is converted to a wildcard expression
+pl$col("*")
 
 # multiple character vectors and a list of RPolarsDataTypes are also allowed
 pl$col(c("foo", "bar"), "baz")

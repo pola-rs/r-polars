@@ -66,6 +66,7 @@ pl_all = function(name = NULL) {
 #' @param ...
 #' One of the following:
 #' - character vectors
+#'   - Single wildcard `"*"` has a special meaning: check the examples.
 #' - [RPolarsDataTypes][pl_dtypes]
 #' - a list of [RPolarsDataTypes][pl_dtypes]
 #' @return [Expr][Expr_class] of a column or columns
@@ -78,6 +79,9 @@ pl_all = function(name = NULL) {
 #'
 #' # multiple columns by RPolarsDataTypes
 #' pl$col(pl$dtypes$Float64, pl$dtypes$String)
+#'
+#' # Single `"*"` is converted to a wildcard expression
+#' pl$col("*")
 #'
 #' # multiple character vectors and a list of RPolarsDataTypes are also allowed
 #' pl$col(c("foo", "bar"), "baz")
