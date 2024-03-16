@@ -109,18 +109,17 @@ pl_col = function(...) {
     } else {
       res = create_cols_from_strs(unlist(dots))
     }
-  } else if (lapply(dots, is_polars_dtype) |> Reduce(`&&`, x = _)) {
-    res = create_cols_from_datatypes(dots)
   } else if (length(dots) == 1L && is.list(dots[[1]]) && lapply(dots[[1]], is_polars_dtype) |> Reduce(`&&`, x = _)) {
     res = create_cols_from_datatypes(dots[[1]])
+  } else if (lapply(dots, is_polars_dtype) |> Reduce(`&&`, x = _)) {
+    res = create_cols_from_datatypes(dots)
   } else {
-    Err_plain(
+    res = Err_plain(
       "pl$col()'s arguments must be one of the following:\n",
       "- character vectors\n",
       "- RPolarsDataTypes\n",
       "- a list of RPolarsDataTypes"
-    ) |>
-      uw()
+    )
   }
 
   res |>
