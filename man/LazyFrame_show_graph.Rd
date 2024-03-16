@@ -14,7 +14,8 @@ LazyFrame_show_graph(
   slice_pushdown = TRUE,
   comm_subplan_elim = TRUE,
   comm_subexpr_elim = TRUE,
-  streaming = FALSE
+  streaming = FALSE,
+  ...
 )
 }
 \arguments{
@@ -45,6 +46,8 @@ reused.}
 
 \item{streaming}{Boolean. Run parts of the query in a streaming fashion
 (this is in an alpha state).}
+
+\item{...}{Additional arguments passed to \code{DiagrammeR::grViz()}.}
 }
 \value{
 If \code{raw_output = TRUE}, a character vector. Otherwise, an object of

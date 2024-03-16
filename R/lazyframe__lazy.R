@@ -1961,6 +1961,7 @@ LazyFrame_group_by_dynamic = function(
 #' @param optimized Optimize the query plan.
 #' @param raw_output Return the raw GraphViz code only, does not print the plot.
 #' @inheritParams LazyFrame_set_optimization_toggle
+#' @param ... Additional arguments passed to `DiagrammeR::grViz()`.
 #'
 #' @return If `raw_output = TRUE`, a character vector. Otherwise, an object of
 #' class `"grViz"`.
@@ -1983,7 +1984,8 @@ LazyFrame_show_graph = function(
     slice_pushdown = TRUE,
     comm_subplan_elim = TRUE,
     comm_subexpr_elim = TRUE,
-    streaming = FALSE) {
+    streaming = FALSE,
+    ...) {
   lf = self$set_optimization_toggle(
     type_coercion,
     predicate_pushdown,
@@ -2005,5 +2007,5 @@ LazyFrame_show_graph = function(
   if (!requireNamespace("DiagrammeR", quietly = TRUE)) {
     stop('The package "DiagrammeR" is required.')
   }
-  DiagrammeR::grViz(graph)
+  DiagrammeR::grViz(graph, ...)
 }
