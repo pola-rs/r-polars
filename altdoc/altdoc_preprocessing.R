@@ -85,18 +85,20 @@ yml$nav[[3]]$Reference = hierarchy
 plugins <- yml$plugins
 if (is.character(plugins)) {
   plugins <- setNames(as.list(plugins), plugins)
+  plugins[["search"]] <- list(
+    separator = paste0("[\\s\\-]+|(", paste(classes, collapse = "_|"), "_)")
+  )
 } else if (is.list(plugins)) {
   for (i in seq_along(plugins)) {
-    if (length(plugins[[i]]) == 1 && is.character(plugins[[i]])) {
-      names(plugins)[i] <- plugins[[i]]
-    } else {
-      names(plugins)[i] <- names(plugins[[i]])[1]
+    if (plugins[[i]] == "search") {
+      plugins[[i]] <- list(
+        search = list(
+          separator = paste0("[\\s\\-]+|(", paste(classes, collapse = "_|"), "_)")
+        )
+      )
     }
   }
 }
-plugins[["search"]] <- list(
-  separator = paste0("[\\s\\-]+|(", paste(classes, collapse = "_|"), "_)")
-)
 yml$plugins <- plugins
 
 
