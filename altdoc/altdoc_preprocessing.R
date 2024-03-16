@@ -83,19 +83,16 @@ yml$nav[[3]]$Reference = hierarchy
 
 # Customize the search
 plugins <- yml$plugins
+replacement <- list(
+  separator = paste0("[\\s\\-]+|(", paste(classes, collapse = "_|"), "_)")
+)
 if (is.character(plugins)) {
   plugins <- setNames(as.list(plugins), plugins)
-  plugins[["search"]] <- list(
-    separator = paste0("[\\s\\-]+|(", paste(classes, collapse = "_|"), "_)")
-  )
+  plugins[["search"]] <- replacement
 } else if (is.list(plugins)) {
   for (i in seq_along(plugins)) {
     if (plugins[[i]] == "search") {
-      plugins[[i]] <- list(
-        search = list(
-          separator = paste0("[\\s\\-]+|(", paste(classes, collapse = "_|"), "_)")
-        )
-      )
+      plugins[[i]] <- list(search = replacement)
     }
   }
 }
