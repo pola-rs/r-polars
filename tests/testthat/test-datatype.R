@@ -135,7 +135,9 @@ test_that("allow '*' for time_zone", {
 
 test_that("is_polars_dtype works", {
   expect_true(is_polars_dtype(pl$Int64))
-  expect_false(is_polars_dtype(pl$Unknown))
   expect_false(is_polars_dtype("numeric"))
   expect_false(is_polars_dtype(mtcars))
+
+  expect_false(is_polars_dtype(pl$Unknown))
+  expect_true(is_polars_dtype(pl$Unknown, include_unknown = TRUE))
 })

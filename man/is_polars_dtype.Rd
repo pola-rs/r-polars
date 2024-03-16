@@ -8,6 +8,9 @@ is_polars_dtype(x, include_unknown = FALSE)
 }
 \arguments{
 \item{x}{An object to be tested.}
+
+\item{include_unknown}{If \code{FALSE} (default), \code{pl$Unknown} is considered as
+an invalid datatype.}
 }
 \value{
 A boolean scalar.
@@ -17,6 +20,7 @@ Check if input is a valid DataType
 }
 \examples{
 is_polars_dtype(pl$Int64)
-is_polars_dtype("numeric")
 is_polars_dtype(mtcars)
+is_polars_dtype(pl$Unknown)
+is_polars_dtype(pl$Unknown, include_unknown = TRUE)
 }
