@@ -1191,5 +1191,30 @@ pl_time = function(hour = NULL, minute = NULL, second = NULL, microsecond = NULL
 #' )
 pl_arg_where = function(condition) {
   arg_where(condition) |>
-    unwrap("in $arg_where():")
+    unwrap("in pl$arg_where():")
+}
+
+#' Return the row indices that would sort the columns
+#'
+#' @param exprs Column(s) to arg sort by. Can be Expr(s) or something coercible
+#'   to Expr(s). Strings are parsed as column names.
+#' @param ... Not used.
+#' @inheritParams Expr_sort
+#'
+#' @return Expr
+#' @seealso [$arg_sort()][Expr_arg_sort()] to find the row indices that would
+#' sort an Expr.
+#' @examples
+#' df = pl$DataFrame(
+#'   a = c(0, 1, 1, 0),
+#'   b = c(3, 2, 3, 2)
+#' )
+#'
+#' df$with_columns(
+#'   arg_sort_a = pl$arg_sort_by("a"),
+#'   arg_sort_ab = pl$arg_sort_by("a", "b", descending = TRUE)
+#' )
+pl_arg_sort_by = function(..., descending = FALSE) {
+  arg_sort_by(list2(...), descending) |>
+    unwrap("in pl$arg_sort_by():")
 }
