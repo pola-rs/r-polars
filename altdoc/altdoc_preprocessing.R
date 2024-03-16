@@ -82,21 +82,21 @@ yml$nav[[3]]$Reference = hierarchy
 
 
 # Customize the search
-plugins <- yml$plugins
-replacement <- list(
+plugins = yml$plugins
+replacement = list(
   separator = paste0("[\\s\\-]+|(", paste(classes, collapse = "_|"), "_)")
 )
 if (is.character(plugins)) {
-  plugins <- setNames(as.list(plugins), plugins)
-  plugins[["search"]] <- replacement
+  plugins = setNames(as.list(plugins), plugins)
+  plugins[["search"]] = replacement
 } else if (is.list(plugins)) {
   for (i in seq_along(plugins)) {
     if (plugins[[i]] == "search") {
-      plugins[[i]] <- list(search = replacement)
+      plugins[[i]] = list(search = replacement)
     }
   }
 }
-yml$plugins <- plugins
+yml$plugins = plugins
 
 
 # These two elements should be lists in the yaml format, not single elements,
