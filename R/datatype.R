@@ -90,7 +90,10 @@ print.RPolarsDataType = function(x, ...) {
 #' @param x An object to be tested.
 #' @param include_unknown If `FALSE` (default), `pl$Unknown` is considered as
 #' an invalid datatype.
+#'
+#' @export
 #' @return A boolean scalar.
+#'
 #' @examples
 #' is_polars_dtype(pl$Int64)
 #' is_polars_dtype(mtcars)
