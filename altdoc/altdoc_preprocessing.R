@@ -80,6 +80,26 @@ hierarchy = append(list("Reference" = "reference_home.md"), hierarchy)
 # Insert the links in the settings
 yml$nav[[3]]$Reference = hierarchy
 
+
+# Customize the search
+plugins <- yml$plugins
+if (is.character(plugins)) {
+  plugins <- setNames(as.list(plugins), plugins)
+} else if (is.list(plugins)) {
+  for (i in seq_along(plugins)) {
+    if (length(plugins[[i]]) == 1 && is.character(plugins[[i]])) {
+      names(plugins)[i] <- plugins[[i]]
+    } else {
+      names(plugins)[i] <- names(plugins[[i]])[1]
+    }
+  }
+}
+plugins[["search"]] <- list(
+  separator = paste0("[\\s\\-]+|(", paste(classes, collapse = "_|"), "_)")
+)
+yml$plugins <- plugins
+
+
 # These two elements should be lists in the yaml format, not single elements,
 # otherwise mkdocs breaks
 for (i in c("extra_css", "plugins")) {

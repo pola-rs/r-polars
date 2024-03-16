@@ -7,8 +7,7 @@ repo_name: $ALTDOC_PACKAGE_NAME
 
 ### Plugins
 plugins:
-  - search:
-      separator: "[\\s\\-]+|(pl_|DataFrame_|LazyFrame_|Expr_|ExprArr_|ExprBin_|ExprCat_|ExprDT_|ExprList_|ExprMeta_|ExprName_|ExprStr_|ExprStruct_)"
+  - search
 
 ### Theming
 theme:
