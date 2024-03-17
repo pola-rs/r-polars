@@ -84,7 +84,7 @@ yml$nav[[3]]$Reference = hierarchy
 # Customize the search
 plugins = yml$plugins
 replacement = list(
-  separator = paste0("[\\s\\-]+|(", paste(classes, collapse = "_|"), "_)")
+  separator = paste0("[\\s\\-\\$]+|(", paste(classes, collapse = "_|"), "_)")
 )
 if (is.character(plugins)) {
   plugins = setNames(as.list(plugins), plugins)
