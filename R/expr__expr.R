@@ -1491,10 +1491,6 @@ Expr_arg_sort = function(descending = FALSE, nulls_last = FALSE) {
   .pr$Expr$arg_sort(self, descending, nulls_last)
 }
 
-#' @inherit Expr_arg_sort title params examples
-#' @description argsort is a alias for arg_sort
-Expr_argsort = Expr_arg_sort
-
 #' Index of min value
 #'
 #' Get the index of the minimal value.

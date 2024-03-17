@@ -7,6 +7,7 @@
 - The argument `columns` in `$drop()` is removed. `$drop()` now accepts several
   character scalars, such as `$drop("a", "b", "c")`. Explicitly using the
   `columns` argument now errors (#912).
+- Removed `$argsort()` which was an old alias for `$arg_sort()` (#930).
 
 ### New features
 
