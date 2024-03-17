@@ -9,7 +9,7 @@
 #' `pl$lit(NULL)` translates into a polars `null`.
 #'
 #' @examples
-#' # scalars to literal, explicit `pl$lit(42)` implicit `+ 2`
+#' # values to literal, explicit `pl$lit(42)` implicit `+ 2`
 #' pl$col("some_column") / pl$lit(42) + 2
 #'
 #' # vector to literal explicitly via Series and back again

@@ -537,7 +537,7 @@ Series_value_counts = function(sort = TRUE, parallel = FALSE) {
 
 #' Apply every value with an R fun
 #' @description About as slow as regular non-vectorized R. Similar to using R sapply on a vector.
-#' @param fun r function, should take a scalar value as input and return one.
+#' @param fun r function, should take a single value as input and return one.
 #' @param datatype DataType of return value. Default NULL means same as input.
 #' @param strict_return_type bool, default TRUE: fail on wrong return type, FALSE: convert to polars Null
 #' @param allow_fail_eval bool, default FALSE: raise R fun error, TRUE: convert to polars Null

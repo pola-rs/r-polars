@@ -13,7 +13,7 @@ Series_map_elements(
 )
 }
 \arguments{
-\item{fun}{r function, should take a scalar value as input and return one.}
+\item{fun}{r function, should take a single value as input and return one.}
 
 \item{datatype}{DataType of return value. Default NULL means same as input.}
 
