@@ -107,27 +107,31 @@ pl_col = function(...) {
 
   dots = list2(...)
 
-  if (lapply(dots, is.character) |> Reduce(`&&`, x = _)) {
+  if (is.character(dots[[1]])) {
     if (length(dots) == 1L && length(dots[[1]]) == 1L) {
       res = create_col(dots[[1]])
     } else {
       res = create_cols_from_strs(unlist(dots))
     }
-  } else if (length(dots) == 1L && is.list(dots[[1]]) && lapply(dots[[1]], is_polars_dtype) |> Reduce(`&&`, x = _)) {
+  } else if (length(dots) == 1L && is.list(dots[[1]])) {
+    # A list of RPolarsDataTypes
     res = create_cols_from_datatypes(dots[[1]])
-  } else if (lapply(dots, is_polars_dtype) |> Reduce(`&&`, x = _)) {
-    res = create_cols_from_datatypes(dots)
   } else {
-    res = Err_plain(
-      "Arguments of pl$col() must be one of the following:\n",
+    # RPolarsDataTypes
+    res = create_cols_from_datatypes(dots)
+  }
+
+  if (!is_ok(res)) {
+    Err_plain(
+      "pl$col()'s arguments must be one of the following:\n",
       "- character vectors\n",
       "- RPolarsDataTypes\n",
       "- a list of RPolarsDataTypes"
-    )
+    ) |>
+      uw()
+  } else {
+    res$ok
   }
-
-  res |>
-    uw()
 }
 
 
