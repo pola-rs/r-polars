@@ -400,7 +400,7 @@ ExprList_tail = function(n = 5L) {
 #' @param fields If the name and number of the desired fields is known in
 #'   advance, a list of field names can be given, which will be assigned by
 #'   index. Otherwise, to dynamically assign field names, a custom R function
-#'   that takes an R scalar double and outputs a string value can be used. If
+#'   that takes an R double and outputs a string value can be used. If
 #'   `NULL` (default), fields will be `field_0`, `field_1` ... `field_n`.
 
 #' @param upper_bound A `LazyFrame` needs to know the schema at all time. The

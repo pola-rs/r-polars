@@ -16,6 +16,7 @@
 - New functions `pl$datetime()`, `pl$date()`, and `pl$time()` to easily create
   Expr of class datetime, date, and time via columns and literals (#918).
 - New function `pl$arg_where()` to get the indices that match a condition (#922).
+- New function `is_polars_dtype()` (#927).
 
 ## Polars R Package 0.15.1
 

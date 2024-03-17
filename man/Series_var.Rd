@@ -11,7 +11,7 @@ Series_var(ddof = 1)
 N - ddof, where N represents the number of elements. By default ddof is 1.}
 }
 \value{
-A numeric scalar
+A numeric value
 }
 \description{
 Compute the variance of a Series

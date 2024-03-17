@@ -7,7 +7,7 @@
 Series_n_unique()
 }
 \value{
-A numeric scalar
+A numeric value
 }
 \description{
 Count unique values in Series

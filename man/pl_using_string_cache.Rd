@@ -7,7 +7,7 @@
 pl_using_string_cache()
 }
 \value{
-A boolean
+A logical value
 }
 \description{
 This function simply checks if the global string cache is active.

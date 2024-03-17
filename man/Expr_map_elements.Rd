@@ -46,7 +46,7 @@ so each element will itself be a Series. Therefore, depending on the context,
 requirements for function differ:
 \itemize{
 \item in \verb{$select()} or \verb{$with_columns()} (selection context), the function must
-operate on R scalar values. Polars will convert each element into an R value
+operate on R values of length 1. Polars will convert each element into an R value
 and pass it to the function. The output of the user function will be converted
 back into a polars type (the return type must match, see argument \code{return_type}).
 Using \verb{$map_elements()} in this context should be avoided as a \code{lapply()}
@@ -80,7 +80,7 @@ e_head = pl$all()$map_elements(\(s) head(s$to_r(), 2))$name$suffix("_head")
 pl$DataFrame(iris)$group_by("Species")$agg(e_sum, e_head)
 
 # apply a function on each value (should be avoided): here the input is an R
-# scalar
+# value of length 1
 # select only Float64 columns
 my_selection = pl$col(pl$dtypes$Float64)
 
