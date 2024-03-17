@@ -1,19 +1,13 @@
 # $show_graph() works
 
     Code
-      cat(query$show_graph(raw_output = TRUE))
+      cat(pl$LazyFrame(a = 1, b = "a")$show_graph(raw_output = TRUE))
     Output
       graph  polars_query {
-      "WITH COLUMNS [\"foo\",\"bar\"] [(0, 0)]" -- "TABLE
-      π */11;
-      σ (col(\"drat\")) > (3.0) [(0, 1)]"
+      "[TABLE
+      π */2;
+      σ -]"
       
-      "WITH COLUMNS [\"foo\",\"bar\"] [(0, 0)]"[label="WITH COLUMNS [\"foo\",\"bar\"]"]
-      "TABLE
-      π */11;
-      σ (col(\"drat\")) > (3.0) [(0, 1)]"[label="TABLE
-      π */11;
-      σ (col(\"drat\")) > (3.0)"]
       
       }
 

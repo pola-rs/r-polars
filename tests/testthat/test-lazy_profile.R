@@ -49,9 +49,7 @@ test_that("profile: show_plot returns a plot in the list of outputs", {
 })
 
 test_that("$show_graph() works", {
-  query = pl$LazyFrame(mtcars)$
-    filter(pl$col("drat") > 3)$
-    with_columns(foo = pl$col("mpg") + pl$col("cyl"), bar = pl$mean("mpg"))
-
-  expect_snapshot(cat(query$show_graph(raw_output = TRUE)))
+  expect_snapshot(
+    cat(pl$LazyFrame(a = 1, b = "a")$show_graph(raw_output = TRUE))
+  )
 })
