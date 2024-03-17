@@ -22,26 +22,26 @@ LazyFrame_sink_ndjson(
 \item{maintain_order}{Maintain the order in which data is processed. Setting
 this to \code{FALSE} will be slightly faster.}
 
-\item{type_coercion}{Boolean. Coerce types such that operations succeed and
+\item{type_coercion}{Logical. Coerce types such that operations succeed and
 run on minimal required memory.}
 
-\item{predicate_pushdown}{Boolean. Applies filters as early as possible at
+\item{predicate_pushdown}{Logical. Applies filters as early as possible at
 scan level.}
 
-\item{projection_pushdown}{Boolean. Select only the columns that are needed
+\item{projection_pushdown}{Logical. Select only the columns that are needed
 at the scan level.}
 
-\item{simplify_expression}{Boolean. Various optimizations, such as constant
+\item{simplify_expression}{Logical. Various optimizations, such as constant
 folding and replacing expensive operations with faster alternatives.}
 
-\item{slice_pushdown}{Boolean. Only load the required slice from the scan
+\item{slice_pushdown}{Logical. Only load the required slice from the scan
 level. Don't materialize sliced outputs (e.g. \code{join$head(10)}).}
 
-\item{no_optimization}{Boolean. Sets the following parameters to \code{FALSE}:
+\item{no_optimization}{Logical. Sets the following parameters to \code{FALSE}:
 \code{predicate_pushdown}, \code{projection_pushdown}, \code{slice_pushdown},
 \code{comm_subplan_elim}, \code{comm_subexpr_elim}.}
 
-\item{inherit_optimization}{Boolean. Use existing optimization settings
+\item{inherit_optimization}{Logical. Use existing optimization settings
 regardless the settings specified in this function call.}
 }
 \description{

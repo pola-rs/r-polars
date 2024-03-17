@@ -563,10 +563,10 @@ Expr_alias = use_extendr_wrapper
 
 #' Apply logical AND on a column
 #'
-#' Check if all boolean values in a Boolean column are `TRUE`. This method is an
+#' Check if all values in a Boolean column are `TRUE`. This method is an
 #' expression - not to be confused with `pl$all()` which is a function to select
 #' all columns.
-#' @param drop_nulls Boolean. Default TRUE, as name says.
+#' @param drop_nulls Logical. Default TRUE, as name says.
 #' @return Boolean literal
 #' @examples
 #' pl$DataFrame(
@@ -586,7 +586,7 @@ Expr_all = function(drop_nulls = TRUE) {
 #' Apply logical OR on a column
 #'
 #' Check if any boolean value in a Boolean column is `TRUE`.
-#' @param drop_nulls Boolean. Default TRUE, as name says.
+#' @param drop_nulls Logical. Default TRUE, as name says.
 #' @return Boolean literal
 #' @examples
 #' pl$DataFrame(
@@ -736,7 +736,7 @@ construct_ProtoExprArray = function(...) {
 #' to inform schema of the actual return type of the R function. Setting this wrong
 #' could theoretically have some downstream implications to the query.
 #' @param agg_list Aggregate list. Map from vector to group in group_by context.
-#' @param in_background Boolean. Whether to execute the map in a background R
+#' @param in_background Logical. Whether to execute the map in a background R
 #' process. Combined with setting e.g. `options(polars.rpool_cap = 4)` it can speed
 #' up some slow R functions as they can run in parallel R sessions. The
 #' communication speed between processes is quite slower than between threads.

@@ -10,7 +10,7 @@ ExprMeta_neq(other)
 \item{other}{Expr to compare with}
 }
 \value{
-A boolean: \code{TRUE} if different, \code{FALSE} otherwise
+A logical value
 }
 \description{
 Indicate if this expression is different from another expression. See also

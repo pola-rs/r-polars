@@ -21,7 +21,7 @@ could theoretically have some downstream implications to the query.}
 
 \item{agg_list}{Aggregate list. Map from vector to group in group_by context.}
 
-\item{in_background}{Boolean. Whether to execute the map in a background R
+\item{in_background}{Logical. Whether to execute the map in a background R
 process. Combined with setting e.g. \code{options(polars.rpool_cap = 4)} it can speed
 up some slow R functions as they can run in parallel R sessions. The
 communication speed between processes is quite slower than between threads.

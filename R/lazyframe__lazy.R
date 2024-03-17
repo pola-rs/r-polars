@@ -361,23 +361,23 @@ LazyFrame_get_optimization_toggle = function() {
 #' @title Configure optimization toggles
 #' @description Configure the optimization toggles for the lazy query
 #' @keywords LazyFrame
-#' @param type_coercion Boolean. Coerce types such that operations succeed and
+#' @param type_coercion Logical. Coerce types such that operations succeed and
 #' run on minimal required memory.
-#' @param predicate_pushdown Boolean. Applies filters as early as possible at
+#' @param predicate_pushdown Logical. Applies filters as early as possible at
 #' scan level.
-#' @param projection_pushdown Boolean. Select only the columns that are needed
+#' @param projection_pushdown Logical. Select only the columns that are needed
 #' at the scan level.
-#' @param simplify_expression Boolean. Various optimizations, such as constant
+#' @param simplify_expression Logical. Various optimizations, such as constant
 #' folding and replacing expensive operations with faster alternatives.
-#' @param slice_pushdown Boolean. Only load the required slice from the scan
+#' @param slice_pushdown Logical. Only load the required slice from the scan
 #' level. Don't materialize sliced outputs (e.g. `join$head(10)`).
-#' @param comm_subplan_elim Boolean. Will try to cache branching subplans that
+#' @param comm_subplan_elim Logical. Will try to cache branching subplans that
 #'  occur on self-joins or unions.
-#' @param comm_subexpr_elim Boolean. Common subexpressions will be cached and
+#' @param comm_subexpr_elim Logical. Common subexpressions will be cached and
 #' reused.
-#' @param streaming Boolean. Run parts of the query in a streaming fashion
+#' @param streaming Logical. Run parts of the query in a streaming fashion
 #' (this is in an alpha state).
-#' @param eager Boolean. Run the query eagerly.
+#' @param eager Logical. Run the query eagerly.
 #' @return LazyFrame with specified optimization toggles
 #' @examples
 #' pl$LazyFrame(mtcars)$set_optimization_toggle(type_coercion = FALSE)
@@ -410,12 +410,12 @@ LazyFrame_set_optimization_toggle = function(
 #' DataFrame
 #' @inheritParams LazyFrame_set_optimization_toggle
 #' @param ... Ignored.
-#' @param no_optimization  Boolean. Sets the following parameters to `FALSE`:
+#' @param no_optimization  Logical. Sets the following parameters to `FALSE`:
 #'  `predicate_pushdown`, `projection_pushdown`, `slice_pushdown`,
 #'  `comm_subplan_elim`, `comm_subexpr_elim`.
-#' @param inherit_optimization  Boolean. Use existing optimization settings
+#' @param inherit_optimization  Logical. Use existing optimization settings
 #' regardless the settings specified in this function call.
-#' @param collect_in_background Boolean. Detach this query from R session.
+#' @param collect_in_background Logical. Detach this query from R session.
 #' Computation will start in background. Get a handle which later can be converted
 #' into the resulting DataFrame. Useful in interactive mode to not lock R session.
 #' @details
@@ -546,7 +546,7 @@ LazyFrame_collect_in_background = function() {
 #'  * "gzip": min-level: 0, max-level: 10.
 #'  * "brotli": min-level: 0, max-level: 11.
 #'  * "zstd": min-level: 1, max-level: 22.
-#' @param statistics Boolean. Whether compute and write column statistics.
+#' @param statistics Logical. Whether compute and write column statistics.
 #' This requires extra compute.
 #' @param row_group_size `NULL` or Integer. Size of the row groups in number of
 #' rows. If `NULL` (default), the chunks of the DataFrame are used. Writing in
@@ -1259,10 +1259,10 @@ LazyFrame_join = function(
 #' @param by Column(s) to sort by. Can be character vector of column names,
 #' a list of Expr(s) or a list with a mix of Expr(s) and column names.
 #' @param ... More columns to sort by as above but provided one Expr per argument.
-#' @param descending Boolean. Sort in descending order (default is `FALSE`). This must be
+#' @param descending Logical. Sort in descending order (default is `FALSE`). This must be
 #' either of length 1 or a logical vector of the same length as the number of
 #' Expr(s) specified in `by` and `...`.
-#' @param nulls_last Boolean. Place `NULL`s at the end? Default is `FALSE`.
+#' @param nulls_last Logical. Place `NULL`s at the end? Default is `FALSE`.
 #' @param maintain_order Whether the order should be maintained if elements are
 #' equal. If `TRUE`, streaming is not possible and performance might be worse
 #' since this requires a stable search.
