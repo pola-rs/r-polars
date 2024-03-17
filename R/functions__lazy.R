@@ -60,59 +60,80 @@ pl_all = function(name = NULL) {
   # https://github.com/pola-rs/polars/blob/589f36432de6e95e81d9715a77d6fe78360512e5/py-polars/polars/internals/lazy_functions.py#L1095
 }
 
-# TODO: rewrite to simplify
-#' Start Expression with a column
-#' @description
-#' Return an expression representing a column in a DataFrame.
-#' @param name
-#' - a single column by a string
-#' - all columns by using a wildcard `"*"`
-#' - multiple columns as vector of strings
-#' - column by regular expression if the regex starts with `^` and ends with `$`
-#' e.g. pl$DataFrame(iris)$select(pl$col(c("^Sepal.*$")))
-#' - a single DataType or an R list of DataTypes, select any column of any such DataType
-#' - Series of utf8 strings abiding to above options
-#' @param ... Additional column names can be passed as strings, separated by commas.
+
+#' Create an expression representing column(s) in a dataframe
 #'
-#' @return Column Expression
-#'
-#' @keywords Expr_new
+#' @param ...
+#' One of the following:
+#' - character vectors
+#'   - Single wildcard `"*"` has a special meaning: check the examples.
+#' - [RPolarsDataTypes][pl_dtypes]
+#' - a list of [RPolarsDataTypes][pl_dtypes]
+#' @return [Expr][Expr_class] of a column or columns
 #' @examples
+#' # a single column by a character
+#' pl$col("foo")
 #'
-#' df = pl$DataFrame(list(foo = 1, bar = 2L, foobar = "3"))
+#' # multiple columns by characters
+#' pl$col("foo", "bar")
 #'
-#' # a single column by a string
-#' df$select(pl$col("foo"))
+#' # multiple columns by RPolarsDataTypes
+#' pl$col(pl$Float64, pl$String)
 #'
-#' # two columns as strings separated by commas
-#' df$select(pl$col("foo", "bar"))
+#' # Single `"*"` is converted to a wildcard expression
+#' pl$col("*")
 #'
-#' # all columns by wildcard
+#' # multiple character vectors and a list of RPolarsDataTypes are also allowed
+#' pl$col(c("foo", "bar"), "baz")
+#' pl$col("foo", c("bar", "baz"))
+#' pl$col(list(pl$Float64, pl$String))
+#'
+#' # there are some special notations for selecting columns
+#' df = pl$DataFrame(foo = 1:3, bar = 4:6, baz = 7:9)
+#'
+#' ## select all columns with a wildcard `"*"`
 #' df$select(pl$col("*"))
-#' df$select(pl$all())
 #'
-#' # multiple columns as vector of strings
-#' df$select(pl$col(c("foo", "bar")))
-#'
-#' # column by regular expression if the regex starts with `^` and ends with `$`
-#' df$select(pl$col("^foo.*$"))
-#'
-#' # a single DataType
-#' df$select(pl$col(pl$dtypes$Float64))
-#'
-#' # ... or an R list of DataTypes, select any column of any such DataType
-#' df$select(pl$col(list(pl$dtypes$Float64, pl$dtypes$String)))
-#'
-#' # from Series of names
-#' df$select(pl$col(pl$Series(c("bar", "foobar"))))
-pl_col = function(name = "", ...) {
+#' ## select multiple columns by a regular expression
+#' ## starts with `^` and ends with `$`
+#' df$select(pl$col(c("^ba.*$")))
+pl_col = function(...) {
+  uw = \(x) unwrap(x, "in pl$col():")
+
   if (!nargs()) {
     Err_plain("pl$col() requires at least one argument.") |>
-      unwrap("in pl$col():")
+      uw()
   }
-  robj_to_col(name, list2(...)) |>
-    unwrap("in pl$col()")
+
+  dots = list2(...)
+
+  if (is.character(dots[[1]])) {
+    if (length(dots) == 1L && length(dots[[1]]) == 1L) {
+      res = create_col(dots[[1]])
+    } else {
+      res = create_cols_from_strs(unlist(dots))
+    }
+  } else if (length(dots) == 1L && is.list(dots[[1]])) {
+    # A list of RPolarsDataTypes
+    res = create_cols_from_datatypes(dots[[1]])
+  } else {
+    # RPolarsDataTypes
+    res = create_cols_from_datatypes(dots)
+  }
+
+  if (!is_ok(res)) {
+    Err_plain(
+      "pl$col()'s arguments must be one of the following:\n",
+      "- character vectors\n",
+      "- RPolarsDataTypes\n",
+      "- a list of RPolarsDataTypes"
+    ) |>
+      uw()
+  } else {
+    res$ok
+  }
 }
+
 
 #' an element in 'eval'-expr
 #' @description Alias for an element in evaluated in an `eval` expression.
@@ -168,17 +189,19 @@ pl_count = function(...) {
     unwrap("in pl$count():")
 }
 
+
 #' Aggregate all column values into a list.
-#' @param name Name of the column(s) that should be imploded, passed to pl$col()
-#' @keywords Expr
-#' @return Expr
+#'
+#' This function is syntactic sugar for `pl$col(...)$implode()`.
+#' @inheritParams pl_head
+#' @inherit pl_head return
 #' @examples
 #' pl$DataFrame(iris)$select(pl$implode("Species"))
-pl_implode = function(name) { # -> Expr
-  result(pl$col(name)) |>
-    map(.pr$Expr$implode) |>
+pl_implode = function(...) {
+  result(pl$col(...)$implode()) |>
     unwrap("in pl$implode():")
 }
+
 
 #' Get the first value.
 #'
