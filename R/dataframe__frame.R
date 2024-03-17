@@ -279,7 +279,9 @@ pl_DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
   # no args create empty DataFrame
   if (length(largs) == 0L) {
     if (!is.null(schema)) {
-      out = lapply(schema, \(dtype) pl$Series(NULL)$cast(dtype)) |>
+      out = lapply(seq_along(schema), \(x) {
+        pl$lit(numeric(0))$cast(schema[[x]])$alias(names(schema)[x])
+      }) |>
         pl$select()
     } else {
       out = .pr$DataFrame$default()
@@ -733,7 +735,7 @@ DataFrame_drop_in_place = function(name) {
 #' @description Check if two DataFrames are equal.
 #'
 #' @param other DataFrame to compare with.
-#' @return A boolean.
+#' @return A logical value
 #' @keywords DataFrame
 #' @examples
 #' dat1 = pl$DataFrame(iris)
@@ -960,7 +962,7 @@ DataFrame_to_data_frame = function(..., int64_conversion = polars_options()$int6
 
 #' Return Polars DataFrame as a list of vectors
 #'
-#' @param unnest_structs Boolean. If `TRUE` (default), then `$unnest()` is applied
+#' @param unnest_structs Logical. If `TRUE` (default), then `$unnest()` is applied
 #' on any struct column.
 #' @inheritParams DataFrame_to_data_frame
 #'
@@ -1680,7 +1682,7 @@ DataFrame_describe = function(percentiles = c(.25, .75), interpolation = "neares
 #' @title Glimpse values in a DataFrame
 #' @keywords DataFrame
 #' @param ... not used
-#' @param return_as_string Boolean (default `FALSE`). If `TRUE`, return the
+#' @param return_as_string Logical (default `FALSE`). If `TRUE`, return the
 #' output as a string.
 #' @return DataFrame
 #' @examples

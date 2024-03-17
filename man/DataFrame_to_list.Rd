@@ -11,7 +11,7 @@ DataFrame_to_list(
 )
 }
 \arguments{
-\item{unnest_structs}{Boolean. If \code{TRUE} (default), then \verb{$unnest()} is applied
+\item{unnest_structs}{Logical. If \code{TRUE} (default), then \verb{$unnest()} is applied
 on any struct column.}
 
 \item{...}{Any args pased to \code{as.data.frame()}.}

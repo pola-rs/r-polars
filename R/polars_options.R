@@ -286,7 +286,7 @@ pl_disable_string_cache = function() {
 #' This function simply checks if the global string cache is active.
 #'
 #' @keywords options
-#' @return A boolean
+#' @return A logical value
 #' @seealso
 #' [`pl$with_string_cache`][pl_with_string_cache]
 #' [`pl$enable_enable_cache`][pl_enable_string_cache]

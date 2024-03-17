@@ -110,7 +110,11 @@ test_serde_df <- function(df) .Call(wrap__test_serde_df, df)
 
 internal_wrap_e <- function(robj, str_to_lit) .Call(wrap__internal_wrap_e, robj, str_to_lit)
 
-robj_to_col <- function(name, dotdotdot) .Call(wrap__robj_to_col, name, dotdotdot)
+create_col <- function(name) .Call(wrap__create_col, name)
+
+create_cols_from_strs <- function(list_of_str) .Call(wrap__create_cols_from_strs, list_of_str)
+
+create_cols_from_datatypes <- function(list_of_dtypes) .Call(wrap__create_cols_from_datatypes, list_of_dtypes)
 
 cargo_rpolars_feature_info <- function() .Call(wrap__cargo_rpolars_feature_info)
 

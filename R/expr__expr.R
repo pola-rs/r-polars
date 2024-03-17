@@ -563,10 +563,10 @@ Expr_alias = use_extendr_wrapper
 
 #' Apply logical AND on a column
 #'
-#' Check if all boolean values in a Boolean column are `TRUE`. This method is an
+#' Check if all values in a Boolean column are `TRUE`. This method is an
 #' expression - not to be confused with `pl$all()` which is a function to select
 #' all columns.
-#' @param drop_nulls Boolean. Default TRUE, as name says.
+#' @param drop_nulls Logical. Default TRUE, as name says.
 #' @return Boolean literal
 #' @examples
 #' pl$DataFrame(
@@ -586,7 +586,7 @@ Expr_all = function(drop_nulls = TRUE) {
 #' Apply logical OR on a column
 #'
 #' Check if any boolean value in a Boolean column is `TRUE`.
-#' @param drop_nulls Boolean. Default TRUE, as name says.
+#' @param drop_nulls Logical. Default TRUE, as name says.
 #' @return Boolean literal
 #' @examples
 #' pl$DataFrame(
@@ -736,7 +736,7 @@ construct_ProtoExprArray = function(...) {
 #' to inform schema of the actual return type of the R function. Setting this wrong
 #' could theoretically have some downstream implications to the query.
 #' @param agg_list Aggregate list. Map from vector to group in group_by context.
-#' @param in_background Boolean. Whether to execute the map in a background R
+#' @param in_background Logical. Whether to execute the map in a background R
 #' process. Combined with setting e.g. `options(polars.rpool_cap = 4)` it can speed
 #' up some slow R functions as they can run in parallel R sessions. The
 #' communication speed between processes is quite slower than between threads.
@@ -839,7 +839,7 @@ Expr_map_batches = function(f, output_type = NULL, agg_list = FALSE, in_backgrou
 #' so each element will itself be a Series. Therefore, depending on the context,
 #' requirements for function differ:
 #' * in `$select()` or `$with_columns()` (selection context), the function must
-#'   operate on R scalar values. Polars will convert each element into an R value
+#'   operate on R values of length 1. Polars will convert each element into an R value
 #'   and pass it to the function. The output of the user function will be converted
 #'   back into a polars type (the return type must match, see argument `return_type`).
 #'   Using `$map_elements()` in this context should be avoided as a `lapply()`
@@ -871,7 +871,7 @@ Expr_map_batches = function(f, output_type = NULL, agg_list = FALSE, in_backgrou
 #' pl$DataFrame(iris)$group_by("Species")$agg(e_sum, e_head)
 #'
 #' # apply a function on each value (should be avoided): here the input is an R
-#' # scalar
+#' # value of length 1
 #' # select only Float64 columns
 #' my_selection = pl$col(pl$dtypes$Float64)
 #'
@@ -1493,10 +1493,6 @@ Expr_arg_sort = function(descending = FALSE, nulls_last = FALSE) {
   .pr$Expr$arg_sort(self, descending, nulls_last)
 }
 
-#' @inherit Expr_arg_sort title params examples
-#' @description argsort is a alias for arg_sort
-Expr_argsort = Expr_arg_sort
-
 #' Index of min value
 #'
 #' Get the index of the minimal value.
@@ -1585,7 +1581,7 @@ Expr_sort_by = function(by, descending = FALSE) {
 
 #' Gather values by index
 #'
-#' @param indices R scalar/vector or Series, or Expr that leads to a Series of
+#' @param indices R vector or Series, or Expr that leads to a Series of
 #' dtype Int64. (0-indexed)
 #' @return Expr
 #' @examples
@@ -3393,8 +3389,8 @@ Expr_rolling = function(
 #'   the names are the old values and the values are the replacements. Note that
 #'   if old values are numeric, the names must be wrapped in backticks;
 #' * an Expr
-#' @param new Either a scalar, a vector of same length as `old` or an Expr. If
-#' missing, `old` must be a named list.
+#' @param new Either a vector of length 1, a vector of same length as `old` or
+#' an Expr. If missing, `old` must be a named list.
 #' @param default The default replacement if the value is not in `old`. Can be
 #' an Expr. If `NULL` (default), then the value doesn't change.
 #' @param return_dtype The data type of the resulting expression. If set to
@@ -3405,7 +3401,7 @@ Expr_rolling = function(
 #' @examples
 #' df = pl$DataFrame(a = c(1, 2, 2, 3))
 #'
-#' # "old" and "new" can take either scalars or vectors of same length
+#' # "old" and "new" can take vectors of length 1 or of same length
 #' df$with_columns(replaced = pl$col("a")$replace(2, 100))
 #' df$with_columns(replaced = pl$col("a")$replace(c(2, 3), c(100, 200)))
 #'

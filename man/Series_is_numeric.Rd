@@ -7,7 +7,7 @@
 Series_is_numeric()
 }
 \value{
-A boolean scalar
+A logical value
 }
 \description{
 This checks whether the Series DataType is in \code{pl$numeric_dtypes}.

@@ -217,27 +217,28 @@ test_that("Select with p$col", {
   expect_equal(z$columns, c("mpg", "hp"))
 })
 
-test_that("select with list of exprs", {
-  l_expr = list(pl$col("mpg"), pl$col("hp"))
-  l_expr2 = list(pl$col("mpg", "hp"))
-  l_expr3 = list(pl$col("mpg"))
-  l_expr4 = list(c("mpg", "hp"))
-  l_expr5 = list("mpg", "hp")
 
-  x1 = pl$DataFrame(mtcars)$select(l_expr)
-  x2 = pl$DataFrame(mtcars)$select(l_expr2)
-  # x3 = pl$DataFrame(mtcars)$select(l_expr3, pl$col("hp")) #not allowed
-  # x4 = pl$DataFrame(mtcars)$select(pl$col("hp"), l_expr3) #not allowed
-  x5 = pl$DataFrame(mtcars)$select(l_expr4)
-  x6 = pl$DataFrame(mtcars)$select(l_expr5)
+patrick::with_parameters_test_that("select with list of exprs", {
+  expect_equal(
+    pl$DataFrame(mtcars)$select(expr)$columns,
+    c("mpg", "hp")
+  )
+},
+  expr = list(
+    list(pl$col("mpg"), pl$col("hp")),
+    list(pl$col("mpg", "hp")),
+    list(c("mpg", "hp")),
+    list("mpg", "hp")
+  ),
+  type = c(
+    "list of exprs",
+    "expr",
+    "character",
+    "list of character"
+  ),
+  .test_name = type
+)
 
-  expect_equal(x1$columns, c("mpg", "hp"))
-  expect_equal(x2$columns, c("mpg", "hp"))
-  # expect_equal(x3$columns, c("mpg", "hp"))
-  # expect_equal(x4$columns, c("mpg", "hp"))
-  expect_equal(x5$columns, c("mpg", "hp"))
-  expect_equal(x6$columns, c("mpg", "hp"))
-})
 
 test_that("select: create a list variable", {
   test = pl$DataFrame(x = 1:2)

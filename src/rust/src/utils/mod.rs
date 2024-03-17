@@ -9,9 +9,6 @@ use crate::rdatatype::RPolarsDataType;
 use crate::rpolarserr::{polars_to_rpolars_err, rdbg, rerr, RPolarsErr, RResult, WithRctx};
 use crate::series::RPolarsSeries;
 
-use std::any::type_name as tn;
-//use std::intrinsics::read_via_copy;
-use crate::lazy::dsl::robj_to_col;
 use crate::rdataframe::{RPolarsDataFrame, RPolarsLazyFrame};
 use extendr_api::eval_string_with_params;
 use extendr_api::prelude::{list, Result as EResult, Strings};
@@ -20,6 +17,7 @@ use extendr_api::CanBeNA;
 use extendr_api::ExternalPtr;
 use extendr_api::Result as ExtendrResult;
 use extendr_api::R;
+use std::any::type_name as tn;
 
 use polars::prelude as pl;
 
@@ -802,11 +800,14 @@ pub fn r_expr_to_rust_expr(robj_expr: Robj) -> RResult<RPolarsExpr> {
     ))
 }
 
+// TODO: move to R side https://github.com/pola-rs/r-polars/issues/835
 fn internal_rust_wrap_e(robj: Robj, str_to_lit: bool) -> RResult<RPolarsExpr> {
     use extendr_api::*;
 
     if !str_to_lit && robj.rtype() == Rtype::Strings {
-        robj_to_col(robj, extendr_api::NULL.into())
+        let expr: ExternalPtr<RPolarsExpr> =
+            (unpack_r_eval(R!("polars:::result(polars::pl$col({{robj}}))"))?).try_into()?;
+        Ok(RPolarsExpr(expr.0.clone()))
     } else {
         RPolarsExpr::lit(robj)
     }
