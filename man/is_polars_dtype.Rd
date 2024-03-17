@@ -7,7 +7,7 @@
 is_polars_dtype(x, include_unknown = FALSE)
 }
 \arguments{
-\item{x}{An object to be tested.}
+\item{x}{An object}
 
 \item{include_unknown}{If \code{FALSE} (default), \code{pl$Unknown} is considered as
 an invalid datatype.}

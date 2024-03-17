@@ -115,7 +115,7 @@ Collate:
     'sql.R'
     'vctrs.R'
     'zzz.R'
-Config/rextendr/version: 0.3.1.9000
+Config/rextendr/version: 0.3.1
 VignetteBuilder: knitr
 Config/polars/LibVersion: 0.38.2
 Config/polars/RustToolchainVersion: nightly-2024-02-23

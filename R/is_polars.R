@@ -42,13 +42,11 @@ is_polars_series = function(x) {
 
 #' Test if the object a polars DataType
 #'
-#' @param x An object to be tested.
+#' @inherit is_polars_df params return
 #' @param include_unknown If `FALSE` (default), `pl$Unknown` is considered as
 #' an invalid datatype.
 #'
 #' @export
-#' @return A logical value
-#'
 #' @examples
 #' is_polars_dtype(pl$Int64)
 #' is_polars_dtype(mtcars)
