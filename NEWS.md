@@ -6,7 +6,7 @@
 
 - The argument `columns` in `$drop()` is removed. `$drop()` now accepts several
   character scalars, such as `$drop("a", "b", "c")` (#912).
-- `pl$col()`'s `name` argument is removed, and the `...` argument no longer
+- In `pl$col()`, the `name` argument is removed, and the `...` argument no longer
   accepts a list of characters and `RPolarsSeries` class objects (#923).
 - `pl$implode(...)` is rewritten to be a syntactic sugar for `pl$col(...)$implode()` (#923).
 
