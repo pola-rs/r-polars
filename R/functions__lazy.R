@@ -78,7 +78,7 @@ pl_all = function(name = NULL) {
 #' pl$col("foo", "bar")
 #'
 #' # multiple columns by RPolarsDataTypes
-#' pl$col(pl$dtypes$Float64, pl$dtypes$String)
+#' pl$col(pl$Float64, pl$String)
 #'
 #' # Single `"*"` is converted to a wildcard expression
 #' pl$col("*")
@@ -86,7 +86,7 @@ pl_all = function(name = NULL) {
 #' # multiple character vectors and a list of RPolarsDataTypes are also allowed
 #' pl$col(c("foo", "bar"), "baz")
 #' pl$col("foo", c("bar", "baz"))
-#' pl$col(list(pl$dtypes$Float64, pl$dtypes$String))
+#' pl$col(list(pl$Float64, pl$String))
 #'
 #' # there are some special notations for selecting columns
 #' df = pl$DataFrame(foo = 1:3, bar = 4:6, baz = 7:9)
@@ -119,7 +119,7 @@ pl_col = function(...) {
     res = create_cols_from_datatypes(dots)
   } else {
     res = Err_plain(
-      "pl$col()'s arguments must be one of the following:\n",
+      "Arguments of pl$col() must be one of the following:\n",
       "- character vectors\n",
       "- RPolarsDataTypes\n",
       "- a list of RPolarsDataTypes"
