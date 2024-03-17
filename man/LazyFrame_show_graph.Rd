@@ -5,6 +5,7 @@
 \title{Plot the query plan}
 \usage{
 LazyFrame_show_graph(
+  ...,
   optimized = TRUE,
   raw_output = FALSE,
   type_coercion = TRUE,
@@ -14,11 +15,12 @@ LazyFrame_show_graph(
   slice_pushdown = TRUE,
   comm_subplan_elim = TRUE,
   comm_subexpr_elim = TRUE,
-  streaming = FALSE,
-  ...
+  streaming = FALSE
 )
 }
 \arguments{
+\item{...}{Additional arguments passed to \code{DiagrammeR::grViz()}.}
+
 \item{optimized}{Optimize the query plan.}
 
 \item{raw_output}{Return the raw GraphViz code only, does not print the plot.}
@@ -46,8 +48,6 @@ reused.}
 
 \item{streaming}{Boolean. Run parts of the query in a streaming fashion
 (this is in an alpha state).}
-
-\item{...}{Additional arguments passed to \code{DiagrammeR::grViz()}.}
 }
 \value{
 If \code{raw_output = TRUE}, a character vector. Otherwise, an object of
