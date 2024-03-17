@@ -7,7 +7,7 @@
 Series_arg_min()
 }
 \value{
-A numeric scalar
+A numeric value
 }
 \description{
 Note that this is 0-indexed.

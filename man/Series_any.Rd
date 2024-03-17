@@ -7,7 +7,7 @@
 Series_any()
 }
 \value{
-A boolean scalar
+A logical value
 }
 \description{
 Reduce boolean Series with ANY

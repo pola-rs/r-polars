@@ -13,7 +13,7 @@ is_polars_series(x)
 A logical value
 }
 \description{
-These functions test if the object is a polars Series.
+This function tests if the object is a polars Series.
 }
 \examples{
 is_polars_series(1:3)

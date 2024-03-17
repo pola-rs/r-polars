@@ -13,7 +13,7 @@ is_polars_df(x)
 A logical value
 }
 \description{
-These functions test if the object is a polars DataFrame.
+This function tests if the object is a polars DataFrame.
 }
 \examples{
 is_polars_df(mtcars)

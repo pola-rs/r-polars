@@ -85,24 +85,6 @@ print.RPolarsDataType = function(x, ...) {
 "!=.RPolarsDataType" = function(e1, e2) e1$ne(e2)
 
 
-#' Check if input is a valid DataType
-#'
-#' @param x An object to be tested.
-#' @param include_unknown If `FALSE` (default), `pl$Unknown` is considered as
-#' an invalid datatype.
-#'
-#' @export
-#' @return A boolean scalar.
-#'
-#' @examples
-#' is_polars_dtype(pl$Int64)
-#' is_polars_dtype(mtcars)
-#' is_polars_dtype(pl$Unknown)
-#' is_polars_dtype(pl$Unknown, include_unknown = TRUE)
-is_polars_dtype = function(x, include_unknown = FALSE) {
-  inherits(x, "RPolarsDataType") && (x != pl$Unknown || include_unknown)
-}
-
 #' check if x is a valid RPolarsDataType
 #' @name same_outer_datatype
 #' @param lhs an RPolarsDataType
