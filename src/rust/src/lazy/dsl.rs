@@ -2708,56 +2708,21 @@ pub fn internal_wrap_e(robj: Robj, str_to_lit: Robj) -> RResult<RPolarsExpr> {
 }
 
 #[extendr]
-pub fn robj_to_col(name: Robj, dotdotdot: Robj) -> RResult<RPolarsExpr> {
-    //let last_type_str = None;
+pub fn create_col(name: Robj) -> RResult<RPolarsExpr> {
+    let name = robj_to!(String, name)?;
+    Ok(RPolarsExpr::col(&name))
+}
 
-    || -> RResult<RPolarsExpr> {
-        use crate::utils::unpack_r_eval;
-        let name = if name.inherits("RPolarsSeries") {
-            unpack_r_eval(R!("polars:::result({{name}}$to_vector())"))?
-        } else {
-            name
-        };
+#[extendr]
+pub fn create_cols_from_strs(list_of_str: Robj) -> RResult<RPolarsExpr> {
+    let strs = robj_to!(Vec, String, list_of_str)?;
+    Ok(RPolarsExpr::cols(strs))
+}
 
-        match () {
-            _ if name.is_string() && name.len() == 1 && dotdotdot.len() == 0 => {
-                Ok(RPolarsExpr::col(name.as_str().unwrap_or("")))
-            }
-            _ if name.inherits("RPolarsDataType")
-                //or if name is a list and first element is RPolarsDataType
-                | if let Some(Ok(robj)) = name.as_list().map(|l| l.elt(0)) {
-                    robj.inherits("RPolarsDataType")
-                } else {
-                    false
-                } =>
-            {
-                let mut name = robj_to!(Vec, PLPolarsDataType, name)?;
-                let mut ddd = robj_to!(Vec, PLPolarsDataType, dotdotdot)?;
-                name.append(&mut ddd);
-                Ok(RPolarsExpr(dsl::dtype_cols(name)))
-            }
-
-            _ => {
-                let mut name = robj_to!(Vec, String, name)?;
-                let mut ddd = robj_to!(Vec, String, dotdotdot)?;
-                name.append(&mut ddd);
-
-                Ok(RPolarsExpr::cols(name))
-            }
-        }
-    }()
-    .when("constructing a Column Expr")
-
-    // if ddd.length() > 0 {}
-    // if res.is_ok() {
-    //     return res;
-    // } else {
-    //     res_dtype = robj_to!(Vec, RPolarsDataType, name);
-    //     if res_dtype.is_ok() {
-    //         return ();
-    //     }
-    // }
-    // let ddd = dotdotdot.as_list().unwrap();
+#[extendr]
+pub fn create_cols_from_datatypes(list_of_dtypes: Robj) -> RResult<RPolarsExpr> {
+    let dtypes = robj_to!(Vec, PLPolarsDataType, list_of_dtypes)?;
+    Ok(RPolarsExpr(dsl::dtype_cols(dtypes)))
 }
 
 #[extendr]
@@ -2766,7 +2731,7 @@ extendr_module! {
     impl RPolarsExpr;
     impl RPolarsProtoExprArray;
     fn internal_wrap_e;
-    fn robj_to_col;
-
-
+    fn create_col;
+    fn create_cols_from_strs;
+    fn create_cols_from_datatypes;
 }
