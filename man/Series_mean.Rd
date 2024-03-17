@@ -7,7 +7,7 @@
 Series_mean()
 }
 \value{
-A numeric scalar
+A numeric value
 }
 \description{
 Compute the mean of a Series

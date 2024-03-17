@@ -10,7 +10,7 @@ Series_is_sorted(descending = FALSE)
 \item{descending}{Check if the Series is sorted in descending order.}
 }
 \value{
-A boolean scalar
+A logical value
 }
 \description{
 Check if the Series is sorted

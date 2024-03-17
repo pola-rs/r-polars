@@ -537,7 +537,7 @@ Series_value_counts = function(sort = TRUE, parallel = FALSE) {
 
 #' Apply every value with an R fun
 #' @description About as slow as regular non-vectorized R. Similar to using R sapply on a vector.
-#' @param fun r function, should take a scalar value as input and return one.
+#' @param fun r function, should take a single value as input and return one.
 #' @param datatype DataType of return value. Default NULL means same as input.
 #' @param strict_return_type bool, default TRUE: fail on wrong return type, FALSE: convert to polars Null
 #' @param allow_fail_eval bool, default FALSE: raise R fun error, TRUE: convert to polars Null
@@ -642,7 +642,7 @@ Series_alias = use_extendr_wrapper
 
 #' Reduce boolean Series with ANY
 #'
-#' @return A boolean scalar
+#' @return A logical value
 #' @examples
 #' pl$Series(c(TRUE, FALSE, NA))$any()
 Series_any = function() {
@@ -651,7 +651,7 @@ Series_any = function() {
 
 #' Reduce Boolean Series with ALL
 #'
-#' @return A boolean scalar
+#' @return A logical value
 #' @examples
 #' pl$Series(c(TRUE, TRUE, NA))$all()
 Series_all = function() {
@@ -662,7 +662,7 @@ Series_all = function() {
 #'
 #' Note that this is 0-indexed.
 #'
-#' @return A numeric scalar
+#' @return A numeric value
 #' @examples
 #' pl$Series(c(5, 1))$arg_max()
 Series_arg_max = use_extendr_wrapper
@@ -671,7 +671,7 @@ Series_arg_max = use_extendr_wrapper
 #'
 #' Note that this is 0-indexed.
 #'
-#' @return A numeric scalar
+#' @return A numeric value
 #' @examples
 #' pl$Series(c(5, 1))$arg_min()
 Series_arg_min = use_extendr_wrapper
@@ -714,7 +714,7 @@ Series_clone = use_extendr_wrapper
 
 #' Compute the sum of a Series
 #'
-#' @return A numeric scalar
+#' @return A numeric value
 #' @details
 #' The Dtypes Int8, UInt8, Int16 and UInt16 are cast to Int64 before summing to
 #' prevent overflow issues.
@@ -792,7 +792,7 @@ Series_std = function(ddof = 1) {
 
 #' Check if the Series is sorted
 #' @param descending Check if the Series is sorted in descending order.
-#' @return A boolean scalar
+#' @return A logical value
 #' @seealso
 #' Use [`$set_sorted()`][Series_set_sorted] to add a "sorted" flag to the Series
 #' that could be used for faster operations later on.
@@ -881,7 +881,7 @@ Series_to_frame = function() {
 #' @param strict If `TRUE`, do not allow similar DataType comparison. Overrides
 #' `null_equal`.
 #'
-#' @return A boolean scalar
+#' @return A logical value
 #' @examples
 #' pl$Series(1:4)$equals(pl$Series(1:4))
 #'
@@ -953,7 +953,7 @@ in_DataType = function(l, rs) any(sapply(rs, function(r) l == r))
 #'
 #' This checks whether the Series DataType is in `pl$numeric_dtypes`.
 #'
-#' @return A boolean scalar
+#' @return A logical value
 #'
 #' @examples
 #' pl$Series(1:4)$is_numeric()
@@ -981,7 +981,7 @@ Series_to_lit = function() {
 
 #' Count unique values in Series
 #'
-#' @return A numeric scalar
+#' @return A numeric value
 #' @examples
 #' pl$Series(c(1, 2, 1, 4, 4, 1, 5))$n_unique()
 Series_n_unique = function() {

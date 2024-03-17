@@ -10,7 +10,7 @@ ExprMeta_eq(other)
 \item{other}{Expr to compare with}
 }
 \value{
-A boolean: \code{TRUE} if equal, \code{FALSE} otherwise
+A logical value
 }
 \description{
 Indicate if this expression is the same as another expression. See also the

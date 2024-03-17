@@ -37,7 +37,7 @@ means smaller files on disk:
 \item "zstd": min-level: 1, max-level: 22.
 }}
 
-\item{statistics}{Boolean. Whether compute and write column statistics.
+\item{statistics}{Logical. Whether compute and write column statistics.
 This requires extra compute.}
 
 \item{row_group_size}{\code{NULL} or Integer. Size of the row groups in number of

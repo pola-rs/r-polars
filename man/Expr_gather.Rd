@@ -7,7 +7,7 @@
 Expr_gather(indices)
 }
 \arguments{
-\item{indices}{R scalar/vector or Series, or Expr that leads to a Series of
+\item{indices}{R vector or Series, or Expr that leads to a Series of
 dtype Int64. (0-indexed)}
 }
 \value{

@@ -16,7 +16,7 @@ by \code{strict}.}
 \code{null_equal}.}
 }
 \value{
-A boolean scalar
+A logical value
 }
 \description{
 This checks whether two Series are equal in values and in their name.

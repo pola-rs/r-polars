@@ -7,7 +7,7 @@
 Series_max()
 }
 \value{
-A numeric scalar
+A numeric value
 }
 \description{
 Find the max of a Series
