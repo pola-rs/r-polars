@@ -279,8 +279,10 @@ pl_DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
   # no args create empty DataFrame
   if (length(largs) == 0L) {
     if (!is.null(schema)) {
-      out = lapply(schema, \(dtype) pl$Series(NULL)$cast(dtype)) |>
-        pl$select()
+      largs = lapply(seq_along(schema), \(x) {
+        pl$lit(numeric(0))$cast(schema[[x]])$alias(names(schema)[x])
+      })
+      out = pl$select(largs)
     } else {
       out = .pr$DataFrame$default()
     }

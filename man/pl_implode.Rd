@@ -4,18 +4,18 @@
 \alias{pl_implode}
 \title{Aggregate all column values into a list.}
 \usage{
-pl_implode(name)
+pl_implode(...)
 }
 \arguments{
-\item{name}{Name of the column(s) that should be imploded, passed to pl$col()}
+\item{...}{Characters indicating the column names, passed to \code{\link[=pl_col]{pl$col()}}.
+See \code{\link[=pl_col]{?pl_col}} for details.}
 }
 \value{
-Expr
+\link[=Expr_class]{Expr}
 }
 \description{
-Aggregate all column values into a list.
+This function is syntactic sugar for \code{pl$col(...)$implode()}.
 }
 \examples{
 pl$DataFrame(iris)$select(pl$implode("Species"))
 }
-\keyword{Expr}
