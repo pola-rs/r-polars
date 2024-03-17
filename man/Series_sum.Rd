@@ -7,7 +7,7 @@
 Series_sum()
 }
 \value{
-A numeric scalar
+A numeric value
 }
 \description{
 Compute the sum of a Series

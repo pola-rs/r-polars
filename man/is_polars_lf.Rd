@@ -13,7 +13,7 @@ is_polars_lf(x)
 A logical value
 }
 \description{
-These functions test if the object is a polars LazyFrame.
+This function tests if the object is a polars LazyFrame.
 }
 \examples{
 is_polars_lf(mtcars)

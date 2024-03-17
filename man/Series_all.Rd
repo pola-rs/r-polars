@@ -7,7 +7,7 @@
 Series_all()
 }
 \value{
-A boolean scalar
+A logical value
 }
 \description{
 Reduce Boolean Series with ALL

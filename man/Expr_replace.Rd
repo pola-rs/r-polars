@@ -16,8 +16,8 @@ if old values are numeric, the names must be wrapped in backticks;
 \item an Expr
 }}
 
-\item{new}{Either a scalar, a vector of same length as \code{old} or an Expr. If
-missing, \code{old} must be a named list.}
+\item{new}{Either a vector of length 1, a vector of same length as \code{old} or
+an Expr. If missing, \code{old} must be a named list.}
 
 \item{default}{The default replacement if the value is not in \code{old}. Can be
 an Expr. If \code{NULL} (default), then the value doesn't change.}
@@ -35,7 +35,7 @@ This allows one to recode values in a column.
 \examples{
 df = pl$DataFrame(a = c(1, 2, 2, 3))
 
-# "old" and "new" can take either scalars or vectors of same length
+# "old" and "new" can take vectors of length 1 or of same length
 df$with_columns(replaced = pl$col("a")$replace(2, 100))
 df$with_columns(replaced = pl$col("a")$replace(c(2, 3), c(100, 200)))
 

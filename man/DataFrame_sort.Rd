@@ -18,11 +18,11 @@ a list of Expr(s) or a list with a mix of Expr(s) and column names.}
 
 \item{...}{More columns to sort by as above but provided one Expr per argument.}
 
-\item{descending}{Boolean. Sort in descending order (default is \code{FALSE}). This must be
+\item{descending}{Logical. Sort in descending order (default is \code{FALSE}). This must be
 either of length 1 or a logical vector of the same length as the number of
 Expr(s) specified in \code{by} and \code{...}.}
 
-\item{nulls_last}{Boolean. Place \code{NULL}s at the end? Default is \code{FALSE}.}
+\item{nulls_last}{Logical. Place \code{NULL}s at the end? Default is \code{FALSE}.}
 
 \item{maintain_order}{Whether the order should be maintained if elements are
 equal. If \code{TRUE}, streaming is not possible and performance might be worse

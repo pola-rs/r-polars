@@ -4,7 +4,7 @@
 #' counterpart [`$meta$neq()`][ExprMeta_neq].
 #'
 #' @param other Expr to compare with
-#' @return A boolean: `TRUE` if equal, `FALSE` otherwise
+#' @return A logical value
 #' @examples
 #' # three naive expression literals
 #' e1 = pl$lit(40) + 2
@@ -30,7 +30,7 @@ ExprMeta_eq = function(other) {
 #' the counterpart [`$meta$eq()`][ExprMeta_eq].
 #'
 #' @inheritParams ExprMeta_eq
-#' @return A boolean: `TRUE` if different, `FALSE` otherwise
+#' @return A logical value
 #' @examples
 #' # three naive expression literals
 #' e1 = pl$lit(40) + 2

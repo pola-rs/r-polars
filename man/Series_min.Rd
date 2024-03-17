@@ -7,7 +7,7 @@
 Series_min()
 }
 \value{
-A numeric scalar
+A numeric value
 }
 \description{
 Find the min of a Series

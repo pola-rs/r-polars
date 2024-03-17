@@ -18,6 +18,7 @@
 - New function `pl$arg_where()` to get the indices that match a condition (#922).
 - New method `<LazyFrame>$show_graph()` to plot the query plan of a LazyFrame 
   (#928).
+- New function `is_polars_dtype()` (#927).
 
 ## Polars R Package 0.15.1
 

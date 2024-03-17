@@ -10,7 +10,7 @@ DataFrame_equals(other)
 \item{other}{DataFrame to compare with.}
 }
 \value{
-A boolean.
+A logical value
 }
 \description{
 Check if two DataFrames are equal.
