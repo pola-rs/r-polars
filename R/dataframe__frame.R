@@ -279,10 +279,10 @@ pl_DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
   # no args create empty DataFrame
   if (length(largs) == 0L) {
     if (!is.null(schema)) {
-      largs = lapply(seq_along(schema), \(x) {
+      out = lapply(seq_along(schema), \(x) {
         pl$lit(numeric(0))$cast(schema[[x]])$alias(names(schema)[x])
-      })
-      out = pl$select(largs)
+      }) |>
+        pl$select()
     } else {
       out = .pr$DataFrame$default()
     }
