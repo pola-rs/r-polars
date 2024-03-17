@@ -1967,9 +1967,17 @@ LazyFrame_group_by_dynamic = function(
 #' class `"grViz"`.
 #'
 #' @examplesIf requireNamespace("DiagrammeR", quietly = TRUE)
-#' query = pl$LazyFrame(mtcars)$
-#'   filter(pl$col("drat") > 3)$
-#'   with_columns(foo = pl$col("mpg") + pl$col("cyl"), bar = pl$mean("mpg"))
+#' lf = pl$LazyFrame(
+#'   a = c("a", "b", "a", "b", "b", "c"),
+#'   b = 1:6,
+#'   c = 6:1
+#' )
+#'
+#' query = lf$group_by("a", maintain_order = TRUE)$agg(
+#'   pl$all()$sum()
+#' )$sort(
+#'   "a"
+#' )
 #'
 #' query$show_graph(raw_output = TRUE)
 #'
