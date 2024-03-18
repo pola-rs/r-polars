@@ -7,7 +7,7 @@
 Series_median()
 }
 \value{
-A numeric scalar
+A numeric value
 }
 \description{
 Compute the median of a Series

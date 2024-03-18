@@ -7,13 +7,13 @@
 Expr_all(drop_nulls = TRUE)
 }
 \arguments{
-\item{drop_nulls}{Boolean. Default TRUE, as name says.}
+\item{drop_nulls}{Logical. Default TRUE, as name says.}
 }
 \value{
 Boolean literal
 }
 \description{
-Check if all boolean values in a Boolean column are \code{TRUE}. This method is an
+Check if all values in a Boolean column are \code{TRUE}. This method is an
 expression - not to be confused with \code{pl$all()} which is a function to select
 all columns.
 }

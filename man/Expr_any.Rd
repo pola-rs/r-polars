@@ -7,7 +7,7 @@
 Expr_any(drop_nulls = TRUE)
 }
 \arguments{
-\item{drop_nulls}{Boolean. Default TRUE, as name says.}
+\item{drop_nulls}{Logical. Default TRUE, as name says.}
 }
 \value{
 Boolean literal

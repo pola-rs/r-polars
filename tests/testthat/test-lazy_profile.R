@@ -49,9 +49,5 @@ test_that("profile: show_plot returns a plot in the list of outputs", {
 })
 
 test_that("$to_dot() works", {
-  query = pl$LazyFrame(mtcars)$
-    filter(pl$col("drat") > 3)$
-    with_columns(foo = pl$col("mpg") + pl$col("cyl"), bar = pl$mean("mpg"))
-
-  expect_snapshot(cat(query$to_dot(raw_output = TRUE)))
+  expect_snapshot(cat(pl$LazyFrame(a = 1, b = "a")$to_dot()))
 })

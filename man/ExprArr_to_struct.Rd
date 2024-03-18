@@ -11,7 +11,7 @@ ExprArr_to_struct(fields = NULL)
 \item{fields}{If the name and number of the desired fields is known in
 advance, a list of field names can be given, which will be assigned by
 index. Otherwise, to dynamically assign field names, a custom R function
-that takes an R scalar double and outputs a string value can be used. If
+that takes an R double and outputs a string value can be used. If
 \code{NULL} (default), fields will be \code{field_0}, \code{field_1} ... \code{field_n}.}
 }
 \value{

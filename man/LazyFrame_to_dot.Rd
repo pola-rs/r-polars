@@ -22,28 +22,28 @@ LazyFrame_to_dot(
 
 \item{optimized}{Optimize the query plan.}
 
-\item{type_coercion}{Boolean. Coerce types such that operations succeed and
+\item{type_coercion}{Logical. Coerce types such that operations succeed and
 run on minimal required memory.}
 
-\item{predicate_pushdown}{Boolean. Applies filters as early as possible at
+\item{predicate_pushdown}{Logical. Applies filters as early as possible at
 scan level.}
 
-\item{projection_pushdown}{Boolean. Select only the columns that are needed
+\item{projection_pushdown}{Logical. Select only the columns that are needed
 at the scan level.}
 
-\item{simplify_expression}{Boolean. Various optimizations, such as constant
+\item{simplify_expression}{Logical. Various optimizations, such as constant
 folding and replacing expensive operations with faster alternatives.}
 
-\item{slice_pushdown}{Boolean. Only load the required slice from the scan
+\item{slice_pushdown}{Logical. Only load the required slice from the scan
 level. Don't materialize sliced outputs (e.g. \code{join$head(10)}).}
 
-\item{comm_subplan_elim}{Boolean. Will try to cache branching subplans that
+\item{comm_subplan_elim}{Logical. Will try to cache branching subplans that
 occur on self-joins or unions.}
 
-\item{comm_subexpr_elim}{Boolean. Common subexpressions will be cached and
+\item{comm_subexpr_elim}{Logical. Common subexpressions will be cached and
 reused.}
 
-\item{streaming}{Boolean. Run parts of the query in a streaming fashion
+\item{streaming}{Logical. Run parts of the query in a streaming fashion
 (this is in an alpha state).}
 }
 \value{
@@ -54,9 +54,17 @@ This only returns the "dot" output that can be passed to other packages, such
 as \code{DiagrammeR::grViz()}.
 }
 \examples{
-query = pl$LazyFrame(mtcars)$
-  filter(pl$col("drat") > 3)$
-  with_columns(foo = pl$col("mpg") + pl$col("cyl"), bar = pl$mean("mpg"))
+lf = pl$LazyFrame(
+  a = c("a", "b", "a", "b", "b", "c"),
+  b = 1:6,
+  c = 6:1
+)
+
+query = lf$group_by("a", maintain_order = TRUE)$agg(
+  pl$all()$sum()
+)$sort(
+  "a"
+)
 
 query$to_dot() |> cat()
 

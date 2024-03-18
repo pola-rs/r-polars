@@ -1,6 +1,14 @@
-# TODO: more tests
 test_that("pl$col", {
   expect_error(pl$col(), "requires at least one argument")
+
+  expect_true(pl$col("a", "b")$meta$eq(pl$col(c("a", "b"))))
+  expect_true(pl$col(c("a", "b"), "c")$meta$eq(pl$col("a", c("b", "c"))))
+  expect_true(pl$col(pl$Int32, pl$Float64)$meta$eq(pl$col(list(pl$Int32, pl$Float64))))
+
+  expect_error(pl$col(list("a", "b")))
+  expect_error(pl$col("a", pl$Int32))
+  expect_error(pl$col(list(pl$Int32, pl$Float64), pl$String))
+  expect_error(pl$col(pl$String, list(pl$Int32, pl$Float64)))
 })
 
 
@@ -131,11 +139,6 @@ test_that("pl$implode", {
   act = pl$implode("bob")
   exp = pl$col("bob")$implode()
   expect_true(act$meta$eq(exp))
-
-  ctx = pl$implode(42) |> get_err_ctx()
-
-  expect_identical(ctx$BadArgument, "name")
-  expect_identical(ctx$When, "constructing a Column Expr")
 })
 
 
