@@ -52,8 +52,8 @@ jobs:
       matrix:
         config:
           - { os: macos-14, r: "release" }
-          - { os: windows-latest, r: "devel", rtools-version: "43" }
-          - { os: windows-latest, r: "release", rtools-version: "" }
+          - { os: windows-latest, r: "devel" }
+          - { os: windows-latest, r: "release" }
           - { os: ubuntu-latest, r: "devel", http-user-agent: "release" }
           - { os: ubuntu-latest, r: "release" }
           - { os: ubuntu-latest, r: "oldrel-1" }
