@@ -121,17 +121,16 @@ pl_col = function(...) {
     res = create_cols_from_datatypes(dots)
   }
 
-  if (!is_ok(res)) {
-    Err_plain(
-      "pl$col()'s arguments must be one of the following:\n",
-      "- character vectors\n",
-      "- RPolarsDataTypes\n",
-      "- a list of RPolarsDataTypes"
+  res |>
+    map_err(
+      \(err) err$plain(paste0(
+        "pl$col()'s arguments must be one of the following:\n",
+        "- character vectors\n",
+        "- RPolarsDataTypes\n",
+        "- a list of RPolarsDataTypes"
+      ))
     ) |>
-      uw()
-  } else {
-    res$ok
-  }
+    uw()
 }
 
 
