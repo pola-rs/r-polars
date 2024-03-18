@@ -1190,6 +1190,8 @@ RPolarsLazyFrame$rolling <- function(index_column, period, offset, closed, by, c
 
 RPolarsLazyFrame$group_by_dynamic <- function(index_column, every, period, offset, label, include_boundaries, closed, by, start_by, check_sorted) .Call(wrap__RPolarsLazyFrame__group_by_dynamic, self, index_column, every, period, offset, label, include_boundaries, closed, by, start_by, check_sorted)
 
+RPolarsLazyFrame$to_dot <- function(optimized) .Call(wrap__RPolarsLazyFrame__to_dot, self, optimized)
+
 #' @export
 `$.RPolarsLazyFrame` <- function (self, name) { func <- RPolarsLazyFrame[[name]]; environment(func) <- environment(); func }
 
