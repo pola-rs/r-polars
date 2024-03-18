@@ -1955,29 +1955,27 @@ LazyFrame_group_by_dynamic = function(
 
 #' Plot the query plan
 #'
-#' Note that this requires to have the package `DiagrammeR` installed. Use
-#' `raw_output = TRUE` to obtain the raw GraphViz code without plotting it.
+#' This only returns the "dot" output that can be passed to other packages, such
+#' as `DiagrammeR::grViz()`.
 #'
-#' @param ... Additional arguments passed to `DiagrammeR::grViz()`.
+#' @param ... Not used..
 #' @param optimized Optimize the query plan.
-#' @param raw_output Return the raw GraphViz code only, does not print the plot.
 #' @inheritParams LazyFrame_set_optimization_toggle
 #'
-#' @return If `raw_output = TRUE`, a character vector. Otherwise, an object of
-#' class `"grViz"`.
+#' @return A character vector
 #'
-#' @examplesIf requireNamespace("DiagrammeR", quietly = TRUE)
+#' @examples
 #' query = pl$LazyFrame(mtcars)$
 #'   filter(pl$col("drat") > 3)$
 #'   with_columns(foo = pl$col("mpg") + pl$col("cyl"), bar = pl$mean("mpg"))
 #'
-#' query$show_graph(raw_output = TRUE)
+#' query$to_dot() |> cat()
 #'
-#' query$show_graph()
-LazyFrame_show_graph = function(
+#' # You could print the graph by using DiagrammeR for example, with
+#' # query$to_dot() |> DiagrammeR::grViz().
+LazyFrame_to_dot = function(
     ...,
     optimized = TRUE,
-    raw_output = FALSE,
     type_coercion = TRUE,
     predicate_pushdown = TRUE,
     projection_pushdown = TRUE,
@@ -1995,17 +1993,8 @@ LazyFrame_show_graph = function(
     comm_subplan_elim,
     comm_subexpr_elim,
     streaming
-  ) |> unwrap("in $show_graph():")
+  ) |> unwrap("in $to_dot():")
 
-  graph = .pr$LazyFrame$to_dot(self, optimized) |>
-    unwrap("in $show_graph():")
-
-  if (isTRUE(raw_output)) {
-    return(graph)
-  }
-
-  if (!requireNamespace("DiagrammeR", quietly = TRUE)) {
-    stop('The package "DiagrammeR" is required.')
-  }
-  DiagrammeR::grViz(graph, ...)
+  .pr$LazyFrame$to_dot(self, optimized) |>
+    unwrap("in $to_dot():")
 }

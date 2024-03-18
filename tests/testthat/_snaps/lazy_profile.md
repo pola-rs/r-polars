@@ -1,7 +1,7 @@
-# $show_graph() works
+# $to_dot() works
 
     Code
-      cat(query$show_graph(raw_output = TRUE))
+      cat(query$to_dot(raw_output = TRUE))
     Output
       graph  polars_query {
       "WITH COLUMNS [\"foo\",\"bar\"] [(0, 0)]" -- "TABLE
