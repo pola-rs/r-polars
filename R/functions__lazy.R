@@ -1221,7 +1221,6 @@ pl_arg_where = function(condition) {
 #'
 #' @param exprs Column(s) to arg sort by. Can be Expr(s) or something coercible
 #'   to Expr(s). Strings are parsed as column names.
-#' @param ... Not used.
 #' @inheritParams Expr_sort
 #'
 #' @return Expr
@@ -1235,9 +1234,14 @@ pl_arg_where = function(condition) {
 #'
 #' df$with_columns(
 #'   arg_sort_a = pl$arg_sort_by("a"),
-#'   arg_sort_ab = pl$arg_sort_by("a", "b", descending = TRUE)
+#'   arg_sort_ab = pl$arg_sort_by(c("a", "b"), descending = TRUE)
 #' )
-pl_arg_sort_by = function(..., descending = FALSE) {
-  arg_sort_by(list2(...), descending) |>
+#'
+#' # we can also pass Expr
+#' df$with_columns(
+#'   arg_sort_a = pl$arg_sort_by(pl$col("a") * -1)
+#' )
+pl_arg_sort_by = function(exprs, descending = FALSE) {
+  arg_sort_by(wrap_elist_result(exprs, str_to_lit = FALSE), descending) |>
     unwrap("in pl$arg_sort_by():")
 }

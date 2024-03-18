@@ -14,7 +14,7 @@ all_horizontal <- function(dotdotdot) .Call(wrap__all_horizontal, dotdotdot)
 
 any_horizontal <- function(dotdotdot) .Call(wrap__any_horizontal, dotdotdot)
 
-arg_sort_by <- function(dotdotdot, descending) .Call(wrap__arg_sort_by, dotdotdot, descending)
+arg_sort_by <- function(exprs, descending) .Call(wrap__arg_sort_by, exprs, descending)
 
 arg_where <- function(condition) .Call(wrap__arg_where, condition)
 

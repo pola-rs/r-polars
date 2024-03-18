@@ -326,9 +326,9 @@ fn arg_where(condition: Robj) -> RResult<RPolarsExpr> {
 }
 
 #[extendr]
-fn arg_sort_by(dotdotdot: Robj, descending: Robj) -> RResult<RPolarsExpr> {
+fn arg_sort_by(exprs: Robj, descending: Robj) -> RResult<RPolarsExpr> {
     Ok(pl::arg_sort_by(
-        robj_to!(VecPLExprCol, dotdotdot)?,
+        robj_to!(VecPLExprCol, exprs)?,
         &robj_to!(Vec, bool, descending)?,
     )
     .into())
