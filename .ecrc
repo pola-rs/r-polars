@@ -5,8 +5,6 @@
   "SpacesAftertabs": false,
   "NoColor": false,
   "Exclude": [
-    "LICENSE\\.note$",
-    "tests/testthat/_snaps/"
   ],
   "AllowedContentTypes": [],
   "PassedFiles": [],
