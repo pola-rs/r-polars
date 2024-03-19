@@ -1023,7 +1023,8 @@ DataFrame_join = function(
   }
   .pr$DataFrame$lazy(self)$join(
     other = other$lazy(), left_on = left_on, right_on = right_on,
-    on = on, how = how, suffix = suffix, allow_parallel = allow_parallel,
+    on = on, how = how, suffix = suffix, validate = validate,
+    join_nulls = join_nulls, allow_parallel = allow_parallel,
     force_parallel = force_parallel
   )$collect()
 }

@@ -168,25 +168,51 @@ test_that("argument 'validate' works", {
 })
 
 test_that("argument 'join_nulls' works", {
-  df1 = pl$LazyFrame(x = c(NA, letters[1:2]), y = 1:3)
-  df2 = pl$LazyFrame(x = c(NA, letters[2:3]), y2 = 4:6)
+  df1 = pl$DataFrame(x = c(NA, letters[1:2]), y = 1:3)
+  df2 = pl$DataFrame(x = c(NA, letters[2:3]), y2 = 4:6)
 
-  # discard nulls by default
+  # 1 discard nulls by default
+
+  # eager1
   expect_identical(
-    df1$join(df2, on = "x")$collect()$to_data_frame(),
+    df1$join(df2, on = "x")$to_data_frame(),
     data.frame(x = "b", y = 3L, y2 = 5L)
   )
 
-  # consider nulls as a valid key
+  # lazy1
   expect_identical(
-    df1$join(df2, on = "x", join_nulls = TRUE)$collect()$to_data_frame(),
+    df1$lazy()$join(df2$lazy(), on = "x")$collect()$to_data_frame(),
+    data.frame(x = "b", y = 3L, y2 = 5L)
+  )
+
+  # 2 consider nulls as a valid key
+
+  # eager2
+  expect_identical(
+    df1$join(df2, on = "x", join_nulls = TRUE)$to_data_frame(),
     data.frame(x = c(NA, "b"), y = c(1L, 3L), y2 = c(4L, 5L))
   )
 
-  # several nulls
-  df2 = pl$LazyFrame(x = c(NA, letters[2:3], NA), y2 = 4:7)
+  # lazy2
   expect_identical(
-    df1$join(df2, on = "x", join_nulls = TRUE)$collect()$to_data_frame(),
+    df1$lazy()$join(df2$lazy(), on = "x", join_nulls = TRUE)$collect()$
+      to_data_frame(),
+    data.frame(x = c(NA, "b"), y = c(1L, 3L), y2 = c(4L, 5L))
+  )
+
+  # 3 several nulls
+  df3 = pl$DataFrame(x = c(NA, letters[2:3], NA), y2 = 4:7)
+
+  # eager3
+  expect_identical(
+    df1$join(df2, on = "x", join_nulls = TRUE)$to_data_frame(),
+    data.frame(x = c(NA, "b", NA), y = c(1L, 3L, 1L), y2 = c(4L, 5L, 7L))
+  )
+
+  # lazy3
+  expect_identical(
+    df1$lazy()$join(df2$lazy(), on = "x", join_nulls = TRUE)$collect()$
+      to_data_frame(),
     data.frame(x = c(NA, "b", NA), y = c(1L, 3L, 1L), y2 = c(4L, 5L, 7L))
   )
 })
