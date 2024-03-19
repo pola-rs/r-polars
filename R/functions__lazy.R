@@ -123,12 +123,12 @@ pl_col = function(...) {
 
   res |>
     map_err(
-      \(err) err$plain(paste0(
+      \(...) Err_plain(
         "pl$col()'s arguments must be one of the following:\n",
         "- character vectors\n",
         "- RPolarsDataTypes\n",
         "- a list of RPolarsDataTypes"
-      ))
+      )$err
     ) |>
     uw()
 }
