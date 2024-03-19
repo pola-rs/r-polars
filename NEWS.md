@@ -2,7 +2,16 @@
 
 ## Polars R Package (development version)
 
-### Breaking changes
+### Breaking changes due to Rust-polars update
+
+- rust-polars is updated to 0.38.3 (#937).
+  - New argument `non_existent` in `$replace_time_zone()` to specify what should
+    happen when a datetime doesn't exist.
+  - In rolling aggregation functions (such as `$rolling_mean()`), the default 
+    value of argument `closed` now is `NULL`. Using `closed` with a fixed 
+    `window_size` now throws an error.
+
+### Other breaking changes
 
 - The argument `columns` in `$drop()` is removed. `$drop()` now accepts several
   character scalars, such as `$drop("a", "b", "c")` (#912).
