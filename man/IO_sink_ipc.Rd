@@ -5,7 +5,7 @@
 \title{Stream the output of a query to an Arrow IPC file}
 \usage{
 LazyFrame_sink_ipc(
-  file,
+  path,
   ...,
   compression = "zstd",
   maintain_order = TRUE,
@@ -19,7 +19,7 @@ LazyFrame_sink_ipc(
 )
 }
 \arguments{
-\item{file}{A character. File path to which the file should be written.}
+\item{path}{A character. File path to which the file should be written.}
 
 \item{...}{Ignored.}
 

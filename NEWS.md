@@ -7,8 +7,8 @@
 - rust-polars is updated to 0.38.3 (#937).
   - New argument `non_existent` in `$replace_time_zone()` to specify what should
     happen when a datetime doesn't exist.
-  - In rolling aggregation functions (such as `$rolling_mean()`), the default
-    value of argument `closed` now is `NULL`. Using `closed` with a fixed
+  - In rolling aggregation functions (such as `$rolling_mean()`), the default 
+    value of argument `closed` now is `NULL`. Using `closed` with a fixed 
     `window_size` now throws an error.
 
 ### Other breaking changes
@@ -18,7 +18,8 @@
   - Unify names of input/output function arguments (935).
     - All arguments except the first argument must be named arguments.
     - In `pl$read_*` and `pl$scan_*` functions, the first argument is now `source`.
-    - In `<DataFrame>$write_*` and  `<LazyFrame>$sink_*` functions, the first argument is now `file`.
+    - In `<DataFrame>$write_*` functions, the first argument is now `file`.
+    - In `<LazyFrame>$sink_*` functions, the first argument is now `path`.
 - The argument `columns` in `$drop()` is removed. `$drop()` now accepts several
   character scalars, such as `$drop("a", "b", "c")` (#912).
 - In `pl$col()`, the `name` argument is removed, and the `...` argument no longer
@@ -33,7 +34,7 @@
 - New function `is_polars_dtype()` (#927).
 - New method `<LazyFrame>to_dot()` to print the query plan of a LazyFrame with
   graphviz dot syntax (#928).
-- Argument `ambiguous` can now take the value `"null"` to convert ambigous
+- Argument `ambiguous` can now take the value `"null"` to convert ambigous 
   datetimes to null values (#937).
 
 ## Polars R Package 0.15.1

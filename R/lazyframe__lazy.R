@@ -530,7 +530,7 @@ LazyFrame_collect_in_background = function() {
 #' This writes the output of a query directly to a Parquet file without collecting
 #' it in the R session first. This is useful if the output of the query is still
 #' larger than RAM as it would crash the R session if it was collected into R.
-#' @param file A character. File path to which the file should be written.
+#' @param path A character. File path to which the file should be written.
 #' @param ... Ignored.
 #' @param compression String. The compression method. One of:
 #' * "lz4": fast compression/decompression.
@@ -574,7 +574,7 @@ LazyFrame_collect_in_background = function() {
 #' # load parquet directly into a DataFrame / memory
 #' pl$scan_parquet(tmpf2)$collect()
 LazyFrame_sink_parquet = function(
-    file,
+    path,
     ...,
     compression = "zstd",
     compression_level = 3,
@@ -612,7 +612,7 @@ LazyFrame_sink_parquet = function(
 
   lf |>
     .pr$LazyFrame$sink_parquet(
-      file,
+      path,
       compression,
       compression_level,
       statistics,
@@ -652,7 +652,7 @@ LazyFrame_sink_parquet = function(
 #' # load ipc directly into a DataFrame / memory
 #' # pl$scan_ipc(tmpf2)$collect()
 LazyFrame_sink_ipc = function(
-    file,
+    path,
     ...,
     compression = "zstd",
     maintain_order = TRUE,
@@ -686,7 +686,7 @@ LazyFrame_sink_ipc = function(
 
   lf |>
     .pr$LazyFrame$sink_ipc(
-      file,
+      path,
       compression,
       maintain_order
     ) |>
@@ -721,7 +721,7 @@ LazyFrame_sink_ipc = function(
 #' # load parquet directly into a DataFrame / memory
 #' pl$scan_csv(tmpf2)$collect()
 LazyFrame_sink_csv = function(
-    file,
+    path,
     ...,
     include_bom = FALSE,
     include_header = TRUE,
@@ -766,7 +766,7 @@ LazyFrame_sink_csv = function(
 
   lf |>
     .pr$LazyFrame$sink_csv(
-      file,
+      path,
       include_bom,
       include_header,
       separator,
@@ -808,7 +808,7 @@ LazyFrame_sink_csv = function(
 #' # load parquet directly into a DataFrame / memory
 #' pl$scan_ndjson(tmpf)$collect()
 LazyFrame_sink_ndjson = function(
-    file,
+    path,
     ...,
     maintain_order = TRUE,
     type_coercion = TRUE,
@@ -841,7 +841,7 @@ LazyFrame_sink_ndjson = function(
 
   lf |>
     .pr$LazyFrame$sink_json(
-      file,
+      path,
       maintain_order
     ) |>
     unwrap("in $sink_ndjson()") |>
