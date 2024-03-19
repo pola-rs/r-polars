@@ -1440,8 +1440,14 @@ impl RPolarsExpr {
         ))
     }
 
-    pub fn dt_convert_time_zone(&self, tz: String) -> Self {
-        self.0.clone().dt().convert_time_zone(tz).into()
+    pub fn dt_convert_time_zone(&self, time_zone: Robj) -> RResult<RPolarsExpr> {
+        Ok(RPolarsExpr(
+            self.0
+                .clone()
+                .dt()
+                .convert_time_zone(robj_to!(String, time_zone)?)
+                .into(),
+        ))
     }
 
     pub fn dt_replace_time_zone(

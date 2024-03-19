@@ -44,7 +44,7 @@ df1 = pl$DataFrame(
     as.POSIXct("2020-03-01", tz = "UTC"),
     as.POSIXct("2020-07-01", tz = "UTC"),
     "1mo"
-  )$dt$convert_time_zone("Europe/London")$to_series()
+  )$dt$convert_time_zone("Europe/London")
 )
 
 df1$select(
