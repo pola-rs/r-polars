@@ -874,3 +874,4 @@ features. Unrelated breaking changes and new features are put in separate sectio
 
 Release date: 2023-04-16. Full changelog:
 [v0.4.6...v0.5.0](https://github.com/pola-rs/r-polars/compare/v0.4.7...v0.5.0)
+
