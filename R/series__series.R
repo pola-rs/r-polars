@@ -476,7 +476,7 @@ Series_compare = function(other, op) {
 #'
 #' `$to_r()` automatically returns an R vector or list based on the Polars
 #' DataType. It is possible to force the output type by using `$to_vector()` or
-#' `$to_r_list()`.
+#' `$to_list()`.
 #'
 #' @inheritParams DataFrame_to_data_frame
 #'
@@ -487,7 +487,7 @@ Series_compare = function(other, op) {
 #' series_vec = pl$Series(letters[1:3])
 #'
 #' series_vec$to_r() # as vector because Series DataType is not list (is String)
-#' series_vec$to_r_list() # implicit call as.list(), convert to list
+#' series_vec$to_list() # implicit call as.list(), convert to list
 #' series_vec$to_vector() # implicit call unlist(), same as to_r() as already vector
 #'
 #'
@@ -501,7 +501,7 @@ Series_compare = function(other, op) {
 #' series_list
 #'
 #' series_list$to_r() # as list because Series DataType is list
-#' series_list$to_r_list() # implicit call as.list(), same as to_r() as already list
+#' series_list$to_list() # implicit call as.list(), same as to_r() as already list
 #' series_list$to_vector() # implicit call unlist(), append into a vector
 Series_to_r = \(int64_conversion = polars_options()$int64_conversion) {
   unwrap(.pr$Series$to_r(self, int64_conversion), "in $to_r():")
@@ -513,15 +513,10 @@ Series_to_vector = \(int64_conversion = polars_options()$int64_conversion) {
   unlist(unwrap(.pr$Series$to_r(self, int64_conversion)), "in $to_vector():")
 }
 
-#' Alias to Series_to_vector (backward compatibility)
-#' @return R vector
-#' @noRd
-Series_to_r_vector = Series_to_vector
-
 #' @rdname Series_to_r
 #' @inheritParams DataFrame_to_data_frame
-Series_to_r_list = \(int64_conversion = polars_options()$int64_conversion) {
-  as.list(unwrap(.pr$Series$to_r(self, int64_conversion)), "in $to_r_list():")
+Series_to_list = \(int64_conversion = polars_options()$int64_conversion) {
+  as.list(unwrap(.pr$Series$to_r(self, int64_conversion)), "in $to_list():")
 }
 
 #' Count the occurrences of unique values

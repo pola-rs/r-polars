@@ -2167,7 +2167,6 @@ test_that("to_r", {
     NA, NA_integer_, NA_character_, NA_real_
   )
   for (i in l) expect_identical(pl$lit(i)$to_r(), i)
-  for (i in l) expect_identical(pl$expr_to_r(i), i)
 
   # NULL to NULL
   expect_identical(pl$lit(NULL)$to_r(), NULL)

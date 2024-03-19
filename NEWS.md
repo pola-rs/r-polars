@@ -25,6 +25,10 @@
 - In `pl$col()`, the `name` argument is removed, and the `...` argument no longer
   accepts a list of characters and `RPolarsSeries` class objects (#923).
 - Removed `$argsort()` which was an old alias for `$arg_sort()` (#930).
+- Removed `pl$expr_to_r()` which was an alias for `$to_r()` (#938).
+- `<Series>$to_r_list()` is renamed `<Series>$to_list()` (#938).
+- Removed `<Series>$to_r_vector()` which was an old alias for 
+  `<Series>$to_vector()` (#938).
 
 ### New features
 
