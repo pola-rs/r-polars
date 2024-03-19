@@ -2007,6 +2007,6 @@ LazyFrame_to_dot = function(
     streaming
   ) |> unwrap("in $to_dot():")
 
-  .pr$LazyFrame$to_dot(self, optimized) |>
+  .pr$LazyFrame$to_dot(lf, optimized) |>
     unwrap("in $to_dot():")
 }
