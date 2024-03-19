@@ -1,6 +1,6 @@
 {
     "rust-analyzer.linkedProjects": [
-        "./src/rust/Cargo.toml",
+        "./src/rust/Cargo.toml"
     ],
     "rust-analyzer.cargo.features": "all",
     "python.formatting.provider": "black",
@@ -24,5 +24,5 @@
         "rprintln",
         "tzone",
         "unnest"
-    ],
+    ]
 }
