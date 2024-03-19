@@ -1446,12 +1446,12 @@ impl RPolarsExpr {
 
     pub fn dt_replace_time_zone(
         &self,
-        tz: Nullable<String>,
+        time_zone: Nullable<String>,
         ambiguous: Robj,
         non_existent: Robj,
     ) -> RResult<Self> {
         Ok(RPolarsExpr(self.0.clone().dt().replace_time_zone(
-            tz.into_option(),
+            time_zone.into_option(),
             robj_to!(PLExpr, ambiguous)?,
             robj_to!(NonExistent, non_existent)?,
         )))

@@ -712,7 +712,7 @@ ExprDT_convert_time_zone = function(tz) {
 #' underlying timestamp. Use to correct a wrong time zone annotation. This will
 #' change the corresponding global timepoint.
 #'
-#' @param tz NULL or string time zone from [base::OlsonNames()]
+#' @param time_zone `NULL` or string time zone from [base::OlsonNames()]
 #' @param ambiguous Determine how to deal with ambiguous datetimes:
 #' * `"raise"` (default): throw an error
 #' * `"earliest"`: use the earliest datetime
@@ -725,29 +725,43 @@ ExprDT_convert_time_zone = function(tz) {
 #' @keywords ExprDT
 #' @aliases (Expr)$dt$replace_time_zone
 #' @examples
-#' df_1 = pl$DataFrame(x = as.POSIXct("2009-08-07 00:00:01", tz = "America/New_York"))
-#'
-#' df_1$with_columns(
-#'   pl$col("x")$dt$replace_time_zone("UTC")$alias("utc"),
-#'   pl$col("x")$dt$replace_time_zone("Europe/Amsterdam")$alias("cest")
+#' df1 = pl$DataFrame(
+#'   london_timezone = pl$date_range(
+#'     as.POSIXct("2020-03-01", tz = "UTC"),
+#'     as.POSIXct("2020-07-01", tz = "UTC"),
+#'     "1mo"
+#'   )$dt$convert_time_zone("Europe/London")$to_series()
 #' )
 #'
-#' # You can use ambiguous to deal with ambiguous datetimes
-#' df_2 = pl$DataFrame(
-#'   x = seq(
-#'     as.POSIXct("2018-10-28 01:30", tz = "UTC"),
-#'     as.POSIXct("2018-10-28 02:30", tz = "UTC"),
-#'     by = "30 min"
+#' df1$select(
+#'   "london_timezone",
+#'   London_to_Amsterdam = pl$col("london_timezone")$dt$replace_time_zone("Europe/Amsterdam")
+#' )
+#'
+#' # You can use `ambiguous` to deal with ambiguous datetimes:
+#' dates = c(
+#'   "2018-10-28 01:30",
+#'   "2018-10-28 02:00",
+#'   "2018-10-28 02:30",
+#'   "2018-10-28 02:00"
+#' )
+#' df2 = pl$DataFrame(
+#'   ts = as_polars_series(dates)$str$strptime(pl$Datetime("us")),
+#'   ambiguous = c("earliest", "earliest", "latest", "latest")
+#' )
+#'
+#' df2$with_columns(
+#'   ts_localized = pl$col("ts")$dt$replace_time_zone(
+#'     "Europe/Brussels",
+#'     ambiguous = pl$col("ambiguous")
 #'   )
 #' )
-#'
-#' df_2$with_columns(
-#'   pl$col("x")$dt$replace_time_zone("Europe/Brussels", "earliest")$alias("earliest"),
-#'   pl$col("x")$dt$replace_time_zone("Europe/Brussels", "latest")$alias("latest"),
-#'   pl$col("x")$dt$replace_time_zone("Europe/Brussels", "null")$alias("null")
-#' )
-ExprDT_replace_time_zone = function(tz, ambiguous = "raise", non_existent = "raise") {
-  check_tz_to_result(tz) |>
+ExprDT_replace_time_zone = function(
+    time_zone,
+    ...,
+    ambiguous = "raise",
+    non_existent = "raise") {
+  check_tz_to_result(time_zone) |>
     and_then(\(valid_tz) {
       .pr$Expr$dt_replace_time_zone(self, valid_tz, ambiguous, non_existent)
     }) |>
