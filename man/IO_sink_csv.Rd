@@ -5,7 +5,7 @@
 \title{Stream the output of a query to a CSV file}
 \usage{
 LazyFrame_sink_csv(
-  path,
+  file,
   ...,
   include_bom = FALSE,
   include_header = TRUE,
@@ -30,7 +30,7 @@ LazyFrame_sink_csv(
 )
 }
 \arguments{
-\item{path}{A character. File path to which the file should be written.}
+\item{file}{File path to which the result should be written.}
 
 \item{...}{Ignored.}
 

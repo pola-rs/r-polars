@@ -5,7 +5,7 @@
 \title{Stream the output of a query to a Parquet file}
 \usage{
 LazyFrame_sink_parquet(
-  path,
+  file,
   ...,
   compression = "zstd",
   compression_level = 3,
@@ -23,7 +23,7 @@ LazyFrame_sink_parquet(
 )
 }
 \arguments{
-\item{path}{A character. File path to which the file should be written.}
+\item{file}{A character. File path to which the file should be written.}
 
 \item{...}{Ignored.}
 

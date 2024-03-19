@@ -15,7 +15,7 @@ DataFrame_write_parquet(
 )
 }
 \arguments{
-\item{file}{File path to which the result should be written.}
+\item{file}{A character. File path to which the file should be written.}
 
 \item{...}{Ignored.}
 

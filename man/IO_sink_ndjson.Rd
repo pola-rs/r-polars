@@ -5,7 +5,7 @@
 \title{Stream the output of a query to a JSON file}
 \usage{
 LazyFrame_sink_ndjson(
-  path,
+  file,
   ...,
   maintain_order = TRUE,
   type_coercion = TRUE,
@@ -18,7 +18,7 @@ LazyFrame_sink_ndjson(
 )
 }
 \arguments{
-\item{path}{A character. File path to which the file should be written.}
+\item{file}{File path to which the result should be written.}
 
 \item{...}{Ignored.}
 
