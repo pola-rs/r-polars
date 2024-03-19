@@ -15,6 +15,8 @@ ExprDT_replace_time_zone(
 \arguments{
 \item{time_zone}{\code{NULL} or string time zone from \code{\link[base:timezones]{base::OlsonNames()}}}
 
+\item{...}{Ignored.}
+
 \item{ambiguous}{Determine how to deal with ambiguous datetimes:
 \itemize{
 \item \code{"raise"} (default): throw an error

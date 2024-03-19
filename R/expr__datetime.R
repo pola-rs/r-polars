@@ -676,6 +676,7 @@ ExprDT_convert_time_zone = function(time_zone) {
 #' change the corresponding global timepoint.
 #'
 #' @param time_zone `NULL` or string time zone from [base::OlsonNames()]
+#' @param ... Ignored.
 #' @param ambiguous Determine how to deal with ambiguous datetimes:
 #' * `"raise"` (default): throw an error
 #' * `"earliest"`: use the earliest datetime
