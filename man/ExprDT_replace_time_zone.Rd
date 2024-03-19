@@ -5,16 +5,22 @@
 \alias{(Expr)$dt$replace_time_zone}
 \title{replace_time_zone}
 \usage{
-ExprDT_replace_time_zone(tz, ambiguous = "raise")
+ExprDT_replace_time_zone(tz, ambiguous = "raise", non_existent = "raise")
 }
 \arguments{
 \item{tz}{NULL or string time zone from \code{\link[base:timezones]{base::OlsonNames()}}}
 
 \item{ambiguous}{Determine how to deal with ambiguous datetimes:
 \itemize{
-\item \code{"raise"} (default): raise
+\item \code{"raise"} (default): throw an error
 \item \code{"earliest"}: use the earliest datetime
 \item \code{"latest"}: use the latest datetime
+}}
+
+\item{non_existent}{Determine how to deal with non-existent datetimes:
+\itemize{
+\item \code{"raise"} (default): throw an error
+\item \code{"null"}: return a null value
 }}
 }
 \value{

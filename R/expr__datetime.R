@@ -714,9 +714,12 @@ ExprDT_convert_time_zone = function(tz) {
 #'
 #' @param tz NULL or string time zone from [base::OlsonNames()]
 #' @param ambiguous Determine how to deal with ambiguous datetimes:
-#' * `"raise"` (default): raise
+#' * `"raise"` (default): throw an error
 #' * `"earliest"`: use the earliest datetime
 #' * `"latest"`: use the latest datetime
+#' @param non_existent Determine how to deal with non-existent datetimes:
+#' * `"raise"` (default): throw an error
+#' * `"null"`: return a null value
 #' @return Expr of i64
 #' @keywords ExprDT
 #' @aliases (Expr)$dt$replace_time_zone
@@ -741,10 +744,10 @@ ExprDT_convert_time_zone = function(tz) {
 #'   pl$col("x")$dt$replace_time_zone("Europe/Brussels", "earliest")$alias("earliest"),
 #'   pl$col("x")$dt$replace_time_zone("Europe/Brussels", "latest")$alias("latest")
 #' )
-ExprDT_replace_time_zone = function(tz, ambiguous = "raise") {
+ExprDT_replace_time_zone = function(tz, ambiguous = "raise", non_existent = "raise") {
   check_tz_to_result(tz) |>
     and_then(\(valid_tz) {
-      .pr$Expr$dt_replace_time_zone(self, valid_tz, ambiguous)
+      .pr$Expr$dt_replace_time_zone(self, valid_tz, ambiguous, non_existent)
     }) |>
     unwrap("in $replace_time_zone():")
 }
