@@ -5,7 +5,7 @@
 ### Breaking changes due to Rust-polars update
 
 - rust-polars is updated to 0.38.3 (#937).
-  - New argument `non_existent` in `$replace_time_zone()` to specify what should
+  - New argument `non_existent` in `$dt$replace_time_zone()` to specify what should
     happen when a datetime doesn't exist.
   - In rolling aggregation functions (such as `$rolling_mean()`), the default
     value of argument `closed` now is `NULL`. Using `closed` with a fixed
@@ -20,6 +20,10 @@
     - In `pl$read_*` and `pl$scan_*` functions, the first argument is now `source`.
     - In `<DataFrame>$write_*` functions, the first argument is now `file`.
     - In `<LazyFrame>$sink_*` functions, the first argument is now `path`.
+  - In `$dt$convert_time_zone()` and `$dt$replace_time_zone()`, the `tz` argument
+    is renamed to `time_zone` (#944).
+  - In `$dt$replace_time_zone()`, all arguments except `time_zone` must be named
+    arguments (#944).
 - The argument `columns` in `$drop()` is removed. `$drop()` now accepts several
   character scalars, such as `$drop("a", "b", "c")` (#912).
 - In `pl$col()`, the `name` argument is removed, and the `...` argument no longer
