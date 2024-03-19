@@ -311,7 +311,18 @@ pub fn robj_to_rank_method(robj: Robj) -> RResult<pl::RankMethod> {
         "random" => Ok(RM::Random),
         s =>  rerr()
         .bad_val(format!(
-            "RankMethod choice: [{s}] is not any 'average','dense', 'min', 'max', 'ordinal', 'random'"
+            "RankMethod choice: [{s}] is not any of 'average','dense', 'min', 'max', 'ordinal', 'random'"
+        )),
+    }
+}
+
+pub fn robj_to_non_existent(robj: Robj) -> RResult<pl::NonExistent> {
+    use pl::NonExistent as NE;
+    match robj_to_rchoice(robj)?.to_lowercase().as_str() {
+        "null" => Ok(NE::Null),
+        "raise" => Ok(NE::Raise),
+        s => rerr().bad_val(format!(
+            "NonExistent choice: [{s}] is not any of 'null', 'raise'"
         )),
     }
 }
