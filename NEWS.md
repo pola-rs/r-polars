@@ -7,8 +7,8 @@
 - rust-polars is updated to 0.38.3 (#937).
   - New argument `non_existent` in `$replace_time_zone()` to specify what should
     happen when a datetime doesn't exist.
-  - In rolling aggregation functions (such as `$rolling_mean()`), the default 
-    value of argument `closed` now is `NULL`. Using `closed` with a fixed 
+  - In rolling aggregation functions (such as `$rolling_mean()`), the default
+    value of argument `closed` now is `NULL`. Using `closed` with a fixed
     `window_size` now throws an error.
 
 ### Other breaking changes
@@ -27,7 +27,7 @@
 - Removed `$argsort()` which was an old alias for `$arg_sort()` (#930).
 - Removed `pl$expr_to_r()` which was an alias for `$to_r()` (#938).
 - `<Series>$to_r_list()` is renamed `<Series>$to_list()` (#938).
-- Removed `<Series>$to_r_vector()` which was an old alias for 
+- Removed `<Series>$to_r_vector()` which was an old alias for
   `<Series>$to_vector()` (#938).
 
 ### New features
@@ -38,7 +38,7 @@
 - New function `is_polars_dtype()` (#927).
 - New method `<LazyFrame>to_dot()` to print the query plan of a LazyFrame with
   graphviz dot syntax (#928).
-- Argument `ambiguous` can now take the value `"null"` to convert ambigous 
+- Argument `ambiguous` can now take the value `"null"` to convert ambigous
   datetimes to null values (#937).
 
 ## Polars R Package 0.15.1
