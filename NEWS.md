@@ -5,10 +5,10 @@
 ### Breaking changes due to Rust-polars update
 
 - rust-polars is updated to 0.38.3 (#937).
-  - New argument `non_existent` in `$replace_time_zone()` to specify what should
+  - New argument `non_existent` in `$dt$replace_time_zone()` to specify what should
     happen when a datetime doesn't exist.
-  - In rolling aggregation functions (such as `$rolling_mean()`), the default 
-    value of argument `closed` now is `NULL`. Using `closed` with a fixed 
+  - In rolling aggregation functions (such as `$rolling_mean()`), the default
+    value of argument `closed` now is `NULL`. Using `closed` with a fixed
     `window_size` now throws an error.
 
 ### Other breaking changes
@@ -20,6 +20,10 @@
     - In `pl$read_*` and `pl$scan_*` functions, the first argument is now `source`.
     - In `<DataFrame>$write_*` functions, the first argument is now `file`.
     - In `<LazyFrame>$sink_*` functions, the first argument is now `path`.
+  - In `$dt$convert_time_zone()` and `$dt$replace_time_zone()`, the `tz` argument
+    is renamed to `time_zone` (#944).
+  - In `$dt$replace_time_zone()`, all arguments except `time_zone` must be named
+    arguments (#944).
 - The argument `columns` in `$drop()` is removed. `$drop()` now accepts several
   character scalars, such as `$drop("a", "b", "c")` (#912).
 - In `pl$col()`, the `name` argument is removed, and the `...` argument no longer
@@ -27,7 +31,7 @@
 - Removed `$argsort()` which was an old alias for `$arg_sort()` (#930).
 - Removed `pl$expr_to_r()` which was an alias for `$to_r()` (#938).
 - `<Series>$to_r_list()` is renamed `<Series>$to_list()` (#938).
-- Removed `<Series>$to_r_vector()` which was an old alias for 
+- Removed `<Series>$to_r_vector()` which was an old alias for
   `<Series>$to_vector()` (#938).
 
 ### New features
@@ -38,7 +42,7 @@
 - New function `is_polars_dtype()` (#927).
 - New method `<LazyFrame>to_dot()` to print the query plan of a LazyFrame with
   graphviz dot syntax (#928).
-- Argument `ambiguous` can now take the value `"null"` to convert ambigous 
+- Argument `ambiguous` can now take the value `"null"` to convert ambigous
   datetimes to null values (#937).
 
 ## Polars R Package 0.15.1
