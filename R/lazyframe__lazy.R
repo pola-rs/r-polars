@@ -1956,3 +1956,57 @@ LazyFrame_group_by_dynamic = function(
   ) |>
     unwrap("in $group_by_dynamic():")
 }
+
+#' Plot the query plan
+#'
+#' This only returns the "dot" output that can be passed to other packages, such
+#' as `DiagrammeR::grViz()`.
+#'
+#' @param ... Not used..
+#' @param optimized Optimize the query plan.
+#' @inheritParams LazyFrame_set_optimization_toggle
+#'
+#' @return A character vector
+#'
+#' @examples
+#' lf = pl$LazyFrame(
+#'   a = c("a", "b", "a", "b", "b", "c"),
+#'   b = 1:6,
+#'   c = 6:1
+#' )
+#'
+#' query = lf$group_by("a", maintain_order = TRUE)$agg(
+#'   pl$all()$sum()
+#' )$sort(
+#'   "a"
+#' )
+#'
+#' query$to_dot() |> cat()
+#'
+#' # You could print the graph by using DiagrammeR for example, with
+#' # query$to_dot() |> DiagrammeR::grViz().
+LazyFrame_to_dot = function(
+    ...,
+    optimized = TRUE,
+    type_coercion = TRUE,
+    predicate_pushdown = TRUE,
+    projection_pushdown = TRUE,
+    simplify_expression = TRUE,
+    slice_pushdown = TRUE,
+    comm_subplan_elim = TRUE,
+    comm_subexpr_elim = TRUE,
+    streaming = FALSE) {
+  lf = self$set_optimization_toggle(
+    type_coercion,
+    predicate_pushdown,
+    projection_pushdown,
+    simplify_expression,
+    slice_pushdown,
+    comm_subplan_elim,
+    comm_subexpr_elim,
+    streaming
+  ) |> unwrap("in $to_dot():")
+
+  .pr$LazyFrame$to_dot(self, optimized) |>
+    unwrap("in $to_dot():")
+}

@@ -242,7 +242,7 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
                                 .dt()
                                 .convert_time_zone(sys_tz)
                                 .dt()
-                                .replace_time_zone(None, pl::lit("raise"))])
+                                .replace_time_zone(None, pl::lit("raise"), pl::NonExistent::Raise)])
                             .collect()?
                             .column(s_name)?
                             .clone(),

@@ -47,3 +47,7 @@ test_that("profile: show_plot returns a plot in the list of outputs", {
 
   expect_length(p1, 3)
 })
+
+test_that("$to_dot() works", {
+  expect_snapshot(cat(pl$LazyFrame(a = 1, b = "a")$to_dot()))
+})

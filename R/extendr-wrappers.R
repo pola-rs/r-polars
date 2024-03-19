@@ -780,7 +780,7 @@ RPolarsExpr$dt_cast_time_unit <- function(tu) .Call(wrap__RPolarsExpr__dt_cast_t
 
 RPolarsExpr$dt_convert_time_zone <- function(tz) .Call(wrap__RPolarsExpr__dt_convert_time_zone, self, tz)
 
-RPolarsExpr$dt_replace_time_zone <- function(tz, ambiguous) .Call(wrap__RPolarsExpr__dt_replace_time_zone, self, tz, ambiguous)
+RPolarsExpr$dt_replace_time_zone <- function(tz, ambiguous, non_existent) .Call(wrap__RPolarsExpr__dt_replace_time_zone, self, tz, ambiguous, non_existent)
 
 RPolarsExpr$dt_total_days <- function() .Call(wrap__RPolarsExpr__dt_total_days, self)
 
@@ -1189,6 +1189,8 @@ RPolarsLazyFrame$with_context <- function(contexts) .Call(wrap__RPolarsLazyFrame
 RPolarsLazyFrame$rolling <- function(index_column, period, offset, closed, by, check_sorted) .Call(wrap__RPolarsLazyFrame__rolling, self, index_column, period, offset, closed, by, check_sorted)
 
 RPolarsLazyFrame$group_by_dynamic <- function(index_column, every, period, offset, label, include_boundaries, closed, by, start_by, check_sorted) .Call(wrap__RPolarsLazyFrame__group_by_dynamic, self, index_column, every, period, offset, label, include_boundaries, closed, by, start_by, check_sorted)
+
+RPolarsLazyFrame$to_dot <- function(optimized) .Call(wrap__RPolarsLazyFrame__to_dot, self, optimized)
 
 #' @export
 `$.RPolarsLazyFrame` <- function (self, name) { func <- RPolarsLazyFrame[[name]]; environment(func) <- environment(); func }

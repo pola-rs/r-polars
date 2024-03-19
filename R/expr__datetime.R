@@ -705,18 +705,22 @@ ExprDT_convert_time_zone = function(tz) {
     unwrap()
 }
 
-#' replace_time_zone
-#' @description
-#' Cast time zone for a Series of type Datetime.
-#' Different from ``convert_time_zone``, this will also modify the underlying timestamp.
-#' Use to correct a wrong time zone annotation. This will change the corresponding global timepoint.
+#' Replace time zone
 #'
+#' Cast time zone for a Series of type Datetime. This is different from
+#' [`$convert_time_zone()`][ExprDT_convert_time_zone] as it will also modify the
+#' underlying timestamp. Use to correct a wrong time zone annotation. This will
+#' change the corresponding global timepoint.
 #'
 #' @param tz NULL or string time zone from [base::OlsonNames()]
 #' @param ambiguous Determine how to deal with ambiguous datetimes:
-#' * `"raise"` (default): raise
+#' * `"raise"` (default): throw an error
 #' * `"earliest"`: use the earliest datetime
 #' * `"latest"`: use the latest datetime
+#' * `"null"`: return a null value
+#' @param non_existent Determine how to deal with non-existent datetimes:
+#' * `"raise"` (default): throw an error
+#' * `"null"`: return a null value
 #' @return Expr of i64
 #' @keywords ExprDT
 #' @aliases (Expr)$dt$replace_time_zone
@@ -739,12 +743,13 @@ ExprDT_convert_time_zone = function(tz) {
 #'
 #' df_2$with_columns(
 #'   pl$col("x")$dt$replace_time_zone("Europe/Brussels", "earliest")$alias("earliest"),
-#'   pl$col("x")$dt$replace_time_zone("Europe/Brussels", "latest")$alias("latest")
+#'   pl$col("x")$dt$replace_time_zone("Europe/Brussels", "latest")$alias("latest"),
+#'   pl$col("x")$dt$replace_time_zone("Europe/Brussels", "null")$alias("null")
 #' )
-ExprDT_replace_time_zone = function(tz, ambiguous = "raise") {
+ExprDT_replace_time_zone = function(tz, ambiguous = "raise", non_existent = "raise") {
   check_tz_to_result(tz) |>
     and_then(\(valid_tz) {
-      .pr$Expr$dt_replace_time_zone(self, valid_tz, ambiguous)
+      .pr$Expr$dt_replace_time_zone(self, valid_tz, ambiguous, non_existent)
     }) |>
     unwrap("in $replace_time_zone():")
 }
