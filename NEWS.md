@@ -13,11 +13,17 @@
 
 ### Other breaking changes
 
+- Several functions have been rewritten to match the behavior of Python Polars.
+  - `pl$implode(...)` is rewritten to be a syntactic sugar for `pl$col(...)$implode()` (#923).
+  - Unify names of input/output function arguments (935).
+    - All arguments except the first argument must be named arguments.
+    - In `pl$read_*` and `pl$scan_*` functions, the first argument is now `source`.
+    - In `<DataFrame>$write_*` functions, the first argument is now `file`.
+    - In `<LazyFrame>$sink_*` functions, the first argument is now `path`.
 - The argument `columns` in `$drop()` is removed. `$drop()` now accepts several
   character scalars, such as `$drop("a", "b", "c")` (#912).
 - In `pl$col()`, the `name` argument is removed, and the `...` argument no longer
   accepts a list of characters and `RPolarsSeries` class objects (#923).
-- `pl$implode(...)` is rewritten to be a syntactic sugar for `pl$col(...)$implode()` (#923).
 - Removed `$argsort()` which was an old alias for `$arg_sort()` (#930).
 
 ### New features
