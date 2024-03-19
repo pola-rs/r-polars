@@ -19,6 +19,9 @@
   accepts a list of characters and `RPolarsSeries` class objects (#923).
 - `pl$implode(...)` is rewritten to be a syntactic sugar for `pl$col(...)$implode()` (#923).
 - Removed `$argsort()` which was an old alias for `$arg_sort()` (#930).
+- In `$str$strptime()`, `$str$to_date()`, `$str$to_datetime()`, and 
+  `$str$to_time()`, only the first argument can be unnamed. Those functions now 
+  throw an error if you pass additional unnamed arguments (#939).
 
 ### New features
 

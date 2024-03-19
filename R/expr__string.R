@@ -12,14 +12,15 @@
 #' When parsing a Datetime the column precision will be inferred from the format
 #' string, if given, e.g.: `"%F %T%.3f"` => [`pl$Datetime("ms")`][pl_Datetime].
 #' If no fractional second component is found then the default is `"us"` (microsecond).
-#' @param datatype The data type to convert into. Can be either Date, Datetime,
-#' or Time.
+#' @param dtype The data type to convert into. Can be either `pl$Date`,
+#' `pl$Datetime()`, or `pl$Time`.
 #' @param format Format to use for conversion. Refer to
 #' [the chrono crate documentation](https://docs.rs/chrono/latest/chrono/format/strftime/index.html)
 #' for the full specification. Example: `"%Y-%m-%d %H:%M:%S"`.
 #' If `NULL` (default), the format is inferred from the data.
 #' Notice that time zone `%Z` is not supported and will just ignore timezones.
 #' Numeric time zones like `%z` or `%:z` are supported.
+#' @param ... Not used.
 #' @param strict If `TRUE` (default), raise an error if a single string cannot
 #' be parsed. If `FALSE`, produce a polars `null`.
 #' @param exact If `TRUE` (default), require an exact format match. If `FALSE`,
@@ -79,23 +80,29 @@
 #' s$str$strptime(
 #'   pl$Datetime("ns"),
 #'   format = "%Y-%m-%d %H:%M:%S %z",
-#'   strict = FALSE,
+#'   strict = FALSE
 #' )
 ExprStr_strptime = function(
-    datatype,
+    dtype,
     format = NULL,
+    ...,
     strict = TRUE,
     exact = TRUE,
     cache = TRUE,
     ambiguous = "raise") {
+  dots = list2(...)
+  if ("datatype" %in% names(dots)) {
+    Err_plain("Argument `datatype` of `$str$strptime()` was deprecated in 0.16.0. Use `dtype` instead.") |>
+      unwrap("in $str$strptime():")
+  }
   pcase(
     # not a datatype
-    !is_polars_dtype(datatype),
-    Err_plain("arg datatype is not an RPolarsDataType"),
+    !is_polars_dtype(dtype),
+    Err_plain("arg dtype is not an RPolarsDataType"),
     # Datetime
-    pl$same_outer_dt(datatype, pl$Datetime()),
+    pl$same_outer_dt(dtype, pl$Datetime()),
     {
-      datetime_type = .pr$DataType$get_insides(datatype)
+      datetime_type = .pr$DataType$get_insides(dtype)
       .pr$Expr$str_to_datetime(
         self, format, datetime_type$tu, datetime_type$tz, strict, exact, cache, ambiguous
       ) |> and_then(
@@ -103,18 +110,17 @@ ExprStr_strptime = function(
       )
     },
     # Date
-    datatype == pl$Date,
+    dtype == pl$Date,
     .pr$Expr$str_to_date(self, format, strict, exact, cache),
     # Time
-    datatype == pl$Time,
+    dtype == pl$Time,
     .pr$Expr$str_to_time(self, format, strict, cache),
     # Other
-    or_else = Err_plain("datatype should be of type {Date, Datetime, Time}")
+    or_else = Err_plain("dtype should be of type {Date, Datetime, Time}")
   ) |>
-    unwrap("in str$strptime():")
+    unwrap("in $str$strptime():")
 }
 
-# TODO for 0.16.0: should not allow positional arguments except for the first one
 #' Convert a String column into a Date column
 #'
 #' @inheritParams ExprStr_strptime
@@ -129,12 +135,21 @@ ExprStr_strptime = function(
 #' s = pl$Series(c("2020/01/01", "2020/02/01", "2020/03/01"))
 #'
 #' s$str$to_date()
-ExprStr_to_date = function(format = NULL, strict = TRUE, exact = TRUE, cache = TRUE) {
+#'
+#' # by default, this errors if some values cannot be converted
+#' s = pl$Series(c("2020/01/01", "2020 02 01", "2020-03-01"))
+#' try(s$str$to_date())
+#' s$str$to_date(strict = FALSE)
+ExprStr_to_date = function(format = NULL, ..., strict = TRUE, exact = TRUE, cache = TRUE) {
+  dots = list2(...)
+  if (length(dots) > 0) {
+    Err_plain("Arguments `strict`, `exact`, and `cache` have to be named as of 0.16.0.") |>
+      unwrap("in $str$to_date():")
+  }
   .pr$Expr$str_to_date(self, format, strict, exact, cache) |>
     unwrap("in $str$to_date():")
 }
 
-# TODO for 0.16.0: should not allow positional arguments except for the first one
 #' Convert a String column into a Time column
 #'
 #' @inheritParams ExprStr_strptime
@@ -149,12 +164,16 @@ ExprStr_to_date = function(format = NULL, strict = TRUE, exact = TRUE, cache = T
 #' s = pl$Series(c("01:00", "02:00", "03:00"))
 #'
 #' s$str$to_time("%H:%M")
-ExprStr_to_time = function(format = NULL, strict = TRUE, cache = TRUE) {
+ExprStr_to_time = function(format = NULL, ..., strict = TRUE, cache = TRUE) {
+  dots = list2(...)
+  if (length(dots) > 0) {
+    Err_plain("Arguments `strict` and `cache` have to be named as of 0.16.0.") |>
+      unwrap("in $str$to_time():")
+  }
   .pr$Expr$str_to_time(self, format, strict, cache) |>
     unwrap("in $str$to_time():")
 }
 
-# TODO for 0.16.0: should not allow positional arguments except for the first one
 #' Convert a String column into a Datetime column
 #'
 #' @inheritParams ExprStr_strptime
@@ -176,12 +195,18 @@ ExprStr_to_time = function(format = NULL, strict = TRUE, cache = TRUE) {
 #' s$str$to_datetime(time_unit = "ms")
 ExprStr_to_datetime = function(
     format = NULL,
+    ...,
     time_unit = NULL,
     time_zone = NULL,
     strict = TRUE,
     exact = TRUE,
     cache = TRUE,
     ambiguous = "raise") {
+  dots = list2(...)
+  if (length(dots) > 0) {
+    Err_plain("All arguments (except `format`) have to be named as of 0.16.0.") |>
+      unwrap("in $str$to_datetime():")
+  }
   .pr$Expr$str_to_datetime(
     self, format, time_unit, time_zone, strict, exact, cache, ambiguous
   ) |>
