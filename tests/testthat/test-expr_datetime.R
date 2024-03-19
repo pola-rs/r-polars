@@ -697,9 +697,9 @@ test_that("replace_time_zone for ambiguous time", {
   x = seq(as.POSIXct("2018-10-28 01:30", tz = "UTC"), as.POSIXct("2018-10-28 02:30", tz = "UTC"), by = "30 min")
 
   pl_out = pl$DataFrame(x = x)$with_columns(
-    pl$col("x")$dt$replace_time_zone("Europe/Brussels", "earliest")$alias("earliest"),
-    pl$col("x")$dt$replace_time_zone("Europe/Brussels", "latest")$alias("latest"),
-    pl$col("x")$dt$replace_time_zone("Europe/Brussels", "null")$alias("null")
+    pl$col("x")$dt$replace_time_zone("Europe/Brussels", ambiguous = "earliest")$alias("earliest"),
+    pl$col("x")$dt$replace_time_zone("Europe/Brussels", ambiguous = "latest")$alias("latest"),
+    pl$col("x")$dt$replace_time_zone("Europe/Brussels", ambiguous = "null")$alias("null")
   )$to_data_frame()
 
   lubridate_out = data.frame(
