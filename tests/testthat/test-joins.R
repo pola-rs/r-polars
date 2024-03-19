@@ -205,13 +205,13 @@ test_that("argument 'join_nulls' works", {
 
   # eager3
   expect_identical(
-    df1$join(df2, on = "x", join_nulls = TRUE)$to_data_frame(),
+    df1$join(df3, on = "x", join_nulls = TRUE)$to_data_frame(),
     data.frame(x = c(NA, "b", NA), y = c(1L, 3L, 1L), y2 = c(4L, 5L, 7L))
   )
 
   # lazy3
   expect_identical(
-    df1$lazy()$join(df2$lazy(), on = "x", join_nulls = TRUE)$collect()$
+    df1$lazy()$join(df3$lazy(), on = "x", join_nulls = TRUE)$collect()$
       to_data_frame(),
     data.frame(x = c(NA, "b", NA), y = c(1L, 3L, 1L), y2 = c(4L, 5L, 7L))
   )
