@@ -2249,15 +2249,17 @@ Expr_interpolate = function(method = "linear") {
 
 
 prepare_rolling_window_args = function(
-    window_size, # : int | str,
-    min_periods = NULL # : int | None = None,
-    ) { # ->tuple[str, int]:
+    window_size,
+    min_periods = NULL,
+    by,
+    closed) {
   if (is.numeric(window_size)) {
     if (is.null(min_periods)) min_periods = as.numeric(window_size)
     window_size = paste0(as.character(floor(window_size)), "i")
   }
   if (is.null(min_periods)) min_periods = 1
-  list(window_size = window_size, min_periods = min_periods)
+  if (!is.null(by) && is.null(closed)) closed = "right"
+  list(window_size = window_size, min_periods = min_periods, closed = closed)
 }
 
 
@@ -2291,10 +2293,11 @@ prepare_rolling_window_args = function(
 #' @param by If the `window_size` is temporal for instance `"5h"` or `"3s"`, you
 #' must set the column that will be used to determine the windows. This column
 #' must be of DataType Date or DateTime.
-#' @param closed String, one of `"left"`, `"right"`, `"both"`, `"none"`. Defines
-#' whether the temporal window interval is closed or not.
-#' @param warn_if_unsorted Warn if data is not known to be sorted by `by` column (if passed).
-#' Experimental.
+#' @param closed Defines whether the temporal window interval is closed or not.
+#' Only applicable if `by` is not `NULL` (in which case, its possible values are
+#' `"left"`, `"right"` (default), `"both"`, `"none"`).
+#' @param warn_if_unsorted Warn if data is not known to be sorted by `by` column
+#' (if passed).
 #'
 #' @details
 #' If you want to compute multiple aggregation statistics over the same dynamic
@@ -2310,12 +2313,12 @@ Expr_rolling_min = function(
     min_periods = NULL,
     center = FALSE,
     by = NULL,
-    closed = c("left", "right", "both", "none"),
+    closed = NULL,
     warn_if_unsorted = TRUE) {
-  wargs = prepare_rolling_window_args(window_size, min_periods)
+  wargs = prepare_rolling_window_args(window_size, min_periods, by, closed)
   .pr$Expr$rolling_min(
     self, wargs$window_size, weights,
-    wargs$min_periods, center, by, closed[1L], warn_if_unsorted
+    wargs$min_periods, center, by, wargs$closed, warn_if_unsorted
   ) |>
     unwrap("in $rolling_min():")
 }
@@ -2336,12 +2339,12 @@ Expr_rolling_max = function(
     min_periods = NULL,
     center = FALSE,
     by = NULL,
-    closed = c("left", "right", "both", "none"),
+    closed = NULL,
     warn_if_unsorted = TRUE) {
-  wargs = prepare_rolling_window_args(window_size, min_periods)
+  wargs = prepare_rolling_window_args(window_size, min_periods, by, closed)
   .pr$Expr$rolling_max(
     self, wargs$window_size, weights,
-    wargs$min_periods, center, by, closed[1L], warn_if_unsorted
+    wargs$min_periods, center, by, wargs$closed, warn_if_unsorted
   ) |>
     unwrap("in $rolling_max()")
 }
@@ -2362,12 +2365,12 @@ Expr_rolling_mean = function(
     min_periods = NULL,
     center = FALSE,
     by = NULL,
-    closed = c("left", "right", "both", "none"),
+    closed = NULL,
     warn_if_unsorted = TRUE) {
-  wargs = prepare_rolling_window_args(window_size, min_periods)
+  wargs = prepare_rolling_window_args(window_size, min_periods, by, closed)
   .pr$Expr$rolling_mean(
     self, wargs$window_size, weights,
-    wargs$min_periods, center, by, closed[1L], warn_if_unsorted
+    wargs$min_periods, center, by, wargs$closed, warn_if_unsorted
   ) |>
     unwrap("in $rolling_mean():")
 }
@@ -2388,12 +2391,12 @@ Expr_rolling_sum = function(
     min_periods = NULL,
     center = FALSE,
     by = NULL,
-    closed = c("left", "right", "both", "none"),
+    closed = NULL,
     warn_if_unsorted = TRUE) {
-  wargs = prepare_rolling_window_args(window_size, min_periods)
+  wargs = prepare_rolling_window_args(window_size, min_periods, by, closed)
   .pr$Expr$rolling_sum(
     self, wargs$window_size, weights,
-    wargs$min_periods, center, by, closed[1L], warn_if_unsorted
+    wargs$min_periods, center, by, wargs$closed, warn_if_unsorted
   ) |>
     unwrap("in $rolling_sum():")
 }
@@ -2416,12 +2419,12 @@ Expr_rolling_std = function(
     min_periods = NULL,
     center = FALSE,
     by = NULL,
-    closed = c("left", "right", "both", "none"),
+    closed = NULL,
     warn_if_unsorted = TRUE) {
-  wargs = prepare_rolling_window_args(window_size, min_periods)
+  wargs = prepare_rolling_window_args(window_size, min_periods, by, closed)
   .pr$Expr$rolling_std(
     self, wargs$window_size, weights,
-    wargs$min_periods, center, by, closed[1L], warn_if_unsorted
+    wargs$min_periods, center, by, wargs$closed, warn_if_unsorted
   ) |>
     unwrap("in $rolling_std(): ")
 }
@@ -2443,12 +2446,12 @@ Expr_rolling_var = function(
     min_periods = NULL,
     center = FALSE,
     by = NULL,
-    closed = c("left", "right", "both", "none"),
+    closed = NULL,
     warn_if_unsorted = TRUE) {
-  wargs = prepare_rolling_window_args(window_size, min_periods)
+  wargs = prepare_rolling_window_args(window_size, min_periods, by, closed)
   .pr$Expr$rolling_var(
     self, wargs$window_size, weights,
-    wargs$min_periods, center, by, closed[1L], warn_if_unsorted
+    wargs$min_periods, center, by, wargs$closed, warn_if_unsorted
   ) |>
     unwrap("in $rolling_var():")
 }
@@ -2470,12 +2473,12 @@ Expr_rolling_median = function(
     min_periods = NULL,
     center = FALSE,
     by = NULL,
-    closed = c("left", "right", "both", "none"),
+    closed = NULL,
     warn_if_unsorted = TRUE) {
-  wargs = prepare_rolling_window_args(window_size, min_periods)
+  wargs = prepare_rolling_window_args(window_size, min_periods, by, closed)
   .pr$Expr$rolling_median(
     self, wargs$window_size, weights,
-    wargs$min_periods, center, by, closed[1L], warn_if_unsorted
+    wargs$min_periods, center, by, wargs$closed, warn_if_unsorted
   ) |> unwrap("in $rolling_median():")
 }
 
@@ -2501,12 +2504,12 @@ Expr_rolling_quantile = function(
     min_periods = NULL,
     center = FALSE,
     by = NULL,
-    closed = c("left", "right", "both", "none"),
+    closed = NULL,
     warn_if_unsorted = TRUE) {
-  wargs = prepare_rolling_window_args(window_size, min_periods)
+  wargs = prepare_rolling_window_args(window_size, min_periods, by, closed)
   .pr$Expr$rolling_quantile(
     self, quantile, interpolation, wargs$window_size, weights,
-    wargs$min_periods, center, by, closed[1L], warn_if_unsorted
+    wargs$min_periods, center, by, wargs$closed, warn_if_unsorted
   ) |>
     unwrap("in $rolling_quantile():")
 }

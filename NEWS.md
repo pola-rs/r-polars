@@ -2,13 +2,28 @@
 
 ## Polars R Package (development version)
 
-### Breaking changes
+### Breaking changes due to Rust-polars update
 
+- rust-polars is updated to 0.38.3 (#937).
+  - New argument `non_existent` in `$replace_time_zone()` to specify what should
+    happen when a datetime doesn't exist.
+  - In rolling aggregation functions (such as `$rolling_mean()`), the default 
+    value of argument `closed` now is `NULL`. Using `closed` with a fixed 
+    `window_size` now throws an error.
+
+### Other breaking changes
+
+- Several functions have been rewritten to match the behavior of Python Polars.
+  - `pl$implode(...)` is rewritten to be a syntactic sugar for `pl$col(...)$implode()` (#923).
+  - Unify names of input/output function arguments (935).
+    - All arguments except the first argument must be named arguments.
+    - In `pl$read_*` and `pl$scan_*` functions, the first argument is now `source`.
+    - In `<DataFrame>$write_*` functions, the first argument is now `file`.
+    - In `<LazyFrame>$sink_*` functions, the first argument is now `path`.
 - The argument `columns` in `$drop()` is removed. `$drop()` now accepts several
   character scalars, such as `$drop("a", "b", "c")` (#912).
 - In `pl$col()`, the `name` argument is removed, and the `...` argument no longer
   accepts a list of characters and `RPolarsSeries` class objects (#923).
-- `pl$implode(...)` is rewritten to be a syntactic sugar for `pl$col(...)$implode()` (#923).
 - Removed `$argsort()` which was an old alias for `$arg_sort()` (#930).
 
 ### New features
@@ -17,6 +32,10 @@
   Expr of class datetime, date, and time via columns and literals (#918).
 - New function `pl$arg_where()` to get the indices that match a condition (#922).
 - New function `is_polars_dtype()` (#927).
+- New method `<LazyFrame>to_dot()` to print the query plan of a LazyFrame with
+  graphviz dot syntax (#928).
+- Argument `ambiguous` can now take the value `"null"` to convert ambigous 
+  datetimes to null values (#937).
 
 ## Polars R Package 0.15.1
 

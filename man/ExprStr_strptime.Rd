@@ -38,9 +38,10 @@ conversion.}
 
 \item{ambiguous}{Determine how to deal with ambiguous datetimes:
 \itemize{
-\item \code{"raise"} (default): raise
+\item \code{"raise"} (default): throw an error
 \item \code{"earliest"}: use the earliest datetime
 \item \code{"latest"}: use the latest datetime
+\item \code{"null"}: return a null value
 }}
 }
 \value{

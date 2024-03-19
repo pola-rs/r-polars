@@ -6,6 +6,7 @@
 \usage{
 LazyFrame_sink_csv(
   path,
+  ...,
   include_bom = FALSE,
   include_header = TRUE,
   separator = ",",
@@ -29,7 +30,9 @@ LazyFrame_sink_csv(
 )
 }
 \arguments{
-\item{path}{File path to which the result should be written.}
+\item{path}{A character. File path to which the file should be written.}
+
+\item{...}{Ignored.}
 
 \item{include_bom}{Whether to include UTF-8 BOM (byte order mark) in the CSV
 output.}

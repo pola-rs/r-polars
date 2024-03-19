@@ -530,7 +530,8 @@ LazyFrame_collect_in_background = function() {
 #' This writes the output of a query directly to a Parquet file without collecting
 #' it in the R session first. This is useful if the output of the query is still
 #' larger than RAM as it would crash the R session if it was collected into R.
-#' @param path String. The path of the parquet file
+#' @param path A character. File path to which the file should be written.
+#' @param ... Ignored.
 #' @param compression String. The compression method. One of:
 #' * "lz4": fast compression/decompression.
 #' * "uncompressed"
@@ -574,6 +575,7 @@ LazyFrame_collect_in_background = function() {
 #' pl$scan_parquet(tmpf2)$collect()
 LazyFrame_sink_parquet = function(
     path,
+    ...,
     compression = "zstd",
     compression_level = 3,
     statistics = FALSE,
@@ -628,7 +630,6 @@ LazyFrame_sink_parquet = function(
 #' This writes the output of a query directly to an Arrow IPC file without collecting
 #' it in the R session first. This is useful if the output of the query is still
 #' larger than RAM as it would crash the R session if it was collected into R.
-#' @param path String. The path to the Arrow IPC file
 #' @param compression `NULL` or string, the compression method. One of `NULL`,
 #' "lz4" or "zstd". Choose "zstd" for good compression performance. Choose "lz4"
 #' for fast compression/decompression.
@@ -652,6 +653,7 @@ LazyFrame_sink_parquet = function(
 #' # pl$scan_ipc(tmpf2)$collect()
 LazyFrame_sink_ipc = function(
     path,
+    ...,
     compression = "zstd",
     maintain_order = TRUE,
     type_coercion = TRUE,
@@ -720,6 +722,7 @@ LazyFrame_sink_ipc = function(
 #' pl$scan_csv(tmpf2)$collect()
 LazyFrame_sink_csv = function(
     path,
+    ...,
     include_bom = FALSE,
     include_header = TRUE,
     separator = ",",
@@ -806,6 +809,7 @@ LazyFrame_sink_csv = function(
 #' pl$scan_ndjson(tmpf)$collect()
 LazyFrame_sink_ndjson = function(
     path,
+    ...,
     maintain_order = TRUE,
     type_coercion = TRUE,
     predicate_pushdown = TRUE,
@@ -1951,4 +1955,58 @@ LazyFrame_group_by_dynamic = function(
     wrap_elist_result(by, str_to_lit = FALSE), start_by, check_sorted
   ) |>
     unwrap("in $group_by_dynamic():")
+}
+
+#' Plot the query plan
+#'
+#' This only returns the "dot" output that can be passed to other packages, such
+#' as `DiagrammeR::grViz()`.
+#'
+#' @param ... Not used..
+#' @param optimized Optimize the query plan.
+#' @inheritParams LazyFrame_set_optimization_toggle
+#'
+#' @return A character vector
+#'
+#' @examples
+#' lf = pl$LazyFrame(
+#'   a = c("a", "b", "a", "b", "b", "c"),
+#'   b = 1:6,
+#'   c = 6:1
+#' )
+#'
+#' query = lf$group_by("a", maintain_order = TRUE)$agg(
+#'   pl$all()$sum()
+#' )$sort(
+#'   "a"
+#' )
+#'
+#' query$to_dot() |> cat()
+#'
+#' # You could print the graph by using DiagrammeR for example, with
+#' # query$to_dot() |> DiagrammeR::grViz().
+LazyFrame_to_dot = function(
+    ...,
+    optimized = TRUE,
+    type_coercion = TRUE,
+    predicate_pushdown = TRUE,
+    projection_pushdown = TRUE,
+    simplify_expression = TRUE,
+    slice_pushdown = TRUE,
+    comm_subplan_elim = TRUE,
+    comm_subexpr_elim = TRUE,
+    streaming = FALSE) {
+  lf = self$set_optimization_toggle(
+    type_coercion,
+    predicate_pushdown,
+    projection_pushdown,
+    simplify_expression,
+    slice_pushdown,
+    comm_subplan_elim,
+    comm_subexpr_elim,
+    streaming
+  ) |> unwrap("in $to_dot():")
+
+  .pr$LazyFrame$to_dot(self, optimized) |>
+    unwrap("in $to_dot():")
 }

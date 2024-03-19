@@ -698,13 +698,15 @@ test_that("replace_time_zone for ambiguous time", {
 
   pl_out = pl$DataFrame(x = x)$with_columns(
     pl$col("x")$dt$replace_time_zone("Europe/Brussels", "earliest")$alias("earliest"),
-    pl$col("x")$dt$replace_time_zone("Europe/Brussels", "latest")$alias("latest")
+    pl$col("x")$dt$replace_time_zone("Europe/Brussels", "latest")$alias("latest"),
+    pl$col("x")$dt$replace_time_zone("Europe/Brussels", "null")$alias("null")
   )$to_data_frame()
 
   lubridate_out = data.frame(
     x = x,
     earliest = lubridate::force_tz(x, "Europe/Brussels", roll_dst = c("NA", "pre")),
-    latest = lubridate::force_tz(x, "Europe/Brussels", roll_dst = c("NA", "post"))
+    latest = lubridate::force_tz(x, "Europe/Brussels", roll_dst = c("NA", "post")),
+    null = as.POSIXct(c("2018-10-28 01:30:00 CEST", NA, NA), tz = "Europe/Brussels")
   )
 
   expect_equal(pl_out, lubridate_out)

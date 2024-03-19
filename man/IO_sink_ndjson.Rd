@@ -6,6 +6,7 @@
 \usage{
 LazyFrame_sink_ndjson(
   path,
+  ...,
   maintain_order = TRUE,
   type_coercion = TRUE,
   predicate_pushdown = TRUE,
@@ -17,7 +18,9 @@ LazyFrame_sink_ndjson(
 )
 }
 \arguments{
-\item{path}{File path to which the result should be written.}
+\item{path}{A character. File path to which the file should be written.}
+
+\item{...}{Ignored.}
 
 \item{maintain_order}{Maintain the order in which data is processed. Setting
 this to \code{FALSE} will be slightly faster.}
