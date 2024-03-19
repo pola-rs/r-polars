@@ -29,7 +29,7 @@
   Expr of class datetime, date, and time via columns and literals (#918).
 - New function `pl$arg_where()` to get the indices that match a condition (#922).
 - New function `is_polars_dtype()` (#927).
-- New method `<LazyFrame>to_dot()` to print the query plan of a LazyFrame with
+- New method `<LazyFrame>$to_dot()` to print the query plan of a LazyFrame with
   graphviz dot syntax (#928).
 - Argument `ambiguous` can now take the value `"null"` to convert ambigous 
   datetimes to null values (#937).
