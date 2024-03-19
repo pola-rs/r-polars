@@ -28,6 +28,8 @@
 - New function `is_polars_dtype()` (#927).
 - New method `<LazyFrame>to_dot()` to print the query plan of a LazyFrame with
   graphviz dot syntax (#928).
+- Argument `ambiguous` can now take the value `"null"` to convert ambigous 
+  datetimes to null values (#937).
 
 ## Polars R Package 0.15.1
 

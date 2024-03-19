@@ -3,7 +3,7 @@
 \name{ExprDT_replace_time_zone}
 \alias{ExprDT_replace_time_zone}
 \alias{(Expr)$dt$replace_time_zone}
-\title{replace_time_zone}
+\title{Replace time zone}
 \usage{
 ExprDT_replace_time_zone(tz, ambiguous = "raise", non_existent = "raise")
 }
@@ -15,6 +15,7 @@ ExprDT_replace_time_zone(tz, ambiguous = "raise", non_existent = "raise")
 \item \code{"raise"} (default): throw an error
 \item \code{"earliest"}: use the earliest datetime
 \item \code{"latest"}: use the latest datetime
+\item \code{"null"}: return a null value
 }}
 
 \item{non_existent}{Determine how to deal with non-existent datetimes:
@@ -27,9 +28,10 @@ ExprDT_replace_time_zone(tz, ambiguous = "raise", non_existent = "raise")
 Expr of i64
 }
 \description{
-Cast time zone for a Series of type Datetime.
-Different from \code{convert_time_zone}, this will also modify the underlying timestamp.
-Use to correct a wrong time zone annotation. This will change the corresponding global timepoint.
+Cast time zone for a Series of type Datetime. This is different from
+\code{\link[=ExprDT_convert_time_zone]{$convert_time_zone()}} as it will also modify the
+underlying timestamp. Use to correct a wrong time zone annotation. This will
+change the corresponding global timepoint.
 }
 \examples{
 df_1 = pl$DataFrame(x = as.POSIXct("2009-08-07 00:00:01", tz = "America/New_York"))
@@ -50,7 +52,8 @@ df_2 = pl$DataFrame(
 
 df_2$with_columns(
   pl$col("x")$dt$replace_time_zone("Europe/Brussels", "earliest")$alias("earliest"),
-  pl$col("x")$dt$replace_time_zone("Europe/Brussels", "latest")$alias("latest")
+  pl$col("x")$dt$replace_time_zone("Europe/Brussels", "latest")$alias("latest"),
+  pl$col("x")$dt$replace_time_zone("Europe/Brussels", "null")$alias("null")
 )
 }
 \keyword{ExprDT}
