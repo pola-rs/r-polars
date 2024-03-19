@@ -1,4 +1,4 @@
-APPLY_FIXES: all
+APPLY_FIXES: none
 DISABLE:
   - RUST
   - R
