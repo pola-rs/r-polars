@@ -2,29 +2,29 @@
 % Please edit documentation in R/expr__datetime.R
 \name{ExprDT_microsecond}
 \alias{ExprDT_microsecond}
-\alias{(Expr)$dt$microsecond}
-\title{Microsecond}
+\title{Extract microseconds from underlying Datetime representation.}
 \usage{
 ExprDT_microsecond()
 }
 \value{
-Expr of microsecond as Int64
+\link[=Expr_class]{Expr} of data type Int32
 }
 \description{
-Extract microseconds from underlying Datetime representation.
 Applies to Datetime columns.
 }
 \examples{
-pl$DataFrame(
-  date = pl$date_range(
-    as.numeric(as.POSIXct("2001-1-1")) * 1E6 + 456789, # manually convert to us
-    as.numeric(as.POSIXct("2001-1-1 00:00:6")) * 1E6,
-    interval = "2s654321us",
-    time_unit = "us" # instruct polars input is us, and store as us
+df = pl$DataFrame(
+  datetime = as.POSIXct(
+    c(
+      "1978-01-01 01:01:01",
+      "2024-10-13 05:30:14.500",
+      "2065-01-01 10:20:30.06"
+    ),
+    "UTC"
   )
-)$with_columns(
-  pl$col("date")$cast(pl$Int64)$alias("datetime int64"),
-  pl$col("date")$dt$microsecond()$alias("microsecond")
+)
+
+df$with_columns(
+  microsecond = pl$col("datetime")$dt$microsecond()
 )
 }
-\keyword{ExprDT}

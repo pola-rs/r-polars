@@ -414,28 +414,30 @@ ExprDT_minute = function() {
   .pr$Expr$dt_minute(self)
 }
 
-#' Second
-#' @description
-#' Extract seconds from underlying Datetime representation.
+#' Extract seconds from underlying Datetime representation
+#'
 #' Applies to Datetime columns.
 #' Returns the integer second number from 0 to 59, or a floating
-#' point number from 0 < 60 if ``fractional=True`` that includes
+#' point number from 0 < 60 if `fractional=TRUE` that includes
 #' any milli/micro/nanosecond component.
-#'
-#' @param fractional Whether to include the fractional component of the second.
-#'
-#' @return Expr of second as UInt32
-#' @keywords ExprDT
-#' @aliases (Expr)$dt$second
+#' @param fractional A logical.
+#' Whether to include the fractional component of the second.
+#' @return [Expr][Expr_class] of data type Int8 or Float64
 #' @examples
-#' pl$DataFrame(date = pl$date_range(
-#'   as.numeric(as.POSIXct("2001-1-1")) * 1E6 + 456789, # manually convert to us
-#'   as.numeric(as.POSIXct("2001-1-1 00:00:6")) * 1E6,
-#'   interval = "2s654321us",
-#'   time_unit = "us", # instruct polars input is us, and store as us
-#' ))$with_columns(
-#'   pl$col("date")$dt$second()$alias("second"),
-#'   pl$col("date")$dt$second(fractional = TRUE)$alias("second_frac")
+#' df = pl$DataFrame(
+#'   datetime = as.POSIXct(
+#'     c(
+#'       "1978-01-01 01:01:01",
+#'       "2024-10-13 05:30:14.500",
+#'       "2065-01-01 10:20:30.06"
+#'     ),
+#'     "UTC"
+#'   )
+#' )
+#'
+#' df$with_columns(
+#'   second = pl$col("datetime")$dt$second(),
+#'   second_fractional = pl$col("datetime")$dt$second(fractional = TRUE)
 #' )
 ExprDT_second = function(fractional = FALSE) {
   sec = .pr$Expr$dt_second(self)
@@ -446,74 +448,69 @@ ExprDT_second = function(fractional = FALSE) {
   }
 }
 
-#' Millisecond
-#' @description
-#' Extract milliseconds from underlying Datetime representation.
-#' Applies to Datetime columns.
+
+#' Extract milliseconds from underlying Datetime representation
 #'
-#' @return Expr of millisecond as Int64
-#' @keywords ExprDT
-#' @aliases (Expr)$dt$millisecond
+#' Applies to Datetime columns.
+#' @return [Expr][Expr_class] of data type Int32
 #' @examples
-#' pl$DataFrame(date = pl$date_range(
-#'   as.numeric(as.POSIXct("2001-1-1")) * 1E6 + 456789, # manually convert to us
-#'   as.numeric(as.POSIXct("2001-1-1 00:00:6")) * 1E6,
-#'   interval = "2s654321us",
-#'   time_unit = "us", # instruct polars input is us, and store as us
-#' ))$with_columns(
-#'   pl$col("date")$cast(pl$Int64)$alias("datetime int64"),
-#'   pl$col("date")$dt$millisecond()$alias("millisecond")
+#' df = pl$DataFrame(
+#'   datetime = as.POSIXct(
+#'     c(
+#'       "1978-01-01 01:01:01",
+#'       "2024-10-13 05:30:14.500",
+#'       "2065-01-01 10:20:30.06"
+#'     ),
+#'     "UTC"
+#'   )
+#' )
+#'
+#' df$with_columns(
+#'   millisecond = pl$col("datetime")$dt$millisecond()
 #' )
 ExprDT_millisecond = function() {
   .pr$Expr$dt_millisecond(self)
 }
 
-#' Microsecond
-#' @description
+
 #' Extract microseconds from underlying Datetime representation.
-#' Applies to Datetime columns.
-#'
-#' @return Expr of microsecond as Int64
-#' @keywords ExprDT
-#' @aliases (Expr)$dt$microsecond
+#' @inherit ExprDT_millisecond description return
 #' @examples
-#' pl$DataFrame(
-#'   date = pl$date_range(
-#'     as.numeric(as.POSIXct("2001-1-1")) * 1E6 + 456789, # manually convert to us
-#'     as.numeric(as.POSIXct("2001-1-1 00:00:6")) * 1E6,
-#'     interval = "2s654321us",
-#'     time_unit = "us" # instruct polars input is us, and store as us
+#' df = pl$DataFrame(
+#'   datetime = as.POSIXct(
+#'     c(
+#'       "1978-01-01 01:01:01",
+#'       "2024-10-13 05:30:14.500",
+#'       "2065-01-01 10:20:30.06"
+#'     ),
+#'     "UTC"
 #'   )
-#' )$with_columns(
-#'   pl$col("date")$cast(pl$Int64)$alias("datetime int64"),
-#'   pl$col("date")$dt$microsecond()$alias("microsecond")
+#' )
+#'
+#' df$with_columns(
+#'   microsecond = pl$col("datetime")$dt$microsecond()
 #' )
 ExprDT_microsecond = function() {
   .pr$Expr$dt_microsecond(self)
 }
 
 
-
-#' Nanosecond
-#' @description
-#' Extract seconds from underlying Datetime representation.
-#' Applies to Datetime columns.
-#' Returns the integer second number from 0 to 59, or a floating
-#' point number from 0 < 60 if ``fractional=True`` that includes
-#' any milli/micro/nanosecond component.
-#'
-#' @return Expr of second as Int64
-#' @keywords ExprDT
-#' @aliases (Expr)$dt$nanosecond
+#' Extract microseconds from underlying Datetime representation
+#' @inherit ExprDT_millisecond description return
 #' @examples
-#' pl$DataFrame(date = pl$date_range(
-#'   as.numeric(as.POSIXct("2001-1-1")) * 1E9 + 123456789, # manually convert to us
-#'   as.numeric(as.POSIXct("2001-1-1 00:00:6")) * 1E9,
-#'   interval = "1s987654321ns",
-#'   time_unit = "ns" # instruct polars input is us, and store as us
-#' ))$with_columns(
-#'   pl$col("date")$cast(pl$Int64)$alias("datetime int64"),
-#'   pl$col("date")$dt$nanosecond()$alias("nanosecond")
+#' df = pl$DataFrame(
+#'   datetime = as.POSIXct(
+#'     c(
+#'       "1978-01-01 01:01:01",
+#'       "2024-10-13 05:30:14.500",
+#'       "2065-01-01 10:20:30.06"
+#'     ),
+#'     "UTC"
+#'   )
+#' )
+#'
+#' df$with_columns(
+#'   nanosecond = pl$col("datetime")$dt$nanosecond()
 #' )
 ExprDT_nanosecond = function() {
   .pr$Expr$dt_nanosecond(self)
