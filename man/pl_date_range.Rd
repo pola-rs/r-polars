@@ -2,80 +2,92 @@
 % Please edit documentation in R/functions__eager.R
 \name{pl_date_range}
 \alias{pl_date_range}
-\title{New date range}
+\title{Generate a date range}
 \usage{
 pl_date_range(
   start,
   end,
-  interval,
+  interval = "1d",
+  ...,
   closed = "both",
-  time_unit = "us",
-  time_zone = NULL,
-  explode = TRUE
+  time_unit = NULL,
+  time_zone = NULL
 )
 }
 \arguments{
-\item{start}{POSIXt or Date preferably with time_zone or double or integer}
+\item{start}{Lower bound of the date range.
+Something can be coerced to a Date or a \link[=DataType_Datetime]{Datetime} expression.
+See examples for details.}
 
-\item{end}{POSIXt or Date preferably with time_zone or double or integer. If
-\code{end} and \code{interval} are missing, then a single datetime is constructed.}
+\item{end}{Upper bound of the date range.
+Something can be coerced to a Date or a \link[=DataType_Datetime]{Datetime} expression.
+See examples for details.}
 
-\item{interval}{String, a Polars \code{duration} or R \code{\link[=difftime]{difftime()}}. Can be missing
-if \code{end} is missing also.}
+\item{interval}{Interval of the range periods, specified as a R \link{difftime} object or
+using the Polars duration string language. See the \code{Interval} section for details.}
 
-\item{closed}{One of \code{"both"} (default), \code{"left"}, \code{"none"} or \code{"right"}.}
+\item{...}{Ignored.}
 
-\item{time_unit}{String (\code{"ns"}, \code{"us"}, \code{"ms"}) or integer.}
+\item{closed}{Define which sides of the range are closed (inclusive).
+One of the followings:
+\itemize{
+\item \code{"both"} (default)
+\item \code{"left"}
+\item \code{"right"}
+\item \code{"none"}
+}}
 
-\item{time_zone}{String describing a timezone. If \code{NULL} (default), \verb{"GMT} is
-used.}
+\item{time_unit}{Time unit of the resulting the \link[=DataType_Datetime]{Datetime} data type.
+One of \code{"ns"}, \code{"us"}, \code{"ms"}.
+Only takes effect if the output column is of type \link[=DataType_Datetime]{Datetime}.}
 
-\item{explode}{If \code{TRUE} (default), all created ranges will be "unlisted"
-into a column. Otherwise, output will be a list of ranges.}
+\item{time_zone}{Time zone of the resulting \link[=DataType_Datetime]{Datetime} data type.
+Only takes effect if the output column is of type \link[=DataType_Datetime]{Datetime}.}
 }
 \value{
-A datetime
+A \link[=Expr_class]{Expr} of data type Date or \link[=DataType_Datetime]{Datetime}
 }
 \description{
-New date range
+If both \code{start} and \code{end} are passed as the Date types (not Datetime),
+and the \code{interval} granularity is no finer than \code{"1d"}, the returned range is also of type Date.
+All other permutations return a Datetime.
+Note that in a future version of Polars, \code{pl$date_range} will always
+return Date. Please use \code{pl$datetime_range()} if you want Datetime instead.
 }
-\details{
-If param \code{time_zone} is not defined the Series will have no time zone.
+\section{Interval}{
 
-Note that R POSIXt without defined timezones (tzone/tz), so-called naive
-datetimes, are counter intuitive in R. It is recommended to always set the
-timezone of start and end. If not output will vary between local machine
-timezone, R and polars.
-
-In R/r-polars it is perfectly fine to mix timezones of params \code{time_zone},
-\code{start} and \code{end}.
-
-Compared to the Python implementation, \code{pl$date_range()} doesn't have the
-argument \code{eager} and always returns an Expr. Use \verb{$to_series()} to return a
-Series.
+\code{interval} is created according to the following string language:
+\itemize{
+\item 1ns (1 nanosecond)
+\item 1us (1 microsecond)
+\item 1ms (1 millisecond)
+\item 1s (1 second)
+\item 1m (1 minute)
+\item 1h (1 hour)
+\item 1d (1 calendar day)
+\item 1w (1 calendar week)
+\item 1mo (1 calendar month)
+\item 1q (1 calendar quarter)
+\item 1y (1 calendar year)
 }
+
+Or combine them: \code{"3d12h4m25s"} # 3 days, 12 hours, 4 minutes, and 25 seconds
+
+By "calendar day", we mean the corresponding time on the next day
+(which may not be 24 hours, due to daylight savings).
+Similarly for "calendar week", "calendar month", "calendar quarter", and "calendar year".
+}
+
 \examples{
-# All in GMT, straight forward, no mental confusion
-s_gmt = pl$date_range(
-  as.POSIXct("2022-01-01", tz = "GMT"),
-  as.POSIXct("2022-01-02", tz = "GMT"),
-  interval = "6h", time_unit = "ms", time_zone = "GMT"
-)
-s_gmt
-s_gmt$to_r()
+# Using Polars duration string to specify the interval:
+pl$date_range(as.Date("2022-01-01"), as.Date("2022-03-01"), "1mo") |>
+  as_polars_series("date")
 
-# polars uses "GMT" if time_zone = NULL
-s_null = pl$date_range(
-  as.POSIXct("2022-01-01", tz = "GMT"),
-  as.POSIXct("2022-01-02", tz = "GMT"),
-  interval = "6h", time_unit = "ms", time_zone = NULL
-)
-# back to R POSIXct. R prints non tzone tagged POSIXct in local timezone
-s_null$to_r()
-
-# use of ISOdate
-t1 = ISOdate(2022, 1, 1, 0) # preset GMT
-t2 = ISOdate(2022, 1, 2, 0) # preset GMT
-pl$date_range(t1, t2, interval = "4h", time_unit = "ms", time_zone = "GMT")$to_r()
-
+# Using `difftime` object to specify the interval:
+pl$date_range(
+  as.Date("1985-01-01"),
+  as.Date("1985-01-10"),
+  as.difftime(2, units = "days")
+) |>
+  as_polars_series("date")
 }

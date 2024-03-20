@@ -482,11 +482,11 @@ test_that("offset_by", {
 
 test_that("dt$epoch", {
   df = pl$select(
-    pl$date_range(as.Date("2022-1-1"))$dt$epoch("ns")$alias("e_ns"),
-    pl$date_range(as.Date("2022-1-1"))$dt$epoch("us")$alias("e_us"),
-    pl$date_range(as.Date("2022-1-1"))$dt$epoch("ms")$alias("e_ms"),
-    pl$date_range(as.Date("2022-1-1"))$dt$epoch("s")$alias("e_s"),
-    pl$date_range(as.Date("2022-1-1"))$dt$epoch("d")$alias("e_d")
+    as_polars_series(as.Date("2022-1-1"))$dt$epoch("ns")$alias("e_ns"),
+    as_polars_series(as.Date("2022-1-1"))$dt$epoch("us")$alias("e_us"),
+    as_polars_series(as.Date("2022-1-1"))$dt$epoch("ms")$alias("e_ms"),
+    as_polars_series(as.Date("2022-1-1"))$dt$epoch("s")$alias("e_s"),
+    as_polars_series(as.Date("2022-1-1"))$dt$epoch("d")$alias("e_d")
   )
   l_act = df$to_list()
 
@@ -500,11 +500,11 @@ test_that("dt$epoch", {
   expect_identical(l_act$e_d, base_r_d_epochs)
 
   expect_grepl_error(
-    pl$date_range(as.Date("2022-1-1"))$dt$epoch("bob"),
+    as_polars_series(as.Date("2022-1-1"))$dt$epoch("bob"),
     "epoch: tu must be one of 'ns', 'us', 'ms', 's', 'd'"
   )
   expect_grepl_error(
-    pl$date_range(as.Date("2022-1-1"))$dt$epoch(42),
+    as_polars_series(as.Date("2022-1-1"))$dt$epoch(42),
     "epoch: tu must be a string"
   )
 })
@@ -535,11 +535,11 @@ test_that("dt$timestamp", {
   expect_identical(suppressWarnings(as.numeric(l_exp$timestamp_ns)), base_r_s_timestamp * 1E9)
 
   expect_error(
-    pl$date_range(as.Date("2022-1-1"))$dt$timestamp("bob")
+    as_polars_series(as.Date("2022-1-1"))$dt$timestamp("bob")
   )
 
   expect_error(
-    pl$date_range(as.Date("2022-1-1"))$dt$timestamp(42)
+    as_polars_series(as.Date("2022-1-1"))$dt$timestamp(42)
   )
 })
 
@@ -583,25 +583,23 @@ test_that("dt$with_time_unit cast_time_unit", {
   expect_true(types$cast_time_unit_ms == pl$Datetime("ms"))
 
   # cast wrong inputs
-
-
   expect_grepl_error(
-    pl$date_range(as.Date("2022-1-1"))$dt$cast_time_unit("bob"),
+    as_polars_series(as.Date("2022-1-1"))$dt$cast_time_unit("bob"),
     r"{The argument \[tu\] caused an error}"
   )
   expect_grepl_error(
-    pl$date_range(as.Date("2022-1-1"))$dt$cast_time_unit(42),
+    as_polars_series(as.Date("2022-1-1"))$dt$cast_time_unit(42),
     r"{Expected a value of type \[\&str\]}"
   )
 
   # with wrong inputs
   expect_grepl_error(
-    pl$date_range(as.Date("2022-1-1"))$dt$with_time_unit("bob"),
+    as_polars_series(as.Date("2022-1-1"))$dt$with_time_unit("bob"),
     r"{The argument \[tu\] caused an error}"
   )
 
   expect_grepl_error(
-    pl$date_range(as.Date("2022-1-1"))$dt$with_time_unit(42),
+    as_polars_series(as.Date("2022-1-1"))$dt$with_time_unit(42),
     r"{Expected a value of type \[\&str\]}"
   )
 })
