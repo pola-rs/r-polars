@@ -256,7 +256,7 @@ RPolarsDataType$new_categorical <- function(ordering) .Call(wrap__RPolarsDataTyp
 
 RPolarsDataType$new_datetime <- function(tu, tz) .Call(wrap__RPolarsDataType__new_datetime, tu, tz)
 
-RPolarsDataType$new_duration <- function() .Call(wrap__RPolarsDataType__new_duration)
+RPolarsDataType$new_duration <- function(tu) .Call(wrap__RPolarsDataType__new_duration, tu)
 
 RPolarsDataType$new_list <- function(inner) .Call(wrap__RPolarsDataType__new_list, inner)
 
