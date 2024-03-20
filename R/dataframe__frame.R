@@ -1838,7 +1838,8 @@ DataFrame_transpose = function(
 
 #' Write to comma-separated values (CSV) file
 #'
-#' @param path File path to which the result should be written.
+#' @param file File path to which the result should be written.
+#' @param ... Ignored.
 #' @param include_bom Whether to include UTF-8 BOM (byte order mark) in the CSV
 #' output.
 #' @param include_header Whether to include header in the CSV output.
@@ -1884,7 +1885,8 @@ DataFrame_transpose = function(
 #'
 #' pl$read_csv(destination)
 DataFrame_write_csv = function(
-    path,
+    file,
+    ...,
     include_bom = FALSE,
     include_header = TRUE,
     separator = ",",
@@ -1899,7 +1901,7 @@ DataFrame_write_csv = function(
     quote_style = "necessary") {
   .pr$DataFrame$write_csv(
     self,
-    path, include_bom, include_header, separator, line_terminator, quote,
+    file, include_bom, include_header, separator, line_terminator, quote,
     batch_size, datetime_format, date_format, time_format, float_precision,
     null_values, quote_style
   ) |>
@@ -1909,6 +1911,7 @@ DataFrame_write_csv = function(
 
 #' Write to parquet file
 #' @inheritParams LazyFrame_sink_parquet
+#' @inheritParams DataFrame_write_csv
 #'
 #' @rdname IO_write_parquet
 #'
@@ -1919,7 +1922,8 @@ DataFrame_write_csv = function(
 #' destination = tempfile(fileext = ".parquet")
 #' dat$write_parquet(destination)
 DataFrame_write_parquet = function(
-    path,
+    file,
+    ...,
     compression = "zstd",
     compression_level = 3,
     statistics = FALSE,
@@ -1927,7 +1931,7 @@ DataFrame_write_parquet = function(
     data_pagesize_limit = NULL) {
   .pr$DataFrame$write_parquet(
     self,
-    path,
+    file,
     compression,
     compression_level,
     statistics,
@@ -1940,7 +1944,7 @@ DataFrame_write_parquet = function(
 
 #' Write to JSON file
 #'
-#' @param file File path to which the result should be written.
+#' @inheritParams DataFrame_write_csv
 #' @param pretty Pretty serialize JSON.
 #' @param row_oriented Write to row-oriented JSON. This is slower, but more
 #' common.
@@ -1963,6 +1967,7 @@ DataFrame_write_parquet = function(
 #' }
 DataFrame_write_json = function(
     file,
+    ...,
     pretty = FALSE,
     row_oriented = FALSE) {
   .pr$DataFrame$write_json(self, file, pretty, row_oriented) |>

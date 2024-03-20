@@ -1,6 +1,7 @@
 #' Scan a parquet file
 #'
-#' @param file Path to a file. You can use globbing with `*` to scan/read multiple
+#' @inheritParams pl_scan_csv
+#' @param source Path to a file. You can use globbing with `*` to scan/read multiple
 #' files in the same directory (see examples).
 #' @param n_rows Maximum number of rows to read.
 #' @param cache Cache the result after reading.
@@ -39,7 +40,8 @@
 #'   file.path(temp_dir, "**/*.parquet")
 #' )$collect()
 pl_scan_parquet = function(
-    file,
+    source,
+    ...,
     n_rows = NULL,
     cache = TRUE,
     parallel = c(
@@ -55,7 +57,7 @@ pl_scan_parquet = function(
     use_statistics = TRUE,
     hive_partitioning = TRUE) {
   new_from_parquet(
-    path = file,
+    path = source,
     n_rows = n_rows,
     cache = cache,
     parallel = parallel,
@@ -67,7 +69,7 @@ pl_scan_parquet = function(
     use_statistics = use_statistics,
     hive_partitioning = hive_partitioning
   ) |>
-    unwrap("in pl$scan_parquet(): ")
+    unwrap("in pl$scan_parquet():")
 }
 
 #' Read a parquet file
@@ -76,7 +78,8 @@ pl_scan_parquet = function(
 #' @return DataFrame
 pl_read_parquet = function(
     # remapped to pl$read_parquet, a hack to support roxygen2 @inheritsParams
-    file,
+    source,
+    ...,
     n_rows = NULL,
     cache = TRUE,
     parallel = c(
@@ -91,9 +94,9 @@ pl_read_parquet = function(
     low_memory = FALSE,
     use_statistics = TRUE,
     hive_partitioning = TRUE) {
-  args = as.list(environment())
+  .args = as.list(environment())
   result({
-    do.call(pl$scan_parquet, args)$collect()
+    do.call(pl$scan_parquet, .args)$collect()
   }) |>
-    unwrap("in pl$read_parquet(): ")
+    unwrap("in pl$read_parquet():")
 }
