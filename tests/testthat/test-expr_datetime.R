@@ -1,17 +1,17 @@
-test_that("pl$date_range", {
+test_that("pl$datetime_range", {
   t1 = as.POSIXct("2022-01-01")
   t2 = as.POSIXct("2022-01-02")
 
   expect_identical(
-    pl$date_range(start = t1, end = t2, interval = "6h")$to_r(),
+    pl$datetime_range(start = t1, end = t2, interval = "6h")$to_r(),
     seq(t1, t2, by = as.difftime(6, units = "hours"))
   )
   expect_identical(
-    pl$date_range(start = t1, end = t2, interval = "6h", time_zone = NULL)$to_r(),
+    pl$datetime_range(start = t1, end = t2, interval = "6h", time_zone = NULL)$to_r(),
     seq(t1, t2, by = as.difftime(6, units = "hours"))
   )
   expect_identical(
-    pl$date_range(start = t1, end = t2, interval = "6h", time_zone = "GMT")$to_r(),
+    pl$datetime_range(start = t1, end = t2, interval = "6h", time_zone = "GMT")$to_r(),
     seq(
       as.POSIXct("2022-01-01", tz = "GMT"),
       as.POSIXct("2022-01-02", tz = "GMT"),
@@ -19,30 +19,30 @@ test_that("pl$date_range", {
     )
   )
   expect_identical(
-    pl$date_range(start = t1, end = t2, interval = "3h", time_unit = "ms")$to_r(),
+    pl$datetime_range(start = t1, end = t2, interval = "3h", time_unit = "ms")$to_r(),
     seq(t1, t2, by = as.difftime(3, units = "hours"))
   )
   expect_identical(
-    pl$date_range(start = t1, end = t2, interval = "3h", time_unit = "ns")$to_r(),
+    pl$datetime_range(start = t1, end = t2, interval = "3h", time_unit = "ns")$to_r(),
     seq(t1, t2, by = as.difftime(3, units = "hours"))
   )
 
   t1 = as.POSIXct("2022-01-01", tz = "GMT")
   t2 = as.POSIXct("2022-01-02", tz = "GMT")
   expect_identical(
-    pl$date_range(start = t1, end = t2, interval = "6h", time_zone = NULL)$to_r(),
+    pl$datetime_range(start = t1, end = t2, interval = "6h", time_zone = NULL)$to_r(),
     seq(t1, t2, by = as.difftime(6, units = "hours"))
   )
   expect_identical(
-    pl$date_range(start = t1, end = t2, interval = "6h", time_zone = "GMT")$to_r(),
+    pl$datetime_range(start = t1, end = t2, interval = "6h", time_zone = "GMT")$to_r(),
     seq(t1, t2, by = as.difftime(6, units = "hours")) |> "attr<-"("tzone", "GMT")
   )
   expect_identical(
-    pl$date_range(start = t1, end = t2, interval = "3h", time_unit = "ms")$to_r(),
+    pl$datetime_range(start = t1, end = t2, interval = "3h", time_unit = "ms")$to_r(),
     seq(t1, t2, by = as.difftime(3, units = "hours"))
   )
   expect_identical(
-    pl$date_range(start = t1, end = t2, interval = "3h", time_unit = "ns")$to_r(),
+    pl$datetime_range(start = t1, end = t2, interval = "3h", time_unit = "ns")$to_r(),
     seq(t1, t2, by = as.difftime(3, units = "hours"))
   )
 
@@ -50,20 +50,20 @@ test_that("pl$date_range", {
   t1 = as.POSIXct("2022-01-01", tz = "CET")
   t2 = as.POSIXct("2022-01-02", tz = "CET")
   expect_identical(
-    pl$date_range(start = t1, end = t2, interval = "6h", time_zone = NULL)$to_r(),
+    pl$datetime_range(start = t1, end = t2, interval = "6h", time_zone = NULL)$to_r(),
     seq(t1, t2, by = as.difftime(6, units = "hours"))
   )
   expect_identical(
-    pl$date_range(start = t1, end = t2, interval = "6h", time_zone = NULL)$to_r(),
+    pl$datetime_range(start = t1, end = t2, interval = "6h", time_zone = NULL)$to_r(),
     seq(t1, t2, by = as.difftime(6, units = "hours"))
   )
 
   expect_identical(
-    pl$date_range(start = t1, end = t2, interval = "3h", time_unit = "ms")$to_r(),
+    pl$datetime_range(start = t1, end = t2, interval = "3h", time_unit = "ms")$to_r(),
     seq(t1, t2, by = as.difftime(3, units = "hours"))
   )
   expect_identical(
-    pl$date_range(start = t1, end = t2, interval = "3h", time_unit = "ns")$to_r(),
+    pl$datetime_range(start = t1, end = t2, interval = "3h", time_unit = "ns")$to_r(),
     seq(t1, t2, by = as.difftime(3, units = "hours"))
   )
 
@@ -73,7 +73,7 @@ test_that("pl$date_range", {
   t2 = as.POSIXct("2022-01-10", tz = "GMT")
   for (i_diff_time in c("secs", "mins", "hours", "days", "weeks")) {
     expect_identical(
-      pl$date_range(
+      pl$datetime_range(
         start = t1, end = t2,
         as.difftime(25, units = i_diff_time),
         time_unit = "ns"
@@ -81,6 +81,23 @@ test_that("pl$date_range", {
       seq(t1, t2, by = as.difftime(25, units = i_diff_time))
     )
   }
+})
+
+test_that("pl$date_range", {
+  expect_identical(
+    pl$date_range(
+      as.Date("2022-01-01"), as.Date("2022-03-01"), "1mo"
+    )$to_series()$to_vector(),
+    seq(as.Date("2022-01-01"), as.Date("2022-03-01"), by = "1 month")
+  )
+
+  # Deprecated usage
+  expect_identical(
+    pl$date_range(
+      as.POSIXct("2022-01-01 12:00", "UTC"), as.POSIXct("2022-01-03", "UTC"), "1d"
+    )$to_series()$to_vector(),
+    as.POSIXct(c("2022-01-01 12:00", "2022-01-02 12:00"), "UTC")
+  )
 })
 
 test_that("dt$truncate", {
@@ -109,39 +126,6 @@ test_that("dt$truncate", {
     as.numeric(l_actual$truncated_4s_offset_2s - l_actual$truncated_4s),
     rep(3, 13)
   )
-})
-
-
-test_that("pl$date_range", {
-  t1 = ISOdate(2022, 1, 1, 0)
-  t2 = ISOdate(2022, 1, 2, 0)
-
-  df = pl$DataFrame(
-    t1 = t1, t2 = t2
-  )$select(
-    pl$date_range("t1", "t2", "6h")$alias("s1"),
-    pl$date_range(pl$col("t1"), pl$col("t2"), "6h")$alias("s2"),
-    pl$date_range(t1, t2, "6h")$alias("s3")
-  )
-  l = df$to_list()
-  expect_identical(l$s1, l$s2)
-  expect_identical(l$s1, l$s3)
-})
-
-
-test_that("pl$date_range Date", {
-  d_chr = "2022-01-01"
-  d_plus1_chr = "2022-01-02"
-  d_date = as.Date(d_chr)
-  s_d = pl$Series(d_date)
-  s_dt = pl$Series(as.POSIXct(d_chr))
-  df = pl$DataFrame(Date = d_date)$to_series()
-
-  dr_e = pl$date_range(d_date, d_date + 1, interval = "6h")
-
-  expect_identical(dr_e$to_r()[1], s_dt$to_r())
-  expect_identical(rev(dr_e$to_r())[1], as.POSIXct(d_plus1_chr))
-  expect_identical(dr_e$to_series()$len(), 5)
 })
 
 
