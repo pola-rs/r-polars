@@ -499,19 +499,20 @@ DataFrame_drop_nulls = function(subset = NULL) {
 }
 
 
-#' @title Drop duplicated rows
-#'
-#' @keywords DataFrame
+#' Drop duplicated rows
 #'
 #' @param subset A character vector with the names of the column(s) to use to
-#'  identify duplicates. If `NULL` (default), use all columns.
+#'   identify duplicates. If `NULL` (default), use all columns.
+#' @param ... Not used.
 #' @param keep Which of the duplicate rows to keep:
-#' * "first": Keep first unique row.
-#' * "last": Keep last unique row.
-#' * "none": Don’t keep duplicate rows.
-#' @param maintain_order Keep the same order as the original data. Setting
-#'  this to `TRUE` makes it more expensive to compute and blocks the possibility
-#'  to run on the streaming engine.
+#' * `"any"` (default): Does not give any guarantee of which row is kept. This
+#'   allows more optimizations.
+#' * `"first"`: Keep first unique row.
+#' * `"last"`: Keep last unique row.
+#' * `"none"`: Don’t keep duplicate rows.
+#' @param maintain_order Keep the same order as the original data. Setting this
+#'   to `TRUE` makes it more expensive to compute and blocks the possibility to
+#'   run on the streaming engine.
 #'
 #' @return DataFrame
 #' @examples
@@ -524,16 +525,17 @@ DataFrame_drop_nulls = function(subset = NULL) {
 #' df$unique()$height
 #'
 #' # subset to define unique, keep only last or first
-#' df$unique(subset = "x", keep = c("last"))
-#' df$unique(subset = "x", keep = c("first"))
+#' df$unique(subset = "x", keep = "last")
+#' df$unique(subset = "x", keep = "first")
 #'
 #' # only keep unique rows
 #' df$unique(keep = "none")
 DataFrame_unique = function(
     subset = NULL,
-    keep = c("first", "last", "none"),
+    ...,
+    keep = "any",
     maintain_order = FALSE) {
-  self$lazy()$unique(subset, keep, maintain_order) |>
+  self$lazy()$unique(subset = subset, keep = keep, maintain_order = maintain_order) |>
     .pr$LazyFrame$collect() |>
     unwrap("in $unique():")
 }

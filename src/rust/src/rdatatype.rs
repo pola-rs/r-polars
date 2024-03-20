@@ -265,7 +265,7 @@ pub fn robj_to_nonzero_usize(robj: Robj) -> RResult<NonZeroUsize> {
 
 pub fn robj_to_unique_keep_strategy(robj: Robj) -> RResult<UniqueKeepStrategy> {
     match robj_to_rchoice(robj)?.to_lowercase().as_str() {
-        // "any" => Ok(pl::UniqueKeepStrategy::Any),
+        "any" => Ok(pl::UniqueKeepStrategy::Any),
         "first" => Ok(pl::UniqueKeepStrategy::First),
         "last" => Ok(pl::UniqueKeepStrategy::Last),
         "none" => Ok(pl::UniqueKeepStrategy::None),
