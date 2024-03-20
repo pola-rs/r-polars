@@ -3,48 +3,74 @@
 \name{ExprDT_replace_time_zone}
 \alias{ExprDT_replace_time_zone}
 \alias{(Expr)$dt$replace_time_zone}
-\title{replace_time_zone}
+\title{Replace time zone}
 \usage{
-ExprDT_replace_time_zone(tz, ambiguous = "raise")
+ExprDT_replace_time_zone(
+  time_zone,
+  ...,
+  ambiguous = "raise",
+  non_existent = "raise"
+)
 }
 \arguments{
-\item{tz}{NULL or string time zone from \code{\link[base:timezones]{base::OlsonNames()}}}
+\item{time_zone}{\code{NULL} or string time zone from \code{\link[base:timezones]{base::OlsonNames()}}}
+
+\item{...}{Ignored.}
 
 \item{ambiguous}{Determine how to deal with ambiguous datetimes:
 \itemize{
-\item \code{"raise"} (default): raise
+\item \code{"raise"} (default): throw an error
 \item \code{"earliest"}: use the earliest datetime
 \item \code{"latest"}: use the latest datetime
+\item \code{"null"}: return a null value
+}}
+
+\item{non_existent}{Determine how to deal with non-existent datetimes:
+\itemize{
+\item \code{"raise"} (default): throw an error
+\item \code{"null"}: return a null value
 }}
 }
 \value{
 Expr of i64
 }
 \description{
-Cast time zone for a Series of type Datetime.
-Different from \code{convert_time_zone}, this will also modify the underlying timestamp.
-Use to correct a wrong time zone annotation. This will change the corresponding global timepoint.
+Cast time zone for a Series of type Datetime. This is different from
+\code{\link[=ExprDT_convert_time_zone]{$convert_time_zone()}} as it will also modify the
+underlying timestamp. Use to correct a wrong time zone annotation. This will
+change the corresponding global timepoint.
 }
 \examples{
-df_1 = pl$DataFrame(x = as.POSIXct("2009-08-07 00:00:01", tz = "America/New_York"))
-
-df_1$with_columns(
-  pl$col("x")$dt$replace_time_zone("UTC")$alias("utc"),
-  pl$col("x")$dt$replace_time_zone("Europe/Amsterdam")$alias("cest")
+df1 = pl$DataFrame(
+  london_timezone = pl$date_range(
+    as.POSIXct("2020-03-01", tz = "UTC"),
+    as.POSIXct("2020-07-01", tz = "UTC"),
+    "1mo"
+  )$dt$convert_time_zone("Europe/London")
 )
 
-# You can use ambiguous to deal with ambiguous datetimes
-df_2 = pl$DataFrame(
-  x = seq(
-    as.POSIXct("2018-10-28 01:30", tz = "UTC"),
-    as.POSIXct("2018-10-28 02:30", tz = "UTC"),
-    by = "30 min"
+df1$select(
+  "london_timezone",
+  London_to_Amsterdam = pl$col("london_timezone")$dt$replace_time_zone("Europe/Amsterdam")
+)
+
+# You can use `ambiguous` to deal with ambiguous datetimes:
+dates = c(
+  "2018-10-28 01:30",
+  "2018-10-28 02:00",
+  "2018-10-28 02:30",
+  "2018-10-28 02:00"
+)
+df2 = pl$DataFrame(
+  ts = as_polars_series(dates)$str$strptime(pl$Datetime("us")),
+  ambiguous = c("earliest", "earliest", "latest", "latest")
+)
+
+df2$with_columns(
+  ts_localized = pl$col("ts")$dt$replace_time_zone(
+    "Europe/Brussels",
+    ambiguous = pl$col("ambiguous")
   )
-)
-
-df_2$with_columns(
-  pl$col("x")$dt$replace_time_zone("Europe/Brussels", "earliest")$alias("earliest"),
-  pl$col("x")$dt$replace_time_zone("Europe/Brussels", "latest")$alias("latest")
 )
 }
 \keyword{ExprDT}

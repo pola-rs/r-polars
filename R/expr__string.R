@@ -29,10 +29,7 @@
 #' cleaning your data beforehand will almost certainly be more performant.
 #' @param cache Use a cache of unique, converted dates to apply the datetime
 #' conversion.
-#' @param ambiguous Determine how to deal with ambiguous datetimes:
-#' * `"raise"` (default): raise
-#' * `"earliest"`: use the earliest datetime
-#' * `"latest"`: use the latest datetime
+#' @inheritParams ExprDT_replace_time_zone
 #' @return [Expr][Expr_class] of Date, Datetime or Time type
 #' @seealso
 #' - [`<Expr>$str$to_date()`][ExprStr_to_date]
