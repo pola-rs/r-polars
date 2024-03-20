@@ -13,7 +13,7 @@
 #' string, if given, e.g.: `"%F %T%.3f"` => [`pl$Datetime("ms")`][pl_Datetime].
 #' If no fractional second component is found then the default is `"us"` (microsecond).
 #' @param dtype The data type to convert into. Can be either `pl$Date`,
-#' `pl$Datetime()`, or `pl$Time`.
+#' [`pl$Datetime()`][DataType_Datetime], or `pl$Time`.
 #' @param format Format to use for conversion. Refer to
 #' [the chrono crate documentation](https://docs.rs/chrono/latest/chrono/format/strftime/index.html)
 #' for the full specification. Example: `"%Y-%m-%d %H:%M:%S"`.
@@ -90,11 +90,6 @@ ExprStr_strptime = function(
     exact = TRUE,
     cache = TRUE,
     ambiguous = "raise") {
-  dots = list2(...)
-  if ("datatype" %in% names(dots)) {
-    Err_plain("Argument `datatype` of `$str$strptime()` was deprecated in 0.16.0. Use `dtype` instead.") |>
-      unwrap("in $str$strptime():")
-  }
   pcase(
     # not a datatype
     !is_polars_dtype(dtype),
@@ -141,11 +136,6 @@ ExprStr_strptime = function(
 #' try(s$str$to_date())
 #' s$str$to_date(strict = FALSE)
 ExprStr_to_date = function(format = NULL, ..., strict = TRUE, exact = TRUE, cache = TRUE) {
-  dots = list2(...)
-  if (length(dots) > 0) {
-    Err_plain("Arguments `strict`, `exact`, and `cache` have to be named as of 0.16.0.") |>
-      unwrap("in $str$to_date():")
-  }
   .pr$Expr$str_to_date(self, format, strict, exact, cache) |>
     unwrap("in $str$to_date():")
 }
@@ -165,11 +155,6 @@ ExprStr_to_date = function(format = NULL, ..., strict = TRUE, exact = TRUE, cach
 #'
 #' s$str$to_time("%H:%M")
 ExprStr_to_time = function(format = NULL, ..., strict = TRUE, cache = TRUE) {
-  dots = list2(...)
-  if (length(dots) > 0) {
-    Err_plain("Arguments `strict` and `cache` have to be named as of 0.16.0.") |>
-      unwrap("in $str$to_time():")
-  }
   .pr$Expr$str_to_time(self, format, strict, cache) |>
     unwrap("in $str$to_time():")
 }
@@ -202,11 +187,6 @@ ExprStr_to_datetime = function(
     exact = TRUE,
     cache = TRUE,
     ambiguous = "raise") {
-  dots = list2(...)
-  if (length(dots) > 0) {
-    Err_plain("All arguments (except `format`) have to be named as of 0.16.0.") |>
-      unwrap("in $str$to_datetime():")
-  }
   .pr$Expr$str_to_datetime(
     self, format, time_unit, time_zone, strict, exact, cache, ambiguous
   ) |>

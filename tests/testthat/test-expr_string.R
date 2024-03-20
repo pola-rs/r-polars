@@ -81,14 +81,6 @@ test_that("str$strptime time", {
   )
 })
 
-test_that("$str$strptime() arg datatype is no longer valid", {
-  out = pl$lit(c("01:00", "02:00", "03:00"))
-  expect_grepl_error(
-    out$str$strptime(datatype = pl$Time)$to_series(),
-    "was deprecated in 0.16.0."
-  )
-})
-
 test_that("$str$to_date", {
   out = pl$lit(c("2009-01-02", "2009-01-03", "2009-1-4"))$
     str$to_date()$to_r()
@@ -107,14 +99,6 @@ test_that("$str$to_date", {
   )
 })
 
-test_that("$str$to_date() must have named args", {
-  out = pl$lit(c("2009-01-02", "2009-01-03", "2009-1-4"))
-  expect_grepl_error(
-    out$str$to_date("%Y-%m-%d", TRUE)$to_series(),
-    "Arguments `strict`, `exact`, and `cache` have to be named"
-  )
-})
-
 test_that("$str$to_time", {
   out = pl$lit(c("01:20:01", "28:00:02", "03:00:02"))$
     str$to_time(strict = FALSE)$to_r()
@@ -125,14 +109,6 @@ test_that("$str$to_time", {
   expect_error(
     ppl$lit(c("01:20:01", "28:00:02", "03:00:02"))$
       str$to_time()
-  )
-})
-
-test_that("$str$to_time() must have named args", {
-  out = pl$lit(c("01:00", "02:00", "03:00"))
-  expect_grepl_error(
-    out$str$to_time("%H:%M", TRUE)$to_series(),
-    "Arguments `strict` and `cache` have to be named"
   )
 })
 
@@ -151,14 +127,6 @@ test_that("$str$to_datetime", {
     pl$lit(c("2009-01-02 01:00", "2009-01-03 02:00", "2009-1-4"))$
       str$to_date(format = "%Y / %m / %d", strict = FALSE)$to_r(),
     as.Date(rep(NA_character_, 3))
-  )
-})
-
-test_that("$str$to_datetime() must have named args", {
-  out = pl$lit(c("01:00", "02:00", "03:00"))
-  expect_grepl_error(
-    out$str$to_datetime("%H:%M", TRUE)$to_series(),
-    "All arguments \\(except `format`\\) have to be named "
   )
 })
 
