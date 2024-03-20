@@ -30,7 +30,8 @@
     - The unused argument (not working in recent versions) `explode` is removed.
     - The arguments `closed`, `time_unit`, and `time_zone` should be named arguments.
     - No longer accepts numeric values to `start` and `end`.
-    - The usage of `pl$date_range()` to crate a range of `Date` data type is deprecated.
+    - The usage of `pl$date_range()` to crate a range of `Datetime` data type is deprecated.
+      `pl$date_range()` will always create a range of `Date` data type in the future.
       Please use `pl$datetime_range()` if you want to create a range of `Datetime` instead.
 - The argument `columns` in `$drop()` is removed. `$drop()` now accepts several
   character scalars, such as `$drop("a", "b", "c")` (#912).
