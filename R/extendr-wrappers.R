@@ -38,6 +38,8 @@ reduce <- function(lambda, exprs) .Call(wrap__reduce, lambda, exprs)
 
 date_range <- function(start, end, interval, closed, time_unit, time_zone) .Call(wrap__date_range, start, end, interval, closed, time_unit, time_zone)
 
+datetime_range <- function(start, end, interval, closed, time_unit, time_zone) .Call(wrap__datetime_range, start, end, interval, closed, time_unit, time_zone)
+
 as_struct <- function(exprs) .Call(wrap__as_struct, exprs)
 
 struct_ <- function(exprs, eager, schema) .Call(wrap__struct_, exprs, eager, schema)

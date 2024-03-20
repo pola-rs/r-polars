@@ -163,21 +163,20 @@ pl_concat = function(
 
 
 # TODO: link to the Date type docs
-# TODO: link to pl_datetime_range
 #' Generate a date range
 #'
 #' If both `start` and `end` are passed as the Date types (not Datetime),
 #' and the `interval` granularity is no finer than `"1d"`, the returned range is also of type Date.
 #' All other permutations return a Datetime.
-#' Note that in a future version of Polars, `pl$date_range` will always
-#' return Date. Please use `pl$datetime_range()` if you want Datetime instead.
+#' Note that in a future version of Polars, `pl$date_range()` will always
+#' return Date. Please use [`pl$datetime_range()`][pl_datetime_range] if you want Datetime instead.
 #' @param start Lower bound of the date range.
 #' Something can be coerced to a Date or a [Datetime][DataType_Datetime] expression.
 #' See examples for details.
 #' @param end Upper bound of the date range.
 #' Something can be coerced to a Date or a [Datetime][DataType_Datetime] expression.
 #' See examples for details.
-#' @param interval Interval of the range periods, specified as a R [difftime] object or
+#' @param interval Interval of the range periods, specified as a [difftime] object or
 #' using the Polars duration string language. See the `Interval` section for details.
 #' @param ... Ignored.
 #' @param closed Define which sides of the range are closed (inclusive).
@@ -187,7 +186,7 @@ pl_concat = function(
 #' - `"right"`
 #' - `"none"`
 #' @param time_unit Time unit of the resulting the [Datetime][DataType_Datetime] data type.
-#' One of `"ns"`, `"us"`, `"ms"`.
+#' One of `"ns"`, `"us"`, `"ms"` or `NULL`
 #' Only takes effect if the output column is of type [Datetime][DataType_Datetime].
 #' @param time_zone Time zone of the resulting [Datetime][DataType_Datetime] data type.
 #' Only takes effect if the output column is of type [Datetime][DataType_Datetime].
@@ -234,6 +233,47 @@ pl_date_range = function(
     time_zone = NULL) {
   date_range(start, end, interval, closed, time_unit, time_zone) |>
     unwrap("in pl$date_range():")
+}
+
+
+#' Generate a datetime range
+#' @inheritParams pl_date_range
+#' @inheritSection pl_date_range Interval
+#' @param time_unit Time unit of the resulting the [Datetime][DataType_Datetime] data type.
+#' One of `"ns"`, `"us"`, `"ms"` or `NULL`
+#' @param time_zone Time zone of the resulting [Datetime][DataType_Datetime] data type.
+#' @return A [Expr][Expr_class] of data type [Datetime][DataType_Datetime]
+#' @examples
+#' # Using Polars duration string to specify the interval:
+#' pl$datetime_range(as.Date("2022-01-01"), as.Date("2022-03-01"), "1mo") |>
+#'   as_polars_series("datetime")
+#'
+#' # Using `difftime` object to specify the interval:
+#' pl$datetime_range(
+#'   as.Date("1985-01-01"),
+#'   as.Date("1985-01-10"),
+#'   as.difftime(1, units = "days") + as.difftime(12, units = "hours")
+#' ) |>
+#'   as_polars_series("datetime")
+#'
+#' # Specifying a time zone:
+#' pl$datetime_range(
+#'   as.Date("2022-01-01"),
+#'   as.Date("2022-03-01"),
+#'   "1mo",
+#'   time_zone = "America/New_York"
+#' ) |>
+#'   as_polars_series("datetime")
+pl_datetime_range = function(
+    start,
+    end,
+    interval = "1d",
+    ...,
+    closed = "both",
+    time_unit = NULL,
+    time_zone = NULL) {
+  datetime_range(start, end, interval, closed, time_unit, time_zone) |>
+    unwrap("in pl$datetime_range():")
 }
 
 

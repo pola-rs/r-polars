@@ -98,6 +98,25 @@ fn date_range(
 }
 
 #[extendr]
+fn datetime_range(
+    start: Robj,
+    end: Robj,
+    interval: Robj,
+    closed: Robj,
+    time_unit: Robj,
+    time_zone: Robj,
+) -> RResult<RPolarsExpr> {
+    Ok(RPolarsExpr(polars::lazy::prelude::datetime_range(
+        robj_to!(PLExprCol, start)?,
+        robj_to!(PLExprCol, end)?,
+        robj_to!(pl_duration, interval)?,
+        robj_to!(ClosedWindow, closed)?,
+        robj_to!(Option, timeunit, time_unit)?,
+        robj_to!(Option, String, time_zone)?,
+    )))
+}
+
+#[extendr]
 fn as_struct(exprs: Robj) -> RResult<RPolarsExpr> {
     Ok(pl::as_struct(robj_to!(VecPLExprNamed, exprs)?).into())
 }
@@ -338,8 +357,8 @@ extendr_module! {
     fn fold;
     fn reduce;
 
-    //fn r_date_range;
     fn date_range;
+    fn datetime_range;
     fn as_struct;
     fn struct_;
 
