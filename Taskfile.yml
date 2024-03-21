@@ -200,7 +200,6 @@ tasks:
         rextendr::register_extendr()'
 
   build-readme:
-    internal: true
     desc: Build README.md
     sources:
       - README.Rmd

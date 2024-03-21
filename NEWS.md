@@ -43,6 +43,9 @@
 - `<Series>$to_r_list()` is renamed `<Series>$to_list()` (#938).
 - Removed `<Series>$to_r_vector()` which was an old alias for
   `<Series>$to_vector()` (#938).
+- In `$str$strptime()`, `$str$to_date()`, `$str$to_datetime()`, and
+  `$str$to_time()`, all arguments (except the first one) must be named (#939).
+- In `$str$strptime()`, the argument `datatype` is renamed `dtype` (#939).
 - `$unique()` for `DataFrame` and `LazyFrame` have several changes (#953):
   - New default value `"any"` for argument `keep`.
   - Arguments `keep` and `maintain_order` must be named.
@@ -54,7 +57,7 @@
 - New function `pl$arg_where()` to get the indices that match a condition (#922).
 - New function `is_polars_dtype()` (#927).
 - New function `pl$datetime_range()` (#950).
-- New method `<LazyFrame>to_dot()` to print the query plan of a LazyFrame with
+- New method `<LazyFrame>$to_dot()` to print the query plan of a LazyFrame with
   graphviz dot syntax (#928).
 - Argument `ambiguous` can now take the value `"null"` to convert ambigous
   datetimes to null values (#937).
