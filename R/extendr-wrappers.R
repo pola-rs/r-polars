@@ -36,7 +36,9 @@ fold <- function(acc, lambda, exprs) .Call(wrap__fold, acc, lambda, exprs)
 
 reduce <- function(lambda, exprs) .Call(wrap__reduce, lambda, exprs)
 
-r_date_range_lazy <- function(start, end, every, closed, time_unit, time_zone, explode) .Call(wrap__r_date_range_lazy, start, end, every, closed, time_unit, time_zone, explode)
+date_range <- function(start, end, interval, closed, time_unit, time_zone) .Call(wrap__date_range, start, end, interval, closed, time_unit, time_zone)
+
+datetime_range <- function(start, end, interval, closed, time_unit, time_zone) .Call(wrap__datetime_range, start, end, interval, closed, time_unit, time_zone)
 
 as_struct <- function(exprs) .Call(wrap__as_struct, exprs)
 

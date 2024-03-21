@@ -25,6 +25,15 @@
     is renamed to `time_zone` (#944).
   - In `$dt$replace_time_zone()`, all arguments except `time_zone` must be named
     arguments (#944).
+  - `pl$date_range()` is completely rewritten (#950).
+    - The argument `end` must be specified.
+    - The default value of `interval` is changed to `"1d"`.
+    - The unused argument (not working in recent versions) `explode` is removed.
+    - The arguments `closed`, `time_unit`, and `time_zone` must be named arguments.
+    - No longer accepts numeric values to `start` and `end`.
+    - The usage of `pl$date_range()` to create a range of `Datetime` data type is deprecated.
+      `pl$date_range()` will always create a range of `Date` data type in the future.
+      Please use `pl$datetime_range()` if you want to create a range of `Datetime` instead.
 - The argument `columns` in `$drop()` is removed. `$drop()` now accepts several
   character scalars, such as `$drop("a", "b", "c")` (#912).
 - In `pl$col()`, the `name` argument is removed, and the `...` argument no longer
@@ -47,6 +56,7 @@
   Expr of class datetime, date, and time via columns and literals (#918).
 - New function `pl$arg_where()` to get the indices that match a condition (#922).
 - New function `is_polars_dtype()` (#927).
+- New function `pl$datetime_range()` (#950).
 - New method `<LazyFrame>$to_dot()` to print the query plan of a LazyFrame with
   graphviz dot syntax (#928).
 - Argument `ambiguous` can now take the value `"null"` to convert ambigous
