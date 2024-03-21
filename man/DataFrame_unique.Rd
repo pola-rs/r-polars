@@ -4,26 +4,26 @@
 \alias{DataFrame_unique}
 \title{Drop duplicated rows}
 \usage{
-DataFrame_unique(
-  subset = NULL,
-  keep = c("first", "last", "none"),
-  maintain_order = FALSE
-)
+DataFrame_unique(subset = NULL, ..., keep = "any", maintain_order = FALSE)
 }
 \arguments{
 \item{subset}{A character vector with the names of the column(s) to use to
 identify duplicates. If \code{NULL} (default), use all columns.}
 
+\item{...}{Not used.}
+
 \item{keep}{Which of the duplicate rows to keep:
 \itemize{
-\item "first": Keep first unique row.
-\item "last": Keep last unique row.
-\item "none": Don’t keep duplicate rows.
+\item \code{"any"} (default): Does not give any guarantee of which row is kept. This
+allows more optimizations.
+\item \code{"first"}: Keep first unique row.
+\item \code{"last"}: Keep last unique row.
+\item \code{"none"}: Don’t keep duplicate rows.
 }}
 
-\item{maintain_order}{Keep the same order as the original data. Setting
-this to \code{TRUE} makes it more expensive to compute and blocks the possibility
-to run on the streaming engine.}
+\item{maintain_order}{Keep the same order as the original data. Setting this
+to \code{TRUE} makes it more expensive to compute and blocks the possibility to
+run on the streaming engine.}
 }
 \value{
 DataFrame
@@ -41,10 +41,9 @@ df$height
 df$unique()$height
 
 # subset to define unique, keep only last or first
-df$unique(subset = "x", keep = c("last"))
-df$unique(subset = "x", keep = c("first"))
+df$unique(subset = "x", keep = "last")
+df$unique(subset = "x", keep = "first")
 
 # only keep unique rows
 df$unique(keep = "none")
 }
-\keyword{DataFrame}
