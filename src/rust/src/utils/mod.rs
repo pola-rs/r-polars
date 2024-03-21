@@ -749,17 +749,13 @@ pub fn robj_to_datatype(robj: extendr_api::Robj) -> RResult<RPolarsDataType> {
 }
 
 pub fn robj_to_pl_duration_string(robj: extendr_api::Robj) -> RResult<String> {
-    let robj = unpack_r_result_list(robj)?;
-    let robj_clone = robj.clone(); //reserve shallowcopy for writing err msg
-
     use extendr_api::*;
-    let pl_duration_robj = unpack_r_eval(R!("polars:::result(polars:::as_pl_duration({{robj}}))"))
-        .bad_robj(&robj_clone)
-        .mistyped("String")
-        .when("preparing a polars duration string")?;
+    let pl_duration_robj = unpack_r_eval(R!(
+        "polars:::result(polars::parse_as_polars_duration_string({{robj}}))"
+    ))?;
 
     robj_to_string(pl_duration_robj)
-        .plain("internal error in as_pl_duration: did not return a string")
+        .plain("internal error in `parse_as_polars_duration_string()`: did not return a string")
 }
 
 //this function is used to convert and Rside Expr into rust side Expr
