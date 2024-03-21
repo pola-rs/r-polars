@@ -96,8 +96,10 @@ impl RPolarsDataType {
             .map(|dt| RPolarsDataType(pl::DataType::Datetime(dt, null_to_opt(tz))))
     }
 
-    pub fn new_duration() -> RPolarsDataType {
-        todo!("duration not implemented")
+    pub fn new_duration(tu: Robj) -> RResult<RPolarsDataType> {
+        Ok(RPolarsDataType(pl::DataType::Duration(robj_to!(
+            timeunit, tu
+        )?)))
     }
 
     pub fn new_list(inner: &RPolarsDataType) -> RPolarsDataType {
