@@ -5,10 +5,10 @@
 \alias{Series}
 \title{Create new Series}
 \usage{
-pl_Series(x, name = NULL, dtype = NULL, ..., nan_to_null = FALSE)
+pl_Series(values, name = NULL, dtype = NULL, ..., nan_to_null = FALSE)
 }
 \arguments{
-\item{x}{any vector}
+\item{values}{any vector}
 
 \item{name}{Name of the Series. If \code{NULL}, an empty string is used.}
 

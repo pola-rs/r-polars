@@ -14,6 +14,7 @@
 ### Other breaking changes
 
 - Several functions have been rewritten to match the behavior of Python Polars.
+  - In `pl$Series()`, the first argument `x` is renamed to `values` (#933).
   - `pl$implode(...)` is rewritten to be a syntactic sugar for `pl$col(...)$implode()` (#923).
   - Unify names of input/output function arguments (935).
     - All arguments except the first argument must be named arguments.
@@ -49,6 +50,7 @@
 
 - The `join_nulls` and `validate` arguments of `<DataFrame>$join()` now work
   correctly (#945).
+- Export the `Duration` datatype (#955).
 
 ## Polars R Package 0.15.1
 
