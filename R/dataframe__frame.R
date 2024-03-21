@@ -1008,7 +1008,8 @@ DataFrame_to_list = function(unnest_structs = TRUE, ..., int64_conversion = pola
 DataFrame_join = function(
     other,
     on = NULL,
-    how = c("inner", "left", "outer", "semi", "anti", "cross", "outer_coalesce"),
+    how = c("inner", "left", "outer", "semi", "anti", "cross",
+            "outer_coalesce"),
     ...,
     left_on = NULL,
     right_on = NULL,
@@ -1021,12 +1022,9 @@ DataFrame_join = function(
     Err_plain("`other` must be a DataFrame.") |>
       unwrap("in $join():")
   }
-  .pr$DataFrame$lazy(self)$join(
-    other = other$lazy(), left_on = left_on, right_on = right_on,
-    on = on, how = how, suffix = suffix, validate = validate,
-    join_nulls = join_nulls, allow_parallel = allow_parallel,
-    force_parallel = force_parallel
-  )$collect()
+  other <- other$lazy()
+  .args = as.list(environment())
+  do.call(.pr$DataFrame$lazy(self)$join, .args)$collect()
 }
 
 #' Convert DataFrame to a Series of type "struct"
