@@ -29,9 +29,9 @@
     - The argument `end` must be specified.
     - The default value of `interval` is changed to `"1d"`.
     - The unused argument (not working in recent versions) `explode` is removed.
-    - The arguments `closed`, `time_unit`, and `time_zone` should be named arguments.
+    - The arguments `closed`, `time_unit`, and `time_zone` must be named arguments.
     - No longer accepts numeric values to `start` and `end`.
-    - The usage of `pl$date_range()` to crate a range of `Datetime` data type is deprecated.
+    - The usage of `pl$date_range()` to create a range of `Datetime` data type is deprecated.
       `pl$date_range()` will always create a range of `Date` data type in the future.
       Please use `pl$datetime_range()` if you want to create a range of `Datetime` instead.
 - The argument `columns` in `$drop()` is removed. `$drop()` now accepts several

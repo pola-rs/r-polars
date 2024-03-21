@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr__datetime.R
 \name{ExprDT_nanosecond}
 \alias{ExprDT_nanosecond}
-\title{Extract microseconds from underlying Datetime representation}
+\title{Extract nanoseconds from underlying Datetime representation}
 \usage{
 ExprDT_nanosecond()
 }

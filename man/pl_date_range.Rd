@@ -16,11 +16,11 @@ pl_date_range(
 }
 \arguments{
 \item{start}{Lower bound of the date range.
-Something can be coerced to a Date or a \link[=DataType_Datetime]{Datetime} expression.
+Something that can be coerced to a Date or a \link[=DataType_Datetime]{Datetime} expression.
 See examples for details.}
 
 \item{end}{Upper bound of the date range.
-Something can be coerced to a Date or a \link[=DataType_Datetime]{Datetime} expression.
+Something that can be coerced to a Date or a \link[=DataType_Datetime]{Datetime} expression.
 See examples for details.}
 
 \item{interval}{Interval of the range periods, specified as a \link{difftime} object or
@@ -29,13 +29,7 @@ using the Polars duration string language. See the \code{Interval} section for d
 \item{...}{Ignored.}
 
 \item{closed}{Define which sides of the range are closed (inclusive).
-One of the followings:
-\itemize{
-\item \code{"both"} (default)
-\item \code{"left"}
-\item \code{"right"}
-\item \code{"none"}
-}}
+One of the followings: \code{"both"} (default), \code{"left"}, \code{"right"}, \code{"none"}.}
 
 \item{time_unit}{Time unit of the resulting the \link[=DataType_Datetime]{Datetime} data type.
 One of \code{"ns"}, \code{"us"}, \code{"ms"} or \code{NULL}
@@ -45,7 +39,7 @@ Only takes effect if the output column is of type \link[=DataType_Datetime]{Date
 Only takes effect if the output column is of type \link[=DataType_Datetime]{Datetime}.}
 }
 \value{
-A \link[=Expr_class]{Expr} of data type Date or \link[=DataType_Datetime]{Datetime}
+An \link[=Expr_class]{Expr} of data type Date or \link[=DataType_Datetime]{Datetime}
 }
 \description{
 If both \code{start} and \code{end} are passed as the Date types (not Datetime),

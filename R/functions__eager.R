@@ -171,26 +171,22 @@ pl_concat = function(
 #' Note that in a future version of Polars, `pl$date_range()` will always
 #' return Date. Please use [`pl$datetime_range()`][pl_datetime_range] if you want Datetime instead.
 #' @param start Lower bound of the date range.
-#' Something can be coerced to a Date or a [Datetime][DataType_Datetime] expression.
+#' Something that can be coerced to a Date or a [Datetime][DataType_Datetime] expression.
 #' See examples for details.
 #' @param end Upper bound of the date range.
-#' Something can be coerced to a Date or a [Datetime][DataType_Datetime] expression.
+#' Something that can be coerced to a Date or a [Datetime][DataType_Datetime] expression.
 #' See examples for details.
 #' @param interval Interval of the range periods, specified as a [difftime] object or
 #' using the Polars duration string language. See the `Interval` section for details.
 #' @param ... Ignored.
 #' @param closed Define which sides of the range are closed (inclusive).
-#' One of the followings:
-#' - `"both"` (default)
-#' - `"left"`
-#' - `"right"`
-#' - `"none"`
+#' One of the followings: `"both"` (default), `"left"`, `"right"`, `"none"`.
 #' @param time_unit Time unit of the resulting the [Datetime][DataType_Datetime] data type.
 #' One of `"ns"`, `"us"`, `"ms"` or `NULL`
 #' Only takes effect if the output column is of type [Datetime][DataType_Datetime].
 #' @param time_zone Time zone of the resulting [Datetime][DataType_Datetime] data type.
 #' Only takes effect if the output column is of type [Datetime][DataType_Datetime].
-#' @return A [Expr][Expr_class] of data type Date or [Datetime][DataType_Datetime]
+#' @return An [Expr][Expr_class] of data type Date or [Datetime][DataType_Datetime]
 #' @section Interval:
 #' `interval` is created according to the following string language:
 #'
@@ -242,7 +238,7 @@ pl_date_range = function(
 #' @param time_unit Time unit of the resulting the [Datetime][DataType_Datetime] data type.
 #' One of `"ns"`, `"us"`, `"ms"` or `NULL`
 #' @param time_zone Time zone of the resulting [Datetime][DataType_Datetime] data type.
-#' @return A [Expr][Expr_class] of data type [Datetime][DataType_Datetime]
+#' @return An [Expr][Expr_class] of data type [Datetime][DataType_Datetime]
 #' @examples
 #' # Using Polars duration string to specify the interval:
 #' pl$datetime_range(as.Date("2022-01-01"), as.Date("2022-03-01"), "1mo") |>

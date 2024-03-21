@@ -495,7 +495,7 @@ ExprDT_microsecond = function() {
 }
 
 
-#' Extract microseconds from underlying Datetime representation
+#' Extract nanoseconds from underlying Datetime representation
 #' @inherit ExprDT_millisecond description return
 #' @examples
 #' df = pl$DataFrame(
