@@ -43,6 +43,9 @@
 - `<Series>$to_r_list()` is renamed `<Series>$to_list()` (#938).
 - Removed `<Series>$to_r_vector()` which was an old alias for
   `<Series>$to_vector()` (#938).
+- `$unique()` for `DataFrame` and `LazyFrame` have several changes (#953):
+  - New default value `"any"` for argument `keep`.
+  - Arguments `keep` and `maintain_order` must be named.
 
 ### New features
 
@@ -55,6 +58,10 @@
   graphviz dot syntax (#928).
 - Argument `ambiguous` can now take the value `"null"` to convert ambigous
   datetimes to null values (#937).
+### Bug fixes
+
+- The `join_nulls` and `validate` arguments of `<DataFrame>$join()` now work
+  correctly (#945).
 - Export the `Duration` datatype (#955).
 
 ## Polars R Package 0.15.1
