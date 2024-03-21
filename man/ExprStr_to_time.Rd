@@ -10,7 +10,7 @@ for the full specification. Example: \code{"\%H:\%M:\%S"}.
 If \code{NULL} (default), the format is inferred from the data.
 }
 \usage{
-ExprStr_to_time(format = NULL, strict = TRUE, cache = TRUE)
+ExprStr_to_time(format = NULL, ..., strict = TRUE, cache = TRUE)
 }
 \arguments{
 \item{format}{Format to use for conversion. Refer to
@@ -19,6 +19,8 @@ for the full specification. Example: \code{"\%Y-\%m-\%d \%H:\%M:\%S"}.
 If \code{NULL} (default), the format is inferred from the data.
 Notice that time zone \verb{\%Z} is not supported and will just ignore timezones.
 Numeric time zones like \verb{\%z} or \verb{\%:z} are supported.}
+
+\item{...}{Not used.}
 
 \item{strict}{If \code{TRUE} (default), raise an error if a single string cannot
 be parsed. If \code{FALSE}, produce a polars \code{null}.}

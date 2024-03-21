@@ -5,8 +5,9 @@
 \title{Convert a String column into a Date/Datetime/Time column.}
 \usage{
 ExprStr_strptime(
-  datatype,
+  dtype,
   format = NULL,
+  ...,
   strict = TRUE,
   exact = TRUE,
   cache = TRUE,
@@ -14,8 +15,8 @@ ExprStr_strptime(
 )
 }
 \arguments{
-\item{datatype}{The data type to convert into. Can be either Date, Datetime,
-or Time.}
+\item{dtype}{The data type to convert into. Can be either \code{pl$Date},
+\code{\link[=DataType_Datetime]{pl$Datetime()}}, or \code{pl$Time}.}
 
 \item{format}{Format to use for conversion. Refer to
 \href{https://docs.rs/chrono/latest/chrono/format/strftime/index.html}{the chrono crate documentation}
@@ -23,6 +24,8 @@ for the full specification. Example: \code{"\%Y-\%m-\%d \%H:\%M:\%S"}.
 If \code{NULL} (default), the format is inferred from the data.
 Notice that time zone \verb{\%Z} is not supported and will just ignore timezones.
 Numeric time zones like \verb{\%z} or \verb{\%:z} are supported.}
+
+\item{...}{Not used.}
 
 \item{strict}{If \code{TRUE} (default), raise an error if a single string cannot
 be parsed. If \code{FALSE}, produce a polars \code{null}.}
@@ -99,7 +102,7 @@ s = pl$Series(
 s$str$strptime(
   pl$Datetime("ns"),
   format = "\%Y-\%m-\%d \%H:\%M:\%S \%z",
-  strict = FALSE,
+  strict = FALSE
 )
 }
 \seealso{
