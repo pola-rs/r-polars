@@ -206,6 +206,33 @@ pub fn pl_series_to_list(
                     )
                 }),
 
+            Duration(tu) => {
+                let tu_f64: f64 = match tu {
+                    pl::TimeUnit::Nanoseconds => 1_000_000_000.0,
+                    pl::TimeUnit::Microseconds => 1_000_000.0,
+                    pl::TimeUnit::Milliseconds => 1_000.0,
+                };
+
+                s.cast(&Float64)?
+                    .f64()
+                    .map(|ca| {
+                        ca.into_iter()
+                            .map(|opt| opt.map(|val| val / tu_f64))
+                            .collect_robj()
+                    })
+                    // TODO set_class and set_attrib reallocates the vector, find some way to modify without.
+                    .map(|mut robj| {
+                        robj.set_class(&["difftime"])
+                            .expect("internal error: class difftime label failed")
+                    })
+                    .map_err(|err| {
+                        pl_error::ComputeError(
+                            format!("when converting polars Duration to R difftime: {:?}", err)
+                                .into(),
+                        )
+                    })
+            }
+
             Datetime(tu, opt_tz) => {
                 let tu_f64: f64 = match tu {
                     pl::TimeUnit::Nanoseconds => 1_000_000_000.0,
