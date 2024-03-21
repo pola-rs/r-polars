@@ -33,10 +33,12 @@ One of the followings: \code{"both"} (default), \code{"left"}, \code{"right"}, \
 
 \item{time_unit}{Time unit of the resulting the \link[=DataType_Datetime]{Datetime} data type.
 One of \code{"ns"}, \code{"us"}, \code{"ms"} or \code{NULL}
-Only takes effect if the output column is of type \link[=DataType_Datetime]{Datetime}.}
+Only takes effect if the output column is of type \link[=DataType_Datetime]{Datetime}
+(Deprecated usage).}
 
 \item{time_zone}{Time zone of the resulting \link[=DataType_Datetime]{Datetime} data type.
-Only takes effect if the output column is of type \link[=DataType_Datetime]{Datetime}.}
+Only takes effect if the output column is of type \link[=DataType_Datetime]{Datetime}
+(Deprecated usage).}
 }
 \value{
 An \link[=Expr_class]{Expr} of data type Date or \link[=DataType_Datetime]{Datetime}

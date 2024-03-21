@@ -183,9 +183,11 @@ pl_concat = function(
 #' One of the followings: `"both"` (default), `"left"`, `"right"`, `"none"`.
 #' @param time_unit Time unit of the resulting the [Datetime][DataType_Datetime] data type.
 #' One of `"ns"`, `"us"`, `"ms"` or `NULL`
-#' Only takes effect if the output column is of type [Datetime][DataType_Datetime].
+#' Only takes effect if the output column is of type [Datetime][DataType_Datetime]
+#' (Deprecated usage).
 #' @param time_zone Time zone of the resulting [Datetime][DataType_Datetime] data type.
-#' Only takes effect if the output column is of type [Datetime][DataType_Datetime].
+#' Only takes effect if the output column is of type [Datetime][DataType_Datetime]
+#' (Deprecated usage).
 #' @return An [Expr][Expr_class] of data type Date or [Datetime][DataType_Datetime]
 #' @section Interval:
 #' `interval` is created according to the following string language:
