@@ -1117,7 +1117,8 @@ LazyFrame_drop_nulls = function(subset = NULL) {
 #' df$unique(keep = "none")
 LazyFrame_unique = function(
     subset = NULL,
-    keep = c("first", "last", "none"),
+    ...,
+    keep = "any",
     maintain_order = FALSE) {
   unwrap(.pr$LazyFrame$unique(self, subset, keep, maintain_order), "in unique():")
 }

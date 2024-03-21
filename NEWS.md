@@ -14,6 +14,7 @@
 ### Other breaking changes
 
 - Several functions have been rewritten to match the behavior of Python Polars.
+  - In `pl$Series()`, the first argument `x` is renamed to `values` (#933).
   - `pl$implode(...)` is rewritten to be a syntactic sugar for `pl$col(...)$implode()` (#923).
   - Unify names of input/output function arguments (935).
     - All arguments except the first argument must be named arguments.
@@ -36,6 +37,9 @@
 - In `$str$strptime()`, `$str$to_date()`, `$str$to_datetime()`, and
   `$str$to_time()`, all arguments (except the first one) must be named (#939).
 - In `$str$strptime()`, the argument `datatype` is renamed `dtype` (#939).
+- `$unique()` for `DataFrame` and `LazyFrame` have several changes (#953):
+  - New default value `"any"` for argument `keep`.
+  - Arguments `keep` and `maintain_order` must be named.
 
 ### New features
 
@@ -47,6 +51,11 @@
   graphviz dot syntax (#928).
 - Argument `ambiguous` can now take the value `"null"` to convert ambigous
   datetimes to null values (#937).
+### Bug fixes
+
+- The `join_nulls` and `validate` arguments of `<DataFrame>$join()` now work
+  correctly (#945).
+- Export the `Duration` datatype (#955).
 
 ## Polars R Package 0.15.1
 

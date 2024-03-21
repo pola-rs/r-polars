@@ -1508,7 +1508,7 @@ test_that("is_between errors if wrong 'closed' arg", {
   df = pl$DataFrame(var = c(1, 2, 3, 4, 5))
   expect_error(
     df$select(pl$col("var")$is_between(1, 2, "foo")),
-    "should be one of"
+    "must be one of"
   )
 })
 

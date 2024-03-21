@@ -96,8 +96,10 @@ impl RPolarsDataType {
             .map(|dt| RPolarsDataType(pl::DataType::Datetime(dt, null_to_opt(tz))))
     }
 
-    pub fn new_duration() -> RPolarsDataType {
-        todo!("duration not implemented")
+    pub fn new_duration(tu: Robj) -> RResult<RPolarsDataType> {
+        Ok(RPolarsDataType(pl::DataType::Duration(robj_to!(
+            timeunit, tu
+        )?)))
     }
 
     pub fn new_list(inner: &RPolarsDataType) -> RPolarsDataType {
@@ -253,8 +255,7 @@ pub fn robj_to_asof_strategy(robj: Robj) -> RResult<AsofStrategy> {
         "forward" => Ok(AsofStrategy::Forward),
         "backward" => Ok(AsofStrategy::Backward),
         s => rerr().bad_val(format!(
-            "asof strategy choice: [{}] is not any of 'forward' or 'backward'",
-            s
+            "asof strategy choice ('{s}') must be one of 'forward' or 'backward'"
         )),
     }
 }
@@ -265,12 +266,12 @@ pub fn robj_to_nonzero_usize(robj: Robj) -> RResult<NonZeroUsize> {
 
 pub fn robj_to_unique_keep_strategy(robj: Robj) -> RResult<UniqueKeepStrategy> {
     match robj_to_rchoice(robj)?.to_lowercase().as_str() {
-        // "any" => Ok(pl::UniqueKeepStrategy::Any),
+        "any" => Ok(pl::UniqueKeepStrategy::Any),
         "first" => Ok(pl::UniqueKeepStrategy::First),
         "last" => Ok(pl::UniqueKeepStrategy::Last),
         "none" => Ok(pl::UniqueKeepStrategy::None),
         s => rerr().bad_val(format!(
-            "keep strategy choice: [{s}] is not any of 'any', 'first', 'last', 'none'"
+            "keep strategy choice ('{s}') must be one of 'any', 'first', 'last', 'none'"
         )),
     }
 }
@@ -284,7 +285,7 @@ pub fn robj_to_quantile_interpolation_option(robj: Robj) -> RResult<QuantileInte
         "midpoint" => Ok(Midpoint),
         "linear" => Ok(Linear),
         s => rerr()
-            .bad_val(format!("interpolation choice [{s}] is not any of 'nearest', 'higher', 'lower', 'midpoint', 'linear'"))
+            .bad_val(format!("interpolation choice ('{s}') must be one of 'nearest', 'higher', 'lower', 'midpoint', 'linear'"))
      ,
     }
 }
@@ -295,7 +296,7 @@ pub fn robj_to_interpolation_method(robj: Robj) -> RResult<pl::InterpolationMeth
         "linear" => Ok(IM::Linear),
         "nearest" => Ok(IM::Nearest),
         s => rerr().bad_val(format!(
-            "InterpolationMethod choice: ['{s}'] is not any of 'linear' or 'nearest'",
+            "InterpolationMethod choice ('{s}') must be one of 'linear' or 'nearest'",
         )),
     }
 }
@@ -311,7 +312,7 @@ pub fn robj_to_rank_method(robj: Robj) -> RResult<pl::RankMethod> {
         "random" => Ok(RM::Random),
         s =>  rerr()
         .bad_val(format!(
-            "RankMethod choice: [{s}] is not any of 'average','dense', 'min', 'max', 'ordinal', 'random'"
+            "RankMethod choice ('{s}') must be one of 'average', 'dense', 'min', 'max', 'ordinal', 'random'"
         )),
     }
 }
@@ -322,7 +323,7 @@ pub fn robj_to_non_existent(robj: Robj) -> RResult<pl::NonExistent> {
         "null" => Ok(NE::Null),
         "raise" => Ok(NE::Raise),
         s => rerr().bad_val(format!(
-            "NonExistent choice: [{s}] is not any of 'null', 'raise'"
+            "NonExistent choice ('{s}') must be one of 'null' or 'raise'"
         )),
     }
 }
@@ -386,8 +387,7 @@ pub fn robj_to_width_strategy(robj: Robj) -> RResult<pl::ListToStructWidthStrate
         "first_non_null" => Ok(WS::FirstNonNull),
         "max_width" => Ok(WS::MaxWidth),
         s => rerr().bad_val(format!(
-            "n_field_strategy: [{}] is not any of 'first_non_null' or 'max_width'",
-            s
+            "n_field_strategy ('{s}') must be one of 'first_non_null' or 'max_width'"
         )),
     }
 }
@@ -400,9 +400,9 @@ pub fn robj_to_timeunit(robj: Robj) -> RResult<pl::TimeUnit> {
         "us" | "μs" => Ok(pl::TimeUnit::Microseconds),
         "ms" => Ok(pl::TimeUnit::Milliseconds),
 
-        _ => rerr().bad_val(
-            "str to polars TimeUnit: [{}] is not any of 'ns', 'us/μs' or 'ms' ".to_string(),
-        ),
+        _ => rerr().bad_val(format!(
+            "str to polars TimeUnit ('{s}') must be one of 'ns', 'us/μs', 'ms'"
+        )),
     }
 }
 
@@ -422,8 +422,7 @@ pub fn robj_to_categorical_ordering(robj: Robj) -> RResult<pl::CategoricalOrderi
         "physical" => Ok(CO::Physical),
         "lexical" => Ok(CO::Lexical),
         _ => rerr().bad_val(format!(
-            "CategoricalOrdering: [{}] is not any of 'physical' or 'lexical'",
-            s
+            "CategoricalOrdering ('{s}') must be one of 'physical' or 'lexical'"
         )),
     }
 }
@@ -454,7 +453,7 @@ pub fn new_parquet_compression(
         )),
     }
     .map_err(polars_to_rpolars_err)
-    .misvalued("should be one of ['uncompressed', 'snappy', 'gzip', 'brotli', 'zstd']")
+    .misvalued("must be one of 'uncompressed', 'snappy', 'gzip', 'brotli', 'zstd'")
 }
 
 pub fn new_ipc_compression(compression_method: Robj) -> RResult<Option<pl::IpcCompression>> {
@@ -463,9 +462,7 @@ pub fn new_ipc_compression(compression_method: Robj) -> RResult<Option<pl::IpcCo
         .map(|cm| match cm.as_str() {
             "lz4" => Ok(LZ4),
             "zstd" => Ok(ZSTD),
-            m => rerr()
-                .bad_val(m)
-                .misvalued("should be one of ['lz4', 'zstd']"),
+            m => rerr().bad_val(m).misvalued("must be one of 'lz4', 'zstd'"),
         })
         .transpose()
 }
@@ -488,12 +485,12 @@ pub fn robj_to_join_type(robj: Robj) -> RResult<pl::JoinType> {
         "cross" => Ok(pl::JoinType::Cross),
         "inner" => Ok(pl::JoinType::Inner),
         "left" => Ok(pl::JoinType::Left),
-        "outer" => Ok(pl::JoinType::Outer{coalesce: false}),
-        "outer_coalesce" => Ok(pl::JoinType::Outer{coalesce: true}),
+        "outer" => Ok(pl::JoinType::Outer { coalesce: false }),
+        "outer_coalesce" => Ok(pl::JoinType::Outer { coalesce: true }),
         "semi" => Ok(pl::JoinType::Semi),
         "anti" => Ok(pl::JoinType::Anti),
         s => rerr().bad_val(format!(
-            "JoinType choice ['{s}'] should be one of 'cross', 'inner', 'left', 'outer', 'semi', 'anti'"
+            "JoinType choice ('{s}') must be one of 'cross', 'inner', 'left', 'outer', 'semi', 'anti'"
         )),
     }
 }
@@ -506,7 +503,7 @@ pub fn robj_to_closed_window(robj: Robj) -> RResult<pl::ClosedWindow> {
         "none" => Ok(CW::None),
         "right" => Ok(CW::Right),
         s => rerr().bad_val(format!(
-            "ClosedWindow choice ['{s}'] should be one of 'both', 'left', 'none', 'right'"
+            "ClosedWindow choice ('{s}') must be one of 'both', 'left', 'none', 'right'"
         )),
     }
 }
@@ -519,7 +516,7 @@ pub fn robj_to_closed_interval(robj: Robj) -> RResult<pl::ClosedInterval> {
         "none" => Ok(CI::None),
         "right" => Ok(CI::Right),
         s => rerr().bad_val(format!(
-            "ClosedInterval choice ['{s}'] should be one of 'both', 'left', 'none', 'right'"
+            "ClosedInterval choice ('{s}') must be one of 'both', 'left', 'none', 'right'"
         )),
     }
 }
@@ -532,7 +529,7 @@ pub fn robj_to_set_operation(robj: Robj) -> RResult<pl::SetOperation> {
         "difference" => Ok(SO::Difference),
         "symmetric_difference" => Ok(SO::SymmetricDifference),
         s => rerr().bad_val(format!(
-            "SetOperation choice ['{s}'] should be one of 'union', 'intersection', 'difference', 'symmetric_difference'"
+            "SetOperation choice ('{s}') must be one of 'union', 'intersection', 'difference', 'symmetric_difference'"
         )),
     }
 }
@@ -545,7 +542,7 @@ pub fn robj_to_join_validation(robj: Robj) -> RResult<pl::JoinValidation> {
         "1:1" => Ok(JV::OneToOne),
         "m:1" => Ok(JV::ManyToOne),
         s => rerr().bad_val(format!(
-            "JoinValidation choice ['{s}'] should be one of 'm:m', '1:m', '1:1', 'm:1'"
+            "JoinValidation choice ('{s}') must be one of 'm:m', '1:m', '1:1', 'm:1'"
         )),
     }
 }
@@ -557,7 +554,7 @@ pub fn robj_to_label(robj: Robj) -> RResult<pl::Label> {
         "right" => Ok(Label::Right),
         "datapoint" => Ok(Label::DataPoint),
         s => rerr().bad_val(format!(
-            "Label choice ['{s}'] should be one of 'left', 'right', 'datapoint'"
+            "Label choice ('{s}') must be one of 'left', 'right', 'datapoint'"
         )),
     }
 }
@@ -575,7 +572,7 @@ pub fn robj_to_start_by(robj: Robj) -> RResult<pl::StartBy> {
         "saturday" => Ok(SB::Saturday),
         "sunday" => Ok(SB::Sunday),
         s => rerr().bad_val(format!(
-            "StartBy choice ['{s}'] should be one of 'window', 'datapoint', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'"
+            "StartBy choice ('{s}') must be one of 'window', 'datapoint', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'"
         )),
     }
 }
@@ -589,7 +586,7 @@ pub fn robj_to_parallel_strategy(robj: extendr_api::Robj) -> RResult<pl::Paralle
         "columns" => Ok(PS::Auto),
         "rowgroups" => Ok(PS::Auto),
         s => rerr().bad_val(format!(
-            "ParallelStrategy choice ['{s}'] should be one of 'Auto', 'None', 'Columns', 'RowGroups'"
+            "ParallelStrategy choice ('{s}') must be one of 'Auto', 'None', 'Columns', 'RowGroups'"
         )),
     }
 }
@@ -600,8 +597,7 @@ pub fn robj_new_null_behavior(robj: Robj) -> RResult<polars::series::ops::NullBe
         "ignore" => Ok(NB::Ignore),
         "drop" => Ok(NB::Drop),
         s => rerr().bad_val(format!(
-            "NullBehavior choice: [{}] is not any of 'drop' or 'ignore'",
-            s
+            "NullBehavior choice ('{s}') must be one of 'drop' or 'ignore'"
         )),
     }
 }
@@ -611,17 +607,18 @@ pub fn parse_fill_null_strategy(
     limit: Option<u32>,
 ) -> RResult<pl::FillNullStrategy> {
     use pl::FillNullStrategy::*;
-    let parsed = match strategy {
-        "forward" => Forward(limit),
-        "backward" => Backward(limit),
-        "min" => Min,
-        "max" => Max,
-        "mean" => Mean,
-        "zero" => Zero,
-        "one" => One,
-        e => return rerr().plain("FillNullStrategy is not known").bad_val(e),
-    };
-    Ok(parsed)
+    match strategy {
+        "forward" => Ok(Forward(limit)),
+        "backward" => Ok(Backward(limit)),
+        "min" => Ok(Min),
+        "max" => Ok(Max),
+        "mean" => Ok(Mean),
+        "zero" => Ok(Zero),
+        "one" => Ok(One),
+        s => rerr().bad_val(format!(
+            "FillNullStrategy ('{s}') must be one of 'forward', 'backward', 'min', 'max', 'mean', 'zero', 'one'"
+        )),
+    }
 }
 
 pub fn robjs_to_ewm_options(
