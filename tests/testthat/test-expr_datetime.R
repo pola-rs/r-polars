@@ -93,9 +93,9 @@ test_that("pl$date_range", {
 
   # Deprecated usage
   expect_identical(
-    pl$date_range(
+    suppressWarnings(pl$date_range(
       as.POSIXct("2022-01-01 12:00", "UTC"), as.POSIXct("2022-01-03", "UTC"), "1d"
-    )$to_series()$to_vector(),
+    )$to_series()$to_vector()),
     as.POSIXct(c("2022-01-01 12:00", "2022-01-02 12:00"), "UTC")
   )
 })
@@ -104,7 +104,7 @@ test_that("dt$truncate", {
   # make a datetime
   t1 = as.POSIXct("3040-01-01", tz = "GMT")
   t2 = t1 + as.difftime(25, units = "secs")
-  s = pl$date_range(t1, t2, interval = "2s", time_unit = "ms")
+  s = pl$datetime_range(t1, t2, interval = "2s", time_unit = "ms")
 
   # use a dt namespace function
   df = pl$DataFrame(datetime = s)$with_columns(
@@ -133,7 +133,7 @@ test_that("dt$round", {
   # make a datetime
   t1 = as.POSIXct("3040-01-01", tz = "GMT")
   t2 = t1 + as.difftime(24, units = "secs")
-  s = pl$date_range(t1, t2, interval = "2s", time_unit = "ms")
+  s = pl$datetime_range(t1, t2, interval = "2s", time_unit = "ms")
 
   # use a dt namespace function
   ## TODO contribute POLARS, offset makes little sense, it should be implemented
@@ -226,7 +226,7 @@ test_that("dt$strftime", {
 
 test_that("dt$year iso_year", {
   df = pl$DataFrame(
-    date = pl$date_range(
+    date = pl$datetime_range(
       as.Date("2020-12-25"),
       as.Date("2021-1-05"),
       interval = "1d",
@@ -255,7 +255,7 @@ test_that("dt$year iso_year", {
 
 test_that("dt$quarter, month, day", {
   df = pl$DataFrame(
-    date = pl$date_range(
+    date = pl$datetime_range(
       as.Date("2020-12-25"),
       as.Date("2021-1-05"),
       interval = "1d",
@@ -288,7 +288,7 @@ test_that("dt$quarter, month, day", {
 
 test_that("hour minute", {
   df = pl$DataFrame(
-    date = pl$date_range(
+    date = pl$datetime_range(
       as.Date("2020-12-25"),
       as.Date("2021-05-05"),
       interval = "1d2h3m4s",
@@ -335,7 +335,7 @@ test_that("hour minute", {
 
 test_that("second, milli, micro, nano", {
   df = pl$DataFrame(
-    date = pl$date_range(
+    date = pl$datetime_range(
       as.Date("2020-12-25"),
       as.Date("2021-05-05"),
       interval = "2h3m4s555ms666us777ns",
@@ -390,8 +390,7 @@ test_that("second, milli, micro, nano", {
 test_that("offset_by", {
   df = pl$DataFrame(
     dates = pl$date_range(
-      as.Date("2000-1-1"), as.Date("2005-1-1"), "1y",
-      time_zone = "GMT"
+      as.Date("2000-1-1"), as.Date("2005-1-1"), "1y"
     )
   )
   l_actual = df$with_columns(
@@ -443,7 +442,7 @@ test_that("offset_by", {
 
   # using expression in arg "by"
   df = pl$DataFrame(
-    dates = pl$date_range(
+    dates = pl$datetime_range(
       as.POSIXct("2022-01-01", tz = "GMT"),
       as.POSIXct("2022-01-02", tz = "GMT"),
       interval = "6h", time_unit = "ms", time_zone = "GMT"
@@ -530,7 +529,7 @@ test_that("dt$timestamp", {
 
 test_that("dt$with_time_unit cast_time_unit", {
   df_time = pl$DataFrame(
-    date = pl$date_range(
+    date = pl$datetime_range(
       start = as.POSIXct("2001-1-1"), end = as.POSIXct("2001-1-3"), interval = "1d", time_unit = "us"
     )
   )$select(
@@ -641,7 +640,7 @@ test_that("dt$with_time_unit cast_time_unit", {
 
 test_that("dt$replace_time_zone", {
   df = pl$DataFrame(
-    london_timezone = pl$date_range(
+    london_timezone = pl$datetime_range(
       start = as.POSIXct("2001-3-1"), end = as.POSIXct("2001-7-1"),
       interval = "1mo", time_zone = "Europe/London"
     )
@@ -723,7 +722,7 @@ test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
   expect_identical(df$diff, c(NA, diffy(df$date, "mins")))
 
   # seconds
-  df = pl$DataFrame(date = pl$date_range(
+  df = pl$DataFrame(date = pl$datetime_range(
     start = as.Date("2020-1-1"), end = as.POSIXct("2020-1-1 00:04:00", tz = "GMT"),
     interval = "1m"
   ))$with_columns(
@@ -733,7 +732,7 @@ test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
 
 
   # milliseconds
-  df = pl$DataFrame(date = pl$date_range(
+  df = pl$DataFrame(date = pl$datetime_range(
     start = as.Date("2020-1-1"), end = as.POSIXct("2020-1-1 00:04:00", tz = "GMT"),
     interval = "1m"
   ))$with_columns(
@@ -742,7 +741,7 @@ test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
   expect_identical(df$diff, c(NA, diffy(df$date, "secs")) * 1000)
 
   # microseconds
-  df = pl$DataFrame(date = pl$date_range(
+  df = pl$DataFrame(date = pl$datetime_range(
     start = as.Date("2020-1-1"), end = as.POSIXct("2020-1-1 00:04:00", tz = "GMT"),
     interval = "1m"
   ))$with_columns(
@@ -751,7 +750,7 @@ test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
   expect_identical(df$diff, c(NA, diffy(df$date, "secs")) * 1E6)
 
   # nanoseconds
-  df = pl$DataFrame(date = pl$date_range(
+  df = pl$DataFrame(date = pl$datetime_range(
     start = as.Date("2020-1-1"), end = as.POSIXct("2020-1-1 00:04:00", tz = "GMT"),
     interval = "1m"
   ))$with_columns(
@@ -762,7 +761,7 @@ test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
 
 test_that("$dt$time()", {
   df = pl$DataFrame(
-    dates = pl$date_range(
+    dates = pl$datetime_range(
       as.Date("2000-1-1"),
       as.Date("2000-1-2"),
       "6h"

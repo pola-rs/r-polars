@@ -178,7 +178,7 @@ test_that("sink_csv: date_format works", {
 
 test_that("sink_csv: datetime_format works", {
   dat = pl$LazyFrame(
-    date = pl$date_range(
+    date = pl$datetime_range(
       as.Date("2020-01-01"),
       as.Date("2020-01-02"),
       interval = "6h"
@@ -197,7 +197,7 @@ test_that("sink_csv: datetime_format works", {
 
 test_that("sink_csv: time_format works", {
   dat = pl$LazyFrame(
-    date = pl$date_range(
+    date = pl$datetime_range(
       as.Date("2020-10-17"),
       as.Date("2020-10-18"),
       "8h"

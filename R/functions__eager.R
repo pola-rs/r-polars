@@ -227,8 +227,38 @@ pl_date_range = function(
     closed = "both",
     time_unit = NULL,
     time_zone = NULL) {
+  .warn_for_deprecated_date_range_use(start, end, interval, time_unit, time_zone)
+
   date_range(start, end, interval, closed, time_unit, time_zone) |>
     unwrap("in pl$date_range():")
+}
+
+
+.warn_for_deprecated_date_range_use = function(
+    start,
+    end,
+    interval,
+    time_unit = NULL,
+    time_zone = NULL) {
+  if (
+    inherits(start, "POSIXt") ||
+      inherits(end, "POSIXt") ||
+      !is.null(time_unit) ||
+      !is.null(time_zone) ||
+      (
+        is.character(interval) &&
+          length(interval) == 1L &&
+          (grepl("h", interval) || grepl("m", gsub("mo", "", interval)) || grepl("s", gsub("saturating", "", interval)))
+      )
+  ) {
+    warning(
+      "Creating Datetime ranges using `pl$date_range()` is deprecated.",
+      "Use `pl$datetime_range()` instead.",
+      call. = FALSE
+    )
+  }
+
+  invisible(NULL)
 }
 
 
