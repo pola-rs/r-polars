@@ -30,8 +30,8 @@
 - Removed `<Series>$to_r_vector()` which was an old alias for
   `<Series>$to_vector()` (#938).
 - `$unique()` for `DataFrame` and `LazyFrame` have several changes (#953):
-  - new default value `"any"` for argument `keep`;
-  - arguments `keep` and `maintain_order` must be named.
+  - New default value `"any"` for argument `keep`.
+  - Arguments `keep` and `maintain_order` must be named.
 
 ### New features
 

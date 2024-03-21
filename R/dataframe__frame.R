@@ -502,7 +502,7 @@ DataFrame_drop_nulls = function(subset = NULL) {
 #' Drop duplicated rows
 #'
 #' @param subset A character vector with the names of the column(s) to use to
-#'   identify duplicates. If `NULL` (default), use all columns.
+#' identify duplicates. If `NULL` (default), use all columns.
 #' @param ... Not used.
 #' @param keep Which of the duplicate rows to keep:
 #' * `"any"` (default): Does not give any guarantee of which row is kept. This
@@ -511,8 +511,8 @@ DataFrame_drop_nulls = function(subset = NULL) {
 #' * `"last"`: Keep last unique row.
 #' * `"none"`: Don’t keep duplicate rows.
 #' @param maintain_order Keep the same order as the original data. Setting this
-#'   to `TRUE` makes it more expensive to compute and blocks the possibility to
-#'   run on the streaming engine.
+#' to `TRUE` makes it more expensive to compute and blocks the possibility to
+#' run on the streaming engine.
 #'
 #' @return DataFrame
 #' @examples
