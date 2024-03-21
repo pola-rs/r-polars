@@ -141,3 +141,18 @@ test_that("is_polars_dtype works", {
   expect_false(is_polars_dtype(pl$Unknown))
   expect_true(is_polars_dtype(pl$Unknown, include_unknown = TRUE))
 })
+
+test_that("pl$Duration", {
+  test = pl$DataFrame(
+    a = 1:2,
+    b = c("a", "b"),
+    c = pl$duration(weeks = c(1, 2), days = c(0, 2))
+  )
+
+  # cannot test conversion of duration from polars to R yet, only thing we can
+  # test is that selection on this dtype is correct
+  expect_equal(
+    test$select(pl$col(pl$Duration()))$width,
+    1
+  )
+})

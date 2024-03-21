@@ -256,7 +256,7 @@ RPolarsDataType$new_categorical <- function(ordering) .Call(wrap__RPolarsDataTyp
 
 RPolarsDataType$new_datetime <- function(tu, tz) .Call(wrap__RPolarsDataType__new_datetime, tu, tz)
 
-RPolarsDataType$new_duration <- function() .Call(wrap__RPolarsDataType__new_duration)
+RPolarsDataType$new_duration <- function(tu) .Call(wrap__RPolarsDataType__new_duration, tu)
 
 RPolarsDataType$new_list <- function(inner) .Call(wrap__RPolarsDataType__new_list, inner)
 
@@ -778,9 +778,9 @@ RPolarsExpr$dt_with_time_unit <- function(tu) .Call(wrap__RPolarsExpr__dt_with_t
 
 RPolarsExpr$dt_cast_time_unit <- function(tu) .Call(wrap__RPolarsExpr__dt_cast_time_unit, self, tu)
 
-RPolarsExpr$dt_convert_time_zone <- function(tz) .Call(wrap__RPolarsExpr__dt_convert_time_zone, self, tz)
+RPolarsExpr$dt_convert_time_zone <- function(time_zone) .Call(wrap__RPolarsExpr__dt_convert_time_zone, self, time_zone)
 
-RPolarsExpr$dt_replace_time_zone <- function(tz, ambiguous, non_existent) .Call(wrap__RPolarsExpr__dt_replace_time_zone, self, tz, ambiguous, non_existent)
+RPolarsExpr$dt_replace_time_zone <- function(time_zone, ambiguous, non_existent) .Call(wrap__RPolarsExpr__dt_replace_time_zone, self, time_zone, ambiguous, non_existent)
 
 RPolarsExpr$dt_total_days <- function() .Call(wrap__RPolarsExpr__dt_total_days, self)
 

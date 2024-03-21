@@ -5,7 +5,7 @@
 ### Breaking changes due to Rust-polars update
 
 - rust-polars is updated to 0.38.3 (#937).
-  - New argument `non_existent` in `$replace_time_zone()` to specify what should
+  - New argument `non_existent` in `$dt$replace_time_zone()` to specify what should
     happen when a datetime doesn't exist.
   - In rolling aggregation functions (such as `$rolling_mean()`), the default
     value of argument `closed` now is `NULL`. Using `closed` with a fixed
@@ -14,12 +14,17 @@
 ### Other breaking changes
 
 - Several functions have been rewritten to match the behavior of Python Polars.
+  - In `pl$Series()`, the first argument `x` is renamed to `values` (#933).
   - `pl$implode(...)` is rewritten to be a syntactic sugar for `pl$col(...)$implode()` (#923).
   - Unify names of input/output function arguments (935).
     - All arguments except the first argument must be named arguments.
     - In `pl$read_*` and `pl$scan_*` functions, the first argument is now `source`.
     - In `<DataFrame>$write_*` functions, the first argument is now `file`.
     - In `<LazyFrame>$sink_*` functions, the first argument is now `path`.
+  - In `$dt$convert_time_zone()` and `$dt$replace_time_zone()`, the `tz` argument
+    is renamed to `time_zone` (#944).
+  - In `$dt$replace_time_zone()`, all arguments except `time_zone` must be named
+    arguments (#944).
 - The argument `columns` in `$drop()` is removed. `$drop()` now accepts several
   character scalars, such as `$drop("a", "b", "c")` (#912).
 - In `pl$col()`, the `name` argument is removed, and the `...` argument no longer
@@ -29,6 +34,9 @@
 - `<Series>$to_r_list()` is renamed `<Series>$to_list()` (#938).
 - Removed `<Series>$to_r_vector()` which was an old alias for
   `<Series>$to_vector()` (#938).
+- `$unique()` for `DataFrame` and `LazyFrame` have several changes (#953):
+  - New default value `"any"` for argument `keep`.
+  - Arguments `keep` and `maintain_order` must be named.
 
 ### New features
 
@@ -40,6 +48,11 @@
   graphviz dot syntax (#928).
 - Argument `ambiguous` can now take the value `"null"` to convert ambigous
   datetimes to null values (#937).
+### Bug fixes
+
+- The `join_nulls` and `validate` arguments of `<DataFrame>$join()` now work
+  correctly (#945).
+- Export the `Duration` datatype (#955).
 
 ## Polars R Package 0.15.1
 

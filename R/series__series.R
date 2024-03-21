@@ -241,7 +241,7 @@ Series_struct = method_as_active_binding(\() series_make_sub_ns(self, expr_struc
 #' This function is a simple way to convert basic types of vectors provided by base R to
 #' [the Series class object][Series_class].
 #' For converting more types properly, use the generic function [as_polars_series()].
-#' @param x any vector
+#' @param values any vector
 #' @param name Name of the Series. If `NULL`, an empty string is used.
 #' @param dtype One of [polars data type][pl_dtypes] or `NULL`.
 #' If not `NULL`, that data type is used to [cast][Expr_cast] the Series created from the vector
@@ -265,7 +265,7 @@ Series_struct = method_as_active_binding(\() series_make_sub_ns(self, expr_struc
 #' s2 = pl$Series(1:3, "a", dtype = pl$Float32)
 #' s2
 pl_Series = function(
-    x,
+    values,
     name = NULL,
     dtype = NULL,
     ...,
@@ -277,7 +277,7 @@ pl_Series = function(
       uw()
   }
 
-  out = .pr$Series$new(x, name) |>
+  out = .pr$Series$new(values, name) |>
     uw()
 
   if (!is.null(dtype)) {

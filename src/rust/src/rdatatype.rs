@@ -96,8 +96,10 @@ impl RPolarsDataType {
             .map(|dt| RPolarsDataType(pl::DataType::Datetime(dt, null_to_opt(tz))))
     }
 
-    pub fn new_duration() -> RPolarsDataType {
-        todo!("duration not implemented")
+    pub fn new_duration(tu: Robj) -> RResult<RPolarsDataType> {
+        Ok(RPolarsDataType(pl::DataType::Duration(robj_to!(
+            timeunit, tu
+        )?)))
     }
 
     pub fn new_list(inner: &RPolarsDataType) -> RPolarsDataType {
@@ -264,7 +266,7 @@ pub fn robj_to_nonzero_usize(robj: Robj) -> RResult<NonZeroUsize> {
 
 pub fn robj_to_unique_keep_strategy(robj: Robj) -> RResult<UniqueKeepStrategy> {
     match robj_to_rchoice(robj)?.to_lowercase().as_str() {
-        // "any" => Ok(pl::UniqueKeepStrategy::Any),
+        "any" => Ok(pl::UniqueKeepStrategy::Any),
         "first" => Ok(pl::UniqueKeepStrategy::First),
         "last" => Ok(pl::UniqueKeepStrategy::Last),
         "none" => Ok(pl::UniqueKeepStrategy::None),
