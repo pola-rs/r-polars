@@ -45,6 +45,10 @@
   graphviz dot syntax (#928).
 - Argument `ambiguous` can now take the value `"null"` to convert ambigous
   datetimes to null values (#937).
+### Bug fixes
+
+- The `join_nulls` and `validate` arguments of `<DataFrame>$join()` now work
+  correctly (#945).
 - Export the `Duration` datatype (#955).
 
 ## Polars R Package 0.15.1
