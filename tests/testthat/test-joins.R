@@ -33,7 +33,7 @@ test_that("lazyframe join examples", {
   # error on unknown how choice
   expect_error(
     df$join(other_df, on = "ham", how = "foobar"),
-    "should be one of"
+    "must be one of"
   )
 
   # error on invalid choice
@@ -182,13 +182,13 @@ test_that("argument 'validate' works", {
   # eager error on unknown validate choice
   expect_error(
     df2$join(df1, on = "x", validate = "foobar"),
-    "should be one of"
+    "must be one of"
   )
 
   # lazy error on unknown validate choice
   expect_error(
     df2$lazy()$join(df1$lazy(), on = "x", validate = "foobar")$collect(),
-    "should be one of"
+    "must be one of"
   )
 })
 
