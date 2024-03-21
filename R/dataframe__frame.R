@@ -1022,7 +1022,7 @@ DataFrame_join = function(
     Err_plain("`other` must be a DataFrame.") |>
       unwrap("in $join():")
   }
-  other <- other$lazy()
+  other = other$lazy()
   .args = as.list(environment())
   do.call(.pr$DataFrame$lazy(self)$join, .args)$collect()
 }
