@@ -319,7 +319,6 @@ pl_tail = function(..., n = 10) {
     unwrap("in pl$tail():")
 }
 
-# TODO: add pl_mean_horizontal
 #' Get the mean value.
 #'
 #' This function is syntactic sugar for `pl$col(...)$mean()`.
@@ -327,6 +326,7 @@ pl_tail = function(..., n = 10) {
 #' @inherit pl_head return
 #' @seealso
 #' - [`<Expr>$mean()`][Expr_mean]
+#' - [`pl$mean_horizontal()`][pl_mean_horizontal]
 #' @examples
 #' df = pl$DataFrame(
 #'   a = c(1, 8, 3),
@@ -947,6 +947,26 @@ pl_sum_horizontal = function(...) {
     unwrap("in $sum_horizontal():")
 }
 
+#' Compute the mean rowwise
+#'
+#' @param ... Columns to concatenate into a single string column. Accepts
+#' expressions. Strings are parsed as column names, other non-expression inputs
+#' are parsed as literals.
+#' @return Expr
+#'
+#' @examples
+#' df = pl$DataFrame(
+#'   a = c(1, 8, 3),
+#'   b = c(4, 5, NA_real_),
+#'   c = c("x", "y", "z")
+#' )
+#' df$with_columns(
+#'   pl$mean_horizontal("a", "b")$alias("mean")
+#' )
+pl_mean_horizontal = function(...) {
+  mean_horizontal(list2(...)) |>
+    unwrap("in $mean_horizontal():")
+}
 
 #' Create polars Duration from distinct time components
 #'

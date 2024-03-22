@@ -2422,6 +2422,26 @@ test_that("pl$sum_horizontal works", {
   )
 })
 
+test_that("pl$mean_horizontal works", {
+  df = pl$DataFrame(
+    a = c(2, 7, 3, -Inf),
+    b = c(4, 5, NA_real_, 1),
+    c = c("w", "x", "y", "z")
+  )
+  expect_identical(
+    df$select(
+      pl$mean_horizontal("a", "b")$alias("mean")
+    )$to_list(),
+    list(mean = c(3, 6, 3, -Inf))
+  )
+  expect_identical(
+    df$select(
+      pl$mean_horizontal("a", "b", 3)$alias("mean")
+    )$to_list(),
+    list(mean = c(3, 5, 3, -Inf))
+  )
+})
+
 test_that("pl$max_horizontal works", {
   df = pl$DataFrame(
     a = NA_real_,

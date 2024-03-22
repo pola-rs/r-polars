@@ -38,6 +38,15 @@ fn sum_horizontal(dotdotdot: Robj) -> RResult<RPolarsExpr> {
 }
 
 #[extendr]
+fn mean_horizontal(dotdotdot: Robj) -> RResult<RPolarsExpr> {
+    Ok(
+        polars::lazy::dsl::mean_horizontal(robj_to!(VecPLExprCol, dotdotdot)?)
+            .map_err(polars_to_rpolars_err)?
+            .into(),
+    )
+}
+
+#[extendr]
 fn all_horizontal(dotdotdot: Robj) -> RResult<RPolarsExpr> {
     Ok(
         polars::lazy::dsl::all_horizontal(robj_to!(VecPLExprCol, dotdotdot)?)
@@ -350,6 +359,7 @@ extendr_module! {
     fn min_horizontal;
     fn max_horizontal;
     fn sum_horizontal;
+    fn mean_horizontal;
 
     fn concat_list;
     fn concat_str;
