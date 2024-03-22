@@ -294,25 +294,6 @@ replace_private_with_pub_methods = function(env, class_pattern, keep = c(), remo
   invisible(NULL)
 }
 
-## TODO deprecate and handle on rust side only
-#' construct data type vector
-#' @description lifecycle: Deprecate, move to rust side
-#' @param l list of Expr or string
-#' @return extptr to rust vector of RPolarsDataType's
-#' @noRd
-construct_DataTypeVector = function(l) {
-  dtv = RPolarsDataTypeVector$new()
-  for (i in seq_along(l)) {
-    if (inherits(l[[i]], "RPolarsDataType")) {
-      dtv$push(names(l)[i], l[[i]])
-      next
-    }
-    stop(paste("element:", i, "is not a DateType"))
-  }
-  dtv
-}
-
-
 # completion symbols to method/property names.
 # Can be altered to "" at session time to support e.g. vscode autocomplete which will literally
 # evaluate these symbols and cause error and abort.

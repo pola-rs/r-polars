@@ -291,7 +291,7 @@ test_that("group_by_dynamic for LazyFrame: arg 'closed' works", {
     df$group_by_dynamic(index_column = "dt", closed = "foobar", every = "1h")$agg(
       pl$col("n")$mean()
     )$collect(),
-    "should be one of"
+    "must be one of"
   )
 })
 
@@ -323,7 +323,7 @@ test_that("group_by_dynamic for LazyFrame: arg 'label' works", {
     df$group_by_dynamic(index_column = "dt", label = "foobar", every = "1h")$agg(
       pl$col("n")$mean()
     )$collect(),
-    "should be one of"
+    "must be one of"
   )
 })
 
@@ -358,7 +358,7 @@ test_that("group_by_dynamic for LazyFrame: arg 'start_by' works", {
     df$group_by_dynamic(index_column = "dt", start_by = "foobar", every = "1h")$agg(
       pl$col("n")$mean()
     )$collect(),
-    "should be one of"
+    "must be one of"
   )
 })
 

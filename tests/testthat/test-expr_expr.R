@@ -1508,7 +1508,7 @@ test_that("is_between errors if wrong 'closed' arg", {
   df = pl$DataFrame(var = c(1, 2, 3, 4, 5))
   expect_error(
     df$select(pl$col("var")$is_between(1, 2, "foo")),
-    "should be one of"
+    "must be one of"
   )
 })
 
@@ -2167,7 +2167,6 @@ test_that("to_r", {
     NA, NA_integer_, NA_character_, NA_real_
   )
   for (i in l) expect_identical(pl$lit(i)$to_r(), i)
-  for (i in l) expect_identical(pl$expr_to_r(i), i)
 
   # NULL to NULL
   expect_identical(pl$lit(NULL)$to_r(), NULL)
@@ -2420,6 +2419,26 @@ test_that("pl$sum_horizontal works", {
       pl$sum_horizontal("a", "b", "c", 2)$alias("sum")
     )$to_list(),
     list(sum = c(6, 8, 2, -Inf))
+  )
+})
+
+test_that("pl$mean_horizontal works", {
+  df = pl$DataFrame(
+    a = c(2, 7, 3, -Inf),
+    b = c(4, 5, NA_real_, 1),
+    c = c("w", "x", "y", "z")
+  )
+  expect_identical(
+    df$select(
+      pl$mean_horizontal("a", "b")$alias("mean")
+    )$to_list(),
+    list(mean = c(3, 6, 3, -Inf))
+  )
+  expect_identical(
+    df$select(
+      pl$mean_horizontal("a", "b", 3)$alias("mean")
+    )$to_list(),
+    list(mean = c(3, 5, 3, -Inf))
   )
 })
 

@@ -5,7 +5,8 @@
 \title{Write to comma-separated values (CSV) file}
 \usage{
 DataFrame_write_csv(
-  path,
+  file,
+  ...,
   include_bom = FALSE,
   include_header = TRUE,
   separator = ",",
@@ -21,7 +22,9 @@ DataFrame_write_csv(
 )
 }
 \arguments{
-\item{path}{File path to which the result should be written.}
+\item{file}{File path to which the result should be written.}
+
+\item{...}{Ignored.}
 
 \item{include_bom}{Whether to include UTF-8 BOM (byte order mark) in the CSV
 output.}

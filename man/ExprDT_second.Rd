@@ -2,33 +2,37 @@
 % Please edit documentation in R/expr__datetime.R
 \name{ExprDT_second}
 \alias{ExprDT_second}
-\alias{(Expr)$dt$second}
-\title{Second}
+\title{Extract seconds from underlying Datetime representation}
 \usage{
 ExprDT_second(fractional = FALSE)
 }
 \arguments{
-\item{fractional}{Whether to include the fractional component of the second.}
+\item{fractional}{A logical.
+Whether to include the fractional component of the second.}
 }
 \value{
-Expr of second as UInt32
+\link[=Expr_class]{Expr} of data type Int8 or Float64
 }
 \description{
-Extract seconds from underlying Datetime representation.
 Applies to Datetime columns.
 Returns the integer second number from 0 to 59, or a floating
-point number from 0 < 60 if \code{fractional=True} that includes
+point number from 0 < 60 if \code{fractional=TRUE} that includes
 any milli/micro/nanosecond component.
 }
 \examples{
-pl$DataFrame(date = pl$date_range(
-  as.numeric(as.POSIXct("2001-1-1")) * 1E6 + 456789, # manually convert to us
-  as.numeric(as.POSIXct("2001-1-1 00:00:6")) * 1E6,
-  interval = "2s654321us",
-  time_unit = "us", # instruct polars input is us, and store as us
-))$with_columns(
-  pl$col("date")$dt$second()$alias("second"),
-  pl$col("date")$dt$second(fractional = TRUE)$alias("second_frac")
+df = pl$DataFrame(
+  datetime = as.POSIXct(
+    c(
+      "1978-01-01 01:01:01",
+      "2024-10-13 05:30:14.500",
+      "2065-01-01 10:20:30.06"
+    ),
+    "UTC"
+  )
+)
+
+df$with_columns(
+  second = pl$col("datetime")$dt$second(),
+  second_fractional = pl$col("datetime")$dt$second(fractional = TRUE)
 )
 }
-\keyword{ExprDT}

@@ -499,19 +499,20 @@ DataFrame_drop_nulls = function(subset = NULL) {
 }
 
 
-#' @title Drop duplicated rows
-#'
-#' @keywords DataFrame
+#' Drop duplicated rows
 #'
 #' @param subset A character vector with the names of the column(s) to use to
-#'  identify duplicates. If `NULL` (default), use all columns.
+#' identify duplicates. If `NULL` (default), use all columns.
+#' @param ... Not used.
 #' @param keep Which of the duplicate rows to keep:
-#' * "first": Keep first unique row.
-#' * "last": Keep last unique row.
-#' * "none": Don’t keep duplicate rows.
-#' @param maintain_order Keep the same order as the original data. Setting
-#'  this to `TRUE` makes it more expensive to compute and blocks the possibility
-#'  to run on the streaming engine.
+#' * `"any"` (default): Does not give any guarantee of which row is kept. This
+#'   allows more optimizations.
+#' * `"first"`: Keep first unique row.
+#' * `"last"`: Keep last unique row.
+#' * `"none"`: Don’t keep duplicate rows.
+#' @param maintain_order Keep the same order as the original data. Setting this
+#' to `TRUE` makes it more expensive to compute and blocks the possibility to
+#' run on the streaming engine.
 #'
 #' @return DataFrame
 #' @examples
@@ -524,16 +525,17 @@ DataFrame_drop_nulls = function(subset = NULL) {
 #' df$unique()$height
 #'
 #' # subset to define unique, keep only last or first
-#' df$unique(subset = "x", keep = c("last"))
-#' df$unique(subset = "x", keep = c("first"))
+#' df$unique(subset = "x", keep = "last")
+#' df$unique(subset = "x", keep = "first")
 #'
 #' # only keep unique rows
 #' df$unique(keep = "none")
 DataFrame_unique = function(
     subset = NULL,
-    keep = c("first", "last", "none"),
+    ...,
+    keep = "any",
     maintain_order = FALSE) {
-  self$lazy()$unique(subset, keep, maintain_order) |>
+  self$lazy()$unique(subset = subset, keep = keep, maintain_order = maintain_order) |>
     .pr$LazyFrame$collect() |>
     unwrap("in $unique():")
 }
@@ -1008,7 +1010,8 @@ DataFrame_to_list = function(unnest_structs = TRUE, ..., int64_conversion = pola
 DataFrame_join = function(
     other,
     on = NULL,
-    how = c("inner", "left", "outer", "semi", "anti", "cross", "outer_coalesce"),
+    how = c("inner", "left", "outer", "semi", "anti", "cross",
+            "outer_coalesce"),
     ...,
     left_on = NULL,
     right_on = NULL,
@@ -1021,11 +1024,9 @@ DataFrame_join = function(
     Err_plain("`other` must be a DataFrame.") |>
       unwrap("in $join():")
   }
-  .pr$DataFrame$lazy(self)$join(
-    other = other$lazy(), left_on = left_on, right_on = right_on,
-    on = on, how = how, suffix = suffix, allow_parallel = allow_parallel,
-    force_parallel = force_parallel
-  )$collect()
+  other = other$lazy()
+  .args = as.list(environment())
+  do.call(.pr$DataFrame$lazy(self)$join, .args)$collect()
 }
 
 #' Convert DataFrame to a Series of type "struct"
@@ -1838,7 +1839,8 @@ DataFrame_transpose = function(
 
 #' Write to comma-separated values (CSV) file
 #'
-#' @param path File path to which the result should be written.
+#' @param file File path to which the result should be written.
+#' @param ... Ignored.
 #' @param include_bom Whether to include UTF-8 BOM (byte order mark) in the CSV
 #' output.
 #' @param include_header Whether to include header in the CSV output.
@@ -1884,7 +1886,8 @@ DataFrame_transpose = function(
 #'
 #' pl$read_csv(destination)
 DataFrame_write_csv = function(
-    path,
+    file,
+    ...,
     include_bom = FALSE,
     include_header = TRUE,
     separator = ",",
@@ -1899,7 +1902,7 @@ DataFrame_write_csv = function(
     quote_style = "necessary") {
   .pr$DataFrame$write_csv(
     self,
-    path, include_bom, include_header, separator, line_terminator, quote,
+    file, include_bom, include_header, separator, line_terminator, quote,
     batch_size, datetime_format, date_format, time_format, float_precision,
     null_values, quote_style
   ) |>
@@ -1909,6 +1912,7 @@ DataFrame_write_csv = function(
 
 #' Write to parquet file
 #' @inheritParams LazyFrame_sink_parquet
+#' @inheritParams DataFrame_write_csv
 #'
 #' @rdname IO_write_parquet
 #'
@@ -1919,7 +1923,8 @@ DataFrame_write_csv = function(
 #' destination = tempfile(fileext = ".parquet")
 #' dat$write_parquet(destination)
 DataFrame_write_parquet = function(
-    path,
+    file,
+    ...,
     compression = "zstd",
     compression_level = 3,
     statistics = FALSE,
@@ -1927,7 +1932,7 @@ DataFrame_write_parquet = function(
     data_pagesize_limit = NULL) {
   .pr$DataFrame$write_parquet(
     self,
-    path,
+    file,
     compression,
     compression_level,
     statistics,
@@ -1940,7 +1945,7 @@ DataFrame_write_parquet = function(
 
 #' Write to JSON file
 #'
-#' @param file File path to which the result should be written.
+#' @inheritParams DataFrame_write_csv
 #' @param pretty Pretty serialize JSON.
 #' @param row_oriented Write to row-oriented JSON. This is slower, but more
 #' common.
@@ -1963,6 +1968,7 @@ DataFrame_write_parquet = function(
 #' }
 DataFrame_write_json = function(
     file,
+    ...,
     pretty = FALSE,
     row_oriented = FALSE) {
   .pr$DataFrame$write_json(self, file, pretty, row_oriented) |>

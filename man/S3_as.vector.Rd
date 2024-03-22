@@ -45,7 +45,7 @@ withr::with_envvar(
     )
   \}
 )
-#> <error: in to_r: ComputeError(ErrString("datetime '2020-03-08 02:00:00' is non-existent in time zone 'America/New_York'. Non-existent datetimes are not yet supported")) When calling: devtools::document()>
+#> <error: in to_r: ComputeError(ErrString("datetime '2020-03-08 02:00:00' is non-existent in time zone 'America/New_York'. You may be able to use `non_existent='null'` to return `null` in this case.")) When calling: devtools::document()>
 
 withr::with_envvar(
   new = c(TZ = "America/New_York"),

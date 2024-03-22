@@ -5,7 +5,8 @@
 \title{New LazyFrame from NDJSON}
 \usage{
 pl_scan_ndjson(
-  path,
+  source,
+  ...,
   infer_schema_length = 100,
   batch_size = NULL,
   n_rows = NULL,
@@ -18,9 +19,11 @@ pl_scan_ndjson(
 )
 }
 \arguments{
-\item{path}{Path to a file or URL. It is possible to provide multiple paths
+\item{source}{Path to a file or URL. It is possible to provide multiple paths
 provided that all NDJSON files have the same schema. It is not possible to
 provide several URLs.}
+
+\item{...}{Ignored.}
 
 \item{infer_schema_length}{Maximum number of rows to read to infer the column
 types. If set to 0, all columns will be read as UTF-8. If \code{NULL}, a full

@@ -13,7 +13,7 @@ test_that("str$strptime datetime", {
   expect_identical(
     pl$lit(txt_datetimes)$str$strptime(
       pl$Datetime(),
-      format = "%Y-%m-%d %H:%M:%S %z", strict = FALSE,
+      format = "%Y-%m-%d %H:%M:%S %z", strict = FALSE
     )$to_r(),
     as.POSIXct(txt_datetimes, format = "%Y-%m-%d %H:%M:%S %z", tz = "UTC")
   )
@@ -30,7 +30,7 @@ test_that("str$strptime date", {
 
   expect_grepl_error(
     pl$lit(txt_dates)$str$strptime(pl$Int32, format = "%Y-%m-%d")$to_series(),
-    "datatype should be of type \\{Date, Datetime, Time\\}"
+    "dtype should be of type \\{Date, Datetime, Time\\}"
   )
 
   expect_grepl_error(
@@ -41,7 +41,7 @@ test_that("str$strptime date", {
   expect_identical(
     pl$lit(txt_dates)$str$strptime(
       pl$Date,
-      format = "%Y-%m-%d ", exact = TRUE, strict = FALSE,
+      format = "%Y-%m-%d ", exact = TRUE, strict = FALSE
     )$to_r(),
     as.Date(c(NA, NA, "2022-1-1", NA))
   )
@@ -49,7 +49,7 @@ test_that("str$strptime date", {
   expect_identical(
     pl$lit(txt_dates)$str$strptime(
       pl$Date,
-      format = "%Y-%m-%d", exact = FALSE, strict = FALSE,
+      format = "%Y-%m-%d", exact = FALSE, strict = FALSE
     )$to_r(),
     as.Date(txt_dates)
   )
@@ -64,7 +64,7 @@ test_that("str$strptime time", {
 
   expect_grepl_error(
     pl$lit(txt_times)$str$strptime(pl$Int32, format = "%H:%M:%S %z")$to_series(),
-    "datatype should be of type \\{Date, Datetime, Time\\}"
+    "dtype should be of type \\{Date, Datetime, Time\\}"
   )
 
   expect_grepl_error(
@@ -75,7 +75,7 @@ test_that("str$strptime time", {
   expect_equal(
     pl$lit(txt_times)$str$strptime(
       pl$Time,
-      format = "%H:%M:%S %z", strict = FALSE,
+      format = "%H:%M:%S %z", strict = FALSE
     )$to_r(),
     pl$PTime(txt_times, tu = "ns")
   )
@@ -773,7 +773,7 @@ test_that("str$replace_many()", {
 
 make_datetime_format_cases = function() {
   tibble::tribble(
-    ~.test_name, ~time_str, ~datatype, ~type_expected,
+    ~.test_name, ~time_str, ~dtype, ~type_expected,
     "utc-example", "2020-01-01 01:00Z", pl$Datetime(), pl$Datetime("us", "UTC"),
     "iso8602_1", "2020-01-01T01:00:00", pl$Datetime(), pl$Datetime("us"),
     "iso8602_2", "2020-01-01T01:00", pl$Datetime(), pl$Datetime("us"),
@@ -790,7 +790,7 @@ make_datetime_format_cases = function() {
 patrick::with_parameters_test_that(
   "parse time without format specified",
   {
-    s = pl$Series(time_str)$str$strptime(datatype)
+    s = pl$Series(time_str)$str$strptime(dtype)
     expect_true(s$dtype == type_expected)
   },
   .cases = make_datetime_format_cases()

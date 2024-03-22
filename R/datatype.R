@@ -146,6 +146,7 @@ DataType_constructors = function() {
     Array = DataType_Array,
     Categorical = DataType_Categorical,
     Datetime = DataType_Datetime,
+    Duration = DataType_Duration,
     List = DataType_List,
     Struct = DataType_Struct
   )
@@ -183,6 +184,25 @@ DataType_Datetime = function(time_unit = "us", time_zone = NULL) {
       unwrap("in $Datetime():")
   }
   unwrap(.pr$DataType$new_datetime(time_unit, time_zone))
+}
+
+#' Data type representing a time duration
+#'
+#' @inheritParams DataType_Datetime
+#'
+#' @return Duration DataType
+#'
+#' @examples
+#' test = pl$DataFrame(
+#'   a = 1:2,
+#'   b = c("a", "b"),
+#'   c = pl$duration(weeks = c(1, 2), days = c(0, 2))
+#' )
+#'
+#' # select all columns of type "duration"
+#' test$select(pl$col(pl$Duration()))
+DataType_Duration = function(time_unit = "us") {
+  unwrap(.pr$DataType$new_duration(time_unit))
 }
 
 #' Create Struct DataType

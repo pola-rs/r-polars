@@ -414,28 +414,30 @@ ExprDT_minute = function() {
   .pr$Expr$dt_minute(self)
 }
 
-#' Second
-#' @description
-#' Extract seconds from underlying Datetime representation.
+#' Extract seconds from underlying Datetime representation
+#'
 #' Applies to Datetime columns.
 #' Returns the integer second number from 0 to 59, or a floating
-#' point number from 0 < 60 if ``fractional=True`` that includes
+#' point number from 0 < 60 if `fractional=TRUE` that includes
 #' any milli/micro/nanosecond component.
-#'
-#' @param fractional Whether to include the fractional component of the second.
-#'
-#' @return Expr of second as UInt32
-#' @keywords ExprDT
-#' @aliases (Expr)$dt$second
+#' @param fractional A logical.
+#' Whether to include the fractional component of the second.
+#' @return [Expr][Expr_class] of data type Int8 or Float64
 #' @examples
-#' pl$DataFrame(date = pl$date_range(
-#'   as.numeric(as.POSIXct("2001-1-1")) * 1E6 + 456789, # manually convert to us
-#'   as.numeric(as.POSIXct("2001-1-1 00:00:6")) * 1E6,
-#'   interval = "2s654321us",
-#'   time_unit = "us", # instruct polars input is us, and store as us
-#' ))$with_columns(
-#'   pl$col("date")$dt$second()$alias("second"),
-#'   pl$col("date")$dt$second(fractional = TRUE)$alias("second_frac")
+#' df = pl$DataFrame(
+#'   datetime = as.POSIXct(
+#'     c(
+#'       "1978-01-01 01:01:01",
+#'       "2024-10-13 05:30:14.500",
+#'       "2065-01-01 10:20:30.06"
+#'     ),
+#'     "UTC"
+#'   )
+#' )
+#'
+#' df$with_columns(
+#'   second = pl$col("datetime")$dt$second(),
+#'   second_fractional = pl$col("datetime")$dt$second(fractional = TRUE)
 #' )
 ExprDT_second = function(fractional = FALSE) {
   sec = .pr$Expr$dt_second(self)
@@ -446,81 +448,76 @@ ExprDT_second = function(fractional = FALSE) {
   }
 }
 
-#' Millisecond
-#' @description
-#' Extract milliseconds from underlying Datetime representation.
-#' Applies to Datetime columns.
+
+#' Extract milliseconds from underlying Datetime representation
 #'
-#' @return Expr of millisecond as Int64
-#' @keywords ExprDT
-#' @aliases (Expr)$dt$millisecond
+#' Applies to Datetime columns.
+#' @return [Expr][Expr_class] of data type Int32
 #' @examples
-#' pl$DataFrame(date = pl$date_range(
-#'   as.numeric(as.POSIXct("2001-1-1")) * 1E6 + 456789, # manually convert to us
-#'   as.numeric(as.POSIXct("2001-1-1 00:00:6")) * 1E6,
-#'   interval = "2s654321us",
-#'   time_unit = "us", # instruct polars input is us, and store as us
-#' ))$with_columns(
-#'   pl$col("date")$cast(pl$Int64)$alias("datetime int64"),
-#'   pl$col("date")$dt$millisecond()$alias("millisecond")
+#' df = pl$DataFrame(
+#'   datetime = as.POSIXct(
+#'     c(
+#'       "1978-01-01 01:01:01",
+#'       "2024-10-13 05:30:14.500",
+#'       "2065-01-01 10:20:30.06"
+#'     ),
+#'     "UTC"
+#'   )
+#' )
+#'
+#' df$with_columns(
+#'   millisecond = pl$col("datetime")$dt$millisecond()
 #' )
 ExprDT_millisecond = function() {
   .pr$Expr$dt_millisecond(self)
 }
 
-#' Microsecond
-#' @description
+
 #' Extract microseconds from underlying Datetime representation.
-#' Applies to Datetime columns.
-#'
-#' @return Expr of microsecond as Int64
-#' @keywords ExprDT
-#' @aliases (Expr)$dt$microsecond
+#' @inherit ExprDT_millisecond description return
 #' @examples
-#' pl$DataFrame(
-#'   date = pl$date_range(
-#'     as.numeric(as.POSIXct("2001-1-1")) * 1E6 + 456789, # manually convert to us
-#'     as.numeric(as.POSIXct("2001-1-1 00:00:6")) * 1E6,
-#'     interval = "2s654321us",
-#'     time_unit = "us" # instruct polars input is us, and store as us
+#' df = pl$DataFrame(
+#'   datetime = as.POSIXct(
+#'     c(
+#'       "1978-01-01 01:01:01",
+#'       "2024-10-13 05:30:14.500",
+#'       "2065-01-01 10:20:30.06"
+#'     ),
+#'     "UTC"
 #'   )
-#' )$with_columns(
-#'   pl$col("date")$cast(pl$Int64)$alias("datetime int64"),
-#'   pl$col("date")$dt$microsecond()$alias("microsecond")
+#' )
+#'
+#' df$with_columns(
+#'   microsecond = pl$col("datetime")$dt$microsecond()
 #' )
 ExprDT_microsecond = function() {
   .pr$Expr$dt_microsecond(self)
 }
 
 
-
-#' Nanosecond
-#' @description
-#' Extract seconds from underlying Datetime representation.
-#' Applies to Datetime columns.
-#' Returns the integer second number from 0 to 59, or a floating
-#' point number from 0 < 60 if ``fractional=True`` that includes
-#' any milli/micro/nanosecond component.
-#'
-#' @return Expr of second as Int64
-#' @keywords ExprDT
-#' @aliases (Expr)$dt$nanosecond
+#' Extract nanoseconds from underlying Datetime representation
+#' @inherit ExprDT_millisecond description return
 #' @examples
-#' pl$DataFrame(date = pl$date_range(
-#'   as.numeric(as.POSIXct("2001-1-1")) * 1E9 + 123456789, # manually convert to us
-#'   as.numeric(as.POSIXct("2001-1-1 00:00:6")) * 1E9,
-#'   interval = "1s987654321ns",
-#'   time_unit = "ns" # instruct polars input is us, and store as us
-#' ))$with_columns(
-#'   pl$col("date")$cast(pl$Int64)$alias("datetime int64"),
-#'   pl$col("date")$dt$nanosecond()$alias("nanosecond")
+#' df = pl$DataFrame(
+#'   datetime = as.POSIXct(
+#'     c(
+#'       "1978-01-01 01:01:01",
+#'       "2024-10-13 05:30:14.500",
+#'       "2065-01-01 10:20:30.06"
+#'     ),
+#'     "UTC"
+#'   )
+#' )
+#'
+#' df$with_columns(
+#'   nanosecond = pl$col("datetime")$dt$nanosecond()
 #' )
 ExprDT_nanosecond = function() {
   .pr$Expr$dt_nanosecond(self)
 }
 
 
-
+# TODO: update the argument name and examples
 #' Epoch
 #' @description
 #' Get the time passed since the Unix EPOCH in the give time unit.
@@ -532,10 +529,10 @@ ExprDT_nanosecond = function() {
 #' @keywords ExprDT
 #' @aliases (Expr)$dt$epoch
 #' @examples
-#' pl$date_range(as.Date("2022-1-1"))$dt$epoch("ns")$to_series()
-#' pl$date_range(as.Date("2022-1-1"))$dt$epoch("ms")$to_series()
-#' pl$date_range(as.Date("2022-1-1"))$dt$epoch("s")$to_series()
-#' pl$date_range(as.Date("2022-1-1"))$dt$epoch("d")$to_series()
+#' as_polars_series(as.Date("2022-1-1"))$dt$epoch("ns")
+#' as_polars_series(as.Date("2022-1-1"))$dt$epoch("ms")
+#' as_polars_series(as.Date("2022-1-1"))$dt$epoch("s")
+#' as_polars_series(as.Date("2022-1-1"))$dt$epoch("d")
 ExprDT_epoch = function(tu = c("us", "ns", "ms", "s", "d")) {
   tu = tu[1]
 
@@ -641,30 +638,65 @@ ExprDT_cast_time_unit = function(tu = c("ns", "us", "ms")) {
     unwrap()
 }
 
-#' With Time Zone
-#' @description Set time zone for a Series of type Datetime.
-#' Use to change time zone annotation, but keep the corresponding global timepoint.
+#' Convert to given time zone for an expression of type Datetime.
 #'
-#' @param tz String time zone from base::OlsonNames()
+#' If converting from a time-zone-naive datetime,
+#' then conversion will happen as if converting from UTC,
+#' regardless of your system’s time zone.
+#' @param time_zone String time zone from [base::OlsonNames()]
 #' @return Expr of i64
-#' @keywords ExprDT
-#' @details corresponds to in R manually modifying the tzone attribute of POSIXt objects
-#' @aliases (Expr)$dt$convert_time_zone
 #' @examples
 #' df = pl$DataFrame(
-#'   london_timezone = pl$date_range(
+#'   date = pl$date_range(
 #'     as.POSIXct("2020-03-01", tz = "UTC"),
-#'     as.POSIXct("2020-07-01", tz = "UTC"),
-#'     "1mo",
-#'     time_zone = "UTC"
-#'   )$dt$convert_time_zone("Europe/London")
+#'     as.POSIXct("2020-05-01", tz = "UTC"),
+#'     "1mo"
+#'   )
 #' )
 #'
 #' df$select(
+#'   "date",
+#'   London = pl$col("date")$dt$convert_time_zone("Europe/London")
+#' )
+ExprDT_convert_time_zone = function(time_zone) {
+  check_tz_to_result(time_zone) |>
+    and_then(\(valid_tz) .pr$Expr$dt_convert_time_zone(self, valid_tz)) |>
+    map_err(\(err) paste("in dt$convert_time_zone:", err)) |>
+    unwrap("in $convert_time_zone():")
+}
+
+#' Replace time zone
+#'
+#' Cast time zone for a Series of type Datetime. This is different from
+#' [`$convert_time_zone()`][ExprDT_convert_time_zone] as it will also modify the
+#' underlying timestamp. Use to correct a wrong time zone annotation. This will
+#' change the corresponding global timepoint.
+#'
+#' @param time_zone `NULL` or string time zone from [base::OlsonNames()]
+#' @param ... Ignored.
+#' @param ambiguous Determine how to deal with ambiguous datetimes:
+#' * `"raise"` (default): throw an error
+#' * `"earliest"`: use the earliest datetime
+#' * `"latest"`: use the latest datetime
+#' * `"null"`: return a null value
+#' @param non_existent Determine how to deal with non-existent datetimes:
+#' * `"raise"` (default): throw an error
+#' * `"null"`: return a null value
+#' @return Expr of i64
+#' @keywords ExprDT
+#' @aliases (Expr)$dt$replace_time_zone
+#' @examples
+#' df1 = pl$DataFrame(
+#'   london_timezone = pl$date_range(
+#'     as.POSIXct("2020-03-01", tz = "UTC"),
+#'     as.POSIXct("2020-07-01", tz = "UTC"),
+#'     "1mo"
+#'   )$dt$convert_time_zone("Europe/London")
+#' )
+#'
+#' df1$select(
 #'   "london_timezone",
-#'   London_to_Amsterdam = pl$col(
-#'     "london_timezone"
-#'   )$dt$replace_time_zone("Europe/Amsterdam")
+#'   London_to_Amsterdam = pl$col("london_timezone")$dt$replace_time_zone("Europe/Amsterdam")
 #' )
 #'
 #' # You can use `ambiguous` to deal with ambiguous datetimes:
@@ -674,77 +706,25 @@ ExprDT_cast_time_unit = function(tu = c("ns", "us", "ms")) {
 #'   "2018-10-28 02:30",
 #'   "2018-10-28 02:00"
 #' )
-#'
-#' df = pl$DataFrame(
-#'   ts = pl$Series(dates)$str$strptime(pl$Datetime("us"), "%F %H:%M"),
+#' df2 = pl$DataFrame(
+#'   ts = as_polars_series(dates)$str$strptime(pl$Datetime("us")),
 #'   ambiguous = c("earliest", "earliest", "latest", "latest")
 #' )
 #'
-#' df$with_columns(
+#' df2$with_columns(
 #'   ts_localized = pl$col("ts")$dt$replace_time_zone(
 #'     "Europe/Brussels",
 #'     ambiguous = pl$col("ambiguous")
 #'   )
 #' )
-#'
-#' # Polars Datetime type without a time zone will be converted to R
-#' # with respect to the session time zone. If ambiguous times are present
-#' # an error will be raised. It is recommended to add a time zone before
-#' # converting to R.
-#' s_without_tz = pl$Series(dates)$str$strptime(pl$Datetime("us"), "%F %H:%M")
-#' s_without_tz
-#'
-#' s_with_tz = s_without_tz$dt$replace_time_zone("UTC")
-#' s_with_tz
-#'
-#' as.vector(s_with_tz)
-ExprDT_convert_time_zone = function(tz) {
-  check_tz_to_result(tz) |>
-    map(\(valid_tz) .pr$Expr$dt_convert_time_zone(self, valid_tz)) |>
-    map_err(\(err) paste("in dt$convert_time_zone:", err)) |>
-    unwrap()
-}
-
-#' replace_time_zone
-#' @description
-#' Cast time zone for a Series of type Datetime.
-#' Different from ``convert_time_zone``, this will also modify the underlying timestamp.
-#' Use to correct a wrong time zone annotation. This will change the corresponding global timepoint.
-#'
-#'
-#' @param tz NULL or string time zone from [base::OlsonNames()]
-#' @param ambiguous Determine how to deal with ambiguous datetimes:
-#' * `"raise"` (default): raise
-#' * `"earliest"`: use the earliest datetime
-#' * `"latest"`: use the latest datetime
-#' @return Expr of i64
-#' @keywords ExprDT
-#' @aliases (Expr)$dt$replace_time_zone
-#' @examples
-#' df_1 = pl$DataFrame(x = as.POSIXct("2009-08-07 00:00:01", tz = "America/New_York"))
-#'
-#' df_1$with_columns(
-#'   pl$col("x")$dt$replace_time_zone("UTC")$alias("utc"),
-#'   pl$col("x")$dt$replace_time_zone("Europe/Amsterdam")$alias("cest")
-#' )
-#'
-#' # You can use ambiguous to deal with ambiguous datetimes
-#' df_2 = pl$DataFrame(
-#'   x = seq(
-#'     as.POSIXct("2018-10-28 01:30", tz = "UTC"),
-#'     as.POSIXct("2018-10-28 02:30", tz = "UTC"),
-#'     by = "30 min"
-#'   )
-#' )
-#'
-#' df_2$with_columns(
-#'   pl$col("x")$dt$replace_time_zone("Europe/Brussels", "earliest")$alias("earliest"),
-#'   pl$col("x")$dt$replace_time_zone("Europe/Brussels", "latest")$alias("latest")
-#' )
-ExprDT_replace_time_zone = function(tz, ambiguous = "raise") {
-  check_tz_to_result(tz) |>
+ExprDT_replace_time_zone = function(
+    time_zone,
+    ...,
+    ambiguous = "raise",
+    non_existent = "raise") {
+  check_tz_to_result(time_zone) |>
     and_then(\(valid_tz) {
-      .pr$Expr$dt_replace_time_zone(self, valid_tz, ambiguous)
+      .pr$Expr$dt_replace_time_zone(self, valid_tz, ambiguous, non_existent)
     }) |>
     unwrap("in $replace_time_zone():")
 }

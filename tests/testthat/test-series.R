@@ -468,13 +468,13 @@ test_that("Series list", {
 
   expected_list = list(list(c(1L, 2L, 3L, 4L, 5L, NA)), list(1:2, NA_integer_))
   expect_identical(series_list$to_r(), expected_list)
-  expect_identical(series_list$to_r_list(), expected_list)
+  expect_identical(series_list$to_list(), expected_list)
   expect_identical(series_list$to_vector(), unlist(expected_list))
 
   series_vec = pl$Series(1:5)
   expect_identical(series_vec$to_r(), 1:5)
   expect_identical(series_vec$to_vector(), 1:5)
-  expect_identical(series_vec$to_r_list(), as.list(1:5))
+  expect_identical(series_vec$to_list(), as.list(1:5))
 
 
   # build heterogenous sized 3-level nested list of chars
@@ -513,11 +513,6 @@ test_that("to_series", {
   expect_identical(pl$DataFrame(l)$to_series(0)$to_r(), l$a)
   expect_identical(pl$DataFrame(l)$to_series(1)$to_r(), l$b)
   expect_identical(pl$DataFrame(l)$to_series(2), NULL)
-})
-
-
-test_that("Backward compatibility: to_r_vector", {
-  expect_identical(pl$Series(1:3)$to_r_vector(), 1:3)
 })
 
 test_that("internal method get_fmt and to_fmt_char", {

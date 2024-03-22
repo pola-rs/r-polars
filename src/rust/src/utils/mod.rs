@@ -1099,6 +1099,10 @@ macro_rules! robj_to_inner {
     (RArrow_field, $a:ident) => {
         $crate::utils::robj_to_rarrow_field($a)
     };
+
+    (NonExistent, $a:ident) => {
+        $crate::rdatatype::robj_to_non_existent($a)
+    };
 }
 
 //convert any Robj to appropriate rust type with informative error Strings

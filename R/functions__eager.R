@@ -162,89 +162,148 @@ pl_concat = function(
 }
 
 
-#' New date range
+# TODO: link to the Date type docs
+#' Generate a date range
 #'
-#' @param start POSIXt or Date preferably with time_zone or double or integer
-#' @param end POSIXt or Date preferably with time_zone or double or integer. If
-#' `end` and `interval` are missing, then a single datetime is constructed.
-#' @param interval String, a Polars `duration` or R [difftime()]. Can be missing
-#' if `end` is missing also.
-#' @param closed One of `"both"` (default), `"left"`, `"none"` or `"right"`.
-#' @param time_unit String (`"ns"`, `"us"`, `"ms"`) or integer.
-#' @param time_zone String describing a timezone. If `NULL` (default), `"GMT` is
-#' used.
-#' @param explode If `TRUE` (default), all created ranges will be "unlisted"
-#' into a column. Otherwise, output will be a list of ranges.
+#' If both `start` and `end` are passed as the Date types (not Datetime),
+#' and the `interval` granularity is no finer than `"1d"`, the returned range is also of type Date.
+#' All other permutations return a Datetime.
+#' Note that in a future version of Polars, `pl$date_range()` will always
+#' return Date. Please use [`pl$datetime_range()`][pl_datetime_range] if you want Datetime instead.
+#' @param start Lower bound of the date range.
+#' Something that can be coerced to a Date or a [Datetime][DataType_Datetime] expression.
+#' See examples for details.
+#' @param end Upper bound of the date range.
+#' Something that can be coerced to a Date or a [Datetime][DataType_Datetime] expression.
+#' See examples for details.
+#' @param interval Interval of the range periods, specified as a [difftime] object or
+#' using the Polars duration string language. See the `Interval` section for details.
+#' @param ... Ignored.
+#' @param closed Define which sides of the range are closed (inclusive).
+#' One of the followings: `"both"` (default), `"left"`, `"right"`, `"none"`.
+#' @param time_unit Time unit of the resulting the [Datetime][DataType_Datetime] data type.
+#' One of `"ns"`, `"us"`, `"ms"` or `NULL`
+#' Only takes effect if the output column is of type [Datetime][DataType_Datetime]
+#' (Deprecated usage).
+#' @param time_zone Time zone of the resulting [Datetime][DataType_Datetime] data type.
+#' Only takes effect if the output column is of type [Datetime][DataType_Datetime]
+#' (Deprecated usage).
+#' @return An [Expr][Expr_class] of data type Date or [Datetime][DataType_Datetime]
+#' @section Interval:
+#' `interval` is created according to the following string language:
 #'
-#' @details
-#' If param `time_zone` is not defined the Series will have no time zone.
+#' - 1ns (1 nanosecond)
+#' - 1us (1 microsecond)
+#' - 1ms (1 millisecond)
+#' - 1s (1 second)
+#' - 1m (1 minute)
+#' - 1h (1 hour)
+#' - 1d (1 calendar day)
+#' - 1w (1 calendar week)
+#' - 1mo (1 calendar month)
+#' - 1q (1 calendar quarter)
+#' - 1y (1 calendar year)
 #'
-#' Note that R POSIXt without defined timezones (tzone/tz), so-called naive
-#' datetimes, are counter intuitive in R. It is recommended to always set the
-#' timezone of start and end. If not output will vary between local machine
-#' timezone, R and polars.
+#' Or combine them: `"3d12h4m25s"` # 3 days, 12 hours, 4 minutes, and 25 seconds
 #'
-#' In R/r-polars it is perfectly fine to mix timezones of params `time_zone`,
-#' `start` and `end`.
-#'
-#' Compared to the Python implementation, `pl$date_range()` doesn't have the
-#' argument `eager` and always returns an Expr. Use `$to_series()` to return a
-#' Series.
-#'
-#' @return A datetime
-#'
+#' By "calendar day", we mean the corresponding time on the next day
+#' (which may not be 24 hours, due to daylight savings).
+#' Similarly for "calendar week", "calendar month", "calendar quarter", and "calendar year".
 #' @examples
-#' # All in GMT, straight forward, no mental confusion
-#' s_gmt = pl$date_range(
-#'   as.POSIXct("2022-01-01", tz = "GMT"),
-#'   as.POSIXct("2022-01-02", tz = "GMT"),
-#'   interval = "6h", time_unit = "ms", time_zone = "GMT"
-#' )
-#' s_gmt
-#' s_gmt$to_r()
+#' # Using Polars duration string to specify the interval:
+#' pl$date_range(as.Date("2022-01-01"), as.Date("2022-03-01"), "1mo") |>
+#'   as_polars_series("date")
 #'
-#' # polars uses "GMT" if time_zone = NULL
-#' s_null = pl$date_range(
-#'   as.POSIXct("2022-01-01", tz = "GMT"),
-#'   as.POSIXct("2022-01-02", tz = "GMT"),
-#'   interval = "6h", time_unit = "ms", time_zone = NULL
-#' )
-#' # back to R POSIXct. R prints non tzone tagged POSIXct in local timezone
-#' s_null$to_r()
-#'
-#' # use of ISOdate
-#' t1 = ISOdate(2022, 1, 1, 0) # preset GMT
-#' t2 = ISOdate(2022, 1, 2, 0) # preset GMT
-#' pl$date_range(t1, t2, interval = "4h", time_unit = "ms", time_zone = "GMT")$to_r()
-#'
+#' # Using `difftime` object to specify the interval:
+#' pl$date_range(
+#'   as.Date("1985-01-01"),
+#'   as.Date("1985-01-10"),
+#'   as.difftime(2, units = "days")
+#' ) |>
+#'   as_polars_series("date")
 pl_date_range = function(
     start,
     end,
-    interval,
+    interval = "1d",
+    ...,
     closed = "both",
-    time_unit = "us",
-    time_zone = NULL,
-    explode = TRUE) {
-  if (missing(end)) {
-    end = start
-    interval = "1h"
-  }
-  start = cast_naive_value_to_datetime_expr(start)
-  end = cast_naive_value_to_datetime_expr(end)
+    time_unit = NULL,
+    time_zone = NULL) {
+  .warn_for_deprecated_date_range_use(start, end, interval, time_unit, time_zone)
 
-  r_date_range_lazy(start, end, interval, closed, time_unit, time_zone, explode) |>
-    unwrap("in pl$date_range()")
+  date_range(start, end, interval, closed, time_unit, time_zone) |>
+    unwrap("in pl$date_range():")
 }
 
 
-# date range support functions
-cast_naive_value_to_datetime_expr = function(x, time_unit = "ms", time_zone = NULL) {
-  if (!inherits(x, c("numeric", "integer", "integer64"))) {
-    x
-  } else {
-    pl$lit(x)$cast(pl$Datetime(time_unit, time_zone))
+.warn_for_deprecated_date_range_use = function(
+    start,
+    end,
+    interval,
+    time_unit = NULL,
+    time_zone = NULL) {
+  if (
+    inherits(start, "POSIXt") ||
+      inherits(end, "POSIXt") ||
+      !is.null(time_unit) ||
+      !is.null(time_zone) ||
+      (
+        is.character(interval) &&
+          length(interval) == 1L &&
+          (grepl("h", interval) || grepl("m", gsub("mo", "", interval)) || grepl("s", gsub("saturating", "", interval)))
+      )
+  ) {
+    warning(
+      "Creating Datetime ranges using `pl$date_range()` is deprecated.",
+      "Use `pl$datetime_range()` instead.",
+      call. = FALSE
+    )
   }
+
+  invisible(NULL)
 }
+
+
+#' Generate a datetime range
+#' @inheritParams pl_date_range
+#' @inheritSection pl_date_range Interval
+#' @param time_unit Time unit of the resulting the [Datetime][DataType_Datetime] data type.
+#' One of `"ns"`, `"us"`, `"ms"` or `NULL`
+#' @param time_zone Time zone of the resulting [Datetime][DataType_Datetime] data type.
+#' @return An [Expr][Expr_class] of data type [Datetime][DataType_Datetime]
+#' @examples
+#' # Using Polars duration string to specify the interval:
+#' pl$datetime_range(as.Date("2022-01-01"), as.Date("2022-03-01"), "1mo") |>
+#'   as_polars_series("datetime")
+#'
+#' # Using `difftime` object to specify the interval:
+#' pl$datetime_range(
+#'   as.Date("1985-01-01"),
+#'   as.Date("1985-01-10"),
+#'   as.difftime(1, units = "days") + as.difftime(12, units = "hours")
+#' ) |>
+#'   as_polars_series("datetime")
+#'
+#' # Specifying a time zone:
+#' pl$datetime_range(
+#'   as.Date("2022-01-01"),
+#'   as.Date("2022-03-01"),
+#'   "1mo",
+#'   time_zone = "America/New_York"
+#' ) |>
+#'   as_polars_series("datetime")
+pl_datetime_range = function(
+    start,
+    end,
+    interval = "1d",
+    ...,
+    closed = "both",
+    time_unit = NULL,
+    time_zone = NULL) {
+  datetime_range(start, end, interval, closed, time_unit, time_zone) |>
+    unwrap("in pl$datetime_range():")
+}
+
 
 # to pl_duration from other R types, add more if need
 as_pl_duration = function(x) {

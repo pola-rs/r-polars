@@ -38,6 +38,15 @@ fn sum_horizontal(dotdotdot: Robj) -> RResult<RPolarsExpr> {
 }
 
 #[extendr]
+fn mean_horizontal(dotdotdot: Robj) -> RResult<RPolarsExpr> {
+    Ok(
+        polars::lazy::dsl::mean_horizontal(robj_to!(VecPLExprCol, dotdotdot)?)
+            .map_err(polars_to_rpolars_err)?
+            .into(),
+    )
+}
+
+#[extendr]
 fn all_horizontal(dotdotdot: Robj) -> RResult<RPolarsExpr> {
     Ok(
         polars::lazy::dsl::all_horizontal(robj_to!(VecPLExprCol, dotdotdot)?)
@@ -79,28 +88,41 @@ fn concat_str(dotdotdot: Robj, separator: Robj, ignore_nulls: Robj) -> RResult<R
 }
 
 #[extendr]
-fn r_date_range_lazy(
+fn date_range(
     start: Robj,
     end: Robj,
-    every: Robj,
+    interval: Robj,
     closed: Robj,
     time_unit: Robj,
     time_zone: Robj,
-    explode: Robj,
 ) -> RResult<RPolarsExpr> {
-    let expr = polars::lazy::prelude::date_range(
+    Ok(RPolarsExpr(polars::lazy::prelude::date_range(
         robj_to!(PLExprCol, start)?,
         robj_to!(PLExprCol, end)?,
-        robj_to!(pl_duration, every)?,
+        robj_to!(pl_duration, interval)?,
         robj_to!(ClosedWindow, closed)?,
         robj_to!(Option, timeunit, time_unit)?,
         robj_to!(Option, String, time_zone)?,
-    );
-    if robj_to!(bool, explode)? {
-        Ok(RPolarsExpr(expr.explode()))
-    } else {
-        Ok(RPolarsExpr(expr))
-    }
+    )))
+}
+
+#[extendr]
+fn datetime_range(
+    start: Robj,
+    end: Robj,
+    interval: Robj,
+    closed: Robj,
+    time_unit: Robj,
+    time_zone: Robj,
+) -> RResult<RPolarsExpr> {
+    Ok(RPolarsExpr(polars::lazy::prelude::datetime_range(
+        robj_to!(PLExprCol, start)?,
+        robj_to!(PLExprCol, end)?,
+        robj_to!(pl_duration, interval)?,
+        robj_to!(ClosedWindow, closed)?,
+        robj_to!(Option, timeunit, time_unit)?,
+        robj_to!(Option, String, time_zone)?,
+    )))
 }
 
 #[extendr]
@@ -347,6 +369,7 @@ extendr_module! {
     fn min_horizontal;
     fn max_horizontal;
     fn sum_horizontal;
+    fn mean_horizontal;
 
     fn concat_list;
     fn concat_str;
@@ -354,8 +377,8 @@ extendr_module! {
     fn fold;
     fn reduce;
 
-    //fn r_date_range;
-    fn r_date_range_lazy;
+    fn date_range;
+    fn datetime_range;
     fn as_struct;
     fn struct_;
 

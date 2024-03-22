@@ -6,6 +6,7 @@
 \usage{
 LazyFrame_sink_ipc(
   path,
+  ...,
   compression = "zstd",
   maintain_order = TRUE,
   type_coercion = TRUE,
@@ -18,7 +19,9 @@ LazyFrame_sink_ipc(
 )
 }
 \arguments{
-\item{path}{String. The path to the Arrow IPC file}
+\item{path}{A character. File path to which the file should be written.}
+
+\item{...}{Ignored.}
 
 \item{compression}{\code{NULL} or string, the compression method. One of \code{NULL},
 "lz4" or "zstd". Choose "zstd" for good compression performance. Choose "lz4"

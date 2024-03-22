@@ -676,6 +676,14 @@ impl RPolarsLazyFrame {
             opt_state: self.0.get_current_optimizations(),
         })
     }
+
+    pub fn to_dot(&self, optimized: Robj) -> RResult<String> {
+        let result = self
+            .0
+            .to_dot(robj_to!(bool, optimized)?)
+            .map_err(polars_to_rpolars_err)?;
+        Ok(result)
+    }
 }
 
 #[derive(Clone)]

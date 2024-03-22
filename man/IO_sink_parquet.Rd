@@ -6,6 +6,7 @@
 \usage{
 LazyFrame_sink_parquet(
   path,
+  ...,
   compression = "zstd",
   compression_level = 3,
   statistics = FALSE,
@@ -22,7 +23,9 @@ LazyFrame_sink_parquet(
 )
 }
 \arguments{
-\item{path}{String. The path of the parquet file}
+\item{path}{A character. File path to which the file should be written.}
+
+\item{...}{Ignored.}
 
 \item{compression}{String. The compression method. One of:
 \itemize{

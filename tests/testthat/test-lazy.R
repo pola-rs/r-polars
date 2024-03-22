@@ -283,20 +283,27 @@ test_that("fill_nulls", {
 })
 
 test_that("unique", {
-  df = pl$DataFrame(
+  df = pl$LazyFrame(
     x = as.numeric(c(1, 1:5)),
     y = as.numeric(c(1, 1:5)),
     z = as.numeric(c(1, 1, 1:4))
   )
-  v = df$lazy()$unique()$collect()$height
-  w = df$lazy()$unique("z", "first")$collect()$height
-  x = df$lazy()$unique(c("x", "y", "z"), "first")$collect()$height
-  y = df$lazy()$unique(c("x"), "first")$collect()$height
-  z = df$lazy()$unique(c("y", "z"), "first")$collect()$height
-  expect_equal(w, 4)
-  expect_equal(x, 5)
-  expect_equal(y, 5)
-  expect_equal(z, 5)
+  expect_equal(
+    df$unique()$collect()$to_list()$x |> sort(),
+    c(1, 2, 3, 4, 5)
+  )
+  expect_equal(
+    df$unique("z", keep = "first")$collect()$to_list()$x |> sort(),
+    c(1, 3, 4, 5)
+  )
+  expect_equal(
+    df$unique("z", keep = "last")$collect()$to_list()$x |> sort(),
+    c(2, 3, 4, 5)
+  )
+  expect_equal(
+    df$unique("z", keep = "none")$collect()$to_list()$x |> sort(),
+    c(3, 4, 5)
+  )
 })
 
 test_that("unique, maintain_order", {

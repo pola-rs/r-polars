@@ -2,71 +2,32 @@
 % Please edit documentation in R/expr__datetime.R
 \name{ExprDT_convert_time_zone}
 \alias{ExprDT_convert_time_zone}
-\alias{(Expr)$dt$convert_time_zone}
-\title{With Time Zone}
+\title{Convert to given time zone for an expression of type Datetime.}
 \usage{
-ExprDT_convert_time_zone(tz)
+ExprDT_convert_time_zone(time_zone)
 }
 \arguments{
-\item{tz}{String time zone from base::OlsonNames()}
+\item{time_zone}{String time zone from \code{\link[base:timezones]{base::OlsonNames()}}}
 }
 \value{
 Expr of i64
 }
 \description{
-Set time zone for a Series of type Datetime.
-Use to change time zone annotation, but keep the corresponding global timepoint.
-}
-\details{
-corresponds to in R manually modifying the tzone attribute of POSIXt objects
+If converting from a time-zone-naive datetime,
+then conversion will happen as if converting from UTC,
+regardless of your system’s time zone.
 }
 \examples{
 df = pl$DataFrame(
-  london_timezone = pl$date_range(
+  date = pl$date_range(
     as.POSIXct("2020-03-01", tz = "UTC"),
-    as.POSIXct("2020-07-01", tz = "UTC"),
-    "1mo",
-    time_zone = "UTC"
-  )$dt$convert_time_zone("Europe/London")
-)
-
-df$select(
-  "london_timezone",
-  London_to_Amsterdam = pl$col(
-    "london_timezone"
-  )$dt$replace_time_zone("Europe/Amsterdam")
-)
-
-# You can use `ambiguous` to deal with ambiguous datetimes:
-dates = c(
-  "2018-10-28 01:30",
-  "2018-10-28 02:00",
-  "2018-10-28 02:30",
-  "2018-10-28 02:00"
-)
-
-df = pl$DataFrame(
-  ts = pl$Series(dates)$str$strptime(pl$Datetime("us"), "\%F \%H:\%M"),
-  ambiguous = c("earliest", "earliest", "latest", "latest")
-)
-
-df$with_columns(
-  ts_localized = pl$col("ts")$dt$replace_time_zone(
-    "Europe/Brussels",
-    ambiguous = pl$col("ambiguous")
+    as.POSIXct("2020-05-01", tz = "UTC"),
+    "1mo"
   )
 )
 
-# Polars Datetime type without a time zone will be converted to R
-# with respect to the session time zone. If ambiguous times are present
-# an error will be raised. It is recommended to add a time zone before
-# converting to R.
-s_without_tz = pl$Series(dates)$str$strptime(pl$Datetime("us"), "\%F \%H:\%M")
-s_without_tz
-
-s_with_tz = s_without_tz$dt$replace_time_zone("UTC")
-s_with_tz
-
-as.vector(s_with_tz)
+df$select(
+  "date",
+  London = pl$col("date")$dt$convert_time_zone("Europe/London")
+)
 }
-\keyword{ExprDT}

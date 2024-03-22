@@ -14,66 +14,66 @@ inputs:
 runs:
   using: composite
   steps:
-      - name: Update Rust
-        if: inputs.rust-nightly != 'true' && env.LIBR_POLARS_FEATURES != 'full_features'
-        shell: bash
-        run: |
-          rustup update
+    - name: Update Rust
+      if: inputs.rust-nightly != 'true' && env.LIBR_POLARS_FEATURES != 'full_features'
+      shell: bash
+      run: |
+        rustup update
 
-      - name: Install Task
-        uses: arduino/setup-task@v2
-        with:
-          version: 3.x
-          repo-token: ${{ inputs.token }}
+    - name: Install Task
+      uses: arduino/setup-task@v2
+      with:
+        version: 3.x
+        repo-token: ${{ inputs.token }}
 
-      - name: Install R
-        # Workaround for https://github.com/actions/runner-images/issues/9394
-        if: runner.os == 'macOS'
-        uses: r-lib/actions/setup-r@v2
-        with:
-          use-public-rspm: true
-          Ncpus: 2
+    - name: Install R
+      # Workaround for https://github.com/actions/runner-images/issues/9394
+      if: runner.os == 'macOS'
+      uses: r-lib/actions/setup-r@v2
+      with:
+        use-public-rspm: true
+        Ncpus: 2
 
-      - name: Set cmake build threads for macOS
-        # Workaround for build error on macos-14
-        # Same as https://github.com/pola-rs/polars/pull/14715
-        if: runner.os == 'macOS'
-        shell: bash
-        run: |
-          echo "CMAKE_BUILD_PARALLEL_LEVEL=10" >>"$GITHUB_ENV"
+    - name: Set cmake build threads for macOS
+      # Workaround for build error on macos-14
+      # Same as https://github.com/pola-rs/polars/pull/14715
+      if: runner.os == 'macOS'
+      shell: bash
+      run: |
+        echo "CMAKE_BUILD_PARALLEL_LEVEL=10" >>"$GITHUB_ENV"
 
-      - name: Set up Rust nightly toolchain
-        if: inputs.rust-nightly == 'true' || env.LIBR_POLARS_FEATURES == 'full_features'
-        shell: bash
-        run: |
-          task setup-rust-toolchain
+    - name: Set up Rust nightly toolchain
+      if: inputs.rust-nightly == 'true' || env.LIBR_POLARS_FEATURES == 'full_features'
+      shell: bash
+      run: |
+        task setup-rust-toolchain
 
-      - name: Set up Rust target
-        if: inputs.target != ''
-        shell: bash
-        run: |
-          rustup target add ${{ inputs.target }}
+    - name: Set up Rust target
+      if: inputs.target != ''
+      shell: bash
+      run: |
+        rustup target add ${{ inputs.target }}
 
-      - name: Set up Rust profile
-        if: env.LIBR_POLARS_PROFILE == ''
-        shell: bash
-        run: |
-          echo "LIBR_POLARS_PROFILE=release" >>"$GITHUB_ENV"
+    - name: Set up Rust profile
+      if: env.LIBR_POLARS_PROFILE == ''
+      shell: bash
+      run: |
+        echo "LIBR_POLARS_PROFILE=release" >>"$GITHUB_ENV"
 
-      - name: Find default target
-        id: find-target
-        if: inputs.target == ''
-        shell: bash
-        run: |
-          if [ "${{ runner.os }}" == "Windows" ]; then
-            TARGET=x86_64-pc-windows-gnu
-          else
-            TARGET=$(rustc -vV | grep host | cut -d' ' -f2)
-          fi
-          echo "target=${TARGET}" >>"$GITHUB_OUTPUT"
+    - name: Find default target
+      id: find-target
+      if: inputs.target == ''
+      shell: bash
+      run: |
+        if [ "${{ runner.os }}" == "Windows" ]; then
+          TARGET=x86_64-pc-windows-gnu
+        else
+          TARGET=$(rustc -vV | grep host | cut -d' ' -f2)
+        fi
+        echo "target=${TARGET}" >>"$GITHUB_OUTPUT"
 
-      - name: Cache Rust
-        uses: Swatinem/rust-cache@v2
-        with:
-          shared-key: build-${{ env.LIBR_POLARS_PROFILE }}-${{ inputs.target || steps.find-target.outputs.target }}
-          workspaces: "src/rust -> target"
+    - name: Cache Rust
+      uses: Swatinem/rust-cache@v2
+      with:
+        shared-key: build-${{ env.LIBR_POLARS_PROFILE }}-${{ inputs.target || steps.find-target.outputs.target }}
+        workspaces: "src/rust -> target"

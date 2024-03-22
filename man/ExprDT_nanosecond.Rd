@@ -2,30 +2,29 @@
 % Please edit documentation in R/expr__datetime.R
 \name{ExprDT_nanosecond}
 \alias{ExprDT_nanosecond}
-\alias{(Expr)$dt$nanosecond}
-\title{Nanosecond}
+\title{Extract nanoseconds from underlying Datetime representation}
 \usage{
 ExprDT_nanosecond()
 }
 \value{
-Expr of second as Int64
+\link[=Expr_class]{Expr} of data type Int32
 }
 \description{
-Extract seconds from underlying Datetime representation.
 Applies to Datetime columns.
-Returns the integer second number from 0 to 59, or a floating
-point number from 0 < 60 if \code{fractional=True} that includes
-any milli/micro/nanosecond component.
 }
 \examples{
-pl$DataFrame(date = pl$date_range(
-  as.numeric(as.POSIXct("2001-1-1")) * 1E9 + 123456789, # manually convert to us
-  as.numeric(as.POSIXct("2001-1-1 00:00:6")) * 1E9,
-  interval = "1s987654321ns",
-  time_unit = "ns" # instruct polars input is us, and store as us
-))$with_columns(
-  pl$col("date")$cast(pl$Int64)$alias("datetime int64"),
-  pl$col("date")$dt$nanosecond()$alias("nanosecond")
+df = pl$DataFrame(
+  datetime = as.POSIXct(
+    c(
+      "1978-01-01 01:01:01",
+      "2024-10-13 05:30:14.500",
+      "2065-01-01 10:20:30.06"
+    ),
+    "UTC"
+  )
+)
+
+df$with_columns(
+  nanosecond = pl$col("datetime")$dt$nanosecond()
 )
 }
-\keyword{ExprDT}

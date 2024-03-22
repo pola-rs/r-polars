@@ -30,6 +30,8 @@ max_horizontal <- function(dotdotdot) .Call(wrap__max_horizontal, dotdotdot)
 
 sum_horizontal <- function(dotdotdot) .Call(wrap__sum_horizontal, dotdotdot)
 
+mean_horizontal <- function(dotdotdot) .Call(wrap__mean_horizontal, dotdotdot)
+
 concat_list <- function(exprs) .Call(wrap__concat_list, exprs)
 
 concat_str <- function(dotdotdot, separator, ignore_nulls) .Call(wrap__concat_str, dotdotdot, separator, ignore_nulls)
@@ -38,7 +40,9 @@ fold <- function(acc, lambda, exprs) .Call(wrap__fold, acc, lambda, exprs)
 
 reduce <- function(lambda, exprs) .Call(wrap__reduce, lambda, exprs)
 
-r_date_range_lazy <- function(start, end, every, closed, time_unit, time_zone, explode) .Call(wrap__r_date_range_lazy, start, end, every, closed, time_unit, time_zone, explode)
+date_range <- function(start, end, interval, closed, time_unit, time_zone) .Call(wrap__date_range, start, end, interval, closed, time_unit, time_zone)
+
+datetime_range <- function(start, end, interval, closed, time_unit, time_zone) .Call(wrap__datetime_range, start, end, interval, closed, time_unit, time_zone)
 
 as_struct <- function(exprs) .Call(wrap__as_struct, exprs)
 
@@ -208,9 +212,9 @@ RPolarsDataFrame$sample_frac <- function(frac, with_replacement, shuffle, seed) 
 
 RPolarsDataFrame$transpose <- function(keep_names_as, new_col_names) .Call(wrap__RPolarsDataFrame__transpose, self, keep_names_as, new_col_names)
 
-RPolarsDataFrame$write_csv <- function(path, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style) .Call(wrap__RPolarsDataFrame__write_csv, self, path, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style)
+RPolarsDataFrame$write_csv <- function(file, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style) .Call(wrap__RPolarsDataFrame__write_csv, self, file, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style)
 
-RPolarsDataFrame$write_parquet <- function(path, compression_method, compression_level, statistics, row_group_size, data_pagesize_limit) .Call(wrap__RPolarsDataFrame__write_parquet, self, path, compression_method, compression_level, statistics, row_group_size, data_pagesize_limit)
+RPolarsDataFrame$write_parquet <- function(file, compression_method, compression_level, statistics, row_group_size, data_pagesize_limit) .Call(wrap__RPolarsDataFrame__write_parquet, self, file, compression_method, compression_level, statistics, row_group_size, data_pagesize_limit)
 
 RPolarsDataFrame$write_json <- function(file, pretty, row_oriented) .Call(wrap__RPolarsDataFrame__write_json, self, file, pretty, row_oriented)
 
@@ -258,7 +262,7 @@ RPolarsDataType$new_categorical <- function(ordering) .Call(wrap__RPolarsDataTyp
 
 RPolarsDataType$new_datetime <- function(tu, tz) .Call(wrap__RPolarsDataType__new_datetime, tu, tz)
 
-RPolarsDataType$new_duration <- function() .Call(wrap__RPolarsDataType__new_duration)
+RPolarsDataType$new_duration <- function(tu) .Call(wrap__RPolarsDataType__new_duration, tu)
 
 RPolarsDataType$new_list <- function(inner) .Call(wrap__RPolarsDataType__new_list, inner)
 
@@ -780,9 +784,9 @@ RPolarsExpr$dt_with_time_unit <- function(tu) .Call(wrap__RPolarsExpr__dt_with_t
 
 RPolarsExpr$dt_cast_time_unit <- function(tu) .Call(wrap__RPolarsExpr__dt_cast_time_unit, self, tu)
 
-RPolarsExpr$dt_convert_time_zone <- function(tz) .Call(wrap__RPolarsExpr__dt_convert_time_zone, self, tz)
+RPolarsExpr$dt_convert_time_zone <- function(time_zone) .Call(wrap__RPolarsExpr__dt_convert_time_zone, self, time_zone)
 
-RPolarsExpr$dt_replace_time_zone <- function(tz, ambiguous) .Call(wrap__RPolarsExpr__dt_replace_time_zone, self, tz, ambiguous)
+RPolarsExpr$dt_replace_time_zone <- function(time_zone, ambiguous, non_existent) .Call(wrap__RPolarsExpr__dt_replace_time_zone, self, time_zone, ambiguous, non_existent)
 
 RPolarsExpr$dt_total_days <- function() .Call(wrap__RPolarsExpr__dt_total_days, self)
 
@@ -1191,6 +1195,8 @@ RPolarsLazyFrame$with_context <- function(contexts) .Call(wrap__RPolarsLazyFrame
 RPolarsLazyFrame$rolling <- function(index_column, period, offset, closed, by, check_sorted) .Call(wrap__RPolarsLazyFrame__rolling, self, index_column, period, offset, closed, by, check_sorted)
 
 RPolarsLazyFrame$group_by_dynamic <- function(index_column, every, period, offset, label, include_boundaries, closed, by, start_by, check_sorted) .Call(wrap__RPolarsLazyFrame__group_by_dynamic, self, index_column, every, period, offset, label, include_boundaries, closed, by, start_by, check_sorted)
+
+RPolarsLazyFrame$to_dot <- function(optimized) .Call(wrap__RPolarsLazyFrame__to_dot, self, optimized)
 
 #' @export
 `$.RPolarsLazyFrame` <- function (self, name) { func <- RPolarsLazyFrame[[name]]; environment(func) <- environment(); func }

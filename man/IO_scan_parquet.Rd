@@ -6,7 +6,8 @@
 \title{Scan a parquet file}
 \usage{
 pl_scan_parquet(
-  file,
+  source,
+  ...,
   n_rows = NULL,
   cache = TRUE,
   parallel = c("Auto", "None", "Columns", "RowGroups"),
@@ -19,8 +20,10 @@ pl_scan_parquet(
 )
 }
 \arguments{
-\item{file}{Path to a file. You can use globbing with \code{*} to scan/read multiple
+\item{source}{Path to a file. You can use globbing with \code{*} to scan/read multiple
 files in the same directory (see examples).}
+
+\item{...}{Ignored.}
 
 \item{n_rows}{Maximum number of rows to read.}
 

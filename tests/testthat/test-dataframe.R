@@ -724,20 +724,22 @@ test_that("unique", {
     y = as.numeric(c(1, 1:5)),
     z = as.numeric(c(1, 1, 1:4))
   )
-  v = df$unique()$height
-  w = df$unique("z", "first")$height
-  x = df$unique(c("x", "y", "z"), "first")$height
-  y = df$unique(c("x"), "first")$height
-  z = df$unique(c("y", "z"), "first")$height
-  expect_equal(v, 5)
-  expect_equal(w, 4)
-  expect_equal(x, 5)
-  expect_equal(y, 5)
-  expect_equal(z, 5)
-
-  x = df$unique("z", "first")$to_data_frame()
-  y = df$unique("z", "last")$to_data_frame()
-  expect_false(all(x == y))
+  expect_equal(
+    df$unique()$to_list()$x |> sort(),
+    c(1, 2, 3, 4, 5)
+  )
+  expect_equal(
+    df$unique("z", keep = "first")$to_list()$x |> sort(),
+    c(1, 3, 4, 5)
+  )
+  expect_equal(
+    df$unique("z", keep = "last")$to_list()$x |> sort(),
+    c(2, 3, 4, 5)
+  )
+  expect_equal(
+    df$unique("z", keep = "none")$to_list()$x |> sort(),
+    c(3, 4, 5)
+  )
 })
 
 test_that("unique, maintain_order", {

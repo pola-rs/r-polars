@@ -5,7 +5,8 @@
 \title{Write to parquet file}
 \usage{
 DataFrame_write_parquet(
-  path,
+  file,
+  ...,
   compression = "zstd",
   compression_level = 3,
   statistics = FALSE,
@@ -14,7 +15,9 @@ DataFrame_write_parquet(
 )
 }
 \arguments{
-\item{path}{String. The path of the parquet file}
+\item{file}{File path to which the result should be written.}
+
+\item{...}{Ignored.}
 
 \item{compression}{String. The compression method. One of:
 \itemize{

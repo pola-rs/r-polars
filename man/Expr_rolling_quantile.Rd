@@ -12,7 +12,7 @@ Expr_rolling_quantile(
   min_periods = NULL,
   center = FALSE,
   by = NULL,
-  closed = c("left", "right", "both", "none"),
+  closed = NULL,
   warn_if_unsorted = TRUE
 )
 }
@@ -52,11 +52,12 @@ before computing a result. If \code{NULL}, it will be set equal to window size.}
 must set the column that will be used to determine the windows. This column
 must be of DataType Date or DateTime.}
 
-\item{closed}{String, one of \code{"left"}, \code{"right"}, \code{"both"}, \code{"none"}. Defines
-whether the temporal window interval is closed or not.}
+\item{closed}{Defines whether the temporal window interval is closed or not.
+Only applicable if \code{by} is not \code{NULL} (in which case, its possible values are
+\code{"left"}, \code{"right"} (default), \code{"both"}, \code{"none"}).}
 
-\item{warn_if_unsorted}{Warn if data is not known to be sorted by \code{by} column (if passed).
-Experimental.}
+\item{warn_if_unsorted}{Warn if data is not known to be sorted by \code{by} column
+(if passed).}
 }
 \value{
 Expr

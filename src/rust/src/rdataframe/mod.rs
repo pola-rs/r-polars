@@ -477,7 +477,7 @@ impl RPolarsDataFrame {
     #[allow(clippy::too_many_arguments)]
     pub fn write_csv(
         &self,
-        path: Robj,
+        file: Robj,
         include_bom: Robj,
         include_header: Robj,
         separator: Robj,
@@ -491,8 +491,8 @@ impl RPolarsDataFrame {
         null_value: Robj,
         quote_style: Robj,
     ) -> RResult<()> {
-        let path = robj_to!(str, path)?;
-        let f = std::fs::File::create(path)?;
+        let file = robj_to!(str, file)?;
+        let f = std::fs::File::create(file)?;
         pl::CsvWriter::new(f)
             .include_bom(robj_to!(bool, include_bom)?)
             .include_header(robj_to!(bool, include_header)?)
@@ -512,15 +512,15 @@ impl RPolarsDataFrame {
 
     pub fn write_parquet(
         &self,
-        path: Robj,
+        file: Robj,
         compression_method: Robj,
         compression_level: Robj,
         statistics: Robj,
         row_group_size: Robj,
         data_pagesize_limit: Robj,
     ) -> RResult<u64> {
-        let path = robj_to!(str, path)?;
-        let f = std::fs::File::create(path)?;
+        let file = robj_to!(str, file)?;
+        let f = std::fs::File::create(file)?;
         pl::ParquetWriter::new(f)
             .with_compression(new_parquet_compression(
                 compression_method,

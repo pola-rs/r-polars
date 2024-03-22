@@ -5,7 +5,8 @@
 \title{Import data in Apache Arrow IPC format}
 \usage{
 pl_scan_ipc(
-  path,
+  source,
+  ...,
   n_rows = NULL,
   cache = TRUE,
   rechunk = TRUE,
@@ -15,9 +16,11 @@ pl_scan_ipc(
 )
 }
 \arguments{
-\item{path}{Path to a file or URL. It is possible to provide multiple paths
+\item{source}{Path to a file or URL. It is possible to provide multiple paths
 provided that all CSV files have the same schema. It is not possible to
 provide several URLs.}
+
+\item{...}{Ignored.}
 
 \item{n_rows}{Maximum number of rows to read.}
 

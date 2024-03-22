@@ -3,8 +3,8 @@
 #' @description
 #' Read a file from path into a polars LazyFrame.
 #' @rdname IO_scan_ndjson
-#'
-#' @param path Path to a file or URL. It is possible to provide multiple paths
+#' @inheritParams pl_scan_csv
+#' @param source Path to a file or URL. It is possible to provide multiple paths
 #' provided that all NDJSON files have the same schema. It is not possible to
 #' provide several URLs.
 #' @param infer_schema_length Maximum number of rows to read to infer the column
@@ -33,7 +33,8 @@
 #'   pl$scan_ndjson(ndjson_filename)$collect()
 #' }
 pl_scan_ndjson = function(
-    path,
+    source,
+    ...,
     infer_schema_length = 100,
     batch_size = NULL,
     n_rows = NULL,
@@ -48,11 +49,12 @@ pl_scan_ndjson = function(
 
   # check if url link and predownload, wrap in result, robj_to! can unpack R-result
   args[["path"]] = lapply(
-    path, check_is_link,
+    source, check_is_link,
     reuse_downloaded = reuse_downloaded, raise_error = TRUE
   ) |>
     result()
 
+  args[["source"]] = NULL
   args[["reuse_downloaded"]] = NULL
 
   ## call low level function with args
@@ -79,7 +81,8 @@ pl_scan_ndjson = function(
 #'   pl$read_ndjson(ndjson_filename)
 #' }
 pl_read_ndjson = function(
-    path,
+    source,
+    ...,
     infer_schema_length = 100,
     batch_size = NULL,
     n_rows = NULL,
@@ -88,7 +91,9 @@ pl_read_ndjson = function(
     row_index_name = NULL,
     row_index_offset = 0,
     ignore_errors = FALSE) {
-  mc = match.call()
-  mc[[1]] = get("pl", envir = asNamespace("polars"))$scan_ndjson
-  eval.parent(mc)$collect()
+  .args = as.list(environment())
+  result({
+    do.call(pl$scan_ndjson, .args)$collect()
+  }) |>
+    unwrap("in pl$read_ndjson():")
 }

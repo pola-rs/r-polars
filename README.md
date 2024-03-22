@@ -38,6 +38,10 @@ Examples of common operations:
 - use the lazy execution engine for maximum performance and
   memory-efficient operations
 
+Note that this package is rapidly evolving and there are a number of
+breaking changes at each version. Be sure to check the
+[changelog](https://rpolars.github.io/NEWS.html) when updating `polars`.
+
 ## Install
 
 The recommended way to install this package is via R-universe:

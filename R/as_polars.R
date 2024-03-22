@@ -498,16 +498,16 @@ as_polars_series.clock_sys_time = function(x, name = NULL, ...) {
 #' @rdname as_polars_series
 #' @export
 as_polars_series.clock_zoned_time = function(x, name = NULL, ...) {
-  tz = clock::zoned_time_zone(x)
+  time_zone = clock::zoned_time_zone(x)
 
-  if (isTRUE(tz == "")) {
+  if (isTRUE(time_zone == "")) {
     # https://github.com/r-lib/clock/issues/366
-    tz = Sys.timezone()
+    time_zone = Sys.timezone()
   }
-  if (!isTRUE(tz %in% base::OlsonNames())) {
+  if (!isTRUE(time_zone %in% base::OlsonNames())) {
     sprintf(
       "The time zone '%s' is not supported in polars. See `base::OlsonNames()` for supported time zones.",
-      tz
+      time_zone
     ) |>
       Err_plain() |>
       unwrap("in as_polars_series(<clock_zoned_time>):")
@@ -517,5 +517,5 @@ as_polars_series.clock_zoned_time = function(x, name = NULL, ...) {
     clock::as_naive_time(x),
     name = name,
     ...
-  )$dt$replace_time_zone(tz)
+  )$dt$replace_time_zone(time_zone)
 }

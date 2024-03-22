@@ -9,21 +9,22 @@
 #' @return LazyFrame
 #' @rdname IO_scan_ipc
 pl_scan_ipc = function(
-    path,
+    source,
+    ...,
     n_rows = NULL,
     cache = TRUE,
     rechunk = TRUE,
     row_count_name = NULL,
     row_count_offset = 0L,
     memmap = TRUE) {
-  result_lf = import_arrow_ipc(
-    path,
+  import_arrow_ipc(
+    source,
     n_rows,
     cache,
     rechunk,
     row_count_name,
     row_count_offset,
     memmap
-  )
-  unwrap(result_lf, "in pl$scan_ipc:")
+  ) |>
+    unwrap("in pl$scan_ipc:")
 }
