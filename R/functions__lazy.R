@@ -319,7 +319,6 @@ pl_tail = function(..., n = 10) {
     unwrap("in pl$tail():")
 }
 
-# TODO: add pl_mean_horizontal
 #' Get the mean value.
 #'
 #' This function is syntactic sugar for `pl$col(...)$mean()`.
@@ -327,6 +326,7 @@ pl_tail = function(..., n = 10) {
 #' @inherit pl_head return
 #' @seealso
 #' - [`<Expr>$mean()`][Expr_mean]
+#' - [`pl$mean_horizontal()`][pl_mean_horizontal]
 #' @examples
 #' df = pl$DataFrame(
 #'   a = c(1, 8, 3),
