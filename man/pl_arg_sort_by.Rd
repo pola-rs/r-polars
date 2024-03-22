@@ -4,13 +4,11 @@
 \alias{pl_arg_sort_by}
 \title{Return the row indices that would sort the columns}
 \usage{
-pl_arg_sort_by(exprs, ..., descending = FALSE)
+pl_arg_sort_by(..., descending = FALSE)
 }
 \arguments{
-\item{exprs}{Column(s) to arg sort by. Can be Expr(s) or something coercible
+\item{...}{Column(s) to arg sort by. Can be Expr(s) or something coercible
 to Expr(s). Strings are parsed as column names.}
-
-\item{...}{Not used.}
 
 \item{descending}{Sort in descending order. When sorting by multiple columns,
 can be specified per column by passing a vector of booleans.}
@@ -30,6 +28,11 @@ df = pl$DataFrame(
 df$with_columns(
   arg_sort_a = pl$arg_sort_by("a"),
   arg_sort_ab = pl$arg_sort_by(c("a", "b"), descending = TRUE)
+)
+
+# we can also pass Expr
+df$with_columns(
+  arg_sort_a = pl$arg_sort_by(pl$col("a") * -1)
 )
 }
 \seealso{
