@@ -44,7 +44,7 @@ parse_as_polars_duration_string = function(x, ...) {
 #' @export
 parse_as_polars_duration_string.character = function(x, ...) {
   if (length(x) != 1L || is.na(x)) {
-    Err_plain("`x` should be a single non-NA character.") |>
+    Err_plain("The argument parsed as a Polars duration must be a single non-NA character.") |>
       unwrap("in `parse_as_polars_duration_string(<character>)`")
   }
 
@@ -56,7 +56,7 @@ parse_as_polars_duration_string.character = function(x, ...) {
 #' @export
 parse_as_polars_duration_string.difftime = function(x, ...) {
   if (length(x) != 1L || is.na(x)) {
-    Err_plain("`x` should be a single non-NA difftime.") |>
+    Err_plain("The argument parsed as a Polars duration must be a single non-NA difftime.") |>
       unwrap("in `parse_as_polars_duration_string(<difftime>)`")
   }
 
