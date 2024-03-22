@@ -949,19 +949,22 @@ pl_sum_horizontal = function(...) {
 
 #' Compute the mean rowwise
 #'
-#' @param ... Columns to concatenate into a single string column. Accepts
-#' expressions. Strings are parsed as column names, other non-expression inputs
-#' are parsed as literals.
+#' @inheritParams pl_sum_horizontal
+#'
 #' @return Expr
 #'
 #' @examples
 #' df = pl$DataFrame(
-#'   a = c(1, 8, 3),
-#'   b = c(4, 5, NA_real_),
-#'   c = c("x", "y", "z")
+#'   a = c(1, 8, 3, 6, 7),
+#'   b = c(4, 5, NA_real_, Inf, NaN)
 #' )
+#'
 #' df$with_columns(
 #'   pl$mean_horizontal("a", "b")$alias("mean")
+#' )
+#'
+#' df$with_columns(
+#'   pl$mean_horizontal("a", "b", 5)$alias("mean")
 #' )
 pl_mean_horizontal = function(...) {
   mean_horizontal(list2(...)) |>
