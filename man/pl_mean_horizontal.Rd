@@ -24,10 +24,7 @@ df = pl$DataFrame(
 )
 
 df$with_columns(
-  pl$mean_horizontal("a", "b")$alias("mean")
-)
-
-df$with_columns(
-  pl$mean_horizontal("a", "b", 5)$alias("mean")
+  pl$mean_horizontal("a", "b")$alias("mean"),
+  pl$mean_horizontal("a", "b", 5)$alias("mean_with_lit")
 )
 }

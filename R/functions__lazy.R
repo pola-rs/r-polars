@@ -960,11 +960,8 @@ pl_sum_horizontal = function(...) {
 #' )
 #'
 #' df$with_columns(
-#'   pl$mean_horizontal("a", "b")$alias("mean")
-#' )
-#'
-#' df$with_columns(
-#'   pl$mean_horizontal("a", "b", 5)$alias("mean")
+#'   pl$mean_horizontal("a", "b")$alias("mean"),
+#'   pl$mean_horizontal("a", "b", 5)$alias("mean_with_lit")
 #' )
 pl_mean_horizontal = function(...) {
   mean_horizontal(list2(...)) |>
