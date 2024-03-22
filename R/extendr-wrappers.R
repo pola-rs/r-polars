@@ -28,6 +28,8 @@ max_horizontal <- function(dotdotdot) .Call(wrap__max_horizontal, dotdotdot)
 
 sum_horizontal <- function(dotdotdot) .Call(wrap__sum_horizontal, dotdotdot)
 
+mean_horizontal <- function(dotdotdot) .Call(wrap__mean_horizontal, dotdotdot)
+
 concat_list <- function(exprs) .Call(wrap__concat_list, exprs)
 
 concat_str <- function(dotdotdot, separator, ignore_nulls) .Call(wrap__concat_str, dotdotdot, separator, ignore_nulls)
