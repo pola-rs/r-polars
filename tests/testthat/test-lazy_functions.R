@@ -420,3 +420,49 @@ test_that("pl$arg_where() works", {
     list(a = numeric(0))
   )
 })
+
+test_that("pl$arg_sort_by() works", {
+  df = pl$DataFrame(
+    a = c(0, 1, 1, 0),
+    b = c(3, 2, 3, 2)
+  )
+
+  expect_identical(
+    df$select(
+      arg_sort_a = pl$arg_sort_by("a"),
+      arg_sort_ab = pl$arg_sort_by(c("a", "b"))
+    )$to_list(),
+    list(
+      arg_sort_a = c(0, 3, 1, 2),
+      arg_sort_ab = c(3, 0, 1, 2)
+    )
+  )
+
+  # descending is unique value
+  expect_identical(
+    df$select(
+      arg_sort_ab = pl$arg_sort_by(c("a", "b"), descending = TRUE)
+    )$to_list(),
+    list(
+      arg_sort_ab = c(2, 1, 0, 3)
+    )
+  )
+
+  # descending vector
+  expect_identical(
+    df$select(
+      arg_sort_ab = pl$arg_sort_by(c("a", "b"), descending = c(TRUE, FALSE))
+    )$to_list(),
+    list(
+      arg_sort_ab = c(1, 2, 3, 0)
+    )
+  )
+
+  # we can also pass Expr
+  expect_identical(
+    df$select(
+      arg_sort_a = pl$arg_sort_by(pl$col("a") * -1)
+    )$to_list(),
+    list(arg_sort_a = c(1, 2, 0, 3))
+  )
+})
