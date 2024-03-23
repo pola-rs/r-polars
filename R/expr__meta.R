@@ -84,19 +84,47 @@ ExprMeta_root_names = function() {
   .pr$Expr$meta_roots(self)
 }
 
-#' Get the output column names
+
+#' Get the column name that this expression would produce
 #'
-#' Get the column name that this expression would produce. It might not always
-#' be possible to determine the output name as it might depend on the schema of
-#' the context. In that case this will raise an error. Use
-#' [`$meta$root_names()`][ExprMeta_root_names] to get the name of input column.
+#' It may not always be possible to determine the output name as
+#' that can depend on the schema of the context; in that case this will
+#' raise an error if `raise_if_undetermined` is `TRUE` (the default), or
+#' return `NA` otherwise.
 #'
+#' @param ... Ignored.
+#' @param raise_if_undetermined If `TRUE` (default), raise an error if the
+#' output name cannot be determined. Otherwise, return `NA`.
 #' @return A character vector
 #' @examples
-#' e = (pl$col("alice") + pl$col("eve"))$alias("bob")
+#' e = pl$col("foo") * pl$col("bar")
 #' e$meta$output_name()
-ExprMeta_output_name = function() {
-  .pr$Expr$meta_output_name(self) |> unwrap("in $meta$output_name")
+#'
+#' e_filter = pl$col("foo")$filter(pl$col("bar") == 13)
+#' e_filter$meta$output_name()
+#'
+#' e_sum_over = pl$sum("foo")$over("groups")
+#' e_sum_over$meta$output_name()
+#'
+#' e_sum_slice = pl$sum("foo")$slice(pl$len() - 10, pl$col("bar"))
+#' e_sum_slice$meta$output_name()
+#'
+#' pl$len()$meta$output_name()
+#'
+#' pl$col("*")$meta$output_name(raise_if_undetermined = FALSE)
+ExprMeta_output_name = function(..., raise_if_undetermined = TRUE) {
+  uw = \(res, raise_if_undetermined) {
+    if (isTRUE(raise_if_undetermined)) {
+      res |>
+        unwrap("in $meta$output_name():")
+    } else {
+      res |>
+        unwrap_or(NA_character_)
+    }
+  }
+
+  .pr$Expr$meta_output_name(self) |>
+    uw(raise_if_undetermined)
 }
 
 #' Undo any renaming operation
