@@ -64,6 +64,7 @@
 - New function `pl$mean_horizontal()` (#959).
 - New argument `raise_if_undetermined` of `<Expr>$meta$output_name()` (#961).
 - New function `pl$arg_sort_by()` (#929).
+- New functions `pl$date_ranges()` and `pl$datetime_ranges()` (#962).
 
 ### Bug fixes
 
