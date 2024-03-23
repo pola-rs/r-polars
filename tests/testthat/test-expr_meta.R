@@ -55,6 +55,7 @@ test_that("meta$output_name", {
     pl$all()$meta$output_name(),
     c("\\$meta\\$output_name", "Cannot determine.*output column")
   )
+  expect_identical(pl$all()$meta$output_name(raise_if_undetermined = FALSE), NA_character_)
 })
 
 test_that("meta$undo_aliases", {
