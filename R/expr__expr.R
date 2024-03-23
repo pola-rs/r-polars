@@ -1483,6 +1483,8 @@ Expr_bottom_k = function(k) {
 #' Get the index values that would sort this column.
 #'
 #' @inherit Expr_sort params return
+#' @seealso [pl$arg_sort_by()][pl_arg_sort_by()] to find the row indices that would
+#' sort multiple columns.
 #' @examples
 #' pl$DataFrame(
 #'   a = c(6, 1, 0, NA, Inf, NaN)

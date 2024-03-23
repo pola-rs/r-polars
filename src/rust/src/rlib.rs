@@ -347,11 +347,21 @@ fn arg_where(condition: Robj) -> RResult<RPolarsExpr> {
     Ok(pl::arg_where(robj_to!(PLExpr, condition)?).into())
 }
 
+#[extendr]
+fn arg_sort_by(exprs: Robj, descending: Robj) -> RResult<RPolarsExpr> {
+    Ok(pl::arg_sort_by(
+        robj_to!(VecPLExprCol, exprs)?,
+        &robj_to!(Vec, bool, descending)?,
+    )
+    .into())
+}
+
 extendr_module! {
     mod rlib;
 
     fn all_horizontal;
     fn any_horizontal;
+    fn arg_sort_by;
     fn arg_where;
     fn coalesce_exprs;
     fn datetime;
