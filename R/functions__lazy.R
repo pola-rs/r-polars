@@ -1261,6 +1261,14 @@ pl_arg_where = function(condition) {
 #'   arg_sort_a = pl$arg_sort_by(pl$col("a") * -1)
 #' )
 pl_arg_sort_by = function(..., descending = FALSE) {
-  arg_sort_by(list2(...), descending) |>
+  dots = list2(...)
+
+  # The first argument must be a column, not columns
+  if (is.character(dots[[1]]) && length(dots[[1]]) > 1) {
+    dots[[1]] = as.list(dots[[1]])
+    dots = unlist(dots, recursive = FALSE)
+  }
+
+  arg_sort_by(dots, descending) |>
     unwrap("in pl$arg_sort_by():")
 }
