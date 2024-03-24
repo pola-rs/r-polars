@@ -80,7 +80,10 @@ df$with_columns(
 
 # provide a custom "end" value
 df$with_columns(
-  dt_range_lit = pl$datetime_ranges("start", pl$lit(as.POSIXct("2022-01-01 11:00")), interval = "1h")
+  dt_range_lit = pl$datetime_ranges(
+    "start", pl$lit(as.POSIXct("2022-01-01 11:00")),
+    interval = "1h"
+  )
 )
 }
 \seealso{
