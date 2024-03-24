@@ -418,7 +418,9 @@ difftime_to_pl_duration = function(dft) {
 #'
 #' # provide a custom "end" value
 #' df$with_columns(
-#'   dt_range_lit = pl$datetime_ranges("start", pl$lit(as.POSIXct("2022-01-01 11:00")), interval = "1h")
+#'   dt_range_lit = pl$datetime_ranges(
+#'     "start", pl$lit(as.POSIXct("2022-01-01 11:00")), interval = "1h"
+#'   )
 #' )
 pl_datetime_ranges = function(
     start,
@@ -429,7 +431,7 @@ pl_datetime_ranges = function(
     time_unit = NULL,
     time_zone = NULL) {
   datetime_ranges(start, end, interval, closed, time_unit, time_zone) |>
-    unwrap("in pl$datetimes_range():")
+    unwrap("in pl$datetimes_ranges():")
 }
 
 
