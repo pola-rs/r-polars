@@ -466,3 +466,83 @@ test_that("pl$arg_sort_by() works", {
     list(arg_sort_a = c(1, 2, 0, 3))
   )
 })
+
+test_that("pl$date_ranges() works", {
+  df = pl$DataFrame(
+    start = as.Date(c("2022-01-01", "2022-01-02", NA)),
+    end = as.Date("2022-01-03")
+  )
+
+  expect_identical(
+    df$select(
+      date_range = pl$date_ranges("start", "end"),
+      date_range_cr = pl$date_ranges("start", "end", closed = "right")
+    )$to_list(),
+    list(
+      date_range = list(
+        as.Date(c("2022-01-01", "2022-01-02", "2022-01-03")),
+        as.Date(c("2022-01-02", "2022-01-03")),
+        NULL
+      ),
+      date_range_cr = list(
+        as.Date(c("2022-01-02", "2022-01-03")),
+        as.Date(c("2022-01-03")),
+        NULL
+      )
+    )
+  )
+
+  # works with literal
+  expect_identical(
+    df$select(
+      date_range = pl$date_ranges("start", pl$lit(as.Date("2022-01-02")))
+    )$to_list(),
+    list(
+      date_range = list(
+        as.Date(c("2022-01-01", "2022-01-02")),
+        as.Date(c("2022-01-02")),
+        NULL
+      )
+    )
+  )
+})
+
+test_that("pl$datetime_ranges() works", {
+  df = pl$DataFrame(
+    start = as.POSIXct(c("2022-01-01 10:00", "2022-01-01 11:00", NA)),
+    end = as.POSIXct("2022-01-01 12:00")
+  )
+
+  expect_identical(
+    df$select(
+      dt_range = pl$datetime_ranges("start", "end", interval = "1h"),
+      dt_range_cr = pl$datetime_ranges("start", "end", closed = "right", interval = "1h")
+    )$to_list(),
+    list(
+      dt_range = list(
+        as.POSIXct(c("2022-01-01 10:00", "2022-01-01 11:00", "2022-01-01 12:00")),
+        as.POSIXct(c("2022-01-01 11:00", "2022-01-01 12:00")),
+        NULL
+      ),
+      dt_range_cr = list(
+        as.POSIXct(c("2022-01-01 11:00", "2022-01-01 12:00")),
+        as.POSIXct(c("2022-01-01 12:00")),
+        NULL
+      )
+    )
+  )
+
+  # works with literal
+  expect_identical(
+    df$select(
+      dt_range_lit = pl$datetime_ranges("start", pl$lit(as.POSIXct("2022-01-01 11:00")), interval = "1h")
+    )$to_list(),
+    list(
+      dt_range_lit = list(
+        as.POSIXct(c("2022-01-01 10:00", "2022-01-01 11:00")),
+        as.POSIXct(c("2022-01-01 11:00")),
+        NULL
+      )
+    )
+  )
+})

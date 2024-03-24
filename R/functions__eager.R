@@ -165,30 +165,30 @@ pl_concat = function(
 # TODO: link to the Date type docs
 #' Generate a date range
 #'
-#' If both `start` and `end` are passed as the Date types (not Datetime),
-#' and the `interval` granularity is no finer than `"1d"`, the returned range is also of type Date.
-#' All other permutations return a Datetime.
-#' Note that in a future version of Polars, `pl$date_range()` will always
-#' return Date. Please use [`pl$datetime_range()`][pl_datetime_range] if you want Datetime instead.
-#' @param start Lower bound of the date range.
-#' Something that can be coerced to a Date or a [Datetime][DataType_Datetime] expression.
-#' See examples for details.
-#' @param end Upper bound of the date range.
-#' Something that can be coerced to a Date or a [Datetime][DataType_Datetime] expression.
-#' See examples for details.
-#' @param interval Interval of the range periods, specified as a [difftime] object or
-#' using the Polars duration string language. See the `Interval` section for details.
+#' If both `start` and `end` are passed as the Date types (not Datetime), and
+#' the `interval` granularity is no finer than `"1d"`, the returned range is
+#' also of type Date. All other permutations return a Datetime. Note that in a
+#' future version of Polars, `pl$date_range()` will always return Date. Please
+#' use [`pl$datetime_range()`][pl_datetime_range] if you want Datetime instead.
+#'
+#' @param start Lower bound of the date range. Something that can be coerced to
+#' a Date or a [Datetime][DataType_Datetime] expression. See examples for details.
+#' @param end Upper bound of the date range. Something that can be coerced to a
+#' Date or a [Datetime][DataType_Datetime] expression. See examples for details.
+#' @param interval Interval of the range periods, specified as a [difftime] object
+#' or using the Polars duration string language. See the `Interval` section for
+#' details.
 #' @param ... Ignored.
 #' @param closed Define which sides of the range are closed (inclusive).
 #' One of the followings: `"both"` (default), `"left"`, `"right"`, `"none"`.
-#' @param time_unit Time unit of the resulting the [Datetime][DataType_Datetime] data type.
-#' One of `"ns"`, `"us"`, `"ms"` or `NULL`
-#' Only takes effect if the output column is of type [Datetime][DataType_Datetime]
-#' (Deprecated usage).
-#' @param time_zone Time zone of the resulting [Datetime][DataType_Datetime] data type.
-#' Only takes effect if the output column is of type [Datetime][DataType_Datetime]
-#' (Deprecated usage).
+#' @param time_unit Time unit of the resulting the [Datetime][DataType_Datetime]
+#' data type. One of `"ns"`, `"us"`, `"ms"` or `NULL`. Only takes effect if the
+#' output column is of type [Datetime][DataType_Datetime] (deprecated usage).
+#' @param time_zone Time zone of the resulting [Datetime][DataType_Datetime] data
+#' type. Only takes effect if the output column is of type [Datetime][DataType_Datetime]
+#' (deprecated usage).
 #' @return An [Expr][Expr_class] of data type Date or [Datetime][DataType_Datetime]
+#'
 #' @section Interval:
 #' `interval` is created according to the following string language:
 #'
@@ -208,7 +208,12 @@ pl_concat = function(
 #'
 #' By "calendar day", we mean the corresponding time on the next day
 #' (which may not be 24 hours, due to daylight savings).
-#' Similarly for "calendar week", "calendar month", "calendar quarter", and "calendar year".
+#' Similarly for "calendar week", "calendar month", "calendar quarter", and
+#' "calendar year".
+#'
+#' @seealso [`pl$date_ranges()`][pl_date_ranges] to create a simple Series of data
+#' type list(Date) based on column values.
+#'
 #' @examples
 #' # Using Polars duration string to specify the interval:
 #' pl$date_range(as.Date("2022-01-01"), as.Date("2022-03-01"), "1mo") |>
@@ -264,13 +269,70 @@ pl_date_range = function(
 }
 
 
-#' Generate a datetime range
+
+# TODO: link to the Date type docs
+#' Generate a list containing a date range
+#'
+#' If both `start` and `end` are passed as the Date types (not Datetime), and
+#' the `interval` granularity is no finer than `"1d"`, the returned range is
+#' also of type Date. All other permutations return a Datetime. Note that in a
+#' future version of Polars, `pl$date_ranges()` will always return Date. Please
+#' use [`pl$datetime_ranges()`][pl_datetime_ranges] if you want Datetime instead.
+#'
 #' @inheritParams pl_date_range
 #' @inheritSection pl_date_range Interval
-#' @param time_unit Time unit of the resulting the [Datetime][DataType_Datetime] data type.
-#' One of `"ns"`, `"us"`, `"ms"` or `NULL`
-#' @param time_zone Time zone of the resulting [Datetime][DataType_Datetime] data type.
+#'
+#' @return An [Expr][Expr_class] of data type List(Date) or
+#' List([Datetime][DataType_Datetime])
+#'
+#' @seealso [`pl$date_range()`][pl_date_range] to create a simple Series of data
+#' type Date.
+#'
+#' @examples
+#' df = pl$DataFrame(
+#'   start = as.Date(c("2022-01-01", "2022-01-02", NA)),
+#'   end = as.Date("2022-01-03")
+#' )
+#'
+#' df$with_columns(
+#'   date_range = pl$date_ranges("start", "end"),
+#'   date_range_cr = pl$date_ranges("start", "end", closed = "right")
+#' )
+#'
+#' # provide a custom "end" value
+#' df$with_columns(
+#'   date_range_lit = pl$date_ranges("start", pl$lit(as.Date("2022-01-02")))
+#' )
+pl_date_ranges = function(
+    start,
+    end,
+    interval = "1d",
+    ...,
+    closed = "both",
+    time_unit = NULL,
+    time_zone = NULL) {
+  .warn_for_deprecated_date_range_use(start, end, interval, time_unit, time_zone)
+
+  date_ranges(start, end, interval, closed, time_unit, time_zone) |>
+    unwrap("in pl$date_ranges():")
+}
+
+
+#' Generate a datetime range
+#'
+#' @inheritParams pl_date_range
+#' @inheritSection pl_date_range Interval
+#'
+#' @param time_unit Time unit of the resulting the [Datetime][DataType_Datetime]
+#' data type. One of `"ns"`, `"us"`, `"ms"` or `NULL`
+#' @param time_zone Time zone of the resulting [Datetime][DataType_Datetime]
+#' data type.
+#'
 #' @return An [Expr][Expr_class] of data type [Datetime][DataType_Datetime]
+#'
+#' @seealso [`pl$datetime_ranges()`][pl_datetime_ranges] to create a simple
+#' Series of data type list(Datetime) based on column values.
+#'
 #' @examples
 #' # Using Polars duration string to specify the interval:
 #' pl$datetime_range(as.Date("2022-01-01"), as.Date("2022-03-01"), "1mo") |>
@@ -330,6 +392,47 @@ difftime_to_pl_duration = function(dft) {
     or_else = stop("unknown difftime units: ", u)
   )
   paste0(value, unit)
+}
+
+
+#' Generate a list containing a datetime range
+#'
+#' @inheritParams pl_datetime_range
+#' @inheritSection pl_datetime_range Interval
+#'
+#' @return An [Expr][Expr_class] of data type list([Datetime][DataType_Datetime])
+#'
+#' @seealso [`pl$datetime_range()`][pl_datetime_range] to create a simple Series
+#' of data type Datetime.
+#'
+#' @examples
+#' df = pl$DataFrame(
+#'   start = as.POSIXct(c("2022-01-01 10:00", "2022-01-01 11:00", NA)),
+#'   end = as.POSIXct("2022-01-01 12:00")
+#' )
+#'
+#' df$with_columns(
+#'   dt_range = pl$datetime_ranges("start", "end", interval = "1h"),
+#'   dt_range_cr = pl$datetime_ranges("start", "end", closed = "right", interval = "1h")
+#' )
+#'
+#' # provide a custom "end" value
+#' df$with_columns(
+#'   dt_range_lit = pl$datetime_ranges(
+#'     "start", pl$lit(as.POSIXct("2022-01-01 11:00")),
+#'     interval = "1h"
+#'   )
+#' )
+pl_datetime_ranges = function(
+    start,
+    end,
+    interval = "1d",
+    ...,
+    closed = "both",
+    time_unit = NULL,
+    time_zone = NULL) {
+  datetime_ranges(start, end, interval, closed, time_unit, time_zone) |>
+    unwrap("in pl$datetimes_ranges():")
 }
 
 

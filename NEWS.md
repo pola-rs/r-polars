@@ -16,7 +16,7 @@
 - Several functions have been rewritten to match the behavior of Python Polars.
   - In `pl$Series()`, the first argument `x` is renamed to `values` (#933).
   - `pl$implode(...)` is rewritten to be a syntactic sugar for `pl$col(...)$implode()` (#923).
-  - Unify names of input/output function arguments (935).
+  - Unify names of input/output function arguments (#935).
     - All arguments except the first argument must be named arguments.
     - In `pl$read_*` and `pl$scan_*` functions, the first argument is now `source`.
     - In `<DataFrame>$write_*` functions, the first argument is now `file`.
@@ -64,6 +64,7 @@
 - New function `pl$mean_horizontal()` (#959).
 - New argument `raise_if_undetermined` of `<Expr>$meta$output_name()` (#961).
 - New function `pl$arg_sort_by()` (#929).
+- New functions `pl$date_ranges()` and `pl$datetime_ranges()` (#962).
 
 ### Bug fixes
 
