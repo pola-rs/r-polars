@@ -13,7 +13,7 @@ A logical value
 This checks whether the Series DataType is in \code{pl$numeric_dtypes}.
 }
 \examples{
-pl$Series(1:4)$is_numeric()
-pl$Series(c("a", "b", "c"))$is_numeric()
+as_polars_series(1:4)$is_numeric()
+as_polars_series(c("a", "b", "c"))$is_numeric()
 pl$numeric_dtypes
 }

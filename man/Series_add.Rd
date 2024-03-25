@@ -17,11 +17,11 @@ Converted to \link[=Series_class]{Series} by \code{\link[=as_polars_series]{as_p
 Method equivalent of addition operator \code{series + other}.
 }
 \examples{
-pl$Series(1:3)$add(pl$Series(11:13))
-pl$Series(1:3)$add(11:13)
-pl$Series(1:3)$add(1L)
+as_polars_series(1:3)$add(as_polars_series(11:13))
+as_polars_series(1:3)$add(11:13)
+as_polars_series(1:3)$add(1L)
 
-pl$Series("a")$add("-z")
+as_polars_series("a")$add("-z")
 }
 \seealso{
 \itemize{

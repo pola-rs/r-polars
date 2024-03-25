@@ -93,7 +93,7 @@
 #'
 #' @examples
 #' # make a Series
-#' s = pl$Series(c(1:3, 1L))
+#' s = as_polars_series(c(1:3, 1L))
 #'
 #' # call an active binding
 #' s$shape
@@ -105,8 +105,8 @@
 #' s$cos()
 #'
 #' # use Expr method in subnamespaces
-#' pl$Series(list(3:1, 1:2, NULL))$list$first()
-#' pl$Series(c(1, NA, 2))$str$concat("-")
+#' as_polars_series(list(3:1, 1:2, NULL))$list$first()
+#' as_polars_series(c(1, NA, 2))$str$concat("-")
 #'
 #' s = pl$date_range(
 #'   as.Date("2024-02-18"), as.Date("2024-02-24"),
@@ -315,7 +315,7 @@ pl_Series = function(
 #' @rdname Series_print
 #' @return self
 #'
-#' @examples pl$Series(1:3)
+#' @examples as_polars_series(1:3)
 Series_print = function() {
   .pr$Series$print(self)
   invisible(self)
@@ -331,11 +331,11 @@ Series_print = function() {
 #' @seealso
 #' - [Arithmetic operators][S3_arithmetic]
 #' @examples
-#' pl$Series(1:3)$add(pl$Series(11:13))
-#' pl$Series(1:3)$add(11:13)
-#' pl$Series(1:3)$add(1L)
+#' as_polars_series(1:3)$add(as_polars_series(11:13))
+#' as_polars_series(1:3)$add(11:13)
+#' as_polars_series(1:3)$add(1L)
 #'
-#' pl$Series("a")$add("-z")
+#' as_polars_series("a")$add("-z")
 Series_add = function(other) {
   .pr$Series$add(self, as_polars_series(other))
 }
@@ -350,11 +350,11 @@ Series_add = function(other) {
 #' @seealso
 #' - [Arithmetic operators][S3_arithmetic]
 #' @examples
-#' pl$Series(1:3)$sub(11:13)
-#' pl$Series(1:3)$sub(pl$Series(11:13))
-#' pl$Series(1:3)$sub(1L)
-#' 1L - pl$Series(1:3)
-#' pl$Series(1:3) - 1L
+#' as_polars_series(1:3)$sub(11:13)
+#' as_polars_series(1:3)$sub(as_polars_series(11:13))
+#' as_polars_series(1:3)$sub(1L)
+#' 1L - as_polars_series(1:3)
+#' as_polars_series(1:3) - 1L
 Series_sub = function(other) {
   .pr$Series$sub(self, as_polars_series(other))
 }
@@ -367,9 +367,9 @@ Series_sub = function(other) {
 #' @seealso
 #' - [Arithmetic operators][S3_arithmetic]
 #' @examples
-#' pl$Series(1:3)$div(11:13)
-#' pl$Series(1:3)$div(pl$Series(11:13))
-#' pl$Series(1:3)$div(1L)
+#' as_polars_series(1:3)$div(11:13)
+#' as_polars_series(1:3)$div(as_polars_series(11:13))
+#' as_polars_series(1:3)$div(1L)
 Series_div = function(other) {
   .pr$Series$div(self, as_polars_series(other))
 }
@@ -382,9 +382,9 @@ Series_div = function(other) {
 #' @seealso
 #' - [Arithmetic operators][S3_arithmetic]
 #' @examples
-#' pl$Series(1:3)$floor_div(11:13)
-#' pl$Series(1:3)$floor_div(pl$Series(11:13))
-#' pl$Series(1:3)$floor_div(1L)
+#' as_polars_series(1:3)$floor_div(11:13)
+#' as_polars_series(1:3)$floor_div(as_polars_series(11:13))
+#' as_polars_series(1:3)$floor_div(1L)
 Series_floor_div = function(other) {
   self$to_frame()$select(pl$col(self$name)$floor_div(as_polars_series(other)))$to_series(0)
 }
@@ -397,9 +397,9 @@ Series_floor_div = function(other) {
 #' @seealso
 #' - [Arithmetic operators][S3_arithmetic]
 #' @examples
-#' pl$Series(1:3)$mul(11:13)
-#' pl$Series(1:3)$mul(pl$Series(11:13))
-#' pl$Series(1:3)$mul(1L)
+#' as_polars_series(1:3)$mul(11:13)
+#' as_polars_series(1:3)$mul(as_polars_series(11:13))
+#' as_polars_series(1:3)$mul(1L)
 Series_mul = function(other) {
   .pr$Series$mul(self, as_polars_series(other))
 }
@@ -412,9 +412,9 @@ Series_mul = function(other) {
 #' @seealso
 #' - [Arithmetic operators][S3_arithmetic]
 #' @examples
-#' pl$Series(1:4)$mod(2L)
-#' pl$Series(1:3)$mod(pl$Series(11:13))
-#' pl$Series(1:3)$mod(1L)
+#' as_polars_series(1:4)$mod(2L)
+#' as_polars_series(1:3)$mod(as_polars_series(11:13))
+#' as_polars_series(1:3)$mod(1L)
 Series_mod = function(other) {
   .pr$Series$rem(self, as_polars_series(other))
 }
@@ -447,10 +447,10 @@ Series_pow = function(exponent) {
 #' @return [Series][Series_class]
 #' @examples
 #' # We can either use `compare()`...
-#' pl$Series(1:5)$compare(pl$Series(c(1:3, NA_integer_, 10L)), op = "equal")
+#' as_polars_series(1:5)$compare(as_polars_series(c(1:3, NA_integer_, 10L)), op = "equal")
 #'
 #' # ... or the more classic way
-#' pl$Series(1:5) == pl$Series(c(1:3, NA_integer_, 10L))
+#' as_polars_series(1:5) == as_polars_series(c(1:3, NA_integer_, 10L))
 Series_compare = function(other, op) {
   other_s = as_polars_series(other)
   s_len = self$len()
@@ -502,7 +502,7 @@ Series_compare = function(other, op) {
 #' @inheritSection DataFrame_class Conversion to R data types considerations
 #' @examples
 #' # Series with non-list type
-#' series_vec = pl$Series(letters[1:3])
+#' series_vec = as_polars_series(letters[1:3])
 #'
 #' series_vec$to_r() # as vector because Series DataType is not list (is String)
 #' series_vec$to_list() # implicit call as.list(), convert to list
@@ -510,7 +510,7 @@ Series_compare = function(other, op) {
 #'
 #'
 #' # make a Series with nested lists
-#' series_list = pl$Series(
+#' series_list = as_polars_series(
 #'   list(
 #'     list(c(1:5, NA_integer_)),
 #'     list(1:2, NA_integer_)
@@ -543,7 +543,7 @@ Series_to_list = \(int64_conversion = polars_options()$int64_conversion) {
 #'
 #' @return DataFrame
 #' @examples
-#' pl$Series(iris$Species, name = "flower species")$value_counts()
+#' as_polars_series(iris$Species, name = "flower species")$value_counts()
 Series_value_counts = function(sort = TRUE, parallel = FALSE) {
   unwrap(.pr$Series$value_counts(self, sort, parallel), "in $value_counts():")
 }
@@ -560,12 +560,12 @@ Series_value_counts = function(sort = TRUE, parallel = FALSE) {
 #' @aliases apply
 #'
 #' @examples
-#' s = pl$Series(letters[1:5], "ltrs")
+#' s = as_polars_series(letters[1:5], "ltrs")
 #' f = \(x) paste(x, ":", as.integer(charToRaw(x)))
 #' s$map_elements(f, pl$String)
 #'
 #' # same as
-#' pl$Series(sapply(s$to_r(), f), s$name)
+#' as_polars_series(sapply(s$to_r(), f), s$name)
 Series_map_elements = function(
     fun, datatype = NULL, strict_return_type = TRUE, allow_fail_eval = FALSE) {
   .pr$Series$map_elements(
@@ -578,7 +578,7 @@ Series_map_elements = function(
 #'
 #' @return A numeric value
 #' @examples
-#' pl$Series(1:10)$len()
+#' as_polars_series(1:10)$len()
 Series_len = use_extendr_wrapper
 
 #' Lengths of Series memory chunks
@@ -587,7 +587,7 @@ Series_len = use_extendr_wrapper
 #' the output is equal to the length of the full Series.
 #'
 #' @examples
-#' chunked_series = c(pl$Series(1:3), pl$Series(1:10))
+#' chunked_series = c(as_polars_series(1:3), as_polars_series(1:10))
 #' chunked_series$chunk_lengths()
 Series_chunk_lengths = use_extendr_wrapper
 
@@ -606,9 +606,9 @@ Series_chunk_lengths = use_extendr_wrapper
 #' @return [Series][Series_class]
 #' @examplesIf requireNamespace("withr", quietly = TRUE)
 #' # default immutable behavior, s_imut and s_imut_copy stay the same
-#' s_imut = pl$Series(1:3)
+#' s_imut = as_polars_series(1:3)
 #' s_imut_copy = s_imut
-#' s_new = s_imut$append(pl$Series(1:3))
+#' s_new = s_imut$append(as_polars_series(1:3))
 #' s_new
 #'
 #' # the original Series didn't change
@@ -619,9 +619,9 @@ Series_chunk_lengths = use_extendr_wrapper
 #' withr::with_options(
 #'   list(polars.strictly_immutable = FALSE),
 #'   {
-#'     s_mut = pl$Series(1:3)
+#'     s_mut = as_polars_series(1:3)
 #'     s_mut_copy = s_mut
-#'     s_new = s_mut$append(pl$Series(1:3), immutable = FALSE)
+#'     s_new = s_mut$append(as_polars_series(1:3), immutable = FALSE)
 #'     print(s_new)
 #'
 #'     # the original Series also changed since it's mutable
@@ -650,14 +650,14 @@ Series_append = function(other, immutable = TRUE) {
 #' @usage Series_alias(name)
 #' @return [Series][Series_class]
 #' @examples
-#' pl$Series(1:3, name = "alice")$alias("bob")
+#' as_polars_series(1:3, name = "alice")$alias("bob")
 Series_alias = use_extendr_wrapper
 
 #' Reduce boolean Series with ANY
 #'
 #' @return A logical value
 #' @examples
-#' pl$Series(c(TRUE, FALSE, NA))$any()
+#' as_polars_series(c(TRUE, FALSE, NA))$any()
 Series_any = function() {
   unwrap(.pr$Series$any(self), "in $any():")
 }
@@ -666,7 +666,7 @@ Series_any = function() {
 #'
 #' @return A logical value
 #' @examples
-#' pl$Series(c(TRUE, TRUE, NA))$all()
+#' as_polars_series(c(TRUE, TRUE, NA))$all()
 Series_all = function() {
   unwrap(.pr$Series$all(self), "in $all():")
 }
@@ -677,7 +677,7 @@ Series_all = function() {
 #'
 #' @return A numeric value
 #' @examples
-#' pl$Series(c(5, 1))$arg_max()
+#' as_polars_series(c(5, 1))$arg_max()
 Series_arg_max = use_extendr_wrapper
 
 #' Index of min value
@@ -686,7 +686,7 @@ Series_arg_max = use_extendr_wrapper
 #'
 #' @return A numeric value
 #' @examples
-#' pl$Series(c(5, 1))$arg_min()
+#' as_polars_series(c(5, 1))$arg_min()
 Series_arg_min = use_extendr_wrapper
 
 
@@ -699,7 +699,7 @@ Series_arg_min = use_extendr_wrapper
 #'
 #' @return [Series][Series_class]
 #' @examples
-#' df1 = pl$Series(1:10)
+#' df1 = as_polars_series(1:10)
 #'
 #' # Make a function to take a Series, add an attribute, and return a Series
 #' give_attr = function(data) {
@@ -717,7 +717,7 @@ Series_arg_min = use_extendr_wrapper
 #'   attr(data, "created_on") = "2024-01-29"
 #'   data
 #' }
-#' df1 = pl$Series(1:10)
+#' df1 = as_polars_series(1:10)
 #' df2 = give_attr(df1)
 #'
 #' # now, the original Series doesn't get this attribute
@@ -732,9 +732,9 @@ Series_clone = use_extendr_wrapper
 #' The Dtypes Int8, UInt8, Int16 and UInt16 are cast to Int64 before summing to
 #' prevent overflow issues.
 #' @examples
-#' pl$Series(c(1:2, NA, 3, 5))$sum() # a NA is dropped always
-#' pl$Series(c(1:2, NA, 3, NaN, 4, Inf))$sum() # NaN poisons the result
-#' pl$Series(c(1:2, 3, Inf, 4, -Inf, 5))$sum() # Inf-Inf is NaN
+#' as_polars_series(c(1:2, NA, 3, 5))$sum() # a NA is dropped always
+#' as_polars_series(c(1:2, NA, 3, NaN, 4, Inf))$sum() # NaN poisons the result
+#' as_polars_series(c(1:2, 3, Inf, 4, -Inf, 5))$sum() # Inf-Inf is NaN
 Series_sum = function() {
   unwrap(.pr$Series$sum(self), "in $sum():")
 }
@@ -743,9 +743,9 @@ Series_sum = function() {
 #'
 #' @inherit Series_sum details return
 #' @examples
-#' pl$Series(c(1:2, NA, 3, 5))$mean() # a NA is dropped always
-#' pl$Series(c(1:2, NA, 3, NaN, 4, Inf))$mean() # NaN carries / poisons
-#' pl$Series(c(1:2, 3, Inf, 4, -Inf, 5))$mean() # Inf-Inf is NaN
+#' as_polars_series(c(1:2, NA, 3, 5))$mean() # a NA is dropped always
+#' as_polars_series(c(1:2, NA, 3, NaN, 4, Inf))$mean() # NaN carries / poisons
+#' as_polars_series(c(1:2, 3, Inf, 4, -Inf, 5))$mean() # Inf-Inf is NaN
 Series_mean = function() {
   unwrap(.pr$Series$mean(self), "in $mean():")
 }
@@ -754,9 +754,9 @@ Series_mean = function() {
 #'
 #' @inherit Series_sum details return
 #' @examples
-#' pl$Series(c(1:2, NA, 3, 5))$median() # a NA is dropped always
-#' pl$Series(c(1:2, NA, 3, NaN, 4, Inf))$median() # NaN carries / poisons
-#' pl$Series(c(1:2, 3, Inf, 4, -Inf, 5))$median() # Inf-Inf is NaN
+#' as_polars_series(c(1:2, NA, 3, 5))$median() # a NA is dropped always
+#' as_polars_series(c(1:2, NA, 3, NaN, 4, Inf))$median() # NaN carries / poisons
+#' as_polars_series(c(1:2, 3, Inf, 4, -Inf, 5))$median() # Inf-Inf is NaN
 Series_median = function() {
   unwrap(.pr$Series$median(self), "in $median():")
 }
@@ -765,9 +765,9 @@ Series_median = function() {
 #'
 #' @inherit Series_sum details return
 #' @examples
-#' pl$Series(c(1:2, NA, 3, 5))$max() # a NA is dropped always
-#' pl$Series(c(1:2, NA, 3, NaN, 4, Inf))$max() # NaN carries / poisons
-#' pl$Series(c(1:2, 3, Inf, 4, -Inf, 5))$max() # Inf-Inf is NaN
+#' as_polars_series(c(1:2, NA, 3, 5))$max() # a NA is dropped always
+#' as_polars_series(c(1:2, NA, 3, NaN, 4, Inf))$max() # NaN carries / poisons
+#' as_polars_series(c(1:2, 3, Inf, 4, -Inf, 5))$max() # Inf-Inf is NaN
 Series_max = function() {
   unwrap(.pr$Series$max(self), "in $max():")
 }
@@ -776,9 +776,9 @@ Series_max = function() {
 #'
 #' @inherit Series_sum details return
 #' @examples
-#' pl$Series(c(1:2, NA, 3, 5))$min() # a NA is dropped always
-#' pl$Series(c(1:2, NA, 3, NaN, 4, Inf))$min() # NaN carries / poisons
-#' pl$Series(c(1:2, 3, Inf, 4, -Inf, 5))$min() # Inf-Inf is NaN
+#' as_polars_series(c(1:2, NA, 3, 5))$min() # a NA is dropped always
+#' as_polars_series(c(1:2, NA, 3, NaN, 4, Inf))$min() # NaN carries / poisons
+#' as_polars_series(c(1:2, 3, Inf, 4, -Inf, 5))$min() # Inf-Inf is NaN
 Series_min = function() {
   unwrap(.pr$Series$min(self), "in $min():")
 }
@@ -788,7 +788,7 @@ Series_min = function() {
 #' @inheritParams DataFrame_var
 #' @inherit Series_sum return
 #' @examples
-#' pl$Series(1:10)$var()
+#' as_polars_series(1:10)$var()
 Series_var = function(ddof = 1) {
   unwrap(.pr$Series$var(self, ddof), "in $var():")
 }
@@ -798,7 +798,7 @@ Series_var = function(ddof = 1) {
 #' @inheritParams DataFrame_var
 #' @inherit Series_sum return
 #' @examples
-#' pl$Series(1:10)$std()
+#' as_polars_series(1:10)$std()
 Series_std = function(ddof = 1) {
   unwrap(.pr$Series$std(self, ddof), "in $std():")
 }
@@ -810,7 +810,7 @@ Series_std = function(ddof = 1) {
 #' Use [`$set_sorted()`][Series_set_sorted] to add a "sorted" flag to the Series
 #' that could be used for faster operations later on.
 #' @examples
-#' pl$Series(1:4)$sort()$is_sorted()
+#' as_polars_series(1:4)$sort()$is_sorted()
 Series_is_sorted = function(descending = FALSE) {
   .pr$Series$is_sorted(self, descending) |> unwrap("in $is_sorted()")
 }
@@ -829,7 +829,7 @@ Series_is_sorted = function(descending = FALSE) {
 #'
 #' @return A [Series][Series_class] with a flag
 #' @examples
-#' s = pl$Series(1:4)$set_sorted()
+#' s = as_polars_series(1:4)$set_sorted()
 #' s$flags
 Series_set_sorted = function(descending = FALSE, in_place = FALSE) {
   if (in_place && polars_options()$strictly_immutable) {
@@ -856,8 +856,8 @@ Series_set_sorted = function(descending = FALSE, in_place = FALSE) {
 #' @return [Series][Series_class]
 #'
 #' @examples
-#' pl$Series(c(1.5, NA, 1, NaN, Inf, -Inf))$sort()
-#' pl$Series(c(1.5, NA, 1, NaN, Inf, -Inf))$sort(nulls_last = TRUE)
+#' as_polars_series(c(1.5, NA, 1, NaN, Inf, -Inf))$sort()
+#' as_polars_series(c(1.5, NA, 1, NaN, Inf, -Inf))$sort(nulls_last = TRUE)
 Series_sort = function(descending = FALSE, nulls_last = FALSE, in_place = FALSE) {
   if (in_place && polars_options()$strictly_immutable) {
     stop(paste(
@@ -877,9 +877,9 @@ Series_sort = function(descending = FALSE, nulls_last = FALSE, in_place = FALSE)
 #'
 #' @examples
 #' # default will be a DataFrame with empty name
-#' pl$Series(1:4)$to_frame()
+#' as_polars_series(1:4)$to_frame()
 #'
-#' pl$Series(1:4, "bob")$to_frame()
+#' as_polars_series(1:4, "bob")$to_frame()
 Series_to_frame = function() {
   unwrap(.pr$Series$to_frame(self), "in $to_frame():")
 }
@@ -896,18 +896,18 @@ Series_to_frame = function() {
 #'
 #' @return A logical value
 #' @examples
-#' pl$Series(1:4)$equals(pl$Series(1:4))
+#' as_polars_series(1:4)$equals(as_polars_series(1:4))
 #'
 #' # names are different
-#' pl$Series(1:4, "bob")$equals(pl$Series(1:4))
+#' as_polars_series(1:4, "bob")$equals(as_polars_series(1:4))
 #'
 #' # nulls are different by default
-#' pl$Series(c(1:4, NA))$equals(pl$Series(c(1:4, NA)))
-#' pl$Series(c(1:4, NA))$equals(pl$Series(c(1:4, NA)), null_equal = TRUE)
+#' as_polars_series(c(1:4, NA))$equals(as_polars_series(c(1:4, NA)))
+#' as_polars_series(c(1:4, NA))$equals(as_polars_series(c(1:4, NA)), null_equal = TRUE)
 #'
 #' # datatypes are ignored by default
-#' pl$Series(1:4)$cast(pl$Int16)$equals(pl$Series(1:4))
-#' pl$Series(1:4)$cast(pl$Int16)$equals(pl$Series(1:4), strict = TRUE)
+#' as_polars_series(1:4)$cast(pl$Int16)$equals(as_polars_series(1:4))
+#' as_polars_series(1:4)$cast(pl$Int16)$equals(as_polars_series(1:4), strict = TRUE)
 Series_equals = function(other, null_equal = FALSE, strict = FALSE) {
   .pr$Series$equals(self, other, null_equal, strict)
 }
@@ -921,7 +921,7 @@ Series_equals = function(other, null_equal = FALSE, strict = FALSE) {
 #'
 #' @return [Series][Series_class]
 #' @examples
-#' pl$Series(1:4, "bob")$rename("alice")
+#' as_polars_series(1:4, "bob")$rename("alice")
 Series_rename = function(name, in_place = FALSE) {
   if (identical(self$name, name)) {
     return(self)
@@ -953,7 +953,7 @@ Series_rename = function(name, in_place = FALSE) {
 #' @return [Series][Series_class]
 #'
 #' @examples
-#' pl$Series(1:2, "bob")$rep(3)
+#' as_polars_series(1:2, "bob")$rep(3)
 Series_rep = function(n, rechunk = TRUE) {
   if (!is.numeric(n)) stop("n must be numeric")
   if (!is_scalar_bool(rechunk)) stop("rechunk must be a bool")
@@ -969,8 +969,8 @@ in_DataType = function(l, rs) any(sapply(rs, function(r) l == r))
 #' @return A logical value
 #'
 #' @examples
-#' pl$Series(1:4)$is_numeric()
-#' pl$Series(c("a", "b", "c"))$is_numeric()
+#' as_polars_series(1:4)$is_numeric()
+#' as_polars_series(c("a", "b", "c"))$is_numeric()
 #' pl$numeric_dtypes
 Series_is_numeric = function() {
   in_DataType(self$dtype, pl$numeric_dtypes)
@@ -981,7 +981,7 @@ Series_is_numeric = function() {
 #'
 #' @return [Expr][Expr_class]
 #' @examples
-#' pl$Series(list(1:1, 1:2, 1:3, 1:4))$
+#' as_polars_series(list(1:1, 1:2, 1:3, 1:4))$
 #'   print()$
 #'   to_lit()$
 #'   list$len()$
@@ -996,7 +996,7 @@ Series_to_lit = function() {
 #'
 #' @return A numeric value
 #' @examples
-#' pl$Series(c(1, 2, 1, 4, 4, 1, 5))$n_unique()
+#' as_polars_series(c(1, 2, 1, 4, 4, 1, 5))$n_unique()
 Series_n_unique = function() {
   unwrap(.pr$Series$n_unique(self), "in $n_unique():")
 }

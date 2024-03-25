@@ -35,7 +35,7 @@ conversion.}
 Convert a String column into a Time column
 }
 \examples{
-s = pl$Series(c("01:00", "02:00", "03:00"))
+s = as_polars_series(c("01:00", "02:00", "03:00"))
 
 s$str$to_time("\%H:\%M")
 }

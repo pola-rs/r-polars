@@ -60,7 +60,7 @@ If no fractional second component is found then the default is \code{"us"} (micr
 }
 \examples{
 # Dealing with a consistent format
-s = pl$Series(c("2020-01-01 01:00Z", "2020-01-01 02:00Z"))
+s = as_polars_series(c("2020-01-01 01:00Z", "2020-01-01 02:00Z"))
 
 s$str$strptime(pl$Datetime(), "\%Y-\%m-\%d \%H:\%M\%#z")
 
@@ -68,10 +68,10 @@ s$str$strptime(pl$Datetime(), "\%Y-\%m-\%d \%H:\%M\%#z")
 s$str$strptime(pl$Datetime())
 
 # Datetime with timezone is interpreted as UTC timezone
-pl$Series("2020-01-01T01:00:00+09:00")$str$strptime(pl$Datetime())
+as_polars_series("2020-01-01T01:00:00+09:00")$str$strptime(pl$Datetime())
 
 # Dealing with different formats.
-s = pl$Series(
+s = as_polars_series(
   c(
     "2021-04-22",
     "2022-01-04 00:00:00",
@@ -91,7 +91,7 @@ s$to_frame()$select(
 )
 
 # Ignore invalid time
-s = pl$Series(
+s = as_polars_series(
   c(
     "2023-01-01 11:22:33 -0100",
     "2023-01-01 11:22:33 +0300",

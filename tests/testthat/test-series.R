@@ -1,7 +1,7 @@
 test_that("pl$Series_apply", {
   # non strict casting just yields null for wrong type
   expect_identical(
-    pl$Series(1:3, "integers")$
+    as_polars_series(1:3, "integers")$
       map_elements(function(x) "wrong type", NULL, strict = FALSE)$
       to_r(),
     rep(NA_integer_, 3)
@@ -9,12 +9,12 @@ test_that("pl$Series_apply", {
 
   # strict type casting, throws an error
   expect_error(
-    pl$Series(1:3, "integers")$map_elements(function(x) "wrong type", NULL, strict = TRUE)
+    as_polars_series(1:3, "integers")$map_elements(function(x) "wrong type", NULL, strict = TRUE)
   )
 
   # handle na int
   expect_identical(
-    pl$Series(c(1:3, NA_integer_), "integers")
+    as_polars_series(c(1:3, NA_integer_), "integers")
     $map_elements(function(x) x, NULL, TRUE)
     $to_vector(),
     c(1:3, NA)
@@ -22,7 +22,7 @@ test_that("pl$Series_apply", {
 
   # handle na nan double
   expect_identical(
-    pl$Series(c(1, 2, NA_real_, NaN), "doubles")$
+    as_polars_series(c(1, 2, NA_real_, NaN), "doubles")$
       map_elements(function(x) x, NULL, TRUE)$
       to_vector(),
     c(1, 2, NA, NaN) * 1.0
@@ -30,7 +30,7 @@ test_that("pl$Series_apply", {
 
   # handle na logical
   expect_identical(
-    pl$Series(c(TRUE, FALSE, NA), "boolean")$
+    as_polars_series(c(TRUE, FALSE, NA), "boolean")$
       map_elements(function(x) x, NULL, FALSE)$
       to_vector(),
     c(TRUE, FALSE, NA)
@@ -38,7 +38,7 @@ test_that("pl$Series_apply", {
 
   # handle na character
   expect_identical(
-    pl$Series(c("A", "B", NA_character_), "strings")$
+    as_polars_series(c("A", "B", NA_character_), "strings")$
       map_elements(function(x) {
       if (isTRUE(x == "B")) 2 else x
     }, NULL, FALSE)$
@@ -49,7 +49,7 @@ test_that("pl$Series_apply", {
 
   # Int32 -> Float64
   expect_identical(
-    pl$Series(c(1:3, NA_integer_), "integers")$
+    as_polars_series(c(1:3, NA_integer_), "integers")$
       map_elements(
       function(x) {
         if (is.na(x)) NA_real_ else as.double(x)
@@ -64,7 +64,7 @@ test_that("pl$Series_apply", {
 
   # Float64 -> Int32
   expect_identical(
-    pl$Series(c(1, 2, 3, NA_real_), "integers")$
+    as_polars_series(c(1, 2, 3, NA_real_), "integers")$
       map_elements(function(x) {
       if (is.na(x)) 42L else as.integer(x)
     }, datatype = pl$dtypes$Int32)$
@@ -76,7 +76,7 @@ test_that("pl$Series_apply", {
   # global statefull variables can be used in R user function (so can browser() debugging, nice!)
   global_var = 0L
   expect_identical(
-    pl$Series(c(1:3, NA), "name")$
+    as_polars_series(c(1:3, NA), "name")$
       map_elements(\(x) {
       global_var <<- global_var + 1L
       x + global_var
@@ -88,7 +88,7 @@ test_that("pl$Series_apply", {
 })
 
 test_that("pl$Series_abs", {
-  s = pl$Series(c(-42, 42, NA_real_))
+  s = as_polars_series(c(-42, 42, NA_real_))
   expect_identical(
     s$abs()$to_vector(),
     c(42, 42, NA_real_)
@@ -96,7 +96,7 @@ test_that("pl$Series_abs", {
 
   expect_s3_class(s$abs(), "RPolarsSeries")
 
-  s_int = pl$Series(c(-42L, 42L, NA_integer_))
+  s_int = as_polars_series(c(-42L, 42L, NA_integer_))
   expect_identical(
     s_int$abs()$to_vector(),
     c(42L, 42L, NA_integer_)
@@ -105,7 +105,7 @@ test_that("pl$Series_abs", {
 
 
 test_that("pl$Series_alias", {
-  s = pl$Series(letters, "foo")
+  s = as_polars_series(letters, "foo")
   s2 = s$alias("bar")
   expect_identical(s$name, "foo")
   expect_identical(s2$name, "bar")
@@ -117,41 +117,41 @@ test_that("Series_append", {
   withr::with_options(
     list(polars.strictly_immutable = FALSE),
     {
-      s = pl$Series(letters, "foo")
+      s = as_polars_series(letters, "foo")
       s2 = s
-      S = pl$Series(LETTERS, "bar")
+      S = as_polars_series(LETTERS, "bar")
       unwrap(.pr$Series$append_mut(s, S))
 
       expect_identical(
         s$to_vector(),
-        pl$Series(c(letters, LETTERS))$to_vector()
+        as_polars_series(c(letters, LETTERS))$to_vector()
       )
 
       # default immutable behavior, s_imut and s_imut_copy stay the same
-      s_imut = pl$Series(1:3)
+      s_imut = as_polars_series(1:3)
       s_imut_copy = s_imut
-      s_new = s_imut$append(pl$Series(1:3))
+      s_new = s_imut$append(as_polars_series(1:3))
       expect_identical(s_imut$to_vector(), s_imut_copy$to_vector())
 
       # pypolars-like mutable behavior,s_mut_copy become the same as s_new
-      s_mut = pl$Series(1:3)
+      s_mut = as_polars_series(1:3)
       s_mut_copy = s_mut
-      s_new = s_mut$append(pl$Series(1:3), immutable = FALSE)
+      s_new = s_mut$append(as_polars_series(1:3), immutable = FALSE)
       expect_identical(s_new$to_vector(), s_mut_copy$to_vector())
     }
   )
 
   expect_error(
-    s_mut$append(pl$Series(1:3), immutable = FALSE),
+    s_mut$append(as_polars_series(1:3), immutable = FALSE),
     regexp = "breaks immutability"
   )
 })
 
 
 test_that("pl$Series_combine_c", {
-  s = pl$Series(1:3, "foo")
+  s = as_polars_series(1:3, "foo")
   s2 = c(s, s, 1:3)
-  s3 = pl$Series(c(1:3, 1:3, 1:3), "bar")
+  s3 = as_polars_series(c(1:3, 1:3, 1:3), "bar")
 
   expect_identical(
     s2$to_vector(),
@@ -162,33 +162,33 @@ test_that("pl$Series_combine_c", {
 
 
 test_that("all any", {
-  expect_false(pl$Series(c(TRUE, TRUE, NA))$all())
-  expect_false(pl$Series(c(TRUE, TRUE, FALSE))$all())
-  expect_false(pl$Series(c(NA, NA, NA))$all())
-  expect_true(pl$Series(c(TRUE, TRUE, TRUE))$all())
-  expect_error(pl$Series(1:3)$all())
+  expect_false(as_polars_series(c(TRUE, TRUE, NA))$all())
+  expect_false(as_polars_series(c(TRUE, TRUE, FALSE))$all())
+  expect_false(as_polars_series(c(NA, NA, NA))$all())
+  expect_true(as_polars_series(c(TRUE, TRUE, TRUE))$all())
+  expect_error(as_polars_series(1:3)$all())
 
-  expect_true(pl$Series(c(TRUE, TRUE, NA))$any())
-  expect_true(pl$Series(c(TRUE, NA, FALSE))$any())
-  expect_true(pl$Series(c(TRUE, FALSE, FALSE))$any())
-  expect_false(pl$Series(c(FALSE, FALSE, NA))$any())
-  expect_false(pl$Series(c(NA, NA, NA))$any())
-  expect_error(pl$Series(1:3)$any())
+  expect_true(as_polars_series(c(TRUE, TRUE, NA))$any())
+  expect_true(as_polars_series(c(TRUE, NA, FALSE))$any())
+  expect_true(as_polars_series(c(TRUE, FALSE, FALSE))$any())
+  expect_false(as_polars_series(c(FALSE, FALSE, NA))$any())
+  expect_false(as_polars_series(c(NA, NA, NA))$any())
+  expect_error(as_polars_series(1:3)$any())
 })
 
 
 # deprecated will come back when all expr functions are accisble via series
 # test_that("is_unique", {
-#   expect_true(pl$Series(1:5)$is_unique()$all())
-#   expect_false(pl$Series(c(1:5,1))$is_unique()$all())
-#   expect_false(pl$Series(c(1:3,NA,NA))$is_unique()$all())
-#   expect_true(pl$Series(c(1:3,NA,NA))$is_unique()$any())
-#   expect_true(pl$Series(c(1:3,NA))$is_unique()$all())
+#   expect_true(as_polars_series(1:5)$is_unique()$all())
+#   expect_false(as_polars_series(c(1:5,1))$is_unique()$all())
+#   expect_false(as_polars_series(c(1:3,NA,NA))$is_unique()$all())
+#   expect_true(as_polars_series(c(1:3,NA,NA))$is_unique()$any())
+#   expect_true(as_polars_series(c(1:3,NA))$is_unique()$all())
 # })
 
 
 test_that("clone", {
-  s = pl$Series(1:3)
+  s = as_polars_series(1:3)
   s2 = s$clone()
   s3 = s2
   expect_different(s, s2)
@@ -199,7 +199,7 @@ test_that("clone", {
 })
 
 test_that("cloning to avoid giving attributes to original data", {
-  df1 = pl$Series(1:10)
+  df1 = as_polars_series(1:10)
 
   give_attr = function(data) {
     attr(data, "created_on") = "2024-01-29"
@@ -213,42 +213,42 @@ test_that("cloning to avoid giving attributes to original data", {
     attr(data, "created_on") = "2024-01-29"
     data
   }
-  df1 = pl$Series(1:10)
+  df1 = as_polars_series(1:10)
   df2 = give_attr2(df1)
   expect_null(attributes(df1)$created_on)
 })
 
 test_that("dtype and equality", {
-  expect_true(pl$Series(1:3)$dtype == pl$dtypes$Int32)
-  expect_false(pl$Series(1:3)$dtype == pl$dtypes$Float64)
+  expect_true(as_polars_series(1:3)$dtype == pl$dtypes$Int32)
+  expect_false(as_polars_series(1:3)$dtype == pl$dtypes$Float64)
 
-  expect_true(pl$Series(1.0)$dtype == pl$dtypes$Float64)
-  expect_false(pl$Series(1.0)$dtype == pl$dtypes$Int32)
+  expect_true(as_polars_series(1.0)$dtype == pl$dtypes$Float64)
+  expect_false(as_polars_series(1.0)$dtype == pl$dtypes$Int32)
 })
 
 
 test_that("shape and len", {
   expect_identical(
-    pl$Series(1:3)$shape,
+    as_polars_series(1:3)$shape,
     c(3, 1)
   )
   expect_identical(
-    pl$Series(integer())$shape,
+    as_polars_series(integer())$shape,
     c(0, 1)
   )
-  expect_identical(pl$Series(integer())$len(), 0)
-  expect_identical(pl$Series(1:3)$len(), 3)
+  expect_identical(as_polars_series(integer())$len(), 0)
+  expect_identical(as_polars_series(1:3)$len(), 3)
 })
 
 test_that("floor & ceil", {
   expect_identical(
-    pl$Series(c(1.5, .5, -.5, NA_real_, NaN))$
+    as_polars_series(c(1.5, .5, -.5, NA_real_, NaN))$
       floor()$
       to_r(),
     c(1, 0, -1, NA_real_, NaN)
   )
   expect_identical(
-    pl$Series(c(1.5, .5, -.5, NA_real_, NaN))$
+    as_polars_series(c(1.5, .5, -.5, NA_real_, NaN))$
       ceil()$
       to_r(),
     c(2, 1, 0, NA_real_, NaN)
@@ -258,7 +258,7 @@ test_that("floor & ceil", {
 test_that("to_frame", {
   # high level
   expect_identical(
-    pl$Series(1:3, "foo")$
+    as_polars_series(1:3, "foo")$
       to_frame()$
       to_data_frame(),
     data.frame(foo = 1:3)
@@ -266,7 +266,7 @@ test_that("to_frame", {
 })
 
 test_that("flags work", {
-  s = pl$Series(c(2, 1, 3))
+  s = as_polars_series(c(2, 1, 3))
   expect_identical(
     s$sort()$flags,
     list(SORTED_ASC = TRUE, SORTED_DESC = FALSE)
@@ -276,7 +276,7 @@ test_that("flags work", {
     list(SORTED_ASC = FALSE, SORTED_DESC = TRUE)
   )
 
-  s = pl$Series(list(1, 2, 3))
+  s = as_polars_series(list(1, 2, 3))
   expect_identical(
     s$flags,
     list(SORTED_ASC = FALSE, SORTED_DESC = FALSE, FAST_EXPLODE = TRUE)
@@ -284,10 +284,10 @@ test_that("flags work", {
 })
 
 test_that("sort on Series and Expr gives same results", {
-  s = pl$Series(c(2, 1, 3))
+  s = as_polars_series(c(2, 1, 3))
 
   l = list(a = c(6, 1, 0, NA, Inf, -Inf, NaN))
-  s = pl$Series(l$a, "a")
+  s = as_polars_series(l$a, "a")
   l_actual_expr_sort = pl$DataFrame(l)$select(
     pl$col("a")$sort()$alias("sort"),
     pl$col("a")$sort(descending = TRUE)$alias("sort_reverse")
@@ -304,7 +304,7 @@ test_that("sort on Series and Expr gives same results", {
 
 # TODO rework this test
 # test_that("is_sorted  sort", {
-#   s = pl$Series(c(NA,2,1,3,NA))
+#   s = as_polars_series(c(NA,2,1,3,NA))
 #   s_sorted = s$sort(descending = FALSE)
 #   expect_true(s_sorted$is_sorted())
 #   expect_false(s$is_sorted())
@@ -318,7 +318,7 @@ test_that("sort on Series and Expr gives same results", {
 
 test_that("set_sorted", {
   expect_error(
-    pl$Series(c(1, 3, 2, 4))$set_sorted(in_place = TRUE),
+    as_polars_series(c(1, 3, 2, 4))$set_sorted(in_place = TRUE),
     regexp = "breaks immutability"
   )
 
@@ -327,7 +327,7 @@ test_that("set_sorted", {
     list(polars.strictly_immutable = FALSE),
     {
       # test in_place, test set_sorted
-      s = pl$Series(c(1, 3, 2, 4))
+      s = as_polars_series(c(1, 3, 2, 4))
       s$set_sorted(descending = FALSE, in_place = TRUE)
       expect_identical(
         s$sort(descending = FALSE)$to_r(),
@@ -335,7 +335,7 @@ test_that("set_sorted", {
       )
 
       # test NOT in_place no effect
-      s = pl$Series(c(1, 3, 2, 4))
+      s = as_polars_series(c(1, 3, 2, 4))
       s$set_sorted(descending = FALSE, in_place = FALSE)
       expect_identical(
         s$sort(descending = FALSE)$to_r(),
@@ -343,14 +343,14 @@ test_that("set_sorted", {
       )
 
       # test NOT in_place with effect
-      s = pl$Series(c(1, 3, 2, 4))$
+      s = as_polars_series(c(1, 3, 2, 4))$
         set_sorted(descending = FALSE, in_place = FALSE)$
         sort()$
         to_r()
       expect_identical(s, c(1, 3, 2, 4))
 
       # test NOT in_place. reverse-reverse
-      s = pl$Series(c(1, 3, 2, 4))$
+      s = as_polars_series(c(1, 3, 2, 4))$
         set_sorted(descending = TRUE, in_place = FALSE)$
         sort(descending = TRUE)$
         to_r()
@@ -360,7 +360,7 @@ test_that("set_sorted", {
 })
 
 test_that("value counts", {
-  s = pl$Series(c(1, 4, 4, 4, 4, 3, 3, 3, 2, 2, NA))
+  s = as_polars_series(c(1, 4, 4, 4, 4, 3, 3, 3, 2, 2, NA))
   s_st = s$value_counts(sort = TRUE, parallel = FALSE)
   s_mt = s$value_counts(sort = TRUE, parallel = FALSE)
   df_st = s_st$to_data_frame()
@@ -375,8 +375,8 @@ test_that("value counts", {
 })
 
 test_that("arg minmax", {
-  s1 = pl$Series(c(NA, 3, 1, 2))
-  s2 = pl$Series(c(NA_real_, NA_real_))
+  s1 = as_polars_series(c(NA, 3, 1, 2))
+  s2 = as_polars_series(c(NA_real_, NA_real_))
   expect_equal(s1$arg_max(), 1)
   expect_equal(s1$arg_min(), 2)
   expect_equal(s2$arg_max(), NA_real_)
@@ -384,36 +384,36 @@ test_that("arg minmax", {
 })
 
 test_that("series comparison", {
-  expect_true((pl$Series(1:4) == pl$Series(1:4))$all())
-  expect_true((pl$Series(1:4) == 1:4)$all())
-  expect_true((pl$Series(letters) == pl$Series(letters))$all())
-  expect_true((pl$Series(letters) == letters)$all())
-  expect_false((pl$Series(letters) == LETTERS)$any())
-  expect_true((pl$Series(1:4, "foo") == pl$Series(1:4, "foo"))$all())
+  expect_true((as_polars_series(1:4) == as_polars_series(1:4))$all())
+  expect_true((as_polars_series(1:4) == 1:4)$all())
+  expect_true((as_polars_series(letters) == as_polars_series(letters))$all())
+  expect_true((as_polars_series(letters) == letters)$all())
+  expect_false((as_polars_series(letters) == LETTERS)$any())
+  expect_true((as_polars_series(1:4, "foo") == as_polars_series(1:4, "foo"))$all())
 
-  expect_true((pl$Series(1:4) == pl$Series(1:4))$any())
-  expect_true((pl$Series(letters) == pl$Series(letters))$any())
-  expect_true((pl$Series(1:4, "foo") == pl$Series(1:4, "bar"))$all())
+  expect_true((as_polars_series(1:4) == as_polars_series(1:4))$any())
+  expect_true((as_polars_series(letters) == as_polars_series(letters))$any())
+  expect_true((as_polars_series(1:4, "foo") == as_polars_series(1:4, "bar"))$all())
 
-  expect_false((pl$Series(1) == pl$Series(NA_integer_))$all())
-  expect_false((pl$Series(1) == pl$Series(NA_integer_))$all())
-  expect_true((pl$Series(5L) == pl$Series(5.0))$all())
+  expect_false((as_polars_series(1) == as_polars_series(NA_integer_))$all())
+  expect_false((as_polars_series(1) == as_polars_series(NA_integer_))$all())
+  expect_true((as_polars_series(5L) == as_polars_series(5.0))$all())
 
-  expect_true((pl$Series(5) < 6)$all())
-  expect_true((pl$Series(5) <= 6)$all())
-  expect_false((pl$Series(6) < 5)$all())
-  expect_false((pl$Series(6) <= 5)$all())
+  expect_true((as_polars_series(5) < 6)$all())
+  expect_true((as_polars_series(5) <= 6)$all())
+  expect_false((as_polars_series(6) < 5)$all())
+  expect_false((as_polars_series(6) <= 5)$all())
 
-  expect_true((pl$Series("a") > 5)$all())
-  expect_true((pl$Series("a") < "ab")$all())
-  expect_true((pl$Series("ab") == "ab")$all())
-  expect_true((pl$Series("true") == TRUE)$all())
+  expect_true((as_polars_series("a") > 5)$all())
+  expect_true((as_polars_series("a") < "ab")$all())
+  expect_true((as_polars_series("ab") == "ab")$all())
+  expect_true((as_polars_series("true") == TRUE)$all())
 
-  expect_true((pl$Series(1:5) <= 5)$all())
-  expect_false((pl$Series(1:5) <= 3)$all())
-  expect_true((pl$Series(1:5) < 11:15)$all())
+  expect_true((as_polars_series(1:5) <= 5)$all())
+  expect_false((as_polars_series(1:5) <= 3)$all())
+  expect_true((as_polars_series(1:5) < 11:15)$all())
   expect_error(
-    (pl$Series(1:5) <= c(1:2))$all(),
+    (as_polars_series(1:5) <= c(1:2))$all(),
     regexp = "not same length or either of length 1."
   )
 })
@@ -423,33 +423,33 @@ test_that("series comparison", {
 test_that("rep", {
   # rechunk FALSE gives same result
   expect_identical(
-    pl$Series(1:2, "alice")$rep(2, rechunk = FALSE)$to_r(),
-    pl$Series(rep(1:2, 2), "alice")$to_r()
+    as_polars_series(1:2, "alice")$rep(2, rechunk = FALSE)$to_r(),
+    as_polars_series(rep(1:2, 2), "alice")$to_r()
   )
 
   expect_identical(
-    pl$Series(1:2, "alice")$rep(2, rechunk = TRUE)$to_r(),
-    pl$Series(rep(1:2, 2), "alice")$to_r()
+    as_polars_series(1:2, "alice")$rep(2, rechunk = TRUE)$to_r(),
+    as_polars_series(rep(1:2, 2), "alice")$to_r()
   )
   # ^^^^^^^^^^^^^^^^ why is the expectation the same in both cases?
 
   expect_identical(
-    pl$Series(1:2, "alice")$rep(1)$to_r(),
-    pl$Series(rep(1:2, 1), "alice")$to_r()
+    as_polars_series(1:2, "alice")$rep(1)$to_r(),
+    as_polars_series(rep(1:2, 1), "alice")$to_r()
   )
 
   expect_identical(
-    pl$Series(1:2, "alice")$rep(0)$to_r(),
-    pl$Series(rep(1:2, 0), "alice")$to_r()
+    as_polars_series(1:2, "alice")$rep(0)$to_r(),
+    as_polars_series(rep(1:2, 0), "alice")$to_r()
   )
 
   expect_identical(
-    pl$Series(1:2, "alice")$rep(0)$to_r(),
+    as_polars_series(1:2, "alice")$rep(0)$to_r(),
     integer(0)
   )
 
   expect_error(
-    pl$Series(1:2, "alice")$rep(-1)$to_r(),
+    as_polars_series(1:2, "alice")$rep(-1)$to_r(),
     regexp = "cannot be less than zero"
   )
 })
@@ -471,7 +471,7 @@ test_that("Series list", {
   expect_identical(series_list$to_list(), expected_list)
   expect_identical(series_list$to_vector(), unlist(expected_list))
 
-  series_vec = pl$Series(1:5)
+  series_vec = as_polars_series(1:5)
   expect_identical(series_vec$to_r(), 1:5)
   expect_identical(series_vec$to_vector(), 1:5)
   expect_identical(series_vec$to_list(), as.list(1:5))
@@ -488,7 +488,7 @@ test_that("Series list", {
   })
 
   # parse and assemble nested Series
-  s = pl$Series(l)
+  s = as_polars_series(l)
 
   # check data_type
   expect_true(s$dtype == with(pl, List(List(List(String)))))
@@ -501,11 +501,11 @@ test_that("Series list", {
 
 
 test_that("Series numeric", {
-  expect_true(pl$Series(1:4)$is_numeric())
-  expect_true(pl$Series(c(1, 2, 3))$is_numeric())
-  expect_false(pl$Series(c("a", "b", "c"))$is_numeric())
-  expect_false(pl$Series(c(TRUE, FALSE))$is_numeric())
-  expect_false(pl$Series(c(NA, NA))$is_numeric())
+  expect_true(as_polars_series(1:4)$is_numeric())
+  expect_true(as_polars_series(c(1, 2, 3))$is_numeric())
+  expect_false(as_polars_series(c("a", "b", "c"))$is_numeric())
+  expect_false(as_polars_series(c(TRUE, FALSE))$is_numeric())
+  expect_false(as_polars_series(c(NA, NA))$is_numeric())
 })
 
 test_that("to_series", {
@@ -516,7 +516,7 @@ test_that("to_series", {
 })
 
 test_that("internal method get_fmt and to_fmt_char", {
-  s_1 = pl$Series(c("foo", "bar"))
+  s_1 = as_polars_series(c("foo", "bar"))
   expect_equal(
     .pr$Series$get_fmt(s_1, index = 1, str_length = 3),
     '"ba…'
@@ -547,7 +547,7 @@ make_cases = function() {
 }
 patrick::with_parameters_test_that("mean, median, std, var",
   {
-    s = pl$Series(rnorm(100))
+    s = as_polars_series(rnorm(100))
     a = s[[.test_name]]()
     # upstream .std_as_series() does not appear to return Series
     if (inherits(a, "RPolarsSeries")) a = a$to_vector()
@@ -560,24 +560,24 @@ patrick::with_parameters_test_that("mean, median, std, var",
 
 test_that("n_unique", {
   x = c(1:4, NA, NaN, 1) # 6 unique one repeated
-  expect_identical(pl$Series(x)$n_unique(), 6)
-  expect_identical(pl$Series(c())$n_unique(), 0)
+  expect_identical(as_polars_series(x)$n_unique(), 6)
+  expect_identical(as_polars_series(c())$n_unique(), 0)
 })
 
 
 test_that("method from Expr", {
-  expect_equal(pl$Series(1:3)$cos()$to_r(), cos(1:3))
+  expect_equal(as_polars_series(1:3)$cos()$to_r(), cos(1:3))
 })
 
 test_that("cum_sum", {
-  expect_equal(pl$Series(c(1, 2, NA, 3))$cum_sum()$to_r(), c(1, 3, NA, 6))
+  expect_equal(as_polars_series(c(1, 2, NA, 3))$cum_sum()$to_r(), c(1, 3, NA, 6))
 })
 
 test_that("the dtype argument of pl$Series", {
-  expect_identical(pl$Series(1, dtype = pl$String)$to_r(), "1.0")
-  expect_error(pl$Series("foo", dtype = pl$Int32), "conversion from `str` to `i32`")
+  expect_identical(pl$Series(values = 1, dtype = pl$String)$to_r(), "1.0")
+  expect_error(pl$Series(values = "foo", dtype = pl$Int32), "conversion from `str` to `i32`")
 })
 
 test_that("the nan_to_null argument of pl$Series", {
-  expect_identical(pl$Series(c(1, 2, NA, NaN), nan_to_null = TRUE)$to_r(), c(1, 2, NA, NA))
+  expect_identical(pl$Series(values = c(1, 2, NA, NaN), nan_to_null = TRUE)$to_r(), c(1, 2, NA, NA))
 })

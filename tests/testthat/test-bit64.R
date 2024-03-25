@@ -2,7 +2,7 @@ test_that("from r to series and reverse", {
   skip_if_not_installed("bit64")
   # R to series
   values = c(-1, 0, 1, NA, 2^61, -2^61)
-  s_act = pl$Series(bit64::as.integer64(values))
+  s_act = pl$Series(values = bit64::as.integer64(values))
   s_ref = pl$lit(values)$cast(pl$Int64)$to_series()
   expect_true(all((s_act == s_ref)$to_r(), na.rm = TRUE))
   # series to R

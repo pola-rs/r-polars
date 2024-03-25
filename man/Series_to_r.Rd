@@ -76,7 +76,7 @@ withr::with_envvar(
 
 \examples{
 # Series with non-list type
-series_vec = pl$Series(letters[1:3])
+series_vec = as_polars_series(letters[1:3])
 
 series_vec$to_r() # as vector because Series DataType is not list (is String)
 series_vec$to_list() # implicit call as.list(), convert to list
@@ -84,7 +84,7 @@ series_vec$to_vector() # implicit call unlist(), same as to_r() as already vecto
 
 
 # make a Series with nested lists
-series_list = pl$Series(
+series_list = as_polars_series(
   list(
     list(c(1:5, NA_integer_)),
     list(1:2, NA_integer_)

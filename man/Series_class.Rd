@@ -152,7 +152,7 @@ withr::with_envvar(
 
 \examples{
 # make a Series
-s = pl$Series(c(1:3, 1L))
+s = as_polars_series(c(1:3, 1L))
 
 # call an active binding
 s$shape
@@ -164,8 +164,8 @@ s$sort()$flags
 s$cos()
 
 # use Expr method in subnamespaces
-pl$Series(list(3:1, 1:2, NULL))$list$first()
-pl$Series(c(1, NA, 2))$str$concat("-")
+as_polars_series(list(3:1, 1:2, NULL))$list$first()
+as_polars_series(c(1, NA, 2))$str$concat("-")
 
 s = pl$date_range(
   as.Date("2024-02-18"), as.Date("2024-02-24"),

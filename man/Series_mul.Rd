@@ -17,9 +17,9 @@ Converted to \link[=Series_class]{Series} by \code{\link[=as_polars_series]{as_p
 Method equivalent of multiplication operator \code{series * other}.
 }
 \examples{
-pl$Series(1:3)$mul(11:13)
-pl$Series(1:3)$mul(pl$Series(11:13))
-pl$Series(1:3)$mul(1L)
+as_polars_series(1:3)$mul(11:13)
+as_polars_series(1:3)$mul(as_polars_series(11:13))
+as_polars_series(1:3)$mul(1L)
 }
 \seealso{
 \itemize{

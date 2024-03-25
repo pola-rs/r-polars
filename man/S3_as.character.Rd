@@ -18,7 +18,7 @@ will be formatted to a string of this length.}
 Convert to a character vector
 }
 \examples{
-s = pl$Series(c("foo", "barbaz"))
+s = as_polars_series(c("foo", "barbaz"))
 as.character(s)
 as.character(s, str_length = 3)
 }

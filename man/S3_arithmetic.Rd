@@ -72,9 +72,9 @@ tryCatch(
   error = function(e) e
 )
 
-pl$Series(5) + 10
-+pl$Series(5)
--pl$Series(5)
+as_polars_series(5) + 10
++as_polars_series(5)
+-as_polars_series(5)
 }
 \seealso{
 \itemize{

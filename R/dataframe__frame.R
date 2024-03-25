@@ -2056,7 +2056,9 @@ DataFrame_rolling = function(index_column, period, offset = NULL, closed = "righ
 #' )
 #'
 #' # Dynamic group bys can also be combined with grouping on normal keys
-#' df = df$with_columns(groups = pl$Series(c("a", "a", "a", "b", "b", "a", "a")))
+#' df = df$with_columns(
+#'   groups = as_polars_series(c("a", "a", "a", "b", "b", "a", "a"))
+#' )
 #' df
 #'
 #' df$group_by_dynamic(

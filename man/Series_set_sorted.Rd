@@ -24,6 +24,6 @@ Set a sorted flag on a Series
 Use \code{\link[=Series_class]{$flags}} to see the values of the sorted flags.
 }
 \examples{
-s = pl$Series(1:4)$set_sorted()
+s = as_polars_series(1:4)$set_sorted()
 s$flags
 }

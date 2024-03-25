@@ -426,7 +426,7 @@ as.vector.RPolarsSeries = function(x, mode) x$to_vector()
 #' @export
 #' @rdname S3_as.character
 #' @examples
-#' s = pl$Series(c("foo", "barbaz"))
+#' s = as_polars_series(c("foo", "barbaz"))
 #' as.character(s)
 #' as.character(s, str_length = 3)
 as.character.RPolarsSeries = function(x, ..., str_length = NULL) {
@@ -475,7 +475,7 @@ print.RPolarsSeries = function(x, ...) {
 #' All objects must have the same datatype. Combining does not rechunk. Read more
 #' about R vectors, Series and chunks in \code{\link[polars]{docs_translations}}:
 #' @examples
-#' s = c(pl$Series(1:5), 3:1, NA_integer_)
+#' s = c(as_polars_series(1:5), 3:1, NA_integer_)
 #' s$chunk_lengths() # the series contain three unmerged chunks
 #' @export
 #' @rdname S3_c

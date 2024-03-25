@@ -330,7 +330,7 @@ test_that("lit expr", {
 
   # explicit vector to series to literal
   expect_identical(
-    pl$DataFrame(list())$select(pl$lit(pl$Series(1:4)))$to_list()[[1L]],
+    pl$DataFrame(list())$select(pl$lit(as_polars_series(1:4)))$to_list()[[1L]],
     1:4
   )
 
@@ -1146,7 +1146,7 @@ test_that("fill_null  + forward backward _fill + fill_nan", {
       pl$col("a")$fill_nan("hej")$alias("fnan_str"),
       pl$col("a")$fill_nan(TRUE)$alias("fnan_bool"),
       pl$col("a")$fill_nan(pl$lit(10) / 2)$alias("fnan_expr"),
-      pl$col("a")$fill_nan(pl$Series(10))$alias("fnan_series")
+      pl$col("a")$fill_nan(as_polars_series(10))$alias("fnan_series")
     )$to_list(),
     list(
       fnan_NULL = R_replace_nan(l$a, NA_real_),
@@ -1155,12 +1155,12 @@ test_that("fill_null  + forward backward _fill + fill_nan", {
       fnan_str = c("1.0", "hej", NA, "hej", "3.0"),
       fnan_bool = R_replace_nan(l$a, TRUE),
       fnan_expr = R_replace_nan(l$a, pl$select(pl$lit(10) / 2)$to_list()[[1L]]),
-      fnan_series = R_replace_nan(l$a, pl$Series(10)$to_r())
+      fnan_series = R_replace_nan(l$a, as_polars_series(10)$to_r())
     )
   )
   # series with length not allowed
   expect_error(
-    pl$DataFrame(l)$select(pl$col("a")$fill_nan(pl$Series(10:11))$alias("fnan_series2"))
+    pl$DataFrame(l)$select(pl$col("a")$fill_nan(as_polars_series(10:11))$alias("fnan_series2"))
   )
 })
 
@@ -1562,7 +1562,7 @@ test_that("inspect", {
   )
   ref_fun = \(s) {
     cat("before dropping half the column it was:")
-    pl$Series(1:5)$print()
+    as_polars_series(1:5)$print()
     cat("and not it is dropped", "\n", sep = "")
   }
   ref_text = capture_output(ref_fun())
@@ -2299,7 +2299,7 @@ test_that("concat_list", {
   # concat Expr a Series and an R obejct
   df_act = pl$select(pl$concat_list(list(
     pl$lit(1:5),
-    pl$Series(5:1),
+    as_polars_series(5:1),
     rep(0L, 5)
   ))$alias("alice"))
 

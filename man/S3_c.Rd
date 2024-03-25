@@ -22,6 +22,6 @@ All objects must have the same datatype. Combining does not rechunk. Read more
 about R vectors, Series and chunks in \code{\link[polars]{docs_translations}}:
 }
 \examples{
-s = c(pl$Series(1:5), 3:1, NA_integer_)
+s = c(as_polars_series(1:5), 3:1, NA_integer_)
 s$chunk_lengths() # the series contain three unmerged chunks
 }

@@ -13,5 +13,5 @@ A logical value
 Reduce Boolean Series with ALL
 }
 \examples{
-pl$Series(c(TRUE, TRUE, NA))$all()
+as_polars_series(c(TRUE, TRUE, NA))$all()
 }

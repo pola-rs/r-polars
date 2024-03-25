@@ -17,9 +17,9 @@ Converted to \link[=Series_class]{Series} by \code{\link[=as_polars_series]{as_p
 Method equivalent of modulo operator \code{series \%\% other}.
 }
 \examples{
-pl$Series(1:4)$mod(2L)
-pl$Series(1:3)$mod(pl$Series(11:13))
-pl$Series(1:3)$mod(1L)
+as_polars_series(1:4)$mod(2L)
+as_polars_series(1:3)$mod(as_polars_series(11:13))
+as_polars_series(1:3)$mod(1L)
 }
 \seealso{
 \itemize{

@@ -13,5 +13,5 @@ A logical value
 Reduce boolean Series with ANY
 }
 \examples{
-pl$Series(c(TRUE, FALSE, NA))$any()
+as_polars_series(c(TRUE, FALSE, NA))$any()
 }

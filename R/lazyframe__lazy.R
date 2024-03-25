@@ -1903,7 +1903,9 @@ LazyFrame_rolling = function(
 #' )$collect()
 #'
 #' # Dynamic group bys can also be combined with grouping on normal keys
-#' lf = lf$with_columns(groups = pl$Series(c("a", "a", "a", "b", "b", "a", "a")))
+#' lf = lf$with_columns(
+#'   groups = as_polars_series(c("a", "a", "a", "b", "b", "a", "a"))
+#' )
 #' lf$collect()
 #'
 #' lf$group_by_dynamic(

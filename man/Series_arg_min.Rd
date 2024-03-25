@@ -13,5 +13,5 @@ A numeric value
 Note that this is 0-indexed.
 }
 \examples{
-pl$Series(c(5, 1))$arg_min()
+as_polars_series(c(5, 1))$arg_min()
 }

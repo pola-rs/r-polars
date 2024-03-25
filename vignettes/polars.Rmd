@@ -107,7 +107,7 @@ via `pl$`:
 ```{r}
 library(polars)
 
-pl$Series((1:5) * 5)
+pl$Series(name = "a", values = (1:5) * 5)
 
 pl$DataFrame(a = 1:5, b = letters[1:5])
 ```
@@ -132,9 +132,9 @@ vectors.
 
 ```{r}
 pl$DataFrame(
-  a = pl$Series((1:5) * 5),
-  b = pl$Series(letters[1:5]),
-  c = pl$Series(c(1, 2, 3, 4, 5)),
+  a = as_polars_series((1:5) * 5),
+  b = as_polars_series(letters[1:5]),
+  c = as_polars_series(c(1, 2, 3, 4, 5)),
   d = c(15, 14, 13, 12, 11),
   c(5, 4, 3, 2, 1),
   1:5

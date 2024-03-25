@@ -16,7 +16,7 @@ immutable. Any modification of a \code{Series} should lead to a clone anyways, b
 this can be useful when dealing with attributes (see examples).
 }
 \examples{
-df1 = pl$Series(1:10)
+df1 = as_polars_series(1:10)
 
 # Make a function to take a Series, add an attribute, and return a Series
 give_attr = function(data) {
@@ -34,7 +34,7 @@ give_attr = function(data) {
   attr(data, "created_on") = "2024-01-29"
   data
 }
-df1 = pl$Series(1:10)
+df1 = as_polars_series(1:10)
 df2 = give_attr(df1)
 
 # now, the original Series doesn't get this attribute

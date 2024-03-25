@@ -23,6 +23,6 @@ return a cloned Series with the flag.}
 Sort a Series
 }
 \examples{
-pl$Series(c(1.5, NA, 1, NaN, Inf, -Inf))$sort()
-pl$Series(c(1.5, NA, 1, NaN, Inf, -Inf))$sort(nulls_last = TRUE)
+as_polars_series(c(1.5, NA, 1, NaN, Inf, -Inf))$sort()
+as_polars_series(c(1.5, NA, 1, NaN, Inf, -Inf))$sort(nulls_last = TRUE)
 }

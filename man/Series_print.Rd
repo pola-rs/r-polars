@@ -13,5 +13,5 @@ self
 Print Series
 }
 \examples{
-pl$Series(1:3)
+as_polars_series(1:3)
 }
