@@ -71,7 +71,7 @@
 
 - The `join_nulls` and `validate` arguments of `<DataFrame>$join()` now work
   correctly (#945).
-- We said in the changelog of 0.14.0 that all `row_count_*` args in I/O functions 
+- We said in the changelog of 0.14.0 that all `row_count_*` args in I/O functions
   were renamed `row_index_*`, but this change was not made for CSV and IPC
   functions. This renaming is now made (#964).
 
