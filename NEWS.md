@@ -49,7 +49,7 @@
 - `$unique()` for `DataFrame` and `LazyFrame` have several changes (#953):
   - New default value `"any"` for argument `keep`.
   - Arguments `keep` and `maintain_order` must be named.
-- The following deprecated methods are now removed: `pl$threadpool_size()`,
+- The following deprecated functions are now removed: `pl$threadpool_size()`,
   `<DataFrame>$with_row_count()`, `<LazyFrame>$with_row_count()` (#965).
 
 ### New features
