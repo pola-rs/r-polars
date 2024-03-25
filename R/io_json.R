@@ -7,22 +7,7 @@
 #' @param source Path to a file or URL. It is possible to provide multiple paths
 #' provided that all NDJSON files have the same schema. It is not possible to
 #' provide several URLs.
-#' @param infer_schema_length Maximum number of rows to read to infer the column
-#' types. If set to 0, all columns will be read as UTF-8. If `NULL`, a full
-#' table scan will be done (slow).
 #' @param batch_size Number of rows that will be processed per thread.
-#' @param n_rows Maximum number of rows to read.
-#' @param low_memory Reduce memory usage (will yield a lower performance).
-#' @param rechunk Reallocate to contiguous memory when all chunks / files are
-#' parsed.
-#' @param row_index_name If not `NULL`, this will insert a row count column with
-#' the given name into the DataFrame.
-#' @param row_index_offset Offset to start the row_count column (only used if
-#' the name is set).
-#' @param reuse_downloaded If `TRUE`(default) and a URL was provided, cache the
-#' downloaded files in session for an easy reuse.
-#' @param ignore_errors If `TRUE`, do not error if parsing fails because of
-#' schema mismatches.
 #' @return A LazyFrame
 #'
 # we should use @examplesIf but altdoc doesn't know how to parse it yet

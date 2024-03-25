@@ -3,18 +3,12 @@
 #' @inheritParams pl_scan_csv
 #' @param source Path to a file. You can use globbing with `*` to scan/read multiple
 #' files in the same directory (see examples).
-#' @param n_rows Maximum number of rows to read.
 #' @param cache Cache the result after reading.
 #' @param parallel This determines the direction of parallelism. `"auto"` will
 #' try to determine the optimal direction. Can be `"auto"`, `"none"`, `"columns"`,
 #' or `"rowgroups"`,
 #' @param rechunk In case of reading multiple files via a glob pattern, rechunk
 #' the final DataFrame into contiguous memory chunks.
-#' @param row_index_name If not `NULL`, this will insert a row count column with
-#' the given name into the DataFrame.
-#' @param row_index_offset Offset to start the row_index column (only used if
-#' the name is set).
-#' @param low_memory Reduce memory usage (will yield a lower performance).
 #' @param hive_partitioning Infer statistics and schema from hive partitioned URL
 #' and use them to prune reads.
 #' @param use_statistics Use statistics in the parquet file to determine if pages
