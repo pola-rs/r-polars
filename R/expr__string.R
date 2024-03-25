@@ -4,7 +4,6 @@
 # expr_str_make_sub_ns = macro_new_subnamespace("^ExprStr_", "RPolarsExprStrNameSpace")
 
 
-# TODO for 0.16.0: rename arguments, should not allow positional arguments except for the first two
 #' Convert a String column into a Date/Datetime/Time column.
 #'
 #' Similar to the [strptime()] function.
