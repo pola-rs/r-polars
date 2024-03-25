@@ -315,11 +315,6 @@ LazyFrame_with_row_index = function(name, offset = NULL) {
     unwrap("in $with_row_index():")
 }
 
-LazyFrame_with_row_count = function(name, offset = NULL) {
-  warning("`$with_row_count()` is deprecated and will be removed in 0.15.0. Use `with_row_index()` instead.")
-  .pr$LazyFrame$with_row_index(self, name, offset) |>
-    unwrap("in $with_row_count():")
-}
 
 #' Apply filter to LazyFrame
 #'

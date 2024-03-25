@@ -447,13 +447,6 @@ DataFrame_with_row_index = function(name, offset = NULL) {
     unwrap("in $with_row_index():")
 }
 
-DataFrame_with_row_count = function(name, offset = NULL) {
-  warning("`$with_row_count()` is deprecated and will be removed in 0.15.0. Use `with_row_index()` instead.")
-  .pr$DataFrame$with_row_index(self, name, offset) |>
-    unwrap("in $with_row_count():")
-}
-
-
 # define setter function
 DataFrame.property_setters$columns = function(self, names) {
   unwrap(.pr$DataFrame$set_column_names_mut(self, names))
@@ -1010,8 +1003,10 @@ DataFrame_to_list = function(unnest_structs = TRUE, ..., int64_conversion = pola
 DataFrame_join = function(
     other,
     on = NULL,
-    how = c("inner", "left", "outer", "semi", "anti", "cross",
-            "outer_coalesce"),
+    how = c(
+      "inner", "left", "outer", "semi", "anti", "cross",
+      "outer_coalesce"
+    ),
     ...,
     left_on = NULL,
     right_on = NULL,

@@ -107,9 +107,3 @@ check_feature = function(feature_name, context = NULL, call = sys.call(1L)) {
 #' @examples
 #' pl$thread_pool_size()
 pl_thread_pool_size = function() thread_pool_size()
-
-#' @rdname pl_thread_pool_size
-pl_threadpool_size = function() {
-  warning("`pl$threadpool_size()` is deprecated and will be removed in 0.15.0. Use `pl$thread_pool_size()` instead.")
-  thread_pool_size()
-}

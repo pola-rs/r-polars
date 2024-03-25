@@ -52,9 +52,9 @@
        [93] "std"                       "struct"                   
        [95] "sum"                       "sum_horizontal"           
        [97] "tail"                      "thread_pool_size"         
-       [99] "threadpool_size"           "time"                     
-      [101] "using_string_cache"        "var"                      
-      [103] "when"                      "with_string_cache"        
+       [99] "time"                      "using_string_cache"       
+      [101] "var"                       "when"                     
+      [103] "with_string_cache"        
 
 ---
 
@@ -91,8 +91,8 @@
       [53] "sum"              "tail"             "to_data_frame"    "to_list"         
       [57] "to_series"        "to_struct"        "transpose"        "unique"          
       [61] "unnest"           "var"              "width"            "with_columns"    
-      [65] "with_row_count"   "with_row_index"   "write_csv"        "write_json"      
-      [69] "write_ndjson"     "write_parquet"   
+      [65] "with_row_index"   "write_csv"        "write_json"       "write_ndjson"    
+      [69] "write_parquet"   
 
 ---
 
@@ -164,8 +164,7 @@
       [49] "to_dot"                  "unique"                 
       [51] "unnest"                  "var"                    
       [53] "width"                   "with_columns"           
-      [55] "with_context"            "with_row_count"         
-      [57] "with_row_index"         
+      [55] "with_context"            "with_row_index"         
 
 ---
 
