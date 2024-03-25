@@ -65,12 +65,15 @@
 - New argument `raise_if_undetermined` of `<Expr>$meta$output_name()` (#961).
 - New function `pl$arg_sort_by()` (#929).
 - New functions `pl$date_ranges()` and `pl$datetime_ranges()` (#962).
+- Export the `Duration` datatype (#955).
 
 ### Bug fixes
 
 - The `join_nulls` and `validate` arguments of `<DataFrame>$join()` now work
   correctly (#945).
-- Export the `Duration` datatype (#955).
+- We said in the changelog of 0.14.0 that all `row_count_*` args in I/O functions
+  were renamed `row_index_*`, but this change was not made for CSV and IPC
+  functions. This renaming is now made (#964).
 
 ## Polars R Package 0.15.1
 

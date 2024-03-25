@@ -120,14 +120,14 @@ test_that("arg null_values works", {
   ))
 })
 
-test_that("args row_count_ work", {
+test_that("args row_index_ work", {
   dat = mtcars
   tmpf = tempfile()
   write.csv(dat, tmpf, row.names = FALSE)
 
-  out = pl$read_csv(tmpf, row_count_name = "foo")$to_data_frame()
+  out = pl$read_csv(tmpf, row_index_name = "foo")$to_data_frame()
   expect_equal(out$foo, 0:31)
-  out = pl$read_csv(tmpf, row_count_name = "foo", row_count_offset = 1)$to_data_frame()
+  out = pl$read_csv(tmpf, row_index_name = "foo", row_index_offset = 1)$to_data_frame()
   expect_equal(out$foo, 1:32)
 })
 
