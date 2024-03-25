@@ -125,7 +125,7 @@ explicitly specify the time zone before conversion.
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{# Due to daylight savings, clocks were turned forward 1 hour on Sunday, March 8, 2020, 2:00:00 am
 # so this particular date-time doesn't exist
-non_existent_time = pl$Series("2020-03-08 02:00:00")$str$strptime(pl$Datetime(), "\%F \%T")
+non_existent_time = as_polars_series("2020-03-08 02:00:00")$str$strptime(pl$Datetime(), "\%F \%T")
 
 withr::with_envvar(
   new = c(TZ = "America/New_York"),

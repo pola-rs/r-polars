@@ -329,7 +329,7 @@ as_polars_series = function(x, name = NULL, ...) {
 #' @rdname as_polars_series
 #' @export
 as_polars_series.default = function(x, name = NULL, ...) {
-  pl$Series(x, name = name)
+  pl$Series(values = x, name = name)
 }
 
 

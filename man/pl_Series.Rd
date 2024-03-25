@@ -5,9 +5,13 @@
 \alias{Series}
 \title{Create new Series}
 \usage{
-pl_Series(values, name = NULL, dtype = NULL, ..., nan_to_null = FALSE)
+pl_Series(..., values = NULL, name = NULL, dtype = NULL, nan_to_null = FALSE)
 }
 \arguments{
+\item{...}{Treated as \code{values}, \code{name}, and \code{dtype} in order.
+In future versions, the order of the arguments will be changed to
+\code{pl$Series(name, values, dtype, ..., nan_to_null)} and \code{...} will be ignored.}
+
 \item{values}{any vector}
 
 \item{name}{Name of the Series. If \code{NULL}, an empty string is used.}
@@ -15,8 +19,6 @@ pl_Series(values, name = NULL, dtype = NULL, ..., nan_to_null = FALSE)
 \item{dtype}{One of \link[=pl_dtypes]{polars data type} or \code{NULL}.
 If not \code{NULL}, that data type is used to \link[=Expr_cast]{cast} the Series created from the vector
 to a specific data type internally.}
-
-\item{...}{Ignored.}
 
 \item{nan_to_null}{If \code{TRUE}, \code{NaN} values contained in the Series are replaced to \code{null}.
 Using the \code{\link[=Expr_fill_nan]{$fill_nan()}} method internally.}
@@ -30,15 +32,15 @@ This function is a simple way to convert basic types of vectors provided by base
 For converting more types properly, use the generic function \code{\link[=as_polars_series]{as_polars_series()}}.
 }
 \examples{
-# Constructing a Series by specifying name and values positionally:
-s = pl$Series(1:3, "a")
+# Constructing a Series by specifying name and values positionally (deprecated):
+s = suppressWarnings(pl$Series(1:3, "a"))
 s
 
 # Notice that the dtype is automatically inferred as a polars Int32:
 s$dtype
 
 # Constructing a Series with a specific dtype:
-s2 = pl$Series(1:3, "a", dtype = pl$Float32)
+s2 = pl$Series(values = 1:3, name = "a", dtype = pl$Float32)
 s2
 }
 \seealso{

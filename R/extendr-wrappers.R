@@ -1230,7 +1230,7 @@ RPolarsLazyGroupBy$tail <- function(n) .Call(wrap__RPolarsLazyGroupBy__tail, sel
 
 RPolarsSeries <- new.env(parent = emptyenv())
 
-RPolarsSeries$new <- function(x, name) .Call(wrap__RPolarsSeries__new, x, name)
+RPolarsSeries$new <- function(name, values) .Call(wrap__RPolarsSeries__new, name, values)
 
 RPolarsSeries$clone <- function() .Call(wrap__RPolarsSeries__clone, self)
 
