@@ -24,6 +24,10 @@ datetime <- function(year, month, day, hour, minute, second, microsecond, time_u
 
 duration <- function(weeks, days, hours, minutes, seconds, milliseconds, microseconds, nanoseconds, time_unit) .Call(wrap__duration, weeks, days, hours, minutes, seconds, milliseconds, microseconds, nanoseconds, time_unit)
 
+int_range <- function(start, end, step, dtype) .Call(wrap__int_range, start, end, step, dtype)
+
+int_ranges <- function(start, end, step, dtype) .Call(wrap__int_ranges, start, end, step, dtype)
+
 min_horizontal <- function(dotdotdot) .Call(wrap__min_horizontal, dotdotdot)
 
 max_horizontal <- function(dotdotdot) .Call(wrap__max_horizontal, dotdotdot)

@@ -37,6 +37,7 @@
 
       This warning can also be silenced by replacing `pl$Series(<values>, <name>)`
       by `as_polars_series(<values>, <name>)`.
+
   - `pl$implode(...)` is rewritten to be a syntactic sugar for `pl$col(...)$implode()` (#923).
   - Unify names of input/output function arguments (#935).
     - All arguments except the first argument must be named arguments.
@@ -90,6 +91,7 @@
 - New function `pl$arg_sort_by()` (#929).
 - New functions `pl$date_ranges()` and `pl$datetime_ranges()` (#962).
 - Export the `Duration` datatype (#955).
+- New functions `pl$int_range()` and `pl$int_ranges()` (#968).
 
 ### Bug fixes
 
