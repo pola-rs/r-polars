@@ -748,10 +748,11 @@ pub fn robj_to_datatype(robj: extendr_api::Robj) -> RResult<RPolarsDataType> {
     Ok(RPolarsDataType(ext_dt.0.clone()))
 }
 
+// TODO: move to R side?
 pub fn robj_to_pl_duration_string(robj: extendr_api::Robj) -> RResult<String> {
     use extendr_api::*;
     let pl_duration_robj = unpack_r_eval(R!(
-        "polars:::result(polars::parse_as_polars_duration_string({{robj}}))"
+        "polars:::result(polars:::parse_as_polars_duration_string({{robj}}))"
     ))?;
 
     robj_to_string(pl_duration_robj)

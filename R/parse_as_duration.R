@@ -28,7 +28,7 @@
 #' By "calendar day", we mean the corresponding time on the next day
 #' (which may not be 24 hours, due to daylight savings).
 #' Similarly for "calendar week", "calendar month", "calendar quarter", and "calendar year".
-#' @export
+#' @noRd
 #' @examples
 #' # A single character is passed as is
 #' parse_as_polars_duration_string("1d")
@@ -40,24 +40,22 @@ parse_as_polars_duration_string = function(x, ...) {
 }
 
 
-#' @rdname parse_as_polars_duration_string
-#' @export
+#' @exportS3Method
 parse_as_polars_duration_string.character = function(x, ...) {
   if (length(x) != 1L || is.na(x)) {
     Err_plain("The argument parsed as a Polars duration must be a single non-NA character.") |>
-      unwrap("in `parse_as_polars_duration_string(<character>)`")
+      unwrap()
   }
 
   x
 }
 
 
-#' @rdname parse_as_polars_duration_string
-#' @export
+#' @exportS3Method
 parse_as_polars_duration_string.difftime = function(x, ...) {
   if (length(x) != 1L || is.na(x)) {
     Err_plain("The argument parsed as a Polars duration must be a single non-NA difftime.") |>
-      unwrap("in `parse_as_polars_duration_string(<difftime>)`")
+      unwrap()
   }
 
   difftime_to_duration_string(x)
