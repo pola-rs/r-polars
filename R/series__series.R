@@ -276,13 +276,10 @@ pl_Series = function(
 
   if (!missing(...)) {
     warning(
-      "The argument position of `pl$Series()` will be changed as of 0.17.0:\n",
-      "Until 0.17.0, the first argument corresponds to the values and the second argument to the name of the Series.\n",
-      "As of 0.17.0, the first argument will correspond to the name and the second argument to the values.\n",
-      " - 0.15.x: pl$Series(x, name, dtype, ..., nan_to_null)\n",
-      " - 0.17.0: pl$Series(name, values, dtype, ..., nan_to_null)\n",
-      "Since detecting the positional arguments now, use these arguments as `values`, `name` and `dtype`.\n",
-      "Use named arguments `values`, `name`, and `dtype` in `pl$Series()` instead of positional arguments to silence this warning."
+      "`pl$Series()` will handle unnamed arguments differently as of 0.17.0:\n",
+      "- until 0.17.0, the first argument corresponds to the values and the second argument to the name of the Series.\n",
+      "- as of 0.17.0, the first argument will correspond to the name and the second argument to the values.\n",
+      "Use named arguments in `pl$Series()` or replace `pl$Series(<values>, <name>)` by `as_polars_series(<values>, <name>)` to silence this warning.\n"
     )
     dots = list(...)
     values = values %||% dots[[1]]
