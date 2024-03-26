@@ -34,6 +34,8 @@
       # The first argument is `name`, the second argument is `values`.
       pl$Series("foo", 1:3)
       ```
+      This warning can also be silenced by replacing `pl$Series(<values>, <name>)` 
+      by `as_polars_series(<values>, <name>)`.
   - `pl$implode(...)` is rewritten to be a syntactic sugar for `pl$col(...)$implode()` (#923).
   - Unify names of input/output function arguments (#935).
     - All arguments except the first argument must be named arguments.
