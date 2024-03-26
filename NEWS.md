@@ -18,19 +18,21 @@
     - The argument `x` is renamed `values` (#933).
     - Using positional arguments in `pl$Series()` throws a warning, since the
       argument positions will be changed in the future (#966).
+
       ```r
       # polars 0.15.1 or earlier
       # The first argument is `x`, the second argument is `name`.
       pl$Series(1:3, "foo")
-      
+
       # The code above will warn in 0.16.0
       # Use named arguments to silence the warning.
       pl$Series(values = 1:3, name = "foo")
       pl$Series(name = "foo", values = 1:3)
-      
+
       # polars 0.17.0 or later (future version)
       # The first argument is `name`, the second argument is `values`.
       pl$Series("foo", 1:3)
+      ```
   - `pl$implode(...)` is rewritten to be a syntactic sugar for `pl$col(...)$implode()` (#923).
   - Unify names of input/output function arguments (#935).
     - All arguments except the first argument must be named arguments.
