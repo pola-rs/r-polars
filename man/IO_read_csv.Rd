@@ -22,8 +22,8 @@ pl_read_csv(
   low_memory = FALSE,
   rechunk = TRUE,
   skip_rows_after_header = 0,
-  row_count_name = NULL,
-  row_count_offset = 0,
+  row_index_name = NULL,
+  row_index_offset = 0,
   try_parse_dates = FALSE,
   eol_char = "\\n",
   raise_if_empty = TRUE,
@@ -95,10 +95,10 @@ parsed.}
 \item{skip_rows_after_header}{Parse the first row as headers, and then skip
 this number of rows.}
 
-\item{row_count_name}{If not \code{NULL}, this will insert a row count column with
+\item{row_index_name}{If not \code{NULL}, this will insert a row index column with
 the given name into the DataFrame.}
 
-\item{row_count_offset}{Offset to start the row_count column (only used if
+\item{row_index_offset}{Offset to start the row index column (only used if
 the name is set).}
 
 \item{try_parse_dates}{Try to automatically parse dates. Most ISO8601-like

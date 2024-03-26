@@ -82,7 +82,7 @@ test_that("concat dataframe", {
 
   # can concat Series
   expect_identical(
-    pl$concat(1:5, pl$Series(5:1, "b"), how = "horizontal")$to_list(),
+    pl$concat(1:5, as_polars_series(5:1, "b"), how = "horizontal")$to_list(),
     list(x = 1:5, b = 5:1)
   )
 

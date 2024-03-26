@@ -44,8 +44,8 @@ test_that("POSIXct data conversion", {
   )
   # TODO: infer timezone from string, change the arugment name from `tz`
   expect_true(
-    pl$Series("2022-01-01 UTC")$str$strptime(pl$Datetime(time_zone = "UTC"), "%F %Z")$eq(
-      pl$Series(as.POSIXct("2022-01-01", tz = "UTC"))
+    as_polars_series("2022-01-01 UTC")$str$strptime(pl$Datetime(time_zone = "UTC"), "%F %Z")$eq(
+      as_polars_series(as.POSIXct("2022-01-01", tz = "UTC"))
     )$to_r()
   )
 
@@ -58,8 +58,8 @@ test_that("POSIXct data conversion", {
       )
       # TODO: infer timezone from string, change the arugment name from `tz`
       expect_true(
-        pl$Series("2022-01-01 UTC")$str$strptime(pl$Datetime(time_zone = "UTC"), "%F %Z")$eq(
-          pl$Series(as.POSIXct("2022-01-01", tz = "UTC"))
+        as_polars_series("2022-01-01 UTC")$str$strptime(pl$Datetime(time_zone = "UTC"), "%F %Z")$eq(
+          as_polars_series(as.POSIXct("2022-01-01", tz = "UTC"))
         )$to_r()
       )
 
@@ -111,15 +111,15 @@ test_that("String and Utf8 are identical", {
 
 test_that("Categorical", {
   expect_identical(
-    pl$Series(c("z", "z", "k", "a"))$cast(pl$Categorical())$sort()$to_r(),
+    as_polars_series(c("z", "z", "k", "a"))$cast(pl$Categorical())$sort()$to_r(),
     factor(c("z", "z", "k", "a"))
   )
   expect_identical(
-    pl$Series(c("z", "z", "k", "a"))$cast(pl$Categorical("lexical"))$sort()$to_r(),
+    as_polars_series(c("z", "z", "k", "a"))$cast(pl$Categorical("lexical"))$sort()$to_r(),
     factor(c("a", "k", "z", "z"))
   )
   expect_error(
-    pl$Series(c("z", "z", "k", "a"))$cast(pl$Categorical("foobar"))
+    as_polars_series(c("z", "z", "k", "a"))$cast(pl$Categorical("foobar"))
   )
 })
 

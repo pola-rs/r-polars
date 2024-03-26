@@ -37,14 +37,15 @@ table scan will be done (slow).}
 \item{rechunk}{Reallocate to contiguous memory when all chunks / files are
 parsed.}
 
-\item{row_index_name}{If not \code{NULL}, this will insert a row count column with
+\item{row_index_name}{If not \code{NULL}, this will insert a row index column with
 the given name into the DataFrame.}
 
-\item{row_index_offset}{Offset to start the row_count column (only used if
+\item{row_index_offset}{Offset to start the row index column (only used if
 the name is set).}
 
-\item{ignore_errors}{If \code{TRUE}, do not error if parsing fails because of
-schema mismatches.}
+\item{ignore_errors}{Keep reading the file even if some lines yield errors.
+You can also use \code{infer_schema_length = 0} to read all columns as UTF8 to
+check which values might cause an issue.}
 }
 \value{
 A DataFrame

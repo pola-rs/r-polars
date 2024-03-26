@@ -41,12 +41,12 @@ conversion.}
 Convert a String column into a Date column
 }
 \examples{
-s = pl$Series(c("2020/01/01", "2020/02/01", "2020/03/01"))
+s = as_polars_series(c("2020/01/01", "2020/02/01", "2020/03/01"))
 
 s$str$to_date()
 
 # by default, this errors if some values cannot be converted
-s = pl$Series(c("2020/01/01", "2020 02 01", "2020-03-01"))
+s = as_polars_series(c("2020/01/01", "2020 02 01", "2020-03-01"))
 try(s$str$to_date())
 s$str$to_date(strict = FALSE)
 }

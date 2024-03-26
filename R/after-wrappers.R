@@ -315,7 +315,7 @@ pl_select = function(...) {
 #' Does not give meaningful answers for regular R objects.
 #' @param robj an R object
 #' @return String of mem address
-#' @examples pl$mem_address(pl$Series(1:3))
+#' @examples pl$mem_address(pl$Series(values = 1:3))
 pl_mem_address = function(robj) {
   mem_address(robj)
 }

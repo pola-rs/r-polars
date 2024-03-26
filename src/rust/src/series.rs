@@ -55,8 +55,8 @@ impl From<&RPolarsExpr> for pl::PolarsResult<RPolarsSeries> {
 #[extendr]
 impl RPolarsSeries {
     //utility methods
-    pub fn new(x: Robj, name: Robj) -> RResult<RPolarsSeries> {
-        robjname2series(x, robj_to!(Option, str, name)?.unwrap_or(""))
+    pub fn new(name: Robj, values: Robj) -> RResult<RPolarsSeries> {
+        robjname2series(values, robj_to!(str, name)?)
             .map_err(polars_to_rpolars_err)
             .map(RPolarsSeries)
     }

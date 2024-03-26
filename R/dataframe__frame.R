@@ -79,7 +79,7 @@
 #' ```{r}
 #' # Due to daylight savings, clocks were turned forward 1 hour on Sunday, March 8, 2020, 2:00:00 am
 #' # so this particular date-time doesn't exist
-#' non_existent_time = pl$Series("2020-03-08 02:00:00")$str$strptime(pl$Datetime(), "%F %T")
+#' non_existent_time = as_polars_series("2020-03-08 02:00:00")$str$strptime(pl$Datetime(), "%F %T")
 #'
 #' withr::with_envvar(
 #'   new = c(TZ = "America/New_York"),
@@ -446,13 +446,6 @@ DataFrame_with_row_index = function(name, offset = NULL) {
   .pr$DataFrame$with_row_index(self, name, offset) |>
     unwrap("in $with_row_index():")
 }
-
-DataFrame_with_row_count = function(name, offset = NULL) {
-  warning("`$with_row_count()` is deprecated and will be removed in 0.15.0. Use `with_row_index()` instead.")
-  .pr$DataFrame$with_row_index(self, name, offset) |>
-    unwrap("in $with_row_count():")
-}
-
 
 # define setter function
 DataFrame.property_setters$columns = function(self, names) {
@@ -1010,8 +1003,10 @@ DataFrame_to_list = function(unnest_structs = TRUE, ..., int64_conversion = pola
 DataFrame_join = function(
     other,
     on = NULL,
-    how = c("inner", "left", "outer", "semi", "anti", "cross",
-            "outer_coalesce"),
+    how = c(
+      "inner", "left", "outer", "semi", "anti", "cross",
+      "outer_coalesce"
+    ),
     ...,
     left_on = NULL,
     right_on = NULL,
@@ -2061,7 +2056,9 @@ DataFrame_rolling = function(index_column, period, offset = NULL, closed = "righ
 #' )
 #'
 #' # Dynamic group bys can also be combined with grouping on normal keys
-#' df = df$with_columns(groups = pl$Series(c("a", "a", "a", "b", "b", "a", "a")))
+#' df = df$with_columns(
+#'   groups = as_polars_series(c("a", "a", "a", "b", "b", "a", "a"))
+#' )
 #' df
 #'
 #' df$group_by_dynamic(

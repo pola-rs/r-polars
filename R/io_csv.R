@@ -50,9 +50,9 @@
 #' parsed.
 #' @param skip_rows_after_header Parse the first row as headers, and then skip
 #' this number of rows.
-#' @param row_count_name If not `NULL`, this will insert a row count column with
+#' @param row_index_name If not `NULL`, this will insert a row index column with
 #' the given name into the DataFrame.
-#' @param row_count_offset Offset to start the row_count column (only used if
+#' @param row_index_offset Offset to start the row index column (only used if
 #' the name is set).
 #' @param try_parse_dates Try to automatically parse dates. Most ISO8601-like
 #' formats can be inferred, as well as a handful of others. If this does not
@@ -91,8 +91,8 @@ pl_scan_csv = function(
     low_memory = FALSE,
     rechunk = TRUE,
     skip_rows_after_header = 0,
-    row_count_name = NULL,
-    row_count_offset = 0,
+    row_index_name = NULL,
+    row_index_offset = 0,
     try_parse_dates = FALSE,
     eol_char = "\n",
     raise_if_empty = TRUE,
@@ -140,8 +140,8 @@ pl_scan_csv = function(
     args$null_values = RNullValues
   }
 
-  if (is.null(row_count_name) && !is.null(row_count_offset)) {
-    args["row_count_offset"] = list(NULL)
+  if (is.null(row_index_name) && !is.null(row_index_offset)) {
+    args["row_index_offset"] = list(NULL)
   }
 
   ## call low level function with args
@@ -173,8 +173,8 @@ pl_read_csv = function(
     low_memory = FALSE,
     rechunk = TRUE,
     skip_rows_after_header = 0,
-    row_count_name = NULL,
-    row_count_offset = 0,
+    row_index_name = NULL,
+    row_index_offset = 0,
     try_parse_dates = FALSE,
     eol_char = "\n",
     raise_if_empty = TRUE,

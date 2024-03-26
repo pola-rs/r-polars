@@ -14,7 +14,7 @@
 #'
 #' # vector to literal explicitly via Series and back again
 #' # R vector to expression and back again
-#' pl$select(pl$lit(pl$Series(1:4)))$to_list()[[1L]]
+#' pl$select(pl$lit(as_polars_series(1:4)))$to_list()[[1L]]
 #'
 #' # r vector to literal and back r vector
 #' pl$lit(1:4)$to_r()
@@ -319,7 +319,6 @@ pl_tail = function(..., n = 10) {
     unwrap("in pl$tail():")
 }
 
-# TODO: add pl_mean_horizontal
 #' Get the mean value.
 #'
 #' This function is syntactic sugar for `pl$col(...)$mean()`.
@@ -327,6 +326,7 @@ pl_tail = function(..., n = 10) {
 #' @inherit pl_head return
 #' @seealso
 #' - [`<Expr>$mean()`][Expr_mean]
+#' - [`pl$mean_horizontal()`][pl_mean_horizontal]
 #' @examples
 #' df = pl$DataFrame(
 #'   a = c(1, 8, 3),
@@ -585,7 +585,7 @@ pl_var = function(..., ddof = 1) {
 #' # concat Expr a Series and an R obejct
 #' pl$concat_list(list(
 #'   pl$lit(1:5),
-#'   pl$Series(5:1),
+#'   as_polars_series(5:1),
 #'   rep(0L, 5)
 #' ))$alias("alice")$to_series()
 #'
@@ -947,6 +947,26 @@ pl_sum_horizontal = function(...) {
     unwrap("in $sum_horizontal():")
 }
 
+#' Compute the mean rowwise
+#'
+#' @inheritParams pl_sum_horizontal
+#'
+#' @return Expr
+#'
+#' @examples
+#' df = pl$DataFrame(
+#'   a = c(1, 8, 3, 6, 7),
+#'   b = c(4, 5, NA_real_, Inf, NaN)
+#' )
+#'
+#' df$with_columns(
+#'   pl$mean_horizontal("a", "b")$alias("mean"),
+#'   pl$mean_horizontal("a", "b", 5)$alias("mean_with_lit")
+#' )
+pl_mean_horizontal = function(...) {
+  mean_horizontal(list2(...)) |>
+    unwrap("in $mean_horizontal():")
+}
 
 #' Create polars Duration from distinct time components
 #'
@@ -1213,5 +1233,42 @@ pl_time = function(hour = NULL, minute = NULL, second = NULL, microsecond = NULL
 #' )
 pl_arg_where = function(condition) {
   arg_where(condition) |>
-    unwrap("in $arg_where():")
+    unwrap("in pl$arg_where():")
+}
+
+#' Return the row indices that would sort the columns
+#'
+#' @param ... Column(s) to arg sort by. Can be Expr(s) or something coercible
+#' to Expr(s). Strings are parsed as column names.
+#' @inheritParams Expr_sort
+#'
+#' @return Expr
+#' @seealso [$arg_sort()][Expr_arg_sort()] to find the row indices that would
+#' sort an Expr.
+#' @examples
+#' df = pl$DataFrame(
+#'   a = c(0, 1, 1, 0),
+#'   b = c(3, 2, 3, 2)
+#' )
+#'
+#' df$with_columns(
+#'   arg_sort_a = pl$arg_sort_by("a"),
+#'   arg_sort_ab = pl$arg_sort_by(c("a", "b"), descending = TRUE)
+#' )
+#'
+#' # we can also pass Expr
+#' df$with_columns(
+#'   arg_sort_a = pl$arg_sort_by(pl$col("a") * -1)
+#' )
+pl_arg_sort_by = function(..., descending = FALSE) {
+  dots = list2(...)
+
+  # The first argument must be a column, not columns
+  if (is.character(dots[[1]]) && length(dots[[1]]) > 1) {
+    dots[[1]] = as.list(dots[[1]])
+    dots = unlist(dots, recursive = FALSE)
+  }
+
+  arg_sort_by(dots, descending) |>
+    unwrap("in pl$arg_sort_by():")
 }

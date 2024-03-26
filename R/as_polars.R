@@ -117,7 +117,7 @@ as_polars_df.data.frame = function(
     old_rownames = as.character(old_rownames)
 
     pl$concat(
-      pl$Series(old_rownames, name = rownames),
+      as_polars_series(old_rownames, name = rownames),
       df_to_rpldf(x, schema = schema, schema_overrides = schema_overrides),
       how = "horizontal"
     )
@@ -329,7 +329,7 @@ as_polars_series = function(x, name = NULL, ...) {
 #' @rdname as_polars_series
 #' @export
 as_polars_series.default = function(x, name = NULL, ...) {
-  pl$Series(x, name = name)
+  pl$Series(values = x, name = name)
 }
 
 
@@ -408,7 +408,7 @@ as_polars_series.nanoarrow_array_stream = function(x, name = NULL, ...) {
 
   if (length(list_of_arrays) < 1L) {
     # TODO: support 0-length array stream
-    out = pl$Series(NULL, name = name)
+    out = pl$Series(name = name)
   } else {
     out = as_polars_series.nanoarrow_array(list_of_arrays[[1L]], name = name)
     lapply(

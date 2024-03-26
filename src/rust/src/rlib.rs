@@ -38,6 +38,15 @@ fn sum_horizontal(dotdotdot: Robj) -> RResult<RPolarsExpr> {
 }
 
 #[extendr]
+fn mean_horizontal(dotdotdot: Robj) -> RResult<RPolarsExpr> {
+    Ok(
+        polars::lazy::dsl::mean_horizontal(robj_to!(VecPLExprCol, dotdotdot)?)
+            .map_err(polars_to_rpolars_err)?
+            .into(),
+    )
+}
+
+#[extendr]
 fn all_horizontal(dotdotdot: Robj) -> RResult<RPolarsExpr> {
     Ok(
         polars::lazy::dsl::all_horizontal(robj_to!(VecPLExprCol, dotdotdot)?)
@@ -98,6 +107,25 @@ fn date_range(
 }
 
 #[extendr]
+fn date_ranges(
+    start: Robj,
+    end: Robj,
+    interval: Robj,
+    closed: Robj,
+    time_unit: Robj,
+    time_zone: Robj,
+) -> RResult<RPolarsExpr> {
+    Ok(RPolarsExpr(polars::lazy::prelude::date_ranges(
+        robj_to!(PLExprCol, start)?,
+        robj_to!(PLExprCol, end)?,
+        robj_to!(pl_duration, interval)?,
+        robj_to!(ClosedWindow, closed)?,
+        robj_to!(Option, timeunit, time_unit)?,
+        robj_to!(Option, String, time_zone)?,
+    )))
+}
+
+#[extendr]
 fn datetime_range(
     start: Robj,
     end: Robj,
@@ -107,6 +135,25 @@ fn datetime_range(
     time_zone: Robj,
 ) -> RResult<RPolarsExpr> {
     Ok(RPolarsExpr(polars::lazy::prelude::datetime_range(
+        robj_to!(PLExprCol, start)?,
+        robj_to!(PLExprCol, end)?,
+        robj_to!(pl_duration, interval)?,
+        robj_to!(ClosedWindow, closed)?,
+        robj_to!(Option, timeunit, time_unit)?,
+        robj_to!(Option, String, time_zone)?,
+    )))
+}
+
+#[extendr]
+fn datetime_ranges(
+    start: Robj,
+    end: Robj,
+    interval: Robj,
+    closed: Robj,
+    time_unit: Robj,
+    time_zone: Robj,
+) -> RResult<RPolarsExpr> {
+    Ok(RPolarsExpr(polars::lazy::prelude::datetime_ranges(
         robj_to!(PLExprCol, start)?,
         robj_to!(PLExprCol, end)?,
         robj_to!(pl_duration, interval)?,
@@ -338,11 +385,21 @@ fn arg_where(condition: Robj) -> RResult<RPolarsExpr> {
     Ok(pl::arg_where(robj_to!(PLExpr, condition)?).into())
 }
 
+#[extendr]
+fn arg_sort_by(exprs: Robj, descending: Robj) -> RResult<RPolarsExpr> {
+    Ok(pl::arg_sort_by(
+        robj_to!(VecPLExprCol, exprs)?,
+        &robj_to!(Vec, bool, descending)?,
+    )
+    .into())
+}
+
 extendr_module! {
     mod rlib;
 
     fn all_horizontal;
     fn any_horizontal;
+    fn arg_sort_by;
     fn arg_where;
     fn coalesce_exprs;
     fn datetime;
@@ -350,6 +407,7 @@ extendr_module! {
     fn min_horizontal;
     fn max_horizontal;
     fn sum_horizontal;
+    fn mean_horizontal;
 
     fn concat_list;
     fn concat_str;
@@ -358,7 +416,9 @@ extendr_module! {
     fn reduce;
 
     fn date_range;
+    fn date_ranges;
     fn datetime_range;
+    fn datetime_ranges;
     fn as_struct;
     fn struct_;
 

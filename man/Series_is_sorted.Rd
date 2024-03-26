@@ -16,7 +16,7 @@ A logical value
 Check if the Series is sorted
 }
 \examples{
-pl$Series(1:4)$sort()$is_sorted()
+as_polars_series(1:4)$sort()$is_sorted()
 }
 \seealso{
 Use \code{\link[=Series_set_sorted]{$set_sorted()}} to add a "sorted" flag to the Series

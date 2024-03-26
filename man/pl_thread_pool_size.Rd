@@ -2,12 +2,9 @@
 % Please edit documentation in R/polars_info.R
 \name{pl_thread_pool_size}
 \alias{pl_thread_pool_size}
-\alias{pl_threadpool_size}
 \title{Get the number of threads in the Polars thread pool.}
 \usage{
 pl_thread_pool_size()
-
-pl_threadpool_size()
 }
 \value{
 The number of threads

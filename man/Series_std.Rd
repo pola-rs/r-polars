@@ -17,5 +17,5 @@ A numeric value
 Compute the standard deviation of a Series
 }
 \examples{
-pl$Series(1:10)$std()
+as_polars_series(1:10)$std()
 }

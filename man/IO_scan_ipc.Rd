@@ -10,8 +10,8 @@ pl_scan_ipc(
   n_rows = NULL,
   cache = TRUE,
   rechunk = TRUE,
-  row_count_name = NULL,
-  row_count_offset = 0L,
+  row_index_name = NULL,
+  row_index_offset = 0L,
   memmap = TRUE
 )
 }
@@ -29,10 +29,10 @@ provide several URLs.}
 \item{rechunk}{Reallocate to contiguous memory when all chunks / files are
 parsed.}
 
-\item{row_count_name}{If not \code{NULL}, this will insert a row count column with
+\item{row_index_name}{If not \code{NULL}, this will insert a row index column with
 the given name into the DataFrame.}
 
-\item{row_count_offset}{Offset to start the row_count column (only used if
+\item{row_index_offset}{Offset to start the row index column (only used if
 the name is set).}
 
 \item{memmap}{bool, mapped memory}

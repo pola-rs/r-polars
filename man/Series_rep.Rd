@@ -20,5 +20,5 @@ memory.}
 Note that this function doesn't exist in Python Polars.
 }
 \examples{
-pl$Series(1:2, "bob")$rep(3)
+as_polars_series(1:2, "bob")$rep(3)
 }

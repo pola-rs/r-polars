@@ -30,7 +30,7 @@ df$with_columns(lapply(
 # concat Expr a Series and an R obejct
 pl$concat_list(list(
   pl$lit(1:5),
-  pl$Series(5:1),
+  as_polars_series(5:1),
   rep(0L, 5)
 ))$alias("alice")$to_series()
 

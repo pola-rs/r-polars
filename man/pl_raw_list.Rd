@@ -42,16 +42,16 @@ elements must be raw or \code{NULL} (encoded as missing), and the S3 class is
 raw_list = pl$raw_list(raw(1), raw(3), charToRaw("alice"), NULL)
 
 # pass it to Series or lit
-pl$Series(raw_list)
+pl$Series(values = raw_list)
 pl$lit(raw_list)
 
 # convert polars bianry Series to rpolars_raw_list
-pl$Series(raw_list)$to_r()
+pl$Series(values = raw_list)$to_r()
 
 
 # NB: a plain list of raws yield a polars Series of DateType [list[Binary]]
 # which is not the same
-pl$Series(list(raw(1), raw(2)))
+pl$Series(values = list(raw(1), raw(2)))
 
 # to regular list, use as.list or unclass
 as.list(raw_list)

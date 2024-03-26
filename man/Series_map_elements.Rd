@@ -28,11 +28,11 @@ Series_map_elements(
 About as slow as regular non-vectorized R. Similar to using R sapply on a vector.
 }
 \examples{
-s = pl$Series(letters[1:5], "ltrs")
+s = as_polars_series(letters[1:5], "ltrs")
 f = \(x) paste(x, ":", as.integer(charToRaw(x)))
 s$map_elements(f, pl$String)
 
 # same as
-pl$Series(sapply(s$to_r(), f), s$name)
+as_polars_series(sapply(s$to_r(), f), s$name)
 }
 \keyword{Series}

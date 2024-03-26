@@ -17,11 +17,11 @@ Converted to \link[=Series_class]{Series} by \code{\link[=as_polars_series]{as_p
 Method equivalent of subtraction operator \code{series - other}.
 }
 \examples{
-pl$Series(1:3)$sub(11:13)
-pl$Series(1:3)$sub(pl$Series(11:13))
-pl$Series(1:3)$sub(1L)
-1L - pl$Series(1:3)
-pl$Series(1:3) - 1L
+as_polars_series(1:3)$sub(11:13)
+as_polars_series(1:3)$sub(as_polars_series(11:13))
+as_polars_series(1:3)$sub(1L)
+1L - as_polars_series(1:3)
+as_polars_series(1:3) - 1L
 }
 \seealso{
 \itemize{

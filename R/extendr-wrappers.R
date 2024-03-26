@@ -14,6 +14,8 @@ all_horizontal <- function(dotdotdot) .Call(wrap__all_horizontal, dotdotdot)
 
 any_horizontal <- function(dotdotdot) .Call(wrap__any_horizontal, dotdotdot)
 
+arg_sort_by <- function(exprs, descending) .Call(wrap__arg_sort_by, exprs, descending)
+
 arg_where <- function(condition) .Call(wrap__arg_where, condition)
 
 coalesce_exprs <- function(exprs) .Call(wrap__coalesce_exprs, exprs)
@@ -28,6 +30,8 @@ max_horizontal <- function(dotdotdot) .Call(wrap__max_horizontal, dotdotdot)
 
 sum_horizontal <- function(dotdotdot) .Call(wrap__sum_horizontal, dotdotdot)
 
+mean_horizontal <- function(dotdotdot) .Call(wrap__mean_horizontal, dotdotdot)
+
 concat_list <- function(exprs) .Call(wrap__concat_list, exprs)
 
 concat_str <- function(dotdotdot, separator, ignore_nulls) .Call(wrap__concat_str, dotdotdot, separator, ignore_nulls)
@@ -38,7 +42,11 @@ reduce <- function(lambda, exprs) .Call(wrap__reduce, lambda, exprs)
 
 date_range <- function(start, end, interval, closed, time_unit, time_zone) .Call(wrap__date_range, start, end, interval, closed, time_unit, time_zone)
 
+date_ranges <- function(start, end, interval, closed, time_unit, time_zone) .Call(wrap__date_ranges, start, end, interval, closed, time_unit, time_zone)
+
 datetime_range <- function(start, end, interval, closed, time_unit, time_zone) .Call(wrap__datetime_range, start, end, interval, closed, time_unit, time_zone)
+
+datetime_ranges <- function(start, end, interval, closed, time_unit, time_zone) .Call(wrap__datetime_ranges, start, end, interval, closed, time_unit, time_zone)
 
 as_struct <- function(exprs) .Call(wrap__as_struct, exprs)
 
@@ -84,7 +92,7 @@ concat_df_horizontal <- function(l) .Call(wrap__concat_df_horizontal, l)
 
 concat_series <- function(l, rechunk, to_supertypes) .Call(wrap__concat_series, l, rechunk, to_supertypes)
 
-new_from_csv <- function(path, has_header, separator, comment_prefix, quote_char, skip_rows, dtypes, null_values, ignore_errors, cache, infer_schema_length, n_rows, encoding, low_memory, rechunk, skip_rows_after_header, row_count_name, row_count_offset, try_parse_dates, eol_char, raise_if_empty, truncate_ragged_lines) .Call(wrap__new_from_csv, path, has_header, separator, comment_prefix, quote_char, skip_rows, dtypes, null_values, ignore_errors, cache, infer_schema_length, n_rows, encoding, low_memory, rechunk, skip_rows_after_header, row_count_name, row_count_offset, try_parse_dates, eol_char, raise_if_empty, truncate_ragged_lines)
+new_from_csv <- function(path, has_header, separator, comment_prefix, quote_char, skip_rows, dtypes, null_values, ignore_errors, cache, infer_schema_length, n_rows, encoding, low_memory, rechunk, skip_rows_after_header, row_index_name, row_index_offset, try_parse_dates, eol_char, raise_if_empty, truncate_ragged_lines) .Call(wrap__new_from_csv, path, has_header, separator, comment_prefix, quote_char, skip_rows, dtypes, null_values, ignore_errors, cache, infer_schema_length, n_rows, encoding, low_memory, rechunk, skip_rows_after_header, row_index_name, row_index_offset, try_parse_dates, eol_char, raise_if_empty, truncate_ragged_lines)
 
 import_arrow_ipc <- function(path, n_rows, cache, rechunk, row_name, row_index, memmap) .Call(wrap__import_arrow_ipc, path, n_rows, cache, rechunk, row_name, row_index, memmap)
 
@@ -1222,7 +1230,7 @@ RPolarsLazyGroupBy$tail <- function(n) .Call(wrap__RPolarsLazyGroupBy__tail, sel
 
 RPolarsSeries <- new.env(parent = emptyenv())
 
-RPolarsSeries$new <- function(x, name) .Call(wrap__RPolarsSeries__new, x, name)
+RPolarsSeries$new <- function(name, values) .Call(wrap__RPolarsSeries__new, name, values)
 
 RPolarsSeries$clone <- function() .Call(wrap__RPolarsSeries__clone, self)
 

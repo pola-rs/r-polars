@@ -57,7 +57,7 @@ conversion.}
 Convert a String column into a Datetime column
 }
 \examples{
-s = pl$Series(c("2020-01-01 01:00Z", "2020-01-01 02:00Z"))
+s = as_polars_series(c("2020-01-01 01:00Z", "2020-01-01 02:00Z"))
 
 s$str$to_datetime("\%Y-\%m-\%d \%H:\%M\%#z")
 s$str$to_datetime(time_unit = "ms")

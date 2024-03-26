@@ -14,6 +14,6 @@ the output is equal to the length of the full Series.
 Lengths of Series memory chunks
 }
 \examples{
-chunked_series = c(pl$Series(1:3), pl$Series(1:10))
+chunked_series = c(as_polars_series(1:3), as_polars_series(1:10))
 chunked_series$chunk_lengths()
 }

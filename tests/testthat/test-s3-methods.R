@@ -75,7 +75,7 @@ make_cases = function() {
 }
 patrick::with_parameters_test_that("RPolarsSeries",
   {
-    d = pl$Series(mtcars$mpg)
+    d = as_polars_series(mtcars$mpg)
     x = base(mtcars$mpg)
     y = base(d)
     z = d[[pola]]()
@@ -99,17 +99,17 @@ vecs_to_test = list(
 
 patrick::with_parameters_test_that("Series as.vector",
   {
-    expect_equal(as.vector(pl$Series(v)), v, ignore_attr = TRUE)
+    expect_equal(as.vector(as_polars_series(v)), v, ignore_attr = TRUE)
   },
   v = vecs_to_test
 )
 
 patrick::with_parameters_test_that("Series as.character",
   {
-    expect_equal(as.character(pl$Series(v)), as.character(v), ignore_attr = TRUE)
-    expect_snapshot(as.character(pl$Series(v)), cran = TRUE)
-    expect_snapshot(as.character(pl$Series(v), str_length = 15), cran = TRUE)
-    expect_snapshot(as.character(pl$Series(v), str_length = 2), cran = TRUE)
+    expect_equal(as.character(as_polars_series(v)), as.character(v), ignore_attr = TRUE)
+    expect_snapshot(as.character(as_polars_series(v)), cran = TRUE)
+    expect_snapshot(as.character(as_polars_series(v), str_length = 15), cran = TRUE)
+    expect_snapshot(as.character(as_polars_series(v), str_length = 2), cran = TRUE)
   },
   v = vecs_to_test
 )
@@ -261,8 +261,8 @@ test_that("brackets", {
   )
 
   # Series
-  expect_equal(pl$Series(letters)[1:5]$to_vector(), letters[1:5])
-  expect_equal(pl$Series(letters)[-5]$to_vector(), letters[-5])
+  expect_equal(as_polars_series(letters)[1:5]$to_vector(), letters[1:5])
+  expect_equal(as_polars_series(letters)[-5]$to_vector(), letters[-5])
 })
 
 

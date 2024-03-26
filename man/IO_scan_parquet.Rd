@@ -36,10 +36,10 @@ or \code{"rowgroups"},}
 \item{rechunk}{In case of reading multiple files via a glob pattern, rechunk
 the final DataFrame into contiguous memory chunks.}
 
-\item{row_index_name}{If not \code{NULL}, this will insert a row count column with
+\item{row_index_name}{If not \code{NULL}, this will insert a row index column with
 the given name into the DataFrame.}
 
-\item{row_index_offset}{Offset to start the row_index column (only used if
+\item{row_index_offset}{Offset to start the row index column (only used if
 the name is set).}
 
 \item{low_memory}{Reduce memory usage (will yield a lower performance).}

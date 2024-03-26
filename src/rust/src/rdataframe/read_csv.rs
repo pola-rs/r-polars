@@ -64,16 +64,16 @@ pub fn new_from_csv(
     low_memory: Robj,
     rechunk: Robj,
     skip_rows_after_header: Robj,
-    row_count_name: Robj,
-    row_count_offset: Robj,
+    row_index_name: Robj,
+    row_index_offset: Robj,
     try_parse_dates: Robj,
     eol_char: Robj,
     raise_if_empty: Robj,
     truncate_ragged_lines: Robj,
 ) -> RResult<RPolarsLazyFrame> {
-    let offset = robj_to!(Option, u32, row_count_offset)?.unwrap_or(0);
+    let offset = robj_to!(Option, u32, row_index_offset)?.unwrap_or(0);
     let opt_rowcount =
-        robj_to!(Option, String, row_count_name)?.map(|name| RowIndex { name, offset });
+        robj_to!(Option, String, row_index_name)?.map(|name| RowIndex { name, offset });
 
     let vec_pathbuf = robj_to!(Vec, PathBuf, path)?;
     let linereader = match vec_pathbuf.len() {

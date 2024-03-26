@@ -56,9 +56,9 @@ expected_iris_select_df = structure(list(miah = c(
 patrick::with_parameters_test_that("DataFrame, mixed input, create and print",
   {
     input_vectors_and_series = list(
-      newname = pl$Series(c(1, 2, 3, 4, 5), name = "b"), # overwrite name b with newname
-      pl$Series((1:5) * 5, "a"),
-      pl$Series(letters[1:5], "b"),
+      newname = as_polars_series(c(1, 2, 3, 4, 5), name = "b"), # overwrite name b with newname
+      as_polars_series((1:5) * 5, "a"),
+      as_polars_series(letters[1:5], "b"),
       c(5, 4, 3, 2, 1), # unnamed vector
       named_vector = c(15, 14, 13, 12, 11), # named provide
       c(5, 4, 3, 2, 0)
@@ -369,7 +369,7 @@ test_that("get column(s)", {
   expected_list_of_series = {
     expected = lapply(
       1:5,
-      function(i) pl$Series(iris[[i]],names(iris)[i])
+      function(i) as_polars_series(iris[[i]],names(iris)[i])
     )
     names(expected) = names(iris)
     expected
@@ -393,7 +393,7 @@ test_that("get column(s)", {
 test_that("get column", {
   expect_true(
     pl$DataFrame(iris)$get_column("Sepal.Length")$equals(
-      pl$Series(iris$Sepal.Length, "Sepal.Length")
+      as_polars_series(iris$Sepal.Length, "Sepal.Length")
     )
   )
 
@@ -1068,7 +1068,7 @@ test_that("describe", {
   )
 
   # names using internal separator ":" in column names, should also just work.
-  df = pl$DataFrame("foo:bar:jazz" = 1, pl$Series(2, name = ""), "foobar" = 3)
+  df = pl$DataFrame("foo:bar:jazz" = 1, as_polars_series(2, name = ""), "foobar" = 3)
   expect_identical(
     df$describe()$columns,
     c("statistic", df$columns)

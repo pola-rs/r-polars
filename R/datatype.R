@@ -55,7 +55,7 @@ wrap_proto_schema = function(x) {
 #'
 #' # The function changes type from Int32 to String
 #' # Specifying the output DataType: String solves the problem
-#' pl$Series(1:4)$map_elements(\(x) letters[x], datatype = pl$dtypes$String)
+#' as_polars_series(1:4)$map_elements(\(x) letters[x], datatype = pl$dtypes$String)
 #'
 NULL
 

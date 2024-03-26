@@ -30,5 +30,6 @@ df$select(pl$mean("a", "b"))
 \seealso{
 \itemize{
 \item \code{\link[=Expr_mean]{<Expr>$mean()}}
+\item \code{\link[=pl_mean_horizontal]{pl$mean_horizontal()}}
 }
 }

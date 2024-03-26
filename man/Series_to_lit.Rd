@@ -13,7 +13,7 @@ Series_to_lit()
 Convert a Series to literal
 }
 \examples{
-pl$Series(list(1:1, 1:2, 1:3, 1:4))$
+as_polars_series(list(1:1, 1:2, 1:3, 1:4))$
   print()$
   to_lit()$
   list$len()$

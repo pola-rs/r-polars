@@ -14,16 +14,16 @@ pl_scan_ipc = function(
     n_rows = NULL,
     cache = TRUE,
     rechunk = TRUE,
-    row_count_name = NULL,
-    row_count_offset = 0L,
+    row_index_name = NULL,
+    row_index_offset = 0L,
     memmap = TRUE) {
   import_arrow_ipc(
     source,
     n_rows,
     cache,
     rechunk,
-    row_count_name,
-    row_count_offset,
+    row_index_name,
+    row_index_offset,
     memmap
   ) |>
     unwrap("in pl$scan_ipc:")

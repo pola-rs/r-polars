@@ -17,9 +17,9 @@ Converted to \link[=Series_class]{Series} by \code{\link[=as_polars_series]{as_p
 Method equivalent of division operator \code{series / other}.
 }
 \examples{
-pl$Series(1:3)$div(11:13)
-pl$Series(1:3)$div(pl$Series(11:13))
-pl$Series(1:3)$div(1L)
+as_polars_series(1:3)$div(11:13)
+as_polars_series(1:3)$div(as_polars_series(11:13))
+as_polars_series(1:3)$div(1L)
 }
 \seealso{
 \itemize{

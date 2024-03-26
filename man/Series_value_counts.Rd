@@ -19,5 +19,5 @@ DataFrame
 Count the occurrences of unique values
 }
 \examples{
-pl$Series(iris$Species, name = "flower species")$value_counts()
+as_polars_series(iris$Species, name = "flower species")$value_counts()
 }

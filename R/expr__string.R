@@ -4,7 +4,6 @@
 # expr_str_make_sub_ns = macro_new_subnamespace("^ExprStr_", "RPolarsExprStrNameSpace")
 
 
-# TODO for 0.16.0: rename arguments, should not allow positional arguments except for the first two
 #' Convert a String column into a Date/Datetime/Time column.
 #'
 #' Similar to the [strptime()] function.
@@ -38,7 +37,7 @@
 #' - [`<Expr>$str$to_time()`][ExprStr_to_time]
 #' @examples
 #' # Dealing with a consistent format
-#' s = pl$Series(c("2020-01-01 01:00Z", "2020-01-01 02:00Z"))
+#' s = as_polars_series(c("2020-01-01 01:00Z", "2020-01-01 02:00Z"))
 #'
 #' s$str$strptime(pl$Datetime(), "%Y-%m-%d %H:%M%#z")
 #'
@@ -46,10 +45,10 @@
 #' s$str$strptime(pl$Datetime())
 #'
 #' # Datetime with timezone is interpreted as UTC timezone
-#' pl$Series("2020-01-01T01:00:00+09:00")$str$strptime(pl$Datetime())
+#' as_polars_series("2020-01-01T01:00:00+09:00")$str$strptime(pl$Datetime())
 #'
 #' # Dealing with different formats.
-#' s = pl$Series(
+#' s = as_polars_series(
 #'   c(
 #'     "2021-04-22",
 #'     "2022-01-04 00:00:00",
@@ -69,7 +68,7 @@
 #' )
 #'
 #' # Ignore invalid time
-#' s = pl$Series(
+#' s = as_polars_series(
 #'   c(
 #'     "2023-01-01 11:22:33 -0100",
 #'     "2023-01-01 11:22:33 +0300",
@@ -127,12 +126,12 @@ ExprStr_strptime = function(
 #' @seealso
 #' - [`<Expr>$str$strptime()`][ExprStr_strptime]
 #' @examples
-#' s = pl$Series(c("2020/01/01", "2020/02/01", "2020/03/01"))
+#' s = as_polars_series(c("2020/01/01", "2020/02/01", "2020/03/01"))
 #'
 #' s$str$to_date()
 #'
 #' # by default, this errors if some values cannot be converted
-#' s = pl$Series(c("2020/01/01", "2020 02 01", "2020-03-01"))
+#' s = as_polars_series(c("2020/01/01", "2020 02 01", "2020-03-01"))
 #' try(s$str$to_date())
 #' s$str$to_date(strict = FALSE)
 ExprStr_to_date = function(format = NULL, ..., strict = TRUE, exact = TRUE, cache = TRUE) {
@@ -151,7 +150,7 @@ ExprStr_to_date = function(format = NULL, ..., strict = TRUE, exact = TRUE, cach
 #' @seealso
 #' - [`<Expr>$str$strptime()`][ExprStr_strptime]
 #' @examples
-#' s = pl$Series(c("01:00", "02:00", "03:00"))
+#' s = as_polars_series(c("01:00", "02:00", "03:00"))
 #'
 #' s$str$to_time("%H:%M")
 ExprStr_to_time = function(format = NULL, ..., strict = TRUE, cache = TRUE) {
@@ -174,7 +173,7 @@ ExprStr_to_time = function(format = NULL, ..., strict = TRUE, cache = TRUE) {
 #' @seealso
 #' - [`<Expr>$str$strptime()`][ExprStr_strptime]
 #' @examples
-#' s = pl$Series(c("2020-01-01 01:00Z", "2020-01-01 02:00Z"))
+#' s = as_polars_series(c("2020-01-01 01:00Z", "2020-01-01 02:00Z"))
 #'
 #' s$str$to_datetime("%Y-%m-%d %H:%M%#z")
 #' s$str$to_datetime(time_unit = "ms")

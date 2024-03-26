@@ -14,7 +14,7 @@ Convert Series to DataFrame
 }
 \examples{
 # default will be a DataFrame with empty name
-pl$Series(1:4)$to_frame()
+as_polars_series(1:4)$to_frame()
 
-pl$Series(1:4, "bob")$to_frame()
+as_polars_series(1:4, "bob")$to_frame()
 }

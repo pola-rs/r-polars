@@ -128,7 +128,7 @@ if (requireNamespace("arrow", quietly = TRUE) && requireNamespace("nanoarrow", q
     tibble::tribble(
       ~.test_name, ~x, ~expected_name,
       "vector", 1, "",
-      "Series", pl$Series(1, "foo"), "foo",
+      "Series", as_polars_series(1, "foo"), "foo",
       "Expr", pl$lit(1)$alias("foo"), "foo",
       "Then", pl$when(TRUE)$then(1), "literal",
       "ChainedThen", pl$when(FALSE)$then(0)$when(TRUE)$then(1), "literal",

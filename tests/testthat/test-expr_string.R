@@ -790,7 +790,7 @@ make_datetime_format_cases = function() {
 patrick::with_parameters_test_that(
   "parse time without format specified",
   {
-    s = pl$Series(time_str)$str$strptime(dtype)
+    s = as_polars_series(time_str)$str$strptime(dtype)
     expect_true(s$dtype == type_expected)
   },
   .cases = make_datetime_format_cases()

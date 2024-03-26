@@ -14,9 +14,31 @@
 ### Other breaking changes
 
 - Several functions have been rewritten to match the behavior of Python Polars.
-  - In `pl$Series()`, the first argument `x` is renamed to `values` (#933).
+  - In `pl$Series()` arguments are changed.
+    - The argument `x` is renamed `values` (#933).
+    - The argument `values` has a new default value `NULL` (#966).
+    - Using positional arguments in `pl$Series()` throws a warning, since the
+      argument positions will be changed in the future (#966).
+
+      ```r
+      # polars 0.15.1 or earlier
+      # The first argument is `x`, the second argument is `name`.
+      pl$Series(1:3, "foo")
+
+      # The code above will warn in 0.16.0
+      # Use named arguments to silence the warning.
+      pl$Series(values = 1:3, name = "foo")
+      pl$Series(name = "foo", values = 1:3)
+
+      # polars 0.17.0 or later (future version)
+      # The first argument is `name`, the second argument is `values`.
+      pl$Series("foo", 1:3)
+      ```
+
+      This warning can also be silenced by replacing `pl$Series(<values>, <name>)`
+      by `as_polars_series(<values>, <name>)`.
   - `pl$implode(...)` is rewritten to be a syntactic sugar for `pl$col(...)$implode()` (#923).
-  - Unify names of input/output function arguments (935).
+  - Unify names of input/output function arguments (#935).
     - All arguments except the first argument must be named arguments.
     - In `pl$read_*` and `pl$scan_*` functions, the first argument is now `source`.
     - In `<DataFrame>$write_*` functions, the first argument is now `file`.
@@ -49,6 +71,8 @@
 - `$unique()` for `DataFrame` and `LazyFrame` have several changes (#953):
   - New default value `"any"` for argument `keep`.
   - Arguments `keep` and `maintain_order` must be named.
+- The following deprecated functions are now removed: `pl$threadpool_size()`,
+  `<DataFrame>$with_row_count()`, `<LazyFrame>$with_row_count()` (#965).
 
 ### New features
 
@@ -61,11 +85,19 @@
   graphviz dot syntax (#928).
 - Argument `ambiguous` can now take the value `"null"` to convert ambigous
   datetimes to null values (#937).
+- New function `pl$mean_horizontal()` (#959).
+- New argument `raise_if_undetermined` of `<Expr>$meta$output_name()` (#961).
+- New function `pl$arg_sort_by()` (#929).
+- New functions `pl$date_ranges()` and `pl$datetime_ranges()` (#962).
+- Export the `Duration` datatype (#955).
+
 ### Bug fixes
 
 - The `join_nulls` and `validate` arguments of `<DataFrame>$join()` now work
   correctly (#945).
-- Export the `Duration` datatype (#955).
+- We said in the changelog of 0.14.0 that all `row_count_*` args in I/O functions
+  were renamed `row_index_*`, but this change was not made for CSV and IPC
+  functions. This renaming is now made (#964).
 
 ## Polars R Package 0.15.1
 
