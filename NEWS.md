@@ -16,6 +16,7 @@
 - Several functions have been rewritten to match the behavior of Python Polars.
   - In `pl$Series()` arguments are changed.
     - The argument `x` is renamed `values` (#933).
+    - The argument `values` has a new default value `NULL` (#966).
     - Using positional arguments in `pl$Series()` throws a warning, since the
       argument positions will be changed in the future (#966).
 

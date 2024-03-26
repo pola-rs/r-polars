@@ -244,8 +244,9 @@ Series_struct = method_as_active_binding(\() series_make_sub_ns(self, expr_struc
 #' @param ... Treated as `values`, `name`, and `dtype` in order.
 #' In future versions, the order of the arguments will be changed to
 #' `pl$Series(name, values, dtype, ..., nan_to_null)` and `...` will be ignored.
-#' @param values any vector
-#' @param name Name of the Series. If `NULL`, an empty string is used.
+#' @param values Vector of base R types, or `NULL` (default).
+#' If `NULL`, empty Series is created.
+#' @param name Name of the Series. If `NULL` (default), an empty string is used.
 #' @param dtype One of [polars data type][pl_dtypes] or `NULL`.
 #' If not `NULL`, that data type is used to [cast][Expr_cast] the Series created from the vector
 #' to a specific data type internally.

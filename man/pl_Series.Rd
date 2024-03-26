@@ -12,9 +12,10 @@ pl_Series(..., values = NULL, name = NULL, dtype = NULL, nan_to_null = FALSE)
 In future versions, the order of the arguments will be changed to
 \code{pl$Series(name, values, dtype, ..., nan_to_null)} and \code{...} will be ignored.}
 
-\item{values}{any vector}
+\item{values}{Vector of base R types, or \code{NULL} (default).
+If \code{NULL}, empty Series is created.}
 
-\item{name}{Name of the Series. If \code{NULL}, an empty string is used.}
+\item{name}{Name of the Series. If \code{NULL} (default), an empty string is used.}
 
 \item{dtype}{One of \link[=pl_dtypes]{polars data type} or \code{NULL}.
 If not \code{NULL}, that data type is used to \link[=Expr_cast]{cast} the Series created from the vector
