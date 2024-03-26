@@ -13,5 +13,5 @@ A numeric value
 Count unique values in Series
 }
 \examples{
-pl$Series(c(1, 2, 1, 4, 4, 1, 5))$n_unique()
+as_polars_series(c(1, 2, 1, 4, 4, 1, 5))$n_unique()
 }

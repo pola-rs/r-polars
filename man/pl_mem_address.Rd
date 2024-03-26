@@ -19,5 +19,5 @@ Get underlying mem address a rust object (via ExtPtr). Expert use only.
 Does not give meaningful answers for regular R objects.
 }
 \examples{
-pl$mem_address(pl$Series(1:3))
+pl$mem_address(pl$Series(values = 1:3))
 }

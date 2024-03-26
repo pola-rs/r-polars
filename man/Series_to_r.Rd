@@ -49,7 +49,7 @@ explicitly specify the time zone before conversion.
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{# Due to daylight savings, clocks were turned forward 1 hour on Sunday, March 8, 2020, 2:00:00 am
 # so this particular date-time doesn't exist
-non_existent_time = pl$Series("2020-03-08 02:00:00")$str$strptime(pl$Datetime(), "\%F \%T")
+non_existent_time = as_polars_series("2020-03-08 02:00:00")$str$strptime(pl$Datetime(), "\%F \%T")
 
 withr::with_envvar(
   new = c(TZ = "America/New_York"),
@@ -76,7 +76,7 @@ withr::with_envvar(
 
 \examples{
 # Series with non-list type
-series_vec = pl$Series(letters[1:3])
+series_vec = as_polars_series(letters[1:3])
 
 series_vec$to_r() # as vector because Series DataType is not list (is String)
 series_vec$to_list() # implicit call as.list(), convert to list
@@ -84,7 +84,7 @@ series_vec$to_vector() # implicit call unlist(), same as to_r() as already vecto
 
 
 # make a Series with nested lists
-series_list = pl$Series(
+series_list = as_polars_series(
   list(
     list(c(1:5, NA_integer_)),
     list(1:2, NA_integer_)

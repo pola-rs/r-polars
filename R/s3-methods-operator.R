@@ -35,9 +35,9 @@
 #'   error = function(e) e
 #' )
 #'
-#' pl$Series(5) + 10
-#' +pl$Series(5)
-#' -pl$Series(5)
+#' as_polars_series(5) + 10
+#' +as_polars_series(5)
+#' -as_polars_series(5)
 NULL
 
 
@@ -158,7 +158,7 @@ NULL
 #' @rdname S3_arithmetic
 `-.RPolarsSeries` = function(x, y) {
   result(if (missing(y)) {
-    pl$Series(0L)$sub(as_polars_series(x))
+    as_polars_series(0L)$sub(as_polars_series(x))
   } else {
     as_polars_series(x)$sub(y)
   }) |>

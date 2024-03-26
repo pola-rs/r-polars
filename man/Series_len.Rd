@@ -13,5 +13,5 @@ A numeric value
 Length of a Series
 }
 \examples{
-pl$Series(1:10)$len()
+as_polars_series(1:10)$len()
 }

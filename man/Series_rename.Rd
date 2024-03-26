@@ -20,5 +20,5 @@ it will throw an error.}
 Rename a series
 }
 \examples{
-pl$Series(1:4, "bob")$rename("alice")
+as_polars_series(1:4, "bob")$rename("alice")
 }

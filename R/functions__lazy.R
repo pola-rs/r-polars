@@ -14,7 +14,7 @@
 #'
 #' # vector to literal explicitly via Series and back again
 #' # R vector to expression and back again
-#' pl$select(pl$lit(pl$Series(1:4)))$to_list()[[1L]]
+#' pl$select(pl$lit(as_polars_series(1:4)))$to_list()[[1L]]
 #'
 #' # r vector to literal and back r vector
 #' pl$lit(1:4)$to_r()
@@ -585,7 +585,7 @@ pl_var = function(..., ddof = 1) {
 #' # concat Expr a Series and an R obejct
 #' pl$concat_list(list(
 #'   pl$lit(1:5),
-#'   pl$Series(5:1),
+#'   as_polars_series(5:1),
 #'   rep(0L, 5)
 #' ))$alias("alice")$to_series()
 #'

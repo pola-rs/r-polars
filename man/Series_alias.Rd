@@ -16,5 +16,5 @@ Series_alias(name)
 Change name of Series
 }
 \examples{
-pl$Series(1:3, name = "alice")$alias("bob")
+as_polars_series(1:3, name = "alice")$alias("bob")
 }

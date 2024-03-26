@@ -22,16 +22,16 @@ A logical value
 This checks whether two Series are equal in values and in their name.
 }
 \examples{
-pl$Series(1:4)$equals(pl$Series(1:4))
+as_polars_series(1:4)$equals(as_polars_series(1:4))
 
 # names are different
-pl$Series(1:4, "bob")$equals(pl$Series(1:4))
+as_polars_series(1:4, "bob")$equals(as_polars_series(1:4))
 
 # nulls are different by default
-pl$Series(c(1:4, NA))$equals(pl$Series(c(1:4, NA)))
-pl$Series(c(1:4, NA))$equals(pl$Series(c(1:4, NA)), null_equal = TRUE)
+as_polars_series(c(1:4, NA))$equals(as_polars_series(c(1:4, NA)))
+as_polars_series(c(1:4, NA))$equals(as_polars_series(c(1:4, NA)), null_equal = TRUE)
 
 # datatypes are ignored by default
-pl$Series(1:4)$cast(pl$Int16)$equals(pl$Series(1:4))
-pl$Series(1:4)$cast(pl$Int16)$equals(pl$Series(1:4), strict = TRUE)
+as_polars_series(1:4)$cast(pl$Int16)$equals(as_polars_series(1:4))
+as_polars_series(1:4)$cast(pl$Int16)$equals(as_polars_series(1:4), strict = TRUE)
 }

@@ -75,7 +75,7 @@ df$
 # Polars quick exploration guide
 
 ```{r}
-series = pl$Series(c(1, 2, 3, 4, 5))
+series = as_polars_series(c(1, 2, 3, 4, 5))
 series
 
 df = pl$DataFrame(

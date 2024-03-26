@@ -17,5 +17,5 @@ A numeric value
 Compute the variance of a Series
 }
 \examples{
-pl$Series(1:10)$var()
+as_polars_series(1:10)$var()
 }

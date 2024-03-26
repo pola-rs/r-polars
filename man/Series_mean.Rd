@@ -17,7 +17,7 @@ The Dtypes Int8, UInt8, Int16 and UInt16 are cast to Int64 before summing to
 prevent overflow issues.
 }
 \examples{
-pl$Series(c(1:2, NA, 3, 5))$mean() # a NA is dropped always
-pl$Series(c(1:2, NA, 3, NaN, 4, Inf))$mean() # NaN carries / poisons
-pl$Series(c(1:2, 3, Inf, 4, -Inf, 5))$mean() # Inf-Inf is NaN
+as_polars_series(c(1:2, NA, 3, 5))$mean() # a NA is dropped always
+as_polars_series(c(1:2, NA, 3, NaN, 4, Inf))$mean() # NaN carries / poisons
+as_polars_series(c(1:2, 3, Inf, 4, -Inf, 5))$mean() # Inf-Inf is NaN
 }
