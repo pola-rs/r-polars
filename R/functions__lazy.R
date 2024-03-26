@@ -1272,3 +1272,70 @@ pl_arg_sort_by = function(..., descending = FALSE) {
   arg_sort_by(dots, descending) |>
     unwrap("in pl$arg_sort_by():")
 }
+
+
+#' Generate a range of integers
+#'
+#' @param start Start of the range (inclusive). Defaults to 0.
+#' @param end End of the range (exclusive). If `NULL` (default), the value of
+#' `start` is used and `start` is set to 0.
+#' @param step Step size of the range.
+#' @param ... Not used.
+#' @param dtype Data type of the range.
+#'
+#' @return An Expr with the data type specified in `dtype` (default is `Int64`).
+#'
+#' @seealso [`pl$int_ranges()`][pl_int_ranges] to generate a range of integers for
+#' each row of the input columns.
+#'
+#' @examples
+#' pl$int_range(0, 3) |>
+#'   as_polars_series()
+#'
+#' # "end" can be omitted for shorter syntax
+#' pl$int_range(3) |>
+#'   as_polars_series()
+#'
+#' # custom data type
+#' pl$int_range(3, dtype = pl$Int16) |>
+#'   as_polars_series()
+#'
+#' # one can use pl$int_range() and pl$len() to create an index column
+#' df = pl$DataFrame(a = c(1, 3, 5), b = c(2, 4, 6))
+#' df$select(
+#'   index = pl$int_range(pl$len(), dtype = pl$UInt32),
+#'   pl$all()
+#' )
+pl_int_range = function(start = 0, end = NULL, step = 1, ..., dtype = pl$Int64) {
+  if (is.null(end)) {
+    end = start
+    start = 0
+  }
+  int_range(start, end, step, dtype) |>
+    unwrap("in pl$int_range():")
+}
+
+#' Generate a range of integers for each row of the input columns
+#'
+#' @inheritParams pl_int_range
+#'
+#' @return An Expr with the data type List(`dtype`) (with `Int64` as default of
+#' `dtype`).
+#'
+#' @seealso [`pl$int_range()`][pl_int_range] to generate a single range of
+#' integers.
+#'
+#' @examples
+#' df = pl$DataFrame(start = c(1, -1), end = c(3, 2))
+#'
+#' df$with_columns(int_range = pl$int_ranges("start", "end"))
+#'
+#' df$with_columns(int_range = pl$int_ranges("start", "end", dtype = pl$Int16))
+pl_int_ranges = function(start = 0, end = NULL, step = 1, ..., dtype = pl$Int64) {
+  if (is.null(end)) {
+    end = start
+    start = 0
+  }
+  int_ranges(start, end, step, dtype) |>
+    unwrap("in pl$int_ranges():")
+}

@@ -91,6 +91,7 @@
 - New function `pl$arg_sort_by()` (#929).
 - New functions `pl$date_ranges()` and `pl$datetime_ranges()` (#962).
 - Export the `Duration` datatype (#955).
+- New functions `pl$int_range()` and `pl$int_ranges()` (#968).
 
 ### Bug fixes
 

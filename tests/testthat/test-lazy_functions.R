@@ -546,3 +546,102 @@ test_that("pl$datetime_ranges() works", {
     )
   )
 })
+
+test_that("pl$int_range() works", {
+  expect_identical(
+    pl$int_range(0, 3) |> as_polars_series() |> as.vector(),
+    c(0, 1, 2)
+  )
+
+  # "end" can be omitted for shorter syntax
+  expect_identical(
+    pl$int_range(3) |> as_polars_series() |> as.vector(),
+    c(0, 1, 2)
+  )
+
+  # custom data type
+  # TODO: this works with any dtype, how can I test this?
+  # expect_true(all.equal(
+  #   as_polars_series(pl$int_range(0, 3, dtype = pl$Int16))$dtype,
+  #   pl$Float32
+  # ))
+
+  expect_grepl_error(
+    pl$int_range(0, 3, dtype = pl$String) |> as_polars_series(),
+    "non-integer `dtype`"
+  )
+
+  expect_grepl_error(
+    pl$int_range(0, 3, dtype = pl$Float32) |> as_polars_series(),
+    "non-integer `dtype`"
+  )
+
+  # "step" works
+  expect_identical(
+    pl$int_range(0, 3, step = 2) |> as_polars_series() |> as.vector(),
+    c(0, 2)
+  )
+
+  # negative step requires start > end
+  expect_identical(
+    pl$int_range(0, 3, step = -1) |> as_polars_series() |> as.vector(),
+    numeric(0)
+  )
+
+  expect_identical(
+    pl$int_range(3, 0, step = -1) |> as_polars_series() |> as.vector(),
+    c(3, 2, 1)
+  )
+})
+
+test_that("pl$int_ranges() works", {
+  df = pl$DataFrame(start = c(1, -1), end = c(3, 2))
+
+  expect_identical(
+    df$select(int_range = pl$int_ranges("start", "end"))$to_list(),
+    list(int_range = list(c(1, 2), c(-1, 0, 1)))
+  )
+
+  # TODO: this works with any dtype, how can I test this?
+  # expect_true(
+  #   all.equal(
+  #     df$select(int_range = pl$int_ranges("start", "end", dtype = pl$Int16))$schema,
+  #     list(int_range = pl$List(pl$Int16))
+  #   )
+  # )
+
+  # This one works with `pl$String`
+  # TODO: fix either this one or pl$int_range()
+  # https://github.com/pola-rs/polars/issues/15307
+  # expect_grepl_error(
+  #   df$select(int_range = pl$int_ranges("start", "end", dtype = pl$String)),
+  #   "non-integer `dtype`"
+  # )
+
+  # "step" works
+  expect_identical(
+    df$select(int_range = pl$int_ranges("start", "end", step = 2))$to_list(),
+    list(int_range = list(1, c(-1, 1)))
+  )
+
+  # negative step requires start > end
+  expect_identical(
+    pl$DataFrame(start = c(1, -1), end = c(3, 2))$
+      select(int_range = pl$int_ranges("start", "end", step = -1))$
+      to_list(),
+    list(int_range = list(numeric(0), numeric(0)))
+  )
+
+  expect_identical(
+    pl$DataFrame(start = c(3, -1), end = c(1, 2))$
+      select(int_range = pl$int_ranges("start", "end", step = -1))$
+      to_list(),
+    list(int_range = list(c(3, 2), numeric(0)))
+  )
+
+  # with literal
+  expect_identical(
+    df$select(int_range = pl$int_ranges("start", 3))$to_list(),
+    list(int_range = list(c(1, 2), c(-1, 0, 1, 2)))
+  )
+})

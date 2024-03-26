@@ -394,6 +394,29 @@ fn arg_sort_by(exprs: Robj, descending: Robj) -> RResult<RPolarsExpr> {
     .into())
 }
 
+#[extendr]
+pub fn int_range(start: Robj, end: Robj, step: i64, dtype: Robj) -> RResult<RPolarsExpr> {
+    let start = robj_to!(PLExprCol, start)?;
+    let end = robj_to!(PLExprCol, end)?;
+    // let step = robj_to!(PLExprCol, step)?;
+    let dtype = robj_to!(RPolarsDataType, dtype)?.into();
+    Ok(polars::lazy::dsl::int_range(start, end, step, dtype).into())
+}
+
+#[extendr]
+pub fn int_ranges(start: Robj, end: Robj, step: Robj, dtype: Robj) -> RResult<RPolarsExpr> {
+    let start = robj_to!(PLExprCol, start)?;
+    let end = robj_to!(PLExprCol, end)?;
+    let step = robj_to!(PLExprCol, step)?;
+    let dtype = robj_to!(RPolarsDataType, dtype)?.into();
+    let mut result = polars::lazy::dsl::int_ranges(start, end, step);
+    if dtype != pl::DataType::Int64 {
+        result = result.cast(pl::DataType::List(Box::new(dtype)))
+    }
+
+    Ok(result.into())
+}
+
 extendr_module! {
     mod rlib;
 
@@ -404,6 +427,8 @@ extendr_module! {
     fn coalesce_exprs;
     fn datetime;
     fn duration;
+    fn int_range;
+    fn int_ranges;
     fn min_horizontal;
     fn max_horizontal;
     fn sum_horizontal;
