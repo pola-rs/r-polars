@@ -50,3 +50,38 @@ test_that("categorical sub namespace", {
 #     cast(pl$Array(width = 2))$
 #     to_series()
 # })
+
+test_that("Method dispatch Expr -> Series works in functions", {
+
+  # Input is defined inside a function
+  fn <- function() {
+    fn_value <- pl$Series(values = "a")
+    as.vector(pl$Series(values = letters[1:3])$is_in(fn_value))
+  }
+
+  expect_identical(
+    fn(),
+    c(TRUE, FALSE, FALSE)
+  )
+
+  # Input is passed by the suer
+  fn2 <- function(input) {
+    as.vector(pl$Series(values = letters[1:3])$is_in(input))
+  }
+
+  expect_identical(
+    fn2(pl$Series(values = "a")),
+    c(TRUE, FALSE, FALSE)
+  )
+
+  # Nested functions
+  fn3 <- function() {
+    fn_value <- pl$Series(values = "a")
+    fn2(fn_value)
+  }
+
+  expect_identical(
+    fn3(),
+    c(TRUE, FALSE, FALSE)
+  )
+})

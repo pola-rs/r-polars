@@ -179,7 +179,7 @@ add_expr_methods_to_series = function() {
         self = pl$col(col_name)
         # Override `self` in `$.RPolarsExpr`
         environment(f) = environment()
-        expr = do.call(f, scall)
+        expr = do.call(f, scall, envir = parent.frame())
 
         pcase(
           inherits(expr, "RPolarsExpr"), df$select(expr)$to_series(0),
