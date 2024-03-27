@@ -22,8 +22,8 @@ a Date or a \link[=DataType_Datetime]{Datetime} expression. See examples for det
 Date or a \link[=DataType_Datetime]{Datetime} expression. See examples for details.}
 
 \item{interval}{Interval of the range periods, specified as a \link{difftime} object
-or using the Polars duration string language. See the \code{Interval} section for
-details.}
+or using the Polars duration string language.
+See the \verb{Polars duration string language} section for details.}
 
 \item{...}{Ignored.}
 
@@ -48,9 +48,12 @@ also of type Date. All other permutations return a Datetime. Note that in a
 future version of Polars, \code{pl$date_range()} will always return Date. Please
 use \code{\link[=pl_datetime_range]{pl$datetime_range()}} if you want Datetime instead.
 }
-\section{Interval}{
+\section{Polars duration string language}{
 
-\code{interval} is created according to the following string language:
+Polars duration string language is a simple representation of
+durations. It is used in many Polars functions that accept durations.
+
+It has the following format:
 \itemize{
 \item 1ns (1 nanosecond)
 \item 1us (1 microsecond)
@@ -69,8 +72,7 @@ Or combine them: \code{"3d12h4m25s"} # 3 days, 12 hours, 4 minutes, and 25 secon
 
 By "calendar day", we mean the corresponding time on the next day
 (which may not be 24 hours, due to daylight savings).
-Similarly for "calendar week", "calendar month", "calendar quarter", and
-"calendar year".
+Similarly for "calendar week", "calendar month", "calendar quarter", and "calendar year".
 }
 
 \examples{

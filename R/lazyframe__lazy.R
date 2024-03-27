@@ -1298,6 +1298,7 @@ LazyFrame_sort = function(
 #' This is similar to a left-join except that we match on nearest key rather
 #' than equal keys.
 #'
+#' Both tables (DataFrames or LazyFrames) must be sorted by the asof_join key.
 #' @param other LazyFrame
 #' @param ...  Not used, blocks use of further positional arguments
 #' @inheritParams DataFrame_join
@@ -1318,31 +1319,13 @@ LazyFrame_sort = function(
 #' @param tolerance
 #' Numeric tolerance. By setting this the join will only be done if the near
 #' keys are within this distance. If an asof join is done on columns of dtype
-#' "Date", "Datetime", "Duration" or "Time" you can use the following values:
-#'
-#'     - 1ns   (1 nanosecond)
-#'     - 1us   (1 microsecond)
-#'     - 1ms   (1 millisecond)
-#'     - 1s    (1 second)
-#'     - 1m    (1 minute)
-#'     - 1h    (1 hour)
-#'     - 1d    (1 day)
-#'     - 1w    (1 week)
-#'     - 1mo   (1 calendar month) // currently not available, as interval is not fixed
-#'     - 1y    (1 calendar year)  // currently not available, as interval is not fixed
-#'     - 1i    (1 index count)
-#'
-#' Or combine them: "3d12h4m25s" # 3 days, 12 hours, 4 minutes, and 25 seconds
+#' "Date", "Datetime", "Duration" or "Time", use the Polars duration string language.
+#' About the language, see the `Polars duration string language` section for details.
 #'
 #' There may be a circumstance where R types are not sufficient to express a
 #' numeric tolerance. In that case, you can use the expression syntax like
 #' `tolerance = pl$lit(42)$cast(pl$Uint64)`
-#'
-#' @details
-#' Both tables (DataFrames or LazyFrames) must be sorted by the asof_join key.
-#'
-#' @keywords LazyFrame
-#' @return A LazyFrame
+#' @inheritSection polars_duration_string  Polars duration string language
 #' @examples #
 #' # create two LazyFrame to join asof
 #' gdp = pl$LazyFrame(

@@ -1,10 +1,6 @@
-#' Parse an object as the Polars duration string language
+#' The Polars duration string language
 #'
-#' A generic function for parsing an object as a string representation of a duration.
-#' See the `Polars duration string language` section for details.
-#' @param x An object to parse as a duration.
-#' It's length should be `1` and it should not be `NA`.
-#' @param ... Additional arguments passed to methods.
+#' @name polars_duration_string
 #' @section Polars duration string language:
 #' Polars duration string language is a simple representation of
 #' durations. It is used in many Polars functions that accept durations.
@@ -28,6 +24,18 @@
 #' By "calendar day", we mean the corresponding time on the next day
 #' (which may not be 24 hours, due to daylight savings).
 #' Similarly for "calendar week", "calendar month", "calendar quarter", and "calendar year".
+NULL
+
+
+# TODO: rewrite the Rust macro for R object into Polars duration
+# TODO: use this function inside of `Expr_rolling`, `LazyFrame_join_asof`, `DataFrame_join_asof`
+#' Parse an object as the Polars duration string language
+#'
+#' A generic function for parsing an object as a string representation of a duration.
+#' See the `Polars duration string language` section for details.
+#' @param x An object to parse as a duration.
+#' It's length should be `1` and it should not be `NA`.
+#' @param ... Additional arguments passed to methods.
 #' @noRd
 #' @examples
 #' # A single character is passed as is

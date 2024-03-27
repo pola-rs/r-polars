@@ -22,9 +22,13 @@ column.}
 
 \item{...}{Ignored.}
 
-\item{period}{Length of the window, must be non-negative.}
+\item{period}{A character representing the length of the window,
+must be non-negative. See the \verb{Polars duration string language} section
+for details.}
 
-\item{offset}{Offset of the window. Default is \code{-period}.}
+\item{offset}{A character representing the offset of the window,
+or \code{NULL} (default). If \code{NULL}, \code{-period} is used.
+See the \verb{Polars duration string language} section for details.}
 
 \item{closed}{Define which sides of the temporal interval are closed
 (inclusive). This can be either \code{"left"}, \code{"right"}, \code{"both"} or \code{"none"}.}
@@ -56,8 +60,19 @@ whereas if you pass a non-default offset, then the windows will be:
 }
 }
 \details{
-The period and offset arguments are created either from a timedelta, or by
-using the following string language:
+In case of a rolling operation on an integer column, the windows are defined
+by:
+\itemize{
+\item "1i" # length 1
+\item "10i" # length 10
+}
+}
+\section{Polars duration string language}{
+
+Polars duration string language is a simple representation of
+durations. It is used in many Polars functions that accept durations.
+
+It has the following format:
 \itemize{
 \item 1ns (1 nanosecond)
 \item 1us (1 microsecond)
@@ -70,22 +85,15 @@ using the following string language:
 \item 1mo (1 calendar month)
 \item 1q (1 calendar quarter)
 \item 1y (1 calendar year)
-\item 1i (1 index count)
 }
 
-Or combine them: "3d12h4m25s" # 3 days, 12 hours, 4 minutes, and 25 seconds
+Or combine them: \code{"3d12h4m25s"} # 3 days, 12 hours, 4 minutes, and 25 seconds
 
-By "calendar day", we mean the corresponding time on the next day (which may
-not be 24 hours, due to daylight savings). Similarly for "calendar week",
-"calendar month", "calendar quarter", and "calendar year".
+By "calendar day", we mean the corresponding time on the next day
+(which may not be 24 hours, due to daylight savings).
+Similarly for "calendar week", "calendar month", "calendar quarter", and "calendar year".
+}
 
-In case of a rolling operation on an integer column, the windows are defined
-by:
-\itemize{
-\item "1i" # length 1
-\item "10i" # length 10
-}
-}
 \examples{
 # create a DataFrame with a Datetime column and an f64 column
 dates = c(

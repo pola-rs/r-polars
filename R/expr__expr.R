@@ -3285,14 +3285,23 @@ Expr_peak_max = function() {
 #' * …
 #' * (t_n + offset, t_n + offset + period]
 #'
+#' @details
+#' In case of a rolling operation on an integer column, the windows are defined
+#' by:
+#' * "1i" # length 1
+#' * "10i" # length 10
 #' @param index_column Column used to group based on the time window. Often of
 #' type Date/Datetime. This column must be sorted in ascending order. If this
 #' column represents an index, it has to be either Int32 or Int64. Note that
 #' Int32 gets temporarily cast to Int64, so if performance matters use an Int64
 #' column.
 #' @param ... Ignored.
-#' @param period Length of the window, must be non-negative.
-#' @param offset Offset of the window. Default is `-period`.
+#' @param period A character representing the length of the window,
+#' must be non-negative. See the `Polars duration string language` section
+#' for details.
+#' @param offset A character representing the offset of the window,
+#' or `NULL` (default). If `NULL`, `-period` is used.
+#' See the `Polars duration string language` section for details.
 #' @param closed Define which sides of the temporal interval are closed
 #' (inclusive). This can be either `"left"`, `"right"`, `"both"` or `"none"`.
 #' @param check_sorted Check whether data is actually sorted. Checking it is
@@ -3300,33 +3309,7 @@ Expr_peak_max = function() {
 #' can set this to `FALSE` but note that if the data actually is unsorted, it
 #' will lead to incorrect output.
 #'
-#' @details
-#' The period and offset arguments are created either from a timedelta, or by
-#' using the following string language:
-#' * 1ns (1 nanosecond)
-#' * 1us (1 microsecond)
-#' * 1ms (1 millisecond)
-#' * 1s (1 second)
-#' * 1m (1 minute)
-#' * 1h (1 hour)
-#' * 1d (1 calendar day)
-#' * 1w (1 calendar week)
-#' * 1mo (1 calendar month)
-#' * 1q (1 calendar quarter)
-#' * 1y (1 calendar year)
-#' * 1i (1 index count)
-#'
-#' Or combine them: "3d12h4m25s" # 3 days, 12 hours, 4 minutes, and 25 seconds
-#'
-#' By "calendar day", we mean the corresponding time on the next day (which may
-#' not be 24 hours, due to daylight savings). Similarly for "calendar week",
-#' "calendar month", "calendar quarter", and "calendar year".
-#'
-#' In case of a rolling operation on an integer column, the windows are defined
-#' by:
-#' * "1i" # length 1
-#' * "10i" # length 10
-#'
+#' @inheritSection polars_duration_string  Polars duration string language
 #' @return Expr
 #'
 #' @examples
@@ -3359,7 +3342,7 @@ Expr_rolling = function(
     period, offset = NULL,
     closed = "right", check_sorted = TRUE) {
   if (is.null(offset)) {
-    offset = paste0("-", period)
+    offset = paste0("-", period) # TODO: `paste0` should be executed after `period` is parsed as string
   }
   .pr$Expr$rolling(self, index_column, period, offset, closed, check_sorted) |>
     unwrap("in $rolling():")

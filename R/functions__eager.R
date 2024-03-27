@@ -176,8 +176,8 @@ pl_concat = function(
 #' @param end Upper bound of the date range. Something that can be coerced to a
 #' Date or a [Datetime][DataType_Datetime] expression. See examples for details.
 #' @param interval Interval of the range periods, specified as a [difftime] object
-#' or using the Polars duration string language. See the `Interval` section for
-#' details.
+#' or using the Polars duration string language.
+#' See the `Polars duration string language` section for details.
 #' @param ... Ignored.
 #' @param closed Define which sides of the range are closed (inclusive).
 #' One of the followings: `"both"` (default), `"left"`, `"right"`, `"none"`.
@@ -189,27 +189,7 @@ pl_concat = function(
 #' (deprecated usage).
 #' @return An [Expr][Expr_class] of data type Date or [Datetime][DataType_Datetime]
 #'
-#' @section Interval:
-#' `interval` is created according to the following string language:
-#'
-#' - 1ns (1 nanosecond)
-#' - 1us (1 microsecond)
-#' - 1ms (1 millisecond)
-#' - 1s (1 second)
-#' - 1m (1 minute)
-#' - 1h (1 hour)
-#' - 1d (1 calendar day)
-#' - 1w (1 calendar week)
-#' - 1mo (1 calendar month)
-#' - 1q (1 calendar quarter)
-#' - 1y (1 calendar year)
-#'
-#' Or combine them: `"3d12h4m25s"` # 3 days, 12 hours, 4 minutes, and 25 seconds
-#'
-#' By "calendar day", we mean the corresponding time on the next day
-#' (which may not be 24 hours, due to daylight savings).
-#' Similarly for "calendar week", "calendar month", "calendar quarter", and
-#' "calendar year".
+#' @inheritSection polars_duration_string  Polars duration string language
 #'
 #' @seealso [`pl$date_ranges()`][pl_date_ranges] to create a simple Series of data
 #' type list(Date) based on column values.
@@ -280,7 +260,7 @@ pl_date_range = function(
 #' use [`pl$datetime_ranges()`][pl_datetime_ranges] if you want Datetime instead.
 #'
 #' @inheritParams pl_date_range
-#' @inheritSection pl_date_range Interval
+#' @inheritSection polars_duration_string  Polars duration string language
 #'
 #' @return An [Expr][Expr_class] of data type List(Date) or
 #' List([Datetime][DataType_Datetime])
@@ -321,7 +301,7 @@ pl_date_ranges = function(
 #' Generate a datetime range
 #'
 #' @inheritParams pl_date_range
-#' @inheritSection pl_date_range Interval
+#' @inheritSection polars_duration_string  Polars duration string language
 #'
 #' @param time_unit Time unit of the resulting the [Datetime][DataType_Datetime]
 #' data type. One of `"ns"`, `"us"`, `"ms"` or `NULL`
@@ -370,7 +350,7 @@ pl_datetime_range = function(
 #' Generate a list containing a datetime range
 #'
 #' @inheritParams pl_datetime_range
-#' @inheritSection pl_datetime_range Interval
+#' @inheritSection polars_duration_string  Polars duration string language
 #'
 #' @return An [Expr][Expr_class] of data type list([Datetime][DataType_Datetime])
 #'

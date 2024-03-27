@@ -1348,8 +1348,8 @@ DataFrame_estimated_size = use_extendr_wrapper
 
 #' Perform joins on nearest keys
 #' @inherit LazyFrame_join_asof
+#' @inheritSection polars_duration_string  Polars duration string language
 #' @param other DataFrame or LazyFrame
-#' @keywords DataFrame
 #' @return New joined DataFrame
 #' @examples
 #' # create two DataFrames to join asof
