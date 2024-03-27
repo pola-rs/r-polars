@@ -100,6 +100,7 @@ Collate:
     'is_polars.R'
     'lazyframe__group_by.R'
     'lazyframe__lazy.R'
+    'parse_as_duration.R'
     'pkg-arrow.R'
     'pkg-knitr.R'
     'pkg-nanoarrow.R'

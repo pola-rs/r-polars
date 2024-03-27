@@ -156,14 +156,14 @@ test_that("dt$round", {
   ctx = result(pl$col("datetime")$dt$round(42))$err$contexts()
   expect_identical(
     names(ctx),
-    c("BadArgument", "When", "TypeMismatch", "BadValue", "PlainErrorMessage")
+    c("BadArgument", "PlainErrorMessage")
   )
   expect_identical(ctx$BadArgument, "every")
 
   ctx = result(pl$col("datetime")$dt$round("1s", 42))$err$contexts()
   expect_identical(
     names(ctx),
-    c("BadArgument", "When", "TypeMismatch", "BadValue", "PlainErrorMessage")
+    c("BadArgument", "PlainErrorMessage")
   )
   expect_identical(ctx$BadArgument, "offset")
 })

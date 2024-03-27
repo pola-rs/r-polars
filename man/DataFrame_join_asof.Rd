@@ -55,22 +55,8 @@ search.
 
 \item{tolerance}{Numeric tolerance. By setting this the join will only be done if the near
 keys are within this distance. If an asof join is done on columns of dtype
-"Date", "Datetime", "Duration" or "Time" you can use the following values:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{- 1ns   (1 nanosecond)
-- 1us   (1 microsecond)
-- 1ms   (1 millisecond)
-- 1s    (1 second)
-- 1m    (1 minute)
-- 1h    (1 hour)
-- 1d    (1 day)
-- 1w    (1 week)
-- 1mo   (1 calendar month) // currently not available, as interval is not fixed
-- 1y    (1 calendar year)  // currently not available, as interval is not fixed
-- 1i    (1 index count)
-}\if{html}{\out{</div>}}
-
-Or combine them: "3d12h4m25s" # 3 days, 12 hours, 4 minutes, and 25 seconds
+"Date", "Datetime", "Duration" or "Time", use the Polars duration string language.
+About the language, see the \verb{Polars duration string language} section for details.
 
 There may be a circumstance where R types are not sufficient to express a
 numeric tolerance. In that case, you can use the expression syntax like
@@ -92,6 +78,33 @@ than equal keys.
 \details{
 Both tables (DataFrames or LazyFrames) must be sorted by the asof_join key.
 }
+\section{Polars duration string language}{
+
+Polars duration string language is a simple representation of
+durations. It is used in many Polars functions that accept durations.
+
+It has the following format:
+\itemize{
+\item 1ns (1 nanosecond)
+\item 1us (1 microsecond)
+\item 1ms (1 millisecond)
+\item 1s (1 second)
+\item 1m (1 minute)
+\item 1h (1 hour)
+\item 1d (1 calendar day)
+\item 1w (1 calendar week)
+\item 1mo (1 calendar month)
+\item 1q (1 calendar quarter)
+\item 1y (1 calendar year)
+}
+
+Or combine them: \code{"3d12h4m25s"} # 3 days, 12 hours, 4 minutes, and 25 seconds
+
+By "calendar day", we mean the corresponding time on the next day
+(which may not be 24 hours, due to daylight savings).
+Similarly for "calendar week", "calendar month", "calendar quarter", and "calendar year".
+}
+
 \examples{
 # create two DataFrames to join asof
 gdp = pl$DataFrame(
@@ -126,4 +139,3 @@ pop$join_asof(gdp, on = "date", strategy = "backward", tolerance = "2w2d")
 # only look 11 days back (numeric tolerance depends on polars type, <date> is in days)
 pop$join_asof(gdp, on = "date", strategy = "backward", tolerance = 11)
 }
-\keyword{DataFrame}

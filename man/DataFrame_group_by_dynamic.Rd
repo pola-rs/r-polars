@@ -27,9 +27,13 @@ an Int64 column.}
 
 \item{every}{Interval of the window.}
 
-\item{period}{Length of the window, must be non-negative.}
+\item{period}{A character representing the length of the window,
+must be non-negative. See the \verb{Polars duration string language} section
+for details.}
 
-\item{offset}{Offset of the window. Default is \code{-period}.}
+\item{offset}{A character representing the offset of the window,
+or \code{NULL} (default). If \code{NULL}, \code{-period} is used.
+See the \verb{Polars duration string language} section for details.}
 
 \item{include_boundaries}{Add two columns \code{"_lower_boundary"} and
 \code{"_upper_boundary"} columns that show the boundaries of the window. This will
@@ -85,29 +89,6 @@ whereas if you pass a non-default offset, then the windows will be:
 }
 }
 \details{
-The period and offset arguments are created either from a timedelta, or by
-using the following string language:
-\itemize{
-\item 1ns (1 nanosecond)
-\item 1us (1 microsecond)
-\item 1ms (1 millisecond)
-\item 1s (1 second)
-\item 1m (1 minute)
-\item 1h (1 hour)
-\item 1d (1 calendar day)
-\item 1w (1 calendar week)
-\item 1mo (1 calendar month)
-\item 1q (1 calendar quarter)
-\item 1y (1 calendar year)
-\item 1i (1 index count)
-}
-
-Or combine them: "3d12h4m25s" # 3 days, 12 hours, 4 minutes, and 25 seconds
-
-By "calendar day", we mean the corresponding time on the next day (which may
-not be 24 hours, due to daylight savings). Similarly for "calendar week",
-"calendar month", "calendar quarter", and "calendar year".
-
 In case of a rolling operation on an integer column, the windows are defined
 by:
 \itemize{
