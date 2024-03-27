@@ -169,17 +169,13 @@ add_expr_methods_to_series = function() {
       new_f = eval(parse(text = paste0(r"(function() {
         f = RPolarsExpr$)", method, r"(
 
-        # get the future args the new function will be called with
-        # not using ... as this will erase tooltips and defaults
-        # instead using sys.call/do.call
-        scall = as.list(sys.call()[-1])
-
         df = self$to_frame()
         col_name = self$name
         self = pl$col(col_name)
         # Override `self` in `$.RPolarsExpr`
         environment(f) = environment()
-        expr = do.call(f, scall, envir = parent.frame())
+
+        expr = do.call(f, as.list(match.call()[-1]), envir = parent.frame())
 
         pcase(
           inherits(expr, "RPolarsExpr"), df$select(expr)$to_series(0),
@@ -207,8 +203,7 @@ series_make_sub_ns = function(pl_series, .expr_make_sub_ns_fn) {
   lapply(fns, \(f) {
     environment(f) = parent.frame(2L)
     new_f = function() {
-      scall = as.list(sys.call()[-1])
-      expr = do.call(f, scall)
+      expr = do.call(f, as.list(match.call()[-1]), envir = parent.frame())
       pcase(
         inherits(expr, "RPolarsExpr"), df$select(expr)$to_series(0),
         or_else = expr
