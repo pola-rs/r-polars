@@ -100,6 +100,8 @@
 - We said in the changelog of 0.14.0 that all `row_count_*` args in I/O functions
   were renamed `row_index_*`, but this change was not made for CSV and IPC
   functions. This renaming is now made (#964).
+- Evaluating `Series` methods from `Expr` inside functions now works correctly (#973).
+  Thanks @Yunuuuu for the report.
 
 ## Polars R Package 0.15.1
 
