@@ -54,8 +54,8 @@ test_that("categorical sub namespace", {
 test_that("Method dispatch Expr -> Series works in functions", {
 
   # Input is defined inside a function
-  fn <- function() {
-    fn_value <- pl$Series(values = "a")
+  fn = function() {
+    fn_value = pl$Series(values = "a")
     as.vector(pl$Series(values = letters[1:3])$is_in(fn_value))
   }
 
@@ -65,7 +65,7 @@ test_that("Method dispatch Expr -> Series works in functions", {
   )
 
   # Input is passed by the suer
-  fn2 <- function(input) {
+  fn2 = function(input) {
     as.vector(pl$Series(values = letters[1:3])$is_in(input))
   }
 
@@ -75,8 +75,8 @@ test_that("Method dispatch Expr -> Series works in functions", {
   )
 
   # Nested functions
-  fn3 <- function() {
-    fn_value <- pl$Series(values = "a")
+  fn3 = function() {
+    fn_value = pl$Series(values = "a")
     fn2(fn_value)
   }
 
