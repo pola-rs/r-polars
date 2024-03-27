@@ -133,16 +133,11 @@ add_expr_methods_to_then = function(then_like_class) {
       new_f = eval(parse(text = paste0(r"(function() {
         f = RPolarsExpr$)", method, r"(
 
-        # get the future args the new function will be called with
-        # not using ... as this will erase tooltips and defaults
-        # instead using sys.call/do.call
-        scall = as.list(sys.call()[-1])
-
         self = self$otherwise(pl$lit(NULL))
         # Override `self` in `$.RPolarsExpr`
         environment(f) = environment()
 
-        do.call(f, scall)
+        do.call(f, as.list(match.call()[-1]), envir = parent.frame())
       })")))
       # set new_method to have the same formals arguments
       formals(new_f) = formals(method, RPolarsExpr)

@@ -7,8 +7,7 @@
 ExprStr_split(by, inclusive = FALSE)
 }
 \arguments{
-\item{by}{String or Expr of a string, a valid regex pattern that will be
-used to split the string.}
+\item{by}{Substring to split by. Can be an Expr.}
 
 \item{inclusive}{If \code{TRUE}, include the split character/string in the results.}
 }
@@ -29,4 +28,3 @@ df = pl$DataFrame(
 df
 df$select(pl$col("s")$str$split(by = pl$col("by"))$alias("split"))
 }
-\keyword{ExprStr}

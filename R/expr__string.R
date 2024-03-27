@@ -668,9 +668,7 @@ ExprStr_count_matches = function(pattern, literal = FALSE) {
 
 #' Split the string by a substring
 #'
-#' @keywords ExprStr
-#' @param by String or Expr of a string, a valid regex pattern that will be
-#' used to split the string.
+#' @param by Substring to split by. Can be an Expr.
 #' @param inclusive If `TRUE`, include the split character/string in the results.
 #'
 #' @return
