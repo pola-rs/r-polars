@@ -64,7 +64,7 @@ test_that("Method dispatch Expr -> Series works in functions", {
     c(TRUE, FALSE, FALSE)
   )
 
-  # Input is passed by the suer
+  # Input is passed by the user
   fn2 = function(input) {
     as.vector(pl$Series(values = letters[1:3])$is_in(input))
   }
