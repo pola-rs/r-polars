@@ -83,4 +83,16 @@ test_that("Method dispatch Expr -> Series works in functions", {
     fn3(),
     c(TRUE, FALSE, FALSE)
   )
+
+  # Non-positional arguments
+  fn4 = function(s, a) {
+    # `ambiguous` is a non-positional argument
+    s$dt$replace_time_zone("Europe/Brussels", ambiguous = a)
+  }
+
+  expect_true(
+    fn4(as_polars_series(as.POSIXct("2018-10-28 02:00")), "null") |>
+      as.vector() |>
+      is.na()
+  )
 })
