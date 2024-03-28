@@ -402,10 +402,6 @@ test_that("get column", {
   )
 })
 
-
-
-# TODO implement series cast and test Series_equal
-
 test_that("with_columns: list or unlisted input", {
   test = pl$DataFrame(mtcars)
 

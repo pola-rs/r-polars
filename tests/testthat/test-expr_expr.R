@@ -2210,7 +2210,7 @@ test_that("entropy", {
     r_entropy(1:3, base = 2, normalize = FALSE)
   )
 
-  # TODO contribute polars calculating entropy on utf8 returns NULL, should either raise error
+  # TODO: https://github.com/pola-rs/polars/issues/15350
   pl$select(pl$lit(c("a", "b", "b", "c", "c", "c"))$entropy(base = 2))
 
   pl$lit(c("a", "a", "a"))$entropy(base = 2, normalize = FALSE)$to_r()
