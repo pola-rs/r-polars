@@ -54,12 +54,14 @@ ExprBin_ends_with = function(suffix) {
 #'
 #' df$with_columns(encoded = pl$col("code")$bin$encode("hex"))
 ExprBin_encode = function(encoding) {
-  pcase(
-    identical(encoding, "hex"), result(.pr$Expr$bin_hex_encode(self)),
-    identical(encoding, "base64"), result(.pr$Expr$bin_base64_encode(self)),
-    or_else = Err_plain(sprintf("The `encoding` argument must be one of 'hex' or 'base64'. Got: %s", str_string(encoding)))
-  ) |>
-    unwrap("in $bin$encode():")
+  if (identical(encoding, "hex")) {
+    .pr$Expr$bin_hex_encode(self)
+  } else if (identical(encoding, "base64")) {
+    .pr$Expr$bin_base64_encode(self)
+  } else {
+    Err_plain(sprintf("The `encoding` argument must be one of 'hex' or 'base64'. Got: %s", str_string(encoding))) |>
+      unwrap("in $bin$encode():")
+  }
 }
 
 
@@ -88,10 +90,13 @@ ExprBin_encode = function(encoding) {
 #' )
 #' df$select(pl$col("colors")$bin$decode("hex", strict = FALSE))
 ExprBin_decode = function(encoding, ..., strict = TRUE) {
-  pcase(
-    identical(encoding, "hex"), .pr$Expr$bin_hex_decode(self, strict),
-    identical(encoding, "base64"), .pr$Expr$bin_base64_decode(self, strict),
-    or_else = Err_plain(sprintf("The `encoding` argument must be one of 'hex' or 'base64'. Got: %s", str_string(encoding)))
-  ) |>
-    unwrap("in $bin$decode():")
+  if (identical(encoding, "hex")) {
+    res = .pr$Expr$bin_hex_decode(self, strict)
+  } else if (identical(encoding, "base64")) {
+    res = .pr$Expr$bin_base64_decode(self, strict)
+  } else {
+    res = Err_plain(sprintf("The `encoding` argument must be one of 'hex' or 'base64'. Got: %s", str_string(encoding)))
+  }
+
+  unwrap(res, "in $bin$decode():")
 }
