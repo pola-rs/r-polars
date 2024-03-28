@@ -16,8 +16,8 @@ use crate::CONFIG;
 use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut};
 use pl::PolarsError as pl_error;
 use pl::{
-    BinaryNameSpaceImpl, Duration, DurationMethods, IntoSeries, RollingGroupOptions, SetOperation,
-    StringNameSpaceImpl, TemporalMethods,
+    Duration, DurationMethods, IntoSeries, RollingGroupOptions, SetOperation, StringNameSpaceImpl,
+    TemporalMethods,
 };
 use polars::lazy::dsl;
 use polars::prelude as pl;
@@ -2369,56 +2369,22 @@ impl RPolarsExpr {
             .into())
     }
 
-    pub fn bin_encode_hex(&self) -> Self {
-        self.0
-            .clone()
-            .map(
-                move |s| s.binary().map(|s| Some(s.hex_encode().into_series())),
-                pl::GetOutput::same_type(),
-            )
-            .with_fmt("binary.hex_encode")
-            .into()
+    pub fn bin_hex_encode(&self) -> Self {
+        self.0.clone().binary().hex_encode().into()
     }
 
-    pub fn bin_encode_base64(&self) -> Self {
-        self.0
-            .clone()
-            .map(
-                move |s| s.binary().map(|s| Some(s.base64_encode().into_series())),
-                pl::GetOutput::same_type(),
-            )
-            .with_fmt("binary.base64_encode")
-            .into()
+    pub fn bin_base64_encode(&self) -> Self {
+        self.0.clone().binary().base64_encode().into()
     }
 
-    pub fn bin_decode_hex(&self, strict: bool) -> Self {
-        self.0
-            .clone()
-            .map(
-                move |s| {
-                    s.binary()?
-                        .hex_decode(strict)
-                        .map(|s| Some(s.into_series()))
-                },
-                pl::GetOutput::same_type(),
-            )
-            .with_fmt("binary.hex_decode")
-            .into()
+    pub fn bin_hex_decode(&self, strict: Robj) -> Result<RPolarsExpr, String> {
+        let strict = robj_to!(bool, strict)?;
+        Ok(self.0.clone().binary().hex_decode(strict).into())
     }
 
-    pub fn bin_decode_base64(&self, strict: bool) -> Self {
-        self.0
-            .clone()
-            .map(
-                move |s| {
-                    s.binary()?
-                        .base64_decode(strict)
-                        .map(|s| Some(s.into_series()))
-                },
-                pl::GetOutput::same_type(),
-            )
-            .with_fmt("binary.base64_decode")
-            .into()
+    pub fn bin_base64_decode(&self, strict: Robj) -> Result<RPolarsExpr, String> {
+        let strict = robj_to!(bool, strict)?;
+        Ok(self.0.clone().binary().base64_decode(strict).into())
     }
 
     pub fn struct_field_by_name(&self, name: Robj) -> Result<RPolarsExpr, String> {
