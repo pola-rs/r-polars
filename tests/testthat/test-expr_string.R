@@ -795,3 +795,40 @@ patrick::with_parameters_test_that(
   },
   .cases = make_datetime_format_cases()
 )
+
+test_that("str$extract_groups() works", {
+  df = pl$DataFrame(
+    url = c(
+      "http://vote.com/ballon_dor?candidate=messi&ref=python",
+      "http://vote.com/ballon_dor?candidate=weghorst&ref=polars",
+      "http://vote.com/ballon_dor?error=404&ref=rust"
+    )
+  )
+
+  # named patterns
+  pattern = r"(candidate=(?<candidate>\w+)&ref=(?<ref>\w+))"
+  expect_identical(
+    df$select(
+      captures = pl$col("url")$str$extract_groups(pattern)
+    )$unnest("captures")$to_list(),
+    list(candidate = c("messi", "weghorst", NA), ref = c("python", "polars", NA))
+  )
+
+  # unnamed patterns
+  pattern = r"(candidate=(\w+)&ref=(\w+))"
+  expect_identical(
+    df$select(
+      captures = pl$col("url")$str$extract_groups(pattern)
+    )$unnest("captures")$to_list(),
+    list("1" = c("messi", "weghorst", NA), "2" = c("python", "polars", NA))
+  )
+
+  # empty pattern
+  pattern = ""
+  expect_identical(
+    df$select(
+      captures = pl$col("url")$str$extract_groups(pattern)
+    )$unnest("captures")$to_list(),
+    list(url = NULL)
+  )
+})
