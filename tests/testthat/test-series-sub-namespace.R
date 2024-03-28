@@ -43,13 +43,16 @@ test_that("categorical sub namespace", {
   )
 })
 
-# TODO: this panicks
-# test_that("array sub namespace", {
-#   s = as_polars_series(list(3:1, 1:2, c(NA_integer_, 4L)))$
-#     to_lit()$
-#     cast(pl$Array(width = 2))$
-#     to_series()
-# })
+test_that("array sub namespace", {
+  s = as_polars_series(list(2:1, 1:2, c(NA_integer_, 4L)))$
+    to_lit()$
+    cast(pl$Array(pl$Int32, width = 2))$
+    to_series()
+
+  expect_true(s$dtype == pl$Array(pl$Int32, width = 2))
+  expect_false(s$dtype == pl$Array(pl$Int32, width = 3))
+  expect_false(s$dtype == pl$String)
+})
 
 test_that("Method dispatch Expr -> Series works in functions", {
   # Input is defined inside a function

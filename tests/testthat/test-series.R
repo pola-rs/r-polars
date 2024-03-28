@@ -302,19 +302,20 @@ test_that("sort on Series and Expr gives same results", {
   )
 })
 
-# TODO rework this test
-# test_that("is_sorted  sort", {
-#   s = as_polars_series(c(NA,2,1,3,NA))
-#   s_sorted = s$sort(descending = FALSE)
-#   expect_true(s_sorted$is_sorted())
-#   expect_false(s$is_sorted())
-#
-#   s_sorted_rev = s$sort(descending = TRUE)
-#   expect_false(s_sorted_rev$is_sorted(descending = FALSE))
-#   expect_true(s_sorted_rev$is_sorted(descending = TRUE, nulls_last = FALSE))
-#   expect_false(s_sorted_rev$is_sorted(descending = TRUE, nulls_last = TRUE))
-#
-# })
+test_that("$is_sorted() works", {
+  s = as_polars_series(c(NA, 2, 1, 3, NA))
+  expect_false(s$is_sorted())
+
+  s_sorted = s$sort(descending = FALSE)
+  expect_true(s_sorted$is_sorted())
+
+  s_sorted = s$sort(descending = FALSE, nulls_last = TRUE)
+  expect_true(s_sorted$is_sorted())
+
+  s_sorted_rev = s$sort(descending = TRUE)
+  expect_false(s_sorted_rev$is_sorted(descending = FALSE))
+  expect_true(s_sorted_rev$is_sorted(descending = TRUE))
+})
 
 test_that("set_sorted", {
   expect_error(
@@ -493,10 +494,17 @@ test_that("Series list", {
   # check data_type
   expect_true(s$dtype == with(pl, List(List(List(String)))))
 
-  # flatten 3-levels and return to R
-  # TODO CONTRIBUTE POLARS this is a bug, when flattening an empty list, it should not give a null
-  # ul = unlist(pl$DataFrame(s)$select(pl$col("")$flatten()$flatten()$flatten())$to_list())
-  # expect_true(all(unlist(l) == ul))
+  # Note: flattening an empty list returns null in polars
+  # https://github.com/pola-rs/polars/issues/6723
+  # https://github.com/pola-rs/polars/issues/14381
+  ul = pl$DataFrame(s)$select(pl$col("")$flatten()$flatten()$flatten())$to_list() |>
+    unlist()
+
+  expect_identical(
+    lapply(ul, \(x) if (length(x) == 0) NA_character_ else x) |>
+      unlist(),
+    ul
+  )
 })
 
 
