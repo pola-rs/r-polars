@@ -924,8 +924,8 @@ ExprStr_replace_many = function(patterns, replace_with, ascii_case_insensitive =
 #' All group names are strings. If your pattern contains unnamed groups, their
 #' numerical position is converted to a string. See examples.
 #'
-#' @return Expr of data type [Struct][pl_Struct] with fields of data type
-#' [`String`][pl_String].
+#' @return Expr of data type [Struct][DataType_Struct] with fields of data type
+#' `String`.
 #'
 #' @examples
 #' df = pl$DataFrame(

@@ -10,8 +10,8 @@ ExprStr_extract_groups(pattern)
 \item{pattern}{String or Expr of a string, a valid regex pattern.}
 }
 \value{
-Expr of data type \link[=pl_Struct]{Struct} with fields of data type
-\code{\link[=pl_String]{String}}.
+Expr of data type \link[=DataType_Struct]{Struct} with fields of data type
+\code{String}.
 }
 \description{
 Extract all capture groups for the given regex pattern
