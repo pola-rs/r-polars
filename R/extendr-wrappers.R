@@ -1030,13 +1030,13 @@ RPolarsExpr$bin_starts_with <- function(sub) .Call(wrap__RPolarsExpr__bin_starts
 
 RPolarsExpr$bin_ends_with <- function(sub) .Call(wrap__RPolarsExpr__bin_ends_with, self, sub)
 
-RPolarsExpr$bin_encode_hex <- function() .Call(wrap__RPolarsExpr__bin_encode_hex, self)
+RPolarsExpr$bin_hex_encode <- function() .Call(wrap__RPolarsExpr__bin_hex_encode, self)
 
-RPolarsExpr$bin_encode_base64 <- function() .Call(wrap__RPolarsExpr__bin_encode_base64, self)
+RPolarsExpr$bin_base64_encode <- function() .Call(wrap__RPolarsExpr__bin_base64_encode, self)
 
-RPolarsExpr$bin_decode_hex <- function(strict) .Call(wrap__RPolarsExpr__bin_decode_hex, self, strict)
+RPolarsExpr$bin_hex_decode <- function(strict) .Call(wrap__RPolarsExpr__bin_hex_decode, self, strict)
 
-RPolarsExpr$bin_decode_base64 <- function(strict) .Call(wrap__RPolarsExpr__bin_decode_base64, self, strict)
+RPolarsExpr$bin_base64_decode <- function(strict) .Call(wrap__RPolarsExpr__bin_base64_decode, self, strict)
 
 RPolarsExpr$struct_field_by_name <- function(name) .Call(wrap__RPolarsExpr__struct_field_by_name, self, name)
 
