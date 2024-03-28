@@ -1028,9 +1028,9 @@ RPolarsExpr$bin_starts_with <- function(sub) .Call(wrap__RPolarsExpr__bin_starts
 
 RPolarsExpr$bin_ends_with <- function(sub) .Call(wrap__RPolarsExpr__bin_ends_with, self, sub)
 
-RPolarsExpr$bin_encode_hex <- function() .Call(wrap__RPolarsExpr__bin_encode_hex, self)
+RPolarsExpr$bin_hex_encode <- function() .Call(wrap__RPolarsExpr__bin_hex_encode, self)
 
-RPolarsExpr$bin_encode_base64 <- function() .Call(wrap__RPolarsExpr__bin_encode_base64, self)
+RPolarsExpr$bin_base64_encode <- function() .Call(wrap__RPolarsExpr__bin_base64_encode, self)
 
 RPolarsExpr$bin_hex_decode <- function(strict) .Call(wrap__RPolarsExpr__bin_hex_decode, self, strict)
 

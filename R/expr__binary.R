@@ -40,22 +40,28 @@ ExprBin_ends_with = function(suffix) {
 }
 
 
-
-#' encode
+#' Encode a value using the provided encoding
 #'
-#' @aliases expr_bin_encode
-#' @description  Encode a value using the provided encoding.
-#' @keywords ExprBin
-#' @param encoding binary choice either 'hex' or 'base64'
-#' @return binary array with values encoded using provided encoding
+#' @inheritParams ExprBin_decode
+#' @inherit ExprBin_decode return
+#' @examples
+#' df = pl$DataFrame(
+#'   name = c("black", "yellow", "blue"),
+#'   code = as_polars_series(
+#'     c("000000", "ffff00", "0000ff")
+#'   )$cast(pl$Binary)$bin$decode("hex")
+#' )
+#'
+#' df$with_columns(encoded = pl$col("code")$bin$encode("hex"))
 ExprBin_encode = function(encoding) {
   pcase(
-    !is_string(encoding), stop("encoding must be a string, it was: %s", str_string(encoding)),
-    encoding == "hex", .pr$Expr$bin_encode_hex(self),
-    encoding == "base64", .pr$Expr$bin_encode_base64(self),
-    or_else = stop("encoding must be one of 'hex' or 'base64', got %s", encoding)
-  )
+    identical(encoding, "hex"), result(.pr$Expr$bin_hex_encode(self)),
+    identical(encoding, "base64"), result(.pr$Expr$bin_base64_encode(self)),
+    or_else = Err_plain(sprintf("The `encoding` argument must be one of 'hex' or 'base64'. Got: %s", str_string(encoding)))
+  ) |>
+    unwrap("in $bin$encode():")
 }
+
 
 #' Decode values using the provided encoding
 #'
@@ -83,14 +89,9 @@ ExprBin_encode = function(encoding) {
 #' df$select(pl$col("colors")$bin$decode("hex", strict = FALSE))
 ExprBin_decode = function(encoding, ..., strict = TRUE) {
   pcase(
-    !is_string(encoding), Err_plain(
-      sprintf("The `encoding` argument must be one of 'hex' or 'base64'. But it was: %s.", str_string(encoding))
-    ),
-    encoding == "hex", .pr$Expr$bin_hex_decode(self, strict),
-    encoding == "base64", .pr$Expr$bin_base64_decode(self, strict),
-    or_else = Err_plain(
-      sprintf("The `encoding` argument must be one of 'hex' or 'base64', got '%s'.", encoding)
-    )
+    identical(encoding, "hex"), .pr$Expr$bin_hex_decode(self, strict),
+    identical(encoding, "base64"), .pr$Expr$bin_base64_decode(self, strict),
+    or_else = Err_plain(sprintf("The `encoding` argument must be one of 'hex' or 'base64'. Got: %s", str_string(encoding)))
   ) |>
     unwrap("in $bin$decode():")
 }
