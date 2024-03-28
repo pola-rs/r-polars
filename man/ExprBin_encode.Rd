@@ -2,18 +2,26 @@
 % Please edit documentation in R/expr__binary.R
 \name{ExprBin_encode}
 \alias{ExprBin_encode}
-\alias{expr_bin_encode}
-\title{encode}
+\title{Encode a value using the provided encoding}
 \usage{
 ExprBin_encode(encoding)
 }
 \arguments{
-\item{encoding}{binary choice either 'hex' or 'base64'}
+\item{encoding}{A character, \code{"hex"} or \code{"base64"}. The encoding to use.}
 }
 \value{
-binary array with values encoded using provided encoding
+\link[=Expr_class]{Expr} of data type String.
 }
 \description{
-Encode a value using the provided encoding.
+Encode a value using the provided encoding
 }
-\keyword{ExprBin}
+\examples{
+df = pl$DataFrame(
+  name = c("black", "yellow", "blue"),
+  code = as_polars_series(
+    c("000000", "ffff00", "0000ff")
+  )$cast(pl$Binary)$bin$decode("hex")
+)
+
+df$with_columns(encoded = pl$col("code")$bin$encode("hex"))
+}

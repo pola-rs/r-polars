@@ -48,6 +48,7 @@
     is renamed to `time_zone` (#944).
   - In `$dt$replace_time_zone()`, all arguments except `time_zone` must be named
     arguments (#944).
+  - In `$bin$decode()`, the `strict` argument must be a named argument (#980).
   - `pl$date_range()` is completely rewritten (#950).
     - The argument `end` must be specified.
     - The default value of `interval` is changed to `"1d"`.

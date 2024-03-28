@@ -40,38 +40,63 @@ ExprBin_ends_with = function(suffix) {
 }
 
 
-
-#' encode
+#' Encode a value using the provided encoding
 #'
-#' @aliases expr_bin_encode
-#' @description  Encode a value using the provided encoding.
-#' @keywords ExprBin
-#' @param encoding binary choice either 'hex' or 'base64'
-#' @return binary array with values encoded using provided encoding
+#' @inheritParams ExprBin_decode
+#' @inherit ExprBin_decode return
+#' @examples
+#' df = pl$DataFrame(
+#'   name = c("black", "yellow", "blue"),
+#'   code = as_polars_series(
+#'     c("000000", "ffff00", "0000ff")
+#'   )$cast(pl$Binary)$bin$decode("hex")
+#' )
+#'
+#' df$with_columns(encoded = pl$col("code")$bin$encode("hex"))
 ExprBin_encode = function(encoding) {
-  pcase(
-    !is_string(encoding), stop("encoding must be a string, it was: %s", str_string(encoding)),
-    encoding == "hex", .pr$Expr$bin_encode_hex(self),
-    encoding == "base64", .pr$Expr$bin_encode_base64(self),
-    or_else = stop("encoding must be one of 'hex' or 'base64', got %s", encoding)
-  )
+  if (identical(encoding, "hex")) {
+    .pr$Expr$bin_hex_encode(self)
+  } else if (identical(encoding, "base64")) {
+    .pr$Expr$bin_base64_encode(self)
+  } else {
+    Err_plain(sprintf("The `encoding` argument must be one of 'hex' or 'base64'. Got: %s", str_string(encoding))) |>
+      unwrap("in $bin$encode():")
+  }
 }
 
-#' decode
+
+#' Decode values using the provided encoding
 #'
-#' @aliases expr_bin_decode
-#' @description Decode a value using the provided encoding.
-#' @keywords ExprBin
-#' @param encoding binary choice either 'hex' or 'base64'
+#' @param encoding A character, `"hex"` or `"base64"`. The encoding to use.
+#' @param ... Ignored.
 #' @param strict  Raise an error if the underlying value cannot be decoded,
-#'  otherwise mask out with a null value.
+#'  otherwise mask out with a `null` value.
+#' @return [Expr][Expr_class] of data type String.
+#' @examples
+#' df = pl$DataFrame(
+#'   name = c("black", "yellow", "blue"),
+#'   code_hex = as_polars_series(c("000000", "ffff00", "0000ff"))$cast(pl$Binary),
+#'   code_base64 = as_polars_series(c("AAAA", "//8A", "AAD/"))$cast(pl$Binary)
+#' )
 #'
-#' @return binary array with values decoded using provided encoding
-ExprBin_decode = function(encoding, strict = TRUE) {
-  pcase(
-    !is_string(encoding), stop("encoding must be a string, it was: %s", str_string(encoding)),
-    encoding == "hex", .pr$Expr$bin_decode_hex(self, strict),
-    encoding == "base64", .pr$Expr$bin_decode_base64(self, strict),
-    or_else = stop("encoding must be one of 'hex' or 'base64', got %s", encoding)
-  )
+#' df$with_columns(
+#'   decoded_hex = pl$col("code_hex")$bin$decode("hex"),
+#'   decoded_base64 = pl$col("code_base64")$bin$decode("base64")
+#' )
+#'
+#' # Set `strict = FALSE` to set invalid values to `null` instead of raising an error.
+#' df = pl$DataFrame(
+#'   colors = as_polars_series(c("000000", "ffff00", "invalid_value"))$cast(pl$Binary)
+#' )
+#' df$select(pl$col("colors")$bin$decode("hex", strict = FALSE))
+ExprBin_decode = function(encoding, ..., strict = TRUE) {
+  if (identical(encoding, "hex")) {
+    res = .pr$Expr$bin_hex_decode(self, strict)
+  } else if (identical(encoding, "base64")) {
+    res = .pr$Expr$bin_base64_decode(self, strict)
+  } else {
+    res = Err_plain(sprintf("The `encoding` argument must be one of 'hex' or 'base64'. Got: %s", str_string(encoding)))
+  }
+
+  unwrap(res, "in $bin$decode():")
 }
