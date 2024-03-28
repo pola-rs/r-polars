@@ -992,6 +992,8 @@ RPolarsExpr$str_extract <- function(pattern, group_index) .Call(wrap__RPolarsExp
 
 RPolarsExpr$str_extract_all <- function(pattern) .Call(wrap__RPolarsExpr__str_extract_all, self, pattern)
 
+RPolarsExpr$str_extract_groups <- function(pattern) .Call(wrap__RPolarsExpr__str_extract_groups, self, pattern)
+
 RPolarsExpr$str_count_matches <- function(pattern, literal) .Call(wrap__RPolarsExpr__str_count_matches, self, pattern, literal)
 
 RPolarsExpr$str_to_date <- function(format, strict, exact, cache) .Call(wrap__RPolarsExpr__str_to_date, self, format, strict, exact, cache)

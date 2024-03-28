@@ -2142,6 +2142,10 @@ impl RPolarsExpr {
         self.0.clone().str().extract_all(pattern.0.clone()).into()
     }
 
+    pub fn str_extract_groups(&self, pattern: &str) -> RResult<Self> {
+        Ok(self.0.clone().str().extract_groups(pattern)?.into())
+    }
+
     pub fn str_count_matches(&self, pattern: Robj, literal: Robj) -> RResult<Self> {
         Ok(self
             .0

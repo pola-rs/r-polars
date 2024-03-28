@@ -914,3 +914,42 @@ ExprStr_replace_many = function(patterns, replace_with, ascii_case_insensitive =
   .pr$Expr$str_replace_many(self, patterns, replace_with, ascii_case_insensitive) |>
     unwrap("in str$replace_many():")
 }
+
+
+#' Extract all capture groups for the given regex pattern
+#'
+#' @inheritParams ExprStr_contains
+#'
+#' @details
+#' All group names are strings. If your pattern contains unnamed groups, their
+#' numerical position is converted to a string. See examples.
+#'
+#' @return Expr of data type [Struct][pl_Struct] with fields of data type
+#' [`String`][pl_String].
+#'
+#' @examples
+#' df = pl$DataFrame(
+#'   url = c(
+#'     "http://vote.com/ballon_dor?candidate=messi&ref=python",
+#'     "http://vote.com/ballon_dor?candidate=weghorst&ref=polars",
+#'     "http://vote.com/ballon_dor?error=404&ref=rust"
+#'   )
+#' )
+#'
+#' pattern = r"(candidate=(?<candidate>\w+)&ref=(?<ref>\w+))"
+#'
+#' df$with_columns(
+#'   captures = pl$col("url")$str$extract_groups(pattern)
+#' )$unnest("captures")
+#'
+#' # If the groups are unnamed, their numerical position (as a string) is used:
+#'
+#' pattern = r"(candidate=(\w+)&ref=(\w+))"
+#'
+#' df$with_columns(
+#'   captures = pl$col("url")$str$extract_groups(pattern)
+#' )$unnest("captures")
+ExprStr_extract_groups = function(pattern) {
+  .pr$Expr$str_extract_groups(self, pattern) |>
+    unwrap("in str$extract_groups():")
+}
