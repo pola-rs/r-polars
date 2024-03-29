@@ -2345,6 +2345,15 @@ impl RPolarsExpr {
             .into())
     }
 
+    pub fn str_find(&self, pat: Robj, literal: Robj, strict: Robj) -> RResult<Self> {
+        let pat = robj_to!(PLExpr, pat)?;
+        let literal = robj_to!(Option, bool, literal)?;
+        let strict = robj_to!(bool, strict)?;
+        match literal {
+            Some(true) => Ok(self.0.clone().str().find_literal(pat).into()),
+            _ => Ok(self.0.clone().str().find(pat, strict).into()),
+        }
+    }
     //binary methods
     pub fn bin_contains(&self, lit: Robj) -> RResult<Self> {
         Ok(self

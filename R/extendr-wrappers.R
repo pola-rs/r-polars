@@ -1024,6 +1024,8 @@ RPolarsExpr$str_contains_any <- function(patterns, ascii_case_insensitive) .Call
 
 RPolarsExpr$str_replace_many <- function(patterns, replace_with, ascii_case_insensitive) .Call(wrap__RPolarsExpr__str_replace_many, self, patterns, replace_with, ascii_case_insensitive)
 
+RPolarsExpr$str_find <- function(pat, literal, strict) .Call(wrap__RPolarsExpr__str_find, self, pat, literal, strict)
+
 RPolarsExpr$bin_contains <- function(lit) .Call(wrap__RPolarsExpr__bin_contains, self, lit)
 
 RPolarsExpr$bin_starts_with <- function(sub) .Call(wrap__RPolarsExpr__bin_starts_with, self, sub)

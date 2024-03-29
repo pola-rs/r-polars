@@ -94,6 +94,7 @@
 - Export the `Duration` datatype (#955).
 - New functions `pl$int_range()` and `pl$int_ranges()` (#968).
 - New string method `$str$extract_groups()` (#979).
+- New string method `$str$find()` (#985).
 
 ### Bug fixes
 

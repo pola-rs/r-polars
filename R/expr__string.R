@@ -953,3 +953,22 @@ ExprStr_extract_groups = function(pattern) {
   .pr$Expr$str_extract_groups(self, pattern) |>
     unwrap("in str$extract_groups():")
 }
+
+#' Return the index position of the first substring matching a pattern
+#'
+#' @inheritParams ExprStr_count_matches
+#' @param ... Not used.
+#' @param strict Raise an error if the underlying pattern is not a valid regex,
+#' otherwise mask out with a null value.
+#'
+#' @return An Expr of data type UInt32
+#'
+#' @examples
+#' pl$DataFrame(s = c("AAA", "aAa", "aaa"))$with_columns(
+#'   default_match = pl$col("s")$str$find("Aa"),
+#'   insensitive_match = pl$col("s")$str$find("(?i)Aa")
+#' )
+ExprStr_find = function(pattern, ..., literal = FALSE, strict = TRUE) {
+  .pr$Expr$str_find(self, pattern, literal, strict) |>
+    unwrap("in str$find():")
+}
