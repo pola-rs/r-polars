@@ -65,11 +65,10 @@
        [1] "ChainedThen"       "ChainedWhen"       "DataFrame"        
        [4] "DataType"          "DataTypeVector"    "Err"              
        [7] "Expr"              "GroupBy"           "LazyFrame"        
-      [10] "LazyGroupBy"       "ProtoExprArray"    "RField"           
-      [13] "RNullValues"       "RThreadHandle"     "SQLContext"       
-      [16] "Series"            "StringCacheHolder" "Then"             
-      [19] "VecDataFrame"      "When"              "env"              
-      [22] "print_env"        
+      [10] "LazyGroupBy"       "RField"            "RNullValues"      
+      [13] "RThreadHandle"     "SQLContext"        "Series"           
+      [16] "StringCacheHolder" "Then"              "VecDataFrame"     
+      [19] "When"              "env"               "print_env"        
 
 # public and private methods of each class DataFrame
 

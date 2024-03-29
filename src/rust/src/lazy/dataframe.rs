@@ -320,13 +320,14 @@ impl RPolarsLazyFrame {
         RPolarsLazyFrame(new_df)
     }
 
-    fn drop_nulls(&self, subset: &RPolarsProtoExprArray) -> RPolarsLazyFrame {
-        if subset.0.is_empty() {
-            RPolarsLazyFrame(self.0.clone().drop_nulls(None))
+    fn drop_nulls(&self, subset: Robj) -> RResult<Self> {
+        let subset = robj_to!(Option, VecPLExprCol, subset)?;
+        let out = if subset.is_some() {
+            RPolarsLazyFrame(self.0.clone().drop_nulls(subset))
         } else {
-            let vec = pra_to_vec(subset, "select");
-            RPolarsLazyFrame(self.0.clone().drop_nulls(Some(vec)))
-        }
+            RPolarsLazyFrame(self.0.clone().drop_nulls(None))
+        };
+        Ok(out.into())
     }
 
     fn unique(&self, subset: Robj, keep: Robj, maintain_order: Robj) -> RResult<RPolarsLazyFrame> {

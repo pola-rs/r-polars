@@ -661,68 +661,6 @@ Expr_is_null = use_extendr_wrapper
 Expr_is_not_null = use_extendr_wrapper
 
 
-# TODO move this function in to rust with input list of args
-# TODO deprecate context feature
-#' construct proto Expr array from args
-#' @noRd
-#' @param ...  any Expr or string
-#'
-#'
-#'
-#' @return RPolarsProtoExprArray object
-#'
-#' @examples .pr$env$construct_ProtoExprArray(pl$col("Species"), "Sepal.Width")
-construct_ProtoExprArray = function(...) {
-  pra = RPolarsProtoExprArray$new()
-  args = list2(...)
-
-  # deal with list of expressions
-  is_list = which(vapply(args, is.list, FUN.VALUE = logical(1L)))
-  for (i in seq_along(is_list)) {
-    tmp = unlist(args[[is_list[i]]], recursive = FALSE)
-    args[[is_list[i]]] = NULL
-    args = append(tmp, args)
-  }
-  args = Filter(Negate(is.null), args)
-
-  arg_names = names(args)
-
-
-  # if args not named load in Expr and string
-  if (is.null(arg_names)) {
-    if (length(args) == 1 && is.list(args)) {
-      args = unlist(args)
-    }
-    for (i in args) {
-      # if (is_string(i)) {
-      #   pra$push_back_str(i)
-      #   next
-      # }
-      pra$push_back_rexpr(wrap_e(i, str_to_lit = FALSE))
-    }
-
-    # if args named, convert string to col and alias any column by name if a name
-  } else {
-    for (i in seq_along(args)) {
-      arg = args[[i]]
-      name = arg_names[i]
-
-      expr = wrap_e(arg, str_to_lit = FALSE)
-
-
-      if (nchar(name) >= 1L) {
-        expr = expr$alias(name)
-      }
-      pra$push_back_rexpr(expr) # rust method
-    }
-  }
-
-
-
-  pra
-}
-
-
 ## TODO allow list to be formed from recursive R lists
 ## TODO Contribute polars, seems polars now prefer word f or function in map/apply/rolling/apply
 # over lambda. However lambda is still in examples.
@@ -1872,7 +1810,17 @@ Expr_last = use_extendr_wrapper
 #' This applies an expression on groups and returns the same number of rows as
 #' the input (contrarily to `$group_by()` + `$agg()`).
 #'
-#' @param ... Character vector indicating the columns to group by.
+#' @param expr Columns to group by. Can be an Expr or something coercible to an
+#' Expr. Strings are parsed as column names.
+#' @param ... Not used.
+#' @param mapping_strategy One of the following:
+#' * `"group_to_rows"` (default): if the aggregation results in multiple values,
+#'   assign them back to their position in the DataFrame. This can only be done
+#'   if the group yields the same elements before aggregation as after.
+#' * `"join"`: join the groups as `List<group_dtype>` to the row positions. Note
+#'   that this can be memory intensive.
+#' * `"explode"`: don’t do any mapping, but simply flatten the group. This only
+#'   makes sense if the input data is sorted.
 #'
 #' @return Expr
 #' @examples
@@ -1892,9 +1840,14 @@ Expr_last = use_extendr_wrapper
 #' )$with_columns(
 #'   count = pl$col("val")$count()$over(over_vars)
 #' )
-Expr_over = function(...) {
-  pra = construct_ProtoExprArray(...)
-  .pr$Expr$over(self, pra)
+Expr_over = function(expr, ..., mapping_strategy = "group_to_rows") {
+  expr = c(
+    wrap_elist_result(expr, str_to_lit = FALSE) |>
+      unwrap("in $over():"),
+    list2(...)
+  )
+  .pr$Expr$over(self, expr, mapping_strategy) |>
+    unwrap("in $over():")
 }
 
 #' Check whether each value is unique

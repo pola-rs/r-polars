@@ -4,10 +4,24 @@
 \alias{Expr_over}
 \title{Apply window function over a subgroup}
 \usage{
-Expr_over(...)
+Expr_over(expr, ..., mapping_strategy = "group_to_rows")
 }
 \arguments{
-\item{...}{Character vector indicating the columns to group by.}
+\item{expr}{Columns to group by. Can be an Expr or something coercible to an
+Expr. Strings are parsed as column names.}
+
+\item{...}{Not used.}
+
+\item{mapping_strategy}{One of the following:
+\itemize{
+\item \code{"group_to_rows"} (default): if the aggregation results in multiple values,
+assign them back to their position in the DataFrame. This can only be done
+if the group yields the same elements before aggregation as after.
+\item \code{"join"}: join the groups as \verb{List<group_dtype>} to the row positions. Note
+that this can be memory intensive.
+\item \code{"explode"}: don’t do any mapping, but simply flatten the group. This only
+makes sense if the input data is sorted.
+}}
 }
 \value{
 Expr

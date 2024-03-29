@@ -1,4 +1,4 @@
-use crate::lazy::dsl::{RPolarsExpr, RPolarsProtoExprArray};
+use crate::lazy::dsl::RPolarsExpr;
 use crate::rdataframe::RPolarsDataFrame;
 use crate::robj_to;
 use crate::series::RPolarsSeries;
@@ -65,9 +65,8 @@ fn any_horizontal(dotdotdot: Robj) -> RResult<RPolarsExpr> {
 }
 
 #[extendr]
-fn coalesce_exprs(exprs: &RPolarsProtoExprArray) -> RPolarsExpr {
-    let exprs: Vec<pl::Expr> = exprs.to_vec("select");
-    pl::coalesce(exprs.as_slice()).into()
+fn coalesce_exprs(exprs: Robj) -> RResult<RPolarsExpr> {
+    Ok(pl::coalesce(&robj_to!(VecPLExprCol, exprs)?).into())
 }
 
 #[extendr]

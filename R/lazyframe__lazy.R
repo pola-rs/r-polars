@@ -1089,8 +1089,9 @@ LazyFrame_tail = function(n = 5L) {
 #' tmp$drop_nulls("mpg")$collect()$height
 #' tmp$drop_nulls(c("mpg", "hp"))$collect()$height
 LazyFrame_drop_nulls = function(subset = NULL) {
-  pra = do.call(construct_ProtoExprArray, as.list(subset))
-  .pr$LazyFrame$drop_nulls(self, pra)
+  if (!is.null(subset)) subset = as.list(subset)
+  .pr$LazyFrame$drop_nulls(self, subset) |>
+    unwrap("in $drop_nulls():")
 }
 
 #' @inherit DataFrame_unique title description params
