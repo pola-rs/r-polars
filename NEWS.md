@@ -14,7 +14,9 @@
 ### Other breaking changes
 
 - Several functions have been rewritten to match the behavior of Python Polars.
+
   - In `pl$Series()` arguments are changed.
+
     - The argument `x` is renamed `values` (#933).
     - The argument `values` has a new default value `NULL` (#966).
     - Using positional arguments in `pl$Series()` throws a warning, since the
@@ -58,6 +60,7 @@
     - The usage of `pl$date_range()` to create a range of `Datetime` data type is deprecated.
       `pl$date_range()` will always create a range of `Date` data type in the future.
       Please use `pl$datetime_range()` if you want to create a range of `Datetime` instead.
+
 - The argument `columns` in `$drop()` is removed. `$drop()` now accepts several
   character scalars, such as `$drop("a", "b", "c")` (#912).
 - In `pl$col()`, the `name` argument is removed, and the `...` argument no longer
@@ -67,6 +70,7 @@
 - `<Series>$to_r_list()` is renamed `<Series>$to_list()` (#938).
 - Removed `<Series>$to_r_vector()` which was an old alias for
   `<Series>$to_vector()` (#938).
+- In `$str$contains()`, the arguments `literal` and `strict` should be named arguments (#982).
 - In `$str$strptime()`, `$str$to_date()`, `$str$to_datetime()`, and
   `$str$to_time()`, all arguments (except the first one) must be named (#939).
 - In `$str$strptime()`, the argument `datatype` is renamed `dtype` (#939).
