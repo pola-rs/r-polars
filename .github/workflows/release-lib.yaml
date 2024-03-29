@@ -92,7 +92,7 @@ jobs:
           ARTIFACT_NAME="${LIB_NAME}-${LIB_VERSION}-${TARGET}.tar.gz"
           if [[ ${{ runner.os }} == 'Windows' ]]; then
             pushd ..
-            Rscript -e 'pak::pak("pkgbuild")'
+            Rscript -e 'install.packages("pkgbuild")'
             Rscript -e 'pkgbuild::compile_dll()' # Linker of Rtools is needed here.
             popd
           else
