@@ -46,6 +46,10 @@
     - In `<LazyFrame>$sink_*` functions, the first argument is now `path`.
   - In `$dt$convert_time_zone()` and `$dt$replace_time_zone()`, the `tz` argument
     is renamed to `time_zone` (#944).
+  - In `<DataFrame>$rolling()`, `<LazyFrame>$rolling()`, `<DataFrame>$group_by_dynamic()`
+    and `<LazyFrame>$group_by_dynamic()`, the `by` argument is renamed to `group_by` (#983).
+  - In `<DataFrame>$rolling()` and `<DataFrame>$group_by_dynamic()`, all arguments
+    except `index_column` must be named arguments (#983).
   - In `$dt$replace_time_zone()`, all arguments except `time_zone` must be named
     arguments (#944).
   - In `$bin$decode()`, the `strict` argument must be a named argument (#980).
