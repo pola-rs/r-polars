@@ -90,6 +90,7 @@ features = [
   #"dtype-struct",
   "dtype-time",
   "dynamic_group_by",
+  "extract_groups",
   "extract_jsonpath",
   "ewma",
   "find_many",
