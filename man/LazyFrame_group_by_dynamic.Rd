@@ -13,7 +13,7 @@ LazyFrame_group_by_dynamic(
   include_boundaries = FALSE,
   closed = "left",
   label = "left",
-  by = NULL,
+  group_by = NULL,
   start_by = "window",
   check_sorted = TRUE
 )
@@ -54,7 +54,7 @@ you don’t need the label to be at one of the boundaries, choose this option
 for maximum performance.
 }}
 
-\item{by}{Also group by this column/these columns.}
+\item{group_by}{Also group by this column/these columns.}
 
 \item{start_by}{The strategy to determine the start of the first window by:
 \itemize{
@@ -145,7 +145,7 @@ lf$group_by_dynamic(
   "time",
   every = "1h",
   closed = "both",
-  by = "groups",
+  group_by = "groups",
   include_boundaries = TRUE
 )$agg(pl$col("n"))$collect()
 
@@ -163,4 +163,9 @@ lf$group_by_dynamic(
   include_boundaries = TRUE,
   closed = "right"
 )$agg(A_agg_list = pl$col("A"))$collect()
+}
+\seealso{
+\itemize{
+\item \code{\link[=LazyFrame_rolling]{<LazyFrame>$rolling()}}
+}
 }

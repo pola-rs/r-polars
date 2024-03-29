@@ -1793,36 +1793,47 @@ LazyFrame_with_context = function(other) {
 #' case of a rolling group by on indices, dtype needs to be either Int32 or Int64.
 #' Note that Int32 gets temporarily cast to Int64, so if performance matters use
 #' an Int64 column.
-#' @param by Also group by this column/these columns.
+#' @param group_by Also group by this column/these columns.
 #'
+#' @inheritSection polars_duration_string  Polars duration string language
 #' @return A [LazyGroupBy][LazyGroupBy_class] object
-#'
+#' @seealso
+#' - [`<LazyFrame>$group_by_dynamic()`][LazyFrame_group_by_dynamic]
 #' @examples
-#' df = pl$LazyFrame(
-#'   dt = c("2020-01-01", "2020-01-01", "2020-01-01", "2020-01-02", "2020-01-03", "2020-01-08"),
-#'   a = c(3, 7, 5, 9, 2, 1)
-#' )$with_columns(
-#'   pl$col("dt")$str$strptime(pl$Date, format = NULL)$set_sorted()
+#' dates = c(
+#'   "2020-01-01 13:45:48",
+#'   "2020-01-01 16:42:13",
+#'   "2020-01-01 16:45:09",
+#'   "2020-01-02 18:12:48",
+#'   "2020-01-03 19:45:32",
+#'   "2020-01-08 23:16:43"
 #' )
 #'
-#' df$collect()
+#' df = pl$LazyFrame(dt = dates, a = c(3, 7, 5, 9, 2, 1))$with_columns(
+#'   pl$col("dt")$str$strptime(pl$Datetime())$set_sorted()
+#' )
 #'
 #' df$rolling(index_column = "dt", period = "2d")$agg(
-#'   pl$col("a"),
-#'   pl$sum("a")$alias("sum_a"),
-#'   pl$min("a")$alias("min_a"),
-#'   pl$max("a")$alias("max_a")
+#'   sum_a = pl$sum("a"),
+#'   min_a = pl$min("a"),
+#'   max_a = pl$max("a")
 #' )$collect()
 LazyFrame_rolling = function(
-    index_column, ..., period, offset = NULL, closed = "right", by = NULL, check_sorted = TRUE) {
+    index_column,
+    ...,
+    period,
+    offset = NULL,
+    closed = "right",
+    group_by = NULL,
+    check_sorted = TRUE) {
   if (is.null(offset)) {
-    offset = paste0("-", period)
+    offset = paste0("-", period) # TODO: `paste0` should be executed after `period` is parsed as string
   }
   .pr$LazyFrame$rolling(
     self, index_column, period, offset, closed,
-    wrap_elist_result(by, str_to_lit = FALSE), check_sorted
+    wrap_elist_result(group_by, str_to_lit = FALSE), check_sorted
   ) |>
-    unwrap("in $rolling():")
+    unwrap("in <LazyFrame>$rolling():")
 }
 
 
@@ -1848,7 +1859,8 @@ LazyFrame_rolling = function(
 #'   starts the window on the Monday before the first data point, etc.
 #'
 #' @return A [LazyGroupBy][LazyGroupBy_class] object
-#'
+#' @seealso
+#' - [`<LazyFrame>$rolling()`][LazyFrame_rolling]
 #' @examples
 #' lf = pl$LazyFrame(
 #'   time = pl$date_range(
@@ -1895,7 +1907,7 @@ LazyFrame_rolling = function(
 #'   "time",
 #'   every = "1h",
 #'   closed = "both",
-#'   by = "groups",
+#'   group_by = "groups",
 #'   include_boundaries = TRUE
 #' )$agg(pl$col("n"))$collect()
 #'
@@ -1922,18 +1934,18 @@ LazyFrame_group_by_dynamic = function(
     include_boundaries = FALSE,
     closed = "left",
     label = "left",
-    by = NULL,
+    group_by = NULL,
     start_by = "window",
     check_sorted = TRUE) {
   if (is.null(offset)) {
-    offset = paste0("-", every)
+    offset = paste0("-", every) # TODO: `paste0` should be executed after `period` is parsed as string
   }
   if (is.null(period)) {
     period = every
   }
   .pr$LazyFrame$group_by_dynamic(
     self, index_column, every, period, offset, label, include_boundaries, closed,
-    wrap_elist_result(by, str_to_lit = FALSE), start_by, check_sorted
+    wrap_elist_result(group_by, str_to_lit = FALSE), start_by, check_sorted
   ) |>
     unwrap("in $group_by_dynamic():")
 }

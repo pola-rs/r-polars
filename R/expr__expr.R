@@ -3345,7 +3345,7 @@ Expr_rolling = function(
     offset = paste0("-", period) # TODO: `paste0` should be executed after `period` is parsed as string
   }
   .pr$Expr$rolling(self, index_column, period, offset, closed, check_sorted) |>
-    unwrap("in $rolling():")
+    unwrap("in <Expr>$rolling():")
 }
 
 #' Replace values by different values
