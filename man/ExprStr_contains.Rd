@@ -12,10 +12,10 @@ compatible with the \href{https://docs.rs/regex/latest/regex/}{regex crate}.}
 
 \item{...}{Ignored.}
 
-\item{literal}{A logical flag. If \code{TRUE}, treat \code{pattern} as a literal string,
+\item{literal}{A logical flag. If \code{TRUE} (default), treat \code{pattern} as a literal string,
 not as a regular expression.}
 
-\item{strict}{A logical flag. If \code{TRUE}, raise an error if the underlying pattern is
+\item{strict}{A logical flag. If \code{TRUE} (default), raise an error if the underlying pattern is
 not a valid regex, otherwise mask out with a null value.}
 }
 \value{
