@@ -2,33 +2,51 @@
 % Please edit documentation in R/expr__string.R
 \name{ExprStr_contains}
 \alias{ExprStr_contains}
-\title{Check if string contains a regex}
+\title{Check if string contains a substring that matches a pattern}
 \usage{
-ExprStr_contains(pattern, literal = FALSE, strict = TRUE)
+ExprStr_contains(pattern, ..., literal = FALSE, strict = TRUE)
 }
 \arguments{
-\item{pattern}{String or Expr of a string, a valid regex pattern.}
+\item{pattern}{A character or \link[=Expr_class]{Expr} of a valid regex pattern,
+compatible with the \href{https://docs.rs/regex/latest/regex/}{regex crate}.}
 
-\item{literal}{Treat pattern as a literal string.}
+\item{...}{Ignored.}
 
-\item{strict}{Raise an error if the underlying pattern is not a valid regex
-expression, otherwise replace the invalid regex with a null value.}
+\item{literal}{A logical flag. If \code{TRUE}, treat \code{pattern} as a literal string,
+not as a regular expression.}
+
+\item{strict}{A logical flag. If \code{TRUE}, raise an error if the underlying pattern is
+not a valid regex, otherwise mask out with a null value.}
 }
 \value{
-Expr returning a Boolean
+\link[=Expr_class]{Expr} of Boolean data type
 }
 \description{
-Check if string contains a substring that matches a regex.
+Check if string contains a substring that matches a pattern
 }
 \details{
-See also \verb{$str$starts_with()} and \verb{$str$ends_with()}.
+To modify regular expression behaviour (such as case-sensitivity) with flags,
+use the inline \code{(?iLmsuxU)} syntax. See the regex crate’s section on
+\href{https://docs.rs/regex/latest/regex/#grouping-and-flags}{grouping and flags}
+for additional information about the use of inline expression modifiers.
 }
 \examples{
-df = pl$DataFrame(a = c("Crab", "cat and dog", "rab$bit", NA))
+# The inline `(?i)` syntax example
+pl$DataFrame(s = c("AAA", "aAa", "aaa"))$with_columns(
+  default_match = pl$col("s")$str$contains("AA"),
+  insensitive_match = pl$col("s")$str$contains("(?i)AA")
+)
+
+df = pl$DataFrame(txt = c("Crab", "cat and dog", "rab$bit", NA))
 df$select(
-  pl$col("a"),
-  pl$col("a")$str$contains("cat|bit")$alias("regex"),
-  pl$col("a")$str$contains("rab$", literal = TRUE)$alias("literal")
+  pl$col("txt"),
+  regex = pl$col("txt")$str$contains("cat|bit"),
+  literal = pl$col("txt")$str$contains("rab$", literal = TRUE)
 )
 }
-\keyword{ExprStr}
+\seealso{
+\itemize{
+\item \code{\link[=ExprStr_starts_with]{<Expr>$str$start_with()}}: Check if string values start with a substring.
+\item \code{\link[=ExprStr_ends_with]{<Expr>$str$ends_with()}}: Check if string values end with a substring.
+}
+}

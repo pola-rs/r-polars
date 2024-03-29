@@ -10,7 +10,7 @@ ExprStr_starts_with(sub)
 \item{sub}{Prefix substring or Expr.}
 }
 \value{
-Expr returning a Boolean
+\link[=Expr_class]{Expr} of Boolean data type
 }
 \description{
 Check if string values starts with a substring.

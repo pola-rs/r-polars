@@ -7,7 +7,8 @@
 ExprStr_extract_groups(pattern)
 }
 \arguments{
-\item{pattern}{String or Expr of a string, a valid regex pattern.}
+\item{pattern}{A character or \link[=Expr_class]{Expr} of a valid regex pattern,
+compatible with the \href{https://docs.rs/regex/latest/regex/}{regex crate}.}
 }
 \value{
 Expr of data type \link[=DataType_Struct]{Struct} with fields of data type
