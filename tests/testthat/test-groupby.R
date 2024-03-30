@@ -1,13 +1,21 @@
 ### group_by ------------------------------------------------
 
 df = pl$DataFrame(
-  list(
-    foo = c("one", "two", "two", "one", "two"),
-    bar = c(5, 3, 2, 4, 1)
-  )
+  foo = c("one", "two", "two", "one", "two"),
+  bar = c(5, 3, 2, 4, 1)
 )
 
 gb = df$group_by("foo", maintain_order = TRUE)
+
+test_that("$group_by() with list literal", {
+  expect_identical(
+    gb$agg(x = list(c(1, 2, 3)))$to_list(),
+    list(
+      foo = c("one", "two"),
+      x = rep(list(c(1, 2, 3)), 2)
+    )
+  )
+})
 
 test_that("groupby", {
   df2 = gb$agg(
