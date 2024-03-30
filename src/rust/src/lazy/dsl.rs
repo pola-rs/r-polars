@@ -2155,13 +2155,10 @@ impl RPolarsExpr {
         Ok(self.0.clone().str().extract_groups(pattern)?.into())
     }
 
-    pub fn str_count_matches(&self, pattern: Robj, literal: Robj) -> RResult<Self> {
-        Ok(self
-            .0
-            .clone()
-            .str()
-            .count_matches(robj_to!(PLExpr, pattern)?, robj_to!(bool, literal)?)
-            .into())
+    pub fn str_count_matches(&self, pat: Robj, literal: Robj) -> RResult<Self> {
+        let pat = robj_to!(PLExpr, pat)?;
+        let literal = robj_to!(bool, literal)?;
+        Ok(self.0.clone().str().count_matches(pat, literal).into())
     }
 
     pub fn str_to_date(
@@ -2265,38 +2262,33 @@ impl RPolarsExpr {
 
     pub fn str_replace(
         &self,
-        pattern: Robj,
+        pat: Robj,
         value: Robj,
         literal: Robj,
+        n: Robj,
     ) -> Result<RPolarsExpr, String> {
+        let pat = robj_to!(PLExpr, pat)?;
+        let value = robj_to!(PLExpr, value)?;
+        let literal = robj_to!(bool, literal)?;
+        let n = robj_to!(i64, n)?;
         Ok(self
             .0
             .clone()
             .str()
-            .replace(
-                robj_to!(Expr, pattern)?.0,
-                robj_to!(Expr, value)?.0,
-                robj_to!(bool, literal)?,
-            )
+            .replace_n(pat, value, literal, n)
             .into())
     }
 
     pub fn str_replace_all(
         &self,
-        pattern: Robj,
+        pat: Robj,
         value: Robj,
         literal: Robj,
     ) -> Result<RPolarsExpr, String> {
-        Ok(self
-            .0
-            .clone()
-            .str()
-            .replace_all(
-                robj_to!(Expr, pattern)?.0,
-                robj_to!(Expr, value)?.0,
-                robj_to!(bool, literal)?,
-            )
-            .into())
+        let pat = robj_to!(PLExpr, pat)?;
+        let value = robj_to!(PLExpr, value)?;
+        let literal = robj_to!(bool, literal)?;
+        Ok(self.0.clone().str().replace_all(pat, value, literal).into())
     }
 
     pub fn str_slice(&self, offset: Robj, length: Robj) -> Result<RPolarsExpr, String> {

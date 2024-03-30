@@ -4,30 +4,29 @@
 \alias{ExprStr_count_matches}
 \title{Count all successive non-overlapping regex matches}
 \usage{
-ExprStr_count_matches(pattern, literal = FALSE)
+ExprStr_count_matches(pattern, ..., literal = FALSE)
 }
 \arguments{
-\item{pattern}{A valid regex pattern}
+\item{pattern}{A character or something can be coerced to a string \link[=Expr_class]{Expr}
+of a valid regex pattern, compatible with the \href{https://docs.rs/regex/latest/regex/}{regex crate}.}
 
-\item{literal}{Treat pattern as a literal string.}
+\item{...}{Ignored.}
+
+\item{literal}{Logical. If \code{TRUE} (default), treat \code{pattern} as a literal string,
+not as a regular expression.}
 }
 \value{
-UInt32 array. Contains null if original value is null or regex capture nothing.
+\link[=Expr_class]{Expr} of data type \code{UInt32}.
+Returns \code{null} if the original value is \code{null}.
 }
 \description{
 Count all successive non-overlapping regex matches
 }
 \examples{
-df = pl$DataFrame(foo = c("123 bla 45 asd", "xyz 678 910t"))
-df$select(
-  pl$col("foo")$str$count_matches(r"{(\d)}")$alias("count digits")
-)
+df = pl$DataFrame(foo = c("12 dbc 3xy", "cat\\\\w", "1zy3\\\\d\\\\d", NA))
 
-# we can use Polars expressions as pattern so that it's not necessarily the
-# same for all rows
-df2 = pl$DataFrame(foo = c("hello", "hi there"), pat = c("ell", "e"))
-df2$with_columns(
-  pl$col("foo")$str$count_matches(pl$col("pat"))$alias("reg_count")
+df$with_columns(
+  count_digits = pl$col("foo")$str$count_matches(r"(\d)"),
+  count_slash_d = pl$col("foo")$str$count_matches(r"(\d)", literal = TRUE)
 )
 }
-\keyword{ExprStr}
