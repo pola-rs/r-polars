@@ -618,6 +618,16 @@ test_that("str$replace", {
     pl$lit(c("abcabc", "123a123"))$str$replace("ab", "__")$to_r(),
     c("__cabc", "123a123")
   )
+
+  expect_identical(
+    pl$lit(c("ababab", "123a123"))$str$replace("a", "_", n = 2)$to_r(),
+    c("_b_bab", "123_123")
+  )
+
+  expect_error(
+    pl$lit("1234")$str$replace(r"{\d}", "foo", n = 2)$to_r(),
+    "regex replacement with 'n > 1' not yet supported"
+  )
 })
 
 test_that("str$replace_all", {

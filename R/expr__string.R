@@ -763,6 +763,9 @@ ExprStr_splitn = function(by, n) {
 #' @param value A character or an [Expr][Expr_class] of string
 #' that will replace the matched substring.
 #' @param n A number of matches to replace.
+#' Note that regex replacement with `n > 1` not yet supported,
+#' so raise an error if `n > 1` and `pattern` includes regex pattern
+#' and `literal = FALSE`.
 #' @return [Expr][Expr_class] of String type
 #' @seealso
 #' - [`<Expr>$str$replace_all()`][ExprStr_replace_all]

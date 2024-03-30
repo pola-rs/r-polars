@@ -18,7 +18,10 @@ that will replace the matched substring.}
 \item{literal}{Logical. If \code{TRUE} (default), treat \code{pattern} as a literal string,
 not as a regular expression.}
 
-\item{n}{A number of matches to replace.}
+\item{n}{A number of matches to replace.
+Note that regex replacement with \code{n > 1} not yet supported,
+so raise an error if \code{n > 1} and \code{pattern} includes regex pattern
+and \code{literal = FALSE}.}
 }
 \value{
 \link[=Expr_class]{Expr} of String type
