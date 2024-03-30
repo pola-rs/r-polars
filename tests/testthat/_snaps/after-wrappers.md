@@ -94,6 +94,34 @@
       [65] "with_columns"     "with_row_index"   "write_csv"        "write_json"      
       [69] "write_ndjson"     "write_parquet"   
 
+---
+
+    Code
+      ls(.pr[[private_key]])
+    Output
+       [1] "clone_in_rust"             "columns"                  
+       [3] "default"                   "drop_all_in_place"        
+       [5] "drop_in_place"             "dtype_strings"            
+       [7] "dtypes"                    "equals"                   
+       [9] "estimated_size"            "export_stream"            
+      [11] "from_arrow_record_batches" "get_column"               
+      [13] "get_columns"               "lazy"                     
+      [15] "melt"                      "n_chunks"                 
+      [17] "new_with_capacity"         "null_count"               
+      [19] "partition_by"              "pivot_expr"               
+      [21] "print"                     "rechunk"                  
+      [23] "sample_frac"               "sample_n"                 
+      [25] "schema"                    "select"                   
+      [27] "select_at_idx"             "set_column_from_robj"     
+      [29] "set_column_from_series"    "set_column_names_mut"     
+      [31] "shape"                     "to_list"                  
+      [33] "to_list_tag_structs"       "to_list_unwind"           
+      [35] "to_struct"                 "transpose"                
+      [37] "unnest"                    "with_columns"             
+      [39] "with_row_index"            "write_csv"                
+      [41] "write_json"                "write_ndjson"             
+      [43] "write_parquet"            
+
 # public and private methods of each class GroupBy
 
     Code
@@ -658,6 +686,36 @@
       [178] "to_struct"         "to_vector"         "top_k"            
       [181] "unique"            "unique_counts"     "upper_bound"      
       [184] "value_counts"      "var"               "xor"              
+
+---
+
+    Code
+      ls(.pr[[private_key]])
+    Output
+       [1] "add"                         "alias"                      
+       [3] "all"                         "any"                        
+       [5] "append_mut"                  "arg_max"                    
+       [7] "arg_min"                     "chunk_lengths"              
+       [9] "clone"                       "compare"                    
+      [11] "div"                         "dtype"                      
+      [13] "equals"                      "fast_explode_flag"          
+      [15] "from_arrow_array_robj"       "from_arrow_array_stream_str"
+      [17] "get_fmt"                     "is_sorted"                  
+      [19] "is_sorted_flag"              "is_sorted_reverse_flag"     
+      [21] "len"                         "map_elements"               
+      [23] "max"                         "mean"                       
+      [25] "median"                      "min"                        
+      [27] "mul"                         "n_unique"                   
+      [29] "name"                        "new"                        
+      [31] "panic"                       "print"                      
+      [33] "rem"                         "rename_mut"                 
+      [35] "rep"                         "set_sorted_mut"             
+      [37] "shape"                       "sleep"                      
+      [39] "sort_mut"                    "std"                        
+      [41] "sub"                         "sum"                        
+      [43] "to_fmt_char"                 "to_frame"                   
+      [45] "to_r"                        "value_counts"               
+      [47] "var"                        
 
 # public and private methods of each class RThreadHandle
 
