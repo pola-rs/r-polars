@@ -75,6 +75,7 @@
 - Removed `<Series>$to_r_vector()` which was an old alias for
   `<Series>$to_vector()` (#938).
 - In `$str$contains()`, the arguments `literal` and `strict` should be named arguments (#982).
+- In `$str$contains_any()`, the `ascii_case_insensitive` argument must be named (#986).
 - In `$str$strptime()`, `$str$to_date()`, `$str$to_datetime()`, and
   `$str$to_time()`, all arguments (except the first one) must be named (#939).
 - In `$str$strptime()`, the argument `datatype` is renamed `dtype` (#939).

@@ -4,17 +4,20 @@
 \alias{ExprStr_contains_any}
 \title{Use the aho-corasick algorithm to find matches}
 \usage{
-ExprStr_contains_any(patterns, ascii_case_insensitive = FALSE)
+ExprStr_contains_any(patterns, ..., ascii_case_insensitive = FALSE)
 }
 \arguments{
-\item{patterns}{String patterns to search. Can be an Expr.}
+\item{patterns}{Character vector or something can be coerced to strings \link[=Expr_class]{Expr}
+of a valid regex pattern, compatible with the \href{https://docs.rs/regex/latest/regex/}{regex crate}.}
+
+\item{...}{Ignored.}
 
 \item{ascii_case_insensitive}{Enable ASCII-aware case insensitive matching.
 When this option is enabled, searching will be performed without respect to
 case for ASCII letters (a-z and A-Z) only.}
 }
 \value{
-Expr
+\link[=Expr_class]{Expr} of Boolean data type
 }
 \description{
 This function determines if any of the patterns find a match.
@@ -31,4 +34,9 @@ df = pl$DataFrame(
 df$with_columns(
   contains_any = pl$col("lyrics")$str$contains_any(c("you", "me"))
 )
+}
+\seealso{
+\itemize{
+\item \code{\link[=ExprStr_contains]{<Expr>$str$contains()}}
+}
 }

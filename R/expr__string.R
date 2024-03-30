@@ -874,13 +874,14 @@ ExprStr_reverse = function() {
 #' Use the aho-corasick algorithm to find matches
 #'
 #' This function determines if any of the patterns find a match.
-#' @param patterns String patterns to search. Can be an Expr.
+#' @inherit ExprStr_contains params return
+#' @param patterns Character vector or something can be coerced to strings [Expr][Expr_class]
+#' of a valid regex pattern, compatible with the [regex crate](https://docs.rs/regex/latest/regex/).
 #' @param ascii_case_insensitive Enable ASCII-aware case insensitive matching.
 #' When this option is enabled, searching will be performed without respect to
 #' case for ASCII letters (a-z and A-Z) only.
-#'
-#' @return Expr
-#'
+#' @seealso
+#' - [`<Expr>$str$contains()`][ExprStr_contains]
 #' @examples
 #' df = pl$DataFrame(
 #'   lyrics = c(
@@ -893,7 +894,7 @@ ExprStr_reverse = function() {
 #' df$with_columns(
 #'   contains_any = pl$col("lyrics")$str$contains_any(c("you", "me"))
 #' )
-ExprStr_contains_any = function(patterns, ascii_case_insensitive = FALSE) {
+ExprStr_contains_any = function(patterns, ..., ascii_case_insensitive = FALSE) {
   .pr$Expr$str_contains_any(self, patterns, ascii_case_insensitive) |>
     unwrap("in str$contains_any():")
 }
