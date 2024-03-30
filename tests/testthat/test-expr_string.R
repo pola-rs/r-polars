@@ -604,13 +604,13 @@ test_that("str$replace", {
   )
 
   expect_identical(
-    pl$lit(c("123abc", "abc456"))$str$replace(r"{abc\b}", "ABC", TRUE)$to_r(),
+    pl$lit(c("123abc", "abc456"))$str$replace(r"{abc\b}", "ABC", literal = TRUE)$to_r(),
     c("123abc", "abc456")
   )
 
   e = pl$lit(r"{(abc\b)}")
   expect_identical(
-    pl$lit(c("123abc", "abc456"))$str$replace(e, "ABC", FALSE)$to_r(),
+    pl$lit(c("123abc", "abc456"))$str$replace(e, "ABC", literal = FALSE)$to_r(),
     c("123ABC", "abc456")
   )
 
@@ -637,7 +637,7 @@ test_that("str$replace_all", {
   )
 
   expect_identical(
-    pl$lit(c("abcabc", "123a123"))$str$replace_all("^12", "-", TRUE)$to_r(),
+    pl$lit(c("abcabc", "123a123"))$str$replace_all("^12", "-", literal = TRUE)$to_r(),
     c("abcabc", "123a123")
   )
 })

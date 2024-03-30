@@ -4,28 +4,66 @@
 \alias{ExprStr_replace}
 \title{Replace first matching regex/literal substring with a new string value}
 \usage{
-ExprStr_replace(pattern, value, literal = FALSE)
+ExprStr_replace(pattern, value, ..., literal = FALSE, n = 1L)
 }
 \arguments{
-\item{pattern}{Regex pattern, can be an Expr.}
+\item{pattern}{A character or something can be coerced to a string \link[=Expr_class]{Expr}
+of a valid regex pattern, compatible with the \href{https://docs.rs/regex/latest/regex/}{regex crate}.}
 
-\item{value}{Replacement, can be an Expr.}
+\item{value}{A character or an \link[=Expr_class]{Expr} of string
+that will replace the matched substring.}
 
-\item{literal}{Treat pattern as a literal string.}
+\item{...}{Ignored.}
+
+\item{literal}{Logical. If \code{TRUE} (default), treat \code{pattern} as a literal string,
+not as a regular expression.}
+
+\item{n}{A number of matches to replace.}
 }
 \value{
-Expr of String Series
+\link[=Expr_class]{Expr} of String type
 }
 \description{
 Replace first matching regex/literal substring with a new string value
 }
+\details{
+To modify regular expression behaviour (such as case-sensitivity) with flags,
+use the inline \code{(?iLmsuxU)} syntax. See the regex crate’s section on
+\href{https://docs.rs/regex/latest/regex/#grouping-and-flags}{grouping and flags}
+for additional information about the use of inline expression modifiers.
+}
+\section{Capture groups}{
+
+The dollar sign (\code{$}) is a special character related to capture groups.
+To refer to a literal dollar sign, use \verb{$$} instead or set \code{literal} to \code{TRUE}.
+}
+
 \examples{
-df = pl$DataFrame(id = c(1, 2), text = c("123abc", "abc456"))
+df = pl$DataFrame(id = 1L:2L, text = c("123abc", "abc456"))
+df$with_columns(pl$col("text")$str$replace(r"(abc\b)", "ABC"))
+
+# Capture groups are supported.
+# Use `${1}` in the value string to refer to the first capture group in the pattern,
+# `${2}` to refer to the second capture group, and so on.
+# You can also use named capture groups.
+df = pl$DataFrame(word = c("hat", "hut"))
 df$with_columns(
-  pl$col("text")$str$replace(r"{abc\b}", "ABC")
+  positional = pl$col("word")$str$replace("h(.)t", "b${1}d"),
+  named = pl$col("word")$str$replace("h(?<vowel>.)t", "b${vowel}d")
+)
+
+# Apply case-insensitive string replacement using the `(?i)` flag.
+df = pl$DataFrame(
+  city = "Philadelphia",
+  season = c("Spring", "Summer", "Autumn", "Winter"),
+  weather = c("Rainy", "Sunny", "Cloudy", "Snowy")
+)
+df$with_columns(
+  pl$col("weather")$str$replace("(?i)foggy|rainy|cloudy|snowy", "Sunny")
 )
 }
 \seealso{
-\verb{$str$replace_all()}: Replace all matching regex/literal substrings.
+\itemize{
+\item \code{\link[=ExprStr_replace_all]{<Expr>$str$replace_all()}}
 }
-\keyword{ExprStr}
+}
