@@ -624,7 +624,7 @@ test_that("str$replace", {
     c("_b_bab", "123_123")
   )
 
-  expect_error(
+  expect_grepl_error(
     pl$lit("1234")$str$replace(r"{\d}", "foo", n = 2)$to_r(),
     "regex replacement with 'n > 1' not yet supported"
   )
