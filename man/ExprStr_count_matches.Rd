@@ -16,7 +16,7 @@ of a valid regex pattern, compatible with the \href{https://docs.rs/regex/latest
 not as a regular expression.}
 }
 \value{
-Expression of data type \code{UInt32}.
+\link[=Expr_class]{Expr} of data type \code{UInt32}.
 Returns \code{null} if the original value is \code{null}.
 }
 \description{

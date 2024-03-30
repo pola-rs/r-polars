@@ -30,9 +30,9 @@ and \code{literal = FALSE}.}
 Replace first matching regex/literal substring with a new string value
 }
 \details{
-To modify regular expression behaviour (such as case-sensitivity) with flags,
-use the inline \code{(?iLmsuxU)} syntax. See the regex crate’s section on
-\href{https://docs.rs/regex/latest/regex/#grouping-and-flags}{grouping and flags}
+To modify regular expression behaviour (such as case-sensitivity)
+with flags, use the inline \code{(?iLmsuxU)} syntax. See the regex crate’s section
+on \href{https://docs.rs/regex/latest/regex/#grouping-and-flags}{grouping and flags}
 for additional information about the use of inline expression modifiers.
 }
 \section{Capture groups}{

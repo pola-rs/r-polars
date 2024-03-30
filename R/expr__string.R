@@ -663,7 +663,7 @@ ExprStr_extract_all = function(pattern) {
 #' Count all successive non-overlapping regex matches
 #'
 #' @inheritParams ExprStr_contains
-#' @return Expression of data type `UInt32`.
+#' @return [Expr][Expr_class] of data type `UInt32`.
 #' Returns `null` if the original value is `null`.
 #' @examples
 #' df = pl$DataFrame(foo = c("12 dbc 3xy", "cat\\w", "1zy3\\d\\d", NA))
@@ -755,11 +755,10 @@ ExprStr_splitn = function(by, n) {
 
 #' Replace first matching regex/literal substring with a new string value
 #'
-#' @inherit ExprStr_contains details
+#' @inherit ExprStr_contains details params
 #' @section Capture groups:
 #' The dollar sign (`$`) is a special character related to capture groups.
 #' To refer to a literal dollar sign, use `$$` instead or set `literal` to `TRUE`.
-#' @inheritParams ExprStr_contains
 #' @param value A character or an [Expr][Expr_class] of string
 #' that will replace the matched substring.
 #' @param n A number of matches to replace.
