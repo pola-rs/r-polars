@@ -196,14 +196,9 @@ impl RPolarsDataFrame {
     }
 
     pub fn get_columns(&self) -> List {
-        let mut l = List::from_values(
-            self.0
-                .get_columns()
-                .iter()
-                .map(|x| RPolarsSeries(x.clone())),
-        );
-        l.set_names(self.0.get_column_names()).unwrap();
-        l
+        let cols = self.0.get_columns().to_vec();
+        let vec = unsafe { std::mem::transmute::<Vec<pl::Series>, Vec<RPolarsSeries>>(cols) };
+        List::from_values(vec)
     }
 
     pub fn dtypes(&self) -> List {

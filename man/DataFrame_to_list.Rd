@@ -84,4 +84,9 @@ withr::with_envvar(
 \examples{
 pl$DataFrame(iris)$to_list()
 }
-\keyword{DataFrame}
+\seealso{
+\itemize{
+\item \code{\link[=DataFrame_get_columns]{<DataFrame>$get_columns()}}:
+Similar to this method but returns a list of \link[=Series_class]{Series} instead of vectors.
+}
+}

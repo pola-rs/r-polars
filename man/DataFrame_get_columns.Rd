@@ -2,18 +2,30 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_get_columns}
 \alias{DataFrame_get_columns}
-\title{Get columns (as Series)}
+\title{Get the DataFrame as a List of Series}
 \usage{
 DataFrame_get_columns()
 }
 \value{
-A list of series
+A list of \link[=Series_class]{Series}
 }
 \description{
-Extract all DataFrame columns as a list of Polars series.
+Get the DataFrame as a List of Series
 }
 \examples{
-df = pl$DataFrame(iris[1:2, ])
+df = pl$DataFrame(foo = 1L:3L, bar = 4L:6L)
+df$get_columns()
+
+df = pl$DataFrame(
+  a = 1:4,
+  b = c(0.5, 4, 10, 13),
+  c = c(TRUE, TRUE, FALSE, TRUE)
+)
 df$get_columns()
 }
-\keyword{DataFrame}
+\seealso{
+\itemize{
+\item \code{\link[=DataFrame_to_list]{<DataFrame>$to_list()}}:
+Similar to this method but returns a list of vectors instead of \link[=Series_class]{Series}.
+}
+}
