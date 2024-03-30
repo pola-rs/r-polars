@@ -455,8 +455,7 @@ ExprStr_pad_start = function(width, fillchar = " ") {
 #' )
 #'
 #' df = pl$DataFrame(txt = c("Crab", "cat and dog", "rab$bit", NA))
-#' df$select(
-#'   pl$col("txt"),
+#' df$with_columns(
 #'   regex = pl$col("txt")$str$contains("cat|bit"),
 #'   literal = pl$col("txt")$str$contains("rab$", literal = TRUE)
 #' )
