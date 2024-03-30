@@ -439,9 +439,9 @@ ExprStr_pad_start = function(width, fillchar = " ") {
 #' @param pattern A character or [Expr][Expr_class] of a valid regex pattern,
 #' compatible with the [regex crate](https://docs.rs/regex/latest/regex/).
 #' @param ... Ignored.
-#' @param literal A logical flag. If `TRUE` (default), treat `pattern` as a literal string,
+#' @param literal Logical. If `TRUE` (default), treat `pattern` as a literal string,
 #' not as a regular expression.
-#' @param strict A logical flag. If `TRUE` (default), raise an error if the underlying pattern is
+#' @param strict Logical. If `TRUE` (default), raise an error if the underlying pattern is
 #' not a valid regex, otherwise mask out with a null value.
 #' @return [Expr][Expr_class] of Boolean data type
 #' @seealso
