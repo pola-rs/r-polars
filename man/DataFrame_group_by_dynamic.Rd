@@ -6,13 +6,14 @@
 \usage{
 DataFrame_group_by_dynamic(
   index_column,
+  ...,
   every,
   period = NULL,
   offset = NULL,
   include_boundaries = FALSE,
   closed = "left",
   label = "left",
-  by = NULL,
+  group_by = NULL,
   start_by = "window",
   check_sorted = TRUE
 )
@@ -24,6 +25,8 @@ is specified, then it must be sorted in ascending order within each group). In
 case of a rolling group by on indices, dtype needs to be either Int32 or Int64.
 Note that Int32 gets temporarily cast to Int64, so if performance matters use
 an Int64 column.}
+
+\item{...}{Ignored.}
 
 \item{every}{Interval of the window.}
 
@@ -51,7 +54,7 @@ you don’t need the label to be at one of the boundaries, choose this option
 for maximum performance.
 }}
 
-\item{by}{Also group by this column/these columns.}
+\item{group_by}{Also group by this column/these columns.}
 
 \item{start_by}{The strategy to determine the start of the first window by:
 \itemize{
@@ -98,7 +101,7 @@ by:
 }
 \examples{
 df = pl$DataFrame(
-  time = pl$date_range(
+  time = pl$datetime_range(
     start = strptime("2021-12-16 00:00:00", format = "\%Y-\%m-\%d \%H:\%M:\%S", tz = "UTC"),
     end = strptime("2021-12-16 03:00:00", format = "\%Y-\%m-\%d \%H:\%M:\%S", tz = "UTC"),
     interval = "30m"
@@ -141,7 +144,7 @@ df$group_by_dynamic(
   "time",
   every = "1h",
   closed = "both",
-  by = "groups",
+  group_by = "groups",
   include_boundaries = TRUE
 )$agg(pl$col("n"))
 
@@ -159,4 +162,9 @@ df$group_by_dynamic(
   include_boundaries = TRUE,
   closed = "right"
 )$agg(A_agg_list = pl$col("A"))
+}
+\seealso{
+\itemize{
+\item \code{\link[=DataFrame_rolling]{<DataFrame>$rolling()}}
+}
 }

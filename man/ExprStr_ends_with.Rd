@@ -10,7 +10,7 @@ ExprStr_ends_with(sub)
 \item{sub}{Suffix substring or Expr.}
 }
 \value{
-Expr returning a Boolean
+\link[=Expr_class]{Expr} of Boolean data type
 }
 \description{
 Check if string values end with a substring.
