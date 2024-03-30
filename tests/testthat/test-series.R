@@ -622,3 +622,22 @@ test_that("Positional arguments deprecation", {
     )
   )
 })
+
+test_that("$item() works", {
+  expect_equal(pl$Series(values = 1)$item(), 1)
+  expect_equal(pl$Series(values = 3:1)$cum_sum()$item(-1), 6)
+
+  # errors
+  expect_grepl_error(
+    pl$Series(values = 1)$item(c(0, 0)),
+    "`index` must be an integer of length 1"
+  )
+  expect_grepl_error(
+    pl$Series(values = 1)$item("a"),
+    "`index` must be an integer of length 1"
+  )
+  expect_grepl_error(
+    pl$Series(values = 1:2)$item(),
+    "if the Series is of length 1"
+  )
+})
