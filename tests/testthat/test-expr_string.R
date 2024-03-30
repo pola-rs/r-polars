@@ -864,6 +864,6 @@ test_that("str$find() works", {
 
   # combining "literal" and "strict"
   expect_silent(
-    test$select(lit = pl$col("s")$str$find("(?iAa", literal = TRUE))
+    test$select(lit = pl$col("s")$str$find("(?iAa", strict = TRUE, literal = TRUE))
   )
 })
