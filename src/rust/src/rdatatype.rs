@@ -328,6 +328,18 @@ pub fn robj_to_non_existent(robj: Robj) -> RResult<pl::NonExistent> {
     }
 }
 
+pub fn robj_to_window_mapping(robj: Robj) -> RResult<pl::WindowMapping> {
+    use pl::WindowMapping as WM;
+    match robj_to_rchoice(robj)?.to_lowercase().as_str() {
+        "group_to_rows" => Ok(WM::GroupsToRows),
+        "join" => Ok(WM::Join),
+        "explode" => Ok(WM::Explode),
+        s => rerr().bad_val(format!(
+            "WindowMapping choice ('{s}') must be one of 'group_to_rows', 'join', 'explode'"
+        )),
+    }
+}
+
 pub fn literal_to_any_value(litval: pl::LiteralValue) -> RResult<pl::AnyValue<'static>> {
     use pl::AnyValue as av;
     use pl::LiteralValue as lv;

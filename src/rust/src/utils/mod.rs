@@ -1100,6 +1100,10 @@ macro_rules! robj_to_inner {
     (NonExistent, $a:ident) => {
         $crate::rdatatype::robj_to_non_existent($a)
     };
+
+    (WindowMapping, $a:ident) => {
+        $crate::rdatatype::robj_to_window_mapping($a)
+    };
 }
 
 //convert any Robj to appropriate rust type with informative error Strings

@@ -280,6 +280,23 @@ test_that("over", {
     as.numeric(df3$get_column("val")$to_r()),
     c(2, 1, 1, 1, 2)
   )
+
+  basic_expr = pl$col("foo")$min()$over("a", "b")
+  expect_true(
+    basic_expr$meta$eq(
+      pl$col("foo")$min()$over(c("a", "b"))
+    )
+  )
+  expect_true(
+    basic_expr$meta$eq(
+      pl$col("foo")$min()$over(list(pl$col("a"), pl$col("b")))
+    )
+  )
+  expect_true(
+    basic_expr$meta$eq(
+      pl$col("foo")$min()$over(list(pl$col("a"), "b"))
+    )
+  )
 })
 
 test_that("col DataType + col(s) + col regex", {

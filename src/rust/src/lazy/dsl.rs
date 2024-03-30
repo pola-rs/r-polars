@@ -1774,10 +1774,15 @@ impl RPolarsExpr {
         Ok(self.0.clone().pow(robj_to!(PLExpr, exponent)?).into())
     }
 
-    //expr      "funnies"
-    pub fn over(&self, proto_exprs: &RPolarsProtoExprArray) -> Self {
-        let ve = pra_to_vec(proto_exprs, "select");
-        self.0.clone().over(ve).into()
+    pub fn over(&self, partition_by: Robj, mapping: Robj) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .over_with_options(
+                robj_to!(Vec, PLExpr, partition_by)?,
+                robj_to!(WindowMapping, mapping)?,
+            )
+            .into())
     }
 
     pub fn print(&self) {
@@ -2349,6 +2354,15 @@ impl RPolarsExpr {
             .into())
     }
 
+    pub fn str_find(&self, pat: Robj, literal: Robj, strict: Robj) -> RResult<Self> {
+        let pat = robj_to!(PLExpr, pat)?;
+        let literal = robj_to!(Option, bool, literal)?;
+        let strict = robj_to!(bool, strict)?;
+        match literal {
+            Some(true) => Ok(self.0.clone().str().find_literal(pat).into()),
+            _ => Ok(self.0.clone().str().find(pat, strict).into()),
+        }
+    }
     //binary methods
     pub fn bin_contains(&self, lit: Robj) -> RResult<Self> {
         Ok(self
@@ -2621,47 +2635,6 @@ impl ProtoRexpr {
     }
 }
 
-//and array of expression or proto expressions.
-#[derive(Clone, Debug)]
-pub struct RPolarsProtoExprArray(pub Vec<ProtoRexpr>);
-
-impl Default for RPolarsProtoExprArray {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
-#[extendr]
-impl RPolarsProtoExprArray {
-    pub fn new() -> Self {
-        RPolarsProtoExprArray(Vec::new())
-    }
-
-    pub fn push_back_str(&mut self, s: &str) {
-        self.0.push(ProtoRexpr::new_str(s));
-    }
-
-    pub fn push_back_rexpr(&mut self, r: &RPolarsExpr) {
-        self.0.push(ProtoRexpr::new_expr(r));
-    }
-
-    pub fn print(&self) {
-        rprintln!("{:#?}", self);
-    }
-}
-
-impl RPolarsProtoExprArray {
-    pub fn to_vec(&self, context: &str) -> Vec<pl::Expr> {
-        self.0.iter().map(|re| re.to_rexpr(context).0).collect()
-    }
-}
-
-//external function as extendr-api do not allow methods returning unwrapped structs
-//deprecate use method instead
-pub fn pra_to_vec(pra: &RPolarsProtoExprArray, context: &str) -> Vec<pl::Expr> {
-    pra.0.iter().map(|re| re.to_rexpr(context).0).collect()
-}
-
 //make options rolling options from R friendly arguments, handle conversion errors
 pub fn make_rolling_options(
     window_size: Robj,
@@ -2715,7 +2688,6 @@ pub fn create_cols_from_datatypes(list_of_dtypes: Robj) -> RResult<RPolarsExpr> 
 extendr_module! {
     mod dsl;
     impl RPolarsExpr;
-    impl RPolarsProtoExprArray;
     fn internal_wrap_e;
     fn create_col;
     fn create_cols_from_strs;
