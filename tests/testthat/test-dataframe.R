@@ -369,7 +369,7 @@ test_that("get column(s)", {
   expected_list_of_series = {
     expected = lapply(
       1:5,
-      function(i) as_polars_series(iris[[i]],names(iris)[i])
+      function(i) as_polars_series(iris[[i]], names(iris)[i])
     )
     names(expected) = names(iris)
     expected
@@ -385,7 +385,7 @@ test_that("get column(s)", {
   list_of_vectors = lapply(actual_list_of_series, function(x) x$to_vector())
   expect_identical(
     list_of_vectors,
-    as.list(iris)
+    unname(as.list(iris))
   )
 })
 
