@@ -918,7 +918,7 @@ RPolarsExpr$div <- function(other) .Call(wrap__RPolarsExpr__div, self, other)
 
 RPolarsExpr$pow <- function(exponent) .Call(wrap__RPolarsExpr__pow, self, exponent)
 
-RPolarsExpr$over <- function(expr, mapping) .Call(wrap__RPolarsExpr__over, self, expr, mapping)
+RPolarsExpr$over <- function(partition_by, mapping) .Call(wrap__RPolarsExpr__over, self, partition_by, mapping)
 
 RPolarsExpr$print <- function() invisible(.Call(wrap__RPolarsExpr__print, self))
 

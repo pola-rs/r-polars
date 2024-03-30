@@ -1774,12 +1774,12 @@ impl RPolarsExpr {
         Ok(self.0.clone().pow(robj_to!(PLExpr, exponent)?).into())
     }
 
-    pub fn over(&self, expr: Robj, mapping: Robj) -> RResult<Self> {
+    pub fn over(&self, partition_by: Robj, mapping: Robj) -> RResult<Self> {
         Ok(self
             .0
             .clone()
             .over_with_options(
-                robj_to!(VecPLExprCol, expr)?,
+                robj_to!(Vec, PLExpr, partition_by)?,
                 robj_to!(WindowMapping, mapping)?,
             )
             .into())
