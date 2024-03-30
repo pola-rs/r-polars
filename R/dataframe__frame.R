@@ -598,16 +598,21 @@ DataFrame_clone = function() {
   .pr$DataFrame$clone_in_rust(self)
 }
 
-#' Get columns (as Series)
-#' @name DataFrame_get_columns
-#' @description Extract all DataFrame columns as a list of Polars series.
+#' Get the DataFrame as a List of Series
 #'
-#' @return A list of series
-#' @keywords  DataFrame
-#' @docType NULL
-#' @format NULL
+#' @return A list of [Series][Series_class]
+#' @seealso
+#' - [`<DataFrame>$to_list()`][DataFrame_to_list]:
+#'   Similar to this method but returns a list of vectors instead of [Series][Series_class].
 #' @examples
-#' df = pl$DataFrame(iris[1:2, ])
+#' df = pl$DataFrame(foo = 1L:3L, bar = 4L:6L)
+#' df$get_columns()
+#'
+#' df = pl$DataFrame(
+#'   a = 1:4,
+#'   b = c(0.5, 4, 10, 13),
+#'   c = c(TRUE, TRUE, FALSE, TRUE)
+#' )
 #' df$get_columns()
 DataFrame_get_columns = use_extendr_wrapper
 
@@ -969,7 +974,9 @@ DataFrame_to_data_frame = function(..., int64_conversion = polars_options()$int6
 #'
 #' @return R list of vectors
 #' @inheritSection DataFrame_class Conversion to R data types considerations
-#' @keywords DataFrame
+#' @seealso
+#' - [`<DataFrame>$get_columns()`][DataFrame_get_columns]:
+#'   Similar to this method but returns a list of [Series][Series_class] instead of vectors.
 #' @examples
 #' pl$DataFrame(iris)$to_list()
 DataFrame_to_list = function(unnest_structs = TRUE, ..., int64_conversion = polars_options()$int64_conversion) {
