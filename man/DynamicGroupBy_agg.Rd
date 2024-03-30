@@ -19,7 +19,7 @@ Aggregate a DataFrame over a time or integer window created with
 }
 \examples{
 df = pl$DataFrame(
-  time = pl$date_range(
+  time = pl$datetime_range(
     start = strptime("2021-12-16 00:00:00", format = "\%Y-\%m-\%d \%H:\%M:\%S", tz = "UTC"),
     end = strptime("2021-12-16 03:00:00", format = "\%Y-\%m-\%d \%H:\%M:\%S", tz = "UTC"),
     interval = "30m"
@@ -62,7 +62,7 @@ df$group_by_dynamic(
   "time",
   every = "1h",
   closed = "both",
-  by = "groups",
+  group_by = "groups",
   include_boundaries = TRUE
 )$agg(pl$col("n"))
 
