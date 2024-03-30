@@ -429,27 +429,41 @@ ExprStr_pad_start = function(width, fillchar = " ") {
 }
 
 
-#' Check if string contains a regex
+# TODO: Add ExprStr_find to seealso
+#' Check if string contains a substring that matches a pattern
 #'
-#' @description Check if string contains a substring that matches a regex.
-#' @keywords ExprStr
-#' @param pattern String or Expr of a string, a valid regex pattern.
-#' @param literal Treat pattern as a literal string.
-#' @param strict Raise an error if the underlying pattern is not a valid regex
-#' expression, otherwise replace the invalid regex with a null value.
-#' @details
-#' See also `$str$starts_with()` and `$str$ends_with()`.
-#' @return Expr returning a Boolean
+#' @details To modify regular expression behaviour (such as case-sensitivity) with flags,
+#' use the inline `(?iLmsuxU)` syntax. See the regex crate’s section on
+#' [grouping and flags](https://docs.rs/regex/latest/regex/#grouping-and-flags)
+#' for additional information about the use of inline expression modifiers.
+#' @param pattern A character or something can be coerced to a string [Expr][Expr_class]
+#' of a valid regex pattern, compatible with the [regex crate](https://docs.rs/regex/latest/regex/).
+#' @param ... Ignored.
+#' @param literal Logical. If `TRUE` (default), treat `pattern` as a literal string,
+#' not as a regular expression.
+#' @param strict Logical. If `TRUE` (default), raise an error if the underlying pattern is
+#' not a valid regex, otherwise mask out with a null value.
+#' @return [Expr][Expr_class] of Boolean data type
+#' @seealso
+#' - [`<Expr>$str$start_with()`][ExprStr_starts_with]: Check if string values start with a substring.
+#' - [`<Expr>$str$ends_with()`][ExprStr_ends_with]: Check if string values end with a substring.
 #' @examples
-#' df = pl$DataFrame(a = c("Crab", "cat and dog", "rab$bit", NA))
-#' df$select(
-#'   pl$col("a"),
-#'   pl$col("a")$str$contains("cat|bit")$alias("regex"),
-#'   pl$col("a")$str$contains("rab$", literal = TRUE)$alias("literal")
+#' # The inline `(?i)` syntax example
+#' pl$DataFrame(s = c("AAA", "aAa", "aaa"))$with_columns(
+#'   default_match = pl$col("s")$str$contains("AA"),
+#'   insensitive_match = pl$col("s")$str$contains("(?i)AA")
 #' )
-ExprStr_contains = function(pattern, literal = FALSE, strict = TRUE) {
-  .pr$Expr$str_contains(self, wrap_e(pattern, str_to_lit = TRUE), literal, strict)
+#'
+#' df = pl$DataFrame(txt = c("Crab", "cat and dog", "rab$bit", NA))
+#' df$with_columns(
+#'   regex = pl$col("txt")$str$contains("cat|bit"),
+#'   literal = pl$col("txt")$str$contains("rab$", literal = TRUE)
+#' )
+ExprStr_contains = function(pattern, ..., literal = FALSE, strict = TRUE) {
+  .pr$Expr$str_contains(self, pattern, literal, strict) |>
+    unwrap("in str$contains():")
 }
+
 
 #' Check if string ends with a regex
 #'
@@ -918,12 +932,11 @@ ExprStr_replace_many = function(patterns, replace_with, ascii_case_insensitive =
 
 #' Extract all capture groups for the given regex pattern
 #'
-#' @inheritParams ExprStr_contains
-#'
 #' @details
 #' All group names are strings. If your pattern contains unnamed groups, their
 #' numerical position is converted to a string. See examples.
-#'
+#' @param pattern A character of a valid regular expression pattern containing
+#' at least one capture group, compatible with the [regex crate](https://docs.rs/regex/latest/regex/).
 #' @return Expr of data type [Struct][DataType_Struct] with fields of data type
 #' `String`.
 #'
