@@ -690,12 +690,13 @@ test_that("drop", {
 test_that("drop_nulls", {
   tmp = mtcars
   tmp[1:3, "mpg"] = NA
+  tmp = pl$DataFrame(tmp)
   expect_equal(pl$DataFrame(mtcars)$drop_nulls()$height, 32, ignore_attr = TRUE)
-  expect_equal(pl$DataFrame(tmp)$drop_nulls()$height, 29, ignore_attr = TRUE)
   expect_equal(pl$DataFrame(mtcars)$drop_nulls("mpg")$height, 32, ignore_attr = TRUE)
-  expect_equal(pl$DataFrame(tmp)$drop_nulls("mpg")$height, 29, ignore_attr = TRUE)
-  expect_equal(pl$DataFrame(tmp)$drop_nulls("hp")$height, 32, ignore_attr = TRUE)
-  expect_equal(pl$DataFrame(tmp)$drop_nulls(c("mpg", "hp"))$height, 29, ignore_attr = TRUE)
+  expect_equal(tmp$drop_nulls()$height, 29, ignore_attr = TRUE)
+  expect_equal(tmp$drop_nulls("mpg")$height, 29, ignore_attr = TRUE)
+  expect_equal(tmp$drop_nulls("hp")$height, 32, ignore_attr = TRUE)
+  expect_equal(tmp$drop_nulls(c("mpg", "hp"))$height, 29, ignore_attr = TRUE)
 
   expect_error(
     pl$DataFrame(mtcars)$drop_nulls("bad column name")$height,

@@ -2,35 +2,63 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_over}
 \alias{Expr_over}
-\title{Apply window function over a subgroup}
+\title{Compute expressions over the given groups}
 \usage{
-Expr_over(...)
+Expr_over(..., mapping_strategy = "group_to_rows")
 }
 \arguments{
-\item{...}{Character vector indicating the columns to group by.}
+\item{...}{Column(s) to group by. Accepts expression input.
+Characters are parsed as column names.}
+
+\item{mapping_strategy}{One of the following:
+\itemize{
+\item \code{"group_to_rows"} (default): if the aggregation results in multiple values,
+assign them back to their position in the DataFrame. This can only be done
+if the group yields the same elements before aggregation as after.
+\item \code{"join"}: join the groups as \verb{List<group_dtype>} to the row positions. Note
+that this can be memory intensive.
+\item \code{"explode"}: don’t do any mapping, but simply flatten the group. This only
+makes sense if the input data is sorted.
+}}
 }
 \value{
 Expr
 }
 \description{
-This applies an expression on groups and returns the same number of rows as
-the input (contrarily to \verb{$group_by()} + \verb{$agg()}).
+This expression is similar to performing a group by aggregation and
+joining the result back into the original \link[=DataFrame_class]{DataFrame}.
+The outcome is similar to how window functions work in
+\href{https://www.postgresql.org/docs/current/tutorial-window.html}{PostgreSQL}.
 }
 \examples{
-pl$DataFrame(
-  val = 1:5,
-  a = c("+", "+", "-", "-", "+"),
-  b = c("+", "-", "+", "-", "+")
-)$with_columns(
-  count = pl$col("val")$count()$over("a", "b")
+# Pass the name of a column to compute the expression over that column.
+df = pl$DataFrame(
+  a = c("a", "a", "b", "b", "b"),
+  b = c(1, 2, 3, 5, 3),
+  c = c(5, 4, 3, 2, 1)
 )
 
-over_vars = c("a", "b")
-pl$DataFrame(
-  val = 1:5,
-  a = c("+", "+", "-", "-", "+"),
-  b = c("+", "-", "+", "-", "+")
-)$with_columns(
-  count = pl$col("val")$count()$over(over_vars)
+df$with_columns(
+  pl$col("c")$max()$over("a")$name$suffix("_max")
+)
+
+# Expression input is supported.
+df$with_columns(
+  pl$col("c")$max()$over(pl$col("b") \%/\% 2)$name$suffix("_max")
+)
+
+# Group by multiple columns by passing a character vector of column names
+# or list of expressions.
+df$with_columns(
+  pl$col("c")$min()$over(c("a", "b"))$name$suffix("_min")
+)
+
+df$with_columns(
+  pl$col("c")$min()$over(list(pl$col("a"), pl$col("b")))$name$suffix("_min")
+)
+
+# Or use positional arguments to group by multiple columns in the same way.
+df$with_columns(
+  pl$col("c")$min()$over("a", pl$col("b") \%\% 2)$name$suffix("_min")
 )
 }

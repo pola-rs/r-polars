@@ -918,7 +918,7 @@ RPolarsExpr$div <- function(other) .Call(wrap__RPolarsExpr__div, self, other)
 
 RPolarsExpr$pow <- function(exponent) .Call(wrap__RPolarsExpr__pow, self, exponent)
 
-RPolarsExpr$over <- function(proto_exprs) .Call(wrap__RPolarsExpr__over, self, proto_exprs)
+RPolarsExpr$over <- function(partition_by, mapping) .Call(wrap__RPolarsExpr__over, self, partition_by, mapping)
 
 RPolarsExpr$print <- function() invisible(.Call(wrap__RPolarsExpr__print, self))
 
@@ -1085,22 +1085,6 @@ RPolarsExpr$rolling <- function(index_column, period, offset, closed, check_sort
 
 #' @export
 `[[.RPolarsExpr` <- `$.RPolarsExpr`
-
-RPolarsProtoExprArray <- new.env(parent = emptyenv())
-
-RPolarsProtoExprArray$new <- function() .Call(wrap__RPolarsProtoExprArray__new)
-
-RPolarsProtoExprArray$push_back_str <- function(s) invisible(.Call(wrap__RPolarsProtoExprArray__push_back_str, self, s))
-
-RPolarsProtoExprArray$push_back_rexpr <- function(r) invisible(.Call(wrap__RPolarsProtoExprArray__push_back_rexpr, self, r))
-
-RPolarsProtoExprArray$print <- function() invisible(.Call(wrap__RPolarsProtoExprArray__print, self))
-
-#' @export
-`$.RPolarsProtoExprArray` <- function (self, name) { func <- RPolarsProtoExprArray[[name]]; environment(func) <- environment(); func }
-
-#' @export
-`[[.RPolarsProtoExprArray` <- `$.RPolarsProtoExprArray`
 
 RPolarsLazyFrame <- new.env(parent = emptyenv())
 

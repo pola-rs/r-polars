@@ -662,68 +662,6 @@ Expr_is_null = use_extendr_wrapper
 Expr_is_not_null = use_extendr_wrapper
 
 
-# TODO move this function in to rust with input list of args
-# TODO deprecate context feature
-#' construct proto Expr array from args
-#' @noRd
-#' @param ...  any Expr or string
-#'
-#'
-#'
-#' @return RPolarsProtoExprArray object
-#'
-#' @examples .pr$env$construct_ProtoExprArray(pl$col("Species"), "Sepal.Width")
-construct_ProtoExprArray = function(...) {
-  pra = RPolarsProtoExprArray$new()
-  args = list2(...)
-
-  # deal with list of expressions
-  is_list = which(vapply(args, is.list, FUN.VALUE = logical(1L)))
-  for (i in seq_along(is_list)) {
-    tmp = unlist(args[[is_list[i]]], recursive = FALSE)
-    args[[is_list[i]]] = NULL
-    args = append(tmp, args)
-  }
-  args = Filter(Negate(is.null), args)
-
-  arg_names = names(args)
-
-
-  # if args not named load in Expr and string
-  if (is.null(arg_names)) {
-    if (length(args) == 1 && is.list(args)) {
-      args = unlist(args)
-    }
-    for (i in args) {
-      # if (is_string(i)) {
-      #   pra$push_back_str(i)
-      #   next
-      # }
-      pra$push_back_rexpr(wrap_e(i, str_to_lit = FALSE))
-    }
-
-    # if args named, convert string to col and alias any column by name if a name
-  } else {
-    for (i in seq_along(args)) {
-      arg = args[[i]]
-      name = arg_names[i]
-
-      expr = wrap_e(arg, str_to_lit = FALSE)
-
-
-      if (nchar(name) >= 1L) {
-        expr = expr$alias(name)
-      }
-      pra$push_back_rexpr(expr) # rust method
-    }
-  }
-
-
-
-  pra
-}
-
-
 ## TODO allow list to be formed from recursive R lists
 ## TODO Contribute polars, seems polars now prefer word f or function in map/apply/rolling/apply
 # over lambda. However lambda is still in examples.
@@ -1868,34 +1806,75 @@ Expr_first = use_extendr_wrapper
 #' pl$DataFrame(x = 3:1)$with_columns(last = pl$col("x")$last())
 Expr_last = use_extendr_wrapper
 
-#' Apply window function over a subgroup
+#' Compute expressions over the given groups
 #'
-#' This applies an expression on groups and returns the same number of rows as
-#' the input (contrarily to `$group_by()` + `$agg()`).
+#' This expression is similar to performing a group by aggregation and
+#' joining the result back into the original [DataFrame][DataFrame_class].
+#' The outcome is similar to how window functions work in
+#' [PostgreSQL](https://www.postgresql.org/docs/current/tutorial-window.html).
 #'
-#' @param ... Character vector indicating the columns to group by.
-#'
+#' @param ... Column(s) to group by. Accepts expression input.
+#' Characters are parsed as column names.
+#' @param mapping_strategy One of the following:
+#' * `"group_to_rows"` (default): if the aggregation results in multiple values,
+#'   assign them back to their position in the DataFrame. This can only be done
+#'   if the group yields the same elements before aggregation as after.
+#' * `"join"`: join the groups as `List<group_dtype>` to the row positions. Note
+#'   that this can be memory intensive.
+#' * `"explode"`: don’t do any mapping, but simply flatten the group. This only
+#'   makes sense if the input data is sorted.
 #' @return Expr
 #' @examples
-#' pl$DataFrame(
-#'   val = 1:5,
-#'   a = c("+", "+", "-", "-", "+"),
-#'   b = c("+", "-", "+", "-", "+")
-#' )$with_columns(
-#'   count = pl$col("val")$count()$over("a", "b")
+#' # Pass the name of a column to compute the expression over that column.
+#' df = pl$DataFrame(
+#'   a = c("a", "a", "b", "b", "b"),
+#'   b = c(1, 2, 3, 5, 3),
+#'   c = c(5, 4, 3, 2, 1)
 #' )
 #'
-#' over_vars = c("a", "b")
-#' pl$DataFrame(
-#'   val = 1:5,
-#'   a = c("+", "+", "-", "-", "+"),
-#'   b = c("+", "-", "+", "-", "+")
-#' )$with_columns(
-#'   count = pl$col("val")$count()$over(over_vars)
+#' df$with_columns(
+#'   pl$col("c")$max()$over("a")$name$suffix("_max")
 #' )
-Expr_over = function(...) {
-  pra = construct_ProtoExprArray(...)
-  .pr$Expr$over(self, pra)
+#'
+#' # Expression input is supported.
+#' df$with_columns(
+#'   pl$col("c")$max()$over(pl$col("b") %/% 2)$name$suffix("_max")
+#' )
+#'
+#' # Group by multiple columns by passing a character vector of column names
+#' # or list of expressions.
+#' df$with_columns(
+#'   pl$col("c")$min()$over(c("a", "b"))$name$suffix("_min")
+#' )
+#'
+#' df$with_columns(
+#'   pl$col("c")$min()$over(list(pl$col("a"), pl$col("b")))$name$suffix("_min")
+#' )
+#'
+#' # Or use positional arguments to group by multiple columns in the same way.
+#' df$with_columns(
+#'   pl$col("c")$min()$over("a", pl$col("b") %% 2)$name$suffix("_min")
+#' )
+Expr_over = function(..., mapping_strategy = "group_to_rows") {
+  list_of_exprs = list2(...) |>
+    lapply(\(x) {
+      if (is.character(x)) {
+        as.list(x)
+      } else {
+        x
+      }
+    }) |>
+    unlist(recursive = FALSE) |>
+    lapply(\(x) {
+      if (is.character(x)) {
+        pl$col(x)
+      } else {
+        x
+      }
+    })
+
+  .pr$Expr$over(self, list_of_exprs, mapping_strategy) |>
+    unwrap("in $over():")
 }
 
 #' Check whether each value is unique
