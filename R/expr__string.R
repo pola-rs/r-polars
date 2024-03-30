@@ -431,6 +431,11 @@ ExprStr_pad_start = function(width, fillchar = " ") {
 
 #' Check if string contains a substring that matches a pattern
 #'
+#' @details To modify regular expression behaviour (such as case-sensitivity)
+#' with flags, use the inline `(?iLmsuxU)` syntax. See the regex crate’s section
+#' on [grouping and flags](https://docs.rs/regex/latest/regex/#grouping-and-flags)
+#' for additional information about the use of inline expression modifiers.
+#'
 #' @param pattern A character or something can be coerced to a string [Expr][Expr_class]
 #' of a valid regex pattern, compatible with the [regex crate](https://docs.rs/regex/latest/regex/).
 #' @param ... Ignored.
@@ -438,11 +443,6 @@ ExprStr_pad_start = function(width, fillchar = " ") {
 #' not as a regular expression.
 #' @param strict Logical. If `TRUE` (default), raise an error if the underlying pattern is
 #' not a valid regex, otherwise mask out with a null value.
-#'
-#' @details To modify regular expression behaviour (such as case-sensitivity)
-#' with flags, use the inline `(?iLmsuxU)` syntax. See the regex crate’s section
-#' on [grouping and flags](https://docs.rs/regex/latest/regex/#grouping-and-flags)
-#' for additional information about the use of inline expression modifiers.
 #'
 #' @return [Expr][Expr_class] of Boolean data type
 #' @seealso
