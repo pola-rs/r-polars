@@ -1833,7 +1833,7 @@ LazyFrame_rolling = function(
     self, index_column, period, offset, closed,
     wrap_elist_result(group_by, str_to_lit = FALSE), check_sorted
   ) |>
-    unwrap("in <LazyFrame>$rolling():")
+    unwrap("in $rolling():")
 }
 
 
