@@ -2225,3 +2225,67 @@ DataFrame_partition_by = function(
 
   partitions
 }
+
+
+#' Return the element at the given row/column.
+#'
+#' If row and column location are not specified, the [DataFrame][DataFrame_class]
+#' must have dimensions (1, 1).
+#'
+#' @param row Optional row index (0-indexed).
+#' @param column Optional column index (0-indexed) or name.
+#'
+#' @return A value of length 1
+#'
+#' @examples
+#' df = pl$DataFrame(a = c(1, 2, 3), b = c(4, 5, 6))
+#'
+#' df$select((pl$col("a") * pl$col("b"))$sum())$item()
+#'
+#' df$item(1, 1)
+#'
+#' df$item(2, "b")
+DataFrame_item = function(row = NULL, column = NULL) {
+  uw = \(res) unwrap(res, "in $item():")
+
+  row_null = is.null(row)
+  col_null = is.null(column)
+
+  if (row_null && col_null) {
+    if (!identical(self$shape, c(1, 1))) {
+      Err_plain(
+        "Can only call $item() if the DataFrame is of shape (1, 1) or if explicit row/col values are provided."
+      ) |> uw()
+    }
+    out = .pr$DataFrame$select_at_idx(self, 0) |>
+      uw() |>
+      as.vector()
+    return(out)
+  }
+
+  if ((!row_null && col_null) || (row_null && !col_null)) {
+    Err_plain("Cannot call `$item()` with only one of `row` or `column`.") |>
+      uw()
+  }
+
+  if (is.numeric(column)) {
+    column = self$columns[column + 1]
+    if (is.na(column)) {
+      Err_plain("`column` is out of bounds.") |>
+        uw()
+    }
+  } else if (is.character(column)) {
+    if (!column %in% self$columns) {
+      Err_plain("`column` does not exist.") |>
+        uw()
+    }
+  }
+
+  out = self$get_column(column)[row + 1]$to_r()
+  if (length(out) == 0) {
+    Err_plain("`row` is out of bounds.") |>
+      uw()
+  }
+
+  out
+}

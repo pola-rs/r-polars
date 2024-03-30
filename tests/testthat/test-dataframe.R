@@ -1409,3 +1409,38 @@ test_that("partition_by", {
     df$partition_by("col2", maintain_order = FALSE, include_key = FALSE, as_nested_list = TRUE)
   )
 })
+
+test_that("$item() works", {
+  df = pl$DataFrame(a = c(1, 2, 3), b = c(4, 5, 6))
+
+  expect_equal(df$select((pl$col("a") * pl$col("b"))$sum())$item(), 32)
+  expect_equal(df$item(1, 1), 5)
+  expect_equal(df$item(2, "b"), 6)
+
+  # errors
+
+  expect_grepl_error(
+    df$item(1, 4),
+    "`column` is out of bounds."
+  )
+  expect_grepl_error(
+    df$item(1, "foo"),
+    "`column` does not exist."
+  )
+  expect_grepl_error(
+    df$item(4, 1),
+    "`row` is out of bounds."
+  )
+  expect_grepl_error(
+    df$item(),
+    "if the DataFrame is of shape"
+  )
+  expect_grepl_error(
+    df$item(1),
+    " with only one of `row` or "
+  )
+  expect_grepl_error(
+    df$item(column = 1),
+    " with only one of `row` or "
+  )
+})
