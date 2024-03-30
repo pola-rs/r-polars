@@ -2057,12 +2057,13 @@ impl RPolarsExpr {
             .into())
     }
 
-    pub fn str_contains(&self, pat: &RPolarsExpr, literal: Robj, strict: Robj) -> RResult<Self> {
+    pub fn str_contains(&self, pat: Robj, literal: Robj, strict: Robj) -> RResult<Self> {
+        let pat = robj_to!(PLExpr, pat)?;
         let literal = robj_to!(Option, bool, literal)?;
         let strict = robj_to!(bool, strict)?;
         match literal {
-            Some(true) => Ok(self.0.clone().str().contains_literal(pat.0.clone()).into()),
-            _ => Ok(self.0.clone().str().contains(pat.0.clone(), strict).into()),
+            Some(true) => Ok(self.0.clone().str().contains_literal(pat).into()),
+            _ => Ok(self.0.clone().str().contains(pat, strict).into()),
         }
     }
 
@@ -2144,7 +2145,8 @@ impl RPolarsExpr {
         self.0.clone().str().extract_all(pattern.0.clone()).into()
     }
 
-    pub fn str_extract_groups(&self, pattern: &str) -> RResult<Self> {
+    pub fn str_extract_groups(&self, pattern: Robj) -> RResult<Self> {
+        let pattern = robj_to!(str, pattern)?;
         Ok(self.0.clone().str().extract_groups(pattern)?.into())
     }
 

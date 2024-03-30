@@ -436,8 +436,8 @@ ExprStr_pad_start = function(width, fillchar = " ") {
 #' use the inline `(?iLmsuxU)` syntax. See the regex crate’s section on
 #' [grouping and flags](https://docs.rs/regex/latest/regex/#grouping-and-flags)
 #' for additional information about the use of inline expression modifiers.
-#' @param pattern A character or [Expr][Expr_class] of a valid regex pattern,
-#' compatible with the [regex crate](https://docs.rs/regex/latest/regex/).
+#' @param pattern A character or something can be coerced to a string [Expr][Expr_class]
+#' of a valid regex pattern, compatible with the [regex crate](https://docs.rs/regex/latest/regex/).
 #' @param ... Ignored.
 #' @param literal Logical. If `TRUE` (default), treat `pattern` as a literal string,
 #' not as a regular expression.
@@ -460,7 +460,7 @@ ExprStr_pad_start = function(width, fillchar = " ") {
 #'   literal = pl$col("txt")$str$contains("rab$", literal = TRUE)
 #' )
 ExprStr_contains = function(pattern, ..., literal = FALSE, strict = TRUE) {
-  .pr$Expr$str_contains(self, wrap_e(pattern, str_to_lit = TRUE), literal, strict) |>
+  .pr$Expr$str_contains(self, pattern, literal, strict) |>
     unwrap("in str$contains():")
 }
 
@@ -932,12 +932,11 @@ ExprStr_replace_many = function(patterns, replace_with, ascii_case_insensitive =
 
 #' Extract all capture groups for the given regex pattern
 #'
-#' @inheritParams ExprStr_contains
-#'
 #' @details
 #' All group names are strings. If your pattern contains unnamed groups, their
 #' numerical position is converted to a string. See examples.
-#'
+#' @param pattern A character of a valid regular expression pattern containing
+#' at least one capture group, compatible with the [regex crate](https://docs.rs/regex/latest/regex/).
 #' @return Expr of data type [Struct][DataType_Struct] with fields of data type
 #' `String`.
 #'

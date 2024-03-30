@@ -7,15 +7,15 @@
 ExprStr_contains(pattern, ..., literal = FALSE, strict = TRUE)
 }
 \arguments{
-\item{pattern}{A character or \link[=Expr_class]{Expr} of a valid regex pattern,
-compatible with the \href{https://docs.rs/regex/latest/regex/}{regex crate}.}
+\item{pattern}{A character or something can be coerced to a string \link[=Expr_class]{Expr}
+of a valid regex pattern, compatible with the \href{https://docs.rs/regex/latest/regex/}{regex crate}.}
 
 \item{...}{Ignored.}
 
-\item{literal}{A logical flag. If \code{TRUE} (default), treat \code{pattern} as a literal string,
+\item{literal}{Logical. If \code{TRUE} (default), treat \code{pattern} as a literal string,
 not as a regular expression.}
 
-\item{strict}{A logical flag. If \code{TRUE} (default), raise an error if the underlying pattern is
+\item{strict}{Logical. If \code{TRUE} (default), raise an error if the underlying pattern is
 not a valid regex, otherwise mask out with a null value.}
 }
 \value{
@@ -38,8 +38,7 @@ pl$DataFrame(s = c("AAA", "aAa", "aaa"))$with_columns(
 )
 
 df = pl$DataFrame(txt = c("Crab", "cat and dog", "rab$bit", NA))
-df$select(
-  pl$col("txt"),
+df$with_columns(
   regex = pl$col("txt")$str$contains("cat|bit"),
   literal = pl$col("txt")$str$contains("rab$", literal = TRUE)
 )
