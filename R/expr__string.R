@@ -429,13 +429,8 @@ ExprStr_pad_start = function(width, fillchar = " ") {
 }
 
 
-# TODO: Add ExprStr_find to seealso
 #' Check if string contains a substring that matches a pattern
 #'
-#' @details To modify regular expression behaviour (such as case-sensitivity) with flags,
-#' use the inline `(?iLmsuxU)` syntax. See the regex crate’s section on
-#' [grouping and flags](https://docs.rs/regex/latest/regex/#grouping-and-flags)
-#' for additional information about the use of inline expression modifiers.
 #' @param pattern A character or something can be coerced to a string [Expr][Expr_class]
 #' of a valid regex pattern, compatible with the [regex crate](https://docs.rs/regex/latest/regex/).
 #' @param ... Ignored.
@@ -443,10 +438,22 @@ ExprStr_pad_start = function(width, fillchar = " ") {
 #' not as a regular expression.
 #' @param strict Logical. If `TRUE` (default), raise an error if the underlying pattern is
 #' not a valid regex, otherwise mask out with a null value.
+#'
+#' @details To modify regular expression behaviour (such as case-sensitivity)
+#' with flags, use the inline `(?iLmsuxU)` syntax. See the regex crate’s section
+#' on [grouping and flags](https://docs.rs/regex/latest/regex/#grouping-and-flags)
+#' for additional information about the use of inline expression modifiers.
+#'
 #' @return [Expr][Expr_class] of Boolean data type
 #' @seealso
-#' - [`<Expr>$str$start_with()`][ExprStr_starts_with]: Check if string values start with a substring.
-#' - [`<Expr>$str$ends_with()`][ExprStr_ends_with]: Check if string values end with a substring.
+#' - [`$str$start_with()`][ExprStr_starts_with]: Check if string values
+#'   start with a substring.
+#' - [`$str$ends_with()`][ExprStr_ends_with]: Check if string values end
+#'   with a substring.
+#' - [`$str$find()`][ExprStr_find]: Return the index position of the first
+#'   substring matching a pattern.
+#'
+#'
 #' @examples
 #' # The inline `(?i)` syntax example
 #' pl$DataFrame(s = c("AAA", "aAa", "aaa"))$with_columns(
@@ -969,12 +976,17 @@ ExprStr_extract_groups = function(pattern) {
 
 #' Return the index position of the first substring matching a pattern
 #'
-#' @inheritParams ExprStr_count_matches
-#' @param ... Not used.
-#' @param strict Raise an error if the underlying pattern is not a valid regex,
-#' otherwise mask out with a null value.
+#' @inheritParams ExprStr_contains
 #'
 #' @return An Expr of data type UInt32
+#'
+#' @seealso
+#' - [`$str$start_with()`][ExprStr_starts_with]: Check if string values
+#'   start with a substring.
+#' - [`$str$ends_with()`][ExprStr_ends_with]: Check if string values end
+#'   with a substring.
+#' - [`$str$contains()`][ExprStr_contains]: Check if string contains a substring
+#'   that matches a pattern.
 #'
 #' @examples
 #' pl$DataFrame(s = c("AAA", "aAa", "aaa"))$with_columns(

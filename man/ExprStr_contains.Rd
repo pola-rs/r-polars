@@ -25,9 +25,9 @@ not a valid regex, otherwise mask out with a null value.}
 Check if string contains a substring that matches a pattern
 }
 \details{
-To modify regular expression behaviour (such as case-sensitivity) with flags,
-use the inline \code{(?iLmsuxU)} syntax. See the regex crate’s section on
-\href{https://docs.rs/regex/latest/regex/#grouping-and-flags}{grouping and flags}
+To modify regular expression behaviour (such as case-sensitivity)
+with flags, use the inline \code{(?iLmsuxU)} syntax. See the regex crate’s section
+on \href{https://docs.rs/regex/latest/regex/#grouping-and-flags}{grouping and flags}
 for additional information about the use of inline expression modifiers.
 }
 \examples{
@@ -45,7 +45,11 @@ df$with_columns(
 }
 \seealso{
 \itemize{
-\item \code{\link[=ExprStr_starts_with]{<Expr>$str$start_with()}}: Check if string values start with a substring.
-\item \code{\link[=ExprStr_ends_with]{<Expr>$str$ends_with()}}: Check if string values end with a substring.
+\item \code{\link[=ExprStr_starts_with]{$str$start_with()}}: Check if string values
+start with a substring.
+\item \code{\link[=ExprStr_ends_with]{$str$ends_with()}}: Check if string values end
+with a substring.
+\item \code{\link[=ExprStr_find]{$str$find()}}: Return the index position of the first
+substring matching a pattern.
 }
 }
