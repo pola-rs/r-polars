@@ -935,13 +935,13 @@ test_that("rolling for LazyFrame: error if not explicitly sorted", {
   )
 })
 
-test_that("rolling for LazyFrame: argument 'by' works", {
+test_that("rolling for LazyFrame: argument 'group_by' works", {
   df = pl$LazyFrame(
     index = c(1L, 2L, 3L, 4L, 8L, 9L),
     grp = c("a", "a", rep("b", 4)),
     a = c(3, 7, 5, 9, 2, 1)
   )
-  actual = df$rolling(index_column = "index", period = "2i", by = pl$col("grp"))$agg(
+  actual = df$rolling(index_column = "index", period = "2i", group_by = pl$col("grp"))$agg(
     pl$sum("a")$alias("sum_a"),
     pl$min("a")$alias("min_a"),
     pl$max("a")$alias("max_a")
@@ -956,12 +956,12 @@ test_that("rolling for LazyFrame: argument 'by' works", {
     )
   )
 
-  # string is parsed as column name in "by"
+  # string is parsed as column name in "group_by"
   expect_equal(
-    df$rolling(index_column = "index", period = "2i", by = "grp")$agg(
+    df$rolling(index_column = "index", period = "2i", group_by = "grp")$agg(
       pl$sum("a")$alias("sum_a")
     )$collect()$to_data_frame(),
-    df$rolling(index_column = "index", period = "2i", by = pl$col("grp"))$agg(
+    df$rolling(index_column = "index", period = "2i", group_by = pl$col("grp"))$agg(
       pl$sum("a")$alias("sum_a")
     )$collect()$to_data_frame()
   )
@@ -974,13 +974,13 @@ test_that("rolling for LazyFrame: argument 'check_sorted' works", {
     a = c(3, 7, 5, 9, 2, 1)
   )
   expect_error(
-    df$rolling(index_column = "index", period = "2i", by = "grp")$agg(
+    df$rolling(index_column = "index", period = "2i", group_by = "grp")$agg(
       pl$sum("a")$alias("sum_a")
     )$collect(),
     "not sorted"
   )
   expect_no_error(
-    df$rolling(index_column = "index", period = "2i", by = "grp", check_sorted = FALSE)$agg(
+    df$rolling(index_column = "index", period = "2i", group_by = "grp", check_sorted = FALSE)$agg(
       pl$sum("a")$alias("sum_a")
     )$collect()
   )

@@ -375,7 +375,7 @@ test_that("group_by_dynamic for LazyFrame: argument 'by' works", {
     pl$col("dt")$str$strptime(pl$Datetime("ms"), format = NULL)$set_sorted()
   )
 
-  actual = df$group_by_dynamic(index_column = "dt", every = "2h", by = pl$col("grp"))$agg(
+  actual = df$group_by_dynamic(index_column = "dt", every = "2h", group_by = pl$col("grp"))$agg(
     pl$col("n")$mean()
   )$collect()$to_data_frame()
 
@@ -386,10 +386,10 @@ test_that("group_by_dynamic for LazyFrame: argument 'by' works", {
 
   # string is parsed as column name in "by"
   expect_equal(
-    df$group_by_dynamic(index_column = "dt", every = "2h", by = pl$col("grp"))$agg(
+    df$group_by_dynamic(index_column = "dt", every = "2h", group_by = pl$col("grp"))$agg(
       pl$col("n")$mean()
     )$collect()$to_data_frame(),
-    df$group_by_dynamic(index_column = "dt", every = "2h", by = "grp")$agg(
+    df$group_by_dynamic(index_column = "dt", every = "2h", group_by = "grp")$agg(
       pl$col("n")$mean()
     )$collect()$to_data_frame()
   )
@@ -402,13 +402,13 @@ test_that("group_by_dynamic for LazyFrame: argument 'check_sorted' works", {
     a = c(3, 7, 5, 9, 2, 1)
   )
   expect_error(
-    df$group_by_dynamic(index_column = "index", every = "2i", by = "grp")$agg(
+    df$group_by_dynamic(index_column = "index", every = "2i", group_by = "grp")$agg(
       pl$sum("a")$alias("sum_a")
     )$collect(),
     "not sorted"
   )
   expect_no_error(
-    df$group_by_dynamic(index_column = "index", every = "2i", by = "grp", check_sorted = FALSE)$agg(
+    df$group_by_dynamic(index_column = "index", every = "2i", group_by = "grp", check_sorted = FALSE)$agg(
       pl$sum("a")$alias("sum_a")
     )$collect()
   )
