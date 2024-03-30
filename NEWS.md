@@ -76,6 +76,8 @@
   `<Series>$to_vector()` (#938).
 - In `$str$contains()`, the arguments `literal` and `strict` should be named arguments (#982).
 - In `$str$contains_any()`, the `ascii_case_insensitive` argument must be named (#986).
+- In `$str$count_matches()`, `$str$replace()` and `$str$replace_all()`,
+  the `literal` argument must be named (#987).
 - In `$str$strptime()`, `$str$to_date()`, `$str$to_datetime()`, and
   `$str$to_time()`, all arguments (except the first one) must be named (#939).
 - In `$str$strptime()`, the argument `datatype` is renamed `dtype` (#939).
@@ -104,6 +106,7 @@
 - New functions `pl$int_range()` and `pl$int_ranges()` (#968).
 - New string method `$str$extract_groups()` (#979).
 - New string method `$str$find()` (#985).
+- New argument `n` in `$str$replace()` (#987).
 
 ### Bug fixes
 
