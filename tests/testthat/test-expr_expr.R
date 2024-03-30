@@ -242,29 +242,29 @@ test_that("min max", {
 })
 
 test_that("$over()", {
-  df = pl$DataFrame(list(
+  df = pl$DataFrame(
     val = 1:5,
     a = c("+", "+", "-", "-", "+"),
     b = c("+", "-", "+", "-", "+")
-  ))$select(
+  )$select(
     pl$col("val")$count()$over("a", pl$col("b"))
   )
 
   # with vector of column names
-  df2 = pl$DataFrame(list(
+  df2 = pl$DataFrame(
     val = 1:5,
     a = c("+", "+", "-", "-", "+"),
     b = c("+", "-", "+", "-", "+")
-  ))$select(
+  )$select(
     pl$col("val")$count()$over(c("a", "b"))
   )
 
   over_vars = c("a", "b")
-  df3 = pl$DataFrame(list(
+  df3 = pl$DataFrame(
     val = 1:5,
     a = c("+", "+", "-", "-", "+"),
     b = c("+", "-", "+", "-", "+")
-  ))$select(
+  )$select(
     pl$col("val")$count()$over(over_vars)
   )
 
@@ -300,11 +300,10 @@ test_that("$over()", {
 })
 
 test_that("$over() with mapping_strategy", {
-  df = pl$DataFrame(list(
+  df = pl$DataFrame(
     val = 1:5,
-    a = c("+", "+", "-", "-", "+"),
-    b = c("+", "-", "+", "-", "+")
-  ))
+    a = c("+", "+", "-", "-", "+")
+  )
 
   expect_grepl_error(
     df$select(pl$col("val")$top_k(2)$over("a")),
