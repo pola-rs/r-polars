@@ -468,7 +468,7 @@ ExprStr_pad_start = function(width, fillchar = " ") {
 #' )
 ExprStr_contains = function(pattern, ..., literal = FALSE, strict = TRUE) {
   .pr$Expr$str_contains(self, pattern, literal, strict) |>
-    unwrap("in str$contains():")
+    unwrap("in $str$contains():")
 }
 
 
@@ -662,27 +662,18 @@ ExprStr_extract_all = function(pattern) {
 
 #' Count all successive non-overlapping regex matches
 #'
-#' @keywords ExprStr
-#' @param pattern A valid regex pattern
-#' @param literal Treat pattern as a literal string.
-#'
-#' @return
-#' UInt32 array. Contains null if original value is null or regex capture nothing.
-#'
+#' @inheritParams ExprStr_contains
+#' @return [Expr][Expr_class] of data type `UInt32`.
+#' Returns `null` if the original value is `null`.
 #' @examples
-#' df = pl$DataFrame(foo = c("123 bla 45 asd", "xyz 678 910t"))
-#' df$select(
-#'   pl$col("foo")$str$count_matches(r"{(\d)}")$alias("count digits")
-#' )
+#' df = pl$DataFrame(foo = c("12 dbc 3xy", "cat\\w", "1zy3\\d\\d", NA))
 #'
-#' # we can use Polars expressions as pattern so that it's not necessarily the
-#' # same for all rows
-#' df2 = pl$DataFrame(foo = c("hello", "hi there"), pat = c("ell", "e"))
-#' df2$with_columns(
-#'   pl$col("foo")$str$count_matches(pl$col("pat"))$alias("reg_count")
+#' df$with_columns(
+#'   count_digits = pl$col("foo")$str$count_matches(r"(\d)"),
+#'   count_slash_d = pl$col("foo")$str$count_matches(r"(\d)", literal = TRUE)
 #' )
-ExprStr_count_matches = function(pattern, literal = FALSE) {
-  .pr$Expr$str_count_matches(self, wrap_e(pattern), literal) |>
+ExprStr_count_matches = function(pattern, ..., literal = FALSE) {
+  .pr$Expr$str_count_matches(self, pattern, literal) |>
     unwrap("in $str$count_matches():")
 }
 
@@ -764,46 +755,82 @@ ExprStr_splitn = function(by, n) {
 
 #' Replace first matching regex/literal substring with a new string value
 #'
-#' @keywords ExprStr
-#' @param pattern Regex pattern, can be an Expr.
-#' @param value Replacement, can be an Expr.
-#' @param literal Treat pattern as a literal string.
-#'
-#' @return Expr of String Series
-#'
-#' @seealso `$str$replace_all()`: Replace all matching regex/literal substrings.
-#'
+#' @inherit ExprStr_contains details params
+#' @section Capture groups:
+#' The dollar sign (`$`) is a special character related to capture groups.
+#' To refer to a literal dollar sign, use `$$` instead or set `literal` to `TRUE`.
+#' @param value A character or an [Expr][Expr_class] of string
+#' that will replace the matched substring.
+#' @param n A number of matches to replace.
+#' Note that regex replacement with `n > 1` not yet supported,
+#' so raise an error if `n > 1` and `pattern` includes regex pattern
+#' and `literal = FALSE`.
+#' @return [Expr][Expr_class] of String type
+#' @seealso
+#' - [`<Expr>$str$replace_all()`][ExprStr_replace_all]
 #' @examples
-#' df = pl$DataFrame(id = c(1, 2), text = c("123abc", "abc456"))
+#' df = pl$DataFrame(id = 1L:2L, text = c("123abc", "abc456"))
+#' df$with_columns(pl$col("text")$str$replace(r"(abc\b)", "ABC"))
+#'
+#' # Capture groups are supported.
+#' # Use `${1}` in the value string to refer to the first capture group in the pattern,
+#' # `${2}` to refer to the second capture group, and so on.
+#' # You can also use named capture groups.
+#' df = pl$DataFrame(word = c("hat", "hut"))
 #' df$with_columns(
-#'   pl$col("text")$str$replace(r"{abc\b}", "ABC")
+#'   positional = pl$col("word")$str$replace("h(.)t", "b${1}d"),
+#'   named = pl$col("word")$str$replace("h(?<vowel>.)t", "b${vowel}d")
 #' )
-ExprStr_replace = function(pattern, value, literal = FALSE) {
-  .pr$Expr$str_replace(self, wrap_e_result(pattern), wrap_e_result(value), result(literal)) |>
-    unwrap("in str$replace():")
+#'
+#' # Apply case-insensitive string replacement using the `(?i)` flag.
+#' df = pl$DataFrame(
+#'   city = "Philadelphia",
+#'   season = c("Spring", "Summer", "Autumn", "Winter"),
+#'   weather = c("Rainy", "Sunny", "Cloudy", "Snowy")
+#' )
+#' df$with_columns(
+#'   pl$col("weather")$str$replace("(?i)foggy|rainy|cloudy|snowy", "Sunny")
+#' )
+ExprStr_replace = function(pattern, value, ..., literal = FALSE, n = 1L) {
+  .pr$Expr$str_replace(self, pattern, value, literal, n) |>
+    unwrap("in $str$replace():")
 }
 
 
 
 #' Replace all matching regex/literal substrings with a new string value
 #'
-#' @keywords ExprStr
-#' @param pattern Regex pattern, can be an Expr.
-#' @param value Replacement, can be an Expr.
-#' @param literal Treat pattern as a literal string.
-#'
-#' @return Expr of String Series
-#'
-#' @seealso `$str$replace()`: Replace first matching regex/literal substring.
-#'
+#' @inherit ExprStr_replace details sections params return
+#' @seealso
+#' - [`<Expr>$str$replace()`][ExprStr_replace]
 #' @examples
-#' df = pl$DataFrame(id = c(1, 2), text = c("abcabc", "123a123"))
+#' df = pl$DataFrame(id = 1L:2L, text = c("abcabc", "123a123"))
+#' df$with_columns(pl$col("text")$str$replace_all("a", "-"))
+#'
+#' # Capture groups are supported.
+#' # Use `${1}` in the value string to refer to the first capture group in the pattern,
+#' # `${2}` to refer to the second capture group, and so on.
+#' # You can also use named capture groups.
+#' df = pl$DataFrame(word = c("hat", "hut"))
 #' df$with_columns(
-#'   pl$col("text")$str$replace_all("a", "-")
+#'   positional = pl$col("word")$str$replace_all("h(.)t", "b${1}d"),
+#'   named = pl$col("word")$str$replace_all("h(?<vowel>.)t", "b${vowel}d")
 #' )
-ExprStr_replace_all = function(pattern, value, literal = FALSE) {
-  .pr$Expr$str_replace_all(self, wrap_e_result(pattern), wrap_e_result(value), result(literal)) |>
-    unwrap("in str$replace_all():")
+#'
+#' # Apply case-insensitive string replacement using the `(?i)` flag.
+#' df = pl$DataFrame(
+#'   city = "Philadelphia",
+#'   season = c("Spring", "Summer", "Autumn", "Winter"),
+#'   weather = c("Rainy", "Sunny", "Cloudy", "Snowy")
+#' )
+#' df$with_columns(
+#'   pl$col("weather")$str$replace_all(
+#'     "(?i)foggy|rainy|cloudy|snowy", "Sunny"
+#'   )
+#' )
+ExprStr_replace_all = function(pattern, value, ..., literal = FALSE) {
+  .pr$Expr$str_replace_all(self, pattern, value, literal) |>
+    unwrap("in $str$replace_all():")
 }
 
 

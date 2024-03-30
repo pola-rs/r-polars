@@ -994,7 +994,7 @@ RPolarsExpr$str_extract_all <- function(pattern) .Call(wrap__RPolarsExpr__str_ex
 
 RPolarsExpr$str_extract_groups <- function(pattern) .Call(wrap__RPolarsExpr__str_extract_groups, self, pattern)
 
-RPolarsExpr$str_count_matches <- function(pattern, literal) .Call(wrap__RPolarsExpr__str_count_matches, self, pattern, literal)
+RPolarsExpr$str_count_matches <- function(pat, literal) .Call(wrap__RPolarsExpr__str_count_matches, self, pat, literal)
 
 RPolarsExpr$str_to_date <- function(format, strict, exact, cache) .Call(wrap__RPolarsExpr__str_to_date, self, format, strict, exact, cache)
 
@@ -1008,9 +1008,9 @@ RPolarsExpr$str_split_exact <- function(by, n, inclusive) .Call(wrap__RPolarsExp
 
 RPolarsExpr$str_splitn <- function(by, n) .Call(wrap__RPolarsExpr__str_splitn, self, by, n)
 
-RPolarsExpr$str_replace <- function(pattern, value, literal) .Call(wrap__RPolarsExpr__str_replace, self, pattern, value, literal)
+RPolarsExpr$str_replace <- function(pat, value, literal, n) .Call(wrap__RPolarsExpr__str_replace, self, pat, value, literal, n)
 
-RPolarsExpr$str_replace_all <- function(pattern, value, literal) .Call(wrap__RPolarsExpr__str_replace_all, self, pattern, value, literal)
+RPolarsExpr$str_replace_all <- function(pat, value, literal) .Call(wrap__RPolarsExpr__str_replace_all, self, pat, value, literal)
 
 RPolarsExpr$str_slice <- function(offset, length) .Call(wrap__RPolarsExpr__str_slice, self, offset, length)
 
