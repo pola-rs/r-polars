@@ -10,6 +10,8 @@ ExprStr_contains_any(patterns, ..., ascii_case_insensitive = FALSE)
 \item{patterns}{Character vector or something can be coerced to strings \link[=Expr_class]{Expr}
 of a valid regex pattern, compatible with the \href{https://docs.rs/regex/latest/regex/}{regex crate}.}
 
+\item{...}{Ignored.}
+
 \item{ascii_case_insensitive}{Enable ASCII-aware case insensitive matching.
 When this option is enabled, searching will be performed without respect to
 case for ASCII letters (a-z and A-Z) only.}

@@ -867,7 +867,7 @@ ExprStr_reverse = function() {
 #' Use the aho-corasick algorithm to find matches
 #'
 #' This function determines if any of the patterns find a match.
-#' @inherit ExprStr_contains return
+#' @inherit ExprStr_contains params return
 #' @param patterns Character vector or something can be coerced to strings [Expr][Expr_class]
 #' of a valid regex pattern, compatible with the [regex crate](https://docs.rs/regex/latest/regex/).
 #' @param ascii_case_insensitive Enable ASCII-aware case insensitive matching.
