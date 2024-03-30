@@ -832,3 +832,38 @@ test_that("str$extract_groups() works", {
     list(url = NULL)
   )
 })
+
+test_that("str$find() works", {
+  test = pl$DataFrame(s = c("AAA", "aAa", "aaa", "(?i)Aa"))
+
+  expect_identical(
+    test$select(
+      default = pl$col("s")$str$find("Aa"),
+      insensitive = pl$col("s")$str$find("(?i)Aa")
+    )$to_list(),
+    list(default = c(NA, 1, NA, 4), insensitive = c(0, 0, 0, 4))
+  )
+
+  # arg "literal" works
+  expect_identical(
+    test$select(
+      lit = pl$col("s")$str$find("(?i)Aa", literal = TRUE)
+    )$to_list(),
+    list(lit = c(NA, NA, NA, 0))
+  )
+
+  # arg "strict" works
+  expect_grepl_error(
+    test$select(lit = pl$col("s")$str$find("(?iAa")),
+    "unrecognized flag"
+  )
+
+  expect_silent(
+    test$select(lit = pl$col("s")$str$find("(?iAa", strict = FALSE))
+  )
+
+  # combining "literal" and "strict"
+  expect_silent(
+    test$select(lit = pl$col("s")$str$find("(?iAa", strict = TRUE, literal = TRUE))
+  )
+})
