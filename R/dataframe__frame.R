@@ -2257,7 +2257,10 @@ DataFrame_item = function(row = NULL, column = NULL) {
         "Can only call $item() if the DataFrame is of shape (1, 1) or if explicit row/col values are provided."
       ) |> uw()
     }
-    return(.pr$DataFrame$select_at_idx(self, 0)$ok[1]$to_r())
+    out = .pr$DataFrame$select_at_idx(self, 0) |>
+      uw() |>
+      as.vector()
+    return(out)
   }
 
   if ((!row_null && col_null) || (row_null && !col_null)) {
