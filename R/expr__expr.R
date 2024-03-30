@@ -1829,7 +1829,7 @@ Expr_last = use_extendr_wrapper
 #' df = pl$DataFrame(
 #'   a = c("a", "a", "b", "b", "b"),
 #'   b = c(1, 2, 3, 5, 3),
-#'   c = c(5, 4, 3, 2, 1)
+#'   c = c(5, 4, 2, 1, 3)
 #' )
 #'
 #' df$with_columns(
@@ -1854,6 +1854,11 @@ Expr_last = use_extendr_wrapper
 #' # Or use positional arguments to group by multiple columns in the same way.
 #' df$with_columns(
 #'   pl$col("c")$min()$over("a", pl$col("b") %% 2)$name$suffix("_min")
+#' )
+#'
+#' # Alternative mapping strategy: join values in a list output
+#' df$with_columns(
+#'   top_2 = pl$col("c")$top_k(2)$over("a", mapping_strategy = "join")
 #' )
 Expr_over = function(..., mapping_strategy = "group_to_rows") {
   list_of_exprs = list2(...) |>

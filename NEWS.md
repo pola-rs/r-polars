@@ -103,6 +103,7 @@
 - New functions `pl$int_range()` and `pl$int_ranges()` (#968).
 - New string method `$str$extract_groups()` (#979).
 - New string method `$str$find()` (#985).
+- Method `$over()` gains an argument `mapping_strategy` (#984, #988).
 
 ### Bug fixes
 

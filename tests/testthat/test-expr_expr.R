@@ -241,7 +241,7 @@ test_that("min max", {
   expect_equal(names(fails), character())
 })
 
-test_that("over", {
+test_that("$over()", {
   df = pl$DataFrame(list(
     val = 1:5,
     a = c("+", "+", "-", "-", "+"),
@@ -295,6 +295,26 @@ test_that("over", {
   expect_true(
     basic_expr$meta$eq(
       pl$col("foo")$min()$over(list(pl$col("a"), "b"))
+    )
+  )
+})
+
+test_that("$over() with mapping_strategy", {
+  df = pl$DataFrame(list(
+    val = 1:5,
+    a = c("+", "+", "-", "-", "+"),
+    b = c("+", "-", "+", "-", "+")
+  ))
+
+  expect_grepl_error(
+    df$select(pl$col("val")$top_k(2)$over("a")),
+    "length of the window expression did not match that of the group"
+  )
+
+  expect_identical(
+    df$select(pl$col("val")$top_k(2)$over("a", mapping_strategy = "join"))$to_list(),
+    list(
+      val = list(c(5L, 2L), c(5L, 2L), c(4L, 3L), c(4L, 3L), c(5L, 2L))
     )
   )
 })
