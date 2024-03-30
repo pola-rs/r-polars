@@ -24,6 +24,12 @@ An Expr of data type UInt32
 \description{
 Return the index position of the first substring matching a pattern
 }
+\details{
+To modify regular expression behaviour (such as case-sensitivity)
+with flags, use the inline \code{(?iLmsuxU)} syntax. See the regex crate’s section
+on \href{https://docs.rs/regex/latest/regex/#grouping-and-flags}{grouping and flags}
+for additional information about the use of inline expression modifiers.
+}
 \examples{
 pl$DataFrame(s = c("AAA", "aAa", "aaa"))$with_columns(
   default_match = pl$col("s")$str$find("Aa"),

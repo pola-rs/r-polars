@@ -976,7 +976,7 @@ ExprStr_extract_groups = function(pattern) {
 
 #' Return the index position of the first substring matching a pattern
 #'
-#' @inheritParams ExprStr_contains
+#' @inherit ExprStr_contains params details
 #'
 #' @return An Expr of data type UInt32
 #'
