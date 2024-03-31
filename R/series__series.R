@@ -205,7 +205,6 @@ add_expr_methods_to_series = function() {
 #' @param ... Addtional funtions to add to the namespace
 #' @noRd
 series_make_sub_ns = function(pl_series, .expr_make_sub_ns_fn, ...) {
-  df = pl_series$to_frame()
   # Override `self` in `$.RPolarsExpr`
   self = pl$col(pl_series$name) # nolint: object_usage_linter
 
@@ -215,7 +214,7 @@ series_make_sub_ns = function(pl_series, .expr_make_sub_ns_fn, ...) {
     new_f = function() {
       expr = do.call(f, as.list(match.call()[-1]), envir = parent.frame())
       pcase(
-        inherits(expr, "RPolarsExpr"), df$select(expr)$to_series(0),
+        inherits(expr, "RPolarsExpr"), pl_series$to_frame()$select(expr)$to_series(0),
         or_else = expr
       )
     }
@@ -228,7 +227,13 @@ series_make_sub_ns = function(pl_series, .expr_make_sub_ns_fn, ...) {
     additional_fns = list(...) |>
       lapply(\(f) {
         environment(f) = parent.frame(2L)
-        f
+        new_f = function() {
+          do.call(f, as.list(match.call()[-1]), envir = parent.frame())
+        }
+
+        formals(new_f) = formals(f)
+        class(new_f) = class(f)
+        new_f
       })
 
     new_fns = c(additional_fns, new_fns)
@@ -257,10 +262,15 @@ Series_list = method_as_active_binding(\() series_make_sub_ns(self, expr_list_ma
 Series_str = method_as_active_binding(\() series_make_sub_ns(self, expr_str_make_sub_ns))
 
 Series_struct = method_as_active_binding(
-  \() series_make_sub_ns(
-    self, expr_struct_make_sub_ns,
-    fields = method_as_active_binding(function() unwrap(.pr$Series$struct_fields(pl_series), "in $struct$fields:"))
-  )
+  \() {
+    pl_series = NULL # Workaround for R CMD check `Undefined global functions or variables` error
+    series_make_sub_ns(
+      self, expr_struct_make_sub_ns,
+      fields = method_as_active_binding(function() {
+        unwrap(.pr$Series$struct_fields(pl_series), "in $struct$fields:")
+      })
+    )
+  }
 )
 
 
