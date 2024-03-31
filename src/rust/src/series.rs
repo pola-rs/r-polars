@@ -258,7 +258,7 @@ impl RPolarsSeries {
         self.0.chunk_lengths().map(|val| val as f64).collect()
     }
     
-    pub fn n_chunks(&self) -> f64<> {
+    pub fn n_chunks(&self) -> f64 {
         self.0.n_chunks() as f64
     }
 
