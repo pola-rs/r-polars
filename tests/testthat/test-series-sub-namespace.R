@@ -99,3 +99,14 @@ test_that("Method dispatch Expr -> Series works in functions", {
       is.na()
   )
 })
+
+test_that("$struct$fields", {
+  expect_identical(
+    as_polars_series(data.frame(a = 1, b = 2))$struct$fields,
+    c("a", "b")
+  )
+  expect_grepl_error(
+    as_polars_series(1:3)$struct$fields,
+    "data types don't match"
+  )
+})
