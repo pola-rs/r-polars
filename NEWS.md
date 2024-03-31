@@ -120,6 +120,9 @@
   functions. This renaming is now made (#964).
 - Evaluating `Series` methods from `Expr` inside functions now works correctly (#973).
   Thanks @Yunuuuu for the report.
+- The dependent crate `extendr-api` is updated to 2024-03-31 unreleased version (#995).
+  The issue that the R session crashes when a panic occurs in the Rust side is resolved.
+  Thanks @CGMossa for the upstream fix.
 
 ## Polars R Package 0.15.1
 
