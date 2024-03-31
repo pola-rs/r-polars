@@ -586,6 +586,21 @@ Series_len = use_extendr_wrapper
 #' chunked_series$chunk_lengths()
 Series_chunk_lengths = use_extendr_wrapper
 
+#' Get the number of chunks that this Series contains.
+#'
+#' @return A numeric value
+#' @examples
+#' s = as_polars_series(1:3)
+#' s$n_chunks()
+#'
+#' # Concatenate Series with rechunk = TRUE
+#' s2 = as_polars_series(4:6)
+#' pl$concat(s, s2, rechunk = TRUE)$n_chunks()
+#'
+#' # Concatenate Series with rechunk = FALSE
+#' pl$concat(s, s2, rechunk = FALSE)$n_chunks()
+Series_n_chunks = use_extendr_wrapper
+
 #' Append two Series
 #'
 #' @param other Series to append.

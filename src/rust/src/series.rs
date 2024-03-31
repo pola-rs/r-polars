@@ -258,6 +258,10 @@ impl RPolarsSeries {
         self.0.chunk_lengths().map(|val| val as f64).collect()
     }
 
+    pub fn n_chunks(&self) -> f64 {
+        self.0.n_chunks() as f64
+    }
+
     pub fn alias(&self, name: &str) -> RPolarsSeries {
         let mut s = self.0.clone();
         s.rename(name);

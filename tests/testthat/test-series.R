@@ -240,6 +240,14 @@ test_that("shape and len", {
   expect_identical(as_polars_series(1:3)$len(), 3)
 })
 
+test_that("n_chunks", {
+  s = as_polars_series(1:3)
+  s2 = as_polars_series(4:6)
+  expect_identical(s$n_chunks(), 1)
+  expect_identical(pl$concat(s, s2, rechunk = TRUE)$n_chunks(), 1)
+  expect_identical(pl$concat(s, s2, rechunk = FALSE)$n_chunks(), 2)
+})
+
 test_that("floor & ceil", {
   expect_identical(
     as_polars_series(c(1.5, .5, -.5, NA_real_, NaN))$
