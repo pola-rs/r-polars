@@ -64,6 +64,7 @@
     - The usage of `pl$date_range()` to create a range of `Datetime` data type is deprecated.
       `pl$date_range()` will always create a range of `Date` data type in the future.
       Please use `pl$datetime_range()` if you want to create a range of `Datetime` instead.
+    - `<DataFrame>$get_columns()` now returns an unnamed list instead of a named list (#991).
 
 - The argument `columns` in `$drop()` is removed. `$drop()` now accepts several
   character scalars, such as `$drop("a", "b", "c")` (#912).
@@ -108,6 +109,7 @@
 - New string method `$str$find()` (#985).
 - New argument `n` in `$str$replace()` (#987).
 - Method `$over()` gains an argument `mapping_strategy` (#984, #988).
+- New method `$item()` for `DataFrame` and `Series` (#992).
 
 ### Bug fixes
 
@@ -118,6 +120,9 @@
   functions. This renaming is now made (#964).
 - Evaluating `Series` methods from `Expr` inside functions now works correctly (#973).
   Thanks @Yunuuuu for the report.
+- The dependent crate `extendr-api` is updated to 2024-03-31 unreleased version (#995).
+  The issue that the R session crashes when a panic occurs in the Rust side is resolved.
+  Thanks @CGMossa for the upstream fix.
 
 ## Polars R Package 0.15.1
 

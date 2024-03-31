@@ -717,10 +717,7 @@ test_that("Expr_rechunk Series_chunk_lengths", {
   )$get_columns()
   expect_identical(
     lapply(series_list, \(x) x$chunk_lengths()),
-    list(
-      a_chunked = c(3, 3),
-      a_rechunked = 6
-    )
+    list(c(3, 3), 6)
   )
 })
 

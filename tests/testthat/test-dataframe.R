@@ -369,7 +369,7 @@ test_that("get column(s)", {
   expected_list_of_series = {
     expected = lapply(
       1:5,
-      function(i) as_polars_series(iris[[i]],names(iris)[i])
+      function(i) as_polars_series(iris[[i]], names(iris)[i])
     )
     names(expected) = names(iris)
     expected
@@ -385,7 +385,7 @@ test_that("get column(s)", {
   list_of_vectors = lapply(actual_list_of_series, function(x) x$to_vector())
   expect_identical(
     list_of_vectors,
-    as.list(iris)
+    unname(as.list(iris))
   )
 })
 
@@ -1407,5 +1407,40 @@ test_that("partition_by", {
 
   expect_warning(
     df$partition_by("col2", maintain_order = FALSE, include_key = FALSE, as_nested_list = TRUE)
+  )
+})
+
+test_that("$item() works", {
+  df = pl$DataFrame(a = c(1, 2, 3), b = c(4, 5, 6))
+
+  expect_equal(df$select((pl$col("a") * pl$col("b"))$sum())$item(), 32)
+  expect_equal(df$item(1, 1), 5)
+  expect_equal(df$item(2, "b"), 6)
+
+  # errors
+
+  expect_grepl_error(
+    df$item(1, 4),
+    "`column` is out of bounds."
+  )
+  expect_grepl_error(
+    df$item(1, "foo"),
+    "`column` does not exist."
+  )
+  expect_grepl_error(
+    df$item(4, 1),
+    "`row` is out of bounds."
+  )
+  expect_grepl_error(
+    df$item(),
+    "if the DataFrame is of shape"
+  )
+  expect_grepl_error(
+    df$item(1),
+    " with only one of `row` or "
+  )
+  expect_grepl_error(
+    df$item(column = 1),
+    " with only one of `row` or "
   )
 })

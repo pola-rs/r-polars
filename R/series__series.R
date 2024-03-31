@@ -1009,3 +1009,32 @@ Series_to_lit = function() {
 Series_n_unique = function() {
   unwrap(.pr$Series$n_unique(self), "in $n_unique():")
 }
+
+#' Return the element at the given index
+#'
+#' @param index Index of the item to return.
+#'
+#' @return A value of length 1
+#'
+#' @examples
+#' s1 = pl$Series(values = 1)
+#'
+#' s1$item()
+#'
+#' s2 = pl$Series(values = 9:7)
+#'
+#' s2$cum_sum()$item(-1)
+Series_item = function(index = NULL) {
+  if (is.null(index)) {
+    if (self$len() != 1) {
+      Err_plain("Can only call $item() if the Series is of length 1.") |>
+        unwrap("in $item():")
+    }
+    index = 0
+  }
+  if (length(index) > 1 || !is.numeric(index)) {
+    Err_plain("`index` must be an integer of length 1.") |>
+      unwrap("in $item():")
+  }
+  self$gather(index)$to_r()
+}
