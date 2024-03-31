@@ -1270,9 +1270,9 @@ RPolarsSeries$shape <- function() .Call(wrap__RPolarsSeries__shape, self)
 
 RPolarsSeries$len <- function() .Call(wrap__RPolarsSeries__len, self)
 
-RPolarsSeries$n_chunks <- function() .Call(wrap__RPolarsSeries__n_chunks, self)
-
 RPolarsSeries$chunk_lengths <- function() .Call(wrap__RPolarsSeries__chunk_lengths, self)
+
+RPolarsSeries$n_chunks <- function() .Call(wrap__RPolarsSeries__n_chunks, self)
 
 RPolarsSeries$alias <- function(name) .Call(wrap__RPolarsSeries__alias, self, name)
 
