@@ -688,6 +688,36 @@
       [184] "upper_bound"       "value_counts"      "var"              
       [187] "xor"              
 
+---
+
+    Code
+      ls(.pr[[private_key]])
+    Output
+       [1] "add"                         "alias"                      
+       [3] "all"                         "any"                        
+       [5] "append_mut"                  "arg_max"                    
+       [7] "arg_min"                     "chunk_lengths"              
+       [9] "clone"                       "compare"                    
+      [11] "div"                         "dtype"                      
+      [13] "equals"                      "fast_explode_flag"          
+      [15] "from_arrow_array_robj"       "from_arrow_array_stream_str"
+      [17] "get_fmt"                     "is_sorted"                  
+      [19] "is_sorted_flag"              "is_sorted_reverse_flag"     
+      [21] "len"                         "map_elements"               
+      [23] "max"                         "mean"                       
+      [25] "median"                      "min"                        
+      [27] "mul"                         "n_chunks"                   
+      [29] "n_unique"                    "name"                       
+      [31] "new"                         "panic"                      
+      [33] "print"                       "rem"                        
+      [35] "rename_mut"                  "rep"                        
+      [37] "set_sorted_mut"              "shape"                      
+      [39] "sleep"                       "sort_mut"                   
+      [41] "std"                         "sub"                        
+      [43] "sum"                         "to_fmt_char"                
+      [45] "to_frame"                    "to_r"                       
+      [47] "value_counts"                "var"                        
+
 # public and private methods of each class RThreadHandle
 
     Code
