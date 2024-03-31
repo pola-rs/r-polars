@@ -86,7 +86,11 @@
 #'
 #' ## struct
 #'
-#' `$struct` stores all struct related methods.
+#' `$struct` stores all struct related methods and active bindings.
+#'
+#' Active bindings specific to Series:
+#'
+#' - `$struct$fields`: Returns a character vector of the fields in the struct.
 #'
 #' @inheritSection DataFrame_class Conversion to R data types considerations
 #' @keywords Series
@@ -114,6 +118,9 @@
 #' )$to_series()
 #' s
 #' s$dt$day()
+#'
+#' # Other active bindings in subnamespaces
+#' as_polars_series(data.frame(a = 1:2, b = 3:4))$struct$fields
 #'
 #' # show all available methods for Series
 #' pl$show_all_public_methods("RPolarsSeries")
@@ -195,14 +202,15 @@ add_expr_methods_to_series = function() {
 ## Sub-namespaces
 
 #' Make sub namespace of Series from Expr sub namespace
+#' @param ... Addtional funtions to add to the namespace
 #' @noRd
-series_make_sub_ns = function(pl_series, .expr_make_sub_ns_fn) {
+series_make_sub_ns = function(pl_series, .expr_make_sub_ns_fn, ...) {
   df = pl_series$to_frame()
   # Override `self` in `$.RPolarsExpr`
   self = pl$col(pl_series$name) # nolint: object_usage_linter
 
   fns = .expr_make_sub_ns_fn(pl$col(pl_series$name))
-  lapply(fns, \(f) {
+  new_fns = lapply(fns, \(f) {
     environment(f) = parent.frame(2L)
     new_f = function() {
       expr = do.call(f, as.list(match.call()[-1]), envir = parent.frame())
@@ -215,6 +223,25 @@ series_make_sub_ns = function(pl_series, .expr_make_sub_ns_fn) {
     formals(new_f) = formals(f)
     new_f
   })
+
+  if (!missing(...)) {
+    additional_fns = list(...) |>
+      lapply(\(f) {
+        environment(f) = parent.frame(2L)
+        f
+      })
+
+    new_fns = c(additional_fns, new_fns)
+  }
+
+  new_fns |>
+    lapply(\(f) {
+      if (inherits(f, "property")) {
+        f()
+      } else {
+        f
+      }
+    })
 }
 
 Series_arr = method_as_active_binding(\() series_make_sub_ns(self, expr_arr_make_sub_ns))
@@ -229,7 +256,12 @@ Series_list = method_as_active_binding(\() series_make_sub_ns(self, expr_list_ma
 
 Series_str = method_as_active_binding(\() series_make_sub_ns(self, expr_str_make_sub_ns))
 
-Series_struct = method_as_active_binding(\() series_make_sub_ns(self, expr_struct_make_sub_ns))
+Series_struct = method_as_active_binding(
+  \() series_make_sub_ns(
+    self, expr_struct_make_sub_ns,
+    fields = method_as_active_binding(function() unwrap(.pr$Series$struct_fields(pl_series), "in $struct$fields:"))
+  )
+)
 
 
 # TODO: change the arguments in 0.17.0

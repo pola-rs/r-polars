@@ -496,6 +496,11 @@ impl RPolarsSeries {
         };
     }
 
+    fn struct_fields(&self) -> RResult<Vec<&str>> {
+        let ca = self.0.struct_().map_err(polars_to_rpolars_err)?;
+        Ok(ca.fields().iter().map(|s| s.name()).collect())
+    }
+
     pub fn from_arrow_array_stream_str(name: Robj, robj_str: Robj) -> RResult<Robj> {
         let name = robj_to!(str, name)?;
         let s = crate::arrow_interop::to_rust::arrow_stream_to_series_internal(robj_str)?

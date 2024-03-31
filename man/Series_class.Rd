@@ -102,7 +102,12 @@ Some of these are stored in sub-namespaces.
 
 \subsection{struct}{
 
-\verb{$struct} stores all struct related methods.
+\verb{$struct} stores all struct related methods and active bindings.
+
+Active bindings specific to Series:
+\itemize{
+\item \verb{$struct$fields}: Returns a character vector of the fields in the struct.
+}
 }
 }
 
@@ -173,6 +178,9 @@ s = pl$date_range(
 )$to_series()
 s
 s$dt$day()
+
+# Other active bindings in subnamespaces
+as_polars_series(data.frame(a = 1:2, b = 3:4))$struct$fields
 
 # show all available methods for Series
 pl$show_all_public_methods("RPolarsSeries")
