@@ -678,3 +678,25 @@ is_named = function(x) {
   }
   TRUE
 }
+
+
+parse_as_list_of_expressions <- function(...) {
+  list_of_expressions <- list2(...) |>
+    lapply(\(x) {
+      if (is.character(x)) {
+          as.list(x)
+      } else {
+        x
+      }
+    }) |>
+    unlist(recursive = FALSE) |>
+    lapply(\(x) {
+      if (is.character(x)) {
+        pl$col(x)
+      } else {
+        x
+      }
+    })
+
+  list_of_expressions
+}
