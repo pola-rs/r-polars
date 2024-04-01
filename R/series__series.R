@@ -1099,13 +1099,15 @@ Series_item = function(index = NULL) {
 #'
 #' s$clear(n = 5)
 Series_clear = function(n = 0) {
-  if (n == 0) {
-    out = .pr$Series$clear(self) |>
+  # TODO: check whether n < 0 should be removed when resolved upstream
+  # https://github.com/pola-rs/polars/issues/15421
+  if (length(n) > 1 || !is.numeric(n) || n < 0) {
+    Err_plain("`n` must be an integer greater or equal to 0.") |>
       unwrap("in $clear():")
   }
 
-  if (n < 0) {
-    Err_plain("`n` must be an integer greater or equal to 0.") |>
+  if (n == 0) {
+    out = .pr$Series$clear(self) |>
       unwrap("in $clear():")
   }
 

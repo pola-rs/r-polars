@@ -2371,13 +2371,13 @@ DataFrame_item = function(row = NULL, column = NULL) {
 #'
 #' df$clear(n = 5)
 DataFrame_clear = function(n = 0) {
-  if (n == 0) {
-    out = .pr$DataFrame$clear(self) |>
+  if (length(n) > 1 || !is.numeric(n) || n < 0) {
+    Err_plain("`n` must be an integer greater or equal to 0.") |>
       unwrap("in $clear():")
   }
 
-  if (n < 0) {
-    Err_plain("`n` must be an integer greater or equal to 0.") |>
+  if (n == 0) {
+    out = .pr$DataFrame$clear(self) |>
       unwrap("in $clear():")
   }
 
