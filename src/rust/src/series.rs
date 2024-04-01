@@ -542,6 +542,10 @@ impl RPolarsSeries {
             }
         }
     }
+
+    fn clear(&self) -> RResult<Self> {
+        Ok(self.0.clear().into())
+    }
 }
 
 //inner_from_robj only when used within Series, do not have to comply with extendr_api macro supported types

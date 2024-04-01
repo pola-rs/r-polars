@@ -2349,3 +2349,44 @@ DataFrame_item = function(row = NULL, column = NULL) {
 
   out
 }
+
+
+#' Create an empty or n-row null-filled copy of the DataFrame
+#'
+#' Returns a n-row null-filled DataFrame with an identical schema. `n` can be
+#' greater than the current number of rows in the DataFrame.
+#'
+#' @param n Number of (null-filled) rows to return in the cleared frame.
+#'
+#' @return A n-row null-filled DataFrame with an identical schema
+#'
+#' @examples
+#' df = pl$DataFrame(
+#'   a = c(NA, 2, 3, 4),
+#'   b = c(0.5, NA, 2.5, 13),
+#'   c = c(TRUE, TRUE, FALSE, NA)
+#' )
+#'
+#' df$clear()
+#'
+#' df$clear(n = 5)
+DataFrame_clear = function(n = 0) {
+  if (length(n) > 1 || !is.numeric(n) || n < 0) {
+    Err_plain("`n` must be an integer greater or equal to 0.") |>
+      unwrap("in $clear():")
+  }
+
+  if (n == 0) {
+    out = .pr$DataFrame$clear(self) |>
+      unwrap("in $clear():")
+  }
+
+  if (n > 0) {
+    series = lapply(seq_along(self$schema), function(x) {
+      pl$Series(name = names(self$schema)[x], dtype = self$schema[[x]])$extend_constant(NA, n)
+    })
+    out = pl$DataFrame(series)
+  }
+
+  out
+}

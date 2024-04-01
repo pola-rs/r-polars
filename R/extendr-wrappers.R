@@ -224,6 +224,8 @@ RPolarsDataFrame$sample_frac <- function(frac, with_replacement, shuffle, seed) 
 
 RPolarsDataFrame$transpose <- function(keep_names_as, new_col_names) .Call(wrap__RPolarsDataFrame__transpose, self, keep_names_as, new_col_names)
 
+RPolarsDataFrame$clear <- function() .Call(wrap__RPolarsDataFrame__clear, self)
+
 RPolarsDataFrame$write_csv <- function(file, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style) .Call(wrap__RPolarsDataFrame__write_csv, self, file, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style)
 
 RPolarsDataFrame$write_parquet <- function(file, compression_method, compression_level, statistics, row_group_size, data_pagesize_limit) .Call(wrap__RPolarsDataFrame__write_parquet, self, file, compression_method, compression_level, statistics, row_group_size, data_pagesize_limit)
@@ -1325,6 +1327,8 @@ RPolarsSeries$struct_fields <- function() .Call(wrap__RPolarsSeries__struct_fiel
 RPolarsSeries$from_arrow_array_stream_str <- function(name, robj_str) .Call(wrap__RPolarsSeries__from_arrow_array_stream_str, name, robj_str)
 
 RPolarsSeries$from_arrow_array_robj <- function(name, array) .Call(wrap__RPolarsSeries__from_arrow_array_robj, name, array)
+
+RPolarsSeries$clear <- function() .Call(wrap__RPolarsSeries__clear, self)
 
 #' @export
 `$.RPolarsSeries` <- function (self, name) { func <- RPolarsSeries[[name]]; environment(func) <- environment(); func }

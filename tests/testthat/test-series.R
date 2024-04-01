@@ -649,3 +649,33 @@ test_that("$item() works", {
     "if the Series is of length 1"
   )
 })
+
+test_that("$clear() works", {
+  s = pl$Series(name = "a", values = 1:3)
+
+  expect_identical(
+    s$clear() |> as.vector(),
+    integer(0)
+  )
+
+  expect_identical(s$clear()$name, "a")
+
+  expect_identical(
+    s$clear(5) |> as.vector(),
+    rep(NA_integer_, 5)
+  )
+
+  # error
+  expect_grepl_error(
+    s$clear(-1),
+    "greater or equal to 0"
+  )
+  expect_grepl_error(
+    s$clear("a"),
+    "greater or equal to 0"
+  )
+  expect_grepl_error(
+    s$clear(0:1),
+    "greater or equal to 0"
+  )
+})

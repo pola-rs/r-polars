@@ -1481,3 +1481,36 @@ test_that("$item() works", {
     " with only one of `row` or "
   )
 })
+
+test_that("$clear() works", {
+  df = pl$DataFrame(
+    a = c(NA, 2),
+    b = c("a", NA),
+    c = c(TRUE, TRUE)
+  )
+
+  expect_identical(
+    df$clear()$to_list(),
+    list(a = numeric(0), b = character(0), c = logical(0))
+  )
+
+  # n > number of rows
+  expect_identical(
+    df$clear(3)$to_list(),
+    list(a = rep(NA_real_, 3), b = rep(NA_character_, 3), c = rep(NA, 3))
+  )
+
+  # error
+  expect_grepl_error(
+    df$clear(-1),
+    "greater or equal to 0"
+  )
+  expect_grepl_error(
+    df$clear("a"),
+    "greater or equal to 0"
+  )
+  expect_grepl_error(
+    df$clear(0:1),
+    "greater or equal to 0"
+  )
+})

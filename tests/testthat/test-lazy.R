@@ -1040,7 +1040,6 @@ test_that("rolling for LazyFrame: can be ungrouped", {
   expect_equal(actual, df$collect()$to_data_frame())
 })
 
-
 patrick::with_parameters_test_that("select_seq with list of exprs",
   {
     expect_equal(
@@ -1079,5 +1078,30 @@ test_that("with_columns_seq", {
       collect()$
       to_list(),
     list(x = 1:2, y = list(1:2, 3:4), z = list(c("a", "b"), c("c", "d")))
+  )
+})
+
+test_that("$clear() works", {
+  df = pl$LazyFrame(
+    a = c(NA, 2),
+    b = c("a", NA),
+    c = c(TRUE, TRUE)
+  )
+
+  expect_identical(
+    df$clear()$collect()$to_list(),
+    list(a = numeric(0), b = character(0), c = logical(0))
+  )
+
+  # n > number of rows
+  expect_identical(
+    df$clear(3)$collect()$to_list(),
+    list(a = rep(NA_real_, 3), b = rep(NA_character_, 3), c = rep(NA, 3))
+  )
+
+  # error
+  expect_grepl_error(
+    df$clear(-1),
+    "greater or equal to 0"
   )
 })
