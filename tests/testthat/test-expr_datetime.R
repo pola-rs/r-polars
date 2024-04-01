@@ -210,7 +210,7 @@ test_that("dt$combine", {
     as.POSIXct("2020-12-31 22:30:00", tz = "GMT")
   )
 
-  expect_error(
+  expect_grepl_error(
     pl$lit(as.Date("2021-01-01"))$dt$combine(1, tu = "s")
   )
 })
@@ -517,11 +517,11 @@ test_that("dt$timestamp", {
   expect_identical(as.numeric(l_exp$timestamp_us), base_r_s_timestamp * 1E6)
   expect_identical(suppressWarnings(as.numeric(l_exp$timestamp_ns)), base_r_s_timestamp * 1E9)
 
-  expect_error(
+  expect_grepl_error(
     as_polars_series(as.Date("2022-1-1"))$dt$timestamp("bob")
   )
 
-  expect_error(
+  expect_grepl_error(
     as_polars_series(as.Date("2022-1-1"))$dt$timestamp(42)
   )
 })

@@ -52,8 +52,8 @@ test_that("LazyFrame, custom schema", {
     pl$LazyFrame(list(schema = 1), schema = list(schema = pl$Float32))
   )
   # errors if incorrect datatype
-  expect_error(pl$LazyFrame(x = 1, schema = list(schema = foo)))
-  expect_error(
+  expect_grepl_error(pl$LazyFrame(x = 1, schema = list(schema = foo)))
+  expect_grepl_error(
     pl$LazyFrame(x = 1, schema = list(x = "foo")),
     "expected RPolarsDataType"
   )
@@ -267,7 +267,7 @@ test_that("drop_nulls", {
   expect_equal(pl$DataFrame(tmp)$lazy()$drop_nulls("mpg")$collect()$height, 29, ignore_attr = TRUE)
   expect_equal(pl$DataFrame(tmp)$lazy()$drop_nulls("hp")$collect()$height, 32, ignore_attr = TRUE)
   expect_equal(pl$DataFrame(tmp)$lazy()$drop_nulls(c("mpg", "hp"))$collect()$height, 29, ignore_attr = TRUE)
-  expect_error(
+  expect_grepl_error(
     pl$DataFrame(mtcars)$lazy()$drop_nulls("bad")$collect(),
     "not found: unable to find column \"bad\""
   )
@@ -329,7 +329,7 @@ test_that("sort", {
 
 
   # check expect_grepl_error fails on unmet expectation
-  expect_error(expect_grepl_error(
+  expect_grepl_error(expect_grepl_error(
     pl$DataFrame(mtcars)$lazy()$sort(by = list("cyl", complex(1))),
     "not_in_error_text"
   ))
@@ -431,11 +431,11 @@ test_that("sort", {
   expect_true(is.na(b$mpg[1]))
 
   # error if descending is NULL
-  expect_error(
+  expect_grepl_error(
     df$sort("mpg", descending = NULL),
     "must be of length 1 or of the same length as `by`"
   )
-  expect_error(
+  expect_grepl_error(
     df$sort(c("mpg", "drat"), descending = NULL),
     "must be of length 1 or of the same length as `by`"
   )
@@ -929,7 +929,7 @@ test_that("rolling for LazyFrame: error if not explicitly sorted", {
     index = c(1L, 2L, 3L, 4L, 8L, 9L),
     a = c(3, 7, 5, 9, 2, 1)
   )
-  expect_error(
+  expect_grepl_error(
     df$rolling(index_column = "index", period = "2i")$agg(pl$col("a"))$collect(),
     "not explicitly sorted"
   )
@@ -973,7 +973,7 @@ test_that("rolling for LazyFrame: argument 'check_sorted' works", {
     grp = c("a", "a", rep("b", 4)),
     a = c(3, 7, 5, 9, 2, 1)
   )
-  expect_error(
+  expect_grepl_error(
     df$rolling(index_column = "index", period = "2i", group_by = "grp")$agg(
       pl$sum("a")$alias("sum_a")
     )$collect(),
@@ -992,7 +992,7 @@ test_that("rolling for LazyFrame: error if index not int or date/time", {
     a = c(3, 7, 5, 9, 2, 1)
   )$with_columns(pl$col("index")$set_sorted())
 
-  expect_error(
+  expect_grepl_error(
     df$rolling(index_column = "index", period = "2i")$agg(
       pl$sum("a")$alias("sum_a")
     )$collect()

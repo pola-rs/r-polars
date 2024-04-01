@@ -25,13 +25,13 @@ test_that("polars_options() read-write", {
   # 'maintain_order' only accepts booleans (but error only shown later when
   # polars_options() is called, either directly or in internal functions)
   options(polars.maintain_order = 42)
-  expect_error(
+  expect_grepl_error(
     polars_options(),
     "input must be TRUE or FALSE."
   )
 
   options(polars.maintain_order = FALSE, polars.strictly_immutable = c(TRUE, TRUE))
-  expect_error(
+  expect_grepl_error(
     polars_options(),
     "input must be TRUE or FALSE."
   )
@@ -51,7 +51,7 @@ test_that("option 'int64_conversion ' works", {
 
   # check value of int64_conversion
   options(polars.int64_conversion = "foobar")
-  expect_error(
+  expect_grepl_error(
     polars_options(),
     "input must be one of"
   )
@@ -66,7 +66,7 @@ test_that("option 'int64_conversion ' works", {
   # can convert to bit64, but *only* if bit64 is attached
   try(detach("package:bit64"), silent = TRUE)
   options(polars.int64_conversion = "bit64")
-  expect_error(
+  expect_grepl_error(
     polars_options(),
     "must be attached"
   )

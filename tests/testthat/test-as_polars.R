@@ -32,7 +32,7 @@ if (requireNamespace("arrow", quietly = TRUE) && requireNamespace("nanoarrow", q
 
       if (inherits(x, "nanoarrow_array_stream")) {
         # The stream should be released after conversion
-        expect_error(x$get_next(), "already been released")
+        expect_grepl_error(x$get_next(), "already been released")
       }
 
       actual = as.data.frame(pl_df)
@@ -81,11 +81,11 @@ patrick::with_parameters_test_that("rownames option of as_polars_df",
 
 
 test_that("as_polars_df throws error when rownames is not a single string or already used", {
-  expect_error(as_polars_df(mtcars, rownames = "cyl"), "already used")
-  expect_error(as_polars_df(mtcars, rownames = c("cyl", "disp")), "must be a single string")
-  expect_error(as_polars_df(mtcars, rownames = 1), "must be a single string")
-  expect_error(as_polars_df(mtcars, rownames = NA_character_), "must be a single string")
-  expect_error(
+  expect_grepl_error(as_polars_df(mtcars, rownames = "cyl"), "already used")
+  expect_grepl_error(as_polars_df(mtcars, rownames = c("cyl", "disp")), "must be a single string")
+  expect_grepl_error(as_polars_df(mtcars, rownames = 1), "must be a single string")
+  expect_grepl_error(as_polars_df(mtcars, rownames = NA_character_), "must be a single string")
+  expect_grepl_error(
     as_polars_df(data.frame(a = 1, a = 2, check.names = FALSE), rownames = "a_1"),
     "already used"
   )
@@ -93,7 +93,7 @@ test_that("as_polars_df throws error when rownames is not a single string or alr
 
 
 test_that("as_polars_df throws error when make_names_unique = FALSE and there are duplicated column names", {
-  expect_error(
+  expect_grepl_error(
     as_polars_df(data.frame(a = 1, a = 2, check.names = FALSE), make_names_unique = FALSE),
     "not allowed"
   )
@@ -119,7 +119,7 @@ test_that("schema option and schema_overrides for as_polars_df.data.frame", {
     data.frame(a = as.character(1:3), b = 4:6)
   )
 
-  expect_error(as_polars_df(mtcars, schema = "cyl"), "schema length does not match")
+  expect_grepl_error(as_polars_df(mtcars, schema = "cyl"), "schema length does not match")
 })
 
 
@@ -153,7 +153,7 @@ if (requireNamespace("arrow", quietly = TRUE) && requireNamespace("nanoarrow", q
 
       if (inherits(x, "nanoarrow_array_stream")) {
         # The stream should be released after conversion
-        expect_error(x$get_next(), "already been released")
+        expect_grepl_error(x$get_next(), "already been released")
 
         # Re-create the stream for the next test
         x = nanoarrow::as_nanoarrow_array_stream(data.frame(x = 1))
@@ -239,7 +239,7 @@ test_that("from arrow Table and ChunkedArray", {
     lapply(at$columns, \(x) length(as_polars_series.ChunkedArray(x, rechunk = FALSE)$chunk_lengths())),
     lapply(at$columns, \(x) x$num_chunks)
   )
-  expect_error(expect_identical(
+  expect_grepl_error(expect_identical(
     lapply(at$columns, \(x) length(as_polars_series.ChunkedArray(x, rechunk = TRUE)$chunk_lengths())),
     lapply(at$columns, \(x) x$num_chunks)
   ))
@@ -252,7 +252,7 @@ test_that("from arrow Table and ChunkedArray", {
     lapply(at$columns, \(x) x$num_chunks)
   )
 
-  expect_error(expect_identical(
+  expect_grepl_error(expect_identical(
     as_polars_df.ArrowTabular(at, rechunk = TRUE)$
       select(pl$all()$map_batches(\(s) s$chunk_lengths()))$
       to_list() |>
@@ -290,7 +290,7 @@ test_that("from arrow Table and ChunkedArray", {
   )
   iris_str = iris
   iris_str$Species = as.character(iris_str$Species)
-  expect_error(expect_equal(df$to_list(), as.list(iris_str)))
+  expect_grepl_error(expect_equal(df$to_list(), as.list(iris_str)))
   expect_equal(df$to_list(), as.list(iris_str), tolerance = 0.0001)
 
   # change column name via char schema
@@ -350,7 +350,7 @@ patrick::with_parameters_test_that("as_polars_df for nanoarrow_array_stream",
 
     pl_df = as_polars_df(x)
     expect_s3_class(pl_df, "RPolarsDataFrame")
-    expect_error(x$get_next(), "already been released")
+    expect_grepl_error(x$get_next(), "already been released")
 
     expect_identical(dim(pl_df), c(2L, 2L))
   },
@@ -363,7 +363,7 @@ patrick::with_parameters_test_that("as_polars_series for nanoarrow_array_stream"
 
     pl_series = as_polars_series(x)
     expect_s3_class(pl_series, "RPolarsSeries")
-    expect_error(x$get_next(), "already been released")
+    expect_grepl_error(x$get_next(), "already been released")
 
     expect_identical(length(pl_series), 2L)
   },

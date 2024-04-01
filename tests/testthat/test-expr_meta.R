@@ -14,7 +14,7 @@ test_that("meta$eq meta$neq", {
   expect_true(e2$meta$eq(42))
 
   # error if not wrappable
-  expect_error(e2$meta$eq(complex(1)))
+  expect_grepl_error(e2$meta$eq(complex(1)))
 })
 
 

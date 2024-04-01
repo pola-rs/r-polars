@@ -159,7 +159,7 @@ test_that("gather", {
     list(c(1:3, NA), 4L, 6L)
   )
 
-  expect_error(
+  expect_grepl_error(
     pl$lit(l)$list$gather(list(c(0:3), 0L, 0L))$to_r(),
     "gather indices are out of bounds"
   )
@@ -180,21 +180,21 @@ test_that("gather_every", {
   )
 
   # wrong n
-  expect_error(
+  expect_grepl_error(
     df$select(
       out = pl$col("a")$list$gather_every(-1)
     )
   )
 
   # missing n
-  expect_error(
+  expect_grepl_error(
     df$select(
       out = pl$col("a")$list$gather_every()
     )
   )
 
   # wrong offset
-  expect_error(
+  expect_grepl_error(
     df$select(
       out = pl$col("a")$list$gather_every(n = 2, offset = -1)
     )

@@ -31,13 +31,13 @@ test_that("lazyframe join examples", {
   )
 
   # error on unknown how choice
-  expect_error(
+  expect_grepl_error(
     df$join(other_df, on = "ham", how = "foobar"),
     "must be one of"
   )
 
   # error on invalid choice
-  expect_error(
+  expect_grepl_error(
     df$join(other_df, on = "ham", how = 42),
     "Not a valid R choice"
   )
@@ -133,7 +133,7 @@ test_that("cross join, DataFrame", {
 })
 
 test_that("'other' must be a LazyFrame", {
-  expect_error(
+  expect_grepl_error(
     pl$LazyFrame(x = letters[1:5], y = 1:5)$join(mtcars, on = "x"),
     "`other` must be a LazyFrame"
   )
@@ -144,49 +144,49 @@ test_that("argument 'validate' works", {
   df2 = pl$DataFrame(x = c("a", letters[1:4]), y2 = 6:10)
 
   # eager 1:1
-  expect_error(
+  expect_grepl_error(
     df1$join(df2, on = "x", validate = "1:1"),
     "join keys did not fulfil 1:1 validation"
   )
 
   # lazy 1:1
-  expect_error(
+  expect_grepl_error(
     df1$lazy()$join(df2$lazy(), on = "x", validate = "1:1")$collect(),
     "join keys did not fulfil 1:1 validation"
   )
 
   # eager m:1
-  expect_error(
+  expect_grepl_error(
     df1$join(df2, on = "x", validate = "m:1"),
     "join keys did not fulfil m:1 validation"
   )
 
   # lazy m:1
-  expect_error(
+  expect_grepl_error(
     df1$lazy()$join(df2$lazy(), on = "x", validate = "m:1")$collect(),
     "join keys did not fulfil m:1 validation"
   )
 
   # eager 1:m
-  expect_error(
+  expect_grepl_error(
     df2$join(df1, on = "x", validate = "1:m"),
     "join keys did not fulfil 1:m validation"
   )
 
   # lazy 1:m
-  expect_error(
+  expect_grepl_error(
     df2$lazy()$join(df1$lazy(), on = "x", validate = "1:m")$collect(),
     "join keys did not fulfil 1:m validation"
   )
 
   # eager error on unknown validate choice
-  expect_error(
+  expect_grepl_error(
     df2$join(df1, on = "x", validate = "foobar"),
     "must be one of"
   )
 
   # lazy error on unknown validate choice
-  expect_error(
+  expect_grepl_error(
     df2$lazy()$join(df1$lazy(), on = "x", validate = "foobar")$collect(),
     "must be one of"
   )

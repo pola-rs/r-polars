@@ -45,16 +45,16 @@
 #   for(i in not_results) expect_true(!is_result(i), info = paste("testcase was ",str_string(i)))
 #
 #   #test guard_result
-#   for(i in not_results) expect_error( guard_result(i), info = paste("testcase was ",str_string(i)))
+#   for(i in not_results) expect_grepl_error( guard_result(i), info = paste("testcase was ",str_string(i)))
 #   for(i in are_results) expect_no_error(guard_result(i))
 #
 #   #test is_ok
-#   for(i in not_results) expect_error( is_ok(i), info = paste("testcase was ",str_string(i)))
+#   for(i in not_results) expect_grepl_error( is_ok(i), info = paste("testcase was ",str_string(i)))
 #   for(i in are_ok_result) expect_true( is_ok(i), info = paste("testcase was ",str_string(i)))
 #   for(i in are_err_result) expect_false( is_ok(i), info = paste("testcase was ",str_string(i)))
 #
 #   #test is_err
-#   for(i in not_results) expect_error( is_err(i), info = paste("testcase was ",str_string(i)))
+#   for(i in not_results) expect_grepl_error( is_err(i), info = paste("testcase was ",str_string(i)))
 #   for(i in are_ok_result) expect_false( is_err(i), info = paste("testcase was ",str_string(i)))
 #   for(i in are_err_result) expect_true( is_err(i), info = paste("testcase was ",str_string(i)))
 #
@@ -65,7 +65,7 @@
 #   for(i in are_ok_result) expect_identical(
 #     unwrap(i), i$ok, info = paste("testcase was ",str_string(i))
 #   )
-#   for(i in are_err_result)  expect_error(
+#   for(i in are_err_result)  expect_grepl_error(
 #     unwrap(i), info = paste("testcase was ",str_string(i))
 #   )
 #

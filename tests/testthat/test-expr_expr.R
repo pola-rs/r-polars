@@ -507,7 +507,7 @@ test_that("to_physical + cast", {
 
 
   # cast error raised for String to Boolean
-  expect_error(
+  expect_grepl_error(
     pl$DataFrame(iris)$with_columns(
       pl$col("Species")$cast(pl$dtypes$String)$cast(pl$dtypes$Boolean)
     )
@@ -519,7 +519,7 @@ test_that("to_physical + cast", {
 
 
   # error overflow, strict TRUE
-  expect_error(df_big_n$with_columns(pl$col("big")$cast(pl$Int32)))
+  expect_grepl_error(df_big_n$with_columns(pl$col("big")$cast(pl$Int32)))
 
   # NA_int for strict_
   expect_identical(
@@ -596,7 +596,7 @@ test_that("exclude", {
     df$select(pl$all()$exclude(list("Species", "Petal.Width")))$columns,
     c("Sepal.Length", "Sepal.Width", "Petal.Length")
   )
-  expect_error(
+  expect_grepl_error(
     df$select(pl$all()$exclude(list("Species", pl$Boolean)))$columns
   )
 
@@ -618,10 +618,10 @@ test_that("exclude", {
   )
 
   # wrong cast is not possible
-  expect_error(
+  expect_grepl_error(
     unwrap(.pr$DataTypeVector$from_rlist(list(pl$Float64, pl$Categorical(), "imNoYourType")))
   )
-  expect_error(
+  expect_grepl_error(
     df$select(pl$all()$exclude(list(pl$Float64, pl$Categorical(), "bob")))$columns
   )
 })
@@ -703,7 +703,7 @@ test_that("Expr_append", {
     list(literal = c("Bob", "false"))
   )
 
-  expect_error(
+  expect_grepl_error(
     pl$DataFrame(list())$select(pl$lit("Bob")$append(FALSE, upcast = FALSE)),
     "match"
   )
@@ -1017,7 +1017,7 @@ test_that("gather that", {
     c(1L, 6L)
   )
 
-  expect_error(
+  expect_grepl_error(
     pl$select(pl$lit(0:10)$gather(11))$to_list()[[1L]]
   )
 
@@ -1192,7 +1192,7 @@ test_that("fill_null  + forward backward _fill + fill_nan", {
     )
   )
   # series with length not allowed
-  expect_error(
+  expect_grepl_error(
     pl$DataFrame(l)$select(pl$col("a")$fill_nan(as_polars_series(10:11))$alias("fnan_series2"))
   )
 })
@@ -1349,7 +1349,7 @@ test_that("Expr_quantile", {
     unname(quantile(v, v2))
   )
 
-  expect_error(
+  expect_grepl_error(
     pl$lit(1)$quantile(1, "some_unknwon_interpolation_method")
   )
 
@@ -1539,7 +1539,7 @@ test_that("is_between with Inf/NaN", {
 
 test_that("is_between errors if wrong 'closed' arg", {
   df = pl$DataFrame(var = c(1, 2, 3, 4, 5))
-  expect_error(
+  expect_grepl_error(
     df$select(pl$col("var")$is_between(1, 2, "foo")),
     "must be one of"
   )
@@ -1604,10 +1604,10 @@ test_that("inspect", {
 
   pl$lit(1)$inspect("{}") # no error
   pl$lit(1)$inspect("ssdds{}sdsfsd") # no error
-  expect_error(pl$lit(1)$inspect(""))
-  expect_error(pl$lit(1)$inspect("{}{}"))
-  expect_error(pl$lit(1)$inspect("sd{}sdfsf{}sdsdf"))
-  expect_error(pl$lit(1)$inspect("ssdds{sdds}sdsfsd"))
+  expect_grepl_error(pl$lit(1)$inspect(""))
+  expect_grepl_error(pl$lit(1)$inspect("{}{}"))
+  expect_grepl_error(pl$lit(1)$inspect("sd{}sdfsf{}sdsdf"))
+  expect_grepl_error(pl$lit(1)$inspect("ssdds{sdds}sdsfsd"))
 })
 
 test_that("interpolate", {
@@ -1732,9 +1732,9 @@ test_that("Expr_diff", {
   )
   expect_equal(df, known, ignore_attr = TRUE)
 
-  expect_error(pl$select(pl$lit(1:5)$diff(0)), NA)
-  expect_error(pl$lit(1:5)$diff(99^99))
-  expect_error(pl$lit(1:5)$diff(5, "not a null behavior"))
+  expect_silent(pl$select(pl$lit(1:5)$diff(0)))
+  expect_grepl_error(pl$lit(1:5)$diff(99^99))
+  expect_grepl_error(pl$lit(1:5)$diff(5, "not a null behavior"))
 })
 
 
@@ -2035,10 +2035,10 @@ test_that("reshape", {
     )
   )
 
-  expect_error(pl$lit(1:12)$reshape("hej"))
-  expect_error(pl$lit(1:12)$reshape(c(3, 4, 3)))
-  expect_error(pl$lit(1:12)$reshape(NaN))
-  expect_error(pl$lit(1:12)$reshape(NA_real_))
+  expect_grepl_error(pl$lit(1:12)$reshape("hej"))
+  expect_grepl_error(pl$lit(1:12)$reshape(c(3, 4, 3)))
+  expect_grepl_error(pl$lit(1:12)$reshape(NaN))
+  expect_grepl_error(pl$lit(1:12)$reshape(NA_real_))
 })
 
 
@@ -2064,10 +2064,10 @@ test_that("shuffle", {
     pl$DataFrame(a = letters)$select(pl$col("a")$shuffle(seed = 1))$to_list()
   )
 
-  expect_error(pl$lit(1:12)$shuffle("hej"))
-  expect_error(pl$lit(1:12)$shuffle(-2))
-  expect_error(pl$lit(1:12)$shuffle(NaN))
-  expect_error(pl$lit(1:12)$shuffle(10^73))
+  expect_grepl_error(pl$lit(1:12)$shuffle("hej"))
+  expect_grepl_error(pl$lit(1:12)$shuffle(-2))
+  expect_grepl_error(pl$lit(1:12)$shuffle(NaN))
+  expect_grepl_error(pl$lit(1:12)$shuffle(10^73))
 })
 
 
@@ -2156,8 +2156,9 @@ test_that("extend_constant", {
     ),
     c(5L, NA_integer_)
   )
-  expect_error(pl$lit(1)$extend_constant(5, -1)$to_series())
-  expect_error(pl$lit(1)$extend_constant(5, Inf)$to_series())
+
+  expect_grepl_error(pl$lit(1)$extend_constant(5, -1)$to_series())
+  expect_grepl_error(pl$lit(1)$extend_constant(5, Inf)$to_series())
 })
 
 
@@ -2167,8 +2168,8 @@ test_that("rep", {
   expect_identical(pl$lit((1:3) * 1)$rep(5)$to_r(), rep((1:3) * 1, 5))
   expect_identical(pl$lit(c("a", "b"))$rep(5)$to_r(), rep(c("a", "b"), 5))
   expect_identical(pl$lit(c(T, T, F))$rep(2)$to_r(), rep(c(T, T, F), 2))
-  expect_error(pl$lit(1:4)$rep(-1))
-  expect_error(pl$lit(1:4)$rep(Inf))
+  expect_grepl_error(pl$lit(1:4)$rep(-1))
+  expect_grepl_error(pl$lit(1:4)$rep(Inf))
 })
 
 test_that("rep_extend", {
@@ -2188,8 +2189,8 @@ test_that("rep_extend", {
     c(1:4, 2:1, 2:1) * 1.0
   )
   expect_identical(pl$lit(1)$rep_extend(numeric(), 5)$to_r(), 1)
-  expect_error(pl$lit(1)$rep_extend(1, -1))
-  expect_error(pl$lit(1)$rep_extend(1, Inf))
+  expect_grepl_error(pl$lit(1)$rep_extend(1, -1))
+  expect_grepl_error(pl$lit(1)$rep_extend(1, Inf))
 })
 
 test_that("to_r", {
@@ -2599,7 +2600,7 @@ test_that("rolling, arg check_sorted", {
     pl$col("dt")$str$strptime(pl$Datetime("us"), format = "%Y-%m-%d %H:%M:%S")
   )
 
-  expect_error(
+  expect_grepl_error(
     df$with_columns(
       sum_a_offset1 = pl$sum("a")$rolling(index_column = "dt", period = "2d")
     ),

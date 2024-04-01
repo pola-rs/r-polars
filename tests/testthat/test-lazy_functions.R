@@ -1,14 +1,14 @@
 test_that("pl$col", {
-  expect_error(pl$col(), "requires at least one argument")
+  expect_grepl_error(pl$col(), "requires at least one argument")
 
   expect_true(pl$col("a", "b")$meta$eq(pl$col(c("a", "b"))))
   expect_true(pl$col(c("a", "b"), "c")$meta$eq(pl$col("a", c("b", "c"))))
   expect_true(pl$col(pl$Int32, pl$Float64)$meta$eq(pl$col(list(pl$Int32, pl$Float64))))
 
-  expect_error(pl$col(list("a", "b")))
-  expect_error(pl$col("a", pl$Int32))
-  expect_error(pl$col(list(pl$Int32, pl$Float64), pl$String))
-  expect_error(pl$col(pl$String, list(pl$Int32, pl$Float64)))
+  expect_grepl_error(pl$col(list("a", "b")))
+  expect_grepl_error(pl$col("a", pl$Int32))
+  expect_grepl_error(pl$col(list(pl$Int32, pl$Float64), pl$String))
+  expect_grepl_error(pl$col(pl$String, list(pl$Int32, pl$Float64)))
 })
 
 
@@ -113,8 +113,8 @@ test_that("pl$first pl$last", {
   expect_identical(df$select(pl$first("b"))$to_list(), list(b = 4L))
   expect_identical(df$select(pl$last("b"))$to_list(), list(b = 6L))
 
-  expect_error(pl$first(1))
-  expect_error(pl$last(1))
+  expect_grepl_error(pl$first(1))
+  expect_grepl_error(pl$last(1))
 })
 
 
@@ -130,7 +130,7 @@ test_that("pl$len and pl$count", {
   expect_identical(df$select(pl$len())$to_list(), list(len = 3))
 
   # pass invalid column name type to pl$count
-  expect_error(pl$count(1))
+  expect_grepl_error(pl$count(1))
 })
 
 
@@ -146,8 +146,8 @@ test_that("pl$n_unique", {
   expr_act = pl$n_unique("bob")
   expect_true(expr_act$meta$eq(pl$col("bob")$n_unique()))
 
-  expect_error(pl$n_unique(pl$all()))
-  expect_error(pl$n_unique(1))
+  expect_grepl_error(pl$n_unique(pl$all()))
+  expect_grepl_error(pl$n_unique(1))
 })
 
 test_that("pl$approx_n_unique", {
@@ -160,8 +160,8 @@ test_that("pl$approx_n_unique", {
   expr_act = pl$approx_n_unique("bob")
   expect_true(expr_act$meta$eq(pl$col("bob")$approx_n_unique()))
 
-  expect_error(pl$approx_n_unique(pl$all()))
-  expect_error(pl$approx_n_unique(1:99))
+  expect_grepl_error(pl$approx_n_unique(pl$all()))
+  expect_grepl_error(pl$approx_n_unique(1:99))
 })
 
 
@@ -181,8 +181,8 @@ test_that("pl$head", {
     head(df$to_data_frame(), 2)$a
   )
 
-  expect_error(df$select(pl$head(pl$col("a"), 2)))
-  expect_error(pl$head(df$get_column("a"), -2))
+  expect_grepl_error(df$select(pl$head(pl$col("a"), 2)))
+  expect_grepl_error(pl$head(df$get_column("a"), -2))
 })
 
 
@@ -202,7 +202,7 @@ test_that("pl$tail", {
     tail(df$to_data_frame(), 2)$a
   )
 
-  expect_error(pl$tail(pl$col("a"), 2))
+  expect_grepl_error(pl$tail(pl$col("a"), 2))
 })
 
 test_that("pl$cov pl$rolling_cov pl$corr pl$rolling_corr", {
@@ -299,7 +299,7 @@ test_that("pl$from_epoch() works", {
 
 test_that("pl$from_epoch() errors if wrong time unit", {
   df = pl$DataFrame(timestamp = c(12345, 12346))
-  expect_error(
+  expect_grepl_error(
     df$select(pl$from_epoch(pl$col("timestamp"), time_unit = "foobar")),
     "one of"
   )
