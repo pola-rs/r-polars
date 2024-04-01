@@ -1039,3 +1039,28 @@ test_that("rolling for LazyFrame: can be ungrouped", {
     to_data_frame()
   expect_equal(actual, df$collect()$to_data_frame())
 })
+
+test_that("$clear() works", {
+  df = pl$LazyFrame(
+    a = c(NA, 2),
+    b = c("a", NA),
+    c = c(TRUE, TRUE)
+  )
+
+  expect_identical(
+    df$clear()$collect()$to_list(),
+    list(a = numeric(0), b = character(0), c = logical(0))
+  )
+
+  # n > number of rows
+  expect_identical(
+    df$clear(3)$collect()$to_list(),
+    list(a = rep(NA_real_, 3), b = rep(NA_character_, 3), c = rep(NA, 3))
+  )
+
+  # error
+  expect_grepl_error(
+    df$clear(-1),
+    "greater or equal to 0"
+  )
+})

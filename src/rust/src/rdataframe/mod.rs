@@ -469,6 +469,10 @@ impl RPolarsDataFrame {
             .map(RPolarsDataFrame)
     }
 
+    pub fn clear(&self) -> RResult<Self> {
+        Ok(self.0.clear().into())
+    }
+
     #[allow(clippy::too_many_arguments)]
     pub fn write_csv(
         &self,

@@ -2156,8 +2156,8 @@ test_that("extend_constant", {
     ),
     c(5L, NA_integer_)
   )
-  expect_error(pl$lit(1)$extend_constant(5, -1))
-  expect_error(pl$lit(1)$extend_constant(5, Inf))
+  expect_error(pl$lit(1)$extend_constant(5, -1)$to_series())
+  expect_error(pl$lit(1)$extend_constant(5, Inf)$to_series())
 })
 
 

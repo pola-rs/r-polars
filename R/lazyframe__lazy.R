@@ -2004,3 +2004,26 @@ LazyFrame_to_dot = function(
   .pr$LazyFrame$to_dot(lf, optimized) |>
     unwrap("in $to_dot():")
 }
+
+#' Create an empty or n-row null-filled copy of the LazyFrame
+#'
+#' Returns a n-row null-filled LazyFrame with an identical schema. `n` can be
+#' greater than the current number of rows in the LazyFrame.
+#'
+#' @inheritParams DataFrame_clear
+#'
+#' @return A n-row null-filled LazyFrame with an identical schema
+#'
+#' @examples
+#' df = pl$LazyFrame(
+#'   a = c(NA, 2, 3, 4),
+#'   b = c(0.5, NA, 2.5, 13),
+#'   c = c(TRUE, TRUE, FALSE, NA)
+#' )
+#'
+#' df$clear()
+#'
+#' df$clear(n = 5)
+LazyFrame_clear = function(n = 0) {
+  pl$DataFrame(schema = self$schema)$clear(n)$lazy()
+}

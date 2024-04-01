@@ -1,7 +1,7 @@
 use crate::concurrent::RFnSignature;
 use crate::rdatatype::{
-    literal_to_any_value, new_rolling_cov_options, parse_fill_null_strategy, robj_to_timeunit,
-    RPolarsDataType, RPolarsDataTypeVector,
+    new_rolling_cov_options, parse_fill_null_strategy, robj_to_timeunit, RPolarsDataType,
+    RPolarsDataTypeVector,
 };
 use crate::robj_to;
 use crate::rpolarserr::{polars_to_rpolars_err, rerr, rpolars_to_polars_err, RResult, WithRctx};
@@ -913,24 +913,9 @@ impl RPolarsExpr {
     }
 
     pub fn extend_constant(&self, value: Robj, n: Robj) -> RResult<Self> {
-        let av = robj_to!(LiteralValue, value).and_then(literal_to_any_value)?;
-        let n = robj_to!(usize, n)?;
-        Ok(RPolarsExpr(
-            self.0
-                .clone()
-                .apply(
-                    move |s| {
-                        //swap owned inline string to str as only supported and if swapped here life time is long enough
-                        let av = match &av {
-                            pl::AnyValue::StringOwned(x) => pl::AnyValue::String(x.as_str()),
-                            x => x.clone(),
-                        };
-                        s.extend_constant(av, n).map(Some)
-                    },
-                    pl::GetOutput::same_type(),
-                )
-                .with_fmt("extend"),
-        ))
+        let value = robj_to!(PLExpr, value)?;
+        let n = robj_to!(PLExpr, n)?;
+        Ok(self.0.clone().extend_constant(value, n).into())
     }
 
     pub fn rep(&self, n: f64, rechunk: bool) -> List {

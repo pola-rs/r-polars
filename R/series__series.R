@@ -1081,3 +1081,37 @@ Series_item = function(index = NULL) {
   }
   self$gather(index)$to_r()
 }
+
+
+#' Create an empty or n-row null-filled copy of the Series
+#'
+#' Returns a n-row null-filled Series with an identical schema. `n` can be
+#' greater than the current number of values in the Series.
+#'
+#' @inheritParams DataFrame_clear
+#'
+#' @return A n-value null-filled Series with an identical schema
+#'
+#' @examples
+#' s = pl$Series(name = "a", values = 1:3)
+#'
+#' s$clear()
+#'
+#' s$clear(n = 5)
+Series_clear = function(n = 0) {
+  if (n == 0) {
+    out = .pr$Series$clear(self) |>
+      unwrap("in $clear():")
+  }
+
+  if (n < 0) {
+    Err_plain("`n` must be an integer greater or equal to 0.") |>
+      unwrap("in $clear():")
+  }
+
+  if (n > 0) {
+    out = pl$Series(name = self$name, dtype = self$dtype)$extend_constant(NA, n)
+  }
+
+  out
+}
