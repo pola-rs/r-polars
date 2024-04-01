@@ -168,6 +168,39 @@
       [55] "with_columns"            "with_columns_seq"       
       [57] "with_context"            "with_row_index"         
 
+---
+
+    Code
+      ls(.pr[[private_key]])
+    Output
+       [1] "clone_in_rust"           "collect"                
+       [3] "collect_in_background"   "debug_plan"             
+       [5] "describe_optimized_plan" "describe_plan"          
+       [7] "drop"                    "drop_nulls"             
+       [9] "explode"                 "fetch"                  
+      [11] "fill_nan"                "fill_null"              
+      [13] "filter"                  "first"                  
+      [15] "get_optimization_toggle" "group_by"               
+      [17] "group_by_dynamic"        "join"                   
+      [19] "join_asof"               "last"                   
+      [21] "max"                     "mean"                   
+      [23] "median"                  "melt"                   
+      [25] "min"                     "print"                  
+      [27] "profile"                 "quantile"               
+      [29] "rename"                  "reverse"                
+      [31] "rolling"                 "schema"                 
+      [33] "select"                  "select_seq"             
+      [35] "set_optimization_toggle" "shift"                  
+      [37] "shift_and_fill"          "sink_csv"               
+      [39] "sink_ipc"                "sink_json"              
+      [41] "sink_parquet"            "slice"                  
+      [43] "sort_by_exprs"           "std"                    
+      [45] "sum"                     "tail"                   
+      [47] "to_dot"                  "unique"                 
+      [49] "unnest"                  "var"                    
+      [51] "with_columns"            "with_columns_seq"       
+      [53] "with_context"            "with_row_index"         
+
 # public and private methods of each class Expr
 
     Code

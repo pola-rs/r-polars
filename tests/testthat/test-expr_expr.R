@@ -1732,7 +1732,7 @@ test_that("Expr_diff", {
   )
   expect_equal(df, known, ignore_attr = TRUE)
 
-  expect_grepl_error(pl$select(pl$lit(1:5)$diff(0)), NA)
+  expect_silent(pl$select(pl$lit(1:5)$diff(0)))
   expect_grepl_error(pl$lit(1:5)$diff(99^99))
   expect_grepl_error(pl$lit(1:5)$diff(5, "not a null behavior"))
 })
