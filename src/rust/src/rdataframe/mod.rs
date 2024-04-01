@@ -308,8 +308,16 @@ impl RPolarsDataFrame {
         self.lazy().select(exprs)?.collect()
     }
 
+    pub fn select_seq(&self, exprs: Robj) -> RResult<RPolarsDataFrame> {
+        self.lazy().select_seq(exprs)?.collect()
+    }
+
     pub fn with_columns(&self, exprs: Robj) -> RResult<RPolarsDataFrame> {
         self.lazy().with_columns(exprs)?.collect()
+    }
+
+    pub fn with_columns_seq(&self, exprs: Robj) -> RResult<RPolarsDataFrame> {
+        self.lazy().with_columns_seq(exprs)?.collect()
     }
 
     pub fn to_struct(&self, name: Robj) -> RResult<RPolarsSeries> {

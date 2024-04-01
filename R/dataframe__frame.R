@@ -714,6 +714,26 @@ DataFrame_select = function(...) {
     unwrap("in $select()")
 }
 
+#' @inherit DataFrame_select title params return
+#'
+#' @description
+#' Similar to `dplyr::mutate()`. However, it discards unmentioned columns (like
+#' `.()` in `data.table`).
+#'
+#' This will run all expression sequentially instead of in parallel. Use this
+#' when the work per expression is cheap. Otherwise, `$select()` should be
+#' preferred.
+#'
+#' @examples
+#' pl$DataFrame(iris)$select_seq(
+#'   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
+#'   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
+#' )
+DataFrame_select_seq = function(...) {
+  .pr$DataFrame$select_seq(self, unpack_list(..., .context = "in $select_seq()")) |>
+    unwrap("in $select_seq()")
+}
+
 #' Drop in place
 #' @name DataFrame_drop_in_place
 #' @description Drop a single column in-place and return the dropped column.
@@ -819,6 +839,39 @@ DataFrame_shift_and_fill = function(fill_value, periods = 1) {
 DataFrame_with_columns = function(...) {
   .pr$DataFrame$with_columns(self, unpack_list(..., .context = "in $with_columns()")) |>
     unwrap("in $with_columns()")
+}
+
+#' @inherit DataFrame_with_columns title params return
+#'
+#' @description
+#' Add columns or modify existing ones with expressions. This is
+#' the equivalent of `dplyr::mutate()` as it keeps unmentioned columns (unlike
+#' `$select()`).
+#'
+#' This will run all expression sequentially instead of in parallel. Use this
+#' when the work per expression is cheap. Otherwise, `$with_columns()` should be
+#' preferred.
+#'
+#' @examples
+#' pl$DataFrame(iris)$with_columns_seq(
+#'   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
+#'   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
+#' )
+#'
+#' # same query
+#' l_expr = list(
+#'   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
+#'   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
+#' )
+#' pl$DataFrame(iris)$with_columns_seq(l_expr)
+#'
+#' pl$DataFrame(iris)$with_columns_seq(
+#'   pl$col("Sepal.Length")$abs(), # not named expr will keep name "Sepal.Length"
+#'   SW_add_2 = (pl$col("Sepal.Width") + 2)
+#' )
+DataFrame_with_columns_seq = function(...) {
+  .pr$DataFrame$with_columns_seq(self, unpack_list(..., .context = "in $with_columns_seq()")) |>
+    unwrap("in $with_columns_seq()")
 }
 
 
