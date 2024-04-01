@@ -31,7 +31,7 @@ expect_grepl_error = function(expr, expected_err = NULL, do_not_repeat_call = TR
     conditionMessage(e)
   })
 
-  match_patterns <- vapply(
+  match_patterns = vapply(
     expected_err,
     \(x) grepl(x, err, ignore.case = TRUE),
     FUN.VALUE = logical(1)
