@@ -83,7 +83,7 @@ test_that("arg raise_if_empty works", {
   tmpf = tempfile()
   writeLines("", tmpf)
 
-  expect_error(
+  expect_grepl_error(
     pl$read_csv(tmpf),
     "no data: empty CSV"
   )
@@ -136,7 +136,7 @@ test_that("arg encoding works", {
   tmpf = tempfile()
   write.csv(dat, tmpf, row.names = FALSE)
 
-  expect_error(
+  expect_grepl_error(
     pl$read_csv(tmpf, encoding = "foo"),
     "encoding choice"
   )
@@ -164,7 +164,7 @@ test_that("multiple files errors if different schema", {
   write.csv(dat1, tmpf1, row.names = FALSE)
   write.csv(dat2, tmpf2, row.names = FALSE)
 
-  expect_error(
+  expect_grepl_error(
     pl$read_csv(c(tmpf1, tmpf2)),
     "lengths don't match"
   )
@@ -176,7 +176,7 @@ test_that("bad paths", {
     c(ctx$BadArgument, ctx$PlainErrorMessage),
     c("path", "path cannot have zero length")
   )
-  expect_error(
+  expect_grepl_error(
     pl$read_csv("not a valid path"),
     "failed to locate file"
   )

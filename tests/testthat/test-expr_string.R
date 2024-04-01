@@ -5,7 +5,7 @@ test_that("str$strptime datetime", {
     "invalid time"
   )
 
-  expect_error(
+  expect_grepl_error(
     pl$lit(txt_datetimes)$str$strptime(pl$Datetime(), format = "%Y-%m-%d %H:%M:%S")$to_series(),
     "conversion .* failed"
   )
@@ -88,7 +88,7 @@ test_that("$str$to_date", {
     out,
     as.Date(c("2009-01-02", "2009-01-03", "2009-01-04"))
   )
-  expect_error(
+  expect_grepl_error(
     pl$lit(c("2009-01-02", "2009-01-03", "2009-1-4"))$
       str$to_date(format = "%Y / %m / %d")$to_r()
   )
@@ -106,7 +106,7 @@ test_that("$str$to_time", {
     out,
     pl$PTime(c("01:20:01", "28:00:02", "03:00:02"), tu = "ns")
   )
-  expect_error(
+  expect_grepl_error(
     ppl$lit(c("01:20:01", "28:00:02", "03:00:02"))$
       str$to_time()
   )
@@ -119,7 +119,7 @@ test_that("$str$to_datetime", {
     out,
     as.POSIXct(c("2009-01-02 01:00:00", "2009-01-03 02:00:00", "2009-01-04 03:00:00"), tz = "UTC")
   )
-  expect_error(
+  expect_grepl_error(
     pl$lit(c("2009-01-02 01:00", "2009-01-03 02:00", "2009-1-4"))$
       str$to_date(format = "%Y / %m / %d")$to_r()
   )
@@ -203,7 +203,7 @@ test_that("to_titlecase - enabled via the nightly feature", {
 
 test_that("to_titlecase - enabled via the nightly feature", {
   skip_if(polars_info()$features$nightly)
-  expect_error(pl$col("foo")$str$to_titlecase())
+  expect_grepl_error(pl$col("foo")$str$to_titlecase())
 })
 
 
@@ -257,13 +257,13 @@ test_that("zfill", {
   )
 
   # test wrong input type
-  expect_error(
+  expect_grepl_error(
     pl$lit(c(-1, 2, 10, "5"))$str$zfill(pl$lit("a"))$to_r(),
     "u64"
   )
 
   # test wrong input range
-  expect_error(
+  expect_grepl_error(
     pl$lit(c(-1, 2, 10, "5"))$str$zfill(-3)$to_r(),
     "conversion from"
   )
@@ -706,7 +706,7 @@ test_that("str$parse_int", {
     c(110, 101, NA)
   )
 
-  expect_error(pl$lit("foo")$str$parse_int()$to_r(), "strict integer parsing failed for 1 value")
+  expect_grepl_error(pl$lit("foo")$str$parse_int()$to_r(), "strict integer parsing failed for 1 value")
 })
 
 test_that("str$reverse()", {
@@ -763,7 +763,7 @@ test_that("str$replace_many()", {
   )
 
   # error if different lengths
-  expect_error(
+  expect_grepl_error(
     pl$lit(c("hello there", "hi there", "good bye", NA))$
       str$
       replace_many(c("hi", "hello"), c("foo", "bar", "foo2"))$
@@ -771,7 +771,7 @@ test_that("str$replace_many()", {
     "same amount of patterns as replacement"
   )
 
-  expect_error(
+  expect_grepl_error(
     pl$lit(c("hello there", "hi there", "good bye", NA))$
       str$
       replace_many(c("hi", "hello", "good morning"), c("foo", "bar"))$

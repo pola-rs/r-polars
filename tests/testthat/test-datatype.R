@@ -25,7 +25,7 @@ test_that("plStruct", {
   expect_no_error(pl$Struct(bin = pl$Binary, pl$Boolean, pl$Boolean))
 
   # wrong uses
-  expect_error(
+  expect_grepl_error(
     pl$Struct(bin = pl$Binary, pl$Boolean, "abc"),
     "must either be a Field"
   )
@@ -69,11 +69,11 @@ test_that("POSIXct data conversion", {
         pl$lit(as.POSIXct(non_exsitent_time_chr))$to_r(),
         as.POSIXct(non_exsitent_time_chr)
       )
-      expect_error(
+      expect_grepl_error(
         pl$lit(non_exsitent_time_chr)$str$strptime(pl$Datetime(), "%F %T")$to_r(),
         "non-existent"
       )
-      expect_error(
+      expect_grepl_error(
         pl$lit(ambiguous_time_chr)$str$strptime(pl$Datetime(), "%F %T")$to_r(),
         "ambiguous"
       )
@@ -118,7 +118,7 @@ test_that("Categorical", {
     as_polars_series(c("z", "z", "k", "a"))$cast(pl$Categorical("lexical"))$sort()$to_r(),
     factor(c("a", "k", "z", "z"))
   )
-  expect_error(
+  expect_grepl_error(
     as_polars_series(c("z", "z", "k", "a"))$cast(pl$Categorical("foobar"))
   )
 })

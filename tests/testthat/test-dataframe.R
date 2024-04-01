@@ -107,7 +107,7 @@ test_that("get set properties", {
   expect_different(df2$columns, df$columns)
 
   # cannot set property without setter method
-  expect_error(df$height <- 10)
+  expect_grepl_error(df$height <- 10)
 
   # other getable properties
   expect_equal(df$height, 5L)
@@ -159,14 +159,14 @@ test_that("DataFrame, custom schema", {
     pl$DataFrame(list(schema = 1), schema = list(schema = pl$Float32))
   )
   # incorrect datatype
-  expect_error(pl$DataFrame(x = 1, schema = list(schema = foo)))
-  expect_error(
+  expect_grepl_error(pl$DataFrame(x = 1, schema = list(schema = foo)))
+  expect_grepl_error(
     pl$DataFrame(x = 1, schema = list(x = "foo")),
     "expected RPolarsDataType"
   )
 
   # wrong variable name in schema
-  expect_error(
+  expect_grepl_error(
     pl$DataFrame(x = 1, schema = list(schema = pl$Float32)),
     "Some columns in `schema` are not in the DataFrame"
   )
@@ -418,7 +418,7 @@ test_that("get column", {
     )
   )
 
-  expect_error(
+  expect_grepl_error(
     pl$DataFrame(iris)$get_column("wrong_name")
   )
 })
@@ -547,13 +547,13 @@ test_that("head lazy/eager", {
 
   # lazy bounds
   expect_identical(df$head(0)$to_data_frame(), rdf[integer(), ])
-  expect_error(ldf$head(-1))
-  expect_error(ldf$head(2^32))
+  expect_grepl_error(ldf$head(-1))
+  expect_grepl_error(ldf$head(2^32))
   expect_identical(ldf$head(2^32 - 1)$collect()$to_data_frame(), rdf)
 
   # eager bounds
   expect_identical(ldf$head(0)$collect()$to_data_frame(), rdf[integer(), ])
-  expect_error(df$head(2^32))
+  expect_grepl_error(df$head(2^32))
   expect_identical(df$head(2^32 - 1)$to_data_frame(), rdf)
 })
 
@@ -735,7 +735,7 @@ test_that("drop_nulls", {
   expect_equal(tmp$drop_nulls("hp")$height, 32, ignore_attr = TRUE)
   expect_equal(tmp$drop_nulls(c("mpg", "hp"))$height, 29, ignore_attr = TRUE)
 
-  expect_error(
+  expect_grepl_error(
     pl$DataFrame(mtcars)$drop_nulls("bad column name")$height,
     "not found: unable to find column \"bad column name\""
   )
@@ -840,11 +840,11 @@ test_that("sort", {
   expect_true(is.na(b$mpg[1]))
 
   # error if descending is NULL
-  expect_error(
+  expect_grepl_error(
     df$sort("mpg", descending = NULL),
     "must be of length 1 or of the same length as `by`"
   )
-  expect_error(
+  expect_grepl_error(
     df$sort(c("mpg", "drat"), descending = NULL),
     "must be of length 1 or of the same length as `by`"
   )
@@ -1090,7 +1090,7 @@ test_that("describe", {
   expect_snapshot(df$describe())
   expect_snapshot(pl$DataFrame(mtcars)$describe())
   expect_snapshot(pl$DataFrame(mtcars)$describe(interpolation = "linear"))
-  expect_error(pl$DataFrame(mtcars)$describe("not a percentile"))
+  expect_grepl_error(pl$DataFrame(mtcars)$describe("not a percentile"))
 
   # min/max different depending on categorical ordering
   expect_snapshot(df$select(pl$col("cat")$cast(pl$Categorical("lexical")))$describe())
@@ -1199,8 +1199,8 @@ test_that("sample", {
   expect_identical(df$sample(frac = 0.1)$height, 15)
 
   # must pass either n or fraction and not both
-  expect_error(df$sample(), "Pass either arg")
-  expect_error(df$sample(n = 2, fraction = 0.1), "not both")
+  expect_grepl_error(df$sample(), "Pass either arg")
+  expect_grepl_error(df$sample(n = 2, fraction = 0.1), "not both")
 
   # single check of some conversion errors
   ctx = df$sample(frac = 0.1, seed = "not even a written number") |> get_err_ctx()
@@ -1409,8 +1409,8 @@ test_that("partition_by", {
   )
 
   # Test errors
-  expect_error(df$partition_by("foo"), "not found: foo")
-  expect_error(df$partition_by(pl$Int8), "There is no column to partition by")
+  expect_grepl_error(df$partition_by("foo"), "not found: foo")
+  expect_grepl_error(df$partition_by(pl$Int8), "There is no column to partition by")
 
   # Test `as_nested_list = TRUE`
   expect_true(

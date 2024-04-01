@@ -110,7 +110,7 @@ test_that("when-then multiple predicates", {
 })
 
 test_that("named input is not allowed in when", {
-  expect_error(pl$when(foo = 1), "Detected a named input")
+  expect_grepl_error(pl$when(foo = 1), "Detected a named input")
 })
 
 test_that("$otherwise is optional", {

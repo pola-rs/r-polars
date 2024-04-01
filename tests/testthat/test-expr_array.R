@@ -61,12 +61,12 @@ test_that("arr$max and arr$min error if the nightly feature is false", {
     )
   )
   # max ---
-  expect_error(
+  expect_grepl_error(
     df$select(pl$col("ints")$arr$max())$to_list()
   )
 
   # min ---
-  expect_error(
+  expect_grepl_error(
     df$select(pl$col("ints")$arr$min())$to_list()
   )
 })

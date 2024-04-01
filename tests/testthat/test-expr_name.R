@@ -34,7 +34,7 @@ test_that("name map", {
       )
       lf = df$lazy()
       expect_identical(lf$collect()$columns, "alice_and_bob")
-      expect_error(
+      expect_grepl_error(
         pl$DataFrame(list(alice = 1:3))$select(
           pl$col("alice")$name$map(\(x) 42) # wrong return
         ),
@@ -43,7 +43,7 @@ test_that("name map", {
 
       # TODO: this works but always prints the error message of log("a"), how
       # can we silence it?
-      # expect_error(
+      # expect_grepl_error(
       #   pl$DataFrame(list(alice=1:3))$select(
       #     pl$col("alice")$name$map(\(x) log("a"))
       #   )
@@ -62,7 +62,7 @@ test_that("name prefix_fields", {
     list(col_a = 1, col_b = 2)
   )
 
-  expect_error(
+  expect_grepl_error(
     pl$DataFrame(a = 1, b = 2)$select(pl$col("a")$name$prefix_fields("col_"))
   )
 })
@@ -77,7 +77,7 @@ test_that("name suffix_fields", {
     list(a_post = 1, b_post = 2)
   )
 
-  expect_error(
+  expect_grepl_error(
     pl$DataFrame(a = 1, b = 2)$select(pl$col("a")$name$suffix_fields("col_"))
   )
 })

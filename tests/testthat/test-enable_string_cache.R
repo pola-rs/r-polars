@@ -12,7 +12,7 @@ test_that("string cache", {
   } else {
     pl$disable_string_cache()
   }
-  expect_error(pl$enable_string_cache(42))
+  expect_grepl_error(pl$enable_string_cache(42))
 
   # # with before TRUE
   pl$enable_string_cache()

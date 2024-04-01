@@ -8,7 +8,7 @@ test_that("pl$Series_apply", {
   )
 
   # strict type casting, throws an error
-  expect_error(
+  expect_grepl_error(
     as_polars_series(1:3, "integers")$map_elements(function(x) "wrong type", NULL, strict = TRUE)
   )
 
@@ -141,7 +141,7 @@ test_that("Series_append", {
     }
   )
 
-  expect_error(
+  expect_grepl_error(
     s_mut$append(as_polars_series(1:3), immutable = FALSE),
     regexp = "breaks immutability"
   )
@@ -166,14 +166,14 @@ test_that("all any", {
   expect_false(as_polars_series(c(TRUE, TRUE, FALSE))$all())
   expect_false(as_polars_series(c(NA, NA, NA))$all())
   expect_true(as_polars_series(c(TRUE, TRUE, TRUE))$all())
-  expect_error(as_polars_series(1:3)$all())
+  expect_grepl_error(as_polars_series(1:3)$all())
 
   expect_true(as_polars_series(c(TRUE, TRUE, NA))$any())
   expect_true(as_polars_series(c(TRUE, NA, FALSE))$any())
   expect_true(as_polars_series(c(TRUE, FALSE, FALSE))$any())
   expect_false(as_polars_series(c(FALSE, FALSE, NA))$any())
   expect_false(as_polars_series(c(NA, NA, NA))$any())
-  expect_error(as_polars_series(1:3)$any())
+  expect_grepl_error(as_polars_series(1:3)$any())
 })
 
 
@@ -326,7 +326,7 @@ test_that("$is_sorted() works", {
 })
 
 test_that("set_sorted", {
-  expect_error(
+  expect_grepl_error(
     as_polars_series(c(1, 3, 2, 4))$set_sorted(in_place = TRUE),
     regexp = "breaks immutability"
   )
@@ -421,7 +421,7 @@ test_that("series comparison", {
   expect_true((as_polars_series(1:5) <= 5)$all())
   expect_false((as_polars_series(1:5) <= 3)$all())
   expect_true((as_polars_series(1:5) < 11:15)$all())
-  expect_error(
+  expect_grepl_error(
     (as_polars_series(1:5) <= c(1:2))$all(),
     regexp = "not same length or either of length 1."
   )
@@ -457,7 +457,7 @@ test_that("rep", {
     integer(0)
   )
 
-  expect_error(
+  expect_grepl_error(
     as_polars_series(1:2, "alice")$rep(-1)$to_r(),
     regexp = "cannot be less than zero"
   )
@@ -591,7 +591,7 @@ test_that("cum_sum", {
 
 test_that("the dtype argument of pl$Series", {
   expect_identical(pl$Series(values = 1, dtype = pl$String)$to_r(), "1.0")
-  expect_error(pl$Series(values = "foo", dtype = pl$Int32), "conversion from `str` to `i32`")
+  expect_grepl_error(pl$Series(values = "foo", dtype = pl$Int32), "conversion from `str` to `i32`")
 })
 
 test_that("the nan_to_null argument of pl$Series", {

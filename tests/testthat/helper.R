@@ -23,31 +23,24 @@ expect_different = function(x, y) {
 #' expect_grepl_error(stop("orange and carrot"), "carrot")
 #' expect_grepl_error(stop("orange and carrot"), c("carrot", "orange"))
 expect_grepl_error = function(expr, expected_err = NULL, do_not_repeat_call = TRUE, ...) {
-  # turn of including call in err msg
-  if (do_not_repeat_call) {
-    withr::local_options(polars.do_not_repeat_call = TRUE)
-  }
+  withr::local_options(polars.do_not_repeat_call = do_not_repeat_call)
 
-  # capture err msg
-  err = NULL
+  expr_fails = FALSE
   err = tryCatch(expr, error = function(e) {
-    as.character(e)
+    expr_fails <<- TRUE
+    conditionMessage(e)
   })
 
-  # restore previous options state
-  if (do_not_repeat_call) {
-    withr::local_options(polars.do_not_repeat_call = FALSE)
-  }
+  match_patterns <- vapply(
+    expected_err,
+    \(x) grepl(x, err, ignore.case = TRUE),
+    FUN.VALUE = logical(1)
+  ) |> all()
 
-  # check if error message contains pattern
-  founds = sapply(expected_err, \(x) isTRUE(grepl(x, err, ignore.case = TRUE)[1]))
-
-  if (!all(founds)) {
-    # ... if not use testthat to point out the difference
-    expect_identical(expected_err[which(!founds)[1]], err, ...)
-  }
-
-  invisible(err)
+  expect(
+    expr_fails & match_patterns,
+    failure_message = paste(deparse(substitute(expr)), "does not throw the expected error")
+  )
 }
 
 make_print_cases = function() {

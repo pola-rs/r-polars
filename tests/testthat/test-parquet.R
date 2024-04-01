@@ -79,7 +79,7 @@ test_that("throw error if invalid compression is passed", {
   tmpf = tempfile()
   on.exit(unlink(tmpf))
   df_exp = pl$DataFrame(mtcars)
-  expect_error(
+  expect_grepl_error(
     df_exp$write_parquet(tmpf, compression = "invalid"),
     "Failed to set parquet compression method"
   )

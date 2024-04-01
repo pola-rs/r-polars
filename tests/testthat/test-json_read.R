@@ -64,7 +64,7 @@ test_that("multiple paths works", {
 #   df = data.frame(a = letters[1:3], b = c(1, 2.5, 3))
 #   jsonlite::stream_out(df, file(ndjson_filename), verbose = FALSE)
 #   jsonlite::stream_out(iris, file(ndjson_filename2), verbose = FALSE)
-#   expect_error(
+#   expect_grepl_error(
 #     pl$read_ndjson(c(ndjson_filename, ndjson_filename2)),
 #     "lengths don't match"
 #   )
@@ -76,7 +76,7 @@ test_that("bad paths", {
     c(ctx$BadArgument, ctx$PlainErrorMessage),
     c("path", "path cannot have zero length")
   )
-  expect_error(
+  expect_grepl_error(
     pl$read_ndjson("not a valid path"),
     "failed to locate file"
   )

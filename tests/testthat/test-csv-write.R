@@ -14,7 +14,7 @@ test_that("write_csv: path works", {
 })
 
 test_that("write_csv: null_values works", {
-  expect_error(
+  expect_grepl_error(
     dat_pl$write_csv(temp_out, null_values = NULL)
   )
   dat_pl$write_csv(temp_out, null_values = "hello")
