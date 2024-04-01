@@ -272,9 +272,23 @@ LazyFrame_select = function(...) {
     unwrap("in $select()")
 }
 
-#' @title Select and modify columns of a LazyFrame
+#' @inherit LazyFrame_select title
+#' @inherit DataFrame_select_seq description params
+#' @return A LazyFrame
+#' @examples
+#' pl$LazyFrame(iris)$select_seq(
+#'   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
+#'   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
+#' )
+LazyFrame_select_seq = function(...) {
+  .pr$LazyFrame$select_seq(self, unpack_list(..., .context = "in $select_seq()")) |>
+    unwrap("in $select_seq()")
+}
+
+#' Select and modify columns of a LazyFrame
+#'
 #' @inherit DataFrame_with_columns description params
-#' @keywords LazyFrame
+#'
 #' @return A LazyFrame
 #' @examples
 #' pl$LazyFrame(iris)$with_columns(
@@ -296,6 +310,32 @@ LazyFrame_select = function(...) {
 LazyFrame_with_columns = function(...) {
   .pr$LazyFrame$with_columns(self, unpack_list(..., .context = "in $with_columns()")) |>
     unwrap("in $with_columns()")
+}
+
+#' @inherit LazyFrame_with_columns title
+#' @inherit DataFrame_with_columns_seq description params
+#'
+#' @return A LazyFrame
+#' @examples
+#' pl$LazyFrame(iris)$with_columns_seq(
+#'   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
+#'   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
+#' )
+#'
+#' # same query
+#' l_expr = list(
+#'   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
+#'   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
+#' )
+#' pl$LazyFrame(iris)$with_columns_seq(l_expr)
+#'
+#' pl$LazyFrame(iris)$with_columns_seq(
+#'   pl$col("Sepal.Length")$abs(), # not named expr will keep name "Sepal.Length"
+#'   SW_add_2 = (pl$col("Sepal.Width") + 2)
+#' )
+LazyFrame_with_columns_seq = function(...) {
+  .pr$LazyFrame$with_columns_seq(self, unpack_list(..., .context = "in $with_columns_seq()")) |>
+    unwrap("in $with_columns_seq()")
 }
 
 

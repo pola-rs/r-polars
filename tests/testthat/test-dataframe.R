@@ -239,6 +239,27 @@ patrick::with_parameters_test_that("select with list of exprs", {
   .test_name = type
 )
 
+patrick::with_parameters_test_that("select_seq with list of exprs", {
+  expect_equal(
+    pl$DataFrame(mtcars)$select_seq(expr)$columns,
+    c("mpg", "hp")
+  )
+},
+expr = list(
+  list(pl$col("mpg"), pl$col("hp")),
+  list(pl$col("mpg", "hp")),
+  list(c("mpg", "hp")),
+  list("mpg", "hp")
+),
+type = c(
+  "list of exprs",
+  "expr",
+  "character",
+  "list of character"
+),
+.test_name = type
+)
+
 
 test_that("select: create a list variable", {
   test = pl$DataFrame(x = 1:2)
@@ -479,6 +500,22 @@ test_that("with_columns lazy/eager", {
   expect_identical(
     ldf_actual_kwarg_named$collect()$to_data_frame(check.names = FALSE),
     rdf
+  )
+})
+
+test_that("with_columns_seq", {
+  test = pl$DataFrame(x = 1:2)
+
+  # create one column
+  expect_identical(
+    test$with_columns_seq(y = list(1:2, 3:4))$to_list(),
+    list(x = 1:2, y = list(1:2, 3:4))
+  )
+
+  # create several column
+  expect_identical(
+    test$with_columns_seq(y = list(1:2, 3:4), z = list(c("a", "b"), c("c", "d")))$to_list(),
+    list(x = 1:2, y = list(1:2, 3:4), z = list(c("a", "b"), c("c", "d")))
   )
 })
 

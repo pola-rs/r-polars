@@ -8,7 +8,7 @@ use crate::lazy::dsl::*;
 use crate::rdataframe::RPolarsDataFrame as RDF;
 use crate::rdatatype::{new_ipc_compression, new_parquet_compression, RPolarsDataType};
 use crate::robj_to;
-use crate::rpolarserr::{polars_to_rpolars_err, RPolarsErr, RResult, WithRctx};
+use crate::rpolarserr::{polars_to_rpolars_err, RPolarsErr, RResult};
 use crate::utils::{r_result_list, try_f64_into_usize};
 use extendr_api::prelude::*;
 use pl::{AsOfOptions, Duration, RollingGroupOptions};
@@ -291,9 +291,13 @@ impl RPolarsLazyFrame {
     }
 
     pub fn with_columns(&self, exprs: Robj) -> RResult<Self> {
-        let exprs =
-            robj_to!(VecPLExprColNamed, exprs).when("preparing expressions for $with_columns()")?;
+        let exprs = robj_to!(VecPLExprColNamed, exprs)?;
         Ok(RPolarsLazyFrame(self.clone().0.with_columns(exprs)))
+    }
+
+    pub fn with_columns_seq(&self, exprs: Robj) -> RResult<Self> {
+        let exprs = robj_to!(VecPLExprColNamed, exprs)?;
+        Ok(RPolarsLazyFrame(self.clone().0.with_columns_seq(exprs)))
     }
 
     pub fn unnest(&self, names: Vec<String>) -> RResult<Self> {
@@ -301,14 +305,13 @@ impl RPolarsLazyFrame {
     }
 
     pub fn select(&self, exprs: Robj) -> RResult<Self> {
-        let exprs =
-            robj_to!(VecPLExprColNamed, exprs).when("preparing expressions for $select()")?;
+        let exprs = robj_to!(VecPLExprColNamed, exprs)?;
         Ok(RPolarsLazyFrame(self.clone().0.select(exprs)))
     }
 
-    pub fn select_str_as_lit(&self, exprs: Robj) -> RResult<Self> {
-        let exprs = robj_to!(VecPLExprNamed, exprs).when("preparing columns for DataFrame")?;
-        Ok(RPolarsLazyFrame(self.clone().0.select(exprs)))
+    pub fn select_seq(&self, exprs: Robj) -> RResult<Self> {
+        let exprs = robj_to!(VecPLExprColNamed, exprs)?;
+        Ok(RPolarsLazyFrame(self.clone().0.select_seq(exprs)))
     }
 
     fn tail(&self, n: Robj) -> Result<RPolarsLazyFrame, String> {
