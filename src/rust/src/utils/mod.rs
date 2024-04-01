@@ -261,9 +261,9 @@ const I32_MAX_INTO_F64: f64 = i32::MAX as f64;
 pub const BIT64_NA_ENCODING: i64 = -9223372036854775808i64;
 
 const WITHIN_INT_MAX: &str =
-    "cannot exceeds double->integer unambigious conversion bound of 2^52 = 4503599627370496.0";
+    "cannot exceeds double->integer unambiguous conversion bound of 2^52 = 4503599627370496.0";
 const WITHIN_INT_MIN: &str =
-    "cannot exceeds double->integer unambigious conversion bound of -(2^52)= -4503599627370496.0";
+    "cannot exceeds double->integer unambiguous conversion bound of -(2^52)= -4503599627370496.0";
 const WITHIN_USIZE_MAX: &str = "cannot exceed the upper bound for usize";
 const WITHIN_U32_MAX: &str = "cannot exceed the upper bound for u32 of 4294967295";
 const WITHIN_I32_MIN: &str = "cannot exceed the upper bound for i32 of 2147483647";
