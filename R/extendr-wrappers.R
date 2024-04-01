@@ -1270,9 +1270,9 @@ RPolarsSeries$shape <- function() .Call(wrap__RPolarsSeries__shape, self)
 
 RPolarsSeries$len <- function() .Call(wrap__RPolarsSeries__len, self)
 
-RPolarsSeries$n_chunks <- function() .Call(wrap__RPolarsSeries__n_chunks, self)
-
 RPolarsSeries$chunk_lengths <- function() .Call(wrap__RPolarsSeries__chunk_lengths, self)
+
+RPolarsSeries$n_chunks <- function() .Call(wrap__RPolarsSeries__n_chunks, self)
 
 RPolarsSeries$alias <- function(name) .Call(wrap__RPolarsSeries__alias, self, name)
 
@@ -1313,6 +1313,8 @@ RPolarsSeries$print <- function() invisible(.Call(wrap__RPolarsSeries__print, se
 RPolarsSeries$to_frame <- function() .Call(wrap__RPolarsSeries__to_frame, self)
 
 RPolarsSeries$set_sorted_mut <- function(descending) invisible(.Call(wrap__RPolarsSeries__set_sorted_mut, self, descending))
+
+RPolarsSeries$struct_fields <- function() .Call(wrap__RPolarsSeries__struct_fields, self)
 
 RPolarsSeries$from_arrow_array_stream_str <- function(name, robj_str) .Call(wrap__RPolarsSeries__from_arrow_array_stream_str, name, robj_str)
 
