@@ -166,6 +166,8 @@ Series_shape = method_as_active_binding(\() .pr$Series$shape(self))
 add_expr_methods_to_series = function() {
   methods_exclude = c(
     "agg_groups",
+    "exclude",
+    "inspect",
     "over",
     "rolling",
     "to_series"
