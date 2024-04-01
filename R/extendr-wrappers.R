@@ -194,7 +194,11 @@ RPolarsDataFrame$drop_in_place <- function(names) .Call(wrap__RPolarsDataFrame__
 
 RPolarsDataFrame$select <- function(exprs) .Call(wrap__RPolarsDataFrame__select, self, exprs)
 
+RPolarsDataFrame$select_seq <- function(exprs) .Call(wrap__RPolarsDataFrame__select_seq, self, exprs)
+
 RPolarsDataFrame$with_columns <- function(exprs) .Call(wrap__RPolarsDataFrame__with_columns, self, exprs)
+
+RPolarsDataFrame$with_columns_seq <- function(exprs) .Call(wrap__RPolarsDataFrame__with_columns_seq, self, exprs)
 
 RPolarsDataFrame$to_struct <- function(name) .Call(wrap__RPolarsDataFrame__to_struct, self, name)
 
@@ -1144,11 +1148,13 @@ RPolarsLazyFrame$slice <- function(offset, length) .Call(wrap__RPolarsLazyFrame_
 
 RPolarsLazyFrame$with_columns <- function(exprs) .Call(wrap__RPolarsLazyFrame__with_columns, self, exprs)
 
+RPolarsLazyFrame$with_columns_seq <- function(exprs) .Call(wrap__RPolarsLazyFrame__with_columns_seq, self, exprs)
+
 RPolarsLazyFrame$unnest <- function(names) .Call(wrap__RPolarsLazyFrame__unnest, self, names)
 
 RPolarsLazyFrame$select <- function(exprs) .Call(wrap__RPolarsLazyFrame__select, self, exprs)
 
-RPolarsLazyFrame$select_str_as_lit <- function(exprs) .Call(wrap__RPolarsLazyFrame__select_str_as_lit, self, exprs)
+RPolarsLazyFrame$select_seq <- function(exprs) .Call(wrap__RPolarsLazyFrame__select_seq, self, exprs)
 
 RPolarsLazyFrame$tail <- function(n) .Call(wrap__RPolarsLazyFrame__tail, self, n)
 

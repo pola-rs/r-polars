@@ -86,13 +86,13 @@
       [33] "melt"             "min"              "n_chunks"         "null_count"      
       [37] "partition_by"     "pivot"            "print"            "quantile"        
       [41] "rechunk"          "rename"           "reverse"          "rolling"         
-      [45] "sample"           "schema"           "select"           "shape"           
-      [49] "shift"            "shift_and_fill"   "slice"            "sort"            
-      [53] "std"              "sum"              "tail"             "to_data_frame"   
-      [57] "to_list"          "to_series"        "to_struct"        "transpose"       
-      [61] "unique"           "unnest"           "var"              "width"           
-      [65] "with_columns"     "with_row_index"   "write_csv"        "write_json"      
-      [69] "write_ndjson"     "write_parquet"   
+      [45] "sample"           "schema"           "select"           "select_seq"      
+      [49] "shape"            "shift"            "shift_and_fill"   "slice"           
+      [53] "sort"             "std"              "sum"              "tail"            
+      [57] "to_data_frame"    "to_list"          "to_series"        "to_struct"       
+      [61] "transpose"        "unique"           "unnest"           "var"             
+      [65] "width"            "with_columns"     "with_columns_seq" "with_row_index"  
+      [69] "write_csv"        "write_json"       "write_ndjson"     "write_parquet"   
 
 ---
 
@@ -112,15 +112,16 @@
       [21] "print"                     "rechunk"                  
       [23] "sample_frac"               "sample_n"                 
       [25] "schema"                    "select"                   
-      [27] "select_at_idx"             "set_column_from_robj"     
-      [29] "set_column_from_series"    "set_column_names_mut"     
-      [31] "shape"                     "to_list"                  
-      [33] "to_list_tag_structs"       "to_list_unwind"           
-      [35] "to_struct"                 "transpose"                
-      [37] "unnest"                    "with_columns"             
-      [39] "with_row_index"            "write_csv"                
-      [41] "write_json"                "write_ndjson"             
-      [43] "write_parquet"            
+      [27] "select_at_idx"             "select_seq"               
+      [29] "set_column_from_robj"      "set_column_from_series"   
+      [31] "set_column_names_mut"      "shape"                    
+      [33] "to_list"                   "to_list_tag_structs"      
+      [35] "to_list_unwind"            "to_struct"                
+      [37] "transpose"                 "unnest"                   
+      [39] "with_columns"              "with_columns_seq"         
+      [41] "with_row_index"            "write_csv"                
+      [43] "write_json"                "write_ndjson"             
+      [45] "write_parquet"            
 
 # public and private methods of each class GroupBy
 
@@ -187,7 +188,7 @@
       [27] "profile"                 "quantile"               
       [29] "rename"                  "reverse"                
       [31] "rolling"                 "schema"                 
-      [33] "select"                  "select_str_as_lit"      
+      [33] "select"                  "select_seq"             
       [35] "set_optimization_toggle" "shift"                  
       [37] "shift_and_fill"          "sink_csv"               
       [39] "sink_ipc"                "sink_json"              
@@ -196,8 +197,8 @@
       [45] "sum"                     "tail"                   
       [47] "to_dot"                  "unique"                 
       [49] "unnest"                  "var"                    
-      [51] "with_columns"            "with_context"           
-      [53] "with_row_index"         
+      [51] "with_columns"            "with_columns_seq"       
+      [53] "with_context"            "with_row_index"         
 
 # public and private methods of each class Expr
 
