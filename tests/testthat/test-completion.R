@@ -7,7 +7,7 @@ test_that("code completion: method names are found", {
 })
 
 test_that("code completion: check mode name", {
-  expect_error(
+  expect_grepl_error(
     polars_code_completion_activate(mode = "foobar"),
     "should be one of"
   )

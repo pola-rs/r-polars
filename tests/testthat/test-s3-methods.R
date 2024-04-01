@@ -123,14 +123,14 @@ test_that("drop_nulls", {
   expect_equal(nrow(na.omit(d)), 28)
   expect_equal(nrow(na.omit(d, subset = "hp")), 31)
   expect_equal(nrow(na.omit(d, subset = c("mpg", "hp"))), 28)
-  expect_error(
+  expect_grepl_error(
     na.omit(d, "bad")$collect(),
     "not found: unable to find column \"bad\""
   )
   expect_equal(nrow(na.omit(dl)$collect()), 28)
   expect_equal(nrow(na.omit(dl, subset = "hp")$collect()), 31)
   expect_equal(nrow(na.omit(dl, subset = c("mpg", "hp"))$collect()), 28)
-  expect_error(
+  expect_grepl_error(
     na.omit(dl, "bad")$collect(),
     "not found: unable to find column \"bad\""
   )
@@ -158,11 +158,11 @@ test_that("brackets", {
   # informative errors
   df = pl$DataFrame(mtcars)
 
-  expect_error(df[, "bad"], regexp = "not found")
-  expect_error(df[c(1, 4, 3), ], regexp = "increasing order")
-  expect_error(df[, rep(TRUE, 50)], regexp = "length 11")
-  expect_error(df[, 1:32], regexp = "less than")
-  expect_error(df[, mtcars], regexp = "atomic vector")
+  expect_grepl_error(df[, "bad"], regexp = "not found")
+  expect_grepl_error(df[c(1, 4, 3), ], regexp = "increasing order")
+  expect_grepl_error(df[, rep(TRUE, 50)], regexp = "length 11")
+  expect_grepl_error(df[, 1:32], regexp = "less than")
+  expect_grepl_error(df[, mtcars], regexp = "atomic vector")
 
   # eager
 
@@ -250,8 +250,8 @@ test_that("brackets", {
   )
 
   # Not supported for lazy
-  expect_error(lf[1:3, ], "not supported")
-  expect_error(lf[, "cyl"], "not supported")
+  expect_grepl_error(lf[1:3, ], "not supported")
+  expect_grepl_error(lf[, "cyl"], "not supported")
 
   # Test for drop = FALSE
   expect_equal(

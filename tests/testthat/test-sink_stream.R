@@ -4,7 +4,7 @@ rdf = lf$collect()$to_data_frame()
 test_that("Test sinking data to parquet file", {
   tmpf = tempfile()
   on.exit(unlink(tmpf))
-  expect_error(lf$sink_parquet(tmpf, compression = "rar"))
+  expect_grepl_error(lf$sink_parquet(tmpf, compression = "rar"))
   lf$sink_parquet(tmpf)
   expect_equal(pl$scan_parquet(tmpf)$collect()$to_data_frame(), rdf)
 })
@@ -13,7 +13,7 @@ test_that("Test sinking data to parquet file", {
   tmpf = tempfile()
   on.exit(unlink(tmpf))
   lf$sink_ipc(tmpf)
-  expect_error(lf$sink_ipc(tmpf, compression = "rar"))
+  expect_grepl_error(lf$sink_ipc(tmpf, compression = "rar"))
   expect_identical(pl$scan_ipc(tmpf, memmap = FALSE)$collect()$to_data_frame(), rdf)
 
 
@@ -95,7 +95,7 @@ test_that("sink_csv works", {
 })
 
 test_that("sink_csv: null_values works", {
-  expect_error(
+  expect_grepl_error(
     dat_pl$sink_csv(temp_out, null_values = NULL)
   )
   dat_pl$sink_csv(temp_out, null_values = "hello")

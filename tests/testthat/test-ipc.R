@@ -28,11 +28,11 @@ test_that("Test reading data from Apache Arrow IPC", {
   )
 
   # Test error handling
-  expect_error(pl$scan_ipc(0))
-  expect_error(pl$scan_ipc(tmpf, n_rows = "?"))
-  expect_error(pl$scan_ipc(tmpf, cache = 0L))
-  expect_error(pl$scan_ipc(tmpf, rechunk = list()))
-  expect_error(pl$scan_ipc(tmpf, row_index_name = c("x", "y")))
-  expect_error(pl$scan_ipc(tmpf, row_index_name = "name", row_index_offset = data.frame()))
-  expect_error(pl$scan_ipc(tmpf, memmap = NULL))
+  expect_grepl_error(pl$scan_ipc(0))
+  expect_grepl_error(pl$scan_ipc(tmpf, n_rows = "?"))
+  expect_grepl_error(pl$scan_ipc(tmpf, cache = 0L))
+  expect_grepl_error(pl$scan_ipc(tmpf, rechunk = list()))
+  expect_grepl_error(pl$scan_ipc(tmpf, row_index_name = c("x", "y")))
+  expect_grepl_error(pl$scan_ipc(tmpf, row_index_name = "name", row_index_offset = data.frame()))
+  expect_grepl_error(pl$scan_ipc(tmpf, memmap = NULL))
 })

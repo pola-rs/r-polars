@@ -268,7 +268,7 @@ test_that("group_by_dynamic for LazyFrame: error if not explicitly sorted", {
     index = c(1L, 2L, 3L, 4L, 8L, 9L),
     a = c(3, 7, 5, 9, 2, 1)
   )
-  expect_error(
+  expect_grepl_error(
     df$group_by_dynamic(index_column = "index", every = "2i")$agg(pl$col("a"))$collect(),
     "not explicitly sorted"
   )
@@ -295,7 +295,7 @@ test_that("group_by_dynamic for LazyFrame: arg 'closed' works", {
     c(0, 1.5, 3.5, 5.5)
   )
 
-  expect_error(
+  expect_grepl_error(
     df$group_by_dynamic(index_column = "dt", closed = "foobar", every = "1h")$agg(
       pl$col("n")$mean()
     )$collect(),
@@ -327,7 +327,7 @@ test_that("group_by_dynamic for LazyFrame: arg 'label' works", {
     )
   )
 
-  expect_error(
+  expect_grepl_error(
     df$group_by_dynamic(index_column = "dt", label = "foobar", every = "1h")$agg(
       pl$col("n")$mean()
     )$collect(),
@@ -362,7 +362,7 @@ test_that("group_by_dynamic for LazyFrame: arg 'start_by' works", {
     )
   )
 
-  expect_error(
+  expect_grepl_error(
     df$group_by_dynamic(index_column = "dt", start_by = "foobar", every = "1h")$agg(
       pl$col("n")$mean()
     )$collect(),
@@ -409,7 +409,7 @@ test_that("group_by_dynamic for LazyFrame: argument 'check_sorted' works", {
     grp = c("a", "a", rep("b", 4)),
     a = c(3, 7, 5, 9, 2, 1)
   )
-  expect_error(
+  expect_grepl_error(
     df$group_by_dynamic(index_column = "index", every = "2i", group_by = "grp")$agg(
       pl$sum("a")$alias("sum_a")
     )$collect(),
@@ -428,7 +428,7 @@ test_that("group_by_dynamic for LazyFrame: error if index not int or date/time",
     a = c(3, 7, 5, 9, 2, 1)
   )$with_columns(pl$col("index")$set_sorted())
 
-  expect_error(
+  expect_grepl_error(
     df$group_by_dynamic(index_column = "index", every = "2i")$agg(
       pl$sum("a")$alias("sum_a")
     )$collect()

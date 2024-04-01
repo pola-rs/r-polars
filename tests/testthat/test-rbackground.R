@@ -97,14 +97,14 @@ test_that("rpool errors", {
   skip_if_not_installed("withr")
   withr::with_options(
     list(polars.rpool_cap = c(1, 2)),
-    expect_error(
+    expect_grepl_error(
       polars_options(),
       "integer of length 1"
     )
   )
   withr::with_options(
     list(polars.rpool_cap = -1),
-    expect_error(
+    expect_grepl_error(
       polars_options(),
       "integer of length 1"
     )
