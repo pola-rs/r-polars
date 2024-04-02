@@ -271,6 +271,14 @@ Series_struct = method_as_active_binding(
       fields = method_as_active_binding(function() {
         unwrap(.pr$Series$struct_fields(pl_series), "in $struct$fields:")
       }),
+      #' Convert this struct Series to a DataFrame with a separate column for
+      #' each field
+      #'
+      #' @name Series_struct_unnest
+      #' @return A DataFrame
+      #' @examples
+      #' s = pl$Series(values = c(1, 2), dtype = pl$Struct(foo = pl$Float64))
+      #' s$struct$unnest()
       unnest = function() {
         .pr$Series$struct_unnest(pl_series) |>
           unwrap("in $struct$unnest():")

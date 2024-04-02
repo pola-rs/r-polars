@@ -717,10 +717,11 @@
       [37] "rep"                         "set_sorted_mut"             
       [39] "shape"                       "sleep"                      
       [41] "sort_mut"                    "std"                        
-      [43] "struct_fields"               "sub"                        
-      [45] "sum"                         "to_fmt_char"                
-      [47] "to_frame"                    "to_r"                       
-      [49] "value_counts"                "var"                        
+      [43] "struct_fields"               "struct_unnest"              
+      [45] "sub"                         "sum"                        
+      [47] "to_fmt_char"                 "to_frame"                   
+      [49] "to_r"                        "value_counts"               
+      [51] "var"                        
 
 # public and private methods of each class RThreadHandle
 

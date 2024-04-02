@@ -679,3 +679,17 @@ test_that("$clear() works", {
     "greater or equal to 0"
   )
 })
+
+test_that("$struct$unnest() works", {
+  s = pl$Series(values = c(1, 2), dtype = pl$Struct(foo = pl$Float64))
+  expect_identical(
+    s$struct$unnest()$to_list(),
+    list(foo = c(1, 2))
+  )
+  # empty Series
+  s = pl$Series(dtype = pl$Struct(foo = pl$Float64))
+  expect_identical(
+    s$struct$unnest()$to_list(),
+    list(foo = numeric(0))
+  )
+})
