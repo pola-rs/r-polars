@@ -1,0 +1,35 @@
+---
+title: "Differences with Python Polars"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Differences with Python Polars}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(polars)
+```
+
+We try to mimic the Python Polars API as much as possible so that one can quickly
+switch and copy code between the two languages with as little adjustments to make
+as possible (most of the time switching `.` and `$`).
+
+Still, there are a few places where the API diverges. This is often due to 
+differences in the language itself. This vignette provides a list of those
+differences.
+
+## 64-bit integers
+
+Extra arg to see how to convert 64-bit integers from polars to R.
+
+## Structs and objects
+
+Prefer the `as_` functions
