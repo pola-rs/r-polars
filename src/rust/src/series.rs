@@ -505,6 +505,12 @@ impl RPolarsSeries {
         Ok(ca.fields().iter().map(|s| s.name()).collect())
     }
 
+    fn struct_unnest(&self) -> RResult<RPolarsDataFrame> {
+        let ca = self.0.struct_().map_err(polars_to_rpolars_err)?;
+        let out: pl::DataFrame = ca.clone().into();
+        Ok(out.into())
+    }
+
     pub fn from_arrow_array_stream_str(name: Robj, robj_str: Robj) -> RResult<Robj> {
         let name = robj_to!(str, name)?;
         let s = crate::arrow_interop::to_rust::arrow_stream_to_series_internal(robj_str)?
