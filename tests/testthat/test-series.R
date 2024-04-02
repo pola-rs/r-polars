@@ -686,10 +686,20 @@ test_that("$struct$unnest() works", {
     s$struct$unnest()$to_list(),
     list(foo = c(1, 2))
   )
+
   # empty Series
   s = pl$Series(dtype = pl$Struct(foo = pl$Float64))
   expect_identical(
     s$struct$unnest()$to_list(),
     list(foo = numeric(0))
+  )
+
+  # Series "name" param is not used, only pl$Struct() name is used
+  s = pl$Series(name = "bar", dtype = pl$Struct(pl$Float64))
+  expected = list(numeric(0))
+  names(expected) = ""
+  expect_identical(
+    s$struct$unnest()$to_list(),
+    expected
   )
 })
