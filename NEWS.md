@@ -90,6 +90,8 @@
 
 ### New features
 
+- `pl$Series()` now calls `as_polars_series()` internally, so it can convert
+  more classes to Series properly (#1015).
 - New functions `pl$datetime()`, `pl$date()`, and `pl$time()` to easily create
   Expr of class datetime, date, and time via columns and literals (#918).
 - New function `pl$arg_where()` to get the indices that match a condition (#922).
