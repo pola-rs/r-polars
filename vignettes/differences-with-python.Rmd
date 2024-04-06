@@ -26,10 +26,44 @@ Still, there are a few places where the API diverges. This is often due to
 differences in the language itself. This vignette provides a list of those
 differences.
 
+## Converting data between Polars and R
+
+### From R to Polars
+
+The R package provides functions to create polars `DataFrame`, `LazyFrame`, and 
+`Series`. Like most of the functions, those are designed to be close to their
+Python counterparts.
+
+Still, R users are more used to `as.*` or `as_*` functions to convert R objects.
+Therefore, in the documentation, we sometimes prefer using `as_polars_df(<data>)`
+rather than `pl$DataFrame(<data>)`.
+
+### From Polars to R
+
+While Python Polars has `to_pandas()`, we provide methods to convert Polars data
+to standard R objects, such as `$to_list()` or `$to_dataframe()`. However, the
+standard R user might find it more familiar to call `as.data.frame()`, `as.list()`
+or `as.vector()` on Polars structures.
+
+
 ## 64-bit integers
 
-Extra arg to see how to convert 64-bit integers from polars to R.
+R doesn't natively support 64-bit integers but this is a completely valid data
+type in Polars, which is based on the Arrow specification. This means that 
+handling Int64 values in `polars` structures doesn't deviate from the Python
+setting. However, we need to implement some extra arguments when we want to pass
+data from Polars to R. 
+
+In particular, all functions that convert some polars data to R (`as.data.frame()` 
+and other methods such as `$to_list()`) have an argument `int64_conversion` which
+specifies how Int64 values should be handled. The default is to convert those
+Int64 to Float64, but it is also possible to convert them to character or to keep
+them as Int64 by using the package `bit64` under the hood.
+
+This option can be set globally using `options(polars.int64_conversion = "<value>")`.
+See `?polars_options()` for more details.
+
 
 ## Structs and objects
 
-Prefer the `as_` functions
+Hard to create them from R objects
