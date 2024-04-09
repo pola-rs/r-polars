@@ -7,7 +7,7 @@
 ExprArr_to_list()
 }
 \value{
-\link{Expr} of \link[=DataType_List]{data type List}
+\link[=Expr_class]{Expr} of \link[=DataType_List]{data type List}
 }
 \description{
 Convert an Array column into a List column with the same inner data type

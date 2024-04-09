@@ -281,7 +281,7 @@ ExprArr_shift = function(periods = 1) {
 
 #' Convert an Array column into a List column with the same inner data type
 #'
-#' @return [Expr] of [data type List][DataType_List]
+#' @return [Expr][Expr_class] of [data type List][DataType_List]
 #' @examples
 #' df = pl$DataFrame(
 #'   a = list(c(1, 2), c(3, 4)),
