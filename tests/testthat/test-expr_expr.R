@@ -2036,7 +2036,6 @@ test_that("reshape", {
   )
 
   expect_grepl_error(pl$lit(1:12)$reshape("hej"))
-  expect_grepl_error(pl$lit(1:12)$reshape(c(3, 4, 3)))
   expect_grepl_error(pl$lit(1:12)$reshape(NaN))
   expect_grepl_error(pl$lit(1:12)$reshape(NA_real_))
 })

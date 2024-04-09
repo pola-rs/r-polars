@@ -2806,19 +2806,27 @@ Expr_arccosh = use_extendr_wrapper
 #'   with_columns(arctanh = pl$col("a")$arctanh())
 Expr_arctanh = use_extendr_wrapper
 
-#' Reshape
+#' Reshape this Expr to a flat Series or a Series of Lists
 #'
-#' Reshape an Expr to a flat Series or a Series of Lists.
-#' @param dims Numeric vec of the dimension sizes. If a -1 is used in any of the
-#' dimensions, that dimension is inferred.
-#' @return Expr
+#' @param dimensions A integer vector of length of the dimension size.
+#' If `-1` is used in any of the dimensions, that dimension is inferred.
+#' Currently, more than two dimensions not supported.
+#' @return [Expr][Expr_class].
+#' If a single dimension is given, results in an expression of the original data type.
+#' If a multiple dimensions are given, results in an expression of [data type List][DataType_List]
+#' with shape equal to the dimensions.
 #' @examples
-#' pl$select(pl$lit(1:12)$reshape(c(3, 4)))
-#' pl$select(pl$lit(1:12)$reshape(c(3, -1)))
-Expr_reshape = function(dims) {
-  if (!is.numeric(dims)) pstop(err = "reshape: arg dims must be numeric")
-  if (!length(dims) %in% 1:2) pstop(err = "reshape: arg dims must be of length 1 or 2")
-  unwrap(.pr$Expr$reshape(self, as.numeric(dims)))
+#' df = pl$DataFrame(foo = 1:9)
+#'
+#' df$select(pl$col("foo")$reshape(9))
+#' df$select(pl$col("foo")$reshape(c(3, 3)))
+#'
+#' # Use `-1` to infer the other dimension
+#' df$select(pl$col("foo")$reshape(c(-1, 3)))
+#' df$select(pl$col("foo")$reshape(c(3, -1)))
+Expr_reshape = function(dimensions) {
+  .pr$Expr$reshape(self, dimensions) |>
+    unwrap("in $reshape():")
 }
 
 #' Shuffle values
