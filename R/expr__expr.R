@@ -2806,6 +2806,7 @@ Expr_arccosh = use_extendr_wrapper
 #'   with_columns(arctanh = pl$col("a")$arctanh())
 Expr_arctanh = use_extendr_wrapper
 
+# TODO: link to ExprList_explode
 #' Reshape this Expr to a flat Series or a Series of Lists
 #'
 #' @param dimensions A integer vector of length of the dimension size.
