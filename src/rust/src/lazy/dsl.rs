@@ -11,7 +11,7 @@ use crate::utils::extendr_helpers::robj_inherits;
 use crate::utils::robj_to_rchoice;
 use crate::utils::wrappers::null_to_opt;
 use crate::utils::{r_error_list, r_ok_list, r_result_list, robj_to_binary_vec};
-use crate::utils::{try_f64_into_i64, try_f64_into_u32, try_f64_into_usize};
+use crate::utils::{try_f64_into_u32, try_f64_into_usize};
 use crate::CONFIG;
 use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut};
 use pl::PolarsError as pl_error;
@@ -824,15 +824,9 @@ impl RPolarsExpr {
         self.clone().0.arctanh().into()
     }
 
-    pub fn reshape(&self, dims: Vec<f64>) -> List {
-        let dims_result: Result<Vec<i64>, String> = dims
-            .iter()
-            .map(|x| try_f64_into_i64(*x).map_err(String::from))
-            .collect();
-        let expr_result = dims_result
-            .map(|dims| RPolarsExpr(self.0.clone().reshape(&dims[..])))
-            .map_err(|err| format!("reshape: {}", err));
-        r_result_list(expr_result)
+    pub fn reshape(&self, dims: Robj) -> RResult<Self> {
+        let dims = robj_to!(Vec, i64, dims)?;
+        Ok(self.0.clone().reshape(&dims).into())
     }
 
     pub fn shuffle(&self, seed: Robj) -> RResult<Self> {
