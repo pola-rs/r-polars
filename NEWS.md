@@ -109,6 +109,7 @@
 - New functions `pl$int_range()` and `pl$int_ranges()` (#968).
 - New string method `$str$extract_groups()` (#979).
 - New string method `$str$find()` (#985).
+- New array method `$arr$to_list()` (#1018).
 - New argument `n` in `$str$replace()` (#987).
 - Method `$over()` gains an argument `mapping_strategy` (#984, #988).
 - New method `$item()` for `DataFrame` and `Series` (#992).
