@@ -30,8 +30,3 @@ df$select(pl$col("foo")$reshape(c(3, 3)))
 df$select(pl$col("foo")$reshape(c(-1, 3)))
 df$select(pl$col("foo")$reshape(c(3, -1)))
 }
-\seealso{
-\itemize{
-\item \code{\link[=<Expr>$list$explode]{<Expr>$list$explode()}}: Explode a list column.
-}
-}

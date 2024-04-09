@@ -2815,8 +2815,6 @@ Expr_arctanh = use_extendr_wrapper
 #' If a single dimension is given, results in an expression of the original data type.
 #' If a multiple dimensions are given, results in an expression of [data type List][DataType_List]
 #' with shape equal to the dimensions.
-#' @seealso
-#' - [`<Expr>$list$explode()`]: Explode a list column.
 #' @examples
 #' df = pl$DataFrame(foo = 1:9)
 #'
