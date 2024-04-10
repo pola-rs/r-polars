@@ -18,7 +18,7 @@ We try to mimic the Python Polars API as much as possible so that one can quickl
 switch and copy code between the two languages with as little adjustments to make
 as possible (most of the time switching `.` and `$` to chain methods).
 
-Still, there are a few places where the API diverges. This is often due to 
+Still, there are a few places where the API diverges. This is often due to
 differences in the language itself. This vignette provides a list of those
 differences.
 
@@ -27,12 +27,12 @@ differences.
 
 ### From R to Polars
 
-The R package provides functions to create polars `DataFrame`, `LazyFrame`, and 
+The R package provides functions to create polars `DataFrame`, `LazyFrame`, and
 `Series`. Like most of the functions, those are designed to be close to their
 Python counterparts.
 
 Still, R users are more used to `as.*` or `as_*` functions to convert from or to
-other R objects. Therefore, in the documentation, we sometimes prefer using 
+other R objects. Therefore, in the documentation, we sometimes prefer using
 `as_polars_df(<data>)` rather than `pl$DataFrame(<data>)`.
 
 ### From Polars to R
@@ -46,12 +46,12 @@ or `as.vector()` on Polars structures.
 ## 64-bit integers
 
 R doesn't natively support 64-bit integers (Int64) but this is a completely valid data
-type in Polars, which is based on the Arrow specification. This means that 
+type in Polars, which is based on the Arrow specification. This means that
 handling Int64 values in `polars` objects doesn't deviate from the Python
 setting. However, we need to implement some extra arguments when we want to pass
-data from Polars to R. 
+data from Polars to R.
 
-In particular, all functions that convert some polars data to R (`as.data.frame()` 
+In particular, all functions that convert some polars data to R (`as.data.frame()`
 and other methods such as `$to_list()`) have an argument `int64_conversion` which
 specifies how Int64 values should be handled. The default is to convert those
 Int64 to Float64, but it is also possible to convert them to character or to keep
@@ -68,7 +68,7 @@ See `?polars_options()` for more details.
 A `Struct` is a data type that is composed of several `Field`s, which themselves
 have a name and a datatype.
 
-While it is possible to create a `Series` of type `Struct` in Python via 
+While it is possible to create a `Series` of type `Struct` in Python via
 `pl.Series()`, this is not possible in R:
 
 ```python
