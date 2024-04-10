@@ -98,10 +98,6 @@ A slightly simpler way would be via `tibble::tibble()` or `data.table::data.tabl
 as_polars_series(
   tibble::tibble(a = 1:2, b = list(c("x", "y"), "z"))
 )
-
-as_polars_series(
-  data.table::data.table(a = 1:2, b = list(c("x", "y"), "z"))
-)
 ```
 
 Finally, one can use the method `$to_struct()` to convert existing columns
