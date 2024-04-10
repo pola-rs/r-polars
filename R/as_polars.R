@@ -523,3 +523,25 @@ as_polars_series.clock_zoned_time = function(x, name = NULL, ...) {
     ...
   )$dt$replace_time_zone(time_zone)
 }
+
+
+# TODO: rewrite `recursive_robjname2series_tree` in Rust side
+#' @rdname as_polars_series
+#' @export
+as_polars_series.list = function(x, name = NULL, ...) {
+  lapply(x, \(child) {
+    if (is.null(child)) {
+      NULL # if `NULL`, the type will be resolved later
+    } else {
+      as_polars_series(child)
+    }
+  }) |>
+    as_polars_series.default(name = name)
+}
+
+
+# TODO: reconsider `rpolars_raw_list`
+#' @export
+as_polars_series.rpolars_raw_list = function(x, name = NULL, ...) {
+  as_polars_series.default(x, name = name)
+}

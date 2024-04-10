@@ -427,3 +427,16 @@ test_that("clock_zoned_time may returns empty time zone", {
 
   expect_s3_class(as_polars_series(clock::zoned_time_now(zone = "")), "RPolarsSeries")
 })
+
+
+test_that("as_polars_series for nested type", {
+  expect_true(
+    as_polars_series(list(list(data.frame(a = 1))))$dtype == pl$List(pl$List(pl$Struct(a = pl$Float64)))
+  )
+
+  # TODO: this shouldn't error
+  expect_grepl_error(
+    as_polars_series(list(as_polars_series(NULL), as_polars_series(1L))),
+    "One element was null and another was i32"
+  )
+})

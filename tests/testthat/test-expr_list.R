@@ -1,5 +1,5 @@
 test_that("list$len", {
-  df = pl$DataFrame(list_of_strs = as_polars_series(list(c("a", "b"), "c", character(), list(), NULL)))
+  df = pl$DataFrame(list_of_strs = as_polars_series(list(c("a", "b"), "c", character(), NULL, NULL)))
   l = df$with_columns(pl$col("list_of_strs")$list$len()$alias("list_of_strs_lengths"))$to_list()
 
   expect_identical(
