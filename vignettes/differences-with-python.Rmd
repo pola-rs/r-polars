@@ -68,8 +68,8 @@ See `?polars_options()` for more details.
 A `Struct` is a data type that is composed of several `Field`s, which themselves
 have a name and a datatype.
 
-While it is possible to create a `Series` of type `Struct` in Python via
-`pl.Series()`, this is not possible in R:
+The way to create a `Series` of type `Struct` is a bit convoluted as it involves
+`data.frame()`, `list()`, and `I()`:
 
 ```python
 >>> s = pl.Series([{"a": 1, "b": ["x", "y"]}, {"a": 2, "b": ["z"]}])
@@ -84,12 +84,30 @@ Series: '' [struct[2]]
 Struct({'a': Int64, 'b': List(String)})
 ```
 
-Instead, one should use the method `$to_struct()` to convert existing columns
-or `Series` to a `Struct`:
-
 ```{r}
 library(polars)
 
+as_polars_series(
+  data.frame(a = 1:2, b = I(list(c("x", "y"), "z")))
+)
+```
+
+A slightly simpler way would be via `tibble::tibble()` or `data.table::data.table()`:
+
+```{r}
+as_polars_series(
+  tibble::tibble(a = 1:2, b = list(c("x", "y"), "z"))
+)
+
+as_polars_series(
+  data.table::data.table(a = 1:2, b = list(c("x", "y"), "z"))
+)
+```
+
+Finally, one can use the method `$to_struct()` to convert existing columns
+or `Series` to a `Struct`:
+
+```{r}
 x = pl$DataFrame(
   a = 1:2,
   b = list(c("x", "y"), "z")
