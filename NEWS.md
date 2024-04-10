@@ -14,7 +14,7 @@
 ### Other breaking changes
 
 - R objects inside an R list are now converted to Polars data types via
-  `as_polars_series()` (#1021). For example, up to polars 0.15.1, 
+  `as_polars_series()` (#1021). For example, up to polars 0.15.1,
   data.frames inside a list were converted to a nested List type:
 
   ```r
