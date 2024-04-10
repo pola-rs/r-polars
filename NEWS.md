@@ -13,6 +13,37 @@
 
 ### Other breaking changes
 
+- R objects inside an R list are now converted to Polars data types via
+  `as_polars_series()` (#1021). For example, data.frames inside a list
+  are converted to the polars List type in previous versions.
+
+  ```r
+  pl$select(nested_data = pl$lit(list(data.frame(a = 1))))
+  #> shape: (1, 1)
+  #> ┌─────────────────┐
+  #> │ nested_data     │
+  #> │ ---             │
+  #> │ list[list[f64]] │
+  #> ╞═════════════════╡
+  #> │ [[1.0]]         │
+  #> └─────────────────┘
+  ```
+
+  In 0.17.0, data.frames inside a list are converted to the polars Struct type
+  via `as_polars_series(<data.frame>)`.
+
+  ```r
+  pl$select(nested_data = pl$lit(list(data.frame(a = 1))))
+  #> shape: (1, 1)
+  #> ┌─────────────────┐
+  #> │ nested_data     │
+  #> │ ---             │
+  #> │ list[struct[1]] │
+  #> ╞═════════════════╡
+  #> │ [{1.0}]         │
+  #> └─────────────────┘
+  ```
+
 - Several functions have been rewritten to match the behavior of Python Polars.
 
   - In `pl$Series()` arguments are changed.
