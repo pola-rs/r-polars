@@ -291,15 +291,16 @@ Series_struct = method_as_active_binding(
 # TODO: change the arguments in 0.17.0
 #' Create new Series
 #'
-#' This function is a simple way to convert basic types of vectors provided by base R to
+#' This function is a simple way to convert R vectors to
 #' [the Series class object][Series_class].
-#' For converting more types properly, use the generic function [as_polars_series()].
+#' Internally, this function is a simple wrapper of [as_polars_series()].
 #' @param ... Treated as `values`, `name`, and `dtype` in order.
 #' In future versions, the order of the arguments will be changed to
 #' `pl$Series(name, values, dtype, ..., nan_to_null)` and `...` will be ignored.
-#' @param values Vector of base R types, or `NULL` (default).
-#' If `NULL`, empty Series is created.
-#' @param name Name of the Series. If `NULL` (default), an empty string is used.
+#' @param values Object to convert into a polars Series.
+#' Passed to the `x` argument in [as_polars_series()][as_polars_series].
+#' @param name A character to use as the name of the Series, or `NULL` (default).
+#' Passed to the `name` argument in [as_polars_series()][as_polars_series].
 #' @param dtype One of [polars data type][pl_dtypes] or `NULL`.
 #' If not `NULL`, that data type is used to [cast][Expr_cast] the Series created from the vector
 #' to a specific data type internally.
@@ -346,7 +347,7 @@ pl_Series = function(
       uw()
   }
 
-  out = .pr$Series$new(name %||% "", values) |>
+  out = result(as_polars_series(values, name)) |>
     uw()
 
   if (!is.null(dtype)) {

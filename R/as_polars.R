@@ -303,11 +303,12 @@ as_polars_lf.RPolarsLazyGroupBy = function(x, ...) {
 
 #' To polars Series
 #'
-#' [as_polars_series()] is a generic function that converts an R object to a
-#' polars Series. It is basically a wrapper for [pl$Series()][pl_Series].
-#' @param x Object to convert into a polars Series
-#' @param name A string to use as the name of the Series.
-#' If `NULL` (default), the name of `x` is used or an unnamed Series is created.
+#' [as_polars_series()] is a generic function that converts an R object to
+#' [a polars Series][Series_class].
+#' @param x Object to convert into [a polars Series][Series_class].
+#' @param name A character to use as the name of the [Series][Series_class].
+#' If `NULL` (default), the name of `x` is used or an empty character `""`
+#' will be used if `x` has no name.
 #' @inheritParams as_polars_df
 #' @return a [Series][Series_class]
 #' @export
@@ -329,7 +330,8 @@ as_polars_series = function(x, name = NULL, ...) {
 #' @rdname as_polars_series
 #' @export
 as_polars_series.default = function(x, name = NULL, ...) {
-  pl$Series(values = x, name = name)
+  .pr$Series$new(name %||% "", x) |>
+    unwrap("in as_polars_series():")
 }
 
 
@@ -367,13 +369,15 @@ as_polars_series.POSIXlt = function(x, name = NULL, ...) {
 #' @rdname as_polars_series
 #' @export
 as_polars_series.data.frame = function(x, name = NULL, ...) {
-  pl$DataFrame(unclass(x))$to_struct(name = name)
+  as_polars_df(x)$to_struct(name = name)
 }
 
 
 #' @rdname as_polars_series
 #' @export
-as_polars_series.vctrs_rcrd = as_polars_series.data.frame
+as_polars_series.vctrs_rcrd = function(x, name = NULL, ...) {
+  pl$select(unclass(x))$to_struct(name = name)
+}
 
 
 #' @rdname as_polars_series

@@ -278,6 +278,22 @@ ExprArr_shift = function(periods = 1) {
     unwrap("in $arr$shift():")
 }
 
+
+#' Convert an Array column into a List column with the same inner data type
+#'
+#' @return [Expr][Expr_class] of [data type List][DataType_List]
+#' @examples
+#' df = pl$DataFrame(
+#'   a = list(c(1, 2), c(3, 4)),
+#'   schema = list(a = pl$Array(pl$Int8, 2))
+#' )
+#'
+#' df$with_columns(
+#'   list = pl$col("a")$arr$to_list()
+#' )
+ExprArr_to_list = function() .pr$Expr$arr_to_list(self)
+
+
 #' Convert array to struct
 #'
 #' @inheritParams ExprList_to_struct
