@@ -48,6 +48,7 @@
     - In `<LazyFrame>$sink_*` functions, the first argument is now `path`.
   - In `$dt$convert_time_zone()` and `$dt$replace_time_zone()`, the `tz` argument
     is renamed to `time_zone` (#944).
+  - In `$reshape()`, the `dims` argument is renamed to `dimensions` (#1019).
   - In `<DataFrame>$rolling()`, `<LazyFrame>$rolling()`, `<DataFrame>$group_by_dynamic()`
     and `<LazyFrame>$group_by_dynamic()`, the `by` argument is renamed to `group_by` (#983).
   - In `<DataFrame>$rolling()` and `<DataFrame>$group_by_dynamic()`, all arguments
@@ -90,6 +91,8 @@
 
 ### New features
 
+- `pl$Series()` now calls `as_polars_series()` internally, so it can convert
+  more classes to Series properly (#1015).
 - New functions `pl$datetime()`, `pl$date()`, and `pl$time()` to easily create
   Expr of class datetime, date, and time via columns and literals (#918).
 - New function `pl$arg_where()` to get the indices that match a condition (#922).
@@ -107,6 +110,7 @@
 - New functions `pl$int_range()` and `pl$int_ranges()` (#968).
 - New string method `$str$extract_groups()` (#979).
 - New string method `$str$find()` (#985).
+- New array method `$arr$to_list()` (#1018).
 - New argument `n` in `$str$replace()` (#987).
 - Method `$over()` gains an argument `mapping_strategy` (#984, #988).
 - New method `$item()` for `DataFrame` and `Series` (#992).

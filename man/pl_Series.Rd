@@ -12,10 +12,11 @@ pl_Series(..., values = NULL, name = NULL, dtype = NULL, nan_to_null = FALSE)
 In future versions, the order of the arguments will be changed to
 \code{pl$Series(name, values, dtype, ..., nan_to_null)} and \code{...} will be ignored.}
 
-\item{values}{Vector of base R types, or \code{NULL} (default).
-If \code{NULL}, empty Series is created.}
+\item{values}{Object to convert into a polars Series.
+Passed to the \code{x} argument in \link[=as_polars_series]{as_polars_series()}.}
 
-\item{name}{Name of the Series. If \code{NULL} (default), an empty string is used.}
+\item{name}{A character to use as the name of the Series, or \code{NULL} (default).
+Passed to the \code{name} argument in \link[=as_polars_series]{as_polars_series()}.}
 
 \item{dtype}{One of \link[=pl_dtypes]{polars data type} or \code{NULL}.
 If not \code{NULL}, that data type is used to \link[=Expr_cast]{cast} the Series created from the vector
@@ -28,9 +29,9 @@ Using the \code{\link[=Expr_fill_nan]{$fill_nan()}} method internally.}
 \link[=Series_class]{Series}
 }
 \description{
-This function is a simple way to convert basic types of vectors provided by base R to
+This function is a simple way to convert R vectors to
 \link[=Series_class]{the Series class object}.
-For converting more types properly, use the generic function \code{\link[=as_polars_series]{as_polars_series()}}.
+Internally, this function is a simple wrapper of \code{\link[=as_polars_series]{as_polars_series()}}.
 }
 \examples{
 # Constructing a Series by specifying name and values positionally (deprecated):

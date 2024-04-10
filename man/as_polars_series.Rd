@@ -52,10 +52,11 @@ as_polars_series(x, name = NULL, ...)
 \method{as_polars_series}{clock_zoned_time}(x, name = NULL, ...)
 }
 \arguments{
-\item{x}{Object to convert into a polars Series}
+\item{x}{Object to convert into \link[=Series_class]{a polars Series}.}
 
-\item{name}{A string to use as the name of the Series.
-If \code{NULL} (default), the name of \code{x} is used or an unnamed Series is created.}
+\item{name}{A character to use as the name of the \link[=Series_class]{Series}.
+If \code{NULL} (default), the name of \code{x} is used or an empty character \code{""}
+will be used if \code{x} has no name.}
 
 \item{...}{Additional arguments passed to methods.}
 
@@ -65,8 +66,8 @@ If \code{NULL} (default), the name of \code{x} is used or an unnamed Series is c
 a \link[=Series_class]{Series}
 }
 \description{
-\code{\link[=as_polars_series]{as_polars_series()}} is a generic function that converts an R object to a
-polars Series. It is basically a wrapper for \link[=pl_Series]{pl$Series()}.
+\code{\link[=as_polars_series]{as_polars_series()}} is a generic function that converts an R object to
+\link[=Series_class]{a polars Series}.
 }
 \examples{
 as_polars_series(1:4)
