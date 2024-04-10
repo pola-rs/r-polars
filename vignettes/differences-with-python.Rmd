@@ -88,6 +88,8 @@ Instead, one should use the method `$to_struct()` to convert existing columns
 or `Series` to a `Struct`:
 
 ```{r}
+library(polars)
+
 x = pl$DataFrame(
   a = 1:2,
   b = list(c("x", "y"), "z")
