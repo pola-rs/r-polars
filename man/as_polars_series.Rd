@@ -17,6 +17,7 @@
 \alias{as_polars_series.clock_time_point}
 \alias{as_polars_series.clock_sys_time}
 \alias{as_polars_series.clock_zoned_time}
+\alias{as_polars_series.list}
 \title{To polars Series}
 \usage{
 as_polars_series(x, name = NULL, ...)
@@ -50,6 +51,8 @@ as_polars_series(x, name = NULL, ...)
 \method{as_polars_series}{clock_sys_time}(x, name = NULL, ...)
 
 \method{as_polars_series}{clock_zoned_time}(x, name = NULL, ...)
+
+\method{as_polars_series}{list}(x, name = NULL, ...)
 }
 \arguments{
 \item{x}{Object to convert into \link[=Series_class]{a polars Series}.}
