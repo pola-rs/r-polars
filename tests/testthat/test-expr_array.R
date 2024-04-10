@@ -300,6 +300,22 @@ test_that("arr$shift", {
   )
 })
 
+test_that("arr$to_list", {
+  df = pl$DataFrame(
+    strings = list(c("a", "b"), c("c", "d")),
+    schema = list(strings = pl$Array(pl$String, 2))
+  )
+
+  expect_true(
+    df$select(pl$col("strings")$arr$to_list())$equals(
+      pl$DataFrame(
+        strings = list(c("a", "b"), c("c", "d")),
+        schema = list(strings = pl$List(pl$String))
+      )
+    )
+  )
+})
+
 test_that("arr$to_struct", {
   df = pl$DataFrame(
     strings = list(c("a", "b"), c("c", "d")),

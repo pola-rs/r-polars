@@ -2,21 +2,31 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_reshape}
 \alias{Expr_reshape}
-\title{Reshape}
+\title{Reshape this Expr to a flat Series or a Series of Lists}
 \usage{
-Expr_reshape(dims)
+Expr_reshape(dimensions)
 }
 \arguments{
-\item{dims}{Numeric vec of the dimension sizes. If a -1 is used in any of the
-dimensions, that dimension is inferred.}
+\item{dimensions}{A integer vector of length of the dimension size.
+If \code{-1} is used in any of the dimensions, that dimension is inferred.
+Currently, more than two dimensions not supported.}
 }
 \value{
-Expr
+\link[=Expr_class]{Expr}.
+If a single dimension is given, results in an expression of the original data type.
+If a multiple dimensions are given, results in an expression of \link[=DataType_List]{data type List}
+with shape equal to the dimensions.
 }
 \description{
-Reshape an Expr to a flat Series or a Series of Lists.
+Reshape this Expr to a flat Series or a Series of Lists
 }
 \examples{
-pl$select(pl$lit(1:12)$reshape(c(3, 4)))
-pl$select(pl$lit(1:12)$reshape(c(3, -1)))
+df = pl$DataFrame(foo = 1:9)
+
+df$select(pl$col("foo")$reshape(9))
+df$select(pl$col("foo")$reshape(c(3, 3)))
+
+# Use `-1` to infer the other dimension
+df$select(pl$col("foo")$reshape(c(-1, 3)))
+df$select(pl$col("foo")$reshape(c(3, -1)))
 }

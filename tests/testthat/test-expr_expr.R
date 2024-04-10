@@ -2036,9 +2036,14 @@ test_that("reshape", {
   )
 
   expect_grepl_error(pl$lit(1:12)$reshape("hej"))
-  expect_grepl_error(pl$lit(1:12)$reshape(c(3, 4, 3)))
   expect_grepl_error(pl$lit(1:12)$reshape(NaN))
   expect_grepl_error(pl$lit(1:12)$reshape(NA_real_))
+
+  expect_true(
+    pl$DataFrame(a = 1:4)$select(
+      pl$col("a")$reshape(c(-1, 2))
+    )$dtypes[[1]] == pl$List(pl$Int32)
+  )
 })
 
 
