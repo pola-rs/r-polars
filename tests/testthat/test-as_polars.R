@@ -434,7 +434,7 @@ test_that("as_polars_series for nested type", {
     as_polars_series(list(list(data.frame(a = 1))))$dtype == pl$List(pl$List(pl$Struct(a = pl$Float64)))
   )
 
-  # TODO: Fix me
+  # TODO: this shouldn't error
   expect_grepl_error(
     as_polars_series(list(as_polars_series(NULL), as_polars_series(1L))),
     "One element was null and another was i32"
