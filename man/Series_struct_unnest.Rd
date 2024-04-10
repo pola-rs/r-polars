@@ -6,7 +6,7 @@
 \title{Convert this struct Series to a DataFrame with a separate column for
 each field}
 \usage{
-Series_struct()
+Series_struct_unnest()
 }
 \value{
 A DataFrame

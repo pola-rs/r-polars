@@ -274,6 +274,8 @@ Series_struct = method_as_active_binding(
       #' Convert this struct Series to a DataFrame with a separate column for
       #' each field
       #'
+      #' @usage Series_struct_unnest()
+      #'
       #' @name Series_struct_unnest
       #' @return A DataFrame
       #' @examples
