@@ -14,7 +14,7 @@
 ### Other breaking changes
 
 - R objects inside an R list are now converted to Polars data types via
-  `as_polars_series()` (#1021, #1022). For example, up to polars 0.15.1,
+  `as_polars_series()` (#1021, #1022, #1023). For example, up to polars 0.15.1,
   a list containing a data.frame with a column of `{clock}` naive-time class
   was converted to a nested List type of Float64:
 
