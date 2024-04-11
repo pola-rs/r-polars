@@ -71,36 +71,36 @@ try to convert them to a supported data type. For example, so far the class `hms
 from the eponymous package is not supported, so we try to convert it to a numeric
 class:
 
-```r
-> hms::hms(56, 34, 12)
-12:34:56
+``` r
+hms::hms(56, 34, 12)
+#> 12:34:56
 
-> pl$DataFrame(x = hms::hms(56, 34, 12))
-shape: (1, 1)
-┌─────────┐
-│ x       │
-│ ---     │
-│ f64     │
-╞═════════╡
-│ 45296.0 │
-└─────────┘
+pl$DataFrame(x = hms::hms(56, 34, 12))
+#> shape: (1, 1)
+#> ┌─────────┐
+#> │ x       │
+#> │ ---     │
+#> │ f64     │
+#> ╞═════════╡
+#> │ 45296.0 │
+#> └─────────┘
 ```
+
 
 In some cases, there's no conversion possible. For example, one cannot convert
 a `geos` geometry to any supported data type. In this case, it will raise an
 error:
 
-```r
-> geos::as_geos_geometry("LINESTRING (0 1, 3 9)")
-<geos_geometry[1]>
-[1] <LINESTRING (0 1, 3 9)>
+``` r
+geos::as_geos_geometry("LINESTRING (0 1, 3 9)")
+#> <geos_geometry[1]>
+#> [1] <LINESTRING (0 1, 3 9)>
 
-> pl$DataFrame(x = geos::as_geos_geometry("LINESTRING (0 1, 3 9)"))
-Error: Execution halted with the following contexts
-   0: In R: in $DataFrame():
-   0: During function call [pl$DataFrame(x = geos::as_geos_geometry("LINESTRING (0 1, 3 9)"))]
-   1: When constructing polars literal from Robj
-   2: Encountered the following error in Rust-Polars:
-      	expected Series
+pl$DataFrame(x = geos::as_geos_geometry("LINESTRING (0 1, 3 9)"))
+#> Error: Execution halted with the following contexts
+#>    0: In R: in $DataFrame():
+#>    0: During function call [pl$DataFrame(x = geos::as_geos_geometry("LINESTRING (0 1, 3 9)"))]
+#>    1: When constructing polars literal from Robj
+#>    2: Encountered the following error in Rust-Polars:
+#>         expected Series
 ```
-
