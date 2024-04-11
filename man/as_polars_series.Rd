@@ -79,7 +79,10 @@ as_polars_series(list(1:4))
 
 as_polars_series(data.frame(a = 1:4))
 
-as_polars_series(pl$Series(1:4, name = "foo"))
+as_polars_series(as_polars_series(1:4, name = "foo"))
 
 as_polars_series(pl$lit(1:4))
+
+# Nested type support
+as_polars_series(list(data.frame(a = I(list(1:4)))))
 }

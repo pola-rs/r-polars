@@ -319,9 +319,12 @@ as_polars_lf.RPolarsLazyGroupBy = function(x, ...) {
 #'
 #' as_polars_series(data.frame(a = 1:4))
 #'
-#' as_polars_series(pl$Series(1:4, name = "foo"))
+#' as_polars_series(as_polars_series(1:4, name = "foo"))
 #'
 #' as_polars_series(pl$lit(1:4))
+#'
+#' # Nested type support
+#' as_polars_series(list(data.frame(a = I(list(1:4)))))
 as_polars_series = function(x, name = NULL, ...) {
   UseMethod("as_polars_series")
 }
@@ -525,7 +528,6 @@ as_polars_series.clock_zoned_time = function(x, name = NULL, ...) {
 }
 
 
-# TODO: rewrite `recursive_robjname2series_tree` in Rust side
 #' @rdname as_polars_series
 #' @export
 as_polars_series.list = function(x, name = NULL, ...) {
