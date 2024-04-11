@@ -434,6 +434,11 @@ test_that("as_polars_series for nested type", {
     as_polars_series(list(list(data.frame(a = 1))))$dtype == pl$List(pl$List(pl$Struct(a = pl$Float64)))
   )
   expect_true(
+    as_polars_series(
+      list(data.frame(a = I(list(data.frame(b = 1L)))))
+    )$dtype == pl$List(pl$Struct(a = pl$List(pl$Struct(b = pl$Int32))))
+  )
+  expect_true(
     as_polars_series(list(as_polars_series(NULL), as_polars_series(1L)))$dtype == pl$List(pl$Int32)
   )
   expect_true(

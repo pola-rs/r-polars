@@ -207,7 +207,10 @@ DataType_Duration = function(time_unit = "us") {
 
 #' Create Struct DataType
 #'
-#' Struct DataType Constructor
+#' One can create a `Struct` data type with `pl$Struct()`. There are also
+#' multiple ways to create columns of data type `Struct` in a `DataFrame` or
+#' a `Series`, see the examples.
+#'
 #' @param ... RPolarsDataType objects
 #' @return a list DataType with an inner DataType
 #' @examples
@@ -215,15 +218,38 @@ DataType_Duration = function(time_unit = "us") {
 #' pl$Struct(pl$Boolean)
 #' pl$Struct(foo = pl$Int32, bar = pl$Float64)
 #'
-#' # Find any DataType via pl$dtypes
-#' print(pl$dtypes)
-#'
 #' # check if an element is any kind of Struct()
 #' test = pl$Struct(pl$UInt64)
 #' pl$same_outer_dt(test, pl$Struct())
 #'
 #' # `test` is a type of Struct, but it doesn't mean it is equal to an empty Struct
 #' test == pl$Struct()
+#'
+#' # The way to create a `Series` of type `Struct` is a bit convoluted as it involves
+#' # `data.frame()`, `list()`, and `I()`:
+#' as_polars_series(
+#'   data.frame(a = 1:2, b = I(list(c("x", "y"), "z")))
+#' )
+#'
+#' # A slightly simpler way would be via `tibble::tibble()` or
+#' # `data.table::data.table()`:
+#' if (requireNamespace("tibble", quietly = TRUE)) {
+#'   as_polars_series(
+#'     tibble::tibble(a = 1:2, b = list(c("x", "y"), "z"))
+#'   )
+#' }
+#'
+#' # Finally, one can use the method `$to_struct()` to convert existing columns
+#' # or `Series` to a `Struct`:
+#' x = pl$DataFrame(
+#'   a = 1:2,
+#'   b = list(c("x", "y"), "z")
+#' )
+#'
+#' out = x$select(pl$col("a", "b")$to_struct())
+#' out
+#'
+#' out$schema
 DataType_Struct = function(...) {
   result({
     largs = list2(...)
