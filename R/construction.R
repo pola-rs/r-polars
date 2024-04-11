@@ -223,7 +223,7 @@ df_to_rpldf = function(x, ..., schema = NULL, schema_overrides = NULL) {
       unwrap()
   }
 
-  out = lapply(x, as_polars_series) |>
+  out = lapply(x, \(col) as_polars_series(unAsIs(col))) |>
     pl$select()
 
   out$columns = col_names
