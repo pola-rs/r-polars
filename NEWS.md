@@ -15,32 +15,40 @@
 
 - R objects inside an R list are now converted to Polars data types via
   `as_polars_series()` (#1021). For example, up to polars 0.15.1,
-  data.frames inside a list were converted to a nested List type:
+  a list containing a data.frame with a column of `{clock}` naive-time class
+  was converted to a nested List type of Float64:
 
   ```r
-  pl$select(nested_data = pl$lit(list(data.frame(a = 1))))
+  data = data.frame(time = clock::naive_time_parse("1990-01-01", precision = "day"))
+  pl$select(
+    nested_data = pl$lit(list(data))
+  )
   #> shape: (1, 1)
-  #> ┌─────────────────┐
-  #> │ nested_data     │
-  #> │ ---             │
-  #> │ list[list[f64]] │
-  #> ╞═════════════════╡
-  #> │ [[1.0]]         │
-  #> └─────────────────┘
+  #> ┌──────────────────────────┐
+  #> │ nested_data              │
+  #> │ ---                      │
+  #> │ list[list[list[f64]]]    │
+  #> ╞══════════════════════════╡
+  #> │ [[[2.1475e9], [7305.0]]] │
+  #> └──────────────────────────┘
   ```
 
-  From 0.16.0, data.frames inside a list are converted to the polars Struct type:
+  From 0.16.0, nested types are correctly converted, so that will be
+  a List type of Struct type containing a Datetime type.
 
   ```r
-  pl$select(nested_data = pl$lit(list(data.frame(a = 1))))
+  data = data.frame(time = clock::naive_time_parse("1990-01-01", precision = "day"))
+  pl$select(
+    nested_data = pl$lit(list(data))
+  )
   #> shape: (1, 1)
-  #> ┌─────────────────┐
-  #> │ nested_data     │
-  #> │ ---             │
-  #> │ list[struct[1]] │
-  #> ╞═════════════════╡
-  #> │ [{1.0}]         │
-  #> └─────────────────┘
+  #> ┌─────────────────────────┐
+  #> │ nested_data             │
+  #> │ ---                     │
+  #> │ list[struct[1]]         │
+  #> ╞═════════════════════════╡
+  #> │ [{1990-01-01 00:00:00}] │
+  #> └─────────────────────────┘
   ```
 
 - Several functions have been rewritten to match the behavior of Python Polars.
