@@ -438,10 +438,17 @@ test_that("as_polars_series for nested type", {
       list(data.frame(a = I(list(data.frame(b = 1L)))))
     )$dtype == pl$List(pl$Struct(a = pl$List(pl$Struct(b = pl$Int32))))
   )
-
-  # TODO: this shouldn't error
-  expect_grepl_error(
-    as_polars_series(list(as_polars_series(NULL), as_polars_series(1L))),
-    "One element was null and another was i32"
+  expect_true(
+    as_polars_series(list(as_polars_series(NULL), as_polars_series(1L)))$dtype == pl$List(pl$Int32)
+  )
+  expect_true(
+    as_polars_series(list(NULL, list(1, 2)))$equals(
+      as_polars_series(list(list(), list(1, 2)))
+    )
+  )
+  expect_true(
+    as_polars_series(list(as_polars_series(NULL), list(1, 2)))$equals(
+      as_polars_series(list(list(), list(1, 2)))
+    )
   )
 })

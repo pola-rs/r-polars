@@ -53,11 +53,18 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
 
     // handle any supported Robj
     let series_result = match rtype {
+        Rtype::Null => Ok(SeriesTree::SeriesEmptyVec), // flag NULL with this enum, to resolve polars type later
+
         Rtype::ExternalPtr => match () {
             _ if x.inherits("RPolarsSeries") => {
                 let s: RPolarsSeries =
                     unsafe { &mut *x.external_ptr_addr::<RPolarsSeries>() }.clone();
-                Ok(SeriesTree::Series(s.0))
+
+                let dtype = s.0.dtype().clone();
+                match dtype {
+                    pl::DataType::Null => Ok(SeriesTree::SeriesEmptyVec),
+                    _ => Ok(SeriesTree::Series(s.0)),
+                }
             }
             _ => Err(pl::PolarsError::InvalidOperation(
                 "This externalPtr is currently not supported".into(),
@@ -144,8 +151,6 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
 
             Ok(SeriesTree::Series(s))
         }
-
-        Rtype::Null => Ok(SeriesTree::SeriesEmptyVec), // flag NULL with this enum, to resolve polars type later
 
         Rtype::Raw => {
             let rpolars_raw_list = list!(x)
