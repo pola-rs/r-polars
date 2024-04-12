@@ -2,16 +2,7 @@
 
 ## Polars R Package (development version)
 
-### Breaking changes due to Rust-polars update
-
-- rust-polars is updated to 0.38.3 (#937).
-  - New argument `non_existent` in `$dt$replace_time_zone()` to specify what should
-    happen when a datetime doesn't exist.
-  - In rolling aggregation functions (such as `$rolling_mean()`), the default
-    value of argument `closed` now is `NULL`. Using `closed` with a fixed
-    `window_size` now throws an error.
-
-### Other breaking changes
+### Breaking changes
 
 - R objects inside an R list are now converted to Polars data types via
   `as_polars_series()` (#1021, #1022, #1023). For example, up to polars 0.15.1,
@@ -94,6 +85,16 @@
   - In `$dt$replace_time_zone()`, all arguments except `time_zone` must be named
     arguments (#944).
   - In `$bin$decode()`, the `strict` argument must be a named argument (#980).
+  - In `$str$contains()`, the arguments `literal` and `strict` should be named arguments (#982).
+  - In `$str$contains_any()`, the `ascii_case_insensitive` argument must be named (#986).
+  - In `$str$count_matches()`, `$str$replace()` and `$str$replace_all()`,
+    the `literal` argument must be named (#987).
+  - In `$str$strptime()`, `$str$to_date()`, `$str$to_datetime()`, and
+    `$str$to_time()`, all arguments (except the first one) must be named (#939).
+  - In `$str$strptime()`, the argument `datatype` is renamed `dtype` (#939).
+  - `$unique()` for `DataFrame` and `LazyFrame` have several changes (#953):
+    - New default value `"any"` for argument `keep`.
+    - Arguments `keep` and `maintain_order` must be named.
   - `pl$date_range()` is completely rewritten (#950).
     - The argument `end` must be specified.
     - The default value of `interval` is changed to `"1d"`.
@@ -114,21 +115,17 @@
 - `<Series>$to_r_list()` is renamed `<Series>$to_list()` (#938).
 - Removed `<Series>$to_r_vector()` which was an old alias for
   `<Series>$to_vector()` (#938).
-- In `$str$contains()`, the arguments `literal` and `strict` should be named arguments (#982).
-- In `$str$contains_any()`, the `ascii_case_insensitive` argument must be named (#986).
-- In `$str$count_matches()`, `$str$replace()` and `$str$replace_all()`,
-  the `literal` argument must be named (#987).
-- In `$str$strptime()`, `$str$to_date()`, `$str$to_datetime()`, and
-  `$str$to_time()`, all arguments (except the first one) must be named (#939).
-- In `$str$strptime()`, the argument `datatype` is renamed `dtype` (#939).
-- `$unique()` for `DataFrame` and `LazyFrame` have several changes (#953):
-  - New default value `"any"` for argument `keep`.
-  - Arguments `keep` and `maintain_order` must be named.
 - The following deprecated functions are now removed: `pl$threadpool_size()`,
   `<DataFrame>$with_row_count()`, `<LazyFrame>$with_row_count()` (#965).
+- In rolling aggregation functions (such as `$rolling_mean()`), the default
+  value of argument `closed` now is `NULL`. Using `closed` with a fixed
+  `window_size` now throws an error (#937).
 
 ### New features
 
+- rust-polars is updated to 0.38.3 (#937).
+- New argument `non_existent` in `$dt$replace_time_zone()` to specify what should
+  happen when a datetime doesn't exist (#937).
 - `pl$Series()` now calls `as_polars_series()` internally, so it can convert
   more classes to Series properly (#1015).
 - New functions `pl$datetime()`, `pl$date()`, and `pl$time()` to easily create
