@@ -452,3 +452,16 @@ test_that("as_polars_series for nested type", {
     )
   )
 })
+
+
+test_that("as_polars_df and pl$DataFrame for data.frame has list column", {
+  data = data.frame(a = I(list(data.frame(b = 1L))))
+  expect_true(
+    as_polars_df(data)$equals(
+      pl$DataFrame(data)
+    )
+  )
+  expect_true(
+    as_polars_df(data)$dtypes[[1]] == pl$List(pl$Struct(b = pl$Int32))
+  )
+})

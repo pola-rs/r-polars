@@ -2,16 +2,17 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{pl_DataFrame}
 \alias{pl_DataFrame}
-\title{Create new DataFrame}
+\title{Create a new polars DataFrame}
 \usage{
 pl_DataFrame(..., make_names_unique = TRUE, schema = NULL)
 }
 \arguments{
-\item{...}{One of the following:
+\item{...}{One of the followings:
 \itemize{
-\item a data.frame or something that inherits data.frame or DataFrame
 \item a list of mixed vectors and Series of equal length
 \item mixed vectors and/or Series of equal length
+\item a positional argument of a \link{data.frame} or a \link[=DataFrame_class]{DataFrame}
+(not recommended use). In this case, the object will be passed to \code{\link[=as_polars_df]{as_polars_df()}}.
 }
 
 Columns will be named as of named arguments or alternatively by names of
@@ -24,10 +25,10 @@ prefixed a running number.}
 specific DataType. See Examples.}
 }
 \value{
-DataFrame
+\link[=DataFrame_class]{DataFrame}
 }
 \description{
-Create new DataFrame
+Create a new polars DataFrame
 }
 \examples{
 pl$DataFrame(
@@ -51,4 +52,8 @@ pl$DataFrame(mtcars)
 # custom schema
 pl$DataFrame(iris, schema = list(Sepal.Length = pl$Float32, Species = pl$String))
 }
-\keyword{DataFrame_new}
+\seealso{
+\itemize{
+\item \code{\link[=as_polars_df]{as_polars_df()}}
+}
+}
