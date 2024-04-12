@@ -270,7 +270,21 @@ Series_struct = method_as_active_binding(
       self, expr_struct_make_sub_ns,
       fields = method_as_active_binding(function() {
         unwrap(.pr$Series$struct_fields(pl_series), "in $struct$fields:")
-      })
+      }),
+      #' Convert this struct Series to a DataFrame with a separate column for
+      #' each field
+      #'
+      #' @usage Series_struct_unnest()
+      #'
+      #' @name Series_struct_unnest
+      #' @return A DataFrame
+      #' @examples
+      #' s = pl$Series(values = c(1, 2), dtype = pl$Struct(foo = pl$Float64))
+      #' s$struct$unnest()
+      unnest = function() {
+        .pr$Series$struct_unnest(pl_series) |>
+          unwrap("in $struct$unnest():")
+      }
     )
   }
 )
@@ -1102,8 +1116,6 @@ Series_item = function(index = NULL) {
 #'
 #' s$clear(n = 5)
 Series_clear = function(n = 0) {
-  # TODO: check whether n < 0 should be removed when resolved upstream
-  # https://github.com/pola-rs/polars/issues/15421
   if (length(n) > 1 || !is.numeric(n) || n < 0) {
     Err_plain("`n` must be an integer greater or equal to 0.") |>
       unwrap("in $clear():")
