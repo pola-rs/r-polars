@@ -2177,26 +2177,6 @@ test_that("rep", {
   expect_grepl_error(pl$lit(1:4)$rep(Inf))
 })
 
-test_that("rep_extend", {
-  expect_identical(pl$lit(1:4)$rep_extend(2:1, 2)$to_r(), c(1:4, 2:1, 2:1))
-  expect_identical(
-    pl$lit(1:4)$rep_extend(
-      pl$lit(c(2, 1))$cast(pl$dtypes$Int32),
-      2
-    )$to_r(),
-    c(1:4, 2:1, 2:1)
-  )
-  expect_identical(
-    pl$lit(1:4)$rep_extend(
-      pl$lit(c(2, 1)),
-      2
-    )$to_r(),
-    c(1:4, 2:1, 2:1) * 1.0
-  )
-  expect_identical(pl$lit(1)$rep_extend(numeric(), 5)$to_r(), 1)
-  expect_grepl_error(pl$lit(1)$rep_extend(1, -1))
-  expect_grepl_error(pl$lit(1)$rep_extend(1, Inf))
-})
 
 test_that("to_r", {
   # objects with homomorphic translation between r and polars

@@ -3034,21 +3034,6 @@ Expr_rep = function(n, rechunk = TRUE) {
     unwrap("in $rep()")
 }
 
-#' Extend a Series by repeating values
-#'
-#' @param expr Expr or something coercible to an Expr.
-#' @inheritParams Expr_rep
-#' @param upcast If `TRUE` (default), non identical types will be cast to common
-#' supertype if there is any. If `FALSE` or no common super type, having
-#' different types will throw an error.
-#' @return Expr
-#' @examples
-#' pl$select(pl$lit(c(1, 2, 3))$rep_extend(1:3, n = 5))
-Expr_rep_extend = function(expr, n, rechunk = TRUE, upcast = TRUE) {
-  other = wrap_e(expr)$rep(n, rechunk = FALSE)
-  new = .pr$Expr$append(self, other, upcast)
-  if (rechunk) new$rechunk() else new
-}
 
 #' Convert an Expr to R output
 #'
