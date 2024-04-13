@@ -1974,7 +1974,7 @@ DataFrame_write_csv = function(
 }
 
 
-#' Write to Arrow IPC stream or Arrow IPC file (a.k.a Feather file)
+#' Write to Arrow IPC file (a.k.a Feather file)
 #'
 #' @inherit DataFrame_write_csv params return
 #' @inheritParams LazyFrame_sink_ipc

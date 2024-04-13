@@ -2,7 +2,7 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_write_ipc}
 \alias{DataFrame_write_ipc}
-\title{Write to Arrow IPC stream or Arrow IPC file (a.k.a Feather file)}
+\title{Write to Arrow IPC file (a.k.a Feather file)}
 \usage{
 DataFrame_write_ipc(
   file,
@@ -30,7 +30,7 @@ It may be changed at any point without it being considered a breaking change.}
 This doesn't return anything.
 }
 \description{
-Write to Arrow IPC stream or Arrow IPC file (a.k.a Feather file)
+Write to Arrow IPC file (a.k.a Feather file)
 }
 \examples{
 dat = pl$DataFrame(mtcars)
