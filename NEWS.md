@@ -178,7 +178,7 @@
   - `non_existent` in `$dt$replace_time_zone()` to specify what should happen
     when a datetime doesn't exist.
   - `mapping_strategy` in `$over()` (#984, #988).
-  - `raise_if_undetermined` of `<Expr>$meta$output_name()` (#961).
+  - `raise_if_undetermined` in `$meta$output_name()` (#961).
 
 - Other:
 
