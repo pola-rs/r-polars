@@ -20,6 +20,7 @@ on:
       - vignettes/**
       - DESCRIPTION
       - README.md
+      - NEWS.md
   pull_request:
     branches:
       - main
