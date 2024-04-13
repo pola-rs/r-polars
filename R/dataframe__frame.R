@@ -1978,7 +1978,7 @@ DataFrame_write_csv = function(
 #'
 #' @inherit DataFrame_write_csv params return
 #' @inheritParams LazyFrame_sink_ipc
-#' @param future Setting this to `TRUE` will write Polars. internal data structures that
+#' @param future Setting this to `TRUE` will write Polars' internal data structures that
 #' might not be available by other Arrow implementations.
 #' This functionality is considered **unstable**.
 #' It may be changed at any point without it being considered a breaking change.
