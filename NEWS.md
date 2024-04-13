@@ -44,12 +44,12 @@
 
 - Several functions have been rewritten to match the behavior of Python Polars.
   There are four types of changes: a) change in argument names, b) change in
-  the way arguments are passed (named or by position), c) arguments are removed, 
-  and d) change in the default and accepted values. Those are addressed separately 
+  the way arguments are passed (named or by position), c) arguments are removed,
+  and d) change in the default and accepted values. Those are addressed separately
   below.
-  
+
   1. Change in argument names:
-  
+
     - In `$reshape()`, the `dims` argument is renamed to `dimensions` (#1019).
     - In `pl$read_*` and `pl$scan_*` functions, the first argument is now
       `source` (#935).
@@ -64,12 +64,12 @@
     - In `$str$strptime()`, the argument `datatype` is renamed `dtype` (#939).
 
   2. Change in the way arguments are passed:
-  
+
     - In all input/output functions, all arguments except the first argument
       must be named arguments (#935).
     - In `<DataFrame>$rolling()` and `<DataFrame>$group_by_dynamic()`, all
       arguments except `index_column` must be named arguments (#983).
-    - In `$unique()` for `DataFrame` and `LazyFrame`, arguments `keep` and 
+    - In `$unique()` for `DataFrame` and `LazyFrame`, arguments `keep` and
       `maintain_order` must be named (#953).
     - In `$bin$decode()`, the `strict` argument must be a named argument (#980).
     - In `$dt$replace_time_zone()`, all arguments except `time_zone` must be named
@@ -104,29 +104,29 @@
 
       This warning can also be silenced by replacing `pl$Series(<values>, <name>)`
       by `as_polars_series(<values>, <name>)`.
-      
+
   3. Arguments removed:
-  
-    - The argument `columns` in `$drop()` is removed. `$drop()` now accepts 
+
+    - The argument `columns` in `$drop()` is removed. `$drop()` now accepts
       several character scalars, such as `$drop("a", "b", "c")` (#912).
-    - In `pl$col()`, the `name` argument is removed, and the `...` argument no 
+    - In `pl$col()`, the `name` argument is removed, and the `...` argument no
       longer accepts a list of characters and `RPolarsSeries` class objects (#923).
     - In `pl$date_range()`, the unused argument (not working in recent versions)
       `explode` is removed. (#950).
-  
+
   4. Change in arguments default and accepted values:
-  
+
     - In `pl$Series()`, the argument `values` has a new default value `NULL`
       (#966).
     - In `$unique()` for `DataFrame` and `LazyFrame`, argument `keep` has a new
       default value `"any"` (#953).
     - In rolling aggregation functions (such as `$rolling_mean()`), the default
-      value of argument `closed` now is `NULL`. Using `closed` with a fixed 
+      value of argument `closed` now is `NULL`. Using `closed` with a fixed
       `window_size` now throws an error (#937).
     - In `pl$date_range()`, the argument `end` must be specified and the default
       value of `interval` is changed to `"1d"`. The arguments `start` and `end`
       no longer accept numeric values (#950).
-      
+
 
 - The usage of `pl$date_range()` to create a range of `Datetime` data type is
   deprecated. `pl$date_range()` will always create a range of `Date` data type
@@ -157,7 +157,7 @@
   - `pl$int_range()` and `pl$int_ranges()` (#968)
   - `pl$mean_horizontal()` (#959)
   - `is_polars_dtype()` (#927).
-  
+
 - New methods:
 
   - `<LazyFrame>$to_dot()` to print the query plan of a LazyFrame with graphviz
@@ -169,7 +169,7 @@
   - `$arr$to_list()` (#1018).
   - `$str$extract_groups()` (#979).
   - `$str$find()` (#985).
-  
+
 - New arguments or argument values:
 
   - `ambiguous` can now take the value `"null"` to convert ambigous datetimes to
