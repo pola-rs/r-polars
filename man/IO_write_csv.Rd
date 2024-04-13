@@ -72,7 +72,7 @@ invalid CSV data (e.g. by not quoting strings containing the separator).
 }}
 }
 \value{
-This doesn't return anything but creates a CSV file.
+This doesn't return anything.
 }
 \description{
 Write to comma-separated values (CSV) file

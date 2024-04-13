@@ -468,15 +468,15 @@ pub fn new_parquet_compression(
     .misvalued("must be one of 'uncompressed', 'snappy', 'gzip', 'brotli', 'zstd'")
 }
 
-pub fn new_ipc_compression(compression_method: Robj) -> RResult<Option<pl::IpcCompression>> {
-    use pl::IpcCompression::*;
-    robj_to!(Option, String, compression_method)?
-        .map(|cm| match cm.as_str() {
-            "lz4" => Ok(LZ4),
-            "zstd" => Ok(ZSTD),
-            m => rerr().bad_val(m).misvalued("must be one of 'lz4', 'zstd'"),
-        })
-        .transpose()
+pub fn new_ipc_compression(robj: Robj) -> RResult<Option<pl::IpcCompression>> {
+    match robj_to_rchoice(robj)?.as_str() {
+        "uncompressed" => Ok(None),
+        "lz4" => Ok(Some(pl::IpcCompression::LZ4)),
+        "zstd" => Ok(Some(pl::IpcCompression::ZSTD)),
+        s => rerr().bad_val(format!(
+            "IpcCompression choice ('{s}') must be one of 'uncompressed', 'lz4', 'zstd'"
+        )),
+    }
 }
 
 pub fn new_rolling_cov_options(

@@ -517,6 +517,15 @@ impl RPolarsDataFrame {
             .map_err(polars_to_rpolars_err)
     }
 
+    pub fn write_ipc(&self, file: Robj, compression: Robj, future: Robj) -> RResult<()> {
+        let file = std::fs::File::create(robj_to!(str, file)?)?;
+        pl::IpcWriter::new(file)
+            .with_compression(rdatatype::new_ipc_compression(compression)?)
+            .with_pl_flavor(robj_to!(bool, future)?)
+            .finish(&mut self.0.clone())
+            .map_err(polars_to_rpolars_err)
+    }
+
     pub fn write_parquet(
         &self,
         file: Robj,

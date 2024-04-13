@@ -660,13 +660,14 @@ LazyFrame_sink_parquet = function(
 }
 
 
-#' @title Stream the output of a query to an Arrow IPC file
-#' @description
+#' Stream the output of a query to an Arrow IPC file
+#'
 #' This writes the output of a query directly to an Arrow IPC file without collecting
 #' it in the R session first. This is useful if the output of the query is still
 #' larger than RAM as it would crash the R session if it was collected into R.
-#' @param compression `NULL` or string, the compression method. One of `NULL`,
-#' "lz4" or "zstd". Choose "zstd" for good compression performance. Choose "lz4"
+#' @param compression `NULL` or a character of the compression method,
+#' `"uncompressed"` or "lz4" or "zstd". `NULL` is equivalent to `"uncompressed"`.
+#' Choose "zstd" for good compression performance. Choose "lz4"
 #' for fast compression/decompression.
 #' @inheritParams LazyFrame_sink_parquet
 #' @inheritParams LazyFrame_collect
@@ -689,7 +690,7 @@ LazyFrame_sink_parquet = function(
 LazyFrame_sink_ipc = function(
     path,
     ...,
-    compression = "zstd",
+    compression = c("zstd", "lz4", "uncompressed"),
     maintain_order = TRUE,
     type_coercion = TRUE,
     predicate_pushdown = TRUE,
@@ -722,7 +723,7 @@ LazyFrame_sink_ipc = function(
   lf |>
     .pr$LazyFrame$sink_ipc(
       path,
-      compression,
+      compression %||% "uncompressed",
       maintain_order
     ) |>
     unwrap("in $sink_ipc()") |>
