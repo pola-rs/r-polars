@@ -7,7 +7,7 @@
 pl_DataFrame(..., make_names_unique = TRUE, schema = NULL)
 }
 \arguments{
-\item{...}{One of the followings:
+\item{...}{One of the following:
 \itemize{
 \item a list of mixed vectors and Series of equal length
 \item mixed vectors and/or Series of equal length

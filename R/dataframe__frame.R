@@ -226,7 +226,7 @@ DataFrame_width = method_as_active_binding(\() .pr$DataFrame$shape(self)[2L])
 
 #' Create a new polars DataFrame
 #'
-#' @param ... One of the followings:
+#' @param ... One of the following:
 #'  - a list of mixed vectors and Series of equal length
 #'  - mixed vectors and/or Series of equal length
 #'  - a positional argument of a [data.frame] or a [DataFrame][DataFrame_class]
