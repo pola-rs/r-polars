@@ -103,9 +103,9 @@ impl RPolarsLazyFrame {
             .map_err(polars_to_rpolars_err)
     }
 
-    fn sink_ipc(&self, path: Robj, compression_method: Robj, maintain_order: Robj) -> RResult<()> {
+    fn sink_ipc(&self, path: Robj, compression: Robj, maintain_order: Robj) -> RResult<()> {
         let ipcwo = polars::prelude::IpcWriterOptions {
-            compression: new_ipc_compression(compression_method)?,
+            compression: new_ipc_compression(compression)?,
             maintain_order: robj_to!(bool, maintain_order)?,
         };
         self.0

@@ -50,6 +50,9 @@ smaller chunks may reduce memory pressure and improve writing speeds.}
 \item{data_pagesize_limit}{\code{NULL} or Integer. If \code{NULL} (default), the limit
 will be ~1MB.}
 }
+\value{
+This doesn't return anything.
+}
 \description{
 Write to parquet file
 }

@@ -1936,7 +1936,7 @@ DataFrame_transpose = function(
 #'   invalid CSV data (e.g. by not quoting strings containing the separator).
 #'
 #' @return
-#' This doesn't return anything but creates a CSV file.
+#' This doesn't return anything.
 #'
 #' @rdname IO_write_csv
 #'
@@ -1968,13 +1968,54 @@ DataFrame_write_csv = function(
     batch_size, datetime_format, date_format, time_format, float_precision,
     null_values, quote_style
   ) |>
-    unwrap("in $write_csv():") |>
-    invisible()
+    unwrap("in $write_csv():")
+
+  invisible(NULL)
 }
 
+
+#' Write to Arrow IPC file (a.k.a Feather file)
+#'
+#' @inherit DataFrame_write_csv params return
+#' @inheritParams LazyFrame_sink_ipc
+#' @param future Setting this to `TRUE` will write Polars' internal data structures that
+#' might not be available by other Arrow implementations.
+#' This functionality is considered **unstable**.
+#' It may be changed at any point without it being considered a breaking change.
+#' @rdname IO_write_ipc
+#' @examples
+#' dat = pl$DataFrame(mtcars)
+#'
+#' destination = tempfile(fileext = ".arrow")
+#' dat$write_ipc(destination)
+#'
+#' if (require("arrow", quietly = TRUE)) {
+#'   arrow::read_ipc_file(destination, as_data_frame = FALSE)
+#' }
+DataFrame_write_ipc = function(
+    file,
+    compression = c("uncompressed", "zstd", "lz4"),
+    ...,
+    future = FALSE) {
+  if (isTRUE(future)) {
+    warning("The `future` parameter of `$write_ipc()` is considered unstable.")
+  }
+
+  .pr$DataFrame$write_ipc(
+    self,
+    file,
+    compression %||% "uncompressed",
+    future
+  ) |>
+    unwrap("in $write_ipc():")
+
+  invisible(NULL)
+}
+
+
 #' Write to parquet file
+#' @inherit DataFrame_write_csv params return
 #' @inheritParams LazyFrame_sink_parquet
-#' @inheritParams DataFrame_write_csv
 #'
 #' @rdname IO_write_parquet
 #'
@@ -2001,19 +2042,17 @@ DataFrame_write_parquet = function(
     row_group_size,
     data_pagesize_limit
   ) |>
-    unwrap("in $write_parquet():") |>
-    invisible()
+    unwrap("in $write_parquet():")
+
+  invisible(NULL)
 }
 
 #' Write to JSON file
 #'
-#' @inheritParams DataFrame_write_csv
+#' @inherit DataFrame_write_csv params return
 #' @param pretty Pretty serialize JSON.
 #' @param row_oriented Write to row-oriented JSON. This is slower, but more
 #' common.
-#'
-#' @return
-#' This doesn't return anything.
 #'
 #' @rdname IO_write_json
 #'
@@ -2034,16 +2073,15 @@ DataFrame_write_json = function(
     pretty = FALSE,
     row_oriented = FALSE) {
   .pr$DataFrame$write_json(self, file, pretty, row_oriented) |>
-    unwrap("in $write_json():") |>
-    invisible()
+    unwrap("in $write_json():")
+
+  invisible(NULL)
 }
 
 #' Write to NDJSON file
 #'
+#' @inherit DataFrame_write_csv return
 #' @inheritParams DataFrame_write_json
-#'
-#' @return
-#' This doesn't return anything.
 #'
 #' @rdname IO_write_ndjson
 #'
@@ -2056,8 +2094,9 @@ DataFrame_write_json = function(
 #' pl$read_ndjson(destination)
 DataFrame_write_ndjson = function(file) {
   .pr$DataFrame$write_ndjson(self, file) |>
-    unwrap("in $write_ndjson():") |>
-    invisible()
+    unwrap("in $write_ndjson():")
+
+  invisible(NULL)
 }
 
 #' @inherit LazyFrame_rolling title description params details

@@ -228,6 +228,8 @@ RPolarsDataFrame$clear <- function() .Call(wrap__RPolarsDataFrame__clear, self)
 
 RPolarsDataFrame$write_csv <- function(file, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style) .Call(wrap__RPolarsDataFrame__write_csv, self, file, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style)
 
+RPolarsDataFrame$write_ipc <- function(file, compression, future) .Call(wrap__RPolarsDataFrame__write_ipc, self, file, compression, future)
+
 RPolarsDataFrame$write_parquet <- function(file, compression_method, compression_level, statistics, row_group_size, data_pagesize_limit) .Call(wrap__RPolarsDataFrame__write_parquet, self, file, compression_method, compression_level, statistics, row_group_size, data_pagesize_limit)
 
 RPolarsDataFrame$write_json <- function(file, pretty, row_oriented) .Call(wrap__RPolarsDataFrame__write_json, self, file, pretty, row_oriented)
@@ -1108,7 +1110,7 @@ RPolarsLazyFrame$collect_in_background <- function() .Call(wrap__RPolarsLazyFram
 
 RPolarsLazyFrame$sink_parquet <- function(path, compression_method, compression_level, statistics, row_group_size, data_pagesize_limit, maintain_order) .Call(wrap__RPolarsLazyFrame__sink_parquet, self, path, compression_method, compression_level, statistics, row_group_size, data_pagesize_limit, maintain_order)
 
-RPolarsLazyFrame$sink_ipc <- function(path, compression_method, maintain_order) .Call(wrap__RPolarsLazyFrame__sink_ipc, self, path, compression_method, maintain_order)
+RPolarsLazyFrame$sink_ipc <- function(path, compression, maintain_order) .Call(wrap__RPolarsLazyFrame__sink_ipc, self, path, compression, maintain_order)
 
 RPolarsLazyFrame$sink_csv <- function(path, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style, maintain_order) .Call(wrap__RPolarsLazyFrame__sink_csv, self, path, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style, maintain_order)
 

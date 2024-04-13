@@ -7,7 +7,7 @@
 LazyFrame_sink_ipc(
   path,
   ...,
-  compression = "zstd",
+  compression = c("zstd", "lz4", "uncompressed"),
   maintain_order = TRUE,
   type_coercion = TRUE,
   predicate_pushdown = TRUE,
@@ -23,8 +23,9 @@ LazyFrame_sink_ipc(
 
 \item{...}{Ignored.}
 
-\item{compression}{\code{NULL} or string, the compression method. One of \code{NULL},
-"lz4" or "zstd". Choose "zstd" for good compression performance. Choose "lz4"
+\item{compression}{\code{NULL} or a character of the compression method,
+\code{"uncompressed"} or "lz4" or "zstd". \code{NULL} is equivalent to \code{"uncompressed"}.
+Choose "zstd" for good compression performance. Choose "lz4"
 for fast compression/decompression.}
 
 \item{maintain_order}{Maintain the order in which data is processed. Setting

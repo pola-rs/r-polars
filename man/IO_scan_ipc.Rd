@@ -9,10 +9,10 @@ pl_scan_ipc(
   ...,
   n_rows = NULL,
   cache = TRUE,
-  rechunk = TRUE,
+  rechunk = FALSE,
   row_index_name = NULL,
   row_index_offset = 0L,
-  memmap = TRUE
+  memory_map = TRUE
 )
 }
 \arguments{
@@ -35,7 +35,9 @@ the given name into the DataFrame.}
 \item{row_index_offset}{Offset to start the row index column (only used if
 the name is set).}
 
-\item{memmap}{bool, mapped memory}
+\item{memory_map}{A logical. If \code{TRUE}, try to memory map the file.
+This can greatly improve performance on repeated queries as the OS may cache pages.
+Only uncompressed Arrow IPC files can be memory mapped.}
 }
 \value{
 LazyFrame
