@@ -2,16 +2,7 @@
 
 ## Polars R Package (development version)
 
-### Breaking changes due to Rust-polars update
-
-- rust-polars is updated to 0.38.3 (#937).
-  - New argument `non_existent` in `$dt$replace_time_zone()` to specify what should
-    happen when a datetime doesn't exist.
-  - In rolling aggregation functions (such as `$rolling_mean()`), the default
-    value of argument `closed` now is `NULL`. Using `closed` with a fixed
-    `window_size` now throws an error.
-
-### Other breaking changes
+### Breaking changes
 
 - R objects inside an R list are now converted to Polars data types via
   `as_polars_series()` (#1021, #1022, #1023). For example, up to polars 0.15.1,
@@ -52,12 +43,48 @@
   ```
 
 - Several functions have been rewritten to match the behavior of Python Polars.
+  There are four types of changes: a) change in argument names, b) change in
+  the way arguments are passed (named or by position), c) arguments are removed,
+  and d) change in the default and accepted values. Those are addressed separately
+  below.
 
-  - In `pl$Series()` arguments are changed.
+  1. Change in argument names:
 
-    - The argument `x` is renamed `values` (#933).
-    - The argument `values` has a new default value `NULL` (#966).
-    - Using positional arguments in `pl$Series()` throws a warning, since the
+    - In `$reshape()`, the `dims` argument is renamed to `dimensions` (#1019).
+    - In `pl$read_*` and `pl$scan_*` functions, the first argument is now
+      `source` (#935).
+    - In `pl$Series()`, the argument `x` is renamed `values` (#933).
+    - In `<DataFrame>$write_*` functions, the first argument is now `file` (#935).
+    - In `<LazyFrame>$sink_*` functions, the first argument is now `path` (#935).
+    - In `<DataFrame>$rolling()`, `<LazyFrame>$rolling()`, `<DataFrame>$group_by_dynamic()`
+      and `<LazyFrame>$group_by_dynamic()`, the `by` argument is renamed to
+      `group_by` (#983).
+    - In `$dt$convert_time_zone()` and `$dt$replace_time_zone()`, the `tz`
+      argument is renamed to `time_zone` (#944).
+    - In `$str$strptime()`, the argument `datatype` is renamed `dtype` (#939).
+
+  2. Change in the way arguments are passed:
+
+    - In all input/output functions, all arguments except the first argument
+      must be named arguments (#935).
+    - In `<DataFrame>$rolling()` and `<DataFrame>$group_by_dynamic()`, all
+      arguments except `index_column` must be named arguments (#983).
+    - In `$unique()` for `DataFrame` and `LazyFrame`, arguments `keep` and
+      `maintain_order` must be named (#953).
+    - In `$bin$decode()`, the `strict` argument must be a named argument (#980).
+    - In `$dt$replace_time_zone()`, all arguments except `time_zone` must be named
+      arguments (#944).
+    - In `$str$contains()`, the arguments `literal` and `strict` must be named
+      (#982).
+    - In `$str$contains_any()`, the `ascii_case_insensitive` argument must be
+      named (#986).
+    - In `$str$count_matches()`, `$str$replace()` and `$str$replace_all()`,
+      the `literal` argument must be named (#987).
+    - In `$str$strptime()`, `$str$to_date()`, `$str$to_datetime()`, and
+      `$str$to_time()`, all arguments (except the first one) must be named (#939).
+    - In `pl$date_range()`, the arguments `closed`, `time_unit`, and `time_zone`
+      must be named (#950).
+    - In `pl$Series()`, using positional arguments throws a warning, since the
       argument positions will be changed in the future (#966).
 
       ```r
@@ -78,37 +105,35 @@
       This warning can also be silenced by replacing `pl$Series(<values>, <name>)`
       by `as_polars_series(<values>, <name>)`.
 
-  - `pl$implode(...)` is rewritten to be a syntactic sugar for `pl$col(...)$implode()` (#923).
-  - Unify names of input/output function arguments (#935).
-    - All arguments except the first argument must be named arguments.
-    - In `pl$read_*` and `pl$scan_*` functions, the first argument is now `source`.
-    - In `<DataFrame>$write_*` functions, the first argument is now `file`.
-    - In `<LazyFrame>$sink_*` functions, the first argument is now `path`.
-  - In `$dt$convert_time_zone()` and `$dt$replace_time_zone()`, the `tz` argument
-    is renamed to `time_zone` (#944).
-  - In `$reshape()`, the `dims` argument is renamed to `dimensions` (#1019).
-  - In `<DataFrame>$rolling()`, `<LazyFrame>$rolling()`, `<DataFrame>$group_by_dynamic()`
-    and `<LazyFrame>$group_by_dynamic()`, the `by` argument is renamed to `group_by` (#983).
-  - In `<DataFrame>$rolling()` and `<DataFrame>$group_by_dynamic()`, all arguments
-    except `index_column` must be named arguments (#983).
-  - In `$dt$replace_time_zone()`, all arguments except `time_zone` must be named
-    arguments (#944).
-  - In `$bin$decode()`, the `strict` argument must be a named argument (#980).
-  - `pl$date_range()` is completely rewritten (#950).
-    - The argument `end` must be specified.
-    - The default value of `interval` is changed to `"1d"`.
-    - The unused argument (not working in recent versions) `explode` is removed.
-    - The arguments `closed`, `time_unit`, and `time_zone` must be named arguments.
-    - No longer accepts numeric values to `start` and `end`.
-    - The usage of `pl$date_range()` to create a range of `Datetime` data type is deprecated.
-      `pl$date_range()` will always create a range of `Date` data type in the future.
-      Please use `pl$datetime_range()` if you want to create a range of `Datetime` instead.
-    - `<DataFrame>$get_columns()` now returns an unnamed list instead of a named list (#991).
+  3. Arguments removed:
 
-- The argument `columns` in `$drop()` is removed. `$drop()` now accepts several
-  character scalars, such as `$drop("a", "b", "c")` (#912).
-- In `pl$col()`, the `name` argument is removed, and the `...` argument no longer
-  accepts a list of characters and `RPolarsSeries` class objects (#923).
+    - The argument `columns` in `$drop()` is removed. `$drop()` now accepts
+      several character scalars, such as `$drop("a", "b", "c")` (#912).
+    - In `pl$col()`, the `name` argument is removed, and the `...` argument no
+      longer accepts a list of characters and `RPolarsSeries` class objects (#923).
+    - In `pl$date_range()`, the unused argument (not working in recent versions)
+      `explode` is removed. (#950).
+
+  4. Change in arguments default and accepted values:
+
+    - In `pl$Series()`, the argument `values` has a new default value `NULL`
+      (#966).
+    - In `$unique()` for `DataFrame` and `LazyFrame`, argument `keep` has a new
+      default value `"any"` (#953).
+    - In rolling aggregation functions (such as `$rolling_mean()`), the default
+      value of argument `closed` now is `NULL`. Using `closed` with a fixed
+      `window_size` now throws an error (#937).
+    - In `pl$date_range()`, the argument `end` must be specified and the default
+      value of `interval` is changed to `"1d"`. The arguments `start` and `end`
+      no longer accept numeric values (#950).
+
+
+- The usage of `pl$date_range()` to create a range of `Datetime` data type is
+  deprecated. `pl$date_range()` will always create a range of `Date` data type
+  in the future. Use `pl$datetime_range()` if you want to create a range of
+  `Datetime` instead (#950).
+- `<DataFrame>$get_columns()` now returns an unnamed list instead of a named
+  list (#991).
 - Removed `$argsort()` which was an old alias for `$arg_sort()` (#930).
 - Removed `pl$expr_to_r()` which was an alias for `$to_r()` (#938).
 - `<Series>$to_r_list()` is renamed `<Series>$to_list()` (#938).
@@ -116,48 +141,53 @@
   `<Series>$to_vector()` (#938).
 - Removed `<Expr>$rep_extend()`, which was an experimental method created at the
   early stage of this package and does not exist in other language APIs (#1028).
-- In `$str$contains()`, the arguments `literal` and `strict` should be named arguments (#982).
-- In `$str$contains_any()`, the `ascii_case_insensitive` argument must be named (#986).
-- In `$str$count_matches()`, `$str$replace()` and `$str$replace_all()`,
-  the `literal` argument must be named (#987).
-- In `$str$strptime()`, `$str$to_date()`, `$str$to_datetime()`, and
-  `$str$to_time()`, all arguments (except the first one) must be named (#939).
-- In `$str$strptime()`, the argument `datatype` is renamed `dtype` (#939).
-- `$unique()` for `DataFrame` and `LazyFrame` have several changes (#953):
-  - New default value `"any"` for argument `keep`.
-  - Arguments `keep` and `maintain_order` must be named.
 - The following deprecated functions are now removed: `pl$threadpool_size()`,
   `<DataFrame>$with_row_count()`, `<LazyFrame>$with_row_count()` (#965).
 
+
 ### New features
 
-- `pl$Series()` now calls `as_polars_series()` internally, so it can convert
-  more classes to Series properly (#1015).
-- New functions `pl$datetime()`, `pl$date()`, and `pl$time()` to easily create
-  Expr of class datetime, date, and time via columns and literals (#918).
-- New function `pl$arg_where()` to get the indices that match a condition (#922).
-- New function `is_polars_dtype()` (#927).
-- New function `pl$datetime_range()` (#950).
-- New method `<LazyFrame>$to_dot()` to print the query plan of a LazyFrame with
-  graphviz dot syntax (#928).
-- Argument `ambiguous` can now take the value `"null"` to convert ambigous
-  datetimes to null values (#937).
-- New function `pl$mean_horizontal()` (#959).
-- New argument `raise_if_undetermined` of `<Expr>$meta$output_name()` (#961).
-- New function `pl$arg_sort_by()` (#929).
-- New functions `pl$date_ranges()` and `pl$datetime_ranges()` (#962).
-- Export the `Duration` datatype (#955).
-- New functions `pl$int_range()` and `pl$int_ranges()` (#968).
-- New string method `$str$extract_groups()` (#979).
-- New string method `$str$find()` (#985).
-- New array method `$arr$to_list()` (#1018).
-- New argument `n` in `$str$replace()` (#987).
-- Method `$over()` gains an argument `mapping_strategy` (#984, #988).
-- New method `$item()` for `DataFrame` and `Series` (#992).
-- New active binding `<Series>$struct$fields` (#1002).
-- New methods `$select_seq()` and `$with_columns_seq()` for `DataFrame` and
-  `LazyFrame` (#1003).
-- New method `$clear()` for `DataFrame`, `LazyFrame`, and `Series` (#1004).
+- New functions:
+
+  - `pl$arg_sort_by()` (#929).
+  - `pl$arg_where()` to get the indices that match a condition (#922).
+  - `pl$datetime()`, `pl$date()`, and `pl$time()` to easily create Expr of class
+    datetime, date, and time via columns and literals (#918).
+  - `pl$datetime_range()`, `pl$date_ranges()` and `pl$datetime_ranges()` (#950, #962).
+  - `pl$int_range()` and `pl$int_ranges()` (#968)
+  - `pl$mean_horizontal()` (#959)
+  - `is_polars_dtype()` (#927).
+
+- New methods:
+
+  - `<LazyFrame>$to_dot()` to print the query plan of a LazyFrame with graphviz
+    dot syntax (#928).
+  - `$clear()` for `DataFrame`, `LazyFrame`, and `Series` (#1004).
+  - `$item()` for `DataFrame` and `Series` (#992).
+  - `$select_seq()` and `$with_columns_seq()` for `DataFrame` and `LazyFrame`
+    (#1003).
+  - `$arr$to_list()` (#1018).
+  - `$str$extract_groups()` (#979).
+  - `$str$find()` (#985).
+
+- New arguments or argument values:
+
+  - `ambiguous` can now take the value `"null"` to convert ambigous datetimes to
+    null values (#937).
+  - `n` in `$str$replace()` (#987).
+  - `non_existent` in `$dt$replace_time_zone()` to specify what should happen
+    when a datetime doesn't exist.
+  - `mapping_strategy` in `$over()` (#984, #988).
+  - `raise_if_undetermined` in `$meta$output_name()` (#961).
+
+- Other:
+
+  - `pl$Series()` now calls `as_polars_series()` internally, so it can convert
+    more classes to Series properly (#1015).
+  - Export the `Duration` datatype (#955).
+  - New active binding `<Series>$struct$fields` (#1002).
+  - rust-polars is updated to 0.38.3 (#937).
+
 
 ### Bug fixes
 
