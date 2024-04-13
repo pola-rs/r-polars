@@ -34,5 +34,36 @@ test_that("Test reading data from Apache Arrow IPC", {
   expect_grepl_error(pl$scan_ipc(tmpf, rechunk = list()))
   expect_grepl_error(pl$scan_ipc(tmpf, row_index_name = c("x", "y")))
   expect_grepl_error(pl$scan_ipc(tmpf, row_index_name = "name", row_index_offset = data.frame()))
-  expect_grepl_error(pl$scan_ipc(tmpf, memmap = NULL))
+  expect_grepl_error(pl$scan_ipc(tmpf, memory_map = NULL))
 })
+
+
+patrick::with_parameters_test_that("Write Arrow IPC file",
+  {
+    tmpf = tempfile(fileext = ".arrow")
+    on.exit(unlink(tmpf))
+
+    df = pl$DataFrame(
+      int = 1:4,
+      chr = letters[1:4],
+      fct = factor(letters[1:4])
+    )
+    df$write_ipc(tmpf, compression = compression)
+
+    expect_identical(
+      as.data.frame(df),
+      as.data.frame(pl$scan_ipc(tmpf, memory_map = FALSE))
+    )
+
+    expect_warning(
+      df$write_ipc(tmpf, compression = compression, future = TRUE),
+      "considered unstable"
+    )
+
+    expect_true(
+      df$equals(pl$scan_ipc(tmpf, memory_map = FALSE)$collect())
+    )
+  },
+  compression = c("uncompressed", "lz4", "zstd"),
+  .test_name = compression
+)
