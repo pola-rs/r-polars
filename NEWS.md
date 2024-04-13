@@ -56,6 +56,7 @@
     - In `pl$Series()`, the argument `x` is renamed `values` (#933).
     - In `<DataFrame>$write_*` functions, the first argument is now `file` (#935).
     - In `<LazyFrame>$sink_*` functions, the first argument is now `path` (#935).
+    - In `<LazyFrame>$sink_ipc()`, the argument `memmap` is renamed `memory_map` (#1032).
     - In `<DataFrame>$rolling()`, `<LazyFrame>$rolling()`, `<DataFrame>$group_by_dynamic()`
       and `<LazyFrame>$group_by_dynamic()`, the `by` argument is renamed to
       `group_by` (#983).
@@ -169,6 +170,7 @@
   - `$arr$to_list()` (#1018).
   - `$str$extract_groups()` (#979).
   - `$str$find()` (#985).
+  - `<DataFrame>$write_ipc` (#1032).
 
 - New arguments or argument values:
 
