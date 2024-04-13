@@ -56,13 +56,13 @@
     - In `pl$Series()`, the argument `x` is renamed `values` (#933).
     - In `<DataFrame>$write_*` functions, the first argument is now `file` (#935).
     - In `<LazyFrame>$sink_*` functions, the first argument is now `path` (#935).
-    - In `<LazyFrame>$sink_ipc()`, the argument `memmap` is renamed `memory_map` (#1032).
+    - In `<LazyFrame>$sink_ipc()`, the argument `memmap` is renamed to `memory_map` (#1032).
     - In `<DataFrame>$rolling()`, `<LazyFrame>$rolling()`, `<DataFrame>$group_by_dynamic()`
       and `<LazyFrame>$group_by_dynamic()`, the `by` argument is renamed to
       `group_by` (#983).
     - In `$dt$convert_time_zone()` and `$dt$replace_time_zone()`, the `tz`
       argument is renamed to `time_zone` (#944).
-    - In `$str$strptime()`, the argument `datatype` is renamed `dtype` (#939).
+    - In `$str$strptime()`, the argument `datatype` is renamed to `dtype` (#939).
 
   2. Change in the way arguments are passed:
 
