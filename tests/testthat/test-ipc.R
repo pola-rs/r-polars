@@ -64,6 +64,6 @@ patrick::with_parameters_test_that("Write Arrow IPC file",
       df$equals(pl$scan_ipc(tmpf, memory_map = FALSE)$collect())
     )
   },
-  compression = c("uncompressed", "lz4", "zstd"),
+  compression = list(NULL, "uncompressed", "lz4", "zstd"),
   .test_name = compression
 )

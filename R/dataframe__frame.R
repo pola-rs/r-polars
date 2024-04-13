@@ -1995,7 +1995,7 @@ DataFrame_write_ipc = function(
   .pr$DataFrame$write_ipc(
     self,
     file,
-    compression,
+    compression %||% "uncompressed",
     future
   ) |>
     unwrap("in $write_ipc():")
