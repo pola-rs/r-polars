@@ -32,3 +32,13 @@ This doesn't return anything.
 \description{
 Write to Arrow IPC stream or Arrow IPC file (a.k.a Feather file)
 }
+\examples{
+dat = pl$DataFrame(mtcars)
+
+destination = tempfile(fileext = ".arrow")
+dat$write_ipc(destination)
+
+if (require("arrow", quietly = TRUE)) {
+  arrow::read_ipc_file(destination, as_data_frame = FALSE)
+}
+}

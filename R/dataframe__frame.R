@@ -1983,6 +1983,15 @@ DataFrame_write_csv = function(
 #' This functionality is considered **unstable**.
 #' It may be changed at any point without it being considered a breaking change.
 #' @rdname IO_write_ipc
+#' @examples
+#' dat = pl$DataFrame(mtcars)
+#'
+#' destination = tempfile(fileext = ".arrow")
+#' dat$write_ipc(destination)
+#'
+#' if (require("arrow", quietly = TRUE)) {
+#'   arrow::read_ipc_file(destination, as_data_frame = FALSE)
+#' }
 DataFrame_write_ipc = function(
     file,
     compression = c("uncompressed", "zstd", "lz4"),
