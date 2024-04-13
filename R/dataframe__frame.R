@@ -224,13 +224,13 @@ DataFrame_width = method_as_active_binding(\() .pr$DataFrame$shape(self)[2L])
 
 
 
-#' Create new DataFrame
-#' @name pl_DataFrame
+#' Create a new polars DataFrame
 #'
 #' @param ... One of the following:
-#'  - a data.frame or something that inherits data.frame or DataFrame
 #'  - a list of mixed vectors and Series of equal length
 #'  - mixed vectors and/or Series of equal length
+#'  - a positional argument of a [data.frame] or a [DataFrame][DataFrame_class]
+#'    (not recommended use). In this case, the object will be passed to [as_polars_df()].
 #'
 #' Columns will be named as of named arguments or alternatively by names of
 #' Series or given a placeholder name.
@@ -239,9 +239,9 @@ DataFrame_width = method_as_active_binding(\() .pr$DataFrame$shape(self)[2L])
 #'  prefixed a running number.
 #' @param schema A named list that will be used to convert a variable to a
 #' specific DataType. See Examples.
-#'
-#' @return DataFrame
-#' @keywords DataFrame_new
+#' @seealso
+#' - [as_polars_df()]
+#' @return [DataFrame][DataFrame_class]
 #'
 #' @examples
 #' pl$DataFrame(
@@ -267,9 +267,21 @@ DataFrame_width = method_as_active_binding(\() .pr$DataFrame$shape(self)[2L])
 pl_DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
   uw = \(res) unwrap(res, "in $DataFrame():")
 
-  largs = unpack_list(...) |>
+  skip_classes = c("data.frame", "RPolarsDataFrame")
+  largs = unpack_list(..., skip_classes = skip_classes) |>
     result() |>
     uw()
+
+  # pass to `as_polars_df()`
+  if (length(largs) == 1L && is.null(names(largs)) &&
+    (inherits(largs[[1]], skip_classes))) {
+    # TODO: schema v.s. schema_overrides <https://github.com/pola-rs/r-polars/issues/897>
+    out = as_polars_df(largs[[1]], make_names_unique = make_names_unique, schema_overrides = schema) |>
+      result() |>
+      uw()
+
+    return(out)
+  }
 
   if (length(largs) > 0 && !is.null(schema) && !all(names(schema) %in% names(largs))) {
     Err_plain("Some columns in `schema` are not in the DataFrame.") |>
@@ -287,11 +299,6 @@ pl_DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
       out = .pr$DataFrame$default()
     }
     return(out)
-  }
-
-  # pass through if already a DataFrame
-  if (inherits(largs[[1L]], "RPolarsDataFrame")) {
-    return(largs[[1L]])
   }
 
   # keys are tentative new column names
