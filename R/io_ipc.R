@@ -4,7 +4,9 @@
 #' @keywords LazyFrame_new
 #'
 #' @inheritParams pl_scan_csv
-#' @param memmap bool, mapped memory
+#' @param memory_map A logical. If `TRUE`, try to memory map the file.
+#' This can greatly improve performance on repeated queries as the OS may cache pages.
+#' Only uncompressed Arrow IPC files can be memory mapped.
 #'
 #' @return LazyFrame
 #' @rdname IO_scan_ipc
@@ -13,10 +15,10 @@ pl_scan_ipc = function(
     ...,
     n_rows = NULL,
     cache = TRUE,
-    rechunk = TRUE,
+    rechunk = FALSE,
     row_index_name = NULL,
     row_index_offset = 0L,
-    memmap = TRUE) {
+    memory_map = TRUE) {
   import_arrow_ipc(
     source,
     n_rows,
@@ -24,7 +26,7 @@ pl_scan_ipc = function(
     rechunk,
     row_index_name,
     row_index_offset,
-    memmap
+    memory_map
   ) |>
     unwrap("in pl$scan_ipc:")
 }
