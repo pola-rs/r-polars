@@ -115,7 +115,7 @@
 - Removed `<Series>$to_r_vector()` which was an old alias for
   `<Series>$to_vector()` (#938).
 - Removed `<Expr>$rep_extend()`, which was an experimental method created at the
-  early stage of this package and not existing in other language APIs (#1028).
+  early stage of this package and does not exist in other language APIs (#1028).
 - In `$str$contains()`, the arguments `literal` and `strict` should be named arguments (#982).
 - In `$str$contains_any()`, the `ascii_case_insensitive` argument must be named (#986).
 - In `$str$count_matches()`, `$str$replace()` and `$str$replace_all()`,
