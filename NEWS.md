@@ -170,7 +170,7 @@
   - `$arr$to_list()` (#1018).
   - `$str$extract_groups()` (#979).
   - `$str$find()` (#985).
-  - `<DataFrame>$write_ipc` (#1032).
+  - `<DataFrame>$write_ipc()` (#1032).
 
 - New arguments or argument values:
 
