@@ -130,9 +130,9 @@
     - In `pl$scan_parquet()`, the default value of the argument `rechunk` is
       changed from `TRUE` to `FALSE` (#1033).
     - In `pl$scan_parquet()` and `pl$read_parquet()`, the argument `parallel`
-      only accepts `"auto"`, `"columns"`, `"row_groups"`, and `"none"` (#1033).
+      only accepts `"auto"`, `"columns"`, `"row_groups"`, and `"none"`.
       Previously, it also accepted upper-case notation of `"auto"`, `"columns"`,
-      `"none"`, and, accepted `"RowGroups"` instead of `"row_groups"`.
+      `"none"`, and `"RowGroups"` instead of `"row_groups"` (#1033).
 
 
 - The usage of `pl$date_range()` to create a range of `Datetime` data type is
