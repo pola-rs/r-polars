@@ -8,14 +8,14 @@ pl_read_parquet(
   source,
   ...,
   n_rows = NULL,
-  cache = TRUE,
-  parallel = c("Auto", "None", "Columns", "RowGroups"),
-  rechunk = TRUE,
   row_index_name = NULL,
   row_index_offset = 0L,
+  parallel = c("auto", "columns", "row_groups", "none"),
+  hive_partitioning = TRUE,
+  rechunk = TRUE,
   low_memory = FALSE,
   use_statistics = TRUE,
-  hive_partitioning = TRUE
+  cache = TRUE
 )
 }
 \arguments{
@@ -26,32 +26,51 @@ files in the same directory (see examples).}
 
 \item{n_rows}{Maximum number of rows to read.}
 
-\item{cache}{Cache the result after reading.}
-
-\item{parallel}{This determines the direction of parallelism. \code{"auto"} will
-try to determine the optimal direction. Can be \code{"auto"}, \code{"none"}, \code{"columns"},
-or \code{"rowgroups"},}
-
-\item{rechunk}{In case of reading multiple files via a glob pattern, rechunk
-the final DataFrame into contiguous memory chunks.}
-
 \item{row_index_name}{If not \code{NULL}, this will insert a row index column with
 the given name into the DataFrame.}
 
 \item{row_index_offset}{Offset to start the row index column (only used if
 the name is set).}
 
+\item{parallel}{This determines the direction of parallelism. \code{"auto"} will
+try to determine the optimal direction. Can be \code{"auto"}, \code{"columns"},
+\code{"row_groups"}, or \code{"none"}.}
+
+\item{hive_partitioning}{Infer statistics and schema from hive partitioned URL
+and use them to prune reads.}
+
+\item{rechunk}{In case of reading multiple files via a glob pattern, rechunk
+the final DataFrame into contiguous memory chunks.}
+
 \item{low_memory}{Reduce memory usage (will yield a lower performance).}
 
 \item{use_statistics}{Use statistics in the parquet file to determine if pages
 can be skipped from reading.}
 
-\item{hive_partitioning}{Infer statistics and schema from hive partitioned URL
-and use them to prune reads.}
+\item{cache}{Cache the result after reading.}
 }
 \value{
-DataFrame
+\link[=DataFrame_class]{DataFrame}
 }
 \description{
 Read a parquet file
+}
+\examples{
+\dontshow{if (requireNamespace("arrow", quietly = TRUE) && arrow::arrow_with_dataset() && arrow::arrow_with_parquet()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+temp_dir = tempfile()
+# Write a hive-style partitioned parquet dataset
+arrow::write_dataset(
+  mtcars,
+  temp_dir,
+  partitioning = c("cyl", "gear"),
+  format = "parquet",
+  hive_style = TRUE
+)
+list.files(temp_dir, recursive = TRUE)
+
+# Read the dataset
+pl$read_parquet(
+  file.path(temp_dir, "**/*.parquet")
+)
+\dontshow{\}) # examplesIf}
 }

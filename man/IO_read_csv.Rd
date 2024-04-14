@@ -118,7 +118,7 @@ DataFrame or LazyFrame.}
 downloaded files in session for an easy reuse.}
 }
 \value{
-DataFrame
+\link[=DataFrame_class]{DataFrame}
 }
 \description{
 New DataFrame from CSV
