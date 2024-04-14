@@ -7,6 +7,7 @@ use crate::utils::robj_to_rchoice;
 use crate::RFnSignature;
 use crate::CONFIG;
 use extendr_api::prelude::*;
+use polars::chunked_array::ops::SortMultipleOptions;
 use polars::prelude as pl;
 use std::result::Result;
 
@@ -385,10 +386,25 @@ fn arg_where(condition: Robj) -> RResult<RPolarsExpr> {
 }
 
 #[extendr]
-fn arg_sort_by(exprs: Robj, descending: Robj) -> RResult<RPolarsExpr> {
+fn arg_sort_by(
+    exprs: Robj,
+    descending: Robj,
+    nulls_last: Robj,
+    multithreaded: Robj,
+    maintain_order: Robj,
+) -> RResult<RPolarsExpr> {
+    let descending = robj_to!(Vec, bool, descending)?;
+    let nulls_last = robj_to!(bool, nulls_last)?;
+    let multithreaded = robj_to!(bool, multithreaded)?;
+    let maintain_order = robj_to!(bool, maintain_order)?;
     Ok(pl::arg_sort_by(
         robj_to!(VecPLExprCol, exprs)?,
-        &robj_to!(Vec, bool, descending)?,
+        SortMultipleOptions {
+            descending,
+            nulls_last,
+            multithreaded,
+            maintain_order,
+        },
     )
     .into())
 }

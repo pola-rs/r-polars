@@ -902,6 +902,7 @@ Series_set_sorted = function(descending = FALSE, in_place = FALSE) {
   if (in_place) invisible(NULL) else invisible(self)
 }
 
+
 #' Sort a Series
 #'
 #' @param descending Sort in descending order.
@@ -913,18 +914,18 @@ Series_set_sorted = function(descending = FALSE, in_place = FALSE) {
 #' @examples
 #' as_polars_series(c(1.5, NA, 1, NaN, Inf, -Inf))$sort()
 #' as_polars_series(c(1.5, NA, 1, NaN, Inf, -Inf))$sort(nulls_last = TRUE)
-Series_sort = function(descending = FALSE, nulls_last = FALSE, in_place = FALSE) {
-  if (in_place && polars_options()$strictly_immutable) {
+Series_sort = function(..., descending = FALSE, nulls_last = FALSE, in_place = FALSE) {
+  if (isTRUE(in_place) && polars_options()$strictly_immutable) {
     stop(paste(
-      "in_place sort breaks immutability, to enable mutable features run:\n",
+      "in place sort breaks immutability, to enable mutable features run:\n",
       "`options(polars.strictly_immutable = FALSE)`"
     ))
   }
-  if (!in_place) {
+  if (!isTRUE(in_place)) {
     self = self$clone()
   }
 
-  .pr$Series$sort_mut(self, descending, nulls_last)
+  .pr$Series$sort(self, descending, nulls_last)
 }
 
 #' Convert Series to DataFrame

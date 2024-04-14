@@ -1377,6 +1377,7 @@ Expr_mode = use_extendr_wrapper
 #'
 #' Sort this column. If used in a groupby context, the groups are sorted.
 #'
+#' @param ... Ignored
 #' @param descending Sort in descending order. When sorting by multiple columns,
 #' can be specified per column by passing a vector of booleans.
 #' @param nulls_last If `TRUE`, place nulls values last.
@@ -1384,7 +1385,7 @@ Expr_mode = use_extendr_wrapper
 #' @examples
 #' pl$DataFrame(a = c(6, 1, 0, NA, Inf, NaN))$
 #'   with_columns(sorted = pl$col("a")$sort())
-Expr_sort = function(descending = FALSE, nulls_last = FALSE) {
+Expr_sort = function(..., descending = FALSE, nulls_last = FALSE) {
   .pr$Expr$sort(self, descending, nulls_last)
 }
 

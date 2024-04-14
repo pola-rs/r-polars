@@ -865,6 +865,7 @@ ExprStr_explode = function() {
     unwrap("in str$explode():")
 }
 
+# TODO: rename to `to_integer`
 #' Parse integers with base radix from strings
 #'
 #' @description Parse integers with base 2 by default.
