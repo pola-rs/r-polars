@@ -63,6 +63,7 @@
     - In `$dt$convert_time_zone()` and `$dt$replace_time_zone()`, the `tz`
       argument is renamed to `time_zone` (#944).
     - In `$str$strptime()`, the argument `datatype` is renamed to `dtype` (#939).
+    - In `$str$parse_int()`, argument `radix` is renamed to `base` (#1034).
 
   2. Change in the way arguments are passed:
 
@@ -85,6 +86,8 @@
       `$str$to_time()`, all arguments (except the first one) must be named (#939).
     - In `pl$date_range()`, the arguments `closed`, `time_unit`, and `time_zone`
       must be named (#950).
+    - In `$set_sorted()` and `$sort_by()`, argument `descending` must be named 
+      (#1034).
     - In `pl$Series()`, using positional arguments throws a warning, since the
       argument positions will be changed in the future (#966).
 
@@ -144,6 +147,7 @@
   early stage of this package and does not exist in other language APIs (#1028).
 - The following deprecated functions are now removed: `pl$threadpool_size()`,
   `<DataFrame>$with_row_count()`, `<LazyFrame>$with_row_count()` (#965).
+- In `$group_by_dynamic()`, the first datapoint is always preserved (#1034).
 
 
 ### New features
@@ -181,6 +185,9 @@
     when a datetime doesn't exist.
   - `mapping_strategy` in `$over()` (#984, #988).
   - `raise_if_undetermined` in `$meta$output_name()` (#961).
+  - `null_on_oob` in `$arr$get()` and `$list$get()` to determine what happens
+    when the index is out of bounds (#1034).
+  - `nulls_last`, `multithreaded`, and `maintain_order` in `$sort_by()` (#1034).
 
 - Other:
 
@@ -188,7 +195,7 @@
     more classes to Series properly (#1015).
   - Export the `Duration` datatype (#955).
   - New active binding `<Series>$struct$fields` (#1002).
-  - rust-polars is updated to 0.38.3 (#937).
+  - rust-polars is updated to 0.39.0 (#937, #1034).
 
 
 ### Bug fixes
