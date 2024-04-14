@@ -86,7 +86,7 @@
       `$str$to_time()`, all arguments (except the first one) must be named (#939).
     - In `pl$date_range()`, the arguments `closed`, `time_unit`, and `time_zone`
       must be named (#950).
-    - In `$set_sorted()` and `$sort_by()`, argument `descending` must be named 
+    - In `$set_sorted()` and `$sort_by()`, argument `descending` must be named
       (#1034).
     - In `pl$Series()`, using positional arguments throws a warning, since the
       argument positions will be changed in the future (#966).
