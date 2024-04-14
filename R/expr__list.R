@@ -200,7 +200,10 @@ ExprList_gather_every = function(n, offset = 0) {
 #' df$with_columns(
 #'   first = pl$col("a")$list$first()
 #' )
-ExprList_first = function() .pr$Expr$list_get(self, wrap_e(0L, str_to_lit = FALSE))
+ExprList_first = function() {
+  .pr$Expr$list_get(self, 0, null_on_oob = TRUE) |>
+    unwrap("in $list$first():")
+}
 
 #' Get the last value in a list
 #'
@@ -211,7 +214,10 @@ ExprList_first = function() .pr$Expr$list_get(self, wrap_e(0L, str_to_lit = FALS
 #' df$with_columns(
 #'   last = pl$col("a")$list$last()
 #' )
-ExprList_last = function() .pr$Expr$list_get(self, wrap_e(-1L, str_to_lit = FALSE))
+ExprList_last = function() {
+  .pr$Expr$list_get(self, -1, null_on_oob = TRUE) |>
+    unwrap("in $list$last():")
+}
 
 #' Check if list contains a given value
 #'
