@@ -819,7 +819,7 @@ test_that("opt_toggles", {
   tmpf = tempfile()
   on.exit(unlink(tmpf))
   lf_new_opts$sink_ipc(tmpf, inherit_optimization = TRUE)
-  expect_identical(pl$scan_ipc(tmpf, memmap = FALSE)$collect()$to_data_frame(), df_defaults)
+  expect_identical(pl$scan_ipc(tmpf, memory_map = FALSE)$collect()$to_data_frame(), df_defaults)
 })
 
 test_that("with_context works", {
