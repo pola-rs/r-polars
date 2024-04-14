@@ -46,7 +46,7 @@ test_that("scan read parquet - parallel strategies", {
   df_exp = lf_exp$collect()$to_data_frame()
 
   # check all parallel strategies produce same result
-  for (choice in c("auto", "COLUMNS", "None", "rowGroups")) {
+  for (choice in c("auto", "columns", "none", "row_groups")) {
     expect_identical(
       pl$read_parquet(tmpf, parallel = choice)$to_data_frame(),
       df_exp
