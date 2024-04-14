@@ -1266,9 +1266,7 @@ pl_arg_sort_by = function(
     descending = FALSE,
     nulls_last = FALSE,
     multithreaded = TRUE,
-    maintain_order = FALSE
-  ) {
-
+    maintain_order = FALSE) {
   dots = list2(...)
 
   # The first argument must be a column, not columns

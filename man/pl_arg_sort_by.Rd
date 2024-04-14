@@ -4,13 +4,27 @@
 \alias{pl_arg_sort_by}
 \title{Return the row indices that would sort the columns}
 \usage{
-pl_arg_sort_by(..., descending = FALSE)
+pl_arg_sort_by(
+  ...,
+  descending = FALSE,
+  nulls_last = FALSE,
+  multithreaded = TRUE,
+  maintain_order = FALSE
+)
 }
 \arguments{
 \item{...}{Column(s) to arg sort by. Can be Expr(s) or something coercible
 to Expr(s). Strings are parsed as column names.}
 
 \item{descending}{A logical. If \code{TRUE}, sort in descending order.}
+
+\item{nulls_last}{A logical. If \code{TRUE}, place \code{null} values last insead of first.}
+
+\item{multithreaded}{A logical. If \code{TRUE}, sort using multiple threads.}
+
+\item{maintain_order}{Whether the order should be maintained if elements are
+equal. If \code{TRUE}, streaming is not possible and performance might be worse
+since this requires a stable search.}
 }
 \value{
 Expr
