@@ -8,11 +8,11 @@ pl_scan_ipc(
   source,
   ...,
   n_rows = NULL,
-  cache = TRUE,
-  rechunk = FALSE,
+  memory_map = TRUE,
   row_index_name = NULL,
   row_index_offset = 0L,
-  memory_map = TRUE
+  rechunk = FALSE,
+  cache = TRUE
 )
 }
 \arguments{
@@ -23,10 +23,9 @@ files in the same directory (see examples).}
 
 \item{n_rows}{Maximum number of rows to read.}
 
-\item{cache}{Cache the result after reading.}
-
-\item{rechunk}{In case of reading multiple files via a glob pattern, rechunk
-the final DataFrame into contiguous memory chunks.}
+\item{memory_map}{A logical. If \code{TRUE}, try to memory map the file.
+This can greatly improve performance on repeated queries as the OS may cache pages.
+Only uncompressed Arrow IPC files can be memory mapped.}
 
 \item{row_index_name}{If not \code{NULL}, this will insert a row index column with
 the given name into the DataFrame.}
@@ -34,9 +33,10 @@ the given name into the DataFrame.}
 \item{row_index_offset}{Offset to start the row index column (only used if
 the name is set).}
 
-\item{memory_map}{A logical. If \code{TRUE}, try to memory map the file.
-This can greatly improve performance on repeated queries as the OS may cache pages.
-Only uncompressed Arrow IPC files can be memory mapped.}
+\item{rechunk}{In case of reading multiple files via a glob pattern, rechunk
+the final DataFrame into contiguous memory chunks.}
+
+\item{cache}{Cache the result after reading.}
 }
 \value{
 \link[=LazyFrame_class]{LazyFrame}

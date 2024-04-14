@@ -32,11 +32,11 @@ pl_scan_ipc = function(
     source,
     ...,
     n_rows = NULL,
-    cache = TRUE,
-    rechunk = FALSE,
+    memory_map = TRUE,
     row_index_name = NULL,
     row_index_offset = 0L,
-    memory_map = TRUE) {
+    rechunk = FALSE,
+    cache = TRUE) {
   import_arrow_ipc(
     source,
     n_rows,
@@ -77,11 +77,11 @@ pl_read_ipc = function(
     source,
     ...,
     n_rows = NULL,
-    cache = TRUE,
-    rechunk = FALSE,
+    memory_map = TRUE,
     row_index_name = NULL,
     row_index_offset = 0L,
-    memory_map = TRUE) {
+    rechunk = FALSE,
+    cache = TRUE) {
   .args = as.list(environment())
   result({
     do.call(pl$scan_ipc, .args)$collect()
