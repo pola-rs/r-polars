@@ -441,7 +441,7 @@ test_that("group_by_dynamic for LazyFrame: arg 'offset' works", {
       "2020-01-01", "2020-01-01", "2020-01-01",
       "2020-01-02", "2020-01-03", "2020-01-08"
     ),
-    n = c(3, 7, 5, 9, 2, 1)
+    n = c(3, 10, 5, 9, 2, 1)
   )$with_columns(
     pl$col("dt")$str$strptime(pl$Date, format = NULL)$set_sorted()
   )
@@ -453,7 +453,7 @@ test_that("group_by_dynamic for LazyFrame: arg 'offset' works", {
 
   expect_equal(
     actual[, "n"],
-    c(5.5, 1)
+    c(6, 5.5, 1)
   )
 })
 
