@@ -45,7 +45,7 @@ test_that("concat dataframe", {
   )
 
   # type 'relaxed' vertical concatenation is not allowed by default
-  expect_grepl_error(pl$concat(l_ver[[1L]], pl$DataFrame(a = 2, b = 42L), how = "vertical"), "data types don't match")
+  expect_grepl_error(pl$concat(l_ver[[1L]], pl$DataFrame(a = 2, b = 42L), how = "vertical"), "cannot extend/append Int32 with Float64")
 
   # check lazy eager is identical
   l_ver_lazy = lapply(l_ver, \(df) df$lazy())

@@ -705,7 +705,7 @@ test_that("Expr_append", {
 
   expect_grepl_error(
     pl$DataFrame(list())$select(pl$lit("Bob")$append(FALSE, upcast = FALSE)),
-    "match"
+    "cannot extend/append String with Boolean"
   )
 })
 
@@ -998,8 +998,8 @@ test_that("sort_by", {
   )
 
   expect_grepl_error(pl$lit(1:4)$sort_by(1)$to_r(), "different length")
-  expect_grepl_error(pl$lit(1:4)$sort_by("blop")$to_r(), "column 'blop' not available in 'DataFrame'")
-  expect_grepl_error(pl$lit(1:4)$sort_by("blop")$to_r(), "column 'blop' not available in 'DataFrame'")
+  expect_grepl_error(pl$lit(1:4)$sort_by("blop")$to_r(), "field not found")
+  expect_grepl_error(pl$lit(1:4)$sort_by("blop")$to_r(), "field not found")
   expect_grepl_error(pl$lit(1:4)$sort_by(df)$to_r(), "not convertible into.* Expr")
   expect_grepl_error(pl$lit(1:4)$sort_by(df)$to_r(), "not convertible into.* Expr")
 
@@ -2229,10 +2229,10 @@ test_that("entropy", {
     r_entropy(1:3, base = 2, normalize = FALSE)
   )
 
-  # TODO: https://github.com/pola-rs/polars/issues/15350
-  pl$select(pl$lit(c("a", "b", "b", "c", "c", "c"))$entropy(base = 2))
-
-  pl$lit(c("a", "a", "a"))$entropy(base = 2, normalize = FALSE)$to_r()
+  expect_grepl_error(
+    pl$select(pl$lit(c("a", "b", "b", "c", "c", "c"))$entropy(base = 2)),
+    "expected numerical input"
+  )
 })
 
 

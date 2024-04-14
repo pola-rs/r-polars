@@ -1377,16 +1377,13 @@ Expr_mode = use_extendr_wrapper
 #'
 #' Sort this column. If used in a groupby context, the groups are sorted.
 #'
-#' @param ... Ignored
-#' @param descending Sort in descending order. When sorting by multiple columns,
-#' can be specified per column by passing a vector of booleans.
-#' @param nulls_last If `TRUE`, place nulls values last.
+#' @inheritParams Series_sort
 #' @return Expr
 #' @examples
 #' pl$DataFrame(a = c(6, 1, 0, NA, Inf, NaN))$
 #'   with_columns(sorted = pl$col("a")$sort())
 Expr_sort = function(..., descending = FALSE, nulls_last = FALSE) {
-  .pr$Expr$sort(self, descending, nulls_last)
+  .pr$Expr$sort_with(self, descending, nulls_last)
 }
 
 #' Top k values
@@ -1478,6 +1475,7 @@ Expr_search_sorted = function(element) {
   .pr$Expr$search_sorted(self, wrap_e(element))
 }
 
+# TODO: rewrite `by` to `...` <https://github.com/pola-rs/r-polars/pull/997>
 #' Sort Expr by order of others
 #'
 #' Sort this column by the ordering of another column, or multiple other columns.
@@ -1485,7 +1483,9 @@ Expr_search_sorted = function(element) {
 #'
 #' @param by One expression or a list of expressions and/or strings (interpreted
 #'  as column names).
-#' @inheritParams Expr_sort
+#' @param maintain_order A logical to indicate whether the order should be maintained
+#' if elements are equal.
+#' @inheritParams Series_sort
 #' @return Expr
 #' @examples
 #' df = pl$DataFrame(
@@ -1511,12 +1511,19 @@ Expr_search_sorted = function(element) {
 #' df$with_columns(
 #'   sorted = pl$col("group")$sort_by(pl$col("value1")$sort(descending = TRUE))
 #' )
-Expr_sort_by = function(by, descending = FALSE) {
+Expr_sort_by = function(
+    by, ..., descending = FALSE,
+    nulls_last = FALSE,
+    multithreaded = TRUE,
+    maintain_order = FALSE) {
   .pr$Expr$sort_by(
     self,
     wrap_elist_result(by, str_to_lit = FALSE),
-    result(descending)
-  ) |> unwrap("in $sort_by:")
+    descending,
+    nulls_last,
+    maintain_order,
+    multithreaded
+  ) |> unwrap("in $sort_by():")
 }
 
 #' Gather values by index
@@ -3143,6 +3150,7 @@ Expr_cumulative_eval = function(expr, min_periods = 1L, parallel = FALSE) {
 #' This enables downstream code to use fast paths for sorted arrays. WARNING:
 #' this doesn't check whether the data is actually sorted, you have to ensure of
 #' that yourself.
+#' @param ... Ignored.
 #' @param descending Sort the columns in descending order.
 #' @return Expr
 #' @examples
@@ -3154,7 +3162,7 @@ Expr_cumulative_eval = function(expr, min_periods = 1L, parallel = FALSE) {
 #' s2 = pl$select(pl$lit(c(1, 3, 2, 4))$set_sorted()$alias("a"))$get_column("a")
 #' s2$sort()
 #' s2$flags # returns TRUE while it's not actually sorted
-Expr_set_sorted = function(descending = FALSE) {
+Expr_set_sorted = function(..., descending = FALSE) {
   self$map_batches(\(s) {
     .pr$Series$set_sorted_mut(s, descending) # use private to bypass mut protection
     s

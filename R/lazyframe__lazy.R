@@ -1296,15 +1296,15 @@ LazyFrame_join = function(
 }
 
 
-#' Sort a LazyFrame
-#' @description Sort by one or more Expressions.
+#' Sort the LazyFrame by the given columns
+#'
+#' @inheritParams Series_sort
 #' @param by Column(s) to sort by. Can be character vector of column names,
 #' a list of Expr(s) or a list with a mix of Expr(s) and column names.
 #' @param ... More columns to sort by as above but provided one Expr per argument.
 #' @param descending Logical. Sort in descending order (default is `FALSE`). This must be
 #' either of length 1 or a logical vector of the same length as the number of
 #' Expr(s) specified in `by` and `...`.
-#' @param nulls_last Logical. Place `NULL`s at the end? Default is `FALSE`.
 #' @param maintain_order Whether the order should be maintained if elements are
 #' equal. If `TRUE`, streaming is not possible and performance might be worse
 #' since this requires a stable search.
@@ -1326,10 +1326,11 @@ LazyFrame_sort = function(
     ...,
     descending = FALSE,
     nulls_last = FALSE,
-    maintain_order = FALSE) {
+    maintain_order = FALSE,
+    multithreaded = TRUE) {
   .pr$LazyFrame$sort_by_exprs(
     self, unpack_list(by, .context = "in $sort():"), err_on_named_args(...),
-    descending, nulls_last, maintain_order
+    descending, nulls_last, maintain_order, multithreaded
   ) |>
     unwrap("in $sort():")
 }

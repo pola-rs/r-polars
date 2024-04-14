@@ -484,7 +484,7 @@ RPolarsExpr$to_physical <- function() .Call(wrap__RPolarsExpr__to_physical, self
 
 RPolarsExpr$cast <- function(data_type, strict) .Call(wrap__RPolarsExpr__cast, self, data_type, strict)
 
-RPolarsExpr$sort <- function(descending, nulls_last) .Call(wrap__RPolarsExpr__sort, self, descending, nulls_last)
+RPolarsExpr$sort_with <- function(descending, nulls_last) .Call(wrap__RPolarsExpr__sort_with, self, descending, nulls_last)
 
 RPolarsExpr$arg_sort <- function(descending, nulls_last) .Call(wrap__RPolarsExpr__arg_sort, self, descending, nulls_last)
 

@@ -4,12 +4,14 @@
 \alias{Series_set_sorted}
 \title{Set a sorted flag on a Series}
 \usage{
-Series_set_sorted(descending = FALSE, in_place = FALSE)
+Series_set_sorted(..., descending = FALSE, in_place = FALSE)
 }
 \arguments{
+\item{...}{Ignored.}
+
 \item{descending}{Sort the columns in descending order.}
 
-\item{in_place}{If \code{TRUE}, this will set the flag mutably and return NULL.
+\item{in_place}{If \code{TRUE}, this will set the flag mutably and return \code{NULL}.
 Remember to use \code{options(polars.strictly_immutable = FALSE)} before using
 this parameter, otherwise an error will occur. If \code{FALSE} (default), it will
 return a cloned Series with the flag.}

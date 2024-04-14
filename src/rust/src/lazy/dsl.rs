@@ -248,7 +248,7 @@ impl RPolarsExpr {
         .into()
     }
 
-    pub fn sort(&self, descending: bool, nulls_last: bool) -> Self {
+    pub fn sort_with(&self, descending: bool, nulls_last: bool) -> Self {
         self.clone()
             .0
             .sort(SortOptions {
@@ -1103,7 +1103,7 @@ impl RPolarsExpr {
             .0
             .clone()
             .list()
-            .get(robj_to!(PLExprCol, index)?, robj_to!(bool, null_on_oob)?)
+            .get(robj_to!(PLExpr, index)?, robj_to!(bool, null_on_oob)?)
             .into())
     }
 

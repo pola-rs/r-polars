@@ -252,14 +252,14 @@ test_that("from arrow Table and ChunkedArray", {
     lapply(at$columns, \(x) x$num_chunks)
   )
 
-  expect_grepl_error(expect_identical(
+  expect_identical(
     as_polars_df.ArrowTabular(at, rechunk = TRUE)$
       select(pl$all()$map_batches(\(s) s$chunk_lengths()))$
       to_list() |>
       lapply(length) |>
       unname(),
     lapply(at$columns, \(x) x$num_chunks)
-  ))
+  )
 
 
   # #not supported yet

@@ -2,20 +2,18 @@
 % Please edit documentation in R/expr__array.R
 \name{ExprArr_get}
 \alias{ExprArr_get}
-\alias{arr_get}
 \title{Get the value by index in an array}
 \usage{
-ExprArr_get(index)
+ExprArr_get(index, ..., null_on_oob = TRUE)
 }
 \arguments{
 \item{index}{An Expr or something coercible to an Expr, that must return a
 single index. Values are 0-indexed (so index 0 would return the first item
 of every sub-array) and negative values start from the end (index \code{-1}
-returns the last item). If the index is out of bounds, it will return a
-\code{null}. Strings are parsed as column names.}
+returns the last item).}
 }
 \value{
-Expr
+\link[=Expr_class]{Expr}
 }
 \description{
 This allows to extract one value per array only.

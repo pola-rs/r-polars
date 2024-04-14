@@ -874,7 +874,7 @@ Series_is_sorted = function(descending = FALSE) {
 #' Set a sorted flag on a Series
 #'
 #' @inheritParams Expr_set_sorted
-#' @param in_place If `TRUE`, this will set the flag mutably and return NULL.
+#' @param in_place If `TRUE`, this will set the flag mutably and return `NULL`.
 #' Remember to use `options(polars.strictly_immutable = FALSE)` before using
 #' this parameter, otherwise an error will occur. If `FALSE` (default), it will
 #' return a cloned Series with the flag.
@@ -886,46 +886,51 @@ Series_is_sorted = function(descending = FALSE) {
 #' @examples
 #' s = as_polars_series(1:4)$set_sorted()
 #' s$flags
-Series_set_sorted = function(descending = FALSE, in_place = FALSE) {
-  if (in_place && polars_options()$strictly_immutable) {
-    stop(paste(
+Series_set_sorted = function(..., descending = FALSE, in_place = FALSE) {
+  if (isTRUE(in_place) && polars_options()$strictly_immutable) {
+    Err_plain(
       "Using `in_place = TRUE` in `set_sorted()` breaks immutability. To enable mutable features run:\n",
       "`options(polars.strictly_immutable = FALSE)`"
-    ))
+    ) |>
+      unwrap("in $set_sorted():")
   }
 
-  if (!in_place) {
+  if (!isTRUE(in_place)) {
     self = self$clone()
   }
 
   .pr$Series$set_sorted_mut(self, descending)
-  if (in_place) invisible(NULL) else invisible(self)
+  if (isTRUE(in_place)) invisible(NULL) else invisible(self)
 }
 
 
 #' Sort a Series
 #'
-#' @param descending Sort in descending order.
-#' @inheritParams Expr_sort
 #' @inheritParams Series_set_sorted
-#'
+#' @param descending A logical. If `TRUE`, sort in descending order.
+#' @param nulls_last A logical. If `TRUE`, place `null` values last insead of first.
+#' @param multithreaded A logical. If `TRUE`, sort using multiple threads.
 #' @return [Series][Series_class]
-#'
 #' @examples
 #' as_polars_series(c(1.5, NA, 1, NaN, Inf, -Inf))$sort()
 #' as_polars_series(c(1.5, NA, 1, NaN, Inf, -Inf))$sort(nulls_last = TRUE)
-Series_sort = function(..., descending = FALSE, nulls_last = FALSE, in_place = FALSE) {
+Series_sort = function(
+    ..., descending = FALSE, nulls_last = FALSE, multithreaded = TRUE,
+    in_place = FALSE) {
+  uw = \(res) unwrap(res, "in $sort():")
   if (isTRUE(in_place) && polars_options()$strictly_immutable) {
-    stop(paste(
+    Err_plain(
       "in place sort breaks immutability, to enable mutable features run:\n",
       "`options(polars.strictly_immutable = FALSE)`"
-    ))
+    ) |>
+      uw()
   }
   if (!isTRUE(in_place)) {
     self = self$clone()
   }
 
-  .pr$Series$sort(self, descending, nulls_last)
+  .pr$Series$sort(self, descending, nulls_last, multithreaded) |>
+    uw()
 }
 
 #' Convert Series to DataFrame

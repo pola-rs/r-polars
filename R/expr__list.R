@@ -112,11 +112,12 @@ ExprList_concat = function(other) {
 #' @param index An Expr or something coercible to an Expr, that must return a
 #'   single index. Values are 0-indexed (so index 0 would return the first item
 #'   of every sublist) and negative values start from the end (index `-1`
-#'   returns the last item). If the index is out of bounds, it will return a
-#'   `null`. Strings are parsed as column names.
-#'
-#' @return Expr
-#' @aliases list_get
+#'   returns the last item).
+#' @param ... Ignored.
+#' @param null_on_oob A logical to determine the behavior if an index is out of bounds:
+#' - `TRUE` (default): set as `null`
+#' - `FALSE`: raise an error
+#' @return [Expr][Expr_class]
 #' @examples
 #' df = pl$DataFrame(
 #'   values = list(c(2, 2, NA), c(1, 2, 3), NA_real_, NULL),
@@ -128,7 +129,10 @@ ExprList_concat = function(other) {
 #'   val_minus_1 = pl$col("values")$list$get(-1),
 #'   val_oob = pl$col("values")$list$get(10)
 #' )
-ExprList_get = function(index) .pr$Expr$list_get(self, wrap_e(index, str_to_lit = FALSE))
+ExprList_get = function(index, ..., null_on_oob = TRUE) {
+  .pr$Expr$list_get(self, index, null_on_oob) |>
+    unwrap("in $list$get():")
+}
 
 #' Get several values by index in a list
 #'
