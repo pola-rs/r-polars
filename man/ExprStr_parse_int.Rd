@@ -4,10 +4,10 @@
 \alias{ExprStr_parse_int}
 \title{Parse integers with base radix from strings}
 \usage{
-ExprStr_parse_int(radix = 2, strict = TRUE)
+ExprStr_parse_int(base = 2, strict = TRUE)
 }
 \arguments{
-\item{radix}{Positive integer which is the base of the string we are parsing.
+\item{base}{Positive integer which is the base of the string we are parsing.
 Default is 2.}
 
 \item{strict}{If \code{TRUE} (default), integer overflow will raise an error.
