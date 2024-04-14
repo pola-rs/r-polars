@@ -107,6 +107,6 @@ test_that("$struct$fields", {
   )
   expect_grepl_error(
     as_polars_series(1:3)$struct$fields,
-    "data types don't match"
+    "invalid series dtype"
   )
 })

@@ -494,7 +494,7 @@ test_that("str$count_matches", {
 
   expect_grepl_error(
     df$select(pl$col("foo")$str$count_matches(5)),
-    "data types don't match"
+    "invalid series dtype"
   )
 
   df2 = pl$DataFrame(foo = c("hello", "hi there"), pat = c("ell", "e"))
@@ -527,7 +527,7 @@ test_that("str$split", {
 
   expect_grepl_error(
     pl$DataFrame(pl$lit("42")$str$split(by = 42L, inclusive = TRUE)),
-    "data types don't match"
+    "invalid series dtype"
   )
 
   expect_grepl_error(
