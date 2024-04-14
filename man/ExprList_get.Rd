@@ -14,11 +14,8 @@ returns the last item).}
 
 \item{...}{Ignored.}
 
-\item{null_on_oob}{A logical to determine the behavior if an index is out of bounds:
-\itemize{
-\item \code{TRUE} (default): set as \code{null}
-\item \code{FALSE}: raise an error
-}}
+\item{null_on_oob}{If \code{TRUE}, return \code{null} if an index is out of bounds.
+Otherwise, raise an error.}
 }
 \value{
 \link[=Expr_class]{Expr}

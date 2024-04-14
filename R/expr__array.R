@@ -136,7 +136,7 @@ ExprArr_unique = function(maintain_order = FALSE) .pr$Expr$arr_unique(self, main
 #'
 #' This allows to extract one value per array only.
 #'
-#' @inherit ExprList_get return
+#' @inherit ExprList_get params return
 #' @param index An Expr or something coercible to an Expr, that must return a
 #'   single index. Values are 0-indexed (so index 0 would return the first item
 #'   of every sub-array) and negative values start from the end (index `-1`

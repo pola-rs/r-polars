@@ -114,9 +114,8 @@ ExprList_concat = function(other) {
 #'   of every sublist) and negative values start from the end (index `-1`
 #'   returns the last item).
 #' @param ... Ignored.
-#' @param null_on_oob A logical to determine the behavior if an index is out of bounds:
-#' - `TRUE` (default): set as `null`
-#' - `FALSE`: raise an error
+#' @param null_on_oob If `TRUE`, return `null` if an index is out of bounds.
+#' Otherwise, raise an error.
 #' @return [Expr][Expr_class]
 #' @examples
 #' df = pl$DataFrame(
@@ -144,7 +143,7 @@ ExprList_get = function(index, ..., null_on_oob = TRUE) {
 #'   first item of every sublist) and negative values start from the end (index
 #'   `-1` returns the last item). If the index is out of bounds, it will return
 #'   a `null`. Strings are parsed as column names.
-#' @param null_on_oob Return a `null` value if index is out of bounds.
+#' @inheritParams ExprList_get
 #'
 #' @return Expr
 #' @aliases list_gather
