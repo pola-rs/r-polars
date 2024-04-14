@@ -248,10 +248,10 @@ impl RPolarsExpr {
         .into()
     }
 
-    pub fn sort(&self, descending: bool, nulls_last: bool) -> Self {
+    pub fn sort_with(&self, descending: bool, nulls_last: bool) -> Self {
         self.clone()
             .0
-            .sort_with(SortOptions {
+            .sort(SortOptions {
                 descending,
                 nulls_last,
                 multithreaded: true,
@@ -304,12 +304,28 @@ impl RPolarsExpr {
             .into())
     }
 
-    pub fn sort_by(&self, by: Robj, descending: Robj) -> RResult<RPolarsExpr> {
-        let expr = RPolarsExpr(self.clone().0.sort_by(
+    pub fn sort_by(
+        &self,
+        by: Robj,
+        descending: Robj,
+        nulls_last: Robj,
+        maintain_order: Robj,
+        multithreaded: Robj,
+    ) -> RResult<RPolarsExpr> {
+        let descending = robj_to!(Vec, bool, descending)?;
+        let nulls_last = robj_to!(bool, nulls_last)?;
+        let maintain_order = robj_to!(bool, maintain_order)?;
+        let multithreaded = robj_to!(bool, multithreaded)?;
+        Ok((self.clone().0.sort_by(
             robj_to!(VecPLExprCol, by)?,
-            robj_to!(Vec, bool, descending)?,
-        ));
-        Ok(expr)
+            pl::SortMultipleOptions {
+                descending,
+                nulls_last,
+                maintain_order,
+                multithreaded,
+            },
+        ))
+        .into())
     }
 
     pub fn backward_fill(&self, limit: Nullable<f64>) -> Self {
@@ -1082,8 +1098,13 @@ impl RPolarsExpr {
             .into())
     }
 
-    fn list_get(&self, index: &RPolarsExpr) -> Self {
-        self.0.clone().list().get(index.clone().0).into()
+    fn list_get(&self, index: Robj, null_on_oob: Robj) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .list()
+            .get(robj_to!(PLExpr, index)?, robj_to!(bool, null_on_oob)?)
+            .into())
     }
 
     fn list_join(&self, separator: Robj, ignore_nulls: Robj) -> RResult<Self> {
@@ -1247,8 +1268,13 @@ impl RPolarsExpr {
         self.0.clone().arr().arg_max().into()
     }
 
-    fn arr_get(&self, index: Robj) -> RResult<Self> {
-        Ok(self.0.clone().arr().get(robj_to!(PLExprCol, index)?).into())
+    fn arr_get(&self, index: Robj, null_on_oob: Robj) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .arr()
+            .get(robj_to!(PLExprCol, index)?, robj_to!(bool, null_on_oob)?)
+            .into())
     }
 
     fn arr_join(&self, separator: Robj, ignore_nulls: bool) -> RResult<Self> {
@@ -2281,12 +2307,13 @@ impl RPolarsExpr {
         Ok(self.0.clone().str().explode().into())
     }
 
-    pub fn str_parse_int(&self, radix: Robj, strict: Robj) -> RResult<Self> {
+    // TODO: rename to `str_to_integer`
+    pub fn str_parse_int(&self, base: Robj, strict: Robj) -> RResult<Self> {
         Ok(self
             .0
             .clone()
             .str()
-            .to_integer(robj_to!(u32, radix)?, robj_to!(bool, strict)?)
+            .to_integer(robj_to!(PLExprCol, base)?, robj_to!(bool, strict)?)
             .with_fmt("str.parse_int")
             .into())
     }

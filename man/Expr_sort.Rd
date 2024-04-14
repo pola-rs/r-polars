@@ -4,13 +4,14 @@
 \alias{Expr_sort}
 \title{Sort an Expr}
 \usage{
-Expr_sort(descending = FALSE, nulls_last = FALSE)
+Expr_sort(..., descending = FALSE, nulls_last = FALSE)
 }
 \arguments{
-\item{descending}{Sort in descending order. When sorting by multiple columns,
-can be specified per column by passing a vector of booleans.}
+\item{...}{Ignored.}
 
-\item{nulls_last}{If \code{TRUE}, place nulls values last.}
+\item{descending}{A logical. If \code{TRUE}, sort in descending order.}
+
+\item{nulls_last}{A logical. If \code{TRUE}, place \code{null} values last insead of first.}
 }
 \value{
 Expr

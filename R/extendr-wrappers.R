@@ -14,7 +14,7 @@ all_horizontal <- function(dotdotdot) .Call(wrap__all_horizontal, dotdotdot)
 
 any_horizontal <- function(dotdotdot) .Call(wrap__any_horizontal, dotdotdot)
 
-arg_sort_by <- function(exprs, descending) .Call(wrap__arg_sort_by, exprs, descending)
+arg_sort_by <- function(exprs, descending, nulls_last, multithreaded, maintain_order) .Call(wrap__arg_sort_by, exprs, descending, nulls_last, multithreaded, maintain_order)
 
 arg_where <- function(condition) .Call(wrap__arg_where, condition)
 
@@ -98,7 +98,7 @@ concat_series <- function(l, rechunk, to_supertypes) .Call(wrap__concat_series, 
 
 new_from_csv <- function(path, has_header, separator, comment_prefix, quote_char, skip_rows, dtypes, null_values, ignore_errors, cache, infer_schema_length, n_rows, encoding, low_memory, rechunk, skip_rows_after_header, row_index_name, row_index_offset, try_parse_dates, eol_char, raise_if_empty, truncate_ragged_lines) .Call(wrap__new_from_csv, path, has_header, separator, comment_prefix, quote_char, skip_rows, dtypes, null_values, ignore_errors, cache, infer_schema_length, n_rows, encoding, low_memory, rechunk, skip_rows_after_header, row_index_name, row_index_offset, try_parse_dates, eol_char, raise_if_empty, truncate_ragged_lines)
 
-import_arrow_ipc <- function(path, n_rows, cache, rechunk, row_name, row_index, memmap) .Call(wrap__import_arrow_ipc, path, n_rows, cache, rechunk, row_name, row_index, memmap)
+import_arrow_ipc <- function(path, n_rows, cache, rechunk, row_name, row_index, memory_map) .Call(wrap__import_arrow_ipc, path, n_rows, cache, rechunk, row_name, row_index, memory_map)
 
 new_from_ndjson <- function(path, infer_schema_length, batch_size, n_rows, low_memory, rechunk, row_index_name, row_index_offset, ignore_errors) .Call(wrap__new_from_ndjson, path, infer_schema_length, batch_size, n_rows, low_memory, rechunk, row_index_name, row_index_offset, ignore_errors)
 
@@ -484,7 +484,7 @@ RPolarsExpr$to_physical <- function() .Call(wrap__RPolarsExpr__to_physical, self
 
 RPolarsExpr$cast <- function(data_type, strict) .Call(wrap__RPolarsExpr__cast, self, data_type, strict)
 
-RPolarsExpr$sort <- function(descending, nulls_last) .Call(wrap__RPolarsExpr__sort, self, descending, nulls_last)
+RPolarsExpr$sort_with <- function(descending, nulls_last) .Call(wrap__RPolarsExpr__sort_with, self, descending, nulls_last)
 
 RPolarsExpr$arg_sort <- function(descending, nulls_last) .Call(wrap__RPolarsExpr__arg_sort, self, descending, nulls_last)
 
@@ -500,7 +500,7 @@ RPolarsExpr$search_sorted <- function(element) .Call(wrap__RPolarsExpr__search_s
 
 RPolarsExpr$gather <- function(idx) .Call(wrap__RPolarsExpr__gather, self, idx)
 
-RPolarsExpr$sort_by <- function(by, descending) .Call(wrap__RPolarsExpr__sort_by, self, by, descending)
+RPolarsExpr$sort_by <- function(by, descending, nulls_last, maintain_order, multithreaded) .Call(wrap__RPolarsExpr__sort_by, self, by, descending, nulls_last, maintain_order, multithreaded)
 
 RPolarsExpr$backward_fill <- function(limit) .Call(wrap__RPolarsExpr__backward_fill, self, limit)
 
@@ -690,7 +690,7 @@ RPolarsExpr$list_gather <- function(index, null_on_oob) .Call(wrap__RPolarsExpr_
 
 RPolarsExpr$list_gather_every <- function(n, offset) .Call(wrap__RPolarsExpr__list_gather_every, self, n, offset)
 
-RPolarsExpr$list_get <- function(index) .Call(wrap__RPolarsExpr__list_get, self, index)
+RPolarsExpr$list_get <- function(index, null_on_oob) .Call(wrap__RPolarsExpr__list_get, self, index, null_on_oob)
 
 RPolarsExpr$list_join <- function(separator, ignore_nulls) .Call(wrap__RPolarsExpr__list_join, self, separator, ignore_nulls)
 
@@ -742,7 +742,7 @@ RPolarsExpr$arr_arg_min <- function() .Call(wrap__RPolarsExpr__arr_arg_min, self
 
 RPolarsExpr$arr_arg_max <- function() .Call(wrap__RPolarsExpr__arr_arg_max, self)
 
-RPolarsExpr$arr_get <- function(index) .Call(wrap__RPolarsExpr__arr_get, self, index)
+RPolarsExpr$arr_get <- function(index, null_on_oob) .Call(wrap__RPolarsExpr__arr_get, self, index, null_on_oob)
 
 RPolarsExpr$arr_join <- function(separator, ignore_nulls) .Call(wrap__RPolarsExpr__arr_join, self, separator, ignore_nulls)
 
@@ -1024,7 +1024,7 @@ RPolarsExpr$str_slice <- function(offset, length) .Call(wrap__RPolarsExpr__str_s
 
 RPolarsExpr$str_explode <- function() .Call(wrap__RPolarsExpr__str_explode, self)
 
-RPolarsExpr$str_parse_int <- function(radix, strict) .Call(wrap__RPolarsExpr__str_parse_int, self, radix, strict)
+RPolarsExpr$str_parse_int <- function(base, strict) .Call(wrap__RPolarsExpr__str_parse_int, self, base, strict)
 
 RPolarsExpr$str_reverse <- function() .Call(wrap__RPolarsExpr__str_reverse, self)
 
@@ -1176,7 +1176,7 @@ RPolarsLazyFrame$join_asof <- function(other, left_on, right_on, left_by, right_
 
 RPolarsLazyFrame$join <- function(other, left_on, right_on, how, validate, join_nulls, suffix, allow_parallel, force_parallel) .Call(wrap__RPolarsLazyFrame__join, self, other, left_on, right_on, how, validate, join_nulls, suffix, allow_parallel, force_parallel)
 
-RPolarsLazyFrame$sort_by_exprs <- function(by, dotdotdot, descending, nulls_last, maintain_order) .Call(wrap__RPolarsLazyFrame__sort_by_exprs, self, by, dotdotdot, descending, nulls_last, maintain_order)
+RPolarsLazyFrame$sort_by_exprs <- function(by, dotdotdot, descending, nulls_last, maintain_order, multithreaded) .Call(wrap__RPolarsLazyFrame__sort_by_exprs, self, by, dotdotdot, descending, nulls_last, maintain_order, multithreaded)
 
 RPolarsLazyFrame$melt <- function(id_vars, value_vars, value_name, variable_name, streamable) .Call(wrap__RPolarsLazyFrame__melt, self, id_vars, value_vars, value_name, variable_name, streamable)
 
@@ -1198,7 +1198,7 @@ RPolarsLazyFrame$clone_in_rust <- function() .Call(wrap__RPolarsLazyFrame__clone
 
 RPolarsLazyFrame$with_context <- function(contexts) .Call(wrap__RPolarsLazyFrame__with_context, self, contexts)
 
-RPolarsLazyFrame$rolling <- function(index_column, period, offset, closed, by, check_sorted) .Call(wrap__RPolarsLazyFrame__rolling, self, index_column, period, offset, closed, by, check_sorted)
+RPolarsLazyFrame$rolling <- function(index_column, period, offset, closed, group_by, check_sorted) .Call(wrap__RPolarsLazyFrame__rolling, self, index_column, period, offset, closed, group_by, check_sorted)
 
 RPolarsLazyFrame$group_by_dynamic <- function(index_column, every, period, offset, label, include_boundaries, closed, by, start_by, check_sorted) .Call(wrap__RPolarsLazyFrame__group_by_dynamic, self, index_column, every, period, offset, label, include_boundaries, closed, by, start_by, check_sorted)
 
@@ -1250,7 +1250,7 @@ RPolarsSeries$n_unique <- function() .Call(wrap__RPolarsSeries__n_unique, self)
 
 RPolarsSeries$name <- function() .Call(wrap__RPolarsSeries__name, self)
 
-RPolarsSeries$sort_mut <- function(descending, nulls_last) .Call(wrap__RPolarsSeries__sort_mut, self, descending, nulls_last)
+RPolarsSeries$sort <- function(descending, nulls_last, multithreaded) .Call(wrap__RPolarsSeries__sort, self, descending, nulls_last, multithreaded)
 
 RPolarsSeries$value_counts <- function(sort, parallel) .Call(wrap__RPolarsSeries__value_counts, self, sort, parallel)
 

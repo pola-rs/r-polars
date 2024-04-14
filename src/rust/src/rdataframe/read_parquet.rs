@@ -33,7 +33,10 @@ pub fn new_from_parquet(
         low_memory: robj_to!(bool, low_memory)?,
         cloud_options: None,
         use_statistics: robj_to!(bool, use_statistics)?,
-        hive_partitioning: robj_to!(bool, hive_partitioning)?,
+        hive_options: polars::io::HiveOptions {
+            enabled: robj_to!(bool, hive_partitioning)?,
+            schema: None, // TODO: implement a option to set this
+        },
     };
 
     pl::LazyFrame::scan_parquet(robj_to!(String, path)?, args)

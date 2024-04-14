@@ -136,14 +136,11 @@ ExprArr_unique = function(maintain_order = FALSE) .pr$Expr$arr_unique(self, main
 #'
 #' This allows to extract one value per array only.
 #'
+#' @inherit ExprList_get params return
 #' @param index An Expr or something coercible to an Expr, that must return a
 #'   single index. Values are 0-indexed (so index 0 would return the first item
 #'   of every sub-array) and negative values start from the end (index `-1`
-#'   returns the last item). If the index is out of bounds, it will return a
-#'   `null`. Strings are parsed as column names.
-#'
-#' @return Expr
-#' @aliases arr_get
+#'   returns the last item).
 #' @examples
 #' df = pl$DataFrame(
 #'   values = list(c(1, 2), c(3, 4), c(NA_real_, 6)),
@@ -156,8 +153,8 @@ ExprArr_unique = function(maintain_order = FALSE) .pr$Expr$arr_unique(self, main
 #'   val_minus_1 = pl$col("values")$arr$get(-1),
 #'   val_oob = pl$col("values")$arr$get(10)
 #' )
-ExprArr_get = function(index) {
-  .pr$Expr$arr_get(self, index) |>
+ExprArr_get = function(index, ..., null_on_oob = TRUE) {
+  .pr$Expr$arr_get(self, index, null_on_oob) |>
     unwrap("in $arr$get():")
 }
 

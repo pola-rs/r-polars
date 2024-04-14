@@ -2,20 +2,23 @@
 % Please edit documentation in R/expr__list.R
 \name{ExprList_get}
 \alias{ExprList_get}
-\alias{list_get}
 \title{Get the value by index in a list}
 \usage{
-ExprList_get(index)
+ExprList_get(index, ..., null_on_oob = TRUE)
 }
 \arguments{
 \item{index}{An Expr or something coercible to an Expr, that must return a
 single index. Values are 0-indexed (so index 0 would return the first item
 of every sublist) and negative values start from the end (index \code{-1}
-returns the last item). If the index is out of bounds, it will return a
-\code{null}. Strings are parsed as column names.}
+returns the last item).}
+
+\item{...}{Ignored.}
+
+\item{null_on_oob}{If \code{TRUE}, return \code{null} if an index is out of bounds.
+Otherwise, raise an error.}
 }
 \value{
-Expr
+\link[=Expr_class]{Expr}
 }
 \description{
 This allows to extract one value per list only. To extract several values by

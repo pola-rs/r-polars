@@ -63,14 +63,14 @@ test_that("POSIXct data conversion", {
         )$to_r()
       )
 
-      non_exsitent_time_chr = "2020-03-08 02:00:00"
+      non_existent_time_chr = "2020-03-08 02:00:00"
       ambiguous_time_chr = "2020-11-01 01:00:00"
       expect_identical(
-        pl$lit(as.POSIXct(non_exsitent_time_chr))$to_r(),
-        as.POSIXct(non_exsitent_time_chr)
+        pl$lit(as.POSIXct(non_existent_time_chr))$to_r(),
+        as.POSIXct(non_existent_time_chr)
       )
       expect_grepl_error(
-        pl$lit(non_exsitent_time_chr)$str$strptime(pl$Datetime(), "%F %T")$to_r(),
+        pl$lit(non_existent_time_chr)$str$strptime(pl$Datetime(), "%F %T")$to_r(),
         "non-existent"
       )
       expect_grepl_error(

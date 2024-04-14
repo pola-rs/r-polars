@@ -112,11 +112,11 @@ ExprList_concat = function(other) {
 #' @param index An Expr or something coercible to an Expr, that must return a
 #'   single index. Values are 0-indexed (so index 0 would return the first item
 #'   of every sublist) and negative values start from the end (index `-1`
-#'   returns the last item). If the index is out of bounds, it will return a
-#'   `null`. Strings are parsed as column names.
-#'
-#' @return Expr
-#' @aliases list_get
+#'   returns the last item).
+#' @param ... Ignored.
+#' @param null_on_oob If `TRUE`, return `null` if an index is out of bounds.
+#' Otherwise, raise an error.
+#' @return [Expr][Expr_class]
 #' @examples
 #' df = pl$DataFrame(
 #'   values = list(c(2, 2, NA), c(1, 2, 3), NA_real_, NULL),
@@ -128,7 +128,10 @@ ExprList_concat = function(other) {
 #'   val_minus_1 = pl$col("values")$list$get(-1),
 #'   val_oob = pl$col("values")$list$get(10)
 #' )
-ExprList_get = function(index) .pr$Expr$list_get(self, wrap_e(index, str_to_lit = FALSE))
+ExprList_get = function(index, ..., null_on_oob = TRUE) {
+  .pr$Expr$list_get(self, index, null_on_oob) |>
+    unwrap("in $list$get():")
+}
 
 #' Get several values by index in a list
 #'
@@ -140,7 +143,7 @@ ExprList_get = function(index) .pr$Expr$list_get(self, wrap_e(index, str_to_lit 
 #'   first item of every sublist) and negative values start from the end (index
 #'   `-1` returns the last item). If the index is out of bounds, it will return
 #'   a `null`. Strings are parsed as column names.
-#' @param null_on_oob Return a `null` value if index is out of bounds.
+#' @inheritParams ExprList_get
 #'
 #' @return Expr
 #' @aliases list_gather
@@ -196,7 +199,10 @@ ExprList_gather_every = function(n, offset = 0) {
 #' df$with_columns(
 #'   first = pl$col("a")$list$first()
 #' )
-ExprList_first = function() .pr$Expr$list_get(self, wrap_e(0L, str_to_lit = FALSE))
+ExprList_first = function() {
+  .pr$Expr$list_get(self, 0, null_on_oob = TRUE) |>
+    unwrap("in $list$first():")
+}
 
 #' Get the last value in a list
 #'
@@ -207,7 +213,10 @@ ExprList_first = function() .pr$Expr$list_get(self, wrap_e(0L, str_to_lit = FALS
 #' df$with_columns(
 #'   last = pl$col("a")$list$last()
 #' )
-ExprList_last = function() .pr$Expr$list_get(self, wrap_e(-1L, str_to_lit = FALSE))
+ExprList_last = function() {
+  .pr$Expr$list_get(self, -1, null_on_oob = TRUE) |>
+    unwrap("in $list$last():")
+}
 
 #' Check if list contains a given value
 #'

@@ -2,14 +2,15 @@
 % Please edit documentation in R/lazyframe__lazy.R
 \name{LazyFrame_sort}
 \alias{LazyFrame_sort}
-\title{Sort a LazyFrame}
+\title{Sort the LazyFrame by the given columns}
 \usage{
 LazyFrame_sort(
   by,
   ...,
   descending = FALSE,
   nulls_last = FALSE,
-  maintain_order = FALSE
+  maintain_order = FALSE,
+  multithreaded = TRUE
 )
 }
 \arguments{
@@ -22,17 +23,19 @@ a list of Expr(s) or a list with a mix of Expr(s) and column names.}
 either of length 1 or a logical vector of the same length as the number of
 Expr(s) specified in \code{by} and \code{...}.}
 
-\item{nulls_last}{Logical. Place \code{NULL}s at the end? Default is \code{FALSE}.}
+\item{nulls_last}{A logical. If \code{TRUE}, place \code{null} values last insead of first.}
 
 \item{maintain_order}{Whether the order should be maintained if elements are
 equal. If \code{TRUE}, streaming is not possible and performance might be worse
 since this requires a stable search.}
+
+\item{multithreaded}{A logical. If \code{TRUE}, sort using multiple threads.}
 }
 \value{
 LazyFrame
 }
 \description{
-Sort by one or more Expressions.
+Sort the LazyFrame by the given columns
 }
 \examples{
 df = mtcars

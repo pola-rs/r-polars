@@ -4,14 +4,29 @@
 \alias{Expr_sort_by}
 \title{Sort Expr by order of others}
 \usage{
-Expr_sort_by(by, descending = FALSE)
+Expr_sort_by(
+  by,
+  ...,
+  descending = FALSE,
+  nulls_last = FALSE,
+  multithreaded = TRUE,
+  maintain_order = FALSE
+)
 }
 \arguments{
 \item{by}{One expression or a list of expressions and/or strings (interpreted
 as column names).}
 
-\item{descending}{Sort in descending order. When sorting by multiple columns,
-can be specified per column by passing a vector of booleans.}
+\item{...}{Ignored.}
+
+\item{descending}{A logical. If \code{TRUE}, sort in descending order.}
+
+\item{nulls_last}{A logical. If \code{TRUE}, place \code{null} values last insead of first.}
+
+\item{multithreaded}{A logical. If \code{TRUE}, sort using multiple threads.}
+
+\item{maintain_order}{A logical to indicate whether the order should be maintained
+if elements are equal.}
 }
 \value{
 Expr

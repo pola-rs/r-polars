@@ -14,7 +14,8 @@ first item of every sublist) and negative values start from the end (index
 \code{-1} returns the last item). If the index is out of bounds, it will return
 a \code{null}. Strings are parsed as column names.}
 
-\item{null_on_oob}{Return a \code{null} value if index is out of bounds.}
+\item{null_on_oob}{If \code{TRUE}, return \code{null} if an index is out of bounds.
+Otherwise, raise an error.}
 }
 \value{
 Expr

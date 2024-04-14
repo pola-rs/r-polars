@@ -4,14 +4,24 @@
 \alias{Series_sort}
 \title{Sort a Series}
 \usage{
-Series_sort(descending = FALSE, nulls_last = FALSE, in_place = FALSE)
+Series_sort(
+  ...,
+  descending = FALSE,
+  nulls_last = FALSE,
+  multithreaded = TRUE,
+  in_place = FALSE
+)
 }
 \arguments{
-\item{descending}{Sort in descending order.}
+\item{...}{Ignored.}
 
-\item{nulls_last}{If \code{TRUE}, place nulls values last.}
+\item{descending}{A logical. If \code{TRUE}, sort in descending order.}
 
-\item{in_place}{If \code{TRUE}, this will set the flag mutably and return NULL.
+\item{nulls_last}{A logical. If \code{TRUE}, place \code{null} values last insead of first.}
+
+\item{multithreaded}{A logical. If \code{TRUE}, sort using multiple threads.}
+
+\item{in_place}{If \code{TRUE}, this will set the flag mutably and return \code{NULL}.
 Remember to use \code{options(polars.strictly_immutable = FALSE)} before using
 this parameter, otherwise an error will occur. If \code{FALSE} (default), it will
 return a cloned Series with the flag.}

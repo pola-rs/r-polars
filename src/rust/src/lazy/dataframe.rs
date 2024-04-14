@@ -12,6 +12,7 @@ use crate::rpolarserr::{polars_to_rpolars_err, RPolarsErr, RResult};
 use crate::utils::{r_result_list, try_f64_into_usize};
 use extendr_api::prelude::*;
 use pl::{AsOfOptions, Duration, RollingGroupOptions};
+use polars::chunked_array::ops::SortMultipleOptions;
 use polars::frame::explode::MeltArgs;
 use polars::prelude as pl;
 
@@ -462,6 +463,7 @@ impl RPolarsLazyFrame {
         descending: Robj,
         nulls_last: Robj,
         maintain_order: Robj,
+        multithreaded: Robj,
     ) -> RResult<Self> {
         let mut exprs = robj_to!(VecPLExprCol, by)?;
         let mut ddd = robj_to!(VecPLExprCol, dotdotdot)?;
@@ -475,10 +477,19 @@ impl RPolarsLazyFrame {
 
         let nulls_last = robj_to!(bool, nulls_last)?;
         let maintain_order = robj_to!(bool, maintain_order)?;
+        let multithreaded = robj_to!(bool, multithreaded)?;
         Ok(self
             .0
             .clone()
-            .sort_by_exprs(exprs, descending, nulls_last, maintain_order)
+            .sort_by_exprs(
+                exprs,
+                SortMultipleOptions {
+                    descending,
+                    nulls_last,
+                    maintain_order,
+                    multithreaded,
+                },
+            )
             .into())
     }
 
@@ -614,19 +625,19 @@ impl RPolarsLazyFrame {
         period: Robj,
         offset: Robj,
         closed: Robj,
-        by: Robj,
+        group_by: Robj,
         check_sorted: Robj,
     ) -> RResult<RPolarsLazyGroupBy> {
         let index_column = robj_to!(PLExprCol, index_column)?;
         let period = Duration::parse(robj_to!(str, period)?);
         let offset = Duration::parse(robj_to!(str, offset)?);
         let closed_window = robj_to!(ClosedWindow, closed)?;
-        let by = robj_to!(VecPLExprCol, by)?;
+        let group_by = robj_to!(VecPLExprCol, group_by)?;
         let check_sorted = robj_to!(bool, check_sorted)?;
 
-        let lazy_gb = self.0.clone().group_by_rolling(
+        let lazy_gb = self.0.clone().rolling(
             index_column,
-            by,
+            group_by,
             RollingGroupOptions {
                 index_column: "".into(),
                 period,

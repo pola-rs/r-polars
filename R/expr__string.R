@@ -865,11 +865,12 @@ ExprStr_explode = function() {
     unwrap("in str$explode():")
 }
 
+# TODO: rename to `to_integer`
 #' Parse integers with base radix from strings
 #'
 #' @description Parse integers with base 2 by default.
 #' @keywords ExprStr
-#' @param radix Positive integer which is the base of the string we are parsing.
+#' @param base Positive integer which is the base of the string we are parsing.
 #' Default is 2.
 #' @param strict If `TRUE` (default), integer overflow will raise an error.
 #' Otherwise, they will be converted to `null`.
@@ -882,8 +883,8 @@ ExprStr_explode = function() {
 #' # Convert to null if the string is not a valid integer when `strict = FALSE`
 #' df = pl$DataFrame(x = c("1", "2", "foo"))
 #' df$select(pl$col("x")$str$parse_int(10, FALSE))
-ExprStr_parse_int = function(radix = 2, strict = TRUE) {
-  .pr$Expr$str_parse_int(self, radix, strict) |> unwrap("in str$parse_int():")
+ExprStr_parse_int = function(base = 2, strict = TRUE) {
+  .pr$Expr$str_parse_int(self, base, strict) |> unwrap("in str$parse_int():")
 }
 
 #' Returns string values in reversed order

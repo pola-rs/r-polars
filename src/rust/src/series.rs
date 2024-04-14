@@ -105,8 +105,25 @@ impl RPolarsSeries {
         self.0.name()
     }
 
-    pub fn sort_mut(&mut self, descending: bool, nulls_last: bool) -> Self {
-        RPolarsSeries(self.0.sort(descending, nulls_last))
+    pub fn sort(
+        &mut self,
+        descending: Robj,
+        nulls_last: Robj,
+        multithreaded: Robj,
+    ) -> RResult<Self> {
+        let descending = robj_to!(bool, descending)?;
+        let nulls_last = robj_to!(bool, nulls_last)?;
+        let multithreaded = robj_to!(bool, multithreaded)?;
+        Ok(self
+            .0
+            .sort(
+                pl::SortOptions::default()
+                    .with_order_descending(descending)
+                    .with_nulls_last(nulls_last)
+                    .with_multithreaded(multithreaded),
+            )
+            .map_err(polars_to_rpolars_err)?
+            .into())
     }
 
     pub fn value_counts(
