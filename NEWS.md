@@ -130,6 +130,12 @@
     - In `pl$date_range()`, the argument `end` must be specified and the default
       value of `interval` is changed to `"1d"`. The arguments `start` and `end`
       no longer accept numeric values (#950).
+    - In `pl$scan_parquet()`, the default value of the argument `rechunk` is
+      changed from `TRUE` to `FALSE` (#1033).
+    - In `pl$scan_parquet()` and `pl$read_parquet()`, the argument `parallel`
+      only accepts `"auto"`, `"columns"`, `"row_groups"`, and `"none"`.
+      Previously, it also accepted upper-case notation of `"auto"`, `"columns"`,
+      `"none"`, and `"RowGroups"` instead of `"row_groups"` (#1033).
 
 
 - The usage of `pl$date_range()` to create a range of `Datetime` data type is
@@ -162,6 +168,7 @@
   - `pl$int_range()` and `pl$int_ranges()` (#968)
   - `pl$mean_horizontal()` (#959)
   - `is_polars_dtype()` (#927).
+  - `pl$read_ipc()` (#1033).
 
 - New methods:
 
@@ -210,6 +217,8 @@
 - The dependent crate `extendr-api` is updated to 2024-03-31 unreleased version (#995).
   The issue that the R session crashes when a panic occurs in the Rust side is resolved.
   Thanks @CGMossa for the upstream fix.
+- The `parallel` argument of `pl$scan_parquet()` and `pl$read_parquet()` now works
+  correctly (#1033). Previously, any correct value was treated as `"auto"`.
 
 ## Polars R Package 0.15.1
 

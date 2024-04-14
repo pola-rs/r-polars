@@ -38,7 +38,7 @@ test_that("Test reading data from Apache Arrow IPC", {
 })
 
 
-patrick::with_parameters_test_that("Write Arrow IPC file",
+patrick::with_parameters_test_that("write and read Apache Arrow file",
   {
     tmpf = tempfile(fileext = ".arrow")
     on.exit(unlink(tmpf))
@@ -52,7 +52,7 @@ patrick::with_parameters_test_that("Write Arrow IPC file",
 
     expect_identical(
       as.data.frame(df),
-      as.data.frame(pl$scan_ipc(tmpf, memory_map = FALSE))
+      as.data.frame(pl$read_ipc(tmpf, memory_map = FALSE))
     )
 
     expect_warning(
@@ -61,7 +61,7 @@ patrick::with_parameters_test_that("Write Arrow IPC file",
     )
 
     expect_true(
-      df$equals(pl$scan_ipc(tmpf, memory_map = FALSE)$collect())
+      df$equals(pl$read_ipc(tmpf, memory_map = FALSE))
     )
   },
   compression = list(NULL, "uncompressed", "lz4", "zstd"),

@@ -590,15 +590,13 @@ pub fn robj_to_start_by(robj: Robj) -> RResult<pl::StartBy> {
 }
 
 pub fn robj_to_parallel_strategy(robj: extendr_api::Robj) -> RResult<pl::ParallelStrategy> {
-    use pl::ParallelStrategy as PS;
-    match robj_to_rchoice(robj)?.to_lowercase().as_str() {
-        //accept also lowercase as normal for most other enums
-        "auto" => Ok(PS::Auto),
-        "none" => Ok(PS::Auto),
-        "columns" => Ok(PS::Auto),
-        "rowgroups" => Ok(PS::Auto),
+    match robj_to_rchoice(robj)?.as_str() {
+        "auto" => Ok(pl::ParallelStrategy::Auto),
+        "columns" => Ok(pl::ParallelStrategy::Columns),
+        "row_groups" => Ok(pl::ParallelStrategy::RowGroups),
+        "none" => Ok(pl::ParallelStrategy::None),
         s => rerr().bad_val(format!(
-            "ParallelStrategy choice ('{s}') must be one of 'Auto', 'None', 'Columns', 'RowGroups'"
+            "ParallelStrategy choice ('{s}') must be one of 'auto', 'columns', 'row_groups', 'none'"
         )),
     }
 }

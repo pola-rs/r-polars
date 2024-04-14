@@ -65,7 +65,7 @@
 #' @param truncate_ragged_lines Truncate lines that are longer than the schema.
 #' @param reuse_downloaded If `TRUE`(default) and a URL was provided, cache the
 #' downloaded files in session for an easy reuse.
-#' @return scan_csv returns a LazyFrame. read_csv returns a DataFrame.
+#' @return [LazyFrame][LazyFrame_class]
 #' @examples
 #' my_file = tempfile()
 #' write.csv(iris, my_file)
@@ -153,7 +153,7 @@ pl_scan_csv = function(
 #' New DataFrame from CSV
 #' @rdname IO_read_csv
 #' @inheritParams pl_scan_csv
-#' @return DataFrame
+#' @return [DataFrame][DataFrame_class]
 pl_read_csv = function(
     source,
     ...,

@@ -118,7 +118,7 @@ DataFrame or LazyFrame.}
 downloaded files in session for an easy reuse.}
 }
 \value{
-scan_csv returns a LazyFrame. read_csv returns a DataFrame.
+\link[=LazyFrame_class]{LazyFrame}
 }
 \description{
 Read a file from path into a polars LazyFrame.
