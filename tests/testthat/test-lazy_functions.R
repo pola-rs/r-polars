@@ -568,12 +568,12 @@ test_that("pl$int_range() works", {
 
   expect_grepl_error(
     pl$int_range(0, 3, dtype = pl$String) |> as_polars_series(),
-    "non-integer `dtype`"
+    "must be of type integer"
   )
 
   expect_grepl_error(
     pl$int_range(0, 3, dtype = pl$Float32) |> as_polars_series(),
-    "non-integer `dtype`"
+    "must be of type integer"
   )
 
   # "step" works
@@ -610,13 +610,10 @@ test_that("pl$int_ranges() works", {
   #   )
   # )
 
-  # This one works with `pl$String`
-  # TODO: fix either this one or pl$int_range()
-  # https://github.com/pola-rs/polars/issues/15307
-  # expect_grepl_error(
-  #   df$select(int_range = pl$int_ranges("start", "end", dtype = pl$String)),
-  #   "non-integer `dtype`"
-  # )
+  expect_grepl_error(
+    df$select(int_range = pl$int_ranges("start", "end", dtype = pl$String)),
+    "must be of type integer"
+  )
 
   # "step" works
   expect_identical(

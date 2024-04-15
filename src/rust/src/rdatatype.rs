@@ -202,6 +202,66 @@ impl RPolarsDataType {
     pub fn is_temporal(&self) -> bool {
         self.0.is_temporal()
     }
+
+    pub fn is_logical(&self) -> bool {
+        self.0.is_logical()
+    }
+
+    pub fn is_float(&self) -> bool {
+        self.0.is_float()
+    }
+
+    pub fn is_numeric(&self) -> bool {
+        self.0.is_numeric()
+    }
+
+    pub fn is_integer(&self) -> bool {
+        self.0.is_integer()
+    }
+
+    pub fn is_signed_integer(&self) -> bool {
+        self.0.is_signed_integer()
+    }
+
+    pub fn is_unsigned_integer(&self) -> bool {
+        self.0.is_unsigned_integer()
+    }
+
+    pub fn is_null(&self) -> bool {
+        self.0.is_null()
+    }
+
+    pub fn is_binary(&self) -> bool {
+        self.0.is_binary()
+    }
+
+    pub fn is_primitive(&self) -> bool {
+        self.0.is_primitive()
+    }
+
+    pub fn is_bool(&self) -> bool {
+        self.0.is_bool()
+    }
+
+    pub fn is_array(&self) -> bool {
+        self.0.is_array()
+    }
+
+    pub fn is_list(&self) -> bool {
+        self.0.is_list()
+    }
+
+    pub fn is_nested(&self) -> bool {
+        self.0.is_nested()
+    }
+
+    pub fn is_struct(&self) -> bool {
+        self.0.is_struct()
+    }
+
+    pub fn is_ord(&self) -> bool {
+        self.0.is_ord()
+    }
 }
 
 impl From<RPolarsDataType> for pl::DataType {
