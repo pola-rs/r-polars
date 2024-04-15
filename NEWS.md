@@ -154,6 +154,7 @@
 - The following deprecated functions are now removed: `pl$threadpool_size()`,
   `<DataFrame>$with_row_count()`, `<LazyFrame>$with_row_count()` (#965).
 - In `$group_by_dynamic()`, the first datapoint is always preserved (#1034).
+- `$str$parse_int()` is renamed `$str$to_integer()` (#1037).
 
 
 ### New features

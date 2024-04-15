@@ -2308,13 +2308,12 @@ impl RPolarsExpr {
     }
 
     // TODO: rename to `str_to_integer`
-    pub fn str_parse_int(&self, base: Robj, strict: Robj) -> RResult<Self> {
+    pub fn str_to_integer(&self, base: Robj, strict: Robj) -> RResult<Self> {
         Ok(self
             .0
             .clone()
             .str()
             .to_integer(robj_to!(PLExprCol, base)?, robj_to!(bool, strict)?)
-            .with_fmt("str.parse_int")
             .into())
     }
 
