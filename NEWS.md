@@ -4,6 +4,7 @@
 
 ### Breaking changes
 
+- Rust polars is updated to 0.39.0 (#937, #1034).
 - R objects inside an R list are now converted to Polars data types via
   `as_polars_series()` (#1021, #1022, #1023). For example, up to polars 0.15.1,
   a list containing a data.frame with a column of `{clock}` naive-time class
@@ -171,8 +172,8 @@
   - `pl$datetime_range()`, `pl$date_ranges()` and `pl$datetime_ranges()` (#950, #962).
   - `pl$int_range()` and `pl$int_ranges()` (#968)
   - `pl$mean_horizontal()` (#959)
-  - `is_polars_dtype()` (#927).
   - `pl$read_ipc()` (#1033).
+  - `is_polars_dtype()` (#927).
 
 - New methods:
 
@@ -208,7 +209,6 @@
     more classes to Series properly (#1015).
   - Export the `Duration` datatype (#955).
   - New active binding `<Series>$struct$fields` (#1002).
-  - rust-polars is updated to 0.39.0 (#937, #1034).
   - All `$write_*()` and `$sink_*()` functions now invisibly return the input
     data (#1039).
 
