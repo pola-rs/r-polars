@@ -12,8 +12,8 @@ ExprStr_to_integer(..., base = 10L, strict = TRUE)
 \item{base}{A positive integer or expression which is the base of the string
 we are parsing. Characters are parsed as column names. Default: \code{10L}.}
 
-\item{strict}{A logical. If \code{TRUE} (default), raise any ParseError or overflow
-as ComputeError. If \code{FALSE}, silently convert to \code{null}.}
+\item{strict}{A logical. If \code{TRUE} (default), parsing errors or integer overflow will
+raise an error. If \code{FALSE}, silently convert to \code{null}.}
 }
 \value{
 \link[=Expr_class]{Expression} of data type \code{Int64}.

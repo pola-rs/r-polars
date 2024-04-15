@@ -871,8 +871,8 @@ ExprStr_explode = function() {
 #' @param ... Ignored.
 #' @param base A positive integer or expression which is the base of the string
 #' we are parsing. Characters are parsed as column names. Default: `10L`.
-#' @param strict A logical. If `TRUE` (default), raise any ParseError or overflow
-#' as ComputeError. If `FALSE`, silently convert to `null`.
+#' @param strict A logical. If `TRUE` (default), parsing errors or integer overflow will
+#' raise an error. If `FALSE`, silently convert to `null`.
 #' @return [Expression][Expr_class] of data type `Int64`.
 #' @examples
 #' df = pl$DataFrame(bin = c("110", "101", "010", "invalid"))
