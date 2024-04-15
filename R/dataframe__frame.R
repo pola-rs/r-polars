@@ -1935,8 +1935,7 @@ DataFrame_transpose = function(
 #' * `"never"`: This never puts quotes around fields, even if that results in
 #'   invalid CSV data (e.g. by not quoting strings containing the separator).
 #'
-#' @return
-#' This doesn't return anything.
+#' @return Invisibly returns the input DataFrame.
 #'
 #' @rdname IO_write_csv
 #'

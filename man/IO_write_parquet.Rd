@@ -51,7 +51,7 @@ smaller chunks may reduce memory pressure and improve writing speeds.}
 will be ~1MB.}
 }
 \value{
-This doesn't return anything.
+Invisibly returns the input DataFrame.
 }
 \description{
 Write to parquet file

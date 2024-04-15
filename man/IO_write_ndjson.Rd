@@ -10,7 +10,7 @@ DataFrame_write_ndjson(file)
 \item{file}{File path to which the result should be written.}
 }
 \value{
-This doesn't return anything.
+Invisibly returns the input DataFrame.
 }
 \description{
 Write to NDJSON file
