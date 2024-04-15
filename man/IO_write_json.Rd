@@ -17,7 +17,7 @@ DataFrame_write_json(file, ..., pretty = FALSE, row_oriented = FALSE)
 common.}
 }
 \value{
-This doesn't return anything.
+Invisibly returns the input DataFrame.
 }
 \description{
 Write to JSON file

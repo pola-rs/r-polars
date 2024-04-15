@@ -72,7 +72,7 @@ invalid CSV data (e.g. by not quoting strings containing the separator).
 }}
 }
 \value{
-This doesn't return anything.
+Invisibly returns the input DataFrame.
 }
 \description{
 Write to comma-separated values (CSV) file

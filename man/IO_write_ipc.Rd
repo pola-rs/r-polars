@@ -27,7 +27,7 @@ This functionality is considered \strong{unstable}.
 It may be changed at any point without it being considered a breaking change.}
 }
 \value{
-This doesn't return anything.
+Invisibly returns the input DataFrame.
 }
 \description{
 Write to Arrow IPC file (a.k.a Feather file)

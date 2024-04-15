@@ -210,6 +210,8 @@
   - Export the `Duration` datatype (#955).
   - New active binding `<Series>$struct$fields` (#1002).
   - rust-polars is updated to 0.39.0 (#937, #1034).
+  - All `$write_*()` and `$sink_*()` functions now invisibly return the input
+    data (#1039).
 
 
 ### Bug fixes

@@ -47,6 +47,9 @@ level. Don't materialize sliced outputs (e.g. \code{join$head(10)}).}
 \item{inherit_optimization}{Logical. Use existing optimization settings
 regardless the settings specified in this function call.}
 }
+\value{
+Invisibly returns the input LazyFrame
+}
 \description{
 This writes the output of a query directly to a JSON file without collecting
 it in the R session first. This is useful if the output of the query is still
