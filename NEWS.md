@@ -86,7 +86,7 @@
     - In `$str$strptime()`, `$str$to_date()`, `$str$to_datetime()`, and
       `$str$to_time()`, all arguments (except the first one) must be named (#939).
     - In `$str$to_integer()` (renamed from `$str$parse_int()`), all arguments
-      should be named (#1038).
+      must be named (#1038).
     - In `pl$date_range()`, the arguments `closed`, `time_unit`, and `time_zone`
       must be named (#950).
     - In `$set_sorted()` and `$sort_by()`, argument `descending` must be named
@@ -140,7 +140,7 @@
       Previously, it also accepted upper-case notation of `"auto"`, `"columns"`,
       `"none"`, and `"RowGroups"` instead of `"row_groups"` (#1033).
     - In `$str$to_integer()` (renamed from `$str$parse_int()`), the default
-      value of `base` is changed from `2` to `10L` (#1038).
+      value of `base` is changed from `2` to `10` (#1038).
 
 - The usage of `pl$date_range()` to create a range of `Datetime` data type is
   deprecated. `pl$date_range()` will always create a range of `Date` data type
@@ -158,7 +158,7 @@
 - The following deprecated functions are now removed: `pl$threadpool_size()`,
   `<DataFrame>$with_row_count()`, `<LazyFrame>$with_row_count()` (#965).
 - In `$group_by_dynamic()`, the first datapoint is always preserved (#1034).
-- `$str$parse_int()` is renamed to `$str$to_integer()` (and completely rewritten) (#1038).
+- `$str$parse_int()` is renamed to `$str$to_integer()` (#1038).
 
 
 ### New features
