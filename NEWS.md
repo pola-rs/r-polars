@@ -182,6 +182,8 @@
   - `$str$extract_groups()` (#979).
   - `$str$find()` (#985).
   - `<DataFrame>$write_ipc()` (#1032).
+  - `RPolarsDataType` gains several methods to check the datatype, such as
+    `$is_integer()`, `$is_null()` or `$is_list()` (#1036).
 
 - New arguments or argument values:
 

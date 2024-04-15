@@ -361,3 +361,145 @@ DataType_List = function(datatype = "unknown") {
 DataType_Categorical = function(ordering = "physical") {
   .pr$DataType$new_categorical(ordering) |> unwrap()
 }
+
+#' Check whether the data type is a temporal type
+#'
+#' @return A logical value
+#'
+#' @examples
+#' pl$Date$is_temporal()
+#' pl$Float32$is_temporal()
+DataType_is_temporal = use_extendr_wrapper
+
+#' Check whether the data type is a logical type
+#'
+#' @return A logical value
+DataType_is_logical = use_extendr_wrapper
+
+#' Check whether the data type is a float type
+#'
+#' @inherit DataType_is_temporal return
+#'
+#' @examples
+#' pl$Float32$is_float()
+#' pl$Int32$is_float()
+DataType_is_float = use_extendr_wrapper
+
+#' Check whether the data type is a numeric type
+#'
+#' @inherit DataType_is_temporal return
+#'
+#' @examples
+#' pl$Float32$is_numeric()
+#' pl$Int32$is_numeric()
+#' pl$String$is_numeric()
+DataType_is_numeric = use_extendr_wrapper
+
+#' Check whether the data type is an integer type
+#'
+#' @inherit DataType_is_temporal return
+#'
+#' @examples
+#' pl$Int32$is_integer()
+#' pl$Float32$is_integer()
+DataType_is_integer = use_extendr_wrapper
+
+#' Check whether the data type is a signed integer type
+#'
+#' @inherit DataType_is_temporal return
+#'
+#' @examples
+#' pl$Int32$is_signed_integer()
+#' pl$UInt32$is_signed_integer()
+DataType_is_signed_integer = use_extendr_wrapper
+
+#' Check whether the data type is an unsigned integer type
+#'
+#' @inherit DataType_is_temporal return
+#'
+#' @examples
+#' pl$UInt32$is_unsigned_integer()
+#' pl$Int32$is_unsigned_integer()
+DataType_is_unsigned_integer = use_extendr_wrapper
+
+#' Check whether the data type is a null type
+#'
+#' @inherit DataType_is_temporal return
+#'
+#' @examples
+#' pl$Null$is_null()
+#' pl$Float32$is_null()
+DataType_is_null = use_extendr_wrapper
+
+#' Check whether the data type is a binary type
+#'
+#' @inherit DataType_is_temporal return
+#'
+#' @examples
+#' pl$Binary$is_binary()
+#' pl$Float32$is_binary()
+DataType_is_binary = use_extendr_wrapper
+
+#' Check whether the data type is a primitive type
+#'
+#' @inherit DataType_is_temporal return
+#'
+#' @examples
+#' pl$Float32$is_primitive()
+#' pl$List()$is_primitive()
+DataType_is_primitive = use_extendr_wrapper
+
+#' Check whether the data type is a boolean type
+#'
+#' @inherit DataType_is_temporal return
+#'
+#' @examples
+#' pl$Boolean$is_bool()
+#' pl$Float32$is_bool()
+DataType_is_bool = use_extendr_wrapper
+
+#' Check whether the data type is an array type
+#'
+#' @inherit DataType_is_temporal return
+#'
+#' @examples
+#' pl$Array(width = 2)$is_array()
+#' pl$Float32$is_array()
+DataType_is_array = use_extendr_wrapper
+
+#' Check whether the data type is a list type
+#'
+#' @inherit DataType_is_temporal return
+#'
+#' @examples
+#' pl$List()$is_list()
+#' pl$Float32$is_list()
+DataType_is_list = use_extendr_wrapper
+
+#' Check whether the data type is a nested type
+#'
+#' @inherit DataType_is_temporal return
+#'
+#' @examples
+#' pl$List()$is_nested()
+#' pl$Array(width = 2)$is_nested()
+#' pl$Float32$is_nested()
+DataType_is_nested = use_extendr_wrapper
+
+#' Check whether the data type is a temporal type
+#'
+#' @inherit DataType_is_temporal return
+#'
+#' @examples
+#' pl$Struct()$is_struct()
+#' pl$Float32$is_struct()
+DataType_is_struct = use_extendr_wrapper
+
+#' Check whether the data type is an ordinal type
+#'
+#' @inherit DataType_is_temporal return
+#'
+#' @examples
+#' pl$String$is_ord()
+#' pl$Categorical()$is_ord()
+DataType_is_ord = use_extendr_wrapper

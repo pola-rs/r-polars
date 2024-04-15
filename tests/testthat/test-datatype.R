@@ -156,3 +156,45 @@ test_that("pl$Duration", {
     1
   )
 })
+
+test_that("is_* functions for datatype work", {
+  expect_true(pl$Float32$is_float())
+  expect_false(pl$String$is_float())
+
+  expect_true(pl$Float32$is_numeric())
+  expect_true(pl$Int32$is_numeric())
+  expect_false(pl$String$is_numeric())
+
+  expect_true(pl$Int32$is_integer())
+  expect_false(pl$String$is_integer())
+
+  expect_true(pl$Int32$is_signed_integer())
+  expect_false(pl$String$is_signed_integer())
+
+  expect_true(pl$UInt32$is_unsigned_integer())
+  expect_false(pl$Int32$is_unsigned_integer())
+
+  expect_true(pl$Null$is_null())
+  expect_false(pl$Int32$is_null())
+  expect_false(pl$List()$is_null())
+
+  expect_true(pl$Array(width = 1)$is_array())
+  expect_false(pl$List()$is_array())
+
+  expect_true(pl$List()$is_list())
+  expect_false(pl$Array(width = 1)$is_list())
+
+  expect_true(pl$Struct()$is_struct())
+  expect_false(pl$List()$is_struct())
+
+  expect_true(pl$Float32$is_ord())
+  expect_true(pl$String$is_ord())
+  expect_false(pl$List()$is_ord())
+  expect_false(pl$Categorical()$is_ord())
+
+  expect_true(pl$Float32$is_primitive())
+  expect_true(pl$String$is_primitive())
+  expect_false(pl$Categorical()$is_primitive())
+  expect_false(pl$Struct()$is_primitive())
+  expect_false(pl$List()$is_primitive())
+})

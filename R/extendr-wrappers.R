@@ -302,6 +302,36 @@ RPolarsDataType$get_insides <- function() .Call(wrap__RPolarsDataType__get_insid
 
 RPolarsDataType$is_temporal <- function() .Call(wrap__RPolarsDataType__is_temporal, self)
 
+RPolarsDataType$is_logical <- function() .Call(wrap__RPolarsDataType__is_logical, self)
+
+RPolarsDataType$is_float <- function() .Call(wrap__RPolarsDataType__is_float, self)
+
+RPolarsDataType$is_numeric <- function() .Call(wrap__RPolarsDataType__is_numeric, self)
+
+RPolarsDataType$is_integer <- function() .Call(wrap__RPolarsDataType__is_integer, self)
+
+RPolarsDataType$is_signed_integer <- function() .Call(wrap__RPolarsDataType__is_signed_integer, self)
+
+RPolarsDataType$is_unsigned_integer <- function() .Call(wrap__RPolarsDataType__is_unsigned_integer, self)
+
+RPolarsDataType$is_null <- function() .Call(wrap__RPolarsDataType__is_null, self)
+
+RPolarsDataType$is_binary <- function() .Call(wrap__RPolarsDataType__is_binary, self)
+
+RPolarsDataType$is_primitive <- function() .Call(wrap__RPolarsDataType__is_primitive, self)
+
+RPolarsDataType$is_bool <- function() .Call(wrap__RPolarsDataType__is_bool, self)
+
+RPolarsDataType$is_array <- function() .Call(wrap__RPolarsDataType__is_array, self)
+
+RPolarsDataType$is_list <- function() .Call(wrap__RPolarsDataType__is_list, self)
+
+RPolarsDataType$is_nested <- function() .Call(wrap__RPolarsDataType__is_nested, self)
+
+RPolarsDataType$is_struct <- function() .Call(wrap__RPolarsDataType__is_struct, self)
+
+RPolarsDataType$is_ord <- function() .Call(wrap__RPolarsDataType__is_ord, self)
+
 #' @export
 `$.RPolarsDataType` <- function (self, name) { func <- RPolarsDataType[[name]]; environment(func) <- environment(); func }
 
