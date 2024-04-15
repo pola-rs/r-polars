@@ -63,7 +63,7 @@
     - In `$dt$convert_time_zone()` and `$dt$replace_time_zone()`, the `tz`
       argument is renamed to `time_zone` (#944).
     - In `$str$strptime()`, the argument `datatype` is renamed to `dtype` (#939).
-    - In `$str$parse_int()` (renamed `$str$to_integer()`, see below), argument 
+    - In `$str$parse_int()` (renamed `$str$to_integer()`, see below), argument
       `radix` is renamed to `base` (#1034).
 
   2. Change in the way arguments are passed:
