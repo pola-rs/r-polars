@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr__string.R
 \name{ExprStr_len_chars}
 \alias{ExprStr_len_chars}
-\title{Get the number of characters in $strings}
+\title{Get the number of characters in strings}
 \usage{
 ExprStr_len_chars()
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr__string.R
 \name{ExprStr_len_bytes}
 \alias{ExprStr_len_bytes}
-\title{Get the number of bytes in $strings}
+\title{Get the number of bytes in strings}
 \usage{
 ExprStr_len_bytes()
 }
