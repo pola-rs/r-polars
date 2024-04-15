@@ -707,6 +707,13 @@ test_that("str$to_integer", {
   )
 
   expect_grepl_error(pl$lit("foo")$str$to_integer()$to_r(), "strict integer parsing failed for 1 value")
+
+  expect_identical(
+    pl$DataFrame(base = c(2, 10), str = "10")$select(
+      pl$col("str")$str$to_integer(base = "base")
+    )$to_list()[[1]],
+    c(2, 10)
+  )
 })
 
 test_that("str$reverse()", {
