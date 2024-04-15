@@ -2307,7 +2307,6 @@ impl RPolarsExpr {
         Ok(self.0.clone().str().explode().into())
     }
 
-    // TODO: rename to `str_to_integer`
     pub fn str_to_integer(&self, base: Robj, strict: Robj) -> RResult<Self> {
         Ok(self
             .0
