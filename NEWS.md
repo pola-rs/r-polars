@@ -63,7 +63,8 @@
     - In `$dt$convert_time_zone()` and `$dt$replace_time_zone()`, the `tz`
       argument is renamed to `time_zone` (#944).
     - In `$str$strptime()`, the argument `datatype` is renamed to `dtype` (#939).
-    - In `$str$parse_int()`, argument `radix` is renamed to `base` (#1034).
+    - In `$str$parse_int()` (renamed `$str$to_integer()`, see below), argument
+      `radix` is renamed to `base` (#1034).
 
   2. Change in the way arguments are passed:
 
@@ -154,6 +155,7 @@
 - The following deprecated functions are now removed: `pl$threadpool_size()`,
   `<DataFrame>$with_row_count()`, `<LazyFrame>$with_row_count()` (#965).
 - In `$group_by_dynamic()`, the first datapoint is always preserved (#1034).
+- `$str$parse_int()` is renamed `$str$to_integer()` (#1037).
 
 
 ### New features
