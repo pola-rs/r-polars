@@ -568,12 +568,12 @@ test_that("pl$int_range() works", {
 
   expect_grepl_error(
     pl$int_range(0, 3, dtype = pl$String) |> as_polars_series(),
-    "must be of type integer"
+    "non-integer `dtype` passed"
   )
 
   expect_grepl_error(
     pl$int_range(0, 3, dtype = pl$Float32) |> as_polars_series(),
-    "must be of type integer"
+    "non-integer `dtype` passed"
   )
 
   # "step" works
@@ -612,7 +612,7 @@ test_that("pl$int_ranges() works", {
 
   expect_grepl_error(
     df$select(int_range = pl$int_ranges("start", "end", dtype = pl$String)),
-    "must be of type integer"
+    "non-integer `dtype` passed"
   )
 
   # "step" works

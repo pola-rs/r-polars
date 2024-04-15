@@ -1313,10 +1313,6 @@ pl_arg_sort_by = function(
 #'   pl$all()
 #' )
 pl_int_range = function(start = 0, end = NULL, step = 1, ..., dtype = pl$Int64) {
-  if (!dtype$is_integer()) {
-    Err_plain("`dtype` must be of type integer") |>
-      unwrap("in pl$int_range():")
-  }
   if (is.null(end)) {
     end = start
     start = 0
@@ -1342,10 +1338,6 @@ pl_int_range = function(start = 0, end = NULL, step = 1, ..., dtype = pl$Int64) 
 #'
 #' df$with_columns(int_range = pl$int_ranges("start", "end", dtype = pl$Int16))
 pl_int_ranges = function(start = 0, end = NULL, step = 1, ..., dtype = pl$Int64) {
-  if (!dtype$is_integer()) {
-    Err_plain("`dtype` must be of type integer") |>
-      unwrap("in pl$int_ranges():")
-  }
   if (is.null(end)) {
     end = start
     start = 0

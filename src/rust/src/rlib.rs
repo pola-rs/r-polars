@@ -423,7 +423,13 @@ pub fn int_ranges(start: Robj, end: Robj, step: Robj, dtype: Robj) -> RResult<RP
     let start = robj_to!(PLExprCol, start)?;
     let end = robj_to!(PLExprCol, end)?;
     let step = robj_to!(PLExprCol, step)?;
-    let dtype = robj_to!(RPolarsDataType, dtype)?.into();
+    let dtype: pl::DataType = robj_to!(RPolarsDataType, dtype)?.into();
+    if !dtype.is_integer() {
+        return Err(pl::PolarsError::ComputeError(
+            format!("non-integer `dtype` passed to `int_ranges`: {:?}", dtype,).into(),
+        )
+        .into());
+    }
     let mut result = polars::lazy::dsl::int_ranges(start, end, step);
     if dtype != pl::DataType::Int64 {
         result = result.cast(pl::DataType::List(Box::new(dtype)))
