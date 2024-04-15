@@ -1970,7 +1970,7 @@ DataFrame_write_csv = function(
   ) |>
     unwrap("in $write_csv():")
 
-  invisible(NULL)
+  invisible(self)
 }
 
 
@@ -2009,7 +2009,7 @@ DataFrame_write_ipc = function(
   ) |>
     unwrap("in $write_ipc():")
 
-  invisible(NULL)
+  invisible(self)
 }
 
 
@@ -2044,7 +2044,7 @@ DataFrame_write_parquet = function(
   ) |>
     unwrap("in $write_parquet():")
 
-  invisible(NULL)
+  invisible(self)
 }
 
 #' Write to JSON file
@@ -2075,7 +2075,7 @@ DataFrame_write_json = function(
   .pr$DataFrame$write_json(self, file, pretty, row_oriented) |>
     unwrap("in $write_json():")
 
-  invisible(NULL)
+  invisible(self)
 }
 
 #' Write to NDJSON file
@@ -2096,7 +2096,7 @@ DataFrame_write_ndjson = function(file) {
   .pr$DataFrame$write_ndjson(self, file) |>
     unwrap("in $write_ndjson():")
 
-  invisible(NULL)
+  invisible(self)
 }
 
 #' @inherit LazyFrame_rolling title description params details

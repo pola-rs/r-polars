@@ -67,3 +67,10 @@ patrick::with_parameters_test_that("write and read Apache Arrow file",
   compression = list(NULL, "uncompressed", "lz4", "zstd"),
   .test_name = compression
 )
+
+test_that("write_ipc returns the input data", {
+  dat = pl$DataFrame(mtcars)
+  tmpf = tempfile(fileext = ".arrow")
+  x = dat$write_ipc(tmpf)
+  expect_identical(x$to_list(), dat$to_list())
+})

@@ -7,9 +7,13 @@ test_that("Test sinking data to parquet file", {
   expect_grepl_error(lf$sink_parquet(tmpf, compression = "rar"))
   lf$sink_parquet(tmpf)
   expect_equal(pl$scan_parquet(tmpf)$collect()$to_data_frame(), rdf)
+
+  # return the input data
+  x = lf$sink_parquet(tmpf)
+  expect_identical(x$collect()$to_list(), lf$collect()$to_list())
 })
 
-test_that("Test sinking data to parquet file", {
+test_that("Test sinking data to IPC file", {
   tmpf = tempfile()
   on.exit(unlink(tmpf))
   lf$sink_ipc(tmpf)
@@ -51,6 +55,10 @@ test_that("Test sinking data to parquet file", {
       expect_identical(rdf_in_bg$to_data_frame(), rdf)
     }
   )
+
+  # return the input data
+  x = lf$sink_ipc(tmpf)
+  expect_identical(x$collect()$to_list(), lf$collect()$to_list())
 })
 
 
@@ -92,6 +100,10 @@ test_that("sink_csv works", {
     dat[, c("drat", "mpg")],
     ignore_attr = TRUE # ignore row names
   )
+
+  # return the input data
+  x = dat_pl$sink_csv(temp_out)
+  expect_identical(x$collect()$to_list(), dat_pl$collect()$to_list())
 })
 
 test_that("sink_csv: null_values works", {
@@ -231,6 +243,11 @@ test_that("sink_csv: float_precision works", {
 
 test_that("sink_ndjson works", {
   temp_out = tempfile(fileext = ".json")
-  pl$LazyFrame(mtcars)$head(15)$select(pl$col("drat", "mpg"))$sink_ndjson(temp_out)
+  dat = pl$LazyFrame(mtcars)$head(15)$select(pl$col("drat", "mpg"))
+  dat$sink_ndjson(temp_out)
   expect_snapshot_file(temp_out)
+
+  # return the input data
+  x = dat$sink_ndjson(temp_out)
+  expect_identical(x$collect()$to_list(), dat$collect()$to_list())
 })

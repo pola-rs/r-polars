@@ -596,6 +596,7 @@ LazyFrame_collect_in_background = function() {
 #' @inheritParams LazyFrame_collect
 #'
 #' @rdname IO_sink_parquet
+#' @return Invisibly returns the input LazyFrame
 #'
 #' @examples
 #' # sink table 'mtcars' from mem to parquet
@@ -655,8 +656,9 @@ LazyFrame_sink_parquet = function(
       data_pagesize_limit,
       maintain_order
     ) |>
-    unwrap("in $sink_parquet()") |>
-    invisible()
+    unwrap("in $sink_parquet()")
+
+  invisible(self)
 }
 
 
@@ -673,6 +675,8 @@ LazyFrame_sink_parquet = function(
 #' @inheritParams LazyFrame_collect
 #' @inheritParams LazyFrame_group_by
 #' @inheritParams DataFrame_unique
+#'
+#' @inherit LazyFrame_sink_parquet return
 #'
 #' @rdname IO_sink_ipc
 #'
@@ -726,8 +730,9 @@ LazyFrame_sink_ipc = function(
       compression %||% "uncompressed",
       maintain_order
     ) |>
-    unwrap("in $sink_ipc()") |>
-    invisible()
+    unwrap("in $sink_ipc()")
+
+  invisible(self)
 }
 
 
@@ -743,6 +748,7 @@ LazyFrame_sink_ipc = function(
 #' @inheritParams LazyFrame_group_by
 #' @inheritParams DataFrame_unique
 #'
+#' @inherit LazyFrame_sink_parquet return
 #' @rdname IO_sink_csv
 #'
 #' @examples
@@ -817,8 +823,9 @@ LazyFrame_sink_csv = function(
       quote_style,
       maintain_order
     ) |>
-    unwrap("in $sink_csv()") |>
-    invisible()
+    unwrap("in $sink_csv()")
+
+  invisible(self)
 }
 
 
@@ -834,6 +841,7 @@ LazyFrame_sink_csv = function(
 #' @inheritParams LazyFrame_group_by
 #' @inheritParams DataFrame_unique
 #'
+#' @inherit LazyFrame_sink_parquet return
 #' @rdname IO_sink_ndjson
 #'
 #' @examples
@@ -880,8 +888,9 @@ LazyFrame_sink_ndjson = function(
       path,
       maintain_order
     ) |>
-    unwrap("in $sink_ndjson()") |>
-    invisible()
+    unwrap("in $sink_ndjson()")
+
+  invisible(self)
 }
 
 

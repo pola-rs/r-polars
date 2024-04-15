@@ -84,3 +84,10 @@ test_that("throw error if invalid compression is passed", {
     "Failed to set parquet compression method"
   )
 })
+
+test_that("write_parquet returns the input data", {
+  dat = pl$DataFrame(mtcars)
+  tmpf = tempfile()
+  x = dat$write_parquet(tmpf)
+  expect_identical(x$to_list(), dat$to_list())
+})
