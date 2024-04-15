@@ -391,7 +391,7 @@ ExprStr_strip_chars_end = function(matches = NULL) {
 #' some_floats_expr$cast(pl$Int64)$cast(pl$String)$str$zfill(5)$to_r()
 ExprStr_zfill = function(alignment) {
   .pr$Expr$str_zfill(self, alignment) |>
-    unwrap("in str$zfill():")
+    unwrap("in $str$zfill():")
 }
 
 
@@ -409,7 +409,7 @@ ExprStr_zfill = function(alignment) {
 #' df$select(pl$col("a")$str$pad_end(8, "*"))
 ExprStr_pad_end = function(width, fillchar = " ") {
   .pr$Expr$str_pad_end(self, width, fillchar) |>
-    unwrap("in str$pad_end(): ")
+    unwrap("in $str$pad_end(): ")
 }
 
 
@@ -425,7 +425,7 @@ ExprStr_pad_end = function(width, fillchar = " ") {
 #' df$select(pl$col("a")$str$pad_start(8, "*"))
 ExprStr_pad_start = function(width, fillchar = " ") {
   .pr$Expr$str_pad_start(self, width, fillchar) |>
-    unwrap("in str$pad_start(): ")
+    unwrap("in $str$pad_start(): ")
 }
 
 
@@ -528,7 +528,7 @@ ExprStr_starts_with = function(sub) {
 #' df$select(pl$col("json_val")$str$json_decode(dtype))
 ExprStr_json_decode = function(dtype, infer_schema_length = 100) {
   .pr$Expr$str_json_decode(self, dtype, infer_schema_length) |>
-    unwrap("in str$json_decode():")
+    unwrap("in $str$json_decode():")
 }
 
 #' Extract the first match of JSON string with the provided JSONPath expression
@@ -549,7 +549,7 @@ ExprStr_json_decode = function(dtype, infer_schema_length = 100) {
 #' df$select(pl$col("json_val")$str$json_path_match("$.a"))
 ExprStr_json_path_match = function(json_path) {
   .pr$Expr$str_json_path_match(self, json_path) |>
-    unwrap("in str$json_path_match(): ")
+    unwrap("in $str$json_path_match(): ")
 }
 
 
@@ -636,7 +636,7 @@ ExprStr_encode = function(encoding) {
 #' )
 ExprStr_extract = function(pattern, group_index) {
   .pr$Expr$str_extract(self, pattern, group_index) |>
-    unwrap("in str$extract(): ")
+    unwrap("in $str$extract(): ")
 }
 
 
@@ -699,7 +699,7 @@ ExprStr_count_matches = function(pattern, ..., literal = FALSE) {
 ExprStr_split = function(by, inclusive = FALSE) {
   unwrap(
     .pr$Expr$str_split(self, result(by), result(inclusive)),
-    context = "in str$split():"
+    context = "in $str$split():"
   )
 }
 
@@ -723,7 +723,7 @@ ExprStr_split = function(by, inclusive = FALSE) {
 ExprStr_split_exact = function(by, n, inclusive = FALSE) {
   unwrap(
     .pr$Expr$str_split_exact(self, by, result(n), result(inclusive)),
-    context = "in str$split_exact():"
+    context = "in $str$split_exact():"
   )
 }
 
@@ -749,7 +749,7 @@ ExprStr_split_exact = function(by, n, inclusive = FALSE) {
 #'   s3 = pl$col("s")$str$splitn(by = "_", 3)
 #' )
 ExprStr_splitn = function(by, n) {
-  .pr$Expr$str_splitn(self, result(by), result(n)) |> unwrap("in str$splitn():")
+  .pr$Expr$str_splitn(self, result(by), result(n)) |> unwrap("in $str$splitn():")
 }
 
 
@@ -850,7 +850,7 @@ ExprStr_replace_all = function(pattern, value, ..., literal = FALSE) {
 #' )
 ExprStr_slice = function(offset, length = NULL) {
   .pr$Expr$str_slice(self, result(offset), result(length)) |>
-    unwrap("in str$slice():")
+    unwrap("in $str$slice():")
 }
 
 #' Returns a column with a separate row for every string character
@@ -862,29 +862,31 @@ ExprStr_slice = function(offset, length = NULL) {
 #' df$select(pl$col("a")$str$explode())
 ExprStr_explode = function() {
   .pr$Expr$str_explode(self) |>
-    unwrap("in str$explode():")
+    unwrap("in $str$explode():")
 }
 
-# TODO: rename to `to_integer`
-#' Parse integers with base radix from strings
+
+#' Convert a String column into an Int64 column with base radix
 #'
-#' @description Parse integers with base 2 by default.
-#' @keywords ExprStr
-#' @param base Positive integer which is the base of the string we are parsing.
-#' Default is 2.
-#' @param strict If `TRUE` (default), integer overflow will raise an error.
-#' Otherwise, they will be converted to `null`.
-#' @return Expr: Series of dtype i32.
+#' @param ... Ignored.
+#' @param base A positive integer or expression which is the base of the string
+#' we are parsing. Characters are parsed as column names. Default: `10L`.
+#' @param strict A logical. If `TRUE` (default), parsing errors or integer overflow will
+#' raise an error. If `FALSE`, silently convert to `null`.
+#' @return [Expression][Expr_class] of data type `Int64`.
 #' @examples
-#' df = pl$DataFrame(bin = c("110", "101", "010"))
-#' df$select(pl$col("bin")$str$parse_int())
-#' df$select(pl$col("bin")$str$parse_int(10))
+#' df = pl$DataFrame(bin = c("110", "101", "010", "invalid"))
+#' df$with_columns(
+#'   parsed = pl$col("bin")$str$to_integer(base = 2, strict = FALSE)
+#' )
 #'
-#' # Convert to null if the string is not a valid integer when `strict = FALSE`
-#' df = pl$DataFrame(x = c("1", "2", "foo"))
-#' df$select(pl$col("x")$str$parse_int(10, FALSE))
-ExprStr_parse_int = function(base = 2, strict = TRUE) {
-  .pr$Expr$str_parse_int(self, base, strict) |> unwrap("in str$parse_int():")
+#' df = pl$DataFrame(hex = c("fa1e", "ff00", "cafe", NA))
+#' df$with_columns(
+#'   parsed = pl$col("hex")$str$to_integer(base = 16, strict = TRUE)
+#' )
+ExprStr_to_integer = function(..., base = 10L, strict = TRUE) {
+  .pr$Expr$str_to_integer(self, base, strict) |>
+    unwrap("in $str$to_integer():")
 }
 
 #' Returns string values in reversed order
@@ -896,7 +898,7 @@ ExprStr_parse_int = function(base = 2, strict = TRUE) {
 #' df$with_columns(reversed = pl$col("text")$str$reverse())
 ExprStr_reverse = function() {
   .pr$Expr$str_reverse(self) |>
-    unwrap("in str$reverse():")
+    unwrap("in $str$reverse():")
 }
 
 #' Use the aho-corasick algorithm to find matches
@@ -924,7 +926,7 @@ ExprStr_reverse = function() {
 #' )
 ExprStr_contains_any = function(patterns, ..., ascii_case_insensitive = FALSE) {
   .pr$Expr$str_contains_any(self, patterns, ascii_case_insensitive) |>
-    unwrap("in str$contains_any():")
+    unwrap("in $str$contains_any():")
 }
 
 #' Use the aho-corasick algorithm to replace many matches
@@ -962,7 +964,7 @@ ExprStr_contains_any = function(patterns, ..., ascii_case_insensitive = FALSE) {
 #' )
 ExprStr_replace_many = function(patterns, replace_with, ascii_case_insensitive = FALSE) {
   .pr$Expr$str_replace_many(self, patterns, replace_with, ascii_case_insensitive) |>
-    unwrap("in str$replace_many():")
+    unwrap("in $str$replace_many():")
 }
 
 
@@ -1000,7 +1002,7 @@ ExprStr_replace_many = function(patterns, replace_with, ascii_case_insensitive =
 #' )$unnest("captures")
 ExprStr_extract_groups = function(pattern) {
   .pr$Expr$str_extract_groups(self, pattern) |>
-    unwrap("in str$extract_groups():")
+    unwrap("in $str$extract_groups():")
 }
 
 #' Return the index position of the first substring matching a pattern
@@ -1024,5 +1026,5 @@ ExprStr_extract_groups = function(pattern) {
 #' )
 ExprStr_find = function(pattern, ..., literal = FALSE, strict = TRUE) {
   .pr$Expr$str_find(self, pattern, literal, strict) |>
-    unwrap("in str$find():")
+    unwrap("in $str$find():")
 }

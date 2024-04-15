@@ -685,28 +685,35 @@ test_that("str$str_explode", {
 })
 
 
-test_that("str$parse_int", {
+test_that("str$to_integer", {
   expect_identical(
-    pl$lit(c("110", "101", "010"))$str$parse_int(2)$to_r(),
+    pl$lit(c("110", "101", "010"))$str$to_integer(base = 2)$to_r(),
     c(6, 5, 2)
   )
 
   expect_identical(
-    pl$lit(c("110", "101", "010"))$str$parse_int()$to_r(),
-    c(6, 5, 2)
-  )
-
-  expect_identical(
-    pl$lit(c("110", "101", "010"))$str$parse_int(10)$to_r(),
+    pl$lit(c("110", "101", "010"))$str$to_integer()$to_r(),
     c(110, 101, 10)
   )
 
   expect_identical(
-    pl$lit(c("110", "101", "hej"))$str$parse_int(10, FALSE)$to_r(),
+    pl$lit(c("110", "101", "010"))$str$to_integer(base = 10)$to_r(),
+    c(110, 101, 10)
+  )
+
+  expect_identical(
+    pl$lit(c("110", "101", "hej"))$str$to_integer(base = 10, strict = FALSE)$to_r(),
     c(110, 101, NA)
   )
 
-  expect_grepl_error(pl$lit("foo")$str$parse_int()$to_r(), "strict integer parsing failed for 1 value")
+  expect_grepl_error(pl$lit("foo")$str$to_integer()$to_r(), "strict integer parsing failed for 1 value")
+
+  expect_identical(
+    pl$DataFrame(base = c(2, 10), str = "10")$select(
+      pl$col("str")$str$to_integer(base = "base")
+    )$to_list()[[1]],
+    c(2, 10)
+  )
 })
 
 test_that("str$reverse()", {
