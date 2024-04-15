@@ -687,22 +687,22 @@ test_that("str$str_explode", {
 
 test_that("str$to_integer", {
   expect_identical(
-    pl$lit(c("110", "101", "010"))$str$to_integer(2)$to_r(),
+    pl$lit(c("110", "101", "010"))$str$to_integer(base = 2)$to_r(),
     c(6, 5, 2)
   )
 
   expect_identical(
     pl$lit(c("110", "101", "010"))$str$to_integer()$to_r(),
-    c(6, 5, 2)
-  )
-
-  expect_identical(
-    pl$lit(c("110", "101", "010"))$str$to_integer(10)$to_r(),
     c(110, 101, 10)
   )
 
   expect_identical(
-    pl$lit(c("110", "101", "hej"))$str$to_integer(10, FALSE)$to_r(),
+    pl$lit(c("110", "101", "010"))$str$to_integer(base = 10)$to_r(),
+    c(110, 101, 10)
+  )
+
+  expect_identical(
+    pl$lit(c("110", "101", "hej"))$str$to_integer(base = 10, strict = FALSE)$to_r(),
     c(110, 101, NA)
   )
 
