@@ -50,97 +50,97 @@
 
   1. Change in argument names:
 
-    - In `$reshape()`, the `dims` argument is renamed to `dimensions` (#1019).
-    - In `pl$read_*` and `pl$scan_*` functions, the first argument is now
-      `source` (#935).
-    - In `pl$Series()`, the argument `x` is renamed `values` (#933).
-    - In `<DataFrame>$write_*` functions, the first argument is now `file` (#935).
-    - In `<LazyFrame>$sink_*` functions, the first argument is now `path` (#935).
-    - In `<LazyFrame>$sink_ipc()`, the argument `memmap` is renamed to `memory_map` (#1032).
-    - In `<DataFrame>$rolling()`, `<LazyFrame>$rolling()`, `<DataFrame>$group_by_dynamic()`
-      and `<LazyFrame>$group_by_dynamic()`, the `by` argument is renamed to
-      `group_by` (#983).
-    - In `$dt$convert_time_zone()` and `$dt$replace_time_zone()`, the `tz`
-      argument is renamed to `time_zone` (#944).
-    - In `$str$strptime()`, the argument `datatype` is renamed to `dtype` (#939).
-    - In `$str$to_integer()` (renamed from `$str$parse_int()`), argument `radix` is
-      renamed to `base` (#1038).
+     - In `$reshape()`, the `dims` argument is renamed to `dimensions` (#1019).
+     - In `pl$read_*` and `pl$scan_*` functions, the first argument is now
+       `source` (#935).
+     - In `pl$Series()`, the argument `x` is renamed `values` (#933).
+     - In `<DataFrame>$write_*` functions, the first argument is now `file` (#935).
+     - In `<LazyFrame>$sink_*` functions, the first argument is now `path` (#935).
+     - In `<LazyFrame>$sink_ipc()`, the argument `memmap` is renamed to `memory_map` (#1032).
+     - In `<DataFrame>$rolling()`, `<LazyFrame>$rolling()`, `<DataFrame>$group_by_dynamic()`
+       and `<LazyFrame>$group_by_dynamic()`, the `by` argument is renamed to
+       `group_by` (#983).
+     - In `$dt$convert_time_zone()` and `$dt$replace_time_zone()`, the `tz`
+       argument is renamed to `time_zone` (#944).
+     - In `$str$strptime()`, the argument `datatype` is renamed to `dtype` (#939).
+     - In `$str$to_integer()` (renamed from `$str$parse_int()`), argument `radix` is
+       renamed to `base` (#1038).
 
   2. Change in the way arguments are passed:
 
-    - In all input/output functions, all arguments except the first argument
-      must be named arguments (#935).
-    - In `<DataFrame>$rolling()` and `<DataFrame>$group_by_dynamic()`, all
-      arguments except `index_column` must be named arguments (#983).
-    - In `$unique()` for `DataFrame` and `LazyFrame`, arguments `keep` and
-      `maintain_order` must be named (#953).
-    - In `$bin$decode()`, the `strict` argument must be a named argument (#980).
-    - In `$dt$replace_time_zone()`, all arguments except `time_zone` must be named
-      arguments (#944).
-    - In `$str$contains()`, the arguments `literal` and `strict` must be named
-      (#982).
-    - In `$str$contains_any()`, the `ascii_case_insensitive` argument must be
-      named (#986).
-    - In `$str$count_matches()`, `$str$replace()` and `$str$replace_all()`,
-      the `literal` argument must be named (#987).
-    - In `$str$strptime()`, `$str$to_date()`, `$str$to_datetime()`, and
-      `$str$to_time()`, all arguments (except the first one) must be named (#939).
-    - In `$str$to_integer()` (renamed from `$str$parse_int()`), all arguments
-      must be named (#1038).
-    - In `pl$date_range()`, the arguments `closed`, `time_unit`, and `time_zone`
-      must be named (#950).
-    - In `$set_sorted()` and `$sort_by()`, argument `descending` must be named
-      (#1034).
-    - In `pl$Series()`, using positional arguments throws a warning, since the
-      argument positions will be changed in the future (#966).
+     - In all input/output functions, all arguments except the first argument
+       must be named arguments (#935).
+     - In `<DataFrame>$rolling()` and `<DataFrame>$group_by_dynamic()`, all
+       arguments except `index_column` must be named arguments (#983).
+     - In `$unique()` for `DataFrame` and `LazyFrame`, arguments `keep` and
+       `maintain_order` must be named (#953).
+     - In `$bin$decode()`, the `strict` argument must be a named argument (#980).
+     - In `$dt$replace_time_zone()`, all arguments except `time_zone` must be named
+       arguments (#944).
+     - In `$str$contains()`, the arguments `literal` and `strict` must be named
+       (#982).
+     - In `$str$contains_any()`, the `ascii_case_insensitive` argument must be
+       named (#986).
+     - In `$str$count_matches()`, `$str$replace()` and `$str$replace_all()`,
+       the `literal` argument must be named (#987).
+     - In `$str$strptime()`, `$str$to_date()`, `$str$to_datetime()`, and
+       `$str$to_time()`, all arguments (except the first one) must be named (#939).
+     - In `$str$to_integer()` (renamed from `$str$parse_int()`), all arguments
+       must be named (#1038).
+     - In `pl$date_range()`, the arguments `closed`, `time_unit`, and `time_zone`
+       must be named (#950).
+     - In `$set_sorted()` and `$sort_by()`, argument `descending` must be named
+       (#1034).
+     - In `pl$Series()`, using positional arguments throws a warning, since the
+       argument positions will be changed in the future (#966).
 
-      ```r
-      # polars 0.15.1 or earlier
-      # The first argument is `x`, the second argument is `name`.
-      pl$Series(1:3, "foo")
+       ```r
+       # polars 0.15.1 or earlier
+       # The first argument is `x`, the second argument is `name`.
+       pl$Series(1:3, "foo")
 
-      # The code above will warn in 0.16.0
-      # Use named arguments to silence the warning.
-      pl$Series(values = 1:3, name = "foo")
-      pl$Series(name = "foo", values = 1:3)
+       # The code above will warn in 0.16.0
+       # Use named arguments to silence the warning.
+       pl$Series(values = 1:3, name = "foo")
+       pl$Series(name = "foo", values = 1:3)
 
-      # polars 0.17.0 or later (future version)
-      # The first argument is `name`, the second argument is `values`.
-      pl$Series("foo", 1:3)
-      ```
+       # polars 0.17.0 or later (future version)
+       # The first argument is `name`, the second argument is `values`.
+       pl$Series("foo", 1:3)
+       ```
 
-      This warning can also be silenced by replacing `pl$Series(<values>, <name>)`
-      by `as_polars_series(<values>, <name>)`.
+       This warning can also be silenced by replacing `pl$Series(<values>, <name>)`
+       by `as_polars_series(<values>, <name>)`.
 
   3. Arguments removed:
 
-    - The argument `columns` in `$drop()` is removed. `$drop()` now accepts
-      several character scalars, such as `$drop("a", "b", "c")` (#912).
-    - In `pl$col()`, the `name` argument is removed, and the `...` argument no
-      longer accepts a list of characters and `RPolarsSeries` class objects (#923).
-    - In `pl$date_range()`, the unused argument (not working in recent versions)
-      `explode` is removed. (#950).
+     - The argument `columns` in `$drop()` is removed. `$drop()` now accepts
+       several character scalars, such as `$drop("a", "b", "c")` (#912).
+     - In `pl$col()`, the `name` argument is removed, and the `...` argument no
+       longer accepts a list of characters and `RPolarsSeries` class objects (#923).
+     - In `pl$date_range()`, the unused argument (not working in recent versions)
+       `explode` is removed. (#950).
 
   4. Change in arguments default and accepted values:
 
-    - In `pl$Series()`, the argument `values` has a new default value `NULL`
-      (#966).
-    - In `$unique()` for `DataFrame` and `LazyFrame`, argument `keep` has a new
-      default value `"any"` (#953).
-    - In rolling aggregation functions (such as `$rolling_mean()`), the default
-      value of argument `closed` now is `NULL`. Using `closed` with a fixed
-      `window_size` now throws an error (#937).
-    - In `pl$date_range()`, the argument `end` must be specified and the default
-      value of `interval` is changed to `"1d"`. The arguments `start` and `end`
-      no longer accept numeric values (#950).
-    - In `pl$scan_parquet()`, the default value of the argument `rechunk` is
-      changed from `TRUE` to `FALSE` (#1033).
-    - In `pl$scan_parquet()` and `pl$read_parquet()`, the argument `parallel`
-      only accepts `"auto"`, `"columns"`, `"row_groups"`, and `"none"`.
-      Previously, it also accepted upper-case notation of `"auto"`, `"columns"`,
-      `"none"`, and `"RowGroups"` instead of `"row_groups"` (#1033).
-    - In `$str$to_integer()` (renamed from `$str$parse_int()`), the default
-      value of `base` is changed from `2` to `10` (#1038).
+     - In `pl$Series()`, the argument `values` has a new default value `NULL`
+       (#966).
+     - In `$unique()` for `DataFrame` and `LazyFrame`, argument `keep` has a new
+       default value `"any"` (#953).
+     - In rolling aggregation functions (such as `$rolling_mean()`), the default
+       value of argument `closed` now is `NULL`. Using `closed` with a fixed
+       `window_size` now throws an error (#937).
+     - In `pl$date_range()`, the argument `end` must be specified and the default
+       value of `interval` is changed to `"1d"`. The arguments `start` and `end`
+       no longer accept numeric values (#950).
+     - In `pl$scan_parquet()`, the default value of the argument `rechunk` is
+       changed from `TRUE` to `FALSE` (#1033).
+     - In `pl$scan_parquet()` and `pl$read_parquet()`, the argument `parallel`
+       only accepts `"auto"`, `"columns"`, `"row_groups"`, and `"none"`.
+       Previously, it also accepted upper-case notation of `"auto"`, `"columns"`,
+       `"none"`, and `"RowGroups"` instead of `"row_groups"` (#1033).
+     - In `$str$to_integer()` (renamed from `$str$parse_int()`), the default
+       value of `base` is changed from `2` to `10` (#1038).
 
 - The usage of `pl$date_range()` to create a range of `Datetime` data type is
   deprecated. `pl$date_range()` will always create a range of `Date` data type
@@ -159,7 +159,6 @@
   `<DataFrame>$with_row_count()`, `<LazyFrame>$with_row_count()` (#965).
 - In `$group_by_dynamic()`, the first datapoint is always preserved (#1034).
 - `$str$parse_int()` is renamed to `$str$to_integer()` (#1038).
-
 
 ### New features
 
@@ -212,7 +211,6 @@
   - rust-polars is updated to 0.39.0 (#937, #1034).
   - All `$write_*()` and `$sink_*()` functions now invisibly return the input
     data (#1039).
-
 
 ### Bug fixes
 
