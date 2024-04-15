@@ -2307,14 +2307,15 @@ impl RPolarsExpr {
         Ok(self.0.clone().str().explode().into())
     }
 
-    // TODO: rename to `str_to_integer`
-    pub fn str_parse_int(&self, base: Robj, strict: Robj) -> RResult<Self> {
+    pub fn str_to_integer(&self, base: Robj, strict: Robj) -> RResult<Self> {
+        let base = robj_to!(PLExprCol, base)?;
+        let strict = robj_to!(bool, strict)?;
         Ok(self
             .0
             .clone()
             .str()
-            .to_integer(robj_to!(PLExprCol, base)?, robj_to!(bool, strict)?)
-            .with_fmt("str.parse_int")
+            .to_integer(base, strict)
+            .with_fmt("str.to_integer")
             .into())
     }
 

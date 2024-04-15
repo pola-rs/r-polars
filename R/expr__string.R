@@ -865,26 +865,28 @@ ExprStr_explode = function() {
     unwrap("in str$explode():")
 }
 
-# TODO: rename to `to_integer`
-#' Parse integers with base radix from strings
+
+#' Convert a String column into an Int64 column with base radix
 #'
-#' @description Parse integers with base 2 by default.
-#' @keywords ExprStr
-#' @param base Positive integer which is the base of the string we are parsing.
-#' Default is 2.
-#' @param strict If `TRUE` (default), integer overflow will raise an error.
-#' Otherwise, they will be converted to `null`.
-#' @return Expr: Series of dtype i32.
+#' @param ... Ignored.
+#' @param base A positive integer or expression which is the base of the string
+#' we are parsing. Characters are parsed as column names. Default: `10L`.
+#' @param strict A logical. If `TRUE` (default), raise any ParseError or overflow
+#' as ComputeError. If `FALSE`, silently convert to `null`.
+#' @return [Expression][Expr_class] of data type `Int64`.
 #' @examples
-#' df = pl$DataFrame(bin = c("110", "101", "010"))
-#' df$select(pl$col("bin")$str$parse_int())
-#' df$select(pl$col("bin")$str$parse_int(10))
+#' df = pl$DataFrame(bin = c("110", "101", "010", "invalid"))
+#' df$with_columns(
+#'   parsed = pl$col("bin")$str$to_integer(base = 2, strict = FALSE)
+#' )
 #'
-#' # Convert to null if the string is not a valid integer when `strict = FALSE`
-#' df = pl$DataFrame(x = c("1", "2", "foo"))
-#' df$select(pl$col("x")$str$parse_int(10, FALSE))
-ExprStr_parse_int = function(base = 2, strict = TRUE) {
-  .pr$Expr$str_parse_int(self, base, strict) |> unwrap("in str$parse_int():")
+#' df = pl$DataFrame(hex = c("fa1e", "ff00", "cafe", NA))
+#' df$with_columns(
+#'   parsed = pl$col("hex")$str$to_integer(base = 16, strict = TRUE)
+#' )
+ExprStr_to_integer = function(..., base = 10L, strict = TRUE) {
+  .pr$Expr$str_to_integer(self, base, strict) |>
+    unwrap("in $str$to_integer():")
 }
 
 #' Returns string values in reversed order
