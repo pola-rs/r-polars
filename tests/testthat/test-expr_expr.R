@@ -139,6 +139,17 @@ test_that("count + unique + n_unique", {
   )
 })
 
+test_that("$len() and $count() don't have the same behavior for nulls", {
+  expect_equal(
+    pl$DataFrame(x = c(1, 2, NA))$select(pl$col("x")$len())$to_list(),
+    list(x = 3)
+  )
+  expect_equal(
+    pl$DataFrame(x = c(1, 2, NA))$select(pl$col("x")$count())$to_list(),
+    list(x = 2)
+  )
+})
+
 
 test_that("drop_nans drop_nulls", {
   x = c(1.0, 2.0, NaN, NA)

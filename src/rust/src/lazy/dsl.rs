@@ -1727,7 +1727,7 @@ impl RPolarsExpr {
     }
 
     pub fn len(&self) -> Self {
-        self.0.clone().count().into()
+        self.0.clone().len().into()
     }
 
     pub fn slice(&self, offset: &RPolarsExpr, length: Nullable<&RPolarsExpr>) -> Self {
