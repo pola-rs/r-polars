@@ -18,15 +18,13 @@ ExprArr_sum = function() .pr$Expr$arr_sum(self)
 #' @return Expr
 #' @inherit ExprStr_to_titlecase details
 #' @aliases arr_max
-#' @examplesIf polars_info()$features$nightly
+#' @examples
 #' df = pl$DataFrame(
 #'   values = list(c(1, 2), c(3, 4), c(5, 6)),
 #'   schema = list(values = pl$Array(pl$Float64, 2))
 #' )
 #' df$with_columns(max = pl$col("values")$arr$max())
 ExprArr_max = function() {
-  check_feature("nightly", "in $arr$max():")
-
   .pr$Expr$arr_max(self)
 }
 
@@ -38,15 +36,13 @@ ExprArr_max = function() {
 #' @inherit ExprStr_to_titlecase details
 #' @return Expr
 #' @aliases arr_min
-#' @examplesIf polars_info()$features$nightly
+#' @examples
 #' df = pl$DataFrame(
 #'   values = list(c(1, 2), c(3, 4), c(5, 6)),
 #'   schema = list(values = pl$Array(pl$Float64, 2))
 #' )
 #' df$with_columns(min = pl$col("values")$arr$min())
 ExprArr_min = function() {
-  check_feature("nightly", "in $arr$min():")
-
   .pr$Expr$arr_min(self)
 }
 
