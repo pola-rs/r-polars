@@ -1,6 +1,6 @@
 [package]
 name = "r-polars"
-version = "0.39.0"
+version = "0.39.1"
 edition = "2021"
 rust-version = "1.76.0"
 publish = false
@@ -52,8 +52,8 @@ serde_json = "*"
 smartstring = "1.0.1"
 state = "0.6.0"
 thiserror = "1.0.58"
-polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "37c630320da0d0d3270d283cdafbf6b8402de069", default-features = false }
-polars-lazy = { git = "https://github.com/pola-rs/polars.git", rev = "37c630320da0d0d3270d283cdafbf6b8402de069", default-features = false }
+polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "5e6854171b4883418c9dbc5dd20f1bb10a23f98f", default-features = false }
+polars-lazy = { git = "https://github.com/pola-rs/polars.git", rev = "5e6854171b4883418c9dbc5dd20f1bb10a23f98f", default-features = false }
 either = "1"
 #features copied from node-polars
 
@@ -93,6 +93,7 @@ features = [
   "extract_groups",
   "extract_jsonpath",
   "ewma",
+  "ewma_by",
   "find_many",
   "fmt",
   "interpolate",
@@ -154,4 +155,4 @@ features = [
   "zip_with",
 ]
 git = "https://github.com/pola-rs/polars.git"
-rev = "37c630320da0d0d3270d283cdafbf6b8402de069"
+rev = "5e6854171b4883418c9dbc5dd20f1bb10a23f98f"

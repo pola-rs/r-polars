@@ -17,42 +17,8 @@ test_that("arr$sum", {
   )
 })
 
-# TODO: reenable if the upstream issue is fixed <https://github.com/pola-rs/polars/issues/15646>
-# test_that("arr$max and arr$min", {
-#   skip_if_not(polars_info()$features$nightly)
 
-#   df = pl$DataFrame(
-#     ints = list(1:2, c(1L, NA_integer_), c(NA_integer_, NA_integer_)),
-#     floats = list(c(1, 2), c(1, NA_real_), c(NA_real_, NA_real_)),
-#     schema = list(
-#       ints = pl$Array(pl$Int32, 2),
-#       floats = pl$Array(pl$Float32, 2)
-#     )
-#   )
-#   # max ---
-#   expect_identical(
-#     df$select(pl$col("ints")$arr$max())$to_list(),
-#     list(ints = c(2L, 1L, NA_integer_))
-#   )
-#   expect_identical(
-#     df$select(pl$col("floats")$arr$max())$to_list(),
-#     list(floats = c(2, 1, NA_real_))
-#   )
-
-#   # min ---
-#   expect_identical(
-#     df$select(pl$col("ints")$arr$min())$to_list(),
-#     list(ints = c(1L, 1L, NA_integer_))
-#   )
-#   expect_identical(
-#     df$select(pl$col("floats")$arr$min())$to_list(),
-#     list(floats = c(1, 1, NA_real_))
-#   )
-# })
-
-test_that("arr$max and arr$min error if the nightly feature is false", {
-  skip_if(polars_info()$features$nightly)
-
+test_that("arr$max and arr$min", {
   df = pl$DataFrame(
     ints = list(1:2, c(1L, NA_integer_), c(NA_integer_, NA_integer_)),
     floats = list(c(1, 2), c(1, NA_real_), c(NA_real_, NA_real_)),
@@ -62,13 +28,23 @@ test_that("arr$max and arr$min error if the nightly feature is false", {
     )
   )
   # max ---
-  expect_grepl_error(
-    df$select(pl$col("ints")$arr$max())$to_list()
+  expect_identical(
+    df$select(pl$col("ints")$arr$max())$to_list(),
+    list(ints = c(2L, 1L, NA_integer_))
+  )
+  expect_identical(
+    df$select(pl$col("floats")$arr$max())$to_list(),
+    list(floats = c(2, 1, NA_real_))
   )
 
   # min ---
-  expect_grepl_error(
-    df$select(pl$col("ints")$arr$min())$to_list()
+  expect_identical(
+    df$select(pl$col("ints")$arr$min())$to_list(),
+    list(ints = c(1L, 1L, NA_integer_))
+  )
+  expect_identical(
+    df$select(pl$col("floats")$arr$min())$to_list(),
+    list(floats = c(1, 1, NA_real_))
   )
 })
 
