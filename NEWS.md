@@ -2,6 +2,10 @@
 
 ## polars (development version)
 
+### Bug fixes
+
+* `$len()` now correctly includes `null` values in the count (#1044).
+
 ## Polars R Package 0.16.0
 
 ### Breaking changes
