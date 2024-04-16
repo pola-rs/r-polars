@@ -23,3 +23,10 @@ test_that("write_ndjson: path works", {
     ignore_attr = TRUE # rownames are lost when writing / reading from json
   )
 })
+
+test_that("write_ndjson returns the input data", {
+  dat = pl$DataFrame(mtcars)
+  tmpf = tempfile(fileext = ".arrow")
+  x = dat$write_ndjson(tmpf)
+  expect_identical(x$to_list(), dat$to_list())
+})

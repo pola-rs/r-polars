@@ -13,6 +13,11 @@ test_that("write_csv: path works", {
   )
 })
 
+test_that("write_csv returns the input data", {
+  x = dat_pl$write_csv(temp_out)
+  expect_identical(x$to_list(), dat_pl$to_list())
+})
+
 test_that("write_csv: null_values works", {
   expect_grepl_error(
     dat_pl$write_csv(temp_out, null_values = NULL)
