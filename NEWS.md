@@ -1,6 +1,6 @@
 # NEWS
 
-## polars (development version)
+## polars 0.16.1
 
 This is a small hot-fix release to update dependent Rust polars to 0.39.1 (#1042).
 
