@@ -4,7 +4,7 @@
 
 ### Bug fixes
 
-* `$len()` now correctly counts `null` values (#1044).
+* `$len()` now correctly includes `null` values in the count (#1044).
 
 ## Polars R Package 0.16.0
 
