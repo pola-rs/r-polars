@@ -2,9 +2,17 @@
 
 ## polars (development version)
 
+This is a small hot-fix release to update dependent Rust polars to 0.39.1 (#1042).
+
+Also, there are some updates.
+
 ### Bug fixes
 
-* `$len()` now correctly includes `null` values in the count (#1044).
+- `$len()` now correctly includes `null` values in the count (#1044).
+
+### Other improvements
+
+- `$arr$max()` and `$arr$min()` work without the `nightly` feature (#1042).
 
 ## Polars R Package 0.16.0
 
