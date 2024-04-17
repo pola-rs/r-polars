@@ -189,7 +189,7 @@ pl_read_csv = function(
     unwrap("in pl$read_csv():")
 }
 
-cache_temp_file <- new.env(parent = new.env())
+cache_temp_file = new.env(parent = new.env())
 check_is_link = function(path, reuse_downloaded, raise_error = FALSE) {
   # do nothing let path fail on rust side
   if (is.na(path)) {
