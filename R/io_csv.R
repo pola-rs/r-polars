@@ -187,6 +187,7 @@ pl_read_csv = function(
     unwrap("in pl$read_csv():")
 }
 
+cache_temp_file <- new.env(parent = new.env())
 check_is_link = function(path, reuse_downloaded, raise_error = FALSE) {
   # do nothing let path fail on rust side
   if (is.na(path)) {
@@ -213,13 +214,14 @@ check_is_link = function(path, reuse_downloaded, raise_error = FALSE) {
     # try download file if valid url
     if (!is.null(con)) {
       close(con)
-      tmp_file = paste0(tempdir(), "/", make.names(actual_url))
-      if (isFALSE(reuse_downloaded) || isFALSE(file.exists(tmp_file))) {
-        download.file(url = actual_url, destfile = tmp_file)
-        message(paste("tmp file placed in \n", tmp_file))
+      if (is.null(cache_temp_file[[actual_url]]))
+        cache_temp_file[[actual_url]] <- tempfile()
+      if (isFALSE(reuse_downloaded) || isFALSE(file.exists(cache_temp_file[[actual_url]]))) {
+        download.file(url = actual_url, destfile = cache_temp_file[[actual_url]])
+        message(paste("tmp file placed in \n", cache_temp_file[[actual_url]]))
       }
 
-      path = tmp_file # redirect path to tmp downloaded file
+      path = cache_temp_file[[actual_url]] # redirect path to tmp downloaded file
     } else {
       if (raise_error) {
         stop("failed to locate file at path/url: ", path)
