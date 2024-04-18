@@ -902,9 +902,9 @@ RPolarsExpr$unique_stable <- function() .Call(wrap__RPolarsExpr__unique_stable, 
 
 RPolarsExpr$agg_groups <- function() .Call(wrap__RPolarsExpr__agg_groups, self)
 
-RPolarsExpr$all <- function(drop_nulls) .Call(wrap__RPolarsExpr__all, self, drop_nulls)
+RPolarsExpr$all <- function(ignore_nulls) .Call(wrap__RPolarsExpr__all, self, ignore_nulls)
 
-RPolarsExpr$any <- function(drop_nulls) .Call(wrap__RPolarsExpr__any, self, drop_nulls)
+RPolarsExpr$any <- function(ignore_nulls) .Call(wrap__RPolarsExpr__any, self, ignore_nulls)
 
 RPolarsExpr$is_between <- function(lower, upper, closed) .Call(wrap__RPolarsExpr__is_between, self, lower, upper, closed)
 

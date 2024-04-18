@@ -565,41 +565,55 @@ Expr_alias = use_extendr_wrapper
 #' Apply logical AND on a column
 #'
 #' Check if all values in a Boolean column are `TRUE`. This method is an
-#' expression - not to be confused with `pl$all()` which is a function to select
-#' all columns.
-#' @param drop_nulls Logical. Default TRUE, as name says.
-#' @return Boolean literal
+#' expression - not to be confused with [`pl$all()`][pl_all] which is a function
+#' to select all columns.
+#'
+#' @param ignore_nulls If `TRUE` (default), ignore null values. If `FALSE`,
+#' [Kleene logic](https://en.wikipedia.org/wiki/Three-valued_logic) is used to
+#' deal with nulls: if the column contains any null values and no `TRUE` values,
+#' the output is null.
+#'
+#' @return A logical value
 #' @examples
-#' pl$DataFrame(
-#'   all = c(TRUE, TRUE),
-#'   any = c(TRUE, FALSE),
-#'   none = c(FALSE, FALSE)
-#' )$select(
-#'   # the first $all() selects all columns, the second one applies the AND
-#'   # logical on the values
-#'   pl$all()$all()
+#' df = pl$DataFrame(
+#'   a = c(TRUE, TRUE),
+#'   b = c(TRUE, FALSE),
+#'   c = c(NA, TRUE),
+#'   d = c(NA, NA)
 #' )
-Expr_all = function(drop_nulls = TRUE) {
-  .pr$Expr$all(self, drop_nulls) |>
-    unwrap("in $all()")
+#'
+#' # By default, ignore null values. If there are only nulls, then all() returns
+#' # TRUE.
+#' df$select(pl$col("*")$all())
+#'
+#' # If we set ignore_nulls = FALSE, then we don't know if all values in column
+#' # "c" are TRUE, so it returns null
+#' df$select(pl$col("*")$all(ignore_nulls = FALSE))
+Expr_all = function(ignore_nulls = TRUE) {
+  .pr$Expr$all(self, ignore_nulls) |>
+    unwrap("in $all():")
 }
 
 #' Apply logical OR on a column
 #'
 #' Check if any boolean value in a Boolean column is `TRUE`.
-#' @param drop_nulls Logical. Default TRUE, as name says.
-#' @return Boolean literal
+#'
+#' @inherit Expr_all params return
 #' @examples
-#' pl$DataFrame(
-#'   all = c(TRUE, TRUE),
-#'   any = c(TRUE, FALSE),
-#'   none = c(FALSE, FALSE)
-#' )$select(
-#'   pl$all()$any()
+#' df = pl$DataFrame(
+#'   a = c(TRUE, FALSE),
+#'   b = c(FALSE, FALSE),
+#'   c = c(NA, FALSE)
 #' )
-Expr_any = function(drop_nulls = TRUE) {
-  .pr$Expr$any(self, drop_nulls) |>
-    unwrap("in $all()")
+#'
+#' df$select(pl$col("*")$any())
+#'
+#' # If we set ignore_nulls = FALSE, then we don't know if any values in column
+#' # "c" is TRUE, so it returns null
+#' df$select(pl$col("*")$any(ignore_nulls = FALSE))
+Expr_any = function(ignore_nulls = TRUE) {
+  .pr$Expr$any(self, ignore_nulls) |>
+    unwrap("in $any():")
 }
 
 #' Count elements

@@ -1658,11 +1658,11 @@ impl RPolarsExpr {
 
     // boolean
 
-    pub fn all(&self, drop_nulls: Robj) -> RResult<Self> {
-        Ok(self.0.clone().all(robj_to!(bool, drop_nulls)?).into())
+    pub fn all(&self, ignore_nulls: Robj) -> RResult<Self> {
+        Ok(self.0.clone().all(robj_to!(bool, ignore_nulls)?).into())
     }
-    pub fn any(&self, drop_nulls: Robj) -> RResult<Self> {
-        Ok(self.0.clone().any(robj_to!(bool, drop_nulls)?).into())
+    pub fn any(&self, ignore_nulls: Robj) -> RResult<Self> {
+        Ok(self.0.clone().any(robj_to!(bool, ignore_nulls)?).into())
     }
 
     fn is_between(&self, lower: Robj, upper: Robj, closed: Robj) -> RResult<Self> {

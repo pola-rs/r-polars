@@ -2702,3 +2702,41 @@ test_that("rle_id works", {
     )
   )
 })
+
+test_that("any works", {
+  df = pl$DataFrame(
+    a = c(TRUE, FALSE),
+    b = c(FALSE, FALSE),
+    c = c(NA, FALSE),
+    d = c(NA, NA)
+  )
+
+  expect_identical(
+    df$select(pl$col("*")$any())$to_list(),
+    list(a = TRUE, b = FALSE, c = FALSE, d = FALSE)
+  )
+
+  expect_identical(
+    df$select(pl$col("*")$any(ignore_nulls = FALSE))$to_list(),
+    list(a = TRUE, b = FALSE, c = NA, d = NA)
+  )
+})
+
+test_that("all works", {
+  df = pl$DataFrame(
+    a = c(TRUE, TRUE),
+    b = c(TRUE, FALSE),
+    c = c(NA, TRUE),
+    d = c(NA, NA)
+  )
+
+  expect_identical(
+    df$select(pl$col("*")$all())$to_list(),
+    list(a = TRUE, b = FALSE, c = TRUE, d = TRUE)
+  )
+
+  expect_identical(
+    df$select(pl$col("*")$all(ignore_nulls = FALSE))$to_list(),
+    list(a = TRUE, b = FALSE, c = NA, d = NA)
+  )
+})

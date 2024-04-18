@@ -4,27 +4,35 @@
 \alias{Expr_all}
 \title{Apply logical AND on a column}
 \usage{
-Expr_all(drop_nulls = TRUE)
+Expr_all(ignore_nulls = TRUE)
 }
 \arguments{
-\item{drop_nulls}{Logical. Default TRUE, as name says.}
+\item{ignore_nulls}{If \code{TRUE} (default), ignore null values. If \code{FALSE},
+\href{https://en.wikipedia.org/wiki/Three-valued_logic}{Kleene logic} is used to
+deal with nulls: if the column contains any null values and no \code{TRUE} values,
+the output is null.}
 }
 \value{
-Boolean literal
+A logical value
 }
 \description{
 Check if all values in a Boolean column are \code{TRUE}. This method is an
-expression - not to be confused with \code{pl$all()} which is a function to select
-all columns.
+expression - not to be confused with \code{\link[=pl_all]{pl$all()}} which is a function
+to select all columns.
 }
 \examples{
-pl$DataFrame(
-  all = c(TRUE, TRUE),
-  any = c(TRUE, FALSE),
-  none = c(FALSE, FALSE)
-)$select(
-  # the first $all() selects all columns, the second one applies the AND
-  # logical on the values
-  pl$all()$all()
+df = pl$DataFrame(
+  a = c(TRUE, TRUE),
+  b = c(TRUE, FALSE),
+  c = c(NA, TRUE),
+  d = c(NA, NA)
 )
+
+# By default, ignore null values. If there are only nulls, then all() returns
+# TRUE.
+df$select(pl$col("*")$all())
+
+# If we set ignore_nulls = FALSE, then we don't know if all values in column
+# "c" are TRUE, so it returns null
+df$select(pl$col("*")$all(ignore_nulls = FALSE))
 }
