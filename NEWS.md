@@ -4,8 +4,8 @@
 
 ### Breaking changes
 
-- In `$all()` and `$any()`, the argument `drop_nulls` is renamed `ignore_nulls`
-  (#1050).
+- In `$all()` and `$any()`, the argument `drop_nulls` is renamed `ignore_nulls`,
+  and this argument must be named (#1050).
 
 ## polars 0.16.1
 

@@ -4,9 +4,11 @@
 \alias{Expr_all}
 \title{Apply logical AND on a column}
 \usage{
-Expr_all(ignore_nulls = TRUE)
+Expr_all(..., ignore_nulls = TRUE)
 }
 \arguments{
+\item{...}{Ignored.}
+
 \item{ignore_nulls}{If \code{TRUE} (default), ignore null values. If \code{FALSE},
 \href{https://en.wikipedia.org/wiki/Three-valued_logic}{Kleene logic} is used to
 deal with nulls: if the column contains any null values and no \code{TRUE} values,

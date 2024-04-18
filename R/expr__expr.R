@@ -568,6 +568,7 @@ Expr_alias = use_extendr_wrapper
 #' expression - not to be confused with [`pl$all()`][pl_all] which is a function
 #' to select all columns.
 #'
+#' @param ... Ignored.
 #' @param ignore_nulls If `TRUE` (default), ignore null values. If `FALSE`,
 #' [Kleene logic](https://en.wikipedia.org/wiki/Three-valued_logic) is used to
 #' deal with nulls: if the column contains any null values and no `TRUE` values,
@@ -589,7 +590,7 @@ Expr_alias = use_extendr_wrapper
 #' # If we set ignore_nulls = FALSE, then we don't know if all values in column
 #' # "c" are TRUE, so it returns null
 #' df$select(pl$col("*")$all(ignore_nulls = FALSE))
-Expr_all = function(ignore_nulls = TRUE) {
+Expr_all = function(..., ignore_nulls = TRUE) {
   .pr$Expr$all(self, ignore_nulls) |>
     unwrap("in $all():")
 }
@@ -611,7 +612,7 @@ Expr_all = function(ignore_nulls = TRUE) {
 #' # If we set ignore_nulls = FALSE, then we don't know if any values in column
 #' # "c" is TRUE, so it returns null
 #' df$select(pl$col("*")$any(ignore_nulls = FALSE))
-Expr_any = function(ignore_nulls = TRUE) {
+Expr_any = function(..., ignore_nulls = TRUE) {
   .pr$Expr$any(self, ignore_nulls) |>
     unwrap("in $any():")
 }
