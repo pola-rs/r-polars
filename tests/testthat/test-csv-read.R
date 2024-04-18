@@ -183,6 +183,7 @@ test_that("bad paths", {
 })
 
 test_that("cache url tempfile", {
+  skip_if_offline()
   url <- "https://vincentarelbundock.github.io/Rdatasets/csv/AER/BenderlyZwick.csv"
   local_mocked_bindings(
     download.file = function(...) invisible(NULL),
