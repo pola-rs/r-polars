@@ -188,10 +188,10 @@ test_that("cache url tempfile", {
   local_mocked_bindings(
     download.file = function(...) invisible(NULL),
   )
-  check_is_link(url, reuse_downloaded = T)
+  check_is_link(url, reuse_downloaded = TRUE)
   attempt_1 = cache_temp_file[[url]]
 
-  check_is_link(url, reuse_downloaded = T)
+  check_is_link(url, reuse_downloaded = TRUE)
   attempt_2 = cache_temp_file[[url]]
 
   expect_true(!is.null(cache_temp_file[[url]]))
