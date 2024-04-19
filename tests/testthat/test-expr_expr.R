@@ -716,7 +716,7 @@ test_that("Expr_append", {
 
   expect_grepl_error(
     pl$DataFrame(list())$select(pl$lit("Bob")$append(FALSE, upcast = FALSE)),
-    "cannot extend/append String with Boolean"
+    "type Boolean is incompatible with expected type String"
   )
 })
 
