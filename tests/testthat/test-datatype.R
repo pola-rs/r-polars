@@ -27,7 +27,7 @@ test_that("plStruct", {
   # wrong uses
   expect_grepl_error(
     pl$Struct(bin = pl$Binary, pl$Boolean, "abc"),
-    "must either be a Field"
+    "only accepts named inputs or input of class RPolarsField."
   )
 })
 

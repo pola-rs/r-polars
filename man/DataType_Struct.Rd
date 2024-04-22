@@ -7,10 +7,11 @@
 DataType_Struct(...)
 }
 \arguments{
-\item{...}{RPolarsDataType objects}
+\item{...}{Either named inputs of the form \code{field_name = datatype} or objects
+of class \code{RPolarsField} created by \code{\link[=pl_Field]{pl$Field()}}.}
 }
 \value{
-a list DataType with an inner DataType
+A Struct DataType containing a list of Fields
 }
 \description{
 One can create a \code{Struct} data type with \code{pl$Struct()}. There are also
@@ -19,11 +20,10 @@ a \code{Series}, see the examples.
 }
 \examples{
 # create a Struct-DataType
-pl$Struct(pl$Boolean)
-pl$Struct(foo = pl$Int32, bar = pl$Float64)
+pl$Struct(foo = pl$Int32, pl$Field("bar", pl$Boolean))
 
 # check if an element is any kind of Struct()
-test = pl$Struct(pl$UInt64)
+test = pl$Struct(a = pl$UInt64)
 pl$same_outer_dt(test, pl$Struct())
 
 # `test` is a type of Struct, but it doesn't mean it is equal to an empty Struct

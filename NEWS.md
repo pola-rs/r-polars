@@ -2,6 +2,12 @@
 
 ## polars (development version)
 
+### Breaking changes
+
+- `pl$Struct()` now only accepts named inputs and objects of class `RPolarsField`.
+  For example, `pl$Struct(pl$Boolean)` doesn't work anymore and should be named
+  like `pl$Struct(a = pl$Boolean)` (#1053).
+
 ## polars 0.16.1
 
 This is a small hot-fix release to update dependent Rust polars to 0.39.1 (#1042).
