@@ -181,3 +181,19 @@ test_that("bad paths", {
     "failed to locate file"
   )
 })
+
+test_that("cache url tempfile", {
+  skip_if_offline()
+  url <- "https://vincentarelbundock.github.io/Rdatasets/csv/AER/BenderlyZwick.csv"
+  local_mocked_bindings(
+    download.file = function(...) invisible(NULL),
+  )
+  check_is_link(url, reuse_downloaded = TRUE)
+  attempt_1 = cache_temp_file[[url]]
+
+  check_is_link(url, reuse_downloaded = TRUE)
+  attempt_2 = cache_temp_file[[url]]
+
+  expect_true(!is.null(cache_temp_file[[url]]))
+  expect_equal(attempt_1, attempt_2)
+})

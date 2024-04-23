@@ -10,7 +10,9 @@ Also, there are some updates.
 
 ### Bug fixes
 
-- `$len()` now correctly includes `null` values in the count (#1044).
+* `$len()` now correctly includes `null` values in the count (#1044).
+* In some read/scan functions, downloading files could fail if the URL was too
+  long. This is now fixed (#1049, @DyfanJones).
 
 ### Other improvements
 
