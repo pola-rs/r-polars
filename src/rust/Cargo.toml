@@ -21,7 +21,7 @@ rpolars_debug_print = []
 [workspace]
 # prevents package from thinking it's in the workspace
 [target.'cfg(any(not(target_os = "linux"), use_mimalloc))'.dependencies]
-mimalloc = { version = "0.1.34", default-features = false }
+mimalloc = { version = "0.1.41", default-features = false }
 
 [target.'cfg(all(target_os = "linux", not(use_mimalloc)))'.dependencies]
 jemallocator = { version = "0.5.0", features = ["disable_initial_exec_tls"] }
