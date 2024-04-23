@@ -14,6 +14,27 @@
 #' and use them to prune reads.
 #' @param use_statistics Use statistics in the parquet file to determine if pages
 #' can be skipped from reading.
+#' @param cloud_options Options necessary to scan parquet files from different
+#' cloud storage providers.
+#'
+#' ## GCP
+#'
+#' ### Path to the service account file
+#'
+#' Supported keys:
+#'
+#' - `google_service_account`
+#' - `service_account`
+#' - `google_service_account_path`
+#' - `service_account_path`
+#'
+#' ### Serialized service account key
+#'
+#' Supported keys:
+#'
+#' - `google_service_account_key`
+#' - `service_account_key`
+#'
 #' @rdname IO_scan_parquet
 #' @examplesIf requireNamespace("arrow", quietly = TRUE) && arrow::arrow_with_dataset() && arrow::arrow_with_parquet()
 #' temp_dir = tempfile()
