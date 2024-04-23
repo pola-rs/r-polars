@@ -361,7 +361,7 @@ pub fn robj_to_interpolation_method(robj: Robj) -> RResult<pl::InterpolationMeth
     }
 }
 
-pub fn robj_to_cloudoptions<'a>(
+pub fn robj_to_cloud_options<'a>(
     url: &'a str,
     robj: &'a Robj,
 ) -> RResult<Option<pl::cloud::CloudOptions>> {

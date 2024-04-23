@@ -1,5 +1,5 @@
 use crate::lazy::dataframe::RPolarsLazyFrame;
-use crate::rdatatype::robj_to_cloudoptions;
+use crate::rdatatype::robj_to_cloud_options;
 use crate::robj_to;
 use crate::rpolarserr::{polars_to_rpolars_err, RResult};
 
@@ -26,7 +26,7 @@ pub fn new_from_parquet(
     //retries: Robj // not supported yet, with CloudOptions
 ) -> RResult<RPolarsLazyFrame> {
     let path = robj_to!(String, path)?;
-    let cloud_options = robj_to_cloudoptions(&path, &cloud_options)?;
+    let cloud_options = robj_to_cloud_options(&path, &cloud_options)?;
     let offset = robj_to!(Option, u32, row_index)?.unwrap_or(0);
     let opt_row_index = robj_to!(Option, String, row_name)?.map(|name| RowIndex { name, offset });
     let args = pl::ScanArgsParquet {
