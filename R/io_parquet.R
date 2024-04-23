@@ -46,6 +46,7 @@ pl_scan_parquet = function(
     hive_partitioning = TRUE,
     rechunk = FALSE,
     low_memory = FALSE,
+    cloud_options = NULL,
     use_statistics = TRUE,
     cache = TRUE) {
   new_from_parquet(
@@ -58,7 +59,8 @@ pl_scan_parquet = function(
     row_index = row_index_offset,
     low_memory = low_memory,
     use_statistics = use_statistics,
-    hive_partitioning = hive_partitioning
+    hive_partitioning = hive_partitioning,
+    cloud_options = cloud_options
   ) |>
     unwrap("in pl$scan_parquet():")
 }

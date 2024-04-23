@@ -4,7 +4,7 @@
 \alias{infer_nanoarrow_schema.RPolarsDataFrame}
 \title{Infer nanoarrow schema from a Polars object}
 \usage{
-\method{infer_nanoarrow_schema}{RPolarsDataFrame}(x, ...)
+infer_nanoarrow_schema.RPolarsDataFrame(x, ...)
 }
 \arguments{
 \item{x}{\link[=DataFrame_class]{A Polars DataFrame}}

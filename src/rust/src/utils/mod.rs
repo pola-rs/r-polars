@@ -930,6 +930,9 @@ macro_rules! robj_to_inner {
     (String, $a:ident) => {
         $crate::utils::robj_to_string($a)
     };
+    (str_pairs, $a:ident) => {
+        $crate::utils::robj_to_str_pairlist($a)
+    };
     (str, $a:ident) => {
         $crate::utils::robj_to_str($a)
     };

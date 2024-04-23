@@ -6,6 +6,25 @@ use extendr_api::Rinternals;
 use extendr_api::{extendr, extendr_module, Robj};
 use polars::io::RowIndex;
 use polars::prelude::{self as pl};
+
+pub fn robj_to_cloudoptions<'a>(
+    url: &'a str,
+    robj: &'a Robj,
+) -> RResult<Option<pl::cloud::CloudOptions>> {
+    use extendr_api::{AsStrIter, Attributes};
+    if robj.is_null() {
+        return Ok(None);
+    }
+    if let (Some(names), Some(values)) = (robj.as_str_iter(), robj.names()) {
+        Ok(Some(pl::cloud::CloudOptions::from_untyped_config(
+            url,
+            values.zip(names),
+        )?))
+    } else {
+        Ok(None)
+    }
+}
+
 #[allow(clippy::too_many_arguments)]
 #[extendr]
 pub fn new_from_parquet(
@@ -17,11 +36,14 @@ pub fn new_from_parquet(
     row_name: Robj,
     row_index: Robj,
     //storage_options: Robj, // not supported yet, add provide features e.g. aws
+    cloud_options: Robj,
     use_statistics: Robj,
     low_memory: Robj,
     hive_partitioning: Robj,
     //retries: Robj // not supported yet, with CloudOptions
 ) -> RResult<RPolarsLazyFrame> {
+    let path = robj_to!(String, path)?;
+    let cloud_options = robj_to_cloudoptions(&path, &cloud_options)?;
     let offset = robj_to!(Option, u32, row_index)?.unwrap_or(0);
     let opt_row_index = robj_to!(Option, String, row_name)?.map(|name| RowIndex { name, offset });
     let args = pl::ScanArgsParquet {
@@ -31,7 +53,7 @@ pub fn new_from_parquet(
         rechunk: robj_to!(bool, rechunk)?,
         row_index: opt_row_index,
         low_memory: robj_to!(bool, low_memory)?,
-        cloud_options: None,
+        cloud_options,
         use_statistics: robj_to!(bool, use_statistics)?,
         hive_options: polars::io::HiveOptions {
             enabled: robj_to!(bool, hive_partitioning)?,
@@ -39,7 +61,7 @@ pub fn new_from_parquet(
         },
     };
 
-    pl::LazyFrame::scan_parquet(robj_to!(String, path)?, args)
+    pl::LazyFrame::scan_parquet(path, args)
         .map_err(polars_to_rpolars_err)
         .map(RPolarsLazyFrame)
 }

@@ -14,6 +14,7 @@ pl_scan_parquet(
   hive_partitioning = TRUE,
   rechunk = FALSE,
   low_memory = FALSE,
+  cloud_options = NULL,
   use_statistics = TRUE,
   cache = TRUE
 )
