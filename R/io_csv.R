@@ -136,7 +136,7 @@ pl_scan_csv = function(
 
       Err_plain(
         "null_values arg must be a string OR unamed char vec OR named char vec"
-      ) |> unwrap(" in pl$scan_csv():")
+      ) |> unwrap("in pl$scan_csv():")
     })()
 
     args$null_values = RNullValues
