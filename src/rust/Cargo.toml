@@ -74,6 +74,7 @@ features = [
   "cse",
   "cum_agg",
   "cumulative_eval",
+  "cutqcut",
   "dataframe_arithmetic",
   "date_offset",
   "decompress-fast",

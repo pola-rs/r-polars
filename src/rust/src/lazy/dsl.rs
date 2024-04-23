@@ -1779,6 +1779,70 @@ impl RPolarsExpr {
         Ok(self.0.clone().pow(robj_to!(PLExpr, exponent)?).into())
     }
 
+    pub fn cut(
+        &self,
+        breaks: Robj,
+        labels: Robj,
+        left_closed: Robj,
+        include_breaks: Robj,
+    ) -> RResult<Self> {
+        let breaks = robj_to!(Vec, f64, breaks)?;
+        let labels = robj_to!(Option, Vec, String, labels)?;
+        let left_closed = robj_to!(bool, left_closed)?;
+        let include_breaks = robj_to!(bool, include_breaks)?;
+        Ok(self
+            .0
+            .clone()
+            .cut(breaks, labels, left_closed, include_breaks)
+            .into())
+    }
+
+    pub fn qcut(
+        &self,
+        probs: Robj,
+        labels: Robj,
+        left_closed: Robj,
+        allow_duplicates: Robj,
+        include_breaks: Robj,
+    ) -> RResult<Self> {
+        let probs = robj_to!(Vec, f64, probs)?;
+        let labels = robj_to!(Option, Vec, String, labels)?;
+        let left_closed = robj_to!(bool, left_closed)?;
+        let allow_duplicates = robj_to!(bool, allow_duplicates)?;
+        let include_breaks = robj_to!(bool, include_breaks)?;
+        Ok(self
+            .0
+            .clone()
+            .qcut(probs, labels, left_closed, allow_duplicates, include_breaks)
+            .into())
+    }
+
+    pub fn qcut_uniform(
+        &self,
+        n_bins: Robj,
+        labels: Robj,
+        left_closed: Robj,
+        allow_duplicates: Robj,
+        include_breaks: Robj,
+    ) -> RResult<Self> {
+        let n_bins = robj_to!(usize, n_bins)?;
+        let labels = robj_to!(Option, Vec, String, labels)?;
+        let left_closed = robj_to!(bool, left_closed)?;
+        let allow_duplicates = robj_to!(bool, allow_duplicates)?;
+        let include_breaks = robj_to!(bool, include_breaks)?;
+        Ok(self
+            .0
+            .clone()
+            .qcut_uniform(
+                n_bins,
+                labels,
+                left_closed,
+                allow_duplicates,
+                include_breaks,
+            )
+            .into())
+    }
+
     pub fn over(&self, partition_by: Robj, mapping: Robj) -> RResult<Self> {
         Ok(self
             .0

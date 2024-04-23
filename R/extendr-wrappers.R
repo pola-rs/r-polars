@@ -956,6 +956,12 @@ RPolarsExpr$div <- function(other) .Call(wrap__RPolarsExpr__div, self, other)
 
 RPolarsExpr$pow <- function(exponent) .Call(wrap__RPolarsExpr__pow, self, exponent)
 
+RPolarsExpr$cut <- function(breaks, labels, left_closed, include_breaks) .Call(wrap__RPolarsExpr__cut, self, breaks, labels, left_closed, include_breaks)
+
+RPolarsExpr$qcut <- function(probs, labels, left_closed, allow_duplicates, include_breaks) .Call(wrap__RPolarsExpr__qcut, self, probs, labels, left_closed, allow_duplicates, include_breaks)
+
+RPolarsExpr$qcut_uniform <- function(n_bins, labels, left_closed, allow_duplicates, include_breaks) .Call(wrap__RPolarsExpr__qcut_uniform, self, n_bins, labels, left_closed, allow_duplicates, include_breaks)
+
 RPolarsExpr$over <- function(partition_by, mapping) .Call(wrap__RPolarsExpr__over, self, partition_by, mapping)
 
 RPolarsExpr$print <- function() invisible(.Call(wrap__RPolarsExpr__print, self))
