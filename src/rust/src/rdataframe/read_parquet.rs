@@ -1,4 +1,5 @@
 use crate::lazy::dataframe::RPolarsLazyFrame;
+use crate::rdatatype::robj_to_cloudoptions;
 use crate::robj_to;
 use crate::rpolarserr::{polars_to_rpolars_err, RResult};
 
@@ -6,24 +7,6 @@ use extendr_api::Rinternals;
 use extendr_api::{extendr, extendr_module, Robj};
 use polars::io::RowIndex;
 use polars::prelude::{self as pl};
-
-pub fn robj_to_cloudoptions<'a>(
-    url: &'a str,
-    robj: &'a Robj,
-) -> RResult<Option<pl::cloud::CloudOptions>> {
-    use extendr_api::{AsStrIter, Attributes};
-    if robj.is_null() {
-        return Ok(None);
-    }
-    if let (Some(names), Some(values)) = (robj.as_str_iter(), robj.names()) {
-        Ok(Some(pl::cloud::CloudOptions::from_untyped_config(
-            url,
-            values.zip(names),
-        )?))
-    } else {
-        Ok(None)
-    }
-}
 
 #[allow(clippy::too_many_arguments)]
 #[extendr]
