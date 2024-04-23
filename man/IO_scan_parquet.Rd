@@ -14,6 +14,7 @@ pl_scan_parquet(
   hive_partitioning = TRUE,
   rechunk = FALSE,
   low_memory = FALSE,
+  cloud_options = NULL,
   use_statistics = TRUE,
   cache = TRUE
 )
@@ -43,6 +44,31 @@ and use them to prune reads.}
 the final DataFrame into contiguous memory chunks.}
 
 \item{low_memory}{Reduce memory usage (will yield a lower performance).}
+
+\item{cloud_options}{Options necessary to scan parquet files from different
+cloud storage providers.
+\subsection{GCP}{
+\subsection{Path to the service account file}{
+
+Supported keys:
+\itemize{
+\item \code{google_service_account}
+\item \code{service_account}
+\item \code{google_service_account_path}
+\item \code{service_account_path}
+}
+}
+
+\subsection{Serialized service account key}{
+
+Supported keys:
+\itemize{
+\item \code{google_service_account_key}
+\item \code{service_account_key}
+}
+}
+
+}}
 
 \item{use_statistics}{Use statistics in the parquet file to determine if pages
 can be skipped from reading.}
