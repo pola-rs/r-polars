@@ -4,7 +4,7 @@
 \alias{as_record_batch_reader.RPolarsDataFrame}
 \title{Create a arrow RecordBatchReader from a Polars object}
 \usage{
-as_record_batch_reader.RPolarsDataFrame(x, ...)
+\method{as_record_batch_reader}{RPolarsDataFrame}(x, ...)
 }
 \arguments{
 \item{x}{\link[=DataFrame_class]{A Polars DataFrame}}

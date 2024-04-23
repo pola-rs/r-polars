@@ -4,7 +4,7 @@
 \alias{as_nanoarrow_array_stream.RPolarsDataFrame}
 \title{Create a nanoarrow_array_stream from a Polars object}
 \usage{
-as_nanoarrow_array_stream.RPolarsDataFrame(x, ..., schema = NULL)
+\method{as_nanoarrow_array_stream}{RPolarsDataFrame}(x, ..., schema = NULL)
 }
 \arguments{
 \item{x}{\link[=DataFrame_class]{A Polars DataFrame}}
