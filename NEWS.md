@@ -6,7 +6,7 @@
 
 * `$len()` now correctly includes `null` values in the count (#1044).
 * In some read/scan functions, downloading files could fail if the URL was too
-  long. This is now fixed (#1049).
+  long. This is now fixed (#1049, @DyfanJones).
 
 ## Polars R Package 0.16.0
 
