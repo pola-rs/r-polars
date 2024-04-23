@@ -3430,7 +3430,7 @@ Expr_rle_id = function() {
 #' @param left_closed Set the intervals to be left-closed instead of right-closed.
 #' @param include_breaks Include a column with the right endpoint of the bin each
 #' observation falls in. This will change the data type of the output from a
-#' [`Categorical`][pl_Categorical] to a [`Struct`][pl_Struct].
+#' [`Categorical`][DataType_Categorical] to a [`Struct`][DataType_Struct].
 #'
 #' @return Expr of data type `Categorical` is `include_breaks` is `FALSE` and
 #' of data type `Struct` if `include_breaks` is `TRUE`.

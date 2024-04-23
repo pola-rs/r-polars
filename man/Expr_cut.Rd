@@ -24,7 +24,7 @@ the number of cut points plus one.}
 
 \item{include_breaks}{Include a column with the right endpoint of the bin each
 observation falls in. This will change the data type of the output from a
-\code{\link[=pl_Categorical]{Categorical}} to a \code{\link[=pl_Struct]{Struct}}.}
+\code{\link[=DataType_Categorical]{Categorical}} to a \code{\link[=DataType_Struct]{Struct}}.}
 }
 \value{
 Expr of data type \code{Categorical} is \code{include_breaks} is \code{FALSE} and
