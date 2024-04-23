@@ -5,6 +5,7 @@
 ### Bug fixes
 
 * `$len()` now correctly includes `null` values in the count (#1044).
+* cache temporary file name for url file download (#1046)
 
 ## Polars R Package 0.16.0
 
