@@ -68,8 +68,7 @@ unpack_bool_expr_result = function(...) {
       if (!is.null(names(l))) {
         Err_plain(
           "Detected a named input.",
-          "This usually means that you've used `=` instead of `==`.",
-          "Some names seen:", head(names(l))
+          "This usually means that you've used `=` instead of `==`."
         )
       } else {
         l |>
