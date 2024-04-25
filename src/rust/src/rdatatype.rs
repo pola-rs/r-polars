@@ -361,11 +361,7 @@ pub fn robj_to_interpolation_method(robj: Robj) -> RResult<pl::InterpolationMeth
     }
 }
 
-pub fn robj_to_cloud_options<'a>(
-    url: &'a str,
-    robj: &'a Robj,
-) -> RResult<Option<pl::cloud::CloudOptions>> {
-    use extendr_api::{AsStrIter, Attributes};
+pub fn robj_to_cloud_options(url: &str, robj: &Robj) -> RResult<Option<pl::cloud::CloudOptions>> {
     if robj.is_null() {
         return Ok(None);
     }
