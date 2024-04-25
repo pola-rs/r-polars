@@ -5,6 +5,9 @@
 ### New features
 
 - `$cut()` and `$qcut()` to bin continuous values into discrete categories (#1057).
+- `pl$scan_parquet()` and `pl$read_parquet()` gain an argument `storage_options`
+  to scan/read data via cloud storage providers (GCP, AWS, Azure). Note that this
+  support is experimental (#1056, @andyquinterom).
 
 ### Bug fixes
 
