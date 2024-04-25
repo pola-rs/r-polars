@@ -18,15 +18,14 @@ pub fn new_from_parquet(
     rechunk: Robj,
     row_name: Robj,
     row_index: Robj,
-    //storage_options: Robj, // not supported yet, add provide features e.g. aws
-    cloud_options: Robj,
+    storage_options: Robj,
     use_statistics: Robj,
     low_memory: Robj,
     hive_partitioning: Robj,
     //retries: Robj // not supported yet, with CloudOptions
 ) -> RResult<RPolarsLazyFrame> {
     let path = robj_to!(String, path)?;
-    let cloud_options = robj_to_cloud_options(&path, &cloud_options)?;
+    let cloud_options = robj_to_cloud_options(&path, &storage_options)?;
     let offset = robj_to!(Option, u32, row_index)?.unwrap_or(0);
     let opt_row_index = robj_to!(Option, String, row_name)?.map(|name| RowIndex { name, offset });
     let args = pl::ScanArgsParquet {
