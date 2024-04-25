@@ -79,6 +79,7 @@ impl RPolarsDataType {
             "Time" | "time" => pl::DataType::Time,
             "Null" | "null" => pl::DataType::Null,
             "Categorical" | "factor" => pl::DataType::Categorical(None, Default::default()),
+            "Enum" => pl::DataType::Enum(None, Default::default()),
             "Unknown" | "unknown" => pl::DataType::Unknown,
 
             _ => panic!("data type not recgnized "),
@@ -89,6 +90,16 @@ impl RPolarsDataType {
     pub fn new_categorical(ordering: Robj) -> RResult<RPolarsDataType> {
         let ordering = robj_to!(CategoricalOrdering, ordering)?;
         Ok(RPolarsDataType(pl::DataType::Categorical(None, ordering)))
+    }
+
+    pub fn new_enum(categories: Robj) -> RResult<RPolarsDataType> {
+        use crate::conversion_r_to_s::robjname2series;
+        let s = robjname2series(categories, "").unwrap();
+        let ca = s.str()?;
+        let categories = ca.downcast_iter().next().unwrap().clone();
+        Ok(RPolarsDataType(pl::datatypes::create_enum_data_type(
+            categories,
+        )))
     }
 
     pub fn new_datetime(tu: Robj, tz: Nullable<String>) -> RResult<RPolarsDataType> {

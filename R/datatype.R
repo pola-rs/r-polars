@@ -145,6 +145,7 @@ DataType_constructors = function() {
   list(
     Array = DataType_Array,
     Categorical = DataType_Categorical,
+    Enum = DataType_Enum,
     Datetime = DataType_Datetime,
     Duration = DataType_Duration,
     List = DataType_List,
@@ -361,6 +362,58 @@ DataType_List = function(datatype = "unknown") {
 DataType_Categorical = function(ordering = "physical") {
   .pr$DataType$new_categorical(ordering) |> unwrap()
 }
+
+#' Create Enum DataType
+#'
+#' An `Enum` is a fixed set categorical encoding of a set of strings. It is
+#' similar to the [`Categorical`][DataType_Categorical] data type, but the
+#' categories are explicitly provided by the user and cannot be modified.
+#'
+#' This functionality is **unstable**. It is a work-in-progress feature and may
+#' not always work as expected. It may be changed at any point without it being
+#' considered a breaking change.
+#'
+#' @param categories A character vector specifying the categories of the variable.
+#'
+#'
+#' @return An Enum DataType
+#' @examples
+#' pl$DataFrame(
+#'   x = c("Polar", "Panda", "Brown", "Brown", "Polar"),
+#'   schema = list(x = pl$Enum(c("Polar", "Panda", "Brown")))
+#' )
+#'
+#' # All values of the variable have to be in the categories
+#' dtype = pl$Enum(c("Polar", "Panda", "Brown"))
+#' pl$DataFrame(
+#'   x = c("Polar", "Panda", "Brown", "Brown", "Polar", "Black"),
+#'   schema = list(x = dtype)
+#' )
+#'
+#' # Comparing two Enum is only valid if they have the same categories
+#' df = pl$DataFrame(
+#'   x = c("Polar", "Panda", "Brown", "Brown", "Polar"),
+#'   y = c("Polar", "Polar", "Polar", "Brown", "Brown"),
+#'   z = c("Polar", "Polar", "Polar", "Brown", "Brown"),
+#'   schema = list(
+#'     x = pl$Enum(c("Polar", "Panda", "Brown")),
+#'     y = pl$Enum(c("Polar", "Panda", "Brown")),
+#'     z = pl$Enum(c("Polar", "Black", "Brown"))
+#'   )
+#' )
+#'
+#' # Same categories
+#' df$with_columns(x_eq_y = pl$col("x") == pl$col("y"))
+#'
+#' # Different categories
+#' tryCatch(
+#'   df$with_columns(x_eq_z = pl$col("x") == pl$col("z")),
+#'   error = function(e) e
+#' )
+DataType_Enum = function(categories) {
+  .pr$DataType$new_enum(categories) |> unwrap()
+}
+
 
 #' Check whether the data type is a temporal type
 #'
