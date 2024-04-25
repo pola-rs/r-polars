@@ -214,6 +214,20 @@ impl RPolarsDataType {
         self.0.is_temporal()
     }
 
+    // When rust-polars 0.40.0 is released:
+
+    // pub fn is_enum(&self) -> bool {
+    //     self.0.is_enum()
+    // }
+
+    // pub fn is_categorical(&self) -> bool {
+    //     self.0.is_categorical()
+    // }
+
+    // pub fn is_string(&self) -> bool {
+    //     self.0.is_string()
+    // }
+
     pub fn is_logical(&self) -> bool {
         self.0.is_logical()
     }
