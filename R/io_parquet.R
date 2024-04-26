@@ -121,6 +121,7 @@ pl_read_parquet = function(
     hive_partitioning = TRUE,
     rechunk = TRUE,
     low_memory = FALSE,
+    storage_options = NULL,
     use_statistics = TRUE,
     cache = TRUE) {
   .args = as.list(environment())

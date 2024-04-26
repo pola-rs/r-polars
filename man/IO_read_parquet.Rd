@@ -14,6 +14,7 @@ pl_read_parquet(
   hive_partitioning = TRUE,
   rechunk = TRUE,
   low_memory = FALSE,
+  storage_options = NULL,
   use_statistics = TRUE,
   cache = TRUE
 )
@@ -43,6 +44,10 @@ and use them to prune reads.}
 the final DataFrame into contiguous memory chunks.}
 
 \item{low_memory}{Reduce memory usage (will yield a lower performance).}
+
+\item{storage_options}{Experimental. List of options necessary to scan
+parquet files from different cloud storage providers (GCP, AWS, Azure).
+See the @details section.}
 
 \item{use_statistics}{Use statistics in the parquet file to determine if pages
 can be skipped from reading.}
