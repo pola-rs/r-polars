@@ -361,6 +361,20 @@ pub fn robj_to_interpolation_method(robj: Robj) -> RResult<pl::InterpolationMeth
     }
 }
 
+pub fn robj_to_cloud_options(url: &str, robj: &Robj) -> RResult<Option<pl::cloud::CloudOptions>> {
+    if robj.is_null() {
+        return Ok(None);
+    }
+    if let (Some(names), Some(values)) = (robj.as_str_iter(), robj.names()) {
+        Ok(Some(pl::cloud::CloudOptions::from_untyped_config(
+            url,
+            values.zip(names),
+        )?))
+    } else {
+        Ok(None)
+    }
+}
+
 pub fn robj_to_rank_method(robj: Robj) -> RResult<pl::RankMethod> {
     use pl::RankMethod as RM;
     match robj_to_rchoice(robj)?.to_lowercase().as_str() {
