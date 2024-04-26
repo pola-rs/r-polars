@@ -8,6 +8,7 @@
 - `pl$scan_parquet()` and `pl$read_parquet()` gain an argument `storage_options`
   to scan/read data via cloud storage providers (GCP, AWS, Azure). Note that this
   support is experimental (#1056, @andyquinterom).
+- Add support for the `Enum` datatype via `pl$Enum()` (#1061).
 
 ### Bug fixes
 

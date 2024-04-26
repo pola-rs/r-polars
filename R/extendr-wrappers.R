@@ -276,6 +276,8 @@ RPolarsDataType$new <- function(s) .Call(wrap__RPolarsDataType__new, s)
 
 RPolarsDataType$new_categorical <- function(ordering) .Call(wrap__RPolarsDataType__new_categorical, ordering)
 
+RPolarsDataType$new_enum <- function(categories) .Call(wrap__RPolarsDataType__new_enum, categories)
+
 RPolarsDataType$new_datetime <- function(tu, tz) .Call(wrap__RPolarsDataType__new_datetime, tu, tz)
 
 RPolarsDataType$new_duration <- function(tu) .Call(wrap__RPolarsDataType__new_duration, tu)
