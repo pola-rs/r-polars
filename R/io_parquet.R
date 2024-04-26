@@ -16,7 +16,7 @@
 #' can be skipped from reading.
 #' @param storage_options Experimental. List of options necessary to scan
 #' parquet files from different cloud storage providers (GCP, AWS, Azure).
-#' See the @details section.
+#' See the 'Details' section.
 #' @rdname IO_scan_parquet
 #' @details
 #' ## Connecting to cloud providers
@@ -89,7 +89,7 @@ pl_scan_parquet = function(
 #' Read a parquet file
 #' @rdname IO_read_parquet
 #' @inherit pl_read_csv return
-#' @inheritParams pl_scan_parquet
+#' @inherit pl_scan_parquet params details
 #' @examplesIf requireNamespace("arrow", quietly = TRUE) && arrow::arrow_with_dataset() && arrow::arrow_with_parquet()
 #' temp_dir = tempfile()
 #' # Write a hive-style partitioned parquet dataset

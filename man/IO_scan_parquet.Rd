@@ -47,7 +47,7 @@ the final DataFrame into contiguous memory chunks.}
 
 \item{storage_options}{Experimental. List of options necessary to scan
 parquet files from different cloud storage providers (GCP, AWS, Azure).
-See the @details section.}
+See the 'Details' section.}
 
 \item{use_statistics}{Use statistics in the parquet file to determine if pages
 can be skipped from reading.}

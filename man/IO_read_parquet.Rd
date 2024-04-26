@@ -47,7 +47,7 @@ the final DataFrame into contiguous memory chunks.}
 
 \item{storage_options}{Experimental. List of options necessary to scan
 parquet files from different cloud storage providers (GCP, AWS, Azure).
-See the @details section.}
+See the 'Details' section.}
 
 \item{use_statistics}{Use statistics in the parquet file to determine if pages
 can be skipped from reading.}
@@ -59,6 +59,28 @@ can be skipped from reading.}
 }
 \description{
 Read a parquet file
+}
+\details{
+\subsection{Connecting to cloud providers}{
+
+Polars supports scanning parquet files from different cloud providers.
+The cloud providers currently supported are AWS, GCP, and Azure.
+The supported keys to pass to the \code{storage_options} argument can be found
+here:
+\itemize{
+\item \href{https://docs.rs/object_store/latest/object_store/aws/enum.AmazonS3ConfigKey.html}{aws}
+\item \href{https://docs.rs/object_store/latest/object_store/gcp/enum.GoogleConfigKey.html}{gcp}
+\item \href{https://docs.rs/object_store/latest/object_store/azure/enum.AzureConfigKey.html}{azure}
+}
+\subsection{Implementation details}{
+\itemize{
+\item Currently it is impossible to scan public parquet files from GCP without
+a valid service account. Be sure to always include a service account in the
+\code{storage_options} argument.
+}
+}
+
+}
 }
 \examples{
 \dontshow{if (requireNamespace("arrow", quietly = TRUE) && arrow::arrow_with_dataset() && arrow::arrow_with_parquet()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
