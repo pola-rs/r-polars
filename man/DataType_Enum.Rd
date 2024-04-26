@@ -30,9 +30,12 @@ pl$DataFrame(
 
 # All values of the variable have to be in the categories
 dtype = pl$Enum(c("Polar", "Panda", "Brown"))
-pl$DataFrame(
-  x = c("Polar", "Panda", "Brown", "Brown", "Polar", "Black"),
-  schema = list(x = dtype)
+tryCatch(
+  pl$DataFrame(
+    x = c("Polar", "Panda", "Brown", "Brown", "Polar", "Black"),
+    schema = list(x = dtype)
+  ),
+  error = function(e) e
 )
 
 # Comparing two Enum is only valid if they have the same categories
