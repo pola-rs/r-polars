@@ -5,6 +5,7 @@
 ### New features
 
 - `$cut()` and `$qcut()` to bin continuous values into discrete categories (#1057).
+- Add support for the `Enum` datatype via `pl$Enum()` (#1061).
 
 ### Bug fixes
 
