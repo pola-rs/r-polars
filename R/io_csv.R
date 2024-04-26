@@ -216,8 +216,9 @@ check_is_link = function(path, reuse_downloaded, raise_error = FALSE) {
     # try download file if valid url
     if (!is.null(con)) {
       close(con)
-      if (is.null(cache_temp_file[[actual_url]]))
-        cache_temp_file[[actual_url]] <- tempfile()
+      if (is.null(cache_temp_file[[actual_url]])) {
+        cache_temp_file[[actual_url]] = tempfile()
+      }
       if (isFALSE(reuse_downloaded) || isFALSE(file.exists(cache_temp_file[[actual_url]]))) {
         download.file(url = actual_url, destfile = cache_temp_file[[actual_url]])
         message(paste("tmp file placed in \n", cache_temp_file[[actual_url]]))
