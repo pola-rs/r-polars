@@ -64,7 +64,7 @@ test_that("SQLContext_register_globals", {
   }
   func2 = function(ctx) {
     f4 = pl$LazyFrame(x = 4)
-    ctx$register_globals(envir = rlang::caller_env())
+    ctx$register_globals(envir = parent.frame())
   }
 
   ctx2 = pl$SQLContext()
