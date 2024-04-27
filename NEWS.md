@@ -1,10 +1,12 @@
 # NEWS
 
-## polars (development version)
+## Polars R Package (development version)
 
 ### New features
 
 - `$cut()` and `$qcut()` to bin continuous values into discrete categories (#1057).
+- `pl$scan_parquet()` and `pl$read_parquet()` can read data from the internet by specifying a URL
+  to the first argument (#1056, @andyquinterom).
 - `pl$scan_parquet()` and `pl$read_parquet()` gain an argument `storage_options`
   to scan/read data via cloud storage providers (GCP, AWS, Azure). Note that this
   support is experimental (#1056, @andyquinterom).
@@ -15,7 +17,7 @@
 - In some read/scan functions, downloading files could fail if the URL was too
   long. This is now fixed (#1049, @DyfanJones).
 
-## polars 0.16.1
+## Polars R Package 0.16.1
 
 This is a small hot-fix release to update dependent Rust polars to 0.39.1 (#1042).
 
