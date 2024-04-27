@@ -10,7 +10,7 @@ pl_SQLContext(...)
 \item{...}{Name-value pairs of \link[=LazyFrame_class]{LazyFrame} like objects to register.}
 }
 \value{
-RPolarsSQLContext
+An \link[=SQLContext_class]{SQLContext}
 }
 \description{
 Create a new SQLContext and register the given LazyFrames.

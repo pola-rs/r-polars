@@ -745,8 +745,8 @@
     Code
       ls(.pr$env[[class_name]])
     Output
-      [1] "execute"       "register"      "register_many" "tables"       
-      [5] "unregister"   
+      [1] "execute"          "register"         "register_globals" "register_many"   
+      [5] "tables"           "unregister"      
 
 ---
 
