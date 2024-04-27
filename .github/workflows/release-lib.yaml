@@ -131,6 +131,8 @@ jobs:
             r: devel
           - os: macos-14
             r: oldrel-1
+          - os: windows-latest
+            r: devel
 
     permissions:
       contents: read
