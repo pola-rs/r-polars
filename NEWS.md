@@ -2,6 +2,10 @@
 
 ## Polars R Package (development version)
 
+### New features
+
+- New method `<SQLContext>$register_globals()` (#1064).
+
 ## Polars R Package 0.16.2
 
 ### New features
