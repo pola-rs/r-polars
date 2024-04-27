@@ -10,10 +10,13 @@ SQLContext_register_many(...)
 \item{...}{Name-value pairs of \link[=LazyFrame_class]{LazyFrame} like objects to register.}
 }
 \value{
-Returns the \link{SQLContext_class} object invisibly.
+Returns the \link[=SQLContext_class]{SQLContext} object invisibly.
 }
 \description{
 Register multiple frames as tables.
+}
+\details{
+If a table with the same name is already registered, it will be overwritten.
 }
 \examples{
 \dontshow{if (polars_info()$features$sql) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

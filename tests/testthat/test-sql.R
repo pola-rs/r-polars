@@ -46,3 +46,32 @@ test_that("SQLContext_register, register_many, unregister", {
   ctx$unregister(c("mtcars", "mtcars2"))
   expect_equal(sort(ctx$tables()), sort(c("mtcars3", "mtcars4")))
 })
+
+
+test_that("SQLContext_register_globals", {
+  skip_if_not(polars_info()$features$sql)
+
+  ctx = pl$SQLContext()
+  f1 = pl$DataFrame(x = 1)
+  f2 = pl$LazyFrame(x = 2)
+
+  ctx$register_globals()
+  expect_equal(ctx$tables(), c("f1", "f2"))
+
+  func1 = function(ctx) {
+    f3 = pl$DataFrame(x = 3)
+    ctx$register_globals()
+  }
+  func2 = function(ctx) {
+    f4 = pl$LazyFrame(x = 4)
+    ctx$register_globals(envir = rlang::caller_env())
+  }
+
+  ctx2 = pl$SQLContext()
+  func1(ctx2)
+  expect_equal(ctx2$tables(), c("f3"))
+
+  ctx3 = pl$SQLContext()
+  func2(ctx3)
+  expect_equal(ctx3$tables(), c("f1", "f2"))
+})
