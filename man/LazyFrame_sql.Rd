@@ -57,7 +57,7 @@ lf1$sql(
   query = r"(
 SELECT
  a,
-(a \% 2 == 0) AS a_is_even,
+MOD(a, 2) == 0 AS a_is_even,
 (b::float / 2) AS 'b/2',
 CONCAT_WS(':', c, c, c) AS c_c_c
 FROM frame

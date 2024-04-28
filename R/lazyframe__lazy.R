@@ -2079,6 +2079,8 @@ LazyFrame_clear = function(n = 0) {
 }
 
 
+# TODO: we can't use % in the SQL query
+# <https://github.com/r-lib/roxygen2/issues/1616>
 #' Execute a SQL query against the LazyFrame
 #'
 #' The calling frame is automatically registered as a table in the SQL context
@@ -2121,7 +2123,7 @@ LazyFrame_clear = function(n = 0) {
 #'   query = r"(
 #' SELECT
 #'  a,
-#' (a % 2 == 0) AS a_is_even,
+#' MOD(a, 2) == 0 AS a_is_even,
 #' (b::float / 2) AS 'b/2',
 #' CONCAT_WS(':', c, c, c) AS c_c_c
 #' FROM frame

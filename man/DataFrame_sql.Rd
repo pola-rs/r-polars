@@ -60,7 +60,7 @@ df1$sql(
   query = r"(
 SELECT
 a,
-(a \% 2 == 0) AS a_is_even,
+MOD(a, 2) == 0 AS a_is_even,
 CONCAT_WS(':', b, b) AS b_b,
 EXTRACT(year FROM c) AS year,
 0::float AS 'zero'

@@ -2436,6 +2436,9 @@ DataFrame_clear = function(n = 0) {
   out
 }
 
+
+# TODO: we can't use % in the SQL query
+# <https://github.com/r-lib/roxygen2/issues/1616>
 #' Execute a SQL query against the DataFrame
 #'
 #' @inherit LazyFrame_sql description details params seealso
@@ -2466,7 +2469,7 @@ DataFrame_clear = function(n = 0) {
 #'   query = r"(
 #' SELECT
 #' a,
-#' (a % 2 == 0) AS a_is_even,
+#' MOD(a, 2) == 0 AS a_is_even,
 #' CONCAT_WS(':', b, b) AS b_b,
 #' EXTRACT(year FROM c) AS year,
 #' 0::float AS 'zero'
