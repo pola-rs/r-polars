@@ -89,12 +89,12 @@
       [41] "quantile"         "rechunk"          "rename"           "reverse"         
       [45] "rolling"          "sample"           "schema"           "select"          
       [49] "select_seq"       "shape"            "shift"            "shift_and_fill"  
-      [53] "slice"            "sort"             "std"              "sum"             
-      [57] "tail"             "to_data_frame"    "to_list"          "to_series"       
-      [61] "to_struct"        "transpose"        "unique"           "unnest"          
-      [65] "var"              "width"            "with_columns"     "with_columns_seq"
-      [69] "with_row_index"   "write_csv"        "write_ipc"        "write_json"      
-      [73] "write_ndjson"     "write_parquet"   
+      [53] "slice"            "sort"             "sql"              "std"             
+      [57] "sum"              "tail"             "to_data_frame"    "to_list"         
+      [61] "to_series"        "to_struct"        "transpose"        "unique"          
+      [65] "unnest"           "var"              "width"            "with_columns"    
+      [69] "with_columns_seq" "with_row_index"   "write_csv"        "write_ipc"       
+      [73] "write_json"       "write_ndjson"     "write_parquet"   
 
 ---
 
@@ -164,13 +164,13 @@
       [41] "shift_and_fill"          "sink_csv"               
       [43] "sink_ipc"                "sink_ndjson"            
       [45] "sink_parquet"            "slice"                  
-      [47] "sort"                    "std"                    
-      [49] "sum"                     "tail"                   
-      [51] "to_dot"                  "unique"                 
-      [53] "unnest"                  "var"                    
-      [55] "width"                   "with_columns"           
-      [57] "with_columns_seq"        "with_context"           
-      [59] "with_row_index"         
+      [47] "sort"                    "sql"                    
+      [49] "std"                     "sum"                    
+      [51] "tail"                    "to_dot"                 
+      [53] "unique"                  "unnest"                 
+      [55] "var"                     "width"                  
+      [57] "with_columns"            "with_columns_seq"       
+      [59] "with_context"            "with_row_index"         
 
 ---
 

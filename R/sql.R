@@ -60,7 +60,7 @@ pl_SQLContext = function(...) {
 #' Execute SQL query against the registered data
 #'
 #' Parse the given SQL query and execute it against the registered frame data.
-#' @param query A valid string SQL query.
+#' @param query A character of the SQL query to execute.
 #' @return A [LazyFrame][LazyFrame_class]
 #' @examplesIf polars_info()$features$sql
 #' query = "SELECT * FROM mtcars WHERE cyl = 4"
@@ -174,7 +174,8 @@ SQLContext_tables = function() {
 #' Automatically maps variable names to table names.
 #' @inherit SQLContext_register details return
 #' @param ... Ignored.
-#' @param envir The environment to search for polars DataFrames/LazyFrames.
+#' @param envir The environment to search for polars
+#' [DataFrames][DataFrame_class]/[LazyFrames][LazyFrame_class].
 #' @seealso
 #' - [`<SQLContext>$register()`][SQLContext_register]
 #' - [`<SQLContext>$register_many()`][SQLContext_register_many]

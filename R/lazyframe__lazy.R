@@ -169,8 +169,7 @@ LazyFrame_width = method_as_active_binding(\() length(self$schema))
 #'
 #' @param ... Anything that is accepted by `pl$DataFrame()`
 #'
-#' @return LazyFrame
-#' @keywords LazyFrame_new
+#' @return [LazyFrame][LazyFrame_class]
 #'
 #' @examples
 #' pl$LazyFrame(
@@ -2077,4 +2076,68 @@ LazyFrame_to_dot = function(
 #' df$clear(n = 5)
 LazyFrame_clear = function(n = 0) {
   pl$DataFrame(schema = self$schema)$clear(n)$lazy()
+}
+
+
+#' Execute a SQL query against the LazyFrame
+#'
+#' The calling frame is automatically registered as a table in the SQL context
+#' under the name `"self"`. All [DataFrames][DataFrame_class] and
+#' [LazyFrames][LazyFrame_class] found in the `envir` are also registered,
+#' using their variable name.
+#' More control over registration and execution behaviour is available by
+#' the [SQLContext][SQLContext_class] object.
+#'
+#' This functionality is considered **unstable**, although it is close to
+#' being considered stable. It may be changed at any point without it being
+#' considered a breaking change.
+#' @inherit pl_LazyFrame return
+#' @inheritParams SQLContext_execute
+#' @inheritParams SQLContext_register_globals
+#' @param table_name `NULL` (default) or a character of an explicit name for the table
+#' that represents the calling frame (the alias `"self"` will always be registered/available).
+#' @seealso
+#' - [SQLContext][SQLContext_class]
+#' @examplesIf polars_info()$features$sql
+#' lf1 = pl$LazyFrame(a = 1:3, b = 6:8, c = c("z", "y", "x"))
+#' lf2 = pl$LazyFrame(a = 3:1, d = c(125, -654, 888))
+#'
+#' # Query the LazyFrame using SQL:
+#' lf1$sql("SELECT c, b FROM self WHERE a > 1")$collect()
+#'
+#' # Join two LazyFrames:
+#' lf1$sql(
+#'   "
+#' SELECT self.*, d
+#' FROM self
+#' INNER JOIN lf2 USING (a)
+#' WHERE a > 1 AND b < 8
+#' "
+#' )$collect()
+#'
+#' # Apply SQL transforms (aliasing "self" to "frame") and subsequently
+#' # filter natively (you can freely mix SQL and native operations):
+#' lf1$sql(
+#'   query = r"(
+#' SELECT
+#'  a,
+#' (a % 2 == 0) AS a_is_even,
+#' (b::float / 2) AS 'b/2',
+#' CONCAT_WS(':', c, c, c) AS c_c_c
+#' FROM frame
+#' ORDER BY a
+#' )",
+#'   table_name = "frame"
+#' )$filter(!pl$col("c_c_c")$str$starts_with("x"))$collect()
+LazyFrame_sql = function(query, ..., table_name = NULL, envir = parent.frame()) {
+  result({
+    ctx = pl$SQLContext()$register_globals(envir = envir)$register("self", self)
+
+    if (!is.null(table_name)) {
+      ctx$register(table_name, self)
+    }
+
+    ctx$execute(query)
+  }) |>
+    unwrap("in $sql():")
 }
