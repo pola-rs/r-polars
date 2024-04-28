@@ -5,6 +5,7 @@
 ### New features
 
 - New method `<SQLContext>$register_globals()` (#1064).
+- New experimental method `$sql()` for DataFrame and LazyFrame (#1065).
 
 ## Polars R Package 0.16.2
 

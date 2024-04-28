@@ -2435,3 +2435,54 @@ DataFrame_clear = function(n = 0) {
 
   out
 }
+
+
+# TODO: we can't use % in the SQL query
+# <https://github.com/r-lib/roxygen2/issues/1616>
+#' Execute a SQL query against the DataFrame
+#'
+#' @inherit LazyFrame_sql description details params seealso
+#' @inherit pl_DataFrame return
+#' @examplesIf polars_info()$features$sql
+#' df1 = pl$DataFrame(
+#'   a = 1:3,
+#'   b = c("zz", "yy", "xx"),
+#'   c = as.Date(c("1999-12-31", "2010-10-10", "2077-08-08"))
+#' )
+#'
+#' # Query the DataFrame using SQL:
+#' df1$sql("SELECT c, b FROM self WHERE a > 1")
+#'
+#' # Join two DataFrames using SQL.
+#' df2 = pl$DataFrame(a = 3:1, d = c(125, -654, 888))
+#' df1$sql(
+#'   "
+#' SELECT self.*, d
+#' FROM self
+#' INNER JOIN df2 USING (a)
+#' WHERE a > 1 AND EXTRACT(year FROM c) < 2050
+#' "
+#' )
+#'
+#' # Apply transformations to a DataFrame using SQL, aliasing "self" to "frame".
+#' df1$sql(
+#'   query = r"(
+#' SELECT
+#' a,
+#' MOD(a, 2) == 0 AS a_is_even,
+#' CONCAT_WS(':', b, b) AS b_b,
+#' EXTRACT(year FROM c) AS year,
+#' 0::float AS 'zero'
+#' FROM frame
+#' )",
+#'   table_name = "frame"
+#' )
+DataFrame_sql = function(query, ..., table_name = NULL, envir = parent.frame()) {
+  self$lazy()$sql(
+    query,
+    table_name = table_name,
+    envir = envir
+  )$collect() |>
+    result() |>
+    unwrap("in $sql():")
+}

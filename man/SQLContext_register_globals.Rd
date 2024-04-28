@@ -9,7 +9,8 @@ SQLContext_register_globals(..., envir = parent.frame())
 \arguments{
 \item{...}{Ignored.}
 
-\item{envir}{The environment to search for polars DataFrames/LazyFrames.}
+\item{envir}{The environment to search for polars
+\link[=DataFrame_class]{DataFrames}/\link[=LazyFrame_class]{LazyFrames}.}
 }
 \value{
 Returns the \link[=SQLContext_class]{SQLContext} object invisibly.

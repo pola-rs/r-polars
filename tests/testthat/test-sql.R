@@ -75,3 +75,35 @@ test_that("SQLContext_register_globals", {
   func2(ctx3)
   expect_equal(ctx3$tables(), c("f1", "f2"))
 })
+
+
+test_that("sql method for DataFrame and LazyFrame", {
+  df1 = pl$DataFrame(x = 1)
+  lf1 = pl$LazyFrame(x = 2)
+
+  expect_true(df1$equals(
+    df1$sql("select * from self")
+  ))
+  expect_true(df1$equals(
+    df1$sql("select * from foo", table_name = "foo")
+  ))
+  expect_true(df1$equals(
+    lf1$sql("select * from df1")$collect()
+  ))
+  expect_true(df1$equals(
+    lf1$sql("select x/2 from self")$collect()
+  ))
+
+  # Test the envir argument works correctly
+  func1 = function(data) {
+    df1 = pl$DataFrame(foo = "bar")
+    data$sql("select * from self join df1 using (x)", envir = parent.frame())
+  }
+
+  expect_true(df1$equals(
+    func1(df1)
+  ))
+  expect_true(pl$DataFrame(x = numeric(0))$equals(
+    func1(lf1)$collect()
+  ))
+})
