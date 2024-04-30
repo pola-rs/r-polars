@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 [![R-universe status badge](https://rpolars.r-universe.dev/badges/polars)](https://rpolars.r-universe.dev)
 [![CRAN status](https://www.r-pkg.org/badges/version/polars)](https://CRAN.R-project.org/package=polars)
 [![Dev R-CMD-check](https://github.com/pola-rs/r-polars/actions/workflows/check.yaml/badge.svg)](https://github.com/pola-rs/r-polars/actions/workflows/check.yaml)
-[![Docs dev version](https://img.shields.io/badge/docs-dev-blue.svg)](https://rpolars.github.io)
+[![Docs dev version](https://img.shields.io/badge/docs-dev-blue.svg)](https://pola-rs.github.io/r-polars)
 <!-- badges: end -->
 
 The **polars** package for R gives users access to [a lightning
@@ -49,7 +49,7 @@ Examples of common operations:
   memory-efficient operations
 
 Note that this package is rapidly evolving and there are a number of breaking
-changes at each version. Be sure to check the [changelog](https://rpolars.github.io/NEWS.html)
+changes at each version. Be sure to check the [changelog](https://pola-rs.github.io/r-polars/NEWS.html)
 when updating `polars`.
 
 ## Install
@@ -61,7 +61,7 @@ Sys.setenv(NOT_CRAN = "true")
 install.packages("polars", repos = "https://rpolars.r-universe.dev")
 ```
 
-[The "Install" vignette](https://rpolars.github.io/vignettes/install.html) (`vignette("install", "polars")`)
+[The "Install" vignette](https://pola-rs.github.io/r-polars/vignettes/install.html) (`vignette("install", "polars")`)
 gives more details on how to install this package and other ways to install it.
 
 ## Quickstart example
@@ -96,7 +96,7 @@ df$sort("fruits")$select(
 )
 ```
 
-The [Get Started vignette](https://rpolars.github.io/vignettes/polars.html) (`vignette("polars")`) provides
+The [Get Started vignette](https://pola-rs.github.io/r-polars/vignettes/polars.html) (`vignette("polars")`) provides
 a more detailed introduction to **polars**.
 
 ## Extensions
@@ -104,14 +104,14 @@ a more detailed introduction to **polars**.
 While one can use **polars** as-is, other packages build on it to
 provide different syntaxes:
 
-- [polarssql](https://rpolars.github.io/r-polarssql/) provides a **polars**
+- [polarssql](https://pola-rs.github.io/r-polars/r-polarssql/) provides a **polars**
   backend for [DBI](https://dbi.r-dbi.org/) and [dbplyr](https://dbplyr.tidyverse.org/).
 - [tidypolars](https://tidypolars.etiennebacher.com/) allows one to
   use the [tidyverse](https://www.tidyverse.org/) syntax while using the power of **polars**.
 
 ## Getting help
 
-The online documentation can be found at <https://rpolars.github.io/>.
+The online documentation can be found at <https://pola-rs.github.io/r-polars/>.
 
 If you encounter a bug, please file an issue with a minimal reproducible example on
 [GitHub](https://github.com/pola-rs/r-polars/issues).
