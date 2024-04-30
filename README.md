@@ -40,7 +40,8 @@ Examples of common operations:
 
 Note that this package is rapidly evolving and there are a number of
 breaking changes at each version. Be sure to check the
-[changelog](https://pola-rs.github.io/r-polars/NEWS.html) when updating `polars`.
+[changelog](https://pola-rs.github.io/r-polars/NEWS.html) when updating
+`polars`.
 
 ## Install
 
@@ -111,7 +112,7 @@ vignette](https://pola-rs.github.io/r-polars/vignettes/polars.html)
 While one can use **polars** as-is, other packages build on it to
 provide different syntaxes:
 
-- [polarssql](https://pola-rs.github.io/r-polars/r-polarssql/) provides a
+- [polarssql](https://rpolars.github.io/r-polarssql/) provides a
   **polars** backend for [DBI](https://dbi.r-dbi.org/) and
   [dbplyr](https://dbplyr.tidyverse.org/).
 - [tidypolars](https://tidypolars.etiennebacher.com/) allows one to use
@@ -120,7 +121,8 @@ provide different syntaxes:
 
 ## Getting help
 
-The online documentation can be found at <https://pola-rs.github.io/r-polars/>.
+The online documentation can be found at
+<https://pola-rs.github.io/r-polars/>.
 
 If you encounter a bug, please file an issue with a minimal reproducible
 example on [GitHub](https://github.com/pola-rs/r-polars/issues).
