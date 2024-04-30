@@ -7,6 +7,10 @@
 - New method `<SQLContext>$register_globals()` (#1064).
 - New experimental method `$sql()` for DataFrame and LazyFrame (#1065).
 
+### Miscellaneous
+
+- Move the API document website to the new place (#1067, #1068).
+
 ## Polars R Package 0.16.2
 
 ### New features
