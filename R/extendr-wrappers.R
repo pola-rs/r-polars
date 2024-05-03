@@ -230,9 +230,9 @@ RPolarsDataFrame$write_csv <- function(file, include_bom, include_header, separa
 
 RPolarsDataFrame$write_ipc <- function(file, compression, future) .Call(wrap__RPolarsDataFrame__write_ipc, self, file, compression, future)
 
-RPolarsDataFrame$to_raw_ipc <- function() .Call(wrap__RPolarsDataFrame__to_raw_ipc, self)
+RPolarsDataFrame$to_raw_ipc <- function(compression, future) .Call(wrap__RPolarsDataFrame__to_raw_ipc, self, compression, future)
 
-RPolarsDataFrame$from_raw_ipc <- function(bits) .Call(wrap__RPolarsDataFrame__from_raw_ipc, bits)
+RPolarsDataFrame$from_raw_ipc <- function(bits, n_rows, row_name, row_index, memory_map) .Call(wrap__RPolarsDataFrame__from_raw_ipc, bits, n_rows, row_name, row_index, memory_map)
 
 RPolarsDataFrame$write_parquet <- function(file, compression_method, compression_level, statistics, row_group_size, data_pagesize_limit) .Call(wrap__RPolarsDataFrame__write_parquet, self, file, compression_method, compression_level, statistics, row_group_size, data_pagesize_limit)
 

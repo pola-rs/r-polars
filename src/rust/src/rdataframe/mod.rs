@@ -526,13 +526,43 @@ impl RPolarsDataFrame {
             .map_err(polars_to_rpolars_err)
     }
 
-    pub fn to_raw_ipc(&self) -> RResult<Vec<u8>> {
-        crate::rbackground::serialize_dataframe(&mut self.0.clone())
+    pub fn to_raw_ipc(&self, compression: Robj, future: Robj) -> RResult<Vec<u8>> {
+        use polars::io::SerWriter;
+        let compression = rdatatype::new_ipc_compression(compression)?;
+        let future = robj_to!(bool, future)?;
+        let mut dump = Vec::new();
+        polars::io::ipc::IpcWriter::new(&mut dump)
+            .with_compression(compression)
+            .with_pl_flavor(future)
+            .finish(&mut self.0.clone())
+            .map_err(polars_to_rpolars_err)?;
+
+        Ok(dump)
     }
 
-    pub fn from_raw_ipc(bits: Robj) -> RResult<Self> {
+    pub fn from_raw_ipc(
+        bits: Robj,
+        n_rows: Robj,
+        row_name: Robj,
+        row_index: Robj,
+        memory_map: Robj,
+    ) -> RResult<Self> {
+        use polars::prelude::SerReader;
         let bits = robj_to!(Raw, bits)?;
-        let df = crate::rbackground::deserialize_dataframe(&bits)?;
+        let n_rows = robj_to!(Option, usize, n_rows)?;
+        let row_index = robj_to!(Option, String, row_name)?
+            .map(|name| {
+                robj_to!(u32, row_index).map(|offset| polars::io::RowIndex { name, offset })
+            })
+            .transpose()?;
+        let memory_map = robj_to!(bool, memory_map)?;
+        let df = polars::io::ipc::IpcReader::new(std::io::Cursor::new(bits))
+            .with_n_rows(n_rows)
+            .with_row_index(row_index)
+            .memory_mapped(memory_map)
+            .finish()
+            .map_err(polars_to_rpolars_err)?;
+
         Ok(RPolarsDataFrame(df))
     }
 

@@ -98,6 +98,7 @@ pub fn serialize_dataframe(dataframe: &mut polars::prelude::DataFrame) -> RResul
 
     let mut dump = Vec::new();
     polars::io::ipc::IpcWriter::new(&mut dump)
+        .with_pl_flavor(true)
         .finish(dataframe)
         .map_err(polars_to_rpolars_err)?;
     Ok(dump)
