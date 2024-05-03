@@ -12,6 +12,7 @@
 ### Miscellaneous
 
 - Move the API document website to the new place (#1067, #1068).
+  Access to the old website is set to redirect to the top page of the new website.
 
 ## Polars R Package 0.16.2
 
