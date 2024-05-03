@@ -118,8 +118,6 @@ test_rbackgroundhandler <- function(lambda, arg) .Call(wrap__test_rbackgroundhan
 
 test_rthreadhandle <- function() .Call(wrap__test_rthreadhandle)
 
-test_serde_df <- function(df) .Call(wrap__test_serde_df, df)
-
 internal_wrap_e <- function(robj, str_to_lit) .Call(wrap__internal_wrap_e, robj, str_to_lit)
 
 create_col <- function(name) .Call(wrap__create_col, name)

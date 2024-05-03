@@ -11,7 +11,7 @@ use extendr_api::{
 use flume::{bounded, Sender};
 use ipc_channel::ipc;
 use once_cell::sync::Lazy;
-use polars::prelude::Series as PSeries;
+use polars::prelude as pl;
 use std::collections::VecDeque;
 use std::sync::{Arc, Mutex};
 use std::thread;
@@ -93,32 +93,45 @@ pub fn deserialize_robj(bits: Vec<u8>) -> RResult<Robj> {
         .when("deserializing an R object")
 }
 
-pub fn serialize_dataframe(dataframe: &mut polars::prelude::DataFrame) -> RResult<Vec<u8>> {
+pub fn serialize_dataframe(
+    dataframe: &mut polars::prelude::DataFrame,
+    compression: Option<pl::IpcCompression>,
+    future: bool,
+) -> RResult<Vec<u8>> {
     use polars::io::SerWriter;
 
     let mut dump = Vec::new();
     polars::io::ipc::IpcWriter::new(&mut dump)
-        .with_pl_flavor(true)
+        .with_compression(compression)
+        .with_pl_flavor(future)
         .finish(dataframe)
         .map_err(polars_to_rpolars_err)?;
     Ok(dump)
 }
 
-pub fn deserialize_dataframe(bits: &[u8]) -> RResult<polars::prelude::DataFrame> {
+pub fn deserialize_dataframe(
+    bits: &[u8],
+    n_rows: Option<usize>,
+    row_index: Option<polars::io::RowIndex>,
+    memory_map: bool,
+) -> RResult<polars::prelude::DataFrame> {
     use polars::io::SerReader;
 
     polars::io::ipc::IpcReader::new(std::io::Cursor::new(bits))
+        .with_n_rows(n_rows)
+        .with_row_index(row_index)
+        .memory_mapped(memory_map)
         .finish()
         .map_err(polars_to_rpolars_err)
 }
 
-pub fn serialize_series(series: PSeries) -> RResult<Vec<u8>> {
-    serialize_dataframe(&mut std::iter::once(series).collect())
+pub fn serialize_series(series: pl::Series) -> RResult<Vec<u8>> {
+    serialize_dataframe(&mut std::iter::once(series).collect(), None, true)
 }
 
-pub fn deserialize_series(bits: &[u8]) -> RResult<PSeries> {
-    let tn = std::any::type_name::<PSeries>();
-    deserialize_dataframe(bits)?
+pub fn deserialize_series(bits: &[u8]) -> RResult<pl::Series> {
+    let tn = std::any::type_name::<pl::Series>();
+    deserialize_dataframe(bits, None, None, true)?
         .get_columns()
         .split_first()
         .ok_or(RPolarsErr::new())
@@ -481,8 +494,8 @@ impl RBackgroundPool {
     pub fn rmap_series(
         &self,
         raw_func: Vec<u8>,
-        series: PSeries,
-    ) -> RResult<impl FnOnce() -> RResult<PSeries> + '_> {
+        series: pl::Series,
+    ) -> RResult<impl FnOnce() -> RResult<pl::Series> + '_> {
         #[cfg(feature = "rpolars_debug_print")]
         dbg!("rmap_series");
         let handler = self.lease()?;
@@ -580,13 +593,6 @@ pub fn test_rthreadhandle() -> RPolarsRThreadHandle<RResult<RPolarsDataFrame>> {
     })
 }
 
-#[extendr]
-pub fn test_serde_df(df: &RPolarsDataFrame) -> RResult<RPolarsDataFrame> {
-    let x = serialize_dataframe(&mut df.0.clone())?;
-    let df2 = deserialize_dataframe(x.as_slice())?;
-    Ok(RPolarsDataFrame(df2))
-}
-
 extendr_module! {
     mod rbackground;
     impl RPolarsRThreadHandle<RResult<RPolarsDataFrame>>;
@@ -596,5 +602,4 @@ extendr_module! {
     fn handle_background_request;
     fn test_rbackgroundhandler;
     fn test_rthreadhandle;
-    fn test_serde_df;
 }
