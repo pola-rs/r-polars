@@ -2,6 +2,8 @@
 
 ## Polars R Package (development version)
 
+## Polars R Package 0.16.3
+
 ### New features
 
 - New method `<SQLContext>$register_globals()` (#1064).
@@ -10,6 +12,9 @@
 ### Miscellaneous
 
 - Move the API document website to the new place (#1067, #1068).
+  Access to the old website is set to redirect to the top page of the new website.
+  - Old URL: `https://rpolars.github.io/`
+  - New URL: `https://pola-rs.github.io/r-polars/`
 
 ## Polars R Package 0.16.2
 
