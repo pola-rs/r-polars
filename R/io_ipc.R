@@ -88,3 +88,26 @@ pl_read_ipc = function(
   }) |>
     unwrap("in pl$read_ipc():")
 }
+
+
+#' Write Arrow IPC data to a raw vector
+#'
+#' @return A raw vector
+#' @seealso
+#' - [`<DataFrame>$write_ipc()`][DataFrame_write_ipc]
+#' @examples
+#' df = pl$DataFrame(
+#'    foo = 1:5,
+#'   bar = 6:10,
+#'  ham = letters[1:5]
+#' )
+#'
+#' raw_ipc = df$to_raw_ipc()
+#'
+#' if (require("arrow", quietly = TRUE)) {
+#'  arrow::read_ipc_file(raw_ipc, as_data_frame = FALSE)
+#' }
+DataFrame_to_raw_ipc = function() {
+  .pr$DataFrame$to_raw_ipc(self) |>
+    unwrap("in $to_raw_ipc():")
+}

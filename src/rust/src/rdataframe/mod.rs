@@ -526,6 +526,16 @@ impl RPolarsDataFrame {
             .map_err(polars_to_rpolars_err)
     }
 
+    pub fn to_raw_ipc(&self) -> RResult<Vec<u8>> {
+        crate::rbackground::serialize_dataframe(&mut self.0.clone())
+    }
+
+    pub fn from_raw_ipc(bits: Robj) -> RResult<Self> {
+        let bits = robj_to!(Raw, bits)?;
+        let df = crate::rbackground::deserialize_dataframe(&bits)?;
+        Ok(RPolarsDataFrame(df))
+    }
+
     pub fn write_parquet(
         &self,
         file: Robj,
