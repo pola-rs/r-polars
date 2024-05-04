@@ -45,8 +45,15 @@ test_that("LazyFrame serialize/deseialize", {
 
   expect_snapshot(jsonlite::prettify(json))
 
-  lf$collect()$equals(
+  expect_true(lf$collect()$equals(
     pl$deserialize_lf(json)$collect()
+  ))
+
+  expect_grepl_error(
+    df$lazy()$select(
+      pl$col("a")$map_elements(\(x) -abs(x))
+    )$serialize(),
+    "serialize not supported for this 'opaque' function"
   )
 })
 
