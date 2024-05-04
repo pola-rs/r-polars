@@ -7,6 +7,7 @@
 - `pl$read_ipc()` can read a raw vector of Apache Arrow IPC file (#1072).
 - New method `<DataFrame>$to_raw_ipc()` to serialize a DataFrame to a raw vector
   of Apache Arrow IPC file format (#1072).
+- New methods `$str$head()` and `$str$tail()` (#1074).
 
 ## Polars R Package 0.16.3
 
