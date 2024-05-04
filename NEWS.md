@@ -7,6 +7,10 @@
 - `pl$read_ipc()` can read a raw vector of Apache Arrow IPC file (#1072).
 - New method `<DataFrame>$to_raw_ipc()` to serialize a DataFrame to a raw vector
   of Apache Arrow IPC file format (#1072).
+- New method `<LazyFrame>$serialize()` to serialize a LazyFrame to a character
+  vector of JSON representation (#1073).
+- New function `pl$deserialize_lf()` to deserialize a LazyFrame from a character
+  vector of JSON representation (#1073).
 
 ## Polars R Package 0.16.3
 
