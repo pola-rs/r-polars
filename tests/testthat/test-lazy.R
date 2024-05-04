@@ -31,6 +31,26 @@ test_that("create LazyFrame", {
   )
 })
 
+
+test_that("LazyFrame serialize/deseialize", {
+  skip_if_not_installed("jsonlite")
+
+  df = pl$DataFrame(
+    a = 1:3,
+    b = letters[1:3]
+  )
+
+  lf = df$lazy()$filter(pl$col("a") >= 2)$select("b")
+  json = lf$serialize()
+
+  expect_snapshot(jsonlite::prettify(json))
+
+  lf$collect()$equals(
+    pl$deserialize_lf(json)$collect()
+  )
+})
+
+
 test_that("LazyFrame, custom schema", {
   df = pl$LazyFrame(
     iris,
