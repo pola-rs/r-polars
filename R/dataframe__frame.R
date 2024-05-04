@@ -1982,6 +1982,8 @@ DataFrame_write_csv = function(
 #' This functionality is considered **unstable**.
 #' It may be changed at any point without it being considered a breaking change.
 #' @rdname IO_write_ipc
+#' @seealso
+#' - [`<DataFrame>$to_raw_ipc()`][DataFrame_to_raw_ipc]
 #' @examples
 #' dat = pl$DataFrame(mtcars)
 #'

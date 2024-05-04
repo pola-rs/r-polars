@@ -54,6 +54,9 @@ pl_scan_ipc = function(
 #'
 #' @inherit pl_read_csv return
 #' @inheritParams pl_scan_ipc
+#' @param source A single character or a raw vector of Apache Arrow IPC file.
+#' You can use globbing with `*` to scan/read multiple files in the same directory
+#' (see examples).
 #' @rdname IO_read_ipc
 #' @examplesIf requireNamespace("arrow", quietly = TRUE) && arrow::arrow_with_dataset()
 #' temp_dir = tempfile()
@@ -73,6 +76,15 @@ pl_scan_ipc = function(
 #' pl$read_ipc(
 #'   file.path(temp_dir, "**/*.arrow")
 #' )
+#'
+#' # Read a raw vector
+#' arrow::arrow_table(
+#'   foo = 1:5,
+#'   bar = 6:10,
+#'   ham = letters[1:5]
+#' ) |>
+#'   arrow::write_to_raw(format = "file") |>
+#'   pl$read_ipc()
 pl_read_ipc = function(
     source,
     ...,
@@ -82,9 +94,49 @@ pl_read_ipc = function(
     row_index_offset = 0L,
     rechunk = FALSE,
     cache = TRUE) {
-  .args = as.list(environment())
-  result({
-    do.call(pl$scan_ipc, .args)$collect()
-  }) |>
-    unwrap("in pl$read_ipc():")
+  uw = function(res) unwrap(res, "in pl$read_ipc():")
+
+  if (isTRUE(is.raw(source))) {
+    .pr$DataFrame$from_raw_ipc(
+      source,
+      n_rows,
+      row_index_name,
+      row_index_offset,
+      memory_map
+    ) |>
+      uw()
+  } else {
+    .args = as.list(environment())
+    result(do.call(pl$scan_ipc, .args)$collect()) |>
+      uw()
+  }
+}
+
+
+#' Write Arrow IPC data to a raw vector
+#'
+#' @inheritParams DataFrame_write_ipc
+#' @return A raw vector
+#' @seealso
+#' - [`<DataFrame>$write_ipc()`][DataFrame_write_ipc]
+#' @examples
+#' df = pl$DataFrame(
+#'   foo = 1:5,
+#'   bar = 6:10,
+#'   ham = letters[1:5]
+#' )
+#'
+#' raw_ipc = df$to_raw_ipc()
+#'
+#' pl$read_ipc(raw_ipc)
+#'
+#' if (require("arrow", quietly = TRUE)) {
+#'   arrow::read_ipc_file(raw_ipc, as_data_frame = FALSE)
+#' }
+DataFrame_to_raw_ipc = function(
+    compression = c("uncompressed", "zstd", "lz4"),
+    ...,
+    future = FALSE) {
+  .pr$DataFrame$to_raw_ipc(self, compression, future) |>
+    unwrap("in $to_raw_ipc():")
 }

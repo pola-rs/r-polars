@@ -526,6 +526,33 @@ impl RPolarsDataFrame {
             .map_err(polars_to_rpolars_err)
     }
 
+    pub fn to_raw_ipc(&self, compression: Robj, future: Robj) -> RResult<Vec<u8>> {
+        let compression = rdatatype::new_ipc_compression(compression)?;
+        let future = robj_to!(bool, future)?;
+
+        crate::rbackground::serialize_dataframe(&mut self.0.clone(), compression, future)
+    }
+
+    pub fn from_raw_ipc(
+        bits: Robj,
+        n_rows: Robj,
+        row_name: Robj,
+        row_index: Robj,
+        memory_map: Robj,
+    ) -> RResult<Self> {
+        let bits = robj_to!(Raw, bits)?;
+        let n_rows = robj_to!(Option, usize, n_rows)?;
+        let row_index = robj_to!(Option, String, row_name)?
+            .map(|name| {
+                robj_to!(u32, row_index).map(|offset| polars::io::RowIndex { name, offset })
+            })
+            .transpose()?;
+        let memory_map = robj_to!(bool, memory_map)?;
+        let df = crate::rbackground::deserialize_dataframe(&bits, n_rows, row_index, memory_map)?;
+
+        Ok(RPolarsDataFrame(df))
+    }
+
     pub fn write_parquet(
         &self,
         file: Robj,

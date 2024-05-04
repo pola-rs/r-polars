@@ -1,4 +1,4 @@
-use crate::lazy::dataframe::RPolarsLazyFrame as RLazyFrame;
+use crate::lazy::dataframe::RPolarsLazyFrame;
 use crate::robj_to;
 use crate::rpolarserr::RResult;
 use extendr_api::prelude::*;
@@ -14,7 +14,7 @@ pub fn import_arrow_ipc(
     row_name: Robj,
     row_index: Robj,
     memory_map: Robj,
-) -> RResult<RLazyFrame> {
+) -> RResult<RPolarsLazyFrame> {
     let args = ScanArgsIpc {
         n_rows: robj_to!(Option, usize, n_rows)?,
         cache: robj_to!(bool, cache)?,
@@ -27,7 +27,7 @@ pub fn import_arrow_ipc(
     };
     let lf = LazyFrame::scan_ipc(robj_to!(String, path)?, args)
         .map_err(crate::rpolarserr::polars_to_rpolars_err)?;
-    Ok(RLazyFrame(lf))
+    Ok(RPolarsLazyFrame(lf))
 }
 
 extendr_module! {
