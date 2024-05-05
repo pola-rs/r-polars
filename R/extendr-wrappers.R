@@ -1148,6 +1148,10 @@ RPolarsLazyFrame$collect <- function() .Call(wrap__RPolarsLazyFrame__collect, se
 
 RPolarsLazyFrame$collect_in_background <- function() .Call(wrap__RPolarsLazyFrame__collect_in_background, self)
 
+RPolarsLazyFrame$serialize <- function() .Call(wrap__RPolarsLazyFrame__serialize, self)
+
+RPolarsLazyFrame$deserialize <- function(json) .Call(wrap__RPolarsLazyFrame__deserialize, json)
+
 RPolarsLazyFrame$sink_parquet <- function(path, compression_method, compression_level, statistics, row_group_size, data_pagesize_limit, maintain_order) .Call(wrap__RPolarsLazyFrame__sink_parquet, self, path, compression_method, compression_level, statistics, row_group_size, data_pagesize_limit, maintain_order)
 
 RPolarsLazyFrame$sink_ipc <- function(path, compression, maintain_order) .Call(wrap__RPolarsLazyFrame__sink_ipc, self, path, compression, maintain_order)

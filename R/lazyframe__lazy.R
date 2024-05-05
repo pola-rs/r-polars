@@ -258,6 +258,43 @@ LazyFrame_describe_optimized_plan = function() {
 #' @rdname LazyFrame_describe_plan
 LazyFrame_describe_plan = use_extendr_wrapper
 
+
+#' Serialize the logical plan of this LazyFrame to a file or string in JSON format
+#'
+#' Note that not all LazyFrames can be serialized. For example, LazyFrames that
+#' contain UDFs such as [`$map_elements()`][Expr_map_elements] cannot be serialized.
+#'
+#' @return A character of the JSON representation of the logical plan
+#' @seealso
+#' - [`pl$deserialize_lf()`][pl_deserialize_lf]
+#' @examples
+#' lf = pl$LazyFrame(a = 1:3)$sum()
+#' json = lf$serialize()
+#' json
+#'
+#' # The logical plan can later be deserialized back into a LazyFrame.
+#' pl$deserialize_lf(json)$collect()
+LazyFrame_serialize = function() {
+  .pr$LazyFrame$serialize(self) |>
+    unwrap("in $serialize():")
+}
+
+
+#' Read a logical plan from a JSON file to construct a LazyFrame
+#' @inherit pl_LazyFrame return
+#' @param json A character of the JSON representation of the logical plan.
+#' @seealso
+#' - [`<LazyFrame>$serialize()`][LazyFrame_serialize]
+#' @examples
+#' lf = pl$LazyFrame(a = 1:3)$sum()
+#' json = lf$serialize()
+#' pl$deserialize_lf(json)$collect()
+pl_deserialize_lf = function(json) {
+  .pr$LazyFrame$deserialize(json) |>
+    unwrap("in pl$deserialize_lf():")
+}
+
+
 #' @title Select and modify columns of a LazyFrame
 #' @inherit DataFrame_select description params
 #' @return A LazyFrame
