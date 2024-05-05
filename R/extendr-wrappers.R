@@ -10,6 +10,8 @@
 #' @useDynLib polars, .registration = TRUE
 NULL
 
+polars_allocate_array_stream <- function() .Call(wrap__polars_allocate_array_stream)
+
 all_horizontal <- function(dotdotdot) .Call(wrap__all_horizontal, dotdotdot)
 
 any_horizontal <- function(dotdotdot) .Call(wrap__any_horizontal, dotdotdot)
@@ -1373,6 +1375,8 @@ RPolarsSeries$set_sorted_mut <- function(descending) invisible(.Call(wrap__RPola
 RPolarsSeries$struct_fields <- function() .Call(wrap__RPolarsSeries__struct_fields, self)
 
 RPolarsSeries$export_stream <- function(stream_ptr, pl_flavor) invisible(.Call(wrap__RPolarsSeries__export_stream, self, stream_ptr, pl_flavor))
+
+RPolarsSeries$import_stream <- function(stream_ptr) .Call(wrap__RPolarsSeries__import_stream, stream_ptr)
 
 RPolarsSeries$from_arrow_array_stream_str <- function(name, robj_str) .Call(wrap__RPolarsSeries__from_arrow_array_stream_str, name, robj_str)
 

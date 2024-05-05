@@ -1,5 +1,7 @@
 pub mod to_rust;
 
+use polars_core::utils::arrow;
+
 use extendr_api::prelude::*;
 use std::result::Result;
 
@@ -60,4 +62,17 @@ impl RPackage for NanoArrowRPackage {
         }
         "#)
     }
+}
+
+#[extendr]
+pub fn polars_allocate_array_stream() -> Robj {
+    let aas = Box::new(arrow::ffi::ArrowArrayStream::empty());
+    let x = Box::leak(aas); // leak box to make lifetime static
+    let x = x as *mut arrow::ffi::ArrowArrayStream;
+    format!("{:?}", x as usize).into()
+}
+
+extendr_module! {
+    mod arrow_interop;
+    fn polars_allocate_array_stream;
 }

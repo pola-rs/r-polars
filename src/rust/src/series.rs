@@ -575,6 +575,23 @@ impl RPolarsSeries {
         }
     }
 
+    pub fn import_stream(stream_ptr: &str) -> RResult<Self> {
+        let stream_in_ptr_addr: usize = stream_ptr.parse().unwrap();
+        let stream_in_ptr =
+            unsafe { Box::from_raw(stream_in_ptr_addr as *mut arrow::ffi::ArrowArrayStream) };
+
+        let mut stream = unsafe { arrow::ffi::ArrowArrayStreamReader::try_new(stream_in_ptr)? };
+        let mut arrays: Vec<Box<dyn arrow::array::Array>> = Vec::new();
+        while let Some(array_res) = unsafe { stream.next() } {
+            arrays.push(array_res?);
+        }
+
+        let chunks = arrays.into_iter().collect::<Vec<_>>();
+        let s = pl::Series::try_from(("", chunks)).map_err(polars_to_rpolars_err)?;
+
+        Ok(s.into())
+    }
+
     pub fn from_arrow_array_stream_str(name: Robj, robj_str: Robj) -> RResult<Robj> {
         let name = robj_to!(str, name)?;
         let s = crate::arrow_interop::to_rust::arrow_stream_to_series_internal(robj_str)?

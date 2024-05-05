@@ -411,21 +411,14 @@ as_polars_series.nanoarrow_array = function(x, name = NULL, ...) {
 as_polars_series.nanoarrow_array_stream = function(x, name = NULL, ...) {
   on.exit(x$release())
 
-  list_of_arrays = nanoarrow::collect_array_stream(x, validate = FALSE)
+  stream_out = polars_allocate_array_stream()
+  nanoarrow::nanoarrow_pointer_export(x, stream_out)
 
-  if (length(list_of_arrays) < 1L) {
-    # TODO: support 0-length array stream
-    out = pl$Series(name = name)
-  } else {
-    out = as_polars_series.nanoarrow_array(list_of_arrays[[1L]], name = name)
-    lapply(
-      list_of_arrays[-1L],
-      \(array) .pr$Series$append_mut(out, as_polars_series.nanoarrow_array(array))
-    ) |>
-      invisible()
-  }
-
-  out
+  .pr$Series$import_stream(
+    stream_out
+  ) |>
+    unwrap("in as_polars_series():") |>
+    (\(x) x$alias(name %||% ""))()
 }
 
 
