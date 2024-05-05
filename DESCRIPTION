@@ -22,7 +22,7 @@ URL: https://pola-rs.github.io/r-polars/,
     https://github.com/pola-rs/r-polars,
     https://rpolars.r-universe.dev/polars
 Suggests:
-    arrow,
+    arrow (>= 15.0.1),
     bench,
     bit64,
     callr,
@@ -32,7 +32,7 @@ Suggests:
     jsonlite,
     knitr,
     lubridate,
-    nanoarrow,
+    nanoarrow (>= 0.4.0),
     nycflights13,
     patrick,
     pillar,

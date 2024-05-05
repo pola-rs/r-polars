@@ -8,6 +8,14 @@ test_that("as_nanoarrow_array_stream() works for DataFrame", {
     as.data.frame(stream),
     data.frame(a = 1L, b = "two")
   )
+
+  # nanoarrow does not support the string view type yet
+  # https://github.com/apache/arrow-nanoarrow/pull/367
+  expect_grepl_error(
+    nanoarrow::as_nanoarrow_array_stream(df, future = TRUE) |>
+      as.data.frame(),
+    "Unknown format: 'vu'"
+  )
 })
 
 test_that("infer_nanoarrow_schema() works for DataFrame", {
