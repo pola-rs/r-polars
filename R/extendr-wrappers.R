@@ -852,6 +852,8 @@ RPolarsExpr$dt_total_nanoseconds <- function() .Call(wrap__RPolarsExpr__dt_total
 
 RPolarsExpr$dt_offset_by <- function(by) .Call(wrap__RPolarsExpr__dt_offset_by, self, by)
 
+RPolarsExpr$dt_is_leap_year <- function() .Call(wrap__RPolarsExpr__dt_is_leap_year, self)
+
 RPolarsExpr$repeat_by <- function(by) .Call(wrap__RPolarsExpr__repeat_by, self, by)
 
 RPolarsExpr$log10 <- function() .Call(wrap__RPolarsExpr__log10, self)

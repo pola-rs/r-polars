@@ -16,8 +16,7 @@ use crate::CONFIG;
 use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut};
 use pl::PolarsError as pl_error;
 use pl::{
-    Duration, DurationMethods, IntoSeries, RollingGroupOptions, SetOperation, StringNameSpaceImpl,
-    TemporalMethods,
+    Duration, IntoSeries, RollingGroupOptions, SetOperation, StringNameSpaceImpl, TemporalMethods,
 };
 use polars::lazy::dsl;
 use polars::prelude as pl;
@@ -1469,78 +1468,33 @@ impl RPolarsExpr {
     }
 
     pub fn dt_total_days(&self) -> RResult<Self> {
-        Ok(self
-            .0
-            .clone()
-            .map(
-                |s| Ok(Some(s.duration()?.days().into_series())),
-                pl::GetOutput::from_type(pl::DataType::Int64),
-            )
-            .into())
+        Ok(self.0.clone().dt().total_days().into())
     }
     pub fn dt_total_hours(&self) -> RResult<Self> {
-        Ok(self
-            .0
-            .clone()
-            .map(
-                |s| Ok(Some(s.duration()?.hours().into_series())),
-                pl::GetOutput::from_type(pl::DataType::Int64),
-            )
-            .into())
+        Ok(self.0.clone().dt().total_hours().into())
     }
     pub fn dt_total_minutes(&self) -> RResult<Self> {
-        Ok(self
-            .0
-            .clone()
-            .map(
-                |s| Ok(Some(s.duration()?.minutes().into_series())),
-                pl::GetOutput::from_type(pl::DataType::Int64),
-            )
-            .into())
+        Ok(self.0.clone().dt().total_minutes().into())
     }
     pub fn dt_total_seconds(&self) -> RResult<Self> {
-        Ok(self
-            .0
-            .clone()
-            .map(
-                |s| Ok(Some(s.duration()?.seconds().into_series())),
-                pl::GetOutput::from_type(pl::DataType::Int64),
-            )
-            .into())
+        Ok(self.0.clone().dt().total_seconds().into())
     }
     pub fn dt_total_milliseconds(&self) -> RResult<Self> {
-        Ok(self
-            .0
-            .clone()
-            .map(
-                |s| Ok(Some(s.duration()?.milliseconds().into_series())),
-                pl::GetOutput::from_type(pl::DataType::Int64),
-            )
-            .into())
+        Ok(self.0.clone().dt().total_milliseconds().into())
     }
     pub fn dt_total_microseconds(&self) -> RResult<Self> {
-        Ok(self
-            .0
-            .clone()
-            .map(
-                |s| Ok(Some(s.duration()?.microseconds().into_series())),
-                pl::GetOutput::from_type(pl::DataType::Int64),
-            )
-            .into())
+        Ok(self.0.clone().dt().total_microseconds().into())
     }
     pub fn dt_total_nanoseconds(&self) -> RResult<Self> {
-        Ok(self
-            .0
-            .clone()
-            .map(
-                |s| Ok(Some(s.duration()?.nanoseconds().into_series())),
-                pl::GetOutput::from_type(pl::DataType::Int64),
-            )
-            .into())
+        Ok(self.0.clone().dt().total_nanoseconds().into())
     }
 
     pub fn dt_offset_by(&self, by: Robj) -> RResult<Self> {
         Ok(self.clone().0.dt().offset_by(robj_to!(PLExpr, by)?).into())
+    }
+
+    pub fn dt_is_leap_year(&self) -> Self {
+        self.clone().0.dt().is_leap_year().into()
     }
 
     pub fn repeat_by(&self, by: &RPolarsExpr) -> Self {
