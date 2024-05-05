@@ -2,12 +2,15 @@
 % Please edit documentation in R/pkg-nanoarrow.R
 \name{infer_nanoarrow_schema.RPolarsDataFrame}
 \alias{infer_nanoarrow_schema.RPolarsDataFrame}
+\alias{infer_nanoarrow_schema.RPolarsSeries}
 \title{Infer nanoarrow schema from a Polars object}
 \usage{
 \method{infer_nanoarrow_schema}{RPolarsDataFrame}(x, ..., future = FALSE)
+
+\method{infer_nanoarrow_schema}{RPolarsSeries}(x, ..., future = FALSE)
 }
 \arguments{
-\item{x}{\link[=DataFrame_class]{A Polars DataFrame}}
+\item{x}{A polars object}
 
 \item{...}{Ignored}
 
@@ -20,8 +23,13 @@ It may be changed at any point without it being considered a breaking change.}
 Infer nanoarrow schema from a Polars object
 }
 \examples{
+\dontshow{if (requireNamespace("nanoarrow", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(nanoarrow)
-pl_df = as_polars_df(mtcars)
+
+pl_df = as_polars_df(mtcars)$select("mpg", "cyl")
+pl_s = as_polars_series(letters)
 
 infer_nanoarrow_schema(pl_df)
+infer_nanoarrow_schema(pl_s)
+\dontshow{\}) # examplesIf}
 }

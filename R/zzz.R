@@ -174,7 +174,9 @@ replace_private_with_pub_methods(pl, "^pl_")
 
   # register S3 methods for packages in Suggests
   s3_register("nanoarrow::as_nanoarrow_array_stream", "RPolarsDataFrame")
+  s3_register("nanoarrow::as_nanoarrow_array_stream", "RPolarsSeries")
   s3_register("nanoarrow::infer_nanoarrow_schema", "RPolarsDataFrame")
+  s3_register("nanoarrow::infer_nanoarrow_schema", "RPolarsSeries")
   s3_register("arrow::as_record_batch_reader", "RPolarsDataFrame")
   s3_register("arrow::as_arrow_table", "RPolarsDataFrame")
   s3_register("knitr::knit_print", "RPolarsDataFrame")

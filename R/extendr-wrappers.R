@@ -1372,6 +1372,8 @@ RPolarsSeries$set_sorted_mut <- function(descending) invisible(.Call(wrap__RPola
 
 RPolarsSeries$struct_fields <- function() .Call(wrap__RPolarsSeries__struct_fields, self)
 
+RPolarsSeries$export_stream <- function(stream_ptr, pl_flavor) invisible(.Call(wrap__RPolarsSeries__export_stream, self, stream_ptr, pl_flavor))
+
 RPolarsSeries$from_arrow_array_stream_str <- function(name, robj_str) .Call(wrap__RPolarsSeries__from_arrow_array_stream_str, name, robj_str)
 
 RPolarsSeries$from_arrow_array_robj <- function(name, array) .Call(wrap__RPolarsSeries__from_arrow_array_robj, name, array)
