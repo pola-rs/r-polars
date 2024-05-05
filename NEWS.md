@@ -14,6 +14,7 @@
 - New methods `$str$head()` and `$str$tail()` (#1074).
 - New S3 methods `nanoarrow::as_nanoarrow_array_stream()` and `nanoarrow::infer_nanoarrow_schema()`
   for `RPolarsSeries` (#1076).
+- New method `$dt$is_leap_year()` (#1077).
 
 ## Polars R Package 0.16.3
 
