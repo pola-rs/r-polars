@@ -11,7 +11,7 @@ ExprStr_head(n)
 column names. Negative indexing is supported.}
 }
 \value{
-A string Expr
+Expr: Series of dtype String.
 }
 \description{
 Return the first n characters of each string

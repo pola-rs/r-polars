@@ -1031,6 +1031,8 @@ ExprStr_find = function(pattern, ..., literal = FALSE, strict = TRUE) {
 
 #' Return the first n characters of each string
 #'
+#' @inherit ExprStr_slice return
+#'
 #' @param n Length of the slice (integer or expression). Strings are parsed as
 #' column names. Negative indexing is supported.
 #'
@@ -1046,8 +1048,6 @@ ExprStr_find = function(pattern, ..., literal = FALSE, strict = TRUE) {
 #'
 #' If the length of the string has fewer than `n` characters, the full string is
 #' returned.
-#'
-#' @return A string Expr
 #'
 #' @examples
 #' df = pl$DataFrame(
@@ -1066,8 +1066,8 @@ ExprStr_head = function(n) {
 
 #' Return the last n characters of each string
 #'
-#' @param n Length of the slice (integer or expression). Strings are parsed as
-#' column names. Negative indexing is supported.
+#' @inheritParams ExprStr_head
+#' @inherit ExprStr_slice return
 #'
 #' @details
 #' The `n` input is defined in terms of the number of characters in the (UTF-8)
@@ -1081,8 +1081,6 @@ ExprStr_head = function(n) {
 #'
 #' If the length of the string has fewer than `n` characters, the full string is
 #' returned.
-#'
-#' @return A string Expr
 #'
 #' @examples
 #' df = pl$DataFrame(

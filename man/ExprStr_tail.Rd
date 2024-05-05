@@ -11,7 +11,7 @@ ExprStr_tail(n)
 column names. Negative indexing is supported.}
 }
 \value{
-A string Expr
+Expr: Series of dtype String.
 }
 \description{
 Return the last n characters of each string
