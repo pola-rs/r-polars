@@ -2426,6 +2426,15 @@ impl RPolarsExpr {
             _ => Ok(self.0.clone().str().find(pat, strict).into()),
         }
     }
+
+    fn str_head(&self, n: Robj) -> RResult<Self> {
+        Ok(self.0.clone().str().head(robj_to!(PLExprCol, n)?).into())
+    }
+
+    fn str_tail(&self, n: Robj) -> RResult<Self> {
+        Ok(self.0.clone().str().tail(robj_to!(PLExprCol, n)?).into())
+    }
+
     //binary methods
     pub fn bin_contains(&self, lit: Robj) -> RResult<Self> {
         Ok(self

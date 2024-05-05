@@ -884,3 +884,40 @@ test_that("str$find() works", {
     test$select(lit = pl$col("s")$str$find("(?iAa", strict = TRUE, literal = TRUE))
   )
 })
+
+test_that("$str$head() works", {
+  df = pl$DataFrame(
+    s = c("pear", NA, "papaya", "dragonfruit"),
+    n = c(3, 4, -2, -5)
+  )
+
+  expect_equal(
+    df$select(
+      s_head_5 = pl$col("s")$str$head(5),
+      s_head_n = pl$col("s")$str$head("n")
+    )$to_list(),
+    list(
+      s_head_5 = c("pear", NA, "papay", "drago"),
+      s_head_n = c("pea", NA, "papa", "dragon")
+    )
+  )
+})
+
+
+test_that("$str$tail() works", {
+  df = pl$DataFrame(
+    s = c("pear", NA, "papaya", "dragonfruit"),
+    n = c(3, 4, -2, -5)
+  )
+
+  expect_equal(
+    df$select(
+      s_tail_5 = pl$col("s")$str$tail(5),
+      s_tail_n = pl$col("s")$str$tail("n")
+    )$to_list(),
+    list(
+      s_tail_5 = c("pear", NA, "apaya", "fruit"),
+      s_tail_n = c("ear", NA, "paya", "nfruit")
+    )
+  )
+})

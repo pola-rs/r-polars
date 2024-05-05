@@ -11,6 +11,7 @@
   vector of JSON representation (#1073).
 - New function `pl$deserialize_lf()` to deserialize a LazyFrame from a character
   vector of JSON representation (#1073).
+- New methods `$str$head()` and `$str$tail()` (#1074).
 
 ## Polars R Package 0.16.3
 
