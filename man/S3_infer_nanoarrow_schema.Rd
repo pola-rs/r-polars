@@ -4,12 +4,17 @@
 \alias{infer_nanoarrow_schema.RPolarsDataFrame}
 \title{Infer nanoarrow schema from a Polars object}
 \usage{
-\method{infer_nanoarrow_schema}{RPolarsDataFrame}(x, ...)
+\method{infer_nanoarrow_schema}{RPolarsDataFrame}(x, ..., future = FALSE)
 }
 \arguments{
 \item{x}{\link[=DataFrame_class]{A Polars DataFrame}}
 
 \item{...}{Ignored}
+
+\item{future}{Setting this to \code{TRUE} will write Polars' internal data structures that
+might not be available by other Arrow implementations.
+This functionality is considered \strong{unstable}.
+It may be changed at any point without it being considered a breaking change.}
 }
 \description{
 Infer nanoarrow schema from a Polars object

@@ -64,8 +64,6 @@ arrow_stream_to_df <- function(robj_str) .Call(wrap__arrow_stream_to_df, robj_st
 
 arrow_stream_to_series <- function(robj_str) .Call(wrap__arrow_stream_to_series, robj_str)
 
-export_df_to_arrow_stream <- function(robj_df, robj_str) .Call(wrap__export_df_to_arrow_stream, robj_df, robj_str)
-
 mem_address <- function(robj) .Call(wrap__mem_address, robj)
 
 clone_robj <- function(robj) .Call(wrap__clone_robj, robj)
@@ -204,7 +202,7 @@ RPolarsDataFrame$unnest <- function(names) .Call(wrap__RPolarsDataFrame__unnest,
 
 RPolarsDataFrame$partition_by <- function(by, maintain_order, include_key) .Call(wrap__RPolarsDataFrame__partition_by, self, by, maintain_order, include_key)
 
-RPolarsDataFrame$export_stream <- function(stream_ptr) invisible(.Call(wrap__RPolarsDataFrame__export_stream, self, stream_ptr))
+RPolarsDataFrame$export_stream <- function(stream_ptr, pl_flavor) invisible(.Call(wrap__RPolarsDataFrame__export_stream, self, stream_ptr, pl_flavor))
 
 RPolarsDataFrame$from_arrow_record_batches <- function(rbr) .Call(wrap__RPolarsDataFrame__from_arrow_record_batches, rbr)
 

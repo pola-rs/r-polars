@@ -6,8 +6,7 @@ test_that("as_record_batch_reader() works for DataFrame", {
   expect_s3_class(reader, "RecordBatchReader")
 
   expect_identical(
-    # two as.data.frame()s because arrow sometimes returns a tibble here
-    as.data.frame(as.data.frame(reader)),
+    as.data.frame(reader),
     data.frame(a = 1L, b = "two")
   )
 })
@@ -20,8 +19,12 @@ test_that("as_arrow_table() works for DataFrame", {
   expect_s3_class(table, "Table")
 
   expect_identical(
-    # two as.data.frame()s because arrow sometimes returns a tibble here
-    as.data.frame(as.data.frame(table)),
+    as.data.frame(table),
     data.frame(a = 1L, b = "two")
+  )
+
+  expect_identical(
+    arrow::as_arrow_table(df, future = TRUE)$b$type$ToString(),
+    "string_view"
   )
 })
