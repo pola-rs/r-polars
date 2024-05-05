@@ -4,7 +4,7 @@
 \alias{as_nanoarrow_array_stream.RPolarsDataFrame}
 \title{Create a nanoarrow_array_stream from a Polars object}
 \usage{
-\method{as_nanoarrow_array_stream}{RPolarsDataFrame}(x, ..., schema = NULL)
+\method{as_nanoarrow_array_stream}{RPolarsDataFrame}(x, ..., schema = NULL, future = FALSE)
 }
 \arguments{
 \item{x}{\link[=DataFrame_class]{A Polars DataFrame}}
@@ -12,6 +12,11 @@
 \item{...}{Ignored}
 
 \item{schema}{must stay at default value NULL}
+
+\item{future}{Setting this to \code{TRUE} will write Polars' internal data structures that
+might not be available by other Arrow implementations.
+This functionality is considered \strong{unstable}.
+It may be changed at any point without it being considered a breaking change.}
 }
 \description{
 Create a nanoarrow_array_stream from a Polars object

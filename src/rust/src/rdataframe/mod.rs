@@ -33,11 +33,12 @@ pub struct OwnedDataFrameIterator {
     data_type: arrow::datatypes::ArrowDataType,
     idx: usize,
     n_chunks: usize,
+    pl_flavor: bool,
 }
 
 impl OwnedDataFrameIterator {
-    pub fn new(df: polars::frame::DataFrame) -> Self {
-        let schema = df.schema().to_arrow(false);
+    pub fn new(df: polars::frame::DataFrame, pl_flavor: bool) -> Self {
+        let schema = df.schema().to_arrow(pl_flavor);
         let data_type = ArrowDataType::Struct(schema.fields);
         let vs = df.get_columns().to_vec();
         Self {
@@ -45,6 +46,7 @@ impl OwnedDataFrameIterator {
             data_type,
             idx: 0,
             n_chunks: df.n_chunks(),
+            pl_flavor,
         }
     }
 }
@@ -60,7 +62,7 @@ impl Iterator for OwnedDataFrameIterator {
             let batch_cols = self
                 .columns
                 .iter()
-                .map(|s| s.to_arrow(self.idx, false))
+                .map(|s| s.to_arrow(self.idx, self.pl_flavor))
                 .collect();
             self.idx += 1;
 
@@ -346,12 +348,12 @@ impl RPolarsDataFrame {
         Ok(List::from_values(vec))
     }
 
-    pub fn export_stream(&self, stream_ptr: &str) {
-        let schema = self.0.schema().to_arrow(false);
+    pub fn export_stream(&self, stream_ptr: &str, pl_flavor: bool) {
+        let schema = self.0.schema().to_arrow(pl_flavor);
         let data_type = ArrowDataType::Struct(schema.fields);
         let field = ArrowField::new("", data_type, false);
 
-        let iter_boxed = Box::new(OwnedDataFrameIterator::new(self.0.clone()));
+        let iter_boxed = Box::new(OwnedDataFrameIterator::new(self.0.clone(), pl_flavor));
         let mut stream = arrow::ffi::export_iterator(iter_boxed, field);
         let stream_out_ptr_addr: usize = stream_ptr.parse().unwrap();
         let stream_out_ptr = stream_out_ptr_addr as *mut arrow::ffi::ArrowArrayStream;

@@ -80,6 +80,18 @@ impl RPolarsLazyFrame {
         })
     }
 
+    fn serialize(&self) -> RResult<String> {
+        serde_json::to_string(&self.0.logical_plan)
+            .map_err(|err| RPolarsErr::new().plain(format!("{err:?}")))
+    }
+
+    fn deserialize(json: Robj) -> RResult<Self> {
+        let json = robj_to!(str, json)?;
+        let lp = serde_json::from_str::<pl::LogicalPlan>(&json)
+            .map_err(|err| RPolarsErr::new().plain(format!("{err:?}")))?;
+        Ok(RPolarsLazyFrame(pl::LazyFrame::from(lp)))
+    }
+
     #[allow(clippy::too_many_arguments)]
     pub fn sink_parquet(
         &self,

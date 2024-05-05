@@ -10,3 +10,82 @@
       FILTER [(col("a")) == (2)] FROM
       DF ["a", "b"]; PROJECT */2 COLUMNS; SELECTION: "None"
 
+# LazyFrame serialize/deseialize
+
+    Code
+      jsonlite::prettify(json)
+    Output
+      {
+          "Select": {
+              "expr": [
+                  {
+                      "Column": "b"
+                  }
+              ],
+              "input": {
+                  "Filter": {
+                      "input": {
+                          "DataFrameScan": {
+                              "df": {
+                                  "columns": [
+                                      {
+                                          "name": "a",
+                                          "datatype": "Int32",
+                                          "bit_settings": "",
+                                          "values": [
+                                              1,
+                                              2,
+                                              3
+                                          ]
+                                      },
+                                      {
+                                          "name": "b",
+                                          "datatype": "String",
+                                          "bit_settings": "",
+                                          "values": [
+                                              "a",
+                                              "b",
+                                              "c"
+                                          ]
+                                      }
+                                  ]
+                              },
+                              "schema": {
+                                  "inner": {
+                                      "a": "Int32",
+                                      "b": "String"
+                                  }
+                              },
+                              "output_schema": null,
+                              "projection": null,
+                              "selection": null
+                          }
+                      },
+                      "predicate": {
+                          "BinaryExpr": {
+                              "left": {
+                                  "Column": "a"
+                              },
+                              "op": "GtEq",
+                              "right": {
+                                  "Literal": {
+                                      "Float64": 2.0
+                                  }
+                              }
+                          }
+                      }
+                  }
+              },
+              "schema": {
+                  "inner": {
+                      "b": "String"
+                  }
+              },
+              "options": {
+                  "run_parallel": true,
+                  "duplicate_check": true
+              }
+          }
+      }
+       
+
