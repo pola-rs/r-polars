@@ -12,6 +12,7 @@
 \alias{as_polars_series.vctrs_rcrd}
 \alias{as_polars_series.Array}
 \alias{as_polars_series.ChunkedArray}
+\alias{as_polars_series.RecordBatchReader}
 \alias{as_polars_series.nanoarrow_array}
 \alias{as_polars_series.nanoarrow_array_stream}
 \alias{as_polars_series.clock_time_point}
@@ -41,6 +42,8 @@ as_polars_series(x, name = NULL, ...)
 \method{as_polars_series}{Array}(x, name = NULL, ..., rechunk = TRUE)
 
 \method{as_polars_series}{ChunkedArray}(x, name = NULL, ..., rechunk = TRUE)
+
+\method{as_polars_series}{RecordBatchReader}(x, name = NULL, ...)
 
 \method{as_polars_series}{nanoarrow_array}(x, name = NULL, ...)
 

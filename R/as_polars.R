@@ -399,6 +399,20 @@ as_polars_series.ChunkedArray = as_polars_series.Array
 
 #' @rdname as_polars_series
 #' @export
+as_polars_series.RecordBatchReader = function(x, name = NULL, ...) {
+  stream_out = polars_allocate_array_stream()
+  x$export_to_c(stream_out)
+
+  .pr$Series$import_stream(
+    name %||% "",
+    stream_out
+  ) |>
+    unwrap("in as_polars_series(<RecordBatchReader>):")
+}
+
+
+#' @rdname as_polars_series
+#' @export
 as_polars_series.nanoarrow_array = function(x, name = NULL, ...) {
   # TODO: support 0-length array
   .pr$Series$from_arrow_array_robj(name %||% "", x) |>
@@ -418,7 +432,7 @@ as_polars_series.nanoarrow_array_stream = function(x, name = NULL, ...) {
     name %||% "",
     stream_out
   ) |>
-    unwrap("in as_polars_series():")
+    unwrap("in as_polars_series(<nanoarrow_array_stream>):")
 }
 
 
