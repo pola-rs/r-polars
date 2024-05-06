@@ -19,6 +19,7 @@ if (requireNamespace("arrow", quietly = TRUE) && requireNamespace("nanoarrow", q
       "polars_lazy_group_by_dynamic", pl$LazyFrame(test_df)$group_by_dynamic("col_int", every = "1i"),
       "arrow Table", arrow::as_arrow_table(test_df),
       "arrow RecordBatch", arrow::as_record_batch(test_df),
+      "arrow RecordBatchReader", arrow::as_record_batch_reader(test_df),
       "nanoarrow_array", nanoarrow::as_nanoarrow_array(test_df),
       "nanoarrow_array_stream", nanoarrow::as_nanoarrow_array_stream(test_df),
     )
@@ -35,10 +36,7 @@ if (requireNamespace("arrow", quietly = TRUE) && requireNamespace("nanoarrow", q
         expect_grepl_error(x$get_next(), "already been released")
       }
 
-      actual = as.data.frame(pl_df)
-      expected = as.data.frame(pl$DataFrame(test_df))
-
-      expect_equal(actual, expected)
+      expect_equal(as.data.frame(pl_df), as.data.frame(as_polars_df(test_df)))
     },
     .cases = make_as_polars_df_cases()
   )

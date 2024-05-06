@@ -224,6 +224,13 @@ as_polars_df.ArrowTabular = function(
 
 #' @rdname as_polars_df
 #' @export
+as_polars_df.RecordBatchReader = function(x, ...) {
+  as_polars_series.RecordBatchReader(x, name = "")$to_frame()$unnest("")
+}
+
+
+#' @rdname as_polars_df
+#' @export
 as_polars_df.nanoarrow_array = function(x, ...) {
   array_type = nanoarrow::infer_nanoarrow_schema(x) |>
     nanoarrow::nanoarrow_schema_parse() |>
@@ -253,14 +260,7 @@ as_polars_df.nanoarrow_array_stream = function(x, ...) {
       unwrap("in as_polars_df(<nanoarrow_array_stream>):")
   }
 
-  series = as_polars_series.nanoarrow_array_stream(x, name = NULL)
-
-  if (length(series)) {
-    series$to_frame()$unnest("")
-  } else {
-    # TODO: support 0-length array stream
-    pl$DataFrame()
-  }
+  as_polars_series.nanoarrow_array_stream(x, name = "")$to_frame()$unnest("")
 }
 
 
