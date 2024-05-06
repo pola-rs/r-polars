@@ -470,15 +470,23 @@ test_that("as_polars_df and pl$DataFrame for data.frame has list column", {
 test_that("automatically rechunked for struct array stream", {
   skip_if_not_installed("nanoarrow")
 
-  s_int = nanoarrow::basic_array_stream(
+  s_int_exp = nanoarrow::basic_array_stream(
     list(
       nanoarrow::as_nanoarrow_array(1:5),
       nanoarrow::as_nanoarrow_array(6:10)
     )
   ) |>
-    as_polars_series()
+    as_polars_series(experimental = TRUE)
 
-  s_struct = nanoarrow::basic_array_stream(
+  s_struct_exp = nanoarrow::basic_array_stream(
+    list(
+      nanoarrow::as_nanoarrow_array(mtcars[1:5, ]),
+      nanoarrow::as_nanoarrow_array(mtcars[6:10, ])
+    )
+  ) |>
+    as_polars_series(experimental = TRUE)
+
+  s_struct_stable = nanoarrow::basic_array_stream(
     list(
       nanoarrow::as_nanoarrow_array(mtcars[1:5, ]),
       nanoarrow::as_nanoarrow_array(mtcars[6:10, ])
@@ -486,6 +494,7 @@ test_that("automatically rechunked for struct array stream", {
   ) |>
     as_polars_series()
 
-  expect_identical(s_int$n_chunks(), 2)
-  expect_identical(s_struct$n_chunks(), 1)
+  expect_identical(s_int_exp$n_chunks(), 2)
+  expect_identical(s_struct_exp$n_chunks(), 1)
+  expect_identical(s_struct_stable$n_chunks(), 2)
 })

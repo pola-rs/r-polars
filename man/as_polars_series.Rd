@@ -47,7 +47,7 @@ as_polars_series(x, name = NULL, ...)
 
 \method{as_polars_series}{nanoarrow_array}(x, name = NULL, ...)
 
-\method{as_polars_series}{nanoarrow_array_stream}(x, name = NULL, ...)
+\method{as_polars_series}{nanoarrow_array_stream}(x, name = NULL, ..., experimental = FALSE)
 
 \method{as_polars_series}{clock_time_point}(x, name = NULL, ...)
 
@@ -67,6 +67,9 @@ will be used if \code{x} has no name.}
 \item{...}{Additional arguments passed to methods.}
 
 \item{rechunk}{A logical flag (default \code{TRUE}). Make sure that all data is in contiguous memory.}
+
+\item{experimental}{If \code{TRUE}, use experimental Arrow C stream interface inside the function.
+This argument is experimental and may be removed in the future.}
 }
 \value{
 a \link[=Series_class]{Series}

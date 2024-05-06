@@ -420,19 +420,39 @@ as_polars_series.nanoarrow_array = function(x, name = NULL, ...) {
 }
 
 
+#' @param experimental If `TRUE`, use experimental Arrow C stream interface inside the function.
+#' This argument is experimental and may be removed in the future.
 #' @rdname as_polars_series
 #' @export
-as_polars_series.nanoarrow_array_stream = function(x, name = NULL, ...) {
+as_polars_series.nanoarrow_array_stream = function(x, name = NULL, ..., experimental = FALSE) {
   on.exit(x$release())
 
-  stream_out = polars_allocate_array_stream()
-  nanoarrow::nanoarrow_pointer_export(x, stream_out)
+  if (isTRUE(experimental)) {
+    stream_out = polars_allocate_array_stream()
+    nanoarrow::nanoarrow_pointer_export(x, stream_out)
 
-  .pr$Series$import_stream(
-    name %||% "",
-    stream_out
-  ) |>
-    unwrap("in as_polars_series(<nanoarrow_array_stream>):")
+    .pr$Series$import_stream(
+      name %||% "",
+      stream_out
+    ) |>
+      unwrap("in as_polars_series(<nanoarrow_array_stream>):")
+  } else {
+    list_of_arrays = nanoarrow::collect_array_stream(x, validate = FALSE)
+
+    if (length(list_of_arrays) < 1L) {
+      # TODO: support 0-length array stream
+      out = pl$Series(name = name)
+    } else {
+      out = as_polars_series.nanoarrow_array(list_of_arrays[[1L]], name = name)
+      lapply(
+        list_of_arrays[-1L],
+        \(array) .pr$Series$append_mut(out, as_polars_series.nanoarrow_array(array))
+      ) |>
+        invisible()
+    }
+
+    out
+  }
 }
 
 
