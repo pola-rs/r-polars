@@ -10,6 +10,15 @@ patrick::with_parameters_test_that("round trip arrow array stream",
     expect_true(
       s_in$equals(s_out)
     )
+
+    skip_if_not_installed("nanoarrow")
+    expect_true(
+      s_in$equals(
+        s_in |>
+          nanoarrow::as_nanoarrow_array_stream(future = TRUE) |>
+          as_polars_series()
+      )
+    )
   },
   .vec = list(
     1:5,
