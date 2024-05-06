@@ -4,7 +4,7 @@ patrick::with_parameters_test_that("round trip arrow array stream",
 
     ptr_stream = polars_allocate_array_stream()
     .pr$Series$export_stream(s_in, ptr_stream, TRUE)
-    s_out = .pr$Series$import_stream(ptr_stream) |>
+    s_out = .pr$Series$import_stream("", ptr_stream) |>
       unwrap()
 
     expect_true(

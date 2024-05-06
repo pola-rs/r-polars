@@ -575,8 +575,9 @@ impl RPolarsSeries {
         }
     }
 
-    pub fn import_stream(stream_ptr: &str) -> RResult<Self> {
-        let stream_in_ptr_addr: usize = stream_ptr.parse().unwrap();
+    pub fn import_stream(name: Robj, stream_ptr: Robj) -> RResult<Self> {
+        let name = robj_to!(str, name)?;
+        let stream_in_ptr_addr = robj_to!(usize, stream_ptr)?;
         let stream_in_ptr =
             unsafe { Box::from_raw(stream_in_ptr_addr as *mut arrow::ffi::ArrowArrayStream) };
 
@@ -587,7 +588,7 @@ impl RPolarsSeries {
         }
 
         let chunks = arrays.into_iter().collect::<Vec<_>>();
-        let s = pl::Series::try_from(("", chunks)).map_err(polars_to_rpolars_err)?;
+        let s = pl::Series::try_from((name, chunks)).map_err(polars_to_rpolars_err)?;
 
         Ok(s.into())
     }

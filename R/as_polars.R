@@ -415,10 +415,10 @@ as_polars_series.nanoarrow_array_stream = function(x, name = NULL, ...) {
   nanoarrow::nanoarrow_pointer_export(x, stream_out)
 
   .pr$Series$import_stream(
+    name %||% "",
     stream_out
   ) |>
-    unwrap("in as_polars_series():") |>
-    (\(x) x$alias(name %||% ""))()
+    unwrap("in as_polars_series():")
 }
 
 
