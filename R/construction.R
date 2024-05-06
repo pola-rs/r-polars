@@ -1,100 +1,3 @@
-#' Internal function of `as_polars_df()` for `arrow::Table` class objects.
-#'
-#' This is a copy of Python Polars' `arrow_to_pydf` function.
-#' @param at arrow::ArrowTabular (arrow::Table and arrow::RecordBatch)
-#' @param rechunk A logical flag (default `TRUE`).
-#' Make sure that all data of each column is in contiguous memory.
-#' @param schema named list of DataTypes, or character vector of column names.
-#' Should be the same length as the number of columns of `x`.
-#' If schema names or types do not match `x`, the columns will be renamed/recast.
-#' If `NULL` (default), convert columns as is.
-#' @param schema_overrides named list of DataTypes. Cast some columns to the DataType.
-#' @noRd
-#' @return RPolarsDataFrame
-arrow_to_rpldf = function(at, schema = NULL, schema_overrides = NULL, rechunk = TRUE) {
-  # new column names by schema, #todo get names if schema not NULL
-  n_cols = at$num_columns
-
-  new_schema = unpack_schema(
-    schema = schema %||% names(at),
-    schema_overrides = schema_overrides
-  )
-  col_names = names(new_schema)
-
-  if (length(col_names) != n_cols) {
-    Err_plain("schema length does not match column length") |>
-      unwrap()
-  }
-
-  data_cols = list()
-  # dictionaries cannot be built in different batches (categorical does not allow
-  # that) so we rechunk them and create them separately.
-  # struct columns don't work properly if they contain multiple chunks.
-  special_cols = list()
-
-  ## iter over columns, possibly do special conversion
-  for (i in seq_len(n_cols)) {
-    column = at$column(i - 1L)
-    col_name = col_names[i]
-
-    if (is_arrow_dictionary(column)) {
-      column = coerce_arrow(column)
-      special_cols[[col_name]] = as_polars_series.ChunkedArray(column, col_name, rechunk = rechunk)
-    } else if (is_arrow_struct(column) && column$num_chunks > 1L) {
-      special_cols[[col_name]] = as_polars_series.ChunkedArray(column, col_name, rechunk = rechunk)
-    } else {
-      data_cols[[col_name]] = column
-    }
-  }
-
-  if (length(data_cols)) {
-    tbl = do.call(arrow::arrow_table, data_cols)
-
-    if (tbl$num_rows == 0L) {
-      rdf = pl$DataFrame() # TODO: support creating 0-row DataFrame
-    } else {
-      rdf = as_polars_series(arrow::as_record_batch_reader(tbl))$to_frame()$unnest("")
-    }
-  } else {
-    rdf = pl$DataFrame()
-  }
-
-  if (rechunk) {
-    rdf = rdf$select(pl$all()$rechunk())
-  }
-
-  if (length(special_cols)) {
-    rdf = rdf$with_columns(
-      unname(lapply(special_cols, \(s) pl$lit(s)$alias(s$name)))
-    )$select(
-      pl$col(col_names)
-    )
-  }
-
-  # cast any imported arrow fields not matching schema
-  cast_these_fields = mapply(
-    new_schema,
-    rdf$schema,
-    FUN = \(new_field, df_field)  {
-      if (is.null(new_field) || new_field == df_field) NULL else new_field
-    },
-    SIMPLIFY = FALSE
-  ) |> (\(l) l[!sapply(l, is.null)])()
-
-  if (length(cast_these_fields)) {
-    rdf = rdf$with_columns(
-      mapply(
-        cast_these_fields,
-        names(cast_these_fields),
-        FUN = \(dtype, name) pl$col(name)$cast(dtype),
-        SIMPLIFY = FALSE
-      ) |> unname()
-    )
-  }
-
-  rdf
-}
-
 unpack_schema = function(
     schema = NULL, # char vector of names or 'schema' a named list of DataTypes
     schema_overrides = NULL # named list of DataTypes
@@ -204,7 +107,7 @@ arrow_to_rseries_result = function(name, values, rechunk = TRUE) {
 
 #' Internal function of `as_polars_df()` for `data.frame` class objects.
 #'
-#' This is a copy of `arrow_to_rpldf`
+#' This is a copy of Python Polars' `arrow_to_pydf` function.
 #' @noRd
 #' @return RPolarsDataFrame
 df_to_rpldf = function(x, ..., schema = NULL, schema_overrides = NULL) {

@@ -232,35 +232,6 @@ test_that("from arrow Table and ChunkedArray", {
     unname(as.list(at))
   )
 
-  # no rechunk no longer works
-  # expect_identical(
-  #   lapply(at$columns, \(x) length(as_polars_series.ChunkedArray(x, rechunk = FALSE)$chunk_lengths())),
-  #   lapply(at$columns, \(x) x$num_chunks)
-  # )
-  # expect_grepl_error(expect_identical(
-  #   lapply(at$columns, \(x) length(as_polars_series.ChunkedArray(x, rechunk = TRUE)$chunk_lengths())),
-  #   lapply(at$columns, \(x) x$num_chunks)
-  # ))
-  # expect_identical(
-  #   as_polars_df.ArrowTabular(at, rechunk = FALSE)$
-  #     select(pl$all()$map_batches(\(s) s$chunk_lengths()))$
-  #     to_list() |>
-  #     lapply(length) |>
-  #     unname(),
-  #   lapply(at$columns, \(x) x$num_chunks)
-  # )
-
-  # expect_identical(
-  #   as_polars_df.ArrowTabular(at, rechunk = TRUE)$
-  #     select(pl$all()$map_batches(\(s) s$chunk_lengths()))$
-  #     to_list() |>
-  #     lapply(length) |>
-  #     unname(),
-  #   lapply(at$columns, \(x) x$num_chunks)
-  # )
-
-
-  # #not supported yet
   # #chunked data with factors
   l = list(
     df1 = data.frame(factor = factor(c("apple", "apple", "banana"))),
@@ -279,28 +250,6 @@ test_that("from arrow Table and ChunkedArray", {
     do.call(what = rbind)
   df2 = as_polars_df.ArrowTabular(at2)
   expect_identical(as.data.frame(at2), as.data.frame(df2))
-
-
-  # use schema override
-  df = as_polars_df.ArrowTabular(
-    arrow::arrow_table(iris),
-    schema_overrides = list(Sepal.Length = pl$Float32, Species = pl$String)
-  )
-  iris_str = iris
-  iris_str$Species = as.character(iris_str$Species)
-  expect_grepl_error(expect_equal(df$to_list(), as.list(iris_str)))
-  expect_equal(df$to_list(), as.list(iris_str), tolerance = 0.0001)
-
-  # change column name via char schema
-  char_schema = names(iris)
-  char_schema[1] = "Alice"
-  expect_identical(
-    as_polars_df.ArrowTabular(
-      arrow::arrow_table(iris),
-      schema = char_schema
-    )$columns,
-    char_schema
-  )
 })
 
 

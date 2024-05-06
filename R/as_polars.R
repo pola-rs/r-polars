@@ -65,6 +65,11 @@ as_polars_df.default = function(x, ...) {
 #' @param make_names_unique A logical flag to replace duplicated column names
 #' with unique names. If `FALSE` and there are duplicated column names, an
 #' error is thrown.
+#' @param schema named list of DataTypes, or character vector of column names.
+#' Should match the number of columns in `x` and correspond to each column in `x` by position.
+#' If a column in `x` does not match the name or type at the same position, it will be renamed/recast.
+#' If `NULL` (default), convert columns as is.
+#' @param schema_overrides named list of DataTypes. Cast some columns to the DataType.
 #' @inheritParams as_polars_df.ArrowTabular
 #' @export
 as_polars_df.data.frame = function(
@@ -199,26 +204,9 @@ as_polars_df.RPolarsLazyGroupBy = function(x, ...) {
 
 # TODO: link to DataTypes documents
 #' @rdname as_polars_df
-#' @param rechunk A logical flag (default `TRUE`).
-#' Make sure that all data of each column is in contiguous memory.
-#' @param schema named list of DataTypes, or character vector of column names.
-#' Should match the number of columns in `x` and correspond to each column in `x` by position.
-#' If a column in `x` does not match the name or type at the same position, it will be renamed/recast.
-#' If `NULL` (default), convert columns as is.
-#' @param schema_overrides named list of DataTypes. Cast some columns to the DataType.
 #' @export
-as_polars_df.ArrowTabular = function(
-    x,
-    ...,
-    rechunk = TRUE,
-    schema = NULL,
-    schema_overrides = NULL) {
-  arrow_to_rpldf(
-    x,
-    rechunk = rechunk,
-    schema = schema,
-    schema_overrides = schema_overrides
-  )
+as_polars_df.ArrowTabular = function(x, ...) {
+  as_polars_df.RecordBatchReader(arrow::as_record_batch_reader(x))
 }
 
 
@@ -241,14 +229,7 @@ as_polars_df.nanoarrow_array = function(x, ...) {
       unwrap("in as_polars_df(<nanoarrow_array>):")
   }
 
-  series = as_polars_series.nanoarrow_array(x, name = NULL)
-
-  if (length(series)) {
-    series$to_frame()$unnest("")
-  } else {
-    # TODO: support 0-length array
-    pl$DataFrame()
-  }
+  as_polars_series.nanoarrow_array(x, name = "")$to_frame()$unnest("")
 }
 
 

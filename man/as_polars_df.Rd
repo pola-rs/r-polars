@@ -59,7 +59,7 @@ as_polars_df(x, ...)
 
 \method{as_polars_df}{RPolarsLazyGroupBy}(x, ...)
 
-\method{as_polars_df}{ArrowTabular}(x, ..., rechunk = TRUE, schema = NULL, schema_overrides = NULL)
+\method{as_polars_df}{ArrowTabular}(x, ...)
 
 \method{as_polars_df}{RecordBatchReader}(x, ...)
 
@@ -126,9 +126,6 @@ regardless the settings specified in this function call.}
 \item{collect_in_background}{Logical. Detach this query from R session.
 Computation will start in background. Get a handle which later can be converted
 into the resulting DataFrame. Useful in interactive mode to not lock R session.}
-
-\item{rechunk}{A logical flag (default \code{TRUE}).
-Make sure that all data of each column is in contiguous memory.}
 }
 \value{
 a \link[=DataFrame_class]{DataFrame}
