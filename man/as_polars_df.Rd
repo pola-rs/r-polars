@@ -144,27 +144,27 @@ whether the number of rows to fetch is infinite or not.
 # Convert the row names of a data frame to a column
 as_polars_df(mtcars, rownames = "car")
 
-# Convert an arrow Table to a polars DataFrame
-at = arrow::arrow_table(x = 1:5, y = 6:10)
-as_polars_df(at)
-
-# Convert an arrow Table, with renaming all columns
+# Convert a data frame, with renaming all columns
 as_polars_df(
-  at,
+  data.frame(x = 1, y = 2),
   schema = c("a", "b")
 )
 
-# Convert an arrow Table, with renaming and casting all columns
+# Convert a data frame, with renaming and casting all columns
 as_polars_df(
-  at,
+  data.frame(x = 1, y = 2),
   schema = list(b = pl$Int64, a = pl$String)
 )
 
-# Convert an arrow Table, with casting some columns
+# Convert a data frame, with casting some columns
 as_polars_df(
-  at,
+  data.frame(x = 1, y = 2),
   schema_overrides = list(y = pl$String) # cast some columns
 )
+
+# Convert an arrow Table to a polars DataFrame
+at = arrow::arrow_table(x = 1:5, y = 6:10)
+as_polars_df(at)
 
 # Create a polars DataFrame from a data.frame
 lf = as_polars_df(mtcars)$lazy()
