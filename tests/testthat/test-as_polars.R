@@ -412,3 +412,27 @@ test_that("as_polars_df and pl$DataFrame for data.frame has list column", {
     as_polars_df(data)$dtypes[[1]] == pl$List(pl$Struct(b = pl$Int32))
   )
 })
+
+
+test_that("automatically rechunked for struct array stream", {
+  skip_if_not_installed("nanoarrow")
+
+  s_int = nanoarrow::basic_array_stream(
+    list(
+      nanoarrow::as_nanoarrow_array(1:5),
+      nanoarrow::as_nanoarrow_array(6:10)
+    )
+  ) |>
+    as_polars_series()
+
+  s_struct = nanoarrow::basic_array_stream(
+    list(
+      nanoarrow::as_nanoarrow_array(mtcars[1:5, ]),
+      nanoarrow::as_nanoarrow_array(mtcars[6:10, ])
+    )
+  ) |>
+    as_polars_series()
+
+  expect_identical(s_int$n_chunks(), 2)
+  expect_identical(s_struct$n_chunks(), 1)
+})
