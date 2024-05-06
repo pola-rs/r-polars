@@ -414,6 +414,8 @@ test_that("as_polars_df and pl$DataFrame for data.frame has list column", {
 })
 
 
+# TODO: This behavior is bug or intended? (upstream)
+# If this is a bug, this behavior may be changed in the future.
 test_that("automatically rechunked for struct array stream", {
   skip_if_not_installed("nanoarrow")
 
