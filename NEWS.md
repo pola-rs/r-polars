@@ -21,6 +21,7 @@
 - New methods `$str$head()` and `$str$tail()` (#1074).
 - New S3 methods `nanoarrow::as_nanoarrow_array_stream()` and `nanoarrow::infer_nanoarrow_schema()`
   for `RPolarsSeries` (#1076).
+- New method `$dt$is_leap_year()` (#1077).
 - `as_polars_series()` and `as_polars_df()` can create polars objects from `arrow::RecordBatchReader`
   via the Apache Arrow C stream interface (#1078).
 
