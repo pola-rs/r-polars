@@ -2,13 +2,6 @@
 
 ## Polars R Package (development version)
 
-### Breaking changes
-
-- The following arguments are removed from `as_polars_df(<ArrowTabular>)` (#1078).
-  - `schema` and `schema_overrides`. Use the `<DataFrame>$select()` method and
-    the `<Expr>$cast()` method after conversion to `DataFrame` instead.
-  - `rechunk`. All chunks are automatically rechunked now.
-
 ### New features
 
 - `pl$read_ipc()` can read a raw vector of Apache Arrow IPC file (#1072).
@@ -22,8 +15,9 @@
 - New S3 methods `nanoarrow::as_nanoarrow_array_stream()` and `nanoarrow::infer_nanoarrow_schema()`
   for `RPolarsSeries` (#1076).
 - New method `$dt$is_leap_year()` (#1077).
-- `as_polars_series()` and `as_polars_df()` can create polars objects from `arrow::RecordBatchReader`
-  via the Apache Arrow C stream interface (#1078).
+- `as_polars_df()` and `as_polars_series()` supports `arrow::RecordBatchReader` (#1078).
+- The new `experimental` argument for `as_polars_df(<ArrowTabular>)`, `as_polars_df(<RecordBatchReader>)`,
+  `as_polars_series(<nanoarrow_array_stream>)` (#1078).
 
 ## Polars R Package 0.16.3
 
