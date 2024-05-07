@@ -200,6 +200,8 @@ RPolarsDataFrame$partition_by <- function(by, maintain_order, include_key) .Call
 
 RPolarsDataFrame$export_stream <- function(stream_ptr, pl_flavor) invisible(.Call(wrap__RPolarsDataFrame__export_stream, self, stream_ptr, pl_flavor))
 
+RPolarsDataFrame$from_arrow_record_batches <- function(rbr) .Call(wrap__RPolarsDataFrame__from_arrow_record_batches, rbr)
+
 RPolarsDataFrame$estimated_size <- function() .Call(wrap__RPolarsDataFrame__estimated_size, self)
 
 RPolarsDataFrame$null_count <- function() .Call(wrap__RPolarsDataFrame__null_count, self)
