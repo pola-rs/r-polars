@@ -59,9 +59,16 @@ as_polars_df(x, ...)
 
 \method{as_polars_df}{RPolarsLazyGroupBy}(x, ...)
 
-\method{as_polars_df}{ArrowTabular}(x, ..., rechunk = TRUE, schema = NULL, schema_overrides = NULL)
+\method{as_polars_df}{ArrowTabular}(
+  x,
+  ...,
+  rechunk = TRUE,
+  schema = NULL,
+  schema_overrides = NULL,
+  experimental = FALSE
+)
 
-\method{as_polars_df}{RecordBatchReader}(x, ...)
+\method{as_polars_df}{RecordBatchReader}(x, ..., experimental = FALSE)
 
 \method{as_polars_df}{nanoarrow_array}(x, ...)
 
@@ -129,6 +136,9 @@ into the resulting DataFrame. Useful in interactive mode to not lock R session.}
 
 \item{rechunk}{A logical flag (default \code{TRUE}).
 Make sure that all data of each column is in contiguous memory.}
+
+\item{experimental}{If \code{TRUE}, use experimental Arrow C stream interface inside the function.
+This argument is experimental and may be removed in the future.}
 }
 \value{
 a \link[=DataFrame_class]{DataFrame}

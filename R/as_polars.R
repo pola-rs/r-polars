@@ -7,6 +7,7 @@
 #' [$collect()][LazyFrame_collect] or [$fetch()][LazyFrame_fetch], depending on
 #' whether the number of rows to fetch is infinite or not.
 #' @rdname as_polars_df
+#' @inheritParams as_polars_series
 #' @param x Object to convert to a polars DataFrame.
 #' @param ... Additional arguments passed to methods.
 #' @return a [DataFrame][DataFrame_class]
@@ -212,20 +213,33 @@ as_polars_df.ArrowTabular = function(
     ...,
     rechunk = TRUE,
     schema = NULL,
-    schema_overrides = NULL) {
+    schema_overrides = NULL,
+    experimental = FALSE) {
   arrow_to_rpldf(
     x,
     rechunk = rechunk,
     schema = schema,
-    schema_overrides = schema_overrides
-  )
+    schema_overrides = schema_overrides,
+    experimental = experimental
+  ) |>
+    result() |>
+    unwrap("in as_polars_df():")
 }
 
 
 #' @rdname as_polars_df
 #' @export
-as_polars_df.RecordBatchReader = function(x, ...) {
-  as_polars_series.RecordBatchReader(x, name = "")$to_frame()$unnest("")
+as_polars_df.RecordBatchReader = function(x, ..., experimental = FALSE) {
+  uw = \(res) unwrap(res, "in as_polars_df(<RecordBatchReader>):")
+
+  if (isTRUE(experimental)) {
+    as_polars_series(x, name = "")$to_frame()$unnest("") |>
+      result() |>
+      uw()
+  } else {
+    .pr$DataFrame$from_arrow_record_batches(x$batches()) |>
+      uw()
+  }
 }
 
 

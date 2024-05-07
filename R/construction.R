@@ -9,9 +9,11 @@
 #' If schema names or types do not match `x`, the columns will be renamed/recast.
 #' If `NULL` (default), convert columns as is.
 #' @param schema_overrides named list of DataTypes. Cast some columns to the DataType.
+#' @param experimental If `TRUE`, use the Arrow C stream interface.
 #' @noRd
 #' @return RPolarsDataFrame
-arrow_to_rpldf = function(at, schema = NULL, schema_overrides = NULL, rechunk = TRUE) {
+arrow_to_rpldf = function(
+    at, schema = NULL, schema_overrides = NULL, rechunk = TRUE, ..., experimental = FALSE) {
   # new column names by schema, #todo get names if schema not NULL
   n_cols = at$num_columns
 
@@ -53,7 +55,12 @@ arrow_to_rpldf = function(at, schema = NULL, schema_overrides = NULL, rechunk = 
     if (tbl$num_rows == 0L) {
       rdf = pl$DataFrame() # TODO: support creating 0-row DataFrame
     } else {
-      rdf = as_polars_series(arrow::as_record_batch_reader(tbl))$to_frame()$unnest("")
+      if (isTRUE(experimental)) {
+        rdf = as_polars_series(arrow::as_record_batch_reader(tbl))$to_frame()$unnest("")
+      } else {
+        rdf = .pr$DataFrame$from_arrow_record_batches(arrow::as_record_batch_reader(tbl)$batches()) |>
+          unwrap()
+      }
     }
   } else {
     rdf = pl$DataFrame()
