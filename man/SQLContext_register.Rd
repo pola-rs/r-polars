@@ -12,10 +12,13 @@ SQLContext_register(name, frame)
 \item{frame}{A \link[=LazyFrame_class]{LazyFrame} like object to register.}
 }
 \value{
-Returns the \link{SQLContext_class} object invisibly.
+Returns the \link[=SQLContext_class]{SQLContext} object invisibly.
 }
 \description{
 Register a single frame as a table, using the given name.
+}
+\details{
+If a table with the same name is already registered, it will be overwritten.
 }
 \examples{
 \dontshow{if (polars_info()$features$sql) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

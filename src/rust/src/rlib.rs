@@ -219,17 +219,6 @@ fn arrow_stream_to_series(robj_str: Robj) -> RResult<Robj> {
 }
 
 #[extendr]
-unsafe fn export_df_to_arrow_stream(robj_df: Robj, robj_str: Robj) -> RResult<Robj> {
-    let res: ExternalPtr<RPolarsDataFrame> = robj_df.try_into()?;
-    let pl_df = RPolarsDataFrame(res.0.clone()).0;
-    //safety robj_str must be ptr to a arrow2 stream ready to export into
-    unsafe {
-        crate::arrow_interop::to_rust::export_df_as_stream(pl_df, &robj_str)?;
-    }
-    Ok(robj_str)
-}
-
-#[extendr]
 pub fn dtype_str_repr(dtype: Robj) -> RResult<String> {
     let dtype = robj_to!(RPolarsDataType, dtype)?.0;
     Ok(dtype.to_string())
@@ -474,7 +463,6 @@ extendr_module! {
     fn new_arrow_stream;
     fn arrow_stream_to_df;
     fn arrow_stream_to_series;
-    fn export_df_to_arrow_stream;
 
     //robj meta
     fn mem_address;

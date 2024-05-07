@@ -27,6 +27,42 @@ pub const R_INT_NA_ENC: i32 = -2147483648;
 use crate::rpolarserr::polars_to_rpolars_err;
 use std::result::Result;
 
+use polars_core::error::PolarsError;
+use polars_core::utils::arrow;
+
+pub struct OwnedSeriesIterator {
+    series: pl::Series,
+    idx: usize,
+    n_chunks: usize,
+    pl_flavor: bool,
+}
+
+impl OwnedSeriesIterator {
+    pub fn new(s: pl::Series, pl_flavor: bool) -> Self {
+        Self {
+            series: s.slice(0, s.len()),
+            idx: 0,
+            n_chunks: s.n_chunks(),
+            pl_flavor,
+        }
+    }
+}
+
+impl Iterator for OwnedSeriesIterator {
+    type Item = Result<Box<dyn arrow::array::Array>, PolarsError>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.idx >= self.n_chunks {
+            None
+        } else {
+            let batch = self.series.to_arrow(self.idx, self.pl_flavor);
+            self.idx += 1;
+
+            Some(std::result::Result::Ok(batch))
+        }
+    }
+}
+
 #[derive(Debug, Clone)]
 pub struct RPolarsSeries(pub pl::Series);
 
@@ -520,6 +556,23 @@ impl RPolarsSeries {
     fn struct_fields(&self) -> RResult<Vec<&str>> {
         let ca = self.0.struct_().map_err(polars_to_rpolars_err)?;
         Ok(ca.fields().iter().map(|s| s.name()).collect())
+    }
+
+    pub fn export_stream(&self, stream_ptr: &str, pl_flavor: bool) {
+        let data_type = self.0.dtype().to_arrow(pl_flavor);
+        let field = pl::ArrowField::new("", data_type, false);
+
+        let iter_boxed = Box::new(OwnedSeriesIterator::new(self.0.clone(), pl_flavor));
+        let mut stream = arrow::ffi::export_iterator(iter_boxed, field);
+        let stream_out_ptr_addr: usize = stream_ptr.parse().unwrap();
+        let stream_out_ptr = stream_out_ptr_addr as *mut arrow::ffi::ArrowArrayStream;
+        unsafe {
+            std::ptr::swap_nonoverlapping(
+                stream_out_ptr,
+                &mut stream as *mut arrow::ffi::ArrowArrayStream,
+                1,
+            );
+        }
     }
 
     pub fn from_arrow_array_stream_str(name: Robj, robj_str: Robj) -> RResult<Robj> {

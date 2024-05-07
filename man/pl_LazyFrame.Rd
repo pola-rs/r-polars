@@ -10,7 +10,7 @@ pl_LazyFrame(...)
 \item{...}{Anything that is accepted by \code{pl$DataFrame()}}
 }
 \value{
-LazyFrame
+\link[=LazyFrame_class]{LazyFrame}
 }
 \description{
 This is simply a convenience function to create \code{LazyFrame}s in a quick way.
@@ -39,4 +39,3 @@ pl$LazyFrame(
   schema = list(Sepal.Length = pl$Float32, Species = pl$String)
 )$collect()
 }
-\keyword{LazyFrame_new}

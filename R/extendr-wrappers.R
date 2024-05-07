@@ -64,8 +64,6 @@ arrow_stream_to_df <- function(robj_str) .Call(wrap__arrow_stream_to_df, robj_st
 
 arrow_stream_to_series <- function(robj_str) .Call(wrap__arrow_stream_to_series, robj_str)
 
-export_df_to_arrow_stream <- function(robj_df, robj_str) .Call(wrap__export_df_to_arrow_stream, robj_df, robj_str)
-
 mem_address <- function(robj) .Call(wrap__mem_address, robj)
 
 clone_robj <- function(robj) .Call(wrap__clone_robj, robj)
@@ -102,7 +100,7 @@ import_arrow_ipc <- function(path, n_rows, cache, rechunk, row_name, row_index, 
 
 new_from_ndjson <- function(path, infer_schema_length, batch_size, n_rows, low_memory, rechunk, row_index_name, row_index_offset, ignore_errors) .Call(wrap__new_from_ndjson, path, infer_schema_length, batch_size, n_rows, low_memory, rechunk, row_index_name, row_index_offset, ignore_errors)
 
-new_from_parquet <- function(path, n_rows, cache, parallel, rechunk, row_name, row_index, use_statistics, low_memory, hive_partitioning) .Call(wrap__new_from_parquet, path, n_rows, cache, parallel, rechunk, row_name, row_index, use_statistics, low_memory, hive_partitioning)
+new_from_parquet <- function(path, n_rows, cache, parallel, rechunk, row_name, row_index, storage_options, use_statistics, low_memory, hive_partitioning) .Call(wrap__new_from_parquet, path, n_rows, cache, parallel, rechunk, row_name, row_index, storage_options, use_statistics, low_memory, hive_partitioning)
 
 test_rpolarserr <- function() .Call(wrap__test_rpolarserr)
 
@@ -117,8 +115,6 @@ handle_background_request <- function(server_name) .Call(wrap__handle_background
 test_rbackgroundhandler <- function(lambda, arg) .Call(wrap__test_rbackgroundhandler, lambda, arg)
 
 test_rthreadhandle <- function() .Call(wrap__test_rthreadhandle)
-
-test_serde_df <- function(df) .Call(wrap__test_serde_df, df)
 
 internal_wrap_e <- function(robj, str_to_lit) .Call(wrap__internal_wrap_e, robj, str_to_lit)
 
@@ -206,7 +202,7 @@ RPolarsDataFrame$unnest <- function(names) .Call(wrap__RPolarsDataFrame__unnest,
 
 RPolarsDataFrame$partition_by <- function(by, maintain_order, include_key) .Call(wrap__RPolarsDataFrame__partition_by, self, by, maintain_order, include_key)
 
-RPolarsDataFrame$export_stream <- function(stream_ptr) invisible(.Call(wrap__RPolarsDataFrame__export_stream, self, stream_ptr))
+RPolarsDataFrame$export_stream <- function(stream_ptr, pl_flavor) invisible(.Call(wrap__RPolarsDataFrame__export_stream, self, stream_ptr, pl_flavor))
 
 RPolarsDataFrame$from_arrow_record_batches <- function(rbr) .Call(wrap__RPolarsDataFrame__from_arrow_record_batches, rbr)
 
@@ -229,6 +225,10 @@ RPolarsDataFrame$clear <- function() .Call(wrap__RPolarsDataFrame__clear, self)
 RPolarsDataFrame$write_csv <- function(file, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style) .Call(wrap__RPolarsDataFrame__write_csv, self, file, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style)
 
 RPolarsDataFrame$write_ipc <- function(file, compression, future) .Call(wrap__RPolarsDataFrame__write_ipc, self, file, compression, future)
+
+RPolarsDataFrame$to_raw_ipc <- function(compression, future) .Call(wrap__RPolarsDataFrame__to_raw_ipc, self, compression, future)
+
+RPolarsDataFrame$from_raw_ipc <- function(bits, n_rows, row_name, row_index, memory_map) .Call(wrap__RPolarsDataFrame__from_raw_ipc, bits, n_rows, row_name, row_index, memory_map)
 
 RPolarsDataFrame$write_parquet <- function(file, compression_method, compression_level, statistics, row_group_size, data_pagesize_limit) .Call(wrap__RPolarsDataFrame__write_parquet, self, file, compression_method, compression_level, statistics, row_group_size, data_pagesize_limit)
 
@@ -275,6 +275,8 @@ RPolarsDataType <- new.env(parent = emptyenv())
 RPolarsDataType$new <- function(s) .Call(wrap__RPolarsDataType__new, s)
 
 RPolarsDataType$new_categorical <- function(ordering) .Call(wrap__RPolarsDataType__new_categorical, ordering)
+
+RPolarsDataType$new_enum <- function(categories) .Call(wrap__RPolarsDataType__new_enum, categories)
 
 RPolarsDataType$new_datetime <- function(tu, tz) .Call(wrap__RPolarsDataType__new_datetime, tu, tz)
 
@@ -850,6 +852,8 @@ RPolarsExpr$dt_total_nanoseconds <- function() .Call(wrap__RPolarsExpr__dt_total
 
 RPolarsExpr$dt_offset_by <- function(by) .Call(wrap__RPolarsExpr__dt_offset_by, self, by)
 
+RPolarsExpr$dt_is_leap_year <- function() .Call(wrap__RPolarsExpr__dt_is_leap_year, self)
+
 RPolarsExpr$repeat_by <- function(by) .Call(wrap__RPolarsExpr__repeat_by, self, by)
 
 RPolarsExpr$log10 <- function() .Call(wrap__RPolarsExpr__log10, self)
@@ -955,6 +959,12 @@ RPolarsExpr$sub <- function(other) .Call(wrap__RPolarsExpr__sub, self, other)
 RPolarsExpr$div <- function(other) .Call(wrap__RPolarsExpr__div, self, other)
 
 RPolarsExpr$pow <- function(exponent) .Call(wrap__RPolarsExpr__pow, self, exponent)
+
+RPolarsExpr$cut <- function(breaks, labels, left_closed, include_breaks) .Call(wrap__RPolarsExpr__cut, self, breaks, labels, left_closed, include_breaks)
+
+RPolarsExpr$qcut <- function(probs, labels, left_closed, allow_duplicates, include_breaks) .Call(wrap__RPolarsExpr__qcut, self, probs, labels, left_closed, allow_duplicates, include_breaks)
+
+RPolarsExpr$qcut_uniform <- function(n_bins, labels, left_closed, allow_duplicates, include_breaks) .Call(wrap__RPolarsExpr__qcut_uniform, self, n_bins, labels, left_closed, allow_duplicates, include_breaks)
 
 RPolarsExpr$over <- function(partition_by, mapping) .Call(wrap__RPolarsExpr__over, self, partition_by, mapping)
 
@@ -1064,6 +1074,10 @@ RPolarsExpr$str_replace_many <- function(patterns, replace_with, ascii_case_inse
 
 RPolarsExpr$str_find <- function(pat, literal, strict) .Call(wrap__RPolarsExpr__str_find, self, pat, literal, strict)
 
+RPolarsExpr$str_head <- function(n) .Call(wrap__RPolarsExpr__str_head, self, n)
+
+RPolarsExpr$str_tail <- function(n) .Call(wrap__RPolarsExpr__str_tail, self, n)
+
 RPolarsExpr$bin_contains <- function(lit) .Call(wrap__RPolarsExpr__bin_contains, self, lit)
 
 RPolarsExpr$bin_starts_with <- function(sub) .Call(wrap__RPolarsExpr__bin_starts_with, self, sub)
@@ -1137,6 +1151,10 @@ RPolarsLazyFrame$describe_optimized_plan <- function() .Call(wrap__RPolarsLazyFr
 RPolarsLazyFrame$collect <- function() .Call(wrap__RPolarsLazyFrame__collect, self)
 
 RPolarsLazyFrame$collect_in_background <- function() .Call(wrap__RPolarsLazyFrame__collect_in_background, self)
+
+RPolarsLazyFrame$serialize <- function() .Call(wrap__RPolarsLazyFrame__serialize, self)
+
+RPolarsLazyFrame$deserialize <- function(json) .Call(wrap__RPolarsLazyFrame__deserialize, json)
 
 RPolarsLazyFrame$sink_parquet <- function(path, compression_method, compression_level, statistics, row_group_size, data_pagesize_limit, maintain_order) .Call(wrap__RPolarsLazyFrame__sink_parquet, self, path, compression_method, compression_level, statistics, row_group_size, data_pagesize_limit, maintain_order)
 
@@ -1355,6 +1373,8 @@ RPolarsSeries$to_frame <- function() .Call(wrap__RPolarsSeries__to_frame, self)
 RPolarsSeries$set_sorted_mut <- function(descending) invisible(.Call(wrap__RPolarsSeries__set_sorted_mut, self, descending))
 
 RPolarsSeries$struct_fields <- function() .Call(wrap__RPolarsSeries__struct_fields, self)
+
+RPolarsSeries$export_stream <- function(stream_ptr, pl_flavor) invisible(.Call(wrap__RPolarsSeries__export_stream, self, stream_ptr, pl_flavor))
 
 RPolarsSeries$from_arrow_array_stream_str <- function(name, robj_str) .Call(wrap__RPolarsSeries__from_arrow_array_stream_str, name, robj_str)
 

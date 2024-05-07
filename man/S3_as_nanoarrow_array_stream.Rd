@@ -2,24 +2,36 @@
 % Please edit documentation in R/pkg-nanoarrow.R
 \name{as_nanoarrow_array_stream.RPolarsDataFrame}
 \alias{as_nanoarrow_array_stream.RPolarsDataFrame}
+\alias{as_nanoarrow_array_stream.RPolarsSeries}
 \title{Create a nanoarrow_array_stream from a Polars object}
 \usage{
-\method{as_nanoarrow_array_stream}{RPolarsDataFrame}(x, ..., schema = NULL)
+\method{as_nanoarrow_array_stream}{RPolarsDataFrame}(x, ..., schema = NULL, future = FALSE)
+
+\method{as_nanoarrow_array_stream}{RPolarsSeries}(x, ..., schema = NULL, future = FALSE)
 }
 \arguments{
-\item{x}{\link[=DataFrame_class]{A Polars DataFrame}}
+\item{x}{A polars object}
 
 \item{...}{Ignored}
 
 \item{schema}{must stay at default value NULL}
+
+\item{future}{Setting this to \code{TRUE} will write Polars' internal data structures that
+might not be available by other Arrow implementations.
+This functionality is considered \strong{unstable}.
+It may be changed at any point without it being considered a breaking change.}
 }
 \description{
 Create a nanoarrow_array_stream from a Polars object
 }
 \examples{
+\dontshow{if (requireNamespace("nanoarrow", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(nanoarrow)
-pl_df = as_polars_df(mtcars)
 
-nanoarrow_array_stream = as_nanoarrow_array_stream(pl_df)
-as.data.frame(nanoarrow_array_stream)
+pl_df = as_polars_df(mtcars)$head(5)
+pl_s = as_polars_series(letters[1:5])
+
+as.data.frame(as_nanoarrow_array_stream(pl_df))
+as.vector(as_nanoarrow_array_stream(pl_s))
+\dontshow{\}) # examplesIf}
 }

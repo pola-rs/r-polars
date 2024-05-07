@@ -7,7 +7,7 @@
 SQLContext_execute(query)
 }
 \arguments{
-\item{query}{A valid string SQL query.}
+\item{query}{A character of the SQL query to execute.}
 }
 \value{
 A \link[=LazyFrame_class]{LazyFrame}

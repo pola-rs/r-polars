@@ -1,6 +1,6 @@
 # NEWS
 
-## polars (development version)
+## Polars R Package (development version)
 
 ### Breaking changes
 
@@ -8,7 +8,52 @@
   For example, `pl$Struct(pl$Boolean)` doesn't work anymore and should be named
   like `pl$Struct(a = pl$Boolean)` (#1053).
 
-## polars 0.16.1
+### New features
+
+- `pl$read_ipc()` can read a raw vector of Apache Arrow IPC file (#1072).
+- New method `<DataFrame>$to_raw_ipc()` to serialize a DataFrame to a raw vector
+  of Apache Arrow IPC file format (#1072).
+- New method `<LazyFrame>$serialize()` to serialize a LazyFrame to a character
+  vector of JSON representation (#1073).
+- New function `pl$deserialize_lf()` to deserialize a LazyFrame from a character
+  vector of JSON representation (#1073).
+- New methods `$str$head()` and `$str$tail()` (#1074).
+- New S3 methods `nanoarrow::as_nanoarrow_array_stream()` and `nanoarrow::infer_nanoarrow_schema()`
+  for `RPolarsSeries` (#1076).
+- New method `$dt$is_leap_year()` (#1077).
+
+## Polars R Package 0.16.3
+
+### New features
+
+- New method `<SQLContext>$register_globals()` (#1064).
+- New experimental method `$sql()` for DataFrame and LazyFrame (#1065).
+
+### Miscellaneous
+
+- Move the API document website to the new place (#1067, #1068).
+  Access to the old website is set to redirect to the top page of the new website.
+  - Old URL: `https://rpolars.github.io/`
+  - New URL: `https://pola-rs.github.io/r-polars/`
+
+## Polars R Package 0.16.2
+
+### New features
+
+- `$cut()` and `$qcut()` to bin continuous values into discrete categories (#1057).
+- `pl$scan_parquet()` and `pl$read_parquet()` can read data from the internet by specifying a URL
+  to the first argument (#1056, @andyquinterom).
+- `pl$scan_parquet()` and `pl$read_parquet()` gain an argument `storage_options`
+  to scan/read data via cloud storage providers (GCP, AWS, Azure). Note that this
+  support is experimental (#1056, @andyquinterom).
+- Add support for the `Enum` datatype via `pl$Enum()` (#1061).
+
+### Bug fixes
+
+- In some read/scan functions, downloading files could fail if the URL was too
+  long. This is now fixed (#1049, @DyfanJones).
+
+## Polars R Package 0.16.1
 
 This is a small hot-fix release to update dependent Rust polars to 0.39.1 (#1042).
 

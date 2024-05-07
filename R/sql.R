@@ -29,10 +29,10 @@ print.RPolarsSQLContext = function(x, ...) {
 
 
 #' Initialise a new SQLContext
-#' @name pl_SQLContext
-#' @description Create a new SQLContext and register the given LazyFrames.
+#'
+#' Create a new SQLContext and register the given LazyFrames.
 #' @param ... Name-value pairs of [LazyFrame][LazyFrame_class] like objects to register.
-#' @return RPolarsSQLContext
+#' @return An [SQLContext][SQLContext_class]
 #' @examplesIf polars_info()$features$sql
 #' ctx = pl$SQLContext(mtcars = mtcars)
 #' ctx
@@ -57,9 +57,10 @@ pl_SQLContext = function(...) {
 }
 
 
-#' @title Execute SQL query against the registered data
-#' @description Parse the given SQL query and execute it against the registered frame data.
-#' @param query A valid string SQL query.
+#' Execute SQL query against the registered data
+#'
+#' Parse the given SQL query and execute it against the registered frame data.
+#' @param query A character of the SQL query to execute.
 #' @return A [LazyFrame][LazyFrame_class]
 #' @examplesIf polars_info()$features$sql
 #' query = "SELECT * FROM mtcars WHERE cyl = 4"
@@ -71,11 +72,14 @@ SQLContext_execute = function(query) {
 }
 
 
-#' @title Register a single data as a table
-#' @description Register a single frame as a table, using the given name.
+#' Register a single data as a table
+#'
+#' Register a single frame as a table, using the given name.
+#'
+#' If a table with the same name is already registered, it will be overwritten.
 #' @param name A string name to register the frame as.
 #' @param frame A [LazyFrame][LazyFrame_class] like object to register.
-#' @return Returns the [SQLContext_class] object invisibly.
+#' @return Returns the [SQLContext][SQLContext_class] object invisibly.
 #' @examplesIf polars_info()$features$sql
 #' ctx = pl$SQLContext()
 #' ctx$register("mtcars", mtcars)
@@ -88,10 +92,11 @@ SQLContext_register = function(name, frame) {
 }
 
 
-#' @title Register multiple data as tables
-#' @description Register multiple frames as tables.
+#' Register multiple data as tables
+#'
+#' Register multiple frames as tables.
+#' @inherit SQLContext_register details return
 #' @param ... Name-value pairs of [LazyFrame][LazyFrame_class] like objects to register.
-#' @return Returns the [SQLContext_class] object invisibly.
 #' @examplesIf polars_info()$features$sql
 #' ctx = pl$SQLContext()
 #' r_df = mtcars
@@ -125,10 +130,11 @@ SQLContext_register_many = function(...) {
 }
 
 
-#' @title Unregister tables by name
-#' @description Unregister tables by name.
+#' Unregister tables by name
+#'
+#' Unregister tables by name.
+#' @inherit SQLContext_register return
 #' @param names A character vector of table names to unregister.
-#' @return Returns the [SQLContext_class] object invisibly.
 #' @examplesIf polars_info()$features$sql
 #' # Initialise a new SQLContext and register the given tables.
 #' ctx = pl$SQLContext(x = mtcars, y = mtcars, z = mtcars)
@@ -146,8 +152,9 @@ SQLContext_unregister = function(names) {
 }
 
 
-#' @title List registered tables
-#' @description Return a character vector of the registered table names.
+#' List registered tables
+#'
+#' Return a character vector of the registered table names.
 #' @return A character vector of the registered table names.
 #' @examplesIf polars_info()$features$sql
 #' ctx = pl$SQLContext()
@@ -159,4 +166,40 @@ SQLContext_unregister = function(names) {
 SQLContext_tables = function() {
   .pr$SQLContext$get_tables(self) |>
     unwrap("in $tables()")
+}
+
+
+#' Register all polars DataFrames/LazyFrames found in the environment
+#'
+#' Automatically maps variable names to table names.
+#' @inherit SQLContext_register details return
+#' @param ... Ignored.
+#' @param envir The environment to search for polars
+#' [DataFrames][DataFrame_class]/[LazyFrames][LazyFrame_class].
+#' @seealso
+#' - [`<SQLContext>$register()`][SQLContext_register]
+#' - [`<SQLContext>$register_many()`][SQLContext_register_many]
+#' - [`<SQLContext>$unregister()`][SQLContext_unregister]
+#' @examplesIf polars_info()$features$sql
+#' df1 = pl$DataFrame(a = 1:3, b = c("x", NA, "z"))
+#' df2 = pl$LazyFrame(a = 2:4, c = c("t", "w", "v"))
+#'
+#' # Register frames directly from variables found in the current environment.
+#' ctx = pl$SQLContext()$register_globals()
+#' ctx$tables()
+#'
+#' ctx$execute(
+#'   "SELECT a, b, c FROM df1 LEFT JOIN df2 USING (a) ORDER BY a DESC"
+#' )$collect()
+SQLContext_register_globals = function(..., envir = parent.frame()) {
+  Filter(
+    \(x) inherits(get(x, envir = envir), c("RPolarsDataFrame", "RPolarsLazyFrame")),
+    ls(envir = envir)
+  ) |>
+    sapply(\(x) get(x, envir = envir), simplify = FALSE, USE.NAMES = TRUE) |>
+    do.call(self$register_many, args = _) |>
+    result() |>
+    unwrap("in $register_globals()")
+
+  invisible(self)
 }

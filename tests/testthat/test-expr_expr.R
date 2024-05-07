@@ -2702,3 +2702,75 @@ test_that("rle_id works", {
     )
   )
 })
+
+test_that("cut works", {
+  df = pl$DataFrame(foo = c(-2, -1, 0, 1, 2))
+
+  expect_identical(
+    df$select(
+      cut = pl$col("foo")$cut(c(-1, 1), labels = c("a", "b", "c"))
+    )$to_list(),
+    list(cut = factor(c("a", "a", "b", "b", "c")))
+  )
+
+  expect_identical(
+    df$select(
+      cut = pl$col("foo")$cut(c(-1, 1), labels = c("a", "b", "c"), left_closed = TRUE)
+    )$to_list(),
+    list(cut = factor(c("a", "b", "b", "c", "c")))
+  )
+
+  expect_identical(
+    df$select(
+      cut = pl$col("foo")$cut(c(-1, 1), include_breaks = TRUE)
+    )$unnest("cut")$to_list(),
+    list(
+      brk = c(-1, -1, 1, 1, Inf),
+      foo_bin = factor(c("(-inf, -1]", "(-inf, -1]", "(-1, 1]", "(-1, 1]", "(1, inf]"))
+    )
+  )
+
+  expect_identical(
+    df$select(
+      cut = pl$col("foo")$cut(c(-1, 1), include_breaks = TRUE, left_closed = TRUE)
+    )$unnest("cut")$to_list(),
+    list(
+      brk = c(-1, 1, 1, Inf, Inf),
+      foo_bin = factor(c("[-inf, -1)", "[-1, 1)", "[-1, 1)", "[1, inf)", "[1, inf)"))
+    )
+  )
+})
+
+test_that("qcut works", {
+  df = pl$DataFrame(foo = c(-2, -1, 0, 1, 2))
+
+  expect_equal(
+    df$select(
+      qcut = pl$col("foo")$qcut(c(0.25, 0.75), labels = c("a", "b", "c"))
+    )$to_list(),
+    list(qcut = factor(c("a", "a", "b", "b", "c")))
+  )
+
+  expect_equal(
+    df$select(
+      qcut = pl$col("foo")$qcut(c(0.25, 0.75), labels = c("a", "b", "c"), include_breaks = TRUE)
+    )$unnest("qcut")$to_list(),
+    list(brk = c(-1, -1, 1, 1, Inf), foo_bin = factor(c("a", "a", "b", "b", "c")))
+  )
+
+  expect_equal(
+    df$select(
+      qcut = pl$col("foo")$qcut(2, labels = c("low", "high"), left_closed = TRUE)
+    )$to_list(),
+    list(qcut = factor(c("low", "low", rep("high", 3))))
+  )
+
+  expect_grepl_error(
+    df$select(qcut = pl$col("foo")$qcut("a")),
+    "must either be an integer of length 1 or a vector of probabilities"
+  )
+
+  expect_error(
+    df$select(qcut = pl$col("foo")$qcut(c("a", "b")))
+  )
+})

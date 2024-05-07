@@ -49,7 +49,7 @@ env:
 permissions: read-all
 
 jobs:
-  documentation:
+  build:
     runs-on: ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -99,34 +99,31 @@ jobs:
         run: |
           task setup-python-tools
 
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
       - name: Build docs
         run: task build-website
 
       - name: upload docs
-        if: ${{ github.event_name == 'pull_request' }}
-        uses: actions/upload-artifact@v4
+        if: always()
+        uses: actions/upload-pages-artifact@v3
         with:
-          name: docs
           path: docs
 
-      - uses: webfactory/ssh-agent@v0.9.0
-        env:
-          DEPLOY_DOCS: ${{ secrets.DEPLOY_DOCS  }}
-        if: ${{ (github.event_name != 'pull_request') && (github.repository_owner == 'pola-rs') }}
-        with:
-          ssh-private-key: ${{ secrets.DEPLOY_DOCS }}
-
-        # https://www.mkdocs.org/user-guide/deploying-your-docs/
-      - name: Build site and deploy to GitHub pages
-        env:
-          DEPLOY_DOCS: ${{ secrets.DEPLOY_DOCS  }}
-        if: ${{ (github.event_name != 'pull_request') && (github.repository_owner == 'pola-rs') }}
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          clean: true
-          branch: main
-          folder: docs
-          repository-name: rpolars/rpolars.github.io
-          ssh-key: true
-          clean-exclude: |
-            .nojekyll
+  deploy:
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    if: ${{ (github.event_name != 'pull_request') }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        if: ${{ (github.event_name != 'pull_request') }}
+        uses: actions/deploy-pages@v4

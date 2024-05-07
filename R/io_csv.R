@@ -134,7 +134,9 @@ pl_scan_csv = function(
         return(RPolarsRNullValues$new_named(unlist(null_values)))
       }
 
-      stop("null_values arg must be a string OR unamed char vec OR named char vec")
+      Err_plain(
+        "null_values arg must be a string OR unamed char vec OR named char vec"
+      ) |> unwrap("in pl$scan_csv():")
     })()
 
     args$null_values = RNullValues
@@ -187,6 +189,7 @@ pl_read_csv = function(
     unwrap("in pl$read_csv():")
 }
 
+cache_temp_file = new.env(parent = new.env())
 check_is_link = function(path, reuse_downloaded, raise_error = FALSE) {
   # do nothing let path fail on rust side
   if (is.na(path)) {
@@ -213,16 +216,18 @@ check_is_link = function(path, reuse_downloaded, raise_error = FALSE) {
     # try download file if valid url
     if (!is.null(con)) {
       close(con)
-      tmp_file = paste0(tempdir(), "/", make.names(actual_url))
-      if (isFALSE(reuse_downloaded) || isFALSE(file.exists(tmp_file))) {
-        download.file(url = actual_url, destfile = tmp_file)
-        message(paste("tmp file placed in \n", tmp_file))
+      if (is.null(cache_temp_file[[actual_url]])) {
+        cache_temp_file[[actual_url]] = tempfile()
+      }
+      if (isFALSE(reuse_downloaded) || isFALSE(file.exists(cache_temp_file[[actual_url]]))) {
+        download.file(url = actual_url, destfile = cache_temp_file[[actual_url]])
+        message(paste("tmp file placed in \n", cache_temp_file[[actual_url]]))
       }
 
-      path = tmp_file # redirect path to tmp downloaded file
+      path = cache_temp_file[[actual_url]] # redirect path to tmp downloaded file
     } else {
       if (raise_error) {
-        stop("failed to locate file at path/url: ", path)
+        Err_plain(paste("failed to locate file at path/url:", path)) |> unwrap()
       }
       # do nothing let path fail on rust side
       path = NULL
@@ -235,7 +240,8 @@ check_is_link = function(path, reuse_downloaded, raise_error = FALSE) {
 
 list_to_datatype_vector = function(x) {
   if (!is.list(x) || !is_named(x)) {
-    stop("could not interpret dtypes, must be a named list of DataTypes")
+    Err_plain("could not interpret dtypes, must be a named list of DataTypes") |>
+      unwrap()
   }
   datatype_vector = RPolarsDataTypeVector$new() # mutable
   mapply(
@@ -247,7 +253,8 @@ list_to_datatype_vector = function(x) {
         type = DataType$new(type)
       }
       if (!inherits(type, "RPolarsDataType")) {
-        stop("arg dtypes must be a named list of dtypes or dtype names")
+        Err_plain("arg dtypes must be a named list of dtypes or dtype names") |>
+          unwrap()
       }
       datatype_vector$push(name, type)
     }

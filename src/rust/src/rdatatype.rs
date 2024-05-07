@@ -79,6 +79,7 @@ impl RPolarsDataType {
             "Time" | "time" => pl::DataType::Time,
             "Null" | "null" => pl::DataType::Null,
             "Categorical" | "factor" => pl::DataType::Categorical(None, Default::default()),
+            "Enum" => pl::DataType::Enum(None, Default::default()),
             "Unknown" | "unknown" => pl::DataType::Unknown,
 
             _ => panic!("data type not recgnized "),
@@ -89,6 +90,16 @@ impl RPolarsDataType {
     pub fn new_categorical(ordering: Robj) -> RResult<RPolarsDataType> {
         let ordering = robj_to!(CategoricalOrdering, ordering)?;
         Ok(RPolarsDataType(pl::DataType::Categorical(None, ordering)))
+    }
+
+    pub fn new_enum(categories: Robj) -> RResult<RPolarsDataType> {
+        use crate::conversion_r_to_s::robjname2series;
+        let s = robjname2series(categories, "").unwrap();
+        let ca = s.str()?;
+        let categories = ca.downcast_iter().next().unwrap().clone();
+        Ok(RPolarsDataType(pl::datatypes::create_enum_data_type(
+            categories,
+        )))
     }
 
     pub fn new_datetime(tu: Robj, tz: Nullable<String>) -> RResult<RPolarsDataType> {
@@ -202,6 +213,20 @@ impl RPolarsDataType {
     pub fn is_temporal(&self) -> bool {
         self.0.is_temporal()
     }
+
+    // When rust-polars 0.40.0 is released:
+
+    // pub fn is_enum(&self) -> bool {
+    //     self.0.is_enum()
+    // }
+
+    // pub fn is_categorical(&self) -> bool {
+    //     self.0.is_categorical()
+    // }
+
+    // pub fn is_string(&self) -> bool {
+    //     self.0.is_string()
+    // }
 
     pub fn is_logical(&self) -> bool {
         self.0.is_logical()
@@ -358,6 +383,20 @@ pub fn robj_to_interpolation_method(robj: Robj) -> RResult<pl::InterpolationMeth
         s => rerr().bad_val(format!(
             "InterpolationMethod choice ('{s}') must be one of 'linear' or 'nearest'",
         )),
+    }
+}
+
+pub fn robj_to_cloud_options(url: &str, robj: &Robj) -> RResult<Option<pl::cloud::CloudOptions>> {
+    if robj.is_null() {
+        return Ok(None);
+    }
+    if let (Some(names), Some(values)) = (robj.as_str_iter(), robj.names()) {
+        Ok(Some(pl::cloud::CloudOptions::from_untyped_config(
+            url,
+            values.zip(names),
+        )?))
+    } else {
+        Ok(None)
     }
 }
 

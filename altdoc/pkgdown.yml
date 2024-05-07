@@ -4,5 +4,5 @@ articles:
   userguide: userguide.html
   performance: performance.html
 urls:
-  reference: https://rpolars.github.io/man
-  article: https://rpolars.github.io/vignettes
+  reference: https://pola-rs.github.io/r-polars/man
+  article: https://pola-rs.github.io/r-polars/vignettes

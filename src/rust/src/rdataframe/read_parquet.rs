@@ -1,4 +1,5 @@
 use crate::lazy::dataframe::RPolarsLazyFrame;
+use crate::rdatatype::robj_to_cloud_options;
 use crate::robj_to;
 use crate::rpolarserr::{polars_to_rpolars_err, RResult};
 
@@ -6,6 +7,7 @@ use extendr_api::Rinternals;
 use extendr_api::{extendr, extendr_module, Robj};
 use polars::io::RowIndex;
 use polars::prelude::{self as pl};
+
 #[allow(clippy::too_many_arguments)]
 #[extendr]
 pub fn new_from_parquet(
@@ -16,12 +18,14 @@ pub fn new_from_parquet(
     rechunk: Robj,
     row_name: Robj,
     row_index: Robj,
-    //storage_options: Robj, // not supported yet, add provide features e.g. aws
+    storage_options: Robj,
     use_statistics: Robj,
     low_memory: Robj,
     hive_partitioning: Robj,
     //retries: Robj // not supported yet, with CloudOptions
 ) -> RResult<RPolarsLazyFrame> {
+    let path = robj_to!(String, path)?;
+    let cloud_options = robj_to_cloud_options(&path, &storage_options)?;
     let offset = robj_to!(Option, u32, row_index)?.unwrap_or(0);
     let opt_row_index = robj_to!(Option, String, row_name)?.map(|name| RowIndex { name, offset });
     let args = pl::ScanArgsParquet {
@@ -31,7 +35,7 @@ pub fn new_from_parquet(
         rechunk: robj_to!(bool, rechunk)?,
         row_index: opt_row_index,
         low_memory: robj_to!(bool, low_memory)?,
-        cloud_options: None,
+        cloud_options,
         use_statistics: robj_to!(bool, use_statistics)?,
         hive_options: polars::io::HiveOptions {
             enabled: robj_to!(bool, hive_partitioning)?,
@@ -39,7 +43,7 @@ pub fn new_from_parquet(
         },
     };
 
-    pl::LazyFrame::scan_parquet(robj_to!(String, path)?, args)
+    pl::LazyFrame::scan_parquet(path, args)
         .map_err(polars_to_rpolars_err)
         .map(RPolarsLazyFrame)
 }
