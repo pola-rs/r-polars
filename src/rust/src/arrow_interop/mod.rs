@@ -67,8 +67,7 @@ impl RPackage for NanoArrowRPackage {
 #[extendr]
 pub fn polars_allocate_array_stream() -> Robj {
     let aas = Box::new(arrow::ffi::ArrowArrayStream::empty());
-    let x = Box::leak(aas); // leak box to make lifetime static
-    let x = x as *mut arrow::ffi::ArrowArrayStream;
+    let x = Box::into_raw(aas);
     format!("{:?}", x as usize).into()
 }
 
