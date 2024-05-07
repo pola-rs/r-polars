@@ -232,35 +232,33 @@ test_that("from arrow Table and ChunkedArray", {
     unname(as.list(at))
   )
 
-  # no rechunk no longer works
-  # expect_identical(
-  #   lapply(at$columns, \(x) length(as_polars_series.ChunkedArray(x, rechunk = FALSE)$chunk_lengths())),
-  #   lapply(at$columns, \(x) x$num_chunks)
-  # )
-  # expect_grepl_error(expect_identical(
-  #   lapply(at$columns, \(x) length(as_polars_series.ChunkedArray(x, rechunk = TRUE)$chunk_lengths())),
-  #   lapply(at$columns, \(x) x$num_chunks)
-  # ))
-  # expect_identical(
-  #   as_polars_df.ArrowTabular(at, rechunk = FALSE)$
-  #     select(pl$all()$map_batches(\(s) s$chunk_lengths()))$
-  #     to_list() |>
-  #     lapply(length) |>
-  #     unname(),
-  #   lapply(at$columns, \(x) x$num_chunks)
-  # )
+  expect_identical(
+    lapply(at$columns, \(x) length(as_polars_series.ChunkedArray(x, rechunk = FALSE)$chunk_lengths())),
+    lapply(at$columns, \(x) x$num_chunks)
+  )
+  expect_grepl_error(expect_identical(
+    lapply(at$columns, \(x) length(as_polars_series.ChunkedArray(x, rechunk = TRUE)$chunk_lengths())),
+    lapply(at$columns, \(x) x$num_chunks)
+  ))
+  expect_identical(
+    as_polars_df.ArrowTabular(at, rechunk = FALSE)$
+      select(pl$all()$map_batches(\(s) s$chunk_lengths()))$
+      to_list() |>
+      lapply(length) |>
+      unname(),
+    lapply(at$columns, \(x) x$num_chunks)
+  )
 
-  # expect_identical(
-  #   as_polars_df.ArrowTabular(at, rechunk = TRUE)$
-  #     select(pl$all()$map_batches(\(s) s$chunk_lengths()))$
-  #     to_list() |>
-  #     lapply(length) |>
-  #     unname(),
-  #   lapply(at$columns, \(x) x$num_chunks)
-  # )
+  expect_identical(
+    as_polars_df.ArrowTabular(at, rechunk = TRUE)$
+      select(pl$all()$map_batches(\(s) s$chunk_lengths()))$
+      to_list() |>
+      lapply(length) |>
+      unname(),
+    lapply(at$columns, \(x) x$num_chunks)
+  )
 
-
-  # #not supported yet
+  #not supported yet
   # #chunked data with factors
   l = list(
     df1 = data.frame(factor = factor(c("apple", "apple", "banana"))),
