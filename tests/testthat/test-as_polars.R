@@ -258,7 +258,7 @@ test_that("from arrow Table and ChunkedArray", {
     lapply(at$columns, \(x) x$num_chunks)
   )
 
-  #not supported yet
+  # not supported yet
   # #chunked data with factors
   l = list(
     df1 = data.frame(factor = factor(c("apple", "apple", "banana"))),
