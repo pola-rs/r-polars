@@ -55,12 +55,7 @@ arrow_to_rpldf = function(
     if (tbl$num_rows == 0L) {
       rdf = pl$DataFrame() # TODO: support creating 0-row DataFrame
     } else {
-      if (isTRUE(experimental)) {
-        rdf = as_polars_series(arrow::as_record_batch_reader(tbl))$to_frame()$unnest("")
-      } else {
-        rdf = .pr$DataFrame$from_arrow_record_batches(arrow::as_record_batch_reader(tbl)$batches()) |>
-          unwrap()
-      }
+      rdf = as_polars_df(arrow::as_record_batch_reader(tbl), experimental = experimental)
     }
   } else {
     rdf = pl$DataFrame()
