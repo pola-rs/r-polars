@@ -2,6 +2,8 @@
 
 ## Polars R Package (development version)
 
+## Polars R Package 0.16.4
+
 ### New features
 
 - `pl$read_ipc()` can read a raw vector of Apache Arrow IPC file (#1072).
