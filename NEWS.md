@@ -17,7 +17,7 @@
 - New method `$dt$is_leap_year()` (#1077).
 - `as_polars_df()` and `as_polars_series()` supports `arrow::RecordBatchReader` (#1078).
 - The new `experimental` argument for `as_polars_df(<ArrowTabular>)`, `as_polars_df(<RecordBatchReader>)`,
-  `as_polars_series(<nanoarrow_array_stream>)` (#1078).
+  `as_polars_series(<nanoarrow_array_stream>)`, and `as_polars_df(<nanoarrow_array_stream>)` (#1078).
 
 ## Polars R Package 0.16.3
 

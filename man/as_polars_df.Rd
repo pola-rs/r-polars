@@ -72,7 +72,7 @@ as_polars_df(x, ...)
 
 \method{as_polars_df}{nanoarrow_array}(x, ...)
 
-\method{as_polars_df}{nanoarrow_array_stream}(x, ...)
+\method{as_polars_df}{nanoarrow_array_stream}(x, ..., experimental = FALSE)
 }
 \arguments{
 \item{x}{Object to convert to a polars DataFrame.}

@@ -268,13 +268,16 @@ as_polars_df.nanoarrow_array = function(x, ...) {
 
 #' @rdname as_polars_df
 #' @export
-as_polars_df.nanoarrow_array_stream = function(x, ...) {
+as_polars_df.nanoarrow_array_stream = function(x, ..., experimental = FALSE) {
   if (!identical(nanoarrow::nanoarrow_schema_parse(x$get_schema())$type, "struct")) {
     Err_plain("Can't convert non-struct array stream to RPolarsDataFrame") |>
       unwrap("in as_polars_df(<nanoarrow_array_stream>):")
   }
 
-  as_polars_series.nanoarrow_array_stream(x, name = "")$to_frame()$unnest("")
+  as_polars_series.nanoarrow_array_stream(
+    x,
+    name = "", experimental = experimental
+  )$to_frame()$unnest("")
 }
 
 
