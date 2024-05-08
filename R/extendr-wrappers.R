@@ -10,6 +10,8 @@
 #' @useDynLib polars, .registration = TRUE
 NULL
 
+polars_allocate_array_stream <- function() .Call(wrap__polars_allocate_array_stream)
+
 all_horizontal <- function(dotdotdot) .Call(wrap__all_horizontal, dotdotdot)
 
 any_horizontal <- function(dotdotdot) .Call(wrap__any_horizontal, dotdotdot)
@@ -57,12 +59,6 @@ as_struct <- function(exprs) .Call(wrap__as_struct, exprs)
 struct_ <- function(exprs, eager, schema) .Call(wrap__struct_, exprs, eager, schema)
 
 dtype_str_repr <- function(dtype) .Call(wrap__dtype_str_repr, dtype)
-
-new_arrow_stream <- function() .Call(wrap__new_arrow_stream)
-
-arrow_stream_to_df <- function(robj_str) .Call(wrap__arrow_stream_to_df, robj_str)
-
-arrow_stream_to_series <- function(robj_str) .Call(wrap__arrow_stream_to_series, robj_str)
 
 mem_address <- function(robj) .Call(wrap__mem_address, robj)
 
@@ -1376,7 +1372,7 @@ RPolarsSeries$struct_fields <- function() .Call(wrap__RPolarsSeries__struct_fiel
 
 RPolarsSeries$export_stream <- function(stream_ptr, pl_flavor) invisible(.Call(wrap__RPolarsSeries__export_stream, self, stream_ptr, pl_flavor))
 
-RPolarsSeries$from_arrow_array_stream_str <- function(name, robj_str) .Call(wrap__RPolarsSeries__from_arrow_array_stream_str, name, robj_str)
+RPolarsSeries$import_stream <- function(name, stream_ptr) .Call(wrap__RPolarsSeries__import_stream, name, stream_ptr)
 
 RPolarsSeries$from_arrow_array_robj <- function(name, array) .Call(wrap__RPolarsSeries__from_arrow_array_robj, name, array)
 

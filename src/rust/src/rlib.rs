@@ -1,7 +1,5 @@
 use crate::lazy::dsl::RPolarsExpr;
-use crate::rdataframe::RPolarsDataFrame;
 use crate::robj_to;
-use crate::series::RPolarsSeries;
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::utils::robj_to_rchoice;
 use crate::RFnSignature;
@@ -195,28 +193,7 @@ fn struct_(exprs: Robj, eager: Robj, schema: Robj) -> Result<Robj, String> {
     }
 }
 
-#[extendr]
-fn new_arrow_stream() -> Robj {
-    crate::arrow_interop::to_rust::new_arrow_stream_internal()
-}
 use crate::rpolarserr::*;
-#[extendr]
-fn arrow_stream_to_df(robj_str: Robj) -> RResult<Robj> {
-    let s = crate::arrow_interop::to_rust::arrow_stream_to_series_internal(robj_str)?;
-    let ca = s
-        .struct_()
-        .map_err(polars_to_rpolars_err)
-        .when("unpack struct from producer")
-        .hint("producer exported a plain Series not a Struct series")?;
-    let df: pl::DataFrame = ca.clone().into();
-    Ok(RPolarsDataFrame(df).into_robj())
-}
-
-#[extendr]
-fn arrow_stream_to_series(robj_str: Robj) -> RResult<Robj> {
-    let s = crate::arrow_interop::to_rust::arrow_stream_to_series_internal(robj_str)?;
-    Ok(RPolarsSeries(s).into_robj())
-}
 
 #[extendr]
 pub fn dtype_str_repr(dtype: Robj) -> RResult<String> {
@@ -458,11 +435,6 @@ extendr_module! {
     fn struct_;
 
     fn dtype_str_repr;
-
-    // arrow conversions
-    fn new_arrow_stream;
-    fn arrow_stream_to_df;
-    fn arrow_stream_to_series;
 
     //robj meta
     fn mem_address;

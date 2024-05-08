@@ -12,6 +12,7 @@
 \alias{as_polars_df.RPolarsLazyFrame}
 \alias{as_polars_df.RPolarsLazyGroupBy}
 \alias{as_polars_df.ArrowTabular}
+\alias{as_polars_df.RecordBatchReader}
 \alias{as_polars_df.nanoarrow_array}
 \alias{as_polars_df.nanoarrow_array_stream}
 \title{To polars DataFrame}
@@ -58,11 +59,20 @@ as_polars_df(x, ...)
 
 \method{as_polars_df}{RPolarsLazyGroupBy}(x, ...)
 
-\method{as_polars_df}{ArrowTabular}(x, ..., rechunk = TRUE, schema = NULL, schema_overrides = NULL)
+\method{as_polars_df}{ArrowTabular}(
+  x,
+  ...,
+  rechunk = TRUE,
+  schema = NULL,
+  schema_overrides = NULL,
+  experimental = FALSE
+)
+
+\method{as_polars_df}{RecordBatchReader}(x, ..., experimental = FALSE)
 
 \method{as_polars_df}{nanoarrow_array}(x, ...)
 
-\method{as_polars_df}{nanoarrow_array_stream}(x, ...)
+\method{as_polars_df}{nanoarrow_array_stream}(x, ..., experimental = FALSE)
 }
 \arguments{
 \item{x}{Object to convert to a polars DataFrame.}
@@ -126,6 +136,9 @@ into the resulting DataFrame. Useful in interactive mode to not lock R session.}
 
 \item{rechunk}{A logical flag (default \code{TRUE}).
 Make sure that all data of each column is in contiguous memory.}
+
+\item{experimental}{If \code{TRUE}, use experimental Arrow C stream interface inside the function.
+This argument is experimental and may be removed in the future.}
 }
 \value{
 a \link[=DataFrame_class]{DataFrame}
@@ -144,27 +157,27 @@ whether the number of rows to fetch is infinite or not.
 # Convert the row names of a data frame to a column
 as_polars_df(mtcars, rownames = "car")
 
-# Convert an arrow Table to a polars DataFrame
-at = arrow::arrow_table(x = 1:5, y = 6:10)
-as_polars_df(at)
-
-# Convert an arrow Table, with renaming all columns
+# Convert a data frame, with renaming all columns
 as_polars_df(
-  at,
+  data.frame(x = 1, y = 2),
   schema = c("a", "b")
 )
 
-# Convert an arrow Table, with renaming and casting all columns
+# Convert a data frame, with renaming and casting all columns
 as_polars_df(
-  at,
+  data.frame(x = 1, y = 2),
   schema = list(b = pl$Int64, a = pl$String)
 )
 
-# Convert an arrow Table, with casting some columns
+# Convert a data frame, with casting some columns
 as_polars_df(
-  at,
+  data.frame(x = 1, y = 2),
   schema_overrides = list(y = pl$String) # cast some columns
 )
+
+# Convert an arrow Table to a polars DataFrame
+at = arrow::arrow_table(x = 1:5, y = 6:10)
+as_polars_df(at)
 
 # Create a polars DataFrame from a data.frame
 lf = as_polars_df(mtcars)$lazy()

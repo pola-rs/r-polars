@@ -7,6 +7,7 @@
 #' [$collect()][LazyFrame_collect] or [$fetch()][LazyFrame_fetch], depending on
 #' whether the number of rows to fetch is infinite or not.
 #' @rdname as_polars_df
+#' @inheritParams as_polars_series
 #' @param x Object to convert to a polars DataFrame.
 #' @param ... Additional arguments passed to methods.
 #' @return a [DataFrame][DataFrame_class]
@@ -14,27 +15,27 @@
 #' # Convert the row names of a data frame to a column
 #' as_polars_df(mtcars, rownames = "car")
 #'
-#' # Convert an arrow Table to a polars DataFrame
-#' at = arrow::arrow_table(x = 1:5, y = 6:10)
-#' as_polars_df(at)
-#'
-#' # Convert an arrow Table, with renaming all columns
+#' # Convert a data frame, with renaming all columns
 #' as_polars_df(
-#'   at,
+#'   data.frame(x = 1, y = 2),
 #'   schema = c("a", "b")
 #' )
 #'
-#' # Convert an arrow Table, with renaming and casting all columns
+#' # Convert a data frame, with renaming and casting all columns
 #' as_polars_df(
-#'   at,
+#'   data.frame(x = 1, y = 2),
 #'   schema = list(b = pl$Int64, a = pl$String)
 #' )
 #'
-#' # Convert an arrow Table, with casting some columns
+#' # Convert a data frame, with casting some columns
 #' as_polars_df(
-#'   at,
+#'   data.frame(x = 1, y = 2),
 #'   schema_overrides = list(y = pl$String) # cast some columns
 #' )
+#'
+#' # Convert an arrow Table to a polars DataFrame
+#' at = arrow::arrow_table(x = 1:5, y = 6:10)
+#' as_polars_df(at)
 #'
 #' # Create a polars DataFrame from a data.frame
 #' lf = as_polars_df(mtcars)$lazy()
@@ -212,13 +213,33 @@ as_polars_df.ArrowTabular = function(
     ...,
     rechunk = TRUE,
     schema = NULL,
-    schema_overrides = NULL) {
+    schema_overrides = NULL,
+    experimental = FALSE) {
   arrow_to_rpldf(
     x,
     rechunk = rechunk,
     schema = schema,
-    schema_overrides = schema_overrides
-  )
+    schema_overrides = schema_overrides,
+    experimental = experimental
+  ) |>
+    result() |>
+    unwrap("in as_polars_df():")
+}
+
+
+#' @rdname as_polars_df
+#' @export
+as_polars_df.RecordBatchReader = function(x, ..., experimental = FALSE) {
+  uw = \(res) unwrap(res, "in as_polars_df(<RecordBatchReader>):")
+
+  if (isTRUE(experimental)) {
+    as_polars_series(x, name = "")$to_frame()$unnest("") |>
+      result() |>
+      uw()
+  } else {
+    .pr$DataFrame$from_arrow_record_batches(x$batches()) |>
+      uw()
+  }
 }
 
 
@@ -247,20 +268,16 @@ as_polars_df.nanoarrow_array = function(x, ...) {
 
 #' @rdname as_polars_df
 #' @export
-as_polars_df.nanoarrow_array_stream = function(x, ...) {
-  if (!inherits(nanoarrow::infer_nanoarrow_ptype(x$get_schema()), "data.frame")) {
+as_polars_df.nanoarrow_array_stream = function(x, ..., experimental = FALSE) {
+  if (!identical(nanoarrow::nanoarrow_schema_parse(x$get_schema())$type, "struct")) {
     Err_plain("Can't convert non-struct array stream to RPolarsDataFrame") |>
       unwrap("in as_polars_df(<nanoarrow_array_stream>):")
   }
 
-  series = as_polars_series.nanoarrow_array_stream(x, name = NULL)
-
-  if (length(series)) {
-    series$to_frame()$unnest("")
-  } else {
-    # TODO: support 0-length array stream
-    pl$DataFrame()
-  }
+  as_polars_series.nanoarrow_array_stream(
+    x,
+    name = "", experimental = experimental
+  )$to_frame()$unnest("")
 }
 
 
@@ -399,6 +416,20 @@ as_polars_series.ChunkedArray = as_polars_series.Array
 
 #' @rdname as_polars_series
 #' @export
+as_polars_series.RecordBatchReader = function(x, name = NULL, ...) {
+  stream_out = polars_allocate_array_stream()
+  x$export_to_c(stream_out)
+
+  .pr$Series$import_stream(
+    name %||% "",
+    stream_out
+  ) |>
+    unwrap("in as_polars_series(<RecordBatchReader>):")
+}
+
+
+#' @rdname as_polars_series
+#' @export
 as_polars_series.nanoarrow_array = function(x, name = NULL, ...) {
   # TODO: support 0-length array
   .pr$Series$from_arrow_array_robj(name %||% "", x) |>
@@ -406,26 +437,39 @@ as_polars_series.nanoarrow_array = function(x, name = NULL, ...) {
 }
 
 
+#' @param experimental If `TRUE`, use experimental Arrow C stream interface inside the function.
+#' This argument is experimental and may be removed in the future.
 #' @rdname as_polars_series
 #' @export
-as_polars_series.nanoarrow_array_stream = function(x, name = NULL, ...) {
+as_polars_series.nanoarrow_array_stream = function(x, name = NULL, ..., experimental = FALSE) {
   on.exit(x$release())
 
-  list_of_arrays = nanoarrow::collect_array_stream(x, validate = FALSE)
+  if (isTRUE(experimental)) {
+    stream_out = polars_allocate_array_stream()
+    nanoarrow::nanoarrow_pointer_export(x, stream_out)
 
-  if (length(list_of_arrays) < 1L) {
-    # TODO: support 0-length array stream
-    out = pl$Series(name = name)
-  } else {
-    out = as_polars_series.nanoarrow_array(list_of_arrays[[1L]], name = name)
-    lapply(
-      list_of_arrays[-1L],
-      \(array) .pr$Series$append_mut(out, as_polars_series.nanoarrow_array(array))
+    .pr$Series$import_stream(
+      name %||% "",
+      stream_out
     ) |>
-      invisible()
-  }
+      unwrap("in as_polars_series(<nanoarrow_array_stream>):")
+  } else {
+    list_of_arrays = nanoarrow::collect_array_stream(x, validate = FALSE)
 
-  out
+    if (length(list_of_arrays) < 1L) {
+      # TODO: support 0-length array stream
+      out = pl$Series(name = name)
+    } else {
+      out = as_polars_series.nanoarrow_array(list_of_arrays[[1L]], name = name)
+      lapply(
+        list_of_arrays[-1L],
+        \(array) .pr$Series$append_mut(out, as_polars_series.nanoarrow_array(array))
+      ) |>
+        invisible()
+    }
+
+    out
+  }
 }
 
 
