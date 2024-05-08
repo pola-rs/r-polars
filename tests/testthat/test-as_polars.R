@@ -5,42 +5,44 @@ test_df = data.frame(
   "col_lgl" = rep_len(c(TRUE, FALSE, NA), 10)
 )
 
-if (requireNamespace("arrow", quietly = TRUE) && requireNamespace("nanoarrow", quietly = TRUE)) {
-  make_as_polars_df_cases = function() {
-    tibble::tribble(
-      ~.test_name, ~x,
-      "data.frame", test_df,
-      "polars_lf", pl$LazyFrame(test_df),
-      "polars_group_by", pl$DataFrame(test_df)$group_by("col_int"),
-      "polars_lazy_group_by", pl$LazyFrame(test_df)$group_by("col_int"),
-      "polars_rolling_group_by", pl$DataFrame(test_df)$rolling("col_int", period = "1i"),
-      "polars_lazy_rolling_group_by", pl$LazyFrame(test_df)$rolling("col_int", period = "1i"),
-      "polars_group_by_dynamic", pl$DataFrame(test_df)$group_by_dynamic("col_int", every = "1i"),
-      "polars_lazy_group_by_dynamic", pl$LazyFrame(test_df)$group_by_dynamic("col_int", every = "1i"),
-      "arrow Table", arrow::as_arrow_table(test_df),
-      "arrow RecordBatch", arrow::as_record_batch(test_df),
-      "arrow RecordBatchReader", arrow::as_record_batch_reader(test_df),
-      "nanoarrow_array", nanoarrow::as_nanoarrow_array(test_df),
-      "nanoarrow_array_stream", nanoarrow::as_nanoarrow_array_stream(test_df),
-    )
-  }
 
-  patrick::with_parameters_test_that(
-    "as_polars_df S3 methods",
-    {
-      pl_df = as_polars_df(x)
-      expect_s3_class(pl_df, "RPolarsDataFrame")
+make_as_polars_df_cases = function() {
+  skip_if_not_installed("arrow")
+  skip_if_not_installed("nanoarrow")
 
-      if (inherits(x, "nanoarrow_array_stream")) {
-        # The stream should be released after conversion
-        expect_grepl_error(x$get_next(), "already been released")
-      }
-
-      expect_equal(as.data.frame(pl_df), as.data.frame(as_polars_df(test_df)))
-    },
-    .cases = make_as_polars_df_cases()
+  tibble::tribble(
+    ~.test_name, ~x,
+    "data.frame", test_df,
+    "polars_lf", pl$LazyFrame(test_df),
+    "polars_group_by", pl$DataFrame(test_df)$group_by("col_int"),
+    "polars_lazy_group_by", pl$LazyFrame(test_df)$group_by("col_int"),
+    "polars_rolling_group_by", pl$DataFrame(test_df)$rolling("col_int", period = "1i"),
+    "polars_lazy_rolling_group_by", pl$LazyFrame(test_df)$rolling("col_int", period = "1i"),
+    "polars_group_by_dynamic", pl$DataFrame(test_df)$group_by_dynamic("col_int", every = "1i"),
+    "polars_lazy_group_by_dynamic", pl$LazyFrame(test_df)$group_by_dynamic("col_int", every = "1i"),
+    "arrow Table", arrow::as_arrow_table(test_df),
+    "arrow RecordBatch", arrow::as_record_batch(test_df),
+    "arrow RecordBatchReader", arrow::as_record_batch_reader(test_df),
+    "nanoarrow_array", nanoarrow::as_nanoarrow_array(test_df),
+    "nanoarrow_array_stream", nanoarrow::as_nanoarrow_array_stream(test_df),
   )
 }
+
+patrick::with_parameters_test_that(
+  "as_polars_df S3 methods",
+  {
+    pl_df = as_polars_df(x)
+    expect_s3_class(pl_df, "RPolarsDataFrame")
+
+    if (inherits(x, "nanoarrow_array_stream")) {
+      # The stream should be released after conversion
+      expect_grepl_error(x$get_next(), "already been released")
+    }
+
+    expect_equal(as.data.frame(pl_df), as.data.frame(as_polars_df(test_df)))
+  },
+  .cases = make_as_polars_df_cases()
+)
 
 
 test_that("as_polars_lf S3 method", {
@@ -121,48 +123,49 @@ test_that("schema option and schema_overrides for as_polars_df.data.frame", {
 })
 
 
-if (requireNamespace("arrow", quietly = TRUE) && requireNamespace("nanoarrow", quietly = TRUE)) {
-  make_as_polars_series_cases = function() {
-    tibble::tribble(
-      ~.test_name, ~x, ~expected_name,
-      "vector", 1, "",
-      "Series", as_polars_series(1, "foo"), "foo",
-      "Expr", pl$lit(1)$alias("foo"), "foo",
-      "Then", pl$when(TRUE)$then(1), "literal",
-      "ChainedThen", pl$when(FALSE)$then(0)$when(TRUE)$then(1), "literal",
-      "list", list(1:4), "",
-      "data.frame", data.frame(x = 1, y = letters[1]), "",
-      "POSIXlt", as.POSIXlt("1900-01-01"), "",
-      "arrow Array", arrow::arrow_array(1), "",
-      "arrow ChunkedArray", arrow::chunked_array(1), "",
-      "nanoarrow_array", nanoarrow::as_nanoarrow_array(1), "",
-      "nanoarrow_array_stream", nanoarrow::as_nanoarrow_array_stream(data.frame(x = 1)), "",
-    )
-  }
+make_as_polars_series_cases = function() {
+  skip_if_not_installed("arrow")
+  skip_if_not_installed("nanoarrow")
 
-  patrick::with_parameters_test_that(
-    "as_polars_series S3 methods",
-    {
-      pl_series = as_polars_series(x)
-      expect_s3_class(pl_series, "RPolarsSeries")
-
-      expect_identical(length(pl_series), 1L)
-      expect_equal(pl_series$name, expected_name)
-
-      if (inherits(x, "nanoarrow_array_stream")) {
-        # The stream should be released after conversion
-        expect_grepl_error(x$get_next(), "already been released")
-
-        # Re-create the stream for the next test
-        x = nanoarrow::as_nanoarrow_array_stream(data.frame(x = 1))
-      }
-
-      pl_series = as_polars_series(x, name = "bar")
-      expect_equal(pl_series$name, "bar")
-    },
-    .cases = make_as_polars_series_cases()
+  tibble::tribble(
+    ~.test_name, ~x, ~expected_name,
+    "vector", 1, "",
+    "Series", as_polars_series(1, "foo"), "foo",
+    "Expr", pl$lit(1)$alias("foo"), "foo",
+    "Then", pl$when(TRUE)$then(1), "literal",
+    "ChainedThen", pl$when(FALSE)$then(0)$when(TRUE)$then(1), "literal",
+    "list", list(1:4), "",
+    "data.frame", data.frame(x = 1, y = letters[1]), "",
+    "POSIXlt", as.POSIXlt("1900-01-01"), "",
+    "arrow Array", arrow::arrow_array(1), "",
+    "arrow ChunkedArray", arrow::chunked_array(1), "",
+    "nanoarrow_array", nanoarrow::as_nanoarrow_array(1), "",
+    "nanoarrow_array_stream", nanoarrow::as_nanoarrow_array_stream(data.frame(x = 1)), "",
   )
 }
+
+patrick::with_parameters_test_that(
+  "as_polars_series S3 methods",
+  {
+    pl_series = as_polars_series(x)
+    expect_s3_class(pl_series, "RPolarsSeries")
+
+    expect_identical(length(pl_series), 1L)
+    expect_equal(pl_series$name, expected_name)
+
+    if (inherits(x, "nanoarrow_array_stream")) {
+      # The stream should be released after conversion
+      expect_grepl_error(x$get_next(), "already been released")
+
+      # Re-create the stream for the next test
+      x = nanoarrow::as_nanoarrow_array_stream(data.frame(x = 1))
+    }
+
+    pl_series = as_polars_series(x, name = "bar")
+    expect_equal(pl_series$name, "bar")
+  },
+  .cases = make_as_polars_series_cases()
+)
 
 
 test_that("tests for vctrs_rcrd", {
@@ -333,6 +336,8 @@ test_that("can convert an arrow Table contains dictionary<large_string, uint32> 
 })
 
 make_nanoarrow_array_stream_cases = function() {
+  skip_if_not_installed("nanoarrow")
+
   tibble::tribble(
     ~.test_name, ~x,
     "two chunks", nanoarrow::basic_array_stream(list(data.frame(a = 1, b = 2), data.frame(a = NA, b = 1))),
@@ -342,8 +347,6 @@ make_nanoarrow_array_stream_cases = function() {
 
 patrick::with_parameters_test_that("as_polars_df for nanoarrow_array_stream",
   {
-    skip_if_not_installed("nanoarrow")
-
     pl_df = as_polars_df(x)
     expect_s3_class(pl_df, "RPolarsDataFrame")
     expect_grepl_error(x$get_next(), "already been released")
@@ -355,8 +358,6 @@ patrick::with_parameters_test_that("as_polars_df for nanoarrow_array_stream",
 
 patrick::with_parameters_test_that("as_polars_series for nanoarrow_array_stream",
   {
-    skip_if_not_installed("nanoarrow")
-
     pl_series = as_polars_series(x)
     expect_s3_class(pl_series, "RPolarsSeries")
     expect_grepl_error(x$get_next(), "already been released")
