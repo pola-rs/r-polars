@@ -18,6 +18,10 @@
 - `as_polars_df()` and `as_polars_series()` supports `arrow::RecordBatchReader` (#1078).
 - The new `experimental` argument for `as_polars_df(<ArrowTabular>)`, `as_polars_df(<RecordBatchReader>)`,
   `as_polars_series(<nanoarrow_array_stream>)`, and `as_polars_df(<nanoarrow_array_stream>)` (#1078).
+  If `experimental = TRUE`, these functions switch to use
+  [the Arrow C stream interface](https://arrow.apache.org/docs/format/CStreamInterface.html) internally.
+  At this point, the performance is degraded under the expected use cases,
+  so the default is set to `experimental = FALSE`.
 
 ## Polars R Package 0.16.3
 
