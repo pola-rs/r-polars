@@ -466,7 +466,7 @@ test_that("as_polars_df and pl$DataFrame for data.frame has list column", {
 
 # TODO: This behavior is bug or intended? (upstream)
 # If this is a bug, this behavior may be changed in the future.
-test_that("automatically rechunked for struct array stream", {
+test_that("automatically rechunked for struct array stream from C stream interface", {
   skip_if_not_installed("nanoarrow")
 
   s_int_exp = nanoarrow::basic_array_stream(
@@ -497,3 +497,28 @@ test_that("automatically rechunked for struct array stream", {
   expect_identical(s_struct_exp$n_chunks(), 1)
   expect_identical(s_struct_stable$n_chunks(), 2)
 })
+
+
+make_as_polars_df_experimental_cases = function() {
+  skip_if_not_installed("arrow")
+  skip_if_not_installed("nanoarrow")
+
+  tibble::tribble(
+    ~.test_name, ~x,
+    "arrow Table", arrow::as_arrow_table(test_df),
+    "arrow RecordBatch", arrow::as_record_batch(test_df),
+    "arrow RecordBatchReader", arrow::as_record_batch_reader(test_df),
+    "nanoarrow_array_stream", nanoarrow::as_nanoarrow_array_stream(test_df),
+  )
+}
+
+patrick::with_parameters_test_that(
+  "as_polars_df S3 methods with experimental option",
+  {
+    pl_df = as_polars_df(x, experimental = TRUE)
+    expect_s3_class(pl_df, "RPolarsDataFrame")
+
+    expect_equal(as.data.frame(pl_df), as.data.frame(as_polars_df(test_df)))
+  },
+  .cases = make_as_polars_df_experimental_cases()
+)
