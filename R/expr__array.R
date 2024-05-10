@@ -10,9 +10,6 @@
 #' df$with_columns(sum = pl$col("values")$arr$sum())
 ExprArr_sum = function() .pr$Expr$arr_sum(self)
 
-# TODO: add example with NA when this is fixed:
-# https://github.com/pola-rs/polars/issues/14359
-
 #' Find the maximum value in an array
 #'
 #' @return Expr
@@ -20,16 +17,13 @@ ExprArr_sum = function() .pr$Expr$arr_sum(self)
 #' @aliases arr_max
 #' @examples
 #' df = pl$DataFrame(
-#'   values = list(c(1, 2), c(3, 4), c(5, 6)),
+#'   values = list(c(1, 2), c(3, 4), c(NA_real_, NA_real_)),
 #'   schema = list(values = pl$Array(pl$Float64, 2))
 #' )
 #' df$with_columns(max = pl$col("values")$arr$max())
 ExprArr_max = function() {
   .pr$Expr$arr_max(self)
 }
-
-# TODO: add example with NA when this is fixed:
-# https://github.com/pola-rs/polars/issues/14359
 
 #' Find the minimum value in an array
 #'
@@ -38,7 +32,7 @@ ExprArr_max = function() {
 #' @aliases arr_min
 #' @examples
 #' df = pl$DataFrame(
-#'   values = list(c(1, 2), c(3, 4), c(5, 6)),
+#'   values = list(c(1, 2), c(3, 4), c(NA_real_, NA_real_)),
 #'   schema = list(values = pl$Array(pl$Float64, 2))
 #' )
 #' df$with_columns(min = pl$col("values")$arr$min())

@@ -347,20 +347,19 @@ test_that("group_by_dynamic for LazyFrame: arg 'start_by' works", {
     pl$col("dt")$str$strptime(pl$Datetime("ms", "UTC"), format = NULL)$set_sorted()
   )
 
-  # TODO: any weekday should return the same since it is ignored when there's no
-  # "w" in "every".
-  # https://github.com/pola-rs/polars/issues/13648
-  actual = df$group_by_dynamic(index_column = "dt", start_by = "monday", every = "1h")$agg(
-    pl$col("n")$mean()
-  )$collect()$to_data_frame()
+  for (i in c("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday")) {
+    actual = df$group_by_dynamic(index_column = "dt", start_by = i, every = "1h")$agg(
+      pl$col("n")$mean()
+    )$collect()$to_list()$dt
 
-  expect_equal(
-    actual[, "dt"],
-    as.POSIXct(
-      c("2021-12-16 00:00:00 UTC", "2021-12-16 01:00:00 UTC", "2021-12-16 02:00:00 UTC", "2021-12-16 03:00:00 UTC"),
-      tz = "UTC"
+    expect_equal(
+      actual,
+      as.POSIXct(
+        c("2021-12-16 00:00:00 UTC", "2021-12-16 01:00:00 UTC", "2021-12-16 02:00:00 UTC", "2021-12-16 03:00:00 UTC"),
+        tz = "UTC"
+      )
     )
-  )
+  }
 
   expect_grepl_error(
     df$group_by_dynamic(index_column = "dt", start_by = "foobar", every = "1h")$agg(
