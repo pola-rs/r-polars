@@ -811,8 +811,6 @@ test_that("mode", {
   expect_identical(sort(df$select(pl$col("d")$mode())$to_list()$d, na.last = TRUE), c("b", NA))
 })
 
-# TODO contribute rust, Null does not carry in dot products, NaN do.
-# cumsum does not carry Null either. Maybe it is by design.
 test_that("dot", {
   l = list(a = 1:4, b = c(1, 2, 3, 5), c = c(NA_real_, 1:3), d = c(6:8, NaN))
   actual_list = pl$DataFrame(l)$select(
@@ -856,9 +854,6 @@ test_that("Expr_sort", {
     )
   )$to_list()
 
-
-  # TODO contribute polars in Expr_sort NaN is a value above Inf, but NaN > Inf is false.
-  # more correct use of nan would be slower though
   expect_identical(
     l_actual,
     list(
@@ -866,7 +861,6 @@ test_that("Expr_sort", {
       sort_nulls_last = c(-Inf, 0, 1, 6, Inf, NaN, NA),
       sort_reverse = c(NA, NaN, Inf, 6, 1, 0, -Inf),
       sort_reverse_nulls_last = c(NaN, Inf, 6, 1, 0, -Inf, NA),
-      # this is a bit surprising, have raised in discord
       fake_sort_nulls_last = c(-Inf, 0, 1, 6, Inf, NaN, NA),
       fake_sort_reverse_nulls_last = c(NaN, Inf, 6, 1, 0, -Inf, NA)
     )
