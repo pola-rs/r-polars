@@ -3199,17 +3199,6 @@ Expr_implode = use_extendr_wrapper
 #' df$with_columns(pl$all()$shrink_dtype()$name$suffix("_shrunk"))
 Expr_shrink_dtype = use_extendr_wrapper
 
-
-#' Convert an Expr to a Struct
-#' @return Expr
-#' @examples
-#' pl$DataFrame(iris[, 3:5])$with_columns(
-#'   my_struct = pl$all()$to_struct()
-#' )
-Expr_to_struct = function() {
-  pl$struct(self)
-}
-
 #' Convert Literal to Series
 #'
 #' Collect an expression based on literals into a Series.

@@ -269,9 +269,9 @@
       [160] "str"               "struct"            "sub"              
       [163] "sum"               "tail"              "tan"              
       [166] "tanh"              "to_physical"       "to_r"             
-      [169] "to_series"         "to_struct"         "top_k"            
-      [172] "unique"            "unique_counts"     "upper_bound"      
-      [175] "value_counts"      "var"               "xor"              
+      [169] "to_series"         "top_k"             "unique"           
+      [172] "unique_counts"     "upper_bound"       "value_counts"     
+      [175] "var"               "xor"              
 
 ---
 
@@ -517,10 +517,10 @@
       [160] "std"               "str"               "struct"           
       [163] "sub"               "sum"               "tail"             
       [166] "tan"               "tanh"              "to_physical"      
-      [169] "to_r"              "to_series"         "to_struct"        
-      [172] "top_k"             "unique"            "unique_counts"    
-      [175] "upper_bound"       "value_counts"      "var"              
-      [178] "when"              "xor"              
+      [169] "to_r"              "to_series"         "top_k"            
+      [172] "unique"            "unique_counts"     "upper_bound"      
+      [175] "value_counts"      "var"               "when"             
+      [178] "xor"              
 
 ---
 
@@ -604,10 +604,10 @@
       [160] "std"               "str"               "struct"           
       [163] "sub"               "sum"               "tail"             
       [166] "tan"               "tanh"              "to_physical"      
-      [169] "to_r"              "to_series"         "to_struct"        
-      [172] "top_k"             "unique"            "unique_counts"    
-      [175] "upper_bound"       "value_counts"      "var"              
-      [178] "when"              "xor"              
+      [169] "to_r"              "to_series"         "top_k"            
+      [172] "unique"            "unique_counts"     "upper_bound"      
+      [175] "value_counts"      "var"               "when"             
+      [178] "xor"              
 
 ---
 
@@ -695,10 +695,9 @@
       [169] "sub"               "sum"               "tail"             
       [172] "tan"               "tanh"              "to_frame"         
       [175] "to_list"           "to_lit"            "to_physical"      
-      [178] "to_r"              "to_struct"         "to_vector"        
-      [181] "top_k"             "unique"            "unique_counts"    
-      [184] "upper_bound"       "value_counts"      "var"              
-      [187] "xor"              
+      [178] "to_r"              "to_vector"         "top_k"            
+      [181] "unique"            "unique_counts"     "upper_bound"      
+      [184] "value_counts"      "var"               "xor"              
 
 ---
 

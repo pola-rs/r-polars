@@ -24,8 +24,8 @@ lf = pl$LazyFrame(
   c = 6:10
 )$
   select(
-  pl$col("b")$to_struct(),
-  pl$col("a", "c")$to_struct()$alias("a_and_c")
+  pl$struct("b"),
+  pl$struct(c("a", "c"))$alias("a_and_c")
 )
 lf$collect()
 
