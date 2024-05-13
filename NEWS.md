@@ -6,7 +6,7 @@
 
 - `$to_struct()` on an Expr is removed. This method is now only available for
   `Series`, `DataFrame`, and in the `$list` and `$arr` subnamespaces. For example,
-  `pl$col("a", "b", "c")$to_struct()` should be replaced with 
+  `pl$col("a", "b", "c")$to_struct()` should be replaced with
   `pl$struct(c("a", "b", "c"))` (#1092).
 
 ## Polars R Package 0.16.4
