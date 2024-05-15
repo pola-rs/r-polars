@@ -81,7 +81,7 @@ ExprMeta_pop = function() {
 #' e = (pl$col("alice") + pl$col("eve"))$alias("bob")
 #' e$meta$root_names()
 ExprMeta_root_names = function() {
-  .pr$Expr$meta_roots(self)
+  .pr$Expr$meta_root_names(self)
 }
 
 

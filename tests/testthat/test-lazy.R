@@ -495,7 +495,7 @@ test_that("join_asof_simple", {
   )
   expect_grepl_error(
     pop$join_asof(gdp, left_on = "date", right_on = "date", strategy = "fruitcake"),
-    c("join_asof", "strategy choice", "fruitcake")
+    "must be one of 'forward' or 'backward'"
   )
 
   # shared left_right on

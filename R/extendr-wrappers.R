@@ -604,7 +604,7 @@ RPolarsExpr$rolling_median <- function(window_size, weights, min_periods, center
 
 RPolarsExpr$rolling_quantile <- function(quantile, interpolation, window_size, weights, min_periods, center, by, closed, warn_if_unsorted) .Call(wrap__RPolarsExpr__rolling_quantile, self, quantile, interpolation, window_size, weights, min_periods, center, by, closed, warn_if_unsorted)
 
-RPolarsExpr$rolling_skew <- function(window_size_f, bias) .Call(wrap__RPolarsExpr__rolling_skew, self, window_size_f, bias)
+RPolarsExpr$rolling_skew <- function(window_size, bias) .Call(wrap__RPolarsExpr__rolling_skew, self, window_size, bias)
 
 RPolarsExpr$abs <- function() .Call(wrap__RPolarsExpr__abs, self)
 
@@ -820,7 +820,7 @@ RPolarsExpr$dt_microsecond <- function() .Call(wrap__RPolarsExpr__dt_microsecond
 
 RPolarsExpr$dt_nanosecond <- function() .Call(wrap__RPolarsExpr__dt_nanosecond, self)
 
-RPolarsExpr$timestamp <- function(tu) .Call(wrap__RPolarsExpr__timestamp, self, tu)
+RPolarsExpr$dt_timestamp <- function(tu) .Call(wrap__RPolarsExpr__dt_timestamp, self, tu)
 
 RPolarsExpr$dt_epoch_seconds <- function() .Call(wrap__RPolarsExpr__dt_epoch_seconds, self)
 
@@ -1096,7 +1096,7 @@ RPolarsExpr$meta_pop <- function() .Call(wrap__RPolarsExpr__meta_pop, self)
 
 RPolarsExpr$meta_eq <- function(other) .Call(wrap__RPolarsExpr__meta_eq, self, other)
 
-RPolarsExpr$meta_roots <- function() .Call(wrap__RPolarsExpr__meta_roots, self)
+RPolarsExpr$meta_root_names <- function() .Call(wrap__RPolarsExpr__meta_root_names, self)
 
 RPolarsExpr$meta_output_name <- function() .Call(wrap__RPolarsExpr__meta_output_name, self)
 

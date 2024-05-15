@@ -535,21 +535,20 @@ ExprDT_nanosecond = function() {
 #' as_polars_series(as.Date("2022-1-1"))$dt$epoch("d")
 ExprDT_epoch = function(tu = c("us", "ns", "ms", "s", "d")) {
   tu = tu[1]
+  uw = \(res) unwrap(res, "in $dt$epoch:")
 
   # experimental rust-like error handling on R side for the fun of it, sorry
   # jokes aside here the use case is to tie various rust functions together
   # and add context to the error messages
-  expr_result = pcase(
-    !is_string(tu), Err("tu must be a string"),
-    tu %in% c("ms", "us", "ns"), .pr$Expr$timestamp(self, tu),
-    tu == "s", Ok(.pr$Expr$dt_epoch_seconds(self)),
-    tu == "d", Ok(self$cast(pl$Date)$cast(pl$Int32)),
+  pcase(
+    !is_string(tu), Err("tu must be a string") |> uw(),
+    tu %in% c("ms", "us", "ns"), .pr$Expr$dt_timestamp(self, tu) |> uw(),
+    tu == "s", .pr$Expr$dt_epoch_seconds(self),
+    tu == "d", self$cast(pl$Date)$cast(pl$Int32),
     or_else = Err(
       paste("tu must be one of 'ns', 'us', 'ms', 's', 'd', got", str_string(tu))
-    )
-  ) |> map_err(\(err) paste("in $dt$epoch:", err))
-
-  unwrap(expr_result)
+    ) |> uw()
+  )
 }
 
 
@@ -574,7 +573,7 @@ ExprDT_epoch = function(tu = c("us", "ns", "ms", "s", "d")) {
 #'   pl$col("date")$dt$timestamp(tu = "ms")$alias("timestamp_ms")
 #' )
 ExprDT_timestamp = function(tu = c("ns", "us", "ms")) {
-  .pr$Expr$timestamp(self, tu[1]) |>
+  .pr$Expr$dt_timestamp(self, tu[1]) |>
     map_err(\(err) paste("in $dt$timestamp:", err)) |>
     unwrap()
 }
