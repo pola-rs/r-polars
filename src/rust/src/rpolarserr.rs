@@ -25,7 +25,7 @@ pub enum Rctx {
     Mistyped(String),
     #[error("Expected a value that {0}")]
     Misvalued(String),
-    #[error("Not a valid R choice because {0}")]
+    #[error("Invalid choice: {0}")]
     NotAChoice(String),
     #[error("{0}")]
     Plain(String),

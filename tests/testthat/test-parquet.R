@@ -54,11 +54,14 @@ test_that("scan read parquet - parallel strategies", {
   }
 
   # bad parallel args
-  ctx = pl$read_parquet(tmpf, parallel = "34") |> get_err_ctx()
-  expect_true(startsWith(ctx$BadValue, "ParallelStrategy choice"))
-  expect_identical(ctx$BadArgument, "parallel")
-  ctx = pl$read_parquet(tmpf, parallel = 42) |> get_err_ctx()
-  expect_identical(ctx$NotAChoice, "input is not a character vector")
+  expect_grepl_error(
+    pl$read_parquet(tmpf, parallel = "34"),
+    "must be one of 'auto', 'columns', 'row_groups', 'none'"
+  )
+  expect_grepl_error(
+    pl$read_parquet(tmpf, parallel = 42),
+    "input is not a character vector"
+  )
 })
 
 
