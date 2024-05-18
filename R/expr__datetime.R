@@ -34,7 +34,7 @@
 #' )
 #' df
 ExprDT_truncate = function(every, offset = NULL) {
-  offset = parse_as_polars_duration_string(offset, default = "0ns")
+  offset = parse_string_as_polars_duration(offset, default = "0ns")
   .pr$Expr$dt_truncate(self, every, offset) |>
     unwrap("in $dt$truncate()")
 }
@@ -83,8 +83,8 @@ ExprDT_truncate = function(every, offset = NULL) {
 #' )
 #' df
 ExprDT_round = function(every, offset = NULL) {
-  every = parse_as_polars_duration_string(every, default = "0ns")
-  offset = parse_as_polars_duration_string(offset, default = "0ns")
+  every = parse_string_as_polars_duration(every, default = "0ns")
+  offset = parse_string_as_polars_duration(offset, default = "0ns")
   .pr$Expr$dt_round(self, every, offset) |>
     unwrap("in $dt$round()")
 }
