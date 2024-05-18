@@ -91,7 +91,7 @@ impl From<&RPolarsExpr> for pl::PolarsResult<RPolarsSeries> {
 #[extendr]
 impl RPolarsSeries {
     //utility methods
-    pub fn new(name: Robj, values: Robj) -> RResult<RPolarsSeries> {
+    pub fn new(name: Robj, values: Robj) -> RResult<Self> {
         robjname2series(values, robj_to!(str, name)?)
             .map_err(polars_to_rpolars_err)
             .map(RPolarsSeries)

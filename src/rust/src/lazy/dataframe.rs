@@ -260,7 +260,7 @@ impl RPolarsLazyFrame {
         Ok(out.into())
     }
 
-    fn shift(&self, periods: Robj) -> Result<Self, String> {
+    fn shift(&self, periods: Robj) -> RResult<Self> {
         Ok(self.clone().0.shift(robj_to!(i64, periods)?).into())
     }
 
@@ -276,11 +276,11 @@ impl RPolarsLazyFrame {
         self.0.clone().reverse().into()
     }
 
-    fn drop(&self, columns: Robj) -> Result<RPolarsLazyFrame, String> {
+    fn drop(&self, columns: Robj) -> RResult<RPolarsLazyFrame> {
         Ok(self.0.clone().drop(robj_to!(Vec, String, columns)?).into())
     }
 
-    fn fill_nan(&self, fill_value: Robj) -> Result<Self, String> {
+    fn fill_nan(&self, fill_value: Robj) -> RResult<Self> {
         Ok(self
             .0
             .clone()
@@ -288,7 +288,7 @@ impl RPolarsLazyFrame {
             .into())
     }
 
-    fn fill_null(&self, fill_value: Robj) -> Result<Self, String> {
+    fn fill_null(&self, fill_value: Robj) -> RResult<Self> {
         Ok(self
             .0
             .clone()
@@ -296,7 +296,7 @@ impl RPolarsLazyFrame {
             .into())
     }
 
-    fn slice(&self, offset: Robj, length: Robj) -> Result<RPolarsLazyFrame, String> {
+    fn slice(&self, offset: Robj, length: Robj) -> RResult<RPolarsLazyFrame> {
         Ok(RPolarsLazyFrame(self.0.clone().slice(
             robj_to!(i64, offset)?,
             robj_to!(Option, u32, length)?.unwrap_or(u32::MAX),
@@ -327,7 +327,7 @@ impl RPolarsLazyFrame {
         Ok(RPolarsLazyFrame(self.clone().0.select_seq(exprs)))
     }
 
-    fn tail(&self, n: Robj) -> Result<RPolarsLazyFrame, String> {
+    fn tail(&self, n: Robj) -> RResult<RPolarsLazyFrame> {
         Ok(RPolarsLazyFrame(self.0.clone().tail(robj_to!(u32, n)?)))
     }
 
@@ -512,7 +512,7 @@ impl RPolarsLazyFrame {
         value_name: Robj,
         variable_name: Robj,
         streamable: Robj,
-    ) -> Result<Self, String> {
+    ) -> RResult<Self> {
         let args = MeltArgs {
             id_vars: strings_to_smartstrings(robj_to!(Vec, String, id_vars)?),
             value_vars: strings_to_smartstrings(robj_to!(Vec, String, value_vars)?),
@@ -523,7 +523,7 @@ impl RPolarsLazyFrame {
         Ok(self.0.clone().melt(args).into())
     }
 
-    fn rename(&self, existing: Robj, new: Robj) -> Result<RPolarsLazyFrame, String> {
+    fn rename(&self, existing: Robj, new: Robj) -> RResult<RPolarsLazyFrame> {
         Ok(self
             .0
             .clone()
@@ -735,7 +735,7 @@ impl RPolarsLazyGroupBy {
         )
     }
 
-    fn agg(&self, exprs: Robj) -> Result<RPolarsLazyFrame, String> {
+    fn agg(&self, exprs: Robj) -> RResult<RPolarsLazyFrame> {
         Ok(RPolarsLazyFrame(
             self.lgb.clone().agg(robj_to!(VecPLExprColNamed, exprs)?),
         ))
