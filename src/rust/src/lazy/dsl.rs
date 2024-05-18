@@ -2195,7 +2195,7 @@ impl RPolarsExpr {
             .into())
     }
 
-    pub fn str_split(&self, by: Robj, inclusive: Robj) -> Result<RPolarsExpr, String> {
+    pub fn str_split(&self, by: Robj, inclusive: Robj) -> RResult<RPolarsExpr> {
         let by = robj_to!(PLExpr, by)?;
         let inclusive = robj_to!(bool, inclusive)?;
         if inclusive {
@@ -2205,12 +2205,7 @@ impl RPolarsExpr {
         }
     }
 
-    pub fn str_split_exact(
-        &self,
-        by: Robj,
-        n: Robj,
-        inclusive: Robj,
-    ) -> Result<RPolarsExpr, String> {
+    pub fn str_split_exact(&self, by: Robj, n: Robj, inclusive: Robj) -> RResult<RPolarsExpr> {
         let by = robj_to!(PLExpr, by)?;
         let n = robj_to!(usize, n)?;
         let inclusive = robj_to!(bool, inclusive)?;
@@ -2222,7 +2217,7 @@ impl RPolarsExpr {
         .into())
     }
 
-    pub fn str_splitn(&self, by: Robj, n: Robj) -> Result<RPolarsExpr, String> {
+    pub fn str_splitn(&self, by: Robj, n: Robj) -> RResult<RPolarsExpr> {
         Ok(self
             .0
             .clone()
@@ -2237,7 +2232,7 @@ impl RPolarsExpr {
         value: Robj,
         literal: Robj,
         n: Robj,
-    ) -> Result<RPolarsExpr, String> {
+    ) -> RResult<RPolarsExpr> {
         let pat = robj_to!(PLExpr, pat)?;
         let value = robj_to!(PLExpr, value)?;
         let literal = robj_to!(bool, literal)?;
@@ -2250,26 +2245,21 @@ impl RPolarsExpr {
             .into())
     }
 
-    pub fn str_replace_all(
-        &self,
-        pat: Robj,
-        value: Robj,
-        literal: Robj,
-    ) -> Result<RPolarsExpr, String> {
+    pub fn str_replace_all(&self, pat: Robj, value: Robj, literal: Robj) -> RResult<RPolarsExpr> {
         let pat = robj_to!(PLExpr, pat)?;
         let value = robj_to!(PLExpr, value)?;
         let literal = robj_to!(bool, literal)?;
         Ok(self.0.clone().str().replace_all(pat, value, literal).into())
     }
 
-    pub fn str_slice(&self, offset: Robj, length: Robj) -> Result<RPolarsExpr, String> {
+    pub fn str_slice(&self, offset: Robj, length: Robj) -> RResult<RPolarsExpr> {
         let offset = robj_to!(PLExprCol, offset)?;
         let length = robj_to!(PLExprCol, length)?;
 
         Ok(self.clone().0.str().slice(offset, length).into())
     }
 
-    pub fn str_explode(&self) -> Result<RPolarsExpr, String> {
+    pub fn str_explode(&self) -> RResult<RPolarsExpr> {
         Ok(self.0.clone().str().explode().into())
     }
 
@@ -2373,17 +2363,17 @@ impl RPolarsExpr {
         self.0.clone().binary().base64_encode().into()
     }
 
-    pub fn bin_hex_decode(&self, strict: Robj) -> Result<RPolarsExpr, String> {
+    pub fn bin_hex_decode(&self, strict: Robj) -> RResult<RPolarsExpr> {
         let strict = robj_to!(bool, strict)?;
         Ok(self.0.clone().binary().hex_decode(strict).into())
     }
 
-    pub fn bin_base64_decode(&self, strict: Robj) -> Result<RPolarsExpr, String> {
+    pub fn bin_base64_decode(&self, strict: Robj) -> RResult<RPolarsExpr> {
         let strict = robj_to!(bool, strict)?;
         Ok(self.0.clone().binary().base64_decode(strict).into())
     }
 
-    pub fn struct_field_by_name(&self, name: Robj) -> Result<RPolarsExpr, String> {
+    pub fn struct_field_by_name(&self, name: Robj) -> RResult<RPolarsExpr> {
         Ok(self
             .0
             .clone()
@@ -2396,7 +2386,7 @@ impl RPolarsExpr {
     //     self.0.clone().struct_().field_by_index(index).into()
     // }
 
-    pub fn struct_rename_fields(&self, names: Robj) -> Result<RPolarsExpr, String> {
+    pub fn struct_rename_fields(&self, names: Robj) -> RResult<RPolarsExpr> {
         let string_vec: Vec<String> = robj_to!(Vec, String, names)?;
         Ok(self.0.clone().struct_().rename_fields(string_vec).into())
     }
