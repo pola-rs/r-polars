@@ -306,19 +306,19 @@ impl RPolarsDataFrame {
         RPolarsSeries(self.0.drop_in_place(names).unwrap())
     }
 
-    pub fn select(&self, exprs: Robj) -> RResult<RPolarsDataFrame> {
+    pub fn select(&self, exprs: Robj) -> RResult<Self> {
         self.lazy().select(exprs)?.collect()
     }
 
-    pub fn select_seq(&self, exprs: Robj) -> RResult<RPolarsDataFrame> {
+    pub fn select_seq(&self, exprs: Robj) -> RResult<Self> {
         self.lazy().select_seq(exprs)?.collect()
     }
 
-    pub fn with_columns(&self, exprs: Robj) -> RResult<RPolarsDataFrame> {
+    pub fn with_columns(&self, exprs: Robj) -> RResult<Self> {
         self.lazy().with_columns(exprs)?.collect()
     }
 
-    pub fn with_columns_seq(&self, exprs: Robj) -> RResult<RPolarsDataFrame> {
+    pub fn with_columns_seq(&self, exprs: Robj) -> RResult<Self> {
         self.lazy().with_columns_seq(exprs)?.collect()
     }
 
