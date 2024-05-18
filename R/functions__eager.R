@@ -216,7 +216,7 @@ pl_date_range = function(
     time_zone = NULL) {
   .warn_for_deprecated_date_range_use(start, end, interval, time_unit, time_zone)
 
-  interval = parse_string_as_polars_duration(interval)
+  interval = parse_as_polars_duration_string(interval)
   date_range(start, end, interval, closed, time_unit, time_zone) |>
     unwrap("in pl$date_range():")
 }
@@ -294,7 +294,7 @@ pl_date_ranges = function(
     time_zone = NULL) {
   .warn_for_deprecated_date_range_use(start, end, interval, time_unit, time_zone)
 
-  interval = parse_string_as_polars_duration(interval)
+  interval = parse_as_polars_duration_string(interval)
   date_ranges(start, end, interval, closed, time_unit, time_zone) |>
     unwrap("in pl$date_ranges():")
 }
@@ -344,7 +344,7 @@ pl_datetime_range = function(
     closed = "both",
     time_unit = NULL,
     time_zone = NULL) {
-  interval = parse_string_as_polars_duration(interval)
+  interval = parse_as_polars_duration_string(interval)
   datetime_range(start, end, interval, closed, time_unit, time_zone) |>
     unwrap("in pl$datetime_range():")
 }
@@ -386,7 +386,7 @@ pl_datetime_ranges = function(
     closed = "both",
     time_unit = NULL,
     time_zone = NULL) {
-  interval = parse_string_as_polars_duration(interval)
+  interval = parse_as_polars_duration_string(interval)
   datetime_ranges(start, end, interval, closed, time_unit, time_zone) |>
     unwrap("in pl$datetimes_ranges():")
 }

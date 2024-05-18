@@ -2025,9 +2025,9 @@ LazyFrame_group_by_dynamic = function(
     group_by = NULL,
     start_by = "window",
     check_sorted = TRUE) {
-  every = parse_string_as_polars_duration(every)
-  offset = parse_string_as_polars_duration(offset) %||% paste0("-", every)
-  period = parse_string_as_polars_duration(period) %||% every
+  every = parse_as_polars_duration_string(every)
+  offset = parse_as_polars_duration_string(offset) %||% paste0("-", every)
+  period = parse_as_polars_duration_string(period) %||% every
 
   .pr$LazyFrame$group_by_dynamic(
     self, index_column, every, period, offset, label, include_boundaries, closed,
