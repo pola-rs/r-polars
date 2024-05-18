@@ -87,7 +87,7 @@ impl RPolarsLazyFrame {
 
     fn deserialize(json: Robj) -> RResult<Self> {
         let json = robj_to!(str, json)?;
-        let lp = serde_json::from_str::<pl::LogicalPlan>(&json)
+        let lp = serde_json::from_str::<pl::LogicalPlan>(json)
             .map_err(|err| RPolarsErr::new().plain(format!("{err:?}")))?;
         Ok(RPolarsLazyFrame(pl::LazyFrame::from(lp)))
     }
@@ -343,7 +343,7 @@ impl RPolarsLazyFrame {
         } else {
             RPolarsLazyFrame(self.0.clone().drop_nulls(None))
         };
-        Ok(out.into())
+        Ok(out)
     }
 
     fn unique(&self, subset: Robj, keep: Robj, maintain_order: Robj) -> RResult<RPolarsLazyFrame> {
@@ -669,9 +669,9 @@ impl RPolarsLazyFrame {
     pub fn group_by_dynamic(
         &self,
         index_column: Robj,
-        every: Robj,
-        period: Robj,
-        offset: Robj,
+        every: &str,
+        period: &str,
+        offset: &str,
         label: Robj,
         include_boundaries: Robj,
         closed: Robj,
@@ -686,9 +686,9 @@ impl RPolarsLazyFrame {
             robj_to!(PLExprCol, index_column)?,
             by,
             pl::DynamicGroupOptions {
-                every: robj_to!(pl_duration, every)?,
-                period: robj_to!(pl_duration, period)?,
-                offset: robj_to!(pl_duration, offset)?,
+                every: pl::Duration::parse(every),
+                period: pl::Duration::parse(period),
+                offset: pl::Duration::parse(offset),
                 label: robj_to!(Label, label)?,
                 include_boundaries: robj_to!(bool, include_boundaries)?,
                 closed_window,
@@ -735,26 +735,22 @@ impl RPolarsLazyGroupBy {
         )
     }
 
-    fn agg(&self, exprs: Robj) -> Result<RPolarsLazyFrame, String> {
+    fn agg(&self, exprs: Robj) -> RResult<RPolarsLazyFrame> {
         Ok(RPolarsLazyFrame(
             self.lgb.clone().agg(robj_to!(VecPLExprColNamed, exprs)?),
         ))
     }
 
-    fn head(&self, n: f64) -> List {
-        r_result_list(
-            try_f64_into_usize(n)
-                .map(|n| RPolarsLazyFrame(self.lgb.clone().head(Some(n))))
-                .map_err(|err| format!("head: {}", err)),
-        )
+    fn head(&self, n: f64) -> RResult<RPolarsLazyFrame> {
+        Ok(RPolarsLazyFrame(
+            self.lgb.clone().head(Some(try_f64_into_usize(n)?)),
+        ))
     }
 
-    fn tail(&self, n: f64) -> List {
-        r_result_list(
-            try_f64_into_usize(n)
-                .map(|n| RPolarsLazyFrame(self.lgb.clone().tail(Some(n))))
-                .map_err(|err| format!("tail: {}", err)),
-        )
+    fn tail(&self, n: f64) -> RResult<RPolarsLazyFrame> {
+        Ok(RPolarsLazyFrame(
+            self.lgb.clone().tail(Some(try_f64_into_usize(n)?)),
+        ))
     }
 }
 
