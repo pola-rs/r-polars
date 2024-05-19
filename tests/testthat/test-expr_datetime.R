@@ -153,19 +153,18 @@ test_that("dt$round", {
     )
   )
 
-  ctx = result(pl$col("datetime")$dt$round(42))$err$contexts()
-  expect_identical(
-    names(ctx),
-    c("BadArgument", "PlainErrorMessage")
+  expect_grepl_error(
+    pl$col("datetime")$dt$round(42),
+    "`every` must be a single non-NA character or difftime"
   )
-  expect_identical(ctx$BadArgument, "every")
-
-  ctx = result(pl$col("datetime")$dt$round("1s", 42))$err$contexts()
-  expect_identical(
-    names(ctx),
-    c("BadArgument", "PlainErrorMessage")
+  expect_grepl_error(
+    pl$col("datetime")$dt$round(c("2s", "1h")),
+    "`every` must be a single non-NA character or difftime"
   )
-  expect_identical(ctx$BadArgument, "offset")
+  expect_grepl_error(
+    pl$col("datetime")$dt$round("1s", 42),
+    "`offset` must be a single non-NA character or difftime"
+  )
 })
 
 test_that("dt$combine", {

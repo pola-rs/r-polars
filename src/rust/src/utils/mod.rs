@@ -748,17 +748,6 @@ pub fn robj_to_datatype(robj: extendr_api::Robj) -> RResult<RPolarsDataType> {
     Ok(RPolarsDataType(ext_dt.0.clone()))
 }
 
-// TODO: move to R side?
-pub fn robj_to_pl_duration_string(robj: extendr_api::Robj) -> RResult<String> {
-    use extendr_api::*;
-    let pl_duration_robj = unpack_r_eval(R!(
-        "polars:::result(polars:::parse_as_polars_duration_string({{robj}}))"
-    ))?;
-
-    robj_to_string(pl_duration_robj)
-        .plain("internal error in `parse_as_polars_duration_string()`: did not return a string")
-}
-
 //this function is used to convert and Rside Expr into rust side Expr
 // wrap_e allows to also convert any allowed non Exp
 pub fn robj_to_rexpr(robj: extendr_api::Robj, str_to_lit: bool) -> RResult<RPolarsExpr> {
@@ -932,12 +921,6 @@ macro_rules! robj_to_inner {
     };
     (str, $a:ident) => {
         $crate::utils::robj_to_str($a)
-    };
-    (pl_duration_string, $a:ident) => {
-        $crate::utils::robj_to_pl_duration_string($a)
-    };
-    (pl_duration, $a:ident) => {
-        $crate::utils::robj_to_pl_duration_string($a).map(|s| pl::Duration::parse(s.as_str()))
     };
     (timeunit, $a:ident) => {
         $crate::rdatatype::robj_to_timeunit($a)
