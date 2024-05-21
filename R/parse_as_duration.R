@@ -93,3 +93,11 @@ difftime_to_duration_string = function(dft) {
   )
   paste0(value, unit)
 }
+
+negate_duration_string = function(x) {
+  if (startsWith(x, "-")) {
+    gsub("^-", "", x)
+  } else {
+    paste0("-", x)
+  }
+}

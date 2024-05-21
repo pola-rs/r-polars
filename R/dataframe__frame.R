@@ -2132,7 +2132,7 @@ DataFrame_rolling = function(
     group_by = NULL,
     check_sorted = TRUE) {
   period = parse_as_polars_duration_string(period)
-  offset = parse_as_polars_duration_string(offset) %||% paste0("-", period)
+  offset = parse_as_polars_duration_string(offset) %||% negate_duration_string(period)
   construct_rolling_group_by(self, index_column, period, offset, closed, group_by, check_sorted)
 }
 
@@ -2216,7 +2216,7 @@ DataFrame_group_by_dynamic = function(
     start_by = "window",
     check_sorted = TRUE) {
   every = parse_as_polars_duration_string(every)
-  offset = parse_as_polars_duration_string(offset) %||% paste0("-", every)
+  offset = parse_as_polars_duration_string(offset) %||% negate_duration_string(every)
   period = parse_as_polars_duration_string(period) %||% every
   construct_group_by_dynamic(
     self, index_column, every, period, offset, include_boundaries, closed, label,

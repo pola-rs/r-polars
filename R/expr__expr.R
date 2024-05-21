@@ -3321,7 +3321,7 @@ Expr_rolling = function(
     closed = "right",
     check_sorted = TRUE) {
   period = parse_as_polars_duration_string(period)
-  offset = parse_as_polars_duration_string(offset) %||% paste0("-", period)
+  offset = parse_as_polars_duration_string(offset) %||% negate_duration_string(period)
   .pr$Expr$rolling(self, index_column, period, offset, closed, check_sorted) |>
     unwrap("in $rolling():")
 }
