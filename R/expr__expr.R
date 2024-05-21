@@ -3316,11 +3316,12 @@ Expr_peak_max = function() {
 Expr_rolling = function(
     index_column,
     ...,
-    period, offset = NULL,
-    closed = "right", check_sorted = TRUE) {
-  if (is.null(offset)) {
-    offset = paste0("-", period) # TODO: `paste0` should be executed after `period` is parsed as string
-  }
+    period,
+    offset = NULL,
+    closed = "right",
+    check_sorted = TRUE) {
+  period = parse_as_polars_duration_string(period)
+  offset = parse_as_polars_duration_string(offset) %||% negate_duration_string(period)
   .pr$Expr$rolling(self, index_column, period, offset, closed, check_sorted) |>
     unwrap("in $rolling():")
 }

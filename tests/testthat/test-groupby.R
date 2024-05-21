@@ -274,6 +274,18 @@ test_that("group_by_dynamic for LazyFrame: error if not explicitly sorted", {
   )
 })
 
+test_that("group_by_dynamic for LazyFrame: error if every is negative", {
+  df = pl$LazyFrame(
+    idx = 0:5,
+    n = 0:5
+  )$with_columns(pl$col("idx")$set_sorted())
+
+  expect_grepl_error(
+    df$group_by_dynamic("idx", every = "-2i")$agg(pl$col("n")$mean())$collect(),
+    "'every' argument must be positive"
+  )
+})
+
 test_that("group_by_dynamic for LazyFrame: arg 'closed' works", {
   df = pl$LazyFrame(
     dt = c(
