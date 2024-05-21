@@ -2577,6 +2577,22 @@ test_that("rolling, arg offset", {
   )
 })
 
+test_that("rolling: error if period is negative", {
+  dates = c(
+    "2020-01-01 13:45:48", "2020-01-01 16:42:13", "2020-01-01 16:45:09",
+    "2020-01-02 18:12:48", "2020-01-03 19:45:32", "2020-01-08 23:16:43"
+  )
+
+  df = pl$DataFrame(dt = dates, a = c(3, 7, 5, 9, 2, 1))$
+    with_columns(
+      pl$col("dt")$str$strptime(pl$Datetime("us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
+    )
+  expect_grepl_error(
+    df$select(pl$col("a")$rolling(index_column = "dt", period = "-2d")),
+    "rolling window period should be strictly positive"
+  )
+})
+
 test_that("rolling, arg check_sorted", {
   dates = c(
     "2020-01-02 18:12:48", "2020-01-03 19:45:32", "2020-01-08 23:16:43",

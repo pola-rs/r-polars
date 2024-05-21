@@ -962,6 +962,17 @@ test_that("rolling for LazyFrame: error if not explicitly sorted", {
   )
 })
 
+test_that("rolling for LazyFrame: error if period is negative", {
+  df = pl$LazyFrame(
+    index = c(1L, 2L, 3L, 4L, 8L, 9L),
+    a = c(3, 7, 5, 9, 2, 1)
+  )
+  expect_grepl_error(
+    df$rolling(index_column = "index", period = "-2i")$agg(pl$col("a"))$collect(),
+    "rolling window period should be strictly positive"
+  )
+})
+
 test_that("rolling for LazyFrame: argument 'group_by' works", {
   df = pl$LazyFrame(
     index = c(1L, 2L, 3L, 4L, 8L, 9L),

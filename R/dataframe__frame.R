@@ -2131,9 +2131,8 @@ DataFrame_rolling = function(
     closed = "right",
     group_by = NULL,
     check_sorted = TRUE) {
-  if (is.null(offset)) {
-    offset = paste0("-", period) # TODO: `paste0` should be executed after `period` is parsed as string
-  }
+  period = parse_as_polars_duration_string(period)
+  offset = parse_as_polars_duration_string(offset) %||% paste0("-", period)
   construct_rolling_group_by(self, index_column, period, offset, closed, group_by, check_sorted)
 }
 

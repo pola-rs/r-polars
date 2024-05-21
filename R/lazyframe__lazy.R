@@ -1914,9 +1914,8 @@ LazyFrame_rolling = function(
     closed = "right",
     group_by = NULL,
     check_sorted = TRUE) {
-  if (is.null(offset)) {
-    offset = paste0("-", period) # TODO: `paste0` should be executed after `period` is parsed as string
-  }
+  period = parse_as_polars_duration_string(period)
+  offset = parse_as_polars_duration_string(offset) %||% paste0("-", period)
   .pr$LazyFrame$rolling(
     self, index_column, period, offset, closed,
     wrap_elist_result(group_by, str_to_lit = FALSE), check_sorted
