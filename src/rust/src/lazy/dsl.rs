@@ -261,12 +261,34 @@ impl RPolarsExpr {
             .into()
     }
 
-    pub fn top_k(&self, k: Robj) -> RResult<Self> {
-        Ok(self.0.clone().top_k(robj_to!(PLExpr, k)?).into())
+    pub fn top_k(&self, k: Robj, nulls_last: Robj, multithreaded: Robj) -> RResult<Self> {
+        let nulls_last = robj_to!(bool, nulls_last)?;
+        let multithreaded = robj_to!(bool, multithreaded)?;
+        Ok(self
+            .0
+            .clone()
+            .top_k(
+                robj_to!(PLExpr, k)?,
+                SortOptions::default()
+                    .with_nulls_last(nulls_last)
+                    .with_maintain_order(multithreaded),
+            )
+            .into())
     }
 
-    pub fn bottom_k(&self, k: Robj) -> RResult<Self> {
-        Ok(self.0.clone().bottom_k(robj_to!(PLExpr, k)?).into())
+    pub fn bottom_k(&self, k: Robj, nulls_last: Robj, multithreaded: Robj) -> RResult<Self> {
+        let nulls_last = robj_to!(bool, nulls_last)?;
+        let multithreaded = robj_to!(bool, multithreaded)?;
+        Ok(self
+            .0
+            .clone()
+            .bottom_k(
+                robj_to!(PLExpr, k)?,
+                SortOptions::default()
+                    .with_nulls_last(nulls_last)
+                    .with_maintain_order(multithreaded),
+            )
+            .into())
     }
 
     pub fn arg_max(&self) -> Self {
@@ -1302,8 +1324,13 @@ impl RPolarsExpr {
             .into())
     }
 
-    pub fn dt_round(&self, every: &str, offset: &str) -> RResult<Self> {
-        Ok(self.0.clone().dt().round(every, offset).into())
+    pub fn dt_round(&self, every: Robj, offset: &str) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .dt()
+            .round(robj_to!(PLExpr, every), offset)
+            .into())
     }
 
     pub fn dt_time(&self) -> RResult<Self> {
@@ -2057,7 +2084,7 @@ impl RPolarsExpr {
             .clone()
             .0
             .str()
-            .json_path_match(robj_to!(String, pat)?)
+            .json_path_match(robj_to!(PLExpr, pat)?)
             .into())
     }
 

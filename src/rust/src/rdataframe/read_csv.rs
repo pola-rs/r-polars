@@ -72,8 +72,10 @@ pub fn new_from_csv(
     truncate_ragged_lines: Robj,
 ) -> RResult<RPolarsLazyFrame> {
     let offset = robj_to!(Option, u32, row_index_offset)?.unwrap_or(0);
-    let opt_rowcount =
-        robj_to!(Option, String, row_index_name)?.map(|name| RowIndex { name, offset });
+    let opt_rowcount = robj_to!(Option, String, row_index_name)?.map(|name| RowIndex {
+        name: name.into(),
+        offset,
+    });
 
     let vec_pathbuf = robj_to!(Vec, PathBuf, path)?;
     let linereader = match vec_pathbuf.len() {
@@ -104,16 +106,16 @@ pub fn new_from_csv(
     linereader
         .with_infer_schema_length(robj_to!(Option, usize, infer_schema_length)?)
         .with_separator(robj_to!(Utf8Byte, separator)?)
-        .has_header(robj_to!(bool, has_header)?)
+        .with_has_header(robj_to!(bool, has_header)?)
         .with_ignore_errors(robj_to!(bool, ignore_errors)?)
         .with_skip_rows(robj_to!(usize, skip_rows)?)
         .with_n_rows(robj_to!(Option, usize, n_rows)?)
         .with_cache(robj_to!(bool, cache)?)
-        .with_dtype_overwrite(schema.as_ref())
-        .low_memory(robj_to!(bool, low_memory)?)
+        .with_dtype_overwrite(schema.map(|schema| std::sync::Arc::new(schema)))
+        .with_low_memory(robj_to!(bool, low_memory)?)
         .with_comment_prefix(robj_to!(Option, str, comment_prefix)?)
         .with_quote_char(robj_to!(Option, Utf8Byte, quote_char)?)
-        .with_end_of_line_char(robj_to!(Utf8Byte, eol_char)?)
+        .with_eol_char(robj_to!(Utf8Byte, eol_char)?)
         .with_rechunk(robj_to!(bool, rechunk)?)
         .with_skip_rows_after_header(robj_to!(usize, skip_rows_after_header)?)
         .with_encoding(encoding)
@@ -121,8 +123,8 @@ pub fn new_from_csv(
         .with_null_values(Wrap(null_values).into())
         // .with_missing_is_null(!robj_to!(bool, missing_utf8_is_empty_string)?)
         .with_row_index(opt_rowcount)
-        .truncate_ragged_lines(robj_to!(bool, truncate_ragged_lines)?)
-        .raise_if_empty(robj_to!(bool, raise_if_empty)?)
+        .with_truncate_ragged_lines(robj_to!(bool, truncate_ragged_lines)?)
+        .with_raise_if_empty(robj_to!(bool, raise_if_empty)?)
         .finish()
         .map_err(polars_to_rpolars_err)
         .map(RPolarsLazyFrame)

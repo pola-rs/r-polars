@@ -113,7 +113,9 @@ impl RPolarsDataFrame {
     }
 
     pub fn rechunk(&self) -> Self {
-        self.0.agg_chunks().into()
+        let mut df = self.0.clone();
+        df.as_single_chunk_par();
+        df.into()
     }
 
     pub fn clone_in_rust(&self) -> RPolarsDataFrame {
@@ -546,7 +548,10 @@ impl RPolarsDataFrame {
         let n_rows = robj_to!(Option, usize, n_rows)?;
         let row_index = robj_to!(Option, String, row_name)?
             .map(|name| {
-                robj_to!(u32, row_index).map(|offset| polars::io::RowIndex { name, offset })
+                robj_to!(u32, row_index).map(|offset| polars::io::RowIndex {
+                    name: name.into(),
+                    offset,
+                })
             })
             .transpose()?;
         let memory_map = robj_to!(bool, memory_map)?;
