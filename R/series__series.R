@@ -294,6 +294,10 @@ Series_struct = method_as_active_binding(
 #' If not `NULL`, that data type is used to [cast][Expr_cast] the Series created from the vector
 #' to a specific data type internally.
 #' @param ... Ignored.
+#' @param strict A logical. If `TRUE` (default), throw an error if any value does not exactly match
+#' the given data type by the `dtype` argument. If `FALSE`, values that do not match the data type
+#' are cast to that data type or, if casting is not possible, set to `null` instead.
+#' Passed to the `strict` argument of the [`$cast()`][Expr_cast] method internally.
 #' @param nan_to_null If `TRUE`, `NaN` values contained in the Series are replaced to `null`.
 #' Using the [`$fill_nan()`][Expr_fill_nan] method internally.
 #' @return [Series][Series_class]
@@ -316,6 +320,7 @@ pl_Series = function(
     values = NULL,
     dtype = NULL,
     ...,
+    strict = TRUE,
     nan_to_null = FALSE) {
   uw = function(x) unwrap(x, "in pl$Series():")
 
@@ -328,7 +333,7 @@ pl_Series = function(
     uw()
 
   if (!is.null(dtype)) {
-    out = result(out$cast(dtype)) |>
+    out = result(out$cast(dtype, strict)) |>
       uw()
   }
 

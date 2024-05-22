@@ -5,7 +5,14 @@
 \alias{Series}
 \title{Create new Series}
 \usage{
-pl_Series(name = NULL, values = NULL, dtype = NULL, ..., nan_to_null = FALSE)
+pl_Series(
+  name = NULL,
+  values = NULL,
+  dtype = NULL,
+  ...,
+  strict = TRUE,
+  nan_to_null = FALSE
+)
 }
 \arguments{
 \item{name}{A character to use as the name of the Series, or \code{NULL} (default).
@@ -19,6 +26,11 @@ If not \code{NULL}, that data type is used to \link[=Expr_cast]{cast} the Series
 to a specific data type internally.}
 
 \item{...}{Ignored.}
+
+\item{strict}{A logical. If \code{TRUE} (default), throw an error if any value does not exactly match
+the given data type by the \code{dtype} argument. If \code{FALSE}, values that do not match the data type
+are cast to that data type or, if casting is not possible, set to \code{null} instead.
+Passed to the \code{strict} argument of the \code{\link[=Expr_cast]{$cast()}} method internally.}
 
 \item{nan_to_null}{If \code{TRUE}, \code{NaN} values contained in the Series are replaced to \code{null}.
 Using the \code{\link[=Expr_fill_nan]{$fill_nan()}} method internally.}
