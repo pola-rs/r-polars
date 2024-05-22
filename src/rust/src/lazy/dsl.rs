@@ -684,18 +684,12 @@ impl RPolarsExpr {
         weights: Robj,
         min_periods: Robj,
         center: Robj,
-        by: Robj,
-        closed: Robj,
-        warn_if_unsorted: Robj,
     ) -> RResult<Self> {
-        let options = pl::RollingOptions {
-            window_size: pl::Duration::parse(robj_to!(str, window_size)?),
+        let options = pl::RollingOptionsFixedWindow {
+            window_size: robj_to!(usize, window_size)?,
             weights: robj_to!(Option, Vec, f64, weights)?,
             min_periods: robj_to!(usize, min_periods)?,
             center: robj_to!(bool, center)?,
-            by: robj_to!(Option, String, by)?,
-            closed_window: robj_to!(Option, ClosedWindow, closed)?,
-            warn_if_unsorted: robj_to!(bool, warn_if_unsorted)?,
             fn_params: None,
         };
         let quantile = robj_to!(f64, quantile)?;
@@ -2624,15 +2618,12 @@ pub fn make_rolling_options(
     by_null: Robj,
     closed_null: Robj,
     warn_if_unsorted: Robj,
-) -> RResult<pl::RollingOptions> {
-    Ok(pl::RollingOptions {
-        window_size: pl::Duration::parse(robj_to!(str, window_size)?),
+) -> RResult<pl::RollingOptionsFixedWindow> {
+    Ok(pl::RollingOptionsFixedWindow {
+        window_size: robj_to!(usize, window_size)?,
         weights: robj_to!(Option, Vec, f64, weights)?,
         min_periods: robj_to!(usize, min_periods)?,
         center: robj_to!(bool, center)?,
-        by: robj_to!(Option, String, by_null)?,
-        closed_window: robj_to!(Option, ClosedWindow, closed_null)?,
-        warn_if_unsorted: robj_to!(bool, warn_if_unsorted)?,
         ..Default::default()
     })
 }

@@ -66,7 +66,7 @@ impl Iterator for OwnedDataFrameIterator {
                 .collect();
             self.idx += 1;
 
-            let chunk = polars::frame::ArrowChunk::new(batch_cols);
+            let chunk = arrow::record_batch::RecordBatch::new(batch_cols);
             let array = arrow::array::StructArray::new(
                 self.data_type.clone(),
                 chunk.into_arrays(),

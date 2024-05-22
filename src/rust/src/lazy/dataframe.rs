@@ -87,7 +87,7 @@ impl RPolarsLazyFrame {
 
     fn deserialize(json: Robj) -> RResult<Self> {
         let json = robj_to!(str, json)?;
-        let lp = serde_json::from_str::<pl::LogicalPlan>(json)
+        let lp = serde_json::from_str::<pl::DslPlan>(json)
             .map_err(|err| RPolarsErr::new().plain(format!("{err:?}")))?;
         Ok(RPolarsLazyFrame(pl::LazyFrame::from(lp)))
     }

@@ -555,7 +555,7 @@ test_that("join_asof_simple", {
 
   # test allow_parallel and force_parallel
 
-  # export LogicalPlan as json string
+  # export DslPlan as json string
   logical_json_plan_TT =
     pop$join_asof(gdp, on = "date", allow_parallel = TRUE, force_parallel = TRUE) |>
     .pr$LazyFrame$debug_plan() |>
@@ -570,7 +570,7 @@ test_that("join_asof_simple", {
   allow_p_pat = r"{*"allow_parallel":\s*([^,]*)}" # find allow_parallel value in json string
   force_p_pat = r"{*"force_parallel":\s*([^,]*)}"
 
-  # test if setting was as expected in LogicalPlan
+  # test if setting was as expected in DslPlan
   expect_identical(get_reg(logical_json_plan_TT, allow_p_pat), "\"allow_parallel\": Bool(true)")
   expect_identical(get_reg(logical_json_plan_TT, force_p_pat), "\"force_parallel\": Bool(true)")
   expect_identical(get_reg(logical_json_plan_FF, allow_p_pat), "\"allow_parallel\": Bool(false)")
@@ -951,6 +951,27 @@ test_that("rolling for LazyFrame: integer variable", {
   )
 })
 
+test_that("rolling for LazyFrame: using difftime as period", {
+  df = pl$LazyFrame(
+    dt = c(
+      "2020-01-01", "2020-01-01", "2020-01-01",
+      "2020-01-02", "2020-01-03", "2020-01-08"
+    ),
+    a = c(3, 7, 5, 9, 2, 1)
+  )$with_columns(
+    pl$col("dt")$str$strptime(pl$Date, format = NULL)$set_sorted()
+  )
+
+  expect_equal(
+    df$rolling(index_column = "dt", period = "2d")$agg(
+      pl$sum("a")$alias("sum_a")
+    )$collect()$to_data_frame(),
+    df$rolling(index_column = "dt", period = as.difftime(2, units = "days"))$agg(
+      pl$sum("a")$alias("sum_a")
+    )$collect()$to_data_frame()
+  )
+})
+
 test_that("rolling for LazyFrame: error if not explicitly sorted", {
   df = pl$LazyFrame(
     index = c(1L, 2L, 3L, 4L, 8L, 9L),
@@ -959,6 +980,17 @@ test_that("rolling for LazyFrame: error if not explicitly sorted", {
   expect_grepl_error(
     df$rolling(index_column = "index", period = "2i")$agg(pl$col("a"))$collect(),
     "not explicitly sorted"
+  )
+})
+
+test_that("rolling for LazyFrame: error if period is negative", {
+  df = pl$LazyFrame(
+    index = c(1L, 2L, 3L, 4L, 8L, 9L),
+    a = c(3, 7, 5, 9, 2, 1)
+  )
+  expect_grepl_error(
+    df$rolling(index_column = "index", period = "-2i")$agg(pl$col("a"))$collect(),
+    "rolling window period should be strictly positive"
   )
 })
 
