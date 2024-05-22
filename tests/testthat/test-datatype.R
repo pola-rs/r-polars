@@ -222,10 +222,10 @@ test_that("Enum", {
 
   df = pl$DataFrame(x = "a", y = "b", z = "c")$
     with_columns(
-      pl$col("x")$cast(pl$Enum(c("a", "b", "c"))),
-      pl$col("y")$cast(pl$Enum(c("a", "b", "c"))),
-      pl$col("z")$cast(pl$Enum(c("a", "c")))
-    )
+    pl$col("x")$cast(pl$Enum(c("a", "b", "c"))),
+    pl$col("y")$cast(pl$Enum(c("a", "b", "c"))),
+    pl$col("z")$cast(pl$Enum(c("a", "c")))
+  )
 
   expect_identical(
     df$select(x_eq_y = pl$col("x") == pl$col("y"))$to_list(),

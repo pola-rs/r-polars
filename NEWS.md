@@ -13,6 +13,8 @@
 - `pl$Struct()` now only accepts named inputs and objects of class `RPolarsField`.
   For example, `pl$Struct(pl$Boolean)` doesn't work anymore and should be named
   like `pl$Struct(a = pl$Boolean)` (#1053).
+- In `$all()` and `$any()`, the argument `drop_nulls` is renamed `ignore_nulls`,
+  and this argument must be named (#1050).
 
 ## Polars R Package 0.16.4
 
