@@ -203,60 +203,44 @@ impl RPolarsLazyFrame {
         self.0.clone().last().into()
     }
 
-    fn max(&self) -> RResult<Self> {
-        let ldf = self.0.clone();
-        let out = ldf.max().map_err(polars_to_rpolars_err)?;
-        Ok(out.into())
+    fn max(&self) -> Self {
+        self.0.clone().max().into()
     }
 
-    fn min(&self) -> RResult<Self> {
-        let ldf = self.0.clone();
-        let out = ldf.min().map_err(polars_to_rpolars_err)?;
-        Ok(out.into())
+    fn min(&self) -> Self {
+        self.0.clone().min().into()
     }
 
-    fn mean(&self) -> RResult<Self> {
-        let ldf = self.0.clone();
-        let out = ldf.mean().map_err(polars_to_rpolars_err)?;
-        Ok(out.into())
+    fn mean(&self) -> Self {
+        self.0.clone().mean().into()
     }
 
-    fn median(&self) -> RResult<Self> {
-        let ldf = self.0.clone();
-        let out = ldf.median().map_err(polars_to_rpolars_err)?;
-        Ok(out.into())
+    fn median(&self) -> Self {
+        self.0.clone().median().into()
     }
 
-    fn sum(&self) -> RResult<Self> {
-        let ldf = self.0.clone();
-        let out = ldf.sum().map_err(polars_to_rpolars_err)?;
-        Ok(out.into())
+    fn sum(&self) -> Self {
+        self.0.clone().sum().into()
     }
 
     fn std(&self, ddof: Robj) -> RResult<Self> {
         let ldf = self.0.clone();
-        let out = ldf
-            .std(robj_to!(u8, ddof)?)
-            .map_err(polars_to_rpolars_err)?;
+        let out = ldf.std(robj_to!(u8, ddof)?);
         Ok(out.into())
     }
 
     fn var(&self, ddof: Robj) -> RResult<Self> {
         let ldf = self.0.clone();
-        let out = ldf
-            .var(robj_to!(u8, ddof)?)
-            .map_err(polars_to_rpolars_err)?;
+        let out = ldf.var(robj_to!(u8, ddof)?);
         Ok(out.into())
     }
 
     fn quantile(&self, quantile: Robj, interpolation: Robj) -> RResult<Self> {
         let ldf = self.0.clone();
-        let out = ldf
-            .quantile(
-                robj_to!(PLExpr, quantile)?,
-                robj_to!(quantile_interpolation_option, interpolation)?,
-            )
-            .map_err(polars_to_rpolars_err)?;
+        let out = ldf.quantile(
+            robj_to!(PLExpr, quantile)?,
+            robj_to!(quantile_interpolation_option, interpolation)?,
+        );
         Ok(out.into())
     }
 
