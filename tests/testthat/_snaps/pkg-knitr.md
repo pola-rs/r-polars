@@ -11,7 +11,7 @@
       ---
       
       
-      ```r
+      ``` r
       df = data.frame(a = 1:3, b = letters[1:3])
       pl$DataFrame(df)
       ```
@@ -39,7 +39,7 @@
       ---
       
       
-      ```r
+      ``` r
       df = data.frame(a = 1:3, b = letters[1:3])
       pl$DataFrame(df)
       ```
@@ -101,7 +101,7 @@
       .knit_file("flights.Rmd")
     Output
       
-      ```r
+      ``` r
       nycflights13::flights |>
         to_html_table(5, 5) |>
         writeLines()

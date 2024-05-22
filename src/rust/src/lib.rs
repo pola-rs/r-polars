@@ -44,6 +44,7 @@ pub use crate::rbackground::RBGPOOL;
 #[cfg(not(feature = "sql"))]
 extendr_module! {
     mod polars;
+    use arrow_interop;
     use rlib;
     use concat;
     use rdataframe;
@@ -58,6 +59,7 @@ extendr_module! {
 #[cfg(feature = "sql")]
 extendr_module! {
     mod polars;
+    use arrow_interop;
     use rlib;
     use concat;
     use rdataframe;

@@ -3199,17 +3199,6 @@ Expr_implode = use_extendr_wrapper
 #' df$with_columns(pl$all()$shrink_dtype()$name$suffix("_shrunk"))
 Expr_shrink_dtype = use_extendr_wrapper
 
-
-#' Convert an Expr to a Struct
-#' @return Expr
-#' @examples
-#' pl$DataFrame(iris[, 3:5])$with_columns(
-#'   my_struct = pl$all()$to_struct()
-#' )
-Expr_to_struct = function() {
-  pl$struct(self)
-}
-
 #' Convert Literal to Series
 #'
 #' Collect an expression based on literals into a Series.
@@ -3327,11 +3316,12 @@ Expr_peak_max = function() {
 Expr_rolling = function(
     index_column,
     ...,
-    period, offset = NULL,
-    closed = "right", check_sorted = TRUE) {
-  if (is.null(offset)) {
-    offset = paste0("-", period) # TODO: `paste0` should be executed after `period` is parsed as string
-  }
+    period,
+    offset = NULL,
+    closed = "right",
+    check_sorted = TRUE) {
+  period = parse_as_polars_duration_string(period)
+  offset = parse_as_polars_duration_string(offset) %||% negate_duration_string(period)
   .pr$Expr$rolling(self, index_column, period, offset, closed, check_sorted) |>
     unwrap("in $rolling():")
 }

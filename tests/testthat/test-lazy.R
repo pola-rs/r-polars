@@ -495,7 +495,7 @@ test_that("join_asof_simple", {
   )
   expect_grepl_error(
     pop$join_asof(gdp, left_on = "date", right_on = "date", strategy = "fruitcake"),
-    c("join_asof", "strategy choice", "fruitcake")
+    "must be one of 'forward' or 'backward'"
   )
 
   # shared left_right on
@@ -790,8 +790,8 @@ test_that("unnest", {
 
   df2 = df$
     select(
-    pl$col("a", "b", "c")$to_struct()$alias("first_struct"),
-    pl$col("d", "e", "f")$to_struct()$alias("second_struct")
+    pl$struct(c("a", "b", "c"))$alias("first_struct"),
+    pl$struct(c("d", "e", "f"))$alias("second_struct")
   )
 
   expect_identical(
@@ -804,7 +804,7 @@ test_that("unnest", {
     df$
       select(
       pl$col("a", "b", "c"),
-      pl$col("d", "e", "f")$to_struct()$alias("second_struct")
+      pl$struct(c("d", "e", "f"))$alias("second_struct")
     )$
       collect()$
       to_data_frame()
@@ -951,6 +951,27 @@ test_that("rolling for LazyFrame: integer variable", {
   )
 })
 
+test_that("rolling for LazyFrame: using difftime as period", {
+  df = pl$LazyFrame(
+    dt = c(
+      "2020-01-01", "2020-01-01", "2020-01-01",
+      "2020-01-02", "2020-01-03", "2020-01-08"
+    ),
+    a = c(3, 7, 5, 9, 2, 1)
+  )$with_columns(
+    pl$col("dt")$str$strptime(pl$Date, format = NULL)$set_sorted()
+  )
+
+  expect_equal(
+    df$rolling(index_column = "dt", period = "2d")$agg(
+      pl$sum("a")$alias("sum_a")
+    )$collect()$to_data_frame(),
+    df$rolling(index_column = "dt", period = as.difftime(2, units = "days"))$agg(
+      pl$sum("a")$alias("sum_a")
+    )$collect()$to_data_frame()
+  )
+})
+
 test_that("rolling for LazyFrame: error if not explicitly sorted", {
   df = pl$LazyFrame(
     index = c(1L, 2L, 3L, 4L, 8L, 9L),
@@ -959,6 +980,17 @@ test_that("rolling for LazyFrame: error if not explicitly sorted", {
   expect_grepl_error(
     df$rolling(index_column = "index", period = "2i")$agg(pl$col("a"))$collect(),
     "not explicitly sorted"
+  )
+})
+
+test_that("rolling for LazyFrame: error if period is negative", {
+  df = pl$LazyFrame(
+    index = c(1L, 2L, 3L, 4L, 8L, 9L),
+    a = c(3, 7, 5, 9, 2, 1)
+  )
+  expect_grepl_error(
+    df$rolling(index_column = "index", period = "-2i")$agg(pl$col("a"))$collect(),
+    "rolling window period should be strictly positive"
   )
 })
 

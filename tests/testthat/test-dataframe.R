@@ -882,7 +882,7 @@ test_that("join_asof_simple", {
   )
   expect_grepl_error(
     pop$join_asof(gdp, left_on = "date", right_on = "date", strategy = "fruitcake"),
-    c("join_asof", "strategy choice", "fruitcake")
+    "must be one of 'forward' or 'backward'"
   )
 
   # shared left_right on
@@ -1320,6 +1320,38 @@ test_that("rolling for DataFrame: basic example", {
       min_a = c(3, 3, 3, 3, 2, 1),
       max_a = c(7, 7, 7, 9, 9, 1)
     )
+  )
+})
+
+test_that("rolling for DataFrame: using difftime as period", {
+  df = pl$DataFrame(
+    dt = c(
+      "2020-01-01", "2020-01-01", "2020-01-01",
+      "2020-01-02", "2020-01-03", "2020-01-08"
+    ),
+    a = c(3, 7, 5, 9, 2, 1)
+  )$with_columns(
+    pl$col("dt")$str$strptime(pl$Date, format = NULL)$set_sorted()
+  )
+
+  expect_equal(
+    df$rolling(index_column = "dt", period = "2d")$agg(
+      pl$sum("a")$alias("sum_a")
+    )$to_data_frame(),
+    df$rolling(index_column = "dt", period = as.difftime(2, units = "days"))$agg(
+      pl$sum("a")$alias("sum_a")
+    )$to_data_frame()
+  )
+})
+
+test_that("rolling for LazyFrame: error if period is negative", {
+  df = pl$LazyFrame(
+    index = c(1L, 2L, 3L, 4L, 8L, 9L),
+    a = c(3, 7, 5, 9, 2, 1)
+  )
+  expect_grepl_error(
+    df$rolling(index_column = "index", period = "-2i")$agg(pl$col("a"))$collect(),
+    "rolling window period should be strictly positive"
   )
 })
 

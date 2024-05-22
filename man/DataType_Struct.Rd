@@ -43,14 +43,14 @@ if (requireNamespace("tibble", quietly = TRUE)) {
   )
 }
 
-# Finally, one can use the method `$to_struct()` to convert existing columns
-# or `Series` to a `Struct`:
+# Finally, one can use `pl$struct()` to convert existing columns or `Series`
+# to a `Struct`:
 x = pl$DataFrame(
   a = 1:2,
   b = list(c("x", "y"), "z")
 )
 
-out = x$select(pl$col("a", "b")$to_struct())
+out = x$select(pl$struct(c("a", "b")))
 out
 
 out$schema

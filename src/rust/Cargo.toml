@@ -1,6 +1,6 @@
 [package]
 name = "r-polars"
-version = "0.39.3"
+version = "0.39.4"
 edition = "2021"
 rust-version = "1.76.0"
 publish = false
@@ -21,7 +21,7 @@ rpolars_debug_print = []
 [workspace]
 # prevents package from thinking it's in the workspace
 [target.'cfg(any(not(target_os = "linux"), use_mimalloc))'.dependencies]
-mimalloc = { version = "0.1.41", default-features = false }
+mimalloc = { version = "0.1.42", default-features = false }
 
 [target.'cfg(all(target_os = "linux", not(use_mimalloc)))'.dependencies]
 jemallocator = { version = "0.5.0", features = ["disable_initial_exec_tls"] }
@@ -47,11 +47,11 @@ indenter = "0.3.3"
 ipc-channel = "0.18.0"
 once_cell = "1.19.0"
 rayon = "1.10.0"
-serde = { version = "1.0.200", features = ["derive"] }
+serde = { version = "1.0.202", features = ["derive"] }
 serde_json = "*"
 smartstring = "1.0.1"
 state = "0.6.0"
-thiserror = "1.0.60"
+thiserror = "1.0.61"
 polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "4c57688d204fad3d0d5e4586ecd0405ead7baeb2", default-features = false }
 polars-lazy = { git = "https://github.com/pola-rs/polars.git", rev = "4c57688d204fad3d0d5e4586ecd0405ead7baeb2", default-features = false }
 either = "1"

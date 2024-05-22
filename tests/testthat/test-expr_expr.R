@@ -811,8 +811,6 @@ test_that("mode", {
   expect_identical(sort(df$select(pl$col("d")$mode())$to_list()$d, na.last = TRUE), c("b", NA))
 })
 
-# TODO contribute rust, Null does not carry in dot products, NaN do.
-# cumsum does not carry Null either. Maybe it is by design.
 test_that("dot", {
   l = list(a = 1:4, b = c(1, 2, 3, 5), c = c(NA_real_, 1:3), d = c(6:8, NaN))
   actual_list = pl$DataFrame(l)$select(
@@ -856,9 +854,6 @@ test_that("Expr_sort", {
     )
   )$to_list()
 
-
-  # TODO contribute polars in Expr_sort NaN is a value above Inf, but NaN > Inf is false.
-  # more correct use of nan would be slower though
   expect_identical(
     l_actual,
     list(
@@ -866,7 +861,6 @@ test_that("Expr_sort", {
       sort_nulls_last = c(-Inf, 0, 1, 6, Inf, NaN, NA),
       sort_reverse = c(NA, NaN, Inf, 6, 1, 0, -Inf),
       sort_reverse_nulls_last = c(NaN, Inf, 6, 1, 0, -Inf, NA),
-      # this is a bit surprising, have raised in discord
       fake_sort_nulls_last = c(-Inf, 0, 1, 6, Inf, NaN, NA),
       fake_sort_reverse_nulls_last = c(NaN, Inf, 6, 1, 0, -Inf, NA)
     )
@@ -2580,6 +2574,42 @@ test_that("rolling, arg offset", {
       sum_a_offset1 = c(11, 11, 11, 2, NA, NA),
       sum_a_offset2 = c(2, 2, 2, NA, NA, NA)
     )
+  )
+})
+
+test_that("rolling: error if period is negative", {
+  dates = c(
+    "2020-01-01 13:45:48", "2020-01-01 16:42:13", "2020-01-01 16:45:09",
+    "2020-01-02 18:12:48", "2020-01-03 19:45:32", "2020-01-08 23:16:43"
+  )
+
+  df = pl$DataFrame(dt = dates, a = c(3, 7, 5, 9, 2, 1))$
+    with_columns(
+      pl$col("dt")$str$strptime(pl$Datetime("us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
+    )
+  expect_grepl_error(
+    df$select(pl$col("a")$rolling(index_column = "dt", period = "-2d")),
+    "rolling window period should be strictly positive"
+  )
+})
+
+test_that("rolling: passing a difftime as period works", {
+  dates = c(
+    "2020-01-01 13:45:48", "2020-01-01 16:42:13", "2020-01-01 16:45:09",
+    "2020-01-02 18:12:48", "2020-01-03 19:45:32", "2020-01-08 23:16:43"
+  )
+
+  df = pl$DataFrame(dt = dates, a = c(3, 7, 5, 9, 2, 1))$
+    with_columns(
+      pl$col("dt")$str$strptime(pl$Datetime("us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
+    )
+  expect_identical(
+    df$select(
+      sum_a_offset1 = pl$sum("a")$rolling(index_column = "dt", period = "2d", offset = "1d")
+    )$to_data_frame(),
+    df$select(
+      sum_a_offset1 = pl$sum("a")$rolling(index_column = "dt", period = as.difftime(2, units = "days"), offset = "1d")
+    )$to_data_frame()
   )
 })
 
