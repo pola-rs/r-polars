@@ -16,7 +16,7 @@ use polars::chunked_array::ops::SortMultipleOptions;
 use polars::frame::explode::MeltArgs;
 use polars::prelude as pl;
 
-use polars::prelude::SerializeOptions;
+use polars::prelude::{JoinCoalesce, SerializeOptions};
 use polars_lazy::prelude::CsvWriterOptions;
 
 #[allow(unused_imports)]
@@ -437,7 +437,13 @@ impl RPolarsLazyFrame {
         suffix: Robj,
         allow_parallel: Robj,
         force_parallel: Robj,
+        coalesce: Option<bool>,
     ) -> RResult<Self> {
+        let coalesce = match coalesce {
+            None => JoinCoalesce::JoinSpecific,
+            Some(true) => JoinCoalesce::CoalesceColumns,
+            Some(false) => JoinCoalesce::KeepColumns,
+        };
         Ok(RPolarsLazyFrame(
             self.0
                 .clone()
@@ -448,6 +454,7 @@ impl RPolarsLazyFrame {
                 .allow_parallel(robj_to!(bool, allow_parallel)?)
                 .force_parallel(robj_to!(bool, force_parallel)?)
                 .how(robj_to!(JoinType, how)?)
+                .coalesce(coalesce)
                 .suffix(robj_to!(str, suffix)?)
                 .join_nulls(robj_to!(bool, join_nulls)?)
                 .validate(robj_to!(JoinValidation, validate)?)
