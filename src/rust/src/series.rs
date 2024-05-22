@@ -495,8 +495,19 @@ impl RPolarsSeries {
         r_result_list(s)
     }
 
+    // TODO: add the int64 conversion option
     pub fn mean(&self) -> Result<Robj, String> {
-        RPolarsSeries(self.0.mean_as_series()).to_r("double")
+        match self.0.dtype() {
+            DataType::Boolean => {
+                let s = self.0.cast(&DataType::UInt8)?.mean_reduce().as_any_value();
+                RPolarsSeries(s).to_r("double")
+            }
+            DataType::Datetime(_, _) | DataType::Duration(_) | DataType::Time => {
+                let s = self.0.mean_reduce().as_any_value();
+                RPolarsSeries(s).to_r("double")
+            }
+            _ => RPolarsSeries(self.0.mean()).to_r("double"),
+        }
     }
 
     pub fn median(&self) -> Result<Robj, String> {
