@@ -4,6 +4,8 @@
 
 ### Breaking changes
 
+- As warned in v0.16.0, the order of arguments in `pl$Series` is changed (#1071).
+  The first argument is now `name`, and the second argument is `values`.
 - `$to_struct()` on an Expr is removed. This method is now only available for
   `Series`, `DataFrame`, and in the `$list` and `$arr` subnamespaces. For example,
   `pl$col("a", "b", "c")$to_struct()` should be replaced with

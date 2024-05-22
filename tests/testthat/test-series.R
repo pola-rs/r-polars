@@ -598,38 +598,6 @@ test_that("the nan_to_null argument of pl$Series", {
   expect_identical(pl$Series(values = c(1, 2, NA, NaN), nan_to_null = TRUE)$to_r(), c(1, 2, NA, NA))
 })
 
-# TODO: remove this
-test_that("Positional arguments deprecation", {
-  expect_warning(
-    pl$Series("foo"),
-    "the first argument"
-  )
-  expect_true(
-    suppressWarnings(pl$Series("foo"))$equals(
-      pl$Series(values = "foo")
-    )
-  )
-  expect_true(
-    suppressWarnings(pl$Series("foo", "bar"))$equals(
-      pl$Series(values = "foo", name = "bar")
-    )
-  )
-  expect_true(
-    suppressWarnings(pl$Series(1, "bar", pl$UInt8))$equals(
-      pl$Series(values = 1, name = "bar", dtype = pl$UInt8)
-    )
-  )
-  expect_true(
-    suppressWarnings(pl$Series(1, name = "bar", dtype = pl$UInt8))$equals(
-      pl$Series(values = 1, name = "bar", dtype = pl$UInt8)
-    )
-  )
-  expect_true(
-    suppressWarnings(pl$Series(values = "foo", "bar"))$equals(
-      pl$Series(values = "foo")
-    )
-  )
-})
 
 test_that("$item() works", {
   expect_equal(pl$Series(values = 1)$item(), 1)
