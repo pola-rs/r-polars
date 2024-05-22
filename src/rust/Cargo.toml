@@ -2,7 +2,7 @@
 name = "r-polars"
 version = "0.40.0"
 edition = "2021"
-rust-version = "1.76.0"
+rust-version = "1.77.0"
 publish = false
 
 [lib]
@@ -20,10 +20,10 @@ rpolars_debug_print = []
 
 [workspace]
 # prevents package from thinking it's in the workspace
-[target.'cfg(any(not(target_os = "linux"), use_mimalloc))'.dependencies]
+[target.'cfg(any(not(target_os = "linux"), allocator = "mimalloc"))'.dependencies]
 mimalloc = { version = "0.1.42", default-features = false }
 
-[target.'cfg(all(target_os = "linux", not(use_mimalloc)))'.dependencies]
+[target.'cfg(all(target_os = "linux", not(allocator = "mimalloc")))'.dependencies]
 jemallocator = { version = "0.5.0", features = ["disable_initial_exec_tls"] }
 
 [profile.release-optimized]
