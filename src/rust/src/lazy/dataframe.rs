@@ -80,6 +80,18 @@ impl RPolarsLazyFrame {
         })
     }
 
+    fn serialize(&self) -> RResult<String> {
+        serde_json::to_string(&self.0.logical_plan)
+            .map_err(|err| RPolarsErr::new().plain(format!("{err:?}")))
+    }
+
+    fn deserialize(json: Robj) -> RResult<Self> {
+        let json = robj_to!(str, json)?;
+        let lp = serde_json::from_str::<pl::LogicalPlan>(json)
+            .map_err(|err| RPolarsErr::new().plain(format!("{err:?}")))?;
+        Ok(RPolarsLazyFrame(pl::LazyFrame::from(lp)))
+    }
+
     #[allow(clippy::too_many_arguments)]
     pub fn sink_parquet(
         &self,
@@ -248,7 +260,7 @@ impl RPolarsLazyFrame {
         Ok(out.into())
     }
 
-    fn shift(&self, periods: Robj) -> Result<Self, String> {
+    fn shift(&self, periods: Robj) -> RResult<Self> {
         Ok(self.clone().0.shift(robj_to!(i64, periods)?).into())
     }
 
@@ -264,11 +276,11 @@ impl RPolarsLazyFrame {
         self.0.clone().reverse().into()
     }
 
-    fn drop(&self, columns: Robj) -> Result<RPolarsLazyFrame, String> {
+    fn drop(&self, columns: Robj) -> RResult<Self> {
         Ok(self.0.clone().drop(robj_to!(Vec, String, columns)?).into())
     }
 
-    fn fill_nan(&self, fill_value: Robj) -> Result<Self, String> {
+    fn fill_nan(&self, fill_value: Robj) -> RResult<Self> {
         Ok(self
             .0
             .clone()
@@ -276,7 +288,7 @@ impl RPolarsLazyFrame {
             .into())
     }
 
-    fn fill_null(&self, fill_value: Robj) -> Result<Self, String> {
+    fn fill_null(&self, fill_value: Robj) -> RResult<Self> {
         Ok(self
             .0
             .clone()
@@ -284,7 +296,7 @@ impl RPolarsLazyFrame {
             .into())
     }
 
-    fn slice(&self, offset: Robj, length: Robj) -> Result<RPolarsLazyFrame, String> {
+    fn slice(&self, offset: Robj, length: Robj) -> RResult<Self> {
         Ok(RPolarsLazyFrame(self.0.clone().slice(
             robj_to!(i64, offset)?,
             robj_to!(Option, u32, length)?.unwrap_or(u32::MAX),
@@ -315,7 +327,7 @@ impl RPolarsLazyFrame {
         Ok(RPolarsLazyFrame(self.clone().0.select_seq(exprs)))
     }
 
-    fn tail(&self, n: Robj) -> Result<RPolarsLazyFrame, String> {
+    fn tail(&self, n: Robj) -> RResult<Self> {
         Ok(RPolarsLazyFrame(self.0.clone().tail(robj_to!(u32, n)?)))
     }
 
@@ -331,10 +343,10 @@ impl RPolarsLazyFrame {
         } else {
             RPolarsLazyFrame(self.0.clone().drop_nulls(None))
         };
-        Ok(out.into())
+        Ok(out)
     }
 
-    fn unique(&self, subset: Robj, keep: Robj, maintain_order: Robj) -> RResult<RPolarsLazyFrame> {
+    fn unique(&self, subset: Robj, keep: Robj, maintain_order: Robj) -> RResult<Self> {
         let ke = robj_to!(UniqueKeepStrategy, keep)?;
         let maintain_order = robj_to!(bool, maintain_order)?;
         let subset = robj_to!(Option, Vec, String, subset)?;
@@ -438,7 +450,7 @@ impl RPolarsLazyFrame {
         suffix: Robj,
         allow_parallel: Robj,
         force_parallel: Robj,
-    ) -> RResult<RPolarsLazyFrame> {
+    ) -> RResult<Self> {
         Ok(RPolarsLazyFrame(
             self.0
                 .clone()
@@ -500,7 +512,7 @@ impl RPolarsLazyFrame {
         value_name: Robj,
         variable_name: Robj,
         streamable: Robj,
-    ) -> Result<Self, String> {
+    ) -> RResult<Self> {
         let args = MeltArgs {
             id_vars: strings_to_smartstrings(robj_to!(Vec, String, id_vars)?),
             value_vars: strings_to_smartstrings(robj_to!(Vec, String, value_vars)?),
@@ -511,7 +523,7 @@ impl RPolarsLazyFrame {
         Ok(self.0.clone().melt(args).into())
     }
 
-    fn rename(&self, existing: Robj, new: Robj) -> Result<RPolarsLazyFrame, String> {
+    fn rename(&self, existing: Robj, new: Robj) -> RResult<Self> {
         Ok(self
             .0
             .clone()
@@ -599,7 +611,7 @@ impl RPolarsLazyFrame {
         profile_with_r_func_support(self.0.clone()).map(|(r, p)| list!(result = r, profile = p))
     }
 
-    fn explode(&self, dotdotdot: Robj) -> RResult<RPolarsLazyFrame> {
+    fn explode(&self, dotdotdot: Robj) -> RResult<Self> {
         Ok(self
             .0
             .clone()
@@ -657,9 +669,9 @@ impl RPolarsLazyFrame {
     pub fn group_by_dynamic(
         &self,
         index_column: Robj,
-        every: Robj,
-        period: Robj,
-        offset: Robj,
+        every: &str,
+        period: &str,
+        offset: &str,
         label: Robj,
         include_boundaries: Robj,
         closed: Robj,
@@ -674,9 +686,9 @@ impl RPolarsLazyFrame {
             robj_to!(PLExprCol, index_column)?,
             by,
             pl::DynamicGroupOptions {
-                every: robj_to!(pl_duration, every)?,
-                period: robj_to!(pl_duration, period)?,
-                offset: robj_to!(pl_duration, offset)?,
+                every: pl::Duration::parse(every),
+                period: pl::Duration::parse(period),
+                offset: pl::Duration::parse(offset),
                 label: robj_to!(Label, label)?,
                 include_boundaries: robj_to!(bool, include_boundaries)?,
                 closed_window,
@@ -723,26 +735,22 @@ impl RPolarsLazyGroupBy {
         )
     }
 
-    fn agg(&self, exprs: Robj) -> Result<RPolarsLazyFrame, String> {
+    fn agg(&self, exprs: Robj) -> RResult<RPolarsLazyFrame> {
         Ok(RPolarsLazyFrame(
             self.lgb.clone().agg(robj_to!(VecPLExprColNamed, exprs)?),
         ))
     }
 
-    fn head(&self, n: f64) -> List {
-        r_result_list(
-            try_f64_into_usize(n)
-                .map(|n| RPolarsLazyFrame(self.lgb.clone().head(Some(n))))
-                .map_err(|err| format!("head: {}", err)),
-        )
+    fn head(&self, n: f64) -> RResult<RPolarsLazyFrame> {
+        Ok(RPolarsLazyFrame(
+            self.lgb.clone().head(Some(try_f64_into_usize(n)?)),
+        ))
     }
 
-    fn tail(&self, n: f64) -> List {
-        r_result_list(
-            try_f64_into_usize(n)
-                .map(|n| RPolarsLazyFrame(self.lgb.clone().tail(Some(n))))
-                .map_err(|err| format!("tail: {}", err)),
-        )
+    fn tail(&self, n: f64) -> RResult<RPolarsLazyFrame> {
+        Ok(RPolarsLazyFrame(
+            self.lgb.clone().tail(Some(try_f64_into_usize(n)?)),
+        ))
     }
 }
 

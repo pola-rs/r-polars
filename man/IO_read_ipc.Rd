@@ -16,8 +16,9 @@ pl_read_ipc(
 )
 }
 \arguments{
-\item{source}{Path to a file. You can use globbing with \code{*} to scan/read multiple
-files in the same directory (see examples).}
+\item{source}{A single character or a raw vector of Apache Arrow IPC file.
+You can use globbing with \code{*} to scan/read multiple files in the same directory
+(see examples).}
 
 \item{...}{Ignored.}
 
@@ -63,5 +64,14 @@ list.files(temp_dir, recursive = TRUE)
 pl$read_ipc(
   file.path(temp_dir, "**/*.arrow")
 )
+
+# Read a raw vector
+arrow::arrow_table(
+  foo = 1:5,
+  bar = 6:10,
+  ham = letters[1:5]
+) |>
+  arrow::write_to_raw(format = "file") |>
+  pl$read_ipc()
 \dontshow{\}) # examplesIf}
 }

@@ -42,3 +42,8 @@ if (require("arrow", quietly = TRUE)) {
   arrow::read_ipc_file(destination, as_data_frame = FALSE)
 }
 }
+\seealso{
+\itemize{
+\item \code{\link[=DataFrame_to_raw_ipc]{<DataFrame>$to_raw_ipc()}}
+}
+}

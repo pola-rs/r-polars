@@ -1127,8 +1127,8 @@ DataFrame_to_struct = function(name = "") {
 #'   c = 6:10
 #' )$
 #'   select(
-#'   pl$col("b")$to_struct(),
-#'   pl$col("a", "c")$to_struct()$alias("a_and_c")
+#'   pl$struct("b"),
+#'   pl$struct(c("a", "c"))$alias("a_and_c")
 #' )
 #' df
 #'
@@ -1982,6 +1982,8 @@ DataFrame_write_csv = function(
 #' This functionality is considered **unstable**.
 #' It may be changed at any point without it being considered a breaking change.
 #' @rdname IO_write_ipc
+#' @seealso
+#' - [`<DataFrame>$to_raw_ipc()`][DataFrame_to_raw_ipc]
 #' @examples
 #' dat = pl$DataFrame(mtcars)
 #'
@@ -2129,9 +2131,8 @@ DataFrame_rolling = function(
     closed = "right",
     group_by = NULL,
     check_sorted = TRUE) {
-  if (is.null(offset)) {
-    offset = paste0("-", period) # TODO: `paste0` should be executed after `period` is parsed as string
-  }
+  period = parse_as_polars_duration_string(period)
+  offset = parse_as_polars_duration_string(offset) %||% negate_duration_string(period)
   construct_rolling_group_by(self, index_column, period, offset, closed, group_by, check_sorted)
 }
 
@@ -2214,12 +2215,9 @@ DataFrame_group_by_dynamic = function(
     group_by = NULL,
     start_by = "window",
     check_sorted = TRUE) {
-  if (is.null(offset)) {
-    offset = paste0("-", every) # TODO: `paste0` should be executed after `period` is parsed as string
-  }
-  if (is.null(period)) {
-    period = every
-  }
+  every = parse_as_polars_duration_string(every)
+  offset = parse_as_polars_duration_string(offset) %||% negate_duration_string(every)
+  period = parse_as_polars_duration_string(period) %||% every
   construct_group_by_dynamic(
     self, index_column, every, period, offset, include_boundaries, closed, label,
     group_by, start_by, check_sorted
@@ -2434,4 +2432,55 @@ DataFrame_clear = function(n = 0) {
   }
 
   out
+}
+
+
+# TODO: we can't use % in the SQL query
+# <https://github.com/r-lib/roxygen2/issues/1616>
+#' Execute a SQL query against the DataFrame
+#'
+#' @inherit LazyFrame_sql description details params seealso
+#' @inherit pl_DataFrame return
+#' @examplesIf polars_info()$features$sql
+#' df1 = pl$DataFrame(
+#'   a = 1:3,
+#'   b = c("zz", "yy", "xx"),
+#'   c = as.Date(c("1999-12-31", "2010-10-10", "2077-08-08"))
+#' )
+#'
+#' # Query the DataFrame using SQL:
+#' df1$sql("SELECT c, b FROM self WHERE a > 1")
+#'
+#' # Join two DataFrames using SQL.
+#' df2 = pl$DataFrame(a = 3:1, d = c(125, -654, 888))
+#' df1$sql(
+#'   "
+#' SELECT self.*, d
+#' FROM self
+#' INNER JOIN df2 USING (a)
+#' WHERE a > 1 AND EXTRACT(year FROM c) < 2050
+#' "
+#' )
+#'
+#' # Apply transformations to a DataFrame using SQL, aliasing "self" to "frame".
+#' df1$sql(
+#'   query = r"(
+#' SELECT
+#' a,
+#' MOD(a, 2) == 0 AS a_is_even,
+#' CONCAT_WS(':', b, b) AS b_b,
+#' EXTRACT(year FROM c) AS year,
+#' 0::float AS 'zero'
+#' FROM frame
+#' )",
+#'   table_name = "frame"
+#' )
+DataFrame_sql = function(query, ..., table_name = NULL, envir = parent.frame()) {
+  self$lazy()$sql(
+    query,
+    table_name = table_name,
+    envir = envir
+  )$collect() |>
+    result() |>
+    unwrap("in $sql():")
 }

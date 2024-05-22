@@ -3214,17 +3214,6 @@ Expr_implode = use_extendr_wrapper
 #' df$with_columns(pl$all()$shrink_dtype()$name$suffix("_shrunk"))
 Expr_shrink_dtype = use_extendr_wrapper
 
-
-#' Convert an Expr to a Struct
-#' @return Expr
-#' @examples
-#' pl$DataFrame(iris[, 3:5])$with_columns(
-#'   my_struct = pl$all()$to_struct()
-#' )
-Expr_to_struct = function() {
-  pl$struct(self)
-}
-
 #' Convert Literal to Series
 #'
 #' Collect an expression based on literals into a Series.
@@ -3342,11 +3331,12 @@ Expr_peak_max = function() {
 Expr_rolling = function(
     index_column,
     ...,
-    period, offset = NULL,
-    closed = "right", check_sorted = TRUE) {
-  if (is.null(offset)) {
-    offset = paste0("-", period) # TODO: `paste0` should be executed after `period` is parsed as string
-  }
+    period,
+    offset = NULL,
+    closed = "right",
+    check_sorted = TRUE) {
+  period = parse_as_polars_duration_string(period)
+  offset = parse_as_polars_duration_string(offset) %||% negate_duration_string(period)
   .pr$Expr$rolling(self, index_column, period, offset, closed, check_sorted) |>
     unwrap("in $rolling():")
 }
@@ -3434,4 +3424,106 @@ Expr_rle = function() {
 Expr_rle_id = function() {
   .pr$Expr$rle_id(self) |>
     unwrap("in $rle_id():")
+}
+
+#' Bin continuous values into discrete categories
+#'
+#' @param breaks Unique cut points.
+#' @param ... Ignored.
+#' @param labels Names of the categories. The number of labels must be equal to
+#' the number of cut points plus one.
+#' @param left_closed Set the intervals to be left-closed instead of right-closed.
+#' @param include_breaks Include a column with the right endpoint of the bin each
+#' observation falls in. This will change the data type of the output from a
+#' [`Categorical`][DataType_Categorical] to a [`Struct`][DataType_Struct].
+#'
+#' @return Expr of data type `Categorical` is `include_breaks` is `FALSE` and
+#' of data type `Struct` if `include_breaks` is `TRUE`.
+#'
+#' @seealso [`$qcut()`][Expr_qcut]
+#'
+#' @examples
+#' df = pl$DataFrame(foo = c(-2, -1, 0, 1, 2))
+#'
+#' df$with_columns(
+#'   cut = pl$col("foo")$cut(c(-1, 1), labels = c("a", "b", "c"))
+#' )
+#'
+#' # Add both the category and the breakpoint
+#' df$with_columns(
+#'   cut = pl$col("foo")$cut(c(-1, 1), include_breaks = TRUE)
+#' )$unnest("cut")
+Expr_cut = function(breaks, ..., labels = NULL, left_closed = FALSE, include_breaks = FALSE) {
+  .pr$Expr$cut(
+    self,
+    breaks = breaks,
+    labels = labels,
+    left_closed = left_closed,
+    include_breaks = include_breaks
+  ) |>
+    unwrap("in $cut():")
+}
+
+#' Bin continuous values into discrete categories based on their quantiles
+#'
+#' @param quantiles Either a vector of quantile probabilities between 0 and 1 or
+#' a positive integer determining the number of bins with uniform probability.
+#' @param allow_duplicates If set to `TRUE`, duplicates in the resulting
+#' quantiles are dropped, rather than raising an error. This can happen even
+#' with unique probabilities, depending on the data.
+#'
+#' @inherit Expr_cut params return
+#'
+#' @seealso [`$cut()`][Expr_cut]
+#'
+#' @examples
+#' df = pl$DataFrame(foo = c(-2, -1, 0, 1, 2))
+#'
+#' # Divide a column into three categories according to pre-defined quantile
+#' # probabilities
+#' df$with_columns(
+#'   qcut = pl$col("foo")$qcut(c(0.25, 0.75), labels = c("a", "b", "c"))
+#' )
+#'
+#' # Divide a column into two categories using uniform quantile probabilities.
+#' df$with_columns(
+#'   qcut = pl$col("foo")$qcut(2, labels = c("low", "high"), left_closed = TRUE)
+#' )
+#'
+#' # Add both the category and the breakpoint
+#' df$with_columns(
+#'   qcut = pl$col("foo")$qcut(c(0.25, 0.75), include_breaks = TRUE)
+#' )$unnest("qcut")
+Expr_qcut = function(
+    quantiles,
+    ...,
+    labels = NULL,
+    left_closed = FALSE,
+    allow_duplicates = FALSE,
+    include_breaks = FALSE) {
+  if (length(quantiles) == 1) {
+    if (!is.numeric(quantiles) || as.integer(quantiles) != quantiles) {
+      Err_plain("`quantiles` must either be an integer of length 1 or a vector of probabilities.") |>
+        unwrap("in $qcut():")
+    }
+    .pr$Expr$qcut_uniform(
+      self,
+      n_bins = quantiles,
+      labels = labels,
+      left_closed = left_closed,
+      allow_duplicates = allow_duplicates,
+      include_breaks = include_breaks
+    ) |>
+      unwrap("in $qcut():")
+  } else {
+    .pr$Expr$qcut(
+      self,
+      probs = quantiles,
+      labels = labels,
+      left_closed = left_closed,
+      allow_duplicates = allow_duplicates,
+      include_breaks = include_breaks
+    ) |>
+      unwrap("in $qcut():")
+  }
 }

@@ -74,3 +74,21 @@ test_that("write_ipc returns the input data", {
   x = dat$write_ipc(tmpf)
   expect_identical(x$to_list(), dat$to_list())
 })
+
+
+patrick::with_parameters_test_that("input/output DataFrame as raw vector",
+  {
+    df = as_polars_df(mtcars)
+
+    raw_vec = df$to_raw_ipc(
+      compression = compression,
+      future = TRUE
+    )
+
+    expect_true(
+      df$equals(pl$read_ipc(raw_vec))
+    )
+  },
+  compression = c("uncompressed", "lz4", "zstd"),
+  .test_name = compression
+)

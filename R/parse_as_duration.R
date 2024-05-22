@@ -43,26 +43,33 @@ NULL
 #'
 #' # A single difftime is converted to a duration string
 #' parse_as_polars_duration_string(as.difftime(1, units = "days"))
-parse_as_polars_duration_string = function(x, ...) {
+parse_as_polars_duration_string = function(x, default = NULL, ...) {
+  if (is.null(x)) {
+    return(default)
+  }
   UseMethod("parse_as_polars_duration_string")
 }
 
+#' @exportS3Method
+parse_as_polars_duration_string.default = function(x, default = NULL, ...) {
+  Err_plain(paste0("`", deparse(substitute(x)), "` must be a single non-NA character or difftime.")) |>
+    unwrap()
+}
 
 #' @exportS3Method
-parse_as_polars_duration_string.character = function(x, ...) {
-  if (length(x) != 1L || is.na(x)) {
-    Err_plain("The argument parsed as a Polars duration must be a single non-NA character.") |>
+parse_as_polars_duration_string.character = function(x, default = NULL, ...) {
+  if (length(x) != 1L) {
+    Err_plain(paste0("`", deparse(substitute(x)), "` must be a single non-NA character or difftime.")) |>
       unwrap()
   }
 
   x
 }
 
-
 #' @exportS3Method
-parse_as_polars_duration_string.difftime = function(x, ...) {
-  if (length(x) != 1L || is.na(x)) {
-    Err_plain("The argument parsed as a Polars duration must be a single non-NA difftime.") |>
+parse_as_polars_duration_string.difftime = function(x, default = NULL, ...) {
+  if (length(x) != 1L) {
+    Err_plain(paste0("`", deparse(substitute(x)), "` must be a single non-NA character or difftime.")) |>
       unwrap()
   }
 
@@ -85,4 +92,12 @@ difftime_to_duration_string = function(dft) {
     or_else = Err(sprintf("unknown difftime units: %s", u))
   )
   paste0(value, unit)
+}
+
+negate_duration_string = function(x) {
+  if (startsWith(x, "-")) {
+    gsub("^-", "", x)
+  } else {
+    paste0("-", x)
+  }
 }

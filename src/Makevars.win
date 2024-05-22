@@ -6,7 +6,7 @@ LIBNAME = libr_polars.a
 TARGET_DIR = $(CURDIR)/rust/target
 LIBDIR = $(TARGET_DIR)/$(TARGET)/$(LIBR_POLARS_PROFILE)
 STATLIB = $(LIBDIR)/$(LIBNAME)
-PKG_LIBS = -L$(LIBDIR) -lr_polars -lws2_32 -ladvapi32 -luserenv -lbcrypt -lole32 -lntdll -lpsapi -liphlpapi -lpdh -lpowrprof -loleaut32 -lnetapi32 -lsecur32 -lsynchronization -t
+PKG_LIBS = -L$(LIBDIR) -lr_polars -lws2_32 -lncrypt -lcrypt32 -ladvapi32 -luserenv -lbcrypt -lole32 -lntdll -lpsapi -liphlpapi -lpdh -lpowrprof -loleaut32 -lnetapi32 -lsecur32 -lsynchronization -t
 
 # Rtools42 doesn't have the linker in the location that cargo expects, so we
 # need to overwrite it via configuration.

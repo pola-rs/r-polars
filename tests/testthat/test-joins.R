@@ -39,7 +39,7 @@ test_that("lazyframe join examples", {
   # error on invalid choice
   expect_grepl_error(
     df$join(other_df, on = "ham", how = 42),
-    "Not a valid R choice"
+    "input is not a character vector"
   )
 })
 

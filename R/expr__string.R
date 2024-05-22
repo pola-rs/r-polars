@@ -1028,3 +1028,71 @@ ExprStr_find = function(pattern, ..., literal = FALSE, strict = TRUE) {
   .pr$Expr$str_find(self, pattern, literal, strict) |>
     unwrap("in $str$find():")
 }
+
+#' Return the first n characters of each string
+#'
+#' @inherit ExprStr_slice return
+#'
+#' @param n Length of the slice (integer or expression). Strings are parsed as
+#' column names. Negative indexing is supported.
+#'
+#' @details
+#' The `n` input is defined in terms of the number of characters in the (UTF-8)
+#' string. A character is defined as a Unicode scalar value. A single character
+#' is represented by a single byte when working with ASCII text, and a maximum
+#' of 4 bytes otherwise.
+#'
+#' When the `n` input is negative, `head()` returns characters up to the `n`th
+#' from the end of the string. For example, if `n = -3`, then all characters
+#' except the last three are returned.
+#'
+#' If the length of the string has fewer than `n` characters, the full string is
+#' returned.
+#'
+#' @examples
+#' df = pl$DataFrame(
+#'   s = c("pear", NA, "papaya", "dragonfruit"),
+#'   n = c(3, 4, -2, -5)
+#' )
+#'
+#' df$with_columns(
+#'   s_head_5 = pl$col("s")$str$head(5),
+#'   s_head_n = pl$col("s")$str$head("n")
+#' )
+ExprStr_head = function(n) {
+  .pr$Expr$str_head(self, n) |>
+    unwrap("in $str$head():")
+}
+
+#' Return the last n characters of each string
+#'
+#' @inheritParams ExprStr_head
+#' @inherit ExprStr_slice return
+#'
+#' @details
+#' The `n` input is defined in terms of the number of characters in the (UTF-8)
+#' string. A character is defined as a Unicode scalar value. A single character
+#' is represented by a single byte when working with ASCII text, and a maximum
+#' of 4 bytes otherwise.
+#'
+#' When the `n` input is negative, `tail()` returns characters starting from the
+#' `n`th from the beginning of the string. For example, if `n = -3`, then all
+#' characters except the first three are returned.
+#'
+#' If the length of the string has fewer than `n` characters, the full string is
+#' returned.
+#'
+#' @examples
+#' df = pl$DataFrame(
+#'   s = c("pear", NA, "papaya", "dragonfruit"),
+#'   n = c(3, 4, -2, -5)
+#' )
+#'
+#' df$with_columns(
+#'   s_tail_5 = pl$col("s")$str$tail(5),
+#'   s_tail_n = pl$col("s")$str$tail("n")
+#' )
+ExprStr_tail = function(n) {
+  .pr$Expr$str_tail(self, n) |>
+    unwrap("in $str$tail():")
+}

@@ -12,7 +12,7 @@ status](https://www.r-pkg.org/badges/version/polars)](https://CRAN.R-project.org
 [![Dev
 R-CMD-check](https://github.com/pola-rs/r-polars/actions/workflows/check.yaml/badge.svg)](https://github.com/pola-rs/r-polars/actions/workflows/check.yaml)
 [![Docs dev
-version](https://img.shields.io/badge/docs-dev-blue.svg)](https://rpolars.github.io)
+version](https://img.shields.io/badge/docs-dev-blue.svg)](https://pola-rs.github.io/r-polars)
 <!-- badges: end -->
 
 The **polars** package for R gives users access to [a lightning
@@ -40,7 +40,8 @@ Examples of common operations:
 
 Note that this package is rapidly evolving and there are a number of
 breaking changes at each version. Be sure to check the
-[changelog](https://rpolars.github.io/NEWS.html) when updating `polars`.
+[changelog](https://pola-rs.github.io/r-polars/NEWS.html) when updating
+`polars`.
 
 ## Install
 
@@ -52,7 +53,7 @@ install.packages("polars", repos = "https://rpolars.r-universe.dev")
 ```
 
 [The “Install”
-vignette](https://rpolars.github.io/vignettes/install.html)
+vignette](https://pola-rs.github.io/r-polars/vignettes/install.html)
 (`vignette("install", "polars")`) gives more details on how to install
 this package and other ways to install it.
 
@@ -102,7 +103,7 @@ df$sort("fruits")$select(
 ```
 
 The [Get Started
-vignette](https://rpolars.github.io/vignettes/polars.html)
+vignette](https://pola-rs.github.io/r-polars/vignettes/polars.html)
 (`vignette("polars")`) provides a more detailed introduction to
 **polars**.
 
@@ -120,7 +121,8 @@ provide different syntaxes:
 
 ## Getting help
 
-The online documentation can be found at <https://rpolars.github.io/>.
+The online documentation can be found at
+<https://pola-rs.github.io/r-polars/>.
 
 If you encounter a bug, please file an issue with a minimal reproducible
 example on [GitHub](https://github.com/pola-rs/r-polars/issues).

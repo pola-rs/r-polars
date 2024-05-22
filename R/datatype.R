@@ -145,6 +145,7 @@ DataType_constructors = function() {
   list(
     Array = DataType_Array,
     Categorical = DataType_Categorical,
+    Enum = DataType_Enum,
     Datetime = DataType_Datetime,
     Duration = DataType_Duration,
     List = DataType_List,
@@ -211,15 +212,15 @@ DataType_Duration = function(time_unit = "us") {
 #' multiple ways to create columns of data type `Struct` in a `DataFrame` or
 #' a `Series`, see the examples.
 #'
-#' @param ... RPolarsDataType objects
-#' @return a list DataType with an inner DataType
+#' @param ... Either named inputs of the form `field_name = datatype` or objects
+#' of class `RPolarsField` created by [`pl$Field()`][pl_Field].
+#' @return A Struct DataType containing a list of Fields
 #' @examples
 #' # create a Struct-DataType
-#' pl$Struct(pl$Boolean)
-#' pl$Struct(foo = pl$Int32, bar = pl$Float64)
+#' pl$Struct(foo = pl$Int32, pl$Field("bar", pl$Boolean))
 #'
 #' # check if an element is any kind of Struct()
-#' test = pl$Struct(pl$UInt64)
+#' test = pl$Struct(a = pl$UInt64)
 #' pl$same_outer_dt(test, pl$Struct())
 #'
 #' # `test` is a type of Struct, but it doesn't mean it is equal to an empty Struct
@@ -239,46 +240,42 @@ DataType_Duration = function(time_unit = "us") {
 #'   )
 #' }
 #'
-#' # Finally, one can use the method `$to_struct()` to convert existing columns
-#' # or `Series` to a `Struct`:
+#' # Finally, one can use `pl$struct()` to convert existing columns or `Series`
+#' # to a `Struct`:
 #' x = pl$DataFrame(
 #'   a = 1:2,
 #'   b = list(c("x", "y"), "z")
 #' )
 #'
-#' out = x$select(pl$col("a", "b")$to_struct())
+#' out = x$select(pl$struct(c("a", "b")))
 #' out
 #'
 #' out$schema
 DataType_Struct = function(...) {
+  uw = \(res) unwrap(res, "in pl$Struct():")
+  err_message = Err_plain("`pl$Struct()` only accepts named inputs or input of class RPolarsField.")
   result({
     largs = list2(...)
     if (length(largs) >= 1 && is.list(largs[[1]])) {
       largs = largs[[1]]
-      element_name = "list element"
-    } else {
-      element_name = "positional argument"
     }
-    mapply(
-      names(largs) %||% character(length(largs)),
-      largs,
-      seq_along(largs),
-      FUN = \(name, arg, i) {
-        if (inherits(arg, "RPolarsDataType")) {
-          return(pl$Field(name, arg))
-        }
-        if (inherits(arg, "RPolarsRField")) {
-          return(arg)
-        }
-        stop(sprintf(
-          "%s [%s] {name:'%s', value:%s} must either be a Field (pl$Field) or a named DataType",
-          element_name, i, name, arg
-        ))
-      }, SIMPLIFY = FALSE
-    )
+    lapply(seq_along(largs), function(x) {
+      name = names(largs)[x]
+      dtype = largs[[x]]
+      if (inherits(dtype, "RPolarsRField")) {
+        return(dtype)
+      }
+      if (is.null(name)) {
+        err_message |> uw()
+      }
+      if (inherits(dtype, "RPolarsDataType")) {
+        return(pl$Field(name, dtype))
+      }
+      err_message |> uw()
+    })
   }) |>
     and_then(DataType$new_struct) |>
-    unwrap("in pl$Struct:")
+    uw()
 }
 
 #' Create Array DataType
@@ -361,6 +358,60 @@ DataType_List = function(datatype = "unknown") {
 DataType_Categorical = function(ordering = "physical") {
   .pr$DataType$new_categorical(ordering) |> unwrap()
 }
+
+#' Create Enum DataType
+#'
+#' An `Enum` is a fixed set categorical encoding of a set of strings. It is
+#' similar to the [`Categorical`][DataType_Categorical] data type, but the
+#' categories are explicitly provided by the user and cannot be modified.
+#'
+#' This functionality is **unstable**. It is a work-in-progress feature and may
+#' not always work as expected. It may be changed at any point without it being
+#' considered a breaking change.
+#'
+#' @param categories A character vector specifying the categories of the variable.
+#'
+#' @return An Enum DataType
+#' @examples
+#' pl$DataFrame(
+#'   x = c("Polar", "Panda", "Brown", "Brown", "Polar"),
+#'   schema = list(x = pl$Enum(c("Polar", "Panda", "Brown")))
+#' )
+#'
+#' # All values of the variable have to be in the categories
+#' dtype = pl$Enum(c("Polar", "Panda", "Brown"))
+#' tryCatch(
+#'   pl$DataFrame(
+#'     x = c("Polar", "Panda", "Brown", "Brown", "Polar", "Black"),
+#'     schema = list(x = dtype)
+#'   ),
+#'   error = function(e) e
+#' )
+#'
+#' # Comparing two Enum is only valid if they have the same categories
+#' df = pl$DataFrame(
+#'   x = c("Polar", "Panda", "Brown", "Brown", "Polar"),
+#'   y = c("Polar", "Polar", "Polar", "Brown", "Brown"),
+#'   z = c("Polar", "Polar", "Polar", "Brown", "Brown"),
+#'   schema = list(
+#'     x = pl$Enum(c("Polar", "Panda", "Brown")),
+#'     y = pl$Enum(c("Polar", "Panda", "Brown")),
+#'     z = pl$Enum(c("Polar", "Black", "Brown"))
+#'   )
+#' )
+#'
+#' # Same categories
+#' df$with_columns(x_eq_y = pl$col("x") == pl$col("y"))
+#'
+#' # Different categories
+#' tryCatch(
+#'   df$with_columns(x_eq_z = pl$col("x") == pl$col("z")),
+#'   error = function(e) e
+#' )
+DataType_Enum = function(categories) {
+  .pr$DataType$new_enum(categories) |> unwrap()
+}
+
 
 #' Check whether the data type is a temporal type
 #'

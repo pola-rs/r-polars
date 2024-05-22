@@ -1,7 +1,5 @@
 use crate::lazy::dsl::RPolarsExpr;
-use crate::rdataframe::RPolarsDataFrame;
 use crate::robj_to;
-use crate::series::RPolarsSeries;
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::utils::robj_to_rchoice;
 use crate::RFnSignature;
@@ -91,7 +89,7 @@ fn concat_str(dotdotdot: Robj, separator: Robj, ignore_nulls: Robj) -> RResult<R
 fn date_range(
     start: Robj,
     end: Robj,
-    interval: Robj,
+    interval: &str,
     closed: Robj,
     time_unit: Robj,
     time_zone: Robj,
@@ -99,7 +97,7 @@ fn date_range(
     Ok(RPolarsExpr(polars::lazy::prelude::date_range(
         robj_to!(PLExprCol, start)?,
         robj_to!(PLExprCol, end)?,
-        robj_to!(pl_duration, interval)?,
+        pl::Duration::parse(interval),
         robj_to!(ClosedWindow, closed)?,
         robj_to!(Option, timeunit, time_unit)?,
         robj_to!(Option, String, time_zone)?,
@@ -110,7 +108,7 @@ fn date_range(
 fn date_ranges(
     start: Robj,
     end: Robj,
-    interval: Robj,
+    interval: &str,
     closed: Robj,
     time_unit: Robj,
     time_zone: Robj,
@@ -118,7 +116,7 @@ fn date_ranges(
     Ok(RPolarsExpr(polars::lazy::prelude::date_ranges(
         robj_to!(PLExprCol, start)?,
         robj_to!(PLExprCol, end)?,
-        robj_to!(pl_duration, interval)?,
+        pl::Duration::parse(interval),
         robj_to!(ClosedWindow, closed)?,
         robj_to!(Option, timeunit, time_unit)?,
         robj_to!(Option, String, time_zone)?,
@@ -129,7 +127,7 @@ fn date_ranges(
 fn datetime_range(
     start: Robj,
     end: Robj,
-    interval: Robj,
+    interval: &str,
     closed: Robj,
     time_unit: Robj,
     time_zone: Robj,
@@ -137,7 +135,7 @@ fn datetime_range(
     Ok(RPolarsExpr(polars::lazy::prelude::datetime_range(
         robj_to!(PLExprCol, start)?,
         robj_to!(PLExprCol, end)?,
-        robj_to!(pl_duration, interval)?,
+        pl::Duration::parse(interval),
         robj_to!(ClosedWindow, closed)?,
         robj_to!(Option, timeunit, time_unit)?,
         robj_to!(Option, String, time_zone)?,
@@ -148,7 +146,7 @@ fn datetime_range(
 fn datetime_ranges(
     start: Robj,
     end: Robj,
-    interval: Robj,
+    interval: &str,
     closed: Robj,
     time_unit: Robj,
     time_zone: Robj,
@@ -156,7 +154,7 @@ fn datetime_ranges(
     Ok(RPolarsExpr(polars::lazy::prelude::datetime_ranges(
         robj_to!(PLExprCol, start)?,
         robj_to!(PLExprCol, end)?,
-        robj_to!(pl_duration, interval)?,
+        pl::Duration::parse(interval),
         robj_to!(ClosedWindow, closed)?,
         robj_to!(Option, timeunit, time_unit)?,
         robj_to!(Option, String, time_zone)?,
@@ -195,39 +193,7 @@ fn struct_(exprs: Robj, eager: Robj, schema: Robj) -> Result<Robj, String> {
     }
 }
 
-#[extendr]
-fn new_arrow_stream() -> Robj {
-    crate::arrow_interop::to_rust::new_arrow_stream_internal()
-}
 use crate::rpolarserr::*;
-#[extendr]
-fn arrow_stream_to_df(robj_str: Robj) -> RResult<Robj> {
-    let s = crate::arrow_interop::to_rust::arrow_stream_to_series_internal(robj_str)?;
-    let ca = s
-        .struct_()
-        .map_err(polars_to_rpolars_err)
-        .when("unpack struct from producer")
-        .hint("producer exported a plain Series not a Struct series")?;
-    let df: pl::DataFrame = ca.clone().into();
-    Ok(RPolarsDataFrame(df).into_robj())
-}
-
-#[extendr]
-fn arrow_stream_to_series(robj_str: Robj) -> RResult<Robj> {
-    let s = crate::arrow_interop::to_rust::arrow_stream_to_series_internal(robj_str)?;
-    Ok(RPolarsSeries(s).into_robj())
-}
-
-#[extendr]
-unsafe fn export_df_to_arrow_stream(robj_df: Robj, robj_str: Robj) -> RResult<Robj> {
-    let res: ExternalPtr<RPolarsDataFrame> = robj_df.try_into()?;
-    let pl_df = RPolarsDataFrame(res.0.clone()).0;
-    //safety robj_str must be ptr to a arrow2 stream ready to export into
-    unsafe {
-        crate::arrow_interop::to_rust::export_df_as_stream(pl_df, &robj_str)?;
-    }
-    Ok(robj_str)
-}
 
 #[extendr]
 pub fn dtype_str_repr(dtype: Robj) -> RResult<String> {
@@ -469,12 +435,6 @@ extendr_module! {
     fn struct_;
 
     fn dtype_str_repr;
-
-    // arrow conversions
-    fn new_arrow_stream;
-    fn arrow_stream_to_df;
-    fn arrow_stream_to_series;
-    fn export_df_to_arrow_stream;
 
     //robj meta
     fn mem_address;

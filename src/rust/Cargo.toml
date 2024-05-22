@@ -1,6 +1,6 @@
 [package]
 name = "r-polars"
-version = "0.39.1"
+version = "0.39.4"
 edition = "2021"
 rust-version = "1.76.0"
 publish = false
@@ -21,7 +21,7 @@ rpolars_debug_print = []
 [workspace]
 # prevents package from thinking it's in the workspace
 [target.'cfg(any(not(target_os = "linux"), use_mimalloc))'.dependencies]
-mimalloc = { version = "0.1.34", default-features = false }
+mimalloc = { version = "0.1.42", default-features = false }
 
 [target.'cfg(all(target_os = "linux", not(use_mimalloc)))'.dependencies]
 jemallocator = { version = "0.5.0", features = ["disable_initial_exec_tls"] }
@@ -47,13 +47,13 @@ indenter = "0.3.3"
 ipc-channel = "0.18.0"
 once_cell = "1.19.0"
 rayon = "1.10.0"
-serde = { version = "1.0.198", features = ["derive"] }
+serde = { version = "1.0.202", features = ["derive"] }
 serde_json = "*"
 smartstring = "1.0.1"
 state = "0.6.0"
-thiserror = "1.0.58"
-polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "5e6854171b4883418c9dbc5dd20f1bb10a23f98f", default-features = false }
-polars-lazy = { git = "https://github.com/pola-rs/polars.git", rev = "5e6854171b4883418c9dbc5dd20f1bb10a23f98f", default-features = false }
+thiserror = "1.0.61"
+polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "4c57688d204fad3d0d5e4586ecd0405ead7baeb2", default-features = false }
+polars-lazy = { git = "https://github.com/pola-rs/polars.git", rev = "4c57688d204fad3d0d5e4586ecd0405ead7baeb2", default-features = false }
 either = "1"
 #features copied from node-polars
 
@@ -67,13 +67,17 @@ features = [
   "arg_where",
   "asof_join",
   "avro",
+  "aws",
+  "azure",
   "binary_encoding",
+  "cloud",
   "concat_str",
   "cov",
   "cross_join",
   "cse",
   "cum_agg",
   "cumulative_eval",
+  "cutqcut",
   "dataframe_arithmetic",
   "date_offset",
   "decompress-fast",
@@ -96,6 +100,8 @@ features = [
   "ewma_by",
   "find_many",
   "fmt",
+  "gcp",
+  "http",
   "interpolate",
   "ipc",
   "is_between",
@@ -155,4 +161,4 @@ features = [
   "zip_with",
 ]
 git = "https://github.com/pola-rs/polars.git"
-rev = "5e6854171b4883418c9dbc5dd20f1bb10a23f98f"
+rev = "4c57688d204fad3d0d5e4586ecd0405ead7baeb2"

@@ -27,7 +27,7 @@ test_that("plStruct", {
   # wrong uses
   expect_grepl_error(
     pl$Struct(bin = pl$Binary, pl$Boolean, "abc"),
-    "must either be a Field"
+    "only accepts named inputs or input of class RPolarsField."
   )
 })
 
@@ -197,4 +197,43 @@ test_that("is_* functions for datatype work", {
   expect_false(pl$Categorical()$is_primitive())
   expect_false(pl$Struct()$is_primitive())
   expect_false(pl$List()$is_primitive())
+})
+
+test_that("Enum", {
+  expect_identical(
+    as_polars_series(c("z", "z", "k", "a"))$
+      cast(pl$Enum(c("z", "k", "a")))$
+      to_r(),
+    factor(c("z", "z", "k", "a"))
+  )
+
+  expect_grepl_error(pl$Enum(), "missing")
+  expect_grepl_error(pl$Enum(1), "invalid series dtype")
+  expect_grepl_error(pl$Enum(TRUE), "invalid series dtype")
+  expect_grepl_error(pl$Enum(factor("a")), "invalid series dtype")
+
+  expect_error(
+    as_polars_series(c("z", "z", "k", "a"))$
+      cast(pl$Enum(c("foo", "k", "a"))),
+    "Ensure that all values in the input column are present"
+  )
+
+  # Can compare two cols if same Enum categories only
+
+  df = pl$DataFrame(x = "a", y = "b", z = "c")$
+    with_columns(
+      pl$col("x")$cast(pl$Enum(c("a", "b", "c"))),
+      pl$col("y")$cast(pl$Enum(c("a", "b", "c"))),
+      pl$col("z")$cast(pl$Enum(c("a", "c")))
+    )
+
+  expect_identical(
+    df$select(x_eq_y = pl$col("x") == pl$col("y"))$to_list(),
+    list(x_eq_y = FALSE)
+  )
+
+  expect_grepl_error(
+    df$select(x_eq_z = pl$col("x") == pl$col("z")),
+    "cannot compare categoricals coming from different sources"
+  )
 })

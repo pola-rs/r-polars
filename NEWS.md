@@ -1,13 +1,76 @@
 # NEWS
 
-## polars (development version)
+## Polars R Package (development version)
 
 ### Breaking changes
 
+- As warned in v0.16.0, the order of arguments in `pl$Series` is changed (#1071).
+  The first argument is now `name`, and the second argument is `values`.
+- `$to_struct()` on an Expr is removed. This method is now only available for
+  `Series`, `DataFrame`, and in the `$list` and `$arr` subnamespaces. For example,
+  `pl$col("a", "b", "c")$to_struct()` should be replaced with
+  `pl$struct(c("a", "b", "c"))` (#1092).
+- `pl$Struct()` now only accepts named inputs and objects of class `RPolarsField`.
+  For example, `pl$Struct(pl$Boolean)` doesn't work anymore and should be named
+  like `pl$Struct(a = pl$Boolean)` (#1053).
 - In `$all()` and `$any()`, the argument `drop_nulls` is renamed `ignore_nulls`,
   and this argument must be named (#1050).
 
-## polars 0.16.1
+## Polars R Package 0.16.4
+
+### New features
+
+- `pl$read_ipc()` can read a raw vector of Apache Arrow IPC file (#1072).
+- New method `<DataFrame>$to_raw_ipc()` to serialize a DataFrame to a raw vector
+  of Apache Arrow IPC file format (#1072).
+- New method `<LazyFrame>$serialize()` to serialize a LazyFrame to a character
+  vector of JSON representation (#1073).
+- New function `pl$deserialize_lf()` to deserialize a LazyFrame from a character
+  vector of JSON representation (#1073).
+- New methods `$str$head()` and `$str$tail()` (#1074).
+- New S3 methods `nanoarrow::as_nanoarrow_array_stream()` and `nanoarrow::infer_nanoarrow_schema()`
+  for `RPolarsSeries` (#1076).
+- New method `$dt$is_leap_year()` (#1077).
+- `as_polars_df()` and `as_polars_series()` supports `arrow::RecordBatchReader` (#1078).
+- The new `experimental` argument for `as_polars_df(<ArrowTabular>)`, `as_polars_df(<RecordBatchReader>)`,
+  `as_polars_series(<nanoarrow_array_stream>)`, and `as_polars_df(<nanoarrow_array_stream>)` (#1078).
+  If `experimental = TRUE`, these functions switch to use
+  [the Arrow C stream interface](https://arrow.apache.org/docs/format/CStreamInterface.html) internally.
+  At this point, the performance is degraded under the expected use cases,
+  so the default is set to `experimental = FALSE`.
+
+## Polars R Package 0.16.3
+
+### New features
+
+- New method `<SQLContext>$register_globals()` (#1064).
+- New experimental method `$sql()` for DataFrame and LazyFrame (#1065).
+
+### Miscellaneous
+
+- Move the API document website to the new place (#1067, #1068).
+  Access to the old website is set to redirect to the top page of the new website.
+  - Old URL: `https://rpolars.github.io/`
+  - New URL: `https://pola-rs.github.io/r-polars/`
+
+## Polars R Package 0.16.2
+
+### New features
+
+- `$cut()` and `$qcut()` to bin continuous values into discrete categories (#1057).
+- `pl$scan_parquet()` and `pl$read_parquet()` can read data from the internet by specifying a URL
+  to the first argument (#1056, @andyquinterom).
+- `pl$scan_parquet()` and `pl$read_parquet()` gain an argument `storage_options`
+  to scan/read data via cloud storage providers (GCP, AWS, Azure). Note that this
+  support is experimental (#1056, @andyquinterom).
+- Add support for the `Enum` datatype via `pl$Enum()` (#1061).
+
+### Bug fixes
+
+- In some read/scan functions, downloading files could fail if the URL was too
+  long. This is now fixed (#1049, @DyfanJones).
+
+## Polars R Package 0.16.1
 
 This is a small hot-fix release to update dependent Rust polars to 0.39.1 (#1042).
 

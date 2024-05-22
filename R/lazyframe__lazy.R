@@ -169,8 +169,7 @@ LazyFrame_width = method_as_active_binding(\() length(self$schema))
 #'
 #' @param ... Anything that is accepted by `pl$DataFrame()`
 #'
-#' @return LazyFrame
-#' @keywords LazyFrame_new
+#' @return [LazyFrame][LazyFrame_class]
 #'
 #' @examples
 #' pl$LazyFrame(
@@ -258,6 +257,43 @@ LazyFrame_describe_optimized_plan = function() {
 
 #' @rdname LazyFrame_describe_plan
 LazyFrame_describe_plan = use_extendr_wrapper
+
+
+#' Serialize the logical plan of this LazyFrame to a file or string in JSON format
+#'
+#' Note that not all LazyFrames can be serialized. For example, LazyFrames that
+#' contain UDFs such as [`$map_elements()`][Expr_map_elements] cannot be serialized.
+#'
+#' @return A character of the JSON representation of the logical plan
+#' @seealso
+#' - [`pl$deserialize_lf()`][pl_deserialize_lf]
+#' @examples
+#' lf = pl$LazyFrame(a = 1:3)$sum()
+#' json = lf$serialize()
+#' json
+#'
+#' # The logical plan can later be deserialized back into a LazyFrame.
+#' pl$deserialize_lf(json)$collect()
+LazyFrame_serialize = function() {
+  .pr$LazyFrame$serialize(self) |>
+    unwrap("in $serialize():")
+}
+
+
+#' Read a logical plan from a JSON file to construct a LazyFrame
+#' @inherit pl_LazyFrame return
+#' @param json A character of the JSON representation of the logical plan.
+#' @seealso
+#' - [`<LazyFrame>$serialize()`][LazyFrame_serialize]
+#' @examples
+#' lf = pl$LazyFrame(a = 1:3)$sum()
+#' json = lf$serialize()
+#' pl$deserialize_lf(json)$collect()
+pl_deserialize_lf = function(json) {
+  .pr$LazyFrame$deserialize(json) |>
+    unwrap("in pl$deserialize_lf():")
+}
+
 
 #' @title Select and modify columns of a LazyFrame
 #' @inherit DataFrame_select description params
@@ -1785,8 +1821,8 @@ LazyFrame_clone = function() {
 #'   c = 6:10
 #' )$
 #'   select(
-#'   pl$col("b")$to_struct(),
-#'   pl$col("a", "c")$to_struct()$alias("a_and_c")
+#'   pl$struct("b"),
+#'   pl$struct(c("a", "c"))$alias("a_and_c")
 #' )
 #' lf$collect()
 #'
@@ -1878,9 +1914,8 @@ LazyFrame_rolling = function(
     closed = "right",
     group_by = NULL,
     check_sorted = TRUE) {
-  if (is.null(offset)) {
-    offset = paste0("-", period) # TODO: `paste0` should be executed after `period` is parsed as string
-  }
+  period = parse_as_polars_duration_string(period)
+  offset = parse_as_polars_duration_string(offset) %||% negate_duration_string(period)
   .pr$LazyFrame$rolling(
     self, index_column, period, offset, closed,
     wrap_elist_result(group_by, str_to_lit = FALSE), check_sorted
@@ -1989,12 +2024,10 @@ LazyFrame_group_by_dynamic = function(
     group_by = NULL,
     start_by = "window",
     check_sorted = TRUE) {
-  if (is.null(offset)) {
-    offset = paste0("-", every) # TODO: `paste0` should be executed after `period` is parsed as string
-  }
-  if (is.null(period)) {
-    period = every
-  }
+  every = parse_as_polars_duration_string(every)
+  offset = parse_as_polars_duration_string(offset) %||% negate_duration_string(every)
+  period = parse_as_polars_duration_string(period) %||% every
+
   .pr$LazyFrame$group_by_dynamic(
     self, index_column, every, period, offset, label, include_boundaries, closed,
     wrap_elist_result(group_by, str_to_lit = FALSE), start_by, check_sorted
@@ -2077,4 +2110,70 @@ LazyFrame_to_dot = function(
 #' df$clear(n = 5)
 LazyFrame_clear = function(n = 0) {
   pl$DataFrame(schema = self$schema)$clear(n)$lazy()
+}
+
+
+# TODO: we can't use % in the SQL query
+# <https://github.com/r-lib/roxygen2/issues/1616>
+#' Execute a SQL query against the LazyFrame
+#'
+#' The calling frame is automatically registered as a table in the SQL context
+#' under the name `"self"`. All [DataFrames][DataFrame_class] and
+#' [LazyFrames][LazyFrame_class] found in the `envir` are also registered,
+#' using their variable name.
+#' More control over registration and execution behaviour is available by
+#' the [SQLContext][SQLContext_class] object.
+#'
+#' This functionality is considered **unstable**, although it is close to
+#' being considered stable. It may be changed at any point without it being
+#' considered a breaking change.
+#' @inherit pl_LazyFrame return
+#' @inheritParams SQLContext_execute
+#' @inheritParams SQLContext_register_globals
+#' @param table_name `NULL` (default) or a character of an explicit name for the table
+#' that represents the calling frame (the alias `"self"` will always be registered/available).
+#' @seealso
+#' - [SQLContext][SQLContext_class]
+#' @examplesIf polars_info()$features$sql
+#' lf1 = pl$LazyFrame(a = 1:3, b = 6:8, c = c("z", "y", "x"))
+#' lf2 = pl$LazyFrame(a = 3:1, d = c(125, -654, 888))
+#'
+#' # Query the LazyFrame using SQL:
+#' lf1$sql("SELECT c, b FROM self WHERE a > 1")$collect()
+#'
+#' # Join two LazyFrames:
+#' lf1$sql(
+#'   "
+#' SELECT self.*, d
+#' FROM self
+#' INNER JOIN lf2 USING (a)
+#' WHERE a > 1 AND b < 8
+#' "
+#' )$collect()
+#'
+#' # Apply SQL transforms (aliasing "self" to "frame") and subsequently
+#' # filter natively (you can freely mix SQL and native operations):
+#' lf1$sql(
+#'   query = r"(
+#' SELECT
+#'  a,
+#' MOD(a, 2) == 0 AS a_is_even,
+#' (b::float / 2) AS 'b/2',
+#' CONCAT_WS(':', c, c, c) AS c_c_c
+#' FROM frame
+#' ORDER BY a
+#' )",
+#'   table_name = "frame"
+#' )$filter(!pl$col("c_c_c")$str$starts_with("x"))$collect()
+LazyFrame_sql = function(query, ..., table_name = NULL, envir = parent.frame()) {
+  result({
+    ctx = pl$SQLContext()$register_globals(envir = envir)$register("self", self)
+
+    if (!is.null(table_name)) {
+      ctx$register(table_name, self)
+    }
+
+    ctx$execute(query)
+  }) |>
+    unwrap("in $sql():")
 }

@@ -33,11 +33,12 @@ pub struct OwnedDataFrameIterator {
     data_type: arrow::datatypes::ArrowDataType,
     idx: usize,
     n_chunks: usize,
+    pl_flavor: bool,
 }
 
 impl OwnedDataFrameIterator {
-    pub fn new(df: polars::frame::DataFrame) -> Self {
-        let schema = df.schema().to_arrow(false);
+    pub fn new(df: polars::frame::DataFrame, pl_flavor: bool) -> Self {
+        let schema = df.schema().to_arrow(pl_flavor);
         let data_type = ArrowDataType::Struct(schema.fields);
         let vs = df.get_columns().to_vec();
         Self {
@@ -45,6 +46,7 @@ impl OwnedDataFrameIterator {
             data_type,
             idx: 0,
             n_chunks: df.n_chunks(),
+            pl_flavor,
         }
     }
 }
@@ -60,7 +62,7 @@ impl Iterator for OwnedDataFrameIterator {
             let batch_cols = self
                 .columns
                 .iter()
-                .map(|s| s.to_arrow(self.idx, false))
+                .map(|s| s.to_arrow(self.idx, self.pl_flavor))
                 .collect();
             self.idx += 1;
 
@@ -304,19 +306,19 @@ impl RPolarsDataFrame {
         RPolarsSeries(self.0.drop_in_place(names).unwrap())
     }
 
-    pub fn select(&self, exprs: Robj) -> RResult<RPolarsDataFrame> {
+    pub fn select(&self, exprs: Robj) -> RResult<Self> {
         self.lazy().select(exprs)?.collect()
     }
 
-    pub fn select_seq(&self, exprs: Robj) -> RResult<RPolarsDataFrame> {
+    pub fn select_seq(&self, exprs: Robj) -> RResult<Self> {
         self.lazy().select_seq(exprs)?.collect()
     }
 
-    pub fn with_columns(&self, exprs: Robj) -> RResult<RPolarsDataFrame> {
+    pub fn with_columns(&self, exprs: Robj) -> RResult<Self> {
         self.lazy().with_columns(exprs)?.collect()
     }
 
-    pub fn with_columns_seq(&self, exprs: Robj) -> RResult<RPolarsDataFrame> {
+    pub fn with_columns_seq(&self, exprs: Robj) -> RResult<Self> {
         self.lazy().with_columns_seq(exprs)?.collect()
     }
 
@@ -346,12 +348,12 @@ impl RPolarsDataFrame {
         Ok(List::from_values(vec))
     }
 
-    pub fn export_stream(&self, stream_ptr: &str) {
-        let schema = self.0.schema().to_arrow(false);
+    pub fn export_stream(&self, stream_ptr: &str, pl_flavor: bool) {
+        let schema = self.0.schema().to_arrow(pl_flavor);
         let data_type = ArrowDataType::Struct(schema.fields);
         let field = ArrowField::new("", data_type, false);
 
-        let iter_boxed = Box::new(OwnedDataFrameIterator::new(self.0.clone()));
+        let iter_boxed = Box::new(OwnedDataFrameIterator::new(self.0.clone(), pl_flavor));
         let mut stream = arrow::ffi::export_iterator(iter_boxed, field);
         let stream_out_ptr_addr: usize = stream_ptr.parse().unwrap();
         let stream_out_ptr = stream_out_ptr_addr as *mut arrow::ffi::ArrowArrayStream;
@@ -524,6 +526,33 @@ impl RPolarsDataFrame {
             .with_pl_flavor(robj_to!(bool, future)?)
             .finish(&mut self.0.clone())
             .map_err(polars_to_rpolars_err)
+    }
+
+    pub fn to_raw_ipc(&self, compression: Robj, future: Robj) -> RResult<Vec<u8>> {
+        let compression = rdatatype::new_ipc_compression(compression)?;
+        let future = robj_to!(bool, future)?;
+
+        crate::rbackground::serialize_dataframe(&mut self.0.clone(), compression, future)
+    }
+
+    pub fn from_raw_ipc(
+        bits: Robj,
+        n_rows: Robj,
+        row_name: Robj,
+        row_index: Robj,
+        memory_map: Robj,
+    ) -> RResult<Self> {
+        let bits = robj_to!(Raw, bits)?;
+        let n_rows = robj_to!(Option, usize, n_rows)?;
+        let row_index = robj_to!(Option, String, row_name)?
+            .map(|name| {
+                robj_to!(u32, row_index).map(|offset| polars::io::RowIndex { name, offset })
+            })
+            .transpose()?;
+        let memory_map = robj_to!(bool, memory_map)?;
+        let df = crate::rbackground::deserialize_dataframe(&bits, n_rows, row_index, memory_map)?;
+
+        Ok(RPolarsDataFrame(df))
     }
 
     pub fn write_parquet(

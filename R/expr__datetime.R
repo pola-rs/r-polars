@@ -34,8 +34,9 @@
 #' )
 #' df
 ExprDT_truncate = function(every, offset = NULL) {
+  offset = parse_as_polars_duration_string(offset, default = "0ns")
   .pr$Expr$dt_truncate(self, every, offset) |>
-    unwrap("in dt$truncate()")
+    unwrap("in $dt$truncate()")
 }
 
 #' Round datetime
@@ -82,8 +83,10 @@ ExprDT_truncate = function(every, offset = NULL) {
 #' )
 #' df
 ExprDT_round = function(every, offset = NULL) {
+  every = parse_as_polars_duration_string(every, default = "0ns")
+  offset = parse_as_polars_duration_string(offset, default = "0ns")
   .pr$Expr$dt_round(self, every, offset) |>
-    unwrap("in dt$round()")
+    unwrap("in $dt$round()")
 }
 
 # ExprDT_combine = function(self, tm: time | pli.RPolarsExpr, tu: TimeUnit = "us") -> pli.RPolarsExpr:
@@ -535,21 +538,20 @@ ExprDT_nanosecond = function() {
 #' as_polars_series(as.Date("2022-1-1"))$dt$epoch("d")
 ExprDT_epoch = function(tu = c("us", "ns", "ms", "s", "d")) {
   tu = tu[1]
+  uw = \(res) unwrap(res, "in $dt$epoch:")
 
   # experimental rust-like error handling on R side for the fun of it, sorry
   # jokes aside here the use case is to tie various rust functions together
   # and add context to the error messages
-  expr_result = pcase(
-    !is_string(tu), Err("tu must be a string"),
-    tu %in% c("ms", "us", "ns"), .pr$Expr$timestamp(self, tu),
-    tu == "s", Ok(.pr$Expr$dt_epoch_seconds(self)),
-    tu == "d", Ok(self$cast(pl$Date)$cast(pl$Int32)),
+  pcase(
+    !is_string(tu), Err("tu must be a string") |> uw(),
+    tu %in% c("ms", "us", "ns"), .pr$Expr$dt_timestamp(self, tu) |> uw(),
+    tu == "s", .pr$Expr$dt_epoch_seconds(self),
+    tu == "d", self$cast(pl$Date)$cast(pl$Int32),
     or_else = Err(
       paste("tu must be one of 'ns', 'us', 'ms', 's', 'd', got", str_string(tu))
-    )
-  ) |> map_err(\(err) paste("in dt$epoch:", err))
-
-  unwrap(expr_result)
+    ) |> uw()
+  )
 }
 
 
@@ -574,8 +576,8 @@ ExprDT_epoch = function(tu = c("us", "ns", "ms", "s", "d")) {
 #'   pl$col("date")$dt$timestamp(tu = "ms")$alias("timestamp_ms")
 #' )
 ExprDT_timestamp = function(tu = c("ns", "us", "ms")) {
-  .pr$Expr$timestamp(self, tu[1]) |>
-    map_err(\(err) paste("in dt$timestamp:", err)) |>
+  .pr$Expr$dt_timestamp(self, tu[1]) |>
+    map_err(\(err) paste("in $dt$timestamp:", err)) |>
     unwrap()
 }
 
@@ -604,7 +606,7 @@ ExprDT_timestamp = function(tu = c("ns", "us", "ms")) {
 #' )
 ExprDT_with_time_unit = function(tu = c("ns", "us", "ms")) {
   .pr$Expr$dt_with_time_unit(self, tu[1]) |>
-    map_err(\(err) paste("in dt$with_time_unit:", err)) |>
+    map_err(\(err) paste("in $dt$with_time_unit:", err)) |>
     unwrap()
 }
 
@@ -634,7 +636,7 @@ ExprDT_with_time_unit = function(tu = c("ns", "us", "ms")) {
 #' )
 ExprDT_cast_time_unit = function(tu = c("ns", "us", "ms")) {
   .pr$Expr$dt_cast_time_unit(self, tu[1]) |>
-    map_err(\(err) paste("in dt$cast_time_unit:", err)) |>
+    map_err(\(err) paste("in $dt$cast_time_unit:", err)) |>
     unwrap()
 }
 
@@ -661,7 +663,7 @@ ExprDT_cast_time_unit = function(tu = c("ns", "us", "ms")) {
 ExprDT_convert_time_zone = function(time_zone) {
   check_tz_to_result(time_zone) |>
     and_then(\(valid_tz) .pr$Expr$dt_convert_time_zone(self, valid_tz)) |>
-    map_err(\(err) paste("in dt$convert_time_zone:", err)) |>
+    map_err(\(err) paste("in $dt$convert_time_zone:", err)) |>
     unwrap("in $convert_time_zone():")
 }
 
@@ -947,5 +949,19 @@ ExprDT_offset_by = function(by) {
 #' df$with_columns(times = pl$col("dates")$dt$time())
 ExprDT_time = function() {
   .pr$Expr$dt_time(self) |>
-    unwrap("in dt$time()")
+    unwrap("in $dt$time()")
+}
+
+#' Determine whether the year of the underlying date is a leap year
+#'
+#' @return An Expr of datatype Bool
+#'
+#' @examples
+#' df = pl$DataFrame(date = as.Date(c("2000-01-01", "2001-01-01", "2002-01-01")))
+#'
+#' df$with_columns(
+#'   leap_year = pl$col("date")$dt$is_leap_year()
+#' )
+ExprDT_is_leap_year = function() {
+  .pr$Expr$dt_is_leap_year(self)
 }
