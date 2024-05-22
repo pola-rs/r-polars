@@ -4,10 +4,17 @@
 
 ### Breaking changes
 
+- As warned in v0.16.0, the order of arguments in `pl$Series` is changed (#1071).
+  The first argument is now `name`, and the second argument is `values`.
 - `$to_struct()` on an Expr is removed. This method is now only available for
   `Series`, `DataFrame`, and in the `$list` and `$arr` subnamespaces. For example,
   `pl$col("a", "b", "c")$to_struct()` should be replaced with
   `pl$struct(c("a", "b", "c"))` (#1092).
+- `pl$Struct()` now only accepts named inputs and objects of class `RPolarsField`.
+  For example, `pl$Struct(pl$Boolean)` doesn't work anymore and should be named
+  like `pl$Struct(a = pl$Boolean)` (#1053).
+- In `$all()` and `$any()`, the argument `drop_nulls` is renamed `ignore_nulls`,
+  and this argument must be named (#1050).
 
 ## Polars R Package 0.16.4
 

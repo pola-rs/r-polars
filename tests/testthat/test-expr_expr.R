@@ -2585,8 +2585,8 @@ test_that("rolling: error if period is negative", {
 
   df = pl$DataFrame(dt = dates, a = c(3, 7, 5, 9, 2, 1))$
     with_columns(
-      pl$col("dt")$str$strptime(pl$Datetime("us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
-    )
+    pl$col("dt")$str$strptime(pl$Datetime("us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
+  )
   expect_grepl_error(
     df$select(pl$col("a")$rolling(index_column = "dt", period = "-2d")),
     "rolling window period should be strictly positive"
@@ -2601,8 +2601,8 @@ test_that("rolling: passing a difftime as period works", {
 
   df = pl$DataFrame(dt = dates, a = c(3, 7, 5, 9, 2, 1))$
     with_columns(
-      pl$col("dt")$str$strptime(pl$Datetime("us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
-    )
+    pl$col("dt")$str$strptime(pl$Datetime("us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
+  )
   expect_identical(
     df$select(
       sum_a_offset1 = pl$sum("a")$rolling(index_column = "dt", period = "2d", offset = "1d")
@@ -2802,5 +2802,43 @@ test_that("qcut works", {
 
   expect_error(
     df$select(qcut = pl$col("foo")$qcut(c("a", "b")))
+  )
+})
+
+test_that("any works", {
+  df = pl$DataFrame(
+    a = c(TRUE, FALSE),
+    b = c(FALSE, FALSE),
+    c = c(NA, FALSE),
+    d = c(NA, NA)
+  )
+
+  expect_identical(
+    df$select(pl$col("*")$any())$to_list(),
+    list(a = TRUE, b = FALSE, c = FALSE, d = FALSE)
+  )
+
+  expect_identical(
+    df$select(pl$col("*")$any(ignore_nulls = FALSE))$to_list(),
+    list(a = TRUE, b = FALSE, c = NA, d = NA)
+  )
+})
+
+test_that("all works", {
+  df = pl$DataFrame(
+    a = c(TRUE, TRUE),
+    b = c(TRUE, FALSE),
+    c = c(NA, TRUE),
+    d = c(NA, NA)
+  )
+
+  expect_identical(
+    df$select(pl$col("*")$all())$to_list(),
+    list(a = TRUE, b = FALSE, c = TRUE, d = TRUE)
+  )
+
+  expect_identical(
+    df$select(pl$col("*")$all(ignore_nulls = FALSE))$to_list(),
+    list(a = TRUE, b = FALSE, c = NA, d = NA)
   )
 })

@@ -4,23 +4,32 @@
 \alias{Expr_any}
 \title{Apply logical OR on a column}
 \usage{
-Expr_any(drop_nulls = TRUE)
+Expr_any(..., ignore_nulls = TRUE)
 }
 \arguments{
-\item{drop_nulls}{Logical. Default TRUE, as name says.}
+\item{...}{Ignored.}
+
+\item{ignore_nulls}{If \code{TRUE} (default), ignore null values. If \code{FALSE},
+\href{https://en.wikipedia.org/wiki/Three-valued_logic}{Kleene logic} is used to
+deal with nulls: if the column contains any null values and no \code{TRUE} values,
+the output is null.}
 }
 \value{
-Boolean literal
+A logical value
 }
 \description{
 Check if any boolean value in a Boolean column is \code{TRUE}.
 }
 \examples{
-pl$DataFrame(
-  all = c(TRUE, TRUE),
-  any = c(TRUE, FALSE),
-  none = c(FALSE, FALSE)
-)$select(
-  pl$all()$any()
+df = pl$DataFrame(
+  a = c(TRUE, FALSE),
+  b = c(FALSE, FALSE),
+  c = c(NA, FALSE)
 )
+
+df$select(pl$col("*")$any())
+
+# If we set ignore_nulls = FALSE, then we don't know if any values in column
+# "c" is TRUE, so it returns null
+df$select(pl$col("*")$any(ignore_nulls = FALSE))
 }
