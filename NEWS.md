@@ -10,6 +10,9 @@
   `Series`, `DataFrame`, and in the `$list` and `$arr` subnamespaces. For example,
   `pl$col("a", "b", "c")$to_struct()` should be replaced with
   `pl$struct(c("a", "b", "c"))` (#1092).
+- `pl$Struct()` now only accepts named inputs and objects of class `RPolarsField`.
+  For example, `pl$Struct(pl$Boolean)` doesn't work anymore and should be named
+  like `pl$Struct(a = pl$Boolean)` (#1053).
 
 ## Polars R Package 0.16.4
 

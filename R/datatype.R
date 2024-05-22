@@ -212,15 +212,15 @@ DataType_Duration = function(time_unit = "us") {
 #' multiple ways to create columns of data type `Struct` in a `DataFrame` or
 #' a `Series`, see the examples.
 #'
-#' @param ... RPolarsDataType objects
-#' @return a list DataType with an inner DataType
+#' @param ... Either named inputs of the form `field_name = datatype` or objects
+#' of class `RPolarsField` created by [`pl$Field()`][pl_Field].
+#' @return A Struct DataType containing a list of Fields
 #' @examples
 #' # create a Struct-DataType
-#' pl$Struct(pl$Boolean)
-#' pl$Struct(foo = pl$Int32, bar = pl$Float64)
+#' pl$Struct(foo = pl$Int32, pl$Field("bar", pl$Boolean))
 #'
 #' # check if an element is any kind of Struct()
-#' test = pl$Struct(pl$UInt64)
+#' test = pl$Struct(a = pl$UInt64)
 #' pl$same_outer_dt(test, pl$Struct())
 #'
 #' # `test` is a type of Struct, but it doesn't mean it is equal to an empty Struct
@@ -252,34 +252,30 @@ DataType_Duration = function(time_unit = "us") {
 #'
 #' out$schema
 DataType_Struct = function(...) {
+  uw = \(res) unwrap(res, "in pl$Struct():")
+  err_message = Err_plain("`pl$Struct()` only accepts named inputs or input of class RPolarsField.")
   result({
     largs = list2(...)
     if (length(largs) >= 1 && is.list(largs[[1]])) {
       largs = largs[[1]]
-      element_name = "list element"
-    } else {
-      element_name = "positional argument"
     }
-    mapply(
-      names(largs) %||% character(length(largs)),
-      largs,
-      seq_along(largs),
-      FUN = \(name, arg, i) {
-        if (inherits(arg, "RPolarsDataType")) {
-          return(pl$Field(name, arg))
-        }
-        if (inherits(arg, "RPolarsRField")) {
-          return(arg)
-        }
-        stop(sprintf(
-          "%s [%s] {name:'%s', value:%s} must either be a Field (pl$Field) or a named DataType",
-          element_name, i, name, arg
-        ))
-      }, SIMPLIFY = FALSE
-    )
+    lapply(seq_along(largs), function(x) {
+      name = names(largs)[x]
+      dtype = largs[[x]]
+      if (inherits(dtype, "RPolarsRField")) {
+        return(dtype)
+      }
+      if (is.null(name)) {
+        err_message |> uw()
+      }
+      if (inherits(dtype, "RPolarsDataType")) {
+        return(pl$Field(name, dtype))
+      }
+      err_message |> uw()
+    })
   }) |>
     and_then(DataType$new_struct) |>
-    unwrap("in pl$Struct:")
+    uw()
 }
 
 #' Create Array DataType
