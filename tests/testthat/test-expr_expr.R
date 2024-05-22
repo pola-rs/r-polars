@@ -2585,8 +2585,8 @@ test_that("rolling: error if period is negative", {
 
   df = pl$DataFrame(dt = dates, a = c(3, 7, 5, 9, 2, 1))$
     with_columns(
-      pl$col("dt")$str$strptime(pl$Datetime("us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
-    )
+    pl$col("dt")$str$strptime(pl$Datetime("us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
+  )
   expect_grepl_error(
     df$select(pl$col("a")$rolling(index_column = "dt", period = "-2d")),
     "rolling window period should be strictly positive"
@@ -2601,8 +2601,8 @@ test_that("rolling: passing a difftime as period works", {
 
   df = pl$DataFrame(dt = dates, a = c(3, 7, 5, 9, 2, 1))$
     with_columns(
-      pl$col("dt")$str$strptime(pl$Datetime("us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
-    )
+    pl$col("dt")$str$strptime(pl$Datetime("us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
+  )
   expect_identical(
     df$select(
       sum_a_offset1 = pl$sum("a")$rolling(index_column = "dt", period = "2d", offset = "1d")
