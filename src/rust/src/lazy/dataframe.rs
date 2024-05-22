@@ -16,7 +16,7 @@ use polars::chunked_array::ops::SortMultipleOptions;
 use polars::frame::explode::MeltArgs;
 use polars::prelude as pl;
 
-use polars::io::csv::SerializeOptions;
+use polars::prelude::SerializeOptions;
 use polars_lazy::prelude::CsvWriterOptions;
 
 #[allow(unused_imports)]
@@ -39,13 +39,16 @@ impl From<pl::LazyFrame> for RPolarsLazyFrame {
 
 #[extendr]
 impl RPolarsLazyFrame {
-    fn print(&self) -> Self {
-        rprintln!("{}", self.0.describe_plan());
-        self.clone()
+    fn print(&self) -> RResult<Self> {
+        let plan = self.0.describe_plan().map_err(polars_to_rpolars_err)?;
+        rprintln!("{}", plan);
+        Ok(self.0.clone().into())
     }
 
-    pub fn describe_plan(&self) {
-        rprintln!("{}", self.0.describe_plan());
+    pub fn describe_plan(&self) -> RResult<()> {
+        let plan = self.0.describe_plan().map_err(polars_to_rpolars_err)?;
+        rprintln!("{}", plan);
+        Ok(())
     }
 
     //low level version of describe_plan, mainly for arg testing
