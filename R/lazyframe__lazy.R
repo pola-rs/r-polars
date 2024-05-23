@@ -212,7 +212,7 @@ print.RPolarsLazyFrame = function(x, ...) {
   cat(" $describe_optimized_plan() : Show the optimized query plan.\n")
   cat("\n")
   cat("Naive plan:\n")
-  cloned_x = .pr$LazyFrame$print(x)
+  cloned_x = x$print()
   invisible(cloned_x)
 }
 
@@ -226,7 +226,11 @@ print.RPolarsLazyFrame = function(x, ...) {
 #'
 #' @usage LazyFrame_print(x)
 #' @examples pl$LazyFrame(iris)$print()
-LazyFrame_print = use_extendr_wrapper
+LazyFrame_print = function() {
+  .pr$LazyFrame$print(self) |>
+    unwrap("in $print():")
+  invisible(self)
+}
 
 #' @title Print the optimized or non-optimized plans of `LazyFrame`
 #'
