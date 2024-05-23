@@ -17,6 +17,7 @@ use crate::rpolarserr::RResult;
 use crate::utils::wrappers::null_to_opt;
 use crate::utils::{r_error_list, r_result_list};
 
+use extendr_api::ToVectorValue;
 use extendr_api::{extendr, prelude::*, rprintln};
 use pl::SeriesMethods;
 use polars::datatypes::*;
@@ -499,25 +500,54 @@ impl RPolarsSeries {
     pub fn mean(&self) -> Result<Robj, String> {
         match self.0.dtype() {
             DataType::Boolean => {
-                let s = self.0.cast(&DataType::UInt8)?.mean_reduce().as_any_value();
+                let s = self
+                    .0
+                    .cast(&DataType::UInt8)
+                    .map_err(polars_to_rpolars_err)?
+                    .mean_reduce()
+                    .into_series("");
                 RPolarsSeries(s).to_r("double")
             }
             DataType::Datetime(_, _) | DataType::Duration(_) | DataType::Time => {
-                let s = self.0.mean_reduce().as_any_value();
+                let s = self.0.mean_reduce().into_series("");
                 RPolarsSeries(s).to_r("double")
             }
-            _ => RPolarsSeries(self.0.mean()).to_r("double"),
+            _ => Ok(self.0.mean().into()),
         }
     }
 
     pub fn median(&self) -> Result<Robj, String> {
-        let s = self.0.median_as_series().map_err(polars_to_rpolars_err)?;
-        RPolarsSeries(s).to_r("double")
+        match self.0.dtype() {
+            DataType::Boolean => {
+                let s = self
+                    .0
+                    .cast(&DataType::UInt8)
+                    .map_err(polars_to_rpolars_err)?
+                    .median_reduce()
+                    .map_err(polars_to_rpolars_err)?
+                    .into_series("");
+                RPolarsSeries(s).to_r("double")
+            }
+            DataType::Datetime(_, _) | DataType::Duration(_) | DataType::Time => {
+                let s = self
+                    .0
+                    .median_reduce()
+                    .map_err(polars_to_rpolars_err)?
+                    .into_series("");
+                RPolarsSeries(s).to_r("double")
+            }
+            _ => Ok(self.0.median().into()),
+        }
     }
 
     pub fn min(&self) -> Result<Robj, String> {
-        let s = self.0.min_as_series().map_err(polars_to_rpolars_err)?;
-        RPolarsSeries(s).to_r("double")
+        RPolarsSeries(
+            self.0
+                .min_reduce()
+                .map_err(polars_to_rpolars_err)?
+                .into_series(""),
+        )
+        .to_r("double")
     }
 
     pub fn max(&self) -> Result<Robj, String> {
