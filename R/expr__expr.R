@@ -1407,12 +1407,18 @@ Expr_sort = function(..., descending = FALSE, nulls_last = FALSE) {
 #' \\log{}n - \frac{k}{2}) }
 #'
 #' @param k Number of top values to get
+#' @param ...  Ignored.
+#' @param nulls_last Place null values last.
+#' @param maintain_order Whether the order should be maintained if elements are
+#' equal.
+#' @param multithreaded Sort using multiple threads.
+#'
 #' @return Expr
 #' @examples
 #' pl$DataFrame(a = c(6, 1, 0, NA, Inf, NaN))$select(pl$col("a")$top_k(5))
-Expr_top_k = function(k) {
+Expr_top_k = function(k, ..., nulls_last = FALSE, maintain_order = FALSE, multithreaded = TRUE) {
   if (!is.numeric(k) || k < 0) stop("k must be numeric and positive, prefereably integerish")
-  .pr$Expr$top_k(self, k) |>
+  .pr$Expr$top_k(self, k, nulls_last = nulls_last, multithreaded = multithreaded) |>
     unwrap("in $top_k():")
 }
 

@@ -4,10 +4,25 @@
 \alias{Expr_top_k}
 \title{Top k values}
 \usage{
-Expr_top_k(k)
+Expr_top_k(
+  k,
+  ...,
+  nulls_last = FALSE,
+  maintain_order = FALSE,
+  multithreaded = TRUE
+)
 }
 \arguments{
 \item{k}{Number of top values to get}
+
+\item{...}{Ignored.}
+
+\item{nulls_last}{Place null values last.}
+
+\item{maintain_order}{Whether the order should be maintained if elements are
+equal.}
+
+\item{multithreaded}{Sort using multiple threads.}
 }
 \value{
 Expr
