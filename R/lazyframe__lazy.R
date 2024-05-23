@@ -1250,6 +1250,7 @@ LazyFrame_group_by = function(..., maintain_order = polars_options()$maintain_or
 #'   different between the two DataFrames.
 #' @param how One of the following methods: "inner", "left", "outer", "semi",
 #'   "anti", "cross", "outer_coalesce".
+#' @param ... Ignored.
 #' @param left_on,right_on Same as `on` but only for the left or the right
 #'   DataFrame. They must have the same length.
 #' @param suffix Suffix to add to duplicated column names.
@@ -1269,7 +1270,10 @@ LazyFrame_group_by = function(..., maintain_order = polars_options()$maintain_or
 #'   computation of both DataFrames up to the join in parallel.
 #' @param force_parallel Force the physical plan to evaluate the computation of
 #'   both DataFrames up to the join in parallel.
-#' @param ... Ignored.
+#' @param coalesce Coalescing behavior (merging of join columns).
+#' - `NULL`: join specific.
+#' - `TRUE`: Always coalesce join columns.
+#' - `FALSE`: Never coalesce join columns.
 #'
 #' @return LazyFrame
 #' @examples
@@ -1304,7 +1308,8 @@ LazyFrame_join = function(
     validate = "m:m",
     join_nulls = FALSE,
     allow_parallel = TRUE,
-    force_parallel = FALSE) {
+    force_parallel = FALSE,
+    coalesce = NULL) {
   uw = \(res) unwrap(res, "in $join():")
 
   if (!is_polars_lf(other)) {
@@ -1325,7 +1330,7 @@ LazyFrame_join = function(
 
   .pr$LazyFrame$join(
     self, other, rexprs_left, rexprs_right, how, validate, join_nulls, suffix,
-    allow_parallel, force_parallel
+    allow_parallel, force_parallel, coalesce
   ) |>
     uw()
 }

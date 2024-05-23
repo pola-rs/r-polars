@@ -437,9 +437,9 @@ impl RPolarsLazyFrame {
         suffix: Robj,
         allow_parallel: Robj,
         force_parallel: Robj,
-        coalesce: Option<bool>,
+        coalesce: Robj,
     ) -> RResult<Self> {
-        let coalesce = match coalesce {
+        let coalesce = match robj_to!(Option, bool, coalesce)? {
             None => JoinCoalesce::JoinSpecific,
             Some(true) => JoinCoalesce::CoalesceColumns,
             Some(false) => JoinCoalesce::KeepColumns,

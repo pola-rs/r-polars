@@ -1081,7 +1081,8 @@ DataFrame_join = function(
     validate = "m:m",
     join_nulls = FALSE,
     allow_parallel = TRUE,
-    force_parallel = FALSE) {
+    force_parallel = FALSE,
+    coalesce = NULL) {
   if (!is_polars_df(other)) {
     Err_plain("`other` must be a DataFrame.") |>
       unwrap("in $join():")
