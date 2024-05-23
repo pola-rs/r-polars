@@ -1323,7 +1323,7 @@ impl RPolarsExpr {
             .0
             .clone()
             .dt()
-            .round(robj_to!(PLExpr, every), offset)
+            .round(robj_to!(PLExpr, every)?, offset)
             .into())
     }
 
