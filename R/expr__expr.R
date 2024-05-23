@@ -1430,9 +1430,9 @@ Expr_top_k = function(k, ..., nulls_last = FALSE, maintain_order = FALSE, multit
 #' @inherit Expr_top_k params return
 #' @examples
 #' pl$DataFrame(a = c(6, 1, 0, NA, Inf, NaN))$select(pl$col("a")$bottom_k(5))
-Expr_bottom_k = function(k) {
+Expr_bottom_k = function(k, ..., nulls_last = FALSE, maintain_order = FALSE, multithreaded = TRUE) {
   if (!is.numeric(k) || k < 0) stop("k must be numeric and positive, prefereably integerish")
-  .pr$Expr$bottom_k(self, k) |>
+  .pr$Expr$bottom_k(self, k, nulls_last = nulls_last, multithreaded = multithreaded) |>
     unwrap("in $bottom_k():")
 }
 
