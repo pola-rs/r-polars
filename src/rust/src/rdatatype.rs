@@ -80,7 +80,7 @@ impl RPolarsDataType {
             "Null" | "null" => pl::DataType::Null,
             "Categorical" | "factor" => pl::DataType::Categorical(None, Default::default()),
             "Enum" => pl::DataType::Enum(None, Default::default()),
-            "Unknown" | "unknown" => pl::DataType::Unknown,
+            "Unknown" | "unknown" => pl::DataType::Unknown(polars::datatypes::UnknownKind::Any),
 
             _ => panic!("data type not recgnized "),
         };
