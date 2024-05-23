@@ -979,9 +979,7 @@ LazyFrame_last = use_extendr_wrapper
 #' @docType NULL
 #' @format NULL
 #' @examples pl$LazyFrame(mtcars)$max()$collect()
-LazyFrame_max = function() {
-  unwrap(.pr$LazyFrame$max(self), "in $max():")
-}
+LazyFrame_max = use_extendr_wrapper
 
 #' @title Mean
 #' @description Aggregate the columns in the LazyFrame to their mean value.
@@ -990,9 +988,7 @@ LazyFrame_max = function() {
 #' @docType NULL
 #' @format NULL
 #' @examples pl$LazyFrame(mtcars)$mean()$collect()
-LazyFrame_mean = function() {
-  unwrap(.pr$LazyFrame$mean(self), "in $mean():")
-}
+LazyFrame_mean = use_extendr_wrapper
 
 #' @title Median
 #' @description Aggregate the columns in the LazyFrame to their median value.
@@ -1001,9 +997,7 @@ LazyFrame_mean = function() {
 #' @docType NULL
 #' @format NULL
 #' @examples pl$LazyFrame(mtcars)$median()$collect()
-LazyFrame_median = function() {
-  unwrap(.pr$LazyFrame$median(self), "in $median():")
-}
+LazyFrame_median = use_extendr_wrapper
 
 #' @title Min
 #' @description Aggregate the columns in the LazyFrame to their minimum value.
@@ -1012,9 +1006,7 @@ LazyFrame_median = function() {
 #' @docType NULL
 #' @format NULL
 #' @examples pl$LazyFrame(mtcars)$min()$collect()
-LazyFrame_min = function() {
-  unwrap(.pr$LazyFrame$min(self), "in $min():")
-}
+LazyFrame_min = use_extendr_wrapper
 
 #' @title Sum
 #' @description Aggregate the columns of this LazyFrame to their sum values.
@@ -1023,9 +1015,7 @@ LazyFrame_min = function() {
 #' @docType NULL
 #' @format NULL
 #' @examples pl$LazyFrame(mtcars)$sum()$collect()
-LazyFrame_sum = function() {
-  unwrap(.pr$LazyFrame$sum(self), "in $sum():")
-}
+LazyFrame_sum = use_extendr_wrapper
 
 #' @title Var
 #' @description Aggregate the columns of this LazyFrame to their variance values.
