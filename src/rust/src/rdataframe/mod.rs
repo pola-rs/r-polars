@@ -542,7 +542,6 @@ impl RPolarsDataFrame {
         n_rows: Robj,
         row_name: Robj,
         row_index: Robj,
-        memory_map: Robj,
     ) -> RResult<Self> {
         let bits = robj_to!(Raw, bits)?;
         let n_rows = robj_to!(Option, usize, n_rows)?;
@@ -554,8 +553,7 @@ impl RPolarsDataFrame {
                 })
             })
             .transpose()?;
-        let memory_map = robj_to!(bool, memory_map)?;
-        let df = crate::rbackground::deserialize_dataframe(&bits, n_rows, row_index, memory_map)?;
+        let df = crate::rbackground::deserialize_dataframe(&bits, n_rows, row_index)?;
 
         Ok(RPolarsDataFrame(df))
     }
