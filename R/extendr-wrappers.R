@@ -96,7 +96,7 @@ import_arrow_ipc <- function(path, n_rows, cache, rechunk, row_name, row_index, 
 
 new_from_ndjson <- function(path, infer_schema_length, batch_size, n_rows, low_memory, rechunk, row_index_name, row_index_offset, ignore_errors) .Call(wrap__new_from_ndjson, path, infer_schema_length, batch_size, n_rows, low_memory, rechunk, row_index_name, row_index_offset, ignore_errors)
 
-new_from_parquet <- function(path, n_rows, cache, parallel, rechunk, row_name, row_index, storage_options, use_statistics, low_memory, hive_partitioning) .Call(wrap__new_from_parquet, path, n_rows, cache, parallel, rechunk, row_name, row_index, storage_options, use_statistics, low_memory, hive_partitioning)
+new_from_parquet <- function(path, n_rows, cache, parallel, rechunk, row_name, row_index, storage_options, use_statistics, low_memory, hive_partitioning, glob) .Call(wrap__new_from_parquet, path, n_rows, cache, parallel, rechunk, row_name, row_index, storage_options, use_statistics, low_memory, hive_partitioning, glob)
 
 test_rpolarserr <- function() .Call(wrap__test_rpolarserr)
 
@@ -224,7 +224,7 @@ RPolarsDataFrame$write_ipc <- function(file, compression, future) .Call(wrap__RP
 
 RPolarsDataFrame$to_raw_ipc <- function(compression, future) .Call(wrap__RPolarsDataFrame__to_raw_ipc, self, compression, future)
 
-RPolarsDataFrame$from_raw_ipc <- function(bits, n_rows, row_name, row_index, memory_map) .Call(wrap__RPolarsDataFrame__from_raw_ipc, bits, n_rows, row_name, row_index, memory_map)
+RPolarsDataFrame$from_raw_ipc <- function(bits, n_rows, row_name, row_index) .Call(wrap__RPolarsDataFrame__from_raw_ipc, bits, n_rows, row_name, row_index)
 
 RPolarsDataFrame$write_parquet <- function(file, compression_method, compression_level, statistics, row_group_size, data_pagesize_limit) .Call(wrap__RPolarsDataFrame__write_parquet, self, file, compression_method, compression_level, statistics, row_group_size, data_pagesize_limit)
 
@@ -516,9 +516,9 @@ RPolarsExpr$sort_with <- function(descending, nulls_last) .Call(wrap__RPolarsExp
 
 RPolarsExpr$arg_sort <- function(descending, nulls_last) .Call(wrap__RPolarsExpr__arg_sort, self, descending, nulls_last)
 
-RPolarsExpr$top_k <- function(k) .Call(wrap__RPolarsExpr__top_k, self, k)
+RPolarsExpr$top_k <- function(k, nulls_last, multithreaded) .Call(wrap__RPolarsExpr__top_k, self, k, nulls_last, multithreaded)
 
-RPolarsExpr$bottom_k <- function(k) .Call(wrap__RPolarsExpr__bottom_k, self, k)
+RPolarsExpr$bottom_k <- function(k, nulls_last, multithreaded) .Call(wrap__RPolarsExpr__bottom_k, self, k, nulls_last, multithreaded)
 
 RPolarsExpr$arg_max <- function() .Call(wrap__RPolarsExpr__arg_max, self)
 
@@ -602,7 +602,7 @@ RPolarsExpr$rolling_var <- function(window_size, weights, min_periods, center, b
 
 RPolarsExpr$rolling_median <- function(window_size, weights, min_periods, center, by_null, closed_null, warn_if_unsorted) .Call(wrap__RPolarsExpr__rolling_median, self, window_size, weights, min_periods, center, by_null, closed_null, warn_if_unsorted)
 
-RPolarsExpr$rolling_quantile <- function(quantile, interpolation, window_size, weights, min_periods, center, by, closed, warn_if_unsorted) .Call(wrap__RPolarsExpr__rolling_quantile, self, quantile, interpolation, window_size, weights, min_periods, center, by, closed, warn_if_unsorted)
+RPolarsExpr$rolling_quantile <- function(quantile, interpolation, window_size, weights, min_periods, center) .Call(wrap__RPolarsExpr__rolling_quantile, self, quantile, interpolation, window_size, weights, min_periods, center)
 
 RPolarsExpr$rolling_skew <- function(window_size, bias) .Call(wrap__RPolarsExpr__rolling_skew, self, window_size, bias)
 
@@ -1138,7 +1138,7 @@ RPolarsLazyFrame <- new.env(parent = emptyenv())
 
 RPolarsLazyFrame$print <- function() .Call(wrap__RPolarsLazyFrame__print, self)
 
-RPolarsLazyFrame$describe_plan <- function() invisible(.Call(wrap__RPolarsLazyFrame__describe_plan, self))
+RPolarsLazyFrame$describe_plan <- function() .Call(wrap__RPolarsLazyFrame__describe_plan, self)
 
 RPolarsLazyFrame$debug_plan <- function() .Call(wrap__RPolarsLazyFrame__debug_plan, self)
 
@@ -1218,7 +1218,7 @@ RPolarsLazyFrame$with_row_index <- function(name, offset) .Call(wrap__RPolarsLaz
 
 RPolarsLazyFrame$join_asof <- function(other, left_on, right_on, left_by, right_by, allow_parallel, force_parallel, suffix, strategy, tolerance, tolerance_str) .Call(wrap__RPolarsLazyFrame__join_asof, self, other, left_on, right_on, left_by, right_by, allow_parallel, force_parallel, suffix, strategy, tolerance, tolerance_str)
 
-RPolarsLazyFrame$join <- function(other, left_on, right_on, how, validate, join_nulls, suffix, allow_parallel, force_parallel) .Call(wrap__RPolarsLazyFrame__join, self, other, left_on, right_on, how, validate, join_nulls, suffix, allow_parallel, force_parallel)
+RPolarsLazyFrame$join <- function(other, left_on, right_on, how, validate, join_nulls, suffix, allow_parallel, force_parallel, coalesce) .Call(wrap__RPolarsLazyFrame__join, self, other, left_on, right_on, how, validate, join_nulls, suffix, allow_parallel, force_parallel, coalesce)
 
 RPolarsLazyFrame$sort_by_exprs <- function(by, dotdotdot, descending, nulls_last, maintain_order, multithreaded) .Call(wrap__RPolarsLazyFrame__sort_by_exprs, self, by, dotdotdot, descending, nulls_last, maintain_order, multithreaded)
 
