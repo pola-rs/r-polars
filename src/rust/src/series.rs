@@ -16,8 +16,6 @@ use crate::robj_to;
 use crate::rpolarserr::RResult;
 use crate::utils::wrappers::null_to_opt;
 use crate::utils::{r_error_list, r_result_list};
-
-use extendr_api::ToVectorValue;
 use extendr_api::{extendr, prelude::*, rprintln};
 use pl::SeriesMethods;
 use polars::datatypes::*;
@@ -551,29 +549,47 @@ impl RPolarsSeries {
     }
 
     pub fn max(&self) -> Result<Robj, String> {
-        let s = self.0.max_as_series().map_err(polars_to_rpolars_err)?;
-        RPolarsSeries(s).to_r("double")
+        RPolarsSeries(
+            self.0
+                .max_reduce()
+                .map_err(polars_to_rpolars_err)?
+                .into_series(""),
+        )
+        .to_r("double")
     }
 
     pub fn sum(&self) -> Result<Robj, String> {
-        let s = self.0.sum_as_series().map_err(polars_to_rpolars_err)?;
-        RPolarsSeries(s).to_r("double")
+        RPolarsSeries(
+            self.0
+                .sum_reduce()
+                .map_err(polars_to_rpolars_err)?
+                .into_series(""),
+        )
+        .to_r("double")
     }
 
     pub fn std(&self, ddof: Robj) -> Result<Robj, String> {
-        let s = self
-            .0
-            .std_as_series(robj_to!(u8, ddof)?)
-            .map_err(polars_to_rpolars_err)?;
-        RPolarsSeries(s).to_r("double")
+        let ddof = robj_to!(u8, ddof)?;
+
+        RPolarsSeries(
+            self.0
+                .std_reduce(ddof)
+                .map_err(polars_to_rpolars_err)?
+                .into_series(""),
+        )
+        .to_r("double")
     }
 
     pub fn var(&self, ddof: Robj) -> Result<Robj, String> {
-        let s = self
-            .0
-            .var_as_series(robj_to!(u8, ddof)?)
-            .map_err(polars_to_rpolars_err)?;
-        RPolarsSeries(s).to_r("double")
+        let ddof = robj_to!(u8, ddof)?;
+
+        RPolarsSeries(
+            self.0
+                .var_reduce(ddof)
+                .map_err(polars_to_rpolars_err)?
+                .into_series(""),
+        )
+        .to_r("double")
     }
 
     pub fn print(&self) {
