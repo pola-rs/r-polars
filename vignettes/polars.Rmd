@@ -510,6 +510,9 @@ Before continuing, don't forget to clean up by removing the newly created temp f
 and directory on disk.
 
 ```{r}
+# Remove LazyFrames which reference the files
+rm(aq, aq2)
+
 file.remove(c("airquality.csv", "airquality.parquet"))
 unlink("airquality-ds", recursive = TRUE)
 ```
