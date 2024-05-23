@@ -500,9 +500,6 @@ impl RPolarsExpr {
         weights: Robj,
         min_periods: Robj,
         center: Robj,
-        by_null: Robj,
-        closed_null: Robj,
-        warn_if_unsorted: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
@@ -512,9 +509,6 @@ impl RPolarsExpr {
                 weights,
                 min_periods,
                 center,
-                by_null,
-                closed_null,
-                warn_if_unsorted,
             )?)
             .into())
     }
@@ -526,9 +520,6 @@ impl RPolarsExpr {
         weights: Robj,
         min_periods: Robj,
         center: Robj,
-        by_null: Robj,
-        closed_null: Robj,
-        warn_if_unsorted: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
@@ -538,9 +529,6 @@ impl RPolarsExpr {
                 weights,
                 min_periods,
                 center,
-                by_null,
-                closed_null,
-                warn_if_unsorted,
             )?)
             .into())
     }
@@ -552,9 +540,6 @@ impl RPolarsExpr {
         weights: Robj,
         min_periods: Robj,
         center: Robj,
-        by_null: Robj,
-        closed_null: Robj,
-        warn_if_unsorted: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
@@ -564,9 +549,6 @@ impl RPolarsExpr {
                 weights,
                 min_periods,
                 center,
-                by_null,
-                closed_null,
-                warn_if_unsorted,
             )?)
             .into())
     }
@@ -578,9 +560,6 @@ impl RPolarsExpr {
         weights: Robj,
         min_periods: Robj,
         center: Robj,
-        by_null: Robj,
-        closed_null: Robj,
-        warn_if_unsorted: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
@@ -590,9 +569,6 @@ impl RPolarsExpr {
                 weights,
                 min_periods,
                 center,
-                by_null,
-                closed_null,
-                warn_if_unsorted,
             )?)
             .into())
     }
@@ -604,9 +580,6 @@ impl RPolarsExpr {
         weights: Robj,
         min_periods: Robj,
         center: Robj,
-        by_null: Robj,
-        closed_null: Robj,
-        warn_if_unsorted: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
@@ -616,9 +589,6 @@ impl RPolarsExpr {
                 weights,
                 min_periods,
                 center,
-                by_null,
-                closed_null,
-                warn_if_unsorted,
             )?)
             .into())
     }
@@ -630,9 +600,6 @@ impl RPolarsExpr {
         weights: Robj,
         min_periods: Robj,
         center: Robj,
-        by_null: Robj,
-        closed_null: Robj,
-        warn_if_unsorted: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
@@ -642,9 +609,6 @@ impl RPolarsExpr {
                 weights,
                 min_periods,
                 center,
-                by_null,
-                closed_null,
-                warn_if_unsorted,
             )?)
             .into())
     }
@@ -656,9 +620,6 @@ impl RPolarsExpr {
         weights: Robj,
         min_periods: Robj,
         center: Robj,
-        by_null: Robj,
-        closed_null: Robj,
-        warn_if_unsorted: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
@@ -668,9 +629,6 @@ impl RPolarsExpr {
                 weights,
                 min_periods,
                 center,
-                by_null,
-                closed_null,
-                warn_if_unsorted,
             )?)
             .into())
     }
@@ -2615,9 +2573,6 @@ pub fn make_rolling_options(
     weights: Robj,
     min_periods: Robj,
     center: Robj,
-    by_null: Robj,
-    closed_null: Robj,
-    warn_if_unsorted: Robj,
 ) -> RResult<pl::RollingOptionsFixedWindow> {
     Ok(pl::RollingOptionsFixedWindow {
         window_size: robj_to!(usize, window_size)?,

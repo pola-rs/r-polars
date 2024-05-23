@@ -7,14 +7,14 @@ use polars_core::prelude::QuantileInterpolOptions;
 //expose polars DateType in R
 use crate::rpolarserr::{polars_to_rpolars_err, rerr, RPolarsErr, RResult, WithRctx};
 use crate::utils::collect_hinted_result;
+use crate::utils::robj_to_rchoice;
 use crate::utils::wrappers::null_to_opt;
-#[derive(Debug, Clone, PartialEq)]
-pub struct RPolarsRField(pub pl::Field);
 use pl::UniqueKeepStrategy;
 use polars::prelude::AsofStrategy;
-
-use crate::utils::robj_to_rchoice;
 use std::num::NonZeroUsize;
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct RPolarsRField(pub pl::Field);
 
 #[extendr]
 impl RPolarsRField {

@@ -588,19 +588,19 @@ RPolarsExpr$reinterpret <- function(signed) .Call(wrap__RPolarsExpr__reinterpret
 
 RPolarsExpr$interpolate <- function(method) .Call(wrap__RPolarsExpr__interpolate, self, method)
 
-RPolarsExpr$rolling_min <- function(window_size, weights, min_periods, center, by_null, closed_null, warn_if_unsorted) .Call(wrap__RPolarsExpr__rolling_min, self, window_size, weights, min_periods, center, by_null, closed_null, warn_if_unsorted)
+RPolarsExpr$rolling_min <- function(window_size, weights, min_periods, center) .Call(wrap__RPolarsExpr__rolling_min, self, window_size, weights, min_periods, center)
 
-RPolarsExpr$rolling_max <- function(window_size, weights, min_periods, center, by_null, closed_null, warn_if_unsorted) .Call(wrap__RPolarsExpr__rolling_max, self, window_size, weights, min_periods, center, by_null, closed_null, warn_if_unsorted)
+RPolarsExpr$rolling_max <- function(window_size, weights, min_periods, center) .Call(wrap__RPolarsExpr__rolling_max, self, window_size, weights, min_periods, center)
 
-RPolarsExpr$rolling_mean <- function(window_size, weights, min_periods, center, by_null, closed_null, warn_if_unsorted) .Call(wrap__RPolarsExpr__rolling_mean, self, window_size, weights, min_periods, center, by_null, closed_null, warn_if_unsorted)
+RPolarsExpr$rolling_mean <- function(window_size, weights, min_periods, center) .Call(wrap__RPolarsExpr__rolling_mean, self, window_size, weights, min_periods, center)
 
-RPolarsExpr$rolling_sum <- function(window_size, weights, min_periods, center, by_null, closed_null, warn_if_unsorted) .Call(wrap__RPolarsExpr__rolling_sum, self, window_size, weights, min_periods, center, by_null, closed_null, warn_if_unsorted)
+RPolarsExpr$rolling_sum <- function(window_size, weights, min_periods, center) .Call(wrap__RPolarsExpr__rolling_sum, self, window_size, weights, min_periods, center)
 
-RPolarsExpr$rolling_std <- function(window_size, weights, min_periods, center, by_null, closed_null, warn_if_unsorted) .Call(wrap__RPolarsExpr__rolling_std, self, window_size, weights, min_periods, center, by_null, closed_null, warn_if_unsorted)
+RPolarsExpr$rolling_std <- function(window_size, weights, min_periods, center) .Call(wrap__RPolarsExpr__rolling_std, self, window_size, weights, min_periods, center)
 
-RPolarsExpr$rolling_var <- function(window_size, weights, min_periods, center, by_null, closed_null, warn_if_unsorted) .Call(wrap__RPolarsExpr__rolling_var, self, window_size, weights, min_periods, center, by_null, closed_null, warn_if_unsorted)
+RPolarsExpr$rolling_var <- function(window_size, weights, min_periods, center) .Call(wrap__RPolarsExpr__rolling_var, self, window_size, weights, min_periods, center)
 
-RPolarsExpr$rolling_median <- function(window_size, weights, min_periods, center, by_null, closed_null, warn_if_unsorted) .Call(wrap__RPolarsExpr__rolling_median, self, window_size, weights, min_periods, center, by_null, closed_null, warn_if_unsorted)
+RPolarsExpr$rolling_median <- function(window_size, weights, min_periods, center) .Call(wrap__RPolarsExpr__rolling_median, self, window_size, weights, min_periods, center)
 
 RPolarsExpr$rolling_quantile <- function(quantile, interpolation, window_size, weights, min_periods, center) .Call(wrap__RPolarsExpr__rolling_quantile, self, quantile, interpolation, window_size, weights, min_periods, center)
 
