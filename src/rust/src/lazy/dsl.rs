@@ -504,12 +504,28 @@ impl RPolarsExpr {
         Ok(self
             .0
             .clone()
-            .rolling_min(make_rolling_options(
+            .rolling_min(make_rolling_options_fixed_window(
                 window_size,
                 weights,
                 min_periods,
                 center,
             )?)
+            .into())
+    }
+    fn rolling_min_by(
+        &self,
+        by: Robj,
+        window_size: &str,
+        min_periods: Robj,
+        closed: Robj,
+    ) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .rolling_min_by(
+                robj_to!(PLExpr, by)?,
+                make_rolling_options_dynamic_window(window_size, min_periods, closed)?,
+            )
             .into())
     }
 
@@ -524,12 +540,29 @@ impl RPolarsExpr {
         Ok(self
             .0
             .clone()
-            .rolling_max(make_rolling_options(
+            .rolling_max(make_rolling_options_fixed_window(
                 window_size,
                 weights,
                 min_periods,
                 center,
             )?)
+            .into())
+    }
+
+    fn rolling_max_by(
+        &self,
+        by: Robj,
+        window_size: &str,
+        min_periods: Robj,
+        closed: Robj,
+    ) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .rolling_max_by(
+                robj_to!(PLExpr, by)?,
+                make_rolling_options_dynamic_window(window_size, min_periods, closed)?,
+            )
             .into())
     }
 
@@ -544,12 +577,29 @@ impl RPolarsExpr {
         Ok(self
             .0
             .clone()
-            .rolling_mean(make_rolling_options(
+            .rolling_mean(make_rolling_options_fixed_window(
                 window_size,
                 weights,
                 min_periods,
                 center,
             )?)
+            .into())
+    }
+
+    fn rolling_mean_by(
+        &self,
+        by: Robj,
+        window_size: &str,
+        min_periods: Robj,
+        closed: Robj,
+    ) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .rolling_mean_by(
+                robj_to!(PLExpr, by)?,
+                make_rolling_options_dynamic_window(window_size, min_periods, closed)?,
+            )
             .into())
     }
 
@@ -564,12 +614,29 @@ impl RPolarsExpr {
         Ok(self
             .0
             .clone()
-            .rolling_sum(make_rolling_options(
+            .rolling_sum(make_rolling_options_fixed_window(
                 window_size,
                 weights,
                 min_periods,
                 center,
             )?)
+            .into())
+    }
+
+    fn rolling_sum_by(
+        &self,
+        by: Robj,
+        window_size: &str,
+        min_periods: Robj,
+        closed: Robj,
+    ) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .rolling_sum_by(
+                robj_to!(PLExpr, by)?,
+                make_rolling_options_dynamic_window(window_size, min_periods, closed)?,
+            )
             .into())
     }
 
@@ -584,12 +651,31 @@ impl RPolarsExpr {
         Ok(self
             .0
             .clone()
-            .rolling_std(make_rolling_options(
+            .rolling_std(make_rolling_options_fixed_window(
                 window_size,
                 weights,
                 min_periods,
                 center,
             )?)
+            .into())
+    }
+
+    // TODO: in make_rolling_options_dynamic_window(), the fn_params
+    // arg is different for this one
+    fn rolling_std_by(
+        &self,
+        by: Robj,
+        window_size: &str,
+        min_periods: Robj,
+        closed: Robj,
+    ) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .rolling_std_by(
+                robj_to!(PLExpr, by)?,
+                make_rolling_options_dynamic_window(window_size, min_periods, closed)?,
+            )
             .into())
     }
 
@@ -604,7 +690,7 @@ impl RPolarsExpr {
         Ok(self
             .0
             .clone()
-            .rolling_var(make_rolling_options(
+            .rolling_var(make_rolling_options_fixed_window(
                 window_size,
                 weights,
                 min_periods,
@@ -612,6 +698,25 @@ impl RPolarsExpr {
             )?)
             .into())
     }
+
+    // TODO: in make_rolling_options_dynamic_window(), the fn_params
+    // arg is different for this one
+    // fn rolling_var_by(
+    //     &self,
+    //     by: Robj,
+    //     window_size: &str,
+    //     min_periods: Robj,
+    //     closed: Robj,
+    // ) -> RResult<Self> {
+    //     Ok(self
+    //         .0
+    //         .clone()
+    //         .rolling_var_by(
+    //             robj_to!(PLExpr, by)?,
+    //             make_rolling_options_dynamic_window(window_size, min_periods, closed)?,
+    //         )
+    //         .into())
+    // }
 
     #[allow(clippy::too_many_arguments)]
     pub fn rolling_median(
@@ -624,12 +729,29 @@ impl RPolarsExpr {
         Ok(self
             .0
             .clone()
-            .rolling_median(make_rolling_options(
+            .rolling_median(make_rolling_options_fixed_window(
                 window_size,
                 weights,
                 min_periods,
                 center,
             )?)
+            .into())
+    }
+
+    fn rolling_median_by(
+        &self,
+        by: Robj,
+        window_size: &str,
+        min_periods: Robj,
+        closed: Robj,
+    ) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .rolling_median_by(
+                robj_to!(PLExpr, by)?,
+                make_rolling_options_dynamic_window(window_size, min_periods, closed)?,
+            )
             .into())
     }
 
@@ -659,6 +781,24 @@ impl RPolarsExpr {
             .rolling_quantile(interpolation, quantile, options)
             .into())
     }
+
+    // TODO: this takes args for interpolation
+    // fn rolling_quantile_by(
+    //     &self,
+    //     by: Robj,
+    //     window_size: &str,
+    //     min_periods: Robj,
+    //     closed: Robj,
+    // ) -> RResult<Self> {
+    //     Ok(self
+    //         .0
+    //         .clone()
+    //         .rolling_quantile_by(
+    //             robj_to!(PLExpr, by)?,
+    //             make_rolling_options_dynamic_window(window_size, min_periods, closed)?,
+    //         )
+    //         .into())
+    // }
 
     pub fn rolling_skew(&self, window_size: f64, bias: bool) -> RResult<RPolarsExpr> {
         Ok(self
@@ -2568,7 +2708,7 @@ impl ProtoRexpr {
 }
 
 //make options rolling options from R friendly arguments, handle conversion errors
-pub fn make_rolling_options(
+pub fn make_rolling_options_fixed_window(
     window_size: Robj,
     weights: Robj,
     min_periods: Robj,
@@ -2580,6 +2720,19 @@ pub fn make_rolling_options(
         min_periods: robj_to!(usize, min_periods)?,
         center: robj_to!(bool, center)?,
         ..Default::default()
+    })
+}
+
+pub fn make_rolling_options_dynamic_window(
+    window_size: &str,
+    min_periods: Robj,
+    closed_window: Robj,
+) -> RResult<pl::RollingOptionsDynamicWindow> {
+    Ok(pl::RollingOptionsDynamicWindow {
+        window_size: Duration::parse(window_size),
+        min_periods: robj_to!(usize, min_periods)?,
+        closed_window: robj_to!(ClosedWindow, closed_window)?,
+        fn_params: None,
     })
 }
 
