@@ -8,7 +8,6 @@ pl_read_ipc(
   source,
   ...,
   n_rows = NULL,
-  memory_map = TRUE,
   row_index_name = NULL,
   row_index_offset = 0L,
   rechunk = FALSE,
@@ -23,10 +22,6 @@ You can use globbing with \code{*} to scan/read multiple files in the same direc
 \item{...}{Ignored.}
 
 \item{n_rows}{Maximum number of rows to read.}
-
-\item{memory_map}{A logical. If \code{TRUE}, try to memory map the file.
-This can greatly improve performance on repeated queries as the OS may cache pages.
-Only uncompressed Arrow IPC files can be memory mapped.}
 
 \item{row_index_name}{If not \code{NULL}, this will insert a row index column with
 the given name into the DataFrame.}

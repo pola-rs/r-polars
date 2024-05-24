@@ -6,9 +6,6 @@
 #' Hive-style partitioning is not supported yet.
 #' @inherit pl_scan_csv return
 #' @inheritParams pl_scan_parquet
-#' @param memory_map A logical. If `TRUE`, try to memory map the file.
-#' This can greatly improve performance on repeated queries as the OS may cache pages.
-#' Only uncompressed Arrow IPC files can be memory mapped.
 #' @rdname IO_scan_ipc
 #' @examplesIf requireNamespace("arrow", quietly = TRUE) && arrow::arrow_with_dataset()
 #' temp_dir = tempfile()
@@ -32,7 +29,6 @@ pl_scan_ipc = function(
     source,
     ...,
     n_rows = NULL,
-    memory_map = TRUE,
     row_index_name = NULL,
     row_index_offset = 0L,
     rechunk = FALSE,
@@ -43,8 +39,7 @@ pl_scan_ipc = function(
     cache,
     rechunk,
     row_index_name,
-    row_index_offset,
-    memory_map
+    row_index_offset
   ) |>
     unwrap("in pl$scan_ipc():")
 }
@@ -89,7 +84,6 @@ pl_read_ipc = function(
     source,
     ...,
     n_rows = NULL,
-    memory_map = TRUE,
     row_index_name = NULL,
     row_index_offset = 0L,
     rechunk = FALSE,
@@ -101,8 +95,7 @@ pl_read_ipc = function(
       source,
       n_rows,
       row_index_name,
-      row_index_offset,
-      memory_map
+      row_index_offset
     ) |>
       uw()
   } else {
