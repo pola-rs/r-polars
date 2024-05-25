@@ -516,9 +516,9 @@ RPolarsExpr$sort_with <- function(descending, nulls_last) .Call(wrap__RPolarsExp
 
 RPolarsExpr$arg_sort <- function(descending, nulls_last) .Call(wrap__RPolarsExpr__arg_sort, self, descending, nulls_last)
 
-RPolarsExpr$top_k <- function(k, nulls_last, multithreaded) .Call(wrap__RPolarsExpr__top_k, self, k, nulls_last, multithreaded)
+RPolarsExpr$top_k <- function(k, nulls_last, maintain_order, multithreaded) .Call(wrap__RPolarsExpr__top_k, self, k, nulls_last, maintain_order, multithreaded)
 
-RPolarsExpr$bottom_k <- function(k, nulls_last, multithreaded) .Call(wrap__RPolarsExpr__bottom_k, self, k, nulls_last, multithreaded)
+RPolarsExpr$bottom_k <- function(k, nulls_last, maintain_order, multithreaded) .Call(wrap__RPolarsExpr__bottom_k, self, k, nulls_last, maintain_order, multithreaded)
 
 RPolarsExpr$arg_max <- function() .Call(wrap__RPolarsExpr__arg_max, self)
 
