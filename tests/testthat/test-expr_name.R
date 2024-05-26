@@ -1,5 +1,3 @@
-skip("These function are broken.")
-
 test_that("name to_lowercase", {
   df = pl$DataFrame(Var1 = 1, vAR2 = 2)
   expect_equal(
@@ -28,6 +26,9 @@ test_that("name keep", {
 
 test_that("name map", {
   skip_if_not_installed("withr")
+  # TODO: doesn't work when run via RStudio buttons but works via
+  #  testthat::test_file().
+  skip("This function is broken")
   withr::with_options(
     list(polars.no_messages = TRUE),
     {
