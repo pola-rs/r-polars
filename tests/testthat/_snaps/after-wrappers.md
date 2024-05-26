@@ -436,14 +436,14 @@
       [311] "str_to_lowercase"           "str_to_time"               
       [313] "str_to_titlecase"           "str_to_uppercase"          
       [315] "str_zfill"                  "struct_field_by_name"      
-      [317] "struct_rename_fields"       "sub"                       
-      [319] "sum"                        "tail"                      
-      [321] "tan"                        "tanh"                      
-      [323] "to_physical"                "top_k"                     
-      [325] "unique"                     "unique_counts"             
-      [327] "unique_stable"              "upper_bound"               
-      [329] "value_counts"               "var"                       
-      [331] "xor"                       
+      [317] "struct_rename_fields"       "struct_with_fields"        
+      [319] "sub"                        "sum"                       
+      [321] "tail"                       "tan"                       
+      [323] "tanh"                       "to_physical"               
+      [325] "top_k"                      "unique"                    
+      [327] "unique_counts"              "unique_stable"             
+      [329] "upper_bound"                "value_counts"              
+      [331] "var"                        "xor"                       
 
 # public and private methods of each class When
 

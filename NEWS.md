@@ -29,6 +29,7 @@
   like `pl$Struct(a = pl$Boolean)` (#1053).
 - In `$all()` and `$any()`, the argument `drop_nulls` is renamed `ignore_nulls`,
   and this argument must be named (#1050).
+- New method `$struct$with_fields()` (#1109).
 
 ## Polars R Package 0.16.4
 
