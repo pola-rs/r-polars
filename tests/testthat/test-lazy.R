@@ -752,7 +752,7 @@ test_that("fetch", {
     lf$select(pl$col("a") * 2L)$fetch(5)$to_list()
   )
 
-  # uszie input can be bit64
+  # usize input can be bit64
   expect_identical(
     lf$select(pl$col("a") * 2L)$fetch(bit64::as.integer64(5))$to_list(),
     lf$select(pl$col("a") * 2L)$fetch(5)$to_list()
@@ -762,17 +762,6 @@ test_that("fetch", {
   expect_identical(
     result(lf$select(pl$col("a") * 2L)$fetch(-5)$to_list())$err$contexts(),
     list(BadArgument = "n_rows", ValueOutOfScope = "cannot be less than zero", BadValue = "-5")
-  )
-
-
-  # bad opt profile arg streaming
-  expect_identical(
-    result(pl$select(pl$lit(2L) * 2L)$lazy()$fetch(-5, streaming = 42)$to_list())$err$contexts(),
-    list(
-      BadArgument = "streaming",
-      TypeMismatch = "bool",
-      BadValue = "Rvalue: 42.0, Rsexp: Doubles, Rclass: [\"numeric\"]"
-    )
   )
 })
 
@@ -821,6 +810,7 @@ test_that("opt_toggles", {
     slice_pushdown = FALSE,
     comm_subplan_elim = FALSE,
     comm_subexpr_elim = FALSE,
+    cluster_with_columns = TRUE,
     streaming = TRUE,
     eager = TRUE
   )

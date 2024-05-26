@@ -8,7 +8,7 @@
       
       Naive plan:
       FILTER [(col("a")) == (2)] FROM
-      DF ["a", "b"]; PROJECT */2 COLUMNS; SELECTION: None
+        DF ["a", "b"]; PROJECT */2 COLUMNS; SELECTION: None
 
 # LazyFrame serialize/deseialize
 

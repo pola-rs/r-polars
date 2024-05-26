@@ -478,6 +478,7 @@ LazyFrame_set_optimization_toggle = function(
       slice_pushdown,
       comm_subplan_elim,
       comm_subexpr_elim,
+      cluster_with_columns,
       streaming,
       eager
     )
@@ -490,7 +491,7 @@ LazyFrame_set_optimization_toggle = function(
 #' @param ... Ignored.
 #' @param no_optimization  Logical. Sets the following parameters to `FALSE`:
 #'  `predicate_pushdown`, `projection_pushdown`, `slice_pushdown`,
-#'  `comm_subplan_elim`, `comm_subexpr_elim`.
+#'  `comm_subplan_elim`, `comm_subexpr_elim`, `cluster_with_columns`.
 #' @param inherit_optimization  Logical. Use existing optimization settings
 #' regardless the settings specified in this function call.
 #' @param collect_in_background Logical. Detach this query from R session.
@@ -533,6 +534,7 @@ LazyFrame_collect = function(
     slice_pushdown = FALSE
     comm_subplan_elim = FALSE
     comm_subexpr_elim = FALSE
+    cluster_with_columns = FALSE
   }
 
   if (isTRUE(streaming)) {
@@ -552,6 +554,7 @@ LazyFrame_collect = function(
       slice_pushdown,
       comm_subplan_elim,
       comm_subexpr_elim,
+      cluster_with_columns,
       streaming
     ) |> unwrap("in $collect():")
   }
@@ -1604,6 +1607,7 @@ LazyFrame_fetch = function(
     slice_pushdown = FALSE
     comm_subplan_elim = FALSE
     comm_subexpr_elim = FALSE
+    cluster_with_columns = FALSE
   }
 
   if (isTRUE(streaming)) {
@@ -1621,6 +1625,7 @@ LazyFrame_fetch = function(
       slice_pushdown,
       comm_subplan_elim,
       comm_subexpr_elim,
+      cluster_with_columns,
       streaming
     ) |> unwrap("in $fetch()")
   }
@@ -1701,6 +1706,7 @@ LazyFrame_profile = function(
     slice_pushdown = FALSE
     comm_subplan_elim = FALSE
     comm_subexpr_elim = FALSE
+    cluster_with_columns = FALSE
   }
 
   if (isTRUE(streaming)) {
@@ -1718,6 +1724,7 @@ LazyFrame_profile = function(
       slice_pushdown,
       comm_subplan_elim,
       comm_subexpr_elim,
+      cluster_with_columns,
       streaming
     ) |> unwrap("in $profile():")
   }

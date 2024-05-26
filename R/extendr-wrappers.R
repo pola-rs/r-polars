@@ -1244,7 +1244,7 @@ RPolarsLazyFrame$schema <- function() .Call(wrap__RPolarsLazyFrame__schema, self
 
 RPolarsLazyFrame$fetch <- function(n_rows) .Call(wrap__RPolarsLazyFrame__fetch, self, n_rows)
 
-RPolarsLazyFrame$set_optimization_toggle <- function(type_coercion, predicate_pushdown, projection_pushdown, simplify_expression, slice_pushdown, comm_subplan_elim, comm_subexpr_elim, streaming, eager) .Call(wrap__RPolarsLazyFrame__set_optimization_toggle, self, type_coercion, predicate_pushdown, projection_pushdown, simplify_expression, slice_pushdown, comm_subplan_elim, comm_subexpr_elim, streaming, eager)
+RPolarsLazyFrame$set_optimization_toggle <- function(type_coercion, predicate_pushdown, projection_pushdown, simplify_expression, slice_pushdown, comm_subplan_elim, comm_subexpr_elim, cluster_with_columns, streaming, eager) .Call(wrap__RPolarsLazyFrame__set_optimization_toggle, self, type_coercion, predicate_pushdown, projection_pushdown, simplify_expression, slice_pushdown, comm_subplan_elim, comm_subexpr_elim, cluster_with_columns, streaming, eager)
 
 RPolarsLazyFrame$get_optimization_toggle <- function() .Call(wrap__RPolarsLazyFrame__get_optimization_toggle, self)
 

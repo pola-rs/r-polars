@@ -578,8 +578,8 @@ Series_to_list = \(int64_conversion = polars_options()$int64_conversion) {
 #' @return DataFrame
 #' @examples
 #' as_polars_series(iris$Species, name = "flower species")$value_counts()
-Series_value_counts = function(sort = TRUE, parallel = FALSE) {
-  unwrap(.pr$Series$value_counts(self, sort, parallel), "in $value_counts():")
+Series_value_counts = function(..., sort = TRUE, parallel = FALSE, name = "count") {
+  unwrap(.pr$Series$value_counts(self, sort, parallel, name), "in $value_counts():")
 }
 
 #' Apply every value with an R fun
