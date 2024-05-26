@@ -4,6 +4,21 @@
 
 ### Breaking changes
 
+- Updated rust-polars to 0.40.0 (#1104):
+  - `$join()` gains an argument `coalesce`.
+  - `$top_k()` and `$bottom_k()` gain three arguments `nulls_last`,
+    `maintain_order` and `multithreaded`.
+  - All `$rolling_*()` functions lose the arguments `by`, `closed` and
+    `warn_if_unsorted`. Rolling computations based on `by` must be made via the
+    corresponding `rolling_*_by()`, e.g `rolling_mean_by()` instead of
+    `rolling_mean(by =)`.
+  - `pl$scan_parquet()` and `pl$read_parquet()` gain an argument `glob` which
+    defaults to `TRUE`. Set it to `FALSE` to avoid considering `*` as a globing
+    pattern.
+  - `pl$read_ipc()` loses the argument `memory_map`.
+  - `$is_not_nan()` on a `null` value (`NA` in R) now returns `null`. Previously,
+    it returned `TRUE`.
+
 - As warned in v0.16.0, the order of arguments in `pl$Series` is changed (#1071).
   The first argument is now `name`, and the second argument is `values`.
 - `$to_struct()` on an Expr is removed. This method is now only available for
