@@ -1104,6 +1104,8 @@ RPolarsExpr$struct_field_by_name <- function(name) .Call(wrap__RPolarsExpr__stru
 
 RPolarsExpr$struct_rename_fields <- function(names) .Call(wrap__RPolarsExpr__struct_rename_fields, self, names)
 
+RPolarsExpr$struct_with_fields <- function(fields) .Call(wrap__RPolarsExpr__struct_with_fields, self, fields)
+
 RPolarsExpr$meta_pop <- function() .Call(wrap__RPolarsExpr__meta_pop, self)
 
 RPolarsExpr$meta_eq <- function(other) .Call(wrap__RPolarsExpr__meta_eq, self, other)
