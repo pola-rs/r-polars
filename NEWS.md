@@ -15,7 +15,6 @@
   - `pl$scan_parquet()` and `pl$read_parquet()` gain an argument `glob` which
     defaults to `TRUE`. Set it to `FALSE` to avoid considering `*` as a globing
     pattern.
-  - `pl$read_ipc()` loses the argument `memory_map`.
   - `$is_not_nan()` on a `null` value (`NA` in R) now returns `null`. Previously,
     it returned `TRUE`.
 

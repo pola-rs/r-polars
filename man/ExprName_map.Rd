@@ -16,7 +16,7 @@ Expr
 Rename the output of an expression by mapping a function over the root name.
 }
 \examples{
-\dontshow{if (Sys.info()["sysname"] == "Windows") (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (FALSE) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 df = pl$DataFrame(var1 = 1:3, var2 = "a")
 
 df$select(
