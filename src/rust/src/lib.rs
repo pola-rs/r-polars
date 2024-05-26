@@ -1,13 +1,13 @@
-#[cfg(all(target_os = "linux", not(allocator = "mimalloc")))]
+#[cfg(all(target_family = "unix", not(allocator = "mimalloc")))]
 use jemallocator::Jemalloc;
-#[cfg(any(not(target_os = "linux"), allocator = "mimalloc"))]
+#[cfg(any(not(target_family = "unix"), allocator = "mimalloc"))]
 use mimalloc::MiMalloc;
 #[global_allocator]
-#[cfg(all(target_os = "linux", not(allocator = "mimalloc")))]
+#[cfg(all(target_family = "unix", not(allocator = "mimalloc")))]
 static ALLOC: Jemalloc = Jemalloc;
 
 #[global_allocator]
-#[cfg(any(not(target_os = "linux"), allocator = "mimalloc"))]
+#[cfg(any(not(target_family = "unix"), allocator = "mimalloc"))]
 static ALLOC: MiMalloc = MiMalloc;
 pub mod concurrent;
 pub mod lazy;

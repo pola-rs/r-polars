@@ -18,13 +18,11 @@ nightly = ["polars/nightly"]
 
 rpolars_debug_print = []
 
-[workspace]
-# prevents package from thinking it's in the workspace
-[target.'cfg(any(not(target_os = "linux"), allocator = "mimalloc"))'.dependencies]
-mimalloc = { version = "0.1.42", default-features = false }
+[target.'cfg(all(any(not(target_family = "unix"), allocator = "mimalloc")))'.dependencies]
+mimalloc = { version = "0.1", default-features = false }
 
-[target.'cfg(all(target_os = "linux", not(allocator = "mimalloc")))'.dependencies]
-jemallocator = { version = "0.5.0", features = ["disable_initial_exec_tls"] }
+[target.'cfg(all(target_family = "unix", not(allocator = "mimalloc")))'.dependencies]
+jemallocator = { version = "0.5", features = ["disable_initial_exec_tls"] }
 
 [profile.release-optimized]
 inherits = "release"
