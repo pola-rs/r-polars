@@ -666,7 +666,7 @@ RPolarsExpr$arccosh <- function() .Call(wrap__RPolarsExpr__arccosh, self)
 
 RPolarsExpr$arctanh <- function() .Call(wrap__RPolarsExpr__arctanh, self)
 
-RPolarsExpr$reshape <- function(dims) .Call(wrap__RPolarsExpr__reshape, self, dims)
+RPolarsExpr$reshape <- function(dimensions, is_list) .Call(wrap__RPolarsExpr__reshape, self, dimensions, is_list)
 
 RPolarsExpr$shuffle <- function(seed) .Call(wrap__RPolarsExpr__shuffle, self, seed)
 
@@ -684,7 +684,7 @@ RPolarsExpr$extend_constant <- function(value, n) .Call(wrap__RPolarsExpr__exten
 
 RPolarsExpr$rep <- function(n, rechunk) .Call(wrap__RPolarsExpr__rep, self, n, rechunk)
 
-RPolarsExpr$value_counts <- function(sort, parallel) .Call(wrap__RPolarsExpr__value_counts, self, sort, parallel)
+RPolarsExpr$value_counts <- function(sort, parallel, name) .Call(wrap__RPolarsExpr__value_counts, self, sort, parallel, name)
 
 RPolarsExpr$unique_counts <- function() .Call(wrap__RPolarsExpr__unique_counts, self)
 
@@ -1310,7 +1310,7 @@ RPolarsSeries$name <- function() .Call(wrap__RPolarsSeries__name, self)
 
 RPolarsSeries$sort <- function(descending, nulls_last, multithreaded) .Call(wrap__RPolarsSeries__sort, self, descending, nulls_last, multithreaded)
 
-RPolarsSeries$value_counts <- function(sort, parallel) .Call(wrap__RPolarsSeries__value_counts, self, sort, parallel)
+RPolarsSeries$value_counts <- function(sort, parallel, name) .Call(wrap__RPolarsSeries__value_counts, self, sort, parallel, name)
 
 RPolarsSeries$arg_min <- function() .Call(wrap__RPolarsSeries__arg_min, self)
 
