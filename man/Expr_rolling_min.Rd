@@ -8,10 +8,7 @@ Expr_rolling_min(
   window_size,
   weights = NULL,
   min_periods = NULL,
-  center = FALSE,
-  by = NULL,
-  closed = NULL,
-  warn_if_unsorted = TRUE
+  center = FALSE
 )
 }
 \arguments{
