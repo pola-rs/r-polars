@@ -4,18 +4,22 @@
 \alias{Expr_reshape}
 \title{Reshape this Expr to a flat Series or a Series of Lists}
 \usage{
-Expr_reshape(dimensions)
+Expr_reshape(dimensions, nested_type = pl$List())
 }
 \arguments{
 \item{dimensions}{A integer vector of length of the dimension size.
 If \code{-1} is used in any of the dimensions, that dimension is inferred.
 Currently, more than two dimensions not supported.}
+
+\item{nested_dtype}{The nested data type to create. \link[=pl_List]{List} only
+supports 2 dimensions, whereas \link[=pl_Array]{Array} supports an arbitrary
+number of dimensions.}
 }
 \value{
 \link[=Expr_class]{Expr}.
-If a single dimension is given, results in an expression of the original data type.
-If a multiple dimensions are given, results in an expression of \link[=DataType_List]{data type List}
-with shape equal to the dimensions.
+If a single dimension is given, results in an expression of the original data
+type. If a multiple dimensions are given, results in an expression of data
+type List with shape equal to the dimensions.
 }
 \description{
 Reshape this Expr to a flat Series or a Series of Lists
@@ -29,4 +33,10 @@ df$select(pl$col("foo")$reshape(c(3, 3)))
 # Use `-1` to infer the other dimension
 df$select(pl$col("foo")$reshape(c(-1, 3)))
 df$select(pl$col("foo")$reshape(c(3, -1)))
+
+# One can specify more than 2 dimensions by using the Array type
+df = pl$DataFrame(foo = 1:12)
+df$select(
+  pl$col("foo")$reshape(c(3, 2, 2), nested_type = pl$Array(pl$Float32, 2))
+)
 }

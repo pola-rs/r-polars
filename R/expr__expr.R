@@ -2807,10 +2807,13 @@ Expr_arctanh = use_extendr_wrapper
 #' @param dimensions A integer vector of length of the dimension size.
 #' If `-1` is used in any of the dimensions, that dimension is inferred.
 #' Currently, more than two dimensions not supported.
+#' @param nested_dtype The nested data type to create. [List][pl_List] only
+#' supports 2 dimensions, whereas [Array][pl_Array] supports an arbitrary
+#' number of dimensions.
 #' @return [Expr][Expr_class].
-#' If a single dimension is given, results in an expression of the original data type.
-#' If a multiple dimensions are given, results in an expression of [data type List][DataType_List]
-#' with shape equal to the dimensions.
+#' If a single dimension is given, results in an expression of the original data
+#' type. If a multiple dimensions are given, results in an expression of data
+#' type List with shape equal to the dimensions.
 #' @examples
 #' df = pl$DataFrame(foo = 1:9)
 #'
@@ -2820,8 +2823,15 @@ Expr_arctanh = use_extendr_wrapper
 #' # Use `-1` to infer the other dimension
 #' df$select(pl$col("foo")$reshape(c(-1, 3)))
 #' df$select(pl$col("foo")$reshape(c(3, -1)))
-Expr_reshape = function(dimensions) {
-  .pr$Expr$reshape(self, dimensions) |>
+#'
+#' # One can specify more than 2 dimensions by using the Array type
+#' df = pl$DataFrame(foo = 1:12)
+#' df$select(
+#'   pl$col("foo")$reshape(c(3, 2, 2), nested_type = pl$Array(pl$Float32, 2))
+#' )
+Expr_reshape = function(dimensions, nested_type = pl$List()) {
+  is_list = nested_type$is_list()
+  .pr$Expr$reshape(self, dimensions, is_list) |>
     unwrap("in $reshape():")
 }
 
@@ -3057,16 +3067,20 @@ Expr_to_r = function(df = NULL, i = 0, ..., int64_conversion = polars_options()$
 #' @description
 #' Count all unique values and create a struct mapping value to count.
 #' @return Expr
+#' @param ... Ignored.
 #' @param sort Ensure the output is sorted from most values to least.
 #' @param parallel Better to turn this off in the aggregation context, as it can
 #' lead to contention.
+#' @param name Give the resulting count field a specific name, defaults to
+#' `"count"`.
 #' @format NULL
 #' @examples
 #' df = pl$DataFrame(iris)$select(pl$col("Species")$value_counts())
 #' df
-#' df$unnest()$to_data_frame() # recommended to unnest structs before converting to R
-Expr_value_counts = function(sort = FALSE, parallel = FALSE) {
-  .pr$Expr$value_counts(self, sort, parallel)
+#'
+#' df$unnest()$to_data_frame()
+Expr_value_counts = function(..., sort = FALSE, parallel = FALSE, name = "count") {
+  .pr$Expr$value_counts(self, sort, parallel, name)
 }
 
 #' Count unique values

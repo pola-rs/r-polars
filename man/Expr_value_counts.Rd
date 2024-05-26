@@ -4,13 +4,18 @@
 \alias{Expr_value_counts}
 \title{Value counts}
 \usage{
-Expr_value_counts(sort = FALSE, parallel = FALSE)
+Expr_value_counts(..., sort = FALSE, parallel = FALSE, name = "count")
 }
 \arguments{
+\item{...}{Ignored.}
+
 \item{sort}{Ensure the output is sorted from most values to least.}
 
 \item{parallel}{Better to turn this off in the aggregation context, as it can
 lead to contention.}
+
+\item{name}{Give the resulting count field a specific name, defaults to
+\code{"count"}.}
 }
 \value{
 Expr
@@ -21,5 +26,6 @@ Count all unique values and create a struct mapping value to count.
 \examples{
 df = pl$DataFrame(iris)$select(pl$col("Species")$value_counts())
 df
-df$unnest()$to_data_frame() # recommended to unnest structs before converting to R
+
+df$unnest()$to_data_frame()
 }
