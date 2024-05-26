@@ -62,7 +62,7 @@ arrow_to_rpldf = function(
   }
 
   if (rechunk) {
-    rdf = rdf$select(pl$all()$rechunk())
+    rdf = rdf$rechunk()
   }
 
   if (length(special_cols)) {
