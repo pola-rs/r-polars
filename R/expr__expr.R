@@ -2807,8 +2807,8 @@ Expr_arctanh = use_extendr_wrapper
 #' @param dimensions A integer vector of length of the dimension size.
 #' If `-1` is used in any of the dimensions, that dimension is inferred.
 #' Currently, more than two dimensions not supported.
-#' @param nested_dtype The nested data type to create. [List][pl_List] only
-#' supports 2 dimensions, whereas [Array][pl_Array] supports an arbitrary
+#' @param nested_type The nested data type to create. [List][DataType_List] only
+#' supports 2 dimensions, whereas [Array][DataType_Array] supports an arbitrary
 #' number of dimensions.
 #' @return [Expr][Expr_class].
 #' If a single dimension is given, results in an expression of the original data

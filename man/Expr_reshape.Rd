@@ -11,8 +11,8 @@ Expr_reshape(dimensions, nested_type = pl$List())
 If \code{-1} is used in any of the dimensions, that dimension is inferred.
 Currently, more than two dimensions not supported.}
 
-\item{nested_dtype}{The nested data type to create. \link[=pl_List]{List} only
-supports 2 dimensions, whereas \link[=pl_Array]{Array} supports an arbitrary
+\item{nested_type}{The nested data type to create. \link[=DataType_List]{List} only
+supports 2 dimensions, whereas \link[=DataType_Array]{Array} supports an arbitrary
 number of dimensions.}
 }
 \value{
