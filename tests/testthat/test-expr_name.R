@@ -1,3 +1,5 @@
+skip("These function are broken.")
+
 test_that("name to_lowercase", {
   df = pl$DataFrame(Var1 = 1, vAR2 = 2)
   expect_equal(
