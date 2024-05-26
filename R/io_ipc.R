@@ -101,8 +101,7 @@ pl_read_ipc = function(
       source,
       n_rows,
       row_index_name,
-      row_index_offset,
-      memory_map
+      row_index_offset
     ) |>
       uw()
   } else {
