@@ -56,7 +56,7 @@ ExprName_keep = function() {
 #' @param fun an R function which takes a string as input and return a string
 #' @return Expr
 #'
-#' @examplesIf Sys.info()["sysname"] == "Windows"
+#' @examplesIf FALSE
 #' df = pl$DataFrame(var1 = 1:3, var2 = "a")
 #'
 #' df$select(
