@@ -2304,14 +2304,6 @@ prepare_rolling_window_args = function(
 #' @param min_periods The number of values in the window that should be non-null
 #' before computing a result. If `NULL`, it will be set equal to window size.
 #' @param center Set the labels at the center of the window
-#' @param by If the `window_size` is temporal for instance `"5h"` or `"3s"`, you
-#' must set the column that will be used to determine the windows. This column
-#' must be of DataType Date or DateTime.
-#' @param closed Defines whether the temporal window interval is closed or not.
-#' Only applicable if `by` is not `NULL` (in which case, its possible values are
-#' `"left"`, `"right"` (default), `"both"`, `"none"`).
-#' @param warn_if_unsorted Warn if data is not known to be sorted by `by` column
-#' (if passed).
 #'
 #' @details
 #' If you want to compute multiple aggregation statistics over the same dynamic
