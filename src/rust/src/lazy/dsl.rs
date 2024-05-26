@@ -17,7 +17,7 @@ use pl::PolarsError as pl_error;
 use pl::{Duration, IntoSeries, RollingGroupOptions, SetOperation, TemporalMethods};
 use polars::lazy::dsl;
 use polars::prelude as pl;
-use polars::prelude::{ExprEvalExtension, SortOptions};
+use polars::prelude::{ExprEvalExtension, NestedType, SortOptions};
 use std::ops::{Add, Div, Mul, Rem, Sub};
 use std::result::Result;
 pub type NameGenerator = pl::Arc<dyn Fn(usize) -> String + Send + Sync>;
@@ -935,9 +935,15 @@ impl RPolarsExpr {
         self.clone().0.arctanh().into()
     }
 
-    pub fn reshape(&self, dims: Robj) -> RResult<Self> {
-        let dims = robj_to!(Vec, i64, dims)?;
-        Ok(self.0.clone().reshape(&dims).into())
+    pub fn reshape(&self, dimensions: Robj, is_list: Robj) -> RResult<Self> {
+        let dimensions = robj_to!(Vec, i64, dimensions)?;
+        let is_list = robj_to!(bool, is_list)?;
+        let nested = if is_list {
+            NestedType::List
+        } else {
+            NestedType::Array
+        };
+        Ok(self.0.clone().reshape(&dimensions, nested).into())
     }
 
     pub fn shuffle(&self, seed: Robj) -> RResult<Self> {
@@ -1044,8 +1050,8 @@ impl RPolarsExpr {
         }
     }
 
-    pub fn value_counts(&self, sort: bool, parallel: bool) -> Self {
-        self.0.clone().value_counts(sort, parallel).into()
+    pub fn value_counts(&self, sort: bool, parallel: bool, name: String) -> Self {
+        self.0.clone().value_counts(sort, parallel, name).into()
     }
 
     pub fn unique_counts(&self) -> Self {

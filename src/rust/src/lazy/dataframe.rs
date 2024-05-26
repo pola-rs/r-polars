@@ -577,6 +577,7 @@ impl RPolarsLazyFrame {
         let pl::OptState {
             projection_pushdown,
             predicate_pushdown,
+            cluster_with_columns,
             type_coercion,
             simplify_expr,
             slice_pushdown,
@@ -592,6 +593,7 @@ impl RPolarsLazyFrame {
             type_coercion = type_coercion,
             predicate_pushdown = predicate_pushdown,
             projection_pushdown = projection_pushdown,
+            cluster_with_columns = cluster_with_columns,
             simplify_expression = simplify_expr,
             slice_pushdown = slice_pushdown,
             comm_subplan_elim = comm_subplan_elim,

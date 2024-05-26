@@ -1070,10 +1070,7 @@ DataFrame_to_list = function(unnest_structs = TRUE, ..., int64_conversion = pola
 DataFrame_join = function(
     other,
     on = NULL,
-    how = c(
-      "inner", "left", "outer", "semi", "anti", "cross",
-      "outer_coalesce"
-    ),
+    how = c("inner", "left", "full", "semi", "anti", "cross"),
     ...,
     left_on = NULL,
     right_on = NULL,

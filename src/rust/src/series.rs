@@ -165,9 +165,10 @@ impl RPolarsSeries {
         &self,
         sort: bool,
         parallel: bool,
+        name: String,
     ) -> std::result::Result<RPolarsDataFrame, String> {
         self.0
-            .value_counts(sort, parallel)
+            .value_counts(sort, parallel, name)
             .map(RPolarsDataFrame)
             .map_err(|err| format!("in value_counts: {:?}", err))
     }

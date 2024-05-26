@@ -450,6 +450,8 @@ LazyFrame_get_optimization_toggle = function() {
 #'  occur on self-joins or unions.
 #' @param comm_subexpr_elim Logical. Common subexpressions will be cached and
 #' reused.
+#' @param cluster_with_columns Combine sequential independent calls to
+#' [`with_columns()`][DataFrame_with_columns].
 #' @param streaming Logical. Run parts of the query in a streaming fashion
 #' (this is in an alpha state).
 #' @param eager Logical. Run the query eagerly.
@@ -464,6 +466,7 @@ LazyFrame_set_optimization_toggle = function(
     slice_pushdown = TRUE,
     comm_subplan_elim = TRUE,
     comm_subexpr_elim = TRUE,
+    cluster_with_columns = TRUE,
     streaming = FALSE,
     eager = FALSE) {
   self |>
@@ -519,6 +522,7 @@ LazyFrame_collect = function(
     slice_pushdown = TRUE,
     comm_subplan_elim = TRUE,
     comm_subexpr_elim = TRUE,
+    cluster_with_columns = TRUE,
     streaming = FALSE,
     no_optimization = FALSE,
     inherit_optimization = FALSE,
@@ -1252,8 +1256,8 @@ LazyFrame_group_by = function(..., maintain_order = polars_options()$maintain_or
 #' @param on Either a vector of column names or a list of expressions and/or
 #'   strings. Use `left_on` and `right_on` if the column names to match on are
 #'   different between the two DataFrames.
-#' @param how One of the following methods: "inner", "left", "outer", "semi",
-#'   "anti", "cross", "outer_coalesce".
+#' @param how One of the following methods: "inner", "left", "full", "semi",
+#'   "anti", "cross".
 #' @param ... Ignored.
 #' @param left_on,right_on Same as `on` but only for the left or the right
 #'   DataFrame. They must have the same length.
@@ -1304,7 +1308,7 @@ LazyFrame_group_by = function(..., maintain_order = polars_options()$maintain_or
 LazyFrame_join = function(
     other,
     on = NULL,
-    how = c("inner", "left", "outer", "semi", "anti", "cross", "outer_coalesce"),
+    how = c("inner", "left", "full", "semi", "anti", "cross"),
     ...,
     left_on = NULL,
     right_on = NULL,
@@ -1590,6 +1594,7 @@ LazyFrame_fetch = function(
     slice_pushdown = TRUE,
     comm_subplan_elim = TRUE,
     comm_subexpr_elim = TRUE,
+    cluster_with_columns = TRUE,
     streaming = FALSE,
     no_optimization = FALSE,
     inherit_optimization = FALSE) {
@@ -1683,6 +1688,7 @@ LazyFrame_profile = function(
     slice_pushdown = TRUE,
     comm_subplan_elim = TRUE,
     comm_subexpr_elim = TRUE,
+    cluster_with_columns = TRUE,
     streaming = FALSE,
     no_optimization = FALSE,
     inherit_optimization = FALSE,
@@ -2072,6 +2078,7 @@ LazyFrame_to_dot = function(
     slice_pushdown = TRUE,
     comm_subplan_elim = TRUE,
     comm_subexpr_elim = TRUE,
+    cluster_with_columns = TRUE,
     streaming = FALSE) {
   lf = self$set_optimization_toggle(
     type_coercion,
