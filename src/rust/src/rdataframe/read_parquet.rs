@@ -22,12 +22,16 @@ pub fn new_from_parquet(
     use_statistics: Robj,
     low_memory: Robj,
     hive_partitioning: Robj,
+    glob: Robj,
     //retries: Robj // not supported yet, with CloudOptions
 ) -> RResult<RPolarsLazyFrame> {
     let path = robj_to!(String, path)?;
     let cloud_options = robj_to_cloud_options(&path, &storage_options)?;
     let offset = robj_to!(Option, u32, row_index)?.unwrap_or(0);
-    let opt_row_index = robj_to!(Option, String, row_name)?.map(|name| RowIndex { name, offset });
+    let opt_row_index = robj_to!(Option, String, row_name)?.map(|name| RowIndex {
+        name: name.into(),
+        offset,
+    });
     let args = pl::ScanArgsParquet {
         n_rows: robj_to!(Option, usize, n_rows)?,
         cache: robj_to!(bool, cache)?,
@@ -41,6 +45,7 @@ pub fn new_from_parquet(
             enabled: robj_to!(bool, hive_partitioning)?,
             schema: None, // TODO: implement a option to set this
         },
+        glob: robj_to!(bool, glob)?,
     };
 
     pl::LazyFrame::scan_parquet(path, args)

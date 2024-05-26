@@ -8,10 +8,7 @@ Expr_rolling_sum(
   window_size,
   weights = NULL,
   min_periods = NULL,
-  center = FALSE,
-  by = NULL,
-  closed = NULL,
-  warn_if_unsorted = TRUE
+  center = FALSE
 )
 }
 \arguments{
@@ -40,17 +37,6 @@ be multiplied elementwise with the values in the window.}
 before computing a result. If \code{NULL}, it will be set equal to window size.}
 
 \item{center}{Set the labels at the center of the window}
-
-\item{by}{If the \code{window_size} is temporal for instance \code{"5h"} or \code{"3s"}, you
-must set the column that will be used to determine the windows. This column
-must be of DataType Date or DateTime.}
-
-\item{closed}{Defines whether the temporal window interval is closed or not.
-Only applicable if \code{by} is not \code{NULL} (in which case, its possible values are
-\code{"left"}, \code{"right"} (default), \code{"both"}, \code{"none"}).}
-
-\item{warn_if_unsorted}{Warn if data is not known to be sorted by \code{by} column
-(if passed).}
 }
 \value{
 Expr

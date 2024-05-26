@@ -15,7 +15,8 @@ DataFrame_join(
   validate = "m:m",
   join_nulls = FALSE,
   allow_parallel = TRUE,
-  force_parallel = FALSE
+  force_parallel = FALSE,
+  coalesce = NULL
 )
 }
 \arguments{
@@ -55,6 +56,13 @@ computation of both DataFrames up to the join in parallel.}
 
 \item{force_parallel}{Force the physical plan to evaluate the computation of
 both DataFrames up to the join in parallel.}
+
+\item{coalesce}{Coalescing behavior (merging of join columns).
+\itemize{
+\item \code{NULL}: join specific.
+\item \code{TRUE}: Always coalesce join columns.
+\item \code{FALSE}: Never coalesce join columns.
+}}
 }
 \value{
 DataFrame

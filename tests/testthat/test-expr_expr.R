@@ -648,10 +648,10 @@ test_that("finite infinite is_nan is_not_nan", {
       pl$col("a")$is_not_nan()$alias("is_not_nan")
     )$to_list(),
     list(
-      is_finite   = c(T, F, NA, F, F),
-      is_infinite = c(F, F, NA, T, T),
-      is_nan      = c(F, T, NA, F, F),
-      is_not_nan  = c(T, F, T, T, T)
+      is_finite   = c(TRUE, FALSE, NA, FALSE, FALSE),
+      is_infinite = c(FALSE, FALSE, NA, TRUE, TRUE),
+      is_nan      = c(FALSE, TRUE, NA, FALSE, FALSE),
+      is_not_nan  = c(TRUE, FALSE, NA, TRUE, TRUE)
     )
   )
 })

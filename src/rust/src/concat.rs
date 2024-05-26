@@ -22,6 +22,7 @@ fn concat_lf(
             parallel,
             rechunk,
             to_supertypes,
+            ..Default::default()
         },
     )
     .map_err(polars_to_rpolars_err)
@@ -42,6 +43,7 @@ fn concat_lf_diagonal(
             rechunk,
             parallel,
             to_supertypes,
+            ..Default::default()
         },
     )
     .map_err(polars_to_rpolars_err)

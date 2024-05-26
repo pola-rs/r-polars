@@ -113,14 +113,13 @@ pub fn deserialize_dataframe(
     bits: &[u8],
     n_rows: Option<usize>,
     row_index: Option<polars::io::RowIndex>,
-    memory_map: bool,
 ) -> RResult<polars::prelude::DataFrame> {
     use polars::io::SerReader;
 
     polars::io::ipc::IpcReader::new(std::io::Cursor::new(bits))
         .with_n_rows(n_rows)
         .with_row_index(row_index)
-        .memory_mapped(memory_map)
+        .memory_mapped(None)
         .finish()
         .map_err(polars_to_rpolars_err)
 }
@@ -131,7 +130,7 @@ pub fn serialize_series(series: pl::Series) -> RResult<Vec<u8>> {
 
 pub fn deserialize_series(bits: &[u8]) -> RResult<pl::Series> {
     let tn = std::any::type_name::<pl::Series>();
-    deserialize_dataframe(bits, None, None, true)?
+    deserialize_dataframe(bits, None, None)?
         .get_columns()
         .split_first()
         .ok_or(RPolarsErr::new())

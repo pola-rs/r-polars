@@ -16,7 +16,7 @@ use polars::chunked_array::ops::SortMultipleOptions;
 use polars::frame::explode::MeltArgs;
 use polars::prelude as pl;
 
-use polars::io::csv::SerializeOptions;
+use polars::prelude::{JoinCoalesce, SerializeOptions};
 use polars_lazy::prelude::CsvWriterOptions;
 
 #[allow(unused_imports)]
@@ -39,13 +39,16 @@ impl From<pl::LazyFrame> for RPolarsLazyFrame {
 
 #[extendr]
 impl RPolarsLazyFrame {
-    fn print(&self) -> Self {
-        rprintln!("{}", self.0.describe_plan());
-        self.clone()
+    fn print(&self) -> RResult<Self> {
+        let plan = self.0.describe_plan().map_err(polars_to_rpolars_err)?;
+        rprintln!("{}", plan);
+        Ok(self.0.clone().into())
     }
 
-    pub fn describe_plan(&self) {
-        rprintln!("{}", self.0.describe_plan());
+    pub fn describe_plan(&self) -> RResult<()> {
+        let plan = self.0.describe_plan().map_err(polars_to_rpolars_err)?;
+        rprintln!("{}", plan);
+        Ok(())
     }
 
     //low level version of describe_plan, mainly for arg testing
@@ -87,7 +90,7 @@ impl RPolarsLazyFrame {
 
     fn deserialize(json: Robj) -> RResult<Self> {
         let json = robj_to!(str, json)?;
-        let lp = serde_json::from_str::<pl::LogicalPlan>(json)
+        let lp = serde_json::from_str::<pl::DslPlan>(json)
             .map_err(|err| RPolarsErr::new().plain(format!("{err:?}")))?;
         Ok(RPolarsLazyFrame(pl::LazyFrame::from(lp)))
     }
@@ -203,60 +206,44 @@ impl RPolarsLazyFrame {
         self.0.clone().last().into()
     }
 
-    fn max(&self) -> RResult<Self> {
-        let ldf = self.0.clone();
-        let out = ldf.max().map_err(polars_to_rpolars_err)?;
-        Ok(out.into())
+    fn max(&self) -> Self {
+        self.0.clone().max().into()
     }
 
-    fn min(&self) -> RResult<Self> {
-        let ldf = self.0.clone();
-        let out = ldf.min().map_err(polars_to_rpolars_err)?;
-        Ok(out.into())
+    fn min(&self) -> Self {
+        self.0.clone().min().into()
     }
 
-    fn mean(&self) -> RResult<Self> {
-        let ldf = self.0.clone();
-        let out = ldf.mean().map_err(polars_to_rpolars_err)?;
-        Ok(out.into())
+    fn mean(&self) -> Self {
+        self.0.clone().mean().into()
     }
 
-    fn median(&self) -> RResult<Self> {
-        let ldf = self.0.clone();
-        let out = ldf.median().map_err(polars_to_rpolars_err)?;
-        Ok(out.into())
+    fn median(&self) -> Self {
+        self.0.clone().median().into()
     }
 
-    fn sum(&self) -> RResult<Self> {
-        let ldf = self.0.clone();
-        let out = ldf.sum().map_err(polars_to_rpolars_err)?;
-        Ok(out.into())
+    fn sum(&self) -> Self {
+        self.0.clone().sum().into()
     }
 
     fn std(&self, ddof: Robj) -> RResult<Self> {
         let ldf = self.0.clone();
-        let out = ldf
-            .std(robj_to!(u8, ddof)?)
-            .map_err(polars_to_rpolars_err)?;
+        let out = ldf.std(robj_to!(u8, ddof)?);
         Ok(out.into())
     }
 
     fn var(&self, ddof: Robj) -> RResult<Self> {
         let ldf = self.0.clone();
-        let out = ldf
-            .var(robj_to!(u8, ddof)?)
-            .map_err(polars_to_rpolars_err)?;
+        let out = ldf.var(robj_to!(u8, ddof)?);
         Ok(out.into())
     }
 
     fn quantile(&self, quantile: Robj, interpolation: Robj) -> RResult<Self> {
         let ldf = self.0.clone();
-        let out = ldf
-            .quantile(
-                robj_to!(PLExpr, quantile)?,
-                robj_to!(quantile_interpolation_option, interpolation)?,
-            )
-            .map_err(polars_to_rpolars_err)?;
+        let out = ldf.quantile(
+            robj_to!(PLExpr, quantile)?,
+            robj_to!(quantile_interpolation_option, interpolation)?,
+        );
         Ok(out.into())
     }
 
@@ -450,7 +437,13 @@ impl RPolarsLazyFrame {
         suffix: Robj,
         allow_parallel: Robj,
         force_parallel: Robj,
+        coalesce: Robj,
     ) -> RResult<Self> {
+        let coalesce = match robj_to!(Option, bool, coalesce)? {
+            None => JoinCoalesce::JoinSpecific,
+            Some(true) => JoinCoalesce::CoalesceColumns,
+            Some(false) => JoinCoalesce::KeepColumns,
+        };
         Ok(RPolarsLazyFrame(
             self.0
                 .clone()
@@ -461,6 +454,7 @@ impl RPolarsLazyFrame {
                 .allow_parallel(robj_to!(bool, allow_parallel)?)
                 .force_parallel(robj_to!(bool, force_parallel)?)
                 .how(robj_to!(JoinType, how)?)
+                .coalesce(coalesce)
                 .suffix(robj_to!(str, suffix)?)
                 .join_nulls(robj_to!(bool, join_nulls)?)
                 .validate(robj_to!(JoinValidation, validate)?)

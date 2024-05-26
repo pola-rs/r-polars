@@ -12,6 +12,7 @@
 #' the final DataFrame into contiguous memory chunks.
 #' @param hive_partitioning Infer statistics and schema from hive partitioned URL
 #' and use them to prune reads.
+#' @param glob Expand path given via globbing rules.
 #' @param use_statistics Use statistics in the parquet file to determine if pages
 #' can be skipped from reading.
 #' @param storage_options Experimental. List of options necessary to scan
@@ -65,6 +66,7 @@ pl_scan_parquet = function(
       "none"
     ),
     hive_partitioning = TRUE,
+    glob = TRUE,
     rechunk = FALSE,
     low_memory = FALSE,
     storage_options = NULL,
@@ -81,7 +83,8 @@ pl_scan_parquet = function(
     low_memory = low_memory,
     use_statistics = use_statistics,
     hive_partitioning = hive_partitioning,
-    storage_options = storage_options
+    storage_options = storage_options,
+    glob = glob
   ) |>
     unwrap("in pl$scan_parquet():")
 }
@@ -119,6 +122,7 @@ pl_read_parquet = function(
       "none"
     ),
     hive_partitioning = TRUE,
+    glob = TRUE,
     rechunk = TRUE,
     low_memory = FALSE,
     storage_options = NULL,

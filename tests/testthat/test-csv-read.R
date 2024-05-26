@@ -166,7 +166,7 @@ test_that("multiple files errors if different schema", {
 
   expect_grepl_error(
     pl$read_csv(c(tmpf1, tmpf2)),
-    "lengths don't match"
+    "schema lengths differ"
   )
 })
 

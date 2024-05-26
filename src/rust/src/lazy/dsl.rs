@@ -261,12 +261,50 @@ impl RPolarsExpr {
             .into()
     }
 
-    pub fn top_k(&self, k: Robj) -> RResult<Self> {
-        Ok(self.0.clone().top_k(robj_to!(PLExpr, k)?).into())
+    pub fn top_k(
+        &self,
+        k: Robj,
+        nulls_last: Robj,
+        maintain_order: Robj,
+        multithreaded: Robj,
+    ) -> RResult<Self> {
+        let nulls_last = robj_to!(bool, nulls_last)?;
+        let multithreaded = robj_to!(bool, multithreaded)?;
+        let maintain_order = robj_to!(bool, maintain_order)?;
+        Ok(self
+            .0
+            .clone()
+            .top_k(
+                robj_to!(PLExpr, k)?,
+                SortOptions::default()
+                    .with_nulls_last(nulls_last)
+                    .with_maintain_order(maintain_order)
+                    .with_multithreaded(multithreaded),
+            )
+            .into())
     }
 
-    pub fn bottom_k(&self, k: Robj) -> RResult<Self> {
-        Ok(self.0.clone().bottom_k(robj_to!(PLExpr, k)?).into())
+    pub fn bottom_k(
+        &self,
+        k: Robj,
+        nulls_last: Robj,
+        maintain_order: Robj,
+        multithreaded: Robj,
+    ) -> RResult<Self> {
+        let nulls_last = robj_to!(bool, nulls_last)?;
+        let multithreaded = robj_to!(bool, multithreaded)?;
+        let maintain_order = robj_to!(bool, maintain_order)?;
+        Ok(self
+            .0
+            .clone()
+            .bottom_k(
+                robj_to!(PLExpr, k)?,
+                SortOptions::default()
+                    .with_nulls_last(nulls_last)
+                    .with_maintain_order(maintain_order)
+                    .with_multithreaded(multithreaded),
+            )
+            .into())
     }
 
     pub fn arg_max(&self) -> Self {
@@ -478,22 +516,32 @@ impl RPolarsExpr {
         weights: Robj,
         min_periods: Robj,
         center: Robj,
-        by_null: Robj,
-        closed_null: Robj,
-        warn_if_unsorted: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
             .clone()
-            .rolling_min(make_rolling_options(
+            .rolling_min(make_rolling_options_fixed_window(
                 window_size,
                 weights,
                 min_periods,
                 center,
-                by_null,
-                closed_null,
-                warn_if_unsorted,
             )?)
+            .into())
+    }
+    fn rolling_min_by(
+        &self,
+        by: Robj,
+        window_size: &str,
+        min_periods: Robj,
+        closed: Robj,
+    ) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .rolling_min_by(
+                robj_to!(PLExpr, by)?,
+                make_rolling_options_dynamic_window(window_size, min_periods, closed)?,
+            )
             .into())
     }
 
@@ -504,22 +552,33 @@ impl RPolarsExpr {
         weights: Robj,
         min_periods: Robj,
         center: Robj,
-        by_null: Robj,
-        closed_null: Robj,
-        warn_if_unsorted: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
             .clone()
-            .rolling_max(make_rolling_options(
+            .rolling_max(make_rolling_options_fixed_window(
                 window_size,
                 weights,
                 min_periods,
                 center,
-                by_null,
-                closed_null,
-                warn_if_unsorted,
             )?)
+            .into())
+    }
+
+    fn rolling_max_by(
+        &self,
+        by: Robj,
+        window_size: &str,
+        min_periods: Robj,
+        closed: Robj,
+    ) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .rolling_max_by(
+                robj_to!(PLExpr, by)?,
+                make_rolling_options_dynamic_window(window_size, min_periods, closed)?,
+            )
             .into())
     }
 
@@ -530,22 +589,33 @@ impl RPolarsExpr {
         weights: Robj,
         min_periods: Robj,
         center: Robj,
-        by_null: Robj,
-        closed_null: Robj,
-        warn_if_unsorted: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
             .clone()
-            .rolling_mean(make_rolling_options(
+            .rolling_mean(make_rolling_options_fixed_window(
                 window_size,
                 weights,
                 min_periods,
                 center,
-                by_null,
-                closed_null,
-                warn_if_unsorted,
             )?)
+            .into())
+    }
+
+    fn rolling_mean_by(
+        &self,
+        by: Robj,
+        window_size: &str,
+        min_periods: Robj,
+        closed: Robj,
+    ) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .rolling_mean_by(
+                robj_to!(PLExpr, by)?,
+                make_rolling_options_dynamic_window(window_size, min_periods, closed)?,
+            )
             .into())
     }
 
@@ -556,22 +626,33 @@ impl RPolarsExpr {
         weights: Robj,
         min_periods: Robj,
         center: Robj,
-        by_null: Robj,
-        closed_null: Robj,
-        warn_if_unsorted: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
             .clone()
-            .rolling_sum(make_rolling_options(
+            .rolling_sum(make_rolling_options_fixed_window(
                 window_size,
                 weights,
                 min_periods,
                 center,
-                by_null,
-                closed_null,
-                warn_if_unsorted,
             )?)
+            .into())
+    }
+
+    fn rolling_sum_by(
+        &self,
+        by: Robj,
+        window_size: &str,
+        min_periods: Robj,
+        closed: Robj,
+    ) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .rolling_sum_by(
+                robj_to!(PLExpr, by)?,
+                make_rolling_options_dynamic_window(window_size, min_periods, closed)?,
+            )
             .into())
     }
 
@@ -582,22 +663,35 @@ impl RPolarsExpr {
         weights: Robj,
         min_periods: Robj,
         center: Robj,
-        by_null: Robj,
-        closed_null: Robj,
-        warn_if_unsorted: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
             .clone()
-            .rolling_std(make_rolling_options(
+            .rolling_std(make_rolling_options_fixed_window(
                 window_size,
                 weights,
                 min_periods,
                 center,
-                by_null,
-                closed_null,
-                warn_if_unsorted,
             )?)
+            .into())
+    }
+
+    // TODO: in make_rolling_options_dynamic_window(), the fn_params
+    // arg is different for this one
+    fn rolling_std_by(
+        &self,
+        by: Robj,
+        window_size: &str,
+        min_periods: Robj,
+        closed: Robj,
+    ) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .rolling_std_by(
+                robj_to!(PLExpr, by)?,
+                make_rolling_options_dynamic_window(window_size, min_periods, closed)?,
+            )
             .into())
     }
 
@@ -608,24 +702,37 @@ impl RPolarsExpr {
         weights: Robj,
         min_periods: Robj,
         center: Robj,
-        by_null: Robj,
-        closed_null: Robj,
-        warn_if_unsorted: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
             .clone()
-            .rolling_var(make_rolling_options(
+            .rolling_var(make_rolling_options_fixed_window(
                 window_size,
                 weights,
                 min_periods,
                 center,
-                by_null,
-                closed_null,
-                warn_if_unsorted,
             )?)
             .into())
     }
+
+    // TODO: in make_rolling_options_dynamic_window(), the fn_params
+    // arg is different for this one
+    // fn rolling_var_by(
+    //     &self,
+    //     by: Robj,
+    //     window_size: &str,
+    //     min_periods: Robj,
+    //     closed: Robj,
+    // ) -> RResult<Self> {
+    //     Ok(self
+    //         .0
+    //         .clone()
+    //         .rolling_var_by(
+    //             robj_to!(PLExpr, by)?,
+    //             make_rolling_options_dynamic_window(window_size, min_periods, closed)?,
+    //         )
+    //         .into())
+    // }
 
     #[allow(clippy::too_many_arguments)]
     pub fn rolling_median(
@@ -634,22 +741,33 @@ impl RPolarsExpr {
         weights: Robj,
         min_periods: Robj,
         center: Robj,
-        by_null: Robj,
-        closed_null: Robj,
-        warn_if_unsorted: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
             .clone()
-            .rolling_median(make_rolling_options(
+            .rolling_median(make_rolling_options_fixed_window(
                 window_size,
                 weights,
                 min_periods,
                 center,
-                by_null,
-                closed_null,
-                warn_if_unsorted,
             )?)
+            .into())
+    }
+
+    fn rolling_median_by(
+        &self,
+        by: Robj,
+        window_size: &str,
+        min_periods: Robj,
+        closed: Robj,
+    ) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .rolling_median_by(
+                robj_to!(PLExpr, by)?,
+                make_rolling_options_dynamic_window(window_size, min_periods, closed)?,
+            )
             .into())
     }
 
@@ -662,18 +780,12 @@ impl RPolarsExpr {
         weights: Robj,
         min_periods: Robj,
         center: Robj,
-        by: Robj,
-        closed: Robj,
-        warn_if_unsorted: Robj,
     ) -> RResult<Self> {
-        let options = pl::RollingOptions {
-            window_size: pl::Duration::parse(robj_to!(str, window_size)?),
+        let options = pl::RollingOptionsFixedWindow {
+            window_size: robj_to!(usize, window_size)?,
             weights: robj_to!(Option, Vec, f64, weights)?,
             min_periods: robj_to!(usize, min_periods)?,
             center: robj_to!(bool, center)?,
-            by: robj_to!(Option, String, by)?,
-            closed_window: robj_to!(Option, ClosedWindow, closed)?,
-            warn_if_unsorted: robj_to!(bool, warn_if_unsorted)?,
             fn_params: None,
         };
         let quantile = robj_to!(f64, quantile)?;
@@ -685,6 +797,24 @@ impl RPolarsExpr {
             .rolling_quantile(interpolation, quantile, options)
             .into())
     }
+
+    // TODO: this takes args for interpolation
+    // fn rolling_quantile_by(
+    //     &self,
+    //     by: Robj,
+    //     window_size: &str,
+    //     min_periods: Robj,
+    //     closed: Robj,
+    // ) -> RResult<Self> {
+    //     Ok(self
+    //         .0
+    //         .clone()
+    //         .rolling_quantile_by(
+    //             robj_to!(PLExpr, by)?,
+    //             make_rolling_options_dynamic_window(window_size, min_periods, closed)?,
+    //         )
+    //         .into())
+    // }
 
     pub fn rolling_skew(&self, window_size: f64, bias: bool) -> RResult<RPolarsExpr> {
         Ok(self
@@ -1302,8 +1432,13 @@ impl RPolarsExpr {
             .into())
     }
 
-    pub fn dt_round(&self, every: &str, offset: &str) -> RResult<Self> {
-        Ok(self.0.clone().dt().round(every, offset).into())
+    pub fn dt_round(&self, every: Robj, offset: &str) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .dt()
+            .round(robj_to!(PLExpr, every)?, offset)
+            .into())
     }
 
     pub fn dt_time(&self) -> RResult<Self> {
@@ -2057,7 +2192,7 @@ impl RPolarsExpr {
             .clone()
             .0
             .str()
-            .json_path_match(robj_to!(String, pat)?)
+            .json_path_match(robj_to!(PLExpr, pat)?)
             .into())
     }
 
@@ -2589,24 +2724,31 @@ impl ProtoRexpr {
 }
 
 //make options rolling options from R friendly arguments, handle conversion errors
-pub fn make_rolling_options(
+pub fn make_rolling_options_fixed_window(
     window_size: Robj,
     weights: Robj,
     min_periods: Robj,
     center: Robj,
-    by_null: Robj,
-    closed_null: Robj,
-    warn_if_unsorted: Robj,
-) -> RResult<pl::RollingOptions> {
-    Ok(pl::RollingOptions {
-        window_size: pl::Duration::parse(robj_to!(str, window_size)?),
+) -> RResult<pl::RollingOptionsFixedWindow> {
+    Ok(pl::RollingOptionsFixedWindow {
+        window_size: robj_to!(usize, window_size)?,
         weights: robj_to!(Option, Vec, f64, weights)?,
         min_periods: robj_to!(usize, min_periods)?,
         center: robj_to!(bool, center)?,
-        by: robj_to!(Option, String, by_null)?,
-        closed_window: robj_to!(Option, ClosedWindow, closed_null)?,
-        warn_if_unsorted: robj_to!(bool, warn_if_unsorted)?,
         ..Default::default()
+    })
+}
+
+pub fn make_rolling_options_dynamic_window(
+    window_size: &str,
+    min_periods: Robj,
+    closed_window: Robj,
+) -> RResult<pl::RollingOptionsDynamicWindow> {
+    Ok(pl::RollingOptionsDynamicWindow {
+        window_size: Duration::parse(window_size),
+        min_periods: robj_to!(usize, min_periods)?,
+        closed_window: robj_to!(ClosedWindow, closed_window)?,
+        fn_params: None,
     })
 }
 

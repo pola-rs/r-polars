@@ -66,7 +66,7 @@ impl Iterator for OwnedDataFrameIterator {
                 .collect();
             self.idx += 1;
 
-            let chunk = polars::frame::ArrowChunk::new(batch_cols);
+            let chunk = arrow::record_batch::RecordBatch::new(batch_cols);
             let array = arrow::array::StructArray::new(
                 self.data_type.clone(),
                 chunk.into_arrays(),
@@ -113,7 +113,9 @@ impl RPolarsDataFrame {
     }
 
     pub fn rechunk(&self) -> Self {
-        self.0.agg_chunks().into()
+        let mut df = self.0.clone();
+        df.as_single_chunk_par();
+        df.into()
     }
 
     pub fn clone_in_rust(&self) -> RPolarsDataFrame {
@@ -540,17 +542,18 @@ impl RPolarsDataFrame {
         n_rows: Robj,
         row_name: Robj,
         row_index: Robj,
-        memory_map: Robj,
     ) -> RResult<Self> {
         let bits = robj_to!(Raw, bits)?;
         let n_rows = robj_to!(Option, usize, n_rows)?;
         let row_index = robj_to!(Option, String, row_name)?
             .map(|name| {
-                robj_to!(u32, row_index).map(|offset| polars::io::RowIndex { name, offset })
+                robj_to!(u32, row_index).map(|offset| polars::io::RowIndex {
+                    name: name.into(),
+                    offset,
+                })
             })
             .transpose()?;
-        let memory_map = robj_to!(bool, memory_map)?;
-        let df = crate::rbackground::deserialize_dataframe(&bits, n_rows, row_index, memory_map)?;
+        let df = crate::rbackground::deserialize_dataframe(&bits, n_rows, row_index)?;
 
         Ok(RPolarsDataFrame(df))
     }

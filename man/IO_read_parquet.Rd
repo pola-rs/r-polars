@@ -12,6 +12,7 @@ pl_read_parquet(
   row_index_offset = 0L,
   parallel = c("auto", "columns", "row_groups", "none"),
   hive_partitioning = TRUE,
+  glob = TRUE,
   rechunk = TRUE,
   low_memory = FALSE,
   storage_options = NULL,
@@ -39,6 +40,8 @@ try to determine the optimal direction. Can be \code{"auto"}, \code{"columns"},
 
 \item{hive_partitioning}{Infer statistics and schema from hive partitioned URL
 and use them to prune reads.}
+
+\item{glob}{Expand path given via globbing rules.}
 
 \item{rechunk}{In case of reading multiple files via a glob pattern, rechunk
 the final DataFrame into contiguous memory chunks.}

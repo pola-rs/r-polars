@@ -1,8 +1,8 @@
 [package]
 name = "r-polars"
-version = "0.39.4"
+version = "0.40.0"
 edition = "2021"
-rust-version = "1.76.0"
+rust-version = "1.77.0"
 publish = false
 
 [lib]
@@ -18,13 +18,11 @@ nightly = ["polars/nightly"]
 
 rpolars_debug_print = []
 
-[workspace]
-# prevents package from thinking it's in the workspace
-[target.'cfg(any(not(target_os = "linux"), use_mimalloc))'.dependencies]
-mimalloc = { version = "0.1.42", default-features = false }
+[target.'cfg(all(any(not(target_family = "unix"), allocator = "mimalloc")))'.dependencies]
+mimalloc = { version = "0.1", default-features = false }
 
-[target.'cfg(all(target_os = "linux", not(use_mimalloc)))'.dependencies]
-jemallocator = { version = "0.5.0", features = ["disable_initial_exec_tls"] }
+[target.'cfg(all(target_family = "unix", not(allocator = "mimalloc")))'.dependencies]
+jemallocator = { version = "0.5", features = ["disable_initial_exec_tls"] }
 
 [profile.release-optimized]
 inherits = "release"
@@ -52,10 +50,9 @@ serde_json = "*"
 smartstring = "1.0.1"
 state = "0.6.0"
 thiserror = "1.0.61"
-polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "4c57688d204fad3d0d5e4586ecd0405ead7baeb2", default-features = false }
-polars-lazy = { git = "https://github.com/pola-rs/polars.git", rev = "4c57688d204fad3d0d5e4586ecd0405ead7baeb2", default-features = false }
+polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "7bc70141f4dad7863a2026849522551abb274f00", default-features = false }
+polars-lazy = { git = "https://github.com/pola-rs/polars.git", rev = "7bc70141f4dad7863a2026849522551abb274f00", default-features = false }
 either = "1"
-#features copied from node-polars
 
 [dependencies.polars]
 features = [
@@ -91,7 +88,6 @@ features = [
   "dtype-datetime",
   "dtype-duration",
   "dtype-full",
-  #"dtype-struct",
   "dtype-time",
   "dynamic_group_by",
   "extract_groups",
@@ -111,7 +107,6 @@ features = [
   "is_unique",
   "json",
   "lazy",
-  # "list",
   "list_any_all",
   "list_eval",
   "list_gather",
@@ -139,6 +134,7 @@ features = [
   "replace",
   "rle",
   "rolling_window",
+  "rolling_window_by",
   "round_series",
   "row_hash",
   "rows",
@@ -161,4 +157,4 @@ features = [
   "zip_with",
 ]
 git = "https://github.com/pola-rs/polars.git"
-rev = "4c57688d204fad3d0d5e4586ecd0405ead7baeb2"
+rev = "7bc70141f4dad7863a2026849522551abb274f00"

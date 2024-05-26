@@ -20,7 +20,12 @@ pub fn import_arrow_ipc(
         cache: robj_to!(bool, cache)?,
         rechunk: robj_to!(bool, rechunk)?,
         row_index: robj_to!(Option, String, row_name)?
-            .map(|name| robj_to!(u32, row_index).map(|offset| RowIndex { name, offset }))
+            .map(|name| {
+                robj_to!(u32, row_index).map(|offset| RowIndex {
+                    name: name.into(),
+                    offset,
+                })
+            })
             .transpose()?,
         memory_map: robj_to!(bool, memory_map)?,
         cloud_options: None,

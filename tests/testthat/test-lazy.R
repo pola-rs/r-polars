@@ -555,7 +555,7 @@ test_that("join_asof_simple", {
 
   # test allow_parallel and force_parallel
 
-  # export LogicalPlan as json string
+  # export DslPlan as json string
   logical_json_plan_TT =
     pop$join_asof(gdp, on = "date", allow_parallel = TRUE, force_parallel = TRUE) |>
     .pr$LazyFrame$debug_plan() |>
@@ -570,7 +570,7 @@ test_that("join_asof_simple", {
   allow_p_pat = r"{*"allow_parallel":\s*([^,]*)}" # find allow_parallel value in json string
   force_p_pat = r"{*"force_parallel":\s*([^,]*)}"
 
-  # test if setting was as expected in LogicalPlan
+  # test if setting was as expected in DslPlan
   expect_identical(get_reg(logical_json_plan_TT, allow_p_pat), "\"allow_parallel\": Bool(true)")
   expect_identical(get_reg(logical_json_plan_TT, force_p_pat), "\"force_parallel\": Bool(true)")
   expect_identical(get_reg(logical_json_plan_FF, allow_p_pat), "\"allow_parallel\": Bool(false)")

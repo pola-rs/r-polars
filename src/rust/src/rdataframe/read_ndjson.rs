@@ -25,8 +25,10 @@ pub fn new_from_ndjson(
     ignore_errors: Robj,
 ) -> RResult<RPolarsLazyFrame> {
     let offset = robj_to!(Option, u32, row_index_offset)?.unwrap_or(0);
-    let opt_rowindex =
-        robj_to!(Option, String, row_index_name)?.map(|name| RowIndex { name, offset });
+    let opt_rowindex = robj_to!(Option, String, row_index_name)?.map(|name| RowIndex {
+        name: name.into(),
+        offset,
+    });
 
     let vec_pathbuf = robj_to!(Vec, PathBuf, path)?;
     let linereader = match vec_pathbuf.len() {

@@ -212,7 +212,7 @@ print.RPolarsLazyFrame = function(x, ...) {
   cat(" $describe_optimized_plan() : Show the optimized query plan.\n")
   cat("\n")
   cat("Naive plan:\n")
-  cloned_x = .pr$LazyFrame$print(x)
+  cloned_x = x$print()
   invisible(cloned_x)
 }
 
@@ -226,7 +226,11 @@ print.RPolarsLazyFrame = function(x, ...) {
 #'
 #' @usage LazyFrame_print(x)
 #' @examples pl$LazyFrame(iris)$print()
-LazyFrame_print = use_extendr_wrapper
+LazyFrame_print = function() {
+  .pr$LazyFrame$print(self) |>
+    unwrap("in $print():")
+  invisible(self)
+}
 
 #' @title Print the optimized or non-optimized plans of `LazyFrame`
 #'
@@ -979,9 +983,7 @@ LazyFrame_last = use_extendr_wrapper
 #' @docType NULL
 #' @format NULL
 #' @examples pl$LazyFrame(mtcars)$max()$collect()
-LazyFrame_max = function() {
-  unwrap(.pr$LazyFrame$max(self), "in $max():")
-}
+LazyFrame_max = use_extendr_wrapper
 
 #' @title Mean
 #' @description Aggregate the columns in the LazyFrame to their mean value.
@@ -990,9 +992,7 @@ LazyFrame_max = function() {
 #' @docType NULL
 #' @format NULL
 #' @examples pl$LazyFrame(mtcars)$mean()$collect()
-LazyFrame_mean = function() {
-  unwrap(.pr$LazyFrame$mean(self), "in $mean():")
-}
+LazyFrame_mean = use_extendr_wrapper
 
 #' @title Median
 #' @description Aggregate the columns in the LazyFrame to their median value.
@@ -1001,9 +1001,7 @@ LazyFrame_mean = function() {
 #' @docType NULL
 #' @format NULL
 #' @examples pl$LazyFrame(mtcars)$median()$collect()
-LazyFrame_median = function() {
-  unwrap(.pr$LazyFrame$median(self), "in $median():")
-}
+LazyFrame_median = use_extendr_wrapper
 
 #' @title Min
 #' @description Aggregate the columns in the LazyFrame to their minimum value.
@@ -1012,9 +1010,7 @@ LazyFrame_median = function() {
 #' @docType NULL
 #' @format NULL
 #' @examples pl$LazyFrame(mtcars)$min()$collect()
-LazyFrame_min = function() {
-  unwrap(.pr$LazyFrame$min(self), "in $min():")
-}
+LazyFrame_min = use_extendr_wrapper
 
 #' @title Sum
 #' @description Aggregate the columns of this LazyFrame to their sum values.
@@ -1023,9 +1019,7 @@ LazyFrame_min = function() {
 #' @docType NULL
 #' @format NULL
 #' @examples pl$LazyFrame(mtcars)$sum()$collect()
-LazyFrame_sum = function() {
-  unwrap(.pr$LazyFrame$sum(self), "in $sum():")
-}
+LazyFrame_sum = use_extendr_wrapper
 
 #' @title Var
 #' @description Aggregate the columns of this LazyFrame to their variance values.
@@ -1260,6 +1254,7 @@ LazyFrame_group_by = function(..., maintain_order = polars_options()$maintain_or
 #'   different between the two DataFrames.
 #' @param how One of the following methods: "inner", "left", "outer", "semi",
 #'   "anti", "cross", "outer_coalesce".
+#' @param ... Ignored.
 #' @param left_on,right_on Same as `on` but only for the left or the right
 #'   DataFrame. They must have the same length.
 #' @param suffix Suffix to add to duplicated column names.
@@ -1279,7 +1274,10 @@ LazyFrame_group_by = function(..., maintain_order = polars_options()$maintain_or
 #'   computation of both DataFrames up to the join in parallel.
 #' @param force_parallel Force the physical plan to evaluate the computation of
 #'   both DataFrames up to the join in parallel.
-#' @param ... Ignored.
+#' @param coalesce Coalescing behavior (merging of join columns).
+#' - `NULL`: join specific.
+#' - `TRUE`: Always coalesce join columns.
+#' - `FALSE`: Never coalesce join columns.
 #'
 #' @return LazyFrame
 #' @examples
@@ -1314,7 +1312,8 @@ LazyFrame_join = function(
     validate = "m:m",
     join_nulls = FALSE,
     allow_parallel = TRUE,
-    force_parallel = FALSE) {
+    force_parallel = FALSE,
+    coalesce = NULL) {
   uw = \(res) unwrap(res, "in $join():")
 
   if (!is_polars_lf(other)) {
@@ -1335,7 +1334,7 @@ LazyFrame_join = function(
 
   .pr$LazyFrame$join(
     self, other, rexprs_left, rexprs_right, how, validate, join_nulls, suffix,
-    allow_parallel, force_parallel
+    allow_parallel, force_parallel, coalesce
   ) |>
     uw()
 }
