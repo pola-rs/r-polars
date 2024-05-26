@@ -28,17 +28,17 @@ test_that("name map", {
   skip_if_not_installed("withr")
   # TODO: doesn't work when run via RStudio buttons but works via
   #  testthat::test_file().
-  skip("This function is broken")
+  skip("This function is broken on Ubuntu")
   withr::with_options(
     list(polars.no_messages = TRUE),
     {
-      df = pl$DataFrame(list(alice = 1:3))$select(
+      df = pl$DataFrame(alice = 1:3)$select(
         pl$col("alice")$alias("joe_is_not_root")$name$map(\(x) paste0(x, "_and_bob"))
       )
       lf = df$lazy()
       expect_identical(lf$collect()$columns, "alice_and_bob")
       expect_grepl_error(
-        pl$DataFrame(list(alice = 1:3))$select(
+        pl$DataFrame(alice = 1:3)$select(
           pl$col("alice")$name$map(\(x) 42) # wrong return
         ),
         "was not a string"
