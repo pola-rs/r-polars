@@ -60,3 +60,21 @@ test_that("expr struct$rename_fields", {
   expect_grepl_error(unwrap(err_state), "in struct\\$rename_fields:")
   expect_grepl_error(unwrap(err_state), "42.0")
 })
+
+test_that("$struct$with_fields", {
+  df = pl$DataFrame(x = c(1, 4, 9), y = c(4, 9, 16), multiply = c(10, 2, 3))$
+    with_columns(coords = pl$struct(c("x", "y")))$
+    select("coords", "multiply")
+
+  out = df$select(
+    pl$col("coords")$struct$with_fields(
+      pl$col("coords")$struct$field("x")$sqrt(),
+      y_mul = pl$col("coords")$struct$field("y") * pl$col("multiply")
+    )
+  )$unnest("coords")
+
+  expect_identical(
+    out$to_data_frame(),
+    data.frame(x = c(1, 2, 3), y = c(4, 9, 16), y_mul = c(40, 18, 48))
+  )
+})
