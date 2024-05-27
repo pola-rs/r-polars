@@ -56,17 +56,17 @@ ExprName_keep = function() {
 #' @param fun an R function which takes a string as input and return a string
 #' @return Expr
 #'
-#' @examplesIf FALSE
-#' df = pl$DataFrame(var1 = 1:3, var2 = "a")
-#'
-#' df$select(
-#'   pl$col("*")$name$map(\(x) paste0("new_", x))
-#' )
-#'
-#' # $alias() is not taken into account by $name$map()
-#' df$select(
-#'   pl$col("var1")$alias("foobar")$name$map(\(x) paste0("new_", x))
-#' )
+#' @examples
+#' # df = pl$DataFrame(var1 = 1:3, var2 = "a")
+#' #
+#' #  df$select(
+#' #    pl$col("*")$name$map(\(x) paste0("new_", x))
+#' #  )
+#' #
+#' #  # $alias() is not taken into account by $name$map()
+#' #  df$select(
+#' #    pl$col("var1")$alias("foobar")$name$map(\(x) paste0("new_", x))
+#' #  )
 ExprName_map = function(fun) {
   if (
     !polars_options()$no_messages &&
