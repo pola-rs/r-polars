@@ -1358,6 +1358,9 @@ pl_int_ranges = function(start = 0, end = NULL, step = 1, ..., dtype = pl$Int64)
 #' @return An Expr with the datatype from the selected field.
 #'
 #' @inherit ExprStruct_with_fields examples
+# Necessary because R cannot have two man pages called "pl_Field" and
+# "pl_field"
+#' @rdname pl_field
 pl_field = function(name) {
   field(name) |>
     unwrap("in pl$field():")

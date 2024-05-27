@@ -25,6 +25,10 @@
 #'
 #' @return An [RPolarsRField] object containing its name and its
 #' [data type][pl_dtypes].
+#'
+# Named like this because R cannot have two man pages called "pl_Field" and
+# "pl_field"
+#' @rdname pl_Field_class
 #' @examples
 #' field = pl$Field("city_names", pl$String)
 #'
