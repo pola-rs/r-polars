@@ -2395,14 +2395,33 @@ Expr_rolling_sum = function(
     unwrap("in $rolling_sum():")
 }
 
+#' Apply a rolling sum based on another column.
+#'
+#' @inherit Expr_rolling_min params return details
+#' @inheritParams Expr_rolling
+#'
+#' @param by This column must of dtype [`Date`][pl_Date] or
+#' [`Datetime`][pl_Datetime].
+#'
+#' @examples
+#' df_temporal = pl$DataFrame(
+#'   date = pl$datetime_range(as.Date("2001-1-1"), as.Date("2001-1-2"), "1h")
+#' )$with_row_index("index")
+#'
+#' df_temporal
+#'
+#' df_temporal$with_columns(
+#'   rolling_row_sum = pl$col("index")$rolling_sum_by("date", window_size = "2h")
+#' )
 Expr_rolling_sum_by = function(
     by,
     window_size,
     ...,
     min_periods = 1,
     closed = "right") {
-  .pr$Expr$rolling_sum(
-    self, by = by, window_size = window_size, min_periods = min_periods, closed = closed
+  .pr$Expr$rolling_sum_by(
+    self,
+    by = by, window_size = window_size, min_periods = min_periods, closed = closed
   ) |>
     unwrap("in $rolling_sum_by():")
 }
