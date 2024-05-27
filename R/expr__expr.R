@@ -2395,6 +2395,18 @@ Expr_rolling_sum = function(
     unwrap("in $rolling_sum():")
 }
 
+Expr_rolling_sum_by = function(
+    by,
+    window_size,
+    ...,
+    min_periods = 1,
+    closed = "right") {
+  .pr$Expr$rolling_sum(
+    self, by = by, window_size = window_size, min_periods = min_periods, closed = closed
+  ) |>
+    unwrap("in $rolling_sum_by():")
+}
+
 
 #' Rolling standard deviation
 #'

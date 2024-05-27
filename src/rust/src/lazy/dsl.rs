@@ -539,7 +539,7 @@ impl RPolarsExpr {
             .0
             .clone()
             .rolling_min_by(
-                robj_to!(PLExpr, by)?,
+                robj_to!(PLExprCol, by)?,
                 make_rolling_options_dynamic_window(window_size, min_periods, closed)?,
             )
             .into())
@@ -576,7 +576,7 @@ impl RPolarsExpr {
             .0
             .clone()
             .rolling_max_by(
-                robj_to!(PLExpr, by)?,
+                robj_to!(PLExprCol, by)?,
                 make_rolling_options_dynamic_window(window_size, min_periods, closed)?,
             )
             .into())
@@ -613,7 +613,7 @@ impl RPolarsExpr {
             .0
             .clone()
             .rolling_mean_by(
-                robj_to!(PLExpr, by)?,
+                robj_to!(PLExprCol, by)?,
                 make_rolling_options_dynamic_window(window_size, min_periods, closed)?,
             )
             .into())
@@ -650,7 +650,7 @@ impl RPolarsExpr {
             .0
             .clone()
             .rolling_sum_by(
-                robj_to!(PLExpr, by)?,
+                robj_to!(PLExprCol, by)?,
                 make_rolling_options_dynamic_window(window_size, min_periods, closed)?,
             )
             .into())
@@ -689,7 +689,7 @@ impl RPolarsExpr {
             .0
             .clone()
             .rolling_std_by(
-                robj_to!(PLExpr, by)?,
+                robj_to!(PLExprCol, by)?,
                 make_rolling_options_dynamic_window(window_size, min_periods, closed)?,
             )
             .into())
@@ -728,7 +728,7 @@ impl RPolarsExpr {
     //         .0
     //         .clone()
     //         .rolling_var_by(
-    //             robj_to!(PLExpr, by)?,
+    //             robj_to!(PLExprCol, by)?,
     //             make_rolling_options_dynamic_window(window_size, min_periods, closed)?,
     //         )
     //         .into())
@@ -765,7 +765,7 @@ impl RPolarsExpr {
             .0
             .clone()
             .rolling_median_by(
-                robj_to!(PLExpr, by)?,
+                robj_to!(PLExprCol, by)?,
                 make_rolling_options_dynamic_window(window_size, min_periods, closed)?,
             )
             .into())
@@ -810,7 +810,7 @@ impl RPolarsExpr {
     //         .0
     //         .clone()
     //         .rolling_quantile_by(
-    //             robj_to!(PLExpr, by)?,
+    //             robj_to!(PLExprCol, by)?,
     //             make_rolling_options_dynamic_window(window_size, min_periods, closed)?,
     //         )
     //         .into())
