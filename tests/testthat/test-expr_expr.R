@@ -2047,6 +2047,14 @@ test_that("reshape", {
       pl$col("a")$reshape(c(-1, 2))
     )$dtypes[[1]] == pl$List(pl$Int32)
   )
+
+  # One can specify more than 2 dimensions by using the Array type
+  out = pl$DataFrame(foo = 1:12)$select(
+    pl$col("foo")$reshape(c(3, 2, 2), nested_type = pl$Array(pl$Float32, 2))
+  )
+  # annoying to test schema equivalency with list()
+  expect_snapshot(out$schema)
+  expect_identical(nrow(out), 3L)
 })
 
 
@@ -2216,6 +2224,44 @@ test_that("unique_counts", {
       r_value_counts(i)
     )
   }
+})
+
+test_that("$value_counts", {
+  df = pl$DataFrame(iris)
+
+  expect_identical(
+    df$select(pl$col("Species")$value_counts())$
+      unnest()$
+      sort("Species")$
+      to_data_frame(),
+    data.frame(
+      Species = factor(c("setosa", "versicolor", "virginica")),
+      count = rep(50, 3)
+    )
+  )
+
+  # arg "name"
+  expect_identical(
+    df$select(pl$col("Species")$value_counts(name = "foobar"))$
+      unnest()$
+      sort("Species")$
+      to_data_frame(),
+    data.frame(
+      Species = factor(c("setosa", "versicolor", "virginica")),
+      foobar = rep(50, 3)
+    )
+  )
+
+  # arg "sort"
+  expect_identical(
+    df$select(pl$col("Species")$value_counts(sort = TRUE))$
+      unnest()$
+      to_data_frame(),
+    data.frame(
+      Species = factor(c("setosa", "versicolor", "virginica")),
+      count = rep(50, 3)
+    )
+  )
 })
 
 

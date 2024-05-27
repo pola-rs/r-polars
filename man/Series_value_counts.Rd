@@ -4,13 +4,18 @@
 \alias{Series_value_counts}
 \title{Count the occurrences of unique values}
 \usage{
-Series_value_counts(sort = TRUE, parallel = FALSE)
+Series_value_counts(..., sort = TRUE, parallel = FALSE, name = "count")
 }
 \arguments{
+\item{...}{Ignored.}
+
 \item{sort}{Ensure the output is sorted from most values to least.}
 
 \item{parallel}{Better to turn this off in the aggregation context, as it can
 lead to contention.}
+
+\item{name}{Give the resulting count field a specific name, defaults to
+\code{"count"}.}
 }
 \value{
 DataFrame

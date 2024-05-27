@@ -18,6 +18,7 @@
   slice_pushdown = TRUE,
   comm_subplan_elim = TRUE,
   comm_subexpr_elim = TRUE,
+  cluster_with_columns = TRUE,
   streaming = FALSE,
   no_optimization = FALSE,
   inherit_optimization = FALSE,
@@ -61,12 +62,15 @@ occur on self-joins or unions.}
 \item{comm_subexpr_elim}{Logical. Common subexpressions will be cached and
 reused.}
 
+\item{cluster_with_columns}{Combine sequential independent calls to
+\code{\link[=DataFrame_with_columns]{with_columns()}}.}
+
 \item{streaming}{Logical. Run parts of the query in a streaming fashion
 (this is in an alpha state).}
 
 \item{no_optimization}{Logical. Sets the following parameters to \code{FALSE}:
 \code{predicate_pushdown}, \code{projection_pushdown}, \code{slice_pushdown},
-\code{comm_subplan_elim}, \code{comm_subexpr_elim}.}
+\code{comm_subplan_elim}, \code{comm_subexpr_elim}, \code{cluster_with_columns}.}
 
 \item{inherit_optimization}{Logical. Use existing optimization settings
 regardless the settings specified in this function call.}

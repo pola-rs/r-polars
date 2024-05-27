@@ -169,6 +169,7 @@ as_polars_df.RPolarsLazyFrame = function(
     slice_pushdown = TRUE,
     comm_subplan_elim = TRUE,
     comm_subexpr_elim = TRUE,
+    cluster_with_columns = TRUE,
     streaming = FALSE,
     no_optimization = FALSE,
     inherit_optimization = FALSE,

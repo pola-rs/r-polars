@@ -666,7 +666,7 @@ RPolarsExpr$arccosh <- function() .Call(wrap__RPolarsExpr__arccosh, self)
 
 RPolarsExpr$arctanh <- function() .Call(wrap__RPolarsExpr__arctanh, self)
 
-RPolarsExpr$reshape <- function(dims) .Call(wrap__RPolarsExpr__reshape, self, dims)
+RPolarsExpr$reshape <- function(dimensions, is_list) .Call(wrap__RPolarsExpr__reshape, self, dimensions, is_list)
 
 RPolarsExpr$shuffle <- function(seed) .Call(wrap__RPolarsExpr__shuffle, self, seed)
 
@@ -684,7 +684,7 @@ RPolarsExpr$extend_constant <- function(value, n) .Call(wrap__RPolarsExpr__exten
 
 RPolarsExpr$rep <- function(n, rechunk) .Call(wrap__RPolarsExpr__rep, self, n, rechunk)
 
-RPolarsExpr$value_counts <- function(sort, parallel) .Call(wrap__RPolarsExpr__value_counts, self, sort, parallel)
+RPolarsExpr$value_counts <- function(sort, parallel, name) .Call(wrap__RPolarsExpr__value_counts, self, sort, parallel, name)
 
 RPolarsExpr$unique_counts <- function() .Call(wrap__RPolarsExpr__unique_counts, self)
 
@@ -1244,7 +1244,7 @@ RPolarsLazyFrame$schema <- function() .Call(wrap__RPolarsLazyFrame__schema, self
 
 RPolarsLazyFrame$fetch <- function(n_rows) .Call(wrap__RPolarsLazyFrame__fetch, self, n_rows)
 
-RPolarsLazyFrame$set_optimization_toggle <- function(type_coercion, predicate_pushdown, projection_pushdown, simplify_expression, slice_pushdown, comm_subplan_elim, comm_subexpr_elim, streaming, eager) .Call(wrap__RPolarsLazyFrame__set_optimization_toggle, self, type_coercion, predicate_pushdown, projection_pushdown, simplify_expression, slice_pushdown, comm_subplan_elim, comm_subexpr_elim, streaming, eager)
+RPolarsLazyFrame$set_optimization_toggle <- function(type_coercion, predicate_pushdown, projection_pushdown, simplify_expression, slice_pushdown, comm_subplan_elim, comm_subexpr_elim, cluster_with_columns, streaming, eager) .Call(wrap__RPolarsLazyFrame__set_optimization_toggle, self, type_coercion, predicate_pushdown, projection_pushdown, simplify_expression, slice_pushdown, comm_subplan_elim, comm_subexpr_elim, cluster_with_columns, streaming, eager)
 
 RPolarsLazyFrame$get_optimization_toggle <- function() .Call(wrap__RPolarsLazyFrame__get_optimization_toggle, self)
 
@@ -1310,7 +1310,7 @@ RPolarsSeries$name <- function() .Call(wrap__RPolarsSeries__name, self)
 
 RPolarsSeries$sort <- function(descending, nulls_last, multithreaded) .Call(wrap__RPolarsSeries__sort, self, descending, nulls_last, multithreaded)
 
-RPolarsSeries$value_counts <- function(sort, parallel) .Call(wrap__RPolarsSeries__value_counts, self, sort, parallel)
+RPolarsSeries$value_counts <- function(sort, parallel, name) .Call(wrap__RPolarsSeries__value_counts, self, sort, parallel, name)
 
 RPolarsSeries$arg_min <- function() .Call(wrap__RPolarsSeries__arg_min, self)
 

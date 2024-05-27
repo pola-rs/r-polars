@@ -553,6 +553,7 @@ impl RPolarsLazyFrame {
         slice_pushdown: Robj,
         comm_subplan_elim: Robj,
         comm_subexpr_elim: Robj,
+        cluster_with_columns: Robj,
         streaming: Robj,
         // fast_projection: Robj, // There is no method like with_fast_projection
         eager: Robj,
@@ -568,7 +569,8 @@ impl RPolarsLazyFrame {
             ._with_eager(robj_to!(bool, eager)?)
             .with_projection_pushdown(robj_to!(bool, projection_pushdown)?)
             .with_comm_subplan_elim(robj_to!(bool, comm_subplan_elim)?)
-            .with_comm_subexpr_elim(robj_to!(bool, comm_subexpr_elim)?);
+            .with_comm_subexpr_elim(robj_to!(bool, comm_subexpr_elim)?)
+            .with_cluster_with_columns(robj_to!(bool, cluster_with_columns)?);
 
         Ok(ldf.into())
     }
@@ -583,6 +585,7 @@ impl RPolarsLazyFrame {
             file_caching: _,
             comm_subplan_elim,
             comm_subexpr_elim,
+            cluster_with_columns,
             streaming,
             fast_projection: _,
             row_estimate: _,
@@ -596,6 +599,7 @@ impl RPolarsLazyFrame {
             slice_pushdown = slice_pushdown,
             comm_subplan_elim = comm_subplan_elim,
             comm_subexpr_elim = comm_subexpr_elim,
+            cluster_with_columns = cluster_with_columns,
             streaming = streaming,
             eager = eager,
         )

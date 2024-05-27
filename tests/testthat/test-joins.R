@@ -18,7 +18,7 @@ test_that("lazyframe join examples", {
   )
 
   # outer
-  df_outer = df$join(other_df, on = "ham", how = "outer")$collect()
+  df_outer = df$join(other_df, on = "ham", how = "full")$collect()
   expect_identical(
     df_outer$to_data_frame(),
     data.frame(

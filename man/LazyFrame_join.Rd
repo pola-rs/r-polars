@@ -7,7 +7,7 @@
 LazyFrame_join(
   other,
   on = NULL,
-  how = c("inner", "left", "outer", "semi", "anti", "cross", "outer_coalesce"),
+  how = c("inner", "left", "full", "semi", "anti", "cross"),
   ...,
   left_on = NULL,
   right_on = NULL,
@@ -26,8 +26,8 @@ LazyFrame_join(
 strings. Use \code{left_on} and \code{right_on} if the column names to match on are
 different between the two DataFrames.}
 
-\item{how}{One of the following methods: "inner", "left", "outer", "semi",
-"anti", "cross", "outer_coalesce".}
+\item{how}{One of the following methods: "inner", "left", "full", "semi",
+"anti", "cross".}
 
 \item{...}{Ignored.}
 
