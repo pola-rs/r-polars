@@ -39,6 +39,9 @@
 - In `$all()` and `$any()`, the argument `drop_nulls` is renamed `ignore_nulls`,
   and this argument must be named (#1050).
 - New method `$struct$with_fields()` (#1109).
+- New methods for `RPolarsDataType`: `$is_enum()`, `$is_categorical()`,
+  `$is_known()`, `$is_string()`, `$contains_views()`, `$contains_categorical()`
+  (#1112).
 
 ## Polars R Package 0.16.4
 
