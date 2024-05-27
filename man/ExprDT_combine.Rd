@@ -2,13 +2,13 @@
 % Please edit documentation in R/expr__datetime.R
 \name{ExprDT_combine}
 \alias{ExprDT_combine}
-\title{Combine Data and Time}
+\title{Combine Date and Time}
 \usage{
 ExprDT_combine(time, time_unit = "us")
 }
 \arguments{
 \item{time}{The number of epoch since or before (if negative) the Date. Can be
-an Expr or a PTime, strings are parsed as columns.}
+an Expr or a PTime.}
 
 \item{time_unit}{Unit of time. One of \code{"ms"}, \code{"us"} (default) or \code{"ns"}.}
 }

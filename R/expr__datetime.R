@@ -89,7 +89,7 @@ ExprDT_round = function(every, offset = NULL) {
     unwrap("in $dt$round()")
 }
 
-#' Combine Data and Time
+#' Combine Date and Time
 #'
 #' Create a naive Datetime from an existing Date/Datetime expression and a Time.
 #' Each date/datetime in the first half of the interval is mapped to the start
@@ -97,7 +97,7 @@ ExprDT_round = function(every, offset = NULL) {
 #' mapped to the end of its bucket.
 #'
 #' @param time The number of epoch since or before (if negative) the Date. Can be
-#' an Expr or a PTime, strings are parsed as columns.
+#' an Expr or a PTime.
 #' @inheritParams DataType_Datetime
 #'
 #' @inherit ExprDT_truncate details return
