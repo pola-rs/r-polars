@@ -38,6 +38,8 @@ sum_horizontal <- function(dotdotdot) .Call(wrap__sum_horizontal, dotdotdot)
 
 mean_horizontal <- function(dotdotdot) .Call(wrap__mean_horizontal, dotdotdot)
 
+field <- function(names) .Call(wrap__field, names)
+
 concat_list <- function(exprs) .Call(wrap__concat_list, exprs)
 
 concat_str <- function(dotdotdot, separator, ignore_nulls) .Call(wrap__concat_str, dotdotdot, separator, ignore_nulls)
@@ -300,6 +302,12 @@ RPolarsDataType$get_insides <- function() .Call(wrap__RPolarsDataType__get_insid
 
 RPolarsDataType$is_temporal <- function() .Call(wrap__RPolarsDataType__is_temporal, self)
 
+RPolarsDataType$is_enum <- function() .Call(wrap__RPolarsDataType__is_enum, self)
+
+RPolarsDataType$is_categorical <- function() .Call(wrap__RPolarsDataType__is_categorical, self)
+
+RPolarsDataType$is_string <- function() .Call(wrap__RPolarsDataType__is_string, self)
+
 RPolarsDataType$is_logical <- function() .Call(wrap__RPolarsDataType__is_logical, self)
 
 RPolarsDataType$is_float <- function() .Call(wrap__RPolarsDataType__is_float, self)
@@ -329,6 +337,12 @@ RPolarsDataType$is_nested <- function() .Call(wrap__RPolarsDataType__is_nested, 
 RPolarsDataType$is_struct <- function() .Call(wrap__RPolarsDataType__is_struct, self)
 
 RPolarsDataType$is_ord <- function() .Call(wrap__RPolarsDataType__is_ord, self)
+
+RPolarsDataType$is_known <- function() .Call(wrap__RPolarsDataType__is_known, self)
+
+RPolarsDataType$contains_views <- function() .Call(wrap__RPolarsDataType__contains_views, self)
+
+RPolarsDataType$contains_categoricals <- function() .Call(wrap__RPolarsDataType__contains_categoricals, self)
 
 #' @export
 `$.RPolarsDataType` <- function (self, name) { func <- RPolarsDataType[[name]]; environment(func) <- environment(); func }

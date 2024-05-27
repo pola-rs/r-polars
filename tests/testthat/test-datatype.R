@@ -197,6 +197,30 @@ test_that("is_* functions for datatype work", {
   expect_false(pl$Categorical()$is_primitive())
   expect_false(pl$Struct()$is_primitive())
   expect_false(pl$List()$is_primitive())
+
+  expect_true(pl$Enum(c("a", "b"))$is_enum())
+  expect_false(pl$Categorical()$is_enum())
+
+  expect_true(pl$Categorical()$is_categorical())
+  expect_false(pl$Enum(c("a", "b"))$is_categorical())
+
+  expect_true(pl$String$is_string())
+  expect_false(pl$Float32$is_string())
+
+  expect_true(pl$String$is_known())
+  expect_false(pl$Unknown$is_known())
+})
+
+test_that("contains_* functions for datatype work", {
+  expect_true(pl$List(pl$String)$contains_views())
+  expect_true(pl$List(pl$Binary)$contains_views())
+  expect_false(pl$List(pl$Float32)$contains_views())
+  expect_true(pl$List(pl$List(pl$Binary))$contains_views())
+
+  expect_true(pl$List(pl$Categorical())$contains_categoricals())
+  expect_true(pl$List(pl$Enum(c("a", "b")))$contains_categoricals())
+  expect_false(pl$List(pl$Float32)$contains_categoricals())
+  expect_true(pl$List(pl$List(pl$Categorical()))$contains_categoricals())
 })
 
 test_that("Enum", {
