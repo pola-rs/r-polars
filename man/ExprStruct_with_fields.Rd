@@ -14,8 +14,9 @@ column names, other non-expression inputs are parsed as literals.}
 An \code{\link[=RPolarsExpr]{Expr}} of data type Struct.
 }
 \description{
-This is similar to \code{\link[=DataFrame_with_columns]{with_columns}} on
-\code{\link[=RPolarsDataFrame]{DataFrame}}.
+This is similar to \code{\link[=DataFrame_with_columns]{$with_columns()}} on
+\code{\link[=RPolarsDataFrame]{DataFrame}}. Use \code{\link[=pl_field]{pl$field()}} to quickly
+select a field in a \verb{$struct$with_fields()} context.
 }
 \examples{
 df = pl$DataFrame(x = c(1, 4, 9), y = c(4, 9, 16), multiply = c(10, 2, 3))$
@@ -26,8 +27,8 @@ df
 
 df = df$with_columns(
   pl$col("coords")$struct$with_fields(
-    pl$col("coords")$struct$field("x")$sqrt(),
-    y_mul = pl$col("coords")$struct$field("y") * pl$col("multiply")
+    pl$field("x")$sqrt(),
+    y_mul = pl$field("y") * pl$col("multiply")
   )
 )
 

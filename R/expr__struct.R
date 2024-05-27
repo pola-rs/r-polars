@@ -53,8 +53,9 @@ ExprStruct_rename_fields = function(names) {
 
 #' Add or overwrite fields of this struct
 #'
-#' This is similar to [`with_columns`][DataFrame_with_columns] on
-#' [`DataFrame`][RPolarsDataFrame].
+#' This is similar to [`$with_columns()`][DataFrame_with_columns] on
+#' [`DataFrame`][RPolarsDataFrame]. Use [`pl$field()`][pl_field] to quickly
+#' select a field in a `$struct$with_fields()` context.
 #'
 #' @param ... Field(s) to add. Accepts expression input. Strings are parsed as
 #' column names, other non-expression inputs are parsed as literals.
@@ -70,8 +71,8 @@ ExprStruct_rename_fields = function(names) {
 #'
 #' df = df$with_columns(
 #'   pl$col("coords")$struct$with_fields(
-#'     pl$col("coords")$struct$field("x")$sqrt(),
-#'     y_mul = pl$col("coords")$struct$field("y") * pl$col("multiply")
+#'     pl$field("x")$sqrt(),
+#'     y_mul = pl$field("y") * pl$col("multiply")
 #'   )
 #' )
 #'
