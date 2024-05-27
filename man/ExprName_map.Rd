@@ -16,16 +16,14 @@ Expr
 Rename the output of an expression by mapping a function over the root name.
 }
 \examples{
-\dontshow{if (FALSE) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-df = pl$DataFrame(var1 = 1:3, var2 = "a")
-
-df$select(
-  pl$col("*")$name$map(\(x) paste0("new_", x))
-)
-
-# $alias() is not taken into account by $name$map()
-df$select(
-  pl$col("var1")$alias("foobar")$name$map(\(x) paste0("new_", x))
-)
-\dontshow{\}) # examplesIf}
+# df = pl$DataFrame(var1 = 1:3, var2 = "a")
+#
+#  df$select(
+#    pl$col("*")$name$map(\(x) paste0("new_", x))
+#  )
+#
+#  # $alias() is not taken into account by $name$map()
+#  df$select(
+#    pl$col("var1")$alias("foobar")$name$map(\(x) paste0("new_", x))
+#  )
 }
