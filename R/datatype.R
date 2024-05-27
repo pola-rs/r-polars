@@ -554,3 +554,61 @@ DataType_is_struct = use_extendr_wrapper
 #' pl$String$is_ord()
 #' pl$Categorical()$is_ord()
 DataType_is_ord = use_extendr_wrapper
+
+#' Check whether the data type is an Enum type
+#'
+#' @inherit DataType_is_temporal return
+#'
+#' @examples
+#' pl$Enum(c("a", "b"))$is_enum()
+#' pl$Categorical()$is_enum()
+DataType_is_enum = use_extendr_wrapper
+
+#' Check whether the data type is a Categorical type
+#'
+#' @inherit DataType_is_temporal return
+#'
+#' @examples
+#' pl$Categorical()$is_categorical()
+#' pl$Enum(c("a", "b"))$is_categorical()
+DataType_is_categorical = use_extendr_wrapper
+
+#' Check whether the data type is a String type
+#'
+#' @inherit DataType_is_temporal return
+#'
+#' @examples
+#' pl$String$is_string()
+#' pl$Float32$is_string()
+DataType_is_string = use_extendr_wrapper
+
+#' Check whether the data type is known
+#'
+#' @inherit DataType_is_temporal return
+#'
+#' @examples
+#' pl$String$is_known()
+#' pl$Unknown$is_known()
+DataType_is_known = use_extendr_wrapper
+
+#' Check whether the data type contains views
+#'
+#' @inherit DataType_is_temporal return
+#'
+#' @examples
+#' pl$List(pl$String)$contains_views()
+#' pl$List(pl$Binary)$contains_views()
+#' pl$List(pl$Float32)$contains_views()
+#' pl$List(pl$List(pl$Binary))$contains_views()
+DataType_contains_views = use_extendr_wrapper
+
+#' Check whether the data type contains categoricals
+#'
+#' @inherit DataType_is_temporal return
+#'
+#' @examples
+#' pl$List(pl$Categorical())$contains_categoricals()
+#' pl$List(pl$Enum(c("a", "b")))$contains_categoricals()
+#' pl$List(pl$Float32)$contains_categoricals()
+#' pl$List(pl$List(pl$Categorical()))$contains_categoricals()
+DataType_contains_categoricals = use_extendr_wrapper
