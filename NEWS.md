@@ -38,7 +38,8 @@
   like `pl$Struct(a = pl$Boolean)` (#1053).
 - In `$all()` and `$any()`, the argument `drop_nulls` is renamed `ignore_nulls`,
   and this argument must be named (#1050).
-- New method `$struct$with_fields()` (#1109).
+- New method `$struct$with_fields()` (#1109) and new function `pl$field()` to
+  be used in expressions in `$struct$with_fields()` (#1113).
 - New methods for `RPolarsDataType`: `$is_enum()`, `$is_categorical()`,
   `$is_known()`, `$is_string()`, `$contains_views()`, `$contains_categorical()`
   (#1112).
