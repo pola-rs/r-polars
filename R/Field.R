@@ -28,7 +28,7 @@
 #'
 # Named like this because R cannot have two man pages called "pl_Field" and
 # "pl_field"
-#' @rdname pl_Field_class
+#' @name pl_Field_class
 #' @examples
 #' field = pl$Field("city_names", pl$String)
 #'

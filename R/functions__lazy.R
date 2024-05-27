@@ -1360,7 +1360,7 @@ pl_int_ranges = function(start = 0, end = NULL, step = 1, ..., dtype = pl$Int64)
 #' @inherit ExprStruct_with_fields examples
 # Necessary because R cannot have two man pages called "pl_Field" and
 # "pl_field"
-#' @rdname pl_field
+#' @name pl_field
 pl_field = function(name) {
   field(name) |>
     unwrap("in pl$field():")
