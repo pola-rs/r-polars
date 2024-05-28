@@ -50,8 +50,8 @@ ExprDT_truncate = function(every, offset = NULL) {
 #' @param every string encoding duration see details.
 #' @param offset optional string encoding duration see details.
 #'
-#' @details The ``every`` and ``offset`` argument are created with the
-#' the following string language:
+#' @details The ``every`` and ``offset`` arguments are created with the
+#' following string language:
 #' - 1ns # 1 nanosecond
 #' - 1us # 1 microsecond
 #' - 1ms # 1 millisecond
@@ -91,16 +91,15 @@ ExprDT_round = function(every, offset = NULL) {
 
 #' Combine Date and Time
 #'
-#' Create a naive Datetime from an existing Date/Datetime expression and a Time.
-#' Each date/datetime in the first half of the interval is mapped to the start
-#' of its bucket. Each date/datetime in the second half of the interval is
-#' mapped to the end of its bucket.
+#' If the underlying expression is a Datetime then its time component is
+#' replaced, and if it is a Date then a new Datetime is created by combining
+#' the two values.
 #'
 #' @param time The number of epoch since or before (if negative) the Date. Can be
 #' an Expr or a PTime.
 #' @inheritParams DataType_Datetime
 #'
-#' @inherit ExprDT_truncate details return
+#' @inherit ExprDT_truncate return
 #' @examples
 #' df = pl$DataFrame(
 #'   dtm = c(

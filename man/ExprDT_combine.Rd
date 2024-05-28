@@ -16,30 +16,9 @@ an Expr or a PTime.}
 Date/Datetime expr
 }
 \description{
-Create a naive Datetime from an existing Date/Datetime expression and a Time.
-Each date/datetime in the first half of the interval is mapped to the start
-of its bucket. Each date/datetime in the second half of the interval is
-mapped to the end of its bucket.
-}
-\details{
-The \code{every} and \code{offset} argument are created with the
-the following string language:
-\itemize{
-\item 1ns # 1 nanosecond
-\item 1us # 1 microsecond
-\item 1ms # 1 millisecond
-\item 1s  # 1 second
-\item 1m  # 1 minute
-\item 1h  # 1 hour
-\item 1d  # 1 day
-\item 1w  # 1 calendar week
-\item 1mo # 1 calendar month
-\item 1y  # 1 calendar year
-These strings can be combined:
-\itemize{
-\item 3d12h4m25s # 3 days, 12 hours, 4 minutes, and 25 seconds
-}
-}
+If the underlying expression is a Datetime then its time component is
+replaced, and if it is a Date then a new Datetime is created by combining
+the two values.
 }
 \examples{
 df = pl$DataFrame(
