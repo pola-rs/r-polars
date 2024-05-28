@@ -2,47 +2,39 @@
 % Please edit documentation in R/expr__datetime.R
 \name{ExprDT_combine}
 \alias{ExprDT_combine}
-\alias{(Expr)$dt$combine}
-\title{Combine Data and Time}
+\title{Combine Date and Time}
 \usage{
-ExprDT_combine(tm, tu = "us")
+ExprDT_combine(time, time_unit = "us")
 }
 \arguments{
-\item{tm}{Expr or numeric or PTime, the number of epoch since or before(if negative) the Date
-or tm is an Expr e.g. a column of DataType 'Time' or something into an Expr.}
+\item{time}{The number of epoch since or before (if negative) the Date. Can be
+an Expr or a PTime.}
 
-\item{tu}{time unit of epochs, default is "us", if tm is a PTime, then tz passed via PTime.}
+\item{time_unit}{Unit of time. One of \code{"ms"}, \code{"us"} (default) or \code{"ns"}.}
 }
 \value{
 Date/Datetime expr
 }
 \description{
-Create a naive Datetime from an existing Date/Datetime expression and a Time.
-Each date/datetime in the first half of the interval
-is mapped to the start of its bucket.
-Each date/datetime in the second half of the interval
-is mapped to the end of its bucket.
-}
-\details{
-The \code{tu} allows the following time time units
-the following string language:
-\itemize{
-\item 1ns # 1 nanosecond
-\item 1us # 1 microsecond
-\item 1ms # 1 millisecond
-}
+If the underlying expression is a Datetime then its time component is
+replaced, and if it is a Date then a new Datetime is created by combining
+the two values.
 }
 \examples{
-# Using pl$PTime
-pl$lit(as.Date("2021-01-01"))$dt$combine(pl$PTime("02:34:12"))$to_series()
-pl$lit(as.Date("2021-01-01"))$dt$combine(pl$PTime(3600 * 1.5, tu = "s"))$to_series()
-pl$lit(as.Date("2021-01-01"))$dt$combine(pl$PTime(3600 * 1.5E6 + 123, tu = "us"))$to_series()
+df = pl$DataFrame(
+  dtm = c(
+    ISOdatetime(2022, 12, 31, 10, 30, 45),
+    ISOdatetime(2023, 7, 5, 23, 59, 59)
+  ),
+  dt = c(ISOdate(2022, 10, 10), ISOdate(2022, 7, 5)),
+  tm = c(pl$time(1, 2, 3, 456000), pl$time(7, 8, 9, 101000))
+)$explode("tm")
 
-# pass double and set tu manually
-pl$lit(as.Date("2021-01-01"))$dt$combine(3600 * 1.5E6 + 123, tu = "us")$to_series()
+df
 
-# if needed to convert back to R it is more intuitive to set a specific time zone
-expr = pl$lit(as.Date("2021-01-01"))$dt$combine(3600 * 1.5E6 + 123, tu = "us")
-expr$cast(pl$Datetime("us", "GMT"))$to_r()
+df$select(
+  d1 = pl$col("dtm")$dt$combine(pl$col("tm")),
+  s2 = pl$col("dt")$dt$combine(pl$col("tm")),
+  d3 = pl$col("dt")$dt$combine(pl$time(4, 5, 6))
+)
 }
-\keyword{ExprDT}

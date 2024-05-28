@@ -1451,12 +1451,12 @@ impl RPolarsExpr {
         Ok(self.0.clone().dt().time().into())
     }
 
-    pub fn dt_combine(&self, time: Robj, tu: Robj) -> RResult<RPolarsExpr> {
+    pub fn dt_combine(&self, time: Robj, time_unit: Robj) -> RResult<RPolarsExpr> {
         Ok(self
             .0
             .clone()
             .dt()
-            .combine(robj_to!(PLExpr, time)?, robj_to!(timeunit, tu)?)
+            .combine(robj_to!(PLExpr, time)?, robj_to!(timeunit, time_unit)?)
             .into())
     }
 

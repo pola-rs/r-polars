@@ -814,7 +814,7 @@ RPolarsExpr$dt_round <- function(every, offset) .Call(wrap__RPolarsExpr__dt_roun
 
 RPolarsExpr$dt_time <- function() .Call(wrap__RPolarsExpr__dt_time, self)
 
-RPolarsExpr$dt_combine <- function(time, tu) .Call(wrap__RPolarsExpr__dt_combine, self, time, tu)
+RPolarsExpr$dt_combine <- function(time, time_unit) .Call(wrap__RPolarsExpr__dt_combine, self, time, time_unit)
 
 RPolarsExpr$dt_strftime <- function(fmt) .Call(wrap__RPolarsExpr__dt_strftime, self, fmt)
 

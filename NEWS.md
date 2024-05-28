@@ -43,6 +43,8 @@
 - New methods for `RPolarsDataType`: `$is_enum()`, `$is_categorical()`,
   `$is_known()`, `$is_string()`, `$contains_views()`, `$contains_categorical()`
   (#1112).
+- In `$dt$combine()`, the arguments `tm` and `tu` are renamed `time` and
+  `time_unit` (#1116).
 
 ## Polars R Package 0.16.4
 
