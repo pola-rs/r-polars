@@ -1084,8 +1084,6 @@ RPolarsExpr$str_replace_all <- function(pat, value, literal) .Call(wrap__RPolars
 
 RPolarsExpr$str_slice <- function(offset, length) .Call(wrap__RPolarsExpr__str_slice, self, offset, length)
 
-RPolarsExpr$str_explode <- function() .Call(wrap__RPolarsExpr__str_explode, self)
-
 RPolarsExpr$str_to_integer <- function(base, strict) .Call(wrap__RPolarsExpr__str_to_integer, self, base, strict)
 
 RPolarsExpr$str_reverse <- function() .Call(wrap__RPolarsExpr__str_reverse, self)

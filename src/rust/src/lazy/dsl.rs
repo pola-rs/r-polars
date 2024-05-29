@@ -2389,10 +2389,6 @@ impl RPolarsExpr {
         Ok(self.clone().0.str().slice(offset, length).into())
     }
 
-    pub fn str_explode(&self) -> RResult<RPolarsExpr> {
-        Ok(self.0.clone().str().explode().into())
-    }
-
     pub fn str_to_integer(&self, base: Robj, strict: Robj) -> RResult<Self> {
         let base = robj_to!(PLExprCol, base)?;
         let strict = robj_to!(bool, strict)?;
@@ -2682,7 +2678,6 @@ impl RPolarsExpr {
             period,
             offset,
             closed_window,
-            check_sorted,
         };
 
         Ok(self.0.clone().rolling(options).into())

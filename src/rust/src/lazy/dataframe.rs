@@ -528,7 +528,7 @@ impl RPolarsLazyFrame {
             .into())
     }
 
-    fn schema(&self) -> RResult<Pairlist> {
+    fn schema(&mut self) -> RResult<Pairlist> {
         let schema = self
             .0
             .schema()
@@ -653,7 +653,6 @@ impl RPolarsLazyFrame {
                 period,
                 offset,
                 closed_window,
-                check_sorted,
             },
         );
 
@@ -691,7 +690,6 @@ impl RPolarsLazyFrame {
                 include_boundaries: robj_to!(bool, include_boundaries)?,
                 closed_window,
                 start_by: robj_to!(StartBy, start_by)?,
-                check_sorted: robj_to!(bool, check_sorted)?,
                 ..Default::default()
             },
         );
