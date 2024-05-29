@@ -853,18 +853,6 @@ ExprStr_slice = function(offset, length = NULL) {
     unwrap("in $str$slice():")
 }
 
-#' Returns a column with a separate row for every string character
-#'
-#' @keywords ExprStr
-#' @return Expr: Series of dtype String.
-#' @examples
-#' df = pl$DataFrame(a = c("foo", "bar"))
-#' df$select(pl$col("a")$str$explode())
-ExprStr_explode = function() {
-  .pr$Expr$str_explode(self) |>
-    unwrap("in $str$explode():")
-}
-
 
 #' Convert a String column into an Int64 column with base radix
 #'
