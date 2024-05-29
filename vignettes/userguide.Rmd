@@ -571,7 +571,7 @@ df$select(
 # Single valued `Series` are broadcasted to the shape of the `DataFrame`
 df$select(
   pl$all(),
-  pl$all()$sum()$name$suffix("_sum") # This is a single valued Series broadcasted to the shape of the DataFrame
+  pl$col(pl$Float64)$sum()$name$suffix("_sum") # This is a single valued Series broadcasted to the shape of the DataFrame
 )
 
 # Filters can also be applied within an expression
