@@ -28,6 +28,8 @@
     combine sequential independent calls to `$with_columns()`.
   - `$str$expload()` is removed.
   - The `check_sorted` argument is removed from `$rolling()` and `$group_by_dynamic()`.
+    Sortedness is now verified in a quick manner, so this argument is no longer needed
+    (pola-rs/polars#16494).
 - As warned in v0.16.0, the order of arguments in `pl$Series` is changed (#1071).
   The first argument is now `name`, and the second argument is `values`.
 - `$to_struct()` on an Expr is removed. This method is now only available for
