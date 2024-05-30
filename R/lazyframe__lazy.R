@@ -1924,13 +1924,12 @@ LazyFrame_rolling = function(
     period,
     offset = NULL,
     closed = "right",
-    group_by = NULL,
-    check_sorted = TRUE) {
+    group_by = NULL) {
   period = parse_as_polars_duration_string(period)
   offset = parse_as_polars_duration_string(offset) %||% negate_duration_string(period)
   .pr$LazyFrame$rolling(
     self, index_column, period, offset, closed,
-    wrap_elist_result(group_by, str_to_lit = FALSE), check_sorted
+    wrap_elist_result(group_by, str_to_lit = FALSE)
   ) |>
     unwrap("in $rolling():")
 }
@@ -2034,15 +2033,14 @@ LazyFrame_group_by_dynamic = function(
     closed = "left",
     label = "left",
     group_by = NULL,
-    start_by = "window",
-    check_sorted = TRUE) {
+    start_by = "window") {
   every = parse_as_polars_duration_string(every)
   offset = parse_as_polars_duration_string(offset) %||% negate_duration_string(every)
   period = parse_as_polars_duration_string(period) %||% every
 
   .pr$LazyFrame$group_by_dynamic(
     self, index_column, every, period, offset, label, include_boundaries, closed,
-    wrap_elist_result(group_by, str_to_lit = FALSE), start_by, check_sorted
+    wrap_elist_result(group_by, str_to_lit = FALSE), start_by
   ) |>
     unwrap("in $group_by_dynamic():")
 }

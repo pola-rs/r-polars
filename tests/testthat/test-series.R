@@ -505,15 +505,14 @@ test_that("Series list", {
   # Note: flattening an empty list returns null in polars
   # https://github.com/pola-rs/polars/issues/6723
   # https://github.com/pola-rs/polars/issues/14381
-  # TODO: panicked with Rust Polars 0.40.0
-  # ul = pl$DataFrame(s)$select(pl$col("")$flatten()$flatten()$flatten())$to_list() |>
-  #   unlist()
+  ul = pl$DataFrame(s)$select(pl$col("")$flatten()$flatten()$flatten())$to_list() |>
+    unlist()
 
-  # expect_identical(
-  #   lapply(ul, \(x) if (length(x) == 0) NA_character_ else x) |>
-  #     unlist(),
-  #   ul
-  # )
+  expect_identical(
+    lapply(ul, \(x) if (length(x) == 0) NA_character_ else x) |>
+      unlist(),
+    ul
+  )
 })
 
 

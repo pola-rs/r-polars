@@ -528,7 +528,7 @@ impl RPolarsLazyFrame {
             .into())
     }
 
-    fn schema(&self) -> RResult<Pairlist> {
+    fn schema(&mut self) -> RResult<Pairlist> {
         let schema = self
             .0
             .schema()
@@ -636,14 +636,12 @@ impl RPolarsLazyFrame {
         offset: Robj,
         closed: Robj,
         group_by: Robj,
-        check_sorted: Robj,
     ) -> RResult<RPolarsLazyGroupBy> {
         let index_column = robj_to!(PLExprCol, index_column)?;
         let period = Duration::parse(robj_to!(str, period)?);
         let offset = Duration::parse(robj_to!(str, offset)?);
         let closed_window = robj_to!(ClosedWindow, closed)?;
         let group_by = robj_to!(VecPLExprCol, group_by)?;
-        let check_sorted = robj_to!(bool, check_sorted)?;
 
         let lazy_gb = self.0.clone().rolling(
             index_column,
@@ -653,7 +651,6 @@ impl RPolarsLazyFrame {
                 period,
                 offset,
                 closed_window,
-                check_sorted,
             },
         );
 
@@ -675,7 +672,6 @@ impl RPolarsLazyFrame {
         closed: Robj,
         by: Robj,
         start_by: Robj,
-        check_sorted: Robj,
     ) -> RResult<RPolarsLazyGroupBy> {
         let closed_window = robj_to!(ClosedWindow, closed)?;
         let by = robj_to!(VecPLExprCol, by)?;
@@ -691,7 +687,6 @@ impl RPolarsLazyFrame {
                 include_boundaries: robj_to!(bool, include_boundaries)?,
                 closed_window,
                 start_by: robj_to!(StartBy, start_by)?,
-                check_sorted: robj_to!(bool, check_sorted)?,
                 ..Default::default()
             },
         );

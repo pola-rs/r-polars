@@ -2127,11 +2127,10 @@ DataFrame_rolling = function(
     period,
     offset = NULL,
     closed = "right",
-    group_by = NULL,
-    check_sorted = TRUE) {
+    group_by = NULL) {
   period = parse_as_polars_duration_string(period)
   offset = parse_as_polars_duration_string(offset) %||% negate_duration_string(period)
-  construct_rolling_group_by(self, index_column, period, offset, closed, group_by, check_sorted)
+  construct_rolling_group_by(self, index_column, period, offset, closed, group_by)
 }
 
 #' @inherit LazyFrame_group_by_dynamic title description details params
@@ -2211,14 +2210,13 @@ DataFrame_group_by_dynamic = function(
     closed = "left",
     label = "left",
     group_by = NULL,
-    start_by = "window",
-    check_sorted = TRUE) {
+    start_by = "window") {
   every = parse_as_polars_duration_string(every)
   offset = parse_as_polars_duration_string(offset) %||% negate_duration_string(every)
   period = parse_as_polars_duration_string(period) %||% every
   construct_group_by_dynamic(
     self, index_column, every, period, offset, include_boundaries, closed, label,
-    group_by, start_by, check_sorted
+    group_by, start_by
   )
 }
 

@@ -4,7 +4,7 @@
 
 ### Breaking changes
 
-- Updated rust-polars to unreleased version (> 0.40.0) (#1104, #1110):
+- Updated rust-polars to unreleased version (> 0.40.0) (#1104, #1110, #1117):
   - In `$join()`, there is a new argument `coalesce` and the `how` options now
     accept `"full"` instead of `"outer"` and `"outer_coalesce"`.
   - `$top_k()` and `$bottom_k()` gain three arguments `nulls_last`,
@@ -26,7 +26,10 @@
   - In all functions accepting optimization parameter (such as
     `projection_pushdown`), there is a new parameter `cluster_with_columns` to
     combine sequential independent calls to `$with_columns()`.
-
+  - `$str$expload()` is removed.
+  - The `check_sorted` argument is removed from `$rolling()` and `$group_by_dynamic()`.
+    Sortedness is now verified in a quick manner, so this argument is no longer needed
+    (pola-rs/polars#16494).
 - As warned in v0.16.0, the order of arguments in `pl$Series` is changed (#1071).
   The first argument is now `name`, and the second argument is `values`.
 - `$to_struct()` on an Expr is removed. This method is now only available for

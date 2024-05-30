@@ -962,17 +962,6 @@ test_that("rolling for LazyFrame: using difftime as period", {
   )
 })
 
-test_that("rolling for LazyFrame: error if not explicitly sorted", {
-  df = pl$LazyFrame(
-    index = c(1L, 2L, 3L, 4L, 8L, 9L),
-    a = c(3, 7, 5, 9, 2, 1)
-  )
-  expect_grepl_error(
-    df$rolling(index_column = "index", period = "2i")$agg(pl$col("a"))$collect(),
-    "not explicitly sorted"
-  )
-})
-
 test_that("rolling for LazyFrame: error if period is negative", {
   df = pl$LazyFrame(
     index = c(1L, 2L, 3L, 4L, 8L, 9L),
@@ -1013,25 +1002,6 @@ test_that("rolling for LazyFrame: argument 'group_by' works", {
     df$rolling(index_column = "index", period = "2i", group_by = pl$col("grp"))$agg(
       pl$sum("a")$alias("sum_a")
     )$collect()$to_data_frame()
-  )
-})
-
-test_that("rolling for LazyFrame: argument 'check_sorted' works", {
-  df = pl$LazyFrame(
-    index = c(2L, 1L, 3L, 4L, 9L, 8L), # unsorted index
-    grp = c("a", "a", rep("b", 4)),
-    a = c(3, 7, 5, 9, 2, 1)
-  )
-  expect_grepl_error(
-    df$rolling(index_column = "index", period = "2i", group_by = "grp")$agg(
-      pl$sum("a")$alias("sum_a")
-    )$collect(),
-    "not sorted"
-  )
-  expect_no_error(
-    df$rolling(index_column = "index", period = "2i", group_by = "grp", check_sorted = FALSE)$agg(
-      pl$sum("a")$alias("sum_a")
-    )$collect()
   )
 })
 

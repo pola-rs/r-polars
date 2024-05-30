@@ -1084,8 +1084,6 @@ RPolarsExpr$str_replace_all <- function(pat, value, literal) .Call(wrap__RPolars
 
 RPolarsExpr$str_slice <- function(offset, length) .Call(wrap__RPolarsExpr__str_slice, self, offset, length)
 
-RPolarsExpr$str_explode <- function() .Call(wrap__RPolarsExpr__str_explode, self)
-
 RPolarsExpr$str_to_integer <- function(base, strict) .Call(wrap__RPolarsExpr__str_to_integer, self, base, strict)
 
 RPolarsExpr$str_reverse <- function() .Call(wrap__RPolarsExpr__str_reverse, self)
@@ -1154,7 +1152,7 @@ RPolarsExpr$corr <- function(a, b, method, ddof, propagate_nans) .Call(wrap__RPo
 
 RPolarsExpr$rolling_corr <- function(a, b, window_size, min_periods, ddof) .Call(wrap__RPolarsExpr__rolling_corr, a, b, window_size, min_periods, ddof)
 
-RPolarsExpr$rolling <- function(index_column, period, offset, closed, check_sorted) .Call(wrap__RPolarsExpr__rolling, self, index_column, period, offset, closed, check_sorted)
+RPolarsExpr$rolling <- function(index_column, period, offset, closed) .Call(wrap__RPolarsExpr__rolling, self, index_column, period, offset, closed)
 
 #' @export
 `$.RPolarsExpr` <- function (self, name) { func <- RPolarsExpr[[name]]; environment(func) <- environment(); func }
@@ -1270,9 +1268,9 @@ RPolarsLazyFrame$clone_in_rust <- function() .Call(wrap__RPolarsLazyFrame__clone
 
 RPolarsLazyFrame$with_context <- function(contexts) .Call(wrap__RPolarsLazyFrame__with_context, self, contexts)
 
-RPolarsLazyFrame$rolling <- function(index_column, period, offset, closed, group_by, check_sorted) .Call(wrap__RPolarsLazyFrame__rolling, self, index_column, period, offset, closed, group_by, check_sorted)
+RPolarsLazyFrame$rolling <- function(index_column, period, offset, closed, group_by) .Call(wrap__RPolarsLazyFrame__rolling, self, index_column, period, offset, closed, group_by)
 
-RPolarsLazyFrame$group_by_dynamic <- function(index_column, every, period, offset, label, include_boundaries, closed, by, start_by, check_sorted) .Call(wrap__RPolarsLazyFrame__group_by_dynamic, self, index_column, every, period, offset, label, include_boundaries, closed, by, start_by, check_sorted)
+RPolarsLazyFrame$group_by_dynamic <- function(index_column, every, period, offset, label, include_boundaries, closed, by, start_by) .Call(wrap__RPolarsLazyFrame__group_by_dynamic, self, index_column, every, period, offset, label, include_boundaries, closed, by, start_by)
 
 RPolarsLazyFrame$to_dot <- function(optimized) .Call(wrap__RPolarsLazyFrame__to_dot, self, optimized)
 

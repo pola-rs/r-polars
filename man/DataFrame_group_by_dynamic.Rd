@@ -14,8 +14,7 @@ DataFrame_group_by_dynamic(
   closed = "left",
   label = "left",
   group_by = NULL,
-  start_by = "window",
-  check_sorted = TRUE
+  start_by = "window"
 )
 }
 \arguments{
@@ -64,11 +63,6 @@ and then adding \code{offset}. Note that weekly windows start on Monday.
 \item a day of the week (only takes effect if \code{every} contains \code{"w"}): \code{"monday"}
 starts the window on the Monday before the first data point, etc.
 }}
-
-\item{check_sorted}{Check whether data is actually sorted. Checking it is
-expensive so if you are sure the data within the \code{index_column} is sorted, you
-can set this to \code{FALSE} but note that if the data actually is unsorted, it
-will lead to incorrect output.}
 }
 \value{
 A \link[=GroupBy_class]{GroupBy} object
