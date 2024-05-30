@@ -4,14 +4,7 @@
 \alias{Expr_rolling}
 \title{Create rolling groups based on a time or numeric column}
 \usage{
-Expr_rolling(
-  index_column,
-  ...,
-  period,
-  offset = NULL,
-  closed = "right",
-  check_sorted = TRUE
-)
+Expr_rolling(index_column, ..., period, offset = NULL, closed = "right")
 }
 \arguments{
 \item{index_column}{Column used to group based on the time window. Often of
@@ -32,11 +25,6 @@ See the \verb{Polars duration string language} section for details.}
 
 \item{closed}{Define which sides of the temporal interval are closed
 (inclusive). This can be either \code{"left"}, \code{"right"}, \code{"both"} or \code{"none"}.}
-
-\item{check_sorted}{Check whether data is actually sorted. Checking it is
-expensive so if you are sure the data within the \code{index_column} is sorted, you
-can set this to \code{FALSE} but note that if the data actually is unsorted, it
-will lead to incorrect output.}
 }
 \value{
 Expr

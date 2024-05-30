@@ -2659,35 +2659,6 @@ test_that("rolling: passing a difftime as period works", {
   )
 })
 
-test_that("rolling, arg check_sorted", {
-  dates = c(
-    "2020-01-02 18:12:48", "2020-01-03 19:45:32", "2020-01-08 23:16:43",
-    "2020-01-01 13:45:48", "2020-01-01 16:42:13", "2020-01-01 16:45:09"
-  )
-
-  df = pl$DataFrame(dt = dates, a = c(3, 7, 5, 9, 2, 1))$
-    with_columns(
-    pl$col("dt")$str$strptime(pl$Datetime("us"), format = "%Y-%m-%d %H:%M:%S")
-  )
-
-  expect_grepl_error(
-    df$with_columns(
-      sum_a_offset1 = pl$sum("a")$rolling(index_column = "dt", period = "2d")
-    ),
-    "is not explicitly sorted"
-  )
-
-  # no error message but wrong output
-  expect_no_error(
-    df$with_columns(pl$col("dt")$set_sorted())$with_columns(
-      sum_a_offset1 = pl$sum("a")$rolling(
-        index_column = "dt", period = "2d",
-        check_sorted = FALSE
-      )
-    )
-  )
-})
-
 test_that("eq_missing and ne_missing", {
   x = c(rep(TRUE, 3), rep(FALSE, 3), rep(NA, 3))
   y = c(rep(c(TRUE, FALSE, NA), 3))

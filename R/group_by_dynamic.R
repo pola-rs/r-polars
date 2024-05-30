@@ -40,7 +40,7 @@ RPolarsDynamicGroupBy = new.env(parent = emptyenv())
 #' @noRd
 construct_group_by_dynamic = function(
     df, index_column, every, period, offset, include_boundaries, closed, label,
-    group_by, start_by, check_sorted) {
+    group_by, start_by) {
   if (!inherits(df, "RPolarsDataFrame")) {
     stop("internal error: construct_group called not on DataFrame")
   }
@@ -58,8 +58,7 @@ construct_group_by_dynamic = function(
     closed = closed,
     label = label,
     group_by = group_by,
-    start_by = start_by,
-    check_sorted = check_sorted
+    start_by = start_by
   )
   class(out) = "RPolarsDynamicGroupBy"
   out
@@ -96,8 +95,7 @@ DynamicGroupBy_agg = function(...) {
     closed = prv$closed,
     label = prv$label,
     group_by = prv$group_by,
-    start_by = prv$start_by,
-    check_sorted = prv$check_sorted
+    start_by = prv$start_by
   )$
     agg(unpack_list(..., .context = "in $agg():"))$
     collect(no_optimization = TRUE)

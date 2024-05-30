@@ -36,7 +36,7 @@ RPolarsRollingGroupBy = new.env(parent = emptyenv())
 #' The internal RollingGroupBy constructor
 #' @return The input as grouped DataFrame
 #' @noRd
-construct_rolling_group_by = function(df, index_column, period, offset, closed, group_by, check_sorted) {
+construct_rolling_group_by = function(df, index_column, period, offset, closed, group_by) {
   if (!inherits(df, "RPolarsDataFrame")) {
     stop("internal error: construct_group called not on DataFrame")
   }
@@ -50,8 +50,7 @@ construct_rolling_group_by = function(df, index_column, period, offset, closed, 
     period = period,
     offset = offset,
     closed = closed,
-    group_by = group_by,
-    check_sorted = check_sorted
+    group_by = group_by
   )
   class(out) = "RPolarsRollingGroupBy"
   out
@@ -96,8 +95,7 @@ RollingGroupBy_agg = function(...) {
     period = prv$period,
     offset = prv$offset,
     closed = prv$closed,
-    group_by = prv$group_by,
-    check_sorted = prv$check_sorted
+    group_by = prv$group_by
   )$
     agg(unpack_list(..., .context = "in $agg():"))$
     collect(no_optimization = TRUE)

@@ -3282,10 +3282,6 @@ Expr_peak_max = function() {
 #' See the `Polars duration string language` section for details.
 #' @param closed Define which sides of the temporal interval are closed
 #' (inclusive). This can be either `"left"`, `"right"`, `"both"` or `"none"`.
-#' @param check_sorted Check whether data is actually sorted. Checking it is
-#' expensive so if you are sure the data within the `index_column` is sorted, you
-#' can set this to `FALSE` but note that if the data actually is unsorted, it
-#' will lead to incorrect output.
 #'
 #' @inheritSection polars_duration_string  Polars duration string language
 #' @return Expr
@@ -3319,11 +3315,10 @@ Expr_rolling = function(
     ...,
     period,
     offset = NULL,
-    closed = "right",
-    check_sorted = TRUE) {
+    closed = "right") {
   period = parse_as_polars_duration_string(period)
   offset = parse_as_polars_duration_string(offset) %||% negate_duration_string(period)
-  .pr$Expr$rolling(self, index_column, period, offset, closed, check_sorted) |>
+  .pr$Expr$rolling(self, index_column, period, offset, closed) |>
     unwrap("in $rolling():")
 }
 
