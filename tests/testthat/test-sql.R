@@ -97,7 +97,7 @@ test_that("sql method for DataFrame and LazyFrame", {
   # Test the envir argument works correctly
   func1 = function(data) {
     df1 = pl$DataFrame(foo = "bar")
-    data$sql("select * from self join df1 using (x)", envir = parent.frame())
+    data$sql("select x from self join df1 using (x)", envir = parent.frame())
   }
 
   expect_true(df1$equals(
