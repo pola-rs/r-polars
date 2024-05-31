@@ -26,7 +26,7 @@
   - In all functions accepting optimization parameter (such as
     `projection_pushdown`), there is a new parameter `cluster_with_columns` to
     combine sequential independent calls to `$with_columns()`.
-  - `$str$expload()` is removed.
+  - `$str$explode()` is removed.
   - The `check_sorted` argument is removed from `$rolling()` and `$group_by_dynamic()`.
     Sortedness is now verified in a quick manner, so this argument is no longer needed
     (pola-rs/polars#16494).
