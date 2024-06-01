@@ -873,7 +873,7 @@ test_that("rolling for LazyFrame: date variable", {
     ),
     a = c(3, 7, 5, 9, 2, 1)
   )$with_columns(
-    pl$col("dt")$str$strptime(pl$Date, format = NULL)$set_sorted()
+    pl$col("dt")$str$strptime(pl$Date, format = NULL)
   )
 
   actual = df$rolling(index_column = "dt", period = "2d")$agg(
@@ -900,7 +900,7 @@ test_that("rolling for LazyFrame: datetime variable", {
     ),
     a = c(3, 7, 5, 9, 2, 1)
   )$with_columns(
-    pl$col("dt")$str$strptime(pl$Datetime("ms"), format = NULL)$set_sorted()
+    pl$col("dt")$str$strptime(pl$Datetime("ms"), format = NULL)
   )
 
   actual = df$rolling(index_column = "dt", period = "2d")$agg(
@@ -923,7 +923,7 @@ test_that("rolling for LazyFrame: integer variable", {
   df = pl$LazyFrame(
     index = c(1L, 2L, 3L, 4L, 8L, 9L),
     a = c(3, 7, 5, 9, 2, 1)
-  )$with_columns(pl$col("index")$set_sorted())
+  )
 
   actual = df$rolling(index_column = "index", period = "2i")$agg(
     pl$sum("a")$alias("sum_a"),
@@ -949,7 +949,7 @@ test_that("rolling for LazyFrame: using difftime as period", {
     ),
     a = c(3, 7, 5, 9, 2, 1)
   )$with_columns(
-    pl$col("dt")$str$strptime(pl$Date, format = NULL)$set_sorted()
+    pl$col("dt")$str$strptime(pl$Date, format = NULL)
   )
 
   expect_equal(
@@ -959,17 +959,6 @@ test_that("rolling for LazyFrame: using difftime as period", {
     df$rolling(index_column = "dt", period = as.difftime(2, units = "days"))$agg(
       pl$sum("a")$alias("sum_a")
     )$collect()$to_data_frame()
-  )
-})
-
-test_that("rolling for LazyFrame: error if not explicitly sorted", {
-  df = pl$LazyFrame(
-    index = c(1L, 2L, 3L, 4L, 8L, 9L),
-    a = c(3, 7, 5, 9, 2, 1)
-  )
-  expect_grepl_error(
-    df$rolling(index_column = "index", period = "2i")$agg(pl$col("a"))$collect(),
-    "not explicitly sorted"
   )
 })
 
@@ -1016,30 +1005,11 @@ test_that("rolling for LazyFrame: argument 'group_by' works", {
   )
 })
 
-test_that("rolling for LazyFrame: argument 'check_sorted' works", {
-  df = pl$LazyFrame(
-    index = c(2L, 1L, 3L, 4L, 9L, 8L), # unsorted index
-    grp = c("a", "a", rep("b", 4)),
-    a = c(3, 7, 5, 9, 2, 1)
-  )
-  expect_grepl_error(
-    df$rolling(index_column = "index", period = "2i", group_by = "grp")$agg(
-      pl$sum("a")$alias("sum_a")
-    )$collect(),
-    "not sorted"
-  )
-  expect_no_error(
-    df$rolling(index_column = "index", period = "2i", group_by = "grp", check_sorted = FALSE)$agg(
-      pl$sum("a")$alias("sum_a")
-    )$collect()
-  )
-})
-
 test_that("rolling for LazyFrame: error if index not int or date/time", {
   df = pl$LazyFrame(
     index = c(1:5, 6.0),
     a = c(3, 7, 5, 9, 2, 1)
-  )$with_columns(pl$col("index")$set_sorted())
+  )
 
   expect_grepl_error(
     df$rolling(index_column = "index", period = "2i")$agg(
@@ -1056,7 +1026,7 @@ test_that("rolling for LazyFrame: arg 'offset' works", {
     ),
     a = c(3, 7, 5, 9, 2, 1)
   )$with_columns(
-    pl$col("dt")$str$strptime(pl$Date, format = NULL)$set_sorted()
+    pl$col("dt")$str$strptime(pl$Date, format = NULL)
   )
 
   # checked with python-polars but unclear on how "offset" works
@@ -1080,7 +1050,7 @@ test_that("rolling for LazyFrame: can be ungrouped", {
   df = pl$LazyFrame(
     index = c(1:5, 6.0),
     a = c(3, 7, 5, 9, 2, 1)
-  )$with_columns(pl$col("index")$set_sorted())
+  )
 
   actual = df$rolling(index_column = "dt", period = "2i")$
     ungroup()$

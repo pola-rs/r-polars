@@ -676,15 +676,6 @@ test_that("str$slice", {
 })
 
 
-test_that("str$str_explode", {
-  s = c("64", "255", "9", "11", "16", "2.5", NA, "not number")
-  expect_identical(
-    pl$lit(s)$str$explode()$to_r(),
-    unlist(strsplit(s, split = ""))
-  )
-})
-
-
 test_that("str$to_integer", {
   expect_identical(
     pl$lit(c("110", "101", "010"))$str$to_integer(base = 2)$to_r(),

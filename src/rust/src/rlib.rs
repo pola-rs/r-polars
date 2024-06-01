@@ -404,6 +404,18 @@ pub fn int_ranges(start: Robj, end: Robj, step: Robj, dtype: Robj) -> RResult<RP
     Ok(result.into())
 }
 
+#[extendr]
+pub fn field(names: Robj) -> RResult<RPolarsExpr> {
+    let names = robj_to!(Vec, String, names)?;
+    Ok(pl::Expr::Field(
+        names
+            .into_iter()
+            .map(|name| pl::Arc::from(name.as_str()))
+            .collect(),
+    )
+    .into())
+}
+
 extendr_module! {
     mod rlib;
 
@@ -420,6 +432,8 @@ extendr_module! {
     fn max_horizontal;
     fn sum_horizontal;
     fn mean_horizontal;
+
+    fn field;
 
     fn concat_list;
     fn concat_str;

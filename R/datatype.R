@@ -213,7 +213,7 @@ DataType_Duration = function(time_unit = "us") {
 #' a `Series`, see the examples.
 #'
 #' @param ... Either named inputs of the form `field_name = datatype` or objects
-#' of class `RPolarsField` created by [`pl$Field()`][pl_Field].
+#' of class `RPolarsField` created by [`pl$Field()`][pl_Field_class].
 #' @return A Struct DataType containing a list of Fields
 #' @examples
 #' # create a Struct-DataType

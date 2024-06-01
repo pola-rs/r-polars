@@ -192,8 +192,6 @@ test_that("group_by_dynamic for DataFrame calls the LazyFrame method", {
   df = pl$DataFrame(
     dt = as.Date(as.Date("2021-12-16"):as.Date("2021-12-22"), origin = "1970-01-01"),
     n = 0:6
-  )$with_columns(
-    pl$col("dt")$set_sorted()
   )
 
   actual = df$group_by_dynamic(index_column = "dt", every = "2d")$agg(
@@ -210,8 +208,6 @@ test_that("group_by_dynamic for LazyFrame: date variable", {
   df = pl$LazyFrame(
     dt = as.Date(as.Date("2021-12-16"):as.Date("2021-12-22"), origin = "1970-01-01"),
     n = 0:6
-  )$with_columns(
-    pl$col("dt")$set_sorted()
   )
 
   actual = df$group_by_dynamic(index_column = "dt", every = "2d")$agg(
@@ -233,7 +229,7 @@ test_that("group_by_dynamic for LazyFrame: datetime variable", {
     ),
     n = 0:6
   )$with_columns(
-    pl$col("dt")$str$strptime(pl$Datetime("ms"), format = NULL)$set_sorted()
+    pl$col("dt")$str$strptime(pl$Datetime("ms"), format = NULL)
   )
 
   actual = df$group_by_dynamic(index_column = "dt", every = "1h")$agg(
@@ -250,7 +246,7 @@ test_that("group_by_dynamic for LazyFrame: integer variable", {
   df = pl$LazyFrame(
     idx = 0:5,
     n = 0:5
-  )$with_columns(pl$col("idx")$set_sorted())
+  )
 
   actual = df$group_by_dynamic(
     "idx",
@@ -263,22 +259,11 @@ test_that("group_by_dynamic for LazyFrame: integer variable", {
   )
 })
 
-test_that("group_by_dynamic for LazyFrame: error if not explicitly sorted", {
-  df = pl$LazyFrame(
-    index = c(1L, 2L, 3L, 4L, 8L, 9L),
-    a = c(3, 7, 5, 9, 2, 1)
-  )
-  expect_grepl_error(
-    df$group_by_dynamic(index_column = "index", every = "2i")$agg(pl$col("a"))$collect(),
-    "not explicitly sorted"
-  )
-})
-
 test_that("group_by_dynamic for LazyFrame: error if every is negative", {
   df = pl$LazyFrame(
     idx = 0:5,
     n = 0:5
-  )$with_columns(pl$col("idx")$set_sorted())
+  )
 
   expect_grepl_error(
     df$group_by_dynamic("idx", every = "-2i")$agg(pl$col("n")$mean())$collect(),
@@ -295,7 +280,7 @@ test_that("group_by_dynamic for LazyFrame: arg 'closed' works", {
     ),
     n = 0:6
   )$with_columns(
-    pl$col("dt")$str$strptime(pl$Datetime("ms"), format = NULL)$set_sorted()
+    pl$col("dt")$str$strptime(pl$Datetime("ms"), format = NULL)
   )
 
   actual = df$group_by_dynamic(index_column = "dt", closed = "right", every = "1h")$agg(
@@ -324,7 +309,7 @@ test_that("group_by_dynamic for LazyFrame: arg 'label' works", {
     ),
     n = 0:6
   )$with_columns(
-    pl$col("dt")$str$strptime(pl$Datetime("ms"), format = NULL)$set_sorted()$dt$replace_time_zone("UTC")
+    pl$col("dt")$str$strptime(pl$Datetime("ms"), format = NULL)$dt$replace_time_zone("UTC")
   )
 
   actual = df$group_by_dynamic(index_column = "dt", label = "right", every = "1h")$agg(
@@ -356,7 +341,7 @@ test_that("group_by_dynamic for LazyFrame: arg 'start_by' works", {
     ),
     n = 0:6
   )$with_columns(
-    pl$col("dt")$str$strptime(pl$Datetime("ms", "UTC"), format = NULL)$set_sorted()
+    pl$col("dt")$str$strptime(pl$Datetime("ms", "UTC"), format = NULL)
   )
 
   for (i in c("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday")) {
@@ -391,7 +376,7 @@ test_that("group_by_dynamic for LazyFrame: argument 'by' works", {
     n = 0:6,
     grp = c("a", "a", "a", "b", "b", "a", "a")
   )$with_columns(
-    pl$col("dt")$str$strptime(pl$Datetime("ms"), format = NULL)$set_sorted()
+    pl$col("dt")$str$strptime(pl$Datetime("ms"), format = NULL)
   )
 
   actual = df$group_by_dynamic(index_column = "dt", every = "2h", group_by = pl$col("grp"))$agg(
@@ -414,30 +399,11 @@ test_that("group_by_dynamic for LazyFrame: argument 'by' works", {
   )
 })
 
-test_that("group_by_dynamic for LazyFrame: argument 'check_sorted' works", {
-  df = pl$LazyFrame(
-    index = c(2L, 1L, 3L, 4L, 9L, 8L), # unsorted index
-    grp = c("a", "a", rep("b", 4)),
-    a = c(3, 7, 5, 9, 2, 1)
-  )
-  expect_grepl_error(
-    df$group_by_dynamic(index_column = "index", every = "2i", group_by = "grp")$agg(
-      pl$sum("a")$alias("sum_a")
-    )$collect(),
-    "not sorted"
-  )
-  expect_no_error(
-    df$group_by_dynamic(index_column = "index", every = "2i", group_by = "grp", check_sorted = FALSE)$agg(
-      pl$sum("a")$alias("sum_a")
-    )$collect()
-  )
-})
-
 test_that("group_by_dynamic for LazyFrame: error if index not int or date/time", {
   df = pl$LazyFrame(
     index = c(1:5, 6.0),
     a = c(3, 7, 5, 9, 2, 1)
-  )$with_columns(pl$col("index")$set_sorted())
+  )
 
   expect_grepl_error(
     df$group_by_dynamic(index_column = "index", every = "2i")$agg(
@@ -454,7 +420,7 @@ test_that("group_by_dynamic for LazyFrame: arg 'offset' works", {
     ),
     n = c(3, 10, 5, 9, 2, 1)
   )$with_columns(
-    pl$col("dt")$str$strptime(pl$Date, format = NULL)$set_sorted()
+    pl$col("dt")$str$strptime(pl$Date, format = NULL)
   )
 
   # checked with python-polars but unclear on how "offset" works
@@ -476,7 +442,7 @@ test_that("group_by_dynamic for LazyFrame: arg 'include_boundaries' works", {
     ),
     n = c(3, 7, 5, 9, 2, 1)
   )$with_columns(
-    pl$col("dt")$str$strptime(pl$Date, format = NULL)$set_sorted()
+    pl$col("dt")$str$strptime(pl$Date, format = NULL)
   )
 
   actual = df$group_by_dynamic(
@@ -494,7 +460,7 @@ test_that("group_by_dynamic for LazyFrame: can be ungrouped", {
   df = pl$LazyFrame(
     index = c(1:5, 6.0),
     a = c(3, 7, 5, 9, 2, 1)
-  )$with_columns(pl$col("index")$set_sorted())
+  )
 
   actual = df$group_by_dynamic(index_column = "dt", every = "2i")$
     ungroup()$

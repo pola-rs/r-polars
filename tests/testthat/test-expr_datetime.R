@@ -192,7 +192,7 @@ test_that("dt$combine", {
   expect_identical(
     (
       pl$lit(as.Date("2021-01-01"))
-      $dt$combine(3600 * 1.5E9, tu = "ns")
+      $dt$combine(3600 * 1.5E9, time_unit = "ns")
       $cast(pl$Datetime("us", "GMT"))
       $to_r()
     ),
@@ -202,7 +202,7 @@ test_that("dt$combine", {
   expect_identical(
     (
       pl$lit(as.Date("2021-01-01"))
-      $dt$combine(-3600 * 1.5E9, tu = "ns")
+      $dt$combine(-3600 * 1.5E9, time_unit = "ns")
       $cast(pl$Datetime("us", "GMT"))
       $to_r()
     ),
@@ -210,7 +210,7 @@ test_that("dt$combine", {
   )
 
   expect_grepl_error(
-    pl$lit(as.Date("2021-01-01"))$dt$combine(1, tu = "s")
+    pl$lit(as.Date("2021-01-01"))$dt$combine(1, time_unit = "s")
   )
 })
 

@@ -10,8 +10,7 @@ LazyFrame_rolling(
   period,
   offset = NULL,
   closed = "right",
-  group_by = NULL,
-  check_sorted = TRUE
+  group_by = NULL
 )
 }
 \arguments{
@@ -36,11 +35,6 @@ See the \verb{Polars duration string language} section for details.}
 (inclusive). This can be either \code{"left"}, \code{"right"}, \code{"both"} or \code{"none"}.}
 
 \item{group_by}{Also group by this column/these columns.}
-
-\item{check_sorted}{Check whether data is actually sorted. Checking it is
-expensive so if you are sure the data within the \code{index_column} is sorted, you
-can set this to \code{FALSE} but note that if the data actually is unsorted, it
-will lead to incorrect output.}
 }
 \value{
 A \link[=LazyGroupBy_class]{LazyGroupBy} object

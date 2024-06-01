@@ -23,8 +23,8 @@ Each date/datetime in the second half of the interval
 is mapped to the end of its bucket.
 }
 \details{
-The \code{every} and \code{offset} argument are created with the
-the following string language:
+The \code{every} and \code{offset} arguments are created with the
+following string language:
 \itemize{
 \item 1ns # 1 nanosecond
 \item 1us # 1 microsecond

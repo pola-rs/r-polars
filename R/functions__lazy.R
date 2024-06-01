@@ -1345,3 +1345,23 @@ pl_int_ranges = function(start = 0, end = NULL, step = 1, ..., dtype = pl$Int64)
   int_ranges(start, end, step, dtype) |>
     unwrap("in pl$int_ranges():")
 }
+
+
+#' Quickly select a field in a Struct
+#'
+#' This is syntactic sugar that should mostly be used in
+#' [`$struct$with_fields()`][ExprStruct_with_fields]. `pl$field("x")` is
+#' equivalent to `pl$col("my_struct")$struct$field("x")`.
+#'
+#' @param name Name of the field to select.
+#'
+#' @return An Expr with the datatype from the selected field.
+#'
+#' @inherit ExprStruct_with_fields examples
+# Necessary because R cannot have two man pages called "pl_Field" and
+# "pl_field"
+#' @name pl_field
+pl_field = function(name) {
+  field(name) |>
+    unwrap("in pl$field():")
+}

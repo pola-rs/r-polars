@@ -843,12 +843,10 @@ test_that("Expr_sort", {
     pl$col("a")$sort(descending = TRUE)$alias("sort_reverse"),
     pl$col("a")$sort(descending = TRUE, nulls_last = TRUE)$alias("sort_reverse_nulls_last"),
     pl$col("a")
-    $set_sorted(descending = FALSE)
     $sort(descending = FALSE, nulls_last = TRUE)
     $alias("fake_sort_nulls_last"),
     (
       pl$col("a")
-      $set_sorted(descending = TRUE)
       $sort(descending = TRUE, nulls_last = TRUE)
       $alias("fake_sort_reverse_nulls_last")
     )
@@ -2546,7 +2544,7 @@ test_that("rolling, basic", {
 
   df = pl$DataFrame(dt = dates, a = c(3, 7, 5, 9, 2, 1))$
     with_columns(
-    pl$col("dt")$str$strptime(pl$Datetime("us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
+    pl$col("dt")$str$strptime(pl$Datetime("us"), format = "%Y-%m-%d %H:%M:%S")
   )
 
   out = df$with_columns(
@@ -2575,7 +2573,7 @@ test_that("rolling, arg closed", {
 
   df = pl$DataFrame(dt = dates, a = c(3, 7, 5, 9, 2, 1))$
     with_columns(
-    pl$col("dt")$str$strptime(pl$Datetime("us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
+    pl$col("dt")$str$strptime(pl$Datetime("us"), format = "%Y-%m-%d %H:%M:%S")
   )
 
   out = df$with_columns(
@@ -2604,7 +2602,7 @@ test_that("rolling, arg offset", {
 
   df = pl$DataFrame(dt = dates, a = c(3, 7, 5, 9, 2, 1))$
     with_columns(
-    pl$col("dt")$str$strptime(pl$Datetime("us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
+    pl$col("dt")$str$strptime(pl$Datetime("us"), format = "%Y-%m-%d %H:%M:%S")
   )
 
   # with offset = "1d", we start the window at one or two days after the value
@@ -2631,7 +2629,7 @@ test_that("rolling: error if period is negative", {
 
   df = pl$DataFrame(dt = dates, a = c(3, 7, 5, 9, 2, 1))$
     with_columns(
-    pl$col("dt")$str$strptime(pl$Datetime("us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
+    pl$col("dt")$str$strptime(pl$Datetime("us"), format = "%Y-%m-%d %H:%M:%S")
   )
   expect_grepl_error(
     df$select(pl$col("a")$rolling(index_column = "dt", period = "-2d")),
@@ -2647,7 +2645,7 @@ test_that("rolling: passing a difftime as period works", {
 
   df = pl$DataFrame(dt = dates, a = c(3, 7, 5, 9, 2, 1))$
     with_columns(
-    pl$col("dt")$str$strptime(pl$Datetime("us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
+    pl$col("dt")$str$strptime(pl$Datetime("us"), format = "%Y-%m-%d %H:%M:%S")
   )
   expect_identical(
     df$select(
@@ -2656,35 +2654,6 @@ test_that("rolling: passing a difftime as period works", {
     df$select(
       sum_a_offset1 = pl$sum("a")$rolling(index_column = "dt", period = as.difftime(2, units = "days"), offset = "1d")
     )$to_data_frame()
-  )
-})
-
-test_that("rolling, arg check_sorted", {
-  dates = c(
-    "2020-01-02 18:12:48", "2020-01-03 19:45:32", "2020-01-08 23:16:43",
-    "2020-01-01 13:45:48", "2020-01-01 16:42:13", "2020-01-01 16:45:09"
-  )
-
-  df = pl$DataFrame(dt = dates, a = c(3, 7, 5, 9, 2, 1))$
-    with_columns(
-    pl$col("dt")$str$strptime(pl$Datetime("us"), format = "%Y-%m-%d %H:%M:%S")
-  )
-
-  expect_grepl_error(
-    df$with_columns(
-      sum_a_offset1 = pl$sum("a")$rolling(index_column = "dt", period = "2d")
-    ),
-    "is not explicitly sorted"
-  )
-
-  # no error message but wrong output
-  expect_no_error(
-    df$with_columns(pl$col("dt")$set_sorted())$with_columns(
-      sum_a_offset1 = pl$sum("a")$rolling(
-        index_column = "dt", period = "2d",
-        check_sorted = FALSE
-      )
-    )
   )
 })
 

@@ -50,8 +50,8 @@ ExprDT_truncate = function(every, offset = NULL) {
 #' @param every string encoding duration see details.
 #' @param offset optional string encoding duration see details.
 #'
-#' @details The ``every`` and ``offset`` argument are created with the
-#' the following string language:
+#' @details The ``every`` and ``offset`` arguments are created with the
+#' following string language:
 #' - 1ns # 1 nanosecond
 #' - 1us # 1 microsecond
 #' - 1ms # 1 millisecond
@@ -89,47 +89,39 @@ ExprDT_round = function(every, offset = NULL) {
     unwrap("in $dt$round()")
 }
 
-# ExprDT_combine = function(self, tm: time | pli.RPolarsExpr, tu: TimeUnit = "us") -> pli.RPolarsExpr:
-
-
-#' Combine Data and Time
-#' @description  Create a naive Datetime from an existing Date/Datetime expression and a Time.
-#' Each date/datetime in the first half of the interval
-#' is mapped to the start of its bucket.
-#' Each date/datetime in the second half of the interval
-#' is mapped to the end of its bucket.
+#' Combine Date and Time
 #'
+#' If the underlying expression is a Datetime then its time component is
+#' replaced, and if it is a Date then a new Datetime is created by combining
+#' the two values.
 #'
-#' @param tm Expr or numeric or PTime, the number of epoch since or before(if negative) the Date
-#' or tm is an Expr e.g. a column of DataType 'Time' or something into an Expr.
-#' @param tu time unit of epochs, default is "us", if tm is a PTime, then tz passed via PTime.
+#' @param time The number of epoch since or before (if negative) the Date. Can be
+#' an Expr or a PTime.
+#' @inheritParams DataType_Datetime
 #'
-#'
-#' @details The ``tu`` allows the following time time units
-#' the following string language:
-#' - 1ns # 1 nanosecond
-#' - 1us # 1 microsecond
-#' - 1ms # 1 millisecond
-#'
-#' @return   Date/Datetime expr
-#' @keywords ExprDT
-#' @aliases (Expr)$dt$combine
+#' @inherit ExprDT_truncate return
 #' @examples
-#' # Using pl$PTime
-#' pl$lit(as.Date("2021-01-01"))$dt$combine(pl$PTime("02:34:12"))$to_series()
-#' pl$lit(as.Date("2021-01-01"))$dt$combine(pl$PTime(3600 * 1.5, tu = "s"))$to_series()
-#' pl$lit(as.Date("2021-01-01"))$dt$combine(pl$PTime(3600 * 1.5E6 + 123, tu = "us"))$to_series()
+#' df = pl$DataFrame(
+#'   dtm = c(
+#'     ISOdatetime(2022, 12, 31, 10, 30, 45),
+#'     ISOdatetime(2023, 7, 5, 23, 59, 59)
+#'   ),
+#'   dt = c(ISOdate(2022, 10, 10), ISOdate(2022, 7, 5)),
+#'   tm = c(pl$time(1, 2, 3, 456000), pl$time(7, 8, 9, 101000))
+#' )$explode("tm")
 #'
-#' # pass double and set tu manually
-#' pl$lit(as.Date("2021-01-01"))$dt$combine(3600 * 1.5E6 + 123, tu = "us")$to_series()
+#' df
 #'
-#' # if needed to convert back to R it is more intuitive to set a specific time zone
-#' expr = pl$lit(as.Date("2021-01-01"))$dt$combine(3600 * 1.5E6 + 123, tu = "us")
-#' expr$cast(pl$Datetime("us", "GMT"))$to_r()
-ExprDT_combine = function(tm, tu = "us") {
-  if (inherits(tm, "PTime")) tu = "ns" # PTime implicitly gets converted to "ns"
-  if (!is_string(tu)) stop("combine: input tu is not a string, [%s ]", str_string(tu))
-  unwrap(.pr$Expr$dt_combine(self, wrap_e(tm), tu))
+#' df$select(
+#'   d1 = pl$col("dtm")$dt$combine(pl$col("tm")),
+#'   s2 = pl$col("dt")$dt$combine(pl$col("tm")),
+#'   d3 = pl$col("dt")$dt$combine(pl$time(4, 5, 6))
+#' )
+ExprDT_combine = function(time, time_unit = "us") {
+  # PTime implicitly gets converted to "ns"
+  if (inherits(time, "PTime")) time_unit = "ns"
+  .pr$Expr$dt_combine(self, time, time_unit) |>
+    unwrap("in $dt$combine():")
 }
 
 

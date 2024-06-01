@@ -20,8 +20,8 @@ use extendr_api::{extendr, prelude::*, rprintln};
 use pl::SeriesMethods;
 use polars::datatypes::*;
 use polars::prelude as pl;
-use polars::prelude::ArgAgg;
-use polars::prelude::IntoSeries;
+use polars::prelude::{ArgAgg, IntoSeries};
+use polars_core::series::IsSorted;
 pub const R_INT_NA_ENC: i32 = -2147483648;
 use crate::rpolarserr::polars_to_rpolars_err;
 use std::result::Result;
@@ -181,22 +181,22 @@ impl RPolarsSeries {
         self.0.arg_max()
     }
 
+    // TODO: rename to `can_fast_explode_flag`
     pub fn fast_explode_flag(&self) -> bool {
-        self.0
-            .get_flags()
-            .contains(polars::chunked_array::Settings::FAST_EXPLODE_LIST)
+        match self.0.list() {
+            Err(_) => false,
+            Ok(list) => list._can_fast_explode(),
+        }
     }
 
+    // TODO: rename to `is_sorted_ascending_flag`
     pub fn is_sorted_flag(&self) -> bool {
-        self.0
-            .get_flags()
-            .contains(polars::chunked_array::Settings::SORTED_ASC)
+        matches!(self.0.is_sorted_flag(), IsSorted::Ascending)
     }
 
+    // TODO: rename to `is_sorted_descending_flag`
     pub fn is_sorted_reverse_flag(&self) -> bool {
-        self.0
-            .get_flags()
-            .contains(polars::chunked_array::Settings::SORTED_DSC)
+        matches!(self.0.is_sorted_flag(), IsSorted::Descending)
     }
 
     pub fn is_sorted(&self, descending: Robj) -> RResult<bool> {

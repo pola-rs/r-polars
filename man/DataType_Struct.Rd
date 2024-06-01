@@ -8,7 +8,7 @@ DataType_Struct(...)
 }
 \arguments{
 \item{...}{Either named inputs of the form \code{field_name = datatype} or objects
-of class \code{RPolarsField} created by \code{\link[=pl_Field]{pl$Field()}}.}
+of class \code{RPolarsField} created by \code{\link[=pl_Field_class]{pl$Field()}}.}
 }
 \value{
 A Struct DataType containing a list of Fields

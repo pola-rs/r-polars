@@ -73,8 +73,34 @@ test_that("$struct$with_fields", {
     )
   )$unnest("coords")
 
+  # same thing but with pl$field()
+  out2 = df$select(
+    pl$col("coords")$struct$with_fields(
+      pl$field("x")$sqrt(),
+      y_mul = pl$field("y") * pl$col("multiply")
+    )
+  )$unnest("coords")
+
   expect_identical(
     out$to_data_frame(),
     data.frame(x = c(1, 2, 3), y = c(4, 9, 16), y_mul = c(40, 18, 48))
+  )
+
+  expect_identical(
+    out2$to_data_frame(),
+    data.frame(x = c(1, 2, 3), y = c(4, 9, 16), y_mul = c(40, 18, 48))
+  )
+})
+
+test_that("pl$field() errors if field doesn't exist", {
+  expect_grepl_error(
+    pl$DataFrame(x = c(1, 4, 9))$
+      select(coords = pl$struct("x"))$
+      select(
+      pl$col("coords")$struct$with_fields(
+        pl$field("foobar")
+      )
+    ),
+    "field not found"
   )
 })
