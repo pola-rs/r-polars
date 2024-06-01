@@ -1698,11 +1698,6 @@ test_that("Expr_rolling_*_by", {
     )$to_data_frame(),
     expected
   )
-
-  expect_error(
-    df$select(pl$col("a")$rolling_min_by(1, window_size = "2d")),
-    "must be the same length as values column"
-  )
 })
 
 test_that("Expr_rolling_*_by only works with date/datetime", {
@@ -1711,6 +1706,11 @@ test_that("Expr_rolling_*_by only works with date/datetime", {
   expect_error(
     df$select(pl$col("a")$rolling_min_by("id", window_size = "2i")),
     "`by` argument of dtype `i32` is not supported"
+  )
+
+  expect_error(
+    df$select(pl$col("a")$rolling_min_by(1, window_size = "2d")),
+    "must be the same length as values column"
   )
 })
 
