@@ -1666,6 +1666,131 @@ test_that("Expr_rolling_", {
   )
 })
 
+test_that("Expr_rolling_*_by", {
+  df = pl$DataFrame(
+    a = 1:6,
+    date = pl$datetime_range(as.Date("2001-1-1"), as.Date("2001-1-6"), "1d")
+  )
+
+  expected = data.frame(
+    min = c(1L, 1:5),
+    max = 1:6,
+    mean = c(1, 1.5, 2.5, 3.5, 4.5, 5.5),
+    sum = c(1L, 3L, 5L, 7L, 9L, 11L),
+    # std = c(NA, rep(0.7071067811865476, 5)),
+    # var = c(NA, rep(0.5, 5)),
+    median = c(1, 1.5, 2.5, 3.5, 4.5, 5.5)
+    # quantile_linear = c(NA, 1.33, 2.33, 3.33, 4.33, 5.33)
+  )
+
+  expect_identical(
+    df$select(
+      pl$col("a")$rolling_min_by("date", window_size = "2d")$alias("min"),
+      pl$col("a")$rolling_max_by("date", window_size = "2d")$alias("max"),
+      pl$col("a")$rolling_mean_by("date", window_size = "2d")$alias("mean"),
+      pl$col("a")$rolling_sum_by("date", window_size = "2d")$alias("sum"),
+      # pl$col("a")$rolling_std("date", window_size = "2d")$alias("std"),
+      # pl$col("a")$rolling_var("date", window_size = "2d")$alias("var"),
+      pl$col("a")$rolling_median_by("date", window_size = "2d")$alias("median")
+      # pl$col("a")$rolling_quantile(
+      #   quantile = .33, "date", window_size = "2d", interpolation = "linear"
+      # )$alias("quantile_linear")
+    )$to_data_frame(),
+    expected
+  )
+
+  expect_error(
+    df$select(pl$col("a")$rolling_min_by(1, window_size = "2d")),
+    "must be the same length as values column"
+  )
+})
+
+test_that("Expr_rolling_*_by only works with date/datetime", {
+  df = pl$DataFrame(a = 1:6, id = 11:16)
+
+  expect_error(
+    df$select(pl$col("a")$rolling_min_by("id", window_size = "2i")),
+    "`by` argument of dtype `i32` is not supported"
+  )
+})
+
+test_that("Expr_rolling_*_by: arg 'min_periods'", {
+  df = pl$DataFrame(
+    a = 1:6,
+    date = pl$datetime_range(as.Date("2001-1-1"), as.Date("2001-1-6"), "1d")
+  )
+
+  expected = data.frame(
+    min = c(NA_integer_, 1L:5L),
+    max = c(NA_integer_, 2L:6L),
+    mean = c(NA, 1.5, 2.5, 3.5, 4.5, 5.5),
+    sum = c(NA_integer_, 3L, 5L, 7L, 9L, 11L),
+    # std = c(NA, rep(0.7071067811865476, 5)),
+    # var = c(NA, rep(0.5, 5)),
+    median = c(NA, 1.5, 2.5, 3.5, 4.5, 5.5)
+    # quantile_linear = c(NA, 1.33, 2.33, 3.33, 4.33, 5.33)
+  )
+
+  expect_identical(
+    df$select(
+      pl$col("a")$rolling_min_by("date", window_size = "2d", min_periods = 2)$alias("min"),
+      pl$col("a")$rolling_max_by("date", window_size = "2d", min_periods = 2)$alias("max"),
+      pl$col("a")$rolling_mean_by("date", window_size = "2d", min_periods = 2)$alias("mean"),
+      pl$col("a")$rolling_sum_by("date", window_size = "2d", min_periods = 2)$alias("sum"),
+      # pl$col("a")$rolling_std("date", window_size = "2d", min_periods = 2)$alias("std"),
+      # pl$col("a")$rolling_var("date", window_size = "2d", min_periods = 2)$alias("var"),
+      pl$col("a")$rolling_median_by("date", window_size = "2d", min_periods = 2)$alias("median")
+      # pl$col("a")$rolling_quantile(
+      #   quantile = .33, "date", window_size = "2d", min_periods = 2, interpolation = "linear"
+      # )$alias("quantile_linear")
+    )$to_data_frame(),
+    expected
+  )
+
+  expect_error(
+    df$select(pl$col("a")$rolling_min_by("date", window_size = "2d", min_periods = -1)),
+    "cannot be less than zero"
+  )
+})
+
+test_that("Expr_rolling_*_by: arg 'closed'", {
+  df = pl$DataFrame(
+    a = 1:6,
+    date = pl$datetime_range(as.Date("2001-1-1"), as.Date("2001-1-6"), "1d")
+  )
+
+  expected = data.frame(
+    min = c(NA_integer_, 1L, 1:4),
+    max = c(NA_integer_, 1:5),
+    mean = c(NA, 1, 1.5, 2.5, 3.5, 4.5),
+    sum = c(NA, 1L, 3L, 5L, 7L, 9L),
+    # std = c(NA, rep(0.7071067811865476, 5)),
+    # var = c(NA, rep(0.5, 5)),
+    median = c(NA, 1, 1.5, 2.5, 3.5, 4.5)
+    # quantile_linear = c(NA, 1.33, 2.33, 3.33, 4.33, 5.33)
+  )
+
+  expect_identical(
+    df$select(
+      pl$col("a")$rolling_min_by("date", window_size = "2d", closed = "left")$alias("min"),
+      pl$col("a")$rolling_max_by("date", window_size = "2d", closed = "left")$alias("max"),
+      pl$col("a")$rolling_mean_by("date", window_size = "2d", closed = "left")$alias("mean"),
+      pl$col("a")$rolling_sum_by("date", window_size = "2d", closed = "left")$alias("sum"),
+      # pl$col("a")$rolling_std("date", window_size = "2d", closed = "left")$alias("std"),
+      # pl$col("a")$rolling_var("date", window_size = "2d", closed = "left")$alias("var"),
+      pl$col("a")$rolling_median_by("date", window_size = "2d", closed = "left")$alias("median")
+      # pl$col("a")$rolling_quantile(
+      #   quantile = .33, "date", window_size = "2d", closed = "left", interpolation = "linear"
+      # )$alias("quantile_linear")
+    )$to_data_frame(),
+    expected
+  )
+
+  expect_error(
+    df$select(pl$col("a")$rolling_min_by("date", window_size = "2d", closed = "foo")),
+    "must be one of 'both', 'left', 'none', 'right'"
+  )
+})
 
 test_that("Expr_rank", {
   l = list(a = c(3, 6, 1, 1, 6))
