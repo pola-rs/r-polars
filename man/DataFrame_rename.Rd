@@ -32,3 +32,8 @@ df = pl$DataFrame(
 
 df$rename(apple = "foo")
 }
+\seealso{
+\itemize{
+\item \code{\link[=DataFrame_rename_with]{<DataFrame>$rename_with()}}
+}
+}

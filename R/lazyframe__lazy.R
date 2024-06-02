@@ -1566,10 +1566,10 @@ LazyFrame_rename = function(...) {
 
 #' Rename column names of a LazyFrame with a function
 #'
-#' This function is currently experimental and may
+#' This method is currently experimental and may
 #' change without it being considered a breaking change.
 #' @inherit LazyFrame_rename details return
-#' @param fun A function that takes the old names character vector as input and
+#' @param fun An R function that takes the old names character vector as input and
 #' returns the new names character vector.
 #' @seealso
 #' - [`<LazyFrame>$rename()`][LazyFrame_rename]

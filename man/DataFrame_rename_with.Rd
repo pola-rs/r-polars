@@ -7,14 +7,14 @@
 DataFrame_rename_with(fun)
 }
 \arguments{
-\item{fun}{A function that takes the old names character vector as input and
+\item{fun}{An R function that takes the old names character vector as input and
 returns the new names character vector.}
 }
 \value{
 \link[=DataFrame_class]{DataFrame}
 }
 \description{
-This function is currently experimental and may
+This method is currently experimental and may
 change without it being considered a breaking change.
 }
 \details{
@@ -31,4 +31,9 @@ df = pl$DataFrame(
 df$rename_with(
   \(column_name) paste0("c", substr(column_name, 2, 100))
 )
+}
+\seealso{
+\itemize{
+\item \code{\link[=DataFrame_rename]{<DataFrame>$rename()}}
+}
 }

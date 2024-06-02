@@ -1595,6 +1595,8 @@ DataFrame_pivot = function(
 #' Rename column names of a DataFrame
 #' @inherit pl_DataFrame return
 #' @inherit LazyFrame_rename params details
+#' @seealso
+#' - [`<DataFrame>$rename_with()`][DataFrame_rename_with]
 #' @examples
 #' df = pl$DataFrame(
 #'   foo = 1:3,
@@ -1610,6 +1612,8 @@ DataFrame_rename = function(...) {
 #' Rename column names of a DataFrame with a function
 #' @inherit pl_DataFrame return
 #' @inherit LazyFrame_rename_with description params details
+#' @seealso
+#' - [`<DataFrame>$rename()`][DataFrame_rename]
 #' @examples
 #' df = pl$DataFrame(
 #'   foo = 1:3,

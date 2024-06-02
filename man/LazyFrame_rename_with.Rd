@@ -7,14 +7,14 @@
 LazyFrame_rename_with(fun)
 }
 \arguments{
-\item{fun}{A function that takes the old names character vector as input and
+\item{fun}{An R function that takes the old names character vector as input and
 returns the new names character vector.}
 }
 \value{
 \link[=LazyFrame_class]{LazyFrame}
 }
 \description{
-This function is currently experimental and may
+This method is currently experimental and may
 change without it being considered a breaking change.
 }
 \details{
