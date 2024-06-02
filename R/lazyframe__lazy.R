@@ -1356,6 +1356,8 @@ LazyFrame_join = function(
 #' @param descending Logical. Sort in descending order (default is `FALSE`). This must be
 #' either of length 1 or a logical vector of the same length as the number of
 #' Expr(s) specified in `by` and `...`.
+#' @param nulls_last A logical or logical vector of the same length as the number of columns.
+#' If `TRUE`, place `null` values last insead of first.
 #' @param maintain_order Whether the order should be maintained if elements are
 #' equal. If `TRUE`, streaming is not possible and performance might be worse
 #' since this requires a stable search.

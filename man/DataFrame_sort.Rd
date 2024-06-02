@@ -22,7 +22,8 @@ a list of Expr(s) or a list with a mix of Expr(s) and column names.}
 either of length 1 or a logical vector of the same length as the number of
 Expr(s) specified in \code{by} and \code{...}.}
 
-\item{nulls_last}{A logical. If \code{TRUE}, place \code{null} values last insead of first.}
+\item{nulls_last}{A logical or logical vector of the same length as the number of columns.
+If \code{TRUE}, place \code{null} values last insead of first.}
 
 \item{maintain_order}{Whether the order should be maintained if elements are
 equal. If \code{TRUE}, streaming is not possible and performance might be worse
