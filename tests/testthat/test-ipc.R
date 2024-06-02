@@ -105,6 +105,8 @@ test_that("memory_map", {
     df$equals(pl$DataFrame(x = 1))
   )
 
+  # On Windows, the file is still open so overwriting it is not allowed
+  skip_on_os("windows")
   pl$DataFrame(y = 2)$write_ipc(tmpf, compression = "uncompressed")
 
   expect_true(
