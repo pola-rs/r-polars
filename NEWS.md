@@ -49,6 +49,12 @@
 - In `$dt$combine()`, the arguments `tm` and `tu` are renamed `time` and
   `time_unit` (#1116).
 
+### New features
+
+- Experimental feature `$rename_with()` for LazyFrame and DataFrame.
+  They are equivalent to `polars.LazyFrame.rename(mapping: Callable[[str], str])`
+  or `polars.DataFrame.rename(mapping: Callable[[str], str])` in Python Polars (#1122).
+
 ## Polars R Package 0.16.4
 
 ### New features
