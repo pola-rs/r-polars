@@ -1080,6 +1080,25 @@ test_that("rename", {
 })
 
 
+test_that("rename_with", {
+  df = pl$DataFrame(
+    foo = 1:3,
+    bar = 6:8,
+    ham = letters[1:3]
+  )
+
+  expect_identical(
+  df$rename_with(
+    \(column_name) paste0("c", substr(column_name, 2, 100))
+  ) |>
+    names(),
+  c("coo", "car", "cam")
+  )
+
+  expect_grepl_error(df$rename_with(\(x) 1))
+})
+
+
 test_that("describe", {
   df = pl$DataFrame(
     string = c(letters[1:2], NA),
