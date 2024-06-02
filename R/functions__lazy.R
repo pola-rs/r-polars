@@ -1239,9 +1239,8 @@ pl_arg_where = function(condition) {
 #'
 #' @param ... Column(s) to arg sort by. Can be Expr(s) or something coercible
 #' to Expr(s). Strings are parsed as column names.
-#' @inheritParams Expr_sort
-#' @inheritParams Series_sort
 #' @inheritParams LazyFrame_sort
+#' @inheritParams Expr_sort
 #'
 #' @return Expr
 #' @seealso [$arg_sort()][Expr_arg_sort()] to find the row indices that would

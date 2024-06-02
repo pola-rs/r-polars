@@ -2,7 +2,7 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_rename}
 \alias{DataFrame_rename}
-\title{Rename columns of a DataFrame}
+\title{Rename column names of a DataFrame}
 \usage{
 DataFrame_rename(...)
 }
@@ -14,17 +14,26 @@ DataFrame_rename(...)
 }}
 }
 \value{
-DataFrame
+\link[=DataFrame_class]{DataFrame}
 }
 \description{
-Rename columns of a DataFrame
+Rename column names of a DataFrame
+}
+\details{
+If existing names are swapped (e.g. \code{A} points to \code{B} and \code{B} points to \code{A}),
+polars will block projection and predicate pushdowns at this node.
 }
 \examples{
-df = pl$DataFrame(mtcars)
+df = pl$DataFrame(
+  foo = 1:3,
+  bar = 6:8,
+  ham = letters[1:3]
+)
 
-df$rename(miles_per_gallon = "mpg", horsepower = "hp")
-
-replacements = list(miles_per_gallon = "mpg", horsepower = "hp")
-df$rename(replacements)
+df$rename(apple = "foo")
 }
-\keyword{DataFrame}
+\seealso{
+\itemize{
+\item \code{\link[=DataFrame_rename_with]{<DataFrame>$rename_with()}}
+}
+}

@@ -467,6 +467,28 @@ test_that("pl$arg_sort_by() works", {
   )
 })
 
+patrick::with_parameters_test_that("sort nulls_last",
+  {
+    df = pl$DataFrame(
+      a = c(1, 2, NA, NA, 5),
+      b = c(1, 2, NA, 1, NA),
+      c = c(2, 3, 1, 2, 1)
+    )
+
+    out = df$select(
+      pl$arg_sort_by("a", "b", nulls_last = nulls_last, maintain_order = TRUE)
+    )$to_series() |>
+      as.vector()
+
+    expect_identical(
+      out,
+      expected
+    )
+  },
+  nulls_last = list(TRUE, FALSE, c(TRUE, FALSE), c(FALSE, TRUE)),
+  expected = list(c(0, 1, 4, 3, 2), c(2, 3, 0, 1, 4), c(0, 1, 4, 2, 3), c(3, 2, 0, 1, 4))
+)
+
 test_that("pl$date_ranges() works", {
   df = pl$DataFrame(
     start = as.Date(c("2022-01-01", "2022-01-02", NA)),

@@ -599,6 +599,26 @@ test_that("rename", {
   expect_identical(a, b)
 })
 
+
+test_that("rename_with", {
+  lf = pl$DataFrame(
+    foo = 1:3,
+    bar = 6:8,
+    ham = letters[1:3]
+  )$lazy()
+
+  expect_identical(
+    lf$rename_with(
+      \(column_name) paste0("c", substr(column_name, 2, 100))
+    ) |>
+      names(),
+    c("coo", "car", "cam")
+  )
+
+  expect_grepl_error(lf$rename_with(\(x) 1))
+})
+
+
 test_that("schema", {
   lf = pl$DataFrame(mtcars)$lazy()
   expect_true(lf$dtypes[[1]] == lf$collect()$dtypes[[1]])

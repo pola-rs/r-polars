@@ -4,7 +4,7 @@
 
 ### Breaking changes
 
-- Updated rust-polars to unreleased version (> 0.40.0) (#1104, #1110, #1117):
+- Updated rust-polars to unreleased version (> 0.40.0) (#1104, #1110, #1117, #1124):
   - In `$join()`, there is a new argument `coalesce` and the `how` options now
     accept `"full"` instead of `"outer"` and `"outer_coalesce"`.
   - `$top_k()` and `$bottom_k()` gain three arguments `nulls_last`,
@@ -30,6 +30,8 @@
   - The `check_sorted` argument is removed from `$rolling()` and `$group_by_dynamic()`.
     Sortedness is now verified in a quick manner, so this argument is no longer needed
     (pola-rs/polars#16494).
+  - `$name$map()` stacks on Linux, so this method is deprecated and the document
+    is removed. Please use other methods including `$rename_with()` instead (#1123).
 - As warned in v0.16.0, the order of arguments in `pl$Series` is changed (#1071).
   The first argument is now `name`, and the second argument is `values`.
 - `$to_struct()` on an Expr is removed. This method is now only available for
@@ -48,6 +50,13 @@
   (#1112).
 - In `$dt$combine()`, the arguments `tm` and `tu` are renamed `time` and
   `time_unit` (#1116).
+- The default value of the `rechunk` argument of `pl$concat()` is changed from `TRUE` to `FALSE` (#1125).
+
+### New features
+
+- Experimental feature `$rename_with()` for LazyFrame and DataFrame.
+  They are equivalent to `polars.LazyFrame.rename(mapping: Callable[[str], str])`
+  or `polars.DataFrame.rename(mapping: Callable[[str], str])` in Python Polars (#1122).
 
 ## Polars R Package 0.16.4
 

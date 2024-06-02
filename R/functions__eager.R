@@ -59,7 +59,7 @@ pl_concat = function(
       "vertical", "vertical_relaxed", "horizontal",
       "diagonal", "diagonal_relaxed"
     ),
-    rechunk = TRUE,
+    rechunk = FALSE,
     parallel = TRUE) {
   l = unpack_list(..., skip_classes = "data.frame", .context = "in pl$concat")
 
