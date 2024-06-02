@@ -92,3 +92,22 @@ patrick::with_parameters_test_that("input/output DataFrame as raw vector",
   compression = c("uncompressed", "lz4", "zstd"),
   .test_name = compression
 )
+
+
+test_that("memory_map", {
+  tmpf = tempfile(fileext = ".arrow")
+  on.exit(unlink(tmpf))
+  pl$DataFrame(x = 1)$write_ipc(tmpf, compression = "uncompressed")
+
+  df = pl$read_ipc(tmpf, memory_map = TRUE)
+
+  expect_true(
+    df$equals(pl$DataFrame(x = 1))
+  )
+
+  pl$DataFrame(y = 2)$write_ipc(tmpf, compression = "uncompressed")
+
+  expect_true(
+    df$equals(pl$DataFrame(x = 2))
+  )
+})
