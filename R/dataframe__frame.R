@@ -1592,22 +1592,38 @@ DataFrame_pivot = function(
     unwrap("in $pivot():")
 }
 
-#' @title Rename columns of a DataFrame
-#' @keywords DataFrame
-#' @param ... One of the following:
-#'  - params like `new_name = "old_name"` to rename selected variables.
-#'  - as above but with params wrapped in a list
-#' @return DataFrame
+#' Rename column names of a DataFrame
+#' @inherit pl_DataFrame return
+#' @inherit LazyFrame_rename params details
 #' @examples
-#' df = pl$DataFrame(mtcars)
+#' df = pl$DataFrame(
+#'   foo = 1:3,
+#'   bar = 6:8,
+#'   ham = letters[1:3]
+#' )
 #'
-#' df$rename(miles_per_gallon = "mpg", horsepower = "hp")
-#'
-#' replacements = list(miles_per_gallon = "mpg", horsepower = "hp")
-#' df$rename(replacements)
+#' df$rename(apple = "foo")
 DataFrame_rename = function(...) {
   self$lazy()$rename(...)$collect()
 }
+
+#' Rename column names of a DataFrame with a function
+#' @inherit pl_DataFrame return
+#' @inherit LazyFrame_rename_with description params details
+#' @examples
+#' df = pl$DataFrame(
+#'   foo = 1:3,
+#'   bar = 6:8,
+#'   ham = letters[1:3]
+#' )
+#'
+#' df$rename_with(
+#'   \(column_name) paste0("c", substr(column_name, 2, 100))
+#' )
+DataFrame_rename_with = function(fun) {
+  self$lazy()$rename_with(fun)$collect()
+}
+
 
 #' @title Summary statistics for a DataFrame
 #'

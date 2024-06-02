@@ -2,7 +2,7 @@
 % Please edit documentation in R/lazyframe__lazy.R
 \name{LazyFrame_rename}
 \alias{LazyFrame_rename}
-\title{Rename columns of a DataFrame}
+\title{Rename column names of a LazyFrame}
 \usage{
 LazyFrame_rename(...)
 }
@@ -14,14 +14,26 @@ LazyFrame_rename(...)
 }}
 }
 \value{
-LazyFrame
+\link[=LazyFrame_class]{LazyFrame}
 }
 \description{
-Rename columns of a DataFrame
+Rename column names of a LazyFrame
+}
+\details{
+If existing names are swapped (e.g. \code{A} points to \code{B} and \code{B} points to \code{A}),
+polars will block projection and predicate pushdowns at this node.
 }
 \examples{
-pl$LazyFrame(mtcars)$
-  rename(miles_per_gallon = "mpg", horsepower = "hp")$
-  collect()
+lf = pl$LazyFrame(
+  foo = 1:3,
+  bar = 6:8,
+  ham = letters[1:3]
+)
+
+lf$rename(apple = "foo")$collect()
 }
-\keyword{LazyFrame}
+\seealso{
+\itemize{
+\item \code{\link[=LazyFrame_rename_with]{<LazyFrame>$rename_with()}}
+}
+}

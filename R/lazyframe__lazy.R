@@ -1531,14 +1531,25 @@ LazyFrame_melt = function(
   ) |> unwrap("in $melt( ): ")
 }
 
-#' @title Rename columns of a DataFrame
-#' @keywords LazyFrame
-#' @inheritParams DataFrame_rename
-#' @return LazyFrame
+#' Rename column names of a LazyFrame
+#'
+#' @details
+#' If existing names are swapped (e.g. `A` points to `B` and `B` points to `A`),
+#' polars will block projection and predicate pushdowns at this node.
+#' @inherit pl_LazyFrame return
+#' @param ... One of the following:
+#'  - params like `new_name = "old_name"` to rename selected variables.
+#'  - as above but with params wrapped in a list
+#' @seealso
+#' - [`<LazyFrame>$rename_with()`][LazyFrame_rename_with]
 #' @examples
-#' pl$LazyFrame(mtcars)$
-#'   rename(miles_per_gallon = "mpg", horsepower = "hp")$
-#'   collect()
+#' lf = pl$LazyFrame(
+#'   foo = 1:3,
+#'   bar = 6:8,
+#'   ham = letters[1:3]
+#' )
+#'
+#' lf$rename(apple = "foo")$collect()
 LazyFrame_rename = function(...) {
   mapping = list2(...)
   if (length(mapping) == 0) {
@@ -1550,6 +1561,40 @@ LazyFrame_rename = function(...) {
   existing = unname(unlist(mapping))
   new = names(mapping)
   unwrap(.pr$LazyFrame$rename(self, existing, new), "in $rename():")
+}
+
+
+#' Rename column names of a LazyFrame with a function
+#'
+#' This function is currently experimental and may
+#' change without it being considered a breaking change.
+#' @inherit LazyFrame_rename details return
+#' @param fun A function that takes the old names character vector as input and
+#' returns the new names character vector.
+#' @seealso
+#' - [`<LazyFrame>$rename()`][LazyFrame_rename]
+#' @examples
+#' lf = pl$LazyFrame(
+#'   foo = 1:3,
+#'   bar = 6:8,
+#'   ham = letters[1:3]
+#' )
+#'
+#' lf$rename_with(
+#'   \(column_name) paste0("c", substr(column_name, 2, 100))
+#' )$collect()
+LazyFrame_rename_with = function(fun) {
+  uw = \(res) unwrap(res, "in $rename_with():")
+
+  {
+    existing = names(self)
+    new = fun(existing)
+  } |>
+    result() |>
+    uw()
+
+  .pr$LazyFrame$rename(self, existing, new) |>
+    uw()
 }
 
 
