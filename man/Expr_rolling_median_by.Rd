@@ -7,8 +7,8 @@
 Expr_rolling_median_by(by, window_size, ..., min_periods = 1, closed = "right")
 }
 \arguments{
-\item{by}{This column must of dtype \code{\link[=pl_Date]{Date}} or
-\code{\link[=pl_Datetime]{Datetime}}.}
+\item{by}{This column must of dtype \code{\link[=pl_date]{Date}} or
+\code{\link[=DataType_Datetime]{Datetime}}.}
 
 \item{window_size}{The length of the window. Can be a fixed integer size, or a dynamic temporal
 size indicated by the following string language:

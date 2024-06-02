@@ -2331,8 +2331,8 @@ Expr_rolling_min = function(
 #' @inherit Expr_rolling_min params return details
 #' @inheritParams Expr_rolling
 #'
-#' @param by This column must of dtype [`Date`][pl_Date] or
-#' [`Datetime`][pl_Datetime].
+#' @param by This column must of dtype [`Date`][pl_date] or
+#' [`Datetime`][DataType_Datetime].
 #'
 #' @examples
 #' df_temporal = pl$DataFrame(
@@ -2385,8 +2385,8 @@ Expr_rolling_max = function(
 #' @inherit Expr_rolling_min params return details
 #' @inheritParams Expr_rolling
 #'
-#' @param by This column must of dtype [`Date`][pl_Date] or
-#' [`Datetime`][pl_Datetime].
+#' @param by This column must of dtype [`Date`][pl_date] or
+#' [`Datetime`][DataType_Datetime].
 #'
 #' @examples
 #' df_temporal = pl$DataFrame(
@@ -2439,8 +2439,8 @@ Expr_rolling_mean = function(
 #' @inherit Expr_rolling_min params return details
 #' @inheritParams Expr_rolling
 #'
-#' @param by This column must of dtype [`Date`][pl_Date] or
-#' [`Datetime`][pl_Datetime].
+#' @param by This column must of dtype [`Date`][pl_date] or
+#' [`Datetime`][DataType_Datetime].
 #'
 #' @examples
 #' df_temporal = pl$DataFrame(
@@ -2493,8 +2493,8 @@ Expr_rolling_sum = function(
 #' @inherit Expr_rolling_min params return details
 #' @inheritParams Expr_rolling
 #'
-#' @param by This column must of dtype [`Date`][pl_Date] or
-#' [`Datetime`][pl_Datetime].
+#' @param by This column must of dtype [`Date`][pl_date] or
+#' [`Datetime`][DataType_Datetime].
 #'
 #' @examples
 #' df_temporal = pl$DataFrame(
@@ -2596,8 +2596,8 @@ Expr_rolling_median = function(
 #' @inherit Expr_rolling_min params return details
 #' @inheritParams Expr_rolling
 #'
-#' @param by This column must of dtype [`Date`][pl_Date] or
-#' [`Datetime`][pl_Datetime].
+#' @param by This column must of dtype [`Date`][pl_date] or
+#' [`Datetime`][DataType_Datetime].
 #'
 #' @examples
 #' df_temporal = pl$DataFrame(

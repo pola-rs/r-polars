@@ -12,7 +12,7 @@
   - All `$rolling_*()` functions lose the arguments `by`, `closed` and
     `warn_if_unsorted`. Rolling computations based on `by` must be made via the
     corresponding `rolling_*_by()`, e.g `rolling_mean_by()` instead of
-    `rolling_mean(by =)`.
+    `rolling_mean(by =)` (#1115).
   - `pl$scan_parquet()` and `pl$read_parquet()` gain an argument `glob` which
     defaults to `TRUE`. Set it to `FALSE` to avoid considering `*` as a globing
     pattern.
