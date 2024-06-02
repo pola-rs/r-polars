@@ -7,7 +7,7 @@
 pl_concat(
   ...,
   how = c("vertical", "vertical_relaxed", "horizontal", "diagonal", "diagonal_relaxed"),
-  rechunk = TRUE,
+  rechunk = FALSE,
   parallel = TRUE
 )
 }
