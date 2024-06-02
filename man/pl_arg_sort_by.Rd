@@ -16,9 +16,12 @@ pl_arg_sort_by(
 \item{...}{Column(s) to arg sort by. Can be Expr(s) or something coercible
 to Expr(s). Strings are parsed as column names.}
 
-\item{descending}{A logical. If \code{TRUE}, sort in descending order.}
+\item{descending}{Logical. Sort in descending order (default is \code{FALSE}). This must be
+either of length 1 or a logical vector of the same length as the number of
+Expr(s) specified in \code{by} and \code{...}.}
 
-\item{nulls_last}{A logical. If \code{TRUE}, place \code{null} values last insead of first.}
+\item{nulls_last}{A logical or logical vector of the same length as the number of columns.
+If \code{TRUE}, place \code{null} values last insead of first.}
 
 \item{multithreaded}{A logical. If \code{TRUE}, sort using multiple threads.}
 

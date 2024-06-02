@@ -4,7 +4,7 @@
 
 ### Breaking changes
 
-- Updated rust-polars to unreleased version (> 0.40.0) (#1104, #1110, #1117):
+- Updated rust-polars to unreleased version (> 0.40.0) (#1104, #1110, #1117, #1124):
   - In `$join()`, there is a new argument `coalesce` and the `how` options now
     accept `"full"` instead of `"outer"` and `"outer_coalesce"`.
   - `$top_k()` and `$bottom_k()` gain three arguments `nulls_last`,

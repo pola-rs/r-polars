@@ -340,7 +340,7 @@ impl RPolarsExpr {
         multithreaded: Robj,
     ) -> RResult<RPolarsExpr> {
         let descending = robj_to!(Vec, bool, descending)?;
-        let nulls_last = robj_to!(bool, nulls_last)?;
+        let nulls_last = robj_to!(Vec, bool, nulls_last)?;
         let maintain_order = robj_to!(bool, maintain_order)?;
         let multithreaded = robj_to!(bool, multithreaded)?;
         Ok((self.clone().0.sort_by(
