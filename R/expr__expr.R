@@ -2610,8 +2610,7 @@ Expr_rolling_var_by = function(
     closed = "right",
     ddof = 1) {
   .pr$Expr$rolling_var_by(
-    self, by, window_size, min_periods, closed,
-    ddof = ddof
+    self, by, window_size, min_periods, closed, ddof
   ) |>
     unwrap("in $rolling_var_by():")
 }
@@ -2716,8 +2715,7 @@ Expr_rolling_quantile_by = function(
     min_periods = 1,
     closed = "right") {
   .pr$Expr$rolling_quantile_by(
-    self,
-    by, quantile, interpolation, window_size, min_periods, closed
+    self, by, quantile, interpolation, window_size, min_periods, closed
   ) |>
     unwrap("in $rolling_quantile_by():")
 }
