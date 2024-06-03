@@ -1602,7 +1602,7 @@ DataFrame_pivot = function(
 #'   ham = letters[1:3]
 #' )
 #'
-#' df$rename(apple = "foo")
+#' df$rename(foo = "apple")
 #'
 #' df$rename(
 #'   \(column_name) paste0("c", substr(column_name, 2, 100))

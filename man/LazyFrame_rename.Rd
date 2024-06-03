@@ -9,7 +9,7 @@ LazyFrame_rename(...)
 \arguments{
 \item{...}{One of the following:
 \itemize{
-\item Params like \code{new_name = "old_name"} to rename selected variables.
+\item Key value pairs that map from old name to new name, like \code{old_name = "new_name"}.
 \item As above but with params wrapped in a list
 \item An R function that takes the old names character vector as input and
 returns the new names character vector.
@@ -32,7 +32,7 @@ lf = pl$LazyFrame(
   ham = letters[1:3]
 )
 
-lf$rename(apple = "foo")$collect()
+lf$rename(foo = "apple")$collect()
 
 lf$rename(
   \(column_name) paste0("c", substr(column_name, 2, 100))

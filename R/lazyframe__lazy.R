@@ -1540,7 +1540,7 @@ LazyFrame_melt = function(
 #' polars will block projection and predicate pushdowns at this node.
 #' @inherit pl_LazyFrame return
 #' @param ... One of the following:
-#' - Params like `new_name = "old_name"` to rename selected variables.
+#' - Key value pairs that map from old name to new name, like `old_name = "new_name"`.
 #' - As above but with params wrapped in a list
 #' - An R function that takes the old names character vector as input and
 #'   returns the new names character vector.
@@ -1551,7 +1551,7 @@ LazyFrame_melt = function(
 #'   ham = letters[1:3]
 #' )
 #'
-#' lf$rename(apple = "foo")$collect()
+#' lf$rename(foo = "apple")$collect()
 #'
 #' lf$rename(
 #'   \(column_name) paste0("c", substr(column_name, 2, 100))
@@ -1573,8 +1573,8 @@ LazyFrame_rename = function(...) {
     if (is.list(mapping[[1L]])) {
       mapping = mapping[[1L]]
     }
-    existing = unname(unlist(mapping))
-    new = names(mapping)
+    new = unname(unlist(mapping))
+    existing = names(mapping)
   }
   .pr$LazyFrame$rename(self, existing, new) |>
     uw()

@@ -1062,7 +1062,7 @@ test_that("rename", {
   df = pl$DataFrame(mtcars)
 
   # renaming succeeded
-  a = df$rename(miles_per_gallon = "mpg", horsepower = "hp")$columns
+  a = df$rename(mpg = "miles_per_gallon", hp = "horsepower")$columns
   expect_false("hp" %in% a)
   expect_false("mpg" %in% a)
   expect_true("miles_per_gallon" %in% a)
@@ -1075,7 +1075,7 @@ test_that("rename", {
   )
 
   # wrapped args in list is equivalent
-  b = df$rename(list(miles_per_gallon = "mpg", horsepower = "hp"))$columns
+  b = df$rename(list(mpg = "miles_per_gallon", hp = "horsepower"))$columns
   expect_identical(a, b)
 })
 
