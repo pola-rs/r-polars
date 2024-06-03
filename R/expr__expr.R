@@ -2330,7 +2330,6 @@ Expr_rolling_min = function(
 #'
 #' @inherit Expr_rolling_min params return details
 #' @inheritParams Expr_rolling
-#'
 #' @param by This column must of dtype [`Date`][pl_date] or
 #' [`Datetime`][DataType_Datetime].
 #'
@@ -2351,8 +2350,7 @@ Expr_rolling_min_by = function(
     min_periods = 1,
     closed = "right") {
   .pr$Expr$rolling_min_by(
-    self,
-    by = by, window_size = window_size, min_periods = min_periods, closed = closed
+    self, by, window_size, min_periods, closed
   ) |>
     unwrap("in $rolling_min_by():")
 }
@@ -2382,12 +2380,7 @@ Expr_rolling_max = function(
 
 #' Apply a rolling max based on another column.
 #'
-#' @inherit Expr_rolling_min params return details
-#' @inheritParams Expr_rolling
-#'
-#' @param by This column must of dtype [`Date`][pl_date] or
-#' [`Datetime`][DataType_Datetime].
-#'
+#' @inherit Expr_rolling_min_by params return details
 #' @examples
 #' df_temporal = pl$DataFrame(
 #'   date = pl$datetime_range(as.Date("2001-1-1"), as.Date("2001-1-2"), "1h")
@@ -2405,8 +2398,7 @@ Expr_rolling_max_by = function(
     min_periods = 1,
     closed = "right") {
   .pr$Expr$rolling_max_by(
-    self,
-    by = by, window_size = window_size, min_periods = min_periods, closed = closed
+    self, by, window_size, min_periods, closed
   ) |>
     unwrap("in $rolling_max_by():")
 }
@@ -2436,12 +2428,7 @@ Expr_rolling_mean = function(
 
 #' Apply a rolling mean based on another column.
 #'
-#' @inherit Expr_rolling_min params return details
-#' @inheritParams Expr_rolling
-#'
-#' @param by This column must of dtype [`Date`][pl_date] or
-#' [`Datetime`][DataType_Datetime].
-#'
+#' @inherit Expr_rolling_min_by params return details
 #' @examples
 #' df_temporal = pl$DataFrame(
 #'   date = pl$datetime_range(as.Date("2001-1-1"), as.Date("2001-1-2"), "1h")
@@ -2460,7 +2447,7 @@ Expr_rolling_mean_by = function(
     closed = "right") {
   .pr$Expr$rolling_mean_by(
     self,
-    by = by, window_size = window_size, min_periods = min_periods, closed = closed
+    by, window_size, min_periods, closed
   ) |>
     unwrap("in $rolling_mean_by():")
 }
@@ -2490,12 +2477,7 @@ Expr_rolling_sum = function(
 
 #' Apply a rolling sum based on another column.
 #'
-#' @inherit Expr_rolling_min params return details
-#' @inheritParams Expr_rolling
-#'
-#' @param by This column must of dtype [`Date`][pl_date] or
-#' [`Datetime`][DataType_Datetime].
-#'
+#' @inherit Expr_rolling_min_by params return details
 #' @examples
 #' df_temporal = pl$DataFrame(
 #'   date = pl$datetime_range(as.Date("2001-1-1"), as.Date("2001-1-2"), "1h")
@@ -2513,8 +2495,7 @@ Expr_rolling_sum_by = function(
     min_periods = 1,
     closed = "right") {
   .pr$Expr$rolling_sum_by(
-    self,
-    by = by, window_size = window_size, min_periods = min_periods, closed = closed
+    self, by, window_size, min_periods, closed
   ) |>
     unwrap("in $rolling_sum_by():")
 }
@@ -2544,6 +2525,39 @@ Expr_rolling_std = function(
     unwrap("in $rolling_std(): ")
 }
 
+#' Compute a rolling standard deviation based on another column
+#'
+#' @inherit Expr_rolling_min_by params return details
+#' @inheritParams Expr_rolling_std
+#' @examples
+#' df_temporal = pl$DataFrame(
+#'   date = pl$datetime_range(as.Date("2001-1-1"), as.Date("2001-1-2"), "1h")
+#' )$with_row_index("index")
+#'
+#' df_temporal
+#'
+#' # Compute the rolling std with the temporal windows closed on the right (default)
+#' df_temporal$with_columns(
+#'   rolling_row_std = pl$col("index")$rolling_std_by("date", window_size = "2h")
+#' )
+#'
+#' # Compute the rolling std with the closure of windows on both sides
+#' df_temporal$with_columns(
+#'   rolling_row_std = pl$col("index")$rolling_std_by("date", window_size = "2h", closed = "both")
+#' )
+Expr_rolling_std_by = function(
+    by,
+    window_size,
+    ...,
+    min_periods = 1,
+    closed = "right",
+    ddof = 1) {
+  .pr$Expr$rolling_std_by(
+    self, by, window_size, min_periods, closed, ddof
+  ) |>
+    unwrap("in $rolling_std_by():")
+}
+
 #' Rolling variance
 #'
 #' Compute the rolling (= moving) variance over the values in this array. A
@@ -2566,6 +2580,40 @@ Expr_rolling_var = function(
     wargs$min_periods, center
   ) |>
     unwrap("in $rolling_var():")
+}
+
+#' Compute a rolling variance based on another column
+#'
+#' @inherit Expr_rolling_min_by params return details
+#' @inheritParams Expr_rolling_var
+#' @examples
+#' df_temporal = pl$DataFrame(
+#'   date = pl$datetime_range(as.Date("2001-1-1"), as.Date("2001-1-2"), "1h")
+#' )$with_row_index("index")
+#'
+#' df_temporal
+#'
+#' # Compute the rolling var with the temporal windows closed on the right (default)
+#' df_temporal$with_columns(
+#'   rolling_row_var = pl$col("index")$rolling_var_by("date", window_size = "2h")
+#' )
+#'
+#' # Compute the rolling var with the closure of windows on both sides
+#' df_temporal$with_columns(
+#'   rolling_row_var = pl$col("index")$rolling_var_by("date", window_size = "2h", closed = "both")
+#' )
+Expr_rolling_var_by = function(
+    by,
+    window_size,
+    ...,
+    min_periods = 1,
+    closed = "right",
+    ddof = 1) {
+  .pr$Expr$rolling_var_by(
+    self, by, window_size, min_periods, closed,
+    ddof = ddof
+  ) |>
+    unwrap("in $rolling_var_by():")
 }
 
 #' Rolling median
@@ -2593,12 +2641,7 @@ Expr_rolling_median = function(
 
 #' Apply a rolling median based on another column.
 #'
-#' @inherit Expr_rolling_min params return details
-#' @inheritParams Expr_rolling
-#'
-#' @param by This column must of dtype [`Date`][pl_date] or
-#' [`Datetime`][DataType_Datetime].
-#'
+#' @inherit Expr_rolling_min_by params return details
 #' @examples
 #' df_temporal = pl$DataFrame(
 #'   date = pl$datetime_range(as.Date("2001-1-1"), as.Date("2001-1-2"), "1h")
@@ -2616,8 +2659,7 @@ Expr_rolling_median_by = function(
     min_periods = 1,
     closed = "right") {
   .pr$Expr$rolling_median_by(
-    self,
-    by = by, window_size = window_size, min_periods = min_periods, closed = closed
+    self, by, window_size, min_periods, closed
   ) |>
     unwrap("in $rolling_median_by():")
 }
@@ -2651,6 +2693,34 @@ Expr_rolling_quantile = function(
     unwrap("in $rolling_quantile():")
 }
 
+#' Compute a rolling quantile based on another column
+#'
+#' @inherit Expr_rolling_min_by params return details
+#' @inheritParams Expr_quantile
+#' @examples
+#' df_temporal = pl$DataFrame(
+#'   date = pl$datetime_range(as.Date("2001-1-1"), as.Date("2001-1-2"), "1h")
+#' )$with_row_index("index")
+#'
+#' df_temporal
+#'
+#' df_temporal$with_columns(
+#'   rolling_row_quantile = pl$col("index")$rolling_quantile_by("date", window_size = "2h", quantile = 0.3)
+#' )
+Expr_rolling_quantile_by = function(
+    by,
+    window_size,
+    ...,
+    quantile,
+    interpolation = "nearest",
+    min_periods = 1,
+    closed = "right") {
+  .pr$Expr$rolling_quantile_by(
+    self,
+    by, quantile, interpolation, window_size, min_periods, closed
+  ) |>
+    unwrap("in $rolling_quantile_by():")
+}
 
 #' Rolling skew
 #'
