@@ -1559,15 +1559,17 @@ LazyFrame_melt = function(
 LazyFrame_rename = function(...) {
   uw = \(res) unwrap(res, "in $rename():")
 
+  if (!nargs()) {
+    Err_plain("No arguments provided for `$rename()`.") |>
+      uw()
+  }
+
   mapping = list2(...)
-  if (length(mapping) == 0) {
-    return(self)
-  } else if (is.function(mapping[[1L]])) {
-    {
+  if (is.function(mapping[[1L]])) {
+    result({
       existing = names(self)
       new = mapping[[1L]](existing)
-    } |>
-      result() |>
+    }) |>
       uw()
   } else {
     if (is.list(mapping[[1L]])) {
