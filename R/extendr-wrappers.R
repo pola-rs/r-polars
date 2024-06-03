@@ -620,15 +620,19 @@ RPolarsExpr$rolling_sum_by <- function(by, window_size, min_periods, closed) .Ca
 
 RPolarsExpr$rolling_std <- function(window_size, weights, min_periods, center) .Call(wrap__RPolarsExpr__rolling_std, self, window_size, weights, min_periods, center)
 
-RPolarsExpr$rolling_std_by <- function(by, window_size, min_periods, closed) .Call(wrap__RPolarsExpr__rolling_std_by, self, by, window_size, min_periods, closed)
+RPolarsExpr$rolling_std_by <- function(by, window_size, min_periods, closed, ddof) .Call(wrap__RPolarsExpr__rolling_std_by, self, by, window_size, min_periods, closed, ddof)
 
 RPolarsExpr$rolling_var <- function(window_size, weights, min_periods, center) .Call(wrap__RPolarsExpr__rolling_var, self, window_size, weights, min_periods, center)
+
+RPolarsExpr$rolling_var_by <- function(by, window_size, min_periods, closed, ddof) .Call(wrap__RPolarsExpr__rolling_var_by, self, by, window_size, min_periods, closed, ddof)
 
 RPolarsExpr$rolling_median <- function(window_size, weights, min_periods, center) .Call(wrap__RPolarsExpr__rolling_median, self, window_size, weights, min_periods, center)
 
 RPolarsExpr$rolling_median_by <- function(by, window_size, min_periods, closed) .Call(wrap__RPolarsExpr__rolling_median_by, self, by, window_size, min_periods, closed)
 
 RPolarsExpr$rolling_quantile <- function(quantile, interpolation, window_size, weights, min_periods, center) .Call(wrap__RPolarsExpr__rolling_quantile, self, quantile, interpolation, window_size, weights, min_periods, center)
+
+RPolarsExpr$rolling_quantile_by <- function(by, quantile, interpolation, window_size, min_periods, closed) .Call(wrap__RPolarsExpr__rolling_quantile_by, self, by, quantile, interpolation, window_size, min_periods, closed)
 
 RPolarsExpr$rolling_skew <- function(window_size, bias) .Call(wrap__RPolarsExpr__rolling_skew, self, window_size, bias)
 

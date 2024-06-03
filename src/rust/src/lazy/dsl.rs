@@ -18,11 +18,11 @@ use pl::{Duration, IntoSeries, RollingGroupOptions, SetOperation, TemporalMethod
 use polars::lazy::dsl;
 use polars::prelude as pl;
 use polars::prelude::{ExprEvalExtension, NestedType, SortOptions};
+use std::any::Any;
 use std::ops::{Add, Div, Mul, Rem, Sub};
 use std::result::Result;
 pub type NameGenerator = pl::Arc<dyn Fn(usize) -> String + Send + Sync>;
 use crate::rdatatype::robjs_to_ewm_options;
-
 use crate::utils::r_expr_to_rust_expr;
 use crate::utils::unpack_r_eval;
 use smartstring::{LazyCompact, SmartString};
@@ -540,7 +540,7 @@ impl RPolarsExpr {
             .clone()
             .rolling_min_by(
                 robj_to!(PLExprCol, by)?,
-                make_rolling_options_dynamic_window(window_size, min_periods, closed)?,
+                make_rolling_options_dynamic_window(window_size, min_periods, closed, None)?,
             )
             .into())
     }
@@ -577,7 +577,7 @@ impl RPolarsExpr {
             .clone()
             .rolling_max_by(
                 robj_to!(PLExprCol, by)?,
-                make_rolling_options_dynamic_window(window_size, min_periods, closed)?,
+                make_rolling_options_dynamic_window(window_size, min_periods, closed, None)?,
             )
             .into())
     }
@@ -614,7 +614,7 @@ impl RPolarsExpr {
             .clone()
             .rolling_mean_by(
                 robj_to!(PLExprCol, by)?,
-                make_rolling_options_dynamic_window(window_size, min_periods, closed)?,
+                make_rolling_options_dynamic_window(window_size, min_periods, closed, None)?,
             )
             .into())
     }
@@ -651,7 +651,7 @@ impl RPolarsExpr {
             .clone()
             .rolling_sum_by(
                 robj_to!(PLExprCol, by)?,
-                make_rolling_options_dynamic_window(window_size, min_periods, closed)?,
+                make_rolling_options_dynamic_window(window_size, min_periods, closed, None)?,
             )
             .into())
     }
@@ -676,21 +676,27 @@ impl RPolarsExpr {
             .into())
     }
 
-    // TODO: in make_rolling_options_dynamic_window(), the fn_params
-    // arg is different for this one
     fn rolling_std_by(
         &self,
         by: Robj,
         window_size: &str,
         min_periods: Robj,
         closed: Robj,
+        ddof: Robj,
     ) -> RResult<Self> {
+        let ddof = robj_to!(u8, ddof)?;
+
         Ok(self
             .0
             .clone()
             .rolling_std_by(
                 robj_to!(PLExprCol, by)?,
-                make_rolling_options_dynamic_window(window_size, min_periods, closed)?,
+                make_rolling_options_dynamic_window(
+                    window_size,
+                    min_periods,
+                    closed,
+                    Some(Arc::new(pl::RollingVarParams { ddof }) as Arc<dyn Any + Send + Sync>),
+                )?,
             )
             .into())
     }
@@ -715,24 +721,30 @@ impl RPolarsExpr {
             .into())
     }
 
-    // TODO: in make_rolling_options_dynamic_window(), the fn_params
-    // arg is different for this one
-    // fn rolling_var_by(
-    //     &self,
-    //     by: Robj,
-    //     window_size: &str,
-    //     min_periods: Robj,
-    //     closed: Robj,
-    // ) -> RResult<Self> {
-    //     Ok(self
-    //         .0
-    //         .clone()
-    //         .rolling_var_by(
-    //             robj_to!(PLExprCol, by)?,
-    //             make_rolling_options_dynamic_window(window_size, min_periods, closed)?,
-    //         )
-    //         .into())
-    // }
+    fn rolling_var_by(
+        &self,
+        by: Robj,
+        window_size: &str,
+        min_periods: Robj,
+        closed: Robj,
+        ddof: Robj,
+    ) -> RResult<Self> {
+        let ddof = robj_to!(u8, ddof)?;
+
+        Ok(self
+            .0
+            .clone()
+            .rolling_var_by(
+                robj_to!(PLExprCol, by)?,
+                make_rolling_options_dynamic_window(
+                    window_size,
+                    min_periods,
+                    closed,
+                    Some(Arc::new(pl::RollingVarParams { ddof }) as Arc<dyn Any + Send + Sync>),
+                )?,
+            )
+            .into())
+    }
 
     #[allow(clippy::too_many_arguments)]
     pub fn rolling_median(
@@ -766,7 +778,7 @@ impl RPolarsExpr {
             .clone()
             .rolling_median_by(
                 robj_to!(PLExprCol, by)?,
-                make_rolling_options_dynamic_window(window_size, min_periods, closed)?,
+                make_rolling_options_dynamic_window(window_size, min_periods, closed, None)?,
             )
             .into())
     }
@@ -798,23 +810,29 @@ impl RPolarsExpr {
             .into())
     }
 
-    // TODO: this takes args for interpolation
-    // fn rolling_quantile_by(
-    //     &self,
-    //     by: Robj,
-    //     window_size: &str,
-    //     min_periods: Robj,
-    //     closed: Robj,
-    // ) -> RResult<Self> {
-    //     Ok(self
-    //         .0
-    //         .clone()
-    //         .rolling_quantile_by(
-    //             robj_to!(PLExprCol, by)?,
-    //             make_rolling_options_dynamic_window(window_size, min_periods, closed)?,
-    //         )
-    //         .into())
-    // }
+    fn rolling_quantile_by(
+        &self,
+        by: Robj,
+        quantile: Robj,
+        interpolation: Robj,
+        window_size: &str,
+        min_periods: Robj,
+        closed: Robj,
+    ) -> RResult<Self> {
+        let quantile = robj_to!(f64, quantile)?;
+        let interpolation = robj_to!(quantile_interpolation_option, interpolation)?;
+
+        Ok(self
+            .0
+            .clone()
+            .rolling_quantile_by(
+                robj_to!(PLExprCol, by)?,
+                interpolation,
+                quantile,
+                make_rolling_options_dynamic_window(window_size, min_periods, closed, None)?,
+            )
+            .into())
+    }
 
     pub fn rolling_skew(&self, window_size: f64, bias: bool) -> RResult<RPolarsExpr> {
         Ok(self
@@ -2747,12 +2765,13 @@ pub fn make_rolling_options_dynamic_window(
     window_size: &str,
     min_periods: Robj,
     closed_window: Robj,
+    fn_params: Option<Arc<dyn Any + Send + Sync>>,
 ) -> RResult<pl::RollingOptionsDynamicWindow> {
     Ok(pl::RollingOptionsDynamicWindow {
         window_size: Duration::parse(window_size),
         min_periods: robj_to!(usize, min_periods)?,
         closed_window: robj_to!(ClosedWindow, closed_window)?,
-        fn_params: None,
+        fn_params: fn_params,
     })
 }
 
