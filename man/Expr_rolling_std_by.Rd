@@ -42,6 +42,10 @@ before computing a result. If \code{NULL}, it will be set equal to window size.}
 
 \item{closed}{Define which sides of the temporal interval are closed
 (inclusive). This can be either \code{"left"}, \code{"right"}, \code{"both"} or \code{"none"}.}
+
+\item{ddof}{An integer representing "Delta Degrees of Freedom":
+the divisor used in the calculation is \code{N - ddof},
+where \code{N} represents the number of elements. By default ddof is \code{1}.}
 }
 \value{
 Expr

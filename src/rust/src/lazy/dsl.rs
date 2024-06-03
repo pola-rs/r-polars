@@ -525,6 +525,7 @@ impl RPolarsExpr {
                 weights,
                 min_periods,
                 center,
+                None,
             )?)
             .into())
     }
@@ -561,6 +562,7 @@ impl RPolarsExpr {
                 weights,
                 min_periods,
                 center,
+                None,
             )?)
             .into())
     }
@@ -598,6 +600,7 @@ impl RPolarsExpr {
                 weights,
                 min_periods,
                 center,
+                None,
             )?)
             .into())
     }
@@ -635,6 +638,7 @@ impl RPolarsExpr {
                 weights,
                 min_periods,
                 center,
+                None,
             )?)
             .into())
     }
@@ -663,7 +667,10 @@ impl RPolarsExpr {
         weights: Robj,
         min_periods: Robj,
         center: Robj,
+        ddof: Robj,
     ) -> RResult<Self> {
+        let ddof = robj_to!(u8, ddof)?;
+
         Ok(self
             .0
             .clone()
@@ -672,6 +679,7 @@ impl RPolarsExpr {
                 weights,
                 min_periods,
                 center,
+                Some(Arc::new(pl::RollingVarParams { ddof }) as Arc<dyn Any + Send + Sync>),
             )?)
             .into())
     }
@@ -708,7 +716,10 @@ impl RPolarsExpr {
         weights: Robj,
         min_periods: Robj,
         center: Robj,
+        ddof: Robj,
     ) -> RResult<Self> {
+        let ddof = robj_to!(u8, ddof)?;
+
         Ok(self
             .0
             .clone()
@@ -717,6 +728,7 @@ impl RPolarsExpr {
                 weights,
                 min_periods,
                 center,
+                Some(Arc::new(pl::RollingVarParams { ddof }) as Arc<dyn Any + Send + Sync>),
             )?)
             .into())
     }
@@ -762,6 +774,7 @@ impl RPolarsExpr {
                 weights,
                 min_periods,
                 center,
+                None,
             )?)
             .into())
     }
@@ -2751,13 +2764,14 @@ pub fn make_rolling_options_fixed_window(
     weights: Robj,
     min_periods: Robj,
     center: Robj,
+    fn_params: Option<Arc<dyn Any + Send + Sync>>,
 ) -> RResult<pl::RollingOptionsFixedWindow> {
     Ok(pl::RollingOptionsFixedWindow {
         window_size: robj_to!(usize, window_size)?,
         weights: robj_to!(Option, Vec, f64, weights)?,
         min_periods: robj_to!(usize, min_periods)?,
         center: robj_to!(bool, center)?,
-        ..Default::default()
+        fn_params,
     })
 }
 
@@ -2771,7 +2785,7 @@ pub fn make_rolling_options_dynamic_window(
         window_size: Duration::parse(window_size),
         min_periods: robj_to!(usize, min_periods)?,
         closed_window: robj_to!(ClosedWindow, closed_window)?,
-        fn_params: fn_params,
+        fn_params,
     })
 }
 

@@ -618,11 +618,11 @@ RPolarsExpr$rolling_sum <- function(window_size, weights, min_periods, center) .
 
 RPolarsExpr$rolling_sum_by <- function(by, window_size, min_periods, closed) .Call(wrap__RPolarsExpr__rolling_sum_by, self, by, window_size, min_periods, closed)
 
-RPolarsExpr$rolling_std <- function(window_size, weights, min_periods, center) .Call(wrap__RPolarsExpr__rolling_std, self, window_size, weights, min_periods, center)
+RPolarsExpr$rolling_std <- function(window_size, weights, min_periods, center, ddof) .Call(wrap__RPolarsExpr__rolling_std, self, window_size, weights, min_periods, center, ddof)
 
 RPolarsExpr$rolling_std_by <- function(by, window_size, min_periods, closed, ddof) .Call(wrap__RPolarsExpr__rolling_std_by, self, by, window_size, min_periods, closed, ddof)
 
-RPolarsExpr$rolling_var <- function(window_size, weights, min_periods, center) .Call(wrap__RPolarsExpr__rolling_var, self, window_size, weights, min_periods, center)
+RPolarsExpr$rolling_var <- function(window_size, weights, min_periods, center, ddof) .Call(wrap__RPolarsExpr__rolling_var, self, window_size, weights, min_periods, center, ddof)
 
 RPolarsExpr$rolling_var_by <- function(by, window_size, min_periods, closed, ddof) .Call(wrap__RPolarsExpr__rolling_var_by, self, by, window_size, min_periods, closed, ddof)
 

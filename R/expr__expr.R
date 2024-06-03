@@ -2299,6 +2299,7 @@ prepare_rolling_window_args = function(
 #' - 1i    (1 index count)
 #' If the dynamic string language is used, the `by` and `closed` arguments must
 #' also be set.
+#' @inherit Expr_rolling params return
 #' @param weights An optional slice with the same length as the window that will
 #' be multiplied elementwise with the values in the window.
 #' @param min_periods The number of values in the window that should be non-null
@@ -2309,7 +2310,6 @@ prepare_rolling_window_args = function(
 #' If you want to compute multiple aggregation statistics over the same dynamic
 #' window, consider using `$rolling()` this method can cache the window size
 #' computation.
-#' @return Expr
 #' @examples
 #' pl$DataFrame(a = c(1, 3, 2, 4, 5, 6))$
 #'   with_columns(roll_min = pl$col("a")$rolling_min(window_size = 2))
@@ -2317,6 +2317,7 @@ Expr_rolling_min = function(
     window_size,
     weights = NULL,
     min_periods = NULL,
+    ...,
     center = FALSE) {
   wargs = prepare_rolling_window_args(window_size, min_periods)
   .pr$Expr$rolling_min(
@@ -2369,6 +2370,7 @@ Expr_rolling_max = function(
     window_size,
     weights = NULL,
     min_periods = NULL,
+    ...,
     center = FALSE) {
   wargs = prepare_rolling_window_args(window_size, min_periods)
   .pr$Expr$rolling_max(
@@ -2417,6 +2419,7 @@ Expr_rolling_mean = function(
     window_size,
     weights = NULL,
     min_periods = NULL,
+    ...,
     center = FALSE) {
   wargs = prepare_rolling_window_args(window_size, min_periods)
   .pr$Expr$rolling_mean(
@@ -2509,6 +2512,7 @@ Expr_rolling_sum_by = function(
 #' by the `weight` vector.
 #'
 #' @inherit Expr_rolling_min params details return
+#' @inheritParams pl_std
 #' @examples
 #' pl$DataFrame(a = c(1, 3, 2, 4, 5, 6))$
 #'   with_columns(roll_std = pl$col("a")$rolling_std(window_size = 2))
@@ -2516,11 +2520,12 @@ Expr_rolling_std = function(
     window_size,
     weights = NULL,
     min_periods = NULL,
-    center = FALSE) {
+    ...,
+    center = FALSE,
+    ddof = 1) {
   wargs = prepare_rolling_window_args(window_size, min_periods)
   .pr$Expr$rolling_std(
-    self, wargs$window_size, weights,
-    wargs$min_periods, center
+    self, wargs$window_size, weights, wargs$min_periods, center, ddof
   ) |>
     unwrap("in $rolling_std(): ")
 }
@@ -2566,6 +2571,7 @@ Expr_rolling_std_by = function(
 #' `weight` vector.
 #'
 #' @inherit Expr_rolling_min params details return
+#' @inheritParams pl_std
 #' @examples
 #' pl$DataFrame(a = c(1, 3, 2, 4, 5, 6))$
 #'   with_columns(roll_var = pl$col("a")$rolling_var(window_size = 2))
@@ -2573,11 +2579,12 @@ Expr_rolling_var = function(
     window_size,
     weights = NULL,
     min_periods = NULL,
-    center = FALSE) {
+    ...,
+    center = FALSE,
+    ddof = 1) {
   wargs = prepare_rolling_window_args(window_size, min_periods)
   .pr$Expr$rolling_var(
-    self, wargs$window_size, weights,
-    wargs$min_periods, center
+    self, wargs$window_size, weights, wargs$min_periods, center, ddof
   ) |>
     unwrap("in $rolling_var():")
 }
@@ -2683,6 +2690,7 @@ Expr_rolling_quantile = function(
     window_size,
     weights = NULL,
     min_periods = NULL,
+    ...,
     center = FALSE) {
   wargs = prepare_rolling_window_args(window_size, min_periods)
   .pr$Expr$rolling_quantile(
