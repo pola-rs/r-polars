@@ -8,6 +8,7 @@ Expr_rolling_max(
   window_size,
   weights = NULL,
   min_periods = NULL,
+  ...,
   center = FALSE
 )
 }
@@ -35,6 +36,8 @@ be multiplied elementwise with the values in the window.}
 
 \item{min_periods}{The number of values in the window that should be non-null
 before computing a result. If \code{NULL}, it will be set equal to window size.}
+
+\item{...}{Ignored.}
 
 \item{center}{Set the labels at the center of the window}
 }
