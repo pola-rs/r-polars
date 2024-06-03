@@ -69,6 +69,9 @@ df_temporal = pl$DataFrame(
 df_temporal
 
 df_temporal$with_columns(
-  rolling_row_quantile = pl$col("index")$rolling_quantile_by("date", window_size = "2h", quantile = 0.3)
+  rolling_row_quantile = pl$col("index")$rolling_quantile_by(
+    "date",
+    window_size = "2h", quantile = 0.3
+  )
 )
 }
