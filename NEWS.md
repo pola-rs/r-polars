@@ -50,7 +50,10 @@
   (#1112).
 - In `$dt$combine()`, the arguments `tm` and `tu` are renamed `time` and
   `time_unit` (#1116).
-- The default value of the `rechunk` argument of `pl$concat()` is changed from `TRUE` to `FALSE` (#1125).
+- The default value of the `rechunk` argument of `pl$concat()` is changed from
+  `TRUE` to `FALSE` (#1125).
+- In all `$rolling_*()` functions, the arguments `center` and `ddof` must be
+  named (#1115).
 
 ### New features
 
