@@ -9,8 +9,10 @@ DataFrame_rename(...)
 \arguments{
 \item{...}{One of the following:
 \itemize{
-\item params like \code{new_name = "old_name"} to rename selected variables.
-\item as above but with params wrapped in a list
+\item Params like \code{new_name = "old_name"} to rename selected variables.
+\item As above but with params wrapped in a list
+\item An R function that takes the old names character vector as input and
+returns the new names character vector.
 }}
 }
 \value{
@@ -31,9 +33,8 @@ df = pl$DataFrame(
 )
 
 df$rename(apple = "foo")
-}
-\seealso{
-\itemize{
-\item \code{\link[=DataFrame_rename_with]{<DataFrame>$rename_with()}}
-}
+
+df$rename(
+  \(column_name) paste0("c", substr(column_name, 2, 100))
+)
 }

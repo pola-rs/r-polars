@@ -1540,10 +1540,10 @@ LazyFrame_melt = function(
 #' polars will block projection and predicate pushdowns at this node.
 #' @inherit pl_LazyFrame return
 #' @param ... One of the following:
-#'  - params like `new_name = "old_name"` to rename selected variables.
-#'  - as above but with params wrapped in a list
-#' @seealso
-#' - [`<LazyFrame>$rename_with()`][LazyFrame_rename_with]
+#' - Params like `new_name = "old_name"` to rename selected variables.
+#' - As above but with params wrapped in a list
+#' - An R function that takes the old names character vector as input and
+#'   returns the new names character vector.
 #' @examples
 #' lf = pl$LazyFrame(
 #'   foo = 1:3,
@@ -1552,53 +1552,33 @@ LazyFrame_melt = function(
 #' )
 #'
 #' lf$rename(apple = "foo")$collect()
+#'
+#' lf$rename(
+#'   \(column_name) paste0("c", substr(column_name, 2, 100))
+#' )$collect()
 LazyFrame_rename = function(...) {
+  uw = \(res) unwrap(res, "in $rename():")
+
   mapping = list2(...)
   if (length(mapping) == 0) {
     return(self)
+  } else if (is.function(mapping[[1L]])) {
+    {
+      existing = names(self)
+      new = mapping[[1L]](existing)
+    } |>
+      result() |>
+      uw()
+  } else {
+    if (is.list(mapping[[1L]])) {
+      mapping = mapping[[1L]]
+    }
+    existing = unname(unlist(mapping))
+    new = names(mapping)
   }
-  if (is.list(mapping[[1L]])) {
-    mapping = mapping[[1L]]
-  }
-  existing = unname(unlist(mapping))
-  new = names(mapping)
-  unwrap(.pr$LazyFrame$rename(self, existing, new), "in $rename():")
-}
-
-
-#' Rename column names of a LazyFrame with a function
-#'
-#' This method is currently experimental and may
-#' change without it being considered a breaking change.
-#' @inherit LazyFrame_rename details return
-#' @param fun An R function that takes the old names character vector as input and
-#' returns the new names character vector.
-#' @seealso
-#' - [`<LazyFrame>$rename()`][LazyFrame_rename]
-#' @examples
-#' lf = pl$LazyFrame(
-#'   foo = 1:3,
-#'   bar = 6:8,
-#'   ham = letters[1:3]
-#' )
-#'
-#' lf$rename_with(
-#'   \(column_name) paste0("c", substr(column_name, 2, 100))
-#' )$collect()
-LazyFrame_rename_with = function(fun) {
-  uw = \(res) unwrap(res, "in $rename_with():")
-
-  {
-    existing = names(self)
-    new = fun(existing)
-  } |>
-    result() |>
-    uw()
-
   .pr$LazyFrame$rename(self, existing, new) |>
     uw()
 }
-
 
 #' Fetch `n` rows of a LazyFrame
 #'

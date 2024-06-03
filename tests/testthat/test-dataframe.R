@@ -1080,7 +1080,7 @@ test_that("rename", {
 })
 
 
-test_that("rename_with", {
+test_that("rename with a function", {
   df = pl$DataFrame(
     foo = 1:3,
     bar = 6:8,
@@ -1088,14 +1088,14 @@ test_that("rename_with", {
   )
 
   expect_identical(
-  df$rename_with(
+  df$rename(
     \(column_name) paste0("c", substr(column_name, 2, 100))
   ) |>
     names(),
   c("coo", "car", "cam")
   )
 
-  expect_grepl_error(df$rename_with(\(x) 1))
+  expect_grepl_error(df$rename(\(x) 1))
 })
 
 
