@@ -52,14 +52,16 @@
   `time_unit` (#1116).
 - The default value of the `rechunk` argument of `pl$concat()` is changed from
   `TRUE` to `FALSE` (#1125).
+- In `$rename()` for LazyFrame and DataFrame, key-value pairs of names are changed to
+  `old_name = "new_name"` instead of `new_name = "old_name"` (#1129).
 - In all `$rolling_*()` functions, the arguments `center` and `ddof` must be
   named (#1115).
 
 ### New features
 
-- Experimental feature `$rename_with()` for LazyFrame and DataFrame.
+- Allow specify a function in `$rename()` for LazyFrame and DataFrame.
   They are equivalent to `polars.LazyFrame.rename(mapping: Callable[[str], str])`
-  or `polars.DataFrame.rename(mapping: Callable[[str], str])` in Python Polars (#1122).
+  or `polars.DataFrame.rename(mapping: Callable[[str], str])` in Python Polars (#1122, #1129).
 
 ## Polars R Package 0.16.4
 
