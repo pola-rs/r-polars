@@ -2,6 +2,8 @@
 
 ## Polars R Package (development version)
 
+## Polars R Package 0.17.0
+
 ### Breaking changes
 
 - Updated rust-polars to unreleased version (> 0.40.0) (#1104, #1110, #1117, #1124):
@@ -31,7 +33,7 @@
     Sortedness is now verified in a quick manner, so this argument is no longer needed
     (pola-rs/polars#16494).
   - `$name$map()` stacks on Linux, so this method is deprecated and the document
-    is removed. Please use other methods including `$rename_with()` instead (#1123).
+    is removed. Please use other methods like `<LazyFrame>$rename(<function>)` instead (#1123).
 - As warned in v0.16.0, the order of arguments in `pl$Series` is changed (#1071).
   The first argument is now `name`, and the second argument is `values`.
 - `$to_struct()` on an Expr is removed. This method is now only available for
