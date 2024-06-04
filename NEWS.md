@@ -54,6 +54,7 @@
   `TRUE` to `FALSE` (#1125).
 - In `$rename()` for LazyFrame and DataFrame, key-value pairs of names are changed to
   `old_name = "new_name"` instead of `new_name = "old_name"` (#1129).
+- In `$rename()` for LazyFrame and DataFrame, no argument is not allowed (#1129).
 - In all `$rolling_*()` functions, the arguments `center` and `ddof` must be
   named (#1115).
 
