@@ -588,10 +588,10 @@ test_that("rename", {
   expect_true("miles_per_gallon" %in% a)
   expect_true("horsepower" %in% a)
 
-  # no args are allowed, but does nothing
-  expect_identical(
-    lf$rename()$collect()$to_list(),
-    lf$collect()$to_list()
+  # no args are not allowed
+  expect_grepl_error(
+    lf$rename(),
+    "No arguments provided"
   )
 
   # wrapped args in list is equivalent

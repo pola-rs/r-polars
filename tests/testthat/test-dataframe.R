@@ -1068,10 +1068,10 @@ test_that("rename", {
   expect_true("miles_per_gallon" %in% a)
   expect_true("horsepower" %in% a)
 
-  # no args are allowed, but does nothing
-  expect_identical(
-    df$rename()$to_list(),
-    df$to_list()
+  # no args are not allowed
+  expect_grepl_error(
+    df$rename(),
+    "No arguments provided"
   )
 
   # wrapped args in list is equivalent
