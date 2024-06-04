@@ -582,25 +582,25 @@ test_that("rename", {
   lf = pl$DataFrame(mtcars)$lazy()
 
   # renaming succeeded
-  a = lf$rename(miles_per_gallon = "mpg", horsepower = "hp")$collect()$columns
+  a = lf$rename(mpg = "miles_per_gallon", hp = "horsepower")$collect()$columns
   expect_false("hp" %in% a)
   expect_false("mpg" %in% a)
   expect_true("miles_per_gallon" %in% a)
   expect_true("horsepower" %in% a)
 
-  # no args are allowed, but does nothing
-  expect_identical(
-    lf$rename()$collect()$to_list(),
-    lf$collect()$to_list()
+  # no args are not allowed
+  expect_grepl_error(
+    lf$rename(),
+    "No arguments provided"
   )
 
   # wrapped args in list is equivalent
-  b = lf$rename(list(miles_per_gallon = "mpg", horsepower = "hp"))$collect()$columns
+  b = lf$rename(list(mpg = "miles_per_gallon", hp = "horsepower"))$collect()$columns
   expect_identical(a, b)
 })
 
 
-test_that("rename_with", {
+test_that("rename with a function", {
   lf = pl$DataFrame(
     foo = 1:3,
     bar = 6:8,
@@ -608,14 +608,14 @@ test_that("rename_with", {
   )$lazy()
 
   expect_identical(
-    lf$rename_with(
+    lf$rename(
       \(column_name) paste0("c", substr(column_name, 2, 100))
     ) |>
       names(),
     c("coo", "car", "cam")
   )
 
-  expect_grepl_error(lf$rename_with(\(x) 1))
+  expect_grepl_error(lf$rename(\(x) 1))
 })
 
 

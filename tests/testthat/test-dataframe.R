@@ -1062,25 +1062,25 @@ test_that("rename", {
   df = pl$DataFrame(mtcars)
 
   # renaming succeeded
-  a = df$rename(miles_per_gallon = "mpg", horsepower = "hp")$columns
+  a = df$rename(mpg = "miles_per_gallon", hp = "horsepower")$columns
   expect_false("hp" %in% a)
   expect_false("mpg" %in% a)
   expect_true("miles_per_gallon" %in% a)
   expect_true("horsepower" %in% a)
 
-  # no args are allowed, but does nothing
-  expect_identical(
-    df$rename()$to_list(),
-    df$to_list()
+  # no args are not allowed
+  expect_grepl_error(
+    df$rename(),
+    "No arguments provided"
   )
 
   # wrapped args in list is equivalent
-  b = df$rename(list(miles_per_gallon = "mpg", horsepower = "hp"))$columns
+  b = df$rename(list(mpg = "miles_per_gallon", hp = "horsepower"))$columns
   expect_identical(a, b)
 })
 
 
-test_that("rename_with", {
+test_that("rename with a function", {
   df = pl$DataFrame(
     foo = 1:3,
     bar = 6:8,
@@ -1088,14 +1088,14 @@ test_that("rename_with", {
   )
 
   expect_identical(
-  df$rename_with(
+  df$rename(
     \(column_name) paste0("c", substr(column_name, 2, 100))
   ) |>
     names(),
   c("coo", "car", "cam")
   )
 
-  expect_grepl_error(df$rename_with(\(x) 1))
+  expect_grepl_error(df$rename(\(x) 1))
 })
 
 
