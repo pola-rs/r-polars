@@ -2,6 +2,10 @@
 
 ## Polars R Package (development version)
 
+### New features
+
+- New method `$has_nulls()` (#1133).
+
 ## Polars R Package 0.17.0
 
 ### Breaking changes

@@ -50,7 +50,6 @@ ExprName_keep = function() {
 }
 
 # TODO: this method is broken after <https://github.com/pola-rs/r-polars/pull/1104>, so not documented
-#' @noRd
 #' Map alias of expression with an R function
 #'
 #' Rename the output of an expression by mapping a function over the root name.
@@ -69,6 +68,7 @@ ExprName_keep = function() {
 #' df$select(
 #'   pl$col("var1")$alias("foobar")$name$map(\(x) paste0("new_", x))
 #' )
+#' @noRd
 ExprName_map = function(fun) {
   if (
     !polars_options()$no_messages &&
