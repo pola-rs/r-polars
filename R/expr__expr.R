@@ -3742,3 +3742,19 @@ Expr_qcut = function(
       unwrap("in $qcut():")
   }
 }
+
+#' Check whether the expression contains one or more null values
+#'
+#' @return Expr
+#'
+#' @examples
+#' df = pl$DataFrame(
+#'   a = c(NA, 1, NA),
+#'   b = c(1, NA, 2),
+#'   c = c(1, 2, 3)
+#' )
+#'
+#' df$select(pl$all()$has_nulls())
+Expr_has_nulls = function() {
+  self$null_count() > 0
+}

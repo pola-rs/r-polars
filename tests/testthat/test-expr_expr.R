@@ -2982,3 +2982,16 @@ test_that("all works", {
     list(a = TRUE, b = FALSE, c = NA, d = NA)
   )
 })
+
+test_that("has_nulls works", {
+  df = pl$DataFrame(
+    a = c(NA, 1, NA),
+    b = c(1, NA, 2),
+    c = c(1, 2, 3)
+  )
+
+  expect_identical(
+    df$select(pl$all()$has_nulls())$to_list(),
+    list(a = TRUE, b = TRUE, c = FALSE)
+  )
+})
