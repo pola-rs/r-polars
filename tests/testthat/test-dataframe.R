@@ -1215,14 +1215,14 @@ test_that("sample", {
 
   # plain use
   expect_identical(df$sample(n = 20)$height, 20)
-  expect_identical(df$sample(frac = 0.1)$height, 15)
+  expect_identical(df$sample(fraction = 0.1)$height, 15)
 
   # must pass either n or fraction and not both
   expect_grepl_error(df$sample(), "Pass either arg")
   expect_grepl_error(df$sample(n = 2, fraction = 0.1), "not both")
 
   # single check of some conversion errors
-  ctx = df$sample(frac = 0.1, seed = "not even a written number") |> get_err_ctx()
+  ctx = df$sample(fraction = 0.1, seed = "not even a written number") |> get_err_ctx()
   expect_identical(ctx$PlainErrorMessage, "ParseIntError { kind: InvalidDigit }")
 
   # single check on rust-polars errors

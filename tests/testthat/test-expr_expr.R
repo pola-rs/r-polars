@@ -2215,11 +2215,11 @@ test_that("sample", {
   res = df$select(
     pl$col("a")$sample(seed = 1)$alias("default")$implode(),
     pl$col("a")$sample(n = 3, seed = 1)$alias("n3")$implode(),
-    pl$col("a")$sample(frac = .4, seed = 1)$alias("frac.4")$implode(),
-    pl$col("a")$sample(frac = 1, seed = 1)$alias("frac2")$implode(),
-    pl$col("a")$sample(frac = 1, with_replacement = FALSE, seed = 1)$alias("frac1norep")$implode(),
+    pl$col("a")$sample(fraction = .4, seed = 1)$alias("frac.4")$implode(),
+    pl$col("a")$sample(fraction = 1, seed = 1)$alias("frac2")$implode(),
+    pl$col("a")$sample(fraction = 1, with_replacement = FALSE, seed = 1)$alias("frac1norep")$implode(),
     pl$col("a")$sample(n = 10, with_replacement = FALSE, seed = 1)$alias("n10norep")$implode(),
-    pl$col("a")$sample(frac = 1, with_replacement = FALSE, shuffle = TRUE, seed = 1)$alias("frac1norepshuffle")$implode(),
+    pl$col("a")$sample(fraction = 1, with_replacement = FALSE, shuffle = TRUE, seed = 1)$alias("frac1norepshuffle")$implode(),
     pl$col("a")$sample(n = 10, with_replacement = FALSE, shuffle = TRUE, seed = 1)$alias("n10norep_shuffle")$implode()
   )$to_list() |> lapply(unlist)
 

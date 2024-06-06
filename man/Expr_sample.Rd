@@ -5,15 +5,20 @@
 \title{Take a sample}
 \usage{
 Expr_sample(
-  frac = NULL,
+  n = NULL,
+  ...,
+  fraction = NULL,
   with_replacement = TRUE,
   shuffle = FALSE,
-  seed = NULL,
-  n = NULL
+  seed = NULL
 )
 }
 \arguments{
-\item{frac}{Fraction of items to return (can be higher than 1). Cannot be
+\item{n}{Number of items to return. Cannot be used with \code{fraction}.}
+
+\item{...}{Ignored.}
+
+\item{fraction}{Fraction of items to return (can be higher than 1). Cannot be
 used with \code{n}.}
 
 \item{with_replacement}{If \code{TRUE} (default), allow values to be sampled more
@@ -24,8 +29,6 @@ than once.}
 
 \item{seed}{numeric value of 0 to 2^52 Seed for the random number generator.
 If \code{NULL} (default), a random seed value between 0 and 10000 is picked.}
-
-\item{n}{Number of items to return. Cannot be used with \code{frac}.}
 }
 \value{
 Expr
@@ -35,7 +38,7 @@ Take a sample
 }
 \examples{
 df = pl$DataFrame(a = 1:4)
-df$select(pl$col("a")$sample(frac = 1, with_replacement = TRUE, seed = 1L))
-df$select(pl$col("a")$sample(frac = 2, with_replacement = TRUE, seed = 1L))
+df$select(pl$col("a")$sample(fraction = 1, with_replacement = TRUE, seed = 1L))
+df$select(pl$col("a")$sample(fraction = 2, with_replacement = TRUE, seed = 1L))
 df$select(pl$col("a")$sample(n = 2, with_replacement = FALSE, seed = 1L))
 }

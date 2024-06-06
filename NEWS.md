@@ -2,6 +2,13 @@
 
 ## Polars R Package (development version)
 
+### Breaking changes
+
+- In `$sample()` for Expr and DataFrame, the argument `frac` is renamed `fraction`
+  and all the other arguments must be named. In addition, for the Expr method only,
+  the first argument is now `n` (it was already the case for the DataFrame method)
+  (#1136).
+
 ### New features
 
 - New method `$has_nulls()` (#1133).

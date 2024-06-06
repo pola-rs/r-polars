@@ -6,6 +6,7 @@
 \usage{
 DataFrame_sample(
   n = NULL,
+  ...,
   fraction = NULL,
   with_replacement = FALSE,
   shuffle = FALSE,
@@ -14,6 +15,8 @@ DataFrame_sample(
 }
 \arguments{
 \item{n}{Number of rows to return. Cannot be used with \code{fraction}.}
+
+\item{...}{Ignored.}
 
 \item{fraction}{Fraction of rows to return (between 0 and 1). Cannot be used
 with \code{n}.}
@@ -36,6 +39,6 @@ Take a sample of rows from a DataFrame
 \examples{
 df = pl$DataFrame(iris)
 df$sample(n = 20)
-df$sample(frac = 0.1)
+df$sample(fraction = 0.1)
 }
 \keyword{DataFrame}
