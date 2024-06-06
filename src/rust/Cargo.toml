@@ -6,7 +6,7 @@ rust-version = "1.77.0"
 publish = false
 
 [lib]
-crate-type = ['staticlib']
+crate-type = ['staticlib', 'rlib']
 
 [features]
 default = ["sql"]
