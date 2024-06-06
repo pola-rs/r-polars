@@ -136,14 +136,14 @@ Series_dtype = method_as_active_binding(\() .pr$Series$dtype(self))
 Series_flags = method_as_active_binding(
   \() {
     out = list(
-      "SORTED_ASC" = .pr$Series$is_sorted_flag(self),
-      "SORTED_DESC" = .pr$Series$is_sorted_reverse_flag(self)
+      "SORTED_ASC" = .pr$Series$is_sorted_ascending_flag(self),
+      "SORTED_DESC" = .pr$Series$is_sorted_descending_flag(self)
     )
 
     # the width value given here doesn't matter, but pl$Array() must have one
     if (pl$same_outer_dt(self$dtype, pl$List()) ||
       pl$same_outer_dt(self$dtype, pl$Array(width = 1))) {
-      out[["FAST_EXPLODE"]] = .pr$Series$fast_explode_flag(self)
+      out[["FAST_EXPLODE"]] = .pr$Series$can_fast_explode_flag(self)
     }
 
     out
