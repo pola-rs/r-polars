@@ -2083,7 +2083,7 @@ dependencies = [
 
 [[package]]
 name = "r-polars"
-version = "0.40.0"
+version = "0.40.1"
 dependencies = [
  "either",
  "extendr-api",
