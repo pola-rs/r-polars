@@ -4,7 +4,7 @@
 \alias{DataFrame_n_chunks}
 \title{Number of chunks of the Series in a DataFrame}
 \usage{
-DataFrame_n_chunks(strategy = "all")
+DataFrame_n_chunks(strategy = "first")
 }
 \arguments{
 \item{strategy}{Either \code{"all"} or \code{"first"}. \code{"first"} only returns chunks

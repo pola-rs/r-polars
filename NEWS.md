@@ -2,6 +2,10 @@
 
 ## Polars R Package (development version)
 
+### Breaking changes
+
+- In `$n_chunks()`, the default value of `strategy` now is `"first"` (#1137).
+
 ### New features
 
 - New method `$has_nulls()` (#1133).
