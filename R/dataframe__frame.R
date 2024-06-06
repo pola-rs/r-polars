@@ -1834,8 +1834,9 @@ DataFrame_explode = function(...) {
 #' Take a sample of rows from a DataFrame
 #'
 #' @param n Number of rows to return. Cannot be used with `fraction`.
-#' @param fraction Fraction of rows to return (between 0 and 1). Cannot be used
-#' with `n`.
+#' @param ... Ignored.
+#' @param fraction Fraction of rows to return. Cannot be used with `n`. Can be
+#' larger than 1 if `with_replacement` is `TRUE`.
 #' @param with_replacement Allow values to be sampled more than once.
 #' @param shuffle If `TRUE`, the order of the sampled rows will be shuffled. If
 #' `FALSE` (default), the order of the returned rows will be neither stable nor
@@ -1848,9 +1849,8 @@ DataFrame_explode = function(...) {
 #' @examples
 #' df = pl$DataFrame(iris)
 #' df$sample(n = 20)
-#' df$sample(frac = 0.1)
-DataFrame_sample = function(
-    n = NULL, fraction = NULL, with_replacement = FALSE, shuffle = FALSE, seed = NULL) {
+#' df$sample(fraction = 0.1)
+DataFrame_sample = function(n = NULL, ..., fraction = NULL, with_replacement = FALSE, shuffle = FALSE, seed = NULL) {
   seed = seed %||% sample(0:10000, 1)
   pcase(
     !xor(is.null(n), is.null(fraction)), Err_plain("Pass either arg `n` or `fraction`, not both."),

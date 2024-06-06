@@ -3082,33 +3082,34 @@ Expr_shuffle = function(seed = NULL) {
 
 #' Take a sample
 #'
-#' @param frac Fraction of items to return (can be higher than 1). Cannot be
-#' used with `n`.
+#' @param n Number of items to return. Cannot be used with `fraction`.
+#' @param ... Ignored.
+#' @param fraction Fraction of items to return. Cannot be used with `n`. Can be
+#' larger than 1 if `with_replacement` is `TRUE`.
 #' @param with_replacement If `TRUE` (default), allow values to be sampled more
 #' than once.
 #' @param shuffle Shuffle the order of sampled data points (implicitly `TRUE` if
 #' `with_replacement = TRUE`).
 #' @inheritParams Expr_shuffle
-#' @param n Number of items to return. Cannot be used with `frac`.
 #' @return Expr
 #' @examples
 #' df = pl$DataFrame(a = 1:4)
-#' df$select(pl$col("a")$sample(frac = 1, with_replacement = TRUE, seed = 1L))
-#' df$select(pl$col("a")$sample(frac = 2, with_replacement = TRUE, seed = 1L))
+#' df$select(pl$col("a")$sample(fraction = 1, with_replacement = TRUE, seed = 1L))
+#' df$select(pl$col("a")$sample(fraction = 2, with_replacement = TRUE, seed = 1L))
 #' df$select(pl$col("a")$sample(n = 2, with_replacement = FALSE, seed = 1L))
 Expr_sample = function(
-    frac = NULL, with_replacement = TRUE, shuffle = FALSE,
-    seed = NULL, n = NULL) {
+    n = NULL, ..., fraction = NULL, with_replacement = FALSE, shuffle = FALSE,
+    seed = NULL) {
   pcase(
-    !is.null(n) && !is.null(frac), {
-      Err(.pr$Err$new()$plain("either arg `n` or `frac` must be NULL"))
+    !is.null(n) && !is.null(fraction), {
+      Err(.pr$Err$new()$plain("either arg `n` or `fraction` must be NULL"))
     },
     !is.null(n), .pr$Expr$sample_n(self, n, with_replacement, shuffle, seed),
     or_else = {
-      .pr$Expr$sample_frac(self, frac %||% 1.0, with_replacement, shuffle, seed)
+      .pr$Expr$sample_frac(self, fraction %||% 1, with_replacement, shuffle, seed)
     }
   ) |>
-    unwrap("in $sample()")
+    unwrap("in $sample():")
 }
 
 #' Internal function for emw_x expressions

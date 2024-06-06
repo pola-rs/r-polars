@@ -2212,29 +2212,25 @@ test_that("shuffle", {
 
 test_that("sample", {
   df = pl$DataFrame(a = 1:10)
-  res = df$select(
-    pl$col("a")$sample(seed = 1)$alias("default")$implode(),
-    pl$col("a")$sample(n = 3, seed = 1)$alias("n3")$implode(),
-    pl$col("a")$sample(frac = .4, seed = 1)$alias("frac.4")$implode(),
-    pl$col("a")$sample(frac = 1, seed = 1)$alias("frac2")$implode(),
-    pl$col("a")$sample(frac = 1, with_replacement = FALSE, seed = 1)$alias("frac1norep")$implode(),
-    pl$col("a")$sample(n = 10, with_replacement = FALSE, seed = 1)$alias("n10norep")$implode(),
-    pl$col("a")$sample(frac = 1, with_replacement = FALSE, shuffle = TRUE, seed = 1)$alias("frac1norepshuffle")$implode(),
-    pl$col("a")$sample(n = 10, with_replacement = FALSE, shuffle = TRUE, seed = 1)$alias("n10norep_shuffle")$implode()
-  )$to_list() |> lapply(unlist)
 
-  expect_identical(
-    res,
-    list(
-      default = c(8L, 1L, 2L, 4L, 5L, 10L, 2L, 5L, 3L, 8L),
-      n3 = c(8L, 1L, 2L),
-      frac.4 = c(8L, 1L, 2L, 4L),
-      frac2 = c(8L, 1L, 2L, 4L, 5L, 10L, 2L, 5L, 3L, 8L),
-      frac1norep = 1:10,
-      n10norep = 1:10,
-      frac1norepshuffle = c(6L, 4L, 5L, 10L, 7L, 9L, 3L, 2L, 1L, 8L),
-      n10norep_shuffle = c(6L, 4L, 5L, 10L, 7L, 9L, 3L, 2L, 1L, 8L)
-    )
+  # Numerical checks
+  expect_equal(
+    df$select(pl$col("a")$sample(fraction = 0.2, seed = 1))$to_list(),
+    list(a = c(7, 1))
+  )
+  expect_equal(
+    df$select(pl$col("a")$sample(n = 2, seed = 1))$to_list(),
+    list(a = c(7, 1))
+  )
+
+  # Check fraction arg
+  expect_grepl_error(
+    df$select(pl$col("a")$sample(fraction = 2)),
+    "cannot take a larger sample than the total population when `with_replacement=false`"
+  )
+  expect_equal(
+    df$select(pl$col("a")$sample(fraction = 2, with_replacement = TRUE))$height,
+    20
   )
 })
 

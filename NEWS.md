@@ -5,6 +5,17 @@
 ### Breaking changes
 
 - In `$n_chunks()`, the default value of `strategy` now is `"first"` (#1137).
+-`$sample()` for Expr and DataFrame (#1136):
+  - the argument `frac` is renamed `fraction`;
+  - all the arguments except `n` must be named;
+  - for the Expr method only, the first argument is now `n` (it was already the
+    case for the DataFrame method);
+  - for the Expr method only, the default value for `with_replacement` is now
+    `FALSE` (it was already the case for the DataFrame method).
+
+
+
+
 
 ### New features
 
