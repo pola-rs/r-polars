@@ -1216,6 +1216,11 @@ test_that("sample", {
   # plain use
   expect_identical(df$sample(n = 20)$height, 20)
   expect_identical(df$sample(fraction = 0.1)$height, 15)
+  expect_grepl_error(
+    df$sample(fraction = 1.1),
+    "cannot take a larger sample than the total population when `with_replacement=false`"
+  )
+  expect_identical(df$sample(fraction = 1.1, with_replacement = TRUE)$height, 165)
 
   # must pass either n or fraction and not both
   expect_grepl_error(df$sample(), "Pass either arg")

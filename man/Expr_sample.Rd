@@ -8,7 +8,7 @@ Expr_sample(
   n = NULL,
   ...,
   fraction = NULL,
-  with_replacement = TRUE,
+  with_replacement = FALSE,
   shuffle = FALSE,
   seed = NULL
 )
@@ -18,8 +18,8 @@ Expr_sample(
 
 \item{...}{Ignored.}
 
-\item{fraction}{Fraction of items to return (can be higher than 1). Cannot be
-used with \code{n}.}
+\item{fraction}{Fraction of items to return. Cannot be used with \code{n}. Can be
+larger than 1 if \code{with_replacement} is \code{TRUE}.}
 
 \item{with_replacement}{If \code{TRUE} (default), allow values to be sampled more
 than once.}

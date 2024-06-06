@@ -3084,8 +3084,8 @@ Expr_shuffle = function(seed = NULL) {
 #'
 #' @param n Number of items to return. Cannot be used with `fraction`.
 #' @param ... Ignored.
-#' @param fraction Fraction of items to return (can be higher than 1). Cannot be
-#' used with `n`.
+#' @param fraction Fraction of items to return. Cannot be used with `n`. Can be
+#' larger than 1 if `with_replacement` is `TRUE`.
 #' @param with_replacement If `TRUE` (default), allow values to be sampled more
 #' than once.
 #' @param shuffle Shuffle the order of sampled data points (implicitly `TRUE` if
@@ -3098,7 +3098,7 @@ Expr_shuffle = function(seed = NULL) {
 #' df$select(pl$col("a")$sample(fraction = 2, with_replacement = TRUE, seed = 1L))
 #' df$select(pl$col("a")$sample(n = 2, with_replacement = FALSE, seed = 1L))
 Expr_sample = function(
-    n = NULL, ..., fraction = NULL, with_replacement = TRUE, shuffle = FALSE,
+    n = NULL, ..., fraction = NULL, with_replacement = FALSE, shuffle = FALSE,
     seed = NULL) {
   pcase(
     !is.null(n) && !is.null(fraction), {
@@ -3109,7 +3109,7 @@ Expr_sample = function(
       .pr$Expr$sample_frac(self, fraction %||% 1, with_replacement, shuffle, seed)
     }
   ) |>
-    unwrap("in $sample()")
+    unwrap("in $sample():")
 }
 
 #' Internal function for emw_x expressions

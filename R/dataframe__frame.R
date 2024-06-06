@@ -1835,8 +1835,8 @@ DataFrame_explode = function(...) {
 #'
 #' @param n Number of rows to return. Cannot be used with `fraction`.
 #' @param ... Ignored.
-#' @param fraction Fraction of rows to return (between 0 and 1). Cannot be used
-#' with `n`.
+#' @param fraction Fraction of rows to return. Cannot be used with `n`. Can be
+#' larger than 1 if `with_replacement` is `TRUE`.
 #' @param with_replacement Allow values to be sampled more than once.
 #' @param shuffle If `TRUE`, the order of the sampled rows will be shuffled. If
 #' `FALSE` (default), the order of the returned rows will be neither stable nor

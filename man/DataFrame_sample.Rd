@@ -18,8 +18,8 @@ DataFrame_sample(
 
 \item{...}{Ignored.}
 
-\item{fraction}{Fraction of rows to return (between 0 and 1). Cannot be used
-with \code{n}.}
+\item{fraction}{Fraction of rows to return. Cannot be used with \code{n}. Can be
+larger than 1 if \code{with_replacement} is \code{TRUE}.}
 
 \item{with_replacement}{Allow values to be sampled more than once.}
 
