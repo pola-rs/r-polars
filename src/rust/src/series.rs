@@ -181,21 +181,18 @@ impl RPolarsSeries {
         self.0.arg_max()
     }
 
-    // TODO: rename to `can_fast_explode_flag`
-    pub fn fast_explode_flag(&self) -> bool {
+    pub fn can_fast_explode_flag(&self) -> bool {
         match self.0.list() {
             Err(_) => false,
             Ok(list) => list._can_fast_explode(),
         }
     }
 
-    // TODO: rename to `is_sorted_ascending_flag`
-    pub fn is_sorted_flag(&self) -> bool {
+    pub fn is_sorted_ascending_flag(&self) -> bool {
         matches!(self.0.is_sorted_flag(), IsSorted::Ascending)
     }
 
-    // TODO: rename to `is_sorted_descending_flag`
-    pub fn is_sorted_reverse_flag(&self) -> bool {
+    pub fn is_sorted_descending_flag(&self) -> bool {
         matches!(self.0.is_sorted_flag(), IsSorted::Descending)
     }
 
