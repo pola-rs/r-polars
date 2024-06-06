@@ -58,8 +58,8 @@ test_that("concat dataframe", {
   )
 
   # check rechunk works
-  expect_identical(pl$concat(mtcars, mtcars, rechunk = TRUE)$n_chunks(), rep(1, 11))
-  expect_identical(pl$concat(mtcars, mtcars, rechunk = FALSE)$n_chunks(), rep(2, 11))
+  expect_identical(pl$concat(mtcars, mtcars, rechunk = TRUE)$n_chunks("all"), rep(1, 11))
+  expect_identical(pl$concat(mtcars, mtcars, rechunk = FALSE)$n_chunks("all"), rep(2, 11))
 
 
 
