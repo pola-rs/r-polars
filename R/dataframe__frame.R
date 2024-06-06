@@ -1215,7 +1215,7 @@ DataFrame_first = function() {
 #' str(z)
 #' z = rechunk(z)
 #' str(z)
-DataFrame_n_chunks = function(strategy = "all") {
+DataFrame_n_chunks = function(strategy = "first") {
   .pr$DataFrame$n_chunks(self, strategy) |>
     unwrap("in n_chunks():")
 }

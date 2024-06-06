@@ -948,15 +948,15 @@ test_that("n_chunks", {
     how = "horizontal"
   )
 
-  expect_identical(df$n_chunks(), c(1, 2))
-  expect_identical(df$n_chunks("first"), c(1))
+  expect_identical(df$n_chunks("all"), c(1, 2))
+  expect_identical(df$n_chunks(), 1)
+  expect_identical(pl$DataFrame()$n_chunks("all"), numeric())
   expect_identical(pl$DataFrame()$n_chunks(), numeric())
-  expect_identical(pl$DataFrame()$n_chunks("first"), numeric())
 
-  pl$DataFrame()$n_chunks("wrong strat") |>
-    get_err_ctx("Plain") |>
-    grepl(pat = "strategy") |>
-    expect_true()
+  expect_grepl_error(
+    pl$DataFrame()$n_chunks("wrong strat"),
+    "strategy not recognized"
+  )
 })
 
 
