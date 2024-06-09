@@ -64,12 +64,15 @@ impl RPackage for NanoArrowRPackage {
     }
 }
 
-pub struct RPolarsArrowArrayStream(pub arrow::ffi::ArrowArrayStream);
+#[derive(Debug)]
+pub struct RPolarsArrowArrayStream(pub *mut arrow::ffi::ArrowArrayStream);
 
 #[extendr]
 impl RPolarsArrowArrayStream {
     pub fn empty() -> Self {
-        Self(arrow::ffi::ArrowArrayStream::empty())
+        Self(Box::into_raw(Box::new(
+            arrow::ffi::ArrowArrayStream::empty(),
+        )))
     }
 }
 

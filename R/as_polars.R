@@ -1,3 +1,43 @@
+# TODO: split this file into multiple files like `as_polars_series.R`, `as_polars_df.R`, etc.
+
+# Internal function
+as_polars_array_stream = function(x, ...) {
+  UseMethod("as_polars_array_stream")
+}
+
+
+#' @export
+as_polars_array_stream.default = function(x, ...) {
+  uw = \(res) unwrap(res, "in as_polars_array_stream():")
+
+  if (!requireNamespace("nanoarrow", quietly = TRUE)) {
+    Err_plain("Please install the `nanoarrow` package.") |>
+      uw()
+  }
+
+  nanoarrow::as_nanoarrow_array_stream(x) |>
+    as_polars_array_stream()
+}
+
+
+#' @export
+as_polars_array_stream.nanoarrow_array_stream = function(x, ...) {
+  out = RPolarsArrowArrayStream$empty()
+  nanoarrow::nanoarrow_pointer_export(x, out)
+
+  out
+}
+
+
+#' @export
+as_polars_array_stream.RecordBatchReader = function(x, ...) {
+  out = RPolarsArrowArrayStream$empty()
+  x$export_to_c(out)
+
+  out
+}
+
+
 #' To polars DataFrame
 #'
 #' [as_polars_df()] is a generic function that converts an R object to a
@@ -418,12 +458,9 @@ as_polars_series.ChunkedArray = as_polars_series.Array
 #' @rdname as_polars_series
 #' @export
 as_polars_series.RecordBatchReader = function(x, name = NULL, ...) {
-  stream_out = polars_allocate_array_stream()
-  x$export_to_c(stream_out)
-
   .pr$Series$import_stream(
     name %||% "",
-    stream_out
+    as_polars_array_stream(x)
   ) |>
     unwrap("in as_polars_series(<RecordBatchReader>):")
 }
@@ -446,12 +483,9 @@ as_polars_series.nanoarrow_array_stream = function(x, name = NULL, ..., experime
   on.exit(x$release())
 
   if (isTRUE(experimental)) {
-    stream_out = polars_allocate_array_stream()
-    nanoarrow::nanoarrow_pointer_export(x, stream_out)
-
     .pr$Series$import_stream(
       name %||% "",
-      stream_out
+      as_polars_array_stream(x)
     ) |>
       unwrap("in as_polars_series(<nanoarrow_array_stream>):")
   } else {

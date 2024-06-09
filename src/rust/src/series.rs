@@ -632,13 +632,13 @@ impl RPolarsSeries {
 
     pub fn import_stream(name: Robj, stream_ptr: Robj) -> RResult<Self> {
         let name = robj_to!(str, name)?;
-        let stream_in_ptr_addr = robj_to!(usize, stream_ptr)?;
-        let stream_in_ptr =
-            unsafe { Box::from_raw(stream_in_ptr_addr as *mut arrow::ffi::ArrowArrayStream) };
+        let stream: ExternalPtr<crate::arrow_interop::RPolarsArrowArrayStream> =
+            stream_ptr.try_into()?;
 
-        let mut stream = unsafe { arrow::ffi::ArrowArrayStreamReader::try_new(stream_in_ptr)? };
+        let mut stream_reader =
+            unsafe { arrow::ffi::ArrowArrayStreamReader::try_new(Box::from_raw(stream.0))? };
         let mut arrays: Vec<Box<dyn arrow::array::Array>> = Vec::new();
-        while let Some(array_res) = unsafe { stream.next() } {
+        while let Some(array_res) = unsafe { stream_reader.next() } {
             arrays.push(array_res?);
         }
 
