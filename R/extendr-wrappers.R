@@ -134,6 +134,16 @@ disable_string_cache <- function() .Call(wrap__disable_string_cache)
 
 using_string_cache <- function() .Call(wrap__using_string_cache)
 
+RPolarsArrowArrayStream <- new.env(parent = emptyenv())
+
+RPolarsArrowArrayStream$empty <- function() .Call(wrap__RPolarsArrowArrayStream__empty)
+
+#' @export
+`$.RPolarsArrowArrayStream` <- function (self, name) { func <- RPolarsArrowArrayStream[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.RPolarsArrowArrayStream` <- `$.RPolarsArrowArrayStream`
+
 RPolarsDataFrame <- new.env(parent = emptyenv())
 
 RPolarsDataFrame$shape <- function() .Call(wrap__RPolarsDataFrame__shape, self)

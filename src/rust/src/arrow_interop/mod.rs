@@ -64,6 +64,15 @@ impl RPackage for NanoArrowRPackage {
     }
 }
 
+pub struct RPolarsArrowArrayStream(pub arrow::ffi::ArrowArrayStream);
+
+#[extendr]
+impl RPolarsArrowArrayStream {
+    pub fn empty() -> Self {
+        Self(arrow::ffi::ArrowArrayStream::empty())
+    }
+}
+
 #[extendr]
 pub fn polars_allocate_array_stream() -> Robj {
     let aas = Box::new(arrow::ffi::ArrowArrayStream::empty());
@@ -73,5 +82,6 @@ pub fn polars_allocate_array_stream() -> Robj {
 
 extendr_module! {
     mod arrow_interop;
+    impl RPolarsArrowArrayStream;
     fn polars_allocate_array_stream;
 }
