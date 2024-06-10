@@ -13,13 +13,10 @@
   - for the Expr method only, the default value for `with_replacement` is now
     `FALSE` (it was already the case for the DataFrame method).
 
-
-
-
-
 ### New features
 
 - New method `$has_nulls()` (#1133).
+- New method `$list$explode()` (#1139).
 
 ## Polars R Package 0.17.0
 

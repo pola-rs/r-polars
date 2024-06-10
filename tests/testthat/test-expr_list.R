@@ -614,3 +614,15 @@ test_that("$list$set_*() casts to common supertype", {
     list(a = list(c("1.0", "2.0", "a", "b"), character(0)))
   )
 })
+
+test_that("$list$explode() works", {
+  df = pl$DataFrame(a = list(c(1, 2, 3), c(4, 5, 6)))
+  expect_identical(
+    df$select(pl$col("a")$list$explode())$to_list(),
+    list(a = c(1, 2, 3, 4, 5, 6))
+  )
+  expect_error(
+    df$with_columns(pl$col("a")$list$explode()),
+    "lengths don't match"
+  )
+})
