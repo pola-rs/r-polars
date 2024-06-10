@@ -672,6 +672,7 @@ LazyFrame_sink_parquet = function(
     slice_pushdown = TRUE,
     no_optimization = FALSE,
     inherit_optimization = FALSE) {
+  path = path.expand(path)
   if (isTRUE(no_optimization)) {
     predicate_pushdown = FALSE
     projection_pushdown = FALSE
@@ -750,6 +751,7 @@ LazyFrame_sink_ipc = function(
     slice_pushdown = TRUE,
     no_optimization = FALSE,
     inherit_optimization = FALSE) {
+  path = path.expand(path)
   if (isTRUE(no_optimization)) {
     predicate_pushdown = FALSE
     projection_pushdown = FALSE
@@ -832,6 +834,7 @@ LazyFrame_sink_csv = function(
     slice_pushdown = TRUE,
     no_optimization = FALSE,
     inherit_optimization = FALSE) {
+  path = path.expand(path)
   if (isTRUE(no_optimization)) {
     predicate_pushdown = FALSE
     projection_pushdown = FALSE
@@ -909,6 +912,7 @@ LazyFrame_sink_ndjson = function(
     slice_pushdown = TRUE,
     no_optimization = FALSE,
     inherit_optimization = FALSE) {
+  path = path.expand(path)
   if (isTRUE(no_optimization)) {
     predicate_pushdown = FALSE
     projection_pushdown = FALSE

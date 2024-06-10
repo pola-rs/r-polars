@@ -37,6 +37,7 @@ pl_scan_ipc = function(
     row_index_offset = 0L,
     rechunk = FALSE,
     cache = TRUE) {
+  source = path.expand(source)
   import_arrow_ipc(
     source,
     n_rows,

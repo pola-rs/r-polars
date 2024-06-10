@@ -72,6 +72,7 @@ pl_scan_parquet = function(
     storage_options = NULL,
     use_statistics = TRUE,
     cache = TRUE) {
+  source = path.expand(source)
   new_from_parquet(
     path = source,
     n_rows = n_rows,
