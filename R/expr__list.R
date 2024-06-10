@@ -599,3 +599,14 @@ ExprList_set_symmetric_difference = function(other) {
   .pr$Expr$list_set_operation(self, other, "symmetric_difference") |>
     unwrap("in $list$set_symmetric_difference():")
 }
+
+#' Returns a column with a separate row for every list element
+#'
+#' @inherit ExprList_set_union return
+#'
+#' @examples
+#' df = pl$DataFrame(a = list(c(1, 2, 3), c(4, 5, 6)))
+#' df$select(pl$col("a")$list$explode())
+ExprList_explode = function() {
+  .pr$Expr$explode(self)
+}
