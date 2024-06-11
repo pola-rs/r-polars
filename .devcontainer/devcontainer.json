@@ -1,0 +1,29 @@
+{
+    "image": "ghcr.io/rocker-org/devcontainer/r-ver:4",
+    "features": {
+        "ghcr.io/devcontainers/features/rust:1": {
+            "version": "latest"
+        },
+        "ghcr.io/eitsupi/devcontainer-features/go-task:1": {}
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "EditorConfig.EditorConfig"
+            ]
+        }
+    },
+    "mounts": [
+        {
+            "source": "devcontainer-cargo-cache-${devcontainerId}",
+            "target": "/usr/local/cargo",
+            "type": "volume"
+        }
+    ],
+    "containerEnv": {
+        "NOT_CRAN": "true"
+    },
+    "remoteEnv": {
+        "PKG_SYSREQS": "false"
+    }
+}
