@@ -2283,22 +2283,7 @@ prepare_rolling_window_args = function(
 #' length `window_size` will traverse the array. The values that fill this window
 #' will (optionally) be multiplied with the weights given by the `weight` vector.
 #'
-#' @param window_size
-#' The length of the window. Can be a fixed integer size, or a dynamic temporal
-#' size indicated by the following string language:
-#' - 1ns   (1 nanosecond)
-#' - 1us   (1 microsecond)
-#' - 1ms   (1 millisecond)
-#' - 1s    (1 second)
-#' - 1m    (1 minute)
-#' - 1h    (1 hour)
-#' - 1d    (1 day)
-#' - 1w    (1 week)
-#' - 1mo   (1 calendar month)
-#' - 1y    (1 calendar year)
-#' - 1i    (1 index count)
-#' If the dynamic string language is used, the `by` and `closed` arguments must
-#' also be set.
+#' @param window_size Integer specifying the length of the window.
 #' @inherit Expr_rolling params return
 #' @param weights An optional slice with the same length as the window that will
 #' be multiplied elementwise with the values in the window.
@@ -2333,6 +2318,22 @@ Expr_rolling_min = function(
 #' @inheritParams Expr_rolling
 #' @param by This column must of dtype [`Date`][pl_date] or
 #' [`Datetime`][DataType_Datetime].
+#' @param window_size
+#' The length of the window. Can be a fixed integer size, or a dynamic temporal
+#' size indicated by the following string language:
+#' - 1ns   (1 nanosecond)
+#' - 1us   (1 microsecond)
+#' - 1ms   (1 millisecond)
+#' - 1s    (1 second)
+#' - 1m    (1 minute)
+#' - 1h    (1 hour)
+#' - 1d    (1 day)
+#' - 1w    (1 week)
+#' - 1mo   (1 calendar month)
+#' - 1y    (1 calendar year)
+#' - 1i    (1 index count)
+#' If the dynamic string language is used, the `by` and `closed` arguments must
+#' also be set.
 #'
 #' @examples
 #' df_temporal = pl$DataFrame(

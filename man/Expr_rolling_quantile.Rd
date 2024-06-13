@@ -20,23 +20,7 @@ Expr_rolling_quantile(
 \item{interpolation}{String, one of \code{"nearest"}, \code{"higher"}, \code{"lower"},
 \code{"midpoint"}, \code{"linear"}.}
 
-\item{window_size}{The length of the window. Can be a fixed integer size, or a dynamic temporal
-size indicated by the following string language:
-\itemize{
-\item 1ns   (1 nanosecond)
-\item 1us   (1 microsecond)
-\item 1ms   (1 millisecond)
-\item 1s    (1 second)
-\item 1m    (1 minute)
-\item 1h    (1 hour)
-\item 1d    (1 day)
-\item 1w    (1 week)
-\item 1mo   (1 calendar month)
-\item 1y    (1 calendar year)
-\item 1i    (1 index count)
-If the dynamic string language is used, the \code{by} and \code{closed} arguments must
-also be set.
-}}
+\item{window_size}{Integer specifying the length of the window.}
 
 \item{weights}{An optional slice with the same length as the window that will
 be multiplied elementwise with the values in the window.}
