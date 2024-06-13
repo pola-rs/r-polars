@@ -1417,6 +1417,7 @@ Expr_sort = function(..., descending = FALSE, nulls_last = FALSE) {
 #' @examples
 #' pl$DataFrame(a = c(6, 1, 0, NA, Inf, NaN))$select(pl$col("a")$top_k(5))
 Expr_top_k = function(k, ..., nulls_last = FALSE, maintain_order = FALSE, multithreaded = TRUE) {
+  check_dots_empty(...)
   if (!is.numeric(k) || k < 0) stop("k must be numeric and positive, prefereably integerish")
   .pr$Expr$top_k(self, k, nulls_last = nulls_last, maintain_order = maintain_order, multithreaded = multithreaded) |>
     unwrap("in $top_k():")

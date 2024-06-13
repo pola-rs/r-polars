@@ -678,3 +678,15 @@ is_named = function(x) {
   }
   TRUE
 }
+
+get_dots <- function(...) {
+  eval(substitute(alist(...)))
+}
+
+check_dots_empty <- function(...) {
+  dots <- get_dots(...)
+  if (length(dots) > 0) {
+    Err_plain("`...` must be empty. Problematic values:", toString(dots)) |>
+      unwrap()
+  }
+}
