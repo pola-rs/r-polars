@@ -7,23 +7,7 @@
 Expr_rolling_skew(window_size, bias = TRUE)
 }
 \arguments{
-\item{window_size}{The length of the window. Can be a fixed integer size, or a dynamic temporal
-size indicated by the following string language:
-\itemize{
-\item 1ns   (1 nanosecond)
-\item 1us   (1 microsecond)
-\item 1ms   (1 millisecond)
-\item 1s    (1 second)
-\item 1m    (1 minute)
-\item 1h    (1 hour)
-\item 1d    (1 day)
-\item 1w    (1 week)
-\item 1mo   (1 calendar month)
-\item 1y    (1 calendar year)
-\item 1i    (1 index count)
-If the dynamic string language is used, the \code{by} and \code{closed} arguments must
-also be set.
-}}
+\item{window_size}{Integer specifying the length of the window.}
 
 \item{bias}{If \code{FALSE}, the calculations are corrected for statistical bias.}
 }
