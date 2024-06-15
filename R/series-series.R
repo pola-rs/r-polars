@@ -11,7 +11,10 @@ wrap.PlRSeries <- function(x) {
   makeActiveBinding("name", function(self = .self) series_name(self), .self)
 
   for (namespace in names(polars_namespaces_series)) {
-    makeActiveBinding(namespace, function(x = .self) polars_namespaces_series[[namespace]](x), .self)
+    local({
+      namespace <- namespace
+      makeActiveBinding(namespace, function(x = .self) polars_namespaces_series[[namespace]](x), .self)
+    })
   }
 
   .self$clone <- function() series_clone(.self)
