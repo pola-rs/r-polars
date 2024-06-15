@@ -24,7 +24,7 @@ impl PlRDataFrame {
         Ok(Self { df })
     }
 
-    pub fn as_str(&self) -> savvy::Result<()> {
+    pub fn print(&self) -> savvy::Result<()> {
         r_println!("{:?}", self.df);
         Ok(())
     }

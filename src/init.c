@@ -40,8 +40,8 @@ SEXP savvy_PlRDataFrame_init__impl(SEXP columns) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRDataFrame_as_str__impl(SEXP self__) {
-    SEXP res = savvy_PlRDataFrame_as_str__ffi(self__);
+SEXP savvy_PlRDataFrame_print__impl(SEXP self__) {
+    SEXP res = savvy_PlRDataFrame_print__ffi(self__);
     return handle_result(res);
 }
 
@@ -99,7 +99,7 @@ SEXP savvy_PlRSeries_new_series_list__impl(SEXP name, SEXP values) {
 static const R_CallMethodDef CallEntries[] = {
 
     {"savvy_PlRDataFrame_init__impl", (DL_FUNC) &savvy_PlRDataFrame_init__impl, 1},
-    {"savvy_PlRDataFrame_as_str__impl", (DL_FUNC) &savvy_PlRDataFrame_as_str__impl, 1},
+    {"savvy_PlRDataFrame_print__impl", (DL_FUNC) &savvy_PlRDataFrame_print__impl, 1},
     {"savvy_PlRSeries_print__impl", (DL_FUNC) &savvy_PlRSeries_print__impl, 1},
     {"savvy_PlRSeries_clone__impl", (DL_FUNC) &savvy_PlRSeries_clone__impl, 1},
     {"savvy_PlRSeries_name__impl", (DL_FUNC) &savvy_PlRSeries_name__impl, 1},

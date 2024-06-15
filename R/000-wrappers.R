@@ -26,16 +26,16 @@ NULL
 
 ### wrapper functions for PlRDataFrame
 
-PlRDataFrame_as_str <- function(self) {
+PlRDataFrame_print <- function(self) {
   function() {
-  invisible(.Call(savvy_PlRDataFrame_as_str__impl, self))
+  invisible(.Call(savvy_PlRDataFrame_print__impl, self))
   }
 }
 
 .savvy_wrap_PlRDataFrame <- function(ptr) {
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
-    e$as_str <- PlRDataFrame_as_str(ptr)
+    e$print <- PlRDataFrame_print(ptr)
   
   class(e) <- "PlRDataFrame"
   e

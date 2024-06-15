@@ -9,6 +9,6 @@ wrap.PlRDataFrame <- function(x) {
 
 #' @export
 print.polars_data_frame <- function(x, ...) {
-  x$`_df`$as_str()
+  x$`_df`$print()
   invisible(x)
 }
