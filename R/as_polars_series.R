@@ -5,7 +5,8 @@ as_polars_series <- function(x, name = NULL, ...) {
 
 #' @export
 as_polars_series.default <- function(x, name = NULL, ...) {
-  stop("Unsupported class")
+  classes <- class(x)
+  stop("Unsupported class: ", paste(classes, collapse = ", "))
 }
 
 #' @export
