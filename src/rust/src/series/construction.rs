@@ -4,6 +4,7 @@ use savvy::{savvy, RealSexp};
 
 #[savvy]
 impl PlRSeries {
+    // TODO: NA is not supported (converted to `nan`, not `null`), should be rewriten
     fn new_f32(name: &str, vector: RealSexp) -> savvy::Result<Self> {
         let vals = vector.as_slice();
         Ok(Series::new(name, vals).into())

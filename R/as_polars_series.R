@@ -11,5 +11,5 @@ as_polars_series.default  <- function(x, name = NULL,...) {
 #' @export
 as_polars_series.double <- function(x, name = NULL, ...) {
   PlRSeries$new_f32(name %||% "", x) |>
-    PlSeries()
+    construct_series()
 }

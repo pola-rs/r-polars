@@ -1,5 +1,6 @@
 # TODO: create macro to execute this
-PlSeries <- function(`_s`) {
+
+construct_series <- function(`_s`) {
   e <- new.env(parent = emptyenv())
   e$`_s` <- `_s`
 
