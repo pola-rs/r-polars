@@ -9,7 +9,7 @@ as_polars_series.default <- function(x, name = NULL, ...) {
 }
 
 #' @export
-as_polars_series.PlSeries <- function(x, name = NULL, ...) {
+as_polars_series.polars_series <- function(x, name = NULL, ...) {
   # TODO: rename
   x
 }

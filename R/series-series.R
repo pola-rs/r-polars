@@ -14,12 +14,12 @@ wrap.PlRSeries <- function(x) {
   e <- new.env(parent = emptyenv())
   e$`_s` <- x
 
-  class(e) <- "PlSeries"
+  class(e) <- "polars_series"
   e
 }
 
 #' @export
-print.PlSeries <- function(x, ...) {
+print.polars_series <- function(x, ...) {
   x$`_s`$print()
   invisible(x)
 }
