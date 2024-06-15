@@ -27,4 +27,9 @@ impl PlRDataFrame {
         r_println!("{:?}", self.df);
         Ok(())
     }
+
+    pub fn to_struct(&self, name: &str) -> savvy::Result<PlRSeries> {
+        let s = self.df.clone().into_struct(name);
+        Ok(s.into_series().into())
+    }
 }

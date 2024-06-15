@@ -69,3 +69,8 @@ as_polars_series.AsIs <- function(x, name = NULL, ...) {
   class(x) <- setdiff(class(x), "AsIs")
   as_polars_series(x, name = name)
 }
+
+#' @export
+as_polars_series.data.frame <- function(x, name = NULL, ...) {
+  as_polars_df(x)$to_struct(name = name %||% "")
+}

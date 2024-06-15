@@ -32,10 +32,17 @@ PlRDataFrame_print <- function(self) {
   }
 }
 
+PlRDataFrame_to_struct <- function(self) {
+  function(name) {
+    .savvy_wrap_PlRSeries(.Call(savvy_PlRDataFrame_to_struct__impl, self, name))
+  }
+}
+
 .savvy_wrap_PlRDataFrame <- function(ptr) {
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
     e$print <- PlRDataFrame_print(ptr)
+  e$to_struct <- PlRDataFrame_to_struct(ptr)
   
   class(e) <- "PlRDataFrame"
   e
