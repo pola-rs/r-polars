@@ -16,6 +16,8 @@ wrap.PlRSeries <- function(x) {
 
   makeActiveBinding("name", function(self = .self) series_name(self), .self)
 
+  makeActiveBinding("struct", function(x = .self) series_namespace_struct(x), .self)
+
   .self$clone <- function() series_clone(.self)
   .self$rename <- function(name) series_rename(.self, name)
 

@@ -7,6 +7,7 @@ SEXP savvy_PlRDataFrame_to_struct__ffi(SEXP self__, SEXP name);
 
 // methods and associated functions for PlRSeries
 SEXP savvy_PlRSeries_print__ffi(SEXP self__);
+SEXP savvy_PlRSeries_struct_unnest__ffi(SEXP self__);
 SEXP savvy_PlRSeries_clone__ffi(SEXP self__);
 SEXP savvy_PlRSeries_name__ffi(SEXP self__);
 SEXP savvy_PlRSeries_rename__ffi(SEXP self__, SEXP name);

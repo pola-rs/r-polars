@@ -67,6 +67,12 @@ PlRSeries_print <- function(self) {
   }
 }
 
+PlRSeries_struct_unnest <- function(self) {
+  function() {
+    .savvy_wrap_PlRDataFrame(.Call(savvy_PlRSeries_struct_unnest__impl, self))
+  }
+}
+
 PlRSeries_clone <- function(self) {
   function() {
     .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_clone__impl, self))
@@ -89,6 +95,7 @@ PlRSeries_rename <- function(self) {
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
     e$print <- PlRSeries_print(ptr)
+  e$struct_unnest <- PlRSeries_struct_unnest(ptr)
   e$clone <- PlRSeries_clone(ptr)
   e$name <- PlRSeries_name(ptr)
   e$rename <- PlRSeries_rename(ptr)

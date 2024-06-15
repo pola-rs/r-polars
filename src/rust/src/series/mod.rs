@@ -1,6 +1,6 @@
 mod construction;
 
-use crate::prelude::*;
+use crate::{dataframe::PlRDataFrame, error::RPolarsErr, prelude::*};
 use savvy::{r_println, savvy, EnvironmentSexp, Sexp};
 
 #[savvy]
@@ -32,6 +32,12 @@ impl PlRSeries {
     fn print(&self) -> savvy::Result<()> {
         r_println!("{:?}", self.series);
         Ok(())
+    }
+
+    fn struct_unnest(&self) -> savvy::Result<PlRDataFrame> {
+        let ca = self.series.struct_().map_err(RPolarsErr::from)?;
+        let df: DataFrame = ca.clone().into();
+        Ok(df.into())
     }
 
     fn clone(&self) -> savvy::Result<Self> {

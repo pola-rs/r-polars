@@ -55,6 +55,11 @@ SEXP savvy_PlRSeries_print__impl(SEXP self__) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRSeries_struct_unnest__impl(SEXP self__) {
+    SEXP res = savvy_PlRSeries_struct_unnest__ffi(self__);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRSeries_clone__impl(SEXP self__) {
     SEXP res = savvy_PlRSeries_clone__ffi(self__);
     return handle_result(res);
@@ -112,6 +117,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRDataFrame_print__impl", (DL_FUNC) &savvy_PlRDataFrame_print__impl, 1},
     {"savvy_PlRDataFrame_to_struct__impl", (DL_FUNC) &savvy_PlRDataFrame_to_struct__impl, 2},
     {"savvy_PlRSeries_print__impl", (DL_FUNC) &savvy_PlRSeries_print__impl, 1},
+    {"savvy_PlRSeries_struct_unnest__impl", (DL_FUNC) &savvy_PlRSeries_struct_unnest__impl, 1},
     {"savvy_PlRSeries_clone__impl", (DL_FUNC) &savvy_PlRSeries_clone__impl, 1},
     {"savvy_PlRSeries_name__impl", (DL_FUNC) &savvy_PlRSeries_name__impl, 1},
     {"savvy_PlRSeries_rename__impl", (DL_FUNC) &savvy_PlRSeries_rename__impl, 2},
