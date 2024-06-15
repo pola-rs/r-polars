@@ -1042,7 +1042,9 @@ version = "0.1.0"
 dependencies = [
  "polars",
  "polars-core",
+ "polars-error",
  "savvy",
+ "thiserror",
 ]
 
 [[package]]
