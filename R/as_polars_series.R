@@ -56,3 +56,9 @@ as_polars_series.list <- function(x, name = NULL, ...) {
   PlRSeries$new_series_list(name %||% "", series_list) |>
     wrap()
 }
+
+#' @export
+as_polars_series.AsIs <- function(x, name = NULL, ...) {
+  class(x) <- setdiff(class(x), "AsIs")
+  as_polars_series(x, name = name)
+}

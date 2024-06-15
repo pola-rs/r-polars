@@ -24,6 +24,34 @@ NULL
 }
 
 
+### wrapper functions for PlRDataFrame
+
+PlRDataFrame_as_str <- function(self) {
+  function() {
+  invisible(.Call(savvy_PlRDataFrame_as_str__impl, self))
+  }
+}
+
+.savvy_wrap_PlRDataFrame <- function(ptr) {
+  e <- new.env(parent = emptyenv())
+  e$.ptr <- ptr
+    e$as_str <- PlRDataFrame_as_str(ptr)
+  
+  class(e) <- "PlRDataFrame"
+  e
+}
+
+
+
+PlRDataFrame <- new.env(parent = emptyenv())
+
+### associated functions for PlRDataFrame
+
+PlRDataFrame$init <- function(columns) {
+  .savvy_wrap_PlRDataFrame(.Call(savvy_PlRDataFrame_init__impl, columns))
+}
+
+
 ### wrapper functions for PlRSeries
 
 PlRSeries_print <- function(self) {

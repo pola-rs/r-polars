@@ -1,5 +1,9 @@
 
 
+// methods and associated functions for PlRDataFrame
+SEXP savvy_PlRDataFrame_init__ffi(SEXP columns);
+SEXP savvy_PlRDataFrame_as_str__ffi(SEXP self__);
+
 // methods and associated functions for PlRSeries
 SEXP savvy_PlRSeries_print__ffi(SEXP self__);
 SEXP savvy_PlRSeries_clone__ffi(SEXP self__);

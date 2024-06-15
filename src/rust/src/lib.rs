@@ -1,7 +1,8 @@
 mod conversion;
+mod dataframe;
 mod datatypes;
+mod error;
 mod prelude;
 mod series;
-mod error;
 
 use crate::series::PlRSeries;
