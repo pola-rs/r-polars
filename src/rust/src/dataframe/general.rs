@@ -20,7 +20,7 @@ impl PlRDataFrame {
             })
             .collect();
         let df = DataFrame::new(columns).map_err(RPolarsErr::from)?;
-        Ok(Self { df })
+        Ok(df.into())
     }
 
     pub fn print(&self) -> savvy::Result<()> {
