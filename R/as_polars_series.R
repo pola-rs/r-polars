@@ -38,6 +38,12 @@ as_polars_series.logical <- function(x, name = NULL, ...) {
 }
 
 #' @export
+as_polars_series.NULL <- function(x, name = NULL, ...) {
+  PlRSeries$new_empty(name %||% "") |>
+    wrap()
+}
+
+#' @export
 as_polars_series.list <- function(x, name = NULL, ...) {
   series_list <- lapply(x, \(child) {
     if (is.null(child)) {

@@ -6,6 +6,11 @@ use savvy::{savvy, IntegerSexp, ListSexp, LogicalSexp, RealSexp, StringSexp, Typ
 
 #[savvy]
 impl PlRSeries {
+    // TODO: allow datatype input
+    fn new_empty(name: &str) -> savvy::Result<Self> {
+        Ok(Series::new_empty(name, &DataType::Null).into())
+    }
+
     fn new_f64(name: &str, values: RealSexp) -> savvy::Result<Self> {
         let ca: Float64Chunked = values
             .iter()
