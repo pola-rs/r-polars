@@ -8,6 +8,8 @@ series_namespace_struct <- function(x) {
   .self
 }
 
+polars_namespaces_series$struct <- series_namespace_struct
+
 series_struct_unnest <- function(self) {
   self$`_s`$struct_unnest() |>
     wrap()

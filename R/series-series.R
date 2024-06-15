@@ -1,13 +1,7 @@
 # TODO: create macro to create wrap S3 methods
 
-wrap <- function(x, ...) {
-  UseMethod("wrap")
-}
-
-#' @export
-wrap.default <- function(x, ...) {
-  stop("Unimplemented class!")
-}
+# Allow namespace to be added from external packages
+polars_namespaces_series <- new.env(parent = emptyenv())
 
 #' @export
 wrap.PlRSeries <- function(x) {
@@ -16,7 +10,9 @@ wrap.PlRSeries <- function(x) {
 
   makeActiveBinding("name", function(self = .self) series_name(self), .self)
 
-  makeActiveBinding("struct", function(x = .self) series_namespace_struct(x), .self)
+  for (namespace in names(polars_namespaces_series)) {
+    makeActiveBinding(namespace, function(x = .self) polars_namespaces_series[[namespace]](x), .self)
+  }
 
   .self$clone <- function() series_clone(.self)
   .self$rename <- function(name) series_rename(.self, name)
