@@ -1,3 +1,5 @@
+mod conversion;
+mod datatypes;
 mod prelude;
 mod series;
 

@@ -1,8 +1,18 @@
 # TODO: create macro to execute this
 
-construct_series <- function(`_s`) {
+wrap <- function(x, ...) {
+  UseMethod("wrap")
+}
+
+#' @export
+wrap.default <- function(x, ...) {
+  stop("Unimplemented class!")
+}
+
+#' @export
+wrap.PlRSeries <- function(x) {
   e <- new.env(parent = emptyenv())
-  e$`_s` <- `_s`
+  e$`_s` <- x
 
   class(e) <- "PlSeries"
   e

@@ -47,8 +47,24 @@ PlRSeries <- new.env(parent = emptyenv())
 
 ### associated functions for PlRSeries
 
-PlRSeries$new_f32 <- function(name, vector) {
-  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_f32__impl, name, vector))
+PlRSeries$new_f64 <- function(name, values) {
+  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_f64__impl, name, values))
+}
+
+PlRSeries$new_i32 <- function(name, values) {
+  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_i32__impl, name, values))
+}
+
+PlRSeries$new_bool <- function(name, values) {
+  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_bool__impl, name, values))
+}
+
+PlRSeries$new_str <- function(name, values) {
+  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_str__impl, name, values))
+}
+
+PlRSeries$new_series_list <- function(name, values) {
+  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_series_list__impl, name, values))
 }
 
 

@@ -40,8 +40,28 @@ SEXP savvy_PlRSeries_print__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRSeries_new_f32__impl(SEXP name, SEXP vector) {
-    SEXP res = savvy_PlRSeries_new_f32__ffi(name, vector);
+SEXP savvy_PlRSeries_new_f64__impl(SEXP name, SEXP values) {
+    SEXP res = savvy_PlRSeries_new_f64__ffi(name, values);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSeries_new_i32__impl(SEXP name, SEXP values) {
+    SEXP res = savvy_PlRSeries_new_i32__ffi(name, values);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSeries_new_bool__impl(SEXP name, SEXP values) {
+    SEXP res = savvy_PlRSeries_new_bool__ffi(name, values);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSeries_new_str__impl(SEXP name, SEXP values) {
+    SEXP res = savvy_PlRSeries_new_str__ffi(name, values);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSeries_new_series_list__impl(SEXP name, SEXP values) {
+    SEXP res = savvy_PlRSeries_new_series_list__ffi(name, values);
     return handle_result(res);
 }
 
@@ -49,7 +69,11 @@ SEXP savvy_PlRSeries_new_f32__impl(SEXP name, SEXP vector) {
 static const R_CallMethodDef CallEntries[] = {
 
     {"savvy_PlRSeries_print__impl", (DL_FUNC) &savvy_PlRSeries_print__impl, 1},
-    {"savvy_PlRSeries_new_f32__impl", (DL_FUNC) &savvy_PlRSeries_new_f32__impl, 2},
+    {"savvy_PlRSeries_new_f64__impl", (DL_FUNC) &savvy_PlRSeries_new_f64__impl, 2},
+    {"savvy_PlRSeries_new_i32__impl", (DL_FUNC) &savvy_PlRSeries_new_i32__impl, 2},
+    {"savvy_PlRSeries_new_bool__impl", (DL_FUNC) &savvy_PlRSeries_new_bool__impl, 2},
+    {"savvy_PlRSeries_new_str__impl", (DL_FUNC) &savvy_PlRSeries_new_str__impl, 2},
+    {"savvy_PlRSeries_new_series_list__impl", (DL_FUNC) &savvy_PlRSeries_new_series_list__impl, 2},
     {NULL, NULL, 0}
 };
 
