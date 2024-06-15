@@ -11,16 +11,16 @@ wrap.default <- function(x, ...) {
 
 #' @export
 wrap.PlRSeries <- function(x) {
-  e <- new.env(parent = emptyenv())
-  e$`_s` <- x
+  self <- new.env(parent = emptyenv())
+  self$`_s` <- x
 
-  makeActiveBinding("name", function(self = e) series_name(e), e)
+  makeActiveBinding("name", function(self = self) series_name(self), self)
 
-  e$clone <- function() series_clone(e)
-  e$rename <- function(name) series_rename(e, name)
+  self$clone <- function() series_clone(self)
+  self$rename <- function(name) series_rename(self, name)
 
-  class(e) <- "polars_series"
-  e
+  class(self) <- "polars_series"
+  self
 }
 
 #' @export
