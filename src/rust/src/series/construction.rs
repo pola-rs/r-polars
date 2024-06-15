@@ -1,4 +1,4 @@
-use crate::PlRSeries;
+use crate::{error::RPolarsErr, PlRSeries};
 use polars_core::prelude::*;
 use polars_core::utils::{try_get_supertype, CustomIterTools};
 use savvy::sexp::na::NotAvailableValue;
@@ -48,6 +48,16 @@ impl PlRSeries {
             .map(|value| if value.is_na() { None } else { Some(value) })
             .collect();
         Ok(ca.with_name(name).into_series().into())
+    }
+
+    // TODO: move to R side
+    // TODO: support levels?
+    fn new_categorical(name: &str, values: StringSexp) -> savvy::Result<Self> {
+        let series = self::PlRSeries::new_str(name, values)?
+            .series
+            .cast(&DataType::Categorical(None, Default::default()))
+            .map_err(RPolarsErr::from)?;
+        Ok(series.into())
     }
 
     fn new_series_list(name: &str, values: ListSexp) -> savvy::Result<Self> {

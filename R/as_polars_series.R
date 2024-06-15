@@ -39,6 +39,12 @@ as_polars_series.logical <- function(x, name = NULL, ...) {
 }
 
 #' @export
+as_polars_series.factor <- function(x, name = NULL, ...) {
+  PlRSeries$new_categorical(name %||% "", as.character(x)) |>
+    wrap()
+}
+
+#' @export
 as_polars_series.NULL <- function(x, name = NULL, ...) {
   PlRSeries$new_empty(name %||% "") |>
     wrap()
