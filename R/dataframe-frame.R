@@ -1,10 +1,10 @@
 #' @export
 wrap.PlRDataFrame <- function(x) {
-  self <- new.env(parent = emptyenv())
-  self$`_df` <- x
+  .self <- new.env(parent = emptyenv())
+  .self$`_df` <- x
 
-  class(self) <- "polars_data_frame"
-  self
+  class(.self) <- "polars_data_frame"
+  .self
 }
 
 #' @export
