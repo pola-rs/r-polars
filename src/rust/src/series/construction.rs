@@ -1,12 +1,16 @@
 use crate::PlRSeries;
 use polars_core::prelude::*;
+use polars_core::utils::CustomIterTools;
+use savvy::sexp::na::NotAvailableValue;
 use savvy::{savvy, RealSexp};
 
 #[savvy]
 impl PlRSeries {
-    // TODO: NA is not supported (converted to `nan`, not `null`), should be rewriten
     fn new_f32(name: &str, vector: RealSexp) -> savvy::Result<Self> {
-        let vals = vector.as_slice();
-        Ok(Series::new(name, vals).into())
+        let ca: Float64Chunked = vector
+            .iter()
+            .map(|value| if value.is_na() { None } else { Some(*value) })
+            .collect_trusted();
+        Ok(ca.with_name(name).into_series().into())
     }
 }
