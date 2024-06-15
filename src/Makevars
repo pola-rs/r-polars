@@ -1,0 +1,36 @@
+TARGET = 
+
+# catch DEBUG envvar, which is passed from pkgbuild::compile_dll()
+PROFILE = $(subst x,release,$(subst truex,dev,$(DEBUG)x))
+
+TARGET_DIR = $(CURDIR)/rust/target
+LIBDIR = $(TARGET_DIR)/$(TARGET)/$(subst dev,debug,$(PROFILE))
+STATLIB = $(LIBDIR)/libr_polars.a
+PKG_LIBS = -L$(LIBDIR) -lr_polars
+
+CARGO_BUILD_ARGS = --lib --profile $(PROFILE) --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR)
+
+all: C_clean
+
+$(SHLIB): $(STATLIB)
+
+$(STATLIB):
+	# In some environments, ~/.cargo/bin might not be included in PATH, so we need
+	# to set it here to ensure cargo can be invoked. It is appended to PATH and
+	# therefore is only used if cargo is absent from the user's PATH.
+	export PATH="$(PATH):$(HOME)/.cargo/bin" && \
+	  if [ "$(TARGET)" != "wasm32-unknown-emscripten" ]; then \
+	    cargo build $(CARGO_BUILD_ARGS); \
+	  else \
+	    export CC="$(CC)" && \
+	    export CFLAGS="$(CFLAGS)" && \
+	    export CARGO_PROFILE_DEV_PANIC="abort" && \
+	    export CARGO_PROFILE_RELEASE_PANIC="abort" && \
+	    cargo +nightly build $(CARGO_BUILD_ARGS) --target $(TARGET) -Zbuild-std=panic_abort,std; \
+	  fi
+
+C_clean:
+	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS)
+
+clean:
+	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) rust/target

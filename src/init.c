@@ -34,44 +34,22 @@ SEXP handle_result(SEXP res_) {
     return (SEXP)res;
 }
 
-SEXP savvy_to_upper__impl(SEXP x) {
-    SEXP res = savvy_to_upper__ffi(x);
+
+SEXP savvy_PlRSeries_print__impl(SEXP self__) {
+    SEXP res = savvy_PlRSeries_print__ffi(self__);
     return handle_result(res);
 }
 
-SEXP savvy_int_times_int__impl(SEXP x, SEXP y) {
-    SEXP res = savvy_int_times_int__ffi(x, y);
-    return handle_result(res);
-}
-
-SEXP savvy_Person_new__impl(void) {
-    SEXP res = savvy_Person_new__ffi();
-    return handle_result(res);
-}
-
-SEXP savvy_Person_set_name__impl(SEXP self__, SEXP name) {
-    SEXP res = savvy_Person_set_name__ffi(self__, name);
-    return handle_result(res);
-}
-
-SEXP savvy_Person_name__impl(SEXP self__) {
-    SEXP res = savvy_Person_name__ffi(self__);
-    return handle_result(res);
-}
-
-SEXP savvy_Person_associated_function__impl(void) {
-    SEXP res = savvy_Person_associated_function__ffi();
+SEXP savvy_PlRSeries_new_f32__impl(SEXP name, SEXP vector) {
+    SEXP res = savvy_PlRSeries_new_f32__ffi(name, vector);
     return handle_result(res);
 }
 
 
 static const R_CallMethodDef CallEntries[] = {
-    {"savvy_to_upper__impl", (DL_FUNC) &savvy_to_upper__impl, 1},
-    {"savvy_int_times_int__impl", (DL_FUNC) &savvy_int_times_int__impl, 2},
-    {"savvy_Person_new__impl", (DL_FUNC) &savvy_Person_new__impl, 0},
-    {"savvy_Person_set_name__impl", (DL_FUNC) &savvy_Person_set_name__impl, 2},
-    {"savvy_Person_name__impl", (DL_FUNC) &savvy_Person_name__impl, 1},
-    {"savvy_Person_associated_function__impl", (DL_FUNC) &savvy_Person_associated_function__impl, 0},
+
+    {"savvy_PlRSeries_print__impl", (DL_FUNC) &savvy_PlRSeries_print__impl, 1},
+    {"savvy_PlRSeries_new_f32__impl", (DL_FUNC) &savvy_PlRSeries_new_f32__impl, 2},
     {NULL, NULL, 0}
 };
 

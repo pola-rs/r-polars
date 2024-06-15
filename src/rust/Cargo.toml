@@ -2,21 +2,18 @@
 name = "r-polars"
 version = "0.1.0"
 edition = "2021"
+publish = false
 
 [lib]
 crate-type = ["staticlib", "lib"]
 
-[dependencies]
-savvy = "*"
-
 [profile.release]
-# By default, on release build, savvy terminates the R session when a panic
-# occurs. This is the right behavior in that a panic means such a fatal event
-# where we can have no hope of recovery. 
-# 
-# cf. https://doc.rust-lang.org/book/ch09-03-to-panic-or-not-to-panic.html
-# 
-# However, it's possible that the panic is thrown by some of the dependency
-# crate and there's little you can do. In such cases, you can change the
-# following line to `panic = "unwind"` to always catch a panic.
-panic = "abort"
+panic = "unwind"
+
+[dependencies]
+savvy = "0.6.4"
+polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "318ec405632410a41f634de7aeff46e89a25eab9", default-features = false }
+
+[dependencies.polars]
+git = "https://github.com/pola-rs/polars.git"
+rev = "318ec405632410a41f634de7aeff46e89a25eab9"

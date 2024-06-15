@@ -1,2 +1,5 @@
 ^\.devcontainer$
 ^LICENSE\.md$
+
+^src/rust/.cargo$
+^src/rust/target$
