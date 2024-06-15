@@ -1,0 +1,5 @@
+*.o
+*.so
+*.dll
+target
+.cargo
