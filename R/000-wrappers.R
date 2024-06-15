@@ -32,10 +32,31 @@ PlRSeries_print <- function(self) {
   }
 }
 
+PlRSeries_clone <- function(self) {
+  function() {
+    .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_clone__impl, self))
+  }
+}
+
+PlRSeries_name <- function(self) {
+  function() {
+  .Call(savvy_PlRSeries_name__impl, self)
+  }
+}
+
+PlRSeries_rename <- function(self) {
+  function(name) {
+  invisible(.Call(savvy_PlRSeries_rename__impl, self, name))
+  }
+}
+
 .savvy_wrap_PlRSeries <- function(ptr) {
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
     e$print <- PlRSeries_print(ptr)
+  e$clone <- PlRSeries_clone(ptr)
+  e$name <- PlRSeries_name(ptr)
+  e$rename <- PlRSeries_rename(ptr)
   
   class(e) <- "PlRSeries"
   e
