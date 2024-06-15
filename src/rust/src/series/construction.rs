@@ -56,8 +56,7 @@ impl PlRSeries {
             .map(|value| match value.into_typed() {
                 TypedSexp::Null(_) => None,
                 TypedSexp::Environment(e) => {
-                    let ptr = e.get(".ptr").unwrap().unwrap();
-                    let r_series = <&PlRSeries>::try_from(ptr).unwrap();
+                    let r_series = <&PlRSeries>::from(e);
                     Some(r_series.series.clone())
                 }
                 _ => unreachable!("Only accept a list of Series"),

@@ -1,6 +1,6 @@
 mod general;
 
-use savvy::savvy;
+use savvy::{savvy, EnvironmentSexp};
 use crate::prelude::*;
 
 #[savvy]
@@ -14,6 +14,14 @@ impl From<DataFrame> for PlRDataFrame {
         Self { df }
     }
 }
+
+impl From<EnvironmentSexp> for &PlRDataFrame {
+    fn from(env: EnvironmentSexp) -> Self {
+        let ptr = env.get(".ptr").unwrap().unwrap();
+        <&PlRDataFrame>::try_from(ptr).unwrap()
+    }
+}
+
 impl PlRDataFrame {
     pub(crate) fn new(df: DataFrame) -> Self {
         Self { df }

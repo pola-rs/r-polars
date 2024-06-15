@@ -1,7 +1,7 @@
 mod construction;
 
 use crate::prelude::*;
-use savvy::{r_println, savvy, Sexp};
+use savvy::{r_println, savvy, EnvironmentSexp, Sexp};
 
 #[savvy]
 pub struct PlRSeries {
@@ -17,6 +17,13 @@ impl From<Series> for PlRSeries {
 impl PlRSeries {
     pub(crate) fn new(series: Series) -> Self {
         Self { series }
+    }
+}
+
+impl From<EnvironmentSexp> for &PlRSeries {
+    fn from(env: EnvironmentSexp) -> Self {
+        let ptr = env.get(".ptr").unwrap().unwrap();
+        <&PlRSeries>::try_from(ptr).unwrap()
     }
 }
 
