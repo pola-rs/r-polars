@@ -60,7 +60,7 @@ impl PlRSeries {
                     let r_series = <&PlRSeries>::try_from(ptr).unwrap();
                     Some(r_series.series.clone())
                 }
-                _ => panic!("Expected a list of Series"),
+                _ => unreachable!("Only accept a list of Series"),
             })
             .collect();
 
