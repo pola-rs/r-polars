@@ -1,3 +1,4 @@
+mod arithmetic;
 mod construction;
 
 use crate::{dataframe::PlRDataFrame, error::RPolarsErr, prelude::*};

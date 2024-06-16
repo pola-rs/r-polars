@@ -91,6 +91,41 @@ PlRSeries_rename <- function(self) {
   }
 }
 
+PlRSeries_add <- function(self) {
+  function(other) {
+    other <- .savvy_extract_ptr(other, "PlRSeries")
+  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_add__impl, self, other))
+  }
+}
+
+PlRSeries_sub <- function(self) {
+  function(other) {
+    other <- .savvy_extract_ptr(other, "PlRSeries")
+  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_sub__impl, self, other))
+  }
+}
+
+PlRSeries_div <- function(self) {
+  function(other) {
+    other <- .savvy_extract_ptr(other, "PlRSeries")
+  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_div__impl, self, other))
+  }
+}
+
+PlRSeries_mul <- function(self) {
+  function(other) {
+    other <- .savvy_extract_ptr(other, "PlRSeries")
+  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_mul__impl, self, other))
+  }
+}
+
+PlRSeries_rem <- function(self) {
+  function(other) {
+    other <- .savvy_extract_ptr(other, "PlRSeries")
+  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_rem__impl, self, other))
+  }
+}
+
 .savvy_wrap_PlRSeries <- function(ptr) {
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
@@ -99,6 +134,11 @@ PlRSeries_rename <- function(self) {
   e$clone <- PlRSeries_clone(ptr)
   e$name <- PlRSeries_name(ptr)
   e$rename <- PlRSeries_rename(ptr)
+  e$add <- PlRSeries_add(ptr)
+  e$sub <- PlRSeries_sub(ptr)
+  e$div <- PlRSeries_div(ptr)
+  e$mul <- PlRSeries_mul(ptr)
+  e$rem <- PlRSeries_rem(ptr)
   
   class(e) <- "PlRSeries"
   e
