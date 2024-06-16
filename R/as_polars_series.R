@@ -11,7 +11,11 @@ as_polars_series.default <- function(x, name = NULL, ...) {
 
 #' @export
 as_polars_series.polars_series <- function(x, name = NULL, ...) {
-  x$rename(name %||% x$name)
+  if (is.null(name)) {
+    x
+  } else {
+    x$rename(name %||% x$name)
+  }
 }
 
 #' @export
