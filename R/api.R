@@ -1,5 +1,39 @@
-# TODO: prevent overwriting existing namespaces
+# TODO: move to `pl$api$register_series_namespace`
+# TODO: check reserved namespaces
+# TODO: check existing namespaces
+#' Registering custom functionality with a polars Series
+#'
+#' @param name Name under which the functionality will be accessed.
+#' @param ns_fn A function returns a new [environment] with the custom functionality.
+#' See examples for details.
+#' @examples
+#' # s: polars series
+#' math_shortcuts <- function(s) {
+#'   # Create a new environment to store the methods
+#'   self <- new.env(parent = emptyenv())
+#'
+#'   # Store the series
+#'   self$`_s` <- s
+#'
+#'   # Add methods
+#'   self$square <- function() self$`_s` * self$`_s`
+#'   self$cube <- function() self$`_s` * self$`_s` * self$`_s`
+#'
+#'   # Set the class
+#'   class(self) <- "polars_namespace_series"
+#'
+#'   # Return the environment
+#'   self
+#' }
+#'
+#' polars_api_register_series_namespace("math", math_shortcuts)
+#'
+#' s <- as_polars_series(c(1.5, 31, 42, 64.5))
+#' s$math$square()$rename("s^2")
+#'
+#' s <- as_polars_series(1:5)
+#' s$math$cube()$rename("s^3")
 #' @export
-polars_register_series_namespace <- function(name, ns_env) {
-  assign(name, ns_env, envir = polars_namespaces_series)
+polars_api_register_series_namespace <- function(name, ns_fn) {
+  assign(name, ns_fn, envir = polars_namespaces_series)
 }

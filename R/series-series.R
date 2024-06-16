@@ -13,7 +13,7 @@ wrap.PlRSeries <- function(x) {
   for (namespace in names(polars_namespaces_series)) {
     local({
       namespace <- namespace
-      makeActiveBinding(namespace, function(x = .self) polars_namespaces_series[[namespace]](x), .self)
+      makeActiveBinding(namespace, function() polars_namespaces_series[[namespace]](.self), .self)
     })
   }
 
