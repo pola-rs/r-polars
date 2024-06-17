@@ -2,6 +2,18 @@
 #' @export
 pl <- new.env(parent = emptyenv())
 
+# A function to collect objects to be assigned to the environment
+# These environments are used inside the wrap function etc.
+assign_functions_to_env <- function(env, fn_name_pattern, ..., search_env = parent.frame()) {
+  fn_names <- ls(search_env, pattern = fn_name_pattern)
+  new_names <- sub(fn_name_pattern, "", fn_names)
+
+  lapply(seq_along(fn_names), function(i) {
+    fn <- get(fn_names[i], envir = search_env)
+    assign(new_names[i], fn, envir = env)
+  })
+}
+
 assign_functions_to_env(pl, "^polars_functions_")
 
 assign_functions_to_env(polars_functions_api, "^function_api_")
