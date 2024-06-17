@@ -4,7 +4,7 @@ pl <- new.env(parent = emptyenv())
 
 # A function to collect objects to be assigned to the environment
 # These environments are used inside the wrap function etc.
-assign_functions_to_env <- function(env, fn_name_pattern, ..., search_env = parent.frame()) {
+assign_objects_to_env <- function(env, fn_name_pattern, ..., search_env = parent.frame()) {
   fn_names <- ls(search_env, pattern = fn_name_pattern)
   new_names <- sub(fn_name_pattern, "", fn_names)
 
@@ -14,14 +14,14 @@ assign_functions_to_env <- function(env, fn_name_pattern, ..., search_env = pare
   })
 }
 
-assign_functions_to_env(pl, "^polars_functions_")
+assign_objects_to_env(pl, "^polars_functions_")
 
-assign_functions_to_env(polars_functions_api, "^function_api_")
+assign_objects_to_env(polars_functions_api, "^function_api_")
 
-assign_functions_to_env(polars_namespaces_series, "^namespace_series_")
+assign_objects_to_env(polars_namespaces_series, "^namespace_series_")
 
-assign_functions_to_env(polars_series__methods, "^series__")
+assign_objects_to_env(polars_series__methods, "^series__")
 
-assign_functions_to_env(polars_series_struct_methods, "^series_struct_")
+assign_objects_to_env(polars_series_struct_methods, "^series_struct_")
 
-assign_functions_to_env(polars_dataframe__methods, "^dataframe__")
+assign_objects_to_env(polars_dataframe__methods, "^dataframe__")
