@@ -17,12 +17,9 @@ wrap.PlRSeries <- function(x) {
     assign(name, fn, envir = self)
   })
 
-  for (namespace in names(polars_namespaces_series)) {
-    local({
-      namespace <- namespace
-      makeActiveBinding(namespace, function() polars_namespaces_series[[namespace]](self), self)
-    })
-  }
+  lapply(names(polars_namespaces_series), function(namespace) {
+    makeActiveBinding(namespace, function() polars_namespaces_series[[namespace]](self), self)
+  })
 
   class(self) <- "polars_series"
   self
