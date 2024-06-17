@@ -1,4 +1,5 @@
 # The env to store polars top-level functions
+#' @export
 pl <- new.env(parent = emptyenv())
 
 assign_functions_to_env(pl, "^polars_functions_")
