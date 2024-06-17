@@ -1,33 +1,31 @@
-# TODO: create macro to create wrap S3 methods
-
-# Allow namespace to be added from external packages
+# The env storing series namespaces
 polars_namespaces_series <- new.env(parent = emptyenv())
+
+# The env for storing series methods
+polars_series__methods <- new.env(parent = emptyenv())
 
 #' @export
 wrap.PlRSeries <- function(x) {
-  .self <- new.env(parent = emptyenv())
-  .self$`_s` <- x
+  self <- new.env(parent = emptyenv())
+  self$`_s` <- x
 
-  makeActiveBinding("name", function(self = .self) series_name(self), .self)
+  makeActiveBinding("name", function() self$`_s`$name(), self)
+
+  lapply(names(polars_series__methods), function(name) {
+    fn <- polars_series__methods[[name]]
+    environment(fn) <- environment()
+    assign(name, fn, envir = self)
+  })
 
   for (namespace in names(polars_namespaces_series)) {
     local({
       namespace <- namespace
-      makeActiveBinding(namespace, function() polars_namespaces_series[[namespace]](.self), .self)
+      makeActiveBinding(namespace, function() polars_namespaces_series[[namespace]](self), self)
     })
   }
 
-  .self$add <- function(other) series_add(.self, other)
-  .self$sub <- function(other) series_sub(.self, other)
-  .self$true_div <- function(other) series_true_div(.self, other)
-  .self$mul <- function(other) series_mul(.self, other)
-  .self$mod <- function(other) series_mod(.self, other)
-
-  .self$clone <- function() series_clone(.self)
-  .self$rename <- function(name) series_rename(.self, name)
-
-  class(.self) <- "polars_series"
-  .self
+  class(self) <- "polars_series"
+  self
 }
 
 #' @export
@@ -36,43 +34,39 @@ print.polars_series <- function(x, ...) {
   invisible(x)
 }
 
-series_name <- function(self) {
-  self$`_s`$name()
-}
-
-series_add <- function(self, other) {
+series__add <- function(other) {
   self$`_s`$add(as_polars_series(other)$`_s`) |>
     wrap()
 }
 
-series_sub <- function(self, other) {
+series__sub <- function(other) {
   self$`_s`$sub(as_polars_series(other)$`_s`) |>
     wrap()
 }
 
-series_true_div <- function(self, other) {
+series__true_div <- function(other) {
   self$`_s`$div(as_polars_series(other)$`_s`) |>
     wrap()
 }
 
 # TODO: implement floor_div, requires DataFrame.select_seq, col function, Expr
 
-series_mul <- function(self, other) {
+series__mul <- function(other) {
   self$`_s`$mul(as_polars_series(other)$`_s`) |>
     wrap()
 }
 
-series_mod <- function(self, other) {
+series__mod <- function(other) {
   self$`_s`$rem(as_polars_series(other)$`_s`) |>
     wrap()
 }
 
-series_clone <- function(self) {
+series__clone <- function() {
   self$`_s`$clone() |>
     wrap()
 }
 
-series_rename <- function(self, name) {
+series__rename <- function(name) {
   s <- self$clone()
 
   s$`_s`$rename(name)

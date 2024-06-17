@@ -1,12 +1,19 @@
+# The env for storing dataframe methods
+polars_dataframe__methods <- new.env(parent = emptyenv())
+
 #' @export
 wrap.PlRDataFrame <- function(x) {
-  .self <- new.env(parent = emptyenv())
-  .self$`_df` <- x
+  self <- new.env(parent = emptyenv())
+  self$`_df` <- x
 
-  .self$to_struct <- function(name = "") dataframe_to_struct(.self, name)
+  lapply(names(polars_dataframe__methods), function(name) {
+    fn <- polars_dataframe__methods[[name]]
+    environment(fn) <- environment()
+    assign(name, fn, envir = self)
+  })
 
-  class(.self) <- "polars_data_frame"
-  .self
+  class(self) <- "polars_data_frame"
+  self
 }
 
 #' @export
@@ -15,7 +22,7 @@ print.polars_data_frame <- function(x, ...) {
   invisible(x)
 }
 
-dataframe_to_struct <- function(self, name = "") {
+dataframe__to_struct <- function(name = "") {
   self$`_df`$to_struct(name) |>
     wrap()
 }

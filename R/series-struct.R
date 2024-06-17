@@ -1,16 +1,21 @@
-series_namespace_struct <- function(x) {
-  .self <- new.env(parent = emptyenv())
-  .self$`_s` <- x$`_s`
+# The env for storing all series struct methods
+polars_series_struct_methods <- new.env(parent = emptyenv())
 
-  .self$unnest <- function() series_struct_unnest(.self)
+namespace_series_struct <- function(x) {
+  self <- new.env(parent = emptyenv())
+  self$`_s` <- x$`_s`
 
-  class(.self) <- "polars_namespace_series"
-  .self
+  lapply(names(polars_series_struct_methods), function(name) {
+    fn <- polars_series_struct_methods[[name]]
+    environment(fn) <- environment()
+    assign(name, fn, envir = self)
+  })
+
+  class(self) <- "polars_namespace_series"
+  self
 }
 
-polars_namespaces_series$struct <- series_namespace_struct
-
-series_struct_unnest <- function(self) {
+series_struct_unnest <- function() {
   self$`_s`$struct_unnest() |>
     wrap()
 }

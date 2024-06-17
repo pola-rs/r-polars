@@ -1,4 +1,6 @@
-# TODO: move to `pl$api$register_series_namespace`
+# The env storing pl$api functions
+polars_functions_api <- new.env(parent = emptyenv())
+
 # TODO: check reserved namespaces
 # TODO: check existing namespaces
 #' Registering custom functionality with a polars Series
@@ -26,14 +28,13 @@
 #'   self
 #' }
 #'
-#' polars_api_register_series_namespace("math", math_shortcuts)
+#' pl$api$register_series_namespace("math", math_shortcuts)
 #'
 #' s <- as_polars_series(c(1.5, 31, 42, 64.5))
 #' s$math$square()$rename("s^2")
 #'
 #' s <- as_polars_series(1:5)
 #' s$math$cube()$rename("s^3")
-#' @export
-polars_api_register_series_namespace <- function(name, ns_fn) {
+function_api_register_series_namespace <- function(name, ns_fn) {
   assign(name, ns_fn, envir = polars_namespaces_series)
 }
