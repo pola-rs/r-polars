@@ -14,14 +14,15 @@ assign_objects_to_env <- function(env, fn_name_pattern, ..., search_env = parent
   })
 }
 
-assign_objects_to_env(pl, "^polars_functions_")
+POLARS_OBJECTS <- list(
+  "^polars_functions_" = pl,
+  "^function_api_" = polars_functions_api,
+  "^namespace_series_" = polars_namespaces_series,
+  "^series__" = polars_series__methods,
+  "^series_struct_" = polars_series_struct_methods,
+  "^dataframe__" = polars_dataframe__methods
+)
 
-assign_objects_to_env(polars_functions_api, "^function_api_")
-
-assign_objects_to_env(polars_namespaces_series, "^namespace_series_")
-
-assign_objects_to_env(polars_series__methods, "^series__")
-
-assign_objects_to_env(polars_series_struct_methods, "^series_struct_")
-
-assign_objects_to_env(polars_dataframe__methods, "^dataframe__")
+lapply(names(POLARS_OBJECTS), function(name) {
+  assign_objects_to_env(POLARS_OBJECTS[[name]], name, search_env = parent.frame(2L))
+})
