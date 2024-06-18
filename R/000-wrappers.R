@@ -131,6 +131,13 @@ PlRSeries_rename <- function(self) {
   }
 }
 
+PlRSeries_cast <- function(self) {
+  function(dtype, strict) {
+    dtype <- .savvy_extract_ptr(dtype, "PlRDataType")
+  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_cast__impl, self, dtype, strict))
+  }
+}
+
 PlRSeries_add <- function(self) {
   function(other) {
     other <- .savvy_extract_ptr(other, "PlRSeries")
@@ -174,6 +181,7 @@ PlRSeries_rem <- function(self) {
   e$clone <- PlRSeries_clone(ptr)
   e$name <- PlRSeries_name(ptr)
   e$rename <- PlRSeries_rename(ptr)
+  e$cast <- PlRSeries_cast(ptr)
   e$add <- PlRSeries_add(ptr)
   e$sub <- PlRSeries_sub(ptr)
   e$div <- PlRSeries_div(ptr)

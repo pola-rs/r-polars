@@ -63,3 +63,9 @@ series__rename <- function(name) {
   s$`_s`$rename(name)
   s
 }
+
+series__cast <- function(dtype, ..., strict = TRUE) {
+  dtype <- as_polars_dtype(dtype)
+  self$`_s`$cast(dtype$`_dt`, strict) |>
+    wrap()
+}

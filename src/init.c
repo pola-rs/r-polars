@@ -100,6 +100,11 @@ SEXP savvy_PlRSeries_rename__impl(SEXP self__, SEXP name) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRSeries_cast__impl(SEXP self__, SEXP dtype, SEXP strict) {
+    SEXP res = savvy_PlRSeries_cast__ffi(self__, dtype, strict);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRSeries_add__impl(SEXP self__, SEXP other) {
     SEXP res = savvy_PlRSeries_add__ffi(self__, other);
     return handle_result(res);
@@ -176,6 +181,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRSeries_clone__impl", (DL_FUNC) &savvy_PlRSeries_clone__impl, 1},
     {"savvy_PlRSeries_name__impl", (DL_FUNC) &savvy_PlRSeries_name__impl, 1},
     {"savvy_PlRSeries_rename__impl", (DL_FUNC) &savvy_PlRSeries_rename__impl, 2},
+    {"savvy_PlRSeries_cast__impl", (DL_FUNC) &savvy_PlRSeries_cast__impl, 3},
     {"savvy_PlRSeries_add__impl", (DL_FUNC) &savvy_PlRSeries_add__impl, 2},
     {"savvy_PlRSeries_sub__impl", (DL_FUNC) &savvy_PlRSeries_sub__impl, 2},
     {"savvy_PlRSeries_div__impl", (DL_FUNC) &savvy_PlRSeries_div__impl, 2},

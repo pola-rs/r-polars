@@ -18,12 +18,6 @@ wrap.PlRDataType <- function(x) {
   self
 }
 
-#' @export
-print.polars_data_type <- function(x, ...) {
-  x$`_dt`$print()
-  x
-}
-
 pl__Categorical <- function(ordering = "physical") {
   PlRDataType$new_categorical(ordering) |>
     wrap()

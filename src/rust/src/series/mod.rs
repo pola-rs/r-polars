@@ -1,7 +1,6 @@
 mod arithmetic;
 mod construction;
-
-use crate::{dataframe::PlRDataFrame, error::RPolarsErr, prelude::*};
+use crate::{dataframe::PlRDataFrame, datatypes::PlRDataType, error::RPolarsErr, prelude::*};
 use savvy::{r_println, savvy, EnvironmentSexp, Sexp};
 
 #[savvy]
@@ -52,5 +51,17 @@ impl PlRSeries {
     fn rename(&mut self, name: &str) -> savvy::Result<()> {
         self.series.rename(name);
         Ok(())
+    }
+
+    fn cast(&self, dtype: PlRDataType, strict: bool) -> savvy::Result<Self> {
+        let dtype = dtype.dt;
+        let out = if strict {
+            self.series.strict_cast(&dtype)
+        } else {
+            self.series.cast(&dtype)
+        }
+        .map_err(RPolarsErr::from)?;
+
+        Ok(out.into())
     }
 }
