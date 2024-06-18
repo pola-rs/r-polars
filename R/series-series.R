@@ -25,12 +25,6 @@ wrap.PlRSeries <- function(x) {
   self
 }
 
-#' @export
-print.polars_series <- function(x, ...) {
-  x$`_s`$print()
-  invisible(x)
-}
-
 series__add <- function(other) {
   self$`_s`$add(as_polars_series(other)$`_s`) |>
     wrap()

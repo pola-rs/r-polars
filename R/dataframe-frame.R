@@ -16,12 +16,6 @@ wrap.PlRDataFrame <- function(x) {
   self
 }
 
-#' @export
-print.polars_data_frame <- function(x, ...) {
-  x$`_df`$print()
-  invisible(x)
-}
-
 dataframe__to_struct <- function(name = "") {
   self$`_df`$to_struct(name) |>
     wrap()
