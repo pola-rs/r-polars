@@ -173,8 +173,9 @@ PlRSeries <- new.env(parent = emptyenv())
 
 ### associated functions for PlRSeries
 
-PlRSeries$new_empty <- function(name) {
-  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_empty__impl, name))
+PlRSeries$new_empty <- function(name, dtype = NULL) {
+  dtype <- .savvy_extract_ptr(dtype, "PlRDataType")
+  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_empty__impl, name, dtype))
 }
 
 PlRSeries$new_f64 <- function(name, values) {

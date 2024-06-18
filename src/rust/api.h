@@ -19,7 +19,7 @@ SEXP savvy_PlRSeries_sub__ffi(SEXP self__, SEXP other);
 SEXP savvy_PlRSeries_div__ffi(SEXP self__, SEXP other);
 SEXP savvy_PlRSeries_mul__ffi(SEXP self__, SEXP other);
 SEXP savvy_PlRSeries_rem__ffi(SEXP self__, SEXP other);
-SEXP savvy_PlRSeries_new_empty__ffi(SEXP name);
+SEXP savvy_PlRSeries_new_empty__ffi(SEXP name, SEXP dtype);
 SEXP savvy_PlRSeries_new_f64__ffi(SEXP name, SEXP values);
 SEXP savvy_PlRSeries_new_i32__ffi(SEXP name, SEXP values);
 SEXP savvy_PlRSeries_new_bool__ffi(SEXP name, SEXP values);
