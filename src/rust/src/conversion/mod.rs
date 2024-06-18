@@ -1,6 +1,23 @@
 use crate::prelude::*;
 use crate::PlRDataType;
 
+#[repr(transparent)]
+pub struct Wrap<T>(pub T);
+
+impl<T> Clone for Wrap<T>
+where
+    T: Clone,
+{
+    fn clone(&self) -> Self {
+        Wrap(self.0.clone())
+    }
+}
+impl<T> From<T> for Wrap<T> {
+    fn from(t: T) -> Self {
+        Wrap(t)
+    }
+}
+
 impl TryFrom<&str> for PlRDataType {
     type Error = String;
 
@@ -36,5 +53,40 @@ impl TryFrom<&str> for PlRDataType {
             }
         };
         Ok(Self { dt })
+    }
+}
+
+impl TryFrom<&str> for Wrap<CategoricalOrdering> {
+    type Error = String;
+
+    fn try_from(ordering: &str) -> Result<Self, String> {
+        let ordering = match ordering {
+            "physical" => CategoricalOrdering::Physical,
+            "lexical" => CategoricalOrdering::Lexical,
+            v => {
+                return Err(format!(
+                    "categorical `ordering` must be one of ('physical', 'lexical'), got '{v}'"
+                ))
+            }
+        };
+        Ok(Wrap(ordering))
+    }
+}
+
+impl TryFrom<&str> for Wrap<TimeUnit> {
+    type Error = String;
+
+    fn try_from(time_unit: &str) -> Result<Self, String> {
+        let time_unit = match time_unit {
+            "ns" => TimeUnit::Nanoseconds,
+            "us" => TimeUnit::Microseconds,
+            "ms" => TimeUnit::Milliseconds,
+            v => {
+                return Err(format!(
+                    "`time_unit` must be one of ('ns', 'us', 'ms'), got '{v}'",
+                ))
+            }
+        };
+        Ok(Wrap(time_unit))
     }
 }

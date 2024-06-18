@@ -23,3 +23,18 @@ print.polars_data_type <- function(x, ...) {
   x$`_dt`$print()
   x
 }
+
+pl__Categorical <- function(ordering = "physical") {
+  PlRDataType$new_categorical(ordering) |>
+    wrap()
+}
+
+pl__Datetime <- function(time_unit = "us", time_zone = NULL) {
+  PlRDataType$new_datetime(time_unit, time_zone) |>
+    wrap()
+}
+
+pl__Duration <- function(time_unit = "us") {
+  PlRDataType$new_duration(time_unit) |>
+    wrap()
+}

@@ -60,6 +60,21 @@ SEXP savvy_PlRDataType_new_from_name__impl(SEXP name) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRDataType_new_categorical__impl(SEXP ordering) {
+    SEXP res = savvy_PlRDataType_new_categorical__ffi(ordering);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRDataType_new_datetime__impl(SEXP time_unit, SEXP time_zone) {
+    SEXP res = savvy_PlRDataType_new_datetime__ffi(time_unit, time_zone);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRDataType_new_duration__impl(SEXP time_unit) {
+    SEXP res = savvy_PlRDataType_new_duration__ffi(time_unit);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRSeries_print__impl(SEXP self__) {
     SEXP res = savvy_PlRSeries_print__ffi(self__);
     return handle_result(res);
@@ -153,6 +168,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRDataFrame_to_struct__impl", (DL_FUNC) &savvy_PlRDataFrame_to_struct__impl, 2},
     {"savvy_PlRDataType_print__impl", (DL_FUNC) &savvy_PlRDataType_print__impl, 1},
     {"savvy_PlRDataType_new_from_name__impl", (DL_FUNC) &savvy_PlRDataType_new_from_name__impl, 1},
+    {"savvy_PlRDataType_new_categorical__impl", (DL_FUNC) &savvy_PlRDataType_new_categorical__impl, 1},
+    {"savvy_PlRDataType_new_datetime__impl", (DL_FUNC) &savvy_PlRDataType_new_datetime__impl, 2},
+    {"savvy_PlRDataType_new_duration__impl", (DL_FUNC) &savvy_PlRDataType_new_duration__impl, 1},
     {"savvy_PlRSeries_print__impl", (DL_FUNC) &savvy_PlRSeries_print__impl, 1},
     {"savvy_PlRSeries_struct_unnest__impl", (DL_FUNC) &savvy_PlRSeries_struct_unnest__impl, 1},
     {"savvy_PlRSeries_clone__impl", (DL_FUNC) &savvy_PlRSeries_clone__impl, 1},

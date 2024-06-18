@@ -8,6 +8,9 @@ SEXP savvy_PlRDataFrame_to_struct__ffi(SEXP self__, SEXP name);
 // methods and associated functions for PlRDataType
 SEXP savvy_PlRDataType_print__ffi(SEXP self__);
 SEXP savvy_PlRDataType_new_from_name__ffi(SEXP name);
+SEXP savvy_PlRDataType_new_categorical__ffi(SEXP ordering);
+SEXP savvy_PlRDataType_new_datetime__ffi(SEXP time_unit, SEXP time_zone);
+SEXP savvy_PlRDataType_new_duration__ffi(SEXP time_unit);
 
 // methods and associated functions for PlRSeries
 SEXP savvy_PlRSeries_print__ffi(SEXP self__);

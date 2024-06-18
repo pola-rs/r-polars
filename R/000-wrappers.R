@@ -86,6 +86,18 @@ PlRDataType$new_from_name <- function(name) {
   .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_new_from_name__impl, name))
 }
 
+PlRDataType$new_categorical <- function(ordering) {
+  .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_new_categorical__impl, ordering))
+}
+
+PlRDataType$new_datetime <- function(time_unit, time_zone = NULL) {
+  .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_new_datetime__impl, time_unit, time_zone))
+}
+
+PlRDataType$new_duration <- function(time_unit) {
+  .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_new_duration__impl, time_unit))
+}
+
 
 ### wrapper functions for PlRSeries
 
