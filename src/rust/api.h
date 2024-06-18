@@ -6,6 +6,7 @@ SEXP savvy_PlRDataFrame_print__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_to_struct__ffi(SEXP self__, SEXP name);
 
 // methods and associated functions for PlRDataType
+SEXP savvy_PlRDataType_print__ffi(SEXP self__);
 SEXP savvy_PlRDataType_new_from_name__ffi(SEXP name);
 
 // methods and associated functions for PlRSeries

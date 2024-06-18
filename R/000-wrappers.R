@@ -61,11 +61,16 @@ PlRDataFrame$init <- function(columns) {
 
 ### wrapper functions for PlRDataType
 
+PlRDataType_print <- function(self) {
+  function() {
+  invisible(.Call(savvy_PlRDataType_print__impl, self))
+  }
+}
 
 .savvy_wrap_PlRDataType <- function(ptr) {
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
-  
+    e$print <- PlRDataType_print(ptr)
   
   class(e) <- "PlRDataType"
   e

@@ -26,3 +26,26 @@ POLARS_OBJECTS <- list(
 lapply(names(POLARS_OBJECTS), function(name) {
   assign_objects_to_env(POLARS_OBJECTS[[name]], name, search_env = parent.frame(2L))
 })
+
+# Register data types without arguments as active bindings
+c(
+  "Int8",
+  "Int16",
+  "Int32",
+  "Int64",
+  "UInt8",
+  "UInt16",
+  "UInt32",
+  "UInt64",
+  "Float32",
+  "Float64",
+  "Boolean",
+  "String",
+  "Binary",
+  "Date",
+  "Time",
+  "Null"
+) |>
+  lapply(function(name) {
+    makeActiveBinding(name, function() PlRDataType$new_from_name(name) |> wrap(), pl)
+  })

@@ -1,6 +1,5 @@
 use polars::prelude::*;
-use polars_core::utils::arrow::array::Utf8ViewArray;
-use savvy::savvy;
+use savvy::{r_println, savvy};
 
 // As not like in Python, define the data type class in
 // the Rust side, because defining class in R and converting
@@ -25,6 +24,11 @@ impl From<DataType> for PlRDataType {
 
 #[savvy]
 impl PlRDataType {
+    fn print(&self) -> savvy::Result<()> {
+        r_println!("{:?}", self.dt);
+        Ok(())
+    }
+
     pub fn new_from_name(name: &str) -> savvy::Result<Self> {
         name.try_into().map_err(savvy::Error::from)
     }
