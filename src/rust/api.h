@@ -5,6 +5,9 @@ SEXP savvy_PlRDataFrame_init__ffi(SEXP columns);
 SEXP savvy_PlRDataFrame_print__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_to_struct__ffi(SEXP self__, SEXP name);
 
+// methods and associated functions for PlRDataType
+SEXP savvy_PlRDataType_new_from_name__ffi(SEXP name);
+
 // methods and associated functions for PlRSeries
 SEXP savvy_PlRSeries_print__ffi(SEXP self__);
 SEXP savvy_PlRSeries_struct_unnest__ffi(SEXP self__);

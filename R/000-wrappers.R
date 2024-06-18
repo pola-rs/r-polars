@@ -59,6 +59,29 @@ PlRDataFrame$init <- function(columns) {
 }
 
 
+### wrapper functions for PlRDataType
+
+
+.savvy_wrap_PlRDataType <- function(ptr) {
+  e <- new.env(parent = emptyenv())
+  e$.ptr <- ptr
+  
+  
+  class(e) <- "PlRDataType"
+  e
+}
+
+
+
+PlRDataType <- new.env(parent = emptyenv())
+
+### associated functions for PlRDataType
+
+PlRDataType$new_from_name <- function(name) {
+  .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_new_from_name__impl, name))
+}
+
+
 ### wrapper functions for PlRSeries
 
 PlRSeries_print <- function(self) {
