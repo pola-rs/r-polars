@@ -15,8 +15,8 @@ assign_objects_to_env <- function(env, fn_name_pattern, ..., search_env = parent
 }
 
 POLARS_OBJECTS <- list(
-  "^polars_functions_" = pl,
-  "^function_api_" = polars_functions_api,
+  "^pl__" = pl,
+  "^pl_api_" = pl__api,
   "^namespace_series_" = polars_namespaces_series,
   "^series__" = polars_series__methods,
   "^series_struct_" = polars_series_struct_methods,

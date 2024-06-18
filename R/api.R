@@ -1,5 +1,5 @@
 # The env storing pl$api functions
-polars_functions_api <- new.env(parent = emptyenv())
+pl__api <- new.env(parent = emptyenv())
 
 # TODO: check reserved namespaces
 # TODO: check existing namespaces
@@ -35,6 +35,6 @@ polars_functions_api <- new.env(parent = emptyenv())
 #'
 #' s <- as_polars_series(1:5)
 #' s$math$cube()$rename("s^3")
-function_api_register_series_namespace <- function(name, ns_fn) {
+pl_api_register_series_namespace <- function(name, ns_fn) {
   assign(name, ns_fn, envir = polars_namespaces_series)
 }
