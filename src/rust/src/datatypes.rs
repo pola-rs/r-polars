@@ -35,18 +35,18 @@ impl PlRDataType {
     }
 
     pub fn new_categorical(ordering: &str) -> savvy::Result<Self> {
-        let ordering = TryInto::<Wrap<CategoricalOrdering>>::try_into(ordering)?.0;
+        let ordering = <Wrap<CategoricalOrdering>>::try_from(ordering)?.0;
         Ok(DataType::Categorical(None, ordering).into())
     }
 
     pub fn new_datetime(time_unit: &str, time_zone: Option<&str>) -> savvy::Result<Self> {
-        let time_unit = TryInto::<Wrap<TimeUnit>>::try_into(time_unit)?.0;
+        let time_unit = <Wrap<TimeUnit>>::try_from(time_unit)?.0;
         let time_zone = time_zone.map(|s| s.to_string());
         Ok(DataType::Datetime(time_unit, time_zone).into())
     }
 
     pub fn new_duration(time_unit: &str) -> savvy::Result<Self> {
-        let time_unit = TryInto::<Wrap<TimeUnit>>::try_into(time_unit)?.0;
+        let time_unit = <Wrap<TimeUnit>>::try_from(time_unit)?.0;
         Ok(DataType::Duration(time_unit).into())
     }
 }
