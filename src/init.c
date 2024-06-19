@@ -34,6 +34,15 @@ SEXP handle_result(SEXP res_) {
     return (SEXP)res;
 }
 
+SEXP savvy_col__impl(SEXP name) {
+    SEXP res = savvy_col__ffi(name);
+    return handle_result(res);
+}
+
+SEXP savvy_cols__impl(SEXP names) {
+    SEXP res = savvy_cols__ffi(names);
+    return handle_result(res);
+}
 
 SEXP savvy_PlRDataFrame_init__impl(SEXP columns) {
     SEXP res = savvy_PlRDataFrame_init__ffi(columns);
@@ -72,6 +81,46 @@ SEXP savvy_PlRDataType_new_datetime__impl(SEXP time_unit, SEXP time_zone) {
 
 SEXP savvy_PlRDataType_new_duration__impl(SEXP time_unit) {
     SEXP res = savvy_PlRDataType_new_duration__ffi(time_unit);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_print__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_print__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_add__impl(SEXP self__, SEXP rhs) {
+    SEXP res = savvy_PlRExpr_add__ffi(self__, rhs);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_sub__impl(SEXP self__, SEXP rhs) {
+    SEXP res = savvy_PlRExpr_sub__ffi(self__, rhs);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_mul__impl(SEXP self__, SEXP rhs) {
+    SEXP res = savvy_PlRExpr_mul__ffi(self__, rhs);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_div__impl(SEXP self__, SEXP rhs) {
+    SEXP res = savvy_PlRExpr_div__ffi(self__, rhs);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_rem__impl(SEXP self__, SEXP rhs) {
+    SEXP res = savvy_PlRExpr_rem__ffi(self__, rhs);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_floor_div__impl(SEXP self__, SEXP rhs) {
+    SEXP res = savvy_PlRExpr_floor_div__ffi(self__, rhs);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_neg__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_neg__ffi(self__);
     return handle_result(res);
 }
 
@@ -167,7 +216,8 @@ SEXP savvy_PlRSeries_new_series_list__impl(SEXP name, SEXP values) {
 
 
 static const R_CallMethodDef CallEntries[] = {
-
+    {"savvy_col__impl", (DL_FUNC) &savvy_col__impl, 1},
+    {"savvy_cols__impl", (DL_FUNC) &savvy_cols__impl, 1},
     {"savvy_PlRDataFrame_init__impl", (DL_FUNC) &savvy_PlRDataFrame_init__impl, 1},
     {"savvy_PlRDataFrame_print__impl", (DL_FUNC) &savvy_PlRDataFrame_print__impl, 1},
     {"savvy_PlRDataFrame_to_struct__impl", (DL_FUNC) &savvy_PlRDataFrame_to_struct__impl, 2},
@@ -176,6 +226,14 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRDataType_new_categorical__impl", (DL_FUNC) &savvy_PlRDataType_new_categorical__impl, 1},
     {"savvy_PlRDataType_new_datetime__impl", (DL_FUNC) &savvy_PlRDataType_new_datetime__impl, 2},
     {"savvy_PlRDataType_new_duration__impl", (DL_FUNC) &savvy_PlRDataType_new_duration__impl, 1},
+    {"savvy_PlRExpr_print__impl", (DL_FUNC) &savvy_PlRExpr_print__impl, 1},
+    {"savvy_PlRExpr_add__impl", (DL_FUNC) &savvy_PlRExpr_add__impl, 2},
+    {"savvy_PlRExpr_sub__impl", (DL_FUNC) &savvy_PlRExpr_sub__impl, 2},
+    {"savvy_PlRExpr_mul__impl", (DL_FUNC) &savvy_PlRExpr_mul__impl, 2},
+    {"savvy_PlRExpr_div__impl", (DL_FUNC) &savvy_PlRExpr_div__impl, 2},
+    {"savvy_PlRExpr_rem__impl", (DL_FUNC) &savvy_PlRExpr_rem__impl, 2},
+    {"savvy_PlRExpr_floor_div__impl", (DL_FUNC) &savvy_PlRExpr_floor_div__impl, 2},
+    {"savvy_PlRExpr_neg__impl", (DL_FUNC) &savvy_PlRExpr_neg__impl, 1},
     {"savvy_PlRSeries_print__impl", (DL_FUNC) &savvy_PlRSeries_print__impl, 1},
     {"savvy_PlRSeries_struct_unnest__impl", (DL_FUNC) &savvy_PlRSeries_struct_unnest__impl, 1},
     {"savvy_PlRSeries_clone__impl", (DL_FUNC) &savvy_PlRSeries_clone__impl, 1},

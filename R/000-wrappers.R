@@ -24,6 +24,15 @@ NULL
 }
 
 
+col <- function(name) {
+  .savvy_wrap_PlRExpr(.Call(savvy_col__impl, name))
+}
+
+
+cols <- function(names) {
+  .savvy_wrap_PlRExpr(.Call(savvy_cols__impl, names))
+}
+
 ### wrapper functions for PlRDataFrame
 
 PlRDataFrame_print <- function(self) {
@@ -97,6 +106,86 @@ PlRDataType$new_datetime <- function(time_unit, time_zone = NULL) {
 PlRDataType$new_duration <- function(time_unit) {
   .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_new_duration__impl, time_unit))
 }
+
+
+### wrapper functions for PlRExpr
+
+PlRExpr_print <- function(self) {
+  function() {
+  invisible(.Call(savvy_PlRExpr_print__impl, self))
+  }
+}
+
+PlRExpr_add <- function(self) {
+  function(rhs) {
+    rhs <- .savvy_extract_ptr(rhs, "PlRExpr")
+  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_add__impl, self, rhs))
+  }
+}
+
+PlRExpr_sub <- function(self) {
+  function(rhs) {
+    rhs <- .savvy_extract_ptr(rhs, "PlRExpr")
+  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_sub__impl, self, rhs))
+  }
+}
+
+PlRExpr_mul <- function(self) {
+  function(rhs) {
+    rhs <- .savvy_extract_ptr(rhs, "PlRExpr")
+  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_mul__impl, self, rhs))
+  }
+}
+
+PlRExpr_div <- function(self) {
+  function(rhs) {
+    rhs <- .savvy_extract_ptr(rhs, "PlRExpr")
+  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_div__impl, self, rhs))
+  }
+}
+
+PlRExpr_rem <- function(self) {
+  function(rhs) {
+    rhs <- .savvy_extract_ptr(rhs, "PlRExpr")
+  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_rem__impl, self, rhs))
+  }
+}
+
+PlRExpr_floor_div <- function(self) {
+  function(rhs) {
+    rhs <- .savvy_extract_ptr(rhs, "PlRExpr")
+  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_floor_div__impl, self, rhs))
+  }
+}
+
+PlRExpr_neg <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_neg__impl, self))
+  }
+}
+
+.savvy_wrap_PlRExpr <- function(ptr) {
+  e <- new.env(parent = emptyenv())
+  e$.ptr <- ptr
+    e$print <- PlRExpr_print(ptr)
+  e$add <- PlRExpr_add(ptr)
+  e$sub <- PlRExpr_sub(ptr)
+  e$mul <- PlRExpr_mul(ptr)
+  e$div <- PlRExpr_div(ptr)
+  e$rem <- PlRExpr_rem(ptr)
+  e$floor_div <- PlRExpr_floor_div(ptr)
+  e$neg <- PlRExpr_neg(ptr)
+  
+  class(e) <- "PlRExpr"
+  e
+}
+
+
+
+PlRExpr <- new.env(parent = emptyenv())
+
+### associated functions for PlRExpr
+
 
 
 ### wrapper functions for PlRSeries

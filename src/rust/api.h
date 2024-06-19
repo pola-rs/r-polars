@@ -1,4 +1,5 @@
-
+SEXP savvy_col__ffi(SEXP name);
+SEXP savvy_cols__ffi(SEXP names);
 
 // methods and associated functions for PlRDataFrame
 SEXP savvy_PlRDataFrame_init__ffi(SEXP columns);
@@ -11,6 +12,16 @@ SEXP savvy_PlRDataType_new_from_name__ffi(SEXP name);
 SEXP savvy_PlRDataType_new_categorical__ffi(SEXP ordering);
 SEXP savvy_PlRDataType_new_datetime__ffi(SEXP time_unit, SEXP time_zone);
 SEXP savvy_PlRDataType_new_duration__ffi(SEXP time_unit);
+
+// methods and associated functions for PlRExpr
+SEXP savvy_PlRExpr_print__ffi(SEXP self__);
+SEXP savvy_PlRExpr_add__ffi(SEXP self__, SEXP rhs);
+SEXP savvy_PlRExpr_sub__ffi(SEXP self__, SEXP rhs);
+SEXP savvy_PlRExpr_mul__ffi(SEXP self__, SEXP rhs);
+SEXP savvy_PlRExpr_div__ffi(SEXP self__, SEXP rhs);
+SEXP savvy_PlRExpr_rem__ffi(SEXP self__, SEXP rhs);
+SEXP savvy_PlRExpr_floor_div__ffi(SEXP self__, SEXP rhs);
+SEXP savvy_PlRExpr_neg__ffi(SEXP self__);
 
 // methods and associated functions for PlRSeries
 SEXP savvy_PlRSeries_print__ffi(SEXP self__);
