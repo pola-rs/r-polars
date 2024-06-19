@@ -78,11 +78,18 @@ PlRDataFrame_to_struct <- function(self) {
   }
 }
 
+PlRDataFrame_lazy <- function(self) {
+  function() {
+    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRDataFrame_lazy__impl, self))
+  }
+}
+
 .savvy_wrap_PlRDataFrame <- function(ptr) {
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
     e$print <- PlRDataFrame_print(ptr)
   e$to_struct <- PlRDataFrame_to_struct(ptr)
+  e$lazy <- PlRDataFrame_lazy(ptr)
   
   class(e) <- "PlRDataFrame"
   e
@@ -224,6 +231,38 @@ PlRExpr_cast <- function(self) {
 PlRExpr <- new.env(parent = emptyenv())
 
 ### associated functions for PlRExpr
+
+
+
+### wrapper functions for PlRLazyFrame
+
+PlRLazyFrame_select <- function(self) {
+  function(exprs) {
+    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_select__impl, self, exprs))
+  }
+}
+
+PlRLazyFrame_collect <- function(self) {
+  function() {
+    .savvy_wrap_PlRDataFrame(.Call(savvy_PlRLazyFrame_collect__impl, self))
+  }
+}
+
+.savvy_wrap_PlRLazyFrame <- function(ptr) {
+  e <- new.env(parent = emptyenv())
+  e$.ptr <- ptr
+    e$select <- PlRLazyFrame_select(ptr)
+  e$collect <- PlRLazyFrame_collect(ptr)
+  
+  class(e) <- "PlRLazyFrame"
+  e
+}
+
+
+
+PlRLazyFrame <- new.env(parent = emptyenv())
+
+### associated functions for PlRLazyFrame
 
 
 

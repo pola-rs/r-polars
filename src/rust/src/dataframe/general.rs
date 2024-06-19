@@ -1,5 +1,5 @@
 use super::*;
-use crate::{error::RPolarsErr, PlRSeries};
+use crate::{error::RPolarsErr, PlRLazyFrame, PlRSeries};
 use savvy::{r_println, savvy, ListSexp, TypedSexp};
 
 #[savvy]
@@ -31,5 +31,9 @@ impl PlRDataFrame {
     pub fn to_struct(&self, name: &str) -> savvy::Result<PlRSeries> {
         let s = self.df.clone().into_struct(name);
         Ok(s.into_series().into())
+    }
+
+    pub fn lazy(&self) -> savvy::Result<PlRLazyFrame> {
+        Ok(self.df.clone().lazy().into())
     }
 }

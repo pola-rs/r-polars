@@ -22,6 +22,7 @@ POLARS_OBJECTS <- list(
   "^namespace_series_" = polars_namespaces_series,
   "^series__" = polars_series__methods,
   "^series_struct_" = polars_series_struct_methods,
+  "^lazyframe__" = polars_lazyframe__methods,
   "^dataframe__" = polars_dataframe__methods
 )
 

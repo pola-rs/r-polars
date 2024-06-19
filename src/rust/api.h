@@ -11,6 +11,7 @@ SEXP savvy_lit_from_series__ffi(SEXP value);
 SEXP savvy_PlRDataFrame_init__ffi(SEXP columns);
 SEXP savvy_PlRDataFrame_print__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_to_struct__ffi(SEXP self__, SEXP name);
+SEXP savvy_PlRDataFrame_lazy__ffi(SEXP self__);
 
 // methods and associated functions for PlRDataType
 SEXP savvy_PlRDataType_print__ffi(SEXP self__);
@@ -29,6 +30,10 @@ SEXP savvy_PlRExpr_rem__ffi(SEXP self__, SEXP rhs);
 SEXP savvy_PlRExpr_floor_div__ffi(SEXP self__, SEXP rhs);
 SEXP savvy_PlRExpr_neg__ffi(SEXP self__);
 SEXP savvy_PlRExpr_cast__ffi(SEXP self__, SEXP data_type, SEXP strict);
+
+// methods and associated functions for PlRLazyFrame
+SEXP savvy_PlRLazyFrame_select__ffi(SEXP self__, SEXP exprs);
+SEXP savvy_PlRLazyFrame_collect__ffi(SEXP self__);
 
 // methods and associated functions for PlRSeries
 SEXP savvy_PlRSeries_print__ffi(SEXP self__);

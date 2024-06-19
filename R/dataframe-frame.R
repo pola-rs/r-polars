@@ -20,3 +20,8 @@ dataframe__to_struct <- function(name = "") {
   self$`_df`$to_struct(name) |>
     wrap()
 }
+
+dataframe__lazy <- function() {
+  self$`_df`$lazy() |>
+    wrap()
+}

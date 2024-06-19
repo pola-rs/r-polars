@@ -89,6 +89,11 @@ SEXP savvy_PlRDataFrame_to_struct__impl(SEXP self__, SEXP name) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRDataFrame_lazy__impl(SEXP self__) {
+    SEXP res = savvy_PlRDataFrame_lazy__ffi(self__);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRDataType_print__impl(SEXP self__) {
     SEXP res = savvy_PlRDataType_print__ffi(self__);
     return handle_result(res);
@@ -156,6 +161,16 @@ SEXP savvy_PlRExpr_neg__impl(SEXP self__) {
 
 SEXP savvy_PlRExpr_cast__impl(SEXP self__, SEXP data_type, SEXP strict) {
     SEXP res = savvy_PlRExpr_cast__ffi(self__, data_type, strict);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRLazyFrame_select__impl(SEXP self__, SEXP exprs) {
+    SEXP res = savvy_PlRLazyFrame_select__ffi(self__, exprs);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRLazyFrame_collect__impl(SEXP self__) {
+    SEXP res = savvy_PlRLazyFrame_collect__ffi(self__);
     return handle_result(res);
 }
 
@@ -262,6 +277,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRDataFrame_init__impl", (DL_FUNC) &savvy_PlRDataFrame_init__impl, 1},
     {"savvy_PlRDataFrame_print__impl", (DL_FUNC) &savvy_PlRDataFrame_print__impl, 1},
     {"savvy_PlRDataFrame_to_struct__impl", (DL_FUNC) &savvy_PlRDataFrame_to_struct__impl, 2},
+    {"savvy_PlRDataFrame_lazy__impl", (DL_FUNC) &savvy_PlRDataFrame_lazy__impl, 1},
     {"savvy_PlRDataType_print__impl", (DL_FUNC) &savvy_PlRDataType_print__impl, 1},
     {"savvy_PlRDataType_new_from_name__impl", (DL_FUNC) &savvy_PlRDataType_new_from_name__impl, 1},
     {"savvy_PlRDataType_new_categorical__impl", (DL_FUNC) &savvy_PlRDataType_new_categorical__impl, 1},
@@ -276,6 +292,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_floor_div__impl", (DL_FUNC) &savvy_PlRExpr_floor_div__impl, 2},
     {"savvy_PlRExpr_neg__impl", (DL_FUNC) &savvy_PlRExpr_neg__impl, 1},
     {"savvy_PlRExpr_cast__impl", (DL_FUNC) &savvy_PlRExpr_cast__impl, 3},
+    {"savvy_PlRLazyFrame_select__impl", (DL_FUNC) &savvy_PlRLazyFrame_select__impl, 2},
+    {"savvy_PlRLazyFrame_collect__impl", (DL_FUNC) &savvy_PlRLazyFrame_collect__impl, 1},
     {"savvy_PlRSeries_print__impl", (DL_FUNC) &savvy_PlRSeries_print__impl, 1},
     {"savvy_PlRSeries_struct_unnest__impl", (DL_FUNC) &savvy_PlRSeries_struct_unnest__impl, 1},
     {"savvy_PlRSeries_clone__impl", (DL_FUNC) &savvy_PlRSeries_clone__impl, 1},
