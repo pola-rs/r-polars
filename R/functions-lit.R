@@ -5,14 +5,12 @@ as_polars_lit <- function(x, ...) {
 
 #' @export
 as_polars_lit.default <- function(x, ...) {
-  as_polars_series(x) |>
+  as_polars_series(x, name = "literal") |>
     as_polars_lit.polars_series()
 }
 
 #' @export
-as_polars_lit.polars_expr <- function(x, ...) {
-  x
-}
+as_polars_lit.polars_expr <- as_polars_expr.polars_expr
 
 #' @export
 as_polars_lit.polars_series <- function(x, ...) {

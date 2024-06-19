@@ -41,7 +41,7 @@ expr__mul <- function(other) {
     wrap()
 }
 
-expr__div <- function(other) {
+expr__true_div <- function(other) {
   other <- as_polars_expr(other, str_as_lit = TRUE)
   self$`_rexpr`$div(other$`_rexpr`) |>
     wrap()
