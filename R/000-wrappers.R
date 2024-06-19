@@ -33,6 +33,37 @@ cols <- function(names) {
   .savvy_wrap_PlRExpr(.Call(savvy_cols__impl, names))
 }
 
+
+lit_from_bool <- function(value) {
+  .savvy_wrap_PlRExpr(.Call(savvy_lit_from_bool__impl, value))
+}
+
+
+lit_from_i32 <- function(value) {
+  .savvy_wrap_PlRExpr(.Call(savvy_lit_from_i32__impl, value))
+}
+
+
+lit_from_f64 <- function(value) {
+  .savvy_wrap_PlRExpr(.Call(savvy_lit_from_f64__impl, value))
+}
+
+
+lit_from_str <- function(value) {
+  .savvy_wrap_PlRExpr(.Call(savvy_lit_from_str__impl, value))
+}
+
+
+lit_null <- function() {
+  .savvy_wrap_PlRExpr(.Call(savvy_lit_null__impl))
+}
+
+
+lit_from_series <- function(value) {
+  value <- .savvy_extract_ptr(value, "PlRSeries")
+  .savvy_wrap_PlRExpr(.Call(savvy_lit_from_series__impl, value))
+}
+
 ### wrapper functions for PlRDataFrame
 
 PlRDataFrame_print <- function(self) {
@@ -164,6 +195,13 @@ PlRExpr_neg <- function(self) {
   }
 }
 
+PlRExpr_cast <- function(self) {
+  function(data_type, strict) {
+    data_type <- .savvy_extract_ptr(data_type, "PlRDataType")
+  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_cast__impl, self, data_type, strict))
+  }
+}
+
 .savvy_wrap_PlRExpr <- function(ptr) {
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
@@ -175,6 +213,7 @@ PlRExpr_neg <- function(self) {
   e$rem <- PlRExpr_rem(ptr)
   e$floor_div <- PlRExpr_floor_div(ptr)
   e$neg <- PlRExpr_neg(ptr)
+  e$cast <- PlRExpr_cast(ptr)
   
   class(e) <- "PlRExpr"
   e

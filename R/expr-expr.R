@@ -63,3 +63,9 @@ expr__neg <- function() {
   self$`_rexpr`$neg() |>
     wrap()
 }
+
+expr__cast <- function(dtype, ..., strict = TRUE) {
+  dtype <- as_polars_dtype(dtype)
+  self$`_rexpr`$cast(dtype$`_dt`, strict) |>
+    wrap()
+}
