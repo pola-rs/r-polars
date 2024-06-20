@@ -70,3 +70,7 @@ series__cast <- function(dtype, ..., strict = TRUE) {
   self$`_s`$cast(dtype$`_dt`, strict) |>
     wrap()
 }
+
+series__to_r_vector <- function() {
+    self$`_s`$to_r_vector()
+}
