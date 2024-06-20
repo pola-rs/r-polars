@@ -1,5 +1,6 @@
 use crate::prelude::*;
 use crate::PlRDataType;
+mod chunked_array;
 
 #[repr(transparent)]
 pub struct Wrap<T>(pub T);

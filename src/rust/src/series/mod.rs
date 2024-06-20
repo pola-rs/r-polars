@@ -1,9 +1,12 @@
 mod arithmetic;
 mod construction;
+mod export;
 use crate::{dataframe::PlRDataFrame, datatypes::PlRDataType, error::RPolarsErr, prelude::*};
 use savvy::{r_println, savvy, EnvironmentSexp, Sexp};
 
 #[savvy]
+#[repr(transparent)]
+#[derive(Clone)]
 pub struct PlRSeries {
     pub series: Series,
 }
@@ -17,6 +20,17 @@ impl From<Series> for PlRSeries {
 impl PlRSeries {
     pub(crate) fn new(series: Series) -> Self {
         Self { series }
+    }
+}
+
+pub(crate) trait ToRSeries {
+    fn to_r_series(self) -> Vec<PlRSeries>;
+}
+
+impl ToRSeries for Vec<Series> {
+    fn to_r_series(self) -> Vec<PlRSeries> {
+        // SAFETY: repr is transparent.
+        unsafe { std::mem::transmute(self) }
     }
 }
 

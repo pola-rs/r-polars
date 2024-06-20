@@ -11,13 +11,13 @@ pub enum RPolarsErr {
     Other(String),
 }
 
-impl std::convert::From<std::io::Error> for RPolarsErr {
+impl From<std::io::Error> for RPolarsErr {
     fn from(value: Error) -> Self {
         RPolarsErr::Other(format!("{value:?}"))
     }
 }
 
-impl std::convert::From<RPolarsErr> for savvy::Error {
+impl From<RPolarsErr> for savvy::Error {
     fn from(err: RPolarsErr) -> Self {
         let default = || savvy::Error::new(format!("{:?}", &err).as_str());
 

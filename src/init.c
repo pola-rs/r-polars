@@ -84,6 +84,11 @@ SEXP savvy_PlRDataFrame_print__impl(SEXP self__) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRDataFrame_get_columns__impl(SEXP self__) {
+    SEXP res = savvy_PlRDataFrame_get_columns__ffi(self__);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRDataFrame_to_struct__impl(SEXP self__, SEXP name) {
     SEXP res = savvy_PlRDataFrame_to_struct__ffi(self__, name);
     return handle_result(res);
@@ -264,6 +269,11 @@ SEXP savvy_PlRSeries_new_series_list__impl(SEXP name, SEXP values) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRSeries_to_r_vector__impl(SEXP self__) {
+    SEXP res = savvy_PlRSeries_to_r_vector__ffi(self__);
+    return handle_result(res);
+}
+
 
 static const R_CallMethodDef CallEntries[] = {
     {"savvy_col__impl", (DL_FUNC) &savvy_col__impl, 1},
@@ -276,6 +286,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_lit_from_series__impl", (DL_FUNC) &savvy_lit_from_series__impl, 1},
     {"savvy_PlRDataFrame_init__impl", (DL_FUNC) &savvy_PlRDataFrame_init__impl, 1},
     {"savvy_PlRDataFrame_print__impl", (DL_FUNC) &savvy_PlRDataFrame_print__impl, 1},
+    {"savvy_PlRDataFrame_get_columns__impl", (DL_FUNC) &savvy_PlRDataFrame_get_columns__impl, 1},
     {"savvy_PlRDataFrame_to_struct__impl", (DL_FUNC) &savvy_PlRDataFrame_to_struct__impl, 2},
     {"savvy_PlRDataFrame_lazy__impl", (DL_FUNC) &savvy_PlRDataFrame_lazy__impl, 1},
     {"savvy_PlRDataType_print__impl", (DL_FUNC) &savvy_PlRDataType_print__impl, 1},
@@ -312,6 +323,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRSeries_new_str__impl", (DL_FUNC) &savvy_PlRSeries_new_str__impl, 2},
     {"savvy_PlRSeries_new_categorical__impl", (DL_FUNC) &savvy_PlRSeries_new_categorical__impl, 2},
     {"savvy_PlRSeries_new_series_list__impl", (DL_FUNC) &savvy_PlRSeries_new_series_list__impl, 2},
+    {"savvy_PlRSeries_to_r_vector__impl", (DL_FUNC) &savvy_PlRSeries_to_r_vector__impl, 1},
     {NULL, NULL, 0}
 };
 

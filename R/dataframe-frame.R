@@ -25,3 +25,11 @@ dataframe__lazy <- function() {
   self$`_df`$lazy() |>
     wrap()
 }
+
+dataframe__get_columns <- function() {
+  self$`_df`$get_columns() |>
+    lapply(\(ptr) {
+      .savvy_wrap_PlRSeries(ptr) |>
+        wrap()
+    })
+}

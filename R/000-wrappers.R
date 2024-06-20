@@ -72,6 +72,12 @@ PlRDataFrame_print <- function(self) {
   }
 }
 
+PlRDataFrame_get_columns <- function(self) {
+  function() {
+  .Call(savvy_PlRDataFrame_get_columns__impl, self)
+  }
+}
+
 PlRDataFrame_to_struct <- function(self) {
   function(name) {
     .savvy_wrap_PlRSeries(.Call(savvy_PlRDataFrame_to_struct__impl, self, name))
@@ -88,6 +94,7 @@ PlRDataFrame_lazy <- function(self) {
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
     e$print <- PlRDataFrame_print(ptr)
+  e$get_columns <- PlRDataFrame_get_columns(ptr)
   e$to_struct <- PlRDataFrame_to_struct(ptr)
   e$lazy <- PlRDataFrame_lazy(ptr)
   
@@ -340,6 +347,12 @@ PlRSeries_rem <- function(self) {
   }
 }
 
+PlRSeries_to_r_vector <- function(self) {
+  function() {
+  .Call(savvy_PlRSeries_to_r_vector__impl, self)
+  }
+}
+
 .savvy_wrap_PlRSeries <- function(ptr) {
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
@@ -354,6 +367,7 @@ PlRSeries_rem <- function(self) {
   e$div <- PlRSeries_div(ptr)
   e$mul <- PlRSeries_mul(ptr)
   e$rem <- PlRSeries_rem(ptr)
+  e$to_r_vector <- PlRSeries_to_r_vector(ptr)
   
   class(e) <- "PlRSeries"
   e
