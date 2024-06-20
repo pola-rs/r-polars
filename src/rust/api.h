@@ -20,6 +20,26 @@ SEXP savvy_PlRDataType_new_from_name__ffi(SEXP name);
 SEXP savvy_PlRDataType_new_categorical__ffi(SEXP ordering);
 SEXP savvy_PlRDataType_new_datetime__ffi(SEXP time_unit, SEXP time_zone);
 SEXP savvy_PlRDataType_new_duration__ffi(SEXP time_unit);
+SEXP savvy_PlRDataType_is_temporal__ffi(SEXP self__);
+SEXP savvy_PlRDataType_is_enum__ffi(SEXP self__);
+SEXP savvy_PlRDataType_is_categorical__ffi(SEXP self__);
+SEXP savvy_PlRDataType_is_string__ffi(SEXP self__);
+SEXP savvy_PlRDataType_is_logical__ffi(SEXP self__);
+SEXP savvy_PlRDataType_is_float__ffi(SEXP self__);
+SEXP savvy_PlRDataType_is_numeric__ffi(SEXP self__);
+SEXP savvy_PlRDataType_is_integer__ffi(SEXP self__);
+SEXP savvy_PlRDataType_is_signed_integer__ffi(SEXP self__);
+SEXP savvy_PlRDataType_is_unsigned_integer__ffi(SEXP self__);
+SEXP savvy_PlRDataType_is_null__ffi(SEXP self__);
+SEXP savvy_PlRDataType_is_binary__ffi(SEXP self__);
+SEXP savvy_PlRDataType_is_primitive__ffi(SEXP self__);
+SEXP savvy_PlRDataType_is_bool__ffi(SEXP self__);
+SEXP savvy_PlRDataType_is_array__ffi(SEXP self__);
+SEXP savvy_PlRDataType_is_list__ffi(SEXP self__);
+SEXP savvy_PlRDataType_is_nested__ffi(SEXP self__);
+SEXP savvy_PlRDataType_is_struct__ffi(SEXP self__);
+SEXP savvy_PlRDataType_is_ord__ffi(SEXP self__);
+SEXP savvy_PlRDataType_is_known__ffi(SEXP self__);
 
 // methods and associated functions for PlRExpr
 SEXP savvy_PlRExpr_print__ffi(SEXP self__);

@@ -1,6 +1,6 @@
 use crate::Wrap;
 use polars::prelude::*;
-use savvy::{r_println, savvy};
+use savvy::{r_println, savvy, Sexp};
 
 // As not like in Python, define the data type class in
 // the Rust side, because defining class in R and converting
@@ -48,5 +48,85 @@ impl PlRDataType {
     pub fn new_duration(time_unit: &str) -> savvy::Result<Self> {
         let time_unit = <Wrap<TimeUnit>>::try_from(time_unit)?.0;
         Ok(DataType::Duration(time_unit).into())
+    }
+
+    fn is_temporal(&self) -> savvy::Result<Sexp> {
+        Ok(self.dt.is_temporal().try_into()?)
+    }
+
+    fn is_enum(&self) -> savvy::Result<Sexp> {
+        Ok(self.dt.is_enum().try_into()?)
+    }
+
+    fn is_categorical(&self) -> savvy::Result<Sexp> {
+        Ok(self.dt.is_categorical().try_into()?)
+    }
+
+    fn is_string(&self) -> savvy::Result<Sexp> {
+        Ok(self.dt.is_string().try_into()?)
+    }
+
+    fn is_logical(&self) -> savvy::Result<Sexp> {
+        Ok(self.dt.is_bool().try_into()?)
+    }
+
+    fn is_float(&self) -> savvy::Result<Sexp> {
+        Ok(self.dt.is_float().try_into()?)
+    }
+
+    fn is_numeric(&self) -> savvy::Result<Sexp> {
+        Ok(self.dt.is_numeric().try_into()?)
+    }
+
+    fn is_integer(&self) -> savvy::Result<Sexp> {
+        Ok(self.dt.is_integer().try_into()?)
+    }
+
+    fn is_signed_integer(&self) -> savvy::Result<Sexp> {
+        Ok(self.dt.is_signed_integer().try_into()?)
+    }
+
+    fn is_unsigned_integer(&self) -> savvy::Result<Sexp> {
+        Ok(self.dt.is_unsigned_integer().try_into()?)
+    }
+
+    fn is_null(&self) -> savvy::Result<Sexp> {
+        Ok(self.dt.is_null().try_into()?)
+    }
+
+    fn is_binary(&self) -> savvy::Result<Sexp> {
+        Ok(self.dt.is_binary().try_into()?)
+    }
+
+    fn is_primitive(&self) -> savvy::Result<Sexp> {
+        Ok(self.dt.is_primitive().try_into()?)
+    }
+
+    fn is_bool(&self) -> savvy::Result<Sexp> {
+        Ok(self.dt.is_bool().try_into()?)
+    }
+
+    fn is_array(&self) -> savvy::Result<Sexp> {
+        Ok(self.dt.is_list().try_into()?)
+    }
+
+    fn is_list(&self) -> savvy::Result<Sexp> {
+        Ok(self.dt.is_list().try_into()?)
+    }
+
+    fn is_nested(&self) -> savvy::Result<Sexp> {
+        Ok(self.dt.is_nested().try_into()?)
+    }
+
+    fn is_struct(&self) -> savvy::Result<Sexp> {
+        Ok(self.dt.is_struct().try_into()?)
+    }
+
+    fn is_ord(&self) -> savvy::Result<Sexp> {
+        Ok(self.dt.is_ord().try_into()?)
+    }
+
+    fn is_known(&self) -> savvy::Result<Sexp> {
+        Ok(self.dt.is_known().try_into()?)
     }
 }
