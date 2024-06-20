@@ -67,6 +67,10 @@ impl PlRSeries {
         Ok(())
     }
 
+    fn dtype(&self) -> savvy::Result<PlRDataType> {
+        Ok(self.series.dtype().clone().into())
+    }
+
     fn cast(&self, dtype: PlRDataType, strict: bool) -> savvy::Result<Self> {
         let dtype = dtype.dt;
         let out = if strict {

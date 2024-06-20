@@ -10,6 +10,7 @@ wrap.PlRSeries <- function(x) {
   self$`_s` <- x
 
   makeActiveBinding("name", function() self$`_s`$name(), self)
+  makeActiveBinding("dtype", function() self$`_s`$dtype() |> wrap(), self)
 
   lapply(names(polars_series__methods), function(name) {
     fn <- polars_series__methods[[name]]
