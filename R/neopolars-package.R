@@ -2,6 +2,6 @@
 "_PACKAGE"
 
 ## usethis namespace: start
-#' @importFrom rlang !!! list2
+#' @importFrom rlang !!! abort list2 try_fetch
 ## usethis namespace: end
 NULL
