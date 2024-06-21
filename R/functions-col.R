@@ -13,6 +13,6 @@ pl__col <- function(...) {
         wrap()
     }
   } else {
-    stop("Only character input is supported now")
+    abort("Only character input is supported now")
   }
 }

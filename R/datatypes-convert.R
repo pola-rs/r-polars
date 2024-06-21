@@ -6,7 +6,7 @@ as_polars_dtype <- function(x, ...) {
 #' @export
 as_polars_dtype.default <- function(x, ...) {
   classes <- class(x)
-  stop("Unsupported class: ", paste(classes, collapse = ", "))
+  abort("Unsupported class: ", paste(classes, collapse = ", "))
 }
 
 #' @export
