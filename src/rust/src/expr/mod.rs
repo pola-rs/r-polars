@@ -44,23 +44,3 @@ impl From<EnvironmentSexp> for &PlRExpr {
         <&PlRExpr>::try_from(ptr).unwrap()
     }
 }
-
-impl From<ListSexp> for Wrap<Vec<Expr>> {
-    fn from(list: ListSexp) -> Self {
-        let expr_list = list
-            .iter()
-            .map(|(name, value)| {
-                let rexpr = match value.into_typed() {
-                    TypedSexp::Environment(e) => <&PlRExpr>::from(e).clone(),
-                    _ => unreachable!("Only accept a list of Expr"),
-                };
-                if name.is_empty() {
-                    rexpr.inner
-                } else {
-                    rexpr.inner.alias(name)
-                }
-            })
-            .collect();
-        Wrap(expr_list)
-    }
-}

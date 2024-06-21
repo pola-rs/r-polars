@@ -1,5 +1,6 @@
 use crate::prelude::*;
-use crate::PlRDataType;
+use crate::{PlRDataType, PlRExpr};
+use savvy::{ListSexp, TypedSexp};
 mod chunked_array;
 
 #[repr(transparent)]
@@ -54,6 +55,26 @@ impl TryFrom<&str> for PlRDataType {
             }
         };
         Ok(Self { dt })
+    }
+}
+
+impl From<ListSexp> for Wrap<Vec<Expr>> {
+    fn from(list: ListSexp) -> Self {
+        let expr_list = list
+            .iter()
+            .map(|(name, value)| {
+                let rexpr = match value.into_typed() {
+                    TypedSexp::Environment(e) => <&PlRExpr>::from(e).clone(),
+                    _ => unreachable!("Only accept a list of Expr"),
+                };
+                if name.is_empty() {
+                    rexpr.inner
+                } else {
+                    rexpr.inner.alias(name)
+                }
+            })
+            .collect();
+        Wrap(expr_list)
     }
 }
 
