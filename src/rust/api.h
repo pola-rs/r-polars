@@ -54,7 +54,13 @@ SEXP savvy_PlRExpr_cast__ffi(SEXP self__, SEXP data_type, SEXP strict);
 
 // methods and associated functions for PlRLazyFrame
 SEXP savvy_PlRLazyFrame_select__ffi(SEXP self__, SEXP exprs);
+SEXP savvy_PlRLazyFrame_group_by__ffi(SEXP self__, SEXP by, SEXP maintain_order);
 SEXP savvy_PlRLazyFrame_collect__ffi(SEXP self__);
+
+// methods and associated functions for PlRLazyGroupBy
+SEXP savvy_PlRLazyGroupBy_agg__ffi(SEXP self__, SEXP aggs);
+SEXP savvy_PlRLazyGroupBy_head__ffi(SEXP self__, SEXP n);
+SEXP savvy_PlRLazyGroupBy_tail__ffi(SEXP self__, SEXP n);
 
 // methods and associated functions for PlRSeries
 SEXP savvy_PlRSeries_print__ffi(SEXP self__);

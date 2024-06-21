@@ -1,8 +1,7 @@
 # TODO: support datatype input
 pl__col <- function(...) {
   # TODO: check if dots is empty
-  # TODO: use rlang::list2
-  dots <- list(...)
+  dots <- list2(...)
 
   if (is.character(dots[[1]])) {
     if (length(dots) == 1L && length(dots[[1]]) == 1L && !is.na(dots[[1]])) {

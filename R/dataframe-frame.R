@@ -38,3 +38,7 @@ dataframe__to_list <- function() {
   self$get_columns() |>
     lapply(as.vector)
 }
+
+dataframe__group_by <- function(..., maintain_order = FALSE) {
+  wrap_to_group_by(self, list2(...), maintain_order)
+}

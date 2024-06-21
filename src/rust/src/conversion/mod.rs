@@ -1,6 +1,6 @@
 use crate::prelude::*;
 use crate::{PlRDataType, PlRExpr};
-use savvy::{ListSexp, TypedSexp};
+use savvy::{ListSexp, NumericScalar, TypedSexp};
 mod chunked_array;
 
 #[repr(transparent)]
@@ -110,5 +110,21 @@ impl TryFrom<&str> for Wrap<TimeUnit> {
             }
         };
         Ok(Wrap(time_unit))
+    }
+}
+
+impl TryFrom<NumericScalar> for Wrap<usize> {
+    type Error = String;
+
+    fn try_from(n: NumericScalar) -> Result<Self, String> {
+        let n = n.as_f64();
+        match n {
+            _ if n.is_nan() => Err("n should not be NaN".to_string()),
+            _ if n < 0_f64 => Err("n should not be negative".to_string()),
+            _ if n > usize::MAX as f64 => {
+                Err(format!("n should not be greater than {}", usize::MAX))
+            }
+            _ => Ok(Wrap(n as usize)),
+        }
     }
 }

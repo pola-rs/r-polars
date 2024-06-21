@@ -274,8 +274,28 @@ SEXP savvy_PlRLazyFrame_select__impl(SEXP self__, SEXP exprs) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRLazyFrame_group_by__impl(SEXP self__, SEXP by, SEXP maintain_order) {
+    SEXP res = savvy_PlRLazyFrame_group_by__ffi(self__, by, maintain_order);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRLazyFrame_collect__impl(SEXP self__) {
     SEXP res = savvy_PlRLazyFrame_collect__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRLazyGroupBy_agg__impl(SEXP self__, SEXP aggs) {
+    SEXP res = savvy_PlRLazyGroupBy_agg__ffi(self__, aggs);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRLazyGroupBy_head__impl(SEXP self__, SEXP n) {
+    SEXP res = savvy_PlRLazyGroupBy_head__ffi(self__, n);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRLazyGroupBy_tail__impl(SEXP self__, SEXP n) {
+    SEXP res = savvy_PlRLazyGroupBy_tail__ffi(self__, n);
     return handle_result(res);
 }
 
@@ -429,7 +449,11 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_neg__impl", (DL_FUNC) &savvy_PlRExpr_neg__impl, 1},
     {"savvy_PlRExpr_cast__impl", (DL_FUNC) &savvy_PlRExpr_cast__impl, 3},
     {"savvy_PlRLazyFrame_select__impl", (DL_FUNC) &savvy_PlRLazyFrame_select__impl, 2},
+    {"savvy_PlRLazyFrame_group_by__impl", (DL_FUNC) &savvy_PlRLazyFrame_group_by__impl, 3},
     {"savvy_PlRLazyFrame_collect__impl", (DL_FUNC) &savvy_PlRLazyFrame_collect__impl, 1},
+    {"savvy_PlRLazyGroupBy_agg__impl", (DL_FUNC) &savvy_PlRLazyGroupBy_agg__impl, 2},
+    {"savvy_PlRLazyGroupBy_head__impl", (DL_FUNC) &savvy_PlRLazyGroupBy_head__impl, 2},
+    {"savvy_PlRLazyGroupBy_tail__impl", (DL_FUNC) &savvy_PlRLazyGroupBy_tail__impl, 2},
     {"savvy_PlRSeries_print__impl", (DL_FUNC) &savvy_PlRSeries_print__impl, 1},
     {"savvy_PlRSeries_struct_unnest__impl", (DL_FUNC) &savvy_PlRSeries_struct_unnest__impl, 1},
     {"savvy_PlRSeries_clone__impl", (DL_FUNC) &savvy_PlRSeries_clone__impl, 1},

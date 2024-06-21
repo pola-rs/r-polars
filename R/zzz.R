@@ -4,9 +4,9 @@ pl <- new.env(parent = emptyenv())
 
 # A function to collect objects to be assigned to the environment
 # These environments are used inside the wrap function etc.
-assign_objects_to_env <- function(env, fn_name_pattern, ..., search_env = parent.frame()) {
-  fn_names <- ls(search_env, pattern = fn_name_pattern)
-  new_names <- sub(fn_name_pattern, "", fn_names)
+assign_objects_to_env <- function(env, obj_name_pattern, ..., search_env = parent.frame()) {
+  fn_names <- ls(search_env, pattern = obj_name_pattern)
+  new_names <- sub(obj_name_pattern, "", fn_names)
 
   lapply(seq_along(fn_names), function(i) {
     fn <- get(fn_names[i], envir = search_env)
@@ -24,7 +24,9 @@ POLARS_OBJECTS <- list(
   "^series__" = polars_series__methods,
   "^series_struct_" = polars_series_struct_methods,
   "^lazyframe__" = polars_lazyframe__methods,
-  "^dataframe__" = polars_dataframe__methods
+  "^lazygroupby__" = polars_lazygroupby__methods,
+  "^dataframe__" = polars_dataframe__methods,
+  "^groupby__" = polars_groupby__methods
 )
 
 lapply(names(POLARS_OBJECTS), function(name) {

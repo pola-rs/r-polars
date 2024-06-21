@@ -389,6 +389,12 @@ PlRLazyFrame_select <- function(self) {
   }
 }
 
+PlRLazyFrame_group_by <- function(self) {
+  function(by, maintain_order) {
+    .savvy_wrap_PlRLazyGroupBy(.Call(savvy_PlRLazyFrame_group_by__impl, self, by, maintain_order))
+  }
+}
+
 PlRLazyFrame_collect <- function(self) {
   function() {
     .savvy_wrap_PlRDataFrame(.Call(savvy_PlRLazyFrame_collect__impl, self))
@@ -399,6 +405,7 @@ PlRLazyFrame_collect <- function(self) {
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
     e$select <- PlRLazyFrame_select(ptr)
+  e$group_by <- PlRLazyFrame_group_by(ptr)
   e$collect <- PlRLazyFrame_collect(ptr)
   
   class(e) <- "PlRLazyFrame"
@@ -410,6 +417,45 @@ PlRLazyFrame_collect <- function(self) {
 PlRLazyFrame <- new.env(parent = emptyenv())
 
 ### associated functions for PlRLazyFrame
+
+
+
+### wrapper functions for PlRLazyGroupBy
+
+PlRLazyGroupBy_agg <- function(self) {
+  function(aggs) {
+    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyGroupBy_agg__impl, self, aggs))
+  }
+}
+
+PlRLazyGroupBy_head <- function(self) {
+  function(n) {
+    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyGroupBy_head__impl, self, n))
+  }
+}
+
+PlRLazyGroupBy_tail <- function(self) {
+  function(n) {
+    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyGroupBy_tail__impl, self, n))
+  }
+}
+
+.savvy_wrap_PlRLazyGroupBy <- function(ptr) {
+  e <- new.env(parent = emptyenv())
+  e$.ptr <- ptr
+    e$agg <- PlRLazyGroupBy_agg(ptr)
+  e$head <- PlRLazyGroupBy_head(ptr)
+  e$tail <- PlRLazyGroupBy_tail(ptr)
+  
+  class(e) <- "PlRLazyGroupBy"
+  e
+}
+
+
+
+PlRLazyGroupBy <- new.env(parent = emptyenv())
+
+### associated functions for PlRLazyGroupBy
 
 
 
