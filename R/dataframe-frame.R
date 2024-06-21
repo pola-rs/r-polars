@@ -16,6 +16,11 @@ wrap.PlRDataFrame <- function(x) {
   self
 }
 
+pl__DataFrame <- function(...) {
+  list2(...) |>
+    as_polars_df()
+}
+
 dataframe__to_struct <- function(name = "") {
   self$`_df`$to_struct(name) |>
     wrap()
