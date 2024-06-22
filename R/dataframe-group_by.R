@@ -13,7 +13,7 @@ wrap_to_group_by <- function(x, by, maintain_order) {
     assign(name, fn, envir = self)
   })
 
-  class(self) <- "polars_group_by"
+  class(self) <- c("polars_group_by", "polars_object")
   self
 }
 

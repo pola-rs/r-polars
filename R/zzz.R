@@ -14,7 +14,7 @@ assign_objects_to_env <- function(env, obj_name_pattern, ..., search_env = paren
   })
 }
 
-POLARS_OBJECTS <- list(
+POLARS_STORE_ENVS <- list(
   "^pl__" = pl,
   "^pl_api_" = pl__api,
   "^datatype__" = polars_datatype__methods,
@@ -29,8 +29,10 @@ POLARS_OBJECTS <- list(
   "^groupby__" = polars_groupby__methods
 )
 
-lapply(names(POLARS_OBJECTS), function(name) {
-  assign_objects_to_env(POLARS_OBJECTS[[name]], name, search_env = parent.frame(2L))
+lapply(names(POLARS_STORE_ENVS), function(name) {
+  target_env <- POLARS_STORE_ENVS[[name]]
+  class(target_env) <- c("polars_object")
+  assign_objects_to_env(POLARS_STORE_ENVS[[name]], name, search_env = parent.frame(2L))
 })
 
 .onLoad <- function(libname, pkgname) {

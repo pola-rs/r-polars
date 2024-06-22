@@ -14,7 +14,7 @@ wrap.PlRDataType <- function(x) {
     assign(name, fn, envir = self)
   })
 
-  class(self) <- "polars_data_type"
+  class(self) <- c("polars_data_type", "polars_object")
   self
 }
 

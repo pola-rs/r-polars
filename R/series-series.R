@@ -22,7 +22,7 @@ wrap.PlRSeries <- function(x) {
     makeActiveBinding(namespace, function() polars_namespaces_series[[namespace]](self), self)
   })
 
-  class(self) <- "polars_series"
+  class(self) <- c("polars_series", "polars_object")
   self
 }
 

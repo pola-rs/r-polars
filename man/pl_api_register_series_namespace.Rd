@@ -29,7 +29,7 @@ math_shortcuts <- function(s) {
   self$cube <- function() self$`_s` * self$`_s` * self$`_s`
 
   # Set the class
-  class(self) <- "polars_namespace_series"
+  class(self) <- c("polars_namespace_series", "polars_object")
 
   # Return the environment
   self

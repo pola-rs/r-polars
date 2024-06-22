@@ -12,7 +12,7 @@ wrap.PlRLazyGroupBy <- function(x) {
     assign(name, fn, envir = self)
   })
 
-  class(self) <- "polars_lazy_group_by"
+  class(self) <- c("polars_lazy_group_by", "polars_object")
   self
 }
 

@@ -19,7 +19,7 @@ wrap.PlRExpr <- function(x) {
     makeActiveBinding(namespace, function() polars_namespaces_expr[[namespace]](self), self)
   })
 
-  class(self) <- "polars_expr"
+  class(self) <- c("polars_expr", "polars_object")
   self
 }
 

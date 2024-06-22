@@ -12,7 +12,7 @@ wrap.PlRDataFrame <- function(x) {
     assign(name, fn, envir = self)
   })
 
-  class(self) <- "polars_data_frame"
+  class(self) <- c("polars_data_frame", "polars_object")
   self
 }
 

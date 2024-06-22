@@ -11,7 +11,7 @@ namespace_series_struct <- function(x) {
     assign(name, fn, envir = self)
   })
 
-  class(self) <- "polars_namespace_series"
+  class(self) <- c("polars_namespace_series", "polars_object")
   self
 }
 

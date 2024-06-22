@@ -12,7 +12,7 @@ wrap.PlRLazyFrame <- function(x) {
     assign(name, fn, envir = self)
   })
 
-  class(self) <- "polars_lazy_frame"
+  class(self) <- c("polars_lazy_frame", "polars_object")
   self
 }
 
