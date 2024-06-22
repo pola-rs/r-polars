@@ -3,3 +3,4 @@
 
 ^src/rust/.cargo$
 ^src/rust/target$
+^README\.Rmd$
