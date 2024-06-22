@@ -17,8 +17,7 @@ wrap.PlRLazyGroupBy <- function(x) {
 }
 
 lazygroupby__agg <- function(...) {
-  exprs <- list2(...) |>
-    lapply(\(x) as_polars_expr(x)$`_rexpr`)
+  exprs <- parse_into_list_of_expressions(...)
   self$lgb$agg(exprs) |>
     wrap()
 }

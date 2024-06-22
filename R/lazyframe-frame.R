@@ -17,15 +17,13 @@ wrap.PlRLazyFrame <- function(x) {
 }
 
 lazyframe__select <- function(...) {
-  exprs <- list2(...) |>
-    lapply(\(x) as_polars_expr(x)$`_rexpr`)
+  exprs <- parse_into_list_of_expressions(...)
   self$`_ldf`$select(exprs) |>
     wrap()
 }
 
 lazyframe__group_by <- function(..., maintain_order = FALSE) {
-  exprs <- list2(...) |>
-    lapply(\(x) as_polars_expr(x)$`_rexpr`)
+  exprs <- parse_into_list_of_expressions(...)
   self$`_ldf`$group_by(exprs, maintain_order) |>
     wrap()
 }
