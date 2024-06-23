@@ -399,7 +399,7 @@ impl RPolarsDataFrame {
         };
 
         self.0
-            .unpivot(args)
+            .unpivot2(args)
             .map_err(polars_to_rpolars_err)
             .map(RPolarsDataFrame)
     }
