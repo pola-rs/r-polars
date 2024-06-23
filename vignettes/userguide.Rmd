@@ -271,77 +271,76 @@ dataset$
   collect()
 ```
 
-````{comment}
-```{r}
-compute_age = function() 2021 - pl$col("birthday")$dt$year()
+<!-- ```{r} -->
+<!-- compute_age = function() 2021 - pl$col("birthday")$dt$year() -->
 
-avg_birthday = function(gender) {
-  compute_age()$filter(pl$col("gender") == gender)$mean()$alias(sprintf("avg %s birthday", gender))
-}
+<!-- avg_birthday = function(gender) { -->
+<!--   compute_age()$filter(pl$col("gender") == gender)$mean()$alias(sprintf("avg %s birthday", gender)) -->
+<!-- } -->
 
-q = (
-  dataset$lazy()$
-    group_by("state")$
-    agg(
-    avg_birthday("M"),
-    avg_birthday("F"),
-    (pl$col("gender") == "M")$sum()$alias("# male"),
-    (pl$col("gender") == "F")$sum()$alias("# female")
-  )$
-    limit(5)
-)
-q$collect()
+<!-- q = ( -->
+<!--   dataset$lazy()$ -->
+<!--     group_by("state")$ -->
+<!--     agg( -->
+<!--     avg_birthday("M"), -->
+<!--     avg_birthday("F"), -->
+<!--     (pl$col("gender") == "M")$sum()$alias("# male"), -->
+<!--     (pl$col("gender") == "F")$sum()$alias("# female") -->
+<!--   )$ -->
+<!--     limit(5) -->
+<!-- ) -->
+<!-- q$collect() -->
 
-#
-# get_person <- function() pl$col("first_name") + pl$lit(" ") + pl$col("last_name")
-# q = (
-#     dataset$lazy()
-#     $sort("birthday", descending=True)
-#     $group_by(["state"])
-#     $agg(
-#         [
-#             get_person()$first()$alias("youngest"),
-#             get_person()$last()$alias("oldest"),
-#         ]
-#     )
-#     $limit(5)
-# )
-# q$collect()
-#
-# get_person <- function() pl$col("first_name") + pl$lit(" ") + pl$col("last_name")
-# q = (
-#     dataset$lazy()
-#     $sort("birthday", descending=True)
-#     $group_by(["state"])
-#     $agg(
-#         [
-#             get_person()$first()$alias("youngest"),
-#             get_person()$last()$alias("oldest"),
-#             get_person()$sort()$first()$alias("alphabetical_first"),
-#         ]
-#     )
-#     $limit(5)
-# )
-# q$collect()
-#
-# q = (
-#     dataset$lazy()
-#     $sort("birthday", descending=True)
-#     $group_by(["state"])
-#     $agg(
-#         [
-#             get_person()$first()$alias("youngest"),
-#             get_person()$last()$alias("oldest"),
-#             get_person()$sort()$first()$alias("alphabetical_first"),
-#             pl$col("gender")$sort_by("first_name")$first()$alias("gender"),
-#         ]
-#     )
-#     $sort("state")
-#     $limit(5)
-# )
-# q$collect()
-```
-````
+<!-- # -->
+<!-- # get_person <- function() pl$col("first_name") + pl$lit(" ") + pl$col("last_name") -->
+<!-- # q = ( -->
+<!-- #     dataset$lazy() -->
+<!-- #     $sort("birthday", descending=True) -->
+<!-- #     $group_by(["state"]) -->
+<!-- #     $agg( -->
+<!-- #         [ -->
+<!-- #             get_person()$first()$alias("youngest"), -->
+<!-- #             get_person()$last()$alias("oldest"), -->
+<!-- #         ] -->
+<!-- #     ) -->
+<!-- #     $limit(5) -->
+<!-- # ) -->
+<!-- # q$collect() -->
+<!-- # -->
+<!-- # get_person <- function() pl$col("first_name") + pl$lit(" ") + pl$col("last_name") -->
+<!-- # q = ( -->
+<!-- #     dataset$lazy() -->
+<!-- #     $sort("birthday", descending=True) -->
+<!-- #     $group_by(["state"]) -->
+<!-- #     $agg( -->
+<!-- #         [ -->
+<!-- #             get_person()$first()$alias("youngest"), -->
+<!-- #             get_person()$last()$alias("oldest"), -->
+<!-- #             get_person()$sort()$first()$alias("alphabetical_first"), -->
+<!-- #         ] -->
+<!-- #     ) -->
+<!-- #     $limit(5) -->
+<!-- # ) -->
+<!-- # q$collect() -->
+<!-- # -->
+<!-- # q = ( -->
+<!-- #     dataset$lazy() -->
+<!-- #     $sort("birthday", descending=True) -->
+<!-- #     $group_by(["state"]) -->
+<!-- #     $agg( -->
+<!-- #         [ -->
+<!-- #             get_person()$first()$alias("youngest"), -->
+<!-- #             get_person()$last()$alias("oldest"), -->
+<!-- #             get_person()$sort()$first()$alias("alphabetical_first"), -->
+<!-- #             pl$col("gender")$sort_by("first_name")$first()$alias("gender"), -->
+<!-- #         ] -->
+<!-- #     ) -->
+<!-- #     $sort("state") -->
+<!-- #     $limit(5) -->
+<!-- # ) -->
+<!-- # q$collect() -->
+<!-- ``` -->
+
 
 
 ## Folds
@@ -451,8 +450,6 @@ df$sort("Type 1")$select(
 # List context and row wise computations
 
 ````{comment}
-
-```
 grades = pl$DataFrame(
         "student" = c("bas", "laura", "tim", "jenny"),
         "arithmetic" = c(10, 5, 6, 8),
@@ -520,7 +517,7 @@ out = df$select(
 )
 print(out)
 ```
-````
+
 
 
 # R examples
