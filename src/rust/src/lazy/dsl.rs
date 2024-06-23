@@ -1460,22 +1460,17 @@ impl RPolarsExpr {
 
     // datetime methods
 
-    pub fn dt_truncate(&self, every: Robj, offset: String) -> RResult<Self> {
+    pub fn dt_truncate(&self, every: Robj) -> RResult<Self> {
         Ok(self
             .0
             .clone()
             .dt()
-            .truncate(robj_to!(PLExpr, every)?, offset)
+            .truncate(robj_to!(PLExpr, every)?)
             .into())
     }
 
-    pub fn dt_round(&self, every: Robj, offset: &str) -> RResult<Self> {
-        Ok(self
-            .0
-            .clone()
-            .dt()
-            .round(robj_to!(PLExpr, every)?, offset)
-            .into())
+    pub fn dt_round(&self, every: Robj) -> RResult<Self> {
+        Ok(self.0.clone().dt().round(robj_to!(PLExpr, every)?).into())
     }
 
     pub fn dt_time(&self) -> RResult<Self> {
