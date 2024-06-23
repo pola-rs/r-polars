@@ -1951,8 +1951,8 @@ impl RPolarsExpr {
         // set expected type of output from R function
         let ot = robj_to!(Option, PLPolarsDataType, output_type)?;
         let output_map = pl::GetOutput::map_field(move |fld| match ot {
-            Some(ref dt) => pl::Field::new(fld.name(), dt.clone()),
-            None => fld.clone(),
+            Some(ref dt) => Ok(pl::Field::new(fld.name(), dt.clone())),
+            None => Ok(fld.clone()),
         });
 
         robj_to!(bool, agg_list)
@@ -1985,8 +1985,8 @@ impl RPolarsExpr {
         let ot = robj_to!(Option, PLPolarsDataType, output_type)?;
 
         let output_map = pl::GetOutput::map_field(move |fld| match ot {
-            Some(ref dt) => pl::Field::new(fld.name(), dt.clone()),
-            None => fld.clone(),
+            Some(ref dt) => Ok(pl::Field::new(fld.name(), dt.clone())),
+            None => Ok(fld.clone()),
         });
 
         robj_to!(bool, agg_list)
@@ -2018,8 +2018,8 @@ impl RPolarsExpr {
         let ot = null_to_opt(output_type).map(|rdt| rdt.0.clone());
 
         let output_map = pl::GetOutput::map_field(move |fld| match ot {
-            Some(ref dt) => pl::Field::new(fld.name(), dt.clone()),
-            None => fld.clone(),
+            Some(ref dt) => Ok(pl::Field::new(fld.name(), dt.clone())),
+            None => Ok(fld.clone()),
         });
 
         self.0.clone().apply(rbgfunc, output_map).into()
