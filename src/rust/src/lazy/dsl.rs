@@ -2118,12 +2118,12 @@ impl RPolarsExpr {
         self.clone().0.str().len_chars().into()
     }
 
-    pub fn str_concat(&self, delimiter: Robj, ignore_nulls: Robj) -> RResult<Self> {
+    pub fn str_join(&self, delimiter: Robj, ignore_nulls: Robj) -> RResult<Self> {
         Ok(self
             .0
             .clone()
             .str()
-            .concat(robj_to!(str, delimiter)?, robj_to!(bool, ignore_nulls)?)
+            .join(robj_to!(str, delimiter)?, robj_to!(bool, ignore_nulls)?)
             .into())
     }
 
