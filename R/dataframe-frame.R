@@ -47,3 +47,7 @@ dataframe__to_list <- function() {
 dataframe__group_by <- function(..., maintain_order = FALSE) {
   wrap_to_group_by(self, list2(...), maintain_order)
 }
+
+dataframe__select <- function(...) {
+  self$lazy()$select(...)$collect()
+}
