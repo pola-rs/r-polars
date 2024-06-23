@@ -366,24 +366,34 @@ impl RPolarsSeries {
         )
     }
 
-    pub fn add(&self, other: &RPolarsSeries) -> Self {
-        (&self.0 + &other.0).into()
+    pub fn add(&self, other: &RPolarsSeries) -> RResult<Self> {
+        Ok((&self.0 + &other.0)
+            .map(Into::into)
+            .map_err(polars_to_rpolars_err)?)
     }
 
-    pub fn sub(&self, other: &RPolarsSeries) -> Self {
-        (&self.0 - &other.0).into()
+    pub fn sub(&self, other: &RPolarsSeries) -> RResult<Self> {
+        Ok((&self.0 - &other.0)
+            .map(Into::into)
+            .map_err(polars_to_rpolars_err)?)
     }
 
-    pub fn mul(&self, other: &RPolarsSeries) -> Self {
-        (&self.0 * &other.0).into()
+    pub fn mul(&self, other: &RPolarsSeries) -> RResult<Self> {
+        Ok((&self.0 * &other.0)
+            .map(Into::into)
+            .map_err(polars_to_rpolars_err)?)
     }
 
-    pub fn div(&self, other: &RPolarsSeries) -> Self {
-        (&self.0 / &other.0).into()
+    pub fn div(&self, other: &RPolarsSeries) -> RResult<Self> {
+        Ok((&self.0 / &other.0)
+            .map(Into::into)
+            .map_err(polars_to_rpolars_err)?)
     }
 
-    pub fn rem(&self, other: &RPolarsSeries) -> Self {
-        (&self.0 % &other.0).into()
+    pub fn rem(&self, other: &RPolarsSeries) -> RResult<Self> {
+        Ok((&self.0 % &other.0)
+            .map(Into::into)
+            .map_err(polars_to_rpolars_err)?)
     }
 
     pub fn map_elements(
