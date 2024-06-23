@@ -1763,12 +1763,12 @@ DataFrame_glimpse = function(..., return_as_string = FALSE) {
   }
 
   # closure to extract col info from a column in <self>
-  max_num_value = as.integer(min(10, self$height))
+  max_num_value = min(10, self$height)
   max_col_name_trunc = 50
   parse_column_ = \(col_name, dtype) {
     dtype_str = dtype_str_repr(dtype) |> unwrap_or(paste0("??", str_string(dtype)))
     if (inherits(dtype, "RPolarsDataType")) dtype_str = paste0(" <", dtype_str, ">")
-    val = self$select(pl$col(col_name)$slice(0L, max_num_value))$to_list()[[1]]
+    val = self$select(pl$col(col_name)$slice(0, max_num_value))$to_list()[[1]]
     val_str = paste(val, collapse = ", ")
     if (nchar(col_name) > max_col_name_trunc) {
       col_name = paste0(substr(col_name, 1, max_col_name_trunc - 3), "...")
