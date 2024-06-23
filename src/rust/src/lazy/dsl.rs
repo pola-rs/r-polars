@@ -261,50 +261,12 @@ impl RPolarsExpr {
             .into()
     }
 
-    pub fn top_k(
-        &self,
-        k: Robj,
-        nulls_last: Robj,
-        maintain_order: Robj,
-        multithreaded: Robj,
-    ) -> RResult<Self> {
-        let nulls_last = robj_to!(bool, nulls_last)?;
-        let multithreaded = robj_to!(bool, multithreaded)?;
-        let maintain_order = robj_to!(bool, maintain_order)?;
-        Ok(self
-            .0
-            .clone()
-            .top_k(
-                robj_to!(PLExpr, k)?,
-                SortOptions::default()
-                    .with_nulls_last(nulls_last)
-                    .with_maintain_order(maintain_order)
-                    .with_multithreaded(multithreaded),
-            )
-            .into())
+    pub fn top_k(&self, k: Robj) -> RResult<Self> {
+        Ok(self.0.clone().top_k(robj_to!(PLExpr, k)?).into())
     }
 
-    pub fn bottom_k(
-        &self,
-        k: Robj,
-        nulls_last: Robj,
-        maintain_order: Robj,
-        multithreaded: Robj,
-    ) -> RResult<Self> {
-        let nulls_last = robj_to!(bool, nulls_last)?;
-        let multithreaded = robj_to!(bool, multithreaded)?;
-        let maintain_order = robj_to!(bool, maintain_order)?;
-        Ok(self
-            .0
-            .clone()
-            .bottom_k(
-                robj_to!(PLExpr, k)?,
-                SortOptions::default()
-                    .with_nulls_last(nulls_last)
-                    .with_maintain_order(maintain_order)
-                    .with_multithreaded(multithreaded),
-            )
-            .into())
+    pub fn bottom_k(&self, k: Robj) -> RResult<Self> {
+        Ok(self.0.clone().bottom_k(robj_to!(PLExpr, k)?).into())
     }
 
     pub fn arg_max(&self) -> Self {
