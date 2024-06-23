@@ -25,7 +25,7 @@ use polars_core::utils::arrow;
 use crate::utils::{collect_hinted_result, r_result_list};
 
 use crate::conversion::strings_to_smartstrings;
-use polars::frame::explode::MeltArgs;
+use polars::frame::explode::UnpivotArgs;
 use polars::prelude::pivot::{pivot, pivot_stable};
 
 pub struct OwnedDataFrameIterator {
@@ -382,23 +382,25 @@ impl RPolarsDataFrame {
         self.0.clone().null_count().into()
     }
 
-    fn melt(
+    fn unpivot(
         &self,
-        id_vars: Robj,
-        value_vars: Robj,
+        on: Robj,
+        index: Robj,
         value_name: Robj,
         variable_name: Robj,
+        streamable: Robj,
     ) -> RResult<Self> {
-        let args = MeltArgs {
-            id_vars: strings_to_smartstrings(robj_to!(Vec, String, id_vars)?),
-            value_vars: strings_to_smartstrings(robj_to!(Vec, String, value_vars)?),
+        let args = UnpivotArgs {
+            on: strings_to_smartstrings(robj_to!(Vec, String, on)?),
+            index: strings_to_smartstrings(robj_to!(Vec, String, index)?),
             value_name: robj_to!(Option, String, value_name)?.map(|s| s.into()),
             variable_name: robj_to!(Option, String, variable_name)?.map(|s| s.into()),
-            streamable: false,
+            streamable: robj_to!(bool, streamable)?,
         };
 
-        self.0
-            .melt2(args)
+        let ldf = self.0.clone();
+
+        ldf.unpivot(args)
             .map_err(polars_to_rpolars_err)
             .map(RPolarsDataFrame)
     }
