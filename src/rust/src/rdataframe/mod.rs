@@ -407,8 +407,8 @@ impl RPolarsDataFrame {
     #[allow(clippy::too_many_arguments)]
     pub fn pivot_expr(
         &self,
+        on: Robj,
         index: Robj,
-        columns: Robj,
         values: Robj,
         maintain_order: Robj,
         sort_columns: Robj,
@@ -423,8 +423,8 @@ impl RPolarsDataFrame {
 
         fun(
             &self.0,
-            robj_to!(Vec, String, index)?,
-            robj_to!(Vec, String, columns)?,
+            robj_to!(Vec, String, on)?,
+            robj_to!(Option, Vec, String, index)?,
             robj_to!(Option, Vec, String, values)?,
             robj_to!(bool, sort_columns)?,
             robj_to!(Option, PLExpr, aggregate_expr)?,
