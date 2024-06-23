@@ -86,40 +86,22 @@ fn concat_str(dotdotdot: Robj, separator: Robj, ignore_nulls: Robj) -> RResult<R
 }
 
 #[extendr]
-fn date_range(
-    start: Robj,
-    end: Robj,
-    interval: &str,
-    closed: Robj,
-    time_unit: Robj,
-    time_zone: Robj,
-) -> RResult<RPolarsExpr> {
+fn date_range(start: Robj, end: Robj, interval: &str, closed: Robj) -> RResult<RPolarsExpr> {
     Ok(RPolarsExpr(polars::lazy::prelude::date_range(
         robj_to!(PLExprCol, start)?,
         robj_to!(PLExprCol, end)?,
         pl::Duration::parse(interval),
         robj_to!(ClosedWindow, closed)?,
-        robj_to!(Option, timeunit, time_unit)?,
-        robj_to!(Option, String, time_zone)?,
     )))
 }
 
 #[extendr]
-fn date_ranges(
-    start: Robj,
-    end: Robj,
-    interval: &str,
-    closed: Robj,
-    time_unit: Robj,
-    time_zone: Robj,
-) -> RResult<RPolarsExpr> {
+fn date_ranges(start: Robj, end: Robj, interval: &str, closed: Robj) -> RResult<RPolarsExpr> {
     Ok(RPolarsExpr(polars::lazy::prelude::date_ranges(
         robj_to!(PLExprCol, start)?,
         robj_to!(PLExprCol, end)?,
         pl::Duration::parse(interval),
         robj_to!(ClosedWindow, closed)?,
-        robj_to!(Option, timeunit, time_unit)?,
-        robj_to!(Option, String, time_zone)?,
     )))
 }
 
