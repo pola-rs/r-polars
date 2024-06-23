@@ -207,7 +207,7 @@ pl_date_range = function(
     ...,
     closed = "both") {
   interval = parse_as_polars_duration_string(interval)
-  date_range(start, end, interval, closed, time_unit, time_zone) |>
+  date_range(start, end, interval, closed) |>
     unwrap("in pl$date_range():")
 }
 
@@ -251,7 +251,7 @@ pl_date_ranges = function(
     ...,
     closed = "both") {
   interval = parse_as_polars_duration_string(interval)
-  date_ranges(start, end, interval, closed, time_unit, time_zone) |>
+  date_ranges(start, end, interval, closed) |>
     unwrap("in pl$date_ranges():")
 }
 

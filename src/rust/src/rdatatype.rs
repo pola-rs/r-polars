@@ -730,8 +730,8 @@ pub fn robj_to_statistics_options(robj: Robj) -> RResult<pl::StatisticsOptions> 
         .map(|xi| (xi.0, xi.1.as_bool().unwrap()))
         .collect::<std::collections::HashMap<&str, bool>>();
     let mut out = SO::default();
-    out.min_value = *hm.get(&"min_value").unwrap();
-    out.max_value = *hm.get(&"max_value").unwrap();
+    out.min_value = *hm.get(&"min").unwrap();
+    out.max_value = *hm.get(&"max").unwrap();
     out.distinct_count = *hm.get(&"distinct_count").unwrap();
     out.null_count = *hm.get(&"null_count").unwrap();
     Ok(out)
