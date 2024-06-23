@@ -398,9 +398,8 @@ impl RPolarsDataFrame {
             streamable: robj_to!(bool, streamable)?,
         };
 
-        let ldf = self.0.clone();
-
-        ldf.unpivot(args)
+        self.0
+            .unpivot(args)
             .map_err(polars_to_rpolars_err)
             .map(RPolarsDataFrame)
     }
