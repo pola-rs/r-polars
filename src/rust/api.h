@@ -6,6 +6,14 @@ SEXP savvy_lit_from_f64__ffi(SEXP value);
 SEXP savvy_lit_from_str__ffi(SEXP value);
 SEXP savvy_lit_null__ffi(void);
 SEXP savvy_lit_from_series__ffi(SEXP value);
+SEXP savvy_when__ffi(SEXP condition);
+
+// methods and associated functions for PlRChainedThen
+SEXP savvy_PlRChainedThen_when__ffi(SEXP self__, SEXP condition);
+SEXP savvy_PlRChainedThen_otherwise__ffi(SEXP self__, SEXP statement);
+
+// methods and associated functions for PlRChainedWhen
+SEXP savvy_PlRChainedWhen_then__ffi(SEXP self__, SEXP statement);
 
 // methods and associated functions for PlRDataFrame
 SEXP savvy_PlRDataFrame_init__ffi(SEXP columns);
@@ -83,3 +91,10 @@ SEXP savvy_PlRSeries_new_str__ffi(SEXP name, SEXP values);
 SEXP savvy_PlRSeries_new_categorical__ffi(SEXP name, SEXP values);
 SEXP savvy_PlRSeries_new_series_list__ffi(SEXP name, SEXP values);
 SEXP savvy_PlRSeries_to_r_vector__ffi(SEXP self__);
+
+// methods and associated functions for PlRThen
+SEXP savvy_PlRThen_when__ffi(SEXP self__, SEXP condition);
+SEXP savvy_PlRThen_otherwise__ffi(SEXP self__, SEXP statement);
+
+// methods and associated functions for PlRWhen
+SEXP savvy_PlRWhen_then__ffi(SEXP self__, SEXP statement);

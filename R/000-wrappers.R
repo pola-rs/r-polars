@@ -64,6 +64,72 @@ lit_from_series <- function(value) {
   .savvy_wrap_PlRExpr(.Call(savvy_lit_from_series__impl, value))
 }
 
+
+when <- function(condition) {
+  condition <- .savvy_extract_ptr(condition, "PlRExpr")
+  .savvy_wrap_PlRWhen(.Call(savvy_when__impl, condition))
+}
+
+### wrapper functions for PlRChainedThen
+
+PlRChainedThen_when <- function(self) {
+  function(condition) {
+    condition <- .savvy_extract_ptr(condition, "PlRExpr")
+  .savvy_wrap_PlRChainedWhen(.Call(savvy_PlRChainedThen_when__impl, self, condition))
+  }
+}
+
+PlRChainedThen_otherwise <- function(self) {
+  function(statement) {
+    statement <- .savvy_extract_ptr(statement, "PlRExpr")
+  .savvy_wrap_PlRExpr(.Call(savvy_PlRChainedThen_otherwise__impl, self, statement))
+  }
+}
+
+.savvy_wrap_PlRChainedThen <- function(ptr) {
+  e <- new.env(parent = emptyenv())
+  e$.ptr <- ptr
+    e$when <- PlRChainedThen_when(ptr)
+  e$otherwise <- PlRChainedThen_otherwise(ptr)
+  
+  class(e) <- "PlRChainedThen"
+  e
+}
+
+
+
+PlRChainedThen <- new.env(parent = emptyenv())
+
+### associated functions for PlRChainedThen
+
+
+
+### wrapper functions for PlRChainedWhen
+
+PlRChainedWhen_then <- function(self) {
+  function(statement) {
+    statement <- .savvy_extract_ptr(statement, "PlRExpr")
+  .savvy_wrap_PlRChainedThen(.Call(savvy_PlRChainedWhen_then__impl, self, statement))
+  }
+}
+
+.savvy_wrap_PlRChainedWhen <- function(ptr) {
+  e <- new.env(parent = emptyenv())
+  e$.ptr <- ptr
+    e$then <- PlRChainedWhen_then(ptr)
+  
+  class(e) <- "PlRChainedWhen"
+  e
+}
+
+
+
+PlRChainedWhen <- new.env(parent = emptyenv())
+
+### associated functions for PlRChainedWhen
+
+
+
 ### wrapper functions for PlRDataFrame
 
 PlRDataFrame_print <- function(self) {
@@ -600,5 +666,65 @@ PlRSeries$new_categorical <- function(name, values) {
 PlRSeries$new_series_list <- function(name, values) {
   .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_series_list__impl, name, values))
 }
+
+
+### wrapper functions for PlRThen
+
+PlRThen_when <- function(self) {
+  function(condition) {
+    condition <- .savvy_extract_ptr(condition, "PlRExpr")
+  .savvy_wrap_PlRChainedWhen(.Call(savvy_PlRThen_when__impl, self, condition))
+  }
+}
+
+PlRThen_otherwise <- function(self) {
+  function(statement) {
+    statement <- .savvy_extract_ptr(statement, "PlRExpr")
+  .savvy_wrap_PlRExpr(.Call(savvy_PlRThen_otherwise__impl, self, statement))
+  }
+}
+
+.savvy_wrap_PlRThen <- function(ptr) {
+  e <- new.env(parent = emptyenv())
+  e$.ptr <- ptr
+    e$when <- PlRThen_when(ptr)
+  e$otherwise <- PlRThen_otherwise(ptr)
+  
+  class(e) <- "PlRThen"
+  e
+}
+
+
+
+PlRThen <- new.env(parent = emptyenv())
+
+### associated functions for PlRThen
+
+
+
+### wrapper functions for PlRWhen
+
+PlRWhen_then <- function(self) {
+  function(statement) {
+    statement <- .savvy_extract_ptr(statement, "PlRExpr")
+  .savvy_wrap_PlRThen(.Call(savvy_PlRWhen_then__impl, self, statement))
+  }
+}
+
+.savvy_wrap_PlRWhen <- function(ptr) {
+  e <- new.env(parent = emptyenv())
+  e$.ptr <- ptr
+    e$then <- PlRWhen_then(ptr)
+  
+  class(e) <- "PlRWhen"
+  e
+}
+
+
+
+PlRWhen <- new.env(parent = emptyenv())
+
+### associated functions for PlRWhen
+
 
 

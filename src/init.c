@@ -74,6 +74,26 @@ SEXP savvy_lit_from_series__impl(SEXP value) {
     return handle_result(res);
 }
 
+SEXP savvy_when__impl(SEXP condition) {
+    SEXP res = savvy_when__ffi(condition);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRChainedThen_when__impl(SEXP self__, SEXP condition) {
+    SEXP res = savvy_PlRChainedThen_when__ffi(self__, condition);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRChainedThen_otherwise__impl(SEXP self__, SEXP statement) {
+    SEXP res = savvy_PlRChainedThen_otherwise__ffi(self__, statement);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRChainedWhen_then__impl(SEXP self__, SEXP statement) {
+    SEXP res = savvy_PlRChainedWhen_then__ffi(self__, statement);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRDataFrame_init__impl(SEXP columns) {
     SEXP res = savvy_PlRDataFrame_init__ffi(columns);
     return handle_result(res);
@@ -399,6 +419,21 @@ SEXP savvy_PlRSeries_to_r_vector__impl(SEXP self__) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRThen_when__impl(SEXP self__, SEXP condition) {
+    SEXP res = savvy_PlRThen_when__ffi(self__, condition);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRThen_otherwise__impl(SEXP self__, SEXP statement) {
+    SEXP res = savvy_PlRThen_otherwise__ffi(self__, statement);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRWhen_then__impl(SEXP self__, SEXP statement) {
+    SEXP res = savvy_PlRWhen_then__ffi(self__, statement);
+    return handle_result(res);
+}
+
 
 static const R_CallMethodDef CallEntries[] = {
     {"savvy_col__impl", (DL_FUNC) &savvy_col__impl, 1},
@@ -409,6 +444,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_lit_from_str__impl", (DL_FUNC) &savvy_lit_from_str__impl, 1},
     {"savvy_lit_null__impl", (DL_FUNC) &savvy_lit_null__impl, 0},
     {"savvy_lit_from_series__impl", (DL_FUNC) &savvy_lit_from_series__impl, 1},
+    {"savvy_when__impl", (DL_FUNC) &savvy_when__impl, 1},
+    {"savvy_PlRChainedThen_when__impl", (DL_FUNC) &savvy_PlRChainedThen_when__impl, 2},
+    {"savvy_PlRChainedThen_otherwise__impl", (DL_FUNC) &savvy_PlRChainedThen_otherwise__impl, 2},
+    {"savvy_PlRChainedWhen_then__impl", (DL_FUNC) &savvy_PlRChainedWhen_then__impl, 2},
     {"savvy_PlRDataFrame_init__impl", (DL_FUNC) &savvy_PlRDataFrame_init__impl, 1},
     {"savvy_PlRDataFrame_print__impl", (DL_FUNC) &savvy_PlRDataFrame_print__impl, 1},
     {"savvy_PlRDataFrame_get_columns__impl", (DL_FUNC) &savvy_PlRDataFrame_get_columns__impl, 1},
@@ -474,6 +513,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRSeries_new_categorical__impl", (DL_FUNC) &savvy_PlRSeries_new_categorical__impl, 2},
     {"savvy_PlRSeries_new_series_list__impl", (DL_FUNC) &savvy_PlRSeries_new_series_list__impl, 2},
     {"savvy_PlRSeries_to_r_vector__impl", (DL_FUNC) &savvy_PlRSeries_to_r_vector__impl, 1},
+    {"savvy_PlRThen_when__impl", (DL_FUNC) &savvy_PlRThen_when__impl, 2},
+    {"savvy_PlRThen_otherwise__impl", (DL_FUNC) &savvy_PlRThen_otherwise__impl, 2},
+    {"savvy_PlRWhen_then__impl", (DL_FUNC) &savvy_PlRWhen_then__impl, 2},
     {NULL, NULL, 0}
 };
 
