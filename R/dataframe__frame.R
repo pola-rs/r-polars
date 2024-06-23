@@ -1490,7 +1490,7 @@ DataFrame_join_asof = function(
 
 
 
-#' @inherit LazyFrame_melt
+#' @inherit LazyFrame_unpivot
 #' @keywords DataFrame
 #'
 #' @return A new `DataFrame`
@@ -1502,16 +1502,17 @@ DataFrame_join_asof = function(
 #'   c = c(2, 4, 6),
 #'   d = c(7, 8, 9)
 #' )
-#' df$melt(id_vars = "a", value_vars = c("b", "c", "d"))
-DataFrame_melt = function(
-    id_vars = NULL,
-    value_vars = NULL,
+#' df$unpivot(index = "a", on = c("b", "c", "d"))
+DataFrame_unpivot = function(
+    on = NULL,
+    ...,
+    index = NULL,
     variable_name = NULL,
     value_name = NULL) {
-  .pr$DataFrame$melt(
-    self, id_vars %||% character(), value_vars %||% character(),
+  .pr$DataFrame$unpivot(
+    self, on %||% character(), index %||% character(),
     value_name, variable_name
-  ) |> unwrap("in $melt( ): ")
+  ) |> unwrap("in $unpivot( ): ")
 }
 
 

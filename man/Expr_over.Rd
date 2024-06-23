@@ -4,11 +4,14 @@
 \alias{Expr_over}
 \title{Compute expressions over the given groups}
 \usage{
-Expr_over(..., mapping_strategy = "group_to_rows")
+Expr_over(..., order_by = NULL, mapping_strategy = "group_to_rows")
 }
 \arguments{
 \item{...}{Column(s) to group by. Accepts expression input.
 Characters are parsed as column names.}
+
+\item{order_by}{Order the window functions/aggregations with the partitioned
+groups by the result of the expression passed to \code{order_by}.}
 
 \item{mapping_strategy}{One of the following:
 \itemize{

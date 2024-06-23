@@ -1406,19 +1406,14 @@ Expr_sort = function(..., descending = FALSE, nulls_last = FALSE) {
 #' Return the `k` largest elements. This has time complexity: \eqn{ O(n + k
 #' \\log{}n - \frac{k}{2}) }
 #'
-#' @param k Number of top values to get
-#' @param ...  Ignored.
-#' @param nulls_last Place null values last.
-#' @param maintain_order Whether the order should be maintained if elements are
-#' equal.
-#' @param multithreaded Sort using multiple threads.
+#' @param k Number of top values to get.
 #'
 #' @return Expr
 #' @examples
 #' pl$DataFrame(a = c(6, 1, 0, NA, Inf, NaN))$select(pl$col("a")$top_k(5))
-Expr_top_k = function(k, ..., nulls_last = FALSE, maintain_order = FALSE, multithreaded = TRUE) {
+Expr_top_k = function(k) {
   if (!is.numeric(k) || k < 0) stop("k must be numeric and positive, prefereably integerish")
-  .pr$Expr$top_k(self, k, nulls_last = nulls_last, maintain_order = maintain_order, multithreaded = multithreaded) |>
+  .pr$Expr$top_k(self, k) |>
     unwrap("in $top_k():")
 }
 
@@ -1430,9 +1425,9 @@ Expr_top_k = function(k, ..., nulls_last = FALSE, maintain_order = FALSE, multit
 #' @inherit Expr_top_k params return
 #' @examples
 #' pl$DataFrame(a = c(6, 1, 0, NA, Inf, NaN))$select(pl$col("a")$bottom_k(5))
-Expr_bottom_k = function(k, ..., nulls_last = FALSE, maintain_order = FALSE, multithreaded = TRUE) {
+Expr_bottom_k = function(k) {
   if (!is.numeric(k) || k < 0) stop("k must be numeric and positive, prefereably integerish")
-  .pr$Expr$bottom_k(self, k, nulls_last = nulls_last, maintain_order = maintain_order, multithreaded = multithreaded) |>
+  .pr$Expr$bottom_k(self, k) |>
     unwrap("in $bottom_k():")
 }
 
@@ -1844,6 +1839,8 @@ Expr_last = use_extendr_wrapper
 #'
 #' @param ... Column(s) to group by. Accepts expression input.
 #' Characters are parsed as column names.
+#' @param order_by Order the window functions/aggregations with the partitioned
+#' groups by the result of the expression passed to `order_by`.
 #' @param mapping_strategy One of the following:
 #' * `"group_to_rows"` (default): if the aggregation results in multiple values,
 #'   assign them back to their position in the DataFrame. This can only be done
@@ -1889,7 +1886,7 @@ Expr_last = use_extendr_wrapper
 #' df$with_columns(
 #'   top_2 = pl$col("c")$top_k(2)$over("a", mapping_strategy = "join")
 #' )
-Expr_over = function(..., mapping_strategy = "group_to_rows") {
+Expr_over = function(..., order_by = NULL, mapping_strategy = "group_to_rows") {
   list_of_exprs = list2(...) |>
     lapply(\(x) {
       if (is.character(x)) {
@@ -1907,7 +1904,7 @@ Expr_over = function(..., mapping_strategy = "group_to_rows") {
       }
     })
 
-  .pr$Expr$over(self, list_of_exprs, mapping_strategy) |>
+  .pr$Expr$over(self, list_of_exprs, order_by, order_by_descending = FALSE, order_by_nulls_last = FALSE, mapping_strategy) |>
     unwrap("in $over():")
 }
 
@@ -3307,16 +3304,25 @@ Expr_to_r = function(df = NULL, i = 0, ..., int64_conversion = polars_options()$
 #' @param sort Ensure the output is sorted from most values to least.
 #' @param parallel Better to turn this off in the aggregation context, as it can
 #' lead to contention.
-#' @param name Give the resulting count field a specific name, defaults to
-#' `"count"`.
-#' @format NULL
-#' @examples
-#' df = pl$DataFrame(iris)$select(pl$col("Species")$value_counts())
-#' df
+#' @param name Give the resulting count column a specific name. The default is
+#' `"count"` if `normalize = FALSE` and `"proportion"` if  `normalize = TRUE`.
+#' @param normalize If `TRUE`, it gives relative frequencies of the unique
+#' values instead of their count.
 #'
-#' df$unnest()$to_data_frame()
-Expr_value_counts = function(..., sort = FALSE, parallel = FALSE, name = "count") {
-  .pr$Expr$value_counts(self, sort, parallel, name)
+#' @examples
+#' df = pl$DataFrame(iris)
+#' df$select(pl$col("Species")$value_counts())$unnest()
+#' df$select(pl$col("Species")$value_counts(normalize = TRUE))$unnest()
+Expr_value_counts = function(..., sort = FALSE, parallel = FALSE, name, normalize = FALSE) {
+  if (missing(name)) {
+    if (isTRUE(normalize)) {
+      name = "proportion"
+    } else {
+      name = "count"
+    }
+  }
+
+  .pr$Expr$value_counts(self, sort, parallel, name, normalize)
 }
 
 #' Count unique values

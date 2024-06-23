@@ -2,15 +2,13 @@
 % Please edit documentation in R/expr__datetime.R
 \name{ExprDT_round}
 \alias{ExprDT_round}
-\alias{(Expr)$dt$round}
 \title{Round datetime}
 \usage{
-ExprDT_round(every, offset = NULL)
+ExprDT_round(every)
 }
 \arguments{
-\item{every}{string encoding duration see details.}
-
-\item{offset}{optional string encoding duration see details.}
+\item{every}{Either an Expr or a string indicating a column name or a
+duration (see Details).}
 }
 \value{
 Date/Datetime expr
@@ -23,8 +21,8 @@ Each date/datetime in the second half of the interval
 is mapped to the end of its bucket.
 }
 \details{
-The \code{every} and \code{offset} arguments are created with the
-following string language:
+The \code{every} and \code{offset} argument are created with the
+the following string language:
 \itemize{
 \item 1ns # 1 nanosecond
 \item 1us # 1 microsecond
@@ -41,9 +39,6 @@ These strings can be combined:
 \item 3d12h4m25s # 3 days, 12 hours, 4 minutes, and 25 seconds
 }
 }
-
-This functionality is currently experimental and may
-change without it being considered a breaking change.
 }
 \examples{
 t1 = as.POSIXct("3040-01-01", tz = "GMT")
@@ -57,4 +52,3 @@ df = pl$DataFrame(datetime = s)$with_columns(
 )
 df
 }
-\keyword{ExprDT}

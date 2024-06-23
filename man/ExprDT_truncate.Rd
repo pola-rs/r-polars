@@ -2,15 +2,13 @@
 % Please edit documentation in R/expr__datetime.R
 \name{ExprDT_truncate}
 \alias{ExprDT_truncate}
-\alias{(Expr)$dt$truncate}
 \title{Truncate datetime}
 \usage{
-ExprDT_truncate(every, offset = NULL)
+ExprDT_truncate(every)
 }
 \arguments{
-\item{every}{string encoding duration see details.}
-
-\item{offset}{optional string encoding duration see details.}
+\item{every}{Either an Expr or a string indicating a column name or a
+duration (see Details).}
 }
 \value{
 Date/Datetime expr
@@ -51,4 +49,3 @@ df = pl$DataFrame(datetime = s)$with_columns(
 )
 df
 }
-\keyword{ExprDT}

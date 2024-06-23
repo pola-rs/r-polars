@@ -1489,14 +1489,14 @@ LazyFrame_join_asof = function(
 
 #' Unpivot a Frame from wide to long format
 #'
-#' @param id_vars Columns to use as identifier variables.
-#' @param value_vars Values to use as identifier variables. If `value_vars` is
+#' @param on Values to use as identifier variables. If `value_vars` is
 #' empty all columns that are not in `id_vars` will be used.
+#' @param ... Not used.
+#' @param index Columns to use as identifier variables.
 #' @param variable_name Name to give to the new column containing the names of
 #' the melted columns. Defaults to "variable".
 #' @param value_name Name to give to the new column containing the values of
 #' the melted columns. Defaults to "value"
-#' @param ... Not used.
 #' @param streamable Allow this node to run in the streaming engine. If this
 #' runs in streaming, the output of the melt operation will not have a stable
 #' ordering.
@@ -1519,18 +1519,18 @@ LazyFrame_join_asof = function(
 #'   b = c(1, 3, 5),
 #'   c = c(2, 4, 6)
 #' )
-#' lf$melt(id_vars = "a", value_vars = c("b", "c"))$collect()
-LazyFrame_melt = function(
-    id_vars = NULL,
-    value_vars = NULL,
+#' lf$unpivot(index = "a", on = c("b", "c"))$collect()
+LazyFrame_unpivot = function(
+    on = NULL,
+    ...,
+    index = NULL,
     variable_name = NULL,
     value_name = NULL,
-    ...,
     streamable = TRUE) {
-  .pr$LazyFrame$melt(
-    self, id_vars %||% character(), value_vars %||% character(),
+  .pr$LazyFrame$unpivot(
+    self, on %||% character(), index %||% character(),
     value_name, variable_name, streamable
-  ) |> unwrap("in $melt( ): ")
+  ) |> unwrap("in $unpivot( ): ")
 }
 
 #' Rename column names of a LazyFrame

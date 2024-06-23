@@ -2381,6 +2381,18 @@ test_that("$value_counts", {
       count = rep(50, 3)
     )
   )
+
+  # arg "normalize"
+  expect_equal(
+    df$select(pl$col("Species")$value_counts(normalize = TRUE))$
+      unnest()$
+      sort("Species")$
+      to_data_frame(),
+    data.frame(
+      Species = factor(c("setosa", "versicolor", "virginica")),
+      proportion = rep(0.33333333, 3)
+    )
+  )
 })
 
 

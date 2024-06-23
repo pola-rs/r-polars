@@ -2,8 +2,8 @@
 #' @description  Divide the date/datetime range into buckets.
 #' Each date/datetime is mapped to the start of its bucket.
 #'
-#' @param every string encoding duration see details.
-#' @param offset optional string encoding duration see details.
+#' @param every Either an Expr or a string indicating a column name or a
+#' duration (see Details).
 #'
 #' @details The ``every`` and ``offset`` argument are created with the
 #' the following string language:
@@ -20,8 +20,6 @@
 #' These strings can be combined:
 #'   - 3d12h4m25s # 3 days, 12 hours, 4 minutes, and 25 seconds
 #' @return   Date/Datetime expr
-#' @keywords ExprDT
-#' @aliases (Expr)$dt$truncate
 #' @examples
 #' t1 = as.POSIXct("3040-01-01", tz = "GMT")
 #' t2 = t1 + as.difftime(25, units = "secs")
@@ -33,9 +31,9 @@
 #'   pl$col("datetime")$dt$truncate("4s", offset("3s"))$alias("truncated_4s_offset_2s")
 #' )
 #' df
-ExprDT_truncate = function(every, offset = NULL) {
-  offset = parse_as_polars_duration_string(offset, default = "0ns")
-  .pr$Expr$dt_truncate(self, every, offset) |>
+ExprDT_truncate = function(every) {
+  every = parse_as_polars_duration_string(every, default = "0ns")
+  .pr$Expr$dt_truncate(self, every) |>
     unwrap("in $dt$truncate()")
 }
 
@@ -46,31 +44,8 @@ ExprDT_truncate = function(every, offset = NULL) {
 #' Each date/datetime in the second half of the interval
 #' is mapped to the end of its bucket.
 #'
+#' @inherit ExprDT_truncate params details return
 #'
-#' @param every string encoding duration see details.
-#' @param offset optional string encoding duration see details.
-#'
-#' @details The ``every`` and ``offset`` arguments are created with the
-#' following string language:
-#' - 1ns # 1 nanosecond
-#' - 1us # 1 microsecond
-#' - 1ms # 1 millisecond
-#' - 1s  # 1 second
-#' - 1m  # 1 minute
-#' - 1h  # 1 hour
-#' - 1d  # 1 day
-#' - 1w  # 1 calendar week
-#' - 1mo # 1 calendar month
-#' - 1y  # 1 calendar year
-#' These strings can be combined:
-#'   - 3d12h4m25s # 3 days, 12 hours, 4 minutes, and 25 seconds
-#'
-#' This functionality is currently experimental and may
-#' change without it being considered a breaking change.
-#'
-#' @return   Date/Datetime expr
-#' @keywords ExprDT
-#' @aliases (Expr)$dt$round
 #' @examples
 #' t1 = as.POSIXct("3040-01-01", tz = "GMT")
 #' t2 = t1 + as.difftime(25, units = "secs")
@@ -82,10 +57,9 @@ ExprDT_truncate = function(every, offset = NULL) {
 #'   pl$col("datetime")$dt$truncate("4s", offset("3s"))$alias("truncated_4s_offset_2s")
 #' )
 #' df
-ExprDT_round = function(every, offset = NULL) {
+ExprDT_round = function(every) {
   every = parse_as_polars_duration_string(every, default = "0ns")
-  offset = parse_as_polars_duration_string(offset, default = "0ns")
-  .pr$Expr$dt_round(self, every, offset) |>
+  .pr$Expr$dt_round(self, every) |>
     unwrap("in $dt$round()")
 }
 

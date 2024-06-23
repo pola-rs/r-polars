@@ -236,14 +236,23 @@ ExprStr_len_chars = function() {
 #' # concatenate a Series of strings to a single string
 #' df = pl$DataFrame(foo = c(1, NA, 2))
 #'
-#' df$select(pl$col("foo")$str$concat("-"))
+#' df$select(pl$col("foo")$str$join("-"))
 #'
-#' df$select(pl$col("foo")$str$concat("-", ignore_nulls = FALSE))
+#' df$select(pl$col("foo")$str$join("-", ignore_nulls = FALSE))
+ExprStr_join = function(
+    delimiter = "",
+    ...,
+    ignore_nulls = TRUE) {
+  .pr$Expr$str_join(self, delimiter, ignore_nulls) |>
+    unwrap("in $join():")
+}
+
 ExprStr_concat = function(
     delimiter = "",
     ...,
     ignore_nulls = TRUE) {
-  .pr$Expr$str_concat(self, delimiter, ignore_nulls) |>
+  warning("$str$concat() is deprecated as of 0.18.0. Use $str$join() instead.")
+  .pr$Expr$str_join(self, delimiter, ignore_nulls) |>
     unwrap("in $concat():")
 }
 

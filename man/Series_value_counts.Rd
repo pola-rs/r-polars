@@ -14,8 +14,8 @@ Series_value_counts(..., sort = TRUE, parallel = FALSE, name = "count")
 \item{parallel}{Better to turn this off in the aggregation context, as it can
 lead to contention.}
 
-\item{name}{Give the resulting count field a specific name, defaults to
-\code{"count"}.}
+\item{name}{Give the resulting count column a specific name. The default is
+\code{"count"} if \code{normalize = FALSE} and \code{"proportion"} if  \code{normalize = TRUE}.}
 }
 \value{
 DataFrame
