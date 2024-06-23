@@ -157,3 +157,21 @@ expr__cast <- function(dtype, ..., strict = TRUE) {
   self$`_rexpr`$cast(dtype$`_dt`, strict) |>
     wrap()
 }
+
+expr__and <- function(other) {
+  other <- as_polars_expr(other)
+  self$`_rexpr`$and(other$`_rexpr`) |>
+    wrap()
+}
+
+expr__or <- function(other) {
+  other <- as_polars_expr(other)
+  self$`_rexpr`$or(other$`_rexpr`) |>
+    wrap()
+}
+
+expr__xor <- function(other) {
+  other <- as_polars_expr(other)
+  self$`_rexpr`$xor(other$`_rexpr`) |>
+    wrap()
+}

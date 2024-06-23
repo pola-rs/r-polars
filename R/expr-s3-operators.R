@@ -65,3 +65,18 @@
 `!=.polars_expr` <- function(e1, e2) {
   as_polars_expr(e1)$neq(e2)
 }
+
+#' @export
+`!.polars_expr` <- function(e1) {
+  as_polars_expr(e1)$not()
+}
+
+#' @export
+`&.polars_expr` <- function(e1, e2) {
+  as_polars_expr(e1)$and(e2)
+}
+
+#' @export
+`|.polars_expr` <- function(e1, e2) {
+  as_polars_expr(e1)$or(e2)
+}

@@ -119,4 +119,16 @@ impl PlRExpr {
 
         Ok(expr.into())
     }
+
+    fn and (&self, other: PlRExpr) -> Result<Self> {
+        Ok(self.inner.clone().and(other.inner).into())
+    }
+
+    fn or (&self, other: PlRExpr) -> Result<Self> {
+        Ok(self.inner.clone().or(other.inner).into())
+    }
+
+    fn xor (&self, other: PlRExpr) -> Result<Self> {
+        Ok(self.inner.clone().xor(other.inner).into())
+    }
 }

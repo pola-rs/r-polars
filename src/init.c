@@ -369,6 +369,21 @@ SEXP savvy_PlRExpr_cast__impl(SEXP self__, SEXP data_type, SEXP strict) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_and__impl(SEXP self__, SEXP other) {
+    SEXP res = savvy_PlRExpr_and__ffi(self__, other);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_or__impl(SEXP self__, SEXP other) {
+    SEXP res = savvy_PlRExpr_or__ffi(self__, other);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_xor__impl(SEXP self__, SEXP other) {
+    SEXP res = savvy_PlRExpr_xor__ffi(self__, other);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRLazyFrame_select__impl(SEXP self__, SEXP exprs) {
     SEXP res = savvy_PlRLazyFrame_select__ffi(self__, exprs);
     return handle_result(res);
@@ -583,6 +598,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_is_nan__impl", (DL_FUNC) &savvy_PlRExpr_is_nan__impl, 1},
     {"savvy_PlRExpr_is_not_nan__impl", (DL_FUNC) &savvy_PlRExpr_is_not_nan__impl, 1},
     {"savvy_PlRExpr_cast__impl", (DL_FUNC) &savvy_PlRExpr_cast__impl, 3},
+    {"savvy_PlRExpr_and__impl", (DL_FUNC) &savvy_PlRExpr_and__impl, 2},
+    {"savvy_PlRExpr_or__impl", (DL_FUNC) &savvy_PlRExpr_or__impl, 2},
+    {"savvy_PlRExpr_xor__impl", (DL_FUNC) &savvy_PlRExpr_xor__impl, 2},
     {"savvy_PlRLazyFrame_select__impl", (DL_FUNC) &savvy_PlRLazyFrame_select__impl, 2},
     {"savvy_PlRLazyFrame_group_by__impl", (DL_FUNC) &savvy_PlRLazyFrame_group_by__impl, 3},
     {"savvy_PlRLazyFrame_collect__impl", (DL_FUNC) &savvy_PlRLazyFrame_collect__impl, 1},

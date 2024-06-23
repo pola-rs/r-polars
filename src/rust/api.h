@@ -75,6 +75,9 @@ SEXP savvy_PlRExpr_is_finite__ffi(SEXP self__);
 SEXP savvy_PlRExpr_is_nan__ffi(SEXP self__);
 SEXP savvy_PlRExpr_is_not_nan__ffi(SEXP self__);
 SEXP savvy_PlRExpr_cast__ffi(SEXP self__, SEXP data_type, SEXP strict);
+SEXP savvy_PlRExpr_and__ffi(SEXP self__, SEXP other);
+SEXP savvy_PlRExpr_or__ffi(SEXP self__, SEXP other);
+SEXP savvy_PlRExpr_xor__ffi(SEXP self__, SEXP other);
 
 // methods and associated functions for PlRLazyFrame
 SEXP savvy_PlRLazyFrame_select__ffi(SEXP self__, SEXP exprs);

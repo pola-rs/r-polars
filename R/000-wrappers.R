@@ -526,6 +526,27 @@ PlRExpr_cast <- function(self) {
   }
 }
 
+PlRExpr_and <- function(self) {
+  function(other) {
+    other <- .savvy_extract_ptr(other, "PlRExpr")
+  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_and__impl, self, other))
+  }
+}
+
+PlRExpr_or <- function(self) {
+  function(other) {
+    other <- .savvy_extract_ptr(other, "PlRExpr")
+  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_or__impl, self, other))
+  }
+}
+
+PlRExpr_xor <- function(self) {
+  function(other) {
+    other <- .savvy_extract_ptr(other, "PlRExpr")
+  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_xor__impl, self, other))
+  }
+}
+
 .savvy_wrap_PlRExpr <- function(ptr) {
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
@@ -554,6 +575,9 @@ PlRExpr_cast <- function(self) {
   e$is_nan <- PlRExpr_is_nan(ptr)
   e$is_not_nan <- PlRExpr_is_not_nan(ptr)
   e$cast <- PlRExpr_cast(ptr)
+  e$and <- PlRExpr_and(ptr)
+  e$or <- PlRExpr_or(ptr)
+  e$xor <- PlRExpr_xor(ptr)
   
   class(e) <- "PlRExpr"
   e
