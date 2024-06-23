@@ -284,6 +284,86 @@ SEXP savvy_PlRExpr_neg__impl(SEXP self__) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_eq__impl(SEXP self__, SEXP other) {
+    SEXP res = savvy_PlRExpr_eq__ffi(self__, other);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_eq_missing__impl(SEXP self__, SEXP other) {
+    SEXP res = savvy_PlRExpr_eq_missing__ffi(self__, other);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_neq__impl(SEXP self__, SEXP other) {
+    SEXP res = savvy_PlRExpr_neq__ffi(self__, other);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_neq_missing__impl(SEXP self__, SEXP other) {
+    SEXP res = savvy_PlRExpr_neq_missing__ffi(self__, other);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_gt__impl(SEXP self__, SEXP other) {
+    SEXP res = savvy_PlRExpr_gt__ffi(self__, other);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_gt_eq__impl(SEXP self__, SEXP other) {
+    SEXP res = savvy_PlRExpr_gt_eq__ffi(self__, other);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_lt_eq__impl(SEXP self__, SEXP other) {
+    SEXP res = savvy_PlRExpr_lt_eq__ffi(self__, other);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_lt__impl(SEXP self__, SEXP other) {
+    SEXP res = savvy_PlRExpr_lt__ffi(self__, other);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_alias__impl(SEXP self__, SEXP name) {
+    SEXP res = savvy_PlRExpr_alias__ffi(self__, name);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_not__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_not__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_is_null__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_is_null__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_is_not_null__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_is_not_null__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_is_infinite__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_is_infinite__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_is_finite__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_is_finite__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_is_nan__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_is_nan__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_is_not_nan__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_is_not_nan__ffi(self__);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_cast__impl(SEXP self__, SEXP data_type, SEXP strict) {
     SEXP res = savvy_PlRExpr_cast__ffi(self__, data_type, strict);
     return handle_result(res);
@@ -486,6 +566,22 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_rem__impl", (DL_FUNC) &savvy_PlRExpr_rem__impl, 2},
     {"savvy_PlRExpr_floor_div__impl", (DL_FUNC) &savvy_PlRExpr_floor_div__impl, 2},
     {"savvy_PlRExpr_neg__impl", (DL_FUNC) &savvy_PlRExpr_neg__impl, 1},
+    {"savvy_PlRExpr_eq__impl", (DL_FUNC) &savvy_PlRExpr_eq__impl, 2},
+    {"savvy_PlRExpr_eq_missing__impl", (DL_FUNC) &savvy_PlRExpr_eq_missing__impl, 2},
+    {"savvy_PlRExpr_neq__impl", (DL_FUNC) &savvy_PlRExpr_neq__impl, 2},
+    {"savvy_PlRExpr_neq_missing__impl", (DL_FUNC) &savvy_PlRExpr_neq_missing__impl, 2},
+    {"savvy_PlRExpr_gt__impl", (DL_FUNC) &savvy_PlRExpr_gt__impl, 2},
+    {"savvy_PlRExpr_gt_eq__impl", (DL_FUNC) &savvy_PlRExpr_gt_eq__impl, 2},
+    {"savvy_PlRExpr_lt_eq__impl", (DL_FUNC) &savvy_PlRExpr_lt_eq__impl, 2},
+    {"savvy_PlRExpr_lt__impl", (DL_FUNC) &savvy_PlRExpr_lt__impl, 2},
+    {"savvy_PlRExpr_alias__impl", (DL_FUNC) &savvy_PlRExpr_alias__impl, 2},
+    {"savvy_PlRExpr_not__impl", (DL_FUNC) &savvy_PlRExpr_not__impl, 1},
+    {"savvy_PlRExpr_is_null__impl", (DL_FUNC) &savvy_PlRExpr_is_null__impl, 1},
+    {"savvy_PlRExpr_is_not_null__impl", (DL_FUNC) &savvy_PlRExpr_is_not_null__impl, 1},
+    {"savvy_PlRExpr_is_infinite__impl", (DL_FUNC) &savvy_PlRExpr_is_infinite__impl, 1},
+    {"savvy_PlRExpr_is_finite__impl", (DL_FUNC) &savvy_PlRExpr_is_finite__impl, 1},
+    {"savvy_PlRExpr_is_nan__impl", (DL_FUNC) &savvy_PlRExpr_is_nan__impl, 1},
+    {"savvy_PlRExpr_is_not_nan__impl", (DL_FUNC) &savvy_PlRExpr_is_not_nan__impl, 1},
     {"savvy_PlRExpr_cast__impl", (DL_FUNC) &savvy_PlRExpr_cast__impl, 3},
     {"savvy_PlRLazyFrame_select__impl", (DL_FUNC) &savvy_PlRLazyFrame_select__impl, 2},
     {"savvy_PlRLazyFrame_group_by__impl", (DL_FUNC) &savvy_PlRLazyFrame_group_by__impl, 3},

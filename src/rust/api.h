@@ -58,6 +58,22 @@ SEXP savvy_PlRExpr_div__ffi(SEXP self__, SEXP rhs);
 SEXP savvy_PlRExpr_rem__ffi(SEXP self__, SEXP rhs);
 SEXP savvy_PlRExpr_floor_div__ffi(SEXP self__, SEXP rhs);
 SEXP savvy_PlRExpr_neg__ffi(SEXP self__);
+SEXP savvy_PlRExpr_eq__ffi(SEXP self__, SEXP other);
+SEXP savvy_PlRExpr_eq_missing__ffi(SEXP self__, SEXP other);
+SEXP savvy_PlRExpr_neq__ffi(SEXP self__, SEXP other);
+SEXP savvy_PlRExpr_neq_missing__ffi(SEXP self__, SEXP other);
+SEXP savvy_PlRExpr_gt__ffi(SEXP self__, SEXP other);
+SEXP savvy_PlRExpr_gt_eq__ffi(SEXP self__, SEXP other);
+SEXP savvy_PlRExpr_lt_eq__ffi(SEXP self__, SEXP other);
+SEXP savvy_PlRExpr_lt__ffi(SEXP self__, SEXP other);
+SEXP savvy_PlRExpr_alias__ffi(SEXP self__, SEXP name);
+SEXP savvy_PlRExpr_not__ffi(SEXP self__);
+SEXP savvy_PlRExpr_is_null__ffi(SEXP self__);
+SEXP savvy_PlRExpr_is_not_null__ffi(SEXP self__);
+SEXP savvy_PlRExpr_is_infinite__ffi(SEXP self__);
+SEXP savvy_PlRExpr_is_finite__ffi(SEXP self__);
+SEXP savvy_PlRExpr_is_nan__ffi(SEXP self__);
+SEXP savvy_PlRExpr_is_not_nan__ffi(SEXP self__);
 SEXP savvy_PlRExpr_cast__ffi(SEXP self__, SEXP data_type, SEXP strict);
 
 // methods and associated functions for PlRLazyFrame
