@@ -1087,6 +1087,10 @@ macro_rules! robj_to_inner {
     (WindowMapping, $a:ident) => {
         $crate::rdatatype::robj_to_window_mapping($a)
     };
+
+    (StatisticsOptions, $a:ident) => {
+        $crate::rdatatype::robj_to_statistics_options($a)
+    };
 }
 
 //convert any Robj to appropriate rust type with informative error Strings

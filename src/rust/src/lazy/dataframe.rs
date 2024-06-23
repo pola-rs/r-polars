@@ -108,7 +108,7 @@ impl RPolarsLazyFrame {
     ) -> RResult<()> {
         let pqwo = polars::prelude::ParquetWriteOptions {
             compression: new_parquet_compression(compression_method, compression_level)?,
-            statistics: robj_to!(bool, statistics)?,
+            statistics: robj_to!(StatisticsOptions, statistics)?,
             row_group_size: robj_to!(Option, usize, row_group_size)?,
             data_pagesize_limit: robj_to!(Option, usize, data_pagesize_limit)?,
             maintain_order: robj_to!(bool, maintain_order)?,

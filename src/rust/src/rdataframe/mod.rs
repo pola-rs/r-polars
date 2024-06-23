@@ -575,7 +575,7 @@ impl RPolarsDataFrame {
                 compression_method,
                 compression_level,
             )?)
-            .with_statistics(robj_to!(bool, statistics)?)
+            .with_statistics(robj_to!(StatisticsOptions, statistics)?)
             .with_row_group_size(robj_to!(Option, usize, row_group_size)?)
             .with_data_page_size(robj_to!(Option, usize, data_pagesize_limit)?)
             .set_parallel(true)
