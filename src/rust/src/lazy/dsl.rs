@@ -1081,8 +1081,11 @@ impl RPolarsExpr {
         }
     }
 
-    pub fn value_counts(&self, sort: bool, parallel: bool, name: String) -> Self {
-        self.0.clone().value_counts(sort, parallel, name).into()
+    pub fn value_counts(&self, sort: bool, parallel: bool, name: String, normalize: bool) -> Self {
+        self.0
+            .clone()
+            .value_counts(sort, parallel, name, normalize)
+            .into()
     }
 
     pub fn unique_counts(&self) -> Self {
