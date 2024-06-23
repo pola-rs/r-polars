@@ -388,14 +388,13 @@ impl RPolarsDataFrame {
         index: Robj,
         value_name: Robj,
         variable_name: Robj,
-        streamable: Robj,
     ) -> RResult<Self> {
         let args = UnpivotArgs {
             on: strings_to_smartstrings(robj_to!(Vec, String, on)?),
             index: strings_to_smartstrings(robj_to!(Vec, String, index)?),
             value_name: robj_to!(Option, String, value_name)?.map(|s| s.into()),
             variable_name: robj_to!(Option, String, variable_name)?.map(|s| s.into()),
-            streamable: robj_to!(bool, streamable)?,
+            streamable: false,
         };
 
         self.0

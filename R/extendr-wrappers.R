@@ -208,7 +208,7 @@ RPolarsDataFrame$estimated_size <- function() .Call(wrap__RPolarsDataFrame__esti
 
 RPolarsDataFrame$null_count <- function() .Call(wrap__RPolarsDataFrame__null_count, self)
 
-RPolarsDataFrame$unpivot <- function(on, index, value_name, variable_name, streamable) .Call(wrap__RPolarsDataFrame__unpivot, self, on, index, value_name, variable_name, streamable)
+RPolarsDataFrame$unpivot <- function(on, index, value_name, variable_name) .Call(wrap__RPolarsDataFrame__unpivot, self, on, index, value_name, variable_name)
 
 RPolarsDataFrame$pivot_expr <- function(on, index, values, maintain_order, sort_columns, aggregate_expr, separator) .Call(wrap__RPolarsDataFrame__pivot_expr, self, on, index, values, maintain_order, sort_columns, aggregate_expr, separator)
 

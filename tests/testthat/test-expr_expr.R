@@ -896,14 +896,14 @@ test_that("Expr_sort", {
 })
 
 
-test_that("Expr_k_top", {
+test_that("$top_k() works", {
   l = list(a = c(6, 1, 0, NA, Inf, -Inf, NaN))
 
   l_actual = pl$DataFrame(l)$select(
     pl$col("a")$top_k(3)$alias("k_top"),
     pl$col("a")$bottom_k(3)$alias("k_bot")
   )
-  known = structure(list(k_top = c(NaN, Inf, 6), k_bot = c(NA, -Inf, 0)),
+  known = structure(list(k_top = c(NaN, Inf, 6), k_bot = c(-Inf, 0, 1)),
     row.names = c(NA, -3L), class = "data.frame"
   )
   expect_equal(l_actual$to_data_frame(), known)
@@ -2913,8 +2913,8 @@ test_that("rle works", {
   expect_equal(
     df$select(pl$col("s")$rle())$unnest("s")$to_data_frame(),
     data.frame(
-      lengths = c(2, 1, 1, 1, 1, 2),
-      values = c(1, 2, 1, NA, 1, 3)
+      len = c(2, 1, 1, 1, 1, 2),
+      value = c(1, 2, 1, NA, 1, 3)
     )
   )
 })

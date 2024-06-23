@@ -100,8 +100,7 @@ test_that("dt$truncate", {
 
   # use a dt namespace function
   df = pl$DataFrame(datetime = s)$with_columns(
-    pl$col("datetime")$dt$truncate("4s")$alias("truncated_4s"),
-    pl$col("datetime")$dt$truncate("4s", offset("3s"))$alias("truncated_4s_offset_2s")
+    pl$col("datetime")$dt$truncate("4s")$alias("truncated_4s")
   )
 
   l_actual = df$to_list()
@@ -128,11 +127,8 @@ test_that("dt$round", {
   s = pl$datetime_range(t1, t2, interval = "2s", time_unit = "ms")
 
   # use a dt namespace function
-  ## TODO contribute POLARS, offset makes little sense, it should be implemented
-  ## before round not after.
   df = pl$DataFrame(datetime = s)$with_columns(
-    pl$col("datetime")$dt$round("8s")$alias("truncated_4s"),
-    pl$col("datetime")$dt$round("8s", offset("4s1ms"))$alias("truncated_4s_offset_2s")
+    pl$col("datetime")$dt$round("8s")$alias("truncated_4s")
   )
 
   l_actual = df$to_list()
@@ -140,8 +136,7 @@ test_that("dt$round", {
     lapply(l_actual, \(x) diff(x) |> as.numeric()),
     list(
       datetime = rep(2, 12),
-      truncated_4s = rep(c(0, 8, 0, 0), 3),
-      truncated_4s_offset_2s = rep(c(0, 8, 0, 0), 3)
+      truncated_4s = rep(c(0, 8, 0, 0), 3)
     )
   )
 
@@ -152,10 +147,6 @@ test_that("dt$round", {
   expect_grepl_error(
     pl$col("datetime")$dt$round(c("2s", "1h")),
     "`every` must be a single non-NA character or difftime"
-  )
-  expect_grepl_error(
-    pl$col("datetime")$dt$round("1s", 42),
-    "`offset` must be a single non-NA character or difftime"
   )
 })
 
