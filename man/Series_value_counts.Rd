@@ -4,7 +4,13 @@
 \alias{Series_value_counts}
 \title{Count the occurrences of unique values}
 \usage{
-Series_value_counts(..., sort = TRUE, parallel = FALSE, name = "count")
+Series_value_counts(
+  ...,
+  sort = TRUE,
+  parallel = FALSE,
+  name = "count",
+  normalize = FALSE
+)
 }
 \arguments{
 \item{...}{Ignored.}
@@ -16,6 +22,9 @@ lead to contention.}
 
 \item{name}{Give the resulting count column a specific name. The default is
 \code{"count"} if \code{normalize = FALSE} and \code{"proportion"} if  \code{normalize = TRUE}.}
+
+\item{normalize}{If \code{TRUE}, it gives relative frequencies of the unique
+values instead of their count.}
 }
 \value{
 DataFrame

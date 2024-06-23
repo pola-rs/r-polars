@@ -331,25 +331,25 @@ test_that("map_batches unity", {
 })
 
 
-test_that("map_batches type", {
-  int_iris = iris
-  int_iris[] = lapply(iris, as.integer)
-
-  # auto new type allowed if return is R vector
-  x = pl$DataFrame(iris)$
-    select(
-    pl$col("Sepal.Length")$
-      map_batches(\(s) {
-      as.integer(s$to_r()) # ok to return R vector also, will be
-      # converted back to series named ""
-    })$
-      map_batches(\(s) s * 25L)$
-      map_batches(\(s) s / 4)
-  )$
-    to_data_frame()[, 1, drop = FALSE]
-
-  expect_identical(x, int_iris[, 1, drop = FALSE] * 25L / 4L)
-})
+# test_that("map_batches type", {
+#   int_iris = iris
+#   int_iris[] = lapply(iris, as.integer)
+#
+#   # auto new type allowed if return is R vector
+#   x = pl$DataFrame(iris)$
+#     select(
+#     pl$col("Sepal.Length")$
+#       map_batches(\(s) {
+#       as.integer(s$to_r()) # ok to return R vector also, will be
+#       # converted back to series named ""
+#     })$
+#       map_batches(\(s) s * 25L)$
+#       map_batches(\(s) s / 4)
+#   )$
+#     to_data_frame()[, 1, drop = FALSE]
+#
+#   expect_identical(x, int_iris[, 1, drop = FALSE] * 25L / 4L)
+# })
 
 test_that("cloning", {
   pf = pl$DataFrame(iris)

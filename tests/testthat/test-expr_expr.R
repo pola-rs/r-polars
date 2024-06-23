@@ -2826,8 +2826,8 @@ test_that("replace works", {
   # the replacements
   mapping = list(`2` = 100, `3` = 200)
   expect_equal(
-    df$select(replaced = pl$col("a")$replace(mapping, default = -1))$to_list(),
-    list(replaced = c(-1, 100, 100, 200))
+    df$select(replaced = pl$col("a")$replace(mapping))$to_list(),
+    list(replaced = c(1, 100, 100, 200))
   )
 
   df = pl$DataFrame(a = c("x", "y", "z"))
@@ -2837,10 +2837,59 @@ test_that("replace works", {
     list(replaced = c("1.0", "2.0", "3.0"))
   )
 
+  # "old", "new", and "default" can take Expr
+  df = pl$DataFrame(a = c(1, 2, 2, 3), b = c(1.5, 2.5, 5, 1))
+  expect_equal(
+    df$select(
+      replaced = pl$col("a")$replace(
+        old = pl$col("a")$max(),
+        new = pl$col("b")$sum()
+      )
+    )$to_list(),
+    list(replaced = c(1, 2, 2, 10))
+  )
+})
+
+test_that("replace_strict works", {
+  df = pl$DataFrame(a = c(1, 2, 2, 3))
+
+  # replace_strict requires a default value
+  expect_error(
+    df$select(replaced = pl$col("a")$replace_strict(2, 100, return_dtype = pl$Float32))$to_list(),
+    "incomplete mapping specified for `replace_strict`"
+  )
+  expect_equal(
+    df$select(replaced = pl$col("a")$replace_strict(c(2, 3), 999, default = 1))$to_list(),
+    list(replaced = c(1, 999, 999, 999))
+  )
+  expect_equal(
+    df$select(replaced = pl$col("a")$replace_strict(c(2, 3), c(100, 200), default = 1))$to_list(),
+    list(replaced = c(1, 100, 100, 200))
+  )
+
+  # "old" can be a named list where names are values to replace, and values are
+  # the replacements
+  mapping = list(`2` = 100, `3` = 200)
+  expect_equal(
+    df$select(replaced = pl$col("a")$replace_strict(mapping, default = -1))$to_list(),
+    list(replaced = c(-1, 100, 100, 200))
+  )
+
+  df = pl$DataFrame(a = c("x", "y", "z"))
+  mapping = list(x = 1, y = 2, z = 3)
+  expect_equal(
+    df$select(replaced = pl$col("a")$replace_strict(mapping, return_dtype = pl$String))$to_list(),
+    list(replaced = c("1.0", "2.0", "3.0"))
+  )
+  expect_error(
+    df$select(pl$col("a")$replace_strict(mapping, return_dtype = pl$foo)),
+    "must be a valid dtype"
+  )
+
   # one can specify the data type to return instead of automatically inferring it
   expect_equal(
     df$
-      select(replaced = pl$col("a")$replace(mapping, return_dtype = pl$Int8))$
+      select(replaced = pl$col("a")$replace_strict(mapping, return_dtype = pl$Int32))$
       to_list(),
     list(replaced = 1:3)
   )
@@ -2849,7 +2898,7 @@ test_that("replace works", {
   df = pl$DataFrame(a = c(1, 2, 2, 3), b = c(1.5, 2.5, 5, 1))
   expect_equal(
     df$select(
-      replaced = pl$col("a")$replace(
+      replaced = pl$col("a")$replace_strict(
         old = pl$col("a")$max(),
         new = pl$col("b")$sum(),
         default = pl$col("b"),
@@ -2903,8 +2952,8 @@ test_that("cut works", {
       cut = pl$col("foo")$cut(c(-1, 1), include_breaks = TRUE)
     )$unnest("cut")$to_list(),
     list(
-      brk = c(-1, -1, 1, 1, Inf),
-      foo_bin = factor(c("(-inf, -1]", "(-inf, -1]", "(-1, 1]", "(-1, 1]", "(1, inf]"))
+      breakpoint = c(-1, -1, 1, 1, Inf),
+      category = factor(c("(-inf, -1]", "(-inf, -1]", "(-1, 1]", "(-1, 1]", "(1, inf]"))
     )
   )
 
@@ -2913,8 +2962,8 @@ test_that("cut works", {
       cut = pl$col("foo")$cut(c(-1, 1), include_breaks = TRUE, left_closed = TRUE)
     )$unnest("cut")$to_list(),
     list(
-      brk = c(-1, 1, 1, Inf, Inf),
-      foo_bin = factor(c("[-inf, -1)", "[-1, 1)", "[-1, 1)", "[1, inf)", "[1, inf)"))
+      breakpoint = c(-1, 1, 1, Inf, Inf),
+      category = factor(c("[-inf, -1)", "[-1, 1)", "[-1, 1)", "[1, inf)", "[1, inf)"))
     )
   )
 })
@@ -2933,7 +2982,7 @@ test_that("qcut works", {
     df$select(
       qcut = pl$col("foo")$qcut(c(0.25, 0.75), labels = c("a", "b", "c"), include_breaks = TRUE)
     )$unnest("qcut")$to_list(),
-    list(brk = c(-1, -1, 1, 1, Inf), foo_bin = factor(c("a", "a", "b", "b", "c")))
+    list(breakpoint = c(-1, -1, 1, 1, Inf), category = factor(c("a", "a", "b", "b", "c")))
   )
 
   expect_equal(

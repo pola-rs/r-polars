@@ -3564,9 +3564,11 @@ Expr_rolling = function(
     unwrap("in $rolling():")
 }
 
-#' Replace values by different values
+#' Replace the given values by different values of the same data type.
 #'
-#' This allows one to recode values in a column.
+#' This allows one to recode values in a column, leaving all other values
+#' unchanged. See [`$replace_strict()`][Expr_replace_strict] to give a default
+#' value to all other values and to specify the output datatype.
 #'
 #' @param old Can be several things:
 #' * a vector indicating the values to recode;
@@ -3576,11 +3578,6 @@ Expr_rolling = function(
 #' * an Expr
 #' @param new Either a vector of length 1, a vector of same length as `old` or
 #' an Expr. If missing, `old` must be a named list.
-#' @param default The default replacement if the value is not in `old`. Can be
-#' an Expr. If `NULL` (default), then the value doesn't change.
-#' @param return_dtype The data type of the resulting expression. If set to
-#' `NULL` (default), the data type is determined automatically based on the
-#' other inputs.
 #'
 #' @return Expr
 #' @examples
@@ -3593,32 +3590,87 @@ Expr_rolling = function(
 #' # "old" can be a named list where names are values to replace, and values are
 #' # the replacements
 #' mapping = list(`2` = 100, `3` = 200)
-#' df$with_columns(replaced = pl$col("a")$replace(mapping, default = -1))
+#' df$with_columns(replaced = pl$col("a")$replace(mapping))
 #'
 #' df = pl$DataFrame(a = c("x", "y", "z"))
 #' mapping = list(x = 1, y = 2, z = 3)
 #' df$with_columns(replaced = pl$col("a")$replace(mapping))
 #'
-#' # one can specify the data type to return instead of automatically inferring it
-#' df$with_columns(replaced = pl$col("a")$replace(mapping, return_dtype = pl$Int8))
+#' # "old" and "new" can take Expr
+#' df = pl$DataFrame(a = c(1, 2, 2, 3), b = c(1.5, 2.5, 5, 1))
+#' df$with_columns(
+#'   replaced = pl$col("a")$replace(
+#'     old = pl$col("a")$max(),
+#'     new = pl$col("b")$sum()
+#'   )
+#' )
+Expr_replace = function(old, new) {
+  if (missing(new) && is.list(old)) {
+    new = unlist(old, use.names = FALSE)
+    old = names(old)
+  }
+  .pr$Expr$replace(self, old, new) |>
+    unwrap("in $replace():")
+}
+
+
+#' Replace all values by different values.
+#'
+#' This changes all the values in a column, either using a specific replacement
+#' or a default one. See [`$replace()`][Expr_replace] to replace only a subset
+#' of values.
+#'
+#' @inheritParams Expr_replace
+#' @param default The default replacement if the value is not in `old`. Can be
+#' an Expr. If `NULL` (default), then the value doesn't change.
+#' @param return_dtype The data type of the resulting expression. If set to
+#' `NULL` (default), the data type is determined automatically based on the
+#' other inputs.
+#'
+#' @return Expr
+#' @examples
+#' df = pl$DataFrame(a = c(1, 2, 2, 3))
+#'
+#' # "old" and "new" can take vectors of length 1 or of same length
+#' df$with_columns(replaced = pl$col("a")$replace_strict(2, 100, default = 1))
+#' df$with_columns(
+#'   replaced = pl$col("a")$replace_strict(c(2, 3), c(100, 200), default = 1)
+#' )
+#'
+#' # "old" can be a named list where names are values to replace, and values are
+#' # the replacements
+#' mapping = list(`2` = 100, `3` = 200)
+#' df$with_columns(replaced = pl$col("a")$replace_strict(mapping, default = -1))
+#'
+#' # one can specify the data type to return instead of automatically
+#' # inferring it
+#' df$with_columns(
+#'   replaced = pl$col("a")$replace_strict(mapping, default = 1, return_dtype = pl$Int32)
+#' )
 #'
 #' # "old", "new", and "default" can take Expr
 #' df = pl$DataFrame(a = c(1, 2, 2, 3), b = c(1.5, 2.5, 5, 1))
 #' df$with_columns(
-#'   replaced = pl$col("a")$replace(
+#'   replaced = pl$col("a")$replace_strict(
 #'     old = pl$col("a")$max(),
 #'     new = pl$col("b")$sum(),
 #'     default = pl$col("b"),
 #'   )
 #' )
-Expr_replace = function(old, new, default = NULL, return_dtype = NULL) {
+Expr_replace_strict = function(old, new, default = NULL, return_dtype = NULL) {
   if (missing(new) && is.list(old)) {
     new = unlist(old, use.names = FALSE)
     old = names(old)
   }
-  .pr$Expr$replace(self, old, new, default, return_dtype) |>
-    unwrap("in $replace():")
+  # return_dtype = pl$foo is silently passed otherwise
+  if (!missing(return_dtype) && !is_polars_dtype(return_dtype)) {
+    Err_plain("`return_dtype` must be a valid dtype.") |>
+      unwrap("in $replace_strict():")
+  }
+  .pr$Expr$replace_strict(self, old, new, default, return_dtype) |>
+    unwrap("in $replace_strict():")
 }
+
 
 #' Get the lengths of runs of identical values
 #'

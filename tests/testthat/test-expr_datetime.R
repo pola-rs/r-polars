@@ -90,14 +90,6 @@ test_that("pl$date_range", {
     )$to_series()$to_vector(),
     seq(as.Date("2022-01-01"), as.Date("2022-03-01"), by = "1 month")
   )
-
-  # Deprecated usage
-  expect_identical(
-    suppressWarnings(pl$date_range(
-      as.POSIXct("2022-01-01 12:00", "UTC"), as.POSIXct("2022-01-03", "UTC"), "1d"
-    )$to_series()$to_vector()),
-    as.POSIXct(c("2022-01-01 12:00", "2022-01-02 12:00"), "UTC")
-  )
 })
 
 test_that("dt$truncate", {

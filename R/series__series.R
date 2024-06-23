@@ -371,7 +371,8 @@ Series_print = function() {
 #'
 #' as_polars_series("a")$add("-z")
 Series_add = function(other) {
-  .pr$Series$add(self, as_polars_series(other))
+  .pr$Series$add(self, as_polars_series(other)) |>
+    unwrap("in $add():")
 }
 
 
@@ -390,7 +391,8 @@ Series_add = function(other) {
 #' 1L - as_polars_series(1:3)
 #' as_polars_series(1:3) - 1L
 Series_sub = function(other) {
-  .pr$Series$sub(self, as_polars_series(other))
+  .pr$Series$sub(self, as_polars_series(other)) |>
+    unwrap("in $sub():")
 }
 
 
@@ -405,7 +407,8 @@ Series_sub = function(other) {
 #' as_polars_series(1:3)$div(as_polars_series(11:13))
 #' as_polars_series(1:3)$div(1L)
 Series_div = function(other) {
-  .pr$Series$div(self, as_polars_series(other))
+  .pr$Series$div(self, as_polars_series(other)) |>
+    unwrap("in $div():")
 }
 
 
@@ -435,7 +438,8 @@ Series_floor_div = function(other) {
 #' as_polars_series(1:3)$mul(as_polars_series(11:13))
 #' as_polars_series(1:3)$mul(1L)
 Series_mul = function(other) {
-  .pr$Series$mul(self, as_polars_series(other))
+  .pr$Series$mul(self, as_polars_series(other)) |>
+    unwrap("in $mul():")
 }
 
 
@@ -450,7 +454,8 @@ Series_mul = function(other) {
 #' as_polars_series(1:3)$mod(as_polars_series(11:13))
 #' as_polars_series(1:3)$mod(1L)
 Series_mod = function(other) {
-  .pr$Series$rem(self, as_polars_series(other))
+  .pr$Series$rem(self, as_polars_series(other)) |>
+    unwrap("in $mod():")
 }
 
 
@@ -578,8 +583,9 @@ Series_to_list = \(int64_conversion = polars_options()$int64_conversion) {
 #' @return DataFrame
 #' @examples
 #' as_polars_series(iris$Species, name = "flower species")$value_counts()
-Series_value_counts = function(..., sort = TRUE, parallel = FALSE, name = "count") {
-  unwrap(.pr$Series$value_counts(self, sort, parallel, name), "in $value_counts():")
+Series_value_counts = function(..., sort = TRUE, parallel = FALSE, name = "count", normalize = FALSE) {
+  .pr$Series$value_counts(self, sort, parallel, name, normalize) |>
+    unwrap("in $value_counts():")
 }
 
 #' Apply every value with an R fun
