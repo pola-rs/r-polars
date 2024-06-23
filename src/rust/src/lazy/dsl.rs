@@ -1903,14 +1903,33 @@ impl RPolarsExpr {
             .into())
     }
 
-    pub fn over(&self, partition_by: Robj, mapping: Robj) -> RResult<Self> {
+    pub fn over(
+        &self,
+        partition_by: Robj,
+        order_by: Robj,
+        order_by_descending: bool,
+        order_by_nulls_last: bool,
+        mapping: Robj,
+    ) -> RResult<Self> {
+        let partition_by = robj_to!(Vec, PLExpr, partition_by)?;
+
+        let order_by = robj_to!(Option, Vec, PLExpr, order_by)?.map(|order_by| {
+            (
+                order_by,
+                SortOptions {
+                    descending: order_by_descending,
+                    nulls_last: order_by_nulls_last,
+                    maintain_order: false,
+                    ..Default::default()
+                },
+            )
+        });
+
+        let mapping = robj_to!(WindowMapping, mapping)?;
         Ok(self
             .0
             .clone()
-            .over_with_options(
-                robj_to!(Vec, PLExpr, partition_by)?,
-                robj_to!(WindowMapping, mapping)?,
-            )
+            .over_with_options(partition_by, order_by, mapping)
             .into())
     }
 
