@@ -1519,9 +1519,9 @@ DataFrame_unpivot = function(
 
 #' Pivot data from long to wide
 #' @param values Column values to aggregate. Can be multiple columns if the
-#' `columns` arguments contains multiple columns as well.
+#' `on` arguments contains multiple columns as well.
 #' @param index  One or multiple keys to group by.
-#' @param columns  Name of the column(s) whose values will be used as the header
+#' @param on  Name of the column(s) whose values will be used as the header
 #' of the output DataFrame.
 #' @param ... Not used.
 #' @param aggregate_function One of:
@@ -1545,7 +1545,7 @@ DataFrame_unpivot = function(
 #' df
 #'
 #' df$pivot(
-#'   values = "baz", index = "foo", columns = "bar"
+#'   values = "baz", index = "foo", on = "bar"
 #' )
 #'
 #' # Run an expression as aggregation function
@@ -1558,15 +1558,15 @@ DataFrame_unpivot = function(
 #'
 #' df$pivot(
 #'   index = "col1",
-#'   columns = "col2",
+#'   on = "col2",
 #'   values = "col3",
 #'   aggregate_function = pl$element()$tanh()$mean()
 #' )
 DataFrame_pivot = function(
-    values,
-    index,
-    columns,
+    on,
     ...,
+    index,
+    values,
     aggregate_function = NULL,
     maintain_order = TRUE,
     sort_columns = FALSE,
@@ -1587,7 +1587,7 @@ DataFrame_pivot = function(
     )) |>
     # run pivot when valid aggregate_expr
     and_then(\(aggregate_expr) .pr$DataFrame$pivot_expr(
-      self, index, columns, values, maintain_order, sort_columns, aggregate_expr, separator
+      self, on, index, values, maintain_order, sort_columns, aggregate_expr, separator
     )) |>
     # unwrap and add method context name
     unwrap("in $pivot():")
@@ -1737,7 +1737,7 @@ DataFrame_describe = function(percentiles = c(.25, .75), interpolation = "neares
     )$
       unnest("fields")$
       drop("column")$
-      pivot(index = "statistic", columns = "variable", values = "column_0")$
+      pivot(index = "statistic", on = "variable", values = "column_0")$
       with_columns(statistic = pl$lit(metrics))
   }) |>
     uw()
@@ -1763,12 +1763,12 @@ DataFrame_glimpse = function(..., return_as_string = FALSE) {
   }
 
   # closure to extract col info from a column in <self>
-  max_num_value = min(10, self$height)
+  max_num_value = as.integer(min(10, self$height))
   max_col_name_trunc = 50
   parse_column_ = \(col_name, dtype) {
     dtype_str = dtype_str_repr(dtype) |> unwrap_or(paste0("??", str_string(dtype)))
     if (inherits(dtype, "RPolarsDataType")) dtype_str = paste0(" <", dtype_str, ">")
-    val = self$select(pl$col(col_name)$slice(0, max_num_value))$to_list()[[1]]
+    val = self$select(pl$col(col_name)$slice(0L, max_num_value))$to_list()[[1]]
     val_str = paste(val, collapse = ", ")
     if (nchar(col_name) > max_col_name_trunc) {
       col_name = paste0(substr(col_name, 1, max_col_name_trunc - 3), "...")
@@ -2032,9 +2032,10 @@ DataFrame_write_parquet = function(
     ...,
     compression = "zstd",
     compression_level = 3,
-    statistics = FALSE,
+    statistics = TRUE,
     row_group_size = NULL,
     data_pagesize_limit = NULL) {
+  statistics = translate_statistics(statistics)
   .pr$DataFrame$write_parquet(
     self,
     file,

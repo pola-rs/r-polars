@@ -678,3 +678,32 @@ is_named = function(x) {
   }
   TRUE
 }
+
+# Used in parquet write/sink
+translate_statistics = function(statistics) {
+  if (is.logical(statistics)) {
+    if (isTRUE(statistics)) {
+      statistics = list(
+        min = TRUE,
+        max = TRUE,
+        distinct_count = FALSE,
+        null_count = TRUE
+      )
+    } else {
+      statistics = list(
+        min = FALSE,
+        max = FALSE,
+        distinct_count = FALSE,
+        null_count = FALSE
+      )
+    }
+  } else if (is.character(statistics) && statistics == "full") {
+    statistics = list(
+      min = TRUE,
+      max = TRUE,
+      distinct_count = TRUE,
+      null_count = TRUE
+    )
+  }
+  statistics
+}

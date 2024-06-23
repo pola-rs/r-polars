@@ -629,8 +629,14 @@ LazyFrame_collect_in_background = function() {
 #'  * "gzip": min-level: 0, max-level: 10.
 #'  * "brotli": min-level: 0, max-level: 11.
 #'  * "zstd": min-level: 1, max-level: 22.
-#' @param statistics Logical. Whether compute and write column statistics.
-#' This requires extra compute.
+#' @param statistics Whether statistics should be written to the Parquet
+#' headers. Possible values:
+#' * `TRUE`: enable default set of statistics (default)
+#' * `FALSE`: disable all statistics
+#' * `"full"`: calculate and write all available statistics.
+#' * A named list where all values must be `TRUE` or `FALSE`, e.g.
+#'   `list(min = TRUE, max = FALSE)`. Statistics available are `"min"`, `"max"`,
+#'   `"distinct_count"`, `"null_count"`.
 #' @param row_group_size `NULL` or Integer. Size of the row groups in number of
 #' rows. If `NULL` (default), the chunks of the DataFrame are used. Writing in
 #' smaller chunks may reduce memory pressure and improve writing speeds.
@@ -661,7 +667,7 @@ LazyFrame_sink_parquet = function(
     ...,
     compression = "zstd",
     compression_level = 3,
-    statistics = FALSE,
+    statistics = TRUE,
     row_group_size = NULL,
     data_pagesize_limit = NULL,
     maintain_order = TRUE,
@@ -692,6 +698,8 @@ LazyFrame_sink_parquet = function(
       streaming = FALSE
     ) |> unwrap("in $sink_parquet()")
   }
+
+  statistics = translate_statistics(statistics)
 
   lf |>
     .pr$LazyFrame$sink_parquet(

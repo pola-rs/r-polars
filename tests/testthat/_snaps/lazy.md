@@ -57,8 +57,7 @@
                                   }
                               },
                               "output_schema": null,
-                              "projection": null,
-                              "selection": null
+                              "filter": null
                           }
                       },
                       "predicate": {
@@ -78,7 +77,8 @@
               },
               "options": {
                   "run_parallel": true,
-                  "duplicate_check": true
+                  "duplicate_check": true,
+                  "should_broadcast": true
               }
           }
       }

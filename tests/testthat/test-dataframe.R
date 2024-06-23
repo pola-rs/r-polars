@@ -969,7 +969,7 @@ test_that("pivot examples", {
 
   expect_identical(
     df$pivot(
-      values = "baz", index = "foo", columns = "bar", aggregate_function = "first"
+      values = "baz", index = "foo", on = "bar", aggregate_function = "first"
     )$to_list(),
     list(foo = c("one", "two"), A = c(1, 4), B = c(2, 5), C = c(3, 6))
   )
@@ -985,7 +985,7 @@ test_that("pivot examples", {
   expect_equal(
     df$pivot(
       index = "col1",
-      columns = "col2",
+      on = "col2",
       values = "col3",
       aggregate_function = pl$element()$tanh()$mean()
     )$to_list(),
@@ -1006,7 +1006,7 @@ test_that("pivot args works", {
     jaz = 6:1
   )
   expect_identical(
-    df$pivot("foo", "bar", "baz")$to_list(),
+    df$pivot("baz", index = "bar", values = "foo")$to_list(),
     list(bar = c("A", "B", "C"), `1.0` = c("one", NA, NA), `2.0` = c(
       NA,
       "one", NA
@@ -1021,39 +1021,39 @@ test_that("pivot args works", {
 
   # aggr functions
   expect_identical(
-    df$pivot("cat", "ann", "bob", aggregate_function = "mean")$to_list(),
+    df$pivot("bob", index = "ann", values = "cat", aggregate_function = "mean")$to_list(),
     list(ann = c("one", "two"), A = c(2, 5), B = c(2, 5))
   )
   expect_identical(
-    df$pivot("cat", "ann", "bob", aggregate_function = pl$element()$mean())$to_list(),
-    df$pivot("cat", "ann", "bob", aggregate_function = "mean")$to_list()
+    df$pivot("bob", index = "ann", values = "cat", aggregate_function = pl$element()$mean())$to_list(),
+    df$pivot("bob", index = "ann", values = "cat", aggregate_function = "mean")$to_list()
   )
   expect_grepl_error(
-    df$pivot("ann", "bob", "cat", aggregate_function = 42),
-    c("pivot", "param", "aggregate_function", "42")
+    df$pivot("cat", index = "bob", values = "ann", aggregate_function = 42),
+    "is neither a string, NULL or an Expr"
   )
   expect_grepl_error(
-    df$pivot("ann", "bob", "cat", aggregate_function = "dummy"),
-    c("pivot", "dummy is not a method")
+    df$pivot("cat", index = "bob", values = "ann", aggregate_function = "dummy"),
+    "dummy is not a method"
   )
 
   # maintain_order sort_columns
   expect_grepl_error(
-    df$pivot("ann", "bob", "cat", aggregate_function = "mean", maintain_order = 42),
-    c("pivot", "maintain_order", "bool")
+    df$pivot("cat", index = "bob", values = "ann", aggregate_function = "mean", maintain_order = 42),
+    "Expected a value of type \\[bool\\]"
   )
   expect_grepl_error(
-    df$pivot("ann", "bob", "cat", aggregate_function = "mean", sort_columns = 42),
-    c("pivot", "sort_columns", "bool")
+    df$pivot("cat", index = "bob", values = "ann", aggregate_function = "mean", sort_columns = 42),
+    "Expected a value of type \\[bool\\]"
   )
 
   # separator
   expect_named(
-    df$pivot(c("ann", "bob"), "ann", "cat", aggregate_function = "mean", separator = "."),
+    df$pivot("cat", index = "ann", values = c("ann", "bob"), aggregate_function = "mean", separator = "."),
     c(
-      "ann", "ann.cat.1.0", "ann.cat.2.0", "ann.cat.3.0", "ann.cat.4.0",
-      "ann.cat.5.0", "ann.cat.6.0", "bob.cat.1.0", "bob.cat.2.0", "bob.cat.3.0",
-      "bob.cat.4.0", "bob.cat.5.0", "bob.cat.6.0"
+      "ann", "ann.1.0", "ann.2.0", "ann.3.0", "ann.4.0",
+      "ann.5.0", "ann.6.0", "bob.1.0", "bob.2.0", "bob.3.0",
+      "bob.4.0", "bob.5.0", "bob.6.0"
     )
   )
 })

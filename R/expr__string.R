@@ -244,7 +244,7 @@ ExprStr_join = function(
     ...,
     ignore_nulls = TRUE) {
   .pr$Expr$str_join(self, delimiter, ignore_nulls) |>
-    unwrap("in $join():")
+    unwrap("in $str$join():")
 }
 
 ExprStr_concat = function(
@@ -253,7 +253,7 @@ ExprStr_concat = function(
     ignore_nulls = TRUE) {
   warning("$str$concat() is deprecated as of 0.18.0. Use $str$join() instead.")
   .pr$Expr$str_join(self, delimiter, ignore_nulls) |>
-    unwrap("in $concat():")
+    unwrap("in $str$concat():")
 }
 
 #' Convert a string to uppercase
