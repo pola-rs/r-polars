@@ -1087,7 +1087,15 @@ impl RPolarsExpr {
         self.0.clone().peak_max().into()
     }
 
-    pub fn replace(
+    pub fn replace(&self, old: Robj, new: Robj) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .replace(robj_to!(PLExpr, old)?, robj_to!(PLExpr, new)?)
+            .into())
+    }
+
+    pub fn replace_strict(
         &self,
         old: Robj,
         new: Robj,
@@ -1097,7 +1105,7 @@ impl RPolarsExpr {
         Ok(self
             .0
             .clone()
-            .replace(
+            .replace_strict(
                 robj_to!(PLExpr, old)?,
                 robj_to!(PLExpr, new)?,
                 robj_to!(Option, PLExpr, default)?,
