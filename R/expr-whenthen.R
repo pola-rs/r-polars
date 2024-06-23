@@ -24,7 +24,7 @@ polars_then__methods <- new.env(parent = emptyenv())
 wrap.PlRThen <- function(x) {
   self <- new.env(parent = emptyenv())
   self$`_then` <- x
-  makeActiveBinding("_rexpr", function() self$`_then`$otherwise(pl$lit(NULL)$`_rexpr`), self)
+  makeActiveBinding("_rexpr", function() self$`_then`$otherwise(lit_null()), self)
 
   lapply(names(polars_then__methods), function(name) {
     fn <- polars_then__methods[[name]]
@@ -84,7 +84,7 @@ polars_chainedthen__methods <- new.env(parent = emptyenv())
 wrap.PlRChainedThen <- function(x) {
   self <- new.env(parent = emptyenv())
   self$`_chained_then` <- x
-  makeActiveBinding("_rexpr", function() self$`_chained_then`$otherwise(pl$lit(NULL)$`_rexpr`), self)
+  makeActiveBinding("_rexpr", function() self$`_chained_then`$otherwise(lit_null()), self)
 
   lapply(names(polars_chainedthen__methods), function(name) {
     fn <- polars_chainedthen__methods[[name]]
