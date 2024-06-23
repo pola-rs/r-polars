@@ -1790,12 +1790,17 @@ impl RPolarsExpr {
         self.0.clone().len().into()
     }
 
-    pub fn slice(&self, offset: &RPolarsExpr, length: Nullable<&RPolarsExpr>) -> Self {
+    pub fn slice(&self, offset: Robj, length: Nullable<&RPolarsExpr>) -> RResult<Self> {
+        let offset = robj_to!(PLExpr, offset)?;
         let length = match null_to_opt(length) {
-            Some(i) => i.0.clone(),
+            Some(i) => dsl::cast(i.0.clone(), pl::DataType::Int64),
             None => dsl::lit(i64::MAX),
         };
-        self.0.clone().slice(offset.0.clone(), length).into()
+        Ok(self
+            .0
+            .clone()
+            .slice(dsl::cast(offset, pl::DataType::Int64), length)
+            .into())
     }
 
     pub fn append(&self, other: &RPolarsExpr, upcast: bool) -> Self {
@@ -1913,7 +1918,7 @@ impl RPolarsExpr {
     ) -> RResult<Self> {
         let partition_by = robj_to!(Vec, PLExpr, partition_by)?;
 
-        let order_by = robj_to!(Option, Vec, PLExpr, order_by)?.map(|order_by| {
+        let order_by = robj_to!(Option, Vec, PLExprCol, order_by)?.map(|order_by| {
             (
                 order_by,
                 SortOptions {

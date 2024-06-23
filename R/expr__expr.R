@@ -1163,11 +1163,7 @@ Expr_is_not_nan = use_extendr_wrapper
 #' full data.
 #'
 #' @return Expr
-#' @aliases slice
-#' @name Expr_slice
-#' @format NULL
 #' @examples
-#'
 #' # as head
 #' pl$DataFrame(list(a = 0:100))$select(
 #'   pl$all()$slice(0, 6)
@@ -1185,7 +1181,8 @@ Expr_is_not_nan = use_extendr_wrapper
 #' # recycling
 #' pl$DataFrame(mtcars)$with_columns(pl$col("mpg")$slice(0, 1))
 Expr_slice = function(offset, length = NULL) {
-  .pr$Expr$slice(self, wrap_e(offset), wrap_e(length))
+  .pr$Expr$slice(self, offset, wrap_e(length)) |>
+    unwrap("in $slice():")
 }
 
 
@@ -1840,7 +1837,8 @@ Expr_last = use_extendr_wrapper
 #' @param ... Column(s) to group by. Accepts expression input.
 #' Characters are parsed as column names.
 #' @param order_by Order the window functions/aggregations with the partitioned
-#' groups by the result of the expression passed to `order_by`.
+#' groups by the result of the expression passed to `order_by`. Can be an Expr.
+#' Strings are parsed as column names.
 #' @param mapping_strategy One of the following:
 #' * `"group_to_rows"` (default): if the aggregation results in multiple values,
 #'   assign them back to their position in the DataFrame. This can only be done
@@ -1885,6 +1883,20 @@ Expr_last = use_extendr_wrapper
 #' # Alternative mapping strategy: join values in a list output
 #' df$with_columns(
 #'   top_2 = pl$col("c")$top_k(2)$over("a", mapping_strategy = "join")
+#' )
+#'
+#' # order_by specifies how values are sorted within a group, which is
+#' # essential when the operation depends on the order of values
+#' df = pl$DataFrame(
+#'   g = c(1, 1, 1, 1, 2, 2, 2, 2),
+#'   t = c(1, 2, 3, 4, 4, 1, 2, 3),
+#'   x = c(10, 20, 30, 40, 10, 20, 30, 40)
+#' )
+#'
+#' # without order_by, the first and second values in the second group would
+#' # be inverted, which would be wrong
+#' df$with_columns(
+#'   x_lag = pl$col("x")$shift(1)$over("g", order_by = "t")
 #' )
 Expr_over = function(..., order_by = NULL, mapping_strategy = "group_to_rows") {
   list_of_exprs = list2(...) |>

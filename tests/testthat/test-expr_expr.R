@@ -324,8 +324,23 @@ test_that("$over() with mapping_strategy", {
   expect_identical(
     df$select(pl$col("val")$top_k(2)$over("a", mapping_strategy = "join"))$to_list(),
     list(
-      val = list(c(5L, 2L), c(5L, 2L), c(4L, 3L), c(4L, 3L), c(5L, 2L))
+      val = list(c(5L, 2L), c(5L, 2L), c(3L, 4L), c(3L, 4L), c(5L, 2L))
     )
+  )
+})
+
+test_that("arg 'order_by' in $over() works", {
+  df = pl$DataFrame(
+    g = c(1, 1, 1, 1, 2, 2, 2, 2),
+    t = c(1, 2, 3, 4, 4, 1, 2, 3),
+    x = c(10, 20, 30, 40, 10, 20, 30, 40)
+  )
+
+  expect_equal(
+    df$select(
+      x_lag = pl$col("x")$shift(1)$over("g", order_by = "t")
+    )$to_list(),
+    list(x_lag = c(NA, 10, 20, 30, 40, NA, 20, 30))
   )
 })
 

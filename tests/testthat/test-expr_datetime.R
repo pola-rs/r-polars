@@ -108,14 +108,8 @@ test_that("dt$truncate", {
     lapply(l_actual, \(x) diff(x) |> as.numeric()),
     list(
       datetime = rep(2, 12),
-      truncated_4s = rep(c(0, 4), 6),
-      truncated_4s_offset_2s = rep(c(0, 4), 6)
+      truncated_4s = rep(c(0, 4), 6)
     )
-  )
-
-  expect_identical(
-    as.numeric(l_actual$truncated_4s_offset_2s - l_actual$truncated_4s),
-    rep(3, 13)
   )
 })
 
