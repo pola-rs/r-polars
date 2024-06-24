@@ -72,5 +72,12 @@ series__cast <- function(dtype, ..., strict = TRUE) {
 }
 
 series__to_r_vector <- function() {
-    self$`_s`$to_r_vector()
+  self$`_s`$to_r_vector()
+}
+
+series__to_frame <- function(name = NULL) {
+  PlRDataFrame$init(
+    list(as_polars_series(self, name)$`_s`)
+  ) |>
+    wrap()
 }

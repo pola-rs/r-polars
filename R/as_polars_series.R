@@ -17,7 +17,7 @@ as_polars_series.polars_series <- function(x, name = NULL, ...) {
   if (is.null(name)) {
     x
   } else {
-    x$rename(name %||% x$name)
+    x$rename(name)
   }
 }
 
