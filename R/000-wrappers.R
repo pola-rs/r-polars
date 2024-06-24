@@ -547,6 +547,18 @@ PlRExpr_xor <- function(self) {
   }
 }
 
+PlRExpr_struct_field_by_index <- function(self) {
+  function(index) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_struct_field_by_index__impl, self, index))
+  }
+}
+
+PlRExpr_struct_field_by_name <- function(self) {
+  function(name) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_struct_field_by_name__impl, self, name))
+  }
+}
+
 .savvy_wrap_PlRExpr <- function(ptr) {
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
@@ -578,6 +590,8 @@ PlRExpr_xor <- function(self) {
   e$and <- PlRExpr_and(ptr)
   e$or <- PlRExpr_or(ptr)
   e$xor <- PlRExpr_xor(ptr)
+  e$struct_field_by_index <- PlRExpr_struct_field_by_index(ptr)
+  e$struct_field_by_name <- PlRExpr_struct_field_by_name(ptr)
   
   class(e) <- "PlRExpr"
   e

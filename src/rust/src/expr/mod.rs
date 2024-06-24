@@ -1,5 +1,6 @@
 mod general;
-use crate::prelude::Wrap;
+mod struct_;
+use crate::Wrap;
 use polars::lazy::dsl::Expr;
 use savvy::{savvy, EnvironmentSexp, ListSexp, TypedSexp};
 

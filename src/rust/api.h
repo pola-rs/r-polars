@@ -78,6 +78,8 @@ SEXP savvy_PlRExpr_cast__ffi(SEXP self__, SEXP data_type, SEXP strict);
 SEXP savvy_PlRExpr_and__ffi(SEXP self__, SEXP other);
 SEXP savvy_PlRExpr_or__ffi(SEXP self__, SEXP other);
 SEXP savvy_PlRExpr_xor__ffi(SEXP self__, SEXP other);
+SEXP savvy_PlRExpr_struct_field_by_index__ffi(SEXP self__, SEXP index);
+SEXP savvy_PlRExpr_struct_field_by_name__ffi(SEXP self__, SEXP name);
 
 // methods and associated functions for PlRLazyFrame
 SEXP savvy_PlRLazyFrame_select__ffi(SEXP self__, SEXP exprs);
