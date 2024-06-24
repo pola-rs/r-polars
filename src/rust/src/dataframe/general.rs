@@ -1,10 +1,12 @@
 use super::*;
 use crate::{error::RPolarsErr, series::ToRSeries, PlRLazyFrame, PlRSeries};
-use savvy::{r_println, savvy, ListSexp, OwnedListSexp, Sexp, StringSexp, TypedSexp};
+use savvy::{
+    r_println, savvy, ListSexp, NumericScalar, OwnedListSexp, Result, Sexp, StringSexp, TypedSexp,
+};
 
 #[savvy]
 impl PlRDataFrame {
-    pub fn init(columns: ListSexp) -> savvy::Result<Self> {
+    pub fn init(columns: ListSexp) -> Result<Self> {
         let columns: Vec<Series> = columns
             .iter()
             .map(|(name, column)| match column.into_typed() {
@@ -23,12 +25,12 @@ impl PlRDataFrame {
         Ok(df.into())
     }
 
-    pub fn print(&self) -> savvy::Result<()> {
+    pub fn print(&self) -> Result<()> {
         r_println!("{:?}", self.df);
         Ok(())
     }
 
-    pub fn get_columns(&self) -> savvy::Result<Sexp> {
+    pub fn get_columns(&self) -> Result<Sexp> {
         let cols = self.df.get_columns().to_owned().to_r_series();
         let len = cols.len();
         let mut list = OwnedListSexp::new(len, true)?;
@@ -42,12 +44,29 @@ impl PlRDataFrame {
         Ok(list.into())
     }
 
-    pub fn to_struct(&self, name: &str) -> savvy::Result<PlRSeries> {
+    pub fn to_series(&self, index: NumericScalar) -> Result<PlRSeries> {
+        let df = &self.df;
+        let index = index.as_i32()? as isize;
+
+        let index_adjusted = if index < 0 {
+            df.width().checked_sub(index.unsigned_abs())
+        } else {
+            Some(usize::try_from(index).unwrap())
+        };
+
+        let s = index_adjusted.and_then(|i| df.select_at_idx(i));
+        match s {
+            Some(s) => Ok(PlRSeries::new(s.clone())),
+            None => Err(polars_err!(oob = index, df.width()).to_string().into()),
+        }
+    }
+
+    pub fn to_struct(&self, name: &str) -> Result<PlRSeries> {
         let s = self.df.clone().into_struct(name);
         Ok(s.into_series().into())
     }
 
-    pub fn lazy(&self) -> savvy::Result<PlRLazyFrame> {
+    pub fn lazy(&self) -> Result<PlRLazyFrame> {
         Ok(self.df.clone().lazy().into())
     }
 }

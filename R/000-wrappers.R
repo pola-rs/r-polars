@@ -144,6 +144,12 @@ PlRDataFrame_get_columns <- function(self) {
   }
 }
 
+PlRDataFrame_to_series <- function(self) {
+  function(index) {
+    .savvy_wrap_PlRSeries(.Call(savvy_PlRDataFrame_to_series__impl, self, index))
+  }
+}
+
 PlRDataFrame_to_struct <- function(self) {
   function(name) {
     .savvy_wrap_PlRSeries(.Call(savvy_PlRDataFrame_to_struct__impl, self, name))
@@ -161,6 +167,7 @@ PlRDataFrame_lazy <- function(self) {
   e$.ptr <- ptr
     e$print <- PlRDataFrame_print(ptr)
   e$get_columns <- PlRDataFrame_get_columns(ptr)
+  e$to_series <- PlRDataFrame_to_series(ptr)
   e$to_struct <- PlRDataFrame_to_struct(ptr)
   e$lazy <- PlRDataFrame_lazy(ptr)
   
@@ -697,6 +704,12 @@ PlRSeries_struct_unnest <- function(self) {
   }
 }
 
+PlRSeries_struct_fields <- function(self) {
+  function() {
+  .Call(savvy_PlRSeries_struct_fields__impl, self)
+  }
+}
+
 PlRSeries_clone <- function(self) {
   function() {
     .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_clone__impl, self))
@@ -774,6 +787,7 @@ PlRSeries_to_r_vector <- function(self) {
   e$.ptr <- ptr
     e$print <- PlRSeries_print(ptr)
   e$struct_unnest <- PlRSeries_struct_unnest(ptr)
+  e$struct_fields <- PlRSeries_struct_fields(ptr)
   e$clone <- PlRSeries_clone(ptr)
   e$name <- PlRSeries_name(ptr)
   e$rename <- PlRSeries_rename(ptr)

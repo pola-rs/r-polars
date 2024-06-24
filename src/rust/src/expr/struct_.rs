@@ -1,9 +1,10 @@
 use crate::PlRExpr;
-use savvy::{savvy, Result};
+use savvy::{savvy, NumericScalar, Result};
 
 #[savvy]
 impl PlRExpr {
-    fn struct_field_by_index(&self, index: i32) -> Result<Self> {
+    fn struct_field_by_index(&self, index: NumericScalar) -> Result<Self> {
+        let index = index.as_i32()?;
         Ok(self
             .inner
             .clone()

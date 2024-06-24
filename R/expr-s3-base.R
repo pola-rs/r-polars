@@ -3,3 +3,15 @@ print.polars_expr <- function(x, ...) {
   x$`_rexpr`$print()
   invisible(x)
 }
+
+#' @export
+`[.polars_struct_namespace` <- function(x, i, ...) {
+  # x$field_by_index(i)
+  if (is.numeric(i)) {
+    x$field_by_index(i)
+  } else if (is.character(i)) {
+    x$field(i)
+  } else {
+    abort(sprintf("expected type numeric or character for `i`, got %s", typeof(i)))
+  }
+}

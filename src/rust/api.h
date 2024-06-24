@@ -19,6 +19,7 @@ SEXP savvy_PlRChainedWhen_then__ffi(SEXP self__, SEXP statement);
 SEXP savvy_PlRDataFrame_init__ffi(SEXP columns);
 SEXP savvy_PlRDataFrame_print__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_get_columns__ffi(SEXP self__);
+SEXP savvy_PlRDataFrame_to_series__ffi(SEXP self__, SEXP index);
 SEXP savvy_PlRDataFrame_to_struct__ffi(SEXP self__, SEXP name);
 SEXP savvy_PlRDataFrame_lazy__ffi(SEXP self__);
 
@@ -94,6 +95,7 @@ SEXP savvy_PlRLazyGroupBy_tail__ffi(SEXP self__, SEXP n);
 // methods and associated functions for PlRSeries
 SEXP savvy_PlRSeries_print__ffi(SEXP self__);
 SEXP savvy_PlRSeries_struct_unnest__ffi(SEXP self__);
+SEXP savvy_PlRSeries_struct_fields__ffi(SEXP self__);
 SEXP savvy_PlRSeries_clone__ffi(SEXP self__);
 SEXP savvy_PlRSeries_name__ffi(SEXP self__);
 SEXP savvy_PlRSeries_rename__ffi(SEXP self__, SEXP name);

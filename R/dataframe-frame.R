@@ -51,3 +51,8 @@ dataframe__group_by <- function(..., maintain_order = FALSE) {
 dataframe__select <- function(...) {
   self$lazy()$select(...)$collect()
 }
+
+dataframe__to_series <- function(index = 0) {
+  self$`_df`$to_series(index) |>
+    wrap()
+}

@@ -11,11 +11,18 @@ namespace_expr_struct <- function(x) {
     assign(name, fn, envir = self)
   })
 
-  class(self) <- c("polars_namespace_expr", "polars_object")
+  class(self) <- c(
+    "polars_namespace_expr", "polars_struct_namespace", "polars_object"
+  )
   self
 }
 
-# TODO: support multiple fields
+expr_struct_field_by_index <- function(index) {
+  self$`_rexpr`$struct_field_by_index(index) |>
+    wrap()
+}
+
+# TODO: change to dynamic dots?
 expr_struct_field <- function(name) {
   self$`_rexpr`$struct_field_by_name(name) |>
     wrap()
