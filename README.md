@@ -125,6 +125,38 @@ pl$DataFrame(a = "a")$lazy()$select(pl$col("a")$cast(pl$Int8))$collect()
 #> ! ComputeError(ErrString("conversion from `str` to `i8` failed in column 'a' for 1 out of 1 values: [\"a\"]"))
 ```
 
+The functionality to dispatch the methods of `Expr` to `Series` has also
+been implemented.
+
+``` r
+s <- as_polars_series(mtcars)
+
+s$struct$field
+#> function (name) 
+#> {
+#>     expr <- do.call(fn, as.list(match.call()[-1]), envir = parent.frame())
+#>     wrap(`_s`)$to_frame()$select(expr)$to_series()
+#> }
+#> <environment: 0x562bfc271f40>
+
+s$struct$field("am")
+#> shape: (32,)
+#> Series: 'am' [f64]
+#> [
+#>  1.0
+#>  1.0
+#>  1.0
+#>  0.0
+#>  0.0
+#>  …
+#>  1.0
+#>  1.0
+#>  1.0
+#>  1.0
+#>  1.0
+#> ]
+```
+
 Due to the changes in the package structure, it is now possible to add
 namespaces, which was not possible with the current r-polars.
 
@@ -163,16 +195,6 @@ s$math$square()$rename("s^2")
 
 ### Disadvantages
 
-savvy does not currently support R’s Raw type
-([yutannihilation/savvy#30](https://github.com/yutannihilation/savvy/issues/30)),
-so I don’t think it is possible to implement features that use Raw type
-(such as [“collect in
-background”](https://github.com/pola-rs/r-polars/pull/311) or conversion
-to Polars type of Raw type) at the moment.
-
-Also, I don’t know if it is possible to implement a process like
-`map_elements` that calls the R execution from the Rust side.
-
 Due to the changes in the R class structure, the methods are now
 dynamically added by a loop each time an R class is built. So I’m
 worried that the performance will degrade after a large number of
@@ -181,5 +203,5 @@ moment.
 
 ### Next Steps
 
-I would like to confirm that we can implement the functionality to
-dispatch the methods of `Expr` to `WhenThen` or `Series`.
+I would like to check if it is possible to implement a process like
+`map_elements` that calls the R from the Rust side.
