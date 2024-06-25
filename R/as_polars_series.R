@@ -52,6 +52,12 @@ as_polars_series.factor <- function(x, name = NULL, ...) {
 }
 
 #' @export
+as_polars_series.array <- function(x, name = NULL, ...) {
+  dims <- dim(x)
+  NextMethod()$reshape(dims)
+}
+
+#' @export
 as_polars_series.NULL <- function(x, name = NULL, ...) {
   PlRSeries$new_empty(name %||% "") |>
     wrap()
