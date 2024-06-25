@@ -9,7 +9,7 @@ as.list.polars_data_frame <- function(x, ..., as_series = FALSE) {
   if (isTRUE(as_series)) {
     x$get_columns()
   } else {
-    x$to_list()
+    x$to_r_list()
   }
 }
 

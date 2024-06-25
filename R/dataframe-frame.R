@@ -39,7 +39,7 @@ dataframe__get_columns <- function() {
     })
 }
 
-dataframe__to_list <- function() {
+dataframe__to_r_list <- function() {
   self$get_columns() |>
     lapply(as.vector)
 }
