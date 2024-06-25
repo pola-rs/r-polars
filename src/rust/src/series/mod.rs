@@ -2,7 +2,7 @@ mod arithmetic;
 mod construction;
 mod export;
 use crate::{prelude::*, PlRDataFrame, PlRDataType, RPolarsErr};
-use savvy::{r_println, savvy, EnvironmentSexp, Result, Sexp};
+use savvy::{r_println, savvy, EnvironmentSexp, NumericSexp, Result, Sexp};
 
 #[savvy]
 #[repr(transparent)]
@@ -62,6 +62,12 @@ impl PlRSeries {
             .map(|s| s.name())
             .collect::<Vec<_>>()
             .try_into()?)
+    }
+
+    fn reshape(&self, dims: NumericSexp) -> Result<Self> {
+        let dims: Vec<i64> = <Wrap<Vec<i64>>>::try_from(dims)?.0;
+        let out = self.series.reshape_array(&dims).map_err(RPolarsErr::from)?;
+        Ok(out.into())
     }
 
     fn clone(&self) -> Result<Self> {

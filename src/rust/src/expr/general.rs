@@ -1,11 +1,9 @@
-use crate::datatypes::PlRDataType;
-use crate::PlRExpr;
+use crate::{prelude::*, PlRDataType, PlRExpr};
 use polars::lazy::dsl;
-use polars::prelude::*;
 use polars::series::ops::NullBehavior;
 use polars_core::series::IsSorted;
 use polars_core::utils::arrow::compute::cast::CastOptions;
-use savvy::{r_println, savvy, Result};
+use savvy::{r_println, savvy, NumericSexp, Result};
 use std::io::Cursor;
 use std::ops::Neg;
 
@@ -120,15 +118,20 @@ impl PlRExpr {
         Ok(expr.into())
     }
 
-    fn and (&self, other: PlRExpr) -> Result<Self> {
+    fn and(&self, other: PlRExpr) -> Result<Self> {
         Ok(self.inner.clone().and(other.inner).into())
     }
 
-    fn or (&self, other: PlRExpr) -> Result<Self> {
+    fn or(&self, other: PlRExpr) -> Result<Self> {
         Ok(self.inner.clone().or(other.inner).into())
     }
 
-    fn xor (&self, other: PlRExpr) -> Result<Self> {
+    fn xor(&self, other: PlRExpr) -> Result<Self> {
         Ok(self.inner.clone().xor(other.inner).into())
+    }
+
+    fn reshape(&self, dims: NumericSexp) -> Result<Self> {
+        let dims: Vec<i64> = <Wrap<Vec<i64>>>::try_from(dims)?.0;
+        Ok(self.inner.clone().reshape(&dims, NestedType::Array).into())
     }
 }

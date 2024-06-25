@@ -389,6 +389,11 @@ SEXP savvy_PlRExpr_xor__impl(SEXP self__, SEXP other) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_reshape__impl(SEXP self__, SEXP dims) {
+    SEXP res = savvy_PlRExpr_reshape__ffi(self__, dims);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_struct_field_by_index__impl(SEXP self__, SEXP index) {
     SEXP res = savvy_PlRExpr_struct_field_by_index__ffi(self__, index);
     return handle_result(res);
@@ -441,6 +446,11 @@ SEXP savvy_PlRSeries_struct_unnest__impl(SEXP self__) {
 
 SEXP savvy_PlRSeries_struct_fields__impl(SEXP self__) {
     SEXP res = savvy_PlRSeries_struct_fields__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSeries_reshape__impl(SEXP self__, SEXP dims) {
+    SEXP res = savvy_PlRSeries_reshape__ffi(self__, dims);
     return handle_result(res);
 }
 
@@ -622,6 +632,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_and__impl", (DL_FUNC) &savvy_PlRExpr_and__impl, 2},
     {"savvy_PlRExpr_or__impl", (DL_FUNC) &savvy_PlRExpr_or__impl, 2},
     {"savvy_PlRExpr_xor__impl", (DL_FUNC) &savvy_PlRExpr_xor__impl, 2},
+    {"savvy_PlRExpr_reshape__impl", (DL_FUNC) &savvy_PlRExpr_reshape__impl, 2},
     {"savvy_PlRExpr_struct_field_by_index__impl", (DL_FUNC) &savvy_PlRExpr_struct_field_by_index__impl, 2},
     {"savvy_PlRExpr_struct_field_by_name__impl", (DL_FUNC) &savvy_PlRExpr_struct_field_by_name__impl, 2},
     {"savvy_PlRLazyFrame_select__impl", (DL_FUNC) &savvy_PlRLazyFrame_select__impl, 2},
@@ -633,6 +644,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRSeries_print__impl", (DL_FUNC) &savvy_PlRSeries_print__impl, 1},
     {"savvy_PlRSeries_struct_unnest__impl", (DL_FUNC) &savvy_PlRSeries_struct_unnest__impl, 1},
     {"savvy_PlRSeries_struct_fields__impl", (DL_FUNC) &savvy_PlRSeries_struct_fields__impl, 1},
+    {"savvy_PlRSeries_reshape__impl", (DL_FUNC) &savvy_PlRSeries_reshape__impl, 2},
     {"savvy_PlRSeries_clone__impl", (DL_FUNC) &savvy_PlRSeries_clone__impl, 1},
     {"savvy_PlRSeries_name__impl", (DL_FUNC) &savvy_PlRSeries_name__impl, 1},
     {"savvy_PlRSeries_rename__impl", (DL_FUNC) &savvy_PlRSeries_rename__impl, 2},

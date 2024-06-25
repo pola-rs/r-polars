@@ -1,6 +1,6 @@
 use crate::prelude::*;
 use crate::{PlRDataType, PlRExpr};
-use savvy::{ListSexp, NumericScalar, TypedSexp};
+use savvy::{ListSexp, NumericScalar, NumericSexp, TypedSexp};
 mod chunked_array;
 
 #[repr(transparent)]
@@ -126,5 +126,14 @@ impl TryFrom<NumericScalar> for Wrap<usize> {
             }
             _ => Ok(Wrap(n as usize)),
         }
+    }
+}
+
+impl TryFrom<NumericSexp> for Wrap<Vec<i64>> {
+    type Error = savvy::Error;
+
+    fn try_from(v: NumericSexp) -> Result<Self, savvy::Error> {
+        let v = v.as_slice_i32()?;
+        Ok(Wrap(v.iter().map(|&x| x as i64).collect()))
     }
 }

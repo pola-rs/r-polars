@@ -71,6 +71,11 @@ series__cast <- function(dtype, ..., strict = TRUE) {
     wrap()
 }
 
+series__reshape <- function(dimensions) {
+  self$`_s`$reshape(dimensions) |>
+    wrap()
+}
+
 series__to_r_vector <- function() {
   self$`_s`$to_r_vector()
 }

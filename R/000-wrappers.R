@@ -554,6 +554,12 @@ PlRExpr_xor <- function(self) {
   }
 }
 
+PlRExpr_reshape <- function(self) {
+  function(dims) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_reshape__impl, self, dims))
+  }
+}
+
 PlRExpr_struct_field_by_index <- function(self) {
   function(index) {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_struct_field_by_index__impl, self, index))
@@ -597,6 +603,7 @@ PlRExpr_struct_field_by_name <- function(self) {
   e$and <- PlRExpr_and(ptr)
   e$or <- PlRExpr_or(ptr)
   e$xor <- PlRExpr_xor(ptr)
+  e$reshape <- PlRExpr_reshape(ptr)
   e$struct_field_by_index <- PlRExpr_struct_field_by_index(ptr)
   e$struct_field_by_name <- PlRExpr_struct_field_by_name(ptr)
   
@@ -710,6 +717,12 @@ PlRSeries_struct_fields <- function(self) {
   }
 }
 
+PlRSeries_reshape <- function(self) {
+  function(dims) {
+    .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_reshape__impl, self, dims))
+  }
+}
+
 PlRSeries_clone <- function(self) {
   function() {
     .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_clone__impl, self))
@@ -788,6 +801,7 @@ PlRSeries_to_r_vector <- function(self) {
     e$print <- PlRSeries_print(ptr)
   e$struct_unnest <- PlRSeries_struct_unnest(ptr)
   e$struct_fields <- PlRSeries_struct_fields(ptr)
+  e$reshape <- PlRSeries_reshape(ptr)
   e$clone <- PlRSeries_clone(ptr)
   e$name <- PlRSeries_name(ptr)
   e$rename <- PlRSeries_rename(ptr)

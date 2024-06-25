@@ -175,3 +175,8 @@ expr__xor <- function(other) {
   self$`_rexpr`$xor(other$`_rexpr`) |>
     wrap()
 }
+
+expr__reshape <- function(dimentions) {
+  self$`_rexpr`$reshape(dimentions) |>
+    wrap()
+}
