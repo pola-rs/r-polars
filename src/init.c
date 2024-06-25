@@ -389,8 +389,8 @@ SEXP savvy_PlRExpr_xor__impl(SEXP self__, SEXP other) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_reshape__impl(SEXP self__, SEXP dims) {
-    SEXP res = savvy_PlRExpr_reshape__ffi(self__, dims);
+SEXP savvy_PlRExpr_reshape__impl(SEXP self__, SEXP dimensions) {
+    SEXP res = savvy_PlRExpr_reshape__ffi(self__, dimensions);
     return handle_result(res);
 }
 
@@ -449,8 +449,8 @@ SEXP savvy_PlRSeries_struct_fields__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRSeries_reshape__impl(SEXP self__, SEXP dims) {
-    SEXP res = savvy_PlRSeries_reshape__ffi(self__, dims);
+SEXP savvy_PlRSeries_reshape__impl(SEXP self__, SEXP dimensions) {
+    SEXP res = savvy_PlRSeries_reshape__ffi(self__, dimensions);
     return handle_result(res);
 }
 

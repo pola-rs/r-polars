@@ -130,8 +130,12 @@ impl PlRExpr {
         Ok(self.inner.clone().xor(other.inner).into())
     }
 
-    fn reshape(&self, dims: NumericSexp) -> Result<Self> {
-        let dims: Vec<i64> = <Wrap<Vec<i64>>>::try_from(dims)?.0;
-        Ok(self.inner.clone().reshape(&dims, NestedType::Array).into())
+    fn reshape(&self, dimensions: NumericSexp) -> Result<Self> {
+        let dimensions: Vec<i64> = <Wrap<Vec<i64>>>::try_from(dimensions)?.0;
+        Ok(self
+            .inner
+            .clone()
+            .reshape(&dimensions, NestedType::Array)
+            .into())
     }
 }

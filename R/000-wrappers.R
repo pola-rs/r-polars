@@ -555,8 +555,8 @@ PlRExpr_xor <- function(self) {
 }
 
 PlRExpr_reshape <- function(self) {
-  function(dims) {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_reshape__impl, self, dims))
+  function(dimensions) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_reshape__impl, self, dimensions))
   }
 }
 
@@ -718,8 +718,8 @@ PlRSeries_struct_fields <- function(self) {
 }
 
 PlRSeries_reshape <- function(self) {
-  function(dims) {
-    .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_reshape__impl, self, dims))
+  function(dimensions) {
+    .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_reshape__impl, self, dimensions))
   }
 }
 

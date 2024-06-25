@@ -64,9 +64,12 @@ impl PlRSeries {
             .try_into()?)
     }
 
-    fn reshape(&self, dims: NumericSexp) -> Result<Self> {
-        let dims: Vec<i64> = <Wrap<Vec<i64>>>::try_from(dims)?.0;
-        let out = self.series.reshape_array(&dims).map_err(RPolarsErr::from)?;
+    fn reshape(&self, dimensions: NumericSexp) -> Result<Self> {
+        let dimensions: Vec<i64> = <Wrap<Vec<i64>>>::try_from(dimensions)?.0;
+        let out = self
+            .series
+            .reshape_array(&dimensions)
+            .map_err(RPolarsErr::from)?;
         Ok(out.into())
     }
 
