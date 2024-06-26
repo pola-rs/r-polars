@@ -43,7 +43,7 @@ Updated rust-polars to 0.41.2 (#1147).
 - `$replace()` has been split in two functions depending on the desired 
   behaviour (#1147):
   - `$replace()` recodes some values in the column, leaving all other values
-    unchanged. Compared to the previous version, it doesn't the arguments
+    unchanged. Compared to the previous version, it doesn't use the arguments
     `default` and `return_dtype` anymore.
   - `$replace_strict()` replaces all values by different values. If a value
     doesn't have a specific mapping, it is replaced by the `default` value.
