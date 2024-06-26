@@ -152,6 +152,41 @@ expr__is_not_nan <- function() {
     wrap()
 }
 
+expr__min <- function() {
+  self$`_rexpr`$min() |>
+    wrap()
+}
+
+expr__max <- function() {
+  self$`_rexpr`$max() |>
+    wrap()
+}
+
+expr__nan_max <- function() {
+  self$`_rexpr`$nan_max() |>
+    wrap()
+}
+
+expr__nan_min <- function() {
+  self$`_rexpr`$nan_min() |>
+    wrap()
+}
+
+expr__mean <- function() {
+  self$`_rexpr`$mean() |>
+    wrap()
+}
+
+expr__median <- function() {
+  self$`_rexpr`$median() |>
+    wrap()
+}
+
+expr__sum <- function() {
+  self$`_rexpr`$sum() |>
+    wrap()
+}
+
 expr__cast <- function(dtype, ..., strict = TRUE) {
   dtype <- as_polars_dtype(dtype)
   self$`_rexpr`$cast(dtype$`_dt`, strict) |>

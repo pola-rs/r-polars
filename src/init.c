@@ -369,6 +369,41 @@ SEXP savvy_PlRExpr_is_not_nan__impl(SEXP self__) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_min__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_min__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_max__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_max__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_nan_max__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_nan_max__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_nan_min__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_nan_min__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_mean__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_mean__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_median__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_median__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_sum__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_sum__ffi(self__);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_cast__impl(SEXP self__, SEXP data_type, SEXP strict) {
     SEXP res = savvy_PlRExpr_cast__ffi(self__, data_type, strict);
     return handle_result(res);
@@ -628,6 +663,13 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_is_finite__impl", (DL_FUNC) &savvy_PlRExpr_is_finite__impl, 1},
     {"savvy_PlRExpr_is_nan__impl", (DL_FUNC) &savvy_PlRExpr_is_nan__impl, 1},
     {"savvy_PlRExpr_is_not_nan__impl", (DL_FUNC) &savvy_PlRExpr_is_not_nan__impl, 1},
+    {"savvy_PlRExpr_min__impl", (DL_FUNC) &savvy_PlRExpr_min__impl, 1},
+    {"savvy_PlRExpr_max__impl", (DL_FUNC) &savvy_PlRExpr_max__impl, 1},
+    {"savvy_PlRExpr_nan_max__impl", (DL_FUNC) &savvy_PlRExpr_nan_max__impl, 1},
+    {"savvy_PlRExpr_nan_min__impl", (DL_FUNC) &savvy_PlRExpr_nan_min__impl, 1},
+    {"savvy_PlRExpr_mean__impl", (DL_FUNC) &savvy_PlRExpr_mean__impl, 1},
+    {"savvy_PlRExpr_median__impl", (DL_FUNC) &savvy_PlRExpr_median__impl, 1},
+    {"savvy_PlRExpr_sum__impl", (DL_FUNC) &savvy_PlRExpr_sum__impl, 1},
     {"savvy_PlRExpr_cast__impl", (DL_FUNC) &savvy_PlRExpr_cast__impl, 3},
     {"savvy_PlRExpr_and__impl", (DL_FUNC) &savvy_PlRExpr_and__impl, 2},
     {"savvy_PlRExpr_or__impl", (DL_FUNC) &savvy_PlRExpr_or__impl, 2},

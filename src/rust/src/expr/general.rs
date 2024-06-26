@@ -106,6 +106,34 @@ impl PlRExpr {
         Ok(self.inner.clone().is_not_nan().into())
     }
 
+    fn min(&self) -> Result<Self> {
+        Ok(self.inner.clone().min().into())
+    }
+
+    fn max(&self) -> Result<Self> {
+        Ok(self.inner.clone().max().into())
+    }
+
+    fn nan_max(&self) -> Result<Self> {
+        Ok(self.inner.clone().nan_max().into())
+    }
+
+    fn nan_min(&self) -> Result<Self> {
+        Ok(self.inner.clone().nan_min().into())
+    }
+
+    fn mean(&self) -> Result<Self> {
+        Ok(self.inner.clone().mean().into())
+    }
+
+    fn median(&self) -> Result<Self> {
+        Ok(self.inner.clone().median().into())
+    }
+
+    fn sum(&self) -> Result<Self> {
+        Ok(self.inner.clone().sum().into())
+    }
+
     fn cast(&self, data_type: PlRDataType, strict: bool) -> Result<Self> {
         let dt = data_type.dt;
 

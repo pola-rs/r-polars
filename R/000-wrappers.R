@@ -526,6 +526,48 @@ PlRExpr_is_not_nan <- function(self) {
   }
 }
 
+PlRExpr_min <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_min__impl, self))
+  }
+}
+
+PlRExpr_max <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_max__impl, self))
+  }
+}
+
+PlRExpr_nan_max <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_nan_max__impl, self))
+  }
+}
+
+PlRExpr_nan_min <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_nan_min__impl, self))
+  }
+}
+
+PlRExpr_mean <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_mean__impl, self))
+  }
+}
+
+PlRExpr_median <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_median__impl, self))
+  }
+}
+
+PlRExpr_sum <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_sum__impl, self))
+  }
+}
+
 PlRExpr_cast <- function(self) {
   function(data_type, strict) {
     data_type <- .savvy_extract_ptr(data_type, "PlRDataType")
@@ -599,6 +641,13 @@ PlRExpr_struct_field_by_name <- function(self) {
   e$is_finite <- PlRExpr_is_finite(ptr)
   e$is_nan <- PlRExpr_is_nan(ptr)
   e$is_not_nan <- PlRExpr_is_not_nan(ptr)
+  e$min <- PlRExpr_min(ptr)
+  e$max <- PlRExpr_max(ptr)
+  e$nan_max <- PlRExpr_nan_max(ptr)
+  e$nan_min <- PlRExpr_nan_min(ptr)
+  e$mean <- PlRExpr_mean(ptr)
+  e$median <- PlRExpr_median(ptr)
+  e$sum <- PlRExpr_sum(ptr)
   e$cast <- PlRExpr_cast(ptr)
   e$and <- PlRExpr_and(ptr)
   e$or <- PlRExpr_or(ptr)
