@@ -23,23 +23,23 @@ Updated rust-polars to 0.41.2 (#1147).
   - The order of arguments has changed: `on` is now first, then `index`. The
     order of the other arguments hasn't changed. Note that `on` can be unnamed
     but all the other arguments must be named.
-    
+
 - `pivot()` had several changes (#1147):
   - The argument `columns` is renamed `on`.
-  - The order of arguments has changed: `on` is now first, then `index` and 
+  - The order of arguments has changed: `on` is now first, then `index` and
     `values`. The order of the other arguments hasn't changed. Note that `on`
     can be unnamed but all the other arguments must be named.
-    
+
 - In `$write_parquet()` and `$sink_parquet()`, the default value of argument
   `statistics` is now `TRUE` and can take other values than `TRUE/FALSE` (#1147).
-  
+
 - In `$dt$truncate()` and `$dt$round()`, the argument `offset` has been removed.
   Use `$dt$offset_by()` after those functions instead (#1147).
-  
+
 - In `$top_k()` and `$bottom_k()` for `Expr`, the arguments `nulls_last`,
   `maintain_order` and `multithreaded` have been removed. If any `null` values
   are in the top/bottom `k` values, they will always be positioned last (#1147).
-  
+
 - `$replace()` has been split in two functions depending on the desired 
   behaviour (#1147):
   - `$replace()` recodes some values in the column, leaving all other values
@@ -47,10 +47,10 @@ Updated rust-polars to 0.41.2 (#1147).
     `default` and `return_dtype` anymore.
   - `$replace_strict()` replaces all values by different values. If a value
     doesn't have a specific mapping, it is replaced by the `default` value.
-    
+
 - `$str$concat()` is deprecated, use `$str$join()` (with the same arguments)
   instead (#1147).
-  
+
 - In `pl$date_range()` and `pl$date_ranges()`, the arguments `time_unit` and
   `time_zone` have been removed. They were deprecated in previous versions
   (#1147).
