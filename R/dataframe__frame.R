@@ -1961,6 +1961,7 @@ DataFrame_write_csv = function(
     float_precision = NULL,
     null_values = "",
     quote_style = "necessary") {
+  file = path.expand(file)
   .pr$DataFrame$write_csv(
     self,
     file, include_bom, include_header, separator, line_terminator, quote,
@@ -1998,6 +1999,7 @@ DataFrame_write_ipc = function(
     compression = c("uncompressed", "zstd", "lz4"),
     ...,
     future = FALSE) {
+  file = path.expand(file)
   if (isTRUE(future)) {
     warning("The `future` parameter of `$write_ipc()` is considered unstable.")
   }
@@ -2034,6 +2036,7 @@ DataFrame_write_parquet = function(
     statistics = FALSE,
     row_group_size = NULL,
     data_pagesize_limit = NULL) {
+  file = path.expand(file)
   .pr$DataFrame$write_parquet(
     self,
     file,
@@ -2073,6 +2076,7 @@ DataFrame_write_json = function(
     ...,
     pretty = FALSE,
     row_oriented = FALSE) {
+  file = path.expand(file)
   .pr$DataFrame$write_json(self, file, pretty, row_oriented) |>
     unwrap("in $write_json():")
 
@@ -2094,6 +2098,7 @@ DataFrame_write_json = function(
 #'
 #' pl$read_ndjson(destination)
 DataFrame_write_ndjson = function(file) {
+  file = path.expand(file)
   .pr$DataFrame$write_ndjson(self, file) |>
     unwrap("in $write_ndjson():")
 

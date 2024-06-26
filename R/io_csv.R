@@ -195,6 +195,7 @@ check_is_link = function(path, reuse_downloaded, raise_error = FALSE) {
   if (is.na(path)) {
     return(NULL)
   }
+  path = path.expand(path)
   if (!file.exists(path)) {
     con = NULL
 
