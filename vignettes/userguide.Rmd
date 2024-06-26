@@ -449,7 +449,7 @@ df$sort("Type 1")$select(
 
 # List context and row wise computations
 
-````{comment}
+```{comment}
 grades = pl$DataFrame(
         "student" = c("bas", "laura", "tim", "jenny"),
         "arithmetic" = c(10, 5, 6, 8),
@@ -477,7 +477,7 @@ grades$with_columns(
 
 # Custom functions
 
-```
+```{comment}
 df = pl$DataFrame(
   "keys" = c("a", "a", "b"),
   "values" = c(10, 7, 1)
