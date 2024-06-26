@@ -407,7 +407,7 @@ df$select(
 ```
 
 
-```{r}
+```{comment}
 filtered = df$
   filter(pl$col("Type 2") == "Psychic")$
   select(c("Name", "Type 1", "Speed"))
