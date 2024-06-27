@@ -602,6 +602,45 @@ PlRExpr_reshape <- function(self) {
   }
 }
 
+PlRExpr_any <- function(self) {
+  function(ignore_nulls) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_any__impl, self, ignore_nulls))
+  }
+}
+
+PlRExpr_all <- function(self) {
+  function(ignore_nulls) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_all__impl, self, ignore_nulls))
+  }
+}
+
+PlRExpr_meta_selector_add <- function(self) {
+  function(other) {
+    other <- .savvy_extract_ptr(other, "PlRExpr")
+  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_meta_selector_add__impl, self, other))
+  }
+}
+
+PlRExpr_meta_selector_and <- function(self) {
+  function(other) {
+    other <- .savvy_extract_ptr(other, "PlRExpr")
+  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_meta_selector_and__impl, self, other))
+  }
+}
+
+PlRExpr_meta_selector_sub <- function(self) {
+  function(other) {
+    other <- .savvy_extract_ptr(other, "PlRExpr")
+  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_meta_selector_sub__impl, self, other))
+  }
+}
+
+PlRExpr_meta_as_selector <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_meta_as_selector__impl, self))
+  }
+}
+
 PlRExpr_struct_field_by_index <- function(self) {
   function(index) {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_struct_field_by_index__impl, self, index))
@@ -653,6 +692,12 @@ PlRExpr_struct_field_by_name <- function(self) {
   e$or <- PlRExpr_or(ptr)
   e$xor <- PlRExpr_xor(ptr)
   e$reshape <- PlRExpr_reshape(ptr)
+  e$any <- PlRExpr_any(ptr)
+  e$all <- PlRExpr_all(ptr)
+  e$meta_selector_add <- PlRExpr_meta_selector_add(ptr)
+  e$meta_selector_and <- PlRExpr_meta_selector_and(ptr)
+  e$meta_selector_sub <- PlRExpr_meta_selector_sub(ptr)
+  e$meta_as_selector <- PlRExpr_meta_as_selector(ptr)
   e$struct_field_by_index <- PlRExpr_struct_field_by_index(ptr)
   e$struct_field_by_name <- PlRExpr_struct_field_by_name(ptr)
   

@@ -87,6 +87,12 @@ SEXP savvy_PlRExpr_and__ffi(SEXP self__, SEXP other);
 SEXP savvy_PlRExpr_or__ffi(SEXP self__, SEXP other);
 SEXP savvy_PlRExpr_xor__ffi(SEXP self__, SEXP other);
 SEXP savvy_PlRExpr_reshape__ffi(SEXP self__, SEXP dimensions);
+SEXP savvy_PlRExpr_any__ffi(SEXP self__, SEXP ignore_nulls);
+SEXP savvy_PlRExpr_all__ffi(SEXP self__, SEXP ignore_nulls);
+SEXP savvy_PlRExpr_meta_selector_add__ffi(SEXP self__, SEXP other);
+SEXP savvy_PlRExpr_meta_selector_and__ffi(SEXP self__, SEXP other);
+SEXP savvy_PlRExpr_meta_selector_sub__ffi(SEXP self__, SEXP other);
+SEXP savvy_PlRExpr_meta_as_selector__ffi(SEXP self__);
 SEXP savvy_PlRExpr_struct_field_by_index__ffi(SEXP self__, SEXP index);
 SEXP savvy_PlRExpr_struct_field_by_name__ffi(SEXP self__, SEXP name);
 

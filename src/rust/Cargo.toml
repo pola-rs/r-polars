@@ -19,4 +19,4 @@ thiserror = "1"
 [dependencies.polars]
 git = "https://github.com/pola-rs/polars.git"
 rev = "318ec405632410a41f634de7aeff46e89a25eab9"
-features = ["dtype-full", "lazy", "propagate_nans"]
+features = ["dtype-full", "lazy", "meta", "propagate_nans"]

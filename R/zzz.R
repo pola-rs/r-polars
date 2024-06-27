@@ -16,13 +16,16 @@ assign_objects_to_env <- function(env, obj_name_pattern, ..., search_env = paren
 
 POLARS_STORE_ENVS <- list(
   "^pl__" = pl,
+  "^cs__" = cs,
   "^pl_api_" = pl__api,
   "^datatype__" = polars_datatype__methods,
   "^namespace_expr_" = polars_namespaces_expr,
   "^expr__" = polars_expr__methods,
+  "^expr_meta_" = polars_expr_meta_methods,
   "^expr_struct_" = polars_expr_struct_methods,
   "^then__" = polars_then__methods,
   "^chainedthen__" = polars_chainedthen__methods,
+  "^selector__" = polars_selector__methods,
   "^namespace_series_" = polars_namespaces_series,
   "^series__" = polars_series__methods,
   "^series_struct_" = polars_series_struct_methods,

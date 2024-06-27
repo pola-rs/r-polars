@@ -5,6 +5,11 @@ polars_namespaces_expr <- new.env(parent = emptyenv())
 polars_expr__methods <- new.env(parent = emptyenv())
 
 #' @export
+is_polars_expr <- function(x, ...) {
+  inherits(x, "polars_expr")
+}
+
+#' @export
 wrap.PlRExpr <- function(x) {
   self <- new.env(parent = emptyenv())
   self$`_rexpr` <- x
@@ -213,5 +218,17 @@ expr__xor <- function(other) {
 
 expr__reshape <- function(dimensions) {
   self$`_rexpr`$reshape(dimensions) |>
+    wrap()
+}
+
+expr__any <- function(..., ignore_nulls = TRUE) {
+  check_dots_empty0(...)
+  self$`_rexpr`$any(ignore_nulls) |>
+    wrap()
+}
+
+expr__all <- function(..., ignore_nulls = TRUE) {
+  check_dots_empty0(...)
+  self$`_rexpr`$all(ignore_nulls) |>
     wrap()
 }

@@ -429,6 +429,36 @@ SEXP savvy_PlRExpr_reshape__impl(SEXP self__, SEXP dimensions) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_any__impl(SEXP self__, SEXP ignore_nulls) {
+    SEXP res = savvy_PlRExpr_any__ffi(self__, ignore_nulls);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_all__impl(SEXP self__, SEXP ignore_nulls) {
+    SEXP res = savvy_PlRExpr_all__ffi(self__, ignore_nulls);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_meta_selector_add__impl(SEXP self__, SEXP other) {
+    SEXP res = savvy_PlRExpr_meta_selector_add__ffi(self__, other);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_meta_selector_and__impl(SEXP self__, SEXP other) {
+    SEXP res = savvy_PlRExpr_meta_selector_and__ffi(self__, other);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_meta_selector_sub__impl(SEXP self__, SEXP other) {
+    SEXP res = savvy_PlRExpr_meta_selector_sub__ffi(self__, other);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_meta_as_selector__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_meta_as_selector__ffi(self__);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_struct_field_by_index__impl(SEXP self__, SEXP index) {
     SEXP res = savvy_PlRExpr_struct_field_by_index__ffi(self__, index);
     return handle_result(res);
@@ -675,6 +705,12 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_or__impl", (DL_FUNC) &savvy_PlRExpr_or__impl, 2},
     {"savvy_PlRExpr_xor__impl", (DL_FUNC) &savvy_PlRExpr_xor__impl, 2},
     {"savvy_PlRExpr_reshape__impl", (DL_FUNC) &savvy_PlRExpr_reshape__impl, 2},
+    {"savvy_PlRExpr_any__impl", (DL_FUNC) &savvy_PlRExpr_any__impl, 2},
+    {"savvy_PlRExpr_all__impl", (DL_FUNC) &savvy_PlRExpr_all__impl, 2},
+    {"savvy_PlRExpr_meta_selector_add__impl", (DL_FUNC) &savvy_PlRExpr_meta_selector_add__impl, 2},
+    {"savvy_PlRExpr_meta_selector_and__impl", (DL_FUNC) &savvy_PlRExpr_meta_selector_and__impl, 2},
+    {"savvy_PlRExpr_meta_selector_sub__impl", (DL_FUNC) &savvy_PlRExpr_meta_selector_sub__impl, 2},
+    {"savvy_PlRExpr_meta_as_selector__impl", (DL_FUNC) &savvy_PlRExpr_meta_as_selector__impl, 1},
     {"savvy_PlRExpr_struct_field_by_index__impl", (DL_FUNC) &savvy_PlRExpr_struct_field_by_index__impl, 2},
     {"savvy_PlRExpr_struct_field_by_name__impl", (DL_FUNC) &savvy_PlRExpr_struct_field_by_name__impl, 2},
     {"savvy_PlRLazyFrame_select__impl", (DL_FUNC) &savvy_PlRLazyFrame_select__impl, 2},

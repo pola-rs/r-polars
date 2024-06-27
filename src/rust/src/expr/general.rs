@@ -166,4 +166,12 @@ impl PlRExpr {
             .reshape(&dimensions, NestedType::Array)
             .into())
     }
+
+    fn any(&self, ignore_nulls: bool) -> Result<Self> {
+        Ok(self.inner.clone().any(ignore_nulls).into())
+    }
+
+    fn all(&self, ignore_nulls: bool) -> Result<Self> {
+        Ok(self.inner.clone().all(ignore_nulls).into())
+    }
 }

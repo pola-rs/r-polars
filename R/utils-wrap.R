@@ -2,7 +2,7 @@ wrap <- function(x, ..., call = parent.frame()) {
   try_fetch(
     x,
     error = function(cnd) {
-      err_call <- rlang::error_call(call)[[1]]
+      err_call <- error_call(call)[[1]]
       abort(
         paste0("Evaluation failed in `$", err_call[[length(err_call)]], "()`."),
         call = call,
