@@ -5,6 +5,11 @@ polars_namespaces_series <- new.env(parent = emptyenv())
 polars_series__methods <- new.env(parent = emptyenv())
 
 #' @export
+is_polars_series <- function(x) {
+  inherits(x, "polars_series")
+}
+
+#' @export
 wrap.PlRSeries <- function(x) {
   self <- new.env(parent = emptyenv())
   self$`_s` <- x

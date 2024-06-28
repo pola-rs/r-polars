@@ -2,6 +2,11 @@
 polars_dataframe__methods <- new.env(parent = emptyenv())
 
 #' @export
+is_polars_df <- function(x) {
+  inherits(x, "polars_data_frame")
+}
+
+#' @export
 wrap.PlRDataFrame <- function(x) {
   self <- new.env(parent = emptyenv())
   self$`_df` <- x
