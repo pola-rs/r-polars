@@ -61,6 +61,15 @@ impl PlRSeries {
                     }
                     Ok(list.into())
                 },
+                DataType::Struct(_) => {
+                    let df = series.clone().into_frame().unnest([series.name()]).unwrap();
+                    let len = df.width();
+                    let mut list = OwnedListSexp::new(len, true)?;
+                    for (i, s) in df.iter().enumerate() {
+                        list.set_name_and_value(i, s.name(), to_r_vector_recursive(s)?)?
+                    }
+                    Ok(list.into())
+                }
                 _ => todo!(),
             }
         }
