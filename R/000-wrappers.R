@@ -939,10 +939,6 @@ PlRSeries$new_str <- function(name, values) {
   .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_str__impl, name, values))
 }
 
-PlRSeries$new_categorical <- function(name, values) {
-  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_categorical__impl, name, values))
-}
-
 PlRSeries$new_series_list <- function(name, values) {
   .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_series_list__impl, name, values))
 }

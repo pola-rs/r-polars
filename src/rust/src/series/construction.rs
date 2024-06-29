@@ -50,16 +50,6 @@ impl PlRSeries {
         Ok(ca.with_name(name).into_series().into())
     }
 
-    // TODO: move to R side
-    // TODO: support levels?
-    fn new_categorical(name: &str, values: StringSexp) -> savvy::Result<Self> {
-        let series = self::PlRSeries::new_str(name, values)?
-            .series
-            .cast(&DataType::Categorical(None, Default::default()))
-            .map_err(RPolarsErr::from)?;
-        Ok(series.into())
-    }
-
     fn new_series_list(name: &str, values: ListSexp) -> savvy::Result<Self> {
         let series_vec: Vec<Option<Series>> = values
             .values_iter()

@@ -47,8 +47,9 @@ as_polars_series.logical <- function(x, name = NULL, ...) {
 
 #' @export
 as_polars_series.factor <- function(x, name = NULL, ...) {
-  PlRSeries$new_categorical(name %||% "", as.character(x)) |>
-    wrap()
+  as_polars_series.character(as.character(x), name = name)$cast(
+    pl$Categorical()
+  )
 }
 
 #' @export
