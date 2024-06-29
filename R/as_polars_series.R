@@ -53,6 +53,26 @@ as_polars_series.factor <- function(x, name = NULL, ...) {
 }
 
 #' @export
+as_polars_series.POSIXct <- function(x, name = NULL, ...) {
+  tzone <- attr(x, "tzone")
+
+  int_series <- PlRSeries$new_f64(name %||% "", x)$mul(
+    PlRSeries$new_f64("", 1000)
+  )$cast(pl$Int64$`_dt`, strict = TRUE)
+
+  if (tzone == "") {
+    # TODO: needs `$dt` namespace
+    abort("todo")
+  } else {
+    int_series$cast(
+      pl$Datetime("ms", tzone)$`_dt`,
+      strict = TRUE
+    ) |>
+      wrap()
+  }
+}
+
+#' @export
 as_polars_series.array <- function(x, name = NULL, ...) {
   dims <- dim(x) |>
     rev()

@@ -3,8 +3,13 @@ wrap <- function(x, ..., call = parent.frame()) {
     x,
     error = function(cnd) {
       err_call <- error_call(call)[[1]]
+      msg_body <- if (is.call(err_call)) {
+        paste0("Evaluation failed in `$", err_call[[length(err_call)]], "()`.")
+      } else {
+        "Evaluation failed."
+      }
       abort(
-        paste0("Evaluation failed in `$", err_call[[length(err_call)]], "()`."),
+        msg_body,
         call = call,
         parent = cnd
       )
