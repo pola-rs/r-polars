@@ -70,6 +70,10 @@ impl PlRSeries {
                     }
                     Ok(list.into())
                 }
+                DataType::Null => {
+                    let len = series.len();
+                    Ok(OwnedListSexp::new(len, false)?.into())
+                }
                 _ => todo!(),
             }
         }
