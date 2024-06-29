@@ -68,7 +68,7 @@
 
 #' @export
 `!.polars_expr` <- function(e1) {
-  as_polars_expr(e1)$not()
+  as_polars_expr(e1)$invert()
 }
 
 #' @export

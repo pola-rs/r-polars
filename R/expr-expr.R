@@ -127,6 +127,10 @@ expr__not <- function() {
     wrap()
 }
 
+# Beacuse the $not method and the $invert method are distinguished in the selector,
+# this is only necessary to map the $invert method to the `!` operator.
+expr__invert <- expr__not
+
 expr__is_null <- function() {
   self$`_rexpr`$is_null() |>
     wrap()

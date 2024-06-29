@@ -14,6 +14,7 @@ wrap_to_selector <- function(x, name, parameters = NULL) {
   self <- new.env(parent = emptyenv())
   self$`_rexpr` <- x$`_rexpr`
   self$`_attrs` <- list(name = name, parameters = parameters)
+  self$`_print_override` <- NULL
 
   lapply(names(polars_selector__methods), function(name) {
     fn <- polars_selector__methods[[name]]
@@ -33,6 +34,14 @@ wrap_to_selector <- function(x, name, parameters = NULL) {
 
   class(self) <- c("polars_selector", "polars_expr", "polars_object")
   self
+}
+
+selector__invert <- function() {
+  inverted <- cs$all()$sub(self)
+  # TODO: we want to print something like `!cs$all()` when call `!cs$all()`
+  inverted$`_print_override` <- deparse1(sys.call(sys.nframe() - 1))
+
+  inverted
 }
 
 selector__sub <- function(other) {
