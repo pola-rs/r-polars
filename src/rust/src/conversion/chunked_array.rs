@@ -103,3 +103,22 @@ impl From<Wrap<&DurationChunked>> for Sexp {
         sexp.into()
     }
 }
+
+impl From<Wrap<&TimeChunked>> for Sexp {
+    fn from(ca: Wrap<&TimeChunked>) -> Self {
+        let ca = ca.0;
+        let mut sexp = OwnedRealSexp::new(ca.len()).unwrap();
+        let _ = sexp.set_class(&["hms", "difftime"]);
+        let _ = sexp
+            .set_attrib("units", <OwnedStringSexp>::try_from("secs").unwrap().into())
+            .unwrap();
+        for (i, v) in ca.into_iter().enumerate() {
+            if let Some(v) = v {
+                let _ = sexp.set_elt(i, v as f64 / 1_000_000_000.0);
+            } else {
+                let _ = sexp.set_na(i);
+            }
+        }
+        sexp.into()
+    }
+}

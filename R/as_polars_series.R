@@ -104,6 +104,17 @@ as_polars_series.difftime <- function(x, name = NULL, ...) {
 }
 
 #' @export
+as_polars_series.hms <- function(x, name = NULL, ...) {
+  PlRSeries$new_f64(name %||% "", x)$mul(
+    PlRSeries$new_i32("", 1000000000L)
+  )$cast(
+    pl$Time$`_dt`,
+    strict = TRUE
+  ) |>
+    wrap()
+}
+
+#' @export
 as_polars_series.array <- function(x, name = NULL, ...) {
   dims <- dim(x) |>
     rev()
