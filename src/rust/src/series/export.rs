@@ -61,6 +61,23 @@ impl PlRSeries {
                     }
                     Ok(list.into())
                 },
+                DataType::Date => {
+                    let len = series.len();
+                    let mut out = OwnedRealSexp::new(len)?;
+                    let _ = out.set_class(&["Date"])?;
+                    series
+                        .cast(&DataType::Float64)
+                        .unwrap()
+                        .f64()
+                        .unwrap()
+                        .iter()
+                        .enumerate()
+                        .try_for_each(|(i, opt_v)| match opt_v {
+                            Some(v) => out.set_elt(i, v),
+                            None => out.set_na(i),
+                        })?;
+                    Ok(out.into())
+                }
                 DataType::Struct(_) => {
                     let df = series.clone().into_frame().unnest([series.name()]).unwrap();
                     let len = df.width();

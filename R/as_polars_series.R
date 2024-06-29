@@ -47,9 +47,20 @@ as_polars_series.logical <- function(x, name = NULL, ...) {
 
 #' @export
 as_polars_series.factor <- function(x, name = NULL, ...) {
-  as_polars_series.character(as.character(x), name = name)$cast(
-    pl$Categorical()
-  )
+  PlRSeries$new_str(name %||% "", as.character(x))$cast(
+    pl$Categorical()$`_dt`,
+    strict = TRUE
+  ) |>
+    wrap()
+}
+
+#' @export
+as_polars_series.Date <- function(x, name = NULL, ...) {
+  PlRSeries$new_f64(name %||% "", x)$cast(
+    pl$Date$`_dt`,
+    strict = TRUE
+  ) |>
+    wrap()
 }
 
 #' @export
