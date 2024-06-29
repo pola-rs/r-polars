@@ -47,6 +47,20 @@ impl PlRSeries {
                     }
                     Ok(list.into())
                 },
+                DataType::Array(_, _) => unsafe {
+                    let len = series.len();
+                    let mut list = OwnedListSexp::new(len, false)?;
+                    let ca = series.array().unwrap();
+                    for (i, opt_s) in ca.amortized_iter().enumerate() {
+                        match opt_s {
+                            None => list.set_value_unchecked(i, savvy::sexp::null::null()),
+                            Some(s) => {
+                                list.set_value_unchecked(i, to_r_vector_recursive(s.as_ref())?.0)
+                            }
+                        }
+                    }
+                    Ok(list.into())
+                },
                 _ => todo!(),
             }
         }
