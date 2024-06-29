@@ -62,6 +62,7 @@ impl PlRSeries {
                     Ok(list.into())
                 },
                 DataType::Date => Ok(<Sexp>::from(Wrap(series.date().unwrap()))),
+                DataType::Duration(_) => Ok(<Sexp>::from(Wrap(series.duration().unwrap()))),
                 DataType::Struct(_) => {
                     let df = series.clone().into_frame().unnest([series.name()]).unwrap();
                     let len = df.width();

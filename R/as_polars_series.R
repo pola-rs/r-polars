@@ -84,6 +84,26 @@ as_polars_series.POSIXct <- function(x, name = NULL, ...) {
 }
 
 #' @export
+as_polars_series.difftime <- function(x, name = NULL, ...) {
+  mul_value <- switch(attr(x, "units"),
+    "secs" = 1000L,
+    "mins" = 60L * 1000L,
+    "hours" = 60L * 60L * 1000L,
+    "days" = 24L * 60L * 60L * 1000L,
+    "weeks" = 7L * 24L * 60L * 60L * 1000L,
+    abort("Unsupported `units` attribute of the difftime object.")
+  )
+
+  PlRSeries$new_f64(name %||% "", x)$mul(
+    PlRSeries$new_i32("", mul_value)
+  )$cast(
+    pl$Duration("ms")$`_dt`,
+    strict = TRUE
+  ) |>
+    wrap()
+}
+
+#' @export
 as_polars_series.array <- function(x, name = NULL, ...) {
   dims <- dim(x) |>
     rev()

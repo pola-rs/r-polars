@@ -78,3 +78,28 @@ impl From<Wrap<&DateChunked>> for Sexp {
         sexp.into()
     }
 }
+
+impl From<Wrap<&DurationChunked>> for Sexp {
+    fn from(ca: Wrap<&DurationChunked>) -> Self {
+        let ca = ca.0;
+        let time_unit = ca.time_unit();
+        let div_value: f64 = match time_unit {
+            TimeUnit::Nanoseconds => 1_000_000_000.0,
+            TimeUnit::Microseconds => 1_000_000.0,
+            TimeUnit::Milliseconds => 1_000.0,
+        };
+        let mut sexp = OwnedRealSexp::new(ca.len()).unwrap();
+        let _ = sexp.set_class(&["difftime"]);
+        let _ = sexp
+            .set_attrib("units", <OwnedStringSexp>::try_from("secs").unwrap().into())
+            .unwrap();
+        for (i, v) in ca.into_iter().enumerate() {
+            if let Some(v) = v {
+                let _ = sexp.set_elt(i, v as f64 / div_value);
+            } else {
+                let _ = sexp.set_na(i);
+            }
+        }
+        sexp.into()
+    }
+}
