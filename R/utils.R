@@ -717,11 +717,11 @@ translate_statistics = function(statistics) {
     )
     statistics = modifyList(default, statistics)
     nms = names(statistics)
-    invalid = nms[! nms %in% c("min", "max", "distinct_count", "null_count")]
+    invalid = nms[!nms %in% c("min", "max", "distinct_count", "null_count")]
     if (length(invalid) > 0) {
       msg = paste0("`", invalid, "`", collapse = ", ")
       return(
-        Err_plain("In `statistics`,",  msg, "are not valid keys.")
+        Err_plain("In `statistics`,", msg, "are not valid keys.")
       )
     }
   }

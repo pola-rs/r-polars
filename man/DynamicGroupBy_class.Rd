@@ -9,7 +9,7 @@ This class comes from \code{\link[=DataFrame_group_by_dynamic]{<DataFrame>$group
 }
 \examples{
 df = pl$DataFrame(
-  time = pl$date_range(
+  time = pl$datetime_range(
     start = strptime("2021-12-16 00:00:00", format = "\%Y-\%m-\%d \%H:\%M:\%S", tz = "UTC"),
     end = strptime("2021-12-16 03:00:00", format = "\%Y-\%m-\%d \%H:\%M:\%S", tz = "UTC"),
     interval = "30m"

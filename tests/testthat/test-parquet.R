@@ -104,7 +104,7 @@ test_that("write_parquet: argument 'statistics'", {
   expect_silent(dat$write_parquet(tmpf, statistics = FALSE))
   expect_silent(dat$write_parquet(tmpf, statistics = "full"))
   expect_grepl_error(
-      dat$write_parquet(tmpf, statistics = list(null_count = FALSE)),
+    dat$write_parquet(tmpf, statistics = list(null_count = FALSE)),
     "File out of specification: null count of a page is required"
   )
   expect_grepl_error(
