@@ -13,7 +13,7 @@ A Time Expr
 This only works on Datetime Series, it will error on Date Series.
 }
 \examples{
-df = pl$DataFrame(dates = pl$date_range(
+df = pl$DataFrame(dates = pl$datetime_range(
   as.Date("2000-1-1"),
   as.Date("2000-1-2"),
   "1h"

@@ -14,10 +14,10 @@ Extract the days from a Duration type.
 }
 \examples{
 df = pl$DataFrame(
-  date = pl$date_range(
+  date = pl$datetime_range(
     start = as.Date("2020-3-1"),
     end = as.Date("2020-5-1"),
-    interval = "1mo"
+    interval = "1mo1s"
   )
 )
 df$select(

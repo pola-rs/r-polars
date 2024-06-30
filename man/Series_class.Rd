@@ -172,7 +172,7 @@ s$cos()
 
 # use Expr method in subnamespaces
 as_polars_series(list(3:1, 1:2, NULL))$list$first()
-as_polars_series(c(1, NA, 2))$str$concat("-")
+as_polars_series(c(1, NA, 2))$str$join("-")
 
 s = pl$date_range(
   as.Date("2024-02-18"), as.Date("2024-02-24"),

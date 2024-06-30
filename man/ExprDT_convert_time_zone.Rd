@@ -19,10 +19,10 @@ regardless of your system’s time zone.
 }
 \examples{
 df = pl$DataFrame(
-  date = pl$date_range(
+  date = pl$datetime_range(
     as.POSIXct("2020-03-01", tz = "UTC"),
     as.POSIXct("2020-05-01", tz = "UTC"),
-    "1mo"
+    "1mo1s"
   )
 )
 
