@@ -33,7 +33,7 @@ Updated rust-polars to 0.41.2 (#1147).
 - In `$top_k()` and `$bottom_k()` for `Expr`, the arguments `nulls_last`,
   `maintain_order` and `multithreaded` have been removed. If any `null` values
   are in the top/bottom `k` values, they will always be positioned last (#1147).
-- `$replace()` has been split in two functions depending on the desired 
+- `$replace()` has been split in two functions depending on the desired
   behaviour (#1147):
   - `$replace()` recodes some values in the column, leaving all other values
     unchanged. Compared to the previous version, it doesn't use the arguments
