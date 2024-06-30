@@ -63,6 +63,10 @@ impl PlRSeries {
                 },
                 DataType::Date => Ok(<Sexp>::from(Wrap(series.date().unwrap()))),
                 DataType::Time => Ok(<Sexp>::from(Wrap(series.time().unwrap()))),
+                DataType::Datetime(_, opt_tz) => match opt_tz {
+                    None => todo!(),
+                    Some(_tz) => Ok(<Sexp>::from(Wrap(series.datetime().unwrap()))),
+                },
                 DataType::Duration(_) => Ok(<Sexp>::from(Wrap(series.duration().unwrap()))),
                 DataType::Struct(_) => {
                     let df = series.clone().into_frame().unnest([series.name()]).unwrap();
