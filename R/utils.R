@@ -715,7 +715,7 @@ translate_statistics = function(statistics) {
       distinct_count = FALSE,
       null_count = TRUE
     )
-    statistics = modifyList(default, statistics)
+    statistics = utils::modifyList(default, statistics)
     nms = names(statistics)
     invalid = nms[!nms %in% c("min", "max", "distinct_count", "null_count")]
     if (length(invalid) > 0) {
