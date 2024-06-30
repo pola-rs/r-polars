@@ -13,6 +13,33 @@ test_that("Test sinking data to parquet file", {
   expect_identical(x$collect()$to_list(), lf$collect()$to_list())
 })
 
+test_that("sink_parquet: argument 'statistics'", {
+  tmpf = tempfile()
+  on.exit(unlink(tmpf))
+
+  expect_silent(lf$sink_parquet(tmpf, statistics = TRUE))
+  expect_silent(lf$sink_parquet(tmpf, statistics = FALSE))
+  expect_silent(lf$sink_parquet(tmpf, statistics = "full"))
+  # TODO: uncomment when https://github.com/pola-rs/polars/issues/17306 is fixed
+  # expect_silent(lf$sink_parquet(
+  #   tmpf,
+  #   statistics = list(
+  #     min = TRUE,
+  #     max = FALSE,
+  #     distinct_count = TRUE,
+  #     null_count = FALSE
+  #   )
+  # ))
+  expect_grepl_error(
+    lf$sink_parquet(tmpf, statistics = list(foo = TRUE, foo2 = FALSE)),
+    "In `statistics`, `foo`, `foo2` are not valid keys"
+  )
+  expect_grepl_error(
+    lf$sink_parquet(tmpf, statistics = "foo"),
+    "`statistics` must be TRUE/FALSE, 'full', or a named list."
+  )
+})
+
 test_that("Test sinking data to IPC file", {
   tmpf = tempfile()
   on.exit(unlink(tmpf))

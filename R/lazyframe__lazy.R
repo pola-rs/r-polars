@@ -699,7 +699,8 @@ LazyFrame_sink_parquet = function(
     ) |> unwrap("in $sink_parquet()")
   }
 
-  statistics = translate_statistics(statistics)
+  statistics = translate_statistics(statistics) |>
+    unwrap("in $sink_parquet():")
 
   lf |>
     .pr$LazyFrame$sink_parquet(
@@ -711,7 +712,7 @@ LazyFrame_sink_parquet = function(
       data_pagesize_limit,
       maintain_order
     ) |>
-    unwrap("in $sink_parquet()")
+    unwrap("in $sink_parquet():")
 
   invisible(self)
 }

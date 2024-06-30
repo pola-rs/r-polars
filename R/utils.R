@@ -697,13 +697,33 @@ translate_statistics = function(statistics) {
         null_count = FALSE
       )
     }
-  } else if (is.character(statistics) && statistics == "full") {
-    statistics = list(
+  } else if (is.character(statistics)) {
+    if (statistics == "full") {
+      statistics = list(
+        min = TRUE,
+        max = TRUE,
+        distinct_count = TRUE,
+        null_count = TRUE
+      )
+    } else {
+      return(Err_plain("`statistics` must be TRUE/FALSE, 'full', or a named list."))
+    }
+  } else if (is.list(statistics)) {
+    default = list(
       min = TRUE,
       max = TRUE,
-      distinct_count = TRUE,
+      distinct_count = FALSE,
       null_count = TRUE
     )
+    statistics = modifyList(default, statistics)
+    nms = names(statistics)
+    invalid = nms[! nms %in% c("min", "max", "distinct_count", "null_count")]
+    if (length(invalid) > 0) {
+      msg = paste0("`", invalid, "`", collapse = ", ")
+      return(
+        Err_plain("In `statistics`,",  msg, "are not valid keys.")
+      )
+    }
   }
-  statistics
+  result(statistics)
 }

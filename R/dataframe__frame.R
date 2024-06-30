@@ -2035,7 +2035,8 @@ DataFrame_write_parquet = function(
     statistics = TRUE,
     row_group_size = NULL,
     data_pagesize_limit = NULL) {
-  statistics = translate_statistics(statistics)
+  statistics = translate_statistics(statistics)|> 
+    unwrap("in $write_parquet():")
   .pr$DataFrame$write_parquet(
     self,
     file,
