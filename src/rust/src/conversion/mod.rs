@@ -137,3 +137,20 @@ impl TryFrom<NumericSexp> for Wrap<Vec<i64>> {
         Ok(Wrap(v.iter().map(|&x| x as i64).collect()))
     }
 }
+
+impl TryFrom<&str> for Wrap<NonExistent> {
+    type Error = String;
+
+    fn try_from(non_existent: &str) -> Result<Self, String> {
+        let parsed = match non_existent {
+            "null" => NonExistent::Null,
+            "raise" => NonExistent::Raise,
+            v => {
+                return Err(format!(
+                    "`non_existent` must be one of ('null', 'raise'), got '{v}'",
+                ))
+            }
+        };
+        Ok(Wrap(parsed))
+    }
+}

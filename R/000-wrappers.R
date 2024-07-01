@@ -368,6 +368,19 @@ PlRDataType$new_duration <- function(time_unit) {
 
 ### wrapper functions for PlRExpr
 
+PlRExpr_dt_convert_time_zone <- function(self) {
+  function(time_zone) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_convert_time_zone__impl, self, time_zone))
+  }
+}
+
+PlRExpr_dt_replace_time_zone <- function(self) {
+  function(ambiguous, non_existent, time_zone = NULL) {
+    ambiguous <- .savvy_extract_ptr(ambiguous, "PlRExpr")
+  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_replace_time_zone__impl, self, ambiguous, non_existent, time_zone))
+  }
+}
+
 PlRExpr_print <- function(self) {
   function() {
   invisible(.Call(savvy_PlRExpr_print__impl, self))
@@ -656,7 +669,9 @@ PlRExpr_struct_field_by_name <- function(self) {
 .savvy_wrap_PlRExpr <- function(ptr) {
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
-    e$print <- PlRExpr_print(ptr)
+    e$dt_convert_time_zone <- PlRExpr_dt_convert_time_zone(ptr)
+  e$dt_replace_time_zone <- PlRExpr_dt_replace_time_zone(ptr)
+  e$print <- PlRExpr_print(ptr)
   e$add <- PlRExpr_add(ptr)
   e$sub <- PlRExpr_sub(ptr)
   e$mul <- PlRExpr_mul(ptr)

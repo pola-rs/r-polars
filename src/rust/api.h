@@ -51,6 +51,8 @@ SEXP savvy_PlRDataType_is_ord__ffi(SEXP self__);
 SEXP savvy_PlRDataType_is_known__ffi(SEXP self__);
 
 // methods and associated functions for PlRExpr
+SEXP savvy_PlRExpr_dt_convert_time_zone__ffi(SEXP self__, SEXP time_zone);
+SEXP savvy_PlRExpr_dt_replace_time_zone__ffi(SEXP self__, SEXP ambiguous, SEXP non_existent, SEXP time_zone);
 SEXP savvy_PlRExpr_print__ffi(SEXP self__);
 SEXP savvy_PlRExpr_add__ffi(SEXP self__, SEXP rhs);
 SEXP savvy_PlRExpr_sub__ffi(SEXP self__, SEXP rhs);

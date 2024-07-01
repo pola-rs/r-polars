@@ -81,8 +81,11 @@ series__reshape <- function(dimensions) {
     wrap()
 }
 
+# TODO: add options for ambiguous and non-existent times
+# TODO: add options for i64 etc. conversion
 series__to_r_vector <- function() {
-  self$`_s`$to_r_vector()
+  self$`_s`$to_r_vector() |>
+    wrap()
 }
 
 series__to_frame <- function(name = NULL) {

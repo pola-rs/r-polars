@@ -66,14 +66,23 @@ as_polars_series.Date <- function(x, name = NULL, ...) {
 #' @export
 as_polars_series.POSIXct <- function(x, name = NULL, ...) {
   tzone <- attr(x, "tzone")
+  name <- name %||% ""
 
-  int_series <- PlRSeries$new_f64(name %||% "", x)$mul(
+  int_series <- PlRSeries$new_f64(name, x)$mul(
     PlRSeries$new_f64("", 1000)
   )$cast(pl$Int64$`_dt`, strict = TRUE)
 
   if (tzone == "") {
-    # TODO: needs `$dt` namespace
-    abort("todo")
+    wrap(int_series)$to_frame()$select(
+      pl$col(name)$cast(
+        pl$Datetime("ms", "UTC")
+      )$dt$convert_time_zone(
+        Sys.timezone()
+      )$dt$replace_time_zone(
+        NULL,
+        ambiguous = "raise", non_existent = "raise"
+      )
+    )$to_series()
   } else {
     int_series$cast(
       pl$Datetime("ms", tzone)$`_dt`,

@@ -107,20 +107,16 @@ impl From<Wrap<&DurationChunked>> for Sexp {
 impl From<Wrap<&DatetimeChunked>> for Sexp {
     fn from(ca: Wrap<&DatetimeChunked>) -> Self {
         let ca = ca.0;
-        let time_zone = ca.time_zone();
         let time_unit = ca.time_unit();
         let div_value: f64 = match time_unit {
             TimeUnit::Nanoseconds => 1_000_000_000.0,
             TimeUnit::Microseconds => 1_000_000.0,
             TimeUnit::Milliseconds => 1_000.0,
         };
+        let tzone_attr = ca.time_zone().as_deref().unwrap_or("");
 
         let mut sexp = OwnedRealSexp::new(ca.len()).unwrap();
         let _ = sexp.set_class(&["POSIXct", "POSIXt"]);
-        let tzone_attr = match time_zone {
-            Some(str) => str,
-            None => "",
-        };
         let _ = sexp
             .set_attrib(
                 "tzone",

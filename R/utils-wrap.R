@@ -21,5 +21,5 @@ wrap <- function(x, ..., call = parent.frame()) {
 
 #' @export
 wrap.default <- function(x, ...) {
-  abort("Unimplemented class!")
+  x
 }

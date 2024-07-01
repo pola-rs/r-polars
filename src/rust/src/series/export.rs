@@ -1,9 +1,5 @@
-use crate::{error::RPolarsErr, prelude::*, PlRSeries};
-use polars_core::prelude::*;
-use savvy::{
-    savvy, ExternalPointerSexp, FunctionArgs, FunctionSexp, ListSexp, OwnedIntegerSexp,
-    OwnedListSexp, OwnedLogicalSexp, OwnedRealSexp, OwnedStringSexp, Sexp,
-};
+use crate::{prelude::*, PlRSeries, RPolarsErr};
+use savvy::{savvy, FunctionArgs, FunctionSexp, OwnedListSexp, Sexp, StringSexp};
 
 #[savvy]
 impl PlRSeries {
@@ -64,7 +60,35 @@ impl PlRSeries {
                 DataType::Date => Ok(<Sexp>::from(Wrap(series.date().unwrap()))),
                 DataType::Time => Ok(<Sexp>::from(Wrap(series.time().unwrap()))),
                 DataType::Datetime(_, opt_tz) => match opt_tz {
-                    None => todo!(),
+                    None => {
+                        let local_time_zone: String =
+                            StringSexp(savvy::eval_parse_text("Sys.timezone()")?.inner())
+                                .iter()
+                                .collect();
+                        Ok(<Sexp>::from(Wrap(
+                            series
+                                .clone()
+                                .into_frame()
+                                .lazy()
+                                .select([col(series.name())
+                                    .dt()
+                                    .replace_time_zone(
+                                        Some(local_time_zone),
+                                        lit("raise"),
+                                        NonExistent::Raise,
+                                    )
+                                    .dt()
+                                    .convert_time_zone("UTC".to_string())
+                                    .dt()
+                                    .replace_time_zone(None, lit("raise"), NonExistent::Raise)])
+                                .collect()
+                                .map_err(RPolarsErr::from)?
+                                .select_at_idx(0)
+                                .unwrap()
+                                .datetime()
+                                .unwrap(),
+                        )))
+                    }
                     Some(_tz) => Ok(<Sexp>::from(Wrap(series.datetime().unwrap()))),
                 },
                 DataType::Duration(_) => Ok(<Sexp>::from(Wrap(series.duration().unwrap()))),
