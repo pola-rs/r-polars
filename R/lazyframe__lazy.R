@@ -1336,16 +1336,24 @@ LazyFrame_join = function(
     Err_plain("`other` must be a LazyFrame.") |> uw()
   }
 
-  if (!is.null(on)) {
-    rexprs_right = rexprs_left = as.list(on)
-  } else if ((!is.null(left_on) && !is.null(right_on))) {
-    rexprs_left = as.list(left_on)
-    rexprs_right = as.list(right_on)
-  } else if (how != "cross") {
-    Err_plain("must specify either `on`, or `left_on` and `right_on`.") |> uw()
+  if (how == "cross") {
+    if (!is.null(on) || !is.null(left_on) || !is.null(right_on)) {
+      Err_plain("cross join should not pass join keys.") |> uw()
+    }
+    rexprs_left = as.list(NULL)
+    rexprs_right = as.list(NULL)
   } else {
-    rexprs_left = as.list(self$columns)
-    rexprs_right = as.list(other$columns)
+    if (!is.null(on)) {
+      rexprs_right = rexprs_left = as.list(on)
+    } else if ((!is.null(left_on) && !is.null(right_on))) {
+      rexprs_left = as.list(left_on)
+      rexprs_right = as.list(right_on)
+    } else if (how != "cross") {
+      Err_plain("must specify either `on`, or `left_on` and `right_on`.") |> uw()
+    } else {
+      rexprs_left = as.list(self$columns)
+      rexprs_right = as.list(other$columns)
+    }
   }
 
   .pr$LazyFrame$join(

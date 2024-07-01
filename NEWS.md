@@ -45,6 +45,8 @@ Updated rust-polars to 0.41.2 (#1147).
 - In `pl$date_range()` and `pl$date_ranges()`, the arguments `time_unit` and
   `time_zone` have been removed. They were deprecated in previous versions
   (#1147).
+- In `$join()`, when `how = "cross"`, `on`, `left_on` and `right_on` must be
+  `NULL` (#1147).
 
 
 ### New features

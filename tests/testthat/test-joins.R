@@ -111,6 +111,16 @@ test_that("cross join, DataFrame", {
     )
   )
 
+  expect_grepl_error(
+    dat$join(dat2, how = "cross", on = "foo"),
+    "cross join should not pass join keys"
+  )
+
+  expect_grepl_error(
+    dat$join(dat2, how = "cross", left_on = "foo", right_on = "foo2"),
+    "cross join should not pass join keys"
+  )
+
   # one empty dataframe
   dat_empty = pl$DataFrame(y = character())
   expect_identical(
