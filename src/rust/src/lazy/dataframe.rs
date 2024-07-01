@@ -19,9 +19,6 @@ use polars::prelude as pl;
 use polars::prelude::{JoinCoalesce, SerializeOptions};
 use polars_lazy::prelude::CsvWriterOptions;
 
-#[allow(unused_imports)]
-use std::result::Result;
-
 #[derive(Clone)]
 pub struct RPolarsLazyFrame(pub pl::LazyFrame);
 
@@ -37,6 +34,7 @@ impl From<pl::LazyFrame> for RPolarsLazyFrame {
     }
 }
 
+use extendr_api::Result;
 #[extendr]
 impl RPolarsLazyFrame {
     fn print(&self) -> RResult<Self> {
@@ -68,7 +66,7 @@ impl RPolarsLazyFrame {
     }
 
     //low level version of describe_plan, mainly for arg testing
-    pub fn debug_plan(&self) -> Result<String, String> {
+    pub fn debug_plan(&self) -> std::result::Result<String, String> {
         use polars_core::export::serde::Serialize;
         use serde_json::value::Serializer;
         Serialize::serialize(&self.0.logical_plan.clone(), Serializer)

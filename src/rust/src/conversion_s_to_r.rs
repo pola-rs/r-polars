@@ -48,6 +48,7 @@ pub fn pl_series_to_list(
                         })
                         .collect_robj()
                         .set_class(&["integer64"])
+                        .cloned()
                         .expect("internal error could not set class label 'integer64'")
                 }),
                 _ => Err(pl::PolarsError::InvalidOperation(
@@ -108,6 +109,7 @@ pub fn pl_series_to_list(
                 extendr_api::List::from_values(x)
                     .into_robj()
                     .set_class(["rpolars_raw_list", "list"])
+                    .cloned()
                     .expect("this class label is always valid")
             }),
             Enum(_, _) => s
@@ -181,6 +183,7 @@ pub fn pl_series_to_list(
                 .into_iter()
                 .collect_robj()
                 .set_class(&["Date"])
+                .cloned()
                 .expect("internal error: class label Date failed")),
             Null => Ok((extendr_api::NULL).into_robj()),
             Time => s
@@ -195,8 +198,9 @@ pub fn pl_series_to_list(
                 .map(|mut robj| {
                     robj.set_class(&["PTime"])
                         .expect("internal error: class label PTime failed")
+                        .clone()
                 })
-                .map(|mut robj| robj.set_attrib("tu", "ns"))
+                .map(|mut robj| robj.set_attrib("tu", "ns").cloned())
                 .expect("internal error: attr tu failed")
                 .map_err(|err| {
                     pl_error::ComputeError(
@@ -248,9 +252,11 @@ pub fn pl_series_to_list(
                     .map(|mut robj| {
                         robj.set_class(&["POSIXct", "POSIXt"])
                             .expect("internal error: class POSIXct label failed")
+                            .clone()
                     })
                     .map(|mut robj| {
                         robj.set_attrib("tzone", opt_tz.as_ref().map(|s| s.as_str()).unwrap_or(""))
+                        .cloned()
                     })
                     .expect("internal error: attr tzone failed")
                     .map_err(|err| {

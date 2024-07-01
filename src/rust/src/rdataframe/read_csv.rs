@@ -11,7 +11,6 @@ use polars::io::RowIndex;
 use crate::utils::wrappers::{null_to_opt, Wrap};
 use extendr_api::{extendr, prelude::*};
 use polars::prelude as pl;
-use std::result::Result;
 
 //see param, null_values
 #[derive(Clone, Debug)]
