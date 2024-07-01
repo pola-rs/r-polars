@@ -115,4 +115,8 @@ test_that("write_parquet: argument 'statistics'", {
     dat$write_parquet(tmpf, statistics = "foo"),
     "`statistics` must be TRUE/FALSE, 'full', or a named list."
   )
+  expect_grepl_error(
+    dat$write_parquet(tmpf, statistics = c(max = TRUE, min = FALSE)),
+    "`statistics` must be of length 1."
+  )
 })

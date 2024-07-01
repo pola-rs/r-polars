@@ -38,6 +38,10 @@ test_that("sink_parquet: argument 'statistics'", {
     lf$sink_parquet(tmpf, statistics = "foo"),
     "`statistics` must be TRUE/FALSE, 'full', or a named list."
   )
+  expect_grepl_error(
+    lf$sink_parquet(tmpf, statistics = c(max = TRUE, min = FALSE)),
+    "`statistics` must be of length 1."
+  )
 })
 
 test_that("Test sinking data to IPC file", {

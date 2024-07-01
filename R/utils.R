@@ -681,6 +681,9 @@ is_named = function(x) {
 
 # Used in parquet write/sink
 translate_statistics = function(statistics) {
+  if (length(statistics) != 1) {
+    return(Err_plain("`statistics` must be of length 1."))
+  }
   if (is.logical(statistics)) {
     if (isTRUE(statistics)) {
       statistics = list(
