@@ -144,6 +144,24 @@ PlRDataFrame_get_columns <- function(self) {
   }
 }
 
+PlRDataFrame_shape <- function(self) {
+  function() {
+  .Call(savvy_PlRDataFrame_shape__impl, self)
+  }
+}
+
+PlRDataFrame_height <- function(self) {
+  function() {
+  .Call(savvy_PlRDataFrame_height__impl, self)
+  }
+}
+
+PlRDataFrame_width <- function(self) {
+  function() {
+  .Call(savvy_PlRDataFrame_width__impl, self)
+  }
+}
+
 PlRDataFrame_to_series <- function(self) {
   function(index) {
     .savvy_wrap_PlRSeries(.Call(savvy_PlRDataFrame_to_series__impl, self, index))
@@ -167,6 +185,9 @@ PlRDataFrame_lazy <- function(self) {
   e$.ptr <- ptr
     e$print <- PlRDataFrame_print(ptr)
   e$get_columns <- PlRDataFrame_get_columns(ptr)
+  e$shape <- PlRDataFrame_shape(ptr)
+  e$height <- PlRDataFrame_height(ptr)
+  e$width <- PlRDataFrame_width(ptr)
   e$to_series <- PlRDataFrame_to_series(ptr)
   e$to_struct <- PlRDataFrame_to_struct(ptr)
   e$lazy <- PlRDataFrame_lazy(ptr)

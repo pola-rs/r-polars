@@ -1,7 +1,8 @@
 use super::*;
 use crate::{error::RPolarsErr, series::ToRSeries, PlRLazyFrame, PlRSeries};
 use savvy::{
-    r_println, savvy, ListSexp, NumericScalar, OwnedListSexp, Result, Sexp, StringSexp, TypedSexp,
+    r_println, savvy, ListSexp, NumericScalar, OwnedIntegerSexp, OwnedListSexp, Result, Sexp,
+    StringSexp, TypedSexp,
 };
 
 #[savvy]
@@ -42,6 +43,19 @@ impl PlRDataFrame {
             );
         }
         Ok(list.into())
+    }
+
+    pub fn shape(&self) -> Result<Sexp> {
+        let shape = self.df.shape();
+        OwnedIntegerSexp::try_from_slice([shape.0 as i32, shape.1 as i32])?.into()
+    }
+
+    pub fn height(&self) -> Result<Sexp> {
+        OwnedIntegerSexp::try_from_slice([self.df.height() as i32])?.into()
+    }
+
+    pub fn width(&self) -> Result<Sexp> {
+        OwnedIntegerSexp::try_from_slice([self.df.width() as i32])?.into()
     }
 
     pub fn to_series(&self, index: NumericScalar) -> Result<PlRSeries> {

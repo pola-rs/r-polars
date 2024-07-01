@@ -11,6 +11,10 @@ wrap.PlRDataFrame <- function(x) {
   self <- new.env(parent = emptyenv())
   self$`_df` <- x
 
+  makeActiveBinding("shape", function() self$`_df`$shape(), self)
+  makeActiveBinding("height", function() self$`_df`$height(), self)
+  makeActiveBinding("width", function() self$`_df`$width(), self)
+
   lapply(names(polars_dataframe__methods), function(name) {
     fn <- polars_dataframe__methods[[name]]
     environment(fn) <- environment()
