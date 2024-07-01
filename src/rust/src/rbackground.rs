@@ -58,6 +58,9 @@ impl<T: Send + Sync + 'static> RPolarsRThreadHandle<T> {
     }
 }
 
+use extendr_api::Error;
+use extendr_api::ExternalPtr;
+use extendr_api::Result;
 #[extendr]
 impl RPolarsRThreadHandle<RResult<RPolarsDataFrame>> {
     fn join(&mut self) -> RResult<RPolarsDataFrame> {

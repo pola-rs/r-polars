@@ -11,14 +11,18 @@ pub enum RArrowArrayClass {
     NanoArrowArray,
 }
 
-impl<'a> FromRobj<'a> for RArrowArrayClass {
-    fn from_robj(robj: &Robj) -> std::result::Result<Self, &'static str> {
+impl TryFrom<&Robj> for RArrowArrayClass {
+    type Error = extendr_api::Error;
+
+    fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
         if robj.inherits("nanoarrow_array") {
             Ok(RArrowArrayClass::NanoArrowArray)
         } else if robj.inherits("Array") {
             Ok(RArrowArrayClass::ArrowArray)
         } else {
-            Err("Robj does not inherit from Array or nanoarrow_array")
+            Err(Error::Other(
+                "Robj does not inherit from Array or nanoarrow_array".into(),
+            ))
         }
     }
 }

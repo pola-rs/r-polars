@@ -6,7 +6,6 @@ use extendr_api::prelude::*;
 use polars::lazy::dsl;
 use polars::prelude as pl;
 use polars_core::functions as pl_functions;
-use std::result::Result;
 
 #[extendr]
 fn concat_lf(
