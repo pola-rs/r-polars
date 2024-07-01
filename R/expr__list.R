@@ -491,7 +491,7 @@ ExprList_to_struct = function(
 #'
 #' # concat strings in each list
 #' df$select(
-#'   pl$col("b")$list$eval(pl$element()$str$concat(" "))$list$first()
+#'   pl$col("b")$list$eval(pl$element()$str$join(" "))$list$first()
 #' )
 ExprList_eval = function(expr, parallel = FALSE) {
   .pr$Expr$list_eval(self, expr, parallel)

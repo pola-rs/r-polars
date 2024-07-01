@@ -94,3 +94,29 @@ test_that("write_parquet returns the input data", {
   x = dat$write_parquet(tmpf)
   expect_identical(x$to_list(), dat$to_list())
 })
+
+test_that("write_parquet: argument 'statistics'", {
+  dat = pl$DataFrame(mtcars)
+  tmpf = tempfile()
+  on.exit(unlink(tmpf))
+
+  expect_silent(dat$write_parquet(tmpf, statistics = TRUE))
+  expect_silent(dat$write_parquet(tmpf, statistics = FALSE))
+  expect_silent(dat$write_parquet(tmpf, statistics = "full"))
+  expect_grepl_error(
+    dat$write_parquet(tmpf, statistics = list(null_count = FALSE)),
+    "File out of specification: null count of a page is required"
+  )
+  expect_grepl_error(
+    dat$write_parquet(tmpf, statistics = list(foo = TRUE, foo2 = FALSE)),
+    "In `statistics`, `foo`, `foo2` are not valid keys"
+  )
+  expect_grepl_error(
+    dat$write_parquet(tmpf, statistics = "foo"),
+    "`statistics` must be TRUE/FALSE, 'full', or a named list."
+  )
+  expect_grepl_error(
+    dat$write_parquet(tmpf, statistics = c(max = TRUE, min = FALSE)),
+    "`statistics` must be of length 1."
+  )
+})

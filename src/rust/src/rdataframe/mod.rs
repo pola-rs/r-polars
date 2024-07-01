@@ -25,7 +25,7 @@ use polars_core::utils::arrow;
 use crate::utils::{collect_hinted_result, r_result_list};
 
 use crate::conversion::strings_to_smartstrings;
-use polars::frame::explode::MeltArgs;
+use polars::frame::explode::UnpivotArgs;
 use polars::prelude::pivot::{pivot, pivot_stable};
 
 pub struct OwnedDataFrameIterator {
@@ -382,23 +382,23 @@ impl RPolarsDataFrame {
         self.0.clone().null_count().into()
     }
 
-    fn melt(
+    fn unpivot(
         &self,
-        id_vars: Robj,
-        value_vars: Robj,
+        on: Robj,
+        index: Robj,
         value_name: Robj,
         variable_name: Robj,
     ) -> RResult<Self> {
-        let args = MeltArgs {
-            id_vars: strings_to_smartstrings(robj_to!(Vec, String, id_vars)?),
-            value_vars: strings_to_smartstrings(robj_to!(Vec, String, value_vars)?),
+        let args = UnpivotArgs {
+            on: strings_to_smartstrings(robj_to!(Vec, String, on)?),
+            index: strings_to_smartstrings(robj_to!(Vec, String, index)?),
             value_name: robj_to!(Option, String, value_name)?.map(|s| s.into()),
             variable_name: robj_to!(Option, String, variable_name)?.map(|s| s.into()),
             streamable: false,
         };
 
         self.0
-            .melt2(args)
+            .unpivot2(args)
             .map_err(polars_to_rpolars_err)
             .map(RPolarsDataFrame)
     }
@@ -406,8 +406,8 @@ impl RPolarsDataFrame {
     #[allow(clippy::too_many_arguments)]
     pub fn pivot_expr(
         &self,
+        on: Robj,
         index: Robj,
-        columns: Robj,
         values: Robj,
         maintain_order: Robj,
         sort_columns: Robj,
@@ -422,8 +422,8 @@ impl RPolarsDataFrame {
 
         fun(
             &self.0,
-            robj_to!(Vec, String, index)?,
-            robj_to!(Vec, String, columns)?,
+            robj_to!(Vec, String, on)?,
+            robj_to!(Option, Vec, String, index)?,
             robj_to!(Option, Vec, String, values)?,
             robj_to!(bool, sort_columns)?,
             robj_to!(Option, PLExpr, aggregate_expr)?,
@@ -574,7 +574,7 @@ impl RPolarsDataFrame {
                 compression_method,
                 compression_level,
             )?)
-            .with_statistics(robj_to!(bool, statistics)?)
+            .with_statistics(robj_to!(StatisticsOptions, statistics)?)
             .with_row_group_size(robj_to!(Option, usize, row_group_size)?)
             .with_data_page_size(robj_to!(Option, usize, data_pagesize_limit)?)
             .set_parallel(true)

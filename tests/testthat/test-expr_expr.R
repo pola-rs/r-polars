@@ -324,8 +324,23 @@ test_that("$over() with mapping_strategy", {
   expect_identical(
     df$select(pl$col("val")$top_k(2)$over("a", mapping_strategy = "join"))$to_list(),
     list(
-      val = list(c(5L, 2L), c(5L, 2L), c(4L, 3L), c(4L, 3L), c(5L, 2L))
+      val = list(c(5L, 2L), c(5L, 2L), c(3L, 4L), c(3L, 4L), c(5L, 2L))
     )
+  )
+})
+
+test_that("arg 'order_by' in $over() works", {
+  df = pl$DataFrame(
+    g = c(1, 1, 1, 1, 2, 2, 2, 2),
+    t = c(1, 2, 3, 4, 4, 1, 2, 3),
+    x = c(10, 20, 30, 40, 10, 20, 30, 40)
+  )
+
+  expect_equal(
+    df$select(
+      x_lag = pl$col("x")$shift(1)$over("g", order_by = "t")
+    )$to_list(),
+    list(x_lag = c(NA, 10, 20, 30, 40, NA, 20, 30))
   )
 })
 
@@ -896,14 +911,14 @@ test_that("Expr_sort", {
 })
 
 
-test_that("Expr_k_top", {
+test_that("$top_k() works", {
   l = list(a = c(6, 1, 0, NA, Inf, -Inf, NaN))
 
   l_actual = pl$DataFrame(l)$select(
     pl$col("a")$top_k(3)$alias("k_top"),
     pl$col("a")$bottom_k(3)$alias("k_bot")
   )
-  known = structure(list(k_top = c(NaN, Inf, 6), k_bot = c(NA, -Inf, 0)),
+  known = structure(list(k_top = c(NaN, Inf, 6), k_bot = c(-Inf, 0, 1)),
     row.names = c(NA, -3L), class = "data.frame"
   )
   expect_equal(l_actual$to_data_frame(), known)
@@ -2381,6 +2396,18 @@ test_that("$value_counts", {
       count = rep(50, 3)
     )
   )
+
+  # arg "normalize"
+  expect_equal(
+    df$select(pl$col("Species")$value_counts(normalize = TRUE))$
+      unnest()$
+      sort("Species")$
+      to_data_frame(),
+    data.frame(
+      Species = factor(c("setosa", "versicolor", "virginica")),
+      proportion = rep(0.33333333, 3)
+    )
+  )
 })
 
 
@@ -2814,8 +2841,8 @@ test_that("replace works", {
   # the replacements
   mapping = list(`2` = 100, `3` = 200)
   expect_equal(
-    df$select(replaced = pl$col("a")$replace(mapping, default = -1))$to_list(),
-    list(replaced = c(-1, 100, 100, 200))
+    df$select(replaced = pl$col("a")$replace(mapping))$to_list(),
+    list(replaced = c(1, 100, 100, 200))
   )
 
   df = pl$DataFrame(a = c("x", "y", "z"))
@@ -2825,10 +2852,59 @@ test_that("replace works", {
     list(replaced = c("1.0", "2.0", "3.0"))
   )
 
+  # "old", "new", and "default" can take Expr
+  df = pl$DataFrame(a = c(1, 2, 2, 3), b = c(1.5, 2.5, 5, 1))
+  expect_equal(
+    df$select(
+      replaced = pl$col("a")$replace(
+        old = pl$col("a")$max(),
+        new = pl$col("b")$sum()
+      )
+    )$to_list(),
+    list(replaced = c(1, 2, 2, 10))
+  )
+})
+
+test_that("replace_strict works", {
+  df = pl$DataFrame(a = c(1, 2, 2, 3))
+
+  # replace_strict requires a default value
+  expect_error(
+    df$select(replaced = pl$col("a")$replace_strict(2, 100, return_dtype = pl$Float32))$to_list(),
+    "incomplete mapping specified for `replace_strict`"
+  )
+  expect_equal(
+    df$select(replaced = pl$col("a")$replace_strict(c(2, 3), 999, default = 1))$to_list(),
+    list(replaced = c(1, 999, 999, 999))
+  )
+  expect_equal(
+    df$select(replaced = pl$col("a")$replace_strict(c(2, 3), c(100, 200), default = 1))$to_list(),
+    list(replaced = c(1, 100, 100, 200))
+  )
+
+  # "old" can be a named list where names are values to replace, and values are
+  # the replacements
+  mapping = list(`2` = 100, `3` = 200)
+  expect_equal(
+    df$select(replaced = pl$col("a")$replace_strict(mapping, default = -1))$to_list(),
+    list(replaced = c(-1, 100, 100, 200))
+  )
+
+  df = pl$DataFrame(a = c("x", "y", "z"))
+  mapping = list(x = 1, y = 2, z = 3)
+  expect_equal(
+    df$select(replaced = pl$col("a")$replace_strict(mapping, return_dtype = pl$String))$to_list(),
+    list(replaced = c("1.0", "2.0", "3.0"))
+  )
+  expect_error(
+    df$select(pl$col("a")$replace_strict(mapping, return_dtype = pl$foo)),
+    "must be a valid dtype"
+  )
+
   # one can specify the data type to return instead of automatically inferring it
   expect_equal(
     df$
-      select(replaced = pl$col("a")$replace(mapping, return_dtype = pl$Int8))$
+      select(replaced = pl$col("a")$replace_strict(mapping, return_dtype = pl$Int32))$
       to_list(),
     list(replaced = 1:3)
   )
@@ -2837,7 +2913,7 @@ test_that("replace works", {
   df = pl$DataFrame(a = c(1, 2, 2, 3), b = c(1.5, 2.5, 5, 1))
   expect_equal(
     df$select(
-      replaced = pl$col("a")$replace(
+      replaced = pl$col("a")$replace_strict(
         old = pl$col("a")$max(),
         new = pl$col("b")$sum(),
         default = pl$col("b"),
@@ -2852,8 +2928,8 @@ test_that("rle works", {
   expect_equal(
     df$select(pl$col("s")$rle())$unnest("s")$to_data_frame(),
     data.frame(
-      lengths = c(2, 1, 1, 1, 1, 2),
-      values = c(1, 2, 1, NA, 1, 3)
+      len = c(2, 1, 1, 1, 1, 2),
+      value = c(1, 2, 1, NA, 1, 3)
     )
   )
 })
@@ -2891,8 +2967,8 @@ test_that("cut works", {
       cut = pl$col("foo")$cut(c(-1, 1), include_breaks = TRUE)
     )$unnest("cut")$to_list(),
     list(
-      brk = c(-1, -1, 1, 1, Inf),
-      foo_bin = factor(c("(-inf, -1]", "(-inf, -1]", "(-1, 1]", "(-1, 1]", "(1, inf]"))
+      breakpoint = c(-1, -1, 1, 1, Inf),
+      category = factor(c("(-inf, -1]", "(-inf, -1]", "(-1, 1]", "(-1, 1]", "(1, inf]"))
     )
   )
 
@@ -2901,8 +2977,8 @@ test_that("cut works", {
       cut = pl$col("foo")$cut(c(-1, 1), include_breaks = TRUE, left_closed = TRUE)
     )$unnest("cut")$to_list(),
     list(
-      brk = c(-1, 1, 1, Inf, Inf),
-      foo_bin = factor(c("[-inf, -1)", "[-1, 1)", "[-1, 1)", "[1, inf)", "[1, inf)"))
+      breakpoint = c(-1, 1, 1, Inf, Inf),
+      category = factor(c("[-inf, -1)", "[-1, 1)", "[-1, 1)", "[1, inf)", "[1, inf)"))
     )
   )
 })
@@ -2921,7 +2997,7 @@ test_that("qcut works", {
     df$select(
       qcut = pl$col("foo")$qcut(c(0.25, 0.75), labels = c("a", "b", "c"), include_breaks = TRUE)
     )$unnest("qcut")$to_list(),
-    list(brk = c(-1, -1, 1, 1, Inf), foo_bin = factor(c("a", "a", "b", "b", "c")))
+    list(breakpoint = c(-1, -1, 1, 1, Inf), category = factor(c("a", "a", "b", "b", "c")))
   )
 
   expect_equal(

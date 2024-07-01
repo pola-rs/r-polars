@@ -261,50 +261,12 @@ impl RPolarsExpr {
             .into()
     }
 
-    pub fn top_k(
-        &self,
-        k: Robj,
-        nulls_last: Robj,
-        maintain_order: Robj,
-        multithreaded: Robj,
-    ) -> RResult<Self> {
-        let nulls_last = robj_to!(bool, nulls_last)?;
-        let multithreaded = robj_to!(bool, multithreaded)?;
-        let maintain_order = robj_to!(bool, maintain_order)?;
-        Ok(self
-            .0
-            .clone()
-            .top_k(
-                robj_to!(PLExpr, k)?,
-                SortOptions::default()
-                    .with_nulls_last(nulls_last)
-                    .with_maintain_order(maintain_order)
-                    .with_multithreaded(multithreaded),
-            )
-            .into())
+    pub fn top_k(&self, k: Robj) -> RResult<Self> {
+        Ok(self.0.clone().top_k(robj_to!(PLExpr, k)?).into())
     }
 
-    pub fn bottom_k(
-        &self,
-        k: Robj,
-        nulls_last: Robj,
-        maintain_order: Robj,
-        multithreaded: Robj,
-    ) -> RResult<Self> {
-        let nulls_last = robj_to!(bool, nulls_last)?;
-        let multithreaded = robj_to!(bool, multithreaded)?;
-        let maintain_order = robj_to!(bool, maintain_order)?;
-        Ok(self
-            .0
-            .clone()
-            .bottom_k(
-                robj_to!(PLExpr, k)?,
-                SortOptions::default()
-                    .with_nulls_last(nulls_last)
-                    .with_maintain_order(maintain_order)
-                    .with_multithreaded(multithreaded),
-            )
-            .into())
+    pub fn bottom_k(&self, k: Robj) -> RResult<Self> {
+        Ok(self.0.clone().bottom_k(robj_to!(PLExpr, k)?).into())
     }
 
     pub fn arg_max(&self) -> Self {
@@ -1081,8 +1043,11 @@ impl RPolarsExpr {
         }
     }
 
-    pub fn value_counts(&self, sort: bool, parallel: bool, name: String) -> Self {
-        self.0.clone().value_counts(sort, parallel, name).into()
+    pub fn value_counts(&self, sort: bool, parallel: bool, name: String, normalize: bool) -> Self {
+        self.0
+            .clone()
+            .value_counts(sort, parallel, name, normalize)
+            .into()
     }
 
     pub fn unique_counts(&self) -> Self {
@@ -1122,7 +1087,15 @@ impl RPolarsExpr {
         self.0.clone().peak_max().into()
     }
 
-    pub fn replace(
+    pub fn replace(&self, old: Robj, new: Robj) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .replace(robj_to!(PLExpr, old)?, robj_to!(PLExpr, new)?)
+            .into())
+    }
+
+    pub fn replace_strict(
         &self,
         old: Robj,
         new: Robj,
@@ -1132,7 +1105,7 @@ impl RPolarsExpr {
         Ok(self
             .0
             .clone()
-            .replace(
+            .replace_strict(
                 robj_to!(PLExpr, old)?,
                 robj_to!(PLExpr, new)?,
                 robj_to!(Option, PLExpr, default)?,
@@ -1460,22 +1433,17 @@ impl RPolarsExpr {
 
     // datetime methods
 
-    pub fn dt_truncate(&self, every: Robj, offset: String) -> RResult<Self> {
+    pub fn dt_truncate(&self, every: Robj) -> RResult<Self> {
         Ok(self
             .0
             .clone()
             .dt()
-            .truncate(robj_to!(PLExpr, every)?, offset)
+            .truncate(robj_to!(PLExpr, every)?)
             .into())
     }
 
-    pub fn dt_round(&self, every: Robj, offset: &str) -> RResult<Self> {
-        Ok(self
-            .0
-            .clone()
-            .dt()
-            .round(robj_to!(PLExpr, every)?, offset)
-            .into())
+    pub fn dt_round(&self, every: Robj) -> RResult<Self> {
+        Ok(self.0.clone().dt().round(robj_to!(PLExpr, every)?).into())
     }
 
     pub fn dt_time(&self) -> RResult<Self> {
@@ -1822,12 +1790,17 @@ impl RPolarsExpr {
         self.0.clone().len().into()
     }
 
-    pub fn slice(&self, offset: &RPolarsExpr, length: Nullable<&RPolarsExpr>) -> Self {
+    pub fn slice(&self, offset: Robj, length: Nullable<&RPolarsExpr>) -> RResult<Self> {
+        let offset = robj_to!(PLExpr, offset)?;
         let length = match null_to_opt(length) {
-            Some(i) => i.0.clone(),
+            Some(i) => dsl::cast(i.0.clone(), pl::DataType::Int64),
             None => dsl::lit(i64::MAX),
         };
-        self.0.clone().slice(offset.0.clone(), length).into()
+        Ok(self
+            .0
+            .clone()
+            .slice(dsl::cast(offset, pl::DataType::Int64), length)
+            .into())
     }
 
     pub fn append(&self, other: &RPolarsExpr, upcast: bool) -> Self {
@@ -1935,14 +1908,33 @@ impl RPolarsExpr {
             .into())
     }
 
-    pub fn over(&self, partition_by: Robj, mapping: Robj) -> RResult<Self> {
+    pub fn over(
+        &self,
+        partition_by: Robj,
+        order_by: Robj,
+        order_by_descending: bool,
+        order_by_nulls_last: bool,
+        mapping: Robj,
+    ) -> RResult<Self> {
+        let partition_by = robj_to!(Vec, PLExpr, partition_by)?;
+
+        let order_by = robj_to!(Option, Vec, PLExprCol, order_by)?.map(|order_by| {
+            (
+                order_by,
+                SortOptions {
+                    descending: order_by_descending,
+                    nulls_last: order_by_nulls_last,
+                    maintain_order: false,
+                    ..Default::default()
+                },
+            )
+        });
+
+        let mapping = robj_to!(WindowMapping, mapping)?;
         Ok(self
             .0
             .clone()
-            .over_with_options(
-                robj_to!(Vec, PLExpr, partition_by)?,
-                robj_to!(WindowMapping, mapping)?,
-            )
+            .over_with_options(partition_by, order_by, mapping)
             .into())
     }
 
@@ -1964,8 +1956,8 @@ impl RPolarsExpr {
         // set expected type of output from R function
         let ot = robj_to!(Option, PLPolarsDataType, output_type)?;
         let output_map = pl::GetOutput::map_field(move |fld| match ot {
-            Some(ref dt) => pl::Field::new(fld.name(), dt.clone()),
-            None => fld.clone(),
+            Some(ref dt) => Ok(pl::Field::new(fld.name(), dt.clone())),
+            None => Ok(fld.clone()),
         });
 
         robj_to!(bool, agg_list)
@@ -1998,8 +1990,8 @@ impl RPolarsExpr {
         let ot = robj_to!(Option, PLPolarsDataType, output_type)?;
 
         let output_map = pl::GetOutput::map_field(move |fld| match ot {
-            Some(ref dt) => pl::Field::new(fld.name(), dt.clone()),
-            None => fld.clone(),
+            Some(ref dt) => Ok(pl::Field::new(fld.name(), dt.clone())),
+            None => Ok(fld.clone()),
         });
 
         robj_to!(bool, agg_list)
@@ -2031,8 +2023,8 @@ impl RPolarsExpr {
         let ot = null_to_opt(output_type).map(|rdt| rdt.0.clone());
 
         let output_map = pl::GetOutput::map_field(move |fld| match ot {
-            Some(ref dt) => pl::Field::new(fld.name(), dt.clone()),
-            None => fld.clone(),
+            Some(ref dt) => Ok(pl::Field::new(fld.name(), dt.clone())),
+            None => Ok(fld.clone()),
         });
 
         self.0.clone().apply(rbgfunc, output_map).into()
@@ -2131,12 +2123,12 @@ impl RPolarsExpr {
         self.clone().0.str().len_chars().into()
     }
 
-    pub fn str_concat(&self, delimiter: Robj, ignore_nulls: Robj) -> RResult<Self> {
+    pub fn str_join(&self, delimiter: Robj, ignore_nulls: Robj) -> RResult<Self> {
         Ok(self
             .0
             .clone()
             .str()
-            .concat(robj_to!(str, delimiter)?, robj_to!(bool, ignore_nulls)?)
+            .join(robj_to!(str, delimiter)?, robj_to!(bool, ignore_nulls)?)
             .into())
     }
 

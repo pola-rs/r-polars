@@ -4,11 +4,15 @@
 \alias{Expr_over}
 \title{Compute expressions over the given groups}
 \usage{
-Expr_over(..., mapping_strategy = "group_to_rows")
+Expr_over(..., order_by = NULL, mapping_strategy = "group_to_rows")
 }
 \arguments{
 \item{...}{Column(s) to group by. Accepts expression input.
 Characters are parsed as column names.}
+
+\item{order_by}{Order the window functions/aggregations with the partitioned
+groups by the result of the expression passed to \code{order_by}. Can be an Expr.
+Strings are parsed as column names.}
 
 \item{mapping_strategy}{One of the following:
 \itemize{
@@ -65,5 +69,19 @@ df$with_columns(
 # Alternative mapping strategy: join values in a list output
 df$with_columns(
   top_2 = pl$col("c")$top_k(2)$over("a", mapping_strategy = "join")
+)
+
+# order_by specifies how values are sorted within a group, which is
+# essential when the operation depends on the order of values
+df = pl$DataFrame(
+  g = c(1, 1, 1, 1, 2, 2, 2, 2),
+  t = c(1, 2, 3, 4, 4, 1, 2, 3),
+  x = c(10, 20, 30, 40, 10, 20, 30, 40)
+)
+
+# without order_by, the first and second values in the second group would
+# be inverted, which would be wrong
+df$with_columns(
+  x_lag = pl$col("x")$shift(1)$over("g", order_by = "t")
 )
 }

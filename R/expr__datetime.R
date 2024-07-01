@@ -2,8 +2,8 @@
 #' @description  Divide the date/datetime range into buckets.
 #' Each date/datetime is mapped to the start of its bucket.
 #'
-#' @param every string encoding duration see details.
-#' @param offset optional string encoding duration see details.
+#' @param every Either an Expr or a string indicating a column name or a
+#' duration (see Details).
 #'
 #' @details The ``every`` and ``offset`` argument are created with the
 #' the following string language:
@@ -20,22 +20,18 @@
 #' These strings can be combined:
 #'   - 3d12h4m25s # 3 days, 12 hours, 4 minutes, and 25 seconds
 #' @return   Date/Datetime expr
-#' @keywords ExprDT
-#' @aliases (Expr)$dt$truncate
 #' @examples
 #' t1 = as.POSIXct("3040-01-01", tz = "GMT")
 #' t2 = t1 + as.difftime(25, units = "secs")
-#' s = pl$date_range(t1, t2, interval = "2s", time_unit = "ms")
+#' s = pl$datetime_range(t1, t2, interval = "2s", time_unit = "ms")
 #'
-#' # use a dt namespace function
 #' df = pl$DataFrame(datetime = s)$with_columns(
-#'   pl$col("datetime")$dt$truncate("4s")$alias("truncated_4s"),
-#'   pl$col("datetime")$dt$truncate("4s", offset("3s"))$alias("truncated_4s_offset_2s")
+#'   pl$col("datetime")$dt$truncate("4s")$alias("truncated_4s")
 #' )
 #' df
-ExprDT_truncate = function(every, offset = NULL) {
-  offset = parse_as_polars_duration_string(offset, default = "0ns")
-  .pr$Expr$dt_truncate(self, every, offset) |>
+ExprDT_truncate = function(every) {
+  every = parse_as_polars_duration_string(every, default = "0ns")
+  .pr$Expr$dt_truncate(self, every) |>
     unwrap("in $dt$truncate()")
 }
 
@@ -46,46 +42,20 @@ ExprDT_truncate = function(every, offset = NULL) {
 #' Each date/datetime in the second half of the interval
 #' is mapped to the end of its bucket.
 #'
+#' @inherit ExprDT_truncate params details return
 #'
-#' @param every string encoding duration see details.
-#' @param offset optional string encoding duration see details.
-#'
-#' @details The ``every`` and ``offset`` arguments are created with the
-#' following string language:
-#' - 1ns # 1 nanosecond
-#' - 1us # 1 microsecond
-#' - 1ms # 1 millisecond
-#' - 1s  # 1 second
-#' - 1m  # 1 minute
-#' - 1h  # 1 hour
-#' - 1d  # 1 day
-#' - 1w  # 1 calendar week
-#' - 1mo # 1 calendar month
-#' - 1y  # 1 calendar year
-#' These strings can be combined:
-#'   - 3d12h4m25s # 3 days, 12 hours, 4 minutes, and 25 seconds
-#'
-#' This functionality is currently experimental and may
-#' change without it being considered a breaking change.
-#'
-#' @return   Date/Datetime expr
-#' @keywords ExprDT
-#' @aliases (Expr)$dt$round
 #' @examples
 #' t1 = as.POSIXct("3040-01-01", tz = "GMT")
 #' t2 = t1 + as.difftime(25, units = "secs")
-#' s = pl$date_range(t1, t2, interval = "2s", time_unit = "ms")
+#' s = pl$datetime_range(t1, t2, interval = "2s", time_unit = "ms")
 #'
-#' # use a dt namespace function
 #' df = pl$DataFrame(datetime = s)$with_columns(
-#'   pl$col("datetime")$dt$truncate("4s")$alias("truncated_4s"),
-#'   pl$col("datetime")$dt$truncate("4s", offset("3s"))$alias("truncated_4s_offset_2s")
+#'   pl$col("datetime")$dt$round("4s")$alias("rounded_4s")
 #' )
 #' df
-ExprDT_round = function(every, offset = NULL) {
+ExprDT_round = function(every) {
   every = parse_as_polars_duration_string(every, default = "0ns")
-  offset = parse_as_polars_duration_string(offset, default = "0ns")
-  .pr$Expr$dt_round(self, every, offset) |>
+  .pr$Expr$dt_round(self, every) |>
     unwrap("in $dt$round()")
 }
 
@@ -370,7 +340,7 @@ ExprDT_ordinal_day = function() {
 #' @aliases (Expr)$dt$hour
 #' @examples
 #' df = pl$DataFrame(
-#'   date = pl$date_range(
+#'   date = pl$datetime_range(
 #'     as.Date("2020-12-25"),
 #'     as.Date("2021-1-05"),
 #'     interval = "1d2h",
@@ -395,7 +365,7 @@ ExprDT_hour = function() {
 #' @aliases (Expr)$dt$minute
 #' @examples
 #' df = pl$DataFrame(
-#'   date = pl$date_range(
+#'   date = pl$datetime_range(
 #'     as.Date("2020-12-25"),
 #'     as.Date("2021-1-05"),
 #'     interval = "1d5s",
@@ -556,7 +526,7 @@ ExprDT_epoch = function(tu = c("us", "ns", "ms", "s", "d")) {
 #' @aliases (Expr)$dt$timestamp
 #' @examples
 #' df = pl$DataFrame(
-#'   date = pl$date_range(
+#'   date = pl$datetime_range(
 #'     start = as.Date("2001-1-1"),
 #'     end = as.Date("2001-1-3"),
 #'     interval = "1d1s"
@@ -585,7 +555,7 @@ ExprDT_timestamp = function(tu = c("ns", "us", "ms")) {
 #' @aliases (Expr)$dt$with_time_unit
 #' @examples
 #' df = pl$DataFrame(
-#'   date = pl$date_range(
+#'   date = pl$datetime_range(
 #'     start = as.Date("2001-1-1"),
 #'     end = as.Date("2001-1-3"),
 #'     interval = "1d1s"
@@ -615,7 +585,7 @@ ExprDT_with_time_unit = function(tu = c("ns", "us", "ms")) {
 #' @aliases (Expr)$dt$cast_time_unit
 #' @examples
 #' df = pl$DataFrame(
-#'   date = pl$date_range(
+#'   date = pl$datetime_range(
 #'     start = as.Date("2001-1-1"),
 #'     end = as.Date("2001-1-3"),
 #'     interval = "1d1s"
@@ -641,10 +611,10 @@ ExprDT_cast_time_unit = function(tu = c("ns", "us", "ms")) {
 #' @return Expr of i64
 #' @examples
 #' df = pl$DataFrame(
-#'   date = pl$date_range(
+#'   date = pl$datetime_range(
 #'     as.POSIXct("2020-03-01", tz = "UTC"),
 #'     as.POSIXct("2020-05-01", tz = "UTC"),
-#'     "1mo"
+#'     "1mo1s"
 #'   )
 #' )
 #'
@@ -681,10 +651,10 @@ ExprDT_convert_time_zone = function(time_zone) {
 #' @aliases (Expr)$dt$replace_time_zone
 #' @examples
 #' df1 = pl$DataFrame(
-#'   london_timezone = pl$date_range(
+#'   london_timezone = pl$datetime_range(
 #'     as.POSIXct("2020-03-01", tz = "UTC"),
 #'     as.POSIXct("2020-07-01", tz = "UTC"),
-#'     "1mo"
+#'     "1mo1s"
 #'   )$dt$convert_time_zone("Europe/London")
 #' )
 #'
@@ -729,10 +699,10 @@ ExprDT_replace_time_zone = function(
 #' @return Expr of i64
 #' @examples
 #' df = pl$DataFrame(
-#'   date = pl$date_range(
+#'   date = pl$datetime_range(
 #'     start = as.Date("2020-3-1"),
 #'     end = as.Date("2020-5-1"),
-#'     interval = "1mo"
+#'     interval = "1mo1s"
 #'   )
 #' )
 #' df$select(
@@ -791,7 +761,7 @@ ExprDT_total_minutes = function() {
 #'
 #' @return Expr of i64
 #' @examples
-#' df = pl$DataFrame(date = pl$date_range(
+#' df = pl$DataFrame(date = pl$datetime_range(
 #'   start = as.POSIXct("2020-1-1", tz = "GMT"),
 #'   end = as.POSIXct("2020-1-1 00:04:00", tz = "GMT"),
 #'   interval = "1m"
@@ -810,7 +780,7 @@ ExprDT_total_seconds = function() {
 #'
 #' @return Expr of i64
 #' @examples
-#' df = pl$DataFrame(date = pl$date_range(
+#' df = pl$DataFrame(date = pl$datetime_range(
 #'   start = as.POSIXct("2020-1-1", tz = "GMT"),
 #'   end = as.POSIXct("2020-1-1 00:00:01", tz = "GMT"),
 #'   interval = "1ms"
@@ -829,7 +799,7 @@ ExprDT_total_milliseconds = function() {
 #'
 #' @return Expr of i64
 #' @examples
-#' df = pl$DataFrame(date = pl$date_range(
+#' df = pl$DataFrame(date = pl$datetime_range(
 #'   start = as.POSIXct("2020-1-1", tz = "GMT"),
 #'   end = as.POSIXct("2020-1-1 00:00:01", tz = "GMT"),
 #'   interval = "1ms"
@@ -848,7 +818,7 @@ ExprDT_total_microseconds = function() {
 #'
 #' @return Expr of i64
 #' @examples
-#' df = pl$DataFrame(date = pl$date_range(
+#' df = pl$DataFrame(date = pl$datetime_range(
 #'   start = as.POSIXct("2020-1-1", tz = "GMT"),
 #'   end = as.POSIXct("2020-1-1 00:00:01", tz = "GMT"),
 #'   interval = "1ms"
@@ -907,7 +877,7 @@ ExprDT_total_nanoseconds = function() {
 #'
 #' # the "by" argument also accepts expressions
 #' df = pl$DataFrame(
-#'   dates = pl$date_range(
+#'   dates = pl$datetime_range(
 #'     as.POSIXct("2022-01-01", tz = "GMT"),
 #'     as.POSIXct("2022-01-02", tz = "GMT"),
 #'     interval = "6h", time_unit = "ms", time_zone = "GMT"
@@ -932,7 +902,7 @@ ExprDT_offset_by = function(by) {
 #'
 #'
 #' @examples
-#' df = pl$DataFrame(dates = pl$date_range(
+#' df = pl$DataFrame(dates = pl$datetime_range(
 #'   as.Date("2000-1-1"),
 #'   as.Date("2000-1-2"),
 #'   "1h"

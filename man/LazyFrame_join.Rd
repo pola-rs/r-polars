@@ -7,7 +7,7 @@
 LazyFrame_join(
   other,
   on = NULL,
-  how = c("inner", "left", "full", "semi", "anti", "cross"),
+  how = "inner",
   ...,
   left_on = NULL,
   right_on = NULL,

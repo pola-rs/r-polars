@@ -42,10 +42,10 @@ change the corresponding global timepoint.
 }
 \examples{
 df1 = pl$DataFrame(
-  london_timezone = pl$date_range(
+  london_timezone = pl$datetime_range(
     as.POSIXct("2020-03-01", tz = "UTC"),
     as.POSIXct("2020-07-01", tz = "UTC"),
-    "1mo"
+    "1mo1s"
   )$dt$convert_time_zone("Europe/London")
 )
 

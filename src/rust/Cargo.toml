@@ -1,8 +1,8 @@
 [package]
 name = "r-polars"
-version = "0.40.1"
+version = "0.41.0"
 edition = "2021"
-rust-version = "1.77.0"
+rust-version = "1.79.0"
 publish = false
 
 [lib]
@@ -50,8 +50,8 @@ serde_json = "*"
 smartstring = "1.0.1"
 state = "0.6.0"
 thiserror = "1.0.61"
-polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "318ec405632410a41f634de7aeff46e89a25eab9", default-features = false }
-polars-lazy = { git = "https://github.com/pola-rs/polars.git", rev = "318ec405632410a41f634de7aeff46e89a25eab9", default-features = false }
+polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "f73937ab5213a44eaaba8cfc799d8f837600f179", default-features = false }
+polars-lazy = { git = "https://github.com/pola-rs/polars.git", rev = "f73937ab5213a44eaaba8cfc799d8f837600f179", default-features = false }
 either = "1"
 
 [dependencies.polars]
@@ -76,7 +76,6 @@ features = [
   "cumulative_eval",
   "cutqcut",
   "dataframe_arithmetic",
-  "date_offset",
   "decompress-fast",
   "diagonal_concat",
   "diff",
@@ -116,8 +115,11 @@ features = [
   "meta",
   "mode",
   "moment",
+  "month_start",
+  "month_end",
   "ndarray",
   "object",
+  "offset_by",
   "parquet",
   "partition_by",
   "pct_change",
@@ -157,4 +159,4 @@ features = [
   "zip_with",
 ]
 git = "https://github.com/pola-rs/polars.git"
-rev = "318ec405632410a41f634de7aeff46e89a25eab9"
+rev = "f73937ab5213a44eaaba8cfc799d8f837600f179"

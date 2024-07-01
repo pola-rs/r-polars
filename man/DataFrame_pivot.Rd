@@ -5,10 +5,10 @@
 \title{Pivot data from long to wide}
 \usage{
 DataFrame_pivot(
-  values,
-  index,
-  columns,
+  on,
   ...,
+  index,
+  values,
   aggregate_function = NULL,
   maintain_order = TRUE,
   sort_columns = FALSE,
@@ -16,15 +16,15 @@ DataFrame_pivot(
 )
 }
 \arguments{
-\item{values}{Column values to aggregate. Can be multiple columns if the
-\code{columns} arguments contains multiple columns as well.}
-
-\item{index}{One or multiple keys to group by.}
-
-\item{columns}{Name of the column(s) whose values will be used as the header
+\item{on}{Name of the column(s) whose values will be used as the header
 of the output DataFrame.}
 
 \item{...}{Not used.}
+
+\item{index}{One or multiple keys to group by.}
+
+\item{values}{Column values to aggregate. Can be multiple columns if the
+\code{on} arguments contains multiple columns as well.}
 
 \item{aggregate_function}{One of:
 \itemize{
@@ -56,7 +56,7 @@ df = pl$DataFrame(
 df
 
 df$pivot(
-  values = "baz", index = "foo", columns = "bar"
+  values = "baz", index = "foo", on = "bar"
 )
 
 # Run an expression as aggregation function
@@ -69,7 +69,7 @@ df
 
 df$pivot(
   index = "col1",
-  columns = "col2",
+  on = "col2",
   values = "col3",
   aggregate_function = pl$element()$tanh()$mean()
 )

@@ -2,9 +2,9 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_replace}
 \alias{Expr_replace}
-\title{Replace values by different values}
+\title{Replace the given values by different values of the same data type.}
 \usage{
-Expr_replace(old, new, default = NULL, return_dtype = NULL)
+Expr_replace(old, new)
 }
 \arguments{
 \item{old}{Can be several things:
@@ -18,19 +18,14 @@ if old values are numeric, the names must be wrapped in backticks;
 
 \item{new}{Either a vector of length 1, a vector of same length as \code{old} or
 an Expr. If missing, \code{old} must be a named list.}
-
-\item{default}{The default replacement if the value is not in \code{old}. Can be
-an Expr. If \code{NULL} (default), then the value doesn't change.}
-
-\item{return_dtype}{The data type of the resulting expression. If set to
-\code{NULL} (default), the data type is determined automatically based on the
-other inputs.}
 }
 \value{
 Expr
 }
 \description{
-This allows one to recode values in a column.
+This allows one to recode values in a column, leaving all other values
+unchanged. See \code{\link[=Expr_replace_strict]{$replace_strict()}} to give a default
+value to all other values and to specify the output datatype.
 }
 \examples{
 df = pl$DataFrame(a = c(1, 2, 2, 3))
@@ -42,22 +37,18 @@ df$with_columns(replaced = pl$col("a")$replace(c(2, 3), c(100, 200)))
 # "old" can be a named list where names are values to replace, and values are
 # the replacements
 mapping = list(`2` = 100, `3` = 200)
-df$with_columns(replaced = pl$col("a")$replace(mapping, default = -1))
+df$with_columns(replaced = pl$col("a")$replace(mapping))
 
 df = pl$DataFrame(a = c("x", "y", "z"))
 mapping = list(x = 1, y = 2, z = 3)
 df$with_columns(replaced = pl$col("a")$replace(mapping))
 
-# one can specify the data type to return instead of automatically inferring it
-df$with_columns(replaced = pl$col("a")$replace(mapping, return_dtype = pl$Int8))
-
-# "old", "new", and "default" can take Expr
+# "old" and "new" can take Expr
 df = pl$DataFrame(a = c(1, 2, 2, 3), b = c(1.5, 2.5, 5, 1))
 df$with_columns(
   replaced = pl$col("a")$replace(
     old = pl$col("a")$max(),
-    new = pl$col("b")$sum(),
-    default = pl$col("b"),
+    new = pl$col("b")$sum()
   )
 )
 }

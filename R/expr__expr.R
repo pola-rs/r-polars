@@ -1163,11 +1163,7 @@ Expr_is_not_nan = use_extendr_wrapper
 #' full data.
 #'
 #' @return Expr
-#' @aliases slice
-#' @name Expr_slice
-#' @format NULL
 #' @examples
-#'
 #' # as head
 #' pl$DataFrame(list(a = 0:100))$select(
 #'   pl$all()$slice(0, 6)
@@ -1185,7 +1181,8 @@ Expr_is_not_nan = use_extendr_wrapper
 #' # recycling
 #' pl$DataFrame(mtcars)$with_columns(pl$col("mpg")$slice(0, 1))
 Expr_slice = function(offset, length = NULL) {
-  .pr$Expr$slice(self, wrap_e(offset), wrap_e(length))
+  .pr$Expr$slice(self, offset, wrap_e(length)) |>
+    unwrap("in $slice():")
 }
 
 
@@ -1406,19 +1403,14 @@ Expr_sort = function(..., descending = FALSE, nulls_last = FALSE) {
 #' Return the `k` largest elements. This has time complexity: \eqn{ O(n + k
 #' \\log{}n - \frac{k}{2}) }
 #'
-#' @param k Number of top values to get
-#' @param ...  Ignored.
-#' @param nulls_last Place null values last.
-#' @param maintain_order Whether the order should be maintained if elements are
-#' equal.
-#' @param multithreaded Sort using multiple threads.
+#' @param k Number of top values to get.
 #'
 #' @return Expr
 #' @examples
 #' pl$DataFrame(a = c(6, 1, 0, NA, Inf, NaN))$select(pl$col("a")$top_k(5))
-Expr_top_k = function(k, ..., nulls_last = FALSE, maintain_order = FALSE, multithreaded = TRUE) {
+Expr_top_k = function(k) {
   if (!is.numeric(k) || k < 0) stop("k must be numeric and positive, prefereably integerish")
-  .pr$Expr$top_k(self, k, nulls_last = nulls_last, maintain_order = maintain_order, multithreaded = multithreaded) |>
+  .pr$Expr$top_k(self, k) |>
     unwrap("in $top_k():")
 }
 
@@ -1430,9 +1422,9 @@ Expr_top_k = function(k, ..., nulls_last = FALSE, maintain_order = FALSE, multit
 #' @inherit Expr_top_k params return
 #' @examples
 #' pl$DataFrame(a = c(6, 1, 0, NA, Inf, NaN))$select(pl$col("a")$bottom_k(5))
-Expr_bottom_k = function(k, ..., nulls_last = FALSE, maintain_order = FALSE, multithreaded = TRUE) {
+Expr_bottom_k = function(k) {
   if (!is.numeric(k) || k < 0) stop("k must be numeric and positive, prefereably integerish")
-  .pr$Expr$bottom_k(self, k, nulls_last = nulls_last, maintain_order = maintain_order, multithreaded = multithreaded) |>
+  .pr$Expr$bottom_k(self, k) |>
     unwrap("in $bottom_k():")
 }
 
@@ -1844,6 +1836,9 @@ Expr_last = use_extendr_wrapper
 #'
 #' @param ... Column(s) to group by. Accepts expression input.
 #' Characters are parsed as column names.
+#' @param order_by Order the window functions/aggregations with the partitioned
+#' groups by the result of the expression passed to `order_by`. Can be an Expr.
+#' Strings are parsed as column names.
 #' @param mapping_strategy One of the following:
 #' * `"group_to_rows"` (default): if the aggregation results in multiple values,
 #'   assign them back to their position in the DataFrame. This can only be done
@@ -1889,7 +1884,21 @@ Expr_last = use_extendr_wrapper
 #' df$with_columns(
 #'   top_2 = pl$col("c")$top_k(2)$over("a", mapping_strategy = "join")
 #' )
-Expr_over = function(..., mapping_strategy = "group_to_rows") {
+#'
+#' # order_by specifies how values are sorted within a group, which is
+#' # essential when the operation depends on the order of values
+#' df = pl$DataFrame(
+#'   g = c(1, 1, 1, 1, 2, 2, 2, 2),
+#'   t = c(1, 2, 3, 4, 4, 1, 2, 3),
+#'   x = c(10, 20, 30, 40, 10, 20, 30, 40)
+#' )
+#'
+#' # without order_by, the first and second values in the second group would
+#' # be inverted, which would be wrong
+#' df$with_columns(
+#'   x_lag = pl$col("x")$shift(1)$over("g", order_by = "t")
+#' )
+Expr_over = function(..., order_by = NULL, mapping_strategy = "group_to_rows") {
   list_of_exprs = list2(...) |>
     lapply(\(x) {
       if (is.character(x)) {
@@ -1907,7 +1916,7 @@ Expr_over = function(..., mapping_strategy = "group_to_rows") {
       }
     })
 
-  .pr$Expr$over(self, list_of_exprs, mapping_strategy) |>
+  .pr$Expr$over(self, list_of_exprs, order_by, order_by_descending = FALSE, order_by_nulls_last = FALSE, mapping_strategy) |>
     unwrap("in $over():")
 }
 
@@ -3307,16 +3316,25 @@ Expr_to_r = function(df = NULL, i = 0, ..., int64_conversion = polars_options()$
 #' @param sort Ensure the output is sorted from most values to least.
 #' @param parallel Better to turn this off in the aggregation context, as it can
 #' lead to contention.
-#' @param name Give the resulting count field a specific name, defaults to
-#' `"count"`.
-#' @format NULL
-#' @examples
-#' df = pl$DataFrame(iris)$select(pl$col("Species")$value_counts())
-#' df
+#' @param name Give the resulting count column a specific name. The default is
+#' `"count"` if `normalize = FALSE` and `"proportion"` if  `normalize = TRUE`.
+#' @param normalize If `TRUE`, it gives relative frequencies of the unique
+#' values instead of their count.
 #'
-#' df$unnest()$to_data_frame()
-Expr_value_counts = function(..., sort = FALSE, parallel = FALSE, name = "count") {
-  .pr$Expr$value_counts(self, sort, parallel, name)
+#' @examples
+#' df = pl$DataFrame(iris)
+#' df$select(pl$col("Species")$value_counts())$unnest()
+#' df$select(pl$col("Species")$value_counts(normalize = TRUE))$unnest()
+Expr_value_counts = function(..., sort = FALSE, parallel = FALSE, name, normalize = FALSE) {
+  if (missing(name)) {
+    if (isTRUE(normalize)) {
+      name = "proportion"
+    } else {
+      name = "count"
+    }
+  }
+
+  .pr$Expr$value_counts(self, sort, parallel, name, normalize)
 }
 
 #' Count unique values
@@ -3558,9 +3576,11 @@ Expr_rolling = function(
     unwrap("in $rolling():")
 }
 
-#' Replace values by different values
+#' Replace the given values by different values of the same data type.
 #'
-#' This allows one to recode values in a column.
+#' This allows one to recode values in a column, leaving all other values
+#' unchanged. See [`$replace_strict()`][Expr_replace_strict] to give a default
+#' value to all other values and to specify the output datatype.
 #'
 #' @param old Can be several things:
 #' * a vector indicating the values to recode;
@@ -3570,11 +3590,6 @@ Expr_rolling = function(
 #' * an Expr
 #' @param new Either a vector of length 1, a vector of same length as `old` or
 #' an Expr. If missing, `old` must be a named list.
-#' @param default The default replacement if the value is not in `old`. Can be
-#' an Expr. If `NULL` (default), then the value doesn't change.
-#' @param return_dtype The data type of the resulting expression. If set to
-#' `NULL` (default), the data type is determined automatically based on the
-#' other inputs.
 #'
 #' @return Expr
 #' @examples
@@ -3587,32 +3602,87 @@ Expr_rolling = function(
 #' # "old" can be a named list where names are values to replace, and values are
 #' # the replacements
 #' mapping = list(`2` = 100, `3` = 200)
-#' df$with_columns(replaced = pl$col("a")$replace(mapping, default = -1))
+#' df$with_columns(replaced = pl$col("a")$replace(mapping))
 #'
 #' df = pl$DataFrame(a = c("x", "y", "z"))
 #' mapping = list(x = 1, y = 2, z = 3)
 #' df$with_columns(replaced = pl$col("a")$replace(mapping))
 #'
-#' # one can specify the data type to return instead of automatically inferring it
-#' df$with_columns(replaced = pl$col("a")$replace(mapping, return_dtype = pl$Int8))
+#' # "old" and "new" can take Expr
+#' df = pl$DataFrame(a = c(1, 2, 2, 3), b = c(1.5, 2.5, 5, 1))
+#' df$with_columns(
+#'   replaced = pl$col("a")$replace(
+#'     old = pl$col("a")$max(),
+#'     new = pl$col("b")$sum()
+#'   )
+#' )
+Expr_replace = function(old, new) {
+  if (missing(new) && is.list(old)) {
+    new = unlist(old, use.names = FALSE)
+    old = names(old)
+  }
+  .pr$Expr$replace(self, old, new) |>
+    unwrap("in $replace():")
+}
+
+
+#' Replace all values by different values.
+#'
+#' This changes all the values in a column, either using a specific replacement
+#' or a default one. See [`$replace()`][Expr_replace] to replace only a subset
+#' of values.
+#'
+#' @inheritParams Expr_replace
+#' @param default The default replacement if the value is not in `old`. Can be
+#' an Expr. If `NULL` (default), then the value doesn't change.
+#' @param return_dtype The data type of the resulting expression. If set to
+#' `NULL` (default), the data type is determined automatically based on the
+#' other inputs.
+#'
+#' @return Expr
+#' @examples
+#' df = pl$DataFrame(a = c(1, 2, 2, 3))
+#'
+#' # "old" and "new" can take vectors of length 1 or of same length
+#' df$with_columns(replaced = pl$col("a")$replace_strict(2, 100, default = 1))
+#' df$with_columns(
+#'   replaced = pl$col("a")$replace_strict(c(2, 3), c(100, 200), default = 1)
+#' )
+#'
+#' # "old" can be a named list where names are values to replace, and values are
+#' # the replacements
+#' mapping = list(`2` = 100, `3` = 200)
+#' df$with_columns(replaced = pl$col("a")$replace_strict(mapping, default = -1))
+#'
+#' # one can specify the data type to return instead of automatically
+#' # inferring it
+#' df$with_columns(
+#'   replaced = pl$col("a")$replace_strict(mapping, default = 1, return_dtype = pl$Int32)
+#' )
 #'
 #' # "old", "new", and "default" can take Expr
 #' df = pl$DataFrame(a = c(1, 2, 2, 3), b = c(1.5, 2.5, 5, 1))
 #' df$with_columns(
-#'   replaced = pl$col("a")$replace(
+#'   replaced = pl$col("a")$replace_strict(
 #'     old = pl$col("a")$max(),
 #'     new = pl$col("b")$sum(),
 #'     default = pl$col("b"),
 #'   )
 #' )
-Expr_replace = function(old, new, default = NULL, return_dtype = NULL) {
+Expr_replace_strict = function(old, new, default = NULL, return_dtype = NULL) {
   if (missing(new) && is.list(old)) {
     new = unlist(old, use.names = FALSE)
     old = names(old)
   }
-  .pr$Expr$replace(self, old, new, default, return_dtype) |>
-    unwrap("in $replace():")
+  # return_dtype = pl$foo is silently passed otherwise
+  if (!missing(return_dtype) && !is_polars_dtype(return_dtype)) {
+    Err_plain("`return_dtype` must be a valid dtype.") |>
+      unwrap("in $replace_strict():")
+  }
+  .pr$Expr$replace_strict(self, old, new, default, return_dtype) |>
+    unwrap("in $replace_strict():")
 }
+
 
 #' Get the lengths of runs of identical values
 #'

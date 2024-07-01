@@ -4,15 +4,7 @@
 \alias{pl_date_range}
 \title{Generate a date range}
 \usage{
-pl_date_range(
-  start,
-  end,
-  interval = "1d",
-  ...,
-  closed = "both",
-  time_unit = NULL,
-  time_zone = NULL
-)
+pl_date_range(start, end, interval = "1d", ..., closed = "both")
 }
 \arguments{
 \item{start}{Lower bound of the date range. Something that can be coerced to
@@ -29,14 +21,6 @@ See the \verb{Polars duration string language} section for details.}
 
 \item{closed}{Define which sides of the range are closed (inclusive).
 One of the followings: \code{"both"} (default), \code{"left"}, \code{"right"}, \code{"none"}.}
-
-\item{time_unit}{Time unit of the resulting the \link[=DataType_Datetime]{Datetime}
-data type. One of \code{"ns"}, \code{"us"}, \code{"ms"} or \code{NULL}. Only takes effect if the
-output column is of type \link[=DataType_Datetime]{Datetime} (deprecated usage).}
-
-\item{time_zone}{Time zone of the resulting \link[=DataType_Datetime]{Datetime} data
-type. Only takes effect if the output column is of type \link[=DataType_Datetime]{Datetime}
-(deprecated usage).}
 }
 \value{
 An \link[=Expr_class]{Expr} of data type Date or \link[=DataType_Datetime]{Datetime}

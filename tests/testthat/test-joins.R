@@ -111,6 +111,16 @@ test_that("cross join, DataFrame", {
     )
   )
 
+  expect_grepl_error(
+    dat$join(dat2, how = "cross", on = "foo"),
+    "cross join should not pass join keys"
+  )
+
+  expect_grepl_error(
+    dat$join(dat2, how = "cross", left_on = "foo", right_on = "foo2"),
+    "cross join should not pass join keys"
+  )
+
   # one empty dataframe
   dat_empty = pl$DataFrame(y = character())
   expect_identical(
@@ -146,37 +156,37 @@ test_that("argument 'validate' works", {
   # eager 1:1
   expect_grepl_error(
     df1$join(df2, on = "x", validate = "1:1"),
-    "join keys did not fulfil 1:1 validation"
+    "join keys did not fulfill 1:1 validation"
   )
 
   # lazy 1:1
   expect_grepl_error(
     df1$lazy()$join(df2$lazy(), on = "x", validate = "1:1")$collect(),
-    "join keys did not fulfil 1:1 validation"
+    "join keys did not fulfill 1:1 validation"
   )
 
   # eager m:1
   expect_grepl_error(
     df1$join(df2, on = "x", validate = "m:1"),
-    "join keys did not fulfil m:1 validation"
+    "join keys did not fulfill m:1 validation"
   )
 
   # lazy m:1
   expect_grepl_error(
     df1$lazy()$join(df2$lazy(), on = "x", validate = "m:1")$collect(),
-    "join keys did not fulfil m:1 validation"
+    "join keys did not fulfill m:1 validation"
   )
 
   # eager 1:m
   expect_grepl_error(
     df2$join(df1, on = "x", validate = "1:m"),
-    "join keys did not fulfil 1:m validation"
+    "join keys did not fulfill 1:m validation"
   )
 
   # lazy 1:m
   expect_grepl_error(
     df2$lazy()$join(df1$lazy(), on = "x", validate = "1:m")$collect(),
-    "join keys did not fulfil 1:m validation"
+    "join keys did not fulfill 1:m validation"
   )
 
   # eager error on unknown validate choice

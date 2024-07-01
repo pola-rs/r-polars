@@ -1070,7 +1070,7 @@ DataFrame_to_list = function(unnest_structs = TRUE, ..., int64_conversion = pola
 DataFrame_join = function(
     other,
     on = NULL,
-    how = c("inner", "left", "full", "semi", "anti", "cross"),
+    how = "inner",
     ...,
     left_on = NULL,
     right_on = NULL,
@@ -1490,7 +1490,7 @@ DataFrame_join_asof = function(
 
 
 
-#' @inherit LazyFrame_melt
+#' @inherit LazyFrame_unpivot
 #' @keywords DataFrame
 #'
 #' @return A new `DataFrame`
@@ -1502,25 +1502,26 @@ DataFrame_join_asof = function(
 #'   c = c(2, 4, 6),
 #'   d = c(7, 8, 9)
 #' )
-#' df$melt(id_vars = "a", value_vars = c("b", "c", "d"))
-DataFrame_melt = function(
-    id_vars = NULL,
-    value_vars = NULL,
+#' df$unpivot(index = "a", on = c("b", "c", "d"))
+DataFrame_unpivot = function(
+    on = NULL,
+    ...,
+    index = NULL,
     variable_name = NULL,
     value_name = NULL) {
-  .pr$DataFrame$melt(
-    self, id_vars %||% character(), value_vars %||% character(),
+  .pr$DataFrame$unpivot(
+    self, on %||% character(), index %||% character(),
     value_name, variable_name
-  ) |> unwrap("in $melt( ): ")
+  ) |> unwrap("in $unpivot( ): ")
 }
 
 
 
 #' Pivot data from long to wide
 #' @param values Column values to aggregate. Can be multiple columns if the
-#' `columns` arguments contains multiple columns as well.
+#' `on` arguments contains multiple columns as well.
 #' @param index  One or multiple keys to group by.
-#' @param columns  Name of the column(s) whose values will be used as the header
+#' @param on  Name of the column(s) whose values will be used as the header
 #' of the output DataFrame.
 #' @param ... Not used.
 #' @param aggregate_function One of:
@@ -1544,7 +1545,7 @@ DataFrame_melt = function(
 #' df
 #'
 #' df$pivot(
-#'   values = "baz", index = "foo", columns = "bar"
+#'   values = "baz", index = "foo", on = "bar"
 #' )
 #'
 #' # Run an expression as aggregation function
@@ -1557,15 +1558,15 @@ DataFrame_melt = function(
 #'
 #' df$pivot(
 #'   index = "col1",
-#'   columns = "col2",
+#'   on = "col2",
 #'   values = "col3",
 #'   aggregate_function = pl$element()$tanh()$mean()
 #' )
 DataFrame_pivot = function(
-    values,
-    index,
-    columns,
+    on,
     ...,
+    index,
+    values,
     aggregate_function = NULL,
     maintain_order = TRUE,
     sort_columns = FALSE,
@@ -1586,7 +1587,7 @@ DataFrame_pivot = function(
     )) |>
     # run pivot when valid aggregate_expr
     and_then(\(aggregate_expr) .pr$DataFrame$pivot_expr(
-      self, index, columns, values, maintain_order, sort_columns, aggregate_expr, separator
+      self, on, index, values, maintain_order, sort_columns, aggregate_expr, separator
     )) |>
     # unwrap and add method context name
     unwrap("in $pivot():")
@@ -1736,7 +1737,7 @@ DataFrame_describe = function(percentiles = c(.25, .75), interpolation = "neares
     )$
       unnest("fields")$
       drop("column")$
-      pivot(index = "statistic", columns = "variable", values = "column_0")$
+      pivot(index = "statistic", on = "variable", values = "column_0")$
       with_columns(statistic = pl$lit(metrics))
   }) |>
     uw()
@@ -2031,9 +2032,11 @@ DataFrame_write_parquet = function(
     ...,
     compression = "zstd",
     compression_level = 3,
-    statistics = FALSE,
+    statistics = TRUE,
     row_group_size = NULL,
     data_pagesize_limit = NULL) {
+  statistics = translate_statistics(statistics) |>
+    unwrap("in $write_parquet():")
   .pr$DataFrame$write_parquet(
     self,
     file,

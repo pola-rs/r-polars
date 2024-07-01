@@ -333,7 +333,7 @@ To go from long to wide, we use the `$pivot()` method.
 Here we pivot the data so that every subject takes its own column.
 
 ```{r}
-indo_wide = indo$pivot(values = "conc", index = "time", columns = "Subject")
+indo_wide = indo$pivot(values = "conc", index = "time", on = "Subject")
 indo_wide
 ```
 
@@ -341,7 +341,7 @@ To go from wide to long, we use the `$melt()` method.
 
 ```{r}
 # indo_wide$melt(id_vars = "time") # default column names are "variable" and "value"
-indo_wide$melt(id_vars = "time", variable_name = "subject", value_name = "conc")
+indo_wide$unpivot(index = "time", variable_name = "subject", value_name = "conc")
 ```
 
 Basic functionality aside, it should be noted that `$pivot()` can perform
@@ -356,7 +356,7 @@ different combinations of transmission type (`am`) and engine shape (`vs`)?
 dat$pivot(
   values = "mpg",
   index = c("am", "vs"),
-  columns = "cyl",
+  on = "cyl",
   aggregate_function = "median" # aggregating function
 )
 ```

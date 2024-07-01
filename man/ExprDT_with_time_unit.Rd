@@ -20,7 +20,7 @@ The corresponding global timepoint will change.
 }
 \examples{
 df = pl$DataFrame(
-  date = pl$date_range(
+  date = pl$datetime_range(
     start = as.Date("2001-1-1"),
     end = as.Date("2001-1-3"),
     interval = "1d1s"

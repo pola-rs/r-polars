@@ -181,12 +181,6 @@ pl_concat = function(
 #' @param ... Ignored.
 #' @param closed Define which sides of the range are closed (inclusive).
 #' One of the followings: `"both"` (default), `"left"`, `"right"`, `"none"`.
-#' @param time_unit Time unit of the resulting the [Datetime][DataType_Datetime]
-#' data type. One of `"ns"`, `"us"`, `"ms"` or `NULL`. Only takes effect if the
-#' output column is of type [Datetime][DataType_Datetime] (deprecated usage).
-#' @param time_zone Time zone of the resulting [Datetime][DataType_Datetime] data
-#' type. Only takes effect if the output column is of type [Datetime][DataType_Datetime]
-#' (deprecated usage).
 #' @return An [Expr][Expr_class] of data type Date or [Datetime][DataType_Datetime]
 #'
 #' @inheritSection polars_duration_string  Polars duration string language
@@ -211,45 +205,11 @@ pl_date_range = function(
     end,
     interval = "1d",
     ...,
-    closed = "both",
-    time_unit = NULL,
-    time_zone = NULL) {
-  .warn_for_deprecated_date_range_use(start, end, interval, time_unit, time_zone)
-
+    closed = "both") {
   interval = parse_as_polars_duration_string(interval)
-  date_range(start, end, interval, closed, time_unit, time_zone) |>
+  date_range(start, end, interval, closed) |>
     unwrap("in pl$date_range():")
 }
-
-
-.warn_for_deprecated_date_range_use = function(
-    start,
-    end,
-    interval,
-    time_unit = NULL,
-    time_zone = NULL) {
-  if (
-    inherits(start, "POSIXt") ||
-      inherits(end, "POSIXt") ||
-      !is.null(time_unit) ||
-      !is.null(time_zone) ||
-      (
-        is.character(interval) &&
-          length(interval) == 1L &&
-          (grepl("h", interval) || grepl("m", gsub("mo", "", interval)) || grepl("s", gsub("saturating", "", interval)))
-      )
-  ) {
-    warning(
-      "Creating Datetime ranges using `pl$date_range()` is deprecated.",
-      "Use `pl$datetime_range()` instead.",
-      call. = FALSE
-    )
-  }
-
-  invisible(NULL)
-}
-
-
 
 # TODO: link to the Date type docs
 #' Generate a list containing a date range
@@ -289,13 +249,9 @@ pl_date_ranges = function(
     end,
     interval = "1d",
     ...,
-    closed = "both",
-    time_unit = NULL,
-    time_zone = NULL) {
-  .warn_for_deprecated_date_range_use(start, end, interval, time_unit, time_zone)
-
+    closed = "both") {
   interval = parse_as_polars_duration_string(interval)
-  date_ranges(start, end, interval, closed, time_unit, time_zone) |>
+  date_ranges(start, end, interval, closed) |>
     unwrap("in pl$date_ranges():")
 }
 

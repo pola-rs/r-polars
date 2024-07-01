@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_slice}
 \alias{Expr_slice}
-\alias{slice}
 \title{Get a slice of an Expr}
 \usage{
 Expr_slice(offset, length = NULL)
@@ -23,7 +22,6 @@ in those columns but will not change the number of rows in the data. See
 examples.
 }
 \examples{
-
 # as head
 pl$DataFrame(list(a = 0:100))$select(
   pl$all()$slice(0, 6)

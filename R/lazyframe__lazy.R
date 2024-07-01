@@ -629,8 +629,14 @@ LazyFrame_collect_in_background = function() {
 #'  * "gzip": min-level: 0, max-level: 10.
 #'  * "brotli": min-level: 0, max-level: 11.
 #'  * "zstd": min-level: 1, max-level: 22.
-#' @param statistics Logical. Whether compute and write column statistics.
-#' This requires extra compute.
+#' @param statistics Whether statistics should be written to the Parquet
+#' headers. Possible values:
+#' * `TRUE`: enable default set of statistics (default)
+#' * `FALSE`: disable all statistics
+#' * `"full"`: calculate and write all available statistics.
+#' * A named list where all values must be `TRUE` or `FALSE`, e.g.
+#'   `list(min = TRUE, max = FALSE)`. Statistics available are `"min"`, `"max"`,
+#'   `"distinct_count"`, `"null_count"`.
 #' @param row_group_size `NULL` or Integer. Size of the row groups in number of
 #' rows. If `NULL` (default), the chunks of the DataFrame are used. Writing in
 #' smaller chunks may reduce memory pressure and improve writing speeds.
@@ -661,7 +667,7 @@ LazyFrame_sink_parquet = function(
     ...,
     compression = "zstd",
     compression_level = 3,
-    statistics = FALSE,
+    statistics = TRUE,
     row_group_size = NULL,
     data_pagesize_limit = NULL,
     maintain_order = TRUE,
@@ -693,6 +699,9 @@ LazyFrame_sink_parquet = function(
     ) |> unwrap("in $sink_parquet()")
   }
 
+  statistics = translate_statistics(statistics) |>
+    unwrap("in $sink_parquet():")
+
   lf |>
     .pr$LazyFrame$sink_parquet(
       path,
@@ -703,7 +712,7 @@ LazyFrame_sink_parquet = function(
       data_pagesize_limit,
       maintain_order
     ) |>
-    unwrap("in $sink_parquet()")
+    unwrap("in $sink_parquet():")
 
   invisible(self)
 }
@@ -1311,7 +1320,7 @@ LazyFrame_group_by = function(..., maintain_order = polars_options()$maintain_or
 LazyFrame_join = function(
     other,
     on = NULL,
-    how = c("inner", "left", "full", "semi", "anti", "cross"),
+    how = "inner",
     ...,
     left_on = NULL,
     right_on = NULL,
@@ -1327,16 +1336,21 @@ LazyFrame_join = function(
     Err_plain("`other` must be a LazyFrame.") |> uw()
   }
 
-  if (!is.null(on)) {
-    rexprs_right = rexprs_left = as.list(on)
-  } else if ((!is.null(left_on) && !is.null(right_on))) {
-    rexprs_left = as.list(left_on)
-    rexprs_right = as.list(right_on)
-  } else if (how != "cross") {
-    Err_plain("must specify either `on`, or `left_on` and `right_on`.") |> uw()
+  if (how == "cross") {
+    if (!is.null(on) || !is.null(left_on) || !is.null(right_on)) {
+      Err_plain("cross join should not pass join keys.") |> uw()
+    }
+    rexprs_left = as.list(NULL)
+    rexprs_right = as.list(NULL)
   } else {
-    rexprs_left = as.list(self$columns)
-    rexprs_right = as.list(other$columns)
+    if (!is.null(on)) {
+      rexprs_right = rexprs_left = as.list(on)
+    } else if ((!is.null(left_on) && !is.null(right_on))) {
+      rexprs_left = as.list(left_on)
+      rexprs_right = as.list(right_on)
+    } else {
+      Err_plain("must specify either `on`, or `left_on` and `right_on`.") |> uw()
+    }
   }
 
   .pr$LazyFrame$join(
@@ -1489,14 +1503,14 @@ LazyFrame_join_asof = function(
 
 #' Unpivot a Frame from wide to long format
 #'
-#' @param id_vars Columns to use as identifier variables.
-#' @param value_vars Values to use as identifier variables. If `value_vars` is
+#' @param on Values to use as identifier variables. If `value_vars` is
 #' empty all columns that are not in `id_vars` will be used.
+#' @param ... Not used.
+#' @param index Columns to use as identifier variables.
 #' @param variable_name Name to give to the new column containing the names of
 #' the melted columns. Defaults to "variable".
 #' @param value_name Name to give to the new column containing the values of
 #' the melted columns. Defaults to "value"
-#' @param ... Not used.
 #' @param streamable Allow this node to run in the streaming engine. If this
 #' runs in streaming, the output of the melt operation will not have a stable
 #' ordering.
@@ -1519,18 +1533,18 @@ LazyFrame_join_asof = function(
 #'   b = c(1, 3, 5),
 #'   c = c(2, 4, 6)
 #' )
-#' lf$melt(id_vars = "a", value_vars = c("b", "c"))$collect()
-LazyFrame_melt = function(
-    id_vars = NULL,
-    value_vars = NULL,
+#' lf$unpivot(index = "a", on = c("b", "c"))$collect()
+LazyFrame_unpivot = function(
+    on = NULL,
+    ...,
+    index = NULL,
     variable_name = NULL,
     value_name = NULL,
-    ...,
     streamable = TRUE) {
-  .pr$LazyFrame$melt(
-    self, id_vars %||% character(), value_vars %||% character(),
+  .pr$LazyFrame$unpivot(
+    self, on %||% character(), index %||% character(),
     value_name, variable_name, streamable
-  ) |> unwrap("in $melt( ): ")
+  ) |> unwrap("in $unpivot( ): ")
 }
 
 #' Rename column names of a LazyFrame
@@ -1990,7 +2004,7 @@ LazyFrame_rolling = function(
 #' - [`<LazyFrame>$rolling()`][LazyFrame_rolling]
 #' @examples
 #' lf = pl$LazyFrame(
-#'   time = pl$date_range(
+#'   time = pl$datetime_range(
 #'     start = strptime("2021-12-16 00:00:00", format = "%Y-%m-%d %H:%M:%S", tz = "UTC"),
 #'     end = strptime("2021-12-16 03:00:00", format = "%Y-%m-%d %H:%M:%S", tz = "UTC"),
 #'     interval = "30m"

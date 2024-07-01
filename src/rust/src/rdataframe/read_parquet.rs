@@ -42,8 +42,10 @@ pub fn new_from_parquet(
         cloud_options,
         use_statistics: robj_to!(bool, use_statistics)?,
         hive_options: polars::io::HiveOptions {
-            enabled: robj_to!(bool, hive_partitioning)?,
-            schema: None, // TODO: implement a option to set this
+            enabled: robj_to!(Option, bool, hive_partitioning)?,
+            hive_start_idx: 0, // TODO: is it actually 0?
+            schema: None,      // TODO: implement a option to set this
+            try_parse_dates: true,
         },
         glob: robj_to!(bool, glob)?,
     };

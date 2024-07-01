@@ -13,7 +13,7 @@ use crate::utils::{r_result_list, try_f64_into_usize};
 use extendr_api::prelude::*;
 use pl::{AsOfOptions, Duration, RollingGroupOptions};
 use polars::chunked_array::ops::SortMultipleOptions;
-use polars::frame::explode::MeltArgs;
+use polars::frame::explode::UnpivotArgs;
 use polars::prelude as pl;
 
 use polars::prelude::{JoinCoalesce, SerializeOptions};
@@ -108,14 +108,14 @@ impl RPolarsLazyFrame {
     ) -> RResult<()> {
         let pqwo = polars::prelude::ParquetWriteOptions {
             compression: new_parquet_compression(compression_method, compression_level)?,
-            statistics: robj_to!(bool, statistics)?,
+            statistics: robj_to!(StatisticsOptions, statistics)?,
             row_group_size: robj_to!(Option, usize, row_group_size)?,
             data_pagesize_limit: robj_to!(Option, usize, data_pagesize_limit)?,
             maintain_order: robj_to!(bool, maintain_order)?,
         };
         self.0
             .clone()
-            .sink_parquet(robj_to!(String, path)?.into(), pqwo)
+            .sink_parquet(robj_to!(String, path)?, pqwo)
             .map_err(polars_to_rpolars_err)
     }
 
@@ -126,7 +126,7 @@ impl RPolarsLazyFrame {
         };
         self.0
             .clone()
-            .sink_ipc(robj_to!(String, path)?.into(), ipcwo)
+            .sink_ipc(robj_to!(String, path)?, ipcwo)
             .map_err(polars_to_rpolars_err)
     }
 
@@ -167,6 +167,7 @@ impl RPolarsLazyFrame {
             date_format,
             time_format,
             datetime_format,
+            float_scientific: None,
             float_precision,
             separator,
             quote_char: quote,
@@ -185,7 +186,7 @@ impl RPolarsLazyFrame {
 
         self.0
             .clone()
-            .sink_csv(robj_to!(String, path)?.into(), options)
+            .sink_csv(robj_to!(String, path)?, options)
             .map_err(polars_to_rpolars_err)
     }
 
@@ -194,7 +195,7 @@ impl RPolarsLazyFrame {
         let options = pl::JsonWriterOptions { maintain_order };
         self.0
             .clone()
-            .sink_json(robj_to!(String, path)?.into(), options)
+            .sink_json(robj_to!(String, path)?, options)
             .map_err(polars_to_rpolars_err)
     }
 
@@ -499,22 +500,22 @@ impl RPolarsLazyFrame {
             .into())
     }
 
-    fn melt(
+    fn unpivot(
         &self,
-        id_vars: Robj,
-        value_vars: Robj,
+        on: Robj,
+        index: Robj,
         value_name: Robj,
         variable_name: Robj,
         streamable: Robj,
     ) -> RResult<Self> {
-        let args = MeltArgs {
-            id_vars: strings_to_smartstrings(robj_to!(Vec, String, id_vars)?),
-            value_vars: strings_to_smartstrings(robj_to!(Vec, String, value_vars)?),
+        let args = UnpivotArgs {
+            on: strings_to_smartstrings(robj_to!(Vec, String, on)?),
+            index: strings_to_smartstrings(robj_to!(Vec, String, index)?),
             value_name: robj_to!(Option, String, value_name)?.map(|s| s.into()),
             variable_name: robj_to!(Option, String, variable_name)?.map(|s| s.into()),
             streamable: robj_to!(bool, streamable)?,
         };
-        Ok(self.0.clone().melt(args).into())
+        Ok(self.0.clone().unpivot(args).into())
     }
 
     fn rename(&self, existing: Robj, new: Robj) -> RResult<Self> {
@@ -590,6 +591,7 @@ impl RPolarsLazyFrame {
             fast_projection: _,
             row_estimate: _,
             eager,
+            new_streaming: _,
         } = self.0.get_current_optimizations();
         list!(
             type_coercion = type_coercion,

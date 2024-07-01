@@ -9,7 +9,7 @@ LazyFrame_sink_parquet(
   ...,
   compression = "zstd",
   compression_level = 3,
-  statistics = FALSE,
+  statistics = TRUE,
   row_group_size = NULL,
   data_pagesize_limit = NULL,
   maintain_order = TRUE,
@@ -48,8 +48,16 @@ means smaller files on disk:
 \item "zstd": min-level: 1, max-level: 22.
 }}
 
-\item{statistics}{Logical. Whether compute and write column statistics.
-This requires extra compute.}
+\item{statistics}{Whether statistics should be written to the Parquet
+headers. Possible values:
+\itemize{
+\item \code{TRUE}: enable default set of statistics (default)
+\item \code{FALSE}: disable all statistics
+\item \code{"full"}: calculate and write all available statistics.
+\item A named list where all values must be \code{TRUE} or \code{FALSE}, e.g.
+\code{list(min = TRUE, max = FALSE)}. Statistics available are \code{"min"}, \code{"max"},
+\code{"distinct_count"}, \code{"null_count"}.
+}}
 
 \item{row_group_size}{\code{NULL} or Integer. Size of the row groups in number of
 rows. If \code{NULL} (default), the chunks of the DataFrame are used. Writing in

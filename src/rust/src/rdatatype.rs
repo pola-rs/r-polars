@@ -720,6 +720,23 @@ pub fn robj_new_null_behavior(robj: Robj) -> RResult<polars::series::ops::NullBe
     }
 }
 
+pub fn robj_to_statistics_options(robj: Robj) -> RResult<pl::StatisticsOptions> {
+    use pl::StatisticsOptions as SO;
+    let hm = robj
+        .as_list()
+        .unwrap()
+        .into_hashmap()
+        .into_iter()
+        .map(|xi| (xi.0, xi.1.as_bool().unwrap()))
+        .collect::<std::collections::HashMap<&str, bool>>();
+    let mut out = SO::default();
+    out.min_value = *hm.get(&"min").unwrap();
+    out.max_value = *hm.get(&"max").unwrap();
+    out.distinct_count = *hm.get(&"distinct_count").unwrap();
+    out.null_count = *hm.get(&"null_count").unwrap();
+    Ok(out)
+}
+
 pub fn parse_fill_null_strategy(
     strategy: &str,
     limit: Option<u32>,

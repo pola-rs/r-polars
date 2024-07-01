@@ -17,7 +17,7 @@ Returns the minute number from 0 to 59.
 }
 \examples{
 df = pl$DataFrame(
-  date = pl$date_range(
+  date = pl$datetime_range(
     as.Date("2020-12-25"),
     as.Date("2021-1-05"),
     interval = "1d5s",

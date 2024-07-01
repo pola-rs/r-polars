@@ -156,22 +156,30 @@ test_that("str$concat", {
   # concatenate a Series of strings to a single string
   df = pl$DataFrame(foo = c("1", "a", NA))
   expect_identical(
-    df$select(pl$col("foo")$str$concat())$to_list()[[1]],
+    df$select(pl$col("foo")$str$join())$to_list()[[1]],
     "1a"
   )
   expect_identical(
-    df$select(pl$col("foo")$str$concat("-"))$to_list()[[1]],
+    df$select(pl$col("foo")$str$join("-"))$to_list()[[1]],
     "1-a"
   )
   expect_identical(
-    df$select(pl$col("foo")$str$concat(ignore_nulls = FALSE))$to_list()[[1]],
+    df$select(pl$col("foo")$str$join(ignore_nulls = FALSE))$to_list()[[1]],
     NA_character_
+  )
+  # deprecated
+  expect_warning(
+    expect_identical(
+      df$select(pl$col("foo")$str$concat("-"))$to_list()[[1]],
+      "1-a"
+    ),
+    "deprecated"
   )
 
   # Series list of strings to Series of concatenated strings
   df = pl$DataFrame(list(bar = list(c("a", "b", "c"), c("1", "2", "æ"))))
   expect_identical(
-    df$select(pl$col("bar")$list$eval(pl$element()$str$concat())$list$first())$to_list()$bar,
+    df$select(pl$col("bar")$list$eval(pl$element()$str$join())$list$first())$to_list()$bar,
     sapply(df$to_list()[[1]], paste, collapse = "")
   )
 })

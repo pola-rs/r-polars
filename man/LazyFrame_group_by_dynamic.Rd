@@ -95,7 +95,7 @@ by:
 }
 \examples{
 lf = pl$LazyFrame(
-  time = pl$date_range(
+  time = pl$datetime_range(
     start = strptime("2021-12-16 00:00:00", format = "\%Y-\%m-\%d \%H:\%M:\%S", tz = "UTC"),
     end = strptime("2021-12-16 03:00:00", format = "\%Y-\%m-\%d \%H:\%M:\%S", tz = "UTC"),
     interval = "30m"

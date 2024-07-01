@@ -4,7 +4,7 @@
 \alias{Expr_value_counts}
 \title{Value counts}
 \usage{
-Expr_value_counts(..., sort = FALSE, parallel = FALSE, name = "count")
+Expr_value_counts(..., sort = FALSE, parallel = FALSE, name, normalize = FALSE)
 }
 \arguments{
 \item{...}{Ignored.}
@@ -14,8 +14,11 @@ Expr_value_counts(..., sort = FALSE, parallel = FALSE, name = "count")
 \item{parallel}{Better to turn this off in the aggregation context, as it can
 lead to contention.}
 
-\item{name}{Give the resulting count field a specific name, defaults to
-\code{"count"}.}
+\item{name}{Give the resulting count column a specific name. The default is
+\code{"count"} if \code{normalize = FALSE} and \code{"proportion"} if  \code{normalize = TRUE}.}
+
+\item{normalize}{If \code{TRUE}, it gives relative frequencies of the unique
+values instead of their count.}
 }
 \value{
 Expr
@@ -24,8 +27,7 @@ Expr
 Count all unique values and create a struct mapping value to count.
 }
 \examples{
-df = pl$DataFrame(iris)$select(pl$col("Species")$value_counts())
-df
-
-df$unnest()$to_data_frame()
+df = pl$DataFrame(iris)
+df$select(pl$col("Species")$value_counts())$unnest()
+df$select(pl$col("Species")$value_counts(normalize = TRUE))$unnest()
 }

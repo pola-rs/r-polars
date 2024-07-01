@@ -16,7 +16,7 @@ options(rmarkdown.html_vignette.check_title = FALSE)
 ```
 
 
-````{comment}
+```{.r}
 These functions/methods are either missing, broken, or Vincent can't figure out how to use them.
 
 * `Series_shift`
@@ -33,7 +33,7 @@ Requires new Polars version:
 
 * `df$sample()`
 * `df$describe()`
-````
+```
 
 [The Polars User Guide](https://pola-rs.github.io/polars-book/user-guide/) is a detailed tutorial about the Polars DataFrame library. Its goal is to introduce you to Polars by going through examples and comparing it to other solutions. Some design choices are introduced there. The guide also introduces you to optimal usage of Polars. The Polars User Guide is available at this link:
 
@@ -271,8 +271,7 @@ dataset$
   collect()
 ```
 
-````{comment}
-```{r}
+```{.r}
 compute_age = function() 2021 - pl$col("birthday")$dt$year()
 
 avg_birthday = function(gender) {
@@ -341,13 +340,13 @@ q$collect()
 # )
 # q$collect()
 ```
-````
+
 
 
 ## Folds
 
 
-```{comment}
+```{.r}
 df = pl$DataFrame(
   "a" = c(1, 2, 3),
   "b" = c(10, 20, 30)
@@ -397,7 +396,7 @@ df = pl$read_csv(
 )
 ```
 
-```{comment}
+```{.r}
 df$select(
   "Type 1",
   "Type 2",
@@ -408,7 +407,7 @@ df$select(
 ```
 
 
-```{r}
+```{.r}
 filtered = df$
   filter(pl$col("Type 2") == "Psychic")$
   select(c("Name", "Type 1", "Speed"))
@@ -450,9 +449,7 @@ df$sort("Type 1")$select(
 
 # List context and row wise computations
 
-````{comment}
-
-```
+```{.r}
 grades = pl$DataFrame(
         "student" = c("bas", "laura", "tim", "jenny"),
         "arithmetic" = c(10, 5, 6, 8),
@@ -480,7 +477,7 @@ grades$with_columns(
 
 # Custom functions
 
-```
+```{.r}
 df = pl$DataFrame(
   "keys" = c("a", "a", "b"),
   "values" = c(10, 7, 1)
@@ -520,7 +517,7 @@ out = df$select(
 )
 print(out)
 ```
-````
+
 
 
 # R examples
@@ -624,7 +621,7 @@ df$group_by("fruits")$
 ```
 
 
-```{comment}
+```{.r}
 # We can explode the list column "cars" to a new row for each element in the list
 df$
   # sort("cars")$

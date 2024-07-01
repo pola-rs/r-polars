@@ -47,6 +47,6 @@ df$select(
 
 # concat strings in each list
 df$select(
-  pl$col("b")$list$eval(pl$element()$str$concat(" "))$list$first()
+  pl$col("b")$list$eval(pl$element()$str$join(" "))$list$first()
 )
 }
