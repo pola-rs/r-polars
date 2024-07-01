@@ -45,6 +45,7 @@ pub fn new_from_parquet(
             enabled: robj_to!(Option, bool, hive_partitioning)?,
             hive_start_idx: 0, // TODO: is it actually 0?
             schema: None,      // TODO: implement a option to set this
+            try_parse_dates: true,
         },
         glob: robj_to!(bool, glob)?,
     };

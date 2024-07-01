@@ -167,6 +167,7 @@ impl RPolarsLazyFrame {
             date_format,
             time_format,
             datetime_format,
+            float_scientific: None,
             float_precision,
             separator,
             quote_char: quote,
