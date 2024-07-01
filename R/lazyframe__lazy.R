@@ -1320,7 +1320,7 @@ LazyFrame_group_by = function(..., maintain_order = polars_options()$maintain_or
 LazyFrame_join = function(
     other,
     on = NULL,
-    how = c("inner", "left", "full", "semi", "anti", "cross"),
+    how = "inner",
     ...,
     left_on = NULL,
     right_on = NULL,
@@ -1348,11 +1348,8 @@ LazyFrame_join = function(
     } else if ((!is.null(left_on) && !is.null(right_on))) {
       rexprs_left = as.list(left_on)
       rexprs_right = as.list(right_on)
-    } else if (how != "cross") {
-      Err_plain("must specify either `on`, or `left_on` and `right_on`.") |> uw()
     } else {
-      rexprs_left = as.list(self$columns)
-      rexprs_right = as.list(other$columns)
+      Err_plain("must specify either `on`, or `left_on` and `right_on`.") |> uw()
     }
   }
 
