@@ -1,6 +1,5 @@
 use extendr_api::{extendr, prelude::*, rprintln};
 use polars::prelude::{self as pl, IntoLazy, SerWriter};
-use std::result::Result;
 pub mod read_csv;
 pub mod read_ipc;
 pub mod read_ndjson;
@@ -52,7 +51,7 @@ impl OwnedDataFrameIterator {
 }
 
 impl Iterator for OwnedDataFrameIterator {
-    type Item = Result<Box<dyn arrow::array::Array>, PolarsError>;
+    type Item = std::result::Result<Box<dyn arrow::array::Array>, PolarsError>;
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.idx >= self.n_chunks {
@@ -86,6 +85,7 @@ impl From<pl::DataFrame> for RPolarsDataFrame {
     }
 }
 
+use extendr_api::Result;
 #[extendr]
 impl RPolarsDataFrame {
     pub fn shape(&self) -> Robj {
@@ -143,14 +143,14 @@ impl RPolarsDataFrame {
     }
 
     //internal use
-    pub fn set_column_from_robj(&mut self, robj: Robj, name: &str) -> Result<(), String> {
+    pub fn set_column_from_robj(&mut self, robj: Robj, name: &str) -> std::result::Result<(), String> {
         robjname2series(robj, name)
             .and_then(|s| self.0.with_column(s).map(|_| ()))
             .map_err(|err| format!("in set_column_from_robj: {:?}", err))
     }
 
     //internal use
-    pub fn set_column_from_series(&mut self, x: &RPolarsSeries) -> Result<(), String> {
+    pub fn set_column_from_series(&mut self, x: &RPolarsSeries) -> std::result::Result<(), String> {
         let s: pl::Series = x.into(); //implicit clone, cannot move R objects
         self.0
             .with_column(s)
@@ -183,7 +183,7 @@ impl RPolarsDataFrame {
             .collect()
     }
 
-    pub fn set_column_names_mut(&mut self, names: Vec<String>) -> Result<(), String> {
+    pub fn set_column_names_mut(&mut self, names: Vec<String>) -> std::result::Result<(), String> {
         self.0
             .set_column_names(&names[..])
             .map(|_| ())
@@ -229,7 +229,7 @@ impl RPolarsDataFrame {
     // }
 
     pub fn to_list(&self, int64_conversion: &str) -> List {
-        let robj_vec_res: Result<Vec<Robj>, _> = collect_hinted_result(
+        let robj_vec_res: std::result::Result<Vec<Robj>, _> = collect_hinted_result(
             self.0.width(),
             self.0
                 .iter()
@@ -249,7 +249,7 @@ impl RPolarsDataFrame {
 
     //this methods should only be used for benchmarking
     pub fn to_list_unwind(&self, int64_conversion: &str) -> Robj {
-        let robj_vec_res: Result<Vec<Robj>, _> = collect_hinted_result(
+        let robj_vec_res: std::result::Result<Vec<Robj>, _> = collect_hinted_result(
             self.0.width(),
             self.0
                 .iter()
@@ -271,7 +271,7 @@ impl RPolarsDataFrame {
     // does not expose this arg in to_list as it is quite niche and might be deprecated later
     pub fn to_list_tag_structs(&self, int64_conversion: &str) -> List {
         //convert DataFrame to Result of to R vectors, error if DataType is not supported
-        let robj_vec_res: Result<Vec<Robj>, _> = collect_hinted_result(
+        let robj_vec_res: std::result::Result<Vec<Robj>, _> = collect_hinted_result(
             self.0.width(),
             self.0
                 .iter()
@@ -368,7 +368,7 @@ impl RPolarsDataFrame {
         }
     }
 
-    pub fn from_arrow_record_batches(rbr: Robj) -> Result<RPolarsDataFrame, String> {
+    pub fn from_arrow_record_batches(rbr: Robj) -> std::result::Result<RPolarsDataFrame, String> {
         Ok(RPolarsDataFrame(unsafe {
             crate::arrow_interop::to_rust::to_rust_df(rbr)
         }?))
@@ -607,9 +607,9 @@ impl RPolarsDataFrame {
 }
 
 impl RPolarsDataFrame {
-    pub fn to_list_result(&self, int64_conversion: &str) -> Result<Robj, pl::PolarsError> {
+    pub fn to_list_result(&self, int64_conversion: &str) -> std::result::Result<Robj, pl::PolarsError> {
         //convert DataFrame to Result of to R vectors, error if DataType is not supported
-        let robj_vec_res: Result<Vec<Robj>, _> = self
+        let robj_vec_res: std::result::Result<Vec<Robj>, _> = self
             .0
             .iter()
             .map(|s| pl_series_to_list(s, true, int64_conversion))
