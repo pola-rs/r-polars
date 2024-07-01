@@ -154,9 +154,9 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
 
         Rtype::Raw => {
             let rpolars_raw_list = list!(x)
-                .set_class(["rpolars_raw_list", "list"])
+                                .set_class(["rpolars_raw_list", "list"]).cloned()
                 .map_err(|err| pl::polars_err!(ComputeError: err.to_string()))?;
-            recursive_robjname2series_tree(&rpolars_raw_list, name)
+            recursive_robjname2series_tree(&rpolars_raw_list.into_robj(), name)
         }
 
         Rtype::List if x.inherits("rpolars_raw_list") => {

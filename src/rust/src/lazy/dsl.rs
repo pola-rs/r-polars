@@ -20,7 +20,6 @@ use polars::prelude as pl;
 use polars::prelude::{ExprEvalExtension, NestedType, SortOptions};
 use std::any::Any;
 use std::ops::{Add, Div, Mul, Rem, Sub};
-use std::result::Result;
 pub type NameGenerator = pl::Arc<dyn Fn(usize) -> String + Send + Sync>;
 use crate::rdatatype::robjs_to_ewm_options;
 use crate::utils::r_expr_to_rust_expr;
@@ -56,6 +55,7 @@ impl From<pl::Expr> for RPolarsExpr {
     }
 }
 
+use extendr_api::Result;
 #[extendr]
 impl RPolarsExpr {
     //constructors
@@ -2504,7 +2504,7 @@ impl RPolarsExpr {
             .into())
     }
 
-    pub fn bin_starts_with(&self, sub: Robj) -> Result<Self, String> {
+    pub fn bin_starts_with(&self, sub: Robj) -> std::result::Result<Self, String> {
         Ok(self
             .0
             .clone()
@@ -2513,7 +2513,7 @@ impl RPolarsExpr {
             .into())
     }
 
-    pub fn bin_ends_with(&self, sub: Robj) -> Result<Self, String> {
+    pub fn bin_ends_with(&self, sub: Robj) -> std::result::Result<Self, String> {
         Ok(self
             .0
             .clone()
@@ -2570,7 +2570,7 @@ impl RPolarsExpr {
         List::from_values(exprs.iter().map(|e| RPolarsExpr(e.clone())))
     }
 
-    fn meta_eq(&self, other: Robj) -> Result<bool, String> {
+    fn meta_eq(&self, other: Robj) -> std::result::Result<bool, String> {
         let other = robj_to!(Expr, other)?;
         Ok(self.0 == other.0)
     }
@@ -2585,7 +2585,7 @@ impl RPolarsExpr {
             .collect()
     }
 
-    fn meta_output_name(&self) -> Result<String, String> {
+    fn meta_output_name(&self) -> std::result::Result<String, String> {
         let name = self
             .0
             .clone()

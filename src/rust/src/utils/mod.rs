@@ -1144,7 +1144,7 @@ macro_rules! robj_to {
                 //TODO reintroduce collect_hinted_result_rerr as trait not a generic
                 //generic forces $type to be a literal type in scrop not e.g. PLExprCol
                 //$crate::utils::collect_hinted_result_rerr::<$type>(x.len(), iter)
-                let x: Result<_, _> = iter.collect();
+                let x: std::result::Result<_, _> = iter.collect();
                 x
             } else {
                 // single value without list, convert as is and wrap in a list

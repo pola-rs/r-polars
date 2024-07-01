@@ -24,7 +24,6 @@ use polars::prelude::{ArgAgg, IntoSeries};
 use polars_core::series::IsSorted;
 pub const R_INT_NA_ENC: i32 = -2147483648;
 use crate::rpolarserr::polars_to_rpolars_err;
-use std::result::Result;
 
 use polars_core::error::PolarsError;
 use polars_core::utils::arrow;
@@ -48,7 +47,7 @@ impl OwnedSeriesIterator {
 }
 
 impl Iterator for OwnedSeriesIterator {
-    type Item = Result<Box<dyn arrow::array::Array>, PolarsError>;
+    type Item = std::result::Result<Box<dyn arrow::array::Array>, PolarsError>;
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.idx >= self.n_chunks {
@@ -87,6 +86,7 @@ impl From<&RPolarsExpr> for pl::PolarsResult<RPolarsSeries> {
     }
 }
 
+use extendr_api::Result;
 #[extendr]
 impl RPolarsSeries {
     //utility methods
@@ -129,7 +129,7 @@ impl RPolarsSeries {
         RPolarsDataType(self.0.dtype().clone())
     }
 
-    fn n_unique(&self) -> Result<usize, String> {
+    fn n_unique(&self) -> std::result::Result<usize, String> {
         let n = self.0.n_unique().map_err(|err| err.to_string())?;
         Ok(n)
     }
@@ -504,7 +504,7 @@ impl RPolarsSeries {
     }
 
     // TODO: add the int64 conversion option
-    pub fn mean(&self) -> Result<Robj, String> {
+    pub fn mean(&self) -> std::result::Result<Robj, String> {
         match self.0.dtype() {
             DataType::Boolean => {
                 let s = self
@@ -523,7 +523,7 @@ impl RPolarsSeries {
         }
     }
 
-    pub fn median(&self) -> Result<Robj, String> {
+    pub fn median(&self) -> std::result::Result<Robj, String> {
         match self.0.dtype() {
             DataType::Boolean => {
                 let s = self
@@ -547,7 +547,7 @@ impl RPolarsSeries {
         }
     }
 
-    pub fn min(&self) -> Result<Robj, String> {
+    pub fn min(&self) -> std::result::Result<Robj, String> {
         RPolarsSeries(
             self.0
                 .min_reduce()
@@ -557,7 +557,7 @@ impl RPolarsSeries {
         .to_r("double")
     }
 
-    pub fn max(&self) -> Result<Robj, String> {
+    pub fn max(&self) -> std::result::Result<Robj, String> {
         RPolarsSeries(
             self.0
                 .max_reduce()
@@ -567,7 +567,7 @@ impl RPolarsSeries {
         .to_r("double")
     }
 
-    pub fn sum(&self) -> Result<Robj, String> {
+    pub fn sum(&self) -> std::result::Result<Robj, String> {
         RPolarsSeries(
             self.0
                 .sum_reduce()
@@ -577,7 +577,7 @@ impl RPolarsSeries {
         .to_r("double")
     }
 
-    pub fn std(&self, ddof: Robj) -> Result<Robj, String> {
+    pub fn std(&self, ddof: Robj) -> std::result::Result<Robj, String> {
         let ddof = robj_to!(u8, ddof)?;
 
         RPolarsSeries(
@@ -589,7 +589,7 @@ impl RPolarsSeries {
         .to_r("double")
     }
 
-    pub fn var(&self, ddof: Robj) -> Result<Robj, String> {
+    pub fn var(&self, ddof: Robj) -> std::result::Result<Robj, String> {
         let ddof = robj_to!(u8, ddof)?;
 
         RPolarsSeries(
@@ -659,7 +659,7 @@ impl RPolarsSeries {
         Ok(s.into())
     }
 
-    pub fn from_arrow_array_robj(name: Robj, array: Robj) -> Result<Self, String> {
+    pub fn from_arrow_array_robj(name: Robj, array: Robj) -> std::result::Result<Self, String> {
         let name = robj_to!(str, name)?;
         let arr = crate::arrow_interop::to_rust::arrow_array_to_rust(array)?;
 
@@ -683,7 +683,7 @@ impl RPolarsSeries {
                 Ok(out.into_series().into())
             }
             _ => {
-                let series_res: Result<pl::Series, pl::PolarsError> =
+                let series_res: std::result::Result<pl::Series, pl::PolarsError> =
                     std::convert::TryFrom::try_from((name, arr));
                 Ok(series_res.map_err(|err| err.to_string())?.into())
             }
