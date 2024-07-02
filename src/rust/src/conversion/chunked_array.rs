@@ -1,6 +1,7 @@
 use crate::prelude::*;
 use savvy::{
-    OwnedIntegerSexp, OwnedListSexp, OwnedLogicalSexp, OwnedRealSexp, OwnedStringSexp, Sexp,
+    OwnedIntegerSexp, OwnedListSexp, OwnedLogicalSexp, OwnedRawSexp, OwnedRealSexp,
+    OwnedStringSexp, Sexp,
 };
 
 impl From<Wrap<&BooleanChunked>> for Sexp {
@@ -12,6 +13,24 @@ impl From<Wrap<&BooleanChunked>> for Sexp {
                 let _ = sexp.set_elt(i, v);
             } else {
                 let _ = sexp.set_na(i);
+            }
+        }
+        sexp.into()
+    }
+}
+
+impl From<Wrap<&BinaryChunked>> for Sexp {
+    fn from(ca: Wrap<&BinaryChunked>) -> Self {
+        let ca = ca.0;
+        let mut sexp = OwnedListSexp::new(ca.len(), false).unwrap();
+        for (i, v) in ca.into_iter().enumerate() {
+            unsafe {
+                if let Some(v) = v {
+                    let _ = sexp
+                        .set_value_unchecked(i, OwnedRawSexp::try_from_slice(v).unwrap().inner());
+                } else {
+                    let _ = sexp.set_value_unchecked(i, savvy::sexp::null::null());
+                }
             }
         }
         sexp.into()
