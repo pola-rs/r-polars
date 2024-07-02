@@ -24,1027 +24,1277 @@ NULL
 }
 
 
-col <- function(name) {
-  .savvy_wrap_PlRExpr(.Call(savvy_col__impl, name))
+`col` <- function(`name`) {
+  .savvy_wrap_PlRExpr(.Call(savvy_col__impl, `name`))
 }
 
 
-cols <- function(names) {
-  .savvy_wrap_PlRExpr(.Call(savvy_cols__impl, names))
+`cols` <- function(`names`) {
+  .savvy_wrap_PlRExpr(.Call(savvy_cols__impl, `names`))
 }
 
 
-lit_from_bool <- function(value) {
-  .savvy_wrap_PlRExpr(.Call(savvy_lit_from_bool__impl, value))
+`lit_from_bool` <- function(`value`) {
+  .savvy_wrap_PlRExpr(.Call(savvy_lit_from_bool__impl, `value`))
 }
 
 
-lit_from_i32 <- function(value) {
-  .savvy_wrap_PlRExpr(.Call(savvy_lit_from_i32__impl, value))
+`lit_from_i32` <- function(`value`) {
+  .savvy_wrap_PlRExpr(.Call(savvy_lit_from_i32__impl, `value`))
 }
 
 
-lit_from_f64 <- function(value) {
-  .savvy_wrap_PlRExpr(.Call(savvy_lit_from_f64__impl, value))
+`lit_from_f64` <- function(`value`) {
+  .savvy_wrap_PlRExpr(.Call(savvy_lit_from_f64__impl, `value`))
 }
 
 
-lit_from_str <- function(value) {
-  .savvy_wrap_PlRExpr(.Call(savvy_lit_from_str__impl, value))
+`lit_from_str` <- function(`value`) {
+  .savvy_wrap_PlRExpr(.Call(savvy_lit_from_str__impl, `value`))
 }
 
 
-lit_null <- function() {
+`lit_null` <- function() {
   .savvy_wrap_PlRExpr(.Call(savvy_lit_null__impl))
 }
 
 
-lit_from_series <- function(value) {
-  value <- .savvy_extract_ptr(value, "PlRSeries")
-  .savvy_wrap_PlRExpr(.Call(savvy_lit_from_series__impl, value))
+`lit_from_series` <- function(`value`) {
+  `value` <- .savvy_extract_ptr(`value`, "PlRSeries")
+  .savvy_wrap_PlRExpr(.Call(savvy_lit_from_series__impl, `value`))
 }
 
 
-when <- function(condition) {
-  condition <- .savvy_extract_ptr(condition, "PlRExpr")
-  .savvy_wrap_PlRWhen(.Call(savvy_when__impl, condition))
+`when` <- function(`condition`) {
+  `condition` <- .savvy_extract_ptr(`condition`, "PlRExpr")
+  .savvy_wrap_PlRWhen(.Call(savvy_when__impl, `condition`))
 }
 
 ### wrapper functions for PlRChainedThen
 
-PlRChainedThen_when <- function(self) {
-  function(condition) {
-    condition <- .savvy_extract_ptr(condition, "PlRExpr")
-  .savvy_wrap_PlRChainedWhen(.Call(savvy_PlRChainedThen_when__impl, self, condition))
+`PlRChainedThen_when` <- function(self) {
+  function(`condition`) {
+    `condition` <- .savvy_extract_ptr(`condition`, "PlRExpr")
+    .savvy_wrap_PlRChainedWhen(.Call(savvy_PlRChainedThen_when__impl, `self`, `condition`))
   }
 }
 
-PlRChainedThen_otherwise <- function(self) {
-  function(statement) {
-    statement <- .savvy_extract_ptr(statement, "PlRExpr")
-  .savvy_wrap_PlRExpr(.Call(savvy_PlRChainedThen_otherwise__impl, self, statement))
+`PlRChainedThen_otherwise` <- function(self) {
+  function(`statement`) {
+    `statement` <- .savvy_extract_ptr(`statement`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRChainedThen_otherwise__impl, `self`, `statement`))
   }
 }
 
-.savvy_wrap_PlRChainedThen <- function(ptr) {
+`.savvy_wrap_PlRChainedThen` <- function(ptr) {
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
-    e$when <- PlRChainedThen_when(ptr)
-  e$otherwise <- PlRChainedThen_otherwise(ptr)
-  
+  e$`when` <- `PlRChainedThen_when`(ptr)
+  e$`otherwise` <- `PlRChainedThen_otherwise`(ptr)
+
   class(e) <- "PlRChainedThen"
   e
 }
 
+#' @export
+`$<-.PlRChainedThen` <- function(x, name, value) stop("PlRChainedThen cannot be modified", call. = FALSE)
+
+#' @export
+`[[<-.PlRChainedThen` <- function(x, i, value) stop("PlRChainedThen cannot be modified", call. = FALSE)
 
 
-PlRChainedThen <- new.env(parent = emptyenv())
+
+`PlRChainedThen` <- new.env(parent = emptyenv())
+
+#' @export
+`$<-.PlRChainedThen` <- function(x, name, value) stop("PlRChainedThen cannot be modified", call. = FALSE)
+
+#' @export
+`[[<-.PlRChainedThen` <- function(x, i, value) stop("PlRChainedThen cannot be modified", call. = FALSE)
 
 ### associated functions for PlRChainedThen
 
 
 
+class(`PlRChainedThen`) <- "PlRChainedThen__bundle"
+
+#' @export
+`print.PlRChainedThen__bundle` <- function(x, ...) {
+  cat('PlRChainedThen')
+}
+
+#' @export
+`$<-.PlRChainedThen__bundle` <- function(x, name, value) stop("PlRChainedThen cannot be modified", call. = FALSE)
+
+#' @export
+`[[<-.PlRChainedThen__bundle` <- function(x, i, value) stop("PlRChainedThen cannot be modified", call. = FALSE)
+
 ### wrapper functions for PlRChainedWhen
 
-PlRChainedWhen_then <- function(self) {
-  function(statement) {
-    statement <- .savvy_extract_ptr(statement, "PlRExpr")
-  .savvy_wrap_PlRChainedThen(.Call(savvy_PlRChainedWhen_then__impl, self, statement))
+`PlRChainedWhen_then` <- function(self) {
+  function(`statement`) {
+    `statement` <- .savvy_extract_ptr(`statement`, "PlRExpr")
+    .savvy_wrap_PlRChainedThen(.Call(savvy_PlRChainedWhen_then__impl, `self`, `statement`))
   }
 }
 
-.savvy_wrap_PlRChainedWhen <- function(ptr) {
+`.savvy_wrap_PlRChainedWhen` <- function(ptr) {
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
-    e$then <- PlRChainedWhen_then(ptr)
-  
+  e$`then` <- `PlRChainedWhen_then`(ptr)
+
   class(e) <- "PlRChainedWhen"
   e
 }
 
+#' @export
+`$<-.PlRChainedWhen` <- function(x, name, value) stop("PlRChainedWhen cannot be modified", call. = FALSE)
+
+#' @export
+`[[<-.PlRChainedWhen` <- function(x, i, value) stop("PlRChainedWhen cannot be modified", call. = FALSE)
 
 
-PlRChainedWhen <- new.env(parent = emptyenv())
+
+`PlRChainedWhen` <- new.env(parent = emptyenv())
+
+#' @export
+`$<-.PlRChainedWhen` <- function(x, name, value) stop("PlRChainedWhen cannot be modified", call. = FALSE)
+
+#' @export
+`[[<-.PlRChainedWhen` <- function(x, i, value) stop("PlRChainedWhen cannot be modified", call. = FALSE)
 
 ### associated functions for PlRChainedWhen
 
 
 
+class(`PlRChainedWhen`) <- "PlRChainedWhen__bundle"
+
+#' @export
+`print.PlRChainedWhen__bundle` <- function(x, ...) {
+  cat('PlRChainedWhen')
+}
+
+#' @export
+`$<-.PlRChainedWhen__bundle` <- function(x, name, value) stop("PlRChainedWhen cannot be modified", call. = FALSE)
+
+#' @export
+`[[<-.PlRChainedWhen__bundle` <- function(x, i, value) stop("PlRChainedWhen cannot be modified", call. = FALSE)
+
 ### wrapper functions for PlRDataFrame
 
-PlRDataFrame_print <- function(self) {
+`PlRDataFrame_print` <- function(self) {
   function() {
-  invisible(.Call(savvy_PlRDataFrame_print__impl, self))
+    invisible(.Call(savvy_PlRDataFrame_print__impl, `self`))
   }
 }
 
-PlRDataFrame_get_columns <- function(self) {
+`PlRDataFrame_get_columns` <- function(self) {
   function() {
-  .Call(savvy_PlRDataFrame_get_columns__impl, self)
+    .Call(savvy_PlRDataFrame_get_columns__impl, `self`)
   }
 }
 
-PlRDataFrame_shape <- function(self) {
+`PlRDataFrame_shape` <- function(self) {
   function() {
-  .Call(savvy_PlRDataFrame_shape__impl, self)
+    .Call(savvy_PlRDataFrame_shape__impl, `self`)
   }
 }
 
-PlRDataFrame_height <- function(self) {
+`PlRDataFrame_height` <- function(self) {
   function() {
-  .Call(savvy_PlRDataFrame_height__impl, self)
+    .Call(savvy_PlRDataFrame_height__impl, `self`)
   }
 }
 
-PlRDataFrame_width <- function(self) {
+`PlRDataFrame_width` <- function(self) {
   function() {
-  .Call(savvy_PlRDataFrame_width__impl, self)
+    .Call(savvy_PlRDataFrame_width__impl, `self`)
   }
 }
 
-PlRDataFrame_to_series <- function(self) {
-  function(index) {
-    .savvy_wrap_PlRSeries(.Call(savvy_PlRDataFrame_to_series__impl, self, index))
+`PlRDataFrame_to_series` <- function(self) {
+  function(`index`) {
+    .savvy_wrap_PlRSeries(.Call(savvy_PlRDataFrame_to_series__impl, `self`, `index`))
   }
 }
 
-PlRDataFrame_lazy <- function(self) {
+`PlRDataFrame_equals` <- function(self) {
+  function(`other`, `null_equal`) {
+    `other` <- .savvy_extract_ptr(`other`, "PlRDataFrame")
+    .Call(savvy_PlRDataFrame_equals__impl, `self`, `other`, `null_equal`)
+  }
+}
+
+`PlRDataFrame_lazy` <- function(self) {
   function() {
-    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRDataFrame_lazy__impl, self))
+    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRDataFrame_lazy__impl, `self`))
   }
 }
 
-PlRDataFrame_equals <- function(self) {
-  function(other, null_equal) {
-    other <- .savvy_extract_ptr(other, "PlRDataFrame")
-.Call(savvy_PlRDataFrame_equals__impl, self, other, null_equal)
+`PlRDataFrame_to_struct` <- function(self) {
+  function(`name`) {
+    .savvy_wrap_PlRSeries(.Call(savvy_PlRDataFrame_to_struct__impl, `self`, `name`))
   }
 }
 
-PlRDataFrame_to_struct <- function(self) {
-  function(name) {
-    .savvy_wrap_PlRSeries(.Call(savvy_PlRDataFrame_to_struct__impl, self, name))
-  }
-}
-
-.savvy_wrap_PlRDataFrame <- function(ptr) {
+`.savvy_wrap_PlRDataFrame` <- function(ptr) {
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
-    e$print <- PlRDataFrame_print(ptr)
-  e$get_columns <- PlRDataFrame_get_columns(ptr)
-  e$shape <- PlRDataFrame_shape(ptr)
-  e$height <- PlRDataFrame_height(ptr)
-  e$width <- PlRDataFrame_width(ptr)
-  e$to_series <- PlRDataFrame_to_series(ptr)
-  e$lazy <- PlRDataFrame_lazy(ptr)
-  e$equals <- PlRDataFrame_equals(ptr)
-  e$to_struct <- PlRDataFrame_to_struct(ptr)
-  
+  e$`print` <- `PlRDataFrame_print`(ptr)
+  e$`get_columns` <- `PlRDataFrame_get_columns`(ptr)
+  e$`shape` <- `PlRDataFrame_shape`(ptr)
+  e$`height` <- `PlRDataFrame_height`(ptr)
+  e$`width` <- `PlRDataFrame_width`(ptr)
+  e$`to_series` <- `PlRDataFrame_to_series`(ptr)
+  e$`equals` <- `PlRDataFrame_equals`(ptr)
+  e$`lazy` <- `PlRDataFrame_lazy`(ptr)
+  e$`to_struct` <- `PlRDataFrame_to_struct`(ptr)
+
   class(e) <- "PlRDataFrame"
   e
 }
 
+#' @export
+`$<-.PlRDataFrame` <- function(x, name, value) stop("PlRDataFrame cannot be modified", call. = FALSE)
+
+#' @export
+`[[<-.PlRDataFrame` <- function(x, i, value) stop("PlRDataFrame cannot be modified", call. = FALSE)
 
 
-PlRDataFrame <- new.env(parent = emptyenv())
+
+`PlRDataFrame` <- new.env(parent = emptyenv())
+
+#' @export
+`$<-.PlRDataFrame` <- function(x, name, value) stop("PlRDataFrame cannot be modified", call. = FALSE)
+
+#' @export
+`[[<-.PlRDataFrame` <- function(x, i, value) stop("PlRDataFrame cannot be modified", call. = FALSE)
 
 ### associated functions for PlRDataFrame
 
-PlRDataFrame$init <- function(columns) {
-  .savvy_wrap_PlRDataFrame(.Call(savvy_PlRDataFrame_init__impl, columns))
+`PlRDataFrame`$`init` <- function(`columns`) {
+  .savvy_wrap_PlRDataFrame(.Call(savvy_PlRDataFrame_init__impl, `columns`))
 }
 
+
+class(`PlRDataFrame`) <- "PlRDataFrame__bundle"
+
+#' @export
+`print.PlRDataFrame__bundle` <- function(x, ...) {
+  cat('PlRDataFrame')
+}
+
+#' @export
+`$<-.PlRDataFrame__bundle` <- function(x, name, value) stop("PlRDataFrame cannot be modified", call. = FALSE)
+
+#' @export
+`[[<-.PlRDataFrame__bundle` <- function(x, i, value) stop("PlRDataFrame cannot be modified", call. = FALSE)
 
 ### wrapper functions for PlRDataType
 
-PlRDataType_print <- function(self) {
+`PlRDataType_print` <- function(self) {
   function() {
-  invisible(.Call(savvy_PlRDataType_print__impl, self))
+    invisible(.Call(savvy_PlRDataType_print__impl, `self`))
   }
 }
 
-PlRDataType_is_temporal <- function(self) {
+`PlRDataType_is_temporal` <- function(self) {
   function() {
-  .Call(savvy_PlRDataType_is_temporal__impl, self)
+    .Call(savvy_PlRDataType_is_temporal__impl, `self`)
   }
 }
 
-PlRDataType_is_enum <- function(self) {
+`PlRDataType_is_enum` <- function(self) {
   function() {
-  .Call(savvy_PlRDataType_is_enum__impl, self)
+    .Call(savvy_PlRDataType_is_enum__impl, `self`)
   }
 }
 
-PlRDataType_is_categorical <- function(self) {
+`PlRDataType_is_categorical` <- function(self) {
   function() {
-  .Call(savvy_PlRDataType_is_categorical__impl, self)
+    .Call(savvy_PlRDataType_is_categorical__impl, `self`)
   }
 }
 
-PlRDataType_is_string <- function(self) {
+`PlRDataType_is_string` <- function(self) {
   function() {
-  .Call(savvy_PlRDataType_is_string__impl, self)
+    .Call(savvy_PlRDataType_is_string__impl, `self`)
   }
 }
 
-PlRDataType_is_logical <- function(self) {
+`PlRDataType_is_logical` <- function(self) {
   function() {
-  .Call(savvy_PlRDataType_is_logical__impl, self)
+    .Call(savvy_PlRDataType_is_logical__impl, `self`)
   }
 }
 
-PlRDataType_is_float <- function(self) {
+`PlRDataType_is_float` <- function(self) {
   function() {
-  .Call(savvy_PlRDataType_is_float__impl, self)
+    .Call(savvy_PlRDataType_is_float__impl, `self`)
   }
 }
 
-PlRDataType_is_numeric <- function(self) {
+`PlRDataType_is_numeric` <- function(self) {
   function() {
-  .Call(savvy_PlRDataType_is_numeric__impl, self)
+    .Call(savvy_PlRDataType_is_numeric__impl, `self`)
   }
 }
 
-PlRDataType_is_integer <- function(self) {
+`PlRDataType_is_integer` <- function(self) {
   function() {
-  .Call(savvy_PlRDataType_is_integer__impl, self)
+    .Call(savvy_PlRDataType_is_integer__impl, `self`)
   }
 }
 
-PlRDataType_is_signed_integer <- function(self) {
+`PlRDataType_is_signed_integer` <- function(self) {
   function() {
-  .Call(savvy_PlRDataType_is_signed_integer__impl, self)
+    .Call(savvy_PlRDataType_is_signed_integer__impl, `self`)
   }
 }
 
-PlRDataType_is_unsigned_integer <- function(self) {
+`PlRDataType_is_unsigned_integer` <- function(self) {
   function() {
-  .Call(savvy_PlRDataType_is_unsigned_integer__impl, self)
+    .Call(savvy_PlRDataType_is_unsigned_integer__impl, `self`)
   }
 }
 
-PlRDataType_is_null <- function(self) {
+`PlRDataType_is_null` <- function(self) {
   function() {
-  .Call(savvy_PlRDataType_is_null__impl, self)
+    .Call(savvy_PlRDataType_is_null__impl, `self`)
   }
 }
 
-PlRDataType_is_binary <- function(self) {
+`PlRDataType_is_binary` <- function(self) {
   function() {
-  .Call(savvy_PlRDataType_is_binary__impl, self)
+    .Call(savvy_PlRDataType_is_binary__impl, `self`)
   }
 }
 
-PlRDataType_is_primitive <- function(self) {
+`PlRDataType_is_primitive` <- function(self) {
   function() {
-  .Call(savvy_PlRDataType_is_primitive__impl, self)
+    .Call(savvy_PlRDataType_is_primitive__impl, `self`)
   }
 }
 
-PlRDataType_is_bool <- function(self) {
+`PlRDataType_is_bool` <- function(self) {
   function() {
-  .Call(savvy_PlRDataType_is_bool__impl, self)
+    .Call(savvy_PlRDataType_is_bool__impl, `self`)
   }
 }
 
-PlRDataType_is_array <- function(self) {
+`PlRDataType_is_array` <- function(self) {
   function() {
-  .Call(savvy_PlRDataType_is_array__impl, self)
+    .Call(savvy_PlRDataType_is_array__impl, `self`)
   }
 }
 
-PlRDataType_is_list <- function(self) {
+`PlRDataType_is_list` <- function(self) {
   function() {
-  .Call(savvy_PlRDataType_is_list__impl, self)
+    .Call(savvy_PlRDataType_is_list__impl, `self`)
   }
 }
 
-PlRDataType_is_nested <- function(self) {
+`PlRDataType_is_nested` <- function(self) {
   function() {
-  .Call(savvy_PlRDataType_is_nested__impl, self)
+    .Call(savvy_PlRDataType_is_nested__impl, `self`)
   }
 }
 
-PlRDataType_is_struct <- function(self) {
+`PlRDataType_is_struct` <- function(self) {
   function() {
-  .Call(savvy_PlRDataType_is_struct__impl, self)
+    .Call(savvy_PlRDataType_is_struct__impl, `self`)
   }
 }
 
-PlRDataType_is_ord <- function(self) {
+`PlRDataType_is_ord` <- function(self) {
   function() {
-  .Call(savvy_PlRDataType_is_ord__impl, self)
+    .Call(savvy_PlRDataType_is_ord__impl, `self`)
   }
 }
 
-PlRDataType_is_known <- function(self) {
+`PlRDataType_is_known` <- function(self) {
   function() {
-  .Call(savvy_PlRDataType_is_known__impl, self)
+    .Call(savvy_PlRDataType_is_known__impl, `self`)
   }
 }
 
-.savvy_wrap_PlRDataType <- function(ptr) {
+`.savvy_wrap_PlRDataType` <- function(ptr) {
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
-    e$print <- PlRDataType_print(ptr)
-  e$is_temporal <- PlRDataType_is_temporal(ptr)
-  e$is_enum <- PlRDataType_is_enum(ptr)
-  e$is_categorical <- PlRDataType_is_categorical(ptr)
-  e$is_string <- PlRDataType_is_string(ptr)
-  e$is_logical <- PlRDataType_is_logical(ptr)
-  e$is_float <- PlRDataType_is_float(ptr)
-  e$is_numeric <- PlRDataType_is_numeric(ptr)
-  e$is_integer <- PlRDataType_is_integer(ptr)
-  e$is_signed_integer <- PlRDataType_is_signed_integer(ptr)
-  e$is_unsigned_integer <- PlRDataType_is_unsigned_integer(ptr)
-  e$is_null <- PlRDataType_is_null(ptr)
-  e$is_binary <- PlRDataType_is_binary(ptr)
-  e$is_primitive <- PlRDataType_is_primitive(ptr)
-  e$is_bool <- PlRDataType_is_bool(ptr)
-  e$is_array <- PlRDataType_is_array(ptr)
-  e$is_list <- PlRDataType_is_list(ptr)
-  e$is_nested <- PlRDataType_is_nested(ptr)
-  e$is_struct <- PlRDataType_is_struct(ptr)
-  e$is_ord <- PlRDataType_is_ord(ptr)
-  e$is_known <- PlRDataType_is_known(ptr)
-  
+  e$`print` <- `PlRDataType_print`(ptr)
+  e$`is_temporal` <- `PlRDataType_is_temporal`(ptr)
+  e$`is_enum` <- `PlRDataType_is_enum`(ptr)
+  e$`is_categorical` <- `PlRDataType_is_categorical`(ptr)
+  e$`is_string` <- `PlRDataType_is_string`(ptr)
+  e$`is_logical` <- `PlRDataType_is_logical`(ptr)
+  e$`is_float` <- `PlRDataType_is_float`(ptr)
+  e$`is_numeric` <- `PlRDataType_is_numeric`(ptr)
+  e$`is_integer` <- `PlRDataType_is_integer`(ptr)
+  e$`is_signed_integer` <- `PlRDataType_is_signed_integer`(ptr)
+  e$`is_unsigned_integer` <- `PlRDataType_is_unsigned_integer`(ptr)
+  e$`is_null` <- `PlRDataType_is_null`(ptr)
+  e$`is_binary` <- `PlRDataType_is_binary`(ptr)
+  e$`is_primitive` <- `PlRDataType_is_primitive`(ptr)
+  e$`is_bool` <- `PlRDataType_is_bool`(ptr)
+  e$`is_array` <- `PlRDataType_is_array`(ptr)
+  e$`is_list` <- `PlRDataType_is_list`(ptr)
+  e$`is_nested` <- `PlRDataType_is_nested`(ptr)
+  e$`is_struct` <- `PlRDataType_is_struct`(ptr)
+  e$`is_ord` <- `PlRDataType_is_ord`(ptr)
+  e$`is_known` <- `PlRDataType_is_known`(ptr)
+
   class(e) <- "PlRDataType"
   e
 }
 
+#' @export
+`$<-.PlRDataType` <- function(x, name, value) stop("PlRDataType cannot be modified", call. = FALSE)
+
+#' @export
+`[[<-.PlRDataType` <- function(x, i, value) stop("PlRDataType cannot be modified", call. = FALSE)
 
 
-PlRDataType <- new.env(parent = emptyenv())
+
+`PlRDataType` <- new.env(parent = emptyenv())
+
+#' @export
+`$<-.PlRDataType` <- function(x, name, value) stop("PlRDataType cannot be modified", call. = FALSE)
+
+#' @export
+`[[<-.PlRDataType` <- function(x, i, value) stop("PlRDataType cannot be modified", call. = FALSE)
 
 ### associated functions for PlRDataType
 
-PlRDataType$new_from_name <- function(name) {
-  .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_new_from_name__impl, name))
+`PlRDataType`$`new_from_name` <- function(`name`) {
+  .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_new_from_name__impl, `name`))
 }
 
-PlRDataType$new_categorical <- function(ordering) {
-  .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_new_categorical__impl, ordering))
+`PlRDataType`$`new_categorical` <- function(`ordering`) {
+  .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_new_categorical__impl, `ordering`))
 }
 
-PlRDataType$new_datetime <- function(time_unit, time_zone = NULL) {
-  .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_new_datetime__impl, time_unit, time_zone))
+`PlRDataType`$`new_datetime` <- function(`time_unit`, `time_zone` = NULL) {
+  .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_new_datetime__impl, `time_unit`, `time_zone`))
 }
 
-PlRDataType$new_duration <- function(time_unit) {
-  .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_new_duration__impl, time_unit))
+`PlRDataType`$`new_duration` <- function(`time_unit`) {
+  .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_new_duration__impl, `time_unit`))
 }
 
+
+class(`PlRDataType`) <- "PlRDataType__bundle"
+
+#' @export
+`print.PlRDataType__bundle` <- function(x, ...) {
+  cat('PlRDataType')
+}
+
+#' @export
+`$<-.PlRDataType__bundle` <- function(x, name, value) stop("PlRDataType cannot be modified", call. = FALSE)
+
+#' @export
+`[[<-.PlRDataType__bundle` <- function(x, i, value) stop("PlRDataType cannot be modified", call. = FALSE)
 
 ### wrapper functions for PlRExpr
 
-PlRExpr_dt_convert_time_zone <- function(self) {
-  function(time_zone) {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_convert_time_zone__impl, self, time_zone))
+`PlRExpr_dt_convert_time_zone` <- function(self) {
+  function(`time_zone`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_convert_time_zone__impl, `self`, `time_zone`))
   }
 }
 
-PlRExpr_dt_replace_time_zone <- function(self) {
-  function(ambiguous, non_existent, time_zone = NULL) {
-    ambiguous <- .savvy_extract_ptr(ambiguous, "PlRExpr")
-  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_replace_time_zone__impl, self, ambiguous, non_existent, time_zone))
+`PlRExpr_dt_replace_time_zone` <- function(self) {
+  function(`ambiguous`, `non_existent`, `time_zone` = NULL) {
+    `ambiguous` <- .savvy_extract_ptr(`ambiguous`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_replace_time_zone__impl, `self`, `ambiguous`, `non_existent`, `time_zone`))
   }
 }
 
-PlRExpr_print <- function(self) {
+`PlRExpr_print` <- function(self) {
   function() {
-  invisible(.Call(savvy_PlRExpr_print__impl, self))
+    invisible(.Call(savvy_PlRExpr_print__impl, `self`))
   }
 }
 
-PlRExpr_add <- function(self) {
-  function(rhs) {
-    rhs <- .savvy_extract_ptr(rhs, "PlRExpr")
-  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_add__impl, self, rhs))
+`PlRExpr_add` <- function(self) {
+  function(`rhs`) {
+    `rhs` <- .savvy_extract_ptr(`rhs`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_add__impl, `self`, `rhs`))
   }
 }
 
-PlRExpr_sub <- function(self) {
-  function(rhs) {
-    rhs <- .savvy_extract_ptr(rhs, "PlRExpr")
-  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_sub__impl, self, rhs))
+`PlRExpr_sub` <- function(self) {
+  function(`rhs`) {
+    `rhs` <- .savvy_extract_ptr(`rhs`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_sub__impl, `self`, `rhs`))
   }
 }
 
-PlRExpr_mul <- function(self) {
-  function(rhs) {
-    rhs <- .savvy_extract_ptr(rhs, "PlRExpr")
-  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_mul__impl, self, rhs))
+`PlRExpr_mul` <- function(self) {
+  function(`rhs`) {
+    `rhs` <- .savvy_extract_ptr(`rhs`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_mul__impl, `self`, `rhs`))
   }
 }
 
-PlRExpr_div <- function(self) {
-  function(rhs) {
-    rhs <- .savvy_extract_ptr(rhs, "PlRExpr")
-  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_div__impl, self, rhs))
+`PlRExpr_div` <- function(self) {
+  function(`rhs`) {
+    `rhs` <- .savvy_extract_ptr(`rhs`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_div__impl, `self`, `rhs`))
   }
 }
 
-PlRExpr_rem <- function(self) {
-  function(rhs) {
-    rhs <- .savvy_extract_ptr(rhs, "PlRExpr")
-  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_rem__impl, self, rhs))
+`PlRExpr_rem` <- function(self) {
+  function(`rhs`) {
+    `rhs` <- .savvy_extract_ptr(`rhs`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_rem__impl, `self`, `rhs`))
   }
 }
 
-PlRExpr_floor_div <- function(self) {
-  function(rhs) {
-    rhs <- .savvy_extract_ptr(rhs, "PlRExpr")
-  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_floor_div__impl, self, rhs))
+`PlRExpr_floor_div` <- function(self) {
+  function(`rhs`) {
+    `rhs` <- .savvy_extract_ptr(`rhs`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_floor_div__impl, `self`, `rhs`))
   }
 }
 
-PlRExpr_neg <- function(self) {
+`PlRExpr_neg` <- function(self) {
   function() {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_neg__impl, self))
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_neg__impl, `self`))
   }
 }
 
-PlRExpr_eq <- function(self) {
-  function(other) {
-    other <- .savvy_extract_ptr(other, "PlRExpr")
-  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_eq__impl, self, other))
+`PlRExpr_eq` <- function(self) {
+  function(`other`) {
+    `other` <- .savvy_extract_ptr(`other`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_eq__impl, `self`, `other`))
   }
 }
 
-PlRExpr_eq_missing <- function(self) {
-  function(other) {
-    other <- .savvy_extract_ptr(other, "PlRExpr")
-  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_eq_missing__impl, self, other))
+`PlRExpr_eq_missing` <- function(self) {
+  function(`other`) {
+    `other` <- .savvy_extract_ptr(`other`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_eq_missing__impl, `self`, `other`))
   }
 }
 
-PlRExpr_neq <- function(self) {
-  function(other) {
-    other <- .savvy_extract_ptr(other, "PlRExpr")
-  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_neq__impl, self, other))
+`PlRExpr_neq` <- function(self) {
+  function(`other`) {
+    `other` <- .savvy_extract_ptr(`other`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_neq__impl, `self`, `other`))
   }
 }
 
-PlRExpr_neq_missing <- function(self) {
-  function(other) {
-    other <- .savvy_extract_ptr(other, "PlRExpr")
-  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_neq_missing__impl, self, other))
+`PlRExpr_neq_missing` <- function(self) {
+  function(`other`) {
+    `other` <- .savvy_extract_ptr(`other`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_neq_missing__impl, `self`, `other`))
   }
 }
 
-PlRExpr_gt <- function(self) {
-  function(other) {
-    other <- .savvy_extract_ptr(other, "PlRExpr")
-  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_gt__impl, self, other))
+`PlRExpr_gt` <- function(self) {
+  function(`other`) {
+    `other` <- .savvy_extract_ptr(`other`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_gt__impl, `self`, `other`))
   }
 }
 
-PlRExpr_gt_eq <- function(self) {
-  function(other) {
-    other <- .savvy_extract_ptr(other, "PlRExpr")
-  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_gt_eq__impl, self, other))
+`PlRExpr_gt_eq` <- function(self) {
+  function(`other`) {
+    `other` <- .savvy_extract_ptr(`other`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_gt_eq__impl, `self`, `other`))
   }
 }
 
-PlRExpr_lt_eq <- function(self) {
-  function(other) {
-    other <- .savvy_extract_ptr(other, "PlRExpr")
-  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_lt_eq__impl, self, other))
+`PlRExpr_lt_eq` <- function(self) {
+  function(`other`) {
+    `other` <- .savvy_extract_ptr(`other`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_lt_eq__impl, `self`, `other`))
   }
 }
 
-PlRExpr_lt <- function(self) {
-  function(other) {
-    other <- .savvy_extract_ptr(other, "PlRExpr")
-  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_lt__impl, self, other))
+`PlRExpr_lt` <- function(self) {
+  function(`other`) {
+    `other` <- .savvy_extract_ptr(`other`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_lt__impl, `self`, `other`))
   }
 }
 
-PlRExpr_alias <- function(self) {
-  function(name) {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_alias__impl, self, name))
+`PlRExpr_alias` <- function(self) {
+  function(`name`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_alias__impl, `self`, `name`))
   }
 }
 
-PlRExpr_not <- function(self) {
+`PlRExpr_not` <- function(self) {
   function() {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_not__impl, self))
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_not__impl, `self`))
   }
 }
 
-PlRExpr_is_null <- function(self) {
+`PlRExpr_is_null` <- function(self) {
   function() {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_is_null__impl, self))
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_is_null__impl, `self`))
   }
 }
 
-PlRExpr_is_not_null <- function(self) {
+`PlRExpr_is_not_null` <- function(self) {
   function() {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_is_not_null__impl, self))
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_is_not_null__impl, `self`))
   }
 }
 
-PlRExpr_is_infinite <- function(self) {
+`PlRExpr_is_infinite` <- function(self) {
   function() {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_is_infinite__impl, self))
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_is_infinite__impl, `self`))
   }
 }
 
-PlRExpr_is_finite <- function(self) {
+`PlRExpr_is_finite` <- function(self) {
   function() {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_is_finite__impl, self))
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_is_finite__impl, `self`))
   }
 }
 
-PlRExpr_is_nan <- function(self) {
+`PlRExpr_is_nan` <- function(self) {
   function() {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_is_nan__impl, self))
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_is_nan__impl, `self`))
   }
 }
 
-PlRExpr_is_not_nan <- function(self) {
+`PlRExpr_is_not_nan` <- function(self) {
   function() {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_is_not_nan__impl, self))
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_is_not_nan__impl, `self`))
   }
 }
 
-PlRExpr_min <- function(self) {
+`PlRExpr_min` <- function(self) {
   function() {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_min__impl, self))
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_min__impl, `self`))
   }
 }
 
-PlRExpr_max <- function(self) {
+`PlRExpr_max` <- function(self) {
   function() {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_max__impl, self))
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_max__impl, `self`))
   }
 }
 
-PlRExpr_nan_max <- function(self) {
+`PlRExpr_nan_max` <- function(self) {
   function() {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_nan_max__impl, self))
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_nan_max__impl, `self`))
   }
 }
 
-PlRExpr_nan_min <- function(self) {
+`PlRExpr_nan_min` <- function(self) {
   function() {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_nan_min__impl, self))
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_nan_min__impl, `self`))
   }
 }
 
-PlRExpr_mean <- function(self) {
+`PlRExpr_mean` <- function(self) {
   function() {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_mean__impl, self))
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_mean__impl, `self`))
   }
 }
 
-PlRExpr_median <- function(self) {
+`PlRExpr_median` <- function(self) {
   function() {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_median__impl, self))
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_median__impl, `self`))
   }
 }
 
-PlRExpr_sum <- function(self) {
+`PlRExpr_sum` <- function(self) {
   function() {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_sum__impl, self))
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_sum__impl, `self`))
   }
 }
 
-PlRExpr_cast <- function(self) {
-  function(data_type, strict) {
-    data_type <- .savvy_extract_ptr(data_type, "PlRDataType")
-  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_cast__impl, self, data_type, strict))
+`PlRExpr_cast` <- function(self) {
+  function(`data_type`, `strict`) {
+    `data_type` <- .savvy_extract_ptr(`data_type`, "PlRDataType")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_cast__impl, `self`, `data_type`, `strict`))
   }
 }
 
-PlRExpr_and <- function(self) {
-  function(other) {
-    other <- .savvy_extract_ptr(other, "PlRExpr")
-  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_and__impl, self, other))
+`PlRExpr_and` <- function(self) {
+  function(`other`) {
+    `other` <- .savvy_extract_ptr(`other`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_and__impl, `self`, `other`))
   }
 }
 
-PlRExpr_or <- function(self) {
-  function(other) {
-    other <- .savvy_extract_ptr(other, "PlRExpr")
-  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_or__impl, self, other))
+`PlRExpr_or` <- function(self) {
+  function(`other`) {
+    `other` <- .savvy_extract_ptr(`other`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_or__impl, `self`, `other`))
   }
 }
 
-PlRExpr_xor <- function(self) {
-  function(other) {
-    other <- .savvy_extract_ptr(other, "PlRExpr")
-  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_xor__impl, self, other))
+`PlRExpr_xor` <- function(self) {
+  function(`other`) {
+    `other` <- .savvy_extract_ptr(`other`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_xor__impl, `self`, `other`))
   }
 }
 
-PlRExpr_reshape <- function(self) {
-  function(dimensions) {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_reshape__impl, self, dimensions))
+`PlRExpr_reshape` <- function(self) {
+  function(`dimensions`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_reshape__impl, `self`, `dimensions`))
   }
 }
 
-PlRExpr_any <- function(self) {
-  function(ignore_nulls) {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_any__impl, self, ignore_nulls))
+`PlRExpr_any` <- function(self) {
+  function(`ignore_nulls`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_any__impl, `self`, `ignore_nulls`))
   }
 }
 
-PlRExpr_all <- function(self) {
-  function(ignore_nulls) {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_all__impl, self, ignore_nulls))
+`PlRExpr_all` <- function(self) {
+  function(`ignore_nulls`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_all__impl, `self`, `ignore_nulls`))
   }
 }
 
-PlRExpr_meta_selector_add <- function(self) {
-  function(other) {
-    other <- .savvy_extract_ptr(other, "PlRExpr")
-  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_meta_selector_add__impl, self, other))
+`PlRExpr_meta_selector_add` <- function(self) {
+  function(`other`) {
+    `other` <- .savvy_extract_ptr(`other`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_meta_selector_add__impl, `self`, `other`))
   }
 }
 
-PlRExpr_meta_selector_and <- function(self) {
-  function(other) {
-    other <- .savvy_extract_ptr(other, "PlRExpr")
-  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_meta_selector_and__impl, self, other))
+`PlRExpr_meta_selector_and` <- function(self) {
+  function(`other`) {
+    `other` <- .savvy_extract_ptr(`other`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_meta_selector_and__impl, `self`, `other`))
   }
 }
 
-PlRExpr_meta_selector_sub <- function(self) {
-  function(other) {
-    other <- .savvy_extract_ptr(other, "PlRExpr")
-  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_meta_selector_sub__impl, self, other))
+`PlRExpr_meta_selector_sub` <- function(self) {
+  function(`other`) {
+    `other` <- .savvy_extract_ptr(`other`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_meta_selector_sub__impl, `self`, `other`))
   }
 }
 
-PlRExpr_meta_as_selector <- function(self) {
+`PlRExpr_meta_as_selector` <- function(self) {
   function() {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_meta_as_selector__impl, self))
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_meta_as_selector__impl, `self`))
   }
 }
 
-PlRExpr_struct_field_by_index <- function(self) {
-  function(index) {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_struct_field_by_index__impl, self, index))
+`PlRExpr_struct_field_by_index` <- function(self) {
+  function(`index`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_struct_field_by_index__impl, `self`, `index`))
   }
 }
 
-PlRExpr_struct_field_by_name <- function(self) {
-  function(name) {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_struct_field_by_name__impl, self, name))
+`PlRExpr_struct_field_by_name` <- function(self) {
+  function(`name`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_struct_field_by_name__impl, `self`, `name`))
   }
 }
 
-.savvy_wrap_PlRExpr <- function(ptr) {
+`.savvy_wrap_PlRExpr` <- function(ptr) {
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
-    e$dt_convert_time_zone <- PlRExpr_dt_convert_time_zone(ptr)
-  e$dt_replace_time_zone <- PlRExpr_dt_replace_time_zone(ptr)
-  e$print <- PlRExpr_print(ptr)
-  e$add <- PlRExpr_add(ptr)
-  e$sub <- PlRExpr_sub(ptr)
-  e$mul <- PlRExpr_mul(ptr)
-  e$div <- PlRExpr_div(ptr)
-  e$rem <- PlRExpr_rem(ptr)
-  e$floor_div <- PlRExpr_floor_div(ptr)
-  e$neg <- PlRExpr_neg(ptr)
-  e$eq <- PlRExpr_eq(ptr)
-  e$eq_missing <- PlRExpr_eq_missing(ptr)
-  e$neq <- PlRExpr_neq(ptr)
-  e$neq_missing <- PlRExpr_neq_missing(ptr)
-  e$gt <- PlRExpr_gt(ptr)
-  e$gt_eq <- PlRExpr_gt_eq(ptr)
-  e$lt_eq <- PlRExpr_lt_eq(ptr)
-  e$lt <- PlRExpr_lt(ptr)
-  e$alias <- PlRExpr_alias(ptr)
-  e$not <- PlRExpr_not(ptr)
-  e$is_null <- PlRExpr_is_null(ptr)
-  e$is_not_null <- PlRExpr_is_not_null(ptr)
-  e$is_infinite <- PlRExpr_is_infinite(ptr)
-  e$is_finite <- PlRExpr_is_finite(ptr)
-  e$is_nan <- PlRExpr_is_nan(ptr)
-  e$is_not_nan <- PlRExpr_is_not_nan(ptr)
-  e$min <- PlRExpr_min(ptr)
-  e$max <- PlRExpr_max(ptr)
-  e$nan_max <- PlRExpr_nan_max(ptr)
-  e$nan_min <- PlRExpr_nan_min(ptr)
-  e$mean <- PlRExpr_mean(ptr)
-  e$median <- PlRExpr_median(ptr)
-  e$sum <- PlRExpr_sum(ptr)
-  e$cast <- PlRExpr_cast(ptr)
-  e$and <- PlRExpr_and(ptr)
-  e$or <- PlRExpr_or(ptr)
-  e$xor <- PlRExpr_xor(ptr)
-  e$reshape <- PlRExpr_reshape(ptr)
-  e$any <- PlRExpr_any(ptr)
-  e$all <- PlRExpr_all(ptr)
-  e$meta_selector_add <- PlRExpr_meta_selector_add(ptr)
-  e$meta_selector_and <- PlRExpr_meta_selector_and(ptr)
-  e$meta_selector_sub <- PlRExpr_meta_selector_sub(ptr)
-  e$meta_as_selector <- PlRExpr_meta_as_selector(ptr)
-  e$struct_field_by_index <- PlRExpr_struct_field_by_index(ptr)
-  e$struct_field_by_name <- PlRExpr_struct_field_by_name(ptr)
-  
+  e$`dt_convert_time_zone` <- `PlRExpr_dt_convert_time_zone`(ptr)
+  e$`dt_replace_time_zone` <- `PlRExpr_dt_replace_time_zone`(ptr)
+  e$`print` <- `PlRExpr_print`(ptr)
+  e$`add` <- `PlRExpr_add`(ptr)
+  e$`sub` <- `PlRExpr_sub`(ptr)
+  e$`mul` <- `PlRExpr_mul`(ptr)
+  e$`div` <- `PlRExpr_div`(ptr)
+  e$`rem` <- `PlRExpr_rem`(ptr)
+  e$`floor_div` <- `PlRExpr_floor_div`(ptr)
+  e$`neg` <- `PlRExpr_neg`(ptr)
+  e$`eq` <- `PlRExpr_eq`(ptr)
+  e$`eq_missing` <- `PlRExpr_eq_missing`(ptr)
+  e$`neq` <- `PlRExpr_neq`(ptr)
+  e$`neq_missing` <- `PlRExpr_neq_missing`(ptr)
+  e$`gt` <- `PlRExpr_gt`(ptr)
+  e$`gt_eq` <- `PlRExpr_gt_eq`(ptr)
+  e$`lt_eq` <- `PlRExpr_lt_eq`(ptr)
+  e$`lt` <- `PlRExpr_lt`(ptr)
+  e$`alias` <- `PlRExpr_alias`(ptr)
+  e$`not` <- `PlRExpr_not`(ptr)
+  e$`is_null` <- `PlRExpr_is_null`(ptr)
+  e$`is_not_null` <- `PlRExpr_is_not_null`(ptr)
+  e$`is_infinite` <- `PlRExpr_is_infinite`(ptr)
+  e$`is_finite` <- `PlRExpr_is_finite`(ptr)
+  e$`is_nan` <- `PlRExpr_is_nan`(ptr)
+  e$`is_not_nan` <- `PlRExpr_is_not_nan`(ptr)
+  e$`min` <- `PlRExpr_min`(ptr)
+  e$`max` <- `PlRExpr_max`(ptr)
+  e$`nan_max` <- `PlRExpr_nan_max`(ptr)
+  e$`nan_min` <- `PlRExpr_nan_min`(ptr)
+  e$`mean` <- `PlRExpr_mean`(ptr)
+  e$`median` <- `PlRExpr_median`(ptr)
+  e$`sum` <- `PlRExpr_sum`(ptr)
+  e$`cast` <- `PlRExpr_cast`(ptr)
+  e$`and` <- `PlRExpr_and`(ptr)
+  e$`or` <- `PlRExpr_or`(ptr)
+  e$`xor` <- `PlRExpr_xor`(ptr)
+  e$`reshape` <- `PlRExpr_reshape`(ptr)
+  e$`any` <- `PlRExpr_any`(ptr)
+  e$`all` <- `PlRExpr_all`(ptr)
+  e$`meta_selector_add` <- `PlRExpr_meta_selector_add`(ptr)
+  e$`meta_selector_and` <- `PlRExpr_meta_selector_and`(ptr)
+  e$`meta_selector_sub` <- `PlRExpr_meta_selector_sub`(ptr)
+  e$`meta_as_selector` <- `PlRExpr_meta_as_selector`(ptr)
+  e$`struct_field_by_index` <- `PlRExpr_struct_field_by_index`(ptr)
+  e$`struct_field_by_name` <- `PlRExpr_struct_field_by_name`(ptr)
+
   class(e) <- "PlRExpr"
   e
 }
 
+#' @export
+`$<-.PlRExpr` <- function(x, name, value) stop("PlRExpr cannot be modified", call. = FALSE)
+
+#' @export
+`[[<-.PlRExpr` <- function(x, i, value) stop("PlRExpr cannot be modified", call. = FALSE)
 
 
-PlRExpr <- new.env(parent = emptyenv())
+
+`PlRExpr` <- new.env(parent = emptyenv())
+
+#' @export
+`$<-.PlRExpr` <- function(x, name, value) stop("PlRExpr cannot be modified", call. = FALSE)
+
+#' @export
+`[[<-.PlRExpr` <- function(x, i, value) stop("PlRExpr cannot be modified", call. = FALSE)
 
 ### associated functions for PlRExpr
 
 
 
+class(`PlRExpr`) <- "PlRExpr__bundle"
+
+#' @export
+`print.PlRExpr__bundle` <- function(x, ...) {
+  cat('PlRExpr')
+}
+
+#' @export
+`$<-.PlRExpr__bundle` <- function(x, name, value) stop("PlRExpr cannot be modified", call. = FALSE)
+
+#' @export
+`[[<-.PlRExpr__bundle` <- function(x, i, value) stop("PlRExpr cannot be modified", call. = FALSE)
+
 ### wrapper functions for PlRLazyFrame
 
-PlRLazyFrame_select <- function(self) {
-  function(exprs) {
-    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_select__impl, self, exprs))
+`PlRLazyFrame_select` <- function(self) {
+  function(`exprs`) {
+    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_select__impl, `self`, `exprs`))
   }
 }
 
-PlRLazyFrame_group_by <- function(self) {
-  function(by, maintain_order) {
-    .savvy_wrap_PlRLazyGroupBy(.Call(savvy_PlRLazyFrame_group_by__impl, self, by, maintain_order))
+`PlRLazyFrame_group_by` <- function(self) {
+  function(`by`, `maintain_order`) {
+    .savvy_wrap_PlRLazyGroupBy(.Call(savvy_PlRLazyFrame_group_by__impl, `self`, `by`, `maintain_order`))
   }
 }
 
-PlRLazyFrame_collect <- function(self) {
+`PlRLazyFrame_collect` <- function(self) {
   function() {
-    .savvy_wrap_PlRDataFrame(.Call(savvy_PlRLazyFrame_collect__impl, self))
+    .savvy_wrap_PlRDataFrame(.Call(savvy_PlRLazyFrame_collect__impl, `self`))
   }
 }
 
-.savvy_wrap_PlRLazyFrame <- function(ptr) {
+`.savvy_wrap_PlRLazyFrame` <- function(ptr) {
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
-    e$select <- PlRLazyFrame_select(ptr)
-  e$group_by <- PlRLazyFrame_group_by(ptr)
-  e$collect <- PlRLazyFrame_collect(ptr)
-  
+  e$`select` <- `PlRLazyFrame_select`(ptr)
+  e$`group_by` <- `PlRLazyFrame_group_by`(ptr)
+  e$`collect` <- `PlRLazyFrame_collect`(ptr)
+
   class(e) <- "PlRLazyFrame"
   e
 }
 
+#' @export
+`$<-.PlRLazyFrame` <- function(x, name, value) stop("PlRLazyFrame cannot be modified", call. = FALSE)
+
+#' @export
+`[[<-.PlRLazyFrame` <- function(x, i, value) stop("PlRLazyFrame cannot be modified", call. = FALSE)
 
 
-PlRLazyFrame <- new.env(parent = emptyenv())
+
+`PlRLazyFrame` <- new.env(parent = emptyenv())
+
+#' @export
+`$<-.PlRLazyFrame` <- function(x, name, value) stop("PlRLazyFrame cannot be modified", call. = FALSE)
+
+#' @export
+`[[<-.PlRLazyFrame` <- function(x, i, value) stop("PlRLazyFrame cannot be modified", call. = FALSE)
 
 ### associated functions for PlRLazyFrame
 
 
 
+class(`PlRLazyFrame`) <- "PlRLazyFrame__bundle"
+
+#' @export
+`print.PlRLazyFrame__bundle` <- function(x, ...) {
+  cat('PlRLazyFrame')
+}
+
+#' @export
+`$<-.PlRLazyFrame__bundle` <- function(x, name, value) stop("PlRLazyFrame cannot be modified", call. = FALSE)
+
+#' @export
+`[[<-.PlRLazyFrame__bundle` <- function(x, i, value) stop("PlRLazyFrame cannot be modified", call. = FALSE)
+
 ### wrapper functions for PlRLazyGroupBy
 
-PlRLazyGroupBy_agg <- function(self) {
-  function(aggs) {
-    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyGroupBy_agg__impl, self, aggs))
+`PlRLazyGroupBy_agg` <- function(self) {
+  function(`aggs`) {
+    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyGroupBy_agg__impl, `self`, `aggs`))
   }
 }
 
-PlRLazyGroupBy_head <- function(self) {
-  function(n) {
-    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyGroupBy_head__impl, self, n))
+`PlRLazyGroupBy_head` <- function(self) {
+  function(`n`) {
+    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyGroupBy_head__impl, `self`, `n`))
   }
 }
 
-PlRLazyGroupBy_tail <- function(self) {
-  function(n) {
-    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyGroupBy_tail__impl, self, n))
+`PlRLazyGroupBy_tail` <- function(self) {
+  function(`n`) {
+    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyGroupBy_tail__impl, `self`, `n`))
   }
 }
 
-.savvy_wrap_PlRLazyGroupBy <- function(ptr) {
+`.savvy_wrap_PlRLazyGroupBy` <- function(ptr) {
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
-    e$agg <- PlRLazyGroupBy_agg(ptr)
-  e$head <- PlRLazyGroupBy_head(ptr)
-  e$tail <- PlRLazyGroupBy_tail(ptr)
-  
+  e$`agg` <- `PlRLazyGroupBy_agg`(ptr)
+  e$`head` <- `PlRLazyGroupBy_head`(ptr)
+  e$`tail` <- `PlRLazyGroupBy_tail`(ptr)
+
   class(e) <- "PlRLazyGroupBy"
   e
 }
 
+#' @export
+`$<-.PlRLazyGroupBy` <- function(x, name, value) stop("PlRLazyGroupBy cannot be modified", call. = FALSE)
+
+#' @export
+`[[<-.PlRLazyGroupBy` <- function(x, i, value) stop("PlRLazyGroupBy cannot be modified", call. = FALSE)
 
 
-PlRLazyGroupBy <- new.env(parent = emptyenv())
+
+`PlRLazyGroupBy` <- new.env(parent = emptyenv())
+
+#' @export
+`$<-.PlRLazyGroupBy` <- function(x, name, value) stop("PlRLazyGroupBy cannot be modified", call. = FALSE)
+
+#' @export
+`[[<-.PlRLazyGroupBy` <- function(x, i, value) stop("PlRLazyGroupBy cannot be modified", call. = FALSE)
 
 ### associated functions for PlRLazyGroupBy
 
 
 
+class(`PlRLazyGroupBy`) <- "PlRLazyGroupBy__bundle"
+
+#' @export
+`print.PlRLazyGroupBy__bundle` <- function(x, ...) {
+  cat('PlRLazyGroupBy')
+}
+
+#' @export
+`$<-.PlRLazyGroupBy__bundle` <- function(x, name, value) stop("PlRLazyGroupBy cannot be modified", call. = FALSE)
+
+#' @export
+`[[<-.PlRLazyGroupBy__bundle` <- function(x, i, value) stop("PlRLazyGroupBy cannot be modified", call. = FALSE)
+
 ### wrapper functions for PlRSeries
 
-PlRSeries_print <- function(self) {
+`PlRSeries_print` <- function(self) {
   function() {
-  invisible(.Call(savvy_PlRSeries_print__impl, self))
+    invisible(.Call(savvy_PlRSeries_print__impl, `self`))
   }
 }
 
-PlRSeries_struct_unnest <- function(self) {
+`PlRSeries_struct_unnest` <- function(self) {
   function() {
-    .savvy_wrap_PlRDataFrame(.Call(savvy_PlRSeries_struct_unnest__impl, self))
+    .savvy_wrap_PlRDataFrame(.Call(savvy_PlRSeries_struct_unnest__impl, `self`))
   }
 }
 
-PlRSeries_struct_fields <- function(self) {
+`PlRSeries_struct_fields` <- function(self) {
   function() {
-  .Call(savvy_PlRSeries_struct_fields__impl, self)
+    .Call(savvy_PlRSeries_struct_fields__impl, `self`)
   }
 }
 
-PlRSeries_reshape <- function(self) {
-  function(dimensions) {
-    .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_reshape__impl, self, dimensions))
+`PlRSeries_reshape` <- function(self) {
+  function(`dimensions`) {
+    .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_reshape__impl, `self`, `dimensions`))
   }
 }
 
-PlRSeries_clone <- function(self) {
+`PlRSeries_clone` <- function(self) {
   function() {
-    .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_clone__impl, self))
+    .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_clone__impl, `self`))
   }
 }
 
-PlRSeries_name <- function(self) {
+`PlRSeries_name` <- function(self) {
   function() {
-  .Call(savvy_PlRSeries_name__impl, self)
+    .Call(savvy_PlRSeries_name__impl, `self`)
   }
 }
 
-PlRSeries_rename <- function(self) {
-  function(name) {
-  invisible(.Call(savvy_PlRSeries_rename__impl, self, name))
+`PlRSeries_rename` <- function(self) {
+  function(`name`) {
+    invisible(.Call(savvy_PlRSeries_rename__impl, `self`, `name`))
   }
 }
 
-PlRSeries_dtype <- function(self) {
+`PlRSeries_dtype` <- function(self) {
   function() {
-    .savvy_wrap_PlRDataType(.Call(savvy_PlRSeries_dtype__impl, self))
+    .savvy_wrap_PlRDataType(.Call(savvy_PlRSeries_dtype__impl, `self`))
   }
 }
 
-PlRSeries_cast <- function(self) {
-  function(dtype, strict) {
-    dtype <- .savvy_extract_ptr(dtype, "PlRDataType")
-  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_cast__impl, self, dtype, strict))
+`PlRSeries_cast` <- function(self) {
+  function(`dtype`, `strict`) {
+    `dtype` <- .savvy_extract_ptr(`dtype`, "PlRDataType")
+    .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_cast__impl, `self`, `dtype`, `strict`))
   }
 }
 
-PlRSeries_add <- function(self) {
-  function(other) {
-    other <- .savvy_extract_ptr(other, "PlRSeries")
-  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_add__impl, self, other))
+`PlRSeries_add` <- function(self) {
+  function(`other`) {
+    `other` <- .savvy_extract_ptr(`other`, "PlRSeries")
+    .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_add__impl, `self`, `other`))
   }
 }
 
-PlRSeries_sub <- function(self) {
-  function(other) {
-    other <- .savvy_extract_ptr(other, "PlRSeries")
-  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_sub__impl, self, other))
+`PlRSeries_sub` <- function(self) {
+  function(`other`) {
+    `other` <- .savvy_extract_ptr(`other`, "PlRSeries")
+    .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_sub__impl, `self`, `other`))
   }
 }
 
-PlRSeries_div <- function(self) {
-  function(other) {
-    other <- .savvy_extract_ptr(other, "PlRSeries")
-  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_div__impl, self, other))
+`PlRSeries_div` <- function(self) {
+  function(`other`) {
+    `other` <- .savvy_extract_ptr(`other`, "PlRSeries")
+    .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_div__impl, `self`, `other`))
   }
 }
 
-PlRSeries_mul <- function(self) {
-  function(other) {
-    other <- .savvy_extract_ptr(other, "PlRSeries")
-  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_mul__impl, self, other))
+`PlRSeries_mul` <- function(self) {
+  function(`other`) {
+    `other` <- .savvy_extract_ptr(`other`, "PlRSeries")
+    .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_mul__impl, `self`, `other`))
   }
 }
 
-PlRSeries_rem <- function(self) {
-  function(other) {
-    other <- .savvy_extract_ptr(other, "PlRSeries")
-  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_rem__impl, self, other))
+`PlRSeries_rem` <- function(self) {
+  function(`other`) {
+    `other` <- .savvy_extract_ptr(`other`, "PlRSeries")
+    .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_rem__impl, `self`, `other`))
   }
 }
 
-PlRSeries_to_r_vector <- function(self) {
+`PlRSeries_to_r_vector` <- function(self) {
   function() {
-  .Call(savvy_PlRSeries_to_r_vector__impl, self)
+    .Call(savvy_PlRSeries_to_r_vector__impl, `self`)
   }
 }
 
-.savvy_wrap_PlRSeries <- function(ptr) {
+`.savvy_wrap_PlRSeries` <- function(ptr) {
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
-    e$print <- PlRSeries_print(ptr)
-  e$struct_unnest <- PlRSeries_struct_unnest(ptr)
-  e$struct_fields <- PlRSeries_struct_fields(ptr)
-  e$reshape <- PlRSeries_reshape(ptr)
-  e$clone <- PlRSeries_clone(ptr)
-  e$name <- PlRSeries_name(ptr)
-  e$rename <- PlRSeries_rename(ptr)
-  e$dtype <- PlRSeries_dtype(ptr)
-  e$cast <- PlRSeries_cast(ptr)
-  e$add <- PlRSeries_add(ptr)
-  e$sub <- PlRSeries_sub(ptr)
-  e$div <- PlRSeries_div(ptr)
-  e$mul <- PlRSeries_mul(ptr)
-  e$rem <- PlRSeries_rem(ptr)
-  e$to_r_vector <- PlRSeries_to_r_vector(ptr)
-  
+  e$`print` <- `PlRSeries_print`(ptr)
+  e$`struct_unnest` <- `PlRSeries_struct_unnest`(ptr)
+  e$`struct_fields` <- `PlRSeries_struct_fields`(ptr)
+  e$`reshape` <- `PlRSeries_reshape`(ptr)
+  e$`clone` <- `PlRSeries_clone`(ptr)
+  e$`name` <- `PlRSeries_name`(ptr)
+  e$`rename` <- `PlRSeries_rename`(ptr)
+  e$`dtype` <- `PlRSeries_dtype`(ptr)
+  e$`cast` <- `PlRSeries_cast`(ptr)
+  e$`add` <- `PlRSeries_add`(ptr)
+  e$`sub` <- `PlRSeries_sub`(ptr)
+  e$`div` <- `PlRSeries_div`(ptr)
+  e$`mul` <- `PlRSeries_mul`(ptr)
+  e$`rem` <- `PlRSeries_rem`(ptr)
+  e$`to_r_vector` <- `PlRSeries_to_r_vector`(ptr)
+
   class(e) <- "PlRSeries"
   e
 }
 
+#' @export
+`$<-.PlRSeries` <- function(x, name, value) stop("PlRSeries cannot be modified", call. = FALSE)
+
+#' @export
+`[[<-.PlRSeries` <- function(x, i, value) stop("PlRSeries cannot be modified", call. = FALSE)
 
 
-PlRSeries <- new.env(parent = emptyenv())
+
+`PlRSeries` <- new.env(parent = emptyenv())
+
+#' @export
+`$<-.PlRSeries` <- function(x, name, value) stop("PlRSeries cannot be modified", call. = FALSE)
+
+#' @export
+`[[<-.PlRSeries` <- function(x, i, value) stop("PlRSeries cannot be modified", call. = FALSE)
 
 ### associated functions for PlRSeries
 
-PlRSeries$new_empty <- function(name, dtype = NULL) {
-  dtype <- .savvy_extract_ptr(dtype, "PlRDataType")
-  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_empty__impl, name, dtype))
+`PlRSeries`$`new_empty` <- function(`name`, `dtype` = NULL) {
+  `dtype` <- .savvy_extract_ptr(`dtype`, "PlRDataType")
+  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_empty__impl, `name`, `dtype`))
 }
 
-PlRSeries$new_f64 <- function(name, values) {
-  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_f64__impl, name, values))
+`PlRSeries`$`new_f64` <- function(`name`, `values`) {
+  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_f64__impl, `name`, `values`))
 }
 
-PlRSeries$new_i32 <- function(name, values) {
-  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_i32__impl, name, values))
+`PlRSeries`$`new_i32` <- function(`name`, `values`) {
+  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_i32__impl, `name`, `values`))
 }
 
-PlRSeries$new_bool <- function(name, values) {
-  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_bool__impl, name, values))
+`PlRSeries`$`new_bool` <- function(`name`, `values`) {
+  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_bool__impl, `name`, `values`))
 }
 
-PlRSeries$new_str <- function(name, values) {
-  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_str__impl, name, values))
+`PlRSeries`$`new_str` <- function(`name`, `values`) {
+  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_str__impl, `name`, `values`))
 }
 
-PlRSeries$new_series_list <- function(name, values) {
-  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_series_list__impl, name, values))
+`PlRSeries`$`new_series_list` <- function(`name`, `values`) {
+  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_series_list__impl, `name`, `values`))
 }
 
+
+class(`PlRSeries`) <- "PlRSeries__bundle"
+
+#' @export
+`print.PlRSeries__bundle` <- function(x, ...) {
+  cat('PlRSeries')
+}
+
+#' @export
+`$<-.PlRSeries__bundle` <- function(x, name, value) stop("PlRSeries cannot be modified", call. = FALSE)
+
+#' @export
+`[[<-.PlRSeries__bundle` <- function(x, i, value) stop("PlRSeries cannot be modified", call. = FALSE)
 
 ### wrapper functions for PlRThen
 
-PlRThen_when <- function(self) {
-  function(condition) {
-    condition <- .savvy_extract_ptr(condition, "PlRExpr")
-  .savvy_wrap_PlRChainedWhen(.Call(savvy_PlRThen_when__impl, self, condition))
+`PlRThen_when` <- function(self) {
+  function(`condition`) {
+    `condition` <- .savvy_extract_ptr(`condition`, "PlRExpr")
+    .savvy_wrap_PlRChainedWhen(.Call(savvy_PlRThen_when__impl, `self`, `condition`))
   }
 }
 
-PlRThen_otherwise <- function(self) {
-  function(statement) {
-    statement <- .savvy_extract_ptr(statement, "PlRExpr")
-  .savvy_wrap_PlRExpr(.Call(savvy_PlRThen_otherwise__impl, self, statement))
+`PlRThen_otherwise` <- function(self) {
+  function(`statement`) {
+    `statement` <- .savvy_extract_ptr(`statement`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRThen_otherwise__impl, `self`, `statement`))
   }
 }
 
-.savvy_wrap_PlRThen <- function(ptr) {
+`.savvy_wrap_PlRThen` <- function(ptr) {
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
-    e$when <- PlRThen_when(ptr)
-  e$otherwise <- PlRThen_otherwise(ptr)
-  
+  e$`when` <- `PlRThen_when`(ptr)
+  e$`otherwise` <- `PlRThen_otherwise`(ptr)
+
   class(e) <- "PlRThen"
   e
 }
 
+#' @export
+`$<-.PlRThen` <- function(x, name, value) stop("PlRThen cannot be modified", call. = FALSE)
+
+#' @export
+`[[<-.PlRThen` <- function(x, i, value) stop("PlRThen cannot be modified", call. = FALSE)
 
 
-PlRThen <- new.env(parent = emptyenv())
+
+`PlRThen` <- new.env(parent = emptyenv())
+
+#' @export
+`$<-.PlRThen` <- function(x, name, value) stop("PlRThen cannot be modified", call. = FALSE)
+
+#' @export
+`[[<-.PlRThen` <- function(x, i, value) stop("PlRThen cannot be modified", call. = FALSE)
 
 ### associated functions for PlRThen
 
 
 
+class(`PlRThen`) <- "PlRThen__bundle"
+
+#' @export
+`print.PlRThen__bundle` <- function(x, ...) {
+  cat('PlRThen')
+}
+
+#' @export
+`$<-.PlRThen__bundle` <- function(x, name, value) stop("PlRThen cannot be modified", call. = FALSE)
+
+#' @export
+`[[<-.PlRThen__bundle` <- function(x, i, value) stop("PlRThen cannot be modified", call. = FALSE)
+
 ### wrapper functions for PlRWhen
 
-PlRWhen_then <- function(self) {
-  function(statement) {
-    statement <- .savvy_extract_ptr(statement, "PlRExpr")
-  .savvy_wrap_PlRThen(.Call(savvy_PlRWhen_then__impl, self, statement))
+`PlRWhen_then` <- function(self) {
+  function(`statement`) {
+    `statement` <- .savvy_extract_ptr(`statement`, "PlRExpr")
+    .savvy_wrap_PlRThen(.Call(savvy_PlRWhen_then__impl, `self`, `statement`))
   }
 }
 
-.savvy_wrap_PlRWhen <- function(ptr) {
+`.savvy_wrap_PlRWhen` <- function(ptr) {
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
-    e$then <- PlRWhen_then(ptr)
-  
+  e$`then` <- `PlRWhen_then`(ptr)
+
   class(e) <- "PlRWhen"
   e
 }
 
+#' @export
+`$<-.PlRWhen` <- function(x, name, value) stop("PlRWhen cannot be modified", call. = FALSE)
+
+#' @export
+`[[<-.PlRWhen` <- function(x, i, value) stop("PlRWhen cannot be modified", call. = FALSE)
 
 
-PlRWhen <- new.env(parent = emptyenv())
+
+`PlRWhen` <- new.env(parent = emptyenv())
+
+#' @export
+`$<-.PlRWhen` <- function(x, name, value) stop("PlRWhen cannot be modified", call. = FALSE)
+
+#' @export
+`[[<-.PlRWhen` <- function(x, i, value) stop("PlRWhen cannot be modified", call. = FALSE)
 
 ### associated functions for PlRWhen
 
 
+
+class(`PlRWhen`) <- "PlRWhen__bundle"
+
+#' @export
+`print.PlRWhen__bundle` <- function(x, ...) {
+  cat('PlRWhen')
+}
+
+#' @export
+`$<-.PlRWhen__bundle` <- function(x, name, value) stop("PlRWhen cannot be modified", call. = FALSE)
+
+#' @export
+`[[<-.PlRWhen__bundle` <- function(x, i, value) stop("PlRWhen cannot be modified", call. = FALSE)
 
