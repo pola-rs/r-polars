@@ -51,11 +51,11 @@ impl PlRDataFrame {
     }
 
     pub fn height(&self) -> Result<Sexp> {
-        OwnedIntegerSexp::try_from_slice([self.df.height() as i32])?.into()
+        OwnedIntegerSexp::try_from_scalar(self.df.height() as i32)?.into()
     }
 
     pub fn width(&self) -> Result<Sexp> {
-        OwnedIntegerSexp::try_from_slice([self.df.width() as i32])?.into()
+        OwnedIntegerSexp::try_from_scalar(self.df.width() as i32)?.into()
     }
 
     pub fn to_series(&self, index: NumericScalar) -> Result<PlRSeries> {
