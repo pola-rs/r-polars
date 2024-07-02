@@ -569,6 +569,11 @@ SEXP savvy_PlRSeries_dtype__impl(SEXP self__) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRSeries_equals__impl(SEXP self__, SEXP other, SEXP check_dtypes, SEXP check_names, SEXP null_equal) {
+    SEXP res = savvy_PlRSeries_equals__ffi(self__, other, check_dtypes, check_names, null_equal);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRSeries_cast__impl(SEXP self__, SEXP dtype, SEXP strict) {
     SEXP res = savvy_PlRSeries_cast__ffi(self__, dtype, strict);
     return handle_result(res);
@@ -763,6 +768,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRSeries_name__impl", (DL_FUNC) &savvy_PlRSeries_name__impl, 1},
     {"savvy_PlRSeries_rename__impl", (DL_FUNC) &savvy_PlRSeries_rename__impl, 2},
     {"savvy_PlRSeries_dtype__impl", (DL_FUNC) &savvy_PlRSeries_dtype__impl, 1},
+    {"savvy_PlRSeries_equals__impl", (DL_FUNC) &savvy_PlRSeries_equals__impl, 5},
     {"savvy_PlRSeries_cast__impl", (DL_FUNC) &savvy_PlRSeries_cast__impl, 3},
     {"savvy_PlRSeries_add__impl", (DL_FUNC) &savvy_PlRSeries_add__impl, 2},
     {"savvy_PlRSeries_sub__impl", (DL_FUNC) &savvy_PlRSeries_sub__impl, 2},
