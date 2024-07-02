@@ -129,13 +129,18 @@ SEXP savvy_PlRDataFrame_to_series__impl(SEXP self__, SEXP index) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRDataFrame_to_struct__impl(SEXP self__, SEXP name) {
-    SEXP res = savvy_PlRDataFrame_to_struct__ffi(self__, name);
+SEXP savvy_PlRDataFrame_lazy__impl(SEXP self__) {
+    SEXP res = savvy_PlRDataFrame_lazy__ffi(self__);
     return handle_result(res);
 }
 
-SEXP savvy_PlRDataFrame_lazy__impl(SEXP self__) {
-    SEXP res = savvy_PlRDataFrame_lazy__ffi(self__);
+SEXP savvy_PlRDataFrame_equals__impl(SEXP self__, SEXP other, SEXP null_equal) {
+    SEXP res = savvy_PlRDataFrame_equals__ffi(self__, other, null_equal);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRDataFrame_to_struct__impl(SEXP self__, SEXP name) {
+    SEXP res = savvy_PlRDataFrame_to_struct__ffi(self__, name);
     return handle_result(res);
 }
 
@@ -665,8 +670,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRDataFrame_height__impl", (DL_FUNC) &savvy_PlRDataFrame_height__impl, 1},
     {"savvy_PlRDataFrame_width__impl", (DL_FUNC) &savvy_PlRDataFrame_width__impl, 1},
     {"savvy_PlRDataFrame_to_series__impl", (DL_FUNC) &savvy_PlRDataFrame_to_series__impl, 2},
-    {"savvy_PlRDataFrame_to_struct__impl", (DL_FUNC) &savvy_PlRDataFrame_to_struct__impl, 2},
     {"savvy_PlRDataFrame_lazy__impl", (DL_FUNC) &savvy_PlRDataFrame_lazy__impl, 1},
+    {"savvy_PlRDataFrame_equals__impl", (DL_FUNC) &savvy_PlRDataFrame_equals__impl, 3},
+    {"savvy_PlRDataFrame_to_struct__impl", (DL_FUNC) &savvy_PlRDataFrame_to_struct__impl, 2},
     {"savvy_PlRDataType_print__impl", (DL_FUNC) &savvy_PlRDataType_print__impl, 1},
     {"savvy_PlRDataType_new_from_name__impl", (DL_FUNC) &savvy_PlRDataType_new_from_name__impl, 1},
     {"savvy_PlRDataType_new_categorical__impl", (DL_FUNC) &savvy_PlRDataType_new_categorical__impl, 1},

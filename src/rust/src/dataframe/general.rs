@@ -1,8 +1,8 @@
 use super::*;
 use crate::{error::RPolarsErr, series::ToRSeries, PlRLazyFrame, PlRSeries};
 use savvy::{
-    r_println, savvy, ListSexp, NumericScalar, OwnedIntegerSexp, OwnedListSexp, Result, Sexp,
-    StringSexp, TypedSexp,
+    r_println, savvy, ListSexp, NumericScalar, OwnedIntegerSexp, OwnedListSexp, OwnedLogicalSexp,
+    Result, Sexp, TypedSexp,
 };
 
 #[savvy]
@@ -75,12 +75,20 @@ impl PlRDataFrame {
         }
     }
 
-    pub fn to_struct(&self, name: &str) -> Result<PlRSeries> {
-        let s = self.df.clone().into_struct(name);
-        Ok(s.into_series().into())
+    pub fn equals(&self, other: &PlRDataFrame, null_equal: bool) -> Result<Sexp> {
+        if null_equal {
+            Ok(OwnedLogicalSexp::try_from_scalar(self.df.equals_missing(&other.df))?.into())
+        } else {
+            Ok(OwnedLogicalSexp::try_from_scalar(self.df.equals(&other.df))?.into())
+        }
     }
 
     pub fn lazy(&self) -> Result<PlRLazyFrame> {
         Ok(self.df.clone().lazy().into())
+    }
+
+    pub fn to_struct(&self, name: &str) -> Result<PlRSeries> {
+        let s = self.df.clone().into_struct(name);
+        Ok(s.into_series().into())
     }
 }

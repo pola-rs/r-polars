@@ -23,8 +23,9 @@ SEXP savvy_PlRDataFrame_shape__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_height__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_width__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_to_series__ffi(SEXP self__, SEXP index);
-SEXP savvy_PlRDataFrame_to_struct__ffi(SEXP self__, SEXP name);
 SEXP savvy_PlRDataFrame_lazy__ffi(SEXP self__);
+SEXP savvy_PlRDataFrame_equals__ffi(SEXP self__, SEXP other, SEXP null_equal);
+SEXP savvy_PlRDataFrame_to_struct__ffi(SEXP self__, SEXP name);
 
 // methods and associated functions for PlRDataType
 SEXP savvy_PlRDataType_print__ffi(SEXP self__);

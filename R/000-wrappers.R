@@ -168,15 +168,22 @@ PlRDataFrame_to_series <- function(self) {
   }
 }
 
-PlRDataFrame_to_struct <- function(self) {
-  function(name) {
-    .savvy_wrap_PlRSeries(.Call(savvy_PlRDataFrame_to_struct__impl, self, name))
-  }
-}
-
 PlRDataFrame_lazy <- function(self) {
   function() {
     .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRDataFrame_lazy__impl, self))
+  }
+}
+
+PlRDataFrame_equals <- function(self) {
+  function(other, null_equal) {
+    other <- .savvy_extract_ptr(other, "PlRDataFrame")
+.Call(savvy_PlRDataFrame_equals__impl, self, other, null_equal)
+  }
+}
+
+PlRDataFrame_to_struct <- function(self) {
+  function(name) {
+    .savvy_wrap_PlRSeries(.Call(savvy_PlRDataFrame_to_struct__impl, self, name))
   }
 }
 
@@ -189,8 +196,9 @@ PlRDataFrame_lazy <- function(self) {
   e$height <- PlRDataFrame_height(ptr)
   e$width <- PlRDataFrame_width(ptr)
   e$to_series <- PlRDataFrame_to_series(ptr)
-  e$to_struct <- PlRDataFrame_to_struct(ptr)
   e$lazy <- PlRDataFrame_lazy(ptr)
+  e$equals <- PlRDataFrame_equals(ptr)
+  e$to_struct <- PlRDataFrame_to_struct(ptr)
   
   class(e) <- "PlRDataFrame"
   e
