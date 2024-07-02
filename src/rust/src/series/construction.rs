@@ -2,16 +2,18 @@ use crate::{error::RPolarsErr, PlRDataType, PlRSeries};
 use polars_core::prelude::*;
 use polars_core::utils::{try_get_supertype, CustomIterTools};
 use savvy::sexp::na::NotAvailableValue;
-use savvy::{savvy, IntegerSexp, ListSexp, LogicalSexp, RealSexp, StringSexp, TypedSexp};
+use savvy::{
+    savvy, IntegerSexp, ListSexp, LogicalSexp, RawSexp, RealSexp, Result, StringSexp, TypedSexp,
+};
 
 #[savvy]
 impl PlRSeries {
-    fn new_empty(name: &str, dtype: Option<PlRDataType>) -> savvy::Result<Self> {
+    fn new_empty(name: &str, dtype: Option<PlRDataType>) -> Result<Self> {
         let dtype = dtype.map(|dtype| dtype.dt).unwrap_or(DataType::Null);
         Ok(Series::new_empty(name, &dtype).into())
     }
 
-    fn new_f64(name: &str, values: RealSexp) -> savvy::Result<Self> {
+    fn new_f64(name: &str, values: RealSexp) -> Result<Self> {
         let ca: Float64Chunked = values
             .iter()
             .map(|value| if value.is_na() { None } else { Some(*value) })
@@ -19,7 +21,7 @@ impl PlRSeries {
         Ok(ca.with_name(name).into_series().into())
     }
 
-    fn new_i32(name: &str, values: IntegerSexp) -> savvy::Result<Self> {
+    fn new_i32(name: &str, values: IntegerSexp) -> Result<Self> {
         let ca: Int32Chunked = values
             .iter()
             .map(|value| if value.is_na() { None } else { Some(*value) })
@@ -27,7 +29,7 @@ impl PlRSeries {
         Ok(ca.with_name(name).into_series().into())
     }
 
-    fn new_bool(name: &str, values: LogicalSexp) -> savvy::Result<Self> {
+    fn new_bool(name: &str, values: LogicalSexp) -> Result<Self> {
         let ca: BooleanChunked = values
             .as_slice_raw()
             .iter()
@@ -42,7 +44,7 @@ impl PlRSeries {
         Ok(ca.with_name(name).into_series().into())
     }
 
-    fn new_str(name: &str, values: StringSexp) -> savvy::Result<Self> {
+    fn new_str(name: &str, values: StringSexp) -> Result<Self> {
         let ca: StringChunked = values
             .iter()
             .map(|value| if value.is_na() { None } else { Some(value) })
@@ -50,7 +52,12 @@ impl PlRSeries {
         Ok(ca.with_name(name).into_series().into())
     }
 
-    fn new_series_list(name: &str, values: ListSexp) -> savvy::Result<Self> {
+    fn new_binary(name: &str, values: RawSexp) -> Result<Self> {
+        let ca = BinaryChunked::from_slice(name, &[values.as_slice()]);
+        Ok(ca.into_series().into())
+    }
+
+    fn new_series_list(name: &str, values: ListSexp) -> Result<Self> {
         let series_vec: Vec<Option<Series>> = values
             .values_iter()
             .map(|value| match value.into_typed() {
