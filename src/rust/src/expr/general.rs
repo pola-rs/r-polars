@@ -1,10 +1,6 @@
 use crate::{prelude::*, PlRDataType, PlRExpr};
 use polars::lazy::dsl;
-use polars::series::ops::NullBehavior;
-use polars_core::series::IsSorted;
-use polars_core::utils::arrow::compute::cast::CastOptions;
 use savvy::{r_println, savvy, NumericSexp, Result};
-use std::io::Cursor;
 use std::ops::Neg;
 
 #[savvy]
