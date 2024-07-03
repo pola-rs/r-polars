@@ -99,6 +99,13 @@ SEXP savvy_PlRExpr_meta_selector_add__ffi(SEXP self__, SEXP other);
 SEXP savvy_PlRExpr_meta_selector_and__ffi(SEXP self__, SEXP other);
 SEXP savvy_PlRExpr_meta_selector_sub__ffi(SEXP self__, SEXP other);
 SEXP savvy_PlRExpr_meta_as_selector__ffi(SEXP self__);
+SEXP savvy_PlRExpr_name_keep__ffi(SEXP self__);
+SEXP savvy_PlRExpr_name_prefix__ffi(SEXP self__, SEXP prefix);
+SEXP savvy_PlRExpr_name_suffix__ffi(SEXP self__, SEXP suffix);
+SEXP savvy_PlRExpr_name_to_lowercase__ffi(SEXP self__);
+SEXP savvy_PlRExpr_name_to_uppercase__ffi(SEXP self__);
+SEXP savvy_PlRExpr_name_prefix_fields__ffi(SEXP self__, SEXP prefix);
+SEXP savvy_PlRExpr_name_suffix_fields__ffi(SEXP self__, SEXP suffix);
 SEXP savvy_PlRExpr_struct_field_by_index__ffi(SEXP self__, SEXP index);
 SEXP savvy_PlRExpr_struct_field_by_name__ffi(SEXP self__, SEXP name);
 

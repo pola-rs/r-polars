@@ -1,6 +1,7 @@
 mod datetime;
 mod general;
 mod meta;
+mod name;
 mod struct_;
 use polars::lazy::dsl::Expr;
 use savvy::{savvy, EnvironmentSexp, ListSexp, TypedSexp};

@@ -783,6 +783,48 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
   }
 }
 
+`PlRExpr_name_keep` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_name_keep__impl, `self`))
+  }
+}
+
+`PlRExpr_name_prefix` <- function(self) {
+  function(`prefix`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_name_prefix__impl, `self`, `prefix`))
+  }
+}
+
+`PlRExpr_name_suffix` <- function(self) {
+  function(`suffix`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_name_suffix__impl, `self`, `suffix`))
+  }
+}
+
+`PlRExpr_name_to_lowercase` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_name_to_lowercase__impl, `self`))
+  }
+}
+
+`PlRExpr_name_to_uppercase` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_name_to_uppercase__impl, `self`))
+  }
+}
+
+`PlRExpr_name_prefix_fields` <- function(self) {
+  function(`prefix`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_name_prefix_fields__impl, `self`, `prefix`))
+  }
+}
+
+`PlRExpr_name_suffix_fields` <- function(self) {
+  function(`suffix`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_name_suffix_fields__impl, `self`, `suffix`))
+  }
+}
+
 `PlRExpr_struct_field_by_index` <- function(self) {
   function(`index`) {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_struct_field_by_index__impl, `self`, `index`))
@@ -842,6 +884,13 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
   e$`meta_selector_and` <- `PlRExpr_meta_selector_and`(ptr)
   e$`meta_selector_sub` <- `PlRExpr_meta_selector_sub`(ptr)
   e$`meta_as_selector` <- `PlRExpr_meta_as_selector`(ptr)
+  e$`name_keep` <- `PlRExpr_name_keep`(ptr)
+  e$`name_prefix` <- `PlRExpr_name_prefix`(ptr)
+  e$`name_suffix` <- `PlRExpr_name_suffix`(ptr)
+  e$`name_to_lowercase` <- `PlRExpr_name_to_lowercase`(ptr)
+  e$`name_to_uppercase` <- `PlRExpr_name_to_uppercase`(ptr)
+  e$`name_prefix_fields` <- `PlRExpr_name_prefix_fields`(ptr)
+  e$`name_suffix_fields` <- `PlRExpr_name_suffix_fields`(ptr)
   e$`struct_field_by_index` <- `PlRExpr_struct_field_by_index`(ptr)
   e$`struct_field_by_name` <- `PlRExpr_struct_field_by_name`(ptr)
 

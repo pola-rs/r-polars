@@ -489,6 +489,41 @@ SEXP savvy_PlRExpr_meta_as_selector__impl(SEXP self__) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_name_keep__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_name_keep__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_name_prefix__impl(SEXP self__, SEXP prefix) {
+    SEXP res = savvy_PlRExpr_name_prefix__ffi(self__, prefix);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_name_suffix__impl(SEXP self__, SEXP suffix) {
+    SEXP res = savvy_PlRExpr_name_suffix__ffi(self__, suffix);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_name_to_lowercase__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_name_to_lowercase__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_name_to_uppercase__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_name_to_uppercase__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_name_prefix_fields__impl(SEXP self__, SEXP prefix) {
+    SEXP res = savvy_PlRExpr_name_prefix_fields__ffi(self__, prefix);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_name_suffix_fields__impl(SEXP self__, SEXP suffix) {
+    SEXP res = savvy_PlRExpr_name_suffix_fields__ffi(self__, suffix);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_struct_field_by_index__impl(SEXP self__, SEXP index) {
     SEXP res = savvy_PlRExpr_struct_field_by_index__ffi(self__, index);
     return handle_result(res);
@@ -757,6 +792,13 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_meta_selector_and__impl", (DL_FUNC) &savvy_PlRExpr_meta_selector_and__impl, 2},
     {"savvy_PlRExpr_meta_selector_sub__impl", (DL_FUNC) &savvy_PlRExpr_meta_selector_sub__impl, 2},
     {"savvy_PlRExpr_meta_as_selector__impl", (DL_FUNC) &savvy_PlRExpr_meta_as_selector__impl, 1},
+    {"savvy_PlRExpr_name_keep__impl", (DL_FUNC) &savvy_PlRExpr_name_keep__impl, 1},
+    {"savvy_PlRExpr_name_prefix__impl", (DL_FUNC) &savvy_PlRExpr_name_prefix__impl, 2},
+    {"savvy_PlRExpr_name_suffix__impl", (DL_FUNC) &savvy_PlRExpr_name_suffix__impl, 2},
+    {"savvy_PlRExpr_name_to_lowercase__impl", (DL_FUNC) &savvy_PlRExpr_name_to_lowercase__impl, 1},
+    {"savvy_PlRExpr_name_to_uppercase__impl", (DL_FUNC) &savvy_PlRExpr_name_to_uppercase__impl, 1},
+    {"savvy_PlRExpr_name_prefix_fields__impl", (DL_FUNC) &savvy_PlRExpr_name_prefix_fields__impl, 2},
+    {"savvy_PlRExpr_name_suffix_fields__impl", (DL_FUNC) &savvy_PlRExpr_name_suffix_fields__impl, 2},
     {"savvy_PlRExpr_struct_field_by_index__impl", (DL_FUNC) &savvy_PlRExpr_struct_field_by_index__impl, 2},
     {"savvy_PlRExpr_struct_field_by_name__impl", (DL_FUNC) &savvy_PlRExpr_struct_field_by_name__impl, 2},
     {"savvy_PlRLazyFrame_select__impl", (DL_FUNC) &savvy_PlRLazyFrame_select__impl, 2},
