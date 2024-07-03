@@ -23,6 +23,8 @@ impl From<Wrap<&BinaryChunked>> for Sexp {
     fn from(ca: Wrap<&BinaryChunked>) -> Self {
         let ca = ca.0;
         let mut sexp = OwnedListSexp::new(ca.len(), false).unwrap();
+        let _ = sexp.set_class(&["blob", "vctrs_list_of", "vctrs_vctr", "list"]);
+        let _ = sexp.set_attrib("ptype", OwnedRawSexp::new(0).unwrap().into());
         for (i, v) in ca.into_iter().enumerate() {
             unsafe {
                 if let Some(v) = v {

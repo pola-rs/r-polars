@@ -47,7 +47,7 @@ as_polars_series.logical <- function(x, name = NULL, ...) {
 
 #' @export
 as_polars_series.raw <- function(x, name = NULL, ...) {
-  PlRSeries$new_binary(name %||% "", x) |>
+  PlRSeries$new_single_binary(name %||% "", x) |>
     wrap()
 }
 
@@ -126,6 +126,12 @@ as_polars_series.hms <- function(x, name = NULL, ...) {
     pl$Time$`_dt`,
     strict = TRUE
   ) |>
+    wrap()
+}
+
+#' @export
+as_polars_series.blob <- function(x, name = NULL, ...) {
+  PlRSeries$new_binary(name %||% "", x) |>
     wrap()
 }
 

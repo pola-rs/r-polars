@@ -1178,6 +1178,10 @@ class(`PlRLazyGroupBy`) <- "PlRLazyGroupBy__bundle"
   .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_str__impl, `name`, `values`))
 }
 
+`PlRSeries`$`new_single_binary` <- function(`name`, `values`) {
+  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_single_binary__impl, `name`, `values`))
+}
+
 `PlRSeries`$`new_binary` <- function(`name`, `values`) {
   .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_binary__impl, `name`, `values`))
 }

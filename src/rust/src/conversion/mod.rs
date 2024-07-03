@@ -58,6 +58,20 @@ impl TryFrom<&str> for PlRDataType {
     }
 }
 
+impl From<ListSexp> for Wrap<Vec<Option<Vec<u8>>>> {
+    fn from(list: ListSexp) -> Self {
+        let raw_list = list
+            .values_iter()
+            .map(|value| match value.into_typed() {
+                TypedSexp::Raw(r) => Some(r.to_vec()),
+                TypedSexp::Null(_) => None,
+                _ => unreachable!("Only accept a list of Raw"),
+            })
+            .collect::<Vec<_>>();
+        Wrap(raw_list)
+    }
+}
+
 impl From<ListSexp> for Wrap<Vec<Expr>> {
     fn from(list: ListSexp) -> Self {
         let expr_list = list

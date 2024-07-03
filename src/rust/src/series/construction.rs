@@ -1,9 +1,8 @@
-use crate::{error::RPolarsErr, PlRDataType, PlRSeries};
-use polars_core::prelude::*;
+use crate::{prelude::*, PlRDataType, PlRSeries, RPolarsErr};
 use polars_core::utils::{try_get_supertype, CustomIterTools};
-use savvy::sexp::na::NotAvailableValue;
 use savvy::{
-    savvy, IntegerSexp, ListSexp, LogicalSexp, RawSexp, RealSexp, Result, StringSexp, TypedSexp,
+    savvy, sexp::na::NotAvailableValue, IntegerSexp, ListSexp, LogicalSexp, RawSexp, RealSexp,
+    Result, StringSexp, TypedSexp,
 };
 
 #[savvy]
@@ -52,8 +51,13 @@ impl PlRSeries {
         Ok(ca.with_name(name).into_series().into())
     }
 
-    fn new_binary(name: &str, values: RawSexp) -> Result<Self> {
+    fn new_single_binary(name: &str, values: RawSexp) -> Result<Self> {
         let ca = BinaryChunked::from_slice(name, &[values.as_slice()]);
+        Ok(ca.into_series().into())
+    }
+
+    fn new_binary(name: &str, values: ListSexp) -> Result<Self> {
+        let ca = BinaryChunked::new(name, <Wrap<Vec<Option<Vec<u8>>>>>::from(values).0);
         Ok(ca.into_series().into())
     }
 

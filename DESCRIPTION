@@ -13,4 +13,5 @@ SystemRequirements: Cargo (Rust's package manager), rustc
 Imports:
     rlang
 Suggests:
+    blob,
     hms
