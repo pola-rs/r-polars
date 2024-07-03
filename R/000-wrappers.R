@@ -24,6 +24,11 @@ NULL
 }
 
 
+`concat_df` <- function(`dfs`) {
+  .savvy_wrap_PlRDataFrame(.Call(savvy_concat_df__impl, `dfs`))
+}
+
+
 `col` <- function(`name`) {
   .savvy_wrap_PlRExpr(.Call(savvy_col__impl, `name`))
 }

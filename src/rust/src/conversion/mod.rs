@@ -1,5 +1,5 @@
 use crate::prelude::*;
-use crate::{PlRDataType, PlRExpr};
+use crate::{PlRDataFrame, PlRDataType, PlRExpr};
 use savvy::{ListSexp, NumericScalar, NumericSexp, TypedSexp};
 mod chunked_array;
 
@@ -69,6 +69,21 @@ impl From<ListSexp> for Wrap<Vec<Option<Vec<u8>>>> {
             })
             .collect::<Vec<_>>();
         Wrap(raw_list)
+    }
+}
+
+impl TryFrom<ListSexp> for Wrap<Vec<DataFrame>> {
+    type Error = savvy::Error;
+
+    fn try_from(list: ListSexp) -> Result<Self, savvy::Error> {
+        let dfs = list
+            .values_iter()
+            .map(|sexp| match sexp.into_typed() {
+                TypedSexp::Environment(e) => Ok(<&PlRDataFrame>::try_from(e)?.df.clone()),
+                _ => Err("Only accept a list of polars data frames".to_string()),
+            })
+            .collect::<Result<Vec<_>, _>>()?;
+        Ok(Wrap(dfs))
     }
 }
 

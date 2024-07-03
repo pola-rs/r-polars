@@ -1,7 +1,7 @@
 mod general;
 
-use savvy::{savvy, EnvironmentSexp};
 use crate::prelude::*;
+use savvy::{savvy, EnvironmentSexp};
 
 #[savvy]
 #[derive(Clone)]
@@ -15,10 +15,15 @@ impl From<DataFrame> for PlRDataFrame {
     }
 }
 
-impl From<EnvironmentSexp> for &PlRDataFrame {
-    fn from(env: EnvironmentSexp) -> Self {
-        let ptr = env.get(".ptr").unwrap().unwrap();
-        <&PlRDataFrame>::try_from(ptr).unwrap()
+impl TryFrom<EnvironmentSexp> for &PlRDataFrame {
+    type Error = String;
+
+    fn try_from(env: EnvironmentSexp) -> Result<Self, String> {
+        let ptr = env
+            .get(".ptr")
+            .expect("Failed to get `.ptr` from the object")
+            .ok_or("The object is not a valid polars data frame")?;
+        <&PlRDataFrame>::try_from(ptr).map_err(|e| e.to_string())
     }
 }
 
