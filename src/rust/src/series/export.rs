@@ -18,8 +18,10 @@ impl PlRSeries {
                 DataType::UInt64 | DataType::Int64 => Ok(<Sexp>::from(Wrap(
                     series.cast(&DataType::Float64).unwrap().f64().unwrap(),
                 ))),
+                DataType::Float32 => Ok(<Sexp>::from(Wrap(
+                    series.cast(&DataType::Float64).unwrap().f64().unwrap(),
+                ))),
                 DataType::Float64 => Ok(<Sexp>::from(Wrap(series.f64().unwrap()))),
-                DataType::String => Ok(<Sexp>::from(Wrap(series.str().unwrap()))),
                 DataType::Categorical(_, _) | DataType::Enum(_, _) => {
                     let r_func: FunctionSexp =
                         <Sexp>::try_from(savvy::eval_parse_text("as.factor")?)?.try_into()?;
@@ -91,8 +93,10 @@ impl PlRSeries {
                     }
                     Some(_tz) => Ok(<Sexp>::from(Wrap(series.datetime().unwrap()))),
                 },
-                DataType::Duration(_) => Ok(<Sexp>::from(Wrap(series.duration().unwrap()))),
-                DataType::Binary => Ok(<Sexp>::from(Wrap(series.binary().unwrap()))),
+                DataType::Decimal(_, _) => Ok(<Sexp>::from(Wrap(
+                    series.cast(&DataType::Float64).unwrap().f64().unwrap(),
+                ))),
+                DataType::String => Ok(<Sexp>::from(Wrap(series.str().unwrap()))),
                 DataType::Struct(_) => {
                     let df = series.clone().into_frame().unnest([series.name()]).unwrap();
                     let len = df.width();
@@ -102,6 +106,8 @@ impl PlRSeries {
                     }
                     Ok(list.into())
                 }
+                DataType::Duration(_) => Ok(<Sexp>::from(Wrap(series.duration().unwrap()))),
+                DataType::Binary => Ok(<Sexp>::from(Wrap(series.binary().unwrap()))),
                 DataType::Null => {
                     let len = series.len();
                     Ok(OwnedListSexp::new(len, false)?.into())
