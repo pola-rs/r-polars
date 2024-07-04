@@ -474,8 +474,8 @@ class(`PlRDataFrame`) <- "PlRDataFrame__bundle"
   .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_new_from_name__impl, `name`))
 }
 
-`PlRDataType`$`new_categorical` <- function(`ordering`) {
-  .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_new_categorical__impl, `ordering`))
+`PlRDataType`$`new_decimal` <- function(`scale`, `precision` = NULL) {
+  .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_new_decimal__impl, `scale`, `precision`))
 }
 
 `PlRDataType`$`new_datetime` <- function(`time_unit`, `time_zone` = NULL) {
@@ -484,6 +484,19 @@ class(`PlRDataFrame`) <- "PlRDataFrame__bundle"
 
 `PlRDataType`$`new_duration` <- function(`time_unit`) {
   .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_new_duration__impl, `time_unit`))
+}
+
+`PlRDataType`$`new_categorical` <- function(`ordering`) {
+  .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_new_categorical__impl, `ordering`))
+}
+
+`PlRDataType`$`new_enum` <- function(`categories`) {
+  .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_new_enum__impl, `categories`))
+}
+
+`PlRDataType`$`new_list` <- function(`inner`) {
+  `inner` <- .savvy_extract_ptr(`inner`, "PlRDataType")
+  .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_new_list__impl, `inner`))
 }
 
 

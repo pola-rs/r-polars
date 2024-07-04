@@ -31,9 +31,12 @@ SEXP savvy_PlRDataFrame_to_struct__ffi(SEXP self__, SEXP name);
 // methods and associated functions for PlRDataType
 SEXP savvy_PlRDataType_print__ffi(SEXP self__);
 SEXP savvy_PlRDataType_new_from_name__ffi(SEXP name);
-SEXP savvy_PlRDataType_new_categorical__ffi(SEXP ordering);
+SEXP savvy_PlRDataType_new_decimal__ffi(SEXP scale, SEXP precision);
 SEXP savvy_PlRDataType_new_datetime__ffi(SEXP time_unit, SEXP time_zone);
 SEXP savvy_PlRDataType_new_duration__ffi(SEXP time_unit);
+SEXP savvy_PlRDataType_new_categorical__ffi(SEXP ordering);
+SEXP savvy_PlRDataType_new_enum__ffi(SEXP categories);
+SEXP savvy_PlRDataType_new_list__ffi(SEXP inner);
 SEXP savvy_PlRDataType_is_temporal__ffi(SEXP self__);
 SEXP savvy_PlRDataType_is_enum__ffi(SEXP self__);
 SEXP savvy_PlRDataType_is_categorical__ffi(SEXP self__);

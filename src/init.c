@@ -159,8 +159,8 @@ SEXP savvy_PlRDataType_new_from_name__impl(SEXP name) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRDataType_new_categorical__impl(SEXP ordering) {
-    SEXP res = savvy_PlRDataType_new_categorical__ffi(ordering);
+SEXP savvy_PlRDataType_new_decimal__impl(SEXP scale, SEXP precision) {
+    SEXP res = savvy_PlRDataType_new_decimal__ffi(scale, precision);
     return handle_result(res);
 }
 
@@ -171,6 +171,21 @@ SEXP savvy_PlRDataType_new_datetime__impl(SEXP time_unit, SEXP time_zone) {
 
 SEXP savvy_PlRDataType_new_duration__impl(SEXP time_unit) {
     SEXP res = savvy_PlRDataType_new_duration__ffi(time_unit);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRDataType_new_categorical__impl(SEXP ordering) {
+    SEXP res = savvy_PlRDataType_new_categorical__ffi(ordering);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRDataType_new_enum__impl(SEXP categories) {
+    SEXP res = savvy_PlRDataType_new_enum__ffi(categories);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRDataType_new_list__impl(SEXP inner) {
+    SEXP res = savvy_PlRDataType_new_list__ffi(inner);
     return handle_result(res);
 }
 
@@ -731,9 +746,12 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRDataFrame_to_struct__impl", (DL_FUNC) &savvy_PlRDataFrame_to_struct__impl, 2},
     {"savvy_PlRDataType_print__impl", (DL_FUNC) &savvy_PlRDataType_print__impl, 1},
     {"savvy_PlRDataType_new_from_name__impl", (DL_FUNC) &savvy_PlRDataType_new_from_name__impl, 1},
-    {"savvy_PlRDataType_new_categorical__impl", (DL_FUNC) &savvy_PlRDataType_new_categorical__impl, 1},
+    {"savvy_PlRDataType_new_decimal__impl", (DL_FUNC) &savvy_PlRDataType_new_decimal__impl, 2},
     {"savvy_PlRDataType_new_datetime__impl", (DL_FUNC) &savvy_PlRDataType_new_datetime__impl, 2},
     {"savvy_PlRDataType_new_duration__impl", (DL_FUNC) &savvy_PlRDataType_new_duration__impl, 1},
+    {"savvy_PlRDataType_new_categorical__impl", (DL_FUNC) &savvy_PlRDataType_new_categorical__impl, 1},
+    {"savvy_PlRDataType_new_enum__impl", (DL_FUNC) &savvy_PlRDataType_new_enum__impl, 1},
+    {"savvy_PlRDataType_new_list__impl", (DL_FUNC) &savvy_PlRDataType_new_list__impl, 1},
     {"savvy_PlRDataType_is_temporal__impl", (DL_FUNC) &savvy_PlRDataType_is_temporal__impl, 1},
     {"savvy_PlRDataType_is_enum__impl", (DL_FUNC) &savvy_PlRDataType_is_enum__impl, 1},
     {"savvy_PlRDataType_is_categorical__impl", (DL_FUNC) &savvy_PlRDataType_is_categorical__impl, 1},

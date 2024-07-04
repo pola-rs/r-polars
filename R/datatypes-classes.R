@@ -18,8 +18,8 @@ wrap.PlRDataType <- function(x) {
   self
 }
 
-pl__Categorical <- function(ordering = "physical") {
-  PlRDataType$new_categorical(ordering) |>
+pl__Decimal <- function(precision = NULL, scale = 0L) {
+  PlRDataType$new_decimal(scale = scale, precision = precision) |>
     wrap()
 }
 
@@ -30,6 +30,27 @@ pl__Datetime <- function(time_unit = "us", time_zone = NULL) {
 
 pl__Duration <- function(time_unit = "us") {
   PlRDataType$new_duration(time_unit) |>
+    wrap()
+}
+
+pl__Categorical <- function(ordering = "physical") {
+  PlRDataType$new_categorical(ordering) |>
+    wrap()
+}
+
+pl__Enum <- function(categories) {
+  rlang::warn(c(
+    "The Enum data type is considered unstable.",
+    " It is a work-in-progress feature and may not always work as expected."
+  ))
+
+  PlRDataType$new_enum(categories) |>
+    wrap()
+}
+
+# TODO: check if inner is a polars data type
+pl__List <- function(inner) {
+  PlRDataType$new_list(inner$`_dt`) |>
     wrap()
 }
 
