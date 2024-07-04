@@ -143,7 +143,7 @@ pub struct PyLazyFrame {
 
 #[pymethods]
 impl PyLazyFrame {
-fn select(&mut self, exprs: Vec<PyExpr>) -> Self {
+    fn select(&mut self, exprs: Vec<PyExpr>) -> Self {
         let ldf = self.ldf.clone();
         let exprs = exprs.to_exprs();
         ldf.select(exprs).into()
