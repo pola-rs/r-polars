@@ -1,5 +1,7 @@
 # NEWS
 
+## Polars R Package (development version)
+
 ## Polars R Package 0.18.0
 
 ### Breaking changes
