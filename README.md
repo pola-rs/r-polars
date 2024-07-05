@@ -51,7 +51,7 @@ The recommended way to install this package is via R-multiverse:
 
 ``` r
 Sys.setenv(NOT_CRAN = "true")
-install.packages("polars", repos = "https://r-multiverse.r-universe.dev")
+install.packages("polars", repos = "https://community.r-multiverse.org")
 ```
 
 [The “Install”
