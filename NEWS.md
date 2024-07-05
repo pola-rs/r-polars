@@ -1,6 +1,6 @@
 # NEWS
 
-## Polars R Package (development version)
+## Polars R Package 0.18.0
 
 Updated rust-polars to 0.41.3 (#1147, #1156).
 
