@@ -31,7 +31,7 @@ Installing the latest release version.
 
 ```r
 Sys.setenv(NOT_CRAN = "true") # Enable installation with pre-built Rust library binary, or enable Rust caching
-install.packages("polars", repos = "https://r-multiverse.r-universe.dev")
+install.packages("polars", repos = "https://community.r-multiverse.org")
 ```
 
 - On supported platforms, binary R package will be installed.
@@ -111,7 +111,7 @@ For example (on Bash):
 ```sh
 export LIBR_POLARS_BUILD="false"
 export LIBR_POLARS_PATH="/tmp/libr_polars.a"
-Rscript -e 'install.packages("polars", repos = "https://r-multiverse.r-universe.dev", type = "source")'
+Rscript -e 'install.packages("polars", repos = "https://community.r-multiverse.org", type = "source")'
 ```
 
 ### Rust build time options
