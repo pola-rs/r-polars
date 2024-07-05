@@ -5,6 +5,8 @@
 
 <!-- badges: start -->
 
+[![R-multiverse
+status](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fcommunity.r-multiverse.org%2Fapi%2Fpackages%2Fpolars&query=%24.Version&label=r-multiverse)](https://community.r-multiverse.org/polars)
 [![R-universe status
 badge](https://rpolars.r-universe.dev/badges/polars)](https://rpolars.r-universe.dev)
 [![CRAN
@@ -45,11 +47,11 @@ breaking changes at each version. Be sure to check the
 
 ## Install
 
-The recommended way to install this package is via R-universe:
+The recommended way to install this package is via R-multiverse:
 
 ``` r
 Sys.setenv(NOT_CRAN = "true")
-install.packages("polars", repos = "https://rpolars.r-universe.dev")
+install.packages("polars", repos = "https://r-multiverse.r-universe.dev")
 ```
 
 [The “Install”
