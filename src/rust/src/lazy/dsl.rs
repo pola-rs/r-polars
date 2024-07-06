@@ -2458,6 +2458,24 @@ impl RPolarsExpr {
             .into())
     }
 
+    fn str_extract_many(
+        &self,
+        patterns: Robj,
+        ascii_case_insensitive: Robj,
+        overlapping: Robj,
+    ) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .str()
+            .extract_many(
+                robj_to!(PLExprCol, patterns)?,
+                robj_to!(bool, ascii_case_insensitive)?,
+                robj_to!(bool, overlapping)?,
+            )
+            .into())
+    }
+
     pub fn str_find(&self, pat: Robj, literal: Robj, strict: Robj) -> RResult<Self> {
         let pat = robj_to!(PLExpr, pat)?;
         let literal = robj_to!(Option, bool, literal)?;

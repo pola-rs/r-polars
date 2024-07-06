@@ -1093,3 +1093,34 @@ ExprStr_tail = function(n) {
   .pr$Expr$str_tail(self, n) |>
     unwrap("in $str$tail():")
 }
+
+
+#' Use the aho-corasick algorithm to extract matches
+#'
+#' @param patterns String patterns to search. This can be an Expr or something
+#' coercible to an Expr. Strings are parsed as column names.
+#' @inheritParams ExprStr_contains_any
+#' @param ... Ignored.
+#' @param overlapping Whether matches can overlap.
+#'
+#' @inherit ExprStr_slice return
+#'
+#' @examples
+#' df = pl$DataFrame(values = "discontent")
+#' patterns = pl$lit(c("winter", "disco", "onte", "discontent"))
+#'
+#' df$with_columns(
+#'   matches = pl$col("values")$str$extract_many(patterns),
+#'   matches_overlap = pl$col("values")$str$extract_many(patterns, overlapping = TRUE)
+#' )
+#'
+#' df = pl$DataFrame(
+#'   values = c("discontent", "rhapsody"),
+#'   patterns = list(c("winter", "disco", "onte", "discontent"), c("rhap", "ody", "coalesce"))
+#' )
+#'
+#' df$select(pl$col("values")$str$extract_many("patterns"))
+ExprStr_extract_many = function(patterns, ..., ascii_case_insensitive = FALSE, overlapping = FALSE) {
+  .pr$Expr$str_extract_many(self, patterns, ascii_case_insensitive, overlapping) |>
+    unwrap("in $str$extract_many():")
+}
