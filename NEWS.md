@@ -2,10 +2,11 @@
 
 ## Polars R Package (development version)
 
-Updated rust-polars to 0.41.3 (#1147, #1156).
+## Polars R Package 0.18.0
 
 ### Breaking changes
 
+- Updated rust-polars to 0.41.3 (#1147, #1156).
 - In `$n_chunks()`, the default value of `strategy` now is `"first"` (#1137).
 - `$sample()` for Expr and DataFrame (#1136):
   - the argument `frac` is renamed `fraction`;
@@ -47,7 +48,6 @@ Updated rust-polars to 0.41.3 (#1147, #1156).
   (#1147).
 - In `$join()`, when `how = "cross"`, `on`, `left_on` and `right_on` must be
   `NULL` (#1147).
-
 
 ### New features
 
