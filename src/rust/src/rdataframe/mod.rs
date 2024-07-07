@@ -85,7 +85,6 @@ impl From<pl::DataFrame> for RPolarsDataFrame {
     }
 }
 
-use extendr_api::Result;
 #[extendr]
 impl RPolarsDataFrame {
     pub fn shape(&self) -> Robj {
@@ -143,7 +142,11 @@ impl RPolarsDataFrame {
     }
 
     //internal use
-    pub fn set_column_from_robj(&mut self, robj: Robj, name: &str) -> std::result::Result<(), String> {
+    pub fn set_column_from_robj(
+        &mut self,
+        robj: Robj,
+        name: &str,
+    ) -> std::result::Result<(), String> {
         robjname2series(robj, name)
             .and_then(|s| self.0.with_column(s).map(|_| ()))
             .map_err(|err| format!("in set_column_from_robj: {:?}", err))
@@ -607,7 +610,10 @@ impl RPolarsDataFrame {
 }
 
 impl RPolarsDataFrame {
-    pub fn to_list_result(&self, int64_conversion: &str) -> std::result::Result<Robj, pl::PolarsError> {
+    pub fn to_list_result(
+        &self,
+        int64_conversion: &str,
+    ) -> std::result::Result<Robj, pl::PolarsError> {
         //convert DataFrame to Result of to R vectors, error if DataType is not supported
         let robj_vec_res: std::result::Result<Vec<Robj>, _> = self
             .0

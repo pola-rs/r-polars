@@ -86,7 +86,6 @@ impl From<&RPolarsExpr> for pl::PolarsResult<RPolarsSeries> {
     }
 }
 
-use extendr_api::Result;
 #[extendr]
 impl RPolarsSeries {
     //utility methods

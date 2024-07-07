@@ -256,7 +256,7 @@ pub fn pl_series_to_list(
                     })
                     .map(|mut robj| {
                         robj.set_attrib("tzone", opt_tz.as_ref().map(|s| s.as_str()).unwrap_or(""))
-                        .cloned()
+                            .cloned()
                     })
                     .expect("internal error: attr tzone failed")
                     .map_err(|err| {
