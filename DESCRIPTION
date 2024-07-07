@@ -14,4 +14,9 @@ Imports:
     rlang
 Suggests:
     blob,
-    hms
+    hms,
+    patrick,
+    testthat (>= 3.0.0),
+    tibble
+Config/testthat/edition: 3
+Config/testthat/parallel: true
