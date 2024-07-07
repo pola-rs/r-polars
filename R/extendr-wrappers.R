@@ -1098,6 +1098,8 @@ RPolarsExpr$str_contains_any <- function(patterns, ascii_case_insensitive) .Call
 
 RPolarsExpr$str_replace_many <- function(patterns, replace_with, ascii_case_insensitive) .Call(wrap__RPolarsExpr__str_replace_many, self, patterns, replace_with, ascii_case_insensitive)
 
+RPolarsExpr$str_extract_many <- function(patterns, ascii_case_insensitive, overlapping) .Call(wrap__RPolarsExpr__str_extract_many, self, patterns, ascii_case_insensitive, overlapping)
+
 RPolarsExpr$str_find <- function(pat, literal, strict) .Call(wrap__RPolarsExpr__str_find, self, pat, literal, strict)
 
 RPolarsExpr$str_head <- function(n) .Call(wrap__RPolarsExpr__str_head, self, n)

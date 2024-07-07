@@ -2,6 +2,10 @@
 
 ## Polars R Package (development version)
 
+### New features
+
+- New method `$str$extract_many()` (#1163).
+
 ## Polars R Package 0.18.0
 
 ### Breaking changes

@@ -920,3 +920,38 @@ test_that("$str$tail() works", {
     )
   )
 })
+
+test_that("$str$extract_many() works", {
+  df = pl$DataFrame(values = c("discontent", "dollar $"))
+  patterns = pl$lit(c("winter", "disco", "ONTE", "discontent", "$"))
+
+  expect_equal(
+    df$select(
+      matches = pl$col("values")$str$extract_many(patterns),
+      matches_overlap = pl$col("values")$str$extract_many(patterns, overlapping = TRUE)
+    )$to_list(),
+    list(matches = list("disco", "$"), matches_overlap = list(c("disco", "discontent"), "$"))
+  )
+
+  # arg "ascii_case_insensitive" works
+  expect_equal(
+    df$select(
+      matches_overlap = pl$col("values")$str$extract_many(
+        patterns,
+        ascii_case_insensitive = TRUE, overlapping = TRUE
+      )
+    )$to_list(),
+    list(matches_overlap = list(c("disco", "onte", "discontent"), "$"))
+  )
+
+  # can pass column names as strings
+  df = pl$DataFrame(
+    values = c("discontent", "rhapsody"),
+    patterns = list(c("winter", "disco", "onte", "discontent"), c("rhap", "ody", "coalesce"))
+  )
+
+  expect_equal(
+    df$select(pl$col("values")$str$extract_many("patterns"))$to_list(),
+    list(values = list("disco", c("rhap", "ody")))
+  )
+})
