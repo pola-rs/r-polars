@@ -34,7 +34,6 @@ impl From<pl::LazyFrame> for RPolarsLazyFrame {
     }
 }
 
-use extendr_api::Result;
 #[extendr]
 impl RPolarsLazyFrame {
     fn print(&self) -> RResult<Self> {

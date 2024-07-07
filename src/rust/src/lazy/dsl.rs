@@ -55,7 +55,6 @@ impl From<pl::Expr> for RPolarsExpr {
     }
 }
 
-use extendr_api::Result;
 #[extendr]
 impl RPolarsExpr {
     //constructors
