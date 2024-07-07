@@ -153,10 +153,11 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
         }
 
         Rtype::Raw => {
-            let rpolars_raw_list = list!(x)
+            let mut binding = list!(x);
+            let rpolars_raw_list = binding
                 .set_class(["rpolars_raw_list", "list"])
                 .map_err(|err| pl::polars_err!(ComputeError: err.to_string()))?;
-            recursive_robjname2series_tree(&rpolars_raw_list, name)
+            recursive_robjname2series_tree(&rpolars_raw_list.clone().into_robj(), name)
         }
 
         Rtype::List if x.inherits("rpolars_raw_list") => {

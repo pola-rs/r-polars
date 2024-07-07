@@ -11,8 +11,9 @@ pub enum RArrowArrayClass {
     NanoArrowArray,
 }
 
-impl<'a> FromRobj<'a> for RArrowArrayClass {
-    fn from_robj(robj: &Robj) -> std::result::Result<Self, &'static str> {
+impl TryFrom<&Robj> for RArrowArrayClass {
+    type Error = &'static str;
+    fn try_from(robj: &Robj) -> std::result::Result<Self, &'static str> {
         if robj.inherits("nanoarrow_array") {
             Ok(RArrowArrayClass::NanoArrowArray)
         } else if robj.inherits("Array") {

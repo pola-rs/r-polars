@@ -18,7 +18,7 @@ pub fn arrow_array_to_rust(arrow_array: Robj) -> Result<ArrayRef, String> {
         )
     };
 
-    RArrowArrayClass::from_robj(&arrow_array)?
+    RArrowArrayClass::try_from(&arrow_array)?
         .get_package()
         .get_export_array_func()?
         .call(pairlist!(&arrow_array, ext_a, ext_s))?;
