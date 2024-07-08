@@ -47,4 +47,11 @@ impl PlRLazyFrame {
         let df = self.ldf.clone().collect().map_err(RPolarsErr::from)?;
         Ok(df.into())
     }
+
+    fn cast(&self, dtypes: ListSexp, strict: bool) -> Result<Self> {
+        let dtypes = <Wrap<Vec<Field>>>::try_from(dtypes)?.0;
+        let mut cast_map = PlHashMap::with_capacity(dtypes.len());
+        cast_map.extend(dtypes.iter().map(|f| (f.name.as_ref(), f.dtype.clone())));
+        Ok(self.ldf.clone().cast(cast_map, strict).into())
+    }
 }

@@ -120,6 +120,7 @@ SEXP savvy_PlRExpr_struct_field_by_name__ffi(SEXP self__, SEXP name);
 SEXP savvy_PlRLazyFrame_select__ffi(SEXP self__, SEXP exprs);
 SEXP savvy_PlRLazyFrame_group_by__ffi(SEXP self__, SEXP by, SEXP maintain_order);
 SEXP savvy_PlRLazyFrame_collect__ffi(SEXP self__);
+SEXP savvy_PlRLazyFrame_cast__ffi(SEXP self__, SEXP dtypes, SEXP strict);
 
 // methods and associated functions for PlRLazyGroupBy
 SEXP savvy_PlRLazyGroupBy_agg__ffi(SEXP self__, SEXP aggs);

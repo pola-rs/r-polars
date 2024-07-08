@@ -989,12 +989,19 @@ class(`PlRExpr`) <- "PlRExpr__bundle"
   }
 }
 
+`PlRLazyFrame_cast` <- function(self) {
+  function(`dtypes`, `strict`) {
+    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_cast__impl, `self`, `dtypes`, `strict`))
+  }
+}
+
 `.savvy_wrap_PlRLazyFrame` <- function(ptr) {
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
   e$`select` <- `PlRLazyFrame_select`(ptr)
   e$`group_by` <- `PlRLazyFrame_group_by`(ptr)
   e$`collect` <- `PlRLazyFrame_collect`(ptr)
+  e$`cast` <- `PlRLazyFrame_cast`(ptr)
 
   class(e) <- "PlRLazyFrame"
   e

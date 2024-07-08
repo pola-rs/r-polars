@@ -76,3 +76,7 @@ dataframe__equals <- function(other, ..., null_equal = TRUE) {
   self$`_df`$equals(other$`_df`, null_equal) |>
     wrap()
 }
+
+dataframe__cast <- function(..., strict = TRUE) {
+  self$lazy()$cast(..., strict = strict)$collect()
+}

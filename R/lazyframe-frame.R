@@ -37,3 +37,10 @@ lazyframe__collect <- function() {
   self$`_ldf`$collect() |>
     wrap()
 }
+
+lazyframe__cast <- function(..., strict = TRUE) {
+  list2(...) |>
+    lapply(\(x) x$`_dt`) |>
+    self$`_ldf`$cast(strict) |>
+    wrap()
+}
