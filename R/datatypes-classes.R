@@ -53,8 +53,11 @@ pl__Enum <- function(categories) {
     wrap()
 }
 
-# TODO: check if inner is a polars data type
 pl__List <- function(inner) {
+  if (!isTRUE(is_polars_data_type(inner))) {
+    abort("`inner` must be a polars data type")
+  }
+
   PlRDataType$new_list(inner$`_dt`) |>
     wrap()
 }
