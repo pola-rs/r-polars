@@ -1,8 +1,8 @@
 use super::*;
 use crate::{error::RPolarsErr, series::ToRSeries, PlRLazyFrame, PlRSeries};
 use savvy::{
-    r_println, savvy, ListSexp, NumericScalar, OwnedIntegerSexp, OwnedListSexp, OwnedLogicalSexp,
-    Result, Sexp, TypedSexp,
+    r_println, savvy, ListSexp, NumericScalar, OwnedIntegerSexp, OwnedListSexp, Result, Sexp,
+    TypedSexp,
 };
 
 #[savvy]
@@ -51,11 +51,11 @@ impl PlRDataFrame {
     }
 
     pub fn height(&self) -> Result<Sexp> {
-        OwnedIntegerSexp::try_from_scalar(self.df.height() as i32)?.into()
+        (self.df.height() as i32).try_into()
     }
 
     pub fn width(&self) -> Result<Sexp> {
-        OwnedIntegerSexp::try_from_scalar(self.df.width() as i32)?.into()
+        (self.df.width() as i32).try_into()
     }
 
     pub fn to_series(&self, index: NumericScalar) -> Result<PlRSeries> {
@@ -77,9 +77,9 @@ impl PlRDataFrame {
 
     pub fn equals(&self, other: &PlRDataFrame, null_equal: bool) -> Result<Sexp> {
         if null_equal {
-            Ok(OwnedLogicalSexp::try_from_scalar(self.df.equals_missing(&other.df))?.into())
+            self.df.equals_missing(&other.df).try_into()
         } else {
-            Ok(OwnedLogicalSexp::try_from_scalar(self.df.equals(&other.df))?.into())
+            self.df.equals(&other.df).try_into()
         }
     }
 
