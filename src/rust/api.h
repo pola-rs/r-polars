@@ -133,6 +133,7 @@ SEXP savvy_PlRSeries_name__ffi(SEXP self__);
 SEXP savvy_PlRSeries_rename__ffi(SEXP self__, SEXP name);
 SEXP savvy_PlRSeries_dtype__ffi(SEXP self__);
 SEXP savvy_PlRSeries_equals__ffi(SEXP self__, SEXP other, SEXP check_dtypes, SEXP check_names, SEXP null_equal);
+SEXP savvy_PlRSeries_len__ffi(SEXP self__);
 SEXP savvy_PlRSeries_cast__ffi(SEXP self__, SEXP dtype, SEXP strict);
 SEXP savvy_PlRSeries_add__ffi(SEXP self__, SEXP other);
 SEXP savvy_PlRSeries_sub__ffi(SEXP self__, SEXP other);

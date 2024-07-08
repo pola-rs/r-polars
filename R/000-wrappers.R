@@ -1134,6 +1134,12 @@ class(`PlRLazyGroupBy`) <- "PlRLazyGroupBy__bundle"
   }
 }
 
+`PlRSeries_len` <- function(self) {
+  function() {
+    .Call(savvy_PlRSeries_len__impl, `self`)
+  }
+}
+
 `PlRSeries_cast` <- function(self) {
   function(`dtype`, `strict`) {
     `dtype` <- .savvy_extract_ptr(`dtype`, "PlRDataType")
@@ -1194,6 +1200,7 @@ class(`PlRLazyGroupBy`) <- "PlRLazyGroupBy__bundle"
   e$`rename` <- `PlRSeries_rename`(ptr)
   e$`dtype` <- `PlRSeries_dtype`(ptr)
   e$`equals` <- `PlRSeries_equals`(ptr)
+  e$`len` <- `PlRSeries_len`(ptr)
   e$`cast` <- `PlRSeries_cast`(ptr)
   e$`add` <- `PlRSeries_add`(ptr)
   e$`sub` <- `PlRSeries_sub`(ptr)

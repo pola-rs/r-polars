@@ -2,7 +2,7 @@ mod arithmetic;
 mod construction;
 mod export;
 use crate::{prelude::*, PlRDataFrame, PlRDataType, RPolarsErr};
-use savvy::{r_println, savvy, EnvironmentSexp, NumericSexp, OwnedLogicalSexp, Result, Sexp};
+use savvy::{r_println, savvy, EnvironmentSexp, NumericSexp, Result, Sexp};
 
 #[savvy]
 #[repr(transparent)]
@@ -98,18 +98,21 @@ impl PlRSeries {
         null_equal: bool,
     ) -> Result<Sexp> {
         if check_dtypes && (self.series.dtype() != other.series.dtype()) {
-            return Ok(OwnedLogicalSexp::try_from_scalar(false)?.into());
+            return false.try_into();
         }
         if check_names && (self.series.name() != other.series.name()) {
-            return Ok(OwnedLogicalSexp::try_from_scalar(false)?.into());
+            return false.try_into();
         }
 
-        let res = if null_equal {
-            self.series.equals_missing(&other.series)
+        if null_equal {
+            self.series.equals_missing(&other.series).try_into()
         } else {
-            self.series.equals(&other.series)
-        };
-        Ok(OwnedLogicalSexp::try_from_scalar(res)?.into())
+            self.series.equals(&other.series).try_into()
+        }
+    }
+
+    fn len(&self) -> Result<Sexp> {
+        (self.series.len() as i32).try_into()
     }
 
     fn cast(&self, dtype: PlRDataType, strict: bool) -> Result<Self> {

@@ -14,8 +14,9 @@ wrap.PlRSeries <- function(x) {
   self <- new.env(parent = emptyenv())
   self$`_s` <- x
 
-  makeActiveBinding("name", function() self$`_s`$name(), self)
   makeActiveBinding("dtype", function() self$`_s`$dtype() |> wrap(), self)
+  makeActiveBinding("name", function() self$`_s`$name(), self)
+  makeActiveBinding("shape", function() c(wrap(self$`_s`$len()), 1L), self)
 
   lapply(names(polars_series__methods), function(name) {
     fn <- polars_series__methods[[name]]
@@ -103,5 +104,10 @@ series__to_frame <- function(name = NULL) {
   PlRDataFrame$init(
     list(as_polars_series(self, name)$`_s`)
   ) |>
+    wrap()
+}
+
+series__len <- function() {
+  self$`_s`$len() |>
     wrap()
 }
