@@ -25,11 +25,6 @@ impl From<DataType> for PlRDataType {
 
 #[savvy]
 impl PlRDataType {
-    fn print(&self) -> Result<()> {
-        r_println!("{:?}", self.dt);
-        Ok(())
-    }
-
     pub fn new_from_name(name: &str) -> Result<Self> {
         name.try_into().map_err(savvy::Error::from)
     }
@@ -67,6 +62,19 @@ impl PlRDataType {
 
     pub fn new_list(inner: PlRDataType) -> Result<Self> {
         Ok(DataType::List(Box::new(inner.dt)).into())
+    }
+
+    fn print(&self) -> Result<()> {
+        r_println!("{:?}", self.dt);
+        Ok(())
+    }
+
+    fn eq(&self, other: &PlRDataType) -> Result<Sexp> {
+        (self.dt == other.dt).try_into()
+    }
+
+    fn ne(&self, other: &PlRDataType) -> Result<Sexp> {
+        (self.dt != other.dt).try_into()
     }
 
     fn is_temporal(&self) -> Result<Sexp> {

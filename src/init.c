@@ -149,11 +149,6 @@ SEXP savvy_PlRDataFrame_to_struct__impl(SEXP self__, SEXP name) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRDataType_print__impl(SEXP self__) {
-    SEXP res = savvy_PlRDataType_print__ffi(self__);
-    return handle_result(res);
-}
-
 SEXP savvy_PlRDataType_new_from_name__impl(SEXP name) {
     SEXP res = savvy_PlRDataType_new_from_name__ffi(name);
     return handle_result(res);
@@ -186,6 +181,21 @@ SEXP savvy_PlRDataType_new_enum__impl(SEXP categories) {
 
 SEXP savvy_PlRDataType_new_list__impl(SEXP inner) {
     SEXP res = savvy_PlRDataType_new_list__ffi(inner);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRDataType_print__impl(SEXP self__) {
+    SEXP res = savvy_PlRDataType_print__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRDataType_eq__impl(SEXP self__, SEXP other) {
+    SEXP res = savvy_PlRDataType_eq__ffi(self__, other);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRDataType_ne__impl(SEXP self__, SEXP other) {
+    SEXP res = savvy_PlRDataType_ne__ffi(self__, other);
     return handle_result(res);
 }
 
@@ -749,7 +759,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRDataFrame_equals__impl", (DL_FUNC) &savvy_PlRDataFrame_equals__impl, 3},
     {"savvy_PlRDataFrame_lazy__impl", (DL_FUNC) &savvy_PlRDataFrame_lazy__impl, 1},
     {"savvy_PlRDataFrame_to_struct__impl", (DL_FUNC) &savvy_PlRDataFrame_to_struct__impl, 2},
-    {"savvy_PlRDataType_print__impl", (DL_FUNC) &savvy_PlRDataType_print__impl, 1},
     {"savvy_PlRDataType_new_from_name__impl", (DL_FUNC) &savvy_PlRDataType_new_from_name__impl, 1},
     {"savvy_PlRDataType_new_decimal__impl", (DL_FUNC) &savvy_PlRDataType_new_decimal__impl, 2},
     {"savvy_PlRDataType_new_datetime__impl", (DL_FUNC) &savvy_PlRDataType_new_datetime__impl, 2},
@@ -757,6 +766,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRDataType_new_categorical__impl", (DL_FUNC) &savvy_PlRDataType_new_categorical__impl, 1},
     {"savvy_PlRDataType_new_enum__impl", (DL_FUNC) &savvy_PlRDataType_new_enum__impl, 1},
     {"savvy_PlRDataType_new_list__impl", (DL_FUNC) &savvy_PlRDataType_new_list__impl, 1},
+    {"savvy_PlRDataType_print__impl", (DL_FUNC) &savvy_PlRDataType_print__impl, 1},
+    {"savvy_PlRDataType_eq__impl", (DL_FUNC) &savvy_PlRDataType_eq__impl, 2},
+    {"savvy_PlRDataType_ne__impl", (DL_FUNC) &savvy_PlRDataType_ne__impl, 2},
     {"savvy_PlRDataType_is_temporal__impl", (DL_FUNC) &savvy_PlRDataType_is_temporal__impl, 1},
     {"savvy_PlRDataType_is_enum__impl", (DL_FUNC) &savvy_PlRDataType_is_enum__impl, 1},
     {"savvy_PlRDataType_is_categorical__impl", (DL_FUNC) &savvy_PlRDataType_is_categorical__impl, 1},

@@ -303,6 +303,20 @@ class(`PlRDataFrame`) <- "PlRDataFrame__bundle"
   }
 }
 
+`PlRDataType_eq` <- function(self) {
+  function(`other`) {
+    `other` <- .savvy_extract_ptr(`other`, "PlRDataType")
+    .Call(savvy_PlRDataType_eq__impl, `self`, `other`)
+  }
+}
+
+`PlRDataType_ne` <- function(self) {
+  function(`other`) {
+    `other` <- .savvy_extract_ptr(`other`, "PlRDataType")
+    .Call(savvy_PlRDataType_ne__impl, `self`, `other`)
+  }
+}
+
 `PlRDataType_is_temporal` <- function(self) {
   function() {
     .Call(savvy_PlRDataType_is_temporal__impl, `self`)
@@ -427,6 +441,8 @@ class(`PlRDataFrame`) <- "PlRDataFrame__bundle"
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
   e$`print` <- `PlRDataType_print`(ptr)
+  e$`eq` <- `PlRDataType_eq`(ptr)
+  e$`ne` <- `PlRDataType_ne`(ptr)
   e$`is_temporal` <- `PlRDataType_is_temporal`(ptr)
   e$`is_enum` <- `PlRDataType_is_enum`(ptr)
   e$`is_categorical` <- `PlRDataType_is_categorical`(ptr)

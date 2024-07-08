@@ -4,6 +4,11 @@
 polars_datatype__methods <- new.env(parent = emptyenv())
 
 #' @export
+is_polars_data_type <- function(x) {
+  inherits(x, "polars_data_type")
+}
+
+#' @export
 wrap.PlRDataType <- function(x) {
   self <- new.env(parent = emptyenv())
   self$`_dt` <- x
@@ -51,6 +56,24 @@ pl__Enum <- function(categories) {
 # TODO: check if inner is a polars data type
 pl__List <- function(inner) {
   PlRDataType$new_list(inner$`_dt`) |>
+    wrap()
+}
+
+datatype__eq <- function(other) {
+  if (!isTRUE(is_polars_data_type(other))) {
+    abort("`other` must be a polars data type")
+  }
+
+  self$`_dt`$eq(other$`_dt`) |>
+    wrap()
+}
+
+datatype__ne <- function(other) {
+  if (!isTRUE(is_polars_data_type(other))) {
+    abort("`other` must be a polars data type")
+  }
+
+  self$`_dt`$ne(other$`_dt`) |>
     wrap()
 }
 
