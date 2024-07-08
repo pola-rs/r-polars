@@ -4,9 +4,9 @@
       print(pl_series)
     Output
       shape: (1,)
-      Series: 'foo' [f64]
+      Series: 'foo' [i32]
       [
-      	1.0
+      	1
       ]
 
 # as_polars_series works for classes double
@@ -157,9 +157,9 @@
       print(pl_series)
     Output
       shape: (1,)
-      Series: '' [f64]
+      Series: '' [i32]
       [
-      	1.0
+      	1
       ]
 
 # as_polars_series works for classes data.frame
@@ -170,6 +170,6 @@
       shape: (1,)
       Series: '' [struct[1]]
       [
-      	{1.0}
+      	{1}
       ]
 
