@@ -1,6 +1,6 @@
 use crate::prelude::*;
 use polars_core::utils::arrow::array::Utf8ViewArray;
-use savvy::{r_println, savvy, NumericScalar, Result, Sexp, StringSexp};
+use savvy::{r_println, savvy, EnvironmentSexp, ListSexp, NumericScalar, Result, Sexp, StringSexp};
 
 // As not like in Python, define the data type class in
 // the Rust side, because defining class in R and converting
@@ -20,6 +20,18 @@ impl From<&DataType> for PlRDataType {
 impl From<DataType> for PlRDataType {
     fn from(dt: DataType) -> Self {
         Self { dt }
+    }
+}
+
+impl TryFrom<EnvironmentSexp> for &PlRDataType {
+    type Error = String;
+
+    fn try_from(env: EnvironmentSexp) -> std::result::Result<Self, String> {
+        let ptr = env
+            .get(".ptr")
+            .expect("Failed to get `.ptr` from the object")
+            .ok_or("The object is not a valid polars data type")?;
+        <&PlRDataType>::try_from(ptr).map_err(|e| e.to_string())
     }
 }
 
@@ -62,6 +74,10 @@ impl PlRDataType {
 
     pub fn new_list(inner: PlRDataType) -> Result<Self> {
         Ok(DataType::List(Box::new(inner.dt)).into())
+    }
+
+    pub fn new_struct(fields: ListSexp) -> Result<Self> {
+        Ok(DataType::Struct(<Wrap<Vec<Field>>>::try_from(fields)?.0).into())
     }
 
     fn print(&self) -> Result<()> {

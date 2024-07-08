@@ -515,6 +515,10 @@ class(`PlRDataFrame`) <- "PlRDataFrame__bundle"
   .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_new_list__impl, `inner`))
 }
 
+`PlRDataType`$`new_struct` <- function(`fields`) {
+  .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_new_struct__impl, `fields`))
+}
+
 
 class(`PlRDataType`) <- "PlRDataType__bundle"
 

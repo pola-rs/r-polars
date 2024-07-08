@@ -62,6 +62,13 @@ pl__List <- function(inner) {
     wrap()
 }
 
+pl__Struct <- function(...) {
+  list2(...) |>
+    lapply(\(x) x$`_dt`) |>
+    PlRDataType$new_struct() |>
+    wrap()
+}
+
 datatype__eq <- function(other) {
   if (!isTRUE(is_polars_data_type(other))) {
     abort("`other` must be a polars data type")
