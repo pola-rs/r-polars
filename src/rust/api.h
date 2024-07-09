@@ -1,6 +1,7 @@
 SEXP savvy_concat_df__ffi(SEXP dfs);
 SEXP savvy_col__ffi(SEXP name);
 SEXP savvy_cols__ffi(SEXP names);
+SEXP savvy_dtype_cols__ffi(SEXP dtypes);
 SEXP savvy_lit_from_bool__ffi(SEXP value);
 SEXP savvy_lit_from_i32__ffi(SEXP value);
 SEXP savvy_lit_from_f64__ffi(SEXP value);

@@ -3,7 +3,7 @@ use crate::expr::ToExprs;
 use crate::{PlRDataFrame, PlRExpr, PlRSeries, RPolarsErr};
 use polars::lazy::dsl;
 use polars::prelude::*;
-use savvy::{savvy, StringSexp};
+use savvy::{savvy, ListSexp, StringSexp};
 
 #[savvy]
 pub fn col(name: &str) -> savvy::Result<PlRExpr> {
@@ -14,6 +14,12 @@ pub fn col(name: &str) -> savvy::Result<PlRExpr> {
 pub fn cols(names: StringSexp) -> savvy::Result<PlRExpr> {
     let names = names.iter().collect::<Vec<_>>();
     Ok(dsl::cols(&names).into())
+}
+
+#[savvy]
+pub fn dtype_cols(dtypes: ListSexp) -> savvy::Result<PlRExpr> {
+    let dtypes = <Wrap<Vec<DataType>>>::try_from(dtypes)?.0;
+    Ok(dsl::dtype_cols(&dtypes).into())
 }
 
 #[savvy]

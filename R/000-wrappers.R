@@ -39,6 +39,11 @@ NULL
 }
 
 
+`dtype_cols` <- function(`dtypes`) {
+  .savvy_wrap_PlRExpr(.Call(savvy_dtype_cols__impl, `dtypes`))
+}
+
+
 `lit_from_bool` <- function(`value`) {
   .savvy_wrap_PlRExpr(.Call(savvy_lit_from_bool__impl, `value`))
 }

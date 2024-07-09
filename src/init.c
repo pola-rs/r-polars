@@ -49,6 +49,11 @@ SEXP savvy_cols__impl(SEXP names) {
     return handle_result(res);
 }
 
+SEXP savvy_dtype_cols__impl(SEXP dtypes) {
+    SEXP res = savvy_dtype_cols__ffi(dtypes);
+    return handle_result(res);
+}
+
 SEXP savvy_lit_from_bool__impl(SEXP value) {
     SEXP res = savvy_lit_from_bool__ffi(value);
     return handle_result(res);
@@ -749,6 +754,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_concat_df__impl", (DL_FUNC) &savvy_concat_df__impl, 1},
     {"savvy_col__impl", (DL_FUNC) &savvy_col__impl, 1},
     {"savvy_cols__impl", (DL_FUNC) &savvy_cols__impl, 1},
+    {"savvy_dtype_cols__impl", (DL_FUNC) &savvy_dtype_cols__impl, 1},
     {"savvy_lit_from_bool__impl", (DL_FUNC) &savvy_lit_from_bool__impl, 1},
     {"savvy_lit_from_i32__impl", (DL_FUNC) &savvy_lit_from_i32__impl, 1},
     {"savvy_lit_from_f64__impl", (DL_FUNC) &savvy_lit_from_f64__impl, 1},

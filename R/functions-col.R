@@ -1,18 +1,29 @@
 # TODO: support datatype input
 pl__col <- function(...) {
-  # TODO: check if dots is empty
-  dots <- list2(...)
+  check_dots_unnamed()
 
-  if (is.character(dots[[1]])) {
-    if (length(dots) == 1L && length(dots[[1]]) == 1L && !is.na(dots[[1]])) {
+  dots <- list2(...) |>
+    unlist(recursive = FALSE)
+
+  if (is.character(dots)) {
+    if (anyNA(dots)) {
+      abort("`NA` is not a valid column name")
+    }
+
+    if (length(dots) == 1L) {
       col(dots[[1]]) |>
         wrap()
     } else {
-      # TODO: NA_character_ should not be converted to "NA"
-      cols(unlist(dots)) |>
+      cols(dots) |>
         wrap()
     }
+  } else if (is_polars_data_type(dots[[1]])) {
+    dots |>
+      lapply(\(x) x$`_dt`) |>
+      dtype_cols() |>
+      wrap()
   } else {
-    abort("Only character input is supported now")
+    # TODO: error message improvement
+    abort("invalid input for `pl$col()`.")
   }
 }

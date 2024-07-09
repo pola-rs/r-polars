@@ -107,6 +107,21 @@ impl From<ListSexp> for Wrap<Vec<Expr>> {
     }
 }
 
+impl TryFrom<ListSexp> for Wrap<Vec<DataType>> {
+    type Error = savvy::Error;
+
+    fn try_from(list: ListSexp) -> Result<Self, savvy::Error> {
+        let dtypes = list
+            .values_iter()
+            .map(|sexp| match sexp.into_typed() {
+                TypedSexp::Environment(e) => Ok(<&PlRDataType>::try_from(e)?.dt.clone()),
+                _ => Err("Only accept a list of polars data types".to_string()),
+            })
+            .collect::<Result<Vec<_>, _>>()?;
+        Ok(Wrap(dtypes))
+    }
+}
+
 impl TryFrom<ListSexp> for Wrap<Vec<Field>> {
     type Error = savvy::Error;
 
