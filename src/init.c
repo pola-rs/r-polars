@@ -479,6 +479,11 @@ SEXP savvy_PlRExpr_cast__impl(SEXP self__, SEXP data_type, SEXP strict) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_sort_by__impl(SEXP self__, SEXP by, SEXP descending, SEXP nulls_last, SEXP multithreaded, SEXP maintain_order) {
+    SEXP res = savvy_PlRExpr_sort_by__ffi(self__, by, descending, nulls_last, multithreaded, maintain_order);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_and__impl(SEXP self__, SEXP other) {
     SEXP res = savvy_PlRExpr_and__ffi(self__, other);
     return handle_result(res);
@@ -840,6 +845,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_median__impl", (DL_FUNC) &savvy_PlRExpr_median__impl, 1},
     {"savvy_PlRExpr_sum__impl", (DL_FUNC) &savvy_PlRExpr_sum__impl, 1},
     {"savvy_PlRExpr_cast__impl", (DL_FUNC) &savvy_PlRExpr_cast__impl, 3},
+    {"savvy_PlRExpr_sort_by__impl", (DL_FUNC) &savvy_PlRExpr_sort_by__impl, 6},
     {"savvy_PlRExpr_and__impl", (DL_FUNC) &savvy_PlRExpr_and__impl, 2},
     {"savvy_PlRExpr_or__impl", (DL_FUNC) &savvy_PlRExpr_or__impl, 2},
     {"savvy_PlRExpr_xor__impl", (DL_FUNC) &savvy_PlRExpr_xor__impl, 2},

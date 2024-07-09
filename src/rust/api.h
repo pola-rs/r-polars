@@ -97,6 +97,7 @@ SEXP savvy_PlRExpr_mean__ffi(SEXP self__);
 SEXP savvy_PlRExpr_median__ffi(SEXP self__);
 SEXP savvy_PlRExpr_sum__ffi(SEXP self__);
 SEXP savvy_PlRExpr_cast__ffi(SEXP self__, SEXP data_type, SEXP strict);
+SEXP savvy_PlRExpr_sort_by__ffi(SEXP self__, SEXP by, SEXP descending, SEXP nulls_last, SEXP multithreaded, SEXP maintain_order);
 SEXP savvy_PlRExpr_and__ffi(SEXP self__, SEXP other);
 SEXP savvy_PlRExpr_or__ffi(SEXP self__, SEXP other);
 SEXP savvy_PlRExpr_xor__ffi(SEXP self__, SEXP other);

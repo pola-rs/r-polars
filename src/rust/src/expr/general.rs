@@ -1,6 +1,6 @@
 use crate::{prelude::*, PlRDataType, PlRExpr};
 use polars::lazy::dsl;
-use savvy::{r_println, savvy, NumericSexp, Result};
+use savvy::{r_println, savvy, ListSexp, LogicalSexp, NumericSexp, Result};
 use std::ops::Neg;
 
 #[savvy]
@@ -140,6 +140,30 @@ impl PlRExpr {
         };
 
         Ok(expr.into())
+    }
+
+    fn sort_by(
+        &self,
+        by: ListSexp,
+        descending: LogicalSexp,
+        nulls_last: LogicalSexp,
+        multithreaded: bool,
+        maintain_order: bool,
+    ) -> Result<Self> {
+        let by = <Wrap<Vec<Expr>>>::from(by).0;
+        Ok(self
+            .inner
+            .clone()
+            .sort_by(
+                by,
+                SortMultipleOptions {
+                    descending: descending.to_vec(),
+                    nulls_last: nulls_last.to_vec(),
+                    multithreaded,
+                    maintain_order,
+                },
+            )
+            .into())
     }
 
     fn and(&self, other: PlRExpr) -> Result<Self> {

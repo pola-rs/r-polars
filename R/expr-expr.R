@@ -202,6 +202,22 @@ expr__cast <- function(dtype, ..., strict = TRUE) {
     wrap()
 }
 
+expr__sort_by <- function(
+    ...,
+    descending = FALSE,
+    nulls_last = FALSE,
+    multithreaded = TRUE,
+    maintain_order = FALSE) {
+  check_dots_unnamed()
+
+  by <- parse_into_list_of_expressions(...)
+  descending <- extend_bool(descending, length(by), "descending", "...")
+  nulls_last <- extend_bool(nulls_last, length(by), "nulls_last", "...")
+
+  self$`_rexpr`$sort_by(by, descending, nulls_last, multithreaded, maintain_order) |>
+    wrap()
+}
+
 expr__and <- function(other) {
   other <- as_polars_expr(other)
   self$`_rexpr`$and(other$`_rexpr`) |>
