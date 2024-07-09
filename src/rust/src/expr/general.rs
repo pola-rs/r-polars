@@ -166,6 +166,47 @@ impl PlRExpr {
             .into())
     }
 
+    fn first(&self) -> Result<Self> {
+        Ok(self.inner.clone().first().into())
+    }
+
+    fn last(&self) -> Result<Self> {
+        Ok(self.inner.clone().last().into())
+    }
+
+    fn reverse(&self) -> Result<Self> {
+        Ok(self.inner.clone().reverse().into())
+    }
+
+    fn over(
+        &self,
+        partition_by: ListSexp,
+        order_by_descending: bool,
+        order_by_nulls_last: bool,
+        mapping_strategy: &str,
+        order_by: Option<ListSexp>,
+    ) -> Result<Self> {
+        let partition_by = <Wrap<Vec<Expr>>>::from(partition_by).0;
+        let order_by = order_by.map(|order_by| {
+            (
+                <Wrap<Vec<Expr>>>::from(order_by).0,
+                SortOptions {
+                    descending: order_by_descending,
+                    nulls_last: order_by_nulls_last,
+                    maintain_order: false,
+                    ..Default::default()
+                },
+            )
+        });
+        let mapping_strategy = <Wrap<WindowMapping>>::try_from(mapping_strategy)?.0;
+
+        Ok(self
+            .inner
+            .clone()
+            .over_with_options(partition_by, order_by, mapping_strategy)
+            .into())
+    }
+
     fn and(&self, other: PlRExpr) -> Result<Self> {
         Ok(self.inner.clone().and(other.inner).into())
     }

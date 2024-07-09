@@ -218,6 +218,40 @@ expr__sort_by <- function(
     wrap()
 }
 
+expr__reverse <- function() {
+  self$`_rexpr`$reverse() |>
+    wrap()
+}
+
+expr__first <- function() {
+  self$`_rexpr`$first() |>
+    wrap()
+}
+
+expr__last <- function() {
+  self$`_rexpr`$last() |>
+    wrap()
+}
+
+expr__over <- function(
+    ...,
+    order_by = NULL,
+    mapping_strategy = "group_to_rows") {
+  partition_by <- parse_into_list_of_expressions(...)
+  if (!is.null(order_by)) {
+    order_by <- parse_into_list_of_expressions(!!!order_by)
+  }
+
+  self$`_rexpr`$over(
+    partition_by,
+    order_by = order_by,
+    order_by_descending = FALSE, # does not work yet
+    order_by_nulls_last = FALSE, # does not work yet
+    mapping_strategy = mapping_strategy
+  ) |>
+    wrap()
+}
+
 expr__and <- function(other) {
   other <- as_polars_expr(other)
   self$`_rexpr`$and(other$`_rexpr`) |>

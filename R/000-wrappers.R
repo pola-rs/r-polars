@@ -766,6 +766,30 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
   }
 }
 
+`PlRExpr_first` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_first__impl, `self`))
+  }
+}
+
+`PlRExpr_last` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_last__impl, `self`))
+  }
+}
+
+`PlRExpr_reverse` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_reverse__impl, `self`))
+  }
+}
+
+`PlRExpr_over` <- function(self) {
+  function(`partition_by`, `order_by_descending`, `order_by_nulls_last`, `mapping_strategy`, `order_by` = NULL) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_over__impl, `self`, `partition_by`, `order_by_descending`, `order_by_nulls_last`, `mapping_strategy`, `order_by`))
+  }
+}
+
 `PlRExpr_and` <- function(self) {
   function(`other`) {
     `other` <- .savvy_extract_ptr(`other`, "PlRExpr")
@@ -924,6 +948,10 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
   e$`sum` <- `PlRExpr_sum`(ptr)
   e$`cast` <- `PlRExpr_cast`(ptr)
   e$`sort_by` <- `PlRExpr_sort_by`(ptr)
+  e$`first` <- `PlRExpr_first`(ptr)
+  e$`last` <- `PlRExpr_last`(ptr)
+  e$`reverse` <- `PlRExpr_reverse`(ptr)
+  e$`over` <- `PlRExpr_over`(ptr)
   e$`and` <- `PlRExpr_and`(ptr)
   e$`or` <- `PlRExpr_or`(ptr)
   e$`xor` <- `PlRExpr_xor`(ptr)

@@ -216,3 +216,21 @@ impl TryFrom<&str> for Wrap<NonExistent> {
         Ok(Wrap(parsed))
     }
 }
+
+impl TryFrom<&str> for Wrap<WindowMapping> {
+    type Error = String;
+
+    fn try_from(mapping_strategy: &str) -> Result<Self, String> {
+        let parsed = match mapping_strategy {
+            "group_to_rows" => WindowMapping::GroupsToRows,
+            "join" => WindowMapping::Join,
+            "explode" => WindowMapping::Explode,
+            v => {
+                return Err(format!(
+                "`mapping_strategy` must be one of ('group_to_rows', 'join', 'explode'), got '{v}'",
+            ))
+            }
+        };
+        Ok(Wrap(parsed))
+    }
+}

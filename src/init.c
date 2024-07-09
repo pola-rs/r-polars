@@ -484,6 +484,26 @@ SEXP savvy_PlRExpr_sort_by__impl(SEXP self__, SEXP by, SEXP descending, SEXP nul
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_first__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_first__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_last__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_last__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_reverse__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_reverse__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_over__impl(SEXP self__, SEXP partition_by, SEXP order_by_descending, SEXP order_by_nulls_last, SEXP mapping_strategy, SEXP order_by) {
+    SEXP res = savvy_PlRExpr_over__ffi(self__, partition_by, order_by_descending, order_by_nulls_last, mapping_strategy, order_by);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_and__impl(SEXP self__, SEXP other) {
     SEXP res = savvy_PlRExpr_and__ffi(self__, other);
     return handle_result(res);
@@ -846,6 +866,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_sum__impl", (DL_FUNC) &savvy_PlRExpr_sum__impl, 1},
     {"savvy_PlRExpr_cast__impl", (DL_FUNC) &savvy_PlRExpr_cast__impl, 3},
     {"savvy_PlRExpr_sort_by__impl", (DL_FUNC) &savvy_PlRExpr_sort_by__impl, 6},
+    {"savvy_PlRExpr_first__impl", (DL_FUNC) &savvy_PlRExpr_first__impl, 1},
+    {"savvy_PlRExpr_last__impl", (DL_FUNC) &savvy_PlRExpr_last__impl, 1},
+    {"savvy_PlRExpr_reverse__impl", (DL_FUNC) &savvy_PlRExpr_reverse__impl, 1},
+    {"savvy_PlRExpr_over__impl", (DL_FUNC) &savvy_PlRExpr_over__impl, 6},
     {"savvy_PlRExpr_and__impl", (DL_FUNC) &savvy_PlRExpr_and__impl, 2},
     {"savvy_PlRExpr_or__impl", (DL_FUNC) &savvy_PlRExpr_or__impl, 2},
     {"savvy_PlRExpr_xor__impl", (DL_FUNC) &savvy_PlRExpr_xor__impl, 2},
