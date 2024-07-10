@@ -80,3 +80,18 @@ dataframe__equals <- function(other, ..., null_equal = TRUE) {
 dataframe__cast <- function(..., strict = TRUE) {
   self$lazy()$cast(..., strict = strict)$collect()
 }
+
+dataframe__sort <- function(
+    ...,
+    descending = FALSE,
+    nulls_last = FALSE,
+    multithreaded = TRUE,
+    maintain_order = FALSE) {
+  self$lazy()$sort(
+    ...,
+    descending = descending,
+    nulls_last = nulls_last,
+    multithreaded = multithreaded,
+    maintain_order = maintain_order
+  )$collect()
+}

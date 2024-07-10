@@ -44,3 +44,25 @@ lazyframe__cast <- function(..., strict = TRUE) {
     self$`_ldf`$cast(strict) |>
     wrap()
 }
+
+lazyframe__sort <- function(
+    ...,
+    descending = FALSE,
+    nulls_last = FALSE,
+    multithreaded = TRUE,
+    maintain_order = FALSE) {
+  check_dots_unnamed()
+
+  by <- parse_into_list_of_expressions(...)
+  descending <- extend_bool(descending, length(by), "descending", "...")
+  nulls_last <- extend_bool(nulls_last, length(by), "nulls_last", "...")
+
+  self$`_ldf`$sort_by_exprs(
+    by,
+    descending = descending,
+    nulls_last = nulls_last,
+    multithreaded = multithreaded,
+    maintain_order = multithreaded
+  ) |>
+    wrap()
+}

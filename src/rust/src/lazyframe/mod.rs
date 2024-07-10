@@ -1,7 +1,5 @@
-use crate::prelude::*;
-use crate::{PlRDataFrame, PlRExpr, PlRLazyGroupBy, RPolarsErr};
-use polars_core::prelude::*;
-use savvy::{savvy, ListSexp, Result};
+use crate::{prelude::*, PlRDataFrame, PlRLazyGroupBy, RPolarsErr};
+use savvy::{savvy, ListSexp, LogicalSexp, Result};
 
 #[savvy]
 #[repr(transparent)]
@@ -53,5 +51,28 @@ impl PlRLazyFrame {
         let mut cast_map = PlHashMap::with_capacity(dtypes.len());
         cast_map.extend(dtypes.iter().map(|f| (f.name.as_ref(), f.dtype.clone())));
         Ok(self.ldf.clone().cast(cast_map, strict).into())
+    }
+
+    fn sort_by_exprs(
+        &self,
+        by: ListSexp,
+        descending: LogicalSexp,
+        nulls_last: LogicalSexp,
+        maintain_order: bool,
+        multithreaded: bool,
+    ) -> Result<Self> {
+        let ldf = self.ldf.clone();
+        let by = <Wrap<Vec<Expr>>>::from(by).0;
+        Ok(ldf
+            .sort_by_exprs(
+                by,
+                SortMultipleOptions {
+                    descending: descending.to_vec(),
+                    nulls_last: nulls_last.to_vec(),
+                    maintain_order,
+                    multithreaded,
+                },
+            )
+            .into())
     }
 }
