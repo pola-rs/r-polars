@@ -237,6 +237,8 @@ expr__over <- function(
     ...,
     order_by = NULL,
     mapping_strategy = "group_to_rows") {
+  check_dots_unnamed()
+
   partition_by <- parse_into_list_of_expressions(...)
   if (!is.null(order_by)) {
     order_by <- parse_into_list_of_expressions(!!!order_by)
