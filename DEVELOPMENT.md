@@ -206,7 +206,17 @@ One common function is `check_dots_empty0()`, which checks that `...` is empty.
 When using such functions, wrap the entire process with `wrap({})` and catch errors that occur on the R side with the `wrap()` function.
 This will display more informative error messages.
 
-For example, if you pass a value to `...` in the `any()` method of Expr defined as follows:
+Cases where we need to check that `...` is empty are when simulating methods with keyword-only arguments,
+such as the `Expr.any()` method in Python Polars below.
+
+```python
+class Expr:
+    # snip
+    def any(self, *, ignore_nulls: bool = True) -> Expr:
+        return self._from_pyexpr(self._pyexpr.any(ignore_nulls))
+```
+
+For example, if you pass a value to `...` in the `any()` method of Expr defined as follows in R Polars:
 
 ```r
 expr__any <- function(..., ignore_nulls = TRUE) {
@@ -227,5 +237,16 @@ pl$lit(1)$any(foo = 1)
 #> ! `...` must be empty.
 #> ✖ Problematic argument:
 #> • foo = 1
+#> Run `rlang::last_trace()` to see where the error occurred.
+```
+
+Note that `ignore_nulls` is directly passed to the Rust side and checked there, so there is no need to check it on the R side.
+
+```r
+pl$lit(1)$any(ignore_nulls = 1)
+#> Error:
+#> ! Evaluation failed in `$any()`.
+#> Caused by error:
+#> ! Argument `ignore_nulls` must be logical, not double
 #> Run `rlang::last_trace()` to see where the error occurred.
 ```
