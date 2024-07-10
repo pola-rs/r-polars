@@ -494,6 +494,11 @@ SEXP savvy_PlRExpr_last__impl(SEXP self__) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_filter__impl(SEXP self__, SEXP predicate) {
+    SEXP res = savvy_PlRExpr_filter__ffi(self__, predicate);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_reverse__impl(SEXP self__) {
     SEXP res = savvy_PlRExpr_reverse__ffi(self__);
     return handle_result(res);
@@ -873,6 +878,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_sort_by__impl", (DL_FUNC) &savvy_PlRExpr_sort_by__impl, 6},
     {"savvy_PlRExpr_first__impl", (DL_FUNC) &savvy_PlRExpr_first__impl, 1},
     {"savvy_PlRExpr_last__impl", (DL_FUNC) &savvy_PlRExpr_last__impl, 1},
+    {"savvy_PlRExpr_filter__impl", (DL_FUNC) &savvy_PlRExpr_filter__impl, 2},
     {"savvy_PlRExpr_reverse__impl", (DL_FUNC) &savvy_PlRExpr_reverse__impl, 1},
     {"savvy_PlRExpr_over__impl", (DL_FUNC) &savvy_PlRExpr_over__impl, 6},
     {"savvy_PlRExpr_and__impl", (DL_FUNC) &savvy_PlRExpr_and__impl, 2},

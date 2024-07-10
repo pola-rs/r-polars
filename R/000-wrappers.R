@@ -778,6 +778,13 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
   }
 }
 
+`PlRExpr_filter` <- function(self) {
+  function(`predicate`) {
+    `predicate` <- .savvy_extract_ptr(`predicate`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_filter__impl, `self`, `predicate`))
+  }
+}
+
 `PlRExpr_reverse` <- function(self) {
   function() {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_reverse__impl, `self`))
@@ -950,6 +957,7 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
   e$`sort_by` <- `PlRExpr_sort_by`(ptr)
   e$`first` <- `PlRExpr_first`(ptr)
   e$`last` <- `PlRExpr_last`(ptr)
+  e$`filter` <- `PlRExpr_filter`(ptr)
   e$`reverse` <- `PlRExpr_reverse`(ptr)
   e$`over` <- `PlRExpr_over`(ptr)
   e$`and` <- `PlRExpr_and`(ptr)

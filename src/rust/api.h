@@ -100,6 +100,7 @@ SEXP savvy_PlRExpr_cast__ffi(SEXP self__, SEXP data_type, SEXP strict);
 SEXP savvy_PlRExpr_sort_by__ffi(SEXP self__, SEXP by, SEXP descending, SEXP nulls_last, SEXP multithreaded, SEXP maintain_order);
 SEXP savvy_PlRExpr_first__ffi(SEXP self__);
 SEXP savvy_PlRExpr_last__ffi(SEXP self__);
+SEXP savvy_PlRExpr_filter__ffi(SEXP self__, SEXP predicate);
 SEXP savvy_PlRExpr_reverse__ffi(SEXP self__);
 SEXP savvy_PlRExpr_over__ffi(SEXP self__, SEXP partition_by, SEXP order_by_descending, SEXP order_by_nulls_last, SEXP mapping_strategy, SEXP order_by);
 SEXP savvy_PlRExpr_and__ffi(SEXP self__, SEXP other);

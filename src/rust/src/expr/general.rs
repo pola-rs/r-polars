@@ -174,6 +174,10 @@ impl PlRExpr {
         Ok(self.inner.clone().last().into())
     }
 
+    fn filter(&self, predicate: PlRExpr) -> Result<Self> {
+        Ok(self.inner.clone().filter(predicate.inner).into())
+    }
+
     fn reverse(&self) -> Result<Self> {
         Ok(self.inner.clone().reverse().into())
     }

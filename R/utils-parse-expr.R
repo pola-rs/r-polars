@@ -8,7 +8,8 @@ parse_into_list_of_expressions <- function(...) {
 #' Parse dynamic dots into a single expression (PlRExpr, not polars-expr)
 #' @noRd
 parse_predicates_constraints_into_expression <- function(...) {
-  # TODO: should not allow named arguments
+  check_dots_unnamed()
+
   expr <- list2(...) |>
     lapply(as_polars_expr) |>
     Reduce(`&`, x = _)

@@ -254,6 +254,12 @@ expr__over <- function(
     wrap()
 }
 
+expr__filter <- function(...) {
+  parse_predicates_constraints_into_expression(...) |>
+    self$`_rexpr`$filter() |>
+    wrap()
+}
+
 expr__and <- function(other) {
   other <- as_polars_expr(other)
   self$`_rexpr`$and(other$`_rexpr`) |>
