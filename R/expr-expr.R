@@ -208,14 +208,15 @@ expr__sort_by <- function(
     nulls_last = FALSE,
     multithreaded = TRUE,
     maintain_order = FALSE) {
-  check_dots_unnamed()
+  wrap({
+    check_dots_unnamed()
 
-  by <- parse_into_list_of_expressions(...)
-  descending <- extend_bool(descending, length(by), "descending", "...")
-  nulls_last <- extend_bool(nulls_last, length(by), "nulls_last", "...")
+    by <- parse_into_list_of_expressions(...)
+    descending <- extend_bool(descending, length(by), "descending", "...")
+    nulls_last <- extend_bool(nulls_last, length(by), "nulls_last", "...")
 
-  self$`_rexpr`$sort_by(by, descending, nulls_last, multithreaded, maintain_order) |>
-    wrap()
+    self$`_rexpr`$sort_by(by, descending, nulls_last, multithreaded, maintain_order)
+  })
 }
 
 expr__reverse <- function() {
@@ -237,21 +238,22 @@ expr__over <- function(
     ...,
     order_by = NULL,
     mapping_strategy = "group_to_rows") {
-  check_dots_unnamed()
+  wrap({
+    check_dots_unnamed()
 
-  partition_by <- parse_into_list_of_expressions(...)
-  if (!is.null(order_by)) {
-    order_by <- parse_into_list_of_expressions(!!!order_by)
-  }
+    partition_by <- parse_into_list_of_expressions(...)
+    if (!is.null(order_by)) {
+      order_by <- parse_into_list_of_expressions(!!!order_by)
+    }
 
-  self$`_rexpr`$over(
-    partition_by,
-    order_by = order_by,
-    order_by_descending = FALSE, # does not work yet
-    order_by_nulls_last = FALSE, # does not work yet
-    mapping_strategy = mapping_strategy
-  ) |>
-    wrap()
+    self$`_rexpr`$over(
+      partition_by,
+      order_by = order_by,
+      order_by_descending = FALSE, # does not work yet
+      order_by_nulls_last = FALSE, # does not work yet
+      mapping_strategy = mapping_strategy
+    )
+  })
 }
 
 expr__filter <- function(...) {
@@ -284,13 +286,15 @@ expr__reshape <- function(dimensions) {
 }
 
 expr__any <- function(..., ignore_nulls = TRUE) {
-  check_dots_empty0(...)
-  self$`_rexpr`$any(ignore_nulls) |>
-    wrap()
+  wrap({
+    check_dots_empty0(...)
+    self$`_rexpr`$any(ignore_nulls)
+  })
 }
 
 expr__all <- function(..., ignore_nulls = TRUE) {
-  check_dots_empty0(...)
-  self$`_rexpr`$all(ignore_nulls) |>
-    wrap()
+  wrap({
+    check_dots_empty0(...)
+    self$`_rexpr`$all(ignore_nulls)
+  })
 }

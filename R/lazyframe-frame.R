@@ -51,18 +51,19 @@ lazyframe__sort <- function(
     nulls_last = FALSE,
     multithreaded = TRUE,
     maintain_order = FALSE) {
-  check_dots_unnamed()
+  wrap({
+    check_dots_unnamed()
 
-  by <- parse_into_list_of_expressions(...)
-  descending <- extend_bool(descending, length(by), "descending", "...")
-  nulls_last <- extend_bool(nulls_last, length(by), "nulls_last", "...")
+    by <- parse_into_list_of_expressions(...)
+    descending <- extend_bool(descending, length(by), "descending", "...")
+    nulls_last <- extend_bool(nulls_last, length(by), "nulls_last", "...")
 
-  self$`_ldf`$sort_by_exprs(
-    by,
-    descending = descending,
-    nulls_last = nulls_last,
-    multithreaded = multithreaded,
-    maintain_order = multithreaded
-  ) |>
-    wrap()
+    self$`_ldf`$sort_by_exprs(
+      by,
+      descending = descending,
+      nulls_last = nulls_last,
+      multithreaded = multithreaded,
+      maintain_order = multithreaded
+    )
+  })
 }

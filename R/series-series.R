@@ -72,14 +72,15 @@ series__rename <- function(name) {
 }
 
 series__equals <- function(other, ..., check_dtypes = FALSE, check_names = FALSE, null_equal = FALSE) {
-  check_dots_empty0(...)
+  wrap({
+    check_dots_empty0(...)
 
-  if (!isTRUE(is_polars_series(other))) {
-    abort("`other` must be a polars series")
-  }
+    if (!isTRUE(is_polars_series(other))) {
+      abort("`other` must be a polars series")
+    }
 
-  self$`_s`$equals(other$`_s`, check_dtypes, check_names, null_equal) |>
-    wrap()
+    self$`_s`$equals(other$`_s`, check_dtypes, check_names, null_equal)
+  })
 }
 
 series__cast <- function(dtype, ..., strict = TRUE) {
