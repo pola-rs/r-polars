@@ -6,7 +6,6 @@ print.polars_expr <- function(x, ...) {
 
 #' @export
 `[.polars_struct_namespace` <- function(x, i, ...) {
-  # x$field_by_index(i)
   if (is.numeric(i)) {
     x$field_by_index(i)
   } else if (is.character(i)) {
