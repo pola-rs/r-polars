@@ -76,21 +76,37 @@ The basic classes such as `DataFrame`, `Series`, `Expr`, and `LazyFrame` have be
 and some functions work correctly.
 
 ```{r}
-df <- pl$DataFrame(
-  letters = c("c", "c", "a", "c", "a", "b"),
-  nrs = c(1, 2, 3, 4, 5, 6),
+df = pl$DataFrame(
+  A = 1:5,
+  fruits = c("banana", "banana", "apple", "apple", "banana"),
+  B = 5:1,
+  cars = c("beetle", "audi", "beetle", "beetle", "beetle"),
 )
-df
 
-df$group_by("letters", maintain_order = TRUE)$head(2) |>
-  as.data.frame()
+df$sort("fruits")$select(
+  "fruits",
+  "cars",
+  pl$lit("fruits")$alias("literal_string_fruits"),
+  pl$col("B")$filter(pl$col("cars") == "beetle")$sum(),
+  pl$col("A")$filter(pl$col("B") > 2)$sum()$over("cars")$alias("sum_A_by_cars"),
+  pl$col("A")$sum()$over("fruits")$alias("sum_A_by_fruits"),
+  pl$col("A")$reverse()$over("fruits")$alias("rev_A_by_fruits"),
+  pl$col("A")$sort_by("B")$over("fruits")$alias("sort_A_by_B_by_fruits"),
+)
 ```
 
 Errors is displayed in a way that is not as bad. (Thanks, @etiennebacher)
 
 ```{r}
 #| error: true
-pl$DataFrame(a = "a")$lazy()$select(pl$col("a")$cast(pl$Int8))$collect()
+# Error from the Rust side
+pl$DataFrame(a = "a")$cast(a = pl$Int8)
+```
+
+```{r}
+#| error: true
+# Error from the R side
+pl$DataFrame(a = "a")$sort(a = "a")
 ```
 
 The functionality to dispatch the methods of `Expr` to `Series` has also been implemented.

@@ -85,44 +85,58 @@ The basic classes such as `DataFrame`, `Series`, `Expr`, and `LazyFrame`
 have been implemented, and some functions work correctly.
 
 ``` r
-df <- pl$DataFrame(
-  letters = c("c", "c", "a", "c", "a", "b"),
-  nrs = c(1, 2, 3, 4, 5, 6),
+df = pl$DataFrame(
+  A = 1:5,
+  fruits = c("banana", "banana", "apple", "apple", "banana"),
+  B = 5:1,
+  cars = c("beetle", "audi", "beetle", "beetle", "beetle"),
 )
-df
-#> shape: (6, 2)
-#> ┌─────────┬─────┐
-#> │ letters ┆ nrs │
-#> │ ---     ┆ --- │
-#> │ str     ┆ f64 │
-#> ╞═════════╪═════╡
-#> │ c       ┆ 1.0 │
-#> │ c       ┆ 2.0 │
-#> │ a       ┆ 3.0 │
-#> │ c       ┆ 4.0 │
-#> │ a       ┆ 5.0 │
-#> │ b       ┆ 6.0 │
-#> └─────────┴─────┘
 
-df$group_by("letters", maintain_order = TRUE)$head(2) |>
-  as.data.frame()
-#>   letters nrs
-#> 1       c   1
-#> 2       c   2
-#> 3       a   3
-#> 4       a   5
-#> 5       b   6
+df$sort("fruits")$select(
+  "fruits",
+  "cars",
+  pl$lit("fruits")$alias("literal_string_fruits"),
+  pl$col("B")$filter(pl$col("cars") == "beetle")$sum(),
+  pl$col("A")$filter(pl$col("B") > 2)$sum()$over("cars")$alias("sum_A_by_cars"),
+  pl$col("A")$sum()$over("fruits")$alias("sum_A_by_fruits"),
+  pl$col("A")$reverse()$over("fruits")$alias("rev_A_by_fruits"),
+  pl$col("A")$sort_by("B")$over("fruits")$alias("sort_A_by_B_by_fruits"),
+)
+#> shape: (5, 8)
+#> ┌────────┬────────┬───────────────────────┬─────┬───────────────┬─────────────────┬─────────────────┬───────────────────────┐
+#> │ fruits ┆ cars   ┆ literal_string_fruits ┆ B   ┆ sum_A_by_cars ┆ sum_A_by_fruits ┆ rev_A_by_fruits ┆ sort_A_by_B_by_fruits │
+#> │ ---    ┆ ---    ┆ ---                   ┆ --- ┆ ---           ┆ ---             ┆ ---             ┆ ---                   │
+#> │ str    ┆ str    ┆ str                   ┆ i32 ┆ i32           ┆ i32             ┆ i32             ┆ i32                   │
+#> ╞════════╪════════╪═══════════════════════╪═════╪═══════════════╪═════════════════╪═════════════════╪═══════════════════════╡
+#> │ apple  ┆ beetle ┆ fruits                ┆ 11  ┆ 4             ┆ 7               ┆ 4               ┆ 4                     │
+#> │ apple  ┆ beetle ┆ fruits                ┆ 11  ┆ 4             ┆ 7               ┆ 3               ┆ 3                     │
+#> │ banana ┆ beetle ┆ fruits                ┆ 11  ┆ 4             ┆ 8               ┆ 5               ┆ 5                     │
+#> │ banana ┆ audi   ┆ fruits                ┆ 11  ┆ 2             ┆ 8               ┆ 2               ┆ 2                     │
+#> │ banana ┆ beetle ┆ fruits                ┆ 11  ┆ 4             ┆ 8               ┆ 1               ┆ 1                     │
+#> └────────┴────────┴───────────────────────┴─────┴───────────────┴─────────────────┴─────────────────┴───────────────────────┘
 ```
 
 Errors is displayed in a way that is not as bad. (Thanks,
 @etiennebacher)
 
 ``` r
-pl$DataFrame(a = "a")$lazy()$select(pl$col("a")$cast(pl$Int8))$collect()
+# Error from the Rust side
+pl$DataFrame(a = "a")$cast(a = pl$Int8)
 #> Error:
 #> ! Evaluation failed in `$collect()`.
 #> Caused by error:
-#> ! ComputeError(ErrString("conversion from `str` to `i8` failed in column 'a' for 1 out of 1 values: [\"a\"]"))
+#> ! InvalidOperation(ErrString("conversion from `str` to `i8` failed in column 'a' for 1 out of 1 values: [\"a\"]"))
+```
+
+``` r
+# Error from the R side
+pl$DataFrame(a = "a")$sort(a = "a")
+#> Error:
+#> ! Evaluation failed in `$sort()`.
+#> Caused by error:
+#> ! Arguments in `...` must be passed by position, not name.
+#> ✖ Problematic argument:
+#> • a = "a"
 ```
 
 The functionality to dispatch the methods of `Expr` to `Series` has also
@@ -137,7 +151,7 @@ s$struct$field
 #>     expr <- do.call(fn, as.list(match.call()[-1]), envir = parent.frame())
 #>     wrap(`_s`)$to_frame()$select(expr)$to_series()
 #> }
-#> <environment: 0x562bfc271f40>
+#> <environment: 0x562880fa0b58>
 
 s$struct$field("am")
 #> shape: (32,)
