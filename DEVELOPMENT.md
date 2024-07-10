@@ -197,3 +197,35 @@ impl From<ListSexp> for Wrap<Vec<Expr>> {
     }
 }
 ```
+
+### Argument check on the R side
+
+Want to check arguments on the R side, use functions from the imported `rlang` package.
+One common function is `check_dots_empty0()`, which checks that `...` is empty.
+
+When using such functions, wrap the entire process with `wrap({})` and catch errors that occur on the R side with the `wrap()` function.
+This will display more informative error messages.
+
+For example, if you pass a value to `...` in the `any()` method of Expr defined as follows:
+
+```r
+expr__any <- function(..., ignore_nulls = TRUE) {
+  wrap({
+    check_dots_empty0(...)
+    self$`_rexpr`$any(ignore_nulls)
+  })
+}
+```
+
+Display an error message like this:
+
+```r
+pl$lit(1)$any(foo = 1)
+#> Error:
+#> ! Evaluation failed in `$any()`.
+#> Caused by error:
+#> ! `...` must be empty.
+#> ✖ Problematic argument:
+#> • foo = 1
+#> Run `rlang::last_trace()` to see where the error occurred.
+```
