@@ -1,5 +1,5 @@
 use super::*;
-use crate::{error::RPolarsErr, series::ToRSeries, PlRLazyFrame, PlRSeries};
+use crate::{series::ToRSeries, PlRDataType, PlRLazyFrame, PlRSeries, RPolarsErr};
 use savvy::{
     r_println, savvy, ListSexp, NumericScalar, OwnedIntegerSexp, OwnedListSexp, Result, Sexp,
     TypedSexp,
@@ -41,6 +41,20 @@ impl PlRDataFrame {
                 cols[i].series.name(),
                 Sexp::try_from(cols[i].clone()?)?,
             );
+        }
+        Ok(list.into())
+    }
+
+    pub fn dtypes(&self) -> Result<Sexp> {
+        let iter = self
+            .df
+            .iter()
+            .map(|s| <PlRDataType>::from(s.dtype().clone()));
+        let mut list = OwnedListSexp::new(self.df.width(), false)?;
+        for (i, dtype) in iter.enumerate() {
+            unsafe {
+                let _ = list.set_value_unchecked(i, Sexp::try_from(dtype)?.0);
+            }
         }
         Ok(list.into())
     }

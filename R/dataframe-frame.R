@@ -11,6 +11,11 @@ wrap.PlRDataFrame <- function(x) {
   self <- new.env(parent = emptyenv())
   self$`_df` <- x
 
+  # TODO: columns, flags, schema
+  makeActiveBinding("dtypes", function() {
+    self$`_df`$dtypes() |>
+      lapply(\(x) .savvy_wrap_PlRDataType(x) |> wrap())
+  }, self)
   makeActiveBinding("shape", function() self$`_df`$shape(), self)
   makeActiveBinding("height", function() self$`_df`$height(), self)
   makeActiveBinding("width", function() self$`_df`$width(), self)

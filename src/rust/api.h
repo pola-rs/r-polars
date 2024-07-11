@@ -21,6 +21,7 @@ SEXP savvy_PlRChainedWhen_then__ffi(SEXP self__, SEXP statement);
 SEXP savvy_PlRDataFrame_init__ffi(SEXP columns);
 SEXP savvy_PlRDataFrame_print__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_get_columns__ffi(SEXP self__);
+SEXP savvy_PlRDataFrame_dtypes__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_shape__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_height__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_width__ffi(SEXP self__);
