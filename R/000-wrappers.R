@@ -204,6 +204,12 @@ class(`PlRChainedWhen`) <- "PlRChainedWhen__bundle"
   }
 }
 
+`PlRDataFrame_columns` <- function(self) {
+  function() {
+    .Call(savvy_PlRDataFrame_columns__impl, `self`)
+  }
+}
+
 `PlRDataFrame_dtypes` <- function(self) {
   function() {
     .Call(savvy_PlRDataFrame_dtypes__impl, `self`)
@@ -258,6 +264,7 @@ class(`PlRChainedWhen`) <- "PlRChainedWhen__bundle"
   e$.ptr <- ptr
   e$`print` <- `PlRDataFrame_print`(ptr)
   e$`get_columns` <- `PlRDataFrame_get_columns`(ptr)
+  e$`columns` <- `PlRDataFrame_columns`(ptr)
   e$`dtypes` <- `PlRDataFrame_dtypes`(ptr)
   e$`shape` <- `PlRDataFrame_shape`(ptr)
   e$`height` <- `PlRDataFrame_height`(ptr)

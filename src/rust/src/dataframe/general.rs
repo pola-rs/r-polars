@@ -45,6 +45,10 @@ impl PlRDataFrame {
         Ok(list.into())
     }
 
+    pub fn columns(&self) -> Result<Sexp> {
+        self.df.get_column_names().try_into()
+    }
+
     pub fn dtypes(&self) -> Result<Sexp> {
         let iter = self
             .df
