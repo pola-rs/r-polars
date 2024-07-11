@@ -1,4 +1,3 @@
-# TODO: check dtype
 patrick::with_parameters_test_that(
   "as_polars_series works for classes",
   .cases = {
