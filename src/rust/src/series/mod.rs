@@ -23,17 +23,6 @@ impl PlRSeries {
     }
 }
 
-pub(crate) trait ToRSeries {
-    fn to_r_series(self) -> Vec<PlRSeries>;
-}
-
-impl ToRSeries for Vec<Series> {
-    fn to_r_series(self) -> Vec<PlRSeries> {
-        // SAFETY: repr is transparent.
-        unsafe { std::mem::transmute(self) }
-    }
-}
-
 impl From<EnvironmentSexp> for &PlRSeries {
     fn from(env: EnvironmentSexp) -> Self {
         let ptr = env.get(".ptr").unwrap().unwrap();

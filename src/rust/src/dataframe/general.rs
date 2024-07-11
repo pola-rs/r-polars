@@ -1,5 +1,5 @@
 use super::*;
-use crate::{series::ToRSeries, PlRDataType, PlRLazyFrame, PlRSeries, RPolarsErr};
+use crate::{PlRDataType, PlRLazyFrame, PlRSeries, RPolarsErr};
 use savvy::{
     r_println, savvy, ListSexp, NumericScalar, OwnedIntegerSexp, OwnedListSexp, Result, Sexp,
     TypedSexp,
@@ -32,14 +32,14 @@ impl PlRDataFrame {
     }
 
     pub fn get_columns(&self) -> Result<Sexp> {
-        let cols = self.df.get_columns().to_owned().to_r_series();
+        let cols = self.df.get_columns();
         let len = cols.len();
         let mut list = OwnedListSexp::new(len, true)?;
         for i in 0..len {
             let _ = list.set_name_and_value(
                 i,
-                cols[i].series.name(),
-                Sexp::try_from(cols[i].clone()?)?,
+                cols[i].name(),
+                Sexp::try_from(PlRSeries::from(cols[i].clone()))?,
             );
         }
         Ok(list.into())
