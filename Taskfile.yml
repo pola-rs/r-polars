@@ -119,3 +119,8 @@ tasks:
       - build-documents
     cmds:
       - R CMD INSTALL --no-multiarch --with-keep.source .
+
+  test-snapshot-accept:
+    desc: Accept all test snapshots. (Shortcut to accept snapshots after running tests)
+    cmds:
+      - Rscript -e 'testthat::snapshot_accept()'
