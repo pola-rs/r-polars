@@ -14,7 +14,6 @@ vars:
 
 # TODO: setup tools
 # TODO: lint, auto format
-# TODO: update standalone files
 
 tasks:
   build-rust:
