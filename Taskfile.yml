@@ -31,6 +31,19 @@ tasks:
       - savvy-cli update .
       - Rscript -e 'pkgbuild::compile_dll()'
 
+  build-standalone-files:
+    desc: Update "standalone" R files by `usethis::use_standalone()`
+    generates:
+      - R/import-standalone-*.R
+    vars:
+      STANDALONE_FILES:
+        - types-check
+        - s3-register
+    cmds:
+      - for:
+          var: STANDALONE_FILES
+        cmd: Rscript -e 'usethis::use_standalone("r-lib/rlang", "{{.ITEM}}")'
+
   build-documents:
     desc: Build the R package and generate documents.
     sources:
@@ -42,6 +55,7 @@ tasks:
       - Rscript -e 'if (desc::desc_get("RoxygenNote") < packageVersion("roxygen2")) quit(status = 1)'
     deps:
       - build-rust
+      - build-standalone-files
     cmds:
       - Rscript -e 'devtools::document()'
 
