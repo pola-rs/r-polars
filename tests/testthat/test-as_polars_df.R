@@ -13,3 +13,7 @@ patrick::with_parameters_test_that(
     expect_snapshot(print(pl_df))
   }
 )
+
+test_that("as_polars_df.default throws an error", {
+  expect_error(as_polars_df(1), "Unsupported class")
+})
