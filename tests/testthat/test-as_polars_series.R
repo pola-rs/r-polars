@@ -32,7 +32,6 @@ patrick::with_parameters_test_that(
     expect_equal(pl_series$name, expected_name)
     expect_true(pl_series$dtype$eq(expected_dtype))
 
-    pl_series <- as_polars_series(x, name = "bar")
-    expect_equal(pl_series$name, "bar")
+    expect_equal(as_polars_series(x, name = "bar")$name, "bar")
   }
 )
