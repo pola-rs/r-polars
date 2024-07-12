@@ -66,4 +66,9 @@ lapply(names(POLARS_STORE_ENVS), function(name) {
     lapply(function(name) {
       makeActiveBinding(name, function() PlRDataType$new_from_name(name) |> wrap(), pl)
     })
+
+  # Register S3 methods for optional packages
+  s3_register("waldo::compare_proxy", "polars_data_type")
+  s3_register("waldo::compare_proxy", "polars_series")
+  s3_register("waldo::compare_proxy", "polars_data_frame")
 }
