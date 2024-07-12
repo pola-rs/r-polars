@@ -1,0 +1,108 @@
+version: "3"
+
+env:
+  NOT_CRAN: "true"
+  LIBR_POLARS_BUILD: "true"
+  DEBUG: "true"
+
+vars:
+  MANIFEST: src/rust/Cargo.toml
+  CARGO_LOCK: src/rust/Cargo.lock
+  R_SOURCE: R/*
+  VIGNETTES: vignettes/**/*.Rmd
+  RUST_SOURCE: src/rust/src/**/*.rs
+
+# TODO: setup tools
+# TODO: lint, auto format
+# TODO: update standalone files
+
+tasks:
+  build-rust:
+    desc: Build the Rust library wrappers.
+    sources:
+      - src/Makevars*
+      - configure*
+      - "{{.MANIFEST}}"
+      - "{{.CARGO_LOCK}}"
+      - "{{.RUST_SOURCE}}"
+    generates:
+      - R/000-wrappers.R
+    cmds:
+      - savvy-cli update .
+      - Rscript -e 'pkgbuild::compile_dll()'
+
+  build-documents:
+    desc: Build the R package and generate documents.
+    sources:
+      - DESCRIPTION
+      - "{{.R_SOURCE}}"
+    generates:
+      - man/*.Rd
+    status:
+      - Rscript -e 'if (desc::desc_get("RoxygenNote") < packageVersion("roxygen2")) quit(status = 1)'
+    deps:
+      - build-rust
+    cmds:
+      - Rscript -e 'devtools::document()'
+
+  build-all:
+    desc: Build the R package, generate documents, run all tests, and update files.
+    deps:
+      - build-documents
+    cmds:
+      - task: test-all
+      - task: build-readme
+
+  test-all:
+    desc: Run all tests.
+    cmds:
+      - task: test-source
+
+  test-source:
+    desc: Run all tests for source.
+    internal: true
+    sources:
+      - tests/**/*
+      - "{{.R_SOURCE}}"
+      - src/Makevars*
+      - configure*
+      - "{{.MANIFEST}}"
+      - "{{.CARGO_LOCK}}"
+      - "{{.RUST_SOURCE}}"
+    cmds:
+      - Rscript -e 'devtools::test()'
+
+  build-readme:
+    internal: true
+    desc: Build README.md
+    sources:
+      - README.Rmd
+      - "{{.R_SOURCE}}"
+      - src/Makevars*
+      - configure*
+      - "{{.MANIFEST}}"
+      - "{{.CARGO_LOCK}}"
+      - "{{.RUST_SOURCE}}"
+    generates:
+      - README.md
+    deps:
+      - build-rust
+    cmds:
+      - Rscript -e
+        'devtools::load_all();
+        rmarkdown::render(input = "README.Rmd", output_file = "README.md")'
+
+  install-package:
+    desc: Install the R package.
+    sources:
+      - DESCRIPTION
+      - "{{.R_SOURCE}}"
+      - src/Makevars*
+      - configure*
+      - "{{.MANIFEST}}"
+      - "{{.CARGO_LOCK}}"
+      - "{{.RUST_SOURCE}}"
+    deps:
+      - build-documents
+    cmds:
+      - R CMD INSTALL --no-multiarch --with-keep.source .

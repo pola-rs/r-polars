@@ -1,5 +1,7 @@
 ^\.devcontainer$
 ^LICENSE\.md$
+^\.task$
+^Taskfile\.yml$
 
 ^src/rust/.cargo$
 ^src/rust/target$
