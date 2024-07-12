@@ -15,32 +15,32 @@ assign_objects_to_env <- function(env, obj_name_pattern, ..., search_env = paren
 }
 
 POLARS_STORE_ENVS <- list(
-  "^pl__" = pl,
-  "^cs__" = cs,
-  "^pl_api_" = pl__api,
-  "^datatype__" = polars_datatype__methods,
-  "^namespace_expr_" = polars_namespaces_expr,
-  "^expr__" = polars_expr__methods,
-  "^expr_dt_" = polars_expr_dt_methods,
-  "^expr_meta_" = polars_expr_meta_methods,
-  "^expr_name_" = polars_expr_name_methods,
-  "^expr_struct_" = polars_expr_struct_methods,
-  "^then__" = polars_then__methods,
-  "^chainedthen__" = polars_chainedthen__methods,
-  "^selector__" = polars_selector__methods,
-  "^namespace_series_" = polars_namespaces_series,
-  "^series__" = polars_series__methods,
-  "^series_struct_" = polars_series_struct_methods,
-  "^lazyframe__" = polars_lazyframe__methods,
-  "^lazygroupby__" = polars_lazygroupby__methods,
-  "^dataframe__" = polars_dataframe__methods,
-  "^groupby__" = polars_groupby__methods
+  "pl__" = pl,
+  "cs__" = cs,
+  "pl_api_" = pl__api,
+  "datatype__" = polars_datatype__methods,
+  "namespace_expr_" = polars_namespaces_expr,
+  "expr__" = polars_expr__methods,
+  "expr_dt_" = polars_expr_dt_methods,
+  "expr_meta_" = polars_expr_meta_methods,
+  "expr_name_" = polars_expr_name_methods,
+  "expr_struct_" = polars_expr_struct_methods,
+  "then__" = polars_then__methods,
+  "chainedthen__" = polars_chainedthen__methods,
+  "selector__" = polars_selector__methods,
+  "namespace_series_" = polars_namespaces_series,
+  "series__" = polars_series__methods,
+  "series_struct_" = polars_series_struct_methods,
+  "lazyframe__" = polars_lazyframe__methods,
+  "lazygroupby__" = polars_lazygroupby__methods,
+  "dataframe__" = polars_dataframe__methods,
+  "groupby__" = polars_groupby__methods
 )
 
 lapply(names(POLARS_STORE_ENVS), function(name) {
   target_env <- POLARS_STORE_ENVS[[name]]
   class(target_env) <- c("polars_object")
-  assign_objects_to_env(POLARS_STORE_ENVS[[name]], name, search_env = parent.frame(2L))
+  assign_objects_to_env(POLARS_STORE_ENVS[[name]], sprintf("^%s", name), search_env = parent.frame(2L))
 })
 
 .onLoad <- function(libname, pkgname) {
