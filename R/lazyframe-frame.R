@@ -67,3 +67,9 @@ lazyframe__sort <- function(
     )
   })
 }
+
+lazyframe__with_columns <- function(...) {
+  parse_into_list_of_expressions(...) |>
+    self$`_ldf`$with_columns() |>
+    wrap()
+}

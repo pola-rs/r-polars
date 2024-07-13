@@ -68,6 +68,10 @@ dataframe__select <- function(...) {
   self$lazy()$select(...)$collect()
 }
 
+dataframe__with_columns <- function(...) {
+  self$lazy()$with_columns(...)$collect()
+}
+
 dataframe__to_series <- function(index = 0) {
   self$`_df`$to_series(index) |>
     wrap()

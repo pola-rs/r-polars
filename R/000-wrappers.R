@@ -1084,6 +1084,12 @@ class(`PlRExpr`) <- "PlRExpr__bundle"
   }
 }
 
+`PlRLazyFrame_with_columns` <- function(self) {
+  function(`exprs`) {
+    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_with_columns__impl, `self`, `exprs`))
+  }
+}
+
 `.savvy_wrap_PlRLazyFrame` <- function(ptr) {
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
@@ -1092,6 +1098,7 @@ class(`PlRExpr`) <- "PlRExpr__bundle"
   e$`collect` <- `PlRLazyFrame_collect`(ptr)
   e$`cast` <- `PlRLazyFrame_cast`(ptr)
   e$`sort_by_exprs` <- `PlRLazyFrame_sort_by_exprs`(ptr)
+  e$`with_columns` <- `PlRLazyFrame_with_columns`(ptr)
 
   class(e) <- "PlRLazyFrame"
   e

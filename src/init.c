@@ -659,6 +659,11 @@ SEXP savvy_PlRLazyFrame_sort_by_exprs__impl(SEXP self__, SEXP by, SEXP descendin
     return handle_result(res);
 }
 
+SEXP savvy_PlRLazyFrame_with_columns__impl(SEXP self__, SEXP exprs) {
+    SEXP res = savvy_PlRLazyFrame_with_columns__ffi(self__, exprs);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRLazyGroupBy_agg__impl(SEXP self__, SEXP aggs) {
     SEXP res = savvy_PlRLazyGroupBy_agg__ffi(self__, aggs);
     return handle_result(res);
@@ -941,6 +946,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRLazyFrame_collect__impl", (DL_FUNC) &savvy_PlRLazyFrame_collect__impl, 1},
     {"savvy_PlRLazyFrame_cast__impl", (DL_FUNC) &savvy_PlRLazyFrame_cast__impl, 3},
     {"savvy_PlRLazyFrame_sort_by_exprs__impl", (DL_FUNC) &savvy_PlRLazyFrame_sort_by_exprs__impl, 6},
+    {"savvy_PlRLazyFrame_with_columns__impl", (DL_FUNC) &savvy_PlRLazyFrame_with_columns__impl, 2},
     {"savvy_PlRLazyGroupBy_agg__impl", (DL_FUNC) &savvy_PlRLazyGroupBy_agg__impl, 2},
     {"savvy_PlRLazyGroupBy_head__impl", (DL_FUNC) &savvy_PlRLazyGroupBy_head__impl, 2},
     {"savvy_PlRLazyGroupBy_tail__impl", (DL_FUNC) &savvy_PlRLazyGroupBy_tail__impl, 2},

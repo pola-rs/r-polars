@@ -75,4 +75,10 @@ impl PlRLazyFrame {
             )
             .into())
     }
+
+    fn with_columns(&mut self, exprs: ListSexp) -> Result<Self> {
+        let ldf = self.ldf.clone();
+        let exprs = <Wrap<Vec<Expr>>>::from(exprs).0;
+        Ok(ldf.with_columns(exprs).into())
+    }
 }
