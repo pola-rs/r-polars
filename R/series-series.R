@@ -1,3 +1,37 @@
+# TODO: link to data type docs
+# TODO: name spaces
+#' Polars Series class
+#'
+#' Series are a 1-dimensional data structure, which are similar to [R vectors][vector].
+#' Within a series all elements have the same Data Type.
+#'
+#' The `pl$Series()` function mimics the constructor of the Series class in Python Polars.
+#' This function calls [as_polars_series()] internally to convert the input object to a Polars Series.
+#' @aliases polars_series
+#' @section Active bindings:
+#' - `dtype`: `$dtype` returns the data type of the Series.
+#' - `name`: `$name` returns the name of the Series.
+#' - `shape`: `$shape` returns a integer vector of length two with the number of length
+#'   of the Series and width of the Series (always 1).
+#' @inheritParams as_polars_series
+#' @param values An R object. Passed as the `x` param of [as_polars_series()].
+#' @seealso
+#' - [as_polars_series()]
+#' @examples
+#' # Constructing a Series by specifying name and values positionally:
+#' s <- pl$Series("a", 1:3)
+#' s
+#'
+#' # Active bindings:
+#' s$dtype
+#' s$name
+#' s$shape
+pl__Series <- function(name = NULL, values = NULL) {
+  wrap({
+    as_polars_series(values, name = name)
+  })
+}
+
 # The env storing series namespaces
 polars_namespaces_series <- new.env(parent = emptyenv())
 
