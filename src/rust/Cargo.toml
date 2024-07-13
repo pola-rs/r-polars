@@ -11,9 +11,11 @@ crate-type = ["staticlib", "lib"]
 panic = "unwind"
 
 [dependencies]
-savvy = "0.6.4"
+ciborium = "0.2"
 polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "f73937ab5213a44eaaba8cfc799d8f837600f179", default-features = false }
 polars-error = { git = "https://github.com/pola-rs/polars.git", rev = "f73937ab5213a44eaaba8cfc799d8f837600f179", default-features = false }
+savvy = "0.6.4"
+serde_json = "1"
 thiserror = "1"
 
 [dependencies.polars]
@@ -21,9 +23,12 @@ git = "https://github.com/pola-rs/polars.git"
 rev = "f73937ab5213a44eaaba8cfc799d8f837600f179"
 features = [
     "dtype-full",
+    "json",
     "lazy",
     "meta",
     "propagate_nans",
+    "serde",
+    "serde-lazy",
     "temporal",
     "timezones",
 ]

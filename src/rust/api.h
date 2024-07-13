@@ -122,6 +122,10 @@ SEXP savvy_PlRExpr_name_to_lowercase__ffi(SEXP self__);
 SEXP savvy_PlRExpr_name_to_uppercase__ffi(SEXP self__);
 SEXP savvy_PlRExpr_name_prefix_fields__ffi(SEXP self__, SEXP prefix);
 SEXP savvy_PlRExpr_name_suffix_fields__ffi(SEXP self__, SEXP suffix);
+SEXP savvy_PlRExpr_serialize_binary__ffi(SEXP self__);
+SEXP savvy_PlRExpr_serialize_json__ffi(SEXP self__);
+SEXP savvy_PlRExpr_deserialize_binary__ffi(SEXP data);
+SEXP savvy_PlRExpr_deserialize_json__ffi(SEXP data);
 SEXP savvy_PlRExpr_struct_field_by_index__ffi(SEXP self__, SEXP index);
 SEXP savvy_PlRExpr_struct_field_by_name__ffi(SEXP self__, SEXP name);
 

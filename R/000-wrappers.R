@@ -919,6 +919,18 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
   }
 }
 
+`PlRExpr_serialize_binary` <- function(self) {
+  function() {
+    .Call(savvy_PlRExpr_serialize_binary__impl, `self`)
+  }
+}
+
+`PlRExpr_serialize_json` <- function(self) {
+  function() {
+    .Call(savvy_PlRExpr_serialize_json__impl, `self`)
+  }
+}
+
 `PlRExpr_struct_field_by_index` <- function(self) {
   function(`index`) {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_struct_field_by_index__impl, `self`, `index`))
@@ -991,6 +1003,8 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
   e$`name_to_uppercase` <- `PlRExpr_name_to_uppercase`(ptr)
   e$`name_prefix_fields` <- `PlRExpr_name_prefix_fields`(ptr)
   e$`name_suffix_fields` <- `PlRExpr_name_suffix_fields`(ptr)
+  e$`serialize_binary` <- `PlRExpr_serialize_binary`(ptr)
+  e$`serialize_json` <- `PlRExpr_serialize_json`(ptr)
   e$`struct_field_by_index` <- `PlRExpr_struct_field_by_index`(ptr)
   e$`struct_field_by_name` <- `PlRExpr_struct_field_by_name`(ptr)
 
@@ -1016,6 +1030,13 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
 
 ### associated functions for PlRExpr
 
+`PlRExpr`$`deserialize_binary` <- function(`data`) {
+  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_deserialize_binary__impl, `data`))
+}
+
+`PlRExpr`$`deserialize_json` <- function(`data`) {
+  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_deserialize_json__impl, `data`))
+}
 
 
 class(`PlRExpr`) <- "PlRExpr__bundle"

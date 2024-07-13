@@ -28,6 +28,23 @@ wrap.PlRExpr <- function(x) {
   self
 }
 
+pl__deserialize_expr <- function(data, ..., format = "binary") {
+  wrap({
+    check_dots_empty0(...)
+    check_string(format)
+
+    if (format == "binary") {
+      PlRExpr$deserialize_binary(data)
+    } else if (format == "json") {
+      PlRExpr$deserialize_json(data)
+    } else {
+      abort(
+        sprintf("`format` must be one of ('binary', 'json'), got '%s'", format)
+      )
+    }
+  })
+}
+
 expr__add <- function(other) {
   other <- as_polars_expr(other)
   self$`_rexpr`$add(other$`_rexpr`) |>
