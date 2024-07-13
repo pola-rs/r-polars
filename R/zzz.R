@@ -68,7 +68,8 @@ lapply(names(POLARS_STORE_ENVS), function(name) {
     })
 
   # Register S3 methods for optional packages
+  s3_register("waldo::compare_proxy", "polars_expr")
+  s3_register("waldo::compare_proxy", "polars_data_frame")
   s3_register("waldo::compare_proxy", "polars_data_type")
   s3_register("waldo::compare_proxy", "polars_series")
-  s3_register("waldo::compare_proxy", "polars_data_frame")
 }

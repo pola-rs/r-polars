@@ -30,3 +30,11 @@ compare_proxy.polars_data_frame <- function(x, path) {
     path = path
   )
 }
+
+# exported in zzz.R
+compare_proxy.polars_expr <- function(x, path) {
+  list(
+    object = x$meta$serialize(format = "json"),
+    path = path
+  )
+}
