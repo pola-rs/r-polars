@@ -943,6 +943,30 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
   }
 }
 
+`PlRExpr_struct_multiple_fields` <- function(self) {
+  function(`names`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_struct_multiple_fields__impl, `self`, `names`))
+  }
+}
+
+`PlRExpr_struct_rename_fields` <- function(self) {
+  function(`names`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_struct_rename_fields__impl, `self`, `names`))
+  }
+}
+
+`PlRExpr_struct_json_encode` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_struct_json_encode__impl, `self`))
+  }
+}
+
+`PlRExpr_struct_with_fields` <- function(self) {
+  function(`fields`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_struct_with_fields__impl, `self`, `fields`))
+  }
+}
+
 `.savvy_wrap_PlRExpr` <- function(ptr) {
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
@@ -1007,6 +1031,10 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
   e$`serialize_json` <- `PlRExpr_serialize_json`(ptr)
   e$`struct_field_by_index` <- `PlRExpr_struct_field_by_index`(ptr)
   e$`struct_field_by_name` <- `PlRExpr_struct_field_by_name`(ptr)
+  e$`struct_multiple_fields` <- `PlRExpr_struct_multiple_fields`(ptr)
+  e$`struct_rename_fields` <- `PlRExpr_struct_rename_fields`(ptr)
+  e$`struct_json_encode` <- `PlRExpr_struct_json_encode`(ptr)
+  e$`struct_with_fields` <- `PlRExpr_struct_with_fields`(ptr)
 
   class(e) <- "PlRExpr"
   e

@@ -634,6 +634,26 @@ SEXP savvy_PlRExpr_struct_field_by_name__impl(SEXP self__, SEXP name) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_struct_multiple_fields__impl(SEXP self__, SEXP names) {
+    SEXP res = savvy_PlRExpr_struct_multiple_fields__ffi(self__, names);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_struct_rename_fields__impl(SEXP self__, SEXP names) {
+    SEXP res = savvy_PlRExpr_struct_rename_fields__ffi(self__, names);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_struct_json_encode__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_struct_json_encode__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_struct_with_fields__impl(SEXP self__, SEXP fields) {
+    SEXP res = savvy_PlRExpr_struct_with_fields__ffi(self__, fields);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRLazyFrame_select__impl(SEXP self__, SEXP exprs) {
     SEXP res = savvy_PlRLazyFrame_select__ffi(self__, exprs);
     return handle_result(res);
@@ -941,6 +961,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_deserialize_json__impl", (DL_FUNC) &savvy_PlRExpr_deserialize_json__impl, 1},
     {"savvy_PlRExpr_struct_field_by_index__impl", (DL_FUNC) &savvy_PlRExpr_struct_field_by_index__impl, 2},
     {"savvy_PlRExpr_struct_field_by_name__impl", (DL_FUNC) &savvy_PlRExpr_struct_field_by_name__impl, 2},
+    {"savvy_PlRExpr_struct_multiple_fields__impl", (DL_FUNC) &savvy_PlRExpr_struct_multiple_fields__impl, 2},
+    {"savvy_PlRExpr_struct_rename_fields__impl", (DL_FUNC) &savvy_PlRExpr_struct_rename_fields__impl, 2},
+    {"savvy_PlRExpr_struct_json_encode__impl", (DL_FUNC) &savvy_PlRExpr_struct_json_encode__impl, 1},
+    {"savvy_PlRExpr_struct_with_fields__impl", (DL_FUNC) &savvy_PlRExpr_struct_with_fields__impl, 2},
     {"savvy_PlRLazyFrame_select__impl", (DL_FUNC) &savvy_PlRLazyFrame_select__impl, 2},
     {"savvy_PlRLazyFrame_group_by__impl", (DL_FUNC) &savvy_PlRLazyFrame_group_by__impl, 3},
     {"savvy_PlRLazyFrame_collect__impl", (DL_FUNC) &savvy_PlRLazyFrame_collect__impl, 1},

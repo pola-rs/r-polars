@@ -27,3 +27,24 @@ expr_struct_field <- function(name) {
   self$`_rexpr`$struct_field_by_name(name) |>
     wrap()
 }
+
+expr_struct_rename_fields <- function(...) {
+  wrap({
+    .names <- list2(...) |>
+      unlist(recursive = FALSE)
+    check_character(.names, arg = "...")
+
+    self$`_rexpr`$struct_rename_fields(.names)
+  })
+}
+
+expr_struct_json_encode <- function() {
+  self$`_rexpr`$struct_json_encode() |>
+    wrap()
+}
+
+expr_struct_with_fields <- function(...) {
+  parse_into_list_of_expressions(...) |>
+    self$`_rexpr`$struct_with_fields() |>
+    wrap()
+}
