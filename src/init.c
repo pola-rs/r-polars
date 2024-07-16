@@ -39,6 +39,11 @@ SEXP savvy_concat_df__impl(SEXP dfs) {
     return handle_result(res);
 }
 
+SEXP savvy_field__impl(SEXP names) {
+    SEXP res = savvy_field__ffi(names);
+    return handle_result(res);
+}
+
 SEXP savvy_col__impl(SEXP name) {
     SEXP res = savvy_col__ffi(name);
     return handle_result(res);
@@ -837,6 +842,7 @@ SEXP savvy_PlRWhen_then__impl(SEXP self__, SEXP statement) {
 
 static const R_CallMethodDef CallEntries[] = {
     {"savvy_concat_df__impl", (DL_FUNC) &savvy_concat_df__impl, 1},
+    {"savvy_field__impl", (DL_FUNC) &savvy_field__impl, 1},
     {"savvy_col__impl", (DL_FUNC) &savvy_col__impl, 1},
     {"savvy_cols__impl", (DL_FUNC) &savvy_cols__impl, 1},
     {"savvy_dtype_cols__impl", (DL_FUNC) &savvy_dtype_cols__impl, 1},

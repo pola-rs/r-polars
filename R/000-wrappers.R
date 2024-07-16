@@ -29,6 +29,11 @@ NULL
 }
 
 
+`field` <- function(`names`) {
+  .savvy_wrap_PlRExpr(.Call(savvy_field__impl, `names`))
+}
+
+
 `col` <- function(`name`) {
   .savvy_wrap_PlRExpr(.Call(savvy_col__impl, `name`))
 }

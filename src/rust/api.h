@@ -1,4 +1,5 @@
 SEXP savvy_concat_df__ffi(SEXP dfs);
+SEXP savvy_field__ffi(SEXP names);
 SEXP savvy_col__ffi(SEXP name);
 SEXP savvy_cols__ffi(SEXP names);
 SEXP savvy_dtype_cols__ffi(SEXP dtypes);
