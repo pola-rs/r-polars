@@ -26,11 +26,11 @@ expr_struct_field <- function(...) {
   wrap({
     check_dots_unnamed()
 
-    .names <- list2(...) |>
+    dots <- list2(...) |>
       unlist(recursive = FALSE)
-    check_character(.names, arg = "...")
+    check_character(dots, arg = "...")
 
-    self$`_rexpr`$struct_multiple_fields(.names)
+    self$`_rexpr`$struct_multiple_fields(dots)
   })
 }
 
@@ -38,11 +38,11 @@ expr_struct_rename_fields <- function(...) {
   wrap({
     check_dots_unnamed()
 
-    .names <- list2(...) |>
+    dots <- list2(...) |>
       unlist(recursive = FALSE)
-    check_character(.names, arg = "...")
+    check_character(dots, arg = "...")
 
-    self$`_rexpr`$struct_rename_fields(.names)
+    self$`_rexpr`$struct_rename_fields(dots)
   })
 }
 
