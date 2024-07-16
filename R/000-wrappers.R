@@ -937,12 +937,6 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
   }
 }
 
-`PlRExpr_struct_field_by_name` <- function(self) {
-  function(`name`) {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_struct_field_by_name__impl, `self`, `name`))
-  }
-}
-
 `PlRExpr_struct_multiple_fields` <- function(self) {
   function(`names`) {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_struct_multiple_fields__impl, `self`, `names`))
@@ -1030,7 +1024,6 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
   e$`serialize_binary` <- `PlRExpr_serialize_binary`(ptr)
   e$`serialize_json` <- `PlRExpr_serialize_json`(ptr)
   e$`struct_field_by_index` <- `PlRExpr_struct_field_by_index`(ptr)
-  e$`struct_field_by_name` <- `PlRExpr_struct_field_by_name`(ptr)
   e$`struct_multiple_fields` <- `PlRExpr_struct_multiple_fields`(ptr)
   e$`struct_rename_fields` <- `PlRExpr_struct_rename_fields`(ptr)
   e$`struct_json_encode` <- `PlRExpr_struct_json_encode`(ptr)

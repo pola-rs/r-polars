@@ -127,7 +127,6 @@ SEXP savvy_PlRExpr_serialize_json__ffi(SEXP self__);
 SEXP savvy_PlRExpr_deserialize_binary__ffi(SEXP data);
 SEXP savvy_PlRExpr_deserialize_json__ffi(SEXP data);
 SEXP savvy_PlRExpr_struct_field_by_index__ffi(SEXP self__, SEXP index);
-SEXP savvy_PlRExpr_struct_field_by_name__ffi(SEXP self__, SEXP name);
 SEXP savvy_PlRExpr_struct_multiple_fields__ffi(SEXP self__, SEXP names);
 SEXP savvy_PlRExpr_struct_rename_fields__ffi(SEXP self__, SEXP names);
 SEXP savvy_PlRExpr_struct_json_encode__ffi(SEXP self__);

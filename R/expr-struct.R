@@ -22,14 +22,22 @@ expr_struct_field_by_index <- function(index) {
     wrap()
 }
 
-# TODO: change to dynamic dots and implement `struct_multiple_fields`
-expr_struct_field <- function(name) {
-  self$`_rexpr`$struct_field_by_name(name) |>
-    wrap()
+expr_struct_field <- function(...) {
+  wrap({
+    check_dots_unnamed()
+
+    .names <- list2(...) |>
+      unlist(recursive = FALSE)
+    check_character(.names, arg = "...")
+
+    self$`_rexpr`$struct_multiple_fields(.names)
+  })
 }
 
 expr_struct_rename_fields <- function(...) {
   wrap({
+    check_dots_unnamed()
+
     .names <- list2(...) |>
       unlist(recursive = FALSE)
     check_character(.names, arg = "...")

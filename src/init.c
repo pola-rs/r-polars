@@ -629,11 +629,6 @@ SEXP savvy_PlRExpr_struct_field_by_index__impl(SEXP self__, SEXP index) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_struct_field_by_name__impl(SEXP self__, SEXP name) {
-    SEXP res = savvy_PlRExpr_struct_field_by_name__ffi(self__, name);
-    return handle_result(res);
-}
-
 SEXP savvy_PlRExpr_struct_multiple_fields__impl(SEXP self__, SEXP names) {
     SEXP res = savvy_PlRExpr_struct_multiple_fields__ffi(self__, names);
     return handle_result(res);
@@ -960,7 +955,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_deserialize_binary__impl", (DL_FUNC) &savvy_PlRExpr_deserialize_binary__impl, 1},
     {"savvy_PlRExpr_deserialize_json__impl", (DL_FUNC) &savvy_PlRExpr_deserialize_json__impl, 1},
     {"savvy_PlRExpr_struct_field_by_index__impl", (DL_FUNC) &savvy_PlRExpr_struct_field_by_index__impl, 2},
-    {"savvy_PlRExpr_struct_field_by_name__impl", (DL_FUNC) &savvy_PlRExpr_struct_field_by_name__impl, 2},
     {"savvy_PlRExpr_struct_multiple_fields__impl", (DL_FUNC) &savvy_PlRExpr_struct_multiple_fields__impl, 2},
     {"savvy_PlRExpr_struct_rename_fields__impl", (DL_FUNC) &savvy_PlRExpr_struct_rename_fields__impl, 2},
     {"savvy_PlRExpr_struct_json_encode__impl", (DL_FUNC) &savvy_PlRExpr_struct_json_encode__impl, 1},

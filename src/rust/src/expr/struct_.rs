@@ -13,10 +13,6 @@ impl PlRExpr {
             .into())
     }
 
-    fn struct_field_by_name(&self, name: &str) -> Result<Self> {
-        Ok(self.inner.clone().struct_().field_by_name(name).into())
-    }
-
     fn struct_multiple_fields(&self, names: StringSexp) -> Result<Self> {
         Ok(self
             .inner
