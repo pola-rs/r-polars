@@ -21,6 +21,7 @@ POLARS_STORE_ENVS <- list(
   "datatype__" = polars_datatype__methods,
   "namespace_expr_" = polars_namespaces_expr,
   "expr__" = polars_expr__methods,
+  "expr_cat_" = polars_expr_cat_methods,
   "expr_dt_" = polars_expr_dt_methods,
   "expr_meta_" = polars_expr_meta_methods,
   "expr_name_" = polars_expr_name_methods,

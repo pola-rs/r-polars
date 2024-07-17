@@ -11,9 +11,7 @@ namespace_expr_dt <- function(x) {
     assign(name, fn, envir = self)
   })
 
-  class(self) <- c(
-    "polars_namespace_expr", "polars_dt_namespace", "polars_object"
-  )
+  class(self) <- c("polars_namespace_expr", "polars_object")
   self
 }
 

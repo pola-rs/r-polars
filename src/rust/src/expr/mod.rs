@@ -1,3 +1,4 @@
+mod categorical;
 mod datetime;
 mod general;
 mod meta;

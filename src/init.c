@@ -324,6 +324,11 @@ SEXP savvy_PlRDataType_is_known__impl(SEXP self__) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_cat_get_categories__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_cat_get_categories__ffi(self__);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_dt_convert_time_zone__impl(SEXP self__, SEXP time_zone) {
     SEXP res = savvy_PlRExpr_dt_convert_time_zone__ffi(self__, time_zone);
     return handle_result(res);
@@ -899,6 +904,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRDataType_is_struct__impl", (DL_FUNC) &savvy_PlRDataType_is_struct__impl, 1},
     {"savvy_PlRDataType_is_ord__impl", (DL_FUNC) &savvy_PlRDataType_is_ord__impl, 1},
     {"savvy_PlRDataType_is_known__impl", (DL_FUNC) &savvy_PlRDataType_is_known__impl, 1},
+    {"savvy_PlRExpr_cat_get_categories__impl", (DL_FUNC) &savvy_PlRExpr_cat_get_categories__impl, 1},
     {"savvy_PlRExpr_dt_convert_time_zone__impl", (DL_FUNC) &savvy_PlRExpr_dt_convert_time_zone__impl, 2},
     {"savvy_PlRExpr_dt_replace_time_zone__impl", (DL_FUNC) &savvy_PlRExpr_dt_replace_time_zone__impl, 4},
     {"savvy_PlRExpr_print__impl", (DL_FUNC) &savvy_PlRExpr_print__impl, 1},
