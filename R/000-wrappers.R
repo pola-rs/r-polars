@@ -559,6 +559,51 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
 
 ### wrapper functions for PlRExpr
 
+`PlRExpr_bin_contains` <- function(self) {
+  function(`literal`) {
+    `literal` <- .savvy_extract_ptr(`literal`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_bin_contains__impl, `self`, `literal`))
+  }
+}
+
+`PlRExpr_bin_ends_with` <- function(self) {
+  function(`suffix`) {
+    `suffix` <- .savvy_extract_ptr(`suffix`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_bin_ends_with__impl, `self`, `suffix`))
+  }
+}
+
+`PlRExpr_bin_starts_with` <- function(self) {
+  function(`prefix`) {
+    `prefix` <- .savvy_extract_ptr(`prefix`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_bin_starts_with__impl, `self`, `prefix`))
+  }
+}
+
+`PlRExpr_bin_hex_decode` <- function(self) {
+  function(`strict`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_bin_hex_decode__impl, `self`, `strict`))
+  }
+}
+
+`PlRExpr_bin_base64_decode` <- function(self) {
+  function(`strict`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_bin_base64_decode__impl, `self`, `strict`))
+  }
+}
+
+`PlRExpr_bin_hex_encode` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_bin_hex_encode__impl, `self`))
+  }
+}
+
+`PlRExpr_bin_base64_encode` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_bin_base64_encode__impl, `self`))
+  }
+}
+
 `PlRExpr_cat_get_categories` <- function(self) {
   function() {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_cat_get_categories__impl, `self`))
@@ -975,6 +1020,13 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
 `.savvy_wrap_PlRExpr` <- function(ptr) {
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
+  e$`bin_contains` <- `PlRExpr_bin_contains`(ptr)
+  e$`bin_ends_with` <- `PlRExpr_bin_ends_with`(ptr)
+  e$`bin_starts_with` <- `PlRExpr_bin_starts_with`(ptr)
+  e$`bin_hex_decode` <- `PlRExpr_bin_hex_decode`(ptr)
+  e$`bin_base64_decode` <- `PlRExpr_bin_base64_decode`(ptr)
+  e$`bin_hex_encode` <- `PlRExpr_bin_hex_encode`(ptr)
+  e$`bin_base64_encode` <- `PlRExpr_bin_base64_encode`(ptr)
   e$`cat_get_categories` <- `PlRExpr_cat_get_categories`(ptr)
   e$`dt_convert_time_zone` <- `PlRExpr_dt_convert_time_zone`(ptr)
   e$`dt_replace_time_zone` <- `PlRExpr_dt_replace_time_zone`(ptr)

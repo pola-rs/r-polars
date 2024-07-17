@@ -1,3 +1,4 @@
+mod binary;
 mod categorical;
 mod datetime;
 mod general;

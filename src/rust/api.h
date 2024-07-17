@@ -66,6 +66,13 @@ SEXP savvy_PlRDataType_is_ord__ffi(SEXP self__);
 SEXP savvy_PlRDataType_is_known__ffi(SEXP self__);
 
 // methods and associated functions for PlRExpr
+SEXP savvy_PlRExpr_bin_contains__ffi(SEXP self__, SEXP literal);
+SEXP savvy_PlRExpr_bin_ends_with__ffi(SEXP self__, SEXP suffix);
+SEXP savvy_PlRExpr_bin_starts_with__ffi(SEXP self__, SEXP prefix);
+SEXP savvy_PlRExpr_bin_hex_decode__ffi(SEXP self__, SEXP strict);
+SEXP savvy_PlRExpr_bin_base64_decode__ffi(SEXP self__, SEXP strict);
+SEXP savvy_PlRExpr_bin_hex_encode__ffi(SEXP self__);
+SEXP savvy_PlRExpr_bin_base64_encode__ffi(SEXP self__);
 SEXP savvy_PlRExpr_cat_get_categories__ffi(SEXP self__);
 SEXP savvy_PlRExpr_dt_convert_time_zone__ffi(SEXP self__, SEXP time_zone);
 SEXP savvy_PlRExpr_dt_replace_time_zone__ffi(SEXP self__, SEXP ambiguous, SEXP non_existent, SEXP time_zone);

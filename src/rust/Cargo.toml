@@ -22,6 +22,7 @@ thiserror = "1"
 git = "https://github.com/pola-rs/polars.git"
 rev = "f73937ab5213a44eaaba8cfc799d8f837600f179"
 features = [
+    "binary_encoding",
     "dtype-full",
     "json",
     "lazy",
