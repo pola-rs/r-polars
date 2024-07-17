@@ -31,6 +31,7 @@ POLARS_STORE_ENVS <- list(
   "selector__" = polars_selector__methods,
   "namespace_series_" = polars_namespaces_series,
   "series__" = polars_series__methods,
+  "series_cat_" = polars_series_cat_methods,
   "series_struct_" = polars_series_struct_methods,
   "lazyframe__" = polars_lazyframe__methods,
   "lazygroupby__" = polars_lazygroupby__methods,

@@ -1254,6 +1254,24 @@ class(`PlRLazyGroupBy`) <- "PlRLazyGroupBy__bundle"
   }
 }
 
+`PlRSeries_cat_uses_lexical_ordering` <- function(self) {
+  function() {
+    .Call(savvy_PlRSeries_cat_uses_lexical_ordering__impl, `self`)
+  }
+}
+
+`PlRSeries_cat_is_local` <- function(self) {
+  function() {
+    .Call(savvy_PlRSeries_cat_is_local__impl, `self`)
+  }
+}
+
+`PlRSeries_cat_to_local` <- function(self) {
+  function() {
+    .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_cat_to_local__impl, `self`))
+  }
+}
+
 `PlRSeries_reshape` <- function(self) {
   function(`dimensions`) {
     .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_reshape__impl, `self`, `dimensions`))
@@ -1351,6 +1369,9 @@ class(`PlRLazyGroupBy`) <- "PlRLazyGroupBy__bundle"
   e$`print` <- `PlRSeries_print`(ptr)
   e$`struct_unnest` <- `PlRSeries_struct_unnest`(ptr)
   e$`struct_fields` <- `PlRSeries_struct_fields`(ptr)
+  e$`cat_uses_lexical_ordering` <- `PlRSeries_cat_uses_lexical_ordering`(ptr)
+  e$`cat_is_local` <- `PlRSeries_cat_is_local`(ptr)
+  e$`cat_to_local` <- `PlRSeries_cat_to_local`(ptr)
   e$`reshape` <- `PlRSeries_reshape`(ptr)
   e$`clone` <- `PlRSeries_clone`(ptr)
   e$`name` <- `PlRSeries_name`(ptr)

@@ -53,6 +53,21 @@ impl PlRSeries {
             .try_into()?)
     }
 
+    pub fn cat_uses_lexical_ordering(&self) -> Result<Sexp> {
+        let ca = self.series.categorical().map_err(RPolarsErr::from)?;
+        ca.uses_lexical_ordering().try_into()
+    }
+
+    pub fn cat_is_local(&self) -> Result<Sexp> {
+        let ca = self.series.categorical().map_err(RPolarsErr::from)?;
+        ca.get_rev_map().is_local().try_into()
+    }
+
+    pub fn cat_to_local(&self) -> Result<Self> {
+        let ca = self.series.categorical().map_err(RPolarsErr::from)?;
+        Ok(ca.to_local().into_series().into())
+    }
+
     fn reshape(&self, dimensions: NumericSexp) -> Result<Self> {
         let dimensions: Vec<i64> = <Wrap<Vec<i64>>>::try_from(dimensions)?.0;
         let out = self
