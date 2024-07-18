@@ -4,8 +4,10 @@ expr_wrap_function_factory <- function(fn, self) {
   environment(fn) <- environment()
 
   new_fn <- function() {
-    expr <- do.call(fn, as.list(match.call()[-1]), envir = parent.frame())
-    wrap(`_s`)$to_frame()$select(expr)$to_series()
+    wrap({
+      expr <- do.call(fn, as.list(match.call()[-1]), envir = parent.frame())
+      wrap(`_s`)$to_frame()$select(expr)$to_series()
+    })
   }
 
   formals(new_fn) <- formals(fn)
