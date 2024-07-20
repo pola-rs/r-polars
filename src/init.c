@@ -79,6 +79,11 @@ SEXP savvy_lit_from_str__impl(SEXP value) {
     return handle_result(res);
 }
 
+SEXP savvy_lit_from_raw__impl(SEXP value) {
+    SEXP res = savvy_lit_from_raw__ffi(value);
+    return handle_result(res);
+}
+
 SEXP savvy_lit_null__impl(void) {
     SEXP res = savvy_lit_null__ffi();
     return handle_result(res);
@@ -905,6 +910,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_lit_from_i32__impl", (DL_FUNC) &savvy_lit_from_i32__impl, 1},
     {"savvy_lit_from_f64__impl", (DL_FUNC) &savvy_lit_from_f64__impl, 1},
     {"savvy_lit_from_str__impl", (DL_FUNC) &savvy_lit_from_str__impl, 1},
+    {"savvy_lit_from_raw__impl", (DL_FUNC) &savvy_lit_from_raw__impl, 1},
     {"savvy_lit_null__impl", (DL_FUNC) &savvy_lit_null__impl, 0},
     {"savvy_lit_from_series__impl", (DL_FUNC) &savvy_lit_from_series__impl, 1},
     {"savvy_when__impl", (DL_FUNC) &savvy_when__impl, 1},

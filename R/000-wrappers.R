@@ -69,6 +69,11 @@ NULL
 }
 
 
+`lit_from_raw` <- function(`value`) {
+  .savvy_wrap_PlRExpr(.Call(savvy_lit_from_raw__impl, `value`))
+}
+
+
 `lit_null` <- function() {
   .savvy_wrap_PlRExpr(.Call(savvy_lit_null__impl))
 }

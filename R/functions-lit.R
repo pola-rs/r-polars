@@ -80,6 +80,27 @@ as_polars_lit.character <- function(x, ...) {
   }
 }
 
+#' @export
+as_polars_lit.raw <- function(x, ...) {
+  lit_from_raw(x) |>
+    wrap()
+}
+
+#' @export
+as_polars_lit.blob <- function(x, ...) {
+  len <- length(x)
+
+  if (len == 0L || len == 1L && is.na(x)) {
+    as_polars_lit.NULL()$cast(pl$Binary)
+  } else if (len == 1L) {
+    unlist(x) |>
+      lit_from_raw() |>
+      wrap()
+  } else {
+    as_polars_lit.default(x)
+  }
+}
+
 # TODO: date, datetime, difftime support
 pl__lit <- function(value, dtype = NULL) {
   if (is.null(dtype)) {

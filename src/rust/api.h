@@ -7,6 +7,7 @@ SEXP savvy_lit_from_bool__ffi(SEXP value);
 SEXP savvy_lit_from_i32__ffi(SEXP value);
 SEXP savvy_lit_from_f64__ffi(SEXP value);
 SEXP savvy_lit_from_str__ffi(SEXP value);
+SEXP savvy_lit_from_raw__ffi(SEXP value);
 SEXP savvy_lit_null__ffi(void);
 SEXP savvy_lit_from_series__ffi(SEXP value);
 SEXP savvy_when__ffi(SEXP condition);

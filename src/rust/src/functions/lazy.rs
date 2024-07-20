@@ -1,6 +1,6 @@
 use crate::{prelude::*, PlRExpr, PlRSeries};
 use polars::lazy::dsl;
-use savvy::{savvy, ListSexp, Result, StringSexp};
+use savvy::{savvy, ListSexp, Result, StringSexp, RawSexp};
 
 #[savvy]
 pub fn field(names: StringSexp) -> Result<PlRExpr> {
@@ -45,6 +45,11 @@ pub fn lit_from_str(value: &str) -> Result<PlRExpr> {
 }
 
 #[savvy]
+pub fn lit_from_raw(value: RawSexp) -> Result<PlRExpr> {
+    Ok(dsl::lit(value.as_slice()).into())
+}
+
+#[savvy]
 pub fn lit_null() -> Result<PlRExpr> {
     Ok(dsl::lit(Null {}).into())
 }
@@ -53,5 +58,3 @@ pub fn lit_null() -> Result<PlRExpr> {
 pub fn lit_from_series(value: PlRSeries) -> Result<PlRExpr> {
     Ok(dsl::lit(value.series).into())
 }
-
-// TODO: Raw type support <https://github.com/yutannihilation/savvy/issues/30>
