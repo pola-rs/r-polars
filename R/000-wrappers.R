@@ -332,6 +332,12 @@ class(`PlRDataFrame`) <- "PlRDataFrame__bundle"
   }
 }
 
+`PlRDataType__get_datatype_fields` <- function(self) {
+  function() {
+    .Call(savvy_PlRDataType__get_datatype_fields__impl, `self`)
+  }
+}
+
 `PlRDataType_eq` <- function(self) {
   function(`other`) {
     `other` <- .savvy_extract_ptr(`other`, "PlRDataType")
@@ -470,6 +476,7 @@ class(`PlRDataFrame`) <- "PlRDataFrame__bundle"
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
   e$`print` <- `PlRDataType_print`(ptr)
+  e$`_get_datatype_fields` <- `PlRDataType__get_datatype_fields`(ptr)
   e$`eq` <- `PlRDataType_eq`(ptr)
   e$`ne` <- `PlRDataType_ne`(ptr)
   e$`is_temporal` <- `PlRDataType_is_temporal`(ptr)

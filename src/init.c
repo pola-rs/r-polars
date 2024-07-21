@@ -219,6 +219,11 @@ SEXP savvy_PlRDataType_print__impl(SEXP self__) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRDataType__get_datatype_fields__impl(SEXP self__) {
+    SEXP res = savvy_PlRDataType__get_datatype_fields__ffi(self__);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRDataType_eq__impl(SEXP self__, SEXP other) {
     SEXP res = savvy_PlRDataType_eq__ffi(self__, other);
     return handle_result(res);
@@ -938,6 +943,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRDataType_new_list__impl", (DL_FUNC) &savvy_PlRDataType_new_list__impl, 1},
     {"savvy_PlRDataType_new_struct__impl", (DL_FUNC) &savvy_PlRDataType_new_struct__impl, 1},
     {"savvy_PlRDataType_print__impl", (DL_FUNC) &savvy_PlRDataType_print__impl, 1},
+    {"savvy_PlRDataType__get_datatype_fields__impl", (DL_FUNC) &savvy_PlRDataType__get_datatype_fields__impl, 1},
     {"savvy_PlRDataType_eq__impl", (DL_FUNC) &savvy_PlRDataType_eq__impl, 2},
     {"savvy_PlRDataType_ne__impl", (DL_FUNC) &savvy_PlRDataType_ne__impl, 2},
     {"savvy_PlRDataType_is_temporal__impl", (DL_FUNC) &savvy_PlRDataType_is_temporal__impl, 1},

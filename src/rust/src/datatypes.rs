@@ -1,6 +1,9 @@
 use crate::prelude::*;
 use polars_core::utils::arrow::array::Utf8ViewArray;
-use savvy::{r_println, savvy, EnvironmentSexp, ListSexp, NumericScalar, Result, Sexp, StringSexp};
+use savvy::{
+    r_println, savvy, EnvironmentSexp, ListSexp, NullSexp, NumericScalar, OwnedListSexp,
+    OwnedRealSexp, Result, Sexp, StringSexp,
+};
 
 // As not like in Python, define the data type class in
 // the Rust side, because defining class in R and converting
@@ -83,6 +86,87 @@ impl PlRDataType {
     fn print(&self) -> Result<()> {
         r_println!("{:?}", self.dt);
         Ok(())
+    }
+
+    fn _get_datatype_fields(&self) -> Result<Sexp> {
+        match &self.dt {
+            DataType::Decimal(precision, scale) => {
+                let mut out = OwnedListSexp::new(2, true)?;
+                let precision: Sexp =
+                    precision.map_or_else(|| NullSexp.into(), |v| (v as f64).try_into())?;
+                let scale: Sexp =
+                    scale.map_or_else(|| NullSexp.into(), |v| (v as f64).try_into())?;
+                let _ = out.set_name_and_value(0, "precision", precision);
+                let _ = out.set_name_and_value(1, "scale", scale);
+                Ok(out.into())
+            }
+            DataType::Datetime(time_unit, time_zone) => {
+                let mut out = OwnedListSexp::new(2, true)?;
+                let time_unit: Sexp = format!("{time_unit}").try_into()?;
+                let time_zone: Sexp = time_zone
+                    .as_ref()
+                    .map_or_else(|| NullSexp.into(), |v| v.to_owned().try_into())?;
+                let _ = out.set_name_and_value(0, "time_unit", time_unit);
+                let _ = out.set_name_and_value(1, "time_zone", time_zone);
+                Ok(out.into())
+            }
+            DataType::Duration(time_unit) => {
+                let mut out = OwnedListSexp::new(1, true)?;
+                let time_unit: Sexp = format!("{time_unit}").try_into()?;
+                let _ = out.set_name_and_value(0, "time_unit", time_unit);
+                Ok(out.into())
+            }
+            DataType::Array(inner, width) => {
+                let mut out = OwnedListSexp::new(2, true)?;
+                let inner: Sexp = PlRDataType { dt: *inner.clone() }.try_into()?;
+                let width: Sexp = (*width as f64).try_into()?;
+                let _ = out.set_name_and_value(0, "_inner", inner);
+                let _ = out.set_name_and_value(1, "width", width);
+                Ok(out.into())
+            }
+            DataType::List(inner) => {
+                let mut out = OwnedListSexp::new(1, true)?;
+                let inner: Sexp = PlRDataType { dt: *inner.clone() }.try_into()?;
+                let _ = out.set_name_and_value(0, "_inner", inner);
+                Ok(out.into())
+            }
+            DataType::Struct(fields) => {
+                let mut out = OwnedListSexp::new(1, true)?;
+                let mut list = OwnedListSexp::new(fields.len(), true)?;
+                for (i, field) in fields.iter().enumerate() {
+                    let name = field.name().as_str();
+                    let value: Sexp = PlRDataType {
+                        dt: field.data_type().clone(),
+                    }
+                    .try_into()?;
+                    let _ = list.set_name_and_value(i, name, value);
+                }
+                let _ = out.set_name_and_value(0, "_fields", list);
+                Ok(out.into())
+            }
+            DataType::Categorical(_, ordering) => {
+                let mut out = OwnedListSexp::new(1, true)?;
+                let ordering: Sexp = <String>::from(Wrap(ordering)).try_into()?;
+                let _ = out.set_name_and_value(0, "ordering", ordering);
+                Ok(out.into())
+            }
+            DataType::Enum(categories, _) => {
+                let mut out = OwnedListSexp::new(1, true)?;
+                let categories: Sexp = categories.as_ref().map_or_else(
+                    || NullSexp.into(),
+                    |v| {
+                        v.get_categories()
+                            .into_iter()
+                            .map(|v| v.unwrap_or_default().to_string())
+                            .collect::<Vec<_>>()
+                            .try_into()
+                    },
+                )?;
+                let _ = out.set_name_and_value(0, "categories", categories);
+                Ok(out.into())
+            }
+            _ => Ok(NullSexp.into()),
+        }
     }
 
     fn eq(&self, other: &PlRDataType) -> Result<Sexp> {

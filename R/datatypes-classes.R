@@ -19,6 +19,27 @@ wrap.PlRDataType <- function(x) {
     assign(name, fn, envir = self)
   })
 
+  # Active bindings mimic attributes of DataType classes of Python Polars
+  env_bind(self, !!!x$`_get_datatype_fields`())
+
+  ## _inner is a pointer now, so it should be wrapped
+  if (exists("_inner", envir = self)) {
+    makeActiveBinding("inner", function() {
+      .savvy_wrap_PlRDataType(self$`_inner`) |>
+        wrap()
+    }, self)
+  }
+
+  ## _fields is a list of pointers now, so they should be wrapped
+  if (exists("_fields", envir = self)) {
+    makeActiveBinding("fields", function() {
+      lapply(self$`_fields`, function(x) {
+        .savvy_wrap_PlRDataType(x) |>
+          wrap()
+      })
+    }, self)
+  }
+
   class(self) <- c("polars_data_type", "polars_object")
   self
 }
@@ -52,6 +73,8 @@ pl__Enum <- function(categories) {
   PlRDataType$new_enum(categories) |>
     wrap()
 }
+
+# TODO: pl__Array
 
 pl__List <- function(inner) {
   if (!isTRUE(is_polars_data_type(inner))) {

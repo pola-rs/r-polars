@@ -157,6 +157,15 @@ impl TryFrom<&str> for Wrap<CategoricalOrdering> {
     }
 }
 
+impl From<Wrap<&CategoricalOrdering>> for String {
+    fn from(ordering: Wrap<&CategoricalOrdering>) -> String {
+        match *ordering.0 {
+            CategoricalOrdering::Physical => "physical".into(),
+            CategoricalOrdering::Lexical => "lexical".into(),
+        }
+    }
+}
+
 impl TryFrom<&str> for Wrap<TimeUnit> {
     type Error = String;
 
