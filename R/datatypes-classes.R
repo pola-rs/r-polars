@@ -19,7 +19,7 @@ wrap.PlRDataType <- function(x) {
     assign(name, fn, envir = self)
   })
 
-  # Active bindings mimic attributes of DataType classes of Python Polars
+  # Bindings mimic attributes of DataType classes of Python Polars
   env_bind(self, !!!x$`_get_datatype_fields`())
 
   ## _inner is a pointer now, so it should be wrapped
