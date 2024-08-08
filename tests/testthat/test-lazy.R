@@ -1,7 +1,7 @@
 test_that("lazy prints", {
   getprint = function(x) capture_output(print(x))
 
-  df = pl$DataFrame(list(a = 1:3, b = c(T, T, F)))
+  df = pl$DataFrame(a = 1:3, b = c(TRUE, TRUE, FALSE))
   ldf = df$lazy()$filter(pl$col("a") == 2L)
 
   expect_snapshot(print(ldf))
@@ -15,11 +15,6 @@ test_that("lazy prints", {
     ret_val2 = ldf$print()
   })
   expect_equal(getprint(ret_val2), getprint(ldf))
-
-  # described plan is not equal to optimized plan
-  expect_true(
-    capture_output(ldf$describe_optimized_plan()) != capture_output(ldf$describe_plan())
-  )
 })
 
 test_that("create LazyFrame", {

@@ -232,7 +232,7 @@ LazyFrame_print = function() {
   invisible(self)
 }
 
-#' @title Print the optimized or non-optimized plans of `LazyFrame`
+#' Print the optimized or non-optimized plans of `LazyFrame`
 #'
 #' @rdname LazyFrame_describe_plan
 #'
@@ -240,7 +240,7 @@ LazyFrame_print = function() {
 #' understands. `$describe_optimized_plan()` shows the optimized query plan that
 #' `polars` will execute when `$collect()` is called. It is possible that both
 #' plans are identical if `polars` doesn't find any way to optimize the query.
-#' @keywords LazyFrame
+#'
 #' @return This only prints the plan in the console, it doesn't return any value.
 #' @examples
 #' lazy_frame = pl$LazyFrame(iris)
@@ -255,12 +255,17 @@ LazyFrame_print = function() {
 #' # then filtering, it is faster to filter first and then sort the rest.
 #' lazy_query$describe_optimized_plan()
 LazyFrame_describe_optimized_plan = function() {
-  unwrap(.pr$LazyFrame$describe_optimized_plan(self), "in $describe_optimized_plan():")
+  .pr$LazyFrame$describe_optimized_plan(self) |>
+    unwrap("in $describe_optimized_plan():")
   invisible(NULL)
 }
 
 #' @rdname LazyFrame_describe_plan
-LazyFrame_describe_plan = use_extendr_wrapper
+LazyFrame_describe_plan = function() {
+  .pr$LazyFrame$describe_plan(self) |>
+    unwrap("in $describe_plan():")
+  invisible(NULL)
+}
 
 
 #' Serialize the logical plan of this LazyFrame to a file or string in JSON format

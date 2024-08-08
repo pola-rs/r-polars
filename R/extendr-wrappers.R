@@ -1174,9 +1174,9 @@ RPolarsLazyFrame$print <- function() .Call(wrap__RPolarsLazyFrame__print, self)
 
 RPolarsLazyFrame$describe_plan <- function() .Call(wrap__RPolarsLazyFrame__describe_plan, self)
 
-RPolarsLazyFrame$debug_plan <- function() .Call(wrap__RPolarsLazyFrame__debug_plan, self)
-
 RPolarsLazyFrame$describe_optimized_plan <- function() .Call(wrap__RPolarsLazyFrame__describe_optimized_plan, self)
+
+RPolarsLazyFrame$debug_plan <- function() .Call(wrap__RPolarsLazyFrame__debug_plan, self)
 
 RPolarsLazyFrame$collect <- function() .Call(wrap__RPolarsLazyFrame__collect, self)
 
