@@ -6,6 +6,12 @@
 
 - New method `$str$extract_many()` (#1163).
 
+### Bug fixes
+
+- `$describe_plan()` and `$describe_optimized_plan()` are now consistent in their
+  output. Previously, the former would return a Result-type output and the other
+  would return nothing (as expected). They now both return nothing (#1175).
+
 ## Polars R Package 0.18.0
 
 ### Breaking changes

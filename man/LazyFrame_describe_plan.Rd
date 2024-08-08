@@ -31,4 +31,3 @@ lazy_query$describe_plan()
 # then filtering, it is faster to filter first and then sort the rest.
 lazy_query$describe_optimized_plan()
 }
-\keyword{LazyFrame}
