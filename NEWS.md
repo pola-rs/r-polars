@@ -5,6 +5,8 @@
 ### New features
 
 - New method `$str$extract_many()` (#1163).
+- Converting a `nanoarrow_array` with zero rows to an `RPolarsDataFrame` via
+  `as_polars_df()` now keeps the original schema (#1177).
 
 ### Bug fixes
 
