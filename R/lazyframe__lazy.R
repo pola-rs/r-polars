@@ -1867,8 +1867,8 @@ LazyFrame_clone = function() {
 #' Unnest the Struct columns of a LazyFrame
 #'
 #' @inheritParams DataFrame_unnest
-#' @return A LazyFrame where all "struct" columns are unnested. Non-struct
-#' columns are not modified.
+#'
+#' @return A LazyFrame where some or all columns of datatype Struct are unnested.
 #' @examples
 #' lf = pl$LazyFrame(
 #'   a = 1:5,
@@ -1886,11 +1886,14 @@ LazyFrame_clone = function() {
 #'
 #' # we can specify specific columns to unnest
 #' lf$unnest("a_and_c")$collect()
-LazyFrame_unnest = function(names = NULL) {
-  if (is.null(names)) {
-    names = names(which(dtypes_are_struct(.pr$LazyFrame$schema(self)$ok)))
+LazyFrame_unnest = function(...) {
+  columns = unpack_list(..., .context = "in $unnest():")
+  if (length(columns) == 0) {
+    columns = names(which(dtypes_are_struct(.pr$LazyFrame$schema(self)$ok)))
+  } else {
+    columns = unlist(columns)
   }
-  unwrap(.pr$LazyFrame$unnest(self, names), "in $unnest():")
+  unwrap(.pr$LazyFrame$unnest(self, columns), "in $unnest():")
 }
 
 #' Add an external context to the computation graph

@@ -582,6 +582,48 @@ test_that("to_Struct, unnest, to_frame, to_data_frame", {
   expect_identical(df$to_data_frame(), df_e)
 })
 
+
+test_that("unnest works correctly", {
+  df = pl$DataFrame(
+    a = 1:5,
+    b = c("one", "two", "three", "four", "five"),
+    c = 6:10
+  )$
+    select(
+      foo = pl$lit(1),
+      pl$struct("b"),
+      pl$struct(c("a", "c"))$alias("a_and_c")
+    )
+
+  expect_identical(
+    df$unnest("b", "a_and_c")$to_list(),
+    df$unnest(c("b", "a_and_c"))$to_list()
+  )
+
+  # old behavior still works
+  expect_identical(
+    df$unnest(c("b", "a_and_c"))$to_list(),
+    df$unnest(names = c("b", "a_and_c"))$to_list()
+  )
+
+  # wrong input
+  expect_grepl_error(
+    df$unnest("b", pl$col("a_and_c")),
+    "Input must be a character vector."
+  )
+  expect_grepl_error(
+    df$unnest(1),
+    "Input must be a character vector."
+  )
+
+  # wrong datatype
+  expect_grepl_error(
+    df$unnest("foo"),
+    "expected `Struct`, got `f64`"
+  )
+})
+
+
 make_cases = function() {
   tibble::tribble(
     ~.test_name, ~pola, ~base,

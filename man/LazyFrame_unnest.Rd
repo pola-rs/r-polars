@@ -4,15 +4,15 @@
 \alias{LazyFrame_unnest}
 \title{Unnest the Struct columns of a LazyFrame}
 \usage{
-LazyFrame_unnest(names = NULL)
+LazyFrame_unnest(...)
 }
 \arguments{
-\item{names}{Names of the struct columns to unnest. If \code{NULL} (default), then
-all "struct" columns are unnested.}
+\item{...}{Names of the struct columns to unnest. This doesn't accept Expr.
+If nothing is provided, then all columns of datatype \link[=DataType_Struct]{Struct}
+are unnested.}
 }
 \value{
-A LazyFrame where all "struct" columns are unnested. Non-struct
-columns are not modified.
+A LazyFrame where some or all columns of datatype Struct are unnested.
 }
 \description{
 Unnest the Struct columns of a LazyFrame

@@ -6,6 +6,12 @@
 
 - New method `$str$extract_many()` (#1163).
 
+### Other changes
+
+- In `$unnest()` for `DataFrame` and `LazyFrame`, the `names` argument is removed
+  and replaced by `...`. This doesn't change the previous behavior, e.g.
+  `df$unnest(names = c("a", "b"))` still works (#1170).
+
 ## Polars R Package 0.18.0
 
 ### Breaking changes

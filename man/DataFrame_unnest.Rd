@@ -4,15 +4,15 @@
 \alias{DataFrame_unnest}
 \title{Unnest the Struct columns of a DataFrame}
 \usage{
-DataFrame_unnest(names = NULL)
+DataFrame_unnest(...)
 }
 \arguments{
-\item{names}{Names of the struct columns to unnest. If \code{NULL} (default), then
-all "struct" columns are unnested.}
+\item{...}{Names of the struct columns to unnest. This doesn't accept Expr.
+If nothing is provided, then all columns of datatype \link[=DataType_Struct]{Struct}
+are unnested.}
 }
 \value{
-A DataFrame where all "struct" columns are unnested. Non-struct
-columns are not modified.
+A DataFrame where some or all columns of datatype Struct are unnested.
 }
 \description{
 Unnest the Struct columns of a DataFrame
@@ -35,4 +35,3 @@ df$unnest()
 # we can specify specific columns to unnest
 df$unnest("a_and_c")
 }
-\keyword{DataFrame}
