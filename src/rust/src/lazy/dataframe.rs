@@ -299,8 +299,8 @@ impl RPolarsLazyFrame {
         Ok(RPolarsLazyFrame(self.clone().0.with_columns_seq(exprs)))
     }
 
-    pub fn unnest(&self, names: Vec<String>) -> RResult<Self> {
-        Ok(RPolarsLazyFrame(self.clone().0.unnest(names)))
+    pub fn unnest(&self, columns: Vec<String>) -> RResult<Self> {
+        Ok(RPolarsLazyFrame(self.clone().0.unnest(columns)))
     }
 
     pub fn select(&self, exprs: Robj) -> RResult<Self> {

@@ -1232,7 +1232,7 @@ RPolarsLazyFrame$with_columns <- function(exprs) .Call(wrap__RPolarsLazyFrame__w
 
 RPolarsLazyFrame$with_columns_seq <- function(exprs) .Call(wrap__RPolarsLazyFrame__with_columns_seq, self, exprs)
 
-RPolarsLazyFrame$unnest <- function(names) .Call(wrap__RPolarsLazyFrame__unnest, self, names)
+RPolarsLazyFrame$unnest <- function(columns) .Call(wrap__RPolarsLazyFrame__unnest, self, columns)
 
 RPolarsLazyFrame$select <- function(exprs) .Call(wrap__RPolarsLazyFrame__select, self, exprs)
 
