@@ -266,7 +266,7 @@ find_missing_return = function() {
         has_value()
     })
 
-  names(all_doc_values[sapply(all_doc_values, length) < 1])
+  names(all_doc_values[lengths(all_doc_values) < 1])
 }
 
 
@@ -298,7 +298,7 @@ run_all_examples_collect_errors = \(skip_these = character(), time_examples = FA
     if (time_examples) {
       t2 = Sys.time()
       duration = difftime(t2, t1, units = "secs")
-      if (duration > .1) cat(" ", duration, "s")
+      if (duration > 0.1) cat(" ", duration, "s")
     }
     if (!is.null(err)) list(err = err, txt = txt)
   })

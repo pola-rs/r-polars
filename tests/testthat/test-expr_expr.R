@@ -32,7 +32,7 @@ test_that("expression boolean operators", {
 
   results = unlist(cmp_operators_df$to_list())
   fails = results[!unlist(results)]
-  expect_equal(names(fails), character())
+  expect_named(fails, character())
 })
 
 make_cases = function() {
@@ -185,7 +185,7 @@ test_that("first last heaad tail", {
 
   results = unlist(check_list)
   fails = results[!unlist(results)]
-  expect_equal(names(fails), character())
+  expect_named(fails, character())
 
   df = pl$DataFrame(list(a = 1:11))$select(
     pl$col("a")$head()$alias("head10"),
@@ -230,8 +230,8 @@ test_that("is_null", {
     data.frame(
       a = c(1:2, NA_integer_, 1L, 5L),
       b = c(1, 2, NaN, 1, 5),
-      a_isnull = c(F, F, T, F, F),
-      b_isnull = rep(F, 5)
+      a_isnull = c(FALSE, FALSE, TRUE, FALSE, FALSE),
+      b_isnull = rep(FALSE, 5)
     )
   )
 
@@ -249,7 +249,7 @@ test_that("min max", {
 
   results = unlist(check_list)
   fails = results[!unlist(results)]
-  expect_equal(names(fails), character())
+  expect_named(fails, character())
 })
 
 test_that("$over()", {
@@ -449,24 +449,24 @@ test_that("prefix suffix reverse", {
 
 test_that("and or is_in xor", {
   df = pl$DataFrame(list())
-  expect_true(df$select(pl$lit(T) & T)$to_data_frame()[[1L]])
-  expect_true(!df$select(pl$lit(T) & F)$to_data_frame()[[1L]])
-  expect_true(!df$select(pl$lit(F) & T)$to_data_frame()[[1L]])
-  expect_true(!df$select(pl$lit(F) & F)$to_data_frame()[[1L]])
+  expect_true(df$select(pl$lit(TRUE) & TRUE)$to_data_frame()[[1L]])
+  expect_false(df$select(pl$lit(TRUE) & FALSE)$to_data_frame()[[1L]])
+  expect_false(df$select(pl$lit(FALSE) & TRUE)$to_data_frame()[[1L]])
+  expect_false(df$select(pl$lit(FALSE) & FALSE)$to_data_frame()[[1L]])
 
-  expect_true(df$select(pl$lit(T) | T)$to_data_frame()[[1L]])
-  expect_true(df$select(pl$lit(T) | F)$to_data_frame()[[1L]])
-  expect_true(df$select(pl$lit(F) | T)$to_data_frame()[[1L]])
-  expect_true(!df$select(pl$lit(F) | F)$to_data_frame()[[1L]])
+  expect_true(df$select(pl$lit(TRUE) | TRUE)$to_data_frame()[[1L]])
+  expect_true(df$select(pl$lit(TRUE) | FALSE)$to_data_frame()[[1L]])
+  expect_true(df$select(pl$lit(FALSE) | TRUE)$to_data_frame()[[1L]])
+  expect_false(df$select(pl$lit(FALSE) | FALSE)$to_data_frame()[[1L]])
 
-  expect_true(!df$select(pl$lit(T)$xor(pl$lit(T)))$to_data_frame()[[1L]])
-  expect_true(df$select(pl$lit(T)$xor(pl$lit(F)))$to_data_frame()[[1L]])
-  expect_true(df$select(pl$lit(F)$xor(pl$lit(T)))$to_data_frame()[[1L]])
-  expect_true(!df$select(pl$lit(F)$xor(pl$lit(F)))$to_data_frame()[[1L]])
+  expect_false(df$select(pl$lit(TRUE)$xor(pl$lit(TRUE)))$to_data_frame()[[1L]])
+  expect_true(df$select(pl$lit(TRUE)$xor(pl$lit(FALSE)))$to_data_frame()[[1L]])
+  expect_true(df$select(pl$lit(FALSE)$xor(pl$lit(TRUE)))$to_data_frame()[[1L]])
+  expect_false(df$select(pl$lit(FALSE)$xor(pl$lit(FALSE)))$to_data_frame()[[1L]])
 
   df = pl$DataFrame(list(a = c(1:3, NA_integer_)))
   expect_true(df$select(pl$lit(1L)$is_in(pl$col("a")))$to_data_frame()[[1L]])
-  expect_true(!df$select(pl$lit(4L)$is_in(pl$col("a")))$to_data_frame()[[1L]])
+  expect_false(df$select(pl$lit(4L)$is_in(pl$col("a")))$to_data_frame()[[1L]])
 
 
   # NA_int == NA_int
@@ -554,16 +554,10 @@ test_that("to_physical + cast", {
   )
 
   # strict = FALSE yield NULL for overflow
-  expect_identical(
-    df_big_n$with_columns(pl$col("big")$cast(pl$Int32, strict = FALSE)$is_null())$to_data_frame()$big,
-    TRUE
-  )
+  expect_true(df_big_n$with_columns(pl$col("big")$cast(pl$Int32, strict = FALSE)$is_null())$to_data_frame()$big)
 
   # no overflow to Int64
-  expect_identical(
-    df_big_n$with_columns(pl$col("big")$cast(pl$Int64)$is_null())$to_data_frame()$big,
-    FALSE
-  )
+  expect_false(df_big_n$with_columns(pl$col("big")$cast(pl$Int64)$is_null())$to_data_frame()$big)
 })
 
 
@@ -586,7 +580,7 @@ test_that("pow, rpow, sqrt, log10", {
 
   # log
   expect_equal(pl$DataFrame(list(a = exp(1)^(-1:3)))$select(pl$col("a")$log())$to_data_frame()$a, -1:3)
-  expect_equal(pl$DataFrame(list(a = .42^(-1:3)))$select(pl$col("a")$log(0.42))$to_data_frame()$a, -1:3)
+  expect_equal(pl$DataFrame(list(a = 0.42^(-1:3)))$select(pl$col("a")$log(0.42))$to_data_frame()$a, -1:3)
 
   # exp
   log10123 = suppressWarnings(log(-1:3))
@@ -1000,9 +994,9 @@ test_that("sort_by", {
       pl$col("ab")$sort_by("v3")$alias("ab3"),
       pl$col("ab")$sort_by("v2")$alias("ab2"),
       pl$col("ab")$sort_by("v1")$alias("ab1"),
-      pl$col("ab")$sort_by(list("v3", pl$col("v1")), descending = c(F, T))$alias("ab13FT"),
-      pl$col("ab")$sort_by(list("v3", pl$col("v1")), descending = T)$alias("ab13T"),
-      pl$col("ab")$sort_by(c("v3", "v1"), descending = T)$alias("ab13T2")
+      pl$col("ab")$sort_by(list("v3", pl$col("v1")), descending = c(FALSE, TRUE))$alias("ab13FT"),
+      pl$col("ab")$sort_by(list("v3", pl$col("v1")), descending = TRUE)$alias("ab13T"),
+      pl$col("ab")$sort_by(c("v3", "v1"), descending = TRUE)$alias("ab13T2")
     )$to_list(),
     list(
       ab4 = l$ab[order(l$v4)],
@@ -1010,8 +1004,8 @@ test_that("sort_by", {
       ab2 = l$ab[order(l$v2)],
       ab1 = l$ab[order(l$v1)],
       ab13FT = l$ab[order(l$v3, rev(l$v1))],
-      ab13T = l$ab[order(l$v3, l$v1, decreasing = T)],
-      ab13T2 = l$ab[order(l$v3, l$v1, decreasing = T)]
+      ab13T = l$ab[order(l$v3, l$v1, decreasing = TRUE)],
+      ab13T2 = l$ab[order(l$v3, l$v1, decreasing = TRUE)]
     )
   )
 
@@ -1372,18 +1366,18 @@ test_that("Expr_quantile", {
 
   expect_identical(
     pl$select(
-      pl$lit(0:1)$quantile(.5, "nearest")$alias("nearest"),
-      pl$lit(0:1)$quantile(.5, "linear")$alias("linear"),
-      pl$lit(0:1)$quantile(.5, "higher")$alias("higher"),
-      pl$lit(0:1)$quantile(.5, "lower")$alias("lower"),
-      pl$lit(0:1)$quantile(.5, "midpoint")$alias("midpoint")
+      pl$lit(0:1)$quantile(0.5, "nearest")$alias("nearest"),
+      pl$lit(0:1)$quantile(0.5, "linear")$alias("linear"),
+      pl$lit(0:1)$quantile(0.5, "higher")$alias("higher"),
+      pl$lit(0:1)$quantile(0.5, "lower")$alias("lower"),
+      pl$lit(0:1)$quantile(0.5, "midpoint")$alias("midpoint")
     )$to_list(),
     list(
       nearest = 1.0,
       linear = 0.5,
       higher = 1,
       lower = 0,
-      midpoint = .5
+      midpoint = 0.5
     )
   )
 
@@ -1393,14 +1387,14 @@ test_that("Expr_quantile", {
       pl$lit(c(0:1, NA_integer_))$quantile(0.5, "midpoint")$alias("midpoint_na"),
       pl$lit(c(0:1, NaN))$quantile(0.5, "midpoint")$alias("midpoint_nan"),
       pl$lit(c(0:1, NA_integer_))$quantile(0, "nearest")$alias("nearest_na"),
-      pl$lit(c(0:1, NaN))$quantile(.7, "nearest")$alias("nearest_nan"),
+      pl$lit(c(0:1, NaN))$quantile(0.7, "nearest")$alias("nearest_nan"),
       pl$lit(c(0:1, NA_integer_))$quantile(0, "linear")$alias("linear_na"),
-      pl$lit(c(0:1, NaN))$quantile(.51, "linear")$alias("linear_nan"),
-      pl$lit(c(0:1, NaN))$quantile(.7, "linear")$alias("linear_nan_0.7"),
-      pl$lit(c(0, Inf, NaN))$quantile(.51, "linear")$alias("linear_nan_inf")
+      pl$lit(c(0:1, NaN))$quantile(0.51, "linear")$alias("linear_nan"),
+      pl$lit(c(0:1, NaN))$quantile(0.7, "linear")$alias("linear_nan_0.7"),
+      pl$lit(c(0, Inf, NaN))$quantile(0.51, "linear")$alias("linear_nan_inf")
     )$to_list(),
     list(
-      midpoint_na = .5,
+      midpoint_na = 0.5,
       midpoint_nan = 1,
       nearest_na = 0,
       nearest_nan = 1,
@@ -1567,8 +1561,8 @@ test_that("hash + reinterpret", {
   hash_values1 = unname(unlist(df$select(pl$col(c("Sepal.Width", "Species"))$unique()$hash()$implode())$to_list()))
   hash_values2 = unname(unlist(df$select(pl$col(c("Sepal.Width", "Species"))$unique()$hash(1, 2, 3, 4)$implode())$to_list()))
   hash_values3 = unname((df$select(pl$col(c("Sepal.Width", "Species"))$unique()$hash(1, 2, 3, 4)$implode()$cast(pl$List(pl$String)))$to_list()))
-  expect_true(!any(duplicated(hash_values1)))
-  expect_true(!any(sapply(hash_values3, \(x) any(duplicated(x)))))
+  expect_false(anyDuplicated(hash_values1) > 0)
+  expect_false(any(sapply(hash_values3, \(x) anyDuplicated(x) > 0)))
 
   # In current r-polars + py+polars setting seeds does not change the hash
   # CONTRIBUTE POLARS, py-polars now also has this behavior. Could be a bug.
@@ -1664,7 +1658,7 @@ test_that("Expr_rolling_", {
       pl$col("a")$rolling_var(window_size = 2)$alias("var"),
       pl$col("a")$rolling_median(window_size = 2)$alias("median"),
       pl$col("a")$rolling_quantile(
-        quantile = .33, window_size = 2, interpolation = "linear"
+        quantile = 0.33, window_size = 2, interpolation = "linear"
       )$alias("quantile_linear")
     )$to_data_frame(),
     expected
@@ -1708,7 +1702,7 @@ test_that("Expr_rolling_*_by", {
       pl$col("a")$rolling_var_by("date", window_size = "2d")$alias("var"),
       pl$col("a")$rolling_median_by("date", window_size = "2d")$alias("median"),
       pl$col("a")$rolling_quantile_by(
-        quantile = .33, "date", window_size = "2d", interpolation = "linear"
+        quantile = 0.33, "date", window_size = "2d", interpolation = "linear"
       )$alias("quantile_linear")
     )$to_data_frame(),
     expected
@@ -1756,7 +1750,7 @@ test_that("Expr_rolling_*_by: arg 'min_periods'", {
       pl$col("a")$rolling_var_by("date", window_size = "2d", min_periods = 2)$alias("var"),
       pl$col("a")$rolling_median_by("date", window_size = "2d", min_periods = 2)$alias("median"),
       pl$col("a")$rolling_quantile_by(
-        quantile = .33, "date", window_size = "2d", min_periods = 2, interpolation = "linear"
+        quantile = 0.33, "date", window_size = "2d", min_periods = 2, interpolation = "linear"
       )$alias("quantile_linear")
     )$to_data_frame(),
     expected
@@ -1795,7 +1789,7 @@ test_that("Expr_rolling_*_by: arg 'closed'", {
       pl$col("a")$rolling_var_by("date", window_size = "2d", closed = "left")$alias("var"),
       pl$col("a")$rolling_median_by("date", window_size = "2d", closed = "left")$alias("median"),
       pl$col("a")$rolling_quantile_by(
-        quantile = .33, "date", window_size = "2d", closed = "left", interpolation = "linear"
+        quantile = 0.33, "date", window_size = "2d", closed = "left", interpolation = "linear"
       )$alias("quantile_linear")
     )$to_data_frame(),
     expected
@@ -1955,9 +1949,9 @@ test_that("skew", {
     )$to_list(),
     list(
       a_skew = R_skewness(l$a),
-      a_skew_bias_F = R_skewness(l$a, bias = F),
+      a_skew_bias_F = R_skewness(l$a, bias = FALSE),
       b_skew = R_skewness(l$b, na.rm = TRUE),
-      b_skew_bias_F = R_skewness(l$b, bias = F, na.rm = TRUE)
+      b_skew_bias_F = R_skewness(l$b, bias = FALSE, na.rm = TRUE)
     )
   )
 })
@@ -2013,9 +2007,9 @@ test_that("kurtosis", {
       # pl$col("a")$kurtosis(fisher = FALSE, bias=FALSE)$alias("kurt_FF")
     )$to_list(),
     list2(
-      kurt_TT =  R_kurtosis(l2$a, T, T),
+      kurt_TT =  R_kurtosis(l2$a, TRUE, TRUE),
       # kurt_TF =  R_kurtosis(l2$a,T,F),
-      kurt_FT =  R_kurtosis(l2$a, F, T)
+      kurt_FT =  R_kurtosis(l2$a, FALSE, TRUE)
       # kurt_FF =  R_kurtosis(l2$a,F,F)
     )
   )
@@ -2255,9 +2249,9 @@ test_that("ewm_", {
     pl$col("a")$ewm_mean(com = 1)$alias("com1"),
     pl$col("a")$ewm_mean(span = 2)$alias("span2"),
     pl$col("a")$ewm_mean(half_life = 2)$alias("hl2"),
-    pl$col("a")$ewm_mean(alpha = .5)$alias("a.5"),
+    pl$col("a")$ewm_mean(alpha = 0.5)$alias("a.5"),
     pl$col("a")$ewm_mean(com = 1, adjust = FALSE)$alias("com1_noadjust"),
-    pl$col("a")$ewm_mean(alpha = .5, adjust = FALSE)$alias("a.5_noadjust"),
+    pl$col("a")$ewm_mean(alpha = 0.5, adjust = FALSE)$alias("a.5_noadjust"),
     pl$col("a")$ewm_mean(half_life = 3, adjust = FALSE)$alias("hl2_noadjust"),
     pl$col("a")$ewm_mean(com = 1, min_periods = 4)$alias("com1_min_periods")
   )
@@ -2317,7 +2311,7 @@ test_that("rep", {
   expect_identical(pl$lit(c("a", "b"))$rep(5)$to_r(), rep(c("a", "b"), 5))
   expect_identical(pl$lit((1:3) * 1)$rep(5)$to_r(), rep((1:3) * 1, 5))
   expect_identical(pl$lit(c("a", "b"))$rep(5)$to_r(), rep(c("a", "b"), 5))
-  expect_identical(pl$lit(c(T, T, F))$rep(2)$to_r(), rep(c(T, T, F), 2))
+  expect_identical(pl$lit(c(TRUE, TRUE, FALSE))$rep(2)$to_r(), rep(c(TRUE, TRUE, FALSE), 2))
   expect_grepl_error(pl$lit(1:4)$rep(-1))
   expect_grepl_error(pl$lit(1:4)$rep(Inf))
 })
@@ -2333,7 +2327,7 @@ test_that("to_r", {
   for (i in l) expect_identical(pl$lit(i)$to_r(), i)
 
   # NULL to NULL
-  expect_identical(pl$lit(NULL)$to_r(), NULL)
+  expect_null(pl$lit(NULL)$to_r())
 })
 
 
@@ -2472,7 +2466,7 @@ test_that("shrink_dtype", {
     e = c(-112L, 2L, 129L),
     f = c("a", "b", "c"),
     g = c(0.1, 1.32, 0.12),
-    h = c(T, NA, F)
+    h = c(TRUE, NA, FALSE)
   )$with_columns(pl$col("b")$cast(pl$Int64) * 32L)$select(pl$all()$shrink_dtype())
 
   expect_true(all(mapply(

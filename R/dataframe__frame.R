@@ -1638,7 +1638,7 @@ DataFrame_rename = function(...) {
 #' df
 #'
 #' df$describe()
-DataFrame_describe = function(percentiles = c(.25, .75), interpolation = "nearest") {
+DataFrame_describe = function(percentiles = c(0.25, 0.75), interpolation = "nearest") {
   uw = \(res) unwrap(res, "in $describe():")
 
   if (length(self$columns) == 0) {
