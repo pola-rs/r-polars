@@ -513,3 +513,14 @@ patrick::with_parameters_test_that(
   },
   .cases = make_as_polars_df_experimental_cases()
 )
+
+
+test_that("as_polars_df works for nanoarrow_array with zero rows", {
+  skip_if_not_installed("nanoarrow")
+  orig = data.frame(col1 = character(0), col2 = numeric(0))
+  out = nanoarrow::as_nanoarrow_array(orig) |>
+    as_polars_df() |>
+    as.data.frame()
+  expect_identical(out, orig)
+  expect_identical(lapply(out, class), list(col1 = "character", col2 = "numeric"))
+})
