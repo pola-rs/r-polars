@@ -132,10 +132,7 @@ test_that("get set properties", {
     ))
   )
 
-  expect_equal(
-    df$columns,
-    names(df$schema)
-  )
+  expect_named(df$schema, df$columns)
 })
 
 
@@ -152,7 +149,7 @@ test_that("DataFrame, custom schema", {
       FUN = "=="
     ))
   )
-  expect_identical(names(df$schema), names(iris))
+  expect_named(df$schema, names(iris))
 
   # works fine if a variable is called "schema"
   expect_no_error(
@@ -458,7 +455,7 @@ test_that("with_columns: create a list variable", {
 test_that("with_columns lazy/eager", {
   l = list(
     a = 1:4,
-    b = c(.5, 4, 10, 13),
+    b = c(0.5, 4, 10, 13),
     c = c(TRUE, TRUE, FALSE, TRUE)
   )
   df = pl$DataFrame(l)
@@ -523,7 +520,7 @@ test_that("with_columns_seq", {
 test_that("head lazy/eager", {
   l = list(
     a = 1:4,
-    b = c(.5, 4, 10, 13),
+    b = c(0.5, 4, 10, 13),
     c = c(TRUE, TRUE, FALSE, TRUE)
   )
   df = pl$DataFrame(l)
@@ -630,7 +627,7 @@ test_that("simple translations", {
   expect_equal(a, b, ignore_attr = TRUE)
 
   a = pl$DataFrame(mtcars)$estimated_size()
-  expect_equal(a, 2816, tolerance = .1)
+  expect_equal(a, 2816, tolerance = 0.1)
 
   # trigger u8 conversion errors
   expect_grepl_error(pl$DataFrame(mtcars)$std(256), c("ddof", "exceed the upper bound for u8 of 255"))

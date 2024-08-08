@@ -194,6 +194,6 @@ test_that("cache url tempfile", {
   check_is_link(url, reuse_downloaded = TRUE)
   attempt_2 = cache_temp_file[[url]]
 
-  expect_true(!is.null(cache_temp_file[[url]]))
+  expect_false(is.null(cache_temp_file[[url]]))
   expect_equal(attempt_1, attempt_2)
 })

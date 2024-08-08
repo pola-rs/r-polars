@@ -250,13 +250,13 @@ test_that("n_chunks", {
 
 test_that("floor & ceil", {
   expect_identical(
-    as_polars_series(c(1.5, .5, -.5, NA_real_, NaN))$
+    as_polars_series(c(1.5, 0.5, -0.5, NA_real_, NaN))$
       floor()$
       to_r(),
     c(1, 0, -1, NA_real_, NaN)
   )
   expect_identical(
-    as_polars_series(c(1.5, .5, -.5, NA_real_, NaN))$
+    as_polars_series(c(1.5, 0.5, -0.5, NA_real_, NaN))$
       ceil()$
       to_r(),
     c(2, 1, 0, NA_real_, NaN)
@@ -528,7 +528,7 @@ test_that("to_series", {
   l = list(a = 1:3, b = c("a", "b", "c"))
   expect_identical(pl$DataFrame(l)$to_series(0)$to_r(), l$a)
   expect_identical(pl$DataFrame(l)$to_series(1)$to_r(), l$b)
-  expect_identical(pl$DataFrame(l)$to_series(2), NULL)
+  expect_null(pl$DataFrame(l)$to_series(2))
 })
 
 test_that("internal method get_fmt and to_fmt_char", {

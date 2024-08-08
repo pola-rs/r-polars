@@ -67,7 +67,7 @@ test_that("LazyFrame, custom schema", {
       FUN = "=="
     ))
   )
-  expect_identical(names(df$schema), names(iris))
+  expect_named(df$schema, names(iris))
 
   # works fine if a variable is called "schema"
   expect_no_error(
@@ -345,7 +345,7 @@ test_that("sort", {
     pl$DataFrame(mtcars)$lazy()$sort(
       by = list("cyl", pl$col("gear")), # mixed types which implements Into<Expr>
       "disp", # ... args other unamed args Into<Expr>
-      descending = c(T, T, F) # vector of same length as number of Expr's
+      descending = c(TRUE, TRUE, FALSE) # vector of same length as number of Expr's
     )$collect()
   )
 
@@ -383,9 +383,9 @@ test_that("sort", {
 
   # test raise rust-polars error for mismatch number of booleans
   ctx = pl$DataFrame(mtcars)$lazy()$
-    sort(by = c("cyl", "mpg", "cyl"), descending = c(T, F))$collect() |>
+    sort(by = c("cyl", "mpg", "cyl"), descending = c(TRUE, FALSE))$collect() |>
     get_err_ctx()
-  expect_true(!is.null(ctx$PolarsError))
+  expect_false(is.null(ctx$PolarsError))
 
   # test bad arg
   ctx = pl$DataFrame(mtcars)$
