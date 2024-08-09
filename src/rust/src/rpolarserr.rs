@@ -1,8 +1,8 @@
 use std::collections::VecDeque;
 
 use extendr_api::{
-    call, eval_string, eval_string_with_params, extendr, extendr_module, symbol::class_symbol,
-    Attributes, Nullable, Operators, Pairlist, Rinternals, Robj, Types, R,
+    call, extendr, extendr_module, symbol::class_symbol, Attributes, Nullable, Operators, Pairlist,
+    Robj, Types, R,
 };
 
 #[derive(Clone, Debug, thiserror::Error, serde::Deserialize, serde::Serialize)]
