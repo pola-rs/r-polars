@@ -1143,6 +1143,15 @@ test_that("$clear() works", {
 test_that("$explain() works", {
   lazy_query = pl$LazyFrame(iris)$sort("Species")$filter(pl$col("Species") != "setosa")
 
+  expect_grepl_error(
+    lazy_query$explain(format = "foobar"),
+    "`format` must be one of"
+  )
+  expect_grepl_error(
+    lazy_query$explain(format = 1),
+    "`format` must be one of"
+  )
+
   expect_snapshot(cat(lazy_query$explain(optimized = FALSE)))
   expect_snapshot(cat(lazy_query$explain()))
 
