@@ -280,7 +280,7 @@ LazyFrame_explain = function(
   uw = \(res) unwrap(res, "in $explain():")
 
   if (!is.character(format) || !format %in% c("plain", "tree")) {
-    Err_plain(r"(`format` must be one of `"plain"` or `"tree"`.")") |>
+    Err_plain(r"(`format` must be one of `"plain"` or `"tree"`.)") |>
       uw()
   }
 
