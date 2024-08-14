@@ -389,6 +389,7 @@ impl RPolarsDataFrame {
         value_name: Robj,
         variable_name: Robj,
     ) -> RResult<Self> {
+        use polars::prelude::UnpivotDF;
         let args = UnpivotArgs {
             on: strings_to_smartstrings(robj_to!(Vec, String, on)?),
             index: strings_to_smartstrings(robj_to!(Vec, String, index)?),
