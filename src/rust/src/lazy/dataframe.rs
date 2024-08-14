@@ -49,10 +49,21 @@ impl RPolarsLazyFrame {
         Ok(self.0.describe_plan().map_err(polars_to_rpolars_err)?)
     }
 
+    fn describe_plan_tree(&self) -> RResult<String> {
+        Ok(self.0.describe_plan_tree().map_err(polars_to_rpolars_err)?)
+    }
+
     pub fn describe_optimized_plan(&self) -> RResult<String> {
         Ok(self
             .0
             .describe_optimized_plan()
+            .map_err(polars_to_rpolars_err)?)
+    }
+
+    fn describe_optimized_plan_tree(&self) -> RResult<String> {
+        Ok(self
+            .0
+            .describe_optimized_plan_tree()
             .map_err(polars_to_rpolars_err)?)
     }
 

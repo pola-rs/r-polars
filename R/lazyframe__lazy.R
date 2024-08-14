@@ -86,8 +86,8 @@
 #' Ldf_best = Ldf_best$filter(filter_expr)
 #'
 #' # the non optimized plans are similar, on entire in-mem csv, apply filter
-#' Ldf_okay$describe_plan()
-#' Ldf_best$describe_plan()
+#' Ldf_okay$explain()
+#' Ldf_best$explain()
 #'
 #' # NOTE For Ldf_okay, the full time to load csv alrady paid when creating Rdf and Pdf
 #'
@@ -232,39 +232,89 @@ LazyFrame_print = function() {
   invisible(self)
 }
 
-#' Print the optimized or non-optimized plans of `LazyFrame`
+#' Create a string representation of the query plan
 #'
-#' @rdname LazyFrame_describe_plan
+#' The query plan is read from bottom to top. When `optimized = FALSE`, the
+#' query as it was written by the user is shown. This is not what Polars runs.
+#' Instead, it applies optimizations that are displayed by default by `$explain()`.
+#' One classic example is the predicate pushdown, which applies the filter as
+#' early as possible (i.e. at the bottom of the plan).
 #'
-#' @description `$describe_plan()` shows the query in the format that `polars`
-#' understands. `$describe_optimized_plan()` shows the optimized query plan that
-#' `polars` will execute when `$collect()` is called. It is possible that both
-#' plans are identical if `polars` doesn't find any way to optimize the query.
+#' @inheritParams LazyFrame_set_optimization_toggle
 #'
-#' @return This only prints the plan in the console, it doesn't return any value.
+#' @return A character value containing the query plan.
 #' @examples
 #' lazy_frame = pl$LazyFrame(iris)
 #'
 #' # Prepare your query
 #' lazy_query = lazy_frame$sort("Species")$filter(pl$col("Species") != "setosa")
 #'
-#' # This is the query as `polars` understands it
-#' lazy_query$describe_plan()
+#' # This is the query that was written by the user, without any optimizations
+#' # (use cat() for better printing)
+#' lazy_query$explain(optimized = FALSE) |> cat()
 #'
 #' # This is the query after `polars` optimizes it: instead of sorting first and
 #' # then filtering, it is faster to filter first and then sort the rest.
-#' lazy_query$describe_optimized_plan()
-LazyFrame_describe_optimized_plan = function() {
-  .pr$LazyFrame$describe_optimized_plan(self) |>
-    unwrap("in $describe_optimized_plan():")
-  invisible(NULL)
-}
+#' lazy_query$explain() |> cat()
+#'
+#' # Also possible to see this as tree format
+#' lazy_query$explain(format = "tree") |> cat()
+LazyFrame_explain = function(
+    format = "plain",
+    optimized = TRUE,
+    type_coercion = TRUE,
+    predicate_pushdown = TRUE,
+    projection_pushdown = TRUE,
+    simplify_expression = TRUE,
+    slice_pushdown = TRUE,
+    comm_subplan_elim = TRUE,
+    comm_subexpr_elim = TRUE,
+    cluster_with_columns = TRUE,
+    streaming = FALSE) {
+  uw = \(res) unwrap(res, "in $explain():")
 
-#' @rdname LazyFrame_describe_plan
-LazyFrame_describe_plan = function() {
-  .pr$LazyFrame$describe_plan(self) |>
-    unwrap("in $describe_plan():")
-  invisible(NULL)
+  if (!is.character(format) || !format %in% c("plain", "tree")) {
+    Err_plain("`format` must be one of `\"plain\"` or `\"tree\"`.") |>
+      uw()
+  }
+
+  ldf = self
+
+  if (isTRUE(optimized)) {
+    ldf = ldf |>
+      .pr$LazyFrame$set_optimization_toggle(
+        type_coercion = type_coercion,
+        predicate_pushdown = predicate_pushdown,
+        projection_pushdown = projection_pushdown,
+        simplify_expression = simplify_expression,
+        slice_pushdown = slice_pushdown,
+        comm_subplan_elim = comm_subplan_elim,
+        comm_subexpr_elim = comm_subexpr_elim,
+        cluster_with_columns = cluster_with_columns,
+        streaming = streaming,
+        eager = FALSE
+      ) |>
+      uw()
+
+    if (format == "tree") {
+      out = ldf |>
+        .pr$LazyFrame$describe_optimized_plan_tree()
+    } else {
+      out = ldf |>
+        .pr$LazyFrame$describe_optimized_plan()
+    }
+  } else {
+    if (format == "tree") {
+      out = ldf |>
+        .pr$LazyFrame$describe_plan_tree()
+    } else {
+      out = ldf |>
+        .pr$LazyFrame$describe_plan()
+    }
+  }
+
+  out |>
+    uw()
 }
 
 

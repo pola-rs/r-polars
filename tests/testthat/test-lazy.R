@@ -1139,3 +1139,13 @@ test_that("$clear() works", {
     "greater or equal to 0"
   )
 })
+
+test_that("$explain() works", {
+  lazy_query = pl$LazyFrame(iris)$sort("Species")$filter(pl$col("Species") != "setosa")
+
+  expect_snapshot(cat(lazy_query$explain(optimized = FALSE)))
+  expect_snapshot(cat(lazy_query$explain()))
+
+  expect_snapshot(cat(lazy_query$explain(format = "tree", optimized = FALSE)))
+  expect_snapshot(cat(lazy_query$explain(format = "tree", )))
+})
