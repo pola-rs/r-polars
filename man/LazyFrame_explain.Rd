@@ -5,6 +5,7 @@
 \title{Create a string representation of the query plan}
 \usage{
 LazyFrame_explain(
+  ...,
   format = "plain",
   optimized = TRUE,
   type_coercion = TRUE,
@@ -19,6 +20,14 @@ LazyFrame_explain(
 )
 }
 \arguments{
+\item{...}{Ignored.}
+
+\item{format}{The format to use for displaying the logical plan. Must be either
+\code{"plain"} (default) or \code{"tree"}.}
+
+\item{optimized}{Return an optimized query plan. If \code{TRUE} (default), the
+subsequent optimization flags control which optimizations run.}
+
 \item{type_coercion}{Logical. Coerce types such that operations succeed and
 run on minimal required memory.}
 

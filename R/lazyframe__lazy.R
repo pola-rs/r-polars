@@ -240,6 +240,11 @@ LazyFrame_print = function() {
 #' One classic example is the predicate pushdown, which applies the filter as
 #' early as possible (i.e. at the bottom of the plan).
 #'
+#' @inheritParams LazyFrame_collect
+#' @param format The format to use for displaying the logical plan. Must be either
+#' `"plain"` (default) or `"tree"`.
+#' @param optimized Return an optimized query plan. If `TRUE` (default), the
+#' subsequent optimization flags control which optimizations run.
 #' @inheritParams LazyFrame_set_optimization_toggle
 #'
 #' @return A character value containing the query plan.
@@ -260,6 +265,7 @@ LazyFrame_print = function() {
 #' # Also possible to see this as tree format
 #' lazy_query$explain(format = "tree") |> cat()
 LazyFrame_explain = function(
+    ...,
     format = "plain",
     optimized = TRUE,
     type_coercion = TRUE,
@@ -274,7 +280,7 @@ LazyFrame_explain = function(
   uw = \(res) unwrap(res, "in $explain():")
 
   if (!is.character(format) || !format %in% c("plain", "tree")) {
-    Err_plain("`format` must be one of `\"plain\"` or `\"tree\"`.") |>
+    Err_plain(r"(`format` must be one of `"plain"` or `"tree"`.")") |>
       uw()
   }
 
