@@ -4,7 +4,7 @@
 
 ### Breaking changes
 
-- `$describe_plan()` and `$describe_optimized_plan()` are removed. Use 
+- `$describe_plan()` and `$describe_optimized_plan()` are removed. Use
   respectively `$explain(optimized = FALSE)` and `$explain()` instead (#1182).
 
 ### New features
@@ -18,7 +18,6 @@
 - In `$unnest()` for `DataFrame` and `LazyFrame`, the `names` argument is removed
   and replaced by `...`. This doesn't change the previous behavior, e.g.
   `df$unnest(names = c("a", "b"))` still works (#1170).
-
 
 ## Polars R Package 0.18.0
 
