@@ -4,7 +4,7 @@
       print(ldf)
     Output
       polars LazyFrame
-       $describe_optimized_plan() : Show the optimized query plan.
+       $explain(): Show the optimized query plan.
       
       Naive plan:
       FILTER [(col("a")) == (2)] FROM

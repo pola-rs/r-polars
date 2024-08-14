@@ -432,7 +432,7 @@ Polars has already worked out a more optimized version of the query. We can
 view this optimized plan this by requesting it.
 
 ```{r}
-subset_query$describe_optimized_plan()
+cat(subset_query$explain())
 ```
 
 Here we see a simple, but surprisingly effective component in query

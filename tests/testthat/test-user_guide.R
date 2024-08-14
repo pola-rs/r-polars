@@ -26,7 +26,7 @@
 #   l = l$filter(pl$col("sepal_length") > 5)
 #   l = l$group_by("species",maintain_order = TRUE)
 #   l = l$agg(pl$col("sepal_length")$sum())
-#   capture.output(l$describe_optimized_plan())
+#   capture.output(l$explain())
 #   df = l$collect()
 #   three_lazy_sums = df$to_data_frame()$sepal_length
 #

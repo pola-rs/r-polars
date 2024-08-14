@@ -136,14 +136,14 @@ Ldf_okay = Ldf_okay$filter(filter_expr) # overwrite LazyFrame with new
 Ldf_best = Ldf_best$filter(filter_expr)
 
 # the non optimized plans are similar, on entire in-mem csv, apply filter
-Ldf_okay$explain()
-Ldf_best$explain()
+Ldf_okay$explain(optimized = FALSE)
+Ldf_best$explain(optimized = FALSE)
 
 # NOTE For Ldf_okay, the full time to load csv alrady paid when creating Rdf and Pdf
 
 # The optimized plan are quite different, Ldf_best will read csv and perform filter simultaneously
-Ldf_okay$describe_optimized_plan()
-Ldf_best$describe_optimized_plan()
+Ldf_okay$explain()
+Ldf_best$explain()
 
 
 # To acquire result in-mem use $colelct()
