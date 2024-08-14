@@ -53,7 +53,7 @@ fn concat_lf_diagonal(
 #[extendr]
 pub fn concat_df_horizontal(l: Robj) -> RResult<RPolarsDataFrame> {
     let df_vec = robj_to!(Vec, PLDataFrame, l)?;
-    pl_functions::concat_df_horizontal(&df_vec)
+    pl_functions::concat_df_horizontal(&df_vec, true)
         .map_err(polars_to_rpolars_err)
         .map(RPolarsDataFrame)
 }

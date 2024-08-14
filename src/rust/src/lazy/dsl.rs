@@ -2560,14 +2560,22 @@ impl RPolarsExpr {
 
     fn struct_with_fields(&self, fields: Robj) -> RResult<Self> {
         let fields = robj_to!(VecPLExprColNamed, fields)?;
-        Ok(self.0.clone().struct_().with_fields(fields).into())
+        Ok(self
+            .0
+            .clone()
+            .struct_()
+            .with_fields(fields)
+            .map_err(polars_to_rpolars_err)?
+            .into())
     }
 
     //placed in py-polars/src/lazy/meta.rs, however extendr do not support
     //multiple export impl.
-    fn meta_pop(&self) -> List {
-        let exprs: Vec<pl::Expr> = self.0.clone().meta().pop();
-        List::from_values(exprs.iter().map(|e| RPolarsExpr(e.clone())))
+    fn meta_pop(&self) -> RResult<List> {
+        let exprs: Vec<pl::Expr> = self.0.clone().meta().pop()?;
+        Ok(List::from_values(
+            exprs.iter().map(|e| RPolarsExpr(e.clone())),
+        ))
     }
 
     fn meta_eq(&self, other: Robj) -> Result<bool, String> {

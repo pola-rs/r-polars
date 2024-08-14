@@ -621,7 +621,11 @@ impl RPolarsSeries {
 
     fn struct_fields(&self) -> RResult<Vec<&str>> {
         let ca = self.0.struct_().map_err(polars_to_rpolars_err)?;
-        Ok(ca.fields().iter().map(|s| s.name()).collect())
+        Ok(ca
+            .struct_fields()
+            .iter()
+            .map(|s| s.name().as_str())
+            .collect())
     }
 
     pub fn export_stream(&self, stream_ptr: &str, pl_flavor: bool) {
