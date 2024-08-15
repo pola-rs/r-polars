@@ -701,7 +701,8 @@ LazyFrame_collect_in_background = function() {
 #' @param row_group_size `NULL` or Integer. Size of the row groups in number of
 #' rows. If `NULL` (default), the chunks of the DataFrame are used. Writing in
 #' smaller chunks may reduce memory pressure and improve writing speeds.
-#' @param data_pagesize_limit `NULL` or Integer. If `NULL` (default), the limit
+#' @param data_page_size Size of the data page in bytes. If `NULL` (default), it
+#' is set to 1024^2 bytes.
 #' will be ~1MB.
 #' @param maintain_order Maintain the order in which data is processed. Setting
 #' this to `FALSE` will be slightly faster.
@@ -730,7 +731,7 @@ LazyFrame_sink_parquet = function(
     compression_level = 3,
     statistics = TRUE,
     row_group_size = NULL,
-    data_pagesize_limit = NULL,
+    data_page_size = NULL,
     maintain_order = TRUE,
     type_coercion = TRUE,
     predicate_pushdown = TRUE,
@@ -770,7 +771,7 @@ LazyFrame_sink_parquet = function(
       compression_level,
       statistics,
       row_group_size,
-      data_pagesize_limit,
+      data_page_size,
       maintain_order
     ) |>
     unwrap("in $sink_parquet():")

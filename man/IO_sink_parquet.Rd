@@ -11,7 +11,7 @@ LazyFrame_sink_parquet(
   compression_level = 3,
   statistics = TRUE,
   row_group_size = NULL,
-  data_pagesize_limit = NULL,
+  data_page_size = NULL,
   maintain_order = TRUE,
   type_coercion = TRUE,
   predicate_pushdown = TRUE,
@@ -63,7 +63,8 @@ headers. Possible values:
 rows. If \code{NULL} (default), the chunks of the DataFrame are used. Writing in
 smaller chunks may reduce memory pressure and improve writing speeds.}
 
-\item{data_pagesize_limit}{\code{NULL} or Integer. If \code{NULL} (default), the limit
+\item{data_page_size}{Size of the data page in bytes. If \code{NULL} (default), it
+is set to 1024^2 bytes.
 will be ~1MB.}
 
 \item{maintain_order}{Maintain the order in which data is processed. Setting

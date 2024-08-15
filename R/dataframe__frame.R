@@ -2019,6 +2019,7 @@ DataFrame_write_ipc = function(
 
 
 #' Write to parquet file
+#'
 #' @inherit DataFrame_write_csv params return
 #' @inheritParams LazyFrame_sink_parquet
 #'
@@ -2037,7 +2038,7 @@ DataFrame_write_parquet = function(
     compression_level = 3,
     statistics = TRUE,
     row_group_size = NULL,
-    data_pagesize_limit = NULL) {
+    data_page_size = NULL) {
   statistics = translate_statistics(statistics) |>
     unwrap("in $write_parquet():")
   .pr$DataFrame$write_parquet(
@@ -2047,7 +2048,7 @@ DataFrame_write_parquet = function(
     compression_level,
     statistics,
     row_group_size,
-    data_pagesize_limit
+    data_page_size
   ) |>
     unwrap("in $write_parquet():")
 
