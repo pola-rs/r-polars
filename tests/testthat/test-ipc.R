@@ -121,7 +121,6 @@ test_that("scanning from hive partition works", {
     format = "arrow",
     hive_style = TRUE
   )
-  list.files(temp_dir, recursive = TRUE)
 
   # Passing a directory automatically enables hive partitioning reading
   # i.e. "cyl" and "gear" are in the data and the data is sorted by the
@@ -166,7 +165,6 @@ test_that("try_parse_hive_dates works", {
     format = "arrow",
     hive_style = TRUE
   )
-  list.files(temp_dir, recursive = TRUE)
 
   # default is to parse dates
   expect_identical(

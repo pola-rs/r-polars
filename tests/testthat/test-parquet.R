@@ -65,6 +65,57 @@ test_that("scan read parquet - parallel strategies", {
 })
 
 
+
+test_that("scanning from hive partition works", {
+  skip_if_not_installed("arrow")
+  skip_if_not_installed("withr")
+  temp_dir = withr::local_tempdir()
+  arrow::write_dataset(
+    mtcars,
+    temp_dir,
+    partitioning = c("cyl", "gear"),
+    format = "parquet",
+    hive_style = TRUE
+  )
+
+  # Passing a directory automatically enables hive partitioning reading
+  # i.e. "cyl" and "gear" are in the data and the data is sorted by the
+  # partitioning columns
+  expect_identical(
+    pl$scan_parquet(temp_dir)$select("mpg", "gear")$collect() |> as.data.frame(),
+    mtcars[order(mtcars$cyl, mtcars$gear), c("mpg", "gear")],
+    ignore_attr = TRUE
+  )
+
+  # hive_partitioning controls whether partitioning columns are included
+  expect_identical(
+    pl$scan_parquet(temp_dir, hive_partitioning = FALSE)$collect() |> dim(),
+    c(32L, 9L)
+  )
+})
+
+# TODO: https://github.com/pola-rs/polars/issues/18219
+# test_that("scan_parquet can include file path", {
+#   skip_if_not_installed("arrow")
+#   skip_if_not_installed("withr")
+#   temp_dir = withr::local_tempdir()
+#   arrow::write_dataset(
+#     mtcars,
+#     temp_dir,
+#     partitioning = c("cyl", "gear"),
+#     format = "parquet",
+#     hive_style = TRUE
+#   )
+#
+#   # There are 8 partitions so 8 file paths
+#   expect_identical(
+#     pl$scan_parquet(temp_dir, include_file_paths = "file_paths")$collect()$unique("file_paths") |>
+#       dim(),
+#     c(8L, 12L)
+#   )
+# })
+
+
 test_that("write_parquet works", {
   tmpf = tempfile()
   on.exit(unlink(tmpf))
