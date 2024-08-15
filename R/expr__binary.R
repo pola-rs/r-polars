@@ -4,37 +4,70 @@
 # expr_bin_make_sub_ns = macro_new_subnamespace("^ExprBin_", "RPolarsExprBinNameSpace")
 
 
-#' contains
+#' Check if binaries contain a binary substring
 #'
-#' @aliases expr_bin_contains
-#' @description R Check if binaries in Series contain a binary substring.
-#' @keywords ExprBin
-#' @param lit The binary substring to look for
+#' @param literal The binary substring to look for.
+#'
 #' @return Expr returning a Boolean
-ExprBin_contains = function(lit) {
-  unwrap(.pr$Expr$bin_contains(self, lit))
+#'
+#' @examples
+#' colors = pl$DataFrame(
+#'   name = c("black", "yellow", "blue"),
+#'   code = as_polars_series(c("x00x00x00", "xffxffx00", "x00x00xff"))$cast(pl$Binary),
+#'   lit = as_polars_series(c("x00", "xffx00", "xffxff"))$cast(pl$Binary)
+#' )
+#'
+#' colors$select(
+#'   "name",
+#'   contains_with_lit = pl$col("code")$bin$contains("xff"),
+#'   contains_with_expr = pl$col("code")$bin$contains(pl$col("lit"))
+#' )
+ExprBin_contains = function(literal) {
+  unwrap(.pr$Expr$bin_contains(self, literal))
 }
 
 
-#' starts_with
+#' Check if values start with a binary substring
 #'
-#' @aliases expr_bin_starts_with
-#' @description   Check if values starts with a binary substring.
-#' @keywords ExprBin
 #' @param sub Prefix substring.
+#'
 #' @return Expr returing a Boolean
+#'
+#' @examples
+#' colors = pl$DataFrame(
+#'   name = c("black", "yellow", "blue"),
+#'   code = as_polars_series(c("x00x00x00", "xffxffx00", "x00x00xff"))$cast(pl$Binary),
+#'   lit = as_polars_series(c("x00", "xffx00", "xffxff"))$cast(pl$Binary)
+#' )
+#'
+#' colors$select(
+#'   "name",
+#'   starts_with_lit = pl$col("code")$bin$starts_with("xff"),
+#'   starts_with_expr = pl$col("code")$bin$starts_with(pl$col("prefix"))
+#' )
 ExprBin_starts_with = function(sub) {
   unwrap(.pr$Expr$bin_starts_with(self, sub))
 }
 
 
-#' ends_with
+#' Check if string values end with a binary substring
 #'
-#' @aliases expr_bin_ends_with
-#' @description Check if string values end with a binary substring.
 #' @param suffix Suffix substring.
-#' @keywords ExprBin
+#'
 #' @return Expr returning a Boolean
+#'
+#' @examples
+#' colors = pl$DataFrame(
+#'   name = c("black", "yellow", "blue"),
+#'   code = as_polars_series(c("x00x00x00", "xffxffx00", "x00x00xff"))$cast(pl$Binary),
+#'   lit = as_polars_series(c("x00", "xffx00", "xffxff"))$cast(pl$Binary)
+#' )
+#'
+#' colors$select(
+#'   "name",
+#'   ends_with_lit = pl$col("code")$bin$ends_with("xff"),
+#'   ends_with_expr = pl$col("code")$bin$ends_with(pl$col("prefix"))
+#' )
 ExprBin_ends_with = function(suffix) {
   unwrap(.pr$Expr$bin_ends_with(self, suffix))
 }
@@ -99,4 +132,39 @@ ExprBin_decode = function(encoding, ..., strict = TRUE) {
   }
 
   unwrap(res, "in $bin$decode():")
+}
+
+#' Get the size of binary values in the given unit
+#'
+#' @param unit Size unit. Can be `"b" / "bytes"` and all variants (`"kb"` or
+#' `"kilobytes"`, etc.) until `"terabytes"`.
+#'
+#' @return [Expr][Expr_class] of data type UInt or Float.
+#'
+#' @examples
+#' df = pl$DataFrame(
+#'   name = c("black", "yellow", "blue"),
+#'   code_hex = as_polars_series(c("000000", "ffff00", "0000ff"))$cast(pl$Binary)
+#' )
+#'
+#' df$with_columns(
+#'   n_bytes = pl$col("code_hex")$bin$size(),
+#'   n_kilobytes = pl$col("code_hex")$bin$size("kb")
+#' )
+ExprBin_size = function(unit = "b") {
+  sz = .pr$Expr$bin_size_bytes(self)
+  switch(unit,
+    "b" = ,
+    "bytes" = sz,
+    "kb" = ,
+    "kilobytes" = sz / 1024,
+    "mb" = ,
+    "megabytes" = sz / 1024**2,
+    "gb" = ,
+    "gigabytes" = sz / 1024**3,
+    "tb" = ,
+    "terabytes" = sz / 1024**4,
+    Err_plain("`unit` must be one of 'b', 'kb', 'mb', 'gb', 'tb'") |>
+      unwrap("in $bin$size():")
+  )
 }

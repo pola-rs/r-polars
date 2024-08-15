@@ -2540,6 +2540,10 @@ impl RPolarsExpr {
         Ok(self.0.clone().binary().base64_decode(strict).into())
     }
 
+    pub fn bin_size_bytes(&self) -> Self {
+        self.0.clone().binary().size_bytes().into()
+    }
+
     pub fn struct_field_by_name(&self, name: Robj) -> RResult<RPolarsExpr> {
         Ok(self
             .0

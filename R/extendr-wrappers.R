@@ -1120,6 +1120,8 @@ RPolarsExpr$bin_hex_decode <- function(strict) .Call(wrap__RPolarsExpr__bin_hex_
 
 RPolarsExpr$bin_base64_decode <- function(strict) .Call(wrap__RPolarsExpr__bin_base64_decode, self, strict)
 
+RPolarsExpr$bin_size_bytes <- function() .Call(wrap__RPolarsExpr__bin_size_bytes, self)
+
 RPolarsExpr$struct_field_by_name <- function(name) .Call(wrap__RPolarsExpr__struct_field_by_name, self, name)
 
 RPolarsExpr$struct_rename_fields <- function(names) .Call(wrap__RPolarsExpr__struct_rename_fields, self, names)
