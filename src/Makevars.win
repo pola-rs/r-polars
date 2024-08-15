@@ -12,6 +12,7 @@ PKG_LIBS = -L$(LIBDIR) -lr_polars -lws2_32 -lncrypt -lcrypt32 -ladvapi32 -lusere
 # need to overwrite it via configuration.
 CARGO_LINKER = x86_64-w64-mingw32.static.posix-gcc.exe
 
+
 all: C_clean
 
 $(SHLIB): $(STATLIB)
