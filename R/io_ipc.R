@@ -54,12 +54,12 @@ pl_scan_ipc = function(
     try_parse_hive_dates = TRUE,
     include_file_paths = NULL) {
   import_arrow_ipc(
-    source = source,
+    path = source,
     n_rows = n_rows,
     cache = cache,
     rechunk = rechunk,
-    row_index_name = row_index_name,
-    row_index_offset = row_index_offset,
+    row_name = row_index_name,
+    row_index = row_index_offset,
     memory_map = memory_map,
     hive_partitioning = hive_partitioning,
     hive_schema = hive_schema,
