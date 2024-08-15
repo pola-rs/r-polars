@@ -34,12 +34,12 @@
 #' )
 #' list.files(temp_dir, recursive = TRUE)
 #'
-#' # Read the dataset
-#' # Sinse hive-style partitioning is not supported,
-#' # the `cyl` and `gear` columns are not contained in the result
-#' pl$scan_ipc(
-#'   file.path(temp_dir, "**/*.arrow")
-#' )$collect()
+#' # If the path is a folder, Polars automatically tries to detect partitions
+#' # and includes them in the output
+#' pl$scan_ipc(temp_dir)$collect()
+#'
+#' # We can also impose a schema to the partition
+#' pl$scan_ipc(temp_dir, hive_schema = list(cyl = pl$String, gear = pl$Int32))$collect()
 pl_scan_ipc = function(
     source,
     ...,
