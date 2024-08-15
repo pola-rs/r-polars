@@ -483,6 +483,10 @@ impl RPolarsLazyFrame {
         exprs.append(&mut ddd);
         let descending = robj_to!(Vec, bool, descending)?;
 
+        rprintln!("{:?}", exprs);
+        rprintln!("{:?}", ddd);
+        rprintln!("{:?}", descending);
+
         if descending.is_empty() {
             return Err(RPolarsErr::new()
                 .plain("`descending` must be of length 1 or of the same length as `by`".into()));
