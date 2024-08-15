@@ -1091,6 +1091,10 @@ macro_rules! robj_to_inner {
     (StatisticsOptions, $a:ident) => {
         $crate::rdatatype::robj_to_statistics_options($a)
     };
+
+    (WrapSchema, $a:ident) => {
+        $crate::rdatatype::robj_to_wrap_schema($a)
+    };
 }
 
 //convert any Robj to appropriate rust type with informative error Strings

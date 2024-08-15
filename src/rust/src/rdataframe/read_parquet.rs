@@ -6,7 +6,7 @@ use crate::rpolarserr::{polars_to_rpolars_err, RResult};
 use extendr_api::Rinternals;
 use extendr_api::{extendr, extendr_module, Robj};
 use polars::io::RowIndex;
-use polars::prelude::{self as pl};
+use polars::prelude::{self as pl, Arc};
 
 #[allow(clippy::too_many_arguments)]
 #[extendr]
@@ -23,6 +23,7 @@ pub fn new_from_parquet(
     low_memory: Robj,
     hive_partitioning: Robj,
     glob: Robj,
+    include_file_paths: Robj,
     //retries: Robj // not supported yet, with CloudOptions
 ) -> RResult<RPolarsLazyFrame> {
     let path = robj_to!(String, path)?;
@@ -48,6 +49,7 @@ pub fn new_from_parquet(
             try_parse_dates: true,
         },
         glob: robj_to!(bool, glob)?,
+        include_file_paths: robj_to!(Option, String, include_file_paths)?.map(Arc::from),
     };
 
     pl::LazyFrame::scan_parquet(path, args)

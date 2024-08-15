@@ -2,7 +2,7 @@ use crate::robj_to;
 
 use crate::utils::wrappers::Wrap;
 use extendr_api::prelude::*;
-use polars::prelude as pl;
+use polars::prelude::{self as pl};
 use polars_core::prelude::QuantileInterpolOptions;
 //expose polars DateType in R
 use crate::rpolarserr::{polars_to_rpolars_err, rerr, RPolarsErr, RResult, WithRctx};
@@ -735,6 +735,21 @@ pub fn robj_to_statistics_options(robj: Robj) -> RResult<pl::StatisticsOptions> 
     out.distinct_count = *hm.get(&"distinct_count").unwrap();
     out.null_count = *hm.get(&"null_count").unwrap();
     Ok(out)
+}
+
+pub fn robj_to_wrap_schema(robj: Robj) -> RResult<Wrap<pl::Schema>> {
+    use pl::Schema;
+    let mut schema = Schema::new();
+    let hm = robj.as_list().unwrap().into_hashmap();
+
+    for (key, value) in hm.into_iter() {
+        let dt = crate::utils::robj_to_datatype(value)?;
+        schema.with_column(key.into(), dt.into());
+    }
+
+    let schema: Wrap<Schema> = schema.into();
+
+    Ok(schema)
 }
 
 pub fn parse_fill_null_strategy(
