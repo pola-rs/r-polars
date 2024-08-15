@@ -15,7 +15,7 @@ patrick::with_parameters_test_that("round trip arrow array stream",
     expect_true(
       s_in$equals(
         s_in |>
-          nanoarrow::as_nanoarrow_array_stream(future = TRUE) |>
+          nanoarrow::as_nanoarrow_array_stream(compat_level = TRUE) |>
           as_polars_series()
       )
     )
@@ -23,7 +23,7 @@ patrick::with_parameters_test_that("round trip arrow array stream",
     expect_true(
       as_polars_df(.vec)$equals(
         as_polars_df(.vec) |>
-          nanoarrow::as_nanoarrow_array_stream(future = TRUE) |>
+          nanoarrow::as_nanoarrow_array_stream(compat_level = TRUE) |>
           as_polars_df()
       )
     )
