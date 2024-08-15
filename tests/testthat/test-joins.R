@@ -43,6 +43,23 @@ test_that("lazyframe join examples", {
   )
 })
 
+test_that("right join works", {
+  a = pl$DataFrame(a = c(1, 2, 3), b = c(1, 2, 4))
+  b = pl$DataFrame(a = c(1, 3), b = c(1, 3), c = c(1, 3))
+  expect_identical(
+    a$join(b, on = "a", how = "right", coalesce = TRUE) |> as.data.frame(),
+    data.frame(
+      b = c(1, 4),
+      a = c(1, 3),
+      b_right = c(1, 3),
+      c = c(1, 3)
+    )
+  )
+  expect_named(
+    a$join(b, on = "a", how = "right", coalesce = FALSE),
+    c("a", "b", "a_right", "b_right", "c")
+  )
+})
 
 test_that("test_semi_anti_join", {
   # 1

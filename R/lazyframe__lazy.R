@@ -1330,8 +1330,8 @@ LazyFrame_group_by = function(..., maintain_order = polars_options()$maintain_or
 #' @param on Either a vector of column names or a list of expressions and/or
 #'   strings. Use `left_on` and `right_on` if the column names to match on are
 #'   different between the two DataFrames.
-#' @param how One of the following methods: "inner", "left", "full", "semi",
-#'   "anti", "cross".
+#' @param how One of the following methods: "inner", "left", "right", "full",
+#'   "semi", "anti", "cross".
 #' @param ... Ignored.
 #' @param left_on,right_on Same as `on` but only for the left or the right
 #'   DataFrame. They must have the same length.

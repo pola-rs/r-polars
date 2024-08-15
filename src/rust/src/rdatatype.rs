@@ -606,11 +606,12 @@ pub fn robj_to_join_type(robj: Robj) -> RResult<pl::JoinType> {
         "cross" => Ok(pl::JoinType::Cross),
         "inner" => Ok(pl::JoinType::Inner),
         "left" => Ok(pl::JoinType::Left),
+        "right" => Ok(pl::JoinType::Right),
         "full" => Ok(pl::JoinType::Full),
         "semi" => Ok(pl::JoinType::Semi),
         "anti" => Ok(pl::JoinType::Anti),
         s => rerr().notachoice(format!(
-            "JoinType ('{s}') must be one of 'cross', 'inner', 'left', 'full', 'semi', 'anti'"
+            "JoinType ('{s}') must be one of 'cross', 'inner', 'left', 'right', 'full', 'semi', 'anti'"
         )),
     }
 }
