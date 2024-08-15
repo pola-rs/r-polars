@@ -12,7 +12,11 @@ pl_scan_ipc(
   row_index_name = NULL,
   row_index_offset = 0L,
   rechunk = FALSE,
-  cache = TRUE
+  cache = TRUE,
+  hive_partitioning = NULL,
+  hive_schema = NULL,
+  try_parse_hive_dates = TRUE,
+  include_file_paths = NULL
 )
 }
 \arguments{
@@ -37,6 +41,21 @@ the name is set).}
 the final DataFrame into contiguous memory chunks.}
 
 \item{cache}{Cache the result after reading.}
+
+\item{hive_partitioning}{Infer statistics and schema from Hive partitioned URL
+and use them to prune reads. If \code{NULL} (default), it is automatically
+enabled when a single directory is passed, and otherwise disabled.}
+
+\item{hive_schema}{A list containing the column names and data types of the
+columns by which the data is partitioned, e.g.
+\code{list(a = pl$String, b = pl$Float32)}. If \code{NULL} (default), the schema of
+the Hive partitions is inferred.}
+
+\item{try_parse_hive_dates}{Whether to try parsing hive values as date/datetime
+types.}
+
+\item{include_file_paths}{Character value indicating the column name that will
+include the path of the source file(s).}
 }
 \value{
 \link[=LazyFrame_class]{LazyFrame}

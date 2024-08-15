@@ -9,6 +9,18 @@
 #' @param memory_map A logical. If `TRUE`, try to memory map the file.
 #' This can greatly improve performance on repeated queries as the OS may cache pages.
 #' Only uncompressed Arrow IPC files can be memory mapped.
+#' @param hive_partitioning Infer statistics and schema from Hive partitioned URL
+#' and use them to prune reads. If `NULL` (default), it is automatically
+#' enabled when a single directory is passed, and otherwise disabled.
+#' @param hive_schema A list containing the column names and data types of the
+#' columns by which the data is partitioned, e.g.
+#' `list(a = pl$String, b = pl$Float32)`. If `NULL` (default), the schema of
+#' the Hive partitions is inferred.
+#' @param try_parse_hive_dates Whether to try parsing hive values as date/datetime
+#' types.
+#' @param include_file_paths Character value indicating the column name that will
+#' include the path of the source file(s).
+#'
 #' @rdname IO_scan_ipc
 #' @examplesIf requireNamespace("arrow", quietly = TRUE) && arrow::arrow_with_dataset()
 #' temp_dir = tempfile()
@@ -36,15 +48,23 @@ pl_scan_ipc = function(
     row_index_name = NULL,
     row_index_offset = 0L,
     rechunk = FALSE,
-    cache = TRUE) {
+    cache = TRUE,
+    hive_partitioning = NULL,
+    hive_schema = NULL,
+    try_parse_hive_dates = TRUE,
+    include_file_paths = NULL) {
   import_arrow_ipc(
-    source,
-    n_rows,
-    cache,
-    rechunk,
-    row_index_name,
-    row_index_offset,
-    memory_map
+    source = source,
+    n_rows = n_rows,
+    cache = cache,
+    rechunk = rechunk,
+    row_index_name = row_index_name,
+    row_index_offset = row_index_offset,
+    memory_map = memory_map,
+    hive_partitioning = hive_partitioning,
+    hive_schema = hive_schema,
+    try_parse_hive_dates = try_parse_hive_dates,
+    include_file_paths = include_file_paths
   ) |>
     unwrap("in pl$scan_ipc():")
 }
