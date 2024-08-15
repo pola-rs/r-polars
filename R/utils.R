@@ -730,3 +730,18 @@ translate_statistics = function(statistics) {
   }
   result(statistics)
 }
+
+
+check_compat_level = function(compat_level, fn) {
+  uw = \(res) unwrap(res, paste0("in ", fn, ":"))
+
+  if (is.numeric(compat_level)) {
+    if (!compat_level %in% c(0, 1)) {
+      Err_plain("Numeric values of `compat_level` must be 0 or 1.") |> uw()
+    }
+  } else if (is.character(compat_level)) {
+    if (!compat_level %in% c("newest", "oldest")) {
+      Err_plain(r"(Character values of `compat_level` must be "oldest" or "newest".)") |> uw()
+    }
+  }
+}

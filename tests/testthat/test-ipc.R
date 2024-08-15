@@ -55,11 +55,6 @@ patrick::with_parameters_test_that("write and read Apache Arrow file",
       as.data.frame(pl$read_ipc(tmpf, memory_map = FALSE))
     )
 
-    expect_warning(
-      df$write_ipc(tmpf, compression = compression, future = TRUE),
-      "considered unstable"
-    )
-
     expect_true(
       df$equals(pl$read_ipc(tmpf, memory_map = FALSE))
     )
@@ -82,7 +77,7 @@ patrick::with_parameters_test_that("input/output DataFrame as raw vector",
 
     raw_vec = df$to_raw_ipc(
       compression = compression,
-      future = TRUE
+      compat_level = TRUE
     )
 
     expect_true(

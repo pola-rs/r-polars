@@ -1986,8 +1986,7 @@ DataFrame_write_csv = function(
 #' * an integer indicating the compatibility version (currently only 0 for oldest
 #'   and 1 for newest);
 #' * a logical value with `TRUE` for the newest version and `FALSE` for the oldest
-#'   version;
-#' * a character value (either `"oldest"` or `"newest"`).
+#'   version.
 #'
 #' @rdname IO_write_ipc
 #' @seealso
@@ -2006,18 +2005,6 @@ DataFrame_write_ipc = function(
     compression = c("uncompressed", "zstd", "lz4"),
     ...,
     compat_level = TRUE) {
-
-  uw = \(res) unwrap(res, "in $write_ipc():")
-
-  if (is.numeric(compat_level)) {
-    if (!compat_level %in% c(0, 1)) {
-      Err_plain("Numeric values of `compat_level` must be 0 or 1.") |> uw()
-    }
-  } else if (is.character(compat_level)) {
-    if (!compat_level %in% c("newest", "oldest")) {
-      Err_plain(r"(Character values of `compat_level` must be "oldest" or "newest".)") |> uw()
-    }
-  }
 
   .pr$DataFrame$write_ipc(
     self,

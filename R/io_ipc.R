@@ -155,7 +155,7 @@ pl_read_ipc = function(
 DataFrame_to_raw_ipc = function(
     compression = c("uncompressed", "zstd", "lz4"),
     ...,
-    future = FALSE) {
-  .pr$DataFrame$to_raw_ipc(self, compression, future) |>
+    compat_level = FALSE) {
+  .pr$DataFrame$to_raw_ipc(self, compression, compat_level) |>
     unwrap("in $to_raw_ipc():")
 }

@@ -5,19 +5,24 @@
 \alias{infer_nanoarrow_schema.RPolarsSeries}
 \title{Infer nanoarrow schema from a Polars object}
 \usage{
-\method{infer_nanoarrow_schema}{RPolarsDataFrame}(x, ..., future = FALSE)
+\method{infer_nanoarrow_schema}{RPolarsDataFrame}(x, ..., compat_level = FALSE)
 
-\method{infer_nanoarrow_schema}{RPolarsSeries}(x, ..., future = FALSE)
+\method{infer_nanoarrow_schema}{RPolarsSeries}(x, ..., compat_level = FALSE)
 }
 \arguments{
 \item{x}{A polars object}
 
 \item{...}{Ignored}
 
-\item{future}{Setting this to \code{TRUE} will write Polars' internal data structures that
-might not be available by other Arrow implementations.
-This functionality is considered \strong{unstable}.
-It may be changed at any point without it being considered a breaking change.}
+\item{compat_level}{Use a specific compatibility level when exporting Polars’
+internal data structures. This can be:
+\itemize{
+\item an integer indicating the compatibility version (currently only 0 for oldest
+and 1 for newest);
+\item a logical value with \code{TRUE} for the newest version and \code{FALSE} for the oldest
+version;
+\item a character value (either \code{"oldest"} or \code{"newest"}).
+}}
 }
 \description{
 Infer nanoarrow schema from a Polars object

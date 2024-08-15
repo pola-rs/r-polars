@@ -755,7 +755,16 @@ pub fn robj_to_wrap_schema(robj: Robj) -> RResult<Wrap<pl::Schema>> {
 pub fn robj_to_compat_level(robj: Robj) -> RResult<pl::CompatLevel> {
     use pl::CompatLevel;
     let out;
-    if robj.is_integer() {
+    if robj.is_real() {
+        if let Ok(compat_level) = CompatLevel::with_level(robj.as_real().unwrap() as u16) {
+            out = compat_level;
+        } else {
+            return Err(polars::prelude::PolarsError::ComputeError(
+                format!("invalid compat level").into(),
+            )
+            .into());
+        }
+    } else if robj.is_integer() {
         if let Ok(compat_level) = CompatLevel::with_level(robj.as_integer().unwrap() as u16) {
             out = compat_level;
         } else {

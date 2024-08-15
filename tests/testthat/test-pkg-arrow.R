@@ -24,7 +24,7 @@ test_that("as_arrow_table() works for DataFrame", {
   )
 
   expect_identical(
-    arrow::as_arrow_table(df, future = TRUE)$b$type$ToString(),
+    arrow::as_arrow_table(df, compat_level = TRUE)$b$type$ToString(),
     "string_view"
   )
 })

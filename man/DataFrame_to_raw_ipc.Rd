@@ -17,11 +17,6 @@ Choose "zstd" for good compression performance. Choose "lz4"
 for fast compression/decompression.}
 
 \item{...}{Ignored.}
-
-\item{future}{Setting this to \code{TRUE} will write Polars' internal data structures that
-might not be available by other Arrow implementations.
-This functionality is considered \strong{unstable}.
-It may be changed at any point without it being considered a breaking change.}
 }
 \value{
 A raw vector
