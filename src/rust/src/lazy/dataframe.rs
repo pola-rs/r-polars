@@ -589,34 +589,36 @@ impl RPolarsLazyFrame {
     }
 
     fn get_optimization_toggle(&self) -> List {
-        let pl::OptState {
-            projection_pushdown,
-            predicate_pushdown,
-            type_coercion,
-            simplify_expr,
-            slice_pushdown,
-            file_caching: _,
-            comm_subplan_elim,
-            comm_subexpr_elim,
-            cluster_with_columns,
-            streaming,
-            fast_projection: _,
-            row_estimate: _,
-            eager,
-            new_streaming: _,
-        } = self.0.get_current_optimizations();
-        list!(
-            type_coercion = type_coercion,
-            predicate_pushdown = predicate_pushdown,
-            projection_pushdown = projection_pushdown,
-            simplify_expression = simplify_expr,
-            slice_pushdown = slice_pushdown,
-            comm_subplan_elim = comm_subplan_elim,
-            comm_subexpr_elim = comm_subexpr_elim,
-            cluster_with_columns = cluster_with_columns,
-            streaming = streaming,
-            eager = eager,
-        )
+        // TODO: fix when #1185 is decided
+        // let pl::OptState {
+        //     projection_pushdown,
+        //     predicate_pushdown,
+        //     type_coercion,
+        //     simplify_expr,
+        //     slice_pushdown,
+        //     file_caching: _,
+        //     comm_subplan_elim,
+        //     comm_subexpr_elim,
+        //     cluster_with_columns,
+        //     streaming,
+        //     fast_projection: _,
+        //     row_estimate: _,
+        //     eager,
+        //     new_streaming: _,
+        // } = self.0.get_current_optimizations();
+        // list!(
+        //     type_coercion = type_coercion,
+        //     predicate_pushdown = predicate_pushdown,
+        //     projection_pushdown = projection_pushdown,
+        //     simplify_expression = simplify_expr,
+        //     slice_pushdown = slice_pushdown,
+        //     comm_subplan_elim = comm_subplan_elim,
+        //     comm_subexpr_elim = comm_subexpr_elim,
+        //     cluster_with_columns = cluster_with_columns,
+        //     streaming = streaming,
+        //     eager = eager,
+        // )
+        list!()
     }
 
     fn profile(&self) -> RResult<List> {
