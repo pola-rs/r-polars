@@ -7,7 +7,7 @@
 DataFrame_to_raw_ipc(
   compression = c("uncompressed", "zstd", "lz4"),
   ...,
-  future = FALSE
+  compat_level = FALSE
 )
 }
 \arguments{
@@ -17,6 +17,15 @@ Choose "zstd" for good compression performance. Choose "lz4"
 for fast compression/decompression.}
 
 \item{...}{Ignored.}
+
+\item{compat_level}{Use a specific compatibility level when exporting Polars’
+internal data structures. This can be:
+\itemize{
+\item an integer indicating the compatibility version (currently only 0 for oldest
+and 1 for newest);
+\item a logical value with \code{TRUE} for the newest version and \code{FALSE} for the oldest
+version.
+}}
 }
 \value{
 A raw vector

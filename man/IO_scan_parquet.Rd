@@ -17,7 +17,8 @@ pl_scan_parquet(
   low_memory = FALSE,
   storage_options = NULL,
   use_statistics = TRUE,
-  cache = TRUE
+  cache = TRUE,
+  include_file_paths = NULL
 )
 }
 \arguments{
@@ -38,8 +39,9 @@ the name is set).}
 try to determine the optimal direction. Can be \code{"auto"}, \code{"columns"},
 \code{"row_groups"}, or \code{"none"}.}
 
-\item{hive_partitioning}{Infer statistics and schema from hive partitioned URL
-and use them to prune reads.}
+\item{hive_partitioning}{Infer statistics and schema from Hive partitioned URL
+and use them to prune reads. If \code{NULL} (default), it is automatically
+enabled when a single directory is passed, and otherwise disabled.}
 
 \item{glob}{Expand path given via globbing rules.}
 
@@ -56,6 +58,9 @@ See the 'Details' section.}
 can be skipped from reading.}
 
 \item{cache}{Cache the result after reading.}
+
+\item{include_file_paths}{Character value indicating the column name that will
+include the path of the source file(s).}
 }
 \value{
 \link[=LazyFrame_class]{LazyFrame}

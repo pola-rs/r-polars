@@ -2,6 +2,7 @@
 #'
 #' @inherit pl_scan_csv return
 #' @inheritParams pl_scan_csv
+#' @inheritParams pl_scan_ipc
 #' @param source Path to a file. You can use globbing with `*` to scan/read multiple
 #' files in the same directory (see examples).
 #' @param cache Cache the result after reading.
@@ -10,14 +11,13 @@
 #' `"row_groups"`, or `"none"`.
 #' @param rechunk In case of reading multiple files via a glob pattern, rechunk
 #' the final DataFrame into contiguous memory chunks.
-#' @param hive_partitioning Infer statistics and schema from hive partitioned URL
-#' and use them to prune reads.
 #' @param glob Expand path given via globbing rules.
 #' @param use_statistics Use statistics in the parquet file to determine if pages
 #' can be skipped from reading.
 #' @param storage_options Experimental. List of options necessary to scan
 #' parquet files from different cloud storage providers (GCP, AWS, Azure).
 #' See the 'Details' section.
+#'
 #' @rdname IO_scan_parquet
 #' @details
 #' ## Connecting to cloud providers
@@ -71,7 +71,8 @@ pl_scan_parquet = function(
     low_memory = FALSE,
     storage_options = NULL,
     use_statistics = TRUE,
-    cache = TRUE) {
+    cache = TRUE,
+    include_file_paths = NULL) {
   new_from_parquet(
     path = source,
     n_rows = n_rows,
@@ -84,7 +85,8 @@ pl_scan_parquet = function(
     use_statistics = use_statistics,
     hive_partitioning = hive_partitioning,
     storage_options = storage_options,
-    glob = glob
+    glob = glob,
+    include_file_paths = include_file_paths
   ) |>
     unwrap("in pl$scan_parquet():")
 }
@@ -127,7 +129,8 @@ pl_read_parquet = function(
     low_memory = FALSE,
     storage_options = NULL,
     use_statistics = TRUE,
-    cache = TRUE) {
+    cache = TRUE,
+    include_file_paths = NULL) {
   .args = as.list(environment())
   result({
     do.call(pl$scan_parquet, .args)$collect()

@@ -2005,7 +2005,6 @@ DataFrame_write_ipc = function(
     compression = c("uncompressed", "zstd", "lz4"),
     ...,
     compat_level = TRUE) {
-
   .pr$DataFrame$write_ipc(
     self,
     file,

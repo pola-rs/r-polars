@@ -65,7 +65,7 @@ test_that("scan read parquet - parallel strategies", {
 })
 
 
-test_that("write_paquet works", {
+test_that("write_parquet works", {
   tmpf = tempfile()
   on.exit(unlink(tmpf))
   df_exp = pl$DataFrame(mtcars)

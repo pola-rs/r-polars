@@ -20,8 +20,7 @@ internal data structures. This can be:
 \item an integer indicating the compatibility version (currently only 0 for oldest
 and 1 for newest);
 \item a logical value with \code{TRUE} for the newest version and \code{FALSE} for the oldest
-version;
-\item a character value (either \code{"oldest"} or \code{"newest"}).
+version.
 }}
 }
 \description{
