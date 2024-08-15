@@ -5,6 +5,7 @@
 /// Therefore there annoyingly exists pl::Series and Series
 use crate::apply_input;
 use crate::apply_output;
+use crate::conversion::RCompatLevel;
 use crate::conversion_r_to_s::robjname2series;
 use crate::conversion_s_to_r::pl_series_to_list;
 use crate::handle_type;
@@ -33,16 +34,16 @@ pub struct OwnedSeriesIterator {
     series: pl::Series,
     idx: usize,
     n_chunks: usize,
-    pl_flavor: bool,
+    compat_level: CompatLevel,
 }
 
 impl OwnedSeriesIterator {
-    pub fn new(s: pl::Series, pl_flavor: bool) -> Self {
+    pub fn new(s: pl::Series, compat_level: RCompatLevel) -> Self {
         Self {
             series: s.slice(0, s.len()),
             idx: 0,
             n_chunks: s.n_chunks(),
-            pl_flavor,
+            compat_level: compat_level.0,
         }
     }
 }
@@ -54,7 +55,7 @@ impl Iterator for OwnedSeriesIterator {
         if self.idx >= self.n_chunks {
             None
         } else {
-            let batch = self.series.to_arrow(self.idx, self.pl_flavor);
+            let batch = self.series.to_arrow(self.idx, self.compat_level);
             self.idx += 1;
 
             Some(std::result::Result::Ok(batch))
@@ -628,11 +629,11 @@ impl RPolarsSeries {
             .collect())
     }
 
-    pub fn export_stream(&self, stream_ptr: &str, pl_flavor: bool) {
-        let data_type = self.0.dtype().to_arrow(pl_flavor);
+    pub fn export_stream(&self, stream_ptr: &str, compat_level: RCompatLevel) {
+        let data_type = self.0.dtype().to_arrow(compat_level.0);
         let field = pl::ArrowField::new("", data_type, false);
 
-        let iter_boxed = Box::new(OwnedSeriesIterator::new(self.0.clone(), pl_flavor));
+        let iter_boxed = Box::new(OwnedSeriesIterator::new(self.0.clone(), compat_level));
         let mut stream = arrow::ffi::export_iterator(iter_boxed, field);
         let stream_out_ptr_addr: usize = stream_ptr.parse().unwrap();
         let stream_out_ptr = stream_out_ptr_addr as *mut arrow::ffi::ArrowArrayStream;

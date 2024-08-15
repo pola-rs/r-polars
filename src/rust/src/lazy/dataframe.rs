@@ -1,8 +1,6 @@
 use crate::concurrent::{
     collect_with_r_func_support, fetch_with_r_func_support, profile_with_r_func_support,
 };
-use crate::conversion::strings_to_smartstrings;
-
 use crate::lazy::dsl::*;
 
 use crate::rdataframe::RPolarsDataFrame as RDF;
