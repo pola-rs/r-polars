@@ -752,6 +752,34 @@ pub fn robj_to_wrap_schema(robj: Robj) -> RResult<Wrap<pl::Schema>> {
     Ok(schema)
 }
 
+pub fn robj_to_compat_level(robj: Robj) -> RResult<pl::CompatLevel> {
+    use pl::CompatLevel;
+    let out;
+    if robj.is_integer() {
+        if let Ok(compat_level) = CompatLevel::with_level(robj.as_integer().unwrap() as u16) {
+            out = compat_level;
+        } else {
+            return Err(polars::prelude::PolarsError::ComputeError(
+                format!("invalid compat level").into(),
+            )
+            .into());
+        }
+    } else if robj.is_logical() {
+        if robj.as_bool().unwrap() {
+            out = CompatLevel::newest();
+        } else {
+            out = CompatLevel::oldest();
+        }
+    } else {
+        return Err(polars::prelude::PolarsError::ComputeError(
+            format!("'compat_level' argument accepts int or bool").into(),
+        )
+        .into());
+    }
+
+    Ok(out)
+}
+
 pub fn parse_fill_null_strategy(
     strategy: &str,
     limit: Option<u32>,

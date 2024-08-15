@@ -5,7 +5,6 @@ pub mod read_csv;
 pub mod read_ipc;
 pub mod read_ndjson;
 pub mod read_parquet;
-use crate::conversion::RCompatLevel;
 use crate::conversion_r_to_s::robjname2series;
 use crate::lazy;
 use crate::rdatatype;
@@ -38,8 +37,8 @@ pub struct OwnedDataFrameIterator {
 }
 
 impl OwnedDataFrameIterator {
-    pub fn new(df: polars::frame::DataFrame, compat_level: RCompatLevel) -> Self {
-        let schema = df.schema().to_arrow(compat_level.0);
+    pub fn new(df: polars::frame::DataFrame, compat_level: CompatLevel) -> Self {
+        let schema = df.schema().to_arrow(compat_level);
         let data_type = ArrowDataType::Struct(schema.fields);
         let vs = df.get_columns().to_vec();
         Self {
@@ -47,7 +46,7 @@ impl OwnedDataFrameIterator {
             data_type,
             idx: 0,
             n_chunks: df.n_chunks(),
-            compat_level: compat_level.0,
+            compat_level: compat_level,
         }
     }
 }
@@ -351,8 +350,9 @@ impl RPolarsDataFrame {
         Ok(List::from_values(vec))
     }
 
-    pub fn export_stream(&self, stream_ptr: &str, compat_level: RCompatLevel) {
-        let schema = self.0.schema().to_arrow(compat_level.0);
+    pub fn export_stream(&self, stream_ptr: &str, compat_level: Robj) {
+        let compat_level = robj_to!(CompatLevel, compat_level).unwrap();
+        let schema = self.0.schema().to_arrow(compat_level);
         let data_type = ArrowDataType::Struct(schema.fields);
         let field = ArrowField::new("", data_type, false);
 
@@ -522,25 +522,23 @@ impl RPolarsDataFrame {
             .map_err(polars_to_rpolars_err)
     }
 
-    pub fn write_ipc(
-        &self,
-        file: Robj,
-        compression: Robj,
-        compat_level: RCompatLevel,
-    ) -> RResult<()> {
+    pub fn write_ipc(&self, file: Robj, compression: Robj, compat_level: Robj) -> RResult<()> {
         let file = std::fs::File::create(robj_to!(str, file)?)?;
         pl::IpcWriter::new(file)
             .with_compression(rdatatype::new_ipc_compression(compression)?)
-            .with_compat_level(compat_level.0)
+            .with_compat_level(robj_to!(CompatLevel, compat_level)?)
             .finish(&mut self.0.clone())
             .map_err(polars_to_rpolars_err)
     }
 
-    pub fn to_raw_ipc(&self, compression: Robj, compat_level: RCompatLevel) -> RResult<Vec<u8>> {
+    pub fn to_raw_ipc(&self, compression: Robj, compat_level: Robj) -> RResult<Vec<u8>> {
         let compression = rdatatype::new_ipc_compression(compression)?;
-        // let compat_level = robj_to!(bool, compat_level)?;
 
-        crate::rbackground::serialize_dataframe(&mut self.0.clone(), compression, compat_level.0)
+        crate::rbackground::serialize_dataframe(
+            &mut self.0.clone(),
+            compression,
+            robj_to!(CompatLevel, compat_level)?,
+        )
     }
 
     pub fn from_raw_ipc(

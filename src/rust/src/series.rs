@@ -5,7 +5,6 @@
 /// Therefore there annoyingly exists pl::Series and Series
 use crate::apply_input;
 use crate::apply_output;
-use crate::conversion::RCompatLevel;
 use crate::conversion_r_to_s::robjname2series;
 use crate::conversion_s_to_r::pl_series_to_list;
 use crate::handle_type;
@@ -38,12 +37,12 @@ pub struct OwnedSeriesIterator {
 }
 
 impl OwnedSeriesIterator {
-    pub fn new(s: pl::Series, compat_level: RCompatLevel) -> Self {
+    pub fn new(s: pl::Series, compat_level: CompatLevel) -> Self {
         Self {
             series: s.slice(0, s.len()),
             idx: 0,
             n_chunks: s.n_chunks(),
-            compat_level: compat_level.0,
+            compat_level: compat_level,
         }
     }
 }
@@ -629,8 +628,9 @@ impl RPolarsSeries {
             .collect())
     }
 
-    pub fn export_stream(&self, stream_ptr: &str, compat_level: RCompatLevel) {
-        let data_type = self.0.dtype().to_arrow(compat_level.0);
+    pub fn export_stream(&self, stream_ptr: &str, compat_level: Robj) {
+        let compat_level = robj_to!(CompatLevel, compat_level).unwrap();
+        let data_type = self.0.dtype().to_arrow(compat_level);
         let field = pl::ArrowField::new("", data_type, false);
 
         let iter_boxed = Box::new(OwnedSeriesIterator::new(self.0.clone(), compat_level));

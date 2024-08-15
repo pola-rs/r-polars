@@ -1095,6 +1095,10 @@ macro_rules! robj_to_inner {
     (WrapSchema, $a:ident) => {
         $crate::rdatatype::robj_to_wrap_schema($a)
     };
+
+    (CompatLevel, $a:ident) => {
+        $crate::rdatatype::robj_to_compat_level($a)
+    };
 }
 
 //convert any Robj to appropriate rust type with informative error Strings

@@ -1981,10 +1981,14 @@ DataFrame_write_csv = function(
 #'
 #' @inherit DataFrame_write_csv params return
 #' @inheritParams LazyFrame_sink_ipc
-#' @param future Setting this to `TRUE` will write Polars' internal data structures that
-#' might not be available by other Arrow implementations.
-#' This functionality is considered **unstable**.
-#' It may be changed at any point without it being considered a breaking change.
+#' @param compat_level Use a specific compatibility level when exporting Polars’
+#' internal data structures. This can be:
+#' * an integer indicating the compatibility version (currently only 0 for oldest
+#'   and 1 for newest);
+#' * a logical value with `TRUE` for the newest version and `FALSE` for the oldest
+#'   version;
+#' * a character value (either `"oldest"` or `"newest"`).
+#'
 #' @rdname IO_write_ipc
 #' @seealso
 #' - [`<DataFrame>$to_raw_ipc()`][DataFrame_to_raw_ipc]
@@ -2001,16 +2005,25 @@ DataFrame_write_ipc = function(
     file,
     compression = c("uncompressed", "zstd", "lz4"),
     ...,
-    future = FALSE) {
-  if (isTRUE(future)) {
-    warning("The `future` parameter of `$write_ipc()` is considered unstable.")
+    compat_level = TRUE) {
+
+  uw = \(res) unwrap(res, "in $write_ipc():")
+
+  if (is.numeric(compat_level)) {
+    if (!compat_level %in% c(0, 1)) {
+      Err_plain("Numeric values of `compat_level` must be 0 or 1.") |> uw()
+    }
+  } else if (is.character(compat_level)) {
+    if (!compat_level %in% c("newest", "oldest")) {
+      Err_plain(r"(Character values of `compat_level` must be "oldest" or "newest".)") |> uw()
+    }
   }
 
   .pr$DataFrame$write_ipc(
     self,
     file,
     compression %||% "uncompressed",
-    future
+    compat_level
   ) |>
     unwrap("in $write_ipc():")
 
