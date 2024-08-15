@@ -15,7 +15,7 @@ use pl::{AsOfOptions, Duration, RollingGroupOptions};
 use polars::chunked_array::ops::SortMultipleOptions;
 use polars::prelude as pl;
 
-use polars::prelude::{JoinCoalesce, SerializeOptions};
+use polars::prelude::{JoinCoalesce, SerializeOptions, UnpivotArgsDSL};
 use polars_lazy::prelude::CsvWriterOptions;
 
 #[allow(unused_imports)]
@@ -514,14 +514,18 @@ impl RPolarsLazyFrame {
         index: Robj,
         value_name: Robj,
         variable_name: Robj,
-        streamable: Robj,
     ) -> RResult<Self> {
-        let args = UnpivotArgs {
-            on: strings_to_smartstrings(robj_to!(Vec, String, on)?),
-            index: strings_to_smartstrings(robj_to!(Vec, String, index)?),
+        let args = UnpivotArgsDSL {
+            on: robj_to!(Vec, PLExpr, on)?
+                .into_iter()
+                .map(|e| e.into())
+                .collect(),
+            index: robj_to!(Vec, PLExpr, index)?
+                .into_iter()
+                .map(|e| e.into())
+                .collect(),
             value_name: robj_to!(Option, String, value_name)?.map(|s| s.into()),
             variable_name: robj_to!(Option, String, variable_name)?.map(|s| s.into()),
-            streamable: robj_to!(bool, streamable)?,
         };
         Ok(self.0.clone().unpivot(args).into())
     }
