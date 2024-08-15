@@ -514,11 +514,11 @@ impl RPolarsLazyFrame {
         variable_name: Robj,
     ) -> RResult<Self> {
         let args = UnpivotArgsDSL {
-            on: robj_to!(Vec, PLExpr, on)?
+            on: robj_to!(Vec, PLExprCol, on)?
                 .into_iter()
                 .map(|e| e.into())
                 .collect(),
-            index: robj_to!(Vec, PLExpr, index)?
+            index: robj_to!(Vec, PLExprCol, index)?
                 .into_iter()
                 .map(|e| e.into())
                 .collect(),
