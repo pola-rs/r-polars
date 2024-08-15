@@ -29,9 +29,7 @@ List(\link[=DataType_Datetime]{Datetime})
 \description{
 If both \code{start} and \code{end} are passed as the Date types (not Datetime), and
 the \code{interval} granularity is no finer than \code{"1d"}, the returned range is
-also of type Date. All other permutations return a Datetime. Note that in a
-future version of Polars, \code{pl$date_ranges()} will always return Date. Please
-use \code{\link[=pl_datetime_ranges]{pl$datetime_ranges()}} if you want Datetime instead.
+also of type Date. All other permutations return a Datetime.
 }
 \section{Polars duration string language}{
 
