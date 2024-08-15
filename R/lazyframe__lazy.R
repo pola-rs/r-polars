@@ -1572,10 +1572,7 @@ LazyFrame_join_asof = function(
 #' @param variable_name Name to give to the new column containing the names of
 #' the melted columns. Defaults to "variable".
 #' @param value_name Name to give to the new column containing the values of
-#' the melted columns. Defaults to "value"
-#' @param streamable Allow this node to run in the streaming engine. If this
-#' runs in streaming, the output of the melt operation will not have a stable
-#' ordering.
+#' the melted columns. Defaults to `"value"`.
 #'
 #' @details
 #' Optionally leaves identifiers set.
@@ -1601,11 +1598,10 @@ LazyFrame_unpivot = function(
     ...,
     index = NULL,
     variable_name = NULL,
-    value_name = NULL,
-    streamable = TRUE) {
+    value_name = NULL) {
   .pr$LazyFrame$unpivot(
     self, on %||% character(), index %||% character(),
-    value_name, variable_name, streamable
+    value_name, variable_name
   ) |> unwrap("in $unpivot( ): ")
 }
 

@@ -24,7 +24,7 @@ empty all columns that are not in \code{id_vars} will be used.}
 the melted columns. Defaults to "variable".}
 
 \item{value_name}{Name to give to the new column containing the values of
-the melted columns. Defaults to "value"}
+the melted columns. Defaults to \code{"value"}.}
 }
 \value{
 A new \code{DataFrame}

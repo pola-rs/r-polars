@@ -9,8 +9,7 @@ LazyFrame_unpivot(
   ...,
   index = NULL,
   variable_name = NULL,
-  value_name = NULL,
-  streamable = TRUE
+  value_name = NULL
 )
 }
 \arguments{
@@ -25,11 +24,7 @@ empty all columns that are not in \code{id_vars} will be used.}
 the melted columns. Defaults to "variable".}
 
 \item{value_name}{Name to give to the new column containing the values of
-the melted columns. Defaults to "value"}
-
-\item{streamable}{Allow this node to run in the streaming engine. If this
-runs in streaming, the output of the melt operation will not have a stable
-ordering.}
+the melted columns. Defaults to \code{"value"}.}
 }
 \value{
 A LazyFrame
