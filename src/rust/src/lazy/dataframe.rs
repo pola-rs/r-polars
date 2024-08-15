@@ -13,7 +13,6 @@ use crate::utils::try_f64_into_usize;
 use extendr_api::prelude::*;
 use pl::{AsOfOptions, Duration, RollingGroupOptions};
 use polars::chunked_array::ops::SortMultipleOptions;
-use polars::frame::explode::UnpivotArgs;
 use polars::prelude as pl;
 
 use polars::prelude::{JoinCoalesce, SerializeOptions};

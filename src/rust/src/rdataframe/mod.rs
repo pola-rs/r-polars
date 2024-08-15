@@ -25,7 +25,6 @@ use polars_core::utils::arrow;
 use crate::utils::{collect_hinted_result, r_result_list};
 
 use crate::conversion::strings_to_smartstrings;
-use polars::frame::explode::UnpivotArgs;
 use polars::prelude::pivot::{pivot, pivot_stable};
 
 pub struct OwnedDataFrameIterator {
