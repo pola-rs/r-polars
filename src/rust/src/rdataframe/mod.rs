@@ -25,6 +25,7 @@ use polars_core::utils::arrow;
 use crate::utils::{collect_hinted_result, r_result_list};
 
 use crate::conversion::strings_to_smartstrings;
+use polars::frame::explode::UnpivotArgsIR;
 use polars::prelude::pivot::{pivot, pivot_stable};
 
 pub struct OwnedDataFrameIterator {
@@ -389,12 +390,11 @@ impl RPolarsDataFrame {
         variable_name: Robj,
     ) -> RResult<Self> {
         use polars::prelude::UnpivotDF;
-        let args = UnpivotArgs {
+        let args = UnpivotArgsIR {
             on: strings_to_smartstrings(robj_to!(Vec, String, on)?),
             index: strings_to_smartstrings(robj_to!(Vec, String, index)?),
             value_name: robj_to!(Option, String, value_name)?.map(|s| s.into()),
             variable_name: robj_to!(Option, String, variable_name)?.map(|s| s.into()),
-            streamable: false,
         };
 
         self.0
