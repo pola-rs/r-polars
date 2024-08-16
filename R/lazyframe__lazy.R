@@ -509,8 +509,6 @@ LazyFrame_filter = function(...) {
 #' @param no_optimization  Logical. Sets the following parameters to `FALSE`:
 #'  `predicate_pushdown`, `projection_pushdown`, `slice_pushdown`,
 #'  `comm_subplan_elim`, `comm_subexpr_elim`, `cluster_with_columns`.
-#' @param inherit_optimization  Logical. Use existing optimization settings
-#' regardless the settings specified in this function call.
 #' @param collect_in_background Logical. Detach this query from R session.
 #' Computation will start in background. Get a handle which later can be converted
 #' into the resulting DataFrame. Useful in interactive mode to not lock R session.
@@ -543,7 +541,6 @@ LazyFrame_collect = function(
     cluster_with_columns = TRUE,
     streaming = FALSE,
     no_optimization = FALSE,
-    inherit_optimization = FALSE,
     collect_in_background = FALSE) {
   if (isTRUE(no_optimization)) {
     predicate_pushdown = FALSE
@@ -697,8 +694,7 @@ LazyFrame_sink_parquet = function(
     projection_pushdown = TRUE,
     simplify_expression = TRUE,
     slice_pushdown = TRUE,
-    no_optimization = FALSE,
-    inherit_optimization = FALSE) {
+    no_optimization = FALSE) {
   if (isTRUE(no_optimization)) {
     predicate_pushdown = FALSE
     projection_pushdown = FALSE
@@ -782,8 +778,7 @@ LazyFrame_sink_ipc = function(
     projection_pushdown = TRUE,
     simplify_expression = TRUE,
     slice_pushdown = TRUE,
-    no_optimization = FALSE,
-    inherit_optimization = FALSE) {
+    no_optimization = FALSE) {
   if (isTRUE(no_optimization)) {
     predicate_pushdown = FALSE
     projection_pushdown = FALSE
@@ -868,8 +863,7 @@ LazyFrame_sink_csv = function(
     projection_pushdown = TRUE,
     simplify_expression = TRUE,
     slice_pushdown = TRUE,
-    no_optimization = FALSE,
-    inherit_optimization = FALSE) {
+    no_optimization = FALSE) {
   if (isTRUE(no_optimization)) {
     predicate_pushdown = FALSE
     projection_pushdown = FALSE
@@ -949,8 +943,7 @@ LazyFrame_sink_ndjson = function(
     projection_pushdown = TRUE,
     simplify_expression = TRUE,
     slice_pushdown = TRUE,
-    no_optimization = FALSE,
-    inherit_optimization = FALSE) {
+    no_optimization = FALSE) {
   if (isTRUE(no_optimization)) {
     predicate_pushdown = FALSE
     projection_pushdown = FALSE
@@ -1675,8 +1668,7 @@ LazyFrame_fetch = function(
     comm_subexpr_elim = TRUE,
     cluster_with_columns = TRUE,
     streaming = FALSE,
-    no_optimization = FALSE,
-    inherit_optimization = FALSE) {
+    no_optimization = FALSE) {
   if (isTRUE(no_optimization)) {
     predicate_pushdown = FALSE
     projection_pushdown = FALSE
@@ -1775,7 +1767,6 @@ LazyFrame_profile = function(
     cluster_with_columns = TRUE,
     streaming = FALSE,
     no_optimization = FALSE,
-    inherit_optimization = FALSE,
     collect_in_background = FALSE,
     show_plot = FALSE,
     truncate_nodes = 0) {

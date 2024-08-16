@@ -283,7 +283,6 @@ as.data.frame.RPolarsLazyFrame = function(
     cluster_with_columns = TRUE,
     streaming = FALSE,
     no_optimization = FALSE,
-    inherit_optimization = FALSE,
     collect_in_background = FALSE) {
   as_polars_df.RPolarsLazyFrame(
     x,
@@ -298,7 +297,6 @@ as.data.frame.RPolarsLazyFrame = function(
     cluster_with_columns = cluster_with_columns,
     streaming = streaming,
     no_optimization = no_optimization,
-    inherit_optimization = inherit_optimization,
     collect_in_background = collect_in_background
   ) |>
     as.data.frame.RPolarsDataFrame(...)

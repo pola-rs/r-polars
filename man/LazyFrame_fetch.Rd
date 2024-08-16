@@ -16,8 +16,7 @@ LazyFrame_fetch(
   comm_subexpr_elim = TRUE,
   cluster_with_columns = TRUE,
   streaming = FALSE,
-  no_optimization = FALSE,
-  inherit_optimization = FALSE
+  no_optimization = FALSE
 )
 }
 \arguments{
@@ -55,9 +54,6 @@ reused.}
 \item{no_optimization}{Logical. Sets the following parameters to \code{FALSE}:
 \code{predicate_pushdown}, \code{projection_pushdown}, \code{slice_pushdown},
 \code{comm_subplan_elim}, \code{comm_subexpr_elim}, \code{cluster_with_columns}.}
-
-\item{inherit_optimization}{Logical. Use existing optimization settings
-regardless the settings specified in this function call.}
 }
 \value{
 A DataFrame of maximum n_rows
