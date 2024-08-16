@@ -815,45 +815,6 @@ test_that("unnest", {
   )
 })
 
-# test_that("opt_toggles", {
-#   # some optimization settings
-#   opt_settings = list(
-#     type_coercion = FALSE,
-#     predicate_pushdown = TRUE,
-#     projection_pushdown = TRUE,
-#     simplify_expression = TRUE,
-#     slice_pushdown = FALSE,
-#     comm_subplan_elim = FALSE,
-#     comm_subexpr_elim = FALSE,
-#     cluster_with_columns = TRUE,
-#     streaming = TRUE,
-#     eager = TRUE
-#   )
-#   opt_settings2 = lapply(opt_settings, `!`)
-#
-#   # some LazyFrames
-#   lf = pl$LazyFrame(mtcars)$select(pl$col("mpg") * 0.42)
-#   lf_new_opts = do.call(lf$set_optimization_toggle, opt_settings)$ok
-#   lf_new_opts2 = do.call(lf$set_optimization_toggle, opt_settings2)$ok
-#
-#   # Check set/get roundtrip
-#   expect_identical(lf_new_opts$get_optimization_toggle(), opt_settings)
-#   expect_identical(lf_new_opts2$get_optimization_toggle(), opt_settings2)
-#
-#   # collect - same result, no matter opts
-#   df_new_opts = lf_new_opts$collect(inherit_optimization = TRUE)$to_data_frame()
-#   df_new_opts2 = lf_new_opts2$collect(inherit_optimization = TRUE)$to_data_frame()
-#   df_defaults = lf$collect()$to_data_frame()
-#   expect_identical(df_new_opts, df_defaults)
-#   expect_identical(df_new_opts2, df_defaults)
-#
-#   # sink_ipc - same results
-#   tmpf = tempfile()
-#   on.exit(unlink(tmpf))
-#   lf_new_opts$sink_ipc(tmpf, inherit_optimization = TRUE)
-#   expect_identical(pl$scan_ipc(tmpf, memory_map = FALSE)$collect()$to_data_frame(), df_defaults)
-# })
-
 test_that("with_context works", {
   lf = pl$LazyFrame(a = c(1, 2, 3), b = c("a", "c", NA))
   lf_other = pl$LazyFrame(c = c("foo", "ham"))

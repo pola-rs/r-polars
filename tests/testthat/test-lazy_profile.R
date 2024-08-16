@@ -1,12 +1,3 @@
-test_that("can modify lazy profile settings", {
-  # TODO: some way to check if .pr$LazyFrame$optimization_toggle works
-
-  # toggle settings
-  # read back settings
-  # compare
-  expect_identical(1, 1)
-})
-
 test_that("<LazyFrame>$profile", {
   # profile minimal test
   p0 = pl$LazyFrame()$select(pl$lit(1:3)$alias("x"))$profile()
