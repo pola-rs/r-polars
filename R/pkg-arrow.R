@@ -28,7 +28,6 @@ as_arrow_table.RPolarsDataFrame = function(x, ..., compat_level = FALSE) {
 #' as_record_batch_reader(pl_df)
 # exported in zzz.R
 as_record_batch_reader.RPolarsDataFrame = function(x, ..., compat_level = FALSE) {
-  check_compat_level(compat_level, "")
   # https://github.com/apache/arrow/issues/39793
   allocate_arrow_array_stream = utils::getFromNamespace("allocate_arrow_array_stream", "arrow")
   external_pointer_addr_character = utils::getFromNamespace("external_pointer_addr_character", "arrow")

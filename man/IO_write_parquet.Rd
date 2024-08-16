@@ -11,11 +11,14 @@ DataFrame_write_parquet(
   compression_level = 3,
   statistics = TRUE,
   row_group_size = NULL,
-  data_page_size = NULL
+  data_page_size = NULL,
+  partition_by = NULL,
+  partition_chunk_size_bytes = 4294967296
 )
 }
 \arguments{
-\item{file}{File path to which the result should be written.}
+\item{file}{File path to which the result should be written. This should be
+a path to a directory if writing a partitioned dataset.}
 
 \item{...}{Ignored.}
 
@@ -58,6 +61,14 @@ smaller chunks may reduce memory pressure and improve writing speeds.}
 \item{data_page_size}{Size of the data page in bytes. If \code{NULL} (default), it
 is set to 1024^2 bytes.
 will be ~1MB.}
+
+\item{partition_by}{Column(s) to partition by. A partitioned dataset will be
+written if this is specified.}
+
+\item{partition_chunk_size_bytes}{Approximate size to split DataFrames within
+a single partition when writing. Note this is calculated using the size of
+the DataFrame in memory - the size of the output file may differ depending
+on the file format / compression.}
 }
 \value{
 Invisibly returns the input DataFrame.
@@ -66,9 +77,16 @@ Invisibly returns the input DataFrame.
 Write to parquet file
 }
 \examples{
-# write table 'mtcars' from mem to parquet
+\dontshow{if (requireNamespace("withr", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 dat = pl$DataFrame(mtcars)
 
-destination = tempfile(fileext = ".parquet")
+# write data to a single parquet file
+destination = withr::local_tempfile(fileext = ".parquet")
 dat$write_parquet(destination)
+
+# write data to folder with a hive-partitioned structure
+dest_folder = withr::local_tempdir()
+dat$write_parquet(dest_folder, partition_by = c("gear", "cyl"))
+list.files(dest_folder, recursive = TRUE)
+\dontshow{\}) # examplesIf}
 }

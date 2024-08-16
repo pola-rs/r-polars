@@ -228,7 +228,7 @@ RPolarsDataFrame$to_raw_ipc <- function(compression, compat_level) .Call(wrap__R
 
 RPolarsDataFrame$from_raw_ipc <- function(bits, n_rows, row_name, row_index) .Call(wrap__RPolarsDataFrame__from_raw_ipc, bits, n_rows, row_name, row_index)
 
-RPolarsDataFrame$write_parquet <- function(file, compression_method, compression_level, statistics, row_group_size, data_pagesize_limit) .Call(wrap__RPolarsDataFrame__write_parquet, self, file, compression_method, compression_level, statistics, row_group_size, data_pagesize_limit)
+RPolarsDataFrame$write_parquet <- function(file, compression_method, compression_level, statistics, row_group_size, data_page_size, partition_by, partition_chunk_size_bytes) .Call(wrap__RPolarsDataFrame__write_parquet, self, file, compression_method, compression_level, statistics, row_group_size, data_page_size, partition_by, partition_chunk_size_bytes)
 
 RPolarsDataFrame$write_json <- function(file, pretty, row_oriented) .Call(wrap__RPolarsDataFrame__write_json, self, file, pretty, row_oriented)
 

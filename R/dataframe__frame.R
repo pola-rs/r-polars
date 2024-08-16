@@ -2021,15 +2021,28 @@ DataFrame_write_ipc = function(
 #'
 #' @inherit DataFrame_write_csv params return
 #' @inheritParams LazyFrame_sink_parquet
+#' @param file File path to which the result should be written. This should be
+#' a path to a directory if writing a partitioned dataset.
+#' @param partition_by Column(s) to partition by. A partitioned dataset will be
+#' written if this is specified.
+#' @param partition_chunk_size_bytes Approximate size to split DataFrames within
+#' a single partition when writing. Note this is calculated using the size of
+#' the DataFrame in memory - the size of the output file may differ depending
+#' on the file format / compression.
 #'
 #' @rdname IO_write_parquet
 #'
-#' @examples
-#' # write table 'mtcars' from mem to parquet
+#' @examplesIf requireNamespace("withr", quietly = TRUE)
 #' dat = pl$DataFrame(mtcars)
 #'
-#' destination = tempfile(fileext = ".parquet")
+#' # write data to a single parquet file
+#' destination = withr::local_tempfile(fileext = ".parquet")
 #' dat$write_parquet(destination)
+#'
+#' # write data to folder with a hive-partitioned structure
+#' dest_folder = withr::local_tempdir()
+#' dat$write_parquet(dest_folder, partition_by = c("gear", "cyl"))
+#' list.files(dest_folder, recursive = TRUE)
 DataFrame_write_parquet = function(
     file,
     ...,
@@ -2037,17 +2050,21 @@ DataFrame_write_parquet = function(
     compression_level = 3,
     statistics = TRUE,
     row_group_size = NULL,
-    data_page_size = NULL) {
+    data_page_size = NULL,
+    partition_by = NULL,
+    partition_chunk_size_bytes = 4294967296) {
   statistics = translate_statistics(statistics) |>
     unwrap("in $write_parquet():")
   .pr$DataFrame$write_parquet(
     self,
     file,
-    compression,
-    compression_level,
-    statistics,
-    row_group_size,
-    data_page_size
+    compression = compression,
+    compression_level = compression_level,
+    statistics = statistics,
+    row_group_size = row_group_size,
+    data_page_size = data_page_size,
+    partition_by = partition_by,
+    partition_chunk_size_bytes = partition_chunk_size_bytes
   ) |>
     unwrap("in $write_parquet():")
 

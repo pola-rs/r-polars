@@ -1,5 +1,5 @@
 use extendr_api::{extendr, prelude::*, rprintln};
-use polars::prelude::{self as pl, CompatLevel, IntoLazy, SerWriter};
+use polars::prelude::{self as pl, CompatLevel, IntoLazy, ParquetWriteOptions, SerWriter};
 use std::result::Result;
 pub mod read_csv;
 pub mod read_ipc;
@@ -11,6 +11,7 @@ use crate::rdatatype;
 use crate::rdatatype::{new_parquet_compression, RPolarsDataType};
 use crate::robj_to;
 use crate::rpolarserr::*;
+use crate::utils::robj_to_usize;
 use either::Either;
 pub use lazy::dataframe::*;
 
@@ -563,27 +564,62 @@ impl RPolarsDataFrame {
     }
 
     pub fn write_parquet(
-        &self,
+        &mut self,
         file: Robj,
         compression_method: Robj,
         compression_level: Robj,
         statistics: Robj,
         row_group_size: Robj,
-        data_pagesize_limit: Robj,
-    ) -> RResult<u64> {
+        data_page_size: Robj,
+        partition_by: Robj,
+        partition_chunk_size_bytes: Robj,
+    ) -> RResult<()> {
+        use polars::prelude::write_partitioned_dataset;
         let file = robj_to!(str, file)?;
+        let compression = new_parquet_compression(compression_method, compression_level)?;
+        let statistics = robj_to!(StatisticsOptions, statistics)?;
+        let row_group_size = robj_to!(Option, usize, row_group_size)?;
+        let data_page_size = robj_to!(Option, usize, data_page_size)?;
+        let partition_by = robj_to!(Option, Vec, String, partition_by)?;
+        let partition_chunk_size_bytes = robj_to_usize(partition_chunk_size_bytes)?;
+
+        if let Some(partition_by) = partition_by {
+            let data = &mut self.0.clone();
+            let path = file;
+
+            let write_options = ParquetWriteOptions {
+                compression,
+                statistics,
+                row_group_size,
+                data_page_size,
+                maintain_order: true,
+            };
+
+            let out = write_partitioned_dataset(
+                data,
+                std::path::Path::new(path),
+                partition_by.as_slice(),
+                &write_options,
+                partition_chunk_size_bytes,
+            )
+            .map_err(polars_to_rpolars_err)?;
+
+            return Ok(out);
+        };
+
         let f = std::fs::File::create(file)?;
-        pl::ParquetWriter::new(f)
-            .with_compression(new_parquet_compression(
-                compression_method,
-                compression_level,
-            )?)
-            .with_statistics(robj_to!(StatisticsOptions, statistics)?)
-            .with_row_group_size(robj_to!(Option, usize, row_group_size)?)
-            .with_data_page_size(robj_to!(Option, usize, data_pagesize_limit)?)
+        let out = pl::ParquetWriter::new(f)
+            .with_compression(compression)
+            .with_statistics(statistics)
+            .with_row_group_size(row_group_size)
+            .with_data_page_size(data_page_size)
             .set_parallel(true)
             .finish(&mut self.0.clone())
             .map_err(polars_to_rpolars_err)
+            // Ignore the u64 returned by .finish()
+            .map(|_| ())?;
+
+        Ok(out.into())
     }
 
     pub fn write_json(&mut self, file: Robj, pretty: Robj, row_oriented: Robj) -> RResult<()> {
