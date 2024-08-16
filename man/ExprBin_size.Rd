@@ -7,8 +7,8 @@
 ExprBin_size(unit = "b")
 }
 \arguments{
-\item{unit}{Size unit. Can be \code{"b" / "bytes"} and all variants (\code{"kb"} or
-\code{"kilobytes"}, etc.) until \code{"terabytes"}.}
+\item{unit}{Scale the returned size to the given unit. Can be \code{"b"}, \code{"kb"},
+\code{"mb"}, \code{"gb"}, \code{"tb"}, or their full names (\code{"kilobytes"}, etc.).}
 }
 \value{
 \link[=Expr_class]{Expr} of data type UInt or Float.

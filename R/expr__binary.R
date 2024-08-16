@@ -136,8 +136,8 @@ ExprBin_decode = function(encoding, ..., strict = TRUE) {
 
 #' Get the size of binary values in the given unit
 #'
-#' @param unit Size unit. Can be `"b" / "bytes"` and all variants (`"kb"` or
-#' `"kilobytes"`, etc.) until `"terabytes"`.
+#' @param unit Scale the returned size to the given unit. Can be `"b"`, `"kb"`,
+#' `"mb"`, `"gb"`, `"tb"`, or their full names (`"kilobytes"`, etc.).
 #'
 #' @return [Expr][Expr_class] of data type UInt or Float.
 #'
