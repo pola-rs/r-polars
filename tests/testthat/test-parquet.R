@@ -46,7 +46,7 @@ test_that("scan read parquet - parallel strategies", {
   df_exp = lf_exp$collect()$to_data_frame()
 
   # check all parallel strategies produce same result
-  for (choice in c("auto", "columns", "none", "row_groups")) {
+  for (choice in c("auto", "columns", "none", "row_groups", "prefiltered")) {
     expect_identical(
       pl$read_parquet(tmpf, parallel = choice)$to_data_frame(),
       df_exp
@@ -56,7 +56,7 @@ test_that("scan read parquet - parallel strategies", {
   # bad parallel args
   expect_grepl_error(
     pl$read_parquet(tmpf, parallel = "34"),
-    "must be one of 'auto', 'columns', 'row_groups', 'none'"
+    "must be one of 'auto', 'columns', 'row_groups', 'prefiltered', 'none'"
   )
   expect_grepl_error(
     pl$read_parquet(tmpf, parallel = 42),
@@ -225,4 +225,3 @@ test_that("polars and arrow create the same hive partition", {
     dirname(list.files(temp_dir_polars, recursive = TRUE))
   )
 })
-

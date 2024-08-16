@@ -703,9 +703,10 @@ pub fn robj_to_parallel_strategy(robj: extendr_api::Robj) -> RResult<pl::Paralle
         "auto" => Ok(pl::ParallelStrategy::Auto),
         "columns" => Ok(pl::ParallelStrategy::Columns),
         "row_groups" => Ok(pl::ParallelStrategy::RowGroups),
+        "prefiltered" => Ok(pl::ParallelStrategy::Prefiltered),
         "none" => Ok(pl::ParallelStrategy::None),
         s => rerr().notachoice(format!(
-            "ParallelStrategy ('{s}') must be one of 'auto', 'columns', 'row_groups', 'none'"
+            "ParallelStrategy ('{s}') must be one of 'auto', 'columns', 'row_groups', 'prefiltered', 'none'"
         )),
     }
 }

@@ -8,7 +8,7 @@
 #' @param cache Cache the result after reading.
 #' @param parallel This determines the direction of parallelism. `"auto"` will
 #' try to determine the optimal direction. Can be `"auto"`, `"columns"`,
-#' `"row_groups"`, or `"none"`.
+#' `"row_groups"`, `"prefiltered"`, or `"none"`. See 'Details'.
 #' @param rechunk In case of reading multiple files via a glob pattern, rechunk
 #' the final DataFrame into contiguous memory chunks.
 #' @param glob Expand path given via globbing rules.
@@ -20,6 +20,19 @@
 #'
 #' @rdname IO_scan_parquet
 #' @details
+#' ## On parallel strategies
+#'
+#' The prefiltered strategy first evaluates the pushed-down predicates in
+#' parallel and determines a mask of which rows to read. Then, it parallelizes
+#' over both the columns and the row groups while filtering out rows that do not
+#' need to be read. This can provide significant speedups for large files (i.e.
+#' many row-groups) with a predicate that filters clustered rows or filters
+#' heavily. In other cases, prefiltered may slow down the scan compared other
+#' strategies.
+#'
+#' The prefiltered settings falls back to auto if no predicate is given.
+#'
+#'
 #' ## Connecting to cloud providers
 #'
 #' Polars supports scanning parquet files from different cloud providers.
