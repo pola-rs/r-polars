@@ -3,7 +3,6 @@ pub mod to_rust;
 use polars_core::utils::arrow;
 
 use extendr_api::prelude::*;
-use std::result::Result;
 
 #[derive(Debug)]
 pub enum RArrowArrayClass {
@@ -11,14 +10,18 @@ pub enum RArrowArrayClass {
     NanoArrowArray,
 }
 
-impl<'a> FromRobj<'a> for RArrowArrayClass {
-    fn from_robj(robj: &Robj) -> std::result::Result<Self, &'static str> {
+impl TryFrom<&Robj> for RArrowArrayClass {
+    type Error = extendr_api::Error;
+
+    fn try_from(robj: &Robj) -> Result<Self> {
         if robj.inherits("nanoarrow_array") {
             Ok(RArrowArrayClass::NanoArrowArray)
         } else if robj.inherits("Array") {
             Ok(RArrowArrayClass::ArrowArray)
         } else {
-            Err("Robj does not inherit from Array or nanoarrow_array")
+            Err(Error::Other(
+                "Robj does not inherit from Array or nanoarrow_array".into(),
+            ))
         }
     }
 }
@@ -38,11 +41,11 @@ impl RArrowArrayClass {
 }
 
 pub trait RPackage {
-    fn get_export_array_func(&self) -> Result<Robj, Error>;
+    fn get_export_array_func(&self) -> Result<Robj>;
 }
 
 impl RPackage for ArrowRPackage {
-    fn get_export_array_func(&self) -> Result<Robj, Error> {
+    fn get_export_array_func(&self) -> Result<Robj> {
         R!(r#"
         function(array, exportable_array, exportable_schema) {
             array$export_to_c(exportable_array, exportable_schema)
@@ -51,7 +54,7 @@ impl RPackage for ArrowRPackage {
 }
 
 impl RPackage for NanoArrowRPackage {
-    fn get_export_array_func(&self) -> Result<Robj, Error> {
+    fn get_export_array_func(&self) -> Result<Robj> {
         R!(r#"
         function(array, exportable_array, exportable_schema) {
             nanoarrow::nanoarrow_pointer_export(

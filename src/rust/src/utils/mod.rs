@@ -10,7 +10,6 @@ use crate::rpolarserr::{polars_to_rpolars_err, rdbg, rerr, RPolarsErr, RResult, 
 use crate::series::RPolarsSeries;
 
 use crate::rdataframe::{RPolarsDataFrame, RPolarsLazyFrame};
-use extendr_api::eval_string_with_params;
 use extendr_api::prelude::{list, Result as EResult, Strings};
 use extendr_api::Attributes;
 use extendr_api::CanBeNA;
@@ -1144,7 +1143,7 @@ macro_rules! robj_to {
                 //TODO reintroduce collect_hinted_result_rerr as trait not a generic
                 //generic forces $type to be a literal type in scrop not e.g. PLExprCol
                 //$crate::utils::collect_hinted_result_rerr::<$type>(x.len(), iter)
-                let x: Result<_, _> = iter.collect();
+                let x: std::result::Result<_, _> = iter.collect();
                 x
             } else {
                 // single value without list, convert as is and wrap in a list

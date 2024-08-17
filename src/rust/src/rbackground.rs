@@ -5,8 +5,8 @@ use crate::rpolarserr::{
     extendr_to_rpolars_err, polars_to_rpolars_err, rdbg, RPolarsErr, RResult, Rctx, WithRctx,
 };
 use extendr_api::{
-    call, eval_string, extendr, extendr_module, list, pairlist, symbol::class_symbol, Attributes,
-    Conversions, Length, List, Operators, Pairlist, Rinternals, Robj, NULL, R,
+    call, extendr, extendr_module, list, pairlist, symbol::class_symbol, Attributes, Conversions,
+    Length, List, Operators, Rinternals, Robj, NULL, R,
 };
 use flume::{bounded, Sender};
 use ipc_channel::ipc;
