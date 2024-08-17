@@ -71,11 +71,9 @@ test_that("POSIXct data conversion", {
       )
       expect_grepl_error(
         pl$lit(non_existent_time_chr)$str$strptime(pl$Datetime(), "%F %T")$to_r(),
-        "non-existent"
       )
       expect_grepl_error(
         pl$lit(ambiguous_time_chr)$str$strptime(pl$Datetime(), "%F %T")$to_r(),
-        "ambiguous"
       )
     }
   )

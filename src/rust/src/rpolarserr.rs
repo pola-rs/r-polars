@@ -1,9 +1,6 @@
 use std::collections::VecDeque;
 
-use extendr_api::{
-    call, extendr, extendr_module, symbol::class_symbol, Attributes, Nullable, Operators, Pairlist,
-    Robj, Types, R,
-};
+use extendr_api::prelude::*;
 
 #[derive(Clone, Debug, thiserror::Error, serde::Deserialize, serde::Serialize)]
 pub enum Rctx {

@@ -179,7 +179,7 @@ use crate::rpolarserr::*;
 
 #[extendr]
 pub fn dtype_str_repr(dtype: Robj) -> RResult<String> {
-    let dtype = robj_to!(RPolarsDataType, dtype)?.0;
+    let dtype = robj_to!(PLPolarsDataType, dtype)?;
     Ok(dtype.to_string())
 }
 

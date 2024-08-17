@@ -4,10 +4,7 @@ use crate::rpolarserr::rerr;
 use crate::rpolarserr::{
     extendr_to_rpolars_err, polars_to_rpolars_err, rdbg, RPolarsErr, RResult, Rctx, WithRctx,
 };
-use extendr_api::{
-    call, extendr, extendr_module, list, pairlist, symbol::class_symbol, Attributes, Conversions,
-    Length, List, Operators, Rinternals, Robj, NULL, R,
-};
+use extendr_api::prelude::*;
 use flume::{bounded, Sender};
 use ipc_channel::ipc;
 use once_cell::sync::Lazy;
@@ -15,6 +12,7 @@ use polars::prelude as pl;
 use std::collections::VecDeque;
 use std::sync::{Arc, Mutex};
 use std::thread;
+
 #[derive(Debug)]
 pub struct RPolarsRThreadHandle<T> {
     handle: Option<thread::JoinHandle<T>>,

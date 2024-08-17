@@ -146,8 +146,8 @@ test_that("pl$n_unique", {
   expr_act = pl$n_unique("bob")
   expect_true(expr_act$meta$eq(pl$col("bob")$n_unique()))
 
-  expect_grepl_error(pl$n_unique(pl$all()))
-  expect_grepl_error(pl$n_unique(1))
+  expect_error(pl$n_unique(pl$all()))
+  expect_error(pl$n_unique(1))
 })
 
 test_that("pl$approx_n_unique", {
@@ -160,10 +160,9 @@ test_that("pl$approx_n_unique", {
   expr_act = pl$approx_n_unique("bob")
   expect_true(expr_act$meta$eq(pl$col("bob")$approx_n_unique()))
 
-  expect_grepl_error(pl$approx_n_unique(pl$all()))
-  expect_grepl_error(pl$approx_n_unique(1:99))
+  expect_error(pl$approx_n_unique(pl$all()))
+  expect_error(pl$approx_n_unique(1:99))
 })
-
 
 test_that("pl$head", {
   df = pl$DataFrame(
@@ -171,6 +170,7 @@ test_that("pl$head", {
     b = c(4, 5, 2),
     c = c("foo", "bar", "foo")
   )
+
   expect_identical(
     df$select(pl$head("a"))$to_data_frame()$a,
     head(df$to_data_frame())$a

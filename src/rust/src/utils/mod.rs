@@ -16,6 +16,7 @@ use extendr_api::CanBeNA;
 use extendr_api::ExternalPtr;
 use extendr_api::Result as ExtendrResult;
 use extendr_api::R;
+use crate::eval_string_with_params;
 use std::any::type_name as tn;
 
 use polars::prelude as pl;
@@ -742,8 +743,11 @@ pub fn robj_to_rarrow_field(robj: extendr_api::Robj) -> RResult<Robj> {
 
 pub fn robj_to_datatype(robj: extendr_api::Robj) -> RResult<RPolarsDataType> {
     let rv = rdbg(&robj);
-    let res: ExtendrResult<ExternalPtr<RPolarsDataType>> = robj.try_into();
-    let ext_dt = res.bad_val(rv).mistyped(tn::<RPolarsDataType>())?;
+    if rv != "ExternalPtr.set_class([\"RPolarsDataType\"]" {
+        return Err(RPolarsErr::new().bad_val(rv).mistyped(tn::<RPolarsDataType>().to_string()).into());
+    }
+    let res: ExtendrResult<&ExternalPtr<RPolarsDataType>> = (&robj).try_into();
+    let ext_dt = res?;
     Ok(RPolarsDataType(ext_dt.0.clone()))
 }
 

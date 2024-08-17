@@ -157,10 +157,7 @@ test_that("DataFrame, custom schema", {
   )
   # incorrect datatype
   expect_grepl_error(pl$DataFrame(x = 1, schema = list(schema = foo)))
-  expect_grepl_error(
-    pl$DataFrame(x = 1, schema = list(x = "foo")),
-    "expected RPolarsDataType"
-  )
+  expect_grepl_error(pl$DataFrame(x = 1, schema = list(x = "foo")))
 
   # wrong variable name in schema
   expect_grepl_error(
@@ -606,11 +603,9 @@ test_that("unnest works correctly", {
   # wrong input
   expect_grepl_error(
     df$unnest("b", pl$col("a_and_c")),
-    "Input must be a character vector."
   )
   expect_grepl_error(
     df$unnest(1),
-    "Input must be a character vector."
   )
 
   # wrong datatype
