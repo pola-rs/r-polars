@@ -169,17 +169,18 @@ to a 1.7-2.2x decrease in time.
 
 So what happened? Under the hood, `polars` reorganized the query so that it
 filters rows while reading the csv into memory, and then sorts the remaining
-data. This can be seen by comparing the original query (`describe_plan()`) and
-the optimized query (`describe_optimized_plan()`):
+data. This can be seen by comparing the original query with the optimized one:
 
 ```{r}
-lazy_query$describe_plan()
+lazy_query$explain(optimized = FALSE) |>
+  cat()
 
-lazy_query$describe_optimized_plan()
+lazy_query$explain() |>
+  cat()
 ```
 
 
-Note that the queries must be read from bottom to top, i.e the optimized query
+Note that queries must be read from bottom to top, i.e the optimized query
 is "select the dataset where the column 'country' matches these values, then sort
 the data by the values of 'country'".
 

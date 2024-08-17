@@ -2,9 +2,22 @@
 
 ## Polars R Package (development version)
 
+### Breaking changes
+
+- `$describe_plan()` and `$describe_optimized_plan()` are removed. Use
+  respectively `$explain(optimized = FALSE)` and `$explain()` instead (#1182).
+
 ### New features
 
 - New method `$str$extract_many()` (#1163).
+- Converting a `nanoarrow_array` with zero rows to an `RPolarsDataFrame` via
+  `as_polars_df()` now keeps the original schema (#1177).
+
+### Other changes
+
+- In `$unnest()` for `DataFrame` and `LazyFrame`, the `names` argument is removed
+  and replaced by `...`. This doesn't change the previous behavior, e.g.
+  `df$unnest(names = c("a", "b"))` still works (#1170).
 
 ## Polars R Package 0.18.0
 

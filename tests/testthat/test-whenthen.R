@@ -12,10 +12,7 @@ test_that("When-class", {
   expect_true(grepl("When", capture.output(print(pl$when("a")))))
 
   ctx = result(pl$when(complex(2)))$err$contexts()
-  expect_identical(
-    names(ctx),
-    c("BadArgument", "PlainErrorMessage", "BadValue", "When", "PolarsError")
-  )
+  expect_named(ctx, c("BadArgument", "PlainErrorMessage", "BadValue", "When", "PolarsError"))
   expect_identical(
     ctx$BadArgument,
     "condition"
@@ -30,10 +27,7 @@ test_that("Then-class", {
   expect_s3_class(pl$when(TRUE)$then(FALSE)$otherwise(NA), "RPolarsExpr")
 
   ctx = result(pl$when("a")$then(complex(2)))$err$contexts()
-  expect_identical(
-    names(ctx),
-    c("BadArgument", "PlainErrorMessage", "BadValue", "When", "PolarsError")
-  )
+  expect_named(ctx, c("BadArgument", "PlainErrorMessage", "BadValue", "When", "PolarsError"))
   expect_identical(
     ctx$BadArgument,
     "statement"

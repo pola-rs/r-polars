@@ -1174,9 +1174,13 @@ RPolarsLazyFrame$print <- function() .Call(wrap__RPolarsLazyFrame__print, self)
 
 RPolarsLazyFrame$describe_plan <- function() .Call(wrap__RPolarsLazyFrame__describe_plan, self)
 
-RPolarsLazyFrame$debug_plan <- function() .Call(wrap__RPolarsLazyFrame__debug_plan, self)
+RPolarsLazyFrame$describe_plan_tree <- function() .Call(wrap__RPolarsLazyFrame__describe_plan_tree, self)
 
 RPolarsLazyFrame$describe_optimized_plan <- function() .Call(wrap__RPolarsLazyFrame__describe_optimized_plan, self)
+
+RPolarsLazyFrame$describe_optimized_plan_tree <- function() .Call(wrap__RPolarsLazyFrame__describe_optimized_plan_tree, self)
+
+RPolarsLazyFrame$debug_plan <- function() .Call(wrap__RPolarsLazyFrame__debug_plan, self)
 
 RPolarsLazyFrame$collect <- function() .Call(wrap__RPolarsLazyFrame__collect, self)
 
@@ -1232,7 +1236,7 @@ RPolarsLazyFrame$with_columns <- function(exprs) .Call(wrap__RPolarsLazyFrame__w
 
 RPolarsLazyFrame$with_columns_seq <- function(exprs) .Call(wrap__RPolarsLazyFrame__with_columns_seq, self, exprs)
 
-RPolarsLazyFrame$unnest <- function(names) .Call(wrap__RPolarsLazyFrame__unnest, self, names)
+RPolarsLazyFrame$unnest <- function(columns) .Call(wrap__RPolarsLazyFrame__unnest, self, columns)
 
 RPolarsLazyFrame$select <- function(exprs) .Call(wrap__RPolarsLazyFrame__select, self, exprs)
 

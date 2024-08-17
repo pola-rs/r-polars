@@ -1,7 +1,7 @@
 test_that("lazy prints", {
   getprint = function(x) capture_output(print(x))
 
-  df = pl$DataFrame(list(a = 1:3, b = c(T, T, F)))
+  df = pl$DataFrame(a = 1:3, b = c(TRUE, TRUE, FALSE))
   ldf = df$lazy()$filter(pl$col("a") == 2L)
 
   expect_snapshot(print(ldf))
@@ -15,11 +15,6 @@ test_that("lazy prints", {
     ret_val2 = ldf$print()
   })
   expect_equal(getprint(ret_val2), getprint(ldf))
-
-  # described plan is not equal to optimized plan
-  expect_true(
-    capture_output(ldf$describe_optimized_plan()) != capture_output(ldf$describe_plan())
-  )
 })
 
 test_that("create LazyFrame", {
@@ -72,7 +67,7 @@ test_that("LazyFrame, custom schema", {
       FUN = "=="
     ))
   )
-  expect_identical(names(df$schema), names(iris))
+  expect_named(df$schema, names(iris))
 
   # works fine if a variable is called "schema"
   expect_no_error(
@@ -350,7 +345,7 @@ test_that("sort", {
     pl$DataFrame(mtcars)$lazy()$sort(
       by = list("cyl", pl$col("gear")), # mixed types which implements Into<Expr>
       "disp", # ... args other unamed args Into<Expr>
-      descending = c(T, T, F) # vector of same length as number of Expr's
+      descending = c(TRUE, TRUE, FALSE) # vector of same length as number of Expr's
     )$collect()
   )
 
@@ -388,9 +383,9 @@ test_that("sort", {
 
   # test raise rust-polars error for mismatch number of booleans
   ctx = pl$DataFrame(mtcars)$lazy()$
-    sort(by = c("cyl", "mpg", "cyl"), descending = c(T, F))$collect() |>
+    sort(by = c("cyl", "mpg", "cyl"), descending = c(TRUE, FALSE))$collect() |>
     get_err_ctx()
-  expect_true(!is.null(ctx$PolarsError))
+  expect_false(is.null(ctx$PolarsError))
 
   # test bad arg
   ctx = pl$DataFrame(mtcars)$
@@ -1143,4 +1138,23 @@ test_that("$clear() works", {
     df$clear(-1),
     "greater or equal to 0"
   )
+})
+
+test_that("$explain() works", {
+  lazy_query = pl$LazyFrame(iris)$sort("Species")$filter(pl$col("Species") != "setosa")
+
+  expect_grepl_error(
+    lazy_query$explain(format = "foobar"),
+    "`format` must be one of"
+  )
+  expect_grepl_error(
+    lazy_query$explain(format = 1),
+    "`format` must be one of"
+  )
+
+  expect_snapshot(cat(lazy_query$explain(optimized = FALSE)))
+  expect_snapshot(cat(lazy_query$explain()))
+
+  expect_snapshot(cat(lazy_query$explain(format = "tree", optimized = FALSE)))
+  expect_snapshot(cat(lazy_query$explain(format = "tree", )))
 })

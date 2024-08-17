@@ -257,13 +257,7 @@ as_polars_df.nanoarrow_array = function(x, ...) {
   }
 
   series = as_polars_series.nanoarrow_array(x, name = NULL)
-
-  if (length(series)) {
-    series$to_frame()$unnest("")
-  } else {
-    # TODO: support 0-length array
-    pl$DataFrame()
-  }
+  series$to_frame()$unnest("")
 }
 
 

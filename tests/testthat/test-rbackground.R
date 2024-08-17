@@ -28,7 +28,7 @@ test_that("Test using $map_batches() in background", {
       expect_equal(polars_options()$rpool_active, 0)
       compute = lf$select(pl$col("y")$map_batches(\(x) x * x, in_background = FALSE))
       compute_bg = lf$select(pl$col("y")$map_batches(\(x) {
-        Sys.sleep(.3)
+        Sys.sleep(0.3)
         x * x
       }, in_background = TRUE))
       res_ref = compute$collect()$to_data_frame()
@@ -53,7 +53,7 @@ test_that("Test using $map_batches() in background", {
     {
       compute = lf$select(pl$col("y")$map_batches(\(x) x * x, in_background = FALSE))
       compute_bg = lf$select(pl$col("y")$map_batches(\(x) {
-        Sys.sleep(.3)
+        Sys.sleep(0.3)
         x * x
       }, in_background = TRUE))
 
@@ -71,7 +71,7 @@ test_that("Test using $map_batches() in background", {
         invisible()
 
       # can ask if joined after exhausted
-      expect_equal(handle$is_finished(), NULL)
+      expect_null(handle$is_finished())
 
       # gives correct err message
       expect_rpolarserr(handle$join(), "Handled")
@@ -119,15 +119,15 @@ test_that("reduce cap and active while jobs in queue", {
     {
       l_expr = lapply(1:5, \(i) {
         pl$lit(i)$map_batches(\(x) {
-          Sys.sleep(.4)
+          Sys.sleep(0.4)
           -i
         }, in_background = TRUE)$alias(paste0("lit_", i))
       })
       lf = pl$LazyFrame()$select(l_expr)
       handle = lf$collect(collect_in_background = TRUE)
-      Sys.sleep(.2)
+      Sys.sleep(0.2)
       options(polars.rpool_cap = 2)
-      Sys.sleep(.1)
+      Sys.sleep(0.1)
       options(polars.rpool_cap = 1)
       df = handle$join()
 

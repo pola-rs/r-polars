@@ -86,9 +86,7 @@ withr::with_envvar(
   \}
 )
 #> <error: in to_r: ComputeError(ErrString("datetime '2020-03-08 02:00:00' is non-existent in time zone 'America/New_York'. You may be able to use `non_existent='null'` to return `null` in this case.")) When calling: devtools::document()>
-}\if{html}{\out{</div>}}
 
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{
 withr::with_envvar(
   new = c(TZ = "America/New_York"),
   \{
@@ -138,14 +136,14 @@ Ldf_okay = Ldf_okay$filter(filter_expr) # overwrite LazyFrame with new
 Ldf_best = Ldf_best$filter(filter_expr)
 
 # the non optimized plans are similar, on entire in-mem csv, apply filter
-Ldf_okay$describe_plan()
-Ldf_best$describe_plan()
+Ldf_okay$explain(optimized = FALSE)
+Ldf_best$explain(optimized = FALSE)
 
 # NOTE For Ldf_okay, the full time to load csv alrady paid when creating Rdf and Pdf
 
 # The optimized plan are quite different, Ldf_best will read csv and perform filter simultaneously
-Ldf_okay$describe_optimized_plan()
-Ldf_best$describe_optimized_plan()
+Ldf_okay$explain()
+Ldf_best$explain()
 
 
 # To acquire result in-mem use $colelct()

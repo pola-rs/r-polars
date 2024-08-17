@@ -75,7 +75,7 @@ make_print_cases = function() {
 expect_rpolarserr = function(expr, ctxs) {
   res = result(expr)
   expect_identical(class(res$err), "RPolarsErr")
-  expect_identical(names(res$err$contexts()), ctxs)
+  expect_named(res$err$contexts(), ctxs)
 }
 
 expect_snapshot_file = function(path, ...) {

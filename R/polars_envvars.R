@@ -109,7 +109,7 @@ polars_envvars = function() {
     c("POLARS_WARN_UNSTABLE", "0")
   ) |> as.data.frame()
   out = vector("list", length(envvars))
-  for (i in 1:nrow(envvars)) {
+  for (i in seq_len(nrow(envvars))) {
     e = envvars[[1]][i]
     out[[e]] = Sys.getenv(e, unset = envvars[[2]][i])
   }

@@ -80,7 +80,7 @@ test_that("quantile", {
   b = pl$DataFrame(mtcars)$group_by("cyl", maintain_order = FALSE)$max()$to_data_frame()
   expect_equal(a[order(a$cyl), ], b[order(b$cyl), ], ignore_attr = TRUE)
 
-  a = pl$DataFrame(mtcars)$group_by("cyl", maintain_order = FALSE)$quantile(.5, "midpoint")$to_data_frame()
+  a = pl$DataFrame(mtcars)$group_by("cyl", maintain_order = FALSE)$quantile(0.5, "midpoint")$to_data_frame()
   b = pl$DataFrame(mtcars)$group_by("cyl", maintain_order = FALSE)$median()$to_data_frame()
   expect_equal(a[order(a$cyl), ], b[order(b$cyl), ], ignore_attr = TRUE)
 })

@@ -323,7 +323,7 @@ get_method_usages = function(env, pattern = "") {
   paste0_len = function(..., collapse = NULL, sep = "") {
     dot_args = list2(...)
     # any has zero length, return zero length
-    if (any(!sapply(dot_args, length))) {
+    if (!all(lengths(dot_args))) {
       character()
     } else {
       paste(..., collapse = collapse, sep = sep)
@@ -385,7 +385,7 @@ print_env = function(api, name, max_depth = 10) {
 #' @noRd
 #' @return X without any AsIs subclass
 unAsIs = function(X) {
-  if ("AsIs" %in% class(X)) {
+  if (inherits(X, "AsIs")) {
     class(X) = class(X)[-match("AsIs", class(X))]
   }
   X
@@ -421,7 +421,7 @@ restruct_list = function(l) {
   if (!length(structs_found_list)) {
     return(l)
   }
-  structs_found_list = structs_found_list |> (\(x) x[order(-sapply(x, length))])()
+  structs_found_list = structs_found_list |> (\(x) x[order(-lengths(x))])()
 
   val = NULL # to satisyfy R CMD check no undefined global
   # restruct all tags in list

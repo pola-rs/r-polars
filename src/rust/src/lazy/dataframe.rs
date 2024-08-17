@@ -9,7 +9,7 @@ use crate::rdataframe::RPolarsDataFrame as RDF;
 use crate::rdatatype::{new_ipc_compression, new_parquet_compression, RPolarsDataType};
 use crate::robj_to;
 use crate::rpolarserr::{polars_to_rpolars_err, RPolarsErr, RResult};
-use crate::utils::{r_result_list, try_f64_into_usize};
+use crate::utils::try_f64_into_usize;
 use extendr_api::prelude::*;
 use pl::{AsOfOptions, Duration, RollingGroupOptions};
 use polars::chunked_array::ops::SortMultipleOptions;
@@ -42,10 +42,26 @@ impl RPolarsLazyFrame {
         Ok(self.0.clone().into())
     }
 
-    pub fn describe_plan(&self) -> RResult<()> {
-        let plan = self.0.describe_plan().map_err(polars_to_rpolars_err)?;
-        rprintln!("{}", plan);
-        Ok(())
+    pub fn describe_plan(&self) -> RResult<String> {
+        Ok(self.0.describe_plan().map_err(polars_to_rpolars_err)?)
+    }
+
+    fn describe_plan_tree(&self) -> RResult<String> {
+        Ok(self.0.describe_plan_tree().map_err(polars_to_rpolars_err)?)
+    }
+
+    pub fn describe_optimized_plan(&self) -> RResult<String> {
+        Ok(self
+            .0
+            .describe_optimized_plan()
+            .map_err(polars_to_rpolars_err)?)
+    }
+
+    fn describe_optimized_plan_tree(&self) -> RResult<String> {
+        Ok(self
+            .0
+            .describe_optimized_plan_tree()
+            .map_err(polars_to_rpolars_err)?)
     }
 
     //low level version of describe_plan, mainly for arg testing
@@ -55,13 +71,6 @@ impl RPolarsLazyFrame {
         Serialize::serialize(&self.0.logical_plan.clone(), Serializer)
             .map_err(|err| err.to_string())
             .map(|val| format!("{:?}", val))
-    }
-
-    pub fn describe_optimized_plan(&self) -> List {
-        let result = self.0.describe_optimized_plan().map(|opt_plan| {
-            rprintln!("{}", opt_plan);
-        });
-        r_result_list(result.map_err(|err| format!("{:?}", err)))
     }
 
     pub fn collect(&self) -> RResult<RDF> {
@@ -298,8 +307,8 @@ impl RPolarsLazyFrame {
         Ok(RPolarsLazyFrame(self.clone().0.with_columns_seq(exprs)))
     }
 
-    pub fn unnest(&self, names: Vec<String>) -> RResult<Self> {
-        Ok(RPolarsLazyFrame(self.clone().0.unnest(names)))
+    pub fn unnest(&self, columns: Vec<String>) -> RResult<Self> {
+        Ok(RPolarsLazyFrame(self.clone().0.unnest(columns)))
     }
 
     pub fn select(&self, exprs: Robj) -> RResult<Self> {

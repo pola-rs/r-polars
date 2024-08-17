@@ -150,7 +150,7 @@ patrick::with_parameters_test_that(
     pl_series = as_polars_series(x)
     expect_s3_class(pl_series, "RPolarsSeries")
 
-    expect_identical(length(pl_series), 1L)
+    expect_length(pl_series, 1L)
     expect_equal(pl_series$name, expected_name)
 
     if (inherits(x, "nanoarrow_array_stream")) {
@@ -204,7 +204,7 @@ test_that("tests for vctrs_rcrd", {
 
   vec = latlon(c(32.71, 2.95), c(-117.17, 1.67))
 
-  expect_identical(length(as_polars_series(vec)), 2L)
+  expect_length(as_polars_series(vec), 2L)
 
   expect_snapshot(pl$DataFrame(foo = vec)$dtypes, cran = TRUE)
 
@@ -353,7 +353,7 @@ patrick::with_parameters_test_that("as_polars_series for nanoarrow_array_stream"
     expect_s3_class(pl_series, "RPolarsSeries")
     expect_grepl_error(x$get_next(), "already been released")
 
-    expect_identical(length(pl_series), 2L)
+    expect_length(pl_series, 2L)
   },
   .cases = make_nanoarrow_array_stream_cases()
 )
@@ -513,3 +513,14 @@ patrick::with_parameters_test_that(
   },
   .cases = make_as_polars_df_experimental_cases()
 )
+
+
+test_that("as_polars_df works for nanoarrow_array with zero rows", {
+  skip_if_not_installed("nanoarrow")
+  orig = data.frame(col1 = character(0), col2 = numeric(0))
+  out = nanoarrow::as_nanoarrow_array(orig) |>
+    as_polars_df() |>
+    as.data.frame()
+  expect_identical(out, orig)
+  expect_identical(lapply(out, class), list(col1 = "character", col2 = "numeric"))
+})

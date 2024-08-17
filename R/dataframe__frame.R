@@ -1111,13 +1111,13 @@ DataFrame_to_struct = function(name = "") {
 }
 
 
-## TODO contribute polars add r-polars defaults for to_struct and unnest
 #' Unnest the Struct columns of a DataFrame
-#' @keywords DataFrame
-#' @param names Names of the struct columns to unnest. If `NULL` (default), then
-#' all "struct" columns are unnested.
-#' @return A DataFrame where all "struct" columns are unnested. Non-struct
-#' columns are not modified.
+#'
+#' @param ... Names of the struct columns to unnest. This doesn't accept Expr.
+#' If nothing is provided, then all columns of datatype [Struct][DataType_Struct]
+#' are unnested.
+#'
+#' @return A DataFrame where some or all columns of datatype Struct are unnested.
 #' @examples
 #' df = pl$DataFrame(
 #'   a = 1:5,
@@ -1135,11 +1135,14 @@ DataFrame_to_struct = function(name = "") {
 #'
 #' # we can specify specific columns to unnest
 #' df$unnest("a_and_c")
-DataFrame_unnest = function(names = NULL) {
-  if (is.null(names)) {
-    names = names(which(dtypes_are_struct(.pr$DataFrame$schema(self))))
+DataFrame_unnest = function(...) {
+  columns = unpack_list(..., .context = "in $unnest():")
+  if (length(columns) == 0) {
+    columns = names(which(dtypes_are_struct(.pr$DataFrame$schema(self))))
+  } else {
+    columns = unlist(columns)
   }
-  unwrap(.pr$DataFrame$unnest(self, names), "in $unnest():")
+  unwrap(.pr$DataFrame$unnest(self, columns), "in $unnest():")
 }
 
 
@@ -1638,7 +1641,7 @@ DataFrame_rename = function(...) {
 #' df
 #'
 #' df$describe()
-DataFrame_describe = function(percentiles = c(.25, .75), interpolation = "nearest") {
+DataFrame_describe = function(percentiles = c(0.25, 0.75), interpolation = "nearest") {
   uw = \(res) unwrap(res, "in $describe():")
 
   if (length(self$columns) == 0) {
