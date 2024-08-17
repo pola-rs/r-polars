@@ -49,6 +49,7 @@ pub fn pl_series_to_list(
                         .collect_robj()
                         .set_class(&["integer64"])
                         .expect("internal error could not set class label 'integer64'")
+                        .clone()
                 }),
                 _ => Err(pl::PolarsError::InvalidOperation(
                     "`int64_conversion ` must be one of 'float', 'string', 'bit64'".into(),
@@ -109,6 +110,7 @@ pub fn pl_series_to_list(
                     .into_robj()
                     .set_class(["rpolars_raw_list", "list"])
                     .expect("this class label is always valid")
+                    .clone()
             }),
             Enum(_, _) => s
                 .categorical()
@@ -181,7 +183,8 @@ pub fn pl_series_to_list(
                 .into_iter()
                 .collect_robj()
                 .set_class(&["Date"])
-                .expect("internal error: class label Date failed")),
+                .expect("internal error: class label Date failed")
+                .clone()),
             Null => Ok((extendr_api::NULL).into_robj()),
             Time => s
                 .cast(&Int64)?
@@ -195,8 +198,9 @@ pub fn pl_series_to_list(
                 .map(|mut robj| {
                     robj.set_class(&["PTime"])
                         .expect("internal error: class label PTime failed")
+                        .clone()
                 })
-                .map(|mut robj| robj.set_attrib("tu", "ns"))
+                .map(|mut robj| robj.set_attrib("tu", "ns").cloned())
                 .expect("internal error: attr tu failed")
                 .map_err(|err| {
                     pl_error::ComputeError(
@@ -248,9 +252,12 @@ pub fn pl_series_to_list(
                     .map(|mut robj| {
                         robj.set_class(&["POSIXct", "POSIXt"])
                             .expect("internal error: class POSIXct label failed")
+                            .clone()
                     })
                     .map(|mut robj| {
-                        robj.set_attrib("tzone", opt_tz.as_ref().map(|s| s.as_str()).unwrap_or(""))
+                        let res = robj
+                            .set_attrib("tzone", opt_tz.as_ref().map(|s| s.as_str()).unwrap_or(""));
+                        res.cloned()
                     })
                     .expect("internal error: attr tzone failed")
                     .map_err(|err| {
