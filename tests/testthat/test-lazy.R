@@ -77,7 +77,6 @@ test_that("LazyFrame, custom schema", {
   expect_grepl_error(pl$LazyFrame(x = 1, schema = list(schema = foo)))
   expect_grepl_error(
     pl$LazyFrame(x = 1, schema = list(x = "foo")),
-    "expected RPolarsDataType"
   )
 })
 

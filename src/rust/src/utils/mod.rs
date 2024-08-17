@@ -10,13 +10,13 @@ use crate::rpolarserr::{polars_to_rpolars_err, rdbg, rerr, RPolarsErr, RResult, 
 use crate::series::RPolarsSeries;
 
 use crate::rdataframe::{RPolarsDataFrame, RPolarsLazyFrame};
-use extendr_api::eval_string_with_params;
 use extendr_api::prelude::{list, Result as EResult, Strings};
 use extendr_api::Attributes;
 use extendr_api::CanBeNA;
 use extendr_api::ExternalPtr;
 use extendr_api::Result as ExtendrResult;
 use extendr_api::R;
+use crate::eval_string_with_params;
 use std::any::type_name as tn;
 
 use polars::prelude as pl;
@@ -743,8 +743,11 @@ pub fn robj_to_rarrow_field(robj: extendr_api::Robj) -> RResult<Robj> {
 
 pub fn robj_to_datatype(robj: extendr_api::Robj) -> RResult<RPolarsDataType> {
     let rv = rdbg(&robj);
-    let res: ExtendrResult<ExternalPtr<RPolarsDataType>> = robj.try_into();
-    let ext_dt = res.bad_val(rv).mistyped(tn::<RPolarsDataType>())?;
+    if rv != "ExternalPtr.set_class([\"RPolarsDataType\"]" {
+        return Err(RPolarsErr::new().bad_val(rv).mistyped(tn::<RPolarsDataType>().to_string()).into());
+    }
+    let res: ExtendrResult<&ExternalPtr<RPolarsDataType>> = (&robj).try_into();
+    let ext_dt = res?;
     Ok(RPolarsDataType(ext_dt.0.clone()))
 }
 
@@ -1144,7 +1147,7 @@ macro_rules! robj_to {
                 //TODO reintroduce collect_hinted_result_rerr as trait not a generic
                 //generic forces $type to be a literal type in scrop not e.g. PLExprCol
                 //$crate::utils::collect_hinted_result_rerr::<$type>(x.len(), iter)
-                let x: Result<_, _> = iter.collect();
+                let x: std::result::Result<_, _> = iter.collect();
                 x
             } else {
                 // single value without list, convert as is and wrap in a list
