@@ -19,7 +19,7 @@ Check if values start with a binary substring
 colors = pl$DataFrame(
   name = c("black", "yellow", "blue"),
   code = as_polars_series(c("x00x00x00", "xffxffx00", "x00x00xff"))$cast(pl$Binary),
-  lit = as_polars_series(c("x00", "xffx00", "xffxff"))$cast(pl$Binary)
+  prefix = as_polars_series(c("x00", "xffx00", "xffxff"))$cast(pl$Binary)
 )
 
 colors$select(

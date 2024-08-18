@@ -37,7 +37,7 @@ ExprBin_contains = function(literal) {
 #' colors = pl$DataFrame(
 #'   name = c("black", "yellow", "blue"),
 #'   code = as_polars_series(c("x00x00x00", "xffxffx00", "x00x00xff"))$cast(pl$Binary),
-#'   lit = as_polars_series(c("x00", "xffx00", "xffxff"))$cast(pl$Binary)
+#'   prefix = as_polars_series(c("x00", "xffx00", "xffxff"))$cast(pl$Binary)
 #' )
 #'
 #' colors$select(
@@ -60,13 +60,13 @@ ExprBin_starts_with = function(sub) {
 #' colors = pl$DataFrame(
 #'   name = c("black", "yellow", "blue"),
 #'   code = as_polars_series(c("x00x00x00", "xffxffx00", "x00x00xff"))$cast(pl$Binary),
-#'   lit = as_polars_series(c("x00", "xffx00", "xffxff"))$cast(pl$Binary)
+#'   suffix = as_polars_series(c("x00", "xffx00", "xffxff"))$cast(pl$Binary)
 #' )
 #'
 #' colors$select(
 #'   "name",
 #'   ends_with_lit = pl$col("code")$bin$ends_with("xff"),
-#'   ends_with_expr = pl$col("code")$bin$ends_with(pl$col("prefix"))
+#'   ends_with_expr = pl$col("code")$bin$ends_with(pl$col("suffix"))
 #' )
 ExprBin_ends_with = function(suffix) {
   unwrap(.pr$Expr$bin_ends_with(self, suffix))
