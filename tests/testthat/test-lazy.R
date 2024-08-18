@@ -378,7 +378,7 @@ test_that("sort", {
   # test raise error for missing by
   expect_grepl_error(
     pl$DataFrame(mtcars)$lazy()$sort(),
-    c("arg", "by", "is missing")
+    r"(argument "by" is missing)"
   )
 
   # test raise rust-polars error for mismatch number of booleans

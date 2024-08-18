@@ -1406,7 +1406,7 @@ LazyFrame_sort = function(
     maintain_order = FALSE,
     multithreaded = TRUE) {
   .pr$LazyFrame$sort_by_exprs(
-    self, unpack_list(by, .context = "in $sort():"), err_on_named_args(...),
+    self, wrap_elist_result(by, str_to_lit = FALSE), err_on_named_args(...),
     descending, nulls_last, maintain_order, multithreaded
   ) |>
     unwrap("in $sort():")
