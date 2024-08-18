@@ -63,7 +63,7 @@ lazyframe__sort <- function(
       descending = descending,
       nulls_last = nulls_last,
       multithreaded = multithreaded,
-      maintain_order = multithreaded
+      maintain_order = maintain_order
     )
   })
 }
