@@ -39,16 +39,16 @@ impl PlRSeries {
 
     fn struct_unnest(&self) -> Result<PlRDataFrame> {
         let ca = self.series.struct_().map_err(RPolarsErr::from)?;
-        let df: DataFrame = ca.clone().into();
+        let df: DataFrame = ca.clone().unnest();
         Ok(df.into())
     }
 
     fn struct_fields(&self) -> Result<Sexp> {
         let ca = self.series.struct_().map_err(RPolarsErr::from)?;
         Ok(ca
-            .fields()
+            .struct_fields()
             .iter()
-            .map(|s| s.name())
+            .map(|s| s.name().as_str())
             .collect::<Vec<_>>()
             .try_into()?)
     }

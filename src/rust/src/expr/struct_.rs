@@ -1,4 +1,4 @@
-use crate::{prelude::*, PlRExpr};
+use crate::{error::RPolarsErr, prelude::*, PlRExpr};
 use savvy::{savvy, ListSexp, NumericScalar, Result, StringSexp};
 
 #[savvy]
@@ -37,6 +37,12 @@ impl PlRExpr {
 
     fn struct_with_fields(&self, fields: ListSexp) -> Result<Self> {
         let fields = <Wrap<Vec<Expr>>>::from(fields).0;
-        Ok(self.inner.clone().struct_().with_fields(fields).into())
+        let e = self
+            .inner
+            .clone()
+            .struct_()
+            .with_fields(fields)
+            .map_err(RPolarsErr::from)?;
+        Ok(e.into())
     }
 }
