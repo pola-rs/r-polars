@@ -557,24 +557,20 @@ LazyFrame_collect = function(
 
   collect_f = ifelse(isTRUE(collect_in_background), \(...) Ok(.pr$LazyFrame$collect_in_background(...)), .pr$LazyFrame$collect)
 
-  lf = self
-
-  if (isFALSE(inherit_optimization)) {
-    lf = self |>
-      .pr$LazyFrame$optimization_toggle(
-        type_coercion = type_coercion,
-        predicate_pushdown = predicate_pushdown,
-        projection_pushdown = projection_pushdown,
-        simplify_expression = simplify_expression,
-        slice_pushdown = slice_pushdown,
-        comm_subplan_elim = comm_subplan_elim,
-        comm_subexpr_elim = comm_subexpr_elim,
-        cluster_with_columns = cluster_with_columns,
-        streaming = streaming,
-        eager = FALSE
-      ) |>
-      unwrap("in $collect():")
-  }
+  lf = self |>
+    .pr$LazyFrame$optimization_toggle(
+      type_coercion = type_coercion,
+      predicate_pushdown = predicate_pushdown,
+      projection_pushdown = projection_pushdown,
+      simplify_expression = simplify_expression,
+      slice_pushdown = slice_pushdown,
+      comm_subplan_elim = comm_subplan_elim,
+      comm_subexpr_elim = comm_subexpr_elim,
+      cluster_with_columns = cluster_with_columns,
+      streaming = streaming,
+      eager = FALSE
+    ) |>
+    unwrap("in $collect():")
 
   lf |>
     collect_f() |>
@@ -701,24 +697,20 @@ LazyFrame_sink_parquet = function(
     slice_pushdown = FALSE
   }
 
-  lf = self
-
-  if (isFALSE(inherit_optimization)) {
-    lf = self |>
-      .pr$LazyFrame$optimization_toggle(
-        type_coercion = type_coercion,
-        predicate_pushdown = predicate_pushdown,
-        projection_pushdown = projection_pushdown,
-        simplify_expression = simplify_expression,
-        slice_pushdown = slice_pushdown,
-        comm_subplan_elim = FALSE,
-        comm_subexpr_elim = FALSE,
-        cluster_with_columns = FALSE,
-        streaming = FALSE,
-        eager = FALSE
-      ) |>
-      unwrap("in $sink_parquet()")
-  }
+  lf = self |>
+    .pr$LazyFrame$optimization_toggle(
+      type_coercion = type_coercion,
+      predicate_pushdown = predicate_pushdown,
+      projection_pushdown = projection_pushdown,
+      simplify_expression = simplify_expression,
+      slice_pushdown = slice_pushdown,
+      comm_subplan_elim = FALSE,
+      comm_subexpr_elim = FALSE,
+      cluster_with_columns = FALSE,
+      streaming = FALSE,
+      eager = FALSE
+    ) |>
+    unwrap("in $sink_parquet()")
 
   statistics = translate_statistics(statistics) |>
     unwrap("in $sink_parquet():")
@@ -785,24 +777,20 @@ LazyFrame_sink_ipc = function(
     slice_pushdown = FALSE
   }
 
-  lf = self
-
-  if (isFALSE(inherit_optimization)) {
-    lf = self |>
-      .pr$LazyFrame$optimization_toggle(
-        type_coercion = type_coercion,
-        predicate_pushdown = predicate_pushdown,
-        projection_pushdown = projection_pushdown,
-        simplify_expression = simplify_expression,
-        slice_pushdown = slice_pushdown,
-        comm_subplan_elim = FALSE,
-        comm_subexpr_elim = FALSE,
-        cluster_with_columns = FALSE,
-        streaming = FALSE,
-        eager = FALSE
-      ) |>
-      unwrap("in $sink_ipc()")
-  }
+  lf = self |>
+    .pr$LazyFrame$optimization_toggle(
+      type_coercion = type_coercion,
+      predicate_pushdown = predicate_pushdown,
+      projection_pushdown = projection_pushdown,
+      simplify_expression = simplify_expression,
+      slice_pushdown = slice_pushdown,
+      comm_subplan_elim = FALSE,
+      comm_subexpr_elim = FALSE,
+      cluster_with_columns = FALSE,
+      streaming = FALSE,
+      eager = FALSE
+    ) |>
+    unwrap("in $sink_ipc()")
 
   lf |>
     .pr$LazyFrame$sink_ipc(
@@ -870,24 +858,20 @@ LazyFrame_sink_csv = function(
     slice_pushdown = FALSE
   }
 
-  lf = self
-
-  if (isFALSE(inherit_optimization)) {
-    lf = self |>
-      .pr$LazyFrame$optimization_toggle(
-        type_coercion = type_coercion,
-        predicate_pushdown = predicate_pushdown,
-        projection_pushdown = projection_pushdown,
-        simplify_expression = simplify_expression,
-        slice_pushdown = slice_pushdown,
-        comm_subplan_elim = FALSE,
-        comm_subexpr_elim = FALSE,
-        cluster_with_columns = FALSE,
-        streaming = FALSE,
-        eager = FALSE
-      ) |>
-      unwrap("in $sink_csv()")
-  }
+  lf = self |>
+    .pr$LazyFrame$optimization_toggle(
+      type_coercion = type_coercion,
+      predicate_pushdown = predicate_pushdown,
+      projection_pushdown = projection_pushdown,
+      simplify_expression = simplify_expression,
+      slice_pushdown = slice_pushdown,
+      comm_subplan_elim = FALSE,
+      comm_subexpr_elim = FALSE,
+      cluster_with_columns = FALSE,
+      streaming = FALSE,
+      eager = FALSE
+    ) |>
+    unwrap("in $sink_csv()")
 
   lf |>
     .pr$LazyFrame$sink_csv(
@@ -950,24 +934,20 @@ LazyFrame_sink_ndjson = function(
     slice_pushdown = FALSE
   }
 
-  lf = self
-
-  if (isFALSE(inherit_optimization)) {
-    lf = self |>
-      .pr$LazyFrame$optimization_toggle(
-        type_coercion = type_coercion,
-        predicate_pushdown = predicate_pushdown,
-        projection_pushdown = projection_pushdown,
-        simplify_expression = simplify_expression,
-        slice_pushdown = slice_pushdown,
-        comm_subplan_elim = FALSE,
-        comm_subexpr_elim = FALSE,
-        cluster_with_columns = FALSE,
-        streaming = FALSE,
-        eager = FALSE
-      ) |>
-      unwrap("in $sink_ndjson()")
-  }
+  lf = self |>
+    .pr$LazyFrame$optimization_toggle(
+      type_coercion = type_coercion,
+      predicate_pushdown = predicate_pushdown,
+      projection_pushdown = projection_pushdown,
+      simplify_expression = simplify_expression,
+      slice_pushdown = slice_pushdown,
+      comm_subplan_elim = FALSE,
+      comm_subexpr_elim = FALSE,
+      cluster_with_columns = FALSE,
+      streaming = FALSE,
+      eager = FALSE
+    ) |>
+    unwrap("in $sink_ndjson()")
 
   lf |>
     .pr$LazyFrame$sink_json(
@@ -1682,24 +1662,20 @@ LazyFrame_fetch = function(
     comm_subplan_elim = FALSE
   }
 
-  lf = self
-
-  if (isFALSE(inherit_optimization)) {
-    lf = self |>
-      .pr$LazyFrame$optimization_toggle(
-        type_coercion = type_coercion,
-        predicate_pushdown = predicate_pushdown,
-        projection_pushdown = projection_pushdown,
-        simplify_expression = simplify_expression,
-        slice_pushdown = slice_pushdown,
-        comm_subplan_elim = comm_subplan_elim,
-        comm_subexpr_elim = comm_subexpr_elim,
-        cluster_with_columns = cluster_with_columns,
-        streaming = streaming,
-        eager = FALSE
-      ) |>
-      unwrap("in $fetch()")
-  }
+  lf = self |>
+    .pr$LazyFrame$optimization_toggle(
+      type_coercion = type_coercion,
+      predicate_pushdown = predicate_pushdown,
+      projection_pushdown = projection_pushdown,
+      simplify_expression = simplify_expression,
+      slice_pushdown = slice_pushdown,
+      comm_subplan_elim = comm_subplan_elim,
+      comm_subexpr_elim = comm_subexpr_elim,
+      cluster_with_columns = cluster_with_columns,
+      streaming = streaming,
+      eager = FALSE
+    ) |>
+    unwrap("in $fetch()")
 
   .pr$LazyFrame$fetch(lf, n_rows) |>
     unwrap("in $fetch()")
@@ -1783,24 +1759,20 @@ LazyFrame_profile = function(
     comm_subplan_elim = FALSE
   }
 
-  lf = self
-
-  if (isFALSE(inherit_optimization)) {
-    lf = self |>
-      .pr$LazyFrame$optimization_toggle(
-        type_coercion = type_coercion,
-        predicate_pushdown = predicate_pushdown,
-        projection_pushdown = projection_pushdown,
-        simplify_expression = simplify_expression,
-        slice_pushdown = slice_pushdown,
-        comm_subplan_elim = comm_subplan_elim,
-        comm_subexpr_elim = comm_subexpr_elim,
-        cluster_with_columns = cluster_with_columns,
-        streaming = streaming,
-        eager = FALSE
-      ) |>
-      unwrap("in $profile():")
-  }
+  lf = self |>
+    .pr$LazyFrame$optimization_toggle(
+      type_coercion = type_coercion,
+      predicate_pushdown = predicate_pushdown,
+      projection_pushdown = projection_pushdown,
+      simplify_expression = simplify_expression,
+      slice_pushdown = slice_pushdown,
+      comm_subplan_elim = comm_subplan_elim,
+      comm_subexpr_elim = comm_subexpr_elim,
+      cluster_with_columns = cluster_with_columns,
+      streaming = streaming,
+      eager = FALSE
+    ) |>
+    unwrap("in $profile():")
 
   out = lf |>
     .pr$LazyFrame$profile() |>
