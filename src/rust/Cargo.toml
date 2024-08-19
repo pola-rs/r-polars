@@ -2,11 +2,8 @@
 name = "r-polars"
 version = "0.42.0"
 edition = "2021"
-# rust-version = "1.81.0"
+rust-version = "1.80.0"
 publish = false
-
-[toolchain]
-channel = "nightly"
 
 [lib]
 crate-type = ['staticlib', 'rlib']
