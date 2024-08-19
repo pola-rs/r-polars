@@ -1,8 +1,6 @@
 use crate::concurrent::{
     collect_with_r_func_support, fetch_with_r_func_support, profile_with_r_func_support,
 };
-use crate::conversion::strings_to_smartstrings;
-
 use crate::lazy::dsl::*;
 
 use crate::rdataframe::RPolarsDataFrame as RDF;
@@ -13,10 +11,9 @@ use crate::utils::try_f64_into_usize;
 use extendr_api::prelude::*;
 use pl::{AsOfOptions, Duration, RollingGroupOptions};
 use polars::chunked_array::ops::SortMultipleOptions;
-use polars::frame::explode::UnpivotArgs;
 use polars::prelude as pl;
 
-use polars::prelude::{JoinCoalesce, SerializeOptions};
+use polars::prelude::{JoinCoalesce, SerializeOptions, UnpivotArgsDSL};
 use polars_lazy::prelude::CsvWriterOptions;
 
 #[allow(unused_imports)]
@@ -112,14 +109,14 @@ impl RPolarsLazyFrame {
         compression_level: Robj,
         statistics: Robj,
         row_group_size: Robj,
-        data_pagesize_limit: Robj,
+        data_page_size: Robj,
         maintain_order: Robj,
     ) -> RResult<()> {
         let pqwo = polars::prelude::ParquetWriteOptions {
             compression: new_parquet_compression(compression_method, compression_level)?,
             statistics: robj_to!(StatisticsOptions, statistics)?,
             row_group_size: robj_to!(Option, usize, row_group_size)?,
-            data_pagesize_limit: robj_to!(Option, usize, data_pagesize_limit)?,
+            data_page_size: robj_to!(Option, usize, data_page_size)?,
             maintain_order: robj_to!(bool, maintain_order)?,
         };
         self.0
@@ -515,14 +512,18 @@ impl RPolarsLazyFrame {
         index: Robj,
         value_name: Robj,
         variable_name: Robj,
-        streamable: Robj,
     ) -> RResult<Self> {
-        let args = UnpivotArgs {
-            on: strings_to_smartstrings(robj_to!(Vec, String, on)?),
-            index: strings_to_smartstrings(robj_to!(Vec, String, index)?),
+        let args = UnpivotArgsDSL {
+            on: robj_to!(Vec, PLExprCol, on)?
+                .into_iter()
+                .map(|e| e.into())
+                .collect(),
+            index: robj_to!(Vec, PLExprCol, index)?
+                .into_iter()
+                .map(|e| e.into())
+                .collect(),
             value_name: robj_to!(Option, String, value_name)?.map(|s| s.into()),
             variable_name: robj_to!(Option, String, variable_name)?.map(|s| s.into()),
-            streamable: robj_to!(bool, streamable)?,
         };
         Ok(self.0.clone().unpivot(args).into())
     }
@@ -554,7 +555,7 @@ impl RPolarsLazyFrame {
     }
 
     #[allow(clippy::too_many_arguments)]
-    fn set_optimization_toggle(
+    fn optimization_toggle(
         &self,
         type_coercion: Robj,
         predicate_pushdown: Robj,
@@ -565,7 +566,6 @@ impl RPolarsLazyFrame {
         comm_subexpr_elim: Robj,
         cluster_with_columns: Robj,
         streaming: Robj,
-        // fast_projection: Robj, // There is no method like with_fast_projection
         eager: Robj,
     ) -> RResult<Self> {
         let ldf = self
@@ -583,37 +583,6 @@ impl RPolarsLazyFrame {
             .with_cluster_with_columns(robj_to!(bool, cluster_with_columns)?);
 
         Ok(ldf.into())
-    }
-
-    fn get_optimization_toggle(&self) -> List {
-        let pl::OptState {
-            projection_pushdown,
-            predicate_pushdown,
-            type_coercion,
-            simplify_expr,
-            slice_pushdown,
-            file_caching: _,
-            comm_subplan_elim,
-            comm_subexpr_elim,
-            cluster_with_columns,
-            streaming,
-            fast_projection: _,
-            row_estimate: _,
-            eager,
-            new_streaming: _,
-        } = self.0.get_current_optimizations();
-        list!(
-            type_coercion = type_coercion,
-            predicate_pushdown = predicate_pushdown,
-            projection_pushdown = projection_pushdown,
-            simplify_expression = simplify_expr,
-            slice_pushdown = slice_pushdown,
-            comm_subplan_elim = comm_subplan_elim,
-            comm_subexpr_elim = comm_subexpr_elim,
-            cluster_with_columns = cluster_with_columns,
-            streaming = streaming,
-            eager = eager,
-        )
     }
 
     fn profile(&self) -> RResult<List> {

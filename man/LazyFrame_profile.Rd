@@ -15,7 +15,6 @@ LazyFrame_profile(
   cluster_with_columns = TRUE,
   streaming = FALSE,
   no_optimization = FALSE,
-  inherit_optimization = FALSE,
   collect_in_background = FALSE,
   show_plot = FALSE,
   truncate_nodes = 0
@@ -52,9 +51,6 @@ reused.}
 \item{no_optimization}{Logical. Sets the following parameters to \code{FALSE}:
 \code{predicate_pushdown}, \code{projection_pushdown}, \code{slice_pushdown},
 \code{comm_subplan_elim}, \code{comm_subexpr_elim}, \code{cluster_with_columns}.}
-
-\item{inherit_optimization}{Logical. Use existing optimization settings
-regardless the settings specified in this function call.}
 
 \item{collect_in_background}{Logical. Detach this query from R session.
 Computation will start in background. Get a handle which later can be converted

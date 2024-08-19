@@ -25,8 +25,7 @@ LazyFrame_sink_csv(
   projection_pushdown = TRUE,
   simplify_expression = TRUE,
   slice_pushdown = TRUE,
-  no_optimization = FALSE,
-  inherit_optimization = FALSE
+  no_optimization = FALSE
 )
 }
 \arguments{
@@ -100,9 +99,6 @@ level. Don't materialize sliced outputs (e.g. \code{join$head(10)}).}
 \item{no_optimization}{Logical. Sets the following parameters to \code{FALSE}:
 \code{predicate_pushdown}, \code{projection_pushdown}, \code{slice_pushdown},
 \code{comm_subplan_elim}, \code{comm_subexpr_elim}, \code{cluster_with_columns}.}
-
-\item{inherit_optimization}{Logical. Use existing optimization settings
-regardless the settings specified in this function call.}
 }
 \value{
 Invisibly returns the input LazyFrame

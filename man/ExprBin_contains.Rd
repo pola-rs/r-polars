@@ -2,18 +2,29 @@
 % Please edit documentation in R/expr__binary.R
 \name{ExprBin_contains}
 \alias{ExprBin_contains}
-\alias{expr_bin_contains}
-\title{contains}
+\title{Check if binaries contain a binary substring}
 \usage{
-ExprBin_contains(lit)
+ExprBin_contains(literal)
 }
 \arguments{
-\item{lit}{The binary substring to look for}
+\item{literal}{The binary substring to look for.}
 }
 \value{
 Expr returning a Boolean
 }
 \description{
-R Check if binaries in Series contain a binary substring.
+Check if binaries contain a binary substring
 }
-\keyword{ExprBin}
+\examples{
+colors = pl$DataFrame(
+  name = c("black", "yellow", "blue"),
+  code = as_polars_series(c("x00x00x00", "xffxffx00", "x00x00xff"))$cast(pl$Binary),
+  lit = as_polars_series(c("x00", "xffx00", "xffxff"))$cast(pl$Binary)
+)
+
+colors$select(
+  "name",
+  contains_with_lit = pl$col("code")$bin$contains("xff"),
+  contains_with_expr = pl$col("code")$bin$contains(pl$col("lit"))
+)
+}

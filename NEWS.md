@@ -4,14 +4,39 @@
 
 ### Breaking changes
 
+- Updated rust-polars to 0.42.0 (#1183).
 - `$describe_plan()` and `$describe_optimized_plan()` are removed. Use
   respectively `$explain(optimized = FALSE)` and `$explain()` instead (#1182).
+- The parameter `inherit_optimization` is removed from all functions that had it
+  (#1183).
+- In `$write_parquet()` and `$sink_parquet()`, the parameter `data_pagesize_limit`
+  is renamed `data_page_size` (#1183).
+- The LazyFrame method `$get_optimization_toggle()` is removed, and
+  `$set_optimization_toggle()` is renamed `$optimization_toggle()` (#1183).
+- In `$unpivot()`, the parameter `streamable` is removed (#1183).
+- Some functions have a parameter `future` that determines the compatibility level
+  when exporting Polars' internal data structures. This parameter is renamed
+  `compat_level`, which takes `FALSE` for the oldest flavor (more compatible)
+  and `TRUE` for the newest one (less compatible). It can also take an integer
+  determining a specific compatibility level when more are added in the future.
+  For now, `future = FALSE` can be replaced by `compat_level = FALSE` (#1183).
 
 ### New features
 
 - New method `$str$extract_many()` (#1163).
 - Converting a `nanoarrow_array` with zero rows to an `RPolarsDataFrame` via
   `as_polars_df()` now keeps the original schema (#1177).
+- `$write_parquet()` has two new arguments `partition_by` and
+  `partition_chunk_size_bytes` to write a `DataFrame` to a hive-partitioned
+  directory (#1183).
+- New method `$bin$size()` (#1183).
+- In `$scan_parquet()` and `$read_parquet()`, the `parallel` argument can take
+  the new value `"prefiltered"` (#1183).
+- `$scan_parquet()`, `$scan_ipc()` and `$read_parquet()` have a new argument
+  `include_file_paths` to automatically add a column containing the path to the
+  source file(s) (#1183).
+- `$scan_ipc` can read a hive-partitioned directory with its new arguments
+  `hive_partitioning`, `hive_schema`, and `try_parse_hive_dates` (#1183).
 
 ### Other changes
 

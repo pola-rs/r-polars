@@ -2,7 +2,7 @@ use crate::robj_to;
 
 use crate::utils::wrappers::Wrap;
 use extendr_api::prelude::*;
-use polars::prelude as pl;
+use polars::prelude::{self as pl};
 use polars_core::prelude::QuantileInterpolOptions;
 //expose polars DateType in R
 use crate::rpolarserr::{polars_to_rpolars_err, rerr, RPolarsErr, RResult, WithRctx};
@@ -606,11 +606,12 @@ pub fn robj_to_join_type(robj: Robj) -> RResult<pl::JoinType> {
         "cross" => Ok(pl::JoinType::Cross),
         "inner" => Ok(pl::JoinType::Inner),
         "left" => Ok(pl::JoinType::Left),
+        "right" => Ok(pl::JoinType::Right),
         "full" => Ok(pl::JoinType::Full),
         "semi" => Ok(pl::JoinType::Semi),
         "anti" => Ok(pl::JoinType::Anti),
         s => rerr().notachoice(format!(
-            "JoinType ('{s}') must be one of 'cross', 'inner', 'left', 'full', 'semi', 'anti'"
+            "JoinType ('{s}') must be one of 'cross', 'inner', 'left', 'right', 'full', 'semi', 'anti'"
         )),
     }
 }
@@ -702,9 +703,10 @@ pub fn robj_to_parallel_strategy(robj: extendr_api::Robj) -> RResult<pl::Paralle
         "auto" => Ok(pl::ParallelStrategy::Auto),
         "columns" => Ok(pl::ParallelStrategy::Columns),
         "row_groups" => Ok(pl::ParallelStrategy::RowGroups),
+        "prefiltered" => Ok(pl::ParallelStrategy::Prefiltered),
         "none" => Ok(pl::ParallelStrategy::None),
         s => rerr().notachoice(format!(
-            "ParallelStrategy ('{s}') must be one of 'auto', 'columns', 'row_groups', 'none'"
+            "ParallelStrategy ('{s}') must be one of 'auto', 'columns', 'row_groups', 'prefiltered', 'none'"
         )),
     }
 }
@@ -734,6 +736,58 @@ pub fn robj_to_statistics_options(robj: Robj) -> RResult<pl::StatisticsOptions> 
     out.max_value = *hm.get(&"max").unwrap();
     out.distinct_count = *hm.get(&"distinct_count").unwrap();
     out.null_count = *hm.get(&"null_count").unwrap();
+    Ok(out)
+}
+
+pub fn robj_to_wrap_schema(robj: Robj) -> RResult<Wrap<pl::Schema>> {
+    use pl::Schema;
+    let mut schema = Schema::new();
+    let hm = robj.as_list().unwrap().into_hashmap();
+
+    for (key, value) in hm.into_iter() {
+        let dt = crate::utils::robj_to_datatype(value)?;
+        schema.with_column(key.into(), dt.into());
+    }
+
+    let schema: Wrap<Schema> = schema.into();
+
+    Ok(schema)
+}
+
+pub fn robj_to_compat_level(robj: Robj) -> RResult<pl::CompatLevel> {
+    use pl::CompatLevel;
+    let out;
+    if robj.is_real() {
+        if let Ok(compat_level) = CompatLevel::with_level(robj.as_real().unwrap() as u16) {
+            out = compat_level;
+        } else {
+            return Err(polars::prelude::PolarsError::ComputeError(
+                format!("invalid compat level").into(),
+            )
+            .into());
+        }
+    } else if robj.is_integer() {
+        if let Ok(compat_level) = CompatLevel::with_level(robj.as_integer().unwrap() as u16) {
+            out = compat_level;
+        } else {
+            return Err(polars::prelude::PolarsError::ComputeError(
+                format!("invalid compat level").into(),
+            )
+            .into());
+        }
+    } else if robj.is_logical() {
+        if robj.as_bool().unwrap() {
+            out = CompatLevel::newest();
+        } else {
+            out = CompatLevel::oldest();
+        }
+    } else {
+        return Err(polars::prelude::PolarsError::ComputeError(
+            format!("'compat_level' argument accepts int or bool").into(),
+        )
+        .into());
+    }
+
     Ok(out)
 }
 

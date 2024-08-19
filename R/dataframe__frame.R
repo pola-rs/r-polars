@@ -1981,10 +1981,13 @@ DataFrame_write_csv = function(
 #'
 #' @inherit DataFrame_write_csv params return
 #' @inheritParams LazyFrame_sink_ipc
-#' @param future Setting this to `TRUE` will write Polars' internal data structures that
-#' might not be available by other Arrow implementations.
-#' This functionality is considered **unstable**.
-#' It may be changed at any point without it being considered a breaking change.
+#' @param compat_level Use a specific compatibility level when exporting Polars’
+#' internal data structures. This can be:
+#' * an integer indicating the compatibility version (currently only 0 for oldest
+#'   and 1 for newest);
+#' * a logical value with `TRUE` for the newest version and `FALSE` for the oldest
+#'   version.
+#'
 #' @rdname IO_write_ipc
 #' @seealso
 #' - [`<DataFrame>$to_raw_ipc()`][DataFrame_to_raw_ipc]
@@ -2001,16 +2004,12 @@ DataFrame_write_ipc = function(
     file,
     compression = c("uncompressed", "zstd", "lz4"),
     ...,
-    future = FALSE) {
-  if (isTRUE(future)) {
-    warning("The `future` parameter of `$write_ipc()` is considered unstable.")
-  }
-
+    compat_level = TRUE) {
   .pr$DataFrame$write_ipc(
     self,
     file,
     compression %||% "uncompressed",
-    future
+    compat_level
   ) |>
     unwrap("in $write_ipc():")
 
@@ -2019,17 +2018,31 @@ DataFrame_write_ipc = function(
 
 
 #' Write to parquet file
+#'
 #' @inherit DataFrame_write_csv params return
 #' @inheritParams LazyFrame_sink_parquet
+#' @param file File path to which the result should be written. This should be
+#' a path to a directory if writing a partitioned dataset.
+#' @param partition_by Column(s) to partition by. A partitioned dataset will be
+#' written if this is specified.
+#' @param partition_chunk_size_bytes Approximate size to split DataFrames within
+#' a single partition when writing. Note this is calculated using the size of
+#' the DataFrame in memory - the size of the output file may differ depending
+#' on the file format / compression.
 #'
 #' @rdname IO_write_parquet
 #'
-#' @examples
-#' # write table 'mtcars' from mem to parquet
+#' @examplesIf requireNamespace("withr", quietly = TRUE)
 #' dat = pl$DataFrame(mtcars)
 #'
-#' destination = tempfile(fileext = ".parquet")
+#' # write data to a single parquet file
+#' destination = withr::local_tempfile(fileext = ".parquet")
 #' dat$write_parquet(destination)
+#'
+#' # write data to folder with a hive-partitioned structure
+#' dest_folder = withr::local_tempdir()
+#' dat$write_parquet(dest_folder, partition_by = c("gear", "cyl"))
+#' list.files(dest_folder, recursive = TRUE)
 DataFrame_write_parquet = function(
     file,
     ...,
@@ -2037,17 +2050,21 @@ DataFrame_write_parquet = function(
     compression_level = 3,
     statistics = TRUE,
     row_group_size = NULL,
-    data_pagesize_limit = NULL) {
+    data_page_size = NULL,
+    partition_by = NULL,
+    partition_chunk_size_bytes = 4294967296) {
   statistics = translate_statistics(statistics) |>
     unwrap("in $write_parquet():")
   .pr$DataFrame$write_parquet(
     self,
     file,
-    compression,
-    compression_level,
-    statistics,
-    row_group_size,
-    data_pagesize_limit
+    compression = compression,
+    compression_level = compression_level,
+    statistics = statistics,
+    row_group_size = row_group_size,
+    data_page_size = data_page_size,
+    partition_by = partition_by,
+    partition_chunk_size_bytes = partition_chunk_size_bytes
   ) |>
     unwrap("in $write_parquet():")
 

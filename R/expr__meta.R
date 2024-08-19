@@ -66,7 +66,8 @@ ExprMeta_neq = function(other) {
 #' e2
 #' e2$meta$pop()
 ExprMeta_pop = function() {
-  .pr$Expr$meta_pop(self)
+  .pr$Expr$meta_pop(self) |>
+    unwrap("in $meta$pop():")
 }
 
 

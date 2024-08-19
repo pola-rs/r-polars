@@ -9,6 +9,18 @@
 #' @param memory_map A logical. If `TRUE`, try to memory map the file.
 #' This can greatly improve performance on repeated queries as the OS may cache pages.
 #' Only uncompressed Arrow IPC files can be memory mapped.
+#' @param hive_partitioning Infer statistics and schema from Hive partitioned URL
+#' and use them to prune reads. If `NULL` (default), it is automatically
+#' enabled when a single directory is passed, and otherwise disabled.
+#' @param hive_schema A list containing the column names and data types of the
+#' columns by which the data is partitioned, e.g.
+#' `list(a = pl$String, b = pl$Float32)`. If `NULL` (default), the schema of
+#' the Hive partitions is inferred.
+#' @param try_parse_hive_dates Whether to try parsing hive values as date/datetime
+#' types.
+#' @param include_file_paths Character value indicating the column name that will
+#' include the path of the source file(s).
+#'
 #' @rdname IO_scan_ipc
 #' @examplesIf requireNamespace("arrow", quietly = TRUE) && arrow::arrow_with_dataset()
 #' temp_dir = tempfile()
@@ -22,12 +34,12 @@
 #' )
 #' list.files(temp_dir, recursive = TRUE)
 #'
-#' # Read the dataset
-#' # Sinse hive-style partitioning is not supported,
-#' # the `cyl` and `gear` columns are not contained in the result
-#' pl$scan_ipc(
-#'   file.path(temp_dir, "**/*.arrow")
-#' )$collect()
+#' # If the path is a folder, Polars automatically tries to detect partitions
+#' # and includes them in the output
+#' pl$scan_ipc(temp_dir)$collect()
+#'
+#' # We can also impose a schema to the partition
+#' pl$scan_ipc(temp_dir, hive_schema = list(cyl = pl$String, gear = pl$Int32))$collect()
 pl_scan_ipc = function(
     source,
     ...,
@@ -36,15 +48,23 @@ pl_scan_ipc = function(
     row_index_name = NULL,
     row_index_offset = 0L,
     rechunk = FALSE,
-    cache = TRUE) {
+    cache = TRUE,
+    hive_partitioning = NULL,
+    hive_schema = NULL,
+    try_parse_hive_dates = TRUE,
+    include_file_paths = NULL) {
   import_arrow_ipc(
-    source,
-    n_rows,
-    cache,
-    rechunk,
-    row_index_name,
-    row_index_offset,
-    memory_map
+    path = source,
+    n_rows = n_rows,
+    cache = cache,
+    rechunk = rechunk,
+    row_name = row_index_name,
+    row_index = row_index_offset,
+    memory_map = memory_map,
+    hive_partitioning = hive_partitioning,
+    hive_schema = hive_schema,
+    try_parse_hive_dates = try_parse_hive_dates,
+    include_file_paths = include_file_paths
   ) |>
     unwrap("in pl$scan_ipc():")
 }
@@ -135,7 +155,7 @@ pl_read_ipc = function(
 DataFrame_to_raw_ipc = function(
     compression = c("uncompressed", "zstd", "lz4"),
     ...,
-    future = FALSE) {
-  .pr$DataFrame$to_raw_ipc(self, compression, future) |>
+    compat_level = FALSE) {
+  .pr$DataFrame$to_raw_ipc(self, compression, compat_level) |>
     unwrap("in $to_raw_ipc():")
 }

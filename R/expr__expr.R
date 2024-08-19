@@ -184,10 +184,12 @@ wrap_e_result = function(e, str_to_lit = TRUE, argname = NULL) {
 #' @return Expr
 #' @examples .pr$env$wrap_elist_result(list(pl$lit(42), 42, 1:3))
 wrap_elist_result = function(elist, str_to_lit = TRUE) {
+  if (!is.list(elist) && length(elist) == 1L) {
+    elist = list(elist)
+  }
   element_i = 0L
   result(
     {
-      if (!is.list(elist) && length(elist) == 1L) elist = list(elist)
       lapply(elist, \(e) {
         element_i <<- element_i + 1L
         wrap_e(e, str_to_lit)

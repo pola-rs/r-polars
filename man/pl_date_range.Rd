@@ -28,9 +28,7 @@ An \link[=Expr_class]{Expr} of data type Date or \link[=DataType_Datetime]{Datet
 \description{
 If both \code{start} and \code{end} are passed as the Date types (not Datetime), and
 the \code{interval} granularity is no finer than \code{"1d"}, the returned range is
-also of type Date. All other permutations return a Datetime. Note that in a
-future version of Polars, \code{pl$date_range()} will always return Date. Please
-use \code{\link[=pl_datetime_range]{pl$datetime_range()}} if you want Datetime instead.
+also of type Date. All other permutations return a Datetime.
 }
 \section{Polars duration string language}{
 

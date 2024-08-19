@@ -11,15 +11,14 @@ LazyFrame_sink_parquet(
   compression_level = 3,
   statistics = TRUE,
   row_group_size = NULL,
-  data_pagesize_limit = NULL,
+  data_page_size = NULL,
   maintain_order = TRUE,
   type_coercion = TRUE,
   predicate_pushdown = TRUE,
   projection_pushdown = TRUE,
   simplify_expression = TRUE,
   slice_pushdown = TRUE,
-  no_optimization = FALSE,
-  inherit_optimization = FALSE
+  no_optimization = FALSE
 )
 }
 \arguments{
@@ -63,7 +62,8 @@ headers. Possible values:
 rows. If \code{NULL} (default), the chunks of the DataFrame are used. Writing in
 smaller chunks may reduce memory pressure and improve writing speeds.}
 
-\item{data_pagesize_limit}{\code{NULL} or Integer. If \code{NULL} (default), the limit
+\item{data_page_size}{Size of the data page in bytes. If \code{NULL} (default), it
+is set to 1024^2 bytes.
 will be ~1MB.}
 
 \item{maintain_order}{Maintain the order in which data is processed. Setting
@@ -87,9 +87,6 @@ level. Don't materialize sliced outputs (e.g. \code{join$head(10)}).}
 \item{no_optimization}{Logical. Sets the following parameters to \code{FALSE}:
 \code{predicate_pushdown}, \code{projection_pushdown}, \code{slice_pushdown},
 \code{comm_subplan_elim}, \code{comm_subexpr_elim}, \code{cluster_with_columns}.}
-
-\item{inherit_optimization}{Logical. Use existing optimization settings
-regardless the settings specified in this function call.}
 }
 \value{
 Invisibly returns the input LazyFrame

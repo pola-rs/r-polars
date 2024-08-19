@@ -2,8 +2,7 @@
 % Please edit documentation in R/expr__binary.R
 \name{ExprBin_ends_with}
 \alias{ExprBin_ends_with}
-\alias{expr_bin_ends_with}
-\title{ends_with}
+\title{Check if string values end with a binary substring}
 \usage{
 ExprBin_ends_with(suffix)
 }
@@ -14,6 +13,18 @@ ExprBin_ends_with(suffix)
 Expr returning a Boolean
 }
 \description{
-Check if string values end with a binary substring.
+Check if string values end with a binary substring
 }
-\keyword{ExprBin}
+\examples{
+colors = pl$DataFrame(
+  name = c("black", "yellow", "blue"),
+  code = as_polars_series(c("x00x00x00", "xffxffx00", "x00x00xff"))$cast(pl$Binary),
+  suffix = as_polars_series(c("x00", "xffx00", "xffxff"))$cast(pl$Binary)
+)
+
+colors$select(
+  "name",
+  ends_with_lit = pl$col("code")$bin$ends_with("xff"),
+  ends_with_expr = pl$col("code")$bin$ends_with(pl$col("suffix"))
+)
+}

@@ -245,7 +245,24 @@ LazyFrame_print = function() {
 #' `"plain"` (default) or `"tree"`.
 #' @param optimized Return an optimized query plan. If `TRUE` (default), the
 #' subsequent optimization flags control which optimizations run.
-#' @inheritParams LazyFrame_set_optimization_toggle
+#' @param type_coercion Logical. Coerce types such that operations succeed and
+#' run on minimal required memory.
+#' @param predicate_pushdown Logical. Applies filters as early as possible at
+#' scan level.
+#' @param projection_pushdown Logical. Select only the columns that are needed
+#' at the scan level.
+#' @param simplify_expression Logical. Various optimizations, such as constant
+#' folding and replacing expensive operations with faster alternatives.
+#' @param slice_pushdown Logical. Only load the required slice from the scan
+#' level. Don't materialize sliced outputs (e.g. `join$head(10)`).
+#' @param comm_subplan_elim Logical. Will try to cache branching subplans that
+#'  occur on self-joins or unions.
+#' @param comm_subexpr_elim Logical. Common subexpressions will be cached and
+#' reused.
+#' @param cluster_with_columns Combine sequential independent calls to
+#' [`with_columns()`][DataFrame_with_columns].
+#' @param streaming Logical. Run parts of the query in a streaming fashion
+#' (this is in an alpha state).
 #'
 #' @return A character value containing the query plan.
 #' @examples
@@ -288,7 +305,7 @@ LazyFrame_explain = function(
 
   if (isTRUE(optimized)) {
     ldf = ldf |>
-      .pr$LazyFrame$set_optimization_toggle(
+      .pr$LazyFrame$optimization_toggle(
         type_coercion = type_coercion,
         predicate_pushdown = predicate_pushdown,
         projection_pushdown = projection_pushdown,
@@ -483,78 +500,15 @@ LazyFrame_filter = function(...) {
   .pr$LazyFrame$filter(self, bool_expr)
 }
 
-#' @title Get optimization settings
-#' @description Get the current optimization toggles for the lazy query
-#' @keywords LazyFrame
-#' @return List of optimization toggles
-#' @examples
-#' pl$LazyFrame(mtcars)$get_optimization_toggle()
-LazyFrame_get_optimization_toggle = function() {
-  self |>
-    .pr$LazyFrame$get_optimization_toggle()
-}
-
-#' @title Configure optimization toggles
-#' @description Configure the optimization toggles for the lazy query
-#' @keywords LazyFrame
-#' @param type_coercion Logical. Coerce types such that operations succeed and
-#' run on minimal required memory.
-#' @param predicate_pushdown Logical. Applies filters as early as possible at
-#' scan level.
-#' @param projection_pushdown Logical. Select only the columns that are needed
-#' at the scan level.
-#' @param simplify_expression Logical. Various optimizations, such as constant
-#' folding and replacing expensive operations with faster alternatives.
-#' @param slice_pushdown Logical. Only load the required slice from the scan
-#' level. Don't materialize sliced outputs (e.g. `join$head(10)`).
-#' @param comm_subplan_elim Logical. Will try to cache branching subplans that
-#'  occur on self-joins or unions.
-#' @param comm_subexpr_elim Logical. Common subexpressions will be cached and
-#' reused.
-#' @param cluster_with_columns Combine sequential independent calls to
-#' [`with_columns()`][DataFrame_with_columns].
-#' @param streaming Logical. Run parts of the query in a streaming fashion
-#' (this is in an alpha state).
-#' @param eager Logical. Run the query eagerly.
-#' @return LazyFrame with specified optimization toggles
-#' @examples
-#' pl$LazyFrame(mtcars)$set_optimization_toggle(type_coercion = FALSE)
-LazyFrame_set_optimization_toggle = function(
-    type_coercion = TRUE,
-    predicate_pushdown = TRUE,
-    projection_pushdown = TRUE,
-    simplify_expression = TRUE,
-    slice_pushdown = TRUE,
-    comm_subplan_elim = TRUE,
-    comm_subexpr_elim = TRUE,
-    cluster_with_columns = TRUE,
-    streaming = FALSE,
-    eager = FALSE) {
-  self |>
-    .pr$LazyFrame$set_optimization_toggle(
-      type_coercion,
-      predicate_pushdown,
-      projection_pushdown,
-      simplify_expression,
-      slice_pushdown,
-      comm_subplan_elim,
-      comm_subexpr_elim,
-      cluster_with_columns,
-      streaming,
-      eager
-    )
-}
 
 #' @title Collect a query into a DataFrame
 #' @description `$collect()` performs the query on the LazyFrame. It returns a
 #' DataFrame
-#' @inheritParams LazyFrame_set_optimization_toggle
+#' @inheritParams LazyFrame_explain
 #' @param ... Ignored.
 #' @param no_optimization  Logical. Sets the following parameters to `FALSE`:
 #'  `predicate_pushdown`, `projection_pushdown`, `slice_pushdown`,
 #'  `comm_subplan_elim`, `comm_subexpr_elim`, `cluster_with_columns`.
-#' @param inherit_optimization  Logical. Use existing optimization settings
-#' regardless the settings specified in this function call.
 #' @param collect_in_background Logical. Detach this query from R session.
 #' Computation will start in background. Get a handle which later can be converted
 #' into the resulting DataFrame. Useful in interactive mode to not lock R session.
@@ -587,7 +541,6 @@ LazyFrame_collect = function(
     cluster_with_columns = TRUE,
     streaming = FALSE,
     no_optimization = FALSE,
-    inherit_optimization = FALSE,
     collect_in_background = FALSE) {
   if (isTRUE(no_optimization)) {
     predicate_pushdown = FALSE
@@ -604,21 +557,20 @@ LazyFrame_collect = function(
 
   collect_f = ifelse(isTRUE(collect_in_background), \(...) Ok(.pr$LazyFrame$collect_in_background(...)), .pr$LazyFrame$collect)
 
-  lf = self
-
-  if (isFALSE(inherit_optimization)) {
-    lf = self$set_optimization_toggle(
-      type_coercion,
-      predicate_pushdown,
-      projection_pushdown,
-      simplify_expression,
-      slice_pushdown,
-      comm_subplan_elim,
-      comm_subexpr_elim,
-      cluster_with_columns,
-      streaming
-    ) |> unwrap("in $collect():")
-  }
+  lf = self |>
+    .pr$LazyFrame$optimization_toggle(
+      type_coercion = type_coercion,
+      predicate_pushdown = predicate_pushdown,
+      projection_pushdown = projection_pushdown,
+      simplify_expression = simplify_expression,
+      slice_pushdown = slice_pushdown,
+      comm_subplan_elim = comm_subplan_elim,
+      comm_subexpr_elim = comm_subexpr_elim,
+      cluster_with_columns = cluster_with_columns,
+      streaming = streaming,
+      eager = FALSE
+    ) |>
+    unwrap("in $collect():")
 
   lf |>
     collect_f() |>
@@ -701,7 +653,8 @@ LazyFrame_collect_in_background = function() {
 #' @param row_group_size `NULL` or Integer. Size of the row groups in number of
 #' rows. If `NULL` (default), the chunks of the DataFrame are used. Writing in
 #' smaller chunks may reduce memory pressure and improve writing speeds.
-#' @param data_pagesize_limit `NULL` or Integer. If `NULL` (default), the limit
+#' @param data_page_size Size of the data page in bytes. If `NULL` (default), it
+#' is set to 1024^2 bytes.
 #' will be ~1MB.
 #' @param maintain_order Maintain the order in which data is processed. Setting
 #' this to `FALSE` will be slightly faster.
@@ -730,35 +683,34 @@ LazyFrame_sink_parquet = function(
     compression_level = 3,
     statistics = TRUE,
     row_group_size = NULL,
-    data_pagesize_limit = NULL,
+    data_page_size = NULL,
     maintain_order = TRUE,
     type_coercion = TRUE,
     predicate_pushdown = TRUE,
     projection_pushdown = TRUE,
     simplify_expression = TRUE,
     slice_pushdown = TRUE,
-    no_optimization = FALSE,
-    inherit_optimization = FALSE) {
+    no_optimization = FALSE) {
   if (isTRUE(no_optimization)) {
     predicate_pushdown = FALSE
     projection_pushdown = FALSE
     slice_pushdown = FALSE
   }
 
-  lf = self
-
-  if (isFALSE(inherit_optimization)) {
-    lf = self$set_optimization_toggle(
-      type_coercion,
-      predicate_pushdown,
-      projection_pushdown,
-      simplify_expression,
-      slice_pushdown,
+  lf = self |>
+    .pr$LazyFrame$optimization_toggle(
+      type_coercion = type_coercion,
+      predicate_pushdown = predicate_pushdown,
+      projection_pushdown = projection_pushdown,
+      simplify_expression = simplify_expression,
+      slice_pushdown = slice_pushdown,
       comm_subplan_elim = FALSE,
       comm_subexpr_elim = FALSE,
-      streaming = FALSE
-    ) |> unwrap("in $sink_parquet()")
-  }
+      cluster_with_columns = FALSE,
+      streaming = FALSE,
+      eager = FALSE
+    ) |>
+    unwrap("in $sink_parquet()")
 
   statistics = translate_statistics(statistics) |>
     unwrap("in $sink_parquet():")
@@ -770,7 +722,7 @@ LazyFrame_sink_parquet = function(
       compression_level,
       statistics,
       row_group_size,
-      data_pagesize_limit,
+      data_page_size,
       maintain_order
     ) |>
     unwrap("in $sink_parquet():")
@@ -818,28 +770,27 @@ LazyFrame_sink_ipc = function(
     projection_pushdown = TRUE,
     simplify_expression = TRUE,
     slice_pushdown = TRUE,
-    no_optimization = FALSE,
-    inherit_optimization = FALSE) {
+    no_optimization = FALSE) {
   if (isTRUE(no_optimization)) {
     predicate_pushdown = FALSE
     projection_pushdown = FALSE
     slice_pushdown = FALSE
   }
 
-  lf = self
-
-  if (isFALSE(inherit_optimization)) {
-    lf = self$set_optimization_toggle(
-      type_coercion,
-      predicate_pushdown,
-      projection_pushdown,
-      simplify_expression,
-      slice_pushdown,
+  lf = self |>
+    .pr$LazyFrame$optimization_toggle(
+      type_coercion = type_coercion,
+      predicate_pushdown = predicate_pushdown,
+      projection_pushdown = projection_pushdown,
+      simplify_expression = simplify_expression,
+      slice_pushdown = slice_pushdown,
       comm_subplan_elim = FALSE,
       comm_subexpr_elim = FALSE,
-      streaming = FALSE
-    ) |> unwrap("in $sink_ipc()")
-  }
+      cluster_with_columns = FALSE,
+      streaming = FALSE,
+      eager = FALSE
+    ) |>
+    unwrap("in $sink_ipc()")
 
   lf |>
     .pr$LazyFrame$sink_ipc(
@@ -900,28 +851,27 @@ LazyFrame_sink_csv = function(
     projection_pushdown = TRUE,
     simplify_expression = TRUE,
     slice_pushdown = TRUE,
-    no_optimization = FALSE,
-    inherit_optimization = FALSE) {
+    no_optimization = FALSE) {
   if (isTRUE(no_optimization)) {
     predicate_pushdown = FALSE
     projection_pushdown = FALSE
     slice_pushdown = FALSE
   }
 
-  lf = self
-
-  if (isFALSE(inherit_optimization)) {
-    lf = self$set_optimization_toggle(
-      type_coercion,
-      predicate_pushdown,
-      projection_pushdown,
-      simplify_expression,
-      slice_pushdown,
+  lf = self |>
+    .pr$LazyFrame$optimization_toggle(
+      type_coercion = type_coercion,
+      predicate_pushdown = predicate_pushdown,
+      projection_pushdown = projection_pushdown,
+      simplify_expression = simplify_expression,
+      slice_pushdown = slice_pushdown,
       comm_subplan_elim = FALSE,
       comm_subexpr_elim = FALSE,
-      streaming = FALSE
-    ) |> unwrap("in $sink_csv()")
-  }
+      cluster_with_columns = FALSE,
+      streaming = FALSE,
+      eager = FALSE
+    ) |>
+    unwrap("in $sink_csv()")
 
   lf |>
     .pr$LazyFrame$sink_csv(
@@ -977,28 +927,27 @@ LazyFrame_sink_ndjson = function(
     projection_pushdown = TRUE,
     simplify_expression = TRUE,
     slice_pushdown = TRUE,
-    no_optimization = FALSE,
-    inherit_optimization = FALSE) {
+    no_optimization = FALSE) {
   if (isTRUE(no_optimization)) {
     predicate_pushdown = FALSE
     projection_pushdown = FALSE
     slice_pushdown = FALSE
   }
 
-  lf = self
-
-  if (isFALSE(inherit_optimization)) {
-    lf = self$set_optimization_toggle(
-      type_coercion,
-      predicate_pushdown,
-      projection_pushdown,
-      simplify_expression,
-      slice_pushdown,
+  lf = self |>
+    .pr$LazyFrame$optimization_toggle(
+      type_coercion = type_coercion,
+      predicate_pushdown = predicate_pushdown,
+      projection_pushdown = projection_pushdown,
+      simplify_expression = simplify_expression,
+      slice_pushdown = slice_pushdown,
       comm_subplan_elim = FALSE,
       comm_subexpr_elim = FALSE,
-      streaming = FALSE
-    ) |> unwrap("in $sink_ndjson()")
-  }
+      cluster_with_columns = FALSE,
+      streaming = FALSE,
+      eager = FALSE
+    ) |>
+    unwrap("in $sink_ndjson()")
 
   lf |>
     .pr$LazyFrame$sink_json(
@@ -1329,8 +1278,8 @@ LazyFrame_group_by = function(..., maintain_order = polars_options()$maintain_or
 #' @param on Either a vector of column names or a list of expressions and/or
 #'   strings. Use `left_on` and `right_on` if the column names to match on are
 #'   different between the two DataFrames.
-#' @param how One of the following methods: "inner", "left", "full", "semi",
-#'   "anti", "cross".
+#' @param how One of the following methods: "inner", "left", "right", "full",
+#'   "semi", "anti", "cross".
 #' @param ... Ignored.
 #' @param left_on,right_on Same as `on` but only for the left or the right
 #'   DataFrame. They must have the same length.
@@ -1457,7 +1406,7 @@ LazyFrame_sort = function(
     maintain_order = FALSE,
     multithreaded = TRUE) {
   .pr$LazyFrame$sort_by_exprs(
-    self, unpack_list(by, .context = "in $sort():"), err_on_named_args(...),
+    self, wrap_elist_result(by, str_to_lit = FALSE), err_on_named_args(...),
     descending, nulls_last, maintain_order, multithreaded
   ) |>
     unwrap("in $sort():")
@@ -1571,10 +1520,7 @@ LazyFrame_join_asof = function(
 #' @param variable_name Name to give to the new column containing the names of
 #' the melted columns. Defaults to "variable".
 #' @param value_name Name to give to the new column containing the values of
-#' the melted columns. Defaults to "value"
-#' @param streamable Allow this node to run in the streaming engine. If this
-#' runs in streaming, the output of the melt operation will not have a stable
-#' ordering.
+#' the melted columns. Defaults to `"value"`.
 #'
 #' @details
 #' Optionally leaves identifiers set.
@@ -1600,11 +1546,10 @@ LazyFrame_unpivot = function(
     ...,
     index = NULL,
     variable_name = NULL,
-    value_name = NULL,
-    streamable = TRUE) {
+    value_name = NULL) {
   .pr$LazyFrame$unpivot(
     self, on %||% character(), index %||% character(),
-    value_name, variable_name, streamable
+    value_name, variable_name
   ) |> unwrap("in $unpivot( ): ")
 }
 
@@ -1703,8 +1648,7 @@ LazyFrame_fetch = function(
     comm_subexpr_elim = TRUE,
     cluster_with_columns = TRUE,
     streaming = FALSE,
-    no_optimization = FALSE,
-    inherit_optimization = FALSE) {
+    no_optimization = FALSE) {
   if (isTRUE(no_optimization)) {
     predicate_pushdown = FALSE
     projection_pushdown = FALSE
@@ -1718,21 +1662,20 @@ LazyFrame_fetch = function(
     comm_subplan_elim = FALSE
   }
 
-  lf = self
-
-  if (isFALSE(inherit_optimization)) {
-    lf = self$set_optimization_toggle(
-      type_coercion,
-      predicate_pushdown,
-      projection_pushdown,
-      simplify_expression,
-      slice_pushdown,
-      comm_subplan_elim,
-      comm_subexpr_elim,
-      cluster_with_columns,
-      streaming
-    ) |> unwrap("in $fetch()")
-  }
+  lf = self |>
+    .pr$LazyFrame$optimization_toggle(
+      type_coercion = type_coercion,
+      predicate_pushdown = predicate_pushdown,
+      projection_pushdown = projection_pushdown,
+      simplify_expression = simplify_expression,
+      slice_pushdown = slice_pushdown,
+      comm_subplan_elim = comm_subplan_elim,
+      comm_subexpr_elim = comm_subexpr_elim,
+      cluster_with_columns = cluster_with_columns,
+      streaming = streaming,
+      eager = FALSE
+    ) |>
+    unwrap("in $fetch()")
 
   .pr$LazyFrame$fetch(lf, n_rows) |>
     unwrap("in $fetch()")
@@ -1800,7 +1743,6 @@ LazyFrame_profile = function(
     cluster_with_columns = TRUE,
     streaming = FALSE,
     no_optimization = FALSE,
-    inherit_optimization = FALSE,
     collect_in_background = FALSE,
     show_plot = FALSE,
     truncate_nodes = 0) {
@@ -1817,21 +1759,20 @@ LazyFrame_profile = function(
     comm_subplan_elim = FALSE
   }
 
-  lf = self
-
-  if (isFALSE(inherit_optimization)) {
-    lf = self$set_optimization_toggle(
-      type_coercion,
-      predicate_pushdown,
-      projection_pushdown,
-      simplify_expression,
-      slice_pushdown,
-      comm_subplan_elim,
-      comm_subexpr_elim,
-      cluster_with_columns,
-      streaming
-    ) |> unwrap("in $profile():")
-  }
+  lf = self |>
+    .pr$LazyFrame$optimization_toggle(
+      type_coercion = type_coercion,
+      predicate_pushdown = predicate_pushdown,
+      projection_pushdown = projection_pushdown,
+      simplify_expression = simplify_expression,
+      slice_pushdown = slice_pushdown,
+      comm_subplan_elim = comm_subplan_elim,
+      comm_subexpr_elim = comm_subexpr_elim,
+      cluster_with_columns = cluster_with_columns,
+      streaming = streaming,
+      eager = FALSE
+    ) |>
+    unwrap("in $profile():")
 
   out = lf |>
     .pr$LazyFrame$profile() |>
@@ -2159,7 +2100,7 @@ LazyFrame_group_by_dynamic = function(
 #'
 #' @param ... Not used..
 #' @param optimized Optimize the query plan.
-#' @inheritParams LazyFrame_set_optimization_toggle
+#' @inheritParams LazyFrame_explain
 #'
 #' @return A character vector
 #'
@@ -2192,16 +2133,20 @@ LazyFrame_to_dot = function(
     comm_subexpr_elim = TRUE,
     cluster_with_columns = TRUE,
     streaming = FALSE) {
-  lf = self$set_optimization_toggle(
-    type_coercion,
-    predicate_pushdown,
-    projection_pushdown,
-    simplify_expression,
-    slice_pushdown,
-    comm_subplan_elim,
-    comm_subexpr_elim,
-    streaming
-  ) |> unwrap("in $to_dot():")
+  lf = self |>
+    .pr$LazyFrame$optimization_toggle(
+      type_coercion = type_coercion,
+      predicate_pushdown = predicate_pushdown,
+      projection_pushdown = projection_pushdown,
+      simplify_expression = simplify_expression,
+      slice_pushdown = slice_pushdown,
+      comm_subplan_elim = comm_subplan_elim,
+      comm_subexpr_elim = comm_subexpr_elim,
+      cluster_with_columns = cluster_with_columns,
+      streaming = streaming,
+      eager = FALSE
+    ) |>
+    unwrap("in $to_dot():")
 
   .pr$LazyFrame$to_dot(lf, optimized) |>
     unwrap("in $to_dot():")

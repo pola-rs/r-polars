@@ -1,5 +1,5 @@
 use extendr_api::{extendr, prelude::*, rprintln};
-use polars::prelude::{self as pl, IntoLazy, SerWriter};
+use polars::prelude::{self as pl, CompatLevel, IntoLazy, ParquetWriteOptions, SerWriter};
 use std::result::Result;
 pub mod read_csv;
 pub mod read_ipc;
@@ -11,6 +11,7 @@ use crate::rdatatype;
 use crate::rdatatype::{new_parquet_compression, RPolarsDataType};
 use crate::robj_to;
 use crate::rpolarserr::*;
+use crate::utils::robj_to_usize;
 use either::Either;
 pub use lazy::dataframe::*;
 
@@ -25,7 +26,7 @@ use polars_core::utils::arrow;
 use crate::utils::{collect_hinted_result, r_result_list};
 
 use crate::conversion::strings_to_smartstrings;
-use polars::frame::explode::UnpivotArgs;
+use polars::frame::explode::UnpivotArgsIR;
 use polars::prelude::pivot::{pivot, pivot_stable};
 
 pub struct OwnedDataFrameIterator {
@@ -33,12 +34,12 @@ pub struct OwnedDataFrameIterator {
     data_type: arrow::datatypes::ArrowDataType,
     idx: usize,
     n_chunks: usize,
-    pl_flavor: bool,
+    compat_level: CompatLevel,
 }
 
 impl OwnedDataFrameIterator {
-    pub fn new(df: polars::frame::DataFrame, pl_flavor: bool) -> Self {
-        let schema = df.schema().to_arrow(pl_flavor);
+    pub fn new(df: polars::frame::DataFrame, compat_level: CompatLevel) -> Self {
+        let schema = df.schema().to_arrow(compat_level);
         let data_type = ArrowDataType::Struct(schema.fields);
         let vs = df.get_columns().to_vec();
         Self {
@@ -46,7 +47,7 @@ impl OwnedDataFrameIterator {
             data_type,
             idx: 0,
             n_chunks: df.n_chunks(),
-            pl_flavor,
+            compat_level: compat_level,
         }
     }
 }
@@ -62,7 +63,7 @@ impl Iterator for OwnedDataFrameIterator {
             let batch_cols = self
                 .columns
                 .iter()
-                .map(|s| s.to_arrow(self.idx, self.pl_flavor))
+                .map(|s| s.to_arrow(self.idx, self.compat_level))
                 .collect();
             self.idx += 1;
 
@@ -350,12 +351,13 @@ impl RPolarsDataFrame {
         Ok(List::from_values(vec))
     }
 
-    pub fn export_stream(&self, stream_ptr: &str, pl_flavor: bool) {
-        let schema = self.0.schema().to_arrow(pl_flavor);
+    pub fn export_stream(&self, stream_ptr: &str, compat_level: Robj) {
+        let compat_level = robj_to!(CompatLevel, compat_level).unwrap();
+        let schema = self.0.schema().to_arrow(compat_level);
         let data_type = ArrowDataType::Struct(schema.fields);
         let field = ArrowField::new("", data_type, false);
 
-        let iter_boxed = Box::new(OwnedDataFrameIterator::new(self.0.clone(), pl_flavor));
+        let iter_boxed = Box::new(OwnedDataFrameIterator::new(self.0.clone(), compat_level));
         let mut stream = arrow::ffi::export_iterator(iter_boxed, field);
         let stream_out_ptr_addr: usize = stream_ptr.parse().unwrap();
         let stream_out_ptr = stream_out_ptr_addr as *mut arrow::ffi::ArrowArrayStream;
@@ -389,12 +391,12 @@ impl RPolarsDataFrame {
         value_name: Robj,
         variable_name: Robj,
     ) -> RResult<Self> {
-        let args = UnpivotArgs {
+        use polars::prelude::UnpivotDF;
+        let args = UnpivotArgsIR {
             on: strings_to_smartstrings(robj_to!(Vec, String, on)?),
             index: strings_to_smartstrings(robj_to!(Vec, String, index)?),
             value_name: robj_to!(Option, String, value_name)?.map(|s| s.into()),
             variable_name: robj_to!(Option, String, variable_name)?.map(|s| s.into()),
-            streamable: false,
         };
 
         self.0
@@ -521,20 +523,23 @@ impl RPolarsDataFrame {
             .map_err(polars_to_rpolars_err)
     }
 
-    pub fn write_ipc(&self, file: Robj, compression: Robj, future: Robj) -> RResult<()> {
+    pub fn write_ipc(&self, file: Robj, compression: Robj, compat_level: Robj) -> RResult<()> {
         let file = std::fs::File::create(robj_to!(str, file)?)?;
         pl::IpcWriter::new(file)
             .with_compression(rdatatype::new_ipc_compression(compression)?)
-            .with_pl_flavor(robj_to!(bool, future)?)
+            .with_compat_level(robj_to!(CompatLevel, compat_level)?)
             .finish(&mut self.0.clone())
             .map_err(polars_to_rpolars_err)
     }
 
-    pub fn to_raw_ipc(&self, compression: Robj, future: Robj) -> RResult<Vec<u8>> {
+    pub fn to_raw_ipc(&self, compression: Robj, compat_level: Robj) -> RResult<Vec<u8>> {
         let compression = rdatatype::new_ipc_compression(compression)?;
-        let future = robj_to!(bool, future)?;
 
-        crate::rbackground::serialize_dataframe(&mut self.0.clone(), compression, future)
+        crate::rbackground::serialize_dataframe(
+            &mut self.0.clone(),
+            compression,
+            robj_to!(CompatLevel, compat_level)?,
+        )
     }
 
     pub fn from_raw_ipc(
@@ -559,27 +564,62 @@ impl RPolarsDataFrame {
     }
 
     pub fn write_parquet(
-        &self,
+        &mut self,
         file: Robj,
         compression_method: Robj,
         compression_level: Robj,
         statistics: Robj,
         row_group_size: Robj,
-        data_pagesize_limit: Robj,
-    ) -> RResult<u64> {
+        data_page_size: Robj,
+        partition_by: Robj,
+        partition_chunk_size_bytes: Robj,
+    ) -> RResult<()> {
+        use polars::prelude::write_partitioned_dataset;
         let file = robj_to!(str, file)?;
+        let compression = new_parquet_compression(compression_method, compression_level)?;
+        let statistics = robj_to!(StatisticsOptions, statistics)?;
+        let row_group_size = robj_to!(Option, usize, row_group_size)?;
+        let data_page_size = robj_to!(Option, usize, data_page_size)?;
+        let partition_by = robj_to!(Option, Vec, String, partition_by)?;
+        let partition_chunk_size_bytes = robj_to_usize(partition_chunk_size_bytes)?;
+
+        if let Some(partition_by) = partition_by {
+            let data = &mut self.0.clone();
+            let path = file;
+
+            let write_options = ParquetWriteOptions {
+                compression,
+                statistics,
+                row_group_size,
+                data_page_size,
+                maintain_order: true,
+            };
+
+            let out = write_partitioned_dataset(
+                data,
+                std::path::Path::new(path),
+                partition_by.as_slice(),
+                &write_options,
+                partition_chunk_size_bytes,
+            )
+            .map_err(polars_to_rpolars_err)?;
+
+            return Ok(out);
+        };
+
         let f = std::fs::File::create(file)?;
-        pl::ParquetWriter::new(f)
-            .with_compression(new_parquet_compression(
-                compression_method,
-                compression_level,
-            )?)
-            .with_statistics(robj_to!(StatisticsOptions, statistics)?)
-            .with_row_group_size(robj_to!(Option, usize, row_group_size)?)
-            .with_data_page_size(robj_to!(Option, usize, data_pagesize_limit)?)
+        let out = pl::ParquetWriter::new(f)
+            .with_compression(compression)
+            .with_statistics(statistics)
+            .with_row_group_size(row_group_size)
+            .with_data_page_size(data_page_size)
             .set_parallel(true)
             .finish(&mut self.0.clone())
             .map_err(polars_to_rpolars_err)
+            // Ignore the u64 returned by .finish()
+            .map(|_| ())?;
+
+        Ok(out.into())
     }
 
     pub fn write_json(&mut self, file: Robj, pretty: Robj, row_oriented: Robj) -> RResult<()> {

@@ -33,16 +33,16 @@ pub struct OwnedSeriesIterator {
     series: pl::Series,
     idx: usize,
     n_chunks: usize,
-    pl_flavor: bool,
+    compat_level: CompatLevel,
 }
 
 impl OwnedSeriesIterator {
-    pub fn new(s: pl::Series, pl_flavor: bool) -> Self {
+    pub fn new(s: pl::Series, compat_level: CompatLevel) -> Self {
         Self {
             series: s.slice(0, s.len()),
             idx: 0,
             n_chunks: s.n_chunks(),
-            pl_flavor,
+            compat_level: compat_level,
         }
     }
 }
@@ -54,7 +54,7 @@ impl Iterator for OwnedSeriesIterator {
         if self.idx >= self.n_chunks {
             None
         } else {
-            let batch = self.series.to_arrow(self.idx, self.pl_flavor);
+            let batch = self.series.to_arrow(self.idx, self.compat_level);
             self.idx += 1;
 
             Some(std::result::Result::Ok(batch))
@@ -621,14 +621,19 @@ impl RPolarsSeries {
 
     fn struct_fields(&self) -> RResult<Vec<&str>> {
         let ca = self.0.struct_().map_err(polars_to_rpolars_err)?;
-        Ok(ca.fields().iter().map(|s| s.name()).collect())
+        Ok(ca
+            .struct_fields()
+            .iter()
+            .map(|s| s.name().as_str())
+            .collect())
     }
 
-    pub fn export_stream(&self, stream_ptr: &str, pl_flavor: bool) {
-        let data_type = self.0.dtype().to_arrow(pl_flavor);
+    pub fn export_stream(&self, stream_ptr: &str, compat_level: Robj) {
+        let compat_level = robj_to!(CompatLevel, compat_level).unwrap();
+        let data_type = self.0.dtype().to_arrow(compat_level);
         let field = pl::ArrowField::new("", data_type, false);
 
-        let iter_boxed = Box::new(OwnedSeriesIterator::new(self.0.clone(), pl_flavor));
+        let iter_boxed = Box::new(OwnedSeriesIterator::new(self.0.clone(), compat_level));
         let mut stream = arrow::ffi::export_iterator(iter_boxed, field);
         let stream_out_ptr_addr: usize = stream_ptr.parse().unwrap();
         let stream_out_ptr = stream_out_ptr_addr as *mut arrow::ffi::ArrowArrayStream;

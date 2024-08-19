@@ -2,8 +2,7 @@
 % Please edit documentation in R/expr__binary.R
 \name{ExprBin_starts_with}
 \alias{ExprBin_starts_with}
-\alias{expr_bin_starts_with}
-\title{starts_with}
+\title{Check if values start with a binary substring}
 \usage{
 ExprBin_starts_with(sub)
 }
@@ -14,6 +13,18 @@ ExprBin_starts_with(sub)
 Expr returing a Boolean
 }
 \description{
-Check if values starts with a binary substring.
+Check if values start with a binary substring
 }
-\keyword{ExprBin}
+\examples{
+colors = pl$DataFrame(
+  name = c("black", "yellow", "blue"),
+  code = as_polars_series(c("x00x00x00", "xffxffx00", "x00x00xff"))$cast(pl$Binary),
+  prefix = as_polars_series(c("x00", "xffx00", "xffxff"))$cast(pl$Binary)
+)
+
+colors$select(
+  "name",
+  starts_with_lit = pl$col("code")$bin$starts_with("xff"),
+  starts_with_expr = pl$col("code")$bin$starts_with(pl$col("prefix"))
+)
+}

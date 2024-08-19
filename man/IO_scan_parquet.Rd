@@ -17,7 +17,8 @@ pl_scan_parquet(
   low_memory = FALSE,
   storage_options = NULL,
   use_statistics = TRUE,
-  cache = TRUE
+  cache = TRUE,
+  include_file_paths = NULL
 )
 }
 \arguments{
@@ -36,10 +37,11 @@ the name is set).}
 
 \item{parallel}{This determines the direction of parallelism. \code{"auto"} will
 try to determine the optimal direction. Can be \code{"auto"}, \code{"columns"},
-\code{"row_groups"}, or \code{"none"}.}
+\code{"row_groups"}, \code{"prefiltered"}, or \code{"none"}. See 'Details'.}
 
-\item{hive_partitioning}{Infer statistics and schema from hive partitioned URL
-and use them to prune reads.}
+\item{hive_partitioning}{Infer statistics and schema from Hive partitioned URL
+and use them to prune reads. If \code{NULL} (default), it is automatically
+enabled when a single directory is passed, and otherwise disabled.}
 
 \item{glob}{Expand path given via globbing rules.}
 
@@ -56,6 +58,9 @@ See the 'Details' section.}
 can be skipped from reading.}
 
 \item{cache}{Cache the result after reading.}
+
+\item{include_file_paths}{Character value indicating the column name that will
+include the path of the source file(s).}
 }
 \value{
 \link[=LazyFrame_class]{LazyFrame}
@@ -64,6 +69,19 @@ can be skipped from reading.}
 Scan a parquet file
 }
 \details{
+\subsection{On parallel strategies}{
+
+The prefiltered strategy first evaluates the pushed-down predicates in
+parallel and determines a mask of which rows to read. Then, it parallelizes
+over both the columns and the row groups while filtering out rows that do not
+need to be read. This can provide significant speedups for large files (i.e.
+many row-groups) with a predicate that filters clustered rows or filters
+heavily. In other cases, prefiltered may slow down the scan compared other
+strategies.
+
+The prefiltered settings falls back to auto if no predicate is given.
+}
+
 \subsection{Connecting to cloud providers}{
 
 Polars supports scanning parquet files from different cloud providers.

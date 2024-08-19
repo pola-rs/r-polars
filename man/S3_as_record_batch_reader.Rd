@@ -4,17 +4,21 @@
 \alias{as_record_batch_reader.RPolarsDataFrame}
 \title{Create a arrow RecordBatchReader from a Polars object}
 \usage{
-\method{as_record_batch_reader}{RPolarsDataFrame}(x, ..., future = FALSE)
+\method{as_record_batch_reader}{RPolarsDataFrame}(x, ..., compat_level = FALSE)
 }
 \arguments{
 \item{x}{\link[=DataFrame_class]{A Polars DataFrame}}
 
 \item{...}{Ignored}
 
-\item{future}{Setting this to \code{TRUE} will write Polars' internal data structures that
-might not be available by other Arrow implementations.
-This functionality is considered \strong{unstable}.
-It may be changed at any point without it being considered a breaking change.}
+\item{compat_level}{Use a specific compatibility level when exporting Polars’
+internal data structures. This can be:
+\itemize{
+\item an integer indicating the compatibility version (currently only 0 for oldest
+and 1 for newest);
+\item a logical value with \code{TRUE} for the newest version and \code{FALSE} for the oldest
+version.
+}}
 }
 \description{
 Create a arrow RecordBatchReader from a Polars object

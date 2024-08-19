@@ -26,8 +26,8 @@ DataFrame_join(
 strings. Use \code{left_on} and \code{right_on} if the column names to match on are
 different between the two DataFrames.}
 
-\item{how}{One of the following methods: "inner", "left", "full", "semi",
-"anti", "cross".}
+\item{how}{One of the following methods: "inner", "left", "right", "full",
+"semi", "anti", "cross".}
 
 \item{...}{Ignored.}
 

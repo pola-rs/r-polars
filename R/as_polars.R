@@ -172,7 +172,6 @@ as_polars_df.RPolarsLazyFrame = function(
     cluster_with_columns = TRUE,
     streaming = FALSE,
     no_optimization = FALSE,
-    inherit_optimization = FALSE,
     collect_in_background = FALSE) {
   # capture all args and modify some to match lower level function
   args = as.list(environment())

@@ -12,7 +12,7 @@ test_that("as_nanoarrow_array_stream() works for DataFrame", {
   # nanoarrow does not support the string view type yet
   # https://github.com/apache/arrow-nanoarrow/pull/367
   expect_grepl_error(
-    nanoarrow::as_nanoarrow_array_stream(df, future = TRUE) |>
+    nanoarrow::as_nanoarrow_array_stream(df, compat_level = TRUE) |>
       as.data.frame(),
     "Unknown format: 'vu'"
   )
@@ -33,7 +33,7 @@ test_that("as_nanoarrow_array_stream() works for Series", {
   # nanoarrow does not support the string view type yet
   # https://github.com/apache/arrow-nanoarrow/pull/367
   expect_grepl_error(
-    nanoarrow::as_nanoarrow_array_stream(s, future = TRUE) |>
+    nanoarrow::as_nanoarrow_array_stream(s, compat_level = TRUE) |>
       as.vector(),
     "Unknown format: 'vu'"
   )

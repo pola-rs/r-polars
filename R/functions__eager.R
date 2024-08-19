@@ -167,9 +167,7 @@ pl_concat = function(
 #'
 #' If both `start` and `end` are passed as the Date types (not Datetime), and
 #' the `interval` granularity is no finer than `"1d"`, the returned range is
-#' also of type Date. All other permutations return a Datetime. Note that in a
-#' future version of Polars, `pl$date_range()` will always return Date. Please
-#' use [`pl$datetime_range()`][pl_datetime_range] if you want Datetime instead.
+#' also of type Date. All other permutations return a Datetime.
 #'
 #' @param start Lower bound of the date range. Something that can be coerced to
 #' a Date or a [Datetime][DataType_Datetime] expression. See examples for details.
@@ -216,9 +214,7 @@ pl_date_range = function(
 #'
 #' If both `start` and `end` are passed as the Date types (not Datetime), and
 #' the `interval` granularity is no finer than `"1d"`, the returned range is
-#' also of type Date. All other permutations return a Datetime. Note that in a
-#' future version of Polars, `pl$date_ranges()` will always return Date. Please
-#' use [`pl$datetime_ranges()`][pl_datetime_ranges] if you want Datetime instead.
+#' also of type Date. All other permutations return a Datetime.
 #'
 #' @inheritParams pl_date_range
 #' @inheritSection polars_duration_string  Polars duration string language

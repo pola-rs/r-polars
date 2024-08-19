@@ -55,11 +55,6 @@ patrick::with_parameters_test_that("write and read Apache Arrow file",
       as.data.frame(pl$read_ipc(tmpf, memory_map = FALSE))
     )
 
-    expect_warning(
-      df$write_ipc(tmpf, compression = compression, future = TRUE),
-      "considered unstable"
-    )
-
     expect_true(
       df$equals(pl$read_ipc(tmpf, memory_map = FALSE))
     )
@@ -82,7 +77,7 @@ patrick::with_parameters_test_that("input/output DataFrame as raw vector",
 
     raw_vec = df$to_raw_ipc(
       compression = compression,
-      future = TRUE
+      compat_level = TRUE
     )
 
     expect_true(
@@ -111,5 +106,94 @@ test_that("memory_map", {
 
   expect_true(
     df$equals(pl$DataFrame(x = 2))
+  )
+})
+
+
+test_that("scanning from hive partition works", {
+  skip_if_not_installed("arrow")
+  skip_if_not_installed("withr")
+  temp_dir = withr::local_tempdir()
+  arrow::write_dataset(
+    mtcars,
+    temp_dir,
+    partitioning = c("cyl", "gear"),
+    format = "arrow",
+    hive_style = TRUE
+  )
+
+  # Passing a directory automatically enables hive partitioning reading
+  # i.e. "cyl" and "gear" are in the data and the data is sorted by the
+  # partitioning columns
+  expect_identical(
+    pl$scan_ipc(temp_dir)$select("mpg", "gear")$collect() |> as.data.frame(),
+    mtcars[order(mtcars$cyl, mtcars$gear), c("mpg", "gear")],
+    ignore_attr = TRUE
+  )
+
+  # hive_partitioning controls whether partitioning columns are included
+  expect_identical(
+    pl$scan_ipc(temp_dir, hive_partitioning = FALSE)$collect() |> dim(),
+    c(32L, 9L)
+  )
+
+  # can use hive_schema for more fine grained control on partitioning columns
+  sch = pl$scan_ipc(temp_dir, hive_schema = list(cyl = pl$String, gear = pl$Int32))$
+    collect()$schema
+  expect_true(sch$gear$is_integer())
+  expect_true(sch$cyl$is_string())
+  expect_grepl_error(
+    pl$scan_ipc(temp_dir, hive_schema = list(cyl = "a"))
+  )
+
+  # cannot get a subset of partitioning columns
+  expect_grepl_error(
+    pl$scan_ipc(temp_dir, hive_schema = list(cyl = pl$String))$collect(),
+    r"(path contains column not present in the given Hive schema: "gear")"
+  )
+})
+
+test_that("try_parse_hive_dates works", {
+  skip_if_not_installed("arrow")
+  skip_if_not_installed("withr")
+  temp_dir = withr::local_tempdir()
+  test = data.frame(dt = as.Date(c("2020-01-01", "2020-01-01", "2020-01-02")), y = 1:3)
+  arrow::write_dataset(
+    test,
+    temp_dir,
+    partitioning = "dt",
+    format = "arrow",
+    hive_style = TRUE
+  )
+
+  # default is to parse dates
+  expect_identical(
+    pl$scan_ipc(temp_dir)$select("dt")$collect()$to_list(),
+    list(dt = as.Date(c("2020-01-01", "2020-01-01", "2020-01-02")))
+  )
+
+  expect_identical(
+    pl$scan_ipc(temp_dir, try_parse_hive_dates = FALSE)$select("dt")$collect()$to_list(),
+    list(dt = c("2020-01-01", "2020-01-01", "2020-01-02"))
+  )
+})
+
+test_that("scan_ipc can include file path", {
+  skip_if_not_installed("arrow")
+  skip_if_not_installed("withr")
+  temp_dir = withr::local_tempdir()
+  arrow::write_dataset(
+    mtcars,
+    temp_dir,
+    partitioning = c("cyl", "gear"),
+    format = "arrow",
+    hive_style = TRUE
+  )
+
+  # There are 8 partitions so 8 file paths
+  expect_identical(
+    pl$scan_ipc(temp_dir, include_file_paths = "file_paths")$collect()$unique("file_paths") |>
+      dim(),
+    c(8L, 12L)
   )
 })

@@ -1,5 +1,6 @@
 use crate::rdataframe::RPolarsDataFrame;
 use crate::robj_to;
+
 use crate::rpolarserr::rerr;
 use crate::rpolarserr::{
     extendr_to_rpolars_err, polars_to_rpolars_err, rdbg, RPolarsErr, RResult, Rctx, WithRctx,
@@ -11,7 +12,7 @@ use extendr_api::{
 use flume::{bounded, Sender};
 use ipc_channel::ipc;
 use once_cell::sync::Lazy;
-use polars::prelude as pl;
+use polars::prelude::{self as pl, CompatLevel};
 use std::collections::VecDeque;
 use std::sync::{Arc, Mutex};
 use std::thread;
@@ -96,14 +97,14 @@ pub fn deserialize_robj(bits: Vec<u8>) -> RResult<Robj> {
 pub fn serialize_dataframe(
     dataframe: &mut polars::prelude::DataFrame,
     compression: Option<pl::IpcCompression>,
-    future: bool,
+    compat_level: CompatLevel,
 ) -> RResult<Vec<u8>> {
     use polars::io::SerWriter;
 
     let mut dump = Vec::new();
     polars::io::ipc::IpcWriter::new(&mut dump)
         .with_compression(compression)
-        .with_pl_flavor(future)
+        .with_compat_level(compat_level)
         .finish(dataframe)
         .map_err(polars_to_rpolars_err)?;
     Ok(dump)
@@ -125,7 +126,11 @@ pub fn deserialize_dataframe(
 }
 
 pub fn serialize_series(series: pl::Series) -> RResult<Vec<u8>> {
-    serialize_dataframe(&mut std::iter::once(series).collect(), None, true)
+    serialize_dataframe(
+        &mut std::iter::once(series).collect(),
+        None,
+        CompatLevel::newest(),
+    )
 }
 
 pub fn deserialize_series(bits: &[u8]) -> RResult<pl::Series> {

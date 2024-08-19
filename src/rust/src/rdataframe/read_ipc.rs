@@ -2,8 +2,8 @@ use crate::lazy::dataframe::RPolarsLazyFrame;
 use crate::robj_to;
 use crate::rpolarserr::RResult;
 use extendr_api::prelude::*;
-use polars::io::RowIndex;
-use polars::prelude::{LazyFrame, ScanArgsIpc};
+use polars::io::{HiveOptions, RowIndex};
+use polars::prelude::{Arc, LazyFrame, ScanArgsIpc};
 
 #[extendr]
 pub fn import_arrow_ipc(
@@ -14,7 +14,18 @@ pub fn import_arrow_ipc(
     row_name: Robj,
     row_index: Robj,
     memory_map: Robj,
+    hive_partitioning: Robj,
+    hive_schema: Robj,
+    try_parse_hive_dates: Robj,
+    include_file_paths: Robj,
 ) -> RResult<RPolarsLazyFrame> {
+    let hive_options = HiveOptions {
+        enabled: robj_to!(Option, bool, hive_partitioning)?,
+        hive_start_idx: 0,
+        schema: robj_to!(Option, WrapSchema, hive_schema)?.map(|x| Arc::new(x.0)),
+        try_parse_dates: robj_to!(bool, try_parse_hive_dates)?,
+    };
+
     let args = ScanArgsIpc {
         n_rows: robj_to!(Option, usize, n_rows)?,
         cache: robj_to!(bool, cache)?,
@@ -29,6 +40,8 @@ pub fn import_arrow_ipc(
             .transpose()?,
         memory_map: robj_to!(bool, memory_map)?,
         cloud_options: None,
+        hive_options,
+        include_file_paths: robj_to!(Option, String, include_file_paths)?.map(Arc::from),
     };
     let lf = LazyFrame::scan_ipc(robj_to!(String, path)?, args)
         .map_err(crate::rpolarserr::polars_to_rpolars_err)?;
