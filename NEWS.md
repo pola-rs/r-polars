@@ -4,7 +4,7 @@
 
 ### Breaking changes
 
-- Updated rust-polars to 0.42.0 (#1183).
+- Updated rust-polars to unreleased 2024-08-20, after 0.42.0 (#1183).
 - `$describe_plan()` and `$describe_optimized_plan()` are removed. Use
   respectively `$explain(optimized = FALSE)` and `$explain()` instead (#1182).
 - The parameter `inherit_optimization` is removed from all functions that had it

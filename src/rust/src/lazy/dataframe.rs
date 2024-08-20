@@ -542,7 +542,7 @@ impl RPolarsLazyFrame {
     fn schema(&mut self) -> RResult<Pairlist> {
         let schema = self
             .0
-            .schema()
+            .collect_schema()
             .map_err(crate::rpolarserr::polars_to_rpolars_err)?;
         let pairs = schema.iter().collect::<Vec<_>>().into_iter();
         Ok(Pairlist::from_pairs(

@@ -47,7 +47,7 @@ impl OwnedDataFrameIterator {
             data_type,
             idx: 0,
             n_chunks: df.n_chunks(),
-            compat_level: compat_level,
+            compat_level,
         }
     }
 }
