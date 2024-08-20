@@ -81,19 +81,18 @@ test_that("scanning from hive partition works", {
   )
 })
 
-# TODO: https://github.com/pola-rs/polars/issues/18219
-# test_that("scan_parquet can include file path", {
-#   skip_if_not_installed("withr")
-#   temp_dir = withr::local_tempdir()
-#   pl$DataFrame(mtcars)$write_parquet(temp_dir, partition_by = c("cyl", "gear"))
-#
-#   # There are 8 partitions so 8 file paths
-#   expect_identical(
-#     pl$scan_parquet(temp_dir, include_file_paths = "file_paths")$collect()$unique("file_paths") |>
-#       dim(),
-#     c(8L, 12L)
-#   )
-# })
+test_that("scan_parquet can include file path", {
+  skip_if_not_installed("withr")
+  temp_dir = withr::local_tempdir()
+  pl$DataFrame(mtcars)$write_parquet(temp_dir, partition_by = c("cyl", "gear"))
+
+  # There are 8 partitions so 8 file paths
+  expect_identical(
+    pl$scan_parquet(temp_dir, include_file_paths = "file_paths")$collect()$unique("file_paths") |>
+      dim(),
+    c(8L, 12L)
+  )
+})
 
 
 test_that("write_parquet works", {

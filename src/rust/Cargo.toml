@@ -50,8 +50,8 @@ serde_json = "*"
 smartstring = "1.0.1"
 state = "0.6.0"
 thiserror = "1.0.63"
-polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "7686025ac7738607f2d4f6887e9a1313b7c8b1e2", default-features = false }
-polars-lazy = { git = "https://github.com/pola-rs/polars.git", rev = "7686025ac7738607f2d4f6887e9a1313b7c8b1e2", default-features = false }
+polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "67551b6594c581731f0e9ca814ff7c39377bd324", default-features = false }
+polars-lazy = { git = "https://github.com/pola-rs/polars.git", rev = "67551b6594c581731f0e9ca814ff7c39377bd324", default-features = false }
 either = "1"
 
 [dependencies.polars]
@@ -159,4 +159,4 @@ features = [
   "zip_with",
 ]
 git = "https://github.com/pola-rs/polars.git"
-rev = "7686025ac7738607f2d4f6887e9a1313b7c8b1e2"
+rev = "67551b6594c581731f0e9ca814ff7c39377bd324"
