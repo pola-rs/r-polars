@@ -56,7 +56,8 @@ test_that("multiple paths works", {
   expect_identical(out, rbind(df, df))
 })
 
-# TODO: why doesn't this fail?
+# TODO: either uncomment or remove when https://github.com/pola-rs/polars/issues/18306
+# is resolved
 # test_that("multiple paths fails if different schema", {
 #   skip_if_not_installed("jsonlite")
 #   ndjson_filename = tempfile()
