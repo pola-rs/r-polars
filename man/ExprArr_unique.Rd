@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__array.R
 \name{ExprArr_unique}
 \alias{ExprArr_unique}
-\alias{arr_unique}
 \title{Get unique values in an array}
 \usage{
 ExprArr_unique(maintain_order = FALSE)

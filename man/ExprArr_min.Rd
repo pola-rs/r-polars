@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__array.R
 \name{ExprArr_min}
 \alias{ExprArr_min}
-\alias{arr_min}
 \title{Find the minimum value in an array}
 \usage{
 ExprArr_min()

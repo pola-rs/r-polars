@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__array.R
 \name{ExprArr_sort}
 \alias{ExprArr_sort}
-\alias{arr_sort}
 \title{Sort values in an array}
 \usage{
 ExprArr_sort(descending = FALSE, nulls_last = FALSE)

@@ -3,12 +3,6 @@
 \name{ExprStr_to_time}
 \alias{ExprStr_to_time}
 \title{Convert a String column into a Time column}
-\format{
-Format to use for conversion. Refer to
-\href{https://docs.rs/chrono/latest/chrono/format/strftime/index.html}{the chrono crate documentation}
-for the full specification. Example: \code{"\%H:\%M:\%S"}.
-If \code{NULL} (default), the format is inferred from the data.
-}
 \usage{
 ExprStr_to_time(format = NULL, ..., strict = TRUE, cache = TRUE)
 }

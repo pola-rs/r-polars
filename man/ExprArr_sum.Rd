@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__array.R
 \name{ExprArr_sum}
 \alias{ExprArr_sum}
-\alias{arr_sum}
 \title{Sum all elements in an array}
 \usage{
 ExprArr_sum()

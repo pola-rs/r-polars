@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{ExprList_concat}
 \alias{ExprList_concat}
-\alias{list_concat}
 \title{Concat two list variables}
 \usage{
 ExprList_concat(other)

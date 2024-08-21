@@ -1,11 +1,8 @@
-#' field
+#' Retrieve one of the fields of this Struct as a new Series
 #'
-#' @aliases expr_struct_field
-#' @description Retrieve a ``Struct`` field as a new Series.
-#' By default base 2.
-#' @keywords ExprStruct
-#' @param name string, the Name of the struct field to retrieve.
-#' @return Expr: Series of same and name selected field.
+#' @param name Name of the field.
+#'
+#' @return Expr of datatype Struct
 #' @examples
 #' df = pl$DataFrame(
 #'   aaa = c(1, 2),
@@ -26,15 +23,13 @@ ExprStruct_field = function(name) {
 }
 
 
-#' rename fields
+#' Rename the fields of the struct
 #'
-#' @aliases expr_struct_rename_fields
-#' @description Rename the fields of the struct.
-#' By default base 2.
-#' @keywords ExprStruct
-#' @param names char vec or list of strings given in the same order as the struct's fields.
-#' Providing fewer names will drop the latter fields. Providing too many names is ignored.
-#' @return Expr: struct-series with new names for the fields
+#' @param names Vector or list of strings given in the same order as the struct's
+#' fields. Providing fewer names will drop the latter fields. If too many names
+#' are given, the extra names are ignored.
+#'
+#' @return Expr of datatype Struct
 #' @examples
 #' df = pl$DataFrame(
 #'   aaa = 1:2,
@@ -48,7 +43,8 @@ ExprStruct_field = function(name) {
 #' )
 #' df$unnest()
 ExprStruct_rename_fields = function(names) {
-  .pr$Expr$struct_rename_fields(self, names) |> unwrap("in $struct$rename_fields:")
+  .pr$Expr$struct_rename_fields(self, names) |>
+    unwrap("in $struct$rename_fields:")
 }
 
 #' Add or overwrite fields of this struct

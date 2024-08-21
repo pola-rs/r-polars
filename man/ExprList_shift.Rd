@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{ExprList_shift}
 \alias{ExprList_shift}
-\alias{list_shift}
 \title{Shift list values by \code{n} indices}
 \usage{
 ExprList_shift(periods = 1)

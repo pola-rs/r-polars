@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{ExprList_min}
 \alias{ExprList_min}
-\alias{list_min}
 \title{Find the minimum value in a list}
 \usage{
 ExprList_min()

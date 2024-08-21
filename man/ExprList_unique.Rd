@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{ExprList_unique}
 \alias{ExprList_unique}
-\alias{list_unique}
 \title{Get unique values in a list}
 \usage{
 ExprList_unique()

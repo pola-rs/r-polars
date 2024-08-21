@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{ExprList_arg_max}
 \alias{ExprList_arg_max}
-\alias{list_arg_max}
 \title{Get the index of the maximal value in list}
 \usage{
 ExprList_arg_max()

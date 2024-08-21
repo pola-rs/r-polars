@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{ExprList_reverse}
 \alias{ExprList_reverse}
-\alias{list_reverse}
 \title{Reverse values in a list}
 \usage{
 ExprList_reverse()

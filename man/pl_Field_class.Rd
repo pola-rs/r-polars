@@ -3,8 +3,6 @@
 \name{pl_Field_class}
 \alias{pl_Field_class}
 \alias{pl_Field}
-\alias{RField_class}
-\alias{RPolarsRField}
 \title{Create Field}
 \usage{
 pl_Field(name, datatype)

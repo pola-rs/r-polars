@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__array.R
 \name{ExprArr_reverse}
 \alias{ExprArr_reverse}
-\alias{arr_reverse}
 \title{Reverse values in an array}
 \usage{
 ExprArr_reverse()

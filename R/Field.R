@@ -18,8 +18,6 @@
 #'
 #' `$name = "new_name"` sets the name of the Field.
 #'
-#' @aliases RField_class RPolarsRField
-#'
 #' @param name Field name
 #' @param datatype [DataType][pl_dtypes]
 #'

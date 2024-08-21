@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{ExprList_tail}
 \alias{ExprList_tail}
-\alias{list_tail}
 \title{Get the last \code{n} values of a list}
 \usage{
 ExprList_tail(n = 5L)

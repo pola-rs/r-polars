@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{ExprList_contains}
 \alias{ExprList_contains}
-\alias{list_contains}
 \title{Check if list contains a given value}
 \usage{
 ExprList_contains(item)

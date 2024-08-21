@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{ExprList_eval}
 \alias{ExprList_eval}
-\alias{list_eval}
 \title{Run any polars expression on the list values}
 \usage{
 ExprList_eval(expr, parallel = FALSE)

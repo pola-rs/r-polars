@@ -118,10 +118,7 @@ ExprStr_strptime = function(
 #' Convert a String column into a Date column
 #'
 #' @inheritParams ExprStr_strptime
-#' @format Format to use for conversion. Refer to
-#' [the chrono crate documentation](https://docs.rs/chrono/latest/chrono/format/strftime/index.html)
-#' for the full specification. Example: `"%Y-%m-%d"`.
-#' If `NULL` (default), the format is inferred from the data.
+#'
 #' @return [Expr][Expr_class] of Date type
 #' @seealso
 #' - [`<Expr>$str$strptime()`][ExprStr_strptime]
@@ -142,10 +139,7 @@ ExprStr_to_date = function(format = NULL, ..., strict = TRUE, exact = TRUE, cach
 #' Convert a String column into a Time column
 #'
 #' @inheritParams ExprStr_strptime
-#' @format Format to use for conversion. Refer to
-#' [the chrono crate documentation](https://docs.rs/chrono/latest/chrono/format/strftime/index.html)
-#' for the full specification. Example: `"%H:%M:%S"`.
-#' If `NULL` (default), the format is inferred from the data.
+#'
 #' @return [Expr][Expr_class] of Time type
 #' @seealso
 #' - [`<Expr>$str$strptime()`][ExprStr_strptime]

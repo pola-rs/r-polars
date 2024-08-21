@@ -3,12 +3,6 @@
 \name{ExprStr_to_date}
 \alias{ExprStr_to_date}
 \title{Convert a String column into a Date column}
-\format{
-Format to use for conversion. Refer to
-\href{https://docs.rs/chrono/latest/chrono/format/strftime/index.html}{the chrono crate documentation}
-for the full specification. Example: \code{"\%Y-\%m-\%d"}.
-If \code{NULL} (default), the format is inferred from the data.
-}
 \usage{
 ExprStr_to_date(format = NULL, ..., strict = TRUE, exact = TRUE, cache = TRUE)
 }

@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__array.R
 \name{ExprArr_shift}
 \alias{ExprArr_shift}
-\alias{arr_shift}
 \title{Shift array values by \code{n} indices}
 \usage{
 ExprArr_shift(periods = 1)

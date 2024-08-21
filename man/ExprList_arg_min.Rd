@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{ExprList_arg_min}
 \alias{ExprList_arg_min}
-\alias{list_arg_min}
 \title{Get the index of the minimal value in list}
 \usage{
 ExprList_arg_min()

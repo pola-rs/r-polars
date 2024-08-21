@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__array.R
 \name{ExprArr_arg_min}
 \alias{ExprArr_arg_min}
-\alias{arr_arg_min}
 \title{Get the index of the minimal value in an array}
 \usage{
 ExprArr_arg_min()

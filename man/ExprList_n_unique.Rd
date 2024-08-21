@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{ExprList_n_unique}
 \alias{ExprList_n_unique}
-\alias{list_n_unique}
 \title{Get the number of unique values in a list}
 \usage{
 ExprList_n_unique()

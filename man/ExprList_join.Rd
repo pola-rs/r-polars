@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{ExprList_join}
 \alias{ExprList_join}
-\alias{list_join}
 \title{Join elements of a list}
 \usage{
 ExprList_join(separator, ignore_nulls = FALSE)
