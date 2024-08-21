@@ -71,33 +71,17 @@
 #' to the [POSIXct] type in R, which takes into account the time zone in which
 #' the R session is running (which can be checked with the [Sys.timezone()]
 #' function). In this case, if ambiguous times are included, a conversion error
-#' will occur. In such cases, change the session time zone using
-#' [`Sys.setenv(TZ = "UTC")`][base::Sys.setenv] and then perform the conversion, or use the
-#' [`$dt$replace_time_zone()`][ExprDT_replace_time_zone] method on the Datetime type column to
-#' explicitly specify the time zone before conversion.
+#' will occur. In such cases, use the
+#' [`$dt$replace_time_zone()`][ExprDT_replace_time_zone] method on the Datetime
+#' type column to explicitly specify the time zone before conversion.
 #'
 #' ```{r}
-#' # Due to daylight savings, clocks were turned forward 1 hour on Sunday, March 8, 2020, 2:00:00 am
-#' # so this particular date-time doesn't exist
-#' non_existent_time = as_polars_series("2020-03-08 02:00:00")$str$strptime(pl$Datetime(), "%F %T")
-#'
-#' withr::with_envvar(
-#'   new = c(TZ = "America/New_York"),
-#'   {
-#'     tryCatch(
-#'       # This causes an error due to the time zone (the `TZ` env var is affected).
-#'       as.vector(non_existent_time),
-#'       error = function(e) e
-#'     )
-#'   }
-#' )
-#'
-#' withr::with_envvar(
-#'   new = c(TZ = "America/New_York"),
-#'   {
-#'     # This is safe.
-#'     as.vector(non_existent_time$dt$replace_time_zone("UTC"))
-#'   }
+#' # Due to daylight savings, clocks were turned forward 1 hour on Sunday, March 8,
+#' # 2020, 2:00:00 am so this particular date-time doesn't exist
+#' tryCatch(
+#'   as_polars_series("2020-03-08 02:00:00")$
+#'     str$strptime(pl$Datetime(time_zone = "America/New_York"), "%F %T"),
+#'   error = function(e) print(e)
 #' )
 #' ```
 #' @details Check out the source code in

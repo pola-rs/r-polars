@@ -42,42 +42,32 @@ test_that("POSIXct data conversion", {
     pl$lit("2022-01-01")$str$strptime(pl$Datetime(), "%F")$to_r(),
     as.POSIXct("2022-01-01")
   )
-  # TODO: infer timezone from string, change the arugment name from `tz`
+
+  # Note: do not set the "TZ" envvar here as it doesn't work consistently
+  # https://github.com/pola-rs/r-polars/issues/1188
+  expect_identical(
+    pl$lit("2022-01-01")$str$strptime(pl$Datetime(time_zone = "America/New_York"), "%F")$to_r(),
+    as.POSIXct("2022-01-01", tz = "America/New_York")
+  )
   expect_true(
     as_polars_series("2022-01-01 UTC")$str$strptime(pl$Datetime(time_zone = "UTC"), "%F %Z")$eq(
       as_polars_series(as.POSIXct("2022-01-01", tz = "UTC"))
     )$to_r()
   )
 
-  withr::with_envvar(
-    new = c(TZ = "America/New_York"),
-    {
-      expect_identical(
-        pl$lit("2022-01-01")$str$strptime(pl$Datetime(), "%F")$to_r(),
-        as.POSIXct("2022-01-01")
-      )
-      # TODO: infer timezone from string, change the arugment name from `tz`
-      expect_true(
-        as_polars_series("2022-01-01 UTC")$str$strptime(pl$Datetime(time_zone = "UTC"), "%F %Z")$eq(
-          as_polars_series(as.POSIXct("2022-01-01", tz = "UTC"))
-        )$to_r()
-      )
-
-      non_existent_time_chr = "2020-03-08 02:00:00"
-      ambiguous_time_chr = "2020-11-01 01:00:00"
-      expect_identical(
-        pl$lit(as.POSIXct(non_existent_time_chr))$to_r(),
-        as.POSIXct(non_existent_time_chr)
-      )
-      expect_grepl_error(
-        pl$lit(non_existent_time_chr)$str$strptime(pl$Datetime(), "%F %T")$to_r(),
-        "non-existent"
-      )
-      expect_grepl_error(
-        pl$lit(ambiguous_time_chr)$str$strptime(pl$Datetime(), "%F %T")$to_r(),
-        "ambiguous"
-      )
-    }
+  non_existent_time_chr = "2020-03-08 02:00:00"
+  ambiguous_time_chr = "2020-11-01 01:00:00"
+  expect_identical(
+    pl$lit(as.POSIXct(non_existent_time_chr))$to_r(),
+    as.POSIXct(non_existent_time_chr)
+  )
+  expect_grepl_error(
+    pl$lit(non_existent_time_chr)$str$strptime(pl$Datetime(time_zone = "America/New_York"), "%F %T")$to_r(),
+    "non-existent"
+  )
+  expect_grepl_error(
+    pl$lit(ambiguous_time_chr)$str$strptime(pl$Datetime(time_zone = "America/New_York"), "%F %T")$to_r(),
+    "ambiguous"
   )
 
   expect_identical(
