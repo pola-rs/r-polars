@@ -1974,43 +1974,38 @@ test_that("kurtosis", {
     }
   }
 
-
   l = list(a = c(1:3, NA_integer_, 1:3))
   l2 = list(a = c(1:3, 1:3))
 
+  # missing values should not change outcome
+  expect_equal(
+    pl$DataFrame(l)$select(
+      pl$col("a")$kurtosis()$alias("kurt"),
+      pl$col("a")$kurtosis(fisher = TRUE, bias = FALSE)$alias("_TF"),
+      pl$col("a")$kurtosis(fisher = FALSE, bias = TRUE)$alias("kurt_FT"),
+      pl$col("a")$kurtosis(fisher = FALSE, bias = FALSE)$alias("kurt_FF")
+    )$to_list(),
+    pl$DataFrame(l2)$select(
+      pl$col("a")$kurtosis()$alias("kurt"),
+      pl$col("a")$kurtosis(fisher = TRUE, bias = FALSE)$alias("_TF"),
+      pl$col("a")$kurtosis(fisher = FALSE, bias = TRUE)$alias("kurt_FT"),
+      pl$col("a")$kurtosis(fisher = FALSE, bias = FALSE)$alias("kurt_FF")
+    )$to_list()
+  )
 
-  # TODO this test should pass when polars is updated
-  ## missing values should not change outcome
-  # expect_equal(
-  #   pl$DataFrame(l)$select(
-  #     pl$col("a")$kurtosis()$alias("kurt"),
-  #     pl$col("a")$kurtosis(fisher = TRUE, bias=FALSE)$alias("_TF"),
-  #     pl$col("a")$kurtosis(fisher = FALSE, bias=TRUE)$alias("kurt_FT"),
-  #     pl$col("a")$kurtosis(fisher = FALSE, bias=FALSE)$alias("kurt_FF")
-  #   )$to_list(),
-  #   pl$DataFrame(l2)$select(
-  #     pl$col("a")$kurtosis()$alias("kurt"),
-  #     pl$col("a")$kurtosis(fisher = TRUE, bias=FALSE)$alias("_TF")+3,
-  #     pl$col("a")$kurtosis(fisher = FALSE, bias=TRUE)$alias("kurt_FT"),
-  #     pl$col("a")$kurtosis(fisher = FALSE, bias=FALSE)$alias("kurt_FF")+3
-  #   )$to_list()
-  # )
-
-  #
-
-  # TODO test for bias correction when polars is updated
+  # equivalence with R
   expect_equal(
     pl$DataFrame(l2)$select(
       pl$col("a")$kurtosis()$alias("kurt_TT"),
-      # pl$col("a")$kurtosis(fisher = TRUE, bias=FALSE)$alias("kurt_TF"),
-      pl$col("a")$kurtosis(fisher = FALSE, bias = TRUE)$alias("kurt_FT")
-      # pl$col("a")$kurtosis(fisher = FALSE, bias=FALSE)$alias("kurt_FF")
+      pl$col("a")$kurtosis(fisher = TRUE, bias=FALSE)$alias("kurt_TF"),
+      pl$col("a")$kurtosis(fisher = FALSE, bias = TRUE)$alias("kurt_FT"),
+      pl$col("a")$kurtosis(fisher = FALSE, bias=FALSE)$alias("kurt_FF")
     )$to_list(),
     list2(
       kurt_TT =  R_kurtosis(l2$a, TRUE, TRUE),
-      # kurt_TF =  R_kurtosis(l2$a,T,F),
-      kurt_FT =  R_kurtosis(l2$a, FALSE, TRUE)
-      # kurt_FF =  R_kurtosis(l2$a,F,F)
+      kurt_TF =  R_kurtosis(l2$a,T,F),
+      kurt_FT =  R_kurtosis(l2$a, FALSE, TRUE),
+      kurt_FF =  R_kurtosis(l2$a,F,F)
     )
   )
 })
