@@ -113,18 +113,18 @@ test_that("try_parse_hive_dates works", {
     test,
     temp_dir,
     partitioning = "dt",
-    format = "arrow",
+    format = "parquet",
     hive_style = TRUE
   )
 
   # default is to parse dates
   expect_identical(
-    pl$scan_ipc(temp_dir)$select("dt")$collect()$to_list(),
+    pl$scan_parquet(temp_dir)$select("dt")$collect()$to_list(),
     list(dt = as.Date(c("2020-01-01", "2020-01-01", "2020-01-02")))
   )
 
   expect_identical(
-    pl$scan_ipc(temp_dir, try_parse_hive_dates = FALSE)$select("dt")$collect()$to_list(),
+    pl$scan_parquet(temp_dir, try_parse_hive_dates = FALSE)$select("dt")$collect()$to_list(),
     list(dt = c("2020-01-01", "2020-01-01", "2020-01-02"))
   )
 })
