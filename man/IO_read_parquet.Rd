@@ -11,7 +11,9 @@ pl_read_parquet(
   row_index_name = NULL,
   row_index_offset = 0L,
   parallel = c("auto", "columns", "row_groups", "none"),
-  hive_partitioning = TRUE,
+  hive_partitioning = NULL,
+  hive_schema = NULL,
+  try_parse_hive_dates = TRUE,
   glob = TRUE,
   rechunk = TRUE,
   low_memory = FALSE,
@@ -42,6 +44,14 @@ try to determine the optimal direction. Can be \code{"auto"}, \code{"columns"},
 \item{hive_partitioning}{Infer statistics and schema from Hive partitioned URL
 and use them to prune reads. If \code{NULL} (default), it is automatically
 enabled when a single directory is passed, and otherwise disabled.}
+
+\item{hive_schema}{A list containing the column names and data types of the
+columns by which the data is partitioned, e.g.
+\code{list(a = pl$String, b = pl$Float32)}. If \code{NULL} (default), the schema of
+the Hive partitions is inferred.}
+
+\item{try_parse_hive_dates}{Whether to try parsing hive values as date/datetime
+types.}
 
 \item{glob}{Expand path given via globbing rules.}
 
@@ -104,21 +114,20 @@ a valid service account. Be sure to always include a service account in the
 }
 }
 \examples{
-\dontshow{if (requireNamespace("arrow", quietly = TRUE) && arrow::arrow_with_dataset() && arrow::arrow_with_parquet()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-temp_dir = tempfile()
+\dontshow{if (requireNamespace("withr", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+# Write a Parquet file than we can then import as DataFrame
+temp_file = withr::local_tempfile(fileext = ".parquet")
+pl$DataFrame(mtcars)$write_parquet(temp_file)
+
+pl$read_parquet(temp_file)
+
 # Write a hive-style partitioned parquet dataset
-arrow::write_dataset(
-  mtcars,
-  temp_dir,
-  partitioning = c("cyl", "gear"),
-  format = "parquet",
-  hive_style = TRUE
-)
+temp_dir = withr::local_tempdir()
+pl$DataFrame(mtcars)$write_parquet(temp_dir, partition_by = c("cyl", "gear"))
 list.files(temp_dir, recursive = TRUE)
 
-# Read the dataset
-pl$read_parquet(
-  file.path(temp_dir, "**/*.parquet")
-)
+# If the path is a folder, Polars automatically tries to detect partitions
+# and includes them in the output
+pl$read_parquet(temp_dir)
 \dontshow{\}) # examplesIf}
 }

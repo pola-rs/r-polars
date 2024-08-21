@@ -5,7 +5,7 @@ use crate::rpolarserr::{polars_to_rpolars_err, RResult};
 
 use extendr_api::Rinternals;
 use extendr_api::{extendr, extendr_module, Robj};
-use polars::io::RowIndex;
+use polars::io::{HiveOptions, RowIndex};
 use polars::prelude::{self as pl, Arc};
 
 #[allow(clippy::too_many_arguments)]
@@ -22,6 +22,8 @@ pub fn new_from_parquet(
     use_statistics: Robj,
     low_memory: Robj,
     hive_partitioning: Robj,
+    hive_schema: Robj,
+    try_parse_hive_dates: Robj,
     glob: Robj,
     include_file_paths: Robj,
     //retries: Robj // not supported yet, with CloudOptions
@@ -33,6 +35,12 @@ pub fn new_from_parquet(
         name: name.into(),
         offset,
     });
+    let hive_options = HiveOptions {
+        enabled: robj_to!(Option, bool, hive_partitioning)?,
+        hive_start_idx: 0,
+        schema: robj_to!(Option, WrapSchema, hive_schema)?.map(|x| Arc::new(x.0)),
+        try_parse_dates: robj_to!(bool, try_parse_hive_dates)?,
+    };
     let args = pl::ScanArgsParquet {
         n_rows: robj_to!(Option, usize, n_rows)?,
         cache: robj_to!(bool, cache)?,
@@ -42,12 +50,7 @@ pub fn new_from_parquet(
         low_memory: robj_to!(bool, low_memory)?,
         cloud_options,
         use_statistics: robj_to!(bool, use_statistics)?,
-        hive_options: polars::io::HiveOptions {
-            enabled: robj_to!(Option, bool, hive_partitioning)?,
-            hive_start_idx: 0, // TODO: is it actually 0?
-            schema: None,      // TODO: implement a option to set this
-            try_parse_dates: true,
-        },
+        hive_options,
         glob: robj_to!(bool, glob)?,
         include_file_paths: robj_to!(Option, String, include_file_paths)?.map(Arc::from),
     };
