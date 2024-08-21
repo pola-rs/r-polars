@@ -64,8 +64,6 @@ test_that("scan read parquet - parallel strategies", {
   )
 })
 
-
-
 test_that("scanning from hive partition works", {
   skip_if_not_installed("withr")
   temp_dir = withr::local_tempdir()
@@ -78,6 +76,56 @@ test_that("scanning from hive partition works", {
     pl$scan_parquet(temp_dir)$select("mpg", "gear")$collect() |> as.data.frame(),
     mtcars[order(mtcars$cyl, mtcars$gear), c("mpg", "gear")],
     ignore_attr = TRUE
+  )
+
+  # TODO: uncomment when https://github.com/pola-rs/polars/issues/18293 is resolved
+
+  # hive_partitioning controls whether partitioning columns are included
+  # expect_identical(
+  #   pl$scan_parquet(temp_dir, hive_partitioning = FALSE)$collect() |> dim(),
+  #   c(32L, 9L)
+  # )
+
+  # TODO: uncomment when https://github.com/pola-rs/polars/issues/18294 is resolved
+
+  # can use hive_schema for more fine grained control on partitioning columns
+  # sch = pl$scan_parquet(temp_dir, hive_schema = list(cyl = pl$String, gear = pl$Int32))$
+  #   collect()$schema
+  # expect_true(sch$gear$is_integer())
+  # expect_true(sch$cyl$is_string())
+  expect_grepl_error(
+    pl$scan_parquet(temp_dir, hive_schema = list(cyl = "a"))
+  )
+
+  # cannot get a subset of partitioning columns
+  expect_grepl_error(
+    pl$scan_parquet(temp_dir, hive_schema = list(cyl = pl$String))$collect(),
+    r"(path contains column not present in the given Hive schema: "gear")"
+  )
+})
+
+test_that("try_parse_hive_dates works", {
+  skip_if_not_installed("arrow")
+  skip_if_not_installed("withr")
+  temp_dir = withr::local_tempdir()
+  test = data.frame(dt = as.Date(c("2020-01-01", "2020-01-01", "2020-01-02")), y = 1:3)
+  arrow::write_dataset(
+    test,
+    temp_dir,
+    partitioning = "dt",
+    format = "arrow",
+    hive_style = TRUE
+  )
+
+  # default is to parse dates
+  expect_identical(
+    pl$scan_ipc(temp_dir)$select("dt")$collect()$to_list(),
+    list(dt = as.Date(c("2020-01-01", "2020-01-01", "2020-01-02")))
+  )
+
+  expect_identical(
+    pl$scan_ipc(temp_dir, try_parse_hive_dates = FALSE)$select("dt")$collect()$to_list(),
+    list(dt = c("2020-01-01", "2020-01-01", "2020-01-02"))
   )
 })
 

@@ -98,7 +98,7 @@ import_arrow_ipc <- function(path, n_rows, cache, rechunk, row_name, row_index, 
 
 new_from_ndjson <- function(path, infer_schema_length, batch_size, n_rows, low_memory, rechunk, row_index_name, row_index_offset, ignore_errors) .Call(wrap__new_from_ndjson, path, infer_schema_length, batch_size, n_rows, low_memory, rechunk, row_index_name, row_index_offset, ignore_errors)
 
-new_from_parquet <- function(path, n_rows, cache, parallel, rechunk, row_name, row_index, storage_options, use_statistics, low_memory, hive_partitioning, glob, include_file_paths) .Call(wrap__new_from_parquet, path, n_rows, cache, parallel, rechunk, row_name, row_index, storage_options, use_statistics, low_memory, hive_partitioning, glob, include_file_paths)
+new_from_parquet <- function(path, n_rows, cache, parallel, rechunk, row_name, row_index, storage_options, use_statistics, low_memory, hive_partitioning, hive_schema, try_parse_hive_dates, glob, include_file_paths) .Call(wrap__new_from_parquet, path, n_rows, cache, parallel, rechunk, row_name, row_index, storage_options, use_statistics, low_memory, hive_partitioning, hive_schema, try_parse_hive_dates, glob, include_file_paths)
 
 test_rpolarserr <- function() .Call(wrap__test_rpolarserr)
 

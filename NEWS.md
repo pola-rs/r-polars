@@ -20,6 +20,8 @@
   and `TRUE` for the newest one (less compatible). It can also take an integer
   determining a specific compatibility level when more are added in the future.
   For now, `future = FALSE` can be replaced by `compat_level = FALSE` (#1183).
+- In `$scan_parquet()` and `$read_parquet()`, the default value of
+  `hive_partitioning` is now `NULL` (#1189).
 
 ### New features
 
@@ -35,8 +37,10 @@
 - `$scan_parquet()`, `$scan_ipc()` and `$read_parquet()` have a new argument
   `include_file_paths` to automatically add a column containing the path to the
   source file(s) (#1183).
-- `$scan_ipc` can read a hive-partitioned directory with its new arguments
+- `$scan_ipc()` can read a hive-partitioned directory with its new arguments
   `hive_partitioning`, `hive_schema`, and `try_parse_hive_dates` (#1183).
+- `$scan_parquet()` and `$read_parquet()` gain two new arguments for more control
+  on importing hive partitions: `hive_schema` and `try_parse_hive_dates` (#1189).
 
 ### Other changes
 

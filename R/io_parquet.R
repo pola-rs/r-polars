@@ -51,8 +51,15 @@
 #'   `storage_options` argument.
 #'
 #' @examplesIf requireNamespace("arrow", quietly = TRUE) && arrow::arrow_with_dataset() && arrow::arrow_with_parquet()
-#' temp_dir = tempfile()
+#' # Write a Parquet file than we can then import as DataFrame
+#' temp_file = tempfile(fileext = ".parquet")
+#' pl$DataFrame(mtcars)$write_parquet(temp_file)
+#'
+#' pl$scan_parquet(temp_file)$collect()
+#' invisible(file.remove(temp_file))
+#'
 #' # Write a hive-style partitioned parquet dataset
+#' temp_dir = tempdir()
 #' arrow::write_dataset(
 #'   mtcars,
 #'   temp_dir,
@@ -62,10 +69,12 @@
 #' )
 #' list.files(temp_dir, recursive = TRUE)
 #'
-#' # Read the dataset
-#' pl$scan_parquet(
-#'   file.path(temp_dir, "**/*.parquet")
-#' )$collect()
+#' # If the path is a folder, Polars automatically tries to detect partitions
+#' # and includes them in the output
+#' pl$scan_parquet(temp_dir)$collect()
+#'
+#' # We can also impose a schema to the partition
+#' pl$scan_parquet(temp_dir, hive_schema = list(cyl = pl$String, gear = pl$Int32))$collect()
 pl_scan_parquet = function(
     source,
     ...,
@@ -78,7 +87,9 @@ pl_scan_parquet = function(
       "row_groups",
       "none"
     ),
-    hive_partitioning = TRUE,
+    hive_partitioning = NULL,
+    hive_schema = NULL,
+    try_parse_hive_dates = TRUE,
     glob = TRUE,
     rechunk = FALSE,
     low_memory = FALSE,
@@ -97,6 +108,8 @@ pl_scan_parquet = function(
     low_memory = low_memory,
     use_statistics = use_statistics,
     hive_partitioning = hive_partitioning,
+    hive_schema = hive_schema,
+    try_parse_hive_dates = try_parse_hive_dates,
     storage_options = storage_options,
     glob = glob,
     include_file_paths = include_file_paths
@@ -109,8 +122,15 @@ pl_scan_parquet = function(
 #' @inherit pl_read_csv return
 #' @inherit pl_scan_parquet params details
 #' @examplesIf requireNamespace("arrow", quietly = TRUE) && arrow::arrow_with_dataset() && arrow::arrow_with_parquet()
-#' temp_dir = tempfile()
-#' # Write a hive-style partitioned parquet dataset
+#' # Write a Parquet file than we can then import as DataFrame
+#' temp_file = tempfile(fileext = ".parquet")
+#' pl$DataFrame(mtcars)$write_parquet(temp_file)
+#'
+#' pl$read_parquet(temp_file)
+#' invisible(file.remove(temp_file))
+#'
+#' # Write a hive-style partitioned Parquet dataset
+#' temp_dir = tempdir()
 #' arrow::write_dataset(
 #'   mtcars,
 #'   temp_dir,
@@ -120,10 +140,12 @@ pl_scan_parquet = function(
 #' )
 #' list.files(temp_dir, recursive = TRUE)
 #'
-#' # Read the dataset
-#' pl$read_parquet(
-#'   file.path(temp_dir, "**/*.parquet")
-#' )
+#' # If the path is a folder, Polars automatically tries to detect partitions
+#' # and includes them in the output
+#' pl$read_parquet(temp_dir)
+#'
+#' # We can also impose a schema to the partition
+#' pl$read_parquet(temp_dir, hive_schema = list(cyl = pl$String, gear = pl$Int32))
 pl_read_parquet = function(
     source,
     ...,
@@ -136,7 +158,9 @@ pl_read_parquet = function(
       "row_groups",
       "none"
     ),
-    hive_partitioning = TRUE,
+    hive_partitioning = NULL,
+    hive_schema = NULL,
+    try_parse_hive_dates = TRUE,
     glob = TRUE,
     rechunk = TRUE,
     low_memory = FALSE,
