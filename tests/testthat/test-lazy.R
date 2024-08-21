@@ -338,76 +338,68 @@ test_that("unique, maintain_order", {
   )
 })
 
-
-# TODO only tested error msg of sort, missing tests for arguments are correctly connected to rust
 test_that("sort", {
   expect_no_error(
-    pl$DataFrame(mtcars)$lazy()$sort(
-      by = list("cyl", pl$col("gear")), # mixed types which implements Into<Expr>
-      "disp", # ... args other unamed args Into<Expr>
-      descending = c(TRUE, TRUE, FALSE) # vector of same length as number of Expr's
+    pl$LazyFrame(mtcars)$sort(
+      by = list("cyl", pl$col("gear")),
+      "disp",
+      descending = c(TRUE, TRUE, FALSE)
     )$collect()
   )
 
-
-  # check expect_grepl_error fails on unmet expectation
-  expect_grepl_error(expect_grepl_error(
-    pl$DataFrame(mtcars)$lazy()$sort(by = list("cyl", complex(1))),
-    "not_in_error_text"
-  ))
-
-
-  # test arg by raises error for unsported type
-
-
-
-  ctx = pl$DataFrame(mtcars)$lazy()$sort(by = list("cyl", complex(1))) |> get_err_ctx()
-  expect_true(all(c("BadArgument", "BadValue") %in% names(ctx)))
-  expect_identical(ctx$BadArgument, "by")
-
-  # test arg ... raises error for unsported type
-  ctx = pl$DataFrame(mtcars)$lazy()$sort(by = list("cyl"), complex(1)) |> get_err_ctx()
-  expect_true(all(c("BadArgument", "BadValue") %in% names(ctx)))
-  expect_identical(ctx$BadArgument, " `...` ")
-
-
-  # test raise error for ... named arg
-  ctx = pl$DataFrame(mtcars)$lazy()$sort(by = "cyl", maintain_ord = TRUE) |> get_err_ctx()
-  expect_identical(ctx$BadArgument, " `...` ")
-
-  # test raise error for missing by
+  # can't sort unsupported type in `by`
   expect_grepl_error(
-    pl$DataFrame(mtcars)$lazy()$sort(),
+    pl$LazyFrame(mtcars)$sort(by = complex(1))$collect(),
+    "unsupported R type"
+  )
+
+  # can't sort unsupported type in `...`
+  expect_grepl_error(
+    pl$LazyFrame(mtcars)$sort(by = "cyl", complex(1))$collect(),
+    "unsupported R type"
+  )
+
+  # can't pass named argument in `...`
+  expect_grepl_error(
+    pl$LazyFrame(mtcars)$sort(by = "cyl", maintain_ord = TRUE)$collect(),
+    "... args not allowed to be named here"
+  )
+
+  # need at least one item to sort by
+  expect_grepl_error(
+    pl$LazyFrame(mtcars)$sort()$collect(),
     r"(argument "by" is missing)"
   )
 
-  # test raise rust-polars error for mismatch number of booleans
-  ctx = pl$DataFrame(mtcars)$lazy()$
-    sort(by = c("cyl", "mpg", "cyl"), descending = c(TRUE, FALSE))$collect() |>
-    get_err_ctx()
-  expect_false(is.null(ctx$PolarsError))
+  # `descending` and `nulls_last` need either 1 or as many booleans as items
+  expect_grepl_error(
+    pl$LazyFrame(mtcars)$sort(by = c("cyl", "mpg", "cyl"), descending = c(TRUE, FALSE))$collect(),
+    "does not match the length of `by`"
+  )
+  expect_grepl_error(
+    pl$LazyFrame(mtcars)$sort(by = c("cyl", "mpg", "cyl"), nulls_last = c(TRUE, FALSE))$collect(),
+    "does not match the length of `by`"
+  )
 
-  # test bad arg
-  ctx = pl$DataFrame(mtcars)$
-    lazy()$
-    sort(by = c("cyl", "mpg", "cyl"), descending = 42)$
-    collect() |>
-    get_err_ctx()
-  expect_identical(ctx$TypeMismatch, "bool")
-  expect_identical(ctx$BadArgument, "descending")
+  # `descending` and `nulls_last` can only take booleans
+  expect_grepl_error(
+    pl$LazyFrame(mtcars)$sort(by = c("cyl", "mpg", "cyl"), descending = 42)$collect(),
+    "Expected a value of type"
+  )
+  expect_grepl_error(
+    pl$LazyFrame(mtcars)$sort(by = c("cyl", "mpg", "cyl"), descending = NULL)$collect(),
+    "must be of length 1 or of the same"
+  )
+  expect_grepl_error(
+    pl$LazyFrame(mtcars)$sort(by = c("cyl", "mpg", "cyl"), nulls_last = 42)$collect(),
+    "Expected a value of type"
+  )
+  expect_grepl_error(
+    pl$LazyFrame(mtcars)$sort(by = c("cyl", "mpg", "cyl"), nulls_last = NULL)$collect(),
+    "does not match the length"
+  )
 
-
-
-  ctx = pl$DataFrame(mtcars)$
-    lazy()$
-    sort(by = c("cyl", "mpg", "cyl"), nulls_last = 42)$
-    collect() |>
-    get_err_ctx()
-  expect_identical(ctx$TypeMismatch, "bool")
-  expect_identical(ctx$BadArgument, "nulls_last")
-
-
-  df = pl$DataFrame(mtcars)$lazy()
+  df = pl$LazyFrame(mtcars)
 
   w = df$sort("mpg", maintain_order = TRUE)$collect()$to_data_frame()
   x = df$sort(pl$col("mpg"), maintain_order = TRUE)$collect()$to_data_frame()
@@ -451,16 +443,6 @@ test_that("sort", {
   b = df$sort("mpg", nulls_last = FALSE, maintain_order = TRUE)$collect()$to_data_frame()
   expect_true(is.na(a$mpg[32]))
   expect_true(is.na(b$mpg[1]))
-
-  # error if descending is NULL
-  expect_grepl_error(
-    df$sort("mpg", descending = NULL),
-    "must be of length 1 or of the same length as `by`"
-  )
-  expect_grepl_error(
-    df$sort(c("mpg", "drat"), descending = NULL),
-    "must be of length 1 or of the same length as `by`"
-  )
 })
 
 

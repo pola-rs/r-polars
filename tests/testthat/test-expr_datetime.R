@@ -563,87 +563,61 @@ test_that("dt$with_time_unit cast_time_unit", {
   )
 })
 
+test_that("$convert_time_zone() works", {
+  df_time = pl$DataFrame(
+    date = pl$datetime_range(
+      start = as.Date("2001-3-1"),
+      end = as.Date("2001-5-1"),
+      interval = "1mo",
+      time_zone = "UTC"
+    )
+  )
+  df_casts = df_time$with_columns(
+    pl$col("date")
+      $dt$convert_time_zone("Europe/London")
+      $alias("London")
+  )
 
-# TODO write a new test
-# test_that("$convert_time_zone dt$tz_localize", {
-#
-#   skip(
-#     "This test works on macos but not on linux whereR  reference code yields different results."
-#   )
-#
-#   df_time = pl$DataFrame(
-#     date = pl$date_range(
-#       start = as.Date("2001-3-1"),
-#       end = as.Date("2001-5-1"), interval = "1mo"
-#     )
-#   )
-#   df_casts = df_time$select(
-#     pl$col("date"),
-#     pl$col("date")
-#       $dt$convert_time_zone("Europe/London")
-#       $alias("London_with"),
-#     pl$col("date")
-#       $dt$tz_localize("Europe/London")
-#       $alias("London_localize")
-#   )
-#
-#
-#   r_time = unclass(as.POSIXlt("2001-3-1", tz="GMT"))
-#   r_time_naive = lapply(r_time$mon + 0:2, \(i_mon) {
-#     r_time$mon<-i_mon
-#     class(r_time) = c("POSIXlt","POSIXt")
-#     r_time
-#   }) |> do.call(what=c)
-#
-#
-#   r_time_eu_london = r_time_naive
-#   attr(r_time_eu_london,"tzone") = "Europe/London"
-#
-#   expect_identical(
-#     df_casts$to_list()$London_localize,
-#     as.POSIXct(r_time_eu_london)
-#   )
-#
-#   r_time_gmt = r_time_naive
-#   attr(r_time_gmt,"tzone") = "GMT"
-#   expect_identical(
-#     df_casts$to_list()$London_with,
-#     as.POSIXct(format(as.POSIXct(r_time_gmt),tz="Europe/London"),tz="Europe/London")
-#   )
-#
-# })
+  orig_r = as.POSIXct(
+    c("2001-03-01 00:00:00", "2001-04-01 00:00:00", "2001-05-01 00:00:00"),
+    tz = "UTC"
+  )
+  new_r = orig_r
+  attributes(new_r)$tzone = "Europe/London"
 
+  expect_equal(
+    df_casts$to_list()[["London"]],
+    new_r
+  )
+})
 
-test_that("dt$replace_time_zone", {
+test_that("dt$replace_time_zone() works", {
   df = pl$DataFrame(
     london_timezone = pl$datetime_range(
-      start = as.POSIXct("2001-3-1"), end = as.POSIXct("2001-7-1"),
-      interval = "1mo", time_zone = "Europe/London"
+      start = as.POSIXct("2001-3-1"),
+      end = as.POSIXct("2001-7-1"),
+      interval = "1mo",
+      time_zone = "Europe/London"
     )
   )
 
   df = df$with_columns(
     pl$col("london_timezone")
     $dt$replace_time_zone("Europe/Amsterdam")
-    $alias("cast London_to_Amsterdam")
+    $alias("Amsterdam")
   )
   l = df$to_list()
 
-  # cast moves the time point one hour
-  as.numeric(l$london_timezone)
-  as.numeric(l$`cast London_to_Amsterdam`)
-
   expect_identical(
-    as.numeric(l$london_timezone - l$`cast London_to_Amsterdam`),
+    as.numeric(l$london_timezone - l$Amsterdam),
     rep(1, 5)
   )
 
-  # corrosponding operatio in Base R
   r_amst_tz = l$london_timezone - 3600
   attr(r_amst_tz, "tzone") = "Europe/Amsterdam"
 
   expect_identical(
-    l$`cast London_to_Amsterdam`,
+    l$Amsterdam,
     r_amst_tz
   )
 })
