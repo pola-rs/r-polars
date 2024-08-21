@@ -114,30 +114,20 @@ a valid service account. Be sure to always include a service account in the
 }
 }
 \examples{
-\dontshow{if (requireNamespace("arrow", quietly = TRUE) && arrow::arrow_with_dataset() && arrow::arrow_with_parquet()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (requireNamespace("withr", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 # Write a Parquet file than we can then import as DataFrame
-temp_file = tempfile(fileext = ".parquet")
+temp_file = withr::local_tempfile(fileext = ".parquet")
 pl$DataFrame(mtcars)$write_parquet(temp_file)
 
 pl$read_parquet(temp_file)
-invisible(file.remove(temp_file))
 
-# Write a hive-style partitioned Parquet dataset
-temp_dir = tempdir()
-arrow::write_dataset(
-  mtcars,
-  temp_dir,
-  partitioning = c("cyl", "gear"),
-  format = "parquet",
-  hive_style = TRUE
-)
+# Write a hive-style partitioned parquet dataset
+temp_dir = withr::local_tempdir()
+pl$DataFrame(mtcars)$write_parquet(temp_dir, partition_by = c("cyl", "gear"))
 list.files(temp_dir, recursive = TRUE)
 
 # If the path is a folder, Polars automatically tries to detect partitions
 # and includes them in the output
 pl$read_parquet(temp_dir)
-
-# We can also impose a schema to the partition
-pl$read_parquet(temp_dir, hive_schema = list(cyl = pl$String, gear = pl$Int32))
 \dontshow{\}) # examplesIf}
 }
