@@ -460,11 +460,11 @@ test_that("dt$epoch", {
 
   expect_grepl_error(
     as_polars_series(as.Date("2022-1-1"))$dt$epoch("bob"),
-    "epoch: tu must be one of 'ns', 'us', 'ms', 's', 'd'"
+    "should be one of"
   )
   expect_grepl_error(
     as_polars_series(as.Date("2022-1-1"))$dt$epoch(42),
-    "epoch: tu must be a string"
+    "must be NULL or a character vector"
   )
 })
 
@@ -574,8 +574,8 @@ test_that("$convert_time_zone() works", {
   )
   df_casts = df_time$with_columns(
     pl$col("date")
-      $dt$convert_time_zone("Europe/London")
-      $alias("London")
+    $dt$convert_time_zone("Europe/London")
+    $alias("London")
   )
 
   orig_r = as.POSIXct(

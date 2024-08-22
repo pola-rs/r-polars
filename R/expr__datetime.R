@@ -482,37 +482,30 @@ ExprDT_nanosecond = function() {
 }
 
 
-# TODO: update the argument name and examples
 #' Epoch
-#' @description
+#'
 #' Get the time passed since the Unix EPOCH in the give time unit.
 #'
-#' @param tu string option either 'ns', 'us', 'ms', 's' or  'd'
-#' @details ns and perhaps us will exceed integerish limit if returning to
-#' R as flaot64/double.
-#' @return Expr of epoch as UInt32
-#' @keywords ExprDT
-#' @aliases (Expr)$dt$epoch
+#' @param time_unit Time unit, one of `"ns"`, `"us"`, `"ms"`, `"s"` or  `"d"`.
+#'
+#' @return Expr with datatype Int64
 #' @examples
-#' as_polars_series(as.Date("2022-1-1"))$dt$epoch("ns")
-#' as_polars_series(as.Date("2022-1-1"))$dt$epoch("ms")
-#' as_polars_series(as.Date("2022-1-1"))$dt$epoch("s")
-#' as_polars_series(as.Date("2022-1-1"))$dt$epoch("d")
-ExprDT_epoch = function(tu = c("us", "ns", "ms", "s", "d")) {
-  tu = tu[1]
+#' df = pl$DataFrame(date = pl$date_range(as.Date("2001-1-1"), as.Date("2001-1-3")))
+#'
+#' df$with_columns(
+#'   epoch_ns = pl$col("date")$dt$epoch(),
+#'   epoch_s = pl$col("date")$dt$epoch(time_unit = "s")
+#' )
+ExprDT_epoch = function(time_unit = "us") {
+  time_unit = match.arg(time_unit, choices = c("us", "ns", "ms", "s", "d"))
   uw = \(res) unwrap(res, "in $dt$epoch:")
 
-  # experimental rust-like error handling on R side for the fun of it, sorry
-  # jokes aside here the use case is to tie various rust functions together
-  # and add context to the error messages
-  pcase(
-    !is_string(tu), Err("tu must be a string") |> uw(),
-    tu %in% c("ms", "us", "ns"), .pr$Expr$dt_timestamp(self, tu) |> uw(),
-    tu == "s", .pr$Expr$dt_epoch_seconds(self),
-    tu == "d", self$cast(pl$Date)$cast(pl$Int32),
-    or_else = Err(
-      paste("tu must be one of 'ns', 'us', 'ms', 's', 'd', got", str_string(tu))
-    ) |> uw()
+  switch(time_unit,
+    "ms" = ,
+    "us" = ,
+    "ns" = .pr$Expr$dt_timestamp(self, time_unit) |> uw(),
+    "s" = .pr$Expr$dt_epoch_seconds(self),
+    "d" = self$cast(pl$Date)$cast(pl$Int32)
   )
 }
 
