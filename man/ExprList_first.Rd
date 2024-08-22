@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{ExprList_first}
 \alias{ExprList_first}
-\alias{list_first}
 \title{Get the first value in a list}
 \usage{
 ExprList_first()

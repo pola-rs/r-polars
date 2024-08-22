@@ -1,7 +1,6 @@
 #' Sum all elements in an array
 #'
 #' @return Expr
-#' @aliases arr_sum
 #' @examples
 #' df = pl$DataFrame(
 #'   values = list(c(1, 2), c(3, 4), c(NA_real_, 6)),
@@ -14,7 +13,6 @@ ExprArr_sum = function() .pr$Expr$arr_sum(self)
 #'
 #' @return Expr
 #' @inherit ExprStr_to_titlecase details
-#' @aliases arr_max
 #' @examples
 #' df = pl$DataFrame(
 #'   values = list(c(1, 2), c(3, 4), c(NA_real_, NA_real_)),
@@ -29,7 +27,6 @@ ExprArr_max = function() {
 #'
 #' @inherit ExprStr_to_titlecase details
 #' @return Expr
-#' @aliases arr_min
 #' @examples
 #' df = pl$DataFrame(
 #'   values = list(c(1, 2), c(3, 4), c(NA_real_, NA_real_)),
@@ -43,7 +40,6 @@ ExprArr_min = function() {
 #' Find the median in an array
 #'
 #' @return Expr
-#' @aliases arr_median
 #' @examples
 #' df = pl$DataFrame(
 #'   values = list(c(2, 1, 4), c(8.4, 3.2, 1)),
@@ -58,7 +54,6 @@ ExprArr_median = function() {
 #'
 #' @inheritParams DataFrame_std
 #' @return Expr
-#' @aliases arr_std
 #' @examples
 #' df = pl$DataFrame(
 #'   values = list(c(2, 1, 4), c(8.4, 3.2, 1)),
@@ -73,7 +68,6 @@ ExprArr_std = function(ddof = 1) {
 #'
 #' @inheritParams DataFrame_var
 #' @return Expr
-#' @aliases arr_var
 #' @examples
 #' df = pl$DataFrame(
 #'   values = list(c(2, 1, 4), c(8.4, 3.2, 1)),
@@ -87,7 +81,6 @@ ExprArr_var = function(ddof = 1) {
 #' Sort values in an array
 #'
 #' @inheritParams Expr_sort
-#' @aliases arr_sort
 #' @examples
 #' df = pl$DataFrame(
 #'   values = list(c(2, 1), c(3, 4), c(NA_real_, 6)),
@@ -99,7 +92,6 @@ ExprArr_sort = function(descending = FALSE, nulls_last = FALSE) .pr$Expr$arr_sor
 #' Reverse values in an array
 #'
 #' @return Expr
-#' @aliases arr_reverse
 #' @examples
 #' df = pl$DataFrame(
 #'   values = list(c(1, 2), c(3, 4), c(NA_real_, 6)),
@@ -112,7 +104,6 @@ ExprArr_reverse = function() .pr$Expr$arr_reverse(self)
 #'
 #' @inheritParams Expr_unique
 #' @return Expr
-#' @aliases arr_unique
 #' @examples
 #' df = pl$DataFrame(
 #'   values = list(c(1, 1, 2), c(4, 4, 4), c(NA_real_, 6, 7)),
@@ -154,7 +145,6 @@ ExprArr_get = function(index, ..., null_on_oob = TRUE) {
 #' as columns.
 #'
 #' @return Expr
-#' @aliases arr_contains
 #' @examples
 #' df = pl$DataFrame(
 #'   values = list(0:2, 4:6, c(NA_integer_, NA_integer_, NA_integer_)),
@@ -177,7 +167,6 @@ ExprArr_contains = function(item) .pr$Expr$arr_contains(self, item)
 #' @inheritParams pl_concat_str
 #'
 #' @return Expr
-#' @aliases arr_join
 #' @examples
 #' df = pl$DataFrame(
 #'   values = list(c("a", "b", "c"), c("x", "y", "z"), c("e", NA, NA)),
@@ -197,7 +186,6 @@ ExprArr_join = function(separator, ignore_nulls = FALSE) {
 #' Get the index of the minimal value in an array
 #'
 #' @return Expr
-#' @aliases arr_arg_min
 #' @examples
 #' df = pl$DataFrame(
 #'   values = list(1:2, 2:1),
@@ -211,7 +199,6 @@ ExprArr_arg_min = function() .pr$Expr$arr_arg_min(self)
 #' Get the index of the maximal value in an array
 #'
 #' @return Expr
-#' @aliases arr_arg_max
 #' @examples
 #' df = pl$DataFrame(
 #'   values = list(1:2, 2:1),
@@ -249,7 +236,6 @@ ExprArr_any = function() .pr$Expr$arr_any(self)
 #' @inheritParams ExprList_shift
 #'
 #' @return Expr
-#' @aliases arr_shift
 #' @examples
 #' df = pl$DataFrame(
 #'   values = list(1:3, c(2L, NA_integer_, 5L)),
@@ -286,7 +272,6 @@ ExprArr_to_list = function() .pr$Expr$arr_to_list(self)
 #' @inheritParams ExprList_to_struct
 #'
 #' @return Expr
-#' @aliases arr_to_struct
 #' @examples
 #' df = pl$DataFrame(
 #'   values = list(1:3, c(2L, NA_integer_, 5L)),

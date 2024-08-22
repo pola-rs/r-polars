@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__array.R
 \name{ExprArr_to_struct}
 \alias{ExprArr_to_struct}
-\alias{arr_to_struct}
 \title{Convert array to struct}
 \usage{
 ExprArr_to_struct(fields = NULL)

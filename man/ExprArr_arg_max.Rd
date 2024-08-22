@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__array.R
 \name{ExprArr_arg_max}
 \alias{ExprArr_arg_max}
-\alias{arr_arg_max}
 \title{Get the index of the maximal value in an array}
 \usage{
 ExprArr_arg_max()

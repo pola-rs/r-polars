@@ -18,12 +18,10 @@
 #'
 #' `$name = "new_name"` sets the name of the Field.
 #'
-#' @aliases RField_class RPolarsRField
-#'
 #' @param name Field name
 #' @param datatype [DataType][pl_dtypes]
 #'
-#' @return An [RPolarsRField] object containing its name and its
+#' @return An object of class `"RPolarsRField"` containing its name and its
 #' [data type][pl_dtypes].
 #'
 # Named like this because R cannot have two man pages called "pl_Field" and

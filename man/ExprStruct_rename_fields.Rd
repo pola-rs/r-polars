@@ -2,21 +2,20 @@
 % Please edit documentation in R/expr__struct.R
 \name{ExprStruct_rename_fields}
 \alias{ExprStruct_rename_fields}
-\alias{expr_struct_rename_fields}
-\title{rename fields}
+\title{Rename the fields of the struct}
 \usage{
 ExprStruct_rename_fields(names)
 }
 \arguments{
-\item{names}{char vec or list of strings given in the same order as the struct's fields.
-Providing fewer names will drop the latter fields. Providing too many names is ignored.}
+\item{names}{Vector or list of strings given in the same order as the struct's
+fields. Providing fewer names will drop the latter fields. If too many names
+are given, the extra names are ignored.}
 }
 \value{
-Expr: struct-series with new names for the fields
+Expr of datatype Struct
 }
 \description{
-Rename the fields of the struct.
-By default base 2.
+Rename the fields of the struct
 }
 \examples{
 df = pl$DataFrame(
@@ -31,4 +30,3 @@ df = pl$DataFrame(
 )
 df$unnest()
 }
-\keyword{ExprStruct}

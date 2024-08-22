@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__array.R
 \name{ExprArr_std}
 \alias{ExprArr_std}
-\alias{arr_std}
 \title{Find the standard deviation in an array}
 \usage{
 ExprArr_std(ddof = 1)

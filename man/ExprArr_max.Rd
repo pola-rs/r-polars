@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__array.R
 \name{ExprArr_max}
 \alias{ExprArr_max}
-\alias{arr_max}
 \title{Find the maximum value in an array}
 \usage{
 ExprArr_max()

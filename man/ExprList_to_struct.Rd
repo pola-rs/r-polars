@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{ExprList_to_struct}
 \alias{ExprList_to_struct}
-\alias{list_to_struct}
 \title{Convert a Series of type \code{List} to \code{Struct}}
 \usage{
 ExprList_to_struct(

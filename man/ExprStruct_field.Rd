@@ -2,20 +2,18 @@
 % Please edit documentation in R/expr__struct.R
 \name{ExprStruct_field}
 \alias{ExprStruct_field}
-\alias{expr_struct_field}
-\title{field}
+\title{Retrieve one of the fields of this Struct as a new Series}
 \usage{
 ExprStruct_field(name)
 }
 \arguments{
-\item{name}{string, the Name of the struct field to retrieve.}
+\item{name}{Name of the field.}
 }
 \value{
-Expr: Series of same and name selected field.
+Expr of datatype Struct
 }
 \description{
-Retrieve a \code{Struct} field as a new Series.
-By default base 2.
+Retrieve one of the fields of this Struct as a new Series
 }
 \examples{
 df = pl$DataFrame(
@@ -32,4 +30,3 @@ df$select(
   pl$col("struct_col")$struct$field("ddd")
 )
 }
-\keyword{ExprStruct}

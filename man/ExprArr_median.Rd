@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__array.R
 \name{ExprArr_median}
 \alias{ExprArr_median}
-\alias{arr_median}
 \title{Find the median in an array}
 \usage{
 ExprArr_median()

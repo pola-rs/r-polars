@@ -85,12 +85,15 @@ print.RPolarsDataType = function(x, ...) {
 "!=.RPolarsDataType" = function(e1, e2) e1$ne(e2)
 
 
-#' check if x is a valid RPolarsDataType
-#' @name same_outer_datatype
-#' @param lhs an RPolarsDataType
-#' @param rhs an RPolarsDataType
+#' Check if two DataTypes share the same outer DataType
+#'
+#'
+#' @param lhs RPolarsDataType
+#' @param rhs RPolarsDataType
+#'
 #' @noRd
-#' @return bool TRUE if outer datatype is the same.
+#' @name same_outer_datatype
+#' @return A logical.
 #' @examples
 #' # TRUE
 #' pl$same_outer_dt(pl$Datetime("us"), pl$Datetime("ms"))
@@ -103,20 +106,15 @@ pl_same_outer_dt = function(lhs, rhs) {
 }
 
 
-#' DataType_new (simple DataType's)
-#' @noRd
-#' @description Create a new flag like DataType
-#' @param str name of DataType to create
+#' Create a new DataType (internal)
+#'
+#' @param str Name of DataType to create
+#'
 #' @details
 #' This function is mainly used in `zzz.R` `.onLoad` to instantiate singletons of all
 #' flag-like DataType.
 #'
-#' Non-flag like DataType called composite DataTypes also carries extra information
-#' e.g. Datetime a timeunit and a TimeZone, or List which recursively carries another DataType
-#' inside. Composite DataTypes use DataType constructors.
-#'
-#' Any DataType can be found in pl$dtypes
-#'
+#' @noRd
 #' @return DataType
 #' @examples
 #' .pr$env$DataType_new("Int64")
@@ -124,20 +122,16 @@ DataType_new = function(str) {
   .pr$DataType$new(str)
 }
 
-#' DataType_constructors (composite DataType's)
-#' @description List of all composite DataType constructors
-#' @noRd
+#' DataType_constructors (internal)
+#'
+#' List of all composite DataType constructors
+#'
 #' @details
 #' This list is mainly used in `zzz.R` `.onLoad` to instantiate singletons of all
 #' flag-like DataTypes.
 #'
-#' Non-flag like DataType called composite DataTypes also carries extra information
-#' e.g. Datetime a timeunit and a TimeZone, or List which recursively carries another DataType
-#' inside. Composite DataTypes use DataType constructors.
-#'
-#' Any DataType can be found in pl$dtypes
-#'
 #' @return DataType
+#' @noRd
 #' @examples
 #' # constructors are finally available via pl$... or pl$dtypes$...
 #' pl$List(pl$List(pl$Int64))
@@ -145,9 +139,9 @@ DataType_constructors = function() {
   list(
     Array = DataType_Array,
     Categorical = DataType_Categorical,
-    Enum = DataType_Enum,
     Datetime = DataType_Datetime,
     Duration = DataType_Duration,
+    Enum = DataType_Enum,
     List = DataType_List,
     Struct = DataType_Struct
   )
@@ -182,9 +176,10 @@ DataType_Datetime = function(time_unit = "us", time_zone = NULL) {
       time_zone
     ) |>
       Err_plain() |>
-      unwrap("in $Datetime():")
+      unwrap("in pl$Datetime():")
   }
-  unwrap(.pr$DataType$new_datetime(time_unit, time_zone))
+  .pr$DataType$new_datetime(time_unit, time_zone) |>
+    unwrap("in pl$Datetime():")
 }
 
 #' Data type representing a time duration
@@ -287,6 +282,7 @@ DataType_Struct = function(...) {
 #' @param datatype An inner DataType. The default is `"Unknown"` and is only a
 #' placeholder for when inner DataType does not matter, e.g. as used in example.
 #' @param width The length of the arrays.
+#'
 #' @return An array DataType with an inner DataType
 #' @examples
 #' # basic Array
@@ -308,10 +304,10 @@ DataType_Array = function(datatype = "unknown", width) {
 }
 
 #' Create List DataType
-#' @keywords pl
-#' @param datatype an inner DataType, default is "Unknown" (placeholder for when inner DataType
-#' does not matter, e.g. as used in example)
-#' @return a list DataType with an inner DataType
+#'
+#' @param datatype The inner DataType.
+#'
+#' @return A list DataType with an inner DataType
 #' @examples
 #' # some nested List
 #' pl$List(pl$List(pl$Boolean))

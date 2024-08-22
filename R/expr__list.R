@@ -4,7 +4,7 @@
 #' total.
 #'
 #' @return Expr
-#' @aliases list_len
+#'
 #' @examples
 #' df = pl$DataFrame(list(list_of_strs = list(c("a", "b", NA), "c")))
 #' df$with_columns(len_list = pl$col("list_of_strs")$list$len())
@@ -13,7 +13,7 @@ ExprList_len = function() .pr$Expr$list_len(self)
 #' Sum all elements in a list
 #'
 #' @return Expr
-#' @aliases list_sum
+#'
 #' @examples
 #' df = pl$DataFrame(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_))
 #' df$with_columns(sum = pl$col("values")$list$sum())
@@ -22,7 +22,7 @@ ExprList_sum = function() .pr$Expr$list_sum(self)
 #' Find the maximum value in a list
 #'
 #' @return Expr
-#' @aliases list_max
+#'
 #' @examples
 #' df = pl$DataFrame(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_))
 #' df$with_columns(max = pl$col("values")$list$max())
@@ -31,7 +31,7 @@ ExprList_max = function() .pr$Expr$list_max(self)
 #' Find the minimum value in a list
 #'
 #' @return Expr
-#' @aliases list_min
+#'
 #' @examples
 #' df = pl$DataFrame(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_))
 #' df$with_columns(min = pl$col("values")$list$min())
@@ -40,7 +40,7 @@ ExprList_min = function() .pr$Expr$list_min(self)
 #' Compute the mean value of a list
 #'
 #' @return Expr
-#' @aliases list_mean
+#'
 #' @examples
 #' df = pl$DataFrame(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_))
 #' df$with_columns(mean = pl$col("values")$list$mean())
@@ -50,7 +50,7 @@ ExprList_mean = function() .pr$Expr$list_mean(self)
 #'
 #' @param descending Sort values in descending order
 #' @return Expr
-#' @aliases list_sort
+#'
 #' @examples
 #' df = pl$DataFrame(values = list(c(NA, 2, 1, 3), c(Inf, 2, 3, NaN), NA_real_))
 #' df$with_columns(sort = pl$col("values")$list$sort())
@@ -59,7 +59,7 @@ ExprList_sort = function(descending = FALSE) .pr$Expr$list_sort(self, descending
 #' Reverse values in a list
 #'
 #' @return Expr
-#' @aliases list_reverse
+#'
 #' @examples
 #' df = pl$DataFrame(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_))
 #' df$with_columns(reverse = pl$col("values")$list$reverse())
@@ -68,7 +68,7 @@ ExprList_reverse = function() .pr$Expr$list_reverse(self)
 #' Get unique values in a list
 #'
 #' @return Expr
-#' @aliases list_unique
+#'
 #' @examples
 #' df = pl$DataFrame(values = list(c(2, 2, NA), c(1, 2, 3), NA_real_))
 #' df$with_columns(unique = pl$col("values")$list$unique())
@@ -77,7 +77,7 @@ ExprList_unique = function() .pr$Expr$list_unique(self)
 #' Get the number of unique values in a list
 #'
 #' @return Expr
-#' @aliases list_n_unique
+#'
 #' @examples
 #' df = pl$DataFrame(values = list(c(2, 2, NA), c(1, 2, 3), NA_real_))
 #' df$with_columns(unique = pl$col("values")$list$n_unique())
@@ -89,7 +89,7 @@ ExprList_n_unique = function() .pr$Expr$list_n_unique(self)
 #' an Expr.
 #'
 #' @return Expr
-#' @aliases list_concat
+#'
 #' @examples
 #' df = pl$DataFrame(
 #'   a = list("a", "x"),
@@ -146,7 +146,7 @@ ExprList_get = function(index, ..., null_on_oob = TRUE) {
 #' @inheritParams ExprList_get
 #'
 #' @return Expr
-#' @aliases list_gather
+#'
 #' @examples
 #' df = pl$DataFrame(
 #'   a = list(c(3, 2, 1), 1, c(1, 2)),
@@ -193,7 +193,7 @@ ExprList_gather_every = function(n, offset = 0) {
 #' Get the first value in a list
 #'
 #' @return Expr
-#' @aliases list_first
+#'
 #' @examples
 #' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2)))
 #' df$with_columns(
@@ -207,7 +207,7 @@ ExprList_first = function() {
 #' Get the last value in a list
 #'
 #' @return Expr
-#' @aliases list_last
+#'
 #' @examples
 #' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2)))
 #' df$with_columns(
@@ -224,7 +224,7 @@ ExprList_last = function() {
 #' as columns.
 #'
 #' @return Expr
-#' @aliases list_contains
+#'
 #' @examples
 #' df = pl$DataFrame(
 #'   a = list(3:1, NULL, 1:2),
@@ -246,7 +246,7 @@ ExprList_contains = function(item) .pr$Expr$list_contains(self, wrap_e(item))
 #' @inheritParams pl_concat_str
 #'
 #' @return Expr
-#' @aliases list_join
+#'
 #' @examples
 #' df = pl$DataFrame(
 #'   s = list(c("a", "b", "c"), c("x", "y"), c("e", NA)),
@@ -265,7 +265,7 @@ ExprList_join = function(separator, ignore_nulls = FALSE) {
 #' Get the index of the minimal value in list
 #'
 #' @return Expr
-#' @aliases list_arg_min
+#'
 #' @examples
 #' df = pl$DataFrame(list(s = list(1:2, 2:1)))
 #' df$with_columns(
@@ -276,7 +276,7 @@ ExprList_arg_min = function() .pr$Expr$list_arg_min(self)
 #' Get the index of the maximal value in list
 #'
 #' @return Expr
-#' @aliases list_arg_max
+#'
 #' @examples
 #' df = pl$DataFrame(list(s = list(1:2, 2:1)))
 #' df$with_columns(
@@ -297,7 +297,7 @@ ExprList_arg_max = function() .pr$Expr$list_arg_max(self)
 #'   or `"drop"`.
 #'
 #' @return Expr
-#' @aliases list_diff
+#'
 #' @examples
 #' df = pl$DataFrame(list(s = list(1:4, c(10L, 2L, 1L))))
 #' df$with_columns(diff = pl$col("s")$list$diff(2))
@@ -315,7 +315,7 @@ ExprList_diff = function(n = 1, null_behavior = c("ignore", "drop")) {
 #' Strings are *not* parsed as columns.
 #'
 #' @return Expr
-#' @aliases list_shift
+#'
 #' @examples
 #' df = pl$DataFrame(
 #'   s = list(1:4, c(10L, 2L, 1L)),
@@ -339,7 +339,7 @@ ExprList_shift = function(periods = 1) unwrap(.pr$Expr$list_shift(self, periods)
 #'   the end of the list. Can be an Expr. Strings are parsed as column names.
 #'
 #' @return Expr
-#' @aliases list_slice
+#'
 #' @examples
 #' df = pl$DataFrame(
 #'   s = list(1:4, c(10L, 2L, 1L)),
@@ -364,7 +364,7 @@ ExprList_slice = function(offset, length = NULL) {
 #'   are parsed as column names.
 #'
 #' @return Expr
-#' @aliases list_head
+#'
 #' @examples
 #' df = pl$DataFrame(
 #'   s = list(1:4, c(10L, 2L, 1L)),
@@ -384,7 +384,7 @@ ExprList_head = function(n = 5L) {
 #'   are parsed as column names.
 #'
 #' @return Expr
-#' @aliases list_tail
+#'
 #' @examples
 #' df = pl$DataFrame(
 #'   s = list(1:4, c(10L, 2L, 1L)),
@@ -421,7 +421,7 @@ ExprList_tail = function(n = 5L) {
 #'   evaluated, so you can leave this parameter unset.
 #'
 #' @return Expr
-#' @aliases list_to_struct
+#'
 #' @examples
 #' df = pl$DataFrame(list(a = list(1:2, 1:3)))
 #'
@@ -465,7 +465,7 @@ ExprList_to_struct = function(
 #'   do parallel execution per group.
 #'
 #' @return Expr
-#' @aliases list_eval
+#'
 #' @examples
 #' df = pl$DataFrame(
 #'   a = list(c(1, 8, 3), c(3, 2), c(NA, NA, 1)),

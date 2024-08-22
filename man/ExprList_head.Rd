@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{ExprList_head}
 \alias{ExprList_head}
-\alias{list_head}
 \title{Get the first \code{n} values of a list}
 \usage{
 ExprList_head(n = 5L)

@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{ExprList_last}
 \alias{ExprList_last}
-\alias{list_last}
 \title{Get the last value in a list}
 \usage{
 ExprList_last()

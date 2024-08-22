@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__array.R
 \name{ExprArr_join}
 \alias{ExprArr_join}
-\alias{arr_join}
 \title{Join elements of an array}
 \usage{
 ExprArr_join(separator, ignore_nulls = FALSE)

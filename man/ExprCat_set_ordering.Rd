@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__categorical.R
 \name{ExprCat_set_ordering}
 \alias{ExprCat_set_ordering}
-\alias{expr_cat_set_ordering}
 \title{Set Ordering}
 \usage{
 ExprCat_set_ordering(ordering)
@@ -10,13 +9,13 @@ ExprCat_set_ordering(ordering)
 \arguments{
 \item{ordering}{string either 'physical' or 'lexical'
 \itemize{
-\item 'physical' -> Use the physical representation of the categories to
+\item \code{"physical"}: use the physical representation of the categories to
 determine the order (default).
-\item 'lexical' -> Use the string values to determine the ordering.
+\item \code{"lexical"}: use the string values to determine the order.
 }}
 }
 \value{
-bool: TRUE if equal
+An Expr of datatype Categorical
 }
 \description{
 Determine how this categorical series should be sorted.
@@ -37,4 +36,3 @@ df$with_columns(
   pl$col("cats")$cat$set_ordering("physical")
 )$sort("cats", "vals")
 }
-\keyword{ExprCat}

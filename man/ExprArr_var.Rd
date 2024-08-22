@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__array.R
 \name{ExprArr_var}
 \alias{ExprArr_var}
-\alias{arr_var}
 \title{Find the variance in an array}
 \usage{
 ExprArr_var(ddof = 1)

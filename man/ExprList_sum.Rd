@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{ExprList_sum}
 \alias{ExprList_sum}
-\alias{list_sum}
 \title{Sum all elements in a list}
 \usage{
 ExprList_sum()

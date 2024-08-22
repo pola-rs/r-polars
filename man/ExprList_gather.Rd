@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{ExprList_gather}
 \alias{ExprList_gather}
-\alias{list_gather}
 \title{Get several values by index in a list}
 \usage{
 ExprList_gather(index, null_on_oob = FALSE)

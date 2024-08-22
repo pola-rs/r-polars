@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{ExprList_max}
 \alias{ExprList_max}
-\alias{list_max}
 \title{Find the maximum value in a list}
 \usage{
 ExprList_max()

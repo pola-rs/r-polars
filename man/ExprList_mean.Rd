@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{ExprList_mean}
 \alias{ExprList_mean}
-\alias{list_mean}
 \title{Compute the mean value of a list}
 \usage{
 ExprList_mean()

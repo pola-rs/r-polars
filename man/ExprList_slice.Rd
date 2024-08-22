@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{ExprList_slice}
 \alias{ExprList_slice}
-\alias{list_slice}
 \title{Slice list}
 \usage{
 ExprList_slice(offset, length = NULL)

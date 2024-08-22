@@ -7,11 +7,10 @@
 DataType_List(datatype = "unknown")
 }
 \arguments{
-\item{datatype}{an inner DataType, default is "Unknown" (placeholder for when inner DataType
-does not matter, e.g. as used in example)}
+\item{datatype}{The inner DataType.}
 }
 \value{
-a list DataType with an inner DataType
+A list DataType with an inner DataType
 }
 \description{
 Create List DataType
@@ -24,4 +23,3 @@ pl$List(pl$List(pl$Boolean))
 maybe_List = pl$List(pl$UInt64)
 pl$same_outer_dt(maybe_List, pl$List())
 }
-\keyword{pl}

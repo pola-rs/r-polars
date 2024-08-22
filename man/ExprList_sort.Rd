@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{ExprList_sort}
 \alias{ExprList_sort}
-\alias{list_sort}
 \title{Sort values in a list}
 \usage{
 ExprList_sort(descending = FALSE)

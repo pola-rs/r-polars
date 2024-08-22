@@ -26,4 +26,3 @@ df$select(
   pl$col("vals")$cat$get_categories()
 )
 }
-\keyword{ExprCat}

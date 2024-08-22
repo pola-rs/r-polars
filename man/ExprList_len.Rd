@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{ExprList_len}
 \alias{ExprList_len}
-\alias{list_len}
 \title{Get the length of each list}
 \usage{
 ExprList_len()

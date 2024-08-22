@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__array.R
 \name{ExprArr_contains}
 \alias{ExprArr_contains}
-\alias{arr_contains}
 \title{Check if array contains a given value}
 \usage{
 ExprArr_contains(item)

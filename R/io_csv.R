@@ -1,7 +1,7 @@
 #' New LazyFrame from CSV
 #'
-#' @description
 #' Read a file from path into a polars LazyFrame.
+#'
 #' @rdname IO_scan_csv
 #'
 #' @param source Path to a file or URL. It is possible to provide multiple paths

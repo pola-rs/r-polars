@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{ExprList_diff}
 \alias{ExprList_diff}
-\alias{list_diff}
 \title{Compute difference between list values}
 \usage{
 ExprList_diff(n = 1, null_behavior = c("ignore", "drop"))
