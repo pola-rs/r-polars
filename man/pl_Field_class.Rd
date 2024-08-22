@@ -13,7 +13,7 @@ pl_Field(name, datatype)
 \item{datatype}{\link[=pl_dtypes]{DataType}}
 }
 \value{
-An \link{RPolarsRField} object containing its name and its
+An object of class \code{"RPolarsRField"} containing its name and its
 \link[=pl_dtypes]{data type}.
 }
 \description{
