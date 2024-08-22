@@ -22,7 +22,8 @@ Overview
 ```{r pr_summary}
 dicts = list()
 
-families = c("LazyFrame", "DataFrame")
+families = c("LazyFrame", "DataFrame", "Expr", "ExprArr", "ExprCat", "ExprDT",
+             "ExprList", "ExprMeta", "ExprName", "ExprStr", "ExprStruct")
 
 get_args = function(fun) {
   args = tryCatch(
@@ -44,7 +45,22 @@ for (fam in families) {
 }
 
 r_pol_funs <- data.table::rbindlist(dicts) |>
-  as_tibble()
+  as_tibble() |> 
+  mutate(
+    fun = stringr::str_replace_all(
+      fun,
+      c(
+        "ExprArr_" = "Expr_arr_",
+        "ExprCat_" = "Expr_cat_",
+        "ExprDT_" = "Expr_dt_",
+        "ExprList_" = "Expr_list_",
+        "ExprMeta_" = "Expr_meta_",
+        "ExprName_" = "Expr_name_",
+        "ExprStr_" = "Expr_str_",
+        "ExprStruct_" = "Expr_struct_"
+      )
+    )
+  )
 
 py_pol_funs <- data.table::fread("py_polars_functions_and_args.csv") |>
   as_tibble()
@@ -60,6 +76,7 @@ reactable(
     align = "left",
     minWidth = 70
   ),
+  filterable = TRUE,
   searchable = TRUE,
   columns = list(
     fun_r = colDef(
