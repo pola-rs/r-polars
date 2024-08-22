@@ -2,28 +2,24 @@
 % Please edit documentation in R/expr__datetime.R
 \name{ExprDT_epoch}
 \alias{ExprDT_epoch}
-\alias{(Expr)$dt$epoch}
 \title{Epoch}
 \usage{
-ExprDT_epoch(tu = c("us", "ns", "ms", "s", "d"))
+ExprDT_epoch(time_unit = "us")
 }
 \arguments{
-\item{tu}{string option either 'ns', 'us', 'ms', 's' or  'd'}
+\item{time_unit}{Time unit, one of \code{"ns"}, \code{"us"}, \code{"ms"}, \code{"s"} or  \code{"d"}.}
 }
 \value{
-Expr of epoch as UInt32
+Expr with datatype Int64
 }
 \description{
 Get the time passed since the Unix EPOCH in the give time unit.
 }
-\details{
-ns and perhaps us will exceed integerish limit if returning to
-R as flaot64/double.
-}
 \examples{
-as_polars_series(as.Date("2022-1-1"))$dt$epoch("ns")
-as_polars_series(as.Date("2022-1-1"))$dt$epoch("ms")
-as_polars_series(as.Date("2022-1-1"))$dt$epoch("s")
-as_polars_series(as.Date("2022-1-1"))$dt$epoch("d")
+df = pl$DataFrame(date = pl$date_range(as.Date("2001-1-1"), as.Date("2001-1-3")))
+
+df$with_columns(
+  epoch_ns = pl$col("date")$dt$epoch(),
+  epoch_s = pl$col("date")$dt$epoch(time_unit = "s")
+)
 }
-\keyword{ExprDT}

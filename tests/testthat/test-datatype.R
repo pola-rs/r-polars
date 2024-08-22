@@ -42,7 +42,7 @@ test_that("POSIXct data conversion", {
     pl$lit("2022-01-01")$str$strptime(pl$Datetime(), "%F")$to_r(),
     as.POSIXct("2022-01-01")
   )
-  # TODO: infer timezone from string, change the arugment name from `tz`
+  # TODO: infer timezone from string
   expect_true(
     as_polars_series("2022-01-01 UTC")$str$strptime(pl$Datetime(time_zone = "UTC"), "%F %Z")$eq(
       as_polars_series(as.POSIXct("2022-01-01", tz = "UTC"))
@@ -56,7 +56,7 @@ test_that("POSIXct data conversion", {
         pl$lit("2022-01-01")$str$strptime(pl$Datetime(), "%F")$to_r(),
         as.POSIXct("2022-01-01")
       )
-      # TODO: infer timezone from string, change the arugment name from `tz`
+      # TODO: infer timezone from string
       expect_true(
         as_polars_series("2022-01-01 UTC")$str$strptime(pl$Datetime(time_zone = "UTC"), "%F %Z")$eq(
           as_polars_series(as.POSIXct("2022-01-01", tz = "UTC"))

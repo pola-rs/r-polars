@@ -582,11 +582,12 @@ test_that("pl$int_range() works", {
   )
 
   # custom data type
-  # TODO: this works with any dtype, how can I test this?
-  # expect_true(all.equal(
-  #   as_polars_series(pl$int_range(0, 3, dtype = pl$Int16))$dtype,
-  #   pl$Float32
-  # ))
+  expect_true(
+    as_polars_series(pl$int_range(0, 3, dtype = pl$Int16))$dtype == pl$Int16
+  )
+  expect_false(
+    as_polars_series(pl$int_range(0, 3, dtype = pl$Int16))$dtype == pl$Int32
+  )
 
   expect_grepl_error(
     pl$int_range(0, 3, dtype = pl$String) |> as_polars_series(),
@@ -624,13 +625,16 @@ test_that("pl$int_ranges() works", {
     list(int_range = list(c(1, 2), c(-1, 0, 1)))
   )
 
-  # TODO: this works with any dtype, how can I test this?
-  # expect_true(
-  #   all.equal(
-  #     df$select(int_range = pl$int_ranges("start", "end", dtype = pl$Int16))$schema,
-  #     list(int_range = pl$List(pl$Int16))
-  #   )
-  # )
+  expect_true(
+    df$select(int_range = pl$int_ranges("start", "end", dtype = pl$Int16))$
+      schema$
+      int_range == pl$List(pl$Int16)
+  )
+  expect_false(
+    df$select(int_range = pl$int_ranges("start", "end", dtype = pl$Int16))$
+      schema$
+      int_range == pl$List(pl$String)
+  )
 
   expect_grepl_error(
     df$select(int_range = pl$int_ranges("start", "end", dtype = pl$String)),
