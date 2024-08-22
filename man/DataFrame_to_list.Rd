@@ -58,8 +58,8 @@ explicitly specify the time zone before conversion.
 # so this particular date-time doesn't exist
 non_existent_time = as_polars_series("2020-03-08 02:00:00")$str$strptime(pl$Datetime(), "\%F \%T")
 
-withr::with_envvar(
-  new = c(TZ = "America/New_York"),
+withr::with_timezone(
+  "America/New_York",
   \{
     tryCatch(
       # This causes an error due to the time zone (the `TZ` env var is affected).
@@ -69,9 +69,11 @@ withr::with_envvar(
   \}
 )
 #> <error: in to_r: ComputeError(ErrString("datetime '2020-03-08 02:00:00' is non-existent in time zone 'America/New_York'. You may be able to use `non_existent='null'` to return `null` in this case.")) When calling: devtools::document()>
+}\if{html}{\out{</div>}}
 
-withr::with_envvar(
-  new = c(TZ = "America/New_York"),
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{
+withr::with_timezone(
+  "America/New_York",
   \{
     # This is safe.
     as.vector(non_existent_time$dt$replace_time_zone("UTC"))
