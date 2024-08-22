@@ -392,8 +392,8 @@ patrick::with_parameters_test_that("clock package class support",
     )
 
     # Test on other time zone
-    withr::with_envvar(
-      new = c(TZ = "Europe/Paris"),
+    withr::with_timezone(
+      "Europe/Paris",
       {
         expect_equal(as.POSIXct(as.vector(pl_naive_time)), as.POSIXct(clock_naive_time))
         expect_equal(as.POSIXct(as.vector(pl_zoned_time_1)), as.POSIXct(clock_zoned_time_1))

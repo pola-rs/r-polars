@@ -49,8 +49,8 @@ test_that("POSIXct data conversion", {
     )$to_r()
   )
 
-  withr::with_envvar(
-    new = c(TZ = "America/New_York"),
+  withr::with_timezone(
+    "America/New_York",
     {
       expect_identical(
         pl$lit("2022-01-01")$str$strptime(pl$Datetime(), "%F")$to_r(),
