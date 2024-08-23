@@ -1422,8 +1422,8 @@ class(`PlRLazyGroupBy`) <- "PlRLazyGroupBy__bundle"
 }
 
 `PlRSeries_to_r_vector` <- function(self) {
-  function() {
-    .Call(savvy_PlRSeries_to_r_vector__impl, `self`)
+  function(`local_time_zone`) {
+    .Call(savvy_PlRSeries_to_r_vector__impl, `self`, `local_time_zone`)
   }
 }
 

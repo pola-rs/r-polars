@@ -5,10 +5,10 @@ use savvy::{savvy, FunctionArgs, FunctionSexp, OwnedListSexp, Sexp, StringSexp};
 impl PlRSeries {
     // TODO: check i32::MIN etc.?
     // TODO: export int64 as string, bit64::integer64
-    pub fn to_r_vector(&self) -> savvy::Result<Sexp> {
+    pub fn to_r_vector(&self, local_time_zone: &str) -> savvy::Result<Sexp> {
         let series = &self.series;
 
-        fn to_r_vector_recursive(series: &Series) -> savvy::Result<Sexp> {
+        fn to_r_vector_recursive(series: &Series, local_time_zone: &str) -> savvy::Result<Sexp> {
             match series.dtype() {
                 DataType::Boolean => Ok(<Sexp>::from(Wrap(series.bool().unwrap()))),
                 DataType::UInt8 | DataType::UInt16 | DataType::Int8 | DataType::Int16 => Ok(
@@ -38,9 +38,10 @@ impl PlRSeries {
                     for (i, opt_s) in ca.amortized_iter().enumerate() {
                         match opt_s {
                             None => list.set_value_unchecked(i, savvy::sexp::null::null()),
-                            Some(s) => {
-                                list.set_value_unchecked(i, to_r_vector_recursive(s.as_ref())?.0)
-                            }
+                            Some(s) => list.set_value_unchecked(
+                                i,
+                                to_r_vector_recursive(s.as_ref(), local_time_zone)?.0,
+                            ),
                         }
                     }
                     Ok(list.into())
@@ -52,9 +53,10 @@ impl PlRSeries {
                     for (i, opt_s) in ca.amortized_iter().enumerate() {
                         match opt_s {
                             None => list.set_value_unchecked(i, savvy::sexp::null::null()),
-                            Some(s) => {
-                                list.set_value_unchecked(i, to_r_vector_recursive(s.as_ref())?.0)
-                            }
+                            Some(s) => list.set_value_unchecked(
+                                i,
+                                to_r_vector_recursive(s.as_ref(), local_time_zone)?.0,
+                            ),
                         }
                     }
                     Ok(list.into())
@@ -62,35 +64,29 @@ impl PlRSeries {
                 DataType::Date => Ok(<Sexp>::from(Wrap(series.date().unwrap()))),
                 DataType::Time => Ok(<Sexp>::from(Wrap(series.time().unwrap()))),
                 DataType::Datetime(_, opt_tz) => match opt_tz {
-                    None => {
-                        let local_time_zone: String =
-                            StringSexp(savvy::eval_parse_text("Sys.timezone()")?.inner())
-                                .iter()
-                                .collect();
-                        Ok(<Sexp>::from(Wrap(
-                            series
-                                .clone()
-                                .into_frame()
-                                .lazy()
-                                .select([col(series.name())
-                                    .dt()
-                                    .replace_time_zone(
-                                        Some(local_time_zone),
-                                        lit("raise"),
-                                        NonExistent::Raise,
-                                    )
-                                    .dt()
-                                    .convert_time_zone("UTC".to_string())
-                                    .dt()
-                                    .replace_time_zone(None, lit("raise"), NonExistent::Raise)])
-                                .collect()
-                                .map_err(RPolarsErr::from)?
-                                .select_at_idx(0)
-                                .unwrap()
-                                .datetime()
-                                .unwrap(),
-                        )))
-                    }
+                    None => Ok(<Sexp>::from(Wrap(
+                        series
+                            .clone()
+                            .into_frame()
+                            .lazy()
+                            .select([col(series.name())
+                                .dt()
+                                .replace_time_zone(
+                                    Some(local_time_zone.to_string()),
+                                    lit("raise"),
+                                    NonExistent::Raise,
+                                )
+                                .dt()
+                                .convert_time_zone("UTC".to_string())
+                                .dt()
+                                .replace_time_zone(None, lit("raise"), NonExistent::Raise)])
+                            .collect()
+                            .map_err(RPolarsErr::from)?
+                            .select_at_idx(0)
+                            .unwrap()
+                            .datetime()
+                            .unwrap(),
+                    ))),
                     Some(_tz) => Ok(<Sexp>::from(Wrap(series.datetime().unwrap()))),
                 },
                 DataType::Decimal(_, _) => Ok(<Sexp>::from(Wrap(
@@ -102,7 +98,11 @@ impl PlRSeries {
                     let len = df.width();
                     let mut list = OwnedListSexp::new(len, true)?;
                     for (i, s) in df.iter().enumerate() {
-                        list.set_name_and_value(i, s.name(), to_r_vector_recursive(s)?)?
+                        list.set_name_and_value(
+                            i,
+                            s.name(),
+                            to_r_vector_recursive(s, local_time_zone)?,
+                        )?
                     }
                     Ok(list.into())
                 }
@@ -116,7 +116,7 @@ impl PlRSeries {
             }
         }
 
-        let r_vector = to_r_vector_recursive(series)?;
+        let r_vector = to_r_vector_recursive(series, local_time_zone)?;
         Ok(r_vector)
     }
 }

@@ -131,7 +131,7 @@ series__reshape <- function(dimensions) {
 # TODO: add options for ambiguous and non-existent times
 # TODO: add options for i64 etc. conversion
 series__to_r_vector <- function() {
-  self$`_s`$to_r_vector() |>
+  self$`_s`$to_r_vector(local_time_zone = Sys.timezone()) |>
     wrap()
 }
 
