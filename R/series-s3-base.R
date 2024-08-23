@@ -4,8 +4,9 @@ print.polars_series <- function(x, ...) {
   invisible(x)
 }
 
+# TODO: add the mode argument
 #' @export
-as.vector.polars_series <- function(x, ...) {
+as.vector.polars_series <- function(x) {
   x$to_r_vector()
 }
 
