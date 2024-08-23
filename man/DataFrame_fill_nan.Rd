@@ -2,18 +2,18 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_fill_nan}
 \alias{DataFrame_fill_nan}
-\title{Fill \code{NaN}}
+\title{Fill floating point NaN value with a fill value}
 \usage{
-DataFrame_fill_nan(fill_value)
+DataFrame_fill_nan(value)
 }
 \arguments{
-\item{fill_value}{Value to fill \code{NaN} with.}
+\item{value}{Value used to fill \code{NaN} values.}
 }
 \value{
 DataFrame
 }
 \description{
-Fill \code{NaN} values by an Expression evaluation.
+Fill floating point NaN value with a fill value
 }
 \examples{
 df = pl$DataFrame(
@@ -22,4 +22,3 @@ df = pl$DataFrame(
 )
 df$fill_nan(99)
 }
-\keyword{DataFrame}

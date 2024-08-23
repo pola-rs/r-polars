@@ -1079,10 +1079,10 @@ test_that("shift", {
 })
 
 
-test_that("fill_null  + forward backward _fill + fill_nan", {
+test_that("fill_null  + forward backward _fill", {
   l = list(a = c(1L, rep(NA_integer_, 3L), 10))
 
-  # fiil value
+  # fill value
   expect_identical(
     pl$DataFrame(l)$select(pl$col("a")$fill_null(42L))$to_list()$a,
     l$a |> (\(x) {
@@ -1091,7 +1091,7 @@ test_that("fill_null  + forward backward _fill + fill_nan", {
     })()
   )
 
-  # forwarnd
+  # forward
 
   R_fill_fwd = \(x, lim = Inf) {
     last_seen = NA
@@ -1174,8 +1174,9 @@ test_that("fill_null  + forward backward _fill + fill_nan", {
       a_bfill_NULL = R_fill_bwd(l$a)
     )
   )
+})
 
-  # Fill NaN
+test_that("fill_nan() works", {
   R_replace_nan = \(x, y) {
     x[is.nan(x)] = y
     x

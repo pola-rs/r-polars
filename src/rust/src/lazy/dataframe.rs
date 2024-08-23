@@ -274,20 +274,12 @@ impl RPolarsLazyFrame {
         Ok(self.0.clone().drop(robj_to!(Vec, String, columns)?).into())
     }
 
-    fn fill_nan(&self, fill_value: Robj) -> RResult<Self> {
-        Ok(self
-            .0
-            .clone()
-            .fill_nan(robj_to!(Expr, fill_value)?.0)
-            .into())
+    fn fill_nan(&self, value: Robj) -> RResult<Self> {
+        Ok(self.0.clone().fill_nan(robj_to!(PLExpr, value)?).into())
     }
 
-    fn fill_null(&self, fill_value: Robj) -> RResult<Self> {
-        Ok(self
-            .0
-            .clone()
-            .fill_null(robj_to!(Expr, fill_value)?.0)
-            .into())
+    fn fill_null(&self, value: Robj) -> RResult<Self> {
+        Ok(self.0.clone().fill_null(robj_to!(Expr, value)?.0).into())
     }
 
     fn slice(&self, offset: Robj, length: Robj) -> RResult<Self> {

@@ -2,18 +2,18 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_fill_nan}
 \alias{Expr_fill_nan}
-\title{Fill NaN}
+\title{Fill floating point NaN value with a fill value}
 \usage{
-Expr_fill_nan(expr = NULL)
+Expr_fill_nan(value = NULL)
 }
 \arguments{
-\item{expr}{Expr or something coercible in an Expr}
+\item{value}{Value used to fill \code{NaN} values.}
 }
 \value{
 Expr
 }
 \description{
-Fill NaN
+Fill floating point NaN value with a fill value
 }
 \examples{
 pl$DataFrame(a = c(NaN, 1, NaN, 2, NA))$

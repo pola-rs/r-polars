@@ -1078,8 +1078,8 @@ LazyFrame_quantile = function(quantile, interpolation = "nearest") {
   unwrap(.pr$LazyFrame$quantile(self, wrap_e_result(quantile), interpolation), "in $quantile():")
 }
 
-#' @inherit DataFrame_fill_nan title description params
-#' @keywords LazyFrame
+#' @inherit Expr_fill_nan title params
+#'
 #' @return LazyFrame
 #' @examples
 #' df = pl$LazyFrame(
@@ -1087,8 +1087,8 @@ LazyFrame_quantile = function(quantile, interpolation = "nearest") {
 #'   b = c(1.5, NaN, NaN, 4)
 #' )
 #' df$fill_nan(99)$collect()
-LazyFrame_fill_nan = function(fill_value) {
-  unwrap(.pr$LazyFrame$fill_nan(self, wrap_e_result(fill_value)), "in $fill_nan():")
+LazyFrame_fill_nan = function(value) {
+  unwrap(.pr$LazyFrame$fill_nan(self, value), "in $fill_nan():")
 }
 
 #' @inherit DataFrame_fill_null title description params
