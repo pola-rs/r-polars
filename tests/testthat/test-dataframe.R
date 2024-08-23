@@ -1167,13 +1167,19 @@ test_that("describe", {
   )
 })
 
-test_that("glimpse", {
-  expect_snapshot(pl$DataFrame(mtcars)$with_columns(pl$lit(42)$cast(pl$Int8))$glimpse())
-  expect_rpolarserr(
+test_that("$glimpse() works", {
+  df = pl$DataFrame(mtcars)$with_columns(pl$lit(42)$cast(pl$Int8))
+  expect_snapshot(df$glimpse())
+
+  expect_snapshot(df$glimpse(max_items_per_column = 2))
+
+  expect_snapshot(df$glimpse(max_colname_length = 2))
+
+  expect_grepl_error(
     pl$DataFrame(iris)$glimpse(return_as_string = 42),
-    c("BadArgument", "TypeMismatch", "BadValue")
+    "must be `TRUE` or `FALSE`"
   )
-  expect_true(is_string(pl$DataFrame(iris)$glimpse(return_as_string = TRUE)))
+  expect_type(pl$DataFrame(iris)$glimpse(return_as_string = TRUE), "character")
 })
 
 test_that("explode", {

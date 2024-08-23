@@ -2,12 +2,22 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_glimpse}
 \alias{DataFrame_glimpse}
-\title{Glimpse values in a DataFrame}
+\title{Show a dense preview of the DataFrame}
 \usage{
-DataFrame_glimpse(..., return_as_string = FALSE)
+DataFrame_glimpse(
+  ...,
+  max_items_per_column = 10,
+  max_colname_length = 50,
+  return_as_string = FALSE
+)
 }
 \arguments{
-\item{...}{not used}
+\item{...}{Ignored.}
+
+\item{max_items_per_column}{Maximum number of items to show per column.}
+
+\item{max_colname_length}{Maximum length of the displayed column names. Values
+that exceed this value are truncated with a trailing ellipsis.}
 
 \item{return_as_string}{Logical (default \code{FALSE}). If \code{TRUE}, return the
 output as a string.}
@@ -16,9 +26,10 @@ output as a string.}
 DataFrame
 }
 \description{
-Glimpse values in a DataFrame
+The formatting shows one line per column so that wide DataFrames display
+cleanly. Each line shows the column name, the data type, and the first few
+values.
 }
 \examples{
 pl$DataFrame(iris)$glimpse()
 }
-\keyword{DataFrame}

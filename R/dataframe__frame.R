@@ -1744,35 +1744,41 @@ DataFrame_describe = function(percentiles = c(0.25, 0.75), interpolation = "near
     uw()
 }
 
-#' @title Glimpse values in a DataFrame
-#' @keywords DataFrame
-#' @param ... not used
+#' Show a dense preview of the DataFrame
+#'
+#' The formatting shows one line per column so that wide DataFrames display
+#' cleanly. Each line shows the column name, the data type, and the first few
+#' values.
+#'
+#' @param ... Ignored.
+#' @param max_items_per_column Maximum number of items to show per column.
+#' @param max_colname_length Maximum length of the displayed column names. Values
+#' that exceed this value are truncated with a trailing ellipsis.
 #' @param return_as_string Logical (default `FALSE`). If `TRUE`, return the
 #' output as a string.
+#'
 #' @return DataFrame
 #' @examples
 #' pl$DataFrame(iris)$glimpse()
-DataFrame_glimpse = function(..., return_as_string = FALSE) {
-  # guard input
+DataFrame_glimpse = function(
+    ...,
+    max_items_per_column = 10,
+    max_colname_length = 50,
+    return_as_string = FALSE) {
   if (!is_scalar_bool(return_as_string)) {
-    RPolarsErr$new()$
-      bad_robj(return_as_string)$
-      mistyped("bool")$
-      bad_arg("return_as_string") |>
-      Err() |>
+    Err_plain("`return_as_string` must be `TRUE` or `FALSE`.") |>
       unwrap("in $glimpse() :")
   }
 
-  # closure to extract col info from a column in <self>
-  max_num_value = min(10, self$height)
-  max_col_name_trunc = 50
+  max_num_value = min(max_items_per_column, self$height)
+
   parse_column_ = \(col_name, dtype) {
     dtype_str = dtype_str_repr(dtype) |> unwrap_or(paste0("??", str_string(dtype)))
     if (inherits(dtype, "RPolarsDataType")) dtype_str = paste0(" <", dtype_str, ">")
     val = self$select(pl$col(col_name)$slice(0, max_num_value))$to_list()[[1]]
     val_str = paste(val, collapse = ", ")
-    if (nchar(col_name) > max_col_name_trunc) {
-      col_name = paste0(substr(col_name, 1, max_col_name_trunc - 3), "...")
+    if (nchar(col_name) > max_colname_length) {
+      col_name = paste0(substr(col_name, 1, max_colname_length - 3), "...")
     }
     list(
       col_name = col_name,
@@ -1805,7 +1811,6 @@ DataFrame_glimpse = function(..., return_as_string = FALSE) {
   ) |>
     unwrap("in $glimpse() :")
 
-  # chose return type
   if (return_as_string) output else invisible(cat(output))
 }
 
