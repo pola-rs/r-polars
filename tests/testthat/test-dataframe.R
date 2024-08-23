@@ -1609,3 +1609,32 @@ test_that("$clear() works", {
     "greater or equal to 0"
   )
 })
+
+test_that("$gather_every() works", {
+  df = pl$DataFrame(a = 1:4, b = 5:8)
+
+  expect_identical(
+    df$gather_every(2)$to_list(),
+    list(a = c(1L, 3L), b = c(5L, 7L))
+  )
+  expect_identical(
+    df$gather_every(2, offset = 1)$to_list(),
+    list(a = c(2L, 4L), b = c(6L, 8L))
+  )
+
+  # must specify n
+  expect_grepl_error(
+    df$gather_every(),
+    r"(argument "n" is missing)"
+  )
+
+  # offset must be positive
+  expect_grepl_error(
+    df$gather_every(2, offset = -1),
+    "cannot be less than zero"
+  )
+  expect_grepl_error(
+    df$gather_every(2, offset = "a"),
+    "Expected a value of type"
+  )
+})
