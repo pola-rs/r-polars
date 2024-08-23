@@ -184,7 +184,7 @@ SEXP savvy_PlRSeries_new_str__ffi(SEXP name, SEXP values);
 SEXP savvy_PlRSeries_new_single_binary__ffi(SEXP name, SEXP values);
 SEXP savvy_PlRSeries_new_binary__ffi(SEXP name, SEXP values);
 SEXP savvy_PlRSeries_new_series_list__ffi(SEXP name, SEXP values);
-SEXP savvy_PlRSeries_to_r_vector__ffi(SEXP self__, SEXP local_time_zone);
+SEXP savvy_PlRSeries_to_r_vector__ffi(SEXP self__, SEXP ambiguous, SEXP non_existent, SEXP local_time_zone);
 
 // methods and associated functions for PlRThen
 SEXP savvy_PlRThen_when__ffi(SEXP self__, SEXP condition);

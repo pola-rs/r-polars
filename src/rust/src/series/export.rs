@@ -1,14 +1,26 @@
-use crate::{prelude::*, PlRSeries, RPolarsErr};
+use crate::{prelude::*, PlRExpr, PlRSeries, RPolarsErr};
 use savvy::{savvy, FunctionArgs, FunctionSexp, OwnedListSexp, Sexp, StringSexp};
 
 #[savvy]
 impl PlRSeries {
     // TODO: check i32::MIN etc.?
     // TODO: export int64 as string, bit64::integer64
-    pub fn to_r_vector(&self, local_time_zone: &str) -> savvy::Result<Sexp> {
+    pub fn to_r_vector(
+        &self,
+        ambiguous: PlRExpr,
+        non_existent: &str,
+        local_time_zone: &str,
+    ) -> savvy::Result<Sexp> {
         let series = &self.series;
+        let ambiguous = ambiguous.inner;
+        let non_existent = <Wrap<NonExistent>>::try_from(non_existent)?.0;
 
-        fn to_r_vector_recursive(series: &Series, local_time_zone: &str) -> savvy::Result<Sexp> {
+        fn to_r_vector_recursive(
+            series: &Series,
+            ambiguous: Expr,
+            non_existent: NonExistent,
+            local_time_zone: &str,
+        ) -> savvy::Result<Sexp> {
             match series.dtype() {
                 DataType::Boolean => Ok(<Sexp>::from(Wrap(series.bool().unwrap()))),
                 DataType::UInt8 | DataType::UInt16 | DataType::Int8 | DataType::Int16 => Ok(
@@ -40,7 +52,13 @@ impl PlRSeries {
                             None => list.set_value_unchecked(i, savvy::sexp::null::null()),
                             Some(s) => list.set_value_unchecked(
                                 i,
-                                to_r_vector_recursive(s.as_ref(), local_time_zone)?.0,
+                                to_r_vector_recursive(
+                                    s.as_ref(),
+                                    ambiguous.clone(),
+                                    non_existent,
+                                    local_time_zone,
+                                )?
+                                .0,
                             ),
                         }
                     }
@@ -55,7 +73,13 @@ impl PlRSeries {
                             None => list.set_value_unchecked(i, savvy::sexp::null::null()),
                             Some(s) => list.set_value_unchecked(
                                 i,
-                                to_r_vector_recursive(s.as_ref(), local_time_zone)?.0,
+                                to_r_vector_recursive(
+                                    s.as_ref(),
+                                    ambiguous.clone(),
+                                    non_existent,
+                                    local_time_zone,
+                                )?
+                                .0,
                             ),
                         }
                     }
@@ -73,8 +97,8 @@ impl PlRSeries {
                                 .dt()
                                 .replace_time_zone(
                                     Some(local_time_zone.to_string()),
-                                    lit("raise"),
-                                    NonExistent::Raise,
+                                    ambiguous.clone(),
+                                    non_existent,
                                 )
                                 .dt()
                                 .convert_time_zone("UTC".to_string())
@@ -101,7 +125,12 @@ impl PlRSeries {
                         list.set_name_and_value(
                             i,
                             s.name(),
-                            to_r_vector_recursive(s, local_time_zone)?,
+                            to_r_vector_recursive(
+                                s,
+                                ambiguous.clone(),
+                                non_existent,
+                                local_time_zone,
+                            )?,
                         )?
                     }
                     Ok(list.into())
@@ -116,7 +145,7 @@ impl PlRSeries {
             }
         }
 
-        let r_vector = to_r_vector_recursive(series, local_time_zone)?;
+        let r_vector = to_r_vector_recursive(series, ambiguous, non_existent, local_time_zone)?;
         Ok(r_vector)
     }
 }
