@@ -37,8 +37,11 @@
 #' # Date
 #' as_polars_series(as.Date("2021-01-01"))
 #'
-#' # POSIXct
+#' # POSIXct with timezone
 #' as_polars_series(as.POSIXct("2021-01-01 00:00:00", "UTC"))
+#'
+#' # POSIXct without timezone
+#' as_polars_series(as.POSIXct("2021-01-01 00:00:00"))
 #'
 #' # difftime
 #' as_polars_series(as.difftime(1, units = "days"))
@@ -152,6 +155,7 @@ as_polars_series.POSIXct <- function(x, name = NULL, ...) {
   )$cast(pl$Int64$`_dt`, strict = TRUE)
 
   if (tzone == "") {
+    # TODO: simplify to remove the need for the `wrap()` function
     wrap(int_series)$to_frame()$select(
       pl$col(name)$cast(
         pl$Datetime("ms", "UTC")
@@ -161,7 +165,8 @@ as_polars_series.POSIXct <- function(x, name = NULL, ...) {
         NULL,
         ambiguous = "raise", non_existent = "raise"
       )
-    )$to_series()
+    )$to_series() |>
+      wrap()
   } else {
     int_series$cast(
       pl$Datetime("ms", tzone)$`_dt`,

@@ -102,8 +102,11 @@ as_polars_series(factor(c("a", "b")))
 # Date
 as_polars_series(as.Date("2021-01-01"))
 
-# POSIXct
+# POSIXct with timezone
 as_polars_series(as.POSIXct("2021-01-01 00:00:00", "UTC"))
+
+# POSIXct without timezone
+as_polars_series(as.POSIXct("2021-01-01 00:00:00"))
 
 # difftime
 as_polars_series(as.difftime(1, units = "days"))
