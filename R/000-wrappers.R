@@ -1422,9 +1422,9 @@ class(`PlRLazyGroupBy`) <- "PlRLazyGroupBy__bundle"
 }
 
 `PlRSeries_to_r_vector` <- function(self) {
-  function(`ambiguous`, `non_existent`, `local_time_zone`) {
+  function(`int64`, `ambiguous`, `non_existent`, `local_time_zone`) {
     `ambiguous` <- .savvy_extract_ptr(`ambiguous`, "PlRExpr")
-    .Call(savvy_PlRSeries_to_r_vector__impl, `self`, `ambiguous`, `non_existent`, `local_time_zone`)
+    .Call(savvy_PlRSeries_to_r_vector__impl, `self`, `int64`, `ambiguous`, `non_existent`, `local_time_zone`)
   }
 }
 

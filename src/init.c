@@ -884,8 +884,8 @@ SEXP savvy_PlRSeries_new_series_list__impl(SEXP name, SEXP values) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRSeries_to_r_vector__impl(SEXP self__, SEXP ambiguous, SEXP non_existent, SEXP local_time_zone) {
-    SEXP res = savvy_PlRSeries_to_r_vector__ffi(self__, ambiguous, non_existent, local_time_zone);
+SEXP savvy_PlRSeries_to_r_vector__impl(SEXP self__, SEXP int64, SEXP ambiguous, SEXP non_existent, SEXP local_time_zone) {
+    SEXP res = savvy_PlRSeries_to_r_vector__ffi(self__, int64, ambiguous, non_existent, local_time_zone);
     return handle_result(res);
 }
 
@@ -1076,7 +1076,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRSeries_new_single_binary__impl", (DL_FUNC) &savvy_PlRSeries_new_single_binary__impl, 2},
     {"savvy_PlRSeries_new_binary__impl", (DL_FUNC) &savvy_PlRSeries_new_binary__impl, 2},
     {"savvy_PlRSeries_new_series_list__impl", (DL_FUNC) &savvy_PlRSeries_new_series_list__impl, 2},
-    {"savvy_PlRSeries_to_r_vector__impl", (DL_FUNC) &savvy_PlRSeries_to_r_vector__impl, 4},
+    {"savvy_PlRSeries_to_r_vector__impl", (DL_FUNC) &savvy_PlRSeries_to_r_vector__impl, 5},
     {"savvy_PlRThen_when__impl", (DL_FUNC) &savvy_PlRThen_when__impl, 2},
     {"savvy_PlRThen_otherwise__impl", (DL_FUNC) &savvy_PlRThen_otherwise__impl, 2},
     {"savvy_PlRWhen_then__impl", (DL_FUNC) &savvy_PlRWhen_then__impl, 2},

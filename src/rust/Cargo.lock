@@ -1529,6 +1529,8 @@ dependencies = [
  "polars-error",
  "savvy",
  "serde_json",
+ "strum",
+ "strum_macros",
  "thiserror",
 ]
 

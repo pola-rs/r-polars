@@ -129,13 +129,17 @@ series__reshape <- function(dimensions) {
 }
 
 # TODO: use options to set the default arguments
-# TODO: add options for i64 etc. conversion
-series__to_r_vector <- function(..., ambiguous = "raise", non_existent = "raise") {
+series__to_r_vector <- function(
+    ...,
+    int64 = "double",
+    ambiguous = "raise",
+    non_existent = "raise") {
   wrap({
     check_dots_empty0(...)
 
     ambiguous <- as_polars_expr(ambiguous, str_as_lit = TRUE)$`_rexpr`
     self$`_s`$to_r_vector(
+      int64 = int64,
       ambiguous = ambiguous,
       non_existent = non_existent,
       local_time_zone = Sys.timezone()

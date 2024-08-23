@@ -1,22 +1,39 @@
 use crate::{prelude::*, PlRExpr, PlRSeries, RPolarsErr};
-use savvy::{savvy, FunctionArgs, FunctionSexp, OwnedListSexp, Sexp, StringSexp};
+use savvy::{savvy, FunctionArgs, FunctionSexp, OwnedListSexp, Sexp};
+use strum_macros::EnumString;
+
+#[derive(Debug, Clone, Eq, PartialEq, EnumString)]
+#[strum(serialize_all = "lowercase")]
+pub enum Int64Conversion {
+    Character,
+    Double,
+    Integer,
+}
 
 #[savvy]
 impl PlRSeries {
     // TODO: check i32::MIN etc.?
-    // TODO: export int64 as string, bit64::integer64
+    // TODO: export int64 as bit64::integer64
     pub fn to_r_vector(
         &self,
+        int64: &str,
         ambiguous: PlRExpr,
         non_existent: &str,
         local_time_zone: &str,
     ) -> savvy::Result<Sexp> {
         let series = &self.series;
+
+        let int64 = Int64Conversion::try_from(int64).map_err(|_| {
+            savvy::Error::from(
+                "Argument `int64` must be one of 'character', 'double', 'integer'".to_string(),
+            )
+        })?;
         let ambiguous = ambiguous.inner;
         let non_existent = <Wrap<NonExistent>>::try_from(non_existent)?.0;
 
         fn to_r_vector_recursive(
             series: &Series,
+            int64: Int64Conversion,
             ambiguous: Expr,
             non_existent: NonExistent,
             local_time_zone: &str,
@@ -27,9 +44,18 @@ impl PlRSeries {
                     <Sexp>::from(Wrap(series.cast(&DataType::Int32).unwrap().i32().unwrap())),
                 ),
                 DataType::Int32 => Ok(<Sexp>::from(Wrap(series.i32().unwrap()))),
-                DataType::UInt64 | DataType::Int64 => Ok(<Sexp>::from(Wrap(
-                    series.cast(&DataType::Float64).unwrap().f64().unwrap(),
-                ))),
+                DataType::UInt64 | DataType::Int64 => match int64 {
+                    Int64Conversion::Character => Ok(<Sexp>::from(Wrap(
+                        series.cast(&DataType::String).unwrap().str().unwrap(),
+                    ))),
+                    Int64Conversion::Double => Ok(<Sexp>::from(Wrap(
+                        series.cast(&DataType::Float64).unwrap().f64().unwrap(),
+                    ))),
+                    Int64Conversion::Integer => {
+                        let s = series.cast(&DataType::Int32).map_err(RPolarsErr::from)?;
+                        Ok(<Sexp>::from(Wrap(s.i32().unwrap())))
+                    }
+                },
                 DataType::Float32 => Ok(<Sexp>::from(Wrap(
                     series.cast(&DataType::Float64).unwrap().f64().unwrap(),
                 ))),
@@ -54,6 +80,7 @@ impl PlRSeries {
                                 i,
                                 to_r_vector_recursive(
                                     s.as_ref(),
+                                    int64.clone(),
                                     ambiguous.clone(),
                                     non_existent,
                                     local_time_zone,
@@ -75,6 +102,7 @@ impl PlRSeries {
                                 i,
                                 to_r_vector_recursive(
                                     s.as_ref(),
+                                    int64.clone(),
                                     ambiguous.clone(),
                                     non_existent,
                                     local_time_zone,
@@ -127,6 +155,7 @@ impl PlRSeries {
                             s.name(),
                             to_r_vector_recursive(
                                 s,
+                                int64.clone(),
                                 ambiguous.clone(),
                                 non_existent,
                                 local_time_zone,
@@ -145,7 +174,8 @@ impl PlRSeries {
             }
         }
 
-        let r_vector = to_r_vector_recursive(series, ambiguous, non_existent, local_time_zone)?;
+        let r_vector =
+            to_r_vector_recursive(series, int64, ambiguous, non_existent, local_time_zone)?;
         Ok(r_vector)
     }
 }
