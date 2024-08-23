@@ -2508,3 +2508,19 @@ DataFrame_sql = function(query, ..., table_name = NULL, envir = parent.frame()) 
     result() |>
     unwrap("in $sql():")
 }
+
+
+#' Take every nth row in the DataFrame
+#'
+#' @inheritParams LazyFrame_gather_every
+#'
+#' @return A DataFrame
+#'
+#' @examples
+#' df = pl$DataFrame(a = 1:4, b = 5:8)
+#' df$gather_every(2)
+#'
+#' df$gather_every(2, offset = 1)
+DataFrame_gather_every = function(n, offset = 0) {
+  self$select(pl$col("*")$gather_every(n, offset))
+}

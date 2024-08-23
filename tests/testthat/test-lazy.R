@@ -1101,3 +1101,32 @@ test_that("$explain() works", {
   expect_snapshot(cat(lazy_query$explain(format = "tree", optimized = FALSE)))
   expect_snapshot(cat(lazy_query$explain(format = "tree", )))
 })
+
+test_that("$gather_every() works", {
+  lf = pl$LazyFrame(a = 1:4, b = 5:8)
+
+  expect_identical(
+    lf$gather_every(2)$collect()$to_list(),
+    list(a = c(1L, 3L), b = c(5L, 7L))
+  )
+  expect_identical(
+    lf$gather_every(2, offset = 1)$collect()$to_list(),
+    list(a = c(2L, 4L), b = c(6L, 8L))
+  )
+
+  # must specify n
+  expect_grepl_error(
+    lf$gather_every()$collect(),
+    r"(argument "n" is missing)"
+  )
+
+  # offset must be positive
+  expect_grepl_error(
+    lf$gather_every(2, offset = -1)$collect(),
+    "cannot be less than zero"
+  )
+  expect_grepl_error(
+    lf$gather_every(2, offset = "a")$collect(),
+    "Expected a value of type"
+  )
+})
