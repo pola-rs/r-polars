@@ -25,6 +25,10 @@
 - In `$dt$epoch()`, the argument `tu` is renamed to `time_unit` (#1196).
 - In `$fill_nan()` for `DataFrame`, `LazyFrame` and `Expr`, the argument is
   renamed `value` (#1198).
+- `$shift_and_fill()` is removed and replaced by a new argument `fill_value` in
+  `$shift()`. `$shift_and_fill(fill_value, periods)` can be replaced by 
+  `$shift(n, fill_value)` (#1201).
+- In `$shift()` for various `Expr`, the argument `periods` is renamed `n` (#1201).
 
 ### New features
 

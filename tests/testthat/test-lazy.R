@@ -232,12 +232,12 @@ test_that("tail", {
 })
 
 
-test_that("shift   _and_fill", {
-  a = pl$DataFrame(mtcars)$lazy()$shift(2)$limit(3)$collect()$to_data_frame()
+test_that("shift", {
+  a = pl$LazyFrame(mtcars[1:3, ])$shift(2)$collect()$to_data_frame()
   for (i in seq_along(a)) {
     expect_equal(is.na(a[[i]]), c(TRUE, TRUE, FALSE))
   }
-  a = pl$DataFrame(mtcars)$lazy()$shift_and_fill(0., 2.)$limit(3)$collect()$to_data_frame()
+  a = pl$LazyFrame(mtcars[1:3, ])$shift(2, 0)$collect()$to_data_frame()
   for (i in seq_along(a)) {
     expect_equal(a[[i]], c(0, 0, mtcars[[i]][1]))
   }

@@ -85,14 +85,12 @@ test_that("quantile", {
   expect_equal(a[order(a$cyl), ], b[order(b$cyl), ], ignore_attr = TRUE)
 })
 
-test_that("shift    _and_fill", {
+test_that("shift", {
   a = pl$DataFrame(mtcars)$group_by("cyl")$shift(2)$to_data_frame()
   expect_equal(a[["mpg"]][[1]][1:2], c(NA_real_, NA_real_))
-  a = pl$DataFrame(mtcars)$group_by("cyl")$shift_and_fill(99, 2)$to_data_frame()
+  a = pl$DataFrame(mtcars)$group_by("cyl")$shift(2, 99)$to_data_frame()
   expect_equal(a[["mpg"]][[1]][1:2], c(99, 99))
 })
-
-
 
 
 test_that("groupby, lazygroupby unpack + charvec same as list of strings", {

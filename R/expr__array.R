@@ -233,7 +233,7 @@ ExprArr_any = function() .pr$Expr$arr_any(self)
 
 #' Shift array values by `n` indices
 #'
-#' @inheritParams ExprList_shift
+#' @inheritParams DataFrame_shift
 #'
 #' @return Expr
 #' @examples
@@ -246,8 +246,8 @@ ExprArr_any = function() .pr$Expr$arr_any(self)
 #'   shift_by_expr = pl$col("values")$arr$shift(pl$col("idx")),
 #'   shift_by_lit = pl$col("values")$arr$shift(2)
 #' )
-ExprArr_shift = function(periods = 1) {
-  .pr$Expr$arr_shift(self, periods) |>
+ExprArr_shift = function(n = 1) {
+  .pr$Expr$arr_shift(self, n) |>
     unwrap("in $arr$shift():")
 }
 

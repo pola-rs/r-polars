@@ -4,10 +4,14 @@
 \alias{DataFrame_shift}
 \title{Shift a DataFrame}
 \usage{
-DataFrame_shift(periods = 1)
+DataFrame_shift(n = 1, fill_value = NULL)
 }
 \arguments{
-\item{periods}{Number of periods to shift (can be negative).}
+\item{n}{Number of indices to shift forward. If a negative value is
+passed, values are shifted in the opposite direction instead.}
+
+\item{fill_value}{Fill the resulting null values with this value. Accepts
+expression input. Non-expression inputs are parsed as literals.}
 }
 \value{
 DataFrame
@@ -19,8 +23,11 @@ rows will be discarded. Vice-versa if the period is negative. In the end,
 the total number of rows of the DataFrame doesn't change.
 }
 \examples{
-pl$DataFrame(mtcars)$shift(2)
+df = pl$DataFrame(a = 1:4, b = 5:8)
 
-pl$DataFrame(mtcars)$shift(-2)
+df$shift(2)
+
+df$shift(-2)
+
+df$shift(-2, fill_value = 100)
 }
-\keyword{DataFrame}

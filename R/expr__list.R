@@ -311,8 +311,7 @@ ExprList_diff = function(n = 1, null_behavior = c("ignore", "drop")) {
 
 #' Shift list values by `n` indices
 #'
-#' @param periods Number of places to shift (may be negative). Can be an Expr.
-#' Strings are *not* parsed as columns.
+#' @inheritParams DataFrame_shift
 #'
 #' @return Expr
 #'
@@ -325,7 +324,10 @@ ExprList_diff = function(n = 1, null_behavior = c("ignore", "drop")) {
 #'   shift_by_expr = pl$col("s")$list$shift(pl$col("idx")),
 #'   shift_by_lit = pl$col("s")$list$shift(2)
 #' )
-ExprList_shift = function(periods = 1) unwrap(.pr$Expr$list_shift(self, periods))
+ExprList_shift = function(n = 1) {
+  .pr$Expr$list_shift(self, n) |>
+    unwrap("in $list$shift():")
+}
 
 #' Slice list
 #'

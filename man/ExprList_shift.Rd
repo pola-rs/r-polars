@@ -4,11 +4,11 @@
 \alias{ExprList_shift}
 \title{Shift list values by \code{n} indices}
 \usage{
-ExprList_shift(periods = 1)
+ExprList_shift(n = 1)
 }
 \arguments{
-\item{periods}{Number of places to shift (may be negative). Can be an Expr.
-Strings are \emph{not} parsed as columns.}
+\item{n}{Number of indices to shift forward. If a negative value is
+passed, values are shifted in the opposite direction instead.}
 }
 \value{
 Expr

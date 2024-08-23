@@ -781,37 +781,22 @@ DataFrame_equals = function(other) {
 #' rows will be discarded. Vice-versa if the period is negative. In the end,
 #' the total number of rows of the DataFrame doesn't change.
 #'
-#' @keywords DataFrame
-#' @param periods Number of periods to shift (can be negative).
+#' @param n Number of indices to shift forward. If a negative value is
+#' passed, values are shifted in the opposite direction instead.
+#' @param fill_value Fill the resulting null values with this value. Accepts
+#' expression input. Non-expression inputs are parsed as literals.
+#'
 #' @return DataFrame
 #' @examples
-#' pl$DataFrame(mtcars)$shift(2)
+#' df = pl$DataFrame(a = 1:4, b = 5:8)
 #'
-#' pl$DataFrame(mtcars)$shift(-2)
-DataFrame_shift = function(periods = 1) {
-  self$lazy()$shift(periods)$collect()
-}
-
-#' @title Shift and fill
+#' df$shift(2)
 #'
-#' @description Shift the values by a given period and fill the resulting null
-#' values. See the docs of `$shift()` for more details on shifting.
-#' @keywords DataFrame
+#' df$shift(-2)
 #'
-#' @param fill_value Fill new `NULL` values with this value. Must of length 1.
-#' A logical value will be converted to numeric.
-#' @param periods Number of periods to shift (can be negative).
-#' @return DataFrame
-#' @examples
-#' df = pl$DataFrame(mtcars)
-#'
-#' # insert two rows filled with 0 at the top of the DataFrame
-#' df$shift_and_fill(0, 2)
-#'
-#' # automatic conversion of logical value to numeric
-#' df$shift_and_fill(TRUE, 2)
-DataFrame_shift_and_fill = function(fill_value, periods = 1) {
-  self$lazy()$shift_and_fill(fill_value, periods)$collect()
+#' df$shift(-2, fill_value = 100)
+DataFrame_shift = function(n = 1, fill_value = NULL) {
+  self$lazy()$shift(n, fill_value)$collect()
 }
 
 #' Modify/append column(s)
