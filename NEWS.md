@@ -22,7 +22,9 @@
   For now, `future = FALSE` can be replaced by `compat_level = FALSE` (#1183).
 - In `$scan_parquet()` and `$read_parquet()`, the default value of
   `hive_partitioning` is now `NULL` (#1189).
-- In `$dt$epoch()`, the argument `tu` is renamed to `time_unit` (#1196). 
+- In `$dt$epoch()`, the argument `tu` is renamed to `time_unit` (#1196).
+- In `$fill_nan()` for `DataFrame`, `LazyFrame` and `Expr`, the argument is
+  renamed `value` (#1198).
 
 ### New features
 

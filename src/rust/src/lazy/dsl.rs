@@ -351,8 +351,8 @@ impl RPolarsExpr {
         Ok(self.0.clone().fill_null_with_strategy(strat).into())
     }
 
-    pub fn fill_nan(&self, expr: &RPolarsExpr) -> Self {
-        self.0.clone().fill_nan(expr.0.clone()).into()
+    pub fn fill_nan(&self, value: Robj) -> RResult<Self> {
+        Ok(self.0.clone().fill_nan(robj_to!(PLExpr, value)?).into())
     }
 
     pub fn reverse(&self) -> Self {

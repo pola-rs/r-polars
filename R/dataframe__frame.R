@@ -1333,10 +1333,8 @@ DataFrame_reverse = function() {
   self$lazy()$reverse()$collect()
 }
 
-#' @title Fill `NaN`
-#' @description Fill `NaN` values by an Expression evaluation.
-#' @keywords DataFrame
-#' @param fill_value Value to fill `NaN` with.
+#' @inherit Expr_fill_nan title params
+#'
 #' @return DataFrame
 #' @examples
 #' df = pl$DataFrame(
@@ -1344,8 +1342,8 @@ DataFrame_reverse = function() {
 #'   b = c(1.5, NaN, NaN, 4)
 #' )
 #' df$fill_nan(99)
-DataFrame_fill_nan = function(fill_value) {
-  self$lazy()$fill_nan(fill_value)$collect()
+DataFrame_fill_nan = function(value) {
+  self$lazy()$fill_nan(value)$collect()
 }
 
 #' @title Fill nulls

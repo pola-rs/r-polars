@@ -1656,9 +1656,10 @@ Expr_forward_fill = function(limit = NULL) {
 }
 
 
-#' Fill NaN
+#' Fill floating point NaN value with a fill value
 #'
-#' @param expr Expr or something coercible in an Expr
+#' @param value Value used to fill `NaN` values.
+#'
 #' @return Expr
 #' @examples
 #' pl$DataFrame(a = c(NaN, 1, NaN, 2, NA))$
@@ -1667,8 +1668,9 @@ Expr_forward_fill = function(limit = NULL) {
 #'   # implicit coercion to string
 #'   string = pl$col("a")$fill_nan("invalid")
 #' )
-Expr_fill_nan = function(expr = NULL) {
-  .pr$Expr$fill_nan(self, wrap_e(expr))
+Expr_fill_nan = function(value = NULL) {
+  .pr$Expr$fill_nan(self, value) |>
+    unwrap("in $fill_nan():")
 }
 
 

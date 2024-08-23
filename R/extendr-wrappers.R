@@ -556,7 +556,7 @@ RPolarsExpr$fill_null <- function(expr) .Call(wrap__RPolarsExpr__fill_null, self
 
 RPolarsExpr$fill_null_with_strategy <- function(strategy, limit) .Call(wrap__RPolarsExpr__fill_null_with_strategy, self, strategy, limit)
 
-RPolarsExpr$fill_nan <- function(expr) .Call(wrap__RPolarsExpr__fill_nan, self, expr)
+RPolarsExpr$fill_nan <- function(value) .Call(wrap__RPolarsExpr__fill_nan, self, value)
 
 RPolarsExpr$reverse <- function() .Call(wrap__RPolarsExpr__reverse, self)
 
@@ -1228,9 +1228,9 @@ RPolarsLazyFrame$reverse <- function() .Call(wrap__RPolarsLazyFrame__reverse, se
 
 RPolarsLazyFrame$drop <- function(columns) .Call(wrap__RPolarsLazyFrame__drop, self, columns)
 
-RPolarsLazyFrame$fill_nan <- function(fill_value) .Call(wrap__RPolarsLazyFrame__fill_nan, self, fill_value)
+RPolarsLazyFrame$fill_nan <- function(value) .Call(wrap__RPolarsLazyFrame__fill_nan, self, value)
 
-RPolarsLazyFrame$fill_null <- function(fill_value) .Call(wrap__RPolarsLazyFrame__fill_null, self, fill_value)
+RPolarsLazyFrame$fill_null <- function(value) .Call(wrap__RPolarsLazyFrame__fill_null, self, value)
 
 RPolarsLazyFrame$slice <- function(offset, length) .Call(wrap__RPolarsLazyFrame__slice, self, offset, length)
 
