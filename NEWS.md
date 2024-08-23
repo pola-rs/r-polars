@@ -45,6 +45,8 @@
 - `$scan_parquet()` and `$read_parquet()` gain two new arguments for more control
   on importing hive partitions: `hive_schema` and `try_parse_hive_dates` (#1189).
 - New method `$gather_every()` for `LazyFrame` and `DataFrame` (#1199).
+- `$glimpse()` for `DataFrame` has two new arguments `max_items_per_column` and
+  `max_colname_length` (#1200).
 
 ### Other changes
 
