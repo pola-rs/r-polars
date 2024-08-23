@@ -55,9 +55,13 @@ dataframe__get_columns <- function() {
     })
 }
 
-dataframe__to_r_list <- function() {
-  self$get_columns() |>
-    lapply(as.vector)
+dataframe__to_r_list <- function(..., ambiguous = "raise", non_existent = "raise") {
+  wrap({
+    check_dots_empty0(...)
+
+    self$get_columns() |>
+      lapply(\(col) col$to_r_vector(ambiguous = ambiguous, non_existent = non_existent))
+  })
 }
 
 dataframe__group_by <- function(..., maintain_order = FALSE) {
