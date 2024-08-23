@@ -17,6 +17,7 @@ Suggests:
     hms,
     patrick,
     testthat (>= 3.0.0),
-    tibble
+    tibble,
+    withr
 Config/testthat/edition: 3
 Config/testthat/parallel: true

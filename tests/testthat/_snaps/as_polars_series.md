@@ -86,7 +86,7 @@
       	2021-01-01
       ]
 
-# as_polars_series works for classes POSIXct
+# as_polars_series works for classes POSIXct (UTC)
 
     Code
       print(pl_series)
@@ -95,6 +95,17 @@
       Series: '' [datetime[ms, UTC]]
       [
       	2021-01-01 00:00:00 UTC
+      ]
+
+# as_polars_series works for classes POSIXct (system time)
+
+    Code
+      print(pl_series)
+    Output
+      shape: (1,)
+      Series: '' [datetime[ms]]
+      [
+      	2021-01-01 00:00:00
       ]
 
 # as_polars_series works for classes difftime
