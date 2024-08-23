@@ -44,6 +44,7 @@
   `hive_partitioning`, `hive_schema`, and `try_parse_hive_dates` (#1183).
 - `$scan_parquet()` and `$read_parquet()` gain two new arguments for more control
   on importing hive partitions: `hive_schema` and `try_parse_hive_dates` (#1189).
+- New method `$gather_every()` for `LazyFrame` and `DataFrame` (#1199).
 
 ### Other changes
 
