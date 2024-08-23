@@ -2,20 +2,32 @@
 % Please edit documentation in R/lazyframe__lazy.R
 \name{LazyFrame_shift}
 \alias{LazyFrame_shift}
-\title{Shift}
+\title{Shift a LazyFrame}
 \usage{
-LazyFrame_shift(periods = 1)
+LazyFrame_shift(n = 1, fill_value = NULL)
 }
 \arguments{
-\item{periods}{integer Number of periods to shift (may be negative).}
+\item{n}{Number of indices to shift forward. If a negative value is
+passed, values are shifted in the opposite direction instead.}
+
+\item{fill_value}{Fill the resulting null values with this value. Accepts
+expression input. Non-expression inputs are parsed as literals.}
 }
 \value{
 LazyFrame
 }
 \description{
-Shift the values by a given period.
+Shift the values by a given period. If the period (\code{n}) is positive,
+then \code{n} rows will be inserted at the top of the DataFrame and the last \code{n}
+rows will be discarded. Vice-versa if the period is negative. In the end,
+the total number of rows of the DataFrame doesn't change.
 }
 \examples{
-pl$LazyFrame(mtcars)$shift(2)$collect()
+lf = pl$LazyFrame(a = 1:4, b = 5:8)
+
+lf$shift(2)$collect()
+
+lf$shift(-2)$collect()
+
+lf$shift(-2, fill_value = 100)$collect()
 }
-\keyword{LazyFrame}

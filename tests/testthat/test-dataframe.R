@@ -708,12 +708,12 @@ test_that("drop_in_place", {
 })
 
 
-test_that("shift   _and_fill", {
-  a = pl$DataFrame(mtcars)$shift(2)$head(3)$to_data_frame()
+test_that("shift", {
+  a = pl$DataFrame(mtcars[1:3, ])$shift(2)$to_data_frame()
   for (i in seq_along(a)) {
     expect_equal(is.na(a[[i]]), c(TRUE, TRUE, FALSE))
   }
-  a = pl$DataFrame(mtcars)$shift_and_fill(0., 2.)$head(3)$to_data_frame()
+  a = pl$DataFrame(mtcars[1:3, ])$shift(2, 0)$to_data_frame()
   for (i in seq_along(a)) {
     expect_equal(a[[i]], c(0, 0, mtcars[[i]][1]))
   }

@@ -327,16 +327,15 @@ impl RPolarsExpr {
         self.clone().0.forward_fill(lmt).into()
     }
 
-    pub fn shift(&self, periods: Robj) -> RResult<Self> {
-        Ok(self.clone().0.shift(robj_to!(PLExpr, periods)?).into())
-    }
-
-    pub fn shift_and_fill(&self, periods: Robj, fill_value: Robj) -> RResult<Self> {
-        Ok(self
-            .0
-            .clone()
-            .shift_and_fill(robj_to!(PLExpr, periods)?, robj_to!(PLExpr, fill_value)?)
-            .into())
+    pub fn shift(&self, n: Robj, fill_value: Robj) -> RResult<Self> {
+        let expr = self.0.clone();
+        let n = robj_to!(PLExpr, n)?;
+        let fill_value = robj_to!(Option, PLExpr, fill_value)?;
+        let out = match fill_value {
+            Some(v) => expr.shift_and_fill(n, v),
+            None => expr.shift(n),
+        };
+        Ok(out.into())
     }
 
     pub fn fill_null(&self, expr: Robj) -> RResult<Self> {

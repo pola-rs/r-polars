@@ -272,25 +272,15 @@ GroupBy_quantile = function(quantile, interpolation = "nearest") {
   self$agg(pl$all()$quantile(quantile, interpolation))
 }
 
-#' @title Shift
-#' @description Shift the values by a given period.
-#' @keywords GroupBy
-#' @param periods integer Number of periods to shift (may be negative).
+#' Shift the values by a given period
+#'
+#' @inheritParams DataFrame_shift
+#'
 #' @return GroupBy
-#' @examples pl$DataFrame(mtcars)$group_by("cyl")$shift(2)
-GroupBy_shift = function(periods = 1) {
-  self$agg(pl$all()$shift(periods))
-}
-
-#' @title Shift and fill
-#' @description Shift and fill the values by a given period.
-#' @keywords GroupBy
-#' @param fill_value fill None values with the result of this expression.
-#' @param periods integer Number of periods to shift (may be negative).
-#' @return GroupBy
-#' @examples pl$DataFrame(mtcars)$group_by("cyl")$shift_and_fill(99, 1)
-GroupBy_shift_and_fill = function(fill_value, periods = 1) {
-  self$agg(pl$all()$shift_and_fill(periods, fill_value))
+#' @examples
+#' pl$DataFrame(mtcars)$group_by("cyl")$shift(2)
+GroupBy_shift = function(n = 1, fill_value = NULL) {
+  self$agg(pl$all()$shift(n, fill_value))
 }
 
 #' @title GroupBy null count

@@ -11,7 +11,7 @@ use crate::utils::try_f64_into_usize;
 use extendr_api::prelude::*;
 use pl::{AsOfOptions, Duration, RollingGroupOptions};
 use polars::chunked_array::ops::SortMultipleOptions;
-use polars::prelude as pl;
+use polars::prelude::{self as pl};
 
 use polars::prelude::{JoinCoalesce, SerializeOptions, UnpivotArgsDSL};
 use polars_lazy::prelude::CsvWriterOptions;
@@ -254,16 +254,15 @@ impl RPolarsLazyFrame {
         Ok(out.into())
     }
 
-    fn shift(&self, periods: Robj) -> RResult<Self> {
-        Ok(self.clone().0.shift(robj_to!(i64, periods)?).into())
-    }
-
-    fn shift_and_fill(&self, fill_value: Robj, periods: Robj) -> RResult<Self> {
-        Ok(self
-            .clone()
-            .0
-            .shift_and_fill(robj_to!(PLExpr, periods)?, robj_to!(PLExpr, fill_value)?)
-            .into())
+    fn shift(&self, n: Robj, fill_value: Robj) -> RResult<Self> {
+        let lf = self.0.clone();
+        let n = robj_to!(PLExpr, n)?;
+        let fill_value = robj_to!(Option, PLExpr, fill_value)?;
+        let out = match fill_value {
+            Some(v) => lf.shift_and_fill(n, v),
+            None => lf.shift(n),
+        };
+        Ok(out.into())
     }
 
     fn reverse(&self) -> Self {

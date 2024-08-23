@@ -548,9 +548,7 @@ RPolarsExpr$backward_fill <- function(limit) .Call(wrap__RPolarsExpr__backward_f
 
 RPolarsExpr$forward_fill <- function(limit) .Call(wrap__RPolarsExpr__forward_fill, self, limit)
 
-RPolarsExpr$shift <- function(periods) .Call(wrap__RPolarsExpr__shift, self, periods)
-
-RPolarsExpr$shift_and_fill <- function(periods, fill_value) .Call(wrap__RPolarsExpr__shift_and_fill, self, periods, fill_value)
+RPolarsExpr$shift <- function(n, fill_value) .Call(wrap__RPolarsExpr__shift, self, n, fill_value)
 
 RPolarsExpr$fill_null <- function(expr) .Call(wrap__RPolarsExpr__fill_null, self, expr)
 
@@ -1220,9 +1218,7 @@ RPolarsLazyFrame$var <- function(ddof) .Call(wrap__RPolarsLazyFrame__var, self, 
 
 RPolarsLazyFrame$quantile <- function(quantile, interpolation) .Call(wrap__RPolarsLazyFrame__quantile, self, quantile, interpolation)
 
-RPolarsLazyFrame$shift <- function(periods) .Call(wrap__RPolarsLazyFrame__shift, self, periods)
-
-RPolarsLazyFrame$shift_and_fill <- function(fill_value, periods) .Call(wrap__RPolarsLazyFrame__shift_and_fill, self, fill_value, periods)
+RPolarsLazyFrame$shift <- function(n, fill_value) .Call(wrap__RPolarsLazyFrame__shift, self, n, fill_value)
 
 RPolarsLazyFrame$reverse <- function() .Call(wrap__RPolarsLazyFrame__reverse, self)
 

@@ -2,20 +2,23 @@
 % Please edit documentation in R/group_by.R
 \name{GroupBy_shift}
 \alias{GroupBy_shift}
-\title{Shift}
+\title{Shift the values by a given period}
 \usage{
-GroupBy_shift(periods = 1)
+GroupBy_shift(n = 1, fill_value = NULL)
 }
 \arguments{
-\item{periods}{integer Number of periods to shift (may be negative).}
+\item{n}{Number of indices to shift forward. If a negative value is
+passed, values are shifted in the opposite direction instead.}
+
+\item{fill_value}{Fill the resulting null values with this value. Accepts
+expression input. Non-expression inputs are parsed as literals.}
 }
 \value{
 GroupBy
 }
 \description{
-Shift the values by a given period.
+Shift the values by a given period
 }
 \examples{
 pl$DataFrame(mtcars)$group_by("cyl")$shift(2)
 }
-\keyword{GroupBy}

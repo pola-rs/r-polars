@@ -1104,27 +1104,22 @@ LazyFrame_fill_null = function(fill_value) {
   unwrap(.pr$LazyFrame$fill_null(self, wrap_e_result(fill_value)), "in $fill_null():")
 }
 
-#' @title Shift
-#' @description Shift the values by a given period.
-#' @keywords LazyFrame
-#' @param periods integer Number of periods to shift (may be negative).
-#' @return LazyFrame
-#' @examples pl$LazyFrame(mtcars)$shift(2)$collect()
-LazyFrame_shift = function(periods = 1) {
-  unwrap(.pr$LazyFrame$shift(self, periods), "in $shift():")
-}
-
 #' Shift a LazyFrame
 #'
-#' @description Shift the values by a given period. If the period (`n`) is positive,
-#' then `n` rows will be inserted at the top of the LazyFrame and the last `n`
-#' rows will be discarded. Vice-versa if the period is negative. In the end,
-#' the total number of rows of the LazyFrame doesn't change.
-#' @inheritParams DataFrame_shift_and_fill
+#' @inherit DataFrame_shift description params
+#'
 #' @return LazyFrame
-#' @examples pl$LazyFrame(mtcars)$shift_and_fill(0., 2.)$collect()$to_data_frame()
-LazyFrame_shift_and_fill = function(fill_value, periods = 1) {
-  unwrap(.pr$LazyFrame$shift_and_fill(self, wrap_e(fill_value), periods), "in $shift_and_fill():")
+#' @examples
+#' lf = pl$LazyFrame(a = 1:4, b = 5:8)
+#'
+#' lf$shift(2)$collect()
+#'
+#' lf$shift(-2)$collect()
+#'
+#' lf$shift(-2, fill_value = 100)$collect()
+LazyFrame_shift = function(n = 1, fill_value = NULL) {
+  .pr$LazyFrame$shift(self, n, fill_value) |>
+    unwrap("in $shift():")
 }
 
 #' Drop columns of a LazyFrame

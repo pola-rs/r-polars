@@ -1068,8 +1068,8 @@ test_that("shift", {
 
   expect_identical(
     pl$select(
-      pl$lit(0:3)$shift_and_fill(-2, fill_value = 42)$alias("sm2"),
-      pl$lit(0:3)$shift_and_fill(2, fill_value = pl$lit(42) / 2)$alias("sp2")
+      pl$lit(0:3)$shift(-2, fill_value = 42)$alias("sm2"),
+      pl$lit(0:3)$shift(2, fill_value = pl$lit(42) / 2)$alias("sp2")
     )$to_list(),
     list(
       sm2 = R_shift_and_fill(0:3, -2, 42),
@@ -1998,15 +1998,15 @@ test_that("kurtosis", {
   expect_equal(
     pl$DataFrame(l2)$select(
       pl$col("a")$kurtosis()$alias("kurt_TT"),
-      pl$col("a")$kurtosis(fisher = TRUE, bias=FALSE)$alias("kurt_TF"),
+      pl$col("a")$kurtosis(fisher = TRUE, bias = FALSE)$alias("kurt_TF"),
       pl$col("a")$kurtosis(fisher = FALSE, bias = TRUE)$alias("kurt_FT"),
-      pl$col("a")$kurtosis(fisher = FALSE, bias= FALSE)$alias("kurt_FF")
+      pl$col("a")$kurtosis(fisher = FALSE, bias = FALSE)$alias("kurt_FF")
     )$to_list(),
     list2(
-      kurt_TT =  R_kurtosis(l2$a, TRUE, TRUE),
-      kurt_TF =  R_kurtosis(l2$a, TRUE, FALSE),
-      kurt_FT =  R_kurtosis(l2$a, FALSE, TRUE),
-      kurt_FF =  R_kurtosis(l2$a, FALSE, FALSE)
+      kurt_TT = R_kurtosis(l2$a, TRUE, TRUE),
+      kurt_TF = R_kurtosis(l2$a, TRUE, FALSE),
+      kurt_FT = R_kurtosis(l2$a, FALSE, TRUE),
+      kurt_FF = R_kurtosis(l2$a, FALSE, FALSE)
     )
   )
 })

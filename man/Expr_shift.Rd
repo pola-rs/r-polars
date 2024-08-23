@@ -2,18 +2,22 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_shift}
 \alias{Expr_shift}
-\title{Shift values}
+\title{Shift values by the given number of indices}
 \usage{
-Expr_shift(periods = 1)
+Expr_shift(n = 1, fill_value = NULL)
 }
 \arguments{
-\item{periods}{Number of periods to shift, may be negative.}
+\item{n}{Number of indices to shift forward. If a negative value is
+passed, values are shifted in the opposite direction instead.}
+
+\item{fill_value}{Fill the resulting null values with this value. Accepts
+expression input. Non-expression inputs are parsed as literals.}
 }
 \value{
 Expr
 }
 \description{
-Shift values
+Shift values by the given number of indices
 }
 \examples{
 pl$DataFrame(a = c(1, 2, 4, 5, 8))$

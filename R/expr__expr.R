@@ -1555,9 +1555,10 @@ Expr_gather = function(indices) {
     unwrap("in $gather():")
 }
 
-#' Shift values
+#' Shift values by the given number of indices
 #'
-#' @param periods Number of periods to shift, may be negative.
+#' @inheritParams DataFrame_shift
+#'
 #' @return Expr
 #' @examples
 #' pl$DataFrame(a = c(1, 2, 4, 5, 8))$
@@ -1565,27 +1566,9 @@ Expr_gather = function(indices) {
 #'   pl$col("a")$shift(-2)$alias("shift-2"),
 #'   pl$col("a")$shift(2)$alias("shift+2")
 #' )
-Expr_shift = function(periods = 1) {
-  .pr$Expr$shift(self, periods) |>
+Expr_shift = function(n = 1, fill_value = NULL) {
+  .pr$Expr$shift(self, n, fill_value) |>
     unwrap("in $shift():")
-}
-
-#' Shift and fill values
-#'
-#' Shift the values by a given period and fill the resulting null values.
-#'
-#' @inheritParams Expr_shift
-#' @param fill_value Fill null values with the result of this expression.
-#' @return Expr
-#' @examples
-#' pl$DataFrame(a = c(1, 2, 4, 5, 8))$
-#'   with_columns(
-#'   pl$col("a")$shift_and_fill(-2, fill_value = 42)$alias("shift-2"),
-#'   pl$col("a")$shift_and_fill(2, fill_value = pl$col("a") / 2)$alias("shift+2")
-#' )
-Expr_shift_and_fill = function(periods, fill_value) {
-  .pr$Expr$shift_and_fill(self, periods, pl$lit(fill_value)) |>
-    unwrap("in $shift_and_fill():")
 }
 
 #' Fill null values with a value or strategy
