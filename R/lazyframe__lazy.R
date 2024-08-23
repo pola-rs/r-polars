@@ -2235,3 +2235,20 @@ LazyFrame_sql = function(query, ..., table_name = NULL, envir = parent.frame()) 
   }) |>
     unwrap("in $sql():")
 }
+
+
+#' Take every nth row in the LazyFrame
+#'
+#' @param n Gather every `n`-th row.
+#' @param offset Starting index.
+#'
+#' @return A LazyFrame
+#'
+#' @examples
+#' lf = pl$LazyFrame(a = 1:4, b = 5:8)
+#' lf$gather_every(2)$collect()
+#'
+#' lf$gather_every(2, offset = 1)$collect()
+LazyFrame_gather_every = function(n, offset = 0) {
+  self$select(pl$col("*")$gather_every(n, offset))
+}
