@@ -109,6 +109,7 @@ features = [
   "list_any_all",
   "list_eval",
   "list_gather",
+  "list_sample",
   "list_sets",
   "list_to_struct",
   "log",

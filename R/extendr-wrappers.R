@@ -772,6 +772,10 @@ RPolarsExpr$list_any <- function() .Call(wrap__RPolarsExpr__list_any, self)
 
 RPolarsExpr$list_set_operation <- function(other, operation) .Call(wrap__RPolarsExpr__list_set_operation, self, other, operation)
 
+RPolarsExpr$list_sample_n <- function(n, with_replacement, shuffle, seed) .Call(wrap__RPolarsExpr__list_sample_n, self, n, with_replacement, shuffle, seed)
+
+RPolarsExpr$list_sample_frac <- function(frac, with_replacement, shuffle, seed) .Call(wrap__RPolarsExpr__list_sample_frac, self, frac, with_replacement, shuffle, seed)
+
 RPolarsExpr$arr_max <- function() .Call(wrap__RPolarsExpr__arr_max, self)
 
 RPolarsExpr$arr_min <- function() .Call(wrap__RPolarsExpr__arr_min, self)
