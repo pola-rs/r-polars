@@ -29,6 +29,10 @@
   `$shift()`. `$shift_and_fill(fill_value, periods)` can be replaced by
   `$shift(n, fill_value)` (#1201).
 - In `$shift()` for various `Expr`, the argument `periods` is renamed `n` (#1201).
+- In `$clip()`, arguments `min` and `max` are renamed `lower_bound` and
+  `upper_bound` (#1203).
+- `$clip_min()` and `$clip_max()` are removed. Use `$clip()` with only
+  `lower_bound` or `upper_bound` instead (#1203).
 
 ### New features
 

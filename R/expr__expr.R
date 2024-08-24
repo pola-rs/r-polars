@@ -2869,41 +2869,30 @@ Expr_kurtosis = function(fisher = TRUE, bias = TRUE) {
 
 #' Clip elements
 #'
-#' Clip (limit) the values in an array to a `min` and `max` boundary. This only
-#' works for numerical types.
-#' @param min Minimum value, Expr returning a numeric.
-#' @param max Maximum value, Expr returning a numeric.
+#' Set values outside the given boundaries to the boundary value. This only
+#' works for numeric and temporal values.
+#'
+#' @param lower_bound Lower bound. Accepts expression input. Strings are parsed
+#' as column names and other non-expression inputs are parsed as literals.
+#' @param upper_bound Upper bound. Accepts expression input. Strings are parsed
+#' as column names and other non-expression inputs are parsed as literals.
+#'
 #' @return Expr
 #'
 #' @examples
-#' pl$DataFrame(foo = c(-50L, 5L, NA_integer_, 50L))$
-#'   with_columns(clipped = pl$col("foo")$clip(1, 10))
-Expr_clip = function(min, max) {
-  unwrap(.pr$Expr$clip(self, wrap_e(min), wrap_e(max)))
-}
-
-#' Clip elements below minimum value
+#' df = pl$DataFrame(foo = c(-50L, 5L, NA_integer_, 50L), bound = c(1, 10, 1, 1))
 #'
-#' Replace all values below a minimum value by this minimum value.
-#' @inheritParams Expr_clip
+#' # With the two bounds
+#' df$with_columns(clipped = pl$col("foo")$clip(1, 10))
 #'
-#' @examples
-#' pl$DataFrame(foo = c(-50L, 5L, NA_integer_, 50L))$
-#'   with_columns(clipped = pl$col("foo")$clip_min(1))
-Expr_clip_min = function(min) {
-  unwrap(.pr$Expr$clip_min(self, wrap_e(min)))
-}
-
-#' Clip elements above maximum value
+#' # Without lower bound
+#' df$with_columns(clipped = pl$col("foo")$clip(upper_bound = 10))
 #'
-#' Replace all values above a maximum value by this maximum value.
-#' @inheritParams Expr_clip
-#'
-#' @examples
-#' pl$DataFrame(foo = c(-50L, 5L, NA_integer_, 50L))$
-#'   with_columns(clipped = pl$col("foo")$clip_max(10))
-Expr_clip_max = function(max) {
-  unwrap(.pr$Expr$clip_max(self, wrap_e(max)))
+#' # Using another column as lower bound
+#' df$with_columns(clipped = pl$col("foo")$clip(lower_bound = "bound"))
+Expr_clip = function(lower_bound = NULL, upper_bound = NULL) {
+  .pr$Expr$clip(self, lower_bound, upper_bound) |>
+    unwrap("in $clip():")
 }
 
 #' Find the upper bound of a DataType
