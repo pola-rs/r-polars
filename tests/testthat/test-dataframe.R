@@ -978,6 +978,12 @@ test_that("join_asof_simple", {
       pl$lit(NA_character_)$alias("group_right")
     )$to_list()
   )
+
+  # arg coalesce works
+  expect_identical(
+    pop$join_asof(gdp, left_on = "date", right_on = "date", strategy = "backward", coalesce = FALSE)$to_list()[["date_right"]],
+    as.Date(c("2016-01-01", "2017-01-01", "2018-01-01", "2019-01-01"))
+  )
 })
 
 test_that("n_chunks", {

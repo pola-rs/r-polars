@@ -1448,7 +1448,8 @@ DataFrame_join_asof = function(
     suffix = "_right",
     tolerance = NULL,
     allow_parallel = TRUE,
-    force_parallel = FALSE) {
+    force_parallel = FALSE,
+    coalesce = TRUE) {
   # convert other to LazyFrame, capture any Error as a result, and pass it on
 
   other_df_result = pcase(
@@ -1469,7 +1470,8 @@ DataFrame_join_asof = function(
     force_parallel = force_parallel,
     suffix = suffix,
     strategy = strategy,
-    tolerance = tolerance
+    tolerance = tolerance,
+    coalesce = coalesce
   )$collect()
 }
 

@@ -384,6 +384,7 @@ impl RPolarsLazyFrame {
         strategy: Robj,
         tolerance: Robj,
         tolerance_str: Robj,
+        coalesce: Robj,
     ) -> RResult<Self> {
         let left_by = robj_to!(Option, Vec, String, left_by)?;
         let right_by = robj_to!(Option, Vec, String, right_by)?;
@@ -400,6 +401,13 @@ impl RPolarsLazyFrame {
             .transpose()
             .map_err(|err| RPolarsErr::new().plain(err))?;
         let tolerance_str = robj_to!(Option, String, tolerance_str)?;
+
+        let coalesce = robj_to!(bool, coalesce)?;
+        let coalesce = if coalesce {
+            JoinCoalesce::CoalesceColumns
+        } else {
+            JoinCoalesce::KeepColumns
+        };
 
         Ok(self
             .0
@@ -418,6 +426,7 @@ impl RPolarsLazyFrame {
                 tolerance,
                 tolerance_str: tolerance_str.map(|s| s.into()),
             }))
+            .coalesce(coalesce)
             .suffix(robj_to!(str, suffix)?)
             .finish()
             .into())
