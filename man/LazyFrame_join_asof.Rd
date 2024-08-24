@@ -17,7 +17,8 @@ LazyFrame_join_asof(
   suffix = "_right",
   tolerance = NULL,
   allow_parallel = TRUE,
-  force_parallel = FALSE
+  force_parallel = FALSE,
+  coalesce = TRUE
 )
 }
 \arguments{
@@ -67,6 +68,14 @@ computation of both DataFrames up to the join in parallel.}
 
 \item{force_parallel}{Force the physical plan to evaluate the computation of
 both DataFrames up to the join in parallel.}
+
+\item{coalesce}{Coalescing behavior (merging of \code{on} / \code{left_on} / \code{right_on}
+columns):
+\itemize{
+\item \code{TRUE}: Always coalesce join columns;
+\item \code{FALSE}: Never coalesce join columns.
+Note that joining on any other expressions than \code{col} will turn off coalescing.
+}}
 }
 \description{
 This is similar to a left-join except that we match on nearest key rather

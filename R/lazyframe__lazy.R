@@ -1440,6 +1440,12 @@ LazyFrame_sort = function(
 #' There may be a circumstance where R types are not sufficient to express a
 #' numeric tolerance. In that case, you can use the expression syntax like
 #' `tolerance = pl$lit(42)$cast(pl$Uint64)`
+#' @param coalesce Coalescing behavior (merging of `on` / `left_on` / `right_on`
+#' columns):
+#' * `TRUE`: Always coalesce join columns;
+#' * `FALSE`: Never coalesce join columns.
+#' Note that joining on any other expressions than `col` will turn off coalescing.
+#'
 #' @inheritSection polars_duration_string  Polars duration string language
 #' @examples #
 #' # create two LazyFrame to join asof
@@ -1488,19 +1494,27 @@ LazyFrame_join_asof = function(
     suffix = "_right",
     tolerance = NULL,
     allow_parallel = TRUE,
-    force_parallel = FALSE) {
+    force_parallel = FALSE,
+    coalesce = TRUE) {
   if (!is.null(by)) by_left = by_right = by
   if (!is.null(on)) left_on = right_on = on
   tolerance_str = if (is.character(tolerance)) tolerance else NULL
   tolerance_num = if (!is.character(tolerance)) tolerance else NULL
 
   .pr$LazyFrame$join_asof(
-    self, other,
-    left_on, right_on,
-    by_left, by_right,
-    allow_parallel, force_parallel,
-    suffix, strategy,
-    tolerance_num, tolerance_str
+    self = self,
+    other = other,
+    left_on = left_on,
+    right_on = right_on,
+    left_by = by_left,
+    right_by = by_right,
+    allow_parallel = allow_parallel,
+    force_parallel = force_parallel,
+    suffix = suffix,
+    strategy = strategy,
+    tolerance = tolerance_num,
+    tolerance_str = tolerance_str,
+    coalesce = coalesce
   ) |>
     unwrap("in join_asof( ):")
 }
