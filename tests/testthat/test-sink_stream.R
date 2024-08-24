@@ -171,15 +171,15 @@ test_that("sink_csv: quote_style and quote works", {
   expect_identical(ctx$TypeMismatch, "&str")
 
   # zero byte quote
-  ctx = dat_pl2$sink_csv(temp_out, quote = "") |> get_err_ctx()
+  ctx = dat_pl2$sink_csv(temp_out, quote_char = "") |> get_err_ctx()
   expect_identical(ctx$Plain, "cannot extract single byte from empty string")
 
   # multi byte quote not allowed
-  ctx = dat_pl2$sink_csv(temp_out, quote = "£") |> get_err_ctx()
+  ctx = dat_pl2$sink_csv(temp_out, quote_char = "£") |> get_err_ctx()
   expect_identical(ctx$Plain, "multi byte-string not allowed")
 
   # multi string not allowed
-  ctx = dat_pl2$sink_csv(temp_out, quote = c("a", "b")) |> get_err_ctx()
+  ctx = dat_pl2$sink_csv(temp_out, quote_char = c("a", "b")) |> get_err_ctx()
   expect_identical(ctx$TypeMismatch, "&str")
 })
 

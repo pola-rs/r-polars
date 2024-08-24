@@ -33,6 +33,8 @@
   `upper_bound` (#1203).
 - `$clip_min()` and `$clip_max()` are removed. Use `$clip()` with only
   `lower_bound` or `upper_bound` instead (#1203).
+- In `$write_csv` and `$sink_csv()`, the argument `quote` is renamed
+  `quote_char` (#1206).
 
 ### New features
 
