@@ -20,6 +20,26 @@ expr_dt_convert_time_zone <- function(time_zone) {
     wrap()
 }
 
+# TODO: link to `convert_time_zone`
+# TODO: return, examples
+#' Replace time zone for an expression of type Datetime
+#'
+#' Different from `convert_time_zone`, this will also modify the underlying timestamp
+#' and will ignore the original time zone.
+#'
+#' @inheritParams rlang::args_dots_empty
+#' @param time_zone `NULL` or a character time zone from [base::OlsonNames()].
+#' Pass `NULL` to unset time zone.
+#' @param ambiguous Determine how to deal with ambiguous datetimes.
+#' Character vector or Expression containing the followings:
+#' - `"raise"` (default): Throw an error
+#' - `"earliest"`: Use the earliest datetime
+#' - `"latest"`: Use the latest datetime
+#' - `"null"`: Return a null value
+#' @param non_existent Determine how to deal with non-existent datetimes.
+#' One of the followings:
+#' - `"raise"` (default): Throw an error
+#' - `"null"`: Return a null value
 expr_dt_replace_time_zone <- function(time_zone, ..., ambiguous = "raise", non_existent = "raise") {
   wrap({
     check_dots_empty0(...)

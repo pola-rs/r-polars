@@ -3,6 +3,7 @@
 \name{pl__Series}
 \alias{pl__Series}
 \alias{polars_series}
+\alias{Series}
 \title{Polars Series class}
 \usage{
 pl__Series(name = NULL, values = NULL)

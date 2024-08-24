@@ -7,7 +7,7 @@
 #'
 #' The `pl$Series()` function mimics the constructor of the Series class in Python Polars.
 #' This function calls [as_polars_series()] internally to convert the input object to a Polars Series.
-#' @aliases polars_series
+#' @aliases polars_series Series
 #' @section Active bindings:
 #' - `dtype`: `$dtype` returns the data type of the Series.
 #' - `name`: `$name` returns the name of the Series.
@@ -129,6 +129,31 @@ series__reshape <- function(dimensions) {
 }
 
 # TODO: use options to set the default arguments
+# TODO: more notes about naive time
+# TODO: link to the type mapping vignette
+#' Export the Series as an R vector
+#'
+#' @inheritParams rlang::args_dots_empty
+#' @inheritParams expr_dt_replace_time_zone
+#' @param int64 Determine how to convert Polars' Int64 or UInt64 type values to R type.
+#' One of the followings:
+#' - `"double"`: Convert to the R's [double] type.
+#' - `"character"`: Convert to the R's [character] type.
+#' - `"integer"`: Convert to the R's [integer] type.
+#'   If the value is out of the range of R's integer type, export as `NA_integer_`.
+#' @return A [vector]
+#' @examples
+#' # Create a Series of Int64
+#' series_int64 <- as_polars_series(c("0", "10000000000001"))$cast(pl$Int64)
+#'
+#' ## Export Int64 as double
+#' series_int64$to_r_vector(int64 = "double")
+#'
+#' ## Export Int64 as character
+#' series_int64$to_r_vector(int64 = "character")
+#'
+#' ## Export Int64 as integer
+#' series_int64$to_r_vector(int64 = "integer")
 series__to_r_vector <- function(
     ...,
     int64 = "double",
