@@ -4,21 +4,31 @@
 \alias{Expr_clip}
 \title{Clip elements}
 \usage{
-Expr_clip(min, max)
+Expr_clip(lower_bound = NULL, upper_bound = NULL)
 }
 \arguments{
-\item{min}{Minimum value, Expr returning a numeric.}
+\item{lower_bound}{Lower bound. Accepts expression input. Strings are parsed
+as column names and other non-expression inputs are parsed as literals.}
 
-\item{max}{Maximum value, Expr returning a numeric.}
+\item{upper_bound}{Upper bound. Accepts expression input. Strings are parsed
+as column names and other non-expression inputs are parsed as literals.}
 }
 \value{
 Expr
 }
 \description{
-Clip (limit) the values in an array to a \code{min} and \code{max} boundary. This only
-works for numerical types.
+Set values outside the given boundaries to the boundary value. This only
+works for numeric and temporal values.
 }
 \examples{
-pl$DataFrame(foo = c(-50L, 5L, NA_integer_, 50L))$
-  with_columns(clipped = pl$col("foo")$clip(1, 10))
+df = pl$DataFrame(foo = c(-50L, 5L, NA_integer_, 50L), bound = c(1, 10, 1, 1))
+
+# With the two bounds
+df$with_columns(clipped = pl$col("foo")$clip(1, 10))
+
+# Without lower bound
+df$with_columns(clipped = pl$col("foo")$clip(upper_bound = 10))
+
+# Using another column as lower bound
+df$with_columns(clipped = pl$col("foo")$clip(lower_bound = "bound"))
 }

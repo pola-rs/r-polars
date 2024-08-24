@@ -849,22 +849,10 @@ impl RPolarsExpr {
         self.0.clone().kurtosis(fisher, bias).into()
     }
 
-    //Note clip is implemented a bit different that py-polars
-    //instead of PyValue -> AnyValue , it goes Robj -> Literal Expression -> AnyValue
     pub fn clip(&self, min: Robj, max: Robj) -> RResult<Self> {
-        let av_min = robj_to!(PLExpr, min)?;
-        let av_max = robj_to!(PLExpr, max)?;
+        let av_min = robj_to!(PLExprCol, min)?;
+        let av_max = robj_to!(PLExprCol, max)?;
         Ok(RPolarsExpr(self.0.clone().clip(av_min, av_max)))
-    }
-
-    pub fn clip_min(&self, min: Robj) -> RResult<Self> {
-        let av_min = robj_to!(PLExpr, min)?;
-        Ok(RPolarsExpr(self.0.clone().clip_min(av_min)))
-    }
-
-    pub fn clip_max(&self, max: Robj) -> RResult<Self> {
-        let av_max = robj_to!(PLExpr, max)?;
-        Ok(RPolarsExpr(self.0.clone().clip_max(av_max)))
     }
 
     pub fn lower_bound(&self) -> Self {

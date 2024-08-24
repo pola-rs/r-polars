@@ -2036,12 +2036,12 @@ test_that("clip clip_min clip_max", {
   # clip min
   expect_identical(
     pl$DataFrame(l)$select(
-      pl$col("int")$clip_min(-.Machine$integer.max)$alias("int_mini32"),
-      pl$col("int")$clip_min(-2L)$alias("int_m2i32"),
-      pl$col("int")$clip_min(2L)$alias("int_p2i32"),
-      pl$col("float")$clip_min(-Inf)$alias("float_minf64"),
-      pl$col("float")$clip_min(NaN)$alias("float_NaN2f64"), # in Polars NaN is the highest values
-      pl$col("float")$clip_min(2)$alias("float_p2f64")
+      pl$col("int")$clip(lower_bound = -.Machine$integer.max)$alias("int_mini32"),
+      pl$col("int")$clip(lower_bound = -2L)$alias("int_m2i32"),
+      pl$col("int")$clip(lower_bound = 2L)$alias("int_p2i32"),
+      pl$col("float")$clip(lower_bound = -Inf)$alias("float_minf64"),
+      pl$col("float")$clip(lower_bound = NaN)$alias("float_NaN2f64"), # in Polars NaN is the highest values
+      pl$col("float")$clip(lower_bound = 2)$alias("float_p2f64")
     )$to_list(),
     list(
       int_mini32 = r_clip_min(l$int, -.Machine$integer.max),
@@ -2056,12 +2056,12 @@ test_that("clip clip_min clip_max", {
   # clip max
   expect_identical(
     pl$DataFrame(l)$select(
-      pl$col("int")$clip_max(-.Machine$integer.max)$alias("int_mini32"),
-      pl$col("int")$clip_max(-2L)$alias("int_m2i32"),
-      pl$col("int")$clip_max(2L)$alias("int_p2i32"),
-      pl$col("float")$clip_max(-Inf)$alias("float_minf64"),
-      pl$col("float")$clip_max(NaN)$alias("float_NaN2f64"), # in Polars NaN is the highest values
-      pl$col("float")$clip_max(2)$alias("float_p2f64")
+      pl$col("int")$clip(upper_bound = -.Machine$integer.max)$alias("int_mini32"),
+      pl$col("int")$clip(upper_bound = -2L)$alias("int_m2i32"),
+      pl$col("int")$clip(upper_bound = 2L)$alias("int_p2i32"),
+      pl$col("float")$clip(upper_bound = -Inf)$alias("float_minf64"),
+      pl$col("float")$clip(upper_bound = NaN)$alias("float_NaN2f64"), # in Polars NaN is the highest values
+      pl$col("float")$clip(upper_bound = 2)$alias("float_p2f64")
     )$to_list(),
     list(
       int_mini32 = r_clip_max(l$int, -.Machine$integer.max),
@@ -2089,6 +2089,20 @@ test_that("clip clip_min clip_max", {
       d = r_clip(l$float, -Inf, 1),
       e = r_clip(l$float, 2, 2 + 1)
     )
+  )
+
+  # clip() accepts strings as column names
+  df = pl$DataFrame(foo = c(-50L, 5L, NA_integer_, 50L), bound = c(1, 10, 1, 1))
+  expect_identical(
+    df$select(clipped = pl$col("foo")$clip(lower_bound = "bound"))$to_list(),
+    list(clipped = c(1L, 10L, NA_integer_, 50L))
+  )
+
+  # clip() works with temporal
+  df = pl$DataFrame(foo = as.Date(c("2020-01-01", "2020-01-02")))
+  expect_identical(
+    df$select(clipped = pl$col("foo")$clip(lower_bound = pl$lit("2020-01-02")))$to_list(),
+    list(clipped = as.Date(c("2020-01-02", "2020-01-02")))
   )
 })
 
