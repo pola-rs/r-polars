@@ -1156,13 +1156,15 @@ impl RPolarsExpr {
             .into()
     }
 
-    fn list_unique(&self) -> Self {
-        self.0
-            .clone()
-            .list()
-            .unique()
-            .with_fmt("list.unique")
-            .into()
+    fn list_unique(&self, maintain_order: Robj) -> RResult<Self> {
+        let e = self.0.clone();
+        let maintain_order = robj_to!(bool, maintain_order)?;
+        let out = if maintain_order {
+            e.list().unique_stable().into()
+        } else {
+            e.list().unique().into()
+        };
+        Ok(out)
     }
 
     fn list_n_unique(&self) -> Self {

@@ -4,7 +4,10 @@
 \alias{ExprList_unique}
 \title{Get unique values in a list}
 \usage{
-ExprList_unique()
+ExprList_unique(maintain_order = FALSE)
+}
+\arguments{
+\item{maintain_order}{Maintain order of data. This requires more work.}
 }
 \value{
 Expr

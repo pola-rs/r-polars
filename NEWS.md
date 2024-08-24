@@ -56,6 +56,7 @@
 - `$glimpse()` for `DataFrame` has two new arguments `max_items_per_column` and
   `max_colname_length` (#1200).
 - New method `$list$sample()` (#1204).
+- New argument `maintain_order` in `$list$unique()` (#1207).
 
 ### Other changes
 

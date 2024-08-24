@@ -736,7 +736,7 @@ RPolarsExpr$list_sort <- function(descending) .Call(wrap__RPolarsExpr__list_sort
 
 RPolarsExpr$list_reverse <- function() .Call(wrap__RPolarsExpr__list_reverse, self)
 
-RPolarsExpr$list_unique <- function() .Call(wrap__RPolarsExpr__list_unique, self)
+RPolarsExpr$list_unique <- function(maintain_order) .Call(wrap__RPolarsExpr__list_unique, self, maintain_order)
 
 RPolarsExpr$list_n_unique <- function() .Call(wrap__RPolarsExpr__list_n_unique, self)
 

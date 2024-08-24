@@ -67,12 +67,17 @@ ExprList_reverse = function() .pr$Expr$list_reverse(self)
 
 #' Get unique values in a list
 #'
+#' @param maintain_order Maintain order of data. This requires more work.
+#'
 #' @return Expr
 #'
 #' @examples
 #' df = pl$DataFrame(values = list(c(2, 2, NA), c(1, 2, 3), NA_real_))
 #' df$with_columns(unique = pl$col("values")$list$unique())
-ExprList_unique = function() .pr$Expr$list_unique(self)
+ExprList_unique = function(maintain_order = FALSE) {
+  .pr$Expr$list_unique(self, maintain_order) |>
+    unwrap("in $list$unique():")
+}
 
 #' Get the number of unique values in a list
 #'
