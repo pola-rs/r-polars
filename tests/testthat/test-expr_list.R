@@ -626,3 +626,36 @@ test_that("$list$explode() works", {
     "lengths don't match"
   )
 })
+
+test_that("$list$sample() works", {
+  df = pl$DataFrame(
+    values = list(1:3, NA_integer_, c(NA_integer_, 3L), 5:7),
+    n = c(1, 1, 1, 2)
+  )
+
+  expect_identical(
+    df$select(
+      sample = pl$col("values")$list$sample(n = pl$col("n"), seed = 1)
+    )$to_list(),
+    list(sample = list(3L, NA_integer_, 3L, 6:5))
+  )
+
+  expect_grepl_error(
+    df$select(pl$col("values")$list$sample(fraction = 2)),
+    "cannot take a larger sample than the total population when `with_replacement=false`"
+  )
+
+  expect_identical(
+    df$select(
+      sample = pl$col("values")$list$sample(fraction = 2, with_replacement = TRUE, seed = 1)
+    )$to_list(),
+    list(
+      sample = list(
+        c(3L, 1L, 1L, 2L, 2L, 3L),
+        c(NA_integer_, NA_integer_),
+        c(3L, NA, NA, NA),
+        c(7L, 5L, 5L, 6L, 6L, 7L)
+      )
+    )
+  )
+})
