@@ -1,6 +1,6 @@
 #' knit print polars DataFrame
 #'
-#' Mimics python-polars' NotebookFormatter
+#' Mimics Python Polars' NotebookFormatter
 #' for HTML outputs.
 #'
 #' Outputs HTML tables if the output format is HTML
@@ -25,7 +25,10 @@ knit_print.RPolarsDataFrame = function(x, ...) {
       !isTRUE(.rmd_df_print %in% c("default", "tibble")) &&
       knitr::is_html_output())) {
     x |>
-      to_html_table() |>
+      to_html_table(
+        max_cols = as.integer(Sys.getenv("POLARS_FMT_MAX_COLS", "75")),
+        max_rows = as.integer(Sys.getenv("POLARS_FMT_MAX_ROWS", "10"))
+      ) |>
       knitr::raw_html() |>
       knitr::asis_output()
   } else {
@@ -88,7 +91,7 @@ to_html_table = function(x, max_cols = 75, max_rows = 40) {
     escape_html() |>
     matrix(nrow = length(row_idx))
 
-  if (max_cols <= df_width) {
+  if (max_cols < df_width) {
     .seq = seq_along(cols)
     chr_mat = cbind(
       chr_mat[, head(.seq, max_cols %/% 2)],
@@ -97,12 +100,14 @@ to_html_table = function(x, max_cols = 75, max_rows = 40) {
     )
   }
 
-  if (max_rows <= df_height) {
+  if (max_rows < df_height) {
     .seq = seq_along(row_idx)
+    half = max_rows %/% 2
+    rest = max_rows %% 2
     chr_mat = rbind(
-      chr_mat[head(.seq, max_rows %/% 2), ],
+      chr_mat[head(.seq, half + rest), ],
       omit_chr,
-      chr_mat[tail(.seq, max_rows %/% 2), ]
+      chr_mat[tail(.seq, half), ]
     )
   }
 
@@ -117,6 +122,7 @@ to_html_table = function(x, max_cols = 75, max_rows = 40) {
 .dataframe > thead > tr > th,
 .dataframe > tbody > tr > td {
   text-align: right;
+  white-space: pre-wrap;
 }
 </style>
 "
