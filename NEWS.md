@@ -59,6 +59,7 @@
   `max_colname_length` (#1200).
 - New method `$list$sample()` (#1204).
 - New argument `coalesce` in `$join_asof()` (#1205).
+- New argument `maintain_order` in `$list$unique()` (#1207).
 
 ### Other changes
 
