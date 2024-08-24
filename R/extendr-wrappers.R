@@ -648,10 +648,6 @@ RPolarsExpr$kurtosis <- function(fisher, bias) .Call(wrap__RPolarsExpr__kurtosis
 
 RPolarsExpr$clip <- function(min, max) .Call(wrap__RPolarsExpr__clip, self, min, max)
 
-RPolarsExpr$clip_min <- function(min) .Call(wrap__RPolarsExpr__clip_min, self, min)
-
-RPolarsExpr$clip_max <- function(max) .Call(wrap__RPolarsExpr__clip_max, self, max)
-
 RPolarsExpr$lower_bound <- function() .Call(wrap__RPolarsExpr__lower_bound, self)
 
 RPolarsExpr$upper_bound <- function() .Call(wrap__RPolarsExpr__upper_bound, self)

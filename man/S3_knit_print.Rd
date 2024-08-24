@@ -15,7 +15,7 @@
 invisible x or NULL
 }
 \description{
-Mimics python-polars' NotebookFormatter
+Mimics Python Polars' NotebookFormatter
 for HTML outputs.
 }
 \details{
