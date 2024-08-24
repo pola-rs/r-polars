@@ -612,3 +612,32 @@ ExprList_set_symmetric_difference = function(other) {
 ExprList_explode = function() {
   .pr$Expr$explode(self)
 }
+
+#' Sample from this list
+#'
+#' @inheritParams Expr_sample
+#'
+#' @return Expr
+#' @examples
+#' df = pl$DataFrame(
+#'   values = list(1:3, NA_integer_, c(NA_integer_, 3L), 5:7),
+#'   n = c(1, 1, 1, 2)
+#' )
+#'
+#' df$with_columns(
+#'   sample = pl$col("values")$list$sample(n = pl$col("n"), seed = 1)
+#' )
+ExprList_sample = function(
+    n = NULL, ..., fraction = NULL, with_replacement = FALSE, shuffle = FALSE,
+    seed = NULL) {
+  pcase(
+    !is.null(n) && !is.null(fraction), {
+      Err(.pr$Err$new()$plain("either arg `n` or `fraction` must be NULL"))
+    },
+    !is.null(n), .pr$Expr$list_sample_n(self, n, with_replacement, shuffle, seed),
+    or_else = {
+      .pr$Expr$list_sample_frac(self, fraction %||% 1, with_replacement, shuffle, seed)
+    }
+  ) |>
+    unwrap("in $list$sample():")
+}

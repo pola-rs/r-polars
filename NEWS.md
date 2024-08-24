@@ -55,6 +55,7 @@
 - New method `$gather_every()` for `LazyFrame` and `DataFrame` (#1199).
 - `$glimpse()` for `DataFrame` has two new arguments `max_items_per_column` and
   `max_colname_length` (#1200).
+- New method `$list$sample()` (#1204).
 
 ### Other changes
 

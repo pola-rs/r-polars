@@ -1109,7 +1109,7 @@ impl RPolarsExpr {
         Ok(self.0.clone().rle_id().into())
     }
 
-    //arr/list methods
+    // list methods
 
     fn list_len(&self) -> Self {
         self.0.clone().list().len().into()
@@ -1290,6 +1290,46 @@ impl RPolarsExpr {
             SetOperation::SymmetricDifference => e.set_symmetric_difference(other),
         }
         .into())
+    }
+
+    pub fn list_sample_n(
+        &self,
+        n: Robj,
+        with_replacement: Robj,
+        shuffle: Robj,
+        seed: Robj,
+    ) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .list()
+            .sample_n(
+                robj_to!(PLExpr, n)?,
+                robj_to!(bool, with_replacement)?,
+                robj_to!(bool, shuffle)?,
+                robj_to!(Option, u64, seed)?,
+            )
+            .into())
+    }
+
+    pub fn list_sample_frac(
+        &self,
+        frac: Robj,
+        with_replacement: Robj,
+        shuffle: Robj,
+        seed: Robj,
+    ) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .list()
+            .sample_fraction(
+                robj_to!(PLExpr, frac)?,
+                robj_to!(bool, with_replacement)?,
+                robj_to!(bool, shuffle)?,
+                robj_to!(Option, u64, seed)?,
+            )
+            .into())
     }
 
     // array methods
