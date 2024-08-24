@@ -1448,7 +1448,8 @@ DataFrame_join_asof = function(
     suffix = "_right",
     tolerance = NULL,
     allow_parallel = TRUE,
-    force_parallel = FALSE) {
+    force_parallel = FALSE,
+    coalesce = TRUE) {
   # convert other to LazyFrame, capture any Error as a result, and pass it on
 
   other_df_result = pcase(
@@ -1469,7 +1470,8 @@ DataFrame_join_asof = function(
     force_parallel = force_parallel,
     suffix = suffix,
     strategy = strategy,
-    tolerance = tolerance
+    tolerance = tolerance,
+    coalesce = coalesce
   )$collect()
 }
 
@@ -1900,7 +1902,7 @@ DataFrame_transpose = function(
 #' @param include_header Whether to include header in the CSV output.
 #' @param separator Separate CSV fields with this symbol.
 #' @param line_terminator String used to end each row.
-#' @param quote Byte to use as quoting character.
+#' @param quote_char Byte to use as quoting character.
 #' @param batch_size Number of rows that will be processed per thread.
 #' @param datetime_format A format string, with the specifiers defined by the
 #' chrono Rust crate. If no format specified, the default fractional-second
@@ -1945,7 +1947,7 @@ DataFrame_write_csv = function(
     include_header = TRUE,
     separator = ",",
     line_terminator = "\n",
-    quote = '"',
+    quote_char = '"',
     batch_size = 1024,
     datetime_format = NULL,
     date_format = NULL,
@@ -1955,7 +1957,7 @@ DataFrame_write_csv = function(
     quote_style = "necessary") {
   .pr$DataFrame$write_csv(
     self,
-    file, include_bom, include_header, separator, line_terminator, quote,
+    file, include_bom, include_header, separator, line_terminator, quote_char,
     batch_size, datetime_format, date_format, time_format, float_precision,
     null_values, quote_style
   ) |>

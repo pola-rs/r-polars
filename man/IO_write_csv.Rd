@@ -11,7 +11,7 @@ DataFrame_write_csv(
   include_header = TRUE,
   separator = ",",
   line_terminator = "\\n",
-  quote = "\\"",
+  quote_char = "\\"",
   batch_size = 1024,
   datetime_format = NULL,
   date_format = NULL,
@@ -35,7 +35,7 @@ output.}
 
 \item{line_terminator}{String used to end each row.}
 
-\item{quote}{Byte to use as quoting character.}
+\item{quote_char}{Byte to use as quoting character.}
 
 \item{batch_size}{Number of rows that will be processed per thread.}
 

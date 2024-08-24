@@ -33,6 +33,8 @@
   `upper_bound` (#1203).
 - `$clip_min()` and `$clip_max()` are removed. Use `$clip()` with only
   `lower_bound` or `upper_bound` instead (#1203).
+- In `$write_csv` and `$sink_csv()`, the argument `quote` is renamed
+  `quote_char` (#1206).
 
 ### New features
 
@@ -56,6 +58,7 @@
 - `$glimpse()` for `DataFrame` has two new arguments `max_items_per_column` and
   `max_colname_length` (#1200).
 - New method `$list$sample()` (#1204).
+- New argument `coalesce` in `$join_asof()` (#1205).
 - New argument `maintain_order` in `$list$unique()` (#1207).
 
 ### Other changes

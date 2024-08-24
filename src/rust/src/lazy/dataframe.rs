@@ -144,7 +144,7 @@ impl RPolarsLazyFrame {
         include_header: Robj,
         separator: Robj,
         line_terminator: Robj,
-        quote: Robj,
+        quote_char: Robj,
         batch_size: Robj,
         datetime_format: Robj,
         date_format: Robj,
@@ -160,7 +160,7 @@ impl RPolarsLazyFrame {
         let datetime_format = robj_to!(Option, String, datetime_format)?;
         let float_precision = robj_to!(Option, usize, float_precision)?;
         let separator = robj_to!(Utf8Byte, separator)?;
-        let quote = robj_to!(Utf8Byte, quote)?;
+        let quote_char = robj_to!(Utf8Byte, quote_char)?;
         let null_value = robj_to!(String, null_value)?;
         let line_terminator = robj_to!(String, line_terminator)?;
         let quote_style = robj_to!(QuoteStyle, quote_style)?;
@@ -176,7 +176,7 @@ impl RPolarsLazyFrame {
             float_scientific: None,
             float_precision,
             separator,
-            quote_char: quote,
+            quote_char: quote_char,
             null: null_value,
             line_terminator,
             quote_style,
@@ -384,6 +384,7 @@ impl RPolarsLazyFrame {
         strategy: Robj,
         tolerance: Robj,
         tolerance_str: Robj,
+        coalesce: Robj,
     ) -> RResult<Self> {
         let left_by = robj_to!(Option, Vec, String, left_by)?;
         let right_by = robj_to!(Option, Vec, String, right_by)?;
@@ -400,6 +401,13 @@ impl RPolarsLazyFrame {
             .transpose()
             .map_err(|err| RPolarsErr::new().plain(err))?;
         let tolerance_str = robj_to!(Option, String, tolerance_str)?;
+
+        let coalesce = robj_to!(bool, coalesce)?;
+        let coalesce = if coalesce {
+            JoinCoalesce::CoalesceColumns
+        } else {
+            JoinCoalesce::KeepColumns
+        };
 
         Ok(self
             .0
@@ -418,6 +426,7 @@ impl RPolarsLazyFrame {
                 tolerance,
                 tolerance_str: tolerance_str.map(|s| s.into()),
             }))
+            .coalesce(coalesce)
             .suffix(robj_to!(str, suffix)?)
             .finish()
             .into())
