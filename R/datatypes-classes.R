@@ -87,7 +87,12 @@ pl__List <- function(inner) {
 
 pl__Struct <- function(...) {
   list2(...) |>
-    lapply(\(x) x$`_dt`) |>
+    lapply(\(x) {
+      if (!isTRUE(is_polars_data_type(x))) {
+        abort(sprintf("`...` must be polars data types, got %s", toString(class(x))))
+      }
+      x$`_dt`
+    }) |>
     PlRDataType$new_struct() |>
     wrap()
 }
