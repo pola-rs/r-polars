@@ -14,7 +14,7 @@ series__to_r_vector(
 \arguments{
 \item{...}{These dots are for future extensions and must be empty.}
 
-\item{int64}{Determine how to convert Polars' Int64 or UInt64 type values to R type.
+\item{int64}{Determine how to convert Polars' Int64, UInt32, or UInt64 type values to R type.
 One of the followings:
 \itemize{
 \item \code{"double"}: Convert to the R's \link{double} type.
@@ -47,7 +47,7 @@ Export the Series as an R vector
 }
 \examples{
 # Create a Series of Int64
-series_int64 <- as_polars_series(c("0", "10000000000001"))$cast(pl$Int64)
+series_int64 <- as_polars_series(c("0", "4294967295"))$cast(pl$Int64)
 
 ## Export Int64 as double
 series_int64$to_r_vector(int64 = "double")

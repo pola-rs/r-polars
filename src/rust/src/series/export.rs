@@ -44,7 +44,7 @@ impl PlRSeries {
                     <Sexp>::from(Wrap(series.cast(&DataType::Int32).unwrap().i32().unwrap())),
                 ),
                 DataType::Int32 => Ok(<Sexp>::from(Wrap(series.i32().unwrap()))),
-                DataType::UInt64 | DataType::Int64 => match int64 {
+                DataType::UInt32 | DataType::UInt64 | DataType::Int64 => match int64 {
                     Int64Conversion::Character => Ok(<Sexp>::from(Wrap(
                         series.cast(&DataType::String).unwrap().str().unwrap(),
                     ))),

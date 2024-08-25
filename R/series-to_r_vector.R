@@ -5,7 +5,7 @@
 #'
 #' @inheritParams rlang::args_dots_empty
 #' @inheritParams expr_dt_replace_time_zone
-#' @param int64 Determine how to convert Polars' Int64 or UInt64 type values to R type.
+#' @param int64 Determine how to convert Polars' Int64, UInt32, or UInt64 type values to R type.
 #' One of the followings:
 #' - `"double"`: Convert to the R's [double] type.
 #' - `"character"`: Convert to the R's [character] type.
@@ -14,7 +14,7 @@
 #' @return A [vector]
 #' @examples
 #' # Create a Series of Int64
-#' series_int64 <- as_polars_series(c("0", "10000000000001"))$cast(pl$Int64)
+#' series_int64 <- as_polars_series(c("0", "4294967295"))$cast(pl$Int64)
 #'
 #' ## Export Int64 as double
 #' series_int64$to_r_vector(int64 = "double")
