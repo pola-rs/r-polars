@@ -39,13 +39,7 @@ lazyframe__collect <- function() {
 }
 
 lazyframe__cast <- function(..., strict = TRUE) {
-  list2(...) |>
-    lapply(\(x) {
-      if (!isTRUE(is_polars_data_type(x))) {
-        abort(sprintf("`...` must be polars data types, got %s", toString(class(x))))
-      }
-      x$`_dt`
-    }) |>
+  parse_into_list_of_datatypes(...) |>
     self$`_ldf`$cast(strict) |>
     wrap()
 }
