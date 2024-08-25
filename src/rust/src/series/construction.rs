@@ -28,6 +28,22 @@ impl PlRSeries {
         Ok(ca.with_name(name).into_series().into())
     }
 
+    // From bit64::integer64
+    fn new_i64(name: &str, values: RealSexp) -> Result<Self> {
+        let ca: Int64Chunked = values
+            .iter()
+            .map(|value| {
+                let value = value.to_bits() as i64;
+                if value == i64::MIN {
+                    None
+                } else {
+                    Some(value)
+                }
+            })
+            .collect_trusted();
+        Ok(ca.with_name(name).into_series().into())
+    }
+
     fn new_bool(name: &str, values: LogicalSexp) -> Result<Self> {
         let ca: BooleanChunked = values
             .as_slice_raw()

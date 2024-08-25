@@ -184,3 +184,16 @@
       	{1}
       ]
 
+# as_polars_series works for classes integer64
+
+    Code
+      print(pl_series)
+    Output
+      shape: (3,)
+      Series: '' [i64]
+      [
+      	null
+      	-9223372036854775807
+      	9223372036854775807
+      ]
+

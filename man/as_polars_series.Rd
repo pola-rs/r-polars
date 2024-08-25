@@ -20,6 +20,7 @@
 \alias{as_polars_series.list}
 \alias{as_polars_series.AsIs}
 \alias{as_polars_series.data.frame}
+\alias{as_polars_series.integer64}
 \title{Create a Polars Series from an R object}
 \usage{
 as_polars_series(x, name = NULL, ...)
@@ -59,6 +60,8 @@ as_polars_series(x, name = NULL, ...)
 \method{as_polars_series}{AsIs}(x, name = NULL, ...)
 
 \method{as_polars_series}{data.frame}(x, name = NULL, ...)
+
+\method{as_polars_series}{integer64}(x, name = NULL, ...)
 }
 \arguments{
 \item{x}{An R object.}
@@ -128,5 +131,15 @@ if (requireNamespace("hms", quietly = TRUE)) {
 # blob
 if (requireNamespace("blob", quietly = TRUE)) {
   as_polars_series(blob::as_blob(c("foo", "bar")))
+}
+
+# integer64
+if (requireNamespace("bit64", quietly = TRUE)) {
+  as_polars_series(bit64::as.integer64(c(NA, "9223372036854775807")))
+}
+}
+\seealso{
+\itemize{
+\item \code{\link[=series__to_r_vector]{<Series>$to_r_vector()}}: Export the Series as an R vector.
 }
 }

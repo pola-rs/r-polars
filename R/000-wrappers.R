@@ -1487,6 +1487,10 @@ class(`PlRLazyGroupBy`) <- "PlRLazyGroupBy__bundle"
   .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_i32__impl, `name`, `values`))
 }
 
+`PlRSeries`$`new_i64` <- function(`name`, `values`) {
+  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_i64__impl, `name`, `values`))
+}
+
 `PlRSeries`$`new_bool` <- function(`name`, `values`) {
   .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_bool__impl, `name`, `values`))
 }

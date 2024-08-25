@@ -63,7 +63,7 @@ impl From<Wrap<&Int64Chunked>> for Sexp {
             if let Some(v) = v {
                 let _ = sexp.set_elt(i, f64::from_bits(v as u64));
             } else {
-                let _ = sexp.set_elt(i, f64::from_bits(-9_223_372_036_854_775_808_i64 as u64));
+                let _ = sexp.set_elt(i, f64::from_bits(i64::MIN as u64));
             }
         }
         sexp.into()

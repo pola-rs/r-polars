@@ -15,6 +15,8 @@
 #' When not specified, name is set to an empty string.
 #' @param ... Additional arguments passed to the methods.
 #' @return A [Polars Series](polars_series).
+#' @seealso
+#' - [`<Series>$to_r_vector()`][series__to_r_vector]: Export the Series as an R vector.
 #' @examples
 #' # double
 #' as_polars_series(c(1, 2))
@@ -63,6 +65,11 @@
 #' # blob
 #' if (requireNamespace("blob", quietly = TRUE)) {
 #'   as_polars_series(blob::as_blob(c("foo", "bar")))
+#' }
+#'
+#' # integer64
+#' if (requireNamespace("bit64", quietly = TRUE)) {
+#'   as_polars_series(bit64::as.integer64(c(NA, "9223372036854775807")))
 #' }
 #' @export
 as_polars_series <- function(x, name = NULL, ...) {
@@ -258,4 +265,11 @@ as_polars_series.AsIs <- function(x, name = NULL, ...) {
 #' @export
 as_polars_series.data.frame <- function(x, name = NULL, ...) {
   as_polars_df(x)$to_struct(name = name %||% "")
+}
+
+#' @rdname as_polars_series
+#' @export
+as_polars_series.integer64 <- function(x, name = NULL, ...) {
+  PlRSeries$new_i64(name %||% "", x) |>
+    wrap()
 }
