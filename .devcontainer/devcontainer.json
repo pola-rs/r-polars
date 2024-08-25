@@ -25,5 +25,8 @@
     },
     "remoteEnv": {
         "PKG_SYSREQS": "false"
+    },
+    "updateContentCommand": {
+        "setup-r-polars-requirements": "task setup-dev"
     }
 }
