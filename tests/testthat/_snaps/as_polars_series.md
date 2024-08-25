@@ -14,10 +14,11 @@
     Code
       print(pl_series)
     Output
-      shape: (1,)
+      shape: (2,)
       Series: '' [f64]
       [
       	1.0
+      	null
       ]
 
 # as_polars_series works for classes integer
@@ -25,10 +26,11 @@
     Code
       print(pl_series)
     Output
-      shape: (1,)
+      shape: (2,)
       Series: '' [i32]
       [
       	1
+      	null
       ]
 
 # as_polars_series works for classes character
@@ -36,10 +38,11 @@
     Code
       print(pl_series)
     Output
-      shape: (1,)
+      shape: (2,)
       Series: '' [str]
       [
       	"foo"
+      	null
       ]
 
 # as_polars_series works for classes logical
@@ -47,10 +50,12 @@
     Code
       print(pl_series)
     Output
-      shape: (1,)
+      shape: (3,)
       Series: '' [bool]
       [
       	true
+      	false
+      	null
       ]
 
 # as_polars_series works for classes raw
@@ -80,10 +85,11 @@
     Code
       print(pl_series)
     Output
-      shape: (1,)
+      shape: (2,)
       Series: '' [date]
       [
       	2021-01-01
+      	null
       ]
 
 # as_polars_series works for classes POSIXct (UTC)
@@ -91,10 +97,11 @@
     Code
       print(pl_series)
     Output
-      shape: (1,)
+      shape: (2,)
       Series: '' [datetime[ms, UTC]]
       [
       	2021-01-01 00:00:00 UTC
+      	null
       ]
 
 # as_polars_series works for classes POSIXct (system time)
@@ -102,10 +109,11 @@
     Code
       print(pl_series)
     Output
-      shape: (1,)
+      shape: (2,)
       Series: '' [datetime[ms]]
       [
       	2021-01-01 00:00:00
+      	null
       ]
 
 # as_polars_series works for classes difftime
@@ -113,10 +121,11 @@
     Code
       print(pl_series)
     Output
-      shape: (1,)
+      shape: (2,)
       Series: '' [duration[ms]]
       [
       	7d
+      	null
       ]
 
 # as_polars_series works for classes hms
@@ -124,10 +133,11 @@
     Code
       print(pl_series)
     Output
-      shape: (1,)
+      shape: (2,)
       Series: '' [time]
       [
       	01:00:00
+      	null
       ]
 
 # as_polars_series works for classes blob
@@ -135,10 +145,12 @@
     Code
       print(pl_series)
     Output
-      shape: (1,)
+      shape: (3,)
       Series: '' [binary]
       [
       	b"foo"
+      	b"bar"
+      	null
       ]
 
 # as_polars_series works for classes NULL
@@ -156,10 +168,13 @@
     Code
       print(pl_series)
     Output
-      shape: (1,)
+      shape: (4,)
       Series: '' [list[str]]
       [
       	["foo"]
+      	["1"]
+      	null
+      	[null]
       ]
 
 # as_polars_series works for classes AsIs
@@ -179,9 +194,9 @@
       print(pl_series)
     Output
       shape: (1,)
-      Series: '' [struct[1]]
+      Series: '' [struct[2]]
       [
-      	{1}
+      	{1,true}
       ]
 
 # as_polars_series works for classes integer64
