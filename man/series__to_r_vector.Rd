@@ -23,6 +23,7 @@ One of the followings:
 If the value is out of the range of R's integer type, export as \link{NA_integer_}.
 \item \code{"integer64"}: Convert to the \link[bit64:bit64-package]{bit64::integer64} class.
 The \link[bit64:bit64-package]{bit64} package must be installed.
+If the value is out of the range of \link[bit64:bit64-package]{bit64::integer64}, export as \link[bit64:as.integer64.character]{bit64::NA_integer64_}.
 }}
 
 \item{ambiguous}{Determine how to deal with ambiguous datetimes.
@@ -48,21 +49,23 @@ A \link{vector}
 Export the Series as an R vector
 }
 \examples{
-# Create a Series of Int64
-series_int64 <- as_polars_series(c(NA, "0", "4294967295"))$cast(pl$Int64)
-series_int64
+# Create a Series of UInt64
+series_uint64 <- as_polars_series(
+  c(NA, "0", "4294967295", "18446744073709551615")
+)$cast(pl$UInt64)
+series_uint64
 
 ## Export Int64 as double
-series_int64$to_r_vector(int64 = "double")
+series_uint64$to_r_vector(int64 = "double")
 
 ## Export Int64 as character
-series_int64$to_r_vector(int64 = "character")
+series_uint64$to_r_vector(int64 = "character")
 
 ## Export Int64 as integer
-series_int64$to_r_vector(int64 = "integer")
+series_uint64$to_r_vector(int64 = "integer")
 
 ## Export Int64 as bit64::integer64
 if (requireNamespace("bit64", quietly = TRUE)) {
-  series_int64$to_r_vector(int64 = "integer64")
+  series_uint64$to_r_vector(int64 = "integer64")
 }
 }

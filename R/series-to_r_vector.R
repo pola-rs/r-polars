@@ -13,24 +13,27 @@
 #'   If the value is out of the range of R's integer type, export as [NA_integer_].
 #' - `"integer64"`: Convert to the [bit64::integer64] class.
 #'   The [bit64][bit64::bit64-package] package must be installed.
+#'   If the value is out of the range of [bit64::integer64], export as [bit64::NA_integer64_].
 #' @return A [vector]
 #' @examples
-#' # Create a Series of Int64
-#' series_int64 <- as_polars_series(c(NA, "0", "4294967295"))$cast(pl$Int64)
-#' series_int64
+#' # Create a Series of UInt64
+#' series_uint64 <- as_polars_series(
+#'   c(NA, "0", "4294967295", "18446744073709551615")
+#' )$cast(pl$UInt64)
+#' series_uint64
 #'
 #' ## Export Int64 as double
-#' series_int64$to_r_vector(int64 = "double")
+#' series_uint64$to_r_vector(int64 = "double")
 #'
 #' ## Export Int64 as character
-#' series_int64$to_r_vector(int64 = "character")
+#' series_uint64$to_r_vector(int64 = "character")
 #'
 #' ## Export Int64 as integer
-#' series_int64$to_r_vector(int64 = "integer")
+#' series_uint64$to_r_vector(int64 = "integer")
 #'
 #' ## Export Int64 as bit64::integer64
 #' if (requireNamespace("bit64", quietly = TRUE)) {
-#'   series_int64$to_r_vector(int64 = "integer64")
+#'   series_uint64$to_r_vector(int64 = "integer64")
 #' }
 series__to_r_vector <- function(
     ...,
@@ -39,6 +42,13 @@ series__to_r_vector <- function(
     non_existent = "raise") {
   wrap({
     check_dots_empty0(...)
+
+    # Ensure the bit64 package is loaded if int64 is set to 'integer64'
+    if (identical(int64, "integer64")) {
+      if (!is_installed("bit64")) {
+        abort("If the `int64` argument is set to 'integer64', the `bit64` package must be installed.")
+      }
+    }
 
     ambiguous <- as_polars_expr(ambiguous, str_as_lit = TRUE)$`_rexpr`
     self$`_s`$to_r_vector(

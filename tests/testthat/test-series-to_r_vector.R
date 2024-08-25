@@ -35,6 +35,17 @@ patrick::with_parameters_test_that(
   }
 )
 
+# Because of https://github.com/truecluster/bit64/issues/17,
+# we cannot include this test to the above parameterized test.
+test_that("UInt64 may overflow when int64='integer64'", {
+  skip_if_not_installed("bit64")
+
+  expect_identical(
+    as_polars_series("18446744073709551615")$cast(pl$UInt64)$to_r_vector(int64 = "integer64"),
+    bit64::as.integer64(NA)
+  )
+})
+
 test_that("int64 argument error", {
   expect_error(
     as_polars_series(1)$to_r_vector(int64 = TRUE),
