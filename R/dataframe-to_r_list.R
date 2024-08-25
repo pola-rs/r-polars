@@ -16,11 +16,21 @@
 #'   c = c(TRUE, TRUE, FALSE, TRUE)
 #' )
 #' df$to_r_list()
-dataframe__to_r_list <- function(..., ambiguous = "raise", non_existent = "raise") {
+dataframe__to_r_list <- function(
+    ...,
+    int64 = "double",
+    ambiguous = "raise",
+    non_existent = "raise") {
   wrap({
     check_dots_empty0(...)
 
     self$get_columns() |>
-      lapply(\(col) col$to_r_vector(ambiguous = ambiguous, non_existent = non_existent))
+      lapply(
+        \(col) col$to_r_vector(
+          int64 = int64,
+          ambiguous = ambiguous,
+          non_existent = non_existent
+        )
+      )
   })
 }

@@ -4,10 +4,27 @@
 \alias{dataframe__to_r_list}
 \title{Export the polars DataFrame as an R list of R vectors}
 \usage{
-dataframe__to_r_list(..., ambiguous = "raise", non_existent = "raise")
+dataframe__to_r_list(
+  ...,
+  int64 = "double",
+  ambiguous = "raise",
+  non_existent = "raise"
+)
 }
 \arguments{
 \item{...}{These dots are for future extensions and must be empty.}
+
+\item{int64}{Determine how to convert Polars' Int64, UInt32, or UInt64 type values to R type.
+One of the followings:
+\itemize{
+\item \code{"double"}: Convert to the R's \link{double} type.
+\item \code{"character"}: Convert to the R's \link{character} type.
+\item \code{"integer"}: Convert to the R's \link{integer} type.
+If the value is out of the range of R's integer type, export as \link{NA_integer_}.
+\item \code{"integer64"}: Convert to the \link[bit64:bit64-package]{bit64::integer64} class.
+The \link[bit64:bit64-package]{bit64} package must be installed.
+If the value is out of the range of \link[bit64:bit64-package]{bit64::integer64}, export as \link[bit64:as.integer64.character]{bit64::NA_integer64_}.
+}}
 
 \item{ambiguous}{Determine how to deal with ambiguous datetimes.
 Character vector or Expression containing the followings:
