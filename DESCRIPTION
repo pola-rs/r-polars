@@ -13,6 +13,7 @@ SystemRequirements: Cargo (Rust's package manager), rustc
 Imports:
     rlang (>= 1.1.0)
 Suggests:
+    bit64,
     blob,
     hms,
     patrick,

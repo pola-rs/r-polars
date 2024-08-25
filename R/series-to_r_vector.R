@@ -10,11 +10,14 @@
 #' - `"double"`: Convert to the R's [double] type.
 #' - `"character"`: Convert to the R's [character] type.
 #' - `"integer"`: Convert to the R's [integer] type.
-#'   If the value is out of the range of R's integer type, export as `NA_integer_`.
+#'   If the value is out of the range of R's integer type, export as [NA_integer_].
+#' - `"integer64"`: Convert to the [bit64::integer64] class.
+#'   The [bit64][bit64::bit64-package] package must be installed.
 #' @return A [vector]
 #' @examples
 #' # Create a Series of Int64
-#' series_int64 <- as_polars_series(c("0", "4294967295"))$cast(pl$Int64)
+#' series_int64 <- as_polars_series(c(NA, "0", "4294967295"))$cast(pl$Int64)
+#' series_int64
 #'
 #' ## Export Int64 as double
 #' series_int64$to_r_vector(int64 = "double")
@@ -24,6 +27,11 @@
 #'
 #' ## Export Int64 as integer
 #' series_int64$to_r_vector(int64 = "integer")
+#'
+#' ## Export Int64 as bit64::integer64
+#' if (requireNamespace("bit64", quietly = TRUE)) {
+#'   series_int64$to_r_vector(int64 = "integer64")
+#' }
 series__to_r_vector <- function(
     ...,
     int64 = "double",

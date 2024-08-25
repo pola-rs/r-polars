@@ -20,7 +20,9 @@ One of the followings:
 \item \code{"double"}: Convert to the R's \link{double} type.
 \item \code{"character"}: Convert to the R's \link{character} type.
 \item \code{"integer"}: Convert to the R's \link{integer} type.
-If the value is out of the range of R's integer type, export as \code{NA_integer_}.
+If the value is out of the range of R's integer type, export as \link{NA_integer_}.
+\item \code{"integer64"}: Convert to the \link[bit64:bit64-package]{bit64::integer64} class.
+The \link[bit64:bit64-package]{bit64} package must be installed.
 }}
 
 \item{ambiguous}{Determine how to deal with ambiguous datetimes.
@@ -47,7 +49,8 @@ Export the Series as an R vector
 }
 \examples{
 # Create a Series of Int64
-series_int64 <- as_polars_series(c("0", "4294967295"))$cast(pl$Int64)
+series_int64 <- as_polars_series(c(NA, "0", "4294967295"))$cast(pl$Int64)
+series_int64
 
 ## Export Int64 as double
 series_int64$to_r_vector(int64 = "double")
@@ -57,4 +60,9 @@ series_int64$to_r_vector(int64 = "character")
 
 ## Export Int64 as integer
 series_int64$to_r_vector(int64 = "integer")
+
+## Export Int64 as bit64::integer64
+if (requireNamespace("bit64", quietly = TRUE)) {
+  series_int64$to_r_vector(int64 = "integer64")
+}
 }

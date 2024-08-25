@@ -4,16 +4,16 @@ use strum_macros::EnumString;
 
 #[derive(Debug, Clone, Eq, PartialEq, EnumString)]
 #[strum(serialize_all = "lowercase")]
-pub enum Int64Conversion {
+enum Int64Conversion {
     Character,
     Double,
     Integer,
+    Integer64,
 }
 
 #[savvy]
 impl PlRSeries {
     // TODO: check i32::MIN etc.?
-    // TODO: export int64 as bit64::integer64
     pub fn to_r_vector(
         &self,
         int64: &str,
@@ -25,7 +25,8 @@ impl PlRSeries {
 
         let int64 = Int64Conversion::try_from(int64).map_err(|_| {
             savvy::Error::from(
-                "Argument `int64` must be one of 'character', 'double', 'integer'".to_string(),
+                "Argument `int64` must be one of 'character', 'double', 'integer', 'integer64'"
+                    .to_string(),
             )
         })?;
         let ambiguous = ambiguous.inner;
@@ -55,6 +56,9 @@ impl PlRSeries {
                         let s = series.cast(&DataType::Int32).map_err(RPolarsErr::from)?;
                         Ok(<Sexp>::from(Wrap(s.i32().unwrap())))
                     }
+                    Int64Conversion::Integer64 => Ok(<Sexp>::from(Wrap(
+                        series.cast(&DataType::Int64).unwrap().i64().unwrap(),
+                    ))),
                 },
                 DataType::Float32 => Ok(<Sexp>::from(Wrap(
                     series.cast(&DataType::Float64).unwrap().f64().unwrap(),
