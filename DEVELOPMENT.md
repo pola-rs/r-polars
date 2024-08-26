@@ -83,7 +83,7 @@ R Polars follows the same structure as Python Polars,
 and the `polars_expr` class is defined as follows:
 
 ```r
-wrap.PlRExpr <- function(x) {
+wrap.PlRExpr <- function(x, ...) {
   self <- new.env(parent = emptyenv())
   self$`_rexpr` <- x
 

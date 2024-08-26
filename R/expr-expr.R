@@ -10,7 +10,7 @@ is_polars_expr <- function(x, ...) {
 }
 
 #' @export
-wrap.PlRExpr <- function(x) {
+wrap.PlRExpr <- function(x, ...) {
   self <- new.env(parent = emptyenv())
   self$`_rexpr` <- x
 

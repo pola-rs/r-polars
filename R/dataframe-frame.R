@@ -7,7 +7,7 @@ is_polars_df <- function(x) {
 }
 
 #' @export
-wrap.PlRDataFrame <- function(x) {
+wrap.PlRDataFrame <- function(x, ...) {
   self <- new.env(parent = emptyenv())
   self$`_df` <- x
 

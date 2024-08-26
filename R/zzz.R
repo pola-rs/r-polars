@@ -48,6 +48,9 @@ lapply(names(POLARS_STORE_ENVS), function(name) {
   assign_objects_to_env(POLARS_STORE_ENVS[[name]], sprintf("^%s", name), search_env = parent.frame(2L))
 })
 
+# Avoid R CMD check's 'no visible binding for global variable' note
+utils::globalVariables("self")
+
 .onLoad <- function(libname, pkgname) {
   # Register data types without arguments as active bindings
   c(

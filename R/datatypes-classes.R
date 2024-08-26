@@ -9,7 +9,7 @@ is_polars_data_type <- function(x) {
 }
 
 #' @export
-wrap.PlRDataType <- function(x) {
+wrap.PlRDataType <- function(x, ...) {
   self <- new.env(parent = emptyenv())
   self$`_dt` <- x
 

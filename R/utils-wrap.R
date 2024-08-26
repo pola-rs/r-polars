@@ -1,4 +1,5 @@
-wrap <- function(x, ..., call = parent.frame()) {
+wrap <- function(x, ...) {
+  call <- caller_env()
   try_fetch(
     x,
     error = function(cnd) {

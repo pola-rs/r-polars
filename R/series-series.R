@@ -44,7 +44,7 @@ is_polars_series <- function(x) {
 }
 
 #' @export
-wrap.PlRSeries <- function(x) {
+wrap.PlRSeries <- function(x, ...) {
   self <- new.env(parent = emptyenv())
   self$`_s` <- x
 

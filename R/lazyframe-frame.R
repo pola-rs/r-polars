@@ -7,7 +7,7 @@ is_polars_lf <- function(x) {
 }
 
 #' @export
-wrap.PlRLazyFrame <- function(x) {
+wrap.PlRLazyFrame <- function(x, ...) {
   self <- new.env(parent = emptyenv())
   self$`_ldf` <- x
 
