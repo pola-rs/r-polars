@@ -76,11 +76,13 @@ dataframe__group_by <- function(..., maintain_order = FALSE) {
 }
 
 dataframe__select <- function(...) {
-  self$lazy()$select(...)$collect()
+  self$lazy()$select(...)$collect() |>
+    wrap()
 }
 
 dataframe__with_columns <- function(...) {
-  self$lazy()$with_columns(...)$collect()
+  self$lazy()$with_columns(...)$collect() |>
+    wrap()
 }
 
 dataframe__to_series <- function(index = 0) {
@@ -101,7 +103,8 @@ dataframe__equals <- function(other, ..., null_equal = TRUE) {
 }
 
 dataframe__cast <- function(..., strict = TRUE) {
-  self$lazy()$cast(..., strict = strict)$collect()
+  self$lazy()$cast(..., strict = strict)$collect() |>
+    wrap()
 }
 
 dataframe__sort <- function(
@@ -116,5 +119,6 @@ dataframe__sort <- function(
     nulls_last = nulls_last,
     multithreaded = multithreaded,
     maintain_order = maintain_order
-  )$collect()
+  )$collect() |>
+    wrap()
 }

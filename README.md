@@ -123,6 +123,8 @@ Errors is displayed in a way that is not as bad. (Thanks,
 # Error from the Rust side
 pl$DataFrame(a = "a")$cast(a = pl$Int8)
 #> Error:
+#> ! Evaluation failed in `$cast()`.
+#> Caused by error:
 #> ! Evaluation failed in `$collect()`.
 #> Caused by error:
 #> ! InvalidOperation(ErrString("conversion from `str` to `i8` failed in column 'a' for 1 out of 1 values: [\"a\"]"))
@@ -132,6 +134,8 @@ pl$DataFrame(a = "a")$cast(a = pl$Int8)
 # Error from the R side
 pl$DataFrame(a = "a")$cast(a = integer)
 #> Error:
+#> ! Evaluation failed in `$cast()`.
+#> Caused by error:
 #> ! Evaluation failed in `$cast()`.
 #> Caused by error:
 #> ! Dynamic dots `...` must be polars data types, got function
