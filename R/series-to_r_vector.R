@@ -22,16 +22,16 @@
 #' )$cast(pl$UInt64)
 #' series_uint64
 #'
-#' ## Export Int64 as double
+#' ## Export UInt64 as double
 #' series_uint64$to_r_vector(int64 = "double")
 #'
-#' ## Export Int64 as character
+#' ## Export UInt64 as character
 #' series_uint64$to_r_vector(int64 = "character")
 #'
-#' ## Export Int64 as integer
+#' ## Export UInt64 as integer (overflow occurs)
 #' series_uint64$to_r_vector(int64 = "integer")
 #'
-#' ## Export Int64 as bit64::integer64
+#' ## Export UInt64 as bit64::integer64 (overflow occurs)
 #' if (requireNamespace("bit64", quietly = TRUE)) {
 #'   series_uint64$to_r_vector(int64 = "integer64")
 #' }
