@@ -73,7 +73,7 @@ When not specified, name is set to an empty string.}
 \item{...}{Additional arguments passed to the methods.}
 }
 \value{
-A \href{polars_series}{Polars Series}.
+A \link[=polars_series]{Polars Series}
 }
 \description{
 The \code{\link[=as_polars_series]{as_polars_series()}} function creates a \link[=polars_series]{Polars Series} from various R objects.

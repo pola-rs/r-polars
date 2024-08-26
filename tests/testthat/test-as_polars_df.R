@@ -3,6 +3,9 @@ patrick::with_parameters_test_that(
   .cases = {
     tibble::tribble(
       ~.test_name, ~x,
+      "polars_data_frame", pl$DataFrame(x = 1:2, y = c("a", "b")),
+      "polars_group_by", pl$DataFrame(x = 1:2, y = c("a", "b"))$group_by("x"),
+      "polars_lazy_frame", pl$DataFrame(x = 1:2, y = c("a", "b"))$lazy(),
       "list", list(x = 1:2, y = list("c", "d")),
       "data.frame", data.frame(x = 1:2, y = I(list("c", "d"))),
     )

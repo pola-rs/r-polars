@@ -8,13 +8,12 @@
 #'
 #' The default method of [as_polars_series()] throws an error,
 #' so we need to define methods for the classes we want to support.
-#' @rdname as_polars_series
 #' @param x An R object.
 #' @param name A single string or `NULL`. Name of the Series.
 #' Will be used as a column name when used in a polars DataFrame.
 #' When not specified, name is set to an empty string.
 #' @param ... Additional arguments passed to the methods.
-#' @return A [Polars Series](polars_series).
+#' @return A [Polars Series][polars_series]
 #' @seealso
 #' - [`<Series>$to_r_vector()`][series__to_r_vector]: Export the Series as an R vector.
 #' @examples
