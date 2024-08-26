@@ -76,7 +76,7 @@ When not specified, name is set to an empty string.}
 A \href{polars_series}{Polars Series}.
 }
 \description{
-The \code{\link[=as_polars_series]{as_polars_series()}} function creates a \href{polars_series}{Polars Series} from various R objects.
+The \code{\link[=as_polars_series]{as_polars_series()}} function creates a \link[=polars_series]{Polars Series} from various R objects.
 The Data Type of the Series is determined by the class of the input object.
 }
 \details{

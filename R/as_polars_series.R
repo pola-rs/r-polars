@@ -3,7 +3,7 @@
 # TODO: link to the type mapping vignette
 #' Create a Polars Series from an R object
 #'
-#' The [as_polars_series()] function creates a [Polars Series](polars_series) from various R objects.
+#' The [as_polars_series()] function creates a [Polars Series][polars_series] from various R objects.
 #' The Data Type of the Series is determined by the class of the input object.
 #'
 #' The default method of [as_polars_series()] throws an error,
