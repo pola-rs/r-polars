@@ -130,13 +130,11 @@ pl$DataFrame(a = "a")$cast(a = pl$Int8)
 
 ``` r
 # Error from the R side
-pl$DataFrame(a = "a")$sort(a = "a")
+pl$DataFrame(a = "a")$cast(a = integer)
 #> Error:
-#> ! Evaluation failed in `$sort()`.
+#> ! Evaluation failed in `$cast()`.
 #> Caused by error:
-#> ! Arguments in `...` must be passed by position, not name.
-#> ✖ Problematic argument:
-#> • a = "a"
+#> ! Dynamic dots `...` must be polars data types, got function
 ```
 
 The functionality to dispatch the methods of `Expr` to `Series` has also
@@ -145,13 +143,17 @@ been implemented.
 ``` r
 s <- as_polars_series(mtcars)
 
-s$struct$field
-#> function (name) 
+s$struct$field |>
+   body()
 #> {
-#>     expr <- do.call(fn, as.list(match.call()[-1]), envir = parent.frame())
-#>     wrap(`_s`)$to_frame()$select(expr)$to_series()
+#>     wrap({
+#>         expr <- do.call(fn, as.list(match.call()[-1]), envir = parent.frame())
+#>         wrap(`_s`)$to_frame()$select(expr)$to_series()
+#>     })
 #> }
-#> <environment: 0x562880fa0b58>
+```
+
+``` r
 
 s$struct$field("am")
 #> shape: (32,)

@@ -106,7 +106,7 @@ pl$DataFrame(a = "a")$cast(a = pl$Int8)
 ```{r}
 #| error: true
 # Error from the R side
-pl$DataFrame(a = "a")$sort(a = "a")
+pl$DataFrame(a = "a")$cast(a = integer)
 ```
 
 The functionality to dispatch the methods of `Expr` to `Series` has also been implemented.
@@ -114,7 +114,8 @@ The functionality to dispatch the methods of `Expr` to `Series` has also been im
 ```{r}
 s <- as_polars_series(mtcars)
 
-s$struct$field
+s$struct$field |>
+   body()
 
 s$struct$field("am")
 ```
