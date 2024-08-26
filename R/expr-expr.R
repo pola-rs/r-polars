@@ -214,9 +214,12 @@ expr__sum <- function() {
 }
 
 expr__cast <- function(dtype, ..., strict = TRUE) {
-  dtype <- as_polars_dtype(dtype)
-  self$`_rexpr`$cast(dtype$`_dt`, strict) |>
-    wrap()
+  wrap({
+    check_dots_empty0(...)
+
+    dtype <- as_polars_dtype(dtype)
+    self$`_rexpr`$cast(dtype$`_dt`, strict)
+  })
 }
 
 expr__sort_by <- function(
