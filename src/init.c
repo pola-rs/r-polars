@@ -749,76 +749,6 @@ SEXP savvy_PlRLazyGroupBy_tail__impl(SEXP self__, SEXP n) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRSeries_print__impl(SEXP self__) {
-    SEXP res = savvy_PlRSeries_print__ffi(self__);
-    return handle_result(res);
-}
-
-SEXP savvy_PlRSeries_struct_unnest__impl(SEXP self__) {
-    SEXP res = savvy_PlRSeries_struct_unnest__ffi(self__);
-    return handle_result(res);
-}
-
-SEXP savvy_PlRSeries_struct_fields__impl(SEXP self__) {
-    SEXP res = savvy_PlRSeries_struct_fields__ffi(self__);
-    return handle_result(res);
-}
-
-SEXP savvy_PlRSeries_cat_uses_lexical_ordering__impl(SEXP self__) {
-    SEXP res = savvy_PlRSeries_cat_uses_lexical_ordering__ffi(self__);
-    return handle_result(res);
-}
-
-SEXP savvy_PlRSeries_cat_is_local__impl(SEXP self__) {
-    SEXP res = savvy_PlRSeries_cat_is_local__ffi(self__);
-    return handle_result(res);
-}
-
-SEXP savvy_PlRSeries_cat_to_local__impl(SEXP self__) {
-    SEXP res = savvy_PlRSeries_cat_to_local__ffi(self__);
-    return handle_result(res);
-}
-
-SEXP savvy_PlRSeries_reshape__impl(SEXP self__, SEXP dimensions) {
-    SEXP res = savvy_PlRSeries_reshape__ffi(self__, dimensions);
-    return handle_result(res);
-}
-
-SEXP savvy_PlRSeries_clone__impl(SEXP self__) {
-    SEXP res = savvy_PlRSeries_clone__ffi(self__);
-    return handle_result(res);
-}
-
-SEXP savvy_PlRSeries_name__impl(SEXP self__) {
-    SEXP res = savvy_PlRSeries_name__ffi(self__);
-    return handle_result(res);
-}
-
-SEXP savvy_PlRSeries_rename__impl(SEXP self__, SEXP name) {
-    SEXP res = savvy_PlRSeries_rename__ffi(self__, name);
-    return handle_result(res);
-}
-
-SEXP savvy_PlRSeries_dtype__impl(SEXP self__) {
-    SEXP res = savvy_PlRSeries_dtype__ffi(self__);
-    return handle_result(res);
-}
-
-SEXP savvy_PlRSeries_equals__impl(SEXP self__, SEXP other, SEXP check_dtypes, SEXP check_names, SEXP null_equal) {
-    SEXP res = savvy_PlRSeries_equals__ffi(self__, other, check_dtypes, check_names, null_equal);
-    return handle_result(res);
-}
-
-SEXP savvy_PlRSeries_len__impl(SEXP self__) {
-    SEXP res = savvy_PlRSeries_len__ffi(self__);
-    return handle_result(res);
-}
-
-SEXP savvy_PlRSeries_cast__impl(SEXP self__, SEXP dtype, SEXP strict) {
-    SEXP res = savvy_PlRSeries_cast__ffi(self__, dtype, strict);
-    return handle_result(res);
-}
-
 SEXP savvy_PlRSeries_add__impl(SEXP self__, SEXP other) {
     SEXP res = savvy_PlRSeries_add__ffi(self__, other);
     return handle_result(res);
@@ -891,6 +821,76 @@ SEXP savvy_PlRSeries_new_series_list__impl(SEXP name, SEXP values) {
 
 SEXP savvy_PlRSeries_to_r_vector__impl(SEXP self__, SEXP int64, SEXP ambiguous, SEXP non_existent, SEXP local_time_zone) {
     SEXP res = savvy_PlRSeries_to_r_vector__ffi(self__, int64, ambiguous, non_existent, local_time_zone);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSeries_print__impl(SEXP self__) {
+    SEXP res = savvy_PlRSeries_print__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSeries_struct_unnest__impl(SEXP self__) {
+    SEXP res = savvy_PlRSeries_struct_unnest__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSeries_struct_fields__impl(SEXP self__) {
+    SEXP res = savvy_PlRSeries_struct_fields__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSeries_cat_uses_lexical_ordering__impl(SEXP self__) {
+    SEXP res = savvy_PlRSeries_cat_uses_lexical_ordering__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSeries_cat_is_local__impl(SEXP self__) {
+    SEXP res = savvy_PlRSeries_cat_is_local__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSeries_cat_to_local__impl(SEXP self__) {
+    SEXP res = savvy_PlRSeries_cat_to_local__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSeries_reshape__impl(SEXP self__, SEXP dimensions) {
+    SEXP res = savvy_PlRSeries_reshape__ffi(self__, dimensions);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSeries_clone__impl(SEXP self__) {
+    SEXP res = savvy_PlRSeries_clone__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSeries_name__impl(SEXP self__) {
+    SEXP res = savvy_PlRSeries_name__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSeries_rename__impl(SEXP self__, SEXP name) {
+    SEXP res = savvy_PlRSeries_rename__ffi(self__, name);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSeries_dtype__impl(SEXP self__) {
+    SEXP res = savvy_PlRSeries_dtype__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSeries_equals__impl(SEXP self__, SEXP other, SEXP check_dtypes, SEXP check_names, SEXP null_equal) {
+    SEXP res = savvy_PlRSeries_equals__ffi(self__, other, check_dtypes, check_names, null_equal);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSeries_len__impl(SEXP self__) {
+    SEXP res = savvy_PlRSeries_len__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSeries_cast__impl(SEXP self__, SEXP dtype, SEXP strict) {
+    SEXP res = savvy_PlRSeries_cast__ffi(self__, dtype, strict);
     return handle_result(res);
 }
 
@@ -1054,20 +1054,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRLazyGroupBy_agg__impl", (DL_FUNC) &savvy_PlRLazyGroupBy_agg__impl, 2},
     {"savvy_PlRLazyGroupBy_head__impl", (DL_FUNC) &savvy_PlRLazyGroupBy_head__impl, 2},
     {"savvy_PlRLazyGroupBy_tail__impl", (DL_FUNC) &savvy_PlRLazyGroupBy_tail__impl, 2},
-    {"savvy_PlRSeries_print__impl", (DL_FUNC) &savvy_PlRSeries_print__impl, 1},
-    {"savvy_PlRSeries_struct_unnest__impl", (DL_FUNC) &savvy_PlRSeries_struct_unnest__impl, 1},
-    {"savvy_PlRSeries_struct_fields__impl", (DL_FUNC) &savvy_PlRSeries_struct_fields__impl, 1},
-    {"savvy_PlRSeries_cat_uses_lexical_ordering__impl", (DL_FUNC) &savvy_PlRSeries_cat_uses_lexical_ordering__impl, 1},
-    {"savvy_PlRSeries_cat_is_local__impl", (DL_FUNC) &savvy_PlRSeries_cat_is_local__impl, 1},
-    {"savvy_PlRSeries_cat_to_local__impl", (DL_FUNC) &savvy_PlRSeries_cat_to_local__impl, 1},
-    {"savvy_PlRSeries_reshape__impl", (DL_FUNC) &savvy_PlRSeries_reshape__impl, 2},
-    {"savvy_PlRSeries_clone__impl", (DL_FUNC) &savvy_PlRSeries_clone__impl, 1},
-    {"savvy_PlRSeries_name__impl", (DL_FUNC) &savvy_PlRSeries_name__impl, 1},
-    {"savvy_PlRSeries_rename__impl", (DL_FUNC) &savvy_PlRSeries_rename__impl, 2},
-    {"savvy_PlRSeries_dtype__impl", (DL_FUNC) &savvy_PlRSeries_dtype__impl, 1},
-    {"savvy_PlRSeries_equals__impl", (DL_FUNC) &savvy_PlRSeries_equals__impl, 5},
-    {"savvy_PlRSeries_len__impl", (DL_FUNC) &savvy_PlRSeries_len__impl, 1},
-    {"savvy_PlRSeries_cast__impl", (DL_FUNC) &savvy_PlRSeries_cast__impl, 3},
     {"savvy_PlRSeries_add__impl", (DL_FUNC) &savvy_PlRSeries_add__impl, 2},
     {"savvy_PlRSeries_sub__impl", (DL_FUNC) &savvy_PlRSeries_sub__impl, 2},
     {"savvy_PlRSeries_div__impl", (DL_FUNC) &savvy_PlRSeries_div__impl, 2},
@@ -1083,6 +1069,20 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRSeries_new_binary__impl", (DL_FUNC) &savvy_PlRSeries_new_binary__impl, 2},
     {"savvy_PlRSeries_new_series_list__impl", (DL_FUNC) &savvy_PlRSeries_new_series_list__impl, 2},
     {"savvy_PlRSeries_to_r_vector__impl", (DL_FUNC) &savvy_PlRSeries_to_r_vector__impl, 5},
+    {"savvy_PlRSeries_print__impl", (DL_FUNC) &savvy_PlRSeries_print__impl, 1},
+    {"savvy_PlRSeries_struct_unnest__impl", (DL_FUNC) &savvy_PlRSeries_struct_unnest__impl, 1},
+    {"savvy_PlRSeries_struct_fields__impl", (DL_FUNC) &savvy_PlRSeries_struct_fields__impl, 1},
+    {"savvy_PlRSeries_cat_uses_lexical_ordering__impl", (DL_FUNC) &savvy_PlRSeries_cat_uses_lexical_ordering__impl, 1},
+    {"savvy_PlRSeries_cat_is_local__impl", (DL_FUNC) &savvy_PlRSeries_cat_is_local__impl, 1},
+    {"savvy_PlRSeries_cat_to_local__impl", (DL_FUNC) &savvy_PlRSeries_cat_to_local__impl, 1},
+    {"savvy_PlRSeries_reshape__impl", (DL_FUNC) &savvy_PlRSeries_reshape__impl, 2},
+    {"savvy_PlRSeries_clone__impl", (DL_FUNC) &savvy_PlRSeries_clone__impl, 1},
+    {"savvy_PlRSeries_name__impl", (DL_FUNC) &savvy_PlRSeries_name__impl, 1},
+    {"savvy_PlRSeries_rename__impl", (DL_FUNC) &savvy_PlRSeries_rename__impl, 2},
+    {"savvy_PlRSeries_dtype__impl", (DL_FUNC) &savvy_PlRSeries_dtype__impl, 1},
+    {"savvy_PlRSeries_equals__impl", (DL_FUNC) &savvy_PlRSeries_equals__impl, 5},
+    {"savvy_PlRSeries_len__impl", (DL_FUNC) &savvy_PlRSeries_len__impl, 1},
+    {"savvy_PlRSeries_cast__impl", (DL_FUNC) &savvy_PlRSeries_cast__impl, 3},
     {"savvy_PlRThen_when__impl", (DL_FUNC) &savvy_PlRThen_when__impl, 2},
     {"savvy_PlRThen_otherwise__impl", (DL_FUNC) &savvy_PlRThen_otherwise__impl, 2},
     {"savvy_PlRWhen_then__impl", (DL_FUNC) &savvy_PlRWhen_then__impl, 2},

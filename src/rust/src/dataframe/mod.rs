@@ -26,9 +26,3 @@ impl TryFrom<EnvironmentSexp> for &PlRDataFrame {
         <&PlRDataFrame>::try_from(ptr).map_err(|e| e.to_string())
     }
 }
-
-impl PlRDataFrame {
-    pub(crate) fn new(df: DataFrame) -> Self {
-        Self { df }
-    }
-}

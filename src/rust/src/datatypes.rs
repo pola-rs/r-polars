@@ -1,8 +1,8 @@
 use crate::prelude::*;
 use polars_core::utils::arrow::array::Utf8ViewArray;
 use savvy::{
-    r_println, savvy, EnvironmentSexp, ListSexp, NullSexp, NumericScalar, OwnedListSexp,
-    OwnedRealSexp, Result, Sexp, StringSexp,
+    r_println, savvy, EnvironmentSexp, ListSexp, NullSexp, NumericScalar, OwnedListSexp, Result,
+    Sexp, StringSexp,
 };
 
 // As not like in Python, define the data type class in

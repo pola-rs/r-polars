@@ -1300,6 +1300,48 @@ class(`PlRLazyGroupBy`) <- "PlRLazyGroupBy__bundle"
 
 ### wrapper functions for PlRSeries
 
+`PlRSeries_add` <- function(self) {
+  function(`other`) {
+    `other` <- .savvy_extract_ptr(`other`, "PlRSeries")
+    .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_add__impl, `self`, `other`))
+  }
+}
+
+`PlRSeries_sub` <- function(self) {
+  function(`other`) {
+    `other` <- .savvy_extract_ptr(`other`, "PlRSeries")
+    .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_sub__impl, `self`, `other`))
+  }
+}
+
+`PlRSeries_div` <- function(self) {
+  function(`other`) {
+    `other` <- .savvy_extract_ptr(`other`, "PlRSeries")
+    .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_div__impl, `self`, `other`))
+  }
+}
+
+`PlRSeries_mul` <- function(self) {
+  function(`other`) {
+    `other` <- .savvy_extract_ptr(`other`, "PlRSeries")
+    .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_mul__impl, `self`, `other`))
+  }
+}
+
+`PlRSeries_rem` <- function(self) {
+  function(`other`) {
+    `other` <- .savvy_extract_ptr(`other`, "PlRSeries")
+    .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_rem__impl, `self`, `other`))
+  }
+}
+
+`PlRSeries_to_r_vector` <- function(self) {
+  function(`int64`, `ambiguous`, `non_existent`, `local_time_zone`) {
+    `ambiguous` <- .savvy_extract_ptr(`ambiguous`, "PlRExpr")
+    .Call(savvy_PlRSeries_to_r_vector__impl, `self`, `int64`, `ambiguous`, `non_existent`, `local_time_zone`)
+  }
+}
+
 `PlRSeries_print` <- function(self) {
   function() {
     invisible(.Call(savvy_PlRSeries_print__impl, `self`))
@@ -1386,51 +1428,15 @@ class(`PlRLazyGroupBy`) <- "PlRLazyGroupBy__bundle"
   }
 }
 
-`PlRSeries_add` <- function(self) {
-  function(`other`) {
-    `other` <- .savvy_extract_ptr(`other`, "PlRSeries")
-    .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_add__impl, `self`, `other`))
-  }
-}
-
-`PlRSeries_sub` <- function(self) {
-  function(`other`) {
-    `other` <- .savvy_extract_ptr(`other`, "PlRSeries")
-    .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_sub__impl, `self`, `other`))
-  }
-}
-
-`PlRSeries_div` <- function(self) {
-  function(`other`) {
-    `other` <- .savvy_extract_ptr(`other`, "PlRSeries")
-    .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_div__impl, `self`, `other`))
-  }
-}
-
-`PlRSeries_mul` <- function(self) {
-  function(`other`) {
-    `other` <- .savvy_extract_ptr(`other`, "PlRSeries")
-    .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_mul__impl, `self`, `other`))
-  }
-}
-
-`PlRSeries_rem` <- function(self) {
-  function(`other`) {
-    `other` <- .savvy_extract_ptr(`other`, "PlRSeries")
-    .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_rem__impl, `self`, `other`))
-  }
-}
-
-`PlRSeries_to_r_vector` <- function(self) {
-  function(`int64`, `ambiguous`, `non_existent`, `local_time_zone`) {
-    `ambiguous` <- .savvy_extract_ptr(`ambiguous`, "PlRExpr")
-    .Call(savvy_PlRSeries_to_r_vector__impl, `self`, `int64`, `ambiguous`, `non_existent`, `local_time_zone`)
-  }
-}
-
 `.savvy_wrap_PlRSeries` <- function(ptr) {
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
+  e$`add` <- `PlRSeries_add`(ptr)
+  e$`sub` <- `PlRSeries_sub`(ptr)
+  e$`div` <- `PlRSeries_div`(ptr)
+  e$`mul` <- `PlRSeries_mul`(ptr)
+  e$`rem` <- `PlRSeries_rem`(ptr)
+  e$`to_r_vector` <- `PlRSeries_to_r_vector`(ptr)
   e$`print` <- `PlRSeries_print`(ptr)
   e$`struct_unnest` <- `PlRSeries_struct_unnest`(ptr)
   e$`struct_fields` <- `PlRSeries_struct_fields`(ptr)
@@ -1445,12 +1451,6 @@ class(`PlRLazyGroupBy`) <- "PlRLazyGroupBy__bundle"
   e$`equals` <- `PlRSeries_equals`(ptr)
   e$`len` <- `PlRSeries_len`(ptr)
   e$`cast` <- `PlRSeries_cast`(ptr)
-  e$`add` <- `PlRSeries_add`(ptr)
-  e$`sub` <- `PlRSeries_sub`(ptr)
-  e$`div` <- `PlRSeries_div`(ptr)
-  e$`mul` <- `PlRSeries_mul`(ptr)
-  e$`rem` <- `PlRSeries_rem`(ptr)
-  e$`to_r_vector` <- `PlRSeries_to_r_vector`(ptr)
 
   class(e) <- "PlRSeries"
   e

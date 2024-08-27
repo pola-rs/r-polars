@@ -157,20 +157,6 @@ SEXP savvy_PlRLazyGroupBy_head__ffi(SEXP self__, SEXP n);
 SEXP savvy_PlRLazyGroupBy_tail__ffi(SEXP self__, SEXP n);
 
 // methods and associated functions for PlRSeries
-SEXP savvy_PlRSeries_print__ffi(SEXP self__);
-SEXP savvy_PlRSeries_struct_unnest__ffi(SEXP self__);
-SEXP savvy_PlRSeries_struct_fields__ffi(SEXP self__);
-SEXP savvy_PlRSeries_cat_uses_lexical_ordering__ffi(SEXP self__);
-SEXP savvy_PlRSeries_cat_is_local__ffi(SEXP self__);
-SEXP savvy_PlRSeries_cat_to_local__ffi(SEXP self__);
-SEXP savvy_PlRSeries_reshape__ffi(SEXP self__, SEXP dimensions);
-SEXP savvy_PlRSeries_clone__ffi(SEXP self__);
-SEXP savvy_PlRSeries_name__ffi(SEXP self__);
-SEXP savvy_PlRSeries_rename__ffi(SEXP self__, SEXP name);
-SEXP savvy_PlRSeries_dtype__ffi(SEXP self__);
-SEXP savvy_PlRSeries_equals__ffi(SEXP self__, SEXP other, SEXP check_dtypes, SEXP check_names, SEXP null_equal);
-SEXP savvy_PlRSeries_len__ffi(SEXP self__);
-SEXP savvy_PlRSeries_cast__ffi(SEXP self__, SEXP dtype, SEXP strict);
 SEXP savvy_PlRSeries_add__ffi(SEXP self__, SEXP other);
 SEXP savvy_PlRSeries_sub__ffi(SEXP self__, SEXP other);
 SEXP savvy_PlRSeries_div__ffi(SEXP self__, SEXP other);
@@ -186,6 +172,20 @@ SEXP savvy_PlRSeries_new_single_binary__ffi(SEXP name, SEXP values);
 SEXP savvy_PlRSeries_new_binary__ffi(SEXP name, SEXP values);
 SEXP savvy_PlRSeries_new_series_list__ffi(SEXP name, SEXP values);
 SEXP savvy_PlRSeries_to_r_vector__ffi(SEXP self__, SEXP int64, SEXP ambiguous, SEXP non_existent, SEXP local_time_zone);
+SEXP savvy_PlRSeries_print__ffi(SEXP self__);
+SEXP savvy_PlRSeries_struct_unnest__ffi(SEXP self__);
+SEXP savvy_PlRSeries_struct_fields__ffi(SEXP self__);
+SEXP savvy_PlRSeries_cat_uses_lexical_ordering__ffi(SEXP self__);
+SEXP savvy_PlRSeries_cat_is_local__ffi(SEXP self__);
+SEXP savvy_PlRSeries_cat_to_local__ffi(SEXP self__);
+SEXP savvy_PlRSeries_reshape__ffi(SEXP self__, SEXP dimensions);
+SEXP savvy_PlRSeries_clone__ffi(SEXP self__);
+SEXP savvy_PlRSeries_name__ffi(SEXP self__);
+SEXP savvy_PlRSeries_rename__ffi(SEXP self__, SEXP name);
+SEXP savvy_PlRSeries_dtype__ffi(SEXP self__);
+SEXP savvy_PlRSeries_equals__ffi(SEXP self__, SEXP other, SEXP check_dtypes, SEXP check_names, SEXP null_equal);
+SEXP savvy_PlRSeries_len__ffi(SEXP self__);
+SEXP savvy_PlRSeries_cast__ffi(SEXP self__, SEXP dtype, SEXP strict);
 
 // methods and associated functions for PlRThen
 SEXP savvy_PlRThen_when__ffi(SEXP self__, SEXP condition);

@@ -1,5 +1,4 @@
 use crate::{prelude::*, PlRDataFrame, RPolarsErr};
-use polars::functions;
 use savvy::{savvy, ListSexp, Result};
 
 #[savvy]

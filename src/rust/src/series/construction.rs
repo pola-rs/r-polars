@@ -1,4 +1,4 @@
-use crate::{prelude::*, PlRDataType, PlRSeries, RPolarsErr};
+use crate::{prelude::*, PlRDataType, PlRSeries};
 use polars_core::utils::{try_get_supertype, CustomIterTools};
 use savvy::{
     savvy, sexp::na::NotAvailableValue, IntegerSexp, ListSexp, LogicalSexp, RawSexp, RealSexp,
