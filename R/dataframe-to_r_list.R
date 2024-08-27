@@ -1,6 +1,6 @@
 #' Export the polars DataFrame as an R list of R vectors
 #'
-#' This method is a convention of [`<DataFrame>$get_columns()`][dataframe__get_columns] and
+#' This method is a combination of [`<DataFrame>$get_columns()`][dataframe__get_columns] and
 #' [`<Series>$to_r_vector()`][series__to_r_vector].
 #' First, it gets the columns of the DataFrame as a list of [Series], then it converts each [Series]
 #' to an R [vector].

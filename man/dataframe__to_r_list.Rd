@@ -46,7 +46,7 @@ One of the followings:
 A \link{list} of \link[=vector]{vectors}
 }
 \description{
-This method is a convention of \code{\link[=dataframe__get_columns]{<DataFrame>$get_columns()}} and
+This method is a combination of \code{\link[=dataframe__get_columns]{<DataFrame>$get_columns()}} and
 \code{\link[=series__to_r_vector]{<Series>$to_r_vector()}}.
 First, it gets the columns of the DataFrame as a list of \link{Series}, then it converts each \link{Series}
 to an R \link{vector}.
