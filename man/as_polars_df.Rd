@@ -33,11 +33,11 @@ as_polars_df(x, ...)
 A Polars DataFrame
 }
 \description{
-The \code{\link[=as_polars_df]{as_polars_df()}} function creates a Polars DataFrame from various R objects.
-Polars DataFrame is based on a sequence of \link[=polars_series]{Polars Series},
+The \code{\link[=as_polars_df]{as_polars_df()}} function creates a \link[=DataFrame]{polars DataFrame} from various R objects.
+\link[=DataFrame]{Polars DataFrame} is based on a sequence of \link[=Series]{Polars Series},
 so basically, the input object is converted to a \link{list} of
-\link[=polars_series]{Polars Series} by \code{\link[=as_polars_series]{as_polars_series()}},
-then a Polars DataFrame is created from the list.
+\link[=Series]{Polars Series} by \code{\link[=as_polars_series]{as_polars_series()}},
+then a \link[=DataFrame]{Polars DataFrame} is created from the list.
 }
 \details{
 The default method of \code{\link[=as_polars_df]{as_polars_df()}} throws an error,

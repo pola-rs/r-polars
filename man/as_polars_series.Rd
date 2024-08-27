@@ -67,16 +67,16 @@ as_polars_series(x, name = NULL, ...)
 \item{x}{An R object.}
 
 \item{name}{A single string or \code{NULL}. Name of the Series.
-Will be used as a column name when used in a polars DataFrame.
+Will be used as a column name when used in a \link[=DataFrame]{polars DataFrame}.
 When not specified, name is set to an empty string.}
 
 \item{...}{Additional arguments passed to the methods.}
 }
 \value{
-A \link[=polars_series]{Polars Series}
+A \link[=Series]{polars Series}
 }
 \description{
-The \code{\link[=as_polars_series]{as_polars_series()}} function creates a \link[=polars_series]{Polars Series} from various R objects.
+The \code{\link[=as_polars_series]{as_polars_series()}} function creates a \link[=Series]{polars Series} from various R objects.
 The Data Type of the Series is determined by the class of the input object.
 }
 \details{

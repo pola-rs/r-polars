@@ -1,11 +1,10 @@
-# TODO: link to data frame docs
 #' Create a Polars DataFrame from an R object
 #'
-#' The [as_polars_df()] function creates a Polars DataFrame from various R objects.
-#' Polars DataFrame is based on a sequence of [Polars Series][polars_series],
+#' The [as_polars_df()] function creates a [polars DataFrame][DataFrame] from various R objects.
+#' [Polars DataFrame][DataFrame] is based on a sequence of [Polars Series][Series],
 #' so basically, the input object is converted to a [list] of
-#' [Polars Series][polars_series] by [as_polars_series()],
-#' then a Polars DataFrame is created from the list.
+#' [Polars Series][Series] by [as_polars_series()],
+#' then a [Polars DataFrame][DataFrame] is created from the list.
 #'
 #' The default method of [as_polars_df()] throws an error,
 #' so we need to define methods for the classes we want to support.

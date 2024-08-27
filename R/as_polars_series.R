@@ -1,19 +1,18 @@
 # TODO: link to data type docs
-# TODO: link to data frame docs
 # TODO: link to the type mapping vignette
 #' Create a Polars Series from an R object
 #'
-#' The [as_polars_series()] function creates a [Polars Series][polars_series] from various R objects.
+#' The [as_polars_series()] function creates a [polars Series][Series] from various R objects.
 #' The Data Type of the Series is determined by the class of the input object.
 #'
 #' The default method of [as_polars_series()] throws an error,
 #' so we need to define methods for the classes we want to support.
 #' @param x An R object.
 #' @param name A single string or `NULL`. Name of the Series.
-#' Will be used as a column name when used in a polars DataFrame.
+#' Will be used as a column name when used in a [polars DataFrame][DataFrame].
 #' When not specified, name is set to an empty string.
 #' @param ... Additional arguments passed to the methods.
-#' @return A [Polars Series][polars_series]
+#' @return A [polars Series][Series]
 #' @seealso
 #' - [`<Series>$to_r_vector()`][series__to_r_vector]: Export the Series as an R vector.
 #' @examples

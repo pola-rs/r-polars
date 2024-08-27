@@ -10,7 +10,7 @@ pl__Series(name = NULL, values = NULL)
 }
 \arguments{
 \item{name}{A single string or \code{NULL}. Name of the Series.
-Will be used as a column name when used in a polars DataFrame.
+Will be used as a column name when used in a \link[=DataFrame]{polars DataFrame}.
 When not specified, name is set to an empty string.}
 
 \item{values}{An R object. Passed as the \code{x} param of \code{\link[=as_polars_series]{as_polars_series()}}.}
