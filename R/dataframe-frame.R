@@ -1,3 +1,60 @@
+# TODO: link to data type docs
+#' Polars DataFrame class
+#'
+#' DataFrames are two-dimensional data structure representing data
+#' as a table with rows and columns. Polars DataFrames are similar to
+#' [R Data Frames][data.frame]. R Data Frame's columns are [R vectors][vector],
+#' while Polars DataFrame's columns are [Polars Series][Series].
+#'
+#' The `pl$DataFrame()` function mimics the constructor of the DataFrame class of Python Polars.
+#' This function is basically a shortcut for `list(...) |> as_polars_df()`,
+#' so each argument in `...` is converted to a Polars Series by [as_polars_series()]
+#' and then passed to [as_polars_df()].
+#' @aliases polars_data_frame DataFrame
+#' @section Active bindings:
+#' - `columns`: `$columns` returns a character vector with the names of the columns.
+#' - `dtypes`: `$dtypes` returns a nameless list of the data type of each column.
+#' - `schema`: `$schema` returns a named list with the column names as names and the data types as values.
+#' - `shape`: `$shape` returns a integer vector of length two with the number of rows and columns of the DataFrame.
+#' - `height`: `$height` returns a integer with the number of rows of the DataFrame.
+#' - `width`: `$width` returns a integer with the number of columns of the DataFrame.
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]>
+#' Name-value pairs of objects to be converted to [Polars Series][Series]
+#' by the [as_polars_series()] function.
+#' Each [Series] will be used as a column of the DataFrame.
+#' All values must be the same length.
+#' Each name will be used as the column name. If the name is empty,
+#' the original name of the [Series] will be used.
+#' @examples
+#' # Constructing a DataFrame from vectors:
+#' pl$DataFrame(a = 1:2, b = 3:4)
+#'
+#' # Constructing a DataFrame from Series:
+#' pl$DataFrame(pl$Series("a", 1:2), pl$Series("b", 3:4))
+#'
+#' # Constructing a DataFrame from a list:
+#' data <- list(a = 1:2, b = 3:4)
+#'
+#' ## Using the as_polars_df function (recommended)
+#' as_polars_df(data)
+#'
+#' ## Using dynamic dots feature
+#' pl$DataFrame(!!!data)
+#'
+#' # Active bindings:
+#' df <- pl$DataFrame(a = 1:3, b = c("foo", "bar", "baz"))
+#'
+#' df$columns
+#' df$dtypes
+#' df$schema
+#' df$shape
+#' df$height
+#' df$width
+pl__DataFrame <- function(...) {
+  list2(...) |>
+    as_polars_df()
+}
+
 # The env for storing dataframe methods
 polars_dataframe__methods <- new.env(parent = emptyenv())
 
@@ -30,11 +87,6 @@ wrap.PlRDataFrame <- function(x, ...) {
 
   class(self) <- c("polars_data_frame", "polars_object")
   self
-}
-
-pl__DataFrame <- function(...) {
-  list2(...) |>
-    as_polars_df()
 }
 
 dataframe__to_struct <- function(name = "") {
