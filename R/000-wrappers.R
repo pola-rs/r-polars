@@ -1428,6 +1428,12 @@ class(`PlRLazyGroupBy`) <- "PlRLazyGroupBy__bundle"
   }
 }
 
+`PlRSeries_slice` <- function(self) {
+  function(`offset`, `length` = NULL) {
+    .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_slice__impl, `self`, `offset`, `length`))
+  }
+}
+
 `.savvy_wrap_PlRSeries` <- function(ptr) {
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
@@ -1451,6 +1457,7 @@ class(`PlRLazyGroupBy`) <- "PlRLazyGroupBy__bundle"
   e$`equals` <- `PlRSeries_equals`(ptr)
   e$`len` <- `PlRSeries_len`(ptr)
   e$`cast` <- `PlRSeries_cast`(ptr)
+  e$`slice` <- `PlRSeries_slice`(ptr)
 
   class(e) <- "PlRSeries"
   e

@@ -894,6 +894,11 @@ SEXP savvy_PlRSeries_cast__impl(SEXP self__, SEXP dtype, SEXP strict) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRSeries_slice__impl(SEXP self__, SEXP offset, SEXP length) {
+    SEXP res = savvy_PlRSeries_slice__ffi(self__, offset, length);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRThen_when__impl(SEXP self__, SEXP condition) {
     SEXP res = savvy_PlRThen_when__ffi(self__, condition);
     return handle_result(res);
@@ -1083,6 +1088,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRSeries_equals__impl", (DL_FUNC) &savvy_PlRSeries_equals__impl, 5},
     {"savvy_PlRSeries_len__impl", (DL_FUNC) &savvy_PlRSeries_len__impl, 1},
     {"savvy_PlRSeries_cast__impl", (DL_FUNC) &savvy_PlRSeries_cast__impl, 3},
+    {"savvy_PlRSeries_slice__impl", (DL_FUNC) &savvy_PlRSeries_slice__impl, 3},
     {"savvy_PlRThen_when__impl", (DL_FUNC) &savvy_PlRThen_when__impl, 2},
     {"savvy_PlRThen_otherwise__impl", (DL_FUNC) &savvy_PlRThen_otherwise__impl, 2},
     {"savvy_PlRWhen_then__impl", (DL_FUNC) &savvy_PlRWhen_then__impl, 2},

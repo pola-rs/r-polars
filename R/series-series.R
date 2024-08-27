@@ -105,6 +105,11 @@ series__rename <- function(name) {
   s
 }
 
+series__slice <- function(offset, length = NULL) {
+  self$`_s`$slice(offset, length) |>
+    wrap()
+}
+
 series__equals <- function(other, ..., check_dtypes = FALSE, check_names = FALSE, null_equal = FALSE) {
   wrap({
     check_dots_empty0(...)

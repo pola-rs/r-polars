@@ -186,6 +186,7 @@ SEXP savvy_PlRSeries_dtype__ffi(SEXP self__);
 SEXP savvy_PlRSeries_equals__ffi(SEXP self__, SEXP other, SEXP check_dtypes, SEXP check_names, SEXP null_equal);
 SEXP savvy_PlRSeries_len__ffi(SEXP self__);
 SEXP savvy_PlRSeries_cast__ffi(SEXP self__, SEXP dtype, SEXP strict);
+SEXP savvy_PlRSeries_slice__ffi(SEXP self__, SEXP offset, SEXP length);
 
 // methods and associated functions for PlRThen
 SEXP savvy_PlRThen_when__ffi(SEXP self__, SEXP condition);

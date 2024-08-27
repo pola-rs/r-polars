@@ -1,5 +1,5 @@
 use crate::{prelude::*, PlRDataFrame, PlRDataType, PlRSeries, RPolarsErr};
-use savvy::{r_println, savvy, NumericSexp, Result, Sexp};
+use savvy::{r_println, savvy, NumericScalar, NumericSexp, Result, Sexp};
 
 #[savvy]
 impl PlRSeries {
@@ -100,5 +100,13 @@ impl PlRSeries {
         .map_err(RPolarsErr::from)?;
 
         Ok(out.into())
+    }
+
+    fn slice(&self, offset: NumericScalar, length: Option<NumericScalar>) -> Result<Self> {
+        let offset = offset.as_i32()? as i64;
+        let length = length
+            .map(|l| <Wrap<usize>>::try_from(l).map(|l| l.0))
+            .unwrap_or_else(|| Ok(self.series.len()))?;
+        Ok(self.series.slice(offset, length).into())
     }
 }

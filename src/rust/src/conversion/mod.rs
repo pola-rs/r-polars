@@ -184,18 +184,30 @@ impl TryFrom<&str> for Wrap<TimeUnit> {
     }
 }
 
+// TODO: argument name replacement
 impl TryFrom<NumericScalar> for Wrap<usize> {
     type Error = String;
 
     fn try_from(n: NumericScalar) -> Result<Self, String> {
+        const TOLERANCE: f64 = 0.01; // same as savvy
         let n = n.as_f64();
         match n {
-            _ if n.is_nan() => Err("n should not be NaN".to_string()),
-            _ if n < 0_f64 => Err("n should not be negative".to_string()),
-            _ if n > usize::MAX as f64 => {
-                Err(format!("n should not be greater than {}", usize::MAX))
+            _ if n.is_nan() => Err("`NaN` cannot be converted to usize".to_string()),
+            _ if n < 0_f64 => Err(format!(
+                "Nevative value `{n:?}` cannot be converted to usize"
+            )),
+            _ if n > usize::MAX as f64 => Err(format!(
+                "Value `{n:?}` is too large to be converted to usize"
+            )),
+            _ => {
+                if (n - n.round()).abs() > TOLERANCE {
+                    Err(format!(
+                        "Value `{n:?}` is not integer-ish enough to be converted to usize"
+                    ))
+                } else {
+                    Ok(Wrap(n as usize))
+                }
             }
-            _ => Ok(Wrap(n as usize)),
         }
     }
 }
