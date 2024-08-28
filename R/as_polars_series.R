@@ -270,3 +270,16 @@ as_polars_series.integer64 <- function(x, name = NULL, ...) {
   PlRSeries$new_i64(name %||% "", x) |>
     wrap()
 }
+
+#' @rdname as_polars_series
+#' @export
+as_polars_series.vctrs_rcrd <- function(x, name = NULL, ...) {
+  field_names <- vctrs::fields(x)
+  internal_data <- field_names |>
+    lapply(\(field_name) {
+      vctrs::field(x, field_name) |>
+        as_polars_series(name = field_name)
+    })
+
+  as_polars_df(internal_data)$to_struct(name = name %||% "")
+}

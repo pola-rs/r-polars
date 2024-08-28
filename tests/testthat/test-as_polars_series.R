@@ -54,3 +54,55 @@ test_that("as_polars_series.default throws an error", {
 })
 
 # TODO: more tests for system time
+
+test_that("as_polars_series works for vctrs_rcrd", {
+  skip_if_not_installed("vctrs")
+  skip_if_not_installed("tibble")
+
+  # Sample vctrs_rcrd class
+  # From https://github.com/r-lib/vctrs/blob/8d98911aa64e36dbc249cbc8802618638fd0c603/vignettes/pillar.Rmd#L54-L85
+  latlon <- function(lat, lon) {
+    vctrs::new_rcrd(list(lat = lat, lon = lon), class = "earth_latlon")
+  }
+
+  format.earth_latlon <- function(x, ..., formatter = deg_min) {
+    x_valid <- which(!is.na(x))
+
+    lat <- vctrs::field(x, "lat")[x_valid]
+    lon <- vctrs::field(x, "lon")[x_valid]
+
+    ret <- rep(NA_character_, vec_size(x))
+    ret[x_valid] <- paste0(formatter(lat, "lat"), " ", formatter(lon, "lon"))
+
+    ret
+  }
+
+  deg_min <- function(x, direction) {
+    pm <- if (direction == "lat") c("N", "S") else c("E", "W")
+
+    sign <- sign(x)
+    x <- abs(x)
+    deg <- trunc(x)
+    x <- x - deg
+    min <- round(x * 60)
+
+    # Ensure the columns are always the same width so they line up nicely
+    ret <- sprintf("%d°%.2d'%s", deg, min, ifelse(sign >= 0, pm[[1]], pm[[2]]))
+    format(ret, justify = "right")
+  }
+
+  vec <- latlon(c(32.71, 2.95), c(-117.17, 1.67))
+  pl_series <- as_polars_series(vec)
+
+  expect_s3_class(pl_series, "polars_series")
+  expect_length(pl_series, 2L)
+  expect_snapshot(print(pl_series))
+
+  expect_equal(pl_series$name, "")
+  expect_equal(as_polars_series(vec, "foo")$name, "foo")
+
+  expect_equal(
+    pl_series$dtype,
+    pl$Struct(lat = pl$Float64, lon = pl$Float64)
+  )
+})

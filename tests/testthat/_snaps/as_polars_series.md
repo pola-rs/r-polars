@@ -212,3 +212,15 @@
       	9223372036854775807
       ]
 
+# as_polars_series works for vctrs_rcrd
+
+    Code
+      print(pl_series)
+    Output
+      shape: (2,)
+      Series: '' [struct[2]]
+      [
+      	{32.71,-117.17}
+      	{2.95,1.67}
+      ]
+

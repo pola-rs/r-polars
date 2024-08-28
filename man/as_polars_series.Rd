@@ -21,6 +21,7 @@
 \alias{as_polars_series.AsIs}
 \alias{as_polars_series.data.frame}
 \alias{as_polars_series.integer64}
+\alias{as_polars_series.vctrs_rcrd}
 \title{Create a Polars Series from an R object}
 \usage{
 as_polars_series(x, name = NULL, ...)
@@ -62,6 +63,8 @@ as_polars_series(x, name = NULL, ...)
 \method{as_polars_series}{data.frame}(x, name = NULL, ...)
 
 \method{as_polars_series}{integer64}(x, name = NULL, ...)
+
+\method{as_polars_series}{vctrs_rcrd}(x, name = NULL, ...)
 }
 \arguments{
 \item{x}{An R object.}
