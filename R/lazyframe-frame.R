@@ -22,15 +22,17 @@ wrap.PlRLazyFrame <- function(x, ...) {
 }
 
 lazyframe__select <- function(...) {
-  exprs <- parse_into_list_of_expressions(...)
-  self$`_ldf`$select(exprs) |>
-    wrap()
+  wrap({
+    exprs <- parse_into_list_of_expressions(...)
+    self$`_ldf`$select(exprs)
+  })
 }
 
 lazyframe__group_by <- function(..., maintain_order = FALSE) {
-  exprs <- parse_into_list_of_expressions(...)
-  self$`_ldf`$group_by(exprs, maintain_order) |>
-    wrap()
+  wrap({
+    exprs <- parse_into_list_of_expressions(...)
+    self$`_ldf`$group_by(exprs, maintain_order)
+  })
 }
 
 lazyframe__collect <- function() {
