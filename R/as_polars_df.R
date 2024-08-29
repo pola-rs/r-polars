@@ -60,7 +60,4 @@ as_polars_df.list <- function(x, ...) {
 
 #' @rdname as_polars_df
 #' @export
-as_polars_df.data.frame <- function(x, ...) {
-  as.list(x) |>
-    as_polars_df.list()
-}
+as_polars_df.data.frame <- as_polars_df.list
