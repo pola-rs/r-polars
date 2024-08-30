@@ -72,11 +72,12 @@ Each class object's methods are defined in multiple source files as follows:
 
 This package uses the `roxygen2` package to generate Rd files.
 
-Note that, some S3 methods exported in the `zzz.R` file are not recognized as S3 methods by roxygen2
-if the suggested package is not loaded.
+Note that, some S3 methods exported in the `zzz.R` file are not recognized as S3
+methods by roxygen2 if the suggested package is not loaded.
 
-For example, to generate the documentation for the `nanoarrow::as_nanoarrow_array_stream.RPolarsDataFrame` function,
-the `nanoarrow` package must be installed and loaded.
+For example, to generate the documentation for the
+`nanoarrow::as_nanoarrow_array_stream.RPolarsDataFrame` function, the `nanoarrow`
+package must be installed and loaded.
 
 ```r
 s3_register("nanoarrow::as_nanoarrow_array_stream", "RPolarsDataFrame")
@@ -107,16 +108,21 @@ create a library release to GitHub.
 
 Please push a tag (requires write access to the repository) named starting with
 `lib-v` (e.g. `lib-v0.35.0`, `0.35.0` is matched against the version number in
-the `src/rust/Cargo.toml` file). This triggers the GitHub action to build the libraries
-for all platforms and upload them to the release.
+the `src/rust/Cargo.toml` file). This triggers the GitHub action to build the
+libraries for all platforms and upload them to the release.
 
 The version number of the Rust library is only used for compatibility with the
-R package, so any version number defferent from the previous ones are fine.
+R package, so any version number different from the previous ones are fine.
 Though, it is recommended to use the same major / minor version number as
-the `polars` crate (rust-polars) to conssistency.
+the `polars` crate (rust-polars) to consistency.
 
-After creating the release, run the `dev/generate-lib-sums.R` script to generate `tools/lib-sums.tsv`, which is used to download the binaries during the source R
-package installation process.
+After creating the release, run the `dev/generate-lib-sums.R` script to generate
+`tools/lib-sums.tsv`, which is used to download the binaries during the source R
+package installation process:
+```sh
+task build-lib-sums
+```
+or
 
 ```sh
 Rscript dev/generate-lib-sums.R
@@ -147,7 +153,10 @@ usethis::use_dev_version()
 
 ## Check the performance via debug mode
 
-If you experience unexpected sluggish performance, when using polars in a given IDE, we'd like to hear about it. You can try to activate `pl$set_options(debug_polars = TRUE)` to profile what methods are being touched (not necessarily run) and how fast. Below is an example of good behavior.
+If you experience unexpected sluggish performance, when using polars in a given
+IDE, we'd like to hear about it. You can try to activate
+`options(polars.debug_polars = TRUE)` to profile what methods are being touched
+(not necessarily run) and how fast. Below is an example of good behavior.
 
 ```r
 library(polars)
