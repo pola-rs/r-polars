@@ -6,7 +6,7 @@ LIBNAME = libr_polars.a
 TARGET_DIR = $(CURDIR)/rust/target
 LIBDIR = $(TARGET_DIR)/$(TARGET)/$(LIBR_POLARS_PROFILE)
 STATLIB = $(LIBDIR)/$(LIBNAME)
-PKG_LIBS = -L$(LIBDIR) -lr_polars @ADDITIONAL_PKG_LIBS_FLAG@ -z noexecstack
+PKG_LIBS = -L$(LIBDIR) -lr_polars @ADDITIONAL_PKG_LIBS_FLAG@
 
 all: C_clean
 
