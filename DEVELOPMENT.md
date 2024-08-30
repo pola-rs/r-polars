@@ -72,11 +72,11 @@ Each class object's methods are defined in multiple source files as follows:
 
 This package uses the `roxygen2` package to generate Rd files.
 
-Note that, some S3 methods exported in the `zzz.R` file are not recognized as S3 
+Note that, some S3 methods exported in the `zzz.R` file are not recognized as S3
 methods by roxygen2 if the suggested package is not loaded.
 
 For example, to generate the documentation for the
-`nanoarrow::as_nanoarrow_array_stream.RPolarsDataFrame` function, the `nanoarrow` 
+`nanoarrow::as_nanoarrow_array_stream.RPolarsDataFrame` function, the `nanoarrow`
 package must be installed and loaded.
 
 ```r
