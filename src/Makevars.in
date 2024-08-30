@@ -14,6 +14,9 @@ $(SHLIB): $(STATLIB)
 
 CARGOTMP = $(CURDIR)/.cargo
 
+# -z noexecstack added to avoid following error on Ubuntu:
+# /usr/lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.39' not found (required by /usr/local/lib/R/site-library/polars/libs/polars.so)`
+# https://stackoverflow.com/questions/73435637/how-can-i-fix-usr-bin-ld-warning-trap-o-missing-note-gnu-stack-section-imp/73468271#73468271
 $(STATLIB):
 	if [ -f "$(CURDIR)/../tools/$(LIBNAME)" ]; then \
 		mkdir -p "$(LIBDIR)" ; \
@@ -25,9 +28,6 @@ $(STATLIB):
 		export CARGO_BUILD_JOBS=2; \
 	fi && \
 		export PATH="$(PATH):$(HOME)/.cargo/bin" && \
-		# -z noexecstack added to avoid following error on Ubuntu:
-		# /usr/lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.39' not found (required by /usr/local/lib/R/site-library/polars/libs/polars.so)`
-		# https://stackoverflow.com/questions/73435637/how-can-i-fix-usr-bin-ld-warning-trap-o-missing-note-gnu-stack-section-imp/73468271#73468271
 		cargo build --lib --manifest-path="$(CURDIR)/rust/Cargo.toml" --target-dir "$(TARGET_DIR)" --target="$(TARGET)" \
 			--profile="$(LIBR_POLARS_PROFILE)" --features="$(LIBR_POLARS_FEATURES)" -z noexecstack
 
