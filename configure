@@ -10,8 +10,12 @@ LIBNAME="libr_polars.a"
 LIBR_POLARS_DEFAULT_PATH="$(pwd)/tools/${LIBNAME}"
 LIBR_POLARS_PATH=${LIBR_POLARS_PATH:-${LIBR_POLARS_DEFAULT_PATH}}
 
+# -z noexecstack added to avoid following error on Ubuntu:
+# /usr/lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.39' not found (required by /usr/local/lib/R/site-library/polars/libs/polars.so)`
+# https://stackoverflow.com/questions/73435637/how-can-i-fix-usr-bin-ld-warning-trap-o-missing-note-gnu-stack-section-imp/73468271#73468271
+#
 # not used on macOS
-ADDITIONAL_PKG_LIBS_FLAG="-lrt"
+ADDITIONAL_PKG_LIBS_FLAG="-lrt -z noexecstack"
 
 export PATH="$PATH:$HOME/.cargo/bin"
 
