@@ -4,8 +4,7 @@
 
 ## Polars R Package 0.19.1
 
-- Add the option `-z noexecstack` for compilation on Linux to avoid the error
-  `version GLIBC_2.39' not found` (#1212).
+- This is a maintenance relase. No user facing changes.
 
 ## Polars R Package 0.19.0
 
