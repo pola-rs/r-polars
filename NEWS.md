@@ -1,5 +1,7 @@
 # NEWS
 
+## Polars R Package (development version)
+
 ## Polars R Package 0.19.1
 
 - Add the option `-z noexecstack` for compilation on Linux to avoid the error
