@@ -586,13 +586,19 @@ test_that("conversion of datatype Null to R works", {
     data.frame(x = NA)
   )
 
-  df2 = pl$DataFrame(x = 1, y = NULL)
+  df2 = pl$DataFrame(x = 1:2, y = NULL)
   expect_identical(
     df2$to_data_frame(),
+    data.frame(x = 1:2, y = c(NA, NA))
+  )
+
+  df3 = pl$DataFrame(x = 1, y = NULL)
+  expect_identical(
+    df3$to_data_frame(),
     data.frame(x = 1, y = NA)
   )
   expect_identical(
-    as.data.frame(df2),
+    as.data.frame(df3),
     data.frame(x = 1, y = NA)
   )
 })
