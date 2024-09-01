@@ -98,35 +98,33 @@ patrick::with_parameters_test_that("clock package class support",
       "ms"
     )
 
-    withr::with_timezone("UTC", {
-      clock_naive_time <- clock::naive_time_parse(naive_time_chr, precision = precision)
-      clock_sys_time <- clock::sys_time_parse(naive_time_chr, precision = precision)
-      clock_zoned_time <- clock::as_zoned_time(clock_naive_time, "America/New_York")
+    clock_naive_time <- clock::naive_time_parse(naive_time_chr, precision = precision)
+    clock_sys_time <- clock::sys_time_parse(naive_time_chr, precision = precision)
+    clock_zoned_time <- clock::as_zoned_time(clock_naive_time, "America/New_York")
 
-      series_naive_time <- as_polars_series(clock_naive_time)
-      series_sys_time <- as_polars_series(clock_sys_time)
-      series_zoned_time <- as_polars_series(clock_zoned_time)
+    series_naive_time <- as_polars_series(clock_naive_time)
+    series_sys_time <- as_polars_series(clock_sys_time)
+    series_zoned_time <- as_polars_series(clock_zoned_time)
 
-      expect_s3_class(series_naive_time, "polars_series")
-      expect_s3_class(series_sys_time, "polars_series")
-      expect_s3_class(series_zoned_time, "polars_series")
+    expect_s3_class(series_naive_time, "polars_series")
+    expect_s3_class(series_sys_time, "polars_series")
+    expect_s3_class(series_zoned_time, "polars_series")
 
-      expect_snapshot(print(series_naive_time))
-      expect_snapshot(print(series_sys_time))
-      expect_snapshot(print(series_zoned_time))
+    expect_snapshot(print(series_naive_time))
+    expect_snapshot(print(series_sys_time))
+    expect_snapshot(print(series_zoned_time))
 
-      expect_equal(series_naive_time$name, "")
-      expect_equal(series_sys_time$name, "")
-      expect_equal(series_zoned_time$name, "")
+    expect_equal(series_naive_time$name, "")
+    expect_equal(series_sys_time$name, "")
+    expect_equal(series_zoned_time$name, "")
 
-      expect_equal(as_polars_series(clock_naive_time, name = "foo")$name, "foo")
-      expect_equal(as_polars_series(clock_sys_time, name = "foo")$name, "foo")
-      expect_equal(as_polars_series(clock_zoned_time, name = "foo")$name, "foo")
+    expect_equal(as_polars_series(clock_naive_time, name = "foo")$name, "foo")
+    expect_equal(as_polars_series(clock_sys_time, name = "foo")$name, "foo")
+    expect_equal(as_polars_series(clock_zoned_time, name = "foo")$name, "foo")
 
-      expect_equal(series_naive_time$dtype, pl$Datetime(expected_time_unit, NULL))
-      expect_equal(series_sys_time$dtype, pl$Datetime(expected_time_unit, "UTC"))
-      expect_equal(series_zoned_time$dtype, pl$Datetime(expected_time_unit, "America/New_York"))
-    })
+    expect_equal(series_naive_time$dtype, pl$Datetime(expected_time_unit, NULL))
+    expect_equal(series_sys_time$dtype, pl$Datetime(expected_time_unit, "UTC"))
+    expect_equal(series_zoned_time$dtype, pl$Datetime(expected_time_unit, "America/New_York"))
   },
   precision = c("nanosecond", "microsecond", "millisecond", "second", "minute", "hour", "day"),
   .test_name = precision
