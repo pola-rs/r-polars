@@ -95,7 +95,6 @@ patrick::with_parameters_test_that("clock package class support",
     expected_time_unit <- switch(precision,
       nanosecond = "ns",
       microsecond = "us",
-      millisecond = "ms",
       "ms"
     )
 

@@ -312,8 +312,7 @@ as_polars_series.clock_time_point <- function(x, name = NULL, ...) {
   time_unit <- switch(from_precision,
     nanosecond = "ns",
     microsecond = "us",
-    millisecond = "ms",
-    "ms" # second, minute, hour, day
+    "ms" # millisecond, second, minute, hour, day
   )
 
   multiplier <- switch(from_precision,
@@ -351,12 +350,6 @@ as_polars_series.clock_zoned_time <- function(x, name = NULL, ...) {
   if (isTRUE(time_zone == "")) {
     # https://github.com/r-lib/clock/issues/366
     time_zone <- Sys.timezone()
-  }
-  if (!isTRUE(time_zone %in% base::OlsonNames())) {
-    abort(sprintf(
-      "The time zone '%s' is not supported in polars. See `base::OlsonNames()` for supported time zones.",
-      time_zone
-    ))
   }
 
   as_polars_series.clock_time_point(
