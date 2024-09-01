@@ -12,7 +12,7 @@ pub struct TimePoint {
 }
 
 pub struct ZonedTime {
-    pub tp: TimePoint,
+    pub time_point: TimePoint,
     pub zone: String,
 }
 
@@ -85,16 +85,16 @@ impl From<ZonedTime> for Sexp {
         let _ = sexp.set_class(&["clock_zoned_time", "clock_rcrd", "vctrs_rcrd", "vctrs_vctr"]);
         let _ = sexp.set_attrib(
             "precision",
-            <OwnedIntegerSexp>::try_from_scalar(zt.tp.precision)
+            <OwnedIntegerSexp>::try_from_scalar(zt.time_point.precision)
                 .unwrap()
                 .into(),
         );
         let _ = sexp.set_attrib("zone", <OwnedStringSexp>::try_from(zt.zone).unwrap().into());
         let _ = sexp
-            .set_name_and_value(0, "lower", zt.tp.value.left)
+            .set_name_and_value(0, "lower", zt.time_point.value.left)
             .unwrap();
         let _ = sexp
-            .set_name_and_value(1, "upper", zt.tp.value.right)
+            .set_name_and_value(1, "upper", zt.time_point.value.right)
             .unwrap();
 
         sexp.into()

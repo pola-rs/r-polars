@@ -125,12 +125,11 @@ impl PlRSeries {
                 DataType::Time => Ok(<Sexp>::from(Wrap(series.time().unwrap()))),
                 DataType::Datetime(_, opt_tz) => {
                     if as_clock_class {
+                        let time_point = <clock::TimePoint>::from(series.datetime().unwrap());
                         match opt_tz {
-                            None => Ok(<Sexp>::from(<clock::TimePoint>::from(
-                                series.datetime().unwrap(),
-                            ))),
+                            None => Ok(<Sexp>::from(time_point)),
                             Some(tz) => Ok(<Sexp>::from(clock::ZonedTime {
-                                tp: <clock::TimePoint>::from(series.datetime().unwrap()),
+                                time_point,
                                 zone: tz.to_string(),
                             })),
                         }
