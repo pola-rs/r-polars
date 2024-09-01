@@ -4,12 +4,17 @@
 \name{neopolars-package}
 \alias{neopolars}
 \alias{neopolars-package}
-\title{neopolars: What the Package Does (One Line, Title Case)}
+\title{neopolars: R Bindings for the 'polars' Rust Library}
 \description{
-What the package does (one paragraph).
+Lightning-fast 'DataFrame' library written in 'Rust'. Convert R data to 'Polars' data and vice versa. Perform fast, lazy, larger-than-memory and optimized data queries. 'Polars' is interoperable with the package 'arrow', as both are based on the 'Apache Arrow' Columnar Format.
 }
 \author{
-\strong{Maintainer}: First Last \email{first.last@example.com} (\href{https://orcid.org/YOUR-ORCID-ID}{ORCID})
+\strong{Maintainer}: Tatsuya Shima \email{ts1s1andn@gmail.com}
+
+Authors:
+\itemize{
+  \item Authors of the dependency Rust crates
+}
 
 }
 \keyword{internal}
