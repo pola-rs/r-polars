@@ -1,4 +1,4 @@
-use crate::{prelude::*, PlRDataType, PlRSeries};
+use crate::{prelude::*, PlRDataType, PlRSeries, RPolarsErr};
 use polars_core::utils::{try_get_supertype, CustomIterTools};
 use savvy::{
     savvy, sexp::na::NotAvailableValue, IntegerSexp, ListSexp, LogicalSexp, RawSexp, RealSexp,
@@ -114,5 +114,39 @@ impl PlRSeries {
             .collect();
 
         Ok(Series::new(name, casted_series_vec).into())
+    }
+
+    fn new_from_clock_time_point(
+        name: &str,
+        left: RealSexp,
+        right: RealSexp,
+        multiplier: i32,
+        time_unit: &str,
+    ) -> Result<Self> {
+        let time_unit = <Wrap<TimeUnit>>::try_from(time_unit)?.0;
+        let ca_i64: Int64Chunked = left
+            .iter()
+            .zip(right.iter())
+            .map(|(l, r)| {
+                if l.is_na() || r.is_na() {
+                    None
+                } else {
+                    let left_u32 = *l as u32;
+                    let right_u32 = *r as u32;
+                    let out_u64 = (left_u32 as u64) << 32 | right_u32 as u64;
+                    Some(
+                        i64::from_ne_bytes(
+                            (out_u64.wrapping_sub(9_223_372_036_854_775_808u64)).to_ne_bytes(),
+                        ) * (multiplier as i64),
+                    )
+                }
+            })
+            .collect_trusted();
+        Ok(ca_i64
+            .with_name(name)
+            .into_series()
+            .cast(&DataType::Datetime(time_unit, None))
+            .map_err(RPolarsErr::from)?
+            .into())
     }
 }

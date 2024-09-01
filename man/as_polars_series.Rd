@@ -22,6 +22,9 @@
 \alias{as_polars_series.data.frame}
 \alias{as_polars_series.integer64}
 \alias{as_polars_series.vctrs_rcrd}
+\alias{as_polars_series.clock_time_point}
+\alias{as_polars_series.clock_sys_time}
+\alias{as_polars_series.clock_zoned_time}
 \title{Create a Polars Series from an R object}
 \usage{
 as_polars_series(x, name = NULL, ...)
@@ -65,6 +68,12 @@ as_polars_series(x, name = NULL, ...)
 \method{as_polars_series}{integer64}(x, name = NULL, ...)
 
 \method{as_polars_series}{vctrs_rcrd}(x, name = NULL, ...)
+
+\method{as_polars_series}{clock_time_point}(x, name = NULL, ...)
+
+\method{as_polars_series}{clock_sys_time}(x, name = NULL, ...)
+
+\method{as_polars_series}{clock_zoned_time}(x, name = NULL, ...)
 }
 \arguments{
 \item{x}{An R object.}
@@ -139,6 +148,15 @@ if (requireNamespace("blob", quietly = TRUE)) {
 # integer64
 if (requireNamespace("bit64", quietly = TRUE)) {
   as_polars_series(bit64::as.integer64(c(NA, "9223372036854775807")))
+}
+
+# clock naive time
+if (requireNamespace("clock", quietly = TRUE)) {
+  as_polars_series(clock::naive_time_parse(c(
+    NA,
+    "1900-01-01T12:34:56.123456789",
+    "2020-01-01T12:34:56.123456789"
+  ), precision = "nanosecond"))
 }
 }
 \seealso{

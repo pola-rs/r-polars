@@ -69,6 +69,15 @@
 #' if (requireNamespace("bit64", quietly = TRUE)) {
 #'   as_polars_series(bit64::as.integer64(c(NA, "9223372036854775807")))
 #' }
+#'
+#' # clock naive time
+#' if (requireNamespace("clock", quietly = TRUE)) {
+#'   as_polars_series(clock::naive_time_parse(c(
+#'     NA,
+#'     "1900-01-01T12:34:56.123456789",
+#'     "2020-01-01T12:34:56.123456789"
+#'   ), precision = "nanosecond"))
+#' }
 #' @export
 as_polars_series <- function(x, name = NULL, ...) {
   UseMethod("as_polars_series")
@@ -282,4 +291,77 @@ as_polars_series.vctrs_rcrd <- function(x, name = NULL, ...) {
     })
 
   as_polars_df(internal_data)$to_struct(name = name %||% "")
+}
+
+#' @rdname as_polars_series
+#' @export
+as_polars_series.clock_time_point <- function(x, name = NULL, ...) {
+  from_precision <- clock::time_point_precision(x)
+
+  # Polars' datetime type only include ns, us, ms
+  if (
+    !from_precision %in% c(
+      "nanosecond", "microsecond", "millisecond", "second", "minute", "hour", "day"
+    )
+  ) {
+    x <- clock::time_point_cast(x, "millisecond")
+    from_precision <- clock::time_point_precision(x)
+  }
+
+  # https://github.com/r-lib/clock/blob/adc01b61670b18463cc3087f1e58acf59ddc3915/R/precision.R#L37-L51
+  time_unit <- switch(from_precision,
+    nanosecond = "ns",
+    microsecond = "us",
+    millisecond = "ms",
+    "ms" # second, minute, hour, day
+  )
+
+  multiplier <- switch(from_precision,
+    second = 1000L,
+    minute = 60L * 1000L,
+    hour = 60L * 60L * 1000L,
+    day = 24L * 60L * 60L * 1000L,
+    1L # ns, us, ms
+  )
+
+  left <- vctrs::field(x, "lower")
+  right <- vctrs::field(x, "upper")
+
+  PlRSeries$new_from_clock_time_point(
+    name %||% "",
+    left,
+    right,
+    multiplier,
+    time_unit
+  ) |>
+    wrap()
+}
+
+#' @rdname as_polars_series
+#' @export
+as_polars_series.clock_sys_time = function(x, name = NULL, ...) {
+  as_polars_series.clock_time_point(x, name = name, ...)$dt$replace_time_zone("UTC")
+}
+
+#' @rdname as_polars_series
+#' @export
+as_polars_series.clock_zoned_time <- function(x, name = NULL, ...) {
+  time_zone <- clock::zoned_time_zone(x)
+
+  if (isTRUE(time_zone == "")) {
+    # https://github.com/r-lib/clock/issues/366
+    time_zone <- Sys.timezone()
+  }
+  if (!isTRUE(time_zone %in% base::OlsonNames())) {
+    abort(sprintf(
+      "The time zone '%s' is not supported in polars. See `base::OlsonNames()` for supported time zones.",
+      time_zone
+    ))
+  }
+
+  as_polars_series.clock_time_point(
+    clock::as_naive_time(x),
+    name = name,
+    ...
+  )$dt$replace_time_zone(time_zone)
 }

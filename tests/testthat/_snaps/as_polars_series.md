@@ -224,3 +224,297 @@
       	{2.95,1.67}
       ]
 
+# clock package class support precision=nanosecond
+
+    Code
+      print(series_naive_time)
+    Output
+      shape: (4,)
+      Series: '' [datetime[ns]]
+      [
+      	null
+      	1900-01-01 12:34:56.123456789
+      	2012-01-01 12:34:56.123456789
+      	2212-01-01 12:34:56.123456789
+      ]
+
+---
+
+    Code
+      print(series_sys_time)
+    Output
+      shape: (4,)
+      Series: '' [datetime[ns, UTC]]
+      [
+      	null
+      	1900-01-01 12:34:56.123456789 UTC
+      	2012-01-01 12:34:56.123456789 UTC
+      	2212-01-01 12:34:56.123456789 UTC
+      ]
+
+---
+
+    Code
+      print(series_zoned_time)
+    Output
+      shape: (4,)
+      Series: '' [datetime[ns, America/New_York]]
+      [
+      	null
+      	1900-01-01 12:34:56.123456789 EST
+      	2012-01-01 12:34:56.123456789 EST
+      	2212-01-01 12:34:56.123456789 EST
+      ]
+
+# clock package class support precision=microsecond
+
+    Code
+      print(series_naive_time)
+    Output
+      shape: (4,)
+      Series: '' [datetime[μs]]
+      [
+      	null
+      	1900-01-01 12:34:56.123456
+      	2012-01-01 12:34:56.123456
+      	2212-01-01 12:34:56.123456
+      ]
+
+---
+
+    Code
+      print(series_sys_time)
+    Output
+      shape: (4,)
+      Series: '' [datetime[μs, UTC]]
+      [
+      	null
+      	1900-01-01 12:34:56.123456 UTC
+      	2012-01-01 12:34:56.123456 UTC
+      	2212-01-01 12:34:56.123456 UTC
+      ]
+
+---
+
+    Code
+      print(series_zoned_time)
+    Output
+      shape: (4,)
+      Series: '' [datetime[μs, America/New_York]]
+      [
+      	null
+      	1900-01-01 12:34:56.123456 EST
+      	2012-01-01 12:34:56.123456 EST
+      	2212-01-01 12:34:56.123456 EST
+      ]
+
+# clock package class support precision=millisecond
+
+    Code
+      print(series_naive_time)
+    Output
+      shape: (4,)
+      Series: '' [datetime[ms]]
+      [
+      	null
+      	1900-01-01 12:34:56.123
+      	2012-01-01 12:34:56.123
+      	2212-01-01 12:34:56.123
+      ]
+
+---
+
+    Code
+      print(series_sys_time)
+    Output
+      shape: (4,)
+      Series: '' [datetime[ms, UTC]]
+      [
+      	null
+      	1900-01-01 12:34:56.123 UTC
+      	2012-01-01 12:34:56.123 UTC
+      	2212-01-01 12:34:56.123 UTC
+      ]
+
+---
+
+    Code
+      print(series_zoned_time)
+    Output
+      shape: (4,)
+      Series: '' [datetime[ms, America/New_York]]
+      [
+      	null
+      	1900-01-01 12:34:56.123 EST
+      	2012-01-01 12:34:56.123 EST
+      	2212-01-01 12:34:56.123 EST
+      ]
+
+# clock package class support precision=second
+
+    Code
+      print(series_naive_time)
+    Output
+      shape: (4,)
+      Series: '' [datetime[ms]]
+      [
+      	null
+      	1900-01-01 12:34:56
+      	2012-01-01 12:34:56
+      	2212-01-01 12:34:56
+      ]
+
+---
+
+    Code
+      print(series_sys_time)
+    Output
+      shape: (4,)
+      Series: '' [datetime[ms, UTC]]
+      [
+      	null
+      	1900-01-01 12:34:56 UTC
+      	2012-01-01 12:34:56 UTC
+      	2212-01-01 12:34:56 UTC
+      ]
+
+---
+
+    Code
+      print(series_zoned_time)
+    Output
+      shape: (4,)
+      Series: '' [datetime[ms, America/New_York]]
+      [
+      	null
+      	1900-01-01 12:34:56 EST
+      	2012-01-01 12:34:56 EST
+      	2212-01-01 12:34:56 EST
+      ]
+
+# clock package class support precision=minute
+
+    Code
+      print(series_naive_time)
+    Output
+      shape: (4,)
+      Series: '' [datetime[ms]]
+      [
+      	null
+      	1900-01-01 12:34:00
+      	2012-01-01 12:34:00
+      	2212-01-01 12:34:00
+      ]
+
+---
+
+    Code
+      print(series_sys_time)
+    Output
+      shape: (4,)
+      Series: '' [datetime[ms, UTC]]
+      [
+      	null
+      	1900-01-01 12:34:00 UTC
+      	2012-01-01 12:34:00 UTC
+      	2212-01-01 12:34:00 UTC
+      ]
+
+---
+
+    Code
+      print(series_zoned_time)
+    Output
+      shape: (4,)
+      Series: '' [datetime[ms, America/New_York]]
+      [
+      	null
+      	1900-01-01 12:34:00 EST
+      	2012-01-01 12:34:00 EST
+      	2212-01-01 12:34:00 EST
+      ]
+
+# clock package class support precision=hour
+
+    Code
+      print(series_naive_time)
+    Output
+      shape: (4,)
+      Series: '' [datetime[ms]]
+      [
+      	null
+      	1900-01-01 12:00:00
+      	2012-01-01 12:00:00
+      	2212-01-01 12:00:00
+      ]
+
+---
+
+    Code
+      print(series_sys_time)
+    Output
+      shape: (4,)
+      Series: '' [datetime[ms, UTC]]
+      [
+      	null
+      	1900-01-01 12:00:00 UTC
+      	2012-01-01 12:00:00 UTC
+      	2212-01-01 12:00:00 UTC
+      ]
+
+---
+
+    Code
+      print(series_zoned_time)
+    Output
+      shape: (4,)
+      Series: '' [datetime[ms, America/New_York]]
+      [
+      	null
+      	1900-01-01 12:00:00 EST
+      	2012-01-01 12:00:00 EST
+      	2212-01-01 12:00:00 EST
+      ]
+
+# clock package class support precision=day
+
+    Code
+      print(series_naive_time)
+    Output
+      shape: (4,)
+      Series: '' [datetime[ms]]
+      [
+      	null
+      	1900-01-01 00:00:00
+      	2012-01-01 00:00:00
+      	2212-01-01 00:00:00
+      ]
+
+---
+
+    Code
+      print(series_sys_time)
+    Output
+      shape: (4,)
+      Series: '' [datetime[ms, UTC]]
+      [
+      	null
+      	1900-01-01 00:00:00 UTC
+      	2012-01-01 00:00:00 UTC
+      	2212-01-01 00:00:00 UTC
+      ]
+
+---
+
+    Code
+      print(series_zoned_time)
+    Output
+      shape: (4,)
+      Series: '' [datetime[ms, America/New_York]]
+      [
+      	null
+      	1900-01-01 00:00:00 EST
+      	2012-01-01 00:00:00 EST
+      	2212-01-01 00:00:00 EST
+      ]
+

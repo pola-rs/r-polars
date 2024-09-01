@@ -171,6 +171,7 @@ SEXP savvy_PlRSeries_new_str__ffi(SEXP name, SEXP values);
 SEXP savvy_PlRSeries_new_single_binary__ffi(SEXP name, SEXP values);
 SEXP savvy_PlRSeries_new_binary__ffi(SEXP name, SEXP values);
 SEXP savvy_PlRSeries_new_series_list__ffi(SEXP name, SEXP values);
+SEXP savvy_PlRSeries_new_from_clock_time_point__ffi(SEXP name, SEXP left, SEXP right, SEXP multiplier, SEXP time_unit);
 SEXP savvy_PlRSeries_to_r_vector__ffi(SEXP self__, SEXP int64, SEXP as_clock_class, SEXP ambiguous, SEXP non_existent, SEXP local_time_zone);
 SEXP savvy_PlRSeries_print__ffi(SEXP self__);
 SEXP savvy_PlRSeries_struct_unnest__ffi(SEXP self__);
