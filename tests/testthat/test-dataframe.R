@@ -579,6 +579,23 @@ test_that("to_Struct, unnest, to_frame, to_data_frame", {
   expect_identical(df$to_data_frame(), df_e)
 })
 
+test_that("conversion of datatype Null to R works", {
+  df = pl$DataFrame(x = NULL)
+  expect_identical(
+    df$to_data_frame(),
+    data.frame(x = NA)
+  )
+
+  df2 = pl$DataFrame(x = 1, y = NULL)
+  expect_identical(
+    df2$to_data_frame(),
+    data.frame(x = 1, y = NA)
+  )
+  expect_identical(
+    as.data.frame(df2),
+    data.frame(x = 1, y = NA)
+  )
+})
 
 test_that("unnest works correctly", {
   df = pl$DataFrame(
