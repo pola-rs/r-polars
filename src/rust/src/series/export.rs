@@ -17,6 +17,7 @@ impl PlRSeries {
     pub fn to_r_vector(
         &self,
         int64: &str,
+        as_clock_class: bool,
         ambiguous: PlRExpr,
         non_existent: &str,
         local_time_zone: &str,
@@ -35,6 +36,7 @@ impl PlRSeries {
         fn to_r_vector_recursive(
             series: &Series,
             int64: Int64Conversion,
+            as_clock_class: bool,
             ambiguous: Expr,
             non_existent: NonExistent,
             local_time_zone: &str,
@@ -85,6 +87,7 @@ impl PlRSeries {
                                 to_r_vector_recursive(
                                     s.as_ref(),
                                     int64.clone(),
+                                    as_clock_class,
                                     ambiguous.clone(),
                                     non_existent,
                                     local_time_zone,
@@ -107,6 +110,7 @@ impl PlRSeries {
                                 to_r_vector_recursive(
                                     s.as_ref(),
                                     int64.clone(),
+                                    as_clock_class,
                                     ambiguous.clone(),
                                     non_existent,
                                     local_time_zone,
@@ -119,32 +123,46 @@ impl PlRSeries {
                 },
                 DataType::Date => Ok(<Sexp>::from(Wrap(series.date().unwrap()))),
                 DataType::Time => Ok(<Sexp>::from(Wrap(series.time().unwrap()))),
-                DataType::Datetime(_, opt_tz) => match opt_tz {
-                    None => Ok(<Sexp>::from(Wrap(
-                        series
-                            .clone()
-                            .into_frame()
-                            .lazy()
-                            .select([col(series.name())
-                                .dt()
-                                .replace_time_zone(
-                                    Some(local_time_zone.to_string()),
-                                    ambiguous.clone(),
-                                    non_existent,
-                                )
-                                .dt()
-                                .convert_time_zone("UTC".to_string())
-                                .dt()
-                                .replace_time_zone(None, lit("raise"), NonExistent::Raise)])
-                            .collect()
-                            .map_err(RPolarsErr::from)?
-                            .select_at_idx(0)
-                            .unwrap()
-                            .datetime()
-                            .unwrap(),
-                    ))),
-                    Some(_tz) => Ok(<Sexp>::from(Wrap(series.datetime().unwrap()))),
-                },
+                DataType::Datetime(_, opt_tz) => {
+                    if as_clock_class {
+                        match opt_tz {
+                            None => Ok(<Sexp>::from(<clock::TimePoint>::from(
+                                series.datetime().unwrap(),
+                            ))),
+                            Some(tz) => Ok(<Sexp>::from(clock::ZonedTime {
+                                tp: <clock::TimePoint>::from(series.datetime().unwrap()),
+                                zone: tz.to_string(),
+                            })),
+                        }
+                    } else {
+                        match opt_tz {
+                            None => Ok(<Sexp>::from(Wrap(
+                                series
+                                    .clone()
+                                    .into_frame()
+                                    .lazy()
+                                    .select([col(series.name())
+                                        .dt()
+                                        .replace_time_zone(
+                                            Some(local_time_zone.to_string()),
+                                            ambiguous.clone(),
+                                            non_existent,
+                                        )
+                                        .dt()
+                                        .convert_time_zone("UTC".to_string())
+                                        .dt()
+                                        .replace_time_zone(None, lit("raise"), NonExistent::Raise)])
+                                    .collect()
+                                    .map_err(RPolarsErr::from)?
+                                    .select_at_idx(0)
+                                    .unwrap()
+                                    .datetime()
+                                    .unwrap(),
+                            ))),
+                            Some(_tz) => Ok(<Sexp>::from(Wrap(series.datetime().unwrap()))),
+                        }
+                    }
+                }
                 DataType::Decimal(_, _) => Ok(<Sexp>::from(Wrap(
                     series.cast(&DataType::Float64).unwrap().f64().unwrap(),
                 ))),
@@ -160,6 +178,7 @@ impl PlRSeries {
                             to_r_vector_recursive(
                                 s,
                                 int64.clone(),
+                                as_clock_class,
                                 ambiguous.clone(),
                                 non_existent,
                                 local_time_zone,
@@ -178,8 +197,14 @@ impl PlRSeries {
             }
         }
 
-        let r_vector =
-            to_r_vector_recursive(series, int64, ambiguous, non_existent, local_time_zone)?;
+        let r_vector = to_r_vector_recursive(
+            series,
+            int64,
+            as_clock_class,
+            ambiguous,
+            non_existent,
+            local_time_zone,
+        )?;
         Ok(r_vector)
     }
 }

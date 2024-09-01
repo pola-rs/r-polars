@@ -37,6 +37,7 @@ as.list.polars_data_frame <- function(
     x, ...,
     as_series = FALSE,
     int64 = "double",
+    as_clock_class = FALSE,
     ambiguous = "raise",
     non_existent = "raise") {
   if (isTRUE(as_series)) {
@@ -44,6 +45,7 @@ as.list.polars_data_frame <- function(
   } else {
     x$to_r_list(
       int64 = int64,
+      as_clock_class = as_clock_class,
       ambiguous = ambiguous,
       non_existent = non_existent
     )
@@ -67,6 +69,7 @@ as.data.frame.polars_data_frame <- function(
     x,
     ...,
     int64 = "double",
+    as_clock_class = FALSE,
     ambiguous = "raise",
     non_existent = "raise") {
   .args <- as.list(match.call())

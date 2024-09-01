@@ -56,3 +56,33 @@ test_that("int64 argument error", {
     "must be one of 'character', 'double', 'integer', 'integer64'"
   )
 })
+
+patrick::with_parameters_test_that(
+  "datetime conversion to clock classes",
+  .cases = {
+    skip_if_not_installed("clock")
+
+    tibble::tribble(
+      ~.test_name, ~time_unit, ~precision,
+      "ms", "ms", "millisecond",
+      "us", "us", "microsecond",
+      "ns", "ns", "nanosecond",
+    )
+  },
+  code = {
+    chr_vec <- c(
+      NA,
+      "1900-01-01T12:34:56.123456789",
+      "2012-01-01T12:34:56.123456789",
+      "2212-01-01T12:34:56.123456789"
+    )
+
+    series_naive_time <- as_polars_series(chr_vec)$cast(pl$Datetime(time_unit))
+    series_zoned_time <- series_naive_time$dt$replace_time_zone("America/New_York")
+    naive_time_vec <- clock::naive_time_parse(chr_vec, precision = precision)
+    zoned_time_vec <- clock::as_zoned_time(naive_time_vec, "America/New_York")
+
+    expect_identical(series_naive_time$to_r_vector(as_clock_class = TRUE), naive_time_vec)
+    expect_identical(series_zoned_time$to_r_vector(as_clock_class = TRUE), zoned_time_vec)
+  }
+)

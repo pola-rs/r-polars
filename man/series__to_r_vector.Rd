@@ -7,6 +7,7 @@
 series__to_r_vector(
   ...,
   int64 = "double",
+  as_clock_class = FALSE,
   ambiguous = "raise",
   non_existent = "raise"
 )
@@ -26,20 +27,32 @@ The \link[bit64:bit64-package]{bit64} package must be installed.
 If the value is out of the range of \link[bit64:bit64-package]{bit64::integer64}, export as \link[bit64:as.integer64.character]{bit64::NA_integer64_}.
 }}
 
+\item{as_clock_class}{A logical value indicating whether to export datetimes as
+the \link[clock:clock-package]{clock} package's classes.
+\itemize{
+\item \code{FALSE} (default): datetime values are exported as \link{POSIXct}.
+\item \code{TRUE}: datetime without timezone values are exported as \link[clock:as_naive_time]{clock_naive_time},
+and datetime with timezone values are exported as \link[clock:as_zoned_time]{clock_zoned_time}
+}}
+
 \item{ambiguous}{Determine how to deal with ambiguous datetimes.
+Only applicable when \code{as_clock_class} is set to \code{FALSE} and
+datetime without timezone values are exported as \link{POSIXct}.
 Character vector or Expression containing the followings:
 \itemize{
 \item \code{"raise"} (default): Throw an error
 \item \code{"earliest"}: Use the earliest datetime
 \item \code{"latest"}: Use the latest datetime
-\item \code{"null"}: Return a null value
+\item \code{"null"}: Return a \code{NA} value
 }}
 
 \item{non_existent}{Determine how to deal with non-existent datetimes.
+Only applicable when \code{as_clock_class} is set to \code{FALSE} and
+datetime without timezone values are exported as \link{POSIXct}.
 One of the followings:
 \itemize{
 \item \code{"raise"} (default): Throw an error
-\item \code{"null"}: Return a null value
+\item \code{"null"}: Return a \code{NA} value
 }}
 }
 \value{
@@ -49,7 +62,7 @@ A \link{vector}
 Export the Series as an R vector
 }
 \examples{
-# Create a Series of UInt64
+# Integer values handling
 series_uint64 <- as_polars_series(
   c(NA, "0", "4294967295", "18446744073709551615")
 )$cast(pl$UInt64)
@@ -67,5 +80,22 @@ series_uint64$to_r_vector(int64 = "integer")
 ## Export UInt64 as bit64::integer64 (overflow occurs)
 if (requireNamespace("bit64", quietly = TRUE)) {
   series_uint64$to_r_vector(int64 = "integer64")
+}
+
+# Datetime values handling
+series_datetime <- as_polars_series(
+  as.POSIXct(
+    c(NA, "1920-01-01 00:00:00", "1970-01-01 00:00:00", "2020-01-01 00:00:00"),
+    tz = "UTC"
+  )
+)$cast(pl$Datetime("ns", "UTC"))
+series_datetime
+
+## Export zoned datetime as POSIXct
+series_datetime$to_r_vector(as_clock_class = FALSE)
+
+## Export zoned datetime as clock_zoned_time
+if (requireNamespace("clock", quietly = TRUE)) {
+  series_datetime$to_r_vector(as_clock_class = TRUE)
 }
 }

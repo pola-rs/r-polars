@@ -2,6 +2,7 @@ use crate::prelude::*;
 use crate::{PlRDataFrame, PlRDataType, PlRExpr};
 use savvy::{ListSexp, NumericScalar, NumericSexp, TypedSexp};
 mod chunked_array;
+pub mod clock;
 
 #[repr(transparent)]
 pub struct Wrap<T>(pub T);
