@@ -2,3 +2,5 @@
 
 # Task cache
 .task
+
+src/Makevars
