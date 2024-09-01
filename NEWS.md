@@ -2,9 +2,14 @@
 
 ## Polars R Package (development version)
 
+### Bug fixes
+
+- Converting data of datatype `Null` to R doesn't error anymore. It now creates
+  a column filled with `NA` (#1217).
+
 ## Polars R Package 0.19.1
 
-- This is a maintenance relase. No user facing changes.
+- This is a maintenance release. No user facing changes.
 
 ## Polars R Package 0.19.0
 

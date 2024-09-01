@@ -992,9 +992,19 @@ DataFrame_group_by = function(..., maintain_order = polars_options()$maintain_or
 #' df$to_data_frame()
 DataFrame_to_data_frame = function(..., int64_conversion = polars_options()$int64_conversion) {
   # do not unnest structs and mark with I to also preserve categoricals as is
-  l = lapply(self$to_list(unnest_structs = FALSE, int64_conversion = int64_conversion), I)
+  l = lapply(
+    self$to_list(unnest_structs = FALSE, int64_conversion = int64_conversion),
+    function(x) {
+      # correctly handle columns with datatype Null
+      if (is.null(x)) {
+        NA
+      } else {
+        I(x)
+      }
+    }
+  )
 
-  # similar to as.data.frame, but avoid checks, whcih would edit structs
+  # similar to as.data.frame, but avoid checks, which would edit structs
   df = data.frame(seq_along(l[[1L]]), ...)
   for (i in seq_along(l)) df[[i]] = l[[i]]
   names(df) = .pr$DataFrame$columns(self)
