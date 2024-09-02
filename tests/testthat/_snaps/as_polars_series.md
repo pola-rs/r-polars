@@ -224,7 +224,7 @@
       	{2.95,1.67}
       ]
 
-# clock package class support precision=nanosecond
+# clock datetime classes support precision=nanosecond
 
     Code
       print(series_naive_time)
@@ -266,7 +266,7 @@
       	2212-01-01 12:34:56.123456789 EST
       ]
 
-# clock package class support precision=microsecond
+# clock datetime classes support precision=microsecond
 
     Code
       print(series_naive_time)
@@ -308,7 +308,7 @@
       	2212-01-01 12:34:56.123456 EST
       ]
 
-# clock package class support precision=millisecond
+# clock datetime classes support precision=millisecond
 
     Code
       print(series_naive_time)
@@ -350,7 +350,7 @@
       	2212-01-01 12:34:56.123 EST
       ]
 
-# clock package class support precision=second
+# clock datetime classes support precision=second
 
     Code
       print(series_naive_time)
@@ -392,7 +392,7 @@
       	2212-01-01 12:34:56 EST
       ]
 
-# clock package class support precision=minute
+# clock datetime classes support precision=minute
 
     Code
       print(series_naive_time)
@@ -434,7 +434,7 @@
       	2212-01-01 12:34:00 EST
       ]
 
-# clock package class support precision=hour
+# clock datetime classes support precision=hour
 
     Code
       print(series_naive_time)
@@ -476,7 +476,7 @@
       	2212-01-01 12:00:00 EST
       ]
 
-# clock package class support precision=day
+# clock datetime classes support precision=day
 
     Code
       print(series_naive_time)
@@ -516,5 +516,159 @@
       	1900-01-01 00:00:00 EST
       	2012-01-01 00:00:00 EST
       	2212-01-01 00:00:00 EST
+      ]
+
+# clock duration class support year
+
+    Code
+      print(series_duration)
+    Output
+      shape: (4,)
+      Series: '' [duration[ms]]
+      [
+      	null
+      	-365d -5h -49m -12s
+      	0ms
+      	365d 5h 49m 12s
+      ]
+
+# clock duration class support quarter
+
+    Code
+      print(series_duration)
+    Output
+      shape: (4,)
+      Series: '' [duration[ms]]
+      [
+      	null
+      	-91d -7h -27m -18s
+      	0ms
+      	91d 7h 27m 18s
+      ]
+
+# clock duration class support month
+
+    Code
+      print(series_duration)
+    Output
+      shape: (4,)
+      Series: '' [duration[ms]]
+      [
+      	null
+      	-30d -10h -29m -6s
+      	0ms
+      	30d 10h 29m 6s
+      ]
+
+# clock duration class support week
+
+    Code
+      print(series_duration)
+    Output
+      shape: (4,)
+      Series: '' [duration[ms]]
+      [
+      	null
+      	-7d
+      	0ms
+      	7d
+      ]
+
+# clock duration class support day
+
+    Code
+      print(series_duration)
+    Output
+      shape: (4,)
+      Series: '' [duration[ms]]
+      [
+      	null
+      	-1d
+      	0ms
+      	1d
+      ]
+
+# clock duration class support hour
+
+    Code
+      print(series_duration)
+    Output
+      shape: (4,)
+      Series: '' [duration[ms]]
+      [
+      	null
+      	-1h
+      	0ms
+      	1h
+      ]
+
+# clock duration class support minute
+
+    Code
+      print(series_duration)
+    Output
+      shape: (4,)
+      Series: '' [duration[ms]]
+      [
+      	null
+      	-1m
+      	0ms
+      	1m
+      ]
+
+# clock duration class support second
+
+    Code
+      print(series_duration)
+    Output
+      shape: (4,)
+      Series: '' [duration[ms]]
+      [
+      	null
+      	-1s
+      	0ms
+      	1s
+      ]
+
+# clock duration class support millisecond
+
+    Code
+      print(series_duration)
+    Output
+      shape: (4,)
+      Series: '' [duration[ms]]
+      [
+      	null
+      	-1ms
+      	0ms
+      	1ms
+      ]
+
+# clock duration class support microsecond
+
+    Code
+      print(series_duration)
+    Output
+      shape: (4,)
+      Series: '' [duration[μs]]
+      [
+      	null
+      	-1µs
+      	0µs
+      	1µs
+      ]
+
+# clock duration class support nanosecond
+
+    Code
+      print(series_duration)
+    Output
+      shape: (4,)
+      Series: '' [duration[ns]]
+      [
+      	null
+      	-1ns
+      	0ns
+      	1ns
       ]
 

@@ -17,52 +17,54 @@
 #' - [`<Series>$to_r_vector()`][series__to_r_vector]: Export the Series as an R vector.
 #' @examples
 #' # double
-#' as_polars_series(c(1, 2))
+#' as_polars_series(c(NA, 1, 2))
 #'
 #' # integer
-#' as_polars_series(1:2)
+#' as_polars_series(c(NA, 1:2))
 #'
 #' # character
-#' as_polars_series(c("foo", "bar"))
+#' as_polars_series(c(NA, "foo", "bar"))
 #'
 #' # logical
-#' as_polars_series(c(TRUE, FALSE))
+#' as_polars_series(c(NA, TRUE, FALSE))
 #'
 #' # raw
 #' as_polars_series(charToRaw("foo"))
 #'
 #' # factor
-#' as_polars_series(factor(c("a", "b")))
+#' as_polars_series(factor(c(NA, "a", "b")))
 #'
 #' # Date
-#' as_polars_series(as.Date("2021-01-01"))
+#' as_polars_series(as.Date(c(NA, "2021-01-01")))
 #'
 #' # POSIXct with timezone
-#' as_polars_series(as.POSIXct("2021-01-01 00:00:00", "UTC"))
+#' as_polars_series(as.POSIXct(c(NA, "2021-01-01 00:00:00"), "UTC"))
 #'
 #' # POSIXct without timezone
-#' as_polars_series(as.POSIXct("2021-01-01 00:00:00"))
+#' as_polars_series(as.POSIXct(c(NA, "2021-01-01 00:00:00")))
 #'
 #' # difftime
-#' as_polars_series(as.difftime(1, units = "days"))
+#' as_polars_series(as.difftime(c(NA, 1), units = "days"))
 #'
 #' # NULL
 #' as_polars_series(NULL)
 #'
 #' # list
-#' as_polars_series(list(1, "foo", TRUE))
+#' as_polars_series(list(NA, NULL, 1, "foo", TRUE))
 #'
 #' # data.frame
-#' as_polars_series(data.frame(x = 1:2, y = c("foo", "bar")))
+#' as_polars_series(
+#'   data.frame(x = 1:2, y = c("foo", "bar"), z = I(list(1, 2)))
+#' )
 #'
 #' # hms
 #' if (requireNamespace("hms", quietly = TRUE)) {
-#'   as_polars_series(hms::as_hms("01:00:00"))
+#'   as_polars_series(hms::as_hms(c(NA, "01:00:00")))
 #' }
 #'
 #' # blob
 #' if (requireNamespace("blob", quietly = TRUE)) {
-#'   as_polars_series(blob::as_blob(c("foo", "bar")))
+#'   as_polars_series(blob::as_blob(c(NA, "foo", "bar")))
 #' }
 #'
 #' # integer64
@@ -77,6 +79,11 @@
 #'     "1900-01-01T12:34:56.123456789",
 #'     "2020-01-01T12:34:56.123456789"
 #'   ), precision = "nanosecond"))
+#' }
+#'
+#' # clock duration
+#' if (requireNamespace("clock", quietly = TRUE)) {
+#'   as_polars_series(clock::duration_nanoseconds(c(NA, 1)))
 #' }
 #' @export
 as_polars_series <- function(x, name = NULL, ...) {
@@ -298,11 +305,10 @@ as_polars_series.vctrs_rcrd <- function(x, name = NULL, ...) {
 as_polars_series.clock_time_point <- function(x, name = NULL, ...) {
   precision <- clock::time_point_precision(x)
 
-  # https://github.com/r-lib/clock/blob/7bc03674f56bf1d4f850b0b1ab8d7d924a85e34a/src/time-point.cpp#L25-L40
   time_unit <- switch(precision,
     nanosecond = "ns",
     microsecond = "us",
-    "ms" # millisecond, second, minute, hour, day
+    "ms"
   )
 
   left <- vctrs::field(x, "lower")
@@ -314,7 +320,7 @@ as_polars_series.clock_time_point <- function(x, name = NULL, ...) {
     right,
     precision
   )$cast(
-    pl$Datetime(time_unit)$`_dt`,
+    PlRDataType$new_datetime(time_unit, NULL),
     strict = TRUE
   ) |>
     wrap()
@@ -322,7 +328,7 @@ as_polars_series.clock_time_point <- function(x, name = NULL, ...) {
 
 #' @rdname as_polars_series
 #' @export
-as_polars_series.clock_sys_time = function(x, name = NULL, ...) {
+as_polars_series.clock_sys_time <- function(x, name = NULL, ...) {
   as_polars_series.clock_time_point(x, name = name, ...)$dt$replace_time_zone("UTC")
 }
 
@@ -341,4 +347,30 @@ as_polars_series.clock_zoned_time <- function(x, name = NULL, ...) {
     name = name,
     ...
   )$dt$replace_time_zone(time_zone)
+}
+
+#' @rdname as_polars_series
+#' @export
+as_polars_series.clock_duration <- function(x, name = NULL, ...) {
+  precision <- clock::duration_precision(x)
+
+  time_unit <- switch(precision,
+    nanosecond = "ns",
+    microsecond = "us",
+    "ms"
+  )
+
+  left <- vctrs::field(x, "lower")
+  right <- vctrs::field(x, "upper")
+
+  PlRSeries$new_i64_from_clock_pair(
+    name %||% "",
+    left,
+    right,
+    precision
+  )$cast(
+    PlRDataType$new_duration(time_unit),
+    strict = TRUE
+  ) |>
+    wrap()
 }

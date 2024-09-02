@@ -81,7 +81,7 @@ test_that("as_polars_series works for vctrs_rcrd", {
   )
 })
 
-patrick::with_parameters_test_that("clock package class support",
+patrick::with_parameters_test_that("clock datetime classes support",
   {
     skip_if_not_installed("clock")
 
@@ -128,4 +128,37 @@ patrick::with_parameters_test_that("clock package class support",
   },
   precision = c("nanosecond", "microsecond", "millisecond", "second", "minute", "hour", "day"),
   .test_name = precision
+)
+
+patrick::with_parameters_test_that("clock duration class support",
+  .cases = {
+    skip_if_not_installed("clock")
+
+    tibble::tribble(
+      ~.test_name, ~time_unit, ~construct_function,
+      "year", "ms", clock::duration_years,
+      "quarter", "ms", clock::duration_quarters,
+      "month", "ms", clock::duration_months,
+      "week", "ms", clock::duration_weeks,
+      "day", "ms", clock::duration_days,
+      "hour", "ms", clock::duration_hours,
+      "minute", "ms", clock::duration_minutes,
+      "second", "ms", clock::duration_seconds,
+      "millisecond", "ms", clock::duration_milliseconds,
+      "microsecond", "us", clock::duration_microseconds,
+      "nanosecond", "ns", clock::duration_nanoseconds,
+    )
+  },
+  code = {
+    clock_duration <- construct_function(c(NA, -1:1))
+    series_duration <- as_polars_series(clock_duration)
+
+    expect_s3_class(series_duration, "polars_series")
+    expect_snapshot(print(series_duration))
+
+    expect_equal(series_duration$name, "")
+    expect_equal(as_polars_series(clock_duration, name = "foo")$name, "foo")
+
+    expect_equal(series_duration$dtype, pl$Duration(time_unit))
+  }
 )

@@ -25,6 +25,7 @@
 \alias{as_polars_series.clock_time_point}
 \alias{as_polars_series.clock_sys_time}
 \alias{as_polars_series.clock_zoned_time}
+\alias{as_polars_series.clock_duration}
 \title{Create a Polars Series from an R object}
 \usage{
 as_polars_series(x, name = NULL, ...)
@@ -74,6 +75,8 @@ as_polars_series(x, name = NULL, ...)
 \method{as_polars_series}{clock_sys_time}(x, name = NULL, ...)
 
 \method{as_polars_series}{clock_zoned_time}(x, name = NULL, ...)
+
+\method{as_polars_series}{clock_duration}(x, name = NULL, ...)
 }
 \arguments{
 \item{x}{An R object.}
@@ -97,52 +100,54 @@ so we need to define methods for the classes we want to support.
 }
 \examples{
 # double
-as_polars_series(c(1, 2))
+as_polars_series(c(NA, 1, 2))
 
 # integer
-as_polars_series(1:2)
+as_polars_series(c(NA, 1:2))
 
 # character
-as_polars_series(c("foo", "bar"))
+as_polars_series(c(NA, "foo", "bar"))
 
 # logical
-as_polars_series(c(TRUE, FALSE))
+as_polars_series(c(NA, TRUE, FALSE))
 
 # raw
 as_polars_series(charToRaw("foo"))
 
 # factor
-as_polars_series(factor(c("a", "b")))
+as_polars_series(factor(c(NA, "a", "b")))
 
 # Date
-as_polars_series(as.Date("2021-01-01"))
+as_polars_series(as.Date(c(NA, "2021-01-01")))
 
 # POSIXct with timezone
-as_polars_series(as.POSIXct("2021-01-01 00:00:00", "UTC"))
+as_polars_series(as.POSIXct(c(NA, "2021-01-01 00:00:00"), "UTC"))
 
 # POSIXct without timezone
-as_polars_series(as.POSIXct("2021-01-01 00:00:00"))
+as_polars_series(as.POSIXct(c(NA, "2021-01-01 00:00:00")))
 
 # difftime
-as_polars_series(as.difftime(1, units = "days"))
+as_polars_series(as.difftime(c(NA, 1), units = "days"))
 
 # NULL
 as_polars_series(NULL)
 
 # list
-as_polars_series(list(1, "foo", TRUE))
+as_polars_series(list(NA, NULL, 1, "foo", TRUE))
 
 # data.frame
-as_polars_series(data.frame(x = 1:2, y = c("foo", "bar")))
+as_polars_series(
+  data.frame(x = 1:2, y = c("foo", "bar"), z = I(list(1, 2)))
+)
 
 # hms
 if (requireNamespace("hms", quietly = TRUE)) {
-  as_polars_series(hms::as_hms("01:00:00"))
+  as_polars_series(hms::as_hms(c(NA, "01:00:00")))
 }
 
 # blob
 if (requireNamespace("blob", quietly = TRUE)) {
-  as_polars_series(blob::as_blob(c("foo", "bar")))
+  as_polars_series(blob::as_blob(c(NA, "foo", "bar")))
 }
 
 # integer64
@@ -157,6 +162,11 @@ if (requireNamespace("clock", quietly = TRUE)) {
     "1900-01-01T12:34:56.123456789",
     "2020-01-01T12:34:56.123456789"
   ), precision = "nanosecond"))
+}
+
+# clock duration
+if (requireNamespace("clock", quietly = TRUE)) {
+  as_polars_series(clock::duration_nanoseconds(c(NA, 1)))
 }
 }
 \seealso{
