@@ -1481,9 +1481,8 @@ class(`PlRLazyGroupBy`) <- "PlRLazyGroupBy__bundle"
 
 ### associated functions for PlRSeries
 
-`PlRSeries`$`new_empty` <- function(`name`, `dtype` = NULL) {
-  `dtype` <- .savvy_extract_ptr(`dtype`, "PlRDataType")
-  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_empty__impl, `name`, `dtype`))
+`PlRSeries`$`new_null` <- function(`name`, `length`) {
+  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_null__impl, `name`, `length`))
 }
 
 `PlRSeries`$`new_f64` <- function(`name`, `values`) {

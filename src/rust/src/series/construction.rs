@@ -1,4 +1,4 @@
-use crate::{prelude::*, PlRDataType, PlRSeries};
+use crate::{prelude::*, PlRSeries};
 use polars_core::utils::{try_get_supertype, CustomIterTools};
 use savvy::{
     savvy, sexp::na::NotAvailableValue, IntegerSexp, ListSexp, LogicalSexp, RawSexp, RealSexp,
@@ -7,9 +7,8 @@ use savvy::{
 
 #[savvy]
 impl PlRSeries {
-    fn new_empty(name: &str, dtype: Option<PlRDataType>) -> Result<Self> {
-        let dtype = dtype.map(|dtype| dtype.dt).unwrap_or(DataType::Null);
-        Ok(Series::new_empty(name, &dtype).into())
+    fn new_null(name: &str, length: i32) -> Result<Self> {
+        Ok(Series::new_null(name, length as usize).into())
     }
 
     fn new_f64(name: &str, values: RealSexp) -> Result<Self> {

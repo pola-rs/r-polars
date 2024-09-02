@@ -4,6 +4,7 @@ patrick::with_parameters_test_that(
     skip_if_not_installed("hms")
     skip_if_not_installed("blob")
     skip_if_not_installed("bit64")
+    skip_if_not_installed("vctrs")
 
     withr::with_timezone(
       "UTC",
@@ -27,6 +28,7 @@ patrick::with_parameters_test_that(
         "AsIs", I(1L), "", pl$Int32,
         "data.frame", data.frame(x = 1L, y = TRUE), "", pl$Struct(x = pl$Int32, y = pl$Boolean),
         "integer64", bit64::as.integer64(c(NA, "-9223372036854775807", "9223372036854775807")), "", pl$Int64,
+        "vctrs_unspecified", vctrs::unspecified(3L), "", pl$Null,
       )
     )
   },

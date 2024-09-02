@@ -247,7 +247,7 @@ as_polars_series.array <- function(x, name = NULL, ...) {
 #' @rdname as_polars_series
 #' @export
 as_polars_series.NULL <- function(x, name = NULL, ...) {
-  PlRSeries$new_empty(name %||% "") |>
+  PlRSeries$new_null(name %||% "", 0L) |>
     wrap()
 }
 
@@ -284,6 +284,13 @@ as_polars_series.data.frame <- function(x, name = NULL, ...) {
 #' @export
 as_polars_series.integer64 <- function(x, name = NULL, ...) {
   PlRSeries$new_i64(name %||% "", x) |>
+    wrap()
+}
+
+#' @rdname as_polars_series
+#' @export
+as_polars_series.vctrs_unspecified <- function(x, name = NULL, ...) {
+  PlRSeries$new_null(name %||% "", length(x)) |>
     wrap()
 }
 

@@ -21,6 +21,7 @@
 \alias{as_polars_series.AsIs}
 \alias{as_polars_series.data.frame}
 \alias{as_polars_series.integer64}
+\alias{as_polars_series.vctrs_unspecified}
 \alias{as_polars_series.vctrs_rcrd}
 \alias{as_polars_series.clock_time_point}
 \alias{as_polars_series.clock_sys_time}
@@ -67,6 +68,8 @@ as_polars_series(x, name = NULL, ...)
 \method{as_polars_series}{data.frame}(x, name = NULL, ...)
 
 \method{as_polars_series}{integer64}(x, name = NULL, ...)
+
+\method{as_polars_series}{vctrs_unspecified}(x, name = NULL, ...)
 
 \method{as_polars_series}{vctrs_rcrd}(x, name = NULL, ...)
 

@@ -212,6 +212,19 @@
       	9223372036854775807
       ]
 
+# as_polars_series works for classes vctrs_unspecified
+
+    Code
+      print(pl_series)
+    Output
+      shape: (3,)
+      Series: '' [null]
+      [
+      	null
+      	null
+      	null
+      ]
+
 # as_polars_series works for vctrs_rcrd
 
     Code
