@@ -57,6 +57,11 @@
 #'   data.frame(x = 1:2, y = c("foo", "bar"), z = I(list(1, 2)))
 #' )
 #'
+#' # vctrs_unspecified
+#' if (requireNamespace("vctrs", quietly = TRUE)) {
+#'   as_polars_series(vctrs::unspecified(3L))
+#' }
+#'
 #' # hms
 #' if (requireNamespace("hms", quietly = TRUE)) {
 #'   as_polars_series(hms::as_hms(c(NA, "01:00:00")))
@@ -72,7 +77,7 @@
 #'   as_polars_series(bit64::as.integer64(c(NA, "9223372036854775807")))
 #' }
 #'
-#' # clock naive time
+#' # clock_naive_time
 #' if (requireNamespace("clock", quietly = TRUE)) {
 #'   as_polars_series(clock::naive_time_parse(c(
 #'     NA,
@@ -81,7 +86,7 @@
 #'   ), precision = "nanosecond"))
 #' }
 #'
-#' # clock duration
+#' # clock_duration
 #' if (requireNamespace("clock", quietly = TRUE)) {
 #'   as_polars_series(clock::duration_nanoseconds(c(NA, 1)))
 #' }
