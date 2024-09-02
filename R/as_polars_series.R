@@ -296,42 +296,26 @@ as_polars_series.vctrs_rcrd <- function(x, name = NULL, ...) {
 #' @rdname as_polars_series
 #' @export
 as_polars_series.clock_time_point <- function(x, name = NULL, ...) {
-  from_precision <- clock::time_point_precision(x)
+  precision <- clock::time_point_precision(x)
 
-  # Polars' datetime type only include ns, us, ms
-  if (
-    !from_precision %in% c(
-      "nanosecond", "microsecond", "millisecond", "second", "minute", "hour", "day"
-    )
-  ) {
-    x <- clock::time_point_cast(x, "millisecond")
-    from_precision <- clock::time_point_precision(x)
-  }
-
-  # https://github.com/r-lib/clock/blob/adc01b61670b18463cc3087f1e58acf59ddc3915/R/precision.R#L37-L51
-  time_unit <- switch(from_precision,
+  # https://github.com/r-lib/clock/blob/7bc03674f56bf1d4f850b0b1ab8d7d924a85e34a/src/time-point.cpp#L25-L40
+  time_unit <- switch(precision,
     nanosecond = "ns",
     microsecond = "us",
     "ms" # millisecond, second, minute, hour, day
   )
 
-  multiplier <- switch(from_precision,
-    second = 1000L,
-    minute = 60L * 1000L,
-    hour = 60L * 60L * 1000L,
-    day = 24L * 60L * 60L * 1000L,
-    1L # ns, us, ms
-  )
-
   left <- vctrs::field(x, "lower")
   right <- vctrs::field(x, "upper")
 
-  PlRSeries$new_from_clock_time_point(
+  PlRSeries$new_i64_from_clock_pair(
     name %||% "",
     left,
     right,
-    multiplier,
-    time_unit
+    precision
+  )$cast(
+    pl$Datetime(time_unit)$`_dt`,
+    strict = TRUE
   ) |>
     wrap()
 }

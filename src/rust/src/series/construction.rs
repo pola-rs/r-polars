@@ -1,4 +1,4 @@
-use crate::{prelude::*, PlRDataType, PlRSeries, RPolarsErr};
+use crate::{prelude::*, PlRDataType, PlRSeries};
 use polars_core::utils::{try_get_supertype, CustomIterTools};
 use savvy::{
     savvy, sexp::na::NotAvailableValue, IntegerSexp, ListSexp, LogicalSexp, RawSexp, RealSexp,
@@ -116,15 +116,28 @@ impl PlRSeries {
         Ok(Series::new(name, casted_series_vec).into())
     }
 
-    fn new_from_clock_time_point(
+    fn new_i64_from_clock_pair(
         name: &str,
         left: RealSexp,
         right: RealSexp,
-        multiplier: i32,
-        time_unit: &str,
+        precision: &str,
     ) -> Result<Self> {
-        let time_unit = <Wrap<TimeUnit>>::try_from(time_unit)?.0;
-        let ca_i64: Int64Chunked = left
+        // Polars only supports nanosecond, microsecond, and millisecond precisions.
+        // So we need to convert other precisions to millisecond precision.
+        // https://github.com/r-lib/clock/blob/7bc03674f56bf1d4f850b0b1ab8d7d924a85e34a/R/duration.R#L32-L56
+        let multiplier = match precision {
+            "nanosecond" | "microsecond" | "millisecond" => 1,
+            "second" => 1_000,
+            "minute" => 60_000,
+            "hour" => 3_600_000,
+            "day" => 86_400_000,
+            "week" => 604_800_000,
+            "month" => 2_629_746_000,
+            "quarter" => 7_889_238_000,
+            "year" => 31_556_952_000,
+            _ => unreachable!("Invalid precision"),
+        };
+        let ca: Int64Chunked = left
             .iter()
             .zip(right.iter())
             .map(|(l, r)| {
@@ -137,16 +150,11 @@ impl PlRSeries {
                     Some(
                         i64::from_ne_bytes(
                             (out_u64.wrapping_sub(9_223_372_036_854_775_808u64)).to_ne_bytes(),
-                        ) * (multiplier as i64),
+                        ) * multiplier,
                     )
                 }
             })
             .collect_trusted();
-        Ok(ca_i64
-            .with_name(name)
-            .into_series()
-            .cast(&DataType::Datetime(time_unit, None))
-            .map_err(RPolarsErr::from)?
-            .into())
+        Ok(ca.with_name(name).into_series().into())
     }
 }

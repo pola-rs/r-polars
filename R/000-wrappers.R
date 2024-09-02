@@ -1518,8 +1518,8 @@ class(`PlRLazyGroupBy`) <- "PlRLazyGroupBy__bundle"
   .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_series_list__impl, `name`, `values`))
 }
 
-`PlRSeries`$`new_from_clock_time_point` <- function(`name`, `left`, `right`, `multiplier`, `time_unit`) {
-  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_from_clock_time_point__impl, `name`, `left`, `right`, `multiplier`, `time_unit`))
+`PlRSeries`$`new_i64_from_clock_pair` <- function(`name`, `left`, `right`, `precision`) {
+  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_i64_from_clock_pair__impl, `name`, `left`, `right`, `precision`))
 }
 
 
