@@ -66,13 +66,13 @@ as.list.polars_data_frame <- function(
 #' @export
 #' @rdname s3_as.data.frame
 as.data.frame.polars_data_frame <- function(
-    x,
-    ...,
+    x, ...,
     int64 = "double",
     as_clock_class = FALSE,
     ambiguous = "raise",
     non_existent = "raise") {
   .args <- as.list(match.call())
+  .args$x <- x
   .args$as_series <- FALSE
   out <- do.call(as.list, .args)
   class(out) <- "data.frame"
