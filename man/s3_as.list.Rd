@@ -34,12 +34,17 @@ The \link[bit64:bit64-package]{bit64} package must be installed.
 If the value is out of the range of \link[bit64:bit64-package]{bit64::integer64}, export as \link[bit64:as.integer64.character]{bit64::NA_integer64_}.
 }}
 
-\item{as_clock_class}{A logical value indicating whether to export datetimes as
+\item{as_clock_class}{A logical value indicating whether to export datetimes and duration as
 the \link[clock:clock-package]{clock} package's classes.
 \itemize{
-\item \code{FALSE} (default): datetime values are exported as \link{POSIXct}.
-\item \code{TRUE}: datetime without timezone values are exported as \link[clock:as_naive_time]{clock_naive_time},
-and datetime with timezone values are exported as \link[clock:as_zoned_time]{clock_zoned_time}
+\item \code{FALSE} (default): Duration values are exported as \link{difftime}
+and datetime values are exported as \link{POSIXct}.
+Accuracy may be degraded.
+\item \code{TRUE}: Duration values are exported as \link[clock:duration-helper]{clock_duration},
+datetime without timezone values are exported as \link[clock:as_naive_time]{clock_naive_time},
+and datetime with timezone values are exported as \link[clock:as_zoned_time]{clock_zoned_time}.
+For this case, the \link[clock:clock-package]{clock} package must be installed.
+Accuracy will be maintained.
 }}
 
 \item{ambiguous}{Determine how to deal with ambiguous datetimes.

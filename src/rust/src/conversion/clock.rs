@@ -6,6 +6,11 @@ struct Float64Pair {
     pub right: OwnedRealSexp,
 }
 
+pub struct Duration {
+    value: Float64Pair,
+    precision: i32,
+}
+
 pub struct TimePoint {
     value: Float64Pair,
     precision: i32,
@@ -38,6 +43,19 @@ impl From<&Int64Chunked> for Float64Pair {
     }
 }
 
+impl From<&DurationChunked> for Duration {
+    fn from(ca: &DurationChunked) -> Self {
+        let ca_i64 = &ca.0;
+        let value = Float64Pair::from(ca_i64);
+        let precision: i32 = match ca.time_unit() {
+            TimeUnit::Nanoseconds => 10,
+            TimeUnit::Microseconds => 9,
+            TimeUnit::Milliseconds => 8,
+        };
+        Duration { value, precision }
+    }
+}
+
 impl From<&DatetimeChunked> for TimePoint {
     fn from(ca: &DatetimeChunked) -> Self {
         let ca_i64 = &ca.0;
@@ -51,7 +69,25 @@ impl From<&DatetimeChunked> for TimePoint {
     }
 }
 
-// Export as a clock_naive_time
+// Export as clock_duration
+impl From<Duration> for Sexp {
+    fn from(d: Duration) -> Self {
+        let mut sexp = OwnedListSexp::new(2, true).unwrap();
+        let _ = sexp.set_class(&["clock_duration", "clock_rcrd", "vctrs_rcrd", "vctrs_vctr"]);
+        let _ = sexp.set_attrib(
+            "precision",
+            <OwnedIntegerSexp>::try_from_scalar(d.precision)
+                .unwrap()
+                .into(),
+        );
+        let _ = sexp.set_name_and_value(0, "lower", d.value.left).unwrap();
+        let _ = sexp.set_name_and_value(1, "upper", d.value.right).unwrap();
+
+        sexp.into()
+    }
+}
+
+// Export as clock_naive_time
 impl From<TimePoint> for Sexp {
     fn from(tp: TimePoint) -> Self {
         let mut sexp = OwnedListSexp::new(2, true).unwrap();

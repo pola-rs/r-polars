@@ -57,8 +57,7 @@ test_that("int64 argument error", {
   )
 })
 
-patrick::with_parameters_test_that(
-  "datetime conversion to clock classes",
+patrick::with_parameters_test_that("datetime conversion to clock classes",
   .cases = {
     skip_if_not_installed("clock")
 
@@ -84,5 +83,25 @@ patrick::with_parameters_test_that(
 
     expect_identical(series_naive_time$to_r_vector(as_clock_class = TRUE), naive_time_vec)
     expect_identical(series_zoned_time$to_r_vector(as_clock_class = TRUE), zoned_time_vec)
+  }
+)
+
+patrick::with_parameters_test_that("duration conversion to clock class",
+  .cases = {
+    skip_if_not_installed("clock")
+
+    tibble::tribble(
+      ~.test_name, ~time_unit, ~construct_function,
+      "ms", "ms", clock::duration_milliseconds,
+      "us", "us", clock::duration_microseconds,
+      "ns", "ns", clock::duration_nanoseconds,
+    )
+  },
+  code = {
+    int_vec <- c(NA, -10:10)
+    series_duration <- as_polars_series(int_vec)$cast(pl$Duration(time_unit))
+    duration_vec <- construct_function(int_vec)
+
+    expect_identical(series_duration$to_r_vector(as_clock_class = TRUE), duration_vec)
   }
 )

@@ -27,12 +27,17 @@ The \link[bit64:bit64-package]{bit64} package must be installed.
 If the value is out of the range of \link[bit64:bit64-package]{bit64::integer64}, export as \link[bit64:as.integer64.character]{bit64::NA_integer64_}.
 }}
 
-\item{as_clock_class}{A logical value indicating whether to export datetimes as
+\item{as_clock_class}{A logical value indicating whether to export datetimes and duration as
 the \link[clock:clock-package]{clock} package's classes.
 \itemize{
-\item \code{FALSE} (default): datetime values are exported as \link{POSIXct}.
-\item \code{TRUE}: datetime without timezone values are exported as \link[clock:as_naive_time]{clock_naive_time},
-and datetime with timezone values are exported as \link[clock:as_zoned_time]{clock_zoned_time}
+\item \code{FALSE} (default): Duration values are exported as \link{difftime}
+and datetime values are exported as \link{POSIXct}.
+Accuracy may be degraded.
+\item \code{TRUE}: Duration values are exported as \link[clock:duration-helper]{clock_duration},
+datetime without timezone values are exported as \link[clock:as_naive_time]{clock_naive_time},
+and datetime with timezone values are exported as \link[clock:as_zoned_time]{clock_zoned_time}.
+For this case, the \link[clock:clock-package]{clock} package must be installed.
+Accuracy will be maintained.
 }}
 
 \item{ambiguous}{Determine how to deal with ambiguous datetimes.
@@ -80,6 +85,20 @@ series_uint64$to_r_vector(int64 = "integer")
 ## Export UInt64 as bit64::integer64 (overflow occurs)
 if (requireNamespace("bit64", quietly = TRUE)) {
   series_uint64$to_r_vector(int64 = "integer64")
+}
+
+# Duration values handling
+series_duration <- as_polars_series(
+  c(NA, -1000000000, -10, -1, 1000000000)
+)$cast(pl$Duration("ns"))
+series_duration
+
+## Export Duration as difftime
+series_duration$to_r_vector(as_clock_class = FALSE)
+
+## Export Duration as clock_duration
+if (requireNamespace("clock", quietly = TRUE)) {
+  series_duration$to_r_vector(as_clock_class = TRUE)
 }
 
 # Datetime values handling

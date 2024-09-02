@@ -186,7 +186,14 @@ impl PlRSeries {
                     }
                     Ok(list.into())
                 }
-                DataType::Duration(_) => Ok(<Sexp>::from(Wrap(series.duration().unwrap()))),
+                DataType::Duration(_) => {
+                    if as_clock_class {
+                        let duration = <clock::Duration>::from(series.duration().unwrap());
+                        Ok(<Sexp>::from(duration))
+                    } else {
+                        Ok(<Sexp>::from(Wrap(series.duration().unwrap())))
+                    }
+                }
                 DataType::Binary => Ok(<Sexp>::from(Wrap(series.binary().unwrap()))),
                 DataType::Null => {
                     let len = series.len();
