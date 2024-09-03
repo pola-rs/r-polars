@@ -684,6 +684,27 @@ impl RPolarsLazyFrame {
             .map_err(polars_to_rpolars_err)?;
         Ok(result)
     }
+
+    fn cast(&self, dtypes: List, strict: bool) -> RResult<Self> {
+        use polars_core::prelude::InitHashMaps;
+        use polars_core::prelude::PlHashMap;
+
+        let dtypes = dtypes.into_hashmap();
+        let mut cast_map = PlHashMap::with_capacity(dtypes.len());
+        // TODO: this panicks if conversion to Polars Datatype fails but we can't use `?` in this closure
+        cast_map.extend(
+            dtypes
+                .into_iter()
+                .map(|(k, v)| (k.as_ref(), robj_to!(RPolarsDataType, v).unwrap().0)),
+        );
+        Ok(self.0.clone().cast(cast_map, strict).into())
+    }
+
+    fn cast_all(&self, dtype: Robj, strict: Robj) -> RResult<Self> {
+        let dtype = robj_to!(RPolarsDataType, dtype)?.0;
+        let strict = robj_to!(bool, strict)?;
+        Ok(self.0.clone().cast_all(dtype, strict).into())
+    }
 }
 
 #[derive(Clone)]
