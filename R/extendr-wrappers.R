@@ -1222,7 +1222,7 @@ RPolarsLazyFrame$shift <- function(n, fill_value) .Call(wrap__RPolarsLazyFrame__
 
 RPolarsLazyFrame$reverse <- function() .Call(wrap__RPolarsLazyFrame__reverse, self)
 
-RPolarsLazyFrame$drop <- function(columns) .Call(wrap__RPolarsLazyFrame__drop, self, columns)
+RPolarsLazyFrame$drop <- function(columns, strict) .Call(wrap__RPolarsLazyFrame__drop, self, columns, strict)
 
 RPolarsLazyFrame$fill_nan <- function(value) .Call(wrap__RPolarsLazyFrame__fill_nan, self, value)
 

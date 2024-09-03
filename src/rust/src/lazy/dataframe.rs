@@ -269,8 +269,14 @@ impl RPolarsLazyFrame {
         self.0.clone().reverse().into()
     }
 
-    fn drop(&self, columns: Robj) -> RResult<Self> {
-        Ok(self.0.clone().drop(robj_to!(Vec, String, columns)?).into())
+    fn drop(&self, columns: Vec<String>, strict: Robj) -> RResult<Self> {
+        let strict = robj_to!(bool, strict)?;
+        let out = if strict {
+            self.0.clone().drop(columns)
+        } else {
+            self.0.clone().drop_no_validate(columns)
+        };
+        Ok(out.into())
     }
 
     fn fill_nan(&self, value: Robj) -> RResult<Self> {

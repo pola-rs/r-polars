@@ -4,10 +4,13 @@
 \alias{DataFrame_drop}
 \title{Drop columns of a DataFrame}
 \usage{
-DataFrame_drop(...)
+DataFrame_drop(..., strict = TRUE)
 }
 \arguments{
 \item{...}{Characters of column names to drop. Passed to \code{\link[=pl_col]{pl$col()}}.}
+
+\item{strict}{Validate that all column names exist in the schema and throw an
+exception if a column name does not exist in the schema.}
 }
 \value{
 DataFrame

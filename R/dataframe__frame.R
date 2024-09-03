@@ -463,6 +463,8 @@ DataFrame.property_setters$columns = function(self, names) {
 #' Drop columns of a DataFrame
 #'
 #' @param ... Characters of column names to drop. Passed to [`pl$col()`][pl_col].
+#' @param strict Validate that all column names exist in the schema and throw an
+#' exception if a column name does not exist in the schema.
 #'
 #' @return DataFrame
 #' @examples
@@ -470,8 +472,8 @@ DataFrame.property_setters$columns = function(self, names) {
 #'
 #' # equivalent
 #' pl$DataFrame(mtcars)$drop("mpg", "hp")
-DataFrame_drop = function(...) {
-  self$lazy()$drop(...)$collect()
+DataFrame_drop = function(..., strict = TRUE) {
+  self$lazy()$drop(..., strict = strict)$collect()
 }
 
 

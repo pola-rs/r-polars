@@ -777,6 +777,23 @@ test_that("drop", {
   a = pl$DataFrame(mtcars)$drop("mpg")$columns
   expect_true("hp" %in% a)
   expect_false("mpg" %in% a)
+
+  expect_identical(
+    pl$DataFrame(mtcars)$drop()$to_data_frame(),
+    mtcars,
+    ignore_attr = TRUE
+  )
+
+  # arg 'strict' works
+  expect_grepl_error(
+    pl$DataFrame(mtcars)$drop("a"),
+    r"("a" not found)"
+  )
+  expect_identical(
+    pl$DataFrame(mtcars)$drop("a", strict = FALSE)$to_data_frame(),
+    mtcars,
+    ignore_attr = TRUE
+  )
 })
 
 
