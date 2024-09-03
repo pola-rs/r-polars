@@ -75,9 +75,22 @@ impl PlRSeries {
                     let _ = args.add("x", chr_vec);
                     Ok(r_func.call(args)?.into())
                 }
-                DataType::List(_) => unsafe {
+                DataType::List(inner) => unsafe {
                     let len = series.len();
                     let mut list = OwnedListSexp::new(len, false)?;
+                    let _ = list.set_class(&["vctrs_list_of", "vctrs_vctr", "list"]);
+                    let empty_inner_series = Series::new_empty("", &inner.clone());
+                    let _ = list.set_attrib(
+                        "ptype",
+                        to_r_vector_recursive(
+                            &empty_inner_series,
+                            int64.clone(),
+                            as_clock_class,
+                            ambiguous.clone(),
+                            non_existent,
+                            local_time_zone,
+                        )?,
+                    );
                     let ca = series.list().unwrap();
                     for (i, opt_s) in ca.amortized_iter().enumerate() {
                         match opt_s {
@@ -98,9 +111,22 @@ impl PlRSeries {
                     }
                     Ok(list.into())
                 },
-                DataType::Array(_, _) => unsafe {
+                DataType::Array(inner, _) => unsafe {
                     let len = series.len();
                     let mut list = OwnedListSexp::new(len, false)?;
+                    let _ = list.set_class(&["vctrs_list_of", "vctrs_vctr", "list"]);
+                    let empty_inner_series = Series::new_empty("", &inner.clone());
+                    let _ = list.set_attrib(
+                        "ptype",
+                        to_r_vector_recursive(
+                            &empty_inner_series,
+                            int64.clone(),
+                            as_clock_class,
+                            ambiguous.clone(),
+                            non_existent,
+                            local_time_zone,
+                        )?,
+                    );
                     let ca = series.array().unwrap();
                     for (i, opt_s) in ca.amortized_iter().enumerate() {
                         match opt_s {
