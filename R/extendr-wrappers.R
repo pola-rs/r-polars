@@ -1282,6 +1282,10 @@ RPolarsLazyFrame$group_by_dynamic <- function(index_column, every, period, offse
 
 RPolarsLazyFrame$to_dot <- function(optimized) .Call(wrap__RPolarsLazyFrame__to_dot, self, optimized)
 
+RPolarsLazyFrame$cast <- function(dtypes, strict) .Call(wrap__RPolarsLazyFrame__cast, self, dtypes, strict)
+
+RPolarsLazyFrame$cast_all <- function(dtype, strict) .Call(wrap__RPolarsLazyFrame__cast_all, self, dtype, strict)
+
 #' @export
 `$.RPolarsLazyFrame` <- function (self, name) { func <- RPolarsLazyFrame[[name]]; environment(func) <- environment(); func }
 
