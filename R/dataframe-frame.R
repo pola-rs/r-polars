@@ -154,6 +154,7 @@ dataframe__equals <- function(other, ..., null_equal = TRUE) {
   })
 }
 
+# TODO: accept formulas for type mapping
 dataframe__cast <- function(..., strict = TRUE) {
   self$lazy()$cast(..., strict = strict)$collect() |>
     wrap()
