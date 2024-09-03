@@ -777,6 +777,10 @@ test_that("drop", {
   a = pl$DataFrame(mtcars)$drop("mpg")$columns
   expect_true("hp" %in% a)
   expect_false("mpg" %in% a)
+
+  expect_grepl_error(
+    pl$DataFrame(mtcars)$drop("a"),
+  )
 })
 
 
