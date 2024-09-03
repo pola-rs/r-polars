@@ -2,6 +2,10 @@
 
 ## Polars R Package (development version)
 
+### New features
+
+- New method `$cast()` for `DataFrame` and `LazyFrame` (#1219).
+
 ### Bug fixes
 
 - Converting data of datatype `Null` to R doesn't error anymore. It now creates
