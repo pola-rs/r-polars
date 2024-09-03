@@ -20,6 +20,7 @@ dataframe__to_r_list <- function(
     ...,
     int64 = "double",
     as_clock_class = FALSE,
+    struct = "dataframe",
     ambiguous = "raise",
     non_existent = "raise") {
   wrap({
@@ -29,6 +30,7 @@ dataframe__to_r_list <- function(
       lapply(
         \(col) col$to_r_vector(
           int64 = int64,
+          struct = struct,
           as_clock_class = as_clock_class,
           ambiguous = ambiguous,
           non_existent = non_existent

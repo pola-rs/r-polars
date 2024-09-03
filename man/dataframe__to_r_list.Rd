@@ -8,6 +8,7 @@ dataframe__to_r_list(
   ...,
   int64 = "double",
   as_clock_class = FALSE,
+  struct = "dataframe",
   ambiguous = "raise",
   non_existent = "raise"
 )
@@ -38,6 +39,14 @@ datetime without timezone values are exported as \link[clock:as_naive_time]{cloc
 and datetime with timezone values are exported as \link[clock:as_zoned_time]{clock_zoned_time}.
 For this case, the \link[clock:clock-package]{clock} package must be installed.
 Accuracy will be maintained.
+}}
+
+\item{struct}{Determine how to convert Polars' Struct type values to R class.
+One of the followings:
+\itemize{
+\item \code{"dataframe"} (default): Convert to the R's \link{data.frame} class.
+\item \code{"tibble"}: Convert to the \link[tibble:tbl_df-class]{tibble} class.
+If the \link[=tibble-package]{tibble} is not installed, a warning will be shown.
 }}
 
 \item{ambiguous}{Determine how to deal with ambiguous datetimes.

@@ -7,6 +7,7 @@
 series__to_r_vector(
   ...,
   int64 = "double",
+  struct = "dataframe",
   as_clock_class = FALSE,
   ambiguous = "raise",
   non_existent = "raise"
@@ -25,6 +26,14 @@ If the value is out of the range of R's integer type, export as \link{NA_integer
 \item \code{"integer64"}: Convert to the \link[bit64:bit64-package]{bit64::integer64} class.
 The \link[bit64:bit64-package]{bit64} package must be installed.
 If the value is out of the range of \link[bit64:bit64-package]{bit64::integer64}, export as \link[bit64:as.integer64.character]{bit64::NA_integer64_}.
+}}
+
+\item{struct}{Determine how to convert Polars' Struct type values to R class.
+One of the followings:
+\itemize{
+\item \code{"dataframe"} (default): Convert to the R's \link{data.frame} class.
+\item \code{"tibble"}: Convert to the \link[tibble:tbl_df-class]{tibble} class.
+If the \link[=tibble-package]{tibble} is not installed, a warning will be shown.
 }}
 
 \item{as_clock_class}{A logical value indicating whether to export datetimes and duration as
@@ -64,7 +73,34 @@ One of the followings:
 A \link{vector}
 }
 \description{
-Export the Series as an R vector
+Export the \link{Series} as an R \link{vector}.
+But note that the Struct data type is exported as a \link{data.frame} for consistency,
+and a \link{data.frame} is not a vector.
+}
+\details{
+The class/type of the exported object depends on the data type of the Series as follows:
+\itemize{
+\item Boolean: \link{logical}.
+\item UInt8, UInt16, Int8, Int16, Int32: \link{integer}.
+\item UInt32, Int64, UInt64: \link{double}, \link{character}, \link{integer}, or \link[bit64:bit64-package]{bit64::integer64}.
+Depending on the \code{int64} argument.
+\item Float32, Float64: \link{double}.
+\item Decimal: \link{double}.
+\item String: \link{character}.
+\item Categorical: \link{factor}.
+\item Date: \link{Date}.
+\item Time: \link[hms:hms]{hms::hms}.
+\item Datetime (without timezone): \link{POSIXct} or \link[clock:as_naive_time]{clock_naive_time},
+depending on the \code{as_clock_class} argument.
+\item Datetime (with timezone): \link{POSIXct} or \link[clock:as_zoned_time]{clock_zoned_time},
+depending on the \code{as_clock_class} argument.
+\item Duration: \link{difftime} or \link[clock:duration-helper]{clock_duration},
+depending on the \code{as_clock_class} argument.
+\item Binary: \link[blob:blob]{blob::blob}.
+\item Null: \link[vctrs:unspecified]{vctrs::unspecified}.
+\item List, Array: \link[vctrs:list_of]{vctrs::list_of}.
+\item Struct: \link{data.frame} or \link[tibble:tbl_df-class]{tibble}, depending on the \code{struct} argument.
+}
 }
 \examples{
 # Integer values handling

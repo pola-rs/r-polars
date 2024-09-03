@@ -1,7 +1,7 @@
 Package: neopolars
 Title: R Bindings for the 'polars' Rust Library
 Version: 0.0.0.9000
-Authors@R:c(
+Authors@R: c(
     person("Tatsuya", "Shima", , "ts1s1andn@gmail.com", role = c("aut", "cre")),
     person("Authors of the dependency Rust crates", role = "aut")
   )
@@ -11,6 +11,8 @@ Description: Lightning-fast 'DataFrame' library written in 'Rust'. Convert
     interoperable with the package 'arrow', as both are based on the
     'Apache Arrow' Columnar Format.
 License: MIT + file LICENSE
+Depends:
+    R (>= 4.2)
 Imports:
     rlang (>= 1.1.0)
 Suggests:

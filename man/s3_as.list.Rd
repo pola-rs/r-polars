@@ -9,6 +9,7 @@
   ...,
   as_series = FALSE,
   int64 = "double",
+  struct = "dataframe",
   as_clock_class = FALSE,
   ambiguous = "raise",
   non_existent = "raise"
@@ -32,6 +33,14 @@ If the value is out of the range of R's integer type, export as \link{NA_integer
 \item \code{"integer64"}: Convert to the \link[bit64:bit64-package]{bit64::integer64} class.
 The \link[bit64:bit64-package]{bit64} package must be installed.
 If the value is out of the range of \link[bit64:bit64-package]{bit64::integer64}, export as \link[bit64:as.integer64.character]{bit64::NA_integer64_}.
+}}
+
+\item{struct}{Determine how to convert Polars' Struct type values to R class.
+One of the followings:
+\itemize{
+\item \code{"dataframe"} (default): Convert to the R's \link{data.frame} class.
+\item \code{"tibble"}: Convert to the \link[tibble:tbl_df-class]{tibble} class.
+If the \link[=tibble-package]{tibble} is not installed, a warning will be shown.
 }}
 
 \item{as_clock_class}{A logical value indicating whether to export datetimes and duration as

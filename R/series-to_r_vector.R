@@ -1,8 +1,34 @@
 # TODO: use options to set the default arguments
 # TODO: more notes about naive time
 # TODO: link to the type mapping vignette
+# TODO: link to the data type doc
 #' Export the Series as an R vector
 #'
+#' Export the [Series] as an R [vector].
+#' But note that the Struct data type is exported as a [data.frame] for consistency,
+#' and a [data.frame] is not a vector.
+#'
+#' The class/type of the exported object depends on the data type of the Series as follows:
+#' - Boolean: [logical].
+#' - UInt8, UInt16, Int8, Int16, Int32: [integer].
+#' - UInt32, Int64, UInt64: [double], [character], [integer], or [bit64::integer64].
+#'   Depending on the `int64` argument.
+#' - Float32, Float64: [double].
+#' - Decimal: [double].
+#' - String: [character].
+#' - Categorical: [factor].
+#' - Date: [Date].
+#' - Time: [hms::hms].
+#' - Datetime (without timezone): [POSIXct] or [clock_naive_time][clock::as_naive_time],
+#'   depending on the `as_clock_class` argument.
+#' - Datetime (with timezone): [POSIXct] or [clock_zoned_time][clock::as_zoned_time],
+#'   depending on the `as_clock_class` argument.
+#' - Duration: [difftime] or [clock_duration][clock::duration-helper],
+#'   depending on the `as_clock_class` argument.
+#' - Binary: [blob::blob].
+#' - Null: [vctrs::unspecified].
+#' - List, Array: [vctrs::list_of].
+#' - Struct: [data.frame] or [tibble][tibble::tbl_df], depending on the `struct` argument.
 #' @inheritParams rlang::args_dots_empty
 #' @param int64 Determine how to convert Polars' Int64, UInt32, or UInt64 type values to R type.
 #' One of the followings:
@@ -13,6 +39,11 @@
 #' - `"integer64"`: Convert to the [bit64::integer64] class.
 #'   The [bit64][bit64::bit64-package] package must be installed.
 #'   If the value is out of the range of [bit64::integer64], export as [bit64::NA_integer64_].
+#' @param struct Determine how to convert Polars' Struct type values to R class.
+#' One of the followings:
+#' - `"dataframe"` (default): Convert to the R's [data.frame] class.
+#' - `"tibble"`: Convert to the [tibble][tibble::tbl_df] class.
+#'   If the [tibble][tibble-package] is not installed, a warning will be shown.
 #' @param as_clock_class A logical value indicating whether to export datetimes and duration as
 #' the [clock][clock::clock] package's classes.
 #' - `FALSE` (default): Duration values are exported as [difftime]
@@ -92,6 +123,7 @@
 series__to_r_vector <- function(
     ...,
     int64 = "double",
+    struct = "dataframe",
     as_clock_class = FALSE,
     ambiguous = "raise",
     non_existent = "raise") {
@@ -100,12 +132,17 @@ series__to_r_vector <- function(
 
     # Ensure the bit64 package is loaded if int64 is set to 'integer64'
     if (identical(int64, "integer64")) {
-      if (!is_installed("bit64")) {
+      if (!is_bit64_installed()) {
         abort("If the `int64` argument is set to 'integer64', the `bit64` package must be installed.")
       }
     }
+    if (identical(struct, "tibble")) {
+      if (!is_tibble_installed()) {
+        warn("If the `struct` argument is set to 'tibble', the `tibble` package is recommended to be installed.")
+      }
+    }
     if (isTRUE(as_clock_class)) {
-      if (!is_installed("clock")) {
+      if (!is_clock_installed()) {
         abort("If the `as_clock_class` argument is set to `TRUE`, the `clock` package must be installed.")
       }
     }
@@ -113,10 +150,23 @@ series__to_r_vector <- function(
     ambiguous <- as_polars_expr(ambiguous, str_as_lit = TRUE)$`_rexpr`
     self$`_s`$to_r_vector(
       int64 = int64,
+      struct_ = struct,
       as_clock_class = as_clock_class,
       ambiguous = ambiguous,
       non_existent = non_existent,
       local_time_zone = Sys.timezone()
     )
   })
+}
+
+is_bit64_installed <- function() {
+  is_installed("bit64")
+}
+
+is_tibble_installed <- function() {
+  is_installed("tibble")
+}
+
+is_clock_installed <- function() {
+  is_installed("clock")
 }

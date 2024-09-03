@@ -13,6 +13,13 @@ enum Int64Conversion {
     Integer64,
 }
 
+#[derive(Debug, Clone, EnumString)]
+#[strum(serialize_all = "lowercase")]
+enum StructConversion {
+    DataFrame,
+    Tibble,
+}
+
 // `vctrs::unspecified` like function
 fn vctrs_unspecified_sexp(n: usize) -> Sexp {
     let mut sexp = OwnedLogicalSexp::new(n).unwrap();
@@ -39,9 +46,11 @@ fn set_row_names_sexp(n: usize) -> Sexp {
 #[savvy]
 impl PlRSeries {
     // TODO: check i32::MIN etc.?
+    // TODO: rename `struct_` to `r#struct` https://github.com/yutannihilation/savvy/issues/289
     pub fn to_r_vector(
         &self,
         int64: &str,
+        struct_: &str,
         as_clock_class: bool,
         ambiguous: PlRExpr,
         non_existent: &str,
@@ -51,8 +60,13 @@ impl PlRSeries {
 
         let int64 = Int64Conversion::try_from(int64).map_err(|_| {
             savvy::Error::from(
-                "Argument `int64` must be one of 'character', 'double', 'integer', 'integer64'"
+                "Argument `int64` must be one of ('character', 'double', 'integer', 'integer64')"
                     .to_string(),
+            )
+        })?;
+        let r#struct = StructConversion::try_from(struct_).map_err(|_| {
+            savvy::Error::from(
+                "Argument `struct` must be one of ('dataframe', 'tibble')".to_string(),
             )
         })?;
         let ambiguous = ambiguous.inner;
@@ -61,6 +75,7 @@ impl PlRSeries {
         fn to_r_vector_recursive(
             series: &Series,
             int64: Int64Conversion,
+            r#struct: StructConversion,
             as_clock_class: bool,
             ambiguous: Expr,
             non_existent: NonExistent,
@@ -110,6 +125,7 @@ impl PlRSeries {
                         to_r_vector_recursive(
                             &empty_inner_series,
                             int64.clone(),
+                            r#struct.clone(),
                             as_clock_class,
                             ambiguous.clone(),
                             non_existent,
@@ -125,6 +141,7 @@ impl PlRSeries {
                                 to_r_vector_recursive(
                                     s.as_ref(),
                                     int64.clone(),
+                                    r#struct.clone(),
                                     as_clock_class,
                                     ambiguous.clone(),
                                     non_existent,
@@ -146,6 +163,7 @@ impl PlRSeries {
                         to_r_vector_recursive(
                             &empty_inner_series,
                             int64.clone(),
+                            r#struct.clone(),
                             as_clock_class,
                             ambiguous.clone(),
                             non_existent,
@@ -161,6 +179,7 @@ impl PlRSeries {
                                 to_r_vector_recursive(
                                     s.as_ref(),
                                     int64.clone(),
+                                    r#struct.clone(),
                                     as_clock_class,
                                     ambiguous.clone(),
                                     non_existent,
@@ -221,8 +240,16 @@ impl PlRSeries {
                     let df = series.clone().into_frame().unnest([series.name()]).unwrap();
                     let len = df.width();
                     let mut list = OwnedListSexp::new(len, true)?;
-                    let _ = list.set_class(&["data.frame"]);
-                    let _ = list.set_attrib("row.names", set_row_names_sexp(df.height()));
+                    match r#struct {
+                        StructConversion::DataFrame => {
+                            let _ = list.set_class(&["data.frame"]);
+                            let _ = list.set_attrib("row.names", set_row_names_sexp(df.height()));
+                        }
+                        StructConversion::Tibble => {
+                            let _ = list.set_class(&["tbl_df", "tbl", "data.frame"]);
+                            let _ = list.set_attrib("row.names", set_row_names_sexp(df.height()));
+                        }
+                    }
                     for (i, s) in df.iter().enumerate() {
                         list.set_name_and_value(
                             i,
@@ -230,6 +257,7 @@ impl PlRSeries {
                             to_r_vector_recursive(
                                 s,
                                 int64.clone(),
+                                r#struct.clone(),
                                 as_clock_class,
                                 ambiguous.clone(),
                                 non_existent,
@@ -256,6 +284,7 @@ impl PlRSeries {
         let r_vector = to_r_vector_recursive(
             series,
             int64,
+            r#struct,
             as_clock_class,
             ambiguous,
             non_existent,

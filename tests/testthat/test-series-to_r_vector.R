@@ -53,7 +53,61 @@ test_that("int64 argument error", {
   )
   expect_error(
     as_polars_series(1)$to_r_vector(int64 = "foo"),
-    "must be one of 'character', 'double', 'integer', 'integer64'"
+    r"(must be one of \('character', 'double', 'integer', 'integer64'\))"
+  )
+  with_mocked_bindings(
+    {
+      expect_error(
+        as_polars_series(1)$to_r_vector(int64 = "integer64"),
+        "If the `int64` argument is set to 'integer64', the `bit64` package must be installed"
+      )
+    },
+    is_bit64_installed = function() FALSE
+  )
+})
+
+patrick::with_parameters_test_that(
+  "struct conversion",
+  .cases = {
+    tibble::tribble(
+      ~.test_name, ~classes,
+      "dataframe", "data.frame",
+      "tibble", c("tbl_df", "tbl", "data.frame"),
+    )
+  },
+  code = {
+    df_in <- data.frame(
+      a = 1:2,
+      b = I(list(data.frame(c = letters[1:2]), data.frame(c = letters[3:4])))
+    )
+    df_out <- as_polars_series(df_in)$to_r_vector(struct = .test_name)
+
+    expect_s3_class(df_out, classes)
+    expect_s3_class(df_out$b[[1]], classes)
+    expect_snapshot(df_out)
+  }
+)
+
+test_that("struct argument warning and error", {
+  # TODO: the argument name should be updated after https://github.com/yutannihilation/savvy/issues/289
+  expect_error(
+    as_polars_series(1)$to_r_vector(struct = TRUE),
+    r"(Argument `struct\_` must be character)"
+  )
+  expect_error(
+    as_polars_series(1)$to_r_vector(struct = "foo"),
+    r"(must be one of \('dataframe', 'tibble'\))"
+  )
+  with_mocked_bindings(
+    {
+      skip_if_not_installed("tibble")
+
+      expect_warning(
+        as_polars_series(1)$to_r_vector(struct = "tibble"),
+        "the `tibble` package is recommended to be installed"
+      )
+    },
+    is_tibble_installed = function() FALSE
   )
 })
 
