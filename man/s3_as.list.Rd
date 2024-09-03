@@ -26,7 +26,8 @@ If \code{TRUE}, return a list of \link{Series}, otherwise a list of \link[=vecto
 \item{int64}{Determine how to convert Polars' Int64, UInt32, or UInt64 type values to R type.
 One of the followings:
 \itemize{
-\item \code{"double"}: Convert to the R's \link{double} type.
+\item \code{"double"} (default): Convert to the R's \link{double} type.
+Accuracy may be degraded.
 \item \code{"character"}: Convert to the R's \link{character} type.
 \item \code{"integer"}: Convert to the R's \link{integer} type.
 If the value is out of the range of R's integer type, export as \link{NA_integer_}.
@@ -40,7 +41,7 @@ One of the followings:
 \itemize{
 \item \code{"dataframe"} (default): Convert to the R's \link{data.frame} class.
 \item \code{"tibble"}: Convert to the \link[tibble:tbl_df-class]{tibble} class.
-If the \link[=tibble-package]{tibble} is not installed, a warning will be shown.
+If the \link[tibble:tibble-package]{tibble} is not installed, a warning will be shown.
 }}
 
 \item{as_clock_class}{A logical value indicating whether to export datetimes and duration as

@@ -11,8 +11,8 @@
 #' The class/type of the exported object depends on the data type of the Series as follows:
 #' - Boolean: [logical].
 #' - UInt8, UInt16, Int8, Int16, Int32: [integer].
-#' - UInt32, Int64, UInt64: [double], [character], [integer], or [bit64::integer64].
-#'   Depending on the `int64` argument.
+#' - Int64, UInt32, UInt64: [double], [character], [integer], or [bit64::integer64],
+#'   depending on the `int64` argument.
 #' - Float32, Float64: [double].
 #' - Decimal: [double].
 #' - String: [character].
@@ -32,7 +32,8 @@
 #' @inheritParams rlang::args_dots_empty
 #' @param int64 Determine how to convert Polars' Int64, UInt32, or UInt64 type values to R type.
 #' One of the followings:
-#' - `"double"`: Convert to the R's [double] type.
+#' - `"double"` (default): Convert to the R's [double] type.
+#'   Accuracy may be degraded.
 #' - `"character"`: Convert to the R's [character] type.
 #' - `"integer"`: Convert to the R's [integer] type.
 #'   If the value is out of the range of R's integer type, export as [NA_integer_].
@@ -43,7 +44,7 @@
 #' One of the followings:
 #' - `"dataframe"` (default): Convert to the R's [data.frame] class.
 #' - `"tibble"`: Convert to the [tibble][tibble::tbl_df] class.
-#'   If the [tibble][tibble-package] is not installed, a warning will be shown.
+#'   If the [tibble][tibble::tibble-package] is not installed, a warning will be shown.
 #' @param as_clock_class A logical value indicating whether to export datetimes and duration as
 #' the [clock][clock::clock] package's classes.
 #' - `FALSE` (default): Duration values are exported as [difftime]
