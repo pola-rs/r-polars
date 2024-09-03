@@ -195,10 +195,7 @@ impl PlRSeries {
                     }
                 }
                 DataType::Binary => Ok(<Sexp>::from(Wrap(series.binary().unwrap()))),
-                DataType::Null => {
-                    let len = series.len();
-                    Ok(OwnedListSexp::new(len, false)?.into())
-                }
+                DataType::Null => Ok(vctrs_unspecified_sexp(series.len())),
                 _ => todo!(),
             }
         }

@@ -1,6 +1,6 @@
 use crate::prelude::*;
 use crate::{PlRDataFrame, PlRDataType, PlRExpr};
-use savvy::{ListSexp, NumericScalar, NumericSexp, TypedSexp};
+use savvy::{ListSexp, NumericScalar, NumericSexp, OwnedLogicalSexp, Sexp, TypedSexp};
 mod chunked_array;
 pub mod clock;
 
@@ -19,6 +19,15 @@ impl<T> From<T> for Wrap<T> {
     fn from(t: T) -> Self {
         Wrap(t)
     }
+}
+
+pub fn vctrs_unspecified_sexp(n: usize) -> Sexp {
+    let mut sexp = OwnedLogicalSexp::new(n).unwrap();
+    let _ = sexp.set_class(&["vctrs_unspecified"]);
+    for i in 0..n {
+        let _ = sexp.set_na(i);
+    }
+    sexp.into()
 }
 
 impl TryFrom<&str> for PlRDataType {
