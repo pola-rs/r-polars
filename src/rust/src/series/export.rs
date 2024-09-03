@@ -240,14 +240,13 @@ impl PlRSeries {
                     let df = series.clone().into_frame().unnest([series.name()]).unwrap();
                     let len = df.width();
                     let mut list = OwnedListSexp::new(len, true)?;
+                    let _ = list.set_attrib("row.names", set_row_names_sexp(df.height()));
                     match r#struct {
                         StructConversion::DataFrame => {
                             let _ = list.set_class(&["data.frame"]);
-                            let _ = list.set_attrib("row.names", set_row_names_sexp(df.height()));
                         }
                         StructConversion::Tibble => {
                             let _ = list.set_class(&["tbl_df", "tbl", "data.frame"]);
-                            let _ = list.set_attrib("row.names", set_row_names_sexp(df.height()));
                         }
                     }
                     for (i, s) in df.iter().enumerate() {
