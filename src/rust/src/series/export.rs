@@ -4,7 +4,7 @@ use savvy::{
 };
 use strum_macros::EnumString;
 
-#[derive(Debug, Clone, Eq, PartialEq, EnumString)]
+#[derive(Debug, Clone, EnumString)]
 #[strum(serialize_all = "lowercase")]
 enum Int64Conversion {
     Character,
