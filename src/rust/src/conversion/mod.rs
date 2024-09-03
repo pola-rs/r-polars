@@ -1,8 +1,6 @@
 use crate::prelude::*;
 use crate::{PlRDataFrame, PlRDataType, PlRExpr};
-use savvy::{
-    ListSexp, NumericScalar, NumericSexp, OwnedIntegerSexp, OwnedLogicalSexp, Sexp, TypedSexp,
-};
+use savvy::{ListSexp, NumericScalar, NumericSexp, TypedSexp};
 mod chunked_array;
 pub mod clock;
 
@@ -21,29 +19,6 @@ impl<T> From<T> for Wrap<T> {
     fn from(t: T) -> Self {
         Wrap(t)
     }
-}
-
-// `vctrs::unspecified` like function
-pub fn vctrs_unspecified_sexp(n: usize) -> Sexp {
-    let mut sexp = OwnedLogicalSexp::new(n).unwrap();
-    let _ = sexp.set_class(&["vctrs_unspecified"]);
-    for i in 0..n {
-        let _ = sexp.set_na(i);
-    }
-    sexp.into()
-}
-
-// R's `base::.set_row_names` like function
-// TODO: support n > int32::MAX case
-// Ref: https://github.com/apache/arrow-nanoarrow/blob/cf38896523c2407cc021f552b73cccd8f57dea83/r/src/materialize.c#L81-L104
-pub fn set_row_names_sexp(n: usize) -> Sexp {
-    let sexp = if n == 0 {
-        OwnedIntegerSexp::new(0).unwrap()
-    } else {
-        let n = n as i32;
-        OwnedIntegerSexp::try_from_slice(&[i32::MIN, -n]).unwrap()
-    };
-    sexp.into()
 }
 
 impl TryFrom<&str> for PlRDataType {
