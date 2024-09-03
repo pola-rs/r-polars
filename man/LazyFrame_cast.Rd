@@ -12,8 +12,8 @@ the values are the datatypes to convert to.}
 
 \item{...}{Ignored.}
 
-\item{strict}{Throw an error if a cast could not be done (for instance, due to
-an overflow).}
+\item{strict}{If \code{TRUE} (default), throw an error if a cast could not be done
+(for instance, due to an overflow). Otherwise, return \code{null}.}
 }
 \value{
 A LazyFrame
