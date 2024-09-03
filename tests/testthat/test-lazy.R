@@ -1130,3 +1130,54 @@ test_that("$gather_every() works", {
     "Expected a value of type"
   )
 })
+
+
+test_that("$cast() works", {
+  lf = pl$LazyFrame(
+    foo = 1:3,
+    bar = c(6, 7, 8),
+    ham = as.Date(c("2020-01-02", "2020-03-04", "2020-05-06"))
+  )
+
+  expect_identical(
+    lf$cast(list(foo = pl$Float32, bar = pl$UInt8))$collect()$to_list(),
+    pl$DataFrame(
+      foo = 1:3,
+      bar = c(6, 7, 8),
+      ham = as.Date(c("2020-01-02", "2020-03-04", "2020-05-06")),
+      schema = list(foo = pl$Float32, bar = pl$UInt8, ham = pl$Date)
+    )$to_list()
+  )
+
+  expect_identical(
+    lf$cast(pl$String)$collect()$to_list(),
+    pl$DataFrame(
+      foo = 1:3,
+      bar = c(6, 7, 8),
+      ham = as.Date(c("2020-01-02", "2020-03-04", "2020-05-06")),
+      schema = list(foo = pl$String, bar = pl$String, ham = pl$String)
+    )$to_list()
+  )
+
+  expect_identical(
+    lf$cast(list())$collect()$to_list(),
+    lf$collect()$to_list()
+  )
+
+  expect_grepl_error(lf$cast(1)$collect())
+  expect_grepl_error(lf$cast("a")$collect())
+  expect_grepl_error(lf$cast(list(foo = "a"))$collect())
+  expect_grepl_error(lf$cast(list(), strict = 1)$collect())
+
+  # Test overflow error
+  df = pl$LazyFrame(x = 1024)
+
+  expect_error(
+    df$cast(pl$Int8)$collect(),
+    "conversion from `f64` to `i8` failed"
+  )
+  expect_identical(
+    df$cast(pl$Int8, strict = FALSE)$collect()$to_list(),
+    list(x = NA_integer_)
+  )
+})

@@ -2266,3 +2266,40 @@ LazyFrame_sql = function(query, ..., table_name = NULL, envir = parent.frame()) 
 LazyFrame_gather_every = function(n, offset = 0) {
   self$select(pl$col("*")$gather_every(n, offset))
 }
+
+
+#' Cast LazyFrame column(s) to the specified dtype
+#'
+#' This allows to convert all columns to a datatype or to convert only specific
+#' columns. Contrarily to the Python implementation, it is not possible to
+#' convert all columns of a specific datatype to another datatype.
+#'
+#' @param dtypes Either a datatype or a list where the names are column names and
+#' the values are the datatypes to convert to.
+#' @param ... Ignored.
+#' @param strict If `TRUE` (default), throw an error if a cast could not be done
+#' (for instance, due to an overflow). Otherwise, return `null`.
+#'
+#' @return A LazyFrame
+#'
+#' @examples
+#' lf = pl$LazyFrame(
+#'   foo = 1:3,
+#'   bar = c(6, 7, 8),
+#'   ham = as.Date(c("2020-01-02", "2020-03-04", "2020-05-06"))
+#' )
+#'
+#' # Cast only some columns
+#' lf$cast(list(foo = pl$Float32, bar = pl$UInt8))$collect()
+#'
+#' # Cast all columns to the same type
+#' lf$cast(pl$String)$collect()
+LazyFrame_cast = function(dtypes, ..., strict = TRUE) {
+  if (!is.list(dtypes)) {
+    .pr$LazyFrame$cast_all(self, dtype = dtypes, strict = strict) |>
+      unwrap("in $cast():")
+  } else {
+    .pr$LazyFrame$cast(self, dtypes = dtypes, strict = strict) |>
+      unwrap("in $cast():")
+  }
+}

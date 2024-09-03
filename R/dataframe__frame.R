@@ -2523,3 +2523,26 @@ DataFrame_sql = function(query, ..., table_name = NULL, envir = parent.frame()) 
 DataFrame_gather_every = function(n, offset = 0) {
   self$select(pl$col("*")$gather_every(n, offset))
 }
+
+
+#' Cast DataFrame column(s) to the specified dtype
+#'
+#' @inherit LazyFrame_cast description params
+#'
+#' @return A DataFrame
+#'
+#' @examples
+#' df = pl$DataFrame(
+#'   foo = 1:3,
+#'   bar = c(6, 7, 8),
+#'   ham = as.Date(c("2020-01-02", "2020-03-04", "2020-05-06"))
+#' )
+#'
+#' # Cast only some columns
+#' df$cast(list(foo = pl$Float32, bar = pl$UInt8))
+#'
+#' # Cast all columns to the same type
+#' df$cast(pl$String)
+DataFrame_cast = function(dtypes, ..., strict = TRUE) {
+  self$lazy()$cast(dtypes, strict = strict)$collect()
+}
