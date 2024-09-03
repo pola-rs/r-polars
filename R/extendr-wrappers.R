@@ -1222,7 +1222,7 @@ RPolarsLazyFrame$shift <- function(n, fill_value) .Call(wrap__RPolarsLazyFrame__
 
 RPolarsLazyFrame$reverse <- function() .Call(wrap__RPolarsLazyFrame__reverse, self)
 
-RPolarsLazyFrame$drop <- function(columns) .Call(wrap__RPolarsLazyFrame__drop, self, columns)
+RPolarsLazyFrame$drop <- function(columns, strict) .Call(wrap__RPolarsLazyFrame__drop, self, columns, strict)
 
 RPolarsLazyFrame$fill_nan <- function(value) .Call(wrap__RPolarsLazyFrame__fill_nan, self, value)
 
@@ -1281,10 +1281,6 @@ RPolarsLazyFrame$rolling <- function(index_column, period, offset, closed, group
 RPolarsLazyFrame$group_by_dynamic <- function(index_column, every, period, offset, label, include_boundaries, closed, by, start_by) .Call(wrap__RPolarsLazyFrame__group_by_dynamic, self, index_column, every, period, offset, label, include_boundaries, closed, by, start_by)
 
 RPolarsLazyFrame$to_dot <- function(optimized) .Call(wrap__RPolarsLazyFrame__to_dot, self, optimized)
-
-RPolarsLazyFrame$cast <- function(dtypes, strict) .Call(wrap__RPolarsLazyFrame__cast, self, dtypes, strict)
-
-RPolarsLazyFrame$cast_all <- function(dtype, strict) .Call(wrap__RPolarsLazyFrame__cast_all, self, dtype, strict)
 
 #' @export
 `$.RPolarsLazyFrame` <- function (self, name) { func <- RPolarsLazyFrame[[name]]; environment(func) <- environment(); func }

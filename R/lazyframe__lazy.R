@@ -1133,11 +1133,13 @@ LazyFrame_shift = function(n = 1, fill_value = NULL) {
 #' # equivalent
 #' pl$LazyFrame(mtcars)$drop("mpg", "hp")$collect()
 LazyFrame_drop = function(..., strict = TRUE) {
-  uw = \(res) unwrap(res, "in $drop():")
-  cols = result(dots_to_colnames(self, ...)) |>
-    uw()
+  cols = unpack_list(..., .context = "in $drop():") |>
+    unlist()
+  if (length(cols) == 0) {
+    return(self)
+  }
   .pr$LazyFrame$drop(self, cols, strict) |>
-    uw()
+    unwrap("in $drop():")
 }
 
 #' @title Reverse

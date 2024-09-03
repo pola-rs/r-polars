@@ -245,21 +245,21 @@ test_that("shift", {
 
 
 test_that("quantile", {
-  a = pl$DataFrame(mtcars)$lazy()$quantile(1)$collect()$to_data_frame()
-  b = pl$DataFrame(mtcars)$lazy()$max()$collect()$to_data_frame()
+  a = pl$LazyFrame(mtcars)$quantile(1)$collect()$to_data_frame()
+  b = pl$LazyFrame(mtcars)$max()$collect()$to_data_frame()
   expect_equal(a, b, ignore_attr = TRUE)
 
-  a = pl$DataFrame(mtcars)$lazy()$quantile(0, "midpoint")$collect()$to_data_frame()
-  b = pl$DataFrame(mtcars)$lazy()$min()$collect()$to_data_frame()
+  a = pl$LazyFrame(mtcars)$quantile(0, "midpoint")$collect()$to_data_frame()
+  b = pl$LazyFrame(mtcars)$min()$collect()$to_data_frame()
   expect_equal(a, b, ignore_attr = TRUE)
 
-  a = pl$DataFrame(mtcars)$lazy()$quantile(0.5, "midpoint")$collect()$to_data_frame()
-  b = pl$DataFrame(mtcars)$lazy()$median()$collect()$to_data_frame()
+  a = pl$LazyFrame(mtcars)$quantile(0.5, "midpoint")$collect()$to_data_frame()
+  b = pl$LazyFrame(mtcars)$median()$collect()$to_data_frame()
   expect_equal(a, b, ignore_attr = TRUE)
 })
 
 test_that("fill_nan", {
-  a = pl$DataFrame(a = c(NaN, 1:2), b = c(1, NaN, NaN))$lazy()
+  a = pl$LazyFrame(a = c(NaN, 1:2), b = c(1, NaN, NaN))
   a = a$fill_nan(99)$collect()$to_data_frame()
   expect_equal(sum(a[[1]] == 99), 1)
   expect_equal(sum(a[[2]] == 99), 2)
@@ -267,30 +267,47 @@ test_that("fill_nan", {
 
 
 test_that("drop", {
-  a = pl$DataFrame(mtcars)$lazy()$drop(c("mpg", "hp"))$collect()$columns
+  a = pl$LazyFrame(mtcars)$drop(c("mpg", "hp"))$collect()$columns
   expect_false("hp" %in% a)
   expect_false("mpg" %in% a)
-  a = pl$DataFrame(mtcars)$lazy()$drop(c("mpg", "drat"), "hp")$collect()$columns
+  a = pl$LazyFrame(mtcars)$drop(c("mpg", "drat"), "hp")$collect()$columns
   expect_false("hp" %in% a)
   expect_false("mpg" %in% a)
   expect_false("drat" %in% a)
-  a = pl$DataFrame(mtcars)$lazy()$drop("mpg")$collect()$columns
+  a = pl$LazyFrame(mtcars)$drop("mpg")$collect()$columns
   expect_true("hp" %in% a)
   expect_false("mpg" %in% a)
+
+  expect_identical(
+    pl$LazyFrame(mtcars)$drop()$collect()$to_data_frame(),
+    mtcars,
+    ignore_attr = TRUE
+  )
+
+  # arg 'strict' works
+  expect_grepl_error(
+    pl$LazyFrame(mtcars)$drop("a")$collect(),
+    r"("a" not found)"
+  )
+  expect_identical(
+    pl$LazyFrame(mtcars)$drop("a", strict = FALSE)$collect()$to_data_frame(),
+    mtcars,
+    ignore_attr = TRUE
+  )
 })
 
 
 test_that("drop_nulls", {
   tmp = mtcars
   tmp[1:3, "mpg"] = NA
-  expect_equal(pl$DataFrame(mtcars)$lazy()$drop_nulls()$collect()$height, 32, ignore_attr = TRUE)
-  expect_equal(pl$DataFrame(tmp)$lazy()$drop_nulls()$collect()$height, 29, ignore_attr = TRUE)
-  expect_equal(pl$DataFrame(mtcars)$lazy()$drop_nulls("mpg")$collect()$height, 32, ignore_attr = TRUE)
-  expect_equal(pl$DataFrame(tmp)$lazy()$drop_nulls("mpg")$collect()$height, 29, ignore_attr = TRUE)
-  expect_equal(pl$DataFrame(tmp)$lazy()$drop_nulls("hp")$collect()$height, 32, ignore_attr = TRUE)
-  expect_equal(pl$DataFrame(tmp)$lazy()$drop_nulls(c("mpg", "hp"))$collect()$height, 29, ignore_attr = TRUE)
+  expect_equal(pl$LazyFrame(mtcars)$drop_nulls()$collect()$height, 32, ignore_attr = TRUE)
+  expect_equal(pl$LazyFrame(tmp)$drop_nulls()$collect()$height, 29, ignore_attr = TRUE)
+  expect_equal(pl$LazyFrame(mtcars)$drop_nulls("mpg")$collect()$height, 32, ignore_attr = TRUE)
+  expect_equal(pl$LazyFrame(tmp)$drop_nulls("mpg")$collect()$height, 29, ignore_attr = TRUE)
+  expect_equal(pl$LazyFrame(tmp)$drop_nulls("hp")$collect()$height, 32, ignore_attr = TRUE)
+  expect_equal(pl$LazyFrame(tmp)$drop_nulls(c("mpg", "hp"))$collect()$height, 29, ignore_attr = TRUE)
   expect_grepl_error(
-    pl$DataFrame(mtcars)$lazy()$drop_nulls("bad")$collect(),
+    pl$LazyFrame(mtcars)$drop_nulls("bad")$collect(),
     "not found: unable to find column \"bad\""
   )
 })
