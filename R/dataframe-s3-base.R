@@ -57,7 +57,7 @@ as.list.polars_data_frame <- function(
 #' Export the polars object as an R DataFrame
 #'
 #' This S3 method is a shortcut of
-#' [`<DataFrame>$to_struct()$to_r_vector(ensure_vector = FALSE, struct = "dataframe")`][dataframe__to_r_vector].
+#' [`<DataFrame>$to_struct()$to_r_vector(ensure_vector = FALSE, struct = "dataframe")`][series__to_r_vector].
 #' @inheritParams as.list.polars_data_frame
 #' @return An [R data frame][data.frame]
 #' @examples
