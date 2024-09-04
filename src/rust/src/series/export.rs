@@ -48,6 +48,7 @@ impl PlRSeries {
     // TODO: check i32::MIN etc.?
     pub fn to_r_vector(
         &self,
+        ensure_vector: bool,
         int64: &str,
         r#struct: &str,
         as_clock_class: bool,
@@ -73,6 +74,7 @@ impl PlRSeries {
 
         fn to_r_vector_recursive(
             series: &Series,
+            ensure_vector: bool,
             int64: Int64Conversion,
             r#struct: StructConversion,
             as_clock_class: bool,
@@ -123,6 +125,7 @@ impl PlRSeries {
                         "ptype",
                         to_r_vector_recursive(
                             &empty_inner_series,
+                            false,
                             int64.clone(),
                             r#struct.clone(),
                             as_clock_class,
@@ -139,6 +142,7 @@ impl PlRSeries {
                                 i,
                                 to_r_vector_recursive(
                                     s.as_ref(),
+                                    false,
                                     int64.clone(),
                                     r#struct.clone(),
                                     as_clock_class,
@@ -161,6 +165,7 @@ impl PlRSeries {
                         "ptype",
                         to_r_vector_recursive(
                             &empty_inner_series,
+                            false,
                             int64.clone(),
                             r#struct.clone(),
                             as_clock_class,
@@ -177,6 +182,7 @@ impl PlRSeries {
                                 i,
                                 to_r_vector_recursive(
                                     s.as_ref(),
+                                    false,
                                     int64.clone(),
                                     r#struct.clone(),
                                     as_clock_class,
@@ -239,13 +245,15 @@ impl PlRSeries {
                     let df = series.clone().into_frame().unnest([series.name()]).unwrap();
                     let len = df.width();
                     let mut list = OwnedListSexp::new(len, true)?;
-                    let _ = list.set_attrib("row.names", set_row_names_sexp(df.height()));
-                    match r#struct {
-                        StructConversion::DataFrame => {
-                            let _ = list.set_class(&["data.frame"]);
-                        }
-                        StructConversion::Tibble => {
-                            let _ = list.set_class(&["tbl_df", "tbl", "data.frame"]);
+                    if !ensure_vector {
+                        let _ = list.set_attrib("row.names", set_row_names_sexp(df.height()));
+                        match r#struct {
+                            StructConversion::DataFrame => {
+                                let _ = list.set_class(&["data.frame"]);
+                            }
+                            StructConversion::Tibble => {
+                                let _ = list.set_class(&["tbl_df", "tbl", "data.frame"]);
+                            }
                         }
                     }
                     for (i, s) in df.iter().enumerate() {
@@ -254,6 +262,7 @@ impl PlRSeries {
                             s.name(),
                             to_r_vector_recursive(
                                 s,
+                                false,
                                 int64.clone(),
                                 r#struct.clone(),
                                 as_clock_class,
@@ -281,6 +290,7 @@ impl PlRSeries {
 
         let r_vector = to_r_vector_recursive(
             series,
+            ensure_vector,
             int64,
             r#struct,
             as_clock_class,

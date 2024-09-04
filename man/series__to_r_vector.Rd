@@ -6,6 +6,7 @@
 \usage{
 series__to_r_vector(
   ...,
+  ensure_vector = FALSE,
   int64 = "double",
   struct = "dataframe",
   as_clock_class = FALSE,
@@ -15,6 +16,11 @@ series__to_r_vector(
 }
 \arguments{
 \item{...}{These dots are for future extensions and must be empty.}
+
+\item{ensure_vector}{A logical value indicating whether to ensure the return value is a \link{vector}.
+When the Series has the Struct data type and this argument is \code{FALSE} (default),
+the return value is a \link{data.frame}, not a \link{vector} (\verb{is.vector(<data.frame>)} is \code{FALSE}).
+If \code{TRUE}, return a named \link{list} instead of a \link{data.frame}.}
 
 \item{int64}{Determine how to convert Polars' Int64, UInt32, or UInt64 type values to R type.
 One of the followings:
@@ -34,7 +40,7 @@ One of the followings:
 \itemize{
 \item \code{"dataframe"} (default): Convert to the R's \link{data.frame} class.
 \item \code{"tibble"}: Convert to the \link[tibble:tbl_df-class]{tibble} class.
-If the \link[tibble:tibble-package]{tibble} is not installed, a warning will be shown.
+If the \link[tibble:tibble-package]{tibble} package is not installed, a warning will be shown.
 }}
 
 \item{as_clock_class}{A logical value indicating whether to export datetimes and duration as
@@ -75,8 +81,10 @@ A \link{vector}
 }
 \description{
 Export the \link{Series} as an R \link{vector}.
-But note that the Struct data type is exported as a \link{data.frame} for consistency,
+But note that the Struct data type is exported as a \link{data.frame} by default for consistency,
 and a \link{data.frame} is not a vector.
+If you want to ensure the return value is a \link{vector}, please set \code{ensure_vector = TRUE},
+or use the \code{\link[=as.vector]{as.vector()}} function instead.
 }
 \details{
 The class/type of the exported object depends on the data type of the Series as follows:
@@ -101,9 +109,34 @@ depending on the \code{as_clock_class} argument.
 \item Null: \link[vctrs:unspecified]{vctrs::unspecified}.
 \item List, Array: \link[vctrs:list_of]{vctrs::list_of}.
 \item Struct: \link{data.frame} or \link[tibble:tbl_df-class]{tibble}, depending on the \code{struct} argument.
+If \code{ensure_vector = TRUE}, the top-level Struct is exported as a named \link{list} for
+to ensure the return value is a \link{vector}.
 }
 }
 \examples{
+# Struct values handling
+series_struct <- as_polars_series(
+  data.frame(
+    a = 1:2,
+    b = I(list(data.frame(c = "foo"), data.frame(c = "bar")))
+  )
+)
+series_struct
+
+## Export Struct as data.frame
+series_struct$to_r_vector()
+
+## Export Struct as data.frame,
+## but the top-level Struct is exported as a named list
+series_struct$to_r_vector(ensure_vector = TRUE)
+
+## Export Struct as tibble
+series_struct$to_r_vector(struct = "tibble")
+
+## Export Struct as tibble,
+## but the top-level Struct is exported as a named list
+series_struct$to_r_vector(struct = "tibble", ensure_vector = TRUE)
+
 # Integer values handling
 series_uint64 <- as_polars_series(
   c(NA, "0", "4294967295", "18446744073709551615")

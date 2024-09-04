@@ -47,7 +47,7 @@ One of the followings:
 \itemize{
 \item \code{"dataframe"} (default): Convert to the R's \link{data.frame} class.
 \item \code{"tibble"}: Convert to the \link[tibble:tbl_df-class]{tibble} class.
-If the \link[tibble:tibble-package]{tibble} is not installed, a warning will be shown.
+If the \link[tibble:tibble-package]{tibble} package is not installed, a warning will be shown.
 }}
 
 \item{ambiguous}{Determine how to deal with ambiguous datetimes.

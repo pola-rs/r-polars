@@ -7,7 +7,7 @@ print.polars_series <- function(x, ...) {
 # TODO: support the mode argument
 #' @export
 as.vector.polars_series <- function(x, mode = "any") {
-  x$to_r_vector() |>
+  x$to_r_vector(ensure_vector = TRUE) |>
     as.vector(mode = mode)
 }
 

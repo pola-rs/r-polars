@@ -5,8 +5,10 @@
 #' Export the Series as an R vector
 #'
 #' Export the [Series] as an R [vector].
-#' But note that the Struct data type is exported as a [data.frame] for consistency,
+#' But note that the Struct data type is exported as a [data.frame] by default for consistency,
 #' and a [data.frame] is not a vector.
+#' If you want to ensure the return value is a [vector], please set `ensure_vector = TRUE`,
+#' or use the [as.vector()] function instead.
 #'
 #' The class/type of the exported object depends on the data type of the Series as follows:
 #' - Boolean: [logical].
@@ -29,7 +31,13 @@
 #' - Null: [vctrs::unspecified].
 #' - List, Array: [vctrs::list_of].
 #' - Struct: [data.frame] or [tibble][tibble::tbl_df], depending on the `struct` argument.
+#'   If `ensure_vector = TRUE`, the top-level Struct is exported as a named [list] for
+#'   to ensure the return value is a [vector].
 #' @inheritParams rlang::args_dots_empty
+#' @param ensure_vector A logical value indicating whether to ensure the return value is a [vector].
+#' When the Series has the Struct data type and this argument is `FALSE` (default),
+#' the return value is a [data.frame], not a [vector] (`is.vector(<data.frame>)` is `FALSE`).
+#' If `TRUE`, return a named [list] instead of a [data.frame].
 #' @param int64 Determine how to convert Polars' Int64, UInt32, or UInt64 type values to R type.
 #' One of the followings:
 #' - `"double"` (default): Convert to the R's [double] type.
@@ -44,7 +52,7 @@
 #' One of the followings:
 #' - `"dataframe"` (default): Convert to the R's [data.frame] class.
 #' - `"tibble"`: Convert to the [tibble][tibble::tbl_df] class.
-#'   If the [tibble][tibble::tibble-package] is not installed, a warning will be shown.
+#'   If the [tibble][tibble::tibble-package] package is not installed, a warning will be shown.
 #' @param as_clock_class A logical value indicating whether to export datetimes and duration as
 #' the [clock][clock::clock] package's classes.
 #' - `FALSE` (default): Duration values are exported as [difftime]
@@ -71,6 +79,29 @@
 #' - `"null"`: Return a `NA` value
 #' @return A [vector]
 #' @examples
+#' # Struct values handling
+#' series_struct <- as_polars_series(
+#'   data.frame(
+#'     a = 1:2,
+#'     b = I(list(data.frame(c = "foo"), data.frame(c = "bar")))
+#'   )
+#' )
+#' series_struct
+#'
+#' ## Export Struct as data.frame
+#' series_struct$to_r_vector()
+#'
+#' ## Export Struct as data.frame,
+#' ## but the top-level Struct is exported as a named list
+#' series_struct$to_r_vector(ensure_vector = TRUE)
+#'
+#' ## Export Struct as tibble
+#' series_struct$to_r_vector(struct = "tibble")
+#'
+#' ## Export Struct as tibble,
+#' ## but the top-level Struct is exported as a named list
+#' series_struct$to_r_vector(struct = "tibble", ensure_vector = TRUE)
+#'
 #' # Integer values handling
 #' series_uint64 <- as_polars_series(
 #'   c(NA, "0", "4294967295", "18446744073709551615")
@@ -123,6 +154,7 @@
 #' }
 series__to_r_vector <- function(
     ...,
+    ensure_vector = FALSE,
     int64 = "double",
     struct = "dataframe",
     as_clock_class = FALSE,
@@ -150,6 +182,7 @@ series__to_r_vector <- function(
 
     ambiguous <- as_polars_expr(ambiguous, str_as_lit = TRUE)$`_rexpr`
     self$`_s`$to_r_vector(
+      ensure_vector = ensure_vector,
       int64 = int64,
       struct = struct,
       as_clock_class = as_clock_class,

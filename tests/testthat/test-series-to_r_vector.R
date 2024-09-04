@@ -81,10 +81,19 @@ patrick::with_parameters_test_that(
       b = I(list(data.frame(c = letters[1:2]), data.frame(c = letters[3:4])))
     )
     df_out <- as_polars_series(df_in)$to_r_vector(struct = .test_name)
+    list_out <- as_polars_series(df_in)$to_r_vector(struct = .test_name, ensure_vector = TRUE)
+
+    expect_false(is.vector(df_out))
+    expect_true(is.vector(list_out))
 
     expect_s3_class(df_out, classes)
+    expect_vector(list_out, ptype = list())
+
     expect_s3_class(df_out$b[[1]], classes)
+    expect_s3_class(list_out$b[[2]], classes)
+
     expect_snapshot(df_out)
+    expect_snapshot(list_out)
   }
 )
 
