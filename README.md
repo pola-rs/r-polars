@@ -7,9 +7,10 @@
 
 I have been developing r-polars for over a year, and I felt that a
 significant rewrite was necessary. r-polars is a clone of
-[py-polars](https://github.com/pola-rs/polars/tree/main/py-polars), but
-the package structure is currently quite different. Therefore, it was
-difficult to keep up with frequent updates.
+[py-polars](https://github.com/pola-rs/polars/tree/main/py-polars) /
+[polars-python](https://github.com/pola-rs/polars/tree/main/crates/polars-python),
+but the package structure is currently quite different. Therefore, it
+was difficult to keep up with frequent updates.
 
 I thought that now, around the release of Python Polars 1.0.0, is a good
 time for a complete rewrite, so I decided to try it.
