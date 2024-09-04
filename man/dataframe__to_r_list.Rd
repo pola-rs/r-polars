@@ -71,13 +71,11 @@ One of the followings:
 }}
 }
 \value{
-A \link{list} of \link[=vector]{vectors}
+A \link{list} containing \link{vector}s and \link[=data.frame]{R dataframe}s
 }
 \description{
-This method is a combination of \code{\link[=dataframe__get_columns]{<DataFrame>$get_columns()}} and
-\code{\link[=series__to_r_vector]{<Series>$to_r_vector()}}.
-First, it gets the columns of the DataFrame as a list of \link{Series}, then it converts each \link{Series}
-to an R \link{vector}.
+This method is a shortcut of \verb{<DataFrame>$to_struct()$to_r_vector(ensure_vector = TRUE)}.
+Different from \code{\link[=dataframe__get_columns]{<DataFrame>$get_columns()}}, all columns are exported as R objects.
 }
 \examples{
 df <- pl$DataFrame(foo = c(1, 2, 3), bar = c(4, 5, 6))
@@ -89,4 +87,10 @@ df <- pl$DataFrame(
   c = c(TRUE, TRUE, FALSE, TRUE)
 )
 df$to_r_list()
+}
+\seealso{
+\itemize{
+\item \code{\link[=dataframe__get_columns]{<DataFrame>$get_columns()}}: Export the polars \link{DataFrame} as a \link{list} of \link{Series}.
+\item \code{\link[=series__to_r_vector]{<Series>$to_r_vector()}}: Export the polars \link{Series} as an R vector.
+}
 }

@@ -56,9 +56,8 @@ as.list.polars_data_frame <- function(
 
 #' Export the polars object as an R DataFrame
 #'
-#' This S3 method calls [`as.list(<DataFrame>)`][as.list.polars_data_frame] to
-#' convert the [polars DataFrame][DataFrame] to a list of [vectors][vector], then
-#' makes the list to an [R data frame][data.frame].
+#' This S3 method is a shortcut of
+#' [`<DataFrame>$to_struct()$to_r_vector(ensure_vector = FALSE)`][dataframe__to_r_vector].
 #' @inheritParams as.list.polars_data_frame
 #' @return An [R data frame][data.frame]
 #' @examples
@@ -74,11 +73,12 @@ as.data.frame.polars_data_frame <- function(
     as_clock_class = FALSE,
     ambiguous = "raise",
     non_existent = "raise") {
-  .args <- as.list(match.call())
-  .args$x <- x
-  .args$as_series <- FALSE
-  out <- do.call(as.list, .args)
-  class(out) <- "data.frame"
-  attr(out, "row.names") <- .set_row_names(x$height)
-  out
+  x$to_struct()$to_r_vector(
+    ensure_vector = FALSE,
+    int64 = int64,
+    struct = struct,
+    as_clock_class = as_clock_class,
+    ambiguous = ambiguous,
+    non_existent = non_existent
+  )
 }

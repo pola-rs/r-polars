@@ -8,7 +8,6 @@
   x,
   ...,
   int64 = "double",
-  struct = "dataframe",
   as_clock_class = FALSE,
   ambiguous = "raise",
   non_existent = "raise"
@@ -30,14 +29,6 @@ If the value is out of the range of R's integer type, export as \link{NA_integer
 \item \code{"integer64"}: Convert to the \link[bit64:bit64-package]{bit64::integer64} class.
 The \link[bit64:bit64-package]{bit64} package must be installed.
 If the value is out of the range of \link[bit64:bit64-package]{bit64::integer64}, export as \link[bit64:as.integer64.character]{bit64::NA_integer64_}.
-}}
-
-\item{struct}{Determine how to convert Polars' Struct type values to R class.
-One of the followings:
-\itemize{
-\item \code{"dataframe"} (default): Convert to the R's \link{data.frame} class.
-\item \code{"tibble"}: Convert to the \link[tibble:tbl_df-class]{tibble} class.
-If the \link[tibble:tibble-package]{tibble} package is not installed, a warning will be shown.
 }}
 
 \item{as_clock_class}{A logical value indicating whether to export datetimes and duration as
@@ -77,9 +68,8 @@ One of the followings:
 An \link[=data.frame]{R data frame}
 }
 \description{
-This S3 method calls \code{\link[=as.list.polars_data_frame]{as.list(<DataFrame>)}} to
-convert the \link[=DataFrame]{polars DataFrame} to a list of \link[=vector]{vectors}, then
-makes the list to an \link[=data.frame]{R data frame}.
+This S3 method is a shortcut of
+\code{\link[=dataframe__to_r_vector]{<DataFrame>$to_struct()$to_r_vector(ensure_vector = FALSE, struct = "dataframe")}}.
 }
 \examples{
 df <- as_polars_df(list(a = 1:3, b = 4:6))
