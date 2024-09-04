@@ -1735,3 +1735,29 @@ test_that("$cast() works", {
     list(x = NA_integer_)
   )
 })
+
+
+test_that("$to_dummies() works", {
+  df = pl$DataFrame(foo = 1:2, bar = 3:4, ham = c("a", "b"))
+
+  expect_identical(
+    df$to_dummies()$to_list(),
+    list(foo_1 = 1:0, foo_2 = 0:1, bar_3 = 1:0, bar_4 = 0:1, ham_a = 1:0, ham_b = 0:1)
+  )
+
+  expect_identical(
+    df$to_dummies(drop_first = TRUE)$to_list(),
+    list(foo_2 = 0:1, bar_4 = 0:1, ham_b = 0:1)
+  )
+
+  expect_identical(
+    df$to_dummies(c("foo", "bar"), separator = "::")$to_list(),
+    list(
+      `foo::1` = 1:0,
+      `foo::2` = 0:1,
+      `bar::3` = 1:0,
+      `bar::4` = 0:1,
+      ham = c("a", "b")
+    )
+  )
+})
