@@ -1175,6 +1175,13 @@ class(`PlRExpr`) <- "PlRExpr__bundle"
   }
 }
 
+`PlRLazyFrame_cast_all` <- function(self) {
+  function(`dtype`, `strict`) {
+    `dtype` <- .savvy_extract_ptr(`dtype`, "PlRDataType")
+    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_cast_all__impl, `self`, `dtype`, `strict`))
+  }
+}
+
 `PlRLazyFrame_sort_by_exprs` <- function(self) {
   function(`by`, `descending`, `nulls_last`, `maintain_order`, `multithreaded`) {
     .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_sort_by_exprs__impl, `self`, `by`, `descending`, `nulls_last`, `maintain_order`, `multithreaded`))
@@ -1194,6 +1201,7 @@ class(`PlRExpr`) <- "PlRExpr__bundle"
   e$`group_by` <- `PlRLazyFrame_group_by`(ptr)
   e$`collect` <- `PlRLazyFrame_collect`(ptr)
   e$`cast` <- `PlRLazyFrame_cast`(ptr)
+  e$`cast_all` <- `PlRLazyFrame_cast_all`(ptr)
   e$`sort_by_exprs` <- `PlRLazyFrame_sort_by_exprs`(ptr)
   e$`with_columns` <- `PlRLazyFrame_with_columns`(ptr)
 

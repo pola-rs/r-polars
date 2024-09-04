@@ -41,9 +41,15 @@ lazyframe__collect <- function() {
 }
 
 lazyframe__cast <- function(..., strict = TRUE) {
-  parse_into_list_of_datatypes(...) |>
-    self$`_ldf`$cast(strict) |>
-    wrap()
+  wrap({
+    dtypes <- parse_into_list_of_datatypes(...)
+
+    if (length(dtypes) == 1L && !is_named(dtypes)) {
+      self$`_ldf`$cast_all(dtypes[[1]], strict)
+    } else {
+      self$`_ldf`$cast(dtypes, strict)
+    }
+  })
 }
 
 lazyframe__sort <- function(

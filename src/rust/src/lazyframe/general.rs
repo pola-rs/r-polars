@@ -1,4 +1,4 @@
-use crate::{prelude::*, PlRDataFrame, PlRLazyFrame, PlRLazyGroupBy, RPolarsErr};
+use crate::{prelude::*, PlRDataFrame, PlRDataType, PlRLazyFrame, PlRLazyGroupBy, RPolarsErr};
 use savvy::{savvy, ListSexp, LogicalSexp, Result};
 
 #[savvy]
@@ -31,6 +31,10 @@ impl PlRLazyFrame {
         let mut cast_map = PlHashMap::with_capacity(dtypes.len());
         cast_map.extend(dtypes.iter().map(|f| (f.name.as_ref(), f.dtype.clone())));
         Ok(self.ldf.clone().cast(cast_map, strict).into())
+    }
+
+    fn cast_all(&self, dtype: PlRDataType, strict: bool) -> Result<Self> {
+        Ok(self.ldf.clone().cast_all(dtype.dt, strict).into())
     }
 
     fn sort_by_exprs(
