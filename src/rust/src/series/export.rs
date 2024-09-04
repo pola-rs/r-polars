@@ -46,11 +46,10 @@ fn set_row_names_sexp(n: usize) -> Sexp {
 #[savvy]
 impl PlRSeries {
     // TODO: check i32::MIN etc.?
-    // TODO: rename `struct_` to `r#struct` https://github.com/yutannihilation/savvy/issues/289
     pub fn to_r_vector(
         &self,
         int64: &str,
-        struct_: &str,
+        r#struct: &str,
         as_clock_class: bool,
         ambiguous: PlRExpr,
         non_existent: &str,
@@ -64,7 +63,7 @@ impl PlRSeries {
                     .to_string(),
             )
         })?;
-        let r#struct = StructConversion::try_from(struct_).map_err(|_| {
+        let r#struct = StructConversion::try_from(r#struct).map_err(|_| {
             savvy::Error::from(
                 "Argument `struct` must be one of ('dataframe', 'tibble')".to_string(),
             )

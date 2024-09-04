@@ -151,7 +151,7 @@ series__to_r_vector <- function(
     ambiguous <- as_polars_expr(ambiguous, str_as_lit = TRUE)$`_rexpr`
     self$`_s`$to_r_vector(
       int64 = int64,
-      struct_ = struct,
+      struct = struct,
       as_clock_class = as_clock_class,
       ambiguous = ambiguous,
       non_existent = non_existent,
