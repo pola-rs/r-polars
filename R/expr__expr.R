@@ -1022,26 +1022,33 @@ Expr_to_physical = use_extendr_wrapper
 #' @param dtype DataType to cast to.
 #' @param strict If `TRUE` (default), an error will be thrown if cast failed at
 #' resolve time.
+#' @param wrap_numerical If `TRUE`, numeric casts wrap overflowing values instead
+#' of marking the cast as invalid.
+#'
 #' @return Expr
 #' @examples
-#' df = pl$DataFrame(a = 1:3, b = c(1, 2, 3))
+#' df = pl$DataFrame(a = 1:3, b = c(1, 2, 3), c = c(100, 200, 300))
 #' df$with_columns(
-#'   pl$col("a")$cast(pl$dtypes$Float64),
-#'   pl$col("b")$cast(pl$dtypes$Int32)
+#'   pl$col("a")$cast(pl$Float64),
+#'   pl$col("b")$cast(pl$Int32)
 #' )
 #'
 #' # strict FALSE, inserts null for any cast failure
-#' pl$lit(c(100, 200, 300))$cast(pl$dtypes$UInt8, strict = FALSE)$to_series()
+#' df$with_columns(pl$col("c")$cast(pl$UInt8, strict = FALSE))
+#'
+#' # wrap_numerical doesn't error in case of overflow but rather wraps the value
+#' # to fit in the datatype
+#' df$with_columns(pl$col("c")$cast(pl$UInt8, wrap_numerical = TRUE))
 #'
 #' # strict TRUE, raise any failure as an error when query is executed.
 #' tryCatch(
 #'   {
-#'     pl$lit("a")$cast(pl$dtypes$Float64, strict = TRUE)$to_series()
+#'     pl$lit("a")$cast(pl$Float64, strict = TRUE)$to_series()
 #'   },
 #'   error = function(e) e
 #' )
-Expr_cast = function(dtype, strict = TRUE) {
-  .pr$Expr$cast(self, dtype, strict)
+Expr_cast = function(dtype, strict = TRUE, wrap_numerical = FALSE) {
+  .pr$Expr$cast(self, dtype, strict, wrap_numerical)
 }
 
 #' Compute the square root of the elements

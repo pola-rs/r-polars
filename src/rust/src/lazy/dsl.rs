@@ -227,14 +227,20 @@ impl RPolarsExpr {
         self.0.clone().to_physical().into()
     }
 
-    pub fn cast(&self, data_type: &RPolarsDataType, strict: bool) -> Self {
+    pub fn cast(&self, data_type: &RPolarsDataType, strict: bool, wrap_numerical: bool) -> Self {
+        use polars::chunked_array::cast::CastOptions;
         let dt = data_type.0.clone();
-        if strict {
-            self.0.clone().strict_cast(dt)
+
+        let options = if wrap_numerical {
+            CastOptions::Overflowing
+        } else if strict {
+            CastOptions::Strict
         } else {
-            self.0.clone().cast(dt)
-        }
-        .into()
+            CastOptions::NonStrict
+        };
+
+        let expr = self.0.clone().cast_with_options(dt, options);
+        expr.into()
     }
 
     pub fn sort_with(&self, descending: bool, nulls_last: bool) -> Self {
