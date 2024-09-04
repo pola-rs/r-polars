@@ -34,53 +34,53 @@ SEXP handle_result(SEXP res_) {
     return (SEXP)res;
 }
 
-SEXP savvy_concat_df__impl(SEXP dfs) {
-    SEXP res = savvy_concat_df__ffi(dfs);
+SEXP savvy_concat_df__impl(SEXP c_arg__dfs) {
+    SEXP res = savvy_concat_df__ffi(c_arg__dfs);
     return handle_result(res);
 }
 
-SEXP savvy_field__impl(SEXP names) {
-    SEXP res = savvy_field__ffi(names);
+SEXP savvy_field__impl(SEXP c_arg__names) {
+    SEXP res = savvy_field__ffi(c_arg__names);
     return handle_result(res);
 }
 
-SEXP savvy_col__impl(SEXP name) {
-    SEXP res = savvy_col__ffi(name);
+SEXP savvy_col__impl(SEXP c_arg__name) {
+    SEXP res = savvy_col__ffi(c_arg__name);
     return handle_result(res);
 }
 
-SEXP savvy_cols__impl(SEXP names) {
-    SEXP res = savvy_cols__ffi(names);
+SEXP savvy_cols__impl(SEXP c_arg__names) {
+    SEXP res = savvy_cols__ffi(c_arg__names);
     return handle_result(res);
 }
 
-SEXP savvy_dtype_cols__impl(SEXP dtypes) {
-    SEXP res = savvy_dtype_cols__ffi(dtypes);
+SEXP savvy_dtype_cols__impl(SEXP c_arg__dtypes) {
+    SEXP res = savvy_dtype_cols__ffi(c_arg__dtypes);
     return handle_result(res);
 }
 
-SEXP savvy_lit_from_bool__impl(SEXP value) {
-    SEXP res = savvy_lit_from_bool__ffi(value);
+SEXP savvy_lit_from_bool__impl(SEXP c_arg__value) {
+    SEXP res = savvy_lit_from_bool__ffi(c_arg__value);
     return handle_result(res);
 }
 
-SEXP savvy_lit_from_i32__impl(SEXP value) {
-    SEXP res = savvy_lit_from_i32__ffi(value);
+SEXP savvy_lit_from_i32__impl(SEXP c_arg__value) {
+    SEXP res = savvy_lit_from_i32__ffi(c_arg__value);
     return handle_result(res);
 }
 
-SEXP savvy_lit_from_f64__impl(SEXP value) {
-    SEXP res = savvy_lit_from_f64__ffi(value);
+SEXP savvy_lit_from_f64__impl(SEXP c_arg__value) {
+    SEXP res = savvy_lit_from_f64__ffi(c_arg__value);
     return handle_result(res);
 }
 
-SEXP savvy_lit_from_str__impl(SEXP value) {
-    SEXP res = savvy_lit_from_str__ffi(value);
+SEXP savvy_lit_from_str__impl(SEXP c_arg__value) {
+    SEXP res = savvy_lit_from_str__ffi(c_arg__value);
     return handle_result(res);
 }
 
-SEXP savvy_lit_from_raw__impl(SEXP value) {
-    SEXP res = savvy_lit_from_raw__ffi(value);
+SEXP savvy_lit_from_raw__impl(SEXP c_arg__value) {
+    SEXP res = savvy_lit_from_raw__ffi(c_arg__value);
     return handle_result(res);
 }
 
@@ -89,33 +89,33 @@ SEXP savvy_lit_null__impl(void) {
     return handle_result(res);
 }
 
-SEXP savvy_lit_from_series__impl(SEXP value) {
-    SEXP res = savvy_lit_from_series__ffi(value);
+SEXP savvy_lit_from_series__impl(SEXP c_arg__value) {
+    SEXP res = savvy_lit_from_series__ffi(c_arg__value);
     return handle_result(res);
 }
 
-SEXP savvy_when__impl(SEXP condition) {
-    SEXP res = savvy_when__ffi(condition);
+SEXP savvy_when__impl(SEXP c_arg__condition) {
+    SEXP res = savvy_when__ffi(c_arg__condition);
     return handle_result(res);
 }
 
-SEXP savvy_PlRChainedThen_when__impl(SEXP self__, SEXP condition) {
-    SEXP res = savvy_PlRChainedThen_when__ffi(self__, condition);
+SEXP savvy_PlRChainedThen_when__impl(SEXP self__, SEXP c_arg__condition) {
+    SEXP res = savvy_PlRChainedThen_when__ffi(self__, c_arg__condition);
     return handle_result(res);
 }
 
-SEXP savvy_PlRChainedThen_otherwise__impl(SEXP self__, SEXP statement) {
-    SEXP res = savvy_PlRChainedThen_otherwise__ffi(self__, statement);
+SEXP savvy_PlRChainedThen_otherwise__impl(SEXP self__, SEXP c_arg__statement) {
+    SEXP res = savvy_PlRChainedThen_otherwise__ffi(self__, c_arg__statement);
     return handle_result(res);
 }
 
-SEXP savvy_PlRChainedWhen_then__impl(SEXP self__, SEXP statement) {
-    SEXP res = savvy_PlRChainedWhen_then__ffi(self__, statement);
+SEXP savvy_PlRChainedWhen_then__impl(SEXP self__, SEXP c_arg__statement) {
+    SEXP res = savvy_PlRChainedWhen_then__ffi(self__, c_arg__statement);
     return handle_result(res);
 }
 
-SEXP savvy_PlRDataFrame_init__impl(SEXP columns) {
-    SEXP res = savvy_PlRDataFrame_init__ffi(columns);
+SEXP savvy_PlRDataFrame_init__impl(SEXP c_arg__columns) {
+    SEXP res = savvy_PlRDataFrame_init__ffi(c_arg__columns);
     return handle_result(res);
 }
 
@@ -154,13 +154,13 @@ SEXP savvy_PlRDataFrame_width__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRDataFrame_to_series__impl(SEXP self__, SEXP index) {
-    SEXP res = savvy_PlRDataFrame_to_series__ffi(self__, index);
+SEXP savvy_PlRDataFrame_to_series__impl(SEXP self__, SEXP c_arg__index) {
+    SEXP res = savvy_PlRDataFrame_to_series__ffi(self__, c_arg__index);
     return handle_result(res);
 }
 
-SEXP savvy_PlRDataFrame_equals__impl(SEXP self__, SEXP other, SEXP null_equal) {
-    SEXP res = savvy_PlRDataFrame_equals__ffi(self__, other, null_equal);
+SEXP savvy_PlRDataFrame_equals__impl(SEXP self__, SEXP c_arg__other, SEXP c_arg__null_equal) {
+    SEXP res = savvy_PlRDataFrame_equals__ffi(self__, c_arg__other, c_arg__null_equal);
     return handle_result(res);
 }
 
@@ -169,48 +169,48 @@ SEXP savvy_PlRDataFrame_lazy__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRDataFrame_to_struct__impl(SEXP self__, SEXP name) {
-    SEXP res = savvy_PlRDataFrame_to_struct__ffi(self__, name);
+SEXP savvy_PlRDataFrame_to_struct__impl(SEXP self__, SEXP c_arg__name) {
+    SEXP res = savvy_PlRDataFrame_to_struct__ffi(self__, c_arg__name);
     return handle_result(res);
 }
 
-SEXP savvy_PlRDataType_new_from_name__impl(SEXP name) {
-    SEXP res = savvy_PlRDataType_new_from_name__ffi(name);
+SEXP savvy_PlRDataType_new_from_name__impl(SEXP c_arg__name) {
+    SEXP res = savvy_PlRDataType_new_from_name__ffi(c_arg__name);
     return handle_result(res);
 }
 
-SEXP savvy_PlRDataType_new_decimal__impl(SEXP scale, SEXP precision) {
-    SEXP res = savvy_PlRDataType_new_decimal__ffi(scale, precision);
+SEXP savvy_PlRDataType_new_decimal__impl(SEXP c_arg__scale, SEXP c_arg__precision) {
+    SEXP res = savvy_PlRDataType_new_decimal__ffi(c_arg__scale, c_arg__precision);
     return handle_result(res);
 }
 
-SEXP savvy_PlRDataType_new_datetime__impl(SEXP time_unit, SEXP time_zone) {
-    SEXP res = savvy_PlRDataType_new_datetime__ffi(time_unit, time_zone);
+SEXP savvy_PlRDataType_new_datetime__impl(SEXP c_arg__time_unit, SEXP c_arg__time_zone) {
+    SEXP res = savvy_PlRDataType_new_datetime__ffi(c_arg__time_unit, c_arg__time_zone);
     return handle_result(res);
 }
 
-SEXP savvy_PlRDataType_new_duration__impl(SEXP time_unit) {
-    SEXP res = savvy_PlRDataType_new_duration__ffi(time_unit);
+SEXP savvy_PlRDataType_new_duration__impl(SEXP c_arg__time_unit) {
+    SEXP res = savvy_PlRDataType_new_duration__ffi(c_arg__time_unit);
     return handle_result(res);
 }
 
-SEXP savvy_PlRDataType_new_categorical__impl(SEXP ordering) {
-    SEXP res = savvy_PlRDataType_new_categorical__ffi(ordering);
+SEXP savvy_PlRDataType_new_categorical__impl(SEXP c_arg__ordering) {
+    SEXP res = savvy_PlRDataType_new_categorical__ffi(c_arg__ordering);
     return handle_result(res);
 }
 
-SEXP savvy_PlRDataType_new_enum__impl(SEXP categories) {
-    SEXP res = savvy_PlRDataType_new_enum__ffi(categories);
+SEXP savvy_PlRDataType_new_enum__impl(SEXP c_arg__categories) {
+    SEXP res = savvy_PlRDataType_new_enum__ffi(c_arg__categories);
     return handle_result(res);
 }
 
-SEXP savvy_PlRDataType_new_list__impl(SEXP inner) {
-    SEXP res = savvy_PlRDataType_new_list__ffi(inner);
+SEXP savvy_PlRDataType_new_list__impl(SEXP c_arg__inner) {
+    SEXP res = savvy_PlRDataType_new_list__ffi(c_arg__inner);
     return handle_result(res);
 }
 
-SEXP savvy_PlRDataType_new_struct__impl(SEXP fields) {
-    SEXP res = savvy_PlRDataType_new_struct__ffi(fields);
+SEXP savvy_PlRDataType_new_struct__impl(SEXP c_arg__fields) {
+    SEXP res = savvy_PlRDataType_new_struct__ffi(c_arg__fields);
     return handle_result(res);
 }
 
@@ -224,13 +224,13 @@ SEXP savvy_PlRDataType__get_datatype_fields__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRDataType_eq__impl(SEXP self__, SEXP other) {
-    SEXP res = savvy_PlRDataType_eq__ffi(self__, other);
+SEXP savvy_PlRDataType_eq__impl(SEXP self__, SEXP c_arg__other) {
+    SEXP res = savvy_PlRDataType_eq__ffi(self__, c_arg__other);
     return handle_result(res);
 }
 
-SEXP savvy_PlRDataType_ne__impl(SEXP self__, SEXP other) {
-    SEXP res = savvy_PlRDataType_ne__ffi(self__, other);
+SEXP savvy_PlRDataType_ne__impl(SEXP self__, SEXP c_arg__other) {
+    SEXP res = savvy_PlRDataType_ne__ffi(self__, c_arg__other);
     return handle_result(res);
 }
 
@@ -334,28 +334,28 @@ SEXP savvy_PlRDataType_is_known__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_bin_contains__impl(SEXP self__, SEXP literal) {
-    SEXP res = savvy_PlRExpr_bin_contains__ffi(self__, literal);
+SEXP savvy_PlRExpr_bin_contains__impl(SEXP self__, SEXP c_arg__literal) {
+    SEXP res = savvy_PlRExpr_bin_contains__ffi(self__, c_arg__literal);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_bin_ends_with__impl(SEXP self__, SEXP suffix) {
-    SEXP res = savvy_PlRExpr_bin_ends_with__ffi(self__, suffix);
+SEXP savvy_PlRExpr_bin_ends_with__impl(SEXP self__, SEXP c_arg__suffix) {
+    SEXP res = savvy_PlRExpr_bin_ends_with__ffi(self__, c_arg__suffix);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_bin_starts_with__impl(SEXP self__, SEXP prefix) {
-    SEXP res = savvy_PlRExpr_bin_starts_with__ffi(self__, prefix);
+SEXP savvy_PlRExpr_bin_starts_with__impl(SEXP self__, SEXP c_arg__prefix) {
+    SEXP res = savvy_PlRExpr_bin_starts_with__ffi(self__, c_arg__prefix);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_bin_hex_decode__impl(SEXP self__, SEXP strict) {
-    SEXP res = savvy_PlRExpr_bin_hex_decode__ffi(self__, strict);
+SEXP savvy_PlRExpr_bin_hex_decode__impl(SEXP self__, SEXP c_arg__strict) {
+    SEXP res = savvy_PlRExpr_bin_hex_decode__ffi(self__, c_arg__strict);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_bin_base64_decode__impl(SEXP self__, SEXP strict) {
-    SEXP res = savvy_PlRExpr_bin_base64_decode__ffi(self__, strict);
+SEXP savvy_PlRExpr_bin_base64_decode__impl(SEXP self__, SEXP c_arg__strict) {
+    SEXP res = savvy_PlRExpr_bin_base64_decode__ffi(self__, c_arg__strict);
     return handle_result(res);
 }
 
@@ -374,13 +374,13 @@ SEXP savvy_PlRExpr_cat_get_categories__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_dt_convert_time_zone__impl(SEXP self__, SEXP time_zone) {
-    SEXP res = savvy_PlRExpr_dt_convert_time_zone__ffi(self__, time_zone);
+SEXP savvy_PlRExpr_dt_convert_time_zone__impl(SEXP self__, SEXP c_arg__time_zone) {
+    SEXP res = savvy_PlRExpr_dt_convert_time_zone__ffi(self__, c_arg__time_zone);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_dt_replace_time_zone__impl(SEXP self__, SEXP ambiguous, SEXP non_existent, SEXP time_zone) {
-    SEXP res = savvy_PlRExpr_dt_replace_time_zone__ffi(self__, ambiguous, non_existent, time_zone);
+SEXP savvy_PlRExpr_dt_replace_time_zone__impl(SEXP self__, SEXP c_arg__ambiguous, SEXP c_arg__non_existent, SEXP c_arg__time_zone) {
+    SEXP res = savvy_PlRExpr_dt_replace_time_zone__ffi(self__, c_arg__ambiguous, c_arg__non_existent, c_arg__time_zone);
     return handle_result(res);
 }
 
@@ -389,33 +389,33 @@ SEXP savvy_PlRExpr_print__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_add__impl(SEXP self__, SEXP rhs) {
-    SEXP res = savvy_PlRExpr_add__ffi(self__, rhs);
+SEXP savvy_PlRExpr_add__impl(SEXP self__, SEXP c_arg__rhs) {
+    SEXP res = savvy_PlRExpr_add__ffi(self__, c_arg__rhs);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_sub__impl(SEXP self__, SEXP rhs) {
-    SEXP res = savvy_PlRExpr_sub__ffi(self__, rhs);
+SEXP savvy_PlRExpr_sub__impl(SEXP self__, SEXP c_arg__rhs) {
+    SEXP res = savvy_PlRExpr_sub__ffi(self__, c_arg__rhs);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_mul__impl(SEXP self__, SEXP rhs) {
-    SEXP res = savvy_PlRExpr_mul__ffi(self__, rhs);
+SEXP savvy_PlRExpr_mul__impl(SEXP self__, SEXP c_arg__rhs) {
+    SEXP res = savvy_PlRExpr_mul__ffi(self__, c_arg__rhs);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_div__impl(SEXP self__, SEXP rhs) {
-    SEXP res = savvy_PlRExpr_div__ffi(self__, rhs);
+SEXP savvy_PlRExpr_div__impl(SEXP self__, SEXP c_arg__rhs) {
+    SEXP res = savvy_PlRExpr_div__ffi(self__, c_arg__rhs);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_rem__impl(SEXP self__, SEXP rhs) {
-    SEXP res = savvy_PlRExpr_rem__ffi(self__, rhs);
+SEXP savvy_PlRExpr_rem__impl(SEXP self__, SEXP c_arg__rhs) {
+    SEXP res = savvy_PlRExpr_rem__ffi(self__, c_arg__rhs);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_floor_div__impl(SEXP self__, SEXP rhs) {
-    SEXP res = savvy_PlRExpr_floor_div__ffi(self__, rhs);
+SEXP savvy_PlRExpr_floor_div__impl(SEXP self__, SEXP c_arg__rhs) {
+    SEXP res = savvy_PlRExpr_floor_div__ffi(self__, c_arg__rhs);
     return handle_result(res);
 }
 
@@ -424,48 +424,48 @@ SEXP savvy_PlRExpr_neg__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_eq__impl(SEXP self__, SEXP other) {
-    SEXP res = savvy_PlRExpr_eq__ffi(self__, other);
+SEXP savvy_PlRExpr_eq__impl(SEXP self__, SEXP c_arg__other) {
+    SEXP res = savvy_PlRExpr_eq__ffi(self__, c_arg__other);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_eq_missing__impl(SEXP self__, SEXP other) {
-    SEXP res = savvy_PlRExpr_eq_missing__ffi(self__, other);
+SEXP savvy_PlRExpr_eq_missing__impl(SEXP self__, SEXP c_arg__other) {
+    SEXP res = savvy_PlRExpr_eq_missing__ffi(self__, c_arg__other);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_neq__impl(SEXP self__, SEXP other) {
-    SEXP res = savvy_PlRExpr_neq__ffi(self__, other);
+SEXP savvy_PlRExpr_neq__impl(SEXP self__, SEXP c_arg__other) {
+    SEXP res = savvy_PlRExpr_neq__ffi(self__, c_arg__other);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_neq_missing__impl(SEXP self__, SEXP other) {
-    SEXP res = savvy_PlRExpr_neq_missing__ffi(self__, other);
+SEXP savvy_PlRExpr_neq_missing__impl(SEXP self__, SEXP c_arg__other) {
+    SEXP res = savvy_PlRExpr_neq_missing__ffi(self__, c_arg__other);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_gt__impl(SEXP self__, SEXP other) {
-    SEXP res = savvy_PlRExpr_gt__ffi(self__, other);
+SEXP savvy_PlRExpr_gt__impl(SEXP self__, SEXP c_arg__other) {
+    SEXP res = savvy_PlRExpr_gt__ffi(self__, c_arg__other);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_gt_eq__impl(SEXP self__, SEXP other) {
-    SEXP res = savvy_PlRExpr_gt_eq__ffi(self__, other);
+SEXP savvy_PlRExpr_gt_eq__impl(SEXP self__, SEXP c_arg__other) {
+    SEXP res = savvy_PlRExpr_gt_eq__ffi(self__, c_arg__other);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_lt_eq__impl(SEXP self__, SEXP other) {
-    SEXP res = savvy_PlRExpr_lt_eq__ffi(self__, other);
+SEXP savvy_PlRExpr_lt_eq__impl(SEXP self__, SEXP c_arg__other) {
+    SEXP res = savvy_PlRExpr_lt_eq__ffi(self__, c_arg__other);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_lt__impl(SEXP self__, SEXP other) {
-    SEXP res = savvy_PlRExpr_lt__ffi(self__, other);
+SEXP savvy_PlRExpr_lt__impl(SEXP self__, SEXP c_arg__other) {
+    SEXP res = savvy_PlRExpr_lt__ffi(self__, c_arg__other);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_alias__impl(SEXP self__, SEXP name) {
-    SEXP res = savvy_PlRExpr_alias__ffi(self__, name);
+SEXP savvy_PlRExpr_alias__impl(SEXP self__, SEXP c_arg__name) {
+    SEXP res = savvy_PlRExpr_alias__ffi(self__, c_arg__name);
     return handle_result(res);
 }
 
@@ -539,13 +539,13 @@ SEXP savvy_PlRExpr_sum__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_cast__impl(SEXP self__, SEXP data_type, SEXP strict) {
-    SEXP res = savvy_PlRExpr_cast__ffi(self__, data_type, strict);
+SEXP savvy_PlRExpr_cast__impl(SEXP self__, SEXP c_arg__data_type, SEXP c_arg__strict) {
+    SEXP res = savvy_PlRExpr_cast__ffi(self__, c_arg__data_type, c_arg__strict);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_sort_by__impl(SEXP self__, SEXP by, SEXP descending, SEXP nulls_last, SEXP multithreaded, SEXP maintain_order) {
-    SEXP res = savvy_PlRExpr_sort_by__ffi(self__, by, descending, nulls_last, multithreaded, maintain_order);
+SEXP savvy_PlRExpr_sort_by__impl(SEXP self__, SEXP c_arg__by, SEXP c_arg__descending, SEXP c_arg__nulls_last, SEXP c_arg__multithreaded, SEXP c_arg__maintain_order) {
+    SEXP res = savvy_PlRExpr_sort_by__ffi(self__, c_arg__by, c_arg__descending, c_arg__nulls_last, c_arg__multithreaded, c_arg__maintain_order);
     return handle_result(res);
 }
 
@@ -559,8 +559,8 @@ SEXP savvy_PlRExpr_last__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_filter__impl(SEXP self__, SEXP predicate) {
-    SEXP res = savvy_PlRExpr_filter__ffi(self__, predicate);
+SEXP savvy_PlRExpr_filter__impl(SEXP self__, SEXP c_arg__predicate) {
+    SEXP res = savvy_PlRExpr_filter__ffi(self__, c_arg__predicate);
     return handle_result(res);
 }
 
@@ -569,53 +569,53 @@ SEXP savvy_PlRExpr_reverse__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_over__impl(SEXP self__, SEXP partition_by, SEXP order_by_descending, SEXP order_by_nulls_last, SEXP mapping_strategy, SEXP order_by) {
-    SEXP res = savvy_PlRExpr_over__ffi(self__, partition_by, order_by_descending, order_by_nulls_last, mapping_strategy, order_by);
+SEXP savvy_PlRExpr_over__impl(SEXP self__, SEXP c_arg__partition_by, SEXP c_arg__order_by_descending, SEXP c_arg__order_by_nulls_last, SEXP c_arg__mapping_strategy, SEXP c_arg__order_by) {
+    SEXP res = savvy_PlRExpr_over__ffi(self__, c_arg__partition_by, c_arg__order_by_descending, c_arg__order_by_nulls_last, c_arg__mapping_strategy, c_arg__order_by);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_and__impl(SEXP self__, SEXP other) {
-    SEXP res = savvy_PlRExpr_and__ffi(self__, other);
+SEXP savvy_PlRExpr_and__impl(SEXP self__, SEXP c_arg__other) {
+    SEXP res = savvy_PlRExpr_and__ffi(self__, c_arg__other);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_or__impl(SEXP self__, SEXP other) {
-    SEXP res = savvy_PlRExpr_or__ffi(self__, other);
+SEXP savvy_PlRExpr_or__impl(SEXP self__, SEXP c_arg__other) {
+    SEXP res = savvy_PlRExpr_or__ffi(self__, c_arg__other);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_xor__impl(SEXP self__, SEXP other) {
-    SEXP res = savvy_PlRExpr_xor__ffi(self__, other);
+SEXP savvy_PlRExpr_xor__impl(SEXP self__, SEXP c_arg__other) {
+    SEXP res = savvy_PlRExpr_xor__ffi(self__, c_arg__other);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_reshape__impl(SEXP self__, SEXP dimensions) {
-    SEXP res = savvy_PlRExpr_reshape__ffi(self__, dimensions);
+SEXP savvy_PlRExpr_reshape__impl(SEXP self__, SEXP c_arg__dimensions) {
+    SEXP res = savvy_PlRExpr_reshape__ffi(self__, c_arg__dimensions);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_any__impl(SEXP self__, SEXP ignore_nulls) {
-    SEXP res = savvy_PlRExpr_any__ffi(self__, ignore_nulls);
+SEXP savvy_PlRExpr_any__impl(SEXP self__, SEXP c_arg__ignore_nulls) {
+    SEXP res = savvy_PlRExpr_any__ffi(self__, c_arg__ignore_nulls);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_all__impl(SEXP self__, SEXP ignore_nulls) {
-    SEXP res = savvy_PlRExpr_all__ffi(self__, ignore_nulls);
+SEXP savvy_PlRExpr_all__impl(SEXP self__, SEXP c_arg__ignore_nulls) {
+    SEXP res = savvy_PlRExpr_all__ffi(self__, c_arg__ignore_nulls);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_meta_selector_add__impl(SEXP self__, SEXP other) {
-    SEXP res = savvy_PlRExpr_meta_selector_add__ffi(self__, other);
+SEXP savvy_PlRExpr_meta_selector_add__impl(SEXP self__, SEXP c_arg__other) {
+    SEXP res = savvy_PlRExpr_meta_selector_add__ffi(self__, c_arg__other);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_meta_selector_and__impl(SEXP self__, SEXP other) {
-    SEXP res = savvy_PlRExpr_meta_selector_and__ffi(self__, other);
+SEXP savvy_PlRExpr_meta_selector_and__impl(SEXP self__, SEXP c_arg__other) {
+    SEXP res = savvy_PlRExpr_meta_selector_and__ffi(self__, c_arg__other);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_meta_selector_sub__impl(SEXP self__, SEXP other) {
-    SEXP res = savvy_PlRExpr_meta_selector_sub__ffi(self__, other);
+SEXP savvy_PlRExpr_meta_selector_sub__impl(SEXP self__, SEXP c_arg__other) {
+    SEXP res = savvy_PlRExpr_meta_selector_sub__ffi(self__, c_arg__other);
     return handle_result(res);
 }
 
@@ -629,13 +629,13 @@ SEXP savvy_PlRExpr_name_keep__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_name_prefix__impl(SEXP self__, SEXP prefix) {
-    SEXP res = savvy_PlRExpr_name_prefix__ffi(self__, prefix);
+SEXP savvy_PlRExpr_name_prefix__impl(SEXP self__, SEXP c_arg__prefix) {
+    SEXP res = savvy_PlRExpr_name_prefix__ffi(self__, c_arg__prefix);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_name_suffix__impl(SEXP self__, SEXP suffix) {
-    SEXP res = savvy_PlRExpr_name_suffix__ffi(self__, suffix);
+SEXP savvy_PlRExpr_name_suffix__impl(SEXP self__, SEXP c_arg__suffix) {
+    SEXP res = savvy_PlRExpr_name_suffix__ffi(self__, c_arg__suffix);
     return handle_result(res);
 }
 
@@ -649,13 +649,13 @@ SEXP savvy_PlRExpr_name_to_uppercase__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_name_prefix_fields__impl(SEXP self__, SEXP prefix) {
-    SEXP res = savvy_PlRExpr_name_prefix_fields__ffi(self__, prefix);
+SEXP savvy_PlRExpr_name_prefix_fields__impl(SEXP self__, SEXP c_arg__prefix) {
+    SEXP res = savvy_PlRExpr_name_prefix_fields__ffi(self__, c_arg__prefix);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_name_suffix_fields__impl(SEXP self__, SEXP suffix) {
-    SEXP res = savvy_PlRExpr_name_suffix_fields__ffi(self__, suffix);
+SEXP savvy_PlRExpr_name_suffix_fields__impl(SEXP self__, SEXP c_arg__suffix) {
+    SEXP res = savvy_PlRExpr_name_suffix_fields__ffi(self__, c_arg__suffix);
     return handle_result(res);
 }
 
@@ -669,28 +669,28 @@ SEXP savvy_PlRExpr_serialize_json__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_deserialize_binary__impl(SEXP data) {
-    SEXP res = savvy_PlRExpr_deserialize_binary__ffi(data);
+SEXP savvy_PlRExpr_deserialize_binary__impl(SEXP c_arg__data) {
+    SEXP res = savvy_PlRExpr_deserialize_binary__ffi(c_arg__data);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_deserialize_json__impl(SEXP data) {
-    SEXP res = savvy_PlRExpr_deserialize_json__ffi(data);
+SEXP savvy_PlRExpr_deserialize_json__impl(SEXP c_arg__data) {
+    SEXP res = savvy_PlRExpr_deserialize_json__ffi(c_arg__data);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_struct_field_by_index__impl(SEXP self__, SEXP index) {
-    SEXP res = savvy_PlRExpr_struct_field_by_index__ffi(self__, index);
+SEXP savvy_PlRExpr_struct_field_by_index__impl(SEXP self__, SEXP c_arg__index) {
+    SEXP res = savvy_PlRExpr_struct_field_by_index__ffi(self__, c_arg__index);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_struct_multiple_fields__impl(SEXP self__, SEXP names) {
-    SEXP res = savvy_PlRExpr_struct_multiple_fields__ffi(self__, names);
+SEXP savvy_PlRExpr_struct_multiple_fields__impl(SEXP self__, SEXP c_arg__names) {
+    SEXP res = savvy_PlRExpr_struct_multiple_fields__ffi(self__, c_arg__names);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_struct_rename_fields__impl(SEXP self__, SEXP names) {
-    SEXP res = savvy_PlRExpr_struct_rename_fields__ffi(self__, names);
+SEXP savvy_PlRExpr_struct_rename_fields__impl(SEXP self__, SEXP c_arg__names) {
+    SEXP res = savvy_PlRExpr_struct_rename_fields__ffi(self__, c_arg__names);
     return handle_result(res);
 }
 
@@ -699,18 +699,18 @@ SEXP savvy_PlRExpr_struct_json_encode__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_struct_with_fields__impl(SEXP self__, SEXP fields) {
-    SEXP res = savvy_PlRExpr_struct_with_fields__ffi(self__, fields);
+SEXP savvy_PlRExpr_struct_with_fields__impl(SEXP self__, SEXP c_arg__fields) {
+    SEXP res = savvy_PlRExpr_struct_with_fields__ffi(self__, c_arg__fields);
     return handle_result(res);
 }
 
-SEXP savvy_PlRLazyFrame_select__impl(SEXP self__, SEXP exprs) {
-    SEXP res = savvy_PlRLazyFrame_select__ffi(self__, exprs);
+SEXP savvy_PlRLazyFrame_select__impl(SEXP self__, SEXP c_arg__exprs) {
+    SEXP res = savvy_PlRLazyFrame_select__ffi(self__, c_arg__exprs);
     return handle_result(res);
 }
 
-SEXP savvy_PlRLazyFrame_group_by__impl(SEXP self__, SEXP by, SEXP maintain_order) {
-    SEXP res = savvy_PlRLazyFrame_group_by__ffi(self__, by, maintain_order);
+SEXP savvy_PlRLazyFrame_group_by__impl(SEXP self__, SEXP c_arg__by, SEXP c_arg__maintain_order) {
+    SEXP res = savvy_PlRLazyFrame_group_by__ffi(self__, c_arg__by, c_arg__maintain_order);
     return handle_result(res);
 }
 
@@ -719,113 +719,113 @@ SEXP savvy_PlRLazyFrame_collect__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRLazyFrame_cast__impl(SEXP self__, SEXP dtypes, SEXP strict) {
-    SEXP res = savvy_PlRLazyFrame_cast__ffi(self__, dtypes, strict);
+SEXP savvy_PlRLazyFrame_cast__impl(SEXP self__, SEXP c_arg__dtypes, SEXP c_arg__strict) {
+    SEXP res = savvy_PlRLazyFrame_cast__ffi(self__, c_arg__dtypes, c_arg__strict);
     return handle_result(res);
 }
 
-SEXP savvy_PlRLazyFrame_sort_by_exprs__impl(SEXP self__, SEXP by, SEXP descending, SEXP nulls_last, SEXP maintain_order, SEXP multithreaded) {
-    SEXP res = savvy_PlRLazyFrame_sort_by_exprs__ffi(self__, by, descending, nulls_last, maintain_order, multithreaded);
+SEXP savvy_PlRLazyFrame_sort_by_exprs__impl(SEXP self__, SEXP c_arg__by, SEXP c_arg__descending, SEXP c_arg__nulls_last, SEXP c_arg__maintain_order, SEXP c_arg__multithreaded) {
+    SEXP res = savvy_PlRLazyFrame_sort_by_exprs__ffi(self__, c_arg__by, c_arg__descending, c_arg__nulls_last, c_arg__maintain_order, c_arg__multithreaded);
     return handle_result(res);
 }
 
-SEXP savvy_PlRLazyFrame_with_columns__impl(SEXP self__, SEXP exprs) {
-    SEXP res = savvy_PlRLazyFrame_with_columns__ffi(self__, exprs);
+SEXP savvy_PlRLazyFrame_with_columns__impl(SEXP self__, SEXP c_arg__exprs) {
+    SEXP res = savvy_PlRLazyFrame_with_columns__ffi(self__, c_arg__exprs);
     return handle_result(res);
 }
 
-SEXP savvy_PlRLazyGroupBy_agg__impl(SEXP self__, SEXP aggs) {
-    SEXP res = savvy_PlRLazyGroupBy_agg__ffi(self__, aggs);
+SEXP savvy_PlRLazyGroupBy_agg__impl(SEXP self__, SEXP c_arg__aggs) {
+    SEXP res = savvy_PlRLazyGroupBy_agg__ffi(self__, c_arg__aggs);
     return handle_result(res);
 }
 
-SEXP savvy_PlRLazyGroupBy_head__impl(SEXP self__, SEXP n) {
-    SEXP res = savvy_PlRLazyGroupBy_head__ffi(self__, n);
+SEXP savvy_PlRLazyGroupBy_head__impl(SEXP self__, SEXP c_arg__n) {
+    SEXP res = savvy_PlRLazyGroupBy_head__ffi(self__, c_arg__n);
     return handle_result(res);
 }
 
-SEXP savvy_PlRLazyGroupBy_tail__impl(SEXP self__, SEXP n) {
-    SEXP res = savvy_PlRLazyGroupBy_tail__ffi(self__, n);
+SEXP savvy_PlRLazyGroupBy_tail__impl(SEXP self__, SEXP c_arg__n) {
+    SEXP res = savvy_PlRLazyGroupBy_tail__ffi(self__, c_arg__n);
     return handle_result(res);
 }
 
-SEXP savvy_PlRSeries_add__impl(SEXP self__, SEXP other) {
-    SEXP res = savvy_PlRSeries_add__ffi(self__, other);
+SEXP savvy_PlRSeries_add__impl(SEXP self__, SEXP c_arg__other) {
+    SEXP res = savvy_PlRSeries_add__ffi(self__, c_arg__other);
     return handle_result(res);
 }
 
-SEXP savvy_PlRSeries_sub__impl(SEXP self__, SEXP other) {
-    SEXP res = savvy_PlRSeries_sub__ffi(self__, other);
+SEXP savvy_PlRSeries_sub__impl(SEXP self__, SEXP c_arg__other) {
+    SEXP res = savvy_PlRSeries_sub__ffi(self__, c_arg__other);
     return handle_result(res);
 }
 
-SEXP savvy_PlRSeries_div__impl(SEXP self__, SEXP other) {
-    SEXP res = savvy_PlRSeries_div__ffi(self__, other);
+SEXP savvy_PlRSeries_div__impl(SEXP self__, SEXP c_arg__other) {
+    SEXP res = savvy_PlRSeries_div__ffi(self__, c_arg__other);
     return handle_result(res);
 }
 
-SEXP savvy_PlRSeries_mul__impl(SEXP self__, SEXP other) {
-    SEXP res = savvy_PlRSeries_mul__ffi(self__, other);
+SEXP savvy_PlRSeries_mul__impl(SEXP self__, SEXP c_arg__other) {
+    SEXP res = savvy_PlRSeries_mul__ffi(self__, c_arg__other);
     return handle_result(res);
 }
 
-SEXP savvy_PlRSeries_rem__impl(SEXP self__, SEXP other) {
-    SEXP res = savvy_PlRSeries_rem__ffi(self__, other);
+SEXP savvy_PlRSeries_rem__impl(SEXP self__, SEXP c_arg__other) {
+    SEXP res = savvy_PlRSeries_rem__ffi(self__, c_arg__other);
     return handle_result(res);
 }
 
-SEXP savvy_PlRSeries_new_null__impl(SEXP name, SEXP length) {
-    SEXP res = savvy_PlRSeries_new_null__ffi(name, length);
+SEXP savvy_PlRSeries_new_null__impl(SEXP c_arg__name, SEXP c_arg__length) {
+    SEXP res = savvy_PlRSeries_new_null__ffi(c_arg__name, c_arg__length);
     return handle_result(res);
 }
 
-SEXP savvy_PlRSeries_new_f64__impl(SEXP name, SEXP values) {
-    SEXP res = savvy_PlRSeries_new_f64__ffi(name, values);
+SEXP savvy_PlRSeries_new_f64__impl(SEXP c_arg__name, SEXP c_arg__values) {
+    SEXP res = savvy_PlRSeries_new_f64__ffi(c_arg__name, c_arg__values);
     return handle_result(res);
 }
 
-SEXP savvy_PlRSeries_new_i32__impl(SEXP name, SEXP values) {
-    SEXP res = savvy_PlRSeries_new_i32__ffi(name, values);
+SEXP savvy_PlRSeries_new_i32__impl(SEXP c_arg__name, SEXP c_arg__values) {
+    SEXP res = savvy_PlRSeries_new_i32__ffi(c_arg__name, c_arg__values);
     return handle_result(res);
 }
 
-SEXP savvy_PlRSeries_new_i64__impl(SEXP name, SEXP values) {
-    SEXP res = savvy_PlRSeries_new_i64__ffi(name, values);
+SEXP savvy_PlRSeries_new_i64__impl(SEXP c_arg__name, SEXP c_arg__values) {
+    SEXP res = savvy_PlRSeries_new_i64__ffi(c_arg__name, c_arg__values);
     return handle_result(res);
 }
 
-SEXP savvy_PlRSeries_new_bool__impl(SEXP name, SEXP values) {
-    SEXP res = savvy_PlRSeries_new_bool__ffi(name, values);
+SEXP savvy_PlRSeries_new_bool__impl(SEXP c_arg__name, SEXP c_arg__values) {
+    SEXP res = savvy_PlRSeries_new_bool__ffi(c_arg__name, c_arg__values);
     return handle_result(res);
 }
 
-SEXP savvy_PlRSeries_new_str__impl(SEXP name, SEXP values) {
-    SEXP res = savvy_PlRSeries_new_str__ffi(name, values);
+SEXP savvy_PlRSeries_new_str__impl(SEXP c_arg__name, SEXP c_arg__values) {
+    SEXP res = savvy_PlRSeries_new_str__ffi(c_arg__name, c_arg__values);
     return handle_result(res);
 }
 
-SEXP savvy_PlRSeries_new_single_binary__impl(SEXP name, SEXP values) {
-    SEXP res = savvy_PlRSeries_new_single_binary__ffi(name, values);
+SEXP savvy_PlRSeries_new_single_binary__impl(SEXP c_arg__name, SEXP c_arg__values) {
+    SEXP res = savvy_PlRSeries_new_single_binary__ffi(c_arg__name, c_arg__values);
     return handle_result(res);
 }
 
-SEXP savvy_PlRSeries_new_binary__impl(SEXP name, SEXP values) {
-    SEXP res = savvy_PlRSeries_new_binary__ffi(name, values);
+SEXP savvy_PlRSeries_new_binary__impl(SEXP c_arg__name, SEXP c_arg__values) {
+    SEXP res = savvy_PlRSeries_new_binary__ffi(c_arg__name, c_arg__values);
     return handle_result(res);
 }
 
-SEXP savvy_PlRSeries_new_series_list__impl(SEXP name, SEXP values) {
-    SEXP res = savvy_PlRSeries_new_series_list__ffi(name, values);
+SEXP savvy_PlRSeries_new_series_list__impl(SEXP c_arg__name, SEXP c_arg__values) {
+    SEXP res = savvy_PlRSeries_new_series_list__ffi(c_arg__name, c_arg__values);
     return handle_result(res);
 }
 
-SEXP savvy_PlRSeries_new_i64_from_clock_pair__impl(SEXP name, SEXP left, SEXP right, SEXP precision) {
-    SEXP res = savvy_PlRSeries_new_i64_from_clock_pair__ffi(name, left, right, precision);
+SEXP savvy_PlRSeries_new_i64_from_clock_pair__impl(SEXP c_arg__name, SEXP c_arg__left, SEXP c_arg__right, SEXP c_arg__precision) {
+    SEXP res = savvy_PlRSeries_new_i64_from_clock_pair__ffi(c_arg__name, c_arg__left, c_arg__right, c_arg__precision);
     return handle_result(res);
 }
 
-SEXP savvy_PlRSeries_to_r_vector__impl(SEXP self__, SEXP int64, SEXP struct_, SEXP as_clock_class, SEXP ambiguous, SEXP non_existent, SEXP local_time_zone) {
-    SEXP res = savvy_PlRSeries_to_r_vector__ffi(self__, int64, struct_, as_clock_class, ambiguous, non_existent, local_time_zone);
+SEXP savvy_PlRSeries_to_r_vector__impl(SEXP self__, SEXP c_arg__int64, SEXP c_arg__struct_, SEXP c_arg__as_clock_class, SEXP c_arg__ambiguous, SEXP c_arg__non_existent, SEXP c_arg__local_time_zone) {
+    SEXP res = savvy_PlRSeries_to_r_vector__ffi(self__, c_arg__int64, c_arg__struct_, c_arg__as_clock_class, c_arg__ambiguous, c_arg__non_existent, c_arg__local_time_zone);
     return handle_result(res);
 }
 
@@ -859,8 +859,8 @@ SEXP savvy_PlRSeries_cat_to_local__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRSeries_reshape__impl(SEXP self__, SEXP dimensions) {
-    SEXP res = savvy_PlRSeries_reshape__ffi(self__, dimensions);
+SEXP savvy_PlRSeries_reshape__impl(SEXP self__, SEXP c_arg__dimensions) {
+    SEXP res = savvy_PlRSeries_reshape__ffi(self__, c_arg__dimensions);
     return handle_result(res);
 }
 
@@ -874,8 +874,8 @@ SEXP savvy_PlRSeries_name__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRSeries_rename__impl(SEXP self__, SEXP name) {
-    SEXP res = savvy_PlRSeries_rename__ffi(self__, name);
+SEXP savvy_PlRSeries_rename__impl(SEXP self__, SEXP c_arg__name) {
+    SEXP res = savvy_PlRSeries_rename__ffi(self__, c_arg__name);
     return handle_result(res);
 }
 
@@ -884,8 +884,8 @@ SEXP savvy_PlRSeries_dtype__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRSeries_equals__impl(SEXP self__, SEXP other, SEXP check_dtypes, SEXP check_names, SEXP null_equal) {
-    SEXP res = savvy_PlRSeries_equals__ffi(self__, other, check_dtypes, check_names, null_equal);
+SEXP savvy_PlRSeries_equals__impl(SEXP self__, SEXP c_arg__other, SEXP c_arg__check_dtypes, SEXP c_arg__check_names, SEXP c_arg__null_equal) {
+    SEXP res = savvy_PlRSeries_equals__ffi(self__, c_arg__other, c_arg__check_dtypes, c_arg__check_names, c_arg__null_equal);
     return handle_result(res);
 }
 
@@ -894,28 +894,28 @@ SEXP savvy_PlRSeries_len__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRSeries_cast__impl(SEXP self__, SEXP dtype, SEXP strict) {
-    SEXP res = savvy_PlRSeries_cast__ffi(self__, dtype, strict);
+SEXP savvy_PlRSeries_cast__impl(SEXP self__, SEXP c_arg__dtype, SEXP c_arg__strict) {
+    SEXP res = savvy_PlRSeries_cast__ffi(self__, c_arg__dtype, c_arg__strict);
     return handle_result(res);
 }
 
-SEXP savvy_PlRSeries_slice__impl(SEXP self__, SEXP offset, SEXP length) {
-    SEXP res = savvy_PlRSeries_slice__ffi(self__, offset, length);
+SEXP savvy_PlRSeries_slice__impl(SEXP self__, SEXP c_arg__offset, SEXP c_arg__length) {
+    SEXP res = savvy_PlRSeries_slice__ffi(self__, c_arg__offset, c_arg__length);
     return handle_result(res);
 }
 
-SEXP savvy_PlRThen_when__impl(SEXP self__, SEXP condition) {
-    SEXP res = savvy_PlRThen_when__ffi(self__, condition);
+SEXP savvy_PlRThen_when__impl(SEXP self__, SEXP c_arg__condition) {
+    SEXP res = savvy_PlRThen_when__ffi(self__, c_arg__condition);
     return handle_result(res);
 }
 
-SEXP savvy_PlRThen_otherwise__impl(SEXP self__, SEXP statement) {
-    SEXP res = savvy_PlRThen_otherwise__ffi(self__, statement);
+SEXP savvy_PlRThen_otherwise__impl(SEXP self__, SEXP c_arg__statement) {
+    SEXP res = savvy_PlRThen_otherwise__ffi(self__, c_arg__statement);
     return handle_result(res);
 }
 
-SEXP savvy_PlRWhen_then__impl(SEXP self__, SEXP statement) {
-    SEXP res = savvy_PlRWhen_then__ffi(self__, statement);
+SEXP savvy_PlRWhen_then__impl(SEXP self__, SEXP c_arg__statement) {
+    SEXP res = savvy_PlRWhen_then__ffi(self__, c_arg__statement);
     return handle_result(res);
 }
 
