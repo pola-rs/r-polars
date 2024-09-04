@@ -98,10 +98,9 @@ patrick::with_parameters_test_that(
 )
 
 test_that("struct argument warning and error", {
-  # TODO: the argument name should be updated after https://github.com/yutannihilation/savvy/issues/289
   expect_error(
     as_polars_series(1)$to_r_vector(struct = TRUE),
-    r"(Argument `r#struct` must be character)"
+    r"(Argument `struct` must be character)"
   )
   expect_error(
     as_polars_series(1)$to_r_vector(struct = "foo"),
