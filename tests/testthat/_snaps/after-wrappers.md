@@ -91,12 +91,12 @@
       [45] "reverse"          "rolling"          "sample"           "schema"          
       [49] "select"           "select_seq"       "shape"            "shift"           
       [53] "slice"            "sort"             "sql"              "std"             
-      [57] "sum"              "tail"             "to_data_frame"    "to_list"         
-      [61] "to_raw_ipc"       "to_series"        "to_struct"        "transpose"       
-      [65] "unique"           "unnest"           "unpivot"          "var"             
-      [69] "width"            "with_columns"     "with_columns_seq" "with_row_index"  
-      [73] "write_csv"        "write_ipc"        "write_json"       "write_ndjson"    
-      [77] "write_parquet"   
+      [57] "sum"              "tail"             "to_data_frame"    "to_dummies"      
+      [61] "to_list"          "to_raw_ipc"       "to_series"        "to_struct"       
+      [65] "transpose"        "unique"           "unnest"           "unpivot"         
+      [69] "var"              "width"            "with_columns"     "with_columns_seq"
+      [73] "with_row_index"   "write_csv"        "write_ipc"        "write_json"      
+      [77] "write_ndjson"     "write_parquet"   
 
 ---
 
@@ -119,15 +119,15 @@
       [27] "select"                    "select_at_idx"            
       [29] "select_seq"                "set_column_from_robj"     
       [31] "set_column_from_series"    "set_column_names_mut"     
-      [33] "shape"                     "to_list"                  
-      [35] "to_list_tag_structs"       "to_list_unwind"           
-      [37] "to_raw_ipc"                "to_struct"                
-      [39] "transpose"                 "unnest"                   
-      [41] "unpivot"                   "with_columns"             
-      [43] "with_columns_seq"          "with_row_index"           
-      [45] "write_csv"                 "write_ipc"                
-      [47] "write_json"                "write_ndjson"             
-      [49] "write_parquet"            
+      [33] "shape"                     "to_dummies"               
+      [35] "to_list"                   "to_list_tag_structs"      
+      [37] "to_list_unwind"            "to_raw_ipc"               
+      [39] "to_struct"                 "transpose"                
+      [41] "unnest"                    "unpivot"                  
+      [43] "with_columns"              "with_columns_seq"         
+      [45] "with_row_index"            "write_csv"                
+      [47] "write_ipc"                 "write_json"               
+      [49] "write_ndjson"              "write_parquet"            
 
 # public and private methods of each class GroupBy
 

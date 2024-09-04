@@ -216,6 +216,8 @@ RPolarsDataFrame$sample_n <- function(n, with_replacement, shuffle, seed) .Call(
 
 RPolarsDataFrame$sample_frac <- function(frac, with_replacement, shuffle, seed) .Call(wrap__RPolarsDataFrame__sample_frac, self, frac, with_replacement, shuffle, seed)
 
+RPolarsDataFrame$to_dummies <- function(columns, separator, drop_first) .Call(wrap__RPolarsDataFrame__to_dummies, self, columns, separator, drop_first)
+
 RPolarsDataFrame$transpose <- function(keep_names_as, new_col_names) .Call(wrap__RPolarsDataFrame__transpose, self, keep_names_as, new_col_names)
 
 RPolarsDataFrame$clear <- function() .Call(wrap__RPolarsDataFrame__clear, self)

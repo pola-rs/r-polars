@@ -2546,3 +2546,34 @@ DataFrame_gather_every = function(n, offset = 0) {
 DataFrame_cast = function(dtypes, ..., strict = TRUE) {
   self$lazy()$cast(dtypes, strict = strict)$collect()
 }
+
+
+#' Convert variables into dummy/indicator variables
+#'
+#' @param columns Column name(s) or selector(s) that should be converted to
+#' dummy variables. If `NULL` (default), convert all columns.
+#' @param ... Ignored.
+#' @param separator Separator/delimiter used when generating column names.
+#' @param drop_first Remove the first category from the variables being encoded.
+#'
+#' @return A DataFrame
+#'
+#' @examples
+#' df = pl$DataFrame(foo = 1:2, bar = 3:4, ham = c("a", "b"))
+#'
+#' df$to_dummies()
+#'
+#' df$to_dummies(drop_first = TRUE)
+#'
+#' df$to_dummies(c("foo", "bar"), separator = "::")
+DataFrame_to_dummies = function(
+    columns = NULL,
+    ...,
+    separator = "_",
+    drop_first = FALSE) {
+  if (is.null(columns)) {
+    columns = names(self)
+  }
+  .pr$DataFrame$to_dummies(self, columns = columns, separator = separator, drop_first = drop_first) |>
+    unwrap("in $to_dummies():")
+}

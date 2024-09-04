@@ -7,6 +7,7 @@
 - New method `$cast()` for `DataFrame` and `LazyFrame` (#1219).
 - New argument `strict` in `$drop()` to determine whether unknown column names
   should trigger an error (#1220).
+- New method `$to_dummies()` for `DataFrame` (#1225).
 
 ### Bug fixes
 

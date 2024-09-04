@@ -473,6 +473,23 @@ impl RPolarsDataFrame {
             .map(RPolarsDataFrame)
     }
 
+    fn to_dummies(&self, columns: Robj, separator: Robj, drop_first: Robj) -> RResult<Self> {
+        use polars::prelude::DataFrameOps;
+        let columns = robj_to!(Option, Vec, String, columns)?;
+        let separator = robj_to!(Option, str, separator)?;
+        let drop_first = robj_to!(bool, drop_first)?;
+        let df = match columns {
+            Some(cols) => self.0.columns_to_dummies(
+                cols.iter().map(|x| x as &str).collect(),
+                separator,
+                drop_first,
+            ),
+            None => self.0.to_dummies(separator, drop_first),
+        }
+        .map_err(polars_to_rpolars_err)?;
+        Ok(df.into())
+    }
+
     pub fn transpose(&mut self, keep_names_as: Robj, new_col_names: Robj) -> RResult<Self> {
         let opt_s = robj_to!(Option, str, keep_names_as)?;
         let opt_vec_s = robj_to!(Option, Vec, String, new_col_names)?;
