@@ -13,7 +13,7 @@
 
 .get_dependency_version <- function(pkg) {
   tryCatch(
-    as.character(packageVersion(pkg)),
+    as.character(utils::packageVersion(pkg)),
     error = function(e) "<not installed>"
   )
 }
