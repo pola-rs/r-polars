@@ -1,0 +1,11 @@
+# exported in zzz.R
+compare_proxy.polars_data_frame <- function(x, path) {
+  list(
+    object = structure(
+      as.list(x),
+      shape = x$shape,
+      schema = x$schema
+    ),
+    path = path
+  )
+}
