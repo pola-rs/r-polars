@@ -1,4 +1,15 @@
-# The env to store polars selector functions
+#' Polars column selector function namespace
+#'
+#' `cs` is an [environment class][environment-class] object
+#' that stores all selector functions of the R Polars API
+#' which mimics the Python Polars API.
+#' It is intended to work the same way in Python as if you had imported
+#' Python Polars Selectors with `import polars.selectors as cs`.
+#' @examples
+#' cs
+#'
+#' # How many members are in the `cs` environment?
+#' length(cs)
 #' @export
 cs <- new.env(parent = emptyenv())
 

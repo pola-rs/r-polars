@@ -1,6 +1,33 @@
-# The env to store polars top-level functions
+#' Polars top-level function namespace
+#'
+#' `pl` is an [environment class][environment-class] object
+#' that stores all the top-level functions of the R Polars API
+#' which mimics the Python Polars API.
+#' It is intended to work the same way in Python as if you had imported
+#' Python Polars with `import polars as pl`.
+#' @examples
+#' pl
+#'
+#' # How many members are in the `pl` environment?
+#' length(pl)
+#'
+#' # Create a polars DataFrame
+#' # In Python:
+#' # ```python
+#' # >>> import polars as pl
+#' # >>> df = pl.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
+#' # ```
+#' # In R:
+#' df <- pl$DataFrame(a = c(1, 2, 3), b = c(4, 5, 6))
+#' df
 #' @export
 pl <- new.env(parent = emptyenv())
+
+#' @export
+print.polars_object <- function(x, ...) {
+  cat("<polars_object>\n")
+  invisible(x)
+}
 
 # A function to collect objects to be assigned to the environment
 # These environments are used inside the wrap function etc.
