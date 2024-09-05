@@ -99,10 +99,12 @@ series__clone <- function() {
 }
 
 series__rename <- function(name) {
-  s <- self$clone()
+  wrap({
+    s <- self$clone()
 
-  s$`_s`$rename(name)
-  s
+    s$`_s`$rename(name)
+    s
+  })
 }
 
 series__slice <- function(offset, length = NULL) {

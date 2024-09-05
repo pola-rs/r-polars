@@ -24,12 +24,14 @@ SEXP savvy_PlRDataFrame_init__ffi(SEXP c_arg__columns);
 SEXP savvy_PlRDataFrame_print__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_get_columns__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_columns__ffi(SEXP self__);
+SEXP savvy_PlRDataFrame_set_column_names__ffi(SEXP self__, SEXP c_arg__names);
 SEXP savvy_PlRDataFrame_dtypes__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_shape__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_height__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_width__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_to_series__ffi(SEXP self__, SEXP c_arg__index);
 SEXP savvy_PlRDataFrame_equals__ffi(SEXP self__, SEXP c_arg__other, SEXP c_arg__null_equal);
+SEXP savvy_PlRDataFrame_clone__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_lazy__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_to_struct__ffi(SEXP self__, SEXP c_arg__name);
 

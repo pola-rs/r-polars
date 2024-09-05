@@ -89,6 +89,15 @@ wrap.PlRDataFrame <- function(x, ...) {
   self
 }
 
+dataframe__set_column_names <- function(names) {
+  wrap({
+    df <- self$clone()
+
+    df$`_df`$set_column_names(names)
+    df
+  })
+}
+
 dataframe__to_struct <- function(name = "") {
   self$`_df`$to_struct(name) |>
     wrap()
@@ -96,6 +105,11 @@ dataframe__to_struct <- function(name = "") {
 
 dataframe__lazy <- function() {
   self$`_df`$lazy() |>
+    wrap()
+}
+
+dataframe__clone <- function() {
+  self$`_df`$clone() |>
     wrap()
 }
 

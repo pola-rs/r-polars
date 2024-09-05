@@ -2,7 +2,7 @@ use super::*;
 use crate::{PlRDataType, PlRLazyFrame, PlRSeries, RPolarsErr};
 use savvy::{
     r_println, savvy, ListSexp, NumericScalar, OwnedIntegerSexp, OwnedListSexp, Result, Sexp,
-    TypedSexp,
+    StringSexp, TypedSexp,
 };
 
 #[savvy]
@@ -47,6 +47,13 @@ impl PlRDataFrame {
 
     pub fn columns(&self) -> Result<Sexp> {
         self.df.get_column_names().try_into()
+    }
+
+    pub fn set_column_names(&mut self, names: StringSexp) -> Result<()> {
+        self.df
+            .set_column_names(&names.to_vec())
+            .map_err(RPolarsErr::from)?;
+        Ok(())
     }
 
     pub fn dtypes(&self) -> Result<Sexp> {
@@ -99,6 +106,11 @@ impl PlRDataFrame {
         } else {
             self.df.equals(&other.df).try_into()
         }
+    }
+
+    #[allow(clippy::should_implement_trait)]
+    pub fn clone(&self) -> Result<Self> {
+        Ok(self.df.clone().into())
     }
 
     pub fn lazy(&self) -> Result<PlRLazyFrame> {

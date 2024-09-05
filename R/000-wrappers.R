@@ -220,6 +220,12 @@ class(`PlRChainedWhen`) <- "PlRChainedWhen__bundle"
   }
 }
 
+`PlRDataFrame_set_column_names` <- function(self) {
+  function(`names`) {
+    invisible(.Call(savvy_PlRDataFrame_set_column_names__impl, `self`, `names`))
+  }
+}
+
 `PlRDataFrame_dtypes` <- function(self) {
   function() {
     .Call(savvy_PlRDataFrame_dtypes__impl, `self`)
@@ -257,6 +263,12 @@ class(`PlRChainedWhen`) <- "PlRChainedWhen__bundle"
   }
 }
 
+`PlRDataFrame_clone` <- function(self) {
+  function() {
+    .savvy_wrap_PlRDataFrame(.Call(savvy_PlRDataFrame_clone__impl, `self`))
+  }
+}
+
 `PlRDataFrame_lazy` <- function(self) {
   function() {
     .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRDataFrame_lazy__impl, `self`))
@@ -275,12 +287,14 @@ class(`PlRChainedWhen`) <- "PlRChainedWhen__bundle"
   e$`print` <- `PlRDataFrame_print`(ptr)
   e$`get_columns` <- `PlRDataFrame_get_columns`(ptr)
   e$`columns` <- `PlRDataFrame_columns`(ptr)
+  e$`set_column_names` <- `PlRDataFrame_set_column_names`(ptr)
   e$`dtypes` <- `PlRDataFrame_dtypes`(ptr)
   e$`shape` <- `PlRDataFrame_shape`(ptr)
   e$`height` <- `PlRDataFrame_height`(ptr)
   e$`width` <- `PlRDataFrame_width`(ptr)
   e$`to_series` <- `PlRDataFrame_to_series`(ptr)
   e$`equals` <- `PlRDataFrame_equals`(ptr)
+  e$`clone` <- `PlRDataFrame_clone`(ptr)
   e$`lazy` <- `PlRDataFrame_lazy`(ptr)
   e$`to_struct` <- `PlRDataFrame_to_struct`(ptr)
 

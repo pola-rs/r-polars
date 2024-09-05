@@ -134,6 +134,11 @@ SEXP savvy_PlRDataFrame_columns__impl(SEXP self__) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRDataFrame_set_column_names__impl(SEXP self__, SEXP c_arg__names) {
+    SEXP res = savvy_PlRDataFrame_set_column_names__ffi(self__, c_arg__names);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRDataFrame_dtypes__impl(SEXP self__) {
     SEXP res = savvy_PlRDataFrame_dtypes__ffi(self__);
     return handle_result(res);
@@ -161,6 +166,11 @@ SEXP savvy_PlRDataFrame_to_series__impl(SEXP self__, SEXP c_arg__index) {
 
 SEXP savvy_PlRDataFrame_equals__impl(SEXP self__, SEXP c_arg__other, SEXP c_arg__null_equal) {
     SEXP res = savvy_PlRDataFrame_equals__ffi(self__, c_arg__other, c_arg__null_equal);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRDataFrame_clone__impl(SEXP self__) {
+    SEXP res = savvy_PlRDataFrame_clone__ffi(self__);
     return handle_result(res);
 }
 
@@ -946,12 +956,14 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRDataFrame_print__impl", (DL_FUNC) &savvy_PlRDataFrame_print__impl, 1},
     {"savvy_PlRDataFrame_get_columns__impl", (DL_FUNC) &savvy_PlRDataFrame_get_columns__impl, 1},
     {"savvy_PlRDataFrame_columns__impl", (DL_FUNC) &savvy_PlRDataFrame_columns__impl, 1},
+    {"savvy_PlRDataFrame_set_column_names__impl", (DL_FUNC) &savvy_PlRDataFrame_set_column_names__impl, 2},
     {"savvy_PlRDataFrame_dtypes__impl", (DL_FUNC) &savvy_PlRDataFrame_dtypes__impl, 1},
     {"savvy_PlRDataFrame_shape__impl", (DL_FUNC) &savvy_PlRDataFrame_shape__impl, 1},
     {"savvy_PlRDataFrame_height__impl", (DL_FUNC) &savvy_PlRDataFrame_height__impl, 1},
     {"savvy_PlRDataFrame_width__impl", (DL_FUNC) &savvy_PlRDataFrame_width__impl, 1},
     {"savvy_PlRDataFrame_to_series__impl", (DL_FUNC) &savvy_PlRDataFrame_to_series__impl, 2},
     {"savvy_PlRDataFrame_equals__impl", (DL_FUNC) &savvy_PlRDataFrame_equals__impl, 3},
+    {"savvy_PlRDataFrame_clone__impl", (DL_FUNC) &savvy_PlRDataFrame_clone__impl, 1},
     {"savvy_PlRDataFrame_lazy__impl", (DL_FUNC) &savvy_PlRDataFrame_lazy__impl, 1},
     {"savvy_PlRDataFrame_to_struct__impl", (DL_FUNC) &savvy_PlRDataFrame_to_struct__impl, 2},
     {"savvy_PlRDataType_new_from_name__impl", (DL_FUNC) &savvy_PlRDataType_new_from_name__impl, 1},
