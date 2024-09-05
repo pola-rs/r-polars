@@ -6,11 +6,19 @@ env:
   DEBUG: "true"
 
 vars:
+  REQUIRED_R_PKGS_FOR_S3_METHODS: tibble
+
   MANIFEST: src/rust/Cargo.toml
   CARGO_LOCK: src/rust/Cargo.lock
   R_SOURCE: R/*
   VIGNETTES: vignettes/**/*.Rmd
   RUST_SOURCE: src/rust/src/**/*.rs
+
+  R_FUNC_LOAD_REQUIRED_PKGS:
+    strsplit("{{.REQUIRED_R_PKGS_FOR_S3_METHODS}}", ",") |>
+      unlist() |>
+      lapply(require, character.only = TRUE) |>
+      invisible()
 
 # TODO: setup tools
 # TODO: lint, auto format
@@ -78,7 +86,9 @@ tasks:
       - build-rust
       - build-standalone-files
     cmds:
-      - Rscript -e 'devtools::document()'
+      - Rscript -e
+        '{{.R_FUNC_LOAD_REQUIRED_PKGS}};
+        devtools::document()'
 
   build-all:
     desc: Build the R package, generate documents, run all tests, and update files.
