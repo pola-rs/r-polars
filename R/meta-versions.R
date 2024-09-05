@@ -21,7 +21,7 @@
 # TODO: what the difference between this and `polars_info()`?
 pl__show_versions <- function() {
   main_data <- c(
-    `Polars:` = .get_dependency_version("polars"),
+    `Polars:` = .get_dependency_version("neopolars"),
     `Platform:` = .platform,
     `R:` = .r_version
   ) |>
