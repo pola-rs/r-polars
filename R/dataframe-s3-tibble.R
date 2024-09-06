@@ -9,14 +9,17 @@
 #' @inheritParams tibble::as_tibble
 #' @return A [tibble][tibble::tbl_df]
 #' @seealso
-#' - [`as.data.frame(<polars_data_frame>)`][s3_as.data.frame]
-#' @examples
+#' - [`as.data.frame(<polars_data_frame>)`][s3_as.data.frame]: Export the polars object as a basic data frame.
+#' @examplesIf requireNamespace("tibble", quietly = TRUE)
 #' # Polars DataFrame may have empty column name
-#' df <- pl$DataFrame(a = 1:2, c("a", "b"))
+#' df <- pl$DataFrame(x = 1:2, c("a", "b"))
 #' df
 #'
+#' # Without checking or repairing the column names
+#' tibble::as_tibble(df, .name_repair = "minimal")
+#'
 #' # You can make that unique
-#' as_tibble(df, .name_repair = "unique")
+#' tibble::as_tibble(df, .name_repair = "unique")
 #' @rdname s3_as_tibble
 as_tibble.polars_data_frame <- function(
     x, ...,

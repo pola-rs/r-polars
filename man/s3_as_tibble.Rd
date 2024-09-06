@@ -91,15 +91,20 @@ Additionally, you can check or repair the column names by specifying the \code{.
 Because polars \link{DataFrame} allows empty column name, which is not generally valid column name in R data frame.
 }
 \examples{
+\dontshow{if (requireNamespace("tibble", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 # Polars DataFrame may have empty column name
-df <- pl$DataFrame(a = 1:2, c("a", "b"))
+df <- pl$DataFrame(x = 1:2, c("a", "b"))
 df
 
+# Without checking or repairing the column names
+tibble::as_tibble(df, .name_repair = "minimal")
+
 # You can make that unique
-as_tibble(df, .name_repair = "unique")
+tibble::as_tibble(df, .name_repair = "unique")
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \itemize{
-\item \code{\link[=s3_as.data.frame]{as.data.frame(<polars_data_frame>)}}
+\item \code{\link[=s3_as.data.frame]{as.data.frame(<polars_data_frame>)}}: Export the polars object as a basic data frame.
 }
 }
