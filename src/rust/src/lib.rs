@@ -1,3 +1,5 @@
+mod allocator;
+
 mod conversion;
 mod dataframe;
 mod datatypes;
