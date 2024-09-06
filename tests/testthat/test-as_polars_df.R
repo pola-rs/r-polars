@@ -7,7 +7,7 @@ patrick::with_parameters_test_that(
       "polars_group_by", pl$DataFrame(x = 1:2, y = c("a", "b"))$group_by("x"),
       "polars_lazy_frame", pl$DataFrame(x = 1:2, y = c("a", "b"))$lazy(),
       "list", list(x = 1:2, y = list("c", "d")),
-      "data.frame", data.frame(x = 1:2, y = I(list("c", "d"))),
+      "data.frame", data.frame(x = 1:3, y = I(list("c", "d", TRUE))),
     )
   },
   code = {
@@ -19,4 +19,15 @@ patrick::with_parameters_test_that(
 
 test_that("as_polars_df.default throws an error", {
   expect_error(as_polars_df(1), "Unsupported class")
+})
+
+test_that("as_polars_df(<list/data.frame>, strict = TRUE) throws an error", {
+  expect_error(
+    as_polars_df(list(a = list(1, 1L)), strict = TRUE),
+    "expected: `f64`, got: `i32` at index: 2"
+  )
+  expect_error(
+    as_polars_df(data.frame(a = I(list(1, 1L))), strict = TRUE),
+    "expected: `f64`, got: `i32` at index: 2"
+  )
 })

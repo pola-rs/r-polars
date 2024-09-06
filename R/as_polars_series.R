@@ -292,13 +292,13 @@ as_polars_series.list <- function(x, name = NULL, ..., strict = FALSE) {
 #' @export
 as_polars_series.AsIs <- function(x, name = NULL, ...) {
   class(x) <- setdiff(class(x), "AsIs")
-  as_polars_series(x, name = name)
+  as_polars_series(x, name = name, ...)
 }
 
 #' @rdname as_polars_series
 #' @export
 as_polars_series.data.frame <- function(x, name = NULL, ...) {
-  as_polars_df(x)$to_struct(name = name %||% "")
+  as_polars_df(x, ...)$to_struct(name = name %||% "")
 }
 
 #' @rdname as_polars_series
@@ -322,7 +322,7 @@ as_polars_series.vctrs_rcrd <- function(x, name = NULL, ...) {
   internal_data <- field_names |>
     lapply(\(field_name) {
       vctrs::field(x, field_name) |>
-        as_polars_series(name = field_name)
+        as_polars_series(name = field_name, ...)
     })
 
   as_polars_df(internal_data)$to_struct(name = name %||% "")
