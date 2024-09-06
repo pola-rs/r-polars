@@ -74,6 +74,10 @@ test_that("as_polars_series(<list>, strict = TRUE)", {
     as_polars_series(list(as_polars_series(NULL), 1, 1L), strict = TRUE),
     "expected: `null`, got: `f64` at index: 2"
   )
+  expect_error(
+    as_polars_series(list(NULL, list(TRUE), list(list(), TRUE)), strict = TRUE),
+    r"(expected: `list\[null\]`, got: `bool` at index: 2)"
+  )
 
   expect_equal(
     as_polars_series(list(1, 2, NULL), strict = TRUE),
