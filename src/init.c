@@ -829,8 +829,8 @@ SEXP savvy_PlRSeries_new_binary__impl(SEXP c_arg__name, SEXP c_arg__values) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRSeries_new_series_list__impl(SEXP c_arg__name, SEXP c_arg__values) {
-    SEXP res = savvy_PlRSeries_new_series_list__ffi(c_arg__name, c_arg__values);
+SEXP savvy_PlRSeries_new_series_list__impl(SEXP c_arg__name, SEXP c_arg__values, SEXP c_arg__strict) {
+    SEXP res = savvy_PlRSeries_new_series_list__ffi(c_arg__name, c_arg__values, c_arg__strict);
     return handle_result(res);
 }
 
@@ -1095,7 +1095,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRSeries_new_str__impl", (DL_FUNC) &savvy_PlRSeries_new_str__impl, 2},
     {"savvy_PlRSeries_new_single_binary__impl", (DL_FUNC) &savvy_PlRSeries_new_single_binary__impl, 2},
     {"savvy_PlRSeries_new_binary__impl", (DL_FUNC) &savvy_PlRSeries_new_binary__impl, 2},
-    {"savvy_PlRSeries_new_series_list__impl", (DL_FUNC) &savvy_PlRSeries_new_series_list__impl, 2},
+    {"savvy_PlRSeries_new_series_list__impl", (DL_FUNC) &savvy_PlRSeries_new_series_list__impl, 3},
     {"savvy_PlRSeries_new_i64_from_clock_pair__impl", (DL_FUNC) &savvy_PlRSeries_new_i64_from_clock_pair__impl, 4},
     {"savvy_PlRSeries_to_r_vector__impl", (DL_FUNC) &savvy_PlRSeries_to_r_vector__impl, 8},
     {"savvy_PlRSeries_print__impl", (DL_FUNC) &savvy_PlRSeries_print__impl, 1},

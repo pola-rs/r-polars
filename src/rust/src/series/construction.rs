@@ -76,7 +76,7 @@ impl PlRSeries {
         Ok(ca.into_series().into())
     }
 
-    fn new_series_list(name: &str, values: ListSexp) -> Result<Self> {
+    fn new_series_list(name: &str, values: ListSexp, strict: bool) -> Result<Self> {
         let series_vec: Vec<Option<Series>> = values
             .values_iter()
             .map(|value| match value.into_typed() {
@@ -89,10 +89,34 @@ impl PlRSeries {
             })
             .collect();
 
+        if strict {
+            let expected_dtype = series_vec
+                .iter()
+                .filter(|opt_s| opt_s.is_some())
+                .next()
+                .map(|opt_s| {
+                    opt_s
+                        .as_ref()
+                        .map(|s| s.dtype().clone())
+                        .unwrap_or(DataType::Null)
+                })
+                .unwrap_or(DataType::Null);
+            for (i, s) in series_vec.iter().enumerate() {
+                if let Some(s) = s {
+                    if s.dtype() != &expected_dtype {
+                        return Err(
+                            format!("If `strict = TRUE`, all elements of the list except `NULL` must have the same datatype. expected: `{}`, got: `{}` at index: {}", expected_dtype, s.dtype(), i + 1).into()
+                        );
+                    }
+                }
+            }
+            return Ok(Series::new(name, series_vec).into());
+        }
+
         let dtype = series_vec
             .iter()
-            .map(|s| {
-                if let Some(s) = s {
+            .map(|opt_s| {
+                if let Some(s) = opt_s {
                     s.dtype().clone()
                 } else {
                     DataType::Null
@@ -103,8 +127,8 @@ impl PlRSeries {
 
         let casted_series_vec: Vec<Option<Series>> = series_vec
             .into_iter()
-            .map(|s| {
-                if let Some(s) = s {
+            .map(|opt_s| {
+                if let Some(s) = opt_s {
                     Some(s.cast(&dtype).unwrap())
                 } else {
                     None
@@ -115,6 +139,7 @@ impl PlRSeries {
         Ok(Series::new(name, casted_series_vec).into())
     }
 
+    // from clock classes
     fn new_i64_from_clock_pair(
         name: &str,
         left: RealSexp,

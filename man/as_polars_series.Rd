@@ -61,7 +61,7 @@ as_polars_series(x, name = NULL, ...)
 
 \method{as_polars_series}{`NULL`}(x, name = NULL, ...)
 
-\method{as_polars_series}{list}(x, name = NULL, ...)
+\method{as_polars_series}{list}(x, name = NULL, ..., strict = FALSE)
 
 \method{as_polars_series}{AsIs}(x, name = NULL, ...)
 
@@ -89,6 +89,11 @@ Will be used as a column name when used in a \link[=DataFrame]{polars DataFrame}
 When not specified, name is set to an empty string.}
 
 \item{...}{Additional arguments passed to the methods.}
+
+\item{strict}{A logical value to indicate whether throwing an error when
+the input \link{list}'s elements have different data types.
+If \code{FALSE} (default), all elements are automatically cast to the super type.
+If \code{TRUE}, the first non-\code{NULL} element's data type is used as the data type of the inner Series.}
 }
 \value{
 A \link[=Series]{polars Series}
@@ -99,7 +104,16 @@ The Data Type of the Series is determined by the class of the input object.
 }
 \details{
 The default method of \code{\link[=as_polars_series]{as_polars_series()}} throws an error,
-so we need to define methods for the classes we want to support.
+so we need to define S3 methods for the classes we want to support.
+\subsection{List type conversion}{
+
+In R, a \link{list} can contain elements of different types, but in Polars (Apache Arrow),
+all elements must have the same type.
+So the \code{\link[=as_polars_series]{as_polars_series()}} function automatically casts all elements to the same type
+or throws an error, depending on the \code{strict} argument.
+If you want to create a list with all elements of the same type in R,
+consider using the \code{\link[vctrs:list_of]{vctrs::list_of()}} function.
+}
 }
 \examples{
 # double
@@ -136,7 +150,7 @@ as_polars_series(as.difftime(c(NA, 1), units = "days"))
 as_polars_series(NULL)
 
 # list
-as_polars_series(list(NA, NULL, 1, "foo", TRUE))
+as_polars_series(list(NA, NULL, list(), 1, "foo", TRUE))
 
 # data.frame
 as_polars_series(

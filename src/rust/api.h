@@ -173,7 +173,7 @@ SEXP savvy_PlRSeries_new_bool__ffi(SEXP c_arg__name, SEXP c_arg__values);
 SEXP savvy_PlRSeries_new_str__ffi(SEXP c_arg__name, SEXP c_arg__values);
 SEXP savvy_PlRSeries_new_single_binary__ffi(SEXP c_arg__name, SEXP c_arg__values);
 SEXP savvy_PlRSeries_new_binary__ffi(SEXP c_arg__name, SEXP c_arg__values);
-SEXP savvy_PlRSeries_new_series_list__ffi(SEXP c_arg__name, SEXP c_arg__values);
+SEXP savvy_PlRSeries_new_series_list__ffi(SEXP c_arg__name, SEXP c_arg__values, SEXP c_arg__strict);
 SEXP savvy_PlRSeries_new_i64_from_clock_pair__ffi(SEXP c_arg__name, SEXP c_arg__left, SEXP c_arg__right, SEXP c_arg__precision);
 SEXP savvy_PlRSeries_to_r_vector__ffi(SEXP self__, SEXP c_arg__ensure_vector, SEXP c_arg__int64, SEXP c_arg__struct, SEXP c_arg__as_clock_class, SEXP c_arg__ambiguous, SEXP c_arg__non_existent, SEXP c_arg__local_time_zone);
 SEXP savvy_PlRSeries_print__ffi(SEXP self__);

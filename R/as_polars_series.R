@@ -6,12 +6,25 @@
 #' The Data Type of the Series is determined by the class of the input object.
 #'
 #' The default method of [as_polars_series()] throws an error,
-#' so we need to define methods for the classes we want to support.
+#' so we need to define S3 methods for the classes we want to support.
+#'
+#' ## List type conversion
+#'
+#' In R, a [list] can contain elements of different types, but in Polars (Apache Arrow),
+#' all elements must have the same type.
+#' So the [as_polars_series()] function automatically casts all elements to the same type
+#' or throws an error, depending on the `strict` argument.
+#' If you want to create a list with all elements of the same type in R,
+#' consider using the [vctrs::list_of()] function.
 #' @param x An R object.
 #' @param name A single string or `NULL`. Name of the Series.
 #' Will be used as a column name when used in a [polars DataFrame][DataFrame].
 #' When not specified, name is set to an empty string.
 #' @param ... Additional arguments passed to the methods.
+#' @param strict A logical value to indicate whether throwing an error when
+#' the input [list]'s elements have different data types.
+#' If `FALSE` (default), all elements are automatically cast to the super type.
+#' If `TRUE`, the first non-`NULL` element's data type is used as the data type of the inner Series.
 #' @return A [polars Series][Series]
 #' @seealso
 #' - [`<Series>$to_r_vector()`][series__to_r_vector]: Export the Series as an R vector.
@@ -50,7 +63,7 @@
 #' as_polars_series(NULL)
 #'
 #' # list
-#' as_polars_series(list(NA, NULL, 1, "foo", TRUE))
+#' as_polars_series(list(NA, NULL, list(), 1, "foo", TRUE))
 #'
 #' # data.frame
 #' as_polars_series(
@@ -256,10 +269,9 @@ as_polars_series.NULL <- function(x, name = NULL, ...) {
     wrap()
 }
 
-# TODO: strict option to raise error if all elements are not the same class
 #' @rdname as_polars_series
 #' @export
-as_polars_series.list <- function(x, name = NULL, ...) {
+as_polars_series.list <- function(x, name = NULL, ..., strict = FALSE) {
   series_list <- lapply(x, \(child) {
     if (is.null(child)) {
       NULL
@@ -268,7 +280,7 @@ as_polars_series.list <- function(x, name = NULL, ...) {
     }
   })
 
-  PlRSeries$new_series_list(name %||% "", series_list) |>
+  PlRSeries$new_series_list(name %||% "", series_list, strict = strict) |>
     wrap()
 }
 

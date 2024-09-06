@@ -24,7 +24,7 @@ patrick::with_parameters_test_that(
         "hms", hms::as_hms(c("01:00:00", NA)), "", pl$Time,
         "blob", blob::as_blob(c("foo", "bar", NA)), "", pl$Binary,
         "NULL", NULL, "", pl$Null,
-        "list", list("foo", 1L, NULL, NA), "", pl$List(pl$String),
+        "list", list("foo", 1L, NULL, NA, vctrs::unspecified(), as_polars_series(NULL), list(NULL)), "", pl$List(pl$String),
         "AsIs", I(1L), "", pl$Int32,
         "data.frame", data.frame(x = 1L, y = TRUE), "", pl$Struct(x = pl$Int32, y = pl$Boolean),
         "integer64", bit64::as.integer64(c(NA, "-9223372036854775807", "9223372036854775807")), "", pl$Int64,
@@ -53,6 +53,36 @@ test_that("as_polars_series.default throws an error", {
   x <- 1
   class(x) <- "foo"
   expect_error(as_polars_series(x), "Unsupported class")
+})
+
+test_that("as_polars_series(<list>, strict = TRUE)", {
+  skip_if_not_installed("vctrs")
+
+  expect_error(
+    as_polars_series(list(1, 1L), strict = TRUE),
+    "expected: `f64`, got: `i32` at index: 2"
+  )
+  expect_error(
+    as_polars_series(list(NULL, 1, 1L), strict = TRUE),
+    "expected: `f64`, got: `i32` at index: 3"
+  )
+  expect_error(
+    as_polars_series(list(vctrs::unspecified(), 1, 1L), strict = TRUE),
+    "expected: `null`, got: `f64` at index: 2"
+  )
+  expect_error(
+    as_polars_series(list(as_polars_series(NULL), 1, 1L), strict = TRUE),
+    "expected: `null`, got: `f64` at index: 2"
+  )
+
+  expect_equal(
+    as_polars_series(list(1, 2, NULL), strict = TRUE),
+    as_polars_series(list(1, 2, NULL))
+  )
+  expect_equal(
+    as_polars_series(list(NULL, 1), strict = TRUE),
+    as_polars_series(list(NULL, 1))
+  )
 })
 
 # TODO: more tests for system time

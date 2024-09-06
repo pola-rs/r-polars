@@ -168,12 +168,15 @@
     Code
       print(pl_series)
     Output
-      shape: (4,)
+      shape: (7,)
       Series: '' [list[str]]
       [
       	["foo"]
       	["1"]
       	null
+      	[null]
+      	[]
+      	[]
       	[null]
       ]
 
