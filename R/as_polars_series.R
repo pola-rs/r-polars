@@ -280,7 +280,7 @@ as_polars_series.list <- function(x, name = NULL, ..., strict = FALSE) {
     if (is.null(child)) {
       NULL
     } else {
-      as_polars_series(child, strict = strict)$`_s`
+      as_polars_series(child, ..., strict = strict)$`_s`
     }
   })
 
