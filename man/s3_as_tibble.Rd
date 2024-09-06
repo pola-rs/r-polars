@@ -105,6 +105,6 @@ tibble::as_tibble(df, .name_repair = "unique")
 }
 \seealso{
 \itemize{
-\item \code{\link[=s3_as.data.frame]{as.data.frame(<polars_data_frame>)}}: Export the polars object as a basic data frame.
+\item \code{\link[=as.data.frame.polars_data_frame]{as.data.frame(<polars_data_frame>)}}: Export the polars object as a basic data frame.
 }
 }

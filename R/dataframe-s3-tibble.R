@@ -9,7 +9,7 @@
 #' @inheritParams tibble::as_tibble
 #' @return A [tibble][tibble::tbl_df]
 #' @seealso
-#' - [`as.data.frame(<polars_data_frame>)`][s3_as.data.frame]: Export the polars object as a basic data frame.
+#' - [`as.data.frame(<polars_data_frame>)`][as.data.frame.polars_data_frame]: Export the polars object as a basic data frame.
 #' @examplesIf requireNamespace("tibble", quietly = TRUE)
 #' # Polars DataFrame may have empty column name
 #' df <- pl$DataFrame(x = 1:2, c("a", "b"))
