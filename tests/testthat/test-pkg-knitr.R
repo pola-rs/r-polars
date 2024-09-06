@@ -15,8 +15,10 @@
 }
 
 test_that("Snapshot test of knitr", {
-  skip_if(!requireNamespace("knitr", quietly = TRUE))
-  skip_if(!requireNamespace("pillar", quietly = TRUE))
+  skip_if_not_installed("knitr")
+  skip_if_not_installed("rmarkdown")
+  skip_if_not_installed("pillar")
+  skip_if_not_installed("nycflights13")
 
   expect_snapshot(.knit_file("dataframe.Rmd"), cran = TRUE)
   withr::with_options(

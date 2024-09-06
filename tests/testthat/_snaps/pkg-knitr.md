@@ -117,7 +117,7 @@
         white-space: pre-wrap;
       }
       </style>
-      <small>shape: (336776, 19)</small><table border="1" class="dataframe"><thead><tr><th>year</th><th>month</th><th>&hellip;</th><th>minute</th><th>time_hour</th></tr><tr><td>int</td><td>int</td><td>&hellip;</td><td>dbl</td><td>dttm</td></tr></thead><tbody><tr><td>2013</td><td>1</td><td>&hellip;</td><td>15</td><td>2013-01-01 05:00:00</td></tr><tr><td>2013</td><td>1</td><td>&hellip;</td><td>29</td><td>2013-01-01 05:00:00</td></tr><tr><td>2013</td><td>9</td><td>&hellip;</td><td>59</td><td>2013-09-30 11:00:00</td></tr><tr><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td></tr><tr><td>2013</td><td>9</td><td>&hellip;</td><td>59</td><td>2013-09-30 11:00:00</td></tr><tr><td>2013</td><td>9</td><td>&hellip;</td><td>40</td><td>2013-09-30 08:00:00</td></tr></tbody></table></div>
+      <small>shape: (336_776, 19)</small><table border="1" class="dataframe"><thead><tr><th>year</th><th>month</th><th>&hellip;</th><th>minute</th><th>time_hour</th></tr><tr><td>int</td><td>int</td><td>&hellip;</td><td>dbl</td><td>dttm</td></tr></thead><tbody><tr><td>2013</td><td>1</td><td>&hellip;</td><td>15</td><td>2013-01-01 05:00:00</td></tr><tr><td>2013</td><td>1</td><td>&hellip;</td><td>29</td><td>2013-01-01 05:00:00</td></tr><tr><td>2013</td><td>9</td><td>&hellip;</td><td>59</td><td>2013-09-30 11:00:00</td></tr><tr><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td></tr><tr><td>2013</td><td>9</td><td>&hellip;</td><td>59</td><td>2013-09-30 11:00:00</td></tr><tr><td>2013</td><td>9</td><td>&hellip;</td><td>40</td><td>2013-09-30 08:00:00</td></tr></tbody></table></div>
 
 # to_html_table
 
