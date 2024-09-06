@@ -127,7 +127,11 @@ to_html_table = function(x, max_cols = 75, max_rows = 40) {
 </style>
 "
 
-  .shape = sprintf("<small>shape: (%s, %s)</small>", .dim[1], .dim[2])
+  .shape = sprintf(
+    "<small>shape: (%s, %s)</small>",
+    prettyNum(.dim[1], big.mark = "_"),
+    prettyNum(.dim[2], big.mark = "_")
+  )
 
   paste0(.header_all, .body) |>
     .tag("table", c(border = "1", class = "dataframe")) |>
