@@ -318,8 +318,7 @@ as_polars_series.vctrs_unspecified <- function(x, name = NULL, ...) {
 #' @rdname as_polars_series
 #' @export
 as_polars_series.vctrs_rcrd <- function(x, name = NULL, ...) {
-  field_names <- vctrs::fields(x)
-  internal_data <- field_names |>
+  internal_data <- vctrs::fields(x) |>
     lapply(\(field_name) {
       vctrs::field(x, field_name) |>
         as_polars_series(name = field_name, ...)
