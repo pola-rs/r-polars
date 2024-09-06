@@ -180,6 +180,18 @@
       	[null]
       ]
 
+# as_polars_series works for classes list (casting failed)
+
+    Code
+      print(pl_series)
+    Output
+      shape: (2,)
+      Series: '' [list[str]]
+      [
+      	null
+      	["foo"]
+      ]
+
 # as_polars_series works for classes AsIs
 
     Code

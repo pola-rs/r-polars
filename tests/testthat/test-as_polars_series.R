@@ -25,6 +25,7 @@ patrick::with_parameters_test_that(
         "blob", blob::as_blob(c("foo", "bar", NA)), "", pl$Binary,
         "NULL", NULL, "", pl$Null,
         "list", list("foo", 1L, NULL, NA, vctrs::unspecified(), as_polars_series(NULL), list(NULL)), "", pl$List(pl$String),
+        "list (casting failed)", list(list("bar"), "foo"), "", pl$List(pl$String),
         "AsIs", I(1L), "", pl$Int32,
         "data.frame", data.frame(x = 1L, y = TRUE), "", pl$Struct(x = pl$Int32, y = pl$Boolean),
         "integer64", bit64::as.integer64(c(NA, "-9223372036854775807", "9223372036854775807")), "", pl$Int64,

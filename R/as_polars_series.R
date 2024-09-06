@@ -23,7 +23,8 @@
 #' @param ... Additional arguments passed to the methods.
 #' @param strict A logical value to indicate whether throwing an error when
 #' the input [list]'s elements have different data types.
-#' If `FALSE` (default), all elements are automatically cast to the super type.
+#' If `FALSE` (default), all elements are automatically cast to the super type, or,
+#' casting to the super type is failed, the value will be `null`.
 #' If `TRUE`, the first non-`NULL` element's data type is used as the data type of the inner Series.
 #' @return A [polars Series][Series]
 #' @seealso
@@ -64,6 +65,9 @@
 #'
 #' # list
 #' as_polars_series(list(NA, NULL, list(), 1, "foo", TRUE))
+#'
+#' ## 1st element will be `null` due to the casting failure
+#' as_polars_series(list(list("bar"), "foo"))
 #'
 #' # data.frame
 #' as_polars_series(

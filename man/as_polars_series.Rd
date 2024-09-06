@@ -92,7 +92,8 @@ When not specified, name is set to an empty string.}
 
 \item{strict}{A logical value to indicate whether throwing an error when
 the input \link{list}'s elements have different data types.
-If \code{FALSE} (default), all elements are automatically cast to the super type.
+If \code{FALSE} (default), all elements are automatically cast to the super type, or,
+casting to the super type is failed, the value will be \code{null}.
 If \code{TRUE}, the first non-\code{NULL} element's data type is used as the data type of the inner Series.}
 }
 \value{
@@ -151,6 +152,9 @@ as_polars_series(NULL)
 
 # list
 as_polars_series(list(NA, NULL, list(), 1, "foo", TRUE))
+
+## 1st element will be `null` due to the casting failure
+as_polars_series(list(list("bar"), "foo"))
 
 # data.frame
 as_polars_series(

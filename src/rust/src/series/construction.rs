@@ -122,14 +122,14 @@ impl PlRSeries {
                     DataType::Null
                 }
             })
-            .reduce(|acc, b| try_get_supertype(&acc, &b).unwrap_or(DataType::String))
+            .reduce(|acc, b| try_get_supertype(&acc, &b).unwrap_or(DataType::Null))
             .unwrap_or(DataType::Null);
 
         let casted_series_vec: Vec<Option<Series>> = series_vec
             .into_iter()
             .map(|opt_s| {
                 if let Some(s) = opt_s {
-                    Some(s.cast(&dtype).unwrap())
+                    Some(s.cast(&dtype).ok()?)
                 } else {
                     None
                 }
