@@ -5,6 +5,36 @@ use savvy::{savvy, ListSexp, LogicalSexp, Result};
 
 #[savvy]
 impl PlRLazyFrame {
+    fn optimization_toggle(
+        &self,
+        type_coercion: bool,
+        predicate_pushdown: bool,
+        projection_pushdown: bool,
+        simplify_expression: bool,
+        slice_pushdown: bool,
+        comm_subplan_elim: bool,
+        comm_subexpr_elim: bool,
+        cluster_with_columns: bool,
+        streaming: bool,
+        _eager: bool,
+    ) -> Result<Self> {
+        let ldf = self
+            .ldf
+            .clone()
+            .with_type_coercion(type_coercion)
+            .with_predicate_pushdown(predicate_pushdown)
+            .with_simplify_expr(simplify_expression)
+            .with_slice_pushdown(slice_pushdown)
+            .with_comm_subplan_elim(comm_subplan_elim)
+            .with_comm_subexpr_elim(comm_subexpr_elim)
+            .with_cluster_with_columns(cluster_with_columns)
+            .with_streaming(streaming)
+            ._with_eager(_eager)
+            .with_projection_pushdown(projection_pushdown);
+
+        Ok(ldf.into())
+    }
+
     fn filter(&mut self, predicate: PlRExpr) -> Result<Self> {
         let ldf = self.ldf.clone();
         Ok(ldf.filter(predicate.inner).into())

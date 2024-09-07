@@ -142,12 +142,12 @@ dataframe__group_by <- function(..., maintain_order = FALSE) {
 }
 
 dataframe__select <- function(...) {
-  self$lazy()$select(...)$collect() |>
+  self$lazy()$select(...)$collect(`_eager` = TRUE) |>
     wrap()
 }
 
 dataframe__with_columns <- function(...) {
-  self$lazy()$with_columns(...)$collect() |>
+  self$lazy()$with_columns(...)$collect(`_eager` = TRUE) |>
     wrap()
 }
 
@@ -170,12 +170,12 @@ dataframe__equals <- function(other, ..., null_equal = TRUE) {
 
 # TODO: accept formulas for type mapping
 dataframe__cast <- function(..., strict = TRUE) {
-  self$lazy()$cast(..., strict = strict)$collect() |>
+  self$lazy()$cast(..., strict = strict)$collect(`_eager` = TRUE) |>
     wrap()
 }
 
 dataframe__filter <- function(...) {
-  self$lazy()$filter(...)$collect() |>
+  self$lazy()$filter(...)$collect(`_eager` = TRUE) |>
     wrap()
 }
 
@@ -191,6 +191,6 @@ dataframe__sort <- function(
     nulls_last = nulls_last,
     multithreaded = multithreaded,
     maintain_order = maintain_order
-  )$collect() |>
+  )$collect(`_eager` = TRUE) |>
     wrap()
 }

@@ -1165,6 +1165,12 @@ class(`PlRExpr`) <- "PlRExpr__bundle"
 
 ### wrapper functions for PlRLazyFrame
 
+`PlRLazyFrame_optimization_toggle` <- function(self) {
+  function(`type_coercion`, `predicate_pushdown`, `projection_pushdown`, `simplify_expression`, `slice_pushdown`, `comm_subplan_elim`, `comm_subexpr_elim`, `cluster_with_columns`, `streaming`, `_eager`) {
+    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_optimization_toggle__impl, `self`, `type_coercion`, `predicate_pushdown`, `projection_pushdown`, `simplify_expression`, `slice_pushdown`, `comm_subplan_elim`, `comm_subexpr_elim`, `cluster_with_columns`, `streaming`, `_eager`))
+  }
+}
+
 `PlRLazyFrame_filter` <- function(self) {
   function(`predicate`) {
     `predicate` <- .savvy_extract_ptr(`predicate`, "PlRExpr")
@@ -1218,6 +1224,7 @@ class(`PlRExpr`) <- "PlRExpr__bundle"
 `.savvy_wrap_PlRLazyFrame` <- function(ptr) {
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
+  e$`optimization_toggle` <- `PlRLazyFrame_optimization_toggle`(ptr)
   e$`filter` <- `PlRLazyFrame_filter`(ptr)
   e$`select` <- `PlRLazyFrame_select`(ptr)
   e$`group_by` <- `PlRLazyFrame_group_by`(ptr)

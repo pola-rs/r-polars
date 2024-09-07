@@ -25,7 +25,9 @@ git = "https://github.com/pola-rs/polars.git"
 rev = "7686025ac7738607f2d4f6887e9a1313b7c8b1e2"
 features = [
     "binary_encoding",
+    "cse",
     "dtype-full",
+    "fused",
     "json",
     "lazy",
     "meta",
@@ -33,6 +35,7 @@ features = [
     "propagate_nans",
     "serde",
     "serde-lazy",
+    "streaming",
     "temporal",
     "timezones",
 ]
