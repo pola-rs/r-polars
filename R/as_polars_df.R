@@ -13,11 +13,19 @@
 #'
 #' - The argument `...` (except `name`) is passed to [as_polars_series()] for each element of the list.
 #' - All elements of the list must be converted to the same length of [Series] by [as_polars_series()].
+#' - The name of the each element is used as the column name of the [DataFrame].
+#'   For unnamed elements, the column name will be an empty string `""` or if the element is a [Series],
+#'   the column name will be the name of the [Series].
 #'
 #' ## S3 method for [data.frame]
 #'
 #' - The argument `...` (except `name`) is passed to [as_polars_series()] for each column.
 #' - All columns must be converted to the same length of [Series] by [as_polars_series()].
+#'
+#' ## S3 method for [polars_series][Series]
+#'
+#' This is a shortcut for [`<Series>$to_frame()`][series__to_frame].
+#' The `column_name` argument is passed to the `name` argument of the [`$to_frame()`][series__to_frame] method.
 #'
 #' ## S3 method for [polars_lazy_frame][LazyFrame]
 #'
@@ -25,6 +33,9 @@
 #' @inherit pl__DataFrame return
 #' @inheritParams as_polars_series
 #' @inheritParams lazyframe__collect
+#' @param column_name A character or `NULL`. If not `NULL`,
+#' name/rename the [Series] column in the new [DataFrame].
+#' If `NULL`, the column name is taken from the [Series] name.
 #' @seealso
 #' - [`<DataFrame>$to_r_list()`][dataframe__to_r_list]: Export the DataFrame as an R list of R vectors.
 #' @examples
@@ -45,6 +56,12 @@ as_polars_df.default <- function(x, ...) {
     paste0("Unsupported class for `as_polars_df()`: ", toString(class(x))),
     call = parent.frame()
   )
+}
+
+#' @rdname as_polars_df
+#' @export
+as_polars_df.polars_series <- function(x, ..., column_name = NULL) {
+  x$to_frame(name = column_name)
 }
 
 #' @rdname as_polars_df

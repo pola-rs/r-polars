@@ -5,6 +5,7 @@ patrick::with_parameters_test_that(
 
     tibble::tribble(
       ~.test_name, ~x,
+      "polars_series", as_polars_series(1:2, "foo"),
       "polars_data_frame", pldf,
       "polars_group_by", pldf$group_by("x"),
       "polars_lazy_frame", pldf$lazy(),
@@ -21,6 +22,14 @@ patrick::with_parameters_test_that(
 
 test_that("as_polars_df.default throws an error", {
   expect_error(as_polars_df(1), "Unsupported class")
+})
+
+test_that("column_name argument", {
+  pls <- as_polars_series(1:2, "foo")
+  expect_equal(
+    as_polars_df(pls, column_name = "bar"),
+    as_polars_df(pls$rename("bar"))
+  )
 })
 
 test_that("as_polars_df(<list/data.frame>, strict = TRUE) throws an error", {

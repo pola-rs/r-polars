@@ -3,6 +3,7 @@
 \name{as_polars_df}
 \alias{as_polars_df}
 \alias{as_polars_df.default}
+\alias{as_polars_df.polars_series}
 \alias{as_polars_df.polars_data_frame}
 \alias{as_polars_df.polars_group_by}
 \alias{as_polars_df.polars_lazy_frame}
@@ -13,6 +14,8 @@
 as_polars_df(x, ...)
 
 \method{as_polars_df}{default}(x, ...)
+
+\method{as_polars_df}{polars_series}(x, ..., column_name = NULL)
 
 \method{as_polars_df}{polars_data_frame}(x, ...)
 
@@ -41,6 +44,10 @@ as_polars_df(x, ...)
 \item{x}{An R object.}
 
 \item{...}{Additional arguments passed to the methods.}
+
+\item{column_name}{A character or \code{NULL}. If not \code{NULL},
+name/rename the \link{Series} column in the new \link{DataFrame}.
+If \code{NULL}, the column name is taken from the \link{Series} name.}
 
 \item{type_coercion}{A logical, indicats type coercion optimization.}
 
@@ -82,6 +89,9 @@ so we need to define methods for the classes we want to support.
 \itemize{
 \item The argument \code{...} (except \code{name}) is passed to \code{\link[=as_polars_series]{as_polars_series()}} for each element of the list.
 \item All elements of the list must be converted to the same length of \link{Series} by \code{\link[=as_polars_series]{as_polars_series()}}.
+\item The name of the each element is used as the column name of the \link{DataFrame}.
+For unnamed elements, the column name will be an empty string \code{""} or if the element is a \link{Series},
+the column name will be the name of the \link{Series}.
 }
 }
 
@@ -90,6 +100,12 @@ so we need to define methods for the classes we want to support.
 \item The argument \code{...} (except \code{name}) is passed to \code{\link[=as_polars_series]{as_polars_series()}} for each column.
 \item All columns must be converted to the same length of \link{Series} by \code{\link[=as_polars_series]{as_polars_series()}}.
 }
+}
+
+\subsection{S3 method for \link[=Series]{polars_series}}{
+
+This is a shortcut for \code{\link[=series__to_frame]{<Series>$to_frame()}}.
+The \code{column_name} argument is passed to the \code{name} argument of the \code{\link[=series__to_frame]{$to_frame()}} method.
 }
 
 \subsection{S3 method for \link[=LazyFrame]{polars_lazy_frame}}{

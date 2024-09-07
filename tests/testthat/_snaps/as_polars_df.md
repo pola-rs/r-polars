@@ -1,3 +1,18 @@
+# as_polars_df works for classes polars_series
+
+    Code
+      print(pl_df)
+    Output
+      shape: (2, 1)
+      ┌─────┐
+      │ foo │
+      │ --- │
+      │ i32 │
+      ╞═════╡
+      │ 1   │
+      │ 2   │
+      └─────┘
+
 # as_polars_df works for classes polars_data_frame
 
     Code
