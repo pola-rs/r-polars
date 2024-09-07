@@ -1165,6 +1165,30 @@ class(`PlRExpr`) <- "PlRExpr__bundle"
 
 ### wrapper functions for PlRLazyFrame
 
+`PlRLazyFrame_describe_plan` <- function(self) {
+  function() {
+    .Call(savvy_PlRLazyFrame_describe_plan__impl, `self`)
+  }
+}
+
+`PlRLazyFrame_describe_optimized_plan` <- function(self) {
+  function() {
+    .Call(savvy_PlRLazyFrame_describe_optimized_plan__impl, `self`)
+  }
+}
+
+`PlRLazyFrame_describe_plan_tree` <- function(self) {
+  function() {
+    .Call(savvy_PlRLazyFrame_describe_plan_tree__impl, `self`)
+  }
+}
+
+`PlRLazyFrame_describe_optimized_plan_tree` <- function(self) {
+  function() {
+    .Call(savvy_PlRLazyFrame_describe_optimized_plan_tree__impl, `self`)
+  }
+}
+
 `PlRLazyFrame_optimization_toggle` <- function(self) {
   function(`type_coercion`, `predicate_pushdown`, `projection_pushdown`, `simplify_expression`, `slice_pushdown`, `comm_subplan_elim`, `comm_subexpr_elim`, `cluster_with_columns`, `streaming`, `_eager`) {
     .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_optimization_toggle__impl, `self`, `type_coercion`, `predicate_pushdown`, `projection_pushdown`, `simplify_expression`, `slice_pushdown`, `comm_subplan_elim`, `comm_subexpr_elim`, `cluster_with_columns`, `streaming`, `_eager`))
@@ -1224,6 +1248,10 @@ class(`PlRExpr`) <- "PlRExpr__bundle"
 `.savvy_wrap_PlRLazyFrame` <- function(ptr) {
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
+  e$`describe_plan` <- `PlRLazyFrame_describe_plan`(ptr)
+  e$`describe_optimized_plan` <- `PlRLazyFrame_describe_optimized_plan`(ptr)
+  e$`describe_plan_tree` <- `PlRLazyFrame_describe_plan_tree`(ptr)
+  e$`describe_optimized_plan_tree` <- `PlRLazyFrame_describe_optimized_plan_tree`(ptr)
   e$`optimization_toggle` <- `PlRLazyFrame_optimization_toggle`(ptr)
   e$`filter` <- `PlRLazyFrame_filter`(ptr)
   e$`select` <- `PlRLazyFrame_select`(ptr)

@@ -714,6 +714,26 @@ SEXP savvy_PlRExpr_struct_with_fields__impl(SEXP self__, SEXP c_arg__fields) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRLazyFrame_describe_plan__impl(SEXP self__) {
+    SEXP res = savvy_PlRLazyFrame_describe_plan__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRLazyFrame_describe_optimized_plan__impl(SEXP self__) {
+    SEXP res = savvy_PlRLazyFrame_describe_optimized_plan__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRLazyFrame_describe_plan_tree__impl(SEXP self__) {
+    SEXP res = savvy_PlRLazyFrame_describe_plan_tree__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRLazyFrame_describe_optimized_plan_tree__impl(SEXP self__) {
+    SEXP res = savvy_PlRLazyFrame_describe_optimized_plan_tree__ffi(self__);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRLazyFrame_optimization_toggle__impl(SEXP self__, SEXP c_arg__type_coercion, SEXP c_arg__predicate_pushdown, SEXP c_arg__projection_pushdown, SEXP c_arg__simplify_expression, SEXP c_arg__slice_pushdown, SEXP c_arg__comm_subplan_elim, SEXP c_arg__comm_subexpr_elim, SEXP c_arg__cluster_with_columns, SEXP c_arg__streaming, SEXP c_arg___eager) {
     SEXP res = savvy_PlRLazyFrame_optimization_toggle__ffi(self__, c_arg__type_coercion, c_arg__predicate_pushdown, c_arg__projection_pushdown, c_arg__simplify_expression, c_arg__slice_pushdown, c_arg__comm_subplan_elim, c_arg__comm_subexpr_elim, c_arg__cluster_with_columns, c_arg__streaming, c_arg___eager);
     return handle_result(res);
@@ -1082,6 +1102,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_struct_rename_fields__impl", (DL_FUNC) &savvy_PlRExpr_struct_rename_fields__impl, 2},
     {"savvy_PlRExpr_struct_json_encode__impl", (DL_FUNC) &savvy_PlRExpr_struct_json_encode__impl, 1},
     {"savvy_PlRExpr_struct_with_fields__impl", (DL_FUNC) &savvy_PlRExpr_struct_with_fields__impl, 2},
+    {"savvy_PlRLazyFrame_describe_plan__impl", (DL_FUNC) &savvy_PlRLazyFrame_describe_plan__impl, 1},
+    {"savvy_PlRLazyFrame_describe_optimized_plan__impl", (DL_FUNC) &savvy_PlRLazyFrame_describe_optimized_plan__impl, 1},
+    {"savvy_PlRLazyFrame_describe_plan_tree__impl", (DL_FUNC) &savvy_PlRLazyFrame_describe_plan_tree__impl, 1},
+    {"savvy_PlRLazyFrame_describe_optimized_plan_tree__impl", (DL_FUNC) &savvy_PlRLazyFrame_describe_optimized_plan_tree__impl, 1},
     {"savvy_PlRLazyFrame_optimization_toggle__impl", (DL_FUNC) &savvy_PlRLazyFrame_optimization_toggle__impl, 11},
     {"savvy_PlRLazyFrame_filter__impl", (DL_FUNC) &savvy_PlRLazyFrame_filter__impl, 2},
     {"savvy_PlRLazyFrame_select__impl", (DL_FUNC) &savvy_PlRLazyFrame_select__impl, 2},

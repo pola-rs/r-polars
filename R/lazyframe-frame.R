@@ -77,6 +77,56 @@ lazyframe__collect <- function(
   })
 }
 
+lazyframe__explain <- function(
+    ...,
+    format = "plain",
+    optimized = TRUE,
+    type_coercion = TRUE,
+    predicate_pushdown = TRUE,
+    projection_pushdown = TRUE,
+    simplify_expression = TRUE,
+    slice_pushdown = TRUE,
+    comm_subplan_elim = TRUE,
+    comm_subexpr_elim = TRUE,
+    cluster_with_columns = TRUE,
+    streaming = FALSE) {
+  wrap({
+    check_dots_empty0(...)
+    check_string(format)
+
+    if (!format %in% c("plain", "tree")) {
+      abort(sprintf("`format` must be one of ('plain', 'tree'), got '%s'", format))
+    }
+
+    if (isTRUE(optimized)) {
+      ldf <- self$`_ldf`$optimization_toggle(
+        type_coercion = type_coercion,
+        predicate_pushdown = predicate_pushdown,
+        projection_pushdown = projection_pushdown,
+        simplify_expression = simplify_expression,
+        slice_pushdown = slice_pushdown,
+        comm_subplan_elim = comm_subplan_elim,
+        comm_subexpr_elim = comm_subexpr_elim,
+        cluster_with_columns = cluster_with_columns,
+        streaming = streaming,
+        `_eager` = FALSE
+      )
+
+      if (format == "tree") {
+        ldf$describe_optimized_plan_tree()
+      } else {
+        ldf$describe_optimized_plan()
+      }
+    } else {
+      if (format == "tree") {
+        self$`_ldf`$describe_plan_tree()
+      } else {
+        self$`_ldf`$describe_plan()
+      }
+    }
+  })
+}
+
 lazyframe__cast <- function(..., strict = TRUE) {
   wrap({
     dtypes <- parse_into_list_of_datatypes(...)

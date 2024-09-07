@@ -1,10 +1,40 @@
 use crate::{
     prelude::*, PlRDataFrame, PlRDataType, PlRExpr, PlRLazyFrame, PlRLazyGroupBy, RPolarsErr,
 };
-use savvy::{savvy, ListSexp, LogicalSexp, Result};
+use savvy::{savvy, ListSexp, LogicalSexp, OwnedStringSexp, Result, Sexp};
 
 #[savvy]
 impl PlRLazyFrame {
+    fn describe_plan(&self) -> Result<Sexp> {
+        let string = self.ldf.describe_plan().map_err(RPolarsErr::from)?;
+        let sexp = OwnedStringSexp::try_from_scalar(string)?;
+        Ok(sexp.into())
+    }
+
+    fn describe_optimized_plan(&self) -> Result<Sexp> {
+        let string = self
+            .ldf
+            .describe_optimized_plan()
+            .map_err(RPolarsErr::from)?;
+        let sexp = OwnedStringSexp::try_from_scalar(string)?;
+        Ok(sexp.into())
+    }
+
+    fn describe_plan_tree(&self) -> Result<Sexp> {
+        let string = self.ldf.describe_plan_tree().map_err(RPolarsErr::from)?;
+        let sexp = OwnedStringSexp::try_from_scalar(string)?;
+        Ok(sexp.into())
+    }
+
+    fn describe_optimized_plan_tree(&self) -> Result<Sexp> {
+        let string = self
+            .ldf
+            .describe_optimized_plan_tree()
+            .map_err(RPolarsErr::from)?;
+        let sexp = OwnedStringSexp::try_from_scalar(string)?;
+        Ok(sexp.into())
+    }
+
     fn optimization_toggle(
         &self,
         type_coercion: bool,
