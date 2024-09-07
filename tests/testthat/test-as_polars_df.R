@@ -6,6 +6,7 @@ patrick::with_parameters_test_that(
     tibble::tribble(
       ~.test_name, ~x,
       "polars_series", as_polars_series(1:2, "foo"),
+      "polars_series (struct)", as_polars_series(pldf),
       "polars_data_frame", pldf,
       "polars_group_by", pldf$group_by("x"),
       "polars_lazy_frame", pldf$lazy(),
@@ -29,6 +30,18 @@ test_that("column_name argument", {
   expect_equal(
     as_polars_df(pls, column_name = "bar"),
     as_polars_df(pls$rename("bar"))
+  )
+})
+
+test_that("unnest_struct argument", {
+  pldf <- pl$DataFrame(x = 1:2, y = c("a", "b"))
+  expect_equal(
+    as_polars_df(as_polars_series(pldf), unnest_struct = TRUE),
+    pldf
+  )
+  expect_equal(
+    as_polars_df(as_polars_series(pldf), unnest_struct = FALSE),
+    pl$DataFrame(pldf)
   )
 })
 

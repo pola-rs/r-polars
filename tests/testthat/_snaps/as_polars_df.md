@@ -13,6 +13,21 @@
       │ 2   │
       └─────┘
 
+# as_polars_df works for classes polars_series (struct)
+
+    Code
+      print(pl_df)
+    Output
+      shape: (2, 2)
+      ┌─────┬─────┐
+      │ x   ┆ y   │
+      │ --- ┆ --- │
+      │ i32 ┆ str │
+      ╞═════╪═════╡
+      │ 1   ┆ a   │
+      │ 2   ┆ b   │
+      └─────┴─────┘
+
 # as_polars_df works for classes polars_data_frame
 
     Code

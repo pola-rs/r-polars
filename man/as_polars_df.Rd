@@ -15,7 +15,7 @@ as_polars_df(x, ...)
 
 \method{as_polars_df}{default}(x, ...)
 
-\method{as_polars_df}{polars_series}(x, ..., column_name = NULL)
+\method{as_polars_df}{polars_series}(x, ..., column_name = NULL, unnest_struct = TRUE)
 
 \method{as_polars_df}{polars_data_frame}(x, ...)
 
@@ -48,6 +48,10 @@ as_polars_df(x, ...)
 \item{column_name}{A character or \code{NULL}. If not \code{NULL},
 name/rename the \link{Series} column in the new \link{DataFrame}.
 If \code{NULL}, the column name is taken from the \link{Series} name.}
+
+\item{unnest_struct}{A logical. If \code{TRUE} (default) and the \link{Series} data type is a struct,
+the \code{\link[=series_struct_unnest]{<Series>$struct$unnest()}} method is used to create a \link{DataFrame}
+from the struct \link{Series}. In this case, the \code{column_name} argument is ignored.}
 
 \item{type_coercion}{A logical, indicats type coercion optimization.}
 
@@ -104,7 +108,8 @@ the column name will be the name of the \link{Series}.
 
 \subsection{S3 method for \link[=Series]{polars_series}}{
 
-This is a shortcut for \code{\link[=series__to_frame]{<Series>$to_frame()}}.
+This is a shortcut for \code{\link[=series__to_frame]{<Series>$to_frame()}} or
+\code{\link[=series_struct_unnest]{<Series>$struct$unnest()}}, depending on the \code{unnest_struct} argument and the \link{Series} data type.
 The \code{column_name} argument is passed to the \code{name} argument of the \code{\link[=series__to_frame]{$to_frame()}} method.
 }
 

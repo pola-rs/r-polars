@@ -1,3 +1,4 @@
+# TODO: link to data type doc
 #' Create a Polars DataFrame from an R object
 #'
 #' The [as_polars_df()] function creates a [polars DataFrame][DataFrame] from various R objects.
@@ -24,7 +25,8 @@
 #'
 #' ## S3 method for [polars_series][Series]
 #'
-#' This is a shortcut for [`<Series>$to_frame()`][series__to_frame].
+#' This is a shortcut for [`<Series>$to_frame()`][series__to_frame] or
+#' [`<Series>$struct$unnest()`][series_struct_unnest], depending on the `unnest_struct` argument and the [Series] data type.
 #' The `column_name` argument is passed to the `name` argument of the [`$to_frame()`][series__to_frame] method.
 #'
 #' ## S3 method for [polars_lazy_frame][LazyFrame]
@@ -36,6 +38,9 @@
 #' @param column_name A character or `NULL`. If not `NULL`,
 #' name/rename the [Series] column in the new [DataFrame].
 #' If `NULL`, the column name is taken from the [Series] name.
+#' @param unnest_struct A logical. If `TRUE` (default) and the [Series] data type is a struct,
+#' the [`<Series>$struct$unnest()`][series_struct_unnest] method is used to create a [DataFrame]
+#' from the struct [Series]. In this case, the `column_name` argument is ignored.
 #' @seealso
 #' - [`<DataFrame>$to_r_list()`][dataframe__to_r_list]: Export the DataFrame as an R list of R vectors.
 #' @examples
@@ -60,8 +65,15 @@ as_polars_df.default <- function(x, ...) {
 
 #' @rdname as_polars_df
 #' @export
-as_polars_df.polars_series <- function(x, ..., column_name = NULL) {
-  x$to_frame(name = column_name)
+as_polars_df.polars_series <- function(
+    x, ...,
+    column_name = NULL,
+    unnest_struct = TRUE) {
+  if (isTRUE(unnest_struct) && x$dtype$is_struct()) {
+    x$struct$unnest()
+  } else {
+    x$to_frame(name = column_name)
+  }
 }
 
 #' @rdname as_polars_df
