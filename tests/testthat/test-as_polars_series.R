@@ -37,7 +37,7 @@ patrick::with_parameters_test_that(
     withr::with_timezone(
       "UTC",
       {
-        pl_series <- as_polars_series(x)
+        pl_series <- as_polars_series(x, argument_should_be_ignored = "foo")
         expect_s3_class(pl_series, "polars_series")
         expect_snapshot(print(pl_series))
 
