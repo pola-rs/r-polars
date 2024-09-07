@@ -4,6 +4,7 @@
 \alias{as_polars_series}
 \alias{as_polars_series.default}
 \alias{as_polars_series.polars_series}
+\alias{as_polars_series.polars_data_frame}
 \alias{as_polars_series.double}
 \alias{as_polars_series.integer}
 \alias{as_polars_series.character}
@@ -34,6 +35,8 @@ as_polars_series(x, name = NULL, ...)
 \method{as_polars_series}{default}(x, name = NULL, ...)
 
 \method{as_polars_series}{polars_series}(x, name = NULL, ...)
+
+\method{as_polars_series}{polars_data_frame}(x, name = NULL, ...)
 
 \method{as_polars_series}{double}(x, name = NULL, ...)
 

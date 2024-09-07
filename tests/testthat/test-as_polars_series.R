@@ -11,6 +11,7 @@ patrick::with_parameters_test_that(
       tibble::tribble(
         ~.test_name, ~x, ~expected_name, ~expected_dtype,
         "polars_series", as_polars_series(1L, "foo"), "foo", pl$Int32,
+        "polars_data_frame", pl$DataFrame(a = 1L, y = TRUE), "", pl$Struct(a = pl$Int32, y = pl$Boolean),
         "double", c(1.0, NA), "", pl$Float64,
         "integer", c(1L, NA), "", pl$Int32,
         "character", c("foo", NA), "", pl$String,

@@ -133,6 +133,12 @@ as_polars_series.polars_series <- function(x, name = NULL, ...) {
 
 #' @rdname as_polars_series
 #' @export
+as_polars_series.polars_data_frame <- function(x, name = NULL, ...) {
+  x$to_struct(name = name %||% "")
+}
+
+#' @rdname as_polars_series
+#' @export
 as_polars_series.double <- function(x, name = NULL, ...) {
   PlRSeries$new_f64(name %||% "", x) |>
     wrap()
