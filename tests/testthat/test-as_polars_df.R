@@ -33,8 +33,17 @@ test_that("as_polars_df(<list/data.frame>, strict = TRUE) throws an error", {
 })
 
 test_that("as_polars_df(<list>, name = '...') should not pass the name argument", {
-  expect_error(
+  expect_equal(
     list(as_polars_series(1, "foo")) |> as_polars_df(name = "bar"),
-    "matched by multiple actual arguments"
+    pl$DataFrame(foo = 1)
+  )
+  expect_equal(
+    list(as_polars_series(1, "foo"), as_polars_series(1, "bar")) |>
+      as_polars_df(name = "baz"),
+    pl$DataFrame(foo = 1, bar = 1)
+  )
+  expect_equal(
+    as_polars_df(x = data.frame(foo = 1), name = "bar"),
+    pl$DataFrame(foo = 1)
   )
 })
