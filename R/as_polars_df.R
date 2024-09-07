@@ -9,17 +9,17 @@
 #' The default method of [as_polars_df()] throws an error,
 #' so we need to define methods for the classes we want to support.
 #'
-#' ## S3 method for list
+#' ## S3 method for [list]
 #'
 #' - The argument `...` (except `name`) is passed to [as_polars_series()] for each element of the list.
 #' - All elements of the list must be converted to the same length of [Series] by [as_polars_series()].
 #'
-#' ## S3 method for list
+#' ## S3 method for [data.frame]
 #'
 #' - The argument `...` (except `name`) is passed to [as_polars_series()] for each column.
 #' - All columns must be converted to the same length of [Series] by [as_polars_series()].
 #'
-#' ## S3 method for polars_lazy_frame
+#' ## S3 method for [polars_lazy_frame]
 #'
 #' This is a shortcut for [`<LazyFrame>$collect()`][lazyframe__collect].
 #' @inherit pl__DataFrame return

@@ -78,21 +78,21 @@ then a \link[=DataFrame]{Polars DataFrame} is created from the list.
 \details{
 The default method of \code{\link[=as_polars_df]{as_polars_df()}} throws an error,
 so we need to define methods for the classes we want to support.
-\subsection{S3 method for list}{
+\subsection{S3 method for \link{list}}{
 \itemize{
 \item The argument \code{...} (except \code{name}) is passed to \code{\link[=as_polars_series]{as_polars_series()}} for each element of the list.
 \item All elements of the list must be converted to the same length of \link{Series} by \code{\link[=as_polars_series]{as_polars_series()}}.
 }
 }
 
-\subsection{S3 method for list}{
+\subsection{S3 method for \link{data.frame}}{
 \itemize{
 \item The argument \code{...} (except \code{name}) is passed to \code{\link[=as_polars_series]{as_polars_series()}} for each column.
 \item All columns must be converted to the same length of \link{Series} by \code{\link[=as_polars_series]{as_polars_series()}}.
 }
 }
 
-\subsection{S3 method for polars_lazy_frame}{
+\subsection{S3 method for \link{polars_lazy_frame}}{
 
 This is a shortcut for \code{\link[=lazyframe__collect]{<LazyFrame>$collect()}}.
 }
