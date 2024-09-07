@@ -19,7 +19,7 @@
 #' - The argument `...` (except `name`) is passed to [as_polars_series()] for each column.
 #' - All columns must be converted to the same length of [Series] by [as_polars_series()].
 #'
-#' ## S3 method for [polars_lazy_frame]
+#' ## S3 method for [polars_lazy_frame][LazyFrame]
 #'
 #' This is a shortcut for [`<LazyFrame>$collect()`][lazyframe__collect].
 #' @inherit pl__DataFrame return

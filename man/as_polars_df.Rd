@@ -92,7 +92,7 @@ so we need to define methods for the classes we want to support.
 }
 }
 
-\subsection{S3 method for \link{polars_lazy_frame}}{
+\subsection{S3 method for \link[=LazyFrame]{polars_lazy_frame}}{
 
 This is a shortcut for \code{\link[=lazyframe__collect]{<LazyFrame>$collect()}}.
 }

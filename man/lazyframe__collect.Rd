@@ -20,6 +20,8 @@ lazyframe__collect(
 )
 }
 \arguments{
+\item{...}{These dots are for future extensions and must be empty.}
+
 \item{type_coercion}{A logical, indicats type coercion optimization.}
 
 \item{predicate_pushdown}{A logical, indicats predicate pushdown optimization.}
@@ -43,7 +45,7 @@ If \code{FALSE} (default), the entire query is processed in a single batch.
 Note that streaming mode is considered unstable.
 It may be changed at any point without it being considered a breaking change.}
 
-\item{`_eager`}{A logical, indicates to turn off multi-node optimizations and the other optimizations.
+\item{_eager}{A logical, indicates to turn off multi-node optimizations and the other optimizations.
 This option is intended for internal use only.}
 }
 \value{

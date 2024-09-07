@@ -68,6 +68,7 @@ lazyframe__group_by <- function(..., maintain_order = FALSE) {
 #' By default, all query optimizations are enabled.
 #' Individual optimizations may be disabled by setting the corresponding parameter to `FALSE`.
 #' @inherit pl__DataFrame return
+#' @inheritParams rlang::args_dots_empty
 #' @param type_coercion A logical, indicats type coercion optimization.
 #' @param predicate_pushdown A logical, indicats predicate pushdown optimization.
 #' @param projection_pushdown A logical, indicats projection pushdown optimization.
@@ -81,7 +82,7 @@ lazyframe__group_by <- function(..., maintain_order = FALSE) {
 #' If `FALSE` (default), the entire query is processed in a single batch.
 #' Note that streaming mode is considered unstable.
 #' It may be changed at any point without it being considered a breaking change.
-#' @param `_eager` A logical, indicates to turn off multi-node optimizations and the other optimizations.
+#' @param _eager A logical, indicates to turn off multi-node optimizations and the other optimizations.
 #' This option is intended for internal use only.
 #' @examples
 #' lf <- pl$LazyFrame(
