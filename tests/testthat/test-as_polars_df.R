@@ -31,3 +31,10 @@ test_that("as_polars_df(<list/data.frame>, strict = TRUE) throws an error", {
     "expected: `f64`, got: `i32` at index: 2"
   )
 })
+
+test_that("as_polars_df(<list>, name = '...') should not pass the name argument", {
+  expect_error(
+    list(as_polars_series(1, "foo")) |> as_polars_df(name = "bar"),
+    "matched by multiple actual arguments"
+  )
+})

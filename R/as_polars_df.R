@@ -53,7 +53,7 @@ as_polars_df.polars_lazy_frame <- function(x, ...) {
 #' @rdname as_polars_df
 #' @export
 as_polars_df.list <- function(x, ...) {
-  lapply(x, \(column) as_polars_series(column, ...)$`_s`) |>
+  lapply(x, \(column) as_polars_series(column, name = NULL, ...)$`_s`) |>
     PlRDataFrame$init() |>
     wrap()
 }
