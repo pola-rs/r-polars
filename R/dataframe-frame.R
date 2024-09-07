@@ -174,6 +174,11 @@ dataframe__cast <- function(..., strict = TRUE) {
     wrap()
 }
 
+dataframe__filter <- function(...) {
+  self$lazy()$filter(...)$collect() |>
+    wrap()
+}
+
 dataframe__sort <- function(
     ...,
     descending = FALSE,

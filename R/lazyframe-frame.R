@@ -52,6 +52,12 @@ lazyframe__cast <- function(..., strict = TRUE) {
   })
 }
 
+lazyframe__filter <- function(...) {
+  parse_predicates_constraints_into_expression(...) |>
+    self$`_ldf`$filter() |>
+    wrap()
+}
+
 lazyframe__sort <- function(
     ...,
     descending = FALSE,

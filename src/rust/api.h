@@ -146,6 +146,7 @@ SEXP savvy_PlRExpr_struct_json_encode__ffi(SEXP self__);
 SEXP savvy_PlRExpr_struct_with_fields__ffi(SEXP self__, SEXP c_arg__fields);
 
 // methods and associated functions for PlRLazyFrame
+SEXP savvy_PlRLazyFrame_filter__ffi(SEXP self__, SEXP c_arg__predicate);
 SEXP savvy_PlRLazyFrame_select__ffi(SEXP self__, SEXP c_arg__exprs);
 SEXP savvy_PlRLazyFrame_group_by__ffi(SEXP self__, SEXP c_arg__by, SEXP c_arg__maintain_order);
 SEXP savvy_PlRLazyFrame_collect__ffi(SEXP self__);

@@ -1165,6 +1165,13 @@ class(`PlRExpr`) <- "PlRExpr__bundle"
 
 ### wrapper functions for PlRLazyFrame
 
+`PlRLazyFrame_filter` <- function(self) {
+  function(`predicate`) {
+    `predicate` <- .savvy_extract_ptr(`predicate`, "PlRExpr")
+    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_filter__impl, `self`, `predicate`))
+  }
+}
+
 `PlRLazyFrame_select` <- function(self) {
   function(`exprs`) {
     .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_select__impl, `self`, `exprs`))
@@ -1211,6 +1218,7 @@ class(`PlRExpr`) <- "PlRExpr__bundle"
 `.savvy_wrap_PlRLazyFrame` <- function(ptr) {
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
+  e$`filter` <- `PlRLazyFrame_filter`(ptr)
   e$`select` <- `PlRLazyFrame_select`(ptr)
   e$`group_by` <- `PlRLazyFrame_group_by`(ptr)
   e$`collect` <- `PlRLazyFrame_collect`(ptr)

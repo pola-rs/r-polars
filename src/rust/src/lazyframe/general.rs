@@ -1,8 +1,15 @@
-use crate::{prelude::*, PlRDataFrame, PlRDataType, PlRLazyFrame, PlRLazyGroupBy, RPolarsErr};
+use crate::{
+    prelude::*, PlRDataFrame, PlRDataType, PlRExpr, PlRLazyFrame, PlRLazyGroupBy, RPolarsErr,
+};
 use savvy::{savvy, ListSexp, LogicalSexp, Result};
 
 #[savvy]
 impl PlRLazyFrame {
+    fn filter(&mut self, predicate: PlRExpr) -> Result<Self> {
+        let ldf = self.ldf.clone();
+        Ok(ldf.filter(predicate.inner).into())
+    }
+
     fn select(&mut self, exprs: ListSexp) -> Result<Self> {
         let ldf = self.ldf.clone();
         let exprs = <Wrap<Vec<Expr>>>::from(exprs).0;
