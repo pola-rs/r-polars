@@ -17,6 +17,9 @@ All values must be the same length.
 Each name will be used as the column name. If the name is empty,
 the original name of the \link{Series} will be used.}
 }
+\value{
+A polars \link{DataFrame}
+}
 \description{
 DataFrames are two-dimensional data structure representing data
 as a table with rows and columns. Polars DataFrames are similar to

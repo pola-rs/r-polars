@@ -18,7 +18,20 @@ as_polars_df(x, ...)
 
 \method{as_polars_df}{polars_group_by}(x, ...)
 
-\method{as_polars_df}{polars_lazy_frame}(x, ...)
+\method{as_polars_df}{polars_lazy_frame}(
+  x,
+  ...,
+  type_coercion = TRUE,
+  predicate_pushdown = TRUE,
+  projection_pushdown = TRUE,
+  simplify_expression = TRUE,
+  slice_pushdown = TRUE,
+  comm_subplan_elim = TRUE,
+  comm_subexpr_elim = TRUE,
+  cluster_with_columns = TRUE,
+  no_optimization = FALSE,
+  streaming = FALSE
+)
 
 \method{as_polars_df}{list}(x, ...)
 
@@ -28,6 +41,29 @@ as_polars_df(x, ...)
 \item{x}{An R object.}
 
 \item{...}{Additional arguments passed to the methods.}
+
+\item{type_coercion}{A logical, indicats type coercion optimization.}
+
+\item{predicate_pushdown}{A logical, indicats predicate pushdown optimization.}
+
+\item{projection_pushdown}{A logical, indicats projection pushdown optimization.}
+
+\item{simplify_expression}{A logical, indicats simplify expression optimization.}
+
+\item{slice_pushdown}{A logical, indicats slice pushdown optimization.}
+
+\item{comm_subplan_elim}{A logical, indicats tring to cache branching subplans that occur on self-joins or unions.}
+
+\item{comm_subexpr_elim}{A logical, indicats tring to cache common subexpressions.}
+
+\item{cluster_with_columns}{A logical, indicats to combine sequential independent calls to with_columns.}
+
+\item{no_optimization}{A logical. If \code{TRUE}, turn off (certain) optimizations.}
+
+\item{streaming}{A logical. If \code{TRUE}, process the query in batches to handle larger-than-memory data.
+If \code{FALSE} (default), the entire query is processed in a single batch.
+Note that streaming mode is considered unstable.
+It may be changed at any point without it being considered a breaking change.}
 }
 \value{
 A Polars DataFrame
@@ -42,6 +78,24 @@ then a \link[=DataFrame]{Polars DataFrame} is created from the list.
 \details{
 The default method of \code{\link[=as_polars_df]{as_polars_df()}} throws an error,
 so we need to define methods for the classes we want to support.
+\subsection{S3 method for list}{
+\itemize{
+\item The argument \code{...} (except \code{name}) is passed to \code{\link[=as_polars_series]{as_polars_series()}} for each element of the list.
+\item All elements of the list must be converted to the same length of \link{Series} by \code{\link[=as_polars_series]{as_polars_series()}}.
+}
+}
+
+\subsection{S3 method for list}{
+\itemize{
+\item The argument \code{...} (except \code{name}) is passed to \code{\link[=as_polars_series]{as_polars_series()}} for each column.
+\item All columns must be converted to the same length of \link{Series} by \code{\link[=as_polars_series]{as_polars_series()}}.
+}
+}
+
+\subsection{S3 method for polars_lazy_frame}{
+
+This is a shortcut for \code{\link[=lazyframe__collect]{<LazyFrame>$collect()}}.
+}
 }
 \examples{
 # list

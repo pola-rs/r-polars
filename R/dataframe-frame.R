@@ -25,6 +25,7 @@
 #' All values must be the same length.
 #' Each name will be used as the column name. If the name is empty,
 #' the original name of the [Series] will be used.
+#' @return A polars [DataFrame]
 #' @examples
 #' # Constructing a DataFrame from vectors:
 #' pl$DataFrame(a = 1:2, b = 3:4)

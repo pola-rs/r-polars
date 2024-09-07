@@ -8,7 +8,22 @@
 #'
 #' The default method of [as_polars_df()] throws an error,
 #' so we need to define methods for the classes we want to support.
+#'
+#' ## S3 method for list
+#'
+#' - The argument `...` (except `name`) is passed to [as_polars_series()] for each element of the list.
+#' - All elements of the list must be converted to the same length of [Series] by [as_polars_series()].
+#'
+#' ## S3 method for list
+#'
+#' - The argument `...` (except `name`) is passed to [as_polars_series()] for each column.
+#' - All columns must be converted to the same length of [Series] by [as_polars_series()].
+#'
+#' ## S3 method for polars_lazy_frame
+#'
+#' This is a shortcut for [`<LazyFrame>$collect()`][lazyframe__collect].
 #' @inheritParams as_polars_series
+#' @inheritParams lazyframe__collect
 #' @return A Polars DataFrame
 #' @seealso
 #' - [`<DataFrame>$to_r_list()`][dataframe__to_r_list]: Export the DataFrame as an R list of R vectors.
@@ -46,8 +61,28 @@ as_polars_df.polars_group_by <- function(x, ...) {
 
 #' @rdname as_polars_df
 #' @export
-as_polars_df.polars_lazy_frame <- function(x, ...) {
-  x$collect()
+as_polars_df.polars_lazy_frame <- function(
+    x, ..., type_coercion = TRUE,
+    predicate_pushdown = TRUE,
+    projection_pushdown = TRUE,
+    simplify_expression = TRUE,
+    slice_pushdown = TRUE,
+    comm_subplan_elim = TRUE,
+    comm_subexpr_elim = TRUE,
+    cluster_with_columns = TRUE,
+    no_optimization = FALSE,
+    streaming = FALSE) {
+  x$collect(
+    type_coercion = type_coercion,
+    predicate_pushdown = predicate_pushdown,
+    projection_pushdown = projection_pushdown,
+    simplify_expression = simplify_expression,
+    slice_pushdown = slice_pushdown,
+    comm_subplan_elim = comm_subplan_elim,
+    comm_subexpr_elim = comm_subexpr_elim,
+    cluster_with_columns = cluster_with_columns,
+    streaming = streaming
+  )
 }
 
 #' @rdname as_polars_df

@@ -1,3 +1,7 @@
+pl__LazyFrame <- function(...) {
+  pl$DataFrame(...)$lazy()
+}
+
 # The env for storing lazyrame methods
 polars_lazyframe__methods <- new.env(parent = emptyenv())
 
@@ -35,6 +39,39 @@ lazyframe__group_by <- function(..., maintain_order = FALSE) {
   })
 }
 
+# TODO: see also section
+#' Materialize this LazyFrame into a DataFrame
+#'
+#' By default, all query optimizations are enabled.
+#' Individual optimizations may be disabled by setting the corresponding parameter to `FALSE`.
+#' @inherit pl__DataFrame return
+#' @param type_coercion A logical, indicats type coercion optimization.
+#' @param predicate_pushdown A logical, indicats predicate pushdown optimization.
+#' @param projection_pushdown A logical, indicats projection pushdown optimization.
+#' @param simplify_expression A logical, indicats simplify expression optimization.
+#' @param slice_pushdown A logical, indicats slice pushdown optimization.
+#' @param comm_subplan_elim A logical, indicats tring to cache branching subplans that occur on self-joins or unions.
+#' @param comm_subexpr_elim A logical, indicats tring to cache common subexpressions.
+#' @param cluster_with_columns A logical, indicats to combine sequential independent calls to with_columns.
+#' @param no_optimization A logical. If `TRUE`, turn off (certain) optimizations.
+#' @param streaming A logical. If `TRUE`, process the query in batches to handle larger-than-memory data.
+#' If `FALSE` (default), the entire query is processed in a single batch.
+#' Note that streaming mode is considered unstable.
+#' It may be changed at any point without it being considered a breaking change.
+#' @param `_eager` A logical, indicates to turn off multi-node optimizations and the other optimizations.
+#' This option is intended for internal use only.
+#' @examples
+#' lf <- pl$LazyFrame(
+#'   a = c("a", "b", "a", "b", "b", "c"),
+#'   b = 1:6,
+#'   c = 6:1,
+#' )
+#' lf$group_by("a")$agg(pl$all()$sum())$collect()
+#'
+#' # Collect in streaming mode
+#' lf$group_by("a")$agg(pl$all()$sum())$collect(
+#'   streaming = TRUE
+#' )
 lazyframe__collect <- function(
     ...,
     type_coercion = TRUE,
