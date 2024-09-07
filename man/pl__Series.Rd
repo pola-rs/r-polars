@@ -4,7 +4,7 @@
 \alias{pl__Series}
 \alias{polars_series}
 \alias{Series}
-\title{Polars Series class}
+\title{Polars Series class (\code{polars_series})}
 \usage{
 pl__Series(name = NULL, values = NULL)
 }

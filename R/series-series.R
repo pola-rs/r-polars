@@ -1,6 +1,6 @@
 # TODO: link to data type docs
-# TODO: name spaces
-#' Polars Series class
+# TODO: section for name spaces
+#' Polars Series class (`polars_series`)
 #'
 #' Series are a 1-dimensional data structure, which are similar to [R vectors][vector].
 #' Within a series all elements have the same Data Type.

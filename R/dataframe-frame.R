@@ -1,5 +1,5 @@
 # TODO: link to data type docs
-#' Polars DataFrame class
+#' Polars DataFrame class (`polars_data_frame`)
 #'
 #' DataFrames are two-dimensional data structure representing data
 #' as a table with rows and columns. Polars DataFrames are similar to
@@ -19,9 +19,9 @@
 #' - `height`: `$height` returns a integer with the number of rows of the DataFrame.
 #' - `width`: `$width` returns a integer with the number of columns of the DataFrame.
 #' @param ... <[`dynamic-dots`][rlang::dyn-dots]>
-#' Name-value pairs of objects to be converted to [Polars Series][Series]
+#' Name-value pairs of objects to be converted to polars [Series]
 #' by the [as_polars_series()] function.
-#' Each [Series] will be used as a column of the DataFrame.
+#' Each [Series] will be used as a column of the [DataFrame].
 #' All values must be the same length.
 #' Each name will be used as the column name. If the name is empty,
 #' the original name of the [Series] will be used.

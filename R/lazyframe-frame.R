@@ -1,3 +1,26 @@
+# TODO: link to the lazy method of dataframe
+#' Polars LazyFrame class (`polars_lazy_frame`)
+#'
+#' Representation of a Lazy computation graph/query against a [DataFrame].
+#' This allows for whole-query optimisation in addition to parallelism,
+#' and is the preferred (and highest-performance) mode of operation for polars.
+#'
+#' The `pl$LazyFrame(...)` function is a shortcut for `pl$DataFrame(...)$lazy()`.
+#' @aliases plars_lazy_frame LazyFrame
+#' @inheritParams pl__DataFrame
+#' @return A polars [LazyFrame]
+#' @examples
+#' # Constructing a LazyFrame from vectors:
+#' pl$LazyFrame(a = 1:2, b = 3:4)
+#'
+#' # Constructing a LazyFrame from Series:
+#' pl$LazyFrame(pl$Series("a", 1:2), pl$Series("b", 3:4))
+#'
+#' # Constructing a LazyFrame from a list:
+#' data <- list(a = 1:2, b = 3:4)
+#'
+#' ## Using dynamic dots feature
+#' pl$LazyFrame(!!!data)
 pl__LazyFrame <- function(...) {
   pl$DataFrame(...)$lazy()
 }

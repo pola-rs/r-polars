@@ -22,9 +22,9 @@
 #' ## S3 method for polars_lazy_frame
 #'
 #' This is a shortcut for [`<LazyFrame>$collect()`][lazyframe__collect].
+#' @inherit pl__DataFrame return
 #' @inheritParams as_polars_series
 #' @inheritParams lazyframe__collect
-#' @return A Polars DataFrame
 #' @seealso
 #' - [`<DataFrame>$to_r_list()`][dataframe__to_r_list]: Export the DataFrame as an R list of R vectors.
 #' @examples

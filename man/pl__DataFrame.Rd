@@ -4,15 +4,15 @@
 \alias{pl__DataFrame}
 \alias{polars_data_frame}
 \alias{DataFrame}
-\title{Polars DataFrame class}
+\title{Polars DataFrame class (\code{polars_data_frame})}
 \usage{
 pl__DataFrame(...)
 }
 \arguments{
 \item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}>
-Name-value pairs of objects to be converted to \link[=Series]{Polars Series}
+Name-value pairs of objects to be converted to polars \link{Series}
 by the \code{\link[=as_polars_series]{as_polars_series()}} function.
-Each \link{Series} will be used as a column of the DataFrame.
+Each \link{Series} will be used as a column of the \link{DataFrame}.
 All values must be the same length.
 Each name will be used as the column name. If the name is empty,
 the original name of the \link{Series} will be used.}

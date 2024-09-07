@@ -66,7 +66,7 @@ Note that streaming mode is considered unstable.
 It may be changed at any point without it being considered a breaking change.}
 }
 \value{
-A Polars DataFrame
+A polars \link{DataFrame}
 }
 \description{
 The \code{\link[=as_polars_df]{as_polars_df()}} function creates a \link[=DataFrame]{polars DataFrame} from various R objects.
