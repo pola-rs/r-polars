@@ -204,33 +204,40 @@ as_polars_series.Date <- function(x, name = NULL, ...) {
 #' @rdname as_polars_series
 #' @export
 as_polars_series.POSIXct <- function(x, name = NULL, ...) {
-  tzone <- attr(x, "tzone")
-  name <- name %||% ""
+  wrap({
+    tzone <- attr(x, "tzone")
+    name <- name %||% ""
 
-  int_series <- PlRSeries$new_f64(name, x)$mul(
-    PlRSeries$new_f64("", 1000)
-  )$cast(pl$Int64$`_dt`, strict = TRUE)
+    # POSIXct is based on integer or double
+    new_series_fn <- if (is_integer(x)) {
+      PlRSeries$new_i32
+    } else {
+      PlRSeries$new_f64
+    }
 
-  if (tzone == "") {
-    # TODO: simplify to remove the need for the `wrap()` function
-    wrap(int_series)$to_frame()$select(
-      pl$col(name)$cast(
-        pl$Datetime("ms", "UTC")
-      )$dt$convert_time_zone(
-        Sys.timezone()
-      )$dt$replace_time_zone(
-        NULL,
-        ambiguous = "raise", non_existent = "raise"
+    int_series <- new_series_fn(name, x)$mul(
+      PlRSeries$new_f64("", 1000)
+    )$cast(pl$Int64$`_dt`, strict = TRUE)
+
+    if (tzone == "") {
+      # TODO: simplify to remove the need for the `wrap()` function
+      wrap(int_series)$to_frame()$select(
+        pl$col(name)$cast(
+          pl$Datetime("ms", "UTC")
+        )$dt$convert_time_zone(
+          Sys.timezone()
+        )$dt$replace_time_zone(
+          NULL,
+          ambiguous = "raise", non_existent = "raise"
+        )
+      )$to_series()
+    } else {
+      int_series$cast(
+        pl$Datetime("ms", tzone)$`_dt`,
+        strict = TRUE
       )
-    )$to_series() |>
-      wrap()
-  } else {
-    int_series$cast(
-      pl$Datetime("ms", tzone)$`_dt`,
-      strict = TRUE
-    ) |>
-      wrap()
-  }
+    }
+  })
 }
 
 #' @rdname as_polars_series

@@ -115,7 +115,31 @@
       	null
       ]
 
+# as_polars_series works for classes POSIXct (UTC, integer)
+
+    Code
+      print(pl_series)
+    Output
+      shape: (2,)
+      Series: '' [datetime[ms, UTC]]
+      [
+      	2021-01-01 00:00:00 UTC
+      	null
+      ]
+
 # as_polars_series works for classes POSIXct (system time)
+
+    Code
+      print(pl_series)
+    Output
+      shape: (2,)
+      Series: '' [datetime[ms]]
+      [
+      	2021-01-01 00:00:00
+      	null
+      ]
+
+# as_polars_series works for classes POSIXct (system time, integer)
 
     Code
       print(pl_series)
