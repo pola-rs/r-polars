@@ -8,7 +8,7 @@
 #' The default method of [as_polars_series()] throws an error,
 #' so we need to define S3 methods for the classes we want to support.
 #'
-#' ## List type conversion
+#' ## S3 method for [list] and [list] based classes
 #'
 #' In R, a [list] can contain elements of different types, but in Polars (Apache Arrow),
 #' all elements must have the same type.
@@ -16,6 +16,14 @@
 #' or throws an error, depending on the `strict` argument.
 #' If you want to create a list with all elements of the same type in R,
 #' consider using the [vctrs::list_of()] function.
+#'
+#' Since a [list] can contain another [list], the `strict` argument is also used
+#' when creating [Series] from the inner [list] in the case of classes constructed on top of a [list],
+#' such as [data.frame] or [vctrs_rcrd][vctrs::new_rcrd].
+#'
+#' ## S3 method for [polars_data_frame][DataFrame]
+#'
+#' This method is a shortcut for [`<DataFrame>$to_struct()`][dataframe__to_struct].
 #' @param x An R object.
 #' @param name A single string or `NULL`. Name of the Series.
 #' Will be used as a column name when used in a [polars DataFrame][DataFrame].
@@ -29,6 +37,7 @@
 #' @return A [polars Series][Series]
 #' @seealso
 #' - [`<Series>$to_r_vector()`][series__to_r_vector]: Export the Series as an R vector.
+#' - [as_polars_df()]: Create a Polars DataFrame from an R object.
 #' @examples
 #' # double
 #' as_polars_series(c(NA, 1, 2))

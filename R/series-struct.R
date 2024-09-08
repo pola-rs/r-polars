@@ -26,6 +26,13 @@ namespace_series_struct <- function(x) {
   self
 }
 
+#' Convert this struct Series to a DataFrame with a separate column for each field
+#'
+#' @inherit pl__DataFrame return
+#' @inherit series__to_frame seealso
+#' @examples
+#' s <- as_polars_series(data.frame(a = c(1, 3), b = c(2, 4)))
+#' s$struct$unnest()
 series_struct_unnest <- function() {
   self$`_s`$struct_unnest() |>
     wrap()

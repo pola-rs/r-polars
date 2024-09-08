@@ -49,6 +49,20 @@
 #'
 #' # data.frame
 #' as_polars_df(data.frame(a = 1:2, b = c("foo", "bar")))
+#'
+#' # polars_series
+#' s_int <- as_polars_series(1:2, "a")
+#' s_struct <- as_polars_series(
+#'   data.frame(a = 1:2, b = c("foo", "bar")),
+#'   "struct"
+#' )
+#'
+#' ## Use the Series as a column
+#' as_polars_df(s_int)
+#' as_polars_df(s_struct, column_name = "values", unnest_struct = FALSE)
+#'
+#' ## Unnest the struct data
+#' as_polars_df(s_struct)
 #' @export
 as_polars_df <- function(x, ...) {
   UseMethod("as_polars_df")

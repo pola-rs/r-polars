@@ -99,6 +99,19 @@ dataframe__set_column_names <- function(names) {
   })
 }
 
+# TODO: link to data type docs
+#' Convert a DataFrame to a Series of type Struct
+#'
+#' @param name A character. Name for the struct [Series].
+#' @return A [Series] of the struct type
+#' @seealso
+#' - [as_polars_series()]
+#' @examples
+#' df <- pl$DataFrame(
+#'   a = 1:5,
+#'   b = c("one", "two", "three", "four", "five"),
+#' )
+#' df$to_struct("nums")
 dataframe__to_struct <- function(name = "") {
   self$`_df`$to_struct(name) |>
     wrap()

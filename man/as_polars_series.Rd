@@ -109,7 +109,7 @@ The Data Type of the Series is determined by the class of the input object.
 \details{
 The default method of \code{\link[=as_polars_series]{as_polars_series()}} throws an error,
 so we need to define S3 methods for the classes we want to support.
-\subsection{List type conversion}{
+\subsection{S3 method for \link{list} and \link{list} based classes}{
 
 In R, a \link{list} can contain elements of different types, but in Polars (Apache Arrow),
 all elements must have the same type.
@@ -117,6 +117,15 @@ So the \code{\link[=as_polars_series]{as_polars_series()}} function automaticall
 or throws an error, depending on the \code{strict} argument.
 If you want to create a list with all elements of the same type in R,
 consider using the \code{\link[vctrs:list_of]{vctrs::list_of()}} function.
+
+Since a \link{list} can contain another \link{list}, the \code{strict} argument is also used
+when creating \link{Series} from the inner \link{list} in the case of classes constructed on top of a \link{list},
+such as \link{data.frame} or \link[vctrs:new_rcrd]{vctrs_rcrd}.
+}
+
+\subsection{S3 method for \link[=DataFrame]{polars_data_frame}}{
+
+This method is a shortcut for \code{\link[=dataframe__to_struct]{<DataFrame>$to_struct()}}.
 }
 }
 \examples{
@@ -201,5 +210,6 @@ if (requireNamespace("clock", quietly = TRUE)) {
 \seealso{
 \itemize{
 \item \code{\link[=series__to_r_vector]{<Series>$to_r_vector()}}: Export the Series as an R vector.
+\item \code{\link[=as_polars_df]{as_polars_df()}}: Create a Polars DataFrame from an R object.
 }
 }

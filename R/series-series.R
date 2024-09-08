@@ -135,6 +135,21 @@ series__reshape <- function(dimensions) {
     wrap()
 }
 
+#' Cast this Series to a DataFrame
+#'
+#' @inherit pl__DataFrame return
+#' @param name A character or `NULL`. If not `NULL`,
+#' name/rename the [Series] column in the new [DataFrame].
+#' If `NULL`, the column name is taken from the [Series] name.
+#' @seealso
+#' - [as_polars_df()]
+#' @examples
+#' s <- pl$Series("a", c(123, 456))
+#' df <- s$to_frame()
+#' df
+#'
+#' df <- s$to_frame("xyz")
+#' df
 series__to_frame <- function(name = NULL) {
   PlRDataFrame$init(
     list(as_polars_series(self, name)$`_s`)
