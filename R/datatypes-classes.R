@@ -65,11 +65,7 @@ pl__Categorical <- function(ordering = "physical") {
 }
 
 pl__Enum <- function(categories) {
-  rlang::warn(c(
-    "The Enum data type is considered unstable.",
-    " It is a work-in-progress feature and may not always work as expected."
-  ))
-
+  # TODO: impliment `issue_unstable_warning`
   PlRDataType$new_enum(categories) |>
     wrap()
 }

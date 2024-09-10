@@ -93,7 +93,25 @@ impl std::fmt::Display for PlRDataType {
                     <String>::from(Wrap(ordering))
                 )
             }
-            // TODO: Enum
+            DataType::Enum(categories, _) => {
+                write!(
+                    f,
+                    "Enum(categories={})",
+                    categories.as_ref().map_or_else(
+                        || "NULL".to_string(),
+                        |v| {
+                            format!(
+                                "c({})",
+                                <Vec<String>>::from(Wrap(v))
+                                    .iter()
+                                    .map(|v| format!("'{v}'"))
+                                    .collect::<Vec<_>>()
+                                    .join(", ")
+                            )
+                        }
+                    )
+                )
+            }
             _ => write!(f, "{:?}", self.dt),
         }
     }
@@ -215,13 +233,7 @@ impl PlRDataType {
                 let mut out = OwnedListSexp::new(1, true)?;
                 let categories: Sexp = categories.as_ref().map_or_else(
                     || NullSexp.into(),
-                    |v| {
-                        v.get_categories()
-                            .into_iter()
-                            .map(|v| v.unwrap_or_default().to_string())
-                            .collect::<Vec<_>>()
-                            .try_into()
-                    },
+                    |v| <Vec<String>>::from(Wrap(v)).try_into(),
                 )?;
                 let _ = out.set_name_and_value(0, "categories", categories);
                 Ok(out.into())

@@ -180,3 +180,10 @@
     Output
       Categorical(ordering='physical')
 
+# data types print Enum(c('a', 'b', 'c'))
+
+    Code
+      print(object)
+    Output
+      Enum(categories=c('a', 'b', 'c'))
+

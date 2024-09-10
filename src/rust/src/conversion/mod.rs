@@ -158,6 +158,17 @@ impl TryFrom<&str> for Wrap<CategoricalOrdering> {
     }
 }
 
+impl From<Wrap<&Arc<RevMapping>>> for Vec<String> {
+    fn from(mapping: Wrap<&Arc<RevMapping>>) -> Vec<String> {
+        mapping
+            .0
+            .get_categories()
+            .into_iter()
+            .map(|v| v.unwrap_or_default().to_string())
+            .collect::<Vec<_>>()
+    }
+}
+
 impl From<Wrap<&CategoricalOrdering>> for String {
     fn from(ordering: Wrap<&CategoricalOrdering>) -> String {
         match *ordering.0 {

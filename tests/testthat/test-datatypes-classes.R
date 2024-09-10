@@ -29,6 +29,7 @@ patrick::with_parameters_test_that(
       "Struct(a = Int32, b = String)", pl$Struct(a = pl$Int32, b = pl$String),
       "Struct(a = Struct(b = Int32), c = String)", pl$Struct(a = pl$Struct(b = pl$Int32), c = pl$String),
       "Categorical()", pl$Categorical(),
+      "Enum(c('a', 'b', 'c'))", pl$Enum(c("a", "b", "c")),
     )
   },
   code = {
