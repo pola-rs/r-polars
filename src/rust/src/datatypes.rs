@@ -38,6 +38,67 @@ impl TryFrom<EnvironmentSexp> for &PlRDataType {
     }
 }
 
+impl std::fmt::Display for PlRDataType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        fn opt_usize_to_string(opt: Option<usize>) -> String {
+            opt.map_or_else(|| "NULL".to_string(), |v| v.to_string())
+        }
+
+        fn opt_string_to_string(opt: Option<String>) -> String {
+            opt.map_or_else(|| "NULL".to_string(), |v| format!("'{v}'"))
+        }
+
+        match &self.dt {
+            DataType::Decimal(precision, scale) => {
+                write!(
+                    f,
+                    "Decimal(precision={}, scale={})",
+                    opt_usize_to_string(*precision),
+                    opt_usize_to_string(*scale)
+                )
+            }
+            DataType::Datetime(time_unit, time_zone) => {
+                write!(
+                    f,
+                    "Datetime(time_unit='{}', time_zone={})",
+                    time_unit,
+                    opt_string_to_string(time_zone.clone())
+                )
+            }
+            DataType::Duration(time_unit) => {
+                write!(f, "Duration(time_unit='{}')", time_unit)
+            }
+            // TODO: Array
+            DataType::List(inner) => write!(f, "List({})", PlRDataType { dt: *inner.clone() }),
+            DataType::Struct(fields) => {
+                let fields = fields
+                    .iter()
+                    .map(|field| {
+                        format!(
+                            "{}={}",
+                            field.name(),
+                            PlRDataType {
+                                dt: field.data_type().clone()
+                            }
+                        )
+                    })
+                    .collect::<Vec<_>>()
+                    .join(", ");
+                write!(f, "Struct({})", fields)
+            }
+            DataType::Categorical(_, ordering) => {
+                write!(
+                    f,
+                    "Categorical(ordering='{}')",
+                    <String>::from(Wrap(ordering))
+                )
+            }
+            // TODO: Enum
+            _ => write!(f, "{:?}", self.dt),
+        }
+    }
+}
+
 #[savvy]
 impl PlRDataType {
     pub fn new_from_name(name: &str) -> Result<Self> {
@@ -84,7 +145,7 @@ impl PlRDataType {
     }
 
     fn print(&self) -> Result<()> {
-        r_println!("{:?}", self.dt);
+        r_println!("{}", self);
         Ok(())
     }
 
