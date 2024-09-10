@@ -33,14 +33,14 @@ test_that("column_name argument", {
   )
 })
 
-test_that("unnest_struct argument", {
+test_that("from_struct argument", {
   pldf <- pl$DataFrame(x = 1:2, y = c("a", "b"))
   expect_equal(
-    as_polars_df(as_polars_series(pldf), unnest_struct = TRUE),
+    as_polars_df(as_polars_series(pldf), from_struct = TRUE),
     pldf
   )
   expect_equal(
-    as_polars_df(as_polars_series(pldf), unnest_struct = FALSE),
+    as_polars_df(as_polars_series(pldf), from_struct = FALSE),
     pl$DataFrame(pldf)
   )
 })

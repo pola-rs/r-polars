@@ -26,7 +26,7 @@
 #' ## S3 method for [polars_series][Series]
 #'
 #' This is a shortcut for [`<Series>$to_frame()`][series__to_frame] or
-#' [`<Series>$struct$unnest()`][series_struct_unnest], depending on the `unnest_struct` argument and the [Series] data type.
+#' [`<Series>$struct$unnest()`][series_struct_unnest], depending on the `from_struct` argument and the [Series] data type.
 #' The `column_name` argument is passed to the `name` argument of the [`$to_frame()`][series__to_frame] method.
 #'
 #' ## S3 method for [polars_lazy_frame][LazyFrame]
@@ -38,7 +38,7 @@
 #' @param column_name A character or `NULL`. If not `NULL`,
 #' name/rename the [Series] column in the new [DataFrame].
 #' If `NULL`, the column name is taken from the [Series] name.
-#' @param unnest_struct A logical. If `TRUE` (default) and the [Series] data type is a struct,
+#' @param from_struct A logical. If `TRUE` (default) and the [Series] data type is a struct,
 #' the [`<Series>$struct$unnest()`][series_struct_unnest] method is used to create a [DataFrame]
 #' from the struct [Series]. In this case, the `column_name` argument is ignored.
 #' @seealso
@@ -59,7 +59,7 @@
 #'
 #' ## Use the Series as a column
 #' as_polars_df(s_int)
-#' as_polars_df(s_struct, column_name = "values", unnest_struct = FALSE)
+#' as_polars_df(s_struct, column_name = "values", from_struct = FALSE)
 #'
 #' ## Unnest the struct data
 #' as_polars_df(s_struct)
@@ -82,8 +82,8 @@ as_polars_df.default <- function(x, ...) {
 as_polars_df.polars_series <- function(
     x, ...,
     column_name = NULL,
-    unnest_struct = TRUE) {
-  if (isTRUE(unnest_struct) && x$dtype$is_struct()) {
+    from_struct = TRUE) {
+  if (isTRUE(from_struct) && x$dtype$is_struct()) {
     x$struct$unnest()
   } else {
     x$to_frame(name = column_name)
