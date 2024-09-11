@@ -54,3 +54,19 @@ patrick::with_parameters_test_that(
     expect_error(pl$Enum(categories), error_message)
   }
 )
+
+patrick::with_parameters_test_that(
+  "Enum union",
+  .cases = {
+    tibble::tribble(
+      ~.test_name, ~input, ~expected_output,
+      "a", pl$Enum("a"), pl$Enum(c("b", "d", "a")),
+      "b", pl$Enum("b"), pl$Enum(c("b", "d")),
+      "c, d", pl$Enum(c("c", "d")), pl$Enum(c("b", "d", "c")),
+    )
+  },
+  code = {
+    expect_equal(pl$Enum(c("b", "d"))$union(input), expected_output)
+    expect_equal(input$union(input), input)
+  }
+)
