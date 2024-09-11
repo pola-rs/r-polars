@@ -39,3 +39,18 @@ patrick::with_parameters_test_that(
     expect_snapshot(print(object))
   }
 )
+
+patrick::with_parameters_test_that(
+  "Enum construct error",
+  .cases = {
+    tibble::tribble(
+      ~.test_name, ~categories, ~error_message,
+      "non-character", 1:5, "`categories` must be a character vector, not an integer vector",
+      "NA", c("a", NA_character_), "`categories` can't contain NA values",
+      "duplicated", c("c", "b", "a", "b", "a"), r"(Enum categories must be unique; found duplicated\: b, a)",
+    )
+  },
+  code = {
+    expect_error(pl$Enum(categories), error_message)
+  }
+)

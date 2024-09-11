@@ -66,8 +66,18 @@ pl__Categorical <- function(ordering = "physical") {
 
 pl__Enum <- function(categories) {
   # TODO: impliment `issue_unstable_warning`
-  PlRDataType$new_enum(categories) |>
-    wrap()
+  wrap({
+    check_character(categories, allow_na = FALSE)
+
+    if (anyDuplicated(categories)) {
+      abort(sprintf(
+        "Enum categories must be unique; found duplicated: %s",
+        toString(categories[which(duplicated(categories))])
+      ))
+    }
+
+    PlRDataType$new_enum(categories)
+  })
 }
 
 pl__Array <- function(inner, shape) {
