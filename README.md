@@ -86,7 +86,7 @@ The basic classes such as `DataFrame`, `Series`, `Expr`, and `LazyFrame`
 have been implemented, and some functions work correctly.
 
 ``` r
-df = pl$DataFrame(
+df <- pl$DataFrame(
   A = 1:5,
   fruits = c("banana", "banana", "apple", "apple", "banana"),
   B = 5:1,
@@ -149,7 +149,7 @@ been implemented.
 s <- as_polars_series(mtcars)
 
 s$struct$field |>
-   body()
+  body()
 #> {
 #>     wrap({
 #>         expr <- do.call(fn, as.list(match.call()[-1]), envir = parent.frame())
@@ -159,7 +159,6 @@ s$struct$field |>
 ```
 
 ``` r
-
 s$struct$field("am")
 #> shape: (32,)
 #> Series: 'am' [f64]
@@ -212,6 +211,21 @@ s$math$square()$rename("s^2")
 #>  1764.0
 #>  4160.25
 #> ]
+```
+
+It is now possible to have different bindings for each instance.
+
+``` r
+# The `fields` binding is only available for `Struct`.
+pl$Struct(a = pl$Int32)$fields
+#> $a
+#> Int32
+```
+
+``` r
+pl$Int32$fields
+#> Error in `pl$Int32$fields`:
+#> ! $ - syntax error: `fields` is not a member of the polars object.
 ```
 
 ### Disadvantages

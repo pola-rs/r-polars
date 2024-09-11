@@ -77,7 +77,7 @@ The basic classes such as `DataFrame`, `Series`, `Expr`, and `LazyFrame` have be
 and some functions work correctly.
 
 ```{r}
-df = pl$DataFrame(
+df <- pl$DataFrame(
   A = 1:5,
   fruits = c("banana", "banana", "apple", "apple", "banana"),
   B = 5:1,
@@ -116,8 +116,7 @@ The functionality to dispatch the methods of `Expr` to `Series` has also been im
 s <- as_polars_series(mtcars)
 
 s$struct$field |>
-   body()
-
+  body()
 s$struct$field("am")
 ```
 
@@ -146,6 +145,15 @@ pl$api$register_series_namespace("math", math_shortcuts)
 
 s <- as_polars_series(c(1.5, 31, 42, 64.5))
 s$math$square()$rename("s^2")
+```
+
+It is now possible to have different bindings for each instance.
+
+```{r}
+#| error: true
+# The `fields` binding is only available for `Struct`.
+pl$Struct(a = pl$Int32)$fields
+pl$Int32$fields
 ```
 
 ### Disadvantages
