@@ -43,6 +43,7 @@ SEXP savvy_PlRDataType_new_duration__ffi(SEXP c_arg__time_unit);
 SEXP savvy_PlRDataType_new_categorical__ffi(SEXP c_arg__ordering);
 SEXP savvy_PlRDataType_new_enum__ffi(SEXP c_arg__categories);
 SEXP savvy_PlRDataType_new_list__ffi(SEXP c_arg__inner);
+SEXP savvy_PlRDataType_new_array__ffi(SEXP c_arg__inner, SEXP c_arg__shape);
 SEXP savvy_PlRDataType_new_struct__ffi(SEXP c_arg__fields);
 SEXP savvy_PlRDataType_print__ffi(SEXP self__);
 SEXP savvy_PlRDataType__get_datatype_fields__ffi(SEXP self__);

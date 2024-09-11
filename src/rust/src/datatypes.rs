@@ -1,8 +1,8 @@
 use crate::prelude::*;
 use polars_core::utils::arrow::array::Utf8ViewArray;
 use savvy::{
-    r_println, savvy, EnvironmentSexp, ListSexp, NullSexp, NumericScalar, OwnedListSexp, Result,
-    Sexp, StringSexp,
+    r_println, savvy, EnvironmentSexp, ListSexp, NullSexp, NumericScalar, NumericSexp,
+    OwnedListSexp, OwnedRealSexp, Result, Sexp, StringSexp,
 };
 
 // As not like in Python, define the data type class in
@@ -68,7 +68,31 @@ impl std::fmt::Display for PlRDataType {
             DataType::Duration(time_unit) => {
                 write!(f, "Duration(time_unit='{}')", time_unit)
             }
-            // TODO: Array
+            DataType::Array(_, _) => {
+                let shape = self
+                    .dt
+                    .get_shape()
+                    .unwrap_or(vec![0])
+                    .iter()
+                    .map(|v| v.to_string())
+                    .collect::<Vec<_>>()
+                    .join(", ");
+                fn array_leaf_dtype(dt: &DataType) -> &DataType {
+                    let mut prev = dt;
+                    while let DataType::Array(inner, _) = &prev {
+                        prev = &inner;
+                    }
+                    prev
+                }
+                write!(
+                    f,
+                    "Array({}, shape=c({}))",
+                    PlRDataType {
+                        dt: array_leaf_dtype(&self.dt).clone()
+                    },
+                    shape
+                )
+            }
             DataType::List(inner) => write!(f, "List({})", PlRDataType { dt: *inner.clone() }),
             DataType::Struct(fields) => {
                 let fields = fields
@@ -158,6 +182,30 @@ impl PlRDataType {
         Ok(DataType::List(Box::new(inner.dt)).into())
     }
 
+    pub fn new_array(inner: PlRDataType, shape: NumericSexp) -> Result<Self> {
+        let inner = inner.dt;
+        let mut shape = <Wrap<Vec<usize>>>::try_from(shape)?.0;
+
+        fn new_array_impl(
+            inner: DataType,
+            shape: &mut Vec<usize>,
+        ) -> std::result::Result<DataType, savvy::Error> {
+            if shape.is_empty() {
+                return Err(savvy::Error::from("`shape` must not be empty"));
+            }
+            if shape.len() == 1 {
+                return Ok(DataType::Array(Box::new(inner), shape[0]));
+            }
+            let width = shape.remove(0);
+            return Ok(DataType::Array(
+                Box::new(new_array_impl(inner, shape)?),
+                width,
+            ));
+        }
+
+        new_array_impl(inner, &mut shape).map(|dt| dt.into())
+    }
+
     pub fn new_struct(fields: ListSexp) -> Result<Self> {
         Ok(DataType::Struct(<Wrap<Vec<Field>>>::try_from(fields)?.0).into())
     }
@@ -195,12 +243,21 @@ impl PlRDataType {
                 let _ = out.set_name_and_value(0, "time_unit", time_unit);
                 Ok(out.into())
             }
-            DataType::Array(inner, width) => {
+            DataType::Array(inner, _) => {
                 let mut out = OwnedListSexp::new(2, true)?;
                 let inner: Sexp = PlRDataType { dt: *inner.clone() }.try_into()?;
-                let width: Sexp = (*width as f64).try_into()?;
+                let shape: Sexp = OwnedRealSexp::try_from_slice(
+                    &self
+                        .dt
+                        .get_shape()
+                        .unwrap_or(vec![0])
+                        .iter()
+                        .map(|v| *v as f64)
+                        .collect::<Vec<_>>(),
+                )?
+                .into();
                 let _ = out.set_name_and_value(0, "_inner", inner);
-                let _ = out.set_name_and_value(1, "width", width);
+                let _ = out.set_name_and_value(1, "shape", shape);
                 Ok(out.into())
             }
             DataType::List(inner) => {

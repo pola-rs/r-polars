@@ -219,6 +219,11 @@ SEXP savvy_PlRDataType_new_list__impl(SEXP c_arg__inner) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRDataType_new_array__impl(SEXP c_arg__inner, SEXP c_arg__shape) {
+    SEXP res = savvy_PlRDataType_new_array__ffi(c_arg__inner, c_arg__shape);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRDataType_new_struct__impl(SEXP c_arg__fields) {
     SEXP res = savvy_PlRDataType_new_struct__ffi(c_arg__fields);
     return handle_result(res);
@@ -1003,6 +1008,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRDataType_new_categorical__impl", (DL_FUNC) &savvy_PlRDataType_new_categorical__impl, 1},
     {"savvy_PlRDataType_new_enum__impl", (DL_FUNC) &savvy_PlRDataType_new_enum__impl, 1},
     {"savvy_PlRDataType_new_list__impl", (DL_FUNC) &savvy_PlRDataType_new_list__impl, 1},
+    {"savvy_PlRDataType_new_array__impl", (DL_FUNC) &savvy_PlRDataType_new_array__impl, 2},
     {"savvy_PlRDataType_new_struct__impl", (DL_FUNC) &savvy_PlRDataType_new_struct__impl, 1},
     {"savvy_PlRDataType_print__impl", (DL_FUNC) &savvy_PlRDataType_print__impl, 1},
     {"savvy_PlRDataType__get_datatype_fields__impl", (DL_FUNC) &savvy_PlRDataType__get_datatype_fields__impl, 1},

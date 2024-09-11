@@ -224,6 +224,38 @@ impl TryFrom<NumericScalar> for Wrap<usize> {
     }
 }
 
+impl TryFrom<NumericSexp> for Wrap<Vec<usize>> {
+    type Error = savvy::Error;
+
+    fn try_from(v: NumericSexp) -> Result<Self, savvy::Error> {
+        const TOLERANCE: f64 = 0.01; // same as savvy
+        let v = v.as_slice_f64();
+        let values = v
+            .iter()
+            .map(|&n| {
+                if n.is_nan() {
+                    Err("`NaN` cannot be converted to usize".to_string())
+                } else if n < 0_f64 {
+                    Err(format!(
+                        "Nevative value `{n:?}` cannot be converted to usize"
+                    ))
+                } else if n > usize::MAX as f64 {
+                    Err(format!(
+                        "Value `{n:?}` is too large to be converted to usize"
+                    ))
+                } else if (n - n.round()).abs() > TOLERANCE {
+                    Err(format!(
+                        "Value `{n:?}` is not integer-ish enough to be converted to usize"
+                    ))
+                } else {
+                    Ok(n as usize)
+                }
+            })
+            .collect::<Result<Vec<_>, _>>()?;
+        Ok(Wrap(values))
+    }
+}
+
 impl TryFrom<NumericSexp> for Wrap<Vec<i64>> {
     type Error = savvy::Error;
 

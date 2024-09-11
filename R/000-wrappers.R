@@ -565,6 +565,11 @@ class(`PlRDataFrame`) <- "PlRDataFrame__bundle"
   .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_new_list__impl, `inner`))
 }
 
+`PlRDataType`$`new_array` <- function(`inner`, `shape`) {
+  `inner` <- .savvy_extract_ptr(`inner`, "PlRDataType")
+  .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_new_array__impl, `inner`, `shape`))
+}
+
 `PlRDataType`$`new_struct` <- function(`fields`) {
   .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_new_struct__impl, `fields`))
 }

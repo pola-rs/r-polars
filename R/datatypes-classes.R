@@ -70,7 +70,16 @@ pl__Enum <- function(categories) {
     wrap()
 }
 
-# TODO: pl__Array
+pl__Array <- function(inner, shape) {
+  # TODO: impliment `issue_unstable_warning`
+
+  if (!isTRUE(is_polars_data_type(inner))) {
+    abort("`inner` must be a polars data type")
+  }
+
+  PlRDataType$new_array(inner$`_dt`, shape) |>
+    wrap()
+}
 
 pl__List <- function(inner) {
   if (!isTRUE(is_polars_data_type(inner))) {

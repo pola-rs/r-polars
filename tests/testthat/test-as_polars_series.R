@@ -17,6 +17,7 @@ patrick::with_parameters_test_that(
         "character", c("foo", NA), "", pl$String,
         "logical", c(TRUE, FALSE, NA), "", pl$Boolean,
         "raw", charToRaw("foo"), "", pl$Binary,
+        "array", array(1:24, c(2, 3, 4)), "", pl$Array(pl$Int32, c(3, 2)),
         "factor", factor("foo"), "", pl$Categorical(),
         "Date", as.Date(c("2021-01-01", NA)), "", pl$Date,
         "POSIXct (UTC)", as.POSIXct(c("2021-01-01 00:00:00", NA), "UTC"), "", pl$Datetime("ms", "UTC"),

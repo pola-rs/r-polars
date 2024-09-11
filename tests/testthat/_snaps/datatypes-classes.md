@@ -159,6 +159,27 @@
     Output
       List(List(Datetime(time_unit='ms', time_zone='UTC')))
 
+# data types print Array(String, 2)
+
+    Code
+      print(object)
+    Output
+      Array(String, shape=c(2))
+
+# data types print Array(String, c(2, 2))
+
+    Code
+      print(object)
+    Output
+      Array(String, shape=c(2, 2))
+
+# data types print Array(List(Array(String, 2)), c(2, 2))
+
+    Code
+      print(object)
+    Output
+      Array(List(Array(String, shape=c(2))), shape=c(2, 2))
+
 # data types print Struct(a = Int32, b = String)
 
     Code
