@@ -65,9 +65,9 @@ impl PlRLazyFrame {
         Ok(ldf.into())
     }
 
-    fn filter(&mut self, predicate: PlRExpr) -> Result<Self> {
+    fn filter(&mut self, predicate: &PlRExpr) -> Result<Self> {
         let ldf = self.ldf.clone();
-        Ok(ldf.filter(predicate.inner).into())
+        Ok(ldf.filter(predicate.inner.clone()).into())
     }
 
     fn select(&mut self, exprs: ListSexp) -> Result<Self> {
@@ -100,8 +100,8 @@ impl PlRLazyFrame {
         Ok(self.ldf.clone().cast(cast_map, strict).into())
     }
 
-    fn cast_all(&self, dtype: PlRDataType, strict: bool) -> Result<Self> {
-        Ok(self.ldf.clone().cast_all(dtype.dt, strict).into())
+    fn cast_all(&self, dtype: &PlRDataType, strict: bool) -> Result<Self> {
+        Ok(self.ldf.clone().cast_all(dtype.dt.clone(), strict).into())
     }
 
     fn sort_by_exprs(

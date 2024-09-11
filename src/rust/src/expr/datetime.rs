@@ -14,7 +14,7 @@ impl PlRExpr {
 
     fn dt_replace_time_zone(
         &self,
-        ambiguous: PlRExpr,
+        ambiguous: &PlRExpr,
         non_existent: &str,
         time_zone: Option<&str>,
     ) -> Result<Self> {
@@ -24,7 +24,7 @@ impl PlRExpr {
             .dt()
             .replace_time_zone(
                 time_zone.map(|x| x.to_string()),
-                ambiguous.inner,
+                ambiguous.inner.clone(),
                 <Wrap<NonExistent>>::try_from(non_existent)?.0,
             )
             .into())

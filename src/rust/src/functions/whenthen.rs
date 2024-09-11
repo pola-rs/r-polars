@@ -3,9 +3,9 @@ use polars::lazy::dsl;
 use savvy::{savvy, Result};
 
 #[savvy]
-pub fn when(condition: PlRExpr) -> Result<PlRWhen> {
+pub fn when(condition: &PlRExpr) -> Result<PlRWhen> {
     Ok(PlRWhen {
-        inner: dsl::when(condition.inner),
+        inner: dsl::when(condition.inner.clone()),
     })
 }
 
@@ -35,44 +35,44 @@ pub struct PlRChainedThen {
 
 #[savvy]
 impl PlRWhen {
-    fn then(&self, statement: PlRExpr) -> Result<PlRThen> {
+    fn then(&self, statement: &PlRExpr) -> Result<PlRThen> {
         Ok(PlRThen {
-            inner: self.inner.clone().then(statement.inner),
+            inner: self.inner.clone().then(statement.inner.clone()),
         })
     }
 }
 
 #[savvy]
 impl PlRThen {
-    fn when(&self, condition: PlRExpr) -> Result<PlRChainedWhen> {
+    fn when(&self, condition: &PlRExpr) -> Result<PlRChainedWhen> {
         Ok(PlRChainedWhen {
-            inner: self.inner.clone().when(condition.inner),
+            inner: self.inner.clone().when(condition.inner.clone()),
         })
     }
 
-    fn otherwise(&self, statement: PlRExpr) -> Result<PlRExpr> {
-        Ok(self.inner.clone().otherwise(statement.inner).into())
+    fn otherwise(&self, statement: &PlRExpr) -> Result<PlRExpr> {
+        Ok(self.inner.clone().otherwise(statement.inner.clone()).into())
     }
 }
 
 #[savvy]
 impl PlRChainedWhen {
-    fn then(&self, statement: PlRExpr) -> Result<PlRChainedThen> {
+    fn then(&self, statement: &PlRExpr) -> Result<PlRChainedThen> {
         Ok(PlRChainedThen {
-            inner: self.inner.clone().then(statement.inner),
+            inner: self.inner.clone().then(statement.inner.clone()),
         })
     }
 }
 
 #[savvy]
 impl PlRChainedThen {
-    fn when(&self, condition: PlRExpr) -> Result<PlRChainedWhen> {
+    fn when(&self, condition: &PlRExpr) -> Result<PlRChainedWhen> {
         Ok(PlRChainedWhen {
-            inner: self.inner.clone().when(condition.inner),
+            inner: self.inner.clone().when(condition.inner.clone()),
         })
     }
 
-    fn otherwise(&self, statement: PlRExpr) -> Result<PlRExpr> {
-        Ok(self.inner.clone().otherwise(statement.inner).into())
+    fn otherwise(&self, statement: &PlRExpr) -> Result<PlRExpr> {
+        Ok(self.inner.clone().otherwise(statement.inner.clone()).into())
     }
 }

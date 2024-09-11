@@ -3,21 +3,31 @@ use savvy::{savvy, Result};
 
 #[savvy]
 impl PlRExpr {
-    fn bin_contains(&self, literal: PlRExpr) -> Result<Self> {
+    fn bin_contains(&self, literal: &PlRExpr) -> Result<Self> {
         Ok(self
             .inner
             .clone()
             .binary()
-            .contains_literal(literal.inner)
+            .contains_literal(literal.inner.clone())
             .into())
     }
 
-    fn bin_ends_with(&self, suffix: PlRExpr) -> Result<Self> {
-        Ok(self.inner.clone().binary().ends_with(suffix.inner).into())
+    fn bin_ends_with(&self, suffix: &PlRExpr) -> Result<Self> {
+        Ok(self
+            .inner
+            .clone()
+            .binary()
+            .ends_with(suffix.inner.clone())
+            .into())
     }
 
-    fn bin_starts_with(&self, prefix: PlRExpr) -> Result<Self> {
-        Ok(self.inner.clone().binary().starts_with(prefix.inner).into())
+    fn bin_starts_with(&self, prefix: &PlRExpr) -> Result<Self> {
+        Ok(self
+            .inner
+            .clone()
+            .binary()
+            .starts_with(prefix.inner.clone())
+            .into())
     }
 
     fn bin_hex_decode(&self, strict: bool) -> Result<Self> {

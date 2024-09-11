@@ -178,12 +178,12 @@ impl PlRDataType {
         Ok(create_enum_data_type(categories).into())
     }
 
-    pub fn new_list(inner: PlRDataType) -> Result<Self> {
-        Ok(DataType::List(Box::new(inner.dt)).into())
+    pub fn new_list(inner: &PlRDataType) -> Result<Self> {
+        Ok(DataType::List(Box::new(inner.dt.clone())).into())
     }
 
-    pub fn new_array(inner: PlRDataType, shape: NumericSexp) -> Result<Self> {
-        let inner = inner.dt;
+    pub fn new_array(inner: &PlRDataType, shape: NumericSexp) -> Result<Self> {
+        let inner = inner.dt.clone();
         let mut shape = <Wrap<Vec<usize>>>::try_from(shape)?.0;
 
         fn new_array_impl(

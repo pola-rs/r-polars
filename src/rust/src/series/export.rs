@@ -52,7 +52,7 @@ impl PlRSeries {
         int64: &str,
         r#struct: &str,
         as_clock_class: bool,
-        ambiguous: PlRExpr,
+        ambiguous: &PlRExpr,
         non_existent: &str,
         local_time_zone: &str,
     ) -> savvy::Result<Sexp> {
@@ -69,7 +69,7 @@ impl PlRSeries {
                 "Argument `struct` must be one of ('dataframe', 'tibble')".to_string(),
             )
         })?;
-        let ambiguous = ambiguous.inner;
+        let ambiguous = ambiguous.inner.clone();
         let non_existent = <Wrap<NonExistent>>::try_from(non_existent)?.0;
 
         fn to_r_vector_recursive(

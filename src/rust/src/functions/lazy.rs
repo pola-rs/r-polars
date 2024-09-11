@@ -1,6 +1,6 @@
 use crate::{prelude::*, PlRExpr, PlRSeries};
 use polars::lazy::dsl;
-use savvy::{savvy, ListSexp, Result, StringSexp, RawSexp};
+use savvy::{savvy, ListSexp, RawSexp, Result, StringSexp};
 
 #[savvy]
 pub fn field(names: StringSexp) -> Result<PlRExpr> {
@@ -55,6 +55,6 @@ pub fn lit_null() -> Result<PlRExpr> {
 }
 
 #[savvy]
-pub fn lit_from_series(value: PlRSeries) -> Result<PlRExpr> {
-    Ok(dsl::lit(value.series).into())
+pub fn lit_from_series(value: &PlRSeries) -> Result<PlRExpr> {
+    Ok(dsl::lit(value.series.clone()).into())
 }

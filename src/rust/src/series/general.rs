@@ -90,8 +90,8 @@ impl PlRSeries {
         (self.series.len() as i32).try_into()
     }
 
-    fn cast(&self, dtype: PlRDataType, strict: bool) -> Result<Self> {
-        let dtype = dtype.dt;
+    fn cast(&self, dtype: &PlRDataType, strict: bool) -> Result<Self> {
+        let dtype = dtype.dt.clone();
         let out = if strict {
             self.series.strict_cast(&dtype)
         } else {

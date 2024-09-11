@@ -10,64 +10,64 @@ impl PlRExpr {
         Ok(())
     }
 
-    fn add(&self, rhs: PlRExpr) -> Result<Self> {
-        Ok(dsl::binary_expr(self.inner.clone(), Operator::Plus, rhs.inner).into())
+    fn add(&self, rhs: &PlRExpr) -> Result<Self> {
+        Ok(dsl::binary_expr(self.inner.clone(), Operator::Plus, rhs.inner.clone()).into())
     }
 
-    fn sub(&self, rhs: PlRExpr) -> Result<Self> {
-        Ok(dsl::binary_expr(self.inner.clone(), Operator::Minus, rhs.inner).into())
+    fn sub(&self, rhs: &PlRExpr) -> Result<Self> {
+        Ok(dsl::binary_expr(self.inner.clone(), Operator::Minus, rhs.inner.clone()).into())
     }
 
-    fn mul(&self, rhs: PlRExpr) -> Result<Self> {
-        Ok(dsl::binary_expr(self.inner.clone(), Operator::Multiply, rhs.inner).into())
+    fn mul(&self, rhs: &PlRExpr) -> Result<Self> {
+        Ok(dsl::binary_expr(self.inner.clone(), Operator::Multiply, rhs.inner.clone()).into())
     }
 
-    fn div(&self, rhs: PlRExpr) -> Result<Self> {
-        Ok(dsl::binary_expr(self.inner.clone(), Operator::TrueDivide, rhs.inner).into())
+    fn div(&self, rhs: &PlRExpr) -> Result<Self> {
+        Ok(dsl::binary_expr(self.inner.clone(), Operator::TrueDivide, rhs.inner.clone()).into())
     }
 
-    fn rem(&self, rhs: PlRExpr) -> Result<Self> {
-        Ok(dsl::binary_expr(self.inner.clone(), Operator::Modulus, rhs.inner).into())
+    fn rem(&self, rhs: &PlRExpr) -> Result<Self> {
+        Ok(dsl::binary_expr(self.inner.clone(), Operator::Modulus, rhs.inner.clone()).into())
     }
 
-    fn floor_div(&self, rhs: PlRExpr) -> Result<Self> {
-        Ok(dsl::binary_expr(self.inner.clone(), Operator::FloorDivide, rhs.inner).into())
+    fn floor_div(&self, rhs: &PlRExpr) -> Result<Self> {
+        Ok(dsl::binary_expr(self.inner.clone(), Operator::FloorDivide, rhs.inner.clone()).into())
     }
 
     fn neg(&self) -> Result<Self> {
         Ok(self.inner.clone().neg().into())
     }
 
-    fn eq(&self, other: PlRExpr) -> Result<Self> {
-        Ok(self.inner.clone().eq(other.inner).into())
+    fn eq(&self, other: &PlRExpr) -> Result<Self> {
+        Ok(self.inner.clone().eq(other.inner.clone()).into())
     }
 
-    fn eq_missing(&self, other: PlRExpr) -> Result<Self> {
-        Ok(self.inner.clone().eq_missing(other.inner).into())
+    fn eq_missing(&self, other: &PlRExpr) -> Result<Self> {
+        Ok(self.inner.clone().eq_missing(other.inner.clone()).into())
     }
 
-    fn neq(&self, other: PlRExpr) -> Result<Self> {
-        Ok(self.inner.clone().neq(other.inner).into())
+    fn neq(&self, other: &PlRExpr) -> Result<Self> {
+        Ok(self.inner.clone().neq(other.inner.clone()).into())
     }
 
-    fn neq_missing(&self, other: PlRExpr) -> Result<Self> {
-        Ok(self.inner.clone().neq_missing(other.inner).into())
+    fn neq_missing(&self, other: &PlRExpr) -> Result<Self> {
+        Ok(self.inner.clone().neq_missing(other.inner.clone()).into())
     }
 
-    fn gt(&self, other: PlRExpr) -> Result<Self> {
-        Ok(self.inner.clone().gt(other.inner).into())
+    fn gt(&self, other: &PlRExpr) -> Result<Self> {
+        Ok(self.inner.clone().gt(other.inner.clone()).into())
     }
 
-    fn gt_eq(&self, other: PlRExpr) -> Result<Self> {
-        Ok(self.inner.clone().gt_eq(other.inner).into())
+    fn gt_eq(&self, other: &PlRExpr) -> Result<Self> {
+        Ok(self.inner.clone().gt_eq(other.inner.clone()).into())
     }
 
-    fn lt_eq(&self, other: PlRExpr) -> Result<Self> {
-        Ok(self.inner.clone().lt_eq(other.inner).into())
+    fn lt_eq(&self, other: &PlRExpr) -> Result<Self> {
+        Ok(self.inner.clone().lt_eq(other.inner.clone()).into())
     }
 
-    fn lt(&self, other: PlRExpr) -> Result<Self> {
-        Ok(self.inner.clone().lt(other.inner).into())
+    fn lt(&self, other: &PlRExpr) -> Result<Self> {
+        Ok(self.inner.clone().lt(other.inner.clone()).into())
     }
 
     fn alias(&self, name: &str) -> Result<Self> {
@@ -130,8 +130,8 @@ impl PlRExpr {
         Ok(self.inner.clone().sum().into())
     }
 
-    fn cast(&self, data_type: PlRDataType, strict: bool) -> Result<Self> {
-        let dt = data_type.dt;
+    fn cast(&self, data_type: &PlRDataType, strict: bool) -> Result<Self> {
+        let dt = data_type.dt.clone();
 
         let expr = if strict {
             self.inner.clone().strict_cast(dt)
@@ -174,8 +174,8 @@ impl PlRExpr {
         Ok(self.inner.clone().last().into())
     }
 
-    fn filter(&self, predicate: PlRExpr) -> Result<Self> {
-        Ok(self.inner.clone().filter(predicate.inner).into())
+    fn filter(&self, predicate: &PlRExpr) -> Result<Self> {
+        Ok(self.inner.clone().filter(predicate.inner.clone()).into())
     }
 
     fn reverse(&self) -> Result<Self> {
@@ -211,16 +211,16 @@ impl PlRExpr {
             .into())
     }
 
-    fn and(&self, other: PlRExpr) -> Result<Self> {
-        Ok(self.inner.clone().and(other.inner).into())
+    fn and(&self, other: &PlRExpr) -> Result<Self> {
+        Ok(self.inner.clone().and(other.inner.clone()).into())
     }
 
-    fn or(&self, other: PlRExpr) -> Result<Self> {
-        Ok(self.inner.clone().or(other.inner).into())
+    fn or(&self, other: &PlRExpr) -> Result<Self> {
+        Ok(self.inner.clone().or(other.inner.clone()).into())
     }
 
-    fn xor(&self, other: PlRExpr) -> Result<Self> {
-        Ok(self.inner.clone().xor(other.inner).into())
+    fn xor(&self, other: &PlRExpr) -> Result<Self> {
+        Ok(self.inner.clone().xor(other.inner.clone()).into())
     }
 
     fn reshape(&self, dimensions: NumericSexp) -> Result<Self> {
