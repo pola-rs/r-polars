@@ -1,10 +1,56 @@
-test_that("as_polars_expr for character", {
-  expect_equal(
-    as_polars_expr(c("foo", "bar")),
-    pl$col("foo", "bar")
-  )
-  expect_equal(
-    as_polars_expr(c("foo", "bar"), str_as_lit = TRUE),
-    pl$lit(c("foo", "bar"))
-  )
+test_that("as_polars_expr for character `str_as_lit=FALSE`", {
+  expect_equal(as_polars_expr(character()), pl$col(character()))
+  expect_equal(as_polars_expr(c("foo")), pl$col("foo"))
+  expect_equal(as_polars_expr(c("foo", "bar")), pl$col("foo", "bar"))
+  expect_error(as_polars_expr(NA_character_), "`NA` is not a valid column name")
+  expect_error(as_polars_expr(c("foo", NA_character_)), "`NA` is not a valid column name")
 })
+
+patrick::with_parameters_test_that(
+  "as_polars_expr works for classes",
+  .cases = {
+    tibble::tribble(
+      ~.test_name, ~x, ~expected_expr, ~expected_length,
+      "chr (0)", character(), as_polars_expr(as_polars_series(character(), "literal")), 0,
+      "chr (1)", "foo", wrap(lit_from_str("foo")), 1,
+      "chr (2)", c("foo", "bar"), as_polars_expr(as_polars_series(c("foo", "bar"), "literal")), 2,
+      "chr NA", NA_character_, as_polars_expr(NULL)$cast(pl$String), 1,
+      "lgl (0)", logical(), as_polars_expr(as_polars_series(logical(), "literal")), 0,
+      "lgl (1)", TRUE, wrap(lit_from_bool(TRUE)), 1,
+      "lgl (2)", c(TRUE, FALSE), as_polars_expr(as_polars_series(c(TRUE, FALSE), "literal")), 2,
+      "lgl NA", NA, as_polars_expr(NULL)$cast(pl$Boolean), 1,
+      "int (0)", integer(), as_polars_expr(as_polars_series(integer(), "literal")), 0,
+      "int (1)", 1L, wrap(lit_from_i32(1L)), 1,
+      "int (2)", 1:2, as_polars_expr(as_polars_series(1:2, "literal")), 2,
+      "int NA", NA_integer_, as_polars_expr(NULL)$cast(pl$Int32), 1,
+      "dbl (0)", numeric(), as_polars_expr(as_polars_series(numeric(), "literal")), 0,
+      "dbl (1)", 1, wrap(lit_from_f64(1)), 1,
+      "dbl (2)", c(1, 2), as_polars_expr(as_polars_series(c(1, 2), "literal")), 2,
+      "dbl NA", NA_real_, as_polars_expr(NULL)$cast(pl$Float64), 1,
+      "raw (0)", raw(), as_polars_expr(charToRaw("")), 1,
+      "raw (1)", charToRaw("a"), wrap(lit_from_raw(charToRaw("a"))), 1,
+      "raw (2)", charToRaw("ab"), wrap(lit_from_raw(charToRaw("ab"))), 1,
+      "NULL", NULL, wrap(lit_null()), 1,
+      "list (0)", list(), as_polars_expr(as_polars_series(list(), "literal")), 0,
+      "list (1)", list(TRUE), as_polars_expr(as_polars_series(list(TRUE), "literal"))$first(), 1,
+      "list (2)", list(TRUE, FALSE), as_polars_expr(as_polars_series(list(TRUE, FALSE), "literal")), 2,
+      "series (0)", as_polars_series(logical()), as_polars_expr(as_polars_series(logical())), 0,
+      "series (1)", as_polars_series(TRUE), as_polars_expr(as_polars_series(TRUE)), 1,
+      "series (2)", as_polars_series(c(TRUE, FALSE)), as_polars_expr(as_polars_series(c(TRUE, FALSE))), 2
+    )
+  },
+  code = {
+    out <- as_polars_expr(x, str_as_lit = TRUE)
+    selected_out <- pl$select(out)
+
+    expect_equal(out, expected_expr)
+    expect_snapshot(out)
+
+    expect_equal(selected_out$height, expected_length)
+    if (!is_polars_series(x)) {
+      # For Series, the column name is came from the Series' name
+      expect_equal(selected_out$columns[1], "literal")
+    }
+    expect_snapshot(selected_out)
+  }
+)
