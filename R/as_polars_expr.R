@@ -12,6 +12,8 @@
 #' Because R objects are typically mapped to [Series], this function often calls [as_polars_series()] internally.
 #' However, unlike R, Polars has scalars of length 1, so if an R object is converted to a [Series] of length 1,
 #' this function will use `<Expr>$first()` at the end to convert it to a scalar value.
+#' If you want to implement your own conversion from an R class to a Polars object,
+#' define an S3 method for [as_polars_series()] instead of this function.
 #'
 #' ## Default S3 method
 #'
@@ -64,6 +66,7 @@ as_polars_expr <- function(x, ...) {
   UseMethod("as_polars_expr")
 }
 
+#' @rdname as_polars_expr
 #' @export
 as_polars_expr.default <- function(x, ...) {
   wrap({
@@ -78,26 +81,27 @@ as_polars_expr.default <- function(x, ...) {
   })
 }
 
+#' @rdname as_polars_expr
 #' @export
 as_polars_expr.polars_expr <- function(x, ...) {
   x
 }
 
+#' @rdname as_polars_expr
 #' @export
 as_polars_expr.polars_series <- function(x, ...) {
   lit_from_series(x$`_s`) |>
     wrap()
 }
 
+#' @rdname as_polars_expr
 #' @export
 as_polars_expr.character <- function(x, ..., str_as_lit = FALSE) {
   wrap({
     if (isFALSE(str_as_lit)) {
       pl$col(x)
     } else {
-      len <- length(x)
-
-      if (len == 1L) {
+      if (length(x) == 1L) {
         if (is.na(x)) {
           lit_null()$cast(pl$String$`_dt`, strict = TRUE)
         } else {
@@ -110,12 +114,11 @@ as_polars_expr.character <- function(x, ..., str_as_lit = FALSE) {
   })
 }
 
+#' @rdname as_polars_expr
 #' @export
 as_polars_expr.logical <- function(x, ...) {
   wrap({
-    len <- length(x)
-
-    if (len == 1L) {
+    if (length(x) == 1L) {
       if (is.na(x)) {
         lit_null()$cast(pl$Boolean$`_dt`, strict = TRUE)
       } else {
@@ -127,12 +130,11 @@ as_polars_expr.logical <- function(x, ...) {
   })
 }
 
+#' @rdname as_polars_expr
 #' @export
 as_polars_expr.integer <- function(x, ...) {
   wrap({
-    len <- length(x)
-
-    if (len == 1L) {
+    if (length(x) == 1L) {
       if (is.na(x)) {
         lit_null()$cast(pl$Int32$`_dt`, strict = TRUE)
       } else {
@@ -144,12 +146,11 @@ as_polars_expr.integer <- function(x, ...) {
   })
 }
 
+#' @rdname as_polars_expr
 #' @export
 as_polars_expr.double <- function(x, ...) {
   wrap({
-    len <- length(x)
-
-    if (len == 1L) {
+    if (length(x) == 1L) {
       if (is.na(x)) {
         lit_null()$cast(pl$Float64$`_dt`, strict = TRUE)
       } else {
@@ -161,12 +162,14 @@ as_polars_expr.double <- function(x, ...) {
   })
 }
 
+#' @rdname as_polars_expr
 #' @export
 as_polars_expr.raw <- function(x, ...) {
   lit_from_raw(x) |>
     wrap()
 }
 
+#' @rdname as_polars_expr
 #' @export
 as_polars_expr.NULL <- function(x, ...) {
   lit_null() |>

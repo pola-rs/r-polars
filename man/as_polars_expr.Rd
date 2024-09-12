@@ -2,9 +2,36 @@
 % Please edit documentation in R/as_polars_expr.R
 \name{as_polars_expr}
 \alias{as_polars_expr}
+\alias{as_polars_expr.default}
+\alias{as_polars_expr.polars_expr}
+\alias{as_polars_expr.polars_series}
+\alias{as_polars_expr.character}
+\alias{as_polars_expr.logical}
+\alias{as_polars_expr.integer}
+\alias{as_polars_expr.double}
+\alias{as_polars_expr.raw}
+\alias{as_polars_expr.NULL}
 \title{Create a Polars Expression from an R object}
 \usage{
 as_polars_expr(x, ...)
+
+\method{as_polars_expr}{default}(x, ...)
+
+\method{as_polars_expr}{polars_expr}(x, ...)
+
+\method{as_polars_expr}{polars_series}(x, ...)
+
+\method{as_polars_expr}{character}(x, ..., str_as_lit = FALSE)
+
+\method{as_polars_expr}{logical}(x, ...)
+
+\method{as_polars_expr}{integer}(x, ...)
+
+\method{as_polars_expr}{double}(x, ...)
+
+\method{as_polars_expr}{raw}(x, ...)
+
+\method{as_polars_expr}{`NULL`}(x, ...)
 }
 \arguments{
 \item{x}{An R object.}
@@ -25,6 +52,8 @@ This function is used internally by various polars functions that accept Express
 Because R objects are typically mapped to \link{Series}, this function often calls \code{\link[=as_polars_series]{as_polars_series()}} internally.
 However, unlike R, Polars has scalars of length 1, so if an R object is converted to a \link{Series} of length 1,
 this function will use \verb{<Expr>$first()} at the end to convert it to a scalar value.
+If you want to implement your own conversion from an R class to a Polars object,
+define an S3 method for \code{\link[=as_polars_series]{as_polars_series()}} instead of this function.
 \subsection{Default S3 method}{
 
 Create a \link{Series} by calling \code{\link[=as_polars_series]{as_polars_series()}} and then convert that \link{Series} to an Expression.
