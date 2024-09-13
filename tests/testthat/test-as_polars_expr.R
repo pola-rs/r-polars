@@ -47,10 +47,28 @@ patrick::with_parameters_test_that(
     expect_snapshot(out)
 
     expect_equal(selected_out$height, expected_length)
-    if (!is_polars_series(x)) {
+    if (is_polars_series(x)) {
       # For Series, the column name is came from the Series' name
+      expect_equal(selected_out$columns[1], x$name)
+    } else {
       expect_equal(selected_out$columns[1], "literal")
     }
     expect_snapshot(selected_out)
+
+    # Ensure broadcasting works if the length is 1 (except for Series)
+    if (expected_length == 1 && !is_polars_series(x)) {
+      expect_no_error(pl$DataFrame(a = 1:10)$with_columns(b = out))
+    } else if (expected_length == 1) {
+      # For Series with length 1, a special error message is thrown
+      expect_error(
+        pl$DataFrame(a = 1:10)$with_columns(b = out),
+        r"(length 1 doesn't match the DataFrame height of 10.*for instance by adding '\.first\(\)')"
+      )
+    } else {
+      expect_error(
+        pl$DataFrame(a = 1:10)$with_columns(b = out),
+        r"(unable to add a column of length \d+ to a DataFrame of height 10)"
+      )
+    }
   }
 )
