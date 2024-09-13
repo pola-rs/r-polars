@@ -226,7 +226,7 @@ pub fn pl_series_to_list(
                         pl::DataFrame::new(vec![s.clone()])?
                             .lazy()
                             .select([col(s_name).dt().replace_time_zone(
-                                Some(sys_tz),
+                                Some(sys_tz.into()),
                                 pl::lit("raise"),
                                 pl::NonExistent::Raise,
                             )])
