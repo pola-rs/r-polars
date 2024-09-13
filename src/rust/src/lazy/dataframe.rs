@@ -721,7 +721,7 @@ impl RPolarsLazyFrame {
 #[derive(Clone)]
 pub struct RPolarsLazyGroupBy {
     pub lgb: pl::LazyGroupBy,
-    opt_state: pl::OptState,
+    opt_state: pl::OptFlags,
 }
 
 #[extendr]

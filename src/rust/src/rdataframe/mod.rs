@@ -164,7 +164,7 @@ impl RPolarsDataFrame {
             .0
             .clone()
             .with_row_index(
-                robj_to!(String, name)?.as_str(),
+                robj_to!(String, name)?.into(),
                 robj_to!(Option, u32, offset)?,
             )
             .map_err(polars_to_rpolars_err)?
@@ -327,7 +327,7 @@ impl RPolarsDataFrame {
 
     pub fn to_struct(&self, name: Robj) -> RResult<RPolarsSeries> {
         use pl::IntoSeries;
-        let name = robj_to!(Option, str, name)?.unwrap_or("");
+        let name = robj_to!(str, name)?.into();
         let s = self.0.clone().into_struct(name);
         Ok(s.into_series().into())
     }
