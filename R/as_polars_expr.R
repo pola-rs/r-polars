@@ -22,12 +22,13 @@
 #'
 #' ## S3 method for [character]
 #'
-#' If the `str_as_lit` argument is `FALSE`, this function will call `pl$col()` and
+#' If the `as_lit` argument is `FALSE` (default), this function will call `pl$col()` and
 #' the character vector is treated as column names.
 #'
 #' @inheritParams as_polars_series
-#' @param str_as_lit A logical value indicating whether to treat the character vector as literal values
-#' or column names (default).
+#' @param as_lit A logical value indicating whether to treat vector as literal values or not.
+#' This argument is always set to `TRUE` when calling this function from `pl$lit()`,
+#' and expects to return literal values. See examples for details.
 #' @return A polars Expression
 #' @seealso
 #' - [as_polars_series()]: R -> Polars type mapping is defined by this function.
@@ -35,8 +36,8 @@
 #' # character
 #' as_polars_expr("a")
 #' as_polars_expr(c("a", "b"))
-#' as_polars_expr("a", str_as_lit = TRUE)
-#' as_polars_expr(c("a", "b"), str_as_lit = TRUE)
+#' as_polars_expr("a", as_lit = TRUE)
+#' as_polars_expr(c("a", "b"), as_lit = TRUE)
 #'
 #' # logical
 #' as_polars_expr(TRUE)
@@ -96,9 +97,9 @@ as_polars_expr.polars_series <- function(x, ...) {
 
 #' @rdname as_polars_expr
 #' @export
-as_polars_expr.character <- function(x, ..., str_as_lit = FALSE) {
+as_polars_expr.character <- function(x, ..., as_lit = FALSE) {
   wrap({
-    if (isFALSE(str_as_lit)) {
+    if (isFALSE(as_lit)) {
       pl$col(x)
     } else {
       if (length(x) == 1L) {

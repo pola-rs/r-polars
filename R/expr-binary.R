@@ -16,19 +16,19 @@ namespace_expr_bin <- function(x) {
 }
 
 expr_bin_contains <- function(literal) {
-  as_polars_expr(literal, str_as_lit = TRUE)$`_rexpr` |>
+  as_polars_expr(literal, as_lit = TRUE)$`_rexpr` |>
     self$`_rexpr`$bin_contains() |>
     wrap()
 }
 
 expr_bin_ends_with <- function(suffix) {
-  as_polars_expr(suffix, str_as_lit = TRUE)$`_rexpr` |>
+  as_polars_expr(suffix, as_lit = TRUE)$`_rexpr` |>
     self$`_rexpr`$bin_ends_with() |>
     wrap()
 }
 
 expr_bin_starts_with <- function(prefix) {
-  as_polars_expr(prefix, str_as_lit = TRUE)$`_rexpr` |>
+  as_polars_expr(prefix, as_lit = TRUE)$`_rexpr` |>
     self$`_rexpr`$bin_starts_with() |>
     wrap()
 }

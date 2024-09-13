@@ -180,7 +180,7 @@ series__to_r_vector <- function(
       }
     }
 
-    ambiguous <- as_polars_expr(ambiguous, str_as_lit = TRUE)$`_rexpr`
+    ambiguous <- as_polars_expr(ambiguous, as_lit = TRUE)$`_rexpr`
     self$`_s`$to_r_vector(
       ensure_vector = ensure_vector,
       int64 = int64,

@@ -44,7 +44,7 @@ expr_dt_replace_time_zone <- function(time_zone, ..., ambiguous = "raise", non_e
   wrap({
     check_dots_empty0(...)
 
-    ambiguous <- as_polars_expr(ambiguous, str_as_lit = TRUE)$`_rexpr`
+    ambiguous <- as_polars_expr(ambiguous, as_lit = TRUE)$`_rexpr`
     self$`_rexpr`$dt_replace_time_zone(
       time_zone,
       ambiguous = ambiguous,

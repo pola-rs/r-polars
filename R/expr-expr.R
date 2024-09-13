@@ -87,49 +87,49 @@ expr__neg <- function() {
 }
 
 expr__eq <- function(other) {
-  other <- as_polars_expr(other, str_as_lit = TRUE)
+  other <- as_polars_expr(other, as_lit = TRUE)
   self$`_rexpr`$eq(other$`_rexpr`) |>
     wrap()
 }
 
 expr__eq_missing <- function(other) {
-  other <- as_polars_expr(other, str_as_lit = TRUE)
+  other <- as_polars_expr(other, as_lit = TRUE)
   self$`_rexpr`$eq_missing(other$`_rexpr`) |>
     wrap()
 }
 
 expr__neq <- function(other) {
-  other <- as_polars_expr(other, str_as_lit = TRUE)
+  other <- as_polars_expr(other, as_lit = TRUE)
   self$`_rexpr`$neq(other$`_rexpr`) |>
     wrap()
 }
 
 expr__neq_missing <- function(other) {
-  other <- as_polars_expr(other, str_as_lit = TRUE)
+  other <- as_polars_expr(other, as_lit = TRUE)
   self$`_rexpr`$neq_missing(other$`_rexpr`) |>
     wrap()
 }
 
 expr__gt <- function(other) {
-  other <- as_polars_expr(other, str_as_lit = TRUE)
+  other <- as_polars_expr(other, as_lit = TRUE)
   self$`_rexpr`$gt(other$`_rexpr`) |>
     wrap()
 }
 
 expr__gt_eq <- function(other) {
-  other <- as_polars_expr(other, str_as_lit = TRUE)
+  other <- as_polars_expr(other, as_lit = TRUE)
   self$`_rexpr`$gt_eq(other$`_rexpr`) |>
     wrap()
 }
 
 expr__lt_eq <- function(other) {
-  other <- as_polars_expr(other, str_as_lit = TRUE)
+  other <- as_polars_expr(other, as_lit = TRUE)
   self$`_rexpr`$lt_eq(other$`_rexpr`) |>
     wrap()
 }
 
 expr__lt <- function(other) {
-  other <- as_polars_expr(other, str_as_lit = TRUE)
+  other <- as_polars_expr(other, as_lit = TRUE)
   self$`_rexpr`$lt(other$`_rexpr`) |>
     wrap()
 }

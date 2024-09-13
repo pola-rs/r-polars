@@ -1,4 +1,4 @@
-test_that("as_polars_expr for character `str_as_lit=FALSE`", {
+test_that("as_polars_expr for character `as_lit=FALSE`", {
   expect_equal(as_polars_expr(character()), pl$col(character()))
   expect_equal(as_polars_expr(c("foo")), pl$col("foo"))
   expect_equal(as_polars_expr(c("foo", "bar")), pl$col("foo", "bar"))
@@ -40,7 +40,7 @@ patrick::with_parameters_test_that(
     )
   },
   code = {
-    out <- as_polars_expr(x, str_as_lit = TRUE)
+    out <- as_polars_expr(x, as_lit = TRUE)
     selected_out <- pl$select(out)
 
     expect_equal(out, expected_expr)

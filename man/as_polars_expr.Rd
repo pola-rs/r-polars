@@ -21,7 +21,7 @@ as_polars_expr(x, ...)
 
 \method{as_polars_expr}{polars_series}(x, ...)
 
-\method{as_polars_expr}{character}(x, ..., str_as_lit = FALSE)
+\method{as_polars_expr}{character}(x, ..., as_lit = FALSE)
 
 \method{as_polars_expr}{logical}(x, ...)
 
@@ -38,8 +38,9 @@ as_polars_expr(x, ...)
 
 \item{...}{Additional arguments passed to the methods.}
 
-\item{str_as_lit}{A logical value indicating whether to treat the character vector as literal values
-or column names (default).}
+\item{as_lit}{A logical value indicating whether to treat vector as literal values or not.
+This argument is always set to \code{TRUE} when calling this function from \code{pl$lit()},
+and expects to return literal values. See examples for details.}
 }
 \value{
 A polars Expression
@@ -62,7 +63,7 @@ If the length of the \link{Series} is \code{1}, it will be converted to a scalar
 
 \subsection{S3 method for \link{character}}{
 
-If the \code{str_as_lit} argument is \code{FALSE}, this function will call \code{pl$col()} and
+If the \code{as_lit} argument is \code{FALSE} (default), this function will call \code{pl$col()} and
 the character vector is treated as column names.
 }
 }
@@ -70,8 +71,8 @@ the character vector is treated as column names.
 # character
 as_polars_expr("a")
 as_polars_expr(c("a", "b"))
-as_polars_expr("a", str_as_lit = TRUE)
-as_polars_expr(c("a", "b"), str_as_lit = TRUE)
+as_polars_expr("a", as_lit = TRUE)
+as_polars_expr(c("a", "b"), as_lit = TRUE)
 
 # logical
 as_polars_expr(TRUE)
