@@ -185,14 +185,21 @@
     Code
       print(object)
     Output
-      Struct(a=Int32, b=String)
+      Struct(`a`=Int32, `b`=String)
 
 # data types print Struct(a = Struct(b = Int32), c = String)
 
     Code
       print(object)
     Output
-      Struct(a=Struct(b=Int32), c=String)
+      Struct(`a`=Struct(`b`=Int32), `c`=String)
+
+# data types print Struct(Int8, ` ` = String)
+
+    Code
+      print(object)
+    Output
+      Struct(Int8, ` `=String)
 
 # data types print Categorical()
 
