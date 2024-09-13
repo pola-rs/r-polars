@@ -59,6 +59,8 @@ define an S3 method for \code{\link[=as_polars_series]{as_polars_series()}} inst
 
 Create a \link{Series} by calling \code{\link[=as_polars_series]{as_polars_series()}} and then convert that \link{Series} to an Expression.
 If the length of the \link{Series} is \code{1}, it will be converted to a scalar value using \verb{<Expr>$first()} at the end.
+
+Additional arguments \code{...} are passed to \code{\link[=as_polars_series]{as_polars_series()}}.
 }
 
 \subsection{S3 method for \link{character}}{

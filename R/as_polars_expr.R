@@ -20,6 +20,8 @@
 #' Create a [Series] by calling [as_polars_series()] and then convert that [Series] to an Expression.
 #' If the length of the [Series] is `1`, it will be converted to a scalar value using `<Expr>$first()` at the end.
 #'
+#' Additional arguments `...` are passed to [as_polars_series()].
+#'
 #' ## S3 method for [character]
 #'
 #' If the `as_lit` argument is `FALSE` (default), this function will call `pl$col()` and
@@ -71,7 +73,7 @@ as_polars_expr <- function(x, ...) {
 #' @export
 as_polars_expr.default <- function(x, ...) {
   wrap({
-    series <- as_polars_series(x, name = "literal")
+    series <- as_polars_series(x, name = "literal", ...)
 
     if (series$len() == 1L) {
       # Treat as scalar
