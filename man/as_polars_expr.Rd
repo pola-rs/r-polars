@@ -39,7 +39,7 @@ as_polars_expr(x, ...)
 \item{...}{Additional arguments passed to the methods.}
 
 \item{as_lit}{A logical value indicating whether to treat vector as literal values or not.
-This argument is always set to \code{TRUE} when calling this function from \code{pl$lit()},
+This argument is always set to \code{TRUE} when calling this function from \code{\link[=pl__lit]{pl$lit()}},
 and expects to return literal values. See examples for details.}
 }
 \value{
@@ -48,6 +48,10 @@ A polars Expression
 \description{
 The \code{\link[=as_polars_expr]{as_polars_expr()}} function creates a polars Expression from various R objects.
 This function is used internally by various polars functions that accept Expressions.
+In most cases, users should use \code{\link[=pl__lit]{pl$lit()}} instead of this function, which is
+a shorthand for \code{as_polars_expr(x, as_lit = TRUE)}.
+(In other words, this function can be considered as an internal implementation to realize
+the \code{lit} function of the Polars API in other languages.)
 }
 \details{
 Because R objects are typically mapped to \link{Series}, this function often calls \code{\link[=as_polars_series]{as_polars_series()}} internally.
@@ -69,10 +73,36 @@ If the \code{as_lit} argument is \code{FALSE} (default), this function will call
 the character vector is treated as column names.
 }
 }
+\section{Literal scalar mapping}{
+Since R has no scalar class, each of the following types of length 1 cases is specially
+converted to a scalar literal.
+\itemize{
+\item character: String
+\item logical: Boolean
+\item integer: Int32
+\item double: Float64
+}
+
+and, the \link{raw} type vector is converted to a Binary scalar.
+\itemize{
+\item raw: Binary
+}
+
+\code{NULL} is converted to a \code{null} literal.
+\itemize{
+\item \code{NULL}: Null
+}
+
+Other scalar values cannot be created directly, so we need to \verb{$cast()} from other scalar values
+or extract them with the \verb{$first()} method from a \link{Series}.
+(\code{\link[=as_polars_expr]{as_polars_expr()}} and \code{\link[=pl__lit]{pl$lit()}} automatically apply the \verb{$first()} method to extract scalar values
+inside the default S3 method of \code{\link[=as_polars_expr]{as_polars_expr()}}.)
+}
+
 \examples{
 # character
-as_polars_expr("a")
-as_polars_expr(c("a", "b"))
+as_polars_expr("a") # Same as `pl$col("a")`
+as_polars_expr(c("a", "b")) # Same as `pl$col("a", "b")`
 as_polars_expr("a", as_lit = TRUE)
 as_polars_expr(c("a", "b"), as_lit = TRUE)
 
@@ -102,6 +132,6 @@ as_polars_series(1) |>
 }
 \seealso{
 \itemize{
-\item \code{\link[=as_polars_series]{as_polars_series()}}: R -> Polars type mapping is defined by this function.
+\item \code{\link[=as_polars_series]{as_polars_series()}}: R -> Polars type mapping is mostly defined by this function.
 }
 }
