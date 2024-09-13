@@ -554,8 +554,8 @@ SEXP savvy_PlRExpr_sum__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_cast__impl(SEXP self__, SEXP c_arg__data_type, SEXP c_arg__strict) {
-    SEXP res = savvy_PlRExpr_cast__ffi(self__, c_arg__data_type, c_arg__strict);
+SEXP savvy_PlRExpr_cast__impl(SEXP self__, SEXP c_arg__dtype, SEXP c_arg__strict) {
+    SEXP res = savvy_PlRExpr_cast__ffi(self__, c_arg__dtype, c_arg__strict);
     return handle_result(res);
 }
 

@@ -131,8 +131,8 @@ impl TryFrom<ListSexp> for Wrap<Vec<Field>> {
             .iter()
             .map(|(name, value)| match value.into_typed() {
                 TypedSexp::Environment(e) => {
-                    let data_type = <&PlRDataType>::try_from(e)?.dt.clone();
-                    Ok(Field::new(name, data_type))
+                    let dtype = <&PlRDataType>::try_from(e)?.dt.clone();
+                    Ok(Field::new(name.into(), dtype))
                 }
                 _ => Err("Only accept a list of polars data types".to_string()),
             })

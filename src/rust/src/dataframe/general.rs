@@ -16,7 +16,7 @@ impl PlRDataFrame {
                     if name.is_empty() {
                         series.clone()
                     } else {
-                        series.clone().rename(name).clone()
+                        series.clone().rename(name.into()).clone()
                     }
                 }
                 _ => unreachable!("Only accept a list of Series"),
@@ -46,12 +46,12 @@ impl PlRDataFrame {
     }
 
     pub fn columns(&self) -> Result<Sexp> {
-        self.df.get_column_names().try_into()
+        self.df.get_column_names_str().try_into()
     }
 
     pub fn set_column_names(&mut self, names: StringSexp) -> Result<()> {
         self.df
-            .set_column_names(&names.to_vec())
+            .set_column_names(names.iter().map(|s| s))
             .map_err(RPolarsErr::from)?;
         Ok(())
     }
@@ -118,7 +118,7 @@ impl PlRDataFrame {
     }
 
     pub fn to_struct(&self, name: &str) -> Result<PlRSeries> {
-        let s = self.df.clone().into_struct(name);
+        let s = self.df.clone().into_struct(name.into());
         Ok(s.into_series().into())
     }
 }

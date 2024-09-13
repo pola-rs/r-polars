@@ -12,8 +12,8 @@ panic = "unwind"
 
 [dependencies]
 ciborium = "0.2"
-polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "7686025ac7738607f2d4f6887e9a1313b7c8b1e2", default-features = false }
-polars-error = { git = "https://github.com/pola-rs/polars.git", rev = "7686025ac7738607f2d4f6887e9a1313b7c8b1e2", default-features = false }
+polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "54218e7e35e3defd4b0801e820c56eea6b91e525", default-features = false }
+polars-error = { git = "https://github.com/pola-rs/polars.git", rev = "54218e7e35e3defd4b0801e820c56eea6b91e525", default-features = false }
 savvy = "0.6.7"
 serde_json = "1"
 strum = "0.26"
@@ -22,7 +22,7 @@ thiserror = "1"
 
 [dependencies.polars]
 git = "https://github.com/pola-rs/polars.git"
-rev = "7686025ac7738607f2d4f6887e9a1313b7c8b1e2"
+rev = "54218e7e35e3defd4b0801e820c56eea6b91e525"
 features = [
     "binary_encoding",
     "cse",

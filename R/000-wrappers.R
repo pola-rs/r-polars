@@ -855,9 +855,9 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
 }
 
 `PlRExpr_cast` <- function(self) {
-  function(`data_type`, `strict`) {
-    `data_type` <- .savvy_extract_ptr(`data_type`, "PlRDataType")
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_cast__impl, `self`, `data_type`, `strict`))
+  function(`dtype`, `strict`) {
+    `dtype` <- .savvy_extract_ptr(`dtype`, "PlRDataType")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_cast__impl, `self`, `dtype`, `strict`))
   }
 }
 

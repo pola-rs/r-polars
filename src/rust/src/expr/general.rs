@@ -130,8 +130,8 @@ impl PlRExpr {
         Ok(self.inner.clone().sum().into())
     }
 
-    fn cast(&self, data_type: &PlRDataType, strict: bool) -> Result<Self> {
-        let dt = data_type.dt.clone();
+    fn cast(&self, dtype: &PlRDataType, strict: bool) -> Result<Self> {
+        let dt = dtype.dt.clone();
 
         let expr = if strict {
             self.inner.clone().strict_cast(dt)

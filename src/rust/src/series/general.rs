@@ -57,7 +57,7 @@ impl PlRSeries {
     }
 
     fn rename(&mut self, name: &str) -> Result<()> {
-        self.series.rename(name);
+        self.series.rename(name.into());
         Ok(())
     }
 

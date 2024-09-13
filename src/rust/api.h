@@ -112,7 +112,7 @@ SEXP savvy_PlRExpr_nan_min__ffi(SEXP self__);
 SEXP savvy_PlRExpr_mean__ffi(SEXP self__);
 SEXP savvy_PlRExpr_median__ffi(SEXP self__);
 SEXP savvy_PlRExpr_sum__ffi(SEXP self__);
-SEXP savvy_PlRExpr_cast__ffi(SEXP self__, SEXP c_arg__data_type, SEXP c_arg__strict);
+SEXP savvy_PlRExpr_cast__ffi(SEXP self__, SEXP c_arg__dtype, SEXP c_arg__strict);
 SEXP savvy_PlRExpr_sort_by__ffi(SEXP self__, SEXP c_arg__by, SEXP c_arg__descending, SEXP c_arg__nulls_last, SEXP c_arg__multithreaded, SEXP c_arg__maintain_order);
 SEXP savvy_PlRExpr_first__ffi(SEXP self__);
 SEXP savvy_PlRExpr_last__ffi(SEXP self__);

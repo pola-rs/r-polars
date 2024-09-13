@@ -8,7 +8,7 @@ use savvy::{
 #[savvy]
 impl PlRSeries {
     fn new_null(name: &str, length: i32) -> Result<Self> {
-        Ok(Series::new_null(name, length as usize).into())
+        Ok(Series::new_null(name.into(), length as usize).into())
     }
 
     fn new_f64(name: &str, values: RealSexp) -> Result<Self> {
@@ -16,7 +16,7 @@ impl PlRSeries {
             .iter()
             .map(|value| if value.is_na() { None } else { Some(*value) })
             .collect_trusted();
-        Ok(ca.with_name(name).into_series().into())
+        Ok(ca.with_name(name.into()).into_series().into())
     }
 
     fn new_i32(name: &str, values: IntegerSexp) -> Result<Self> {
@@ -24,7 +24,7 @@ impl PlRSeries {
             .iter()
             .map(|value| if value.is_na() { None } else { Some(*value) })
             .collect_trusted();
-        Ok(ca.with_name(name).into_series().into())
+        Ok(ca.with_name(name.into()).into_series().into())
     }
 
     // From bit64::integer64
@@ -40,7 +40,7 @@ impl PlRSeries {
                 }
             })
             .collect_trusted();
-        Ok(ca.with_name(name).into_series().into())
+        Ok(ca.with_name(name.into()).into_series().into())
     }
 
     fn new_bool(name: &str, values: LogicalSexp) -> Result<Self> {
@@ -55,7 +55,7 @@ impl PlRSeries {
                 }
             })
             .collect_trusted();
-        Ok(ca.with_name(name).into_series().into())
+        Ok(ca.with_name(name.into()).into_series().into())
     }
 
     fn new_str(name: &str, values: StringSexp) -> Result<Self> {
@@ -63,16 +63,16 @@ impl PlRSeries {
             .iter()
             .map(|value| if value.is_na() { None } else { Some(value) })
             .collect();
-        Ok(ca.with_name(name).into_series().into())
+        Ok(ca.with_name(name.into()).into_series().into())
     }
 
     fn new_single_binary(name: &str, values: RawSexp) -> Result<Self> {
-        let ca = BinaryChunked::from_slice(name, &[values.as_slice()]);
+        let ca = BinaryChunked::from_slice(name.into(), &[values.as_slice()]);
         Ok(ca.into_series().into())
     }
 
     fn new_binary(name: &str, values: ListSexp) -> Result<Self> {
-        let ca = BinaryChunked::new(name, <Wrap<Vec<Option<Vec<u8>>>>>::from(values).0);
+        let ca = BinaryChunked::new(name.into(), <Wrap<Vec<Option<Vec<u8>>>>>::from(values).0);
         Ok(ca.into_series().into())
     }
 
@@ -110,7 +110,7 @@ impl PlRSeries {
                     }
                 }
             }
-            return Ok(Series::new(name, series_vec).into());
+            return Ok(Series::new(name.into(), series_vec).into());
         }
 
         let dtype = series_vec
@@ -136,7 +136,7 @@ impl PlRSeries {
             })
             .collect();
 
-        Ok(Series::new(name, casted_series_vec).into())
+        Ok(Series::new(name.into(), casted_series_vec).into())
     }
 
     // from clock classes
@@ -179,6 +179,6 @@ impl PlRSeries {
                 }
             })
             .collect_trusted();
-        Ok(ca.with_name(name).into_series().into())
+        Ok(ca.with_name(name.into()).into_series().into())
     }
 }

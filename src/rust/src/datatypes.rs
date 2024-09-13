@@ -44,7 +44,7 @@ impl std::fmt::Display for PlRDataType {
             opt.map_or_else(|| "NULL".to_string(), |v| v.to_string())
         }
 
-        fn opt_string_to_string(opt: Option<String>) -> String {
+        fn opt_string_to_string(opt: Option<PlSmallStr>) -> String {
             opt.map_or_else(|| "NULL".to_string(), |v| format!("'{v}'"))
         }
 
@@ -77,18 +77,11 @@ impl std::fmt::Display for PlRDataType {
                     .map(|v| v.to_string())
                     .collect::<Vec<_>>()
                     .join(", ");
-                fn array_leaf_dtype(dt: &DataType) -> &DataType {
-                    let mut prev = dt;
-                    while let DataType::Array(inner, _) = &prev {
-                        prev = &inner;
-                    }
-                    prev
-                }
                 write!(
                     f,
                     "Array({}, shape=c({}))",
                     PlRDataType {
-                        dt: array_leaf_dtype(&self.dt).clone()
+                        dt: self.dt.array_leaf_dtype().unwrap().clone()
                     },
                     shape
                 )
@@ -102,7 +95,7 @@ impl std::fmt::Display for PlRDataType {
                             "{}={}",
                             field.name(),
                             PlRDataType {
-                                dt: field.data_type().clone()
+                                dt: field.dtype().clone()
                             }
                         )
                     })
@@ -158,7 +151,7 @@ impl PlRDataType {
 
     pub fn new_datetime(time_unit: &str, time_zone: Option<&str>) -> Result<Self> {
         let time_unit = <Wrap<TimeUnit>>::try_from(time_unit)?.0;
-        let time_zone = time_zone.map(|s| s.to_string());
+        let time_zone: Option<PlSmallStr> = time_zone.map(|s| s.into());
         Ok(DataType::Datetime(time_unit, time_zone).into())
     }
 
@@ -175,7 +168,7 @@ impl PlRDataType {
     pub fn new_enum(categories: StringSexp) -> Result<Self> {
         let categories =
             Utf8ViewArray::from_slice(categories.iter().map(Some).collect::<Vec<_>>().as_slice());
-        Ok(create_enum_data_type(categories).into())
+        Ok(create_enum_dtype(categories).into())
     }
 
     pub fn new_list(inner: &PlRDataType) -> Result<Self> {
@@ -232,7 +225,7 @@ impl PlRDataType {
                 let time_unit: Sexp = format!("{time_unit}").try_into()?;
                 let time_zone: Sexp = time_zone
                     .as_ref()
-                    .map_or_else(|| NullSexp.into(), |v| v.to_owned().try_into())?;
+                    .map_or_else(|| NullSexp.into(), |v| v.to_string().try_into())?;
                 let _ = out.set_name_and_value(0, "time_unit", time_unit);
                 let _ = out.set_name_and_value(1, "time_zone", time_zone);
                 Ok(out.into())
@@ -272,7 +265,7 @@ impl PlRDataType {
                 for (i, field) in fields.iter().enumerate() {
                     let name = field.name().as_str();
                     let value: Sexp = PlRDataType {
-                        dt: field.data_type().clone(),
+                        dt: field.dtype().clone(),
                     }
                     .try_into()?;
                     let _ = list.set_name_and_value(i, name, value);

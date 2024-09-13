@@ -4,7 +4,7 @@ use savvy::{savvy, ListSexp, RawSexp, Result, StringSexp};
 
 #[savvy]
 pub fn field(names: StringSexp) -> Result<PlRExpr> {
-    Ok(dsl::Expr::Field(names.iter().map(|name| Arc::from(name)).collect()).into())
+    Ok(dsl::Expr::Field(names.iter().map(|name| name.into()).collect()).into())
 }
 
 #[savvy]
@@ -15,7 +15,7 @@ pub fn col(name: &str) -> Result<PlRExpr> {
 #[savvy]
 pub fn cols(names: StringSexp) -> Result<PlRExpr> {
     let names = names.iter().collect::<Vec<_>>();
-    Ok(dsl::cols(&names).into())
+    Ok(dsl::cols(names).into())
 }
 
 #[savvy]

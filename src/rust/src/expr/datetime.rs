@@ -8,7 +8,7 @@ impl PlRExpr {
             .inner
             .clone()
             .dt()
-            .convert_time_zone(time_zone.to_string())
+            .convert_time_zone(time_zone.into())
             .into())
     }
 
@@ -23,7 +23,7 @@ impl PlRExpr {
             .clone()
             .dt()
             .replace_time_zone(
-                time_zone.map(|x| x.to_string()),
+                time_zone.map(|x| x.into()),
                 ambiguous.inner.clone(),
                 <Wrap<NonExistent>>::try_from(non_existent)?.0,
             )

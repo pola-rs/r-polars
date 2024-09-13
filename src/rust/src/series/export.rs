@@ -120,7 +120,7 @@ impl PlRSeries {
                     let len = series.len();
                     let mut list = OwnedListSexp::new(len, false)?;
                     let _ = list.set_class(&["vctrs_list_of", "vctrs_vctr", "list"]);
-                    let empty_inner_series = Series::new_empty("", &inner.clone());
+                    let empty_inner_series = Series::new_empty("".into(), &inner.clone());
                     let _ = list.set_attrib(
                         "ptype",
                         to_r_vector_recursive(
@@ -160,7 +160,7 @@ impl PlRSeries {
                     let len = series.len();
                     let mut list = OwnedListSexp::new(len, false)?;
                     let _ = list.set_class(&["vctrs_list_of", "vctrs_vctr", "list"]);
-                    let empty_inner_series = Series::new_empty("", &inner.clone());
+                    let empty_inner_series = Series::new_empty("".into(), &inner.clone());
                     let _ = list.set_attrib(
                         "ptype",
                         to_r_vector_recursive(
@@ -215,15 +215,15 @@ impl PlRSeries {
                                     .clone()
                                     .into_frame()
                                     .lazy()
-                                    .select([col(series.name())
+                                    .select([col(series.name().clone())
                                         .dt()
                                         .replace_time_zone(
-                                            Some(local_time_zone.to_string()),
+                                            Some(local_time_zone.into()),
                                             ambiguous.clone(),
                                             non_existent,
                                         )
                                         .dt()
-                                        .convert_time_zone("UTC".to_string())
+                                        .convert_time_zone("UTC".into())
                                         .dt()
                                         .replace_time_zone(None, lit("raise"), NonExistent::Raise)])
                                     .collect()
@@ -242,7 +242,11 @@ impl PlRSeries {
                 ))),
                 DataType::String => Ok(<Sexp>::from(Wrap(series.str().unwrap()))),
                 DataType::Struct(_) => {
-                    let df = series.clone().into_frame().unnest([series.name()]).unwrap();
+                    let df = series
+                        .clone()
+                        .into_frame()
+                        .unnest([series.name().clone()])
+                        .unwrap();
                     let len = df.width();
                     let mut list = OwnedListSexp::new(len, true)?;
                     if !ensure_vector {
