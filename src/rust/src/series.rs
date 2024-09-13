@@ -81,7 +81,7 @@ impl From<&RPolarsExpr> for pl::PolarsResult<RPolarsSeries> {
             .map(|df| {
                 df.select_at_idx(0)
                     .cloned()
-                    .unwrap_or_else(|| pl::Series::new_empty("", &pl::DataType::Null))
+                    .unwrap_or_else(|| pl::Series::new_empty("".into(), &pl::DataType::Null))
                     .into()
             })
     }
@@ -118,7 +118,7 @@ impl RPolarsSeries {
     }
     //any mut method exposed in R suffixed _mut
     pub fn rename_mut(&mut self, name: &str) {
-        self.0.rename(name);
+        self.0.rename(name.into());
     }
 
     //any other method or trait method in alphabetical order
@@ -169,7 +169,7 @@ impl RPolarsSeries {
         normalize: bool,
     ) -> std::result::Result<RPolarsDataFrame, String> {
         self.0
-            .value_counts(sort, parallel, name, normalize)
+            .value_counts(sort, parallel, name.into(), normalize)
             .map(RPolarsDataFrame)
             .map_err(|err| format!("in value_counts: {:?}", err))
     }
@@ -315,7 +315,7 @@ impl RPolarsSeries {
 
     pub fn alias(&self, name: &str) -> RPolarsSeries {
         let mut s = self.0.clone();
-        s.rename(name);
+        s.rename(name.into());
         RPolarsSeries(s)
     }
 
@@ -512,11 +512,11 @@ impl RPolarsSeries {
                     .cast(&DataType::UInt8)
                     .map_err(polars_to_rpolars_err)?
                     .mean_reduce()
-                    .into_series("");
+                    .into_series("".into());
                 RPolarsSeries(s).to_r("double")
             }
             DataType::Datetime(_, _) | DataType::Duration(_) | DataType::Time => {
-                let s = self.0.mean_reduce().into_series("");
+                let s = self.0.mean_reduce().into_series("".into());
                 RPolarsSeries(s).to_r("double")
             }
             _ => Ok(self.0.mean().into()),
@@ -532,7 +532,7 @@ impl RPolarsSeries {
                     .map_err(polars_to_rpolars_err)?
                     .median_reduce()
                     .map_err(polars_to_rpolars_err)?
-                    .into_series("");
+                    .into_series("".into());
                 RPolarsSeries(s).to_r("double")
             }
             DataType::Datetime(_, _) | DataType::Duration(_) | DataType::Time => {
@@ -540,7 +540,7 @@ impl RPolarsSeries {
                     .0
                     .median_reduce()
                     .map_err(polars_to_rpolars_err)?
-                    .into_series("");
+                    .into_series("".into());
                 RPolarsSeries(s).to_r("double")
             }
             _ => Ok(self.0.median().into()),
@@ -552,7 +552,7 @@ impl RPolarsSeries {
             self.0
                 .min_reduce()
                 .map_err(polars_to_rpolars_err)?
-                .into_series(""),
+                .into_series("".into()),
         )
         .to_r("double")
     }
@@ -562,7 +562,7 @@ impl RPolarsSeries {
             self.0
                 .max_reduce()
                 .map_err(polars_to_rpolars_err)?
-                .into_series(""),
+                .into_series("".into()),
         )
         .to_r("double")
     }
@@ -572,7 +572,7 @@ impl RPolarsSeries {
             self.0
                 .sum_reduce()
                 .map_err(polars_to_rpolars_err)?
-                .into_series(""),
+                .into_series("".into()),
         )
         .to_r("double")
     }
@@ -584,7 +584,7 @@ impl RPolarsSeries {
             self.0
                 .std_reduce(ddof)
                 .map_err(polars_to_rpolars_err)?
-                .into_series(""),
+                .into_series("".into()),
         )
         .to_r("double")
     }
@@ -596,7 +596,7 @@ impl RPolarsSeries {
             self.0
                 .var_reduce(ddof)
                 .map_err(polars_to_rpolars_err)?
-                .into_series(""),
+                .into_series("".into()),
         )
         .to_r("double")
     }
@@ -631,7 +631,7 @@ impl RPolarsSeries {
     pub fn export_stream(&self, stream_ptr: &str, compat_level: Robj) {
         let compat_level = robj_to!(CompatLevel, compat_level).unwrap();
         let data_type = self.0.dtype().to_arrow(compat_level);
-        let field = pl::ArrowField::new("", data_type, false);
+        let field = pl::ArrowField::new("".into(), data_type, false);
 
         let iter_boxed = Box::new(OwnedSeriesIterator::new(self.0.clone(), compat_level));
         let mut stream = arrow::ffi::export_iterator(iter_boxed, field);
@@ -668,7 +668,7 @@ impl RPolarsSeries {
         let name = robj_to!(str, name)?;
         let arr = crate::arrow_interop::to_rust::arrow_array_to_rust(array)?;
 
-        match arr.data_type() {
+        match arr.dtype() {
             ArrowDataType::LargeList(_) => {
                 let array = arr.as_any().downcast_ref::<pl::LargeListArray>().unwrap();
 
@@ -681,7 +681,7 @@ impl RPolarsSeries {
                     }
                     previous = o;
                 }
-                let mut out = unsafe { ListChunked::from_chunks(name, vec![arr]) };
+                let mut out = unsafe { ListChunked::from_chunks(name.into(), vec![arr]) };
                 if fast_explode {
                     out.set_fast_explode()
                 }

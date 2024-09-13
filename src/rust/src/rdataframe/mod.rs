@@ -355,7 +355,7 @@ impl RPolarsDataFrame {
         let compat_level = robj_to!(CompatLevel, compat_level).unwrap();
         let schema = self.0.schema().to_arrow(compat_level);
         let data_type = ArrowDataType::Struct(schema.fields);
-        let field = ArrowField::new("", data_type, false);
+        let field = ArrowField::new("".into(), data_type, false);
 
         let iter_boxed = Box::new(OwnedDataFrameIterator::new(self.0.clone(), compat_level));
         let mut stream = arrow::ffi::export_iterator(iter_boxed, field);
