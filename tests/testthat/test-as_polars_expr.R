@@ -56,17 +56,19 @@ patrick::with_parameters_test_that(
     expect_snapshot(selected_out)
 
     # Ensure broadcasting works if the length is 1 (except for Series)
+    lf <- pl$LazyFrame(a = 1:10)$with_columns(b = out)
+
     if (expected_length == 1 && !is_polars_series(x)) {
-      expect_no_error(pl$DataFrame(a = 1:10)$with_columns(b = out))
+      expect_no_error(lf$collect())
     } else if (expected_length == 1) {
       # For Series with length 1, a special error message is thrown
       expect_error(
-        pl$DataFrame(a = 1:10)$with_columns(b = out),
+        lf$collect(),
         r"(length 1 doesn't match the DataFrame height of 10.*for instance by adding '\.first\(\)')"
       )
     } else {
       expect_error(
-        pl$DataFrame(a = 1:10)$with_columns(b = out),
+        lf$collect(),
         r"(unable to add a column of length \d+ to a DataFrame of height 10)"
       )
     }
