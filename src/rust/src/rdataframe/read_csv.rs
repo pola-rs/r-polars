@@ -22,7 +22,7 @@ use polars::prelude::LazyFileListReader;
 #[extendr]
 impl RPolarsRNullValues {
     pub fn new_all_columns(x: String) -> Self {
-        RPolarsRNullValues(pl::NullValues::AllColumnsSingle(x))
+        RPolarsRNullValues(pl::NullValues::AllColumnsSingle(x.into()))
     }
     pub fn new_columns(x: Vec<String>) -> Self {
         RPolarsRNullValues(pl::NullValues::AllColumns(x))
@@ -95,7 +95,7 @@ pub fn new_from_csv(
     let schema = dtv.map(|some_od| {
         let fields = some_od.0.iter().map(|(name, dtype)| {
             if let Some(sname) = name {
-                pl::Field::new(sname, dtype.clone())
+                pl::Field::new(sname.into(), dtype.clone())
             } else {
                 todo!("missing column name for  dtype not implemented");
             }

@@ -13,7 +13,6 @@ pub fn import_arrow_ipc(
     rechunk: Robj,
     row_name: Robj,
     row_index: Robj,
-    memory_map: Robj,
     hive_partitioning: Robj,
     hive_schema: Robj,
     try_parse_hive_dates: Robj,
@@ -38,10 +37,9 @@ pub fn import_arrow_ipc(
                 })
             })
             .transpose()?,
-        memory_map: robj_to!(bool, memory_map)?,
         cloud_options: None,
         hive_options,
-        include_file_paths: robj_to!(Option, String, include_file_paths)?.map(Arc::from),
+        include_file_paths: robj_to!(Option, String, include_file_paths)?.map(|x| x.into()),
     };
     let lf = LazyFrame::scan_ipc(robj_to!(String, path)?, args)
         .map_err(crate::rpolarserr::polars_to_rpolars_err)?;

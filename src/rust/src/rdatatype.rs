@@ -97,7 +97,7 @@ impl RPolarsDataType {
         let s = robjname2series(categories, "").unwrap();
         let ca = s.str()?;
         let categories = ca.downcast_iter().next().unwrap().clone();
-        Ok(RPolarsDataType(pl::datatypes::create_enum_data_type(
+        Ok(RPolarsDataType(pl::datatypes::create_enum_dtype(
             categories,
         )))
     }
