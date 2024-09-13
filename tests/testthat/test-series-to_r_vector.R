@@ -119,6 +119,34 @@ test_that("struct argument warning and error", {
   )
 })
 
+patrick::with_parameters_test_that(
+  "decimal conversion",
+  .cases = {
+    tibble::tribble(
+      ~.test_name, ~type, ~expected_out,
+      "double", "double", c(NA, 1, 0.1),
+      "character", "character", c(NA, "1.000", "0.100"),
+    )
+  },
+  code = {
+    series_decimal <- as_polars_series(c(NA, 1, 0.1))$cast(pl$Decimal(5, 3))
+
+    out <- series_decimal$to_r_vector(decimal = type)
+    expect_identical(out, expected_out)
+  }
+)
+
+test_that("decimal argument error", {
+  expect_error(
+    as_polars_series(1)$to_r_vector(decimal = TRUE),
+    r"(Argument `decimal` must be character)"
+  )
+  expect_error(
+    as_polars_series(1)$to_r_vector(decimal = "foo"),
+    r"(must be one of \('character', 'double'\))"
+  )
+})
+
 patrick::with_parameters_test_that("datetime conversion to clock classes",
   .cases = {
     skip_if_not_installed("clock")

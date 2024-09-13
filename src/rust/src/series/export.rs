@@ -20,6 +20,13 @@ enum StructConversion {
     Tibble,
 }
 
+#[derive(Debug, Clone, EnumString)]
+#[strum(serialize_all = "lowercase")]
+enum DecimalConversion {
+    Character,
+    Double,
+}
+
 // `vctrs::unspecified` like function
 fn vctrs_unspecified_sexp(n: usize) -> Sexp {
     let mut sexp = OwnedLogicalSexp::new(n).unwrap();
@@ -51,6 +58,7 @@ impl PlRSeries {
         ensure_vector: bool,
         int64: &str,
         r#struct: &str,
+        decimal: &str,
         as_clock_class: bool,
         ambiguous: &PlRExpr,
         non_existent: &str,
@@ -69,6 +77,11 @@ impl PlRSeries {
                 "Argument `struct` must be one of ('dataframe', 'tibble')".to_string(),
             )
         })?;
+        let decimal = DecimalConversion::try_from(decimal).map_err(|_| {
+            savvy::Error::from(
+                "Argument `decimal` must be one of ('character', 'double')".to_string(),
+            )
+        })?;
         let ambiguous = ambiguous.inner.clone();
         let non_existent = <Wrap<NonExistent>>::try_from(non_existent)?.0;
 
@@ -77,6 +90,7 @@ impl PlRSeries {
             ensure_vector: bool,
             int64: Int64Conversion,
             r#struct: StructConversion,
+            decimal: DecimalConversion,
             as_clock_class: bool,
             ambiguous: Expr,
             non_existent: NonExistent,
@@ -128,6 +142,7 @@ impl PlRSeries {
                             false,
                             int64.clone(),
                             r#struct.clone(),
+                            decimal.clone(),
                             as_clock_class,
                             ambiguous.clone(),
                             non_existent,
@@ -145,6 +160,7 @@ impl PlRSeries {
                                     false,
                                     int64.clone(),
                                     r#struct.clone(),
+                                    decimal.clone(),
                                     as_clock_class,
                                     ambiguous.clone(),
                                     non_existent,
@@ -168,6 +184,7 @@ impl PlRSeries {
                             false,
                             int64.clone(),
                             r#struct.clone(),
+                            decimal.clone(),
                             as_clock_class,
                             ambiguous.clone(),
                             non_existent,
@@ -185,6 +202,7 @@ impl PlRSeries {
                                     false,
                                     int64.clone(),
                                     r#struct.clone(),
+                                    decimal.clone(),
                                     as_clock_class,
                                     ambiguous.clone(),
                                     non_existent,
@@ -237,9 +255,14 @@ impl PlRSeries {
                         }
                     }
                 }
-                DataType::Decimal(_, _) => Ok(<Sexp>::from(Wrap(
-                    series.cast(&DataType::Float64).unwrap().f64().unwrap(),
-                ))),
+                DataType::Decimal(_, _) => match decimal {
+                    DecimalConversion::Character => Ok(<Sexp>::from(Wrap(
+                        series.cast(&DataType::String).unwrap().str().unwrap(),
+                    ))),
+                    DecimalConversion::Double => Ok(<Sexp>::from(Wrap(
+                        series.cast(&DataType::Float64).unwrap().f64().unwrap(),
+                    ))),
+                },
                 DataType::String => Ok(<Sexp>::from(Wrap(series.str().unwrap()))),
                 DataType::Struct(_) => {
                     let df = series
@@ -269,6 +292,7 @@ impl PlRSeries {
                                 false,
                                 int64.clone(),
                                 r#struct.clone(),
+                                decimal.clone(),
                                 as_clock_class,
                                 ambiguous.clone(),
                                 non_existent,
@@ -297,6 +321,7 @@ impl PlRSeries {
             ensure_vector,
             int64,
             r#struct,
+            decimal,
             as_clock_class,
             ambiguous,
             non_existent,

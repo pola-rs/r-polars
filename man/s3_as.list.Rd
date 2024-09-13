@@ -10,6 +10,7 @@
   as_series = FALSE,
   int64 = "double",
   struct = "dataframe",
+  decimal = "double",
   as_clock_class = FALSE,
   ambiguous = "raise",
   non_existent = "raise"
@@ -42,6 +43,13 @@ One of the followings:
 \item \code{"dataframe"} (default): Convert to the R's \link{data.frame} class.
 \item \code{"tibble"}: Convert to the \link[tibble:tbl_df-class]{tibble} class.
 If the \link[tibble:tibble-package]{tibble} package is not installed, a warning will be shown.
+}}
+
+\item{decimal}{Determine how to convert Polars' Decimal type values to R type.
+One of the followings:
+\itemize{
+\item \code{"double"} (default): Convert to the R's \link{double} type.
+\item \code{"character"}: Convert to the R's \link{character} type.
 }}
 
 \item{as_clock_class}{A logical value indicating whether to export datetimes and duration as

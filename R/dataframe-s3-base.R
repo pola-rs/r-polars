@@ -38,6 +38,7 @@ as.list.polars_data_frame <- function(
     as_series = FALSE,
     int64 = "double",
     struct = "dataframe",
+    decimal = "double",
     as_clock_class = FALSE,
     ambiguous = "raise",
     non_existent = "raise") {
@@ -47,6 +48,7 @@ as.list.polars_data_frame <- function(
     x$to_r_list(
       int64 = int64,
       struct = struct,
+      decimal = decimal,
       as_clock_class = as_clock_class,
       ambiguous = ambiguous,
       non_existent = non_existent
@@ -69,6 +71,7 @@ as.list.polars_data_frame <- function(
 as.data.frame.polars_data_frame <- function(
     x, ...,
     int64 = "double",
+    decimal = "double",
     as_clock_class = FALSE,
     ambiguous = "raise",
     non_existent = "raise") {
@@ -76,6 +79,7 @@ as.data.frame.polars_data_frame <- function(
     ensure_vector = FALSE,
     int64 = int64,
     struct = "dataframe",
+    decimal = decimal,
     as_clock_class = as_clock_class,
     ambiguous = ambiguous,
     non_existent = non_existent

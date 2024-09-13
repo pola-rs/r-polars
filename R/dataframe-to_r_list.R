@@ -22,6 +22,7 @@ dataframe__to_r_list <- function(
     int64 = "double",
     as_clock_class = FALSE,
     struct = "dataframe",
+    decimal = "double",
     ambiguous = "raise",
     non_existent = "raise") {
   wrap({
@@ -30,8 +31,9 @@ dataframe__to_r_list <- function(
     self$to_struct()$to_r_vector(
       ensure_vector = TRUE,
       int64 = int64,
-      as_clock_class = as_clock_class,
       struct = struct,
+      decimal = decimal,
+      as_clock_class = as_clock_class,
       ambiguous = ambiguous,
       non_existent = non_existent
     )

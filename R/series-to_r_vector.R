@@ -53,6 +53,10 @@
 #' - `"dataframe"` (default): Convert to the R's [data.frame] class.
 #' - `"tibble"`: Convert to the [tibble][tibble::tbl_df] class.
 #'   If the [tibble][tibble::tibble-package] package is not installed, a warning will be shown.
+#' @param decimal Determine how to convert Polars' Decimal type values to R type.
+#' One of the followings:
+#' - `"double"` (default): Convert to the R's [double] type.
+#' - `"character"`: Convert to the R's [character] type.
 #' @param as_clock_class A logical value indicating whether to export datetimes and duration as
 #' the [clock][clock::clock] package's classes.
 #' - `FALSE` (default): Duration values are exported as [difftime]
@@ -157,6 +161,7 @@ series__to_r_vector <- function(
     ensure_vector = FALSE,
     int64 = "double",
     struct = "dataframe",
+    decimal = "double",
     as_clock_class = FALSE,
     ambiguous = "raise",
     non_existent = "raise") {
@@ -185,6 +190,7 @@ series__to_r_vector <- function(
       ensure_vector = ensure_vector,
       int64 = int64,
       struct = struct,
+      decimal = decimal,
       as_clock_class = as_clock_class,
       ambiguous = ambiguous,
       non_existent = non_existent,

@@ -25,6 +25,7 @@ as_tibble.polars_data_frame <- function(
     x, ...,
     .name_repair = "check_unique",
     int64 = "double",
+    decimal = "double",
     as_clock_class = FALSE,
     ambiguous = "raise",
     non_existent = "raise") {
@@ -32,6 +33,7 @@ as_tibble.polars_data_frame <- function(
     ensure_vector = FALSE,
     int64 = int64,
     struct = "tibble",
+    decimal = decimal,
     as_clock_class = as_clock_class,
     ambiguous = ambiguous,
     non_existent = non_existent

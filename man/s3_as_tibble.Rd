@@ -9,6 +9,7 @@
   ...,
   .name_repair = "check_unique",
   int64 = "double",
+  decimal = "double",
   as_clock_class = FALSE,
   ambiguous = "raise",
   non_existent = "raise"
@@ -46,6 +47,13 @@ If the value is out of the range of R's integer type, export as \link{NA_integer
 \item \code{"integer64"}: Convert to the \link[bit64:bit64-package]{bit64::integer64} class.
 The \link[bit64:bit64-package]{bit64} package must be installed.
 If the value is out of the range of \link[bit64:bit64-package]{bit64::integer64}, export as \link[bit64:as.integer64.character]{bit64::NA_integer64_}.
+}}
+
+\item{decimal}{Determine how to convert Polars' Decimal type values to R type.
+One of the followings:
+\itemize{
+\item \code{"double"} (default): Convert to the R's \link{double} type.
+\item \code{"character"}: Convert to the R's \link{character} type.
 }}
 
 \item{as_clock_class}{A logical value indicating whether to export datetimes and duration as
