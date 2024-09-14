@@ -241,12 +241,25 @@ expr__sum <- function() {
     wrap()
 }
 
-expr__cast <- function(dtype, ..., strict = TRUE) {
+expr__cast <- function(dtype, ..., strict = TRUE, wrap_numerical = FALSE) {
   wrap({
     check_dots_empty0(...)
-
     dtype <- as_polars_dtype(dtype)
-    self$`_rexpr`$cast(dtype$`_dt`, strict)
+    self$`_rexpr`$cast(dtype$`_dt`, strict, wrap_numerical)
+  })
+}
+
+expr__sort <- function(..., descending = FALSE, nulls_last = FALSE) {
+  wrap({
+    check_dots_empty0(...)
+    self$`_rexpr`$sort_with(descending, nulls_last)
+  })
+}
+
+expr__arg_sort <- function(..., descending = FALSE, nulls_last = FALSE) {
+  wrap({
+    check_dots_empty0(...)
+    self$`_rexpr`$arg_sort(descending, nulls_last)
   })
 }
 

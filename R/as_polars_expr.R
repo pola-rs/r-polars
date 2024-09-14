@@ -148,7 +148,7 @@ as_polars_expr.character <- function(x, ..., as_lit = FALSE) {
     } else {
       if (length(x) == 1L) {
         if (is.na(x)) {
-          lit_null()$cast(pl$String$`_dt`, strict = TRUE)
+          lit_null()$cast(pl$String$`_dt`, strict = TRUE, wrap_numerical = FALSE)
         } else {
           lit_from_str(x)
         }
@@ -165,7 +165,7 @@ as_polars_expr.logical <- function(x, ...) {
   wrap({
     if (length(x) == 1L) {
       if (is.na(x)) {
-        lit_null()$cast(pl$Boolean$`_dt`, strict = TRUE)
+        lit_null()$cast(pl$Boolean$`_dt`, strict = TRUE, wrap_numerical = FALSE)
       } else {
         lit_from_bool(x)
       }
@@ -181,7 +181,7 @@ as_polars_expr.integer <- function(x, ...) {
   wrap({
     if (length(x) == 1L) {
       if (is.na(x)) {
-        lit_null()$cast(pl$Int32$`_dt`, strict = TRUE)
+        lit_null()$cast(pl$Int32$`_dt`, strict = TRUE, wrap_numerical = FALSE)
       } else {
         lit_from_i32(x)
       }
@@ -197,7 +197,7 @@ as_polars_expr.double <- function(x, ...) {
   wrap({
     if (length(x) == 1L) {
       if (is.na(x)) {
-        lit_null()$cast(pl$Float64$`_dt`, strict = TRUE)
+        lit_null()$cast(pl$Float64$`_dt`, strict = TRUE, wrap_numerical = FALSE)
       } else {
         lit_from_f64(x)
       }

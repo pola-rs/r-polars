@@ -554,8 +554,18 @@ SEXP savvy_PlRExpr_sum__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_cast__impl(SEXP self__, SEXP c_arg__dtype, SEXP c_arg__strict) {
-    SEXP res = savvy_PlRExpr_cast__ffi(self__, c_arg__dtype, c_arg__strict);
+SEXP savvy_PlRExpr_cast__impl(SEXP self__, SEXP c_arg__dtype, SEXP c_arg__strict, SEXP c_arg__wrap_numerical) {
+    SEXP res = savvy_PlRExpr_cast__ffi(self__, c_arg__dtype, c_arg__strict, c_arg__wrap_numerical);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_sort_with__impl(SEXP self__, SEXP c_arg__descending, SEXP c_arg__nulls_last) {
+    SEXP res = savvy_PlRExpr_sort_with__ffi(self__, c_arg__descending, c_arg__nulls_last);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_arg_sort__impl(SEXP self__, SEXP c_arg__descending, SEXP c_arg__nulls_last) {
+    SEXP res = savvy_PlRExpr_arg_sort__ffi(self__, c_arg__descending, c_arg__nulls_last);
     return handle_result(res);
 }
 
@@ -1075,7 +1085,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_mean__impl", (DL_FUNC) &savvy_PlRExpr_mean__impl, 1},
     {"savvy_PlRExpr_median__impl", (DL_FUNC) &savvy_PlRExpr_median__impl, 1},
     {"savvy_PlRExpr_sum__impl", (DL_FUNC) &savvy_PlRExpr_sum__impl, 1},
-    {"savvy_PlRExpr_cast__impl", (DL_FUNC) &savvy_PlRExpr_cast__impl, 3},
+    {"savvy_PlRExpr_cast__impl", (DL_FUNC) &savvy_PlRExpr_cast__impl, 4},
+    {"savvy_PlRExpr_sort_with__impl", (DL_FUNC) &savvy_PlRExpr_sort_with__impl, 3},
+    {"savvy_PlRExpr_arg_sort__impl", (DL_FUNC) &savvy_PlRExpr_arg_sort__impl, 3},
     {"savvy_PlRExpr_sort_by__impl", (DL_FUNC) &savvy_PlRExpr_sort_by__impl, 6},
     {"savvy_PlRExpr_first__impl", (DL_FUNC) &savvy_PlRExpr_first__impl, 1},
     {"savvy_PlRExpr_last__impl", (DL_FUNC) &savvy_PlRExpr_last__impl, 1},

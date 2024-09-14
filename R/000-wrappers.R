@@ -855,9 +855,21 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
 }
 
 `PlRExpr_cast` <- function(self) {
-  function(`dtype`, `strict`) {
+  function(`dtype`, `strict`, `wrap_numerical`) {
     `dtype` <- .savvy_extract_ptr(`dtype`, "PlRDataType")
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_cast__impl, `self`, `dtype`, `strict`))
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_cast__impl, `self`, `dtype`, `strict`, `wrap_numerical`))
+  }
+}
+
+`PlRExpr_sort_with` <- function(self) {
+  function(`descending`, `nulls_last`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_sort_with__impl, `self`, `descending`, `nulls_last`))
+  }
+}
+
+`PlRExpr_arg_sort` <- function(self) {
+  function(`descending`, `nulls_last`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_arg_sort__impl, `self`, `descending`, `nulls_last`))
   }
 }
 
@@ -1093,6 +1105,8 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
   e$`median` <- `PlRExpr_median`(ptr)
   e$`sum` <- `PlRExpr_sum`(ptr)
   e$`cast` <- `PlRExpr_cast`(ptr)
+  e$`sort_with` <- `PlRExpr_sort_with`(ptr)
+  e$`arg_sort` <- `PlRExpr_arg_sort`(ptr)
   e$`sort_by` <- `PlRExpr_sort_by`(ptr)
   e$`first` <- `PlRExpr_first`(ptr)
   e$`last` <- `PlRExpr_last`(ptr)

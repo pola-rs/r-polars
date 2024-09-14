@@ -1,5 +1,6 @@
 use crate::{prelude::*, PlRDataType, PlRExpr};
 use polars::lazy::dsl;
+use polars_core::chunked_array::cast::CastOptions;
 use savvy::{r_println, savvy, ListSexp, LogicalSexp, NumericSexp, Result};
 use std::ops::Neg;
 
@@ -130,16 +131,45 @@ impl PlRExpr {
         Ok(self.inner.clone().sum().into())
     }
 
-    fn cast(&self, dtype: &PlRDataType, strict: bool) -> Result<Self> {
+    fn cast(&self, dtype: &PlRDataType, strict: bool, wrap_numerical: bool) -> Result<Self> {
         let dt = dtype.dt.clone();
 
-        let expr = if strict {
-            self.inner.clone().strict_cast(dt)
+        let options = if wrap_numerical {
+            CastOptions::Overflowing
+        } else if strict {
+            CastOptions::Strict
         } else {
-            self.inner.clone().cast(dt)
+            CastOptions::NonStrict
         };
 
+        let expr = self.inner.clone().cast_with_options(dt, options);
         Ok(expr.into())
+    }
+
+    fn sort_with(&self, descending: bool, nulls_last: bool) -> Result<Self> {
+        Ok(self
+            .inner
+            .clone()
+            .sort(SortOptions {
+                descending,
+                nulls_last,
+                multithreaded: true,
+                maintain_order: false,
+            })
+            .into())
+    }
+
+    fn arg_sort(&self, descending: bool, nulls_last: bool) -> Result<Self> {
+        Ok(self
+            .inner
+            .clone()
+            .arg_sort(SortOptions {
+                descending,
+                nulls_last,
+                multithreaded: true,
+                maintain_order: false,
+            })
+            .into())
     }
 
     fn sort_by(
