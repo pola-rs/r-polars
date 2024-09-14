@@ -69,7 +69,7 @@ Additional arguments \code{...} are passed to \code{\link[=as_polars_series]{as_
 
 \subsection{S3 method for \link{character}}{
 
-If the \code{as_lit} argument is \code{FALSE} (default), this function will call \code{pl$col()} and
+If the \code{as_lit} argument is \code{FALSE} (default), this function will call \code{\link[=pl__col]{pl$col()}} and
 the character vector is treated as column names.
 }
 }

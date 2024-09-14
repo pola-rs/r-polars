@@ -2,7 +2,6 @@
 # TODO: link to Expr class page
 # TODO: link to data type page
 # TODO: link to `expr__first`
-# TODO: link to `pl__col`
 #' Create a Polars Expression from an R object
 #'
 #' The [as_polars_expr()] function creates a polars Expression from various R objects.
@@ -27,7 +26,7 @@
 #'
 #' ## S3 method for [character]
 #'
-#' If the `as_lit` argument is `FALSE` (default), this function will call `pl$col()` and
+#' If the `as_lit` argument is `FALSE` (default), this function will call [`pl$col()`][pl__col] and
 #' the character vector is treated as column names.
 #'
 #' # Literal scalar mapping

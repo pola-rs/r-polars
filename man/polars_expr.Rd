@@ -25,6 +25,6 @@ df$select(pl$col("foo"))
 \seealso{
 \itemize{
 \item \code{\link[=pl__lit]{pl$lit()}}: Create a literal expression.
-\item \code{pl$col()}: Create an expression representing column(s) in a \link{DataFrame}.
+\item \code{\link[=pl__col]{pl$col()}}: Create an expression representing column(s) in a \link{DataFrame}.
 }
 }

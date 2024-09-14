@@ -1,6 +1,5 @@
 # TODO: link to data type docs
 # TODO: section for name spaces
-# TODO: link to pl__col
 # TODO: expr__sort, expr__head
 # source: https://docs.pola.rs/user-guide/concepts/expressions
 #' Polars Expression class (`polars_expr`)
@@ -13,7 +12,7 @@
 #' @aliases Expr
 #' @seealso
 #' - [`pl$lit()`][pl__lit]: Create a literal expression.
-#' - `pl$col()`: Create an expression representing column(s) in a [DataFrame].
+#' - [`pl$col()`][pl__col]: Create an expression representing column(s) in a [DataFrame].
 #' @examples
 #' # An expression, 'Select column `foo`'
 #' pl$col("foo")
