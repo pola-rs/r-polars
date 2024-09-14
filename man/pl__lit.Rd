@@ -29,14 +29,16 @@ converted to a scalar literal.
 \item double: Float64
 }
 
-and, the \link{raw} type vector is converted to a Binary scalar.
+These types' \code{NA} is converted to a \code{null} literal with casting to the corresponding Polars type.
+
+The \link{raw} type vector is converted to a Binary scalar.
 \itemize{
 \item raw: Binary
 }
 
 \code{NULL} is converted to a \code{null} literal.
 \itemize{
-\item \code{NULL}: Null
+\item NULL: null
 }
 
 Other scalar values cannot be created directly, so we need to \verb{$cast()} from other scalar values

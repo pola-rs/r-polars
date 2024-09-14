@@ -40,13 +40,15 @@
 #' - integer: Int32
 #' - double: Float64
 #'
-#' and, the [raw] type vector is converted to a Binary scalar.
+#' These types' `NA` is converted to a `null` literal with casting to the corresponding Polars type.
+#'
+#' The [raw] type vector is converted to a Binary scalar.
 #'
 #' - raw: Binary
 #'
 #' `NULL` is converted to a `null` literal.
 #'
-#' - `NULL`: Null
+#' - NULL: null
 #'
 #' Other scalar values cannot be created directly, so we need to `$cast()` from other scalar values
 #' or extract them with the `$first()` method from a [Series].
@@ -61,27 +63,43 @@
 #' - [as_polars_series()]: R -> Polars type mapping is mostly defined by this function.
 #' @examples
 #' # character
+#' ## as_lit = FALSE (default)
 #' as_polars_expr("a") # Same as `pl$col("a")`
 #' as_polars_expr(c("a", "b")) # Same as `pl$col("a", "b")`
+#'
+#' ## as_lit = TRUE
+#' as_polars_expr(character(0), as_lit = TRUE)
 #' as_polars_expr("a", as_lit = TRUE)
+#' as_polars_expr(NA_character_, as_lit = TRUE)
 #' as_polars_expr(c("a", "b"), as_lit = TRUE)
 #'
 #' # logical
+#' as_polars_expr(logical(0))
 #' as_polars_expr(TRUE)
+#' as_polars_expr(NA)
 #' as_polars_expr(c(TRUE, FALSE))
 #'
 #' # integer
+#' as_polars_expr(integer(0))
 #' as_polars_expr(1L)
+#' as_polars_expr(NA_integer_)
 #' as_polars_expr(c(1L, 2L))
 #'
 #' # double
+#' as_polars_expr(double(0))
 #' as_polars_expr(1)
+#' as_polars_expr(NA_real_)
 #' as_polars_expr(c(1, 2))
 #'
 #' # raw
+#' as_polars_expr(raw(0))
 #' as_polars_expr(charToRaw("foo"))
 #'
+#' # NULL
+#' as_polars_expr(NULL)
+#'
 #' # default method (for list)
+#' as_polars_expr(list())
 #' as_polars_expr(list(1))
 #' as_polars_expr(list(1, 2))
 #'
