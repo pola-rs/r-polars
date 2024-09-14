@@ -25,7 +25,6 @@ use polars::prelude::SchemaExt;
 use polars_core::error::PolarsError;
 use polars_core::utils::arrow;
 
-use crate::conversion::strings_to_smartstrings;
 use polars::frame::explode::UnpivotArgsIR;
 use polars::prelude::pivot::{pivot, pivot_stable};
 

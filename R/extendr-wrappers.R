@@ -94,7 +94,7 @@ concat_series <- function(l, rechunk, to_supertypes) .Call(wrap__concat_series, 
 
 new_from_csv <- function(path, has_header, separator, comment_prefix, quote_char, skip_rows, dtypes, null_values, ignore_errors, cache, infer_schema_length, n_rows, encoding, low_memory, rechunk, skip_rows_after_header, row_index_name, row_index_offset, try_parse_dates, eol_char, raise_if_empty, truncate_ragged_lines) .Call(wrap__new_from_csv, path, has_header, separator, comment_prefix, quote_char, skip_rows, dtypes, null_values, ignore_errors, cache, infer_schema_length, n_rows, encoding, low_memory, rechunk, skip_rows_after_header, row_index_name, row_index_offset, try_parse_dates, eol_char, raise_if_empty, truncate_ragged_lines)
 
-import_arrow_ipc <- function(path, n_rows, cache, rechunk, row_name, row_index, memory_map, hive_partitioning, hive_schema, try_parse_hive_dates, include_file_paths) .Call(wrap__import_arrow_ipc, path, n_rows, cache, rechunk, row_name, row_index, memory_map, hive_partitioning, hive_schema, try_parse_hive_dates, include_file_paths)
+import_arrow_ipc <- function(path, n_rows, cache, rechunk, row_name, row_index, hive_partitioning, hive_schema, try_parse_hive_dates, include_file_paths) .Call(wrap__import_arrow_ipc, path, n_rows, cache, rechunk, row_name, row_index, hive_partitioning, hive_schema, try_parse_hive_dates, include_file_paths)
 
 new_from_ndjson <- function(path, infer_schema_length, batch_size, n_rows, low_memory, rechunk, row_index_name, row_index_offset, ignore_errors) .Call(wrap__new_from_ndjson, path, infer_schema_length, batch_size, n_rows, low_memory, rechunk, row_index_name, row_index_offset, ignore_errors)
 
