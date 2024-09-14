@@ -25,7 +25,6 @@ pub type NameGenerator = pl::Arc<dyn Fn(usize) -> String + Send + Sync>;
 use crate::rdatatype::robjs_to_ewm_options;
 use crate::utils::r_expr_to_rust_expr;
 use crate::utils::unpack_r_eval;
-use smartstring::{LazyCompact, SmartString};
 use std::sync::Arc;
 
 #[derive(Clone, Debug)]
