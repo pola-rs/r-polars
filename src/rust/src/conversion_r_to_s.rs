@@ -240,7 +240,7 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
                     Ok(SeriesTree::Series(
                         pl::DataFrame::new(vec![utc_s.clone()])?
                             .lazy()
-                            .select([col(s_name)
+                            .select([col(s_name.clone())
                                 .dt()
                                 .convert_time_zone(sys_tz.into())
                                 .dt()
