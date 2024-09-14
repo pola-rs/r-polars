@@ -342,7 +342,10 @@ impl RPolarsLazyFrame {
         let maintain_order = robj_to!(bool, maintain_order)?;
         let subset = robj_to!(Option, Vec, String, subset)?;
         let lf = if maintain_order {
-            self.0.clone().unique_stable(subset, ke)
+            self.0.clone().unique_stable(
+                subset.map(|x| x.into_iter().map(|y| y.into()).collect()),
+                ke,
+            )
         } else {
             self.0.clone().unique(subset, ke)
         };
@@ -699,14 +702,14 @@ impl RPolarsLazyFrame {
             .iter()
             .map(|(k, v)| {
                 let data_type = robj_to!(RPolarsDataType, v)?;
-                Ok(pl::Field::new(k, data_type.0))
+                Ok(pl::Field::new(k.into(), data_type.0))
             })
             .collect::<RResult<Vec<_>>>()?;
         let mut cast_map = PlHashMap::with_capacity(dtypes.len());
         cast_map.extend(
             dtypes
                 .iter()
-                .map(|f| (f.name().as_ref(), f.data_type().clone())),
+                .map(|f| (f.name().as_ref(), f.dtype().clone())),
         );
         Ok(self.0.clone().cast(cast_map, strict).into())
     }
