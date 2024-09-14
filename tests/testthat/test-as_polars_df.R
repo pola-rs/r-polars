@@ -1,3 +1,7 @@
+test_that("x argument can't be missing",{
+  expect_error(as_polars_df(), r"(The `x` argument of `as_polars_df\(\)` can't be missing)")
+})
+
 patrick::with_parameters_test_that(
   "as_polars_df works for classes",
   .cases = {
@@ -12,6 +16,7 @@ patrick::with_parameters_test_that(
       "polars_lazy_frame", pldf$lazy(),
       "list", list(x = 1:2, y = list("c", "d")),
       "data.frame", data.frame(x = 1:3, y = I(list("c", "d", TRUE))),
+      "NULL", NULL,
     )
   },
   code = {

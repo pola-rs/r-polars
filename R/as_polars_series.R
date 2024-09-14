@@ -291,8 +291,12 @@ as_polars_series.array <- function(x, name = NULL, ...) {
 #' @rdname as_polars_series
 #' @export
 as_polars_series.NULL <- function(x, name = NULL, ...) {
-  PlRSeries$new_null(name %||% "", 0L) |>
-    wrap()
+  wrap({
+    if (missing(x)) {
+      abort("The `x` argument of `as_polars_series()` can't be missing")
+    }
+    PlRSeries$new_null(name %||% "", 0L)
+  })
 }
 
 #' @rdname as_polars_series

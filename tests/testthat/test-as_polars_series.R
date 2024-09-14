@@ -1,3 +1,7 @@
+test_that("x argument can't be missing",{
+  expect_error(as_polars_series(), r"(The `x` argument of `as_polars_series\(\)` can't be missing)")
+})
+
 patrick::with_parameters_test_that(
   "as_polars_series works for classes",
   .cases = {

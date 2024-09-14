@@ -104,3 +104,13 @@
       │ 3   ┆ ["true"]  │
       └─────┴───────────┘
 
+# as_polars_df works for classes NULL
+
+    Code
+      print(pl_df)
+    Output
+      shape: (0, 0)
+      ┌┐
+      ╞╡
+      └┘
+

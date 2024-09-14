@@ -200,6 +200,10 @@ as_polars_expr.raw <- function(x, ...) {
 #' @rdname as_polars_expr
 #' @export
 as_polars_expr.NULL <- function(x, ...) {
-  lit_null() |>
-    wrap()
+  wrap({
+    if (missing(x)) {
+      abort("The `x` argument of `as_polars_expr()` can't be missing")
+    }
+    lit_null()
+  })
 }

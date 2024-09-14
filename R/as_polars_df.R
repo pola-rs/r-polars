@@ -142,3 +142,14 @@ as_polars_df.list <- function(x, ...) {
 #' @rdname as_polars_df
 #' @export
 as_polars_df.data.frame <- as_polars_df.list
+
+#' @rdname as_polars_df
+#' @export
+as_polars_df.NULL <- function(x, ...) {
+  wrap({
+    if (missing(x)) {
+      abort("The `x` argument of `as_polars_df()` can't be missing")
+    }
+    PlRDataFrame$init(list())
+  })
+}

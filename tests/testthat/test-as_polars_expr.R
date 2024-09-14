@@ -1,3 +1,7 @@
+test_that("x argument can't be missing",{
+  expect_error(as_polars_expr(), r"(The `x` argument of `as_polars_expr\(\)` can't be missing)")
+})
+
 test_that("as_polars_expr for character `as_lit=FALSE`", {
   expect_equal(as_polars_expr(character()), pl$col(character()))
   expect_equal(as_polars_expr(c("foo")), pl$col("foo"))

@@ -9,6 +9,7 @@
 \alias{as_polars_df.polars_lazy_frame}
 \alias{as_polars_df.list}
 \alias{as_polars_df.data.frame}
+\alias{as_polars_df.NULL}
 \title{Create a Polars DataFrame from an R object}
 \usage{
 as_polars_df(x, ...)
@@ -39,6 +40,8 @@ as_polars_df(x, ...)
 \method{as_polars_df}{list}(x, ...)
 
 \method{as_polars_df}{data.frame}(x, ...)
+
+\method{as_polars_df}{`NULL`}(x, ...)
 }
 \arguments{
 \item{x}{An R object.}
