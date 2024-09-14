@@ -18,12 +18,12 @@ pub use lazy::dataframe::*;
 use crate::conversion_s_to_r::pl_series_to_list;
 pub use crate::series::*;
 
+use crate::utils::{collect_hinted_result, r_result_list};
 use arrow::datatypes::ArrowDataType;
 use polars::prelude::ArrowField;
+use polars::prelude::SchemaExt;
 use polars_core::error::PolarsError;
 use polars_core::utils::arrow;
-
-use crate::utils::{collect_hinted_result, r_result_list};
 
 use crate::conversion::strings_to_smartstrings;
 use polars::frame::explode::UnpivotArgsIR;
@@ -40,7 +40,8 @@ pub struct OwnedDataFrameIterator {
 impl OwnedDataFrameIterator {
     pub fn new(df: polars::frame::DataFrame, compat_level: CompatLevel) -> Self {
         let schema = df.schema().to_arrow(compat_level);
-        let data_type = ArrowDataType::Struct(schema.fields);
+        // TODO: changed when bumping to 0.43.1, might need refactor
+        let data_type = ArrowDataType::Struct(schema.iter_values().map(|x| x.clone()).collect());
         let vs = df.get_columns().to_vec();
         Self {
             columns: vs,
@@ -221,7 +222,8 @@ impl RPolarsDataFrame {
 
     pub fn schema(&self) -> List {
         let mut l = self.dtypes();
-        l.set_names(self.0.get_column_names()).unwrap();
+        let nms = self.0.get_column_names().into_iter().map(|x| x.as_str());
+        l.set_names(nms).unwrap();
         l
     }
 
@@ -354,7 +356,8 @@ impl RPolarsDataFrame {
     pub fn export_stream(&self, stream_ptr: &str, compat_level: Robj) {
         let compat_level = robj_to!(CompatLevel, compat_level).unwrap();
         let schema = self.0.schema().to_arrow(compat_level);
-        let data_type = ArrowDataType::Struct(schema.fields);
+        // TODO: changed when bumping to 0.43.1, might need refactor
+        let data_type = ArrowDataType::Struct(schema.iter_values().map(|x| x.clone()).collect());
         let field = ArrowField::new("".into(), data_type, false);
 
         let iter_boxed = Box::new(OwnedDataFrameIterator::new(self.0.clone(), compat_level));
@@ -393,8 +396,14 @@ impl RPolarsDataFrame {
     ) -> RResult<Self> {
         use polars::prelude::UnpivotDF;
         let args = UnpivotArgsIR {
-            on: strings_to_smartstrings(robj_to!(Vec, String, on)?),
-            index: strings_to_smartstrings(robj_to!(Vec, String, index)?),
+            on: robj_to!(Vec, String, on)?
+                .into_iter()
+                .map(|x| x.into())
+                .collect(),
+            index: robj_to!(Vec, String, index)?
+                .into_iter()
+                .map(|x| x.into())
+                .collect(),
             value_name: robj_to!(Option, String, value_name)?.map(|s| s.into()),
             variable_name: robj_to!(Option, String, variable_name)?.map(|s| s.into()),
         };
