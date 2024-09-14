@@ -1,3 +1,32 @@
+# TODO: link to data type docs
+# TODO: section for name spaces
+# TODO: link to pl__col
+# TODO: expr__sort, expr__head
+# source: https://docs.pola.rs/user-guide/concepts/expressions
+#' Polars Expression class (`polars_expr`)
+#'
+#' An expression is a tree of operations that describe how to construct one or more [Series].
+#' As the outputs are [Series], it is straightforward to apply a sequence of expressions each of
+#' which transforms the output from the previous step.
+#' See examples for details.
+#' @name polars_expr
+#' @aliases Expr
+#' @seealso
+#' - [`pl$lit()`][pl__lit]: Create a literal expression.
+#' - `pl$col()`: Create an expression representing column(s) in a [DataFrame].
+#' @examples
+#' # An expression, 'Select column `foo`'
+#' pl$col("foo")
+#'
+#' # Expressions will be evaluated inside a context, such as `<DataFrame>$select()`
+#' df <- pl$DataFrame(
+#'   foo = c(1, 2, 1, 2, 3),
+#'   bar = c(5, 4, 3, 2, 1),
+#' )
+#'
+#' df$select(pl$col("foo"))
+NULL
+
 # The env storing expr namespaces
 polars_namespaces_expr <- new.env(parent = emptyenv())
 
