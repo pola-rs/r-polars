@@ -8,7 +8,6 @@ use polars_core::prelude::QuantileInterpolOptions;
 use crate::rpolarserr::{polars_to_rpolars_err, rerr, RPolarsErr, RResult, WithRctx};
 use crate::utils::collect_hinted_result;
 use crate::utils::robj_to_rchoice;
-use crate::utils::wrappers::null_to_opt;
 use pl::UniqueKeepStrategy;
 use polars::prelude::AsofStrategy;
 use std::num::NonZeroUsize;
@@ -452,7 +451,6 @@ pub fn robj_to_window_mapping(robj: Robj) -> RResult<pl::WindowMapping> {
 pub fn literal_to_any_value(litval: pl::LiteralValue) -> RResult<pl::AnyValue<'static>> {
     use pl::AnyValue as av;
     use pl::LiteralValue as lv;
-    use smartstring::alias::String as SString;
     match litval {
         lv::Boolean(x) => Ok(av::Boolean(x)),
         //lv::Datetime(datetime, unit) => Ok(av::Datetime(datetime, unit, &None)), #check how to convert
