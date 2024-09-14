@@ -46,7 +46,10 @@ pub unsafe fn to_rust_df(rb: Robj) -> Result<pl::DataFrame, String> {
     };
     let names = robj_record_batch_names
         .as_str_vector()
-        .ok_or_else(|| "internal error: Robj$schema$names is not a char vec".to_string())?;
+        .ok_or_else(|| "internal error: Robj$schema$names is not a char vec".to_string())?
+        .into_iter()
+        .map(PlSmallStr::from_str)
+        .collect::<Vec<_>>();
 
     //iterate over record batches
     let rb_len = rb.len();
@@ -83,14 +86,15 @@ pub unsafe fn to_rust_df(rb: Robj) -> Result<pl::DataFrame, String> {
                     .into_par_iter()
                     .zip(names.par_iter())
                     .map(|(arr, name)| {
-                        let s = Series::try_from((*name, arr)).map_err(|err| err.to_string())?;
+                        let s =
+                            Series::try_from((name.clone(), arr)).map_err(|err| err.to_string())?;
                         Ok(s)
                     })
                     .collect::<Result<Vec<_>, String>>()
             })
         } else {
             let iter = arrays_vec.into_iter().zip(names.iter()).map(|(arr, name)| {
-                let s = Series::try_from((*name, arr)).map_err(|err| err.to_string())?;
+                let s = Series::try_from((name.clone(), arr)).map_err(|err| err.to_string())?;
                 Ok(s)
             });
             crate::utils::collect_hinted_result(n_columns, iter)

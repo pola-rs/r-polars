@@ -647,7 +647,7 @@ impl RPolarsSeries {
     }
 
     pub fn import_stream(name: Robj, stream_ptr: Robj) -> RResult<Self> {
-        let name = robj_to!(str, name)?;
+        let name: PlSmallStr = robj_to!(str, name)?.into();
         let stream_in_ptr_addr = robj_to!(usize, stream_ptr)?;
         let stream_in_ptr =
             unsafe { Box::from_raw(stream_in_ptr_addr as *mut arrow::ffi::ArrowArrayStream) };
@@ -665,7 +665,7 @@ impl RPolarsSeries {
     }
 
     pub fn from_arrow_array_robj(name: Robj, array: Robj) -> Result<Self, String> {
-        let name = robj_to!(str, name)?;
+        let name: PlSmallStr = robj_to!(str, name)?.into();
         let arr = crate::arrow_interop::to_rust::arrow_array_to_rust(array)?;
 
         match arr.dtype() {
