@@ -10,7 +10,7 @@
 #' @export
 `-.polars_expr` <- function(e1, e2) {
   if (missing(e2)) {
-    e2$neg()
+    e1$neg()
   } else {
     as_polars_expr(e1)$sub(e2)
   }
