@@ -60,7 +60,6 @@ pl_scan_ipc = function(
     rechunk = rechunk,
     row_name = row_index_name,
     row_index = row_index_offset,
-    memory_map = memory_map,
     hive_partitioning = hive_partitioning,
     hive_schema = hive_schema,
     try_parse_hive_dates = try_parse_hive_dates,
