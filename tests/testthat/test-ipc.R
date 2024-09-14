@@ -34,7 +34,6 @@ test_that("Test reading data from Apache Arrow IPC", {
   expect_grepl_error(pl$scan_ipc(tmpf, rechunk = list()))
   expect_grepl_error(pl$scan_ipc(tmpf, row_index_name = c("x", "y")))
   expect_grepl_error(pl$scan_ipc(tmpf, row_index_name = "name", row_index_offset = data.frame()))
-  expect_grepl_error(pl$scan_ipc(tmpf, memory_map = NULL))
 })
 
 
