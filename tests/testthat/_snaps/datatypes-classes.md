@@ -194,12 +194,12 @@
     Output
       Struct(`a`=Struct(`b`=Int32), `c`=String)
 
-# data types print Struct(Int8, ` ` = String)
+# data types print Struct(Int8, ` ` = String, r"(`'")" = Int16)
 
     Code
       print(object)
     Output
-      Struct(Int8, ` `=String)
+      Struct(Int8, ` `=String, ``'"`=Int16)
 
 # data types print Categorical()
 

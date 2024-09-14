@@ -31,7 +31,7 @@ patrick::with_parameters_test_that(
       "Array(List(Array(String, 2)), c(2, 2))", pl$Array(pl$List(pl$Array(pl$String, 2)), c(2, 2)),
       "Struct(a = Int32, b = String)", pl$Struct(a = pl$Int32, b = pl$String),
       "Struct(a = Struct(b = Int32), c = String)", pl$Struct(a = pl$Struct(b = pl$Int32), c = pl$String),
-      "Struct(Int8, ` ` = String)", pl$Struct(pl$Int8, ` ` = pl$String),
+      r"-(Struct(Int8, ` ` = String, r"(`'")" = Int16))-", pl$Struct(pl$Int8, ` ` = pl$String, r"(`'")" = pl$Int16),
       "Categorical()", pl$Categorical(),
       "Enum(c('a', 'b', 'c'))", pl$Enum(c("a", "b", "c")),
     )
