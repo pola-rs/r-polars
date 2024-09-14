@@ -2118,13 +2118,13 @@ impl RPolarsExpr {
         //     //wrap as series
         // };
 
-        let f = move |name: &str| -> pl::PolarsResult<String> {
+        let f = move |name: &pl::PlSmallStr| -> pl::PolarsResult<pl::PlSmallStr> {
             let robj = probj.clone().0;
             let rfun = robj
                 .as_function()
                 .expect("internal error: this is not an R function");
 
-            let newname_robj = rfun.call(pairlist!(name)).map_err(|err| {
+            let newname_robj = rfun.call(pairlist!(name.as_str())).map_err(|err| {
                 let es =
                     format!("in $name$map(): user function raised this error: {:?}", err).into();
                 pl_error::ComputeError(es)
@@ -2138,7 +2138,7 @@ impl RPolarsExpr {
                         .into();
                     pl_error::ComputeError(es)
                 })
-                .map(|str| str.to_string())
+                .map(|str| str.into())
         };
 
         Ok(self.clone().0.name().map(f).into())
