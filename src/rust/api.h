@@ -120,6 +120,7 @@ SEXP savvy_PlRExpr_first__ffi(SEXP self__);
 SEXP savvy_PlRExpr_last__ffi(SEXP self__);
 SEXP savvy_PlRExpr_filter__ffi(SEXP self__, SEXP c_arg__predicate);
 SEXP savvy_PlRExpr_reverse__ffi(SEXP self__);
+SEXP savvy_PlRExpr_slice__ffi(SEXP self__, SEXP c_arg__offset, SEXP c_arg__length);
 SEXP savvy_PlRExpr_over__ffi(SEXP self__, SEXP c_arg__partition_by, SEXP c_arg__order_by_descending, SEXP c_arg__order_by_nulls_last, SEXP c_arg__mapping_strategy, SEXP c_arg__order_by);
 SEXP savvy_PlRExpr_and__ffi(SEXP self__, SEXP c_arg__other);
 SEXP savvy_PlRExpr_or__ffi(SEXP self__, SEXP c_arg__other);

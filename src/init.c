@@ -594,6 +594,11 @@ SEXP savvy_PlRExpr_reverse__impl(SEXP self__) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_slice__impl(SEXP self__, SEXP c_arg__offset, SEXP c_arg__length) {
+    SEXP res = savvy_PlRExpr_slice__ffi(self__, c_arg__offset, c_arg__length);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_over__impl(SEXP self__, SEXP c_arg__partition_by, SEXP c_arg__order_by_descending, SEXP c_arg__order_by_nulls_last, SEXP c_arg__mapping_strategy, SEXP c_arg__order_by) {
     SEXP res = savvy_PlRExpr_over__ffi(self__, c_arg__partition_by, c_arg__order_by_descending, c_arg__order_by_nulls_last, c_arg__mapping_strategy, c_arg__order_by);
     return handle_result(res);
@@ -1093,6 +1098,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_last__impl", (DL_FUNC) &savvy_PlRExpr_last__impl, 1},
     {"savvy_PlRExpr_filter__impl", (DL_FUNC) &savvy_PlRExpr_filter__impl, 2},
     {"savvy_PlRExpr_reverse__impl", (DL_FUNC) &savvy_PlRExpr_reverse__impl, 1},
+    {"savvy_PlRExpr_slice__impl", (DL_FUNC) &savvy_PlRExpr_slice__impl, 3},
     {"savvy_PlRExpr_over__impl", (DL_FUNC) &savvy_PlRExpr_over__impl, 6},
     {"savvy_PlRExpr_and__impl", (DL_FUNC) &savvy_PlRExpr_and__impl, 2},
     {"savvy_PlRExpr_or__impl", (DL_FUNC) &savvy_PlRExpr_or__impl, 2},

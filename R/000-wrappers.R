@@ -904,6 +904,14 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
   }
 }
 
+`PlRExpr_slice` <- function(self) {
+  function(`offset`, `length`) {
+    `offset` <- .savvy_extract_ptr(`offset`, "PlRExpr")
+    `length` <- .savvy_extract_ptr(`length`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_slice__impl, `self`, `offset`, `length`))
+  }
+}
+
 `PlRExpr_over` <- function(self) {
   function(`partition_by`, `order_by_descending`, `order_by_nulls_last`, `mapping_strategy`, `order_by` = NULL) {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_over__impl, `self`, `partition_by`, `order_by_descending`, `order_by_nulls_last`, `mapping_strategy`, `order_by`))
@@ -1112,6 +1120,7 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
   e$`last` <- `PlRExpr_last`(ptr)
   e$`filter` <- `PlRExpr_filter`(ptr)
   e$`reverse` <- `PlRExpr_reverse`(ptr)
+  e$`slice` <- `PlRExpr_slice`(ptr)
   e$`over` <- `PlRExpr_over`(ptr)
   e$`and` <- `PlRExpr_and`(ptr)
   e$`or` <- `PlRExpr_or`(ptr)

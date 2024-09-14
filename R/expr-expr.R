@@ -1,6 +1,5 @@
 # TODO: link to data type docs
 # TODO: section for name spaces
-# TODO: expr__sort, expr__head
 # source: https://docs.pola.rs/user-guide/concepts/expressions
 #' Polars Expression class (`polars_expr`)
 #'
@@ -14,8 +13,11 @@
 #' - [`pl$lit()`][pl__lit]: Create a literal expression.
 #' - [`pl$col()`][pl__col]: Create an expression representing column(s) in a [DataFrame].
 #' @examples
-#' # An expression, 'Select column `foo`'
-#' pl$col("foo")
+#' # An expression:
+#' # 1. Select column `foo`,
+#' # 2. Then sort the column (not in reversed order)
+#' # 3. Then take the first two values of the sorted output
+#' pl$col("foo")$sort()$head(2)
 #'
 #' # Expressions will be evaluated inside a context, such as `<DataFrame>$select()`
 #' df <- pl$DataFrame(
@@ -23,7 +25,10 @@
 #'   bar = c(5, 4, 3, 2, 1),
 #' )
 #'
-#' df$select(pl$col("foo"))
+#' df$select(
+#'   pl$col("foo")$sort()$head(3), # Return 3 values
+#'   pl$col("bar")$filter(pl$col("foo") == 1)$sum(), # Return a single value
+#' )
 NULL
 
 # The env storing expr namespaces
@@ -283,6 +288,33 @@ expr__sort_by <- function(
 expr__reverse <- function() {
   self$`_rexpr`$reverse() |>
     wrap()
+}
+
+expr__slice <- function(offset, length = NULL) {
+  self$`_rexpr`$slice(
+    as_polars_expr(
+      offset,
+      as_lit = TRUE
+    )$`_rexpr`$cast(pl$Int64$`_dt`, strict = FALSE, wrap_numerical = TRUE),
+    as_polars_expr(
+      length,
+      as_lit = TRUE
+    )$`_rexpr`$cast(pl$Int64$`_dt`, strict = FALSE, wrap_numerical = TRUE)
+  ) |>
+    wrap()
+}
+
+expr__head <- function(n = 10) {
+  self$slice(0, n) |>
+    wrap()
+}
+
+expr__tail <- function(n = 10) {
+  wrap({
+    # Supports unsigned integers
+    offset <- -as_polars_expr(n, as_lit = TRUE)$cast(pl$Int64, strict = FALSE, wrap_numerical = TRUE)
+    self$slice(offset, n)
+  })
 }
 
 expr__first <- function() {

@@ -11,8 +11,11 @@ which transforms the output from the previous step.
 See examples for details.
 }
 \examples{
-# An expression, 'Select column `foo`'
-pl$col("foo")
+# An expression:
+# 1. Select column `foo`,
+# 2. Then sort the column (not in reversed order)
+# 3. Then take the first two values of the sorted output
+pl$col("foo")$sort()$head(2)
 
 # Expressions will be evaluated inside a context, such as `<DataFrame>$select()`
 df <- pl$DataFrame(
@@ -20,7 +23,10 @@ df <- pl$DataFrame(
   bar = c(5, 4, 3, 2, 1),
 )
 
-df$select(pl$col("foo"))
+df$select(
+  pl$col("foo")$sort()$head(3), # Return 3 values
+  pl$col("bar")$filter(pl$col("foo") == 1)$sum(), # Return a single value
+)
 }
 \seealso{
 \itemize{

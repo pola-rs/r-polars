@@ -212,6 +212,14 @@ impl PlRExpr {
         Ok(self.inner.clone().reverse().into())
     }
 
+    fn slice(&self, offset: &PlRExpr, length: &PlRExpr) -> Result<Self> {
+        Ok(self
+            .inner
+            .clone()
+            .slice(offset.inner.clone(), length.inner.clone())
+            .into())
+    }
+
     fn over(
         &self,
         partition_by: ListSexp,
