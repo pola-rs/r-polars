@@ -102,9 +102,9 @@ impl RPolarsDataType {
         )))
     }
 
-    pub fn new_datetime(tu: Robj, tz: Nullable<String>) -> RResult<RPolarsDataType> {
-        robj_to!(timeunit, tu)
-            .map(|dt| RPolarsDataType(pl::DataType::Datetime(dt, null_to_opt(tz))))
+    pub fn new_datetime(tu: Robj, tz: Robj) -> RResult<RPolarsDataType> {
+        let tz = robj_to!(Option, String, tz)?.map(|x| x.into());
+        robj_to!(timeunit, tu).map(|dt| RPolarsDataType(pl::DataType::Datetime(dt, tz)))
     }
 
     pub fn new_duration(tu: Robj) -> RResult<RPolarsDataType> {
@@ -475,12 +475,7 @@ pub fn literal_to_any_value(litval: pl::LiteralValue) -> RResult<pl::AnyValue<'s
         lv::UInt64(x) => Ok(av::UInt64(x)),
         lv::UInt8(x) => Ok(av::UInt8(x)),
         // lv::Utf8(x) => Ok(av::Utf8(x.as_str())),
-        lv::String(x) => {
-            let mut s = SString::new();
-
-            s.push_str(x.as_str());
-            Ok(av::StringOwned(s))
-        }
+        lv::String(x) => Ok(av::StringOwned(x)),
         x => rerr().notachoice(format!("cannot convert LiteralValue {:?} to AnyValue", x)),
     }
 }
@@ -741,8 +736,8 @@ pub fn robj_to_statistics_options(robj: Robj) -> RResult<pl::StatisticsOptions> 
 
 pub fn robj_to_wrap_schema(robj: Robj) -> RResult<Wrap<pl::Schema>> {
     use pl::Schema;
-    let mut schema = Schema::new();
     let hm = robj.as_list().unwrap().into_hashmap();
+    let mut schema = Schema::with_capacity(hm.capacity());
 
     for (key, value) in hm.into_iter() {
         let dt = crate::utils::robj_to_datatype(value)?;
