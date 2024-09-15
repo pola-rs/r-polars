@@ -17,7 +17,7 @@ as_polars_expr(x, ...)
 
 \method{as_polars_expr}{default}(x, ...)
 
-\method{as_polars_expr}{polars_expr}(x, ...)
+\method{as_polars_expr}{polars_expr}(x, ..., structify = FALSE)
 
 \method{as_polars_expr}{polars_series}(x, ...)
 
@@ -37,6 +37,9 @@ as_polars_expr(x, ...)
 \item{x}{An R object.}
 
 \item{...}{Additional arguments passed to the methods.}
+
+\item{structify}{A logical. If \code{TRUE}, convert multi-column expressions to a single struct expression
+by calling \code{\link[=pl__struct]{pl$struct()}}. Otherwise (default), done nothing.}
 
 \item{as_lit}{A logical value indicating whether to treat vector as literal values or not.
 This argument is always set to \code{TRUE} when calling this function from \code{\link[=pl__lit]{pl$lit()}},
@@ -147,6 +150,10 @@ as_polars_expr(list(1, 2))
 ## Unlike the default method, this method does not call `$first()`
 as_polars_series(1) |>
   as_polars_expr()
+
+# polars_expr
+as_polars_expr(pl$col("a", "b"))
+as_polars_expr(pl$col("a", "b"), structify = TRUE)
 }
 \seealso{
 \itemize{

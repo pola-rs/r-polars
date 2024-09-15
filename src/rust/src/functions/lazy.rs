@@ -3,6 +3,17 @@ use polars::lazy::dsl;
 use savvy::{savvy, ListSexp, RawSexp, Result, StringSexp};
 
 #[savvy]
+pub fn as_struct(exprs: ListSexp) -> Result<PlRExpr> {
+    let exprs = <Wrap<Vec<Expr>>>::try_from(exprs)?.0;
+    if exprs.is_empty() {
+        return Err(savvy::Error::from(
+            "expected at least 1 expression in `as_struct`",
+        ));
+    }
+    Ok(dsl::as_struct(exprs).into())
+}
+
+#[savvy]
 pub fn field(names: StringSexp) -> Result<PlRExpr> {
     Ok(dsl::Expr::Field(names.iter().map(|name| name.into()).collect()).into())
 }

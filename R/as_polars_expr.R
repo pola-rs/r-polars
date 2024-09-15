@@ -1,7 +1,7 @@
 # Same as Python Polars' `parse_into_expression`
 # TODO: link to data type page
 # TODO: link to `expr__first`
-# TODO: `structify` option?
+# TODO: link to pl__struct
 #' Create a Polars expression from an R object
 #'
 #' The [as_polars_expr()] function creates a polars [expression] from various R objects.
@@ -57,6 +57,8 @@
 #' @param as_lit A logical value indicating whether to treat vector as literal values or not.
 #' This argument is always set to `TRUE` when calling this function from [`pl$lit()`][pl__lit],
 #' and expects to return literal values. See examples for details.
+#' @param structify A logical. If `TRUE`, convert multi-column expressions to a single struct expression
+#' by calling [`pl$struct()`][pl__struct]. Otherwise (default), done nothing.
 #' @return A polars [expression]
 #' @seealso
 #' - [as_polars_series()]: R -> Polars type mapping is mostly defined by this function.
@@ -106,6 +108,10 @@
 #' ## Unlike the default method, this method does not call `$first()`
 #' as_polars_series(1) |>
 #'   as_polars_expr()
+#'
+#' # polars_expr
+#' as_polars_expr(pl$col("a", "b"))
+#' as_polars_expr(pl$col("a", "b"), structify = TRUE)
 #' @export
 as_polars_expr <- function(x, ...) {
   UseMethod("as_polars_expr")
@@ -128,8 +134,12 @@ as_polars_expr.default <- function(x, ...) {
 
 #' @rdname as_polars_expr
 #' @export
-as_polars_expr.polars_expr <- function(x, ...) {
-  x
+as_polars_expr.polars_expr <- function(x, ..., structify = FALSE) {
+  if (isTRUE(structify)) {
+    .structify_expression(x)
+  } else {
+    x
+  }
 }
 
 #' @rdname as_polars_expr

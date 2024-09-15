@@ -17,6 +17,36 @@ namespace_expr_meta <- function(x) {
   self
 }
 
+# TODO: tests: pl$col("a", "b")$meta$has_multiple_outputs()
+expr_meta_has_multiple_outputs <- function() {
+  self$`_rexpr`$meta_has_multiple_outputs() |>
+    wrap()
+}
+
+# TODO: add tests for undetermined output: pl$all()$name$suffix("_")$meta$output_name()
+expr_meta_output_name <- function(..., raise_if_undetermined = TRUE) {
+  wrap({
+    check_dots_empty0(...)
+
+    if (isTRUE(raise_if_undetermined)) {
+      self$`_rexpr`$meta_output_name()
+    } else {
+      tryCatch(
+        self$`_rexpr`$meta_output_name(),
+        error = function(e) {
+          NULL
+        }
+      )
+    }
+  })
+}
+
+# TODO: tests: pl$col("foo")$alias("bar")$meta$undo_aliases()
+expr_meta_undo_aliases <- function() {
+  self$`_rexpr`$meta_undo_aliases() |>
+    wrap()
+}
+
 expr_meta__selector_add <- function(other) {
   self$`_rexpr`$`_meta_selector_add`(other$`_rexpr`) |>
     wrap()

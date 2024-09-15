@@ -1,4 +1,5 @@
 SEXP savvy_concat_df__ffi(SEXP c_arg__dfs);
+SEXP savvy_as_struct__ffi(SEXP c_arg__exprs);
 SEXP savvy_field__ffi(SEXP c_arg__names);
 SEXP savvy_col__ffi(SEXP c_arg__name);
 SEXP savvy_cols__ffi(SEXP c_arg__names);
@@ -128,6 +129,9 @@ SEXP savvy_PlRExpr_xor__ffi(SEXP self__, SEXP c_arg__other);
 SEXP savvy_PlRExpr_reshape__ffi(SEXP self__, SEXP c_arg__dimensions);
 SEXP savvy_PlRExpr_any__ffi(SEXP self__, SEXP c_arg__ignore_nulls);
 SEXP savvy_PlRExpr_all__ffi(SEXP self__, SEXP c_arg__ignore_nulls);
+SEXP savvy_PlRExpr_meta_output_name__ffi(SEXP self__);
+SEXP savvy_PlRExpr_meta_undo_aliases__ffi(SEXP self__);
+SEXP savvy_PlRExpr_meta_has_multiple_outputs__ffi(SEXP self__);
 SEXP savvy_PlRExpr__meta_selector_add__ffi(SEXP self__, SEXP c_arg__other);
 SEXP savvy_PlRExpr__meta_selector_and__ffi(SEXP self__, SEXP c_arg__other);
 SEXP savvy_PlRExpr__meta_selector_sub__ffi(SEXP self__, SEXP c_arg__other);

@@ -5,6 +5,20 @@ parse_into_list_of_expressions <- function(...) {
     lapply(\(x) as_polars_expr(x)$`_rexpr`)
 }
 
+.structify_expression <- function(expr) {
+  unaliased_expr <- expr$meta$undo_aliases()
+  if (unaliased_expr$meta$has_multiple_outputs()) {
+    expr_name <- expr$meta$output_name(raise_if_undetermined = FALSE)
+    if (is.null(expr_name)) {
+      pl$struct(expr)
+    } else {
+      pl$struct(unaliased_expr)$alias(expr_name)
+    }
+  } else {
+    expr
+  }
+}
+
 #' Parse dynamic dots into a single expression (PlRExpr, not polars-expr)
 #' @noRd
 parse_predicates_constraints_into_expression <- function(...) {

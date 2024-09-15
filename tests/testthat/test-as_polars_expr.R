@@ -2,6 +2,15 @@ test_that("x argument can't be missing",{
   expect_error(as_polars_expr(), r"(The `x` argument of `as_polars_expr\(\)` can't be missing)")
 })
 
+test_that("as_polars_expr for polars_expr `structify=TRUE`", {
+  as_func <- function(x) {
+    as_polars_expr(x, structify = TRUE)
+  }
+  expect_equal(as_func(pl$col("a")), pl$col("a"))
+  expect_equal(as_func(pl$col("a", "b")), pl$struct(pl$col("a", "b")))
+  expect_equal(as_func(pl$col("*")), pl$struct(pl$col("*")))
+})
+
 test_that("as_polars_expr for character `as_lit=FALSE`", {
   expect_equal(as_polars_expr(character()), pl$col(character()))
   expect_equal(as_polars_expr(c("foo")), pl$col("foo"))

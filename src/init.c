@@ -39,6 +39,11 @@ SEXP savvy_concat_df__impl(SEXP c_arg__dfs) {
     return handle_result(res);
 }
 
+SEXP savvy_as_struct__impl(SEXP c_arg__exprs) {
+    SEXP res = savvy_as_struct__ffi(c_arg__exprs);
+    return handle_result(res);
+}
+
 SEXP savvy_field__impl(SEXP c_arg__names) {
     SEXP res = savvy_field__ffi(c_arg__names);
     return handle_result(res);
@@ -634,6 +639,21 @@ SEXP savvy_PlRExpr_all__impl(SEXP self__, SEXP c_arg__ignore_nulls) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_meta_output_name__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_meta_output_name__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_meta_undo_aliases__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_meta_undo_aliases__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_meta_has_multiple_outputs__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_meta_has_multiple_outputs__ffi(self__);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr__meta_selector_add__impl(SEXP self__, SEXP c_arg__other) {
     SEXP res = savvy_PlRExpr__meta_selector_add__ffi(self__, c_arg__other);
     return handle_result(res);
@@ -987,6 +1007,7 @@ SEXP savvy_PlRWhen_then__impl(SEXP self__, SEXP c_arg__statement) {
 
 static const R_CallMethodDef CallEntries[] = {
     {"savvy_concat_df__impl", (DL_FUNC) &savvy_concat_df__impl, 1},
+    {"savvy_as_struct__impl", (DL_FUNC) &savvy_as_struct__impl, 1},
     {"savvy_field__impl", (DL_FUNC) &savvy_field__impl, 1},
     {"savvy_col__impl", (DL_FUNC) &savvy_col__impl, 1},
     {"savvy_cols__impl", (DL_FUNC) &savvy_cols__impl, 1},
@@ -1106,6 +1127,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_reshape__impl", (DL_FUNC) &savvy_PlRExpr_reshape__impl, 2},
     {"savvy_PlRExpr_any__impl", (DL_FUNC) &savvy_PlRExpr_any__impl, 2},
     {"savvy_PlRExpr_all__impl", (DL_FUNC) &savvy_PlRExpr_all__impl, 2},
+    {"savvy_PlRExpr_meta_output_name__impl", (DL_FUNC) &savvy_PlRExpr_meta_output_name__impl, 1},
+    {"savvy_PlRExpr_meta_undo_aliases__impl", (DL_FUNC) &savvy_PlRExpr_meta_undo_aliases__impl, 1},
+    {"savvy_PlRExpr_meta_has_multiple_outputs__impl", (DL_FUNC) &savvy_PlRExpr_meta_has_multiple_outputs__impl, 1},
     {"savvy_PlRExpr__meta_selector_add__impl", (DL_FUNC) &savvy_PlRExpr__meta_selector_add__impl, 2},
     {"savvy_PlRExpr__meta_selector_and__impl", (DL_FUNC) &savvy_PlRExpr__meta_selector_and__impl, 2},
     {"savvy_PlRExpr__meta_selector_sub__impl", (DL_FUNC) &savvy_PlRExpr__meta_selector_sub__impl, 2},

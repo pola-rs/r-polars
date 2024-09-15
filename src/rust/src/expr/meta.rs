@@ -1,8 +1,26 @@
 use crate::{PlRExpr, RPolarsErr};
-use savvy::{savvy, Result};
+use savvy::{savvy, Result, Sexp};
 
 #[savvy]
 impl PlRExpr {
+    fn meta_output_name(&self) -> Result<Sexp> {
+        let name = self
+            .inner
+            .clone()
+            .meta()
+            .output_name()
+            .map_err(RPolarsErr::from)?;
+        name.to_string().try_into()
+    }
+
+    fn meta_undo_aliases(&self) -> Result<Self> {
+        Ok(self.inner.clone().meta().undo_aliases().into())
+    }
+
+    fn meta_has_multiple_outputs(&self) -> Result<Sexp> {
+        self.inner.clone().meta().has_multiple_outputs().try_into()
+    }
+
     fn _meta_selector_add(&self, other: &PlRExpr) -> Result<Self> {
         let out = self
             .inner
