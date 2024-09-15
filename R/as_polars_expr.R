@@ -1,7 +1,6 @@
 # Same as Python Polars' `parse_into_expression`
 # TODO: link to data type page
 # TODO: link to `expr__first`
-# TODO: link to pl__struct
 #' Create a Polars expression from an R object
 #'
 #' The [as_polars_expr()] function creates a polars [expression] from various R objects.
