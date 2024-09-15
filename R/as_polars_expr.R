@@ -1,10 +1,11 @@
 # Same as Python Polars' `parse_into_expression`
 # TODO: link to data type page
 # TODO: link to `expr__first`
-#' Create a Polars Expression from an R object
+# TODO: `structify` option?
+#' Create a Polars expression from an R object
 #'
-#' The [as_polars_expr()] function creates a polars [Expression] from various R objects.
-#' This function is used internally by various polars functions that accept [Expressions][Expression].
+#' The [as_polars_expr()] function creates a polars [expression] from various R objects.
+#' This function is used internally by various polars functions that accept [expressions][Expr].
 #' In most cases, users should use [`pl$lit()`][pl__lit] instead of this function, which is
 #' a shorthand for `as_polars_expr(x, as_lit = TRUE)`.
 #' (In other words, this function can be considered as an internal implementation to realize
@@ -18,7 +19,7 @@
 #'
 #' ## Default S3 method
 #'
-#' Create a [Series] by calling [as_polars_series()] and then convert that [Series] to an [Expression].
+#' Create a [Series] by calling [as_polars_series()] and then convert that [Series] to an [Expr].
 #' If the length of the [Series] is `1`, it will be converted to a scalar value using `<Expr>$first()` at the end.
 #'
 #' Additional arguments `...` are passed to [as_polars_series()].
@@ -56,7 +57,7 @@
 #' @param as_lit A logical value indicating whether to treat vector as literal values or not.
 #' This argument is always set to `TRUE` when calling this function from [`pl$lit()`][pl__lit],
 #' and expects to return literal values. See examples for details.
-#' @return A polars [Expression]
+#' @return A polars [expression]
 #' @seealso
 #' - [as_polars_series()]: R -> Polars type mapping is mostly defined by this function.
 #' @examples

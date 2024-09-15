@@ -3,8 +3,8 @@
 \name{polars_expr}
 \alias{polars_expr}
 \alias{Expr}
-\alias{Expression}
-\title{Polars Expression class (\code{polars_expr})}
+\alias{expression}
+\title{Polars expression class (\code{polars_expr})}
 \description{
 An expression is a tree of operations that describe how to construct one or more \link{Series}.
 As the outputs are \link{Series}, it is straightforward to apply a sequence of expressions each of

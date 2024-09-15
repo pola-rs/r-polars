@@ -11,7 +11,7 @@
 \alias{as_polars_expr.double}
 \alias{as_polars_expr.raw}
 \alias{as_polars_expr.NULL}
-\title{Create a Polars Expression from an R object}
+\title{Create a Polars expression from an R object}
 \usage{
 as_polars_expr(x, ...)
 
@@ -43,11 +43,11 @@ This argument is always set to \code{TRUE} when calling this function from \code
 and expects to return literal values. See examples for details.}
 }
 \value{
-A polars \link{Expression}
+A polars \link{expression}
 }
 \description{
-The \code{\link[=as_polars_expr]{as_polars_expr()}} function creates a polars \link{Expression} from various R objects.
-This function is used internally by various polars functions that accept \link[=Expression]{Expressions}.
+The \code{\link[=as_polars_expr]{as_polars_expr()}} function creates a polars \link{expression} from various R objects.
+This function is used internally by various polars functions that accept \link[=Expr]{expressions}.
 In most cases, users should use \code{\link[=pl__lit]{pl$lit()}} instead of this function, which is
 a shorthand for \code{as_polars_expr(x, as_lit = TRUE)}.
 (In other words, this function can be considered as an internal implementation to realize
@@ -61,7 +61,7 @@ If you want to implement your own conversion from an R class to a Polars object,
 define an S3 method for \code{\link[=as_polars_series]{as_polars_series()}} instead of this function.
 \subsection{Default S3 method}{
 
-Create a \link{Series} by calling \code{\link[=as_polars_series]{as_polars_series()}} and then convert that \link{Series} to an \link{Expression}.
+Create a \link{Series} by calling \code{\link[=as_polars_series]{as_polars_series()}} and then convert that \link{Series} to an \link{Expr}.
 If the length of the \link{Series} is \code{1}, it will be converted to a scalar value using \verb{<Expr>$first()} at the end.
 
 Additional arguments \code{...} are passed to \code{\link[=as_polars_series]{as_polars_series()}}.

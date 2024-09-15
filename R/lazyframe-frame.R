@@ -1,4 +1,4 @@
-# TODO: link to the lazy method of dataframe
+# TODO: link to dataframe__lazy
 #' Polars LazyFrame class (`polars_lazy_frame`)
 #'
 #' Representation of a Lazy computation graph/query against a [DataFrame].
@@ -9,6 +9,8 @@
 #' @aliases plars_lazy_frame LazyFrame
 #' @inheritParams pl__DataFrame
 #' @return A polars [LazyFrame]
+#' @seealso
+#' - [`<LazyFrame>$collect()`][lazyframe__collect]: Materialize a [LazyFrame] into a [DataFrame].
 #' @examples
 #' # Constructing a LazyFrame from vectors:
 #' pl$LazyFrame(a = 1:2, b = 3:4)
@@ -48,11 +50,38 @@ wrap.PlRLazyFrame <- function(x, ...) {
   self
 }
 
+# TODO: link to pl__select
+#' Select columns from this LazyFrame
+#'
+#' @inherit pl__LazyFrame return
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]>
+#' Name-value pairs of objects to be converted to polars [expressions][Expr]
+#' by the [as_polars_expr()] function.
+#' Characters are parsed as column names, other non-expression inputs are parsed as [literals][pl__lit].
+#' Each name will be used as the expression name.
+#' @examples
+#' # Pass the name of a column to select that column.
+#' lf <- pl$LazyFrame(
+#'   foo = 1:3,
+#'   bar = 6:8,
+#'   ham = letters[1:3]
+#' )
+#' lf$select("foo")$collect()
+#'
+#' # Multiple columns can be selected by passing a list of column names.
+#' lf$select("foo", "bar")$collect()
+#'
+#' # Expressions are also accepted.
+#' lf$select(pl$col("foo"), pl$col("bar") + 1)$collect()
+#'
+#' # Name expression (used as the column name of the output DataFrame)
+#' lf$select(
+#'   threshold = pl$when(pl$col("foo") > 2)$then(10)$otherwise(0)
+#' )$collect()
 lazyframe__select <- function(...) {
-  wrap({
-    exprs <- parse_into_list_of_expressions(...)
-    self$`_ldf`$select(exprs)
-  })
+  parse_into_list_of_expressions(...) |>
+    self$`_ldf`$select() |>
+    wrap()
 }
 
 lazyframe__group_by <- function(..., maintain_order = FALSE) {

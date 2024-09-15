@@ -13,7 +13,7 @@ pl__lit(value, dtype = NULL)
 If not \code{NULL}, casted to the specified data type.}
 }
 \value{
-A polars \link{Expression}
+A polars \link{expression}
 }
 \description{
 This function is a shorthand for \code{\link[=as_polars_expr]{as_polars_expr(x, as_lit = TRUE)}} and

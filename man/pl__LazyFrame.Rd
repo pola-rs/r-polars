@@ -41,3 +41,8 @@ data <- list(a = 1:2, b = 3:4)
 ## Using dynamic dots feature
 pl$LazyFrame(!!!data)
 }
+\seealso{
+\itemize{
+\item \code{\link[=lazyframe__collect]{<LazyFrame>$collect()}}: Materialize a \link{LazyFrame} into a \link{DataFrame}.
+}
+}

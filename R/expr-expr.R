@@ -1,14 +1,14 @@
 # TODO: link to data type docs
 # TODO: section for name spaces
 # source: https://docs.pola.rs/user-guide/concepts/expressions
-#' Polars Expression class (`polars_expr`)
+#' Polars expression class (`polars_expr`)
 #'
 #' An expression is a tree of operations that describe how to construct one or more [Series].
 #' As the outputs are [Series], it is straightforward to apply a sequence of expressions each of
 #' which transforms the output from the previous step.
 #' See examples for details.
 #' @name polars_expr
-#' @aliases Expr Expression
+#' @aliases Expr expression
 #' @seealso
 #' - [`pl$lit()`][pl__lit]: Create a literal expression.
 #' - [`pl$col()`][pl__col]: Create an expression representing column(s) in a [DataFrame].
