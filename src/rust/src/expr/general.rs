@@ -1,7 +1,8 @@
 use crate::{prelude::*, PlRDataType, PlRExpr};
 use polars::lazy::dsl;
+use polars::series::ops::NullBehavior;
 use polars_core::chunked_array::cast::CastOptions;
-use savvy::{r_println, savvy, ListSexp, LogicalSexp, NumericSexp, Result};
+use savvy::{r_println, savvy, ListSexp, LogicalSexp, NumericScalar, NumericSexp, Result};
 use std::ops::Neg;
 
 #[savvy]
@@ -263,6 +264,12 @@ impl PlRExpr {
 
     fn pow(&self, exponent: &PlRExpr) -> Result<Self> {
         Ok(self.inner.clone().pow(exponent.inner.clone()).into())
+    }
+
+    fn diff(&self, n: NumericScalar, null_behavior: &str) -> Result<Self> {
+        let n = <Wrap<i64>>::try_from(n)?.0;
+        let null_behavior = <Wrap<NullBehavior>>::try_from(null_behavior)?.0;
+        Ok(self.inner.clone().diff(n, null_behavior).into())
     }
 
     fn reshape(&self, dimensions: NumericSexp) -> Result<Self> {

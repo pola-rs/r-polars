@@ -1,5 +1,6 @@
 use crate::prelude::*;
 use crate::{PlRDataFrame, PlRDataType, PlRExpr};
+use polars::series::ops::NullBehavior;
 use savvy::{ListSexp, NumericScalar, NumericSexp, TypedSexp};
 mod chunked_array;
 pub mod clock;
@@ -256,6 +257,28 @@ impl TryFrom<NumericSexp> for Wrap<Vec<usize>> {
     }
 }
 
+impl TryFrom<NumericScalar> for Wrap<i64> {
+    type Error = savvy::Error;
+
+    fn try_from(v: NumericScalar) -> Result<Self, savvy::Error> {
+        const TOLERANCE: f64 = 0.01; // same as savvy
+        let v = v.as_f64();
+        if v.is_nan() {
+            Err("`NaN` cannot be converted to i64".to_string())?
+        } else if v < i64::MIN as f64 {
+            Err(format!("Value `{v:?}` is too small to be converted to i64"))?
+        } else if v > i64::MAX as f64 {
+            Err(format!("Value `{v:?}` is too large to be converted to i64"))?
+        } else if (v - v.round()).abs() > TOLERANCE {
+            Err(format!(
+                "Value `{v:?}` is not integer-ish enough to be converted to i64"
+            ))?
+        } else {
+            Ok(Wrap(v as i64))
+        }
+    }
+}
+
 impl TryFrom<NumericSexp> for Wrap<Vec<i64>> {
     type Error = savvy::Error;
 
@@ -275,6 +298,23 @@ impl TryFrom<&str> for Wrap<NonExistent> {
             v => {
                 return Err(format!(
                     "`non_existent` must be one of ('null', 'raise'), got '{v}'",
+                ))
+            }
+        };
+        Ok(Wrap(parsed))
+    }
+}
+
+impl TryFrom<&str> for Wrap<NullBehavior> {
+    type Error = String;
+
+    fn try_from(null_behavior: &str) -> Result<Self, String> {
+        let parsed = match null_behavior {
+            "drop" => NullBehavior::Drop,
+            "ignore" => NullBehavior::Ignore,
+            v => {
+                return Err(format!(
+                    "`null_behavior` must be one of ('drop', 'ignore'), got '{v}'",
                 ))
             }
         };

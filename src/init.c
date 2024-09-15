@@ -629,6 +629,11 @@ SEXP savvy_PlRExpr_pow__impl(SEXP self__, SEXP c_arg__exponent) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_diff__impl(SEXP self__, SEXP c_arg__n, SEXP c_arg__null_behavior) {
+    SEXP res = savvy_PlRExpr_diff__ffi(self__, c_arg__n, c_arg__null_behavior);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_reshape__impl(SEXP self__, SEXP c_arg__dimensions) {
     SEXP res = savvy_PlRExpr_reshape__ffi(self__, c_arg__dimensions);
     return handle_result(res);
@@ -801,6 +806,11 @@ SEXP savvy_PlRLazyFrame_group_by__impl(SEXP self__, SEXP c_arg__by, SEXP c_arg__
 
 SEXP savvy_PlRLazyFrame_collect__impl(SEXP self__) {
     SEXP res = savvy_PlRLazyFrame_collect__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRLazyFrame_drop__impl(SEXP self__, SEXP c_arg__columns, SEXP c_arg__strict) {
+    SEXP res = savvy_PlRLazyFrame_drop__ffi(self__, c_arg__columns, c_arg__strict);
     return handle_result(res);
 }
 
@@ -1130,6 +1140,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_or__impl", (DL_FUNC) &savvy_PlRExpr_or__impl, 2},
     {"savvy_PlRExpr_xor__impl", (DL_FUNC) &savvy_PlRExpr_xor__impl, 2},
     {"savvy_PlRExpr_pow__impl", (DL_FUNC) &savvy_PlRExpr_pow__impl, 2},
+    {"savvy_PlRExpr_diff__impl", (DL_FUNC) &savvy_PlRExpr_diff__impl, 3},
     {"savvy_PlRExpr_reshape__impl", (DL_FUNC) &savvy_PlRExpr_reshape__impl, 2},
     {"savvy_PlRExpr_any__impl", (DL_FUNC) &savvy_PlRExpr_any__impl, 2},
     {"savvy_PlRExpr_all__impl", (DL_FUNC) &savvy_PlRExpr_all__impl, 2},
@@ -1165,6 +1176,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRLazyFrame_select__impl", (DL_FUNC) &savvy_PlRLazyFrame_select__impl, 2},
     {"savvy_PlRLazyFrame_group_by__impl", (DL_FUNC) &savvy_PlRLazyFrame_group_by__impl, 3},
     {"savvy_PlRLazyFrame_collect__impl", (DL_FUNC) &savvy_PlRLazyFrame_collect__impl, 1},
+    {"savvy_PlRLazyFrame_drop__impl", (DL_FUNC) &savvy_PlRLazyFrame_drop__impl, 3},
     {"savvy_PlRLazyFrame_cast__impl", (DL_FUNC) &savvy_PlRLazyFrame_cast__impl, 3},
     {"savvy_PlRLazyFrame_cast_all__impl", (DL_FUNC) &savvy_PlRLazyFrame_cast_all__impl, 3},
     {"savvy_PlRLazyFrame_sort_by_exprs__impl", (DL_FUNC) &savvy_PlRLazyFrame_sort_by_exprs__impl, 6},

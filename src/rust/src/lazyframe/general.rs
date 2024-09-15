@@ -93,6 +93,16 @@ impl PlRLazyFrame {
         Ok(df.into())
     }
 
+    fn drop(&self, columns: ListSexp, strict: bool) -> Result<Self> {
+        let ldf = self.ldf.clone();
+        let columns = <Wrap<Vec<Expr>>>::from(columns).0;
+        if strict {
+            Ok(ldf.drop(columns).into())
+        } else {
+            Ok(ldf.drop_no_validate(columns).into())
+        }
+    }
+
     fn cast(&self, dtypes: ListSexp, strict: bool) -> Result<Self> {
         let dtypes = <Wrap<Vec<Field>>>::try_from(dtypes)?.0;
         let mut cast_map = PlHashMap::with_capacity(dtypes.len());

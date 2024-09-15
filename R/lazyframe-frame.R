@@ -305,11 +305,30 @@ lazyframe__sort <- function(
 #'   `b/2` = pl$col("b") / 2,
 #'   `not c` = pl$col("c")$not(),
 #' )$collect()
+#'
+#' # Expressions with multiple outputs can automatically be instantiated
+#' # as Structs by enabling the experimental setting `POLARS_AUTO_STRUCTIFY`:
+#' if (requireNamespace("withr", quietly = TRUE)) {
+#'   withr::with_envvar(c(POLARS_AUTO_STRUCTIFY = "1"), {
+#'     lf$drop("c")$with_columns(
+#'       diffs = pl$col("a", "b")$diff()$name$suffix("_diff"),
+#'     )$collect()
+#'   })
+#' }
 lazyframe__with_columns <- function(...) {
   wrap({
     structify <- parse_env_auto_structify()
 
     parse_into_list_of_expressions(..., `__structify` = structify) |>
       self$`_ldf`$with_columns()
+  })
+}
+
+lazyframe__drop <- function(..., strict = TRUE) {
+  wrap({
+    check_dots_unnamed()
+
+    parse_into_list_of_expressions(...) |>
+      self$`_ldf`$drop(strict)
   })
 }

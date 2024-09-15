@@ -26,6 +26,7 @@ rev = "54218e7e35e3defd4b0801e820c56eea6b91e525"
 features = [
     "binary_encoding",
     "cse",
+    "diff",
     "dtype-full",
     "fused",
     "json",

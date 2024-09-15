@@ -182,6 +182,11 @@ dataframe__equals <- function(other, ..., null_equal = TRUE) {
   })
 }
 
+dataframe__drop <- function(..., strict = TRUE) {
+  self$lazy()$drop(..., strict = strict)$collect(`_eager` = TRUE) |>
+    wrap()
+}
+
 # TODO: accept formulas for type mapping
 dataframe__cast <- function(..., strict = TRUE) {
   self$lazy()$cast(..., strict = strict)$collect(`_eager` = TRUE) |>

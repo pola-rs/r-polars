@@ -397,6 +397,11 @@ expr__xor <- function(other) {
   })
 }
 
+expr__diff <- function(n = 1, null_behavior = "ignore") {
+  self$`_rexpr`$diff(n, null_behavior) |>
+    wrap()
+}
+
 expr__reshape <- function(dimensions) {
   self$`_rexpr`$reshape(dimensions) |>
     wrap()

@@ -951,6 +951,12 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
   }
 }
 
+`PlRExpr_diff` <- function(self) {
+  function(`n`, `null_behavior`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_diff__impl, `self`, `n`, `null_behavior`))
+  }
+}
+
 `PlRExpr_reshape` <- function(self) {
   function(`dimensions`) {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_reshape__impl, `self`, `dimensions`))
@@ -1156,6 +1162,7 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
   e$`or` <- `PlRExpr_or`(ptr)
   e$`xor` <- `PlRExpr_xor`(ptr)
   e$`pow` <- `PlRExpr_pow`(ptr)
+  e$`diff` <- `PlRExpr_diff`(ptr)
   e$`reshape` <- `PlRExpr_reshape`(ptr)
   e$`any` <- `PlRExpr_any`(ptr)
   e$`all` <- `PlRExpr_all`(ptr)
@@ -1282,6 +1289,12 @@ class(`PlRExpr`) <- "PlRExpr__bundle"
   }
 }
 
+`PlRLazyFrame_drop` <- function(self) {
+  function(`columns`, `strict`) {
+    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_drop__impl, `self`, `columns`, `strict`))
+  }
+}
+
 `PlRLazyFrame_cast` <- function(self) {
   function(`dtypes`, `strict`) {
     .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_cast__impl, `self`, `dtypes`, `strict`))
@@ -1319,6 +1332,7 @@ class(`PlRExpr`) <- "PlRExpr__bundle"
   e$`select` <- `PlRLazyFrame_select`(ptr)
   e$`group_by` <- `PlRLazyFrame_group_by`(ptr)
   e$`collect` <- `PlRLazyFrame_collect`(ptr)
+  e$`drop` <- `PlRLazyFrame_drop`(ptr)
   e$`cast` <- `PlRLazyFrame_cast`(ptr)
   e$`cast_all` <- `PlRLazyFrame_cast_all`(ptr)
   e$`sort_by_exprs` <- `PlRLazyFrame_sort_by_exprs`(ptr)
