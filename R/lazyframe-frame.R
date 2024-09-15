@@ -90,11 +90,7 @@ wrap.PlRLazyFrame <- function(x, ...) {
 #' }
 lazyframe__select <- function(...) {
   wrap({
-    structify <- switch(Sys.getenv("POLARS_AUTO_STRUCTIFY", "0"),
-      "0" = FALSE,
-      "1" = TRUE,
-      abort("Environment variable `POLARS_AUTO_STRUCTIFY` must be one of ('0', '1')")
-    )
+    structify <- parse_env_auto_structify()
 
     parse_into_list_of_expressions(..., `__structify` = structify) |>
       self$`_ldf`$select()
