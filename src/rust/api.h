@@ -126,6 +126,7 @@ SEXP savvy_PlRExpr_over__ffi(SEXP self__, SEXP c_arg__partition_by, SEXP c_arg__
 SEXP savvy_PlRExpr_and__ffi(SEXP self__, SEXP c_arg__other);
 SEXP savvy_PlRExpr_or__ffi(SEXP self__, SEXP c_arg__other);
 SEXP savvy_PlRExpr_xor__ffi(SEXP self__, SEXP c_arg__other);
+SEXP savvy_PlRExpr_pow__ffi(SEXP self__, SEXP c_arg__exponent);
 SEXP savvy_PlRExpr_reshape__ffi(SEXP self__, SEXP c_arg__dimensions);
 SEXP savvy_PlRExpr_any__ffi(SEXP self__, SEXP c_arg__ignore_nulls);
 SEXP savvy_PlRExpr_all__ffi(SEXP self__, SEXP c_arg__ignore_nulls);

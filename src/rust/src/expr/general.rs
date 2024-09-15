@@ -261,6 +261,10 @@ impl PlRExpr {
         Ok(self.inner.clone().xor(other.inner.clone()).into())
     }
 
+    fn pow(&self, exponent: &PlRExpr) -> Result<Self> {
+        Ok(self.inner.clone().pow(exponent.inner.clone()).into())
+    }
+
     fn reshape(&self, dimensions: NumericSexp) -> Result<Self> {
         let dimensions: Vec<i64> = <Wrap<Vec<i64>>>::try_from(dimensions)?.0;
         Ok(self

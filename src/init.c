@@ -624,6 +624,11 @@ SEXP savvy_PlRExpr_xor__impl(SEXP self__, SEXP c_arg__other) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_pow__impl(SEXP self__, SEXP c_arg__exponent) {
+    SEXP res = savvy_PlRExpr_pow__ffi(self__, c_arg__exponent);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_reshape__impl(SEXP self__, SEXP c_arg__dimensions) {
     SEXP res = savvy_PlRExpr_reshape__ffi(self__, c_arg__dimensions);
     return handle_result(res);
@@ -1124,6 +1129,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_and__impl", (DL_FUNC) &savvy_PlRExpr_and__impl, 2},
     {"savvy_PlRExpr_or__impl", (DL_FUNC) &savvy_PlRExpr_or__impl, 2},
     {"savvy_PlRExpr_xor__impl", (DL_FUNC) &savvy_PlRExpr_xor__impl, 2},
+    {"savvy_PlRExpr_pow__impl", (DL_FUNC) &savvy_PlRExpr_pow__impl, 2},
     {"savvy_PlRExpr_reshape__impl", (DL_FUNC) &savvy_PlRExpr_reshape__impl, 2},
     {"savvy_PlRExpr_any__impl", (DL_FUNC) &savvy_PlRExpr_any__impl, 2},
     {"savvy_PlRExpr_all__impl", (DL_FUNC) &savvy_PlRExpr_all__impl, 2},

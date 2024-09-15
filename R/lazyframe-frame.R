@@ -81,6 +81,7 @@ wrap.PlRLazyFrame <- function(x, ...) {
 #'
 #' # Expressions with multiple outputs can be automatically instantiated
 #' # as Structs by setting the `POLARS_AUTO_STRUCTIFY` environment variable.
+#' # (Experimental)
 #' if (requireNamespace("withr", quietly = TRUE)) {
 #'   withr::with_envvar(c(POLARS_AUTO_STRUCTIFY = "1"), {
 #'     lf$select(
@@ -271,8 +272,44 @@ lazyframe__sort <- function(
   })
 }
 
+#' Add columns to this LazyFrame
+#'
+#' Added columns will replace existing columns with the same name.
+#'
+#' Creating a new LazyFrame using this method does not create a new copy of
+#' existing data.
+#' @inherit pl__LazyFrame return
+#' @inheritParams lazyframe__select
+#' @examples
+#' # Pass an expression to add it as a new column.
+#' lf <- pl$LazyFrame(
+#'   a = 1:4,
+#'   b = c(0.5, 4, 10, 13),
+#'   c = c(TRUE, TRUE, FALSE, TRUE),
+#' )
+#' lf$with_columns((pl$col("a")^2)$alias("a^2"))$collect()
+#'
+#' # Added columns will replace existing columns with the same name.
+#' lf$with_columns(a = pl$col("a")$cast(pl$Float64))$collect()
+#'
+#' # Multiple columns can be added
+#' lf$with_columns(
+#'   (pl$col("a")^2)$alias("a^2"),
+#'   (pl$col("b") / 2)$alias("b/2"),
+#'   (pl$col("c")$not())$alias("not c"),
+#' )$collect()
+#'
+#' # Name expression instead of `$alias()`
+#' lf$with_columns(
+#'   `a^2` = pl$col("a")^2,
+#'   `b/2` = pl$col("b") / 2,
+#'   `not c` = pl$col("c")$not(),
+#' )$collect()
 lazyframe__with_columns <- function(...) {
-  parse_into_list_of_expressions(...) |>
-    self$`_ldf`$with_columns() |>
-    wrap()
+  wrap({
+    structify <- parse_env_auto_structify()
+
+    parse_into_list_of_expressions(..., `__structify` = structify) |>
+      self$`_ldf`$with_columns()
+  })
 }

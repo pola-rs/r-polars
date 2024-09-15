@@ -41,6 +41,7 @@ lf$select(
 
 # Expressions with multiple outputs can be automatically instantiated
 # as Structs by setting the `POLARS_AUTO_STRUCTIFY` environment variable.
+# (Experimental)
 if (requireNamespace("withr", quietly = TRUE)) {
   withr::with_envvar(c(POLARS_AUTO_STRUCTIFY = "1"), {
     lf$select(

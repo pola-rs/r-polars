@@ -37,6 +37,11 @@
 }
 
 #' @export
+`^.polars_expr` <- function(e1, e2) {
+  as_polars_expr(e1)$pow(e2)
+}
+
+#' @export
 `<.polras_expr` <- function(e1, e2) {
   as_polars_expr(e1)$lt(e2)
 }

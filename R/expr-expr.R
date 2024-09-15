@@ -79,39 +79,52 @@ pl__deserialize_expr <- function(data, ..., format = "binary") {
 }
 
 expr__add <- function(other) {
-  other <- as_polars_expr(other)
-  self$`_rexpr`$add(other$`_rexpr`) |>
-    wrap()
+  wrap({
+    other <- as_polars_expr(other)
+    self$`_rexpr`$add(other$`_rexpr`)
+  })
 }
 
 expr__sub <- function(other) {
-  other <- as_polars_expr(other)
-  self$`_rexpr`$sub(other$`_rexpr`) |>
-    wrap()
+  wrap({
+    other <- as_polars_expr(other)
+    self$`_rexpr`$sub(other$`_rexpr`)
+  })
 }
 
 expr__mul <- function(other) {
-  other <- as_polars_expr(other)
-  self$`_rexpr`$mul(other$`_rexpr`) |>
-    wrap()
+  wrap({
+    other <- as_polars_expr(other)
+    self$`_rexpr`$mul(other$`_rexpr`)
+  })
 }
 
 expr__true_div <- function(other) {
-  other <- as_polars_expr(other)
-  self$`_rexpr`$div(other$`_rexpr`) |>
-    wrap()
+  wrap({
+    other <- as_polars_expr(other)
+    self$`_rexpr`$div(other$`_rexpr`)
+  })
+}
+
+expr__pow <- function(other) {
+  wrap({
+    other <- as_polars_expr(other)
+    self$`_rexpr`$pow(other$`_rexpr`)
+  })
 }
 
 expr__mod <- function(other) {
-  other <- as_polars_expr(other)
-  self$`_rexpr`$rem(other$`_rexpr`) |>
-    wrap()
+  wrap({
+    other <- as_polars_expr(other)
+    self$`_rexpr`$rem(other$`_rexpr`)
+  })
 }
 
 expr__floor_div <- function(other) {
-  other <- as_polars_expr(other)
-  self$`_rexpr`$floor_div(other$`_rexpr`) |>
-    wrap()
+  wrap({
+    other <- as_polars_expr(other)
+    self$`_rexpr`$floor_div(other$`_rexpr`)
+  })
 }
 
 expr__neg <- function() {
@@ -120,51 +133,59 @@ expr__neg <- function() {
 }
 
 expr__eq <- function(other) {
-  other <- as_polars_expr(other, as_lit = TRUE)
-  self$`_rexpr`$eq(other$`_rexpr`) |>
-    wrap()
+  wrap({
+    other <- as_polars_expr(other, as_lit = TRUE)
+    self$`_rexpr`$eq(other$`_rexpr`)
+  })
 }
 
 expr__eq_missing <- function(other) {
-  other <- as_polars_expr(other, as_lit = TRUE)
-  self$`_rexpr`$eq_missing(other$`_rexpr`) |>
-    wrap()
+  wrap({
+    other <- as_polars_expr(other, as_lit = TRUE)
+    self$`_rexpr`$eq_missing(other$`_rexpr`)
+  })
 }
 
 expr__neq <- function(other) {
-  other <- as_polars_expr(other, as_lit = TRUE)
-  self$`_rexpr`$neq(other$`_rexpr`) |>
-    wrap()
+  wrap({
+    other <- as_polars_expr(other, as_lit = TRUE)
+    self$`_rexpr`$neq(other$`_rexpr`)
+  })
 }
 
 expr__neq_missing <- function(other) {
-  other <- as_polars_expr(other, as_lit = TRUE)
-  self$`_rexpr`$neq_missing(other$`_rexpr`) |>
-    wrap()
+  wrap({
+    other <- as_polars_expr(other, as_lit = TRUE)
+    self$`_rexpr`$neq_missing(other$`_rexpr`)
+  })
 }
 
 expr__gt <- function(other) {
-  other <- as_polars_expr(other, as_lit = TRUE)
-  self$`_rexpr`$gt(other$`_rexpr`) |>
-    wrap()
+  wrap({
+    other <- as_polars_expr(other, as_lit = TRUE)
+    self$`_rexpr`$gt(other$`_rexpr`)
+  })
 }
 
 expr__gt_eq <- function(other) {
-  other <- as_polars_expr(other, as_lit = TRUE)
-  self$`_rexpr`$gt_eq(other$`_rexpr`) |>
-    wrap()
+  wrap({
+    other <- as_polars_expr(other, as_lit = TRUE)
+    self$`_rexpr`$gt_eq(other$`_rexpr`)
+  })
 }
 
 expr__lt_eq <- function(other) {
-  other <- as_polars_expr(other, as_lit = TRUE)
-  self$`_rexpr`$lt_eq(other$`_rexpr`) |>
-    wrap()
+  wrap({
+    other <- as_polars_expr(other, as_lit = TRUE)
+    self$`_rexpr`$lt_eq(other$`_rexpr`)
+  })
 }
 
 expr__lt <- function(other) {
-  other <- as_polars_expr(other, as_lit = TRUE)
-  self$`_rexpr`$lt(other$`_rexpr`) |>
-    wrap()
+  wrap({
+    other <- as_polars_expr(other, as_lit = TRUE)
+    self$`_rexpr`$lt(other$`_rexpr`)
+  })
 }
 
 expr__alias <- function(name) {
@@ -356,21 +377,24 @@ expr__filter <- function(...) {
 }
 
 expr__and <- function(other) {
-  other <- as_polars_expr(other)
-  self$`_rexpr`$and(other$`_rexpr`) |>
-    wrap()
+  wrap({
+    other <- as_polars_expr(other)
+    self$`_rexpr`$and(other$`_rexpr`)
+  })
 }
 
 expr__or <- function(other) {
-  other <- as_polars_expr(other)
-  self$`_rexpr`$or(other$`_rexpr`) |>
-    wrap()
+  wrap({
+    other <- as_polars_expr(other)
+    self$`_rexpr`$or(other$`_rexpr`)
+  })
 }
 
 expr__xor <- function(other) {
-  other <- as_polars_expr(other)
-  self$`_rexpr`$xor(other$`_rexpr`) |>
-    wrap()
+  wrap({
+    other <- as_polars_expr(other)
+    self$`_rexpr`$xor(other$`_rexpr`)
+  })
 }
 
 expr__reshape <- function(dimensions) {

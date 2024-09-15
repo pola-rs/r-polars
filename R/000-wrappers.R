@@ -944,6 +944,13 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
   }
 }
 
+`PlRExpr_pow` <- function(self) {
+  function(`exponent`) {
+    `exponent` <- .savvy_extract_ptr(`exponent`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_pow__impl, `self`, `exponent`))
+  }
+}
+
 `PlRExpr_reshape` <- function(self) {
   function(`dimensions`) {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_reshape__impl, `self`, `dimensions`))
@@ -1148,6 +1155,7 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
   e$`and` <- `PlRExpr_and`(ptr)
   e$`or` <- `PlRExpr_or`(ptr)
   e$`xor` <- `PlRExpr_xor`(ptr)
+  e$`pow` <- `PlRExpr_pow`(ptr)
   e$`reshape` <- `PlRExpr_reshape`(ptr)
   e$`any` <- `PlRExpr_any`(ptr)
   e$`all` <- `PlRExpr_all`(ptr)
