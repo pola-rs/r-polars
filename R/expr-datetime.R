@@ -31,7 +31,7 @@ expr_dt_convert_time_zone <- function(time_zone) {
 #' @param time_zone `NULL` or a character time zone from [base::OlsonNames()].
 #' Pass `NULL` to unset time zone.
 #' @param ambiguous Determine how to deal with ambiguous datetimes.
-#' Character vector or Expression containing the followings:
+#' Character vector or [Expression] containing the followings:
 #' - `"raise"` (default): Throw an error
 #' - `"earliest"`: Use the earliest datetime
 #' - `"latest"`: Use the latest datetime

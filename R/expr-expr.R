@@ -8,7 +8,7 @@
 #' which transforms the output from the previous step.
 #' See examples for details.
 #' @name polars_expr
-#' @aliases Expr
+#' @aliases Expr Expression
 #' @seealso
 #' - [`pl$lit()`][pl__lit]: Create a literal expression.
 #' - [`pl$col()`][pl__col]: Create an expression representing column(s) in a [DataFrame].

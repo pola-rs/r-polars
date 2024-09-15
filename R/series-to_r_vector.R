@@ -70,7 +70,7 @@
 #' @param ambiguous Determine how to deal with ambiguous datetimes.
 #' Only applicable when `as_clock_class` is set to `FALSE` and
 #' datetime without timezone values are exported as [POSIXct].
-#' Character vector or Expression containing the followings:
+#' Character vector or [Expression] containing the followings:
 #' - `"raise"` (default): Throw an error
 #' - `"earliest"`: Use the earliest datetime
 #' - `"latest"`: Use the latest datetime

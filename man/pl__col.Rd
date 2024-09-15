@@ -19,7 +19,7 @@ Unnamed objects one of the following:
 }}
 }
 \value{
-A polars Expression
+A polars \link{Expression}
 }
 \description{
 Create an expression representing column(s) in a DataFrame

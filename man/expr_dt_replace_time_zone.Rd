@@ -18,7 +18,7 @@ Pass \code{NULL} to unset time zone.}
 \item{...}{These dots are for future extensions and must be empty.}
 
 \item{ambiguous}{Determine how to deal with ambiguous datetimes.
-Character vector or Expression containing the followings:
+Character vector or \link{Expression} containing the followings:
 \itemize{
 \item \code{"raise"} (default): Throw an error
 \item \code{"earliest"}: Use the earliest datetime

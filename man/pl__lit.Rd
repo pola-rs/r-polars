@@ -13,7 +13,7 @@ pl__lit(value, dtype = NULL)
 If not \code{NULL}, casted to the specified data type.}
 }
 \value{
-A polars Expression
+A polars \link{Expression}
 }
 \description{
 This function is a shorthand for \code{\link[=as_polars_expr]{as_polars_expr(x, as_lit = TRUE)}} and
@@ -36,9 +36,9 @@ The \link{raw} type vector is converted to a Binary scalar.
 \item raw: Binary
 }
 
-\code{NULL} is converted to a \code{null} literal.
+\code{NULL} is converted to a Null type \code{null} literal.
 \itemize{
-\item NULL: null
+\item NULL: Null
 }
 
 Other scalar values cannot be created directly, so we need to \verb{$cast()} from other scalar values

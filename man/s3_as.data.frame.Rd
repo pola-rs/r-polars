@@ -55,7 +55,7 @@ Accuracy will be maintained.
 \item{ambiguous}{Determine how to deal with ambiguous datetimes.
 Only applicable when \code{as_clock_class} is set to \code{FALSE} and
 datetime without timezone values are exported as \link{POSIXct}.
-Character vector or Expression containing the followings:
+Character vector or \link{Expression} containing the followings:
 \itemize{
 \item \code{"raise"} (default): Throw an error
 \item \code{"earliest"}: Use the earliest datetime
