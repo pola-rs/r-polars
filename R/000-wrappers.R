@@ -957,30 +957,30 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
   }
 }
 
-`PlRExpr_meta_selector_add` <- function(self) {
+`PlRExpr__meta_selector_add` <- function(self) {
   function(`other`) {
     `other` <- .savvy_extract_ptr(`other`, "PlRExpr")
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_meta_selector_add__impl, `self`, `other`))
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr__meta_selector_add__impl, `self`, `other`))
   }
 }
 
-`PlRExpr_meta_selector_and` <- function(self) {
+`PlRExpr__meta_selector_and` <- function(self) {
   function(`other`) {
     `other` <- .savvy_extract_ptr(`other`, "PlRExpr")
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_meta_selector_and__impl, `self`, `other`))
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr__meta_selector_and__impl, `self`, `other`))
   }
 }
 
-`PlRExpr_meta_selector_sub` <- function(self) {
+`PlRExpr__meta_selector_sub` <- function(self) {
   function(`other`) {
     `other` <- .savvy_extract_ptr(`other`, "PlRExpr")
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_meta_selector_sub__impl, `self`, `other`))
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr__meta_selector_sub__impl, `self`, `other`))
   }
 }
 
-`PlRExpr_meta_as_selector` <- function(self) {
+`PlRExpr__meta_as_selector` <- function(self) {
   function() {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_meta_as_selector__impl, `self`))
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr__meta_as_selector__impl, `self`))
   }
 }
 
@@ -1128,10 +1128,10 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
   e$`reshape` <- `PlRExpr_reshape`(ptr)
   e$`any` <- `PlRExpr_any`(ptr)
   e$`all` <- `PlRExpr_all`(ptr)
-  e$`meta_selector_add` <- `PlRExpr_meta_selector_add`(ptr)
-  e$`meta_selector_and` <- `PlRExpr_meta_selector_and`(ptr)
-  e$`meta_selector_sub` <- `PlRExpr_meta_selector_sub`(ptr)
-  e$`meta_as_selector` <- `PlRExpr_meta_as_selector`(ptr)
+  e$`_meta_selector_add` <- `PlRExpr__meta_selector_add`(ptr)
+  e$`_meta_selector_and` <- `PlRExpr__meta_selector_and`(ptr)
+  e$`_meta_selector_sub` <- `PlRExpr__meta_selector_sub`(ptr)
+  e$`_meta_as_selector` <- `PlRExpr__meta_as_selector`(ptr)
   e$`name_keep` <- `PlRExpr_name_keep`(ptr)
   e$`name_prefix` <- `PlRExpr_name_prefix`(ptr)
   e$`name_suffix` <- `PlRExpr_name_suffix`(ptr)

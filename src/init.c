@@ -634,23 +634,23 @@ SEXP savvy_PlRExpr_all__impl(SEXP self__, SEXP c_arg__ignore_nulls) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_meta_selector_add__impl(SEXP self__, SEXP c_arg__other) {
-    SEXP res = savvy_PlRExpr_meta_selector_add__ffi(self__, c_arg__other);
+SEXP savvy_PlRExpr__meta_selector_add__impl(SEXP self__, SEXP c_arg__other) {
+    SEXP res = savvy_PlRExpr__meta_selector_add__ffi(self__, c_arg__other);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_meta_selector_and__impl(SEXP self__, SEXP c_arg__other) {
-    SEXP res = savvy_PlRExpr_meta_selector_and__ffi(self__, c_arg__other);
+SEXP savvy_PlRExpr__meta_selector_and__impl(SEXP self__, SEXP c_arg__other) {
+    SEXP res = savvy_PlRExpr__meta_selector_and__ffi(self__, c_arg__other);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_meta_selector_sub__impl(SEXP self__, SEXP c_arg__other) {
-    SEXP res = savvy_PlRExpr_meta_selector_sub__ffi(self__, c_arg__other);
+SEXP savvy_PlRExpr__meta_selector_sub__impl(SEXP self__, SEXP c_arg__other) {
+    SEXP res = savvy_PlRExpr__meta_selector_sub__ffi(self__, c_arg__other);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_meta_as_selector__impl(SEXP self__) {
-    SEXP res = savvy_PlRExpr_meta_as_selector__ffi(self__);
+SEXP savvy_PlRExpr__meta_as_selector__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr__meta_as_selector__ffi(self__);
     return handle_result(res);
 }
 
@@ -1106,10 +1106,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_reshape__impl", (DL_FUNC) &savvy_PlRExpr_reshape__impl, 2},
     {"savvy_PlRExpr_any__impl", (DL_FUNC) &savvy_PlRExpr_any__impl, 2},
     {"savvy_PlRExpr_all__impl", (DL_FUNC) &savvy_PlRExpr_all__impl, 2},
-    {"savvy_PlRExpr_meta_selector_add__impl", (DL_FUNC) &savvy_PlRExpr_meta_selector_add__impl, 2},
-    {"savvy_PlRExpr_meta_selector_and__impl", (DL_FUNC) &savvy_PlRExpr_meta_selector_and__impl, 2},
-    {"savvy_PlRExpr_meta_selector_sub__impl", (DL_FUNC) &savvy_PlRExpr_meta_selector_sub__impl, 2},
-    {"savvy_PlRExpr_meta_as_selector__impl", (DL_FUNC) &savvy_PlRExpr_meta_as_selector__impl, 1},
+    {"savvy_PlRExpr__meta_selector_add__impl", (DL_FUNC) &savvy_PlRExpr__meta_selector_add__impl, 2},
+    {"savvy_PlRExpr__meta_selector_and__impl", (DL_FUNC) &savvy_PlRExpr__meta_selector_and__impl, 2},
+    {"savvy_PlRExpr__meta_selector_sub__impl", (DL_FUNC) &savvy_PlRExpr__meta_selector_sub__impl, 2},
+    {"savvy_PlRExpr__meta_as_selector__impl", (DL_FUNC) &savvy_PlRExpr__meta_as_selector__impl, 1},
     {"savvy_PlRExpr_name_keep__impl", (DL_FUNC) &savvy_PlRExpr_name_keep__impl, 1},
     {"savvy_PlRExpr_name_prefix__impl", (DL_FUNC) &savvy_PlRExpr_name_prefix__impl, 2},
     {"savvy_PlRExpr_name_suffix__impl", (DL_FUNC) &savvy_PlRExpr_name_suffix__impl, 2},

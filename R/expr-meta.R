@@ -18,22 +18,22 @@ namespace_expr_meta <- function(x) {
 }
 
 expr_meta__selector_add <- function(other) {
-  self$`_rexpr`$meta_selector_add(other$`_rexpr`) |>
+  self$`_rexpr`$`_meta_selector_add`(other$`_rexpr`) |>
     wrap()
 }
 
 expr_meta__selector_and <- function(other) {
-  self$`_rexpr`$meta_selector_and(other$`_rexpr`) |>
+  self$`_rexpr`$`_meta_selector_and`(other$`_rexpr`) |>
     wrap()
 }
 
 expr_meta__selector_sub <- function(other) {
-  self$`_rexpr`$meta_selector_sub(other$`_rexpr`) |>
+  self$`_rexpr`$`_meta_selector_sub`(other$`_rexpr`) |>
     wrap()
 }
 
 expr_meta__as_selector <- function() {
-  self$`_rexpr`$meta_as_selector() |>
+  self$`_rexpr`$`_meta_as_selector`() |>
     wrap()
 }
 
