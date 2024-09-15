@@ -1,8 +1,8 @@
 #' Parse dynamic dots into a list of expressions (PlRExpr, not polars-expr)
 #' @noRd
-parse_into_list_of_expressions <- function(...) {
+parse_into_list_of_expressions <- function(..., `__structify` = FALSE) {
   list2(...) |>
-    lapply(\(x) as_polars_expr(x)$`_rexpr`)
+    lapply(\(x) as_polars_expr(x, structify = `__structify`)$`_rexpr`)
 }
 
 .structify_expression <- function(expr) {

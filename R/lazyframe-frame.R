@@ -78,10 +78,27 @@ wrap.PlRLazyFrame <- function(x, ...) {
 #' lf$select(
 #'   threshold = pl$when(pl$col("foo") > 2)$then(10)$otherwise(0)
 #' )$collect()
+#'
+#' # Expressions with multiple outputs can be automatically instantiated
+#' # as Structs by setting the `POLARS_AUTO_STRUCTIFY` environment variable.
+#' if (requireNamespace("withr", quietly = TRUE)) {
+#'   withr::with_envvar(c(POLARS_AUTO_STRUCTIFY = "1"), {
+#'     lf$select(
+#'       is_odd = ((pl$col(pl$Int32) %% 2) == 1)$name$suffix("_is_odd"),
+#'     )$collect()
+#'   })
+#' }
 lazyframe__select <- function(...) {
-  parse_into_list_of_expressions(...) |>
-    self$`_ldf`$select() |>
-    wrap()
+  wrap({
+    structify <- switch(Sys.getenv("POLARS_AUTO_STRUCTIFY", "0"),
+      "0" = FALSE,
+      "1" = TRUE,
+      abort("Environment variable `POLARS_AUTO_STRUCTIFY` must be one of ('0', '1')")
+    )
+
+    parse_into_list_of_expressions(..., `__structify` = structify) |>
+      self$`_ldf`$select()
+  })
 }
 
 lazyframe__group_by <- function(..., maintain_order = FALSE) {
