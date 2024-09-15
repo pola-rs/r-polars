@@ -15,13 +15,13 @@
 #' # multiple columns by characters
 #' pl$col("foo", "bar")
 #'
-#' # multiple columns by RPolarsDataTypes
+#' # multiple columns by polars data types
 #' pl$col(pl$Float64, pl$String)
 #'
 #' # Single `"*"` is converted to a wildcard expression
 #' pl$col("*")
 #'
-#' # multiple character vectors and a list of RPolarsDataTypes are also allowed
+#' # multiple character vectors and a list of polars data types are also allowed
 #' pl$col(c("foo", "bar"), "baz")
 #' pl$col("foo", c("bar", "baz"))
 #' pl$col(list(pl$Float64, pl$String), list(pl$UInt32))
