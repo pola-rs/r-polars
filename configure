@@ -69,7 +69,7 @@ check_bin_lib() {
     echo "---------------------- [LIBRARY BINARY FOUND] ----------------------"
     echo "The library was found at <${LIBR_POLARS_PATH}>. No need to build it."
     echo ""
-    echo "Note: rustc version: $(rustc -V || echo 'Not found')"
+    echo "Note: rustc version: $(command -v rustc >/dev/null && rustc -V || echo 'Not found')"
     echo "--------------------------------------------------------------------"
     echo ""
     sed -e "s|@RUST_TARGET@||" -e "s|@ADDITIONAL_PKG_LIBS_FLAG@|${ADDITIONAL_PKG_LIBS_FLAG}|" src/Makevars.in >src/Makevars
@@ -90,7 +90,7 @@ check_bin_lib() {
     echo "but was found at <${LIBR_POLARS_DEFAULT_PATH}>."
     echo "No need to build it."
     echo ""
-    echo "Note: rustc version: $(rustc -V || echo 'Not found')"
+    echo "Note: rustc version: $(command -v rustc >/dev/null && rustc -V || echo 'Not found')"
     echo "--------------------------------------------------------------------"
     echo ""
     sed -e "s|@RUST_TARGET@||" -e "s|@ADDITIONAL_PKG_LIBS_FLAG@|${ADDITIONAL_PKG_LIBS_FLAG}|" src/Makevars.in >src/Makevars
