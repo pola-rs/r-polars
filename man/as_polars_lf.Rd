@@ -4,7 +4,7 @@
 \alias{as_polars_lf}
 \alias{as_polars_lf.default}
 \alias{as_polars_lf.polars_lazy_frame}
-\title{Create a Polars DataFrame from an R object}
+\title{Create a Polars LazyFrame from an R object}
 \usage{
 as_polars_lf(x, ...)
 
