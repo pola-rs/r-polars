@@ -45,6 +45,28 @@ impl PlRDataFrame {
         Ok(list.into())
     }
 
+    pub fn slice(&self, offset: NumericScalar, length: Option<NumericScalar>) -> Result<Self> {
+        let offset = <Wrap<i64>>::try_from(offset)?.0;
+        let length = length
+            .map(|l| <Wrap<usize>>::try_from(l))
+            .transpose()?
+            .map(|w| w.0);
+        Ok(self
+            .df
+            .slice(offset, length.unwrap_or_else(|| self.df.height()))
+            .into())
+    }
+
+    pub fn head(&self, n: NumericScalar) -> Result<Self> {
+        let n = <Wrap<usize>>::try_from(n)?.0;
+        Ok(self.df.head(Some(n)).into())
+    }
+
+    pub fn tail(&self, n: NumericScalar) -> Result<Self> {
+        let n = <Wrap<usize>>::try_from(n)?.0;
+        Ok(self.df.tail(Some(n)).into())
+    }
+
     pub fn columns(&self) -> Result<Sexp> {
         self.df.get_column_names_str().try_into()
     }

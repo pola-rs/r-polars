@@ -134,6 +134,21 @@ SEXP savvy_PlRDataFrame_get_columns__impl(SEXP self__) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRDataFrame_slice__impl(SEXP self__, SEXP c_arg__offset, SEXP c_arg__length) {
+    SEXP res = savvy_PlRDataFrame_slice__ffi(self__, c_arg__offset, c_arg__length);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRDataFrame_head__impl(SEXP self__, SEXP c_arg__n) {
+    SEXP res = savvy_PlRDataFrame_head__ffi(self__, c_arg__n);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRDataFrame_tail__impl(SEXP self__, SEXP c_arg__n) {
+    SEXP res = savvy_PlRDataFrame_tail__ffi(self__, c_arg__n);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRDataFrame_columns__impl(SEXP self__) {
     SEXP res = savvy_PlRDataFrame_columns__ffi(self__);
     return handle_result(res);
@@ -1041,6 +1056,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRDataFrame_init__impl", (DL_FUNC) &savvy_PlRDataFrame_init__impl, 1},
     {"savvy_PlRDataFrame_print__impl", (DL_FUNC) &savvy_PlRDataFrame_print__impl, 1},
     {"savvy_PlRDataFrame_get_columns__impl", (DL_FUNC) &savvy_PlRDataFrame_get_columns__impl, 1},
+    {"savvy_PlRDataFrame_slice__impl", (DL_FUNC) &savvy_PlRDataFrame_slice__impl, 3},
+    {"savvy_PlRDataFrame_head__impl", (DL_FUNC) &savvy_PlRDataFrame_head__impl, 2},
+    {"savvy_PlRDataFrame_tail__impl", (DL_FUNC) &savvy_PlRDataFrame_tail__impl, 2},
     {"savvy_PlRDataFrame_columns__impl", (DL_FUNC) &savvy_PlRDataFrame_columns__impl, 1},
     {"savvy_PlRDataFrame_set_column_names__impl", (DL_FUNC) &savvy_PlRDataFrame_set_column_names__impl, 2},
     {"savvy_PlRDataFrame_dtypes__impl", (DL_FUNC) &savvy_PlRDataFrame_dtypes__impl, 1},

@@ -182,6 +182,34 @@ dataframe__equals <- function(other, ..., null_equal = TRUE) {
   })
 }
 
+dataframe__slice <- function(offset, length = NULL) {
+  wrap({
+    check_number_decimal(offset, allow_infinite = FALSE)
+    if (isTRUE(length < 0)) {
+      length <- self$height - offset + length
+    }
+    self$`_df`$slice(offset, length)
+  })
+}
+
+dataframe__head <- function(n = 5) {
+  wrap({
+    if (isTRUE(n < 0)) {
+      n <- max(0, self$height + n)
+    }
+    self$`_df`$head(n)
+  })
+}
+
+dataframe__tail <- function(n = 5) {
+  wrap({
+    if (isTRUE(n < 0)) {
+      n <- max(0, self$height + n)
+    }
+    self$`_df`$tail(n)
+  })
+}
+
 dataframe__drop <- function(..., strict = TRUE) {
   self$lazy()$drop(..., strict = strict)$collect(`_eager` = TRUE) |>
     wrap()

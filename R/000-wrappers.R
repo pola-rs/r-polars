@@ -219,6 +219,24 @@ class(`PlRChainedWhen`) <- "PlRChainedWhen__bundle"
   }
 }
 
+`PlRDataFrame_slice` <- function(self) {
+  function(`offset`, `length` = NULL) {
+    .savvy_wrap_PlRDataFrame(.Call(savvy_PlRDataFrame_slice__impl, `self`, `offset`, `length`))
+  }
+}
+
+`PlRDataFrame_head` <- function(self) {
+  function(`n`) {
+    .savvy_wrap_PlRDataFrame(.Call(savvy_PlRDataFrame_head__impl, `self`, `n`))
+  }
+}
+
+`PlRDataFrame_tail` <- function(self) {
+  function(`n`) {
+    .savvy_wrap_PlRDataFrame(.Call(savvy_PlRDataFrame_tail__impl, `self`, `n`))
+  }
+}
+
 `PlRDataFrame_columns` <- function(self) {
   function() {
     .Call(savvy_PlRDataFrame_columns__impl, `self`)
@@ -291,6 +309,9 @@ class(`PlRChainedWhen`) <- "PlRChainedWhen__bundle"
   e$.ptr <- ptr
   e$`print` <- `PlRDataFrame_print`(ptr)
   e$`get_columns` <- `PlRDataFrame_get_columns`(ptr)
+  e$`slice` <- `PlRDataFrame_slice`(ptr)
+  e$`head` <- `PlRDataFrame_head`(ptr)
+  e$`tail` <- `PlRDataFrame_tail`(ptr)
   e$`columns` <- `PlRDataFrame_columns`(ptr)
   e$`set_column_names` <- `PlRDataFrame_set_column_names`(ptr)
   e$`dtypes` <- `PlRDataFrame_dtypes`(ptr)
