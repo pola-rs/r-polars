@@ -199,7 +199,7 @@ datatype__is_bool <- function() {
 }
 
 datatype__is_array <- function() {
-  self$`_dt`$is_list()
+  self$`_dt`$is_array()
 }
 
 datatype__is_list <- function() {

@@ -361,7 +361,7 @@ impl PlRDataType {
     }
 
     fn is_array(&self) -> Result<Sexp> {
-        self.dt.is_list().try_into()
+        self.dt.is_array().try_into()
     }
 
     fn is_list(&self) -> Result<Sexp> {
