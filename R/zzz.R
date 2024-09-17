@@ -104,6 +104,7 @@ utils::globalVariables("self")
 
   # Register S3 methods for optional packages
   s3_register("tibble::as_tibble", "polars_data_frame")
+  s3_register("tibble::as_tibble", "polars_lazy_frame")
   s3_register("waldo::compare_proxy", "polars_expr")
   s3_register("waldo::compare_proxy", "polars_data_frame")
   s3_register("waldo::compare_proxy", "polars_data_type")

@@ -58,14 +58,22 @@ as.list.polars_data_frame <- function(
 
 #' Export the polars object as an R DataFrame
 #'
-#' This S3 method is a shortcut of
+#' ## S3 method for [polars_data_frame][DataFrame]
+#'
+#' This S3 method is a shortcut for
 #' [`<DataFrame>$to_struct()$to_r_vector(ensure_vector = FALSE, struct = "dataframe")`][series__to_r_vector].
+#'
+#' ## S3 method for [polars_lazy_frame][LazyFrame]
+#'
+#' This S3 method is a shortcut for `as_polars_df(x, ...) |> as.data.frame()`.
+#' Additional arguments `...` are passed to [as_polars_df()].
 #' @inheritParams as.list.polars_data_frame
 #' @return An [R data frame][data.frame]
 #' @examples
 #' df <- as_polars_df(list(a = 1:3, b = 4:6))
 #'
 #' as.data.frame(df)
+#' as.data.frame(df$lazy())
 #' @export
 #' @rdname s3-as.data.frame
 as.data.frame.polars_data_frame <- function(
