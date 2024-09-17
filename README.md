@@ -225,7 +225,7 @@ pl$Struct(a = pl$Int32)$fields
 ``` r
 pl$Int32$fields
 #> Error in `pl$Int32$fields`:
-#> ! $ - syntax error: `fields` is not a member of the polars object.
+#> ! $ - syntax error: `fields` is not a member of this polars object
 ```
 
 ### Disadvantages
