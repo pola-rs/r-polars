@@ -32,7 +32,7 @@ length.polars_data_frame <- function(x) x$width
 #' as.list(df, as_series = TRUE)
 #' as.list(df, as_series = FALSE)
 #' @export
-#' @rdname s3_as.list
+#' @rdname s3-as.list
 as.list.polars_data_frame <- function(
     x, ...,
     as_series = FALSE,
@@ -67,7 +67,7 @@ as.list.polars_data_frame <- function(
 #'
 #' as.data.frame(df)
 #' @export
-#' @rdname s3_as.data.frame
+#' @rdname s3-as.data.frame
 as.data.frame.polars_data_frame <- function(
     x, ...,
     int64 = "double",

@@ -20,7 +20,7 @@
 #'
 #' # You can make that unique
 #' tibble::as_tibble(df, .name_repair = "unique")
-#' @rdname s3_as_tibble
+#' @rdname s3-as_tibble
 as_tibble.polars_data_frame <- function(
     x, ...,
     .name_repair = "check_unique",
