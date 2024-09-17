@@ -824,6 +824,16 @@ SEXP savvy_PlRLazyFrame_collect__impl(SEXP self__) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRLazyFrame_slice__impl(SEXP self__, SEXP c_arg__offset, SEXP c_arg__len) {
+    SEXP res = savvy_PlRLazyFrame_slice__ffi(self__, c_arg__offset, c_arg__len);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRLazyFrame_tail__impl(SEXP self__, SEXP c_arg__n) {
+    SEXP res = savvy_PlRLazyFrame_tail__ffi(self__, c_arg__n);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRLazyFrame_drop__impl(SEXP self__, SEXP c_arg__columns, SEXP c_arg__strict) {
     SEXP res = savvy_PlRLazyFrame_drop__ffi(self__, c_arg__columns, c_arg__strict);
     return handle_result(res);
@@ -1194,6 +1204,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRLazyFrame_select__impl", (DL_FUNC) &savvy_PlRLazyFrame_select__impl, 2},
     {"savvy_PlRLazyFrame_group_by__impl", (DL_FUNC) &savvy_PlRLazyFrame_group_by__impl, 3},
     {"savvy_PlRLazyFrame_collect__impl", (DL_FUNC) &savvy_PlRLazyFrame_collect__impl, 1},
+    {"savvy_PlRLazyFrame_slice__impl", (DL_FUNC) &savvy_PlRLazyFrame_slice__impl, 3},
+    {"savvy_PlRLazyFrame_tail__impl", (DL_FUNC) &savvy_PlRLazyFrame_tail__impl, 2},
     {"savvy_PlRLazyFrame_drop__impl", (DL_FUNC) &savvy_PlRLazyFrame_drop__impl, 3},
     {"savvy_PlRLazyFrame_cast__impl", (DL_FUNC) &savvy_PlRLazyFrame_cast__impl, 3},
     {"savvy_PlRLazyFrame_cast_all__impl", (DL_FUNC) &savvy_PlRLazyFrame_cast_all__impl, 3},

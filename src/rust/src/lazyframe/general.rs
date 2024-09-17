@@ -1,7 +1,7 @@
 use crate::{
     prelude::*, PlRDataFrame, PlRDataType, PlRExpr, PlRLazyFrame, PlRLazyGroupBy, RPolarsErr,
 };
-use savvy::{savvy, ListSexp, LogicalSexp, OwnedStringSexp, Result, Sexp};
+use savvy::{savvy, ListSexp, LogicalSexp, NumericScalar, OwnedStringSexp, Result, Sexp};
 
 #[savvy]
 impl PlRLazyFrame {
@@ -91,6 +91,22 @@ impl PlRLazyFrame {
     fn collect(&self) -> Result<PlRDataFrame> {
         let df = self.ldf.clone().collect().map_err(RPolarsErr::from)?;
         Ok(df.into())
+    }
+
+    fn slice(&self, offset: NumericScalar, len: Option<NumericScalar>) -> Result<Self> {
+        let ldf = self.ldf.clone();
+        let offset = <Wrap<i64>>::try_from(offset)?.0;
+        let len = len
+            .map(|l| <Wrap<u32>>::try_from(l))
+            .transpose()?
+            .map(|l| l.0);
+        Ok(ldf.slice(offset, len.unwrap_or(u32::MAX)).into())
+    }
+
+    fn tail(&self, n: NumericScalar) -> Result<Self> {
+        let ldf = self.ldf.clone();
+        let n = <Wrap<u32>>::try_from(n)?.0;
+        Ok(ldf.tail(n).into())
     }
 
     fn drop(&self, columns: ListSexp, strict: bool) -> Result<Self> {

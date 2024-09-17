@@ -61,3 +61,74 @@ test_that("POLARS_AUTO_STRUCTIFY works for select", {
     }
   )
 })
+
+test_that("slice/head/tail works lazy/eager", {
+  .data <- pl$DataFrame(
+    foo = 1:5,
+    bar = 6:10,
+  )
+
+  # slice
+  expect_query_equal(
+    .input$slice(1),
+    .data,
+    pl$DataFrame(foo = 2:5, bar = 7:10)
+  )
+  expect_query_equal(
+    .input$slice(1, 2),
+    .data,
+    pl$DataFrame(foo = 2:3, bar = 7:8)
+  )
+  expect_query_equal(
+    .input$slice(1, 2),
+    .data,
+    pl$DataFrame(foo = 2:3, bar = 7:8)
+  )
+  expect_query_equal(
+    .input$slice(4, 100),
+    .data,
+    pl$DataFrame(foo = 5L, bar = 10L)
+  )
+  expect_eager_equal_lazy_error(
+    .input$slice(0, -2),
+    .data,
+    pl$DataFrame(foo = 1:3, bar = 6:8),
+    r"(negative slice length \(-2\) are invalid for LazyFrame)"
+  )
+
+  # head
+  expect_query_equal(
+    .input$head(1),
+    .data,
+    pl$DataFrame(foo = 1L, bar = 6L)
+  )
+  expect_query_equal(
+    .input$head(100),
+    .data,
+    .data
+  )
+  expect_eager_equal_lazy_error(
+    .input$head(-4),
+    .data,
+    pl$DataFrame(foo = 1L, bar = 6L),
+    r"(negative slice length \(-4\) are invalid for LazyFrame)"
+  )
+
+  # tail
+  expect_query_equal(
+    .input$tail(1),
+    .data,
+    pl$DataFrame(foo = 5L, bar = 10L)
+  )
+  expect_query_equal(
+    .input$tail(100),
+    .data,
+    .data
+  )
+  expect_eager_equal_lazy_error(
+    .input$tail(-4),
+    .data,
+    pl$DataFrame(foo = 5L, bar = 10L),
+    r"(Value `-4\.0` is too small to be converted to u32)"
+  )
+})
