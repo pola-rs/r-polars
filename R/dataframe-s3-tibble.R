@@ -1,6 +1,7 @@
 # exported in zzz.R
 #' Export the polars object as a tibble data frame
 #'
+#' @details
 #' ## S3 method for [polars_data_frame][DataFrame]
 #'
 #' This S3 method is basically a shortcut of

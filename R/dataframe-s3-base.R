@@ -58,6 +58,7 @@ as.list.polars_data_frame <- function(
 
 #' Export the polars object as an R DataFrame
 #'
+#' @details
 #' ## S3 method for [polars_data_frame][DataFrame]
 #'
 #' This S3 method is a shortcut for

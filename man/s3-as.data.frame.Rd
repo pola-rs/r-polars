@@ -87,12 +87,15 @@ One of the followings:
 An \link[=data.frame]{R data frame}
 }
 \description{
-\subsection{S3 method for \link[=DataFrame]{polars_data_frame}}{
-}
+Export the polars object as an R DataFrame
 }
 \details{
+\subsection{S3 method for \link[=DataFrame]{polars_data_frame}}{
+
 This S3 method is a shortcut for
 \code{\link[=series__to_r_vector]{<DataFrame>$to_struct()$to_r_vector(ensure_vector = FALSE, struct = "dataframe")}}.
+}
+
 \subsection{S3 method for \link[=LazyFrame]{polars_lazy_frame}}{
 
 This S3 method is a shortcut for \code{as_polars_df(x, ...) |> as.data.frame()}.
