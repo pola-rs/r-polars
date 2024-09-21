@@ -164,7 +164,7 @@ pub fn pl_series_to_list(
                 Ok(l.into_robj())
             }
             Struct(_) => {
-                let df = s.clone().into_frame().unnest([s.name()]).unwrap();
+                let df = s.clone().into_frame().unnest([s.name().clone()]).unwrap();
                 let mut l = RPolarsDataFrame(df).to_list_result(int64_conversion)?;
 
                 //TODO contribute extendr_api set_attrib mutates &self, change signature to surprise anyone
@@ -225,8 +225,8 @@ pub fn pl_series_to_list(
                         let s_name = s.name();
                         pl::DataFrame::new(vec![s.clone()])?
                             .lazy()
-                            .select([col(s_name).dt().replace_time_zone(
-                                Some(sys_tz),
+                            .select([col(s_name.clone()).dt().replace_time_zone(
+                                Some(sys_tz.into()),
                                 pl::lit("raise"),
                                 pl::NonExistent::Raise,
                             )])

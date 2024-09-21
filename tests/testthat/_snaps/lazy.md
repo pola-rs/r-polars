@@ -10,7 +10,7 @@
       FILTER [(col("a")) == (2)] FROM
         DF ["a", "b"]; PROJECT */2 COLUMNS; SELECTION: None
 
-# LazyFrame serialize/deseialize
+# LazyFrame serialize/deserialize
 
     Code
       jsonlite::prettify(json)
@@ -51,13 +51,11 @@
                                   ]
                               },
                               "schema": {
-                                  "inner": {
+                                  "fields": {
                                       "a": "Int32",
                                       "b": "String"
                                   }
-                              },
-                              "output_schema": null,
-                              "filter": null
+                              }
                           }
                       },
                       "predicate": {

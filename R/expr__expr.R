@@ -1181,7 +1181,7 @@ Expr_is_not_nan = use_extendr_wrapper
 #' )
 #'
 #' # recycling
-#' pl$DataFrame(mtcars)$with_columns(pl$col("mpg")$slice(0, 1))
+#' pl$DataFrame(mtcars)$with_columns(pl$col("mpg")$slice(0, 1)$first())
 Expr_slice = function(offset, length = NULL) {
   .pr$Expr$slice(self, offset, wrap_e(length)) |>
     unwrap("in $slice():")

@@ -27,7 +27,7 @@ test_that("create LazyFrame", {
 })
 
 
-test_that("LazyFrame serialize/deseialize", {
+test_that("LazyFrame serialize/deserialize", {
   skip_if_not_installed("jsonlite")
 
   df = pl$DataFrame(
@@ -48,7 +48,7 @@ test_that("LazyFrame serialize/deseialize", {
     df$lazy()$select(
       pl$col("a")$map_elements(\(x) -abs(x))
     )$serialize(),
-    "serialize not supported for this 'opaque' function"
+    "serialization not supported for this 'opaque' function"
   )
 })
 

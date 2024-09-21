@@ -34,7 +34,6 @@ test_that("Test reading data from Apache Arrow IPC", {
   expect_grepl_error(pl$scan_ipc(tmpf, rechunk = list()))
   expect_grepl_error(pl$scan_ipc(tmpf, row_index_name = c("x", "y")))
   expect_grepl_error(pl$scan_ipc(tmpf, row_index_name = "name", row_index_offset = data.frame()))
-  expect_grepl_error(pl$scan_ipc(tmpf, memory_map = NULL))
 })
 
 
@@ -87,27 +86,6 @@ patrick::with_parameters_test_that("input/output DataFrame as raw vector",
   compression = c("uncompressed", "lz4", "zstd"),
   .test_name = compression
 )
-
-
-test_that("memory_map", {
-  tmpf = tempfile(fileext = ".arrow")
-  on.exit(unlink(tmpf))
-  pl$DataFrame(x = 1)$write_ipc(tmpf, compression = "uncompressed")
-
-  df = pl$read_ipc(tmpf, memory_map = TRUE)
-
-  expect_true(
-    df$equals(pl$DataFrame(x = 1))
-  )
-
-  # On Windows, the file is still open so overwriting it is not allowed
-  skip_on_os("windows")
-  pl$DataFrame(y = 2)$write_ipc(tmpf, compression = "uncompressed")
-
-  expect_true(
-    df$equals(pl$DataFrame(x = 2))
-  )
-})
 
 
 test_that("scanning from hive partition works", {

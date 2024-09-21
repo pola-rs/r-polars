@@ -25,7 +25,6 @@ pub type NameGenerator = pl::Arc<dyn Fn(usize) -> String + Send + Sync>;
 use crate::rdatatype::robjs_to_ewm_options;
 use crate::utils::r_expr_to_rust_expr;
 use crate::utils::unpack_r_eval;
-use smartstring::{LazyCompact, SmartString};
 use std::sync::Arc;
 
 #[derive(Clone, Debug)]
@@ -88,8 +87,12 @@ impl RPolarsExpr {
             (Rtype::Raw, _) => Ok(dsl::lit(robj_to_binary_vec(robj)?)), // Raw in R is seen as a vector of bytes, in polars it is a Literal, not wrapped in a Series.
             (_, rlen) if rlen != 1 => to_series_then_lit(robj),
             (Rtype::List, _) => to_series_then_lit(robj),
-            (_, _) if robj_inherits(&robj, ["POSIXct", "PTime", "Date"]) => {
-                to_series_then_lit(robj)
+            (_, rlen) if robj_inherits(&robj, ["POSIXct", "PTime", "Date"]) => {
+                if rlen == 1 {
+                    Ok(to_series_then_lit(robj)?.first())
+                } else {
+                    to_series_then_lit(robj)
+                }
             }
 
             (Rtype::Integers, 1) => {
@@ -1030,7 +1033,7 @@ impl RPolarsExpr {
         }
     }
 
-    pub fn value_counts(&self, sort: bool, parallel: bool, name: String, normalize: bool) -> Self {
+    pub fn value_counts(&self, sort: bool, parallel: bool, name: &str, normalize: bool) -> Self {
         self.0
             .clone()
             .value_counts(sort, parallel, name, normalize)
@@ -1255,12 +1258,12 @@ impl RPolarsExpr {
         let width_strat = robj_to!(ListToStructWidthStrategy, n_field_strategy)?;
         let fields = robj_to!(Option, Robj, fields)?.map(|robj| {
             let par_fn: ParRObj = robj.into();
-            let f: Arc<(dyn Fn(usize) -> SmartString<LazyCompact> + Send + Sync + 'static)> =
+            let f: Arc<(dyn Fn(usize) -> pl::PlSmallStr + Send + Sync + 'static)> =
                 pl::Arc::new(move |idx: usize| {
                     let thread_com = ThreadCom::from_global(&CONFIG);
                     thread_com.send(RFnSignature::FnF64ToString(par_fn.clone(), idx as f64));
                     let s = thread_com.recv().unwrap_string();
-                    let s: SmartString<LazyCompact> = s.into();
+                    let s: pl::PlSmallStr = s.into();
                     s
                 });
             f
@@ -1443,12 +1446,12 @@ impl RPolarsExpr {
     fn arr_to_struct(&self, fields: Robj) -> RResult<Self> {
         let fields = robj_to!(Option, Robj, fields)?.map(|robj| {
             let par_fn: ParRObj = robj.into();
-            let f: Arc<(dyn Fn(usize) -> SmartString<LazyCompact> + Send + Sync + 'static)> =
+            let f: Arc<(dyn Fn(usize) -> pl::PlSmallStr + Send + Sync + 'static)> =
                 pl::Arc::new(move |idx: usize| {
                     let thread_com = ThreadCom::from_global(&CONFIG);
                     thread_com.send(RFnSignature::FnF64ToString(par_fn.clone(), idx as f64));
                     let s = thread_com.recv().unwrap_string();
-                    let s: SmartString<LazyCompact> = s.into();
+                    let s: pl::PlSmallStr = s.into();
                     s
                 });
             f
@@ -1583,22 +1586,23 @@ impl RPolarsExpr {
             .0
             .clone()
             .dt()
-            .convert_time_zone(robj_to!(String, time_zone)?)
+            .convert_time_zone(robj_to!(String, time_zone)?.into())
             .into())
     }
 
     pub fn dt_replace_time_zone(
         &self,
-        time_zone: Nullable<String>,
+        time_zone: Robj,
         ambiguous: Robj,
         non_existent: Robj,
     ) -> RResult<Self> {
+        let time_zone = robj_to!(Option, String, time_zone)?.map(|x| x.into());
         Ok(self
             .0
             .clone()
             .dt()
             .replace_time_zone(
-                time_zone.into_option(),
+                time_zone,
                 robj_to!(PLExpr, ambiguous)?,
                 robj_to!(NonExistent, non_existent)?,
             )
@@ -1985,7 +1989,7 @@ impl RPolarsExpr {
         // set expected type of output from R function
         let ot = robj_to!(Option, PLPolarsDataType, output_type)?;
         let output_map = pl::GetOutput::map_field(move |fld| match ot {
-            Some(ref dt) => Ok(pl::Field::new(fld.name(), dt.clone())),
+            Some(ref dt) => Ok(pl::Field::new(fld.name().clone(), dt.clone())),
             None => Ok(fld.clone()),
         });
 
@@ -2019,7 +2023,7 @@ impl RPolarsExpr {
         let ot = robj_to!(Option, PLPolarsDataType, output_type)?;
 
         let output_map = pl::GetOutput::map_field(move |fld| match ot {
-            Some(ref dt) => Ok(pl::Field::new(fld.name(), dt.clone())),
+            Some(ref dt) => Ok(pl::Field::new(fld.name().clone(), dt.clone())),
             None => Ok(fld.clone()),
         });
 
@@ -2052,7 +2056,7 @@ impl RPolarsExpr {
         let ot = null_to_opt(output_type).map(|rdt| rdt.0.clone());
 
         let output_map = pl::GetOutput::map_field(move |fld| match ot {
-            Some(ref dt) => Ok(pl::Field::new(fld.name(), dt.clone())),
+            Some(ref dt) => Ok(pl::Field::new(fld.name().clone(), dt.clone())),
             None => Ok(fld.clone()),
         });
 
@@ -2117,13 +2121,13 @@ impl RPolarsExpr {
         //     //wrap as series
         // };
 
-        let f = move |name: &str| -> pl::PolarsResult<String> {
+        let f = move |name: &pl::PlSmallStr| -> pl::PolarsResult<pl::PlSmallStr> {
             let robj = probj.clone().0;
             let rfun = robj
                 .as_function()
                 .expect("internal error: this is not an R function");
 
-            let newname_robj = rfun.call(pairlist!(name)).map_err(|err| {
+            let newname_robj = rfun.call(pairlist!(name.as_str())).map_err(|err| {
                 let es =
                     format!("in $name$map(): user function raised this error: {:?}", err).into();
                 pl_error::ComputeError(es)
@@ -2137,7 +2141,7 @@ impl RPolarsExpr {
                         .into();
                     pl_error::ComputeError(es)
                 })
-                .map(|str| str.to_string())
+                .map(|str| str.into())
         };
 
         Ok(self.clone().0.name().map(f).into())
@@ -2321,12 +2325,13 @@ impl RPolarsExpr {
         exact: Robj,
         cache: Robj,
     ) -> RResult<Self> {
+        let format = robj_to!(Option, String, format)?.map(|x| x.into());
         Ok(self
             .0
             .clone()
             .str()
             .to_date(pl::StrptimeOptions {
-                format: robj_to!(Option, String, format)?,
+                format,
                 strict: robj_to!(bool, strict)?,
                 exact: robj_to!(bool, exact)?,
                 cache: robj_to!(bool, cache)?,
@@ -2345,15 +2350,19 @@ impl RPolarsExpr {
         cache: Robj,
         ambiguous: Robj,
     ) -> RResult<Self> {
+        let format = robj_to!(Option, String, format)?.map(|x| x.into());
+        let time_unit = robj_to!(Option, timeunit, time_unit)?.map(|x| x.into());
+        let time_zone = robj_to!(Option, String, time_zone)?.map(|x| x.into());
+
         Ok(self
             .0
             .clone()
             .str()
             .to_datetime(
-                robj_to!(Option, timeunit, time_unit)?,
-                robj_to!(Option, String, time_zone)?,
+                time_unit,
+                time_zone,
                 pl::StrptimeOptions {
-                    format: robj_to!(Option, String, format)?,
+                    format: format,
                     strict: robj_to!(bool, strict)?,
                     exact: robj_to!(bool, exact)?,
                     cache: robj_to!(bool, cache)?,
@@ -2364,12 +2373,14 @@ impl RPolarsExpr {
     }
 
     pub fn str_to_time(&self, format: Robj, strict: Robj, cache: Robj) -> RResult<Self> {
+        let format = robj_to!(Option, String, format)?.map(|x| x.into());
+
         Ok(self
             .0
             .clone()
             .str()
             .to_time(pl::StrptimeOptions {
-                format: robj_to!(Option, String, format)?,
+                format,
                 strict: robj_to!(bool, strict)?,
                 cache: robj_to!(bool, cache)?,
                 exact: true,
