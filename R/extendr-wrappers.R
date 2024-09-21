@@ -1258,6 +1258,8 @@ RPolarsLazyFrame$join_asof <- function(other, left_on, right_on, left_by, right_
 
 RPolarsLazyFrame$join <- function(other, left_on, right_on, how, validate, join_nulls, suffix, allow_parallel, force_parallel, coalesce) .Call(wrap__RPolarsLazyFrame__join, self, other, left_on, right_on, how, validate, join_nulls, suffix, allow_parallel, force_parallel, coalesce)
 
+RPolarsLazyFrame$join_where <- function(other, predicates, suffix) .Call(wrap__RPolarsLazyFrame__join_where, self, other, predicates, suffix)
+
 RPolarsLazyFrame$sort_by_exprs <- function(by, dotdotdot, descending, nulls_last, maintain_order, multithreaded) .Call(wrap__RPolarsLazyFrame__sort_by_exprs, self, by, dotdotdot, descending, nulls_last, maintain_order, multithreaded)
 
 RPolarsLazyFrame$unpivot <- function(on, index, value_name, variable_name) .Call(wrap__RPolarsLazyFrame__unpivot, self, on, index, value_name, variable_name)

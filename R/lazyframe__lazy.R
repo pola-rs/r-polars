@@ -1367,6 +1367,70 @@ LazyFrame_join = function(
     uw()
 }
 
+#' Perform a join based on one or multiple (in)equality predicates
+#'
+#' @description
+#' This performs an inner join, so only rows where all predicates are true are
+#' included in the result, and a row from either LazyFrame may be included
+#' multiple times in the result.
+#'
+#' Note that the row order of the input LazyFrames is not preserved.
+#'
+#' @param other LazyFrame to join with.
+#' @param ... (In)Equality condition to join the two tables on. When a column
+#' name occurs in both tables, the proper suffix must be applied in the
+#' predicate. For example, if both tables have a column `"x"` that you want to
+#' use in the conditions, you must refer to the column of the right table as
+#' `"x<suffix>"`.
+#' @param suffix Suffix to append to columns with a duplicate name.
+#'
+#' @return
+#'
+#' @examples
+#' east = pl$LazyFrame(
+#'   id = c(100, 101, 102),
+#'   dur = c(120, 140, 160),
+#'   rev = c(12, 14, 16),
+#'   cores = c(2, 8, 4)
+#' )
+#'
+#' west = pl$LazyFrame(
+#'   t_id = c(404, 498, 676, 742),
+#'   time = c(90, 130, 150, 170),
+#'   cost = c(9, 13, 15, 16),
+#'   cores = c(4, 2, 1, 4)
+#' )
+#'
+#' east$join_where(
+#'   west,
+#'   pl$col("dur") < pl$col("time"),
+#'   pl$col("rev") < pl$col("cost")
+#' )$collect()
+
+LazyFrame_join_where = function(
+    other,
+    ...,
+    suffix = "_right"
+  ) {
+  uw = \(res) unwrap(res, "in $join_where():")
+
+  if (!is_polars_lf(other)) {
+    Err_plain("`other` must be a LazyFrame.") |> uw()
+  }
+
+  # bool_expr = unpack_bool_expr_result(...) |>
+  #   unwrap("in $join_where()")
+  #
+  # .pr$LazyFrame$join_where(self, other, bool_expr, suffix) |>
+  #   uw()
+
+  .pr$LazyFrame$join_where(
+    self, other, unpack_list(..., .context = "in $join_where():"), suffix
+  ) |>
+    uw()
+}
+
+
 
 #' Sort the LazyFrame by the given columns
 #'

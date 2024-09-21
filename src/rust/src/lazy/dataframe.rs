@@ -478,6 +478,26 @@ impl RPolarsLazyFrame {
         ))
     }
 
+    fn join_where(&self, other: Robj, predicates: Robj, suffix: Robj) -> RResult<Self> {
+        let ldf = self.0.clone();
+        let other = robj_to!(PLLazyFrame, other)?;
+        let predicates = robj_to!(VecPLExprColNamed, predicates)?;
+        let suffix = robj_to!(str, suffix)?;
+
+        rprintln!("{:?}", predicates);
+
+        let out = ldf
+            .join_builder()
+            .with(other)
+            .suffix(suffix)
+            .join_where(predicates)
+            .into();
+
+        rprintln!("{:?}", out);
+
+        Ok(out)
+    }
+
     pub fn sort_by_exprs(
         &self,
         by: Robj,
