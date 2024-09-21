@@ -245,7 +245,7 @@ DataFrame_width = method_as_active_binding(\() .pr$DataFrame$shape(self)[2L])
 #'
 #' @examples
 #' pl$DataFrame(
-#'   a = list(c(1, 2, 3, 4, 5)), # NB if first column should be a list, wrap it in a Series
+#'   a = c(1, 2, 3, 4, 5),
 #'   b = 1:5,
 #'   c = letters[1:5],
 #'   d = list(1:1, 1:2, 1:3, 1:4, 1:5)

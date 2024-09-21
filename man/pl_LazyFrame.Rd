@@ -19,7 +19,7 @@ be used for making examples and quick demonstrations.
 }
 \examples{
 pl$LazyFrame(
-  a = list(c(1, 2, 3, 4, 5)),
+  a = c(1, 2, 3, 4, 5),
   b = 1:5,
   c = letters[1:5],
   d = list(1:1, 1:2, 1:3, 1:4, 1:5)
