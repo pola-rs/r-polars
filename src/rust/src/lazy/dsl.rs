@@ -87,8 +87,12 @@ impl RPolarsExpr {
             (Rtype::Raw, _) => Ok(dsl::lit(robj_to_binary_vec(robj)?)), // Raw in R is seen as a vector of bytes, in polars it is a Literal, not wrapped in a Series.
             (_, rlen) if rlen != 1 => to_series_then_lit(robj),
             (Rtype::List, _) => to_series_then_lit(robj),
-            (_, _) if robj_inherits(&robj, ["POSIXct", "PTime", "Date"]) => {
-                to_series_then_lit(robj)
+            (_, rlen) if robj_inherits(&robj, ["POSIXct", "PTime", "Date"]) => {
+                if rlen == 1 {
+                    Ok(to_series_then_lit(robj)?.first())
+                } else {
+                    to_series_then_lit(robj)
+                }
             }
 
             (Rtype::Integers, 1) => {
