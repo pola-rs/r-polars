@@ -100,19 +100,24 @@ impl From<Wrap<&StringChunked>> for Sexp {
     }
 }
 
+// Export Arrow Date32 as R's Integer instead of Double, this means `-2147483648` is converted to `NA_integer_`,
+// but `-2147483648` is the day `-5877641-06-23`, so this may not be a problem.
+pub(super) fn date32_export_impl(ca: &DateChunked, classes: &[&str]) -> OwnedIntegerSexp {
+    let mut sexp = OwnedIntegerSexp::new(ca.len()).unwrap();
+    let _ = sexp.set_class(classes);
+    for (i, v) in ca.into_iter().enumerate() {
+        if let Some(v) = v {
+            let _ = sexp.set_elt(i, v);
+        } else {
+            let _ = sexp.set_na(i);
+        }
+    }
+    sexp
+}
+
 impl From<Wrap<&DateChunked>> for Sexp {
     fn from(ca: Wrap<&DateChunked>) -> Self {
-        let ca = ca.0;
-        let mut sexp = OwnedRealSexp::new(ca.len()).unwrap();
-        let _ = sexp.set_class(&["Date"]);
-        for (i, v) in ca.into_iter().enumerate() {
-            if let Some(v) = v {
-                let _ = sexp.set_elt(i, v as f64);
-            } else {
-                let _ = sexp.set_na(i);
-            }
-        }
-        sexp.into()
+        date32_export_impl(ca.0, &["Date"]).into()
     }
 }
 

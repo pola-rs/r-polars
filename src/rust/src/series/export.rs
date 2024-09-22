@@ -248,7 +248,7 @@ impl PlRSeries {
                 DataType::Date => match date {
                     DateConversion::Date => Ok(<Sexp>::from(Wrap(series.date().unwrap()))),
                     DateConversion::IDate => Ok(<Sexp>::from(<data_table::IDate>::from(
-                        series.cast(&DataType::Int32).unwrap().i32().unwrap(),
+                        series.date().unwrap(),
                     ))),
                 },
                 DataType::Time => match time {

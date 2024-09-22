@@ -78,12 +78,14 @@ patrick::with_parameters_test_that(
     )
   },
   code = {
-    double_vec <- c(NA, 100, 20000)
-    series_date <- as_polars_series(double_vec)$cast(pl$Date)
+    int_vec <- c(NA, 100L, 20000L)
+    series_date <- as_polars_series(int_vec)$cast(pl$Date)
 
     out <- series_date$to_r_vector(date = .test_name)
+    # Always export as integer
+    expect_type(out, "integer")
 
-    expected <- as_func(double_vec)
+    expected <- as_func(int_vec)
     expect_identical(out, expected)
   }
 )

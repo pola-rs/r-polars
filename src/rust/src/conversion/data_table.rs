@@ -9,18 +9,11 @@ pub struct ITime {
     sexp: OwnedIntegerSexp,
 }
 
-impl From<&Int32Chunked> for IDate {
-    fn from(ca: &Int32Chunked) -> Self {
-        let mut sexp = OwnedIntegerSexp::new(ca.len()).unwrap();
-        let _ = sexp.set_class(&["IDate", "Date"]);
-        for (i, v) in ca.into_iter().enumerate() {
-            if let Some(v) = v {
-                let _ = sexp.set_elt(i, v);
-            } else {
-                let _ = sexp.set_na(i);
-            }
+impl From<&DateChunked> for IDate {
+    fn from(ca: &DateChunked) -> Self {
+        IDate {
+            sexp: super::chunked_array::date32_export_impl(ca, &["IDate", "Date"])
         }
-        IDate { sexp }
     }
 }
 
