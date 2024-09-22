@@ -288,6 +288,19 @@
       	9223372036854775807
       ]
 
+# as_polars_series works for classes ITime
+
+    Code
+      print(pl_series)
+    Output
+      shape: (3,)
+      Series: '' [time]
+      [
+      	null
+      	01:00:00
+      	00:00:00
+      ]
+
 # as_polars_series works for classes vctrs_unspecified
 
     Code

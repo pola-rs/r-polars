@@ -9,6 +9,7 @@ patrick::with_parameters_test_that(
     skip_if_not_installed("blob")
     skip_if_not_installed("bit64")
     skip_if_not_installed("vctrs")
+    skip_if_not_installed("data.table")
 
     withr::with_timezone(
       "UTC",
@@ -38,6 +39,7 @@ patrick::with_parameters_test_that(
         "AsIs", I(1L), "", pl$Int32,
         "data.frame", data.frame(x = 1L, y = TRUE), "", pl$Struct(x = pl$Int32, y = pl$Boolean),
         "integer64", bit64::as.integer64(c(NA, "-9223372036854775807", "9223372036854775807")), "", pl$Int64,
+        "ITime", data.table::as.ITime(c(NA, 3600, 86400)), "", pl$Time,
         "vctrs_unspecified", vctrs::unspecified(3L), "", pl$Null,
       )
     )
@@ -65,7 +67,7 @@ test_that("as_polars_series.default throws an error", {
   expect_error(as_polars_series(x), "Unsupported class")
 })
 
-test_that("24hour-overed time must be rejected", {
+test_that("24hour-overed hms must be rejected", {
   skip_if_not_installed("hms")
 
   hms_24 <- hms::as_hms(c(NA, "24:00:00", "04:00:00"))

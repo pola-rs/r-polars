@@ -350,6 +350,18 @@ as_polars_series.integer64 <- function(x, name = NULL, ...) {
 
 #' @rdname as_polars_series
 #' @export
+as_polars_series.ITime <- function(x, name = NULL, ...) {
+  PlRSeries$new_i32(name %||% "", x)$mul(
+    PlRSeries$new_f64("", 1000000000)
+  )$cast(
+    pl$Time$`_dt`,
+    strict = TRUE
+  ) |>
+    wrap()
+}
+
+#' @rdname as_polars_series
+#' @export
 as_polars_series.vctrs_unspecified <- function(x, name = NULL, ...) {
   PlRSeries$new_null(name %||% "", length(x)) |>
     wrap()
