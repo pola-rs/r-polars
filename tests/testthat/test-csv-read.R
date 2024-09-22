@@ -197,3 +197,15 @@ test_that("cache url tempfile", {
   expect_false(is.null(cache_temp_file[[url]]))
   expect_equal(attempt_1, attempt_2)
 })
+
+test_that("scan_csv can include file path", {
+  skip_if_not_installed("withr")
+  temp_dir = withr::local_tempdir()
+  pl$DataFrame(mtcars)$write_csv(temp_dir)
+
+  expect_identical(
+    pl$scan_csv(temp_dir, include_file_paths = "file_paths")$collect()$unique("file_paths") |>
+      dim(),
+    c(1L, 12L)
+  )
+})
