@@ -126,6 +126,18 @@ when creating \link{Series} from the inner \link{list} in the case of classes co
 such as \link{data.frame} or \link[vctrs:new_rcrd]{vctrs_rcrd}.
 }
 
+\subsection{S3 method for \link{Date}}{
+
+Sinse polars Data type's unit is day and physical type is integer,
+sub-day precision of the R's \link{Date} object will be ignored.
+}
+
+\subsection{S3 method for \link[hms:hms]{hms}}{
+
+If the \link[hms:hms]{hms} vector contains values greater-equal to 24-oclock or less than 0-oclock,
+an error will be thrown.
+}
+
 \subsection{S3 method for \link[=DataFrame]{polars_data_frame}}{
 
 This method is a shortcut for \code{\link[=dataframe__to_struct]{<DataFrame>$to_struct()}}.

@@ -21,6 +21,16 @@
 #' when creating [Series] from the inner [list] in the case of classes constructed on top of a [list],
 #' such as [data.frame] or [vctrs_rcrd][vctrs::new_rcrd].
 #'
+#' ## S3 method for [Date]
+#'
+#' Sinse polars Data type's unit is day and physical type is integer,
+#' sub-day precision of the R's [Date] object will be ignored.
+#'
+#' ## S3 method for [hms][hms::hms]
+#'
+#' If the [hms][hms::hms] vector contains values greater-equal to 24-oclock or less than 0-oclock,
+#' an error will be thrown.
+#'
 #' ## S3 method for [polars_data_frame][DataFrame]
 #'
 #' This method is a shortcut for [`<DataFrame>$to_struct()`][dataframe__to_struct].
@@ -275,7 +285,7 @@ as_polars_series.hms <- function(x, name = NULL, ...) {
   wrap({
     # TODO: should not panic in upstream
     if (any((x >= 86400L | 0 > x), na.rm = TRUE)) {
-      abort("`hms` class object bigger than 24 hour or less than 0 hour is not supported")
+      abort("`hms` class object contains values greater-equal to 24-oclock or less than 0-oclock is not supported")
     }
 
     PlRSeries$new_f64(name %||% "", x)$mul(

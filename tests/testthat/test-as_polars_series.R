@@ -72,8 +72,8 @@ test_that("Before 0-oclock or after 24-oclock hms must be rejected", {
 
   hms_24 <- hms::as_hms(c(NA, "24:00:00", "04:00:00"))
   hms_minus_1 <- hms::as_hms(c(NA, -3600, 0))
-  expect_error(as_polars_series(hms_24), "`hms` class object bigger than 24 hour or less than 0 hour is not supported")
-  expect_error(as_polars_series(hms_minus_1), "`hms` class object bigger than 24 hour or less than 0 hour is not supported")
+  expect_error(as_polars_series(hms_24), "not supported")
+  expect_error(as_polars_series(hms_minus_1), "not supported")
 })
 
 test_that("as_polars_series(<list>, strict = TRUE)", {

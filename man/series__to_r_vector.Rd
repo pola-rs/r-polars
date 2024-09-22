@@ -122,8 +122,10 @@ depending on the \code{int64} argument.
 \item Decimal: \link{double}.
 \item String: \link{character}.
 \item Categorical: \link{factor}.
-\item Date: \link{Date} or \link[data.table:IDateTime]{data.table::IDate}.
-\item Time: \link[hms:hms]{hms::hms} or \link[data.table:IDateTime]{data.table::ITime}.
+\item Date: \link{Date} or \link[data.table:IDateTime]{data.table::IDate},
+depending on the \code{date} argument.
+\item Time: \link[hms:hms]{hms::hms} or \link[data.table:IDateTime]{data.table::ITime},
+depending on the \code{time} argument.
 \item Datetime (without timezone): \link{POSIXct} or \link[clock:as_naive_time]{clock_naive_time},
 depending on the \code{as_clock_class} argument.
 \item Datetime (with timezone): \link{POSIXct} or \link[clock:as_zoned_time]{clock_zoned_time},

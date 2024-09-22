@@ -19,8 +19,10 @@
 #' - Decimal: [double].
 #' - String: [character].
 #' - Categorical: [factor].
-#' - Date: [Date] or [data.table::IDate][data.table::IDateTime].
-#' - Time: [hms::hms] or [data.table::ITime][data.table::IDateTime].
+#' - Date: [Date] or [data.table::IDate][data.table::IDateTime],
+#'   depending on the `date` argument.
+#' - Time: [hms::hms] or [data.table::ITime][data.table::IDateTime],
+#'   depending on the `time` argument.
 #' - Datetime (without timezone): [POSIXct] or [clock_naive_time][clock::as_naive_time],
 #'   depending on the `as_clock_class` argument.
 #' - Datetime (with timezone): [POSIXct] or [clock_zoned_time][clock::as_zoned_time],
