@@ -11,6 +11,7 @@ SEXP savvy_lit_from_str__ffi(SEXP c_arg__value);
 SEXP savvy_lit_from_raw__ffi(SEXP c_arg__value);
 SEXP savvy_lit_null__ffi(void);
 SEXP savvy_lit_from_series__ffi(SEXP c_arg__value);
+SEXP savvy_lit_from_series_first__ffi(SEXP c_arg__value);
 SEXP savvy_when__ffi(SEXP c_arg__condition);
 
 // methods and associated functions for PlRChainedThen

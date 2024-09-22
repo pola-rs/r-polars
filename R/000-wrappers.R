@@ -90,6 +90,12 @@ NULL
 }
 
 
+`lit_from_series_first` <- function(`value`) {
+  `value` <- .savvy_extract_ptr(`value`, "PlRSeries")
+  .savvy_wrap_PlRExpr(.Call(savvy_lit_from_series_first__impl, `value`))
+}
+
+
 `when` <- function(`condition`) {
   `condition` <- .savvy_extract_ptr(`condition`, "PlRExpr")
   .savvy_wrap_PlRWhen(.Call(savvy_when__impl, `condition`))

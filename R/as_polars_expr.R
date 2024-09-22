@@ -12,14 +12,14 @@
 #'
 #' Because R objects are typically mapped to [Series], this function often calls [as_polars_series()] internally.
 #' However, unlike R, Polars has scalars of length 1, so if an R object is converted to a [Series] of length 1,
-#' this function will use `<Expr>$first()` at the end to convert it to a scalar value.
+#' this function get the first value of the Series and convert it to a scalar literal.
 #' If you want to implement your own conversion from an R class to a Polars object,
 #' define an S3 method for [as_polars_series()] instead of this function.
 #'
 #' ## Default S3 method
 #'
 #' Create a [Series] by calling [as_polars_series()] and then convert that [Series] to an [Expr].
-#' If the length of the [Series] is `1`, it will be converted to a scalar value using `<Expr>$first()` at the end.
+#' If the length of the [Series] is `1`, it will be converted to a scalar value.
 #'
 #' Additional arguments `...` are passed to [as_polars_series()].
 #'
@@ -103,8 +103,13 @@
 #' as_polars_expr(list(1))
 #' as_polars_expr(list(1, 2))
 #'
+#' # default method (for Date)
+#' as_polars_expr(as.Date(integer(0)))
+#' as_polars_expr(as.Date("2021-01-01"))
+#' as_polars_expr(as.Date(c("2021-01-01", "2021-01-02")))
+#'
 #' # polars_series
-#' ## Unlike the default method, this method does not call `$first()`
+#' ## Unlike the default method, this method does not extract the first value
 #' as_polars_series(1) |>
 #'   as_polars_expr()
 #'
@@ -124,7 +129,7 @@ as_polars_expr.default <- function(x, ...) {
 
     if (series$len() == 1L) {
       # Treat as scalar
-      lit_from_series(series$`_s`)$first()
+      lit_from_series_first(series$`_s`)
     } else {
       lit_from_series(series$`_s`)
     }

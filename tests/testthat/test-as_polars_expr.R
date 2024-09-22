@@ -45,8 +45,11 @@ patrick::with_parameters_test_that(
       "raw (2)", charToRaw("ab"), wrap(lit_from_raw(charToRaw("ab"))), 1,
       "NULL", NULL, wrap(lit_null()), 1,
       "list (0)", list(), as_polars_expr(as_polars_series(list(), "literal")), 0,
-      "list (1)", list(TRUE), as_polars_expr(as_polars_series(list(TRUE), "literal"))$first(), 1,
+      "list (1)", list(TRUE), as_polars_expr(list(TRUE)), 1,
       "list (2)", list(TRUE, FALSE), as_polars_expr(as_polars_series(list(TRUE, FALSE), "literal")), 2,
+      "Date (0)", as.Date(integer()), as_polars_expr(as_polars_series(as.Date(integer()), "literal")), 0,
+      "Date (1)", as.Date(0), as_polars_expr(as.Date(0)), 1,
+      "Date (2)", as.Date(0:1), as_polars_expr(as_polars_series(as.Date(0:1), "literal")), 2,
       "series (0)", as_polars_series(logical()), as_polars_expr(as_polars_series(logical())), 0,
       "series (1)", as_polars_series(TRUE), as_polars_expr(as_polars_series(TRUE)), 1,
       "series (2)", as_polars_series(c(TRUE, FALSE)), as_polars_expr(as_polars_series(c(TRUE, FALSE))), 2

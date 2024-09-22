@@ -443,7 +443,7 @@
     Code
       out
     Output
-      Series[literal].first()
+      [true]
 
 ---
 
@@ -479,6 +479,69 @@
       ╞════════════╡
       │ [true]     │
       │ [false]    │
+      └────────────┘
+
+# as_polars_expr works for classes Date (0)
+
+    Code
+      out
+    Output
+      Series[literal]
+
+---
+
+    Code
+      selected_out
+    Output
+      shape: (0, 1)
+      ┌─────────┐
+      │ literal │
+      │ ---     │
+      │ date    │
+      ╞═════════╡
+      └─────────┘
+
+# as_polars_expr works for classes Date (1)
+
+    Code
+      out
+    Output
+      1970-01-01
+
+---
+
+    Code
+      selected_out
+    Output
+      shape: (1, 1)
+      ┌────────────┐
+      │ literal    │
+      │ ---        │
+      │ date       │
+      ╞════════════╡
+      │ 1970-01-01 │
+      └────────────┘
+
+# as_polars_expr works for classes Date (2)
+
+    Code
+      out
+    Output
+      Series[literal]
+
+---
+
+    Code
+      selected_out
+    Output
+      shape: (2, 1)
+      ┌────────────┐
+      │ literal    │
+      │ ---        │
+      │ date       │
+      ╞════════════╡
+      │ 1970-01-01 │
+      │ 1970-01-02 │
       └────────────┘
 
 # as_polars_expr works for classes series (0)

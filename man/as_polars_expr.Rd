@@ -59,13 +59,13 @@ the \code{lit} function of the Polars API in other languages.)
 \details{
 Because R objects are typically mapped to \link{Series}, this function often calls \code{\link[=as_polars_series]{as_polars_series()}} internally.
 However, unlike R, Polars has scalars of length 1, so if an R object is converted to a \link{Series} of length 1,
-this function will use \verb{<Expr>$first()} at the end to convert it to a scalar value.
+this function get the first value of the Series and convert it to a scalar literal.
 If you want to implement your own conversion from an R class to a Polars object,
 define an S3 method for \code{\link[=as_polars_series]{as_polars_series()}} instead of this function.
 \subsection{Default S3 method}{
 
 Create a \link{Series} by calling \code{\link[=as_polars_series]{as_polars_series()}} and then convert that \link{Series} to an \link{Expr}.
-If the length of the \link{Series} is \code{1}, it will be converted to a scalar value using \verb{<Expr>$first()} at the end.
+If the length of the \link{Series} is \code{1}, it will be converted to a scalar value.
 
 Additional arguments \code{...} are passed to \code{\link[=as_polars_series]{as_polars_series()}}.
 }
@@ -146,8 +146,13 @@ as_polars_expr(list())
 as_polars_expr(list(1))
 as_polars_expr(list(1, 2))
 
+# default method (for Date)
+as_polars_expr(as.Date(integer(0)))
+as_polars_expr(as.Date("2021-01-01"))
+as_polars_expr(as.Date(c("2021-01-01", "2021-01-02")))
+
 # polars_series
-## Unlike the default method, this method does not call `$first()`
+## Unlike the default method, this method does not extract the first value
 as_polars_series(1) |>
   as_polars_expr()
 

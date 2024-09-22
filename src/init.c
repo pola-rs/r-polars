@@ -99,6 +99,11 @@ SEXP savvy_lit_from_series__impl(SEXP c_arg__value) {
     return handle_result(res);
 }
 
+SEXP savvy_lit_from_series_first__impl(SEXP c_arg__value) {
+    SEXP res = savvy_lit_from_series_first__ffi(c_arg__value);
+    return handle_result(res);
+}
+
 SEXP savvy_when__impl(SEXP c_arg__condition) {
     SEXP res = savvy_when__ffi(c_arg__condition);
     return handle_result(res);
@@ -1059,6 +1064,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_lit_from_raw__impl", (DL_FUNC) &savvy_lit_from_raw__impl, 1},
     {"savvy_lit_null__impl", (DL_FUNC) &savvy_lit_null__impl, 0},
     {"savvy_lit_from_series__impl", (DL_FUNC) &savvy_lit_from_series__impl, 1},
+    {"savvy_lit_from_series_first__impl", (DL_FUNC) &savvy_lit_from_series_first__impl, 1},
     {"savvy_when__impl", (DL_FUNC) &savvy_when__impl, 1},
     {"savvy_PlRChainedThen_when__impl", (DL_FUNC) &savvy_PlRChainedThen_when__impl, 2},
     {"savvy_PlRChainedThen_otherwise__impl", (DL_FUNC) &savvy_PlRChainedThen_otherwise__impl, 2},
