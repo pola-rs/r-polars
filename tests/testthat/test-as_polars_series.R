@@ -65,6 +65,13 @@ test_that("as_polars_series.default throws an error", {
   expect_error(as_polars_series(x), "Unsupported class")
 })
 
+test_that("24hour-overed time must be rejected", {
+  skip_if_not_installed("hms")
+
+  hms_24 <- hms::as_hms(c(NA, "24:00:00", "04:00:00"))
+  expect_error(as_polars_series(hms_24), "`hms` class object bigger than 24 hours is not supported")
+})
+
 test_that("as_polars_series(<list>, strict = TRUE)", {
   skip_if_not_installed("vctrs")
 

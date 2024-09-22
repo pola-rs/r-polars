@@ -269,17 +269,22 @@ as_polars_series.difftime <- function(x, name = NULL, ...) {
     wrap()
 }
 
-# TODO: should not allow bigger than `hms::as_hms(86400)`
 #' @rdname as_polars_series
 #' @export
 as_polars_series.hms <- function(x, name = NULL, ...) {
-  PlRSeries$new_f64(name %||% "", x)$mul(
-    PlRSeries$new_i32("", 1000000000L)
-  )$cast(
-    pl$Time$`_dt`,
-    strict = TRUE
-  ) |>
-    wrap()
+  wrap({
+    # TODO: handle at the upstream (currently, it panics)
+    if (any(x >= 86400L, na.rm = TRUE)) {
+      abort("`hms` class object bigger than 24 hours is not supported")
+    }
+
+    PlRSeries$new_f64(name %||% "", x)$mul(
+      PlRSeries$new_i32("", 1000000000L)
+    )$cast(
+      pl$Time$`_dt`,
+      strict = TRUE
+    )
+  })
 }
 
 #' @rdname as_polars_series
