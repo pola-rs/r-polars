@@ -62,6 +62,7 @@ tasks:
 
   build-standalone-files:
     desc: Update "standalone" R files by `usethis::use_standalone()`
+    ignore_error: true # GitHub API rate limit
     generates:
       - R/import-standalone-*.R
     vars:
