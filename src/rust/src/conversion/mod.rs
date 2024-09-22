@@ -4,6 +4,7 @@ use polars::series::ops::NullBehavior;
 use savvy::{ListSexp, NumericScalar, NumericSexp, TypedSexp};
 mod chunked_array;
 pub mod clock;
+pub mod data_table;
 
 #[repr(transparent)]
 pub struct Wrap<T>(pub T);

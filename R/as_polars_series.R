@@ -269,6 +269,7 @@ as_polars_series.difftime <- function(x, name = NULL, ...) {
     wrap()
 }
 
+# TODO: should not allow bigger than `hms::as_hms(86400)`
 #' @rdname as_polars_series
 #' @export
 as_polars_series.hms <- function(x, name = NULL, ...) {

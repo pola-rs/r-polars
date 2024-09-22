@@ -67,6 +67,82 @@ test_that("int64 argument error", {
 })
 
 patrick::with_parameters_test_that(
+  "date conversion",
+  .cases = {
+    skip_if_not_installed("data.table")
+
+    tibble::tribble(
+      ~.test_name, ~as_func,
+      "Date", as.Date,
+      "IDate", data.table::as.IDate,
+    )
+  },
+  code = {
+    double_vec <- c(NA, 100, 20000)
+    series_date <- as_polars_series(double_vec)$cast(pl$Date)
+
+    out <- series_date$to_r_vector(date = .test_name)
+
+    expected <- as_func(double_vec)
+    expect_identical(out, expected)
+  }
+)
+
+test_that("date argument error", {
+  expect_error(
+    as_polars_series(1)$to_r_vector(date = TRUE),
+    "must be character"
+  )
+  expect_error(
+    as_polars_series(1)$to_r_vector(date = "foo"),
+    r"(must be one of \('Date', 'IDate'\))"
+  )
+})
+
+patrick::with_parameters_test_that(
+  "time conversion",
+  .cases = {
+    skip_if_not_installed("data.table")
+    skip_if_not_installed("hms")
+
+    tibble::tribble(
+      ~.test_name, ~as_func,
+      "hms", hms::as_hms,
+      "ITime", data.table::as.ITime,
+    )
+  },
+  code = {
+    double_vec <- c(NA, 0, 86399)
+    series_time <- as_polars_series(hms::as_hms(double_vec))$cast(pl$Time)
+
+    out <- series_time$to_r_vector(time = .test_name)
+
+    expected <- as_func(double_vec)
+    expect_identical(out, expected)
+  }
+)
+
+test_that("time argument error", {
+  expect_error(
+    as_polars_series(1)$to_r_vector(time = TRUE),
+    "must be character"
+  )
+  expect_error(
+    as_polars_series(1)$to_r_vector(time = "foo"),
+    r"(must be one of \('hms', 'ITime'\))"
+  )
+  with_mocked_bindings(
+    {
+      expect_error(
+        as_polars_series(1)$to_r_vector(time = "ITime"),
+        r"(If the `time` argument is set to 'ITime', the `data\.table` package must be installed)"
+      )
+    },
+    is_datatable_installed = function() FALSE
+  )
+})
+
+patrick::with_parameters_test_that(
   "struct conversion",
   .cases = {
     tibble::tribble(
@@ -86,11 +162,11 @@ patrick::with_parameters_test_that(
     expect_false(is.vector(df_out))
     expect_true(is.vector(list_out))
 
-    expect_s3_class(df_out, classes)
+    expect_s3_class(df_out, classes, exact = TRUE)
     expect_vector(list_out, ptype = list())
 
-    expect_s3_class(df_out$b[[1]], classes)
-    expect_s3_class(list_out$b[[2]], classes)
+    expect_s3_class(df_out$b[[1]], classes, exact = TRUE)
+    expect_s3_class(list_out$b[[2]], classes, exact = TRUE)
 
     expect_snapshot(df_out)
     expect_snapshot(list_out)

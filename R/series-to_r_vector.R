@@ -19,8 +19,8 @@
 #' - Decimal: [double].
 #' - String: [character].
 #' - Categorical: [factor].
-#' - Date: [Date].
-#' - Time: [hms::hms].
+#' - Date: [Date] or [data.table::IDate][data.table::IDateTime].
+#' - Time: [hms::hms] or [data.table::ITime][data.table::IDateTime].
 #' - Datetime (without timezone): [POSIXct] or [clock_naive_time][clock::as_naive_time],
 #'   depending on the `as_clock_class` argument.
 #' - Datetime (with timezone): [POSIXct] or [clock_zoned_time][clock::as_zoned_time],
@@ -48,6 +48,15 @@
 #' - `"integer64"`: Convert to the [bit64::integer64] class.
 #'   The [bit64][bit64::bit64-package] package must be installed.
 #'   If the value is out of the range of [bit64::integer64], export as [bit64::NA_integer64_].
+#' @param date Determine how to convert Polars' Date type values to R class.
+#' One of the followings:
+#' - `"Date"` (default): Convert to the R's [Date] class.
+#' - `"IDate"`: Convert to the [data.table::IDate][data.table::IDateTime] class.
+#' @param time Determine how to convert Polars' Time type values to R class.
+#' One of the followings:
+#' - `"hms"` (default): Convert to the [hms::hms] class.
+#' - `"ITime"`: Convert to the [data.table::ITime][data.table::IDateTime] class.
+#'   The [data.table][data.table::data.table-package] package must be installed.
 #' @param struct Determine how to convert Polars' Struct type values to R class.
 #' One of the followings:
 #' - `"dataframe"` (default): Convert to the R's [data.frame] class.
@@ -160,6 +169,8 @@ series__to_r_vector <- function(
     ...,
     ensure_vector = FALSE,
     int64 = "double",
+    date = "Date",
+    time = "hms",
     struct = "dataframe",
     decimal = "double",
     as_clock_class = FALSE,
@@ -172,6 +183,11 @@ series__to_r_vector <- function(
     if (identical(int64, "integer64")) {
       if (!is_bit64_installed()) {
         abort("If the `int64` argument is set to 'integer64', the `bit64` package must be installed.")
+      }
+    }
+    if (identical(time, "ITime")) {
+      if (!is_datatable_installed()) {
+        abort("If the `time` argument is set to 'ITime', the `data.table` package must be installed.")
       }
     }
     if (identical(struct, "tibble")) {
@@ -189,6 +205,8 @@ series__to_r_vector <- function(
     self$`_s`$to_r_vector(
       ensure_vector = ensure_vector,
       int64 = int64,
+      date = date,
+      time = time,
       struct = struct,
       decimal = decimal,
       as_clock_class = as_clock_class,
@@ -201,6 +219,10 @@ series__to_r_vector <- function(
 
 is_bit64_installed <- function() {
   is_installed("bit64")
+}
+
+is_datatable_installed <- function() {
+  is_installed("data.table")
 }
 
 is_tibble_installed <- function() {

@@ -8,6 +8,8 @@ series__to_r_vector(
   ...,
   ensure_vector = FALSE,
   int64 = "double",
+  date = "Date",
+  time = "hms",
   struct = "dataframe",
   decimal = "double",
   as_clock_class = FALSE,
@@ -34,6 +36,21 @@ If the value is out of the range of R's integer type, export as \link{NA_integer
 \item \code{"integer64"}: Convert to the \link[bit64:bit64-package]{bit64::integer64} class.
 The \link[bit64:bit64-package]{bit64} package must be installed.
 If the value is out of the range of \link[bit64:bit64-package]{bit64::integer64}, export as \link[bit64:as.integer64.character]{bit64::NA_integer64_}.
+}}
+
+\item{date}{Determine how to convert Polars' Date type values to R class.
+One of the followings:
+\itemize{
+\item \code{"Date"} (default): Convert to the R's \link{Date} class.
+\item \code{"IDate"}: Convert to the \link[data.table:IDateTime]{data.table::IDate} class.
+}}
+
+\item{time}{Determine how to convert Polars' Time type values to R class.
+One of the followings:
+\itemize{
+\item \code{"hms"} (default): Convert to the \link[hms:hms]{hms::hms} class.
+\item \code{"ITime"}: Convert to the \link[data.table:IDateTime]{data.table::ITime} class.
+The \link[data.table:data.table]{data.table} package must be installed.
 }}
 
 \item{struct}{Determine how to convert Polars' Struct type values to R class.
@@ -105,8 +122,8 @@ depending on the \code{int64} argument.
 \item Decimal: \link{double}.
 \item String: \link{character}.
 \item Categorical: \link{factor}.
-\item Date: \link{Date}.
-\item Time: \link[hms:hms]{hms::hms}.
+\item Date: \link{Date} or \link[data.table:IDateTime]{data.table::IDate}.
+\item Time: \link[hms:hms]{hms::hms} or \link[data.table:IDateTime]{data.table::ITime}.
 \item Datetime (without timezone): \link{POSIXct} or \link[clock:as_naive_time]{clock_naive_time},
 depending on the \code{as_clock_class} argument.
 \item Datetime (with timezone): \link{POSIXct} or \link[clock:as_zoned_time]{clock_zoned_time},

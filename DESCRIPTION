@@ -19,6 +19,7 @@ Suggests:
     bit64,
     blob,
     clock,
+    data.table,
     hms,
     patrick,
     testthat (>= 3.0.0),

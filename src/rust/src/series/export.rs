@@ -27,6 +27,19 @@ enum DecimalConversion {
     Double,
 }
 
+#[derive(Debug, Clone, EnumString)]
+enum DateConversion {
+    Date,
+    IDate,
+}
+
+#[derive(Debug, Clone, EnumString)]
+enum TimeConversion {
+    #[strum(serialize = "hms")]
+    HMS,
+    ITime,
+}
+
 // `vctrs::unspecified` like function
 fn vctrs_unspecified_sexp(n: usize) -> Sexp {
     let mut sexp = OwnedLogicalSexp::new(n).unwrap();
@@ -57,6 +70,8 @@ impl PlRSeries {
         &self,
         ensure_vector: bool,
         int64: &str,
+        date: &str,
+        time: &str,
         r#struct: &str,
         decimal: &str,
         as_clock_class: bool,
@@ -71,6 +86,12 @@ impl PlRSeries {
                 "Argument `int64` must be one of ('character', 'double', 'integer', 'integer64')"
                     .to_string(),
             )
+        })?;
+        let date = DateConversion::try_from(date).map_err(|_| {
+            savvy::Error::from("Argument `date` must be one of ('Date', 'IDate')".to_string())
+        })?;
+        let time = TimeConversion::try_from(time).map_err(|_| {
+            savvy::Error::from("Argument `time` must be one of ('hms', 'ITime')".to_string())
         })?;
         let r#struct = StructConversion::try_from(r#struct).map_err(|_| {
             savvy::Error::from(
@@ -89,6 +110,8 @@ impl PlRSeries {
             series: &Series,
             ensure_vector: bool,
             int64: Int64Conversion,
+            date: DateConversion,
+            time: TimeConversion,
             r#struct: StructConversion,
             decimal: DecimalConversion,
             as_clock_class: bool,
@@ -141,6 +164,8 @@ impl PlRSeries {
                             &empty_inner_series,
                             false,
                             int64.clone(),
+                            date.clone(),
+                            time.clone(),
                             r#struct.clone(),
                             decimal.clone(),
                             as_clock_class,
@@ -159,6 +184,8 @@ impl PlRSeries {
                                     s.as_ref(),
                                     false,
                                     int64.clone(),
+                                    date.clone(),
+                                    time.clone(),
                                     r#struct.clone(),
                                     decimal.clone(),
                                     as_clock_class,
@@ -183,6 +210,8 @@ impl PlRSeries {
                             &empty_inner_series,
                             false,
                             int64.clone(),
+                            date.clone(),
+                            time.clone(),
                             r#struct.clone(),
                             decimal.clone(),
                             as_clock_class,
@@ -201,6 +230,8 @@ impl PlRSeries {
                                     s.as_ref(),
                                     false,
                                     int64.clone(),
+                                    date.clone(),
+                                    time.clone(),
                                     r#struct.clone(),
                                     decimal.clone(),
                                     as_clock_class,
@@ -214,8 +245,18 @@ impl PlRSeries {
                     }
                     Ok(list.into())
                 },
-                DataType::Date => Ok(<Sexp>::from(Wrap(series.date().unwrap()))),
-                DataType::Time => Ok(<Sexp>::from(Wrap(series.time().unwrap()))),
+                DataType::Date => match date {
+                    DateConversion::Date => Ok(<Sexp>::from(Wrap(series.date().unwrap()))),
+                    DateConversion::IDate => Ok(<Sexp>::from(<data_table::IDate>::from(
+                        series.cast(&DataType::Int32).unwrap().i32().unwrap(),
+                    ))),
+                },
+                DataType::Time => match time {
+                    TimeConversion::HMS => Ok(<Sexp>::from(Wrap(series.time().unwrap()))),
+                    TimeConversion::ITime => Ok(<Sexp>::from(<data_table::ITime>::from(
+                        series.cast(&DataType::Float64).unwrap().f64().unwrap(),
+                    ))),
+                },
                 DataType::Datetime(_, opt_tz) => {
                     if as_clock_class {
                         let time_point = <clock::TimePoint>::from(series.datetime().unwrap());
@@ -291,6 +332,8 @@ impl PlRSeries {
                                 s,
                                 false,
                                 int64.clone(),
+                                date.clone(),
+                                time.clone(),
                                 r#struct.clone(),
                                 decimal.clone(),
                                 as_clock_class,
@@ -320,6 +363,8 @@ impl PlRSeries {
             series,
             ensure_vector,
             int64,
+            date,
+            time,
             r#struct,
             decimal,
             as_clock_class,
