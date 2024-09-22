@@ -31,7 +31,7 @@ patrick::with_parameters_test_that(
         "POSIXct (system time)", as.POSIXct(c("2021-01-01 00:00:00", NA)), "", pl$Datetime("ms"),
         "POSIXct (system time, integer)", as.POSIXct(c(1609459200L, NA)), "", pl$Datetime("ms"),
         "difftime", as.difftime(c(1, NA), units = "weeks"), "", pl$Duration("ms"),
-        "hms", hms::as_hms(c("01:00:00", NA)), "", pl$Time,
+        "hms", hms::as_hms(c("00:00:00", "01:00:00", NA)), "", pl$Time,
         "blob", blob::as_blob(c("foo", "bar", NA)), "", pl$Binary,
         "NULL", NULL, "", pl$Null,
         "list", list("foo", 1L, NULL, NA, vctrs::unspecified(), as_polars_series(NULL), list(NULL)), "", pl$List(pl$String),
@@ -39,7 +39,7 @@ patrick::with_parameters_test_that(
         "AsIs", I(1L), "", pl$Int32,
         "data.frame", data.frame(x = 1L, y = TRUE), "", pl$Struct(x = pl$Int32, y = pl$Boolean),
         "integer64", bit64::as.integer64(c(NA, "-9223372036854775807", "9223372036854775807")), "", pl$Int64,
-        "ITime", data.table::as.ITime(c(NA, 3600, 86400)), "", pl$Time,
+        "ITime", data.table::as.ITime(c(NA, 3600, 86400, -1)), "", pl$Time,
         "vctrs_unspecified", vctrs::unspecified(3L), "", pl$Null,
       )
     )
@@ -67,11 +67,13 @@ test_that("as_polars_series.default throws an error", {
   expect_error(as_polars_series(x), "Unsupported class")
 })
 
-test_that("24hour-overed hms must be rejected", {
+test_that("Before 0-oclock or after 24-oclock hms must be rejected", {
   skip_if_not_installed("hms")
 
   hms_24 <- hms::as_hms(c(NA, "24:00:00", "04:00:00"))
-  expect_error(as_polars_series(hms_24), "`hms` class object bigger than 24 hours is not supported")
+  hms_minus_1 <- hms::as_hms(c(NA, -3600, 0))
+  expect_error(as_polars_series(hms_24), "`hms` class object bigger than 24 hour or less than 0 hour is not supported")
+  expect_error(as_polars_series(hms_minus_1), "`hms` class object bigger than 24 hour or less than 0 hour is not supported")
 })
 
 test_that("as_polars_series(<list>, strict = TRUE)", {

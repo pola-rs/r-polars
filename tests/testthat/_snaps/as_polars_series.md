@@ -194,9 +194,10 @@
     Code
       print(pl_series)
     Output
-      shape: (2,)
+      shape: (3,)
       Series: '' [time]
       [
+      	00:00:00
       	01:00:00
       	null
       ]
@@ -293,12 +294,13 @@
     Code
       print(pl_series)
     Output
-      shape: (3,)
+      shape: (4,)
       Series: '' [time]
       [
       	null
       	01:00:00
       	00:00:00
+      	23:59:59
       ]
 
 # as_polars_series works for classes vctrs_unspecified

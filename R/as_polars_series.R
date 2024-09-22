@@ -273,9 +273,9 @@ as_polars_series.difftime <- function(x, name = NULL, ...) {
 #' @export
 as_polars_series.hms <- function(x, name = NULL, ...) {
   wrap({
-    # TODO: handle at the upstream (currently, it panics)
-    if (any(x >= 86400L, na.rm = TRUE)) {
-      abort("`hms` class object bigger than 24 hours is not supported")
+    # TODO: should not panic in upstream
+    if (any((x >= 86400L | 0 > x), na.rm = TRUE)) {
+      abort("`hms` class object bigger than 24 hour or less than 0 hour is not supported")
     }
 
     PlRSeries$new_f64(name %||% "", x)$mul(
