@@ -199,13 +199,14 @@ test_that("cache url tempfile", {
 })
 
 test_that("scan_csv can include file path", {
-  skip_if_not_installed("withr")
-  temp_dir = withr::local_tempdir()
-  pl$DataFrame(mtcars)$write_csv(temp_dir)
+    temp_file_1 = withr::local_tempfile()
+    temp_file_2 = withr::local_tempfile()
+    pl$DataFrame(mtcars)$write_csv(temp_file_1)
+    pl$DataFrame(mtcars)$write_csv(temp_file_2)
 
-  expect_identical(
-    pl$scan_csv(temp_dir, include_file_paths = "file_paths")$collect()$unique("file_paths") |>
-      dim(),
-    c(1L, 12L)
-  )
+    expect_identical(
+        pl$scan_csv(c(temp_file_1, temp_file_2), include_file_paths = "file_paths")$collect()$unique("file_paths") |>
+            dim(),
+        c(2L, 12L)
+    )
 })
