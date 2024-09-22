@@ -194,11 +194,19 @@ as_polars_series.factor <- function(x, name = NULL, ...) {
 #' @rdname as_polars_series
 #' @export
 as_polars_series.Date <- function(x, name = NULL, ...) {
-  PlRSeries$new_f64(name %||% "", x)$cast(
-    pl$Date$`_dt`,
-    strict = TRUE
-  ) |>
-    wrap()
+  wrap({
+    # Date is based on integer or double
+    new_series_fn <- if (is_integer(x)) {
+      PlRSeries$new_i32
+    } else {
+      PlRSeries$new_f64
+    }
+
+    new_series_fn(name %||% "", x)$cast(
+      pl$Date$`_dt`,
+      strict = TRUE
+    )
+  })
 }
 
 #' @rdname as_polars_series

@@ -117,6 +117,18 @@
       	null
       ]
 
+# as_polars_series works for classes Date (integer)
+
+    Code
+      print(pl_series)
+    Output
+      shape: (2,)
+      Series: '' [date]
+      [
+      	2021-01-01
+      	null
+      ]
+
 # as_polars_series works for classes POSIXct (UTC)
 
     Code

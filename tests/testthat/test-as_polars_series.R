@@ -24,6 +24,7 @@ patrick::with_parameters_test_that(
         "array", array(1:24, c(2, 3, 4)), "", pl$Array(pl$Int32, c(3, 2)),
         "factor", factor("foo"), "", pl$Categorical(),
         "Date", as.Date(c("2021-01-01", NA)), "", pl$Date,
+        "Date (integer)", as.Date(c(18628L, NA)), "", pl$Date,
         "POSIXct (UTC)", as.POSIXct(c("2021-01-01 00:00:00", NA), "UTC"), "", pl$Datetime("ms", "UTC"),
         "POSIXct (UTC, integer)", as.POSIXct(c(1609459200L, NA), "UTC"), "", pl$Datetime("ms", "UTC"),
         "POSIXct (system time)", as.POSIXct(c("2021-01-01 00:00:00", NA)), "", pl$Datetime("ms"),
