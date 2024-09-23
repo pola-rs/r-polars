@@ -41,10 +41,8 @@ The \link{raw} type vector is converted to a Binary scalar.
 \item NULL: Null
 }
 
-Other scalar values cannot be created directly, so we need to \verb{$cast()} from other scalar values
-or extract them with the \verb{$first()} method from a \link{Series}.
-(\code{\link[=as_polars_expr]{as_polars_expr()}} and \code{\link[=pl__lit]{pl$lit()}} automatically apply the \verb{$first()} method to extract scalar values
-inside the default S3 method of \code{\link[=as_polars_expr]{as_polars_expr()}}.)
+For other R class, the default S3 method is called and R object will be converted via
+\code{\link[=as_polars_series]{as_polars_series()}}. So the type mapping is defined by \code{\link[=as_polars_series]{as_polars_series()}}.
 }
 
 \examples{

@@ -1,6 +1,5 @@
 # Same as Python Polars' `parse_into_expression`
 # TODO: link to data type page
-# TODO: link to `expr__first`
 #' Create a Polars expression from an R object
 #'
 #' The [as_polars_expr()] function creates a polars [expression] from various R objects.
@@ -48,10 +47,8 @@
 #'
 #' - NULL: Null
 #'
-#' Other scalar values cannot be created directly, so we need to `$cast()` from other scalar values
-#' or extract them with the `$first()` method from a [Series].
-#' ([as_polars_expr()] and [`pl$lit()`][pl__lit] automatically apply the `$first()` method to extract scalar values
-#' inside the default S3 method of [as_polars_expr()].)
+#' For other R class, the default S3 method is called and R object will be converted via
+#' [as_polars_series()]. So the type mapping is defined by [as_polars_series()].
 #' @inheritParams as_polars_series
 #' @param as_lit A logical value indicating whether to treat vector as literal values or not.
 #' This argument is always set to `TRUE` when calling this function from [`pl$lit()`][pl__lit],
