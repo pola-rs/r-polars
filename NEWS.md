@@ -10,6 +10,8 @@
   (#1230).
 - In `$serialize()`, in the field `schema`, the field `inner` is renamed `fields`,
   and the fields `output_schema` and `filter` are removed (#1230).
+- New argument `include_file_paths` in `pl_scan_csv()` and `pl_read_csv()` (#1235).
+
 
 ### New features
 
