@@ -74,7 +74,6 @@ pub fn lit_from_series(value: &PlRSeries) -> Result<PlRExpr> {
 pub fn lit_from_series_first(value: &PlRSeries) -> Result<PlRExpr> {
     let s = value.series.clone();
     let av = s
-        .clone()
         .get(0)
         .map_err(RPolarsErr::from)?
         .into_static()

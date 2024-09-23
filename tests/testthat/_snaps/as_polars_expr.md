@@ -544,6 +544,69 @@
       │ 1970-01-02 │
       └────────────┘
 
+# as_polars_expr works for classes POSIXct (UTC) (0)
+
+    Code
+      out
+    Output
+      Series[literal]
+
+---
+
+    Code
+      selected_out
+    Output
+      shape: (0, 1)
+      ┌───────────────────┐
+      │ literal           │
+      │ ---               │
+      │ datetime[ms, UTC] │
+      ╞═══════════════════╡
+      └───────────────────┘
+
+# as_polars_expr works for classes POSIXct (UTC) (1)
+
+    Code
+      out
+    Output
+      1970-01-01 00:00:00 UTC
+
+---
+
+    Code
+      selected_out
+    Output
+      shape: (1, 1)
+      ┌─────────────────────────┐
+      │ literal                 │
+      │ ---                     │
+      │ datetime[ms, UTC]       │
+      ╞═════════════════════════╡
+      │ 1970-01-01 00:00:00 UTC │
+      └─────────────────────────┘
+
+# as_polars_expr works for classes POSIXct (UTC) (2)
+
+    Code
+      out
+    Output
+      Series[literal]
+
+---
+
+    Code
+      selected_out
+    Output
+      shape: (2, 1)
+      ┌─────────────────────────┐
+      │ literal                 │
+      │ ---                     │
+      │ datetime[ms, UTC]       │
+      ╞═════════════════════════╡
+      │ 1970-01-01 00:00:00 UTC │
+      │ 1970-01-01 00:00:01 UTC │
+      └─────────────────────────┘
+
 # as_polars_expr works for classes series (0)
 
     Code

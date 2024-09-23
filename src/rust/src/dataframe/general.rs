@@ -22,6 +22,7 @@ impl PlRDataFrame {
                 _ => unreachable!("Only accept a list of Series"),
             })
             .collect();
+        let columns = columns.into_iter().map(|s| s.into()).collect();
         let df = DataFrame::new(columns).map_err(RPolarsErr::from)?;
         Ok(df.into())
     }
@@ -32,7 +33,13 @@ impl PlRDataFrame {
     }
 
     pub fn get_columns(&self) -> Result<Sexp> {
-        let cols = self.df.get_columns();
+        let cols: Vec<Series> = self
+            .df
+            .get_columns()
+            .to_vec()
+            .into_iter()
+            .map(|c| c.take_materialized_series())
+            .collect();
         let len = cols.len();
         let mut list = OwnedListSexp::new(len, true)?;
         for i in 0..len {
@@ -117,7 +124,7 @@ impl PlRDataFrame {
 
         let s = index_adjusted.and_then(|i| df.select_at_idx(i));
         match s {
-            Some(s) => Ok(PlRSeries::new(s.clone())),
+            Some(s) => Ok(PlRSeries::new(s.as_materialized_series().clone())),
             None => Err(polars_err!(oob = index, df.width()).to_string().into()),
         }
     }

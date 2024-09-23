@@ -50,6 +50,9 @@ patrick::with_parameters_test_that(
       "Date (0)", as.Date(integer()), as_polars_expr(as_polars_series(as.Date(integer()), "literal")), 0,
       "Date (1)", as.Date(0), as_polars_expr(as.Date(0)), 1,
       "Date (2)", as.Date(0:1), as_polars_expr(as_polars_series(as.Date(0:1), "literal")), 2,
+      "POSIXct (UTC) (0)", as.POSIXct(integer(), "UTC"), as_polars_expr(as_polars_series(as.POSIXct(integer(), "UTC"), "literal")), 0,
+      "POSIXct (UTC) (1)", as.POSIXct(0, "UTC"), as_polars_expr(as.POSIXct(0, "UTC")), 1,
+      "POSIXct (UTC) (2)", as.POSIXct(0:1, "UTC"), as_polars_expr(as_polars_series(as.POSIXct(0:1, "UTC"), "literal")), 2,
       "series (0)", as_polars_series(logical()), as_polars_expr(as_polars_series(logical())), 0,
       "series (1)", as_polars_series(TRUE), as_polars_expr(as_polars_series(TRUE)), 1,
       "series (2)", as_polars_series(c(TRUE, FALSE)), as_polars_expr(as_polars_series(c(TRUE, FALSE))), 2
