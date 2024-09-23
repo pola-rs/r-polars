@@ -72,6 +72,7 @@ pub fn new_from_csv(
     eol_char: Robj,
     raise_if_empty: Robj,
     truncate_ragged_lines: Robj,
+    include_file_paths: Robj,
 ) -> RResult<RPolarsLazyFrame> {
     let offset = robj_to!(Option, u32, row_index_offset)?.unwrap_or(0);
     let opt_rowcount = robj_to!(Option, String, row_index_name)?.map(|name| RowIndex {
@@ -126,6 +127,7 @@ pub fn new_from_csv(
         // .with_missing_is_null(!robj_to!(bool, missing_utf8_is_empty_string)?)
         .with_row_index(opt_rowcount)
         .with_truncate_ragged_lines(robj_to!(bool, truncate_ragged_lines)?)
+        .with_include_file_paths(robj_to!(Option, String, include_file_paths)?.map(|x| x.into()))
         .with_raise_if_empty(robj_to!(bool, raise_if_empty)?)
         .finish()
         .map_err(polars_to_rpolars_err)

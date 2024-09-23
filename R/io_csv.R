@@ -65,6 +65,8 @@
 #' @param truncate_ragged_lines Truncate lines that are longer than the schema.
 #' @param reuse_downloaded If `TRUE`(default) and a URL was provided, cache the
 #' downloaded files in session for an easy reuse.
+#' @param include_file_paths Include the path of the source file(s) as a column
+#' with this name.
 #' @return [LazyFrame][LazyFrame_class]
 #' @examples
 #' my_file = tempfile()
@@ -97,7 +99,8 @@ pl_scan_csv = function(
     eol_char = "\n",
     raise_if_empty = TRUE,
     truncate_ragged_lines = FALSE,
-    reuse_downloaded = TRUE) {
+    reuse_downloaded = TRUE,
+    include_file_paths = NULL) {
   # capture all args and modify some to match lower level function
   args = as.list(environment())
 
@@ -181,7 +184,8 @@ pl_read_csv = function(
     eol_char = "\n",
     raise_if_empty = TRUE,
     truncate_ragged_lines = FALSE,
-    reuse_downloaded = TRUE) {
+    reuse_downloaded = TRUE,
+    include_file_paths = NULL) {
   .args = as.list(environment())
   result({
     do.call(pl$scan_csv, .args)$collect()

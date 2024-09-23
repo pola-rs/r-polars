@@ -17,6 +17,7 @@
 - New argument `strict` in `$drop()` to determine whether unknown column names
   should trigger an error (#1220).
 - New method `$to_dummies()` for `DataFrame` (#1225).
+- New argument `include_file_paths` in `pl_scan_csv()` and `pl_read_csv()` (#1235).
 
 ### Bug fixes
 
