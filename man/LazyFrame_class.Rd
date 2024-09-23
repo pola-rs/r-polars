@@ -86,7 +86,9 @@ withr::with_timezone(
   \}
 )
 #> <error: in to_r: ComputeError(ErrString("datetime '2020-03-08 02:00:00' is non-existent in time zone 'America/New_York'. You may be able to use `non_existent='null'` to return `null` in this case.")) When calling: devtools::document()>
+}\if{html}{\out{</div>}}
 
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{
 withr::with_timezone(
   "America/New_York",
   \{

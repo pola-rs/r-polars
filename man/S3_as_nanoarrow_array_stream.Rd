@@ -5,9 +5,19 @@
 \alias{as_nanoarrow_array_stream.RPolarsSeries}
 \title{Create a nanoarrow_array_stream from a Polars object}
 \usage{
-\method{as_nanoarrow_array_stream}{RPolarsDataFrame}(x, ..., schema = NULL, compat_level = FALSE)
+as_nanoarrow_array_stream.RPolarsDataFrame(
+  x,
+  ...,
+  schema = NULL,
+  compat_level = FALSE
+)
 
-\method{as_nanoarrow_array_stream}{RPolarsSeries}(x, ..., schema = NULL, compat_level = FALSE)
+as_nanoarrow_array_stream.RPolarsSeries(
+  x,
+  ...,
+  schema = NULL,
+  compat_level = FALSE
+)
 }
 \arguments{
 \item{x}{A polars object}
