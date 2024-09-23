@@ -54,10 +54,11 @@ pl$lit(5.5)
 pl$lit(NULL)
 pl$lit("foo_bar")
 
-## Generally, for a vector of length 1, it is converted to a Series and then
-## the `$first()` method is called to become a scalar value.
+## Generally, for a vector (an R object) becomes a Series with length 1,
+## it is converted to a Series and then get the first value to become a scalar literal.
 pl$lit(as.Date("2021-01-20"))
 pl$lit(as.POSIXct("2023-03-31 10:30:45"))
+pl$lit(data.frame(a = 1, b = "foo"))
 
 # Literal Series data
 pl$lit(1:3)
