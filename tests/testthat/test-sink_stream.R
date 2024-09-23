@@ -49,27 +49,27 @@ test_that("Test sinking data to IPC file", {
   on.exit(unlink(tmpf))
   lf$sink_ipc(tmpf)
   expect_grepl_error(lf$sink_ipc(tmpf, compression = "rar"))
-  expect_identical(pl$scan_ipc(tmpf, memory_map = FALSE)$collect()$to_data_frame(), rdf)
+  expect_identical(pl$scan_ipc(tmpf)$collect()$to_data_frame(), rdf)
 
 
   # update with new data
   lf$slice(5, 5)$sink_ipc(tmpf)
   expect_equal(
-    pl$scan_ipc(tmpf, memory_map = FALSE)$collect()$to_data_frame(),
+    pl$scan_ipc(tmpf)$collect()$to_data_frame(),
     lf$slice(5, 5)$collect()$to_data_frame()
   )
   lf$sink_ipc(tmpf)
 
   # from another process via rcall
   rdf_callr = callr::r(\(tmpf) {
-    polars::pl$scan_ipc(tmpf, memory_map = FALSE)$collect()$to_data_frame()
+    polars::pl$scan_ipc(tmpf)$collect()$to_data_frame()
   }, args = list(tmpf = tmpf))
   expect_identical(rdf_callr, rdf)
 
 
   # from another process via rpool
   f_ipc_to_s = \(s) {
-    polars::pl$scan_ipc(s$to_r(), memory_map = FALSE)$
+    polars::pl$scan_ipc(s$to_r())$
       select(polars::pl$struct(polars::pl$all()))$
       collect()$
       to_series()

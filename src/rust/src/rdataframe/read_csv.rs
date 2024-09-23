@@ -22,18 +22,20 @@ use polars::prelude::LazyFileListReader;
 #[extendr]
 impl RPolarsRNullValues {
     pub fn new_all_columns(x: String) -> Self {
-        RPolarsRNullValues(pl::NullValues::AllColumnsSingle(x))
+        RPolarsRNullValues(pl::NullValues::AllColumnsSingle(x.into()))
     }
     pub fn new_columns(x: Vec<String>) -> Self {
-        RPolarsRNullValues(pl::NullValues::AllColumns(x))
+        RPolarsRNullValues(pl::NullValues::AllColumns(
+            x.into_iter().map(|xi| xi.into()).collect(),
+        ))
     }
     pub fn new_named(robj: Robj) -> Self {
         let null_markers = robj.as_str_iter().expect("must be str");
         let column_names = robj.names().expect("names were missing");
 
-        let key_val_pair: Vec<(String, String)> = column_names
+        let key_val_pair: Vec<(pl::PlSmallStr, pl::PlSmallStr)> = column_names
             .zip(null_markers)
-            .map(|(k, v)| (k.to_owned(), v.to_owned()))
+            .map(|(k, v)| (k.into(), v.into()))
             .collect();
         RPolarsRNullValues(pl::NullValues::Named(key_val_pair))
     }
@@ -96,7 +98,7 @@ pub fn new_from_csv(
     let schema = dtv.map(|some_od| {
         let fields = some_od.0.iter().map(|(name, dtype)| {
             if let Some(sname) = name {
-                pl::Field::new(sname, dtype.clone())
+                pl::Field::new(sname.into(), dtype.clone())
             } else {
                 todo!("missing column name for  dtype not implemented");
             }
@@ -114,7 +116,7 @@ pub fn new_from_csv(
         .with_cache(robj_to!(bool, cache)?)
         .with_dtype_overwrite(schema.map(|schema| std::sync::Arc::new(schema)))
         .with_low_memory(robj_to!(bool, low_memory)?)
-        .with_comment_prefix(robj_to!(Option, str, comment_prefix)?)
+        .with_comment_prefix(robj_to!(Option, str, comment_prefix)?.map(|x| x.into()))
         .with_quote_char(robj_to!(Option, Utf8Byte, quote_char)?)
         .with_eol_char(robj_to!(Utf8Byte, eol_char)?)
         .with_rechunk(robj_to!(bool, rechunk)?)

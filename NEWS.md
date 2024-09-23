@@ -2,6 +2,15 @@
 
 ## Polars R Package (development version)
 
+- Updated rust-polars to 0.43.1 (#1230).
+
+### Breaking changes
+
+- In `pl$scan_ipc()` and `pl$read_ipc()`, the argument `memory_map` is removed
+  (#1230).
+- In `$serialize()`, in the field `schema`, the field `inner` is renamed `fields`,
+  and the fields `output_schema` and `filter` are removed (#1230).
+
 ### New features
 
 - New method `$cast()` for `DataFrame` and `LazyFrame` (#1219).

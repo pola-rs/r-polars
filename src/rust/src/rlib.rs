@@ -6,61 +6,50 @@ use crate::RFnSignature;
 use crate::CONFIG;
 use extendr_api::prelude::*;
 use polars::chunked_array::ops::SortMultipleOptions;
+use polars::lazy::dsl;
 use polars::prelude as pl;
 use std::result::Result;
 
 #[extendr]
 fn min_horizontal(dotdotdot: Robj) -> RResult<RPolarsExpr> {
-    Ok(
-        polars::lazy::dsl::min_horizontal(robj_to!(VecPLExprCol, dotdotdot)?)
-            .map_err(polars_to_rpolars_err)?
-            .into(),
-    )
+    Ok(dsl::min_horizontal(robj_to!(VecPLExprCol, dotdotdot)?)
+        .map_err(polars_to_rpolars_err)?
+        .into())
 }
 
 #[extendr]
 fn max_horizontal(dotdotdot: Robj) -> RResult<RPolarsExpr> {
-    Ok(
-        polars::lazy::dsl::max_horizontal(robj_to!(VecPLExprCol, dotdotdot)?)
-            .map_err(polars_to_rpolars_err)?
-            .into(),
-    )
+    Ok(dsl::max_horizontal(robj_to!(VecPLExprCol, dotdotdot)?)
+        .map_err(polars_to_rpolars_err)?
+        .into())
 }
 
 #[extendr]
 fn sum_horizontal(dotdotdot: Robj) -> RResult<RPolarsExpr> {
-    Ok(
-        polars::lazy::dsl::sum_horizontal(robj_to!(VecPLExprCol, dotdotdot)?)
-            .map_err(polars_to_rpolars_err)?
-            .into(),
-    )
+    Ok(dsl::sum_horizontal(robj_to!(VecPLExprCol, dotdotdot)?)
+        .map_err(polars_to_rpolars_err)?
+        .into())
 }
 
 #[extendr]
 fn mean_horizontal(dotdotdot: Robj) -> RResult<RPolarsExpr> {
-    Ok(
-        polars::lazy::dsl::mean_horizontal(robj_to!(VecPLExprCol, dotdotdot)?)
-            .map_err(polars_to_rpolars_err)?
-            .into(),
-    )
+    Ok(dsl::mean_horizontal(robj_to!(VecPLExprCol, dotdotdot)?)
+        .map_err(polars_to_rpolars_err)?
+        .into())
 }
 
 #[extendr]
 fn all_horizontal(dotdotdot: Robj) -> RResult<RPolarsExpr> {
-    Ok(
-        polars::lazy::dsl::all_horizontal(robj_to!(VecPLExprCol, dotdotdot)?)
-            .map_err(polars_to_rpolars_err)?
-            .into(),
-    )
+    Ok(dsl::all_horizontal(robj_to!(VecPLExprCol, dotdotdot)?)
+        .map_err(polars_to_rpolars_err)?
+        .into())
 }
 
 #[extendr]
 fn any_horizontal(dotdotdot: Robj) -> RResult<RPolarsExpr> {
-    Ok(
-        polars::lazy::dsl::any_horizontal(robj_to!(VecPLExprCol, dotdotdot)?)
-            .map_err(polars_to_rpolars_err)?
-            .into(),
-    )
+    Ok(dsl::any_horizontal(robj_to!(VecPLExprCol, dotdotdot)?)
+        .map_err(polars_to_rpolars_err)?
+        .into())
 }
 
 #[extendr]
@@ -87,7 +76,7 @@ fn concat_str(dotdotdot: Robj, separator: Robj, ignore_nulls: Robj) -> RResult<R
 
 #[extendr]
 fn date_range(start: Robj, end: Robj, interval: &str, closed: Robj) -> RResult<RPolarsExpr> {
-    Ok(RPolarsExpr(polars::lazy::prelude::date_range(
+    Ok(RPolarsExpr(dsl::date_range(
         robj_to!(PLExprCol, start)?,
         robj_to!(PLExprCol, end)?,
         pl::Duration::parse(interval),
@@ -97,7 +86,7 @@ fn date_range(start: Robj, end: Robj, interval: &str, closed: Robj) -> RResult<R
 
 #[extendr]
 fn date_ranges(start: Robj, end: Robj, interval: &str, closed: Robj) -> RResult<RPolarsExpr> {
-    Ok(RPolarsExpr(polars::lazy::prelude::date_ranges(
+    Ok(RPolarsExpr(dsl::date_ranges(
         robj_to!(PLExprCol, start)?,
         robj_to!(PLExprCol, end)?,
         pl::Duration::parse(interval),
@@ -114,13 +103,13 @@ fn datetime_range(
     time_unit: Robj,
     time_zone: Robj,
 ) -> RResult<RPolarsExpr> {
-    Ok(RPolarsExpr(polars::lazy::prelude::datetime_range(
+    Ok(RPolarsExpr(dsl::datetime_range(
         robj_to!(PLExprCol, start)?,
         robj_to!(PLExprCol, end)?,
         pl::Duration::parse(interval),
         robj_to!(ClosedWindow, closed)?,
         robj_to!(Option, timeunit, time_unit)?,
-        robj_to!(Option, String, time_zone)?,
+        robj_to!(Option, String, time_zone)?.map(|x| x.into()),
     )))
 }
 
@@ -133,13 +122,13 @@ fn datetime_ranges(
     time_unit: Robj,
     time_zone: Robj,
 ) -> RResult<RPolarsExpr> {
-    Ok(RPolarsExpr(polars::lazy::prelude::datetime_ranges(
+    Ok(RPolarsExpr(dsl::datetime_ranges(
         robj_to!(PLExprCol, start)?,
         robj_to!(PLExprCol, end)?,
         pl::Duration::parse(interval),
         robj_to!(ClosedWindow, closed)?,
         robj_to!(Option, timeunit, time_unit)?,
-        robj_to!(Option, String, time_zone)?,
+        robj_to!(Option, String, time_zone)?.map(|x| x.into()),
     )))
 }
 
@@ -284,19 +273,17 @@ pub fn duration(
     time_unit: Robj,
 ) -> RResult<RPolarsExpr> {
     let args = pl::DurationArgs {
-        weeks: robj_to!(Option, PLExprCol, weeks)?.unwrap_or(polars::lazy::dsl::lit(0)),
-        days: robj_to!(Option, PLExprCol, days)?.unwrap_or(polars::lazy::dsl::lit(0)),
-        hours: robj_to!(Option, PLExprCol, hours)?.unwrap_or(polars::lazy::dsl::lit(0)),
-        minutes: robj_to!(Option, PLExprCol, minutes)?.unwrap_or(polars::lazy::dsl::lit(0)),
-        seconds: robj_to!(Option, PLExprCol, seconds)?.unwrap_or(polars::lazy::dsl::lit(0)),
-        milliseconds: robj_to!(Option, PLExprCol, milliseconds)?
-            .unwrap_or(polars::lazy::dsl::lit(0)),
-        microseconds: robj_to!(Option, PLExprCol, microseconds)?
-            .unwrap_or(polars::lazy::dsl::lit(0)),
-        nanoseconds: robj_to!(Option, PLExprCol, nanoseconds)?.unwrap_or(polars::lazy::dsl::lit(0)),
+        weeks: robj_to!(Option, PLExprCol, weeks)?.unwrap_or(dsl::lit(0)),
+        days: robj_to!(Option, PLExprCol, days)?.unwrap_or(dsl::lit(0)),
+        hours: robj_to!(Option, PLExprCol, hours)?.unwrap_or(dsl::lit(0)),
+        minutes: robj_to!(Option, PLExprCol, minutes)?.unwrap_or(dsl::lit(0)),
+        seconds: robj_to!(Option, PLExprCol, seconds)?.unwrap_or(dsl::lit(0)),
+        milliseconds: robj_to!(Option, PLExprCol, milliseconds)?.unwrap_or(dsl::lit(0)),
+        microseconds: robj_to!(Option, PLExprCol, microseconds)?.unwrap_or(dsl::lit(0)),
+        nanoseconds: robj_to!(Option, PLExprCol, nanoseconds)?.unwrap_or(dsl::lit(0)),
         time_unit: robj_to!(timeunit, time_unit)?,
     };
-    Ok(polars::lazy::dsl::duration(args).into())
+    Ok(dsl::duration(args).into())
 }
 
 #[extendr]
@@ -317,15 +304,15 @@ pub fn datetime(
         year: robj_to!(PLExprCol, year)?,
         month: robj_to!(PLExprCol, month)?,
         day: robj_to!(PLExprCol, day)?,
-        hour: robj_to!(Option, PLExprCol, hour)?.unwrap_or(polars::lazy::dsl::lit(0)),
-        minute: robj_to!(Option, PLExprCol, minute)?.unwrap_or(polars::lazy::dsl::lit(0)),
-        second: robj_to!(Option, PLExprCol, second)?.unwrap_or(polars::lazy::dsl::lit(0)),
-        microsecond: robj_to!(Option, PLExprCol, microsecond)?.unwrap_or(polars::lazy::dsl::lit(0)),
+        hour: robj_to!(Option, PLExprCol, hour)?.unwrap_or(dsl::lit(0)),
+        minute: robj_to!(Option, PLExprCol, minute)?.unwrap_or(dsl::lit(0)),
+        second: robj_to!(Option, PLExprCol, second)?.unwrap_or(dsl::lit(0)),
+        microsecond: robj_to!(Option, PLExprCol, microsecond)?.unwrap_or(dsl::lit(0)),
         time_unit: robj_to!(timeunit, time_unit)?,
-        time_zone: robj_to!(Option, String, time_zone)?,
+        time_zone: robj_to!(Option, String, time_zone)?.map(|x| x.into()),
         ambiguous: robj_to!(PLExpr, ambiguous)?,
     };
-    Ok(polars::lazy::dsl::datetime(args).into())
+    Ok(dsl::datetime(args).into())
 }
 
 #[extendr]
@@ -363,7 +350,7 @@ pub fn int_range(start: Robj, end: Robj, step: i64, dtype: Robj) -> RResult<RPol
     let end = robj_to!(PLExprCol, end)?;
     // let step = robj_to!(PLExprCol, step)?;
     let dtype = robj_to!(RPolarsDataType, dtype)?.into();
-    Ok(polars::lazy::dsl::int_range(start, end, step, dtype).into())
+    Ok(dsl::int_range(start, end, step, dtype).into())
 }
 
 #[extendr]
@@ -378,7 +365,7 @@ pub fn int_ranges(start: Robj, end: Robj, step: Robj, dtype: Robj) -> RResult<RP
         )
         .into());
     }
-    let mut result = polars::lazy::dsl::int_ranges(start, end, step);
+    let mut result = dsl::int_ranges(start, end, step);
     if dtype != pl::DataType::Int64 {
         result = result.cast(pl::DataType::List(Box::new(dtype)))
     }
@@ -389,13 +376,7 @@ pub fn int_ranges(start: Robj, end: Robj, step: Robj, dtype: Robj) -> RResult<RP
 #[extendr]
 pub fn field(names: Robj) -> RResult<RPolarsExpr> {
     let names = robj_to!(Vec, String, names)?;
-    Ok(pl::Expr::Field(
-        names
-            .into_iter()
-            .map(|name| pl::Arc::from(name.as_str()))
-            .collect(),
-    )
-    .into())
+    Ok(pl::Expr::Field(names.into_iter().map(|name| name.into()).collect()).into())
 }
 
 extendr_module! {

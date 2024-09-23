@@ -383,14 +383,14 @@ as_polars_series.POSIXlt = function(x, name = NULL, ...) {
 #' @rdname as_polars_series
 #' @export
 as_polars_series.data.frame = function(x, name = NULL, ...) {
-  as_polars_df(x)$to_struct(name = name)
+  as_polars_df(x)$to_struct(name = name %||% "")
 }
 
 
 #' @rdname as_polars_series
 #' @export
 as_polars_series.vctrs_rcrd = function(x, name = NULL, ...) {
-  pl$select(unclass(x))$to_struct(name = name)
+  pl$select(unclass(x))$to_struct(name = name %||% "")
 }
 
 

@@ -25,7 +25,7 @@ pub fn arrow_array_to_rust(arrow_array: Robj) -> Result<ArrayRef, String> {
 
     let array = unsafe {
         let field = ffi::import_field_from_c(schema.as_ref()).map_err(|err| err.to_string())?;
-        ffi::import_array_from_c(*array, field.data_type).map_err(|err| err.to_string())?
+        ffi::import_array_from_c(*array, field.dtype).map_err(|err| err.to_string())?
     };
     Ok(array)
 }
@@ -46,7 +46,10 @@ pub unsafe fn to_rust_df(rb: Robj) -> Result<pl::DataFrame, String> {
     };
     let names = robj_record_batch_names
         .as_str_vector()
-        .ok_or_else(|| "internal error: Robj$schema$names is not a char vec".to_string())?;
+        .ok_or_else(|| "internal error: Robj$schema$names is not a char vec".to_string())?
+        .into_iter()
+        .map(PlSmallStr::from_str)
+        .collect::<Vec<_>>();
 
     //iterate over record batches
     let rb_len = rb.len();
@@ -65,7 +68,7 @@ pub unsafe fn to_rust_df(rb: Robj) -> Result<pl::DataFrame, String> {
         let array_iter = columns_list.into_iter().map(|(_, column)| {
             let arr = arrow_array_to_rust(column)?;
             run_parallel |= matches!(
-                arr.data_type(),
+                arr.dtype(),
                 ArrowDataType::Utf8 | ArrowDataType::Dictionary(_, _, _)
             );
             let list_res: Result<_, String> = Ok(arr);
@@ -83,14 +86,15 @@ pub unsafe fn to_rust_df(rb: Robj) -> Result<pl::DataFrame, String> {
                     .into_par_iter()
                     .zip(names.par_iter())
                     .map(|(arr, name)| {
-                        let s = Series::try_from((*name, arr)).map_err(|err| err.to_string())?;
+                        let s =
+                            Series::try_from((name.clone(), arr)).map_err(|err| err.to_string())?;
                         Ok(s)
                     })
                     .collect::<Result<Vec<_>, String>>()
             })
         } else {
             let iter = arrays_vec.into_iter().zip(names.iter()).map(|(arr, name)| {
-                let s = Series::try_from((*name, arr)).map_err(|err| err.to_string())?;
+                let s = Series::try_from((name.clone(), arr)).map_err(|err| err.to_string())?;
                 Ok(s)
             });
             crate::utils::collect_hinted_result(n_columns, iter)

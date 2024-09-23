@@ -75,7 +75,7 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
             if rdouble.no_na().is_true() {
                 let real_slice = x.as_real_slice().unwrap();
                 let i64_slice = unsafe { std::mem::transmute::<&[f64], &[i64]>(real_slice) };
-                Ok(SeriesTree::Series(pl::Series::new(name, i64_slice)))
+                Ok(SeriesTree::Series(pl::Series::new(name.into(), i64_slice)))
             } else {
                 let mut s: pl::Series = rdouble //convert R NAs to rust options
                     .iter()
@@ -89,7 +89,7 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
                         }
                     })
                     .collect();
-                s.rename(name);
+                s.rename(name.into());
                 Ok(SeriesTree::Series(s))
             }
         }
@@ -97,7 +97,7 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
             let rdouble: Doubles = x.try_into().expect("as matched");
             if rdouble.no_na().is_true() {
                 Ok(SeriesTree::Series(pl::Series::new(
-                    name,
+                    name.into(),
                     x.as_real_slice().unwrap(),
                 )))
             } else {
@@ -105,7 +105,7 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
                     .iter()
                     .map(|x| if x.is_na() { None } else { Some(x.inner()) })
                     .collect();
-                s.rename(name);
+                s.rename(name.into());
                 Ok(SeriesTree::Series(s))
             }
         }
@@ -121,7 +121,7 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
                 .iter()
                 .map(|x| if x.is_na() { None } else { Some(x.is_true()) })
                 .collect();
-            Ok(SeriesTree::Series(pl::Series::new(name, s)))
+            Ok(SeriesTree::Series(pl::Series::new(name.into(), s)))
         }
 
         Rtype::Integers if x.inherits("factor") => Ok(SeriesTree::Series(
@@ -138,14 +138,14 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
         Rtype::Integers => {
             let rints = x.as_integers().expect("as matched");
             let s = if rints.no_na().is_true() {
-                pl::Series::new(name, x.as_integer_slice().expect("as matched"))
+                pl::Series::new(name.into(), x.as_integer_slice().expect("as matched"))
             } else {
                 //convert R NAs to rust options
                 let mut s: pl::Series = rints
                     .iter()
                     .map(|x| if x.is_na() { None } else { Some(x.inner()) })
                     .collect();
-                s.rename(name);
+                s.rename(name.into());
                 s
             };
 
@@ -175,7 +175,7 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
                 collect_hinted_result(l_len, iter);
             let binary_vec_vec =
                 binary_vec_vec_res.map_err(|err| pl::polars_err!(ComputeError: err.to_string()))?;
-            let binary_series = pl::Series::new(name, binary_vec_vec.as_slice());
+            let binary_series = pl::Series::new(name.into(), binary_vec_vec.as_slice());
             Ok(SeriesTree::Series(binary_series))
         }
 
@@ -223,7 +223,7 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
                 Some(tz) => {
                     Ok(SeriesTree::Series(
                         (s * 1_000f64).cast(&pl::DataType::Int64)?.cast(
-                            &pl::DataType::Datetime(pl::TimeUnit::Milliseconds, Some(tz)),
+                            &pl::DataType::Datetime(pl::TimeUnit::Milliseconds, Some(tz.into())),
                         )?,
                     ))
                 }
@@ -235,17 +235,14 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
                         .map_err(|err| pl::PolarsError::ComputeError(err.to_string().into()))?;
                     let s_name = s.name();
                     let utc_s = (s.clone() * 1_000f64).cast(&pl::DataType::Int64)?.cast(
-                        &pl::DataType::Datetime(
-                            pl::TimeUnit::Milliseconds,
-                            Some("UTC".to_string()),
-                        ),
+                        &pl::DataType::Datetime(pl::TimeUnit::Milliseconds, Some("UTC".into())),
                     )?;
                     Ok(SeriesTree::Series(
                         pl::DataFrame::new(vec![utc_s.clone()])?
                             .lazy()
-                            .select([col(s_name)
+                            .select([col(s_name.clone())
                                 .dt()
-                                .convert_time_zone(sys_tz)
+                                .convert_time_zone(sys_tz.into())
                                 .dt()
                                 .replace_time_zone(None, pl::lit("raise"), pl::NonExistent::Raise)])
                             .collect()?
@@ -303,7 +300,7 @@ fn concat_series_tree(
         SeriesTree::Series(s) => Ok(s), // SeriesTree is just a regular Series, return as is
         SeriesTree::SeriesEmptyVec => { // Create Series of empty array and cast to the found leaf_dtype.
             use polars::prelude::ListBuilderTrait;
-            let empty_list_series = pl::ListBinaryChunkedBuilder::new(name, 0,0).finish().into_series();
+            let empty_list_series = pl::ListBinaryChunkedBuilder::new(name.into(), 0,0).finish().into_series();
 
             //cast to any discovered leaftype to allow concatenation without Error
             if let Some(leaf_dt_ref) = leaf_dtype {
@@ -342,7 +339,7 @@ fn concat_series_tree(
             }
 
             // use polars new method to concat concatenated series
-            Ok(pl::Series::new(name, series_vec))
+            Ok(pl::Series::new(name.into(), series_vec))
         }
     }
 }
@@ -350,7 +347,7 @@ fn concat_series_tree(
 //handle R character/strings to utf8
 fn robj_to_utf8_series(rstrings: Strings, name: &str) -> pl::Series {
     if rstrings.no_na().is_true() {
-        pl::Series::new(name, rstrings.as_robj().as_str_vector().unwrap())
+        pl::Series::new(name.into(), rstrings.as_robj().as_str_vector().unwrap())
     } else {
         //convert R NAs to rust options
         let mut s: Vec<Option<&str>> = Vec::with_capacity(rstrings.len());
@@ -360,6 +357,6 @@ fn robj_to_utf8_series(rstrings: Strings, name: &str) -> pl::Series {
                 .map(|x| if x.is_na() { None } else { Some(x.as_str()) }),
         );
 
-        pl::Series::new(name, s)
+        pl::Series::new(name.into(), s)
     }
 }

@@ -8,7 +8,6 @@ use polars_core::prelude::QuantileInterpolOptions;
 use crate::rpolarserr::{polars_to_rpolars_err, rerr, RPolarsErr, RResult, WithRctx};
 use crate::utils::collect_hinted_result;
 use crate::utils::robj_to_rchoice;
-use crate::utils::wrappers::null_to_opt;
 use pl::UniqueKeepStrategy;
 use polars::prelude::AsofStrategy;
 use std::num::NonZeroUsize;
@@ -97,14 +96,14 @@ impl RPolarsDataType {
         let s = robjname2series(categories, "").unwrap();
         let ca = s.str()?;
         let categories = ca.downcast_iter().next().unwrap().clone();
-        Ok(RPolarsDataType(pl::datatypes::create_enum_data_type(
+        Ok(RPolarsDataType(pl::datatypes::create_enum_dtype(
             categories,
         )))
     }
 
-    pub fn new_datetime(tu: Robj, tz: Nullable<String>) -> RResult<RPolarsDataType> {
-        robj_to!(timeunit, tu)
-            .map(|dt| RPolarsDataType(pl::DataType::Datetime(dt, null_to_opt(tz))))
+    pub fn new_datetime(tu: Robj, tz: Robj) -> RResult<RPolarsDataType> {
+        let tz = robj_to!(Option, String, tz)?.map(|x| x.into());
+        robj_to!(timeunit, tu).map(|dt| RPolarsDataType(pl::DataType::Datetime(dt, tz)))
     }
 
     pub fn new_duration(tu: Robj) -> RResult<RPolarsDataType> {
@@ -452,7 +451,6 @@ pub fn robj_to_window_mapping(robj: Robj) -> RResult<pl::WindowMapping> {
 pub fn literal_to_any_value(litval: pl::LiteralValue) -> RResult<pl::AnyValue<'static>> {
     use pl::AnyValue as av;
     use pl::LiteralValue as lv;
-    use smartstring::alias::String as SString;
     match litval {
         lv::Boolean(x) => Ok(av::Boolean(x)),
         //lv::Datetime(datetime, unit) => Ok(av::Datetime(datetime, unit, &None)), #check how to convert
@@ -475,12 +473,7 @@ pub fn literal_to_any_value(litval: pl::LiteralValue) -> RResult<pl::AnyValue<'s
         lv::UInt64(x) => Ok(av::UInt64(x)),
         lv::UInt8(x) => Ok(av::UInt8(x)),
         // lv::Utf8(x) => Ok(av::Utf8(x.as_str())),
-        lv::String(x) => {
-            let mut s = SString::new();
-
-            s.push_str(x.as_str());
-            Ok(av::StringOwned(s))
-        }
+        lv::String(x) => Ok(av::StringOwned(x)),
         x => rerr().notachoice(format!("cannot convert LiteralValue {:?} to AnyValue", x)),
     }
 }
@@ -741,8 +734,8 @@ pub fn robj_to_statistics_options(robj: Robj) -> RResult<pl::StatisticsOptions> 
 
 pub fn robj_to_wrap_schema(robj: Robj) -> RResult<Wrap<pl::Schema>> {
     use pl::Schema;
-    let mut schema = Schema::new();
     let hm = robj.as_list().unwrap().into_hashmap();
+    let mut schema = Schema::with_capacity(hm.capacity());
 
     for (key, value) in hm.into_iter() {
         let dt = crate::utils::robj_to_datatype(value)?;

@@ -52,7 +52,7 @@ pub fn new_from_parquet(
         use_statistics: robj_to!(bool, use_statistics)?,
         hive_options,
         glob: robj_to!(bool, glob)?,
-        include_file_paths: robj_to!(Option, String, include_file_paths)?.map(Arc::from),
+        include_file_paths: robj_to!(Option, String, include_file_paths)?.map(|x| x.into()),
     };
 
     pl::LazyFrame::scan_parquet(path, args)
