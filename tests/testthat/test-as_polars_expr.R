@@ -77,14 +77,16 @@ patrick::with_parameters_test_that(
     # Ensure broadcasting works if the length is 1 (except for Series)
     lf <- pl$LazyFrame(a = 1:10)$with_columns(b = out)
 
-    if (expected_length == 1 && !is_polars_series(x)) {
-      expect_no_error(lf$collect())
-    } else if (expected_length == 1) {
-      # For Series with length 1, a special error message is thrown
-      expect_error(
-        lf$collect(),
-        r"(length 1 doesn't match the DataFrame height of 10.*for instance by adding '\.first\(\)')"
-      )
+    if (expected_length == 1) {
+      if (is_polars_series(x)) {
+        # For Series with length 1, a special error message is thrown
+        expect_error(
+          lf$collect(),
+          r"(length 1 doesn't match the DataFrame height of 10.*for instance by adding '\.first\(\)')"
+        )
+      } else {
+        expect_no_error(lf$collect())
+      }
     } else {
       expect_error(
         lf$collect(),
