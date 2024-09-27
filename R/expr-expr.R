@@ -270,7 +270,8 @@ expr__sum <- function() {
 expr__cast <- function(dtype, ..., strict = TRUE, wrap_numerical = FALSE) {
   wrap({
     check_dots_empty0(...)
-    dtype <- as_polars_dtype(dtype)
+    check_polars_dtype(dtype)
+
     self$`_rexpr`$cast(dtype$`_dt`, strict, wrap_numerical)
   })
 }
@@ -376,7 +377,6 @@ expr__filter <- function(...) {
     wrap()
 }
 
-# TODO: implement `check_dtype` function
 expr__map_batches <- function(
     lambda,
     return_dtype = NULL,
@@ -385,16 +385,13 @@ expr__map_batches <- function(
   wrap({
     check_dots_empty0(...)
     check_function(lambda)
-
-    if (!is.null(return_dtype)) {
-      return_dtype <- as_polars_dtype(return_dtype)$`_dt`
-    }
+    check_polars_dtype(return_dtype, allow_null = TRUE)
 
     self$`_rexpr`$map_batches(
       lambda = function(series) {
         as_polars_series(lambda(wrap(.savvy_wrap_PlRSeries(series))))$`_s`
       },
-      output_type = return_dtype,
+      output_type = return_dtype$`_dt`,
       agg_list = agg_list
     )
   })

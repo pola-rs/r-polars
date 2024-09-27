@@ -125,9 +125,11 @@ series__equals <- function(other, ..., check_dtypes = FALSE, check_names = FALSE
 }
 
 series__cast <- function(dtype, ..., strict = TRUE) {
-  dtype <- as_polars_dtype(dtype)
-  self$`_s`$cast(dtype$`_dt`, strict) |>
-    wrap()
+  wrap({
+    check_polars_dtype(dtype)
+
+    self$`_s`$cast(dtype$`_dt`, strict)
+  })
 }
 
 series__reshape <- function(dimensions) {
