@@ -8,7 +8,10 @@ mod expr;
 mod functions;
 mod lazyframe;
 mod lazygroupby;
+mod map;
 mod prelude;
+mod r_threads;
+mod r_udf;
 mod series;
 
 use crate::conversion::Wrap;

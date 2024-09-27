@@ -89,7 +89,42 @@ impl PlRLazyFrame {
     }
 
     fn collect(&self) -> Result<PlRDataFrame> {
-        let df = self.ldf.clone().collect().map_err(RPolarsErr::from)?;
+        use crate::{
+            r_threads::{concurrent_handler, ThreadCom},
+            r_udf::{RUdfReturn, RUdfSignature, CONFIG},
+        };
+        fn serve_r(
+            udf_sig: RUdfSignature,
+        ) -> std::result::Result<RUdfReturn, Box<dyn std::error::Error>> {
+            udf_sig.eval()
+        }
+
+        let ldf = self.ldf.clone();
+        let df = if ThreadCom::try_from_global(&CONFIG).is_ok() {
+            ldf.collect().map_err(RPolarsErr::from)?
+        } else {
+            concurrent_handler(
+                // closure 1: spawned by main thread
+                // tc is a ThreadCom which any child thread can use to submit R jobs to main thread
+                move |tc| {
+                    // get return value
+                    let retval = ldf.collect();
+
+                    // drop the last two ThreadCom clones, signals to main/R-serving thread to shut down.
+                    ThreadCom::kill_global(&CONFIG);
+                    drop(tc);
+
+                    retval
+                },
+                // closure 2: how to serve polars worker R job request in main thread
+                serve_r,
+                // CONFIG is "global variable" where any new thread can request a clone of ThreadCom to establish contact with main thread
+                &CONFIG,
+            )
+            .map_err(|e| e.to_string())?
+            .map_err(RPolarsErr::from)?
+        };
+
         Ok(df.into())
     }
 

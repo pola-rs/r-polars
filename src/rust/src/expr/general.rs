@@ -1,8 +1,11 @@
+use crate::map::lazy::map_single;
 use crate::{prelude::*, PlRDataType, PlRExpr};
 use polars::lazy::dsl;
 use polars::series::ops::NullBehavior;
 use polars_core::chunked_array::cast::CastOptions;
-use savvy::{r_println, savvy, ListSexp, LogicalSexp, NumericScalar, NumericSexp, Result};
+use savvy::{
+    r_println, savvy, FunctionSexp, ListSexp, LogicalSexp, NumericScalar, NumericSexp, Result,
+};
 use std::ops::Neg;
 
 #[savvy]
@@ -287,5 +290,14 @@ impl PlRExpr {
 
     fn all(&self, ignore_nulls: bool) -> Result<Self> {
         Ok(self.inner.clone().all(ignore_nulls).into())
+    }
+
+    fn map_batches(
+        &self,
+        lambda: FunctionSexp,
+        agg_list: bool,
+        output_type: Option<&PlRDataType>,
+    ) -> Result<Self> {
+        map_single(self, lambda, output_type, agg_list)
     }
 }
