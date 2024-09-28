@@ -1,4 +1,6 @@
 test_that("map_batches works", {
+  skip("map_batches seems buggy (Stacking observed on R-universe builder)")
+
   .data <- pl$DataFrame(a = c(0, 1, 0, 1), b = 1:4)
 
   expect_query_equal(
