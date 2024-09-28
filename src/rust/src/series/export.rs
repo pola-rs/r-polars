@@ -81,28 +81,14 @@ impl PlRSeries {
     ) -> savvy::Result<Sexp> {
         let series = &self.series;
 
-        let int64 = Int64Conversion::try_from(int64).map_err(|_| {
-            savvy::Error::from(
-                "Argument `int64` must be one of ('character', 'double', 'integer', 'integer64')"
-                    .to_string(),
-            )
-        })?;
-        let date = DateConversion::try_from(date).map_err(|_| {
-            savvy::Error::from("Argument `date` must be one of ('Date', 'IDate')".to_string())
-        })?;
-        let time = TimeConversion::try_from(time).map_err(|_| {
-            savvy::Error::from("Argument `time` must be one of ('hms', 'ITime')".to_string())
-        })?;
-        let r#struct = StructConversion::try_from(r#struct).map_err(|_| {
-            savvy::Error::from(
-                "Argument `struct` must be one of ('dataframe', 'tibble')".to_string(),
-            )
-        })?;
-        let decimal = DecimalConversion::try_from(decimal).map_err(|_| {
-            savvy::Error::from(
-                "Argument `decimal` must be one of ('character', 'double')".to_string(),
-            )
-        })?;
+        let int64 =
+            Int64Conversion::try_from(int64).map_err(|e| savvy::Error::from(e.to_string()))?;
+        let date = DateConversion::try_from(date).map_err(|e| savvy::Error::from(e.to_string()))?;
+        let time = TimeConversion::try_from(time).map_err(|e| savvy::Error::from(e.to_string()))?;
+        let r#struct =
+            StructConversion::try_from(r#struct).map_err(|e| savvy::Error::from(e.to_string()))?;
+        let decimal =
+            DecimalConversion::try_from(decimal).map_err(|e| savvy::Error::from(e.to_string()))?;
         let ambiguous = ambiguous.inner.clone();
         let non_existent = <Wrap<NonExistent>>::try_from(non_existent)?.0;
 
