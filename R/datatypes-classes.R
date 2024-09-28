@@ -23,9 +23,7 @@ wrap.PlRDataType <- function(x, ...) {
   if (self$`_dt`$is_enum()) {
     fn <- function(other) {
       wrap({
-        if (!isTRUE(is_polars_data_type(other))) {
-          abort("`other` must be a polars data type")
-        }
+        check_polars_dtype(other)
         if (!other$`_dt`$is_enum()) {
           abort("`other` must be a Enum data type")
         }
@@ -100,22 +98,17 @@ pl__Enum <- function(categories) {
 
 pl__Array <- function(inner, shape) {
   # TODO: impliment `issue_unstable_warning`
-
-  if (!isTRUE(is_polars_data_type(inner))) {
-    abort("`inner` must be a polars data type")
-  }
-
-  PlRDataType$new_array(inner$`_dt`, shape) |>
-    wrap()
+  wrap({
+    check_polars_dtype(inner)
+    PlRDataType$new_array(inner$`_dt`, shape)
+  })
 }
 
 pl__List <- function(inner) {
-  if (!isTRUE(is_polars_data_type(inner))) {
-    abort("`inner` must be a polars data type")
-  }
-
-  PlRDataType$new_list(inner$`_dt`) |>
-    wrap()
+  wrap({
+    check_polars_dtype(inner)
+    PlRDataType$new_list(inner$`_dt`)
+  })
 }
 
 pl__Struct <- function(...) {
@@ -125,21 +118,17 @@ pl__Struct <- function(...) {
 }
 
 datatype__eq <- function(other) {
-  if (!isTRUE(is_polars_data_type(other))) {
-    abort("`other` must be a polars data type")
-  }
-
-  self$`_dt`$eq(other$`_dt`) |>
-    wrap()
+  wrap({
+    check_polars_dtype(other)
+    self$`_dt`$eq(other$`_dt`)
+  })
 }
 
 datatype__ne <- function(other) {
-  if (!isTRUE(is_polars_data_type(other))) {
-    abort("`other` must be a polars data type")
-  }
-
-  self$`_dt`$ne(other$`_dt`) |>
-    wrap()
+  wrap({
+    check_polars_dtype(other)
+    self$`_dt`$ne(other$`_dt`)
+  })
 }
 
 datatype__is_temporal <- function() {

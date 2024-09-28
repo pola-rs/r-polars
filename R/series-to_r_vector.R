@@ -170,16 +170,28 @@
 series__to_r_vector <- function(
     ...,
     ensure_vector = FALSE,
-    int64 = "double",
-    date = "Date",
-    time = "hms",
-    struct = "dataframe",
-    decimal = "double",
+    int64 = c("double", "character", "integer", "integer64"),
+    date = c("Date", "IDate"),
+    time = c("hms", "ITime"),
+    struct = c("dataframe", "tibble"),
+    decimal = c("double", "character"),
     as_clock_class = FALSE,
-    ambiguous = "raise",
-    non_existent = "raise") {
+    ambiguous = c("raise", "earliest", "latest", "null"),
+    non_existent = c("raise", "null")) {
   wrap({
     check_dots_empty0(...)
+
+    int64 <- arg_match0(int64, c("double", "character", "integer", "integer64"))
+    date <- arg_match0(date, c("Date", "IDate"))
+    time <- arg_match0(time, c("hms", "ITime"))
+    struct <- arg_match0(struct, c("dataframe", "tibble"))
+    decimal <- arg_match0(decimal, c("double", "character"))
+
+    non_existent <- arg_match0(non_existent, c("raise", "null"))
+    if (!is_polars_expr(ambiguous)) {
+      ambiguous <- arg_match0(ambiguous, c("raise", "earliest", "latest", "null")) |>
+        as_polars_expr(as_lit = TRUE)
+    }
 
     # Ensure the bit64 package is loaded if int64 is set to 'integer64'
     if (identical(int64, "integer64")) {

@@ -418,9 +418,11 @@ expr__xor <- function(other) {
   })
 }
 
-expr__diff <- function(n = 1, null_behavior = "ignore") {
-  self$`_rexpr`$diff(n, null_behavior) |>
-    wrap()
+expr__diff <- function(n = 1, null_behavior = c("ignore", "drop")) {
+  wrap({
+    null_behavior <- arg_match0(null_behavior, c("ignore", "drop"))
+    self$`_rexpr`$diff(n, null_behavior)
+  })
 }
 
 expr__reshape <- function(dimensions) {

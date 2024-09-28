@@ -40,14 +40,44 @@ expr_dt_convert_time_zone <- function(time_zone) {
 #' One of the followings:
 #' - `"raise"` (default): Throw an error
 #' - `"null"`: Return a null value
-expr_dt_replace_time_zone <- function(time_zone, ..., ambiguous = "raise", non_existent = "raise") {
+#' @examples
+#' # You can use `ambiguous` to deal with ambiguous datetimes:
+#' dates <- c(
+#'   "2018-10-28 01:30",
+#'   "2018-10-28 02:00",
+#'   "2018-10-28 02:30",
+#'   "2018-10-28 02:00"
+#' ) |>
+#'   as.POSIXct("UTC")
+#'
+#' df2 <- pl$DataFrame(
+#'   ts = as_polars_series(dates),
+#'   ambiguous = c("earliest", "earliest", "latest", "latest"),
+#' )
+#'
+#' df2$with_columns(
+#'   ts_localized = pl$col("ts")$dt$replace_time_zone(
+#'     "Europe/Brussels",
+#'     ambiguous = pl$col("ambiguous")
+#'   )
+#' )
+expr_dt_replace_time_zone <- function(
+    time_zone,
+    ...,
+    ambiguous = c("raise", "earliest", "latest", "null"),
+    non_existent = c("raise", "null")) {
   wrap({
     check_dots_empty0(...)
+    non_existent <- arg_match0(non_existent, c("raise", "null"))
 
-    ambiguous <- as_polars_expr(ambiguous, as_lit = TRUE)$`_rexpr`
+    if (!is_polars_expr(ambiguous)) {
+      ambiguous <- arg_match0(ambiguous, c("raise", "earliest", "latest", "null")) |>
+        as_polars_expr(as_lit = TRUE)
+    }
+
     self$`_rexpr`$dt_replace_time_zone(
       time_zone,
-      ambiguous = ambiguous,
+      ambiguous = ambiguous$`_rexpr`,
       non_existent = non_existent
     )
   })

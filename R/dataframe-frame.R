@@ -173,10 +173,7 @@ dataframe__to_series <- function(index = 0) {
 dataframe__equals <- function(other, ..., null_equal = TRUE) {
   wrap({
     check_dots_empty0(...)
-
-    if (!isTRUE(is_polars_df(other))) {
-      abort("`other` must be a polars data frame")
-    }
+    check_polars_df(other)
 
     self$`_df`$equals(other$`_df`, null_equal)
   })

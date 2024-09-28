@@ -7,14 +7,14 @@
 series__to_r_vector(
   ...,
   ensure_vector = FALSE,
-  int64 = "double",
-  date = "Date",
-  time = "hms",
-  struct = "dataframe",
-  decimal = "double",
+  int64 = c("double", "character", "integer", "integer64"),
+  date = c("Date", "IDate"),
+  time = c("hms", "ITime"),
+  struct = c("dataframe", "tibble"),
+  decimal = c("double", "character"),
   as_clock_class = FALSE,
-  ambiguous = "raise",
-  non_existent = "raise"
+  ambiguous = c("raise", "earliest", "latest", "null"),
+  non_existent = c("raise", "null")
 )
 }
 \arguments{

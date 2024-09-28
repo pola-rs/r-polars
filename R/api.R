@@ -36,5 +36,10 @@ pl__api <- new.env(parent = emptyenv())
 #' s <- as_polars_series(1:5)
 #' s$math$cube()$rename("s^3")
 pl_api_register_series_namespace <- function(name, ns_fn) {
-  assign(name, ns_fn, envir = polars_namespaces_series)
+  wrap({
+    check_string(name)
+    check_function(ns_fn)
+
+    assign(name, ns_fn, envir = polars_namespaces_series)
+  })
 }

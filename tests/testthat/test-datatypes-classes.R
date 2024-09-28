@@ -57,7 +57,7 @@ patrick::with_parameters_test_that(
 )
 
 patrick::with_parameters_test_that(
-  "Enum union",
+  "Enum union works",
   .cases = {
     tibble::tribble(
       ~.test_name, ~input, ~expected_output,
@@ -71,3 +71,8 @@ patrick::with_parameters_test_that(
     expect_equal(input$union(input), input)
   }
 )
+
+test_that("Enum union error", {
+  expect_error(pl$Enum("a")$union(1), "`other` must be a polars data type, not the number 1")
+  expect_error(pl$Enum("a")$union(pl$Int32), "`other` must be a Enum data type")
+})

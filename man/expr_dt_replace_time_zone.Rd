@@ -7,8 +7,8 @@
 expr_dt_replace_time_zone(
   time_zone,
   ...,
-  ambiguous = "raise",
-  non_existent = "raise"
+  ambiguous = c("raise", "earliest", "latest", "null"),
+  non_existent = c("raise", "null")
 )
 }
 \arguments{
@@ -36,4 +36,26 @@ One of the followings:
 \description{
 Different from \code{convert_time_zone}, this will also modify the underlying timestamp
 and will ignore the original time zone.
+}
+\examples{
+# You can use `ambiguous` to deal with ambiguous datetimes:
+dates <- c(
+  "2018-10-28 01:30",
+  "2018-10-28 02:00",
+  "2018-10-28 02:30",
+  "2018-10-28 02:00"
+) |>
+  as.POSIXct("UTC")
+
+df2 <- pl$DataFrame(
+  ts = as_polars_series(dates),
+  ambiguous = c("earliest", "earliest", "latest", "latest"),
+)
+
+df2$with_columns(
+  ts_localized = pl$col("ts")$dt$replace_time_zone(
+    "Europe/Brussels",
+    ambiguous = pl$col("ambiguous")
+  )
+)
 }

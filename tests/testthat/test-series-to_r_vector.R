@@ -49,11 +49,11 @@ test_that("UInt64 may overflow when int64='integer64'", {
 test_that("int64 argument error", {
   expect_error(
     as_polars_series(1)$to_r_vector(int64 = TRUE),
-    "must be character"
+    "must be a string"
   )
   expect_error(
     as_polars_series(1)$to_r_vector(int64 = "foo"),
-    r"(must be one of \('character', 'double', 'integer', 'integer64'\))"
+    r"(`int64` must be one of "double", "character", "integer", or "integer64", not "foo")"
   )
   with_mocked_bindings(
     {
@@ -93,11 +93,11 @@ patrick::with_parameters_test_that(
 test_that("date argument error", {
   expect_error(
     as_polars_series(1)$to_r_vector(date = TRUE),
-    "must be character"
+    "must be a string"
   )
   expect_error(
     as_polars_series(1)$to_r_vector(date = "foo"),
-    r"(must be one of \('Date', 'IDate'\))"
+    r"(`date` must be one of "Date" or "IDate", not "foo")"
   )
 })
 
@@ -127,11 +127,11 @@ patrick::with_parameters_test_that(
 test_that("time argument error", {
   expect_error(
     as_polars_series(1)$to_r_vector(time = TRUE),
-    "must be character"
+    "must be a string"
   )
   expect_error(
     as_polars_series(1)$to_r_vector(time = "foo"),
-    r"(must be one of \('hms', 'ITime'\))"
+    r"(`time` must be one of "hms" or "ITime", not "foo")"
   )
   with_mocked_bindings(
     {
@@ -178,11 +178,11 @@ patrick::with_parameters_test_that(
 test_that("struct argument warning and error", {
   expect_error(
     as_polars_series(1)$to_r_vector(struct = TRUE),
-    r"(Argument `struct` must be character)"
+    "`struct` must be a string or character vector"
   )
   expect_error(
     as_polars_series(1)$to_r_vector(struct = "foo"),
-    r"(must be one of \('dataframe', 'tibble'\))"
+    r"(`struct` must be one of "dataframe" or "tibble", not "foo")"
   )
   with_mocked_bindings(
     {
@@ -217,11 +217,11 @@ patrick::with_parameters_test_that(
 test_that("decimal argument error", {
   expect_error(
     as_polars_series(1)$to_r_vector(decimal = TRUE),
-    r"(Argument `decimal` must be character)"
+    "`decimal` must be a string or character vector"
   )
   expect_error(
     as_polars_series(1)$to_r_vector(decimal = "foo"),
-    r"(must be one of \('character', 'double'\))"
+    r"(`decimal` must be one of "double" or "character", not "foo")"
   )
 })
 

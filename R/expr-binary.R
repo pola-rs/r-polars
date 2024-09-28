@@ -35,39 +35,29 @@ expr_bin_starts_with <- function(prefix) {
 
 expr_bin_decode <- function(encoding, ..., strict = TRUE) {
   wrap({
-    check_string(encoding)
     check_dots_empty0(...)
+    encoding <- arg_match0(encoding, c("hex", "base64"))
 
     if (encoding == "hex") {
       self$`_rexpr`$bin_hex_decode(strict)
     } else if (encoding == "base64") {
       self$`_rexpr`$bin_base64_decode(strict)
     } else {
-      abort(
-        sprintf(
-          "`encoding` must be one of ('hex', 'base64'), got '%s'",
-          encoding
-        )
-      )
+      abort("Unreachable")
     }
   })
 }
 
 expr_bin_encode <- function(encoding) {
   wrap({
-    check_string(encoding)
+    encoding <- arg_match0(encoding, c("hex", "base64"))
 
     if (encoding == "hex") {
       self$`_rexpr`$bin_hex_encode()
     } else if (encoding == "base64") {
       self$`_rexpr`$bin_base64_encode()
     } else {
-      abort(
-        sprintf(
-          "`encoding` must be one of ('hex', 'base64'), got '%s'",
-          encoding
-        )
-      )
+      abort("Unreachable")
     }
   })
 }
