@@ -80,49 +80,49 @@ pl__deserialize_expr <- function(data, ..., format = "binary") {
 
 expr__add <- function(other) {
   wrap({
-    other <- as_polars_expr(other)
+    other <- as_polars_expr(other, as_lit = TRUE)
     self$`_rexpr`$add(other$`_rexpr`)
   })
 }
 
 expr__sub <- function(other) {
   wrap({
-    other <- as_polars_expr(other)
+    other <- as_polars_expr(other, as_lit = TRUE)
     self$`_rexpr`$sub(other$`_rexpr`)
   })
 }
 
 expr__mul <- function(other) {
   wrap({
-    other <- as_polars_expr(other)
+    other <- as_polars_expr(other, as_lit = TRUE)
     self$`_rexpr`$mul(other$`_rexpr`)
   })
 }
 
 expr__true_div <- function(other) {
   wrap({
-    other <- as_polars_expr(other)
+    other <- as_polars_expr(other, as_lit = TRUE)
     self$`_rexpr`$div(other$`_rexpr`)
   })
 }
 
 expr__pow <- function(other) {
   wrap({
-    other <- as_polars_expr(other)
+    other <- as_polars_expr(other, as_lit = TRUE)
     self$`_rexpr`$pow(other$`_rexpr`)
   })
 }
 
 expr__mod <- function(other) {
   wrap({
-    other <- as_polars_expr(other)
+    other <- as_polars_expr(other, as_lit = TRUE)
     self$`_rexpr`$rem(other$`_rexpr`)
   })
 }
 
 expr__floor_div <- function(other) {
   wrap({
-    other <- as_polars_expr(other)
+    other <- as_polars_expr(other, as_lit = TRUE)
     self$`_rexpr`$floor_div(other$`_rexpr`)
   })
 }
@@ -399,21 +399,21 @@ expr__map_batches <- function(
 
 expr__and <- function(other) {
   wrap({
-    other <- as_polars_expr(other)
+    other <- as_polars_expr(other, as_lit = TRUE)
     self$`_rexpr`$and(other$`_rexpr`)
   })
 }
 
 expr__or <- function(other) {
   wrap({
-    other <- as_polars_expr(other)
+    other <- as_polars_expr(other, as_lit = TRUE)
     self$`_rexpr`$or(other$`_rexpr`)
   })
 }
 
 expr__xor <- function(other) {
   wrap({
-    other <- as_polars_expr(other)
+    other <- as_polars_expr(other, as_lit = TRUE)
     self$`_rexpr`$xor(other$`_rexpr`)
   })
 }
