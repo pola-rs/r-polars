@@ -12,6 +12,9 @@ pl_api_register_series_namespace(name, ns_fn)
 \item{ns_fn}{A function returns a new \link{environment} with the custom functionality.
 See examples for details.}
 }
+\value{
+\code{NULL} invisibly.
+}
 \description{
 Registering custom functionality with a polars Series
 }

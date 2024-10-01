@@ -8,6 +8,7 @@ pl__api <- new.env(parent = emptyenv())
 #' @param name Name under which the functionality will be accessed.
 #' @param ns_fn A function returns a new [environment] with the custom functionality.
 #' See examples for details.
+#' @return `NULL` invisibly.
 #' @examples
 #' # s: polars series
 #' math_shortcuts <- function(s) {
@@ -42,4 +43,5 @@ pl_api_register_series_namespace <- function(name, ns_fn) {
 
     assign(name, ns_fn, envir = polars_namespaces_series)
   })
+  invisible(NULL)
 }
