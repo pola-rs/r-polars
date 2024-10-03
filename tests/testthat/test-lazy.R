@@ -1231,4 +1231,13 @@ test_that("inequality joins work", {
       cores_right = c(2, 1, 4, 1, 4)
     )
   )
+
+  expect_error(
+    east$join_where(
+      west$collect(),
+      pl$col("dur") < pl$col("time"),
+      pl$col("rev") < pl$col("cost")
+    ),
+    "`other` must be a LazyFrame"
+  )
 })

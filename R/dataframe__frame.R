@@ -2615,5 +2615,8 @@ DataFrame_join_where = function(
     other,
     ...,
     suffix = "_right") {
-  self$lazy()$join_where(self, other = other, ..., suffix = suffix)$collect()
+  if (!is_polars_df(other)) {
+    Err_plain("`other` must be a DataFrame.") |> unwrap()
+  }
+  self$lazy()$join_where(other = other$lazy(), ..., suffix = suffix)$collect()
 }
