@@ -18,6 +18,8 @@
   should trigger an error (#1220).
 - New method `$to_dummies()` for `DataFrame` (#1225).
 - New argument `include_file_paths` in `pl_scan_csv()` and `pl_read_csv()` (#1235).
+- New method `$join_where()` for `DataFrame` and `LazyFrame` to perform
+  inequality joins (#1237).
 
 ### Bug fixes
 
