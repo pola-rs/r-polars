@@ -484,16 +484,12 @@ impl RPolarsLazyFrame {
         let predicates = robj_to!(VecPLExprColNamed, predicates)?;
         let suffix = robj_to!(str, suffix)?;
 
-        rprintln!("{:?}", predicates);
-
         let out = ldf
             .join_builder()
             .with(other)
             .suffix(suffix)
             .join_where(predicates)
             .into();
-
-        rprintln!("{:?}", out);
 
         Ok(out)
     }

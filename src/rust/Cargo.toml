@@ -97,6 +97,7 @@ features = [
   "fmt",
   "gcp",
   "http",
+  "iejoin",
   "interpolate",
   "ipc",
   "is_between",

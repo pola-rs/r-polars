@@ -1406,23 +1406,15 @@ LazyFrame_join = function(
 #'   pl$col("dur") < pl$col("time"),
 #'   pl$col("rev") < pl$col("cost")
 #' )$collect()
-
 LazyFrame_join_where = function(
     other,
     ...,
-    suffix = "_right"
-  ) {
+    suffix = "_right") {
   uw = \(res) unwrap(res, "in $join_where():")
 
   if (!is_polars_lf(other)) {
     Err_plain("`other` must be a LazyFrame.") |> uw()
   }
-
-  # bool_expr = unpack_bool_expr_result(...) |>
-  #   unwrap("in $join_where()")
-  #
-  # .pr$LazyFrame$join_where(self, other, bool_expr, suffix) |>
-  #   uw()
 
   .pr$LazyFrame$join_where(
     self, other, unpack_list(..., .context = "in $join_where():"), suffix
