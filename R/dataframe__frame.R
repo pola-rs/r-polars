@@ -2577,3 +2577,43 @@ DataFrame_to_dummies = function(
   .pr$DataFrame$to_dummies(self, columns = columns, separator = separator, drop_first = drop_first) |>
     unwrap("in $to_dummies():")
 }
+
+#' @inherit LazyFrame_join_where title params
+#'
+#' @description
+#' This performs an inner join, so only rows where all predicates are true are
+#' included in the result, and a row from either DataFrame may be included
+#' multiple times in the result.
+#'
+#' Note that the row order of the input DataFrames is not preserved.
+#'
+#' @param other DataFrame to join with.
+#'
+#' @return A DataFrame
+#'
+#' @examples
+#' east = pl$DataFrame(
+#'   id = c(100, 101, 102),
+#'   dur = c(120, 140, 160),
+#'   rev = c(12, 14, 16),
+#'   cores = c(2, 8, 4)
+#' )
+#'
+#' west = pl$DataFrame(
+#'   t_id = c(404, 498, 676, 742),
+#'   time = c(90, 130, 150, 170),
+#'   cost = c(9, 13, 15, 16),
+#'   cores = c(4, 2, 1, 4)
+#' )
+#'
+#' east$join_where(
+#'   west,
+#'   pl$col("dur") < pl$col("time"),
+#'   pl$col("rev") < pl$col("cost")
+#' )
+DataFrame_join_where = function(
+    other,
+    ...,
+    suffix = "_right") {
+  self$lazy()$join_where(self, other = other, ..., suffix = suffix)$collect()
+}

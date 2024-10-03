@@ -1384,7 +1384,7 @@ LazyFrame_join = function(
 #' `"x<suffix>"`.
 #' @param suffix Suffix to append to columns with a duplicate name.
 #'
-#' @return
+#' @return A LazyFrame
 #'
 #' @examples
 #' east = pl$LazyFrame(

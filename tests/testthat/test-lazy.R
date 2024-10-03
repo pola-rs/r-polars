@@ -1198,3 +1198,37 @@ test_that("$cast() works", {
     list(x = NA_integer_)
   )
 })
+
+test_that("inequality joins work", {
+  east = pl$LazyFrame(
+    id = c(100, 101, 102),
+    dur = c(120, 140, 160),
+    rev = c(12, 14, 16),
+    cores = c(2, 8, 4)
+  )
+  west = pl$LazyFrame(
+    t_id = c(404, 498, 676, 742),
+    time = c(90, 130, 150, 170),
+    cost = c(9, 13, 15, 16),
+    cores = c(4, 2, 1, 4)
+  )
+  out = east$join_where(
+    west,
+    pl$col("dur") < pl$col("time"),
+    pl$col("rev") < pl$col("cost")
+  )$collect()
+
+  expect_identical(
+    out$to_data_frame(),
+    data.frame(
+      id = rep(c(100, 101), 3:2),
+      dur = rep(c(120, 140), 3:2),
+      rev = rep(c(12, 14), 3:2),
+      cores = rep(c(2, 8), 3:2),
+      t_id = c(498, 676, 742, 676, 742),
+      time = c(130, 150, 170, 150, 170),
+      cost = c(13, 15, 16, 15, 16),
+      cores_right = c(2, 1, 4, 1, 4)
+    )
+  )
+})
