@@ -66,12 +66,13 @@ tasks:
     generates:
       - R/import-standalone-*.R
     vars:
-      STANDALONE_FILES:
-        - types-check
+      RLANG_STANDALONE_FILES:
+        - lifecycle
         - s3-register
+        - types-check
     cmds:
       - for:
-          var: STANDALONE_FILES
+          var: RLANG_STANDALONE_FILES
         cmd: Rscript -e 'usethis::use_standalone("r-lib/rlang", "{{.ITEM}}")'
 
   build-documents:

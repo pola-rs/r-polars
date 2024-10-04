@@ -26,6 +26,7 @@ Suggests:
     tibble,
     vctrs,
     withr
+Config/Needs/dev:devtools, lifecycle
 Config/testthat/edition: 3
 Config/testthat/parallel: true
 Encoding: UTF-8
