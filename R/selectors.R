@@ -16,11 +16,6 @@ cs <- new.env(parent = emptyenv())
 # The env for storing selector methods
 polars_selector__methods <- new.env(parent = emptyenv())
 
-#' @export
-is_polars_selector <- function(x, ...) {
-  inherits(x, "polars_selector")
-}
-
 wrap_to_selector <- function(x, name, parameters = NULL) {
   self <- new.env(parent = emptyenv())
   self$`_rexpr` <- x$`_rexpr`

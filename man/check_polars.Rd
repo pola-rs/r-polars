@@ -2,6 +2,13 @@
 % Please edit documentation in R/check_polars.R
 \name{check_polars}
 \alias{check_polars}
+\alias{is_polars}
+\alias{is_polars_dtype}
+\alias{is_polars_df}
+\alias{is_polars_expr}
+\alias{is_polars_lf}
+\alias{is_polars_selector}
+\alias{is_polars_series}
 \alias{check_polars_dtype}
 \alias{check_polars_df}
 \alias{check_polars_expr}
@@ -10,6 +17,18 @@
 \alias{check_polars_series}
 \title{Check if the object is a polars object}
 \usage{
+is_polars_dtype(x)
+
+is_polars_df(x)
+
+is_polars_expr(x, ...)
+
+is_polars_lf(x)
+
+is_polars_selector(x, ...)
+
+is_polars_series(x)
+
 check_polars_dtype(
   x,
   ...,
@@ -75,18 +94,27 @@ mentioned in error messages as the source of the error. See the
 \code{call} argument of \code{\link[rlang:abort]{abort()}} for more information.}
 }
 \value{
-\code{NULL} invisibly.
+\itemize{
+\item \verb{is_polars_*} functions return \code{TRUE} or \code{FALSE}.
+\item \verb{check_polars_*} functions return \code{NULL} invisibly if the input is valid.
+}
 }
 \description{
-Functions to check if the argument is a polars object.
-If the argument is not the correct class, an informative error is thrown.
+Functions to check if the object is a polars object.
+\verb{is_polars_*} functions return \code{TRUE} of \code{FALSE} depending on the class of the object.
+\verb{check_polars_*} functions throw an informative error if the object is not the correct class.
 }
 \details{
-These functions are derived from the \code{standalone-types-check} functions
+\verb{check_polars_*} functions are derived from the \code{standalone-types-check} functions
 from the \link[rlang:rlang-package]{rlang} package
 (Can be installed with \code{usethis::use_standalone("r-lib/rlang", file = "types-check")}).
 }
 \examples{
+is_polars_df(as_polars_df(mtcars))
+is_polars_df(mtcars)
+
+# Use `check_polars_*` functions in a function
+# to ensure the input is a polars object
 sample_func <- function(x) {
   check_polars_df(x)
   TRUE

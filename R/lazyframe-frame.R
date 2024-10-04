@@ -31,11 +31,6 @@ pl__LazyFrame <- function(...) {
 polars_lazyframe__methods <- new.env(parent = emptyenv())
 
 #' @export
-is_polars_lf <- function(x) {
-  inherits(x, "polars_lazy_frame")
-}
-
-#' @export
 wrap.PlRLazyFrame <- function(x, ...) {
   self <- new.env(parent = emptyenv())
   self$`_ldf` <- x

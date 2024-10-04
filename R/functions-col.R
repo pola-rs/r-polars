@@ -52,10 +52,10 @@ pl__col <- function(...) {
       } else {
         cols(dots)
       }
-    } else if (is_polars_data_type(dots[[1]])) {
+    } else if (is_polars_dtype(dots[[1]])) {
       dots |>
         lapply(\(x) {
-          if (!isTRUE(is_polars_data_type(x))) {
+          if (!isTRUE(is_polars_dtype(x))) {
             # TODO: error message improvement
             abort(
               sprintf("Expect polars data type, got %s", toString(class(x))),

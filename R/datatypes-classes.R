@@ -4,11 +4,6 @@
 polars_datatype__methods <- new.env(parent = emptyenv())
 
 #' @export
-is_polars_data_type <- function(x) {
-  inherits(x, "polars_data_type")
-}
-
-#' @export
 wrap.PlRDataType <- function(x, ...) {
   self <- new.env(parent = emptyenv())
   self$`_dt` <- x

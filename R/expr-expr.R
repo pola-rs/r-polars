@@ -38,11 +38,6 @@ polars_namespaces_expr <- new.env(parent = emptyenv())
 polars_expr__methods <- new.env(parent = emptyenv())
 
 #' @export
-is_polars_expr <- function(x, ...) {
-  inherits(x, "polars_expr")
-}
-
-#' @export
 wrap.PlRExpr <- function(x, ...) {
   self <- new.env(parent = emptyenv())
   self$`_rexpr` <- x
