@@ -7,7 +7,7 @@
 \alias{check_polars_expr}
 \alias{check_polars_lf}
 \alias{check_polars_series}
-\title{Check if the argument is a polars object inside a function}
+\title{Check if the object is a polars object}
 \usage{
 check_polars_dtype(
   x,

@@ -1,6 +1,6 @@
 # standalone-types-check.R like type checking functions
 
-#' Check if the argument is a polars object inside a function
+#' Check if the object is a polars object
 #'
 #' Functions to check if the argument is a polars object.
 #' If the argument is not the correct class, an informative error is thrown.
