@@ -6,6 +6,7 @@
 \alias{check_polars_df}
 \alias{check_polars_expr}
 \alias{check_polars_lf}
+\alias{check_polars_selector}
 \alias{check_polars_series}
 \title{Check if the object is a polars object}
 \usage{
@@ -34,6 +35,14 @@ check_polars_expr(
 )
 
 check_polars_lf(
+  x,
+  ...,
+  allow_null = FALSE,
+  arg = caller_arg(x),
+  call = caller_env()
+)
+
+check_polars_selector(
   x,
   ...,
   allow_null = FALSE,

@@ -6,6 +6,7 @@ patrick::with_parameters_test_that("check_polars functions work",
       "df", check_polars_df, as_polars_df(mtcars),
       "expr", check_polars_expr, pl$col("foo"),
       "lf", check_polars_lf, as_polars_lf(mtcars),
+      "selector", check_polars_selector, cs$all(),
       "series", check_polars_series, as_polars_series(1:10),
     )
   },

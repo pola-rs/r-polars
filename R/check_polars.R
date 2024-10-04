@@ -1,5 +1,3 @@
-# standalone-types-check.R like type checking functions
-
 #' Check if the object is a polars object
 #'
 #' Functions to check if the argument is a polars object.
@@ -129,6 +127,34 @@ check_polars_lf <- function(
   stop_input_type(
     x,
     "a polars lazy frame",
+    ...,
+    allow_na = FALSE,
+    allow_null = allow_null,
+    arg = arg,
+    call = call
+  )
+}
+
+#' @rdname check_polars
+#' @export
+check_polars_selector <- function(
+    x,
+    ...,
+    allow_null = FALSE,
+    arg = caller_arg(x),
+    call = caller_env()) {
+  if (!missing(x)) {
+    if (is_polars_selector(x)) {
+      return(invisible(NULL))
+    }
+    if (allow_null && is_null(x)) {
+      return(invisible(NULL))
+    }
+  }
+
+  stop_input_type(
+    x,
+    "a polars selector",
     ...,
     allow_na = FALSE,
     allow_null = allow_null,
