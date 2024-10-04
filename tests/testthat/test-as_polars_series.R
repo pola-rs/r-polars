@@ -29,6 +29,7 @@ patrick::with_parameters_test_that(
         "POSIXct (UTC)", as.POSIXct(c("2021-01-01 00:00:00", NA), "UTC"), "", pl$Datetime("ms", "UTC"),
         "POSIXct (UTC, integer)", as.POSIXct(c(1609459200L, NA), "UTC"), "", pl$Datetime("ms", "UTC"),
         "POSIXct (system time)", as.POSIXct(c("2021-01-01 00:00:00", NA)), "", pl$Datetime("ms"),
+        "POSIXct (system time / NULL)", as.POSIXct(c(1609459200, NA), tz = NULL), "", pl$Datetime("ms"),
         "POSIXct (system time, integer)", as.POSIXct(c(1609459200L, NA)), "", pl$Datetime("ms"),
         "difftime", as.difftime(c(1, NA), units = "weeks"), "", pl$Duration("ms"),
         "hms", hms::as_hms(c("00:00:00", "01:00:00", NA)), "", pl$Time,

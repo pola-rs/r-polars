@@ -223,7 +223,7 @@ as_polars_series.Date <- function(x, name = NULL, ...) {
 #' @export
 as_polars_series.POSIXct <- function(x, name = NULL, ...) {
   wrap({
-    tzone <- attr(x, "tzone")
+    tzone <- attr(x, "tzone") %||% ""
     name <- name %||% ""
 
     # POSIXct is based on integer or double
