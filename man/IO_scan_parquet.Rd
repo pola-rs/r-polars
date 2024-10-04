@@ -61,8 +61,8 @@ the final DataFrame into contiguous memory chunks.}
 \item{low_memory}{Reduce memory usage (will yield a lower performance).}
 
 \item{storage_options}{Experimental. List of options necessary to scan
-parquet files from different cloud storage providers (GCP, AWS, Azure).
-See the 'Details' section.}
+parquet files from different cloud storage providers (GCP, AWS, Azure,
+HuggingFace). See the 'Details' section.}
 
 \item{use_statistics}{Use statistics in the parquet file to determine if pages
 can be skipped from reading.}
@@ -103,14 +103,36 @@ here:
 \item \href{https://docs.rs/object_store/latest/object_store/gcp/enum.GoogleConfigKey.html}{gcp}
 \item \href{https://docs.rs/object_store/latest/object_store/azure/enum.AzureConfigKey.html}{azure}
 }
-\subsection{Implementation details}{
-\itemize{
-\item Currently it is impossible to scan public parquet files from GCP without
+
+Currently it is impossible to scan public parquet files from GCP without
 a valid service account. Be sure to always include a service account in the
 \code{storage_options} argument.
 }
+
+\subsection{Scanning from HuggingFace}{
+
+It is possible to scan data stored on HuggingFace using a path starting with
+\verb{hf://}. The \verb{hf://} path format is defined as
+`hf://BUCKET/REPOSITORY@REVISION/PATH``, where:
+\itemize{
+\item BUCKET is one of datasets or spaces
+\item REPOSITORY is the location of the repository. this is usually in the
+format of username/repo_name. A branch can also be optionally specified by
+appending \verb{@branch}.
+\item REVISION is the name of the branch (or commit) to use. This is optional
+and defaults to main if not given.
+\item PATH is a file or directory path, or a glob pattern from the repository
+root.
 }
 
+A Hugging Face API key can be passed to access private locations using
+either of the following methods:
+\itemize{
+\item Passing a token in storage_options to the scan function, e.g.
+\verb{scan_parquet(..., storage_options = list(token = <your HF token>))}
+\item Setting the HF_TOKEN environment variable, e.g.
+\verb{Sys.setenv(HF_TOKEN = <your HF token>)}.
+}
 }
 }
 \examples{

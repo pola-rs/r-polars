@@ -15,8 +15,8 @@
 #' @param use_statistics Use statistics in the parquet file to determine if pages
 #' can be skipped from reading.
 #' @param storage_options Experimental. List of options necessary to scan
-#' parquet files from different cloud storage providers (GCP, AWS, Azure).
-#' See the 'Details' section.
+#' parquet files from different cloud storage providers (GCP, AWS, Azure,
+#' HuggingFace). See the 'Details' section.
 #'
 #' @rdname IO_scan_parquet
 #' @details
@@ -44,11 +44,31 @@
 #' - [gcp](https://docs.rs/object_store/latest/object_store/gcp/enum.GoogleConfigKey.html)
 #' - [azure](https://docs.rs/object_store/latest/object_store/azure/enum.AzureConfigKey.html)
 #'
-#' ### Implementation details
+#' Currently it is impossible to scan public parquet files from GCP without
+#' a valid service account. Be sure to always include a service account in the
+#' `storage_options` argument.
 #'
-#' - Currently it is impossible to scan public parquet files from GCP without
-#'   a valid service account. Be sure to always include a service account in the
-#'   `storage_options` argument.
+#' ## Scanning from HuggingFace
+#'
+#' It is possible to scan data stored on HuggingFace using a path starting with
+#' `hf://`. The `hf://` path format is defined as
+#' `hf://BUCKET/REPOSITORY@REVISION/PATH``, where:
+#'
+#' * BUCKET is one of datasets or spaces
+#' * REPOSITORY is the location of the repository. this is usually in the
+#'   format of username/repo_name. A branch can also be optionally specified by
+#'   appending `@branch`.
+#' * REVISION is the name of the branch (or commit) to use. This is optional
+#'   and defaults to main if not given.
+#' * PATH is a file or directory path, or a glob pattern from the repository
+#'   root.
+#'
+#' A Hugging Face API key can be passed to access private locations using
+#' either of the following methods:
+#' * Passing a token in storage_options to the scan function, e.g.
+#'   `scan_parquet(..., storage_options = list(token = <your HF token>))`
+#' * Setting the HF_TOKEN environment variable, e.g.
+#'   `Sys.setenv(HF_TOKEN = <your HF token>)`.
 #'
 #' @examplesIf requireNamespace("withr", quietly = TRUE)
 #' # Write a Parquet file than we can then import as DataFrame
