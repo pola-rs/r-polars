@@ -4,7 +4,7 @@
 #'
 #' Functions to check if the argument is a polars object.
 #' If the argument is not the correct class, an informative error is thrown.
-#' 
+#'
 #' These functions are derived from the `standalone-types-check` functions
 #' from the [rlang][rlang::rlang-package] package
 #' (Can be installed with `usethis::use_standalone("r-lib/rlang", file = "types-check")`).
@@ -20,7 +20,7 @@
 #'   check_polars_df(x)
 #'   TRUE
 #' }
-#' 
+#'
 #' sample_func(as_polars_df(mtcars))
 #' try(sample_func(mtcars))
 NULL
@@ -55,34 +55,6 @@ check_polars_dtype <- function(
 
 #' @rdname check_polars
 #' @export
-check_polars_series <- function(
-    x,
-    ...,
-    allow_null = FALSE,
-    arg = caller_arg(x),
-    call = caller_env()) {
-  if (!missing(x)) {
-    if (is_polars_series(x)) {
-      return(invisible(NULL))
-    }
-    if (allow_null && is_null(x)) {
-      return(invisible(NULL))
-    }
-  }
-
-  stop_input_type(
-    x,
-    "a polars series",
-    ...,
-    allow_na = FALSE,
-    allow_null = allow_null,
-    arg = arg,
-    call = call
-  )
-}
-
-#' @rdname check_polars
-#' @export
 check_polars_df <- function(
     x,
     ...,
@@ -101,6 +73,90 @@ check_polars_df <- function(
   stop_input_type(
     x,
     "a polars data frame",
+    ...,
+    allow_na = FALSE,
+    allow_null = allow_null,
+    arg = arg,
+    call = call
+  )
+}
+
+#' @rdname check_polars
+#' @export
+check_polars_expr <- function(
+    x,
+    ...,
+    allow_null = FALSE,
+    arg = caller_arg(x),
+    call = caller_env()) {
+  if (!missing(x)) {
+    if (is_polars_expr(x)) {
+      return(invisible(NULL))
+    }
+    if (allow_null && is_null(x)) {
+      return(invisible(NULL))
+    }
+  }
+
+  stop_input_type(
+    x,
+    "a polars expression",
+    ...,
+    allow_na = FALSE,
+    allow_null = allow_null,
+    arg = arg,
+    call = call
+  )
+}
+
+#' @rdname check_polars
+#' @export
+check_polars_lf <- function(
+    x,
+    ...,
+    allow_null = FALSE,
+    arg = caller_arg(x),
+    call = caller_env()) {
+  if (!missing(x)) {
+    if (is_polars_lf(x)) {
+      return(invisible(NULL))
+    }
+    if (allow_null && is_null(x)) {
+      return(invisible(NULL))
+    }
+  }
+
+  stop_input_type(
+    x,
+    "a polars lazy frame",
+    ...,
+    allow_na = FALSE,
+    allow_null = allow_null,
+    arg = arg,
+    call = call
+  )
+}
+
+#' @rdname check_polars
+#' @export
+check_polars_series <- function(
+    x,
+    ...,
+    allow_null = FALSE,
+    arg = caller_arg(x),
+    call = caller_env()) {
+  if (!missing(x)) {
+    if (is_polars_series(x)) {
+      return(invisible(NULL))
+    }
+    if (allow_null && is_null(x)) {
+      return(invisible(NULL))
+    }
+  }
+
+  stop_input_type(
+    x,
+    "a polars series",
     ...,
     allow_na = FALSE,
     allow_null = allow_null,

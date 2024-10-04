@@ -3,8 +3,10 @@
 \name{check_polars}
 \alias{check_polars}
 \alias{check_polars_dtype}
-\alias{check_polars_series}
 \alias{check_polars_df}
+\alias{check_polars_expr}
+\alias{check_polars_lf}
+\alias{check_polars_series}
 \title{Check if the argument is a polars object inside a function}
 \usage{
 check_polars_dtype(
@@ -15,7 +17,7 @@ check_polars_dtype(
   call = caller_env()
 )
 
-check_polars_series(
+check_polars_df(
   x,
   ...,
   allow_null = FALSE,
@@ -23,7 +25,23 @@ check_polars_series(
   call = caller_env()
 )
 
-check_polars_df(
+check_polars_expr(
+  x,
+  ...,
+  allow_null = FALSE,
+  arg = caller_arg(x),
+  call = caller_env()
+)
+
+check_polars_lf(
+  x,
+  ...,
+  allow_null = FALSE,
+  arg = caller_arg(x),
+  call = caller_env()
+)
+
+check_polars_series(
   x,
   ...,
   allow_null = FALSE,
