@@ -277,11 +277,7 @@ impl PlRExpr {
 
     fn reshape(&self, dimensions: NumericSexp) -> Result<Self> {
         let dimensions: Vec<i64> = <Wrap<Vec<i64>>>::try_from(dimensions)?.0;
-        Ok(self
-            .inner
-            .clone()
-            .reshape(&dimensions, NestedType::Array)
-            .into())
+        Ok(self.inner.clone().reshape(&dimensions).into())
     }
 
     fn any(&self, ignore_nulls: bool) -> Result<Self> {

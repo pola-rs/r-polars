@@ -40,7 +40,11 @@ impl PlRSeries {
     }
 
     fn reshape(&self, dimensions: NumericSexp) -> Result<Self> {
-        let dimensions: Vec<i64> = <Wrap<Vec<i64>>>::try_from(dimensions)?.0;
+        let dimensions = <Wrap<Vec<i64>>>::try_from(dimensions)?
+            .0
+            .into_iter()
+            .map(ReshapeDimension::new)
+            .collect::<Vec<_>>();
         let out = self
             .series
             .reshape_array(&dimensions)

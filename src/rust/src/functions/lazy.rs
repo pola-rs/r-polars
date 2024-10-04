@@ -76,7 +76,6 @@ pub fn lit_from_series_first(value: &PlRSeries) -> Result<PlRExpr> {
     let av = s
         .get(0)
         .map_err(RPolarsErr::from)?
-        .into_static()
-        .map_err(RPolarsErr::from)?;
+        .into_static();
     Ok(dsl::lit(Scalar::new(s.dtype().clone(), av)).into())
 }
