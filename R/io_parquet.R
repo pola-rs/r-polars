@@ -52,7 +52,7 @@
 #'
 #' It is possible to scan data stored on HuggingFace using a path starting with
 #' `hf://`. The `hf://` path format is defined as
-#' `hf://BUCKET/REPOSITORY@REVISION/PATH``, where:
+#' `hf://BUCKET/REPOSITORY@REVISION/PATH`, where:
 #'
 #' * BUCKET is one of datasets or spaces
 #' * REPOSITORY is the location of the repository. this is usually in the

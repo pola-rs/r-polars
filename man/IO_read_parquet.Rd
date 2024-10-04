@@ -113,7 +113,7 @@ a valid service account. Be sure to always include a service account in the
 
 It is possible to scan data stored on HuggingFace using a path starting with
 \verb{hf://}. The \verb{hf://} path format is defined as
-`hf://BUCKET/REPOSITORY@REVISION/PATH``, where:
+\verb{hf://BUCKET/REPOSITORY@REVISION/PATH}, where:
 \itemize{
 \item BUCKET is one of datasets or spaces
 \item REPOSITORY is the location of the repository. this is usually in the
