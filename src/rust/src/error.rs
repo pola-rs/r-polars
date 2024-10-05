@@ -1,8 +1,9 @@
 use polars::prelude::PolarsError;
 use std::fmt::{Debug, Formatter};
-use std::io::Error;
+use strum::ParseError;
 use thiserror::Error;
 
+// TODO: better error handling
 #[derive(Error)]
 pub enum RPolarsErr {
     #[error(transparent)]
@@ -12,7 +13,13 @@ pub enum RPolarsErr {
 }
 
 impl From<std::io::Error> for RPolarsErr {
-    fn from(value: Error) -> Self {
+    fn from(value: std::io::Error) -> Self {
+        RPolarsErr::Other(format!("{value:?}"))
+    }
+}
+
+impl From<ParseError> for RPolarsErr {
+    fn from(value: ParseError) -> Self {
         RPolarsErr::Other(format!("{value:?}"))
     }
 }
