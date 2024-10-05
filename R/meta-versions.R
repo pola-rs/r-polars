@@ -2,6 +2,7 @@
   "bit64",
   "blob",
   "clock",
+  "data.table",
   "hms",
   "tibble",
   "vctrs"
@@ -10,6 +11,8 @@
 .platform <- R.version$platform
 
 .r_version <- R.version$version.string
+
+.self_version <- as.character(utils::packageVersion("neopolars"))
 
 .get_dependency_version <- function(pkg) {
   tryCatch(
@@ -21,7 +24,7 @@
 # TODO: what the difference between this and `polars_info()`?
 pl__show_versions <- function() {
   main_data <- c(
-    `Polars:` = .get_dependency_version("neopolars"),
+    `Polars:` = .self_version,
     `Platform:` = .platform,
     `R:` = .r_version
   ) |>
