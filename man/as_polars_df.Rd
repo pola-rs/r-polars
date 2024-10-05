@@ -144,6 +144,7 @@ as_polars_df(s_struct)
 }
 \seealso{
 \itemize{
-\item \code{\link[=dataframe__to_r_list]{<DataFrame>$to_r_list()}}: Export the DataFrame as an R list of R vectors.
+\item \code{\link[=as.list.polars_data_frame]{as.list(<polars_data_frame>)}}: Export the DataFrame as an R list.
+\item \code{\link[=as.data.frame.polars_data_frame]{as.data.frame(<polars_data_frame>)}}: Export the DataFrame as an R data frame.
 }
 }

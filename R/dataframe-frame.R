@@ -126,8 +126,7 @@ dataframe__clone <- function() {
 #'
 #' @return A [list] of [Series]
 #' @seealso
-#' - [`<DataFrame>$to_r_list()`][dataframe__to_r_list]:
-#'   Similar to this method but returns a list of vectors instead of [Series].
+#' - [`as.list(<polars_data_frame>)`][as.list.polars_data_frame]
 #' @examples
 #' df <- pl$DataFrame(foo = c(1, 2, 3), bar = c(4, 5, 6))
 #' df$get_columns()

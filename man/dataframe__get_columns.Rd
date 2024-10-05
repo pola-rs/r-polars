@@ -25,7 +25,6 @@ df$get_columns()
 }
 \seealso{
 \itemize{
-\item \code{\link[=dataframe__to_r_list]{<DataFrame>$to_r_list()}}:
-Similar to this method but returns a list of vectors instead of \link{Series}.
+\item \code{\link[=as.list.polars_data_frame]{as.list(<polars_data_frame>)}}
 }
 }

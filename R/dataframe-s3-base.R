@@ -13,11 +13,11 @@ length.polars_data_frame <- function(x) x$width
 #' Export the polars object as an R list
 #'
 #' This S3 method calls [`<DataFrame>$get_columns()`][dataframe__get_columns] or
-#' [`<DataFrame>$to_r_list()`][dataframe__to_r_list] depending on the `as_series` argument.
+#' `<DataFrame>$to_struct()$to_r_vector(ensure_vector = TRUE)` depending on the `as_series` argument.
 #'
 #' Arguments other than `x` and `as_series` are passed to [`<Series>$to_r_vector()`][series__to_r_vector],
 #' so they are ignored when `as_series=TRUE`.
-#' @inheritParams dataframe__to_r_list
+#' @inheritParams series__to_r_vector
 #' @param x A polars object
 #' @param ... Ignored
 #' @param as_series Whether to convert each column to an [R vector][vector] or a [Series].
@@ -25,7 +25,6 @@ length.polars_data_frame <- function(x) x$width
 #' @return A [list]
 #' @seealso
 #' - [`<DataFrame>$get_columns()`][dataframe__get_columns]
-#' - [`<DataFrame>$to_r_list()`][dataframe__to_r_list]
 #' @examples
 #' df <- as_polars_df(list(a = 1:3, b = 4:6))
 #'
@@ -36,23 +35,29 @@ length.polars_data_frame <- function(x) x$width
 as.list.polars_data_frame <- function(
     x, ...,
     as_series = FALSE,
-    int64 = "double",
-    struct = "dataframe",
-    decimal = "double",
+    int64 = c("double", "character", "integer", "integer64"),
+    date = c("Date", "IDate"),
+    time = c("hms", "ITime"),
+    struct = c("dataframe", "tibble"),
+    decimal = c("double", "character"),
     as_clock_class = FALSE,
-    ambiguous = "raise",
-    non_existent = "raise") {
+    ambiguous = c("raise", "earliest", "latest", "null"),
+    non_existent = c("raise", "null")) {
   if (isTRUE(as_series)) {
     x$get_columns()
   } else {
-    x$to_r_list(
+    x$to_struct()$to_r_vector(
+      ensure_vector = TRUE,
       int64 = int64,
+      date = date,
+      time = time,
       struct = struct,
       decimal = decimal,
       as_clock_class = as_clock_class,
       ambiguous = ambiguous,
       non_existent = non_existent
-    )
+    ) |>
+      wrap()
   }
 }
 
@@ -67,8 +72,10 @@ as.list.polars_data_frame <- function(
 #' ## S3 method for [polars_lazy_frame][LazyFrame]
 #'
 #' This S3 method is a shortcut for `as_polars_df(x, ...) |> as.data.frame()`.
-#' Additional arguments `...` are passed to [as_polars_df()].
 #' @inheritParams as.list.polars_data_frame
+#' @param ...
+#' - Ignored for [DataFrame]
+#' - Passed to [as_polars_df()] for [LazyFrame]
 #' @return An [R data frame][data.frame]
 #' @examples
 #' df <- as_polars_df(list(a = 1:3, b = 4:6))
@@ -79,14 +86,18 @@ as.list.polars_data_frame <- function(
 #' @rdname s3-as.data.frame
 as.data.frame.polars_data_frame <- function(
     x, ...,
-    int64 = "double",
-    decimal = "double",
+    int64 = c("double", "character", "integer", "integer64"),
+    date = c("Date", "IDate"),
+    time = c("hms", "ITime"),
+    decimal = c("double", "character"),
     as_clock_class = FALSE,
-    ambiguous = "raise",
-    non_existent = "raise") {
+    ambiguous = c("raise", "earliest", "latest", "null"),
+    non_existent = c("raise", "null")) {
   x$to_struct()$to_r_vector(
     ensure_vector = FALSE,
     int64 = int64,
+    date = date,
+    time = time,
     struct = "dataframe",
     decimal = decimal,
     as_clock_class = as_clock_class,

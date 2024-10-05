@@ -8,27 +8,34 @@
 \method{as.data.frame}{polars_data_frame}(
   x,
   ...,
-  int64 = "double",
-  decimal = "double",
+  int64 = c("double", "character", "integer", "integer64"),
+  date = c("Date", "IDate"),
+  time = c("hms", "ITime"),
+  decimal = c("double", "character"),
   as_clock_class = FALSE,
-  ambiguous = "raise",
-  non_existent = "raise"
+  ambiguous = c("raise", "earliest", "latest", "null"),
+  non_existent = c("raise", "null")
 )
 
 \method{as.data.frame}{polars_lazy_frame}(
   x,
   ...,
-  int64 = "double",
-  decimal = "double",
+  int64 = c("double", "character", "integer", "integer64"),
+  date = c("Date", "IDate"),
+  time = c("hms", "ITime"),
+  decimal = c("double", "character"),
   as_clock_class = FALSE,
-  ambiguous = "raise",
-  non_existent = "raise"
+  ambiguous = c("raise", "earliest", "latest", "null"),
+  non_existent = c("raise", "null")
 )
 }
 \arguments{
 \item{x}{A polars object}
 
-\item{...}{Ignored}
+\item{...}{\itemize{
+\item Ignored for \link{DataFrame}
+\item Passed to \code{\link[=as_polars_df]{as_polars_df()}} for \link{LazyFrame}
+}}
 
 \item{int64}{Determine how to convert Polars' Int64, UInt32, or UInt64 type values to R type.
 One of the followings:
@@ -41,6 +48,21 @@ If the value is out of the range of R's integer type, export as \link{NA_integer
 \item \code{"integer64"}: Convert to the \link[bit64:bit64-package]{bit64::integer64} class.
 The \link[bit64:bit64-package]{bit64} package must be installed.
 If the value is out of the range of \link[bit64:bit64-package]{bit64::integer64}, export as \link[bit64:as.integer64.character]{bit64::NA_integer64_}.
+}}
+
+\item{date}{Determine how to convert Polars' Date type values to R class.
+One of the followings:
+\itemize{
+\item \code{"Date"} (default): Convert to the R's \link{Date} class.
+\item \code{"IDate"}: Convert to the \link[data.table:IDateTime]{data.table::IDate} class.
+}}
+
+\item{time}{Determine how to convert Polars' Time type values to R class.
+One of the followings:
+\itemize{
+\item \code{"hms"} (default): Convert to the \link[hms:hms]{hms::hms} class.
+\item \code{"ITime"}: Convert to the \link[data.table:IDateTime]{data.table::ITime} class.
+The \link[data.table:data.table]{data.table} package must be installed.
 }}
 
 \item{decimal}{Determine how to convert Polars' Decimal type values to R type.
@@ -99,7 +121,6 @@ This S3 method is a shortcut for
 \subsection{S3 method for \link[=LazyFrame]{polars_lazy_frame}}{
 
 This S3 method is a shortcut for \code{as_polars_df(x, ...) |> as.data.frame()}.
-Additional arguments \code{...} are passed to \code{\link[=as_polars_df]{as_polars_df()}}.
 }
 }
 \examples{

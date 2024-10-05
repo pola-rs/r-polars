@@ -2,7 +2,7 @@
 compare_proxy.polars_data_frame <- function(x, path) {
   list(
     object = structure(
-      as.list(x),
+      as.list(x, as_series = TRUE),
       shape = x$shape,
       schema = x$schema
     ),

@@ -79,11 +79,7 @@ as_polars_series(a)
 ### Conversion from Polars to R types
 
 In the previous version, there were multiple methods for converting Series or DataFrame to R vectors or R lists,
-but in the new version, they have been unified to `$to_r_vector()` for Series and `$to_r_list()` for DataFrame.
-`<DataFrame>$to_r_list()` internally calls `<Series>$to_r_vector()`.
-
-These methods are provided for convenience, but it is recommended to continue using generic functions such as
-`as.vector()` or `as.data.frame()` according to the general manners of R.
+but in the new version, they have been unified to `$to_r_vector()` of Series.
 
 ### Simplification of class constructor functions
 

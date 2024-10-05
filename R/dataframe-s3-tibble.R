@@ -33,15 +33,19 @@
 #' @rdname s3-as_tibble
 as_tibble.polars_data_frame <- function(
     x, ...,
-    .name_repair = "check_unique",
-    int64 = "double",
-    decimal = "double",
+    .name_repair = c("check_unique", "unique", "universal", "minimal"),
+    int64 = c("double", "character", "integer", "integer64"),
+    date = c("Date", "IDate"),
+    time = c("hms", "ITime"),
+    decimal = c("double", "character"),
     as_clock_class = FALSE,
-    ambiguous = "raise",
-    non_existent = "raise") {
+    ambiguous = c("raise", "earliest", "latest", "null"),
+    non_existent = c("raise", "null")) {
   x$to_struct()$to_r_vector(
     ensure_vector = FALSE,
     int64 = int64,
+    date = date,
+    time = time,
     struct = "tibble",
     decimal = decimal,
     as_clock_class = as_clock_class,

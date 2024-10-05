@@ -42,7 +42,8 @@
 #' the [`<Series>$struct$unnest()`][series_struct_unnest] method is used to create a [DataFrame]
 #' from the struct [Series]. In this case, the `column_name` argument is ignored.
 #' @seealso
-#' - [`<DataFrame>$to_r_list()`][dataframe__to_r_list]: Export the DataFrame as an R list of R vectors.
+#' - [`as.list(<polars_data_frame>)`][as.list.polars_data_frame]: Export the DataFrame as an R list.
+#' - [`as.data.frame(<polars_data_frame>)`][as.data.frame.polars_data_frame]: Export the DataFrame as an R data frame.
 #' @examples
 #' # list
 #' as_polars_df(list(a = 1:2, b = c("foo", "bar")))

@@ -8,12 +8,14 @@
   x,
   ...,
   as_series = FALSE,
-  int64 = "double",
-  struct = "dataframe",
-  decimal = "double",
+  int64 = c("double", "character", "integer", "integer64"),
+  date = c("Date", "IDate"),
+  time = c("hms", "ITime"),
+  struct = c("dataframe", "tibble"),
+  decimal = c("double", "character"),
   as_clock_class = FALSE,
-  ambiguous = "raise",
-  non_existent = "raise"
+  ambiguous = c("raise", "earliest", "latest", "null"),
+  non_existent = c("raise", "null")
 )
 }
 \arguments{
@@ -35,6 +37,21 @@ If the value is out of the range of R's integer type, export as \link{NA_integer
 \item \code{"integer64"}: Convert to the \link[bit64:bit64-package]{bit64::integer64} class.
 The \link[bit64:bit64-package]{bit64} package must be installed.
 If the value is out of the range of \link[bit64:bit64-package]{bit64::integer64}, export as \link[bit64:as.integer64.character]{bit64::NA_integer64_}.
+}}
+
+\item{date}{Determine how to convert Polars' Date type values to R class.
+One of the followings:
+\itemize{
+\item \code{"Date"} (default): Convert to the R's \link{Date} class.
+\item \code{"IDate"}: Convert to the \link[data.table:IDateTime]{data.table::IDate} class.
+}}
+
+\item{time}{Determine how to convert Polars' Time type values to R class.
+One of the followings:
+\itemize{
+\item \code{"hms"} (default): Convert to the \link[hms:hms]{hms::hms} class.
+\item \code{"ITime"}: Convert to the \link[data.table:IDateTime]{data.table::ITime} class.
+The \link[data.table:data.table]{data.table} package must be installed.
 }}
 
 \item{struct}{Determine how to convert Polars' Struct type values to R class.
@@ -90,7 +107,7 @@ A \link{list}
 }
 \description{
 This S3 method calls \code{\link[=dataframe__get_columns]{<DataFrame>$get_columns()}} or
-\code{\link[=dataframe__to_r_list]{<DataFrame>$to_r_list()}} depending on the \code{as_series} argument.
+\verb{<DataFrame>$to_struct()$to_r_vector(ensure_vector = TRUE)} depending on the \code{as_series} argument.
 }
 \details{
 Arguments other than \code{x} and \code{as_series} are passed to \code{\link[=series__to_r_vector]{<Series>$to_r_vector()}},
@@ -105,6 +122,5 @@ as.list(df, as_series = FALSE)
 \seealso{
 \itemize{
 \item \code{\link[=dataframe__get_columns]{<DataFrame>$get_columns()}}
-\item \code{\link[=dataframe__to_r_list]{<DataFrame>$to_r_list()}}
 }
 }
