@@ -103,7 +103,7 @@ mentioned in error messages as the source of the error. See the
 Functions to check if the object is a polars object.
 \verb{is_polars_*} functions return \code{TRUE} of \code{FALSE} depending on the class of the object.
 \verb{check_polars_*} functions throw an informative error if the object is not the correct class.
-Prefixes are corresponding to the polars object classes:
+Suffixes are corresponding to the polars object classes:
 \itemize{
 \item \verb{*_dtype}: For polars data types.
 \item \verb{*_df}: For \link[=DataFrame]{polars data frames}.

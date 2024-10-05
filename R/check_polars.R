@@ -4,7 +4,7 @@
 #' Functions to check if the object is a polars object.
 #' `is_polars_*` functions return `TRUE` of `FALSE` depending on the class of the object.
 #' `check_polars_*` functions throw an informative error if the object is not the correct class.
-#' Prefixes are corresponding to the polars object classes:
+#' Suffixes are corresponding to the polars object classes:
 #' - `*_dtype`: For polars data types.
 #' - `*_df`: For [polars data frames][DataFrame].
 #' - `*_expr`: For [polars expressions][Expr].
