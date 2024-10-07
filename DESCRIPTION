@@ -18,6 +18,7 @@ Imports:
 Suggests:
     bit64,
     blob,
+    cli,
     clock,
     data.table,
     hms,
