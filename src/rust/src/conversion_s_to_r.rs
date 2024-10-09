@@ -110,9 +110,11 @@ pub fn pl_series_to_list(
                     .set_class(["rpolars_raw_list", "list"])
                     .expect("this class label is always valid")
             }),
-            Enum(_, _) => s
-                .categorical()
-                .map(|ca| extendr_api::call!("factor", ca.iter_str().collect_robj()).unwrap()),
+            Enum(_, _) => s.categorical().map(|ca| {
+                let levels = ca.unique().unwrap().iter_str().collect_robj();
+                let values = ca.iter_str().collect_robj();
+                extendr_api::call!("factor", values, levels).unwrap()
+            }),
             Categorical(_, _) => s
                 .categorical()
                 .map(|ca| extendr_api::call!("factor", ca.iter_str().collect_robj()).unwrap()),
