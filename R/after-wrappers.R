@@ -285,7 +285,7 @@ pl_class_names = sort(
     "RPolarsExpr", "RPolarsDataFrame", "RPolarsWhen", "RPolarsThen",
     "RPolarsChainedWhen", "RPolarsChainedThen", "RPolarsSQLContext"
   )
-) # TODO discover all public class automatically
+)
 
 pub_env = as.environment(asNamespace("polars"))
 pub_class_env = as.environment(mget(pl_class_names, envir = pub_env))

@@ -198,7 +198,6 @@ as_polars_df.RPolarsLazyGroupBy = function(x, ...) {
 }
 
 
-# TODO: link to DataTypes documents
 #' @rdname as_polars_df
 #' @param rechunk A logical flag (default `TRUE`).
 #' Make sure that all data of each column is in contiguous memory.

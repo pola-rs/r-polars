@@ -91,7 +91,6 @@ plain.default = function(err, msg) {
 }
 
 
-## TODO refactor upgrade_err into as.RPolarsErr
 #' Internal generic method to add plain text to error message
 #' @details
 #' polars converts any other error types to RPolarsErr.

@@ -27,7 +27,6 @@
 NULL
 
 
-# TODO: rewrite the Rust macro for R object into Polars duration
 # TODO: use this function inside of `Expr_rolling`, `LazyFrame_join_asof`, `DataFrame_join_asof`
 #' Parse an object as the Polars duration string language
 #'

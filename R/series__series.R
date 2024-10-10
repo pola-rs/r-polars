@@ -506,7 +506,6 @@ Series_compare = function(other, op) {
 }
 
 
-# TODO: move to the other file
 #' @export
 #' @rdname Series_compare
 #' @param s1 lhs Series

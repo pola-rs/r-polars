@@ -121,7 +121,6 @@ Expr_print = function() {
   paste0(ls(RPolarsExpr, pattern = pattern), completion_symbols$method)
 }
 
-# TODO: rewrite as something like `as_polars_expr()`
 #' wrap as literal
 #' @description use robj_to!(Expr) on rust side or rarely wrap_e on R-side
 #' This function is only kept for reference
@@ -134,9 +133,6 @@ Expr_print = function() {
 wrap_e = function(e, str_to_lit = TRUE) {
   internal_wrap_e(e, str_to_lit) |> unwrap()
 }
-
-
-## TODO refactor to \(e, str_to_lit = TRUE, argname = NULL) wrap_e(e) |> result()
 
 #' wrap as Expression capture ok/err as result
 #' @param e an Expr(polars) or any R expression
@@ -364,7 +360,6 @@ Expr_pow = function(exponent) {
 #' !pl$lit(TRUE)
 Expr_not = use_extendr_wrapper
 
-# TODO: move to another file and create `S3_logic.Rd`
 #' @export
 `!.RPolarsExpr` = function(x) x$not()
 
