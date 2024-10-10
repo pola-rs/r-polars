@@ -17,13 +17,13 @@
 #' but in that case [roxygen2][roxygen2::roxygen2] recognized them as data
 #' instead of a function.
 #' @noRd
-use_extendr_wrapper = function() {
+use_extendr_wrapper <- function() {
   invisible(TRUE)
 }
 
 
 # Build time options
-build_debug_print = FALSE
+build_debug_print <- FALSE
 
 #' extendr methods into pure functions
 #' @noRd
@@ -36,18 +36,18 @@ build_debug_print = FALSE
 #'
 #' @return env of pure function calls to rust
 #'
-extendr_method_to_pure_functions = function(env, class_name = NULL) {
-  if (is.null(class_name)) class_name = as.character(sys.call()[2])
-  e = as.environment(lapply(env, function(f) {
+extendr_method_to_pure_functions <- function(env, class_name = NULL) {
+  if (is.null(class_name)) class_name <- as.character(sys.call()[2])
+  e <- as.environment(lapply(env, function(f) {
     if (!is.function(f)) {
       return(f)
     }
     if ("self" %in% codetools::findGlobals(f)) {
-      formals(f) = c(alist(self = ), formals(f))
+      formals(f) <- c(alist(self = ), formals(f))
     }
     f
   }))
-  class(e) = c("private_polars_env", paste0("pr_", class_name), "environment")
+  class(e) <- c("private_polars_env", paste0("pr_", class_name), "environment")
   e
 }
 
@@ -56,7 +56,7 @@ extendr_method_to_pure_functions = function(env, class_name = NULL) {
 #' @details This method if polars_optenv$debug_polars == TRUE will print what methods are called
 #' @noRd
 #' @export
-"$.private_polars_env" = function(self, name) {
+"$.private_polars_env" <- function(self, name) {
   # print called private class in debug mode
   if (polars_options()$debug_polars) {
     cat(
@@ -87,26 +87,26 @@ extendr_method_to_pure_functions = function(env, class_name = NULL) {
 #'
 #' # show all content of .pr
 #' .pr$print_env(.pr, ".pr the collection of private method calls to rust-polars")
-.pr = new.env(parent = emptyenv())
-.pr$Series = extendr_method_to_pure_functions(RPolarsSeries)
-.pr$DataFrame = extendr_method_to_pure_functions(RPolarsDataFrame)
-.pr$GroupBy = NULL # derived from DataFrame in R, has no rust calls
-.pr$LazyFrame = extendr_method_to_pure_functions(RPolarsLazyFrame)
-.pr$LazyGroupBy = extendr_method_to_pure_functions(RPolarsLazyGroupBy)
-.pr$DataType = extendr_method_to_pure_functions(RPolarsDataType)
-.pr$DataTypeVector = extendr_method_to_pure_functions(RPolarsDataTypeVector)
-.pr$RField = extendr_method_to_pure_functions(RPolarsRField)
-.pr$Expr = extendr_method_to_pure_functions(RPolarsExpr)
-.pr$When = extendr_method_to_pure_functions(RPolarsWhen)
-.pr$Then = extendr_method_to_pure_functions(RPolarsThen)
-.pr$ChainedWhen = extendr_method_to_pure_functions(RPolarsChainedWhen)
-.pr$ChainedThen = extendr_method_to_pure_functions(RPolarsChainedThen)
-.pr$VecDataFrame = extendr_method_to_pure_functions(RPolarsVecDataFrame)
-.pr$RNullValues = extendr_method_to_pure_functions(RPolarsRNullValues)
-.pr$Err = extendr_method_to_pure_functions(RPolarsErr)
-.pr$RThreadHandle = extendr_method_to_pure_functions(RPolarsRThreadHandle)
-.pr$StringCacheHolder = extendr_method_to_pure_functions(RPolarsStringCacheHolder)
-.pr$SQLContext = extendr_method_to_pure_functions(RPolarsSQLContext)
+.pr <- new.env(parent = emptyenv())
+.pr$Series <- extendr_method_to_pure_functions(RPolarsSeries)
+.pr$DataFrame <- extendr_method_to_pure_functions(RPolarsDataFrame)
+.pr$GroupBy <- NULL # derived from DataFrame in R, has no rust calls
+.pr$LazyFrame <- extendr_method_to_pure_functions(RPolarsLazyFrame)
+.pr$LazyGroupBy <- extendr_method_to_pure_functions(RPolarsLazyGroupBy)
+.pr$DataType <- extendr_method_to_pure_functions(RPolarsDataType)
+.pr$DataTypeVector <- extendr_method_to_pure_functions(RPolarsDataTypeVector)
+.pr$RField <- extendr_method_to_pure_functions(RPolarsRField)
+.pr$Expr <- extendr_method_to_pure_functions(RPolarsExpr)
+.pr$When <- extendr_method_to_pure_functions(RPolarsWhen)
+.pr$Then <- extendr_method_to_pure_functions(RPolarsThen)
+.pr$ChainedWhen <- extendr_method_to_pure_functions(RPolarsChainedWhen)
+.pr$ChainedThen <- extendr_method_to_pure_functions(RPolarsChainedThen)
+.pr$VecDataFrame <- extendr_method_to_pure_functions(RPolarsVecDataFrame)
+.pr$RNullValues <- extendr_method_to_pure_functions(RPolarsRNullValues)
+.pr$Err <- extendr_method_to_pure_functions(RPolarsErr)
+.pr$RThreadHandle <- extendr_method_to_pure_functions(RPolarsRThreadHandle)
+.pr$StringCacheHolder <- extendr_method_to_pure_functions(RPolarsStringCacheHolder)
+.pr$SQLContext <- extendr_method_to_pure_functions(RPolarsSQLContext)
 
 
 
@@ -114,8 +114,8 @@ extendr_method_to_pure_functions = function(env, class_name = NULL) {
 # allow that. Ok use :
 #  - internal documentation (noRd) to show case inner workings of code.
 #  - unit tests, which needs to verify an internal state.
-.pr$env = getNamespace("polars")
-.pr$print_env = print_env
+.pr$env <- getNamespace("polars")
+.pr$print_env <- print_env
 
 
 
@@ -138,8 +138,8 @@ extendr_method_to_pure_functions = function(env, class_name = NULL) {
 #' see zzz.R for usage examples
 #'
 #' @seealso verify_method_call
-macro_add_syntax_check_to_class = function(Class_name) {
-  tokens = paste0(
+macro_add_syntax_check_to_class <- function(Class_name) {
+  tokens <- paste0(
     "`$.", Class_name, "` <- function (self, name) {\n",
     "  verify_not_null_pointer(self, 'in `$.", Class_name, "`')\n",
     "  verify_method_call(", Class_name, ", name)\n",
@@ -160,9 +160,9 @@ macro_add_syntax_check_to_class = function(Class_name) {
 ## modify classes to perform syntax checking
 ## this relies on no envrionment other than env_classes has been defined when macro called
 ## this mod should be run immediately after extendr-wrappers.R are sourced
-non_class_envs = c("completion_symbols")
-is_env_class = sapply(ls(), \(x) typeof(get(x)) == "environment" && !x %in% non_class_envs)
-env_class_names = names(is_env_class)[is_env_class]
+non_class_envs <- c("completion_symbols")
+is_env_class <- sapply(ls(), \(x) typeof(get(x)) == "environment" && !x %in% non_class_envs)
+env_class_names <- names(is_env_class)[is_env_class]
 if (build_debug_print) cat("\nadd syntax check to: ")
 for (i_class in env_class_names) {
   if (build_debug_print) cat(i_class, ", ", sep = "")
@@ -180,8 +180,8 @@ if (build_debug_print) cat("\n")
 #' @param f a function
 #' @param setter bool, if true a property method can be modified by user
 #' @return function subclassed into c("property","function") or c("setter","property","function")
-method_as_active_binding = function(f, setter = FALSE) {
-  class(f) = if (setter) {
+method_as_active_binding <- function(f, setter = FALSE) {
+  class(f) <- if (setter) {
     c("setter", "property", "function")
   } else {
     c("property", "function")
@@ -211,8 +211,8 @@ method_as_active_binding = function(f, setter = FALSE) {
 #' # show all public functions, RPolarsDataTypes, classes and methods
 #' pl$show_all_public_functions()
 #' pl$show_all_public_methods()
-pl = new.env(parent = emptyenv())
-class(pl) = c("pl_polars_env", "environment")
+pl <- new.env(parent = emptyenv())
+class(pl) <- c("pl_polars_env", "environment")
 
 
 #' show all public functions / objects
@@ -222,7 +222,7 @@ class(pl) = c("pl_polars_env", "environment")
 #' @keywords functions
 #' @examples
 #' pl$show_all_public_functions()
-pl_show_all_public_functions = function() {
+pl_show_all_public_functions <- function() {
   print_env(pl, "polars public functions via pl$...")
 }
 
@@ -234,9 +234,9 @@ pl_show_all_public_functions = function() {
 #' @keywords functions
 #' @examples
 #' pl$show_all_public_methods()
-pl_show_all_public_methods = function(class_names = NULL) {
+pl_show_all_public_methods <- function(class_names = NULL) {
   # subset classes to show
-  show_this_env = if (!is.null(class_names)) {
+  show_this_env <- if (!is.null(class_names)) {
     as.environment(mget(class_names, envir = pub_class_env))
   } else {
     pub_class_env
@@ -256,7 +256,7 @@ pl_show_all_public_methods = function(class_names = NULL) {
 #' @return an element from the public namespace `pl` polars. Likely a function or an RPolarsDataType
 #' @export
 #' @noRd
-"$.pl_polars_env" = function(self, name) {
+"$.pl_polars_env" <- function(self, name) {
   # print called private class in debug mode
   # Exception for pl$reset_options: we don't want to check for options validity
   # because we're resetting options to their default anyway
@@ -269,26 +269,26 @@ pl_show_all_public_methods = function(class_names = NULL) {
   self[[name]]
 }
 
-.DollarNames.pl_polars_env = function(x, pattern = "") {
+.DollarNames.pl_polars_env <- function(x, pattern = "") {
   ls(x, pattern = pattern)
 }
 
 
 
 # remap
-DataType = clone_env_one_level_deep(RPolarsDataType)
+DataType <- clone_env_one_level_deep(RPolarsDataType)
 
 # used for printing public environment
-pl_class_names = sort(
+pl_class_names <- sort(
   c(
     "RPolarsLazyFrame", "RPolarsSeries", "RPolarsLazyGroupBy", "RPolarsDataType",
     "RPolarsExpr", "RPolarsDataFrame", "RPolarsWhen", "RPolarsThen",
     "RPolarsChainedWhen", "RPolarsChainedThen", "RPolarsSQLContext"
   )
-) # TODO discover all public class automatically
+)
 
-pub_env = as.environment(asNamespace("polars"))
-pub_class_env = as.environment(mget(pl_class_names, envir = pub_env))
+pub_env <- as.environment(asNamespace("polars"))
+pub_class_env <- as.environment(mget(pl_class_names, envir = pub_env))
 
 
 #' Select from an empty DataFrame
@@ -302,7 +302,7 @@ pub_class_env = as.environment(mget(pl_class_names, envir = pub_env))
 #'   pl$lit(1:4)$alias("ints"),
 #'   pl$lit(letters[1:4])$alias("letters")
 #' )
-pl_select = function(...) {
+pl_select <- function(...) {
   .pr$DataFrame$default()$select(...)
 }
 
@@ -315,7 +315,7 @@ pl_select = function(...) {
 #' @param robj an R object
 #' @return String of mem address
 #' @examples pl$mem_address(pl$Series(values = 1:3))
-pl_mem_address = function(robj) {
+pl_mem_address <- function(robj) {
   mem_address(robj)
 }
 
@@ -332,7 +332,7 @@ pl_mem_address = function(robj) {
 #' @return not applicable
 #' @examples
 #' # all a polars object is only made of:
-#' some_polars_object = pl$DataFrame(iris)
+#' some_polars_object <- pl$DataFrame(iris)
 #' str(some_polars_object) # External Pointer tagged with a class attribute.
 #'
 #' # All state is stored on rust side.

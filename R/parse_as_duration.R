@@ -27,7 +27,6 @@
 NULL
 
 
-# TODO: rewrite the Rust macro for R object into Polars duration
 # TODO: use this function inside of `Expr_rolling`, `LazyFrame_join_asof`, `DataFrame_join_asof`
 #' Parse an object as the Polars duration string language
 #'
@@ -43,7 +42,7 @@ NULL
 #'
 #' # A single difftime is converted to a duration string
 #' parse_as_polars_duration_string(as.difftime(1, units = "days"))
-parse_as_polars_duration_string = function(x, default = NULL, ...) {
+parse_as_polars_duration_string <- function(x, default = NULL, ...) {
   if (is.null(x)) {
     return(default)
   }
@@ -51,13 +50,13 @@ parse_as_polars_duration_string = function(x, default = NULL, ...) {
 }
 
 #' @exportS3Method
-parse_as_polars_duration_string.default = function(x, default = NULL, ...) {
+parse_as_polars_duration_string.default <- function(x, default = NULL, ...) {
   Err_plain(paste0("`", deparse(substitute(x)), "` must be a single non-NA character or difftime.")) |>
     unwrap()
 }
 
 #' @exportS3Method
-parse_as_polars_duration_string.character = function(x, default = NULL, ...) {
+parse_as_polars_duration_string.character <- function(x, default = NULL, ...) {
   if (length(x) != 1L) {
     Err_plain(paste0("`", deparse(substitute(x)), "` must be a single non-NA character or difftime.")) |>
       unwrap()
@@ -67,7 +66,7 @@ parse_as_polars_duration_string.character = function(x, default = NULL, ...) {
 }
 
 #' @exportS3Method
-parse_as_polars_duration_string.difftime = function(x, default = NULL, ...) {
+parse_as_polars_duration_string.difftime <- function(x, default = NULL, ...) {
   if (length(x) != 1L) {
     Err_plain(paste0("`", deparse(substitute(x)), "` must be a single non-NA character or difftime.")) |>
       unwrap()
@@ -78,10 +77,10 @@ parse_as_polars_duration_string.difftime = function(x, default = NULL, ...) {
 
 
 # Internal function for parsing difftime to Polars interval language
-difftime_to_duration_string = function(dft) {
-  value = as.numeric(dft)
-  u = attr(dft, "units")
-  unit = pcase(
+difftime_to_duration_string <- function(dft) {
+  value <- as.numeric(dft)
+  u <- attr(dft, "units")
+  unit <- pcase(
     !is_string(u), Err(sprintf("difftime units should be a character, not a %s", class(u))),
     u == "secs", "s",
     u == "mins", "m",
@@ -94,7 +93,7 @@ difftime_to_duration_string = function(dft) {
   paste0(value, unit)
 }
 
-negate_duration_string = function(x) {
+negate_duration_string <- function(x) {
   if (startsWith(x, "-")) {
     gsub("^-", "", x)
   } else {

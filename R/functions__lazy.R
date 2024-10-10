@@ -1,4 +1,3 @@
-# TODO: rewrite with generic function `as_polars_lit`
 #' Create a literal value
 #'
 #' @param x A vector of any length
@@ -56,8 +55,6 @@ pl_all = function(name = NULL) {
   }
 
   stop("not implemented")
-  # TODO implement input list of Expr as in:
-  # https://github.com/pola-rs/polars/blob/589f36432de6e95e81d9715a77d6fe78360512e5/py-polars/polars/internals/lazy_functions.py#L1095
 }
 
 
