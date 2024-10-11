@@ -304,83 +304,91 @@ impl PlRDataType {
         (self.dt != other.dt).try_into()
     }
 
-    fn is_temporal(&self) -> Result<Sexp> {
-        self.dt.is_temporal().try_into()
-    }
-
-    fn is_enum(&self) -> Result<Sexp> {
-        self.dt.is_enum().try_into()
-    }
-
-    fn is_categorical(&self) -> Result<Sexp> {
-        self.dt.is_categorical().try_into()
-    }
-
-    fn is_string(&self) -> Result<Sexp> {
-        self.dt.is_string().try_into()
-    }
-
-    fn is_logical(&self) -> Result<Sexp> {
-        self.dt.is_bool().try_into()
-    }
-
-    fn is_float(&self) -> Result<Sexp> {
-        self.dt.is_float().try_into()
-    }
-
-    fn is_numeric(&self) -> Result<Sexp> {
-        self.dt.is_numeric().try_into()
-    }
-
-    fn is_integer(&self) -> Result<Sexp> {
-        self.dt.is_integer().try_into()
-    }
-
-    fn is_signed_integer(&self) -> Result<Sexp> {
-        self.dt.is_signed_integer().try_into()
-    }
-
-    fn is_unsigned_integer(&self) -> Result<Sexp> {
-        self.dt.is_unsigned_integer().try_into()
-    }
-
-    fn is_null(&self) -> Result<Sexp> {
-        self.dt.is_null().try_into()
+    fn is_array(&self) -> Result<Sexp> {
+        self.dt.is_array().try_into()
     }
 
     fn is_binary(&self) -> Result<Sexp> {
         self.dt.is_binary().try_into()
     }
 
-    fn is_primitive(&self) -> Result<Sexp> {
-        self.dt.is_primitive().try_into()
-    }
-
     fn is_bool(&self) -> Result<Sexp> {
         self.dt.is_bool().try_into()
     }
 
-    fn is_array(&self) -> Result<Sexp> {
-        self.dt.is_array().try_into()
+    fn is_categorical(&self) -> Result<Sexp> {
+        self.dt.is_categorical().try_into()
+    }
+
+    fn is_date(&self) -> Result<Sexp> {
+        self.dt.is_date().try_into()
+    }
+
+    fn is_enum(&self) -> Result<Sexp> {
+        self.dt.is_enum().try_into()
+    }
+
+    fn is_float(&self) -> Result<Sexp> {
+        self.dt.is_float().try_into()
+    }
+
+    fn is_integer(&self) -> Result<Sexp> {
+        self.dt.is_integer().try_into()
+    }
+
+    fn is_known(&self) -> Result<Sexp> {
+        self.dt.is_known().try_into()
     }
 
     fn is_list(&self) -> Result<Sexp> {
         self.dt.is_list().try_into()
     }
 
+    fn is_logical(&self) -> Result<Sexp> {
+        self.dt.is_bool().try_into()
+    }
+
     fn is_nested(&self) -> Result<Sexp> {
         self.dt.is_nested().try_into()
     }
 
-    fn is_struct(&self) -> Result<Sexp> {
-        self.dt.is_struct().try_into()
+    fn is_nested_null(&self) -> Result<Sexp> {
+        self.dt.is_nested_null().try_into()
+    }
+
+    fn is_null(&self) -> Result<Sexp> {
+        self.dt.is_null().try_into()
+    }
+
+    fn is_numeric(&self) -> Result<Sexp> {
+        self.dt.is_numeric().try_into()
     }
 
     fn is_ord(&self) -> Result<Sexp> {
         self.dt.is_ord().try_into()
     }
 
-    fn is_known(&self) -> Result<Sexp> {
-        self.dt.is_known().try_into()
+    fn is_primitive(&self) -> Result<Sexp> {
+        self.dt.is_primitive().try_into()
+    }
+
+    fn is_signed_integer(&self) -> Result<Sexp> {
+        self.dt.is_signed_integer().try_into()
+    }
+
+    fn is_string(&self) -> Result<Sexp> {
+        self.dt.is_string().try_into()
+    }
+
+    fn is_struct(&self) -> Result<Sexp> {
+        self.dt.is_struct().try_into()
+    }
+
+    fn is_temporal(&self) -> Result<Sexp> {
+        self.dt.is_temporal().try_into()
+    }
+
+    fn is_unsigned_integer(&self) -> Result<Sexp> {
+        self.dt.is_unsigned_integer().try_into()
     }
 }

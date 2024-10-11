@@ -398,69 +398,9 @@ class(`PlRDataFrame`) <- "PlRDataFrame__bundle"
   }
 }
 
-`PlRDataType_is_temporal` <- function(self) {
+`PlRDataType_is_array` <- function(self) {
   function() {
-    .Call(savvy_PlRDataType_is_temporal__impl, `self`)
-  }
-}
-
-`PlRDataType_is_enum` <- function(self) {
-  function() {
-    .Call(savvy_PlRDataType_is_enum__impl, `self`)
-  }
-}
-
-`PlRDataType_is_categorical` <- function(self) {
-  function() {
-    .Call(savvy_PlRDataType_is_categorical__impl, `self`)
-  }
-}
-
-`PlRDataType_is_string` <- function(self) {
-  function() {
-    .Call(savvy_PlRDataType_is_string__impl, `self`)
-  }
-}
-
-`PlRDataType_is_logical` <- function(self) {
-  function() {
-    .Call(savvy_PlRDataType_is_logical__impl, `self`)
-  }
-}
-
-`PlRDataType_is_float` <- function(self) {
-  function() {
-    .Call(savvy_PlRDataType_is_float__impl, `self`)
-  }
-}
-
-`PlRDataType_is_numeric` <- function(self) {
-  function() {
-    .Call(savvy_PlRDataType_is_numeric__impl, `self`)
-  }
-}
-
-`PlRDataType_is_integer` <- function(self) {
-  function() {
-    .Call(savvy_PlRDataType_is_integer__impl, `self`)
-  }
-}
-
-`PlRDataType_is_signed_integer` <- function(self) {
-  function() {
-    .Call(savvy_PlRDataType_is_signed_integer__impl, `self`)
-  }
-}
-
-`PlRDataType_is_unsigned_integer` <- function(self) {
-  function() {
-    .Call(savvy_PlRDataType_is_unsigned_integer__impl, `self`)
-  }
-}
-
-`PlRDataType_is_null` <- function(self) {
-  function() {
-    .Call(savvy_PlRDataType_is_null__impl, `self`)
+    .Call(savvy_PlRDataType_is_array__impl, `self`)
   }
 }
 
@@ -470,21 +410,45 @@ class(`PlRDataFrame`) <- "PlRDataFrame__bundle"
   }
 }
 
-`PlRDataType_is_primitive` <- function(self) {
-  function() {
-    .Call(savvy_PlRDataType_is_primitive__impl, `self`)
-  }
-}
-
 `PlRDataType_is_bool` <- function(self) {
   function() {
     .Call(savvy_PlRDataType_is_bool__impl, `self`)
   }
 }
 
-`PlRDataType_is_array` <- function(self) {
+`PlRDataType_is_categorical` <- function(self) {
   function() {
-    .Call(savvy_PlRDataType_is_array__impl, `self`)
+    .Call(savvy_PlRDataType_is_categorical__impl, `self`)
+  }
+}
+
+`PlRDataType_is_date` <- function(self) {
+  function() {
+    .Call(savvy_PlRDataType_is_date__impl, `self`)
+  }
+}
+
+`PlRDataType_is_enum` <- function(self) {
+  function() {
+    .Call(savvy_PlRDataType_is_enum__impl, `self`)
+  }
+}
+
+`PlRDataType_is_float` <- function(self) {
+  function() {
+    .Call(savvy_PlRDataType_is_float__impl, `self`)
+  }
+}
+
+`PlRDataType_is_integer` <- function(self) {
+  function() {
+    .Call(savvy_PlRDataType_is_integer__impl, `self`)
+  }
+}
+
+`PlRDataType_is_known` <- function(self) {
+  function() {
+    .Call(savvy_PlRDataType_is_known__impl, `self`)
   }
 }
 
@@ -494,15 +458,33 @@ class(`PlRDataFrame`) <- "PlRDataFrame__bundle"
   }
 }
 
+`PlRDataType_is_logical` <- function(self) {
+  function() {
+    .Call(savvy_PlRDataType_is_logical__impl, `self`)
+  }
+}
+
 `PlRDataType_is_nested` <- function(self) {
   function() {
     .Call(savvy_PlRDataType_is_nested__impl, `self`)
   }
 }
 
-`PlRDataType_is_struct` <- function(self) {
+`PlRDataType_is_nested_null` <- function(self) {
   function() {
-    .Call(savvy_PlRDataType_is_struct__impl, `self`)
+    .Call(savvy_PlRDataType_is_nested_null__impl, `self`)
+  }
+}
+
+`PlRDataType_is_null` <- function(self) {
+  function() {
+    .Call(savvy_PlRDataType_is_null__impl, `self`)
+  }
+}
+
+`PlRDataType_is_numeric` <- function(self) {
+  function() {
+    .Call(savvy_PlRDataType_is_numeric__impl, `self`)
   }
 }
 
@@ -512,9 +494,39 @@ class(`PlRDataFrame`) <- "PlRDataFrame__bundle"
   }
 }
 
-`PlRDataType_is_known` <- function(self) {
+`PlRDataType_is_primitive` <- function(self) {
   function() {
-    .Call(savvy_PlRDataType_is_known__impl, `self`)
+    .Call(savvy_PlRDataType_is_primitive__impl, `self`)
+  }
+}
+
+`PlRDataType_is_signed_integer` <- function(self) {
+  function() {
+    .Call(savvy_PlRDataType_is_signed_integer__impl, `self`)
+  }
+}
+
+`PlRDataType_is_string` <- function(self) {
+  function() {
+    .Call(savvy_PlRDataType_is_string__impl, `self`)
+  }
+}
+
+`PlRDataType_is_struct` <- function(self) {
+  function() {
+    .Call(savvy_PlRDataType_is_struct__impl, `self`)
+  }
+}
+
+`PlRDataType_is_temporal` <- function(self) {
+  function() {
+    .Call(savvy_PlRDataType_is_temporal__impl, `self`)
+  }
+}
+
+`PlRDataType_is_unsigned_integer` <- function(self) {
+  function() {
+    .Call(savvy_PlRDataType_is_unsigned_integer__impl, `self`)
   }
 }
 
@@ -525,26 +537,28 @@ class(`PlRDataFrame`) <- "PlRDataFrame__bundle"
   e$`_get_datatype_fields` <- `PlRDataType__get_datatype_fields`(ptr)
   e$`eq` <- `PlRDataType_eq`(ptr)
   e$`ne` <- `PlRDataType_ne`(ptr)
-  e$`is_temporal` <- `PlRDataType_is_temporal`(ptr)
-  e$`is_enum` <- `PlRDataType_is_enum`(ptr)
-  e$`is_categorical` <- `PlRDataType_is_categorical`(ptr)
-  e$`is_string` <- `PlRDataType_is_string`(ptr)
-  e$`is_logical` <- `PlRDataType_is_logical`(ptr)
-  e$`is_float` <- `PlRDataType_is_float`(ptr)
-  e$`is_numeric` <- `PlRDataType_is_numeric`(ptr)
-  e$`is_integer` <- `PlRDataType_is_integer`(ptr)
-  e$`is_signed_integer` <- `PlRDataType_is_signed_integer`(ptr)
-  e$`is_unsigned_integer` <- `PlRDataType_is_unsigned_integer`(ptr)
-  e$`is_null` <- `PlRDataType_is_null`(ptr)
-  e$`is_binary` <- `PlRDataType_is_binary`(ptr)
-  e$`is_primitive` <- `PlRDataType_is_primitive`(ptr)
-  e$`is_bool` <- `PlRDataType_is_bool`(ptr)
   e$`is_array` <- `PlRDataType_is_array`(ptr)
-  e$`is_list` <- `PlRDataType_is_list`(ptr)
-  e$`is_nested` <- `PlRDataType_is_nested`(ptr)
-  e$`is_struct` <- `PlRDataType_is_struct`(ptr)
-  e$`is_ord` <- `PlRDataType_is_ord`(ptr)
+  e$`is_binary` <- `PlRDataType_is_binary`(ptr)
+  e$`is_bool` <- `PlRDataType_is_bool`(ptr)
+  e$`is_categorical` <- `PlRDataType_is_categorical`(ptr)
+  e$`is_date` <- `PlRDataType_is_date`(ptr)
+  e$`is_enum` <- `PlRDataType_is_enum`(ptr)
+  e$`is_float` <- `PlRDataType_is_float`(ptr)
+  e$`is_integer` <- `PlRDataType_is_integer`(ptr)
   e$`is_known` <- `PlRDataType_is_known`(ptr)
+  e$`is_list` <- `PlRDataType_is_list`(ptr)
+  e$`is_logical` <- `PlRDataType_is_logical`(ptr)
+  e$`is_nested` <- `PlRDataType_is_nested`(ptr)
+  e$`is_nested_null` <- `PlRDataType_is_nested_null`(ptr)
+  e$`is_null` <- `PlRDataType_is_null`(ptr)
+  e$`is_numeric` <- `PlRDataType_is_numeric`(ptr)
+  e$`is_ord` <- `PlRDataType_is_ord`(ptr)
+  e$`is_primitive` <- `PlRDataType_is_primitive`(ptr)
+  e$`is_signed_integer` <- `PlRDataType_is_signed_integer`(ptr)
+  e$`is_string` <- `PlRDataType_is_string`(ptr)
+  e$`is_struct` <- `PlRDataType_is_struct`(ptr)
+  e$`is_temporal` <- `PlRDataType_is_temporal`(ptr)
+  e$`is_unsigned_integer` <- `PlRDataType_is_unsigned_integer`(ptr)
 
   class(e) <- "PlRDataType"
   e
