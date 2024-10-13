@@ -63,19 +63,10 @@ as.list.polars_data_frame <- function(
 
 #' Export the polars object as an R DataFrame
 #'
-#' @details
-#' ## S3 method for [polars_data_frame][DataFrame]
-#'
 #' This S3 method is a shortcut for
-#' [`<DataFrame>$to_struct()$to_r_vector(ensure_vector = FALSE, struct = "dataframe")`][series__to_r_vector].
-#'
-#' ## S3 method for [polars_lazy_frame][LazyFrame]
-#'
-#' This S3 method is a shortcut for `as_polars_df(x, ...) |> as.data.frame()`.
+#' [`as_polars_df(x, ...)$to_struct()$to_r_vector(ensure_vector = FALSE, struct = "dataframe")`][series__to_r_vector].
 #' @inheritParams as.list.polars_data_frame
-#' @param ...
-#' - Ignored for [DataFrame]
-#' - Passed to [as_polars_df()] for [LazyFrame]
+#' @param ... Passed to [as_polars_df()].
 #' @return An [R data frame][data.frame]
 #' @examples
 #' df <- as_polars_df(list(a = 1:3, b = 4:6))
@@ -93,7 +84,7 @@ as.data.frame.polars_data_frame <- function(
     as_clock_class = FALSE,
     ambiguous = c("raise", "earliest", "latest", "null"),
     non_existent = c("raise", "null")) {
-  x$to_struct()$to_r_vector(
+  as_polars_df(x, ...)$to_struct()$to_r_vector(
     ensure_vector = FALSE,
     int64 = int64,
     date = date,

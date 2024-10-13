@@ -34,10 +34,7 @@
 \arguments{
 \item{x}{A polars object}
 
-\item{...}{\itemize{
-\item Ignored for \link{DataFrame}
-\item Passed to \code{\link[=as_polars_df]{as_polars_df()}} for \link{LazyFrame}
-}}
+\item{...}{Passed to \code{\link[=as_polars_df]{as_polars_df()}}.}
 
 \item{.name_repair}{Treatment of problematic column names:
 \itemize{
@@ -127,22 +124,10 @@ One of the followings:
 A \link[tibble:tbl_df-class]{tibble}
 }
 \description{
-Export the polars object as a tibble data frame
-}
-\details{
-\subsection{S3 method for \link[=DataFrame]{polars_data_frame}}{
-
 This S3 method is basically a shortcut of
-\code{\link[=series__to_r_vector]{<DataFrame>$to_struct()$to_r_vector(ensure_vector = FALSE, struct = "tibble")}}.
+\code{\link[=series__to_r_vector]{as_polars_df(x, ...)$to_struct()$to_r_vector(ensure_vector = FALSE, struct = "tibble")}}.
 Additionally, you can check or repair the column names by specifying the \code{.name_repair} argument.
 Because polars \link{DataFrame} allows empty column name, which is not generally valid column name in R data frame.
-}
-
-\subsection{S3 method for \link[=LazyFrame]{polars_lazy_frame}}{
-
-This S3 method is a shortcut for \code{as_polars_df(x, ...) |> tibble::as_tibble()}.
-Additional arguments \code{...} are passed to \code{\link[=as_polars_df]{as_polars_df()}}.
-}
 }
 \examples{
 \dontshow{if (requireNamespace("tibble", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

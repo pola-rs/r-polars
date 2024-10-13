@@ -32,10 +32,7 @@
 \arguments{
 \item{x}{A polars object}
 
-\item{...}{\itemize{
-\item Ignored for \link{DataFrame}
-\item Passed to \code{\link[=as_polars_df]{as_polars_df()}} for \link{LazyFrame}
-}}
+\item{...}{Passed to \code{\link[=as_polars_df]{as_polars_df()}}.}
 
 \item{int64}{Determine how to convert Polars' Int64, UInt32, or UInt64 type values to R type.
 One of the followings:
@@ -109,19 +106,8 @@ One of the followings:
 An \link[=data.frame]{R data frame}
 }
 \description{
-Export the polars object as an R DataFrame
-}
-\details{
-\subsection{S3 method for \link[=DataFrame]{polars_data_frame}}{
-
 This S3 method is a shortcut for
-\code{\link[=series__to_r_vector]{<DataFrame>$to_struct()$to_r_vector(ensure_vector = FALSE, struct = "dataframe")}}.
-}
-
-\subsection{S3 method for \link[=LazyFrame]{polars_lazy_frame}}{
-
-This S3 method is a shortcut for \code{as_polars_df(x, ...) |> as.data.frame()}.
-}
+\code{\link[=series__to_r_vector]{as_polars_df(x, ...)$to_struct()$to_r_vector(ensure_vector = FALSE, struct = "dataframe")}}.
 }
 \examples{
 df <- as_polars_df(list(a = 1:3, b = 4:6))

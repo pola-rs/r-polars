@@ -1,18 +1,10 @@
 # exported in zzz.R
 #' Export the polars object as a tibble data frame
 #'
-#' @details
-#' ## S3 method for [polars_data_frame][DataFrame]
-#'
 #' This S3 method is basically a shortcut of
-#' [`<DataFrame>$to_struct()$to_r_vector(ensure_vector = FALSE, struct = "tibble")`][series__to_r_vector].
+#' [`as_polars_df(x, ...)$to_struct()$to_r_vector(ensure_vector = FALSE, struct = "tibble")`][series__to_r_vector].
 #' Additionally, you can check or repair the column names by specifying the `.name_repair` argument.
 #' Because polars [DataFrame] allows empty column name, which is not generally valid column name in R data frame.
-#'
-#' ## S3 method for [polars_lazy_frame][LazyFrame]
-#'
-#' This S3 method is a shortcut for `as_polars_df(x, ...) |> tibble::as_tibble()`.
-#' Additional arguments `...` are passed to [as_polars_df()].
 #' @inheritParams as.data.frame.polars_data_frame
 #' @inheritParams tibble::as_tibble
 #' @return A [tibble][tibble::tbl_df]
@@ -41,7 +33,7 @@ as_tibble.polars_data_frame <- function(
     as_clock_class = FALSE,
     ambiguous = c("raise", "earliest", "latest", "null"),
     non_existent = c("raise", "null")) {
-  x$to_struct()$to_r_vector(
+  as_polars_df(x, ...)$to_struct()$to_r_vector(
     ensure_vector = FALSE,
     int64 = int64,
     date = date,
