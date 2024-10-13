@@ -59,8 +59,7 @@ as.list.polars_data_frame <- function(
       as_clock_class = as_clock_class,
       ambiguous = ambiguous,
       non_existent = non_existent
-    ) |>
-      wrap()
+    )
   }
 }
 
