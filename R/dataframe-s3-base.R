@@ -12,14 +12,14 @@ length.polars_data_frame <- function(x) x$width
 
 #' Export the polars object as an R list
 #'
-#' This S3 method calls [`<DataFrame>$get_columns()`][dataframe__get_columns] or
-#' `<DataFrame>$to_struct()$to_r_vector(ensure_vector = TRUE)` depending on the `as_series` argument.
+#' This S3 method calls [`as_polars_df(x, ...)$get_columns()`][dataframe__get_columns] or
+#' `as_polars_df(x, ...)$to_struct()$to_r_vector(ensure_vector = TRUE)` depending on the `as_series` argument.
 #'
 #' Arguments other than `x` and `as_series` are passed to [`<Series>$to_r_vector()`][series__to_r_vector],
 #' so they are ignored when `as_series=TRUE`.
 #' @inheritParams series__to_r_vector
 #' @param x A polars object
-#' @param ... Ignored
+#' @param ... Passed to [as_polars_df()].
 #' @param as_series Whether to convert each column to an [R vector][vector] or a [Series].
 #' If `TRUE`, return a list of [Series], otherwise a list of [vectors][vector] (default).
 #' @return A [list]
@@ -30,6 +30,9 @@ length.polars_data_frame <- function(x) x$width
 #'
 #' as.list(df, as_series = TRUE)
 #' as.list(df, as_series = FALSE)
+#'
+#' as.list(df$lazy(), as_series = TRUE)
+#' as.list(df$lazy(), as_series = FALSE)
 #' @export
 #' @rdname s3-as.list
 as.list.polars_data_frame <- function(
@@ -44,9 +47,9 @@ as.list.polars_data_frame <- function(
     ambiguous = c("raise", "earliest", "latest", "null"),
     non_existent = c("raise", "null")) {
   if (isTRUE(as_series)) {
-    x$get_columns()
+    as_polars_df(x, ...)$get_columns()
   } else {
-    x$to_struct()$to_r_vector(
+    as_polars_df(x, ...)$to_struct()$to_r_vector(
       ensure_vector = TRUE,
       int64 = int64,
       date = date,
@@ -66,7 +69,6 @@ as.list.polars_data_frame <- function(
 #' This S3 method is a shortcut for
 #' [`as_polars_df(x, ...)$to_struct()$to_r_vector(ensure_vector = FALSE, struct = "dataframe")`][series__to_r_vector].
 #' @inheritParams as.list.polars_data_frame
-#' @param ... Passed to [as_polars_df()].
 #' @return An [R data frame][data.frame]
 #' @examples
 #' df <- as_polars_df(list(a = 1:3, b = 4:6))

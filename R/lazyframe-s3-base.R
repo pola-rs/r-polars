@@ -10,5 +10,9 @@ print.polars_lazy_frame <- function(x, ...) {
 }
 
 #' @export
+#' @rdname s3-as.list
+as.list.polars_lazy_frame <- as.list.polars_data_frame
+
+#' @export
 #' @rdname s3-as.data.frame
 as.data.frame.polars_lazy_frame <- as.data.frame.polars_data_frame
