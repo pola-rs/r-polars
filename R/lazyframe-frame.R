@@ -178,7 +178,7 @@ lazyframe__collect <- function(
 
 lazyframe__explain <- function(
     ...,
-    format = "plain",
+    format = c("plain", "tree"),
     optimized = TRUE,
     type_coercion = TRUE,
     predicate_pushdown = TRUE,
@@ -191,11 +191,8 @@ lazyframe__explain <- function(
     streaming = FALSE) {
   wrap({
     check_dots_empty0(...)
-    check_string(format)
 
-    if (!format %in% c("plain", "tree")) {
-      abort(sprintf("`format` must be one of ('plain', 'tree'), got '%s'", format))
-    }
+    format <- arg_match0(format, c("plain", "tree"))
 
     if (isTRUE(optimized)) {
       ldf <- self$`_ldf`$optimization_toggle(

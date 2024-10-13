@@ -67,19 +67,16 @@ expr_meta__as_selector <- function() {
     wrap()
 }
 
-expr_meta_serialize <- function(..., format = "binary") {
+expr_meta_serialize <- function(..., format = c("binary", "json")) {
   wrap({
     check_dots_empty0(...)
-    check_string(format)
 
-    if (format == "binary") {
-      self$`_rexpr`$serialize_binary()
-    } else if (format == "json") {
-      self$`_rexpr`$serialize_json()
-    } else {
-      abort(
-        sprintf("`format` must be one of ('binary', 'json'), got '%s'", format)
-      )
-    }
+    format <- arg_match0(format, c("binary", "json"))
+
+    switch(format,
+      binary = self$`_rexpr`$serialize_binary(),
+      json = self$`_rexpr`$serialize_json(),
+      abort("Unreachable")
+    )
   })
 }

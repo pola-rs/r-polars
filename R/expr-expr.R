@@ -56,20 +56,17 @@ wrap.PlRExpr <- function(x, ...) {
   self
 }
 
-pl__deserialize_expr <- function(data, ..., format = "binary") {
+pl__deserialize_expr <- function(data, ..., format = c("binary", "json")) {
   wrap({
     check_dots_empty0(...)
-    check_string(format)
 
-    if (format == "binary") {
-      PlRExpr$deserialize_binary(data)
-    } else if (format == "json") {
-      PlRExpr$deserialize_json(data)
-    } else {
-      abort(
-        sprintf("`format` must be one of ('binary', 'json'), got '%s'", format)
-      )
-    }
+    format <- arg_match0(format, c("binary", "json"))
+
+    switch(format,
+      binary = PlRExpr$deserialize_binary(data),
+      json = PlRExpr$deserialize_json(data),
+      abort("Unreachable")
+    )
   })
 }
 
@@ -347,7 +344,7 @@ expr__last <- function() {
 expr__over <- function(
     ...,
     order_by = NULL,
-    mapping_strategy = "group_to_rows") {
+    mapping_strategy = c("group_to_rows", "join", "explode")) {
   wrap({
     check_dots_unnamed()
 
@@ -355,6 +352,7 @@ expr__over <- function(
     if (!is.null(order_by)) {
       order_by <- parse_into_list_of_expressions(!!!order_by)
     }
+    mapping_strategy <- arg_match0(mapping_strategy, c("group_to_rows", "join", "explode"))
 
     self$`_rexpr`$over(
       partition_by,

@@ -60,19 +60,25 @@ pl__Decimal <- function(precision = NULL, scale = 0L) {
     wrap()
 }
 
-pl__Datetime <- function(time_unit = "us", time_zone = NULL) {
-  PlRDataType$new_datetime(time_unit, time_zone) |>
-    wrap()
+pl__Datetime <- function(time_unit = c("us", "ns", "ms"), time_zone = NULL) {
+  wrap({
+    time_unit <- arg_match0(time_unit, c("us", "ns", "ms"))
+    PlRDataType$new_datetime(time_unit, time_zone)
+  })
 }
 
-pl__Duration <- function(time_unit = "us") {
-  PlRDataType$new_duration(time_unit) |>
-    wrap()
+pl__Duration <- function(time_unit = c("us", "ns", "ms")) {
+  wrap({
+    time_unit <- arg_match0(time_unit, c("us", "ns", "ms"))
+    PlRDataType$new_duration(time_unit)
+  })
 }
 
-pl__Categorical <- function(ordering = "physical") {
-  PlRDataType$new_categorical(ordering) |>
-    wrap()
+pl__Categorical <- function(ordering = c("physical", "lexical")) {
+  wrap({
+    ordering <- arg_match0(ordering, c("physical", "lexical"))
+    PlRDataType$new_categorical(ordering)
+  })
 }
 
 pl__Enum <- function(categories) {
