@@ -38,13 +38,11 @@ expr_bin_decode <- function(encoding, ..., strict = TRUE) {
     check_dots_empty0(...)
     encoding <- arg_match0(encoding, c("hex", "base64"))
 
-    if (encoding == "hex") {
-      self$`_rexpr`$bin_hex_decode(strict)
-    } else if (encoding == "base64") {
-      self$`_rexpr`$bin_base64_decode(strict)
-    } else {
+    switch(encoding,
+      hex = self$`_rexpr`$bin_hex_decode(strict),
+      base64 = self$`_rexpr`$bin_base64_decode(strict),
       abort("Unreachable")
-    }
+    )
   })
 }
 
@@ -52,12 +50,10 @@ expr_bin_encode <- function(encoding) {
   wrap({
     encoding <- arg_match0(encoding, c("hex", "base64"))
 
-    if (encoding == "hex") {
-      self$`_rexpr`$bin_hex_encode()
-    } else if (encoding == "base64") {
-      self$`_rexpr`$bin_base64_encode()
-    } else {
+    switch(encoding,
+      hex = self$`_rexpr`$bin_hex_encode(),
+      base64 = self$`_rexpr`$bin_base64_encode(),
       abort("Unreachable")
-    }
+    )
   })
 }
