@@ -1,5 +1,5 @@
 test_that("as_nanoarrow_array_stream() works for DataFrame", {
-  skip_if_not_installed("nanoarrow")
+  skip_if_not_installed("nanoarrow", minimum_version = "0.6.0")
 
   df = pl$DataFrame(a = 1L, b = "two")
   stream = nanoarrow::as_nanoarrow_array_stream(df)
@@ -9,18 +9,16 @@ test_that("as_nanoarrow_array_stream() works for DataFrame", {
     data.frame(a = 1L, b = "two")
   )
 
-  # nanoarrow does not support the string view type yet
-  # https://github.com/apache/arrow-nanoarrow/pull/367
-  expect_grepl_error(
+  expect_identical(
     nanoarrow::as_nanoarrow_array_stream(df, compat_level = TRUE) |>
       as.data.frame(),
-    "Unknown format: 'vu'"
+    data.frame(a = 1L, b = "two")
   )
 })
 
 
 test_that("as_nanoarrow_array_stream() works for Series", {
-  skip_if_not_installed("nanoarrow")
+  skip_if_not_installed("nanoarrow", minimum_version = "0.6.0")
 
   s = as_polars_series(letters[1:3])
   stream = nanoarrow::as_nanoarrow_array_stream(s)
@@ -30,12 +28,10 @@ test_that("as_nanoarrow_array_stream() works for Series", {
     letters[1:3]
   )
 
-  # nanoarrow does not support the string view type yet
-  # https://github.com/apache/arrow-nanoarrow/pull/367
-  expect_grepl_error(
+  expect_identical(
     nanoarrow::as_nanoarrow_array_stream(s, compat_level = TRUE) |>
       as.vector(),
-    "Unknown format: 'vu'"
+    letters[1:3]
   )
 })
 
