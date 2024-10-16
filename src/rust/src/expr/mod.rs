@@ -5,6 +5,7 @@ mod general;
 mod meta;
 mod name;
 mod serde;
+mod string;
 mod r#struct;
 use polars::lazy::dsl::Expr;
 use savvy::{savvy, EnvironmentSexp};

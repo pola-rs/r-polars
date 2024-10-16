@@ -1161,6 +1161,7 @@ dependencies = [
  "polars-lazy",
  "polars-ops",
  "polars-parquet",
+ "polars-plan",
  "polars-sql",
  "polars-time",
  "polars-utils",
@@ -1401,6 +1402,7 @@ version = "0.43.1"
 source = "git+https://github.com/pola-rs/polars.git?rev=be5a4b453ca74bb5e0c782c292e9fca6aa60b203#be5a4b453ca74bb5e0c782c292e9fca6aa60b203"
 dependencies = [
  "ahash",
+ "aho-corasick",
  "argminmax",
  "base64",
  "bytemuck",

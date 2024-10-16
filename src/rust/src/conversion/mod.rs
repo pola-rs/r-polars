@@ -208,7 +208,7 @@ impl TryFrom<NumericScalar> for Wrap<usize> {
         match n {
             _ if n.is_nan() => Err("`NaN` cannot be converted to usize".to_string()),
             _ if n < 0_f64 => Err(format!(
-                "Nevative value `{n:?}` cannot be converted to usize"
+                "Negative value `{n:?}` cannot be converted to usize"
             )),
             _ if n > usize::MAX as f64 => Err(format!(
                 "Value `{n:?}` is too large to be converted to usize"
@@ -239,7 +239,7 @@ impl TryFrom<NumericSexp> for Wrap<Vec<usize>> {
                     Err("`NaN` cannot be converted to usize".to_string())
                 } else if n < 0_f64 {
                     Err(format!(
-                        "Nevative value `{n:?}` cannot be converted to usize"
+                        "Negative value `{n:?}` cannot be converted to usize"
                     ))
                 } else if n > usize::MAX as f64 {
                     Err(format!(
@@ -308,6 +308,21 @@ impl TryFrom<NumericScalar> for Wrap<u32> {
             ))?
         } else {
             Ok(Wrap(v as u32))
+        }
+    }
+}
+
+impl TryFrom<&str> for Wrap<char> {
+    type Error = savvy::Error;
+
+    fn try_from(v: &str) -> Result<Self, savvy::Error> {
+        let n_chars = v.len();
+        if n_chars == 1 {
+            Ok(Wrap(v.chars().nth(0).unwrap()))
+        } else {
+            Err(format!(
+                "Expected a string with one character only, currently has {n_chars:?} (from {v:?})."
+            ))?
         }
     }
 }
