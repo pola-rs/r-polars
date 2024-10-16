@@ -687,6 +687,12 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
   }
 }
 
+`PlRExpr_cat_set_ordering` <- function(self) {
+  function(`ordering`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_cat_set_ordering__impl, `self`, `ordering`))
+  }
+}
+
 `PlRExpr_dt_convert_time_zone` <- function(self) {
   function(`time_zone`) {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_convert_time_zone__impl, `self`, `time_zone`))
@@ -1163,6 +1169,7 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
   e$`bin_hex_encode` <- `PlRExpr_bin_hex_encode`(ptr)
   e$`bin_base64_encode` <- `PlRExpr_bin_base64_encode`(ptr)
   e$`cat_get_categories` <- `PlRExpr_cat_get_categories`(ptr)
+  e$`cat_set_ordering` <- `PlRExpr_cat_set_ordering`(ptr)
   e$`dt_convert_time_zone` <- `PlRExpr_dt_convert_time_zone`(ptr)
   e$`dt_replace_time_zone` <- `PlRExpr_dt_replace_time_zone`(ptr)
   e$`print` <- `PlRExpr_print`(ptr)

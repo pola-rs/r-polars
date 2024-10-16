@@ -424,6 +424,11 @@ SEXP savvy_PlRExpr_cat_get_categories__impl(SEXP self__) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_cat_set_ordering__impl(SEXP self__, SEXP c_arg__ordering) {
+    SEXP res = savvy_PlRExpr_cat_set_ordering__ffi(self__, c_arg__ordering);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_dt_convert_time_zone__impl(SEXP self__, SEXP c_arg__time_zone) {
     SEXP res = savvy_PlRExpr_dt_convert_time_zone__ffi(self__, c_arg__time_zone);
     return handle_result(res);
@@ -1144,6 +1149,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_bin_hex_encode__impl", (DL_FUNC) &savvy_PlRExpr_bin_hex_encode__impl, 1},
     {"savvy_PlRExpr_bin_base64_encode__impl", (DL_FUNC) &savvy_PlRExpr_bin_base64_encode__impl, 1},
     {"savvy_PlRExpr_cat_get_categories__impl", (DL_FUNC) &savvy_PlRExpr_cat_get_categories__impl, 1},
+    {"savvy_PlRExpr_cat_set_ordering__impl", (DL_FUNC) &savvy_PlRExpr_cat_set_ordering__impl, 2},
     {"savvy_PlRExpr_dt_convert_time_zone__impl", (DL_FUNC) &savvy_PlRExpr_dt_convert_time_zone__impl, 2},
     {"savvy_PlRExpr_dt_replace_time_zone__impl", (DL_FUNC) &savvy_PlRExpr_dt_replace_time_zone__impl, 4},
     {"savvy_PlRExpr_print__impl", (DL_FUNC) &savvy_PlRExpr_print__impl, 1},
