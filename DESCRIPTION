@@ -35,6 +35,7 @@ Suggests:
     nanoarrow (>= 0.6.0),
     nycflights13,
     patrick,
+    quickcheck,
     pillar,
     rlang,
     rmarkdown,
@@ -116,7 +117,7 @@ Collate:
     'sql.R'
     'vctrs.R'
     'zzz.R'
-Config/rextendr/version: 0.3.1
+Config/rextendr/version: 0.3.1.9000
 VignetteBuilder: knitr
 Config/polars/LibVersion: 0.43.0
 Config/polars/RustToolchainVersion: nightly-2024-09-19

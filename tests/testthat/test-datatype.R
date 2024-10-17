@@ -224,18 +224,17 @@ test_that("contains_* functions for datatype work", {
 })
 
 test_that("Enum", {
-  # Generate 100 random data frames with random
-  # orders for levels. They should always match
-  for (i in 1:100) {
-    expected_levels = sample(letters, length(letters))
-    expected_values = sample(letters, length(letters))
-    expect_identical(
-      as_polars_series(expected_values)$
-        cast(pl$Enum(expected_levels))$
-        to_r(),
-      factor(expected_values, levels = expected_levels)
-    )
-  }
+  quickcheck::for_all(
+    property = function(factors) {
+      expect_identical(
+        as_polars_series(as.character(factors))$
+          cast(pl$Enum(levels(factors)))$
+          to_r(),
+        factors
+      )
+    },
+    factors = quickcheck::factor_()
+  )
 
   expect_grepl_error(pl$Enum(), "missing")
   expect_grepl_error(pl$Enum(1), "invalid series dtype")
