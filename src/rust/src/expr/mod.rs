@@ -2,6 +2,7 @@ mod binary;
 mod categorical;
 mod datetime;
 mod general;
+mod list;
 mod meta;
 mod name;
 mod serde;

@@ -296,4 +296,8 @@ impl PlRExpr {
     ) -> Result<Self> {
         map_single(self, lambda, output_type, agg_list)
     }
+
+    fn explode(&self) -> Result<Self> {
+        Ok(self.inner.clone().explode().into())
+    }
 }
