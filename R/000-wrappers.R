@@ -681,6 +681,12 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
   }
 }
 
+`PlRExpr_bin_size_bytes` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_bin_size_bytes__impl, `self`))
+  }
+}
+
 `PlRExpr_cat_get_categories` <- function(self) {
   function() {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_cat_get_categories__impl, `self`))
@@ -1418,6 +1424,7 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
   e$`bin_base64_decode` <- `PlRExpr_bin_base64_decode`(ptr)
   e$`bin_hex_encode` <- `PlRExpr_bin_hex_encode`(ptr)
   e$`bin_base64_encode` <- `PlRExpr_bin_base64_encode`(ptr)
+  e$`bin_size_bytes` <- `PlRExpr_bin_size_bytes`(ptr)
   e$`cat_get_categories` <- `PlRExpr_cat_get_categories`(ptr)
   e$`cat_set_ordering` <- `PlRExpr_cat_set_ordering`(ptr)
   e$`dt_convert_time_zone` <- `PlRExpr_dt_convert_time_zone`(ptr)

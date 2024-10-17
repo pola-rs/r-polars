@@ -45,4 +45,8 @@ impl PlRExpr {
     fn bin_base64_encode(&self) -> Result<Self> {
         Ok(self.inner.clone().binary().base64_encode().into())
     }
+
+    fn bin_size_bytes(&self) -> Result<Self> {
+        Ok(self.inner.clone().binary().size_bytes().into())
+    }
 }

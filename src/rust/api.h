@@ -85,6 +85,7 @@ SEXP savvy_PlRExpr_bin_hex_decode__ffi(SEXP self__, SEXP c_arg__strict);
 SEXP savvy_PlRExpr_bin_base64_decode__ffi(SEXP self__, SEXP c_arg__strict);
 SEXP savvy_PlRExpr_bin_hex_encode__ffi(SEXP self__);
 SEXP savvy_PlRExpr_bin_base64_encode__ffi(SEXP self__);
+SEXP savvy_PlRExpr_bin_size_bytes__ffi(SEXP self__);
 SEXP savvy_PlRExpr_cat_get_categories__ffi(SEXP self__);
 SEXP savvy_PlRExpr_cat_set_ordering__ffi(SEXP self__, SEXP c_arg__ordering);
 SEXP savvy_PlRExpr_dt_convert_time_zone__ffi(SEXP self__, SEXP c_arg__time_zone);
