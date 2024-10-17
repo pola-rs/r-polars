@@ -35,6 +35,7 @@ Suggests:
     nanoarrow (>= 0.6.0),
     nycflights13,
     patrick,
+    quickcheck,
     pillar,
     rlang,
     rmarkdown,
