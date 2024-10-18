@@ -13,6 +13,6 @@ A polars \link{expression}
 Compute the mean value of a list
 }
 \examples{
-df <- pl$DataFrame(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_))
+df <- pl$DataFrame(values = list(c(1, 2, 3, NA), c(2, 3), NA))
 df$with_columns(mean = pl$col("values")$list$mean())
 }

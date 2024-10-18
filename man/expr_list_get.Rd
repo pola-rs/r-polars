@@ -26,7 +26,7 @@ index, use \code{\link[=expr_list_gather]{$list$gather()}}.
 }
 \examples{
 df <- pl$DataFrame(
-  values = list(c(2, 2, NA), c(1, 2, 3), NA_real_, NULL),
+  values = list(c(2, 2, NA), c(1, 2, 3), NA, NULL),
   idx = c(1, 2, NA, 3)
 )
 df$with_columns(

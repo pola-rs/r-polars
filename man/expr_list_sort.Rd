@@ -16,6 +16,6 @@ A polars \link{expression}
 Sort values in a list
 }
 \examples{
-df <- pl$DataFrame(values = list(c(NA, 2, 1, 3), c(Inf, 2, 3, NaN), NA_real_))
+df <- pl$DataFrame(values = list(c(NA, 2, 1, 3), c(Inf, 2, 3, NaN), NA))
 df$with_columns(sort = pl$col("values")$list$sort())
 }

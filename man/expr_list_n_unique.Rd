@@ -13,6 +13,6 @@ A polars \link{expression}
 Get the number of unique values in a list
 }
 \examples{
-df <- pl$DataFrame(values = list(c(2, 2, NA), c(1, 2, 3), NA_real_))
+df <- pl$DataFrame(values = list(c(2, 2, NA), c(1, 2, 3), NA))
 df$with_columns(unique = pl$col("values")$list$n_unique())
 }

@@ -13,6 +13,6 @@ A polars \link{expression}
 Sum all elements in a list
 }
 \examples{
-df <- pl$DataFrame(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_))
+df <- pl$DataFrame(values = list(c(1, 2, 3, NA), c(2, 3), NA))
 df$with_columns(sum = pl$col("values")$list$sum())
 }

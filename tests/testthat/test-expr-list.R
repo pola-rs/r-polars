@@ -14,8 +14,8 @@ test_that("list$sum max min mean", {
 
   ints <- list(
     1:5,
-    # c(1:5, NA_integer_),
-    # NA_integer_,
+    # c(1:5, NA),
+    # NA,
     -.Machine$integer.max
   )
 
@@ -34,7 +34,7 @@ test_that("list$sum max min mean", {
     # c((1:5) * 1,Inf,-Inf,NA),
     # c((1:5) * 1,Inf,-Inf,NaN),
 
-    # c(NA_real_),
+    # c(NA),
     # c(NaN),
     c(Inf),
     c(-Inf)
@@ -76,7 +76,7 @@ test_that("list$sum max min mean", {
 
 test_that("list$reverse", {
   l <- list(
-    l_i32 = list(1:5, c(NA_integer_, 3:1)),
+    l_i32 = list(1:5, c(NA, 3:1)),
     l_f64 = list(c(1, 3, 2, 4, NA, Inf), (3:1) * 1),
     l_char = list(letters, LETTERS)
   )
@@ -88,7 +88,7 @@ test_that("list$reverse", {
 
 test_that("list$unique list$sort", {
   l <- list(
-    l_i32 = list(c(1:2, 1:2), c(NA_integer_, NA_integer_, 3L, 1:2)),
+    l_i32 = list(c(1:2, 1:2), c(NA, NA, 3L, 1:2)),
     l_f64 = list(c(1, 1, 2, 3, NA, Inf, NA, Inf), c(1)),
     l_char = list(c(letters, letters), c("a", "a", "b"))
   )
@@ -106,7 +106,7 @@ test_that("list$unique list$sort", {
 
 test_that("list$n_unique", {
   df <- pl$DataFrame(
-    l_i32 = list(c(1:2, 1:2), c(NA_integer_, NA_integer_, 3L, 1:2)),
+    l_i32 = list(c(1:2, 1:2), c(NA, NA, 3L, 1:2)),
     l_f64 = list(c(1, 1, 2, 3, NA, Inf, NA, Inf), c(1)),
     l_char = list(c(letters, letters), c("a", "a", "b"))
   )
@@ -118,7 +118,7 @@ test_that("list$n_unique", {
 
 test_that("list$get", {
   l <- list(
-    l_i32 = list(c(1:2, 1:2), c(NA_integer_, NA_integer_, 3L, 1:2), integer()),
+    l_i32 = list(c(1:2, 1:2), c(NA, NA, 3L, 1:2), integer()),
     l_f64 = list(c(1, 1, 2, 3, NA, Inf, NA, Inf), c(1), numeric()),
     l_char = list(c(letters, letters), c("a", "a", "b"), character())
   )
@@ -280,14 +280,14 @@ test_that("diff", {
   l_act_diff_1 <- df$select(pl$all()$list$diff())
   l_exp_diff_1 <- pl$DataFrame(
     l_i32 = list(c(NA, rep(1L, 4)), c(NA, 1L, 1L), c(NA, -2L, -1L, 6L, 35L)),
-    l_f64 = list(c(NA, 0, 1, 1, NA, NA, NA, NA), NA_real_, numeric())
+    l_f64 = list(c(NA, 0, 1, 1, NA, NA, NA, NA), NA, numeric())
   )
   expect_equal(l_act_diff_1, l_exp_diff_1)
 
   l_act_diff_2 <- df$select(pl$all()$list$diff(n = 2))
   l_exp_diff_2 <- pl$DataFrame(
     l_i32 = list(c(NA, NA, rep(2L, 3)), c(NA, NA, 2L), c(NA, NA, -3L, 5L, 41L)),
-    l_f64 = list(c(NA, NA, 1, 2, NA, Inf, NA, NaN), NA_real_, numeric())
+    l_f64 = list(c(NA, NA, 1, 2, NA, Inf, NA, NaN), NA, numeric())
   )
   expect_equal(l_act_diff_2, l_exp_diff_2)
 
@@ -309,14 +309,14 @@ test_that("shift", {
   l_act_diff_1 <- df$select(pl$all()$list$shift())
   l_exp_diff_1 <- pl$DataFrame(
     l_i32 = list(c(NA, 1L:4L), c(NA, 1L, 2L), c(NA, 4L, 2L, 1L, 7L)),
-    l_f64 = list(c(NA, 1, 1, 2, 3, NA, Inf, NA), NA_real_, numeric())
+    l_f64 = list(c(NA, 1, 1, 2, 3, NA, Inf, NA), NA, numeric())
   )
   expect_equal(l_act_diff_1, l_exp_diff_1)
 
   l_act_diff_2 <- df$select(pl$all()$list$shift(2))
   l_exp_diff_2 <- pl$DataFrame(
     l_i32 = list(c(NA, NA, 1L:3L), c(NA, NA, 1L), c(NA, NA, 4L, 2L, 1L)),
-    l_f64 = list(c(NA, NA, 1, 1, 2, 3, NA, Inf), NA_real_, numeric())
+    l_f64 = list(c(NA, NA, 1, 1, 2, 3, NA, Inf), NA, numeric())
   )
   expect_equal(l_act_diff_2, l_exp_diff_2)
 
@@ -330,7 +330,7 @@ test_that("shift", {
   l_act_diff_m1 <- df$select(pl$all()$list$shift(-1))
   l_exp_diff_m1 <- pl$DataFrame(
     l_i32 = list(c(2L:5L, NA), c(2L, 3L, NA), c(2L, 1L, 7L, 42L, NA)),
-    l_f64 = list(c(1, 2, 3, NA, Inf, NA, Inf, NA), NA_real_, numeric())
+    l_f64 = list(c(1, 2, 3, NA, Inf, NA, Inf, NA), NA, numeric())
   )
   expect_equal(l_act_diff_m1, l_exp_diff_m1)
 })
@@ -387,7 +387,7 @@ test_that("contains", {
   l <- list(
     i32 = list(1:4, 1:3, 1:1),
     f64 = list(c(1, 2, 3, NaN), c(NaN, 1, NA), c(Inf)),
-    utf = list(letters, LETTERS, c(NA_character_, "a"))
+    utf = list(letters, LETTERS, c(NA, "a"))
   )
   df <- pl$DataFrame(!!!l)
 
@@ -519,8 +519,8 @@ test_that("$list$any() works", {
 # TODO-REWRITE: uncomment after pl$DataFrame() accepts schema, #13
 # test_that("$list$set_*() work with integers", {
 #   df <- pl$DataFrame(
-#     a = list(1:3, NA_integer_, c(NA_integer_, 3L), 5:7),
-#     b = list(2:4, 3L, c(3L, 4L, NA_integer_), c(6L, 8L)),
+#     a = list(1:3, NA, c(NA, 3L), 5:7),
+#     b = list(2:4, 3L, c(3L, 4L, NA), c(6L, 8L)),
 #     schema = list(a = pl$List(pl$Int16), b = pl$List(pl$Int32))
 #   )
 
@@ -534,7 +534,7 @@ test_that("$list$any() works", {
 #   )
 #   expect_equal(
 #     df$select(pl$col("a")$list$set_difference("b")),
-#     pl$DataFrame(a = list(1L, NA_integer_, integer(0), c(5L, 7L)))
+#     pl$DataFrame(a = list(1L, NA, integer(0), c(5L, 7L)))
 #   )
 #   expect_equal(
 #     df$select(pl$col("a")$list$set_symmetric_difference("b")),
@@ -544,8 +544,8 @@ test_that("$list$any() works", {
 
 test_that("$list$set_*() work with strings", {
   df <- pl$DataFrame(
-    a = list(letters[1:3], NA_character_, c(NA_character_, letters[3]), letters[5:7]),
-    b = list(letters[2:4], letters[3], c(letters[3:4], NA_character_), letters[c(6, 8)])
+    a = list(letters[1:3], NA, c(NA, letters[3]), letters[5:7]),
+    b = list(letters[2:4], letters[3], c(letters[3:4], NA), letters[c(6, 8)])
   )
 
   expect_equal(
@@ -558,7 +558,7 @@ test_that("$list$set_*() work with strings", {
   )
   expect_equal(
     df$select(pl$col("a")$list$set_difference("b")),
-    pl$DataFrame(a = list("a", NA_character_, character(0), c("e", "g")))
+    pl$DataFrame(a = list("a", NA, character(0), c("e", "g")))
   )
   expect_equal(
     df$select(pl$col("a")$list$set_symmetric_difference("b")),
@@ -568,16 +568,16 @@ test_that("$list$set_*() work with strings", {
 
 test_that("$list$set_*() casts to common supertype", {
   df <- pl$DataFrame(
-    a = list(c(1, 2), NA_real_),
-    b = list(c("a", "b"), NA_character_)
+    a = list(c(1, 2), NA),
+    b = list(c("a", "b"), NA)
   )
   expect_equal(
     df$select(pl$col("a")$list$set_union("b")),
-    pl$DataFrame(a = list(c("1.0", "2.0", "a", "b"), NA_character_))
+    pl$DataFrame(a = list(c("1.0", "2.0", "a", "b"), NA))
   )
   expect_equal(
     df$select(pl$col("a")$list$set_intersection("b")),
-    pl$DataFrame(a = list(character(0), NA_character_))
+    pl$DataFrame(a = list(character(0), NA))
   )
   expect_equal(
     df$select(pl$col("a")$list$set_difference("b")),
@@ -603,7 +603,7 @@ test_that("$list$explode() works", {
 
 test_that("$list$sample() works", {
   df <- pl$DataFrame(
-    values = list(1:3, NA_integer_, c(NA_integer_, 3L), 5:7),
+    values = list(1:3, NA, c(NA, 3L), 5:7),
     n = c(1, 1, 1, 2)
   )
 
@@ -611,7 +611,7 @@ test_that("$list$sample() works", {
     df$select(
       sample = pl$col("values")$list$sample(n = pl$col("n"), seed = 1)
     ),
-    pl$DataFrame(sample = list(3L, NA_integer_, 3L, 6:5))
+    pl$DataFrame(sample = list(3L, NA, 3L, 6:5))
   )
 
   expect_snapshot(df$select(pl$col("values")$list$sample(fraction = 2)), error = TRUE)
@@ -623,7 +623,7 @@ test_that("$list$sample() works", {
     pl$DataFrame(
       sample = list(
         c(3L, 1L, 1L, 2L, 2L, 3L),
-        c(NA_integer_, NA_integer_),
+        c(NA, NA),
         c(3L, NA, NA, NA),
         c(7L, 5L, 5L, 6L, 6L, 7L)
       )

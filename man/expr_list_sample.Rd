@@ -21,7 +21,7 @@ Sample from this list
 }
 \examples{
 df <- pl$DataFrame(
-  values = list(1:3, NA_integer_, c(NA_integer_, 3L), 5:7),
+  values = list(1:3, NA, c(NA, 3L), 5:7),
   n = c(1, 1, 1, 2)
 )
 

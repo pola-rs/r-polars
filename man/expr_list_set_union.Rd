@@ -24,8 +24,8 @@ cannot be e.g \code{list[f32]}.
 }
 \examples{
 df <- pl$DataFrame(
-  a = list(1:3, NA_integer_, c(NA_integer_, 3L), 5:7),
-  b = list(2:4, 3L, c(3L, 4L, NA_integer_), c(6L, 8L))
+  a = list(1:3, NA, c(NA, 3L), 5:7),
+  b = list(2:4, 3L, c(3L, 4L, NA), c(6L, 8L))
 )
 
 df$with_columns(union = pl$col("a")$list$set_union("b"))

@@ -13,6 +13,6 @@ A polars \link{expression}
 Find the minimum value in a list
 }
 \examples{
-df <- pl$DataFrame(values = list(c(1, 2, 3, NA), c(2, 3), NA_real_))
+df <- pl$DataFrame(values = list(c(1, 2, 3, NA), c(2, 3), NA))
 df$with_columns(min = pl$col("values")$list$min())
 }
