@@ -224,11 +224,16 @@ test_that("contains_* functions for datatype work", {
 })
 
 test_that("Enum", {
-  expect_identical(
-    as_polars_series(c("z", "z", "k", "a"))$
-      cast(pl$Enum(c("z", "k", "a")))$
-      to_r(),
-    factor(c("z", "z", "k", "a"))
+  quickcheck::for_all(
+    factors = quickcheck::factor_(),
+    property = function(factors) {
+      expect_identical(
+        as_polars_series(as.character(factors))$
+          cast(pl$Enum(levels(factors)))$
+          to_r(),
+        factors
+      )
+    }
   )
 
   expect_grepl_error(pl$Enum(), "missing")
