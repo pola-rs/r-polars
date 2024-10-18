@@ -225,6 +225,7 @@ test_that("contains_* functions for datatype work", {
 
 test_that("Enum", {
   quickcheck::for_all(
+    factors = quickcheck::factor_(),
     property = function(factors) {
       expect_identical(
         as_polars_series(as.character(factors))$
@@ -232,8 +233,7 @@ test_that("Enum", {
           to_r(),
         factors
       )
-    },
-    factors = quickcheck::factor_()
+    }
   )
 
   expect_grepl_error(pl$Enum(), "missing")

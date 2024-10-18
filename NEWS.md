@@ -2,7 +2,9 @@
 
 ## Polars R Package (development version)
 
-- Maintains level order when converting Enums to factors (#1252, @andyquinterom)
+### Bug fixes
+
+- Maintain level order when converting Enums to factors (#1252, @andyquinterom).
 
 ## Polars R Package 0.20.0
 
