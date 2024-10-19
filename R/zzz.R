@@ -81,28 +81,7 @@ lapply(names(POLARS_STORE_ENVS), function(name) {
 utils::globalVariables("self")
 
 .onLoad <- function(libname, pkgname) {
-  # Register data types without arguments as active bindings
-  c(
-    "Int8",
-    "Int16",
-    "Int32",
-    "Int64",
-    "UInt8",
-    "UInt16",
-    "UInt32",
-    "UInt64",
-    "Float32",
-    "Float64",
-    "Boolean",
-    "String",
-    "Binary",
-    "Date",
-    "Time",
-    "Null"
-  ) |>
-    lapply(function(name) {
-      makeActiveBinding(name, function() PlRDataType$new_from_name(name) |> wrap(), pl)
-    })
+  run_on_load()
 
   # Register S3 methods for optional packages
   s3_register("tibble::as_tibble", "polars_data_frame")

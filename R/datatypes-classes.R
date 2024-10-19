@@ -55,6 +55,31 @@ wrap.PlRDataType <- function(x, ...) {
   self
 }
 
+# Register data types without arguments as active bindings
+on_load({
+  c(
+    "Int8",
+    "Int16",
+    "Int32",
+    "Int64",
+    "UInt8",
+    "UInt16",
+    "UInt32",
+    "UInt64",
+    "Float32",
+    "Float64",
+    "Boolean",
+    "String",
+    "Binary",
+    "Date",
+    "Time",
+    "Null"
+  ) |>
+    lapply(function(name) {
+      makeActiveBinding(name, function() PlRDataType$new_from_name(name) |> wrap(), pl)
+    })
+})
+
 pl__Decimal <- function(precision = NULL, scale = 0L) {
   PlRDataType$new_decimal(scale = scale, precision = precision) |>
     wrap()
