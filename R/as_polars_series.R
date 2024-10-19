@@ -156,6 +156,18 @@ as_polars_series.polars_data_frame <- function(x, name = NULL, ...) {
   x$to_struct(name = name %||% "")
 }
 
+# This is only used for showing the special error message.
+# So, this method is not documented.
+#' @export
+as_polars_series.polars_expr <- function(x, name = NULL, ...) {
+  abort(
+    c(
+      "passing polars expression objects to `as_polars_series()` is not supported.",
+      i = "You can evaluating the expression with `pl$select()`."
+    )
+  )
+}
+
 #' @rdname as_polars_series
 #' @export
 as_polars_series.double <- function(x, name = NULL, ...) {

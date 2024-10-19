@@ -68,6 +68,13 @@ test_that("as_polars_series.default throws an error", {
   expect_error(as_polars_series(x), "Unsupported class")
 })
 
+test_that("as_polars_series.polars_expr throws an error", {
+  expect_error(
+    as_polars_series(pl$lit(1)),
+    r"(You can evaluating the expression with `pl\$select\(\))"
+  )
+})
+
 test_that("Before 0-oclock or after 24-oclock hms must be rejected", {
   skip_if_not_installed("hms")
 
