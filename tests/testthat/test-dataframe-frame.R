@@ -18,6 +18,13 @@ test_that("pl$DataFrame() requires series the same length", {
   expect_error(pl$DataFrame(a = 1:2, b = "foo"), "has length 2")
 })
 
+test_that("pl$DataFrame() rejects expressions", {
+  expect_error(
+    pl$DataFrame(a = 1:2, b = pl$lit("foo")),
+    r"(Try evaluating the expression first using `pl\$select\(\)`)"
+  )
+})
+
 test_that("to_struct()", {
   expect_equal(
     as_polars_df(mtcars)$to_struct("foo"),

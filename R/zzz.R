@@ -80,6 +80,10 @@ lapply(names(POLARS_STORE_ENVS), function(name) {
 # Avoid R CMD check's 'no visible binding for global variable' note
 utils::globalVariables("self")
 
+# Use cli to format error messages
+# TODO: can we use `inline = TRUE` without cli?
+on_load(local_use_cli())
+
 .onLoad <- function(libname, pkgname) {
   run_on_load()
 

@@ -1,4 +1,5 @@
 # TODO: link to data type docs
+# TODO: link to pl__select
 #' Polars DataFrame class (`polars_data_frame`)
 #'
 #' DataFrames are two-dimensional data structure representing data
@@ -52,7 +53,21 @@
 #' df$height
 #' df$width
 pl__DataFrame <- function(...) {
-  list2(...) |>
+  .data <- list2(...)
+
+  # Special error to show hint to use `pl$select` instead of `pl$DataFrame`
+  for (val in .data) {
+    if (is_polars_expr(val)) {
+      abort(
+        c(
+          "passing polars expression objects to `pl$DataFrame()` is not supported.",
+          i = "Try evaluating the expression first using `pl$select()`."
+        )
+      )
+    }
+  }
+
+  .data |>
     as_polars_df()
 }
 
