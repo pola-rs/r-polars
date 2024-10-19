@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr-list.R
 \name{expr_list_all}
 \alias{expr_list_all}
-\title{Evaluate whether all boolean values in a list are true}
+\title{Evaluate whether all boolean values in a sub-list are true}
 \usage{
 expr_list_all()
 }
@@ -10,7 +10,7 @@ expr_list_all()
 A polars \link{expression}
 }
 \description{
-Evaluate whether all boolean values in a list are true
+Evaluate whether all boolean values in a sub-list are true
 }
 \examples{
 df <- pl$DataFrame(

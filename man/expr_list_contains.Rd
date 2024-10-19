@@ -2,19 +2,19 @@
 % Please edit documentation in R/expr-list.R
 \name{expr_list_contains}
 \alias{expr_list_contains}
-\title{Check if list contains a given value}
+\title{Check if sub-lists contains a given value}
 \usage{
 expr_list_contains(item)
 }
 \arguments{
-\item{item}{Expr or something coercible to an Expr. Strings are \emph{not} parsed
-as columns.}
+\item{item}{Item that will be checked for membership. Can be an Expr or
+something coercible to an Expr. Strings are not parsed as columns.}
 }
 \value{
 A polars \link{expression}
 }
 \description{
-Check if list contains a given value
+Check if sub-lists contains a given value
 }
 \examples{
 df <- pl$DataFrame(

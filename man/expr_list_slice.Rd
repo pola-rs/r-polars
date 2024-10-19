@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr-list.R
 \name{expr_list_slice}
 \alias{expr_list_slice}
-\title{Slice list}
+\title{Slice every sub-list}
 \usage{
 expr_list_slice(offset, length = NULL)
 }

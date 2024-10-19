@@ -2,19 +2,19 @@
 % Please edit documentation in R/expr-list.R
 \name{expr_list_tail}
 \alias{expr_list_tail}
-\title{Get the last \code{n} values of a list}
+\title{Slice the last \code{n} values of every sub-list}
 \usage{
 expr_list_tail(n = 5L)
 }
 \arguments{
-\item{n}{Number of values to return for each sublist. Can be an Expr. Strings
+\item{n}{Number of values to return for each sub-list. Can be an Expr. Strings
 are parsed as column names.}
 }
 \value{
 A polars \link{expression}
 }
 \description{
-Get the last \code{n} values of a list
+Slice the last \code{n} values of every sub-list
 }
 \examples{
 df <- pl$DataFrame(

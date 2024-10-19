@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr-list.R
 \name{expr_list_set_intersection}
 \alias{expr_list_set_intersection}
-\title{Get the intersection of two list variables}
+\title{Compute the intersection between elements of a list and other elements}
 \usage{
 expr_list_set_intersection(other)
 }
@@ -14,7 +14,7 @@ Expr.}
 A polars \link{expression}
 }
 \description{
-Get the intersection of two list variables
+Compute the intersection between elements of a list and other elements
 }
 \details{
 Note that the datatypes inside the list must have a common supertype. For

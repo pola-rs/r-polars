@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr-list.R
 \name{expr_list_diff}
 \alias{expr_list_diff}
-\title{Compute difference between list values}
+\title{Compute difference between sub-list values}
 \usage{
 expr_list_diff(n = 1, null_behavior = c("ignore", "drop"))
 }
@@ -17,8 +17,9 @@ A polars \link{expression}
 }
 \description{
 This computes the first discrete difference between shifted items of every
-list. The parameter \code{n} gives the interval between items to subtract, e.g \code{n = 2} the output will be the difference between the 1st and the 3rd value, the
-2nd and 4th value, etc.
+list. The parameter \code{n} gives the interval between items to subtract, e.g.
+if \code{n = 2} the output will be the difference between the 1st and the 3rd
+value, the 2nd and 4th value, etc.
 }
 \examples{
 df <- pl$DataFrame(s = list(1:4, c(10L, 2L, 1L)))

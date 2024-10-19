@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr-list.R
 \name{expr_list_gather_every}
 \alias{expr_list_gather_every}
-\title{Gather every nth element in a list}
+\title{Take every \code{n}-th value starting from offset in sub-lists}
 \usage{
 expr_list_gather_every(n, offset = 0)
 }
@@ -10,7 +10,7 @@ expr_list_gather_every(n, offset = 0)
 A polars \link{expression}
 }
 \description{
-Gather every nth element in a list
+Take every \code{n}-th value starting from offset in sub-lists
 }
 \examples{
 df <- pl$DataFrame(

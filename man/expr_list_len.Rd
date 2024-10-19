@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr-list.R
 \name{expr_list_len}
 \alias{expr_list_len}
-\title{Get the length of each list}
+\title{Return the number of elements in each sub-list}
 \usage{
 expr_list_len()
 }
@@ -10,8 +10,7 @@ expr_list_len()
 A polars \link{expression}
 }
 \description{
-Return the number of elements in each list. Null values are counted in the
-total.
+Null values are counted in the total.
 }
 \examples{
 df <- pl$DataFrame(list_of_strs = list(c("a", "b", NA), "c"))

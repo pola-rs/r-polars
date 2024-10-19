@@ -2,16 +2,18 @@
 % Please edit documentation in R/expr-list.R
 \name{expr_list_gather}
 \alias{expr_list_gather}
-\title{Get several values by index in a list}
+\title{Get several values by index in every sub-list}
 \usage{
-expr_list_gather(index, null_on_oob = FALSE)
+expr_list_gather(index, ..., null_on_oob = FALSE)
 }
 \arguments{
 \item{index}{An Expr or something coercible to an Expr, that can return
-several single indices. Values are 0-indexed (so index 0 would return the
-first item of every sublist) and negative values start from the end (index
+several indices. Values are 0-indexed (so index 0 would return the
+first item of every sub-list) and negative values start from the end (index
 \code{-1} returns the last item). If the index is out of bounds, it will return
 a \code{null}. Strings are parsed as column names.}
+
+\item{...}{Dots which should be empty.}
 
 \item{null_on_oob}{If \code{TRUE}, return \code{null} if an index is out of bounds.
 Otherwise, raise an error.}
@@ -21,7 +23,8 @@ A polars \link{expression}
 }
 \description{
 This allows to extract several values per list. To extract a single value by
-index, use \code{\link[=expr_list_get]{$list$get()}}.
+index, use \code{\link[=expr_list_get]{$list$get()}}. The indices may be defined in a
+single column, or by sub-lists in another column of dtype List.
 }
 \examples{
 df <- pl$DataFrame(

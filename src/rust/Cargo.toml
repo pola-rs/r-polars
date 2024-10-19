@@ -39,6 +39,8 @@ features = [
     "json",
     "lazy",
     "list_any_all",
+    "list_count",
+    "list_drop_nulls",
     "list_eval",
     "list_gather",
     "list_sample",

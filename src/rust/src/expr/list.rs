@@ -33,15 +33,16 @@ impl PlRExpr {
         Ok(self.inner.clone().list().mean().into())
     }
 
-    fn list_sort(&self, descending: bool) -> Result<Self> {
+    fn list_sort(&self, descending: bool, nulls_last: bool) -> Result<Self> {
         Ok(self
             .inner
             .clone()
             .list()
-            .sort(SortOptions {
-                descending,
-                ..Default::default()
-            })
+            .sort(
+                SortOptions::default()
+                    .with_order_descending(descending)
+                    .with_nulls_last(nulls_last),
+            )
             .into())
     }
 
@@ -227,6 +228,38 @@ impl PlRExpr {
             .clone()
             .list()
             .sample_fraction(frac.inner.clone(), with_replacement, shuffle, seed)
+            .into())
+    }
+
+    fn list_median(&self) -> Result<Self> {
+        Ok(self.inner.clone().list().median().into())
+    }
+
+    fn list_std(&self, ddof: NumericScalar) -> Result<Self> {
+        let ddof = <Wrap<u8>>::try_from(ddof)?.0;
+        Ok(self.inner.clone().list().std(ddof).into())
+    }
+
+    fn list_var(&self, ddof: NumericScalar) -> Result<Self> {
+        let ddof = <Wrap<u8>>::try_from(ddof)?.0;
+        Ok(self.inner.clone().list().var(ddof).into())
+    }
+
+    fn list_to_array(&self, width: NumericScalar) -> Result<Self> {
+        let width = <Wrap<usize>>::try_from(width)?.0;
+        Ok(self.inner.clone().list().to_array(width).into())
+    }
+
+    fn list_drop_nulls(&self) -> Result<Self> {
+        Ok(self.inner.clone().list().drop_nulls().into())
+    }
+
+    fn list_count_matches(&self, expr: &PlRExpr) -> Result<Self> {
+        Ok(self
+            .inner
+            .clone()
+            .list()
+            .count_matches(expr.inner.clone())
             .into())
     }
 }

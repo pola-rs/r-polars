@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr-list.R
 \name{expr_list_max}
 \alias{expr_list_max}
-\title{Find the maximum value in a list}
+\title{Compute the maximum value in every sub-list}
 \usage{
 expr_list_max()
 }
@@ -10,7 +10,7 @@ expr_list_max()
 A polars \link{expression}
 }
 \description{
-Find the maximum value in a list
+Compute the maximum value in every sub-list
 }
 \examples{
 df <- pl$DataFrame(values = list(c(1, 2, 3, NA), c(2, 3), NA))

@@ -2,14 +2,14 @@
 % Please edit documentation in R/expr-list.R
 \name{expr_list_get}
 \alias{expr_list_get}
-\title{Get the value by index in a list}
+\title{Get the value by index in every sub-list}
 \usage{
 expr_list_get(index, ..., null_on_oob = TRUE)
 }
 \arguments{
 \item{index}{An Expr or something coercible to an Expr, that must return a
 single index. Values are 0-indexed (so index 0 would return the first item
-of every sublist) and negative values start from the end (index \code{-1}
+of every sub-list) and negative values start from the end (index \code{-1}
 returns the last item).}
 
 \item{...}{Dots which should be empty.}

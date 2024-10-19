@@ -97,11 +97,19 @@ test_that("list$unique list$sort", {
   r_res <- pl$DataFrame(!!!lapply(l, lapply, \(x)  sort(unique(x), na.last = FALSE)))
   expect_equal(p_res, r_res)
 
-
   df <- pl$DataFrame(!!!l)
   p_res <- df$select(pl$all()$list$unique()$list$sort(descending = TRUE))
   r_res <- pl$DataFrame(!!!lapply(l, lapply, \(x)  sort(unique(x), na.last = FALSE, decr = TRUE)))
   expect_equal(p_res, r_res)
+
+  expect_snapshot(
+    df$select(pl$all()$list$unique(TRUE)),
+    error = TRUE
+  )
+  expect_snapshot(
+    df$select(pl$all()$list$sort(TRUE)),
+    error = TRUE
+  )
 })
 
 test_that("list$n_unique", {
@@ -153,6 +161,10 @@ test_that("gather", {
 
   expect_snapshot(
     pl$DataFrame(x = l)$with_columns(pl$col("x")$list$gather(list(c(0:3), 0L, 0L))),
+    error = TRUE
+  )
+  expect_snapshot(
+    pl$DataFrame(x = l)$with_columns(pl$col("x")$list$gather(1, TRUE)),
     error = TRUE
   )
 })
@@ -240,6 +252,11 @@ test_that("join", {
   expect_equal(
     df$select(pl$col("s")$list$join(pl$col("separator"), ignore_nulls = TRUE)),
     pl$DataFrame(s = c("a*b*c", "x_y", "foo*bar"))
+  )
+
+  expect_snapshot(
+    df$select(pl$col("s")$list$join(pl$col("separator"), TRUE)),
+    error = TRUE
   )
 })
 
@@ -494,6 +511,12 @@ test_that("contains with categorical", {
 #       rank = list(c(1, 2), c(2, 1), c(2, 1))
 #     )
 #   )
+#   expect_snapshot(
+#     df$with_columns(
+#       pl$concat_list(list("a", "b"))$list$eval(pl$element(), TRUE)
+#     ),
+#     error = TRUE
+#   )
 # })
 
 test_that("$list$all() works", {
@@ -628,5 +651,60 @@ test_that("$list$sample() works", {
         c(7L, 5L, 5L, 6L, 6L, 7L)
       )
     )
+  )
+})
+
+test_that("list$std", {
+  df <- pl$DataFrame(x = list(c(-1, 0, 1), c(1, 10)))
+
+  expect_equal(
+    df$with_columns(pl$col("x")$list$std()),
+    pl$DataFrame(x = c(1, 6.369)),
+    tolerance = 0.001
+  )
+})
+
+test_that("list$var", {
+  df <- pl$DataFrame(x = list(c(-1, 0, 1), c(1, 10)))
+
+  expect_equal(
+    df$with_columns(x = pl$col("x")$list$var()),
+    pl$DataFrame(x = c(1, 40.5)),
+    tolerance = 0.001
+  )
+})
+
+test_that("list$median", {
+  df <- pl$DataFrame(x = list(c(-1, 0, 1), c(1, 10)))
+  expect_equal(
+    df$with_columns(x = pl$col("x")$list$median()),
+    pl$DataFrame(x = c(0, 5.5))
+  )
+})
+
+test_that("list$to_array", {
+  df <- pl$DataFrame(x = list(c(-1, 0), c(1, 10)))
+
+  expect_equal(
+    df$with_columns(pl$col("x")$list$to_array(2)),
+    pl$DataFrame(x = list(c(-1, 0), c(1, 10)))$cast(pl$Array(pl$Float64, 2))
+  )
+})
+
+test_that("list$drop_nulls", {
+  df <- pl$DataFrame(x = list(c(NA, 0, NA), c(1, NaN), NA))
+
+  expect_equal(
+    df$with_columns(pl$col("x")$list$drop_nulls()),
+    pl$DataFrame(x = list(0, c(1, NaN), numeric(0)))
+  )
+})
+
+test_that("list$count_matches", {
+  df <- pl$DataFrame(x = list(0, 1, c(1, 2, 3, 2), c(1, 2, 1), c(4, 4)))
+
+  expect_equal(
+    df$with_columns(pl$col("x")$list$count_matches(2)),
+    pl$DataFrame(x = c(0, 0, 2, 1, 0))$cast(pl$UInt32)
   )
 })

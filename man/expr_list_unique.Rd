@@ -4,9 +4,11 @@
 \alias{expr_list_unique}
 \title{Get unique values in a list}
 \usage{
-expr_list_unique(maintain_order = FALSE)
+expr_list_unique(..., maintain_order = FALSE)
 }
 \arguments{
+\item{...}{Dots which should be empty.}
+
 \item{maintain_order}{Maintain order of data. This requires more work.}
 }
 \value{

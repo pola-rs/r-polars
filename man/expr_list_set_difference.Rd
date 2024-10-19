@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr-list.R
 \name{expr_list_set_difference}
 \alias{expr_list_set_difference}
-\title{Get the difference of two list variables}
+\title{Compute the set difference between elements of a list and other elements}
 \usage{
 expr_list_set_difference(other)
 }

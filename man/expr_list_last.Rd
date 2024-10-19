@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr-list.R
 \name{expr_list_last}
 \alias{expr_list_last}
-\title{Get the last value in a list}
+\title{Get the last value of the sub-lists}
 \usage{
 expr_list_last()
 }
@@ -10,7 +10,7 @@ expr_list_last()
 A polars \link{expression}
 }
 \description{
-Get the last value in a list
+Get the last value of the sub-lists
 }
 \examples{
 df <- pl$DataFrame(a = list(3:1, NULL, 1:2))

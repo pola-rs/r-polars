@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr-list.R
 \name{expr_list_sample}
 \alias{expr_list_sample}
-\title{Sample from this list}
+\title{Sample values from every sub-list}
 \usage{
 expr_list_sample(
   n = NULL,
@@ -17,7 +17,7 @@ expr_list_sample(
 A polars \link{expression}
 }
 \description{
-Sample from this list
+Sample values from every sub-list
 }
 \examples{
 df <- pl$DataFrame(

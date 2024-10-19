@@ -2,24 +2,24 @@
 % Please edit documentation in R/expr-list.R
 \name{expr_list_eval}
 \alias{expr_list_eval}
-\title{Run any polars expression on the list values}
+\title{Run any polars expression on the sub-lists' values}
 \usage{
-expr_list_eval(expr, parallel = FALSE)
+expr_list_eval(expr, ..., parallel = FALSE)
 }
 \arguments{
 \item{expr}{Expression to run. Note that you can select an element with
 \code{pl$element()}, \code{pl$first()}, and more. See Examples.}
 
-\item{parallel}{Run all expression parallel. Don't activate this blindly.
+\item{parallel}{Run all expressions in parallel. Don't activate this blindly.
 Parallelism is worth it if there is enough work to do per thread. This
-likely should not be used in the \verb{$group_by()} context, because we already
-do parallel execution per group.}
+likely should not be used in the \verb{$group_by()} context, because groups are
+already executed in parallel.}
 }
 \value{
 A polars \link{expression}
 }
 \description{
-Run any polars expression on the list values
+Run any polars expression on the sub-lists' values
 }
 \examples{
 df <- pl$DataFrame(

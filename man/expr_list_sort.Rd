@@ -2,18 +2,22 @@
 % Please edit documentation in R/expr-list.R
 \name{expr_list_sort}
 \alias{expr_list_sort}
-\title{Sort values in a list}
+\title{Sort values in every sub-list}
 \usage{
-expr_list_sort(descending = FALSE)
+expr_list_sort(..., descending = FALSE, nulls_last = FALSE)
 }
 \arguments{
-\item{descending}{Sort values in descending order}
+\item{...}{Dots which should be empty.}
+
+\item{descending}{Sort values in descending order.}
+
+\item{nulls_last}{Place null values last.}
 }
 \value{
 A polars \link{expression}
 }
 \description{
-Sort values in a list
+Sort values in every sub-list
 }
 \examples{
 df <- pl$DataFrame(values = list(c(NA, 2, 1, 3), c(Inf, 2, 3, NaN), NA))

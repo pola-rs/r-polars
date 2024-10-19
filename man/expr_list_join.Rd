@@ -2,20 +2,22 @@
 % Please edit documentation in R/expr-list.R
 \name{expr_list_join}
 \alias{expr_list_join}
-\title{Join elements of a list}
+\title{Join elements of every sub-list}
 \usage{
-expr_list_join(separator, ignore_nulls = FALSE)
+expr_list_join(separator, ..., ignore_nulls = FALSE)
 }
 \arguments{
 \item{separator}{String to separate the items with. Can be an Expr. Strings
 are \emph{not} parsed as columns.}
+
+\item{...}{Dots which should be empty.}
 }
 \value{
 A polars \link{expression}
 }
 \description{
-Join all string items in a sublist and place a separator between them. This
-only works on columns of type \code{list[str]}.
+Join all string items in a sub-list and place a separator between them. This
+only works if the inner dtype is \code{String}.
 }
 \examples{
 df <- pl$DataFrame(

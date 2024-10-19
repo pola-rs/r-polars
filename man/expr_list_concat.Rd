@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr-list.R
 \name{expr_list_concat}
 \alias{expr_list_concat}
-\title{Concat two list variables}
+\title{Concat the lists into a new list}
 \usage{
 expr_list_concat(other)
 }
@@ -14,7 +14,7 @@ an Expr.}
 A polars \link{expression}
 }
 \description{
-Concat two list variables
+Concat the lists into a new list
 }
 \examples{
 df <- pl$DataFrame(

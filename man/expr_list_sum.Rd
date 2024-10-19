@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr-list.R
 \name{expr_list_sum}
 \alias{expr_list_sum}
-\title{Sum all elements in a list}
+\title{Sum all elements in every sub-list}
 \usage{
 expr_list_sum()
 }
@@ -10,7 +10,7 @@ expr_list_sum()
 A polars \link{expression}
 }
 \description{
-Sum all elements in a list
+Sum all elements in every sub-list
 }
 \examples{
 df <- pl$DataFrame(values = list(c(1, 2, 3, NA), c(2, 3), NA))

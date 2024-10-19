@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr-list.R
 \name{expr_list_shift}
 \alias{expr_list_shift}
-\title{Shift list values by \code{n} indices}
+\title{Shift list values by the given number of indices}
 \usage{
 expr_list_shift(n = 1)
 }
@@ -10,7 +10,7 @@ expr_list_shift(n = 1)
 A polars \link{expression}
 }
 \description{
-Shift list values by \code{n} indices
+Shift list values by the given number of indices
 }
 \examples{
 df <- pl$DataFrame(
@@ -19,6 +19,7 @@ df <- pl$DataFrame(
 )
 df$with_columns(
   shift_by_expr = pl$col("s")$list$shift(pl$col("idx")),
-  shift_by_lit = pl$col("s")$list$shift(2)
+  shift_by_lit = pl$col("s")$list$shift(2),
+  shift_by_negative_lit = pl$col("s")$list$shift(-2)
 )
 }

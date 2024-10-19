@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr-list.R
 \name{expr_list_set_symmetric_difference}
 \alias{expr_list_set_symmetric_difference}
-\title{Get the symmetric difference of two list variables}
+\title{Compute the set symmetric difference between elements of a list and other elements}
 \usage{
 expr_list_set_symmetric_difference(other)
 }

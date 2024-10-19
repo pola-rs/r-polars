@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr-list.R
 \name{expr_list_first}
 \alias{expr_list_first}
-\title{Get the first value in a list}
+\title{Get the first value of the sub-lists}
 \usage{
 expr_list_first()
 }
@@ -10,7 +10,7 @@ expr_list_first()
 A polars \link{expression}
 }
 \description{
-Get the first value in a list
+Get the first value of the sub-lists
 }
 \examples{
 df <- pl$DataFrame(a = list(3:1, NULL, 1:2))

@@ -1079,8 +1079,8 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
 }
 
 `PlRExpr_list_sort` <- function(self) {
-  function(`descending`) {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_list_sort__impl, `self`, `descending`))
+  function(`descending`, `nulls_last`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_list_sort__impl, `self`, `descending`, `nulls_last`))
   }
 }
 
@@ -1201,6 +1201,43 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
   function(`frac`, `with_replacement`, `shuffle`, `seed` = NULL) {
     `frac` <- .savvy_extract_ptr(`frac`, "PlRExpr")
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_list_sample_frac__impl, `self`, `frac`, `with_replacement`, `shuffle`, `seed`))
+  }
+}
+
+`PlRExpr_list_median` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_list_median__impl, `self`))
+  }
+}
+
+`PlRExpr_list_std` <- function(self) {
+  function(`ddof`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_list_std__impl, `self`, `ddof`))
+  }
+}
+
+`PlRExpr_list_var` <- function(self) {
+  function(`ddof`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_list_var__impl, `self`, `ddof`))
+  }
+}
+
+`PlRExpr_list_to_array` <- function(self) {
+  function(`width`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_list_to_array__impl, `self`, `width`))
+  }
+}
+
+`PlRExpr_list_drop_nulls` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_list_drop_nulls__impl, `self`))
+  }
+}
+
+`PlRExpr_list_count_matches` <- function(self) {
+  function(`expr`) {
+    `expr` <- .savvy_extract_ptr(`expr`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_list_count_matches__impl, `self`, `expr`))
   }
 }
 
@@ -1674,6 +1711,12 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
   e$`list_set_operation` <- `PlRExpr_list_set_operation`(ptr)
   e$`list_sample_n` <- `PlRExpr_list_sample_n`(ptr)
   e$`list_sample_frac` <- `PlRExpr_list_sample_frac`(ptr)
+  e$`list_median` <- `PlRExpr_list_median`(ptr)
+  e$`list_std` <- `PlRExpr_list_std`(ptr)
+  e$`list_var` <- `PlRExpr_list_var`(ptr)
+  e$`list_to_array` <- `PlRExpr_list_to_array`(ptr)
+  e$`list_drop_nulls` <- `PlRExpr_list_drop_nulls`(ptr)
+  e$`list_count_matches` <- `PlRExpr_list_count_matches`(ptr)
   e$`meta_output_name` <- `PlRExpr_meta_output_name`(ptr)
   e$`meta_undo_aliases` <- `PlRExpr_meta_undo_aliases`(ptr)
   e$`meta_has_multiple_outputs` <- `PlRExpr_meta_has_multiple_outputs`(ptr)
