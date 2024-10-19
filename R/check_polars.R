@@ -2,8 +2,8 @@
 #' Check if the object is a polars object
 #'
 #' Functions to check if the object is a polars object.
-#' `is_polars_*` functions return `TRUE` of `FALSE` depending on the class of the object.
-#' `check_polars_*` functions throw an informative error if the object is not the correct class.
+#' `is_*` functions return `TRUE` of `FALSE` depending on the class of the object.
+#' `check_*` functions throw an informative error if the object is not the correct class.
 #' Suffixes are corresponding to the polars object classes:
 #' - `*_dtype`: For polars data types.
 #' - `*_df`: For [polars data frames][DataFrame].
@@ -19,6 +19,7 @@
 #' @name check_polars
 #' @aliases is_polars
 #' @inheritParams rlang::args_error_context
+#' @inheritParams rlang::is_list
 #' @param x An object to check.
 #' @param ... Arguments passed to [rlang::abort()].
 #' @param allow_null If `TRUE`, `NULL` is allowed as a valid input.
@@ -74,6 +75,15 @@ is_polars_selector <- function(x, ...) {
 #' @export
 is_polars_series <- function(x) {
   inherits(x, "polars_series")
+}
+
+#' @rdname check_polars
+#' @export
+is_list_of_polars_dtype <- function(x, n = NULL) {
+  is_list(x, n = n) && (
+    vapply(x, is_polars_dtype, logical(1)) |>
+      all()
+  )
 }
 
 #' @rdname check_polars
@@ -236,6 +246,35 @@ check_polars_series <- function(
   stop_input_type(
     x,
     "a polars series",
+    ...,
+    allow_na = FALSE,
+    allow_null = allow_null,
+    arg = arg,
+    call = call
+  )
+}
+
+# TODO: improve the error when x is a list of other objects
+#' @rdname check_polars
+#' @export
+check_list_of_polars_dtype <- function(
+    x,
+    ...,
+    allow_null = FALSE,
+    arg = caller_arg(x),
+    call = caller_env()) {
+  if (!missing(x)) {
+    if (is_list_of_polars_dtype(x)) {
+      return(invisible(NULL))
+    }
+    if (allow_null && is_null(x)) {
+      return(invisible(NULL))
+    }
+  }
+
+  stop_input_type(
+    x,
+    "a list of polars data types",
     ...,
     allow_na = FALSE,
     allow_null = allow_null,

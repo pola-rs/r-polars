@@ -9,12 +9,14 @@
 \alias{is_polars_lf}
 \alias{is_polars_selector}
 \alias{is_polars_series}
+\alias{is_list_of_polars_dtype}
 \alias{check_polars_dtype}
 \alias{check_polars_df}
 \alias{check_polars_expr}
 \alias{check_polars_lf}
 \alias{check_polars_selector}
 \alias{check_polars_series}
+\alias{check_list_of_polars_dtype}
 \title{Check if the object is a polars object}
 \usage{
 is_polars_dtype(x)
@@ -28,6 +30,8 @@ is_polars_lf(x)
 is_polars_selector(x, ...)
 
 is_polars_series(x)
+
+is_list_of_polars_dtype(x, n = NULL)
 
 check_polars_dtype(
   x,
@@ -76,11 +80,21 @@ check_polars_series(
   arg = caller_arg(x),
   call = caller_env()
 )
+
+check_list_of_polars_dtype(
+  x,
+  ...,
+  allow_null = FALSE,
+  arg = caller_arg(x),
+  call = caller_env()
+)
 }
 \arguments{
 \item{x}{An object to check.}
 
 \item{...}{Arguments passed to \code{\link[rlang:abort]{rlang::abort()}}.}
+
+\item{n}{Expected length of a vector.}
 
 \item{allow_null}{If \code{TRUE}, \code{NULL} is allowed as a valid input.}
 
@@ -101,8 +115,8 @@ mentioned in error messages as the source of the error. See the
 }
 \description{
 Functions to check if the object is a polars object.
-\verb{is_polars_*} functions return \code{TRUE} of \code{FALSE} depending on the class of the object.
-\verb{check_polars_*} functions throw an informative error if the object is not the correct class.
+\verb{is_*} functions return \code{TRUE} of \code{FALSE} depending on the class of the object.
+\verb{check_*} functions throw an informative error if the object is not the correct class.
 Suffixes are corresponding to the polars object classes:
 \itemize{
 \item \verb{*_dtype}: For polars data types.

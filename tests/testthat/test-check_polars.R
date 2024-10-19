@@ -8,6 +8,7 @@ patrick::with_parameters_test_that("check_polars functions work",
       "lf", is_polars_lf, check_polars_lf, as_polars_lf(mtcars),
       "selector", is_polars_selector, check_polars_selector, cs$all(),
       "series", is_polars_series, check_polars_series, as_polars_series(1:10),
+      "list of dtype", is_list_of_polars_dtype, check_list_of_polars_dtype, list(pl$Int8, pl$String),
     )
   },
   code = {
