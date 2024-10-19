@@ -2,7 +2,7 @@
 % Please edit documentation in R/lazyframe-frame.R
 \name{pl__LazyFrame}
 \alias{pl__LazyFrame}
-\alias{plars_lazy_frame}
+\alias{polars_lazy_frame}
 \alias{LazyFrame}
 \title{Polars LazyFrame class (\code{polars_lazy_frame})}
 \usage{

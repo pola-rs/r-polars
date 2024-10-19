@@ -6,7 +6,7 @@
 #' and is the preferred (and highest-performance) mode of operation for polars.
 #'
 #' The `pl$LazyFrame(...)` function is a shortcut for `pl$DataFrame(...)$lazy()`.
-#' @aliases plars_lazy_frame LazyFrame
+#' @aliases polars_lazy_frame LazyFrame
 #' @inheritParams pl__DataFrame
 #' @return A polars [LazyFrame]
 #' @seealso
@@ -46,7 +46,16 @@ wrap.PlRLazyFrame <- function(x, ...) {
 }
 
 # TODO: link to pl__select
-#' Select columns from this LazyFrame
+#' Select and modify columns of a LazyFrame
+#'
+#' @description
+#' Select and perform operations on a subset of columns only. This discards
+#' unmentioned columns (like `.()` in `data.table` and contrarily to
+#' `dplyr::mutate()`).
+#'
+#' One cannot use new variables in subsequent expressions in the same
+#' `$select()` call. For instance, if you create a variable `x`, you will only
+#' be able to use it in another `$select()` or `$with_columns()` call.
 #'
 #' @inherit pl__LazyFrame return
 #' @param ... <[`dynamic-dots`][rlang::dyn-dots]>
@@ -264,12 +273,17 @@ lazyframe__sort <- function(
   })
 }
 
-#' Add columns to this LazyFrame
+#' Modify/append column(s) of a LazyFrame
 #'
-#' Added columns will replace existing columns with the same name.
+#' @description
+#' Add columns or modify existing ones with expressions. This is similar to
+#' `dplyr::mutate()` as it keeps unmentioned columns (unlike `$select()`).
 #'
-#' Creating a new LazyFrame using this method does not create a new copy of
-#' existing data.
+#' However, unlike `dplyr::mutate()`, one cannot use new variables in subsequent
+#' expressions in the same `$with_columns()`call. For instance, if you create a
+#' variable `x`, you will only be able to use it in another `$with_columns()`
+#' or `$select()` call.
+#'
 #' @inherit pl__LazyFrame return
 #' @inheritParams lazyframe__select
 #' @examples

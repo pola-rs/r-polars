@@ -2,15 +2,15 @@
 % Please edit documentation in R/dataframe-frame.R
 \name{dataframe__get_columns}
 \alias{dataframe__get_columns}
-\title{Get the DataFrame as a List of Series}
+\title{Get the DataFrame as a list of Series}
 \usage{
 dataframe__get_columns()
 }
 \value{
-A \link{list} of \link{Series}
+A list of \link{Series}
 }
 \description{
-Get the DataFrame as a List of Series
+Get the DataFrame as a list of Series
 }
 \examples{
 df <- pl$DataFrame(foo = c(1, 2, 3), bar = c(4, 5, 6))

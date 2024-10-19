@@ -2,7 +2,7 @@
 % Please edit documentation in R/lazyframe-frame.R
 \name{lazyframe__select}
 \alias{lazyframe__select}
-\title{Select columns from this LazyFrame}
+\title{Select and modify columns of a LazyFrame}
 \usage{
 lazyframe__select(...)
 }
@@ -17,7 +17,13 @@ Each name will be used as the expression name.}
 A polars \link{LazyFrame}
 }
 \description{
-Select columns from this LazyFrame
+Select and perform operations on a subset of columns only. This discards
+unmentioned columns (like \code{.()} in \code{data.table} and contrarily to
+\code{dplyr::mutate()}).
+
+One cannot use new variables in subsequent expressions in the same
+\verb{$select()} call. For instance, if you create a variable \code{x}, you will only
+be able to use it in another \verb{$select()} or \verb{$with_columns()} call.
 }
 \examples{
 # Pass the name of a column to select that column.

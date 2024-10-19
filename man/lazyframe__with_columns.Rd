@@ -2,7 +2,7 @@
 % Please edit documentation in R/lazyframe-frame.R
 \name{lazyframe__with_columns}
 \alias{lazyframe__with_columns}
-\title{Add columns to this LazyFrame}
+\title{Modify/append column(s) of a LazyFrame}
 \usage{
 lazyframe__with_columns(...)
 }
@@ -17,11 +17,13 @@ Each name will be used as the expression name.}
 A polars \link{LazyFrame}
 }
 \description{
-Added columns will replace existing columns with the same name.
-}
-\details{
-Creating a new LazyFrame using this method does not create a new copy of
-existing data.
+Add columns or modify existing ones with expressions. This is similar to
+\code{dplyr::mutate()} as it keeps unmentioned columns (unlike \verb{$select()}).
+
+However, unlike \code{dplyr::mutate()}, one cannot use new variables in subsequent
+expressions in the same \verb{$with_columns()}call. For instance, if you create a
+variable \code{x}, you will only be able to use it in another \verb{$with_columns()}
+or \verb{$select()} call.
 }
 \examples{
 # Pass an expression to add it as a new column.

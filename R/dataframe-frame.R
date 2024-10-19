@@ -12,6 +12,7 @@
 #' so each argument in `...` is converted to a Polars Series by [as_polars_series()]
 #' and then passed to [as_polars_df()].
 #' @aliases polars_data_frame DataFrame
+#'
 #' @section Active bindings:
 #' - `columns`: `$columns` returns a character vector with the names of the columns.
 #' - `dtypes`: `$dtypes` returns a nameless list of the data type of each column.
@@ -127,19 +128,69 @@ dataframe__to_struct <- function(name = "") {
     wrap()
 }
 
+#' Convert an existing DataFrame to a LazyFrame
+#' @description Start a new lazy query from a DataFrame.
+#'
+#' @inherit as_polars_lf return
+#' @examples
+#' pl$DataFrame(a = 1:2, b = c(NA, "a"))$lazy()
 dataframe__lazy <- function() {
   self$`_df`$lazy() |>
     wrap()
 }
 
+#' Clone a DataFrame
+#'
+#' This is a cheap operation that does not copy data. Assigning does not copy
+#' the DataFrame (environment object). This is because environment objects have
+#' reference semantics. Calling $clone() creates a new environment, which can
+#' be useful when dealing with attributes (see examples).
+#'
+#' @inherit as_polars_df return
+#' @examples
+#' df1 <- as_polars_df(iris)
+#'
+#' # Assigning does not copy the DataFrame (environment object), calling
+#' # $clone() creates a new environment.
+#' df2 <- df1
+#' df3 <- df1$clone()
+#' rlang::env_label(df1)
+#' rlang::env_label(df2)
+#' rlang::env_label(df3)
+#'
+#' # Cloning can be useful to add attributes to data used in a function without
+#' # adding those attributes to the original object.
+#'
+#' # Make a function to take a DataFrame, add an attribute, and return a
+#' # DataFrame:
+#' give_attr <- function(data) {
+#'   attr(data, "created_on") <- "2024-01-29"
+#'   data
+#' }
+#' df2 <- give_attr(df1)
+#'
+#' # Problem: the original DataFrame also gets the attribute while it shouldn't
+#' attributes(df1)
+#'
+#' # Use $clone() inside the function to avoid that
+#' give_attr <- function(data) {
+#'   data <- data$clone()
+#'   attr(data, "created_on") <- "2024-01-29"
+#'   data
+#' }
+#' df1 <- as_polars_df(iris)
+#' df2 <- give_attr(df1)
+#'
+#' # now, the original DataFrame doesn't get this attribute
+#' attributes(df1)
 dataframe__clone <- function() {
   self$`_df`$clone() |>
     wrap()
 }
 
-#' Get the DataFrame as a List of Series
+#' Get the DataFrame as a list of Series
 #'
-#' @return A [list] of [Series]
+#' @return A list of [Series]
 #' @seealso
 #' - [`as.list(<polars_data_frame>)`][as.list.polars_data_frame]
 #' @examples
@@ -160,25 +211,119 @@ dataframe__get_columns <- function() {
     })
 }
 
+#' Group a DataFrame
+#'
+#' @inherit LazyFrame_group_by description params
+#' @details Within each group, the order of the rows is always preserved,
+#' regardless of the `maintain_order` argument.
+#' @return [GroupBy][GroupBy_class] (a DataFrame with special groupby methods like `$agg()`)
+#' @seealso
+#' - [`<DataFrame>$partition_by()`][DataFrame_partition_by]
+#' @examples
+#' df <- pl$DataFrame(
+#'   a = c("a", "b", "a", "b", "c"),
+#'   b = c(1, 2, 1, 3, 3),
+#'   c = c(5, 4, 3, 2, 1)
+#' )
+#'
+#' df$group_by("a")$agg(pl$col("b")$sum())
+#'
+#' # Set `maintain_order = TRUE` to ensure the order of the groups is
+#' # consistent with the input.
+#' df$group_by("a", maintain_order = TRUE)$agg(pl$col("c"))
+#'
+#' # Group by multiple columns by passing a list of column names.
+#' df$group_by(c("a", "b"))$agg(pl$max("c"))
+#'
+#' # Or pass some arguments to group by multiple columns in the same way.
+#' # Expressions are also accepted.
+#' df$group_by("a", pl$col("b") %/% 2)$agg(
+#'   pl$col("c")$mean()
+#' )
+#'
+#' # The columns will be renamed to the argument names.
+#' df$group_by(d = "a", e = pl$col("b") %/% 2)$agg(
+#'   pl$col("c")$mean()
+#' )
 dataframe__group_by <- function(..., maintain_order = FALSE) {
   wrap_to_group_by(self, list2(...), maintain_order)
 }
 
+#' Select and modify columns of a DataFrame
+#'
+#' @inherit lazyframe__select description params
+#' @inherit as_polars_df return
+#' @examples
+#' as_polars_df(iris)$select(
+#'   abs_SL = pl$col("Sepal.Length")$abs(),
+#'   add_2_SL = pl$col("Sepal.Length") + 2
+#' )
 dataframe__select <- function(...) {
   self$lazy()$select(...)$collect(`_eager` = TRUE) |>
     wrap()
 }
 
+#' Modify/append column(s) of a DataFrame
+#'
+#' @inherit lazyframe__with_columns description params
+#' @inherit as_polars_df return
+#' @examples
+#' as_polars_df(iris)$with_columns(
+#'   abs_SL = pl$col("Sepal.Length")$abs(),
+#'   add_2_SL = pl$col("Sepal.Length") + 2
+#' )
+#'
+#' # same query
+#' l_expr <- list(
+#'   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
+#'   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
+#' )
+#' as_polars_df(iris)$with_columns(l_expr)
+#'
+#' as_polars_df(iris)$with_columns(
+#'   SW_add_2 = (pl$col("Sepal.Width") + 2),
+#'   # unnamed expr will keep name "Sepal.Length"
+#'   pl$col("Sepal.Length")$abs()
+#' )
 dataframe__with_columns <- function(...) {
   self$lazy()$with_columns(...)$collect(`_eager` = TRUE) |>
     wrap()
 }
 
+# TODO-REWRITE: before release, add in news that param idx was renamed "index"
+# and mention that it errors if out of bounds
+#' Select column as Series at index location
+#'
+#' @param index Index of the column to return as Series. Defaults to 0, which is
+#' the first column.
+#'
+#' @return Series or NULL
+#' @examples
+#' df <- as_polars_df(iris[1:10, ])
+#'
+#' # default is to extract the first column
+#' df$to_series()
+#'
+#' # Polars is 0-indexed, so we use index = 1 to extract the *2nd* column
+#' df$to_series(index = 1)
+#'
+#' # doesn't error if the column isn't there
+#' df$to_series(index = 8)
 dataframe__to_series <- function(index = 0) {
   self$`_df`$to_series(index) |>
     wrap()
 }
 
+#' Check whether the DataFrame is equal to another DataFrame
+#'
+#' @param other DataFrame to compare with.
+#' @return A logical value
+#' @examples
+#' dat1 <- as_polars_df(iris)
+#' dat2 <- as_polars_df(iris)
+#' dat3 <- as_polars_df(mtcars)
+#' dat1$equals(dat2)
+#' dat1$equals(dat3)
 dataframe__equals <- function(other, ..., null_equal = TRUE) {
   wrap({
     check_dots_empty0(...)
@@ -188,6 +333,19 @@ dataframe__equals <- function(other, ..., null_equal = TRUE) {
   })
 }
 
+#' Get a slice of the DataFrame.
+#'
+#' @inherit as_polars_df return
+#' @param offset Start index, can be a negative value. This is 0-indexed, so
+#' `offset = 1` skips the first row.
+#' @param length Length of the slice. If `NULL` (default), all rows starting at
+#' the offset will be selected.
+#' @examples
+#' # skip the first 2 rows and take the 4 following rows
+#' as_polars_df(mtcars)$slice(2, 4)
+#'
+#' # this is equivalent to:
+#' mtcars[3:6, ]
 dataframe__slice <- function(offset, length = NULL) {
   wrap({
     check_number_decimal(offset, allow_infinite = FALSE)
@@ -198,6 +356,17 @@ dataframe__slice <- function(offset, length = NULL) {
   })
 }
 
+#' @inherit LazyFrame_head title details
+#' @param n Number of rows to return. If a negative value is passed,
+#' return all rows except the last [`abs(n)`][abs].
+#' @return A [DataFrame][DataFrame_class]
+#' @examples
+#' df <- pl$DataFrame(foo = 1:5, bar = 6:10, ham = letters[1:5])
+#'
+#' df$head(3)
+#'
+#' # Pass a negative value to get all rows except the last `abs(n)`.
+#' df$head(-3)
 dataframe__head <- function(n = 5) {
   wrap({
     if (isTRUE(n < 0)) {
@@ -207,6 +376,17 @@ dataframe__head <- function(n = 5) {
   })
 }
 
+#' @inherit LazyFrame_tail title
+#' @param n Number of rows to return. If a negative value is passed,
+#' return all rows except the first [`abs(n)`][abs].
+#' @inherit DataFrame_head return
+#' @examples
+#' df <- pl$DataFrame(foo = 1:5, bar = 6:10, ham = letters[1:5])
+#'
+#' df$tail(3)
+#'
+#' # Pass a negative value to get all rows except the first `abs(n)`.
+#' df$tail(-3)
 dataframe__tail <- function(n = 5) {
   wrap({
     if (isTRUE(n < 0)) {
@@ -216,22 +396,87 @@ dataframe__tail <- function(n = 5) {
   })
 }
 
+#' Drop columns of a DataFrame
+#'
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Characters of column names to
+#' drop. Passed to [`pl$col()`][pl__col].
+#' @param strict Validate that all column names exist in the schema and throw an
+#' exception if a column name does not exist in the schema.
+#'
+#' @inherit as_polars_df return
+#' @examples
+#' as_polars_df(mtcars)$drop(c("mpg", "hp"))
+#'
+#' # equivalent
+#' as_polars_df(mtcars)$drop("mpg", "hp")
 dataframe__drop <- function(..., strict = TRUE) {
   self$lazy()$drop(..., strict = strict)$collect(`_eager` = TRUE) |>
     wrap()
 }
 
 # TODO: accept formulas for type mapping
+#' Cast DataFrame column(s) to the specified dtype
+#'
+#' @inherit LazyFrame_cast description params
+#'
+#' @inherit as_polars_df return
+#' @examples
+#' df <- pl$DataFrame(
+#'   foo = 1:3,
+#'   bar = c(6, 7, 8),
+#'   ham = as.Date(c("2020-01-02", "2020-03-04", "2020-05-06"))
+#' )
+#'
+#' # Cast only some columns
+#' df$cast(list(foo = pl$Float32, bar = pl$UInt8))
+#'
+#' # Cast all columns to the same type
+#' df$cast(pl$String)
 dataframe__cast <- function(..., strict = TRUE) {
   self$lazy()$cast(..., strict = strict)$collect(`_eager` = TRUE) |>
     wrap()
 }
 
+#' Filter rows of a DataFrame
+#'
+#' @inherit LazyFrame_filter description params details
+#'
+#' @inherit as_polars_df return
+#' @examples
+#' df <- as_polars_df(iris)
+#'
+#' df$filter(pl$col("Sepal.Length") > 5)
+#'
+#' # This is equivalent to
+#' # df$filter(pl$col("Sepal.Length") > 5 & pl$col("Petal.Width") < 1)
+#' df$filter(pl$col("Sepal.Length") > 5, pl$col("Petal.Width") < 1)
+#'
+#' # rows where condition is NA are dropped
+#' iris2 <- iris
+#' iris2[c(1, 3, 5), "Species"] <- NA
+#' df <- as_polars_df(iris2)
+#'
+#' df$filter(pl$col("Species") == "setosa")
 dataframe__filter <- function(...) {
   self$lazy()$filter(...)$collect(`_eager` = TRUE) |>
     wrap()
 }
 
+#' Sort a DataFrame
+#' @inherit LazyFrame_sort details description params
+#' @inheritParams DataFrame_unique
+#' @inherit as_polars_df return
+#' @examples
+#' df <- mtcars
+#' df$mpg[1] <- NA
+#' df <- as_polars_df(df)
+#' df$sort("mpg")
+#' df$sort("mpg", nulls_last = TRUE)
+#' df$sort("cyl", "mpg")
+#' df$sort(c("cyl", "mpg"))
+#' df$sort(c("cyl", "mpg"), descending = TRUE)
+#' df$sort(c("cyl", "mpg"), descending = c(TRUE, FALSE))
+#' df$sort(pl$col("cyl"), pl$col("mpg"))
 dataframe__sort <- function(
     ...,
     descending = FALSE,
