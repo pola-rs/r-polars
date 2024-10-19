@@ -2,6 +2,10 @@
 
 ## Polars R Package (development version)
 
+### Bug fixes
+
+- Maintain level order when converting Enums to factors (#1252, @andyquinterom).
+
 ## Polars R Package 0.20.0
 
 - Updated rust-polars to 0.43.1 (#1230).
