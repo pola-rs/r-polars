@@ -23,8 +23,8 @@
 #'
 #' ## Using dynamic dots feature
 #' pl$LazyFrame(!!!data)
-pl__LazyFrame <- function(...) {
-  pl$DataFrame(...)$lazy()
+pl__LazyFrame <- function(..., .schema_overrides = NULL, .strict = TRUE) {
+  pl$DataFrame(..., .schema_overrides = .schema_overrides, .strict = .strict)$lazy()
 }
 
 # The env for storing lazyrame methods
@@ -232,14 +232,15 @@ lazyframe__explain <- function(
   })
 }
 
-lazyframe__cast <- function(..., strict = TRUE) {
+lazyframe__cast <- function(..., .strict = TRUE) {
   wrap({
+    check_bool(.strict)
     dtypes <- parse_into_list_of_datatypes(...)
 
     if (length(dtypes) == 1L && !is_named(dtypes)) {
-      self$`_ldf`$cast_all(dtypes[[1]], strict)
+      self$`_ldf`$cast_all(dtypes[[1]], strict = .strict)
     } else {
-      self$`_ldf`$cast(dtypes, strict)
+      self$`_ldf`$cast(dtypes, strict = .strict)
     }
   })
 }

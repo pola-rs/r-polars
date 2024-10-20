@@ -4,7 +4,7 @@
 \alias{dataframe__cast}
 \title{Cast DataFrame column(s) to the specified dtype}
 \usage{
-dataframe__cast(..., strict = TRUE)
+dataframe__cast(..., .strict = TRUE)
 }
 \value{
 A polars \link{DataFrame}
@@ -20,7 +20,7 @@ df <- pl$DataFrame(
 )
 
 # Cast only some columns
-df$cast(list(foo = pl$Float32, bar = pl$UInt8))
+df$cast(foo = pl$Float32, bar = pl$UInt8)
 
 # Cast all columns to the same type
 df$cast(pl$String)

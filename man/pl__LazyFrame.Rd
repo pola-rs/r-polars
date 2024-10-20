@@ -6,7 +6,7 @@
 \alias{LazyFrame}
 \title{Polars LazyFrame class (\code{polars_lazy_frame})}
 \usage{
-pl__LazyFrame(...)
+pl__LazyFrame(..., .schema_overrides = NULL, .strict = TRUE)
 }
 \arguments{
 \item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}>
@@ -16,6 +16,13 @@ Each \link{Series} will be used as a column of the \link{DataFrame}.
 All values must be the same length.
 Each name will be used as the column name. If the name is empty,
 the original name of the \link{Series} will be used.}
+
+\item{.schema_overrides}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+A list of polars data types or \code{NULL} (default).
+Passed to the \code{\link[=dataframe__cast]{$cast()}} method as dynamic-dots.}
+
+\item{.strict}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+A logical value. Passed to the \code{\link[=dataframe__cast]{$cast()}} method's \code{.strict} argument.}
 }
 \value{
 A polars \link{LazyFrame}

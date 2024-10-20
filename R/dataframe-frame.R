@@ -8,9 +8,9 @@
 #' while Polars DataFrame's columns are [Polars Series][Series].
 #'
 #' The `pl$DataFrame()` function mimics the constructor of the DataFrame class of Python Polars.
-#' This function is basically a shortcut for `list(...) |> as_polars_df()`,
-#' so each argument in `...` is converted to a Polars Series by [as_polars_series()]
-#' and then passed to [as_polars_df()].
+#' This function is basically a shortcut for
+#' `as_polars_df(list(...))$cast(!!!.schema_overrides, .strict = .strict)`, so each argument in `...` is
+#' converted to a Polars Series by [as_polars_series()] and then passed to [as_polars_df()].
 #' @aliases polars_data_frame DataFrame
 #'
 #' @section Active bindings:
@@ -27,6 +27,11 @@
 #' All values must be the same length.
 #' Each name will be used as the column name. If the name is empty,
 #' the original name of the [Series] will be used.
+#' @param .schema_overrides `r lifecycle::badge("experimental")`
+#' A list of polars data types or `NULL` (default).
+#' Passed to the [`$cast()`][dataframe__cast] method as dynamic-dots.
+#' @param .strict `r lifecycle::badge("experimental")`
+#' A logical value. Passed to the [`$cast()`][dataframe__cast] method's `.strict` argument.
 #' @return A polars [DataFrame]
 #' @examples
 #' # Constructing a DataFrame from vectors:
@@ -53,23 +58,26 @@
 #' df$shape
 #' df$height
 #' df$width
-pl__DataFrame <- function(...) {
-  .data <- list2(...)
+pl__DataFrame <- function(..., .schema_overrides = NULL, .strict = TRUE) {
+  wrap({
+    check_list_of_polars_dtype(.schema_overrides, allow_null = TRUE)
 
-  # Special error to show hint to use `pl$select` instead of `pl$DataFrame`
-  for (val in .data) {
-    if (is_polars_expr(val)) {
-      abort(
-        c(
-          "passing polars expression objects to `pl$DataFrame()` is not supported.",
-          i = "Try evaluating the expression first using `pl$select()`."
+    .data <- list2(...)
+
+    # Special error to show hint to use `pl$select` instead of `pl$DataFrame`
+    for (val in .data) {
+      if (is_polars_expr(val)) {
+        abort(
+          c(
+            "passing polars expression objects to `pl$DataFrame()` is not supported.",
+            i = "Try evaluating the expression first using `pl$select()`."
+          )
         )
-      )
+      }
     }
-  }
 
-  .data |>
-    as_polars_df()
+    as_polars_df(.data)$cast(!!!.schema_overrides, .strict = .strict)
+  })
 }
 
 # The env for storing dataframe methods
@@ -417,8 +425,7 @@ dataframe__drop <- function(..., strict = TRUE) {
 # TODO: accept formulas for type mapping
 #' Cast DataFrame column(s) to the specified dtype
 #'
-#' @inherit LazyFrame_cast description params
-#'
+#' @inherit lazyframe__cast description params
 #' @inherit as_polars_df return
 #' @examples
 #' df <- pl$DataFrame(
@@ -428,12 +435,12 @@ dataframe__drop <- function(..., strict = TRUE) {
 #' )
 #'
 #' # Cast only some columns
-#' df$cast(list(foo = pl$Float32, bar = pl$UInt8))
+#' df$cast(foo = pl$Float32, bar = pl$UInt8)
 #'
 #' # Cast all columns to the same type
 #' df$cast(pl$String)
-dataframe__cast <- function(..., strict = TRUE) {
-  self$lazy()$cast(..., strict = strict)$collect(`_eager` = TRUE) |>
+dataframe__cast <- function(..., .strict = TRUE) {
+  self$lazy()$cast(..., .strict = .strict)$collect(`_eager` = TRUE) |>
     wrap()
 }
 
