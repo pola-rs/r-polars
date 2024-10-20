@@ -2,7 +2,7 @@ use crate::prelude::*;
 use polars_core::utils::arrow::array::Utf8ViewArray;
 use savvy::{
     r_println, savvy, EnvironmentSexp, ListSexp, NullSexp, NumericScalar, NumericSexp,
-    OwnedListSexp, OwnedRealSexp, Result, Sexp, StringSexp,
+    OwnedListSexp, OwnedRealSexp, OwnedStringSexp, Result, Sexp, StringSexp,
 };
 
 // As not like in Python, define the data type class in
@@ -212,6 +212,43 @@ impl PlRDataType {
         Ok(())
     }
 
+    fn _get_dtype_names(&self) -> Result<Sexp> {
+        let names = match &self.dt {
+            DataType::Int8 => vec!["int8", "signed_integer", "integer", "numeric"],
+            DataType::Int16 => vec!["int16", "signed_integer", "integer", "numeric"],
+            DataType::Int32 => vec!["int32", "signed_integer", "integer", "numeric"],
+            DataType::Int64 => vec!["int64", "signed_integer", "integer", "numeric"],
+            DataType::UInt8 => vec!["uint8", "unsigned_integer", "integer", "numeric"],
+            DataType::UInt16 => vec!["uint16", "unsigned_integer", "integer", "numeric"],
+            DataType::UInt32 => vec!["uint32", "unsigned_integer", "integer", "numeric"],
+            DataType::UInt64 => vec!["uint64", "unsigned_integer", "integer", "numeric"],
+            DataType::Float32 => vec!["float32", "float", "numeric"],
+            DataType::Float64 => vec!["float64", "float", "numeric"],
+            DataType::Decimal(_, _) => vec!["decimal", "numeric"],
+            DataType::Boolean => vec!["boolean"],
+            DataType::String => vec!["string"],
+            DataType::Binary => vec!["binary"],
+            DataType::Date => vec!["date", "temporal"],
+            DataType::Time => vec!["time", "temporal"],
+            DataType::Datetime(_, _) => vec!["datetime", "temporal"],
+            DataType::Duration(_) => vec!["duration", "temporal"],
+            DataType::Categorical(_, _) => vec!["categorical"],
+            DataType::Enum(_, _) => vec!["enum"],
+            DataType::Null => vec!["null"],
+            DataType::Unknown(_) => vec!["unknown"],
+            DataType::List(_) => vec!["list", "nested"],
+            DataType::Array(_, _) => vec!["array", "nested"],
+            DataType::Struct(_) => vec!["struct", "nested"],
+            // TODO: what is this? It does not seem supported by py-polars
+            DataType::BinaryOffset => vec!["binary_offset"],
+        }
+        .iter()
+        .map(|s| format!("polars_dtype_{s}"))
+        .collect::<Vec<_>>();
+        let out = OwnedStringSexp::try_from(names)?;
+        Ok(out.into())
+    }
+
     fn _get_datatype_fields(&self) -> Result<Sexp> {
         match &self.dt {
             DataType::Decimal(precision, scale) => {
@@ -302,93 +339,5 @@ impl PlRDataType {
 
     fn ne(&self, other: &PlRDataType) -> Result<Sexp> {
         (self.dt != other.dt).try_into()
-    }
-
-    fn is_array(&self) -> Result<Sexp> {
-        self.dt.is_array().try_into()
-    }
-
-    fn is_binary(&self) -> Result<Sexp> {
-        self.dt.is_binary().try_into()
-    }
-
-    fn is_bool(&self) -> Result<Sexp> {
-        self.dt.is_bool().try_into()
-    }
-
-    fn is_categorical(&self) -> Result<Sexp> {
-        self.dt.is_categorical().try_into()
-    }
-
-    fn is_date(&self) -> Result<Sexp> {
-        self.dt.is_date().try_into()
-    }
-
-    fn is_enum(&self) -> Result<Sexp> {
-        self.dt.is_enum().try_into()
-    }
-
-    fn is_float(&self) -> Result<Sexp> {
-        self.dt.is_float().try_into()
-    }
-
-    fn is_integer(&self) -> Result<Sexp> {
-        self.dt.is_integer().try_into()
-    }
-
-    fn is_known(&self) -> Result<Sexp> {
-        self.dt.is_known().try_into()
-    }
-
-    fn is_list(&self) -> Result<Sexp> {
-        self.dt.is_list().try_into()
-    }
-
-    fn is_logical(&self) -> Result<Sexp> {
-        self.dt.is_bool().try_into()
-    }
-
-    fn is_nested(&self) -> Result<Sexp> {
-        self.dt.is_nested().try_into()
-    }
-
-    fn is_nested_null(&self) -> Result<Sexp> {
-        self.dt.is_nested_null().try_into()
-    }
-
-    fn is_null(&self) -> Result<Sexp> {
-        self.dt.is_null().try_into()
-    }
-
-    fn is_numeric(&self) -> Result<Sexp> {
-        self.dt.is_numeric().try_into()
-    }
-
-    fn is_ord(&self) -> Result<Sexp> {
-        self.dt.is_ord().try_into()
-    }
-
-    fn is_primitive(&self) -> Result<Sexp> {
-        self.dt.is_primitive().try_into()
-    }
-
-    fn is_signed_integer(&self) -> Result<Sexp> {
-        self.dt.is_signed_integer().try_into()
-    }
-
-    fn is_string(&self) -> Result<Sexp> {
-        self.dt.is_string().try_into()
-    }
-
-    fn is_struct(&self) -> Result<Sexp> {
-        self.dt.is_struct().try_into()
-    }
-
-    fn is_temporal(&self) -> Result<Sexp> {
-        self.dt.is_temporal().try_into()
-    }
-
-    fn is_unsigned_integer(&self) -> Result<Sexp> {
-        self.dt.is_unsigned_integer().try_into()
     }
 }

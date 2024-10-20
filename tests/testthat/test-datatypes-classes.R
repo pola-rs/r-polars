@@ -37,6 +37,7 @@ patrick::with_parameters_test_that(
     )
   },
   code = {
+    expect_snapshot(print(class(object)))
     expect_snapshot(print(object))
   }
 )

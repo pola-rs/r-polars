@@ -84,7 +84,7 @@ as_polars_df.polars_series <- function(
     x, ...,
     column_name = NULL,
     from_struct = TRUE) {
-  if (isTRUE(from_struct) && x$dtype$is_struct()) {
+  if (isTRUE(from_struct) && inherits(x$dtype, "polars_dtype_struct")) {
     x$struct$unnest()
   } else {
     x$to_frame(name = column_name)

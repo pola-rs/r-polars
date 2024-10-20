@@ -107,15 +107,14 @@ expr_str_strptime <- function(
     check_dots_empty0(...)
     check_polars_dtype(dtype)
 
-    if (pl$same_outer_dt(dtype, pl$Datetime())) {
-      datetime_type <- dtype$`_rexpr`$get_insides()
-      out <- self$`_rexpr`$str_to_datetime(
-        format, datetime_type$tu, datetime_type$tz, strict, exact, cache, ambiguous
-      )
-      out$`_rexpr`$dt_cast_time_unit(expr, datetime_type$tu)
-    } else if (dtype$is_date()) {
+    dtype_class <- class(dtype)
+    if ("polars_dtype_datetime" %in% dtype_class) {
+      self$`_rexpr`$str_to_datetime(
+        format, dtype$time_unit, dtype$time_zone, strict, exact, cache, ambiguous
+      )$dt_cast_time_unit(expr, dtype$time_unit)
+    } else if ("polars_dtype_date" %in% dtype_class) {
       self$`_rexpr`$str_to_date(format, strict, exact, cache)
-    } else if (dtype$eq(pl$Time)) {
+    } else if ("polars_dtype_time" %in% dtype_class) {
       self$`_rexpr`$str_to_time(format, strict, cache)
     } else {
       abort("`dtype` must be of type Date, Datetime, or Time.")

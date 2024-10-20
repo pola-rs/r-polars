@@ -7,6 +7,7 @@ polars_datatype__methods <- new.env(parent = emptyenv())
 wrap.PlRDataType <- function(x, ...) {
   self <- new.env(parent = emptyenv())
   self$`_dt` <- x
+  dtype_names <- x$`_get_dtype_names`()
 
   lapply(names(polars_datatype__methods), function(name) {
     fn <- polars_datatype__methods[[name]]
@@ -15,11 +16,11 @@ wrap.PlRDataType <- function(x, ...) {
   })
 
   ## Enum only method
-  if (self$`_dt`$is_enum()) {
+  if ("polars_dtype_enum" %in% dtype_names) {
     fn <- function(other) {
       wrap({
         check_polars_dtype(other)
-        if (!other$`_dt`$is_enum()) {
+        if (!inherits(other, "polars_dtype_enum")) {
           abort("`other` must be a Enum data type")
         }
 
@@ -51,7 +52,7 @@ wrap.PlRDataType <- function(x, ...) {
     }, self)
   }
 
-  class(self) <- c("polars_data_type", "polars_object")
+  class(self) <- c("polars_data_type", dtype_names, "polars_object")
   self
 }
 
@@ -157,86 +158,34 @@ datatype__ne <- function(other) {
   })
 }
 
-datatype__is_array <- function() {
-  self$`_dt`$is_array()
+datatype__is_numeric <- function() {
+  inherits(self, "polars_dtype_numeric")
 }
 
-datatype__is_binary <- function() {
-  self$`_dt`$is_binary()
-}
-
-datatype__is_categorical <- function() {
-  self$`_dt`$is_categorical()
-}
-
-datatype__is_date <- function() {
-  self$`_dt`$is_date()
-}
-
-datatype__is_enum <- function() {
-  self$`_dt`$is_enum()
-}
-
-datatype__is_float <- function() {
-  self$`_dt`$is_float()
+datatype__is_decimal <- function() {
+  inherits(self, "polars_dtype_decimal")
 }
 
 datatype__is_integer <- function() {
-  self$`_dt`$is_integer()
-}
-
-datatype__is_known <- function() {
-  self$`_dt`$is_known()
-}
-
-datatype__is_logical <- function() {
-  self$`_dt`$is_bool()
-}
-
-datatype__is_list <- function() {
-  self$`_dt`$is_list()
-}
-
-datatype__is_nested <- function() {
-  self$`_dt`$is_nested()
-}
-
-datatype__is_nested_null <- function() {
-  self$`_dt`$is_nested_null()
-}
-
-datatype__is_null <- function() {
-  self$`_dt`$is_null()
-}
-
-datatype__is_numeric <- function() {
-  self$`_dt`$is_numeric()
-}
-
-datatype__is_ord <- function() {
-  self$`_dt`$is_ord()
-}
-
-datatype__is_primitive <- function() {
-  self$`_dt`$is_primitive()
+  inherits(self, "polars_dtype_integer")
 }
 
 datatype__is_signed_integer <- function() {
-  self$`_dt`$is_signed_integer()
-}
-
-datatype__is_string <- function() {
-  self$`_dt`$is_string()
-}
-
-datatype__is_struct <- function() {
-  self$`_dt`$is_struct()
-}
-
-datatype__is_temporal <- function() {
-  self$`_dt`$is_temporal()
+  inherits(self, "polars_dtype_signed_integer")
 }
 
 datatype__is_unsigned_integer <- function() {
-  self$`_dt`$is_unsigned_integer()
+  inherits(self, "polars_dtype_unsigned_integer")
+}
+
+datatype__is_float <- function() {
+  inherits(self, "polars_dtype_float")
+}
+
+datatype__is_temporal <- function() {
+  inherits(self, "polars_dtype_temporal")
+}
+
+datatype__is_nested <- function() {
+  inherits(self, "polars_dtype_nested")
 }
