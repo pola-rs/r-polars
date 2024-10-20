@@ -20,7 +20,7 @@ wrap_to_group_by <- function(x, by, maintain_order) {
 groupby__agg <- function(...) {
   self$df$lazy()$group_by(
     !!!self$by,
-    maintain_order = self$maintain_order
+    .maintain_order = self$maintain_order
   )$agg(...)$collect(no_optimization = TRUE) |>
     wrap()
 }
@@ -28,7 +28,7 @@ groupby__agg <- function(...) {
 groupby__head <- function(n = 5) {
   self$df$lazy()$group_by(
     !!!self$by,
-    maintain_order = self$maintain_order
+    .maintain_order = self$maintain_order
   )$head(n)$collect(no_optimization = TRUE) |>
     wrap()
 }
@@ -36,7 +36,7 @@ groupby__head <- function(n = 5) {
 groupby__tail <- function(n = 5) {
   self$df$lazy()$group_by(
     !!!self$by,
-    maintain_order = self$maintain_order
+    .maintain_order = self$maintain_order
   )$tail(n)$collect(no_optimization = TRUE) |>
     wrap()
 }

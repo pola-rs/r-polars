@@ -253,8 +253,8 @@ dataframe__get_columns <- function() {
 #' df$group_by(d = "a", e = pl$col("b") %/% 2)$agg(
 #'   pl$col("c")$mean()
 #' )
-dataframe__group_by <- function(..., maintain_order = FALSE) {
-  wrap_to_group_by(self, list2(...), maintain_order)
+dataframe__group_by <- function(..., .maintain_order = FALSE) {
+  wrap_to_group_by(self, list2(...), .maintain_order)
 }
 
 #' Select and modify columns of a DataFrame
@@ -408,7 +408,7 @@ dataframe__tail <- function(n = 5) {
 #'
 #' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Characters of column names to
 #' drop. Passed to [`pl$col()`][pl__col].
-#' @param strict Validate that all column names exist in the schema and throw an
+#' @param .strict Validate that all column names exist in the schema and throw an
 #' exception if a column name does not exist in the schema.
 #'
 #' @inherit as_polars_df return
@@ -417,8 +417,8 @@ dataframe__tail <- function(n = 5) {
 #'
 #' # equivalent
 #' as_polars_df(mtcars)$drop("mpg", "hp")
-dataframe__drop <- function(..., strict = TRUE) {
-  self$lazy()$drop(..., strict = strict)$collect(`_eager` = TRUE) |>
+dataframe__drop <- function(..., .strict = TRUE) {
+  self$lazy()$drop(..., .strict = .strict)$collect(`_eager` = TRUE) |>
     wrap()
 }
 

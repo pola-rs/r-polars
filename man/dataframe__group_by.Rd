@@ -4,7 +4,7 @@
 \alias{dataframe__group_by}
 \title{Group a DataFrame}
 \usage{
-dataframe__group_by(..., maintain_order = FALSE)
+dataframe__group_by(..., .maintain_order = FALSE)
 }
 \value{
 \link[=GroupBy_class]{GroupBy} (a DataFrame with special groupby methods like \verb{$agg()})

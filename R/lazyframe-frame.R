@@ -102,10 +102,10 @@ lazyframe__select <- function(...) {
   })
 }
 
-lazyframe__group_by <- function(..., maintain_order = FALSE) {
+lazyframe__group_by <- function(..., .maintain_order = FALSE) {
   wrap({
     exprs <- parse_into_list_of_expressions(...)
-    self$`_ldf`$group_by(exprs, maintain_order)
+    self$`_ldf`$group_by(exprs, .maintain_order)
   })
 }
 
@@ -331,12 +331,12 @@ lazyframe__with_columns <- function(...) {
   })
 }
 
-lazyframe__drop <- function(..., strict = TRUE) {
+lazyframe__drop <- function(..., .strict = TRUE) {
   wrap({
     check_dots_unnamed()
 
     parse_into_list_of_expressions(...) |>
-      self$`_ldf`$drop(strict)
+      self$`_ldf`$drop(.strict)
   })
 }
 

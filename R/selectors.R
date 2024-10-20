@@ -76,7 +76,7 @@ cs__all <- function() {
 }
 
 # TODO: check dots no name
-cs__by_name <- function(..., require_all = TRUE) {
+cs__by_name <- function(..., .require_all = TRUE) {
   all_names <- list2(...) |>
     unlist()
 
@@ -89,10 +89,10 @@ cs__by_name <- function(..., require_all = TRUE) {
   )
   match_cols <- all_names
 
-  if (isFALSE(require_all)) {
+  if (isFALSE(.require_all)) {
     match_cols <- paste0(all_names, collapse = "|") |>
       (\(x) (paste0("^(", x, ")$")))()
-    selector_params$require_all <- require_all
+    selector_params$require_all <- .require_all
   }
 
   wrap_to_selector(

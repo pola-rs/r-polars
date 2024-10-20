@@ -81,6 +81,54 @@ as_polars_series(a)
 In the previous version, there were multiple methods for converting Series or DataFrame to R vectors or R lists,
 but in the new version, they have been unified to `$to_r_vector()` of Series.
 
+### Argument name changes
+
+This package has started to use [dynamic-dots](https://rlang.r-lib.org/reference/dyn-dots.html) actively.
+Argument names of functions which have dynamic-dots may have dot (`.`) prefix.
+
+```r
+# Previous version
+as_polars_df(mtcars)$group_by("cyl", maintain_order = TRUE)$agg()
+#> shape: (3, 1)
+#> ┌─────┐
+#> │ cyl │
+#> │ --- │
+#> │ f64 │
+#> ╞═════╡
+#> │ 6.0 │
+#> │ 4.0 │
+#> │ 8.0 │
+#> └─────┘
+```
+
+```r
+# New version
+# TODO: This example is hanging. Why?
+as_polars_df(mtcars)$group_by("cyl", maintain_order = TRUE)$agg()
+#> shape: (3, 2)
+#> ┌─────┬────────────────┐
+#> │ cyl ┆ maintain_order │
+#> │ --- ┆ ---            │
+#> │ f64 ┆ bool           │
+#> ╞═════╪════════════════╡
+#> │ 8.0 ┆ true           │
+#> │ 4.0 ┆ true           │
+#> │ 6.0 ┆ true           │
+#> └─────┴────────────────┘
+
+as_polars_df(mtcars)$group_by("cyl", .maintain_order = TRUE)$agg()
+#> shape: (3, 1)
+#> ┌─────┐
+#> │ cyl │
+#> │ --- │
+#> │ f64 │
+#> ╞═════╡
+#> │ 6.0 │
+#> │ 4.0 │
+#> │ 8.0 │
+#> └─────┘
+```
+
 ### Simplification of class constructor functions
 
 In the new version, since conversion from R classes to Polars classes is completely done through
