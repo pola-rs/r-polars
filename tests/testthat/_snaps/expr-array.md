@@ -87,5 +87,5 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! ComputeError(ErrString("cannot compare string with numeric type (i64)"))
+      ! cannot compare string with numeric type (i64)
 

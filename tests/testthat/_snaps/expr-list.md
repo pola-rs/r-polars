@@ -42,7 +42,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! OutOfBounds(ErrString("gather indices are out of bounds"))
+      ! gather indices are out of bounds
 
 ---
 
@@ -71,7 +71,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! InvalidOperation(ErrString("conversion from `f64` to `u32` failed in column 'literal' for 1 out of 1 values: [-1.0]"))
+      ! Invalid operation: conversion from `f64` to `u32` failed in column 'literal' for 1 out of 1 values: [-1.0]
 
 ---
 
@@ -97,7 +97,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! InvalidOperation(ErrString("conversion from `f64` to `u32` failed in column 'literal' for 1 out of 1 values: [-1.0]"))
+      ! Invalid operation: conversion from `f64` to `u32` failed in column 'literal' for 1 out of 1 values: [-1.0]
 
 # join
 
@@ -126,7 +126,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! ShapeMismatch(ErrString("unable to add a column of length 6 to a DataFrame of height 2"))
+      ! lengths don't match: unable to add a column of length 6 to a DataFrame of height 2
 
 # $list$sample() works
 
@@ -138,5 +138,5 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! ShapeMismatch(ErrString("cannot take a larger sample than the total population when `with_replacement=false`"))
+      ! lengths don't match: cannot take a larger sample than the total population when `with_replacement=false`
 

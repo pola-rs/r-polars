@@ -26,9 +26,19 @@ impl From<ParseError> for RPolarsErr {
 
 impl From<RPolarsErr> for savvy::Error {
     fn from(err: RPolarsErr) -> Self {
-        let default = || savvy::Error::new(format!("{:?}", &err).as_str());
+        use RPolarsErr::*;
+        let default = || savvy::Error::new(format!("{}", &err).as_str());
 
         match err {
+            Polars(PolarsError::ColumnNotFound(x)) => {
+                savvy::Error::new(format!("Column(s) not found: {}", x).as_str())
+            }
+            Polars(PolarsError::Duplicate(x)) => {
+                savvy::Error::new(format!("Duplicated column(s): {}", x).as_str())
+            }
+            Polars(PolarsError::InvalidOperation(x)) => {
+                savvy::Error::new(format!("Invalid operation: {}", x).as_str())
+            }
             _ => default(),
         }
     }
