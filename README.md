@@ -128,7 +128,7 @@ pl$DataFrame(a = "a")$cast(a = pl$Int8)
 #> Caused by error:
 #> ! Evaluation failed in `$collect()`.
 #> Caused by error:
-#> ! InvalidOperation(ErrString("conversion from `str` to `i8` failed in column 'a' for 1 out of 1 values: [\"a\"]"))
+#> ! Invalid operation: conversion from `str` to `i8` failed in column 'a' for 1 out of 1 values: ["a"]
 ```
 
 ``` r
@@ -156,9 +156,6 @@ s$struct$field |>
 #>         wrap(`_s`)$to_frame()$select(expr)$to_series()
 #>     })
 #> }
-```
-
-``` r
 s$struct$field("am")
 #> shape: (32,)
 #> Series: 'am' [f64]
@@ -220,9 +217,6 @@ It is now possible to have different bindings for each instance.
 pl$Struct(a = pl$Int32)$fields
 #> $a
 #> Int32
-```
-
-``` r
 pl$Int32$fields
 #> Error in `pl$Int32$fields`:
 #> ! $ - syntax error: `fields` is not a member of this polars object
