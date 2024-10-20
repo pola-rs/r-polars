@@ -351,6 +351,7 @@ impl TryFrom<NumericScalar> for Wrap<u64> {
         }
     }
 }
+
 impl TryFrom<&str> for Wrap<char> {
     type Error = savvy::Error;
 

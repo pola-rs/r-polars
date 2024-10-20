@@ -26,6 +26,9 @@ thiserror = "1"
 git = "https://github.com/pola-rs/polars.git"
 rev = "be5a4b453ca74bb5e0c782c292e9fca6aa60b203"
 features = [
+    "array_any_all",
+    "array_count",
+    "array_to_struct",
     "binary_encoding",
     "concat_str",
     "cse",

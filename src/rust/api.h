@@ -57,6 +57,26 @@ SEXP savvy_PlRDataType_eq__ffi(SEXP self__, SEXP c_arg__other);
 SEXP savvy_PlRDataType_ne__ffi(SEXP self__, SEXP c_arg__other);
 
 // methods and associated functions for PlRExpr
+SEXP savvy_PlRExpr_arr_max__ffi(SEXP self__);
+SEXP savvy_PlRExpr_arr_min__ffi(SEXP self__);
+SEXP savvy_PlRExpr_arr_sum__ffi(SEXP self__);
+SEXP savvy_PlRExpr_arr_std__ffi(SEXP self__, SEXP c_arg__ddof);
+SEXP savvy_PlRExpr_arr_var__ffi(SEXP self__, SEXP c_arg__ddof);
+SEXP savvy_PlRExpr_arr_median__ffi(SEXP self__);
+SEXP savvy_PlRExpr_arr_unique__ffi(SEXP self__, SEXP c_arg__maintain_order);
+SEXP savvy_PlRExpr_arr_to_list__ffi(SEXP self__);
+SEXP savvy_PlRExpr_arr_all__ffi(SEXP self__);
+SEXP savvy_PlRExpr_arr_any__ffi(SEXP self__);
+SEXP savvy_PlRExpr_arr_sort__ffi(SEXP self__, SEXP c_arg__descending, SEXP c_arg__nulls_last);
+SEXP savvy_PlRExpr_arr_reverse__ffi(SEXP self__);
+SEXP savvy_PlRExpr_arr_arg_min__ffi(SEXP self__);
+SEXP savvy_PlRExpr_arr_arg_max__ffi(SEXP self__);
+SEXP savvy_PlRExpr_arr_get__ffi(SEXP self__, SEXP c_arg__index, SEXP c_arg__null_on_oob);
+SEXP savvy_PlRExpr_arr_join__ffi(SEXP self__, SEXP c_arg__separator, SEXP c_arg__ignore_nulls);
+SEXP savvy_PlRExpr_arr_contains__ffi(SEXP self__, SEXP c_arg__other);
+SEXP savvy_PlRExpr_arr_count_matches__ffi(SEXP self__, SEXP c_arg__expr);
+SEXP savvy_PlRExpr_arr_shift__ffi(SEXP self__, SEXP c_arg__n);
+SEXP savvy_PlRExpr_arr_n_unique__ffi(SEXP self__);
 SEXP savvy_PlRExpr_bin_contains__ffi(SEXP self__, SEXP c_arg__literal);
 SEXP savvy_PlRExpr_bin_ends_with__ffi(SEXP self__, SEXP c_arg__suffix);
 SEXP savvy_PlRExpr_bin_starts_with__ffi(SEXP self__, SEXP c_arg__prefix);

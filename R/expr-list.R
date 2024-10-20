@@ -260,7 +260,7 @@ expr_list_gather_every <- function(n, offset = 0) {
 #'   first = pl$col("a")$list$first()
 #' )
 expr_list_first <- function() {
-  self$`_rexpr`$list_get(pl$lit(0)$`_rexpr`, null_on_oob = TRUE) |>
+  self$get(0, null_on_oob = TRUE) |>
     wrap()
 }
 
@@ -274,7 +274,7 @@ expr_list_first <- function() {
 #'   last = pl$col("a")$list$last()
 #' )
 expr_list_last <- function() {
-  self$`_rexpr`$list_get(pl$lit(-1)$`_rexpr`, null_on_oob = TRUE) |>
+  self$get(-1, null_on_oob = TRUE) |>
     wrap()
 }
 
