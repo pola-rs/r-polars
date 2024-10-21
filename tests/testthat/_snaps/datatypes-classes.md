@@ -302,6 +302,21 @@
     Output
       Datetime(time_unit='ns', time_zone='UTC')
 
+# data types print Datetime('us', 'UTC')
+
+    Code
+      print(class(object))
+    Output
+      [1] "polars_data_type"      "polars_dtype_datetime" "polars_dtype_temporal"
+      [4] "polars_object"        
+
+---
+
+    Code
+      print(object)
+    Output
+      Datetime(time_unit='us', time_zone='UTC')
+
 # data types print Duration('ms')
 
     Code
@@ -316,6 +331,21 @@
       print(object)
     Output
       Duration(time_unit='ms')
+
+# data types print Duration('us')
+
+    Code
+      print(class(object))
+    Output
+      [1] "polars_data_type"      "polars_dtype_duration" "polars_dtype_temporal"
+      [4] "polars_object"        
+
+---
+
+    Code
+      print(object)
+    Output
+      Duration(time_unit='us')
 
 # data types print List(String)
 

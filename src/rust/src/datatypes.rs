@@ -61,12 +61,12 @@ impl std::fmt::Display for PlRDataType {
                 write!(
                     f,
                     "Datetime(time_unit='{}', time_zone={})",
-                    time_unit,
+                    time_unit.to_ascii(),
                     opt_string_to_string(time_zone.clone())
                 )
             }
             DataType::Duration(time_unit) => {
-                write!(f, "Duration(time_unit='{}')", time_unit)
+                write!(f, "Duration(time_unit='{}')", time_unit.to_ascii())
             }
             DataType::Array(_, _) => {
                 let shape = self
@@ -263,7 +263,7 @@ impl PlRDataType {
             }
             DataType::Datetime(time_unit, time_zone) => {
                 let mut out = OwnedListSexp::new(2, true)?;
-                let time_unit: Sexp = format!("{time_unit}").try_into()?;
+                let time_unit: Sexp = time_unit.to_ascii().try_into()?;
                 let time_zone: Sexp = time_zone
                     .as_ref()
                     .map_or_else(|| NullSexp.into(), |v| v.to_string().try_into())?;
@@ -273,7 +273,7 @@ impl PlRDataType {
             }
             DataType::Duration(time_unit) => {
                 let mut out = OwnedListSexp::new(1, true)?;
-                let time_unit: Sexp = format!("{time_unit}").try_into()?;
+                let time_unit: Sexp = time_unit.to_ascii().try_into()?;
                 let _ = out.set_name_and_value(0, "time_unit", time_unit);
                 Ok(out.into())
             }
