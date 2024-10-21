@@ -96,6 +96,65 @@ NULL
 }
 
 
+`int_range` <- function(`start`, `end`, `step`, `dtype`) {
+  `start` <- .savvy_extract_ptr(`start`, "PlRExpr")
+  `end` <- .savvy_extract_ptr(`end`, "PlRExpr")
+  `dtype` <- .savvy_extract_ptr(`dtype`, "PlRDataType")
+  .savvy_wrap_PlRExpr(.Call(savvy_int_range__impl, `start`, `end`, `step`, `dtype`))
+}
+
+
+`int_ranges` <- function(`start`, `end`, `step`, `dtype`) {
+  `start` <- .savvy_extract_ptr(`start`, "PlRExpr")
+  `end` <- .savvy_extract_ptr(`end`, "PlRExpr")
+  `step` <- .savvy_extract_ptr(`step`, "PlRExpr")
+  `dtype` <- .savvy_extract_ptr(`dtype`, "PlRDataType")
+  .savvy_wrap_PlRExpr(.Call(savvy_int_ranges__impl, `start`, `end`, `step`, `dtype`))
+}
+
+
+`date_range` <- function(`start`, `end`, `interval`, `closed`) {
+  `start` <- .savvy_extract_ptr(`start`, "PlRExpr")
+  `end` <- .savvy_extract_ptr(`end`, "PlRExpr")
+  .savvy_wrap_PlRExpr(.Call(savvy_date_range__impl, `start`, `end`, `interval`, `closed`))
+}
+
+
+`date_ranges` <- function(`start`, `end`, `interval`, `closed`) {
+  `start` <- .savvy_extract_ptr(`start`, "PlRExpr")
+  `end` <- .savvy_extract_ptr(`end`, "PlRExpr")
+  .savvy_wrap_PlRExpr(.Call(savvy_date_ranges__impl, `start`, `end`, `interval`, `closed`))
+}
+
+
+`datetime_range` <- function(`start`, `end`, `every`, `closed`, `time_unit` = NULL, `time_zone` = NULL) {
+  `start` <- .savvy_extract_ptr(`start`, "PlRExpr")
+  `end` <- .savvy_extract_ptr(`end`, "PlRExpr")
+  .savvy_wrap_PlRExpr(.Call(savvy_datetime_range__impl, `start`, `end`, `every`, `closed`, `time_unit`, `time_zone`))
+}
+
+
+`datetime_ranges` <- function(`start`, `end`, `every`, `closed`, `time_unit` = NULL, `time_zone` = NULL) {
+  `start` <- .savvy_extract_ptr(`start`, "PlRExpr")
+  `end` <- .savvy_extract_ptr(`end`, "PlRExpr")
+  .savvy_wrap_PlRExpr(.Call(savvy_datetime_ranges__impl, `start`, `end`, `every`, `closed`, `time_unit`, `time_zone`))
+}
+
+
+`time_range` <- function(`start`, `end`, `every`, `closed`) {
+  `start` <- .savvy_extract_ptr(`start`, "PlRExpr")
+  `end` <- .savvy_extract_ptr(`end`, "PlRExpr")
+  .savvy_wrap_PlRExpr(.Call(savvy_time_range__impl, `start`, `end`, `every`, `closed`))
+}
+
+
+`time_ranges` <- function(`start`, `end`, `every`, `closed`) {
+  `start` <- .savvy_extract_ptr(`start`, "PlRExpr")
+  `end` <- .savvy_extract_ptr(`end`, "PlRExpr")
+  .savvy_wrap_PlRExpr(.Call(savvy_time_ranges__impl, `start`, `end`, `every`, `closed`))
+}
+
+
 `when` <- function(`condition`) {
   `condition` <- .savvy_extract_ptr(`condition`, "PlRExpr")
   .savvy_wrap_PlRWhen(.Call(savvy_when__impl, `condition`))
@@ -687,6 +746,245 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
   function(`ambiguous`, `non_existent`, `time_zone` = NULL) {
     `ambiguous` <- .savvy_extract_ptr(`ambiguous`, "PlRExpr")
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_replace_time_zone__impl, `self`, `ambiguous`, `non_existent`, `time_zone`))
+  }
+}
+
+`PlRExpr_dt_truncate` <- function(self) {
+  function(`every`) {
+    `every` <- .savvy_extract_ptr(`every`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_truncate__impl, `self`, `every`))
+  }
+}
+
+`PlRExpr_dt_round` <- function(self) {
+  function(`every`) {
+    `every` <- .savvy_extract_ptr(`every`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_round__impl, `self`, `every`))
+  }
+}
+
+`PlRExpr_dt_time` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_time__impl, `self`))
+  }
+}
+
+`PlRExpr_dt_date` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_date__impl, `self`))
+  }
+}
+
+`PlRExpr_dt_combine` <- function(self) {
+  function(`time`, `time_unit`) {
+    `time` <- .savvy_extract_ptr(`time`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_combine__impl, `self`, `time`, `time_unit`))
+  }
+}
+
+`PlRExpr_dt_to_string` <- function(self) {
+  function(`format`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_to_string__impl, `self`, `format`))
+  }
+}
+
+`PlRExpr_dt_year` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_year__impl, `self`))
+  }
+}
+
+`PlRExpr_dt_iso_year` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_iso_year__impl, `self`))
+  }
+}
+
+`PlRExpr_dt_quarter` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_quarter__impl, `self`))
+  }
+}
+
+`PlRExpr_dt_month` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_month__impl, `self`))
+  }
+}
+
+`PlRExpr_dt_week` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_week__impl, `self`))
+  }
+}
+
+`PlRExpr_dt_weekday` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_weekday__impl, `self`))
+  }
+}
+
+`PlRExpr_dt_day` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_day__impl, `self`))
+  }
+}
+
+`PlRExpr_dt_ordinal_day` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_ordinal_day__impl, `self`))
+  }
+}
+
+`PlRExpr_dt_hour` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_hour__impl, `self`))
+  }
+}
+
+`PlRExpr_dt_minute` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_minute__impl, `self`))
+  }
+}
+
+`PlRExpr_dt_second` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_second__impl, `self`))
+  }
+}
+
+`PlRExpr_dt_millisecond` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_millisecond__impl, `self`))
+  }
+}
+
+`PlRExpr_dt_microsecond` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_microsecond__impl, `self`))
+  }
+}
+
+`PlRExpr_dt_nanosecond` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_nanosecond__impl, `self`))
+  }
+}
+
+`PlRExpr_dt_timestamp` <- function(self) {
+  function(`time_unit`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_timestamp__impl, `self`, `time_unit`))
+  }
+}
+
+`PlRExpr_dt_epoch_seconds` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_epoch_seconds__impl, `self`))
+  }
+}
+
+`PlRExpr_dt_with_time_unit` <- function(self) {
+  function(`time_unit`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_with_time_unit__impl, `self`, `time_unit`))
+  }
+}
+
+`PlRExpr_dt_cast_time_unit` <- function(self) {
+  function(`time_unit`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_cast_time_unit__impl, `self`, `time_unit`))
+  }
+}
+
+`PlRExpr_dt_total_days` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_total_days__impl, `self`))
+  }
+}
+
+`PlRExpr_dt_total_hours` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_total_hours__impl, `self`))
+  }
+}
+
+`PlRExpr_dt_total_minutes` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_total_minutes__impl, `self`))
+  }
+}
+
+`PlRExpr_dt_total_seconds` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_total_seconds__impl, `self`))
+  }
+}
+
+`PlRExpr_dt_total_milliseconds` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_total_milliseconds__impl, `self`))
+  }
+}
+
+`PlRExpr_dt_total_microseconds` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_total_microseconds__impl, `self`))
+  }
+}
+
+`PlRExpr_dt_total_nanoseconds` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_total_nanoseconds__impl, `self`))
+  }
+}
+
+`PlRExpr_dt_offset_by` <- function(self) {
+  function(`by`) {
+    `by` <- .savvy_extract_ptr(`by`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_offset_by__impl, `self`, `by`))
+  }
+}
+
+`PlRExpr_dt_is_leap_year` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_is_leap_year__impl, `self`))
+  }
+}
+
+`PlRExpr_dt_dst_offset` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_dst_offset__impl, `self`))
+  }
+}
+
+`PlRExpr_dt_base_utc_offset` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_base_utc_offset__impl, `self`))
+  }
+}
+
+`PlRExpr_dt_month_start` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_month_start__impl, `self`))
+  }
+}
+
+`PlRExpr_dt_month_end` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_month_end__impl, `self`))
+  }
+}
+
+`PlRExpr_dt_century` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_century__impl, `self`))
+  }
+}
+
+`PlRExpr_dt_add_business_days` <- function(self) {
+  function(`n`, `week_mask`, `holidays`, `roll`) {
+    `n` <- .savvy_extract_ptr(`n`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_add_business_days__impl, `self`, `n`, `week_mask`, `holidays`, `roll`))
   }
 }
 
@@ -1467,6 +1765,25 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
   }
 }
 
+`PlRExpr_str_to_date` <- function(self) {
+  function(`strict`, `exact`, `cache`, `format` = NULL) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_str_to_date__impl, `self`, `strict`, `exact`, `cache`, `format`))
+  }
+}
+
+`PlRExpr_str_to_datetime` <- function(self) {
+  function(`strict`, `exact`, `cache`, `ambiguous`, `format` = NULL, `time_unit` = NULL, `time_zone` = NULL) {
+    `ambiguous` <- .savvy_extract_ptr(`ambiguous`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_str_to_datetime__impl, `self`, `strict`, `exact`, `cache`, `ambiguous`, `format`, `time_unit`, `time_zone`))
+  }
+}
+
+`PlRExpr_str_to_time` <- function(self) {
+  function(`strict`, `cache`, `format` = NULL) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_str_to_time__impl, `self`, `strict`, `cache`, `format`))
+  }
+}
+
 `PlRExpr_str_split` <- function(self) {
   function(`by`, `inclusive`) {
     `by` <- .savvy_extract_ptr(`by`, "PlRExpr")
@@ -1633,6 +1950,45 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
   e$`cat_set_ordering` <- `PlRExpr_cat_set_ordering`(ptr)
   e$`dt_convert_time_zone` <- `PlRExpr_dt_convert_time_zone`(ptr)
   e$`dt_replace_time_zone` <- `PlRExpr_dt_replace_time_zone`(ptr)
+  e$`dt_truncate` <- `PlRExpr_dt_truncate`(ptr)
+  e$`dt_round` <- `PlRExpr_dt_round`(ptr)
+  e$`dt_time` <- `PlRExpr_dt_time`(ptr)
+  e$`dt_date` <- `PlRExpr_dt_date`(ptr)
+  e$`dt_combine` <- `PlRExpr_dt_combine`(ptr)
+  e$`dt_to_string` <- `PlRExpr_dt_to_string`(ptr)
+  e$`dt_year` <- `PlRExpr_dt_year`(ptr)
+  e$`dt_iso_year` <- `PlRExpr_dt_iso_year`(ptr)
+  e$`dt_quarter` <- `PlRExpr_dt_quarter`(ptr)
+  e$`dt_month` <- `PlRExpr_dt_month`(ptr)
+  e$`dt_week` <- `PlRExpr_dt_week`(ptr)
+  e$`dt_weekday` <- `PlRExpr_dt_weekday`(ptr)
+  e$`dt_day` <- `PlRExpr_dt_day`(ptr)
+  e$`dt_ordinal_day` <- `PlRExpr_dt_ordinal_day`(ptr)
+  e$`dt_hour` <- `PlRExpr_dt_hour`(ptr)
+  e$`dt_minute` <- `PlRExpr_dt_minute`(ptr)
+  e$`dt_second` <- `PlRExpr_dt_second`(ptr)
+  e$`dt_millisecond` <- `PlRExpr_dt_millisecond`(ptr)
+  e$`dt_microsecond` <- `PlRExpr_dt_microsecond`(ptr)
+  e$`dt_nanosecond` <- `PlRExpr_dt_nanosecond`(ptr)
+  e$`dt_timestamp` <- `PlRExpr_dt_timestamp`(ptr)
+  e$`dt_epoch_seconds` <- `PlRExpr_dt_epoch_seconds`(ptr)
+  e$`dt_with_time_unit` <- `PlRExpr_dt_with_time_unit`(ptr)
+  e$`dt_cast_time_unit` <- `PlRExpr_dt_cast_time_unit`(ptr)
+  e$`dt_total_days` <- `PlRExpr_dt_total_days`(ptr)
+  e$`dt_total_hours` <- `PlRExpr_dt_total_hours`(ptr)
+  e$`dt_total_minutes` <- `PlRExpr_dt_total_minutes`(ptr)
+  e$`dt_total_seconds` <- `PlRExpr_dt_total_seconds`(ptr)
+  e$`dt_total_milliseconds` <- `PlRExpr_dt_total_milliseconds`(ptr)
+  e$`dt_total_microseconds` <- `PlRExpr_dt_total_microseconds`(ptr)
+  e$`dt_total_nanoseconds` <- `PlRExpr_dt_total_nanoseconds`(ptr)
+  e$`dt_offset_by` <- `PlRExpr_dt_offset_by`(ptr)
+  e$`dt_is_leap_year` <- `PlRExpr_dt_is_leap_year`(ptr)
+  e$`dt_dst_offset` <- `PlRExpr_dt_dst_offset`(ptr)
+  e$`dt_base_utc_offset` <- `PlRExpr_dt_base_utc_offset`(ptr)
+  e$`dt_month_start` <- `PlRExpr_dt_month_start`(ptr)
+  e$`dt_month_end` <- `PlRExpr_dt_month_end`(ptr)
+  e$`dt_century` <- `PlRExpr_dt_century`(ptr)
+  e$`dt_add_business_days` <- `PlRExpr_dt_add_business_days`(ptr)
   e$`print` <- `PlRExpr_print`(ptr)
   e$`add` <- `PlRExpr_add`(ptr)
   e$`sub` <- `PlRExpr_sub`(ptr)
@@ -1754,6 +2110,9 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
   e$`str_extract_all` <- `PlRExpr_str_extract_all`(ptr)
   e$`str_extract_groups` <- `PlRExpr_str_extract_groups`(ptr)
   e$`str_count_matches` <- `PlRExpr_str_count_matches`(ptr)
+  e$`str_to_date` <- `PlRExpr_str_to_date`(ptr)
+  e$`str_to_datetime` <- `PlRExpr_str_to_datetime`(ptr)
+  e$`str_to_time` <- `PlRExpr_str_to_time`(ptr)
   e$`str_split` <- `PlRExpr_str_split`(ptr)
   e$`str_split_exact` <- `PlRExpr_str_split_exact`(ptr)
   e$`str_splitn` <- `PlRExpr_str_splitn`(ptr)

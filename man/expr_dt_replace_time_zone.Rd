@@ -33,11 +33,26 @@ One of the followings:
 \item \code{"null"}: Return a null value
 }}
 }
+\value{
+A polars \link{expression}
+}
 \description{
-Different from \code{convert_time_zone}, this will also modify the underlying timestamp
-and will ignore the original time zone.
+Different from \link[=expr_dt_convert_time_zone]{$dt$convert_time_zone()}, this
+will also modify the underlying timestamp and will ignore the original time
+zone.
 }
 \examples{
+df <- pl$select(
+  london_timezone = pl$datetime_range(
+    as.Date("2020-03-01"),
+    as.Date("2020-07-01"),
+    "1mo",
+    time_zone = "UTC"
+  )$dt$convert_time_zone(time_zone = "Europe/London")
+)
+df$with_columns(
+  London_to_Amsterdam = pl$col("london_timezone")$dt$replace_time_zone(time_zone="Europe/Amsterdam")
+)
 # You can use `ambiguous` to deal with ambiguous datetimes:
 dates <- c(
   "2018-10-28 01:30",

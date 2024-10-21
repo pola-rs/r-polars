@@ -11,7 +11,7 @@ expr_str_strptime(
   strict = TRUE,
   exact = TRUE,
   cache = TRUE,
-  ambiguous = "raise"
+  ambiguous = c("raise", "earliest", "latest", "null")
 )
 }
 \arguments{
@@ -61,28 +61,28 @@ If no fractional second component is found then the default is \code{"us"} (micr
 }
 \examples{
 # Dealing with a consistent format
-s <- as_polars_series(c("2020-01-01 01:00Z", "2020-01-01 02:00Z"))
+df <- pl$DataFrame(x = c("2020-01-01 01:00Z", "2020-01-01 02:00Z"))
 
-s$str$strptime(pl$Datetime(), "\%Y-\%m-\%d \%H:\%M\%#z")
+df$select(pl$col("x")$str$strptime(pl$Datetime(), "\%Y-\%m-\%d \%H:\%M\%#z"))
 
 # Auto infer format
-s$str$strptime(pl$Datetime())
+df$select(pl$col("x")$str$strptime(pl$Datetime()))
 
 # Datetime with timezone is interpreted as UTC timezone
-as_polars_series("2020-01-01T01:00:00+09:00")$str$strptime(pl$Datetime())
+df <- pl$DataFrame(x = c("2020-01-01T01:00:00+09:00"))
+df$select(pl$col("x")$str$strptime(pl$Datetime()))
 
 # Dealing with different formats.
-s <- as_polars_series(
-  c(
+df <- pl$DataFrame(
+  date = c(
     "2021-04-22",
     "2022-01-04 00:00:00",
     "01/31/22",
     "Sun Jul  8 00:34:60 2001"
-  ),
-  "date"
+  )
 )
 
-s$to_frame()$select(
+df$select(
   pl$coalesce(
     pl$col("date")$str$strptime(pl$Date, "\%F", strict = FALSE),
     pl$col("date")$str$strptime(pl$Date, "\%F \%T", strict = FALSE),
@@ -92,19 +92,19 @@ s$to_frame()$select(
 )
 
 # Ignore invalid time
-s <- as_polars_series(
-  c(
+df <- pl$DataFrame(
+  x = c(
     "2023-01-01 11:22:33 -0100",
     "2023-01-01 11:22:33 +0300",
     "invalid time"
   )
 )
 
-s$str$strptime(
+df$select(pl$col("x")$str$strptime(
   pl$Datetime("ns"),
   format = "\%Y-\%m-\%d \%H:\%M:\%S \%z",
   strict = FALSE
-)
+))
 }
 \seealso{
 \itemize{

@@ -177,7 +177,7 @@ expr_bin_size <- function(unit = c("b", "kb", "mb", "gb", "tb")) {
       "mb" = sz$div(as_polars_expr(1024**2)$`_rexpr`),
       "gb" = sz$div(as_polars_expr(1024**3)$`_rexpr`),
       "tb" = sz$div(as_polars_expr(1024**4)$`_rexpr`),
-      abort("unreachable")
+      abort("Unreachable")
     )
   })
 }

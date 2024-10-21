@@ -185,69 +185,90 @@ impl PlRExpr {
             .into())
     }
 
-    // fn str_to_date(&self, format: &str, strict: bool, exact: bool, cache: bool) -> Result<Self> {
-    //     let format = format.to_string().into();
-    //     Ok(self
-    //         .inner
-    //         .clone()
-    //         .str()
-    //         .to_date(StrptimeOptions {
-    //             format,
-    //             strict,
-    //             exact,
-    //             cache,
-    //         })
-    //         .into())
-    // }
+    fn str_to_date(
+        &self,
+        strict: bool,
+        exact: bool,
+        cache: bool,
+        format: Option<&str>,
+    ) -> Result<Self> {
+        let format = match format {
+            Some(x) => Some(x.into()),
+            None => None,
+        };
+        Ok(self
+            .inner
+            .clone()
+            .str()
+            .to_date(StrptimeOptions {
+                format,
+                strict,
+                exact,
+                cache,
+            })
+            .into())
+    }
 
-    // #[allow(clippy::too_many_arguments)]
-    // fn str_to_datetime(
-    //     &self,
-    //     format: &PlRExpr,
-    //     time_unit: &PlRExpr,
-    //     time_zone: &PlRExpr,
-    //     strict: &PlRExpr,
-    //     exact: &PlRExpr,
-    //     cache: &PlRExpr,
-    //     ambiguous: &PlRExpr,
-    // ) -> Result<Self> {
-    //     let format = robj_to!(Option, String, format)?.map(|x| x.into());
-    //     let time_unit = robj_to!(Option, timeunit, time_unit)?.map(|x| x.into());
-    //     let time_zone = robj_to!(Option, String, time_zone)?.map(|x| x.into());
+    #[allow(clippy::too_many_arguments)]
+    fn str_to_datetime(
+        &self,
+        strict: bool,
+        exact: bool,
+        cache: bool,
+        ambiguous: &PlRExpr,
+        format: Option<&str>,
+        time_unit: Option<&str>,
+        time_zone: Option<&str>,
+    ) -> Result<Self> {
+        let format: Option<PlSmallStr> = match format {
+            Some(x) => Some(x.into()),
+            None => None,
+        };
+        let time_unit: Option<TimeUnit> = match time_unit {
+            Some(x) => Some(<Wrap<TimeUnit>>::try_from(x)?.0),
+            None => None,
+        };
+        let time_zone: Option<PlSmallStr> = match time_zone {
+            Some(x) => Some(x.into()),
+            None => None,
+        };
 
-    //     Ok(self
-    //         .inner
-    //         .clone()
-    //         .str()
-    //         .to_datetime(
-    //             time_unit,
-    //             time_zone,
-    //             StrptimeOptions {
-    //                 format: format,
-    //                 strict: robj_to!(bool, strict)?,
-    //                 exact: robj_to!(bool, exact)?,
-    //                 cache: robj_to!(bool, cache)?,
-    //             },
-    //             robj_to!(PLExpr, ambiguous)?,
-    //         )
-    //         .into())
-    // }
+        Ok(self
+            .inner
+            .clone()
+            .str()
+            .to_datetime(
+                time_unit,
+                time_zone,
+                StrptimeOptions {
+                    format,
+                    strict,
+                    exact,
+                    cache,
+                },
+                ambiguous.inner.clone(),
+            )
+            .into())
+    }
 
-    // fn str_to_time(&self, format: &PlRExpr, strict: &PlRExpr, cache: &PlRExpr) -> Result<Self> {
-    //     let format = robj_to!(Option, String, format)?.map(|x| x.into());
+    fn str_to_time(&self, strict: bool, cache: bool, format: Option<&str>) -> Result<Self> {
+        let format = match format {
+            Some(x) => Some(x.into()),
+            None => None,
+        };
 
-    //     Ok(self
-    //         .inner
-    //         .clone()
-    //         .str()
-    //         .to_time(StrptimeOptions {
-    //             format,
-    //             strict: robj_to!(bool, strict)?,
-    //             cache: robj_to!(bool, cache)?,
-    //             exact: true,
-    //         })
-    //         .into())
-    // }
+        Ok(self
+            .inner
+            .clone()
+            .str()
+            .to_time(StrptimeOptions {
+                format,
+                strict,
+                cache,
+                exact: true,
+            })
+            .into())
+    }
 
     fn str_split(&self, by: &PlRExpr, inclusive: bool) -> Result<Self> {
         if inclusive {

@@ -29,9 +29,9 @@ A polars \link{expression}
 Convert a String column into a Time column
 }
 \examples{
-s <- as_polars_series(c("01:00", "02:00", "03:00"))
+df <- pl$DataFrame(x = c("01:00", "02:00", "03:00"))
 
-s$str$to_time("\%H:\%M")
+df$select(pl$col("x")$str$to_time("\%H:\%M"))
 }
 \seealso{
 \itemize{

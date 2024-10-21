@@ -51,28 +51,28 @@ namespace_expr_str <- function(x) {
 #' - [`<Expr>$str$to_time()`][expr_str_to_time]
 #' @examples
 #' # Dealing with a consistent format
-#' s <- as_polars_series(c("2020-01-01 01:00Z", "2020-01-01 02:00Z"))
+#' df <- pl$DataFrame(x = c("2020-01-01 01:00Z", "2020-01-01 02:00Z"))
 #'
-#' s$str$strptime(pl$Datetime(), "%Y-%m-%d %H:%M%#z")
+#' df$select(pl$col("x")$str$strptime(pl$Datetime(), "%Y-%m-%d %H:%M%#z"))
 #'
 #' # Auto infer format
-#' s$str$strptime(pl$Datetime())
+#' df$select(pl$col("x")$str$strptime(pl$Datetime()))
 #'
 #' # Datetime with timezone is interpreted as UTC timezone
-#' as_polars_series("2020-01-01T01:00:00+09:00")$str$strptime(pl$Datetime())
+#' df <- pl$DataFrame(x = c("2020-01-01T01:00:00+09:00"))
+#' df$select(pl$col("x")$str$strptime(pl$Datetime()))
 #'
 #' # Dealing with different formats.
-#' s <- as_polars_series(
-#'   c(
+#' df <- pl$DataFrame(
+#'   date = c(
 #'     "2021-04-22",
 #'     "2022-01-04 00:00:00",
 #'     "01/31/22",
 #'     "Sun Jul  8 00:34:60 2001"
-#'   ),
-#'   "date"
+#'   )
 #' )
 #'
-#' s$to_frame()$select(
+#' df$select(
 #'   pl$coalesce(
 #'     pl$col("date")$str$strptime(pl$Date, "%F", strict = FALSE),
 #'     pl$col("date")$str$strptime(pl$Date, "%F %T", strict = FALSE),
@@ -82,19 +82,19 @@ namespace_expr_str <- function(x) {
 #' )
 #'
 #' # Ignore invalid time
-#' s <- as_polars_series(
-#'   c(
+#' df <- pl$DataFrame(
+#'   x = c(
 #'     "2023-01-01 11:22:33 -0100",
 #'     "2023-01-01 11:22:33 +0300",
 #'     "invalid time"
 #'   )
 #' )
 #'
-#' s$str$strptime(
+#' df$select(pl$col("x")$str$strptime(
 #'   pl$Datetime("ns"),
 #'   format = "%Y-%m-%d %H:%M:%S %z",
 #'   strict = FALSE
-#' )
+#' ))
 expr_str_strptime <- function(
     dtype,
     format = NULL,
@@ -102,20 +102,25 @@ expr_str_strptime <- function(
     strict = TRUE,
     exact = TRUE,
     cache = TRUE,
-    ambiguous = "raise") {
+    ambiguous = c("raise", "earliest", "latest", "null")) {
   wrap({
     check_dots_empty0(...)
     check_polars_dtype(dtype)
-
     dtype_class <- class(dtype)
     if ("polars_dtype_datetime" %in% dtype_class) {
+      if (!is_polars_expr(ambiguous)) {
+        ambiguous <- arg_match0(ambiguous, c("raise", "earliest", "latest", "null")) |>
+          as_polars_expr(as_lit = TRUE)
+      }
       self$`_rexpr`$str_to_datetime(
-        format, dtype$time_unit, dtype$time_zone, strict, exact, cache, ambiguous
-      )$dt_cast_time_unit(expr, dtype$time_unit)
+        format = format, time_unit = dtype$time_unit, time_zone = dtype$time_zone,
+        strict = strict, exact = exact, cache = cache,
+        ambiguous = ambiguous$`_rexpr`
+      )
     } else if ("polars_dtype_date" %in% dtype_class) {
-      self$`_rexpr`$str_to_date(format, strict, exact, cache)
+      self$`_rexpr`$str_to_date(format = format, strict = strict, exact = exact, cache = cache)
     } else if ("polars_dtype_time" %in% dtype_class) {
-      self$`_rexpr`$str_to_time(format, strict, cache)
+      self$`_rexpr`$str_to_time(format = format, strict = strict, cache = cache)
     } else {
       abort("`dtype` must be of type Date, Datetime, or Time.")
     }
@@ -130,18 +135,20 @@ expr_str_strptime <- function(
 #' @seealso
 #' - [`<Expr>$str$strptime()`][expr_str_strptime]
 #' @examples
-#' s <- as_polars_series(c("2020/01/01", "2020/02/01", "2020/03/01"))
+#' df <- pl$DataFrame(x = c("2020/01/01", "2020/02/01", "2020/03/01"))
 #'
-#' s$str$to_date()
+#' df$select(pl$col("x")$str$to_date())
 #'
 #' # by default, this errors if some values cannot be converted
-#' s <- as_polars_series(c("2020/01/01", "2020 02 01", "2020-03-01"))
-#' try(s$str$to_date())
-#' s$str$to_date(strict = FALSE)
+#' df <- pl$DataFrame(x = c("2020/01/01", "2020 02 01", "2020-03-01"))
+#' try(df$select(pl$col("x")$str$to_date()))
+#' df$select(pl$col("x")$str$to_date(strict = FALSE))
 expr_str_to_date <- function(format = NULL, ..., strict = TRUE, exact = TRUE, cache = TRUE) {
   wrap({
     check_dots_empty0(...)
-    self$`_rexpr`$str_to_date(format, strict, exact, cache)
+    self$`_rexpr`$str_to_date(
+      format = format, strict = strict, exact = exact, cache = cache
+    )
   })
 }
 
@@ -153,13 +160,13 @@ expr_str_to_date <- function(format = NULL, ..., strict = TRUE, exact = TRUE, ca
 #' @seealso
 #' - [`<Expr>$str$strptime()`][expr_str_strptime]
 #' @examples
-#' s <- as_polars_series(c("01:00", "02:00", "03:00"))
+#' df <- pl$DataFrame(x = c("01:00", "02:00", "03:00"))
 #'
-#' s$str$to_time("%H:%M")
+#' df$select(pl$col("x")$str$to_time("%H:%M"))
 expr_str_to_time <- function(format = NULL, ..., strict = TRUE, cache = TRUE) {
   wrap({
     check_dots_empty0(...)
-    self$`_rexpr`$str_to_time(format, strict, cache)
+    self$`_rexpr`$str_to_time(format = format, strict = strict, cache = cache)
   })
 }
 
@@ -178,10 +185,10 @@ expr_str_to_time <- function(format = NULL, ..., strict = TRUE, cache = TRUE) {
 #' @seealso
 #' - [`<Expr>$str$strptime()`][expr_str_strptime]
 #' @examples
-#' s <- as_polars_series(c("2020-01-01 01:00Z", "2020-01-01 02:00Z"))
+#' df <- pl$DataFrame(x = c("2020-01-01 01:00Z", "2020-01-01 02:00Z"))
 #'
-#' s$str$to_datetime("%Y-%m-%d %H:%M%#z")
-#' s$str$to_datetime(time_unit = "ms")
+#' df$select(pl$col("x")$str$to_datetime("%Y-%m-%d %H:%M%#z"))
+#' df$select(pl$col("x")$str$to_datetime(time_unit = "ms"))
 expr_str_to_datetime <- function(
     format = NULL,
     ...,
@@ -190,11 +197,17 @@ expr_str_to_datetime <- function(
     strict = TRUE,
     exact = TRUE,
     cache = TRUE,
-    ambiguous = "raise") {
+    ambiguous = c("raise", "earliest", "latest", "null")) {
   wrap({
     check_dots_empty0(...)
+    if (!is_polars_expr(ambiguous)) {
+      ambiguous <- arg_match0(ambiguous, c("raise", "earliest", "latest", "null")) |>
+        as_polars_expr(as_lit = TRUE)
+    }
     self$`_rexpr`$str_to_datetime(
-      self, format, time_unit, time_zone, strict, exact, cache, ambiguous
+      format = format, time_unit = time_unit, time_zone = time_zone,
+      strict = strict, exact = exact, cache = cache,
+      ambiguous = ambiguous$`_rexpr`
     )
   })
 }

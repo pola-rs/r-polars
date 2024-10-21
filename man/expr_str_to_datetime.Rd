@@ -12,7 +12,7 @@ expr_str_to_datetime(
   strict = TRUE,
   exact = TRUE,
   cache = TRUE,
-  ambiguous = "raise"
+  ambiguous = c("raise", "earliest", "latest", "null")
 )
 }
 \arguments{
@@ -58,10 +58,10 @@ A polars \link{expression}
 Convert a String column into a Datetime column
 }
 \examples{
-s <- as_polars_series(c("2020-01-01 01:00Z", "2020-01-01 02:00Z"))
+df <- pl$DataFrame(x = c("2020-01-01 01:00Z", "2020-01-01 02:00Z"))
 
-s$str$to_datetime("\%Y-\%m-\%d \%H:\%M\%#z")
-s$str$to_datetime(time_unit = "ms")
+df$select(pl$col("x")$str$to_datetime("\%Y-\%m-\%d \%H:\%M\%#z"))
+df$select(pl$col("x")$str$to_datetime(time_unit = "ms"))
 }
 \seealso{
 \itemize{
