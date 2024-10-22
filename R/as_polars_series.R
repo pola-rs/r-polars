@@ -213,6 +213,7 @@ as_polars_series.factor <- function(x, name = NULL, ...) {
     wrap()
 }
 
+# TODO: Use `$floor()` before casting to `Date`. Ref: `as.Date(-0.1)` v.s. `as_polars_series(as.Date(-0.1))`
 #' @rdname as_polars_series
 #' @export
 as_polars_series.Date <- function(x, name = NULL, ...) {
