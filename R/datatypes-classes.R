@@ -52,7 +52,7 @@ wrap.PlRDataType <- function(x, ...) {
     }, self)
   }
 
-  class(self) <- c("polars_data_type", dtype_names, "polars_object")
+  class(self) <- c(dtype_names, "polars_dtype", "polars_object")
   self
 }
 

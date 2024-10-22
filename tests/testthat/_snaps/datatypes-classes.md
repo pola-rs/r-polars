@@ -3,9 +3,9 @@
     Code
       print(class(object))
     Output
-      [1] "polars_data_type"            "polars_dtype_int8"          
-      [3] "polars_dtype_signed_integer" "polars_dtype_integer"       
-      [5] "polars_dtype_numeric"        "polars_object"              
+      [1] "polars_dtype_int8"           "polars_dtype_signed_integer"
+      [3] "polars_dtype_integer"        "polars_dtype_numeric"       
+      [5] "polars_dtype"                "polars_object"              
 
 ---
 
@@ -19,9 +19,9 @@
     Code
       print(class(object))
     Output
-      [1] "polars_data_type"            "polars_dtype_int16"         
-      [3] "polars_dtype_signed_integer" "polars_dtype_integer"       
-      [5] "polars_dtype_numeric"        "polars_object"              
+      [1] "polars_dtype_int16"          "polars_dtype_signed_integer"
+      [3] "polars_dtype_integer"        "polars_dtype_numeric"       
+      [5] "polars_dtype"                "polars_object"              
 
 ---
 
@@ -35,9 +35,9 @@
     Code
       print(class(object))
     Output
-      [1] "polars_data_type"            "polars_dtype_int32"         
-      [3] "polars_dtype_signed_integer" "polars_dtype_integer"       
-      [5] "polars_dtype_numeric"        "polars_object"              
+      [1] "polars_dtype_int32"          "polars_dtype_signed_integer"
+      [3] "polars_dtype_integer"        "polars_dtype_numeric"       
+      [5] "polars_dtype"                "polars_object"              
 
 ---
 
@@ -51,9 +51,9 @@
     Code
       print(class(object))
     Output
-      [1] "polars_data_type"            "polars_dtype_int64"         
-      [3] "polars_dtype_signed_integer" "polars_dtype_integer"       
-      [5] "polars_dtype_numeric"        "polars_object"              
+      [1] "polars_dtype_int64"          "polars_dtype_signed_integer"
+      [3] "polars_dtype_integer"        "polars_dtype_numeric"       
+      [5] "polars_dtype"                "polars_object"              
 
 ---
 
@@ -67,9 +67,9 @@
     Code
       print(class(object))
     Output
-      [1] "polars_data_type"              "polars_dtype_uint8"           
-      [3] "polars_dtype_unsigned_integer" "polars_dtype_integer"         
-      [5] "polars_dtype_numeric"          "polars_object"                
+      [1] "polars_dtype_uint8"            "polars_dtype_unsigned_integer"
+      [3] "polars_dtype_integer"          "polars_dtype_numeric"         
+      [5] "polars_dtype"                  "polars_object"                
 
 ---
 
@@ -83,9 +83,9 @@
     Code
       print(class(object))
     Output
-      [1] "polars_data_type"              "polars_dtype_uint16"          
-      [3] "polars_dtype_unsigned_integer" "polars_dtype_integer"         
-      [5] "polars_dtype_numeric"          "polars_object"                
+      [1] "polars_dtype_uint16"           "polars_dtype_unsigned_integer"
+      [3] "polars_dtype_integer"          "polars_dtype_numeric"         
+      [5] "polars_dtype"                  "polars_object"                
 
 ---
 
@@ -99,9 +99,9 @@
     Code
       print(class(object))
     Output
-      [1] "polars_data_type"              "polars_dtype_uint32"          
-      [3] "polars_dtype_unsigned_integer" "polars_dtype_integer"         
-      [5] "polars_dtype_numeric"          "polars_object"                
+      [1] "polars_dtype_uint32"           "polars_dtype_unsigned_integer"
+      [3] "polars_dtype_integer"          "polars_dtype_numeric"         
+      [5] "polars_dtype"                  "polars_object"                
 
 ---
 
@@ -115,9 +115,9 @@
     Code
       print(class(object))
     Output
-      [1] "polars_data_type"              "polars_dtype_uint64"          
-      [3] "polars_dtype_unsigned_integer" "polars_dtype_integer"         
-      [5] "polars_dtype_numeric"          "polars_object"                
+      [1] "polars_dtype_uint64"           "polars_dtype_unsigned_integer"
+      [3] "polars_dtype_integer"          "polars_dtype_numeric"         
+      [5] "polars_dtype"                  "polars_object"                
 
 ---
 
@@ -131,8 +131,8 @@
     Code
       print(class(object))
     Output
-      [1] "polars_data_type"     "polars_dtype_float32" "polars_dtype_float"  
-      [4] "polars_dtype_numeric" "polars_object"       
+      [1] "polars_dtype_float32" "polars_dtype_float"   "polars_dtype_numeric"
+      [4] "polars_dtype"         "polars_object"       
 
 ---
 
@@ -146,8 +146,8 @@
     Code
       print(class(object))
     Output
-      [1] "polars_data_type"     "polars_dtype_float64" "polars_dtype_float"  
-      [4] "polars_dtype_numeric" "polars_object"       
+      [1] "polars_dtype_float64" "polars_dtype_float"   "polars_dtype_numeric"
+      [4] "polars_dtype"         "polars_object"       
 
 ---
 
@@ -161,7 +161,7 @@
     Code
       print(class(object))
     Output
-      [1] "polars_data_type"     "polars_dtype_boolean" "polars_object"       
+      [1] "polars_dtype_boolean" "polars_dtype"         "polars_object"       
 
 ---
 
@@ -175,7 +175,7 @@
     Code
       print(class(object))
     Output
-      [1] "polars_data_type"    "polars_dtype_string" "polars_object"      
+      [1] "polars_dtype_string" "polars_dtype"        "polars_object"      
 
 ---
 
@@ -189,7 +189,7 @@
     Code
       print(class(object))
     Output
-      [1] "polars_data_type"    "polars_dtype_binary" "polars_object"      
+      [1] "polars_dtype_binary" "polars_dtype"        "polars_object"      
 
 ---
 
@@ -203,7 +203,7 @@
     Code
       print(class(object))
     Output
-      [1] "polars_data_type"      "polars_dtype_date"     "polars_dtype_temporal"
+      [1] "polars_dtype_date"     "polars_dtype_temporal" "polars_dtype"         
       [4] "polars_object"        
 
 ---
@@ -218,7 +218,7 @@
     Code
       print(class(object))
     Output
-      [1] "polars_data_type"      "polars_dtype_time"     "polars_dtype_temporal"
+      [1] "polars_dtype_time"     "polars_dtype_temporal" "polars_dtype"         
       [4] "polars_object"        
 
 ---
@@ -233,7 +233,7 @@
     Code
       print(class(object))
     Output
-      [1] "polars_data_type"  "polars_dtype_null" "polars_object"    
+      [1] "polars_dtype_null" "polars_dtype"      "polars_object"    
 
 ---
 
@@ -247,7 +247,7 @@
     Code
       print(class(object))
     Output
-      [1] "polars_data_type"     "polars_dtype_decimal" "polars_dtype_numeric"
+      [1] "polars_dtype_decimal" "polars_dtype_numeric" "polars_dtype"        
       [4] "polars_object"       
 
 ---
@@ -262,7 +262,7 @@
     Code
       print(class(object))
     Output
-      [1] "polars_data_type"     "polars_dtype_decimal" "polars_dtype_numeric"
+      [1] "polars_dtype_decimal" "polars_dtype_numeric" "polars_dtype"        
       [4] "polars_object"       
 
 ---
@@ -277,7 +277,7 @@
     Code
       print(class(object))
     Output
-      [1] "polars_data_type"      "polars_dtype_datetime" "polars_dtype_temporal"
+      [1] "polars_dtype_datetime" "polars_dtype_temporal" "polars_dtype"         
       [4] "polars_object"        
 
 ---
@@ -292,7 +292,7 @@
     Code
       print(class(object))
     Output
-      [1] "polars_data_type"      "polars_dtype_datetime" "polars_dtype_temporal"
+      [1] "polars_dtype_datetime" "polars_dtype_temporal" "polars_dtype"         
       [4] "polars_object"        
 
 ---
@@ -307,7 +307,7 @@
     Code
       print(class(object))
     Output
-      [1] "polars_data_type"      "polars_dtype_datetime" "polars_dtype_temporal"
+      [1] "polars_dtype_datetime" "polars_dtype_temporal" "polars_dtype"         
       [4] "polars_object"        
 
 ---
@@ -322,7 +322,7 @@
     Code
       print(class(object))
     Output
-      [1] "polars_data_type"      "polars_dtype_duration" "polars_dtype_temporal"
+      [1] "polars_dtype_duration" "polars_dtype_temporal" "polars_dtype"         
       [4] "polars_object"        
 
 ---
@@ -337,7 +337,7 @@
     Code
       print(class(object))
     Output
-      [1] "polars_data_type"      "polars_dtype_duration" "polars_dtype_temporal"
+      [1] "polars_dtype_duration" "polars_dtype_temporal" "polars_dtype"         
       [4] "polars_object"        
 
 ---
@@ -352,7 +352,7 @@
     Code
       print(class(object))
     Output
-      [1] "polars_data_type"    "polars_dtype_list"   "polars_dtype_nested"
+      [1] "polars_dtype_list"   "polars_dtype_nested" "polars_dtype"       
       [4] "polars_object"      
 
 ---
@@ -367,7 +367,7 @@
     Code
       print(class(object))
     Output
-      [1] "polars_data_type"    "polars_dtype_list"   "polars_dtype_nested"
+      [1] "polars_dtype_list"   "polars_dtype_nested" "polars_dtype"       
       [4] "polars_object"      
 
 ---
@@ -382,7 +382,7 @@
     Code
       print(class(object))
     Output
-      [1] "polars_data_type"    "polars_dtype_array"  "polars_dtype_nested"
+      [1] "polars_dtype_array"  "polars_dtype_nested" "polars_dtype"       
       [4] "polars_object"      
 
 ---
@@ -397,7 +397,7 @@
     Code
       print(class(object))
     Output
-      [1] "polars_data_type"    "polars_dtype_array"  "polars_dtype_nested"
+      [1] "polars_dtype_array"  "polars_dtype_nested" "polars_dtype"       
       [4] "polars_object"      
 
 ---
@@ -412,7 +412,7 @@
     Code
       print(class(object))
     Output
-      [1] "polars_data_type"    "polars_dtype_array"  "polars_dtype_nested"
+      [1] "polars_dtype_array"  "polars_dtype_nested" "polars_dtype"       
       [4] "polars_object"      
 
 ---
@@ -427,7 +427,7 @@
     Code
       print(class(object))
     Output
-      [1] "polars_data_type"    "polars_dtype_struct" "polars_dtype_nested"
+      [1] "polars_dtype_struct" "polars_dtype_nested" "polars_dtype"       
       [4] "polars_object"      
 
 ---
@@ -442,7 +442,7 @@
     Code
       print(class(object))
     Output
-      [1] "polars_data_type"    "polars_dtype_struct" "polars_dtype_nested"
+      [1] "polars_dtype_struct" "polars_dtype_nested" "polars_dtype"       
       [4] "polars_object"      
 
 ---
@@ -457,7 +457,7 @@
     Code
       print(class(object))
     Output
-      [1] "polars_data_type"    "polars_dtype_struct" "polars_dtype_nested"
+      [1] "polars_dtype_struct" "polars_dtype_nested" "polars_dtype"       
       [4] "polars_object"      
 
 ---
@@ -472,7 +472,7 @@
     Code
       print(class(object))
     Output
-      [1] "polars_data_type"         "polars_dtype_categorical"
+      [1] "polars_dtype_categorical" "polars_dtype"            
       [3] "polars_object"           
 
 ---
@@ -487,7 +487,7 @@
     Code
       print(class(object))
     Output
-      [1] "polars_data_type"  "polars_dtype_enum" "polars_object"    
+      [1] "polars_dtype_enum" "polars_dtype"      "polars_object"    
 
 ---
 

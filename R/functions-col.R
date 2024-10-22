@@ -7,7 +7,7 @@
 #' Unnamed objects one of the following:
 #' - character vectors
 #'   - Single wildcard `"*"` has a special meaning: check the examples.
-#' - (lists of) `polars_data_type` objects
+#' - (lists of) `polars_dtype` objects
 #' @examples
 #' # a single column by a character
 #' pl$col("foo")

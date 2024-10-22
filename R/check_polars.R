@@ -44,7 +44,7 @@ NULL
 #' @rdname check_polars
 #' @export
 is_polars_dtype <- function(x) {
-  inherits(x, "polars_data_type")
+  inherits(x, "polars_dtype")
 }
 
 #' @rdname check_polars

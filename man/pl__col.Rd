@@ -15,7 +15,7 @@ Unnamed objects one of the following:
 \itemize{
 \item Single wildcard \code{"*"} has a special meaning: check the examples.
 }
-\item (lists of) \code{polars_data_type} objects
+\item (lists of) \code{polars_dtype} objects
 }}
 }
 \value{

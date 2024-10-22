@@ -93,6 +93,6 @@ on_load(local_use_cli())
   s3_register("tibble::as_tibble", "polars_lazy_frame")
   s3_register("waldo::compare_proxy", "polars_expr")
   s3_register("waldo::compare_proxy", "polars_data_frame")
-  s3_register("waldo::compare_proxy", "polars_data_type")
+  s3_register("waldo::compare_proxy", "polars_dtype")
   s3_register("waldo::compare_proxy", "polars_series")
 }
