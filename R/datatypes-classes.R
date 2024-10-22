@@ -1,5 +1,74 @@
 # Unlike Python Polars, the DataType object is defined on the Rust side, so this file provide wrappers
 
+# TODO: link to data type mapping vignette
+# TODO: floating point numbers section
+# TODO: lists bindings of each class
+# source: https://docs.pola.rs/user-guide/concepts/data-types-and-structures/
+#' Polars DataType class (`polars_dtype`)
+#'
+#' @description
+#' Polars supports a variety of data types that fall broadly under the following categories:
+#'
+#' - Numeric data types: signed integers, unsigned integers, floating point numbers, and decimals.
+#' - Nested data types: lists, structs, and arrays.
+#' - Temporal: dates, datetimes, times, and time deltas.
+#' - Miscellaneous: strings, binary data, Booleans, categoricals, and enums.
+#'
+#' All types support missing values represented by the special value `null`.
+#' This is not to be conflated with the special value `NaN` in floating number data types;
+#' see the section about floating point numbers for more information.
+#'
+#' @details
+#' ## Full data types table
+#'
+#' | Type(s)                                        | Details                                                                         |
+#' | ---------------------------------------------- | ------------------------------------------------------------------------------- |
+#' | `Boolean`                                      | Boolean type that is bit packed efficiently.                                    |
+#' | `Int8`, `Int16`, `Int32`, `Int64`              | Varying-precision signed integer types.                                         |
+#' | `UInt8`, `UInt16`, `UInt32`, `UInt64`          | Varying-precision unsigned integer types.                                       |
+#' | `Float32`, `Float64`                           | Varying-precision signed floating point numbers.                                |
+#' | `Decimal` `r lifecycle::badge("experimental")` | Decimal 128-bit type with optional precision and non-negative scale.            |
+#' | `String`                                       | Variable length UTF-8 encoded string data, typically Human-readable.            |
+#' | `Binary`                                       | Stores arbitrary, varying length raw binary data.                               |
+#' | `Date`                                         | Represents a calendar date.                                                     |
+#' | `Time`                                         | Represents a time of day.                                                       |
+#' | `Datetime`                                     | Represents a calendar date and time of day.                                     |
+#' | `Duration`                                     | Represents a time duration.                                                     |
+#' | `Array`                                        | Arrays with a known, fixed shape per series; akin to numpy arrays.              |
+#' | `List`                                         | Homogeneous 1D container with variable length.                                  |
+#' | `Categorical`                                  | Efficient encoding of string data where the categories are inferred at runtime. |
+#' | `Enum` `r lifecycle::badge("experimental")`    | Efficient ordered encoding of a set of predetermined string categories.         |
+#' | `Struct`                                       | Composite product type that can store multiple fields.                          |
+#' | `Null`                                         | Represents null values.                                                         |
+#'
+#' @name polars_dtype
+#' @aliases DataType
+#' @examples
+#' pl$Int8
+#' pl$Int16
+#' pl$Int32
+#' pl$Int64
+#' pl$UInt8
+#' pl$UInt16
+#' pl$UInt32
+#' pl$UInt64
+#' pl$Float32
+#' pl$Float64
+#' pl$Decimal(scale = 2)
+#' pl$String
+#' pl$Binary
+#' pl$Date
+#' pl$Time
+#' pl$Datetime()
+#' pl$Duration()
+#' pl$Array(pl$Int32, c(2, 3))
+#' pl$List(pl$Int32)
+#' pl$Categorical()
+#' pl$Enum(c("a", "b", "c"))
+#' pl$Struct(a = pl$Int32, b = pl$String)
+#' pl$Null
+NULL
+
 # The env for storing data type methods
 polars_datatype__methods <- new.env(parent = emptyenv())
 
@@ -81,11 +150,20 @@ on_load({
     })
 })
 
+#' @rdname polars_dtype
+#' @param precision A integer or `NULL` (default), maximum number of digits in each number.
+#' If `NULL`, the precision is inferred.
+#' @param scale A integer. Number of digits to the right of the decimal point in each number.
 pl__Decimal <- function(precision = NULL, scale = 0L) {
   PlRDataType$new_decimal(scale = scale, precision = precision) |>
     wrap()
 }
 
+# TODO: more about timezone
+#' @rdname polars_dtype
+#' @param time_unit One of `"us"` (default, microseconds),
+#' `"ns"` (nanoseconds) or `"ms"`(milliseconds). Representing the unit of time.
+#' @param time_zone A string or `NULL` (default). Representing the timezone.
 pl__Datetime <- function(time_unit = c("us", "ns", "ms"), time_zone = NULL) {
   wrap({
     time_unit <- arg_match0(time_unit, c("us", "ns", "ms"))
@@ -93,6 +171,7 @@ pl__Datetime <- function(time_unit = c("us", "ns", "ms"), time_zone = NULL) {
   })
 }
 
+#' @rdname polars_dtype
 pl__Duration <- function(time_unit = c("us", "ns", "ms")) {
   wrap({
     time_unit <- arg_match0(time_unit, c("us", "ns", "ms"))
@@ -100,6 +179,9 @@ pl__Duration <- function(time_unit = c("us", "ns", "ms")) {
   })
 }
 
+#' @rdname polars_dtype
+#' @param ordering One of `"physical"` (default) or `"lexical"`.
+#' Ordering by order of appearance (`"physical"`) or string value (`"lexical"`).
 pl__Categorical <- function(ordering = c("physical", "lexical")) {
   wrap({
     ordering <- arg_match0(ordering, c("physical", "lexical"))
@@ -107,6 +189,9 @@ pl__Categorical <- function(ordering = c("physical", "lexical")) {
   })
 }
 
+#' @rdname polars_dtype
+#' @param categories A character vector.
+#' Should not contain `NA` values and all values should be unique.
 pl__Enum <- function(categories) {
   # TODO: impliment `issue_unstable_warning`
   wrap({
@@ -123,14 +208,18 @@ pl__Enum <- function(categories) {
   })
 }
 
+# TODO: shape is...?
+#' @rdname polars_dtype
+#' @param inner A polars data type object.
+#' @param shape A integer-ish vector, representing the shape of the Array.
 pl__Array <- function(inner, shape) {
-  # TODO: impliment `issue_unstable_warning`
   wrap({
     check_polars_dtype(inner)
     PlRDataType$new_array(inner$`_dt`, shape)
   })
 }
 
+#' @rdname polars_dtype
 pl__List <- function(inner) {
   wrap({
     check_polars_dtype(inner)
@@ -138,6 +227,10 @@ pl__List <- function(inner) {
   })
 }
 
+#' @rdname polars_dtype
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]>
+#' Name-value pairs of polars data type.
+#' Each pair represents a field of the Struct.
 pl__Struct <- function(...) {
   parse_into_list_of_datatypes(...) |>
     PlRDataType$new_struct() |>

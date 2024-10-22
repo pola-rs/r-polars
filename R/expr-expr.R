@@ -1,6 +1,6 @@
 # TODO: link to data type docs
 # TODO: section for name spaces
-# source: https://docs.pola.rs/user-guide/concepts/expressions
+# source: https://docs.pola.rs/user-guide/concepts/expressions/
 #' Polars expression class (`polars_expr`)
 #'
 #' An expression is a tree of operations that describe how to construct one or more [Series].

@@ -20,7 +20,7 @@ patrick::with_parameters_test_that(
       "Time", pl$Time,
       "Null", pl$Null,
       "Decimal(NULL, 1)", pl$Decimal(NULL, 1),
-      "Decimal(2, 1)", pl$Decimal(2, 3),
+      "Decimal(2, 3)", pl$Decimal(2, 3),
       "Datetime('ms', NULL)", pl$Datetime("ms", NULL),
       "Datetime('ns', 'UTC')", pl$Datetime("ns", "UTC"),
       "Datetime('us', 'UTC')", pl$Datetime("us", "UTC"),

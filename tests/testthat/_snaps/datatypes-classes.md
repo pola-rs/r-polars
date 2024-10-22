@@ -257,7 +257,7 @@
     Output
       Decimal(precision=NULL, scale=1)
 
-# data types print Decimal(2, 1)
+# data types print Decimal(2, 3)
 
     Code
       print(class(object))
