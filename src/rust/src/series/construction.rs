@@ -1,8 +1,8 @@
 use crate::{prelude::*, PlRSeries};
 use polars_core::utils::{try_get_supertype, CustomIterTools};
 use savvy::{
-    savvy, sexp::na::NotAvailableValue, IntegerSexp, ListSexp, LogicalSexp, RawSexp, RealSexp,
-    Result, StringSexp, TypedSexp,
+    savvy, sexp::na::NotAvailableValue, IntegerSexp, ListSexp, LogicalSexp, NumericSexp,
+    NumericTypedSexp, RawSexp, RealSexp, Result, StringSexp, TypedSexp,
 };
 
 #[savvy]
@@ -137,6 +137,27 @@ impl PlRSeries {
             .collect();
 
         Ok(Series::new(name.into(), casted_series_vec).into())
+    }
+
+    // from Date classes
+    fn new_i32_from_date(name: &str, values: NumericSexp) -> Result<Self> {
+        let ca: Int32Chunked = match values.into_typed() {
+            NumericTypedSexp::Integer(i) => i
+                .iter()
+                .map(|value| if value.is_na() { None } else { Some(*value) })
+                .collect_trusted(),
+            NumericTypedSexp::Real(r) => r
+                .iter()
+                .map(|value| {
+                    if value.is_na() {
+                        None
+                    } else {
+                        Some(value.floor() as i32)
+                    }
+                })
+                .collect_trusted(),
+        };
+        Ok(ca.with_name(name.into()).into_series().into())
     }
 
     // from clock classes

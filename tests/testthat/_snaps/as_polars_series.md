@@ -129,16 +129,17 @@
       	null
       ]
 
-# as_polars_series works for classes Date (negative sub-date value)
+# as_polars_series works for classes Date (sub-date value)
 
     Code
       print(pl_series)
     Output
-      shape: (2,)
+      shape: (3,)
       Series: '' [date]
       [
       	1969-12-31
-      	1969-12-31
+      	1970-01-01
+      	1970-01-01
       ]
 
 # as_polars_series works for classes POSIXct (UTC)

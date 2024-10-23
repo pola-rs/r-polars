@@ -213,23 +213,14 @@ as_polars_series.factor <- function(x, name = NULL, ...) {
     wrap()
 }
 
-# TODO: Use `$floor()` before casting to `Date`. Ref: `as.Date(-0.1)` v.s. `as_polars_series(as.Date(-0.1))`
 #' @rdname as_polars_series
 #' @export
 as_polars_series.Date <- function(x, name = NULL, ...) {
-  wrap({
-    # Date is based on integer or double
-    new_series_fn <- if (is_integer(x)) {
-      PlRSeries$new_i32
-    } else {
-      PlRSeries$new_f64
-    }
-
-    new_series_fn(name %||% "", x)$cast(
-      pl$Date$`_dt`,
-      strict = TRUE
-    )
-  })
+  PlRSeries$new_i32_from_date(name %||% "", x)$cast(
+    pl$Date$`_dt`,
+    strict = TRUE
+  ) |>
+    wrap()
 }
 
 #' @rdname as_polars_series

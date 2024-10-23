@@ -26,7 +26,7 @@ patrick::with_parameters_test_that(
         "factor", factor("foo"), "", pl$Categorical(),
         "Date", as.Date(c("2021-01-01", NA)), "", pl$Date,
         "Date (integer)", as.Date(c(18628L, NA)), "", pl$Date,
-        "Date (negative sub-date value)", as.Date(c(-1, -1.1)), "", pl$Date,
+        "Date (sub-date value)", as.Date(c(-0.1, 0, 0.1)), "", pl$Date,
         "POSIXct (UTC)", as.POSIXct(c("2021-01-01 00:00:00", NA), "UTC"), "", pl$Datetime("ms", "UTC"),
         "POSIXct (UTC, integer)", as.POSIXct(c(1609459200L, NA), "UTC"), "", pl$Datetime("ms", "UTC"),
         "POSIXct (system time)", as.POSIXct(c("2021-01-01 00:00:00", NA)), "", pl$Datetime("ms"),
