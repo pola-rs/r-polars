@@ -6,20 +6,24 @@
 \usage{
 expr_dt_add_business_days(
   n,
+  ...,
   week_mask = c(TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, FALSE),
   holidays = as.Date(integer(0)),
   roll = c("raise", "backward", "forward")
 )
 }
 \arguments{
-\item{n}{Number of business days to offset by. Can be a single integer or an
-expression.}
+\item{n}{An integer value or a \link[=Expr]{polars expression} representing the number of
+business days to offset by.}
 
-\item{week_mask}{Which days of the week to count. The default is Monday to
-Friday. If you wanted to count only Monday to Thursday, you would pass
+\item{...}{These dots are for future extensions and must be empty.}
+
+\item{week_mask}{Non-NA logical vector of length 7, representing the days of
+the week to count. The default is Monday to Friday (\code{c(TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, FALSE)}).
+If you wanted to count only Monday to Thursday, you would pass
 \code{c(TRUE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE)}.}
 
-\item{holidays}{Holidays to exclude from the count.}
+\item{holidays}{A \link{Date} class vector, representing the holidays to exclude from the count.}
 
 \item{roll}{What to do when the start date lands on a non-business day.
 Options are:
@@ -41,7 +45,9 @@ df$with_columns(result = pl$col("start")$dt$add_business_days(5))
 
 # You can pass a custom weekend - for example, if you only take Sunday off:
 week_mask <- c(TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE)
-df$with_columns(result = pl$col("start")$dt$add_business_days(5, week_mask))
+df$with_columns(
+  result = pl$col("start")$dt$add_business_days(5, week_mask = week_mask)
+)
 
 # You can also pass a list of holidays:
 holidays <- as.Date(c("2020-1-3", "2020-1-6"))

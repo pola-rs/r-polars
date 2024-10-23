@@ -204,7 +204,7 @@ impl PlRExpr {
             .to_vec()
             .try_into()
             .map_err(|_| savvy::Error::new("invalid week_mask"))?;
-        let holidays = holidays.as_slice_i32()?.into();
+        let holidays = base_date::DateProxy::from(holidays).0;
         let roll = <Wrap<Roll>>::try_from(roll)?.0;
         Ok(self
             .inner

@@ -2,6 +2,7 @@ use crate::prelude::*;
 use crate::{PlRDataFrame, PlRDataType, PlRExpr};
 use polars::series::ops::NullBehavior;
 use savvy::{ListSexp, NumericScalar, NumericSexp, TypedSexp};
+pub mod base_date;
 mod chunked_array;
 pub mod clock;
 pub mod data_table;

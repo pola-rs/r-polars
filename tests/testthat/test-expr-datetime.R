@@ -797,26 +797,41 @@ test_that("dt$add_business_days", {
     df$select(pl$col("x")$dt$add_business_days(5)),
     pl$DataFrame(x = as.Date(c("2020-1-8", "2020-1-9")))
   )
-  week_mask <- c(TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE)
   expect_equal(
-    df$select(pl$col("x")$dt$add_business_days(5, week_mask)),
+    df$select(pl$col("x")$dt$add_business_days(pl$lit(5L))),
+    pl$DataFrame(x = as.Date(c("2020-1-8", "2020-1-9")))
+  )
+  expect_equal(
+    df$select(
+      pl$col("x")$dt$add_business_days(5, week_mask = c(TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE))
+    ),
     pl$DataFrame(x = as.Date(c("2020-1-7", "2020-1-8")))
   )
-  holidays <- as.Date(c("2020-1-3", "2020-1-6"))
   expect_equal(
-    df$select(pl$col("x")$dt$add_business_days(5, holidays = holidays)),
+    df$select(pl$col("x")$dt$add_business_days(5, holidays = as.Date(c("2020-1-3", "2020-1-6")))),
     pl$DataFrame(x = as.Date(c("2020-1-10", "2020-1-13")))
   )
-
-  df <- pl$DataFrame(x = as.Date(c("2020-1-5", "2020-1-6")))
+  # `as.Date(-0.001)` shows `1969-12-31`. Sub-day values should be floored
   expect_equal(
-    df$select(pl$col("x")$dt$add_business_days(0, roll = "forward")),
+    pl$select(
+      x = pl$lit(as.Date(-7:-8))$dt$add_business_days(4, holidays = as.Date(-0.001))
+    ),
+    pl$DataFrame(x = as.Date(c("1970-01-01", "1969-12-30")))
+  )
+  expect_equal(
+    pl$select(
+      x = pl$lit(as.Date(c("2020-1-5", "2020-1-6")))$dt$add_business_days(0, roll = "forward")
+    ),
     pl$DataFrame(x = as.Date(c("2020-1-6", "2020-1-6")))
   )
 
   # Basic errors
   expect_snapshot(
     df$select(pl$col("x")$dt$add_business_days(5.2)),
+    error = TRUE
+  )
+  expect_snapshot(
+    df$select(pl$col("x")$dt$add_business_days(pl$lit(5))),
     error = TRUE
   )
   expect_snapshot(

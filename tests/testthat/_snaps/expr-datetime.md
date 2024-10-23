@@ -146,6 +146,18 @@
 ---
 
     Code
+      df$select(pl$col("x")$dt$add_business_days(pl$lit(5)))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Invalid operation: expected Int64, Int32, UInt64, or UInt32, got f64
+
+---
+
+    Code
       df$select(pl$col("x")$dt$add_business_days(0, week_mask = rep(TRUE, 6)))
     Condition
       Error in `df$select()`:
