@@ -278,7 +278,7 @@ as_polars_series.difftime <- function(x, name = NULL, ...) {
 as_polars_series.hms <- function(x, name = NULL, ...) {
   wrap({
     if (suppressWarnings(max(x, na.rm = TRUE) >= 86400.0 || min(x, na.rm = TRUE) < 0.0)) {
-      abort("`hms` class object contains values greater-equal to 24-oclock or less than 0-oclock is not supported")
+      abort("Conversion from `hms` vectors to polars series containing values greater than 24-oclocks or less than 0-oclocks is not supported.")
     }
 
     PlRSeries$new_i64_from_numeric_and_multiplier(
