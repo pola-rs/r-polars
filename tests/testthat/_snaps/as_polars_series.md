@@ -202,7 +202,7 @@
       	null
       ]
 
-# as_polars_series works for classes difftime
+# as_polars_series works for classes difftime (weeks)
 
     Code
       print(pl_series)
@@ -211,6 +211,18 @@
       Series: '' [duration[ms]]
       [
       	7d
+      	null
+      ]
+
+# as_polars_series works for classes difftime (sub-second)
+
+    Code
+      print(pl_series)
+    Output
+      shape: (2,)
+      Series: '' [duration[ms]]
+      [
+      	1s
       	null
       ]
 
@@ -224,6 +236,19 @@
       [
       	00:00:00
       	01:00:00
+      	null
+      ]
+
+# as_polars_series works for classes hms (sub-second)
+
+    Code
+      print(pl_series)
+    Output
+      shape: (3,)
+      Series: '' [time]
+      [
+      	00:00:01.000999999
+      	00:00:32.000000999
       	null
       ]
 
