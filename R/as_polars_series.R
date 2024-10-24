@@ -277,8 +277,7 @@ as_polars_series.difftime <- function(x, name = NULL, ...) {
 #' @export
 as_polars_series.hms <- function(x, name = NULL, ...) {
   wrap({
-    # TODO: should not panic in upstream
-    if (any((x >= 86400L | 0 > x), na.rm = TRUE)) {
+    if (suppressWarnings(max(x, na.rm = TRUE) >= 86400.0 || min(x, na.rm = TRUE) < 0.0)) {
       abort("`hms` class object contains values greater-equal to 24-oclock or less than 0-oclock is not supported")
     }
 
