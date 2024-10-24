@@ -230,15 +230,8 @@ as_polars_series.POSIXct <- function(x, name = NULL, ...) {
     tzone <- attr(x, "tzone") %||% ""
     name <- name %||% ""
 
-    # POSIXct is based on integer or double
-    new_series_fn <- if (is_integer(x)) {
-      PlRSeries$new_i32
-    } else {
-      PlRSeries$new_f64
-    }
-
-    int_series <- new_series_fn(name, x)$mul(
-      PlRSeries$new_f64("", 1000)
+    int_series <- PlRSeries$new_i64_from_numeric_and_multiplier(
+      name, x, 1000L
     )$cast(pl$Int64$`_dt`, strict = TRUE)
 
     if (tzone == "") {
@@ -267,19 +260,16 @@ as_polars_series.POSIXct <- function(x, name = NULL, ...) {
 as_polars_series.difftime <- function(x, name = NULL, ...) {
   mul_value <- switch(attr(x, "units"),
     "secs" = 1000L,
-    "mins" = 60L * 1000L,
-    "hours" = 60L * 60L * 1000L,
-    "days" = 24L * 60L * 60L * 1000L,
-    "weeks" = 7L * 24L * 60L * 60L * 1000L,
+    "mins" = 60000L,
+    "hours" = 3600000L,
+    "days" = 86400000L,
+    "weeks" = 604800000L,
     abort("Unsupported `units` attribute of the difftime object.")
   )
 
-  PlRSeries$new_f64(name %||% "", x)$mul(
-    PlRSeries$new_i32("", mul_value)
-  )$cast(
-    pl$Duration("ms")$`_dt`,
-    strict = TRUE
-  ) |>
+  PlRSeries$new_i64_from_numeric_and_multiplier(
+    name %||% "", x, mul_value
+  )$cast(pl$Duration("ms")$`_dt`, strict = TRUE) |>
     wrap()
 }
 
@@ -292,12 +282,10 @@ as_polars_series.hms <- function(x, name = NULL, ...) {
       abort("`hms` class object contains values greater-equal to 24-oclock or less than 0-oclock is not supported")
     }
 
-    PlRSeries$new_f64(name %||% "", x)$mul(
-      PlRSeries$new_i32("", 1000000000L)
-    )$cast(
-      pl$Time$`_dt`,
-      strict = TRUE
-    )
+    PlRSeries$new_i64_from_numeric_and_multiplier(
+      name %||% "", x, 1000000000L
+    )$cast(pl$Time$`_dt`, strict = TRUE) |>
+      wrap()
   })
 }
 
@@ -365,12 +353,9 @@ as_polars_series.integer64 <- function(x, name = NULL, ...) {
 #' @rdname as_polars_series
 #' @export
 as_polars_series.ITime <- function(x, name = NULL, ...) {
-  PlRSeries$new_i32(name %||% "", x)$mul(
-    PlRSeries$new_f64("", 1000000000)
-  )$cast(
-    pl$Time$`_dt`,
-    strict = TRUE
-  ) |>
+  PlRSeries$new_i64_from_numeric_and_multiplier(
+    name %||% "", x, 1000000000L
+  )$cast(pl$Time$`_dt`, strict = TRUE) |>
     wrap()
 }
 

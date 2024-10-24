@@ -2621,6 +2621,10 @@ class(`PlRLazyGroupBy`) <- "PlRLazyGroupBy__bundle"
   .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_i32_from_date__impl, `name`, `values`))
 }
 
+`PlRSeries`$`new_i64_from_numeric_and_multiplier` <- function(`name`, `values`, `multiplier`) {
+  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_i64_from_numeric_and_multiplier__impl, `name`, `values`, `multiplier`))
+}
+
 `PlRSeries`$`new_i64_from_clock_pair` <- function(`name`, `left`, `right`, `precision`) {
   .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_i64_from_clock_pair__impl, `name`, `left`, `right`, `precision`))
 }

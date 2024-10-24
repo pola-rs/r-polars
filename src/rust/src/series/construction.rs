@@ -139,7 +139,7 @@ impl PlRSeries {
         Ok(Series::new(name.into(), casted_series_vec).into())
     }
 
-    // from Date classes
+    // from Date class
     fn new_i32_from_date(name: &str, values: NumericSexp) -> Result<Self> {
         let ca: Int32Chunked = match values.into_typed() {
             NumericTypedSexp::Integer(i) => i
@@ -153,6 +153,37 @@ impl PlRSeries {
                         None
                     } else {
                         Some(value.floor() as i32)
+                    }
+                })
+                .collect_trusted(),
+        };
+        Ok(ca.with_name(name.into()).into_series().into())
+    }
+
+    // from numeric and integer multiplier
+    fn new_i64_from_numeric_and_multiplier(
+        name: &str,
+        values: NumericSexp,
+        multiplier: i32,
+    ) -> Result<Self> {
+        let ca: Int64Chunked = match values.into_typed() {
+            NumericTypedSexp::Integer(i) => i
+                .iter()
+                .map(|value| {
+                    if value.is_na() {
+                        None
+                    } else {
+                        Some((*value as i64) * multiplier as i64)
+                    }
+                })
+                .collect_trusted(),
+            NumericTypedSexp::Real(r) => r
+                .iter()
+                .map(|value| {
+                    if value.is_na() {
+                        None
+                    } else {
+                        Some((value * (multiplier as f64)).round_ties_even() as i64)
                     }
                 })
                 .collect_trusted(),
