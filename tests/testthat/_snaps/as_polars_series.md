@@ -204,6 +204,20 @@
       	null
       ]
 
+# as_polars_series works for classes POSIXlt
+
+    Code
+      print(pl_series)
+    Output
+      shape: (4,)
+      Series: '' [datetime[μs, UTC]]
+      [
+      	null
+      	2021-01-01 00:00:00.123457 UTC
+      	1970-01-01 00:00:00.123456 UTC
+      	1970-01-01 00:00:00.123456 UTC
+      ]
+
 # as_polars_series works for classes difftime (weeks)
 
     Code

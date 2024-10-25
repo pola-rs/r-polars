@@ -13,6 +13,7 @@
 \alias{as_polars_series.factor}
 \alias{as_polars_series.Date}
 \alias{as_polars_series.POSIXct}
+\alias{as_polars_series.POSIXlt}
 \alias{as_polars_series.difftime}
 \alias{as_polars_series.hms}
 \alias{as_polars_series.blob}
@@ -54,6 +55,8 @@ as_polars_series(x, name = NULL, ...)
 \method{as_polars_series}{Date}(x, name = NULL, ...)
 
 \method{as_polars_series}{POSIXct}(x, name = NULL, ...)
+
+\method{as_polars_series}{POSIXlt}(x, name = NULL, ...)
 
 \method{as_polars_series}{difftime}(x, name = NULL, ...)
 
