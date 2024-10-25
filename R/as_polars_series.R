@@ -23,10 +23,22 @@
 #'
 #' ## S3 method for [Date]
 #'
-#' Sinse polars Data type's unit is day and physical type is integer,
-#' sub-day precision of the R's [Date] object will be ignored.
+#' Sub-day values will be ignored (floored to the day).
+#'
+#' ## S3 method for [POSIXct]
+#'
+#' Sub-millisecond values will be rounded to milliseconds.
+#'
+#' If the `tzone` attribute is not present or an empty string (`""`),
+#' the [Series]' [dtype][DataType] will be Datetime without timezone.
+#'
+#' ## S3 method for [difftime]
+#'
+#' Sub-millisecond values will be rounded to milliseconds.
 #'
 #' ## S3 method for [hms][hms::hms]
+#'
+#' Sub-nanosecond values will be rounded to nanoseconds.
 #'
 #' If the [hms][hms::hms] vector contains values greater-equal to 24-oclock or less than 0-oclock,
 #' an error will be thrown.
@@ -70,6 +82,10 @@
 #' # Date
 #' as_polars_series(as.Date(c(NA, "2021-01-01")))
 #'
+#' ## Sub-day precision will be ignored
+#' as.Date(c(-0.5, 0, 0.5)) |>
+#'   as_polars_series()
+#'
 #' # POSIXct with timezone
 #' as_polars_series(as.POSIXct(c(NA, "2021-01-01 00:00:00"), "UTC"))
 #'
@@ -78,6 +94,13 @@
 #'
 #' # difftime
 #' as_polars_series(as.difftime(c(NA, 1), units = "days"))
+#'
+#' ## Sub-millisecond values will be rounded to milliseconds
+#' as.difftime(c(0.0005, 0.0010, 0.0015, 0.0020), units = "secs") |>
+#'   as_polars_series()
+#'
+#' as.difftime(c(0.0005, 0.0010, 0.0015, 0.0020), units = "weeks") |>
+#'   as_polars_series()
 #'
 #' # NULL
 #' as_polars_series(NULL)
@@ -232,7 +255,7 @@ as_polars_series.POSIXct <- function(x, name = NULL, ...) {
 
     int_series <- PlRSeries$new_i64_from_numeric_and_multiplier(
       name, x, 1000L
-    )$cast(pl$Int64$`_dt`, strict = TRUE)
+    )
 
     if (tzone == "") {
       # TODO: simplify to remove the need for the `wrap()` function

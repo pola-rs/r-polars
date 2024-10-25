@@ -134,12 +134,14 @@
     Code
       print(pl_series)
     Output
-      shape: (3,)
+      shape: (5,)
       Series: '' [date]
       [
+      	1969-12-30
       	1969-12-31
       	1970-01-01
       	1970-01-01
+      	1970-01-02
       ]
 
 # as_polars_series works for classes POSIXct (UTC)
@@ -207,22 +209,28 @@
     Code
       print(pl_series)
     Output
-      shape: (2,)
+      shape: (5,)
       Series: '' [duration[ms]]
       [
       	7d
+      	10m 4s 800ms
+      	1m 480ms
+      	15m 7s 200ms
       	null
       ]
 
-# as_polars_series works for classes difftime (sub-second)
+# as_polars_series works for classes difftime (secs)
 
     Code
       print(pl_series)
     Output
-      shape: (2,)
+      shape: (5,)
       Series: '' [duration[ms]]
       [
       	1s 1ms
+      	1ms
+      	0ms
+      	2ms
       	null
       ]
 
@@ -244,11 +252,13 @@
     Code
       print(pl_series)
     Output
-      shape: (3,)
+      shape: (5,)
       Series: '' [time]
       [
       	00:00:01.001
       	00:00:32.000001
+      	00:00:00
+      	00:00:00.000000001
       	null
       ]
 

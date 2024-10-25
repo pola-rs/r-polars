@@ -1,4 +1,4 @@
-test_that("x argument can't be missing",{
+test_that("x argument can't be missing", {
   expect_error(as_polars_series(), r"(The `x` argument of `as_polars_series\(\)` can't be missing)")
 })
 
@@ -26,16 +26,16 @@ patrick::with_parameters_test_that(
         "factor", factor("foo"), "", pl$Categorical(),
         "Date", as.Date(c("2021-01-01", NA)), "", pl$Date,
         "Date (integer)", as.Date(c(18628L, NA)), "", pl$Date,
-        "Date (sub-date value)", as.Date(c(-0.1, 0, 0.1)), "", pl$Date,
+        "Date (sub-date value)", as.Date(c(-1.5, -0.5, 0, 0.5, 1.5)), "", pl$Date,
         "POSIXct (UTC)", as.POSIXct(c("2021-01-01 00:00:00", NA), "UTC"), "", pl$Datetime("ms", "UTC"),
         "POSIXct (UTC, integer)", as.POSIXct(c(1609459200L, NA), "UTC"), "", pl$Datetime("ms", "UTC"),
         "POSIXct (system time)", as.POSIXct(c("2021-01-01 00:00:00", NA)), "", pl$Datetime("ms"),
         "POSIXct (system time / NULL)", as.POSIXct(c(1609459200, NA), tz = NULL), "", pl$Datetime("ms"),
         "POSIXct (system time, integer)", as.POSIXct(c(1609459200L, NA)), "", pl$Datetime("ms"),
-        "difftime (weeks)", as.difftime(c(1, NA), units = "weeks"), "", pl$Duration("ms"),
-        "difftime (sub-second)", as.difftime(c(1.001, NA), units = "secs"), "", pl$Duration("ms"),
+        "difftime (weeks)", as.difftime(c(1, 0.001, 0.0001, 0.0015, NA), units = "weeks"), "", pl$Duration("ms"),
+        "difftime (secs)", as.difftime(c(1.001, 0.001, 0.0001, 0.0015, NA), units = "secs"), "", pl$Duration("ms"),
         "hms", hms::as_hms(c("00:00:00", "01:00:00", NA)), "", pl$Time,
-        "hms (sub-second)", hms::as_hms(c(1.001, 32.000001, NA)), "", pl$Time,
+        "hms (sub-second)", hms::as_hms(c(1.001, 32.000001, 1e-10, 6e-10, NA)), "", pl$Time,
         "blob", blob::as_blob(c("foo", "bar", NA)), "", pl$Binary,
         "NULL", NULL, "", pl$Null,
         "list", list("foo", 1L, NULL, NA, vctrs::unspecified(), as_polars_series(NULL), list(NULL)), "", pl$List(pl$String),
@@ -77,6 +77,23 @@ test_that("as_polars_series.polars_expr throws an error", {
     r"(You can evaluating the expression with `pl\$select\(\))"
   )
 })
+
+patrick::with_parameters_test_that("difftime's units (mins, hours, days) support",
+  .cases = {
+    tibble::tribble(
+      ~.test_name, ~expected_series,
+      "mins", as_polars_series(as.difftime(c(NA, 60), units = "secs")),
+      "hours", as_polars_series(as.difftime(c(NA, 3600), units = "secs")),
+      "days", as_polars_series(as.difftime(c(NA, 86400), units = "secs")),
+    )
+  },
+  code = {
+    expect_equal(
+      as_polars_series(as.difftime(c(NA, 1), units = .test_name)),
+      expected_series
+    )
+  }
+)
 
 test_that("Before 0-oclock or after 24-oclock hms must be rejected", {
   skip_if_not_installed("hms")
