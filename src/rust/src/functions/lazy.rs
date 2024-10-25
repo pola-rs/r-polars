@@ -2,6 +2,12 @@ use crate::{prelude::*, PlRExpr, PlRSeries, RPolarsErr};
 use polars::lazy::dsl;
 use savvy::{savvy, ListSexp, RawSexp, Result, StringSexp};
 
+macro_rules! set_unwrapped_or_0 {
+    ($($var:ident),+ $(,)?) => {
+        $(let $var = $var.map(|e| e.inner).unwrap_or(dsl::lit(0));)+
+    };
+}
+
 #[savvy]
 pub fn as_struct(exprs: ListSexp) -> Result<PlRExpr> {
     let exprs = <Wrap<Vec<Expr>>>::try_from(exprs)?.0;
@@ -11,6 +17,41 @@ pub fn as_struct(exprs: ListSexp) -> Result<PlRExpr> {
         ));
     }
     Ok(dsl::as_struct(exprs).into())
+}
+
+#[savvy]
+pub fn datetime(
+    year: PlRExpr,
+    month: PlRExpr,
+    day: PlRExpr,
+    time_unit: &str,
+    ambiguous: PlRExpr,
+    hour: Option<PlRExpr>,
+    minute: Option<PlRExpr>,
+    second: Option<PlRExpr>,
+    microsecond: Option<PlRExpr>,
+    time_zone: Option<&str>,
+) -> Result<PlRExpr> {
+    let year = year.inner;
+    let month = month.inner;
+    let day = day.inner;
+    set_unwrapped_or_0!(hour, minute, second, microsecond);
+    let ambiguous = ambiguous.inner;
+    let time_unit = <Wrap<TimeUnit>>::try_from(time_unit)?.0;
+    let time_zone = time_zone.map(|x| x.into());
+    let args = DatetimeArgs {
+        year,
+        month,
+        day,
+        hour,
+        minute,
+        second,
+        microsecond,
+        time_unit,
+        time_zone,
+        ambiguous,
+    };
+    Ok(dsl::datetime(args).into())
 }
 
 #[savvy]
@@ -73,9 +114,6 @@ pub fn lit_from_series(value: &PlRSeries) -> Result<PlRExpr> {
 #[savvy]
 pub fn lit_from_series_first(value: &PlRSeries) -> Result<PlRExpr> {
     let s = value.series.clone();
-    let av = s
-        .get(0)
-        .map_err(RPolarsErr::from)?
-        .into_static();
+    let av = s.get(0).map_err(RPolarsErr::from)?.into_static();
     Ok(dsl::lit(Scalar::new(s.dtype().clone(), av)).into())
 }

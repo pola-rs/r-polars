@@ -34,6 +34,19 @@ NULL
 }
 
 
+`datetime` <- function(`year`, `month`, `day`, `time_unit`, `ambiguous`, `hour` = NULL, `minute` = NULL, `second` = NULL, `microsecond` = NULL, `time_zone` = NULL) {
+  `year` <- .savvy_extract_ptr(`year`, "PlRExpr")
+  `month` <- .savvy_extract_ptr(`month`, "PlRExpr")
+  `day` <- .savvy_extract_ptr(`day`, "PlRExpr")
+  `ambiguous` <- .savvy_extract_ptr(`ambiguous`, "PlRExpr")
+  `hour` <- .savvy_extract_ptr(`hour`, "PlRExpr")
+  `minute` <- .savvy_extract_ptr(`minute`, "PlRExpr")
+  `second` <- .savvy_extract_ptr(`second`, "PlRExpr")
+  `microsecond` <- .savvy_extract_ptr(`microsecond`, "PlRExpr")
+  .savvy_wrap_PlRExpr(.Call(savvy_datetime__impl, `year`, `month`, `day`, `time_unit`, `ambiguous`, `hour`, `minute`, `second`, `microsecond`, `time_zone`))
+}
+
+
 `field` <- function(`names`) {
   .savvy_wrap_PlRExpr(.Call(savvy_field__impl, `names`))
 }
