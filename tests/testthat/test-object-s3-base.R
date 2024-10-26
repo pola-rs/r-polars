@@ -5,6 +5,13 @@ test_that("Error when the member does not exist", {
   )
 })
 
+test_that("Error for extracting with `[`", {
+  expect_error(
+    pl$lit(1)[1],
+    r"(Extracting elements of this polars object with `\[` is not supported)"
+  )
+})
+
 test_that("Reject modification of members", {
   expect_error(
     {
@@ -17,5 +24,11 @@ test_that("Reject modification of members", {
       as_polars_df(mtcars)[[1]] <- 1
     },
     r"(Modifying elements of this polars object with `\[\[` is not supported)"
+  )
+  expect_error(
+    {
+      as_polars_df(mtcars)[1] <- 1
+    },
+    r"(Modifying elements of this polars object with `\[` is not supported)"
   )
 })
