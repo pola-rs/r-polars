@@ -55,6 +55,43 @@ pub fn datetime(
 }
 
 #[savvy]
+pub fn duration(
+    time_unit: &str,
+    weeks: Option<PlRExpr>,
+    days: Option<PlRExpr>,
+    hours: Option<PlRExpr>,
+    minutes: Option<PlRExpr>,
+    seconds: Option<PlRExpr>,
+    milliseconds: Option<PlRExpr>,
+    microseconds: Option<PlRExpr>,
+    nanoseconds: Option<PlRExpr>,
+) -> Result<PlRExpr> {
+    set_unwrapped_or_0!(
+        weeks,
+        days,
+        hours,
+        minutes,
+        seconds,
+        milliseconds,
+        microseconds,
+        nanoseconds,
+    );
+    let time_unit = <Wrap<TimeUnit>>::try_from(time_unit)?.0;
+    let args = DurationArgs {
+        weeks,
+        days,
+        hours,
+        minutes,
+        seconds,
+        milliseconds,
+        microseconds,
+        nanoseconds,
+        time_unit,
+    };
+    Ok(dsl::duration(args).into())
+}
+
+#[savvy]
 pub fn field(names: StringSexp) -> Result<PlRExpr> {
     Ok(dsl::Expr::Field(names.iter().map(|name| name.into()).collect()).into())
 }

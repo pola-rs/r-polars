@@ -108,6 +108,113 @@ pl__datetime <- function(
   })
 }
 
+# TODO: more examples
+#' Create polars Duration from distinct time components
+#'
+#' A [Duration][pl__Duration] represents a fixed amount of time. For example,
+#' `pl$duration(days = 1)` means "exactly 24 hours". By contrast,
+#' [`<expr>$dt$offset_by("1d")`][expr_dt_offset_by] means "1 calendar day", which could sometimes be
+#' 23 hours or 25 hours depending on Daylight Savings Time.
+#' For non-fixed durations such as "calendar month" or "calendar day",
+#' please use [`<expr>$dt$offset_by()`][[expr_dt_offset_by]] instead.
+#' @inherit as_polars_expr return
+#' @inheritParams rlang::args_dots_empty
+#' @param weeks Something can be coerced to an [polars expression][Expr] by [as_polars_expr()]
+#' which represents a column or literal number of weeks, or `NULL` (default).
+#' @param days Something can be coerced to an [polars expression][Expr] by [as_polars_expr()]
+#' which represents a column or literal number of days, or `NULL` (default).
+#' @param hours Something can be coerced to an [polars expression][Expr] by [as_polars_expr()]
+#' which represents a column or literal number of hours, or `NULL` (default).
+#' @param minutes Something can be coerced to an [polars expression][Expr] by [as_polars_expr()]
+#' which represents a column or literal number of minutes, or `NULL` (default).
+#' @param seconds Something can be coerced to an [polars expression][Expr] by [as_polars_expr()]
+#' which represents a column or literal number of seconds, or `NULL` (default).
+#' @param milliseconds Something can be coerced to an [polars expression][Expr] by [as_polars_expr()]
+#' which represents a column or literal number of milliseconds, or `NULL` (default).
+#' @param microseconds Something can be coerced to an [polars expression][Expr] by [as_polars_expr()]
+#' which represents a column or literal number of microseconds, or `NULL` (default).
+#' @param nanoseconds Something can be coerced to an [polars expression][Expr] by [as_polars_expr()]
+#' which represents a column or literal number of nanoseconds, or `NULL` (default).
+#' @param time_unit One of `NULL`, `"us"` (microseconds),
+#' `"ns"` (nanoseconds) or `"ms"`(milliseconds). Representing the unit of time.
+#' If `NULL` (default), the time unit will be inferred from the other inputs:
+#' `"ns"` if `nanoseconds` was specified, `"us"` otherwise.
+#' @examples
+#' df <- pl$DataFrame(
+#'   dt = as.POSIXct(c("2022-01-01", "2022-01-02")),
+#'   add = c(1, 2)
+#' )
+#' df
+#'
+#' df$select(
+#'   add_weeks = pl$col("dt") + pl$duration(weeks = pl$col("add")),
+#'   add_days = pl$col("dt") + pl$duration(days = pl$col("add")),
+#'   add_seconds = pl$col("dt") + pl$duration(seconds = pl$col("add")),
+#'   add_millis = pl$col("dt") + pl$duration(milliseconds = pl$col("add")),
+#'   add_hours = pl$col("dt") + pl$duration(hours = pl$col("add"))
+#' )
+pl__duration <- function(
+    ...,
+    weeks = NULL,
+    days = NULL,
+    hours = NULL,
+    minutes = NULL,
+    seconds = NULL,
+    milliseconds = NULL,
+    microseconds = NULL,
+    nanoseconds = NULL,
+    time_unit = NULL) {
+  wrap({
+    check_dots_empty0(...)
+
+    if (!is.null(weeks)) {
+      weeks <- as_polars_expr(weeks)
+    }
+    if (!is.null(days)) {
+      days <- as_polars_expr(days)
+    }
+    if (!is.null(hours)) {
+      hours <- as_polars_expr(hours)
+    }
+    if (!is.null(minutes)) {
+      minutes <- as_polars_expr(minutes)
+    }
+    if (!is.null(seconds)) {
+      seconds <- as_polars_expr(seconds)
+    }
+    if (!is.null(milliseconds)) {
+      milliseconds <- as_polars_expr(milliseconds)
+    }
+    if (!is.null(microseconds)) {
+      microseconds <- as_polars_expr(microseconds)
+    }
+    if (!is.null(nanoseconds)) {
+      nanoseconds <- as_polars_expr(nanoseconds)
+      if (is.null(time_unit)) {
+        time_unit <- "ns"
+      }
+    }
+
+    if (is.null(time_unit)) {
+      time_unit <- "us"
+    }
+
+    time_unit <- arg_match0(time_unit, c("us", "ns", "ms"))
+
+    duration(
+      weeks = weeks$`_rexpr`,
+      days = days$`_rexpr`,
+      hours = hours$`_rexpr`,
+      minutes = minutes$`_rexpr`,
+      seconds = seconds$`_rexpr`,
+      milliseconds = milliseconds$`_rexpr`,
+      microseconds = microseconds$`_rexpr`,
+      nanoseconds = nanoseconds$`_rexpr`,
+      time_unit = time_unit
+    )
+  })
+}
+
 # TODO: support `schema` argument
 #' Collect columns into a struct column
 #'
