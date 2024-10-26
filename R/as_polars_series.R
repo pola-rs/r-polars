@@ -278,25 +278,24 @@ as_polars_series.POSIXct <- function(x, name = NULL, ...) {
   })
 }
 
-# TODO: adds nanosec, needs `pl$duration()`
 #' @rdname as_polars_series
 #' @export
 as_polars_series.POSIXlt <- function(x, name = NULL, ...) {
-  x_list <- unclass(x)
-  microsec <- (x_list$sec - floor(x_list$sec)) * 1e6
-  nanosec <- (microsec - floor(microsec)) * 1e3
+  nanosec <- (x$sec - floor(x$sec)) * 1e9
 
   pl$select(
     pl$datetime(
-      year = x_list$year + 1900L,
-      month = x_list$mon + 1L,
-      day = x_list$mday,
-      hour = x_list$hour,
-      minute = x_list$min,
-      second = x_list$sec,
-      microsecond = round(microsec),
-      time_zone = attr(x, "tzone")[1] %||% ""
-    )$alias(name %||% "")
+      year = x$year + 1900L,
+      month = x$mon + 1L,
+      day = x$mday,
+      hour = x$hour,
+      minute = x$min,
+      second = x$sec,
+      time_zone = attr(x, "tzone")[1] %||% "UTC"
+    )$alias(name %||% "")$dt$cast_time_unit("ns") +
+      pl$duration(
+        nanoseconds = round(nanosec),
+      )
   )$to_series()
 }
 

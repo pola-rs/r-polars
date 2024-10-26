@@ -210,12 +210,12 @@
       print(pl_series)
     Output
       shape: (4,)
-      Series: '' [datetime[μs, UTC]]
+      Series: '' [datetime[ns, UTC]]
       [
       	null
-      	2021-01-01 00:00:00.123457 UTC
-      	1970-01-01 00:00:00.123456 UTC
-      	1970-01-01 00:00:00.123456 UTC
+      	2021-01-01 00:00:00.123456717 UTC
+      	1970-01-01 00:00:00.123456500 UTC
+      	1970-01-01 00:00:00.123455500 UTC
       ]
 
 # as_polars_series works for classes difftime (weeks)
