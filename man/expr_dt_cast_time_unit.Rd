@@ -4,10 +4,11 @@
 \alias{expr_dt_cast_time_unit}
 \title{Change time unit}
 \usage{
-expr_dt_cast_time_unit(time_unit = c("ns", "us", "ms"))
+expr_dt_cast_time_unit(time_unit)
 }
 \arguments{
-\item{time_unit}{Time unit, one of 'ns', 'us', or 'ms'.}
+\item{time_unit}{One of \code{"us"} (microseconds),
+\code{"ns"} (nanoseconds) or \code{"ms"}(milliseconds). Representing the unit of time.}
 }
 \value{
 A polars \link{expression}
@@ -24,7 +25,7 @@ df <- pl$select(
   )
 )
 df$with_columns(
-  cast_time_unit_ns = pl$col("date")$dt$cast_time_unit(),
-  cast_time_unit_ms = pl$col("date")$dt$cast_time_unit(time_unit = "ms")
+  cast_time_unit_ms = pl$col("date")$dt$cast_time_unit("ms"),
+  cast_time_unit_ns = pl$col("date")$dt$cast_time_unit("ns"),
 )
 }

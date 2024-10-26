@@ -447,7 +447,7 @@ test_that("dt$timestamp", {
     )
   )
   l_exp <- df$select(
-    pl$col("date")$dt$timestamp()$alias("timestamp_ns"),
+    pl$col("date")$dt$timestamp("ns")$alias("timestamp_ns"),
     pl$col("date")$dt$timestamp(time_unit = "us")$alias("timestamp_us"),
     pl$col("date")$dt$timestamp(time_unit = "ms")$alias("timestamp_ms")
   )
@@ -486,7 +486,7 @@ test_that("dt$with_time_unit cast_time_unit", {
     )
   )$select(
     pl$col("date"),
-    pl$col("date")$dt$cast_time_unit()$alias("cast_time_unit_ns"),
+    pl$col("date")$dt$cast_time_unit("ns")$alias("cast_time_unit_ns"),
     pl$col("date")$dt$cast_time_unit(time_unit = "us")$alias("cast_time_unit_us"),
     pl$col("date")$dt$cast_time_unit(time_unit = "ms")$alias("cast_time_unit_ms"),
     pl$col("date")$dt$with_time_unit()$alias("with_time_unit_ns"),

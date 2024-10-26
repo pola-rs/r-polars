@@ -213,11 +213,10 @@ expr_dt_round <- function(every) {
 #' replaced, and if it is a Date then a new Datetime is created by combining
 #' the two values.
 #'
+#' @inherit expr_dt_truncate return
+#' @inheritParams pl__Datetime
 #' @param time The number of epoch since or before (if negative) the Date. Can
 #' be an Expr or a PTime.
-#' @inheritParams expr_dt_timestamp
-#'
-#' @inherit expr_dt_truncate return
 #' @examplesIf requireNamespace("hms", quietly = TRUE)
 #' df <- pl$DataFrame(
 #'   dtm = c(
@@ -235,9 +234,9 @@ expr_dt_round <- function(every) {
 #'   s2 = pl$col("dt")$dt$combine(pl$col("tm")),
 #'   d3 = pl$col("dt")$dt$combine(hms::parse_hms("4:5:6"))
 #' )
-expr_dt_combine <- function(time, time_unit = c("ns", "us", "ms")) {
+expr_dt_combine <- function(time, time_unit = c("us", "ns", "ms")) {
   wrap({
-    time_unit <- arg_match0(time_unit, values = c("ns", "us", "ms"))
+    time_unit <- arg_match0(time_unit, values = c("us", "ns", "ms"))
     self$`_rexpr`$dt_combine(as_polars_expr(time)$`_rexpr`, time_unit)
   })
 }
@@ -647,9 +646,9 @@ expr_dt_epoch <- function(time_unit = c("us", "ns", "ms", "s", "d")) {
 #'   pl$col("date")$dt$timestamp()$alias("timestamp_ns"),
 #'   pl$col("date")$dt$timestamp(time_unit = "ms")$alias("timestamp_ms")
 #' )
-expr_dt_timestamp <- function(time_unit = c("ns", "us", "ms")) {
+expr_dt_timestamp <- function(time_unit = c("us", "ns", "ms")) {
   wrap({
-    time_unit <- arg_match0(time_unit, values = c("ns", "us", "ms"))
+    time_unit <- arg_match0(time_unit, values = c("us", "ns", "ms"))
     self$`_rexpr`$dt_timestamp(time_unit)
   })
 }
@@ -686,8 +685,9 @@ expr_dt_with_time_unit <- function(time_unit = c("ns", "us", "ms")) {
 #' @description
 #' Cast the underlying data to another time unit. This may lose precision.
 #'
-#' @inheritParams expr_dt_timestamp
 #' @inherit as_polars_expr return
+#' @param time_unit One of `"us"` (microseconds),
+#' `"ns"` (nanoseconds) or `"ms"`(milliseconds). Representing the unit of time.
 #' @examples
 #' df <- pl$select(
 #'   date = pl$datetime_range(
@@ -697,12 +697,12 @@ expr_dt_with_time_unit <- function(time_unit = c("ns", "us", "ms")) {
 #'   )
 #' )
 #' df$with_columns(
-#'   cast_time_unit_ns = pl$col("date")$dt$cast_time_unit(),
-#'   cast_time_unit_ms = pl$col("date")$dt$cast_time_unit(time_unit = "ms")
+#'   cast_time_unit_ms = pl$col("date")$dt$cast_time_unit("ms"),
+#'   cast_time_unit_ns = pl$col("date")$dt$cast_time_unit("ns"),
 #' )
-expr_dt_cast_time_unit <- function(time_unit = c("ns", "us", "ms")) {
+expr_dt_cast_time_unit <- function(time_unit) {
   wrap({
-    time_unit <- arg_match0(time_unit, values = c("ns", "us", "ms"))
+    time_unit <- arg_match0(time_unit, values = c("us", "ns", "ms"))
     self$`_rexpr`$dt_cast_time_unit(time_unit)
   })
 }

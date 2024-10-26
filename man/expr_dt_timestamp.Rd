@@ -4,7 +4,7 @@
 \alias{expr_dt_timestamp}
 \title{Get timestamp in the given time unit}
 \usage{
-expr_dt_timestamp(time_unit = c("ns", "us", "ms"))
+expr_dt_timestamp(time_unit = c("us", "ns", "ms"))
 }
 \arguments{
 \item{time_unit}{Time unit, one of 'ns', 'us', or 'ms'.}

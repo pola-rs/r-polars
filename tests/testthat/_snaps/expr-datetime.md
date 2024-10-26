@@ -26,8 +26,8 @@
       Error in `pl$lit(as.Date("2021-01-01"))$dt$combine()`:
       ! Evaluation failed in `$combine()`.
       Caused by error in `pl$lit(as.Date("2021-01-01"))$dt$combine()`:
-      ! `time_unit` must be one of "ns", "us", or "ms", not "s".
-      i Did you mean "ns"?
+      ! `time_unit` must be one of "us", "ns", or "ms", not "s".
+      i Did you mean "us"?
 
 # dt$epoch
 
@@ -63,7 +63,7 @@
       Caused by error:
       ! Evaluation failed.
       Caused by error:
-      ! `time_unit` must be one of "ns", "us", or "ms", not "bob".
+      ! `time_unit` must be one of "us", "ns", or "ms", not "bob".
 
 ---
 
@@ -87,7 +87,7 @@
       Caused by error:
       ! Evaluation failed.
       Caused by error:
-      ! `time_unit` must be one of "ns", "us", or "ms", not "bob".
+      ! `time_unit` must be one of "us", "ns", or "ms", not "bob".
 
 ---
 

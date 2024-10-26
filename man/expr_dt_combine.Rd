@@ -4,13 +4,14 @@
 \alias{expr_dt_combine}
 \title{Combine Date and Time}
 \usage{
-expr_dt_combine(time, time_unit = c("ns", "us", "ms"))
+expr_dt_combine(time, time_unit = c("us", "ns", "ms"))
 }
 \arguments{
 \item{time}{The number of epoch since or before (if negative) the Date. Can
 be an Expr or a PTime.}
 
-\item{time_unit}{Time unit, one of 'ns', 'us', or 'ms'.}
+\item{time_unit}{One of \code{"us"} (default, microseconds),
+\code{"ns"} (nanoseconds) or \code{"ms"}(milliseconds). Representing the unit of time.}
 }
 \value{
 A polars \link{expression}
