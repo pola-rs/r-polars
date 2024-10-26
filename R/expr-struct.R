@@ -28,7 +28,7 @@ expr_struct_field <- function(...) {
 
     dots <- list2(...) |>
       unlist(recursive = FALSE)
-    check_character(dots, arg = "...")
+    check_character(dots, arg = "...", allow_na = FALSE)
 
     self$`_rexpr`$struct_multiple_fields(dots)
   })
@@ -40,7 +40,7 @@ expr_struct_rename_fields <- function(...) {
 
     dots <- list2(...) |>
       unlist(recursive = FALSE)
-    check_character(dots, arg = "...")
+    check_character(dots, arg = "...", allow_na = FALSE)
 
     self$`_rexpr`$struct_rename_fields(dots)
   })

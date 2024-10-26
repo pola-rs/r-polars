@@ -4,7 +4,7 @@ pl__field <- function(...) {
 
     dots <- list2(...) |>
       unlist(recursive = FALSE)
-    check_character(dots, arg = "...")
+    check_character(dots, arg = "...", allow_na = FALSE)
 
     field(dots)
   })
