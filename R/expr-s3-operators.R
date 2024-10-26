@@ -42,7 +42,7 @@
 }
 
 #' @export
-`<.polras_expr` <- function(e1, e2) {
+`<.polars_expr` <- function(e1, e2) {
   as_polars_expr(e1, as_lit = TRUE)$lt(e2)
 }
 
