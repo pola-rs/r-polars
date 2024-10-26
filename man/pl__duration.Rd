@@ -58,7 +58,7 @@ A \link[=pl__Duration]{Duration} represents a fixed amount of time. For example,
 \code{\link[=expr_dt_offset_by]{<expr>$dt$offset_by("1d")}} means "1 calendar day", which could sometimes be
 23 hours or 25 hours depending on Daylight Savings Time.
 For non-fixed durations such as "calendar month" or "calendar day",
-please use [\verb{<expr>$dt$offset_by()}][\link{expr_dt_offset_by}] instead.
+please use \code{\link[=expr_dt_offset_by]{<expr>$dt$offset_by()}} instead.
 }
 \examples{
 df <- pl$DataFrame(

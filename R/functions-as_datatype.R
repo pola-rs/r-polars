@@ -116,7 +116,7 @@ pl__datetime <- function(
 #' [`<expr>$dt$offset_by("1d")`][expr_dt_offset_by] means "1 calendar day", which could sometimes be
 #' 23 hours or 25 hours depending on Daylight Savings Time.
 #' For non-fixed durations such as "calendar month" or "calendar day",
-#' please use [`<expr>$dt$offset_by()`][[expr_dt_offset_by]] instead.
+#' please use [`<expr>$dt$offset_by()`][expr_dt_offset_by] instead.
 #' @inherit as_polars_expr return
 #' @inheritParams rlang::args_dots_empty
 #' @param weeks Something can be coerced to an [polars expression][Expr] by [as_polars_expr()]
