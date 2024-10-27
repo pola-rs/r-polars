@@ -142,6 +142,11 @@ If the \code{tzone} attribute is not present or an empty string (\code{""}),
 the \link{Series}' \link[=DataType]{dtype} will be Datetime without timezone.
 }
 
+\subsection{S3 method for \link{POSIXlt}}{
+
+Sub-nanosecond values will be rounded to nanoseconds.
+}
+
 \subsection{S3 method for \link{difftime}}{
 
 Sub-millisecond values will be rounded to milliseconds.
@@ -187,10 +192,13 @@ as.Date(c(-0.5, 0, 0.5)) |>
   as_polars_series()
 
 # POSIXct with timezone
-as_polars_series(as.POSIXct(c(NA, "2021-01-01 00:00:00"), "UTC"))
+as_polars_series(as.POSIXct(c(NA, "2021-01-01 00:00:00.123456789"), "UTC"))
 
 # POSIXct without timezone
-as_polars_series(as.POSIXct(c(NA, "2021-01-01 00:00:00")))
+as_polars_series(as.POSIXct(c(NA, "2021-01-01 00:00:00.123456789")))
+
+# POSIXlt
+as_polars_series(as.POSIXlt(c(NA, "2021-01-01 00:00:00.123456789"), "UTC"))
 
 # difftime
 as_polars_series(as.difftime(c(NA, 1), units = "days"))

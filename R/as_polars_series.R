@@ -32,6 +32,10 @@
 #' If the `tzone` attribute is not present or an empty string (`""`),
 #' the [Series]' [dtype][DataType] will be Datetime without timezone.
 #'
+#'  ## S3 method for [POSIXlt]
+#'
+#' Sub-nanosecond values will be rounded to nanoseconds.
+#'
 #' ## S3 method for [difftime]
 #'
 #' Sub-millisecond values will be rounded to milliseconds.
@@ -87,10 +91,13 @@
 #'   as_polars_series()
 #'
 #' # POSIXct with timezone
-#' as_polars_series(as.POSIXct(c(NA, "2021-01-01 00:00:00"), "UTC"))
+#' as_polars_series(as.POSIXct(c(NA, "2021-01-01 00:00:00.123456789"), "UTC"))
 #'
 #' # POSIXct without timezone
-#' as_polars_series(as.POSIXct(c(NA, "2021-01-01 00:00:00")))
+#' as_polars_series(as.POSIXct(c(NA, "2021-01-01 00:00:00.123456789")))
+#'
+#' # POSIXlt
+#' as_polars_series(as.POSIXlt(c(NA, "2021-01-01 00:00:00.123456789"), "UTC"))
 #'
 #' # difftime
 #' as_polars_series(as.difftime(c(NA, 1), units = "days"))
