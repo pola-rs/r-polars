@@ -23,6 +23,20 @@ NULL
   }
 }
 
+# Prohibit modifying environments
+
+#' @export
+`$<-.savvy_neopolars__sealed` <- function(x, name, value) {
+  class <- gsub("__bundle$", "", class(x)[1])
+  stop(class, " cannot be modified", call. = FALSE)
+}
+
+#' @export
+`[[<-.savvy_neopolars__sealed` <- function(x, i, value) {
+  class <- gsub("__bundle$", "", class(x)[1])
+  stop(class, " cannot be modified", call. = FALSE)
+}
+
 
 `concat_df` <- function(`dfs`) {
   .savvy_wrap_PlRDataFrame(.Call(savvy_concat_df__impl, `dfs`))
@@ -208,42 +222,24 @@ NULL
   e$`when` <- `PlRChainedThen_when`(ptr)
   e$`otherwise` <- `PlRChainedThen_otherwise`(ptr)
 
-  class(e) <- "PlRChainedThen"
+  class(e) <- c("PlRChainedThen", "savvy_neopolars__sealed")
   e
 }
-
-#' @export
-`$<-.PlRChainedThen` <- function(x, name, value) stop("PlRChainedThen cannot be modified", call. = FALSE)
-
-#' @export
-`[[<-.PlRChainedThen` <- function(x, i, value) stop("PlRChainedThen cannot be modified", call. = FALSE)
 
 
 
 `PlRChainedThen` <- new.env(parent = emptyenv())
 
-#' @export
-`$<-.PlRChainedThen` <- function(x, name, value) stop("PlRChainedThen cannot be modified", call. = FALSE)
-
-#' @export
-`[[<-.PlRChainedThen` <- function(x, i, value) stop("PlRChainedThen cannot be modified", call. = FALSE)
-
 ### associated functions for PlRChainedThen
 
 
 
-class(`PlRChainedThen`) <- "PlRChainedThen__bundle"
+class(`PlRChainedThen`) <- c("PlRChainedThen__bundle", "savvy_neopolars__sealed")
 
 #' @export
 `print.PlRChainedThen__bundle` <- function(x, ...) {
   cat('PlRChainedThen')
 }
-
-#' @export
-`$<-.PlRChainedThen__bundle` <- function(x, name, value) stop("PlRChainedThen cannot be modified", call. = FALSE)
-
-#' @export
-`[[<-.PlRChainedThen__bundle` <- function(x, i, value) stop("PlRChainedThen cannot be modified", call. = FALSE)
 
 ### wrapper functions for PlRChainedWhen
 
@@ -259,42 +255,24 @@ class(`PlRChainedThen`) <- "PlRChainedThen__bundle"
   e$.ptr <- ptr
   e$`then` <- `PlRChainedWhen_then`(ptr)
 
-  class(e) <- "PlRChainedWhen"
+  class(e) <- c("PlRChainedWhen", "savvy_neopolars__sealed")
   e
 }
-
-#' @export
-`$<-.PlRChainedWhen` <- function(x, name, value) stop("PlRChainedWhen cannot be modified", call. = FALSE)
-
-#' @export
-`[[<-.PlRChainedWhen` <- function(x, i, value) stop("PlRChainedWhen cannot be modified", call. = FALSE)
 
 
 
 `PlRChainedWhen` <- new.env(parent = emptyenv())
 
-#' @export
-`$<-.PlRChainedWhen` <- function(x, name, value) stop("PlRChainedWhen cannot be modified", call. = FALSE)
-
-#' @export
-`[[<-.PlRChainedWhen` <- function(x, i, value) stop("PlRChainedWhen cannot be modified", call. = FALSE)
-
 ### associated functions for PlRChainedWhen
 
 
 
-class(`PlRChainedWhen`) <- "PlRChainedWhen__bundle"
+class(`PlRChainedWhen`) <- c("PlRChainedWhen__bundle", "savvy_neopolars__sealed")
 
 #' @export
 `print.PlRChainedWhen__bundle` <- function(x, ...) {
   cat('PlRChainedWhen')
 }
-
-#' @export
-`$<-.PlRChainedWhen__bundle` <- function(x, name, value) stop("PlRChainedWhen cannot be modified", call. = FALSE)
-
-#' @export
-`[[<-.PlRChainedWhen__bundle` <- function(x, i, value) stop("PlRChainedWhen cannot be modified", call. = FALSE)
 
 ### wrapper functions for PlRDataFrame
 
@@ -415,25 +393,13 @@ class(`PlRChainedWhen`) <- "PlRChainedWhen__bundle"
   e$`lazy` <- `PlRDataFrame_lazy`(ptr)
   e$`to_struct` <- `PlRDataFrame_to_struct`(ptr)
 
-  class(e) <- "PlRDataFrame"
+  class(e) <- c("PlRDataFrame", "savvy_neopolars__sealed")
   e
 }
-
-#' @export
-`$<-.PlRDataFrame` <- function(x, name, value) stop("PlRDataFrame cannot be modified", call. = FALSE)
-
-#' @export
-`[[<-.PlRDataFrame` <- function(x, i, value) stop("PlRDataFrame cannot be modified", call. = FALSE)
 
 
 
 `PlRDataFrame` <- new.env(parent = emptyenv())
-
-#' @export
-`$<-.PlRDataFrame` <- function(x, name, value) stop("PlRDataFrame cannot be modified", call. = FALSE)
-
-#' @export
-`[[<-.PlRDataFrame` <- function(x, i, value) stop("PlRDataFrame cannot be modified", call. = FALSE)
 
 ### associated functions for PlRDataFrame
 
@@ -442,18 +408,12 @@ class(`PlRChainedWhen`) <- "PlRChainedWhen__bundle"
 }
 
 
-class(`PlRDataFrame`) <- "PlRDataFrame__bundle"
+class(`PlRDataFrame`) <- c("PlRDataFrame__bundle", "savvy_neopolars__sealed")
 
 #' @export
 `print.PlRDataFrame__bundle` <- function(x, ...) {
   cat('PlRDataFrame')
 }
-
-#' @export
-`$<-.PlRDataFrame__bundle` <- function(x, name, value) stop("PlRDataFrame cannot be modified", call. = FALSE)
-
-#' @export
-`[[<-.PlRDataFrame__bundle` <- function(x, i, value) stop("PlRDataFrame cannot be modified", call. = FALSE)
 
 ### wrapper functions for PlRDataType
 
@@ -498,25 +458,13 @@ class(`PlRDataFrame`) <- "PlRDataFrame__bundle"
   e$`eq` <- `PlRDataType_eq`(ptr)
   e$`ne` <- `PlRDataType_ne`(ptr)
 
-  class(e) <- "PlRDataType"
+  class(e) <- c("PlRDataType", "savvy_neopolars__sealed")
   e
 }
-
-#' @export
-`$<-.PlRDataType` <- function(x, name, value) stop("PlRDataType cannot be modified", call. = FALSE)
-
-#' @export
-`[[<-.PlRDataType` <- function(x, i, value) stop("PlRDataType cannot be modified", call. = FALSE)
 
 
 
 `PlRDataType` <- new.env(parent = emptyenv())
-
-#' @export
-`$<-.PlRDataType` <- function(x, name, value) stop("PlRDataType cannot be modified", call. = FALSE)
-
-#' @export
-`[[<-.PlRDataType` <- function(x, i, value) stop("PlRDataType cannot be modified", call. = FALSE)
 
 ### associated functions for PlRDataType
 
@@ -559,18 +507,12 @@ class(`PlRDataFrame`) <- "PlRDataFrame__bundle"
 }
 
 
-class(`PlRDataType`) <- "PlRDataType__bundle"
+class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_neopolars__sealed")
 
 #' @export
 `print.PlRDataType__bundle` <- function(x, ...) {
   cat('PlRDataType')
 }
-
-#' @export
-`$<-.PlRDataType__bundle` <- function(x, name, value) stop("PlRDataType cannot be modified", call. = FALSE)
-
-#' @export
-`[[<-.PlRDataType__bundle` <- function(x, i, value) stop("PlRDataType cannot be modified", call. = FALSE)
 
 ### wrapper functions for PlRExpr
 
@@ -2159,25 +2101,13 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
   e$`struct_json_encode` <- `PlRExpr_struct_json_encode`(ptr)
   e$`struct_with_fields` <- `PlRExpr_struct_with_fields`(ptr)
 
-  class(e) <- "PlRExpr"
+  class(e) <- c("PlRExpr", "savvy_neopolars__sealed")
   e
 }
-
-#' @export
-`$<-.PlRExpr` <- function(x, name, value) stop("PlRExpr cannot be modified", call. = FALSE)
-
-#' @export
-`[[<-.PlRExpr` <- function(x, i, value) stop("PlRExpr cannot be modified", call. = FALSE)
 
 
 
 `PlRExpr` <- new.env(parent = emptyenv())
-
-#' @export
-`$<-.PlRExpr` <- function(x, name, value) stop("PlRExpr cannot be modified", call. = FALSE)
-
-#' @export
-`[[<-.PlRExpr` <- function(x, i, value) stop("PlRExpr cannot be modified", call. = FALSE)
 
 ### associated functions for PlRExpr
 
@@ -2190,18 +2120,12 @@ class(`PlRDataType`) <- "PlRDataType__bundle"
 }
 
 
-class(`PlRExpr`) <- "PlRExpr__bundle"
+class(`PlRExpr`) <- c("PlRExpr__bundle", "savvy_neopolars__sealed")
 
 #' @export
 `print.PlRExpr__bundle` <- function(x, ...) {
   cat('PlRExpr')
 }
-
-#' @export
-`$<-.PlRExpr__bundle` <- function(x, name, value) stop("PlRExpr cannot be modified", call. = FALSE)
-
-#' @export
-`[[<-.PlRExpr__bundle` <- function(x, i, value) stop("PlRExpr cannot be modified", call. = FALSE)
 
 ### wrapper functions for PlRLazyFrame
 
@@ -2323,42 +2247,24 @@ class(`PlRExpr`) <- "PlRExpr__bundle"
   e$`sort_by_exprs` <- `PlRLazyFrame_sort_by_exprs`(ptr)
   e$`with_columns` <- `PlRLazyFrame_with_columns`(ptr)
 
-  class(e) <- "PlRLazyFrame"
+  class(e) <- c("PlRLazyFrame", "savvy_neopolars__sealed")
   e
 }
-
-#' @export
-`$<-.PlRLazyFrame` <- function(x, name, value) stop("PlRLazyFrame cannot be modified", call. = FALSE)
-
-#' @export
-`[[<-.PlRLazyFrame` <- function(x, i, value) stop("PlRLazyFrame cannot be modified", call. = FALSE)
 
 
 
 `PlRLazyFrame` <- new.env(parent = emptyenv())
 
-#' @export
-`$<-.PlRLazyFrame` <- function(x, name, value) stop("PlRLazyFrame cannot be modified", call. = FALSE)
-
-#' @export
-`[[<-.PlRLazyFrame` <- function(x, i, value) stop("PlRLazyFrame cannot be modified", call. = FALSE)
-
 ### associated functions for PlRLazyFrame
 
 
 
-class(`PlRLazyFrame`) <- "PlRLazyFrame__bundle"
+class(`PlRLazyFrame`) <- c("PlRLazyFrame__bundle", "savvy_neopolars__sealed")
 
 #' @export
 `print.PlRLazyFrame__bundle` <- function(x, ...) {
   cat('PlRLazyFrame')
 }
-
-#' @export
-`$<-.PlRLazyFrame__bundle` <- function(x, name, value) stop("PlRLazyFrame cannot be modified", call. = FALSE)
-
-#' @export
-`[[<-.PlRLazyFrame__bundle` <- function(x, i, value) stop("PlRLazyFrame cannot be modified", call. = FALSE)
 
 ### wrapper functions for PlRLazyGroupBy
 
@@ -2387,42 +2293,24 @@ class(`PlRLazyFrame`) <- "PlRLazyFrame__bundle"
   e$`head` <- `PlRLazyGroupBy_head`(ptr)
   e$`tail` <- `PlRLazyGroupBy_tail`(ptr)
 
-  class(e) <- "PlRLazyGroupBy"
+  class(e) <- c("PlRLazyGroupBy", "savvy_neopolars__sealed")
   e
 }
-
-#' @export
-`$<-.PlRLazyGroupBy` <- function(x, name, value) stop("PlRLazyGroupBy cannot be modified", call. = FALSE)
-
-#' @export
-`[[<-.PlRLazyGroupBy` <- function(x, i, value) stop("PlRLazyGroupBy cannot be modified", call. = FALSE)
 
 
 
 `PlRLazyGroupBy` <- new.env(parent = emptyenv())
 
-#' @export
-`$<-.PlRLazyGroupBy` <- function(x, name, value) stop("PlRLazyGroupBy cannot be modified", call. = FALSE)
-
-#' @export
-`[[<-.PlRLazyGroupBy` <- function(x, i, value) stop("PlRLazyGroupBy cannot be modified", call. = FALSE)
-
 ### associated functions for PlRLazyGroupBy
 
 
 
-class(`PlRLazyGroupBy`) <- "PlRLazyGroupBy__bundle"
+class(`PlRLazyGroupBy`) <- c("PlRLazyGroupBy__bundle", "savvy_neopolars__sealed")
 
 #' @export
 `print.PlRLazyGroupBy__bundle` <- function(x, ...) {
   cat('PlRLazyGroupBy')
 }
-
-#' @export
-`$<-.PlRLazyGroupBy__bundle` <- function(x, name, value) stop("PlRLazyGroupBy cannot be modified", call. = FALSE)
-
-#' @export
-`[[<-.PlRLazyGroupBy__bundle` <- function(x, i, value) stop("PlRLazyGroupBy cannot be modified", call. = FALSE)
 
 ### wrapper functions for PlRSeries
 
@@ -2585,25 +2473,13 @@ class(`PlRLazyGroupBy`) <- "PlRLazyGroupBy__bundle"
   e$`cast` <- `PlRSeries_cast`(ptr)
   e$`slice` <- `PlRSeries_slice`(ptr)
 
-  class(e) <- "PlRSeries"
+  class(e) <- c("PlRSeries", "savvy_neopolars__sealed")
   e
 }
-
-#' @export
-`$<-.PlRSeries` <- function(x, name, value) stop("PlRSeries cannot be modified", call. = FALSE)
-
-#' @export
-`[[<-.PlRSeries` <- function(x, i, value) stop("PlRSeries cannot be modified", call. = FALSE)
 
 
 
 `PlRSeries` <- new.env(parent = emptyenv())
-
-#' @export
-`$<-.PlRSeries` <- function(x, name, value) stop("PlRSeries cannot be modified", call. = FALSE)
-
-#' @export
-`[[<-.PlRSeries` <- function(x, i, value) stop("PlRSeries cannot be modified", call. = FALSE)
 
 ### associated functions for PlRSeries
 
@@ -2656,18 +2532,12 @@ class(`PlRLazyGroupBy`) <- "PlRLazyGroupBy__bundle"
 }
 
 
-class(`PlRSeries`) <- "PlRSeries__bundle"
+class(`PlRSeries`) <- c("PlRSeries__bundle", "savvy_neopolars__sealed")
 
 #' @export
 `print.PlRSeries__bundle` <- function(x, ...) {
   cat('PlRSeries')
 }
-
-#' @export
-`$<-.PlRSeries__bundle` <- function(x, name, value) stop("PlRSeries cannot be modified", call. = FALSE)
-
-#' @export
-`[[<-.PlRSeries__bundle` <- function(x, i, value) stop("PlRSeries cannot be modified", call. = FALSE)
 
 ### wrapper functions for PlRThen
 
@@ -2691,42 +2561,24 @@ class(`PlRSeries`) <- "PlRSeries__bundle"
   e$`when` <- `PlRThen_when`(ptr)
   e$`otherwise` <- `PlRThen_otherwise`(ptr)
 
-  class(e) <- "PlRThen"
+  class(e) <- c("PlRThen", "savvy_neopolars__sealed")
   e
 }
-
-#' @export
-`$<-.PlRThen` <- function(x, name, value) stop("PlRThen cannot be modified", call. = FALSE)
-
-#' @export
-`[[<-.PlRThen` <- function(x, i, value) stop("PlRThen cannot be modified", call. = FALSE)
 
 
 
 `PlRThen` <- new.env(parent = emptyenv())
 
-#' @export
-`$<-.PlRThen` <- function(x, name, value) stop("PlRThen cannot be modified", call. = FALSE)
-
-#' @export
-`[[<-.PlRThen` <- function(x, i, value) stop("PlRThen cannot be modified", call. = FALSE)
-
 ### associated functions for PlRThen
 
 
 
-class(`PlRThen`) <- "PlRThen__bundle"
+class(`PlRThen`) <- c("PlRThen__bundle", "savvy_neopolars__sealed")
 
 #' @export
 `print.PlRThen__bundle` <- function(x, ...) {
   cat('PlRThen')
 }
-
-#' @export
-`$<-.PlRThen__bundle` <- function(x, name, value) stop("PlRThen cannot be modified", call. = FALSE)
-
-#' @export
-`[[<-.PlRThen__bundle` <- function(x, i, value) stop("PlRThen cannot be modified", call. = FALSE)
 
 ### wrapper functions for PlRWhen
 
@@ -2742,40 +2594,22 @@ class(`PlRThen`) <- "PlRThen__bundle"
   e$.ptr <- ptr
   e$`then` <- `PlRWhen_then`(ptr)
 
-  class(e) <- "PlRWhen"
+  class(e) <- c("PlRWhen", "savvy_neopolars__sealed")
   e
 }
-
-#' @export
-`$<-.PlRWhen` <- function(x, name, value) stop("PlRWhen cannot be modified", call. = FALSE)
-
-#' @export
-`[[<-.PlRWhen` <- function(x, i, value) stop("PlRWhen cannot be modified", call. = FALSE)
 
 
 
 `PlRWhen` <- new.env(parent = emptyenv())
 
-#' @export
-`$<-.PlRWhen` <- function(x, name, value) stop("PlRWhen cannot be modified", call. = FALSE)
-
-#' @export
-`[[<-.PlRWhen` <- function(x, i, value) stop("PlRWhen cannot be modified", call. = FALSE)
-
 ### associated functions for PlRWhen
 
 
 
-class(`PlRWhen`) <- "PlRWhen__bundle"
+class(`PlRWhen`) <- c("PlRWhen__bundle", "savvy_neopolars__sealed")
 
 #' @export
 `print.PlRWhen__bundle` <- function(x, ...) {
   cat('PlRWhen')
 }
-
-#' @export
-`$<-.PlRWhen__bundle` <- function(x, name, value) stop("PlRWhen cannot be modified", call. = FALSE)
-
-#' @export
-`[[<-.PlRWhen__bundle` <- function(x, i, value) stop("PlRWhen cannot be modified", call. = FALSE)
 
