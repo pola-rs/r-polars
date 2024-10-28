@@ -61,7 +61,7 @@
       Caused by error in `pl$col("strings")$arr$var()`:
       ! Evaluation failed in `$var()`.
       Caused by error:
-      ! Value `1000.0` is too large to be converted to u8
+      ! 1000.0 is out of range that can be safely converted to u8
 
 # arr$std
 
@@ -75,7 +75,7 @@
       Caused by error in `pl$col("strings")$arr$std()`:
       ! Evaluation failed in `$std()`.
       Caused by error:
-      ! Value `1000.0` is too large to be converted to u8
+      ! 1000.0 is out of range that can be safely converted to u8
 
 # arr$count_matches
 

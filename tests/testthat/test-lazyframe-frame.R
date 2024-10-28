@@ -129,6 +129,6 @@ test_that("slice/head/tail works lazy/eager", {
     .input$tail(-4),
     .data,
     pl$DataFrame(foo = 5L, bar = 10L),
-    r"(Value `-4\.0` is too small to be converted to u32)"
+    r"(-4\.0 is out of range that can be safely converted to u32)"
   )
 })

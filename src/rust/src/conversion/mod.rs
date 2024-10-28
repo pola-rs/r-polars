@@ -7,6 +7,10 @@ mod chunked_array;
 pub mod clock;
 pub mod data_table;
 
+// Same as savvy
+const F64_MAX_SIGFIG: f64 = (2_u64.pow(53) - 1) as f64;
+const F64_TOLERANCE: f64 = 0.01;
+
 #[repr(transparent)]
 pub struct Wrap<T>(pub T);
 
@@ -195,31 +199,12 @@ impl TryFrom<&str> for Wrap<TimeUnit> {
     }
 }
 
-// TODO: argument name replacement
 impl TryFrom<NumericScalar> for Wrap<usize> {
-    type Error = String;
+    type Error = savvy::Error;
 
-    fn try_from(n: NumericScalar) -> Result<Self, String> {
-        const TOLERANCE: f64 = 0.01; // same as savvy
-        let n = n.as_f64();
-        match n {
-            _ if n.is_nan() => Err("`NaN` cannot be converted to usize".to_string()),
-            _ if n < 0_f64 => Err(format!(
-                "Negative value `{n:?}` cannot be converted to usize"
-            )),
-            _ if n > usize::MAX as f64 => Err(format!(
-                "Value `{n:?}` is too large to be converted to usize"
-            )),
-            _ => {
-                if (n - n.round()).abs() > TOLERANCE {
-                    Err(format!(
-                        "Value `{n:?}` is not integer-ish enough to be converted to usize"
-                    ))
-                } else {
-                    Ok(Wrap(n as usize))
-                }
-            }
-        }
+    fn try_from(n: NumericScalar) -> Result<Self, savvy::Error> {
+        let n = n.as_usize()?;
+        Ok(Wrap(n))
     }
 }
 
@@ -227,31 +212,8 @@ impl TryFrom<NumericSexp> for Wrap<Vec<usize>> {
     type Error = savvy::Error;
 
     fn try_from(v: NumericSexp) -> Result<Self, savvy::Error> {
-        const TOLERANCE: f64 = 0.01; // same as savvy
-        let v = v.as_slice_f64();
-        let values = v
-            .iter()
-            .map(|&n| {
-                if n.is_nan() {
-                    Err("`NaN` cannot be converted to usize".to_string())
-                } else if n < 0_f64 {
-                    Err(format!(
-                        "Negative value `{n:?}` cannot be converted to usize"
-                    ))
-                } else if n > usize::MAX as f64 {
-                    Err(format!(
-                        "Value `{n:?}` is too large to be converted to usize"
-                    ))
-                } else if (n - n.round()).abs() > TOLERANCE {
-                    Err(format!(
-                        "Value `{n:?}` is not integer-ish enough to be converted to usize"
-                    ))
-                } else {
-                    Ok(n as usize)
-                }
-            })
-            .collect::<Result<Vec<_>, _>>()?;
-        Ok(Wrap(values))
+        let v = v.iter_usize().collect::<Result<Vec<_>, _>>()?;
+        Ok(Wrap(v))
     }
 }
 
@@ -259,20 +221,19 @@ impl TryFrom<NumericScalar> for Wrap<i64> {
     type Error = savvy::Error;
 
     fn try_from(v: NumericScalar) -> Result<Self, savvy::Error> {
-        const TOLERANCE: f64 = 0.01; // same as savvy
-        let v = v.as_f64();
-        if v.is_nan() {
-            Err("`NaN` cannot be converted to i64".to_string())?
-        } else if v < i64::MIN as f64 {
-            Err(format!("Value `{v:?}` is too small to be converted to i64"))?
-        } else if v > i64::MAX as f64 {
-            Err(format!("Value `{v:?}` is too large to be converted to i64"))?
-        } else if (v - v.round()).abs() > TOLERANCE {
-            Err(format!(
-                "Value `{v:?}` is not integer-ish enough to be converted to i64"
-            ))?
-        } else {
-            Ok(Wrap(v as i64))
+        match v {
+            NumericScalar::Integer(i) => Ok(Wrap(i as i64)),
+            NumericScalar::Real(f) => {
+                if f.is_nan() {
+                    Err("`NaN` cannot be converted to i64".into())
+                } else if f.is_infinite() || !(0f64..=F64_MAX_SIGFIG).contains(&f) {
+                    Err(format!("{f:?} is out of range that can be safely converted to i64").into())
+                } else if (f - f.round()).abs() > F64_TOLERANCE {
+                    Err(format!("{f:?} is not integer-ish").into())
+                } else {
+                    Ok(Wrap(f as i64))
+                }
+            }
         }
     }
 }
@@ -291,20 +252,21 @@ impl TryFrom<NumericScalar> for Wrap<u8> {
     type Error = savvy::Error;
 
     fn try_from(v: NumericScalar) -> Result<Self, savvy::Error> {
-        const TOLERANCE: f64 = 0.01; // same as savvy
-        let v = v.as_f64();
-        if v.is_nan() {
-            Err("`NaN` cannot be converted to u8".to_string())?
-        } else if v < 0_f64 {
-            Err(format!("Value `{v:?}` is too small to be converted to u8"))?
-        } else if v > u8::MAX as f64 {
-            Err(format!("Value `{v:?}` is too large to be converted to u8"))?
-        } else if (v - v.round()).abs() > TOLERANCE {
-            Err(format!(
-                "Value `{v:?}` is not integer-ish enough to be converted to u8"
-            ))?
-        } else {
-            Ok(Wrap(v as u8))
+        match v {
+            NumericScalar::Integer(i) => <u8>::try_from(i)
+                .map_err(|e| e.to_string().into())
+                .map(Wrap),
+            NumericScalar::Real(f) => {
+                if f.is_nan() {
+                    Err("`NaN` cannot be converted to u8".into())
+                } else if f.is_infinite() || !(0f64..=u8::MAX as f64).contains(&f) {
+                    Err(format!("{f:?} is out of range that can be safely converted to u8").into())
+                } else if (f - f.round()).abs() > F64_TOLERANCE {
+                    Err(format!("{f:?} is not integer-ish").into())
+                } else {
+                    Ok(Wrap(f as u8))
+                }
+            }
         }
     }
 }
@@ -313,20 +275,21 @@ impl TryFrom<NumericScalar> for Wrap<u32> {
     type Error = savvy::Error;
 
     fn try_from(v: NumericScalar) -> Result<Self, savvy::Error> {
-        const TOLERANCE: f64 = 0.01; // same as savvy
-        let v = v.as_f64();
-        if v.is_nan() {
-            Err("`NaN` cannot be converted to u32".to_string())?
-        } else if v < 0_f64 {
-            Err(format!("Value `{v:?}` is too small to be converted to u32"))?
-        } else if v > u32::MAX as f64 {
-            Err(format!("Value `{v:?}` is too large to be converted to u32"))?
-        } else if (v - v.round()).abs() > TOLERANCE {
-            Err(format!(
-                "Value `{v:?}` is not integer-ish enough to be converted to u32"
-            ))?
-        } else {
-            Ok(Wrap(v as u32))
+        match v {
+            NumericScalar::Integer(i) => <u32>::try_from(i)
+                .map_err(|e| e.to_string().into())
+                .map(Wrap),
+            NumericScalar::Real(f) => {
+                if f.is_nan() {
+                    Err("`NaN` cannot be converted to u32".into())
+                } else if f.is_infinite() || !(0f64..=u32::MAX as f64).contains(&f) {
+                    Err(format!("{f:?} is out of range that can be safely converted to u32").into())
+                } else if (f - f.round()).abs() > F64_TOLERANCE {
+                    Err(format!("{f:?} is not integer-ish").into())
+                } else {
+                    Ok(Wrap(f as u32))
+                }
+            }
         }
     }
 }
@@ -335,20 +298,21 @@ impl TryFrom<NumericScalar> for Wrap<u64> {
     type Error = savvy::Error;
 
     fn try_from(v: NumericScalar) -> Result<Self, savvy::Error> {
-        const TOLERANCE: f64 = 0.01; // same as savvy
-        let v = v.as_f64();
-        if v.is_nan() {
-            Err("`NaN` cannot be converted to u64".to_string())?
-        } else if v < 0_f64 {
-            Err(format!("Value `{v:?}` is too small to be converted to u64"))?
-        } else if v > u64::MAX as f64 {
-            Err(format!("Value `{v:?}` is too large to be converted to u64"))?
-        } else if (v - v.round()).abs() > TOLERANCE {
-            Err(format!(
-                "Value `{v:?}` is not integer-ish enough to be converted to u64"
-            ))?
-        } else {
-            Ok(Wrap(v as u64))
+        match v {
+            NumericScalar::Integer(i) => <u64>::try_from(i)
+                .map_err(|e| e.to_string().into())
+                .map(Wrap),
+            NumericScalar::Real(f) => {
+                if f.is_nan() {
+                    Err("`NaN` cannot be converted to u64".into())
+                } else if f.is_infinite() || !(0f64..=F64_MAX_SIGFIG).contains(&f) {
+                    Err(format!("{f:?} is out of range that can be safely converted to u64").into())
+                } else if (f - f.round()).abs() > F64_TOLERANCE {
+                    Err(format!("{f:?} is not integer-ish").into())
+                } else {
+                    Ok(Wrap(f as u64))
+                }
+            }
         }
     }
 }

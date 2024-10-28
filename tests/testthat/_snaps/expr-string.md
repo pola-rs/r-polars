@@ -165,7 +165,7 @@
       Caused by error in `pl$col("a")$str$pad_end()`:
       ! Evaluation failed in `$pad_end()`.
       Caused by error:
-      ! Negative value `-2.0` cannot be converted to usize
+      ! -2.0 is out of range that can be safely converted to usize
 
 ---
 
@@ -207,7 +207,7 @@
       Caused by error in `pl$col("a")$str$pad_start()`:
       ! Evaluation failed in `$pad_start()`.
       Caused by error:
-      ! Negative value `-2.0` cannot be converted to usize
+      ! -2.0 is out of range that can be safely converted to usize
 
 # encode decode
 
