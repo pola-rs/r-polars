@@ -29,11 +29,13 @@ patrick::with_parameters_test_that(
 )
 
 test_that("pl$col() input error", {
+  invalid_error_message <- r"(Invalid input for `pl\$col\(\)`)"
+
   expect_error(pl$col(NA_character_), "`NA` is not a valid column name")
   expect_error(pl$col("foo", NA_character_), "`NA` is not a valid column name")
-  expect_error(pl$col(1), r"(invalid input for `pl\$col\(\)`)")
-  expect_error(pl$col(list("foo")), r"(invalid input for `pl\$col\(\)`)")
-  expect_error(pl$col("foo", pl$Int8), r"(invalid input for `pl\$col\(\)`)")
-  expect_error(pl$col(pl$Int8, "foo"), "Expect polars data type, got character")
+  expect_error(pl$col(1), invalid_error_message)
+  expect_error(pl$col(list("foo")), invalid_error_message)
+  expect_error(pl$col("foo", pl$Int8), invalid_error_message)
+  expect_error(pl$col(pl$Int8, "foo"), invalid_error_message)
   expect_error(pl$col(foo = "bar"), "Arguments in `...` must be passed by position, not name")
 })

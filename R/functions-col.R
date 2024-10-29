@@ -52,22 +52,15 @@ pl__col <- function(...) {
       } else {
         cols(dots)
       }
-    } else if (is_polars_dtype(dots[[1]])) {
+    } else if (is_list_of_polars_dtype(dots)) {
       dots |>
-        lapply(\(x) {
-          if (!isTRUE(is_polars_dtype(x))) {
-            # TODO: error message improvement
-            abort(
-              sprintf("Expect polars data type, got %s", toString(class(x))),
-              call = parent.frame(3L)
-            )
-          }
-          x$`_dt`
-        }) |>
+        lapply(\(x) x$`_dt`) |>
         dtype_cols()
     } else {
-      # TODO: error message improvement
-      abort("invalid input for `pl$col()`.")
+      abort(c(
+        "Invalid input for `pl$col()`",
+        i = "`pl$col()` accepts either character vectors or (lists of) polars data types"
+      ))
     }
   })
 }
