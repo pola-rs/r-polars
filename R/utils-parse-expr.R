@@ -9,7 +9,7 @@ parse_into_list_of_expressions <- function(..., `__structify` = FALSE) {
   unaliased_expr <- expr$meta$undo_aliases()
   if (unaliased_expr$meta$has_multiple_outputs()) {
     expr_name <- expr$meta$output_name(raise_if_undetermined = FALSE)
-    if (is.null(expr_name)) {
+    if (is_na(expr_name)) {
       pl$struct(expr)
     } else {
       pl$struct(unaliased_expr)$alias(expr_name)

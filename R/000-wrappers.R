@@ -1485,6 +1485,25 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_neopolars__sealed")
   }
 }
 
+`PlRExpr_meta_eq` <- function(self) {
+  function(`other`) {
+    `other` <- .savvy_extract_ptr(`other`, "PlRExpr")
+    .Call(savvy_PlRExpr_meta_eq__impl, `self`, `other`)
+  }
+}
+
+`PlRExpr_meta_pop` <- function(self) {
+  function() {
+    .Call(savvy_PlRExpr_meta_pop__impl, `self`)
+  }
+}
+
+`PlRExpr_meta_root_names` <- function(self) {
+  function() {
+    .Call(savvy_PlRExpr_meta_root_names__impl, `self`)
+  }
+}
+
 `PlRExpr_meta_output_name` <- function(self) {
   function() {
     .Call(savvy_PlRExpr_meta_output_name__impl, `self`)
@@ -1527,6 +1546,24 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_neopolars__sealed")
 `PlRExpr__meta_as_selector` <- function(self) {
   function() {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr__meta_as_selector__impl, `self`))
+  }
+}
+
+`PlRExpr_meta_tree_format` <- function(self) {
+  function() {
+    .Call(savvy_PlRExpr_meta_tree_format__impl, `self`)
+  }
+}
+
+`PlRExpr_meta_is_regex_projection` <- function(self) {
+  function() {
+    .Call(savvy_PlRExpr_meta_is_regex_projection__impl, `self`)
+  }
+}
+
+`PlRExpr_meta_is_column_selection` <- function(self) {
+  function(`allow_aliasing`) {
+    .Call(savvy_PlRExpr_meta_is_column_selection__impl, `self`, `allow_aliasing`)
   }
 }
 
@@ -2039,6 +2076,9 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_neopolars__sealed")
   e$`list_to_array` <- `PlRExpr_list_to_array`(ptr)
   e$`list_drop_nulls` <- `PlRExpr_list_drop_nulls`(ptr)
   e$`list_count_matches` <- `PlRExpr_list_count_matches`(ptr)
+  e$`meta_eq` <- `PlRExpr_meta_eq`(ptr)
+  e$`meta_pop` <- `PlRExpr_meta_pop`(ptr)
+  e$`meta_root_names` <- `PlRExpr_meta_root_names`(ptr)
   e$`meta_output_name` <- `PlRExpr_meta_output_name`(ptr)
   e$`meta_undo_aliases` <- `PlRExpr_meta_undo_aliases`(ptr)
   e$`meta_has_multiple_outputs` <- `PlRExpr_meta_has_multiple_outputs`(ptr)
@@ -2046,6 +2086,9 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_neopolars__sealed")
   e$`_meta_selector_and` <- `PlRExpr__meta_selector_and`(ptr)
   e$`_meta_selector_sub` <- `PlRExpr__meta_selector_sub`(ptr)
   e$`_meta_as_selector` <- `PlRExpr__meta_as_selector`(ptr)
+  e$`meta_tree_format` <- `PlRExpr_meta_tree_format`(ptr)
+  e$`meta_is_regex_projection` <- `PlRExpr_meta_is_regex_projection`(ptr)
+  e$`meta_is_column_selection` <- `PlRExpr_meta_is_column_selection`(ptr)
   e$`name_keep` <- `PlRExpr_name_keep`(ptr)
   e$`name_prefix` <- `PlRExpr_name_prefix`(ptr)
   e$`name_suffix` <- `PlRExpr_name_suffix`(ptr)

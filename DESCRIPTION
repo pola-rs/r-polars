@@ -22,6 +22,7 @@ Suggests:
     clock,
     data.table,
     hms,
+    jsonlite,
     patrick,
     testthat (>= 3.0.0),
     tibble,
