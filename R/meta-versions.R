@@ -1,6 +1,7 @@
 .dependencies <- c(
   "bit64",
   "blob",
+  "cli",
   "clock",
   "data.table",
   "hms",
@@ -12,11 +13,11 @@
 
 .r_version <- R.version$version.string
 
-.self_version <- as.character(utils::packageVersion("neopolars"))
+.self_version <- `.__NAMESPACE__.`$spec[["version"]]
 
 .get_dependency_version <- function(pkg) {
   tryCatch(
-    as.character(utils::packageVersion(pkg)),
+    asNamespace(pkg)[[".__NAMESPACE__."]][["spec"]][["version"]],
     error = function(e) "<not installed>"
   )
 }
@@ -26,6 +27,8 @@
 #'
 #' `r lifecycle::badge("experimental")`
 #' Print out the version of Polars and its optional dependencies.
+#'
+#' [cli][cli::cli-package] enhances the terminal output, especially error messages.
 #'
 #' These packages may be used for exporting [Series] to R.
 #' See [`<Series>$to_r_vector()`][series__to_r_vector] for details.

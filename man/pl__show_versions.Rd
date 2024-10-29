@@ -14,6 +14,8 @@ pl__show_versions()
 Print out the version of Polars and its optional dependencies.
 }
 \details{
+\link[cli:cli-package]{cli} enhances the terminal output, especially error messages.
+
 These packages may be used for exporting \link{Series} to R.
 See \code{\link[=series__to_r_vector]{<Series>$to_r_vector()}} for details.
 \itemize{

@@ -11,6 +11,7 @@
       ----Optional dependencies----                 
       bit64:      0.0.0
       blob:       0.0.0
+      cli:        0.0.0
       clock:      0.0.0
       data.table: 0.0.0
       hms:        0.0.0
