@@ -331,12 +331,12 @@ lazyframe__with_columns <- function(...) {
   })
 }
 
-lazyframe__drop <- function(..., .strict = TRUE) {
+lazyframe__drop <- function(..., strict = TRUE) {
   wrap({
     check_dots_unnamed()
 
     parse_into_list_of_expressions(...) |>
-      self$`_ldf`$drop(.strict)
+      self$`_ldf`$drop(strict)
   })
 }
 
