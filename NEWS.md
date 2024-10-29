@@ -81,6 +81,88 @@ as_polars_series(a)
 In the previous version, there were multiple methods for converting Series or DataFrame to R vectors or R lists,
 but in the new version, they have been unified to `$to_r_vector()` of Series.
 
+### Proprietary vector classes
+
+Related to type conversion, the previous version had its own vector classes introduced to represent
+Polars' `Time` and `Binary` types in R (The class names are `PTime` and `rpolars_raw_list`).
+
+Since these are alternatives to the classes provided by widely used external packages `{hms}` and `{blob}`,
+they were dropped in favor of them.
+
+We think it is rare for users to handle data saved as these classes, but we can migrate data to the other classes
+by the following steps.
+
+- `PTime` objects can be converted to `hms` objects by `hms::as_hms()` after `as.vector(<PTime>)`
+  to remove the attributes of the `PTime` object.
+  However, it can be converted as it is only when the time unit of `PTime` is seconds.
+  In other cases, division processing to convert the unit to seconds is required after removing the attributes.
+- `blob::as_blob(unclass(<rpolars_raw_list>))` can be used to convert `rpolars_raw_list` to `blob`.
+
+The new version does not support these proprietary classes at all,
+and `hms` and `blob` are fully supported.
+
+```r
+# Previous version
+r_df <- tibble::tibble(
+  time = hms::as_hms(c("12:00:00", NA, "14:00:00")),
+  binary = blob::as_blob(c(1L, NA, 2L)),
+)
+
+## R to Polars
+pl_df <- as_polars_df(r_df)
+pl_df
+#> shape: (3, 2)
+#> ┌─────────┬──────────────┐
+#> │ time    ┆ binary       │
+#> │ ---     ┆ ---          │
+#> │ f64     ┆ list[binary] │
+#> ╞═════════╪══════════════╡
+#> │ 43200.0 ┆ [b"\x01"]    │
+#> │ null    ┆ []           │
+#> │ 50400.0 ┆ [b"\x02"]    │
+#> └─────────┴──────────────┘
+
+## Polars to R
+tibble::as_tibble(pl_df)
+#> # A tibble: 3 × 2
+#>    time binary
+#>   <dbl> <list>
+#> 1 43200 <rplrs_r_ [1]>
+#> 2    NA <rplrs_r_ [0]>
+#> 3 50400 <rplrs_r_ [1]>
+```
+
+```r
+# New version
+r_df <- tibble::tibble(
+  time = hms::as_hms(c("12:00:00", NA, "14:00:00")),
+  binary = blob::as_blob(c(1L, NA, 2L)),
+)
+
+## R to Polars
+pl_df <- as_polars_df(r_df)
+pl_df
+#> shape: (3, 2)
+#> ┌──────────┬─────────┐
+#> │ time     ┆ binary  │
+#> │ ---      ┆ ---     │
+#> │ time     ┆ binary  │
+#> ╞══════════╪═════════╡
+#> │ 12:00:00 ┆ b"\x01" │
+#> │ null     ┆ null    │
+#> │ 14:00:00 ┆ b"\x02" │
+#> └──────────┴─────────┘
+
+## Polars to R
+tibble::as_tibble(pl_df)
+#> # A tibble: 3 × 2
+#>   time      binary
+#>   <time>    <blob>
+#> 1 12:00  <raw 1 B>
+#> 2    NA         NA
+#> 3 14:00  <raw 1 B>
+```
+
 ### Argument name changes
 
 This package has started to use [dynamic-dots](https://rlang.r-lib.org/reference/dyn-dots.html) actively.
@@ -103,7 +185,6 @@ as_polars_df(mtcars)$group_by("cyl", maintain_order = TRUE)$agg()
 
 ```r
 # New version
-# TODO: This example is hanging. Why?
 as_polars_df(mtcars)$group_by("cyl", maintain_order = TRUE)$agg()
 #> shape: (3, 2)
 #> ┌─────┬────────────────┐
