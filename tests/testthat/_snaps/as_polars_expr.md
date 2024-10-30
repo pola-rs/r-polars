@@ -313,6 +313,27 @@
       │ 2.0     │
       └─────────┘
 
+# as_polars_expr works for classes dbl NaN
+
+    Code
+      out
+    Output
+      dyn float: NaN
+
+---
+
+    Code
+      selected_out
+    Output
+      shape: (1, 1)
+      ┌─────────┐
+      │ literal │
+      │ ---     │
+      │ f64     │
+      ╞═════════╡
+      │ NaN     │
+      └─────────┘
+
 # as_polars_expr works for classes dbl NA
 
     Code

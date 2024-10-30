@@ -39,6 +39,7 @@ patrick::with_parameters_test_that(
       "dbl (0)", numeric(), as_polars_expr(as_polars_series(numeric(), "literal")), 0,
       "dbl (1)", 1, wrap(lit_from_f64(1)), 1,
       "dbl (2)", c(1, 2), as_polars_expr(as_polars_series(c(1, 2), "literal")), 2,
+      "dbl NaN", NaN, wrap(lit_from_f64(NaN)), 1,
       "dbl NA", NA_real_, as_polars_expr(NULL)$cast(pl$Float64), 1,
       "raw (0)", raw(), as_polars_expr(charToRaw("")), 1,
       "raw (1)", charToRaw("a"), wrap(lit_from_raw(charToRaw("a"))), 1,
