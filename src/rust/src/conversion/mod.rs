@@ -9,6 +9,7 @@ pub mod data_table;
 
 // Same as savvy
 const F64_MAX_SIGFIG: f64 = (2_u64.pow(53) - 1) as f64;
+const F64_MIN_SIGFIG: f64 = -(2_u64.pow(53) as f64);
 const F64_TOLERANCE: f64 = 0.01;
 
 #[repr(transparent)]
@@ -226,7 +227,7 @@ impl TryFrom<NumericScalar> for Wrap<i64> {
             NumericScalar::Real(f) => {
                 if f.is_nan() {
                     Err("`NaN` cannot be converted to i64".into())
-                } else if f.is_infinite() || !(0f64..=F64_MAX_SIGFIG).contains(&f) {
+                } else if f.is_infinite() || !(F64_MIN_SIGFIG..=F64_MAX_SIGFIG).contains(&f) {
                     Err(format!("{f:?} is out of range that can be safely converted to i64").into())
                 } else if (f - f.round()).abs() > F64_TOLERANCE {
                     Err(format!("{f:?} is not integer-ish").into())

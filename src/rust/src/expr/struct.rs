@@ -4,13 +4,8 @@ use savvy::{savvy, ListSexp, NumericScalar, Result, StringSexp};
 #[savvy]
 impl PlRExpr {
     fn struct_field_by_index(&self, index: NumericScalar) -> Result<Self> {
-        let index = index.as_i32()?;
-        Ok(self
-            .inner
-            .clone()
-            .struct_()
-            .field_by_index(index as i64)
-            .into())
+        let index = <Wrap<i64>>::try_from(index)?.0;
+        Ok(self.inner.clone().struct_().field_by_index(index).into())
     }
 
     fn struct_multiple_fields(&self, names: StringSexp) -> Result<Self> {
