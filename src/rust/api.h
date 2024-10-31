@@ -1,3 +1,9 @@
+SEXP savvy_all_horizontal__ffi(SEXP c_arg__exprs);
+SEXP savvy_any_horizontal__ffi(SEXP c_arg__exprs);
+SEXP savvy_max_horizontal__ffi(SEXP c_arg__exprs);
+SEXP savvy_min_horizontal__ffi(SEXP c_arg__exprs);
+SEXP savvy_sum_horizontal__ffi(SEXP c_arg__exprs);
+SEXP savvy_mean_horizontal__ffi(SEXP c_arg__exprs);
 SEXP savvy_concat_df__ffi(SEXP c_arg__dfs);
 SEXP savvy_as_struct__ffi(SEXP c_arg__exprs);
 SEXP savvy_datetime__ffi(SEXP c_arg__year, SEXP c_arg__month, SEXP c_arg__day, SEXP c_arg__time_unit, SEXP c_arg__ambiguous, SEXP c_arg__hour, SEXP c_arg__minute, SEXP c_arg__second, SEXP c_arg__microsecond, SEXP c_arg__time_zone);

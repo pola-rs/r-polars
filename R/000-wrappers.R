@@ -38,6 +38,36 @@ NULL
 }
 
 
+`all_horizontal` <- function(`exprs`) {
+  .savvy_wrap_PlRExpr(.Call(savvy_all_horizontal__impl, `exprs`))
+}
+
+
+`any_horizontal` <- function(`exprs`) {
+  .savvy_wrap_PlRExpr(.Call(savvy_any_horizontal__impl, `exprs`))
+}
+
+
+`max_horizontal` <- function(`exprs`) {
+  .savvy_wrap_PlRExpr(.Call(savvy_max_horizontal__impl, `exprs`))
+}
+
+
+`min_horizontal` <- function(`exprs`) {
+  .savvy_wrap_PlRExpr(.Call(savvy_min_horizontal__impl, `exprs`))
+}
+
+
+`sum_horizontal` <- function(`exprs`) {
+  .savvy_wrap_PlRExpr(.Call(savvy_sum_horizontal__impl, `exprs`))
+}
+
+
+`mean_horizontal` <- function(`exprs`) {
+  .savvy_wrap_PlRExpr(.Call(savvy_mean_horizontal__impl, `exprs`))
+}
+
+
 `concat_df` <- function(`dfs`) {
   .savvy_wrap_PlRDataFrame(.Call(savvy_concat_df__impl, `dfs`))
 }

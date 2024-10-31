@@ -34,6 +34,36 @@ SEXP handle_result(SEXP res_) {
     return (SEXP)res;
 }
 
+SEXP savvy_all_horizontal__impl(SEXP c_arg__exprs) {
+    SEXP res = savvy_all_horizontal__ffi(c_arg__exprs);
+    return handle_result(res);
+}
+
+SEXP savvy_any_horizontal__impl(SEXP c_arg__exprs) {
+    SEXP res = savvy_any_horizontal__ffi(c_arg__exprs);
+    return handle_result(res);
+}
+
+SEXP savvy_max_horizontal__impl(SEXP c_arg__exprs) {
+    SEXP res = savvy_max_horizontal__ffi(c_arg__exprs);
+    return handle_result(res);
+}
+
+SEXP savvy_min_horizontal__impl(SEXP c_arg__exprs) {
+    SEXP res = savvy_min_horizontal__ffi(c_arg__exprs);
+    return handle_result(res);
+}
+
+SEXP savvy_sum_horizontal__impl(SEXP c_arg__exprs) {
+    SEXP res = savvy_sum_horizontal__ffi(c_arg__exprs);
+    return handle_result(res);
+}
+
+SEXP savvy_mean_horizontal__impl(SEXP c_arg__exprs) {
+    SEXP res = savvy_mean_horizontal__ffi(c_arg__exprs);
+    return handle_result(res);
+}
+
 SEXP savvy_concat_df__impl(SEXP c_arg__dfs) {
     SEXP res = savvy_concat_df__ffi(c_arg__dfs);
     return handle_result(res);
@@ -1716,6 +1746,12 @@ SEXP savvy_PlRWhen_then__impl(SEXP self__, SEXP c_arg__statement) {
 
 
 static const R_CallMethodDef CallEntries[] = {
+    {"savvy_all_horizontal__impl", (DL_FUNC) &savvy_all_horizontal__impl, 1},
+    {"savvy_any_horizontal__impl", (DL_FUNC) &savvy_any_horizontal__impl, 1},
+    {"savvy_max_horizontal__impl", (DL_FUNC) &savvy_max_horizontal__impl, 1},
+    {"savvy_min_horizontal__impl", (DL_FUNC) &savvy_min_horizontal__impl, 1},
+    {"savvy_sum_horizontal__impl", (DL_FUNC) &savvy_sum_horizontal__impl, 1},
+    {"savvy_mean_horizontal__impl", (DL_FUNC) &savvy_mean_horizontal__impl, 1},
     {"savvy_concat_df__impl", (DL_FUNC) &savvy_concat_df__impl, 1},
     {"savvy_as_struct__impl", (DL_FUNC) &savvy_as_struct__impl, 1},
     {"savvy_datetime__impl", (DL_FUNC) &savvy_datetime__impl, 10},
