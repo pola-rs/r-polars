@@ -1,4 +1,4 @@
-# $date_range(), $datetime_range()
+# $date_range(), $datetime_range() error
 
     Code
       pl$date_range(1, as.Date("2000-01-01"))
@@ -38,7 +38,7 @@
       Caused by error in `pl$datetime_range()`:
       ! `end` must be a Date, POSIXct, character, or Polars expression, not `TRUE`.
 
-# $date_ranges(), $datetime_ranges()
+# $date_ranges(), $datetime_ranges() error
 
     Code
       pl$date_ranges(1, as.Date("2000-01-01"))

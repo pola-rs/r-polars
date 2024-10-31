@@ -46,12 +46,12 @@ parse_as_polars_duration_string <- function(x, default = NULL, ...) {
   UseMethod("parse_as_polars_duration_string")
 }
 
-#' @exportS3Method
+#' @export
 parse_as_polars_duration_string.NULL <- function(x, default = NULL, ...) {
   default
 }
 
-#' @exportS3Method
+#' @export
 parse_as_polars_duration_string.default <- function(x, default = NULL, ...) {
   abort(
     paste0("`", deparse(substitute(x)), "` must be a single non-NA character or difftime."),
@@ -59,7 +59,7 @@ parse_as_polars_duration_string.default <- function(x, default = NULL, ...) {
   )
 }
 
-#' @exportS3Method
+#' @export
 parse_as_polars_duration_string.character <- function(x, default = NULL, ...) {
   if (length(x) != 1L) {
     abort(
@@ -70,33 +70,63 @@ parse_as_polars_duration_string.character <- function(x, default = NULL, ...) {
   x
 }
 
-#' @exportS3Method
+#' @export
 parse_as_polars_duration_string.difftime <- function(x, default = NULL, ...) {
-  if (length(x) != 1L) {
+  if (length(x) != 1L || anyNA(x)) {
     abort(
       paste0("`", deparse(substitute(x)), "` must be a single non-NA character or difftime."),
       call = caller_env()
     )
   }
-  difftime_to_duration_string(x)
-}
 
-
-# Internal function for parsing difftime to Polars interval language
-difftime_to_duration_string <- function(dft) {
-  value <- as.numeric(dft)
-  u <- attr(dft, "units")
-  check_string(u)
-  unit <- switch(u,
-    "secs" = "s",
-    "mins" = "m",
-    "hours" = "h",
-    "days" = "d",
-    "weeks" = "w",
-    "years" = "y",
-    abort(paste0("unknown difftime units: ", u))
+  unit <- switch(attr(x, "units"),
+    weeks = "w",
+    days = "d",
+    hours = "h",
+    mins = "m",
+    secs = "s",
+    abort("Unsupported `units` attribute of the difftime object.")
   )
-  paste0(value, unit)
+
+  rest_value <- as.numeric(x)
+  out <- ""
+
+  if (rest_value < 0) {
+    out <- "-"
+    rest_value <- abs(rest_value)
+  }
+
+  if (unit == "w") {
+    weeks  <- trunc(rest_value)
+    out <- sprintf("%s%dw", out, weeks)
+    rest_value <- (rest_value - weeks) * 7
+    unit <- "d"
+  }
+
+  if (unit == "d") {
+    days  <- trunc(rest_value)
+    out <- sprintf("%s%dd", out, days)
+    rest_value <- (rest_value - days) * 24
+    unit <- "h"
+  }
+
+  if (unit == "h") {
+    hours  <- trunc(rest_value)
+    out <- sprintf("%s%dh", out, hours)
+    rest_value <- (rest_value - hours) * 60
+    unit <- "m"
+  }
+
+  if (unit == "m") {
+    minutes  <- trunc(rest_value)
+    out <- sprintf("%s%dm", out, minutes)
+    rest_value <- (rest_value - minutes) * 60
+  }
+
+  seconds <- trunc(rest_value)
+  milliseconds <- (rest_value - seconds) * 1e3
+
+  sprintf("%s%ds%.0fms", out, seconds, milliseconds)
 }
 
 negate_duration_string <- function(x) {
