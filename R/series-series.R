@@ -126,8 +126,12 @@ series__cast <- function(dtype, ..., strict = TRUE) {
 }
 
 series__reshape <- function(dimensions) {
-  self$`_s`$reshape(dimensions) |>
-    wrap()
+  wrap({
+    if (is.numeric(dimensions) && anyNA(dimensions)) {
+      abort("`dimensions` must not contain any NA values.")
+    }
+    self$`_s`$reshape(dimensions)
+  })
 }
 
 #' Cast this Series to a DataFrame

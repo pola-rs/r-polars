@@ -419,8 +419,12 @@ expr__diff <- function(n = 1, null_behavior = c("ignore", "drop")) {
 }
 
 expr__reshape <- function(dimensions) {
-  self$`_rexpr`$reshape(dimensions) |>
-    wrap()
+  wrap({
+    if (is.numeric(dimensions) && anyNA(dimensions)) {
+      abort("`dimensions` must not contain any NA values.")
+    }
+    self$`_rexpr`$reshape(dimensions)
+  })
 }
 
 expr__any <- function(..., ignore_nulls = TRUE) {

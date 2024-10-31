@@ -1,7 +1,7 @@
 use crate::prelude::*;
 use crate::{PlRDataFrame, PlRDataType, PlRExpr};
 use polars::series::ops::NullBehavior;
-use savvy::{ListSexp, NumericScalar, NumericSexp, TypedSexp};
+use savvy::{ListSexp, NumericScalar, NumericSexp, NumericTypedSexp, TypedSexp};
 pub mod base_date;
 mod chunked_array;
 pub mod clock;
@@ -239,13 +239,30 @@ impl TryFrom<NumericScalar> for Wrap<i64> {
     }
 }
 
-// TODO: update to support more bigger numeric
 impl TryFrom<NumericSexp> for Wrap<Vec<i64>> {
     type Error = savvy::Error;
 
     fn try_from(v: NumericSexp) -> Result<Self, savvy::Error> {
-        let v = v.as_slice_i32()?;
-        Ok(Wrap(v.iter().map(|&x| x as i64).collect()))
+        let v = match v.into_typed() {
+            NumericTypedSexp::Integer(i) => i.iter().map(|&x| x as i64).collect::<Vec<_>>(),
+            NumericTypedSexp::Real(f) => {
+                if f.iter().any(|&x| x.is_nan()) {
+                    return Err("`NaN` cannot be converted to i64".into());
+                } else if f.iter().any(|&x| x.is_infinite()) {
+                    return Err("infinite values cannot be converted to i64".into());
+                } else if f
+                    .iter()
+                    .any(|&x| !(F64_MIN_SIGFIG..=F64_MAX_SIGFIG).contains(&x))
+                {
+                    return Err("out of range values cannot be converted to i64".into());
+                } else if f.iter().any(|&x| (x - x.round()).abs() > F64_TOLERANCE) {
+                    return Err("non-integer-ish values cannot be converted to i64".into());
+                } else {
+                    f.iter().map(|&x| x as i64).collect::<Vec<_>>()
+                }
+            }
+        };
+        Ok(Wrap(v))
     }
 }
 
