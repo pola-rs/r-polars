@@ -833,9 +833,10 @@ expr_dt_total_nanoseconds <- function() {
     wrap()
 }
 
+# TODO: fix implementation (e.g. should support difftime input) and documentation
 #' Offset a date by a relative time offset
 #'
-#' This differs from `pl$col("foo") + timedelta` in that it can
+#' This differs from `pl$col("foo") + Duration` in that it can
 #' take months and leap years into account. Note that only a single minus
 #' sign is allowed in the `by` string, as the first character.
 #'

@@ -13,7 +13,7 @@ expr_dt_offset_by(by)
 A polars \link{expression}
 }
 \description{
-This differs from \code{pl$col("foo") + timedelta} in that it can
+This differs from \code{pl$col("foo") + Duration} in that it can
 take months and leap years into account. Note that only a single minus
 sign is allowed in the \code{by} string, as the first character.
 }

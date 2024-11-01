@@ -51,6 +51,8 @@ parse_as_polars_duration_string.NULL <- function(x, default = NULL, ...) {
   default
 }
 
+# TODO: `default` is needed?
+# TODO: error message improvement
 #' @export
 parse_as_polars_duration_string.default <- function(x, default = NULL, ...) {
   abort(
@@ -97,28 +99,28 @@ parse_as_polars_duration_string.difftime <- function(x, default = NULL, ...) {
   }
 
   if (unit == "w") {
-    weeks  <- trunc(rest_value)
+    weeks <- trunc(rest_value)
     out <- sprintf("%s%dw", out, weeks)
     rest_value <- (rest_value - weeks) * 7
     unit <- "d"
   }
 
   if (unit == "d") {
-    days  <- trunc(rest_value)
+    days <- trunc(rest_value)
     out <- sprintf("%s%dd", out, days)
     rest_value <- (rest_value - days) * 24
     unit <- "h"
   }
 
   if (unit == "h") {
-    hours  <- trunc(rest_value)
+    hours <- trunc(rest_value)
     out <- sprintf("%s%dh", out, hours)
     rest_value <- (rest_value - hours) * 60
     unit <- "m"
   }
 
   if (unit == "m") {
-    minutes  <- trunc(rest_value)
+    minutes <- trunc(rest_value)
     out <- sprintf("%s%dm", out, minutes)
     rest_value <- (rest_value - minutes) * 60
   }
@@ -127,6 +129,37 @@ parse_as_polars_duration_string.difftime <- function(x, default = NULL, ...) {
   milliseconds <- (rest_value - seconds) * 1e3
 
   sprintf("%s%ds%.0fms", out, seconds, milliseconds)
+}
+
+#' @export
+parse_as_polars_duration_string.clock_duration <- function(x, default = NULL, ...) {
+  if (length(x) != 1L || anyNA(x)) {
+    abort(
+      paste0("`", deparse(substitute(x)), "` must be a single non-NA character or difftime."),
+      call = caller_env()
+    )
+  }
+
+  precision <- clock::duration_precision(x)
+
+  unit <- switch(precision,
+    nanosecond = "ns",
+    microsecond = "us",
+    millisecond = "ms",
+    second = "s",
+    minute = "m",
+    hour = "h",
+    day = "d",
+    week = "w",
+    month = "mo",
+    quarter = "q",
+    year = "y",
+    abort(
+      sprintf("Unsupported precision `%s` of the clock duration object.", precision)
+    )
+  )
+
+  sprintf("%s%s", x, unit)
 }
 
 negate_duration_string <- function(x) {
