@@ -160,6 +160,13 @@ If the \link[hms:hms]{hms} vector contains values greater-equal to 24-oclock or 
 an error will be thrown.
 }
 
+\subsection{S3 method for \link[clock:duration-helper]{clock_duration}}{
+
+Calendrical durations (years, quarters, months) are treated as chronologically with
+the internal representation of seconds.
+Please check the \link[clock:duration-helper]{clock_duration} documentation for more details.
+}
+
 \subsection{S3 method for \link[=DataFrame]{polars_data_frame}}{
 
 This method is a shortcut for \code{\link[=dataframe__to_struct]{<DataFrame>$to_struct()}}.
@@ -256,6 +263,11 @@ if (requireNamespace("clock", quietly = TRUE)) {
 # clock_duration
 if (requireNamespace("clock", quietly = TRUE)) {
   as_polars_series(clock::duration_nanoseconds(c(NA, 1)))
+}
+
+## Calendrical durations are treated as chronologically
+if (requireNamespace("clock", quietly = TRUE)) {
+  as_polars_series(clock::duration_years(c(NA, 1)))
 }
 }
 \seealso{

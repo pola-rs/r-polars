@@ -47,6 +47,12 @@
 #' If the [hms][hms::hms] vector contains values greater-equal to 24-oclock or less than 0-oclock,
 #' an error will be thrown.
 #'
+#' ## S3 method for [clock_duration][clock::duration-helper]
+#'
+#' Calendrical durations (years, quarters, months) are treated as chronologically with
+#' the internal representation of seconds.
+#' Please check the [clock_duration][clock::duration-helper] documentation for more details.
+#'
 #' ## S3 method for [polars_data_frame][DataFrame]
 #'
 #' This method is a shortcut for [`<DataFrame>$to_struct()`][dataframe__to_struct].
@@ -155,6 +161,11 @@
 #' # clock_duration
 #' if (requireNamespace("clock", quietly = TRUE)) {
 #'   as_polars_series(clock::duration_nanoseconds(c(NA, 1)))
+#' }
+#'
+#' ## Calendrical durations are treated as chronologically
+#' if (requireNamespace("clock", quietly = TRUE)) {
+#'   as_polars_series(clock::duration_years(c(NA, 1)))
 #' }
 #' @export
 as_polars_series <- function(x, name = NULL, ...) {
