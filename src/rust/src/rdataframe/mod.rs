@@ -226,10 +226,6 @@ impl RPolarsDataFrame {
         l
     }
 
-    // fn compare_other_(&self) -> bool {
-    //     self.0.compare
-    // }
-
     pub fn to_list(&self, int64_conversion: &str) -> List {
         let robj_vec_res: Result<Vec<Robj>, _> = collect_hinted_result(
             self.0.width(),

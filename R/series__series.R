@@ -475,57 +475,35 @@ Series_pow = function(exponent) {
   self$to_frame()$select(pl$col(self$name)$pow(as_polars_series(exponent)))$to_series(0)
 }
 
-
-#' Compare Series
-#'
-#' Check the (in)equality of two Series.
-#'
-#' @param other A Series or something a Series can be created from
-#' @param op The chosen operator, must be one of `"equal"`, `"not_equal"`,
-#' `"lt"`, `"gt"`, `"lt_eq"` or `"gt_eq"`
-#' @return [Series][Series_class]
-#' @examples
-#' # We can either use `compare()`...
-#' as_polars_series(1:5)$compare(as_polars_series(c(1:3, NA_integer_, 10L)), op = "equal")
-#'
-#' # ... or the more classic way
-#' as_polars_series(1:5) == as_polars_series(c(1:3, NA_integer_, 10L))
-Series_compare = function(other, op) {
-  other_s = as_polars_series(other)
-  s_len = self$len()
-  o_len = other_s$len()
-  if (
-    s_len != o_len &&
-      o_len != 1 &&
-      s_len != 1
-  ) {
-    stop("in compare Series: not same length or either of length 1.")
-  }
-  .pr$Series$compare(self, as_polars_series(other), op) |>
-    unwrap(paste0("in $compare() with operator `", op, "`:"))
+#' @export
+`==.RPolarsSeries` = function(s1, s2) {
+  pl$select(pl$lit(s1)$eq(pl$lit(as_polars_series(s2))$cast(s1$dtype)))$to_series()
 }
 
+#' @export
+`!=.RPolarsSeries` = function(s1, s2) {
+  pl$select(pl$lit(self)$neq(pl$lit(as_polars_series(s2))$cast(s1$dtype)))$to_series()
+}
 
 #' @export
-#' @rdname Series_compare
-#' @param s1 lhs Series
-#' @param s2 rhs Series or any into Series
-"==.RPolarsSeries" = function(s1, s2) as_polars_series(s1)$compare(s2, "equal")
+`<.RPolarsSeries` = function(s1, s2) {
+  pl$select(pl$lit(s1)$lt(pl$lit(as_polars_series(s2))$cast(s1$dtype)))$to_series()
+}
+
 #' @export
-#' @rdname Series_compare
-"!=.RPolarsSeries" = function(s1, s2) as_polars_series(s1)$compare(s2, "not_equal")
+`>.RPolarsSeries` = function(s1, s2) {
+  pl$select(pl$lit(s1)$gt(pl$lit(as_polars_series(s2))$cast(s1$dtype)))$to_series()
+}
+
 #' @export
-#' @rdname Series_compare
-"<.RPolarsSeries" = function(s1, s2) as_polars_series(s1)$compare(s2, "lt")
+`<=.RPolarsSeries` = function(s1, s2) {
+  pl$select(pl$lit(s1)$lt_eq(pl$lit(as_polars_series(s2))$cast(s1$dtype)))$to_series()
+}
+
 #' @export
-#' @rdname Series_compare
-">.RPolarsSeries" = function(s1, s2) as_polars_series(s1)$compare(s2, "gt")
-#' @export
-#' @rdname Series_compare
-"<=.RPolarsSeries" = function(s1, s2) as_polars_series(s1)$compare(s2, "lt_eq")
-#' @export
-#' @rdname Series_compare
-">=.RPolarsSeries" = function(s1, s2) as_polars_series(s1)$compare(s2, "gt_eq")
+`>=.RPolarsSeries` = function(s1, s2) {
+  pl$select(pl$lit(s1)$gt_eq(pl$lit(as_polars_series(s2))$cast(s1$dtype)))$to_series()
+}
 
 
 #' Convert Series to R vector or list

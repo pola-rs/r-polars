@@ -2,6 +2,10 @@
 
 ## Polars R Package (development version)
 
+### Breaking changes
+
+- `<Series>$compare()` is removed.
+
 ### Bug fixes
 
 - Maintain level order when converting Enums to factors (#1252, @andyquinterom).

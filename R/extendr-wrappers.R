@@ -1358,8 +1358,6 @@ RPolarsSeries$get_fmt <- function(index, str_length) .Call(wrap__RPolarsSeries__
 
 RPolarsSeries$to_fmt_char <- function(str_length) .Call(wrap__RPolarsSeries__to_fmt_char, self, str_length)
 
-RPolarsSeries$compare <- function(other, op) .Call(wrap__RPolarsSeries__compare, self, other, op)
-
 RPolarsSeries$rep <- function(n, rechunk) .Call(wrap__RPolarsSeries__rep, self, n, rechunk)
 
 RPolarsSeries$shape <- function() .Call(wrap__RPolarsSeries__shape, self)
