@@ -251,45 +251,6 @@ impl RPolarsSeries {
         res
     }
 
-    pub fn compare(&self, other: &RPolarsSeries, op: String) -> List {
-        //try cast other to self, downcast(dc) to chunkedarray and compare with operator(op) elementwise
-        macro_rules! comp {
-            ($self:expr, $other:expr, $dc:ident, $op:expr) => {{
-                let dtype = self.0.dtype();
-                let lhs = $self.0.$dc().unwrap().clone();
-                let casted_series = $other.0.cast(dtype).map_err(|err| err.to_string())?;
-                let rhs = casted_series.$dc().map_err(|err| err.to_string())?;
-
-                let ca_bool = match $op.as_str() {
-                    "equal" => lhs.equal(rhs),
-                    "not_equal" => lhs.not_equal(rhs),
-                    "gt" => lhs.gt(rhs),
-                    "gt_eq" => lhs.gt_eq(rhs),
-                    "lt" => lhs.lt(rhs),
-                    "lt_eq" => lhs.lt_eq(rhs),
-                    _ => panic!("not supported operator"),
-                };
-                Ok(RPolarsSeries(ca_bool.into_series()))
-            }};
-        }
-
-        use polars::prelude::ChunkCompare;
-        let dtype = self.0.dtype();
-        use pl::DataType::*;
-        let res = (|| match dtype {
-            Int32 => comp!(self, other, i32, op),
-            Int64 => comp!(self, other, i64, op),
-            Float64 => comp!(self, other, f64, op),
-            Boolean => comp!(self, other, bool, op),
-            String => comp!(self, other, str, op),
-            _ => Err(format!(
-                "oups this type: {} is not supported yet, but easily could be",
-                dtype
-            )),
-        })();
-        r_result_list(res)
-    }
-
     //names repeat_ as repeat is locked keyword in R
     pub fn rep(&self, n: Robj, rechunk: Robj) -> std::result::Result<RPolarsSeries, String> {
         use crate::robj_to;
