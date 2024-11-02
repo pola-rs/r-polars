@@ -4,7 +4,7 @@
 
 ### Breaking changes
 
-- `<Series>$compare()` is removed.
+- `<Series>$compare()` is removed. (#1272)
 
 ### Bug fixes
 
