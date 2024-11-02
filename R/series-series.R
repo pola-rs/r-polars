@@ -61,6 +61,46 @@ wrap.PlRSeries <- function(x, ...) {
   self
 }
 
+series__eq <- function(other) {
+  pl$select(pl$lit(self)$eq(as_polars_series(other)))$to_series() |>
+    wrap()
+}
+
+series__eq_missing <- function(other) {
+  pl$select(pl$lit(self)$eq_missing())$to_series() |>
+    wrap()
+}
+
+series__neq <- function(other) {
+  pl$select(pl$lit(self)$neq(as_polars_series(other)))$to_series() |>
+    wrap()
+}
+
+series__neq_missing <- function(other) {
+  pl$select(pl$lit(self)$neq_missing())$to_series() |>
+    wrap()
+}
+
+series__gt <- function(other) {
+  pl$select(pl$lit(self)$gt(as_polars_series(other)))$to_series() |>
+    wrap()
+}
+
+series__gt_eq <- function(other) {
+  pl$select(pl$lit(self)$gt_eq(as_polars_series(other)))$to_series() |>
+    wrap()
+}
+
+series__lt <- function(other) {
+  pl$select(pl$lit(self)$lt(as_polars_series(other)))$to_series() |>
+    wrap()
+}
+
+series__lt_eq <- function(other) {
+  pl$select(pl$lit(self)$lt_eq(as_polars_series(other)))$to_series() |>
+    wrap()
+}
+
 series__add <- function(other) {
   self$`_s`$add(as_polars_series(other)$`_s`) |>
     wrap()

@@ -30,3 +30,33 @@
 `%%.polars_series` <- function(e1, e2) {
   as_polars_series(e1)$mod(e2)
 }
+
+#' @export
+`<.polars_series` <- function(e1, e2) {
+  as_polars_series(e1)$lt(e2)
+}
+
+#' @export
+`>.polars_series` <- function(e1, e2) {
+  as_polars_series(e1)$gt(e2)
+}
+
+#' @export
+`<=.polars_series` <- function(e1, e2) {
+  as_polars_series(e1)$lt_eq(e2)
+}
+
+#' @export
+`>=.polars_series` <- function(e1, e2) {
+  as_polars_series(e1)$gt_eq(e2)
+}
+
+#' @export
+`==.polars_series` <- function(e1, e2) {
+  as_polars_series(e1)$eq(e2)
+}
+
+#' @export
+`!=.polars_series` <- function(e1, e2) {
+  as_polars_series(e1)$neq(e2)
+}
