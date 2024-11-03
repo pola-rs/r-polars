@@ -371,7 +371,7 @@ pub fn robj_to_unique_keep_strategy(robj: Robj) -> RResult<UniqueKeepStrategy> {
 }
 
 pub fn robj_to_quantile_interpolation_option(robj: Robj) -> RResult<QuantileInterpolOptions> {
-    use pl::QuantileInterpolOptions::*;
+    use pl::QuantileMethod::*;
     match robj_to_rchoice(robj)?.as_str() {
         "nearest" => Ok(Nearest),
         "higher" => Ok(Higher),

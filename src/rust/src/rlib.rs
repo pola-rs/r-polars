@@ -249,10 +249,14 @@ fn fold(acc: Robj, lambda: Robj, exprs: Robj) -> RResult<RPolarsExpr> {
 #[extendr]
 fn reduce(lambda: Robj, exprs: Robj) -> RResult<RPolarsExpr> {
     let par_fn = ParRObj(lambda);
-    let f = move |acc: pl::Series, x: pl::Series| {
+    let f = move |acc: pl::Column, x: pl::Column| {
         let thread_com = ThreadCom::try_from_global(&CONFIG)
             .map_err(|err| pl::polars_err!(ComputeError: err))?;
-        thread_com.send(RFnSignature::FnTwoSeriesToSeries(par_fn.clone(), acc, x));
+        thread_com.send(RFnSignature::FnTwoSeriesToSeries(
+            par_fn.clone(),
+            acc.take_materialized_series(),
+            x.take_materialized_series(),
+        ));
         let s = thread_com.recv().unwrap_series();
         Ok(Some(s))
     };

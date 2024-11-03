@@ -452,17 +452,7 @@ impl RPolarsExpr {
     }
 
     pub fn reinterpret(&self, signed: bool) -> RPolarsExpr {
-        use crate::utils::reinterpret;
-        let function = move |s: pl::Series| reinterpret(&s, signed).map(Some);
-        let dt = if signed {
-            pl::DataType::Int64
-        } else {
-            pl::DataType::UInt64
-        };
-        self.clone()
-            .0
-            .map(function, pl::GetOutput::from_type(dt))
-            .into()
+        self.0.clone().reinterpret(signed).into()
     }
 
     pub fn interpolate(&self, method: Robj) -> RResult<RPolarsExpr> {
@@ -918,15 +908,9 @@ impl RPolarsExpr {
         self.clone().0.arctanh().into()
     }
 
-    pub fn reshape(&self, dimensions: Robj, is_list: Robj) -> RResult<Self> {
+    pub fn reshape(&self, dimensions: Robj) -> RResult<Self> {
         let dimensions = robj_to!(Vec, i64, dimensions)?;
-        let is_list = robj_to!(bool, is_list)?;
-        let nested = if is_list {
-            NestedType::List
-        } else {
-            NestedType::Array
-        };
-        Ok(self.0.clone().reshape(&dimensions, nested).into())
+        Ok(self.0.clone().reshape(&dimensions).into())
     }
 
     pub fn shuffle(&self, seed: Robj) -> RResult<Self> {
@@ -1023,7 +1007,9 @@ impl RPolarsExpr {
                             if s.len() == 1 {
                                 Ok(Some(s.new_from_index(0, n)))
                             } else {
-                                RPolarsSeries(s).rep_impl(n, rechunk).map(|s| Some(s.0))
+                                RPolarsSeries(s.as_materialized_series().clone())
+                                    .rep_impl(n, rechunk)
+                                    .map(|s| Some(s.0.into()))
                             }
                         },
                         pl::GetOutput::same_type(),
