@@ -14,6 +14,6 @@ Expr
 Returns a boolean Series indicating which values are NaN.
 }
 \examples{
-as_polars_df(list(alice = c(0, NaN, NA, Inf, -Inf)))$
+pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$
   with_columns(nan = pl$col("alice")$is_nan())
 }

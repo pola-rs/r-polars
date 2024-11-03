@@ -43,7 +43,7 @@ ExprName_prefix = function(prefix) {
 #' @return Expr
 #'
 #' @examples
-#' as_polars_df(list(alice = 1:3))$select(pl$col("alice")$alias("bob")$name$keep())
+#' pl$DataFrame(list(alice = 1:3))$select(pl$col("alice")$alias("bob")$name$keep())
 ExprName_keep = function() {
   .pr$Expr$name_keep(self) |>
     unwrap("in $name$keep():")

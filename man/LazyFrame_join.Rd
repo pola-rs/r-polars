@@ -74,8 +74,8 @@ observations based on matching observations, for example with \code{how = "inner
 }
 \examples{
 # inner join by default
-df1 = as_polars_lf(list(key = 1:3, payload = c("f", "i", NA)))
-df2 = as_polars_lf(list(key = c(3L, 4L, 5L, NA_integer_)))
+df1 = pl$LazyFrame(list(key = 1:3, payload = c("f", "i", NA)))
+df2 = pl$LazyFrame(list(key = c(3L, 4L, 5L, NA_integer_)))
 df1$join(other = df2, on = "key")
 
 # cross join

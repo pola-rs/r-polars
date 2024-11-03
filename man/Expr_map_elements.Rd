@@ -102,7 +102,7 @@ as_polars_df(iris)$select(e_add10, e_letter)
 # First we multiply each element of a Series of 1M elements by 2.
 n = 1000000L
 set.seed(1)
-df = as_polars_df(list(
+df = pl$DataFrame(list(
   a = 1:n,
   b = sample(letters, n, replace = TRUE)
 ))

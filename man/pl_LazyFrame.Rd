@@ -26,7 +26,7 @@ pl$LazyFrame(
 ) # directly from vectors
 
 # from a list of vectors or data.frame
-as_polars_lf(list(
+pl$LazyFrame(list(
   a = c(1, 2, 3, 4, 5),
   b = 1:5,
   c = letters[1:5],

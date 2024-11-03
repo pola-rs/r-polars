@@ -293,7 +293,7 @@ pub_class_env = as.environment(mget(pl_class_names, envir = pub_env))
 
 #' Select from an empty DataFrame
 #'
-#' `pl$select(...)` is a shorthand for `as_polars_df(list())$select(...)`
+#' `pl$select(...)` is a shorthand for `pl$DataFrame(list())$select(...)`
 #' @keywords DataFrame
 #' @param ... [Expressions][Expr_class]
 #' @return a [DataFrame][DataFrame_class]

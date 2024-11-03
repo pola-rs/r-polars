@@ -118,8 +118,8 @@ test_that("drop_nulls", {
   tmp = mtcars
   tmp[1:3, "mpg"] = NA
   tmp[4, "hp"] = NA
-  d = pl$DataFrame(tmp)
-  dl = pl$DataFrame(tmp)$lazy()
+  d = as_polars_df(tmp)
+  dl = as_polars_df(tmp)$lazy()
   expect_equal(nrow(na.omit(d)), 28)
   expect_equal(nrow(na.omit(d, subset = "hp")), 31)
   expect_equal(nrow(na.omit(d, subset = c("mpg", "hp"))), 28)

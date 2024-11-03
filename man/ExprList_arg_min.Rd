@@ -13,7 +13,7 @@ Expr
 Get the index of the minimal value in list
 }
 \examples{
-df = as_polars_df(list(s = list(1:2, 2:1)))
+df = pl$DataFrame(list(s = list(1:2, 2:1)))
 df$with_columns(
   arg_min = pl$col("s")$list$arg_min()
 )

@@ -23,16 +23,16 @@ examples.
 }
 \examples{
 # as head
-as_polars_df(list(a = 0:100))$select(
+pl$DataFrame(list(a = 0:100))$select(
   pl$all()$slice(0, 6)
 )
 
 # as tail
-as_polars_df(list(a = 0:100))$select(
+pl$DataFrame(list(a = 0:100))$select(
   pl$all()$slice(-6, 6)
 )
 
-as_polars_df(list(a = 0:100))$select(
+pl$DataFrame(list(a = 0:100))$select(
   pl$all()$slice(80)
 )
 

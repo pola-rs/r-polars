@@ -13,5 +13,5 @@ Expr
 Keep the original root name of the expression.
 }
 \examples{
-as_polars_df(list(alice = 1:3))$select(pl$col("alice")$alias("bob")$name$keep())
+pl$DataFrame(list(alice = 1:3))$select(pl$col("alice")$alias("bob")$name$keep())
 }

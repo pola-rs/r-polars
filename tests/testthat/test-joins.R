@@ -63,8 +63,8 @@ test_that("right join works", {
 
 test_that("test_semi_anti_join", {
   # 1
-  df_a = as_polars_df(list(key = 1:3, payload = c("f", "i", NA)))
-  df_b = as_polars_df(list(key = c(3L, 4L, 5L, NA)))
+  df_a = pl$DataFrame(list(key = 1:3, payload = c("f", "i", NA)))
+  df_b = pl$DataFrame(list(key = c(3L, 4L, 5L, NA)))
 
   # eager1
   expect_identical(
@@ -87,8 +87,8 @@ test_that("test_semi_anti_join", {
   )
 
   # 2
-  df_a = as_polars_df(list(a = c(1:3, 1L), b = c("a", "b", "c", "a"), payload = c(10L, 20L, 30L, 40L)))
-  df_b = as_polars_df(list(a = c(3L, 3L, 4L, 5L), b = c("c", "c", "d", "e")))
+  df_a = pl$DataFrame(list(a = c(1:3, 1L), b = c("a", "b", "c", "a"), payload = c(10L, 20L, 30L, 40L)))
+  df_b = pl$DataFrame(list(a = c(3L, 3L, 4L, 5L), b = c("c", "c", "d", "e")))
 
   # eager2
   expect_identical(

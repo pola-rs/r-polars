@@ -54,10 +54,10 @@ test_that("LazyFrame serialize/deserialize", {
 
 
 test_that("LazyFrame, custom schema", {
-  df = pl$LazyFrame(
+  df = suppressWarnings(pl$LazyFrame(
     iris,
     schema = list(Sepal.Length = pl$Float32, Species = pl$String)
-  )$collect()
+  )$collect())
 
   # dtypes from object are as expected
   expect_true(
@@ -71,7 +71,7 @@ test_that("LazyFrame, custom schema", {
 
   # works fine if a variable is called "schema"
   expect_no_error(
-    as_polars_lf(list(schema = 1), schema = list(schema = pl$Float32))
+    pl$LazyFrame(list(schema = 1), schema = list(schema = pl$Float32))
   )
   # errors if incorrect datatype
   expect_grepl_error(pl$LazyFrame(x = 1, schema = list(schema = foo)))
@@ -87,7 +87,7 @@ test_that("lazy filter", {
   test_df = iris
   test_df$is_long = apply(test_df[, c("Sepal.Length", "Petal.Length")], 1, mean) |> (\(x) x > (max(x) + mean(x)) / 2)()
   test_df$Species = as.character(test_df$Species)
-  pdf = pl$DataFrame(test_df)
+  pdf = as_polars_df(test_df)
   ldf = pdf$lazy()
   df_enumerate_rows = function(df) {
     stopifnot(inherits(df, "data.frame"))
@@ -301,11 +301,11 @@ test_that("drop_nulls", {
   tmp = mtcars
   tmp[1:3, "mpg"] = NA
   expect_equal(as_polars_lf(mtcars)$drop_nulls()$collect()$height, 32, ignore_attr = TRUE)
-  expect_equal(pl$LazyFrame(tmp)$drop_nulls()$collect()$height, 29, ignore_attr = TRUE)
+  expect_equal(as_polars_lf(tmp)$drop_nulls()$collect()$height, 29, ignore_attr = TRUE)
   expect_equal(as_polars_lf(mtcars)$drop_nulls("mpg")$collect()$height, 32, ignore_attr = TRUE)
-  expect_equal(pl$LazyFrame(tmp)$drop_nulls("mpg")$collect()$height, 29, ignore_attr = TRUE)
-  expect_equal(pl$LazyFrame(tmp)$drop_nulls("hp")$collect()$height, 32, ignore_attr = TRUE)
-  expect_equal(pl$LazyFrame(tmp)$drop_nulls(c("mpg", "hp"))$collect()$height, 29, ignore_attr = TRUE)
+  expect_equal(as_polars_lf(tmp)$drop_nulls("mpg")$collect()$height, 29, ignore_attr = TRUE)
+  expect_equal(as_polars_lf(tmp)$drop_nulls("hp")$collect()$height, 32, ignore_attr = TRUE)
+  expect_equal(as_polars_lf(tmp)$drop_nulls(c("mpg", "hp"))$collect()$height, 29, ignore_attr = TRUE)
   expect_grepl_error(
     as_polars_lf(mtcars)$drop_nulls("bad")$collect(),
     "not found: unable to find column \"bad\""
@@ -455,7 +455,7 @@ test_that("sort", {
   # nulls_last
   df = mtcars
   df$mpg[1] = NA
-  df = pl$DataFrame(df)$lazy()
+  df = as_polars_df(df)$lazy()
   a = df$sort("mpg", nulls_last = TRUE, maintain_order = TRUE)$collect()$to_data_frame()
   b = df$sort("mpg", nulls_last = FALSE, maintain_order = TRUE)$collect()$to_data_frame()
   expect_true(is.na(a$mpg[32]))

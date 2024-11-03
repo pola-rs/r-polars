@@ -41,7 +41,7 @@ test_that("concat dataframe", {
   # use "_relaxed"
   expect_identical(
     pl$concat(l_ver[[1L]], pl$DataFrame(a = 2, b = 42L), how = "vertical_relaxed")$to_list(),
-    pl$DataFrame(rbind(data.frame(a = 1:5, b = letters[1:5]), data.frame(a = 2, b = 42L)))$to_list()
+    as_polars_df(rbind(data.frame(a = 1:5, b = letters[1:5]), data.frame(a = 2, b = 42L)))$to_list()
   )
 
   # type 'relaxed' vertical concatenation is not allowed by default
@@ -96,7 +96,7 @@ test_that("concat dataframe", {
   expect_equal(mean(is.na(df_dia$to_data_frame())), 8 / 10)
 
   # diagonal lazy
-  lf_dia = pl$concat(l_hor |> lapply(pl$LazyFrame), how = "diagonal")
+  lf_dia = pl$concat(l_hor |> lapply(as_polars_lf), how = "diagonal")
   expect_identical(
     lf_dia$collect()$to_list(),
     df_dia$to_list()

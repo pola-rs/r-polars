@@ -17,7 +17,7 @@ Note that \code{NaN} values are not \code{null} values. Null values correspond t
 in R.
 }
 \examples{
-as_polars_df(list(x = c(1, 2, NaN, NA)))$select(pl$col("x")$drop_nans())
+pl$DataFrame(list(x = c(1, 2, NaN, NA)))$select(pl$col("x")$drop_nans())
 }
 \seealso{
 \code{drop_nulls()}

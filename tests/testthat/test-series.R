@@ -465,7 +465,7 @@ test_that("rep", {
 
 
 test_that("Series list", {
-  series_list = as_polars_df(list(a = c(1:5, NA_integer_)))$select(
+  series_list = pl$DataFrame(list(a = c(1:5, NA_integer_)))$select(
     pl$col("a")$implode()$implode()$append(
       (
         pl$col("a")$head(2)$implode()$append(

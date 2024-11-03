@@ -11,7 +11,7 @@ test_that("expression boolean operators", {
   expect_equal(class(!pl$col("foobar")), "RPolarsExpr")
 
 
-  cmp_operators_df = as_polars_df(list())$with_columns(
+  cmp_operators_df = pl$DataFrame(list())$with_columns(
     (pl$lit(1) < 2)$alias("1 lt 2"),
     (pl$lit(1) < 1)$alias("1 lt 1 not")$not(),
     (pl$lit(2) > 1)$alias("2 gt 1"),
@@ -134,7 +134,7 @@ test_that("count + unique + n_unique", {
   )
 
   expect_equal(
-    as_polars_df(list(a = 1:100))$select(pl$all()$unique(maintain_order = TRUE))$to_list(),
+    pl$DataFrame(list(a = 1:100))$select(pl$all()$unique(maintain_order = TRUE))$to_list(),
     list(a = 1:100)
   )
 })
@@ -155,30 +155,30 @@ test_that("drop_nans drop_nulls", {
   x = c(1.0, 2.0, NaN, NA)
 
   expect_equal(
-    as_polars_df(list(x = x))$select(pl$col("x")$drop_nans()$drop_nulls())$get_column("x")$to_r(),
+    pl$DataFrame(list(x = x))$select(pl$col("x")$drop_nans()$drop_nulls())$get_column("x")$to_r(),
     c(1.0, 2.0)
   )
 
   expect_equal(
-    as_polars_df(list(x = x))$select(
+    pl$DataFrame(list(x = x))$select(
       pl$col("x")$drop_nans()$drop_nulls()$count()
     )$get_column("x")$to_r() |> as.numeric(),
     2L
   )
 
   expect_equal(
-    as_polars_df(list(x = x))$select(pl$col("x")$drop_nulls())$get_column("x")$to_r(),
+    pl$DataFrame(list(x = x))$select(pl$col("x")$drop_nulls())$get_column("x")$to_r(),
     c(1.0, 2.0, NaN)
   )
 
   expect_equal(
-    as_polars_df(list(x = x))$select(pl$col("x")$drop_nans())$get_column("x")$to_r(),
+    pl$DataFrame(list(x = x))$select(pl$col("x")$drop_nans())$get_column("x")$to_r(),
     c(1.0, 2.0, NA)
   )
 })
 
 test_that("first last heaad tail", {
-  check_list = as_polars_df(list(a = 1:11))$select(
+  check_list = pl$DataFrame(list(a = 1:11))$select(
     (pl$col("a")$first() == 1L)$alias("1 is first"),
     (pl$col("a")$last() == 11L)$alias("11 is last")
   )$to_data_frame(check.names = FALSE)
@@ -187,7 +187,7 @@ test_that("first last heaad tail", {
   fails = results[!unlist(results)]
   expect_named(fails, character())
 
-  df = as_polars_df(list(a = 1:11))$select(
+  df = pl$DataFrame(list(a = 1:11))$select(
     pl$col("a")$head()$alias("head10"),
     pl$col("a")$tail()$alias("tail10")
   )$to_data_frame()
@@ -197,7 +197,7 @@ test_that("first last heaad tail", {
     data.frame(head10 = 1:10, tail10 = 2:11)
   )
 
-  df = as_polars_df(list(a = 1:11))$select(
+  df = pl$DataFrame(list(a = 1:11))$select(
     pl$col("a")$head(2)$alias("head2"),
     pl$col("a")$tail(2)$alias("tail2")
   )$to_data_frame()
@@ -207,7 +207,7 @@ test_that("first last heaad tail", {
   )
 
   # limit is an alias for head
-  df = as_polars_df(list(a = 1:11))$select(
+  df = pl$DataFrame(list(a = 1:11))$select(
     pl$col("a")$limit(2)$alias("limit2"),
     pl$col("a")$tail(2)$alias("tail2")
   )$to_data_frame()
@@ -242,7 +242,7 @@ test_that("is_null", {
 })
 
 test_that("min max", {
-  check_list = as_polars_df(list(x = c(1, NA, 3)))$select(
+  check_list = pl$DataFrame(list(x = c(1, NA, 3)))$select(
     (pl$col("x")$max() == 3L)$alias("3 is max"),
     (pl$col("x")$min() == 1L)$alias("1 not null is min")
   )$to_data_frame()
@@ -375,30 +375,30 @@ test_that("col DataType + col(s) + col regex", {
 
 test_that("lit expr", {
   expect_identical(
-    as_polars_df(list(a = 1:4))$filter(pl$col("a") > 2L)$to_data_frame()$a,
+    pl$DataFrame(list(a = 1:4))$filter(pl$col("a") > 2L)$to_data_frame()$a,
     3:4
   )
 
   expect_identical(
-    as_polars_df(list(a = letters))$filter(pl$col("a") >= "x")$to_data_frame()$a,
+    pl$DataFrame(list(a = letters))$filter(pl$col("a") >= "x")$to_data_frame()$a,
     c("x", "y", "z")
   )
 
   expect_identical(
-    as_polars_df(list(a = letters))$filter(pl$col("a") >= pl$lit(NULL))$to_data_frame(),
+    pl$DataFrame(list(a = letters))$filter(pl$col("a") >= pl$lit(NULL))$to_data_frame(),
     data.frame(a = character())
   )
 
 
   # explicit vector to series to literal
   expect_identical(
-    as_polars_df(list())$select(pl$lit(as_polars_series(1:4)))$to_list()[[1L]],
+    pl$DataFrame(list())$select(pl$lit(as_polars_series(1:4)))$to_list()[[1L]],
     1:4
   )
 
   # implicit vector to literal
   expect_identical(
-    as_polars_df(list())$select(pl$lit(24) / 4:1 + 2)$to_list()[[1L]],
+    pl$DataFrame(list())$select(pl$lit(24) / 4:1 + 2)$to_list()[[1L]],
     24 / 4:1 + 2
   )
 
@@ -416,7 +416,7 @@ test_that("lit expr", {
 })
 
 test_that("prefix suffix reverse", {
-  df = as_polars_df(list(
+  df = pl$DataFrame(list(
     A = c(1, 2, 3, 4, 5),
     fruits = c("banana", "banana", "apple", "apple", "banana"),
     B = c(5, 4, 3, 2, 1),
@@ -448,7 +448,7 @@ test_that("prefix suffix reverse", {
 })
 
 test_that("and or is_in xor", {
-  df = as_polars_df(list())
+  df = pl$DataFrame(list())
   expect_true(df$select(pl$lit(TRUE) & TRUE)$to_data_frame()[[1L]])
   expect_false(df$select(pl$lit(TRUE) & FALSE)$to_data_frame()[[1L]])
   expect_false(df$select(pl$lit(FALSE) & TRUE)$to_data_frame()[[1L]])
@@ -464,14 +464,14 @@ test_that("and or is_in xor", {
   expect_true(df$select(pl$lit(FALSE)$xor(pl$lit(TRUE)))$to_data_frame()[[1L]])
   expect_false(df$select(pl$lit(FALSE)$xor(pl$lit(FALSE)))$to_data_frame()[[1L]])
 
-  df = as_polars_df(list(a = c(1:3, NA_integer_)))
+  df = pl$DataFrame(list(a = c(1:3, NA_integer_)))
   expect_true(df$select(pl$lit(1L)$is_in(pl$col("a")))$to_data_frame()[[1L]])
   expect_false(df$select(pl$lit(4L)$is_in(pl$col("a")))$to_data_frame()[[1L]])
 
 
   # NA_int == NA_int
   expect_identical(
-    as_polars_df(list(a = c(1:4, NA_integer_)))$select(
+    pl$DataFrame(list(a = c(1:4, NA_integer_)))$select(
       pl$col("a")$is_in(pl$lit(NA_integer_))
     )$to_data_frame()[[1L]],
     c(rep(FALSE, 4), NA)
@@ -479,7 +479,7 @@ test_that("and or is_in xor", {
 
   # both R and polars aliases NA_int_ with NA_real_ in comparisons
   expect_identical(
-    as_polars_df(list(a = c(1:4, NA_integer_)))$select(
+    pl$DataFrame(list(a = c(1:4, NA_integer_)))$select(
       pl$col("a")$is_in(pl$lit(NA_real_))
     )$to_data_frame()[[1L]],
     c(rep(FALSE, 4), NA)
@@ -541,7 +541,7 @@ test_that("to_physical + cast", {
 
 
   # down cast big number
-  df_big_n = as_polars_df(list(big = 2^50))$with_columns(pl$col("big")$cast(pl$Int64))
+  df_big_n = pl$DataFrame(list(big = 2^50))$with_columns(pl$col("big")$cast(pl$Int64))
 
 
   # error overflow, strict TRUE
@@ -563,29 +563,29 @@ test_that("to_physical + cast", {
 
 test_that("pow, rpow, sqrt, log10", {
   # pow
-  expect_identical(as_polars_df(list(a = -1:3))$select(pl$lit(2)$pow(pl$col("a")))$get_column("literal")$to_r(), 2^(-1:3))
-  expect_identical(as_polars_df(list(a = -1:3))$select(pl$lit(2)^pl$col("a"))$get_column("literal")$to_r(), 2^(-1:3))
+  expect_identical(pl$DataFrame(list(a = -1:3))$select(pl$lit(2)$pow(pl$col("a")))$get_column("literal")$to_r(), 2^(-1:3))
+  expect_identical(pl$DataFrame(list(a = -1:3))$select(pl$lit(2)^pl$col("a"))$get_column("literal")$to_r(), 2^(-1:3))
 
   # sqrt
   expect_identical(
-    as_polars_df(list(a = -1:3))$select(pl$col("a")$sqrt())$get_column("a")$to_r(),
+    pl$DataFrame(list(a = -1:3))$select(pl$col("a")$sqrt())$get_column("a")$to_r(),
     suppressWarnings(sqrt(-1:3))
   )
 
   # log10
   expect_equal(
-    as_polars_df(list(a = 10^(-1:3)))$select(pl$col("a")$log10())$to_data_frame()$a,
+    pl$DataFrame(list(a = 10^(-1:3)))$select(pl$col("a")$log10())$to_data_frame()$a,
     -1:3
   )
 
   # log
-  expect_equal(as_polars_df(list(a = exp(1)^(-1:3)))$select(pl$col("a")$log())$to_data_frame()$a, -1:3)
-  expect_equal(as_polars_df(list(a = 0.42^(-1:3)))$select(pl$col("a")$log(0.42))$to_data_frame()$a, -1:3)
+  expect_equal(pl$DataFrame(list(a = exp(1)^(-1:3)))$select(pl$col("a")$log())$to_data_frame()$a, -1:3)
+  expect_equal(pl$DataFrame(list(a = 0.42^(-1:3)))$select(pl$col("a")$log(0.42))$to_data_frame()$a, -1:3)
 
   # exp
   log10123 = suppressWarnings(log(-1:3))
   expect_equal(
-    as_polars_df(list(a = log10123))$select(pl$col("a")$exp())$to_data_frame()$a,
+    pl$DataFrame(list(a = log10123))$select(pl$col("a")$exp())$to_data_frame()$a,
     exp(1)^log10123
   )
 })
@@ -650,7 +650,7 @@ test_that("exclude", {
 
 test_that("finite infinite is_nan is_not_nan", {
   expect_identical(
-    as_polars_df(list(a = c(0, NaN, NA, Inf, -Inf)))$select(
+    pl$DataFrame(list(a = c(0, NaN, NA, Inf, -Inf)))$select(
       pl$col("a")$is_finite()$alias("is_finite"),
       pl$col("a")$is_infinite()$alias("is_infinite"),
       pl$col("a")$is_nan()$alias("is_nan"),
@@ -701,7 +701,7 @@ test_that("slice", {
 
 test_that("Expr_append", {
   # append bottom to to row
-  df = as_polars_df(list(a = 1:3, b = c(NA_real_, 4, 5)))
+  df = pl$DataFrame(list(a = 1:3, b = c(NA_real_, 4, 5)))
   expect_identical(
     df$select(pl$all()$head(1)$append(pl$all()$tail(1)))$to_list(),
     list(a = c(1L, 3L), b = c(NA_real_, 5))
@@ -709,29 +709,29 @@ test_that("Expr_append", {
 
   # implicit upcast, when default = TRUE
   expect_identical(
-    as_polars_df(list())$select(pl$lit(42)$append(42L))$to_list(),
+    pl$DataFrame(list())$select(pl$lit(42)$append(42L))$to_list(),
     list(literal = c(42, 42))
   )
 
   expect_identical(
-    as_polars_df(list())$select(pl$lit(42)$append(FALSE))$to_list(),
+    pl$DataFrame(list())$select(pl$lit(42)$append(FALSE))$to_list(),
     list(literal = c(42, 0))
   )
 
   expect_identical(
-    as_polars_df(list())$select(pl$lit("Bob")$append(FALSE))$to_list(),
+    pl$DataFrame(list())$select(pl$lit("Bob")$append(FALSE))$to_list(),
     list(literal = c("Bob", "false"))
   )
 
   expect_grepl_error(
-    as_polars_df(list())$select(pl$lit("Bob")$append(FALSE, upcast = FALSE)),
+    pl$DataFrame(list())$select(pl$lit("Bob")$append(FALSE, upcast = FALSE)),
     "type Boolean is incompatible with expected type String"
   )
 })
 
 
 test_that("Expr_rechunk Series_chunk_lengths", {
-  series_list = as_polars_df(list(a = 1:3, b = 4:6))$select(
+  series_list = pl$DataFrame(list(a = 1:3, b = 4:6))$select(
     pl$col("a")$append(pl$col("b"))$alias("a_chunked"),
     pl$col("a")$append(pl$col("b"))$rechunk()$alias("a_rechunked")
   )$get_columns()
@@ -742,7 +742,7 @@ test_that("Expr_rechunk Series_chunk_lengths", {
 })
 
 test_that("cum_sum cum_prod cum_min cum_max cum_count", {
-  l_actual = as_polars_df(list(a = 1:4))$select(
+  l_actual = pl$DataFrame(list(a = 1:4))$select(
     pl$col("a")$cum_sum()$alias("cum_sum"),
     pl$col("a")$cum_prod()$alias("cum_prod")$cast(pl$Float64),
     pl$col("a")$cum_min()$alias("cum_min"),
@@ -760,7 +760,7 @@ test_that("cum_sum cum_prod cum_min cum_max cum_count", {
     l_actual, l_reference
   )
 
-  l_actual_rev = as_polars_df(list(a = 1:4))$select(
+  l_actual_rev = pl$DataFrame(list(a = 1:4))$select(
     pl$col("a")$cum_sum(reverse = TRUE)$alias("cum_sum"),
     pl$col("a")$cum_prod(reverse = TRUE)$alias("cum_prod")$cast(pl$Float64),
     pl$col("a")$cum_min(reverse = TRUE)$alias("cum_min"),
@@ -808,7 +808,7 @@ test_that("floor ceil round", {
 })
 
 test_that("mode", {
-  df = as_polars_df(list(
+  df = pl$DataFrame(list(
     a = 1:6,
     b = c(1L, 1L, 3L, 3L, 5L, 6L),
     c = c(1L, 1L, 2L, 2L, 3L, 3L),
@@ -969,7 +969,7 @@ test_that("arg_min arg_max arg_sort", {
 test_that("search_sorted", {
   expect_identical(
     as.numeric(
-      as_polars_df(list(a = 0:100))$select(pl$col("a")$search_sorted(pl$lit(42L)))$to_list()$a
+      pl$DataFrame(list(a = 0:100))$select(pl$col("a")$search_sorted(pl$lit(42L)))$to_list()$a
     ),
     42
   )
@@ -1411,7 +1411,7 @@ test_that("Expr_quantile", {
 
 
 test_that("Expr_filter", {
-  pdf = as_polars_df(list(
+  pdf = pl$DataFrame(list(
     group_col = c("g1", "g1", "g2"),
     b = c(1, 2, 3)
   ))
@@ -1435,7 +1435,7 @@ test_that("Expr_filter", {
 
 
 test_that("Expr explode/flatten", {
-  df = as_polars_df(list(a = letters))$select(pl$col("a")$explode()$gather(0:5))
+  df = pl$DataFrame(list(a = letters))$select(pl$col("a")$explode()$gather(0:5))
 
   expect_identical(
     df$to_data_frame()$a,
@@ -1443,7 +1443,7 @@ test_that("Expr explode/flatten", {
   )
 
   little_iris = iris[c(1:3, 51:53), ]
-  listed_group_df = pl$DataFrame(little_iris)$group_by("Species", maintain_order = TRUE)$agg(pl$all())
+  listed_group_df = as_polars_df(little_iris)$group_by("Species", maintain_order = TRUE)$agg(pl$all())
   vectors_df = listed_group_df$select(
     pl$col(c("Sepal.Width", "Sepal.Length"))$explode()
   )
@@ -1467,7 +1467,7 @@ test_that("Expr explode/flatten", {
 
 
 test_that("gather_every", {
-  df = as_polars_df(list(a = 0:24))$select(pl$col("a")$gather_every(6))
+  df = pl$DataFrame(list(a = 0:24))$select(pl$col("a")$gather_every(6))
   expect_identical(
     df$to_list()[[1L]],
     seq(0L, 24L, 6L)

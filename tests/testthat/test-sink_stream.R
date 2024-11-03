@@ -120,7 +120,7 @@ test_that("Test sinking data to IPC file", {
 dat = head(mtcars, n = 15)
 dat[c(1, 3, 9, 12), c(3, 4, 5)] = NA
 dat$id = seq_len(nrow(dat))
-dat_pl = pl$LazyFrame(dat)
+dat_pl = as_polars_lf(dat)
 temp_out = tempfile(fileext = ".csv")
 
 test_that("sink_csv works", {
@@ -159,7 +159,7 @@ test_that("sink_csv: separator works", {
 })
 
 test_that("sink_csv: quote_style and quote works", {
-  dat_pl2 = pl$LazyFrame(head(iris))
+  dat_pl2 = as_polars_lf(head(iris))
 
   # wrong quote_style
   ctx = dat_pl2$sink_csv(temp_out, quote_style = "foo") |> get_err_ctx()

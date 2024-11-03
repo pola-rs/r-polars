@@ -180,7 +180,7 @@ LazyFrame_width = method_as_active_binding(\() length(self$schema))
 #' ) # directly from vectors
 #'
 #' # from a list of vectors or data.frame
-#' as_polars_lf(list(
+#' pl$LazyFrame(list(
 #'   a = c(1, 2, 3, 4, 5),
 #'   b = 1:5,
 #'   c = letters[1:5],
@@ -1305,8 +1305,8 @@ LazyFrame_group_by = function(..., maintain_order = polars_options()$maintain_or
 #' @return LazyFrame
 #' @examples
 #' # inner join by default
-#' df1 = as_polars_lf(list(key = 1:3, payload = c("f", "i", NA)))
-#' df2 = as_polars_lf(list(key = c(3L, 4L, 5L, NA_integer_)))
+#' df1 = pl$LazyFrame(list(key = 1:3, payload = c("f", "i", NA)))
+#' df2 = pl$LazyFrame(list(key = c(3L, 4L, 5L, NA_integer_)))
 #' df1$join(other = df2, on = "key")
 #'
 #' # cross join

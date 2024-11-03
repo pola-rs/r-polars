@@ -13,5 +13,5 @@ Expr
 Reverse a variable
 }
 \examples{
-as_polars_df(list(a = 1:5))$select(pl$col("a")$reverse())
+pl$DataFrame(list(a = 1:5))$select(pl$col("a")$reverse())
 }

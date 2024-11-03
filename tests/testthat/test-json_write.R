@@ -1,5 +1,5 @@
 dat = head(mtcars, n = 5)[, 1:3]
-dat_pl = pl$DataFrame(dat)
+dat_pl = as_polars_df(dat)
 temp_out = tempfile()
 
 test_that("write_json: path works", {

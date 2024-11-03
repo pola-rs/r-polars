@@ -88,7 +88,7 @@ test_that("DataFrame, input free vectors, input empty", {
 })
 
 test_that("get set properties", {
-  df = as_polars_df(list(a = 1:5, b = rep(TRUE, 5)))
+  df = pl$DataFrame(list(a = 1:5, b = rep(TRUE, 5)))
 
   expect_equal(
     df$columns,
@@ -137,10 +137,10 @@ test_that("get set properties", {
 
 
 test_that("DataFrame, custom schema", {
-  df = pl$DataFrame(
+  df = suppressWarnings(pl$DataFrame(
     iris,
     schema = list(Sepal.Length = pl$Float32, Species = pl$String)
-  )
+  ))
   # dtypes from object are as expected
   expect_true(
     all(mapply(
@@ -153,7 +153,7 @@ test_that("DataFrame, custom schema", {
 
   # works fine if a variable is called "schema"
   expect_no_error(
-    as_polars_df(list(schema = 1), schema = list(schema = pl$Float32))
+    pl$DataFrame(list(schema = 1), schema = list(schema = pl$Float32))
   )
   # incorrect datatype
   expect_grepl_error(pl$DataFrame(x = 1, schema = list(schema = foo)))
@@ -275,8 +275,7 @@ test_that("select: create a list variable", {
 })
 
 test_that("map_batches unity", {
-  x = pl$
-    DataFrame(iris)$
+  x = as_polars_df(iris)$
     select(
     pl$col("Sepal.Length")$
       map_batches(\(s) s)
@@ -292,8 +291,7 @@ test_that("map_batches unity", {
   # int is preseved
   int_iris = iris
   int_iris[, 1:4] = lapply(iris[, 1:4], as.integer)
-  x = pl$
-    DataFrame(int_iris)$
+  x = as_polars_df(int_iris)$
     select(
     pl$col("Sepal.Length")$
       map_batches(\(s) s)
@@ -306,8 +304,7 @@ test_that("map_batches unity", {
   )
 
   # drop the dataframe structure
-  x = pl$
-    DataFrame(iris)$
+  x = as_polars_df(iris)$
     select(
     pl$col("Species")$
       map_batches(\(s) s)
@@ -317,8 +314,7 @@ test_that("map_batches unity", {
   expect_different(x, iris[, 1, drop = FALSE])
 
 
-  x = pl$
-    DataFrame(iris)$
+  x = as_polars_df(iris)$
     select(
     pl$col("Species")$
       map_batches(\(s) s)
@@ -352,7 +348,7 @@ test_that("cloning", {
   pf = as_polars_df(iris)
 
   # shallow copy, same external pointer
-  pf2 = pl$DataFrame(pf)
+  pf2 = suppressWarnings(pl$DataFrame(pf))
   expect_identical(pf, pf2)
   expect_identical(pl$mem_address(pf), pl$mem_address(pf2))
 
@@ -701,12 +697,12 @@ test_that("null_count 64bit", {
   tmp = mtcars
   tmp[1:2, 1:2] = NA
   tmp[5, 3] = NA
-  a = pl$DataFrame(tmp)$null_count()$to_data_frame()
+  a = as_polars_df(tmp)$null_count()$to_data_frame()
   a = sapply(a, as.integer)
   b = sapply(tmp, function(x) sum(is.na(x)))
   expect_equal(a, b)
 
-  a = pl$DataFrame(tmp)$group_by("vs")$null_count()$to_data_frame()
+  a = as_polars_df(tmp)$group_by("vs")$null_count()$to_data_frame()
   expect_equal(dim(a), c(2, 11))
 })
 
@@ -800,7 +796,7 @@ test_that("drop", {
 test_that("drop_nulls", {
   tmp = mtcars
   tmp[1:3, "mpg"] = NA
-  tmp = pl$DataFrame(tmp)
+  tmp = as_polars_df(tmp)
   expect_equal(as_polars_df(mtcars)$drop_nulls()$height, 32, ignore_attr = TRUE)
   expect_equal(as_polars_df(mtcars)$drop_nulls("mpg")$height, 32, ignore_attr = TRUE)
   expect_equal(tmp$drop_nulls()$height, 29, ignore_attr = TRUE)
@@ -906,7 +902,7 @@ test_that("sort", {
   # nulls_last
   df = mtcars
   df$mpg[1] = NA
-  df = pl$DataFrame(df)
+  df = as_polars_df(df)
   a = df$sort("mpg", nulls_last = TRUE, maintain_order = TRUE)$to_data_frame()
   b = df$sort("mpg", nulls_last = FALSE, maintain_order = TRUE)$to_data_frame()
   expect_true(is.na(a$mpg[32]))

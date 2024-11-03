@@ -541,7 +541,7 @@ Expr_gt_eq = function(other) {
 #' context only.
 #' @return Expr
 #' @examples
-#' df = as_polars_df(list(
+#' df = pl$DataFrame(list(
 #'   group = c("one", "one", "one", "two", "two", "two"),
 #'   value = c(94, 95, 96, 97, 97, 99)
 #' ))
@@ -639,7 +639,7 @@ Expr_len = use_extendr_wrapper
 #' `drop_nans()`
 #' @return Expr
 #' @examples
-#' as_polars_df(list(x = c(1, 2, NaN, NA)))$select(pl$col("x")$drop_nulls())
+#' pl$DataFrame(list(x = c(1, 2, NaN, NA)))$select(pl$col("x")$drop_nulls())
 Expr_drop_nulls = use_extendr_wrapper
 
 #' Drop NaN
@@ -653,7 +653,7 @@ Expr_drop_nulls = use_extendr_wrapper
 #'
 #' @return Expr
 #' @examples
-#' as_polars_df(list(x = c(1, 2, NaN, NA)))$select(pl$col("x")$drop_nans())
+#' pl$DataFrame(list(x = c(1, 2, NaN, NA)))$select(pl$col("x")$drop_nans())
 Expr_drop_nans = use_extendr_wrapper
 
 #' Check if elements are NULL
@@ -661,7 +661,7 @@ Expr_drop_nans = use_extendr_wrapper
 #' Returns a boolean Series indicating which values are null.
 #' @return Expr
 #' @examples
-#' as_polars_df(list(x = c(1, NA, 3)))$select(pl$col("x")$is_null())
+#' pl$DataFrame(list(x = c(1, NA, 3)))$select(pl$col("x")$is_null())
 Expr_is_null = use_extendr_wrapper
 
 #' Check if elements are not NULL
@@ -670,7 +670,7 @@ Expr_is_null = use_extendr_wrapper
 #' for `$is_null()$not()`.
 #' @return Expr
 #' @examples
-#' as_polars_df(list(x = c(1, NA, 3)))$select(pl$col("x")$is_not_null())
+#' pl$DataFrame(list(x = c(1, NA, 3)))$select(pl$col("x")$is_not_null())
 Expr_is_not_null = use_extendr_wrapper
 
 
@@ -844,7 +844,7 @@ Expr_map_batches = function(f, output_type = NULL, agg_list = FALSE, in_backgrou
 #' # First we multiply each element of a Series of 1M elements by 2.
 #' n = 1000000L
 #' set.seed(1)
-#' df = as_polars_df(list(
+#' df = pl$DataFrame(list(
 #'   a = 1:n,
 #'   b = sample(letters, n, replace = TRUE)
 #' ))
@@ -926,7 +926,7 @@ Expr_map_elements = function(f, return_type = NULL, strict_return_type = TRUE, a
 #' @return Expr
 #' @name Expr_reverse
 #' @examples
-#' as_polars_df(list(a = 1:5))$select(pl$col("a")$reverse())
+#' pl$DataFrame(list(a = 1:5))$select(pl$col("a")$reverse())
 Expr_reverse = function() {
   .pr$Expr$reverse(self)
 }
@@ -1103,7 +1103,7 @@ Expr_exclude = function(columns) {
 #' Returns a boolean Series indicating which values are finite.
 #' @return Expr
 #' @examples
-#' as_polars_df(list(alice = c(0, NaN, NA, Inf, -Inf)))$
+#' pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$
 #'   with_columns(finite = pl$col("alice")$is_finite())
 Expr_is_finite = use_extendr_wrapper
 
@@ -1116,7 +1116,7 @@ Expr_is_finite = use_extendr_wrapper
 #' @name Expr_is_infinite
 #' @format NULL
 #' @examples
-#' as_polars_df(list(alice = c(0, NaN, NA, Inf, -Inf)))$
+#' pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$
 #'   with_columns(infinite = pl$col("alice")$is_infinite())
 Expr_is_infinite = use_extendr_wrapper
 
@@ -1130,7 +1130,7 @@ Expr_is_infinite = use_extendr_wrapper
 #'
 #' @format NULL
 #' @examples
-#' as_polars_df(list(alice = c(0, NaN, NA, Inf, -Inf)))$
+#' pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$
 #'   with_columns(nan = pl$col("alice")$is_nan())
 Expr_is_nan = use_extendr_wrapper
 
@@ -1144,7 +1144,7 @@ Expr_is_nan = use_extendr_wrapper
 #' @name Expr_is_not_nan
 #' @format NULL
 #' @examples
-#' as_polars_df(list(alice = c(0, NaN, NA, Inf, -Inf)))$
+#' pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$
 #'   with_columns(not_nan = pl$col("alice")$is_not_nan())
 Expr_is_not_nan = use_extendr_wrapper
 
@@ -1162,16 +1162,16 @@ Expr_is_not_nan = use_extendr_wrapper
 #' @return Expr
 #' @examples
 #' # as head
-#' as_polars_df(list(a = 0:100))$select(
+#' pl$DataFrame(list(a = 0:100))$select(
 #'   pl$all()$slice(0, 6)
 #' )
 #'
 #' # as tail
-#' as_polars_df(list(a = 0:100))$select(
+#' pl$DataFrame(list(a = 0:100))$select(
 #'   pl$all()$slice(-6, 6)
 #' )
 #'
-#' as_polars_df(list(a = 0:100))$select(
+#' pl$DataFrame(list(a = 0:100))$select(
 #'   pl$all()$slice(80)
 #' )
 #'
@@ -1194,13 +1194,13 @@ Expr_slice = function(offset, length = NULL) {
 #' @name Expr_append
 #' @examples
 #' # append bottom to to row
-#' df = as_polars_df(list(a = 1:3, b = c(NA_real_, 4, 5)))
+#' df = pl$DataFrame(list(a = 1:3, b = c(NA_real_, 4, 5)))
 #' df$select(pl$all()$head(1)$append(pl$all()$tail(1)))
 #'
 #' # implicit upcast, when default = TRUE
-#' as_polars_df(list())$select(pl$lit(42)$append(42L))
-#' as_polars_df(list())$select(pl$lit(42)$append(FALSE))
-#' as_polars_df(list())$select(pl$lit("Bob")$append(FALSE))
+#' pl$DataFrame(list())$select(pl$lit(42)$append(42L))
+#' pl$DataFrame(list())$select(pl$lit(42)$append(FALSE))
+#' pl$DataFrame(list())$select(pl$lit("Bob")$append(FALSE))
 Expr_append = function(other, upcast = TRUE) {
   .pr$Expr$append(self, wrap_e(other), upcast)
 }
@@ -1215,7 +1215,7 @@ Expr_append = function(other, upcast = TRUE) {
 #' See rechunk() explained here \code{\link[polars]{docs_translations}}.
 #' @examples
 #' # get chunked lengths with/without rechunk
-#' series_list = as_polars_df(list(a = 1:3, b = 4:6))$select(
+#' series_list = pl$DataFrame(list(a = 1:3, b = 4:6))$select(
 #'   pl$col("a")$append(pl$col("b"))$alias("a_chunked"),
 #'   pl$col("a")$append(pl$col("b"))$rechunk()$alias("a_rechunked")
 #' )$get_columns()
@@ -1907,7 +1907,7 @@ Expr_over = function(..., order_by = NULL, mapping_strategy = "group_to_rows") {
 #' @return Expr
 #'
 #' @examples
-#' pl$DataFrame(head(mtcars[, 1:2]))$
+#' as_polars_df(head(mtcars[, 1:2]))$
 #'   with_columns(is_unique = pl$col("mpg")$is_unique())
 Expr_is_unique = use_extendr_wrapper
 
@@ -1916,7 +1916,7 @@ Expr_is_unique = use_extendr_wrapper
 #' @return Expr
 #'
 #' @examples
-#' pl$DataFrame(head(mtcars[, 1:2]))$
+#' as_polars_df(head(mtcars[, 1:2]))$
 #'   with_columns(is_ufirst = pl$col("mpg")$is_first_distinct())
 Expr_is_first_distinct = use_extendr_wrapper
 
@@ -1925,7 +1925,7 @@ Expr_is_first_distinct = use_extendr_wrapper
 #' @return Expr
 #'
 #' @examples
-#' pl$DataFrame(head(mtcars[, 1:2]))$
+#' as_polars_df(head(mtcars[, 1:2]))$
 #'   with_columns(is_ulast = pl$col("mpg")$is_last_distinct())
 Expr_is_last_distinct = use_extendr_wrapper
 
@@ -1936,7 +1936,7 @@ Expr_is_last_distinct = use_extendr_wrapper
 #' @return Expr
 #'
 #' @examples
-#' pl$DataFrame(head(mtcars[, 1:2]))$
+#' as_polars_df(head(mtcars[, 1:2]))$
 #'   with_columns(is_duplicated = pl$col("mpg")$is_duplicated())
 Expr_is_duplicated = use_extendr_wrapper
 
@@ -2831,7 +2831,7 @@ Expr_pct_change = function(n = 1) {
 #' @return Expr
 #' @inherit Expr_rolling_skew details
 #' @examples
-#' df = as_polars_df(list(a = c(1:3, 2:1)))
+#' df = pl$DataFrame(list(a = c(1:3, 2:1)))
 #' df$select(pl$col("a")$skew())
 Expr_skew = function(bias = TRUE) {
   .pr$Expr$skew(self, bias)

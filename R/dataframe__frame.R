@@ -477,7 +477,7 @@ DataFrame_drop = function(..., strict = TRUE) {
 #' tmp = mtcars
 #' tmp[1:3, "mpg"] = NA
 #' tmp[4, "hp"] = NA
-#' tmp = pl$DataFrame(tmp)
+#' tmp = as_polars_df(tmp)
 #'
 #' # number of rows in `tmp` before dropping nulls
 #' tmp$height
@@ -1045,8 +1045,8 @@ DataFrame_to_list = function(unnest_structs = TRUE, ..., int64_conversion = pola
 #' @keywords DataFrame
 #' @examples
 #' # inner join by default
-#' df1 = as_polars_df(list(key = 1:3, payload = c("f", "i", NA)))
-#' df2 = as_polars_df(list(key = c(3L, 4L, 5L, NA_integer_)))
+#' df1 = pl$DataFrame(list(key = 1:3, payload = c("f", "i", NA)))
+#' df2 = pl$DataFrame(list(key = c(3L, 4L, 5L, NA_integer_)))
 #' df1$join(other = df2, on = "key")
 #'
 #' # cross join
@@ -2073,7 +2073,7 @@ DataFrame_write_parquet = function(
 #'
 #' @examples
 #' if (require("jsonlite", quiet = TRUE)) {
-#'   dat = pl$DataFrame(head(mtcars))
+#'   dat = as_polars_df(head(mtcars))
 #'   destination = tempfile()
 #'
 #'   dat$select(pl$col("drat", "mpg"))$write_json(destination)
@@ -2101,7 +2101,7 @@ DataFrame_write_json = function(
 #' @rdname IO_write_ndjson
 #'
 #' @examples
-#' dat = pl$DataFrame(head(mtcars))
+#' dat = as_polars_df(head(mtcars))
 #'
 #' destination = tempfile()
 #' dat$select(pl$col("drat", "mpg"))$write_ndjson(destination)

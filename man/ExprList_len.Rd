@@ -14,6 +14,6 @@ Return the number of elements in each list. Null values are counted in the
 total.
 }
 \examples{
-df = as_polars_df(list(list_of_strs = list(c("a", "b", NA), "c")))
+df = pl$DataFrame(list(list_of_strs = list(c("a", "b", NA), "c")))
 df$with_columns(len_list = pl$col("list_of_strs")$list$len())
 }

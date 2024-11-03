@@ -13,7 +13,7 @@ Expr
 Get the last value in a list
 }
 \examples{
-df = as_polars_df(list(a = list(3:1, NULL, 1:2)))
+df = pl$DataFrame(list(a = list(3:1, NULL, 1:2)))
 df$with_columns(
   last = pl$col("a")$list$last()
 )
