@@ -6,6 +6,11 @@
 
 - `<Series>$compare()` is removed. (#1272)
 
+### Deprecations
+
+- Passing a single data.frame to `pl$DataFrame()` to convert a data.frame to a polars DataFrame is deprecated and a warning will be shown (#1275).
+  Use `as_polars_df()` instead.
+
 ### Bug fixes
 
 - Maintain level order when converting Enums to factors (#1252, @andyquinterom).
