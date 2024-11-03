@@ -14,7 +14,7 @@ Get the group indexes of the group by operation. Should be used in aggregation
 context only.
 }
 \examples{
-df = pl$DataFrame(list(
+df = as_polars_df(list(
   group = c("one", "one", "one", "two", "two", "two"),
   value = c(94, 95, 96, 97, 97, 99)
 ))

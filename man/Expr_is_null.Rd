@@ -13,5 +13,5 @@ Expr
 Returns a boolean Series indicating which values are null.
 }
 \examples{
-pl$DataFrame(list(x = c(1, NA, 3)))$select(pl$col("x")$is_null())
+as_polars_df(list(x = c(1, NA, 3)))$select(pl$col("x")$is_null())
 }

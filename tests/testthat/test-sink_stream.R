@@ -1,4 +1,4 @@
-lf = pl$LazyFrame(mtcars)$with_columns((pl$col("mpg") * 0.425)$alias("kpl"))
+lf = as_polars_lf(mtcars)$with_columns((pl$col("mpg") * 0.425)$alias("kpl"))
 rdf = lf$collect()$to_data_frame()
 
 test_that("Test sinking data to parquet file", {
@@ -274,7 +274,7 @@ test_that("sink_csv: float_precision works", {
 
 test_that("sink_ndjson works", {
   temp_out = tempfile(fileext = ".json")
-  dat = pl$LazyFrame(mtcars)$head(15)$select(pl$col("drat", "mpg"))
+  dat = as_polars_lf(mtcars)$head(15)$select(pl$col("drat", "mpg"))
   dat$sink_ndjson(temp_out)
   expect_snapshot_file(temp_out)
 

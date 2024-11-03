@@ -25,7 +25,7 @@ test_that("write_ndjson: path works", {
 })
 
 test_that("write_ndjson returns the input data", {
-  dat = pl$DataFrame(mtcars)
+  dat = as_polars_df(mtcars)
   tmpf = tempfile(fileext = ".arrow")
   x = dat$write_ndjson(tmpf)
   expect_identical(x$to_list(), dat$to_list())

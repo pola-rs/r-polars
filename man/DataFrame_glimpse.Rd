@@ -31,5 +31,5 @@ cleanly. Each line shows the column name, the data type, and the first few
 values.
 }
 \examples{
-pl$DataFrame(iris)$glimpse()
+as_polars_df(iris)$glimpse()
 }

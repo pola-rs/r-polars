@@ -10,7 +10,7 @@ make_cases = function() {
 }
 patrick::with_parameters_test_that("aggregations",
   {
-    d = pl$DataFrame(mtcars)
+    d = as_polars_df(mtcars)
     w = d[[pola]]()$to_data_frame()
     x = base(d)$to_data_frame()
     y = base(d$lazy())$collect()$to_data_frame()
@@ -37,7 +37,7 @@ make_cases = function() {
 }
 patrick::with_parameters_test_that("inspection",
   {
-    d = pl$DataFrame(mtcars)
+    d = as_polars_df(mtcars)
     x = FUN(mtcars)
     y = FUN(d)
     if (inherits(y, "RPolarsDataFrame")) y = y$to_data_frame()
@@ -57,7 +57,7 @@ patrick::with_parameters_test_that("dimnames",
   {
     df_r = mtcars |>
       `rownames<-`(NULL) # Drop row names
-    df_pl = pl$DataFrame(mtcars)
+    df_pl = as_polars_df(mtcars)
 
     expect_equal(.fn(df_r), .fn(df_pl))
   },
@@ -156,7 +156,7 @@ test_that("unique", {
 
 test_that("brackets", {
   # informative errors
-  df = pl$DataFrame(mtcars)
+  df = as_polars_df(mtcars)
 
   expect_grepl_error(df[, "bad"], regexp = "not found")
   expect_grepl_error(df[c(1, 4, 3), ], regexp = "increasing order")
@@ -213,13 +213,13 @@ test_that("brackets", {
     ignore_attr = TRUE
   )
 
-  df = pl$DataFrame(mtcars)
+  df = as_polars_df(mtcars)
   a = mtcars[-(1:2), -c(1, 3, 6, 9)]
   b = df[-(1:2), -c(1, 3, 6, 9)]$to_data_frame()
   expect_equal(a, b, ignore_attr = TRUE)
 
   # lazy
-  lf = pl$DataFrame(mtcars)$lazy()
+  lf = as_polars_df(mtcars)$lazy()
 
   a = lf[, c("mpg", "hp")]$collect()$to_data_frame()
   b = mtcars[, c("mpg", "hp")]

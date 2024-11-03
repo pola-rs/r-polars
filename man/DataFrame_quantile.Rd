@@ -20,6 +20,6 @@ Aggregate the columns in the DataFrame to a unique quantile
 value. Use \verb{$describe()} to specify several quantiles.
 }
 \examples{
-pl$DataFrame(mtcars)$quantile(.4)
+as_polars_df(mtcars)$quantile(.4)
 }
 \keyword{DataFrame}

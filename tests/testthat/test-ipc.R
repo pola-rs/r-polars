@@ -63,7 +63,7 @@ patrick::with_parameters_test_that("write and read Apache Arrow file",
 )
 
 test_that("write_ipc returns the input data", {
-  dat = pl$DataFrame(mtcars)
+  dat = as_polars_df(mtcars)
   tmpf = tempfile(fileext = ".arrow")
   x = dat$write_ipc(tmpf)
   expect_identical(x$to_list(), dat$to_list())

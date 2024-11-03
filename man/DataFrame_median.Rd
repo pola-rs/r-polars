@@ -13,6 +13,6 @@ A DataFrame with one row.
 Aggregate the columns in the DataFrame to their median value.
 }
 \examples{
-pl$DataFrame(mtcars)$median()
+as_polars_df(mtcars)$median()
 }
 \keyword{DataFrame}

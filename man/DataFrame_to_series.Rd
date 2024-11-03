@@ -20,7 +20,7 @@ index doesn't exist in the DataFrame. Keep in mind that Polars is 0-indexed
 so "0" is the first column.
 }
 \examples{
-df = pl$DataFrame(iris[1:10, ])
+df = as_polars_df(iris[1:10, ])
 
 # default is to extract the first column
 df$to_series()

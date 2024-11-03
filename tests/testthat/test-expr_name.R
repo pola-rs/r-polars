@@ -10,7 +10,7 @@ test_that("name to_uppercase", {
 
 test_that("name keep", {
   expect_identical(
-    pl$DataFrame(list(alice = 1:3))$select(
+    as_polars_df(list(alice = 1:3))$select(
       pl$col("alice")$alias("bob")$name$keep(),
       pl$col("alice")$alias("bob")
     )$columns,
@@ -41,7 +41,7 @@ test_that("name map", {
       # TODO: this works but always prints the error message of log("a"), how
       # can we silence it?
       # expect_grepl_error(
-      #   pl$DataFrame(list(alice=1:3))$select(
+      #   as_polars_df(list(alice=1:3))$select(
       #     pl$col("alice")$name$map(\(x) log("a"))
       #   )
       # )

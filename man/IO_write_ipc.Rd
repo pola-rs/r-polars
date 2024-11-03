@@ -37,7 +37,7 @@ Invisibly returns the input DataFrame.
 Write to Arrow IPC file (a.k.a Feather file)
 }
 \examples{
-dat = pl$DataFrame(mtcars)
+dat = as_polars_df(mtcars)
 
 destination = tempfile(fileext = ".arrow")
 dat$write_ipc(destination)

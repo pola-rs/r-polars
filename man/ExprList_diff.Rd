@@ -21,7 +21,7 @@ list. The parameter \code{n} gives the interval between items to subtract, e.g \
 2nd and 4th value, etc.
 }
 \examples{
-df = pl$DataFrame(list(s = list(1:4, c(10L, 2L, 1L))))
+df = as_polars_df(list(s = list(1:4, c(10L, 2L, 1L))))
 df$with_columns(diff = pl$col("s")$list$diff(2))
 
 # negative value starts shifting from the end

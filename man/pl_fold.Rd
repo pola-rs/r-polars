@@ -22,7 +22,7 @@ This allows one to do rowwise operations, starting with an initial value
 value.
 }
 \examples{
-df = pl$DataFrame(mtcars)
+df = as_polars_df(mtcars)
 
 # Make the row-wise sum of all columns
 df$with_columns(

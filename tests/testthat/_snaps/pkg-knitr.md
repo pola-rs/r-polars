@@ -13,7 +13,7 @@
       
       ``` r
       df = data.frame(a = 1:3, b = letters[1:3])
-      pl$DataFrame(df)
+      as_polars_df(df)
       ```
       
       ```{=html}
@@ -42,7 +42,7 @@
       
       ``` r
       df = data.frame(a = 1:3, b = letters[1:3])
-      pl$DataFrame(df)
+      as_polars_df(df)
       ```
       
       ```{=html}
@@ -64,7 +64,7 @@
       
       ``` r
       df = data.frame(a = 1:3, b = letters[1:3])
-      pl$DataFrame(df)
+      as_polars_df(df)
       ```
       
       <div><style>
@@ -84,7 +84,7 @@
       
       ``` r
       df = data.frame(a = 1:3, b = letters[1:3])
-      pl$DataFrame(df)
+      as_polars_df(df)
       ```
       
           ## shape: (3, 2)

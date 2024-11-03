@@ -13,6 +13,6 @@ Expr
 Returns a boolean Series indicating which values are finite.
 }
 \examples{
-pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$
+as_polars_df(list(alice = c(0, NaN, NA, Inf, -Inf)))$
   with_columns(finite = pl$col("alice")$is_finite())
 }

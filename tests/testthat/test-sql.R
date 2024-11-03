@@ -3,8 +3,8 @@ test_that("Intialize SQLContext with LazyFrame like objects", {
 
   ctx = pl$SQLContext(
     r_df = mtcars,
-    pl_df = pl$DataFrame(mtcars),
-    pl_lf = pl$LazyFrame(mtcars)
+    pl_df = as_polars_df(mtcars),
+    pl_lf = as_polars_lf(mtcars)
   )
 
   expect_snapshot(ctx)

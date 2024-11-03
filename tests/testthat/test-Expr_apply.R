@@ -1,5 +1,5 @@
 test_that("Expr_map_elements works", {
-  df = pl$DataFrame(list(
+  df = as_polars_df(list(
     a = c(1:3, 5L, NA_integer_, 50, 100),
     b = c("a", "b", "c", "c", "d", NA_character_, NA_character_)
   ))
@@ -24,7 +24,7 @@ test_that("Expr_map_elements works", {
   )
 
 
-  df = pl$DataFrame(list(
+  df = as_polars_df(list(
     a = c("a", "a", "a", "b", "b", "b", "c", "c", "c", NA_character_, NA_character_),
     b = c("a", "b", NA_character_, "b", "c", NA_character_, "c", "a", NA_character_, NA_character_, NA_character_),
     val1 = 1:11,

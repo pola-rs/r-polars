@@ -82,7 +82,7 @@ construct_group_by = function(df, groupby_input, maintain_order) {
 #' @export
 #'
 #' @examples
-#' pl$DataFrame(iris)$group_by("Species")
+#' as_polars_df(iris)$group_by("Species")
 print.RPolarsGroupBy = function(x, ...) {
   prv = attr(x, "private")
   .pr$DataFrame$print(prv$dat)
@@ -267,7 +267,7 @@ GroupBy_std = function() {
 #' @param quantile numeric Quantile between 0.0 and 1.0.
 #' @param interpolation string Interpolation method: "nearest", "higher", "lower", "midpoint", or "linear".
 #' @return GroupBy
-#' @examples pl$DataFrame(mtcars)$lazy()$quantile(.4)$collect()
+#' @examples as_polars_df(mtcars)$lazy()$quantile(.4)$collect()
 GroupBy_quantile = function(quantile, interpolation = "nearest") {
   self$agg(pl$all()$quantile(quantile, interpolation))
 }
@@ -278,7 +278,7 @@ GroupBy_quantile = function(quantile, interpolation = "nearest") {
 #'
 #' @return GroupBy
 #' @examples
-#' pl$DataFrame(mtcars)$group_by("cyl")$shift(2)
+#' as_polars_df(mtcars)$group_by("cyl")$shift(2)
 GroupBy_shift = function(n = 1, fill_value = NULL) {
   self$agg(pl$all()$shift(n, fill_value))
 }
@@ -301,7 +301,7 @@ GroupBy_null_count = function() {
 #' Revert the group by operation.
 #' @return [DataFrame][DataFrame_class]
 #' @examples
-#' gb = pl$DataFrame(mtcars)$group_by("cyl")
+#' gb = as_polars_df(mtcars)$group_by("cyl")
 #' gb
 #'
 #' gb$ungroup()

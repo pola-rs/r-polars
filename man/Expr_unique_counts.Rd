@@ -15,5 +15,5 @@ differs from \verb{$value_counts()} in that it does not return the values, only
 the counts and it might be faster.
 }
 \examples{
-pl$DataFrame(iris)$select(pl$col("Species")$unique_counts())
+as_polars_df(iris)$select(pl$col("Species")$unique_counts())
 }

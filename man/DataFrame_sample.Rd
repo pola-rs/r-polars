@@ -37,7 +37,7 @@ DataFrame
 Take a sample of rows from a DataFrame
 }
 \examples{
-df = pl$DataFrame(iris)
+df = as_polars_df(iris)
 df$sample(n = 20)
 df$sample(fraction = 0.1)
 }

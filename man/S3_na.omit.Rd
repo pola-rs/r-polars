@@ -20,7 +20,7 @@
 Drop missing values
 }
 \examples{
-df = pl$DataFrame(data.frame(a = c(NA, 2:10), b = c(1, NA, 3:10)))$lazy()
+df = as_polars_df(data.frame(a = c(NA, 2:10), b = c(1, NA, 3:10)))$lazy()
 na.omit(df)
 na.omit(df, subset = "a")
 na.omit(df, subset = c("a", "b"))

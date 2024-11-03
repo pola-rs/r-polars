@@ -30,7 +30,7 @@ Mimics the behavior of [\code{x[i, j, drop = TRUE]}][Extract] for \link{data.fra
 \verb{<Series>[i]} is equivalent to \verb{pl$select(<Series>)[i, , drop = TRUE]}.
 }
 \examples{
-df = pl$DataFrame(data.frame(a = 1:3, b = letters[1:3]))
+df = as_polars_df(data.frame(a = 1:3, b = letters[1:3]))
 lf = df$lazy()
 
 # Select a row

@@ -227,10 +227,8 @@ DataFrame_width = method_as_active_binding(\() .pr$DataFrame$shape(self)[2L])
 #' Create a new polars DataFrame
 #'
 #' @param ... One of the following:
-#'  - a list of mixed vectors and Series of equal length
 #'  - mixed vectors and/or Series of equal length
-#'  - a positional argument of a [data.frame] or a [DataFrame][DataFrame_class]
-#'    (not recommended use). In this case, the object will be passed to [as_polars_df()].
+#'  - a list of mixed vectors and Series of equal length (Deprecated, please use [as_polars_df()] instead).
 #'
 #' Columns will be named as of named arguments or alternatively by names of
 #' Series or given a placeholder name.
@@ -238,7 +236,7 @@ DataFrame_width = method_as_active_binding(\() .pr$DataFrame$shape(self)[2L])
 #' @param make_names_unique If `TRUE` (default), any duplicated names will be
 #'  prefixed a running number.
 #' @param schema A named list that will be used to convert a variable to a
-#' specific DataType. See Examples.
+#' specific DataType. Same as `schema_overrides` of [as_polars_df()].
 #' @seealso
 #' - [as_polars_df()]
 #' @return [DataFrame][DataFrame_class]
@@ -250,20 +248,6 @@ DataFrame_width = method_as_active_binding(\() .pr$DataFrame$shape(self)[2L])
 #'   c = letters[1:5],
 #'   d = list(1:1, 1:2, 1:3, 1:4, 1:5)
 #' ) # directly from vectors
-#'
-#' # from a list of vectors
-#' pl$DataFrame(list(
-#'   a = c(1, 2, 3, 4, 5),
-#'   b = 1:5,
-#'   c = letters[1:5],
-#'   d = list(1L, 1:2, 1:3, 1:4, 1:5)
-#' ))
-#'
-#' # from a data.frame
-#' pl$DataFrame(mtcars)
-#'
-#' # custom schema
-#' pl$DataFrame(iris, schema = list(Sepal.Length = pl$Float32, Species = pl$String))
 pl_DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
   uw = \(res) unwrap(res, "in $DataFrame():")
 
@@ -275,6 +259,11 @@ pl_DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
   # pass to `as_polars_df()`
   if (length(largs) == 1L && is.null(names(largs)) &&
     (inherits(largs[[1]], skip_classes))) {
+    warning(
+      "Passing a `data.frame` or `RPolarsDataFrame` to `pl$DataFrame()` is deprecated and will be removed in the future.",
+      " Use `as_polars_df()` instead."
+    )
+
     # TODO: schema v.s. schema_overrides <https://github.com/pola-rs/r-polars/issues/897>
     out = as_polars_df(largs[[1]], make_names_unique = make_names_unique, schema_overrides = schema) |>
       result() |>
@@ -355,7 +344,7 @@ pl_DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
 #' @return self
 #' @export
 #'
-#' @examples pl$DataFrame(iris)
+#' @examples as_polars_df(iris)
 print.RPolarsDataFrame = function(x, ...) {
   x$print()
   invisible(x)
@@ -365,7 +354,7 @@ print.RPolarsDataFrame = function(x, ...) {
 #' @noRd
 #' @return self
 #'
-#' @examples pl$DataFrame(iris)
+#' @examples as_polars_df(iris)
 DataFrame_print = function() {
   .pr$DataFrame$print(self)
   invisible(self)
@@ -394,7 +383,7 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 #' with(.pr$env, ls(DataFrame.property_setters))
 #'
 #' # specific use case for one object property 'columns' (names)
-#' df = pl$DataFrame(iris)
+#' df = as_polars_df(iris)
 #'
 #' # get values
 #' df$columns
@@ -442,7 +431,7 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 #' @return A new `DataFrame` object with a counter column in front
 #' @docType NULL
 #' @examples
-#' df = pl$DataFrame(mtcars)
+#' df = as_polars_df(mtcars)
 #'
 #' # by default, the index starts at 0 (to mimic the behavior of Python Polars)
 #' df$with_row_index("idx")
@@ -468,10 +457,10 @@ DataFrame.property_setters$columns = function(self, names) {
 #'
 #' @return DataFrame
 #' @examples
-#' pl$DataFrame(mtcars)$drop(c("mpg", "hp"))
+#' as_polars_df(mtcars)$drop(c("mpg", "hp"))
 #'
 #' # equivalent
-#' pl$DataFrame(mtcars)$drop("mpg", "hp")
+#' as_polars_df(mtcars)$drop("mpg", "hp")
 DataFrame_drop = function(..., strict = TRUE) {
   self$lazy()$drop(..., strict = strict)$collect()
 }
@@ -554,7 +543,7 @@ DataFrame_unique = function(
 #' @return A character vector with the data type of each column
 #' @keywords DataFrame
 #' @examples
-#' pl$DataFrame(iris)$dtype_strings()
+#' as_polars_df(iris)$dtype_strings()
 DataFrame_dtype_strings = use_extendr_wrapper
 
 
@@ -568,7 +557,7 @@ DataFrame_dtype_strings = use_extendr_wrapper
 #' @aliases lazy
 #' @keywords  DataFrame LazyFrame_new
 #' @examples
-#' pl$DataFrame(iris)$lazy()
+#' as_polars_df(iris)$lazy()
 DataFrame_lazy = use_extendr_wrapper
 
 #' Clone a DataFrame
@@ -580,7 +569,7 @@ DataFrame_lazy = use_extendr_wrapper
 #'
 #' @return A DataFrame
 #' @examples
-#' df1 = pl$DataFrame(iris)
+#' df1 = as_polars_df(iris)
 #'
 #' # Make a function to take a DataFrame, add an attribute, and return a DataFrame
 #' give_attr = function(data) {
@@ -598,7 +587,7 @@ DataFrame_lazy = use_extendr_wrapper
 #'   attr(data, "created_on") = "2024-01-29"
 #'   data
 #' }
-#' df1 = pl$DataFrame(iris)
+#' df1 = as_polars_df(iris)
 #' df2 = give_attr(df1)
 #'
 #' # now, the original DataFrame doesn't get this attribute
@@ -635,7 +624,7 @@ DataFrame_get_columns = use_extendr_wrapper
 #' @aliases DataFrame_get_column
 #' @keywords  DataFrame
 #' @examples
-#' df = pl$DataFrame(iris[1:2, ])
+#' df = as_polars_df(iris[1:2, ])
 #' df$get_column("Species")
 DataFrame_get_column = function(name) {
   unwrap(.pr$DataFrame$get_column(self, name), "in $get_column():")
@@ -655,7 +644,7 @@ DataFrame_get_column = function(name) {
 #' @return Series or NULL
 #' @keywords  DataFrame
 #' @examples
-#' df = pl$DataFrame(iris[1:10, ])
+#' df = as_polars_df(iris[1:10, ])
 #'
 #' # default is to extract the first column
 #' df$to_series()
@@ -714,7 +703,7 @@ DataFrame_sort = function(
 #' @return DataFrame
 #' @keywords DataFrame
 #' @examples
-#' pl$DataFrame(iris)$select(
+#' as_polars_df(iris)$select(
 #'   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
 #'   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
 #' )
@@ -734,7 +723,7 @@ DataFrame_select = function(...) {
 #' preferred.
 #'
 #' @examples
-#' pl$DataFrame(iris)$select_seq(
+#' as_polars_df(iris)$select_seq(
 #'   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
 #'   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
 #' )
@@ -751,7 +740,7 @@ DataFrame_select_seq = function(...) {
 #' @return Series
 #' @keywords  DataFrame
 #' @examples
-#' dat = pl$DataFrame(iris)
+#' dat = as_polars_df(iris)
 #' x = dat$drop_in_place("Species")
 #' x
 #' dat$columns
@@ -767,9 +756,9 @@ DataFrame_drop_in_place = function(name) {
 #' @return A logical value
 #' @keywords DataFrame
 #' @examples
-#' dat1 = pl$DataFrame(iris)
-#' dat2 = pl$DataFrame(iris)
-#' dat3 = pl$DataFrame(mtcars)
+#' dat1 = as_polars_df(iris)
+#' dat2 = as_polars_df(iris)
+#' dat3 = as_polars_df(mtcars)
 #' dat1$equals(dat2)
 #' dat1$equals(dat3)
 DataFrame_equals = function(other) {
@@ -814,7 +803,7 @@ DataFrame_shift = function(n = 1, fill_value = NULL) {
 #' @keywords DataFrame
 #' @return A DataFrame
 #' @examples
-#' pl$DataFrame(iris)$with_columns(
+#' as_polars_df(iris)$with_columns(
 #'   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
 #'   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
 #' )
@@ -824,9 +813,9 @@ DataFrame_shift = function(n = 1, fill_value = NULL) {
 #'   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
 #'   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
 #' )
-#' pl$DataFrame(iris)$with_columns(l_expr)
+#' as_polars_df(iris)$with_columns(l_expr)
 #'
-#' pl$DataFrame(iris)$with_columns(
+#' as_polars_df(iris)$with_columns(
 #'   pl$col("Sepal.Length")$abs(), # not named expr will keep name "Sepal.Length"
 #'   SW_add_2 = (pl$col("Sepal.Width") + 2)
 #' )
@@ -847,7 +836,7 @@ DataFrame_with_columns = function(...) {
 #' preferred.
 #'
 #' @examples
-#' pl$DataFrame(iris)$with_columns_seq(
+#' as_polars_df(iris)$with_columns_seq(
 #'   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
 #'   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
 #' )
@@ -857,9 +846,9 @@ DataFrame_with_columns = function(...) {
 #'   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
 #'   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
 #' )
-#' pl$DataFrame(iris)$with_columns_seq(l_expr)
+#' as_polars_df(iris)$with_columns_seq(l_expr)
 #'
-#' pl$DataFrame(iris)$with_columns_seq(
+#' as_polars_df(iris)$with_columns_seq(
 #'   pl$col("Sepal.Length")$abs(), # not named expr will keep name "Sepal.Length"
 #'   SW_add_2 = (pl$col("Sepal.Width") + 2)
 #' )
@@ -914,7 +903,7 @@ DataFrame_tail = function(n = 5L) {
 #' @keywords DataFrame
 #' @return A DataFrame with only the rows where the conditions are `TRUE`.
 #' @examples
-#' df = pl$DataFrame(iris)
+#' df = as_polars_df(iris)
 #'
 #' df$filter(pl$col("Sepal.Length") > 5)
 #'
@@ -925,7 +914,7 @@ DataFrame_tail = function(n = 5L) {
 #' # rows where condition is NA are dropped
 #' iris2 = iris
 #' iris2[c(1, 3, 5), "Species"] = NA
-#' df = pl$DataFrame(iris2)
+#' df = as_polars_df(iris2)
 #'
 #' df$filter(pl$col("Species") == "setosa")
 DataFrame_filter = function(...) {
@@ -990,7 +979,7 @@ DataFrame_group_by = function(..., maintain_order = polars_options()$maintain_or
 #' @inheritSection DataFrame_class Conversion to R data types considerations
 #' @keywords DataFrame
 #' @examples
-#' df = pl$DataFrame(iris[1:3, ])
+#' df = as_polars_df(iris[1:3, ])
 #' df$to_data_frame()
 DataFrame_to_data_frame = function(..., int64_conversion = polars_options()$int64_conversion) {
   # do not unnest structs and mark with I to also preserve categoricals as is
@@ -1035,7 +1024,7 @@ DataFrame_to_data_frame = function(..., int64_conversion = polars_options()$int6
 #' - [`<DataFrame>$get_columns()`][DataFrame_get_columns]:
 #'   Similar to this method but returns a list of [Series][Series_class] instead of vectors.
 #' @examples
-#' pl$DataFrame(iris)$to_list()
+#' as_polars_df(iris)$to_list()
 DataFrame_to_list = function(unnest_structs = TRUE, ..., int64_conversion = polars_options()$int64_conversion) {
   if (unnest_structs) {
     .pr$DataFrame$to_list(self, int64_conversion) |>
@@ -1056,8 +1045,8 @@ DataFrame_to_list = function(unnest_structs = TRUE, ..., int64_conversion = pola
 #' @keywords DataFrame
 #' @examples
 #' # inner join by default
-#' df1 = pl$DataFrame(list(key = 1:3, payload = c("f", "i", NA)))
-#' df2 = pl$DataFrame(list(key = c(3L, 4L, 5L, NA_integer_)))
+#' df1 = as_polars_df(list(key = 1:3, payload = c("f", "i", NA)))
+#' df2 = as_polars_df(list(key = c(3L, 4L, 5L, NA_integer_)))
 #' df1$join(other = df2, on = "key")
 #'
 #' # cross join
@@ -1147,7 +1136,7 @@ DataFrame_unnest = function(...) {
 #' @title Get the first row of the DataFrame.
 #' @keywords DataFrame
 #' @return A DataFrame with one row.
-#' @examples pl$DataFrame(mtcars)$first()
+#' @examples as_polars_df(mtcars)$first()
 DataFrame_first = function() {
   self$lazy()$first()$collect()
 }
@@ -1237,7 +1226,7 @@ DataFrame_rechunk = function() {
 #' @title Get the last row of the DataFrame.
 #' @keywords DataFrame
 #' @return A DataFrame with one row.
-#' @examples pl$DataFrame(mtcars)$last()
+#' @examples as_polars_df(mtcars)$last()
 DataFrame_last = function() {
   self$lazy()$last()$collect()
 }
@@ -1246,7 +1235,7 @@ DataFrame_last = function() {
 #' @description Aggregate the columns in the DataFrame to their maximum value.
 #' @keywords DataFrame
 #' @return A DataFrame with one row.
-#' @examples pl$DataFrame(mtcars)$max()
+#' @examples as_polars_df(mtcars)$max()
 DataFrame_max = function() {
   self$lazy()$max()$collect()
 }
@@ -1255,7 +1244,7 @@ DataFrame_max = function() {
 #' @description Aggregate the columns in the DataFrame to their mean value.
 #' @keywords DataFrame
 #' @return A DataFrame with one row.
-#' @examples pl$DataFrame(mtcars)$mean()
+#' @examples as_polars_df(mtcars)$mean()
 DataFrame_mean = function() {
   self$lazy()$mean()$collect()
 }
@@ -1264,7 +1253,7 @@ DataFrame_mean = function() {
 #' @description Aggregate the columns in the DataFrame to their median value.
 #' @keywords DataFrame
 #' @return A DataFrame with one row.
-#' @examples pl$DataFrame(mtcars)$median()
+#' @examples as_polars_df(mtcars)$median()
 DataFrame_median = function() {
   self$lazy()$median()$collect()
 }
@@ -1273,7 +1262,7 @@ DataFrame_median = function() {
 #' @description Aggregate the columns in the DataFrame to their minimum value.
 #' @keywords DataFrame
 #' @return A DataFrame with one row.
-#' @examples pl$DataFrame(mtcars)$min()
+#' @examples as_polars_df(mtcars)$min()
 DataFrame_min = function() {
   self$lazy()$min()$collect()
 }
@@ -1282,7 +1271,7 @@ DataFrame_min = function() {
 #' @description Aggregate the columns of this DataFrame to their sum values.
 #' @keywords DataFrame
 #' @return A DataFrame with one row.
-#' @examples pl$DataFrame(mtcars)$sum()
+#' @examples as_polars_df(mtcars)$sum()
 DataFrame_sum = function() {
   self$lazy()$sum()$collect()
 }
@@ -1293,7 +1282,7 @@ DataFrame_sum = function() {
 #' @param ddof Delta Degrees of Freedom: the divisor used in the calculation is
 #' N - ddof, where N represents the number of elements. By default ddof is 1.
 #' @return A DataFrame with one row.
-#' @examples pl$DataFrame(mtcars)$var()
+#' @examples as_polars_df(mtcars)$var()
 DataFrame_var = function(ddof = 1) {
   self$lazy()$var(ddof)$collect()
 }
@@ -1305,7 +1294,7 @@ DataFrame_var = function(ddof = 1) {
 #' @param ddof Delta Degrees of Freedom: the divisor used in the calculation is
 #' N - ddof, where N represents the number of elements. By default ddof is 1.
 #' @return A DataFrame with one row.
-#' @examples pl$DataFrame(mtcars)$std()
+#' @examples as_polars_df(mtcars)$std()
 DataFrame_std = function(ddof = 1) {
   self$lazy()$std(ddof)$collect()
 }
@@ -1317,7 +1306,7 @@ DataFrame_std = function(ddof = 1) {
 #' @param quantile Numeric of length 1 between 0 and 1.
 #' @inheritParams Expr_quantile
 #' @return DataFrame
-#' @examples pl$DataFrame(mtcars)$quantile(.4)
+#' @examples as_polars_df(mtcars)$quantile(.4)
 DataFrame_quantile = function(quantile, interpolation = "nearest") {
   self$lazy()$quantile(quantile, interpolation)$collect()
 }
@@ -1325,7 +1314,7 @@ DataFrame_quantile = function(quantile, interpolation = "nearest") {
 #' @title Reverse
 #' @description Reverse the DataFrame (the last row becomes the first one, etc.).
 #' @return DataFrame
-#' @examples pl$DataFrame(mtcars)$reverse()
+#' @examples as_polars_df(mtcars)$reverse()
 DataFrame_reverse = function() {
   self$lazy()$reverse()$collect()
 }
@@ -1371,7 +1360,7 @@ DataFrame_fill_null = function(fill_value) {
 #' the offset will be selected.
 #' @examples
 #' # skip the first 2 rows and take the 4 following rows
-#' pl$DataFrame(mtcars)$slice(2, 4)
+#' as_polars_df(mtcars)$slice(2, 4)
 #'
 #' # this is equivalent to:
 #' mtcars[3:6, ]
@@ -1404,7 +1393,7 @@ DataFrame_null_count = use_extendr_wrapper
 #' @format NULL
 #' @format function
 #' @examples
-#' pl$DataFrame(mtcars)$estimated_size()
+#' as_polars_df(mtcars)$estimated_size()
 DataFrame_estimated_size = use_extendr_wrapper
 
 
@@ -1625,7 +1614,7 @@ DataFrame_rename = function(...) {
 #' @keywords DataFrame
 #' @return DataFrame
 #' @examples
-#' pl$DataFrame(iris)$describe()
+#' as_polars_df(iris)$describe()
 #'
 #' # string, date, boolean columns are also supported:
 #' df = pl$DataFrame(
@@ -1758,7 +1747,7 @@ DataFrame_describe = function(percentiles = c(0.25, 0.75), interpolation = "near
 #'
 #' @return DataFrame
 #' @examples
-#' pl$DataFrame(iris)$glimpse()
+#' as_polars_df(iris)$glimpse()
 DataFrame_glimpse = function(
     ...,
     max_items_per_column = 10,
@@ -1853,7 +1842,7 @@ DataFrame_explode = function(...) {
 #' @keywords DataFrame
 #' @return DataFrame
 #' @examples
-#' df = pl$DataFrame(iris)
+#' df = as_polars_df(iris)
 #' df$sample(n = 20)
 #' df$sample(fraction = 0.1)
 DataFrame_sample = function(n = NULL, ..., fraction = NULL, with_replacement = FALSE, shuffle = FALSE, seed = NULL) {
@@ -1890,11 +1879,11 @@ DataFrame_sample = function(n = NULL, ..., fraction = NULL, with_replacement = F
 #' @examples
 #'
 #' # simple use-case
-#' pl$DataFrame(mtcars)$transpose(include_header = TRUE, column_names = rownames(mtcars))
+#' as_polars_df(mtcars)$transpose(include_header = TRUE, column_names = rownames(mtcars))
 #'
 #' # All rows must have one shared supertype, recast Categorical to String which is a supertype
 #' # of f64, and then dataset "Iris" can be transposed
-#' pl$DataFrame(iris)$with_columns(pl$col("Species")$cast(pl$String))$transpose()
+#' as_polars_df(iris)$with_columns(pl$col("Species")$cast(pl$String))$transpose()
 #'
 DataFrame_transpose = function(
     include_header = FALSE,
@@ -1946,7 +1935,7 @@ DataFrame_transpose = function(
 #' @rdname IO_write_csv
 #'
 #' @examples
-#' dat = pl$DataFrame(mtcars)
+#' dat = as_polars_df(mtcars)
 #'
 #' destination = tempfile(fileext = ".csv")
 #' dat$select(pl$col("drat", "mpg"))$write_csv(destination)
@@ -1994,7 +1983,7 @@ DataFrame_write_csv = function(
 #' @seealso
 #' - [`<DataFrame>$to_raw_ipc()`][DataFrame_to_raw_ipc]
 #' @examples
-#' dat = pl$DataFrame(mtcars)
+#' dat = as_polars_df(mtcars)
 #'
 #' destination = tempfile(fileext = ".arrow")
 #' dat$write_ipc(destination)
@@ -2035,7 +2024,7 @@ DataFrame_write_ipc = function(
 #' @rdname IO_write_parquet
 #'
 #' @examplesIf requireNamespace("withr", quietly = TRUE)
-#' dat = pl$DataFrame(mtcars)
+#' dat = as_polars_df(mtcars)
 #'
 #' # write data to a single parquet file
 #' destination = withr::local_tempfile(fileext = ".parquet")

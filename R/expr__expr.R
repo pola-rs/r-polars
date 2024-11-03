@@ -541,7 +541,7 @@ Expr_gt_eq = function(other) {
 #' context only.
 #' @return Expr
 #' @examples
-#' df = pl$DataFrame(list(
+#' df = as_polars_df(list(
 #'   group = c("one", "one", "one", "two", "two", "two"),
 #'   value = c(94, 95, 96, 97, 97, 99)
 #' ))
@@ -639,7 +639,7 @@ Expr_len = use_extendr_wrapper
 #' `drop_nans()`
 #' @return Expr
 #' @examples
-#' pl$DataFrame(list(x = c(1, 2, NaN, NA)))$select(pl$col("x")$drop_nulls())
+#' as_polars_df(list(x = c(1, 2, NaN, NA)))$select(pl$col("x")$drop_nulls())
 Expr_drop_nulls = use_extendr_wrapper
 
 #' Drop NaN
@@ -653,7 +653,7 @@ Expr_drop_nulls = use_extendr_wrapper
 #'
 #' @return Expr
 #' @examples
-#' pl$DataFrame(list(x = c(1, 2, NaN, NA)))$select(pl$col("x")$drop_nans())
+#' as_polars_df(list(x = c(1, 2, NaN, NA)))$select(pl$col("x")$drop_nans())
 Expr_drop_nans = use_extendr_wrapper
 
 #' Check if elements are NULL
@@ -661,7 +661,7 @@ Expr_drop_nans = use_extendr_wrapper
 #' Returns a boolean Series indicating which values are null.
 #' @return Expr
 #' @examples
-#' pl$DataFrame(list(x = c(1, NA, 3)))$select(pl$col("x")$is_null())
+#' as_polars_df(list(x = c(1, NA, 3)))$select(pl$col("x")$is_null())
 Expr_is_null = use_extendr_wrapper
 
 #' Check if elements are not NULL
@@ -670,7 +670,7 @@ Expr_is_null = use_extendr_wrapper
 #' for `$is_null()$not()`.
 #' @return Expr
 #' @examples
-#' pl$DataFrame(list(x = c(1, NA, 3)))$select(pl$col("x")$is_not_null())
+#' as_polars_df(list(x = c(1, NA, 3)))$select(pl$col("x")$is_not_null())
 Expr_is_not_null = use_extendr_wrapper
 
 
@@ -715,7 +715,7 @@ Expr_is_not_null = use_extendr_wrapper
 #' `polars_options()$rpool_cap` to set and view number of parallel R sessions.
 #'
 #' @examples
-#' pl$DataFrame(iris)$
+#' as_polars_df(iris)$
 #'   select(
 #'   pl$col("Sepal.Length")$map_batches(\(x) {
 #'     paste("cheese", as.character(x$to_vector()))
@@ -819,7 +819,7 @@ Expr_map_batches = function(f, output_type = NULL, agg_list = FALSE, in_backgrou
 #' # get the first two values of each variable and store them in a list
 #' e_sum = pl$all()$map_elements(\(s) sum(s$to_r()))$name$suffix("_sum")
 #' e_head = pl$all()$map_elements(\(s) head(s$to_r(), 2))$name$suffix("_head")
-#' pl$DataFrame(iris)$group_by("Species")$agg(e_sum, e_head)
+#' as_polars_df(iris)$group_by("Species")$agg(e_sum, e_head)
 #'
 #' # apply a function on each value (should be avoided): here the input is an R
 #' # value of length 1
@@ -835,7 +835,7 @@ Expr_map_batches = function(f, output_type = NULL, agg_list = FALSE, in_backgrou
 #' e_letter = my_selection$map_elements(\(x) {
 #'   letters[ceiling(x)]
 #' }, return_type = pl$dtypes$String)$name$suffix("_letter")
-#' pl$DataFrame(iris)$select(e_add10, e_letter)
+#' as_polars_df(iris)$select(e_add10, e_letter)
 #'
 #'
 #' # Small benchmark --------------------------------
@@ -844,7 +844,7 @@ Expr_map_batches = function(f, output_type = NULL, agg_list = FALSE, in_backgrou
 #' # First we multiply each element of a Series of 1M elements by 2.
 #' n = 1000000L
 #' set.seed(1)
-#' df = pl$DataFrame(list(
+#' df = as_polars_df(list(
 #'   a = 1:n,
 #'   b = sample(letters, n, replace = TRUE)
 #' ))
@@ -872,7 +872,7 @@ Expr_map_batches = function(f, output_type = NULL, agg_list = FALSE, in_backgrou
 #' # use apply over each Species-group in each column equal to 12 sequential
 #' # runs ~1.2 sec.
 #' system.time({
-#'   pl$LazyFrame(iris)$group_by("Species")$agg(
+#'   as_polars_lf(iris)$group_by("Species")$agg(
 #'     pl$all()$map_elements(\(s) {
 #'       Sys.sleep(.1)
 #'       s$sum()
@@ -888,7 +888,7 @@ Expr_map_batches = function(f, output_type = NULL, agg_list = FALSE, in_backgrou
 #' polars_options()$rpool_cap
 #'
 #' system.time({
-#'   pl$LazyFrame(iris)$group_by("Species")$agg(
+#'   as_polars_lf(iris)$group_by("Species")$agg(
 #'     pl$all()$map_elements(\(s) {
 #'       Sys.sleep(.1)
 #'       s$sum()
@@ -899,7 +899,7 @@ Expr_map_batches = function(f, output_type = NULL, agg_list = FALSE, in_backgrou
 #' # second run in parallel: this reuses R processes in "polars global_rpool".
 #' polars_options()$rpool_cap
 #' system.time({
-#'   pl$LazyFrame(iris)$group_by("Species")$agg(
+#'   as_polars_lf(iris)$group_by("Species")$agg(
 #'     pl$all()$map_elements(\(s) {
 #'       Sys.sleep(.1)
 #'       s$sum()
@@ -926,7 +926,7 @@ Expr_map_elements = function(f, return_type = NULL, strict_return_type = TRUE, a
 #' @return Expr
 #' @name Expr_reverse
 #' @examples
-#' pl$DataFrame(list(a = 1:5))$select(pl$col("a")$reverse())
+#' as_polars_df(list(a = 1:5))$select(pl$col("a")$reverse())
 Expr_reverse = function() {
   .pr$Expr$reverse(self)
 }
@@ -1069,7 +1069,7 @@ Expr_exp = use_extendr_wrapper
 #' @examples
 #'
 #' # make DataFrame
-#' df = pl$DataFrame(iris)
+#' df = as_polars_df(iris)
 #'
 #' # by name(s)
 #' df$select(pl$all()$exclude("Species"))
@@ -1103,7 +1103,7 @@ Expr_exclude = function(columns) {
 #' Returns a boolean Series indicating which values are finite.
 #' @return Expr
 #' @examples
-#' pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$
+#' as_polars_df(list(alice = c(0, NaN, NA, Inf, -Inf)))$
 #'   with_columns(finite = pl$col("alice")$is_finite())
 Expr_is_finite = use_extendr_wrapper
 
@@ -1116,7 +1116,7 @@ Expr_is_finite = use_extendr_wrapper
 #' @name Expr_is_infinite
 #' @format NULL
 #' @examples
-#' pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$
+#' as_polars_df(list(alice = c(0, NaN, NA, Inf, -Inf)))$
 #'   with_columns(infinite = pl$col("alice")$is_infinite())
 Expr_is_infinite = use_extendr_wrapper
 
@@ -1130,7 +1130,7 @@ Expr_is_infinite = use_extendr_wrapper
 #'
 #' @format NULL
 #' @examples
-#' pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$
+#' as_polars_df(list(alice = c(0, NaN, NA, Inf, -Inf)))$
 #'   with_columns(nan = pl$col("alice")$is_nan())
 Expr_is_nan = use_extendr_wrapper
 
@@ -1144,7 +1144,7 @@ Expr_is_nan = use_extendr_wrapper
 #' @name Expr_is_not_nan
 #' @format NULL
 #' @examples
-#' pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$
+#' as_polars_df(list(alice = c(0, NaN, NA, Inf, -Inf)))$
 #'   with_columns(not_nan = pl$col("alice")$is_not_nan())
 Expr_is_not_nan = use_extendr_wrapper
 
@@ -1162,21 +1162,21 @@ Expr_is_not_nan = use_extendr_wrapper
 #' @return Expr
 #' @examples
 #' # as head
-#' pl$DataFrame(list(a = 0:100))$select(
+#' as_polars_df(list(a = 0:100))$select(
 #'   pl$all()$slice(0, 6)
 #' )
 #'
 #' # as tail
-#' pl$DataFrame(list(a = 0:100))$select(
+#' as_polars_df(list(a = 0:100))$select(
 #'   pl$all()$slice(-6, 6)
 #' )
 #'
-#' pl$DataFrame(list(a = 0:100))$select(
+#' as_polars_df(list(a = 0:100))$select(
 #'   pl$all()$slice(80)
 #' )
 #'
 #' # recycling
-#' pl$DataFrame(mtcars)$with_columns(pl$col("mpg")$slice(0, 1)$first())
+#' as_polars_df(mtcars)$with_columns(pl$col("mpg")$slice(0, 1)$first())
 Expr_slice = function(offset, length = NULL) {
   .pr$Expr$slice(self, offset, wrap_e(length)) |>
     unwrap("in $slice():")
@@ -1194,13 +1194,13 @@ Expr_slice = function(offset, length = NULL) {
 #' @name Expr_append
 #' @examples
 #' # append bottom to to row
-#' df = pl$DataFrame(list(a = 1:3, b = c(NA_real_, 4, 5)))
+#' df = as_polars_df(list(a = 1:3, b = c(NA_real_, 4, 5)))
 #' df$select(pl$all()$head(1)$append(pl$all()$tail(1)))
 #'
 #' # implicit upcast, when default = TRUE
-#' pl$DataFrame(list())$select(pl$lit(42)$append(42L))
-#' pl$DataFrame(list())$select(pl$lit(42)$append(FALSE))
-#' pl$DataFrame(list())$select(pl$lit("Bob")$append(FALSE))
+#' as_polars_df(list())$select(pl$lit(42)$append(42L))
+#' as_polars_df(list())$select(pl$lit(42)$append(FALSE))
+#' as_polars_df(list())$select(pl$lit("Bob")$append(FALSE))
 Expr_append = function(other, upcast = TRUE) {
   .pr$Expr$append(self, wrap_e(other), upcast)
 }
@@ -1215,7 +1215,7 @@ Expr_append = function(other, upcast = TRUE) {
 #' See rechunk() explained here \code{\link[polars]{docs_translations}}.
 #' @examples
 #' # get chunked lengths with/without rechunk
-#' series_list = pl$DataFrame(list(a = 1:3, b = 4:6))$select(
+#' series_list = as_polars_df(list(a = 1:3, b = 4:6))$select(
 #'   pl$col("a")$append(pl$col("b"))$alias("a_chunked"),
 #'   pl$col("a")$append(pl$col("b"))$rechunk()$alias("a_rechunked")
 #' )$get_columns()
@@ -1750,7 +1750,7 @@ Expr_product = use_extendr_wrapper
 #'
 #' @return Expr
 #' @examples
-#' pl$DataFrame(iris[, 4:5])$with_columns(count = pl$col("Species")$n_unique())
+#' as_polars_df(iris[, 4:5])$with_columns(count = pl$col("Species")$n_unique())
 Expr_n_unique = use_extendr_wrapper
 
 #' Approx count unique values
@@ -1758,7 +1758,7 @@ Expr_n_unique = use_extendr_wrapper
 #' This is done using the HyperLogLog++ algorithm for cardinality estimation.
 #' @return Expr
 #' @examples
-#' pl$DataFrame(iris[, 4:5])$
+#' as_polars_df(iris[, 4:5])$
 #'   with_columns(count = pl$col("Species")$approx_n_unique())
 Expr_approx_n_unique = use_extendr_wrapper
 
@@ -1785,7 +1785,7 @@ Expr_arg_unique = use_extendr_wrapper
 #' appearance.
 #' @return Expr
 #' @examples
-#' pl$DataFrame(iris)$select(pl$col("Species")$unique())
+#' as_polars_df(iris)$select(pl$col("Species")$unique())
 Expr_unique = function(maintain_order = FALSE) {
   if (!is_scalar_bool(maintain_order)) stop("param maintain_order must be a bool")
   if (maintain_order) {
@@ -2156,7 +2156,7 @@ Expr_is_between = function(lower_bound, upper_bound, closed = "both") {
 #' @return Expr
 #' @aliases hash
 #' @examples
-#' df = pl$DataFrame(iris[1:3, c(1, 2)])
+#' df = as_polars_df(iris[1:3, c(1, 2)])
 #' df$with_columns(pl$all()$hash(1234)$name$suffix("_hash"))
 Expr_hash = function(seed = 0, seed_1 = NULL, seed_2 = NULL, seed_3 = NULL) {
   k0 = seed
@@ -2831,7 +2831,7 @@ Expr_pct_change = function(n = 1) {
 #' @return Expr
 #' @inherit Expr_rolling_skew details
 #' @examples
-#' df = pl$DataFrame(list(a = c(1:3, 2:1)))
+#' df = as_polars_df(list(a = c(1:3, 2:1)))
 #' df$select(pl$col("a")$skew())
 Expr_skew = function(bias = TRUE) {
   .pr$Expr$skew(self, bias)
@@ -3293,7 +3293,7 @@ Expr_to_r = function(df = NULL, i = 0, ..., int64_conversion = polars_options()$
 #' values instead of their count.
 #'
 #' @examples
-#' df = pl$DataFrame(iris)
+#' df = as_polars_df(iris)
 #' df$select(pl$col("Species")$value_counts())$unnest()
 #' df$select(pl$col("Species")$value_counts(normalize = TRUE))$unnest()
 Expr_value_counts = function(..., sort = FALSE, parallel = FALSE, name, normalize = FALSE) {
@@ -3315,7 +3315,7 @@ Expr_value_counts = function(..., sort = FALSE, parallel = FALSE, name, normaliz
 #' the counts and it might be faster.
 #' @return  Expr
 #' @examples
-#' pl$DataFrame(iris)$select(pl$col("Species")$unique_counts())
+#' as_polars_df(iris)$select(pl$col("Species")$unique_counts())
 Expr_unique_counts = use_extendr_wrapper
 
 #' Compute the logarithm of elements

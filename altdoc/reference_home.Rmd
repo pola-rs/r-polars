@@ -56,7 +56,7 @@ you can only apply expressions that return either the same number of values or a
 single value that will be duplicated on all rows:
 
 ```{r}
-test = pl$DataFrame(mtcars)
+test = as_polars_df(mtcars)
 ```
 
 ```{r}

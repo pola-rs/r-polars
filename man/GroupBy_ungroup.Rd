@@ -13,7 +13,7 @@ GroupBy_ungroup()
 Revert the group by operation.
 }
 \examples{
-gb = pl$DataFrame(mtcars)$group_by("cyl")
+gb = as_polars_df(mtcars)$group_by("cyl")
 gb
 
 gb$ungroup()

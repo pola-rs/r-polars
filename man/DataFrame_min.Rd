@@ -13,6 +13,6 @@ A DataFrame with one row.
 Aggregate the columns in the DataFrame to their minimum value.
 }
 \examples{
-pl$DataFrame(mtcars)$min()
+as_polars_df(mtcars)$min()
 }
 \keyword{DataFrame}

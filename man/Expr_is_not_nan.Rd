@@ -15,6 +15,6 @@ Returns a boolean Series indicating which values are not NaN. Syntactic sugar
 for \verb{$is_nan()$not()}.
 }
 \examples{
-pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$
+as_polars_df(list(alice = c(0, NaN, NA, Inf, -Inf)))$
   with_columns(not_nan = pl$col("alice")$is_not_nan())
 }

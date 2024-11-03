@@ -13,7 +13,7 @@ Expr
 Drop missing values
 }
 \examples{
-pl$DataFrame(list(x = c(1, 2, NaN, NA)))$select(pl$col("x")$drop_nulls())
+as_polars_df(list(x = c(1, 2, NaN, NA)))$select(pl$col("x")$drop_nulls())
 }
 \seealso{
 \code{drop_nans()}

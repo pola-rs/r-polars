@@ -6,7 +6,7 @@
 #' @return Expr
 #'
 #' @examples
-#' df = pl$DataFrame(list(list_of_strs = list(c("a", "b", NA), "c")))
+#' df = as_polars_df(list(list_of_strs = list(c("a", "b", NA), "c")))
 #' df$with_columns(len_list = pl$col("list_of_strs")$list$len())
 ExprList_len = function() .pr$Expr$list_len(self)
 
@@ -200,7 +200,7 @@ ExprList_gather_every = function(n, offset = 0) {
 #' @return Expr
 #'
 #' @examples
-#' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2)))
+#' df = as_polars_df(list(a = list(3:1, NULL, 1:2)))
 #' df$with_columns(
 #'   first = pl$col("a")$list$first()
 #' )
@@ -214,7 +214,7 @@ ExprList_first = function() {
 #' @return Expr
 #'
 #' @examples
-#' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2)))
+#' df = as_polars_df(list(a = list(3:1, NULL, 1:2)))
 #' df$with_columns(
 #'   last = pl$col("a")$list$last()
 #' )
@@ -272,7 +272,7 @@ ExprList_join = function(separator, ignore_nulls = FALSE) {
 #' @return Expr
 #'
 #' @examples
-#' df = pl$DataFrame(list(s = list(1:2, 2:1)))
+#' df = as_polars_df(list(s = list(1:2, 2:1)))
 #' df$with_columns(
 #'   arg_min = pl$col("s")$list$arg_min()
 #' )
@@ -283,7 +283,7 @@ ExprList_arg_min = function() .pr$Expr$list_arg_min(self)
 #' @return Expr
 #'
 #' @examples
-#' df = pl$DataFrame(list(s = list(1:2, 2:1)))
+#' df = as_polars_df(list(s = list(1:2, 2:1)))
 #' df$with_columns(
 #'   arg_max = pl$col("s")$list$arg_max()
 #' )
@@ -304,7 +304,7 @@ ExprList_arg_max = function() .pr$Expr$list_arg_max(self)
 #' @return Expr
 #'
 #' @examples
-#' df = pl$DataFrame(list(s = list(1:4, c(10L, 2L, 1L))))
+#' df = as_polars_df(list(s = list(1:4, c(10L, 2L, 1L))))
 #' df$with_columns(diff = pl$col("s")$list$diff(2))
 #'
 #' # negative value starts shifting from the end
@@ -430,7 +430,7 @@ ExprList_tail = function(n = 5L) {
 #' @return Expr
 #'
 #' @examples
-#' df = pl$DataFrame(list(a = list(1:2, 1:3)))
+#' df = as_polars_df(list(a = list(1:2, 1:3)))
 #'
 #' # this discards the third value of the second list as the struct length is
 #' # determined based on the length of the first non-empty list

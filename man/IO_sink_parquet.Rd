@@ -99,7 +99,7 @@ larger than RAM as it would crash the R session if it was collected into R.
 \examples{
 # sink table 'mtcars' from mem to parquet
 tmpf = tempfile()
-pl$LazyFrame(mtcars)$sink_parquet(tmpf)
+as_polars_lf(mtcars)$sink_parquet(tmpf)
 
 # stream a query end-to-end
 tmpf2 = tempfile()

@@ -13,7 +13,7 @@ pl_select(...)
 a \link[=DataFrame_class]{DataFrame}
 }
 \description{
-\code{pl$select(...)} is a shorthand for \code{pl$DataFrame(list())$select(...)}
+\code{pl$select(...)} is a shorthand for \code{as_polars_df(list())$select(...)}
 }
 \examples{
 pl$select(

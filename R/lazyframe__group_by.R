@@ -111,7 +111,7 @@ LazyGroupBy_print = function() {
 #' Revert the group by operation.
 #' @inherit LazyGroupBy_agg return
 #' @examples
-#' lf = pl$LazyFrame(mtcars)
+#' lf = as_polars_lf(mtcars)
 #' lf
 #'
 #' lgb = lf$group_by("cyl")

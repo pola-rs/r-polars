@@ -37,7 +37,7 @@ Expr
 Convert a Series of type \code{List} to \code{Struct}
 }
 \examples{
-df = pl$DataFrame(list(a = list(1:2, 1:3)))
+df = as_polars_df(list(a = list(1:2, 1:3)))
 
 # this discards the third value of the second list as the struct length is
 # determined based on the length of the first non-empty list

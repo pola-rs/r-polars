@@ -66,7 +66,7 @@ One classic example is the predicate pushdown, which applies the filter as
 early as possible (i.e. at the bottom of the plan).
 }
 \examples{
-lazy_frame = pl$LazyFrame(iris)
+lazy_frame = as_polars_lf(iris)
 
 # Prepare your query
 lazy_query = lazy_frame$sort("Species")$filter(pl$col("Species") != "setosa")

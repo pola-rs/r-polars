@@ -30,7 +30,7 @@ prexpr = pl$col("mpg")$map_batches(\(x) {
   Sys.sleep(.1)
   x * 0.43
 }, in_background = TRUE)$alias("kml")
-handle = pl$LazyFrame(mtcars)$with_columns(prexpr)$collect_in_background()
+handle = as_polars_lf(mtcars)$with_columns(prexpr)$collect_in_background()
 if (!handle$is_finished()) print("not done yet")
 df = handle$join() # get result
 df

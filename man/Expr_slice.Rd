@@ -23,19 +23,19 @@ examples.
 }
 \examples{
 # as head
-pl$DataFrame(list(a = 0:100))$select(
+as_polars_df(list(a = 0:100))$select(
   pl$all()$slice(0, 6)
 )
 
 # as tail
-pl$DataFrame(list(a = 0:100))$select(
+as_polars_df(list(a = 0:100))$select(
   pl$all()$slice(-6, 6)
 )
 
-pl$DataFrame(list(a = 0:100))$select(
+as_polars_df(list(a = 0:100))$select(
   pl$all()$slice(80)
 )
 
 # recycling
-pl$DataFrame(mtcars)$with_columns(pl$col("mpg")$slice(0, 1)$first())
+as_polars_df(mtcars)$with_columns(pl$col("mpg")$slice(0, 1)$first())
 }

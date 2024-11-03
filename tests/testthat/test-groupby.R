@@ -40,7 +40,7 @@ patrick::with_parameters_test_that("groupby print",
 )
 
 test_that("groupby print when several groups", {
-  df = pl$DataFrame(mtcars[1:3, 1:4])$group_by("mpg", "cyl", "disp", maintain_order = TRUE)
+  df = as_polars_df(mtcars[1:3, 1:4])$group_by("mpg", "cyl", "disp", maintain_order = TRUE)
   expect_snapshot(df)
 })
 
@@ -63,7 +63,7 @@ make_cases = function() {
 patrick::with_parameters_test_that(
   "simple translations: eager",
   {
-    a = pl$DataFrame(mtcars)$group_by(pl$col("cyl"))$first()$to_data_frame()
+    a = as_polars_df(mtcars)$group_by(pl$col("cyl"))$first()$to_data_frame()
     b = as.data.frame(do.call(rbind, by(mtcars, mtcars$cyl, \(x) apply(x, 2, head, 1))))
     b = b[order(b$cyl), colnames(b) != "cyl"]
     expect_equal(a[order(a$cyl), 2:ncol(a)], b, ignore_attr = TRUE)
@@ -72,23 +72,23 @@ patrick::with_parameters_test_that(
 )
 
 test_that("quantile", {
-  a = pl$DataFrame(mtcars)$group_by("cyl", maintain_order = FALSE)$quantile(0, "midpoint")$to_data_frame()
-  b = pl$DataFrame(mtcars)$group_by("cyl", maintain_order = FALSE)$min()$to_data_frame()
+  a = as_polars_df(mtcars)$group_by("cyl", maintain_order = FALSE)$quantile(0, "midpoint")$to_data_frame()
+  b = as_polars_df(mtcars)$group_by("cyl", maintain_order = FALSE)$min()$to_data_frame()
   expect_equal(a[order(a$cyl), ], b[order(b$cyl), ], ignore_attr = TRUE)
 
-  a = pl$DataFrame(mtcars)$group_by("cyl", maintain_order = FALSE)$quantile(1, "midpoint")$to_data_frame()
-  b = pl$DataFrame(mtcars)$group_by("cyl", maintain_order = FALSE)$max()$to_data_frame()
+  a = as_polars_df(mtcars)$group_by("cyl", maintain_order = FALSE)$quantile(1, "midpoint")$to_data_frame()
+  b = as_polars_df(mtcars)$group_by("cyl", maintain_order = FALSE)$max()$to_data_frame()
   expect_equal(a[order(a$cyl), ], b[order(b$cyl), ], ignore_attr = TRUE)
 
-  a = pl$DataFrame(mtcars)$group_by("cyl", maintain_order = FALSE)$quantile(0.5, "midpoint")$to_data_frame()
-  b = pl$DataFrame(mtcars)$group_by("cyl", maintain_order = FALSE)$median()$to_data_frame()
+  a = as_polars_df(mtcars)$group_by("cyl", maintain_order = FALSE)$quantile(0.5, "midpoint")$to_data_frame()
+  b = as_polars_df(mtcars)$group_by("cyl", maintain_order = FALSE)$median()$to_data_frame()
   expect_equal(a[order(a$cyl), ], b[order(b$cyl), ], ignore_attr = TRUE)
 })
 
 test_that("shift", {
-  a = pl$DataFrame(mtcars)$group_by("cyl")$shift(2)$to_data_frame()
+  a = as_polars_df(mtcars)$group_by("cyl")$shift(2)$to_data_frame()
   expect_equal(a[["mpg"]][[1]][1:2], c(NA_real_, NA_real_))
-  a = pl$DataFrame(mtcars)$group_by("cyl")$shift(2, 99)$to_data_frame()
+  a = as_polars_df(mtcars)$group_by("cyl")$shift(2, 99)$to_data_frame()
   expect_equal(a[["mpg"]][[1]][1:2], c(99, 99))
 })
 
@@ -98,7 +98,7 @@ test_that("groupby, lazygroupby unpack + charvec same as list of strings", {
   withr::with_options(
     list(polars.maintain_order = TRUE),
     {
-      df = pl$DataFrame(mtcars)
+      df = as_polars_df(mtcars)
       to_l = \(x) (if (inherits(x, "RPolarsDataFrame")) x else x$collect())$to_list()
       for (x in list(df, df$lazy())) {
         df1 = x$group_by(list("cyl", "gear"))$agg(pl$mean("hp")) # args wrapped in list
@@ -116,7 +116,7 @@ test_that("agg, lazygroupby unpack + charvec same as list of strings", {
   withr::with_options(
     list(polars.maintain_order = TRUE),
     {
-      df = pl$DataFrame(mtcars)
+      df = as_polars_df(mtcars)
       to_l = \(x) (if (inherits(x, "RPolarsDataFrame")) x else x$collect())$to_list()
       for (x in list(df, df$lazy())) {
         df1 = x$group_by("cyl")$agg(pl$col("hp")$mean(), pl$col("gear")$mean()) # args wrapped in list
@@ -131,7 +131,7 @@ test_that("agg, lazygroupby unpack + charvec same as list of strings", {
 
 
 test_that("LazyGroupBy ungroup", {
-  lf = pl$LazyFrame(mtcars)
+  lf = as_polars_lf(mtcars)
   lgb = lf$group_by("cyl")
 
   # tests $ungroup() only changed the class of output, not input (lgb).
@@ -151,7 +151,7 @@ test_that("LazyGroupBy ungroup", {
 })
 
 test_that("GroupBy ungroup", {
-  df = pl$DataFrame(mtcars)
+  df = as_polars_df(mtcars)
   gb = df$group_by("cyl")
 
   # tests $ungroup() only changed the class of output, not input (lgb).

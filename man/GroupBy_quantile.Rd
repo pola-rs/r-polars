@@ -18,6 +18,6 @@ GroupBy
 Aggregate the columns in the DataFrame to their quantile value.
 }
 \examples{
-pl$DataFrame(mtcars)$lazy()$quantile(.4)$collect()
+as_polars_df(mtcars)$lazy()$quantile(.4)$collect()
 }
 \keyword{GroupBy}

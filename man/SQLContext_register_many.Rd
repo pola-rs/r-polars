@@ -22,8 +22,8 @@ If a table with the same name is already registered, it will be overwritten.
 \dontshow{if (polars_info()$features$sql) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 ctx = pl$SQLContext()
 r_df = mtcars
-pl_df = pl$DataFrame(mtcars)
-pl_lf = pl$LazyFrame(mtcars)
+pl_df = as_polars_df(mtcars)
+pl_lf = as_polars_lf(mtcars)
 
 ctx$register_many(r_df = r_df, pl_df = pl_df, pl_lf = pl_lf)
 

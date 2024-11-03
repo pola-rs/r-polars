@@ -16,7 +16,7 @@
 #' [`<DataFrame>$filter()`][DataFrame_filter],
 #' [`<LazyFrame>$filter()`][LazyFrame_filter]
 #' @examples
-#' df = pl$DataFrame(data.frame(a = 1:3, b = letters[1:3]))
+#' df = as_polars_df(data.frame(a = 1:3, b = letters[1:3]))
 #' lf = df$lazy()
 #'
 #' # Select a row
@@ -496,7 +496,7 @@ c.RPolarsSeries = \(x, ...) {
 #' @export
 #' @rdname S3_na.omit
 #' @examples
-#' df = pl$DataFrame(data.frame(a = c(NA, 2:10), b = c(1, NA, 3:10)))$lazy()
+#' df = as_polars_df(data.frame(a = c(NA, 2:10), b = c(1, NA, 3:10)))$lazy()
 #' na.omit(df)
 #' na.omit(df, subset = "a")
 #' na.omit(df, subset = c("a", "b"))

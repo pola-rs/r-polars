@@ -13,7 +13,7 @@ Expr
 Get the index of the maximal value in list
 }
 \examples{
-df = pl$DataFrame(list(s = list(1:2, 2:1)))
+df = as_polars_df(list(s = list(1:2, 2:1)))
 df$with_columns(
   arg_max = pl$col("s")$list$arg_max()
 )

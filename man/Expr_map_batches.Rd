@@ -54,7 +54,7 @@ to global variables. Use \code{options(polars.rpool_cap = 4)} and
 \code{polars_options()$rpool_cap} to set and view number of parallel R sessions.
 }
 \examples{
-pl$DataFrame(iris)$
+as_polars_df(iris)$
   select(
   pl$col("Sepal.Length")$map_batches(\(x) {
     paste("cheese", as.character(x$to_vector()))

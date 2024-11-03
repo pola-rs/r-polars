@@ -16,9 +16,9 @@ A logical value
 Check if two DataFrames are equal.
 }
 \examples{
-dat1 = pl$DataFrame(iris)
-dat2 = pl$DataFrame(iris)
-dat3 = pl$DataFrame(mtcars)
+dat1 = as_polars_df(iris)
+dat2 = as_polars_df(iris)
+dat3 = as_polars_df(mtcars)
 dat1$equals(dat2)
 dat1$equals(dat3)
 }

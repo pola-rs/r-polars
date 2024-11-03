@@ -18,8 +18,8 @@ test_that("lazy prints", {
 })
 
 test_that("create LazyFrame", {
-  old = pl$DataFrame(mtcars)$lazy()
-  new = pl$LazyFrame(mtcars)
+  old = as_polars_df(mtcars)$lazy()
+  new = as_polars_lf(mtcars)
   expect_equal(
     old$collect()$to_data_frame(),
     new$collect()$to_data_frame()
@@ -71,7 +71,7 @@ test_that("LazyFrame, custom schema", {
 
   # works fine if a variable is called "schema"
   expect_no_error(
-    pl$LazyFrame(list(schema = 1), schema = list(schema = pl$Float32))
+    as_polars_lf(list(schema = 1), schema = list(schema = pl$Float32))
   )
   # errors if incorrect datatype
   expect_grepl_error(pl$LazyFrame(x = 1, schema = list(schema = foo)))
@@ -159,11 +159,11 @@ test_that("lazy filter", {
 
 test_that("Multiple conditions in filter", {
   expect_identical(
-    pl$LazyFrame(mtcars)$filter(
+    as_polars_lf(mtcars)$filter(
       pl$col("cyl") > 6,
       pl$col("mpg") > 15
     )$collect()$to_data_frame(),
-    pl$LazyFrame(mtcars)$filter(
+    as_polars_lf(mtcars)$filter(
       pl$col("cyl") > 6 & pl$col("mpg") > 15
     )$collect()$to_data_frame()
   )
@@ -188,7 +188,7 @@ make_cases = function() {
 patrick::with_parameters_test_that(
   "simple translations: lazy",
   {
-    a = pl$DataFrame(mtcars)$lazy()[[pola]]()$collect()$to_data_frame()
+    a = as_polars_df(mtcars)$lazy()[[pola]]()$collect()$to_data_frame()
     b = data.frame(lapply(mtcars, base))
     testthat::expect_equal(a, b, ignore_attr = TRUE)
   },
@@ -196,48 +196,48 @@ patrick::with_parameters_test_that(
 )
 
 test_that("simple translations", {
-  a = pl$DataFrame(mtcars)$lazy()$reverse()$collect()$to_data_frame()
+  a = as_polars_df(mtcars)$lazy()$reverse()$collect()$to_data_frame()
   b = mtcars[32:1, ]
   expect_equal(a, b, ignore_attr = TRUE)
 
-  a = pl$DataFrame(mtcars)$lazy()$slice(2, 4)$collect()$to_data_frame()
+  a = as_polars_df(mtcars)$lazy()$slice(2, 4)$collect()$to_data_frame()
   b = mtcars[3:6, ]
   expect_equal(a, b, ignore_attr = TRUE)
 
-  a = pl$DataFrame(mtcars)$lazy()$slice(30)$collect()$to_data_frame()
+  a = as_polars_df(mtcars)$lazy()$slice(30)$collect()$to_data_frame()
   b = tail(mtcars, 2)
   expect_equal(a, b, ignore_attr = TRUE)
 
-  a = pl$DataFrame(mtcars)$lazy()$var(10)$collect()$to_data_frame()
+  a = as_polars_df(mtcars)$lazy()$var(10)$collect()$to_data_frame()
   b = data.frame(lapply(mtcars, var))
   expect_true(all(a != b))
 
-  a = pl$DataFrame(mtcars)$lazy()$std(10)$collect()$to_data_frame()
+  a = as_polars_df(mtcars)$lazy()$std(10)$collect()$to_data_frame()
   b = data.frame(lapply(mtcars, sd))
   expect_true(all(a != b))
 
   # trigger u8 conversion errors
-  expect_grepl_error(pl$DataFrame(mtcars)$lazy()$std(256), c("ddof", "cannot exceed the upper bound for u8 of 255"))
+  expect_grepl_error(as_polars_df(mtcars)$lazy()$std(256), c("ddof", "cannot exceed the upper bound for u8 of 255"))
   expect_grepl_error(
-    pl$DataFrame(mtcars)$lazy()$var(-1),
+    as_polars_df(mtcars)$lazy()$var(-1),
     c("ddof", "cannot be less than zero")
   )
 })
 
 
 test_that("tail", {
-  a = pl$DataFrame(mtcars)$lazy()$tail(6)$collect()$to_data_frame()
+  a = as_polars_df(mtcars)$lazy()$tail(6)$collect()$to_data_frame()
   b = tail(mtcars)
   expect_equal(a, b, ignore_attr = TRUE)
 })
 
 
 test_that("shift", {
-  a = pl$LazyFrame(mtcars[1:3, ])$shift(2)$collect()$to_data_frame()
+  a = as_polars_lf(mtcars[1:3, ])$shift(2)$collect()$to_data_frame()
   for (i in seq_along(a)) {
     expect_equal(is.na(a[[i]]), c(TRUE, TRUE, FALSE))
   }
-  a = pl$LazyFrame(mtcars[1:3, ])$shift(2, 0)$collect()$to_data_frame()
+  a = as_polars_lf(mtcars[1:3, ])$shift(2, 0)$collect()$to_data_frame()
   for (i in seq_along(a)) {
     expect_equal(a[[i]], c(0, 0, mtcars[[i]][1]))
   }
@@ -245,16 +245,16 @@ test_that("shift", {
 
 
 test_that("quantile", {
-  a = pl$LazyFrame(mtcars)$quantile(1)$collect()$to_data_frame()
-  b = pl$LazyFrame(mtcars)$max()$collect()$to_data_frame()
+  a = as_polars_lf(mtcars)$quantile(1)$collect()$to_data_frame()
+  b = as_polars_lf(mtcars)$max()$collect()$to_data_frame()
   expect_equal(a, b, ignore_attr = TRUE)
 
-  a = pl$LazyFrame(mtcars)$quantile(0, "midpoint")$collect()$to_data_frame()
-  b = pl$LazyFrame(mtcars)$min()$collect()$to_data_frame()
+  a = as_polars_lf(mtcars)$quantile(0, "midpoint")$collect()$to_data_frame()
+  b = as_polars_lf(mtcars)$min()$collect()$to_data_frame()
   expect_equal(a, b, ignore_attr = TRUE)
 
-  a = pl$LazyFrame(mtcars)$quantile(0.5, "midpoint")$collect()$to_data_frame()
-  b = pl$LazyFrame(mtcars)$median()$collect()$to_data_frame()
+  a = as_polars_lf(mtcars)$quantile(0.5, "midpoint")$collect()$to_data_frame()
+  b = as_polars_lf(mtcars)$median()$collect()$to_data_frame()
   expect_equal(a, b, ignore_attr = TRUE)
 })
 
@@ -267,30 +267,30 @@ test_that("fill_nan", {
 
 
 test_that("drop", {
-  a = pl$LazyFrame(mtcars)$drop(c("mpg", "hp"))$collect()$columns
+  a = as_polars_lf(mtcars)$drop(c("mpg", "hp"))$collect()$columns
   expect_false("hp" %in% a)
   expect_false("mpg" %in% a)
-  a = pl$LazyFrame(mtcars)$drop(c("mpg", "drat"), "hp")$collect()$columns
+  a = as_polars_lf(mtcars)$drop(c("mpg", "drat"), "hp")$collect()$columns
   expect_false("hp" %in% a)
   expect_false("mpg" %in% a)
   expect_false("drat" %in% a)
-  a = pl$LazyFrame(mtcars)$drop("mpg")$collect()$columns
+  a = as_polars_lf(mtcars)$drop("mpg")$collect()$columns
   expect_true("hp" %in% a)
   expect_false("mpg" %in% a)
 
   expect_identical(
-    pl$LazyFrame(mtcars)$drop()$collect()$to_data_frame(),
+    as_polars_lf(mtcars)$drop()$collect()$to_data_frame(),
     mtcars,
     ignore_attr = TRUE
   )
 
   # arg 'strict' works
   expect_grepl_error(
-    pl$LazyFrame(mtcars)$drop("a")$collect(),
+    as_polars_lf(mtcars)$drop("a")$collect(),
     r"("a" not found)"
   )
   expect_identical(
-    pl$LazyFrame(mtcars)$drop("a", strict = FALSE)$collect()$to_data_frame(),
+    as_polars_lf(mtcars)$drop("a", strict = FALSE)$collect()$to_data_frame(),
     mtcars,
     ignore_attr = TRUE
   )
@@ -300,14 +300,14 @@ test_that("drop", {
 test_that("drop_nulls", {
   tmp = mtcars
   tmp[1:3, "mpg"] = NA
-  expect_equal(pl$LazyFrame(mtcars)$drop_nulls()$collect()$height, 32, ignore_attr = TRUE)
+  expect_equal(as_polars_lf(mtcars)$drop_nulls()$collect()$height, 32, ignore_attr = TRUE)
   expect_equal(pl$LazyFrame(tmp)$drop_nulls()$collect()$height, 29, ignore_attr = TRUE)
-  expect_equal(pl$LazyFrame(mtcars)$drop_nulls("mpg")$collect()$height, 32, ignore_attr = TRUE)
+  expect_equal(as_polars_lf(mtcars)$drop_nulls("mpg")$collect()$height, 32, ignore_attr = TRUE)
   expect_equal(pl$LazyFrame(tmp)$drop_nulls("mpg")$collect()$height, 29, ignore_attr = TRUE)
   expect_equal(pl$LazyFrame(tmp)$drop_nulls("hp")$collect()$height, 32, ignore_attr = TRUE)
   expect_equal(pl$LazyFrame(tmp)$drop_nulls(c("mpg", "hp"))$collect()$height, 29, ignore_attr = TRUE)
   expect_grepl_error(
-    pl$LazyFrame(mtcars)$drop_nulls("bad")$collect(),
+    as_polars_lf(mtcars)$drop_nulls("bad")$collect(),
     "not found: unable to find column \"bad\""
   )
 })
@@ -357,7 +357,7 @@ test_that("unique, maintain_order", {
 
 test_that("sort", {
   expect_no_error(
-    pl$LazyFrame(mtcars)$sort(
+    as_polars_lf(mtcars)$sort(
       by = list("cyl", pl$col("gear")),
       "disp",
       descending = c(TRUE, TRUE, FALSE)
@@ -366,57 +366,57 @@ test_that("sort", {
 
   # can't sort unsupported type in `by`
   expect_grepl_error(
-    pl$LazyFrame(mtcars)$sort(by = complex(1))$collect(),
+    as_polars_lf(mtcars)$sort(by = complex(1))$collect(),
     "unsupported R type"
   )
 
   # can't sort unsupported type in `...`
   expect_grepl_error(
-    pl$LazyFrame(mtcars)$sort(by = "cyl", complex(1))$collect(),
+    as_polars_lf(mtcars)$sort(by = "cyl", complex(1))$collect(),
     "unsupported R type"
   )
 
   # can't pass named argument in `...`
   expect_grepl_error(
-    pl$LazyFrame(mtcars)$sort(by = "cyl", maintain_ord = TRUE)$collect(),
+    as_polars_lf(mtcars)$sort(by = "cyl", maintain_ord = TRUE)$collect(),
     "... args not allowed to be named here"
   )
 
   # need at least one item to sort by
   expect_grepl_error(
-    pl$LazyFrame(mtcars)$sort()$collect(),
+    as_polars_lf(mtcars)$sort()$collect(),
     r"(argument "by" is missing)"
   )
 
   # `descending` and `nulls_last` need either 1 or as many booleans as items
   expect_grepl_error(
-    pl$LazyFrame(mtcars)$sort(by = c("cyl", "mpg", "cyl"), descending = c(TRUE, FALSE))$collect(),
+    as_polars_lf(mtcars)$sort(by = c("cyl", "mpg", "cyl"), descending = c(TRUE, FALSE))$collect(),
     "does not match the length of `by`"
   )
   expect_grepl_error(
-    pl$LazyFrame(mtcars)$sort(by = c("cyl", "mpg", "cyl"), nulls_last = c(TRUE, FALSE))$collect(),
+    as_polars_lf(mtcars)$sort(by = c("cyl", "mpg", "cyl"), nulls_last = c(TRUE, FALSE))$collect(),
     "does not match the length of `by`"
   )
 
   # `descending` and `nulls_last` can only take booleans
   expect_grepl_error(
-    pl$LazyFrame(mtcars)$sort(by = c("cyl", "mpg", "cyl"), descending = 42)$collect(),
+    as_polars_lf(mtcars)$sort(by = c("cyl", "mpg", "cyl"), descending = 42)$collect(),
     "Expected a value of type"
   )
   expect_grepl_error(
-    pl$LazyFrame(mtcars)$sort(by = c("cyl", "mpg", "cyl"), descending = NULL)$collect(),
+    as_polars_lf(mtcars)$sort(by = c("cyl", "mpg", "cyl"), descending = NULL)$collect(),
     "must be of length 1 or of the same"
   )
   expect_grepl_error(
-    pl$LazyFrame(mtcars)$sort(by = c("cyl", "mpg", "cyl"), nulls_last = 42)$collect(),
+    as_polars_lf(mtcars)$sort(by = c("cyl", "mpg", "cyl"), nulls_last = 42)$collect(),
     "Expected a value of type"
   )
   expect_grepl_error(
-    pl$LazyFrame(mtcars)$sort(by = c("cyl", "mpg", "cyl"), nulls_last = NULL)$collect(),
+    as_polars_lf(mtcars)$sort(by = c("cyl", "mpg", "cyl"), nulls_last = NULL)$collect(),
     "does not match the length"
   )
 
-  df = pl$LazyFrame(mtcars)
+  df = as_polars_lf(mtcars)
 
   w = df$sort("mpg", maintain_order = TRUE)$collect()$to_data_frame()
   x = df$sort(pl$col("mpg"), maintain_order = TRUE)$collect()$to_data_frame()
@@ -573,7 +573,7 @@ test_that("join_asof_simple", {
 
 
 test_that("rename", {
-  lf = pl$DataFrame(mtcars)$lazy()
+  lf = as_polars_df(mtcars)$lazy()
 
   # renaming succeeded
   a = lf$rename(mpg = "miles_per_gallon", hp = "horsepower")$collect()$columns
@@ -614,7 +614,7 @@ test_that("rename with a function", {
 
 
 test_that("schema", {
-  lf = pl$DataFrame(mtcars)$lazy()
+  lf = as_polars_df(mtcars)$lazy()
   expect_true(lf$dtypes[[1]] == lf$collect()$dtypes[[1]])
   expect_identical(lf$columns, lf$collect()$columns)
 })
@@ -627,12 +627,12 @@ test_that("select with list of exprs", {
   l_expr4 = list(c("mpg", "hp"))
   l_expr5 = list("mpg", "hp")
 
-  x1 = pl$LazyFrame(mtcars)$select(l_expr)
-  x2 = pl$LazyFrame(mtcars)$select(l_expr2)
-  # x3 = pl$LazyFrame(mtcars)$select(l_expr3, pl$col("hp")) #not allowed
-  # x4 = pl$LazyFrame(mtcars)$select(pl$col("hp"), l_expr3) #not allowed
-  x5 = pl$LazyFrame(mtcars)$select(l_expr4)
-  x6 = pl$LazyFrame(mtcars)$select(l_expr5)
+  x1 = as_polars_lf(mtcars)$select(l_expr)
+  x2 = as_polars_lf(mtcars)$select(l_expr2)
+  # x3 = as_polars_lf(mtcars)$select(l_expr3, pl$col("hp")) #not allowed
+  # x4 = as_polars_lf(mtcars)$select(pl$col("hp"), l_expr3) #not allowed
+  x5 = as_polars_lf(mtcars)$select(l_expr4)
+  x6 = as_polars_lf(mtcars)$select(l_expr5)
 
   expect_equal(x1$columns, c("mpg", "hp"))
   expect_equal(x2$columns, c("mpg", "hp"))
@@ -706,18 +706,18 @@ test_that("explode", {
 })
 
 test_that("width", {
-  dat = pl$LazyFrame(mtcars)
+  dat = as_polars_lf(mtcars)
   expect_equal(dat$width, 11)
   expect_equal(ncol(dat), 11)
 })
 
 test_that("with_row_index", {
-  lf = pl$LazyFrame(mtcars)
+  lf = as_polars_lf(mtcars)
   expect_identical(lf$with_row_index("idx", 42)$select(pl$col("idx"))$collect()$to_data_frame()$idx, as.double(42:(41 + nrow(mtcars))))
 })
 
 test_that("cloning", {
-  pf = pl$LazyFrame(iris)
+  pf = as_polars_lf(iris)
 
   # deep copy clone rust side object, hence not same mem address
   pf2 = pf$clone()
@@ -726,7 +726,7 @@ test_that("cloning", {
 })
 
 test_that("cloning to avoid giving attributes to original data", {
-  df1 = pl$LazyFrame(iris)
+  df1 = as_polars_lf(iris)
 
   give_attr = function(data) {
     attr(data, "created_on") = "2024-01-29"
@@ -740,7 +740,7 @@ test_that("cloning to avoid giving attributes to original data", {
     attr(data, "created_on") = "2024-01-29"
     data
   }
-  df1 = pl$LazyFrame(iris)
+  df1 = as_polars_lf(iris)
   df2 = give_attr2(df1)
   expect_null(attributes(df1)$created_on)
 })
@@ -1037,7 +1037,7 @@ test_that("rolling for LazyFrame: can be ungrouped", {
 patrick::with_parameters_test_that("select_seq with list of exprs",
   {
     expect_equal(
-      pl$LazyFrame(mtcars)$select_seq(expr)$collect()$columns,
+      as_polars_lf(mtcars)$select_seq(expr)$collect()$columns,
       c("mpg", "hp")
     )
   },
@@ -1101,7 +1101,7 @@ test_that("$clear() works", {
 })
 
 test_that("$explain() works", {
-  lazy_query = pl$LazyFrame(iris)$sort("Species")$filter(pl$col("Species") != "setosa")
+  lazy_query = as_polars_lf(iris)$sort("Species")$filter(pl$col("Species") != "setosa")
 
   expect_grepl_error(
     lazy_query$explain(format = "foobar"),

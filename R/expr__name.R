@@ -6,7 +6,7 @@
 #' [`$prefix()`][ExprName_prefix] to add a prefix
 #'
 #' @examples
-#' dat = pl$DataFrame(mtcars)
+#' dat = as_polars_df(mtcars)
 #'
 #' dat$select(
 #'   pl$col("mpg"),
@@ -26,7 +26,7 @@ ExprName_suffix = function(suffix) {
 #' [`$suffix()`][ExprName_suffix] to add a suffix
 #'
 #' @examples
-#' dat = pl$DataFrame(mtcars)
+#' dat = as_polars_df(mtcars)
 #'
 #' dat$select(
 #'   pl$col("mpg"),
@@ -43,7 +43,7 @@ ExprName_prefix = function(prefix) {
 #' @return Expr
 #'
 #' @examples
-#' pl$DataFrame(list(alice = 1:3))$select(pl$col("alice")$alias("bob")$name$keep())
+#' as_polars_df(list(alice = 1:3))$select(pl$col("alice")$alias("bob")$name$keep())
 ExprName_keep = function() {
   .pr$Expr$name_keep(self) |>
     unwrap("in $name$keep():")

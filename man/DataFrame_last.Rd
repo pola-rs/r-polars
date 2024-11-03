@@ -13,6 +13,6 @@ A DataFrame with one row.
 Get the last row of the DataFrame.
 }
 \examples{
-pl$DataFrame(mtcars)$last()
+as_polars_df(mtcars)$last()
 }
 \keyword{DataFrame}
