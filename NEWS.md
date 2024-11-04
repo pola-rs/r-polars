@@ -8,8 +8,9 @@
 
 ### Deprecations
 
-- Passing a single data.frame to `pl$DataFrame()` to convert a data.frame to a polars DataFrame is deprecated and a warning will be shown (#1275).
-  Use `as_polars_df()` instead.
+- Passing a single data.frame to `pl$DataFrame()` or `pl$LazyFrame()` to convert a 
+  data.frame to a polars DataFrame or LazyFrame is deprecated and a warning will 
+  be shown. Use `as_polars_df()` or `as_polars_lf()` instead (#1275).
 
 ### Bug fixes
 
