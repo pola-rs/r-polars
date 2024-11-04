@@ -3,7 +3,7 @@ use crate::robj_to;
 use crate::utils::wrappers::Wrap;
 use extendr_api::prelude::*;
 use polars::prelude::{self as pl};
-use polars_core::prelude::QuantileInterpolOptions;
+use polars_core::prelude::QuantileMethod;
 //expose polars DateType in R
 use crate::rpolarserr::{polars_to_rpolars_err, rerr, RPolarsErr, RResult, WithRctx};
 use crate::utils::collect_hinted_result;
@@ -370,7 +370,7 @@ pub fn robj_to_unique_keep_strategy(robj: Robj) -> RResult<UniqueKeepStrategy> {
     }
 }
 
-pub fn robj_to_quantile_interpolation_option(robj: Robj) -> RResult<QuantileInterpolOptions> {
+pub fn robj_to_quantile_interpolation_option(robj: Robj) -> RResult<QuantileMethod> {
     use pl::QuantileMethod::*;
     match robj_to_rchoice(robj)?.as_str() {
         "nearest" => Ok(Nearest),

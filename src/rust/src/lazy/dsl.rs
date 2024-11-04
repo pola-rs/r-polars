@@ -14,10 +14,10 @@ use crate::utils::{r_error_list, r_ok_list, robj_to_binary_vec};
 use crate::CONFIG;
 use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut};
 use pl::PolarsError as pl_error;
-use pl::{Duration, IntoSeries, RollingGroupOptions, SetOperation, TemporalMethods};
+use pl::{Duration, IntoColumn, RollingGroupOptions, SetOperation, TemporalMethods};
 use polars::lazy::dsl;
 use polars::prelude as pl;
-use polars::prelude::{ExprEvalExtension, NestedType, SortOptions};
+use polars::prelude::{ExprEvalExtension, SortOptions};
 use std::any::Any;
 use std::ops::{Add, Div, Mul, Rem, Sub};
 use std::result::Result;
@@ -1252,13 +1252,15 @@ impl RPolarsExpr {
                     let s: pl::PlSmallStr = s.into();
                     s
                 });
-            f
+            pl::NameGenerator(f)
         });
         let ub = robj_to!(usize, upper_bound)?;
         Ok(RPolarsExpr(self.0.clone().list().to_struct(
-            width_strat,
-            fields,
-            ub,
+            pl::ListToStructArgs::InferWidth {
+                infer_field_strategy: width_strat,
+                get_index_name: fields,
+                max_fields: ub,
+            },
         )))
     }
 
@@ -1442,7 +1444,13 @@ impl RPolarsExpr {
                 });
             f
         });
-        Ok(RPolarsExpr(self.0.clone().arr().to_struct(fields)))
+        Ok(RPolarsExpr(
+            self.0
+                .clone()
+                .arr()
+                .to_struct(fields)
+                .map_err(polars_to_rpolars_err)?,
+        ))
     }
 
     fn arr_shift(&self, n: Robj) -> RResult<Self> {
@@ -1541,8 +1549,9 @@ impl RPolarsExpr {
             .0
             .map(
                 |s| {
-                    s.timestamp(pl::TimeUnit::Milliseconds)
-                        .map(|ca| Some((ca / 1000).into_series()))
+                    s.take_materialized_series()
+                        .timestamp(pl::TimeUnit::Milliseconds)
+                        .map(|ca| Some((ca / 1000).into_column()))
                 },
                 pl::GetOutput::from_type(pl::DataType::Int64),
             )
