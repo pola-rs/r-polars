@@ -16,7 +16,7 @@ Series
 Extract a DataFrame column as a Polars series.
 }
 \examples{
-df = pl$DataFrame(iris[1:2, ])
+df = as_polars_df(iris[1:2, ])
 df$get_column("Species")
 }
 \keyword{DataFrame}

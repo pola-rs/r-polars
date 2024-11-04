@@ -18,6 +18,6 @@ Aggregate the columns of this LazyFrame to their standard
 deviation values.
 }
 \examples{
-pl$LazyFrame(mtcars)$std()$collect()
+as_polars_lf(mtcars)$std()$collect()
 }
 \keyword{LazyFrame}

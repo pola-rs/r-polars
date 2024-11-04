@@ -69,7 +69,7 @@ Note: use \verb{$fetch(n)} if you want to run your query on the first \code{n} r
 This can be a huge time saver in debugging queries.
 }
 \examples{
-pl$LazyFrame(iris)$filter(pl$col("Species") == "setosa")$collect()
+as_polars_lf(iris)$filter(pl$col("Species") == "setosa")$collect()
 }
 \seealso{
 \itemize{

@@ -8,7 +8,7 @@ make_cases = function() {
 
 patrick::with_parameters_test_that("lazy functions in context",
   {
-    df = pl$DataFrame(mtcars)
+    df = as_polars_df(mtcars)
     x = df$select((pl[[pola]]("mpg") * 10)$alias("test"))$to_data_frame()
     y = df$lazy()$select((pl[[pola]]("mpg") * 10)$alias("test"))$collect()$to_data_frame()
     z = data.frame(test = base(mtcars$mpg) * 10)

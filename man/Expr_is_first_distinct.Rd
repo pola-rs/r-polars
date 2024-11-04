@@ -13,6 +13,6 @@ Expr
 Check whether each value is the first occurrence
 }
 \examples{
-pl$DataFrame(head(mtcars[, 1:2]))$
+as_polars_df(head(mtcars[, 1:2]))$
   with_columns(is_ufirst = pl$col("mpg")$is_first_distinct())
 }

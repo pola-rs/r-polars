@@ -25,7 +25,7 @@ Exclude certain columns from selection
 \examples{
 
 # make DataFrame
-df = pl$DataFrame(iris)
+df = as_polars_df(iris)
 
 # by name(s)
 df$select(pl$all()$exclude("Species"))

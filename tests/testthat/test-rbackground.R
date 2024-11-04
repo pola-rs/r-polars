@@ -1,4 +1,4 @@
-lf = pl$LazyFrame(data.frame(x = 1:10, y = 11:20))
+lf = as_polars_lf(data.frame(x = 1:10, y = 11:20))
 
 test_that("Test collecting LazyFrame in background", {
   skip_if_not(Sys.getenv("CI") == "true")

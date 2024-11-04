@@ -13,6 +13,6 @@ A LazyFrame with one row
 Aggregate the columns in the LazyFrame to their median value.
 }
 \examples{
-pl$LazyFrame(mtcars)$median()$collect()
+as_polars_lf(mtcars)$median()$collect()
 }
 \keyword{LazyFrame}

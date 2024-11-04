@@ -206,7 +206,7 @@ pl_LazyFrame = function(...) {
 #' @return self
 #' @export
 #'
-#' @examples pl$LazyFrame(iris)
+#' @examples as_polars_lf(iris)
 print.RPolarsLazyFrame = function(x, ...) {
   cat("polars LazyFrame\n")
   cat(" $explain(): Show the optimized query plan.\n")
@@ -225,7 +225,7 @@ print.RPolarsLazyFrame = function(x, ...) {
 #' @docType NULL
 #'
 #' @usage LazyFrame_print(x)
-#' @examples pl$LazyFrame(iris)$print()
+#' @examples as_polars_lf(iris)$print()
 LazyFrame_print = function() {
   .pr$LazyFrame$print(self) |>
     unwrap("in $print():")
@@ -266,7 +266,7 @@ LazyFrame_print = function() {
 #'
 #' @return A character value containing the query plan.
 #' @examples
-#' lazy_frame = pl$LazyFrame(iris)
+#' lazy_frame = as_polars_lf(iris)
 #'
 #' # Prepare your query
 #' lazy_query = lazy_frame$sort("Species")$filter(pl$col("Species") != "setosa")
@@ -381,7 +381,7 @@ pl_deserialize_lf = function(json) {
 #' @inherit DataFrame_select description params
 #' @return A LazyFrame
 #' @examples
-#' pl$LazyFrame(iris)$select(
+#' as_polars_lf(iris)$select(
 #'   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
 #'   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
 #' )
@@ -394,7 +394,7 @@ LazyFrame_select = function(...) {
 #' @inherit DataFrame_select_seq description params
 #' @return A LazyFrame
 #' @examples
-#' pl$LazyFrame(iris)$select_seq(
+#' as_polars_lf(iris)$select_seq(
 #'   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
 #'   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
 #' )
@@ -409,7 +409,7 @@ LazyFrame_select_seq = function(...) {
 #'
 #' @return A LazyFrame
 #' @examples
-#' pl$LazyFrame(iris)$with_columns(
+#' as_polars_lf(iris)$with_columns(
 #'   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
 #'   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
 #' )
@@ -419,9 +419,9 @@ LazyFrame_select_seq = function(...) {
 #'   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
 #'   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
 #' )
-#' pl$LazyFrame(iris)$with_columns(l_expr)
+#' as_polars_lf(iris)$with_columns(l_expr)
 #'
-#' pl$LazyFrame(iris)$with_columns(
+#' as_polars_lf(iris)$with_columns(
 #'   pl$col("Sepal.Length")$abs(), # not named expr will keep name "Sepal.Length"
 #'   SW_add_2 = (pl$col("Sepal.Width") + 2)
 #' )
@@ -435,7 +435,7 @@ LazyFrame_with_columns = function(...) {
 #'
 #' @return A LazyFrame
 #' @examples
-#' pl$LazyFrame(iris)$with_columns_seq(
+#' as_polars_lf(iris)$with_columns_seq(
 #'   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
 #'   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
 #' )
@@ -445,9 +445,9 @@ LazyFrame_with_columns = function(...) {
 #'   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
 #'   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
 #' )
-#' pl$LazyFrame(iris)$with_columns_seq(l_expr)
+#' as_polars_lf(iris)$with_columns_seq(l_expr)
 #'
-#' pl$LazyFrame(iris)$with_columns_seq(
+#' as_polars_lf(iris)$with_columns_seq(
 #'   pl$col("Sepal.Length")$abs(), # not named expr will keep name "Sepal.Length"
 #'   SW_add_2 = (pl$col("Sepal.Width") + 2)
 #' )
@@ -461,7 +461,7 @@ LazyFrame_with_columns_seq = function(...) {
 #' @return A new LazyFrame with a counter column in front
 #' @docType NULL
 #' @examples
-#' df = pl$LazyFrame(mtcars)
+#' df = as_polars_lf(mtcars)
 #'
 #' # by default, the index starts at 0 (to mimic the behavior of Python Polars)
 #' df$with_row_index("idx")
@@ -486,7 +486,7 @@ LazyFrame_with_row_index = function(name, offset = NULL) {
 #' @return A new `LazyFrame` object with add/modified column.
 #' @docType NULL
 #' @examples
-#' lf = pl$LazyFrame(iris)
+#' lf = as_polars_lf(iris)
 #'
 #' lf$filter(pl$col("Species") == "setosa")$collect()
 #'
@@ -518,7 +518,7 @@ LazyFrame_filter = function(...) {
 #' @keywords LazyFrame DataFrame_new
 #' @return A `DataFrame`
 #' @examples
-#' pl$LazyFrame(iris)$filter(pl$col("Species") == "setosa")$collect()
+#' as_polars_lf(iris)$filter(pl$col("Species") == "setosa")$collect()
 #' @seealso
 #'  - [`$fetch()`][LazyFrame_fetch] - fast limited query check
 #'  - [`$profile()`][LazyFrame_profile] - same as `$collect()` but also returns
@@ -608,7 +608,7 @@ LazyFrame_collect = function(
 #' )$alias("kml")
 #'
 #' # return is immediately a handle to another thread.
-#' handle = pl$LazyFrame(mtcars)$with_columns(expr)$collect_in_background()
+#' handle = as_polars_lf(mtcars)$with_columns(expr)$collect_in_background()
 #'
 #' # ask if query is done
 #' if (!handle$is_finished()) print("not done yet")
@@ -668,7 +668,7 @@ LazyFrame_collect_in_background = function() {
 #' @examples
 #' # sink table 'mtcars' from mem to parquet
 #' tmpf = tempfile()
-#' pl$LazyFrame(mtcars)$sink_parquet(tmpf)
+#' as_polars_lf(mtcars)$sink_parquet(tmpf)
 #'
 #' # stream a query end-to-end
 #' tmpf2 = tempfile()
@@ -752,7 +752,7 @@ LazyFrame_sink_parquet = function(
 #' @examples
 #' # sink table 'mtcars' from mem to ipc
 #' tmpf = tempfile()
-#' pl$LazyFrame(mtcars)$sink_ipc(tmpf)
+#' as_polars_lf(mtcars)$sink_ipc(tmpf)
 #'
 #' # stream a query end-to-end (not supported yet, https://github.com/pola-rs/polars/issues/1040)
 #' # tmpf2 = tempfile()
@@ -822,7 +822,7 @@ LazyFrame_sink_ipc = function(
 #' @examples
 #' # sink table 'mtcars' from mem to CSV
 #' tmpf = tempfile()
-#' pl$LazyFrame(mtcars)$sink_csv(tmpf)
+#' as_polars_lf(mtcars)$sink_csv(tmpf)
 #'
 #' # stream a query end-to-end
 #' tmpf2 = tempfile()
@@ -914,7 +914,7 @@ LazyFrame_sink_csv = function(
 #' @examples
 #' # sink table 'mtcars' from mem to JSON
 #' tmpf = tempfile(fileext = ".json")
-#' pl$LazyFrame(mtcars)$sink_ndjson(tmpf)
+#' as_polars_lf(mtcars)$sink_ndjson(tmpf)
 #'
 #' # load parquet directly into a DataFrame / memory
 #' pl$scan_ndjson(tmpf)$collect()
@@ -990,7 +990,7 @@ LazyFrame_limit = LazyFrame_head
 #' @return A LazyFrame with one row
 #' @docType NULL
 #' @format NULL
-#' @examples pl$LazyFrame(mtcars)$first()$collect()
+#' @examples as_polars_lf(mtcars)$first()$collect()
 LazyFrame_first = use_extendr_wrapper
 
 #' @title Get the last row of a LazyFrame
@@ -999,7 +999,7 @@ LazyFrame_first = use_extendr_wrapper
 #' @return A LazyFrame with one row
 #' @docType NULL
 #' @format NULL
-#' @examples pl$LazyFrame(mtcars)$last()$collect()
+#' @examples as_polars_lf(mtcars)$last()$collect()
 LazyFrame_last = use_extendr_wrapper
 
 #' @title Max
@@ -1008,7 +1008,7 @@ LazyFrame_last = use_extendr_wrapper
 #' @return A LazyFrame with one row
 #' @docType NULL
 #' @format NULL
-#' @examples pl$LazyFrame(mtcars)$max()$collect()
+#' @examples as_polars_lf(mtcars)$max()$collect()
 LazyFrame_max = use_extendr_wrapper
 
 #' @title Mean
@@ -1017,7 +1017,7 @@ LazyFrame_max = use_extendr_wrapper
 #' @return A LazyFrame with one row
 #' @docType NULL
 #' @format NULL
-#' @examples pl$LazyFrame(mtcars)$mean()$collect()
+#' @examples as_polars_lf(mtcars)$mean()$collect()
 LazyFrame_mean = use_extendr_wrapper
 
 #' @title Median
@@ -1026,7 +1026,7 @@ LazyFrame_mean = use_extendr_wrapper
 #' @return A LazyFrame with one row
 #' @docType NULL
 #' @format NULL
-#' @examples pl$LazyFrame(mtcars)$median()$collect()
+#' @examples as_polars_lf(mtcars)$median()$collect()
 LazyFrame_median = use_extendr_wrapper
 
 #' @title Min
@@ -1035,7 +1035,7 @@ LazyFrame_median = use_extendr_wrapper
 #' @return A LazyFrame with one row
 #' @docType NULL
 #' @format NULL
-#' @examples pl$LazyFrame(mtcars)$min()$collect()
+#' @examples as_polars_lf(mtcars)$min()$collect()
 LazyFrame_min = use_extendr_wrapper
 
 #' @title Sum
@@ -1044,7 +1044,7 @@ LazyFrame_min = use_extendr_wrapper
 #' @return A LazyFrame with one row
 #' @docType NULL
 #' @format NULL
-#' @examples pl$LazyFrame(mtcars)$sum()$collect()
+#' @examples as_polars_lf(mtcars)$sum()$collect()
 LazyFrame_sum = use_extendr_wrapper
 
 #' @title Var
@@ -1052,7 +1052,7 @@ LazyFrame_sum = use_extendr_wrapper
 #' @keywords LazyFrame
 #' @inheritParams DataFrame_var
 #' @return A LazyFrame with one row
-#' @examples pl$LazyFrame(mtcars)$var()$collect()
+#' @examples as_polars_lf(mtcars)$var()$collect()
 LazyFrame_var = function(ddof = 1) {
   unwrap(.pr$LazyFrame$var(self, ddof), "in $var():")
 }
@@ -1063,7 +1063,7 @@ LazyFrame_var = function(ddof = 1) {
 #' @keywords LazyFrame
 #' @inheritParams DataFrame_std
 #' @return A LazyFrame with one row
-#' @examples pl$LazyFrame(mtcars)$std()$collect()
+#' @examples as_polars_lf(mtcars)$std()$collect()
 LazyFrame_std = function(ddof = 1) {
   unwrap(.pr$LazyFrame$std(self, ddof), "in $std():")
 }
@@ -1073,7 +1073,7 @@ LazyFrame_std = function(ddof = 1) {
 #' value. Use `$describe()` to specify several quantiles.
 #' @inheritParams DataFrame_quantile
 #' @return LazyFrame
-#' @examples pl$LazyFrame(mtcars)$quantile(.4)$collect()
+#' @examples as_polars_lf(mtcars)$quantile(.4)$collect()
 LazyFrame_quantile = function(quantile, interpolation = "nearest") {
   unwrap(.pr$LazyFrame$quantile(self, wrap_e_result(quantile), interpolation), "in $quantile():")
 }
@@ -1128,10 +1128,10 @@ LazyFrame_shift = function(n = 1, fill_value = NULL) {
 #'
 #' @return LazyFrame
 #' @examples
-#' pl$LazyFrame(mtcars)$drop(c("mpg", "hp"))$collect()
+#' as_polars_lf(mtcars)$drop(c("mpg", "hp"))$collect()
 #'
 #' # equivalent
-#' pl$LazyFrame(mtcars)$drop("mpg", "hp")$collect()
+#' as_polars_lf(mtcars)$drop("mpg", "hp")$collect()
 LazyFrame_drop = function(..., strict = TRUE) {
   cols = unpack_list(..., .context = "in $drop():") |>
     unlist()
@@ -1146,7 +1146,7 @@ LazyFrame_drop = function(..., strict = TRUE) {
 #' @description Reverse the LazyFrame (the last row becomes the first one, etc.).
 #' @keywords LazyFrame
 #' @return LazyFrame
-#' @examples pl$LazyFrame(mtcars)$reverse()$collect()
+#' @examples as_polars_lf(mtcars)$reverse()$collect()
 LazyFrame_reverse = use_extendr_wrapper
 
 #' @title Slice
@@ -1154,8 +1154,8 @@ LazyFrame_reverse = use_extendr_wrapper
 #' @inheritParams DataFrame_slice
 #' @return A [LazyFrame][LazyFrame_class]
 #' @examples
-#' pl$LazyFrame(mtcars)$slice(2, 4)$collect()
-#' pl$LazyFrame(mtcars)$slice(30)$collect()
+#' as_polars_lf(mtcars)$slice(2, 4)$collect()
+#' as_polars_lf(mtcars)$slice(30)$collect()
 #' mtcars[2:6, ]
 LazyFrame_slice = function(offset, length = NULL) {
   unwrap(.pr$LazyFrame$slice(self, offset, length), "in $slice():")
@@ -1696,11 +1696,11 @@ LazyFrame_rename = function(...) {
 #'
 #' @examples
 #' # fetch 3 rows
-#' pl$LazyFrame(iris)$fetch(3)
+#' as_polars_lf(iris)$fetch(3)
 #'
 #' # this fetch-query returns 4 rows, because we started with 3 and appended one
 #' # row in the query (see section 'Details')
-#' pl$LazyFrame(iris)$
+#' as_polars_lf(iris)$
 #'   select(pl$col("Species")$append("flora gigantica, alien"))$
 #'   fetch(3)
 LazyFrame_fetch = function(
@@ -1780,7 +1780,7 @@ LazyFrame_fetch = function(
 #' ## Use $profile() to compare two queries
 #'
 #' # -1-  map each Species-group with native polars, takes ~120us only
-#' pl$LazyFrame(iris)$
+#' as_polars_lf(iris)$
 #'   sort("Sepal.Length")$
 #'   group_by("Species", maintain_order = TRUE)$
 #'   agg(pl$col(pl$Float64)$first() + 5)$
@@ -1794,7 +1794,7 @@ LazyFrame_fetch = function(
 #'   s$to_r()[1] + 5
 #' }
 #'
-#' pl$LazyFrame(iris)$
+#' as_polars_lf(iris)$
 #'   sort("Sepal.Length")$
 #'   group_by("Species", maintain_order = TRUE)$
 #'   agg(pl$col(pl$Float64)$map_elements(r_func))$
@@ -1905,7 +1905,7 @@ LazyFrame_explode = function(...) {
 #'
 #' @return A LazyFrame
 #' @examples
-#' df1 = pl$LazyFrame(iris)
+#' df1 = as_polars_lf(iris)
 #'
 #' # Make a function to take a LazyFrame, add an attribute, and return a LazyFrame
 #' give_attr = function(data) {
@@ -1923,7 +1923,7 @@ LazyFrame_explode = function(...) {
 #'   attr(data, "created_on") = "2024-01-29"
 #'   data
 #' }
-#' df1 = pl$LazyFrame(iris)
+#' df1 = as_polars_lf(iris)
 #' df2 = give_attr(df1)
 #'
 #' # now, the original LazyFrame doesn't get this attribute

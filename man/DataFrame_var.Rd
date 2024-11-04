@@ -17,6 +17,6 @@ A DataFrame with one row.
 Aggregate the columns of this DataFrame to their variance values.
 }
 \examples{
-pl$DataFrame(mtcars)$var()
+as_polars_df(mtcars)$var()
 }
 \keyword{DataFrame}

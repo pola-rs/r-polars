@@ -20,5 +20,5 @@ GroupBy
 Shift the values by a given period
 }
 \examples{
-pl$DataFrame(mtcars)$group_by("cyl")$shift(2)
+as_polars_df(mtcars)$group_by("cyl")$shift(2)
 }

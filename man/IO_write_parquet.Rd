@@ -78,7 +78,7 @@ Write to parquet file
 }
 \examples{
 \dontshow{if (requireNamespace("withr", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-dat = pl$DataFrame(mtcars)
+dat = as_polars_df(mtcars)
 
 # write data to a single parquet file
 destination = withr::local_tempfile(fileext = ".parquet")

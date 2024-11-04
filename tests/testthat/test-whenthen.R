@@ -45,7 +45,7 @@ test_that("Chained", {
 
 
 test_that("when-then-otherwise", {
-  df = pl$DataFrame(mtcars)
+  df = as_polars_df(mtcars)
   e = pl$when(pl$col("cyl") > 4)$
     then(pl$lit(">4cyl"))$
     otherwise(pl$lit("<=4cyl"))

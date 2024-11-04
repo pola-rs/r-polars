@@ -37,11 +37,11 @@ Polars transpose is currently eager only, likely because it is not trivial to de
 \examples{
 
 # simple use-case
-pl$DataFrame(mtcars)$transpose(include_header = TRUE, column_names = rownames(mtcars))
+as_polars_df(mtcars)$transpose(include_header = TRUE, column_names = rownames(mtcars))
 
 # All rows must have one shared supertype, recast Categorical to String which is a supertype
 # of f64, and then dataset "Iris" can be transposed
-pl$DataFrame(iris)$with_columns(pl$col("Species")$cast(pl$String))$transpose()
+as_polars_df(iris)$with_columns(pl$col("Species")$cast(pl$String))$transpose()
 
 }
 \keyword{DataFrame}

@@ -27,7 +27,7 @@ Expr
 Count all unique values and create a struct mapping value to count.
 }
 \examples{
-df = pl$DataFrame(iris)
+df = as_polars_df(iris)
 df$select(pl$col("Species")$value_counts())$unnest()
 df$select(pl$col("Species")$value_counts(normalize = TRUE))$unnest()
 }

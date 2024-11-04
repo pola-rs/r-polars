@@ -16,7 +16,7 @@ bool
 check if schema
 }
 \examples{
-pl$is_schema(pl$DataFrame(iris)$schema)
+pl$is_schema(as_polars_df(iris)$schema)
 pl$is_schema(list("alice", "bob"))
 }
 \keyword{functions}

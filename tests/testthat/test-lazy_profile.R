@@ -7,14 +7,14 @@ test_that("<LazyFrame>$profile", {
 
 
   # profile supports with and without R functions
-  p1 = pl$LazyFrame(iris)$
+  p1 = as_polars_lf(iris)$
     sort("Sepal.Length")$
     group_by("Species", maintain_order = TRUE)$
     agg(pl$col(pl$Float64)$first()$add(5)$name$suffix("_apply"))$
     profile()
 
   r_func = \(s) s$to_r()[1] + 5
-  p2 = pl$LazyFrame(iris)$
+  p2 = as_polars_lf(iris)$
     sort("Sepal.Length")$ # for no specific reason
     group_by("Species", maintain_order = TRUE)$
     agg(pl$col(pl$Float64)$map_elements(r_func))$
@@ -30,7 +30,7 @@ test_that("<LazyFrame>$profile", {
 
 test_that("profile: show_plot returns a plot in the list of outputs", {
   skip_if_not_installed("ggplot2")
-  p1 = pl$LazyFrame(iris)$
+  p1 = as_polars_lf(iris)$
     sort("Sepal.Length")$
     group_by("Species", maintain_order = TRUE)$
     agg(pl$col(pl$Float64)$first()$add(5)$name$suffix("_apply"))$

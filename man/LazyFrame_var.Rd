@@ -17,6 +17,6 @@ A LazyFrame with one row
 Aggregate the columns of this LazyFrame to their variance values.
 }
 \examples{
-pl$LazyFrame(mtcars)$var()$collect()
+as_polars_lf(mtcars)$var()$collect()
 }
 \keyword{LazyFrame}

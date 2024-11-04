@@ -1,7 +1,7 @@
 test_that("plain scan read parquet", {
   tmpf = tempfile()
   on.exit(unlink(tmpf))
-  lf_exp = pl$LazyFrame(mtcars)
+  lf_exp = as_polars_lf(mtcars)
   lf_exp$sink_parquet(tmpf, compression = "snappy")
   df_exp = lf_exp$collect()$to_data_frame()
 
@@ -22,7 +22,7 @@ test_that("plain scan read parquet", {
 test_that("scan read parquet - test arg row_index", {
   tmpf = tempfile()
   on.exit(unlink(tmpf))
-  lf_exp = pl$LazyFrame(mtcars)
+  lf_exp = as_polars_lf(mtcars)
   lf_exp$sink_parquet(tmpf, compression = "snappy")
   df_exp = lf_exp$collect()$to_data_frame()
 
@@ -41,7 +41,7 @@ test_that("scan read parquet - test arg row_index", {
 test_that("scan read parquet - parallel strategies", {
   tmpf = tempfile()
   on.exit(unlink(tmpf))
-  lf_exp = pl$LazyFrame(mtcars)
+  lf_exp = as_polars_lf(mtcars)
   lf_exp$sink_parquet(tmpf, compression = "snappy")
   df_exp = lf_exp$collect()$to_data_frame()
 
@@ -67,7 +67,7 @@ test_that("scan read parquet - parallel strategies", {
 test_that("scanning from hive partition works", {
   skip_if_not_installed("withr")
   temp_dir = withr::local_tempdir()
-  pl$DataFrame(mtcars)$write_parquet(temp_dir, partition_by = c("cyl", "gear"))
+  as_polars_df(mtcars)$write_parquet(temp_dir, partition_by = c("cyl", "gear"))
 
   # Passing a directory automatically enables hive partitioning reading
   # i.e. "cyl" and "gear" are in the data and the data is sorted by the
@@ -132,7 +132,7 @@ test_that("try_parse_hive_dates works", {
 test_that("scan_parquet can include file path", {
   skip_if_not_installed("withr")
   temp_dir = withr::local_tempdir()
-  pl$DataFrame(mtcars)$write_parquet(temp_dir, partition_by = c("cyl", "gear"))
+  as_polars_df(mtcars)$write_parquet(temp_dir, partition_by = c("cyl", "gear"))
 
   # There are 8 partitions so 8 file paths
   expect_identical(
@@ -146,7 +146,7 @@ test_that("scan_parquet can include file path", {
 test_that("write_parquet works", {
   tmpf = tempfile()
   on.exit(unlink(tmpf))
-  df_exp = pl$DataFrame(mtcars)
+  df_exp = as_polars_df(mtcars)
   df_exp$write_parquet(tmpf)
 
   expect_identical(
@@ -159,7 +159,7 @@ test_that("write_parquet works", {
 test_that("throw error if invalid compression is passed", {
   tmpf = tempfile()
   on.exit(unlink(tmpf))
-  df_exp = pl$DataFrame(mtcars)
+  df_exp = as_polars_df(mtcars)
   expect_grepl_error(
     df_exp$write_parquet(tmpf, compression = "invalid"),
     "Failed to set parquet compression method"
@@ -167,14 +167,14 @@ test_that("throw error if invalid compression is passed", {
 })
 
 test_that("write_parquet returns the input data", {
-  dat = pl$DataFrame(mtcars)
+  dat = as_polars_df(mtcars)
   tmpf = tempfile()
   x = dat$write_parquet(tmpf)
   expect_identical(x$to_list(), dat$to_list())
 })
 
 test_that("write_parquet: argument 'statistics'", {
-  dat = pl$DataFrame(mtcars)
+  dat = as_polars_df(mtcars)
   tmpf = tempfile()
   on.exit(unlink(tmpf))
 
@@ -202,7 +202,7 @@ test_that("write_parquet: argument 'statistics'", {
 test_that("write_parquet can create a hive partition", {
   skip_if_not_installed("withr")
   temp_dir = withr::local_tempdir()
-  dat = pl$DataFrame(mtcars)
+  dat = as_polars_df(mtcars)
   on.exit(unlink(temp_dir))
 
   # basic
@@ -261,7 +261,7 @@ test_that("polars and arrow create the same hive partition", {
 
   # polars
   temp_dir_polars = withr::local_tempdir()
-  dat2 = pl$DataFrame(mtcars)$
+  dat2 = as_polars_df(mtcars)$
     with_columns(pl$col("gear")$cast(pl$Int32), pl$col("cyl")$cast(pl$Int32))
   on.exit(unlink(temp_dir_polars))
   dat2$write_parquet(temp_dir_polars, partition_by = c("cyl", "gear"))

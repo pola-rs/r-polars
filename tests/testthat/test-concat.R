@@ -1,10 +1,10 @@
 test_that("concat dataframe", {
   # mixing lazy with first eager not allowed
-  ctx = pl$concat(pl$DataFrame(mtcars), pl$LazyFrame(mtcars), how = "vertical") |> get_err_ctx()
+  ctx = pl$concat(as_polars_df(mtcars), as_polars_lf(mtcars), how = "vertical") |> get_err_ctx()
   expect_true(endsWith(ctx$BadArgument, "number 2"))
   expect_true(endsWith(ctx$PlainErrorMessage, "avoid implicit collect"))
 
-  ctx = pl$concat(pl$DataFrame(mtcars), mtcars$hp, pl$lit(mtcars$mpg), how = "horizontal") |>
+  ctx = pl$concat(as_polars_df(mtcars), mtcars$hp, pl$lit(mtcars$mpg), how = "horizontal") |>
     get_err_ctx()
   expect_true(endsWith(ctx$BadArgument, "number 3"))
   expect_true(endsWith(ctx$PlainErrorMessage, "avoid implicit collect"))
@@ -13,7 +13,7 @@ test_that("concat dataframe", {
   df_ref = rbind(mtcars, mtcars)
   row.names(df_ref) = 1:64
   expect_identical(
-    pl$concat(pl$LazyFrame(mtcars), pl$DataFrame(mtcars), how = "vertical")$
+    pl$concat(as_polars_lf(mtcars), as_polars_df(mtcars), how = "vertical")$
       collect()$
       to_data_frame(),
     df_ref
@@ -41,7 +41,7 @@ test_that("concat dataframe", {
   # use "_relaxed"
   expect_identical(
     pl$concat(l_ver[[1L]], pl$DataFrame(a = 2, b = 42L), how = "vertical_relaxed")$to_list(),
-    pl$DataFrame(rbind(data.frame(a = 1:5, b = letters[1:5]), data.frame(a = 2, b = 42L)))$to_list()
+    as_polars_df(rbind(data.frame(a = 1:5, b = letters[1:5]), data.frame(a = 2, b = 42L)))$to_list()
   )
 
   # type 'relaxed' vertical concatenation is not allowed by default
@@ -96,7 +96,7 @@ test_that("concat dataframe", {
   expect_equal(mean(is.na(df_dia$to_data_frame())), 8 / 10)
 
   # diagonal lazy
-  lf_dia = pl$concat(l_hor |> lapply(pl$LazyFrame), how = "diagonal")
+  lf_dia = pl$concat(l_hor |> lapply(as_polars_lf), how = "diagonal")
   expect_identical(
     lf_dia$collect()$to_list(),
     df_dia$to_list()

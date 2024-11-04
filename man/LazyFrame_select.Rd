@@ -19,7 +19,7 @@ Similar to \code{dplyr::mutate()}. However, it discards unmentioned
 columns (like \code{.()} in \code{data.table}).
 }
 \examples{
-pl$LazyFrame(iris)$select(
+as_polars_lf(iris)$select(
   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
 )

@@ -23,7 +23,7 @@ when the work per expression is cheap. Otherwise, \verb{$with_columns()} should 
 preferred.
 }
 \examples{
-pl$DataFrame(iris)$with_columns_seq(
+as_polars_df(iris)$with_columns_seq(
   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
 )
@@ -33,9 +33,9 @@ l_expr = list(
   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
 )
-pl$DataFrame(iris)$with_columns_seq(l_expr)
+as_polars_df(iris)$with_columns_seq(l_expr)
 
-pl$DataFrame(iris)$with_columns_seq(
+as_polars_df(iris)$with_columns_seq(
   pl$col("Sepal.Length")$abs(), # not named expr will keep name "Sepal.Length"
   SW_add_2 = (pl$col("Sepal.Width") + 2)
 )

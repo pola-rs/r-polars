@@ -412,7 +412,7 @@
 ---
 
     Code
-      pl$DataFrame(mtcars)$describe()
+      as_polars_df(mtcars)$describe()
     Output
       shape: (9, 12)
       ┌────────────┬───────────┬──────────┬────────────┬───┬──────────┬──────────┬──────────┬────────┐
@@ -434,7 +434,7 @@
 ---
 
     Code
-      pl$DataFrame(mtcars)$describe(interpolation = "linear")
+      as_polars_df(mtcars)$describe(interpolation = "linear")
     Output
       shape: (9, 12)
       ┌────────────┬───────────┬──────────┬────────────┬───┬──────────┬──────────┬──────────┬────────┐

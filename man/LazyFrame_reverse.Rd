@@ -13,6 +13,6 @@ LazyFrame
 Reverse the LazyFrame (the last row becomes the first one, etc.).
 }
 \examples{
-pl$LazyFrame(mtcars)$reverse()$collect()
+as_polars_lf(mtcars)$reverse()$collect()
 }
 \keyword{LazyFrame}

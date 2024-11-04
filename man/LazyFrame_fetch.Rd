@@ -70,11 +70,11 @@ file influence the final number of rows.
 }
 \examples{
 # fetch 3 rows
-pl$LazyFrame(iris)$fetch(3)
+as_polars_lf(iris)$fetch(3)
 
 # this fetch-query returns 4 rows, because we started with 3 and appended one
 # row in the query (see section 'Details')
-pl$LazyFrame(iris)$
+as_polars_lf(iris)$
   select(pl$col("Species")$append("flora gigantica, alien"))$
   fetch(3)
 }

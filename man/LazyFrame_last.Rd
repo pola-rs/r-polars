@@ -13,6 +13,6 @@ A LazyFrame with one row
 Aggregate the columns in the LazyFrame to their maximum value.
 }
 \examples{
-pl$LazyFrame(mtcars)$last()$collect()
+as_polars_lf(mtcars)$last()$collect()
 }
 \keyword{LazyFrame}

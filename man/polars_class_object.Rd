@@ -19,13 +19,13 @@ See function macro_add_syntax_check_to_class().
 }
 \examples{
 # all a polars object is only made of:
-some_polars_object = pl$DataFrame(iris)
+some_polars_object = as_polars_df(iris)
 str(some_polars_object) # External Pointer tagged with a class attribute.
 
 # All state is stored on rust side.
 
 # The single exception from the rule is class "GroupBy", where objects also have
 # two private attributes "groupby_input" and "maintain_order".
-str(pl$DataFrame(iris)$group_by("Species"))
+str(as_polars_df(iris)$group_by("Species"))
 }
 \keyword{api_object}

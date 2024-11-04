@@ -13,6 +13,6 @@ A DataFrame with one row.
 Aggregate the columns of this DataFrame to their sum values.
 }
 \examples{
-pl$DataFrame(mtcars)$sum()
+as_polars_df(mtcars)$sum()
 }
 \keyword{DataFrame}

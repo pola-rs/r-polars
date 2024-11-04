@@ -21,7 +21,7 @@ Get a slice of the DataFrame.
 }
 \examples{
 # skip the first 2 rows and take the 4 following rows
-pl$DataFrame(mtcars)$slice(2, 4)
+as_polars_df(mtcars)$slice(2, 4)
 
 # this is equivalent to:
 mtcars[3:6, ]

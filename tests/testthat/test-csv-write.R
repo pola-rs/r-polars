@@ -1,6 +1,6 @@
 dat = head(mtcars, n = 15)
 dat[c(1, 3, 9, 12), c(3, 4, 5)] = NA
-dat_pl = pl$DataFrame(dat)
+dat_pl = as_polars_df(dat)
 temp_noext = tempfile()
 temp_out = tempfile(fileext = ".csv")
 
@@ -33,7 +33,7 @@ test_that("write_csv: separator works", {
 })
 
 test_that("write_csv: quote_style and quote works", {
-  dat_pl2 = pl$DataFrame(head(iris))
+  dat_pl2 = as_polars_df(head(iris))
 
   # wrong quote_style
   ctx = dat_pl2$write_csv(temp_out, quote_style = "foo") |> get_err_ctx()

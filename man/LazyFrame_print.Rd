@@ -16,6 +16,6 @@ self
 can be used i the middle of a method chain
 }
 \examples{
-pl$LazyFrame(iris)$print()
+as_polars_lf(iris)$print()
 }
 \keyword{LazyFrame}

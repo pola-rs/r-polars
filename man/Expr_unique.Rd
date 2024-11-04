@@ -17,5 +17,5 @@ Expr
 Get unique values
 }
 \examples{
-pl$DataFrame(iris)$select(pl$col("Species")$unique())
+as_polars_df(iris)$select(pl$col("Species")$unique())
 }

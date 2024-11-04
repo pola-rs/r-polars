@@ -16,7 +16,7 @@ immutable. Any modification of a \code{LazyFrame} should lead to a clone anyways
 but this can be useful when dealing with attributes (see examples).
 }
 \examples{
-df1 = pl$LazyFrame(iris)
+df1 = as_polars_lf(iris)
 
 # Make a function to take a LazyFrame, add an attribute, and return a LazyFrame
 give_attr = function(data) {
@@ -34,7 +34,7 @@ give_attr = function(data) {
   attr(data, "created_on") = "2024-01-29"
   data
 }
-df1 = pl$LazyFrame(iris)
+df1 = as_polars_lf(iris)
 df2 = give_attr(df1)
 
 # now, the original LazyFrame doesn't get this attribute

@@ -17,6 +17,6 @@ Return an estimation of the total (heap) allocated size of the
 DataFrame.
 }
 \examples{
-pl$DataFrame(mtcars)$estimated_size()
+as_polars_df(mtcars)$estimated_size()
 }
 \keyword{DataFrame}

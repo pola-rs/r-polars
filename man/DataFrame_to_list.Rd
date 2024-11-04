@@ -82,7 +82,7 @@ withr::with_timezone(
 }
 
 \examples{
-pl$DataFrame(iris)$to_list()
+as_polars_df(iris)$to_list()
 }
 \seealso{
 \itemize{

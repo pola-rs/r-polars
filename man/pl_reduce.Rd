@@ -19,7 +19,7 @@ This allows one to do rowwise operations. See \code{\link[=pl_fold]{pl$fold()}} 
 operations with an initial value.
 }
 \examples{
-df = pl$DataFrame(mtcars)
+df = as_polars_df(mtcars)
 
 # Make the row-wise sum of all columns
 df$with_columns(

@@ -13,6 +13,6 @@ A LazyFrame with one row
 Aggregate the columns of this LazyFrame to their sum values.
 }
 \examples{
-pl$LazyFrame(mtcars)$sum()$collect()
+as_polars_lf(mtcars)$sum()$collect()
 }
 \keyword{LazyFrame}

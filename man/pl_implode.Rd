@@ -17,5 +17,5 @@ See \code{\link[=pl_col]{?pl_col}} for details.}
 This function is syntactic sugar for \code{pl$col(...)$implode()}.
 }
 \examples{
-pl$DataFrame(iris)$select(pl$implode("Species"))
+as_polars_df(iris)$select(pl$implode("Species"))
 }

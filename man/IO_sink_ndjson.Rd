@@ -54,7 +54,7 @@ larger than RAM as it would crash the R session if it was collected into R.
 \examples{
 # sink table 'mtcars' from mem to JSON
 tmpf = tempfile(fileext = ".json")
-pl$LazyFrame(mtcars)$sink_ndjson(tmpf)
+as_polars_lf(mtcars)$sink_ndjson(tmpf)
 
 # load parquet directly into a DataFrame / memory
 pl$scan_ndjson(tmpf)$collect()
