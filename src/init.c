@@ -144,6 +144,11 @@ SEXP savvy_lit_from_series_first__impl(SEXP c_arg__value) {
     return handle_result(res);
 }
 
+SEXP savvy_concat_list__impl(SEXP c_arg__s) {
+    SEXP res = savvy_concat_list__ffi(c_arg__s);
+    return handle_result(res);
+}
+
 SEXP savvy_int_range__impl(SEXP c_arg__start, SEXP c_arg__end, SEXP c_arg__step, SEXP c_arg__dtype) {
     SEXP res = savvy_int_range__ffi(c_arg__start, c_arg__end, c_arg__step, c_arg__dtype);
     return handle_result(res);
@@ -1768,6 +1773,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_lit_null__impl", (DL_FUNC) &savvy_lit_null__impl, 0},
     {"savvy_lit_from_series__impl", (DL_FUNC) &savvy_lit_from_series__impl, 1},
     {"savvy_lit_from_series_first__impl", (DL_FUNC) &savvy_lit_from_series_first__impl, 1},
+    {"savvy_concat_list__impl", (DL_FUNC) &savvy_concat_list__impl, 1},
     {"savvy_int_range__impl", (DL_FUNC) &savvy_int_range__impl, 4},
     {"savvy_int_ranges__impl", (DL_FUNC) &savvy_int_ranges__impl, 4},
     {"savvy_date_range__impl", (DL_FUNC) &savvy_date_range__impl, 4},

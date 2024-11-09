@@ -154,3 +154,10 @@ pub fn lit_from_series_first(value: &PlRSeries) -> Result<PlRExpr> {
     let av = s.get(0).map_err(RPolarsErr::from)?.into_static();
     Ok(dsl::lit(Scalar::new(s.dtype().clone(), av)).into())
 }
+
+#[savvy]
+pub fn concat_list(s: ListSexp) -> Result<PlRExpr> {
+    let s = <Wrap<Vec<Expr>>>::from(s).0;
+    let expr = dsl::concat_list(s).map_err(RPolarsErr::from)?;
+    Ok(expr.into())
+}

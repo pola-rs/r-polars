@@ -20,6 +20,7 @@ SEXP savvy_lit_from_raw__ffi(SEXP c_arg__value);
 SEXP savvy_lit_null__ffi(void);
 SEXP savvy_lit_from_series__ffi(SEXP c_arg__value);
 SEXP savvy_lit_from_series_first__ffi(SEXP c_arg__value);
+SEXP savvy_concat_list__ffi(SEXP c_arg__s);
 SEXP savvy_int_range__ffi(SEXP c_arg__start, SEXP c_arg__end, SEXP c_arg__step, SEXP c_arg__dtype);
 SEXP savvy_int_ranges__ffi(SEXP c_arg__start, SEXP c_arg__end, SEXP c_arg__step, SEXP c_arg__dtype);
 SEXP savvy_date_range__ffi(SEXP c_arg__start, SEXP c_arg__end, SEXP c_arg__interval, SEXP c_arg__closed);

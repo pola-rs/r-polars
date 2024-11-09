@@ -237,3 +237,37 @@ pl__struct <- function(...) {
     as_struct() |>
     wrap()
 }
+
+#' Horizontally concatenate columns into a single list column
+#'
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Columns to concatenate into a
+#' single list column. Accepts expression input. Strings are parsed as column
+#' names, other non-expression inputs are parsed as literals.
+#'
+#' @inherit as_polars_expr return
+#' @examples
+#' df <- pl$DataFrame(a = list(1:2, 3, 4:5), b = list(4, integer(0), NULL))
+#'
+#' # Concatenate two existing list columns. Null values are propagated.
+#' df$with_columns(concat_list = pl$concat_list("a", "b"))
+#'
+#' # Non-list columns are cast to a list before concatenation. The output data
+#' # type is the supertype of the concatenated columns.
+#' df$select("a", concat_list = pl$concat_list("a", pl$lit("x")))
+#'
+#' # Create lagged columns and collect them into a list. This mimics a rolling
+#' # window.
+#' df <- pl$DataFrame(A = c(1, 2, 9, 2, 13))
+#' df <- df$select(
+#'   A_lag_1 = pl$col("A")$shift(1),
+#'   A_lag_2 = pl$col("A")$shift(2),
+#'   A_lag_3 = pl$col("A")$shift(3)
+#' )
+#' df$select(A_rolling = pl$concat_list("A_lag_1", "A_lag_2", "A_lag_3"))
+pl__concat_list <- function(...) {
+  wrap({
+    check_dots_unnamed()
+    parse_into_list_of_expressions(...) |>
+      concat_list()
+  })
+}
