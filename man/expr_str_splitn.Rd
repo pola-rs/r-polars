@@ -7,7 +7,7 @@
 expr_str_splitn(by, n)
 }
 \arguments{
-\item{by}{Substring to split by.}
+\item{by}{Substring to split by. Can be an Expr.}
 
 \item{n}{Number of splits to make.}
 }

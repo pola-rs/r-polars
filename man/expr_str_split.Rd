@@ -4,10 +4,12 @@
 \alias{expr_str_split}
 \title{Split the string by a substring}
 \usage{
-expr_str_split(by, inclusive = FALSE)
+expr_str_split(by, ..., inclusive = FALSE)
 }
 \arguments{
 \item{by}{Substring to split by. Can be an Expr.}
+
+\item{...}{Dots which should be empty.}
 
 \item{inclusive}{If \code{TRUE}, include the split character/string in the results.}
 }
@@ -26,5 +28,5 @@ df <- pl$DataFrame(
   by = c("_", "_", "*")
 )
 df
-df$select(pl$col("s")$str$split(by = pl$col("by"))$alias("split"))
+df$select(split = pl$col("s")$str$split(by = pl$col("by")))
 }

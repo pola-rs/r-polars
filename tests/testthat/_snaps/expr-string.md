@@ -209,6 +209,20 @@
       Caused by error:
       ! -2.0 is out of range that can be safely converted to usize
 
+---
+
+    Code
+      df$select(pl$col("a")$str$pad_start(5, "multiple_chars"))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$select()`.
+      Caused by error in `pl$col("a")$str$pad_start()`:
+      ! Evaluation failed in `$pad_start()`.
+      Caused by error:
+      ! Expected a string with one character only, currently has 14 (from "multiple_chars").
+
 # encode decode
 
     Code
@@ -277,6 +291,18 @@
       Caused by error:
       ! Argument `group_index` must be numeric, not character
 
+# str$extract_all
+
+    Code
+      pl$select(pl$lit("abc")$str$extract_all(1))
+    Condition
+      Error:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! invalid series dtype: expected `String`, got `f64`
+
 # str$count_matches
 
     Code
@@ -288,6 +314,52 @@
       ! Evaluation failed in `$collect()`.
       Caused by error:
       ! invalid series dtype: expected `String`, got `f64`
+
+# str$split
+
+    Code
+      df$select(pl$col("x")$str$split(by = 42))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! invalid series dtype: expected `String`, got `f64`
+
+---
+
+    Code
+      df$select(pl$col("x")$str$split(by = "foo", inclusive = 42))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$select()`.
+      Caused by error in `pl$col("x")$str$split()`:
+      ! Evaluation failed in `$split()`.
+      Caused by error:
+      ! Argument `inclusive` must be logical, not double
+
+# str$split_exact
+
+    Code
+      pl$lit("42")$str$split_exact(by = "a", n = -1, inclusive = TRUE)
+    Condition
+      Error in `pl$lit("42")$str$split_exact()`:
+      ! Evaluation failed in `$split_exact()`.
+      Caused by error:
+      ! -1.0 is out of range that can be safely converted to usize
+
+---
+
+    Code
+      pl$lit("42")$str$split_exact(by = "a", n = 2, inclusive = "joe")
+    Condition
+      Error in `pl$lit("42")$str$split_exact()`:
+      ! Evaluation failed in `$split_exact()`.
+      Caused by error:
+      ! Argument `inclusive` must be logical, not character
 
 # str$replace
 

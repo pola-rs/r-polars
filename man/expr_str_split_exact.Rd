@@ -4,12 +4,14 @@
 \alias{expr_str_split_exact}
 \title{Split the string by a substring using \code{n} splits}
 \usage{
-expr_str_split_exact(by, n, inclusive = FALSE)
+expr_str_split_exact(by, n, ..., inclusive = FALSE)
 }
 \arguments{
-\item{by}{Substring to split by.}
+\item{by}{Substring to split by. Can be an Expr.}
 
 \item{n}{Number of splits to make.}
+
+\item{...}{Dots which should be empty.}
 
 \item{inclusive}{If \code{TRUE}, include the split character/string in the results.}
 }

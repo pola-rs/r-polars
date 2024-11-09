@@ -179,7 +179,7 @@ test_that("str$concat", {
     "deprecated"
   )
 
-  # TODO-REWRITE: uncomment later
+  # TODO-REWRITE: requires pl$element()
   # Series list of strings to Series of concatenated strings
   # df <- pl$DataFrame(x = list(c("a", "b", "c"), c("1", "2", "æ")))
   # expect_equal(
@@ -359,10 +359,18 @@ test_that("str$pad_start str$pad_start", {
     pl$DataFrame(a = c("wwwwcow", "wmonkey", NA, "hippopotamus"))
   )
 
-  expect_snapshot(df$select(pl$col("a")$str$pad_start("wrong_string", "w")), error = TRUE)
-  expect_snapshot(df$select(pl$col("a")$str$pad_start(-2, "w")), error = TRUE)
-  # TODO-REWRITE: this should error
-  # expect_snapshot(df$select(pl$col("a")$str$pad_start(5, "multiple_chars")), error = TRUE)
+  expect_snapshot(
+    df$select(pl$col("a")$str$pad_start("wrong_string", "w")),
+    error = TRUE
+  )
+  expect_snapshot(
+    df$select(pl$col("a")$str$pad_start(-2, "w")),
+    error = TRUE
+  )
+  expect_snapshot(
+    df$select(pl$col("a")$str$pad_start(5, "multiple_chars")),
+    error = TRUE
+  )
 })
 
 
@@ -486,13 +494,11 @@ test_that("str$extract", {
     pl$DataFrame(x = c("messi", NA, "ronaldo"))
   )
 
-  # wrong input
   expect_equal(
     pl$DataFrame(x = "abc")$with_columns(pl$col("x")$str$extract(42, 42)),
     pl$DataFrame(x = NA_character_)
   )
 
-  # TODO-REWRITE: -> breaking change, this used to work
   expect_snapshot(
     pl$DataFrame(x = "abc")$with_columns(pl$col("x")$str$extract(pl$lit("a"), "2")),
     error = TRUE
@@ -504,20 +510,18 @@ test_that("str$extract", {
   )
 })
 
-# TODO-REWRITE: why does it fail?
-# "Unsupported class for `as_polars_series()`: PlRExpr"
-# test_that("str$extract_all", {
-#   df <- pl$DataFrame(x = c("123 bla 45 asd", "xyz 678 910t"))
-#   expect_equal(
-#     df$select(pl$col("x")$str$extract_all(r"((\d+))")),
-#     pl$DataFrame(x = list(c("123", "45"), c("678", "910")))
-#   )
+test_that("str$extract_all", {
+  df <- pl$DataFrame(x = c("123 bla 45 asd", "xyz 678 910t"))
+  expect_equal(
+    df$select(pl$col("x")$str$extract_all(r"((\d+))")),
+    pl$DataFrame(x = list(c("123", "45"), c("678", "910")))
+  )
 
-#   expect_snapshot(
-#     pl$lit("abc")$str$extract_all(complex(2)),
-#     snapshot = TRUE
-#   )
-# })
+  expect_snapshot(
+    pl$select(pl$lit("abc")$str$extract_all(1)),
+    error = TRUE
+  )
+})
 
 
 test_that("str$count_matches", {
@@ -539,91 +543,102 @@ test_that("str$count_matches", {
   )
 })
 
+test_that("str$split", {
+  df <- pl$DataFrame(x = c("foo bar", "foo-bar", "foo bar baz"))
+  expect_equal(
+    df$select(pl$col("x")$str$split(by = " ")),
+    pl$DataFrame(x = list(c("foo", "bar"), "foo-bar", c("foo", "bar", "baz")))
+  )
 
-# TODO-REWRITE: requires better handling of struct in waldo
-# test_that("str$split", {
-#   expect_equal(
-#     pl$lit(c("foo bar", "foo-bar", "foo bar baz"))$str$split(by = " ")$to_r(),
-#     list(c("foo", "bar"), "foo-bar", c("foo", "bar", "baz"))
-#   )
+  expect_equal(
+    df$select(pl$col("x")$str$split(by = " ", inclusive = TRUE)),
+    pl$DataFrame(x = list(c("foo ", "bar"), "foo-bar", c("foo ", "bar ", "baz")))
+  )
 
-#   expect_equal(
-#     pl$lit(c("foo bar", "foo-bar", "foo bar baz"))$str$split(by = " ", inclusive = TRUE)$to_r(),
-#     list(c("foo ", "bar"), "foo-bar", c("foo ", "bar ", "baz"))
-#   )
+  expect_equal(
+    df$select(pl$col("x")$str$split(by = "-", inclusive = TRUE)),
+    pl$DataFrame(x = list("foo bar", c("foo-", "bar"), "foo bar baz"))
+  )
 
-#   expect_equal(
-#     pl$lit(c("foo bar", "foo-bar", "foo bar baz"))$str$split(by = "-", inclusive = TRUE)$to_r(),
-#     list("foo bar", c("foo-", "bar"), "foo bar baz")
-#   )
+  expect_snapshot(
+    df$select(pl$col("x")$str$split(by = 42)),
+    error = TRUE
+  )
 
-#   expect_grepl_error(
-#     pl$DataFrame(pl$lit("42")$str$split(by = 42L, inclusive = TRUE)),
-#     "invalid series dtype"
-#   )
+  expect_snapshot(
+    df$select(pl$col("x")$str$split(by = "foo", inclusive = 42)),
+    error = TRUE
+  )
 
-#   expect_grepl_error(
-#     pl$lit("42")$str$split(by = "blop", inclusive = 42),
-#     "bool"
-#   )
+  # with expression in "by" arg
+  df <- pl$DataFrame(
+    s = c("foo^bar", "foo_bar", "foo*bar*baz"),
+    by = c("_", "_", "*")
+  )
+  expect_equal(
+    df$select(pl$col("s")$str$split(by = pl$col("by"))),
+    pl$DataFrame(s = list("foo^bar", c("foo", "bar"), c("foo", "bar", "baz")))
+  )
+})
 
-#   # with expression in "by" arg
-#   df <- pl$DataFrame(s = c("foo^bar", "foo_bar", "foo*bar*baz"), "by" = c("_", "_", "*"))
-#   expect_equal(
-#     df$select(pl$col("s")$str$split(by = pl$col("by")))[[1]],
-#     list("foo^bar", c("foo", "bar"), c("foo", "bar", "baz"))
-#   )
-# })
+test_that("str$split_exact", {
+  df <- pl$DataFrame(x = c("foo bar", "bar foo", "foo bar baz"))
+  expect_equal(
+    df$select(pl$col("x")$str$split_exact(by = " ", n = 1)),
+    pl$DataFrame(
+      x = data.frame(
+        field_0 = c("foo", "bar", "foo"),
+        field_1 = c("bar", "foo", "bar")
+      )
+    )
+  )
+  expect_equal(
+    df$select(pl$col("x")$str$split_exact(by = " ", n = 2)),
+    pl$DataFrame(
+      x = data.frame(
+        field_0 = c("foo", "bar", "foo"),
+        field_1 = c("bar", "foo", "bar"),
+        field_2 = c(NA, NA, "baz")
+      )
+    )
+  )
+  expect_snapshot(
+    pl$lit("42")$str$split_exact(by = "a", n = -1, inclusive = TRUE),
+    error = TRUE
+  )
+  expect_snapshot(
+    pl$lit("42")$str$split_exact(by = "a", n = 2, inclusive = "joe"),
+    error = TRUE
+  )
+})
 
-# test_that("str$split_exact", {
-#   expect_equal(
-#     pl$lit(c("foo bar", "bar foo", "foo bar baz"))$str$split_exact(by = " ", n = 1)$to_r(),
-#     structure(list(field_0 = c("foo", "bar", "foo"), field_1 = c("bar", "foo", "bar")), is_struct = TRUE)
-#   )
+test_that("str$splitn", {
+  dat <- pl$DataFrame(x = c("a_1", NA, "c", "d_4-5"))
+  expect_equal(
+    dat$with_columns(pl$col("x")$str$splitn(by = "_", 1)),
+    pl$DataFrame(x = data.frame(field_0 = c("a_1", NA, "c", "d_4-5")))
+  )
 
-#   expect_equal(
-#     pl$lit(c("foo bar", "bar foo", "foo bar baz"))$str$split_exact(by = " ", n = 2)$to_r(),
-#     structure(list(field_0 = c("foo", "bar", "foo"), field_1 = c("bar", "foo", "bar"), field_2 = c(NA, NA, "baz")), is_struct = TRUE)
-#   )
+  expect_equal(
+    dat$with_columns(pl$col("x")$str$splitn(by = "_", 2)),
+    pl$DataFrame(
+      x = data.frame(
+        field_0 = c("a", NA, "c", "d"),
+        field_1 = c("1", NA, NA, "4-5")
+      )
+    )
+  )
 
-#   expect_equal(
-#     pl$lit(c("foo bar", "foo-bar", "foo bar baz"))$str$split(by = "-", inclusive = TRUE)$to_r(),
-#     list("foo bar", c("foo-", "bar"), "foo bar baz")
-#   )
-
-#   expect_grepl_error(
-#     pl$lit("42")$str$split_exact(by = "a", n = -1, inclusive = TRUE),
-#     "cannot be less than zero"
-#   )
-
-#   expect_grepl_error(
-#     pl$lit("42")$str$split_exact(by = "a", n = 2, inclusive = "joe"),
-#     "bool"
-#   )
-# })
-
-
-# test_that("str$split_exact", {
-#   dat <- pl$DataFrame(x = c("a_1", NA, "c", "d_4-5"))
-#   expect_equal(
-#     dat$with_columns(pl$col("x")$str$splitn(by = "_", 1)),
-#     pl$DataFrame(field_0 = c("a_1", NA, "c", "d_4-5"))
-#   )
-
-#   expect_equal(
-#     dat$with_columns(pl$col("x")$str$splitn(by = "_", 2)),
-#     pl$DataFrame(field_0 = c("a", NA, "c", "d"), field_1 = c("1", NA, NA, "4-5"))
-#   )
-
-#   expect_equal(
-#     dat$with_columns(pl$col("x")$str$splitn(by = "-", 2)),
-#     pl$DataFrame(
-#       field_0 = c("a_1", NA, "c", "d_4"),
-#       field_1 = c(NA, NA, NA, "5")
-#     )
-#   )
-# })
-
+  expect_equal(
+    dat$with_columns(pl$col("x")$str$splitn(by = "-", 2)),
+    pl$DataFrame(
+      x = data.frame(
+        field_0 = c("a_1", NA, "c", "d_4"),
+        field_1 = c(NA, NA, NA, "5")
+      )
+    )
+  )
+})
 
 test_that("str$replace", {
   dat <- pl$DataFrame(x = c("123abc", "abc456"))
