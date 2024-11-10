@@ -34,9 +34,14 @@ pub use polars_core;
 pub use smartstring;
 
 use crate::concurrent::{RFnOutput, RFnSignature};
-use crate::utils::extendr_concurrent::{InitCell, ThreadCom};
-type ThreadComStorage = InitCell<std::sync::RwLock<Option<ThreadCom<RFnSignature, RFnOutput>>>>;
-static CONFIG: ThreadComStorage = InitCell::new();
+use crate::utils::extendr_concurrent::ThreadCom;
+type ThreadComStorage = Lazy<std::sync::RwLock<Option<ThreadCom<RFnSignature, RFnOutput>>>>;
+
+use once_cell::sync::Lazy;
+use std::sync::RwLock;
+
+static CONFIG: Lazy<RwLock<Option<ThreadCom<RFnSignature, RFnOutput>>>> =
+    Lazy::new(|| RwLock::new(None));
 pub use crate::rbackground::RBGPOOL;
 
 // Macro to generate exports

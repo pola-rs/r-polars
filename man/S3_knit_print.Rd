@@ -4,7 +4,7 @@
 \alias{knit_print.RPolarsDataFrame}
 \title{knit print polars DataFrame}
 \usage{
-\method{knit_print}{RPolarsDataFrame}(x, ...)
+knit_print.RPolarsDataFrame(x, ...)
 }
 \arguments{
 \item{x}{a polars DataFrame to knit_print}

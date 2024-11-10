@@ -1,12 +1,11 @@
 use extendr_api::prelude::*;
 
 //use std::sync::mpsc::{Receiver, Sender};
+use once_cell::sync::Lazy;
 use std::sync::RwLock;
 use std::thread;
 
 use flume::{Receiver, Sender};
-
-pub use state::InitCell;
 
 //shamelessly make Robj send + sync
 //no crashes so far for the 'data'-SEXPS as Vectors, lists, pairlists
@@ -96,67 +95,45 @@ where
             .expect("thread failed recieve, likely a user interrupt")
     }
 
-    pub fn update_global(&self, conf: &InitCell<RwLock<Option<ThreadCom<S, R>>>>)
-    where
-        S: Send,
-        R: Send,
-    {
-        //set or update global thread_com
-        let conf_status = conf.set(RwLock::new(Some(self.clone())));
-        //dbg!(conf_status);
-        if !conf_status {
-            let mut gtc = conf
-                .get()
-                .write()
-                .expect("failed to modify GLOBAL therad_com");
-            *gtc = Some(self.clone());
-        }
-    }
-
-    pub fn kill_global(conf: &InitCell<RwLock<Option<ThreadCom<S, R>>>>) {
-        let mut val = conf
-            .get()
+    // Update the global state with the current ThreadCom instance
+    pub fn update_global(&self, conf: &Lazy<RwLock<Option<ThreadCom<S, R>>>>) {
+        let mut global = conf
             .write()
-            .expect("another thread crashed while touching CONFIG");
-        *val = None;
+            .expect("Failed to acquire write lock on global ThreadCom");
+        *global = Some(self.clone());
     }
 
-    pub fn from_global(config: &InitCell<RwLock<Option<ThreadCom<S, R>>>>) -> Self
-    where
-        S: Send,
-        R: Send,
-    {
-        let thread_com = config
-            .get()
+    // Clear the global state
+    pub fn kill_global(conf: &Lazy<RwLock<Option<ThreadCom<S, R>>>>) {
+        let mut global = conf
+            .write()
+            .expect("Failed to acquire write lock on global ThreadCom");
+        *global = None;
+    }
+
+    // Retrieve a copy of ThreadCom from the global state, panics if uninitialized
+    pub fn from_global(conf: &Lazy<RwLock<Option<ThreadCom<S, R>>>>) -> Self {
+        let global = conf
             .read()
-            .expect("failded to restore thread_com")
+            .expect("Failed to acquire read lock on global ThreadCom");
+        global
             .as_ref()
-            .unwrap()
-            .clone();
-
-        thread_com
+            .expect("Global ThreadCom is uninitialized")
+            .clone()
     }
 
+    // Try to retrieve ThreadCom from the global state; returns an error if uninitialized
     pub fn try_from_global(
-        config: &InitCell<RwLock<Option<ThreadCom<S, R>>>>,
-    ) -> std::result::Result<Self, String>
-    where
-        S: Send,
-        R: Send,
-    {
-        let lock = config.try_get();
-        let inner_lock = lock
-            .ok_or("internal error: global ThreadCom storage has not already been initialized")?
+        conf: &Lazy<RwLock<Option<ThreadCom<S, R>>>>,
+    ) -> std::result::Result<Self, String> {
+        let global = conf
             .read()
-            .expect("internal error: RwLock was poisoned (some other thread used the RwLock but panicked)");
+            .expect("Failed to acquire read lock on global ThreadCom");
 
-        let opt_thread_com = inner_lock.as_ref();
-
-        let thread_com = opt_thread_com
-            .ok_or("Global ThreadCom storage is empty")?
-            .clone();
-
-        Ok(thread_com)
+        match global.as_ref() {
+            Some(thread_com) => Ok(thread_com.clone()),
+            None => Err("Global ThreadCom is empty".to_string()),
+        }
     }
 }
 
@@ -180,7 +157,7 @@ pub fn concurrent_handler<F, I, R, S, T>(
     f: F,
     //y: Y,
     i: I,
-    conf: &InitCell<RwLock<Option<ThreadCom<S, R>>>>,
+    conf: &Lazy<RwLock<Option<ThreadCom<S, R>>>>,
 ) -> std::result::Result<T, Box<dyn std::error::Error>>
 where
     F: FnOnce(ThreadCom<S, R>) -> T + Send + 'static,

@@ -16,6 +16,10 @@
       as_polars_df(df)
       ```
       
+      ```
+      ## Warning in raw_block(x, "html", ...): raw_block() requires Pandoc >= 2.0.0
+      ```
+      
       ```{=html}
       <div><style>
       .dataframe > thead > tr > th,
@@ -45,6 +49,10 @@
       as_polars_df(df)
       ```
       
+      ```
+      ## Warning in raw_block(x, "html", ...): raw_block() requires Pandoc >= 2.0.0
+      ```
+      
       ```{=html}
       <div><style>
       .dataframe > thead > tr > th,
@@ -55,69 +63,6 @@
       </style>
       <small>shape: (3, 2)</small><table border="1" class="dataframe"><thead><tr><th>a</th><th>b</th></tr><tr><td>i32</td><td>str</td></tr></thead><tbody><tr><td>1</td><td>"a"</td></tr><tr><td>2</td><td>"b"</td></tr><tr><td>3</td><td>"c"</td></tr></tbody></table></div>
       ```
-
----
-
-    Code
-      .knit_file("dataframe.Rmd", use = "rmarkdown")
-    Output
-      
-      ``` r
-      df = data.frame(a = 1:3, b = letters[1:3])
-      as_polars_df(df)
-      ```
-      
-      <div><style>
-      .dataframe > thead > tr > th,
-      .dataframe > tbody > tr > td {
-        text-align: right;
-        white-space: pre-wrap;
-      }
-      </style>
-      <small>shape: (3, 2)</small><table border="1" class="dataframe"><thead><tr><th>a</th><th>b</th></tr><tr><td>i32</td><td>str</td></tr></thead><tbody><tr><td>1</td><td>"a"</td></tr><tr><td>2</td><td>"b"</td></tr><tr><td>3</td><td>"c"</td></tr></tbody></table></div>
-
----
-
-    Code
-      .knit_file("dataframe.Rmd", use = "rmarkdown")
-    Output
-      
-      ``` r
-      df = data.frame(a = 1:3, b = letters[1:3])
-      as_polars_df(df)
-      ```
-      
-          ## shape: (3, 2)
-          ## ┌─────┬─────┐
-          ## │ a   ┆ b   │
-          ## │ --- ┆ --- │
-          ## │ i32 ┆ str │
-          ## ╞═════╪═════╡
-          ## │ 1   ┆ a   │
-          ## │ 2   ┆ b   │
-          ## │ 3   ┆ c   │
-          ## └─────┴─────┘
-
----
-
-    Code
-      .knit_file("flights.Rmd")
-    Output
-      
-      ``` r
-      nycflights13::flights |>
-        to_html_table(5, 5) |>
-        writeLines()
-      ```
-      
-      <div><style>
-      .dataframe > thead > tr > th,
-      .dataframe > tbody > tr > td {
-        text-align: right;
-        white-space: pre-wrap;
-      }
-      </style>
-      <small>shape: (336_776, 19)</small><table border="1" class="dataframe"><thead><tr><th>year</th><th>month</th><th>&hellip;</th><th>minute</th><th>time_hour</th></tr><tr><td>int</td><td>int</td><td>&hellip;</td><td>dbl</td><td>dttm</td></tr></thead><tbody><tr><td>2013</td><td>1</td><td>&hellip;</td><td>15</td><td>2013-01-01 05:00:00</td></tr><tr><td>2013</td><td>1</td><td>&hellip;</td><td>29</td><td>2013-01-01 05:00:00</td></tr><tr><td>2013</td><td>9</td><td>&hellip;</td><td>59</td><td>2013-09-30 11:00:00</td></tr><tr><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td></tr><tr><td>2013</td><td>9</td><td>&hellip;</td><td>59</td><td>2013-09-30 11:00:00</td></tr><tr><td>2013</td><td>9</td><td>&hellip;</td><td>40</td><td>2013-09-30 08:00:00</td></tr></tbody></table></div>
 
 # to_html_table
 
