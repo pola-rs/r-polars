@@ -579,7 +579,7 @@ expr_list_tail <- function(n = 5L) {
 expr_list_eval <- function(expr, ..., parallel = FALSE) {
   wrap({
     check_dots_empty0(...)
-    self$`_rexpr`$list_eval(expr, parallel)
+    self$`_rexpr`$list_eval(as_polars_expr(expr)$`_rexpr`, parallel)
   })
 }
 

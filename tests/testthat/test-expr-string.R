@@ -179,15 +179,12 @@ test_that("str$concat", {
     "deprecated"
   )
 
-  # TODO-REWRITE: requires pl$element()
-  # Series list of strings to Series of concatenated strings
-  # df <- pl$DataFrame(x = list(c("a", "b", "c"), c("1", "2", "æ")))
-  # expect_equal(
-  #   df$select(pl$col("x")$list$eval(pl$element()$str$join())$list$first()),
-  #   pl$DataFrame(x = c("a b c", "1 2 æ"))
-  # )
+  df <- pl$DataFrame(x = list(c("a", "b", "c"), c("1", "2", "æ")))
+  expect_equal(
+    df$select(pl$col("x")$list$eval(pl$element()$str$join())$list$first()),
+    pl$DataFrame(x = c("abc", "12æ"))
+  )
 })
-
 
 test_that("to_uppercase, to_lowercase", {
   # concatenate a Series of strings to a single string

@@ -5,7 +5,7 @@
 \alias{pl}
 \title{Polars top-level function namespace}
 \format{
-An object of class \code{polars_object} of length 52.
+An object of class \code{polars_object} of length 53.
 }
 \usage{
 pl
