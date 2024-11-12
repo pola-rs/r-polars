@@ -49,6 +49,18 @@ impl PlRExpr {
         self.inner.clone().meta().has_multiple_outputs().try_into()
     }
 
+    fn meta_is_regex_projection(&self) -> Result<Sexp> {
+        self.inner.clone().meta().is_regex_projection().try_into()
+    }
+
+    fn meta_is_column_selection(&self, allow_aliasing: bool) -> Result<Sexp> {
+        self.inner
+            .clone()
+            .meta()
+            .is_column_selection(allow_aliasing)
+            .try_into()
+    }
+
     fn _meta_selector_add(&self, other: &PlRExpr) -> Result<Self> {
         let out = self
             .inner
@@ -94,25 +106,13 @@ impl PlRExpr {
         Ok(self.inner.clone().meta()._into_selector().into())
     }
 
-    fn meta_tree_format(&self) -> Result<Sexp> {
+    fn compute_tree_format(&self, display_as_dot: bool) -> Result<Sexp> {
         let e = self
             .inner
             .clone()
             .meta()
-            .into_tree_formatter()
+            .into_tree_formatter(display_as_dot)
             .map_err(RPolarsErr::from)?;
         format!("{e}").try_into()
-    }
-
-    fn meta_is_regex_projection(&self) -> Result<Sexp> {
-        self.inner.clone().meta().is_regex_projection().try_into()
-    }
-
-    fn meta_is_column_selection(&self, allow_aliasing: bool) -> Result<Sexp> {
-        self.inner
-            .clone()
-            .meta()
-            .is_column_selection(allow_aliasing)
-            .try_into()
     }
 }

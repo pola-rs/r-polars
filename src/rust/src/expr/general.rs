@@ -159,6 +159,7 @@ impl PlRExpr {
                 nulls_last,
                 multithreaded: true,
                 maintain_order: false,
+                limit: None,
             })
             .into())
     }
@@ -172,6 +173,7 @@ impl PlRExpr {
                 nulls_last,
                 multithreaded: true,
                 maintain_order: false,
+                limit: None,
             })
             .into())
     }
@@ -195,6 +197,7 @@ impl PlRExpr {
                     nulls_last: nulls_last.to_vec(),
                     multithreaded,
                     maintain_order,
+                    limit: None,
                 },
             )
             .into())

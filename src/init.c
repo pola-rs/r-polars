@@ -1159,6 +1159,16 @@ SEXP savvy_PlRExpr_meta_has_multiple_outputs__impl(SEXP self__) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_meta_is_regex_projection__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_meta_is_regex_projection__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_meta_is_column_selection__impl(SEXP self__, SEXP c_arg__allow_aliasing) {
+    SEXP res = savvy_PlRExpr_meta_is_column_selection__ffi(self__, c_arg__allow_aliasing);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr__meta_selector_add__impl(SEXP self__, SEXP c_arg__other) {
     SEXP res = savvy_PlRExpr__meta_selector_add__ffi(self__, c_arg__other);
     return handle_result(res);
@@ -1179,18 +1189,8 @@ SEXP savvy_PlRExpr__meta_as_selector__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_meta_tree_format__impl(SEXP self__) {
-    SEXP res = savvy_PlRExpr_meta_tree_format__ffi(self__);
-    return handle_result(res);
-}
-
-SEXP savvy_PlRExpr_meta_is_regex_projection__impl(SEXP self__) {
-    SEXP res = savvy_PlRExpr_meta_is_regex_projection__ffi(self__);
-    return handle_result(res);
-}
-
-SEXP savvy_PlRExpr_meta_is_column_selection__impl(SEXP self__, SEXP c_arg__allow_aliasing) {
-    SEXP res = savvy_PlRExpr_meta_is_column_selection__ffi(self__, c_arg__allow_aliasing);
+SEXP savvy_PlRExpr_compute_tree_format__impl(SEXP self__, SEXP c_arg__display_as_dot) {
+    SEXP res = savvy_PlRExpr_compute_tree_format__ffi(self__, c_arg__display_as_dot);
     return handle_result(res);
 }
 
@@ -1976,13 +1976,13 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_meta_output_name__impl", (DL_FUNC) &savvy_PlRExpr_meta_output_name__impl, 1},
     {"savvy_PlRExpr_meta_undo_aliases__impl", (DL_FUNC) &savvy_PlRExpr_meta_undo_aliases__impl, 1},
     {"savvy_PlRExpr_meta_has_multiple_outputs__impl", (DL_FUNC) &savvy_PlRExpr_meta_has_multiple_outputs__impl, 1},
+    {"savvy_PlRExpr_meta_is_regex_projection__impl", (DL_FUNC) &savvy_PlRExpr_meta_is_regex_projection__impl, 1},
+    {"savvy_PlRExpr_meta_is_column_selection__impl", (DL_FUNC) &savvy_PlRExpr_meta_is_column_selection__impl, 2},
     {"savvy_PlRExpr__meta_selector_add__impl", (DL_FUNC) &savvy_PlRExpr__meta_selector_add__impl, 2},
     {"savvy_PlRExpr__meta_selector_and__impl", (DL_FUNC) &savvy_PlRExpr__meta_selector_and__impl, 2},
     {"savvy_PlRExpr__meta_selector_sub__impl", (DL_FUNC) &savvy_PlRExpr__meta_selector_sub__impl, 2},
     {"savvy_PlRExpr__meta_as_selector__impl", (DL_FUNC) &savvy_PlRExpr__meta_as_selector__impl, 1},
-    {"savvy_PlRExpr_meta_tree_format__impl", (DL_FUNC) &savvy_PlRExpr_meta_tree_format__impl, 1},
-    {"savvy_PlRExpr_meta_is_regex_projection__impl", (DL_FUNC) &savvy_PlRExpr_meta_is_regex_projection__impl, 1},
-    {"savvy_PlRExpr_meta_is_column_selection__impl", (DL_FUNC) &savvy_PlRExpr_meta_is_column_selection__impl, 2},
+    {"savvy_PlRExpr_compute_tree_format__impl", (DL_FUNC) &savvy_PlRExpr_compute_tree_format__impl, 2},
     {"savvy_PlRExpr_name_keep__impl", (DL_FUNC) &savvy_PlRExpr_name_keep__impl, 1},
     {"savvy_PlRExpr_name_prefix__impl", (DL_FUNC) &savvy_PlRExpr_name_prefix__impl, 2},
     {"savvy_PlRExpr_name_suffix__impl", (DL_FUNC) &savvy_PlRExpr_name_suffix__impl, 2},

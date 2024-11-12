@@ -183,6 +183,7 @@ impl PlRLazyFrame {
                     nulls_last: nulls_last.to_vec(),
                     maintain_order,
                     multithreaded,
+                    limit: None,
                 },
             )
             .into())

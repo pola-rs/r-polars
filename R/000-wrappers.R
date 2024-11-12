@@ -1557,6 +1557,18 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_neopolars__sealed")
   }
 }
 
+`PlRExpr_meta_is_regex_projection` <- function(self) {
+  function() {
+    .Call(savvy_PlRExpr_meta_is_regex_projection__impl, `self`)
+  }
+}
+
+`PlRExpr_meta_is_column_selection` <- function(self) {
+  function(`allow_aliasing`) {
+    .Call(savvy_PlRExpr_meta_is_column_selection__impl, `self`, `allow_aliasing`)
+  }
+}
+
 `PlRExpr__meta_selector_add` <- function(self) {
   function(`other`) {
     `other` <- .savvy_extract_ptr(`other`, "PlRExpr")
@@ -1584,21 +1596,9 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_neopolars__sealed")
   }
 }
 
-`PlRExpr_meta_tree_format` <- function(self) {
-  function() {
-    .Call(savvy_PlRExpr_meta_tree_format__impl, `self`)
-  }
-}
-
-`PlRExpr_meta_is_regex_projection` <- function(self) {
-  function() {
-    .Call(savvy_PlRExpr_meta_is_regex_projection__impl, `self`)
-  }
-}
-
-`PlRExpr_meta_is_column_selection` <- function(self) {
-  function(`allow_aliasing`) {
-    .Call(savvy_PlRExpr_meta_is_column_selection__impl, `self`, `allow_aliasing`)
+`PlRExpr_compute_tree_format` <- function(self) {
+  function(`display_as_dot`) {
+    .Call(savvy_PlRExpr_compute_tree_format__impl, `self`, `display_as_dot`)
   }
 }
 
@@ -2117,13 +2117,13 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_neopolars__sealed")
   e$`meta_output_name` <- `PlRExpr_meta_output_name`(ptr)
   e$`meta_undo_aliases` <- `PlRExpr_meta_undo_aliases`(ptr)
   e$`meta_has_multiple_outputs` <- `PlRExpr_meta_has_multiple_outputs`(ptr)
+  e$`meta_is_regex_projection` <- `PlRExpr_meta_is_regex_projection`(ptr)
+  e$`meta_is_column_selection` <- `PlRExpr_meta_is_column_selection`(ptr)
   e$`_meta_selector_add` <- `PlRExpr__meta_selector_add`(ptr)
   e$`_meta_selector_and` <- `PlRExpr__meta_selector_and`(ptr)
   e$`_meta_selector_sub` <- `PlRExpr__meta_selector_sub`(ptr)
   e$`_meta_as_selector` <- `PlRExpr__meta_as_selector`(ptr)
-  e$`meta_tree_format` <- `PlRExpr_meta_tree_format`(ptr)
-  e$`meta_is_regex_projection` <- `PlRExpr_meta_is_regex_projection`(ptr)
-  e$`meta_is_column_selection` <- `PlRExpr_meta_is_column_selection`(ptr)
+  e$`compute_tree_format` <- `PlRExpr_compute_tree_format`(ptr)
   e$`name_keep` <- `PlRExpr_name_keep`(ptr)
   e$`name_prefix` <- `PlRExpr_name_prefix`(ptr)
   e$`name_suffix` <- `PlRExpr_name_suffix`(ptr)

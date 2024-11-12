@@ -186,6 +186,7 @@ expr_meta_root_names <- function() {
   self$`_rexpr`$meta_root_names()
 }
 
+# TODO: add equivalent of meta.show_graph of Python Polars
 #' Format the expression as a tree
 #'
 #' @return A character vector
@@ -194,9 +195,8 @@ expr_meta_root_names <- function() {
 #' my_expr$meta$tree_format() |>
 #'   cat()
 expr_meta_tree_format <- function() {
-  wrap({
-    self$`_rexpr`$meta_tree_format()
-  })
+  self$`_rexpr`$compute_tree_format(FALSE) |>
+    wrap()
 }
 
 # TODO: add examples with selectors when implemented
