@@ -165,7 +165,7 @@ expr_dt_replace_time_zone <- function(
 #' df$with_columns(truncated = pl$col("datetime")$dt$truncate("30m"))
 expr_dt_truncate <- function(every) {
   wrap({
-    every <- parse_as_polars_duration_string(every, default = "0ns")
+    every <- parse_as_duration_string(every, default = "0ns")
     self$`_rexpr`$dt_truncate(as_polars_expr(every, as_lit = TRUE)$`_rexpr`)
   })
 }
@@ -202,7 +202,7 @@ expr_dt_truncate <- function(every) {
 #' df$with_columns(round = pl$col("datetime")$dt$round("1h"))
 expr_dt_round <- function(every) {
   wrap({
-    every <- parse_as_polars_duration_string(every, default = "0ns")
+    every <- parse_as_duration_string(every, default = "0ns")
     self$`_rexpr`$dt_round(as_polars_expr(every, as_lit = TRUE)$`_rexpr`)
   })
 }
