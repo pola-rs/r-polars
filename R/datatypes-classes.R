@@ -282,3 +282,13 @@ datatype__is_temporal <- function() {
 datatype__is_nested <- function() {
   inherits(self, "polars_dtype_nested")
 }
+
+datatype__max <- function() {
+  self$`_dt`$max() |>
+    wrap()
+}
+
+datatype__min <- function() {
+  self$`_dt`$min() |>
+    wrap()
+}

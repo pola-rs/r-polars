@@ -470,6 +470,18 @@ class(`PlRDataFrame`) <- c("PlRDataFrame__bundle", "savvy_neopolars__sealed")
   }
 }
 
+`PlRDataType_max` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRDataType_max__impl, `self`))
+  }
+}
+
+`PlRDataType_min` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRDataType_min__impl, `self`))
+  }
+}
+
 `PlRDataType_eq` <- function(self) {
   function(`other`) {
     `other` <- .savvy_extract_ptr(`other`, "PlRDataType")
@@ -490,6 +502,8 @@ class(`PlRDataFrame`) <- c("PlRDataFrame__bundle", "savvy_neopolars__sealed")
   e$`print` <- `PlRDataType_print`(ptr)
   e$`_get_dtype_names` <- `PlRDataType__get_dtype_names`(ptr)
   e$`_get_datatype_fields` <- `PlRDataType__get_datatype_fields`(ptr)
+  e$`max` <- `PlRDataType_max`(ptr)
+  e$`min` <- `PlRDataType_min`(ptr)
   e$`eq` <- `PlRDataType_eq`(ptr)
   e$`ne` <- `PlRDataType_ne`(ptr)
 

@@ -70,6 +70,8 @@ SEXP savvy_PlRDataType_new_struct__ffi(SEXP c_arg__fields);
 SEXP savvy_PlRDataType_print__ffi(SEXP self__);
 SEXP savvy_PlRDataType__get_dtype_names__ffi(SEXP self__);
 SEXP savvy_PlRDataType__get_datatype_fields__ffi(SEXP self__);
+SEXP savvy_PlRDataType_max__ffi(SEXP self__);
+SEXP savvy_PlRDataType_min__ffi(SEXP self__);
 SEXP savvy_PlRDataType_eq__ffi(SEXP self__, SEXP c_arg__other);
 SEXP savvy_PlRDataType_ne__ffi(SEXP self__, SEXP c_arg__other);
 

@@ -1,4 +1,5 @@
-use crate::prelude::*;
+use crate::{prelude::*, PlRExpr, RPolarsErr};
+use polars::lazy::dsl;
 use polars_core::utils::arrow::array::Utf8ViewArray;
 use savvy::{
     r_println, savvy, EnvironmentSexp, ListSexp, NullSexp, NumericScalar, NumericSexp,
@@ -331,6 +332,16 @@ impl PlRDataType {
             }
             _ => Ok(NullSexp.into()),
         }
+    }
+
+    fn max(&self) -> Result<PlRExpr> {
+        let v = self.dt.max().map_err(RPolarsErr::from)?;
+        Ok(dsl::lit(v).into())
+    }
+
+    fn min(&self) -> Result<PlRExpr> {
+        let v = self.dt.min().map_err(RPolarsErr::from)?;
+        Ok(dsl::lit(v).into())
     }
 
     fn eq(&self, other: &PlRDataType) -> Result<Sexp> {
