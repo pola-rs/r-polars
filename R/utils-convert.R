@@ -42,19 +42,13 @@ NULL
 #'
 #' # A single difftime is converted to a duration string
 #' parse_as_duration_string(as.difftime(1, units = "days"))
-parse_as_duration_string <- function(x, default = NULL, ...) {
+parse_as_duration_string <- function(x) {
   UseMethod("parse_as_duration_string")
 }
 
-#' @export
-parse_as_duration_string.NULL <- function(x, default = NULL, ...) {
-  default
-}
-
-# TODO: `default` is needed?
 # TODO: error message improvement
 #' @export
-parse_as_duration_string.default <- function(x, default = NULL, ...) {
+parse_as_duration_string.default <- function(x) {
   abort(
     paste0("`", deparse(substitute(x)), "` must be a single non-NA character or difftime."),
     call = caller_env()
@@ -62,8 +56,8 @@ parse_as_duration_string.default <- function(x, default = NULL, ...) {
 }
 
 #' @export
-parse_as_duration_string.character <- function(x, default = NULL, ...) {
-  if (length(x) != 1L) {
+parse_as_duration_string.character <- function(x) {
+  if (length(x) != 1L || anyNA(x)) {
     abort(
       paste0("`", deparse(substitute(x)), "` must be a single non-NA character or difftime."),
       call = caller_env()
@@ -73,7 +67,7 @@ parse_as_duration_string.character <- function(x, default = NULL, ...) {
 }
 
 #' @export
-parse_as_duration_string.difftime <- function(x, default = NULL, ...) {
+parse_as_duration_string.difftime <- function(x) {
   if (length(x) != 1L || anyNA(x)) {
     abort(
       paste0("`", deparse(substitute(x)), "` must be a single non-NA character or difftime."),
@@ -132,7 +126,7 @@ parse_as_duration_string.difftime <- function(x, default = NULL, ...) {
 }
 
 #' @export
-parse_as_duration_string.clock_duration <- function(x, default = NULL, ...) {
+parse_as_duration_string.clock_duration <- function(x) {
   if (length(x) != 1L || anyNA(x)) {
     abort(
       paste0("`", deparse(substitute(x)), "` must be a single non-NA character or difftime."),
