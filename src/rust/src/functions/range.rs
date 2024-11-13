@@ -16,33 +16,6 @@ pub fn int_range(
     Ok(dsl::int_range(start, end, step, dtype).into())
 }
 
-// TODO-REWRITE: unsure of the replacement for Bound
-// #[savvy]
-// pub fn eager_int_range(
-//     lower: &Bound<'_, PyAny>,
-//     upper: &Bound<'_, PyAny>,
-//     step: &Bound<'_, PyAny>,
-//     dtype: &PlRDataType,
-// ) -> Result<PlRSeries> {
-//     let dtype = dtype.dt.clone();
-//     if !dtype.is_integer() {
-//         return Err(RPolarsErr::from(
-//             polars_err!(ComputeError: "non-integer `dtype` passed to `int_range`: {:?}", dtype),
-//         )
-//         .into());
-//     }
-
-//     let ret = with_match_physical_integer_polars_type!(dtype, |$T| {
-//         let start_v: <$T as PolarsNumericType>::Native = lower.extract()?;
-//         let end_v: <$T as PolarsNumericType>::Native = upper.extract()?;
-//         let step: i64 = step.extract()?;
-//         new_int_range::<$T>(start_v, end_v, step, PlSmallStr::from_static("literal"))
-//     });
-
-//     let s = ret.map_err(RPolarsErr::from)?;
-//     Ok(s.into())
-// }
-
 #[savvy]
 pub fn int_ranges(
     start: &PlRExpr,

@@ -103,3 +103,102 @@ patrick::with_parameters_test_that("clock_duration interval works",
     expect_equal(out, expected)
   }
 )
+
+test_that("$int_range, $int_ranges", {
+  expect_equal(
+    pl$select(int = pl$int_range(0, 3)),
+    pl$DataFrame(int = 0:2)$cast(pl$Int64)
+  )
+  expect_equal(
+    pl$select(int = pl$int_range(3)),
+    pl$DataFrame(int = 0:2)$cast(pl$Int64)
+  )
+  expect_equal(
+    pl$select(int = pl$int_range(0, 3, step = 2)),
+    pl$DataFrame(int = c(0L, 2L))$cast(pl$Int64)
+  )
+  expect_equal(
+    pl$select(int = pl$int_range(0, 3, dtype = pl$Int16)),
+    pl$DataFrame(int = 0:2)$cast(pl$Int16)
+  )
+
+  df <- pl$DataFrame(start = c(1, -1), end = c(3, 2))
+  expect_equal(
+    df$select(int_range = pl$int_ranges("start", "end")),
+    pl$DataFrame(int_range = list(1:2, -1:1))$cast(pl$List(pl$Int64))
+  )
+  expect_equal(
+    df$select(int_range = pl$int_ranges("end")),
+    pl$DataFrame(int_range = list(0:2, 0:1))$cast(pl$List(pl$Int64))
+  )
+  expect_equal(
+    df$select(int_range = pl$int_ranges("end", step = 2)),
+    pl$DataFrame(int_range = list(c(0L, 2L), 0L))$cast(pl$List(pl$Int64))
+  )
+  expect_equal(
+    df$select(int_range = pl$int_ranges("start", "end", dtype = pl$Int16)),
+    pl$DataFrame(int_range = list(1:2, -1:1))$cast(pl$List(pl$Int16))
+  )
+})
+
+test_that("$time_range", {
+  skip_if_not_installed("hms")
+  expect_equal(
+    pl$select(
+      time = pl$time_range(
+        start = hms::parse_hms("14:00:00"),
+        interval = as.difftime("3:15:00")
+      )
+    ),
+    pl$DataFrame(time = hms::parse_hms(
+      c("14:00:00", "17:15:00", "20:30:00", "23:45:00")
+    ))
+  )
+  expect_equal(
+    pl$select(
+      time = pl$time_range(
+        start = hms::parse_hms("14:00:00"),
+        interval = "3h15m"
+      )
+    ),
+    pl$DataFrame(time = hms::parse_hms(
+      c("14:00:00", "17:15:00", "20:30:00", "23:45:00")
+    ))
+  )
+  expect_snapshot(
+    pl$time_range(
+      start = hms::parse_hms("14:00:00"),
+      interval = "2y"
+    ),
+    error = TRUE
+  )
+})
+
+test_that("$time_ranges", {
+  skip_if_not_installed("hms")
+  df <- pl$DataFrame(
+    start = hms::parse_hms(c("21:00:00", "22:00:00")),
+    end = hms::parse_hms(c("23:00:00", "23:00:00"))
+  )
+  expect_equal(
+    df$select(time_range = pl$time_ranges("start", "end")),
+    pl$DataFrame(time_range = list(
+      hms::parse_hms(c("21:00:00", "22:00:00", "23:00:00")),
+      hms::parse_hms(c("22:00:00", "23:00:00"))
+    ))
+  )
+  expect_equal(
+    df$select(time_range = pl$time_ranges("start")),
+    pl$DataFrame(time_range = list(
+      hms::parse_hms(c("21:00:00", "22:00:00", "23:00:00")),
+      hms::parse_hms(c("22:00:00", "23:00:00"))
+    ))
+  )
+  expect_snapshot(
+    pl$time_ranges(
+      start = hms::parse_hms("14:00:00"),
+      interval = "2y"
+    ),
+    error = TRUE
+  )
+})
