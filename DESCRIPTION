@@ -30,7 +30,7 @@ Suggests:
     curl,
     ggplot2,
     jsonlite,
-    knitr,
+    knitr (>= 1.49.0),
     lubridate,
     nanoarrow (>= 0.6.0),
     nycflights13,
