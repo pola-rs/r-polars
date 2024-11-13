@@ -43,7 +43,8 @@ Suggests:
     tibble,
     tools,
     vctrs,
-    withr
+    withr,
+    xfun (>= 0.48)
 Config/Needs/website:
     altdoc,
     future.apply,
