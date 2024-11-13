@@ -17,9 +17,13 @@ updates:
   - package-ecosystem: "cargo"
     directory: "/src/rust"
     schedule:
-      interval: "daily"
+      interval: weekly
     commit-message:
       prefix: "chore: "
+    groups:
+      patch:
+        update-types:
+          - patch
 
   - package-ecosystem: "devcontainers"
     directory: "/"
