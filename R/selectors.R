@@ -525,8 +525,8 @@ cs__date <- function() {
 #' df$select(!cs$datetime())
 cs__datetime <- function(time_unit = c("ms", "us", "ns"), time_zone = list("*", NULL)) {
   time_unit <- arg_match(time_unit, values = c("ms", "us", "ns"), multiple = TRUE)
-  if (!is_character(time_zone) && is_list(time_zone) && is.null(time_zone)) {
-    abort("`time_zone` must be a character vector, `NULL`, or a list.")
+  if (!is_character(time_zone) && !is_list(time_zone) && !is.null(time_zone)) {
+    abort("`time_zone` must be a character vector, a list, or `NULL`.")
   }
   if (is.null(time_zone)) {
     time_zone <- list(NULL)
