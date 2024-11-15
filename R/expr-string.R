@@ -17,6 +17,7 @@ namespace_expr_str <- function(x) {
   self
 }
 
+# TODO: example of parse Time type
 #' Convert a String column into a Date/Datetime/Time column.
 #'
 #' Similar to the [strptime()] function.
