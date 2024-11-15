@@ -453,13 +453,10 @@ as_polars_series.clock_time_point <- function(x, name = NULL, ...) {
     "ms"
   )
 
-  left <- vctrs::field(x, "lower")
-  right <- vctrs::field(x, "upper")
-
   PlRSeries$new_i64_from_clock_pair(
     name %||% "",
-    left,
-    right,
+    vctrs::field(x, "lower"),
+    vctrs::field(x, "upper"),
     precision
   )$cast(
     PlRDataType$new_datetime(time_unit, NULL),
@@ -471,24 +468,36 @@ as_polars_series.clock_time_point <- function(x, name = NULL, ...) {
 #' @rdname as_polars_series
 #' @export
 as_polars_series.clock_sys_time <- function(x, name = NULL, ...) {
-  as_polars_series.clock_time_point(x, name = name, ...)$dt$replace_time_zone("UTC")
+  as_polars_series.clock_time_point(x, name = name, ...)$dt$convert_time_zone("UTC")
 }
 
 #' @rdname as_polars_series
 #' @export
 as_polars_series.clock_zoned_time <- function(x, name = NULL, ...) {
   time_zone <- clock::zoned_time_zone(x)
+  precision <- clock::zoned_time_precision(x)
 
   if (isTRUE(time_zone == "")) {
     # https://github.com/r-lib/clock/issues/366
     time_zone <- Sys.timezone()
   }
 
-  as_polars_series.clock_time_point(
-    clock::as_naive_time(x),
-    name = name,
-    ...
-  )$dt$replace_time_zone(time_zone)
+  time_unit <- switch(precision,
+    nanosecond = "ns",
+    microsecond = "us",
+    "ms"
+  )
+
+  PlRSeries$new_i64_from_clock_pair(
+    name %||% "",
+    vctrs::field(x, "lower"),
+    vctrs::field(x, "upper"),
+    precision
+  )$cast(
+    PlRDataType$new_datetime(time_unit, time_zone),
+    strict = TRUE
+  ) |>
+    wrap()
 }
 
 #' @rdname as_polars_series
@@ -502,13 +511,10 @@ as_polars_series.clock_duration <- function(x, name = NULL, ...) {
     "ms"
   )
 
-  left <- vctrs::field(x, "lower")
-  right <- vctrs::field(x, "upper")
-
   PlRSeries$new_i64_from_clock_pair(
     name %||% "",
-    left,
-    right,
+    vctrs::field(x, "lower"),
+    vctrs::field(x, "upper"),
     precision
   )$cast(
     PlRDataType$new_duration(time_unit),
