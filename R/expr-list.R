@@ -154,9 +154,7 @@ expr_list_n_unique <- function() {
 #'   conc_to_lit_list = pl$col("a")$list$concat(pl$lit(list("hello", c("hello", "world"))))
 #' )
 expr_list_concat <- function(other) {
-  # TODO-REWRITE: py-polars internals are more complicated than that but need
-  # pl$concat_list() to be implemented before finishing this.
-  pl$concat_list(list(other)) |>
+  pl$concat_list(wrap(self$`_rexpr`), other) |>
     wrap()
 }
 

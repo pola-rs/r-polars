@@ -438,28 +438,27 @@ test_that("contains with categorical", {
 })
 
 
-# TODO-REWRITE: uncomment after pl$concat_list() is implemented
-# test_that("concat", {
-#   df <- pl$DataFrame(
-#     a = list("a", "x"),
-#     b = list(c("b", "c"), c("y", "z"))
-#   )
+test_that("concat", {
+  df <- pl$DataFrame(
+    a = list("a", "x"),
+    b = list(c("b", "c"), c("y", "z"))
+  )
 
-#   expect_equal(
-#     df$select(pl$col("a")$list$concat(pl$col("b"))),
-#     pl$DataFrame(a = list(c("a", "b", "c"), c("x", "y", "z")))
-#   )
+  expect_equal(
+    df$select(pl$col("a")$list$concat(pl$col("b"))),
+    pl$DataFrame(a = list(c("a", "b", "c"), c("x", "y", "z")))
+  )
 
-#   expect_equal(
-#     df$select(pl$col("a")$list$concat(pl$lit("hello from R"))),
-#     pl$DataFrame(a = list(c("a", "hello from R"), c("x", "hello from R")))
-#   )
+  expect_equal(
+    df$select(pl$col("a")$list$concat(pl$lit("hello from R"))),
+    pl$DataFrame(a = list(c("a", "hello from R"), c("x", "hello from R")))
+  )
 
-#   expect_equal(
-#     df$select(pl$col("a")$list$concat(pl$lit(c("hello", "world")))),
-#     pl$DataFrame(a = list(c("a", "hello"), c("x", "world")))
-#   )
-# })
+  expect_equal(
+    df$select(pl$col("a")$list$concat(pl$lit(c("hello", "world")))),
+    pl$DataFrame(a = list(c("a", "hello"), c("x", "world")))
+  )
+})
 
 
 # TODO-REWRITE: don't know how to adapt Rust code
@@ -497,7 +496,7 @@ test_that("contains with categorical", {
 # })
 
 
-# TODO-REWRITE: uncomment after pl$concat_list() is implemented
+# TODO-REWRITE: uncomment after pl$element() is implemented
 # test_that("eval", {
 #   df <- pl$DataFrame(a = c(1, 8, 3), b = c(4, 5, 2))
 #   l_act <- df$with_columns(
