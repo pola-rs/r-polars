@@ -171,18 +171,16 @@ test_that("dt$year iso_year", {
     pl$col("date")$dt$iso_year()$alias("iso_year")
   )
 
-  # dput(lubridate::isoyear(df$to_list()$date))
-  lubridate_iso_year <- c(2020L, 2020L, 2020L, 2020L, 2020L, 2020L, 2020L, 2020L, 2020L, 2020L, 2021L, 2021L)
-  # dput(lubridate::year(df$to_list()$date))
-  lubridate_year <- c(2020L, 2020L, 2020L, 2020L, 2020L, 2020L, 2020L, 2021L, 2021L, 2021L, 2021L, 2021L)
+  iso_years <- c(2020L, 2020L, 2020L, 2020L, 2020L, 2020L, 2020L, 2020L, 2020L, 2020L, 2021L, 2021L)
+  years <- c(2020L, 2020L, 2020L, 2020L, 2020L, 2020L, 2020L, 2021L, 2021L, 2021L, 2021L, 2021L)
   expect_equal(
     df$select("iso_year"),
-    pl$DataFrame(iso_year = lubridate_iso_year)
+    pl$DataFrame(iso_year = iso_years)
   )
 
   expect_equal(
     df$select("year"),
-    pl$DataFrame(year = lubridate_year)
+    pl$DataFrame(year = years)
   )
 })
 
@@ -602,28 +600,31 @@ test_that("dt$replace_time_zone() works", {
 })
 
 test_that("replace_time_zone for ambiguous time", {
-  skip_if_not_installed("lubridate")
+  skip_if_not_installed("clock")
 
-  x <- seq(as.POSIXct("2018-10-28 01:30", tz = "UTC"), as.POSIXct("2018-10-28 02:30", tz = "UTC"), by = "30 min")
-
-  pl_out <- pl$DataFrame(x = x)$with_columns(
-    pl$col("x")$dt$replace_time_zone("Europe/Brussels", ambiguous = "earliest")$alias("earliest"),
-    pl$col("x")$dt$replace_time_zone("Europe/Brussels", ambiguous = "latest")$alias("latest"),
-    pl$col("x")$dt$replace_time_zone("Europe/Brussels", ambiguous = "null")$alias("null")
+  x <- seq(
+    clock::naive_time_parse("2018-10-28T01:30:00"),
+    clock::naive_time_parse("2018-10-28T02:30:00"),
+    by = clock::duration_minutes(30)
   )
 
-  lubridate_out <- pl$DataFrame(
-    x = x,
-    earliest = lubridate::force_tz(x, "Europe/Brussels", roll_dst = c("NA", "pre")),
-    latest = lubridate::force_tz(x, "Europe/Brussels", roll_dst = c("NA", "post")),
-    null = as.POSIXct(c("2018-10-28 01:30:00 CEST", NA, NA), tz = "Europe/Brussels")
+  pl_out <- pl$select(
+    earliest = pl$lit(x)$dt$replace_time_zone("Europe/Brussels", ambiguous = "earliest"),
+    latest = pl$lit(x)$dt$replace_time_zone("Europe/Brussels", ambiguous = "latest"),
+    null = pl$lit(x)$dt$replace_time_zone("Europe/Brussels", ambiguous = "null")
   )
 
-  expect_equal(pl_out, lubridate_out)
+  clock_out <- pl$select(
+    earliest = clock::as_zoned_time(x, "Europe/Brussels", ambiguous = "earliest"),
+    latest = clock::as_zoned_time(x, "Europe/Brussels", ambiguous = "latest"),
+    null = clock::as_zoned_time(x, "Europe/Brussels", ambiguous = "NA")
+  )
+
+  expect_equal(pl_out, clock_out)
 })
 
 
-test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
+test_that("dt$days, dt$hours, dt$minutes, dt$seconds, + ms, us, ns", {
   # diff with settable units
   diffy <- \(x, units) as.numeric(diff(x), units = units)
   # days
