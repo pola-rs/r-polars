@@ -5,18 +5,35 @@
 \alias{cs}
 \title{Polars column selector function namespace}
 \format{
-An object of class \code{polars_object} of length 2.
+An object of class \code{polars_object} of length 29.
 }
 \usage{
 cs
 }
 \description{
-\code{cs} is an \link[=environment-class]{environment class} object
-that stores all selector functions of the R Polars API
-which mimics the Python Polars API.
+\code{cs} is an \link[=environment-class]{environment class} object that stores all
+selector functions of the R Polars API which mimics the Python Polars API.
 It is intended to work the same way in Python as if you had imported
 Python Polars Selectors with \verb{import polars.selectors as cs}.
 }
+\section{Supported operators}{
+
+There are 4 supported operators for selectors:
+\itemize{
+\item \code{&} to combine conditions with AND, e.g. select columns that contain
+\code{"oo"} \emph{and} end with \code{"t"} with \code{cs$contains("oo") & cs$ends_with("t")};
+\item \code{|} to combine conditions with OR, e.g. select columns that contain
+\code{"oo"} \emph{or} end with \code{"t"} with \code{cs$contains("oo") | cs$ends_with("t")};
+\item \code{-} to substract conditions, e.g. select all columns that have alphanumeric
+names except those that contain \code{"a"} with
+\code{cs$alphanumeric() - cs$contains("a")};
+\item \code{!} to invert the selection, e.g. select all columns that \emph{are not} of data
+type \code{String} with \code{!cs$string()}.
+}
+
+Note that Python Polars uses \code{~} instead of \code{!} to invert selectors.
+}
+
 \examples{
 cs
 

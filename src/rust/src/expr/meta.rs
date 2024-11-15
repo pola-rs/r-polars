@@ -115,4 +115,8 @@ impl PlRExpr {
             .map_err(RPolarsErr::from)?;
         format!("{e}").try_into()
     }
+
+    fn meta_is_column(&self) -> Result<Sexp> {
+        self.inner.clone().meta().is_column().try_into()
+    }
 }

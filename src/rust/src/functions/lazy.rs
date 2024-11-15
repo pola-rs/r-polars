@@ -1,6 +1,6 @@
 use crate::{prelude::*, PlRExpr, PlRSeries, RPolarsErr};
 use polars::lazy::dsl;
-use savvy::{savvy, ListSexp, RawSexp, Result, StringSexp};
+use savvy::{savvy, ListSexp, NumericSexp, RawSexp, Result, StringSexp};
 
 macro_rules! set_unwrapped_or_0 {
     ($($var:ident),+ $(,)?) => {
@@ -111,6 +111,28 @@ pub fn cols(names: StringSexp) -> Result<PlRExpr> {
 pub fn dtype_cols(dtypes: ListSexp) -> Result<PlRExpr> {
     let dtypes = <Wrap<Vec<DataType>>>::try_from(dtypes)?.0;
     Ok(dsl::dtype_cols(&dtypes).into())
+}
+
+#[savvy]
+pub fn index_cols(indices: NumericSexp) -> Result<PlRExpr> {
+    let n = <Wrap<Vec<i64>>>::try_from(indices)?.0;
+    let out = if n.len() == 1 {
+        dsl::nth(n[0])
+    } else {
+        dsl::index_cols(n)
+    }
+    .into();
+    Ok(out)
+}
+
+#[savvy]
+pub fn first() -> Result<PlRExpr> {
+    Ok(dsl::first().into())
+}
+
+#[savvy]
+pub fn last() -> Result<PlRExpr> {
+    Ok(dsl::last().into())
 }
 
 #[savvy]

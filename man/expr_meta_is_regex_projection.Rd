@@ -7,7 +7,7 @@
 expr_meta_is_regex_projection()
 }
 \value{
-A polars \link{expression}
+A logical value.
 }
 \description{
 Indicate if this expression expands to columns that match a regex pattern

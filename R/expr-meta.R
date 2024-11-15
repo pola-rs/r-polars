@@ -199,7 +199,6 @@ expr_meta_tree_format <- function() {
     wrap()
 }
 
-# TODO: add examples with selectors when implemented
 #' Indicate if this expression only selects columns (optionally with aliasing)
 #'
 #' This can include bare columns, column matches by regex or dtype, selectors
@@ -210,7 +209,7 @@ expr_meta_tree_format <- function() {
 #' pure column selection. Set `TRUE` to allow for column selection that also
 #' includes aliasing.
 #'
-#' @inherit as_polars_expr return
+#' @return A logical value.
 #' @examples
 #' e <- pl$col("foo")
 #' e$meta$is_column_selection()
@@ -222,6 +221,9 @@ expr_meta_tree_format <- function() {
 #'
 #' e <- pl$col("foo") * pl$col("bar")
 #' e$meta$is_column_selection()
+#' 
+#' e <- cs$starts_with("foo")
+#' e$meta$is_column_selection()
 expr_meta_is_column_selection <- function(..., allow_aliasing = FALSE) {
   wrap({
     check_dots_empty0(...)
@@ -229,9 +231,27 @@ expr_meta_is_column_selection <- function(..., allow_aliasing = FALSE) {
   })
 }
 
+#' Indicate if this expression is a basic (non-regex) unaliased column
+#'
+#' @inherit expr_meta_is_column_selection return
+#' @examples
+#' e <- pl$col("foo")
+#' e$meta$is_column()
+#'
+#' e <- pl.col("foo") * pl.col("bar")
+#' e$meta$is_column()
+#'
+#' e <- pl.col(r"^col.*\d+$")
+#' e$meta$is_column()
+expr_meta_is_column <- function() {
+  wrap({
+    self$`_rexpr`$meta_is_column()
+  })
+}
+
 #' Indicate if this expression expands to columns that match a regex pattern
 #'
-#' @inherit as_polars_expr return
+#' @inherit expr_meta_is_column_selection return
 #' @examples
 #' e <- pl$col("^.*$")$name$prefix("foo_")
 #' e$meta$is_regex_projection()
