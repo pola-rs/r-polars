@@ -22,7 +22,7 @@ pl__time_ranges(
 \item{interval}{Interval of the range periods, specified as a \link{difftime}
 or using the Polars duration string language (see details).}
 
-\item{...}{Dots which should be empty.}
+\item{...}{These dots are for future extensions and must be empty.}
 
 \item{closed}{Define which sides of the range are closed (inclusive).
 One of the following: \code{"both"} (default), \code{"left"}, \code{"right"}, \code{"none"}.}

@@ -34,7 +34,7 @@ expr_meta_has_multiple_outputs <- function() {
 #' depend on the schema of the context; in that case this will raise an error
 #' if `raise_if_undetermined = TRUE` (the default), and return `NA` otherwise.
 #'
-#' @inheritParams rlang::check_dots_empty0
+#' @inheritParams rlang::args_dots_empty
 #' @param raise_if_undetermined If `TRUE` (default), raise an error if the
 #' output name cannot be determined. Otherwise return `NA`.
 #' @inherit as_polars_expr return
@@ -105,7 +105,7 @@ expr_meta__as_selector <- function() {
 
 #' Serialize this expression to a string in binary or JSON format
 #'
-#' @inheritParams rlang::check_dots_empty0
+#' @inheritParams rlang::args_dots_empty
 #' @param format The format in which to serialize. Must be one of:
 #' * `"binary"` (default): serialize to binary format (bytes).
 #' * `"json"`: serialize to JSON format (string).
@@ -205,7 +205,7 @@ expr_meta_tree_format <- function() {
 #' This can include bare columns, column matches by regex or dtype, selectors
 #' and exclude ops, and (optionally) column/expression aliasing.
 #'
-#' @inheritParams rlang::check_dots_empty0
+#' @inheritParams rlang::args_dots_empty
 #' @param allow_aliasing If `FALSE` (default), any aliasing is not considered
 #' pure column selection. Set `TRUE` to allow for column selection that also
 #' includes aliasing.

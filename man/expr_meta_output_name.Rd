@@ -7,7 +7,7 @@
 expr_meta_output_name(..., raise_if_undetermined = TRUE)
 }
 \arguments{
-\item{...}{Dots which should be empty.}
+\item{...}{These dots are for future extensions and must be empty.}
 
 \item{raise_if_undetermined}{If \code{TRUE} (default), raise an error if the
 output name cannot be determined. Otherwise return \code{NA}.}

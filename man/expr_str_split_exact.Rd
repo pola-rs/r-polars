@@ -11,7 +11,7 @@ expr_str_split_exact(by, n, ..., inclusive = FALSE)
 
 \item{n}{Number of splits to make.}
 
-\item{...}{Dots which should be empty.}
+\item{...}{These dots are for future extensions and must be empty.}
 
 \item{inclusive}{If \code{TRUE}, include the split character/string in the results.}
 }

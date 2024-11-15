@@ -91,7 +91,7 @@ expr_bin_starts_with <- function(prefix) {
 #' Decode values using the provided encoding
 #'
 #' @param encoding A character, `"hex"` or `"base64"`. The encoding to use.
-#' @inheritParams rlang::check_dots_empty0
+#' @inheritParams rlang::args_dots_empty
 #' @param strict  Raise an error if the underlying value cannot be decoded,
 #'  otherwise mask out with a `null` value.
 #' @inherit as_polars_expr return

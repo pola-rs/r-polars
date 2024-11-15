@@ -706,7 +706,7 @@ expr_str_count_matches <- function(pattern, ..., literal = FALSE) {
 
 #' Split the string by a substring
 #'
-#' @inheritParams rlang::check_dots_empty0
+#' @inheritParams rlang::args_dots_empty
 #' @param by Substring to split by. Can be an Expr.
 #' @param inclusive If `TRUE`, include the split character/string in the results.
 #'
@@ -737,7 +737,7 @@ expr_str_split <- function(by, ..., inclusive = FALSE) {
 #' @description This results in a struct of `n+1` fields. If it cannot make `n`
 #' splits, the remaining field elements will be null.
 #'
-#' @inheritParams rlang::check_dots_empty0
+#' @inheritParams rlang::args_dots_empty
 #' @inheritParams expr_str_split
 #' @param n Number of splits to make.
 #'

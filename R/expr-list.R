@@ -81,7 +81,7 @@ expr_list_mean <- function() {
 #'
 #' @param descending Sort values in descending order.
 #' @param nulls_last Place null values last.
-#' @inheritParams rlang::check_dots_empty0
+#' @inheritParams rlang::args_dots_empty
 #'
 #' @inherit as_polars_expr return
 #'
@@ -110,7 +110,7 @@ expr_list_reverse <- function() {
 #' Get unique values in a list
 #'
 #' @param maintain_order Maintain order of data. This requires more work.
-#' @inheritParams rlang::check_dots_empty0
+#' @inheritParams rlang::args_dots_empty
 #'
 #' @inherit as_polars_expr return
 #'
@@ -169,7 +169,7 @@ expr_list_concat <- function(other) {
 #'   single index. Values are 0-indexed (so index 0 would return the first item
 #'   of every sub-list) and negative values start from the end (index `-1`
 #'   returns the last item).
-#' @inheritParams rlang::check_dots_empty0
+#' @inheritParams rlang::args_dots_empty
 #' @param null_on_oob If `TRUE`, return `null` if an index is out of bounds.
 #' Otherwise, raise an error.
 #' @return [Expr][expr_class]
@@ -203,7 +203,7 @@ expr_list_get <- function(index, ..., null_on_oob = TRUE) {
 #'   `-1` returns the last item). If the index is out of bounds, it will return
 #'   a `null`. Strings are parsed as column names.
 #' @inheritParams expr_list_get
-#' @inheritParams rlang::check_dots_empty0
+#' @inheritParams rlang::args_dots_empty
 #' @inherit as_polars_expr return
 #'
 #' @examples
@@ -307,7 +307,7 @@ expr_list_contains <- function(item) {
 #' @param separator String to separate the items with. Can be an Expr. Strings
 #'   are *not* parsed as columns.
 #' @inheritParams pl_concat_str
-#' @inheritParams rlang::check_dots_empty0
+#' @inheritParams rlang::args_dots_empty
 #'
 #' @inherit as_polars_expr return
 #'

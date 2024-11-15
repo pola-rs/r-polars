@@ -5,7 +5,7 @@
 #' the `interval` granularity is no finer than `"1d"`, the returned range is
 #' also of type Date. All other permutations return a Datetime.
 #'
-#' @inheritParams rlang::check_dots_empty0
+#' @inheritParams rlang::args_dots_empty
 #' @param start Lower bound of the date range. Something that can be coerced to
 #' a Date or a [Datetime][DataType_Datetime] expression. See examples for details.
 #' @param end Upper bound of the date range. Something that can be coerced to a
@@ -223,7 +223,7 @@ pl__datetime_ranges <- function(
 
 #' Generate a range of integers
 #'
-#' @inheritParams rlang::check_dots_empty0
+#' @inheritParams rlang::args_dots_empty
 #' @param start Start of the range (inclusive). Defaults to 0.
 #' @param end End of the range (exclusive). If `NULL` (default), the value
 #' of `start` is used and `start` is set to 0.
@@ -300,7 +300,7 @@ pl__int_ranges <- function(
 
 #' Generate a time range
 #'
-#' @inheritParams rlang::check_dots_empty0
+#' @inheritParams rlang::args_dots_empty
 #' @inheritParams pl__datetime_range
 #' @param start Lower bound of the time range. If omitted, defaults to
 #' `00:00:00.000`.
@@ -347,7 +347,7 @@ pl__time_range <- function(
 
 #' Create a column of time ranges
 #'
-#' @inheritParams rlang::check_dots_empty0
+#' @inheritParams rlang::args_dots_empty
 #' @inheritParams pl__time_range
 #'
 #' @inheritSection polars_duration_string Polars duration string language

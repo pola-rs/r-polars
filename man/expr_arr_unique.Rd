@@ -7,7 +7,7 @@
 expr_arr_unique(..., maintain_order = FALSE)
 }
 \arguments{
-\item{...}{Dots which should be empty.}
+\item{...}{These dots are for future extensions and must be empty.}
 }
 \value{
 A polars \link{expression}

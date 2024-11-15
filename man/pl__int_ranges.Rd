@@ -14,7 +14,7 @@ of \code{start} is used and \code{start} is set to 0.}
 
 \item{step}{Step size of the range.}
 
-\item{...}{Dots which should be empty.}
+\item{...}{These dots are for future extensions and must be empty.}
 
 \item{dtype}{Data type of the range.}
 }

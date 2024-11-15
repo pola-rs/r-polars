@@ -7,7 +7,7 @@
 expr_meta_is_column_selection(..., allow_aliasing = FALSE)
 }
 \arguments{
-\item{...}{Dots which should be empty.}
+\item{...}{These dots are for future extensions and must be empty.}
 
 \item{allow_aliasing}{If \code{FALSE} (default), any aliasing is not considered
 pure column selection. Set \code{TRUE} to allow for column selection that also

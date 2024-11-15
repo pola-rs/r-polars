@@ -103,7 +103,7 @@ expr_arr_var <- function(ddof = 1) {
 
 #' Sort values in every sub-array
 #'
-#' @inheritParams rlang::check_dots_empty0
+#' @inheritParams rlang::args_dots_empty
 #' @inheritParams expr_sort
 #' @examples
 #' df <- pl$DataFrame(
@@ -132,7 +132,7 @@ expr_arr_reverse <- function() {
 
 #' Get the unique values in every sub-array
 #'
-#' @inheritParams rlang::check_dots_empty0
+#' @inheritParams rlang::args_dots_empty
 #' @inheritParams expr_unique
 #' @inherit as_polars_expr return
 #' @examples
@@ -203,7 +203,7 @@ expr_arr_contains <- function(item) {
 #'
 #' @param separator String to separate the items with. Can be an Expr. Strings
 #'   are not parsed as columns.
-#' @inheritParams rlang::check_dots_empty0
+#' @inheritParams rlang::args_dots_empty
 #' @inheritParams pl_concat_str
 #'
 #' @inherit as_polars_expr return

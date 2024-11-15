@@ -7,7 +7,7 @@
 expr_list_sort(..., descending = FALSE, nulls_last = FALSE)
 }
 \arguments{
-\item{...}{Dots which should be empty.}
+\item{...}{These dots are for future extensions and must be empty.}
 
 \item{descending}{Sort values in descending order.}
 

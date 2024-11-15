@@ -12,7 +12,7 @@ single index. Values are 0-indexed (so index 0 would return the first item
 of every sub-list) and negative values start from the end (index \code{-1}
 returns the last item).}
 
-\item{...}{Dots which should be empty.}
+\item{...}{These dots are for future extensions and must be empty.}
 
 \item{null_on_oob}{If \code{TRUE}, return \code{null} if an index is out of bounds.
 Otherwise, raise an error.}

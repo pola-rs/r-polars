@@ -24,7 +24,7 @@ Date or a \link[=DataType_Datetime]{Datetime} expression. See examples for detai
 \item{interval}{Interval of the range periods, specified as a \link{difftime}
 object or using the Polars duration string language. See the \verb{Polars duration string language} section for details. Must consist of full days.}
 
-\item{...}{Dots which should be empty.}
+\item{...}{These dots are for future extensions and must be empty.}
 
 \item{closed}{Define which sides of the range are closed (inclusive).
 One of the following: \code{"both"} (default), \code{"left"}, \code{"right"}, \code{"none"}.}

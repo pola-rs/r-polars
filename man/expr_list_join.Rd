@@ -10,7 +10,7 @@ expr_list_join(separator, ..., ignore_nulls = FALSE)
 \item{separator}{String to separate the items with. Can be an Expr. Strings
 are \emph{not} parsed as columns.}
 
-\item{...}{Dots which should be empty.}
+\item{...}{These dots are for future extensions and must be empty.}
 }
 \value{
 A polars \link{expression}

@@ -10,7 +10,7 @@ expr_arr_get(index, ..., null_on_oob = TRUE)
 \item{index}{An Expr or something coercible to an Expr, that must return a
 single index.}
 
-\item{...}{Dots which should be empty.}
+\item{...}{These dots are for future extensions and must be empty.}
 
 \item{null_on_oob}{If \code{TRUE}, return \code{null} if an index is out of bounds.
 Otherwise, raise an error.}

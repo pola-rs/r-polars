@@ -9,7 +9,7 @@ expr_bin_decode(encoding, ..., strict = TRUE)
 \arguments{
 \item{encoding}{A character, \code{"hex"} or \code{"base64"}. The encoding to use.}
 
-\item{...}{Dots which should be empty.}
+\item{...}{These dots are for future extensions and must be empty.}
 
 \item{strict}{Raise an error if the underlying value cannot be decoded,
 otherwise mask out with a \code{null} value.}
