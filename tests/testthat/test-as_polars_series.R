@@ -144,6 +144,24 @@ test_that("as_polars_series(<list>, strict = TRUE)", {
   )
 })
 
+test_that("as_polars_series(<POSIXlt>) works for ambiguous time as like clock::as_zoned_time()", {
+  skip_if_not_installed("clock")
+
+  chr_vec <- c("2018-10-28 01:30:00", "2018-10-28 02:00:00", "2018-10-28 02:30:00")
+  lt_vec <- as.POSIXlt(chr_vec, tz = "Europe/Brussels")
+  zoned_time_vec <- clock::naive_time_parse(chr_vec, format = "%Y-%m-%d %H:%M:%S") |>
+    clock::as_zoned_time("Europe/Brussels", ambiguous = "earliest")
+
+  expect_equal(
+    as_polars_series(lt_vec)$dt$cast_time_unit("ms"),
+    as_polars_series(clock::as_zoned_time(lt_vec))
+  )
+  expect_equal(
+    as_polars_series(lt_vec)$dt$cast_time_unit("ms"),
+    as_polars_series(zoned_time_vec)
+  )
+})
+
 # TODO: more tests for system time
 
 test_that("as_polars_series works for vctrs_rcrd", {

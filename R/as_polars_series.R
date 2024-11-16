@@ -309,11 +309,10 @@ as_polars_series.POSIXlt <- function(x, name = NULL, ...) {
       hour = x$hour,
       minute = x$min,
       second = x$sec,
-      time_zone = attr(x, "tzone")[1] %||% "UTC"
-    )$alias(name %||% "")$dt$cast_time_unit("ns") +
-      pl$duration(
-        nanoseconds = round(nanosec),
-      )
+      time_zone = attr(x, "tzone")[1] %||% "UTC",
+      time_unit = "ns",
+      ambiguous = "earliest"
+    )$alias(name %||% "") + pl$duration(nanoseconds = round(nanosec))
   )$to_series()
 }
 
