@@ -10,6 +10,15 @@ print.polars_lazy_frame <- function(x, ...) {
 }
 
 #' @export
+dim.polars_lazy_frame <- function(x) c(NA_integer_, length(x$collect_schema()))
+
+#' @export
+length.polars_lazy_frame <- function(x) length(x$collect_schema())
+
+#' @export
+names.polars_lazy_frame <- function(x) names(x$collect_schema())
+
+#' @export
 #' @rdname s3-as.list
 as.list.polars_lazy_frame <- as.list.polars_data_frame
 
