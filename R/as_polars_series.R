@@ -299,8 +299,6 @@ as_polars_series.POSIXct <- function(x, name = NULL, ...) {
 #' @rdname as_polars_series
 #' @export
 as_polars_series.POSIXlt <- function(x, name = NULL, ...) {
-  nanosec <- (x$sec - floor(x$sec)) * 1e9
-
   pl$select(
     pl$datetime(
       year = x$year + 1900L,
@@ -312,7 +310,7 @@ as_polars_series.POSIXlt <- function(x, name = NULL, ...) {
       time_zone = attr(x, "tzone")[1] %||% "UTC",
       time_unit = "ns",
       ambiguous = "earliest"
-    )$alias(name %||% "") + pl$duration(nanoseconds = floor(nanosec))
+    )$alias(name %||% "") + pl$duration(nanoseconds = (x$sec - floor(x$sec)) * 1e9)
   )$to_series()
 }
 
