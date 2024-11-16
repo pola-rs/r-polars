@@ -97,6 +97,12 @@ pub fn field(names: StringSexp) -> Result<PlRExpr> {
 }
 
 #[savvy]
+pub fn coalesce(exprs: ListSexp) -> Result<PlRExpr> {
+    let exprs = <Wrap<Vec<Expr>>>::try_from(exprs)?.0;
+    Ok(dsl::coalesce(&exprs).into())
+}
+
+#[savvy]
 pub fn col(name: &str) -> Result<PlRExpr> {
     Ok(dsl::col(name).into())
 }

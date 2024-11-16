@@ -89,6 +89,11 @@ SEXP savvy_field__impl(SEXP c_arg__names) {
     return handle_result(res);
 }
 
+SEXP savvy_coalesce__impl(SEXP c_arg__exprs) {
+    SEXP res = savvy_coalesce__ffi(c_arg__exprs);
+    return handle_result(res);
+}
+
 SEXP savvy_col__impl(SEXP c_arg__name) {
     SEXP res = savvy_col__ffi(c_arg__name);
     return handle_result(res);
@@ -1797,6 +1802,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_datetime__impl", (DL_FUNC) &savvy_datetime__impl, 10},
     {"savvy_duration__impl", (DL_FUNC) &savvy_duration__impl, 9},
     {"savvy_field__impl", (DL_FUNC) &savvy_field__impl, 1},
+    {"savvy_coalesce__impl", (DL_FUNC) &savvy_coalesce__impl, 1},
     {"savvy_col__impl", (DL_FUNC) &savvy_col__impl, 1},
     {"savvy_cols__impl", (DL_FUNC) &savvy_cols__impl, 1},
     {"savvy_dtype_cols__impl", (DL_FUNC) &savvy_dtype_cols__impl, 1},

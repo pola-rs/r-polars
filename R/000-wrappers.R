@@ -109,6 +109,11 @@ NULL
 }
 
 
+`coalesce` <- function(`exprs`) {
+  .savvy_wrap_PlRExpr(.Call(savvy_coalesce__impl, `exprs`))
+}
+
+
 `col` <- function(`name`) {
   .savvy_wrap_PlRExpr(.Call(savvy_col__impl, `name`))
 }

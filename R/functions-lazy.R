@@ -1,12 +1,11 @@
 pl__field <- function(...) {
-  wrap({
-    check_dots_unnamed()
+  check_dots_unnamed()
 
-    dots <- list2(...)
-    check_list_of_string(dots, arg = "...")
+  dots <- list2(...)
+  check_list_of_string(dots, arg = "...")
 
-    field(as.character(dots))
-  })
+  field(as.character(dots)) |>
+    wrap()
 }
 
 pl__select <- function(...) {
@@ -35,7 +34,29 @@ pl__select <- function(...) {
 #'   a_b_doubled = pl$concat_list(c("a", "b"))$list$eval(pl$element() * 2)
 #' )
 pl__element <- function() {
-  wrap({
-    pl$col("")
-  })
+  pl$col("")
+}
+
+#' Folds the columns from left to right, keeping the first non-null value
+#' @inherit as_polars_expr return
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]>
+#' Non-named objects can be referenced as columns.
+#' Each object will be converted to [expression] by [as_polars_expr()].
+#' Strings are parsed as column names, other non-expression inputs are parsed as literals.
+#' @examples
+#' df <- pl$DataFrame(
+#'   a = c(1, NA, NA, NA),
+#'   b = c(1, 2, NA, NA),
+#'   c = c(5, NA, 3, NA)
+#' )
+#'
+#' df$with_columns(d = pl$coalesce("a", "b", "c", 10))
+#'
+#' df$with_columns(d = pl$coalesce(pl$col("a", "b", "c"), 10))
+pl__coalesce <- function(...) {
+  check_dots_unnamed()
+
+  parse_into_list_of_expressions(...) |>
+    coalesce() |>
+    wrap()
 }

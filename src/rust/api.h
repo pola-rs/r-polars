@@ -9,6 +9,7 @@ SEXP savvy_as_struct__ffi(SEXP c_arg__exprs);
 SEXP savvy_datetime__ffi(SEXP c_arg__year, SEXP c_arg__month, SEXP c_arg__day, SEXP c_arg__time_unit, SEXP c_arg__ambiguous, SEXP c_arg__hour, SEXP c_arg__minute, SEXP c_arg__second, SEXP c_arg__microsecond, SEXP c_arg__time_zone);
 SEXP savvy_duration__ffi(SEXP c_arg__time_unit, SEXP c_arg__weeks, SEXP c_arg__days, SEXP c_arg__hours, SEXP c_arg__minutes, SEXP c_arg__seconds, SEXP c_arg__milliseconds, SEXP c_arg__microseconds, SEXP c_arg__nanoseconds);
 SEXP savvy_field__ffi(SEXP c_arg__names);
+SEXP savvy_coalesce__ffi(SEXP c_arg__exprs);
 SEXP savvy_col__ffi(SEXP c_arg__name);
 SEXP savvy_cols__ffi(SEXP c_arg__names);
 SEXP savvy_dtype_cols__ffi(SEXP c_arg__dtypes);
