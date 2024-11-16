@@ -513,8 +513,7 @@ cs__datetime <- function(time_unit = c("ms", "us", "ns"), time_zone = list("*", 
       time_zone |>
         lapply(\(tz) pl$Datetime(tu, tz))
     }) |>
-    unlist(recursive = TRUE) |>
-    as.list()
+    unlist(recursive = TRUE)
 
   wrap_to_selector(
     pl$col(!!!datetime_dtypes),
