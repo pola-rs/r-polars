@@ -4,12 +4,12 @@
 \alias{cs__by_name}
 \title{Select all columns matching the given names}
 \usage{
-cs__by_name(..., .require_all = TRUE)
+cs__by_name(..., require_all = TRUE)
 }
 \arguments{
 \item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Column names to select.}
 
-\item{.require_all}{Whether to match all names (the default) or any of the
+\item{require_all}{Whether to match all names (the default) or any of the
 names.}
 }
 \value{
@@ -34,7 +34,7 @@ df <- pl$DataFrame(
 df$select(cs$by_name("foo", "bar"))
 
 # Match any of the given columns by name:
-df$select(cs$by_name("baz", "moose", "foo", "bear", .require_all = FALSE))
+df$select(cs$by_name("baz", "moose", "foo", "bear", require_all = FALSE))
 
 # Match all columns except for those given:
 df$select(!cs$by_name("foo", "bar"))

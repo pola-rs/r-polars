@@ -155,7 +155,7 @@ as_polars_expr.polars_series <- function(x, ...) {
 as_polars_expr.character <- function(x, ..., as_lit = FALSE) {
   wrap({
     if (isFALSE(as_lit)) {
-      pl$col(x)
+      pl$col(!!!x)
     } else {
       if (length(x) == 1L) {
         if (identical(x, NA_character_)) {

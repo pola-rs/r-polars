@@ -257,7 +257,7 @@ test_that("hour minute", {
     )
   )
   expect_equal(
-    df$select(pl$col(c("hour", "minute"))$cast(pl$Float64)),
+    df$select(pl$col("hour", "minute")$cast(pl$Float64)),
     pl$DataFrame(!!!l_exp)
   )
 })

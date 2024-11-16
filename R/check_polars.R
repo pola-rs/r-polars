@@ -288,32 +288,3 @@ check_list_of_polars_dtype <- function(
     call = call
   )
 }
-
-check_date_or_datetime <- function(
-    x,
-    ...,
-    allow_null = FALSE,
-    arg = caller_arg(x),
-    call = caller_env()) {
-  if (!missing(x)) {
-    if (inherits(x, c("Date", "POSIXct", "polars_expr"))) {
-      return(invisible(NULL))
-    }
-    if (allow_null && is_null(x)) {
-      return(invisible(NULL))
-    }
-    if (is_character(x)) {
-      return(invisible(NULL))
-    }
-  }
-
-  stop_input_type(
-    x,
-    "a Date, POSIXct, character, or Polars expression",
-    ...,
-    allow_na = FALSE,
-    allow_null = allow_null,
-    arg = arg,
-    call = call
-  )
-}

@@ -24,7 +24,7 @@ df <- pl$DataFrame(
   y = c(3.0, 4.5, 1.0, 2.5, -2.0),
   z = c("a", "b", "a", "b", "b")
 )$with_columns(
-  z = pl$col("z")$cast(pl$Categorical("lexical"))
+  z = pl$col("z")$cast(pl$Categorical())
 )
 
 # Group by all string columns, sum the numeric columns, then sort by the

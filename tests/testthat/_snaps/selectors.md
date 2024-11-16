@@ -66,7 +66,7 @@
       Caused by error:
       ! Evaluation failed in `$select()`.
       Caused by error in `cs$contains()`:
-      ! All elements of `...` must be non-missing values of type character.
+      ! `...` must be a list of single strings, not a list.
 
 ---
 
@@ -78,7 +78,7 @@
       Caused by error:
       ! Evaluation failed in `$select()`.
       Caused by error in `cs$contains()`:
-      ! All elements of `...` must be non-missing values of type character.
+      ! `...` must be a list of single strings, not a list.
 
 # ends_with
 
@@ -90,7 +90,7 @@
       Caused by error:
       ! Evaluation failed in `$select()`.
       Caused by error in `cs$ends_with()`:
-      ! All elements of `...` must be non-missing values of type character.
+      ! `...` must be a list of single strings, not a list.
 
 # exclude
 
@@ -114,5 +114,5 @@
       Caused by error:
       ! Evaluation failed in `$select()`.
       Caused by error in `cs$starts_with()`:
-      ! All elements of `...` must be non-missing values of type character.
+      ! `...` must be a list of single strings, not a list.
 

@@ -104,7 +104,7 @@ selector__or <- function(other) {
 selector__and <- function(other) {
   if (is_column(other)) {
     colname <- other$meta$output_name()
-    other <- cs__by_name(colname)
+    other <- cs$by_name(colname)
   }
   if (is_polars_selector(other)) {
     wrap_to_selector(
@@ -192,7 +192,7 @@ cs__alpha <- function(ascii_only = FALSE, ..., ignore_spaces = FALSE) {
     re_space <- ""
   }
   raw_params <- paste0("^[", re_alpha, re_space, "]+$")
-  wrap_to_selector(pl$col(raw_params), name = "alpha")
+  wrap_to_selector(pl$col(!!!raw_params), name = "alpha")
 }
 
 #' Select all columns with alphanumeric names (e.g. only letters and the digits 0-9)
@@ -237,7 +237,7 @@ cs__alphanumeric <- function(ascii_only = FALSE, ..., ignore_spaces = FALSE) {
     re_space <- ""
   }
   raw_params <- paste0("^[", re_alphanumeric, re_digit, re_space, "]+$")
-  wrap_to_selector(pl$col(raw_params), name = "alphanumeric")
+  wrap_to_selector(pl$col(!!!raw_params), name = "alphanumeric")
 }
 
 #' Select all binary columns
@@ -301,8 +301,10 @@ cs__boolean <- function() {
 cs__by_dtype <- function(...) {
   check_dots_unnamed()
   list_dtypes <- list2(...)
+  check_list_of_polars_dtype(list_dtypes, arg = "...")
+
   wrap_to_selector(
-    pl$col(list_dtypes),
+    pl$col(!!!list_dtypes),
     name = "by_dtype",
     parameters = list_dtypes
   )
@@ -340,7 +342,7 @@ cs__by_index <- function(indices) {
 #' Select all columns matching the given names
 #'
 #' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Column names to select.
-#' @param .require_all Whether to match all names (the default) or any of the
+#' @param require_all Whether to match all names (the default) or any of the
 #' names.
 #'
 #' @inherit cs__by_index details
@@ -357,32 +359,31 @@ cs__by_index <- function(indices) {
 #' df$select(cs$by_name("foo", "bar"))
 #'
 #' # Match any of the given columns by name:
-#' df$select(cs$by_name("baz", "moose", "foo", "bear", .require_all = FALSE))
+#' df$select(cs$by_name("baz", "moose", "foo", "bear", require_all = FALSE))
 #'
 #' # Match all columns except for those given:
 #' df$select(!cs$by_name("foo", "bar"))
-cs__by_name <- function(..., .require_all = TRUE) {
+cs__by_name <- function(..., require_all = TRUE) {
   check_dots_unnamed()
-  all_names <- list2(...) |>
-    unlist()
+  dots <- list2(...)
+  check_list_of_string(dots, arg = "...")
 
-  if (!isTRUE(is.character(all_names))) {
-    abort("`...` must be characters in `cs$by_name()`")
-  }
+  all_names <- as.character(dots)
 
   selector_params <- list(
     "*names" = all_names
   )
-  match_cols <- all_names
 
-  if (isFALSE(.require_all)) {
+  if (isFALSE(require_all)) {
     match_cols <- paste0(all_names, collapse = "|") |>
       (\(x) (paste0("^(", x, ")$")))()
-    selector_params$require_all <- .require_all
+    selector_params$require_all <- require_all
+  } else {
+    match_cols <- all_names
   }
 
   wrap_to_selector(
-    pl$col(match_cols),
+    pl$col(!!!match_cols),
     name = "by_name",
     parameters = selector_params
   )
@@ -432,15 +433,13 @@ cs__categorical <- function() {
 #' df$select(!cs$contains("ba"))
 cs__contains <- function(...) {
   check_dots_unnamed()
-  input <- list2(...)
-  is_char <- vapply(input, \(x) is_character(x) && !anyNA(x), FUN.VALUE = logical(1))
-  if (!all(is_char)) {
-    abort("All elements of `...` must be non-missing values of type character.")
-  }
-  substring <- unlist(input, use.names = FALSE) |>
-    paste(collapse = "|")
-  raw_params <- paste0("^.*", substring, ".*$")
-  wrap_to_selector(pl$col(raw_params), name = "contains")
+  dots <- list2(...)
+  check_list_of_string(dots, arg = "...")
+
+  substrings <- as.character(dots) |>
+    paste0(collapse = "|")
+  raw_params <- paste0("^.*", substrings, ".*$")
+  wrap_to_selector(pl$col(!!!raw_params), name = "contains")
 }
 
 #' Select all date columns
@@ -528,20 +527,18 @@ cs__datetime <- function(time_unit = c("ms", "us", "ns"), time_zone = list("*", 
   if (!is_character(time_zone) && !is_list(time_zone) && !is.null(time_zone)) {
     abort("`time_zone` must be a character vector, a list, or `NULL`.")
   }
-  if (is.null(time_zone)) {
-    time_zone <- list(NULL)
-  }
+  time_zone <- time_zone %||% list(NULL)
 
   datetime_dtypes <- time_unit |>
     lapply(\(tu) {
       time_zone |>
         lapply(\(tz) pl$Datetime(tu, tz))
     }) |>
-    unlist() |>
+    unlist(recursive = TRUE) |>
     as.list()
 
   wrap_to_selector(
-    pl$col(datetime_dtypes),
+    pl$col(!!!datetime_dtypes),
     name = "datetime"
   )
 }
@@ -603,7 +600,7 @@ cs__digit <- function(ascii_only = FALSE) {
   } else {
     re_digit <- r"(\d)"
   }
-  wrap_to_selector(pl$col(paste0("^", re_digit, "+$")), name = "digit")
+  wrap_to_selector(pl$col(!!!paste0("^", re_digit, "+$")), name = "digit")
 }
 
 #' Select all duration columns, optionally filtering by time unit
@@ -637,7 +634,7 @@ cs__duration <- function(time_unit = c("ms", "us", "ns")) {
     lapply(pl$Duration)
 
   wrap_to_selector(
-    pl$col(duration_dtypes),
+    pl$col(!!!duration_dtypes),
     name = "duration"
   )
 }
@@ -666,15 +663,13 @@ cs__duration <- function(time_unit = c("ms", "us", "ns")) {
 #' df$select(!cs$ends_with("z"))
 cs__ends_with <- function(...) {
   check_dots_unnamed()
-  input <- list2(...)
-  is_char <- vapply(input, \(x) is_character(x) && !anyNA(x), FUN.VALUE = logical(1))
-  if (!all(is_char)) {
-    abort("All elements of `...` must be non-missing values of type character.")
-  }
-  substring <- unlist(input, use.names = FALSE) |>
-    paste(collapse = "|")
-  raw_params <- paste0("^.*(", substring, ")$")
-  wrap_to_selector(pl$col(raw_params), name = "ends_with")
+  dots <- list2(...)
+  check_list_of_string(dots, arg = "...")
+
+  substrings <- as.character(dots) |>
+    paste0(collapse = "|")
+  raw_params <- paste0("^.*(", substrings, ")$")
+  wrap_to_selector(pl$col(!!!raw_params), name = "ends_with")
 }
 
 #' Select all columns except those matching the given columns, datatypes, or
@@ -702,12 +697,12 @@ cs__exclude <- function(...) {
   check_dots_unnamed()
   input <- list2(...)
 
-  names <- Filter(
-    \(x) is_character(x) && !(startsWith(x, "^") && endsWith(x, "$")),
+  col_names <- Filter(
+    \(x) is_string(x) && !(startsWith(x, "^") && !endsWith(x, "$")),
     input
   )
   regexes <- Filter(
-    \(x) is_character(x) && startsWith(x, "^") && endsWith(x, "$"),
+    \(x) is_string(x) && startsWith(x, "^") && endsWith(x, "$"),
     input
   )
   dtypes <- Filter(is_polars_dtype, input)
@@ -721,16 +716,11 @@ cs__exclude <- function(...) {
   }
 
   selected <- list()
-  if (length(names) > 0) {
-    selected <- append(selected, cs$by_name(names))
+  if (length(col_names) > 0) {
+    selected <- append(selected, cs$by_name(!!!col_names))
   }
   if (length(regexes) > 0) {
-    if (length(regexes) > 1) {
-      regexes <- paste(unlist(regexes), collapse = "|")
-    } else {
-      regexes <- regexes[[1]]
-    }
-    selected <- append(selected, cs$matches(regexes))
+    selected <- append(selected, cs$matches(paste0(unlist(regexes), collapse = "|")))
   }
   if (length(dtypes) > 0) {
     selected <- append(selected, cs$by_dtype(!!!dtypes))
@@ -783,7 +773,7 @@ cs__first <- function() {
 cs__float <- function() {
   list_dtypes <- list(pl$Float32, pl$Float64)
   wrap_to_selector(
-    pl$col(list_dtypes),
+    pl$col(!!!list_dtypes),
     name = "float",
     parameters = list_dtypes
   )
@@ -811,7 +801,7 @@ cs__integer <- function() {
     pl$UInt8, pl$UInt16, pl$UInt32, pl$UInt64
   )
   wrap_to_selector(
-    pl$col(list_dtypes),
+    pl$col(!!!list_dtypes),
     name = "integer",
     parameters = list_dtypes
   )
@@ -881,7 +871,7 @@ cs__matches <- function(pattern) {
     sfx <- ""
   }
   raw_params <- paste0(pfx, pattern, sfx)
-  wrap_to_selector(pl$col(raw_params), name = "matches")
+  wrap_to_selector(pl$col(!!!raw_params), name = "matches")
 }
 
 #' Select all numeric columns.
@@ -908,7 +898,7 @@ cs__numeric <- function() {
     pl$UInt8, pl$UInt16, pl$UInt32, pl$UInt64
   )
   wrap_to_selector(
-    pl$col(list_dtypes),
+    pl$col(!!!list_dtypes),
     name = "numeric",
     parameters = list_dtypes
   )
@@ -937,7 +927,7 @@ cs__numeric <- function() {
 cs__signed_integer <- function() {
   list_dtypes <- list(pl$Int8, pl$Int16, pl$Int32, pl$Int64)
   wrap_to_selector(
-    pl$col(list_dtypes),
+    pl$col(!!!list_dtypes),
     name = "signed_integer",
     parameters = list_dtypes
   )
@@ -967,15 +957,13 @@ cs__signed_integer <- function() {
 #' df$select(!cs$starts_with("b"))
 cs__starts_with <- function(...) {
   check_dots_unnamed()
-  input <- list2(...)
-  is_char <- vapply(input, \(x) is_character(x) && !anyNA(x), FUN.VALUE = logical(1))
-  if (!all(is_char)) {
-    abort("All elements of `...` must be non-missing values of type character.")
-  }
-  substring <- unlist(input, use.names = FALSE) |>
-    paste(collapse = "|")
-  raw_params <- paste0("^(", substring, ").*$")
-  wrap_to_selector(pl$col(raw_params), name = "starts_with")
+  dots <- list2(...)
+  check_list_of_string(dots, arg = "...")
+
+  substrings <- as.character(dots) |>
+    paste0(collapse = "|")
+  raw_params <- paste0("^(", substrings, ").*$")
+  wrap_to_selector(pl$col(!!!raw_params), name = "starts_with")
 }
 
 #' Select all String (and, optionally, Categorical) string columns.
@@ -990,7 +978,7 @@ cs__starts_with <- function(...) {
 #'   y = c(3.0, 4.5, 1.0, 2.5, -2.0),
 #'   z = c("a", "b", "a", "b", "b")
 #' )$with_columns(
-#'   z = pl$col("z")$cast(pl$Categorical("lexical"))
+#'   z = pl$col("z")$cast(pl$Categorical())
 #' )
 #'
 #' # Group by all string columns, sum the numeric columns, then sort by the
@@ -1009,7 +997,7 @@ cs__string <- function(..., include_categorical = FALSE) {
   } else {
     list_dtypes <- list(pl$String)
   }
-  wrap_to_selector(pl$col(list_dtypes), name = "string")
+  wrap_to_selector(pl$col(!!!list_dtypes), name = "string")
 }
 
 #' Select all temporal columns
@@ -1033,7 +1021,7 @@ cs__string <- function(..., include_categorical = FALSE) {
 cs__temporal <- function() {
   list_dtypes <- list(pl$Date, pl$Time)
   wrap_to_selector(
-    pl$col(list_dtypes),
+    pl$col(!!!list_dtypes),
     name = "temporal",
     parameters = list_dtypes
   ) | cs$datetime() | cs$duration()
@@ -1081,7 +1069,7 @@ cs__time <- function() {
 cs__unsigned_integer <- function() {
   list_dtypes <- list(pl$UInt8, pl$UInt16, pl$UInt32, pl$UInt64)
   wrap_to_selector(
-    pl$col(list_dtypes),
+    pl$col(!!!list_dtypes),
     name = "integer",
     parameters = list_dtypes
   )

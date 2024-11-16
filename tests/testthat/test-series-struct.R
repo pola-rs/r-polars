@@ -9,8 +9,5 @@ test_that("Extract works for series struct namespace", {
     s$struct[1],
     as_polars_series(mtcars$cyl, name = "cyl")
   )
-  expect_error(
-    s$struct[NA_character_],
-    "can't contain NA values"
-  )
+  expect_error(s$struct[NA_character_])
 })

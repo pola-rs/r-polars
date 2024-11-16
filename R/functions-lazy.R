@@ -2,11 +2,10 @@ pl__field <- function(...) {
   wrap({
     check_dots_unnamed()
 
-    dots <- list2(...) |>
-      unlist(recursive = FALSE)
-    check_character(dots, arg = "...", allow_na = FALSE)
+    dots <- list2(...)
+    check_list_of_string(dots, arg = "...")
 
-    field(dots)
+    field(as.character(dots))
   })
 }
 

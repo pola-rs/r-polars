@@ -5,7 +5,7 @@
     Output
       cols(["i8", "i16"])
 
-# pl$col() works c(int8, int16), string
+# pl$col() works !!!c(int8, int16), string
 
     Code
       object
@@ -33,7 +33,7 @@
     Output
       col("^str.*$")
 
-# pl$col() works c(^str.*$, i8)
+# pl$col() works ^str.*$, i8
 
     Code
       object
@@ -54,7 +54,7 @@
     Output
       dtype_columns([Int8, Int16])
 
-# pl$col() works list(pl$Int8, pl$Int16)
+# pl$col() works !!!list(pl$Int8, pl$Int16)
 
     Code
       object

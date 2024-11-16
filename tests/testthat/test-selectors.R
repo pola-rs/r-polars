@@ -184,7 +184,7 @@ test_that("by_name", {
     c("foo", "bar")
   )
   expect_named(
-    df$select(cs$by_name("baz", "moose", "foo", "bear", .require_all = FALSE)),
+    df$select(cs$by_name("baz", "moose", "foo", "bear", require_all = FALSE)),
     c("foo", "baz")
   )
   expect_snapshot(

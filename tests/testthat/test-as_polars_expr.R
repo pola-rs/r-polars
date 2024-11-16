@@ -12,11 +12,13 @@ test_that("as_polars_expr for polars_expr `structify=TRUE`", {
 })
 
 test_that("as_polars_expr for character `as_lit=FALSE`", {
-  expect_equal(as_polars_expr(character()), pl$col(character()))
+  invalid_error_message <- r"(Invalid input for `pl\$col\(\)`)"
+
+  expect_equal(as_polars_expr(character()), pl$col())
   expect_equal(as_polars_expr(c("foo")), pl$col("foo"))
   expect_equal(as_polars_expr(c("foo", "bar")), pl$col("foo", "bar"))
-  expect_error(as_polars_expr(NA_character_), "`NA` is not a valid column name")
-  expect_error(as_polars_expr(c("foo", NA_character_)), "`NA` is not a valid column name")
+  expect_error(as_polars_expr(NA_character_), invalid_error_message)
+  expect_error(as_polars_expr(c("foo", NA_character_)), invalid_error_message)
 })
 
 patrick::with_parameters_test_that(

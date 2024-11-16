@@ -8,14 +8,15 @@ pl__col(...)
 }
 \arguments{
 \item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}>
-The name or datatype of the column(s) to represent.
+The name or \link[=DataType]{data type} of the column(s) to represent.
 Unnamed objects one of the following:
 \itemize{
-\item character vectors
+\item Single string(s) representing column names
 \itemize{
-\item Single wildcard \code{"*"} has a special meaning: check the examples.
+\item Regular expressions starting with \code{^} and ending with \code{$} are allowed.
+\item Single wildcard \code{"*"}  has a special meaning: check the examples.
 }
-\item (lists of) \code{polars_dtype} objects
+\item \link[=DataType]{Polars DataType(s)}
 }}
 }
 \value{
@@ -37,10 +38,9 @@ pl$col(pl$Float64, pl$String)
 # Single `"*"` is converted to a wildcard expression
 pl$col("*")
 
-# multiple character vectors and a list of polars data types are also allowed
-pl$col(c("foo", "bar"), "baz")
-pl$col("foo", c("bar", "baz"))
-pl$col(list(pl$Float64, pl$String), list(pl$UInt32))
+# Character vectors with length > 1 should be used with `!!!`
+pl$col(!!!c("foo", "bar"), "baz")
+pl$col("foo", !!!c("bar", "baz"))
 
 # there are some special notations for selecting columns
 df <- pl$DataFrame(foo = 1:3, bar = 4:6, baz = 7:9)

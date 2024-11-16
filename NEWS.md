@@ -163,9 +163,30 @@ tibble::as_tibble(pl_df)
 #> 3 14:00  <raw 1 B>
 ```
 
-### Argument name changes
+### Dynamic dots features
 
 This package has started to use [dynamic-dots](https://rlang.r-lib.org/reference/dyn-dots.html) actively.
+
+### Single string handling
+
+In the previous version, we could give a character vector of length 2 or more to `pl$col()`,
+but in the new version, all elements must be of length 1.
+If we want to use a vector of length 2 or more, we need to expand it using `!!!`.
+
+```r
+# Previous version
+pl$col(c("foo", "bar"), "baz")
+#> polars Expr: cols(["foo", "bar", "baz"])
+```
+
+```r
+# New version
+pl$col(!!!c("foo", "bar"), "baz")
+#> cols(["foo", "bar", "baz"])
+```
+
+#### Argument name changes
+
 Argument names of functions which have dynamic-dots may have dot (`.`) prefix.
 
 ```r
@@ -181,6 +202,18 @@ as_polars_df(mtcars)$group_by("cyl", maintain_order = TRUE)$agg()
 #> │ 4.0 │
 #> │ 8.0 │
 #> └─────┘
+
+as_polars_df(mtcars)$group_by("cyl", .maintain_order = TRUE)$agg()
+#> shape: (3, 2)
+#> ┌─────┬─────────────────┐
+#> │ cyl ┆ .maintain_order │
+#> │ --- ┆ ---             │
+#> │ f64 ┆ bool            │
+#> ╞═════╪═════════════════╡
+#> │ 8.0 ┆ true            │
+#> │ 4.0 ┆ true            │
+#> │ 6.0 ┆ true            │
+#> └─────┴─────────────────┘
 ```
 
 ```r
@@ -210,7 +243,7 @@ as_polars_df(mtcars)$group_by("cyl", .maintain_order = TRUE)$agg()
 #> └─────┘
 ```
 
-### Simplification of class constructor functions
+#### Simplification of class constructor functions
 
 In the new version, since conversion from R classes to Polars classes is completely done through
 generic functions like `as_polars_df()`, functions that mimic class constructors of Python Polars

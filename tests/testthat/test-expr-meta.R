@@ -74,12 +74,10 @@ test_that("meta$undo_aliases", {
 
 test_that("meta$has_multiple_outputs", {
   e1 <- pl$col("alice")
-  e2 <- pl$col(c("alice", "bob"))
-  e3 <- pl$col("alice", "bob")
+  e2 <- pl$col("alice", "bob")
 
   expect_false(e1$meta$has_multiple_outputs())
   expect_true(e2$meta$has_multiple_outputs())
-  expect_true(e3$meta$has_multiple_outputs())
 })
 
 test_that("meta$is_regex_projection", {
