@@ -27,14 +27,14 @@
 #'
 #' ## S3 method for [POSIXct]
 #'
-#' Sub-millisecond values will be rounded to milliseconds.
+#' Sub-millisecond values will be ignored (floored to the millisecond).
 #'
 #' If the `tzone` attribute is not present or an empty string (`""`),
 #' the [Series]' [dtype][DataType] will be Datetime without timezone.
 #'
 #'  ## S3 method for [POSIXlt]
 #'
-#' Sub-nanosecond values will be rounded to nanoseconds.
+#' Sub-nanosecond values will be ignored (floored to the nanosecond).
 #'
 #' ## S3 method for [difftime]
 #'
@@ -42,7 +42,7 @@
 #'
 #' ## S3 method for [hms][hms::hms]
 #'
-#' Sub-nanosecond values will be rounded to nanoseconds.
+#' Sub-nanosecond values will be ignored (floored to the nanosecond).
 #'
 #' If the [hms][hms::hms] vector contains values greater-equal to 24-oclock or less than 0-oclock,
 #' an error will be thrown.
@@ -272,7 +272,7 @@ as_polars_series.POSIXct <- function(x, name = NULL, ...) {
     name <- name %||% ""
 
     int_series <- PlRSeries$new_i64_from_numeric_and_multiplier(
-      name, x, 1000L
+      name, x, 1000L, "floor"
     )
 
     if (tzone == "") {
@@ -312,7 +312,7 @@ as_polars_series.POSIXlt <- function(x, name = NULL, ...) {
       time_zone = attr(x, "tzone")[1] %||% "UTC",
       time_unit = "ns",
       ambiguous = "earliest"
-    )$alias(name %||% "") + pl$duration(nanoseconds = round(nanosec))
+    )$alias(name %||% "") + pl$duration(nanoseconds = floor(nanosec))
   )$to_series()
 }
 
@@ -329,7 +329,7 @@ as_polars_series.difftime <- function(x, name = NULL, ...) {
   )
 
   PlRSeries$new_i64_from_numeric_and_multiplier(
-    name %||% "", x, mul_value
+    name %||% "", x, mul_value, "round"
   )$cast(pl$Duration("ms")$`_dt`, strict = TRUE) |>
     wrap()
 }
@@ -346,7 +346,7 @@ as_polars_series.hms <- function(x, name = NULL, ...) {
     }
 
     PlRSeries$new_i64_from_numeric_and_multiplier(
-      name %||% "", x, 1000000000L
+      name %||% "", x, 1000000000L, "floor"
     )$cast(pl$Time$`_dt`, strict = TRUE) |>
       wrap()
   })
@@ -417,7 +417,7 @@ as_polars_series.integer64 <- function(x, name = NULL, ...) {
 #' @export
 as_polars_series.ITime <- function(x, name = NULL, ...) {
   PlRSeries$new_i64_from_numeric_and_multiplier(
-    name %||% "", x, 1000000000L
+    name %||% "", x, 1000000000L, "floor"
   )$cast(pl$Time$`_dt`, strict = TRUE) |>
     wrap()
 }

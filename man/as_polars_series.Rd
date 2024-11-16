@@ -136,7 +136,7 @@ Sub-day values will be ignored (floored to the day).
 
 \subsection{S3 method for \link{POSIXct}}{
 
-Sub-millisecond values will be rounded to milliseconds.
+Sub-millisecond values will be ignored (floored to the millisecond).
 
 If the \code{tzone} attribute is not present or an empty string (\code{""}),
 the \link{Series}' \link[=DataType]{dtype} will be Datetime without timezone.
@@ -144,7 +144,7 @@ the \link{Series}' \link[=DataType]{dtype} will be Datetime without timezone.
 
 \subsection{S3 method for \link{POSIXlt}}{
 
-Sub-nanosecond values will be rounded to nanoseconds.
+Sub-nanosecond values will be ignored (floored to the nanosecond).
 }
 
 \subsection{S3 method for \link{difftime}}{
@@ -154,7 +154,7 @@ Sub-millisecond values will be rounded to milliseconds.
 
 \subsection{S3 method for \link[hms:hms]{hms}}{
 
-Sub-nanosecond values will be rounded to nanoseconds.
+Sub-nanosecond values will be ignored (floored to the nanosecond).
 
 If the \link[hms:hms]{hms} vector contains values greater-equal to 24-oclock or less than 0-oclock,
 an error will be thrown.
