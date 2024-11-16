@@ -232,6 +232,15 @@ lazyframe__explain <- function(
   })
 }
 
+lazyframe__collect_schema <- function() {
+  self$`_ldf`$collect_schema() |>
+    lapply(function(x) {
+      .savvy_wrap_PlRDataType(x) |>
+        wrap()
+    }) |>
+    wrap()
+}
+
 lazyframe__cast <- function(..., .strict = TRUE) {
   wrap({
     check_bool(.strict)

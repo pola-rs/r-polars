@@ -118,6 +118,8 @@ dataframe__set_column_names <- function(names) {
   })
 }
 
+dataframe__collect_schema <- function() self$schema
+
 # TODO: link to data type docs
 #' Convert a DataFrame to a Series of type Struct
 #'
