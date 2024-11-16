@@ -501,3 +501,41 @@ dataframe__sort <- function(
   )$collect(`_eager` = TRUE) |>
     wrap()
 }
+
+#' Get number of chunks used by the ChunkedArrays of this DataFrame
+#'
+#' @param strategy Return the number of chunks of the `"first"` column, or
+#' `"all"` columns in this DataFrame.
+#'
+#' @return An integer vector.
+#' @examples
+#' df <- pl$DataFrame(
+#'   a = c(1, 2, 3, 4),
+#'   b = c(0.5, 4, 10, 13),
+#'   c = c(TRUE, TRUE, FALSE, TRUE)
+#' )
+#'
+#' df$n_chunks()
+#' df$n_chunks(strategy = "all")
+dataframe__n_chunks <- function(strategy = c("first", "all")) {
+  wrap({
+    strategy <- arg_match0(strategy, values = c("first", "all"))
+    if (strategy == "first") {
+      self$`_df`$n_chunks()
+    } else {
+      vapply(as.list(self, as_series = TRUE), \(x) x$n_chunks(), FUN.VALUE = integer(1))
+    }
+  })
+}
+
+#' Rechunk the data in this DataFrame to a contiguous allocation
+#'
+#' This will make sure all subsequent operations have optimal and predictable
+#' performance.
+#'
+#' @inherit as_polars_df return
+dataframe__rechunk <- function() {
+  wrap({
+    self$`_df`$rechunk()
+  })
+}

@@ -1,5 +1,5 @@
 use crate::prelude::*;
-use crate::{PlRDataFrame, PlRDataType, PlRExpr};
+use crate::{PlRDataFrame, PlRDataType, PlRExpr, PlRLazyFrame, PlRSeries};
 use polars::series::ops::NullBehavior;
 use savvy::{ListSexp, NumericScalar, NumericSexp, NumericTypedSexp, TypedSexp};
 pub mod base_date;
@@ -93,6 +93,36 @@ impl TryFrom<ListSexp> for Wrap<Vec<DataFrame>> {
             })
             .collect::<Result<Vec<_>, _>>()?;
         Ok(Wrap(dfs))
+    }
+}
+
+impl TryFrom<ListSexp> for Wrap<Vec<LazyFrame>> {
+    type Error = savvy::Error;
+
+    fn try_from(list: ListSexp) -> Result<Self, savvy::Error> {
+        let lfs = list
+            .values_iter()
+            .map(|sexp| match sexp.into_typed() {
+                TypedSexp::Environment(e) => Ok(<&PlRLazyFrame>::try_from(e)?.ldf.clone()),
+                _ => Err("Only accept a list of polars lazy frames".to_string()),
+            })
+            .collect::<Result<Vec<_>, _>>()?;
+        Ok(Wrap(lfs))
+    }
+}
+
+impl TryFrom<ListSexp> for Wrap<Vec<Series>> {
+    type Error = savvy::Error;
+
+    fn try_from(list: ListSexp) -> Result<Self, savvy::Error> {
+        let s = list
+            .values_iter()
+            .map(|sexp| match sexp.into_typed() {
+                TypedSexp::Environment(e) => Ok(<&PlRSeries>::from(e).series.clone()),
+                _ => Err("Only accept a list of polars series".to_string()),
+            })
+            .collect::<Result<Vec<_>, _>>()?;
+        Ok(Wrap(s))
     }
 }
 

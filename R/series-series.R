@@ -200,3 +200,22 @@ series__len <- function() {
   self$`_s`$len() |>
     wrap()
 }
+
+#' Get the number of chunks that this Series contains
+#'
+#' @return An integer value
+#' @examples
+#' s <- pl$Series("a", c(1, 2, 3))
+#' s$n_chunks()
+#'
+#' s2 <- pl$Series("a", c(4, 5, 6))
+#'
+#' # Concatenate Series with rechunk = TRUE
+#' pl$concat(c(s, s2), rechunk = TRUE)$n_chunks()
+#'
+#' # Concatenate Series with rechunk = FALSE
+#' pl$concat(c(s, s2), rechunk = FALSE)$n_chunks()
+series__n_chunks <- function() {
+  self$`_s`$n_chunks() |>
+    wrap()
+}

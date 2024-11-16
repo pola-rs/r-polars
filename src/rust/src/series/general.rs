@@ -113,4 +113,8 @@ impl PlRSeries {
             .unwrap_or_else(|| Ok(self.series.len()))?;
         Ok(self.series.slice(offset, length).into())
     }
+
+    fn n_chunks(&self) -> Result<Sexp> {
+        (self.series.n_chunks() as i32).try_into()
+    }
 }

@@ -73,6 +73,11 @@ NULL
 }
 
 
+`concat_series` <- function(`series`) {
+  .savvy_wrap_PlRSeries(.Call(savvy_concat_series__impl, `series`))
+}
+
+
 `as_struct` <- function(`exprs`) {
   .savvy_wrap_PlRExpr(.Call(savvy_as_struct__impl, `exprs`))
 }
@@ -188,6 +193,31 @@ NULL
 
 `concat_list` <- function(`s`) {
   .savvy_wrap_PlRExpr(.Call(savvy_concat_list__impl, `s`))
+}
+
+
+`concat_df_diagonal` <- function(`dfs`) {
+  .savvy_wrap_PlRDataFrame(.Call(savvy_concat_df_diagonal__impl, `dfs`))
+}
+
+
+`concat_df_horizontal` <- function(`dfs`) {
+  .savvy_wrap_PlRDataFrame(.Call(savvy_concat_df_horizontal__impl, `dfs`))
+}
+
+
+`concat_lf` <- function(`lfs`, `rechunk`, `parallel`, `to_supertypes`) {
+  .savvy_wrap_PlRLazyFrame(.Call(savvy_concat_lf__impl, `lfs`, `rechunk`, `parallel`, `to_supertypes`))
+}
+
+
+`concat_lf_horizontal` <- function(`lfs`, `parallel`) {
+  .savvy_wrap_PlRLazyFrame(.Call(savvy_concat_lf_horizontal__impl, `lfs`, `parallel`))
+}
+
+
+`concat_lf_diagonal` <- function(`lfs`, `rechunk`, `parallel`, `to_supertypes`) {
+  .savvy_wrap_PlRLazyFrame(.Call(savvy_concat_lf_diagonal__impl, `lfs`, `rechunk`, `parallel`, `to_supertypes`))
 }
 
 
@@ -428,6 +458,18 @@ class(`PlRChainedWhen`) <- c("PlRChainedWhen__bundle", "savvy_neopolars__sealed"
   }
 }
 
+`PlRDataFrame_n_chunks` <- function(self) {
+  function() {
+    .Call(savvy_PlRDataFrame_n_chunks__impl, `self`)
+  }
+}
+
+`PlRDataFrame_rechunk` <- function(self) {
+  function() {
+    .savvy_wrap_PlRDataFrame(.Call(savvy_PlRDataFrame_rechunk__impl, `self`))
+  }
+}
+
 `.savvy_wrap_PlRDataFrame` <- function(ptr) {
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
@@ -447,6 +489,8 @@ class(`PlRChainedWhen`) <- c("PlRChainedWhen__bundle", "savvy_neopolars__sealed"
   e$`clone` <- `PlRDataFrame_clone`(ptr)
   e$`lazy` <- `PlRDataFrame_lazy`(ptr)
   e$`to_struct` <- `PlRDataFrame_to_struct`(ptr)
+  e$`n_chunks` <- `PlRDataFrame_n_chunks`(ptr)
+  e$`rechunk` <- `PlRDataFrame_rechunk`(ptr)
 
   class(e) <- c("PlRDataFrame", "savvy_neopolars__sealed")
   e
@@ -2574,6 +2618,12 @@ class(`PlRLazyGroupBy`) <- c("PlRLazyGroupBy__bundle", "savvy_neopolars__sealed"
   }
 }
 
+`PlRSeries_n_chunks` <- function(self) {
+  function() {
+    .Call(savvy_PlRSeries_n_chunks__impl, `self`)
+  }
+}
+
 `.savvy_wrap_PlRSeries` <- function(ptr) {
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
@@ -2598,6 +2648,7 @@ class(`PlRLazyGroupBy`) <- c("PlRLazyGroupBy__bundle", "savvy_neopolars__sealed"
   e$`len` <- `PlRSeries_len`(ptr)
   e$`cast` <- `PlRSeries_cast`(ptr)
   e$`slice` <- `PlRSeries_slice`(ptr)
+  e$`n_chunks` <- `PlRSeries_n_chunks`(ptr)
 
   class(e) <- c("PlRSeries", "savvy_neopolars__sealed")
   e

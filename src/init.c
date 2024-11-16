@@ -69,6 +69,11 @@ SEXP savvy_concat_df__impl(SEXP c_arg__dfs) {
     return handle_result(res);
 }
 
+SEXP savvy_concat_series__impl(SEXP c_arg__series) {
+    SEXP res = savvy_concat_series__ffi(c_arg__series);
+    return handle_result(res);
+}
+
 SEXP savvy_as_struct__impl(SEXP c_arg__exprs) {
     SEXP res = savvy_as_struct__ffi(c_arg__exprs);
     return handle_result(res);
@@ -166,6 +171,31 @@ SEXP savvy_lit_from_series_first__impl(SEXP c_arg__value) {
 
 SEXP savvy_concat_list__impl(SEXP c_arg__s) {
     SEXP res = savvy_concat_list__ffi(c_arg__s);
+    return handle_result(res);
+}
+
+SEXP savvy_concat_df_diagonal__impl(SEXP c_arg__dfs) {
+    SEXP res = savvy_concat_df_diagonal__ffi(c_arg__dfs);
+    return handle_result(res);
+}
+
+SEXP savvy_concat_df_horizontal__impl(SEXP c_arg__dfs) {
+    SEXP res = savvy_concat_df_horizontal__ffi(c_arg__dfs);
+    return handle_result(res);
+}
+
+SEXP savvy_concat_lf__impl(SEXP c_arg__lfs, SEXP c_arg__rechunk, SEXP c_arg__parallel, SEXP c_arg__to_supertypes) {
+    SEXP res = savvy_concat_lf__ffi(c_arg__lfs, c_arg__rechunk, c_arg__parallel, c_arg__to_supertypes);
+    return handle_result(res);
+}
+
+SEXP savvy_concat_lf_horizontal__impl(SEXP c_arg__lfs, SEXP c_arg__parallel) {
+    SEXP res = savvy_concat_lf_horizontal__ffi(c_arg__lfs, c_arg__parallel);
+    return handle_result(res);
+}
+
+SEXP savvy_concat_lf_diagonal__impl(SEXP c_arg__lfs, SEXP c_arg__rechunk, SEXP c_arg__parallel, SEXP c_arg__to_supertypes) {
+    SEXP res = savvy_concat_lf_diagonal__ffi(c_arg__lfs, c_arg__rechunk, c_arg__parallel, c_arg__to_supertypes);
     return handle_result(res);
 }
 
@@ -311,6 +341,16 @@ SEXP savvy_PlRDataFrame_lazy__impl(SEXP self__) {
 
 SEXP savvy_PlRDataFrame_to_struct__impl(SEXP self__, SEXP c_arg__name) {
     SEXP res = savvy_PlRDataFrame_to_struct__ffi(self__, c_arg__name);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRDataFrame_n_chunks__impl(SEXP self__) {
+    SEXP res = savvy_PlRDataFrame_n_chunks__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRDataFrame_rechunk__impl(SEXP self__) {
+    SEXP res = savvy_PlRDataFrame_rechunk__ffi(self__);
     return handle_result(res);
 }
 
@@ -1774,6 +1814,11 @@ SEXP savvy_PlRSeries_slice__impl(SEXP self__, SEXP c_arg__offset, SEXP c_arg__le
     return handle_result(res);
 }
 
+SEXP savvy_PlRSeries_n_chunks__impl(SEXP self__) {
+    SEXP res = savvy_PlRSeries_n_chunks__ffi(self__);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRThen_when__impl(SEXP self__, SEXP c_arg__condition) {
     SEXP res = savvy_PlRThen_when__ffi(self__, c_arg__condition);
     return handle_result(res);
@@ -1798,6 +1843,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_sum_horizontal__impl", (DL_FUNC) &savvy_sum_horizontal__impl, 1},
     {"savvy_mean_horizontal__impl", (DL_FUNC) &savvy_mean_horizontal__impl, 1},
     {"savvy_concat_df__impl", (DL_FUNC) &savvy_concat_df__impl, 1},
+    {"savvy_concat_series__impl", (DL_FUNC) &savvy_concat_series__impl, 1},
     {"savvy_as_struct__impl", (DL_FUNC) &savvy_as_struct__impl, 1},
     {"savvy_datetime__impl", (DL_FUNC) &savvy_datetime__impl, 10},
     {"savvy_duration__impl", (DL_FUNC) &savvy_duration__impl, 9},
@@ -1818,6 +1864,11 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_lit_from_series__impl", (DL_FUNC) &savvy_lit_from_series__impl, 1},
     {"savvy_lit_from_series_first__impl", (DL_FUNC) &savvy_lit_from_series_first__impl, 1},
     {"savvy_concat_list__impl", (DL_FUNC) &savvy_concat_list__impl, 1},
+    {"savvy_concat_df_diagonal__impl", (DL_FUNC) &savvy_concat_df_diagonal__impl, 1},
+    {"savvy_concat_df_horizontal__impl", (DL_FUNC) &savvy_concat_df_horizontal__impl, 1},
+    {"savvy_concat_lf__impl", (DL_FUNC) &savvy_concat_lf__impl, 4},
+    {"savvy_concat_lf_horizontal__impl", (DL_FUNC) &savvy_concat_lf_horizontal__impl, 2},
+    {"savvy_concat_lf_diagonal__impl", (DL_FUNC) &savvy_concat_lf_diagonal__impl, 4},
     {"savvy_int_range__impl", (DL_FUNC) &savvy_int_range__impl, 4},
     {"savvy_int_ranges__impl", (DL_FUNC) &savvy_int_ranges__impl, 4},
     {"savvy_date_range__impl", (DL_FUNC) &savvy_date_range__impl, 4},
@@ -1847,6 +1898,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRDataFrame_clone__impl", (DL_FUNC) &savvy_PlRDataFrame_clone__impl, 1},
     {"savvy_PlRDataFrame_lazy__impl", (DL_FUNC) &savvy_PlRDataFrame_lazy__impl, 1},
     {"savvy_PlRDataFrame_to_struct__impl", (DL_FUNC) &savvy_PlRDataFrame_to_struct__impl, 2},
+    {"savvy_PlRDataFrame_n_chunks__impl", (DL_FUNC) &savvy_PlRDataFrame_n_chunks__impl, 1},
+    {"savvy_PlRDataFrame_rechunk__impl", (DL_FUNC) &savvy_PlRDataFrame_rechunk__impl, 1},
     {"savvy_PlRDataType_new_from_name__impl", (DL_FUNC) &savvy_PlRDataType_new_from_name__impl, 1},
     {"savvy_PlRDataType_new_decimal__impl", (DL_FUNC) &savvy_PlRDataType_new_decimal__impl, 2},
     {"savvy_PlRDataType_new_datetime__impl", (DL_FUNC) &savvy_PlRDataType_new_datetime__impl, 2},
@@ -2139,6 +2192,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRSeries_len__impl", (DL_FUNC) &savvy_PlRSeries_len__impl, 1},
     {"savvy_PlRSeries_cast__impl", (DL_FUNC) &savvy_PlRSeries_cast__impl, 3},
     {"savvy_PlRSeries_slice__impl", (DL_FUNC) &savvy_PlRSeries_slice__impl, 3},
+    {"savvy_PlRSeries_n_chunks__impl", (DL_FUNC) &savvy_PlRSeries_n_chunks__impl, 1},
     {"savvy_PlRThen_when__impl", (DL_FUNC) &savvy_PlRThen_when__impl, 2},
     {"savvy_PlRThen_otherwise__impl", (DL_FUNC) &savvy_PlRThen_otherwise__impl, 2},
     {"savvy_PlRWhen_then__impl", (DL_FUNC) &savvy_PlRWhen_then__impl, 2},

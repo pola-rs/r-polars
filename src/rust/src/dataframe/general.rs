@@ -150,4 +150,14 @@ impl PlRDataFrame {
         let s = self.df.clone().into_struct(name.into());
         Ok(s.into_series().into())
     }
+
+    pub fn n_chunks(&self) -> Result<Sexp> {
+        (self.df.first_col_n_chunks() as i32).try_into()
+    }
+
+    pub fn rechunk(&self) -> Result<Self> {
+        let mut df = self.df.clone();
+        df.as_single_chunk_par();
+        Ok(df.into())
+    }
 }

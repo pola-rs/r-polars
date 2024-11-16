@@ -33,6 +33,7 @@ features = [
     "business",
     "concat_str",
     "cse",
+    "diagonal_concat",
     "diff",
     "dtype-full",
     "extract_groups",
