@@ -29,40 +29,19 @@ A Polars selector
 Select all datetime columns
 }
 \examples{
+chr_vec <- c("1999-07-21 05:20:16.987654", "2000-05-16 06:21:21.123456")
 df <- pl$DataFrame(
-  tstamp_tokyo = as.POSIXct(
-    c(
-      "1999-7-21  5:20:16:987654",
-      "2000-5-16  6:21:21:123465"
-    ),
-    tz = "Asia/Tokyo"
-  ),
-  tstamp_utc = as.POSIXct(
-    c(
-      "1999-7-21  5:20:16:987654",
-      "2000-5-16  6:21:21:123465"
-    ),
-    tz = "UTC"
-  ),
-  tstamp = as.POSIXct(c(
-    "1999-7-21  5:20:16:987654",
-    "2000-5-16  6:21:21:123465"
-  )),
-  dt = as.Date(c(
-    "1999-12-31", "2010-7-5"
-  )),
-  .schema_overrides = list(
-    tstamp_tokyo = pl$Datetime("ns", "Asia/Tokyo"),
-    tstamp_utc = pl$Datetime("us", "UTC"),
-    tstamp = pl$Datetime("us")
-  )
+  tstamp_tokyo = as.POSIXlt(chr_vec, tz = "Asia/Tokyo"),
+  tstamp_utc = as.POSIXct(chr_vec, tz = "UTC"),
+  tstamp = as.POSIXct(chr_vec),
+  dt = as.Date(chr_vec),
 )
 
 # Select all datetime columns:
 df$select(cs$datetime())
 
-# Select all datetime columns that have "us" precision:
-df$select(cs$datetime("us"))
+# Select all datetime columns that have "ms" precision:
+df$select(cs$datetime("ms"))
 
 # Select all datetime columns that have any timezone:
 df$select(cs$datetime(time_zone = "*"))
