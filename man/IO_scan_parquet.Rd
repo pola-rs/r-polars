@@ -15,12 +15,14 @@ pl_scan_parquet(
   hive_schema = NULL,
   try_parse_hive_dates = TRUE,
   glob = TRUE,
+  schema = NULL,
   rechunk = FALSE,
   low_memory = FALSE,
   storage_options = NULL,
   use_statistics = TRUE,
   cache = TRUE,
-  include_file_paths = NULL
+  include_file_paths = NULL,
+  allow_missing_columns = FALSE
 )
 }
 \arguments{
@@ -55,6 +57,9 @@ types.}
 
 \item{glob}{Expand path given via globbing rules.}
 
+\item{schema}{Specify the datatypes of the columns. The datatypes must match the datatypes in the file(s).
+If there are extra columns that are not in the file(s), consider also enabling \code{allow_missing_columns}.}
+
 \item{rechunk}{In case of reading multiple files via a glob pattern, rechunk
 the final DataFrame into contiguous memory chunks.}
 
@@ -71,6 +76,11 @@ can be skipped from reading.}
 
 \item{include_file_paths}{Include the path of the source file(s) as a column
 with this name.}
+
+\item{allow_missing_columns}{When reading a list of parquet files, if a column existing in the first
+file cannot be found in subsequent files, the default behavior is to raise an error.
+However, if \code{allow_missing_columns} is set to \code{TRUE}, a full-NULL column is returned
+instead of erroring for the files that do not contain the column.}
 }
 \value{
 \link[=LazyFrame_class]{LazyFrame}

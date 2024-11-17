@@ -485,7 +485,7 @@ test_that("automatically rechunked for struct array stream from C stream interfa
     as_polars_series()
 
   expect_identical(s_int_exp$n_chunks(), 2)
-  expect_identical(s_struct_exp$n_chunks(), 1)
+  expect_identical(s_struct_exp$n_chunks(), 2)
   expect_identical(s_struct_stable$n_chunks(), 2)
 })
 

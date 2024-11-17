@@ -1758,8 +1758,7 @@ Expr_n_unique = use_extendr_wrapper
 #' This is done using the HyperLogLog++ algorithm for cardinality estimation.
 #' @return Expr
 #' @examples
-#' as_polars_df(iris[, 4:5])$
-#'   with_columns(count = pl$col("Species")$approx_n_unique())
+#' as_polars_df(mtcars)$select(count = pl$col("cyl")$approx_n_unique())
 Expr_approx_n_unique = use_extendr_wrapper
 
 #' Count missing values
@@ -3039,7 +3038,7 @@ Expr_arctanh = use_extendr_wrapper
 #' # One can specify more than 2 dimensions by using the Array type
 #' df = pl$DataFrame(foo = 1:12)
 #' df$select(
-#'   pl$col("foo")$reshape(c(3, 2, 2), nested_type = pl$Array(pl$Float32, 2))
+#'   pl$col("foo")$reshape(c(3, 2, 2))
 #' )
 Expr_reshape = function(dimensions) {
   .pr$Expr$reshape(self, dimensions) |>

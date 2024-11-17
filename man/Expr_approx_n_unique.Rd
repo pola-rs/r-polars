@@ -13,6 +13,5 @@ Expr
 This is done using the HyperLogLog++ algorithm for cardinality estimation.
 }
 \examples{
-as_polars_df(iris[, 4:5])$
-  with_columns(count = pl$col("Species")$approx_n_unique())
+as_polars_df(mtcars)$select(count = pl$col("cyl")$approx_n_unique())
 }

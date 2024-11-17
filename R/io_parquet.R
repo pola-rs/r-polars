@@ -12,11 +12,17 @@
 #' @param rechunk In case of reading multiple files via a glob pattern, rechunk
 #' the final DataFrame into contiguous memory chunks.
 #' @param glob Expand path given via globbing rules.
+#' @param schema Specify the datatypes of the columns. The datatypes must match the datatypes in the file(s).
+#' If there are extra columns that are not in the file(s), consider also enabling `allow_missing_columns`.
 #' @param use_statistics Use statistics in the parquet file to determine if pages
 #' can be skipped from reading.
 #' @param storage_options Experimental. List of options necessary to scan
 #' parquet files from different cloud storage providers (GCP, AWS, Azure,
 #' HuggingFace). See the 'Details' section.
+#' @param allow_missing_columns When reading a list of parquet files, if a column existing in the first
+#' file cannot be found in subsequent files, the default behavior is to raise an error.
+#' However, if `allow_missing_columns` is set to `TRUE`, a full-NULL column is returned
+#' instead of erroring for the files that do not contain the column.
 #'
 #' @rdname IO_scan_parquet
 #' @details
@@ -101,12 +107,14 @@ pl_scan_parquet = function(
     hive_schema = NULL,
     try_parse_hive_dates = TRUE,
     glob = TRUE,
+    schema = NULL,
     rechunk = FALSE,
     low_memory = FALSE,
     storage_options = NULL,
     use_statistics = TRUE,
     cache = TRUE,
-    include_file_paths = NULL) {
+    include_file_paths = NULL,
+    allow_missing_columns = FALSE) {
   new_from_parquet(
     path = source,
     n_rows = n_rows,
@@ -122,7 +130,9 @@ pl_scan_parquet = function(
     try_parse_hive_dates = try_parse_hive_dates,
     storage_options = storage_options,
     glob = glob,
-    include_file_paths = include_file_paths
+    schema = schema,
+    include_file_paths = include_file_paths,
+    allow_missing_columns = allow_missing_columns
   ) |>
     unwrap("in pl$scan_parquet():")
 }
@@ -162,12 +172,14 @@ pl_read_parquet = function(
     hive_schema = NULL,
     try_parse_hive_dates = TRUE,
     glob = TRUE,
+    schema = NULL,
     rechunk = TRUE,
     low_memory = FALSE,
     storage_options = NULL,
     use_statistics = TRUE,
     cache = TRUE,
-    include_file_paths = NULL) {
+    include_file_paths = NULL,
+    allow_missing_columns = FALSE) {
   .args = as.list(environment())
   result({
     do.call(pl$scan_parquet, .args)$collect()
