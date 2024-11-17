@@ -5,6 +5,7 @@
 ### Breaking changes
 
 - Updated Rust Polars to 0.44.2 (#1271).
+  - Minimum supported Rust version (MSRV) is now 1.82.0.
   - `$reshape()`'s `nested_type` argument is removed.
   - `$approx_n_unique()` no longer works on Categorical type.
 - `<Series>$compare()` is removed. (#1272)
