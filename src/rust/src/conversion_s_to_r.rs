@@ -225,7 +225,7 @@ pub fn pl_series_to_list(
                         let sys_tz = robj_to!(String, sys_tz_robj)
                             .map_err(|err| pl::PolarsError::ComputeError(err.to_string().into()))?;
                         let s_name = s.name();
-                        pl::DataFrame::new(vec![s.clone()])?
+                        pl::DataFrame::new(vec![s.clone().into()])?
                             .lazy()
                             .select([col(s_name.clone()).dt().replace_time_zone(
                                 Some(sys_tz.into()),
@@ -234,6 +234,7 @@ pub fn pl_series_to_list(
                             )])
                             .collect()?
                             .column(s_name)?
+                            .as_materialized_series()
                             .clone()
                     }
                 };

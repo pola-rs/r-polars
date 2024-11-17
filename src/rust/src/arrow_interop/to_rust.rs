@@ -80,28 +80,32 @@ pub unsafe fn to_rust_df(rb: Robj) -> Result<pl::DataFrame, String> {
         // for instance utf8 -> large-utf8
         // dict encoded to categorical
 
-        let series_vec = if run_parallel {
+        let columns = if run_parallel {
             POOL.install(|| {
                 arrays_vec
                     .into_par_iter()
                     .zip(names.par_iter())
                     .map(|(arr, name)| {
-                        let s =
-                            Series::try_from((name.clone(), arr)).map_err(|err| err.to_string())?;
+                        let s = Series::try_from((name.clone(), arr))
+                            .map_err(|err| err.to_string())?
+                            .into_column();
                         Ok(s)
                     })
                     .collect::<Result<Vec<_>, String>>()
             })
         } else {
             let iter = arrays_vec.into_iter().zip(names.iter()).map(|(arr, name)| {
-                let s = Series::try_from((name.clone(), arr)).map_err(|err| err.to_string())?;
+                let s = Series::try_from((name.clone(), arr))
+                    .map_err(|err| err.to_string())?
+                    .into_column();
                 Ok(s)
             });
             crate::utils::collect_hinted_result(n_columns, iter)
         }?;
 
         // no need to check as a record batch has the same guarantees
-        let df_res: Result<_, String> = Ok(DataFrame::new_no_checks(series_vec));
+        let df_res: Result<_, String> =
+            Ok(unsafe { DataFrame::new_no_checks_height_from_first(columns) });
         df_res
     });
     let dfs = crate::utils::collect_hinted_result(rb_len, dfs_iter)?;

@@ -22,10 +22,12 @@ pub fn new_from_parquet(
     use_statistics: Robj,
     low_memory: Robj,
     hive_partitioning: Robj,
+    schema: Robj,
     hive_schema: Robj,
     try_parse_hive_dates: Robj,
     glob: Robj,
     include_file_paths: Robj,
+    allow_missing_columns: Robj,
     //retries: Robj // not supported yet, with CloudOptions
 ) -> RResult<RPolarsLazyFrame> {
     let path = robj_to!(String, path)?;
@@ -41,6 +43,8 @@ pub fn new_from_parquet(
         schema: robj_to!(Option, WrapSchema, hive_schema)?.map(|x| Arc::new(x.0)),
         try_parse_dates: robj_to!(bool, try_parse_hive_dates)?,
     };
+    let schema = robj_to!(Option, WrapSchema, schema)?;
+    let allow_missing_columns = robj_to!(bool, allow_missing_columns)?;
     let args = pl::ScanArgsParquet {
         n_rows: robj_to!(Option, usize, n_rows)?,
         cache: robj_to!(bool, cache)?,
@@ -50,9 +54,11 @@ pub fn new_from_parquet(
         low_memory: robj_to!(bool, low_memory)?,
         cloud_options,
         use_statistics: robj_to!(bool, use_statistics)?,
+        schema: schema.map(|x| Arc::new(x.0)),
         hive_options,
         glob: robj_to!(bool, glob)?,
         include_file_paths: robj_to!(Option, String, include_file_paths)?.map(|x| x.into()),
+        allow_missing_columns,
     };
 
     pl::LazyFrame::scan_parquet(path, args)

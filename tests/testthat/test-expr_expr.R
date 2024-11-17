@@ -1708,18 +1708,15 @@ test_that("Expr_rolling_*_by", {
     )$to_data_frame(),
     expected
   )
+
+  expect_no_error(
+    pl$DataFrame(a = 1:6, id = 11:16)$select(pl$col("a")$rolling_min_by("id", window_size = "2i")),
+  )
 })
 
-test_that("Expr_rolling_*_by only works with date/datetime", {
-  df = pl$DataFrame(a = 1:6, id = 11:16)
-
+test_that("Expr_rolling_*_by error", {
   expect_error(
-    df$select(pl$col("a")$rolling_min_by("id", window_size = "2i")),
-    "`by` argument of dtype `i32` is not supported"
-  )
-
-  expect_error(
-    df$select(pl$col("a")$rolling_min_by(1, window_size = "2d")),
+    pl$DataFrame(a = 1:6, id = 11:16)$select(pl$col("a")$rolling_min_by(1, window_size = "2d")),
     "must be the same length as values column"
   )
 })
@@ -2187,12 +2184,12 @@ test_that("reshape", {
   expect_true(
     pl$DataFrame(a = 1:4)$select(
       pl$col("a")$reshape(c(-1, 2))
-    )$dtypes[[1]] == pl$List(pl$Int32)
+    )$dtypes[[1]] == pl$Array(pl$Int32, 2)
   )
 
   # One can specify more than 2 dimensions by using the Array type
   out = pl$DataFrame(foo = 1:12)$select(
-    pl$col("foo")$reshape(c(3, 2, 2), nested_type = pl$Array(pl$Float32, 2))
+    pl$col("foo")$reshape(c(3, 2, 2))
   )
   # annoying to test schema equivalency with list()
   expect_snapshot(out$schema)

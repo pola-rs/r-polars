@@ -98,7 +98,7 @@ import_arrow_ipc <- function(path, n_rows, cache, rechunk, row_name, row_index, 
 
 new_from_ndjson <- function(path, infer_schema_length, batch_size, n_rows, low_memory, rechunk, row_index_name, row_index_offset, ignore_errors) .Call(wrap__new_from_ndjson, path, infer_schema_length, batch_size, n_rows, low_memory, rechunk, row_index_name, row_index_offset, ignore_errors)
 
-new_from_parquet <- function(path, n_rows, cache, parallel, rechunk, row_name, row_index, storage_options, use_statistics, low_memory, hive_partitioning, hive_schema, try_parse_hive_dates, glob, include_file_paths) .Call(wrap__new_from_parquet, path, n_rows, cache, parallel, rechunk, row_name, row_index, storage_options, use_statistics, low_memory, hive_partitioning, hive_schema, try_parse_hive_dates, glob, include_file_paths)
+new_from_parquet <- function(path, n_rows, cache, parallel, rechunk, row_name, row_index, storage_options, use_statistics, low_memory, hive_partitioning, schema, hive_schema, try_parse_hive_dates, glob, include_file_paths, allow_missing_columns) .Call(wrap__new_from_parquet, path, n_rows, cache, parallel, rechunk, row_name, row_index, storage_options, use_statistics, low_memory, hive_partitioning, schema, hive_schema, try_parse_hive_dates, glob, include_file_paths, allow_missing_columns)
 
 test_rpolarserr <- function() .Call(wrap__test_rpolarserr)
 
@@ -680,7 +680,7 @@ RPolarsExpr$arccosh <- function() .Call(wrap__RPolarsExpr__arccosh, self)
 
 RPolarsExpr$arctanh <- function() .Call(wrap__RPolarsExpr__arctanh, self)
 
-RPolarsExpr$reshape <- function(dimensions, is_list) .Call(wrap__RPolarsExpr__reshape, self, dimensions, is_list)
+RPolarsExpr$reshape <- function(dimensions) .Call(wrap__RPolarsExpr__reshape, self, dimensions)
 
 RPolarsExpr$shuffle <- function(seed) .Call(wrap__RPolarsExpr__shuffle, self, seed)
 

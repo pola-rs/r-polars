@@ -4,6 +4,10 @@
 
 ### Breaking changes
 
+- Updated Rust Polars to 0.44.2 (#1271).
+  - Minimum supported Rust version (MSRV) is now 1.82.0.
+  - `$reshape()`'s `nested_type` argument is removed.
+  - `$approx_n_unique()` no longer works on Categorical type.
 - `<Series>$compare()` is removed. (#1272)
 
 ### Deprecations
@@ -18,7 +22,7 @@
 
 ## Polars R Package 0.20.0
 
-- Updated rust-polars to 0.43.1 (#1230).
+- Updated Rust Polars to 0.43.1 (#1230).
 
 ### Breaking changes
 
@@ -50,7 +54,7 @@
 
 ### Breaking changes
 
-- Updated rust-polars to unreleased 2024-08-20, after 0.42.0 (#1183).
+- Updated Rust Polars to unreleased 2024-08-20, after 0.42.0 (#1183).
 - `$describe_plan()` and `$describe_optimized_plan()` are removed. Use
   respectively `$explain(optimized = FALSE)` and `$explain()` instead (#1182).
 - The parameter `inherit_optimization` is removed from all functions that had it
@@ -117,7 +121,7 @@
 
 ### Breaking changes
 
-- Updated rust-polars to 0.41.3 (#1147, #1156).
+- Updated Rust Polars to 0.41.3 (#1147, #1156).
 - In `$n_chunks()`, the default value of `strategy` now is `"first"` (#1137).
 - `$sample()` for Expr and DataFrame (#1136):
   - the argument `frac` is renamed `fraction`;
@@ -174,7 +178,7 @@
 
 ### Breaking changes
 
-- Updated rust-polars to unreleased version (> 0.40.0) (#1104, #1110, #1117, #1124):
+- Updated Rust Polars to unreleased version (> 0.40.0) (#1104, #1110, #1117, #1124):
   - In `$join()`, there is a new argument `coalesce` and the `how` options now
     accept `"full"` instead of `"outer"` and `"outer_coalesce"`.
   - `$top_k()` and `$bottom_k()` gain three arguments `nulls_last`,
@@ -290,7 +294,7 @@
 
 ## Polars R Package 0.16.1
 
-This is a small hot-fix release to update dependent Rust polars to 0.39.1 (#1042).
+This is a small hot-fix release to update dependent Rust Polars to 0.39.1 (#1042).
 
 Also, there are some updates.
 
@@ -306,7 +310,7 @@ Also, there are some updates.
 
 ### Breaking changes
 
-- Rust polars is updated to 0.39.0 (#937, #1034).
+- Rust Polars is updated to 0.39.0 (#937, #1034).
 - R objects inside an R list are now converted to Polars data types via
   `as_polars_series()` (#1021, #1022, #1023). For example, up to polars 0.15.1,
   a list containing a data.frame with a column of `{clock}` naive-time class
@@ -533,7 +537,7 @@ Also, there are some updates.
 
 ### New features
 
-- rust-polars is updated to 0.38.2 (#907).
+- Rust Polars is updated to 0.38.2 (#907).
   - Minimum supported Rust version (MSRV) is now 1.76.0.
 - `as_polars_df(<nanoarrow_array>)` is added (#893).
 - It is now possible to create an empty `DataFrame` with a specific schema
@@ -551,9 +555,9 @@ Also, there are some updates.
 
 ## Polars R Package 0.15.0
 
-### Breaking changes due to Rust-polars update
+### Breaking changes due to Rust Polars update
 
-- rust-polars is updated to 0.38.1 (#865, #872).
+- Rust Polars is updated to 0.38.1 (#865, #872).
   - in `$pivot()`, arguments `aggregate_function`, `maintain_order`,
     `sort_columns` and `separator` must be named. Values that are passed
     by position are ignored.
@@ -715,9 +719,9 @@ Also, there are some updates.
 
 ## Polars R Package 0.14.0
 
-### Breaking changes due to Rust-polars update
+### Breaking changes due to Rust Polars update
 
-- rust-polars is updated to 0.37.0 (#776).
+- Rust Polars is updated to 0.37.0 (#776).
   - Minimum supported Rust version (MSRV) is now 1.74.1.
   - `$with_row_count()` for `DataFrame` and `LazyFrame` is deprecated and
     will be removed in 0.15.0. It is replaced by `$with_row_index()`.
@@ -904,9 +908,9 @@ a large amount of documentation improvements.
 - `pl$polars_info()` is moved to `polars_info()`. `pl$polars_info()` is deprecated
   and will be removed in 0.13.0 (#662).
 
-### Rust-polars update
+### Rust Polars update
 
-- rust-polars is updated to 0.36.2 (#659). Most of the changes from 0.35.x to 0.36.2
+- Rust Polars is updated to 0.36.2 (#659). Most of the changes from 0.35.x to 0.36.2
   were covered in R polars 0.12.0.
   The main change is that `pl$Utf8` is replaced by `pl$String`.
   `pl$Utf8` is an alias and will keep working, but `pl$String` is now preferred
@@ -927,9 +931,9 @@ a large amount of documentation improvements.
 
 ## Polars R Package 0.12.0
 
-### BREAKING CHANGES DUE TO RUST-POLARS UPDATE
+### BREAKING CHANGES DUE TO Rust Polars UPDATE
 
-- rust-polars is updated to 2023-12-25 unreleased version (#601, #622).
+- Rust Polars is updated to 2023-12-25 unreleased version (#601, #622).
   This is the same version of Python Polars package 0.20.2, so please check
   the [upgrade guide](https://pola-rs.github.io/polars/releases/upgrade/0.20/) for details too.
   - `pl$scan_csv()` and `pl$read_csv()`'s `comment_char` argument is renamed `comment_prefix`.
@@ -984,9 +988,9 @@ a large amount of documentation improvements.
 
 ## Polars R Package 0.11.0
 
-### BREAKING CHANGES DUE TO RUST-POLARS UPDATE
+### BREAKING CHANGES DUE TO Rust Polars UPDATE
 
-- rust-polars is updated to 0.35.0 (2023-11-17) (#515)
+- Rust Polars is updated to 0.35.0 (2023-11-17) (#515)
   - changes in `$write_csv()` and `sink_csv()`: `has_header` is renamed
     `include_header` and there's a new argument `include_bom`.
   - `pl$cov()` gains a `ddof` argument.
@@ -1065,9 +1069,9 @@ a large amount of documentation improvements.
 
 ## Polars R Package 0.10.0
 
-### BREAKING CHANGES DUE TO RUST-POLARS UPDATE
+### BREAKING CHANGES DUE TO Rust Polars UPDATE
 
-- rust-polars is updated to 2023-10-25 unreleased version (#442)
+- Rust Polars is updated to 2023-10-25 unreleased version (#442)
   - Minimum supported Rust version (MSRV) is now 1.73.
   - New subnamespace `"name"` that contains methods `$prefix()`, `$suffix()`
     `keep()` (renamed from `keep_name()`) and `map()` (renamed from `map_alias()`).
@@ -1109,9 +1113,9 @@ a large amount of documentation improvements.
 
 ## Polars R Package 0.9.0
 
-### BREAKING CHANGES DUE TO RUST-POLARS UPDATE
+### BREAKING CHANGES DUE TO Rust Polars UPDATE
 
-- rust-polars is updated to 0.33.2 (#417)
+- Rust Polars is updated to 0.33.2 (#417)
   - In all date-time related methods, the argument `use_earliest` is replaced by `ambiguous`.
   - In `$sample()` and `$shuffle()`, the argument `fixed_seed` is removed.
   - In `$value_counts()`, the arguments `multithreaded` and `sort`
@@ -1121,7 +1125,7 @@ a large amount of documentation improvements.
   - Using `$is_in()` with `NA` on both sides now returns `NA` and not `TRUE` anymore.
   - Argument `pattern` of `$str$count_matches()` can now use expressions.
   - Needs Rust toolchain `nightly-2023-08-26` for to build with full features.
-- Rename R functions to match rust-polars
+- Rename R functions to match Rust Polars
   - `$str$count_match()` -> `$str$count_matches()` (#417)
   - `$str$strip()` -> `$str$strip_chars()` (#417)
   - `$str$lstrip()` -> `$str$strip_chars_start()` (#417)
@@ -1187,9 +1191,9 @@ a large amount of documentation improvements.
 
 ## Polars R Package 0.8.0
 
-### BREAKING CHANGES DUE TO RUST-POLARS UPDATE
+### BREAKING CHANGES DUE TO Rust Polars UPDATE
 
-rust-polars was updated to 0.32.0, which comes with many breaking changes and new
+Rust Polars was updated to 0.32.0, which comes with many breaking changes and new
 features. Unrelated breaking changes and new features are put in separate sections
 (#334):
 
@@ -1259,7 +1263,7 @@ features. Unrelated breaking changes and new features are put in separate sectio
   will trigger something like `Cargo build --features "full_features"` which is not exactly the same
   as `Cargo build --all-features`. Some dev features are not included in "full_features" (#311).
 - Fix bug to allow using polars without library(polars) (#355).
-- New methods `<LazyFrame>$optimization_toggle()` + `$profile()` and enable rust-polars feature
+- New methods `<LazyFrame>$optimization_toggle()` + `$profile()` and enable Rust Polars feature
   CSE: "Activate common subplan elimination optimization" (#323)
 - Named expression e.g. `pl$select(newname = pl$lit(2))` are no longer experimental
   and allowed as default (#357).
@@ -1269,7 +1273,7 @@ features. Unrelated breaking changes and new features are put in separate sectio
   can define a custom way to convert their format to Polars format. This generic
   must return a Polars series. See #368 for an example (#369).
 - Private API Support for Arrow Stream import/export of DataFrame between two R packages that uses
-  rust-polars. [See R package example here](https://github.com/rpolars/extendrpolarsexamples)
+  Rust Polars. [See R package example here](https://github.com/rpolars/extendrpolarsexamples)
   (#326).
 
 ## Polars R Package 0.7.0
@@ -1278,7 +1282,7 @@ features. Unrelated breaking changes and new features are put in separate sectio
 
 - Replace the argument `reverse` by `descending` in all sorting functions. This
   is for consistency with the upstream Polars (#291, #293).
-- Bump rust-polars from 2023-04-20 unreleased version to version 0.30.0 released in 2023-05-30 (#289).
+- Bump Rust Polars from 2023-04-20 unreleased version to version 0.30.0 released in 2023-05-30 (#289).
   - Rename `concat_lst` to `concat_list`.
   - Rename `$str$explode` to `$str$str_explode`.
   - Remove `tz_aware` and `utc` arguments from `str_parse`.
@@ -1299,7 +1303,7 @@ features. Unrelated breaking changes and new features are put in separate sectio
 - Fix memory leak on error bug. Fix printing of `%` bug. Prepare for renaming of polars classes (#252).
 - Add helpful reference landing page at `polars.github.io/reference_home` (#223, #264).
 - Supports Rust 1.65 (#262, #280)
-  - rust-polars' `simd` feature is now disabled by default. To enable it, set the environment variable
+  - Rust Polars' `simd` feature is now disabled by default. To enable it, set the environment variable
     `RPOLARS_ALL_FEATURES` to `true` when build r-polars (#262).
   - `opt-level` of `argminmax` is now set to `1` in the `release` profile to support Rust < 1.66.
     The profile can be changed by setting the environment variable `RPOLARS_PROFILE` (when set to `release-optimized`,
@@ -1332,7 +1336,7 @@ features. Unrelated breaking changes and new features are put in separate sectio
 
 ### BREAKING CHANGES
 
-- Bump rust-polars from 2023-02-17 unreleased version to 2023-04-20 unreleased version. (#183)
+- Bump Rust Polars from 2023-02-17 unreleased version to 2023-04-20 unreleased version. (#183)
   - `top_k`'s `reverse` option is removed. Use the new `bottom_k` method instead.
   - The name of the `fmt` argument of some methods (e.g. `parse_date`) has been changed to `format`.
 

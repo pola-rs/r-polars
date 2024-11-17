@@ -8,6 +8,7 @@ use extendr_api::prelude::*;
 use polars::chunked_array::ops::SortMultipleOptions;
 use polars::lazy::dsl;
 use polars::prelude as pl;
+use polars::prelude::IntoColumn;
 use std::result::Result;
 
 #[extendr]
@@ -236,12 +237,16 @@ fn test_robj_to_rchoice(robj: Robj) -> RResult<String> {
 #[extendr]
 fn fold(acc: Robj, lambda: Robj, exprs: Robj) -> RResult<RPolarsExpr> {
     let par_fn = ParRObj(lambda);
-    let f = move |acc: pl::Series, x: pl::Series| {
+    let f = move |acc: pl::Column, x: pl::Column| {
         let thread_com = ThreadCom::try_from_global(&CONFIG)
             .map_err(|err| pl::polars_err!(ComputeError: err))?;
-        thread_com.send(RFnSignature::FnTwoSeriesToSeries(par_fn.clone(), acc, x));
+        thread_com.send(RFnSignature::FnTwoSeriesToSeries(
+            par_fn.clone(),
+            acc.as_materialized_series().clone(),
+            x.as_materialized_series().clone(),
+        ));
         let s = thread_com.recv().unwrap_series();
-        Ok(Some(s))
+        Ok(Some(s.into_column()))
     };
     Ok(pl::fold_exprs(robj_to!(PLExpr, acc)?, f, robj_to!(Vec, PLExpr, exprs)?).into())
 }
@@ -249,12 +254,16 @@ fn fold(acc: Robj, lambda: Robj, exprs: Robj) -> RResult<RPolarsExpr> {
 #[extendr]
 fn reduce(lambda: Robj, exprs: Robj) -> RResult<RPolarsExpr> {
     let par_fn = ParRObj(lambda);
-    let f = move |acc: pl::Series, x: pl::Series| {
+    let f = move |acc: pl::Column, x: pl::Column| {
         let thread_com = ThreadCom::try_from_global(&CONFIG)
             .map_err(|err| pl::polars_err!(ComputeError: err))?;
-        thread_com.send(RFnSignature::FnTwoSeriesToSeries(par_fn.clone(), acc, x));
+        thread_com.send(RFnSignature::FnTwoSeriesToSeries(
+            par_fn.clone(),
+            acc.take_materialized_series(),
+            x.take_materialized_series(),
+        ));
         let s = thread_com.recv().unwrap_series();
-        Ok(Some(s))
+        Ok(Some(s.into_column()))
     };
     Ok(pl::reduce_exprs(f, robj_to!(Vec, PLExpr, exprs)?).into())
 }

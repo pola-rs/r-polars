@@ -14,11 +14,10 @@ use crate::utils::{r_error_list, r_ok_list, robj_to_binary_vec};
 use crate::CONFIG;
 use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut};
 use pl::PolarsError as pl_error;
-use pl::{Duration, IntoSeries, RollingGroupOptions, SetOperation, TemporalMethods};
+use pl::{Duration, IntoColumn, RollingGroupOptions, SetOperation, TemporalMethods};
 use polars::lazy::dsl;
 use polars::prelude as pl;
-use polars::prelude::{ExprEvalExtension, NestedType, SortOptions};
-use std::any::Any;
+use polars::prelude::{ExprEvalExtension, SortOptions};
 use std::ops::{Add, Div, Mul, Rem, Sub};
 use std::result::Result;
 pub type NameGenerator = pl::Arc<dyn Fn(usize) -> String + Send + Sync>;
@@ -452,17 +451,7 @@ impl RPolarsExpr {
     }
 
     pub fn reinterpret(&self, signed: bool) -> RPolarsExpr {
-        use crate::utils::reinterpret;
-        let function = move |s: pl::Series| reinterpret(&s, signed).map(Some);
-        let dt = if signed {
-            pl::DataType::Int64
-        } else {
-            pl::DataType::UInt64
-        };
-        self.clone()
-            .0
-            .map(function, pl::GetOutput::from_type(dt))
-            .into()
+        self.0.clone().reinterpret(signed).into()
     }
 
     pub fn interpolate(&self, method: Robj) -> RResult<RPolarsExpr> {
@@ -643,7 +632,7 @@ impl RPolarsExpr {
                 weights,
                 min_periods,
                 center,
-                Some(Arc::new(pl::RollingVarParams { ddof }) as Arc<dyn Any + Send + Sync>),
+                Some(pl::RollingFnParams::Var(pl::RollingVarParams { ddof })),
             )?)
             .into())
     }
@@ -667,7 +656,7 @@ impl RPolarsExpr {
                     window_size,
                     min_periods,
                     closed,
-                    Some(Arc::new(pl::RollingVarParams { ddof }) as Arc<dyn Any + Send + Sync>),
+                    Some(pl::RollingFnParams::Var(pl::RollingVarParams { ddof })),
                 )?,
             )
             .into())
@@ -692,7 +681,7 @@ impl RPolarsExpr {
                 weights,
                 min_periods,
                 center,
-                Some(Arc::new(pl::RollingVarParams { ddof }) as Arc<dyn Any + Send + Sync>),
+                Some(pl::RollingFnParams::Var(pl::RollingVarParams { ddof })),
             )?)
             .into())
     }
@@ -716,7 +705,7 @@ impl RPolarsExpr {
                     window_size,
                     min_periods,
                     closed,
-                    Some(Arc::new(pl::RollingVarParams { ddof }) as Arc<dyn Any + Send + Sync>),
+                    Some(pl::RollingFnParams::Var(pl::RollingVarParams { ddof })),
                 )?,
             )
             .into())
@@ -918,15 +907,9 @@ impl RPolarsExpr {
         self.clone().0.arctanh().into()
     }
 
-    pub fn reshape(&self, dimensions: Robj, is_list: Robj) -> RResult<Self> {
+    pub fn reshape(&self, dimensions: Robj) -> RResult<Self> {
         let dimensions = robj_to!(Vec, i64, dimensions)?;
-        let is_list = robj_to!(bool, is_list)?;
-        let nested = if is_list {
-            NestedType::List
-        } else {
-            NestedType::Array
-        };
-        Ok(self.0.clone().reshape(&dimensions, nested).into())
+        Ok(self.0.clone().reshape(&dimensions).into())
     }
 
     pub fn shuffle(&self, seed: Robj) -> RResult<Self> {
@@ -1023,7 +1006,9 @@ impl RPolarsExpr {
                             if s.len() == 1 {
                                 Ok(Some(s.new_from_index(0, n)))
                             } else {
-                                RPolarsSeries(s).rep_impl(n, rechunk).map(|s| Some(s.0))
+                                RPolarsSeries(s.as_materialized_series().clone())
+                                    .rep_impl(n, rechunk)
+                                    .map(|s| Some(s.0.into()))
                             }
                         },
                         pl::GetOutput::same_type(),
@@ -1266,13 +1251,15 @@ impl RPolarsExpr {
                     let s: pl::PlSmallStr = s.into();
                     s
                 });
-            f
+            pl::NameGenerator(f)
         });
         let ub = robj_to!(usize, upper_bound)?;
         Ok(RPolarsExpr(self.0.clone().list().to_struct(
-            width_strat,
-            fields,
-            ub,
+            pl::ListToStructArgs::InferWidth {
+                infer_field_strategy: width_strat,
+                get_index_name: fields,
+                max_fields: ub,
+            },
         )))
     }
 
@@ -1456,7 +1443,13 @@ impl RPolarsExpr {
                 });
             f
         });
-        Ok(RPolarsExpr(self.0.clone().arr().to_struct(fields)))
+        Ok(RPolarsExpr(
+            self.0
+                .clone()
+                .arr()
+                .to_struct(fields)
+                .map_err(polars_to_rpolars_err)?,
+        ))
     }
 
     fn arr_shift(&self, n: Robj) -> RResult<Self> {
@@ -1555,8 +1548,9 @@ impl RPolarsExpr {
             .0
             .map(
                 |s| {
-                    s.timestamp(pl::TimeUnit::Milliseconds)
-                        .map(|ca| Some((ca / 1000).into_series()))
+                    s.take_materialized_series()
+                        .timestamp(pl::TimeUnit::Milliseconds)
+                        .map(|ca| Some((ca / 1000).into_column()))
                 },
                 pl::GetOutput::from_type(pl::DataType::Int64),
             )
@@ -1978,12 +1972,15 @@ impl RPolarsExpr {
     pub fn map_batches(&self, lambda: Robj, output_type: Robj, agg_list: Robj) -> RResult<Self> {
         // define closure how to request R code evaluated in main thread from a some polars sub thread
         let par_fn = ParRObj(lambda);
-        let f = move |s: pl::Series| {
+        let f = move |col: pl::Column| {
             let thread_com = ThreadCom::try_from_global(&CONFIG)
                 .expect("polars was thread could not initiate ThreadCommunication to R");
-            thread_com.send(RFnSignature::FnSeriesToSeries(par_fn.clone(), s));
+            thread_com.send(RFnSignature::FnSeriesToSeries(
+                par_fn.clone(),
+                col.as_materialized_series().clone(),
+            ));
             let s = thread_com.recv().unwrap_series();
-            Ok(Some(s))
+            Ok(Some(s.into_column()))
         };
 
         // set expected type of output from R function
@@ -2012,12 +2009,12 @@ impl RPolarsExpr {
     ) -> RResult<Self> {
         let raw_func = crate::rbackground::serialize_robj(lambda).unwrap();
 
-        let rbgfunc = move |s| {
+        let rbgfunc = move |col: pl::Column| {
             crate::RBGPOOL
-                .rmap_series(raw_func.clone(), s)
+                .rmap_series(raw_func.clone(), col.as_materialized_series().clone())
                 .map_err(rpolars_to_polars_err)?()
             .map_err(rpolars_to_polars_err)
-            .map(Some)
+            .map(|s| Some(s.into_column()))
         };
 
         let ot = robj_to!(Option, PLPolarsDataType, output_type)?;
@@ -2045,12 +2042,12 @@ impl RPolarsExpr {
     ) -> Self {
         let raw_func = crate::rbackground::serialize_robj(lambda).unwrap();
 
-        let rbgfunc = move |s| {
+        let rbgfunc = move |column: pl::Column| {
             crate::RBGPOOL
-                .rmap_series(raw_func.clone(), s)
+                .rmap_series(raw_func.clone(), column.as_materialized_series().clone())
                 .map_err(rpolars_to_polars_err)?()
             .map_err(rpolars_to_polars_err)
-            .map(Some)
+            .map(|s| Some(s.into_column()))
         };
 
         let ot = null_to_opt(output_type).map(|rdt| rdt.0.clone());
@@ -2826,7 +2823,7 @@ pub fn make_rolling_options_fixed_window(
     weights: Robj,
     min_periods: Robj,
     center: Robj,
-    fn_params: Option<Arc<dyn Any + Send + Sync>>,
+    fn_params: Option<pl::RollingFnParams>,
 ) -> RResult<pl::RollingOptionsFixedWindow> {
     Ok(pl::RollingOptionsFixedWindow {
         window_size: robj_to!(usize, window_size)?,
@@ -2841,7 +2838,7 @@ pub fn make_rolling_options_dynamic_window(
     window_size: &str,
     min_periods: Robj,
     closed_window: Robj,
-    fn_params: Option<Arc<dyn Any + Send + Sync>>,
+    fn_params: Option<pl::RollingFnParams>,
 ) -> RResult<pl::RollingOptionsDynamicWindow> {
     Ok(pl::RollingOptionsDynamicWindow {
         window_size: Duration::parse(window_size),

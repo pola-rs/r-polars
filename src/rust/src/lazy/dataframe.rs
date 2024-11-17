@@ -560,6 +560,7 @@ impl RPolarsLazyFrame {
             .rename(
                 robj_to!(Vec, String, existing)?,
                 robj_to!(Vec, String, new)?,
+                true,
             )
             .into())
     }

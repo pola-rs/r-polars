@@ -238,7 +238,7 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
                         &pl::DataType::Datetime(pl::TimeUnit::Milliseconds, Some("UTC".into())),
                     )?;
                     Ok(SeriesTree::Series(
-                        pl::DataFrame::new(vec![utc_s.clone()])?
+                        pl::DataFrame::new(vec![utc_s.clone().into()])?
                             .lazy()
                             .select([col(s_name.clone())
                                 .dt()
@@ -247,6 +247,7 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
                                 .replace_time_zone(None, pl::lit("raise"), pl::NonExistent::Raise)])
                             .collect()?
                             .column(s_name)?
+                            .as_materialized_series()
                             .clone(),
                     ))
                 }
