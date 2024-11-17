@@ -19,7 +19,7 @@ the equivalent of \code{dplyr::mutate()} as it keeps unmentioned columns (unlike
 \verb{$select()}).
 }
 \examples{
-pl$LazyFrame(iris)$with_columns(
+as_polars_lf(iris)$with_columns(
   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
 )
@@ -29,9 +29,9 @@ l_expr = list(
   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
 )
-pl$LazyFrame(iris)$with_columns(l_expr)
+as_polars_lf(iris)$with_columns(l_expr)
 
-pl$LazyFrame(iris)$with_columns(
+as_polars_lf(iris)$with_columns(
   pl$col("Sepal.Length")$abs(), # not named expr will keep name "Sepal.Length"
   SW_add_2 = (pl$col("Sepal.Width") + 2)
 )

@@ -52,7 +52,7 @@ test_that("Expression examples // types/NAS in-out", {
     "rando2" = rep(5.0, 5),
     "groups" =  c("A", "A", "B", "C", "B")
   )
-  pf = pl$DataFrame(df_in)
+  pf = as_polars_df(df_in)
   df_out = pf$to_data_frame()
 
   expect_equal(df_in, df_out)

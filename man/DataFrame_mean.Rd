@@ -13,6 +13,6 @@ A DataFrame with one row.
 Aggregate the columns in the DataFrame to their mean value.
 }
 \examples{
-pl$DataFrame(mtcars)$mean()
+as_polars_df(mtcars)$mean()
 }
 \keyword{DataFrame}

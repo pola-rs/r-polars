@@ -18,8 +18,8 @@ This function only temporarily enables the global string cache.
 \examples{
 # activate string cache temporarily when constructing two DataFrame's
 pl$with_string_cache({
-  df1 = pl$DataFrame(head(iris, 2))
-  df2 = pl$DataFrame(tail(iris, 2))
+  df1 = as_polars_df(head(iris, 2))
+  df2 = as_polars_df(tail(iris, 2))
 })
 pl$concat(list(df1, df2))
 }

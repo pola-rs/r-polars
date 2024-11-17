@@ -3,7 +3,7 @@
 #' @return bool
 #' @keywords functions
 #' @examples
-#' pl$is_schema(pl$DataFrame(iris)$schema)
+#' pl$is_schema(as_polars_df(iris)$schema)
 #' pl$is_schema(list("alice", "bob"))
 pl_is_schema = \(x) {
   is.list(x) && !is.null(names(x)) && !anyNA(names(x)) &&

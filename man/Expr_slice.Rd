@@ -37,5 +37,5 @@ pl$DataFrame(list(a = 0:100))$select(
 )
 
 # recycling
-pl$DataFrame(mtcars)$with_columns(pl$col("mpg")$slice(0, 1)$first())
+as_polars_df(mtcars)$with_columns(pl$col("mpg")$slice(0, 1)$first())
 }

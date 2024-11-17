@@ -13,7 +13,7 @@
       
       ``` r
       df = data.frame(a = 1:3, b = letters[1:3])
-      pl$DataFrame(df)
+      as_polars_df(df)
       ```
       
       ```{=html}
@@ -24,7 +24,7 @@
         white-space: pre-wrap;
       }
       </style>
-      <small>shape: (3, 2)</small><table border="1" class="dataframe"><thead><tr><th>a</th><th>b</th></tr><tr><td>i32</td><td>str</td></tr></thead><tbody><tr><td>1</td><td>&quot;a&quot;</td></tr><tr><td>2</td><td>&quot;b&quot;</td></tr><tr><td>3</td><td>&quot;c&quot;</td></tr></tbody></table></div>
+      <small>shape: (3, 2)</small><table border="1" class="dataframe"><thead><tr><th>a</th><th>b</th></tr><tr><td>i32</td><td>str</td></tr></thead><tbody><tr><td>1</td><td>"a"</td></tr><tr><td>2</td><td>"b"</td></tr><tr><td>3</td><td>"c"</td></tr></tbody></table></div>
       ```
 
 ---
@@ -42,7 +42,7 @@
       
       ``` r
       df = data.frame(a = 1:3, b = letters[1:3])
-      pl$DataFrame(df)
+      as_polars_df(df)
       ```
       
       ```{=html}
@@ -53,7 +53,7 @@
         white-space: pre-wrap;
       }
       </style>
-      <small>shape: (3, 2)</small><table border="1" class="dataframe"><thead><tr><th>a</th><th>b</th></tr><tr><td>i32</td><td>str</td></tr></thead><tbody><tr><td>1</td><td>&quot;a&quot;</td></tr><tr><td>2</td><td>&quot;b&quot;</td></tr><tr><td>3</td><td>&quot;c&quot;</td></tr></tbody></table></div>
+      <small>shape: (3, 2)</small><table border="1" class="dataframe"><thead><tr><th>a</th><th>b</th></tr><tr><td>i32</td><td>str</td></tr></thead><tbody><tr><td>1</td><td>"a"</td></tr><tr><td>2</td><td>"b"</td></tr><tr><td>3</td><td>"c"</td></tr></tbody></table></div>
       ```
 
 ---
@@ -64,7 +64,7 @@
       
       ``` r
       df = data.frame(a = 1:3, b = letters[1:3])
-      pl$DataFrame(df)
+      as_polars_df(df)
       ```
       
       <div><style>
@@ -74,7 +74,7 @@
         white-space: pre-wrap;
       }
       </style>
-      <small>shape: (3, 2)</small><table border="1" class="dataframe"><thead><tr><th>a</th><th>b</th></tr><tr><td>i32</td><td>str</td></tr></thead><tbody><tr><td>1</td><td>&quot;a&quot;</td></tr><tr><td>2</td><td>&quot;b&quot;</td></tr><tr><td>3</td><td>&quot;c&quot;</td></tr></tbody></table></div>
+      <small>shape: (3, 2)</small><table border="1" class="dataframe"><thead><tr><th>a</th><th>b</th></tr><tr><td>i32</td><td>str</td></tr></thead><tbody><tr><td>1</td><td>"a"</td></tr><tr><td>2</td><td>"b"</td></tr><tr><td>3</td><td>"c"</td></tr></tbody></table></div>
 
 ---
 
@@ -84,7 +84,7 @@
       
       ``` r
       df = data.frame(a = 1:3, b = letters[1:3])
-      pl$DataFrame(df)
+      as_polars_df(df)
       ```
       
           ## shape: (3, 2)

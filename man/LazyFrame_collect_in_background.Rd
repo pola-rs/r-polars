@@ -37,7 +37,7 @@ expr = pl$col("mpg")$map_batches(
 )$alias("kml")
 
 # return is immediately a handle to another thread.
-handle = pl$LazyFrame(mtcars)$with_columns(expr)$collect_in_background()
+handle = as_polars_lf(mtcars)$with_columns(expr)$collect_in_background()
 
 # ask if query is done
 if (!handle$is_finished()) print("not done yet")

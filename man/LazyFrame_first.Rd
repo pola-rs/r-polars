@@ -13,6 +13,6 @@ A LazyFrame with one row
 Get the first row of a LazyFrame
 }
 \examples{
-pl$LazyFrame(mtcars)$first()$collect()
+as_polars_lf(mtcars)$first()$collect()
 }
 \keyword{DataFrame}

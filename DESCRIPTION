@@ -30,7 +30,7 @@ Suggests:
     curl,
     ggplot2,
     jsonlite,
-    knitr,
+    knitr (>= 1.49.0),
     lubridate,
     nanoarrow (>= 0.6.0),
     nycflights13,
@@ -43,7 +43,8 @@ Suggests:
     tibble,
     tools,
     vctrs,
-    withr
+    withr,
+    xfun (>= 0.48)
 Config/Needs/website:
     altdoc,
     future.apply,
@@ -119,5 +120,5 @@ Collate:
     'zzz.R'
 Config/rextendr/version: 0.3.1
 VignetteBuilder: knitr
-Config/polars/LibVersion: 0.43.1
+Config/polars/LibVersion: 0.44.0
 Config/polars/RustToolchainVersion: nightly-2024-10-28

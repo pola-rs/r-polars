@@ -20,7 +20,7 @@ Drop all rows that contain nulls (which correspond to \code{NA} in R).
 tmp = mtcars
 tmp[1:3, "mpg"] = NA
 tmp[4, "hp"] = NA
-tmp = pl$DataFrame(tmp)
+tmp = as_polars_df(tmp)
 
 # number of rows in `tmp` before dropping nulls
 tmp$height

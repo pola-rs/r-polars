@@ -111,7 +111,7 @@ larger than RAM as it would crash the R session if it was collected into R.
 \examples{
 # sink table 'mtcars' from mem to CSV
 tmpf = tempfile()
-pl$LazyFrame(mtcars)$sink_csv(tmpf)
+as_polars_lf(mtcars)$sink_csv(tmpf)
 
 # stream a query end-to-end
 tmpf2 = tempfile()

@@ -45,11 +45,11 @@ indenter = "0.3.3"
 ipc-channel = "0.18.3"
 once_cell = "1.20.2"
 rayon = "1.10.0"
-serde = { version = "1.0.214", features = ["derive"] }
+serde = { version = "1.0.215", features = ["derive"] }
 serde_json = "*"
 smartstring = "1.0.1"
 state = "0.6.0"
-thiserror = "1.0.66"
+thiserror = "2.0.3"
 polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "2dce3d3b5c80ae7522a3435f844fac8fed9dc9e8", default-features = false }
 polars-lazy = { git = "https://github.com/pola-rs/polars.git", rev = "2dce3d3b5c80ae7522a3435f844fac8fed9dc9e8", default-features = false }
 either = "1"

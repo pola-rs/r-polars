@@ -13,5 +13,5 @@ DataFrame
 Reverse the DataFrame (the last row becomes the first one, etc.).
 }
 \examples{
-pl$DataFrame(mtcars)$reverse()
+as_polars_df(mtcars)$reverse()
 }

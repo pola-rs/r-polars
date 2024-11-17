@@ -24,7 +24,7 @@ Write to JSON file
 }
 \examples{
 if (require("jsonlite", quiet = TRUE)) {
-  dat = pl$DataFrame(head(mtcars))
+  dat = as_polars_df(head(mtcars))
   destination = tempfile()
 
   dat$select(pl$col("drat", "mpg"))$write_json(destination)

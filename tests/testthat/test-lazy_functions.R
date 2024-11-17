@@ -82,7 +82,7 @@ test_that("pl$std pl$var", {
 
 test_that("pl$struct", {
   expr = pl$struct(names(iris))$alias("struct")
-  df_act = pl$DataFrame(iris[1:150, ])$select(expr)$to_data_frame()
+  df_act = as_polars_df(iris[1:150, ])$select(expr)$to_data_frame()
 
   df_exp = structure(
     list(struct = unname(lapply(1:150, \(i) as.list(iris[i, ])))),
@@ -206,7 +206,7 @@ test_that("pl$tail", {
 })
 
 test_that("pl$cov pl$rolling_cov pl$corr pl$rolling_corr", {
-  lf = pl$LazyFrame(mtcars)
+  lf = as_polars_lf(mtcars)
 
   expect_identical(lf$select(pl$cov("mpg", "hp"))$collect()$to_data_frame()[1, ] |> round(digits = 3), cov(mtcars$mpg, mtcars$hp) |> round(digits = 3))
 

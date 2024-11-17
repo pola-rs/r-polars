@@ -81,7 +81,7 @@ pl$LazyFrame()$select(pl$lit(2) + 2)$profile()
 ## Use $profile() to compare two queries
 
 # -1-  map each Species-group with native polars, takes ~120us only
-pl$LazyFrame(iris)$
+as_polars_lf(iris)$
   sort("Sepal.Length")$
   group_by("Species", maintain_order = TRUE)$
   agg(pl$col(pl$Float64)$first() + 5)$
@@ -95,7 +95,7 @@ r_func = \(s) {
   s$to_r()[1] + 5
 }
 
-pl$LazyFrame(iris)$
+as_polars_lf(iris)$
   sort("Sepal.Length")$
   group_by("Species", maintain_order = TRUE)$
   agg(pl$col(pl$Float64)$map_elements(r_func))$

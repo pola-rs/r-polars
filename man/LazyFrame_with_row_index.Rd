@@ -18,7 +18,7 @@ A new LazyFrame with a counter column in front
 Add a new column at index 0 that counts the rows
 }
 \examples{
-df = pl$LazyFrame(mtcars)
+df = as_polars_lf(mtcars)
 
 # by default, the index starts at 0 (to mimic the behavior of Python Polars)
 df$with_row_index("idx")

@@ -56,7 +56,7 @@ patrick::with_parameters_test_that(
     # - 1 non-expr then 1 expr
     # - 2 non-exprs
 
-    dat = pl$DataFrame(mtcars)
+    dat = as_polars_df(mtcars)
     dat_exp = data.frame(
       mpg = do.call(fn, list(mtcars$mpg, 2)),
       cyl = do.call(fn, list(2, mtcars$cyl)),
@@ -119,17 +119,17 @@ test_that("logical ops symbol work with expressions", {
 
 test_that("count + unique + n_unique", {
   expect_equal(
-    pl$DataFrame(iris)$select(pl$all()$unique()$count())$to_list() |> lapply(as.numeric),
+    as_polars_df(iris)$select(pl$all()$unique()$count())$to_list() |> lapply(as.numeric),
     lapply(iris, \(x) length(unique(x)))
   )
 
   expect_equal(
-    pl$DataFrame(iris)$select(pl$all()$unique()$len())$to_list() |> lapply(as.numeric),
+    as_polars_df(iris)$select(pl$all()$unique()$len())$to_list() |> lapply(as.numeric),
     lapply(iris, \(x) length(unique(x)))
   )
 
   expect_equal(
-    pl$DataFrame(iris)$select(pl$all()$n_unique())$to_list() |> lapply(as.numeric),
+    as_polars_df(iris)$select(pl$all()$n_unique())$to_list() |> lapply(as.numeric),
     lapply(iris, \(x) length(unique(x)))
   )
 
@@ -347,26 +347,26 @@ test_that("arg 'order_by' in $over() works", {
 test_that("col DataType + col(s) + col regex", {
   # one Datatype
   expect_equal(
-    pl$DataFrame(iris)$select(pl$col(pl$dtypes$Float64))$to_data_frame(),
+    as_polars_df(iris)$select(pl$col(pl$dtypes$Float64))$to_data_frame(),
     iris[, sapply(iris, is.numeric)]
   )
 
   # multiple
   expect_equal(
-    pl$DataFrame(iris)$select(pl$col(list(pl$Float64, pl$Categorical())))$to_data_frame(),
+    as_polars_df(iris)$select(pl$col(list(pl$Float64, pl$Categorical())))$to_data_frame(),
     iris
   )
 
   # multiple cols
   Names = c("Sepal.Length", "Sepal.Width")
   expect_equal(
-    pl$DataFrame(iris)$select(pl$col(Names))$to_data_frame(),
+    as_polars_df(iris)$select(pl$col(Names))$to_data_frame(),
     iris[, Names]
   )
 
   # regex
   expect_equal(
-    pl$DataFrame(iris)$select(pl$col("^Sepal.*$"))$to_data_frame(),
+    as_polars_df(iris)$select(pl$col("^Sepal.*$"))$to_data_frame(),
     iris[, Names]
   )
 })
@@ -534,7 +534,7 @@ test_that("to_physical + cast", {
 
   # cast error raised for String to Boolean
   expect_grepl_error(
-    pl$DataFrame(iris)$with_columns(
+    as_polars_df(iris)$with_columns(
       pl$col("Species")$cast(pl$dtypes$String)$cast(pl$dtypes$Boolean)
     )
   )
@@ -593,7 +593,7 @@ test_that("pow, rpow, sqrt, log10", {
 
 test_that("exclude", {
   # string column name
-  df = pl$DataFrame(iris)
+  df = as_polars_df(iris)
   expect_identical(
     df$select(pl$all()$exclude("Species"))$columns,
     c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")
@@ -1443,7 +1443,7 @@ test_that("Expr explode/flatten", {
   )
 
   little_iris = iris[c(1:3, 51:53), ]
-  listed_group_df = pl$DataFrame(little_iris)$group_by("Species", maintain_order = TRUE)$agg(pl$all())
+  listed_group_df = as_polars_df(little_iris)$group_by("Species", maintain_order = TRUE)$agg(pl$all())
   vectors_df = listed_group_df$select(
     pl$col(c("Sepal.Width", "Sepal.Length"))$explode()
   )
@@ -1557,7 +1557,7 @@ test_that("is_between errors if wrong 'closed' arg", {
 })
 
 test_that("hash + reinterpret", {
-  df = pl$DataFrame(iris)
+  df = as_polars_df(iris)
 
   hash_values1 = unname(unlist(df$select(pl$col(c("Sepal.Width", "Species"))$unique()$hash()$implode())$to_list()))
   hash_values2 = unname(unlist(df$select(pl$col(c("Sepal.Width", "Species"))$unique()$hash(1, 2, 3, 4)$implode())$to_list()))
@@ -1858,7 +1858,7 @@ test_that("Expr_diff", {
   )
 
   # negative diff values are now accepted upstream
-  df = pl$DataFrame(mtcars)$select(
+  df = as_polars_df(mtcars)$select(
     pl$col("mpg")$diff(1)$alias("positive"),
     pl$col("mpg")$diff(-1)$alias("negative")
   )$to_data_frame()
@@ -2365,7 +2365,7 @@ test_that("unique_counts", {
 })
 
 test_that("$value_counts", {
-  df = pl$DataFrame(iris)
+  df = as_polars_df(iris)
 
   expect_identical(
     df$select(pl$col("Species")$value_counts())$

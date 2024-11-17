@@ -72,7 +72,7 @@ withr::with_timezone(
 }
 
 \examples{
-df = pl$DataFrame(iris[1:3, ])
+df = as_polars_df(iris[1:3, ])
 df$to_data_frame()
 }
 \keyword{DataFrame}

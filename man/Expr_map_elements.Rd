@@ -77,7 +77,7 @@ achieve the best performance and avoid using \verb{$map_elements()}.
 # get the first two values of each variable and store them in a list
 e_sum = pl$all()$map_elements(\(s) sum(s$to_r()))$name$suffix("_sum")
 e_head = pl$all()$map_elements(\(s) head(s$to_r(), 2))$name$suffix("_head")
-pl$DataFrame(iris)$group_by("Species")$agg(e_sum, e_head)
+as_polars_df(iris)$group_by("Species")$agg(e_sum, e_head)
 
 # apply a function on each value (should be avoided): here the input is an R
 # value of length 1
@@ -93,7 +93,7 @@ e_add10 = my_selection$map_elements(\(x)  {
 e_letter = my_selection$map_elements(\(x) {
   letters[ceiling(x)]
 }, return_type = pl$dtypes$String)$name$suffix("_letter")
-pl$DataFrame(iris)$select(e_add10, e_letter)
+as_polars_df(iris)$select(e_add10, e_letter)
 
 
 # Small benchmark --------------------------------
@@ -130,7 +130,7 @@ system.time({
 # use apply over each Species-group in each column equal to 12 sequential
 # runs ~1.2 sec.
 system.time({
-  pl$LazyFrame(iris)$group_by("Species")$agg(
+  as_polars_lf(iris)$group_by("Species")$agg(
     pl$all()$map_elements(\(s) {
       Sys.sleep(.1)
       s$sum()
@@ -146,7 +146,7 @@ options(polars.rpool_cap = 4)
 polars_options()$rpool_cap
 
 system.time({
-  pl$LazyFrame(iris)$group_by("Species")$agg(
+  as_polars_lf(iris)$group_by("Species")$agg(
     pl$all()$map_elements(\(s) {
       Sys.sleep(.1)
       s$sum()
@@ -157,7 +157,7 @@ system.time({
 # second run in parallel: this reuses R processes in "polars global_rpool".
 polars_options()$rpool_cap
 system.time({
-  pl$LazyFrame(iris)$group_by("Species")$agg(
+  as_polars_lf(iris)$group_by("Species")$agg(
     pl$all()$map_elements(\(s) {
       Sys.sleep(.1)
       s$sum()

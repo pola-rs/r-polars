@@ -137,10 +137,10 @@ test_that("get set properties", {
 
 
 test_that("DataFrame, custom schema", {
-  df = pl$DataFrame(
+  df = suppressWarnings(pl$DataFrame(
     iris,
     schema = list(Sepal.Length = pl$Float32, Species = pl$String)
-  )
+  ))
   # dtypes from object are as expected
   expect_true(
     all(mapply(
@@ -188,7 +188,7 @@ test_that("construct an empty DataFrame with schema only", {
 })
 
 test_that("DataFrame, select sum over", {
-  df = pl$DataFrame(iris)$select(
+  df = as_polars_df(iris)$select(
     pl$col("Sepal.Width")$sum()$over("Species")$alias("miah"),
     pl$col("Sepal.Length")$sum()$over("Species")$alias("miah2"),
     "Petal.Length"
@@ -206,9 +206,9 @@ test_that("DataFrame, select sum over", {
 })
 
 test_that("Select with p$col", {
-  x = pl$DataFrame(mtcars)$select(pl$col("mpg", "hp"))
-  y = pl$DataFrame(mtcars)$select(pl$col(c("mpg", "hp")))
-  z = pl$DataFrame(mtcars)$select(pl$col("mpg"), pl$col("hp"))
+  x = as_polars_df(mtcars)$select(pl$col("mpg", "hp"))
+  y = as_polars_df(mtcars)$select(pl$col(c("mpg", "hp")))
+  z = as_polars_df(mtcars)$select(pl$col("mpg"), pl$col("hp"))
   expect_equal(x$columns, c("mpg", "hp"))
   expect_equal(y$columns, c("mpg", "hp"))
   expect_equal(z$columns, c("mpg", "hp"))
@@ -217,7 +217,7 @@ test_that("Select with p$col", {
 
 patrick::with_parameters_test_that("select with list of exprs", {
   expect_equal(
-    pl$DataFrame(mtcars)$select(expr)$columns,
+    as_polars_df(mtcars)$select(expr)$columns,
     c("mpg", "hp")
   )
 },
@@ -238,7 +238,7 @@ patrick::with_parameters_test_that("select with list of exprs", {
 
 patrick::with_parameters_test_that("select_seq with list of exprs", {
   expect_equal(
-    pl$DataFrame(mtcars)$select_seq(expr)$columns,
+    as_polars_df(mtcars)$select_seq(expr)$columns,
     c("mpg", "hp")
   )
 },
@@ -275,8 +275,7 @@ test_that("select: create a list variable", {
 })
 
 test_that("map_batches unity", {
-  x = pl$
-    DataFrame(iris)$
+  x = as_polars_df(iris)$
     select(
     pl$col("Sepal.Length")$
       map_batches(\(s) s)
@@ -292,8 +291,7 @@ test_that("map_batches unity", {
   # int is preseved
   int_iris = iris
   int_iris[, 1:4] = lapply(iris[, 1:4], as.integer)
-  x = pl$
-    DataFrame(int_iris)$
+  x = as_polars_df(int_iris)$
     select(
     pl$col("Sepal.Length")$
       map_batches(\(s) s)
@@ -306,8 +304,7 @@ test_that("map_batches unity", {
   )
 
   # drop the dataframe structure
-  x = pl$
-    DataFrame(iris)$
+  x = as_polars_df(iris)$
     select(
     pl$col("Species")$
       map_batches(\(s) s)
@@ -317,8 +314,7 @@ test_that("map_batches unity", {
   expect_different(x, iris[, 1, drop = FALSE])
 
 
-  x = pl$
-    DataFrame(iris)$
+  x = as_polars_df(iris)$
     select(
     pl$col("Species")$
       map_batches(\(s) s)
@@ -333,7 +329,7 @@ test_that("map_batches type", {
   int_iris[] = lapply(iris, as.integer)
 
   # auto new type allowed if return is R vector
-  x = pl$DataFrame(iris)$
+  x = as_polars_df(iris)$
     select(
     pl$col("Sepal.Length")$
       map_batches(\(s) {
@@ -349,10 +345,10 @@ test_that("map_batches type", {
 })
 
 test_that("cloning", {
-  pf = pl$DataFrame(iris)
+  pf = as_polars_df(iris)
 
   # shallow copy, same external pointer
-  pf2 = pl$DataFrame(pf)
+  pf2 = suppressWarnings(pl$DataFrame(pf))
   expect_identical(pf, pf2)
   expect_identical(pl$mem_address(pf), pl$mem_address(pf2))
 
@@ -363,7 +359,7 @@ test_that("cloning", {
 })
 
 test_that("cloning to avoid giving attributes to original data", {
-  df1 = pl$DataFrame(iris)
+  df1 = as_polars_df(iris)
 
   give_attr = function(data) {
     attr(data, "created_on") = "2024-01-29"
@@ -377,13 +373,13 @@ test_that("cloning to avoid giving attributes to original data", {
     attr(data, "created_on") = "2024-01-29"
     data
   }
-  df1 = pl$DataFrame(iris)
+  df1 = as_polars_df(iris)
   df2 = give_attr2(df1)
   expect_null(attributes(df1)$created_on)
 })
 
 test_that("get column(s)", {
-  df = pl$DataFrame(iris)
+  df = as_polars_df(iris)
   expected_list_of_series = {
     expected = lapply(
       1:5,
@@ -410,18 +406,18 @@ test_that("get column(s)", {
 
 test_that("get column", {
   expect_true(
-    pl$DataFrame(iris)$get_column("Sepal.Length")$equals(
+    as_polars_df(iris)$get_column("Sepal.Length")$equals(
       as_polars_series(iris$Sepal.Length, "Sepal.Length")
     )
   )
 
   expect_grepl_error(
-    pl$DataFrame(iris)$get_column("wrong_name")
+    as_polars_df(iris)$get_column("wrong_name")
   )
 })
 
 test_that("with_columns: list or unlisted input", {
-  test = pl$DataFrame(mtcars)
+  test = as_polars_df(mtcars)
 
   # one element in $with_columns()
   expect_identical(
@@ -657,7 +653,7 @@ make_cases = function() {
 patrick::with_parameters_test_that(
   "simple translations: eager",
   {
-    a = pl$DataFrame(mtcars)[[pola]]()$to_data_frame()
+    a = as_polars_df(mtcars)[[pola]]()$to_data_frame()
     b = data.frame(lapply(mtcars, base))
     testthat::expect_equal(a, b, ignore_attr = TRUE)
   },
@@ -665,33 +661,33 @@ patrick::with_parameters_test_that(
 )
 
 test_that("simple translations", {
-  a = pl$DataFrame(mtcars)$var(10)$to_data_frame()
+  a = as_polars_df(mtcars)$var(10)$to_data_frame()
   b = data.frame(lapply(mtcars, var))
   expect_true(all(a != b))
 
-  a = pl$DataFrame(mtcars)$std(10)$to_data_frame()
+  a = as_polars_df(mtcars)$std(10)$to_data_frame()
   b = data.frame(lapply(mtcars, sd))
   expect_true(all(a != b))
 
-  a = pl$DataFrame(mtcars)$reverse()$to_data_frame()
+  a = as_polars_df(mtcars)$reverse()$to_data_frame()
   b = mtcars[32:1, ]
   expect_equal(a, b, ignore_attr = TRUE)
 
-  a = pl$DataFrame(mtcars)$slice(2, 4)$to_data_frame()
+  a = as_polars_df(mtcars)$slice(2, 4)$to_data_frame()
   b = mtcars[3:6, ]
   expect_equal(a, b, ignore_attr = TRUE)
 
-  a = pl$DataFrame(mtcars)$slice(30)$to_data_frame()
+  a = as_polars_df(mtcars)$slice(30)$to_data_frame()
   b = tail(mtcars, 2)
   expect_equal(a, b, ignore_attr = TRUE)
 
-  a = pl$DataFrame(mtcars)$estimated_size()
+  a = as_polars_df(mtcars)$estimated_size()
   expect_equal(a, 2816, tolerance = 0.1)
 
   # trigger u8 conversion errors
-  expect_grepl_error(pl$DataFrame(mtcars)$std(256), c("ddof", "exceed the upper bound for u8 of 255"))
+  expect_grepl_error(as_polars_df(mtcars)$std(256), c("ddof", "exceed the upper bound for u8 of 255"))
   expect_grepl_error(
-    pl$DataFrame(mtcars)$var(-1),
+    as_polars_df(mtcars)$var(-1),
     c("ddof", "cannot be less than zero")
   )
 })
@@ -701,23 +697,23 @@ test_that("null_count 64bit", {
   tmp = mtcars
   tmp[1:2, 1:2] = NA
   tmp[5, 3] = NA
-  a = pl$DataFrame(tmp)$null_count()$to_data_frame()
+  a = as_polars_df(tmp)$null_count()$to_data_frame()
   a = sapply(a, as.integer)
   b = sapply(tmp, function(x) sum(is.na(x)))
   expect_equal(a, b)
 
-  a = pl$DataFrame(tmp)$group_by("vs")$null_count()$to_data_frame()
+  a = as_polars_df(tmp)$group_by("vs")$null_count()$to_data_frame()
   expect_equal(dim(a), c(2, 11))
 })
 
 test_that("tail", {
-  a = as.data.frame(pl$DataFrame(mtcars)$tail(6))
+  a = as.data.frame(as_polars_df(mtcars)$tail(6))
   b = tail(mtcars)
   expect_equal(a, b, ignore_attr = TRUE)
 })
 
 test_that("drop_in_place", {
-  dat = pl$DataFrame(iris)
+  dat = as_polars_df(iris)
   expect_true("Species" %in% dat$columns)
   x = dat$drop_in_place("Species")
   expect_false("Species" %in% dat$columns)
@@ -726,11 +722,11 @@ test_that("drop_in_place", {
 
 
 test_that("shift", {
-  a = pl$DataFrame(mtcars[1:3, ])$shift(2)$to_data_frame()
+  a = as_polars_df(mtcars[1:3, ])$shift(2)$to_data_frame()
   for (i in seq_along(a)) {
     expect_equal(is.na(a[[i]]), c(TRUE, TRUE, FALSE))
   }
-  a = pl$DataFrame(mtcars[1:3, ])$shift(2, 0)$to_data_frame()
+  a = as_polars_df(mtcars[1:3, ])$shift(2, 0)$to_data_frame()
   for (i in seq_along(a)) {
     expect_equal(a[[i]], c(0, 0, mtcars[[i]][1]))
   }
@@ -738,8 +734,8 @@ test_that("shift", {
 
 
 test_that("equals", {
-  dat1 = pl$DataFrame(iris)
-  dat2 = pl$DataFrame(mtcars)
+  dat1 = as_polars_df(iris)
+  dat2 = as_polars_df(mtcars)
   expect_true(dat1$equals(dat1))
   expect_false(dat1$equals(dat2))
 })
@@ -752,45 +748,45 @@ test_that("fill_nan", {
 })
 
 test_that("quantile", {
-  a = pl$DataFrame(mtcars)$quantile(1, "midpoint")$to_data_frame()
-  b = pl$DataFrame(mtcars)$max()$to_data_frame()
+  a = as_polars_df(mtcars)$quantile(1, "midpoint")$to_data_frame()
+  b = as_polars_df(mtcars)$max()$to_data_frame()
   expect_equal(a, b, ignore_attr = TRUE)
 
-  a = pl$DataFrame(mtcars)$quantile(0, "midpoint")$to_data_frame()
-  b = pl$DataFrame(mtcars)$min()$to_data_frame()
+  a = as_polars_df(mtcars)$quantile(0, "midpoint")$to_data_frame()
+  b = as_polars_df(mtcars)$min()$to_data_frame()
   expect_equal(a, b, ignore_attr = TRUE)
 
-  a = pl$DataFrame(mtcars)$quantile(0.5, "midpoint")$to_data_frame()
-  b = pl$DataFrame(mtcars)$median()$to_data_frame()
+  a = as_polars_df(mtcars)$quantile(0.5, "midpoint")$to_data_frame()
+  b = as_polars_df(mtcars)$median()$to_data_frame()
   expect_equal(a, b, ignore_attr = TRUE)
 })
 
 
 test_that("drop", {
-  a = pl$DataFrame(mtcars)$drop(c("mpg", "hp"))$columns
+  a = as_polars_df(mtcars)$drop(c("mpg", "hp"))$columns
   expect_false("hp" %in% a)
   expect_false("mpg" %in% a)
-  a = pl$DataFrame(mtcars)$drop(c("mpg", "drat"), "hp")$columns
+  a = as_polars_df(mtcars)$drop(c("mpg", "drat"), "hp")$columns
   expect_false("hp" %in% a)
   expect_false("mpg" %in% a)
   expect_false("drat" %in% a)
-  a = pl$DataFrame(mtcars)$drop("mpg")$columns
+  a = as_polars_df(mtcars)$drop("mpg")$columns
   expect_true("hp" %in% a)
   expect_false("mpg" %in% a)
 
   expect_identical(
-    pl$DataFrame(mtcars)$drop()$to_data_frame(),
+    as_polars_df(mtcars)$drop()$to_data_frame(),
     mtcars,
     ignore_attr = TRUE
   )
 
   # arg 'strict' works
   expect_grepl_error(
-    pl$DataFrame(mtcars)$drop("a"),
+    as_polars_df(mtcars)$drop("a"),
     r"("a" not found)"
   )
   expect_identical(
-    pl$DataFrame(mtcars)$drop("a", strict = FALSE)$to_data_frame(),
+    as_polars_df(mtcars)$drop("a", strict = FALSE)$to_data_frame(),
     mtcars,
     ignore_attr = TRUE
   )
@@ -800,16 +796,16 @@ test_that("drop", {
 test_that("drop_nulls", {
   tmp = mtcars
   tmp[1:3, "mpg"] = NA
-  tmp = pl$DataFrame(tmp)
-  expect_equal(pl$DataFrame(mtcars)$drop_nulls()$height, 32, ignore_attr = TRUE)
-  expect_equal(pl$DataFrame(mtcars)$drop_nulls("mpg")$height, 32, ignore_attr = TRUE)
+  tmp = as_polars_df(tmp)
+  expect_equal(as_polars_df(mtcars)$drop_nulls()$height, 32, ignore_attr = TRUE)
+  expect_equal(as_polars_df(mtcars)$drop_nulls("mpg")$height, 32, ignore_attr = TRUE)
   expect_equal(tmp$drop_nulls()$height, 29, ignore_attr = TRUE)
   expect_equal(tmp$drop_nulls("mpg")$height, 29, ignore_attr = TRUE)
   expect_equal(tmp$drop_nulls("hp")$height, 32, ignore_attr = TRUE)
   expect_equal(tmp$drop_nulls(c("mpg", "hp"))$height, 29, ignore_attr = TRUE)
 
   expect_grepl_error(
-    pl$DataFrame(mtcars)$drop_nulls("bad column name")$height,
+    as_polars_df(mtcars)$drop_nulls("bad column name")$height,
     "not found: unable to find column \"bad column name\""
   )
 })
@@ -860,8 +856,8 @@ test_that("unique, maintain_order", {
 })
 
 test_that("as_data_frame (backward compatibility)", {
-  w = as.data.frame(pl$DataFrame(mtcars)$to_data_frame())
-  x = as.data.frame(pl$DataFrame(mtcars)$to_data_frame())
+  w = as.data.frame(as_polars_df(mtcars)$to_data_frame())
+  x = as.data.frame(as_polars_df(mtcars)$to_data_frame())
   y = mtcars
   expect_equal(w, x, ignore_attr = TRUE)
   expect_equal(w, y, ignore_attr = TRUE)
@@ -869,7 +865,7 @@ test_that("as_data_frame (backward compatibility)", {
 
 
 test_that("sort", {
-  df = pl$DataFrame(mtcars)
+  df = as_polars_df(mtcars)
 
   w = df$sort("mpg", maintain_order = TRUE)$to_data_frame()
   x = df$sort(pl$col("mpg"), maintain_order = TRUE)$to_data_frame()
@@ -906,7 +902,7 @@ test_that("sort", {
   # nulls_last
   df = mtcars
   df$mpg[1] = NA
-  df = pl$DataFrame(df)
+  df = as_polars_df(df)
   a = df$sort("mpg", nulls_last = TRUE, maintain_order = TRUE)$to_data_frame()
   b = df$sort("mpg", nulls_last = FALSE, maintain_order = TRUE)$to_data_frame()
   expect_true(is.na(a$mpg[32]))
@@ -924,7 +920,7 @@ test_that("sort", {
 })
 
 test_that("dtype_strings", {
-  df_1 = pl$DataFrame(data.frame(a = 1L, b = 1.0, c = "1", d = I(list(1))))
+  df_1 = as_polars_df(data.frame(a = 1L, b = 1.0, c = "1", d = I(list(1))))
   expect_equal(df_1$dtype_strings(), c("i32", "f64", "str", "list[f64]"))
 })
 
@@ -1138,7 +1134,7 @@ test_that("pivot args works", {
 })
 
 test_that("rename", {
-  df = pl$DataFrame(mtcars)
+  df = as_polars_df(mtcars)
 
   # renaming succeeded
   a = df$rename(mpg = "miles_per_gallon", hp = "horsepower")$columns
@@ -1186,17 +1182,17 @@ test_that("describe", {
     bool = c(TRUE, FALSE, NA)
   )
   expect_snapshot(df$describe())
-  expect_snapshot(pl$DataFrame(mtcars)$describe())
-  expect_snapshot(pl$DataFrame(mtcars)$describe(interpolation = "linear"))
-  expect_grepl_error(pl$DataFrame(mtcars)$describe("not a percentile"))
+  expect_snapshot(as_polars_df(mtcars)$describe())
+  expect_snapshot(as_polars_df(mtcars)$describe(interpolation = "linear"))
+  expect_grepl_error(as_polars_df(mtcars)$describe("not a percentile"))
 
   # min/max different depending on categorical ordering
   expect_snapshot(df$select(pl$col("cat")$cast(pl$Categorical("lexical")))$describe())
 
   # perc = NULL  is the same as numeric()
   expect_identical(
-    pl$DataFrame(mtcars)$describe(perc = numeric())$to_list(),
-    pl$DataFrame(mtcars)$describe(perc = NULL)$to_list()
+    as_polars_df(mtcars)$describe(perc = numeric())$to_list(),
+    as_polars_df(mtcars)$describe(perc = NULL)$to_list()
   )
 
   # names using internal separator ":" in column names, should also just work.
@@ -1208,7 +1204,7 @@ test_that("describe", {
 })
 
 test_that("$glimpse() works", {
-  df = pl$DataFrame(mtcars)$with_columns(pl$lit(42)$cast(pl$Int8))
+  df = as_polars_df(mtcars)$with_columns(pl$lit(42)$cast(pl$Int8))
   expect_snapshot(df$glimpse())
 
   expect_snapshot(df$glimpse(max_items_per_column = 2))
@@ -1216,10 +1212,10 @@ test_that("$glimpse() works", {
   expect_snapshot(df$glimpse(max_colname_length = 2))
 
   expect_grepl_error(
-    pl$DataFrame(iris)$glimpse(return_as_string = 42),
+    as_polars_df(iris)$glimpse(return_as_string = 42),
     "must be `TRUE` or `FALSE`"
   )
-  expect_type(pl$DataFrame(iris)$glimpse(return_as_string = TRUE), "character")
+  expect_type(as_polars_df(iris)$glimpse(return_as_string = TRUE), "character")
 })
 
 test_that("explode", {
@@ -1267,7 +1263,7 @@ test_that("explode", {
 })
 
 test_that("with_row_index", {
-  df = pl$DataFrame(mtcars)
+  df = as_polars_df(mtcars)
   expect_identical(
     df$with_row_index("idx", 42)$select(pl$col("idx"))$to_data_frame()$idx,
     as.double(42:(41 + nrow(mtcars)))
@@ -1276,7 +1272,7 @@ test_that("with_row_index", {
 
 test_that("strictly_immutable = FALSE", {
   # check dataframe is immutable by setting
-  df = pl$DataFrame(iris)
+  df = as_polars_df(iris)
   df_immutable_copy = df
   df_immutable_copy$columns = paste0(df_immutable_copy$columns, "_modified")
   expect_true(all(names(df) != names(df_immutable_copy)))
@@ -1287,7 +1283,7 @@ test_that("strictly_immutable = FALSE", {
     list(polars.strictly_immutable = FALSE),
     {
       # check change setting took effect
-      df = pl$DataFrame(iris)
+      df = as_polars_df(iris)
       df_mutable_copy = df
       df_mutable_copy$columns = paste0(df_mutable_copy$columns, "_modified")
       expect_true(all(names(df) == names(df_mutable_copy)))
@@ -1296,7 +1292,7 @@ test_that("strictly_immutable = FALSE", {
 })
 
 test_that("sample", {
-  df = pl$DataFrame(iris)
+  df = as_polars_df(iris)
 
   # plain use
   expect_identical(df$sample(n = 20)$height, 20)
@@ -1344,7 +1340,7 @@ test_that("transpose", {
 
   # include_header + custom header column name + column names
   expect_identical(
-    pl$DataFrame(mtcars)$
+    as_polars_df(mtcars)$
       transpose(include_header = TRUE, header_name = "alice", column_names = rownames(mtcars))$
       to_data_frame(),
     R_t_df(mtcars, include_header = TRUE, header_name = "alice")
@@ -1352,7 +1348,7 @@ test_that("transpose", {
 
   # same but default column name
   expect_identical(
-    pl$DataFrame(mtcars)$
+    as_polars_df(mtcars)$
       transpose(include_header = TRUE, column_names = rownames(mtcars))$
       to_data_frame(),
     R_t_df(mtcars, include_header = TRUE)
@@ -1360,7 +1356,7 @@ test_that("transpose", {
 
   # no heaser column
   expect_identical(
-    pl$DataFrame(mtcars)$
+    as_polars_df(mtcars)$
       transpose(include_header = FALSE, column_names = rownames(mtcars))$
       to_data_frame(),
     R_t_df(mtcars, include_header = FALSE)
@@ -1370,7 +1366,7 @@ test_that("transpose", {
   df_expected = R_t_df(mtcars, include_header = FALSE)
   colnames(df_expected) = paste0("column_", seq_len(ncol(df_expected)) - 1L)
   expect_identical(
-    pl$DataFrame(mtcars)$
+    as_polars_df(mtcars)$
       transpose(include_header = FALSE, column_names = NULL)$
       to_data_frame(),
     df_expected
@@ -1380,7 +1376,7 @@ test_that("transpose", {
   df_expected = R_t_df(iris, include_header = FALSE)
   colnames(df_expected) = paste0("column_", seq_len(ncol(df_expected)) - 1L)
   expect_identical(
-    pl$DataFrame(iris)$
+    as_polars_df(iris)$
       with_columns(pl$col("Species")$
       cast(pl$String))$
       transpose(FALSE)$
@@ -1393,7 +1389,7 @@ test_that("drop_all_in_place", {
   # this test verifies internal function in_place drop all Series in DataFrame
   # will not affect a fully cloned DataFrame df_clone
 
-  df_copy = df = polars::pl$DataFrame(mtcars)
+  df_copy = df = polars::as_polars_df(mtcars)
   df_clone = df$clone()
   s = df$get_column("cyl")
   .pr$DataFrame$drop_all_in_place(df)

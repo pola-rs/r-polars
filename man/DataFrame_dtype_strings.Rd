@@ -15,6 +15,6 @@ available types with \code{names(pl$dtypes)}. The data type of each column is al
 shown when printing the DataFrame.
 }
 \examples{
-pl$DataFrame(iris)$dtype_strings()
+as_polars_df(iris)$dtype_strings()
 }
 \keyword{DataFrame}

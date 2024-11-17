@@ -20,7 +20,7 @@ A \link[=LazyFrame_class]{LazyFrame}
 Get a slice of the LazyFrame.
 }
 \examples{
-pl$LazyFrame(mtcars)$slice(2, 4)$collect()
-pl$LazyFrame(mtcars)$slice(30)$collect()
+as_polars_lf(mtcars)$slice(2, 4)$collect()
+as_polars_lf(mtcars)$slice(30)$collect()
 mtcars[2:6, ]
 }

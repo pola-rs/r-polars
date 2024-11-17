@@ -26,6 +26,6 @@ Expr for the computed correlation
 Calculates the correlation between two columns
 }
 \examples{
-lf = pl$LazyFrame(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
+lf = as_polars_lf(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
 lf$select(pl$corr("a", "b", method = "spearman"))$collect()
 }

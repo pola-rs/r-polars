@@ -15,7 +15,7 @@
 }
 
 test_that("Snapshot test of knitr", {
-  skip_if_not_installed("knitr")
+  skip_if_not_installed("knitr", "1.49.0")
   skip_if_not_installed("rmarkdown")
   skip_if_not_installed("pillar")
   skip_if_not_installed("nycflights13")

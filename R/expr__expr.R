@@ -715,7 +715,7 @@ Expr_is_not_null = use_extendr_wrapper
 #' `polars_options()$rpool_cap` to set and view number of parallel R sessions.
 #'
 #' @examples
-#' pl$DataFrame(iris)$
+#' as_polars_df(iris)$
 #'   select(
 #'   pl$col("Sepal.Length")$map_batches(\(x) {
 #'     paste("cheese", as.character(x$to_vector()))
@@ -819,7 +819,7 @@ Expr_map_batches = function(f, output_type = NULL, agg_list = FALSE, in_backgrou
 #' # get the first two values of each variable and store them in a list
 #' e_sum = pl$all()$map_elements(\(s) sum(s$to_r()))$name$suffix("_sum")
 #' e_head = pl$all()$map_elements(\(s) head(s$to_r(), 2))$name$suffix("_head")
-#' pl$DataFrame(iris)$group_by("Species")$agg(e_sum, e_head)
+#' as_polars_df(iris)$group_by("Species")$agg(e_sum, e_head)
 #'
 #' # apply a function on each value (should be avoided): here the input is an R
 #' # value of length 1
@@ -835,7 +835,7 @@ Expr_map_batches = function(f, output_type = NULL, agg_list = FALSE, in_backgrou
 #' e_letter = my_selection$map_elements(\(x) {
 #'   letters[ceiling(x)]
 #' }, return_type = pl$dtypes$String)$name$suffix("_letter")
-#' pl$DataFrame(iris)$select(e_add10, e_letter)
+#' as_polars_df(iris)$select(e_add10, e_letter)
 #'
 #'
 #' # Small benchmark --------------------------------
@@ -872,7 +872,7 @@ Expr_map_batches = function(f, output_type = NULL, agg_list = FALSE, in_backgrou
 #' # use apply over each Species-group in each column equal to 12 sequential
 #' # runs ~1.2 sec.
 #' system.time({
-#'   pl$LazyFrame(iris)$group_by("Species")$agg(
+#'   as_polars_lf(iris)$group_by("Species")$agg(
 #'     pl$all()$map_elements(\(s) {
 #'       Sys.sleep(.1)
 #'       s$sum()
@@ -888,7 +888,7 @@ Expr_map_batches = function(f, output_type = NULL, agg_list = FALSE, in_backgrou
 #' polars_options()$rpool_cap
 #'
 #' system.time({
-#'   pl$LazyFrame(iris)$group_by("Species")$agg(
+#'   as_polars_lf(iris)$group_by("Species")$agg(
 #'     pl$all()$map_elements(\(s) {
 #'       Sys.sleep(.1)
 #'       s$sum()
@@ -899,7 +899,7 @@ Expr_map_batches = function(f, output_type = NULL, agg_list = FALSE, in_backgrou
 #' # second run in parallel: this reuses R processes in "polars global_rpool".
 #' polars_options()$rpool_cap
 #' system.time({
-#'   pl$LazyFrame(iris)$group_by("Species")$agg(
+#'   as_polars_lf(iris)$group_by("Species")$agg(
 #'     pl$all()$map_elements(\(s) {
 #'       Sys.sleep(.1)
 #'       s$sum()
@@ -1069,7 +1069,7 @@ Expr_exp = use_extendr_wrapper
 #' @examples
 #'
 #' # make DataFrame
-#' df = pl$DataFrame(iris)
+#' df = as_polars_df(iris)
 #'
 #' # by name(s)
 #' df$select(pl$all()$exclude("Species"))
@@ -1176,7 +1176,7 @@ Expr_is_not_nan = use_extendr_wrapper
 #' )
 #'
 #' # recycling
-#' pl$DataFrame(mtcars)$with_columns(pl$col("mpg")$slice(0, 1)$first())
+#' as_polars_df(mtcars)$with_columns(pl$col("mpg")$slice(0, 1)$first())
 Expr_slice = function(offset, length = NULL) {
   .pr$Expr$slice(self, offset, wrap_e(length)) |>
     unwrap("in $slice():")
@@ -1750,7 +1750,7 @@ Expr_product = use_extendr_wrapper
 #'
 #' @return Expr
 #' @examples
-#' pl$DataFrame(iris[, 4:5])$with_columns(count = pl$col("Species")$n_unique())
+#' as_polars_df(iris[, 4:5])$with_columns(count = pl$col("Species")$n_unique())
 Expr_n_unique = use_extendr_wrapper
 
 #' Approx count unique values
@@ -1758,7 +1758,7 @@ Expr_n_unique = use_extendr_wrapper
 #' This is done using the HyperLogLog++ algorithm for cardinality estimation.
 #' @return Expr
 #' @examples
-#' pl$DataFrame(iris[, 4:5])$
+#' as_polars_df(iris[, 4:5])$
 #'   with_columns(count = pl$col("Species")$approx_n_unique())
 Expr_approx_n_unique = use_extendr_wrapper
 
@@ -1785,7 +1785,7 @@ Expr_arg_unique = use_extendr_wrapper
 #' appearance.
 #' @return Expr
 #' @examples
-#' pl$DataFrame(iris)$select(pl$col("Species")$unique())
+#' as_polars_df(iris)$select(pl$col("Species")$unique())
 Expr_unique = function(maintain_order = FALSE) {
   if (!is_scalar_bool(maintain_order)) stop("param maintain_order must be a bool")
   if (maintain_order) {
@@ -1907,7 +1907,7 @@ Expr_over = function(..., order_by = NULL, mapping_strategy = "group_to_rows") {
 #' @return Expr
 #'
 #' @examples
-#' pl$DataFrame(head(mtcars[, 1:2]))$
+#' as_polars_df(head(mtcars[, 1:2]))$
 #'   with_columns(is_unique = pl$col("mpg")$is_unique())
 Expr_is_unique = use_extendr_wrapper
 
@@ -1916,7 +1916,7 @@ Expr_is_unique = use_extendr_wrapper
 #' @return Expr
 #'
 #' @examples
-#' pl$DataFrame(head(mtcars[, 1:2]))$
+#' as_polars_df(head(mtcars[, 1:2]))$
 #'   with_columns(is_ufirst = pl$col("mpg")$is_first_distinct())
 Expr_is_first_distinct = use_extendr_wrapper
 
@@ -1925,7 +1925,7 @@ Expr_is_first_distinct = use_extendr_wrapper
 #' @return Expr
 #'
 #' @examples
-#' pl$DataFrame(head(mtcars[, 1:2]))$
+#' as_polars_df(head(mtcars[, 1:2]))$
 #'   with_columns(is_ulast = pl$col("mpg")$is_last_distinct())
 Expr_is_last_distinct = use_extendr_wrapper
 
@@ -1936,7 +1936,7 @@ Expr_is_last_distinct = use_extendr_wrapper
 #' @return Expr
 #'
 #' @examples
-#' pl$DataFrame(head(mtcars[, 1:2]))$
+#' as_polars_df(head(mtcars[, 1:2]))$
 #'   with_columns(is_duplicated = pl$col("mpg")$is_duplicated())
 Expr_is_duplicated = use_extendr_wrapper
 
@@ -2156,7 +2156,7 @@ Expr_is_between = function(lower_bound, upper_bound, closed = "both") {
 #' @return Expr
 #' @aliases hash
 #' @examples
-#' df = pl$DataFrame(iris[1:3, c(1, 2)])
+#' df = as_polars_df(iris[1:3, c(1, 2)])
 #' df$with_columns(pl$all()$hash(1234)$name$suffix("_hash"))
 Expr_hash = function(seed = 0, seed_1 = NULL, seed_2 = NULL, seed_3 = NULL) {
   k0 = seed
@@ -3289,7 +3289,7 @@ Expr_to_r = function(df = NULL, i = 0, ..., int64_conversion = polars_options()$
 #' values instead of their count.
 #'
 #' @examples
-#' df = pl$DataFrame(iris)
+#' df = as_polars_df(iris)
 #' df$select(pl$col("Species")$value_counts())$unnest()
 #' df$select(pl$col("Species")$value_counts(normalize = TRUE))$unnest()
 Expr_value_counts = function(..., sort = FALSE, parallel = FALSE, name, normalize = FALSE) {
@@ -3311,7 +3311,7 @@ Expr_value_counts = function(..., sort = FALSE, parallel = FALSE, name, normaliz
 #' the counts and it might be faster.
 #' @return  Expr
 #' @examples
-#' pl$DataFrame(iris)$select(pl$col("Species")$unique_counts())
+#' as_polars_df(iris)$select(pl$col("Species")$unique_counts())
 Expr_unique_counts = use_extendr_wrapper
 
 #' Compute the logarithm of elements

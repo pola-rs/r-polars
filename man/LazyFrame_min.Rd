@@ -13,6 +13,6 @@ A LazyFrame with one row
 Aggregate the columns in the LazyFrame to their minimum value.
 }
 \examples{
-pl$LazyFrame(mtcars)$min()$collect()
+as_polars_lf(mtcars)$min()$collect()
 }
 \keyword{LazyFrame}

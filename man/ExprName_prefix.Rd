@@ -16,7 +16,7 @@ Expr
 Add a prefix to a column name
 }
 \examples{
-dat = pl$DataFrame(mtcars)
+dat = as_polars_df(mtcars)
 
 dat$select(
   pl$col("mpg"),

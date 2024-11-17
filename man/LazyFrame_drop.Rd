@@ -19,8 +19,8 @@ LazyFrame
 Drop columns of a LazyFrame
 }
 \examples{
-pl$LazyFrame(mtcars)$drop(c("mpg", "hp"))$collect()
+as_polars_lf(mtcars)$drop(c("mpg", "hp"))$collect()
 
 # equivalent
-pl$LazyFrame(mtcars)$drop("mpg", "hp")$collect()
+as_polars_lf(mtcars)$drop("mpg", "hp")$collect()
 }

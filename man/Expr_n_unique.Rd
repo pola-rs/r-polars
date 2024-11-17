@@ -13,5 +13,5 @@ Expr
 Count number of unique values
 }
 \examples{
-pl$DataFrame(iris[, 4:5])$with_columns(count = pl$col("Species")$n_unique())
+as_polars_df(iris[, 4:5])$with_columns(count = pl$col("Species")$n_unique())
 }

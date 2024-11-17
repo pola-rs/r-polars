@@ -21,6 +21,6 @@ Expr
 The hash value is of type \code{UInt64}.
 }
 \examples{
-df = pl$DataFrame(iris[1:3, c(1, 2)])
+df = as_polars_df(iris[1:3, c(1, 2)])
 df$with_columns(pl$all()$hash(1234)$name$suffix("_hash"))
 }

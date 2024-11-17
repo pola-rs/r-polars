@@ -13,6 +13,6 @@ A DataFrame with one row.
 Aggregate the columns in the DataFrame to their maximum value.
 }
 \examples{
-pl$DataFrame(mtcars)$max()
+as_polars_df(mtcars)$max()
 }
 \keyword{DataFrame}

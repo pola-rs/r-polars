@@ -13,13 +13,13 @@ make_as_polars_df_cases = function() {
   tibble::tribble(
     ~.test_name, ~x,
     "data.frame", test_df,
-    "polars_lf", pl$LazyFrame(test_df),
-    "polars_group_by", pl$DataFrame(test_df)$group_by("col_int"),
-    "polars_lazy_group_by", pl$LazyFrame(test_df)$group_by("col_int"),
-    "polars_rolling_group_by", pl$DataFrame(test_df)$rolling("col_int", period = "1i"),
-    "polars_lazy_rolling_group_by", pl$LazyFrame(test_df)$rolling("col_int", period = "1i"),
-    "polars_group_by_dynamic", pl$DataFrame(test_df)$group_by_dynamic("col_int", every = "1i"),
-    "polars_lazy_group_by_dynamic", pl$LazyFrame(test_df)$group_by_dynamic("col_int", every = "1i"),
+    "polars_lf", as_polars_lf(test_df),
+    "polars_group_by", as_polars_df(test_df)$group_by("col_int"),
+    "polars_lazy_group_by", as_polars_lf(test_df)$group_by("col_int"),
+    "polars_rolling_group_by", as_polars_df(test_df)$rolling("col_int", period = "1i"),
+    "polars_lazy_rolling_group_by", as_polars_lf(test_df)$rolling("col_int", period = "1i"),
+    "polars_group_by_dynamic", as_polars_df(test_df)$group_by_dynamic("col_int", every = "1i"),
+    "polars_lazy_group_by_dynamic", as_polars_lf(test_df)$group_by_dynamic("col_int", every = "1i"),
     "arrow Table", arrow::as_arrow_table(test_df),
     "arrow RecordBatch", arrow::as_record_batch(test_df),
     "arrow RecordBatchReader", arrow::as_record_batch_reader(test_df),
@@ -446,7 +446,7 @@ test_that("as_polars_df and pl$DataFrame for data.frame has list column", {
   data = data.frame(a = I(list(data.frame(b = 1L))))
   expect_true(
     as_polars_df(data)$equals(
-      pl$DataFrame(data)
+      suppressWarnings(pl$DataFrame(data))
     )
   )
   expect_true(

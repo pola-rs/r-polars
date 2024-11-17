@@ -21,7 +21,7 @@ This is equivalent to \code{\link[dplyr:filter]{dplyr::filter()}}.
 Rows where the condition returns \code{NA} are dropped.
 }
 \examples{
-lf = pl$LazyFrame(iris)
+lf = as_polars_lf(iris)
 
 lf$filter(pl$col("Species") == "setosa")$collect()
 

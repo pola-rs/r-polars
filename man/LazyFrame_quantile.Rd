@@ -20,5 +20,5 @@ Aggregate the columns in the DataFrame to a unique quantile
 value. Use \verb{$describe()} to specify several quantiles.
 }
 \examples{
-pl$LazyFrame(mtcars)$quantile(.4)$collect()
+as_polars_lf(mtcars)$quantile(.4)$collect()
 }

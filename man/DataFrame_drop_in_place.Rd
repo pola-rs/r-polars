@@ -16,7 +16,7 @@ Series
 Drop a single column in-place and return the dropped column.
 }
 \examples{
-dat = pl$DataFrame(iris)
+dat = as_polars_df(iris)
 x = dat$drop_in_place("Species")
 x
 dat$columns

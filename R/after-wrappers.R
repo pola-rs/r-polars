@@ -83,7 +83,7 @@ extendr_method_to_pure_functions = function(env, class_name = NULL) {
 #' @export
 #' @examples
 #' # .pr$DataFrame$print() is an external function where self is passed as arg
-#' .pr$DataFrame$print(self = pl$DataFrame(iris))
+#' .pr$DataFrame$print(self = as_polars_df(iris))
 #'
 #' # show all content of .pr
 #' .pr$print_env(.pr, ".pr the collection of private method calls to rust-polars")
@@ -332,12 +332,12 @@ pl_mem_address = function(robj) {
 #' @return not applicable
 #' @examples
 #' # all a polars object is only made of:
-#' some_polars_object = pl$DataFrame(iris)
+#' some_polars_object = as_polars_df(iris)
 #' str(some_polars_object) # External Pointer tagged with a class attribute.
 #'
 #' # All state is stored on rust side.
 #'
 #' # The single exception from the rule is class "GroupBy", where objects also have
 #' # two private attributes "groupby_input" and "maintain_order".
-#' str(pl$DataFrame(iris)$group_by("Species"))
+#' str(as_polars_df(iris)$group_by("Species"))
 NULL

@@ -13,6 +13,6 @@ Expr
 This is done using the HyperLogLog++ algorithm for cardinality estimation.
 }
 \examples{
-pl$DataFrame(iris[, 4:5])$
+as_polars_df(iris[, 4:5])$
   with_columns(count = pl$col("Species")$approx_n_unique())
 }

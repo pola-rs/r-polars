@@ -13,6 +13,6 @@ Expr
 This is syntactic sugar for \verb{$is_unique()$not()}.
 }
 \examples{
-pl$DataFrame(head(mtcars[, 1:2]))$
+as_polars_df(head(mtcars[, 1:2]))$
   with_columns(is_duplicated = pl$col("mpg")$is_duplicated())
 }

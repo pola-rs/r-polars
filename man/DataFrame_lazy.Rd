@@ -14,7 +14,7 @@ A LazyFrame
 Start a new lazy query from a DataFrame.
 }
 \examples{
-pl$DataFrame(iris)$lazy()
+as_polars_df(iris)$lazy()
 }
 \keyword{DataFrame}
 \keyword{LazyFrame_new}

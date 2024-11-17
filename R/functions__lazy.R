@@ -192,7 +192,7 @@ pl_count = function(...) {
 #' @inheritParams pl_head
 #' @inherit pl_head return
 #' @examples
-#' pl$DataFrame(iris)$select(pl$implode("Species"))
+#' as_polars_df(iris)$select(pl$implode("Species"))
 pl_implode = function(...) {
   result(pl$col(...)$implode()) |>
     unwrap("in pl$implode():")
@@ -708,7 +708,7 @@ pl_concat_str = function(..., separator = "", ignore_nulls = FALSE) {
 
 #' @return Expr for the computed covariance
 #' @examples
-#' lf = pl$LazyFrame(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
+#' lf = as_polars_lf(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
 #' lf$select(pl$cov("a", "b"))$collect()
 #' pl$cov(c(1, 8, 3), c(4, 5, 2))$to_r()
 pl_cov = function(a, b, ddof = 1) {
@@ -726,7 +726,7 @@ pl_cov = function(a, b, ddof = 1) {
 #' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
 #' @return Expr for the computed rolling covariance
 #' @examples
-#' lf = pl$LazyFrame(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
+#' lf = as_polars_lf(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
 #' lf$select(pl$rolling_cov("a", "b", window_size = 2))$collect()
 pl_rolling_cov = function(a, b, window_size, min_periods = NULL, ddof = 1) {
   if (is.null(min_periods)) {
@@ -747,7 +747,7 @@ pl_rolling_cov = function(a, b, window_size, min_periods = NULL, ddof = 1) {
 #' Defaults to `False` where `NaN` are regarded as larger than any finite number and thus lead to the highest rank.
 #' @return Expr for the computed correlation
 #' @examples
-#' lf = pl$LazyFrame(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
+#' lf = as_polars_lf(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
 #' lf$select(pl$corr("a", "b", method = "spearman"))$collect()
 pl_corr = function(a, b, method = "pearson", ddof = 1, propagate_nans = FALSE) {
   .pr$Expr$corr(a, b, method, ddof, propagate_nans) |> unwrap("in pl$corr()")
@@ -763,7 +763,7 @@ pl_corr = function(a, b, method = "pearson", ddof = 1, propagate_nans = FALSE) {
 #' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
 #' @return Expr for the computed rolling correlation
 #' @examples
-#' lf = pl$LazyFrame(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
+#' lf = as_polars_lf(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
 #' lf$select(pl$rolling_corr("a", "b", window_size = 2))$collect()
 pl_rolling_corr = function(a, b, window_size, min_periods = NULL, ddof = 1) {
   if (is.null(min_periods)) {
@@ -786,7 +786,7 @@ pl_rolling_corr = function(a, b, window_size, min_periods = NULL, ddof = 1) {
 #' @return An expression that will be applied rowwise
 #'
 #' @examples
-#' df = pl$DataFrame(mtcars)
+#' df = as_polars_df(mtcars)
 #'
 #' # Make the row-wise sum of all columns
 #' df$with_columns(
@@ -808,7 +808,7 @@ pl_fold = function(acc, lambda, exprs) {
 #' operations with an initial value.
 #'
 #' @examples
-#' df = pl$DataFrame(mtcars)
+#' df = as_polars_df(mtcars)
 #'
 #' # Make the row-wise sum of all columns
 #' df$with_columns(

@@ -22,7 +22,7 @@ values, the mean, standard deviation, min, max, median and the percentiles
 specified in the argument \code{percentiles}.
 }
 \examples{
-pl$DataFrame(iris)$describe()
+as_polars_df(iris)$describe()
 
 # string, date, boolean columns are also supported:
 df = pl$DataFrame(

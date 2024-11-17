@@ -13,7 +13,7 @@ A new \code{LazyFrame} object.
 Revert the group by operation.
 }
 \examples{
-lf = pl$LazyFrame(mtcars)
+lf = as_polars_lf(mtcars)
 lf
 
 lgb = lf$group_by("cyl")

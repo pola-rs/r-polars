@@ -1,5 +1,5 @@
 dat = head(mtcars, n = 5)[, 1:3]
-dat_pl = pl$DataFrame(dat)
+dat_pl = as_polars_df(dat)
 temp_out = tempfile()
 
 test_that("write_json: path works", {
@@ -25,7 +25,7 @@ test_that("write_ndjson: path works", {
 })
 
 test_that("write_ndjson returns the input data", {
-  dat = pl$DataFrame(mtcars)
+  dat = as_polars_df(mtcars)
   tmpf = tempfile(fileext = ".arrow")
   x = dat$write_ndjson(tmpf)
   expect_identical(x$to_list(), dat$to_list())

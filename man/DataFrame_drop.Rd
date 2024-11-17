@@ -19,8 +19,8 @@ DataFrame
 Drop columns of a DataFrame
 }
 \examples{
-pl$DataFrame(mtcars)$drop(c("mpg", "hp"))
+as_polars_df(mtcars)$drop(c("mpg", "hp"))
 
 # equivalent
-pl$DataFrame(mtcars)$drop("mpg", "hp")
+as_polars_df(mtcars)$drop("mpg", "hp")
 }

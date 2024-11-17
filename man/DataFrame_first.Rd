@@ -13,6 +13,6 @@ A DataFrame with one row.
 Get the first row of the DataFrame.
 }
 \examples{
-pl$DataFrame(mtcars)$first()
+as_polars_df(mtcars)$first()
 }
 \keyword{DataFrame}

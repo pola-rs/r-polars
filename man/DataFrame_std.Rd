@@ -18,6 +18,6 @@ Aggregate the columns of this DataFrame to their standard
 deviation values.
 }
 \examples{
-pl$DataFrame(mtcars)$std()
+as_polars_df(mtcars)$std()
 }
 \keyword{DataFrame}

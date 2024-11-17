@@ -60,7 +60,7 @@ larger than RAM as it would crash the R session if it was collected into R.
 \examples{
 # sink table 'mtcars' from mem to ipc
 tmpf = tempfile()
-pl$LazyFrame(mtcars)$sink_ipc(tmpf)
+as_polars_lf(mtcars)$sink_ipc(tmpf)
 
 # stream a query end-to-end (not supported yet, https://github.com/pola-rs/polars/issues/1040)
 # tmpf2 = tempfile()

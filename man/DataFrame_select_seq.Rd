@@ -23,7 +23,7 @@ when the work per expression is cheap. Otherwise, \verb{$select()} should be
 preferred.
 }
 \examples{
-pl$DataFrame(iris)$select_seq(
+as_polars_df(iris)$select_seq(
   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
 )
