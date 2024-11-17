@@ -137,6 +137,10 @@ pub fn deserialize_series(bits: &[u8]) -> RResult<pl::Series> {
     let tn = std::any::type_name::<pl::Series>();
     deserialize_dataframe(bits, None, None)?
         .get_columns()
+        .to_vec()
+        .into_iter()
+        .map(|c| c.take_materialized_series())
+        .collect::<Vec<_>>()
         .split_first()
         .ok_or(RPolarsErr::new())
         .mistyped(tn)

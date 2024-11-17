@@ -20,7 +20,7 @@ use extendr_api::{extendr, prelude::*, rprintln};
 use pl::SeriesMethods;
 use polars::datatypes::*;
 use polars::prelude as pl;
-use polars::prelude::{ArgAgg, IntoSeries};
+use polars::prelude::{ArgAgg, IntoColumn, IntoSeries};
 use polars_core::series::IsSorted;
 pub const R_INT_NA_ENC: i32 = -2147483648;
 use crate::rpolarserr::polars_to_rpolars_err;
@@ -81,7 +81,11 @@ impl From<&RPolarsExpr> for pl::PolarsResult<RPolarsSeries> {
             .map(|df| {
                 df.select_at_idx(0)
                     .cloned()
-                    .unwrap_or_else(|| pl::Series::new_empty("".into(), &pl::DataType::Null))
+                    .unwrap_or_else(|| {
+                        pl::Series::new_empty("".into(), &pl::DataType::Null).into_column()
+                    })
+                    .as_materialized_series()
+                    .clone()
                     .into()
             })
     }

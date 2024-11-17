@@ -480,7 +480,7 @@ pub fn literal_to_any_value(litval: pl::LiteralValue) -> RResult<pl::AnyValue<'s
 
 pub fn expr_to_any_value(e: pl::Expr) -> std::result::Result<pl::AnyValue<'static>, String> {
     use pl::*;
-    pl::DataFrame::default()
+    let av = pl::DataFrame::default()
         .lazy()
         .select(&[e])
         .collect()
@@ -491,8 +491,8 @@ pub fn expr_to_any_value(e: pl::Expr) -> std::result::Result<pl::AnyValue<'stati
         .iter()
         .next()
         .ok_or_else(|| String::from("series had no first value"))?
-        .into_static()
-        .map_err(|err| err.to_string())
+        .into_static();
+    Ok(av)
 }
 
 pub fn robj_to_width_strategy(robj: Robj) -> RResult<pl::ListToStructWidthStrategy> {

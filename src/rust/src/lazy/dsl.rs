@@ -18,7 +18,6 @@ use pl::{Duration, IntoColumn, RollingGroupOptions, SetOperation, TemporalMethod
 use polars::lazy::dsl;
 use polars::prelude as pl;
 use polars::prelude::{ExprEvalExtension, SortOptions};
-use std::any::Any;
 use std::ops::{Add, Div, Mul, Rem, Sub};
 use std::result::Result;
 pub type NameGenerator = pl::Arc<dyn Fn(usize) -> String + Send + Sync>;
@@ -633,7 +632,7 @@ impl RPolarsExpr {
                 weights,
                 min_periods,
                 center,
-                Some(Arc::new(pl::RollingVarParams { ddof }) as Arc<dyn Any + Send + Sync>),
+                Some(pl::RollingFnParams::Var(pl::RollingVarParams { ddof })),
             )?)
             .into())
     }
@@ -657,7 +656,7 @@ impl RPolarsExpr {
                     window_size,
                     min_periods,
                     closed,
-                    Some(Arc::new(pl::RollingVarParams { ddof }) as Arc<dyn Any + Send + Sync>),
+                    Some(pl::RollingFnParams::Var(pl::RollingVarParams { ddof })),
                 )?,
             )
             .into())
@@ -682,7 +681,7 @@ impl RPolarsExpr {
                 weights,
                 min_periods,
                 center,
-                Some(Arc::new(pl::RollingVarParams { ddof }) as Arc<dyn Any + Send + Sync>),
+                Some(pl::RollingFnParams::Var(pl::RollingVarParams { ddof })),
             )?)
             .into())
     }
@@ -706,7 +705,7 @@ impl RPolarsExpr {
                     window_size,
                     min_periods,
                     closed,
-                    Some(Arc::new(pl::RollingVarParams { ddof }) as Arc<dyn Any + Send + Sync>),
+                    Some(pl::RollingFnParams::Var(pl::RollingVarParams { ddof })),
                 )?,
             )
             .into())
@@ -1973,12 +1972,15 @@ impl RPolarsExpr {
     pub fn map_batches(&self, lambda: Robj, output_type: Robj, agg_list: Robj) -> RResult<Self> {
         // define closure how to request R code evaluated in main thread from a some polars sub thread
         let par_fn = ParRObj(lambda);
-        let f = move |s: pl::Series| {
+        let f = move |col: pl::Column| {
             let thread_com = ThreadCom::try_from_global(&CONFIG)
                 .expect("polars was thread could not initiate ThreadCommunication to R");
-            thread_com.send(RFnSignature::FnSeriesToSeries(par_fn.clone(), s));
+            thread_com.send(RFnSignature::FnSeriesToSeries(
+                par_fn.clone(),
+                col.as_materialized_series().clone(),
+            ));
             let s = thread_com.recv().unwrap_series();
-            Ok(Some(s))
+            Ok(Some(s.into_column()))
         };
 
         // set expected type of output from R function
@@ -2007,12 +2009,12 @@ impl RPolarsExpr {
     ) -> RResult<Self> {
         let raw_func = crate::rbackground::serialize_robj(lambda).unwrap();
 
-        let rbgfunc = move |s| {
+        let rbgfunc = move |col: pl::Column| {
             crate::RBGPOOL
-                .rmap_series(raw_func.clone(), s)
+                .rmap_series(raw_func.clone(), col.as_materialized_series().clone())
                 .map_err(rpolars_to_polars_err)?()
             .map_err(rpolars_to_polars_err)
-            .map(Some)
+            .map(|s| Some(s.into_column()))
         };
 
         let ot = robj_to!(Option, PLPolarsDataType, output_type)?;
@@ -2040,12 +2042,12 @@ impl RPolarsExpr {
     ) -> Self {
         let raw_func = crate::rbackground::serialize_robj(lambda).unwrap();
 
-        let rbgfunc = move |s| {
+        let rbgfunc = move |column: pl::Column| {
             crate::RBGPOOL
-                .rmap_series(raw_func.clone(), s)
+                .rmap_series(raw_func.clone(), column.as_materialized_series().clone())
                 .map_err(rpolars_to_polars_err)?()
             .map_err(rpolars_to_polars_err)
-            .map(Some)
+            .map(|s| Some(s.into_column()))
         };
 
         let ot = null_to_opt(output_type).map(|rdt| rdt.0.clone());
@@ -2821,7 +2823,7 @@ pub fn make_rolling_options_fixed_window(
     weights: Robj,
     min_periods: Robj,
     center: Robj,
-    fn_params: Option<Arc<dyn Any + Send + Sync>>,
+    fn_params: Option<pl::RollingFnParams>,
 ) -> RResult<pl::RollingOptionsFixedWindow> {
     Ok(pl::RollingOptionsFixedWindow {
         window_size: robj_to!(usize, window_size)?,
@@ -2836,7 +2838,7 @@ pub fn make_rolling_options_dynamic_window(
     window_size: &str,
     min_periods: Robj,
     closed_window: Robj,
-    fn_params: Option<Arc<dyn Any + Send + Sync>>,
+    fn_params: Option<pl::RollingFnParams>,
 ) -> RResult<pl::RollingOptionsDynamicWindow> {
     Ok(pl::RollingOptionsDynamicWindow {
         window_size: Duration::parse(window_size),

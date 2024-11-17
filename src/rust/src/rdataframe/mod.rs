@@ -28,7 +28,7 @@ use polars_core::utils::arrow;
 use polars::frame::explode::UnpivotArgsIR;
 use polars::prelude::pivot::{pivot, pivot_stable};
 
-pub struct OwnedDataFrameIterator {
+pub struct DataFrameStreamIterator {
     columns: Vec<polars::series::Series>,
     data_type: arrow::datatypes::ArrowDataType,
     idx: usize,
@@ -36,12 +36,15 @@ pub struct OwnedDataFrameIterator {
     compat_level: CompatLevel,
 }
 
-impl OwnedDataFrameIterator {
+impl DataFrameStreamIterator {
     pub fn new(df: polars::frame::DataFrame, compat_level: CompatLevel) -> Self {
         let schema = df.schema().to_arrow(compat_level);
-        // TODO: changed when bumping to 0.43.1, might need refactor
-        let data_type = ArrowDataType::Struct(schema.iter_values().map(|x| x.clone()).collect());
-        let vs = df.get_columns().to_vec();
+        let data_type = ArrowDataType::Struct(schema.into_iter_values().collect());
+        let vs = df
+            .get_columns()
+            .iter()
+            .map(|v| v.as_materialized_series().clone())
+            .collect();
         Self {
             columns: vs,
             data_type,
@@ -52,7 +55,7 @@ impl OwnedDataFrameIterator {
     }
 }
 
-impl Iterator for OwnedDataFrameIterator {
+impl Iterator for DataFrameStreamIterator {
     type Item = Result<Box<dyn arrow::array::Array>, PolarsError>;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -64,14 +67,14 @@ impl Iterator for OwnedDataFrameIterator {
                 .columns
                 .iter()
                 .map(|s| s.to_arrow(self.idx, self.compat_level))
-                .collect();
+                .collect::<Vec<_>>();
             self.idx += 1;
 
-            let chunk = arrow::record_batch::RecordBatch::new(batch_cols);
             let array = arrow::array::StructArray::new(
                 self.data_type.clone(),
-                chunk.into_arrays(),
-                std::option::Option::None,
+                batch_cols[0].len(),
+                batch_cols,
+                None,
             );
             Some(std::result::Result::Ok(Box::new(array)))
         }
@@ -139,8 +142,8 @@ impl RPolarsDataFrame {
 
     //internal use
     pub fn new_with_capacity(capacity: i32) -> Self {
-        let empty_series: Vec<pl::Series> = Vec::with_capacity(capacity as usize);
-        RPolarsDataFrame(pl::DataFrame::new(empty_series).unwrap())
+        let empty_cols: Vec<pl::Column> = Vec::with_capacity(capacity as usize);
+        RPolarsDataFrame(pl::DataFrame::new(empty_cols).unwrap())
     }
 
     //internal use
@@ -201,7 +204,13 @@ impl RPolarsDataFrame {
     }
 
     pub fn get_columns(&self) -> List {
-        let cols = self.0.get_columns().to_vec();
+        let cols = self
+            .0
+            .get_columns()
+            .to_vec()
+            .into_iter()
+            .map(|c| c.take_materialized_series())
+            .collect();
         let vec = unsafe { std::mem::transmute::<Vec<pl::Series>, Vec<RPolarsSeries>>(cols) };
         List::from_values(vec)
     }
@@ -296,14 +305,19 @@ impl RPolarsDataFrame {
         let expr_result = {
             self.0
                 .select_at_idx(idx as usize)
-                .map(|s| RPolarsSeries(s.clone()))
+                .map(|s| RPolarsSeries(s.as_materialized_series().clone()))
                 .ok_or_else(|| format!("select_at_idx: no series found at idx {:?}", idx))
         };
         r_result_list(expr_result)
     }
 
     pub fn drop_in_place(&mut self, names: &str) -> RPolarsSeries {
-        RPolarsSeries(self.0.drop_in_place(names).unwrap())
+        RPolarsSeries(
+            self.0
+                .drop_in_place(names)
+                .unwrap()
+                .take_materialized_series(),
+        )
     }
 
     pub fn select(&self, exprs: Robj) -> RResult<Self> {
@@ -355,7 +369,7 @@ impl RPolarsDataFrame {
         let data_type = ArrowDataType::Struct(schema.iter_values().map(|x| x.clone()).collect());
         let field = ArrowField::new("".into(), data_type, false);
 
-        let iter_boxed = Box::new(OwnedDataFrameIterator::new(self.0.clone(), compat_level));
+        let iter_boxed = Box::new(DataFrameStreamIterator::new(self.0.clone(), compat_level));
         let mut stream = arrow::ffi::export_iterator(iter_boxed, field);
         let stream_out_ptr_addr: usize = stream_ptr.parse().unwrap();
         let stream_out_ptr = stream_out_ptr_addr as *mut arrow::ffi::ArrowArrayStream;
