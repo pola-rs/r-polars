@@ -2,20 +2,30 @@
 % Please edit documentation in R/expr-datetime.R
 \name{expr_dt_strftime}
 \alias{expr_dt_strftime}
-\title{Convert date/time/datetime to string}
+\title{Convert a Date/Time/Datetime/Duration column into a String column with the given format}
 \usage{
 expr_dt_strftime(format)
 }
 \arguments{
-\item{format}{Format to use. See \code{chrono} docs for specifying the format:
-\url{https://docs.rs/chrono/latest/chrono/format/strftime/index.html}`.}
+\item{format}{Single string of format to use, or \code{NULL}.
+\code{NULL} will be treated as \code{"iso"}.
+Available formats depend on the column \link[=DataType]{data type}:
+\itemize{
+\item For \link[=DataType]{Date/Time/Datetime}, refer to the
+\link[=https://docs.rs/chrono/latest/chrono/format/strftime/index.html]{chrono strftime documentation}
+for specification. Example: \code{"\%y-\%m-\%d"}.
+Special case \code{"iso"} will use the ISO8601 format.
+\item For \link[=DataType]{Duration}, \code{"iso"} or \code{"polars"} can be used.
+The \code{"iso"} format string results in ISO8601 duration string output,
+and \code{"polars"} results in the same form seen in the polars print representation.
+}}
 }
 \value{
 A polars \link{expression}
 }
 \description{
 Similar to \verb{$cast(pl$String)}, but this method allows you to customize the
-formatting of the resulting string. This is an alias for \verb{$dt$to_string()}.
+formatting of the resulting string. This is an alias for \code{\link[=expr_dt_to_string]{$dt$to_string()}}.
 }
 \examples{
 pl$DataFrame(

@@ -29,6 +29,100 @@
       ! `time_unit` must be one of "us", "ns", or "ms", not "s".
       i Did you mean "us"?
 
+# dt$to_string and dt$strftime works datetime_ns
+
+    Code
+      pl$select(to_string_default = temporal_lit$dt$to_string(),
+      "to_string_{format_str}" := temporal_lit$dt$to_string(format_str),
+      strftime_iso = temporal_lit$dt$strftime("iso"), )
+    Output
+      shape: (1, 3)
+      ┌───────────────────────────────┬──────────────┬───────────────────────────────┐
+      │ to_string_default             ┆ to_string_%F ┆ strftime_iso                  │
+      │ ---                           ┆ ---          ┆ ---                           │
+      │ str                           ┆ str          ┆ str                           │
+      ╞═══════════════════════════════╪══════════════╪═══════════════════════════════╡
+      │ 1970-01-01 00:00:00.000000001 ┆ 1970-01-01   ┆ 1970-01-01 00:00:00.000000001 │
+      └───────────────────────────────┴──────────────┴───────────────────────────────┘
+
+# dt$to_string and dt$strftime works datetime_ms_utc
+
+    Code
+      pl$select(to_string_default = temporal_lit$dt$to_string(),
+      "to_string_{format_str}" := temporal_lit$dt$to_string(format_str),
+      strftime_iso = temporal_lit$dt$strftime("iso"), )
+    Output
+      shape: (1, 3)
+      ┌───────────────────────────────┬──────────────┬───────────────────────────────┐
+      │ to_string_default             ┆ to_string_%F ┆ strftime_iso                  │
+      │ ---                           ┆ ---          ┆ ---                           │
+      │ str                           ┆ str          ┆ str                           │
+      ╞═══════════════════════════════╪══════════════╪═══════════════════════════════╡
+      │ 1970-01-01 00:00:00.001+00:00 ┆ 1970-01-01   ┆ 1970-01-01 00:00:00.001+00:00 │
+      └───────────────────────────────┴──────────────┴───────────────────────────────┘
+
+# dt$to_string and dt$strftime works date
+
+    Code
+      pl$select(to_string_default = temporal_lit$dt$to_string(),
+      "to_string_{format_str}" := temporal_lit$dt$to_string(format_str),
+      strftime_iso = temporal_lit$dt$strftime("iso"), )
+    Output
+      shape: (1, 3)
+      ┌───────────────────┬──────────────┬──────────────┐
+      │ to_string_default ┆ to_string_%F ┆ strftime_iso │
+      │ ---               ┆ ---          ┆ ---          │
+      │ str               ┆ str          ┆ str          │
+      ╞═══════════════════╪══════════════╪══════════════╡
+      │ 1970-01-02        ┆ 1970-01-02   ┆ 1970-01-02   │
+      └───────────────────┴──────────────┴──────────────┘
+
+# dt$to_string and dt$strftime works time
+
+    Code
+      pl$select(to_string_default = temporal_lit$dt$to_string(),
+      "to_string_{format_str}" := temporal_lit$dt$to_string(format_str),
+      strftime_iso = temporal_lit$dt$strftime("iso"), )
+    Output
+      shape: (1, 3)
+      ┌────────────────────┬──────────────┬────────────────────┐
+      │ to_string_default  ┆ to_string_%T ┆ strftime_iso       │
+      │ ---                ┆ ---          ┆ ---                │
+      │ str                ┆ str          ┆ str                │
+      ╞════════════════════╪══════════════╪════════════════════╡
+      │ 00:00:00.000000001 ┆ 00:00:00     ┆ 00:00:00.000000001 │
+      └────────────────────┴──────────────┴────────────────────┘
+
+# dt$to_string and dt$strftime works duration_ns
+
+    Code
+      pl$select(to_string_default = temporal_lit$dt$to_string(), to_string_polars = temporal_lit$
+        dt$to_string("polars"), strftime_iso = temporal_lit$dt$strftime("iso"), )
+    Output
+      shape: (1, 3)
+      ┌───────────────────┬──────────────────┬────────────────┐
+      │ to_string_default ┆ to_string_polars ┆ strftime_iso   │
+      │ ---               ┆ ---              ┆ ---            │
+      │ str               ┆ str              ┆ str            │
+      ╞═══════════════════╪══════════════════╪════════════════╡
+      │ PT0.000000001S    ┆ 1ns              ┆ PT0.000000001S │
+      └───────────────────┴──────────────────┴────────────────┘
+
+# dt$to_string and dt$strftime works duration_ms
+
+    Code
+      pl$select(to_string_default = temporal_lit$dt$to_string(), to_string_polars = temporal_lit$
+        dt$to_string("polars"), strftime_iso = temporal_lit$dt$strftime("iso"), )
+    Output
+      shape: (1, 3)
+      ┌───────────────────┬──────────────────┬──────────────┐
+      │ to_string_default ┆ to_string_polars ┆ strftime_iso │
+      │ ---               ┆ ---              ┆ ---          │
+      │ str               ┆ str              ┆ str          │
+      ╞═══════════════════╪══════════════════╪══════════════╡
+      │ PT0.001S          ┆ 1ms              ┆ PT0.001S     │
+      └───────────────────┴──────────────────┴──────────────┘
+
 # dt$epoch
 
     Code

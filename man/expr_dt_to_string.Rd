@@ -2,26 +2,61 @@
 % Please edit documentation in R/expr-datetime.R
 \name{expr_dt_to_string}
 \alias{expr_dt_to_string}
-\title{Convert date/time/datetime to string}
+\title{Convert a Date/Time/Datetime/Duration column into a String column with the given format}
 \usage{
-expr_dt_to_string(format)
+expr_dt_to_string(format = NULL)
 }
 \arguments{
-\item{format}{Format to use. See \code{chrono} docs for specifying the format:
-\url{https://docs.rs/chrono/latest/chrono/format/strftime/index.html}`.}
+\item{format}{Single string of format to use, or \code{NULL} (default).
+\code{NULL} will be treated as \code{"iso"}.
+Available formats depend on the column \link[=DataType]{data type}:
+\itemize{
+\item For \link[=DataType]{Date/Time/Datetime}, refer to the
+\link[=https://docs.rs/chrono/latest/chrono/format/strftime/index.html]{chrono strftime documentation}
+for specification. Example: \code{"\%y-\%m-\%d"}.
+Special case \code{"iso"} will use the ISO8601 format.
+\item For \link[=DataType]{Duration}, \code{"iso"} or \code{"polars"} can be used.
+The \code{"iso"} format string results in ISO8601 duration string output,
+and \code{"polars"} results in the same form seen in the polars print representation.
+}}
 }
 \value{
 A polars \link{expression}
 }
 \description{
 Similar to \verb{$cast(pl$String)}, but this method allows you to customize the
-formatting of the resulting string. This is an alias for \verb{$dt$strftime()}.
+formatting of the resulting string; if no format is provided, the appropriate
+ISO format for the underlying data type is used.
 }
 \examples{
-pl$DataFrame(
-  datetime = c(as.POSIXct(c("2021-01-02 00:00:00", "2021-01-03 00:00:00")))
-)$
-  with_columns(
-  datetime_string = pl$col("datetime")$dt$to_string("\%Y/\%m/\%d \%H:\%M:\%S")
+\dontshow{if (requireNamespace("hms", quietly = TRUE) && requireNamespace("clock", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+df <- pl$DataFrame(
+  dt = as.Date(c("1990-03-01", "2020-05-03", "2077-07-05")),
+  dtm = as.POSIXct(c("1980-08-10 00:10:20", "2010-10-20 08:25:35", "2040-12-30 16:40:50")),
+  tm = hms::as_hms(c("01:02:03.456789", "23:59:09.101", "00:00:00.000100")),
+  dur = clock::duration_days(c(-1, 14, 0)) + clock::duration_hours(c(0, -10, 0)) +
+    clock::duration_seconds(c(-42, 0, 0)) + clock::duration_microseconds(c(0, 1001, 0)),
 )
+
+# Default format for temporal dtypes is ISO8601:
+df$select((cs$date() | cs$datetime())$dt$to_string()$name$prefix("s_"))
+df$select((cs$time() | cs$duration())$dt$to_string()$name$prefix("s_"))
+
+# All temporal types (aside from Duration) support strftime formatting:
+df$select(
+  pl$col("dtm"),
+  s_dtm = pl$col("dtm")$dt$to_string("\%Y/\%m/\%d (\%H.\%M.\%S)"),
+)
+
+# The Polars Duration string format is also available:
+df$select(pl$col("dur"), s_dur = pl$col("dur")$dt$to_string("polars"))
+
+# If you’re interested in extracting the day or month names,
+# you can use the '\%A' and '\%B' strftime specifiers:
+df$select(
+  pl$col("dt"),
+  day_name = pl$col("dtm")$dt$to_string("\%A"),
+  month_name = pl$col("dtm")$dt$to_string("\%B"),
+)
+\dontshow{\}) # examplesIf}
 }

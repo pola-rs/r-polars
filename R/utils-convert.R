@@ -26,8 +26,7 @@
 #' Similarly for "calendar week", "calendar month", "calendar quarter", and "calendar year".
 NULL
 
-
-# TODO: use this function inside of `Expr_rolling`, `LazyFrame_join_asof`, `DataFrame_join_asof`
+# TODO: Test this function with expr_dt_to_string(format = "polars")
 #' Parse an object as the Polars duration string language
 #'
 #' A generic function for parsing an object as a string representation of a duration.

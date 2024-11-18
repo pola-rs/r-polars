@@ -241,34 +241,74 @@ expr_dt_combine <- function(time, time_unit = c("us", "ns", "ms")) {
   })
 }
 
-#' Convert date/time/datetime to string
+# TODO: link to cast
+# TODO: link to polars duration string docs
+#' Convert a Date/Time/Datetime/Duration column into a String column with the given format
 #'
 #' Similar to `$cast(pl$String)`, but this method allows you to customize the
-#' formatting of the resulting string. This is an alias for `$dt$strftime()`.
-#'
-#' @param format Format to use. See `chrono` docs for specifying the format:
-#' <https://docs.rs/chrono/latest/chrono/format/strftime/index.html>`.
-#'
+#' formatting of the resulting string; if no format is provided, the appropriate
+#' ISO format for the underlying data type is used.
+#' @param format Single string of format to use, or `NULL` (default).
+#' `NULL` will be treated as `"iso"`.
+#' Available formats depend on the column [data type][DataType]:
+#' - For [Date/Time/Datetime][DataType], refer to the
+#'   [chrono strftime documentation][https://docs.rs/chrono/latest/chrono/format/strftime/index.html]
+#'   for specification. Example: `"%y-%m-%d"`.
+#'   Special case `"iso"` will use the ISO8601 format.
+#' - For [Duration][DataType], `"iso"` or `"polars"` can be used.
+#'   The `"iso"` format string results in ISO8601 duration string output,
+#'   and `"polars"` results in the same form seen in the polars print representation.
 #' @inherit as_polars_expr return
-#' @examples
-#' pl$DataFrame(
-#'   datetime = c(as.POSIXct(c("2021-01-02 00:00:00", "2021-01-03 00:00:00")))
-#' )$
-#'   with_columns(
-#'   datetime_string = pl$col("datetime")$dt$to_string("%Y/%m/%d %H:%M:%S")
+#' @examplesIf requireNamespace("hms", quietly = TRUE) && requireNamespace("clock", quietly = TRUE)
+#' df <- pl$DataFrame(
+#'   dt = as.Date(c("1990-03-01", "2020-05-03", "2077-07-05")),
+#'   dtm = as.POSIXct(c("1980-08-10 00:10:20", "2010-10-20 08:25:35", "2040-12-30 16:40:50")),
+#'   tm = hms::as_hms(c("01:02:03.456789", "23:59:09.101", "00:00:00.000100")),
+#'   dur = clock::duration_days(c(-1, 14, 0)) + clock::duration_hours(c(0, -10, 0)) +
+#'     clock::duration_seconds(c(-42, 0, 0)) + clock::duration_microseconds(c(0, 1001, 0)),
 #' )
-expr_dt_to_string <- function(format) {
-  self$`_rexpr`$dt_to_string(format) |>
+#'
+#' # Default format for temporal dtypes is ISO8601:
+#' df$select((cs$date() | cs$datetime())$dt$to_string()$name$prefix("s_"))
+#' df$select((cs$time() | cs$duration())$dt$to_string()$name$prefix("s_"))
+#'
+#' # All temporal types (aside from Duration) support strftime formatting:
+#' df$select(
+#'   pl$col("dtm"),
+#'   s_dtm = pl$col("dtm")$dt$to_string("%Y/%m/%d (%H.%M.%S)"),
+#' )
+#'
+#' # The Polars Duration string format is also available:
+#' df$select(pl$col("dur"), s_dur = pl$col("dur")$dt$to_string("polars"))
+#'
+#' # If you’re interested in extracting the day or month names,
+#' # you can use the '%A' and '%B' strftime specifiers:
+#' df$select(
+#'   pl$col("dt"),
+#'   day_name = pl$col("dtm")$dt$to_string("%A"),
+#'   month_name = pl$col("dtm")$dt$to_string("%B"),
+#' )
+expr_dt_to_string <- function(format = NULL) {
+  self$`_rexpr`$dt_to_string(format %||% "iso") |>
     wrap()
 }
 
-#' @inherit expr_dt_to_string title params
+#' @inherit expr_dt_to_string title
 #'
 #' @description
 #' Similar to `$cast(pl$String)`, but this method allows you to customize the
-#' formatting of the resulting string. This is an alias for `$dt$to_string()`.
-#'
+#' formatting of the resulting string. This is an alias for [`$dt$to_string()`][expr_dt_to_string].
 #' @inherit as_polars_expr return
+#' @param format Single string of format to use, or `NULL`.
+#' `NULL` will be treated as `"iso"`.
+#' Available formats depend on the column [data type][DataType]:
+#' - For [Date/Time/Datetime][DataType], refer to the
+#'   [chrono strftime documentation][https://docs.rs/chrono/latest/chrono/format/strftime/index.html]
+#'   for specification. Example: `"%y-%m-%d"`.
+#'   Special case `"iso"` will use the ISO8601 format.
+#' - For [Duration][DataType], `"iso"` or `"polars"` can be used.
+#'   The `"iso"` format string results in ISO8601 duration string output,
+#'   and `"polars"` results in the same form seen in the polars print representation.
 #' @examples
 #' pl$DataFrame(
 #'   datetime = c(as.POSIXct(c("2021-01-02 00:00:00", "2021-01-03 00:00:00")))
@@ -280,7 +320,6 @@ expr_dt_strftime <- function(format) {
   self$to_string(format) |>
     wrap()
 }
-
 
 #' Extract year from underlying Date representation
 #' @description
