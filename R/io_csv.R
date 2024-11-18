@@ -224,7 +224,15 @@ check_is_link = function(path, reuse_downloaded, raise_error = FALSE) {
         cache_temp_file[[actual_url]] = tempfile()
       }
       if (isFALSE(reuse_downloaded) || isFALSE(file.exists(cache_temp_file[[actual_url]]))) {
-        download.file(url = actual_url, destfile = cache_temp_file[[actual_url]])
+        # TODO: py-polars doesn't error with the URL in the issue. We should
+        # see how they handle URLs.
+        # https://github.com/pola-rs/r-polars/issues/1288
+        curl_available = nzchar(Sys.which("curl"))
+        if (tolower(Sys.info()[["sysname"]]) == "windows" && curl_available) {
+          download.file(url = actual_url, destfile = cache_temp_file[[actual_url]], method = "curl")
+        } else {
+          download.file(url = actual_url, destfile = cache_temp_file[[actual_url]])
+        }
         message(paste("tmp file placed in \n", cache_temp_file[[actual_url]]))
       }
 
