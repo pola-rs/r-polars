@@ -224,7 +224,7 @@ check_is_link = function(path, reuse_downloaded, raise_error = FALSE) {
         cache_temp_file[[actual_url]] = tempfile()
       }
       if (isFALSE(reuse_downloaded) || isFALSE(file.exists(cache_temp_file[[actual_url]]))) {
-        download.file(url = actual_url, destfile = cache_temp_file[[actual_url]])
+        download.file(url = actual_url, destfile = cache_temp_file[[actual_url]], mode = "wb")
         message(paste("tmp file placed in \n", cache_temp_file[[actual_url]]))
       }
 
