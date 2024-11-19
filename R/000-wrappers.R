@@ -2427,6 +2427,9 @@ class(`PlRExpr`) <- c("PlRExpr__bundle", "savvy_neopolars__sealed")
 
 ### associated functions for PlRLazyFrame
 
+`PlRLazyFrame`$`new_from_ipc` <- function(`source`, `cache`, `rechunk`, `try_parse_hive_dates`, `retries`, `row_index_offset`, `n_rows` = NULL, `row_index_name` = NULL, `storage_options` = NULL, `hive_partitioning` = NULL, `hive_schema` = NULL, `file_cache_ttl` = NULL, `include_file_paths` = NULL) {
+  .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_new_from_ipc__impl, `source`, `cache`, `rechunk`, `try_parse_hive_dates`, `retries`, `row_index_offset`, `n_rows`, `row_index_name`, `storage_options`, `hive_partitioning`, `hive_schema`, `file_cache_ttl`, `include_file_paths`))
+}
 
 
 class(`PlRLazyFrame`) <- c("PlRLazyFrame__bundle", "savvy_neopolars__sealed")

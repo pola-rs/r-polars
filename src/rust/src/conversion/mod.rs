@@ -1,7 +1,8 @@
 use crate::prelude::*;
-use crate::{PlRDataFrame, PlRDataType, PlRExpr, PlRLazyFrame, PlRSeries};
+use crate::{PlRDataFrame, PlRDataType, PlRExpr, PlRLazyFrame, PlRSeries, RPolarsErr};
+use polars::prelude::cloud::CloudOptions;
 use polars::series::ops::NullBehavior;
-use savvy::{ListSexp, NumericScalar, NumericSexp, NumericTypedSexp, TypedSexp};
+use savvy::{ListSexp, NumericScalar, NumericSexp, NumericTypedSexp, StringSexp, TypedSexp};
 pub mod base_date;
 mod chunked_array;
 pub mod clock;
@@ -380,6 +381,22 @@ impl TryFrom<&str> for Wrap<char> {
     }
 }
 
+impl TryFrom<StringSexp> for Wrap<Vec<(String, String)>> {
+    type Error = savvy::Error;
+
+    fn try_from(sexp: StringSexp) -> Result<Self, savvy::Error> {
+        let Some(names) = sexp.get_names() else {
+            return Err(format!("Expected a named vector").into());
+        };
+        let out = names
+            .into_iter()
+            .zip(sexp.iter())
+            .map(|(name, value)| (name.to_string(), value.to_string()))
+            .collect::<Vec<_>>();
+        Ok(Wrap(out))
+    }
+}
+
 impl TryFrom<&str> for Wrap<NonExistent> {
     type Error = String;
 
@@ -475,4 +492,28 @@ impl TryFrom<&str> for Wrap<Roll> {
         };
         Ok(Wrap(parsed))
     }
+}
+
+impl TryFrom<ListSexp> for Wrap<Schema> {
+    type Error = String;
+
+    fn try_from(schema: ListSexp) -> Result<Self, String> {
+        let names_list = schema.iter().map(|x| x.0).collect::<Vec<&str>>();
+        let hm = <Wrap<Vec<DataType>>>::try_from(schema).unwrap().0;
+        let mut schema = Schema::with_capacity(hm.capacity());
+
+        for i in 0..hm.len() {
+            schema.with_column(names_list[i].into(), hm[i].clone().into());
+        }
+
+        Ok(Wrap(schema))
+    }
+}
+
+pub(crate) fn parse_cloud_options(
+    uri: &str,
+    kv: Vec<(String, String)>,
+) -> savvy::Result<CloudOptions> {
+    let out = CloudOptions::from_untyped_config(uri, kv).map_err(RPolarsErr::from)?;
+    Ok(out)
 }

@@ -1,9 +1,12 @@
 use crate::{
     prelude::*, PlRDataFrame, PlRDataType, PlRExpr, PlRLazyFrame, PlRLazyGroupBy, RPolarsErr,
 };
+use polars::io::{HiveOptions, RowIndex};
 use savvy::{
     savvy, ListSexp, LogicalSexp, NumericScalar, OwnedListSexp, OwnedStringSexp, Result, Sexp,
+    StringSexp,
 };
+use std::path::PathBuf;
 
 #[savvy]
 impl PlRLazyFrame {
@@ -205,5 +208,94 @@ impl PlRLazyFrame {
         let ldf = self.ldf.clone();
         let exprs = <Wrap<Vec<Expr>>>::from(exprs).0;
         Ok(ldf.with_columns(exprs).into())
+    }
+
+    fn new_from_ipc(
+        source: StringSexp,
+        cache: bool,
+        rechunk: bool,
+        try_parse_hive_dates: bool,
+        retries: NumericScalar,
+        row_index_offset: NumericScalar,
+        n_rows: Option<NumericScalar>,
+        row_index_name: Option<&str>,
+        storage_options: Option<StringSexp>,
+        hive_partitioning: Option<bool>,
+        hive_schema: Option<ListSexp>,
+        file_cache_ttl: Option<NumericScalar>,
+        include_file_paths: Option<&str>,
+    ) -> Result<Self> {
+        let source = source
+            .to_vec()
+            .iter()
+            .map(PathBuf::from)
+            .collect::<Vec<PathBuf>>();
+        let row_index_offset = <Wrap<u32>>::try_from(row_index_offset)?.0;
+        let retries = <Wrap<usize>>::try_from(retries)?.0;
+        let hive_schema: Option<Wrap<Schema>> = match hive_schema {
+            Some(x) => Some(<Wrap<Schema>>::try_from(x)?),
+            None => None,
+        };
+        let n_rows: Option<usize> = match n_rows {
+            Some(x) => Some(<Wrap<usize>>::try_from(x)?.0),
+            None => None,
+        };
+        let row_index: Option<RowIndex> = match row_index_name {
+            Some(x) => Some(RowIndex {
+                name: x.into(),
+                offset: row_index_offset,
+            }),
+            None => None,
+        };
+        let file_cache_ttl: Option<u64> = match file_cache_ttl {
+            Some(x) => Some(<Wrap<u64>>::try_from(x)?.0),
+            None => None,
+        };
+
+        let hive_options = HiveOptions {
+            enabled: hive_partitioning,
+            hive_start_idx: 0,
+            schema: hive_schema.map(|x| Arc::new(x.0)),
+            try_parse_dates: try_parse_hive_dates,
+        };
+
+        // TODO: better error message
+        let cloud_options = match storage_options {
+            Some(x) => {
+                let out = <Wrap<Vec<(String, String)>>>::try_from(x).map_err(
+                    |_| RPolarsErr::Other(format!("`storage_options` must be a named character vector")),
+                )?;
+                Some(out.0)
+            }
+            None => None,
+        };
+
+        let mut args = ScanArgsIpc {
+            n_rows,
+            cache,
+            rechunk,
+            row_index,
+            cloud_options: None,
+            hive_options,
+            include_file_paths: include_file_paths.map(|x| x.into()),
+        };
+
+        let first_path: Option<PathBuf> = source.get(0).unwrap().clone().into();
+
+        if let Some(first_path) = first_path {
+            let first_path_url = first_path.to_string_lossy();
+
+            let mut cloud_options =
+                parse_cloud_options(&first_path_url, cloud_options.unwrap_or_default())?;
+            if let Some(file_cache_ttl) = file_cache_ttl {
+                cloud_options.file_cache_ttl = file_cache_ttl;
+            }
+            args.cloud_options = Some(
+                cloud_options.with_max_retries(retries),
+            );
+        }
+
+        let lf = LazyFrame::scan_ipc_files(source.into(), args).map_err(RPolarsErr::from)?;
+        Ok(lf.into())
     }
 }
