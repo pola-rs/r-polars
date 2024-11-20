@@ -283,10 +283,6 @@ datatype__is_nested <- function() {
   inherits(self, "polars_dtype_nested")
 }
 
-datatype__is_string <- function() {
-  inherits(self, "polars_dtype_string")
-}
-
 datatype__max <- function() {
   self$`_dt`$max() |>
     wrap()

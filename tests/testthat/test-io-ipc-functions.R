@@ -119,10 +119,13 @@ test_that("scanning from hive partition works", {
   )
 
   # can use hive_schema for more fine grained control on partitioning columns
-  sch <- pl$scan_ipc(temp_dir, hive_schema = list(cyl = pl$String, gear = pl$Int32))$
-    collect()$schema
+  sch <- pl$scan_ipc(
+    temp_dir, hive_schema = list(cyl = pl$String, gear = pl$Int32)
+  )$collect()$schema
+
   expect_true(sch$gear$is_integer())
-  expect_true(sch$cyl$is_string())
+  expect_s3_class(sch$cyl, "polars_dtype_string")
+
   expect_snapshot(
     pl$scan_ipc(temp_dir, hive_schema = list(cyl = "a")),
     error = TRUE
