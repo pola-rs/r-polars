@@ -14,7 +14,7 @@ impl PlRExpr {
         let mut out = OwnedListSexp::new(exprs.len(), false)?;
         for (i, expr) in iter.enumerate() {
             unsafe {
-                let _ = out.set_value_unchecked(i, Sexp::try_from(expr)?.0);
+                out.set_value_unchecked(i, Sexp::try_from(expr)?.0);
             }
         }
         out.into()

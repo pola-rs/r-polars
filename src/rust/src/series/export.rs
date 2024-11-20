@@ -43,7 +43,7 @@ enum TimeConversion {
 // `vctrs::unspecified` like function
 fn vctrs_unspecified_sexp(n: usize) -> Sexp {
     let mut sexp = OwnedLogicalSexp::new(n).unwrap();
-    let _ = sexp.set_class(&["vctrs_unspecified"]);
+    let _ = sexp.set_class(["vctrs_unspecified"]);
     for i in 0..n {
         let _ = sexp.set_na(i);
     }
@@ -58,7 +58,7 @@ fn set_row_names_sexp(n: usize) -> Sexp {
         OwnedIntegerSexp::new(0).unwrap()
     } else {
         let n = n as i32;
-        OwnedIntegerSexp::try_from_slice(&[i32::MIN, -n]).unwrap()
+        OwnedIntegerSexp::try_from_slice([i32::MIN, -n]).unwrap()
     };
     sexp.into()
 }
@@ -129,7 +129,7 @@ impl PlRSeries {
                 DataType::Float64 => Ok(<Sexp>::from(Wrap(series.f64().unwrap()))),
                 DataType::Categorical(_, _) | DataType::Enum(_, _) => {
                     let r_func: FunctionSexp =
-                        <Sexp>::try_from(savvy::eval_parse_text("as.factor")?)?.try_into()?;
+                        <Sexp>::from(savvy::eval_parse_text("as.factor")?).try_into()?;
                     let chr_vec =
                         <Sexp>::from(Wrap(series.cast(&DataType::String).unwrap().str().unwrap()));
                     let mut args = FunctionArgs::new();
@@ -139,7 +139,7 @@ impl PlRSeries {
                 DataType::List(inner) => unsafe {
                     let len = series.len();
                     let mut list = OwnedListSexp::new(len, false)?;
-                    let _ = list.set_class(&["vctrs_list_of", "vctrs_vctr", "list"]);
+                    let _ = list.set_class(["vctrs_list_of", "vctrs_vctr", "list"]);
                     let empty_inner_series = Series::new_empty("".into(), &inner.clone());
                     let _ = list.set_attrib(
                         "ptype",
@@ -185,7 +185,7 @@ impl PlRSeries {
                 DataType::Array(inner, _) => unsafe {
                     let len = series.len();
                     let mut list = OwnedListSexp::new(len, false)?;
-                    let _ = list.set_class(&["vctrs_list_of", "vctrs_vctr", "list"]);
+                    let _ = list.set_class(["vctrs_list_of", "vctrs_vctr", "list"]);
                     let empty_inner_series = Series::new_empty("".into(), &inner.clone());
                     let _ = list.set_attrib(
                         "ptype",
@@ -300,10 +300,10 @@ impl PlRSeries {
                         let _ = list.set_attrib("row.names", set_row_names_sexp(df.height()));
                         match r#struct {
                             StructConversion::DataFrame => {
-                                let _ = list.set_class(&["data.frame"]);
+                                let _ = list.set_class(["data.frame"]);
                             }
                             StructConversion::Tibble => {
-                                let _ = list.set_class(&["tbl_df", "tbl", "data.frame"]);
+                                let _ = list.set_class(["tbl_df", "tbl", "data.frame"]);
                             }
                         }
                     }

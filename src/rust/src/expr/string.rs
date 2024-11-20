@@ -1,5 +1,5 @@
 use crate::{prelude::*, PlRExpr, RPolarsErr};
-use savvy::{savvy, NumericScalar, Result, Sexp};
+use savvy::{savvy, NumericScalar, Result};
 
 #[savvy]
 impl PlRExpr {
@@ -192,10 +192,7 @@ impl PlRExpr {
         cache: bool,
         format: Option<&str>,
     ) -> Result<Self> {
-        let format = match format {
-            Some(x) => Some(x.into()),
-            None => None,
-        };
+        let format = format.map(|x| x.into());
         Ok(self
             .inner
             .clone()
@@ -220,18 +217,12 @@ impl PlRExpr {
         time_unit: Option<&str>,
         time_zone: Option<&str>,
     ) -> Result<Self> {
-        let format: Option<PlSmallStr> = match format {
-            Some(x) => Some(x.into()),
-            None => None,
-        };
+        let format: Option<PlSmallStr> = format.map(|x| x.into());
         let time_unit: Option<TimeUnit> = match time_unit {
             Some(x) => Some(<Wrap<TimeUnit>>::try_from(x)?.0),
             None => None,
         };
-        let time_zone: Option<PlSmallStr> = match time_zone {
-            Some(x) => Some(x.into()),
-            None => None,
-        };
+        let time_zone: Option<PlSmallStr> = time_zone.map(|x| x.into());
 
         Ok(self
             .inner
@@ -252,10 +243,7 @@ impl PlRExpr {
     }
 
     fn str_to_time(&self, strict: bool, cache: bool, format: Option<&str>) -> Result<Self> {
-        let format = match format {
-            Some(x) => Some(x.into()),
-            None => None,
-        };
+        let format = format.map(|x| x.into());
 
         Ok(self
             .inner

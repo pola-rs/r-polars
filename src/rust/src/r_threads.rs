@@ -3,7 +3,7 @@
 // Copied from https://github.com/pola-rs/r-polars/blob/9572aef7b3c067ffebe124e61d22279674c17871/src/rust/src/utils/extendr_concurrent.rs
 
 use flume::{Receiver, Sender};
-use savvy::{r_println, r_eprintln};
+use savvy::r_println;
 use state::InitCell;
 use std::{sync::RwLock, thread};
 

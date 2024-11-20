@@ -80,10 +80,7 @@ pub fn datetime_range(
         Some(x) => Some(<Wrap<TimeUnit>>::try_from(x)?.0),
         None => None,
     };
-    let time_zone: Option<PlSmallStr> = match time_zone {
-        Some(x) => Some(x.into()),
-        None => None,
-    };
+    let time_zone: Option<PlSmallStr> = time_zone.map(|x| x.into());
     Ok(dsl::datetime_range(start, end, every, closed, time_unit, time_zone).into())
 }
 
@@ -104,10 +101,7 @@ pub fn datetime_ranges(
         Some(x) => Some(<Wrap<TimeUnit>>::try_from(x)?.0),
         None => None,
     };
-    let time_zone: Option<PlSmallStr> = match time_zone {
-        Some(x) => Some(x.into()),
-        None => None,
-    };
+    let time_zone: Option<PlSmallStr> = time_zone.map(|x| x.into());
     Ok(dsl::datetime_ranges(start, end, every, closed, time_unit, time_zone).into())
 }
 

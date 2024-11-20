@@ -147,7 +147,7 @@ impl PlRDataType {
 
     pub fn new_decimal(scale: NumericScalar, precision: Option<NumericScalar>) -> Result<Self> {
         let precision = precision
-            .map(|p| <Wrap<usize>>::try_from(p))
+            .map(<Wrap<usize>>::try_from)
             .transpose()?
             .map(|p| p.0);
         let scale = Some(<Wrap<usize>>::try_from(scale)?.0);
@@ -195,10 +195,10 @@ impl PlRDataType {
                 return Ok(DataType::Array(Box::new(inner), shape[0]));
             }
             let width = shape.remove(0);
-            return Ok(DataType::Array(
+            Ok(DataType::Array(
                 Box::new(new_array_impl(inner, shape)?),
                 width,
-            ));
+            ))
         }
 
         new_array_impl(inner, &mut shape).map(|dt| dt.into())
@@ -282,7 +282,7 @@ impl PlRDataType {
                 let mut out = OwnedListSexp::new(2, true)?;
                 let inner: Sexp = PlRDataType { dt: *inner.clone() }.try_into()?;
                 let shape: Sexp = OwnedRealSexp::try_from_slice(
-                    &self
+                    self
                         .dt
                         .get_shape()
                         .unwrap_or(vec![0])

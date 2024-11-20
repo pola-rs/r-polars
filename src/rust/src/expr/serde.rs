@@ -7,7 +7,7 @@ impl PlRExpr {
     fn serialize_binary(&self) -> Result<Sexp> {
         let mut dump = Vec::new();
         let writer = BufWriter::new(&mut dump);
-        let _ = ciborium::into_writer(&self.inner, writer)
+        ciborium::into_writer(&self.inner, writer)
             .map_err(|err| RPolarsErr::Other(err.to_string()))?;
         dump.try_into()
     }

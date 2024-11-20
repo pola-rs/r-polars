@@ -7,7 +7,7 @@ pub fn concat_df(dfs: ListSexp) -> Result<PlRDataFrame> {
     use polars_core::utils::rayon::prelude::*;
 
     let rdfs = <Wrap<Vec<DataFrame>>>::try_from(dfs)?.0;
-    let identity_df = rdfs.iter().next().unwrap().clear();
+    let identity_df = rdfs.first().unwrap().clear();
 
     let identity = || Ok(identity_df.clone());
 

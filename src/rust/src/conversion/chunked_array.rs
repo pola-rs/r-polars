@@ -23,15 +23,15 @@ impl From<Wrap<&BinaryChunked>> for Sexp {
     fn from(ca: Wrap<&BinaryChunked>) -> Self {
         let ca = ca.0;
         let mut sexp = OwnedListSexp::new(ca.len(), false).unwrap();
-        let _ = sexp.set_class(&["blob", "vctrs_list_of", "vctrs_vctr", "list"]);
+        let _ = sexp.set_class(["blob", "vctrs_list_of", "vctrs_vctr", "list"]);
         let _ = sexp.set_attrib("ptype", OwnedRawSexp::new(0).unwrap().into());
         for (i, v) in ca.into_iter().enumerate() {
             unsafe {
                 if let Some(v) = v {
-                    let _ = sexp
+                    sexp
                         .set_value_unchecked(i, OwnedRawSexp::try_from_slice(v).unwrap().inner());
                 } else {
-                    let _ = sexp.set_value_unchecked(i, savvy::sexp::null::null());
+                    sexp.set_value_unchecked(i, savvy::sexp::null::null());
                 }
             }
         }
@@ -58,7 +58,7 @@ impl From<Wrap<&Int64Chunked>> for Sexp {
     fn from(ca: Wrap<&Int64Chunked>) -> Self {
         let ca = ca.0;
         let mut sexp = OwnedRealSexp::new(ca.len()).unwrap();
-        let _ = sexp.set_class(&["integer64"]);
+        let _ = sexp.set_class(["integer64"]);
         for (i, v) in ca.into_iter().enumerate() {
             if let Some(v) = v {
                 let _ = sexp.set_elt(i, f64::from_bits(v as u64));
@@ -131,8 +131,8 @@ impl From<Wrap<&DurationChunked>> for Sexp {
             TimeUnit::Milliseconds => 1_000.0,
         };
         let mut sexp = OwnedRealSexp::new(ca.len()).unwrap();
-        let _ = sexp.set_class(&["difftime"]);
-        let _ = sexp
+        let _ = sexp.set_class(["difftime"]);
+        sexp
             .set_attrib("units", <OwnedStringSexp>::try_from("secs").unwrap().into())
             .unwrap();
         for (i, v) in ca.into_iter().enumerate() {
@@ -158,8 +158,8 @@ impl From<Wrap<&DatetimeChunked>> for Sexp {
         let tzone_attr = ca.time_zone().as_deref().unwrap_or("");
 
         let mut sexp = OwnedRealSexp::new(ca.len()).unwrap();
-        let _ = sexp.set_class(&["POSIXct", "POSIXt"]);
-        let _ = sexp
+        let _ = sexp.set_class(["POSIXct", "POSIXt"]);
+        sexp
             .set_attrib(
                 "tzone",
                 <OwnedStringSexp>::try_from(tzone_attr).unwrap().into(),
@@ -180,8 +180,8 @@ impl From<Wrap<&TimeChunked>> for Sexp {
     fn from(ca: Wrap<&TimeChunked>) -> Self {
         let ca = ca.0;
         let mut sexp = OwnedRealSexp::new(ca.len()).unwrap();
-        let _ = sexp.set_class(&["hms", "difftime"]);
-        let _ = sexp
+        let _ = sexp.set_class(["hms", "difftime"]);
+        sexp
             .set_attrib("units", <OwnedStringSexp>::try_from("secs").unwrap().into())
             .unwrap();
         for (i, v) in ca.into_iter().enumerate() {

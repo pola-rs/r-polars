@@ -136,10 +136,7 @@ impl PlRLazyFrame {
     fn slice(&self, offset: NumericScalar, len: Option<NumericScalar>) -> Result<Self> {
         let ldf = self.ldf.clone();
         let offset = <Wrap<i64>>::try_from(offset)?.0;
-        let len = len
-            .map(|l| <Wrap<u32>>::try_from(l))
-            .transpose()?
-            .map(|l| l.0);
+        let len = len.map(<Wrap<u32>>::try_from).transpose()?.map(|l| l.0);
         Ok(ldf.slice(offset, len.unwrap_or(u32::MAX)).into())
     }
 
@@ -240,13 +237,10 @@ impl PlRLazyFrame {
             Some(x) => Some(<Wrap<usize>>::try_from(x)?.0),
             None => None,
         };
-        let row_index = match row_index_name {
-            Some(x) => Some(RowIndex {
+        let row_index = row_index_name.map(|x| RowIndex {
                 name: x.into(),
                 offset: row_index_offset,
-            }),
-            None => None,
-        };
+            });
         let file_cache_ttl = match file_cache_ttl {
             Some(x) => Some(<Wrap<u64>>::try_from(x)?.0),
             None => None,
@@ -263,9 +257,7 @@ impl PlRLazyFrame {
         let cloud_options = match storage_options {
             Some(x) => {
                 let out = <Wrap<Vec<(String, String)>>>::try_from(x).map_err(|_| {
-                    RPolarsErr::Other(format!(
-                        "`storage_options` must be a named character vector"
-                    ))
+                    RPolarsErr::Other("`storage_options` must be a named character vector".to_string())
                 })?;
                 Some(out.0)
             }
@@ -282,7 +274,7 @@ impl PlRLazyFrame {
             include_file_paths: include_file_paths.map(|x| x.into()),
         };
 
-        let first_path = source.get(0).unwrap().clone().into();
+        let first_path = source.first().unwrap().clone().into();
 
         if let Some(first_path) = first_path {
             let first_path_url = first_path.to_string_lossy();

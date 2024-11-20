@@ -73,15 +73,15 @@ impl From<&DatetimeChunked> for TimePoint {
 impl From<Duration> for Sexp {
     fn from(d: Duration) -> Self {
         let mut sexp = OwnedListSexp::new(2, true).unwrap();
-        let _ = sexp.set_class(&["clock_duration", "clock_rcrd", "vctrs_rcrd", "vctrs_vctr"]);
+        let _ = sexp.set_class(["clock_duration", "clock_rcrd", "vctrs_rcrd", "vctrs_vctr"]);
         let _ = sexp.set_attrib(
             "precision",
             <OwnedIntegerSexp>::try_from_scalar(d.precision)
                 .unwrap()
                 .into(),
         );
-        let _ = sexp.set_name_and_value(0, "lower", d.value.left).unwrap();
-        let _ = sexp.set_name_and_value(1, "upper", d.value.right).unwrap();
+        sexp.set_name_and_value(0, "lower", d.value.left).unwrap();
+        sexp.set_name_and_value(1, "upper", d.value.right).unwrap();
 
         sexp.into()
     }
@@ -91,7 +91,7 @@ impl From<Duration> for Sexp {
 impl From<TimePoint> for Sexp {
     fn from(tp: TimePoint) -> Self {
         let mut sexp = OwnedListSexp::new(2, true).unwrap();
-        let _ = sexp.set_class(&[
+        let _ = sexp.set_class([
             "clock_naive_time",
             "clock_time_point",
             "clock_rcrd",
@@ -108,8 +108,8 @@ impl From<TimePoint> for Sexp {
                 .unwrap()
                 .into(),
         );
-        let _ = sexp.set_name_and_value(0, "lower", tp.value.left).unwrap();
-        let _ = sexp.set_name_and_value(1, "upper", tp.value.right).unwrap();
+        sexp.set_name_and_value(0, "lower", tp.value.left).unwrap();
+        sexp.set_name_and_value(1, "upper", tp.value.right).unwrap();
 
         sexp.into()
     }
@@ -118,7 +118,7 @@ impl From<TimePoint> for Sexp {
 impl From<ZonedTime> for Sexp {
     fn from(zt: ZonedTime) -> Self {
         let mut sexp = OwnedListSexp::new(2, true).unwrap();
-        let _ = sexp.set_class(&["clock_zoned_time", "clock_rcrd", "vctrs_rcrd", "vctrs_vctr"]);
+        let _ = sexp.set_class(["clock_zoned_time", "clock_rcrd", "vctrs_rcrd", "vctrs_vctr"]);
         let _ = sexp.set_attrib(
             "precision",
             <OwnedIntegerSexp>::try_from_scalar(zt.time_point.precision)
@@ -126,10 +126,10 @@ impl From<ZonedTime> for Sexp {
                 .into(),
         );
         let _ = sexp.set_attrib("zone", <OwnedStringSexp>::try_from(zt.zone).unwrap().into());
-        let _ = sexp
+        sexp
             .set_name_and_value(0, "lower", zt.time_point.value.left)
             .unwrap();
-        let _ = sexp
+        sexp
             .set_name_and_value(1, "upper", zt.time_point.value.right)
             .unwrap();
 

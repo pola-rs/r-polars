@@ -13,7 +13,7 @@ impl PlRExpr {
             .inner
             .clone()
             .struct_()
-            .field_by_names(names.iter().map(|s| s))
+            .field_by_names(names.iter())
             .into())
     }
 
@@ -22,7 +22,7 @@ impl PlRExpr {
             .inner
             .clone()
             .struct_()
-            .rename_fields(names.iter().map(|s| s))
+            .rename_fields(names.iter())
             .into())
     }
 

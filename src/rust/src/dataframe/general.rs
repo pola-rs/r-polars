@@ -55,7 +55,7 @@ impl PlRDataFrame {
     pub fn slice(&self, offset: NumericScalar, length: Option<NumericScalar>) -> Result<Self> {
         let offset = <Wrap<i64>>::try_from(offset)?.0;
         let length = length
-            .map(|l| <Wrap<usize>>::try_from(l))
+            .map(<Wrap<usize>>::try_from)
             .transpose()?
             .map(|w| w.0);
         Ok(self
@@ -80,7 +80,7 @@ impl PlRDataFrame {
 
     pub fn set_column_names(&mut self, names: StringSexp) -> Result<()> {
         self.df
-            .set_column_names(names.iter().map(|s| s))
+            .set_column_names(names.iter())
             .map_err(RPolarsErr::from)?;
         Ok(())
     }
@@ -93,7 +93,7 @@ impl PlRDataFrame {
         let mut list = OwnedListSexp::new(self.df.width(), false)?;
         for (i, dtype) in iter.enumerate() {
             unsafe {
-                let _ = list.set_value_unchecked(i, Sexp::try_from(dtype)?.0);
+                list.set_value_unchecked(i, Sexp::try_from(dtype)?.0);
             }
         }
         Ok(list.into())

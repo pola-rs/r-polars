@@ -11,7 +11,7 @@ macro_rules! set_unwrapped_or_0 {
 
 #[savvy]
 pub fn as_struct(exprs: ListSexp) -> Result<PlRExpr> {
-    let exprs = <Wrap<Vec<Expr>>>::try_from(exprs)?.0;
+    let exprs = <Wrap<Vec<Expr>>>::from(exprs).0;
     if exprs.is_empty() {
         return Err(savvy::Error::from(
             "expected at least 1 expression in `as_struct`",
@@ -99,7 +99,7 @@ pub fn field(names: StringSexp) -> Result<PlRExpr> {
 
 #[savvy]
 pub fn coalesce(exprs: ListSexp) -> Result<PlRExpr> {
-    let exprs = <Wrap<Vec<Expr>>>::try_from(exprs)?.0;
+    let exprs = <Wrap<Vec<Expr>>>::from(exprs).0;
     Ok(dsl::coalesce(&exprs).into())
 }
 

@@ -92,8 +92,7 @@ impl PlRSeries {
         if strict {
             let expected_dtype = series_vec
                 .iter()
-                .filter(|opt_s| opt_s.is_some())
-                .next()
+                .find(|opt_s| opt_s.is_some())
                 .map(|opt_s| {
                     opt_s
                         .as_ref()
