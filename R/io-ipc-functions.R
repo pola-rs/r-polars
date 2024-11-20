@@ -5,6 +5,7 @@
 #' This allows the query optimizer to push down predicates and projections to
 #' the scan level, thereby potentially reducing memory overhead.
 #'
+#' @inherit pl__LazyFrame return
 #' @inheritParams rlang::args_dots_empty
 #' @inheritParams pl_scan_parquet
 #' @param hive_partitioning Infer statistics and schema from Hive partitioned
@@ -79,8 +80,8 @@ pl__scan_ipc <- function(
 
 #' Read into a DataFrame from Arrow IPC (Feather v2) file
 #'
-#' @inherit pl_read_csv return
-#' @inheritParams pl_scan_ipc
+#' @inherit pl__DataFrame return
+#' @inheritParams pl__scan_ipc
 #' @examplesIf requireNamespace("arrow", quietly = TRUE) && arrow::arrow_with_dataset()
 #' temp_dir <- tempfile()
 #' # Write a hive-style partitioned arrow file dataset
@@ -114,9 +115,8 @@ pl__read_ipc <- function(
     hive_schema = NULL,
     try_parse_hive_dates = TRUE,
     include_file_paths = NULL) {
-  wrap({
-    check_dots_empty0(...)
-    .args <- as.list(environment())
-    do.call(pl__scan_ipc, .args)$collect()
-  })
+  check_dots_empty0(...)
+  .args <- as.list(environment())
+  do.call(pl__scan_ipc, .args)$collect() |>
+    wrap()
 }

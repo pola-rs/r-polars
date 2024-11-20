@@ -1,4 +1,4 @@
-test_that("Test reading data from Apache Arrow IPC", {
+test_that("Test reading data from Apache Arrow file", {
   skip_if_not_installed("arrow")
 
   tmpf <- tempfile()
@@ -36,6 +36,15 @@ test_that("Test reading data from Apache Arrow IPC", {
   )
   expect_snapshot(
     pl$scan_ipc(tmpf, row_index_name = "name", row_index_offset = data.frame()),
+    error = TRUE
+  )
+  # TODO: should not be an error
+  expect_snapshot(
+    pl$scan_ipc("nonexistent.arrow"),
+    error = TRUE
+  )
+  expect_snapshot(
+    pl$read_ipc("nonexistent.arrow"),
     error = TRUE
   )
 })
@@ -120,7 +129,8 @@ test_that("scanning from hive partition works", {
 
   # can use hive_schema for more fine grained control on partitioning columns
   sch <- pl$scan_ipc(
-    temp_dir, hive_schema = list(cyl = pl$String, gear = pl$Int32)
+    temp_dir,
+    hive_schema = list(cyl = pl$String, gear = pl$Int32)
   )$collect()$schema
 
   expect_true(sch$gear$is_integer())

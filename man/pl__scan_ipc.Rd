@@ -40,6 +40,9 @@ datetime types.}
 \item{include_file_paths}{Character value indicating the column name that
 will include the path of the source file(s).}
 }
+\value{
+A polars \link{LazyFrame}
+}
 \description{
 This allows the query optimizer to push down predicates and projections to
 the scan level, thereby potentially reducing memory overhead.
