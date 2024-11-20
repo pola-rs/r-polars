@@ -232,22 +232,22 @@ impl PlRLazyFrame {
             .collect::<Vec<PathBuf>>();
         let row_index_offset = <Wrap<u32>>::try_from(row_index_offset)?.0;
         let retries = <Wrap<usize>>::try_from(retries)?.0;
-        let hive_schema: Option<Wrap<Schema>> = match hive_schema {
+        let hive_schema = match hive_schema {
             Some(x) => Some(<Wrap<Schema>>::try_from(x)?),
             None => None,
         };
-        let n_rows: Option<usize> = match n_rows {
+        let n_rows = match n_rows {
             Some(x) => Some(<Wrap<usize>>::try_from(x)?.0),
             None => None,
         };
-        let row_index: Option<RowIndex> = match row_index_name {
+        let row_index = match row_index_name {
             Some(x) => Some(RowIndex {
                 name: x.into(),
                 offset: row_index_offset,
             }),
             None => None,
         };
-        let file_cache_ttl: Option<u64> = match file_cache_ttl {
+        let file_cache_ttl = match file_cache_ttl {
             Some(x) => Some(<Wrap<u64>>::try_from(x)?.0),
             None => None,
         };
@@ -262,9 +262,11 @@ impl PlRLazyFrame {
         // TODO: better error message
         let cloud_options = match storage_options {
             Some(x) => {
-                let out = <Wrap<Vec<(String, String)>>>::try_from(x).map_err(
-                    |_| RPolarsErr::Other(format!("`storage_options` must be a named character vector")),
-                )?;
+                let out = <Wrap<Vec<(String, String)>>>::try_from(x).map_err(|_| {
+                    RPolarsErr::Other(format!(
+                        "`storage_options` must be a named character vector"
+                    ))
+                })?;
                 Some(out.0)
             }
             None => None,
@@ -280,7 +282,7 @@ impl PlRLazyFrame {
             include_file_paths: include_file_paths.map(|x| x.into()),
         };
 
-        let first_path: Option<PathBuf> = source.get(0).unwrap().clone().into();
+        let first_path = source.get(0).unwrap().clone().into();
 
         if let Some(first_path) = first_path {
             let first_path_url = first_path.to_string_lossy();
@@ -290,9 +292,7 @@ impl PlRLazyFrame {
             if let Some(file_cache_ttl) = file_cache_ttl {
                 cloud_options.file_cache_ttl = file_cache_ttl;
             }
-            args.cloud_options = Some(
-                cloud_options.with_max_retries(retries),
-            );
+            args.cloud_options = Some(cloud_options.with_max_retries(retries));
         }
 
         let lf = LazyFrame::scan_ipc_files(source.into(), args).map_err(RPolarsErr::from)?;

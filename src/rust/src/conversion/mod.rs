@@ -495,17 +495,14 @@ impl TryFrom<&str> for Wrap<Roll> {
 }
 
 impl TryFrom<ListSexp> for Wrap<Schema> {
-    type Error = String;
+    type Error = savvy::Error;
 
-    fn try_from(schema: ListSexp) -> Result<Self, String> {
-        let names_list = schema.iter().map(|x| x.0).collect::<Vec<&str>>();
-        let hm = <Wrap<Vec<DataType>>>::try_from(schema).unwrap().0;
-        let mut schema = Schema::with_capacity(hm.capacity());
-
-        for i in 0..hm.len() {
-            schema.with_column(names_list[i].into(), hm[i].clone().into());
+    fn try_from(dtypes: ListSexp) -> Result<Self, savvy::Error> {
+        let fields = <Wrap<Vec<Field>>>::try_from(dtypes)?.0;
+        let mut schema = Schema::with_capacity(fields.len());
+        for field in fields {
+            schema.with_column(field.name, field.dtype);
         }
-
         Ok(Wrap(schema))
     }
 }
