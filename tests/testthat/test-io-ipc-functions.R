@@ -38,11 +38,8 @@ test_that("Test reading data from Apache Arrow file", {
     pl$scan_ipc(tmpf, row_index_name = "name", row_index_offset = data.frame()),
     error = TRUE
   )
-  # TODO: should not be an error
-  expect_snapshot(
-    pl$scan_ipc("nonexistent.arrow"),
-    error = TRUE
-  )
+
+  expect_no_error(pl$scan_ipc("nonexistent.arrow"))
   expect_snapshot(
     pl$read_ipc("nonexistent.arrow"),
     error = TRUE
