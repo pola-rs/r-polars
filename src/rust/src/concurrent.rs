@@ -89,60 +89,45 @@ fn serve_r(rfsig: RFnSignature) -> Result<RFnOutput, Box<dyn std::error::Error>>
 // which could call R from any spawned thread by polars. This function is a bridge between multithraedded polars
 // and mostly single threaded only R
 pub fn collect_with_r_func_support(lazy_df: pl::LazyFrame) -> RResult<RPolarsDataFrame> {
-    let new_df = if ThreadCom::try_from_global(&CONFIG).is_ok() {
-        #[cfg(feature = "rpolars_debug_print")]
-        println!("in collect:  concurrent handler already started");
-        lazy_df.collect().map_err(polars_to_rpolars_err)
-    } else {
-        #[cfg(feature = "rpolars_debug_print")]
-        println!("in collect: starting a concurrent handler");
+    #[cfg(feature = "rpolars_debug_print")]
+    println!("in collect: concurrent handler done");
+    concurrent_handler(
+        // closure 1: spawned by main thread
+        // tc is a ThreadCom which any child thread can use to submit R jobs to main thread
+        move |tc| {
+            // get return value
+            let retval = lazy_df.collect();
 
-        #[cfg(feature = "rpolars_debug_print")]
-        println!("in collect: concurrent handler done");
-        concurrent_handler(
-            // closure 1: spawned by main thread
-            // tc is a ThreadCom which any child thread can use to submit R jobs to main thread
-            move |tc| {
-                // get return value
-                let retval = lazy_df.collect();
+            // drop the last two ThreadCom clones, signals to main/R-serving thread to shut down.
+            ThreadCom::kill_global(&CONFIG);
+            drop(tc);
 
-                // drop the last two ThreadCom clones, signals to main/R-serving thread to shut down.
-                ThreadCom::kill_global(&CONFIG);
-                drop(tc);
-
-                retval
-            },
-            // closure 2: how to serve polars worker R job request in main thread
-            serve_r,
-            //CONFIG is "global variable" where any new thread can request a clone of ThreadCom to establish contact with main thread
-            &CONFIG,
-        )
-        .map_err(|err| RPolarsErr::new().plain(err.to_string()))?
-        .map_err(polars_to_rpolars_err)
-    };
-
-    //wrap ok
-    Ok(RPolarsDataFrame(new_df?))
+            retval
+        },
+        // closure 2: how to serve polars worker R job request in main thread
+        serve_r,
+        //CONFIG is "global variable" where any new thread can request a clone of ThreadCom to establish contact with main thread
+        &CONFIG,
+    )
+    .map_err(|err| RPolarsErr::new().plain(err.to_string()))?
+    .map_err(polars_to_rpolars_err)
+    .map(RPolarsDataFrame)
 }
 
 pub fn profile_with_r_func_support(
     lazy_df: pl::LazyFrame,
 ) -> RResult<(RPolarsDataFrame, RPolarsDataFrame)> {
-    if ThreadCom::try_from_global(&CONFIG).is_ok() {
-        lazy_df.profile()
-    } else {
-        concurrent_handler(
-            move |tc| {
-                let retval = lazy_df.profile();
-                ThreadCom::kill_global(&CONFIG);
-                drop(tc);
-                retval
-            },
-            serve_r,
-            &CONFIG,
-        )
-        .map_err(|err| RPolarsErr::new().plain(err.to_string()))?
-    }
+    concurrent_handler(
+        move |tc| {
+            let retval = lazy_df.profile();
+            ThreadCom::kill_global(&CONFIG);
+            drop(tc);
+            retval
+        },
+        serve_r,
+        &CONFIG,
+    )
+    .map_err(|err| RPolarsErr::new().plain(err.to_string()))?
     .map_err(polars_to_rpolars_err)
     .map(|(result_df, profile_df)| (RPolarsDataFrame(result_df), RPolarsDataFrame(profile_df)))
 }
@@ -151,21 +136,17 @@ pub fn fetch_with_r_func_support(
     lazy_df: pl::LazyFrame,
     n_rows: usize,
 ) -> RResult<RPolarsDataFrame> {
-    if ThreadCom::try_from_global(&CONFIG).is_ok() {
-        lazy_df.fetch(n_rows)
-    } else {
-        concurrent_handler(
-            move |tc| {
-                let retval = lazy_df.fetch(n_rows);
-                ThreadCom::kill_global(&CONFIG);
-                drop(tc);
-                retval
-            },
-            serve_r,
-            &CONFIG,
-        )
-        .map_err(|err| RPolarsErr::new().plain(err.to_string()))?
-    }
+    concurrent_handler(
+        move |tc| {
+            let retval = lazy_df.fetch(n_rows);
+            ThreadCom::kill_global(&CONFIG);
+            drop(tc);
+            retval
+        },
+        serve_r,
+        &CONFIG,
+    )
+    .map_err(|err| RPolarsErr::new().plain(err.to_string()))?
     .map_err(polars_to_rpolars_err)
     .map(RPolarsDataFrame)
 }

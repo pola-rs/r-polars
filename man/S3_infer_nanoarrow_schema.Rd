@@ -5,9 +5,9 @@
 \alias{infer_nanoarrow_schema.RPolarsSeries}
 \title{Infer nanoarrow schema from a Polars object}
 \usage{
-\method{infer_nanoarrow_schema}{RPolarsDataFrame}(x, ..., compat_level = FALSE)
+infer_nanoarrow_schema.RPolarsDataFrame(x, ..., compat_level = FALSE)
 
-\method{infer_nanoarrow_schema}{RPolarsSeries}(x, ..., compat_level = FALSE)
+infer_nanoarrow_schema.RPolarsSeries(x, ..., compat_level = FALSE)
 }
 \arguments{
 \item{x}{A polars object}
