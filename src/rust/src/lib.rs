@@ -35,13 +35,15 @@ pub use smartstring;
 
 use crate::concurrent::{RFnOutput, RFnSignature};
 use crate::utils::extendr_concurrent::ThreadCom;
-type ThreadComStorage = Lazy<std::sync::RwLock<Option<ThreadCom<RFnSignature, RFnOutput>>>>;
 
 use once_cell::sync::Lazy;
 use std::sync::RwLock;
 
-static CONFIG: Lazy<RwLock<Option<ThreadCom<RFnSignature, RFnOutput>>>> =
-    Lazy::new(|| RwLock::new(None));
+//TODO  verify reallocation of Vec<ThreadCom> does not mess something up. with_capcity(99)
+// ensure at least no reallication before 99 levels of nested r-polars queries
+// which is quite unlikely.
+static CONFIG: Lazy<RwLock<Vec<ThreadCom<RFnSignature, RFnOutput>>>> =
+    Lazy::new(|| RwLock::new(Vec::with_capacity(99)));
 pub use crate::rbackground::RBGPOOL;
 
 // Macro to generate exports

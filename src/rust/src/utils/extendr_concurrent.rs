@@ -96,41 +96,45 @@ where
     }
 
     // Update the global state with the current ThreadCom instance
-    pub fn update_global(&self, conf: &Lazy<RwLock<Option<ThreadCom<S, R>>>>) {
+    pub fn update_global(&self, conf: &Lazy<RwLock<Vec<ThreadCom<S, R>>>>) {
         let mut global = conf
             .write()
             .expect("Failed to acquire write lock on global ThreadCom");
-        *global = Some(self.clone());
+        global.push(self.clone());
+        #[cfg(feature = "rpolars_debug_print")]
+        println!("threadcom stack is now {} levels deep.", global.len())
     }
 
     // Clear the global state
-    pub fn kill_global(conf: &Lazy<RwLock<Option<ThreadCom<S, R>>>>) {
+    pub fn kill_global(conf: &Lazy<RwLock<Vec<ThreadCom<S, R>>>>) {
         let mut global = conf
             .write()
             .expect("Failed to acquire write lock on global ThreadCom");
-        *global = None;
+        let _old_tc = global
+            .pop()
+            .expect("at least one threadcom must have remained on stack");
     }
 
     // Retrieve a copy of ThreadCom from the global state, panics if uninitialized
-    pub fn from_global(conf: &Lazy<RwLock<Option<ThreadCom<S, R>>>>) -> Self {
+    pub fn from_global(conf: &Lazy<RwLock<Vec<ThreadCom<S, R>>>>) -> Self {
         let global = conf
             .read()
             .expect("Failed to acquire read lock on global ThreadCom");
         global
-            .as_ref()
+            .last()
             .expect("Global ThreadCom is uninitialized")
             .clone()
     }
 
-    // Try to retrieve ThreadCom from the global state; returns an error if uninitialized
+    // Try to retrieve ThreadCom from the global state; returns an error if uninitialized.
     pub fn try_from_global(
-        conf: &Lazy<RwLock<Option<ThreadCom<S, R>>>>,
+        conf: &Lazy<RwLock<Vec<ThreadCom<S, R>>>>,
     ) -> std::result::Result<Self, String> {
         let global = conf
             .read()
             .expect("Failed to acquire read lock on global ThreadCom");
 
-        match global.as_ref() {
+        match global.last() {
             Some(thread_com) => Ok(thread_com.clone()),
             None => Err("Global ThreadCom is empty".to_string()),
         }
@@ -157,7 +161,7 @@ pub fn concurrent_handler<F, I, R, S, T>(
     f: F,
     //y: Y,
     i: I,
-    conf: &Lazy<RwLock<Option<ThreadCom<S, R>>>>,
+    conf: &Lazy<RwLock<Vec<ThreadCom<S, R>>>>,
 ) -> std::result::Result<T, Box<dyn std::error::Error>>
 where
     F: FnOnce(ThreadCom<S, R>) -> T + Send + 'static,
