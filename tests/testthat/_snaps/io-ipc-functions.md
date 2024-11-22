@@ -1,12 +1,18 @@
 # Test reading data from Apache Arrow file
 
     Code
+      pl$scan_ipc(character(0))
+    Condition
+      Error in `pl$scan_ipc()`:
+      ! `source` must have length > 0.
+
+---
+
+    Code
       pl$scan_ipc(0)
     Condition
       Error in `pl$scan_ipc()`:
-      ! Evaluation failed in `$scan_ipc()`.
-      Caused by error:
-      ! Argument `source` must be character, not double
+      ! `source` must be a character vector, not the number 0.
 
 ---
 

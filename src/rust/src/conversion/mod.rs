@@ -514,3 +514,19 @@ pub(crate) fn parse_cloud_options(
     let out = CloudOptions::from_untyped_config(uri, kv).map_err(RPolarsErr::from)?;
     Ok(out)
 }
+
+impl TryFrom<&str> for Wrap<ParallelStrategy> {
+    type Error = String;
+
+    fn try_from(strategy: &str) -> Result<Self, String> {
+        let parsed = match strategy {
+            "auto" => ParallelStrategy::Auto,
+            "columns" => ParallelStrategy::Columns,
+            "row_groups" => ParallelStrategy::RowGroups,
+            "prefiltered" => ParallelStrategy::Prefiltered,
+            "none" => ParallelStrategy::None,
+            v => return Err(format!("unsupported value: '{v}'",)),
+        };
+        Ok(Wrap(parsed))
+    }
+}

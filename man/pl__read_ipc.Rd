@@ -22,7 +22,41 @@ pl__read_ipc(
 )
 }
 \arguments{
+\item{source}{Path(s) to a file or directory. When needing to authenticate
+for scanning cloud locations, see the \code{storage_options} parameter.}
+
 \item{...}{These dots are for future extensions and must be empty.}
+
+\item{n_rows}{Stop reading from parquet file after reading \code{n_rows}.}
+
+\item{cache}{Cache the result after reading.}
+
+\item{rechunk}{In case of reading multiple files via a glob pattern rechunk
+the final DataFrame into contiguous memory chunks.}
+
+\item{row_index_name}{If not \code{NULL}, this will insert a row index column with
+the given name into the DataFrame.}
+
+\item{row_index_offset}{Offset to start the row index column (only used if
+the name is set).}
+
+\item{storage_options}{Named vector containing options that indicate how to
+connect to a cloud provider. The cloud providers currently supported are
+AWS, GCP, and Azure.
+See supported keys here:
+\itemize{
+\item \href{https://docs.rs/object_store/latest/object_store/aws/enum.AmazonS3ConfigKey.html}{aws}
+\item \href{https://docs.rs/object_store/latest/object_store/gcp/enum.GoogleConfigKey.html}{gcp}
+\item \href{https://docs.rs/object_store/latest/object_store/azure/enum.AzureConfigKey.html}{azure}
+\item Hugging Face (\verb{hf://}): Accepts an API key under the token parameter
+\code{c(token = YOUR_TOKEN)} or by setting the \code{HF_TOKEN} environment
+variable.
+}
+
+If \code{storage_options} is not provided, Polars will try to infer the
+information from environment variables.}
+
+\item{retries}{Number of retries if accessing a cloud instance fails.}
 
 \item{hive_partitioning}{Infer statistics and schema from Hive partitioned
 sources and use them to prune reads. If \code{NULL} (default), it is automatically

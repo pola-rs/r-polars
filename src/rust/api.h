@@ -331,6 +331,7 @@ SEXP savvy_PlRLazyFrame_collect_schema__ffi(SEXP self__);
 SEXP savvy_PlRLazyFrame_sort_by_exprs__ffi(SEXP self__, SEXP c_arg__by, SEXP c_arg__descending, SEXP c_arg__nulls_last, SEXP c_arg__maintain_order, SEXP c_arg__multithreaded);
 SEXP savvy_PlRLazyFrame_with_columns__ffi(SEXP self__, SEXP c_arg__exprs);
 SEXP savvy_PlRLazyFrame_new_from_ipc__ffi(SEXP c_arg__source, SEXP c_arg__cache, SEXP c_arg__rechunk, SEXP c_arg__try_parse_hive_dates, SEXP c_arg__retries, SEXP c_arg__row_index_offset, SEXP c_arg__n_rows, SEXP c_arg__row_index_name, SEXP c_arg__storage_options, SEXP c_arg__hive_partitioning, SEXP c_arg__hive_schema, SEXP c_arg__file_cache_ttl, SEXP c_arg__include_file_paths);
+SEXP savvy_PlRLazyFrame_new_from_parquet__ffi(SEXP c_arg__source, SEXP c_arg__cache, SEXP c_arg__parallel, SEXP c_arg__rechunk, SEXP c_arg__low_memory, SEXP c_arg__use_statistics, SEXP c_arg__try_parse_hive_dates, SEXP c_arg__retries, SEXP c_arg__glob, SEXP c_arg__allow_missing_columns, SEXP c_arg__row_index_offset, SEXP c_arg__storage_options, SEXP c_arg__n_rows, SEXP c_arg__row_index_name, SEXP c_arg__hive_partitioning, SEXP c_arg__schema, SEXP c_arg__hive_schema, SEXP c_arg__include_file_paths);
 
 // methods and associated functions for PlRLazyGroupBy
 SEXP savvy_PlRLazyGroupBy_agg__ffi(SEXP self__, SEXP c_arg__aggs);

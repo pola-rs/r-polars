@@ -25,6 +25,7 @@ test_that("Test reading data from Apache Arrow file", {
   )
 
   # Test error handling
+  expect_snapshot(pl$scan_ipc(character(0)), error = TRUE)
   expect_snapshot(pl$scan_ipc(0), error = TRUE)
   expect_snapshot(pl$scan_ipc(tmpf, n_rows = "?"), error = TRUE)
   expect_snapshot(pl$scan_ipc(tmpf, cache = 0L), error = TRUE)

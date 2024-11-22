@@ -290,4 +290,102 @@ impl PlRLazyFrame {
         let lf = LazyFrame::scan_ipc_files(source.into(), args).map_err(RPolarsErr::from)?;
         Ok(lf.into())
     }
+
+    fn new_from_parquet(
+        source: StringSexp,
+        cache: bool,
+        parallel: &str,
+        rechunk: bool,
+        low_memory: bool,
+        use_statistics: bool,
+        try_parse_hive_dates: bool,
+        retries: NumericScalar,
+        glob: bool,
+        allow_missing_columns: bool,
+        row_index_offset: NumericScalar,
+        storage_options: Option<StringSexp>,
+        n_rows: Option<NumericScalar>,
+        row_index_name: Option<&str>,
+        hive_partitioning: Option<bool>,
+        schema: Option<ListSexp>,
+        hive_schema: Option<ListSexp>,
+        include_file_paths: Option<&str>,
+    ) -> Result<Self> {
+        let source = source
+            .to_vec()
+            .iter()
+            .map(PathBuf::from)
+            .collect::<Vec<PathBuf>>();
+        let row_index_offset = <Wrap<u32>>::try_from(row_index_offset)?.0;
+        let n_rows = match n_rows {
+            Some(x) => Some(<Wrap<usize>>::try_from(x)?.0),
+            None => None,
+        };
+        let parallel = <Wrap<ParallelStrategy>>::try_from(parallel)?.0;
+        let retries = <Wrap<usize>>::try_from(retries)?.0;
+        let hive_schema = match hive_schema {
+            Some(x) => Some(Arc::new(<Wrap<Schema>>::try_from(x)?.0)),
+            None => None,
+        };
+        let schema = match schema {
+            Some(x) => Some(<Wrap<Schema>>::try_from(x)?.0),
+            None => None,
+        };
+
+        let row_index = match row_index_name {
+            Some(x) => Some(RowIndex {
+                name: x.into(),
+                offset: row_index_offset,
+            }),
+            None => None,
+        };
+
+        let hive_options = HiveOptions {
+            enabled: hive_partitioning,
+            hive_start_idx: 0,
+            schema: hive_schema,
+            try_parse_dates: try_parse_hive_dates,
+        };
+
+        let mut args = ScanArgsParquet {
+            n_rows,
+            cache,
+            parallel,
+            rechunk,
+            row_index,
+            low_memory,
+            cloud_options: None,
+            use_statistics,
+            schema: schema.map(|x| Arc::new(x)),
+            hive_options,
+            glob,
+            include_file_paths: include_file_paths.map(|x| x.into()),
+            allow_missing_columns,
+        };
+
+        let first_path = source.first().unwrap().clone().into();
+
+        let cloud_options = match storage_options {
+            Some(x) => {
+                let out = <Wrap<Vec<(String, String)>>>::try_from(x).map_err(|_| {
+                    RPolarsErr::Other(format!(
+                        "`storage_options` must be a named character vector"
+                    ))
+                })?;
+                Some(out.0)
+            }
+            None => None,
+        };
+
+        if let Some(first_path) = first_path {
+            let first_path_url = first_path.to_string_lossy();
+            let cloud_options =
+                parse_cloud_options(&first_path_url, cloud_options.unwrap_or_default())?;
+            args.cloud_options = Some(cloud_options.with_max_retries(retries));
+        }
+
+        let lf = LazyFrame::scan_parquet_files(source.into(), args).map_err(RPolarsErr::from)?;
+
+        Ok(lf.into())
+    }
 }
