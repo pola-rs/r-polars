@@ -506,6 +506,10 @@ class(`PlRChainedWhen`) <- c("PlRChainedWhen__bundle", "savvy_neopolars__sealed"
   .savvy_wrap_PlRDataFrame(.Call(savvy_PlRDataFrame_init__impl, `columns`))
 }
 
+`PlRDataFrame`$`read_ipc_stream` <- function(`source`, `row_index_offset`, `rechunk`, `columns` = NULL, `projection` = NULL, `n_rows` = NULL, `row_index_name` = NULL) {
+  .savvy_wrap_PlRDataFrame(.Call(savvy_PlRDataFrame_read_ipc_stream__impl, `source`, `row_index_offset`, `rechunk`, `columns`, `projection`, `n_rows`, `row_index_name`))
+}
+
 
 class(`PlRDataFrame`) <- c("PlRDataFrame__bundle", "savvy_neopolars__sealed")
 

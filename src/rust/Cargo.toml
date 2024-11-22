@@ -42,6 +42,7 @@ features = [
     "find_many",
     "fused",
     "ipc",
+    "ipc_streaming",
     "is_in",
     "json",
     "lazy",

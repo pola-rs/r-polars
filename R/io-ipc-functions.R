@@ -1,4 +1,3 @@
-# TODO: read raw vector
 # TODO: swap param inheritance with pl__scan_parquet
 #' Lazily read from an Arrow IPC (Feather v2) file or multiple files via glob
 #' patterns
@@ -123,5 +122,44 @@ pl__read_ipc <- function(
   check_dots_empty0(...)
   .args <- as.list(environment())
   do.call(pl__scan_ipc, .args)$collect() |>
+    wrap()
+}
+
+# TODO: read raw vector
+# TODO: Allow integer-ish columns
+# TODO: rechunk's default value is different from the other read functions
+#' Read into a DataFrame from Arrow IPC stream format
+#'
+#' @inherit pl__DataFrame return
+#' @inheritParams pl__scan_ipc
+#' @param source A character of the path to an Arrow IPC stream file.
+#' @param columns A character vector of column names to read.
+#' @param rechunk A logical value to indicate whether to make sure that all data is contiguous.
+#' @examplesIf requireNamespace("nanoarrow", quietly = TRUE)
+#' temp_file <- tempfile(fileext = ".arrows")
+#'
+#' mtcars |>
+#'   nanoarrow::write_nanoarrow(temp_file)
+#'
+#' pl$read_ipc_stream(temp_file, columns = c("cyl", "am"))
+pl__read_ipc_stream <- function(
+    source,
+    ...,
+    columns = NULL,
+    n_rows = NULL,
+    row_index_name = NULL,
+    row_index_offset = 0L,
+    rechunk = TRUE) {
+  check_dots_empty0(...)
+  check_character(columns, allow_na = FALSE, allow_null = TRUE)
+
+  PlRDataFrame$read_ipc_stream(
+    source = source,
+    columns = columns,
+    n_rows = n_rows,
+    row_index_name = row_index_name,
+    row_index_offset = row_index_offset,
+    rechunk = rechunk
+  ) |>
     wrap()
 }

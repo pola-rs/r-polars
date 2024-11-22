@@ -24,6 +24,7 @@ Suggests:
     data.table,
     hms,
     jsonlite,
+    nanoarrow,
     patrick,
     testthat (>= 3.0.0),
     tibble,

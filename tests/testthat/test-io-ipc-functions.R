@@ -190,3 +190,32 @@ test_that("scan_ipc can include file path", {
     8L
   )
 })
+
+test_that("read_ipc_stream works", {
+  skip_if_not_installed("nanoarrow")
+
+  temp_file <- withr::local_tempfile()
+  mtcars |>
+    nanoarrow::write_nanoarrow(temp_file)
+
+  expect_equal(
+    pl$read_ipc_stream(temp_file),
+    as_polars_df(mtcars)
+  )
+  expect_equal(
+    pl$read_ipc_stream(temp_file, columns = c("cyl", "am")),
+    as_polars_df(mtcars)$select("cyl", "am")
+  )
+  expect_equal(
+    pl$read_ipc_stream(temp_file, n_rows = 5),
+    as_polars_df(mtcars)$head(5)
+  )
+  expect_equal(
+    pl$read_ipc_stream(temp_file, row_index_name = "foo", columns = "cyl"),
+    as_polars_df(mtcars)$select(foo = pl$lit(0:31, pl$UInt32), "cyl")
+  )
+  expect_equal(
+    pl$read_ipc_stream(temp_file, row_index_name = "foo", row_index_offset = 1, columns = "cyl"),
+    as_polars_df(mtcars)$select(foo = pl$lit(1:32, pl$UInt32), "cyl")
+  )
+})
