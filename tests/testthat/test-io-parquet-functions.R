@@ -1,6 +1,6 @@
 test_that("plain scan read parquet", {
   skip_if_not_installed("arrow")
-  tmpf <- tempfile()
+  tmpf <- withr::local_tempfile()
   on.exit(unlink(tmpf))
   arrow::write_parquet(mtcars, tmpf)
 
@@ -22,7 +22,7 @@ test_that("plain scan read parquet", {
 
 test_that("scan read parquet - test arg row_index", {
   skip_if_not_installed("arrow")
-  tmpf <- tempfile()
+  tmpf <- withr::local_tempfile()
   on.exit(unlink(tmpf))
   arrow::write_parquet(mtcars, tmpf, compression = "snappy")
 
@@ -40,7 +40,7 @@ test_that("scan read parquet - test arg row_index", {
 
 test_that("scan read parquet - parallel strategies", {
   skip_if_not_installed("arrow")
-  tmpf <- tempfile()
+  tmpf <- withr::local_tempfile()
   on.exit(unlink(tmpf))
   arrow::write_parquet(mtcars, tmpf, compression = "snappy")
 
@@ -144,7 +144,7 @@ test_that("scan_parquet can include file path", {
 # TODO-REWRITE: uncomment when $write_parquet() is implemented
 
 # test_that("write_parquet works", {
-#   tmpf <- tempfile()
+#   tmpf <- withr::local_tempfile()
 #   on.exit(unlink(tmpf))
 #   df_exp <- as_polars_df(mtcars)
 #   df_exp$write_parquet(tmpf)
@@ -157,7 +157,7 @@ test_that("scan_parquet can include file path", {
 # })
 
 # test_that("throw error if invalid compression is passed", {
-#   tmpf <- tempfile()
+#   tmpf <- withr::local_tempfile()
 #   on.exit(unlink(tmpf))
 #   df_exp <- as_polars_df(mtcars)
 #   expect_grepl_error(
@@ -168,14 +168,14 @@ test_that("scan_parquet can include file path", {
 
 # test_that("write_parquet returns the input data", {
 #   dat <- as_polars_df(mtcars)
-#   tmpf <- tempfile()
+#   tmpf <- withr::local_tempfile()
 #   x <- dat$write_parquet(tmpf)
 #   expect_equal(x, dat)
 # })
 
 # test_that("write_parquet: argument 'statistics'", {
 #   dat <- as_polars_df(mtcars)
-#   tmpf <- tempfile()
+#   tmpf <- withr::local_tempfile()
 #   on.exit(unlink(tmpf))
 
 #   expect_silent(dat$write_parquet(tmpf, statistics = TRUE))

@@ -238,32 +238,31 @@ impl PlRLazyFrame {
             None => None,
         };
         let row_index = row_index_name.map(|x| RowIndex {
-                name: x.into(),
-                offset: row_index_offset,
-            });
+            name: x.into(),
+            offset: row_index_offset,
+        });
         let file_cache_ttl = match file_cache_ttl {
             Some(x) => Some(<Wrap<u64>>::try_from(x)?.0),
             None => None,
         };
-
         let hive_options = HiveOptions {
             enabled: hive_partitioning,
             hive_start_idx: 0,
             schema: hive_schema.map(|x| Arc::new(x.0)),
             try_parse_dates: try_parse_hive_dates,
         };
-
         // TODO: better error message
         let cloud_options = match storage_options {
             Some(x) => {
                 let out = <Wrap<Vec<(String, String)>>>::try_from(x).map_err(|_| {
-                    RPolarsErr::Other("`storage_options` must be a named character vector".to_string())
+                    RPolarsErr::Other(
+                        "`storage_options` must be a named character vector".to_string(),
+                    )
                 })?;
                 Some(out.0)
             }
             None => None,
         };
-
         let mut args = ScanArgsIpc {
             n_rows,
             cache,
@@ -274,8 +273,133 @@ impl PlRLazyFrame {
             include_file_paths: include_file_paths.map(|x| x.into()),
         };
 
-        let first_path = source.first().unwrap().clone().into();
+        let first_path: Option<PathBuf> = source.first().unwrap().clone().into();
+        if let Some(first_path) = first_path {
+            let first_path_url = first_path.to_string_lossy();
+            let mut cloud_options =
+                parse_cloud_options(&first_path_url, cloud_options.unwrap_or_default())?;
+            if let Some(file_cache_ttl) = file_cache_ttl {
+                cloud_options.file_cache_ttl = file_cache_ttl;
+            }
+            args.cloud_options = Some(cloud_options.with_max_retries(retries));
+        }
+        let lf = LazyFrame::scan_ipc_files(source.into(), args).map_err(RPolarsErr::from)?;
+        Ok(lf.into())
+    }
 
+    fn new_from_csv(
+        source: StringSexp,
+        separator: &str,
+        has_header: bool,
+        ignore_errors: bool,
+        skip_rows: NumericScalar,
+        cache: bool,
+        missing_utf8_is_empty_string: bool,
+        low_memory: bool,
+        rechunk: bool,
+        skip_rows_after_header: NumericScalar,
+        encoding: &str,
+        try_parse_dates: bool,
+        eol_char: &str,
+        raise_if_empty: bool,
+        truncate_ragged_lines: bool,
+        decimal_comma: bool,
+        glob: bool,
+        retries: NumericScalar,
+        row_index_offset: NumericScalar,
+        comment_prefix: Option<&str>,
+        quote_char: Option<&str>,
+        null_values: Option<StringSexp>,
+        infer_schema_length: Option<NumericScalar>,
+        row_index_name: Option<&str>,
+        n_rows: Option<NumericScalar>,
+        overwrite_dtype: Option<ListSexp>,
+        schema: Option<ListSexp>,
+        storage_options: Option<StringSexp>,
+        file_cache_ttl: Option<NumericScalar>,
+        include_file_paths: Option<&str>,
+    ) -> Result<PlRLazyFrame> {
+        let source = source
+            .to_vec()
+            .iter()
+            .map(PathBuf::from)
+            .collect::<Vec<PathBuf>>();
+        let encoding = <Wrap<CsvEncoding>>::try_from(encoding)?.0;
+        let skip_rows = <Wrap<usize>>::try_from(skip_rows)?.0;
+        let skip_rows_after_header = <Wrap<usize>>::try_from(skip_rows_after_header)?.0;
+        let infer_schema_length = match infer_schema_length {
+            Some(x) => Some(<Wrap<usize>>::try_from(x)?.0),
+            None => None,
+        };
+        let row_index_offset = <Wrap<u32>>::try_from(row_index_offset)?.0;
+        let n_rows = match n_rows {
+            Some(x) => Some(<Wrap<usize>>::try_from(x)?.0),
+            None => None,
+        };
+        let null_values = match null_values {
+            Some(x) => Some(<Wrap<NullValues>>::try_from(x)?.0),
+            None => None,
+        };
+        let retries = <Wrap<usize>>::try_from(retries)?.0;
+        let file_cache_ttl = match file_cache_ttl {
+            Some(x) => Some(<Wrap<u64>>::try_from(x)?.0),
+            None => None,
+        };
+
+        let quote_char = quote_char
+            .map(|s| {
+                s.as_bytes()
+                    .first()
+                    .ok_or_else(|| polars_err!(InvalidOperation: "`quote_char` cannot be empty"))
+            })
+            .transpose()
+            .map_err(RPolarsErr::from)?
+            .copied();
+        let separator = separator
+            .as_bytes()
+            .first()
+            .ok_or_else(|| polars_err!(InvalidOperation: "`separator` cannot be empty"))
+            .copied()
+            .map_err(RPolarsErr::from)?;
+        let eol_char = eol_char
+            .as_bytes()
+            .first()
+            .ok_or_else(|| polars_err!(InvalidOperation: "`eol_char` cannot be empty"))
+            .copied()
+            .map_err(RPolarsErr::from)?;
+
+        let row_index = match row_index_name {
+            Some(x) => Some(RowIndex {
+                name: x.into(),
+                offset: row_index_offset,
+            }),
+            None => None,
+        };
+
+        let overwrite_dtype = match overwrite_dtype {
+            Some(x) => Some(<Wrap<Schema>>::try_from(x)?.0),
+            None => None,
+        };
+
+        let schema = match schema {
+            Some(x) => Some(<Wrap<Schema>>::try_from(x)?.0),
+            None => None,
+        };
+
+        let cloud_options = match storage_options {
+            Some(x) => {
+                let out = <Wrap<Vec<(String, String)>>>::try_from(x).map_err(|_| {
+                    RPolarsErr::Other(format!(
+                        "`storage_options` must be a named character vector"
+                    ))
+                })?;
+                Some(out.0)
+            }
+            None => None,
+        };
+
+        let mut r = LazyCsvReader::new_paths(source.clone().into());
+        let first_path: Option<PathBuf> = source.first().unwrap().clone().into();
         if let Some(first_path) = first_path {
             let first_path_url = first_path.to_string_lossy();
 
@@ -284,11 +408,38 @@ impl PlRLazyFrame {
             if let Some(file_cache_ttl) = file_cache_ttl {
                 cloud_options.file_cache_ttl = file_cache_ttl;
             }
-            args.cloud_options = Some(cloud_options.with_max_retries(retries));
+            cloud_options = cloud_options.with_max_retries(retries);
+            r = r.with_cloud_options(Some(cloud_options));
         }
 
-        let lf = LazyFrame::scan_ipc_files(source.into(), args).map_err(RPolarsErr::from)?;
-        Ok(lf.into())
+        let r = r
+            .with_infer_schema_length(infer_schema_length)
+            .with_separator(separator)
+            .with_has_header(has_header)
+            .with_ignore_errors(ignore_errors)
+            .with_skip_rows(skip_rows)
+            .with_n_rows(n_rows)
+            .with_cache(cache)
+            .with_dtype_overwrite(overwrite_dtype.map(Arc::new))
+            .with_schema(schema.map(Arc::new))
+            .with_low_memory(low_memory)
+            .with_comment_prefix(comment_prefix.map(|x| x.into()))
+            .with_quote_char(quote_char)
+            .with_eol_char(eol_char)
+            .with_rechunk(rechunk)
+            .with_skip_rows_after_header(skip_rows_after_header)
+            .with_encoding(encoding)
+            .with_row_index(row_index)
+            .with_try_parse_dates(try_parse_dates)
+            .with_null_values(null_values)
+            .with_missing_is_null(!missing_utf8_is_empty_string)
+            .with_truncate_ragged_lines(truncate_ragged_lines)
+            .with_decimal_comma(decimal_comma)
+            .with_glob(glob)
+            .with_raise_if_empty(raise_if_empty)
+            .with_include_file_paths(include_file_paths.map(|x| x.into()));
+
+        Ok(r.finish().map_err(RPolarsErr::from)?.into())
     }
 
     fn new_from_parquet(

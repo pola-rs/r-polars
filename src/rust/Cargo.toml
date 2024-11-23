@@ -34,6 +34,7 @@ features = [
     "cloud",
     "concat_str",
     "cse",
+    "csv",
     "diagonal_concat",
     "diff",
     "dtype-full",

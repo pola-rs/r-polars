@@ -1,7 +1,7 @@
 test_that("Test reading data from Apache Arrow file", {
   skip_if_not_installed("arrow")
 
-  tmpf <- tempfile()
+  tmpf <- withr::local_tempfile()
   on.exit(unlink(tmpf))
   arrow::write_ipc_file(iris, tmpf, compression = "uncompressed")
 
