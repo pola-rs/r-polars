@@ -139,6 +139,14 @@ where
             None => Err("Global ThreadCom is empty".to_string()),
         }
     }
+
+    // only for testing
+    pub fn get_global_threadcom_stack_size(conf: &Lazy<RwLock<Vec<ThreadCom<S, R>>>>) -> usize {
+        let global = conf
+            .read()
+            .expect("Failed to acquire read lock on global ThreadCom");
+        global.len()
+    }
 }
 
 // //debug threads
@@ -202,7 +210,8 @@ where
             let answer = i(s); //handle requst with i closure
             let a = answer.map_err(|err| format!("user function raised an error: {:?} \n", err))?;
 
-            c_tx.send(a).unwrap();
+            c_tx.send(a)
+                .expect("failed to result back to polars thread");
         } else if let Err(recv_err) = any_new_msg {
             #[cfg(feature = "rpolars_debug_print")]
             dbg!(&recv_err);

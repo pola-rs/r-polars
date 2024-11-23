@@ -84,6 +84,8 @@ test_wrong_call_pl_lit <- function(robj) .Call(wrap__test_wrong_call_pl_lit, rob
 
 test_robj_to_rchoice <- function(robj) .Call(wrap__test_robj_to_rchoice, robj)
 
+test_threadcom_stack_size <- function() .Call(wrap__test_threadcom_stack_size)
+
 concat_lf <- function(l, rechunk, parallel, to_supertypes) .Call(wrap__concat_lf, l, rechunk, parallel, to_supertypes)
 
 concat_lf_diagonal <- function(l, rechunk, parallel, to_supertypes) .Call(wrap__concat_lf_diagonal, l, rechunk, parallel, to_supertypes)

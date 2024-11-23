@@ -234,6 +234,12 @@ fn test_robj_to_rchoice(robj: Robj) -> RResult<String> {
 }
 
 #[extendr]
+fn test_threadcom_stack_size() -> i32 {
+    // can be used to check if threadcom are cleaned up after use
+    ThreadCom::get_global_threadcom_stack_size(&CONFIG) as i32
+}
+
+#[extendr]
 fn fold(acc: Robj, lambda: Robj, exprs: Robj) -> RResult<RPolarsExpr> {
     let par_fn = ParRObj(lambda);
     let f = move |acc: pl::Series, x: pl::Series| {
@@ -427,4 +433,5 @@ extendr_module! {
     fn test_robj_to_expr;
     fn test_wrong_call_pl_lit;
     fn test_robj_to_rchoice;
+    fn test_threadcom_stack_size;
 }

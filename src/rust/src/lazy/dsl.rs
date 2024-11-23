@@ -1980,7 +1980,7 @@ impl RPolarsExpr {
         let par_fn = ParRObj(lambda);
         let f = move |s: pl::Series| {
             let thread_com = ThreadCom::try_from_global(&CONFIG)
-                .expect("polars was thread could not initiate ThreadCommunication to R");
+                .expect("polars thread could not initiate ThreadCom(munication) to R");
             thread_com.send(RFnSignature::FnSeriesToSeries(par_fn.clone(), s));
             let s = thread_com.recv().unwrap_series();
             Ok(Some(s))

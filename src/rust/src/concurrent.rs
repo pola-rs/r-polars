@@ -109,8 +109,14 @@ pub fn collect_with_r_func_support(lazy_df: pl::LazyFrame) -> RResult<RPolarsDat
         //CONFIG is "global variable" where any new thread can request a clone of ThreadCom to establish contact with main thread
         &CONFIG,
     )
-    .map_err(|err| RPolarsErr::new().plain(err.to_string()))?
-    .map_err(polars_to_rpolars_err)
+    .map_err(|err| {
+        //THIS AN SIDE EFFECT, CLEAN UP THREADCOM IN CASE OF AN R ERROR.
+        ThreadCom::kill_global(&CONFIG);
+
+        // This is the error mapped
+        RPolarsErr::new().plain(err.to_string())
+    })? // propagate any R error
+    .map_err(polars_to_rpolars_err) // map any polars error
     .map(RPolarsDataFrame)
 }
 
