@@ -1654,6 +1654,11 @@ SEXP savvy_PlRLazyFrame_new_from_parquet__impl(SEXP c_arg__source, SEXP c_arg__c
     return handle_result(res);
 }
 
+SEXP savvy_PlRLazyFrame_new_from_ndjson__impl(SEXP c_arg__source, SEXP c_arg__low_memory, SEXP c_arg__rechunk, SEXP c_arg__ignore_errors, SEXP c_arg__retries, SEXP c_arg__row_index_offset, SEXP c_arg__row_index_name, SEXP c_arg__infer_schema_length, SEXP c_arg__schema, SEXP c_arg__schema_overrides, SEXP c_arg__batch_size, SEXP c_arg__n_rows, SEXP c_arg__include_file_paths, SEXP c_arg__storage_options, SEXP c_arg__file_cache_ttl) {
+    SEXP res = savvy_PlRLazyFrame_new_from_ndjson__ffi(c_arg__source, c_arg__low_memory, c_arg__rechunk, c_arg__ignore_errors, c_arg__retries, c_arg__row_index_offset, c_arg__row_index_name, c_arg__infer_schema_length, c_arg__schema, c_arg__schema_overrides, c_arg__batch_size, c_arg__n_rows, c_arg__include_file_paths, c_arg__storage_options, c_arg__file_cache_ttl);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRLazyGroupBy_agg__impl(SEXP self__, SEXP c_arg__aggs) {
     SEXP res = savvy_PlRLazyGroupBy_agg__ffi(self__, c_arg__aggs);
     return handle_result(res);
@@ -2180,6 +2185,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRLazyFrame_new_from_ipc__impl", (DL_FUNC) &savvy_PlRLazyFrame_new_from_ipc__impl, 13},
     {"savvy_PlRLazyFrame_new_from_csv__impl", (DL_FUNC) &savvy_PlRLazyFrame_new_from_csv__impl, 30},
     {"savvy_PlRLazyFrame_new_from_parquet__impl", (DL_FUNC) &savvy_PlRLazyFrame_new_from_parquet__impl, 18},
+    {"savvy_PlRLazyFrame_new_from_ndjson__impl", (DL_FUNC) &savvy_PlRLazyFrame_new_from_ndjson__impl, 15},
     {"savvy_PlRLazyGroupBy_agg__impl", (DL_FUNC) &savvy_PlRLazyGroupBy_agg__impl, 2},
     {"savvy_PlRLazyGroupBy_head__impl", (DL_FUNC) &savvy_PlRLazyGroupBy_head__impl, 2},
     {"savvy_PlRLazyGroupBy_tail__impl", (DL_FUNC) &savvy_PlRLazyGroupBy_tail__impl, 2},

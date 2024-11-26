@@ -2443,6 +2443,10 @@ class(`PlRExpr`) <- c("PlRExpr__bundle", "savvy_neopolars__sealed")
   .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_new_from_parquet__impl, `source`, `cache`, `parallel`, `rechunk`, `low_memory`, `use_statistics`, `try_parse_hive_dates`, `retries`, `glob`, `allow_missing_columns`, `row_index_offset`, `storage_options`, `n_rows`, `row_index_name`, `hive_partitioning`, `schema`, `hive_schema`, `include_file_paths`))
 }
 
+`PlRLazyFrame`$`new_from_ndjson` <- function(`source`, `low_memory`, `rechunk`, `ignore_errors`, `retries`, `row_index_offset`, `row_index_name` = NULL, `infer_schema_length` = NULL, `schema` = NULL, `schema_overrides` = NULL, `batch_size` = NULL, `n_rows` = NULL, `include_file_paths` = NULL, `storage_options` = NULL, `file_cache_ttl` = NULL) {
+  .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_new_from_ndjson__impl, `source`, `low_memory`, `rechunk`, `ignore_errors`, `retries`, `row_index_offset`, `row_index_name`, `infer_schema_length`, `schema`, `schema_overrides`, `batch_size`, `n_rows`, `include_file_paths`, `storage_options`, `file_cache_ttl`))
+}
+
 
 class(`PlRLazyFrame`) <- c("PlRLazyFrame__bundle", "savvy_neopolars__sealed")
 
