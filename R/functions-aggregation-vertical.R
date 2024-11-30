@@ -20,11 +20,10 @@
 #' # Evaluate bitwise AND for a column.
 #' df$select(pl$all("a"))
 pl__all <- function(..., ignore_nulls = TRUE) {
-  names <- list2(...)
-  if (length(names) == 0) {
+  if (missing(...)) {
     pl$col("*")
   } else {
-    pl$col(!!!names)$all(ignore_nulls = ignore_nulls)
+    pl$col(...)$all(ignore_nulls = ignore_nulls)
   }
 }
 
