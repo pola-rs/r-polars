@@ -8,6 +8,11 @@ pl__any(..., ignore_nulls = TRUE)
 }
 \arguments{
 \item{...}{Name(s) of the columns to use in the aggregation.}
+
+\item{ignore_nulls}{If \code{TRUE} (default), ignore null values. If \code{FALSE},
+\href{https://en.wikipedia.org/wiki/Three-valued_logic}{Kleene logic} is used to
+deal with nulls: if the column contains any null values and no \code{TRUE} values,
+the output is null.}
 }
 \value{
 A polars \link{expression}
