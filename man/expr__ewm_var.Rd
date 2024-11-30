@@ -33,13 +33,7 @@ expr__ewm_var(
 \leq 1}.}
 
 \item{adjust}{Divide by decaying adjustment factor in beginning periods to
-account for imbalance in relative weightings:
-\itemize{
-\item when \code{TRUE} (default), the EW function is calculated using weights
-\eqn{w_i = (1 - \alpha)^i};
-\item when \code{FALSE}, the EW function is calculated recursively by \deqn{y_0 &= x_0
- \\y_t &= (1 - \alpha)y_{t - 1} + \alpha x_t}
-}}
+account for imbalance in relative weightings:}
 
 \item{bias}{If \code{FALSE} (default), apply a correction to make the estimate
 statistically unbiased.}
@@ -65,65 +59,9 @@ average of (\eqn{x_0}, null, \eqn{x_2}) are \eqn{1-\alpha} and \eqn{1} if
 A polars \link{expression}
 }
 \description{
-The \code{\link[=as_polars_expr]{as_polars_expr()}} function creates a polars \link{expression} from various R objects.
-This function is used internally by various polars functions that accept \link[=Expr]{expressions}.
-In most cases, users should use \code{\link[=pl__lit]{pl$lit()}} instead of this function, which is
-a shorthand for \code{as_polars_expr(x, as_lit = TRUE)}.
-(In other words, this function can be considered as an internal implementation to realize
-the \code{lit} function of the Polars API in other languages.)
+Compute exponentially-weighted moving variance
 }
-\details{
-Because R objects are typically mapped to \link{Series}, this function often calls \code{\link[=as_polars_series]{as_polars_series()}} internally.
-However, unlike R, Polars has scalars of length 1, so if an R object is converted to a \link{Series} of length 1,
-this function get the first value of the Series and convert it to a scalar literal.
-If you want to implement your own conversion from an R class to a Polars object,
-define an S3 method for \code{\link[=as_polars_series]{as_polars_series()}} instead of this function.
-\subsection{Default S3 method}{
-
-Create a \link{Series} by calling \code{\link[=as_polars_series]{as_polars_series()}} and then convert that \link{Series} to an \link{Expr}.
-If the length of the \link{Series} is \code{1}, it will be converted to a scalar value.
-
-Additional arguments \code{...} are passed to \code{\link[=as_polars_series]{as_polars_series()}}.
-}
-
-\subsection{S3 method for \link{character}}{
-
-If the \code{as_lit} argument is \code{FALSE} (default), this function will call \code{\link[=pl__col]{pl$col()}} and
-the character vector is treated as column names.
-}
-}
-\section{Literal scalar mapping}{
-Since R has no scalar class, each of the following types of length 1 cases is specially
-converted to a scalar literal.
-\itemize{
-\item character: String
-\item logical: Boolean
-\item integer: Int32
-\item double: Float64
-}
-
-These types' \code{NA} is converted to a \code{null} literal with casting to the corresponding Polars type.
-
-The \link{raw} type vector is converted to a Binary scalar.
-\itemize{
-\item raw: Binary
-}
-
-\code{NULL} is converted to a Null type \code{null} literal.
-\itemize{
-\item NULL: Null
-}
-
-For other R class, the default S3 method is called and R object will be converted via
-\code{\link[=as_polars_series]{as_polars_series()}}. So the type mapping is defined by \code{\link[=as_polars_series]{as_polars_series()}}.
-}
-
 \examples{
 df <- pl$DataFrame(a = 1:3)
 df$select(pl$col("a")$ewm_var(com = 1, ignore_nulls = FALSE))
-}
-\seealso{
-\itemize{
-\item \code{\link[=as_polars_series]{as_polars_series()}}: R -> Polars type mapping is mostly defined by this function.
-}
 }

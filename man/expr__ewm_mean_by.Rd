@@ -10,8 +10,6 @@ expr__ewm_mean_by(by, ..., half_life)
 \item{by}{Times to calculate average by. Should be DateTime, Date, UInt64,
 UInt32, Int64, or Int32 data type.}
 
-\item{...}{Additional arguments passed to the methods.}
-
 \item{half_life}{Unit over which observation decays to half its value. Can
 be created either from a timedelta, or by using the following string
 language:
@@ -39,60 +37,8 @@ By "calendar day", we mean the corresponding time on the next day
 A polars \link{expression}
 }
 \description{
-Given observations \eqn{x_0}, \eqn{x_1}, \ldots, \eqn{x_{n-1}} at times
-\eqn{t_0}, \eqn{t_1}, \ldots, \eqn{t_{n-1}}, the EWMA is calculated as
-\deqn{y_0 &= x_0
-\alpha_i &= 1 - \exp \left\{ \frac{ -\ln(2)(t_i-t_{i-1}) } { \tau } \right\}
-y_i &= \alpha_i x_i + (1 - \alpha_i) y_{i-1}; \quad i > 0
+Compute time-based exponentially weighted moving average
 }
-where \eqn{\tau} is the \code{half_life}.
-}
-\details{
-Because R objects are typically mapped to \link{Series}, this function often calls \code{\link[=as_polars_series]{as_polars_series()}} internally.
-However, unlike R, Polars has scalars of length 1, so if an R object is converted to a \link{Series} of length 1,
-this function get the first value of the Series and convert it to a scalar literal.
-If you want to implement your own conversion from an R class to a Polars object,
-define an S3 method for \code{\link[=as_polars_series]{as_polars_series()}} instead of this function.
-\subsection{Default S3 method}{
-
-Create a \link{Series} by calling \code{\link[=as_polars_series]{as_polars_series()}} and then convert that \link{Series} to an \link{Expr}.
-If the length of the \link{Series} is \code{1}, it will be converted to a scalar value.
-
-Additional arguments \code{...} are passed to \code{\link[=as_polars_series]{as_polars_series()}}.
-}
-
-\subsection{S3 method for \link{character}}{
-
-If the \code{as_lit} argument is \code{FALSE} (default), this function will call \code{\link[=pl__col]{pl$col()}} and
-the character vector is treated as column names.
-}
-}
-\section{Literal scalar mapping}{
-Since R has no scalar class, each of the following types of length 1 cases is specially
-converted to a scalar literal.
-\itemize{
-\item character: String
-\item logical: Boolean
-\item integer: Int32
-\item double: Float64
-}
-
-These types' \code{NA} is converted to a \code{null} literal with casting to the corresponding Polars type.
-
-The \link{raw} type vector is converted to a Binary scalar.
-\itemize{
-\item raw: Binary
-}
-
-\code{NULL} is converted to a Null type \code{null} literal.
-\itemize{
-\item NULL: Null
-}
-
-For other R class, the default S3 method is called and R object will be converted via
-\code{\link[=as_polars_series]{as_polars_series()}}. So the type mapping is defined by \code{\link[=as_polars_series]{as_polars_series()}}.
-}
-
 \examples{
 df <- pl$DataFrame(
   values = c(0, 1, 2, NA, 4),
@@ -103,9 +49,4 @@ df <- pl$DataFrame(
 df$with_columns(
   result = pl$col("values")$ewm_mean_by("times", half_life = "4d")
 )
-}
-\seealso{
-\itemize{
-\item \code{\link[=as_polars_series]{as_polars_series()}}: R -> Polars type mapping is mostly defined by this function.
-}
 }
