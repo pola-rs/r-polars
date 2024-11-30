@@ -3329,12 +3329,12 @@ expr__rolling_var_by <- function(
 #' @param ignore_nulls Ignore missing values when calculating weights.
 #' * when `FALSE` (default), weights are based on absolute positions. For
 #'   example, the weights of \eqn{x_0} and \eqn{x_2} used in calculating the
-#'   final weighted average of [\eqn{x_0}, None, \eqn{x_2}] are
+#'   final weighted average of (\eqn{x_0}, null, \eqn{x_2}) are
 #'   \eqn{(1-\alpha)^2} and \eqn{1} if `adjust = TRUE`, and \eqn{(1-\alpha)^2}
 #'   and \eqn{\alpha} if `adjust = FALSE`.
 #' * when `TRUE`, weights are based on relative positions. For example, the
 #'   weights of \eqn{x_0} and \eqn{x_2} used in calculating the final weighted
-#'   average of [\eqn{x_0}, None, \eqn{x_2}] are \eqn{1-\alpha} and \eqn{1} if
+#'   average of (\eqn{x_0}, null, \eqn{x_2}) are \eqn{1-\alpha} and \eqn{1} if
 #'   `adjust = TRUE`, and \eqn{1-\alpha} and \eqn{\alpha} if `adjust = FALSE`.
 #'
 #' @inherit as_polars_expr
