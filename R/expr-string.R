@@ -322,7 +322,6 @@ expr_str_to_lowercase <- function() {
 #' Strip leading and trailing characters
 #'
 #'
-#' @aliases expr_str_strip_chars
 #' @description  Remove leading and trailing characters.
 #'
 #' @param matches The set of characters to be removed. All combinations of this
@@ -347,7 +346,6 @@ expr_str_strip_chars <- function(matches = NULL) {
 #' Strip leading characters
 #'
 #'
-#' @aliases expr_str_strip_chars_start
 #' @description  Remove leading characters.
 #'
 #' @param matches The set of characters to be removed. All combinations of this
@@ -371,7 +369,6 @@ expr_str_strip_chars_start <- function(matches = NULL) {
 #' Strip trailing characters
 #'
 #'
-#' @aliases expr_str_strip_chars_end
 #' @description  Remove trailing characters.
 #'
 #' @param matches The set of characters to be removed. All combinations of this
@@ -396,7 +393,6 @@ expr_str_strip_chars_end <- function(matches = NULL) {
 
 #' Fills the string with zeroes.
 #'
-#' @aliases expr_str_zfill
 #' @description Add zeroes to a string until it reaches `n` characters. If the
 #' number of characters is already greater than `n`, the string is not modified.
 #' @param alignment Fill the value up to this length. This can be an Expr or

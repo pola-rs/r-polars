@@ -13,6 +13,21 @@ expr_list_sample(
   seed = NULL
 )
 }
+\arguments{
+\item{n}{Number of items to return. Cannot be used with \code{fraction.} Defaults
+to 1 if \code{fraction} is \code{NULL}.}
+
+\item{...}{These dots are for future extensions and must be empty.}
+
+\item{fraction}{Fraction of items to return. Cannot be used with \code{n}.}
+
+\item{with_replacement}{Allow values to be sampled more than once.}
+
+\item{shuffle}{Shuffle the order of sampled data points.}
+
+\item{seed}{Seed for the random number generator. If \code{NULL} (default), a
+random seed is generated for each sample operation.}
+}
 \value{
 A polars \link{expression}
 }

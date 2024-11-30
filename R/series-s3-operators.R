@@ -43,12 +43,12 @@
 
 #' @export
 `<=.polars_series` <- function(e1, e2) {
-  as_polars_series(e1)$lt_eq(e2)
+  as_polars_series(e1)$le(e2)
 }
 
 #' @export
 `>=.polars_series` <- function(e1, e2) {
-  as_polars_series(e1)$gt_eq(e2)
+  as_polars_series(e1)$ge(e2)
 }
 
 #' @export
@@ -58,5 +58,5 @@
 
 #' @export
 `!=.polars_series` <- function(e1, e2) {
-  as_polars_series(e1)$neq(e2)
+  as_polars_series(e1)$ne(e2)
 }

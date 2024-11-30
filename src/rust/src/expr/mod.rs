@@ -6,6 +6,7 @@ mod general;
 mod list;
 mod meta;
 mod name;
+mod rolling;
 mod serde;
 mod string;
 mod r#struct;

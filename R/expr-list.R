@@ -704,7 +704,7 @@ expr_list_explode <- function() {
 
 #' Sample values from every sub-list
 #'
-#' @inheritParams expr_sample
+#' @inheritParams expr__sample
 #'
 #' @inherit as_polars_expr return
 #' @examples

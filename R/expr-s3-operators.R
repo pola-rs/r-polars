@@ -53,12 +53,12 @@
 
 #' @export
 `<=.polars_expr` <- function(e1, e2) {
-  as_polars_expr(e1, as_lit = TRUE)$lt_eq(e2)
+  as_polars_expr(e1, as_lit = TRUE)$le(e2)
 }
 
 #' @export
 `>=.polars_expr` <- function(e1, e2) {
-  as_polars_expr(e1, as_lit = TRUE)$gt_eq(e2)
+  as_polars_expr(e1, as_lit = TRUE)$ge(e2)
 }
 
 #' @export
@@ -68,7 +68,7 @@
 
 #' @export
 `!=.polars_expr` <- function(e1, e2) {
-  as_polars_expr(e1, as_lit = TRUE)$neq(e2)
+  as_polars_expr(e1, as_lit = TRUE)$ne(e2)
 }
 
 #' @export

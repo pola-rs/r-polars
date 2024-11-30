@@ -1079,6 +1079,12 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_neopolars__sealed")
   }
 }
 
+`PlRExpr_abs` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_abs__impl, `self`))
+  }
+}
+
 `PlRExpr_add` <- function(self) {
   function(`rhs`) {
     `rhs` <- .savvy_extract_ptr(`rhs`, "PlRExpr")
@@ -1396,9 +1402,723 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_neopolars__sealed")
   }
 }
 
+`PlRExpr_cum_sum` <- function(self) {
+  function(`reverse`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_cum_sum__impl, `self`, `reverse`))
+  }
+}
+
+`PlRExpr_cum_prod` <- function(self) {
+  function(`reverse`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_cum_prod__impl, `self`, `reverse`))
+  }
+}
+
+`PlRExpr_cum_min` <- function(self) {
+  function(`reverse`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_cum_min__impl, `self`, `reverse`))
+  }
+}
+
+`PlRExpr_cum_max` <- function(self) {
+  function(`reverse`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_cum_max__impl, `self`, `reverse`))
+  }
+}
+
+`PlRExpr_cum_count` <- function(self) {
+  function(`reverse`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_cum_count__impl, `self`, `reverse`))
+  }
+}
+
+`PlRExpr_agg_groups` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_agg_groups__impl, `self`))
+  }
+}
+
+`PlRExpr_count` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_count__impl, `self`))
+  }
+}
+
+`PlRExpr_arg_max` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_arg_max__impl, `self`))
+  }
+}
+
+`PlRExpr_arg_min` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_arg_min__impl, `self`))
+  }
+}
+
+`PlRExpr_arg_unique` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_arg_unique__impl, `self`))
+  }
+}
+
+`PlRExpr_unique` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_unique__impl, `self`))
+  }
+}
+
+`PlRExpr_unique_stable` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_unique_stable__impl, `self`))
+  }
+}
+
+`PlRExpr_implode` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_implode__impl, `self`))
+  }
+}
+
+`PlRExpr_len` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_len__impl, `self`))
+  }
+}
+
+`PlRExpr_value_counts` <- function(self) {
+  function(`sort`, `parallel`, `name`, `normalize`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_value_counts__impl, `self`, `sort`, `parallel`, `name`, `normalize`))
+  }
+}
+
+`PlRExpr_unique_counts` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_unique_counts__impl, `self`))
+  }
+}
+
+`PlRExpr_null_count` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_null_count__impl, `self`))
+  }
+}
+
+`PlRExpr_product` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_product__impl, `self`))
+  }
+}
+
+`PlRExpr_quantile` <- function(self) {
+  function(`quantile`, `interpolation`) {
+    `quantile` <- .savvy_extract_ptr(`quantile`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_quantile__impl, `self`, `quantile`, `interpolation`))
+  }
+}
+
+`PlRExpr_std` <- function(self) {
+  function(`ddof`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_std__impl, `self`, `ddof`))
+  }
+}
+
+`PlRExpr_var` <- function(self) {
+  function(`ddof`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_var__impl, `self`, `ddof`))
+  }
+}
+
+`PlRExpr_is_unique` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_is_unique__impl, `self`))
+  }
+}
+
+`PlRExpr_is_between` <- function(self) {
+  function(`lower`, `upper`, `closed`) {
+    `lower` <- .savvy_extract_ptr(`lower`, "PlRExpr")
+    `upper` <- .savvy_extract_ptr(`upper`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_is_between__impl, `self`, `lower`, `upper`, `closed`))
+  }
+}
+
+`PlRExpr_approx_n_unique` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_approx_n_unique__impl, `self`))
+  }
+}
+
+`PlRExpr_n_unique` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_n_unique__impl, `self`))
+  }
+}
+
+`PlRExpr_is_first_distinct` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_is_first_distinct__impl, `self`))
+  }
+}
+
+`PlRExpr_is_last_distinct` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_is_last_distinct__impl, `self`))
+  }
+}
+
+`PlRExpr_sin` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_sin__impl, `self`))
+  }
+}
+
+`PlRExpr_cos` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_cos__impl, `self`))
+  }
+}
+
+`PlRExpr_tan` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_tan__impl, `self`))
+  }
+}
+
+`PlRExpr_cot` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_cot__impl, `self`))
+  }
+}
+
+`PlRExpr_arcsin` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_arcsin__impl, `self`))
+  }
+}
+
+`PlRExpr_arccos` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_arccos__impl, `self`))
+  }
+}
+
+`PlRExpr_arctan` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_arctan__impl, `self`))
+  }
+}
+
+`PlRExpr_arctan2` <- function(self) {
+  function(`y`) {
+    `y` <- .savvy_extract_ptr(`y`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_arctan2__impl, `self`, `y`))
+  }
+}
+
+`PlRExpr_sinh` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_sinh__impl, `self`))
+  }
+}
+
+`PlRExpr_cosh` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_cosh__impl, `self`))
+  }
+}
+
+`PlRExpr_tanh` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_tanh__impl, `self`))
+  }
+}
+
+`PlRExpr_arcsinh` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_arcsinh__impl, `self`))
+  }
+}
+
+`PlRExpr_arccosh` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_arccosh__impl, `self`))
+  }
+}
+
+`PlRExpr_arctanh` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_arctanh__impl, `self`))
+  }
+}
+
+`PlRExpr_degrees` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_degrees__impl, `self`))
+  }
+}
+
+`PlRExpr_radians` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_radians__impl, `self`))
+  }
+}
+
+`PlRExpr_sign` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_sign__impl, `self`))
+  }
+}
+
+`PlRExpr_is_duplicated` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_is_duplicated__impl, `self`))
+  }
+}
+
+`PlRExpr_is_in` <- function(self) {
+  function(`expr`) {
+    `expr` <- .savvy_extract_ptr(`expr`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_is_in__impl, `self`, `expr`))
+  }
+}
+
+`PlRExpr_sqrt` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_sqrt__impl, `self`))
+  }
+}
+
+`PlRExpr_cbrt` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_cbrt__impl, `self`))
+  }
+}
+
+`PlRExpr_dot` <- function(self) {
+  function(`expr`) {
+    `expr` <- .savvy_extract_ptr(`expr`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dot__impl, `self`, `expr`))
+  }
+}
+
+`PlRExpr_cumulative_eval` <- function(self) {
+  function(`expr`, `min_periods`, `parallel`) {
+    `expr` <- .savvy_extract_ptr(`expr`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_cumulative_eval__impl, `self`, `expr`, `min_periods`, `parallel`))
+  }
+}
+
+`PlRExpr_log` <- function(self) {
+  function(`base`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_log__impl, `self`, `base`))
+  }
+}
+
+`PlRExpr_log1p` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_log1p__impl, `self`))
+  }
+}
+
+`PlRExpr_exp` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_exp__impl, `self`))
+  }
+}
+
+`PlRExpr_mode` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_mode__impl, `self`))
+  }
+}
+
+`PlRExpr_entropy` <- function(self) {
+  function(`base`, `normalize`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_entropy__impl, `self`, `base`, `normalize`))
+  }
+}
+
+`PlRExpr_hash` <- function(self) {
+  function(`seed`, `seed_1`, `seed_2`, `seed_3`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_hash__impl, `self`, `seed`, `seed_1`, `seed_2`, `seed_3`))
+  }
+}
+
+`PlRExpr_pct_change` <- function(self) {
+  function(`n`) {
+    `n` <- .savvy_extract_ptr(`n`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_pct_change__impl, `self`, `n`))
+  }
+}
+
+`PlRExpr_skew` <- function(self) {
+  function(`bias`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_skew__impl, `self`, `bias`))
+  }
+}
+
+`PlRExpr_kurtosis` <- function(self) {
+  function(`fisher`, `bias`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_kurtosis__impl, `self`, `fisher`, `bias`))
+  }
+}
+
+`PlRExpr_peak_min` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_peak_min__impl, `self`))
+  }
+}
+
+`PlRExpr_peak_max` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_peak_max__impl, `self`))
+  }
+}
+
+`PlRExpr_rank` <- function(self) {
+  function(`method`, `descending`, `seed` = NULL) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_rank__impl, `self`, `method`, `descending`, `seed`))
+  }
+}
+
+`PlRExpr_hist` <- function(self) {
+  function(`include_category`, `include_breakpoint`, `bin_count` = NULL, `bins` = NULL) {
+    `bins` <- .savvy_extract_ptr(`bins`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_hist__impl, `self`, `include_category`, `include_breakpoint`, `bin_count`, `bins`))
+  }
+}
+
+`PlRExpr_search_sorted` <- function(self) {
+  function(`element`, `side`) {
+    `element` <- .savvy_extract_ptr(`element`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_search_sorted__impl, `self`, `element`, `side`))
+  }
+}
+
+`PlRExpr_ewm_mean` <- function(self) {
+  function(`alpha`, `adjust`, `min_periods`, `ignore_nulls`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_ewm_mean__impl, `self`, `alpha`, `adjust`, `min_periods`, `ignore_nulls`))
+  }
+}
+
+`PlRExpr_ewm_mean_by` <- function(self) {
+  function(`times`, `half_life`) {
+    `times` <- .savvy_extract_ptr(`times`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_ewm_mean_by__impl, `self`, `times`, `half_life`))
+  }
+}
+
+`PlRExpr_ewm_std` <- function(self) {
+  function(`alpha`, `adjust`, `bias`, `min_periods`, `ignore_nulls`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_ewm_std__impl, `self`, `alpha`, `adjust`, `bias`, `min_periods`, `ignore_nulls`))
+  }
+}
+
+`PlRExpr_ewm_var` <- function(self) {
+  function(`alpha`, `adjust`, `bias`, `min_periods`, `ignore_nulls`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_ewm_var__impl, `self`, `alpha`, `adjust`, `bias`, `min_periods`, `ignore_nulls`))
+  }
+}
+
+`PlRExpr_extend_constant` <- function(self) {
+  function(`value`, `n`) {
+    `value` <- .savvy_extract_ptr(`value`, "PlRExpr")
+    `n` <- .savvy_extract_ptr(`n`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_extend_constant__impl, `self`, `value`, `n`))
+  }
+}
+
 `PlRExpr_explode` <- function(self) {
   function() {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_explode__impl, `self`))
+  }
+}
+
+`PlRExpr_gather` <- function(self) {
+  function(`idx`) {
+    `idx` <- .savvy_extract_ptr(`idx`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_gather__impl, `self`, `idx`))
+  }
+}
+
+`PlRExpr_get` <- function(self) {
+  function(`idx`) {
+    `idx` <- .savvy_extract_ptr(`idx`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_get__impl, `self`, `idx`))
+  }
+}
+
+`PlRExpr_gather_every` <- function(self) {
+  function(`n`, `offset`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_gather_every__impl, `self`, `n`, `offset`))
+  }
+}
+
+`PlRExpr_append` <- function(self) {
+  function(`other`, `upcast`) {
+    `other` <- .savvy_extract_ptr(`other`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_append__impl, `self`, `other`, `upcast`))
+  }
+}
+
+`PlRExpr_rechunk` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_rechunk__impl, `self`))
+  }
+}
+
+`PlRExpr_round` <- function(self) {
+  function(`decimals`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_round__impl, `self`, `decimals`))
+  }
+}
+
+`PlRExpr_round_sig_figs` <- function(self) {
+  function(`digits`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_round_sig_figs__impl, `self`, `digits`))
+  }
+}
+
+`PlRExpr_floor` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_floor__impl, `self`))
+  }
+}
+
+`PlRExpr_ceil` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_ceil__impl, `self`))
+  }
+}
+
+`PlRExpr_clip` <- function(self) {
+  function(`min` = NULL, `max` = NULL) {
+    `min` <- .savvy_extract_ptr(`min`, "PlRExpr")
+    `max` <- .savvy_extract_ptr(`max`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_clip__impl, `self`, `min`, `max`))
+  }
+}
+
+`PlRExpr_backward_fill` <- function(self) {
+  function(`limit` = NULL) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_backward_fill__impl, `self`, `limit`))
+  }
+}
+
+`PlRExpr_forward_fill` <- function(self) {
+  function(`limit` = NULL) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_forward_fill__impl, `self`, `limit`))
+  }
+}
+
+`PlRExpr_shift` <- function(self) {
+  function(`n`, `fill_value` = NULL) {
+    `n` <- .savvy_extract_ptr(`n`, "PlRExpr")
+    `fill_value` <- .savvy_extract_ptr(`fill_value`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_shift__impl, `self`, `n`, `fill_value`))
+  }
+}
+
+`PlRExpr_fill_null` <- function(self) {
+  function(`expr`) {
+    `expr` <- .savvy_extract_ptr(`expr`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_fill_null__impl, `self`, `expr`))
+  }
+}
+
+`PlRExpr_fill_null_with_strategy` <- function(self) {
+  function(`strategy`, `limit` = NULL) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_fill_null_with_strategy__impl, `self`, `strategy`, `limit`))
+  }
+}
+
+`PlRExpr_fill_nan` <- function(self) {
+  function(`expr`) {
+    `expr` <- .savvy_extract_ptr(`expr`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_fill_nan__impl, `self`, `expr`))
+  }
+}
+
+`PlRExpr_drop_nulls` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_drop_nulls__impl, `self`))
+  }
+}
+
+`PlRExpr_drop_nans` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_drop_nans__impl, `self`))
+  }
+}
+
+`PlRExpr_top_k` <- function(self) {
+  function(`k`) {
+    `k` <- .savvy_extract_ptr(`k`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_top_k__impl, `self`, `k`))
+  }
+}
+
+`PlRExpr_top_k_by` <- function(self) {
+  function(`by`, `k`, `reverse`) {
+    `k` <- .savvy_extract_ptr(`k`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_top_k_by__impl, `self`, `by`, `k`, `reverse`))
+  }
+}
+
+`PlRExpr_bottom_k` <- function(self) {
+  function(`k`) {
+    `k` <- .savvy_extract_ptr(`k`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_bottom_k__impl, `self`, `k`))
+  }
+}
+
+`PlRExpr_bottom_k_by` <- function(self) {
+  function(`by`, `k`, `reverse`) {
+    `k` <- .savvy_extract_ptr(`k`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_bottom_k_by__impl, `self`, `by`, `k`, `reverse`))
+  }
+}
+
+`PlRExpr_interpolate` <- function(self) {
+  function(`method`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_interpolate__impl, `self`, `method`))
+  }
+}
+
+`PlRExpr_interpolate_by` <- function(self) {
+  function(`by`) {
+    `by` <- .savvy_extract_ptr(`by`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_interpolate_by__impl, `self`, `by`))
+  }
+}
+
+`PlRExpr_lower_bound` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_lower_bound__impl, `self`))
+  }
+}
+
+`PlRExpr_upper_bound` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_upper_bound__impl, `self`))
+  }
+}
+
+`PlRExpr_cut` <- function(self) {
+  function(`breaks`, `left_closed`, `include_breaks`, `labels` = NULL) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_cut__impl, `self`, `breaks`, `left_closed`, `include_breaks`, `labels`))
+  }
+}
+
+`PlRExpr_qcut` <- function(self) {
+  function(`probs`, `left_closed`, `allow_duplicates`, `include_breaks`, `labels` = NULL) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_qcut__impl, `self`, `probs`, `left_closed`, `allow_duplicates`, `include_breaks`, `labels`))
+  }
+}
+
+`PlRExpr_qcut_uniform` <- function(self) {
+  function(`n_bins`, `left_closed`, `allow_duplicates`, `include_breaks`, `labels` = NULL) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_qcut_uniform__impl, `self`, `n_bins`, `left_closed`, `allow_duplicates`, `include_breaks`, `labels`))
+  }
+}
+
+`PlRExpr_reinterpret` <- function(self) {
+  function(`signed`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_reinterpret__impl, `self`, `signed`))
+  }
+}
+
+`PlRExpr_repeat_by` <- function(self) {
+  function(`by`) {
+    `by` <- .savvy_extract_ptr(`by`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_repeat_by__impl, `self`, `by`))
+  }
+}
+
+`PlRExpr_replace` <- function(self) {
+  function(`old`, `new`) {
+    `old` <- .savvy_extract_ptr(`old`, "PlRExpr")
+    `new` <- .savvy_extract_ptr(`new`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_replace__impl, `self`, `old`, `new`))
+  }
+}
+
+`PlRExpr_replace_strict` <- function(self) {
+  function(`old`, `new`, `default` = NULL, `return_dtype` = NULL) {
+    `old` <- .savvy_extract_ptr(`old`, "PlRExpr")
+    `new` <- .savvy_extract_ptr(`new`, "PlRExpr")
+    `default` <- .savvy_extract_ptr(`default`, "PlRExpr")
+    `return_dtype` <- .savvy_extract_ptr(`return_dtype`, "PlRDataType")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_replace_strict__impl, `self`, `old`, `new`, `default`, `return_dtype`))
+  }
+}
+
+`PlRExpr_rle` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_rle__impl, `self`))
+  }
+}
+
+`PlRExpr_rle_id` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_rle_id__impl, `self`))
+  }
+}
+
+`PlRExpr_shuffle` <- function(self) {
+  function(`seed` = NULL) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_shuffle__impl, `self`, `seed`))
+  }
+}
+
+`PlRExpr_sample_n` <- function(self) {
+  function(`n`, `with_replacement`, `shuffle`, `seed` = NULL) {
+    `n` <- .savvy_extract_ptr(`n`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_sample_n__impl, `self`, `n`, `with_replacement`, `shuffle`, `seed`))
+  }
+}
+
+`PlRExpr_sample_frac` <- function(self) {
+  function(`frac`, `with_replacement`, `shuffle`, `seed` = NULL) {
+    `frac` <- .savvy_extract_ptr(`frac`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_sample_frac__impl, `self`, `frac`, `with_replacement`, `shuffle`, `seed`))
+  }
+}
+
+`PlRExpr_shrink_dtype` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_shrink_dtype__impl, `self`))
+  }
+}
+
+`PlRExpr_set_sorted_flag` <- function(self) {
+  function(`descending`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_set_sorted_flag__impl, `self`, `descending`))
+  }
+}
+
+`PlRExpr_to_physical` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_to_physical__impl, `self`))
+  }
+}
+
+`PlRExpr_rolling` <- function(self) {
+  function(`index_column`, `period`, `offset`, `closed`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_rolling__impl, `self`, `index_column`, `period`, `offset`, `closed`))
+  }
+}
+
+`PlRExpr_exclude` <- function(self) {
+  function(`columns`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_exclude__impl, `self`, `columns`))
+  }
+}
+
+`PlRExpr_exclude_dtype` <- function(self) {
+  function(`dtypes`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_exclude_dtype__impl, `self`, `dtypes`))
   }
 }
 
@@ -1729,6 +2449,116 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_neopolars__sealed")
 `PlRExpr_name_suffix_fields` <- function(self) {
   function(`suffix`) {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_name_suffix_fields__impl, `self`, `suffix`))
+  }
+}
+
+`PlRExpr_rolling_sum` <- function(self) {
+  function(`window_size`, `center`, `weights` = NULL, `min_periods` = NULL) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_rolling_sum__impl, `self`, `window_size`, `center`, `weights`, `min_periods`))
+  }
+}
+
+`PlRExpr_rolling_sum_by` <- function(self) {
+  function(`by`, `window_size`, `min_periods`, `closed`) {
+    `by` <- .savvy_extract_ptr(`by`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_rolling_sum_by__impl, `self`, `by`, `window_size`, `min_periods`, `closed`))
+  }
+}
+
+`PlRExpr_rolling_min` <- function(self) {
+  function(`window_size`, `center`, `weights` = NULL, `min_periods` = NULL) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_rolling_min__impl, `self`, `window_size`, `center`, `weights`, `min_periods`))
+  }
+}
+
+`PlRExpr_rolling_min_by` <- function(self) {
+  function(`by`, `window_size`, `min_periods`, `closed`) {
+    `by` <- .savvy_extract_ptr(`by`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_rolling_min_by__impl, `self`, `by`, `window_size`, `min_periods`, `closed`))
+  }
+}
+
+`PlRExpr_rolling_max` <- function(self) {
+  function(`window_size`, `center`, `weights` = NULL, `min_periods` = NULL) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_rolling_max__impl, `self`, `window_size`, `center`, `weights`, `min_periods`))
+  }
+}
+
+`PlRExpr_rolling_max_by` <- function(self) {
+  function(`by`, `window_size`, `min_periods`, `closed`) {
+    `by` <- .savvy_extract_ptr(`by`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_rolling_max_by__impl, `self`, `by`, `window_size`, `min_periods`, `closed`))
+  }
+}
+
+`PlRExpr_rolling_mean` <- function(self) {
+  function(`window_size`, `center`, `weights` = NULL, `min_periods` = NULL) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_rolling_mean__impl, `self`, `window_size`, `center`, `weights`, `min_periods`))
+  }
+}
+
+`PlRExpr_rolling_mean_by` <- function(self) {
+  function(`by`, `window_size`, `min_periods`, `closed`) {
+    `by` <- .savvy_extract_ptr(`by`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_rolling_mean_by__impl, `self`, `by`, `window_size`, `min_periods`, `closed`))
+  }
+}
+
+`PlRExpr_rolling_std` <- function(self) {
+  function(`window_size`, `center`, `ddof`, `weights` = NULL, `min_periods` = NULL) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_rolling_std__impl, `self`, `window_size`, `center`, `ddof`, `weights`, `min_periods`))
+  }
+}
+
+`PlRExpr_rolling_std_by` <- function(self) {
+  function(`by`, `window_size`, `min_periods`, `closed`, `ddof`) {
+    `by` <- .savvy_extract_ptr(`by`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_rolling_std_by__impl, `self`, `by`, `window_size`, `min_periods`, `closed`, `ddof`))
+  }
+}
+
+`PlRExpr_rolling_var` <- function(self) {
+  function(`window_size`, `center`, `ddof`, `weights` = NULL, `min_periods` = NULL) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_rolling_var__impl, `self`, `window_size`, `center`, `ddof`, `weights`, `min_periods`))
+  }
+}
+
+`PlRExpr_rolling_var_by` <- function(self) {
+  function(`by`, `window_size`, `min_periods`, `closed`, `ddof`) {
+    `by` <- .savvy_extract_ptr(`by`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_rolling_var_by__impl, `self`, `by`, `window_size`, `min_periods`, `closed`, `ddof`))
+  }
+}
+
+`PlRExpr_rolling_median` <- function(self) {
+  function(`window_size`, `center`, `weights` = NULL, `min_periods` = NULL) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_rolling_median__impl, `self`, `window_size`, `center`, `weights`, `min_periods`))
+  }
+}
+
+`PlRExpr_rolling_median_by` <- function(self) {
+  function(`by`, `window_size`, `min_periods`, `closed`) {
+    `by` <- .savvy_extract_ptr(`by`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_rolling_median_by__impl, `self`, `by`, `window_size`, `min_periods`, `closed`))
+  }
+}
+
+`PlRExpr_rolling_quantile` <- function(self) {
+  function(`quantile`, `interpolation`, `window_size`, `center`, `weights` = NULL, `min_periods` = NULL) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_rolling_quantile__impl, `self`, `quantile`, `interpolation`, `window_size`, `center`, `weights`, `min_periods`))
+  }
+}
+
+`PlRExpr_rolling_quantile_by` <- function(self) {
+  function(`by`, `quantile`, `interpolation`, `window_size`, `min_periods`, `closed`) {
+    `by` <- .savvy_extract_ptr(`by`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_rolling_quantile_by__impl, `self`, `by`, `quantile`, `interpolation`, `window_size`, `min_periods`, `closed`))
+  }
+}
+
+`PlRExpr_rolling_skew` <- function(self) {
+  function(`window_size`, `bias`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_rolling_skew__impl, `self`, `window_size`, `bias`))
   }
 }
 
@@ -2118,6 +2948,7 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_neopolars__sealed")
   e$`dt_century` <- `PlRExpr_dt_century`(ptr)
   e$`dt_add_business_days` <- `PlRExpr_dt_add_business_days`(ptr)
   e$`print` <- `PlRExpr_print`(ptr)
+  e$`abs` <- `PlRExpr_abs`(ptr)
   e$`add` <- `PlRExpr_add`(ptr)
   e$`sub` <- `PlRExpr_sub`(ptr)
   e$`mul` <- `PlRExpr_mul`(ptr)
@@ -2167,7 +2998,120 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_neopolars__sealed")
   e$`any` <- `PlRExpr_any`(ptr)
   e$`all` <- `PlRExpr_all`(ptr)
   e$`map_batches` <- `PlRExpr_map_batches`(ptr)
+  e$`cum_sum` <- `PlRExpr_cum_sum`(ptr)
+  e$`cum_prod` <- `PlRExpr_cum_prod`(ptr)
+  e$`cum_min` <- `PlRExpr_cum_min`(ptr)
+  e$`cum_max` <- `PlRExpr_cum_max`(ptr)
+  e$`cum_count` <- `PlRExpr_cum_count`(ptr)
+  e$`agg_groups` <- `PlRExpr_agg_groups`(ptr)
+  e$`count` <- `PlRExpr_count`(ptr)
+  e$`arg_max` <- `PlRExpr_arg_max`(ptr)
+  e$`arg_min` <- `PlRExpr_arg_min`(ptr)
+  e$`arg_unique` <- `PlRExpr_arg_unique`(ptr)
+  e$`unique` <- `PlRExpr_unique`(ptr)
+  e$`unique_stable` <- `PlRExpr_unique_stable`(ptr)
+  e$`implode` <- `PlRExpr_implode`(ptr)
+  e$`len` <- `PlRExpr_len`(ptr)
+  e$`value_counts` <- `PlRExpr_value_counts`(ptr)
+  e$`unique_counts` <- `PlRExpr_unique_counts`(ptr)
+  e$`null_count` <- `PlRExpr_null_count`(ptr)
+  e$`product` <- `PlRExpr_product`(ptr)
+  e$`quantile` <- `PlRExpr_quantile`(ptr)
+  e$`std` <- `PlRExpr_std`(ptr)
+  e$`var` <- `PlRExpr_var`(ptr)
+  e$`is_unique` <- `PlRExpr_is_unique`(ptr)
+  e$`is_between` <- `PlRExpr_is_between`(ptr)
+  e$`approx_n_unique` <- `PlRExpr_approx_n_unique`(ptr)
+  e$`n_unique` <- `PlRExpr_n_unique`(ptr)
+  e$`is_first_distinct` <- `PlRExpr_is_first_distinct`(ptr)
+  e$`is_last_distinct` <- `PlRExpr_is_last_distinct`(ptr)
+  e$`sin` <- `PlRExpr_sin`(ptr)
+  e$`cos` <- `PlRExpr_cos`(ptr)
+  e$`tan` <- `PlRExpr_tan`(ptr)
+  e$`cot` <- `PlRExpr_cot`(ptr)
+  e$`arcsin` <- `PlRExpr_arcsin`(ptr)
+  e$`arccos` <- `PlRExpr_arccos`(ptr)
+  e$`arctan` <- `PlRExpr_arctan`(ptr)
+  e$`arctan2` <- `PlRExpr_arctan2`(ptr)
+  e$`sinh` <- `PlRExpr_sinh`(ptr)
+  e$`cosh` <- `PlRExpr_cosh`(ptr)
+  e$`tanh` <- `PlRExpr_tanh`(ptr)
+  e$`arcsinh` <- `PlRExpr_arcsinh`(ptr)
+  e$`arccosh` <- `PlRExpr_arccosh`(ptr)
+  e$`arctanh` <- `PlRExpr_arctanh`(ptr)
+  e$`degrees` <- `PlRExpr_degrees`(ptr)
+  e$`radians` <- `PlRExpr_radians`(ptr)
+  e$`sign` <- `PlRExpr_sign`(ptr)
+  e$`is_duplicated` <- `PlRExpr_is_duplicated`(ptr)
+  e$`is_in` <- `PlRExpr_is_in`(ptr)
+  e$`sqrt` <- `PlRExpr_sqrt`(ptr)
+  e$`cbrt` <- `PlRExpr_cbrt`(ptr)
+  e$`dot` <- `PlRExpr_dot`(ptr)
+  e$`cumulative_eval` <- `PlRExpr_cumulative_eval`(ptr)
+  e$`log` <- `PlRExpr_log`(ptr)
+  e$`log1p` <- `PlRExpr_log1p`(ptr)
+  e$`exp` <- `PlRExpr_exp`(ptr)
+  e$`mode` <- `PlRExpr_mode`(ptr)
+  e$`entropy` <- `PlRExpr_entropy`(ptr)
+  e$`hash` <- `PlRExpr_hash`(ptr)
+  e$`pct_change` <- `PlRExpr_pct_change`(ptr)
+  e$`skew` <- `PlRExpr_skew`(ptr)
+  e$`kurtosis` <- `PlRExpr_kurtosis`(ptr)
+  e$`peak_min` <- `PlRExpr_peak_min`(ptr)
+  e$`peak_max` <- `PlRExpr_peak_max`(ptr)
+  e$`rank` <- `PlRExpr_rank`(ptr)
+  e$`hist` <- `PlRExpr_hist`(ptr)
+  e$`search_sorted` <- `PlRExpr_search_sorted`(ptr)
+  e$`ewm_mean` <- `PlRExpr_ewm_mean`(ptr)
+  e$`ewm_mean_by` <- `PlRExpr_ewm_mean_by`(ptr)
+  e$`ewm_std` <- `PlRExpr_ewm_std`(ptr)
+  e$`ewm_var` <- `PlRExpr_ewm_var`(ptr)
+  e$`extend_constant` <- `PlRExpr_extend_constant`(ptr)
   e$`explode` <- `PlRExpr_explode`(ptr)
+  e$`gather` <- `PlRExpr_gather`(ptr)
+  e$`get` <- `PlRExpr_get`(ptr)
+  e$`gather_every` <- `PlRExpr_gather_every`(ptr)
+  e$`append` <- `PlRExpr_append`(ptr)
+  e$`rechunk` <- `PlRExpr_rechunk`(ptr)
+  e$`round` <- `PlRExpr_round`(ptr)
+  e$`round_sig_figs` <- `PlRExpr_round_sig_figs`(ptr)
+  e$`floor` <- `PlRExpr_floor`(ptr)
+  e$`ceil` <- `PlRExpr_ceil`(ptr)
+  e$`clip` <- `PlRExpr_clip`(ptr)
+  e$`backward_fill` <- `PlRExpr_backward_fill`(ptr)
+  e$`forward_fill` <- `PlRExpr_forward_fill`(ptr)
+  e$`shift` <- `PlRExpr_shift`(ptr)
+  e$`fill_null` <- `PlRExpr_fill_null`(ptr)
+  e$`fill_null_with_strategy` <- `PlRExpr_fill_null_with_strategy`(ptr)
+  e$`fill_nan` <- `PlRExpr_fill_nan`(ptr)
+  e$`drop_nulls` <- `PlRExpr_drop_nulls`(ptr)
+  e$`drop_nans` <- `PlRExpr_drop_nans`(ptr)
+  e$`top_k` <- `PlRExpr_top_k`(ptr)
+  e$`top_k_by` <- `PlRExpr_top_k_by`(ptr)
+  e$`bottom_k` <- `PlRExpr_bottom_k`(ptr)
+  e$`bottom_k_by` <- `PlRExpr_bottom_k_by`(ptr)
+  e$`interpolate` <- `PlRExpr_interpolate`(ptr)
+  e$`interpolate_by` <- `PlRExpr_interpolate_by`(ptr)
+  e$`lower_bound` <- `PlRExpr_lower_bound`(ptr)
+  e$`upper_bound` <- `PlRExpr_upper_bound`(ptr)
+  e$`cut` <- `PlRExpr_cut`(ptr)
+  e$`qcut` <- `PlRExpr_qcut`(ptr)
+  e$`qcut_uniform` <- `PlRExpr_qcut_uniform`(ptr)
+  e$`reinterpret` <- `PlRExpr_reinterpret`(ptr)
+  e$`repeat_by` <- `PlRExpr_repeat_by`(ptr)
+  e$`replace` <- `PlRExpr_replace`(ptr)
+  e$`replace_strict` <- `PlRExpr_replace_strict`(ptr)
+  e$`rle` <- `PlRExpr_rle`(ptr)
+  e$`rle_id` <- `PlRExpr_rle_id`(ptr)
+  e$`shuffle` <- `PlRExpr_shuffle`(ptr)
+  e$`sample_n` <- `PlRExpr_sample_n`(ptr)
+  e$`sample_frac` <- `PlRExpr_sample_frac`(ptr)
+  e$`shrink_dtype` <- `PlRExpr_shrink_dtype`(ptr)
+  e$`set_sorted_flag` <- `PlRExpr_set_sorted_flag`(ptr)
+  e$`to_physical` <- `PlRExpr_to_physical`(ptr)
+  e$`rolling` <- `PlRExpr_rolling`(ptr)
+  e$`exclude` <- `PlRExpr_exclude`(ptr)
+  e$`exclude_dtype` <- `PlRExpr_exclude_dtype`(ptr)
   e$`list_len` <- `PlRExpr_list_len`(ptr)
   e$`list_contains` <- `PlRExpr_list_contains`(ptr)
   e$`list_max` <- `PlRExpr_list_max`(ptr)
@@ -2220,6 +3164,23 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_neopolars__sealed")
   e$`name_to_uppercase` <- `PlRExpr_name_to_uppercase`(ptr)
   e$`name_prefix_fields` <- `PlRExpr_name_prefix_fields`(ptr)
   e$`name_suffix_fields` <- `PlRExpr_name_suffix_fields`(ptr)
+  e$`rolling_sum` <- `PlRExpr_rolling_sum`(ptr)
+  e$`rolling_sum_by` <- `PlRExpr_rolling_sum_by`(ptr)
+  e$`rolling_min` <- `PlRExpr_rolling_min`(ptr)
+  e$`rolling_min_by` <- `PlRExpr_rolling_min_by`(ptr)
+  e$`rolling_max` <- `PlRExpr_rolling_max`(ptr)
+  e$`rolling_max_by` <- `PlRExpr_rolling_max_by`(ptr)
+  e$`rolling_mean` <- `PlRExpr_rolling_mean`(ptr)
+  e$`rolling_mean_by` <- `PlRExpr_rolling_mean_by`(ptr)
+  e$`rolling_std` <- `PlRExpr_rolling_std`(ptr)
+  e$`rolling_std_by` <- `PlRExpr_rolling_std_by`(ptr)
+  e$`rolling_var` <- `PlRExpr_rolling_var`(ptr)
+  e$`rolling_var_by` <- `PlRExpr_rolling_var_by`(ptr)
+  e$`rolling_median` <- `PlRExpr_rolling_median`(ptr)
+  e$`rolling_median_by` <- `PlRExpr_rolling_median_by`(ptr)
+  e$`rolling_quantile` <- `PlRExpr_rolling_quantile`(ptr)
+  e$`rolling_quantile_by` <- `PlRExpr_rolling_quantile_by`(ptr)
+  e$`rolling_skew` <- `PlRExpr_rolling_skew`(ptr)
   e$`serialize_binary` <- `PlRExpr_serialize_binary`(ptr)
   e$`serialize_json` <- `PlRExpr_serialize_json`(ptr)
   e$`str_len_bytes` <- `PlRExpr_str_len_bytes`(ptr)
