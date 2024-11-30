@@ -3,7 +3,7 @@ test_that("list$len", {
   expect_equal(
     df$with_columns(pl$col("x")$list$len()),
     pl$DataFrame(
-      x = c(2, 1, 0, 0, 0)
+      x = c(2, 1, 0, NA, NA)
     )$cast(x = pl$UInt32)
   )
 })
