@@ -3320,11 +3320,10 @@ expr__rolling_var_by <- function(
 #' \leq 1}.
 #' @param adjust Divide by decaying adjustment factor in beginning periods to
 #' account for imbalance in relative weightings:
-# TODO: broken latex notation
-# * when `TRUE` (default), the EW function is calculated using weights
-#  \eqn{w_i = (1 - \alpha)^i};
-# * when `FALSE`, the EW function is calculated recursively by \deqn{y_0 = x_0
-#  ; y_t = (1 - \alpha)y_{t - 1} + \alpha x_t}
+#' * when `TRUE` (default), the EW function is calculated using weights
+#'  \eqn{w_i = (1 - \alpha)^i};
+#' * when `FALSE`, the EW function is calculated recursively by \deqn{y_0 = x_0}
+#'   \deqn{y_t = (1 - \alpha)y_{t - 1} + \alpha x_t}
 #' @param bias If `FALSE` (default), apply a correction to make the estimate
 #' statistically unbiased.
 #' @param ignore_nulls Ignore missing values when calculating weights.
@@ -3429,15 +3428,12 @@ expr__ewm_mean <- function(
 
 #' Compute time-based exponentially weighted moving average
 #'
-# TODO: broken latex notation
-# @description
-# Given observations \eqn{x_0}, \eqn{x_1}, \ldots, \eqn{x_{n-1}} at times
-# \eqn{t_0}, \eqn{t_1}, \ldots, \eqn{t_{n-1}}, the EWMA is calculated as
-# \deqn{y_0 &= x_0
-# \alpha_i &= 1 - \exp \left\{ \frac{ -\ln(2)(t_i-t_{i-1}) } { \tau } \right\}
-# y_i &= \alpha_i x_i + (1 - \alpha_i) y_{i-1}; \quad i > 0
-# }
-# where \eqn{\tau} is the `half_life`.
+#' Given observations \eqn{x_0}, \eqn{x_1}, \ldots, \eqn{x_{n-1}} at times
+#' \eqn{t_0}, \eqn{t_1}, \ldots, \eqn{t_{n-1}}, the EWMA is calculated as
+#' \deqn{y_0 = x_0}
+#' \deqn{\alpha_i = 1 - \exp \left\{ \frac{ -\ln(2)(t_i-t_{i-1}) } { \tau } \right\}}
+#' \deqn{y_i = \alpha_i x_i + (1 - \alpha_i) y_{i-1}; \quad i > 0}
+#' where \eqn{\tau} is the `half_life`.
 #'
 #' @param by Times to calculate average by. Should be DateTime, Date, UInt64,
 #' UInt32, Int64, or Int32 data type.

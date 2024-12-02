@@ -33,7 +33,13 @@ expr__ewm_std(
 \leq 1}.}
 
 \item{adjust}{Divide by decaying adjustment factor in beginning periods to
-account for imbalance in relative weightings:}
+account for imbalance in relative weightings:
+\itemize{
+\item when \code{TRUE} (default), the EW function is calculated using weights
+\eqn{w_i = (1 - \alpha)^i};
+\item when \code{FALSE}, the EW function is calculated recursively by \deqn{y_0 = x_0}
+\deqn{y_t = (1 - \alpha)y_{t - 1} + \alpha x_t}
+}}
 
 \item{bias}{If \code{FALSE} (default), apply a correction to make the estimate
 statistically unbiased.}
