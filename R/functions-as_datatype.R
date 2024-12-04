@@ -190,14 +190,10 @@ pl__duration <- function(
     }
     if (!is.null(nanoseconds)) {
       nanoseconds <- as_polars_expr(nanoseconds)
-      if (is.null(time_unit)) {
-        time_unit <- "ns"
-      }
+      time_unit <- time_unit %||% "ns"
     }
 
-    if (is.null(time_unit)) {
-      time_unit <- "us"
-    }
+    time_unit <- time_unit %||% "us"
 
     time_unit <- arg_match0(time_unit, c("us", "ns", "ms"))
 
