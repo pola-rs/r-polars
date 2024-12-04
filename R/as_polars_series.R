@@ -299,6 +299,13 @@ as_polars_series.POSIXct <- function(x, name = NULL, ...) {
 #' @rdname as_polars_series
 #' @export
 as_polars_series.POSIXlt <- function(x, name = NULL, ...) {
+  time_zone <- attr(x, "tzone")[1] %||% "UTC"
+
+  if (identical(time_zone, "")) {
+    # The document says: `""` marks the current time zone
+    time_zone <- Sys.timezone()
+  }
+
   pl$select(
     pl$datetime(
       year = x$year + 1900L,
@@ -307,7 +314,7 @@ as_polars_series.POSIXlt <- function(x, name = NULL, ...) {
       hour = x$hour,
       minute = x$min,
       second = x$sec,
-      time_zone = attr(x, "tzone")[1] %||% "UTC",
+      time_zone = time_zone,
       time_unit = "ns",
       ambiguous = pl$when(x$isdst == 0)$then(pl$lit("latest"))$otherwise(pl$lit("earliest"))
     )$alias(name %||% "") + pl$duration(nanoseconds = (x$sec - floor(x$sec)) * 1e9)
