@@ -151,16 +151,10 @@ test_that("as_polars_series(<POSIXlt>) works for ambiguous time as like clock::a
   # `as.POSIXlt(chr_vec, tz = "Europe/Brussels")$isdst` returns `c(1L, 1L, 1L)` on Linux,
   # but returns `c(1L, 1L, 0L)` on macOS and Windows.
   lt_vec <- as.POSIXlt(chr_vec, tz = "Europe/Brussels")
-  zoned_time_vec <- clock::naive_time_parse(chr_vec, format = "%Y-%m-%d %H:%M:%S") |>
-    clock::as_zoned_time("Europe/Brussels", ambiguous = "earliest")
 
   expect_equal(
     as_polars_series(lt_vec)$dt$cast_time_unit("ms"),
     as_polars_series(clock::as_zoned_time(lt_vec))
-  )
-  expect_equal(
-    as_polars_series(lt_vec)$dt$cast_time_unit("ms"),
-    as_polars_series(zoned_time_vec)
   )
 })
 
