@@ -54,13 +54,13 @@ SEXP savvy_min_horizontal__impl(SEXP c_arg__exprs) {
     return handle_result(res);
 }
 
-SEXP savvy_sum_horizontal__impl(SEXP c_arg__exprs) {
-    SEXP res = savvy_sum_horizontal__ffi(c_arg__exprs);
+SEXP savvy_sum_horizontal__impl(SEXP c_arg__exprs, SEXP c_arg__ignore_nulls) {
+    SEXP res = savvy_sum_horizontal__ffi(c_arg__exprs, c_arg__ignore_nulls);
     return handle_result(res);
 }
 
-SEXP savvy_mean_horizontal__impl(SEXP c_arg__exprs) {
-    SEXP res = savvy_mean_horizontal__ffi(c_arg__exprs);
+SEXP savvy_mean_horizontal__impl(SEXP c_arg__exprs, SEXP c_arg__ignore_nulls) {
+    SEXP res = savvy_mean_horizontal__ffi(c_arg__exprs, c_arg__ignore_nulls);
     return handle_result(res);
 }
 
@@ -2520,8 +2520,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_any_horizontal__impl", (DL_FUNC) &savvy_any_horizontal__impl, 1},
     {"savvy_max_horizontal__impl", (DL_FUNC) &savvy_max_horizontal__impl, 1},
     {"savvy_min_horizontal__impl", (DL_FUNC) &savvy_min_horizontal__impl, 1},
-    {"savvy_sum_horizontal__impl", (DL_FUNC) &savvy_sum_horizontal__impl, 1},
-    {"savvy_mean_horizontal__impl", (DL_FUNC) &savvy_mean_horizontal__impl, 1},
+    {"savvy_sum_horizontal__impl", (DL_FUNC) &savvy_sum_horizontal__impl, 2},
+    {"savvy_mean_horizontal__impl", (DL_FUNC) &savvy_mean_horizontal__impl, 2},
     {"savvy_concat_df__impl", (DL_FUNC) &savvy_concat_df__impl, 1},
     {"savvy_concat_series__impl", (DL_FUNC) &savvy_concat_series__impl, 1},
     {"savvy_as_struct__impl", (DL_FUNC) &savvy_as_struct__impl, 1},

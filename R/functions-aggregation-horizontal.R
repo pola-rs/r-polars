@@ -102,7 +102,9 @@ pl__any_horizontal <- function(...) {
 #'
 #' @inheritParams pl__min_horizontal
 #' @inherit as_polars_expr return
-#'
+#' @param ignore_nulls A logical.
+#' If `TRUE`, ignore null values (default). If `FALSE`,
+#' any null value in the input will lead to a null output.
 #' @examples
 #' df <- pl$DataFrame(
 #'   a = c(1, 8, 3)
@@ -112,18 +114,18 @@ pl__any_horizontal <- function(...) {
 #' df$with_columns(
 #'   sum = pl$sum_horizontal("a", "b")
 #' )
-pl__sum_horizontal <- function(...) {
+pl__sum_horizontal <- function(..., ignore_nulls = TRUE) {
   wrap({
     check_dots_unnamed()
     parse_into_list_of_expressions(...) |> 
-      sum_horizontal()
+      sum_horizontal(ignore_nulls = ignore_nulls)
   })
 }
 
 #' Compute the mean horizontally across columns
 #'
 #' @inheritParams pl__min_horizontal 
-#'
+#' @inheritParams pl__sum_horizontal
 #' @inherit as_polars_expr return
 #'
 #' @examples
@@ -136,10 +138,10 @@ pl__sum_horizontal <- function(...) {
 #' df$with_columns(
 #'   mean = pl$mean_horizontal("a", "b")
 #' )
-pl__mean_horizontal <- function(...) {
+pl__mean_horizontal <- function(..., ignore_nulls = TRUE) {
   wrap({
     check_dots_unnamed()
     parse_into_list_of_expressions(...) |> 
-      mean_horizontal()
+      mean_horizontal(ignore_nulls = ignore_nulls)
   })
 }

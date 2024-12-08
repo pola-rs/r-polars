@@ -58,13 +58,13 @@ NULL
 }
 
 
-`sum_horizontal` <- function(`exprs`) {
-  .savvy_wrap_PlRExpr(.Call(savvy_sum_horizontal__impl, `exprs`))
+`sum_horizontal` <- function(`exprs`, `ignore_nulls`) {
+  .savvy_wrap_PlRExpr(.Call(savvy_sum_horizontal__impl, `exprs`, `ignore_nulls`))
 }
 
 
-`mean_horizontal` <- function(`exprs`) {
-  .savvy_wrap_PlRExpr(.Call(savvy_mean_horizontal__impl, `exprs`))
+`mean_horizontal` <- function(`exprs`, `ignore_nulls`) {
+  .savvy_wrap_PlRExpr(.Call(savvy_mean_horizontal__impl, `exprs`, `ignore_nulls`))
 }
 
 

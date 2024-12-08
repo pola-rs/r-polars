@@ -4,12 +4,16 @@
 \alias{pl__mean_horizontal}
 \title{Compute the mean horizontally across columns}
 \usage{
-pl__mean_horizontal(...)
+pl__mean_horizontal(..., ignore_nulls = TRUE)
 }
 \arguments{
 \item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Columns to aggregate
 horizontally. Accepts expressions. Strings are parsed as column
 names, other non-expression inputs are parsed as literals.}
+
+\item{ignore_nulls}{A logical.
+If \code{TRUE}, ignore null values (default). If \code{FALSE},
+any null value in the input will lead to a null output.}
 }
 \value{
 A polars \link{expression}
