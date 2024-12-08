@@ -1,6 +1,6 @@
 #' Get the minimum value horizontally across columns
 #'
-#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Columns to aggregate 
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Columns to aggregate
 #' horizontally. Accepts expressions. Strings are parsed as column
 #' names, other non-expression inputs are parsed as literals.
 #'
@@ -18,7 +18,7 @@
 pl__min_horizontal <- function(...) {
   wrap({
     check_dots_unnamed()
-    parse_into_list_of_expressions(...) |> 
+    parse_into_list_of_expressions(...) |>
       min_horizontal()
   })
 }
@@ -40,7 +40,7 @@ pl__min_horizontal <- function(...) {
 pl__max_horizontal <- function(...) {
   wrap({
     check_dots_unnamed()
-    parse_into_list_of_expressions(...) |> 
+    parse_into_list_of_expressions(...) |>
       max_horizontal()
   })
 }
@@ -69,7 +69,7 @@ pl__max_horizontal <- function(...) {
 pl__all_horizontal <- function(...) {
   wrap({
     check_dots_unnamed()
-    parse_into_list_of_expressions(...) |> 
+    parse_into_list_of_expressions(...) |>
       all_horizontal()
   })
 }
@@ -93,7 +93,7 @@ pl__all_horizontal <- function(...) {
 pl__any_horizontal <- function(...) {
   wrap({
     check_dots_unnamed()
-    parse_into_list_of_expressions(...) |> 
+    parse_into_list_of_expressions(...) |>
       any_horizontal()
   })
 }
@@ -117,14 +117,14 @@ pl__any_horizontal <- function(...) {
 pl__sum_horizontal <- function(..., ignore_nulls = TRUE) {
   wrap({
     check_dots_unnamed()
-    parse_into_list_of_expressions(...) |> 
+    parse_into_list_of_expressions(...) |>
       sum_horizontal(ignore_nulls = ignore_nulls)
   })
 }
 
 #' Compute the mean horizontally across columns
 #'
-#' @inheritParams pl__min_horizontal 
+#' @inheritParams pl__min_horizontal
 #' @inheritParams pl__sum_horizontal
 #' @inherit as_polars_expr return
 #'
@@ -141,7 +141,7 @@ pl__sum_horizontal <- function(..., ignore_nulls = TRUE) {
 pl__mean_horizontal <- function(..., ignore_nulls = TRUE) {
   wrap({
     check_dots_unnamed()
-    parse_into_list_of_expressions(...) |> 
+    parse_into_list_of_expressions(...) |>
       mean_horizontal(ignore_nulls = ignore_nulls)
   })
 }
