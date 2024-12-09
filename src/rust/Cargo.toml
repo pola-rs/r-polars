@@ -49,7 +49,7 @@ serde = { version = "1.0.215", features = ["derive"] }
 serde_json = "*"
 smartstring = "1.0.1"
 state = "0.6.0"
-thiserror = "2.0.3"
+thiserror = "2.0.6"
 polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "2dce3d3b5c80ae7522a3435f844fac8fed9dc9e8", default-features = false }
 polars-lazy = { git = "https://github.com/pola-rs/polars.git", rev = "2dce3d3b5c80ae7522a3435f844fac8fed9dc9e8", default-features = false }
 either = "1"
