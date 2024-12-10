@@ -1,5 +1,11 @@
 # NEWS
 
+> [!IMPORTANT]
+>
+> The development of this package is now in maintenance mode, and the possibility of adding new features in the future is low.
+> The focus of future development is on a completely rewritten version that currently exists in the `next` branch.
+> Please check the GitHub issue #1152.
+
 ## Polars R Package (development version)
 
 ### Breaking changes
