@@ -2,10 +2,11 @@
 
 > [!IMPORTANT]
 >
-> This package is now in maintenance mode, and the possibility of adding new features in the future is low.
+> This package is now in maintenance mode,
+> meaning that important bugs will be fixed if possible but we won't adding new features in the next few weeks / months.
 >
-> The focus of future development is on a completely rewritten version that currently exists in the `next` branch.
-> The package currently named `neopolars` in that branch will become the new `polars` package in the future.
+> The focus of future development is on a completely rewritten version (`neopolars`) that currently exists in the `next` branch.
+> The package in that branch will become the new `polars` package once the rewrite is complete.
 >
 > Please check the GitHub issue #1152.
 
