@@ -121,7 +121,7 @@ impl RPolarsLazyFrame {
         };
         self.0
             .clone()
-            .sink_parquet(robj_to!(String, path)?, pqwo)
+            .sink_parquet(&robj_to!(String, path)?, pqwo, None)
             .map_err(polars_to_rpolars_err)
     }
 
@@ -132,7 +132,7 @@ impl RPolarsLazyFrame {
         };
         self.0
             .clone()
-            .sink_ipc(robj_to!(String, path)?, ipcwo)
+            .sink_ipc(robj_to!(String, path)?, ipcwo, None)
             .map_err(polars_to_rpolars_err)
     }
 
@@ -192,7 +192,7 @@ impl RPolarsLazyFrame {
 
         self.0
             .clone()
-            .sink_csv(robj_to!(String, path)?, options)
+            .sink_csv(robj_to!(String, path)?, options, None)
             .map_err(polars_to_rpolars_err)
     }
 
@@ -201,7 +201,7 @@ impl RPolarsLazyFrame {
         let options = pl::JsonWriterOptions { maintain_order };
         self.0
             .clone()
-            .sink_json(robj_to!(String, path)?, options)
+            .sink_json(robj_to!(String, path)?, options, None)
             .map_err(polars_to_rpolars_err)
     }
 
@@ -526,6 +526,7 @@ impl RPolarsLazyFrame {
                     nulls_last,
                     maintain_order,
                     multithreaded,
+                    limit: None,
                 },
             )
             .into())

@@ -20,13 +20,13 @@ pub use crate::series::*;
 
 use crate::utils::{collect_hinted_result, r_result_list};
 use arrow::datatypes::ArrowDataType;
+use polars::frame::explode::UnpivotArgsIR;
+use polars::prelude::pivot::{pivot, pivot_stable};
 use polars::prelude::ArrowField;
 use polars::prelude::SchemaExt;
 use polars_core::error::PolarsError;
 use polars_core::utils::arrow;
-
-use polars::frame::explode::UnpivotArgsIR;
-use polars::prelude::pivot::{pivot, pivot_stable};
+use polars_core::utils::Container;
 
 pub struct DataFrameStreamIterator {
     columns: Vec<polars::series::Series>,

@@ -27,16 +27,20 @@ fn max_horizontal(dotdotdot: Robj) -> RResult<RPolarsExpr> {
 
 #[extendr]
 fn sum_horizontal(dotdotdot: Robj) -> RResult<RPolarsExpr> {
-    Ok(dsl::sum_horizontal(robj_to!(VecPLExprCol, dotdotdot)?)
-        .map_err(polars_to_rpolars_err)?
-        .into())
+    Ok(
+        dsl::sum_horizontal(robj_to!(VecPLExprCol, dotdotdot)?, true)
+            .map_err(polars_to_rpolars_err)?
+            .into(),
+    )
 }
 
 #[extendr]
 fn mean_horizontal(dotdotdot: Robj) -> RResult<RPolarsExpr> {
-    Ok(dsl::mean_horizontal(robj_to!(VecPLExprCol, dotdotdot)?)
-        .map_err(polars_to_rpolars_err)?
-        .into())
+    Ok(
+        dsl::mean_horizontal(robj_to!(VecPLExprCol, dotdotdot)?, true)
+            .map_err(polars_to_rpolars_err)?
+            .into(),
+    )
 }
 
 #[extendr]
@@ -348,6 +352,7 @@ fn arg_sort_by(
             nulls_last,
             multithreaded,
             maintain_order,
+            limit: None,
         },
     )
     .into())

@@ -208,6 +208,7 @@ impl RPolarsSeries {
             nulls_last: descending,
             multithreaded: true,
             maintain_order: false,
+            limit: None,
         };
         self.0.is_sorted(options).map_err(polars_to_rpolars_err)
     }
