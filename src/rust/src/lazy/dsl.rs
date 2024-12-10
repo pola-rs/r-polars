@@ -247,6 +247,7 @@ impl RPolarsExpr {
                 nulls_last,
                 multithreaded: true,
                 maintain_order: false,
+                limit: None,
             })
             .into()
     }
@@ -259,6 +260,7 @@ impl RPolarsExpr {
                 nulls_last,
                 multithreaded: true,
                 maintain_order: false,
+                limit: None,
             })
             .into()
     }
@@ -314,6 +316,7 @@ impl RPolarsExpr {
                 nulls_last,
                 maintain_order,
                 multithreaded,
+                limit: None,
             },
         ))
         .into())
@@ -2662,7 +2665,7 @@ impl RPolarsExpr {
             .0
             .clone()
             .meta()
-            .into_tree_formatter()
+            .into_tree_formatter(false)
             .map_err(polars_to_rpolars_err)?;
         Ok(format!("{e}"))
     }
@@ -2719,15 +2722,12 @@ impl RPolarsExpr {
         .into())
     }
 
-    pub fn corr(a: Robj, b: Robj, method: Robj, ddof: Robj, propagate_nans: Robj) -> RResult<Self> {
+    pub fn corr(a: Robj, b: Robj, method: Robj, propagate_nans: Robj) -> RResult<Self> {
         let x = robj_to!(PLExprCol, a)?;
         let y = robj_to!(PLExprCol, b)?;
-        let df = robj_to!(u8, ddof)?;
         match robj_to!(String, method)?.as_str() {
-            "pearson" => Ok(pl::pearson_corr(x, y, df).into()),
-            "spearman" => {
-                Ok(pl::spearman_rank_corr(x, y, df, robj_to!(bool, propagate_nans)?).into())
-            }
+            "pearson" => Ok(pl::pearson_corr(x, y).into()),
+            "spearman" => Ok(pl::spearman_rank_corr(x, y, robj_to!(bool, propagate_nans)?).into()),
             m => rerr()
                 .bad_val(m)
                 .misvalued("should be 'pearson' or 'spearman'"),

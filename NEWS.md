@@ -2,6 +2,11 @@
 
 ## Polars R Package (development version)
 
+### Breaking changes
+
+- Updated Rust Polars to 0.45.1.
+  - The `ddof` argument of `pl$corr()` is removed.
+
 ## Polars R Package 0.21.0
 
 ### Breaking changes

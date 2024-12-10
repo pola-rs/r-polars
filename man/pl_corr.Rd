@@ -4,7 +4,7 @@
 \alias{pl_corr}
 \title{Correlation}
 \usage{
-pl_corr(a, b, method = "pearson", ddof = 1, propagate_nans = FALSE)
+pl_corr(a, b, method = "pearson", propagate_nans = FALSE)
 }
 \arguments{
 \item{a}{One column name or Expr or anything convertible Into\if{html}{\out{<Expr>}} via \code{pl$col()}.}
@@ -12,8 +12,6 @@ pl_corr(a, b, method = "pearson", ddof = 1, propagate_nans = FALSE)
 \item{b}{Another column name or Expr or anything convertible Into\if{html}{\out{<Expr>}} via \code{pl$col()}.}
 
 \item{method}{str One of 'pearson' or 'spearman'}
-
-\item{ddof}{integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.}
 
 \item{propagate_nans}{bool Used only when calculating the spearman rank correlation.
 If \code{True} any \code{NaN} encountered will lead to \code{NaN} in the output.

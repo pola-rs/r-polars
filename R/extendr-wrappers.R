@@ -1158,7 +1158,7 @@ RPolarsExpr$cov <- function(a, b, ddof) .Call(wrap__RPolarsExpr__cov, a, b, ddof
 
 RPolarsExpr$rolling_cov <- function(a, b, window_size, min_periods, ddof) .Call(wrap__RPolarsExpr__rolling_cov, a, b, window_size, min_periods, ddof)
 
-RPolarsExpr$corr <- function(a, b, method, ddof, propagate_nans) .Call(wrap__RPolarsExpr__corr, a, b, method, ddof, propagate_nans)
+RPolarsExpr$corr <- function(a, b, method, propagate_nans) .Call(wrap__RPolarsExpr__corr, a, b, method, propagate_nans)
 
 RPolarsExpr$rolling_corr <- function(a, b, window_size, min_periods, ddof) .Call(wrap__RPolarsExpr__rolling_corr, a, b, window_size, min_periods, ddof)
 
