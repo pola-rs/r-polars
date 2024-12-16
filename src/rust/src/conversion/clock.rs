@@ -126,11 +126,9 @@ impl From<ZonedTime> for Sexp {
                 .into(),
         );
         let _ = sexp.set_attrib("zone", <OwnedStringSexp>::try_from(zt.zone).unwrap().into());
-        sexp
-            .set_name_and_value(0, "lower", zt.time_point.value.left)
+        sexp.set_name_and_value(0, "lower", zt.time_point.value.left)
             .unwrap();
-        sexp
-            .set_name_and_value(1, "upper", zt.time_point.value.right)
+        sexp.set_name_and_value(1, "upper", zt.time_point.value.right)
             .unwrap();
 
         sexp.into()

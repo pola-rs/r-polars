@@ -282,8 +282,7 @@ impl PlRDataType {
                 let mut out = OwnedListSexp::new(2, true)?;
                 let inner: Sexp = PlRDataType { dt: *inner.clone() }.try_into()?;
                 let shape: Sexp = OwnedRealSexp::try_from_slice(
-                    self
-                        .dt
+                    self.dt
                         .get_shape()
                         .unwrap_or(vec![0])
                         .iter()

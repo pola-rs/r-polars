@@ -28,8 +28,7 @@ impl From<Wrap<&BinaryChunked>> for Sexp {
         for (i, v) in ca.into_iter().enumerate() {
             unsafe {
                 if let Some(v) = v {
-                    sexp
-                        .set_value_unchecked(i, OwnedRawSexp::try_from_slice(v).unwrap().inner());
+                    sexp.set_value_unchecked(i, OwnedRawSexp::try_from_slice(v).unwrap().inner());
                 } else {
                     sexp.set_value_unchecked(i, savvy::sexp::null::null());
                 }
@@ -132,8 +131,7 @@ impl From<Wrap<&DurationChunked>> for Sexp {
         };
         let mut sexp = OwnedRealSexp::new(ca.len()).unwrap();
         let _ = sexp.set_class(["difftime"]);
-        sexp
-            .set_attrib("units", <OwnedStringSexp>::try_from("secs").unwrap().into())
+        sexp.set_attrib("units", <OwnedStringSexp>::try_from("secs").unwrap().into())
             .unwrap();
         for (i, v) in ca.into_iter().enumerate() {
             if let Some(v) = v {
@@ -159,12 +157,11 @@ impl From<Wrap<&DatetimeChunked>> for Sexp {
 
         let mut sexp = OwnedRealSexp::new(ca.len()).unwrap();
         let _ = sexp.set_class(["POSIXct", "POSIXt"]);
-        sexp
-            .set_attrib(
-                "tzone",
-                <OwnedStringSexp>::try_from(tzone_attr).unwrap().into(),
-            )
-            .unwrap();
+        sexp.set_attrib(
+            "tzone",
+            <OwnedStringSexp>::try_from(tzone_attr).unwrap().into(),
+        )
+        .unwrap();
         for (i, v) in ca.into_iter().enumerate() {
             if let Some(v) = v {
                 let _ = sexp.set_elt(i, v as f64 / div_value);
@@ -181,8 +178,7 @@ impl From<Wrap<&TimeChunked>> for Sexp {
         let ca = ca.0;
         let mut sexp = OwnedRealSexp::new(ca.len()).unwrap();
         let _ = sexp.set_class(["hms", "difftime"]);
-        sexp
-            .set_attrib("units", <OwnedStringSexp>::try_from("secs").unwrap().into())
+        sexp.set_attrib("units", <OwnedStringSexp>::try_from("secs").unwrap().into())
             .unwrap();
         for (i, v) in ca.into_iter().enumerate() {
             if let Some(v) = v {

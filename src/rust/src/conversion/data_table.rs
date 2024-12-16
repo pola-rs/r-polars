@@ -12,7 +12,7 @@ pub struct ITime {
 impl From<&DateChunked> for IDate {
     fn from(ca: &DateChunked) -> Self {
         IDate {
-            sexp: super::chunked_array::date32_export_impl(ca, &["IDate", "Date"])
+            sexp: super::chunked_array::date32_export_impl(ca, &["IDate", "Date"]),
         }
     }
 }
