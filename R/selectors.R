@@ -541,7 +541,7 @@ cs__datetime <- function(time_unit = c("ms", "us", "ns"), time_zone = list("*", 
 #' # Select all columns except for those that are decimal:
 #' df$select(!cs$decimal())
 cs__decimal <- function() {
-  wrap_to_selector(pl$col(pl$Decimal()), name = "decimal")
+  wrap_to_selector(pl$col(pl$Decimal(NULL, NULL)), name = "decimal")
 }
 
 #' Select all columns having names consisting only of digits

@@ -42,6 +42,7 @@ impl TryFrom<&str> for PlRDataType {
             "Int16" => DataType::Int16,
             "Int32" => DataType::Int32,
             "Int64" => DataType::Int64,
+            "Int128" => DataType::Int128,
             "UInt8" => DataType::UInt8,
             "UInt16" => DataType::UInt16,
             "UInt32" => DataType::UInt32,

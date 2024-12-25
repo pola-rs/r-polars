@@ -132,6 +132,7 @@ on_load({
     "Int16",
     "Int32",
     "Int64",
+    "Int128",
     "UInt8",
     "UInt16",
     "UInt32",
@@ -151,9 +152,10 @@ on_load({
 })
 
 #' @rdname polars_dtype
-#' @param precision A integer or `NULL` (default), maximum number of digits in each number.
+#' @param precision Single integer or `NULL` (default), maximum number of digits in each number.
 #' If `NULL`, the precision is inferred.
-#' @param scale A integer. Number of digits to the right of the decimal point in each number.
+#' @param scale Single integer or `NULL`. Number of digits to the right of the decimal point in each number.
+#' The default is `0`.
 pl__Decimal <- function(precision = NULL, scale = 0L) {
   PlRDataType$new_decimal(scale = scale, precision = precision) |>
     wrap()

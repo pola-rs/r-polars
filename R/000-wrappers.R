@@ -589,7 +589,7 @@ class(`PlRDataFrame`) <- c("PlRDataFrame__bundle", "savvy_neopolars__sealed")
   .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_new_from_name__impl, `name`))
 }
 
-`PlRDataType`$`new_decimal` <- function(`scale`, `precision` = NULL) {
+`PlRDataType`$`new_decimal` <- function(`scale` = NULL, `precision` = NULL) {
   .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_new_decimal__impl, `scale`, `precision`))
 }
 

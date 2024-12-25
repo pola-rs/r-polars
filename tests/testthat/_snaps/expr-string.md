@@ -301,7 +301,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! invalid series dtype: expected `String`, got `f64`
+      ! invalid series dtype: expected `String`, got `f64` for series with name `literal`
 
 # str$count_matches
 
@@ -313,7 +313,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! invalid series dtype: expected `String`, got `f64`
+      ! invalid series dtype: expected `String`, got `f64` for series with name `literal`
 
 # str$split
 
@@ -325,7 +325,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! invalid series dtype: expected `String`, got `f64`
+      ! invalid series dtype: expected `String`, got `f64` for series with name `literal`
 
 ---
 

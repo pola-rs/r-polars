@@ -108,21 +108,23 @@ impl PlRSeries {
                     <Sexp>::from(Wrap(series.cast(&DataType::Int32).unwrap().i32().unwrap())),
                 ),
                 DataType::Int32 => Ok(<Sexp>::from(Wrap(series.i32().unwrap()))),
-                DataType::UInt32 | DataType::UInt64 | DataType::Int64 => match int64 {
-                    Int64Conversion::Character => Ok(<Sexp>::from(Wrap(
-                        series.cast(&DataType::String).unwrap().str().unwrap(),
-                    ))),
-                    Int64Conversion::Double => Ok(<Sexp>::from(Wrap(
-                        series.cast(&DataType::Float64).unwrap().f64().unwrap(),
-                    ))),
-                    Int64Conversion::Integer => {
-                        let s = series.cast(&DataType::Int32).map_err(RPolarsErr::from)?;
-                        Ok(<Sexp>::from(Wrap(s.i32().unwrap())))
+                DataType::UInt32 | DataType::UInt64 | DataType::Int64 | DataType::Int128 => {
+                    match int64 {
+                        Int64Conversion::Character => Ok(<Sexp>::from(Wrap(
+                            series.cast(&DataType::String).unwrap().str().unwrap(),
+                        ))),
+                        Int64Conversion::Double => Ok(<Sexp>::from(Wrap(
+                            series.cast(&DataType::Float64).unwrap().f64().unwrap(),
+                        ))),
+                        Int64Conversion::Integer => {
+                            let s = series.cast(&DataType::Int32).map_err(RPolarsErr::from)?;
+                            Ok(<Sexp>::from(Wrap(s.i32().unwrap())))
+                        }
+                        Int64Conversion::Integer64 => Ok(<Sexp>::from(Wrap(
+                            series.cast(&DataType::Int64).unwrap().i64().unwrap(),
+                        ))),
                     }
-                    Int64Conversion::Integer64 => Ok(<Sexp>::from(Wrap(
-                        series.cast(&DataType::Int64).unwrap().i64().unwrap(),
-                    ))),
-                },
+                }
                 DataType::Float32 => Ok(<Sexp>::from(Wrap(
                     series.cast(&DataType::Float64).unwrap().f64().unwrap(),
                 ))),
