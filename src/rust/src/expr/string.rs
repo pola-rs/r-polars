@@ -80,6 +80,11 @@ impl PlRExpr {
         Ok(self.inner.clone().str().pad_start(width, fillchar).into())
     }
 
+    fn str_to_decimal(&self, infer_len: NumericScalar) -> Result<Self> {
+        let infer_len = <Wrap<usize>>::try_from(infer_len)?.0;
+        Ok(self.inner.clone().str().to_decimal(infer_len).into())
+    }
+
     fn str_contains(&self, pat: &PlRExpr, literal: bool, strict: bool) -> Result<Self> {
         if literal {
             Ok(self

@@ -409,6 +409,7 @@ SEXP savvy_PlRExpr_str_strip_chars_start__ffi(SEXP self__, SEXP c_arg__matches);
 SEXP savvy_PlRExpr_str_zfill__ffi(SEXP self__, SEXP c_arg__alignment);
 SEXP savvy_PlRExpr_str_pad_end__ffi(SEXP self__, SEXP c_arg__width, SEXP c_arg__fillchar);
 SEXP savvy_PlRExpr_str_pad_start__ffi(SEXP self__, SEXP c_arg__width, SEXP c_arg__fillchar);
+SEXP savvy_PlRExpr_str_to_decimal__ffi(SEXP self__, SEXP c_arg__infer_len);
 SEXP savvy_PlRExpr_str_contains__ffi(SEXP self__, SEXP c_arg__pat, SEXP c_arg__literal, SEXP c_arg__strict);
 SEXP savvy_PlRExpr_str_ends_with__ffi(SEXP self__, SEXP c_arg__sub);
 SEXP savvy_PlRExpr_str_starts_with__ffi(SEXP self__, SEXP c_arg__sub);

@@ -1008,3 +1008,19 @@ test_that("$str$extract_many works", {
     pl$DataFrame(values = list("disco", c("rhap", "ody")))
   )
 })
+
+# TODO: uncomment when https://github.com/pola-rs/polars/issues/20556 is solved
+# test_that("to_decimal", {
+#   df <- pl$DataFrame(
+#     x = c(
+#       "40.12", "3420.13", "120134.19", "3212.98",
+#       "12.90", "143.09", "143.9"
+#     )
+#   )
+#   expect_equal(
+#     df$select(pl$col("x")$str$to_decimal()),
+#     pl$DataFrame(x = c(
+#       40.12, 3420.13, 120134.19, 3212.98, 12.90, 143.09, 143.9
+#     ), .schema_overrides = list(x = pl$Decimal(scale = 2)))
+#   )
+# })

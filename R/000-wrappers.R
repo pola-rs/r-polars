@@ -2644,6 +2644,12 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_neopolars__sealed")
   }
 }
 
+`PlRExpr_str_to_decimal` <- function(self) {
+  function(`infer_len`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_str_to_decimal__impl, `self`, `infer_len`))
+  }
+}
+
 `PlRExpr_str_contains` <- function(self) {
   function(`pat`, `literal`, `strict`) {
     `pat` <- .savvy_extract_ptr(`pat`, "PlRExpr")
@@ -3194,6 +3200,7 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_neopolars__sealed")
   e$`str_zfill` <- `PlRExpr_str_zfill`(ptr)
   e$`str_pad_end` <- `PlRExpr_str_pad_end`(ptr)
   e$`str_pad_start` <- `PlRExpr_str_pad_start`(ptr)
+  e$`str_to_decimal` <- `PlRExpr_str_to_decimal`(ptr)
   e$`str_contains` <- `PlRExpr_str_contains`(ptr)
   e$`str_ends_with` <- `PlRExpr_str_ends_with`(ptr)
   e$`str_starts_with` <- `PlRExpr_str_starts_with`(ptr)
