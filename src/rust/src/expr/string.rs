@@ -77,13 +77,8 @@ impl PlRExpr {
             .into())
     }
 
-    fn str_zfill(&self, alignment: &PlRExpr) -> Result<Self> {
-        Ok(self
-            .inner
-            .clone()
-            .str()
-            .zfill(alignment.inner.clone())
-            .into())
+    fn str_zfill(&self, length: &PlRExpr) -> Result<Self> {
+        Ok(self.inner.clone().str().zfill(length.inner.clone()).into())
     }
 
     fn str_pad_end(&self, width: NumericScalar, fillchar: &str) -> Result<Self> {
@@ -121,16 +116,21 @@ impl PlRExpr {
         }
     }
 
-    fn str_ends_with(&self, sub: &PlRExpr) -> Result<Self> {
-        Ok(self.inner.clone().str().ends_with(sub.inner.clone()).into())
-    }
-
-    fn str_starts_with(&self, sub: &PlRExpr) -> Result<Self> {
+    fn str_ends_with(&self, suffix: &PlRExpr) -> Result<Self> {
         Ok(self
             .inner
             .clone()
             .str()
-            .starts_with(sub.inner.clone())
+            .ends_with(suffix.inner.clone())
+            .into())
+    }
+
+    fn str_starts_with(&self, prefix: &PlRExpr) -> Result<Self> {
+        Ok(self
+            .inner
+            .clone()
+            .str()
+            .starts_with(prefix.inner.clone())
             .into())
     }
 

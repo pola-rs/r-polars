@@ -4,10 +4,10 @@
 \alias{expr_str_starts_with}
 \title{Check if string starts with a regex}
 \usage{
-expr_str_starts_with(sub)
+expr_str_starts_with(prefix)
 }
 \arguments{
-\item{sub}{Prefix substring or Expr.}
+\item{prefix}{Prefix substring or Expr.}
 }
 \value{
 A polars \link{expression}

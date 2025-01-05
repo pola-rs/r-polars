@@ -4,11 +4,13 @@
 \alias{expr_str_zfill}
 \title{Fills the string with zeroes.}
 \usage{
-expr_str_zfill(alignment)
+expr_str_zfill(length)
 }
 \arguments{
-\item{alignment}{Fill the value up to this length. This can be an Expr or
-something coercible to an Expr. Strings are parsed as column names.}
+\item{length}{Pad the string until it reaches this length. Strings with
+length equal to or greater than this value are returned as-is. This can be
+an Expr or something coercible to an Expr. Strings are parsed as column
+names.}
 }
 \value{
 A polars \link{expression}
@@ -26,12 +28,6 @@ sign character rather than before. The original string is returned if width is
 less than or equal to \code{len(s)}.
 }
 \examples{
-some_floats_expr <- pl$lit(c(0, 10, -5, 5))
-
-# cast to String and ljust alignment = 5, and view as R char vector
-some_floats_expr$cast(pl$String)$str$zfill(5)$to_r()
-
-# cast to int and the to utf8 and then ljust alignment = 5, and view as R
-# char vector
-some_floats_expr$cast(pl$Int64)$cast(pl$String)$str$zfill(5)$to_r()
+df <- pl$DataFrame(a = c(-1L, 123L, 999999L, NA))
+df$with_columns(zfill = pl$col("a")$cast(pl$String)$str$zfill(4))
 }

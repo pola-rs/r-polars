@@ -4,10 +4,10 @@
 \alias{expr_str_ends_with}
 \title{Check if string ends with a regex}
 \usage{
-expr_str_ends_with(sub)
+expr_str_ends_with(suffix)
 }
 \arguments{
-\item{sub}{Suffix substring or Expr.}
+\item{suffix}{Suffix substring or Expr.}
 }
 \value{
 A polars \link{expression}
