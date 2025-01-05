@@ -13,5 +13,5 @@
       Resolved plan until failure:
       
       	---> FAILED HERE RESOLVING 'select' <---
-      DF ["a", "b"]; PROJECT */2 COLUMNS; SELECTION: None
+      DF ["a", "b"]; PROJECT */2 COLUMNS
 
