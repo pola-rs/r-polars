@@ -2625,6 +2625,20 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_neopolars__sealed")
   }
 }
 
+`PlRExpr_str_strip_prefix` <- function(self) {
+  function(`prefix`) {
+    `prefix` <- .savvy_extract_ptr(`prefix`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_str_strip_prefix__impl, `self`, `prefix`))
+  }
+}
+
+`PlRExpr_str_strip_suffix` <- function(self) {
+  function(`suffix`) {
+    `suffix` <- .savvy_extract_ptr(`suffix`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_str_strip_suffix__impl, `self`, `suffix`))
+  }
+}
+
 `PlRExpr_str_zfill` <- function(self) {
   function(`alignment`) {
     `alignment` <- .savvy_extract_ptr(`alignment`, "PlRExpr")
@@ -3197,6 +3211,8 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_neopolars__sealed")
   e$`str_strip_chars` <- `PlRExpr_str_strip_chars`(ptr)
   e$`str_strip_chars_end` <- `PlRExpr_str_strip_chars_end`(ptr)
   e$`str_strip_chars_start` <- `PlRExpr_str_strip_chars_start`(ptr)
+  e$`str_strip_prefix` <- `PlRExpr_str_strip_prefix`(ptr)
+  e$`str_strip_suffix` <- `PlRExpr_str_strip_suffix`(ptr)
   e$`str_zfill` <- `PlRExpr_str_zfill`(ptr)
   e$`str_pad_end` <- `PlRExpr_str_pad_end`(ptr)
   e$`str_pad_start` <- `PlRExpr_str_pad_start`(ptr)

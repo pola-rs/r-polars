@@ -406,6 +406,8 @@ SEXP savvy_PlRExpr_str_to_lowercase__ffi(SEXP self__);
 SEXP savvy_PlRExpr_str_strip_chars__ffi(SEXP self__, SEXP c_arg__matches);
 SEXP savvy_PlRExpr_str_strip_chars_end__ffi(SEXP self__, SEXP c_arg__matches);
 SEXP savvy_PlRExpr_str_strip_chars_start__ffi(SEXP self__, SEXP c_arg__matches);
+SEXP savvy_PlRExpr_str_strip_prefix__ffi(SEXP self__, SEXP c_arg__prefix);
+SEXP savvy_PlRExpr_str_strip_suffix__ffi(SEXP self__, SEXP c_arg__suffix);
 SEXP savvy_PlRExpr_str_zfill__ffi(SEXP self__, SEXP c_arg__alignment);
 SEXP savvy_PlRExpr_str_pad_end__ffi(SEXP self__, SEXP c_arg__width, SEXP c_arg__fillchar);
 SEXP savvy_PlRExpr_str_pad_start__ffi(SEXP self__, SEXP c_arg__width, SEXP c_arg__fillchar);

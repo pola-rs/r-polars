@@ -284,6 +284,17 @@ test_that("strip_chars_*()", {
   )
 })
 
+test_that("strip_prefix, strip_suffix", {
+  df <- pl$DataFrame(a = c("foobar", "foofoobarbar", "foo", "bar"))
+  expect_equal(
+    df$select(pl$col("a")$str$strip_prefix("foo")),
+    pl$DataFrame(a = c("bar", "foobarbar", "", "bar"))
+  )
+  expect_equal(
+    df$select(pl$col("a")$str$strip_suffix("bar")),
+    pl$DataFrame(a = c("foo", "foofoobar", "foo", ""))
+  )
+})
 
 test_that("zfill", {
   dat <- pl$DataFrame(x = " 123abc ")

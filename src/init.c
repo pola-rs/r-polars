@@ -2024,6 +2024,16 @@ SEXP savvy_PlRExpr_str_strip_chars_start__impl(SEXP self__, SEXP c_arg__matches)
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_str_strip_prefix__impl(SEXP self__, SEXP c_arg__prefix) {
+    SEXP res = savvy_PlRExpr_str_strip_prefix__ffi(self__, c_arg__prefix);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_str_strip_suffix__impl(SEXP self__, SEXP c_arg__suffix) {
+    SEXP res = savvy_PlRExpr_str_strip_suffix__ffi(self__, c_arg__suffix);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_str_zfill__impl(SEXP self__, SEXP c_arg__alignment) {
     SEXP res = savvy_PlRExpr_str_zfill__ffi(self__, c_arg__alignment);
     return handle_result(res);
@@ -2919,6 +2929,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_str_strip_chars__impl", (DL_FUNC) &savvy_PlRExpr_str_strip_chars__impl, 2},
     {"savvy_PlRExpr_str_strip_chars_end__impl", (DL_FUNC) &savvy_PlRExpr_str_strip_chars_end__impl, 2},
     {"savvy_PlRExpr_str_strip_chars_start__impl", (DL_FUNC) &savvy_PlRExpr_str_strip_chars_start__impl, 2},
+    {"savvy_PlRExpr_str_strip_prefix__impl", (DL_FUNC) &savvy_PlRExpr_str_strip_prefix__impl, 2},
+    {"savvy_PlRExpr_str_strip_suffix__impl", (DL_FUNC) &savvy_PlRExpr_str_strip_suffix__impl, 2},
     {"savvy_PlRExpr_str_zfill__impl", (DL_FUNC) &savvy_PlRExpr_str_zfill__impl, 2},
     {"savvy_PlRExpr_str_pad_end__impl", (DL_FUNC) &savvy_PlRExpr_str_pad_end__impl, 3},
     {"savvy_PlRExpr_str_pad_start__impl", (DL_FUNC) &savvy_PlRExpr_str_pad_start__impl, 3},

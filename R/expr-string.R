@@ -390,6 +390,51 @@ expr_str_strip_chars_end <- function(matches = NULL) {
     wrap()
 }
 
+#' Strip prefix
+#'
+#' @description
+#' The prefix will be removed from the string exactly once, if found.
+#'
+#' @param prefix The prefix to be removed.
+#'
+#' @details
+#' This method strips the exact character sequence provided in `prefix` from
+#' the start of the input. To strip a set of characters in any order, use
+#' [`$strip_chars_start()`][expr_str_chars_start] instead.
+#'
+#' @inherit as_polars_expr return
+#' @examples
+#' df <- pl$DataFrame(a = c("foobar", "foofoobar", "foo", "bar"))
+#' df$with_columns(
+#'   stripped = pl$col("a")$str$strip_prefix("foo")
+#' )
+expr_str_strip_prefix <- function(prefix = NULL) {
+  self$`_rexpr`$str_strip_prefix(as_polars_expr(prefix, as_lit = TRUE)$`_rexpr`) |>
+    wrap()
+}
+
+#' Strip suffix
+#'
+#' @description
+#' The suffix will be removed from the string exactly once, if found.
+#'
+#' @param suffix The suffix to be removed.
+#'
+#' @details
+#' This method strips the exact character sequence provided in `suffix` from
+#' the end of the input. To strip a set of characters in any order, use
+#' [`$strip_chars_end()`][expr_str_chars_end] instead.
+#'
+#' @inherit as_polars_expr return
+#' @examples
+#' df <- pl$DataFrame(a = c("foobar", "foobarbar", "foo", "bar"))
+#' df$with_columns(
+#'   stripped = pl$col("a")$str$strip_suffix("bar")
+#' )
+expr_str_strip_suffix <- function(suffix = NULL) {
+  self$`_rexpr`$str_strip_suffix(as_polars_expr(suffix, as_lit = TRUE)$`_rexpr`) |>
+    wrap()
+}
 
 #' Fills the string with zeroes.
 #'

@@ -59,6 +59,24 @@ impl PlRExpr {
             .into())
     }
 
+    fn str_strip_prefix(&self, prefix: &PlRExpr) -> Result<Self> {
+        Ok(self
+            .inner
+            .clone()
+            .str()
+            .strip_prefix(prefix.inner.clone())
+            .into())
+    }
+
+    fn str_strip_suffix(&self, suffix: &PlRExpr) -> Result<Self> {
+        Ok(self
+            .inner
+            .clone()
+            .str()
+            .strip_suffix(suffix.inner.clone())
+            .into())
+    }
+
     fn str_zfill(&self, alignment: &PlRExpr) -> Result<Self> {
         Ok(self
             .inner
