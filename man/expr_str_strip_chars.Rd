@@ -4,10 +4,10 @@
 \alias{expr_str_strip_chars}
 \title{Strip leading and trailing characters}
 \usage{
-expr_str_strip_chars(matches = NULL)
+expr_str_strip_chars(characters = NULL)
 }
 \arguments{
-\item{matches}{The set of characters to be removed. All combinations of this
+\item{characters}{The set of characters to be removed. All combinations of this
 set of characters will be stripped. If \code{NULL} (default), all whitespace is
 removed instead. This can be an Expr.}
 }

@@ -2605,23 +2605,23 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_neopolars__sealed")
 }
 
 `PlRExpr_str_strip_chars` <- function(self) {
-  function(`matches`) {
-    `matches` <- .savvy_extract_ptr(`matches`, "PlRExpr")
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_str_strip_chars__impl, `self`, `matches`))
+  function(`characters`) {
+    `characters` <- .savvy_extract_ptr(`characters`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_str_strip_chars__impl, `self`, `characters`))
   }
 }
 
 `PlRExpr_str_strip_chars_end` <- function(self) {
-  function(`matches`) {
-    `matches` <- .savvy_extract_ptr(`matches`, "PlRExpr")
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_str_strip_chars_end__impl, `self`, `matches`))
+  function(`characters`) {
+    `characters` <- .savvy_extract_ptr(`characters`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_str_strip_chars_end__impl, `self`, `characters`))
   }
 }
 
 `PlRExpr_str_strip_chars_start` <- function(self) {
-  function(`matches`) {
-    `matches` <- .savvy_extract_ptr(`matches`, "PlRExpr")
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_str_strip_chars_start__impl, `self`, `matches`))
+  function(`characters`) {
+    `characters` <- .savvy_extract_ptr(`characters`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_str_strip_chars_start__impl, `self`, `characters`))
   }
 }
 
@@ -2647,14 +2647,14 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_neopolars__sealed")
 }
 
 `PlRExpr_str_pad_end` <- function(self) {
-  function(`width`, `fillchar`) {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_str_pad_end__impl, `self`, `width`, `fillchar`))
+  function(`length`, `fill_char`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_str_pad_end__impl, `self`, `length`, `fill_char`))
   }
 }
 
 `PlRExpr_str_pad_start` <- function(self) {
-  function(`width`, `fillchar`) {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_str_pad_start__impl, `self`, `width`, `fillchar`))
+  function(`length`, `fill_char`) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_str_pad_start__impl, `self`, `length`, `fill_char`))
   }
 }
 

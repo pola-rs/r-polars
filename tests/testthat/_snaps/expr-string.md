@@ -151,7 +151,7 @@
       Caused by error in `pl$col("a")$str$pad_end()`:
       ! Evaluation failed in `$pad_end()`.
       Caused by error:
-      ! Argument `width` must be numeric, not character
+      ! Argument `length` must be numeric, not character
 
 ---
 
@@ -193,7 +193,7 @@
       Caused by error in `pl$col("a")$str$pad_start()`:
       ! Evaluation failed in `$pad_start()`.
       Caused by error:
-      ! Argument `width` must be numeric, not character
+      ! Argument `length` must be numeric, not character
 
 ---
 

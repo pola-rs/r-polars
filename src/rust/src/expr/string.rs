@@ -32,30 +32,30 @@ impl PlRExpr {
     //     f_str_to_titlecase(self)
     // }
 
-    fn str_strip_chars(&self, matches: &PlRExpr) -> Result<Self> {
+    fn str_strip_chars(&self, characters: &PlRExpr) -> Result<Self> {
         Ok(self
             .inner
             .clone()
             .str()
-            .strip_chars(matches.inner.clone())
+            .strip_chars(characters.inner.clone())
             .into())
     }
 
-    fn str_strip_chars_end(&self, matches: &PlRExpr) -> Result<Self> {
+    fn str_strip_chars_end(&self, characters: &PlRExpr) -> Result<Self> {
         Ok(self
             .inner
             .clone()
             .str()
-            .strip_chars_end(matches.inner.clone())
+            .strip_chars_end(characters.inner.clone())
             .into())
     }
 
-    fn str_strip_chars_start(&self, matches: &PlRExpr) -> Result<Self> {
+    fn str_strip_chars_start(&self, characters: &PlRExpr) -> Result<Self> {
         Ok(self
             .inner
             .clone()
             .str()
-            .strip_chars_start(matches.inner.clone())
+            .strip_chars_start(characters.inner.clone())
             .into())
     }
 
@@ -81,16 +81,16 @@ impl PlRExpr {
         Ok(self.inner.clone().str().zfill(length.inner.clone()).into())
     }
 
-    fn str_pad_end(&self, width: NumericScalar, fillchar: &str) -> Result<Self> {
-        let width = <Wrap<usize>>::try_from(width)?.0;
-        let fillchar = <Wrap<char>>::try_from(fillchar)?.0;
-        Ok(self.inner.clone().str().pad_end(width, fillchar).into())
+    fn str_pad_end(&self, length: NumericScalar, fill_char: &str) -> Result<Self> {
+        let length = <Wrap<usize>>::try_from(length)?.0;
+        let fill_char = <Wrap<char>>::try_from(fill_char)?.0;
+        Ok(self.inner.clone().str().pad_end(length, fill_char).into())
     }
 
-    fn str_pad_start(&self, width: NumericScalar, fillchar: &str) -> Result<Self> {
-        let width = <Wrap<usize>>::try_from(width)?.0;
-        let fillchar = <Wrap<char>>::try_from(fillchar)?.0;
-        Ok(self.inner.clone().str().pad_start(width, fillchar).into())
+    fn str_pad_start(&self, length: NumericScalar, fill_char: &str) -> Result<Self> {
+        let length = <Wrap<usize>>::try_from(length)?.0;
+        let fill_char = <Wrap<char>>::try_from(fill_char)?.0;
+        Ok(self.inner.clone().str().pad_start(length, fill_char).into())
     }
 
     fn str_to_decimal(&self, infer_len: NumericScalar) -> Result<Self> {

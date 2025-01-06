@@ -2009,18 +2009,18 @@ SEXP savvy_PlRExpr_str_to_lowercase__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_str_strip_chars__impl(SEXP self__, SEXP c_arg__matches) {
-    SEXP res = savvy_PlRExpr_str_strip_chars__ffi(self__, c_arg__matches);
+SEXP savvy_PlRExpr_str_strip_chars__impl(SEXP self__, SEXP c_arg__characters) {
+    SEXP res = savvy_PlRExpr_str_strip_chars__ffi(self__, c_arg__characters);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_str_strip_chars_end__impl(SEXP self__, SEXP c_arg__matches) {
-    SEXP res = savvy_PlRExpr_str_strip_chars_end__ffi(self__, c_arg__matches);
+SEXP savvy_PlRExpr_str_strip_chars_end__impl(SEXP self__, SEXP c_arg__characters) {
+    SEXP res = savvy_PlRExpr_str_strip_chars_end__ffi(self__, c_arg__characters);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_str_strip_chars_start__impl(SEXP self__, SEXP c_arg__matches) {
-    SEXP res = savvy_PlRExpr_str_strip_chars_start__ffi(self__, c_arg__matches);
+SEXP savvy_PlRExpr_str_strip_chars_start__impl(SEXP self__, SEXP c_arg__characters) {
+    SEXP res = savvy_PlRExpr_str_strip_chars_start__ffi(self__, c_arg__characters);
     return handle_result(res);
 }
 
@@ -2039,13 +2039,13 @@ SEXP savvy_PlRExpr_str_zfill__impl(SEXP self__, SEXP c_arg__length) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_str_pad_end__impl(SEXP self__, SEXP c_arg__width, SEXP c_arg__fillchar) {
-    SEXP res = savvy_PlRExpr_str_pad_end__ffi(self__, c_arg__width, c_arg__fillchar);
+SEXP savvy_PlRExpr_str_pad_end__impl(SEXP self__, SEXP c_arg__length, SEXP c_arg__fill_char) {
+    SEXP res = savvy_PlRExpr_str_pad_end__ffi(self__, c_arg__length, c_arg__fill_char);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_str_pad_start__impl(SEXP self__, SEXP c_arg__width, SEXP c_arg__fillchar) {
-    SEXP res = savvy_PlRExpr_str_pad_start__ffi(self__, c_arg__width, c_arg__fillchar);
+SEXP savvy_PlRExpr_str_pad_start__impl(SEXP self__, SEXP c_arg__length, SEXP c_arg__fill_char) {
+    SEXP res = savvy_PlRExpr_str_pad_start__ffi(self__, c_arg__length, c_arg__fill_char);
     return handle_result(res);
 }
 
