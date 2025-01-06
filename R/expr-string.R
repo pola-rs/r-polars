@@ -464,9 +464,9 @@ expr_str_zfill <- function(length) {
 
 #' Convert a String column into a Decimal column
 #'
-#' @description
 #' This method infers the needed parameters `precision` and `scale`.
 #'
+#' @inheritParams rlang::args_dots_empty
 #' @param inference_length Number of elements to parse to determine the
 #' `precision` and `scale`.
 #' @inherit as_polars_expr return
@@ -479,9 +479,11 @@ expr_str_zfill <- function(length) {
 #'   )
 #' )
 #' df$with_columns(numbers_decimal = pl$col("numbers")$str$to_decimal())
-expr_str_to_decimal <- function(inference_length = 100) {
-  self$`_rexpr`$str_to_decimal(inference_length) |>
-    wrap()
+expr_str_to_decimal <- function(..., inference_length = 100) {
+  wrap({
+    check_dots_empty0(...)
+    self$`_rexpr`$str_to_decimal(inference_length)
+  })
 }
 
 #' Left justify strings

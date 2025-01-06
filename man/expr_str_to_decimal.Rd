@@ -4,9 +4,11 @@
 \alias{expr_str_to_decimal}
 \title{Convert a String column into a Decimal column}
 \usage{
-expr_str_to_decimal(inference_length = 100)
+expr_str_to_decimal(..., inference_length = 100)
 }
 \arguments{
+\item{...}{These dots are for future extensions and must be empty.}
+
 \item{inference_length}{Number of elements to parse to determine the
 \code{precision} and \code{scale}.}
 }
