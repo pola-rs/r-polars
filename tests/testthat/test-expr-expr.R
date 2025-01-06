@@ -833,7 +833,6 @@ test_that("mode", {
     df$select(pl$col("c")$mode()$sort()),
     pl$DataFrame(c = 1:3)
   )
-  skip("Upstream panicking issue <https://github.com/pola-rs/polars/issues/20448>")
   expect_equal(
     df$select(pl$col("d")$mode()$sort()),
     pl$DataFrame(d = c(NA, "b"))
