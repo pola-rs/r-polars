@@ -116,6 +116,23 @@
       * ..1 = TRUE
       i Did you forget to name an argument?
 
+# eval
+
+    Code
+      df$with_columns(pl$concat_list(list("a", "b"))$list$eval(pl$element(), TRUE))
+    Condition
+      Error in `df$with_columns()`:
+      ! Evaluation failed in `$with_columns()`.
+      Caused by error:
+      ! Evaluation failed in `$with_columns()`.
+      Caused by error in `pl$concat_list(list("a", "b"))$list$eval()`:
+      ! Evaluation failed in `$eval()`.
+      Caused by error in `pl$concat_list(list("a", "b"))$list$eval()`:
+      ! `...` must be empty.
+      x Problematic argument:
+      * ..1 = TRUE
+      i Did you forget to name an argument?
+
 # $list$explode() works
 
     Code

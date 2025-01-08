@@ -495,28 +495,26 @@ test_that("concat", {
 #   expect_equal(act_2, exp_2)
 # })
 
-
-# TODO-REWRITE: uncomment after pl$element() is implemented
-# test_that("eval", {
-#   df <- pl$DataFrame(a = c(1, 8, 3), b = c(4, 5, 2))
-#   l_act <- df$with_columns(
-#     pl$concat_list(list("a", "b"))$list$eval(pl$element()$rank())$alias("rank")
-#   )
-#   expect_equal(
-#     l_act,
-#     pl$DataFrame(
-#       a = c(1, 8, 3),
-#       b = c(4, 5, 2),
-#       rank = list(c(1, 2), c(2, 1), c(2, 1))
-#     )
-#   )
-#   expect_snapshot(
-#     df$with_columns(
-#       pl$concat_list(list("a", "b"))$list$eval(pl$element(), TRUE)
-#     ),
-#     error = TRUE
-#   )
-# })
+test_that("eval", {
+  df <- pl$DataFrame(a = c(1, 8, 3), b = c(4, 5, 2))
+  l_act <- df$with_columns(
+    pl$concat_list("a", "b")$list$eval(pl$element()$rank())$alias("rank")
+  )
+  expect_equal(
+    l_act,
+    pl$DataFrame(
+      a = c(1, 8, 3),
+      b = c(4, 5, 2),
+      rank = list(c(1, 2), c(2, 1), c(2, 1))
+    )
+  )
+  expect_snapshot(
+    df$with_columns(
+      pl$concat_list(list("a", "b"))$list$eval(pl$element(), TRUE)
+    ),
+    error = TRUE
+  )
+})
 
 test_that("$list$all() works", {
   df <- pl$DataFrame(
@@ -538,31 +536,30 @@ test_that("$list$any() works", {
   )
 })
 
-# TODO-REWRITE: uncomment after pl$DataFrame() accepts schema, #13
-# test_that("$list$set_*() work with integers", {
-#   df <- pl$DataFrame(
-#     a = list(1:3, NA, c(NA, 3L), 5:7),
-#     b = list(2:4, 3L, c(3L, 4L, NA), c(6L, 8L)),
-#     schema = list(a = pl$List(pl$Int16), b = pl$List(pl$Int32))
-#   )
+test_that("$list$set_*() work with integers", {
+  df <- pl$DataFrame(
+    a = list(1:3, NA, c(NA, 3L), 5:7),
+    b = list(2:4, 3L, c(3L, 4L, NA), c(6L, 8L)),
+    .schema_overrides = list(a = pl$List(pl$Int16), b = pl$List(pl$Int32))
+  )
 
-#   expect_equal(
-#     df$select(pl$col("a")$list$set_union("b")),
-#     pl$DataFrame(a = list(1:4, c(NA, 3L), c(NA, 3L, 4L), 5:8))
-#   )
-#   expect_equal(
-#     df$select(pl$col("a")$list$set_intersection("b")),
-#     pl$DataFrame(a = list(2:3, integer(0), c(NA, 3L), 6L))
-#   )
-#   expect_equal(
-#     df$select(pl$col("a")$list$set_difference("b")),
-#     pl$DataFrame(a = list(1L, NA, integer(0), c(5L, 7L)))
-#   )
-#   expect_equal(
-#     df$select(pl$col("a")$list$set_symmetric_difference("b")),
-#     pl$DataFrame(a = list(c(1L, 4L), c(NA, 3L), 4L, c(5L, 7L, 8L)))
-#   )
-# })
+  expect_equal(
+    df$select(pl$col("a")$list$set_union("b")),
+    pl$DataFrame(a = list(1:4, c(NA, 3L), c(NA, 3L, 4L), 5:8))
+  )
+  expect_equal(
+    df$select(pl$col("a")$list$set_intersection("b")),
+    pl$DataFrame(a = list(2:3, integer(0), c(NA, 3L), 6L))
+  )
+  expect_equal(
+    df$select(pl$col("a")$list$set_difference("b")),
+    pl$DataFrame(a = list(1L, NA, integer(0), c(5L, 7L)))
+  )
+  expect_equal(
+    df$select(pl$col("a")$list$set_symmetric_difference("b")),
+    pl$DataFrame(a = list(c(1L, 4L), c(NA, 3L), 4L, c(5L, 7L, 8L)))
+  )
+})
 
 test_that("$list$set_*() work with strings", {
   df <- pl$DataFrame(
