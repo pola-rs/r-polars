@@ -57,14 +57,13 @@ test_that("pl$sum()", {
   )
 })
 
-# TODO-REWRITE: requires $cum_sum()
-# test_that("pl$cum_sum()", {
-#   df <- pl$DataFrame(
-#     a = c(1, 8, 3),
-#     b = c(4, 5, 2)
-#   )
-#   expect_equal(
-#     df$select(pl$cum_sum("a", "b")),
-#     pl$DataFrame(a = 12, b = 11)
-#   )
-# })
+test_that("pl$cum_sum()", {
+  df <- pl$DataFrame(
+    a = c(1, 8, 3),
+    b = c(4, 5, 2)
+  )
+  expect_equal(
+    df$select(pl$cum_sum("a", "b")),
+    pl$DataFrame(a = c(1, 9, 12), b = c(4, 9, 11))
+  )
+})
