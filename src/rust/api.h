@@ -497,6 +497,9 @@ SEXP savvy_PlRSeries_to_r_vector__ffi(SEXP self__, SEXP c_arg__ensure_vector, SE
 SEXP savvy_PlRSeries_print__ffi(SEXP self__);
 SEXP savvy_PlRSeries_struct_unnest__ffi(SEXP self__);
 SEXP savvy_PlRSeries_struct_fields__ffi(SEXP self__);
+SEXP savvy_PlRSeries_is_sorted_ascending_flag__ffi(SEXP self__);
+SEXP savvy_PlRSeries_is_sorted_descending_flag__ffi(SEXP self__);
+SEXP savvy_PlRSeries_can_fast_explode_flag__ffi(SEXP self__);
 SEXP savvy_PlRSeries_cat_uses_lexical_ordering__ffi(SEXP self__);
 SEXP savvy_PlRSeries_cat_is_local__ffi(SEXP self__);
 SEXP savvy_PlRSeries_cat_to_local__ffi(SEXP self__);

@@ -3547,6 +3547,24 @@ class(`PlRLazyGroupBy`) <- c("PlRLazyGroupBy__bundle", "savvy_neopolars__sealed"
   }
 }
 
+`PlRSeries_is_sorted_ascending_flag` <- function(self) {
+  function() {
+    .Call(savvy_PlRSeries_is_sorted_ascending_flag__impl, `self`)
+  }
+}
+
+`PlRSeries_is_sorted_descending_flag` <- function(self) {
+  function() {
+    .Call(savvy_PlRSeries_is_sorted_descending_flag__impl, `self`)
+  }
+}
+
+`PlRSeries_can_fast_explode_flag` <- function(self) {
+  function() {
+    .Call(savvy_PlRSeries_can_fast_explode_flag__impl, `self`)
+  }
+}
+
 `PlRSeries_cat_uses_lexical_ordering` <- function(self) {
   function() {
     .Call(savvy_PlRSeries_cat_uses_lexical_ordering__impl, `self`)
@@ -3639,6 +3657,9 @@ class(`PlRLazyGroupBy`) <- c("PlRLazyGroupBy__bundle", "savvy_neopolars__sealed"
   e$`print` <- `PlRSeries_print`(ptr)
   e$`struct_unnest` <- `PlRSeries_struct_unnest`(ptr)
   e$`struct_fields` <- `PlRSeries_struct_fields`(ptr)
+  e$`is_sorted_ascending_flag` <- `PlRSeries_is_sorted_ascending_flag`(ptr)
+  e$`is_sorted_descending_flag` <- `PlRSeries_is_sorted_descending_flag`(ptr)
+  e$`can_fast_explode_flag` <- `PlRSeries_can_fast_explode_flag`(ptr)
   e$`cat_uses_lexical_ordering` <- `PlRSeries_cat_uses_lexical_ordering`(ptr)
   e$`cat_is_local` <- `PlRSeries_cat_is_local`(ptr)
   e$`cat_to_local` <- `PlRSeries_cat_to_local`(ptr)

@@ -48,6 +48,23 @@ converted to a Polars Series by \code{\link[=as_polars_series]{as_polars_series(
 \item \code{shape}: \verb{$shape} returns a integer vector of length two with the number of rows and columns of the DataFrame.
 \item \code{height}: \verb{$height} returns a integer with the number of rows of the DataFrame.
 \item \code{width}: \verb{$width} returns a integer with the number of columns of the DataFrame.
+\item \code{flags}: \verb{$flags} returns a list with column names as names and a named
+logical vector with the flags as values.
+}
+}
+
+\section{Flags}{
+
+
+Flags are used internally to avoid doing unnecessary computations, such as
+sorting a variable that we know is already sorted. The number of flags
+varies depending on the column type: columns of type \code{array} and \code{list}
+have the flags \code{SORTED_ASC}, \code{SORTED_DESC}, and \code{FAST_EXPLODE}, while other
+column types only have the former two.
+\itemize{
+\item \code{SORTED_ASC} is set to \code{TRUE} when we sort a column in increasing order, so
+that we can use this information later on to avoid re-sorting it.
+\item \code{SORTED_DESC} is similar but applies to sort in decreasing order.
 }
 }
 

@@ -1,4 +1,5 @@
 use crate::{prelude::*, PlRDataFrame, PlRDataType, PlRSeries, RPolarsErr};
+use polars_core::series::IsSorted;
 use savvy::{r_println, savvy, NumericScalar, NumericSexp, Result, Sexp};
 
 #[savvy]
@@ -21,6 +22,22 @@ impl PlRSeries {
             .map(|s| s.name().as_str())
             .collect::<Vec<_>>()
             .try_into()
+    }
+
+    fn is_sorted_ascending_flag(&self) -> Result<Sexp> {
+        matches!(self.series.is_sorted_flag(), IsSorted::Ascending).try_into()
+    }
+
+    fn is_sorted_descending_flag(&self) -> Result<Sexp> {
+        matches!(self.series.is_sorted_flag(), IsSorted::Descending).try_into()
+    }
+
+    fn can_fast_explode_flag(&self) -> Result<Sexp> {
+        let out = match self.series.list() {
+            Err(_) => false,
+            Ok(list) => list._can_fast_explode(),
+        };
+        out.try_into()
     }
 
     pub fn cat_uses_lexical_ordering(&self) -> Result<Sexp> {

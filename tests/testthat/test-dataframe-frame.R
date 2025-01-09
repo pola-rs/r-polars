@@ -57,3 +57,33 @@ test_that("to_series()", {
     as_polars_series(data$b, "b")
   )
 })
+
+test_that("flags work", {
+  df <- pl$DataFrame(a = c(2, 1), b = c(3, 4), c = list(c(1, 2), 4))
+  expect_identical(
+    df$sort("a")$flags,
+    list(
+      a = c(SORTED_ASC = TRUE, SORTED_DESC = FALSE),
+      b = c(SORTED_ASC = FALSE, SORTED_DESC = FALSE),
+      c = c(SORTED_ASC = FALSE, SORTED_DESC = FALSE, FAST_EXPLODE = FALSE)
+    )
+  )
+  expect_identical(
+    df$with_columns(pl$col("b")$implode())$flags,
+    list(
+      a = c(SORTED_ASC = FALSE, SORTED_DESC = FALSE),
+      b = c(SORTED_ASC = FALSE, SORTED_DESC = FALSE, FAST_EXPLODE = TRUE),
+      c = c(SORTED_ASC = FALSE, SORTED_DESC = FALSE, FAST_EXPLODE = TRUE)
+    )
+  )
+
+  # no FAST_EXPLODE for array
+  df <- pl$DataFrame(
+    a = list(c(1, 2), c(4, 5)),
+    .schema_overrides = list(a = pl$Array(pl$Float64, 2))
+  )
+  expect_identical(
+    df$flags,
+    list(a = c(SORTED_ASC = FALSE, SORTED_DESC = FALSE))
+  )
+})

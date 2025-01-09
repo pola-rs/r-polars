@@ -20,6 +20,21 @@
 #' - `shape`: `$shape` returns a integer vector of length two with the number of rows and columns of the DataFrame.
 #' - `height`: `$height` returns a integer with the number of rows of the DataFrame.
 #' - `width`: `$width` returns a integer with the number of columns of the DataFrame.
+#' - `flags`: `$flags` returns a list with column names as names and a named
+#'   logical vector with the flags as values.
+#'
+#' @section Flags:
+#'
+#' Flags are used internally to avoid doing unnecessary computations, such as
+#' sorting a variable that we know is already sorted. The number of flags
+#' varies depending on the column type: columns of type `array` and `list`
+#' have the flags `SORTED_ASC`, `SORTED_DESC`, and `FAST_EXPLODE`, while other
+#' column types only have the former two.
+#'
+#' - `SORTED_ASC` is set to `TRUE` when we sort a column in increasing order, so
+#'   that we can use this information later on to avoid re-sorting it.
+#' - `SORTED_DESC` is similar but applies to sort in decreasing order.
+#'
 #' @param ... <[`dynamic-dots`][rlang::dyn-dots]>
 #' Name-value pairs of objects to be converted to polars [Series]
 #' by the [as_polars_series()] function.
@@ -88,7 +103,6 @@ wrap.PlRDataFrame <- function(x, ...) {
   self <- new.env(parent = emptyenv())
   self$`_df` <- x
 
-  # TODO: flags
   makeActiveBinding("columns", function() self$`_df`$columns(), self)
   makeActiveBinding("dtypes", function() {
     self$`_df`$dtypes() |>
@@ -98,6 +112,11 @@ wrap.PlRDataFrame <- function(x, ...) {
   makeActiveBinding("shape", function() self$`_df`$shape(), self)
   makeActiveBinding("height", function() self$`_df`$height(), self)
   makeActiveBinding("width", function() self$`_df`$width(), self)
+  makeActiveBinding(
+    "flags",
+    function() lapply(self$get_columns(), \(x) x$flags),
+    self
+  )
 
   lapply(names(polars_dataframe__methods), function(name) {
     fn <- polars_dataframe__methods[[name]]
