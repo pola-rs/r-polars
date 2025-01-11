@@ -110,10 +110,10 @@ features = [
     "unique_counts"
 ]
 
-[target.'cfg(all(any(not(target_family = "unix"), allocator = "mimalloc")))'.dependencies]
+[target.'cfg(all(any(not(target_family = "unix"), target_os = "emscripten", allocator = "mimalloc")))'.dependencies]
 mimalloc = { version = "0.1", default-features = false }
 
-[target.'cfg(all(target_family = "unix", not(target_os = "macos"), not(allocator = "mimalloc")))'.dependencies]
+[target.'cfg(all(target_family = "unix", not(target_os = "macos"), not(target_os = "emscripten"), not(allocator = "mimalloc")))'.dependencies]
 jemallocator = { version = "0.5", features = [
     "disable_initial_exec_tls",
     "background_threads",

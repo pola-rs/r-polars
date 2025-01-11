@@ -665,6 +665,8 @@ pub(crate) fn parse_cloud_options(
     Ok(out)
 }
 
+// TODO: Refactor with adding `parquet` feature as like Python Polars
+#[cfg(not(target_arch = "wasm32"))]
 impl TryFrom<&str> for Wrap<ParallelStrategy> {
     type Error = String;
 

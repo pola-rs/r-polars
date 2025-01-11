@@ -1,0 +1,24 @@
+name: Build WASM
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - src/**
+      - configure*
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build wasm package
+        uses: r-wasm/actions/build-rwasm@main
+        with:
+          packages: |
+            local::.

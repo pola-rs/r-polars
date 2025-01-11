@@ -10,6 +10,10 @@ PKG_LIBS = -L$(LIBDIR) -lr_polars
 
 CARGO_BUILD_ARGS = --lib --profile $(PROFILE) --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR)
 
+# Some features should be removed when building for WASM, as like Python Polars
+# <https://github.com/pola-rs/polars/blob/93ceaccdac6f05c9b07a5117f3a4a90c238dbd29/.github/workflows/test-pyodide.yml#L40-L45>
+WASM_INCOMPATIBLE_FEATURES = parquet|async|json|extract_jsonpath|cloud|polars_cloud|tokio|clipboard|decompress|new_streaming
+
 all: C_clean
 
 $(SHLIB): $(STATLIB)
@@ -22,6 +26,9 @@ $(STATLIB):
 	  if [ "$(TARGET)" != "wasm32-unknown-emscripten" ]; then \
 	    cargo build $(CARGO_BUILD_ARGS); \
 	  else \
+		sed -E -i \
+			-e "/^\s*\"($(WASM_INCOMPATIBLE_FEATURES))\",$$/d" \
+			./rust/Cargo.toml && \
 	    export CC="$(CC)" && \
 	    export CFLAGS="$(CFLAGS)" && \
 	    export CARGO_PROFILE_DEV_PANIC="abort" && \

@@ -26,8 +26,16 @@ impl PlRExpr {
             .into())
     }
 
+    #[allow(unused_variables)]
     fn struct_json_encode(&self) -> Result<Self> {
-        Ok(self.inner.clone().struct_().json_encode().into())
+        #[cfg(not(target_arch = "wasm32"))]
+        {
+            Ok(self.inner.clone().struct_().json_encode().into())
+        }
+        #[cfg(target_arch = "wasm32")]
+        {
+            Err(RPolarsErr::Other(format!("Not supported in WASM")).into())
+        }
     }
 
     fn struct_with_fields(&self, fields: ListSexp) -> Result<Self> {
