@@ -439,16 +439,19 @@ test_that("str$json_path, str$json_decode", {
     pl$DataFrame(json_val = c("1", NA, "2", "2.1", "true"))
   )
 
-  # TODO-REWRITE: uncomment when Field is implemented
-  # df <- pl$DataFrame(
-  #   json_val = c('{"a":1, "b": true}', NA, '{"a":2, "b": false}')
-  # )
-  # dtype <- pl$Struct(pl$Field("a", pl$Float64), pl$Field("b", pl$Boolean))
-  # actual <- df$select(pl$col("json_val")$str$json_decode(dtype))
-  # expect_equal(
-  #   actual,
-  #   pl$DataFrame(json_val = list(a = c(1, NA, 2), b = c(TRUE, NA, FALSE)))
-  # )
+  df <- pl$DataFrame(
+    json_val = c('{"a":1, "b": true}', NA, '{"a":2, "b": false}')
+  )
+  dtype <- pl$Struct(a = pl$Float64, b = pl$Boolean)
+  actual <- df$select(pl$col("json_val")$str$json_decode(dtype))
+  expect_equal(
+    actual$select(pl$col("json_val")$struct$unnest()),
+    pl$DataFrame(a = c(1, NA, 2), b = c(TRUE, NA, FALSE))
+  )
+  expect_error(
+    df$select(pl$col("json_val")$str$json_decode(dtype, 1)),
+    "Did you forget"
+  )
 })
 
 

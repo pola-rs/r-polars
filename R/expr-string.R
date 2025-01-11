@@ -606,6 +606,7 @@ expr_str_starts_with <- function(prefix) {
 
 #' Parse string values as JSON.
 #'
+#' @inheritParams rlang::args_dots_empty
 #' @param dtype The dtype to cast the extracted value to. If `NULL`, the dtype
 #' will be inferred from the JSON value.
 #' @param infer_schema_length How many rows to parse to determine the schema.
@@ -618,11 +619,13 @@ expr_str_starts_with <- function(prefix) {
 #' df <- pl$DataFrame(
 #'   json_val = c('{"a":1, "b": true}', NA, '{"a":2, "b": false}')
 #' )
-#' dtype <- pl$Struct(pl$Field("a", pl$Int64), pl$Field("b", pl$Boolean))
+#' dtype <- pl$Struct(a = pl$Int64, b = pl$Boolean)
 #' df$select(pl$col("json_val")$str$json_decode(dtype))
-expr_str_json_decode <- function(dtype, infer_schema_length = 100) {
-  self$`_rexpr`$str_json_decode(dtype, infer_schema_length) |>
-    wrap()
+expr_str_json_decode <- function(dtype, ..., infer_schema_length = 100) {
+  wrap({
+    check_dots_empty0(...)
+    self$`_rexpr`$str_json_decode(dtype$`_dt`, infer_schema_length)
+  })
 }
 
 #' Extract the first match of JSON string with the provided JSONPath expression
