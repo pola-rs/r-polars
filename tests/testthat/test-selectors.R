@@ -42,6 +42,14 @@ test_that("'minus' operator works", {
   )
 })
 
+test_that("'xor' operator works", {
+  df <- pl$DataFrame(foo = "a", bar = "b", foo3 = 3)
+  expect_named(
+    df$select(cs$string()$xor(cs$contains("foo"))),
+    c("bar", "foo3")
+  )
+})
+
 test_that("can use selectors in expressions", {
   df <- pl$DataFrame(
     dt = as.Date(c("1999-12-31", "2024-1-1", "2010-7-5")),

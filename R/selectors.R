@@ -120,6 +120,24 @@ selector__and <- function(other) {
   }
 }
 
+selector__xor <- function(other) {
+  if (is_column(other)) {
+    other <- cs$by_name(other$meta$output_name())
+  }
+  if (is_polars_selector(other)) {
+    wrap_to_selector(
+      self$meta$`_as_selector`()$meta$`_selector_xor`(other),
+      name = "xor",
+      parameters = list(
+        self = self,
+        other = other
+      )
+    )
+  } else {
+    self$as_expr()$xor(other)
+  }
+}
+
 selector__as_expr <- function() {
   self$`_rexpr` |>
     wrap()

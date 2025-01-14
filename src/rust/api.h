@@ -93,6 +93,7 @@ SEXP savvy_PlRExpr__meta_as_selector__ffi(SEXP self__);
 SEXP savvy_PlRExpr__meta_selector_add__ffi(SEXP self__, SEXP c_arg__other);
 SEXP savvy_PlRExpr__meta_selector_and__ffi(SEXP self__, SEXP c_arg__other);
 SEXP savvy_PlRExpr__meta_selector_sub__ffi(SEXP self__, SEXP c_arg__other);
+SEXP savvy_PlRExpr__meta_selector_xor__ffi(SEXP self__, SEXP c_arg__other);
 SEXP savvy_PlRExpr_abs__ffi(SEXP self__);
 SEXP savvy_PlRExpr_add__ffi(SEXP self__, SEXP c_arg__rhs);
 SEXP savvy_PlRExpr_agg_groups__ffi(SEXP self__);

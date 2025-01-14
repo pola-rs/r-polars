@@ -98,6 +98,11 @@ expr_meta__selector_sub <- function(other) {
     wrap()
 }
 
+expr_meta__selector_xor <- function(other) {
+  self$`_rexpr`$`_meta_selector_xor`(other$`_rexpr`) |>
+    wrap()
+}
+
 expr_meta__as_selector <- function() {
   self$`_rexpr`$`_meta_as_selector`() |>
     wrap()
