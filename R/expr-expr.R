@@ -1510,16 +1510,16 @@ expr__arg_unique <- function() {
     wrap()
 }
 
-# TODO-REWRITE: requires pl$arg_where()
-# #' Return indices where expression is true
-# #'
-# #' @inherit as_polars_expr return
-# #' @examples
-# #' df <- pl$DataFrame(a = c(1, 1, 2, 1))
-# #' df$select((pl$col("a") == 1)$arg_true())
-# expr__arg_true <- function() {
-# pl$arg_where(self$`_rexpr`)
-# }
+#' Return indices where expression is true
+#'
+#' @inherit as_polars_expr return
+#' @examples
+#' df <- pl$DataFrame(a = c(1, 1, 2, 1))
+#' df$select((pl$col("a") == 1)$arg_true())
+expr__arg_true <- function() {
+  arg_where(self$`_rexpr`) |> 
+    wrap()
+}
 
 #' Get the number of non-null elements in the column
 #'

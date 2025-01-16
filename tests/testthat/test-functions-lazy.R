@@ -18,3 +18,11 @@ test_that("pl$coalesce()", {
     "must be passed by position, not name"
   )
 })
+
+test_that("arg_where", {
+  df <- pl$DataFrame(a = 1:5)
+  expect_equal(
+    df$select(pl$arg_where(pl$col("a") %% 2 == 0)),
+    pl$DataFrame(a = c(1, 3))$cast(pl$UInt32)
+  )
+})

@@ -60,3 +60,18 @@ pl__coalesce <- function(...) {
     coalesce() |>
     wrap()
 }
+
+#' Return indices where `condition` evaluates to `TRUE`
+#'
+#' @param condition Boolean expression to evaluate.
+#' @inherit as_polars_expr return
+#'
+#' @examples
+#' df <- pl$DataFrame(a = 1:5)
+#' df$select(
+#'   pl$arg_where(pl$col("a") %% 2 == 0)
+#' )
+pl__arg_where <- function(condition) {
+  arg_where(as_polars_expr(condition)$`_rexpr`) |>
+    wrap()
+}

@@ -48,6 +48,12 @@ NULL
 }
 
 
+`arg_where` <- function(`condition`) {
+  `condition` <- .savvy_extract_ptr(`condition`, "PlRExpr")
+  .savvy_wrap_PlRExpr(.Call(savvy_arg_where__impl, `condition`))
+}
+
+
 `as_struct` <- function(`exprs`) {
   .savvy_wrap_PlRExpr(.Call(savvy_as_struct__impl, `exprs`))
 }

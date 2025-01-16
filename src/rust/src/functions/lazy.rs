@@ -264,3 +264,8 @@ pub fn concat_lf_diagonal(
     .map_err(RPolarsErr::from)?;
     Ok(lf.into())
 }
+
+#[savvy]
+pub fn arg_where(condition: PlRExpr) -> Result<PlRExpr> {
+    Ok(dsl::arg_where(condition.inner.clone()).into())
+}

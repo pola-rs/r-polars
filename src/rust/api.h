@@ -1,5 +1,6 @@
 SEXP savvy_all_horizontal__ffi(SEXP c_arg__exprs);
 SEXP savvy_any_horizontal__ffi(SEXP c_arg__exprs);
+SEXP savvy_arg_where__ffi(SEXP c_arg__condition);
 SEXP savvy_as_struct__ffi(SEXP c_arg__exprs);
 SEXP savvy_coalesce__ffi(SEXP c_arg__exprs);
 SEXP savvy_col__ffi(SEXP c_arg__name);

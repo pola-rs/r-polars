@@ -1338,6 +1338,14 @@ test_that("arg_unique", {
   )
 })
 
+test_that("arg_true", {
+  df <- pl$DataFrame(a = c(1, 1, 2, 1))
+  expect_equal(
+    df$select((pl$col("a") == 1)$arg_true()),
+    pl$DataFrame(a = c(0, 1, 3))$cast(pl$UInt32)
+  )
+})
+
 # test_that("Expr_quantile", {
 #   v <- sample(0:100)
 #   expect_equal(
