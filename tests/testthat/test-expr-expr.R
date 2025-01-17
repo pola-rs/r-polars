@@ -2473,57 +2473,6 @@ test_that("shrink_dtype", {
   )
 })
 
-# TODO-REWRITE: should be in tests for functions
-# test_that("concat_list", {
-#   # Create lagged columns and collect them into a list. This mimics a rolling window.
-#   df <- pl$DataFrame(A = c(1, 2, 9, 2, 13))
-#   df_act <- df$with_columns(lapply(
-#     0:2,
-#     \(i) pl$col("A")$shift(i)$alias(paste0("A_lag_", i))
-#   ))$select(
-#     pl$concat_list(lapply(2:0, \(i) pl$col(paste0("A_lag_", i))))$alias(
-#       "A_rolling"
-#     )
-#   )
-#   expect_equal(
-#     df_act,
-#     structure(
-#       list(
-#         A_rolling = list(
-#           c(NA, NA, 1), c(NA, 1, 2),
-#           c(1, 2, 9), c(2, 9, 2),
-#           c(9, 2, 13)
-#         )
-#       ),
-#       row.names = c(NA, -5L),
-#       class = "data.frame"
-#     )
-#   )
-
-#   # concat Expr a Series and an R obejct
-#   df_act <- pl$select(pl$concat_list(list(
-#     pl$lit(1:5),
-#     as_polars_series(5:1),
-#     rep(0L, 5)
-#   ))$alias("alice"))
-
-#   expect_equal(
-#     df_act,
-#     structure(
-#       list(alice = list(
-#         c(1L, 5L, 0L),
-#         c(2L, 4L, 0L),
-#         c(3L, 3L, 0L),
-#         c(4L, 2L, 0L),
-#         c(5L, 1L, 0L)
-#       )),
-#       row.names = c(NA, -5L),
-#       class = "data.frame"
-#     )
-#   )
-# })
-
-
 test_that("implode", {
   expect_equal(
     pl$select(x = 1:4)$select(pl$col("x")$implode()$explode()),
