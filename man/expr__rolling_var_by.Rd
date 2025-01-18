@@ -14,8 +14,10 @@ expr__rolling_var_by(
 )
 }
 \arguments{
-\item{by}{This column must be of dtype Datetime or Date. Accepts expression
-input. Strings are parsed as column names.}
+\item{by}{Should be DateTime, Date, UInt64, UInt32, Int64, or Int32 data
+type after conversion by \code{\link[=as_polars_expr]{as_polars_expr()}}. Note that the
+integer ones require using \code{"i"} in \code{window_size}. Accepts expression input.
+Strings are parsed as column names.}
 
 \item{window_size}{The length of the window. Can be a dynamic temporal size
 indicated by a timedelta or the following string language:

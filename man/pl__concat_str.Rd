@@ -8,7 +8,7 @@ pl__concat_str(..., separator = "", ignore_nulls = FALSE)
 }
 \arguments{
 \item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Columns to concatenate into a
-single list column. Accepts expression input. Strings are parsed as column
+single string column. Accepts expression input. Strings are parsed as column
 names, other non-expression inputs are parsed as literals. Non-\code{String}
 columns are cast to \code{String}.}
 

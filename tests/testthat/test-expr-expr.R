@@ -1656,49 +1656,81 @@ test_that("Expr_rolling_", {
   )
 })
 
-test_that("rolling_*_by", {
-  df <- pl$select(
-    a = 1:6,
-    date = pl$datetime_range(as.Date("2001-1-1"), as.Date("2001-1-6"), "1d")
-  )
+patrick::with_parameters_test_that(
+  "rolling_*_by with date / datetime window",
+  {
+    df <- pl$select(a = 1:6, date = dt)
 
-  expected <- pl$DataFrame(
-    min = c(1L, 1:5),
-    max = 1:6,
-    mean = c(1, 1.5, 2.5, 3.5, 4.5, 5.5),
-    sum = c(1L, 3L, 5L, 7L, 9L, 11L),
-    std = c(NA, rep(0.7071067811865476, 5)),
-    var = c(NA, rep(0.5, 5)),
-    median = c(1, 1.5, 2.5, 3.5, 4.5, 5.5),
-    quantile_linear = c(1, 1.33, 2.33, 3.33, 4.33, 5.33)
-  )
+    expected <- pl$DataFrame(
+      min = c(1L, 1:5),
+      max = 1:6,
+      mean = c(1, 1.5, 2.5, 3.5, 4.5, 5.5),
+      sum = c(1L, 3L, 5L, 7L, 9L, 11L),
+      std = c(NA, rep(0.7071067811865476, 5)),
+      var = c(NA, rep(0.5, 5)),
+      median = c(1, 1.5, 2.5, 3.5, 4.5, 5.5),
+      quantile_linear = c(1, 1.33, 2.33, 3.33, 4.33, 5.33)
+    )
 
-  expect_equal(
-    df$select(
-      min = pl$col("a")$rolling_min_by("date", window_size = "2d"),
-      max = pl$col("a")$rolling_max_by("date", window_size = "2d"),
-      mean = pl$col("a")$rolling_mean_by("date", window_size = "2d"),
-      sum = pl$col("a")$rolling_sum_by("date", window_size = "2d"),
-      std = pl$col("a")$rolling_std_by("date", window_size = "2d"),
-      var = pl$col("a")$rolling_var_by("date", window_size = "2d"),
-      median = pl$col("a")$rolling_median_by("date", window_size = "2d"),
-      quantile_linear = pl$col("a")$rolling_quantile_by(
-        quantile = 0.33, "date", window_size = "2d", interpolation = "linear"
-      )
-    ),
-    expected
+    expect_equal(
+      df$select(
+        min = pl$col("a")$rolling_min_by("date", window_size = "2d"),
+        max = pl$col("a")$rolling_max_by("date", window_size = "2d"),
+        mean = pl$col("a")$rolling_mean_by("date", window_size = "2d"),
+        sum = pl$col("a")$rolling_sum_by("date", window_size = "2d"),
+        std = pl$col("a")$rolling_std_by("date", window_size = "2d"),
+        var = pl$col("a")$rolling_var_by("date", window_size = "2d"),
+        median = pl$col("a")$rolling_median_by("date", window_size = "2d"),
+        quantile_linear = pl$col("a")$rolling_quantile_by(
+          quantile = 0.33, "date", window_size = "2d", interpolation = "linear"
+        )
+      ),
+      expected
+    )
+  },
+  dt = c(
+    pl$datetime_range(as.Date("2001-1-1"), as.Date("2001-1-6"), "1d"),
+    pl$date_range(as.Date("2001-1-1"), as.Date("2001-1-6"), "1d")
   )
-})
+)
 
-test_that("rolling_*_by only works with date/datetime", {
+patrick::with_parameters_test_that(
+  "rolling_*_by with integer window",
+  {
+    df <- pl$DataFrame(a = 1:6, id = 11:16)$cast(id = integer_type)
+
+    expected <- pl$DataFrame(
+      min = c(1L, 1:5),
+      max = 1:6,
+      mean = c(1, 1.5, 2.5, 3.5, 4.5, 5.5),
+      sum = c(1L, 3L, 5L, 7L, 9L, 11L),
+      std = c(NA, rep(0.7071067811865476, 5)),
+      var = c(NA, rep(0.5, 5)),
+      median = c(1, 1.5, 2.5, 3.5, 4.5, 5.5),
+      quantile_linear = c(1, 1.33, 2.33, 3.33, 4.33, 5.33)
+    )
+
+    expect_equal(
+      df$select(
+        min = pl$col("a")$rolling_min_by("id", window_size = "2i"),
+        max = pl$col("a")$rolling_max_by("id", window_size = "2i"),
+        mean = pl$col("a")$rolling_mean_by("id", window_size = "2i"),
+        sum = pl$col("a")$rolling_sum_by("id", window_size = "2i"),
+        std = pl$col("a")$rolling_std_by("id", window_size = "2i"),
+        var = pl$col("a")$rolling_var_by("id", window_size = "2i"),
+        median = pl$col("a")$rolling_median_by("id", window_size = "2i"),
+        quantile_linear = pl$col("a")$rolling_quantile_by(
+          quantile = 0.33, "id", window_size = "2i", interpolation = "linear"
+        )
+      ),
+      expected
+    )
+  },
+  integer_type = c(pl$Int32, pl$Int64, pl$UInt32, pl$UInt64)
+)
+
+test_that("rolling_*_by only works with date, datetime, or integers", {
   df <- pl$DataFrame(a = 1:6, id = 11:16)
-
-  # TODO: uncomment and update docs when https://github.com/pola-rs/polars/issues/19491
-  # is resolved
-  # expect_snapshot(
-  #   df$select(pl$col("a")$rolling_min_by("id", window_size = "2i")),
-  #   error = TRUE
-  # )
   expect_snapshot(
     df$select(pl$col("a")$rolling_min_by(1, window_size = "2d")),
     error = TRUE

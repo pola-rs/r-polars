@@ -137,7 +137,7 @@
       Caused by error:
       ! `closed` must be one of "both", "left", "right", or "none", not "foo".
 
-# rolling_*_by only works with date/datetime
+# rolling_*_by only works with date, datetime, or integers
 
     Code
       df$select(pl$col("a")$rolling_min_by(1, window_size = "2d"))
