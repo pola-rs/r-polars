@@ -2488,48 +2488,6 @@ test_that("implode", {
   )
 })
 
-# TODO-REWRITE: should be in tests for functions
-# test_that("concat_str", {
-#   df <- pl$DataFrame(
-#     a = 1:3,
-#     b = c("dogs", "cats", NA),
-#     c = c("play", "swim", "walk")
-#   )
-
-#   out <- df$with_columns(
-#     pl$concat_str(
-#       pl$col("a") * 2L, "b", pl$col("c"),
-#       separator = " "
-#     )$alias("full_sentence")
-#   )
-
-#   expect_equal(dim(out), c(3, 4))
-#   expect_equal(
-#     out$full_sentence,
-#     c("2 dogs play", "4 cats swim", NA)
-#   )
-
-#   # ignore_nulls
-#   out <- df$with_columns(
-#     pl$concat_str(
-#       pl$col("a") * 2L, "b", pl$col("c"),
-#       separator = " ", ignore_nulls = TRUE
-#     )$alias("full_sentence")
-#   )
-
-#   expect_equal(
-#     out$full_sentence,
-#     c("2 dogs play", "4 cats swim", "6 walk")
-#   )
-
-#   # check error for something which cannot be turned into an Expression
-#   ctxs <- pl$concat_str("a", complex(1)) |>
-#     (\(x) result(x)$err$contexts())()
-#   expect_equal(ctxs$BadArgument, " `...` ")
-#   expect_equal(ctxs$When, "converting element 2 into an Expr")
-#   expect_equal(ctxs$PlainErrorMessage, "cannot be converted into an Expr")
-# })
-
 test_that("peak_min, peak_max", {
   df <- pl$DataFrame(x = c(1, 2, 3, 2.2, 3, 4, 5, 2))
   expect_equal(

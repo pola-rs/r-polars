@@ -13,6 +13,7 @@ SEXP savvy_concat_lf_diagonal__ffi(SEXP c_arg__lfs, SEXP c_arg__rechunk, SEXP c_
 SEXP savvy_concat_lf_horizontal__ffi(SEXP c_arg__lfs, SEXP c_arg__parallel);
 SEXP savvy_concat_list__ffi(SEXP c_arg__s);
 SEXP savvy_concat_series__ffi(SEXP c_arg__series);
+SEXP savvy_concat_str__ffi(SEXP c_arg__s, SEXP c_arg__separator, SEXP c_arg__ignore_nulls);
 SEXP savvy_date_range__ffi(SEXP c_arg__start, SEXP c_arg__end, SEXP c_arg__interval, SEXP c_arg__closed);
 SEXP savvy_date_ranges__ffi(SEXP c_arg__start, SEXP c_arg__end, SEXP c_arg__interval, SEXP c_arg__closed);
 SEXP savvy_datetime__ffi(SEXP c_arg__year, SEXP c_arg__month, SEXP c_arg__day, SEXP c_arg__time_unit, SEXP c_arg__ambiguous, SEXP c_arg__hour, SEXP c_arg__minute, SEXP c_arg__second, SEXP c_arg__microsecond, SEXP c_arg__time_zone);

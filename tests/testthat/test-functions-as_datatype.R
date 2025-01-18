@@ -18,3 +18,52 @@ test_that("pl$concat_list()", {
     error = TRUE
   )
 })
+
+test_that("concat_str", {
+  df <- pl$DataFrame(
+    a = 1:3,
+    b = c("dogs", "cats", NA),
+    c = c("play", "swim", "walk")
+  )
+  expect_equal(
+    df$select(
+      x = pl$concat_str(
+        pl$col("a") * 2L, "b", pl$col("c"),
+        separator = " "
+      )
+    ),
+    pl$DataFrame(x = c("2 dogs play", "4 cats swim", NA))
+  )
+
+  # literal numeric
+  expect_equal(
+    df$select(
+      x = pl$concat_str(
+        1L, "b", pl$col("c"),
+        separator = " "
+      )
+    ),
+    pl$DataFrame(x = c("1 dogs play", "1 cats swim", NA))
+  )
+
+  # ignore_nulls
+  expect_equal(
+    df$select(
+      x = pl$concat_str(
+        pl$col("a") * 2L, "b", pl$col("c"),
+        separator = " ",
+        ignore_nulls = TRUE
+      )
+    ),
+    pl$DataFrame(x = c("2 dogs play", "4 cats swim", "6 walk"))
+  )
+
+  expect_snapshot(
+    df$select(x = pl$concat_str(pl$col("a"), complex(1))),
+    error = TRUE
+  )
+  expect_snapshot(
+    df$select(x = pl$concat_str(a = "foo")),
+    error = TRUE
+  )
+})

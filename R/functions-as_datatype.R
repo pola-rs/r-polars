@@ -267,3 +267,39 @@ pl__concat_list <- function(...) {
       concat_list()
   })
 }
+
+#' Horizontally concatenate columns into a single string column
+#'
+#' Operates in linear time.
+#'
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Columns to concatenate into a
+#' single string column. Accepts expression input. Strings are parsed as column
+#' names, other non-expression inputs are parsed as literals. Non-`String`
+#' columns are cast to `String`.
+#' @param separator String that will be used to separate the values of each
+#' column.
+#' @param ignore_nulls If `FALSE` (default), null values will be propagated,
+#' i.e. if the row contains any null values, the output is null.
+#'
+#' @inherit as_polars_expr return
+#' @examples
+#' df <- pl$DataFrame(
+#'   a = 1:3,
+#'   b = c("dogs", "cats", NA),
+#'   c = c("play", "swim", "walk")
+#' )
+#' df$with_columns(
+#'   full_sentence = pl$concat_str(
+#'     pl$col("a") * 2L,
+#'     pl$col("b"),
+#'     pl$col("c"),
+#'     separator = " ",
+#'   )
+#' )
+pl__concat_str <- function(..., separator = "", ignore_nulls = FALSE) {
+  wrap({
+    check_dots_unnamed()
+    exprs <- parse_into_list_of_expressions(...)
+    concat_str(exprs, separator, ignore_nulls)
+  })
+}
