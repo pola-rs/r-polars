@@ -162,10 +162,9 @@ test_that("as_polars_series(<POSIXlt>) works for leap second as like str_to_date
   chr_vec <- c("2005-12-31 23:59:59", "2005-12-31 23:59:60", "2005-12-31 23:59:60.123456789", "2006-01-01 00:00:00")
   lt_vec <- as.POSIXlt(chr_vec, tz = "UTC")
 
-  # TODO: simplify after series' str namespace is implemented
   expect_equal(
-    pl$select(literal = as_polars_series(lt_vec)),
-    pl$select(pl$lit(chr_vec)$str$to_datetime(time_unit = "ns", time_zone = "UTC"))
+    as_polars_series(lt_vec),
+    as_polars_series(chr_vec)$str$to_datetime(time_unit = "ns", time_zone = "UTC")
   )
 })
 
