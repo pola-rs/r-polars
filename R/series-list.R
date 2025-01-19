@@ -14,7 +14,7 @@ namespace_series_list <- function(x) {
   # Dispatch expr list methods
   lapply(setdiff(names(polars_expr_list_methods), names(self)), function(name) {
     fn <- polars_expr_list_methods[[name]]
-    wraped_fn <- expr_wrap_function_factory(fn, self)
+    wraped_fn <- expr_wrap_function_factory(fn, self, "list")
     assign(name, wraped_fn, envir = self)
   })
 

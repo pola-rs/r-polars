@@ -14,7 +14,7 @@ namespace_series_dt <- function(x) {
   # Dispatch expr dt methods
   lapply(setdiff(names(polars_expr_dt_methods), names(self)), function(name) {
     fn <- polars_expr_dt_methods[[name]]
-    wraped_fn <- expr_wrap_function_factory(fn, self)
+    wraped_fn <- expr_wrap_function_factory(fn, self, "dt")
     assign(name, wraped_fn, envir = self)
   })
 

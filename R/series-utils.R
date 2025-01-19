@@ -1,7 +1,13 @@
-expr_wrap_function_factory <- function(fn, self) {
+expr_wrap_function_factory <- function(fn, self, namespace = NULL) {
   `_s` <- self$`_s`
-  self <- pl$col(`_s`$name())
   environment(fn) <- environment()
+
+  # Override `self` with the column expression or namespace
+  if (is.null(namespace)) {
+    self <- pl$col(`_s`$name())
+  } else {
+    self <- pl$col(`_s`$name())[[namespace]]
+  }
 
   new_fn <- function() {
     wrap({
