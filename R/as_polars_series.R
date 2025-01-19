@@ -306,6 +306,10 @@ as_polars_series.POSIXlt <- function(x, name = NULL, ...) {
     time_zone <- Sys.timezone()
   }
 
+  # POSIXlt allows '60s', but pl$datetime doesn't
+  second_fixed <- x$sec %% 60
+  minute_diff <- x$sec %/% 60
+
   pl$select(
     pl$datetime(
       year = x$year + 1900L,
@@ -313,11 +317,14 @@ as_polars_series.POSIXlt <- function(x, name = NULL, ...) {
       day = x$mday,
       hour = x$hour,
       minute = x$min,
-      second = x$sec,
+      second = second_fixed,
       time_zone = time_zone,
       time_unit = "ns",
       ambiguous = pl$when(x$isdst == 0)$then(pl$lit("latest"))$otherwise(pl$lit("earliest"))
-    )$alias(name %||% "") + pl$duration(nanoseconds = (x$sec - floor(x$sec)) * 1e9)
+    )$alias(name %||% "") + pl$duration(
+      minutes = minute_diff,
+      nanoseconds = (x$sec - floor(x$sec)) * 1e9
+    )
   )$to_series()
 }
 
