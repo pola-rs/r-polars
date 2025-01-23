@@ -226,7 +226,7 @@ df$group_by("groups")$agg(
 ## GroupBy
 
 ```{r}
-url = "https://theunitedstates.io/congress-legislators/legislators-historical.csv"
+url = "https://unitedstates.github.io/congress-legislators/legislators-historical.csv"
 
 dtypes = list(
   "first_name" = pl$Categorical(),
