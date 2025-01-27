@@ -979,7 +979,8 @@ test_that("$str$tail works", {
 
 test_that("$str$extract_many works", {
   df <- pl$DataFrame(values = c("discontent", "dollar $"))
-  patterns <- pl$lit(c("winter", "disco", "ONTE", "discontent", "$"))
+  # FIXME: The literal must be a single list[str] after <https://github.com/pola-rs/polars/pull/20781>
+  patterns <- pl$lit(list(c("winter", "disco", "ONTE", "discontent", "$")))
 
   expect_equal(
     df$select(
@@ -987,8 +988,8 @@ test_that("$str$extract_many works", {
       matches_overlap = pl$col("values")$str$extract_many(patterns, overlapping = TRUE)
     ),
     pl$DataFrame(
-      matches = list("disco", "$"),
-      matches_overlap = list(c("disco", "discontent"), "$")
+      matches = list("disco"),
+      matches_overlap = list(c("disco", "discontent"))
     )
   )
 
@@ -1007,7 +1008,7 @@ test_that("$str$extract_many works", {
       )
     ),
     pl$DataFrame(
-      matches_overlap = list(c("disco", "onte", "discontent"), "$")
+      matches_overlap = list(c("disco", "onte", "discontent"))
     )
   )
 
