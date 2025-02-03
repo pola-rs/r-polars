@@ -226,7 +226,7 @@ impl PlRSeries {
                 } else {
                     let left_u32 = *l as u32;
                     let right_u32 = *r as u32;
-                    let out_u64 = (left_u32 as u64) << 32 | right_u32 as u64;
+                    let out_u64 = ((left_u32 as u64) << 32) | right_u32 as u64;
                     Some(
                         i64::from_ne_bytes(
                             (out_u64.wrapping_sub(9_223_372_036_854_775_808u64)).to_ne_bytes(),

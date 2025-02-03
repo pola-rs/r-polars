@@ -767,7 +767,7 @@ impl PlRExpr {
 
     fn backward_fill(&self, limit: Option<NumericScalar>) -> Result<Self> {
         let limit: FillNullLimit = match limit {
-            Some(x) => Some(<Wrap<u32>>::try_from(x)?.0.into()),
+            Some(x) => Some(<Wrap<u32>>::try_from(x)?.0),
             None => None,
         };
         Ok(self.inner.clone().backward_fill(limit).into())
@@ -775,7 +775,7 @@ impl PlRExpr {
 
     fn forward_fill(&self, limit: Option<NumericScalar>) -> Result<Self> {
         let limit: FillNullLimit = match limit {
-            Some(x) => Some(<Wrap<u32>>::try_from(x)?.0.into()),
+            Some(x) => Some(<Wrap<u32>>::try_from(x)?.0),
             None => None,
         };
         Ok(self.inner.clone().forward_fill(limit).into())
@@ -800,7 +800,7 @@ impl PlRExpr {
         limit: Option<NumericScalar>,
     ) -> Result<Self> {
         let limit: FillNullLimit = match limit {
-            Some(x) => Some(<Wrap<u32>>::try_from(x)?.0.into()),
+            Some(x) => Some(<Wrap<u32>>::try_from(x)?.0),
             None => None,
         };
         let strategy = parse_fill_null_strategy(strategy, limit)?;
@@ -870,10 +870,7 @@ impl PlRExpr {
         labels: Option<StringSexp>,
     ) -> Result<Self> {
         let breaks: Vec<f64> = breaks.as_slice_f64().into();
-        let labels = match labels {
-            Some(x) => Some(x.to_vec()),
-            None => None,
-        };
+        let labels = labels.map(|x| x.to_vec());
         Ok(self
             .inner
             .clone()
@@ -890,10 +887,7 @@ impl PlRExpr {
         labels: Option<StringSexp>,
     ) -> Result<Self> {
         let probs: Vec<f64> = probs.as_slice_f64().into();
-        let labels = match labels {
-            Some(x) => Some(x.to_vec()),
-            None => None,
-        };
+        let labels = labels.map(|x| x.to_vec());
         Ok(self
             .inner
             .clone()
@@ -910,10 +904,7 @@ impl PlRExpr {
         labels: Option<StringSexp>,
     ) -> Result<Self> {
         let n_bins = <Wrap<usize>>::try_from(n_bins)?.0;
-        let labels = match labels {
-            Some(x) => Some(x.to_vec()),
-            None => None,
-        };
+        let labels = labels.map(|x| x.to_vec());
         Ok(self
             .inner
             .clone()
