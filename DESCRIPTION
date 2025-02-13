@@ -34,7 +34,7 @@ Suggests:
     lubridate,
     nanoarrow (>= 0.6.0),
     nycflights13,
-    patrick,
+    patrick (>= 0.3.0),
     quickcheck,
     pillar,
     rlang,
