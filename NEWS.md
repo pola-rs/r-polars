@@ -10,7 +10,12 @@
 >
 > Please check the GitHub issue #1152.
 
-## Polars R Package (development version)
+## polars (development version)
+
+## Polars R Package 0.22.1
+
+This is a small hot-fix release to fix the build error on R-multiverse.
+No user-facing changes.
 
 ## Polars R Package 0.22.0
 
