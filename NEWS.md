@@ -12,6 +12,9 @@
 
 ## Polars R Package 0.22.1
 
+This is a small hot-fix release to fix the build error on R-multiverse.
+No user-facing changes.
+
 ## Polars R Package 0.22.0
 
 ### Breaking changes
