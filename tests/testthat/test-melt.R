@@ -52,5 +52,6 @@ patrick::with_parameters_test_that("unpivot example",
   },
   create_func = c("DataFrame", "LazyFrame"),
   is_func = list(is_polars_df, is_polars_lf),
-  .test_name = create_func
+  .test_name = create_func,
+  .interpret_glue = FALSE
 )

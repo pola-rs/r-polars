@@ -61,7 +61,8 @@ patrick::with_parameters_test_that("dimnames",
 
     expect_equal(.fn(df_r), .fn(df_pl))
   },
-  .fn = c(dimnames, colnames, rownames, row.names, names)
+  .fn = c(dimnames, colnames, rownames, row.names, names),
+  .interpret_glue = FALSE
 )
 
 make_cases = function() {
