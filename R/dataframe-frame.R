@@ -620,3 +620,51 @@ dataframe__rechunk <- function() {
     self$`_df`$rechunk()
   })
 }
+
+#' @inherit lazyframe__bottom_k title description params
+#' @inherit as_polars_df return
+#'
+#' @examples
+#' df <- pl$DataFrame(
+#'   a = c("a", "b", "a", "b", "b", "c"),
+#'   b = c(2, 1, 1, 3, 2, 1)
+#' )
+#'
+#' # Get the rows which contain the 4 smallest values in column b.
+#' df$bottom_k(4, by = "b")
+#'
+#' # Get the rows which contain the 4 smallest values when sorting on column a
+#' # and b$
+#' df$bottom_k(4, by = c("a", "b"))
+dataframe__bottom_k <- function(k, ..., by, reverse = FALSE) {
+  self$lazy()$bottom_k(k, by = by, reverse = reverse)$collect(
+    projection_pushdown = FALSE,
+    predicate_pushdown = FALSE,
+    comm_subplan_elim = FALSE,
+    slice_pushdown = TRUE
+  ) |> wrap()
+}
+
+#' @inherit lazyframe__top_k title description params
+#' @inherit as_polars_df return
+#'
+#' @examples
+#' df <- pl$DataFrame(
+#'   a = c("a", "b", "a", "b", "b", "c"),
+#'   b = c(2, 1, 1, 3, 2, 1)
+#' )
+#'
+#' # Get the rows which contain the 4 largest values in column b.
+#' df$top_k(4, by = "b")
+#'
+#' # Get the rows which contain the 4 largest values when sorting on column a
+#' # and b
+#' df$top_k(4, by = c("a", "b"))
+dataframe__top_k <- function(k, ..., by, reverse = FALSE) {
+  self$lazy()$top_k(k, by = by, reverse = reverse)$collect(
+    projection_pushdown = FALSE,
+    predicate_pushdown = FALSE,
+    comm_subplan_elim = FALSE,
+    slice_pushdown = TRUE
+  ) |> wrap()
+}

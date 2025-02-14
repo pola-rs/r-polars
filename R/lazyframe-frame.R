@@ -1867,7 +1867,7 @@ lazyframe__bottom_k <- function(k, ..., by, reverse = FALSE) {
 #' lf$top_k(4, by = "b")$collect()
 #'
 #' # Get the rows which contain the 4 largest values when sorting on column a
-#' # and b$
+#' # and b
 #' lf$top_k(4, by = c("a", "b"))$collect()
 lazyframe__top_k <- function(k, ..., by, reverse = FALSE) {
   wrap({

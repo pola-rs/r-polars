@@ -214,3 +214,47 @@ test_that("with_columns_seq can create list variables", {
     pl$DataFrame(x = 1:2, y = list(1:2, 3:4), z = list(c("a", "b"), c("c", "d")))
   )
 })
+
+test_that("bottom_k works", {
+  df <- pl$DataFrame(
+    a = c("a", "b", "a", "b", "b", "c"),
+    b = c(2, 1, 1, 3, 2, 1)
+  )
+  expect_query_equal(
+    .input$bottom_k(4, by = "b"),
+    df,
+    pl$DataFrame(a = c("b", "a", "c", "a"), b = c(1, 1, 1, 2))
+  )
+  expect_query_equal(
+    .input$bottom_k(4, by = c("a", "b")),
+    df,
+    pl$DataFrame(a = c("a", "a", "b", "b"), b = c(1, 2, 1, 2))
+  )
+  expect_query_error(
+    .input$bottom_k(4, by = 1),
+    df,
+    "lengths don't match"
+  )
+})
+
+test_that("top_k works", {
+  df <- pl$DataFrame(
+    a = c("a", "b", "a", "b", "b", "c"),
+    b = c(2, 1, 1, 3, 2, 1)
+  )
+  expect_query_equal(
+    .input$top_k(4, by = "b"),
+    df,
+    pl$DataFrame(a = c("b", "a", "b", "b"), b = c(3, 2, 2, 1))
+  )
+  expect_query_equal(
+    .input$top_k(4, by = c("a", "b")),
+    df,
+    pl$DataFrame(a = c("c", "b", "b", "b"), b = c(1, 3, 2, 1))
+  )
+  expect_query_error(
+    .input$top_k(4, by = 1),
+    df,
+    "lengths don't match"
+  )
+})
