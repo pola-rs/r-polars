@@ -132,3 +132,85 @@ test_that("slice/head/tail works lazy/eager", {
     r"(-4\.0 is out of range that can be safely converted to u32)"
   )
 })
+
+test_that("with_columns: basic usage", {
+  df <- pl$DataFrame(x = 1:2)
+
+  expect_query_equal(
+    .input$with_columns(y = 1 + pl$col("x"), z = pl$col("x")^2),
+    df,
+    pl$DataFrame(x = 1:2, y = c(2, 3), z = c(1, 4))
+  )
+
+  # cannot reuse defined variable in same statement
+  expect_query_error(
+    .input$with_columns(y = 1 + pl$col("x"), z = pl$col("y")^2),
+    df,
+    "Column(s) not found: y",
+    fixed = TRUE
+  )
+
+  # chaining multiple with_columns works
+  expect_query_equal(
+    .input$with_columns(y = 1 + pl$col("x"))$with_columns(z = pl$col("y")^2),
+    df,
+    pl$DataFrame(x = 1:2, y = c(2, 3), z = c(4, 9))
+  )
+})
+
+test_that("with_columns can create list variables", {
+  df <- pl$DataFrame(x = 1:2)
+
+  expect_query_equal(
+    .input$with_columns(y = list(1:2, 3:4)),
+    df,
+    pl$DataFrame(x = 1:2, y = list(1:2, 3:4))
+  )
+
+  expect_query_equal(
+    .input$with_columns(y = list(1:2, 3:4), z = list(c("a", "b"), c("c", "d"))),
+    df,
+    pl$DataFrame(x = 1:2, y = list(1:2, 3:4), z = list(c("a", "b"), c("c", "d")))
+  )
+})
+
+test_that("with_columns_seq: basic usage", {
+  df <- pl$DataFrame(x = 1:2)
+
+  expect_query_equal(
+    .input$with_columns_seq(y = 1 + pl$col("x"), z = pl$col("x")^2),
+    df,
+    pl$DataFrame(x = 1:2, y = c(2, 3), z = c(1, 4))
+  )
+
+  # cannot reuse defined variable in same statement
+  expect_query_error(
+    .input$with_columns_seq(y = 1 + pl$col("x"), z = pl$col("y")^2),
+    df,
+    "Column(s) not found: y",
+    fixed = TRUE
+  )
+
+  # chaining multiple with_columns_seq works
+  expect_query_equal(
+    .input$with_columns_seq(y = 1 + pl$col("x"))$with_columns_seq(z = pl$col("y")^2),
+    df,
+    pl$DataFrame(x = 1:2, y = c(2, 3), z = c(4, 9))
+  )
+})
+
+test_that("with_columns_seq can create list variables", {
+  df <- pl$DataFrame(x = 1:2)
+
+  expect_query_equal(
+    .input$with_columns_seq(y = list(1:2, 3:4)),
+    df,
+    pl$DataFrame(x = 1:2, y = list(1:2, 3:4))
+  )
+
+  expect_query_equal(
+    .input$with_columns_seq(y = list(1:2, 3:4), z = list(c("a", "b"), c("c", "d"))),
+    df,
+    pl$DataFrame(x = 1:2, y = list(1:2, 3:4), z = list(c("a", "b"), c("c", "d")))
+  )
+})
