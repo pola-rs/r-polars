@@ -278,9 +278,9 @@ dependencies = [
 
 [[package]]
 name = "cc"
-version = "1.2.7"
+version = "1.2.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a012a0df96dd6d06ba9a1b29d6402d1a5d77c6befd2566afdc26e10603dc93d7"
+checksum = "c7777341816418c02e033934a09f20dc0ccaf65a5201ef8a450ae0105a573fda"
 dependencies = [
  "jobserver",
  "libc",
@@ -2525,12 +2525,11 @@ dependencies = [
 
 [[package]]
 name = "savvy"
-version = "0.8.3"
+version = "0.8.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "187d52c3a95bb88fa444b097b9c20edd8eb18622fcba9a3055b0b48386316095"
+checksum = "f9aa3b33184a4a12f3e626794689d6eb7c02e7cbea2d4b157e78253cf57aa6ca"
 dependencies = [
  "cc",
- "once_cell",
  "rustversion",
  "savvy-ffi",
  "savvy-macro",
@@ -2538,9 +2537,9 @@ dependencies = [
 
 [[package]]
 name = "savvy-bindgen"
-version = "0.8.3"
+version = "0.8.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "79236364f88e6dd77ceb6663569c47cb8b94cf855d06b929d5f9a03fe7202339"
+checksum = "b43ec0bf41e48237223290ff2ae843d58a6e7a830f6d00cd01acebd5981244ec"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2549,15 +2548,15 @@ dependencies = [
 
 [[package]]
 name = "savvy-ffi"
-version = "0.8.3"
+version = "0.8.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a75924b61870a3314933298515228bcb434c05baf6c169ef308ad86890956e73"
+checksum = "c5e1cd9e562f19a846cf30a981bc82a23328cd121b880f63f3f1d6588dc398f3"
 
 [[package]]
 name = "savvy-macro"
-version = "0.8.3"
+version = "0.8.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8a8c3b21e973e3617424bea8ca33dc97f2608f7592147e42de1aa989951da959"
+checksum = "c710edd536fc66235ea7677ce5bc5f4c2fa158e7555e48756641230bf754c73d"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2631,9 +2630,9 @@ dependencies = [
 
 [[package]]
 name = "serde_json"
-version = "1.0.137"
+version = "1.0.138"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "930cfb6e6abf99298aaad7d29abbef7a9999a9a8806a40088f55f0dcec03146b"
+checksum = "d434192e7da787e94a6ea7e9670b26a036d0ca41e0b7efb2676dd32bae872949"
 dependencies = [
  "indexmap",
  "itoa",
