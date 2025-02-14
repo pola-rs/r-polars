@@ -446,7 +446,7 @@ lazyframe__explain <- function(
         collapse_joins = collapse_joins,
         streaming = streaming,
         `_check_order` = `_check_order`,
-        `_eager` = `_eager`
+        `_eager` = FALSE
       )
 
       if (format == "tree") {
