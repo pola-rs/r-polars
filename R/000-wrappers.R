@@ -3386,6 +3386,12 @@ class(`PlRExpr`) <- c("PlRExpr__bundle", "savvy_neopolars__sealed")
   }
 }
 
+`PlRLazyFrame_drop_nans` <- function(self) {
+  function(`subset` = NULL) {
+    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_drop_nans__impl, `self`, `subset`))
+  }
+}
+
 `PlRLazyFrame_drop_nulls` <- function(self) {
   function(`subset` = NULL) {
     .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_drop_nulls__impl, `self`, `subset`))
@@ -3663,6 +3669,7 @@ class(`PlRExpr`) <- c("PlRExpr__bundle", "savvy_neopolars__sealed")
   e$`describe_plan` <- `PlRLazyFrame_describe_plan`(ptr)
   e$`describe_plan_tree` <- `PlRLazyFrame_describe_plan_tree`(ptr)
   e$`drop` <- `PlRLazyFrame_drop`(ptr)
+  e$`drop_nans` <- `PlRLazyFrame_drop_nans`(ptr)
   e$`drop_nulls` <- `PlRLazyFrame_drop_nulls`(ptr)
   e$`explode` <- `PlRLazyFrame_explode`(ptr)
   e$`fill_nan` <- `PlRLazyFrame_fill_nan`(ptr)

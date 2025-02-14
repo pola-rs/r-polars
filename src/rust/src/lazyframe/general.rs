@@ -629,6 +629,12 @@ impl PlRLazyFrame {
         Ok(ldf.drop_nulls(subset).into())
     }
 
+    fn drop_nans(&self, subset: Option<ListSexp>) -> Result<Self> {
+        let ldf = self.ldf.clone();
+        let subset = subset.map(|e| <Wrap<Vec<Expr>>>::from(e).0);
+        Ok(ldf.drop_nans(subset).into())
+    }
+
     fn unpivot(
         &self,
         on: ListSexp,

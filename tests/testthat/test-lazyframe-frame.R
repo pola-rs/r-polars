@@ -550,3 +550,37 @@ test_that("argument 'join_nulls' works", {
     pl$DataFrame(x = c(NA, "b", NA), y = c(1L, 3L, 1L), y2 = c(4L, 5L, 7L))
   )
 })
+
+test_that("drop_nans works", {
+  df <- pl$DataFrame(
+    foo = c(1, NaN, 2.5),
+    bar = c(NaN, 110, 25.5),
+    ham = c("a", "b", NA)
+  )
+
+  expect_query_equal(
+    .input$drop_nans(),
+    .input = df,
+    pl$DataFrame(foo = 2.5, bar = 25.5, ham = NA_character_)
+  )
+  expect_query_equal(
+    .input$drop_nans(subset = "bar"),
+    .input = df,
+    pl$DataFrame(foo = c(NaN, 2.5), bar = c(110, 25.5), ham = c("b", NA))
+  )
+
+  df <- pl$DataFrame(
+    a = c(NaN, NaN, NaN, NaN),
+    b = c(10.0, 2.5, NaN, 5.25),
+    c = c(65.75, NaN, NaN, 10.5)
+  )
+  expect_query_equal(
+    .input$filter(!pl$all_horizontal(pl$all()$is_nan())),
+    .input = df,
+    pl$DataFrame(
+      a = c(NaN, NaN, NaN),
+      b = c(10.0, 2.5, 5.25),
+      c = c(65.75, NaN, 10.5)
+    )
+  )
+})

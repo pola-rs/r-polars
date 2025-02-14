@@ -2309,6 +2309,11 @@ SEXP savvy_PlRLazyFrame_drop__impl(SEXP self__, SEXP c_arg__columns, SEXP c_arg_
     return handle_result(res);
 }
 
+SEXP savvy_PlRLazyFrame_drop_nans__impl(SEXP self__, SEXP c_arg__subset) {
+    SEXP res = savvy_PlRLazyFrame_drop_nans__ffi(self__, c_arg__subset);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRLazyFrame_drop_nulls__impl(SEXP self__, SEXP c_arg__subset) {
     SEXP res = savvy_PlRLazyFrame_drop_nulls__ffi(self__, c_arg__subset);
     return handle_result(res);
@@ -3206,6 +3211,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRLazyFrame_describe_plan__impl", (DL_FUNC) &savvy_PlRLazyFrame_describe_plan__impl, 1},
     {"savvy_PlRLazyFrame_describe_plan_tree__impl", (DL_FUNC) &savvy_PlRLazyFrame_describe_plan_tree__impl, 1},
     {"savvy_PlRLazyFrame_drop__impl", (DL_FUNC) &savvy_PlRLazyFrame_drop__impl, 3},
+    {"savvy_PlRLazyFrame_drop_nans__impl", (DL_FUNC) &savvy_PlRLazyFrame_drop_nans__impl, 2},
     {"savvy_PlRLazyFrame_drop_nulls__impl", (DL_FUNC) &savvy_PlRLazyFrame_drop_nulls__impl, 2},
     {"savvy_PlRLazyFrame_explode__impl", (DL_FUNC) &savvy_PlRLazyFrame_explode__impl, 2},
     {"savvy_PlRLazyFrame_fill_nan__impl", (DL_FUNC) &savvy_PlRLazyFrame_fill_nan__impl, 2},

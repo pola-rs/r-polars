@@ -1021,6 +1021,52 @@ lazyframe__drop_nulls <- function(subset = NULL) {
   })
 }
 
+#' Drop all rows that contain NaN values
+#'
+#' The original order of the remaining rows is preserved.
+#'
+#' @param subset Column name(s) for which `NaN` values are considered. If `NULL`
+#' (default), use all columns (note that only floating-point columns can
+#' contain `NaN`s).
+#'
+#' @inherit as_polars_lf return
+#' @examples
+#' lf <- pl$LazyFrame(
+#'   foo = c(1, NaN, 2.5),
+#'   bar = c(NaN, 110, 25.5),
+#'   ham = c("a", "b", NA)
+#' )
+#'
+#' # The default behavior of this method is to drop rows where any single value
+#' # of the row is null.
+#' lf$drop_nans()$collect()
+#'
+#' # This behaviour can be constrained to consider only a subset of columns, as
+#' # defined by name or with a selector. For example, dropping rows if there is
+#' # a null in the "bar" column:
+#' lf$drop_nans(subset = "bar")$collect()
+#'
+#' # Dropping a row only if *all* values are NaN requires a different
+#' # formulation:
+#' df <- pl$LazyFrame(
+#'   a = c(NaN, NaN, NaN, NaN),
+#'   b = c(10.0, 2.5, NaN, 5.25),
+#'   c = c(65.75, NaN, NaN, 10.5)
+#' )
+#' df$filter(!pl$all_horizontal(pl$all()$is_nan()))$collect()
+lazyframe__drop_nans <- function(subset = NULL) {
+  wrap({
+    if (!is.null(subset)) {
+      if (is_polars_selector(subset)) {
+        subset <- parse_into_list_of_expressions(!!!list(subset))
+      } else {
+        subset <- parse_into_list_of_expressions(!!!subset)
+      }
+    }
+    self$`_ldf`$drop_nans(subset)
+  })
+}
+
 #' Drop duplicate rows
 #'
 #' @inheritParams rlang::args_dots_empty
