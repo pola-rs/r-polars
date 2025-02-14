@@ -603,3 +603,58 @@ test_that("explain() works", {
   expect_snapshot(cat(lazy_query$explain(format = "tree", optimized = FALSE)))
   expect_snapshot(cat(lazy_query$explain(format = "tree", )))
 })
+
+test_that("$cast() works", {
+  df <- pl$DataFrame(
+    foo = 1:3,
+    bar = c(6, 7, 8),
+    ham = as.Date(c("2020-01-02", "2020-03-04", "2020-05-06"))
+  )
+
+  expect_query_equal(
+    .input$cast(foo = pl$Float32, bar = pl$UInt8),
+    df,
+    pl$DataFrame(
+      foo = 1:3,
+      bar = c(6, 7, 8),
+      ham = as.Date(c("2020-01-02", "2020-03-04", "2020-05-06")),
+      .schema_overrides = list(foo = pl$Float32, bar = pl$UInt8, ham = pl$Date)
+    )
+  )
+
+  expect_query_equal(
+    .input$cast(pl$String),
+    df,
+    pl$DataFrame(
+      foo = 1:3,
+      bar = c(6, 7, 8),
+      ham = as.Date(c("2020-01-02", "2020-03-04", "2020-05-06")),
+      .schema_overrides = list(foo = pl$String, bar = pl$String, ham = pl$String)
+    )
+  )
+
+  expect_query_equal(
+    .input$cast(),
+    df,
+    df
+  )
+
+  expect_query_error(.input$cast(1), df)
+  expect_query_error(.input$cast("a"), df)
+  expect_query_error(.input$cast(list(foo = "a")), df)
+  expect_query_error(.input$cast(list(), strict = 1), df)
+
+  # Test overflow error
+  df <- pl$DataFrame(x = 1024)
+
+  expect_query_error(
+    .input$cast(pl$Int8),
+    df,
+    "conversion from `f64` to `i8` failed"
+  )
+  expect_query_equal(
+    .input$cast(pl$Int8, .strict = FALSE),
+    df,
+    pl$DataFrame(x = NA_integer_, .schema_overrides = list(x = pl$Int8))
+  )
+})
