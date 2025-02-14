@@ -551,11 +551,6 @@ impl PlRLazyFrame {
         Ok(ldf.fill_nan(fill_value.inner.clone()).into())
     }
 
-    fn fill_null(&self, fill_value: &PlRExpr) -> Result<Self> {
-        let ldf = self.ldf.clone();
-        Ok(ldf.fill_null(fill_value.inner.clone()).into())
-    }
-
     fn min(&self) -> Result<Self> {
         let ldf = self.ldf.clone();
         let out = ldf.min();

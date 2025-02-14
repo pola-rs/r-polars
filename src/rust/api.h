@@ -469,7 +469,6 @@ SEXP savvy_PlRLazyFrame_drop_nans__ffi(SEXP self__, SEXP c_arg__subset);
 SEXP savvy_PlRLazyFrame_drop_nulls__ffi(SEXP self__, SEXP c_arg__subset);
 SEXP savvy_PlRLazyFrame_explode__ffi(SEXP self__, SEXP c_arg__column);
 SEXP savvy_PlRLazyFrame_fill_nan__ffi(SEXP self__, SEXP c_arg__fill_value);
-SEXP savvy_PlRLazyFrame_fill_null__ffi(SEXP self__, SEXP c_arg__fill_value);
 SEXP savvy_PlRLazyFrame_filter__ffi(SEXP self__, SEXP c_arg__predicate);
 SEXP savvy_PlRLazyFrame_group_by__ffi(SEXP self__, SEXP c_arg__by, SEXP c_arg__maintain_order);
 SEXP savvy_PlRLazyFrame_group_by_dynamic__ffi(SEXP self__, SEXP c_arg__index_column, SEXP c_arg__every, SEXP c_arg__period, SEXP c_arg__offset, SEXP c_arg__label, SEXP c_arg__include_boundaries, SEXP c_arg__closed, SEXP c_arg__group_by, SEXP c_arg__start_by);

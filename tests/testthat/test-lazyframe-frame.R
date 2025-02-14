@@ -729,3 +729,76 @@ test_that("$gather_every() works", {
     "must be numeric, not character"
   )
 })
+
+test_that("fill_null(): basic usage", {
+  df <- pl$DataFrame(
+    a = c(1.5, 2, NA, NaN),
+    b = c(1, NA, NA, 4)
+  )
+  expect_query_equal(
+    .input$fill_null(99),
+    df,
+    pl$DataFrame(
+      a = c(1.5, 2, 99, NaN),
+      b = c(1, 99, 99, 4)
+    )
+  )
+
+  # can't pass "value" and "strategy"
+  expect_query_error(
+    .input$fill_null(99, strategy = "one"),
+    .input = df,
+    "Exactly one of `value` or `strategy`"
+  )
+
+  # arg "limit" works
+  expect_query_equal(
+    .input$fill_null(strategy = "forward", limit = 1),
+    df,
+    pl$DataFrame(
+      a = c(1.5, 2, 2, NaN),
+      b = c(1, 1, NA, 4)
+    )
+  )
+
+  # arg "matches_supertype" works
+  df <- df$cast(a = pl$Float32, b = pl$Int32)
+  expect_query_equal(
+    .input$fill_null(99),
+    df,
+    pl$DataFrame(
+      a = c(1.5, 2, 99, NaN),
+      b = c(1, 99, 99, 4)
+    )$cast(a = pl$Float32, b = pl$Float64)
+  )
+  expect_query_equal(
+    .input$fill_null(99, matches_supertype = FALSE),
+    df,
+    df
+  )
+})
+
+patrick::with_parameters_test_that("fill_null(): arg 'strategy' works",
+  .cases = {
+    tibble::tribble(
+      ~.strategy, ~.a, ~.b,
+      "forward", c(1.5, 2, 2, NaN), c(1.5, 1.5, 1.5, 4),
+      "backward", c(1.5, 2, NaN, NaN), c(1.5, 4, 4, 4),
+      "min", c(1.5, 2, 1.5, NaN), c(1.5, 1.5, 1.5, 4),
+      "max", c(1.5, 2, 2, NaN), c(1.5, 4, 4, 4),
+      "zero", c(1.5, 2, 0, NaN), c(1.5, 0, 0, 4),
+      "one", c(1.5, 2, 1, NaN), c(1.5, 1, 1, 4),
+    )
+  },
+  code = {
+    df <- pl$DataFrame(
+      a = c(1.5, 2, NA, NaN),
+      b = c(1.5, NA, NA, 4)
+    )
+    expect_query_equal(
+      .input$fill_null(strategy = .strategy),
+      df,
+      pl$DataFrame(a = .a, b = .b)
+    )
+  }
+)

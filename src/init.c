@@ -2329,11 +2329,6 @@ SEXP savvy_PlRLazyFrame_fill_nan__impl(SEXP self__, SEXP c_arg__fill_value) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRLazyFrame_fill_null__impl(SEXP self__, SEXP c_arg__fill_value) {
-    SEXP res = savvy_PlRLazyFrame_fill_null__ffi(self__, c_arg__fill_value);
-    return handle_result(res);
-}
-
 SEXP savvy_PlRLazyFrame_filter__impl(SEXP self__, SEXP c_arg__predicate) {
     SEXP res = savvy_PlRLazyFrame_filter__ffi(self__, c_arg__predicate);
     return handle_result(res);
@@ -3215,7 +3210,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRLazyFrame_drop_nulls__impl", (DL_FUNC) &savvy_PlRLazyFrame_drop_nulls__impl, 2},
     {"savvy_PlRLazyFrame_explode__impl", (DL_FUNC) &savvy_PlRLazyFrame_explode__impl, 2},
     {"savvy_PlRLazyFrame_fill_nan__impl", (DL_FUNC) &savvy_PlRLazyFrame_fill_nan__impl, 2},
-    {"savvy_PlRLazyFrame_fill_null__impl", (DL_FUNC) &savvy_PlRLazyFrame_fill_null__impl, 2},
     {"savvy_PlRLazyFrame_filter__impl", (DL_FUNC) &savvy_PlRLazyFrame_filter__impl, 2},
     {"savvy_PlRLazyFrame_group_by__impl", (DL_FUNC) &savvy_PlRLazyFrame_group_by__impl, 3},
     {"savvy_PlRLazyFrame_group_by_dynamic__impl", (DL_FUNC) &savvy_PlRLazyFrame_group_by_dynamic__impl, 10},

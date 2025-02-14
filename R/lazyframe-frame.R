@@ -960,8 +960,17 @@ lazyframe__fill_nan <- function(value) {
     wrap()
 }
 
-#' @inherit DataFrame_fill_null title description params
+#' Fill null values using the specified value or strategy
 #'
+#' @inheritParams rlang::args_dots_empty
+#' @param value Value used to fill null values.
+#' @param strategy Strategy used to fill null values. Must be one of:
+#' `"forward"`, `"backward"`, `"min"`, `"max"`, `"mean"`, `"zero"`, `"one"`,
+#' or `NULL` (default).
+#' @param limit Number of consecutive null values to fill when using the
+#' `"forward"` or `"backward"` strategy.
+#' @param matches_supertype Fill all matching supertypes of the fill `value`
+#' literal.
 #' @inherit as_polars_lf return
 #' @examples
 #' lf <- pl$LazyFrame(
@@ -969,9 +978,78 @@ lazyframe__fill_nan <- function(value) {
 #'   b = c(1.5, NA, NA, 4)
 #' )
 #' lf$fill_null(99)$collect()
-lazyframe__fill_null <- function(fill_value) {
-  self$`_ldf`$fill_null(as_polars_expr(fill_value)$`_rexpr`) |>
-    wrap()
+#'
+#' lf$fill_null(strategy = "forward")$collect()
+#'
+#' lf$fill_null(strategy = "max")$collect()
+#'
+#' lf$fill_null(strategy = "zero")$collect()
+lazyframe__fill_null <- function(
+    value,
+    strategy = NULL,
+    limit = NULL,
+    ...,
+    matches_supertype = TRUE) {
+  wrap({
+    # Can't use check_exclusive() because it errors when we call this from the
+    # eager method.
+    if (!missing(value) && !missing(strategy) && !is.null(value) && !is.null(strategy)) {
+      abort("Exactly one of `value` or `strategy` must be supplied.")
+    }
+    check_dots_empty0(...)
+    if (!missing(value) && !is.null(value)) {
+      if (is_polars_expr(value)) {
+        dtypes <- NULL
+      } else if (is.logical(value)) {
+        dtypes <- pl$Boolean
+      } else if (isTRUE(matches_supertype) && is.numeric(value)) {
+        dtypes <- c(
+          pl$Int8,
+          pl$Int16,
+          pl$Int32,
+          pl$Int64,
+          pl$Int128,
+          pl$UInt8,
+          pl$UInt16,
+          pl$UInt32,
+          pl$UInt64,
+          pl$Float32,
+          pl$Float64,
+          pl$Decimal()
+        )
+      } else if (is.integer(value)) {
+        dtypes <- pl$Int64
+      } else if (is.double(value)) {
+        dtypes <- pl$Float64
+      } else if (inherits(value, "POSIXct")) {
+        abort("TODO")
+      } else if (is(x, "Duration")) {
+        abort("TODO")
+      } else if (is.Date(value)) {
+        dtypes <- pl$Date
+      } else if (is.character(value)) {
+        dtypes <- c(pl$String, pl$Categorical("physical"), pl$Categorical("lexical"))
+      } else {
+        dtypes <- NULL
+      }
+      # TODO: time datatype
+
+      if (!is_list_of_polars_dtype(dtypes)) {
+        dtypes <- list(dtypes)
+      }
+
+      if (!is.null(dtypes)) {
+        return(
+          self$with_columns(
+            # do not specify strategy otherwise check_exclusive() errors
+            pl$col(!!!dtypes)$fill_null(value = value, limit = limit)
+          ) |>
+            wrap()
+        )
+      }
+    }
+    self$select(pl$all()$fill_null(value, strategy, limit))
+  })
 }
 
 #' Shift values by the given number of indices
