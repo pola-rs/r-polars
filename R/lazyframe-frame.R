@@ -1896,13 +1896,13 @@ lazyframe__interpolate <- function() {
     wrap()
 }
 
-#' Take two sorted DataFrames and merge them by the sorted key
+#' Take two sorted LazyFrames and merge them by the sorted key
 #'
 #' The output of this operation will also be sorted. It is the callers
 #' responsibility that the frames are sorted by that key, otherwise the output
 #' will not make sense. The schemas of both LazyFrames must be equal.
 #'
-#' @param other Other DataFrame that must be merged.
+#' @param other Other LazyFrame that must be merged.
 #' @param key Key that is sorted.
 #'
 #' @inherit as_polars_lf return

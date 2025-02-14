@@ -668,3 +668,48 @@ dataframe__top_k <- function(k, ..., by, reverse = FALSE) {
     slice_pushdown = TRUE
   ) |> wrap()
 }
+
+#' Take two sorted DataFrames and merge them by the sorted key
+#'
+#' The output of this operation will also be sorted. It is the callers
+#' responsibility that the frames are sorted by that key, otherwise the output
+#' will not make sense. The schemas of both DataFrames must be equal.
+#'
+#' @param other Other DataFrame that must be merged.
+#' @inheritParams lazyframe__merge_sorted
+#'
+#' @inherit as_polars_df return
+#'
+#' @examples
+#' df1 <- pl$DataFrame(
+#'   name = c("steve", "elise", "bob"),
+#'   age = c(42, 44, 18)
+#' )$sort("age")
+#'
+#' df2 <- pl$DataFrame(
+#'   name = c("anna", "megan", "steve", "thomas"),
+#'   age = c(21, 33, 42, 20)
+#' )$sort("age")
+#'
+#' df1$merge_sorted(df2, key = "age")
+dataframe__merge_sorted <- function(other, key) {
+  self$lazy()$merge_sorted(other$lazy(), key)$collect(`_eager` = TRUE) |>
+    wrap()
+}
+
+#' @inherit lazyframe__set_sorted title description params
+#'
+#' @inherit as_polars_df return
+#' @examples
+#' # We mark the data as sorted by "age" but this is not the case!
+#' # It is up to the user to ensure that the column is actually sorted.
+#' df1 <- pl$DataFrame(
+#'   name = c("steve", "elise", "bob"),
+#'   age = c(42, 44, 18)
+#' )$set_sorted("age")
+#'
+#' df1$flags
+dataframe__set_sorted <- function(column, ..., descending = FALSE) {
+  self$lazy()$set_sorted(column, descending = descending)$collect(`_eager` = TRUE) |>
+    wrap()
+}

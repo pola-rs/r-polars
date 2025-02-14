@@ -2,12 +2,12 @@
 % Please edit documentation in R/lazyframe-frame.R
 \name{lazyframe__merge_sorted}
 \alias{lazyframe__merge_sorted}
-\title{Take two sorted DataFrames and merge them by the sorted key}
+\title{Take two sorted LazyFrames and merge them by the sorted key}
 \usage{
 lazyframe__merge_sorted(other, key)
 }
 \arguments{
-\item{other}{Other DataFrame that must be merged.}
+\item{other}{Other LazyFrame that must be merged.}
 
 \item{key}{Key that is sorted.}
 }

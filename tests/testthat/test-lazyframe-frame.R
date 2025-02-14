@@ -258,3 +258,50 @@ test_that("top_k works", {
     "lengths don't match"
   )
 })
+
+test_that("merge_sorted works", {
+  df1 <- pl$DataFrame(
+    name = c("steve", "elise", "bob"),
+    age = c(42, 44, 18)
+  )$sort("age")
+
+  df2 <- pl$DataFrame(
+    name = c("anna", "megan", "steve", "thomas"),
+    age = c(21, 33, 42, 20)
+  )$sort("age")
+
+  expect_query_equal(
+    .input$merge_sorted(.input2, key = "age"),
+    .input = df1,
+    .input2 = df2,
+    pl$DataFrame(
+      name = c("bob", "thomas", "anna", "megan", "steve", "steve", "elise"),
+      age = c(18, 20, 21, 33, 42, 42, 44)
+    )
+  )
+  expect_query_error(
+    .input$merge_sorted(.input2, key = "foobar"),
+    .input = df1,
+    .input2 = df2,
+    'Column(s) not found: "foobar" not found',
+    fixed = TRUE
+  )
+})
+
+test_that("set_sorted works", {
+  df1 <- pl$DataFrame(
+    name = c("steve", "elise", "bob"),
+    age = c(42, 44, 18)
+  )$set_sorted("age")
+
+  expect_true(df1$flags[["age"]][["SORTED_ASC"]])
+  expect_false(df1$flags[["name"]][["SORTED_ASC"]])
+
+  df1 <- pl$DataFrame(
+    name = c("steve", "elise", "bob"),
+    age = c(42, 44, 18)
+  )$set_sorted("age", descending = TRUE)
+
+  expect_true(df1$flags[["age"]][["SORTED_DESC"]])
+  expect_false(df1$flags[["name"]][["SORTED_DESC"]])
+})

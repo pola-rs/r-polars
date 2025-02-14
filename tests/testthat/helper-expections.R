@@ -50,22 +50,23 @@ expect_query_equal <- function(object, ...) {
 #' Same as `expect_query_equal()`, but for `expect_error()`.
 #' @param object A polars query, must be started with `.input`.
 #' See `expect_query_equal()` for details.
-#' @param input R object will be converted to a DataFrame or LazyFrame
+#' @param .input R object will be converted to a DataFrame or LazyFrame
 #' by `as_polars_df()` or `as_polars_lf()`.
 #' @param regexp passed to `expect_error()`.
 #' @param class passed to `expect_error()`.
+#' @param .input2 Same as `.input`. Used when query has two frames, e.g. in joins.
 #' @param ... passed to `expect_error()`.
 #' @noRd
-expect_query_error <- function(object, input, regexp = NULL, class = NULL, ...) {
+expect_query_error <- function(object, .input, regexp = NULL, class = NULL, .input2 = NULL, ...) {
   query <- rlang::enquo(object)
   expect_error(
-    rlang::eval_tidy(query, rlang::new_data_mask(rlang::env(.input = as_polars_lf(input))))$collect(),
+    rlang::eval_tidy(query, rlang::new_data_mask(rlang::env(.input = as_polars_lf(.input), .input2 = as_polars_lf(.input2))))$collect(),
     regexp = regexp,
     class = class,
     ...
   )
   expect_error(
-    rlang::eval_tidy(query, rlang::new_data_mask(rlang::env(.input = as_polars_df(input)))),
+    rlang::eval_tidy(query, rlang::new_data_mask(rlang::env(.input = as_polars_df(.input), .input2 = as_polars_df(.input2)))),
     regexp = regexp,
     class = class,
     ...
