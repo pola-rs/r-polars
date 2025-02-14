@@ -1197,7 +1197,8 @@ lazyframe__join <- function(
           join_nulls = join_nulls, suffix = suffix,
           allow_parallel = allow_parallel, force_parallel = force_parallel,
           coalesce = coalesce, maintain_order = maintain_order
-        )
+        ) |>
+          wrap()
       )
     }
 
