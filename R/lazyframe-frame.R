@@ -179,13 +179,15 @@ lazyframe__group_by <- function(..., .maintain_order = FALSE) {
 #' @param comm_subplan_elim A logical, indicats tring to cache branching subplans that occur on self-joins or unions.
 #' @param comm_subexpr_elim A logical, indicats tring to cache common subexpressions.
 #' @param cluster_with_columns A logical, indicats to combine sequential independent calls to with_columns.
+#' @param collapse_joins Collapse a join and filters into a faster join.
 #' @param no_optimization A logical. If `TRUE`, turn off (certain) optimizations.
 #' @param streaming A logical. If `TRUE`, process the query in batches to handle larger-than-memory data.
 #' If `FALSE` (default), the entire query is processed in a single batch.
 #' Note that streaming mode is considered unstable.
 #' It may be changed at any point without it being considered a breaking change.
-#' @param _eager A logical, indicates to turn off multi-node optimizations and the other optimizations.
-#' This option is intended for internal use only.
+#' @param _eager A logical, indicates to turn off multi-node optimizations and
+#' the other optimizations. This option is intended for internal use only.
+#' @param _check_order,_type_check For internal use only.
 #'
 #' @inherit as_polars_lf return
 #'
@@ -213,6 +215,7 @@ lazyframe__group_by <- function(..., .maintain_order = FALSE) {
 lazyframe__collect <- function(
     ...,
     type_coercion = TRUE,
+    `_type_check` = TRUE,
     predicate_pushdown = TRUE,
     projection_pushdown = TRUE,
     simplify_expression = TRUE,
@@ -220,8 +223,10 @@ lazyframe__collect <- function(
     comm_subplan_elim = TRUE,
     comm_subexpr_elim = TRUE,
     cluster_with_columns = TRUE,
+    collapse_joins = TRUE,
     no_optimization = FALSE,
     streaming = FALSE,
+    `_check_order` = TRUE,
     `_eager` = FALSE) {
   wrap({
     check_dots_empty0(...)
@@ -233,10 +238,13 @@ lazyframe__collect <- function(
       comm_subplan_elim <- FALSE
       comm_subexpr_elim <- FALSE
       cluster_with_columns <- FALSE
+      collapse_joins <- FALSE
+      `_check_order` <- FALSE
     }
 
     ldf <- self$`_ldf`$optimization_toggle(
       type_coercion = type_coercion,
+      `_type_check` = `_type_check`,
       predicate_pushdown = predicate_pushdown,
       projection_pushdown = projection_pushdown,
       simplify_expression = simplify_expression,
@@ -244,7 +252,9 @@ lazyframe__collect <- function(
       comm_subplan_elim = comm_subplan_elim,
       comm_subexpr_elim = comm_subexpr_elim,
       cluster_with_columns = cluster_with_columns,
+      collapse_joins = collapse_joins,
       streaming = streaming,
+      `_check_order` = `_check_order`,
       `_eager` = `_eager`
     )
 
@@ -307,6 +317,7 @@ lazyframe__collect <- function(
 lazyframe__profile <- function(
     ...,
     type_coercion = TRUE,
+    `_type_check` = TRUE,
     predicate_pushdown = TRUE,
     projection_pushdown = TRUE,
     simplify_expression = TRUE,
@@ -314,9 +325,10 @@ lazyframe__profile <- function(
     comm_subplan_elim = TRUE,
     comm_subexpr_elim = TRUE,
     cluster_with_columns = TRUE,
+    collapse_joins = TRUE,
     streaming = FALSE,
     no_optimization = FALSE,
-    collect_in_background = FALSE,
+    `_check_order` = TRUE,
     show_plot = FALSE,
     truncate_nodes = 0) {
   wrap({
@@ -329,6 +341,8 @@ lazyframe__profile <- function(
       comm_subplan_elim <- FALSE
       comm_subexpr_elim <- FALSE
       cluster_with_columns <- FALSE
+      collapse_joins <- FALSE
+      `_check_order` <- FALSE
     }
 
     if (isTRUE(streaming)) {
@@ -337,6 +351,7 @@ lazyframe__profile <- function(
 
     lf <- self$`_ldf`$optimization_toggle(
       type_coercion = type_coercion,
+      `_type_check` = `_type_check`,
       predicate_pushdown = predicate_pushdown,
       projection_pushdown = projection_pushdown,
       simplify_expression = simplify_expression,
@@ -344,8 +359,10 @@ lazyframe__profile <- function(
       comm_subplan_elim = comm_subplan_elim,
       comm_subexpr_elim = comm_subexpr_elim,
       cluster_with_columns = cluster_with_columns,
+      collapse_joins = collapse_joins,
       streaming = streaming,
-      `_eager` = FALSE
+      `_check_order` = `_check_order`,
+      `_eager` = `_eager`
     )
 
     out <- lapply(self$`_ldf`$profile(), \(x) {
@@ -399,6 +416,7 @@ lazyframe__explain <- function(
     format = c("plain", "tree"),
     optimized = TRUE,
     type_coercion = TRUE,
+    `_type_check` = TRUE,
     predicate_pushdown = TRUE,
     projection_pushdown = TRUE,
     simplify_expression = TRUE,
@@ -406,7 +424,9 @@ lazyframe__explain <- function(
     comm_subplan_elim = TRUE,
     comm_subexpr_elim = TRUE,
     cluster_with_columns = TRUE,
-    streaming = FALSE) {
+    collapse_joins = TRUE,
+    streaming = FALSE,
+    `_check_order` = TRUE) {
   wrap({
     check_dots_empty0(...)
 
@@ -415,6 +435,7 @@ lazyframe__explain <- function(
     if (isTRUE(optimized)) {
       ldf <- self$`_ldf`$optimization_toggle(
         type_coercion = type_coercion,
+        `_type_check` = `_type_check`,
         predicate_pushdown = predicate_pushdown,
         projection_pushdown = projection_pushdown,
         simplify_expression = simplify_expression,
@@ -422,8 +443,10 @@ lazyframe__explain <- function(
         comm_subplan_elim = comm_subplan_elim,
         comm_subexpr_elim = comm_subexpr_elim,
         cluster_with_columns = cluster_with_columns,
+        collapse_joins = collapse_joins,
         streaming = streaming,
-        `_eager` = FALSE
+        `_check_order` = `_check_order`,
+        `_eager` = `_eager`
       )
 
       if (format == "tree") {
@@ -1791,19 +1814,21 @@ lazyframe__to_dot <- function(
     comm_subexpr_elim = TRUE,
     cluster_with_columns = TRUE,
     streaming = FALSE) {
-  lf <- self |>
-    self$`_ldf`$optimization_toggle(
-      pe_coercion = type_coercion,
-      predicate_pushdown = predicate_pushdown,
-      projection_pushdown = projection_pushdown,
-      simplify_expression = simplify_expression,
-      slice_pushdown = slice_pushdown,
-      comm_subplan_elim = comm_subplan_elim,
-      comm_subexpr_elim = comm_subexpr_elim,
-      cluster_with_columns = cluster_with_columns,
-      streaming = streaming,
-      eager = FALSE
-    )
+  ldf <- self$`_ldf`$optimization_toggle(
+    type_coercion = type_coercion,
+    `_type_check` = `_type_check`,
+    predicate_pushdown = predicate_pushdown,
+    projection_pushdown = projection_pushdown,
+    simplify_expression = simplify_expression,
+    slice_pushdown = slice_pushdown,
+    comm_subplan_elim = comm_subplan_elim,
+    comm_subexpr_elim = comm_subexpr_elim,
+    cluster_with_columns = cluster_with_columns,
+    collapse_joins = collapse_joins,
+    streaming = streaming,
+    `_check_order` = `_check_order`,
+    `_eager` = FALSE
+  )
 
   self$`_ldf`$to_dot(optimized)
 }

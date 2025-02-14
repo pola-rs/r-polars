@@ -7,6 +7,7 @@
 lazyframe__profile(
   ...,
   type_coercion = TRUE,
+  `_type_check` = TRUE,
   predicate_pushdown = TRUE,
   projection_pushdown = TRUE,
   simplify_expression = TRUE,
@@ -14,9 +15,10 @@ lazyframe__profile(
   comm_subplan_elim = TRUE,
   comm_subexpr_elim = TRUE,
   cluster_with_columns = TRUE,
+  collapse_joins = TRUE,
   streaming = FALSE,
   no_optimization = FALSE,
-  collect_in_background = FALSE,
+  `_check_order` = TRUE,
   show_plot = FALSE,
   truncate_nodes = 0
 )
@@ -40,12 +42,16 @@ lazyframe__profile(
 
 \item{cluster_with_columns}{A logical, indicats to combine sequential independent calls to with_columns.}
 
+\item{collapse_joins}{Collapse a join and filters into a faster join.}
+
 \item{streaming}{A logical. If \code{TRUE}, process the query in batches to handle larger-than-memory data.
 If \code{FALSE} (default), the entire query is processed in a single batch.
 Note that streaming mode is considered unstable.
 It may be changed at any point without it being considered a breaking change.}
 
 \item{no_optimization}{A logical. If \code{TRUE}, turn off (certain) optimizations.}
+
+\item{_check_order, _type_check}{For internal use only.}
 
 \item{show_plot}{Show a Gantt chart of the profiling result}
 
