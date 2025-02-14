@@ -554,7 +554,7 @@ dataframe__filter <- function(...) {
 
 #' Sort a DataFrame
 #' @inherit LazyFrame_sort details description params
-#' @inheritParams DataFrame_unique
+#' @inheritParams dataframe__unique
 #' @inherit as_polars_df return
 #' @examples
 #' df <- mtcars
@@ -711,5 +711,27 @@ dataframe__merge_sorted <- function(other, key) {
 #' df1$flags
 dataframe__set_sorted <- function(column, ..., descending = FALSE) {
   self$lazy()$set_sorted(column, descending = descending)$collect(`_eager` = TRUE) |>
+    wrap()
+}
+
+#' @inherit lazyframe__unique title params
+#' @inherit as_polars_df return
+#' @examples
+#' df <- pl$DataFrame(
+#'   foo = c(1, 2, 3, 1),
+#'   bar = c("a", "a", "a", "a"),
+#'   ham = c("b", "b", "b", "b"),
+#' )
+#' df$unique(maintain_order = TRUE)
+#'
+#' df$unique(subset = c("bar", "ham"), maintain_order = TRUE)
+#'
+#' df$unique(keep = "last", maintain_order = TRUE)
+dataframe__unique <- function(
+    subset = NULL,
+    ...,
+    keep = c("any", "none", "first", "last"),
+    maintain_order = FALSE) {
+  self$lazy()$unique(subset = subset, keep = keep, maintain_order = maintain_order)$collect(`_eager` = TRUE) |>
     wrap()
 }

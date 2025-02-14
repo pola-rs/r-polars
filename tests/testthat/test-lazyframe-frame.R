@@ -305,3 +305,45 @@ test_that("set_sorted works", {
   expect_true(df1$flags[["age"]][["SORTED_DESC"]])
   expect_false(df1$flags[["name"]][["SORTED_DESC"]])
 })
+
+test_that("unique works", {
+  df <- pl$DataFrame(
+    foo = c(1, 2, 3, 1),
+    bar = c("a", "a", "a", "a"),
+    ham = c("b", "b", "b", "b"),
+  )
+  expect_query_equal(
+    .input$unique(maintain_order = TRUE),
+    .input = df,
+    pl$DataFrame(
+      foo = c(1, 2, 3),
+      bar = rep("a", 3),
+      ham = rep("b", 3)
+    )
+  )
+  expect_query_equal(
+    .input$unique(subset = c("bar", "ham"), maintain_order = TRUE),
+    .input = df,
+    pl$DataFrame(foo = 1, bar = "a", ham = "b")
+  )
+  expect_query_equal(
+    .input$unique(keep = "last", maintain_order = TRUE),
+    .input = df,
+    pl$DataFrame(
+      foo = c(2, 3, 1),
+      bar = rep("a", 3),
+      ham = rep("b", 3)
+    )
+  )
+  expect_query_error(
+    .input$unique(subset = "foobar", maintain_order = TRUE),
+    df,
+    'Column(s) not found: "foobar" not found',
+    fixed = TRUE
+  )
+  expect_query_error(
+    .input$unique(keep = "foobar", maintain_order = TRUE),
+    df,
+    "must be one of"
+  )
+})

@@ -1021,7 +1021,7 @@ lazyframe__drop_nulls <- function(subset = NULL) {
   })
 }
 
-#' Drop duplicate rows from this DataFrame
+#' Drop duplicate rows
 #'
 #' @inheritParams rlang::args_dots_empty
 #' @param subset Column name(s) or selector(s), to consider when identifying
@@ -1032,7 +1032,7 @@ lazyframe__drop_nulls <- function(subset = NULL) {
 #' * `"none"`: don’t keep duplicate rows.
 #' * `"first"`: keep first unique row.
 #' * `"last"`: keep last unique row.
-#' @param maintain_order Keep the same order as the original LazyFrame. This is
+#' @param maintain_order Keep the same order as the original data. This is
 #' more expensive to compute. Setting this to `TRUE` blocks the possibility to
 #' run on the streaming engine.
 #'

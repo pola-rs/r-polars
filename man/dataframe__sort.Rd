@@ -12,6 +12,13 @@ dataframe__sort(
   maintain_order = FALSE
 )
 }
+\arguments{
+\item{...}{These dots are for future extensions and must be empty.}
+
+\item{maintain_order}{Keep the same order as the original data. This is
+more expensive to compute. Setting this to \code{TRUE} blocks the possibility to
+run on the streaming engine.}
+}
 \value{
 A polars \link{DataFrame}
 }
