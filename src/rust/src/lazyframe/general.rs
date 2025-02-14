@@ -1,5 +1,6 @@
 use crate::{
-    prelude::*, PlRDataFrame, PlRDataType, PlRExpr, PlRLazyFrame, PlRLazyGroupBy, RPolarsErr,
+    prelude::*, PlRDataFrame, PlRDataType, PlRExpr, PlRLazyFrame, PlRLazyGroupBy, PlRSeries,
+    RPolarsErr,
 };
 use polars::io::{HiveOptions, RowIndex};
 use savvy::{
@@ -211,6 +212,497 @@ impl PlRLazyFrame {
         let ldf = self.ldf.clone();
         let exprs = <Wrap<Vec<Expr>>>::from(exprs).0;
         Ok(ldf.with_columns(exprs).into())
+    }
+
+    fn to_dot(&self, optimized: bool) -> Result<String> {
+        let result = self.ldf.to_dot(optimized).map_err(RPolarsErr::from)?;
+        Ok(result)
+    }
+
+    fn sort(
+        &self,
+        by_column: &str,
+        descending: bool,
+        nulls_last: bool,
+        maintain_order: bool,
+        multithreaded: bool,
+    ) -> Result<Self> {
+        let ldf = self.ldf.clone();
+        Ok(ldf
+            .sort(
+                [by_column],
+                SortMultipleOptions {
+                    descending: vec![descending],
+                    nulls_last: vec![nulls_last],
+                    multithreaded,
+                    maintain_order,
+                    limit: None,
+                },
+            )
+            .into())
+    }
+
+    fn top_k(&self, k: NumericScalar, by: ListSexp, reverse: LogicalSexp) -> Result<Self> {
+        let ldf = self.ldf.clone();
+        let k = <Wrap<u32>>::try_from(k)?.0;
+        let exprs = <Wrap<Vec<Expr>>>::from(by).0;
+        let reverse = reverse.to_vec();
+        Ok(ldf
+            .top_k(
+                k,
+                exprs,
+                SortMultipleOptions::new().with_order_descending_multi(reverse),
+            )
+            .into())
+    }
+
+    fn bottom_k(&self, k: NumericScalar, by: ListSexp, reverse: LogicalSexp) -> Result<Self> {
+        let ldf = self.ldf.clone();
+        let k = <Wrap<u32>>::try_from(k)?.0;
+        let exprs = <Wrap<Vec<Expr>>>::from(by).0;
+        let reverse = reverse.to_vec();
+        Ok(ldf
+            .bottom_k(
+                k,
+                exprs,
+                SortMultipleOptions::new().with_order_descending_multi(reverse),
+            )
+            .into())
+    }
+
+    fn cache(&self) -> Result<Self> {
+        let ldf = self.ldf.clone();
+        Ok(ldf.cache().into())
+    }
+
+    fn profile(&self) -> Result<Sexp> {
+        use crate::{
+            r_threads::{concurrent_handler, ThreadCom},
+            r_udf::{RUdfReturn, RUdfSignature, CONFIG},
+        };
+        fn serve_r(
+            udf_sig: RUdfSignature,
+        ) -> std::result::Result<RUdfReturn, Box<dyn std::error::Error>> {
+            udf_sig.eval()
+        }
+
+        let ldf = self.ldf.clone();
+        let (data, timings) = if ThreadCom::try_from_global(&CONFIG).is_ok() {
+            let ldf = self.ldf.clone();
+            ldf.profile().map_err(RPolarsErr::from)?
+        } else {
+            concurrent_handler(
+                // closure 1: spawned by main thread
+                // tc is a ThreadCom which any child thread can use to submit R jobs to main thread
+                move |tc| {
+                    // get return value
+                    let retval = ldf.profile();
+
+                    // drop the last two ThreadCom clones, signals to main/R-serving thread to shut down.
+                    ThreadCom::kill_global(&CONFIG);
+                    drop(tc);
+
+                    retval
+                },
+                // closure 2: how to serve polars worker R job request in main thread
+                serve_r,
+                // CONFIG is "global variable" where any new thread can request a clone of ThreadCom to establish contact with main thread
+                &CONFIG,
+            )
+            .map_err(|e| e.to_string())?
+            .map_err(RPolarsErr::from)?
+        };
+
+        let data = <PlRDataFrame>::from(data);
+        let timings = <PlRDataFrame>::from(timings);
+
+        let mut out = OwnedListSexp::new(2, true)?;
+        unsafe {
+            let _ = out.set_value_unchecked(0, Sexp::try_from(data)?.0);
+            let _ = out.set_value_unchecked(1, Sexp::try_from(timings)?.0);
+        };
+        Ok(out.into())
+    }
+
+    fn serialize(&self) -> Result<Sexp> {
+        let dump = serde_json::to_string(&self.ldf.logical_plan)
+            .map_err(|err| RPolarsErr::Other(err.to_string()))?;
+        dump.try_into()
+    }
+
+    fn select_seq(&mut self, exprs: ListSexp) -> Result<Self> {
+        let ldf = self.ldf.clone();
+        let exprs = <Wrap<Vec<Expr>>>::from(exprs).0;
+        Ok(ldf.select_seq(exprs).into())
+    }
+
+    fn rolling(
+        &mut self,
+        index_column: &PlRExpr,
+        period: &str,
+        offset: &str,
+        closed: &str,
+        by: ListSexp,
+    ) -> Result<PlRLazyGroupBy> {
+        let closed_window = <Wrap<ClosedWindow>>::try_from(closed)?.0;
+        let ldf = self.ldf.clone();
+        let by = <Wrap<Vec<Expr>>>::from(by).0;
+        let lazy_gb = ldf.rolling(
+            index_column.inner.clone(),
+            by,
+            RollingGroupOptions {
+                index_column: "".into(),
+                period: Duration::try_parse(period).map_err(RPolarsErr::from)?,
+                offset: Duration::try_parse(offset).map_err(RPolarsErr::from)?,
+                closed_window,
+            },
+        );
+
+        Ok(PlRLazyGroupBy { lgb: Some(lazy_gb) })
+    }
+
+    fn group_by_dynamic(
+        &mut self,
+        index_column: &PlRExpr,
+        every: &str,
+        period: &str,
+        offset: &str,
+        label: &str,
+        include_boundaries: bool,
+        closed: &str,
+        group_by: ListSexp,
+        start_by: &str,
+    ) -> Result<PlRLazyGroupBy> {
+        let closed_window = <Wrap<ClosedWindow>>::try_from(closed)?.0;
+        let group_by = <Wrap<Vec<Expr>>>::from(group_by).0;
+        let ldf = self.ldf.clone();
+        let label = <Wrap<Label>>::try_from(label)?.0;
+        let start_by = <Wrap<StartBy>>::try_from(start_by)?.0;
+        let lazy_gb = ldf.group_by_dynamic(
+            index_column.inner.clone(),
+            group_by,
+            DynamicGroupOptions {
+                every: Duration::try_parse(every).map_err(RPolarsErr::from)?,
+                period: Duration::try_parse(period).map_err(RPolarsErr::from)?,
+                offset: Duration::try_parse(offset).map_err(RPolarsErr::from)?,
+                label,
+                include_boundaries,
+                closed_window,
+                start_by,
+                ..Default::default()
+            },
+        );
+
+        Ok(PlRLazyGroupBy { lgb: Some(lazy_gb) })
+    }
+
+    fn join_asof(
+        &self,
+        other: &PlRLazyFrame,
+        left_on: &PlRExpr,
+        right_on: &PlRExpr,
+        allow_parallel: bool,
+        force_parallel: bool,
+        suffix: &str,
+        coalesce: bool,
+        strategy: &str,
+        allow_eq: bool,
+        check_sortedness: bool,
+        left_by: Option<StringSexp>,
+        right_by: Option<StringSexp>,
+        tolerance: Option<&PlRSeries>,
+        tolerance_str: Option<&str>,
+    ) -> Result<Self> {
+        let coalesce = if coalesce {
+            JoinCoalesce::CoalesceColumns
+        } else {
+            JoinCoalesce::KeepColumns
+        };
+        let strategy = <Wrap<AsofStrategy>>::try_from(strategy)?.0;
+        let ldf = self.ldf.clone();
+        let other = other.ldf.clone();
+        let left_on = left_on.inner.clone();
+        let right_on = right_on.inner.clone();
+        let left_by = left_by.map(|x| x.to_vec().into_iter().map(|y| y.into()).collect());
+        let right_by = right_by.map(|x| x.to_vec().into_iter().map(|y| y.into()).collect());
+        let tolerance = match tolerance {
+            Some(x) => Some(
+                x.series
+                    .clone()
+                    .get(0)
+                    .map_err(RPolarsErr::from)?
+                    .into_static(),
+            ),
+            None => None,
+        };
+        Ok(ldf
+            .join_builder()
+            .with(other)
+            .left_on([left_on])
+            .right_on([right_on])
+            .allow_parallel(allow_parallel)
+            .force_parallel(force_parallel)
+            .coalesce(coalesce)
+            .how(JoinType::AsOf(AsOfOptions {
+                strategy,
+                left_by,
+                right_by,
+                tolerance,
+                tolerance_str: tolerance_str.map(|s| s.into()),
+                allow_eq,
+                check_sortedness,
+            }))
+            .suffix(suffix)
+            .finish()
+            .into())
+    }
+
+    fn join(
+        &self,
+        other: &PlRLazyFrame,
+        left_on: ListSexp,
+        right_on: ListSexp,
+        allow_parallel: bool,
+        force_parallel: bool,
+        join_nulls: bool,
+        how: &str,
+        suffix: &str,
+        validate: &str,
+        coalesce: Option<bool>,
+    ) -> Result<Self> {
+        let coalesce = match coalesce {
+            None => JoinCoalesce::JoinSpecific,
+            Some(true) => JoinCoalesce::CoalesceColumns,
+            Some(false) => JoinCoalesce::KeepColumns,
+        };
+        let ldf = self.ldf.clone();
+        let other = other.ldf.clone();
+        let left_on = <Wrap<Vec<Expr>>>::from(left_on).0;
+        let right_on = <Wrap<Vec<Expr>>>::from(right_on).0;
+
+        let how = <Wrap<JoinType>>::try_from(how)?.0;
+        let validate = <Wrap<JoinValidation>>::try_from(validate)?.0;
+        Ok(ldf
+            .join_builder()
+            .with(other)
+            .left_on(left_on)
+            .right_on(right_on)
+            .allow_parallel(allow_parallel)
+            .force_parallel(force_parallel)
+            .join_nulls(join_nulls)
+            .how(how)
+            .coalesce(coalesce)
+            .validate(validate)
+            .suffix(suffix)
+            .finish()
+            .into())
+    }
+
+    fn join_where(&self, other: &PlRLazyFrame, predicates: ListSexp, suffix: &str) -> Result<Self> {
+        let ldf = self.ldf.clone();
+        let other = other.ldf.clone();
+
+        let predicates = <Wrap<Vec<Expr>>>::from(predicates).0;
+
+        Ok(ldf
+            .join_builder()
+            .with(other)
+            .suffix(suffix)
+            .join_where(predicates)
+            .into())
+    }
+
+    fn with_columns_seq(&mut self, exprs: ListSexp) -> Result<Self> {
+        let ldf = self.ldf.clone();
+        let exprs = <Wrap<Vec<Expr>>>::from(exprs).0;
+        Ok(ldf.with_columns_seq(exprs).into())
+    }
+
+    fn rename(&mut self, existing: StringSexp, new: StringSexp, strict: bool) -> Result<Self> {
+        let ldf = self.ldf.clone();
+        Ok(ldf.rename(existing.to_vec(), new.to_vec(), strict).into())
+    }
+
+    fn reverse(&self) -> Result<Self> {
+        let ldf = self.ldf.clone();
+        Ok(ldf.reverse().into())
+    }
+
+    fn shift(&self, n: &PlRExpr, fill_value: Option<&PlRExpr>) -> Result<Self> {
+        let lf = self.ldf.clone();
+        let out = match fill_value {
+            Some(v) => lf.shift_and_fill(n.inner.clone(), v.inner.clone()),
+            None => lf.shift(n.inner.clone()),
+        };
+        Ok(out.into())
+    }
+
+    fn fill_nan(&self, fill_value: &PlRExpr) -> Result<Self> {
+        let ldf = self.ldf.clone();
+        Ok(ldf.fill_nan(fill_value.inner.clone()).into())
+    }
+
+    fn fill_null(&self, fill_value: &PlRExpr) -> Result<Self> {
+        let ldf = self.ldf.clone();
+        Ok(ldf.fill_null(fill_value.inner.clone()).into())
+    }
+
+    fn min(&self) -> Result<Self> {
+        let ldf = self.ldf.clone();
+        let out = ldf.min();
+        Ok(out.into())
+    }
+
+    fn max(&self) -> Result<Self> {
+        let ldf = self.ldf.clone();
+        let out = ldf.max();
+        Ok(out.into())
+    }
+
+    fn sum(&self) -> Result<Self> {
+        let ldf = self.ldf.clone();
+        let out = ldf.sum();
+        Ok(out.into())
+    }
+
+    fn mean(&self) -> Result<Self> {
+        let ldf = self.ldf.clone();
+        let out = ldf.mean();
+        Ok(out.into())
+    }
+
+    fn std(&self, ddof: NumericScalar) -> Result<Self> {
+        let ddof = <Wrap<u8>>::try_from(ddof)?.0;
+        let ldf = self.ldf.clone();
+        let out = ldf.std(ddof);
+        Ok(out.into())
+    }
+
+    fn var(&self, ddof: NumericScalar) -> Result<Self> {
+        let ddof = <Wrap<u8>>::try_from(ddof)?.0;
+        let ldf = self.ldf.clone();
+        let out = ldf.var(ddof);
+        Ok(out.into())
+    }
+
+    fn median(&self) -> Result<Self> {
+        let ldf = self.ldf.clone();
+        let out = ldf.median();
+        Ok(out.into())
+    }
+
+    fn quantile(&self, quantile: &PlRExpr, interpolation: &str) -> Result<Self> {
+        let ldf = self.ldf.clone();
+        let interpolation = <Wrap<QuantileMethod>>::try_from(interpolation)?.0;
+        let out = ldf.quantile(quantile.inner.clone(), interpolation);
+        Ok(out.into())
+    }
+
+    fn explode(&self, column: ListSexp) -> Result<Self> {
+        let ldf = self.ldf.clone();
+        let column = <Wrap<Vec<Expr>>>::from(column).0;
+        Ok(ldf.explode(column).into())
+    }
+
+    fn null_count(&self) -> Result<Self> {
+        let ldf = self.ldf.clone();
+        Ok(ldf.null_count().into())
+    }
+
+    fn unique(&self, maintain_order: bool, keep: &str, subset: Option<ListSexp>) -> Result<Self> {
+        let ldf = self.ldf.clone();
+        let keep = <Wrap<UniqueKeepStrategy>>::try_from(keep)?.0;
+        let subset = subset.map(|e| <Wrap<Vec<Expr>>>::from(e).0);
+        let out = match maintain_order {
+            true => ldf.unique_stable_generic(subset, keep),
+            false => ldf.unique_generic(subset, keep),
+        };
+        Ok(out.into())
+    }
+
+    fn drop_nulls(&self, subset: Option<ListSexp>) -> Result<Self> {
+        let ldf = self.ldf.clone();
+        let subset = subset.map(|e| <Wrap<Vec<Expr>>>::from(e).0);
+        Ok(ldf.drop_nulls(subset).into())
+    }
+
+    fn unpivot(
+        &self,
+        on: ListSexp,
+        index: ListSexp,
+        value_name: Option<&str>,
+        variable_name: Option<&str>,
+    ) -> Result<Self> {
+        let on = <Wrap<Vec<Expr>>>::from(on).0;
+        let index = <Wrap<Vec<Expr>>>::from(index).0;
+        let args = UnpivotArgsDSL {
+            on: on.into_iter().map(|e| e.into()).collect(),
+            index: index.into_iter().map(|e| e.into()).collect(),
+            value_name: value_name.map(|s| s.into()),
+            variable_name: variable_name.map(|s| s.into()),
+        };
+
+        let ldf = self.ldf.clone();
+        Ok(ldf.unpivot(args).into())
+    }
+
+    fn with_row_index(&self, name: &str, offset: Option<NumericScalar>) -> Result<Self> {
+        let ldf = self.ldf.clone();
+        let offset: Option<u32> = match offset {
+            Some(x) => Some(<Wrap<u32>>::try_from(x)?.0),
+            None => None,
+        };
+        Ok(ldf.with_row_index(name, offset).into())
+    }
+
+    // fn map_batches(
+    //     &self,
+    //     lambda: PyObject,
+    //     predicate_pushdown: bool,
+    //     projection_pushdown: bool,
+    //     slice_pushdown: bool,
+    //     streamable: bool,
+    //     schema: Option<Wrap<Schema>>,
+    //     validate_output: bool,
+    // ) -> Result<Self> {
+    //     let mut opt = OptFlags::default();
+    //     opt.set(OptFlags::PREDICATE_PUSHDOWN, predicate_pushdown);
+    //     opt.set(OptFlags::PROJECTION_PUSHDOWN, projection_pushdown);
+    //     opt.set(OptFlags::SLICE_PUSHDOWN, slice_pushdown);
+    //     opt.set(OptFlags::STREAMING, streamable);
+
+    //     self.ldf
+    //         .clone()
+    //         .map_python(
+    //             lambda.into(),
+    //             opt,
+    //             schema.map(|s| Arc::new(s.0)),
+    //             validate_output,
+    //         )
+    //         .into()
+    // }
+
+    fn clone(&self) -> Result<Self> {
+        Ok(self.ldf.clone().into())
+    }
+
+    fn unnest(&self, columns: ListSexp) -> Result<Self> {
+        let columns = <Wrap<Vec<Expr>>>::from(columns).0;
+        Ok(self.ldf.clone().unnest(columns).into())
+    }
+
+    fn count(&self) -> Result<Self> {
+        let ldf = self.ldf.clone();
+        Ok(ldf.count().into())
+    }
+
+    fn merge_sorted(&self, other: &PlRLazyFrame, key: &str) -> Result<Self> {
+        let out = self
+            .ldf
+            .clone()
+            .merge_sorted(other.ldf.clone(), key)
+            .map_err(RPolarsErr::from)?;
+        Ok(out.into())
     }
 
     fn new_from_ipc(

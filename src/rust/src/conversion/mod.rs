@@ -86,6 +86,20 @@ impl From<ListSexp> for Wrap<Vec<Option<Vec<u8>>>> {
     }
 }
 
+impl TryFrom<&str> for Wrap<u8> {
+    type Error = String;
+
+    fn try_from(string: &str) -> Result<Self, String> {
+        let mut utf8_byte_iter = string.as_bytes().iter();
+        match (utf8_byte_iter.next(), utf8_byte_iter.next()) {
+            (Some(s), None) => Ok(Wrap(*s)),
+            (None, None) => Err(format!("cannot extract single byte from empty string")),
+            (Some(_), Some(_)) => Err(format!("multi byte-string not allowed")),
+            (None, Some(_)) => unreachable!("the iter() cannot yield Some after None(depleted)"),
+        }
+    }
+}
+
 impl TryFrom<ListSexp> for Wrap<Vec<DataFrame>> {
     type Error = savvy::Error;
 
@@ -596,6 +610,117 @@ impl TryFrom<&str> for Wrap<QuantileMethod> {
             "midpoint" => QuantileMethod::Midpoint,
             "linear" => QuantileMethod::Linear,
             "equiprobable" => QuantileMethod::Equiprobable,
+            _ => return Err("unreachable".to_string()),
+        };
+        Ok(Wrap(parsed))
+    }
+}
+
+impl TryFrom<&str> for Wrap<UniqueKeepStrategy> {
+    type Error = String;
+
+    fn try_from(strategy: &str) -> Result<Self, String> {
+        let parsed = match strategy {
+            "first" => UniqueKeepStrategy::First,
+            "last" => UniqueKeepStrategy::Last,
+            "none" => UniqueKeepStrategy::None,
+            "any" => UniqueKeepStrategy::Any,
+            _ => return Err("unreachable".to_string()),
+        };
+        Ok(Wrap(parsed))
+    }
+}
+
+impl TryFrom<&str> for Wrap<JoinType> {
+    type Error = String;
+
+    fn try_from(how: &str) -> Result<Self, String> {
+        let parsed = match how {
+            "cross" => JoinType::Cross,
+            "inner" => JoinType::Inner,
+            "left" => JoinType::Left,
+            "right" => JoinType::Right,
+            "full" => JoinType::Full,
+            "semi" => JoinType::Semi,
+            "anti" => JoinType::Anti,
+            _ => return Err("unreachable".to_string()),
+        };
+        Ok(Wrap(parsed))
+    }
+}
+
+impl TryFrom<&str> for Wrap<JoinValidation> {
+    type Error = String;
+
+    fn try_from(validation: &str) -> Result<Self, String> {
+        let parsed = match validation {
+            "m:m" => JoinValidation::ManyToMany,
+            "1:m" => JoinValidation::OneToMany,
+            "1:1" => JoinValidation::OneToOne,
+            "m:1" => JoinValidation::ManyToOne,
+            _ => return Err("unreachable".to_string()),
+        };
+        Ok(Wrap(parsed))
+    }
+}
+
+impl TryFrom<&str> for Wrap<Label> {
+    type Error = String;
+
+    fn try_from(label: &str) -> Result<Self, String> {
+        let parsed = match label {
+            "left" => Label::Left,
+            "right" => Label::Right,
+            "datapoint" => Label::DataPoint,
+            _ => return Err("unreachable".to_string()),
+        };
+        Ok(Wrap(parsed))
+    }
+}
+
+impl TryFrom<&str> for Wrap<StartBy> {
+    type Error = String;
+
+    fn try_from(start_by: &str) -> Result<Self, String> {
+        let parsed = match start_by {
+            "window" => StartBy::WindowBound,
+            "datapoint" => StartBy::DataPoint,
+            "monday" => StartBy::Monday,
+            "tuesday" => StartBy::Tuesday,
+            "wednesday" => StartBy::Wednesday,
+            "thursday" => StartBy::Thursday,
+            "friday" => StartBy::Friday,
+            "saturday" => StartBy::Saturday,
+            "sunday" => StartBy::Sunday,
+            _ => return Err("unreachable".to_string()),
+        };
+        Ok(Wrap(parsed))
+    }
+}
+
+impl TryFrom<&str> for Wrap<QuoteStyle> {
+    type Error = String;
+
+    fn try_from(quote_style: &str) -> Result<Self, String> {
+        let parsed = match quote_style {
+            "always" => QuoteStyle::Always,
+            "necessary" => QuoteStyle::Necessary,
+            "non_numeric" => QuoteStyle::NonNumeric,
+            "never" => QuoteStyle::Never,
+            _ => return Err("unreachable".to_string()),
+        };
+        Ok(Wrap(parsed))
+    }
+}
+
+impl TryFrom<&str> for Wrap<AsofStrategy> {
+    type Error = String;
+
+    fn try_from(strategy: &str) -> Result<Self, String> {
+        let parsed = match strategy {
+            "forward" => AsofStrategy::Forward,
+            "backward" => AsofStrategy::Backward,
+            "nearest" => AsofStrategy::Nearest,
             _ => return Err("unreachable".to_string()),
         };
         Ok(Wrap(parsed))
