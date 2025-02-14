@@ -695,3 +695,37 @@ test_that("$cast() works", {
     pl$DataFrame(x = NA_integer_, .schema_overrides = list(x = pl$Int8))
   )
 })
+
+test_that("$gather_every() works", {
+  df <- pl$DataFrame(a = 1:4, b = 5:8)
+
+  expect_query_equal(
+    .input$gather_every(2),
+    df,
+    pl$DataFrame(a = c(1L, 3L), b = c(5L, 7L))
+  )
+  expect_query_equal(
+    .input$gather_every(2, offset = 1),
+    df,
+    pl$DataFrame(a = c(2L, 4L), b = c(6L, 8L))
+  )
+
+  # must specify n
+  expect_query_error(
+    .input$gather_every(),
+    df,
+    r"(argument "n" is missing)"
+  )
+
+  # offset must be positive
+  expect_query_error(
+    .input$gather_every(2, offset = -1),
+    df,
+    r"(-1.0 is out of range)"
+  )
+  expect_query_error(
+    .input$gather_every(2, offset = "a"),
+    df,
+    "must be numeric, not character"
+  )
+})

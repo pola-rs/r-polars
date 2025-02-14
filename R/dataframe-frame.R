@@ -852,3 +852,18 @@ dataframe__drop_nulls <- function(...) {
   self$lazy()$drop_nulls(...)$collect(`_eager` = TRUE) |>
     wrap()
 }
+
+#' Take every nth row in the DataFrame
+#'
+#' @inheritParams lazyframe__gather_every
+#' @inherit as_polars_df return
+#'
+#' @examples
+#' df <- pl$DataFrame(a = 1:4, b = 5:8)
+#' df$gather_every(2)
+#'
+#' df$gather_every(2, offset = 1)
+dataframe__gather_every <- function(n, offset = 0) {
+  self$select(pl$col("*")$gather_every(n, offset)) |>
+    wrap()
+}
