@@ -19,7 +19,7 @@ Get the maximum value horizontally across columns
 }
 \examples{
 df <- pl$DataFrame(
-  a = c(1, 8, 3)
+  a = c(1, 8, 3),
   b = c(4, 5, NA),
   c = c(1, 2, NA, Inf)
 )

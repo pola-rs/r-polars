@@ -1016,14 +1016,14 @@ lazyframe__reverse <- function() {
 #'
 #' The original order of the remaining rows is preserved.
 #'
-#' @param subset Column name(s) for which null values are considered. If `NULL`
-#' (default), use all columns.
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Column name(s) for which null
+#' values are considered. If empty (default), use all columns.
 #'
 #' @inherit as_polars_lf return
 #' @examples
 #' lf <- pl$LazyFrame(
 #'   foo = 1:3,
-#'   bar = c(6, NA, 8),
+#'   bar = c(6L, NA, 8L),
 #'   ham = c("a", "b", NA)
 #' )
 #'
@@ -1034,11 +1034,13 @@ lazyframe__reverse <- function() {
 #' # This behaviour can be constrained to consider only a subset of columns, as
 #' # defined by name or with a selector. For example, dropping rows if there is
 #' # a null in any of the integer columns:
-#' lf$drop_nulls(subset = cs$integer())$collect()
-lazyframe__drop_nulls <- function(subset = NULL) {
+#' lf$drop_nulls(cs$integer())$collect()
+lazyframe__drop_nulls <- function(...) {
   wrap({
-    if (!is.null(subset)) {
-      subset <- parse_into_list_of_expressions(!!!subset)
+    check_dots_unnamed()
+    subset <- parse_into_list_of_expressions(...)
+    if (length(subset) == 0) {
+      subset <- NULL
     }
     self$`_ldf`$drop_nulls(subset)
   })
@@ -1048,9 +1050,9 @@ lazyframe__drop_nulls <- function(subset = NULL) {
 #'
 #' The original order of the remaining rows is preserved.
 #'
-#' @param subset Column name(s) for which `NaN` values are considered. If `NULL`
-#' (default), use all columns (note that only floating-point columns can
-#' contain `NaN`s).
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Column name(s) for which null
+#' values are considered. If empty (default), use all columns (note that only
+#' floating-point columns can contain `NaN`s).
 #'
 #' @inherit as_polars_lf return
 #' @examples
@@ -1067,7 +1069,7 @@ lazyframe__drop_nulls <- function(subset = NULL) {
 #' # This behaviour can be constrained to consider only a subset of columns, as
 #' # defined by name or with a selector. For example, dropping rows if there is
 #' # a null in the "bar" column:
-#' lf$drop_nans(subset = "bar")$collect()
+#' lf$drop_nans("bar")$collect()
 #'
 #' # Dropping a row only if *all* values are NaN requires a different
 #' # formulation:
@@ -1077,14 +1079,12 @@ lazyframe__drop_nulls <- function(subset = NULL) {
 #'   c = c(65.75, NaN, NaN, 10.5)
 #' )
 #' df$filter(!pl$all_horizontal(pl$all()$is_nan()))$collect()
-lazyframe__drop_nans <- function(subset = NULL) {
+lazyframe__drop_nans <- function(...) {
   wrap({
-    if (!is.null(subset)) {
-      if (is_polars_selector(subset)) {
-        subset <- parse_into_list_of_expressions(!!!list(subset))
-      } else {
-        subset <- parse_into_list_of_expressions(!!!subset)
-      }
+    check_dots_unnamed()
+    subset <- parse_into_list_of_expressions(...)
+    if (length(subset) == 0) {
+      subset <- NULL
     }
     self$`_ldf`$drop_nans(subset)
   })

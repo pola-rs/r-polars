@@ -557,14 +557,18 @@ test_that("drop_nans works", {
     bar = c(NaN, 110, 25.5),
     ham = c("a", "b", NA)
   )
-
   expect_query_equal(
     .input$drop_nans(),
     .input = df,
     pl$DataFrame(foo = 2.5, bar = 25.5, ham = NA_character_)
   )
   expect_query_equal(
-    .input$drop_nans(subset = "bar"),
+    .input$drop_nans("foo", "bar"),
+    .input = df,
+    pl$DataFrame(foo = 2.5, bar = 25.5, ham = NA_character_)
+  )
+  expect_query_equal(
+    .input$drop_nans("bar"),
     .input = df,
     pl$DataFrame(foo = c(NaN, 2.5), bar = c(110, 25.5), ham = c("b", NA))
   )
@@ -582,6 +586,39 @@ test_that("drop_nans works", {
       b = c(10.0, 2.5, 5.25),
       c = c(65.75, NaN, 10.5)
     )
+  )
+  expect_query_error(
+    .input$drop_nans(subset = cs$integer()),
+    .input = df,
+    "must be passed by position"
+  )
+})
+
+test_that("drop_nulls works", {
+  df <- pl$DataFrame(
+    foo = 1:3,
+    bar = c(6L, NA, 8L),
+    ham = c("a", "b", NA)
+  )
+  expect_query_equal(
+    .input$drop_nulls(),
+    .input = df,
+    pl$DataFrame(foo = 1L, bar = 6L, ham = "a")
+  )
+  expect_query_equal(
+    .input$drop_nulls("ham", "bar"),
+    .input = df,
+    pl$DataFrame(foo = 1L, bar = 6L, ham = "a")
+  )
+  expect_query_equal(
+    .input$drop_nulls(cs$integer()),
+    .input = df,
+    pl$DataFrame(foo = c(1L, 3L), bar = c(6L, 8L), ham = c("a", NA))
+  )
+  expect_query_error(
+    .input$drop_nulls(subset = cs$integer()),
+    .input = df,
+    "must be passed by position"
   )
 })
 

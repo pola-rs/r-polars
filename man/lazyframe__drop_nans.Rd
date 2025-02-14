@@ -4,12 +4,12 @@
 \alias{lazyframe__drop_nans}
 \title{Drop all rows that contain NaN values}
 \usage{
-lazyframe__drop_nans(subset = NULL)
+lazyframe__drop_nans(...)
 }
 \arguments{
-\item{subset}{Column name(s) for which \code{NaN} values are considered. If \code{NULL}
-(default), use all columns (note that only floating-point columns can
-contain \code{NaN}s).}
+\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Column name(s) for which null
+values are considered. If empty (default), use all columns (note that only
+floating-point columns can contain \code{NaN}s).}
 }
 \value{
 A polars \link{LazyFrame}
@@ -31,7 +31,7 @@ lf$drop_nans()$collect()
 # This behaviour can be constrained to consider only a subset of columns, as
 # defined by name or with a selector. For example, dropping rows if there is
 # a null in the "bar" column:
-lf$drop_nans(subset = "bar")$collect()
+lf$drop_nans("bar")$collect()
 
 # Dropping a row only if *all* values are NaN requires a different
 # formulation:

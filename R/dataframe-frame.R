@@ -816,7 +816,7 @@ dataframe__join <- function(
 #' # This behaviour can be constrained to consider only a subset of columns, as
 #' # defined by name or with a selector. For example, dropping rows if there is
 #' # a null in the "bar" column:
-#' df$drop_nans(subset = "bar")
+#' df$drop_nans("bar")
 #'
 #' # Dropping a row only if *all* values are NaN requires a different
 #' # formulation:
@@ -826,7 +826,29 @@ dataframe__join <- function(
 #'   c = c(65.75, NaN, NaN, 10.5)
 #' )
 #' df$filter(!pl$all_horizontal(pl$all()$is_nan()))
-dataframe__drop_nans <- function(subset = NULL) {
-  self$lazy()$drop_nans(subset)$collect(`_eager` = TRUE) |>
+dataframe__drop_nans <- function(...) {
+  self$lazy()$drop_nans(...)$collect(`_eager` = TRUE) |>
+    wrap()
+}
+
+#' @inherit lazyframe__drop_nulls title description params
+#' @inherit as_polars_df return
+#' @examples
+#' df <- pl$DataFrame(
+#'   foo = 1:3,
+#'   bar = c(6L, NA, 8L),
+#'   ham = c("a", "b", NA)
+#' )
+#'
+#' # The default behavior of this method is to drop rows where any single value
+#' # of the row is null.
+#' df$drop_nulls()
+#'
+#' # This behaviour can be constrained to consider only a subset of columns, as
+#' # defined by name or with a selector. For example, dropping rows if there is
+#' # a null in any of the integer columns:
+#' df$drop_nulls(cs$integer())
+dataframe__drop_nulls <- function(...) {
+  self$lazy()$drop_nulls(...)$collect(`_eager` = TRUE) |>
     wrap()
 }
