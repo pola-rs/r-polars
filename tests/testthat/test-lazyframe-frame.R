@@ -584,3 +584,22 @@ test_that("drop_nans works", {
     )
   )
 })
+
+test_that("explain() works", {
+  lazy_query <- as_polars_lf(iris)$sort("Species")$filter(pl$col("Species") != "setosa")
+
+  expect_error(
+    lazy_query$explain(format = "foobar"),
+    "`format` must be one of"
+  )
+  expect_error(
+    lazy_query$explain(format = 1),
+    "`format` must be a string or character vector"
+  )
+
+  expect_snapshot(cat(lazy_query$explain(optimized = FALSE)))
+  expect_snapshot(cat(lazy_query$explain()))
+
+  expect_snapshot(cat(lazy_query$explain(format = "tree", optimized = FALSE)))
+  expect_snapshot(cat(lazy_query$explain(format = "tree", )))
+})
