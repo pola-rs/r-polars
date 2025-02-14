@@ -34,7 +34,8 @@ patrick::with_parameters_test_that(
     list(fun = pl$LazyFrame, how = "vertical"),
     list(fun = pl$LazyFrame, how = "horizontal"),
     list(fun = pl$LazyFrame, how = "diagonal")
-  )
+  ),
+  .interpret_glue = FALSE
 )
 
 test_that("concat() on length-1 input return input for Series", {
