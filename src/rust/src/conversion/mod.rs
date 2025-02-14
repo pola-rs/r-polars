@@ -807,3 +807,19 @@ impl TryFrom<&str> for Wrap<ParallelStrategy> {
         Ok(Wrap(parsed))
     }
 }
+
+impl TryFrom<&str> for Wrap<MaintainOrderJoin> {
+    type Error = String;
+
+    fn try_from(maintain_order: &str) -> Result<Self, String> {
+        let parsed = match maintain_order {
+            "none" => MaintainOrderJoin::None,
+            "left" => MaintainOrderJoin::Left,
+            "right" => MaintainOrderJoin::Right,
+            "left_right" => MaintainOrderJoin::LeftRight,
+            "right_left" => MaintainOrderJoin::RightLeft,
+            _ => return Err("unreachable".to_string()),
+        };
+        Ok(Wrap(parsed))
+    }
+}

@@ -347,3 +347,206 @@ test_that("unique works", {
     "must be one of"
   )
 })
+
+test_that("join: basic usage", {
+  df <- pl$DataFrame(
+    foo = 1:3,
+    bar = c(6, 7, 8),
+    ham = c("a", "b", "c")
+  )
+  other_df <- pl$DataFrame(
+    apple = c("x", "y", "z"),
+    ham = c("a", "b", "d")
+  )
+
+  # inner default
+  expect_query_equal(
+    .input$join(.input2, on = "ham"),
+    .input = df, .input2 = other_df,
+    pl$DataFrame(
+      foo = 1:2,
+      bar = c(6, 7),
+      ham = c("a", "b"),
+      apple = c("x", "y")
+    )
+  )
+
+  # outer
+  expect_query_equal(
+    .input$join(.input2, on = "ham", how = "full"),
+    .input = df, .input2 = other_df,
+    pl$DataFrame(
+      foo = c(1L, 2L, NA, 3L),
+      bar = c(6, 7, NA, 8),
+      ham = c("a", "b", NA, "c"),
+      apple = c("x", "y", "z", NA),
+      ham_right = c("a", "b", "d", NA)
+    )
+  )
+
+  # error on invalid 'how'
+  expect_query_error(
+    df$lazy()$join(other_df$lazy(), on = "ham", how = "foobar"),
+    "must be one of"
+  )
+  expect_query_error(
+    df$lazy()$join(other_df$lazy(), on = "ham", how = 42),
+    "must be a string or character vector"
+  )
+  # 'other' must be of same class
+  expect_query_error(
+    df$lazy()$join(other_df, on = "ham"),
+    "must be a polars lazy frame"
+  )
+})
+
+test_that("right join works", {
+  a <- pl$DataFrame(a = c(1, 2, 3), b = c(1, 2, 4))
+  b <- pl$DataFrame(a = c(1, 3), b = c(1, 3), c = c(1, 3))
+  expect_query_equal(
+    .input$join(.input2, on = "a", how = "right", coalesce = TRUE),
+    .input = a, .input2 = b,
+    pl$DataFrame(
+      b = c(1, 4),
+      a = c(1, 3),
+      b_right = c(1, 3),
+      c = c(1, 3)
+    )
+  )
+  expect_query_equal(
+    .input$join(.input2, on = "a", how = "right", coalesce = FALSE),
+    .input = a, .input2 = b,
+    pl$DataFrame(
+      a = c(1, 3),
+      b = c(1, 4),
+      a_right = c(1, 3),
+      b_right = c(1, 3),
+      c = c(1, 3)
+    )
+  )
+})
+
+test_that("semi and anti join", {
+  df_a <- pl$DataFrame(key = 1:3, payload = c("f", "i", NA))
+  df_b <- pl$DataFrame(key = c(3L, 4L, 5L, NA))
+
+  expect_query_equal(
+    .input$join(.input2, on = "key", how = "anti"),
+    .input = df_a, .input2 = df_b,
+    pl$DataFrame(key = 1:2, payload = c("f", "i"))
+  )
+  expect_query_equal(
+    .input$join(.input2, on = "key", how = "semi"),
+    .input = df_a, .input2 = df_b,
+    pl$DataFrame(key = 3L, payload = NA_character_)
+  )
+
+  df_a <- pl$DataFrame(a = c(1:3, 1L), b = c("a", "b", "c", "a"), payload = c(10L, 20L, 30L, 40L))
+  df_b <- pl$DataFrame(a = c(3L, 3L, 4L, 5L), b = c("c", "c", "d", "e"))
+
+  expect_query_equal(
+    .input$join(.input2, on = c("a", "b"), how = "anti"),
+    .input = df_a, .input2 = df_b,
+    pl$DataFrame(a = c(1:2, 1L), b = c("a", "b", "a"), payload = c(10L, 20L, 40L))
+  )
+  expect_query_equal(
+    .input$join(.input2, on = c("a", "b"), how = "semi"),
+    .input = df_a, .input2 = df_b,
+    pl$DataFrame(a = 3L, b = "c", payload = 30L)
+  )
+})
+
+# TODO-REWRITE: panics
+# test_that("cross join", {
+#   dat <- pl$DataFrame(x = letters[1:3])
+#   dat2 <- pl$DataFrame(y = 1:4)
+
+#   expect_query_equal(
+#     .input$join(.input2, how = "cross"),
+#     .input = dat, .input2 = dat2,
+#     pl$DataFrame(
+#       x = rep(letters[1:3], each = 4),
+#       y = rep(1:4, 3)
+#     )
+#   )
+
+#   expect_query_error(
+#     dat$lazy()$join(.input2$lazy(), how = "cross", on = "foo"),
+#     "cross join should not pass join keys"
+#   )
+#   expect_query_error(
+#     dat$lazy()$join(.input2$lazy(), how = "cross", left_on = "foo", right_on = "foo2"),
+#     "cross join should not pass join keys"
+#   )
+
+#   # one empty dataframe
+#   dat_empty <- pl$DataFrame(y = character())
+#   expect_query_equal(
+#     .input$join(dat_empty, how = "cross"),
+#     .input = dat, .input2 = dat2,
+#     pl$DataFrame(x = character(), y = character())
+#   )
+#   expect_query_equal(
+#     dat_empty$join(dat, how = "cross"),
+#     pl$DataFrame(y = character(), x = character())
+#   )
+
+#   # suffix works
+#   expect_query_equal(
+#     .input$join(.input, how = "cross"),
+#     .input = dat,
+#     pl$DataFrame(
+#       x = rep(letters[1:3], each = 3),
+#       x_right = rep(letters[1:3], 3)
+#     )
+#   )
+# })
+
+test_that("argument 'validate' works", {
+  df1 <- pl$DataFrame(x = letters[1:5], y = 1:5)
+  df2 <- pl$DataFrame(x = c("a", letters[1:4]), y2 = 6:10)
+
+  expect_query_error(
+    df1$lazy()$join(df2$lazy(), on = "x", validate = "1:1"),
+    "join keys did not fulfill 1:1 validation"
+  )
+  expect_query_error(
+    df1$lazy()$join(df2$lazy(), on = "x", validate = "m:1"),
+    "join keys did not fulfill m:1 validation"
+  )
+  expect_query_error(
+    df2$lazy()$join(df1$lazy(), on = "x", validate = "1:m"),
+    "join keys did not fulfill 1:m validation"
+  )
+  expect_query_error(
+    df2$lazy()$join(df1$lazy(), on = "x", validate = "foobar"),
+    "must be one of"
+  )
+})
+
+test_that("argument 'join_nulls' works", {
+  df1 <- pl$DataFrame(x = c(NA, letters[1:2]), y = 1:3)
+  df2 <- pl$DataFrame(x = c(NA, letters[2:3]), y2 = 4:6)
+
+  # discard nulls by default
+  expect_query_equal(
+    .input$join(.input2, on = "x"),
+    .input = df1, .input2 = df2,
+    pl$DataFrame(x = "b", y = 3L, y2 = 5L)
+  )
+
+  # consider nulls as a valid key
+  expect_query_equal(
+    .input$join(.input2, on = "x", join_nulls = TRUE),
+    .input = df1, .input2 = df2,
+    pl$DataFrame(x = c(NA, "b"), y = c(1L, 3L), y2 = c(4L, 5L))
+  )
+
+  # several nulls
+  df3 <- pl$DataFrame(x = c(NA, letters[2:3], NA), y2 = 4:7)
+  expect_query_equal(
+    .input$join(.input2, on = "x", join_nulls = TRUE),
+    .input = df1, .input2 = df3,
+    pl$DataFrame(x = c(NA, "b", NA), y = c(1L, 3L, 1L), y2 = c(4L, 5L, 7L))
+  )
+})

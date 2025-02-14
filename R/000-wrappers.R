@@ -3433,9 +3433,9 @@ class(`PlRExpr`) <- c("PlRExpr__bundle", "savvy_neopolars__sealed")
 }
 
 `PlRLazyFrame_join` <- function(self) {
-  function(`other`, `left_on`, `right_on`, `allow_parallel`, `force_parallel`, `join_nulls`, `how`, `suffix`, `validate`, `coalesce` = NULL) {
+  function(`other`, `left_on`, `right_on`, `allow_parallel`, `force_parallel`, `join_nulls`, `how`, `suffix`, `validate`, `maintain_order`, `coalesce` = NULL) {
     `other` <- .savvy_extract_ptr(`other`, "PlRLazyFrame")
-    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_join__impl, `self`, `other`, `left_on`, `right_on`, `allow_parallel`, `force_parallel`, `join_nulls`, `how`, `suffix`, `validate`, `coalesce`))
+    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_join__impl, `self`, `other`, `left_on`, `right_on`, `allow_parallel`, `force_parallel`, `join_nulls`, `how`, `suffix`, `validate`, `maintain_order`, `coalesce`))
   }
 }
 

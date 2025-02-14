@@ -1074,7 +1074,7 @@ lazyframe__unique <- function(
 #' @param other LazyFrame to join with.
 #' @param on Either a vector of column names or a list of expressions and/or
 #'   strings. Use `left_on` and `right_on` if the column names to match on are
-#'   different between the two DataFrames.
+#'   different between the two LazyFrames.
 #' @param how One of the following methods:
 #' * "inner": returns rows that have matching values in both tables
 #' * "left": returns all rows from the left table, and the matched rows from
@@ -1103,15 +1103,28 @@ lazyframe__unique <- function(
 #' @param join_nulls Join on null values. By default null values will never
 #'   produce matches.
 #' @param allow_parallel Allow the physical plan to optionally evaluate the
-#'   computation of both DataFrames up to the join in parallel.
+#'   computation of both LazyFrames up to the join in parallel.
 #' @param force_parallel Force the physical plan to evaluate the computation of
-#'   both DataFrames up to the join in parallel.
+#'   both LazyFrames up to the join in parallel.
 #' @param coalesce Coalescing behavior (merging of join columns).
 #' - `NULL`: join specific.
 #' - `TRUE`: Always coalesce join columns.
 #' - `FALSE`: Never coalesce join columns.
 #' Note that joining on any other expressions than `col` will turn off
 #' coalescing.
+#' @param maintain_order Which frame row order to preserve, if any. Do not rely
+#' on any observed ordering without explicitly setting this parameter, as your
+#' code may break in a future release. Not specifying any ordering can improve
+#' performance. Supported for inner, left, right and full joins.
+#'
+#' * `"none"`: No specific ordering is desired. The ordering might differ
+#'   across Polars versions or even between different runs.
+#' * `"left"`: Preserves the order of the left frame.
+#' * `"right"`: Preserves the order of the right frame.
+#' * `"left_right"`: First preserves the order of the left frame, then the
+#'   right.
+#' * `"right_left"`: First preserves the order of the right frame, then the
+#'   left.
 #'
 #' @inherit as_polars_lf return
 #' @examples
@@ -1143,6 +1156,7 @@ lazyframe__join <- function(
     suffix = "_right",
     validate = c("m:m", "1:m", "m:1", "1:1"),
     join_nulls = FALSE,
+    maintain_order = c("none", "left", "right", "left_right", "right_left"),
     allow_parallel = TRUE,
     force_parallel = FALSE,
     coalesce = NULL) {
@@ -1152,6 +1166,10 @@ lazyframe__join <- function(
     how <- arg_match0(
       how,
       values = c("inner", "full", "left", "right", "semi", "anti", "cross")
+    )
+    maintain_order <- arg_match0(
+      maintain_order,
+      values = c("none", "left", "right", "left_right", "right_left")
     )
     validate <- arg_match0(validate, values = c("m:m", "1:m", "m:1", "1:1"))
     uses_on <- !is.null(on)
@@ -1173,11 +1191,12 @@ lazyframe__join <- function(
       }
       return(
         self$`_ldf`$join(
-          other$`_ldf`, list(), list(),
+          other$`_ldf`,
+          left_on = list(), right_on = list(),
           how = how, validate = validate,
           join_nulls = join_nulls, suffix = suffix,
           allow_parallel = allow_parallel, force_parallel = force_parallel,
-          coalesce = coalesce
+          coalesce = coalesce, maintain_order = maintain_order
         )
       )
     }
@@ -1191,11 +1210,12 @@ lazyframe__join <- function(
       abort("must specify either `on`, or `left_on` and `right_on`.")
     }
     self$`_ldf`$join(
-      other$`_ldf`, rexprs_left, rexprs_right,
+      other$`_ldf`,
+      left_on = rexprs_left, right_on = rexprs_right,
       how = how, validate = validate,
       join_nulls = join_nulls, suffix = suffix,
       allow_parallel = allow_parallel, force_parallel = force_parallel,
-      coalesce = coalesce
+      coalesce = coalesce, maintain_order = maintain_order
     )
   })
 }

@@ -28,6 +28,13 @@ lazyframe__join_asof(
 
 \item{...}{These dots are for future extensions and must be empty.}
 
+\item{left_on, right_on}{Same as \code{on} but only for the left or the right
+DataFrame. They must have the same length.}
+
+\item{on}{Either a vector of column names or a list of expressions and/or
+strings. Use \code{left_on} and \code{right_on} if the column names to match on are
+different between the two DataFrames.}
+
 \item{by_left, by_right}{Same as \code{by} but only for the left or the right
 table. They must have the same length.}
 
@@ -47,10 +54,18 @@ nearest to the left key. String keys are not currently supported for a
 nearest search.
 }}
 
+\item{suffix}{Suffix to add to duplicated column names.}
+
 \item{tolerance}{Numeric tolerance. By setting this the join will only be
 done if the near keys are within this distance. If an asof join is done on
 columns of dtype "Date", "Datetime", "Duration" or "Time", use the Polars
 duration string language (see details).}
+
+\item{allow_parallel}{Allow the physical plan to optionally evaluate the
+computation of both DataFrames up to the join in parallel.}
+
+\item{force_parallel}{Force the physical plan to evaluate the computation of
+both DataFrames up to the join in parallel.}
 
 \item{coalesce}{Coalescing behavior (merging of \code{on} / \code{left_on} /
 \code{right_on} columns):
