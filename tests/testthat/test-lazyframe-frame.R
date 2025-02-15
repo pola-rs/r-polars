@@ -923,3 +923,114 @@ test_that("unnest", {
     "must be passed by position"
   )
 })
+
+test_that("join_asof", {
+  l_gdp <- pl$DataFrame(
+    date = as.Date(c("2016-1-1", "2017-1-1", "2018-1-1", "2019-1-1")),
+    gdp = c(4164, 4411, 4566, 4696),
+    group = c("a", "a", "b", "b")
+  )$sort("date")
+
+  l_pop <- pl$DataFrame(
+    date = as.Date(c("2016-5-12", "2017-5-12", "2018-5-12", "2019-5-12")),
+    population = c(82.19, 82.66, 83.12, 83.52),
+    group_right = c("b", "b", "a", "a")
+  )$sort("date")
+
+  # argument "strategy"
+  expect_query_equal(
+    .input$join_asof(.input2, on = "date", strategy = "backward"),
+    .input = l_gdp, .input2 = l_pop,
+    pl$DataFrame(
+      date = as.Date(c("2016-1-1", "2017-1-1", "2018-1-1", "2019-1-1")),
+      gdp = c(4164, 4411, 4566, 4696),
+      group = c("a", "a", "b", "b"),
+      population = c(NA, 82.19, 82.66, 83.12),
+      group_right = c(NA, "b", "b", "a")
+    )
+  )
+  expect_query_equal(
+    .input$join_asof(.input2, on = "date", strategy = "forward"),
+    .input = l_gdp, .input2 = l_pop,
+    pl$DataFrame(
+      date = as.Date(c("2016-1-1", "2017-1-1", "2018-1-1", "2019-1-1")),
+      gdp = c(4164, 4411, 4566, 4696),
+      group = c("a", "a", "b", "b"),
+      population = c(82.19, 82.66, 83.12, 83.52),
+      group_right = c("b", "b", "a", "a")
+    )
+  )
+  expect_query_error(
+    .input$join_asof(.input2, on = "date", strategy = "foobar"),
+    .input = l_gdp, .input2 = l_pop,
+    "must be one of"
+  )
+
+  # left_on / right_on
+  expect_query_equal(
+    .input$join_asof(.input2, left_on = "date", right_on = "date", strategy = "forward"),
+    .input = l_gdp, .input2 = l_pop,
+    pl$DataFrame(
+      date = as.Date(c("2016-1-1", "2017-1-1", "2018-1-1", "2019-1-1")),
+      gdp = c(4164, 4411, 4566, 4696),
+      group = c("a", "a", "b", "b"),
+      population = c(82.19, 82.66, 83.12, 83.52),
+      group_right = c("b", "b", "a", "a")
+    )
+  )
+
+  # test by
+  expect_query_equal(
+    .input$join_asof(
+      .input2,
+      on = "date", by_left = "group",
+      by_right = "group_right", strategy = "backward"
+    ),
+    .input = l_gdp, .input2 = l_pop,
+    pl$DataFrame(
+      date = as.Date(c("2016-01-01", "2017-01-01", "2018-01-01", "2019-01-01")),
+      gdp = c(4164, 4411, 4566, 4696),
+      group = c("a", "a", "b", "b"),
+      population = c(NA, NA, 82.66, 82.66),
+    )
+  )
+  expect_query_equal(
+    .input$join_asof(
+      .input2,
+      on = "date", by_left = "group",
+      by_right = "group_right", strategy = "forward"
+    ),
+    .input = l_gdp, .input2 = l_pop,
+    pl$DataFrame(
+      date = as.Date(c("2016-01-01", "2017-01-01", "2018-01-01", "2019-01-01")),
+      gdp = c(4164, 4411, 4566, 4696),
+      group = c("a", "a", "b", "b"),
+      population = c(83.12, 83.12, NA, NA),
+    )
+  )
+
+  # tolerance exceeding 18w
+  expect_query_equal(
+    .input$join_asof(.input2, on = "date", strategy = "backward", tolerance = "18w"),
+    .input = l_gdp, .input2 = l_pop,
+    pl$DataFrame(
+      date = as.Date(c("2016-1-1", "2017-1-1", "2018-1-1", "2019-1-1")),
+      gdp = c(4164, 4411, 4566, 4696),
+      group = c("a", "a", "b", "b"),
+      population = rep(NA_real_, 4),
+      group_right = rep(NA_character_, 4)
+    )
+  )
+  expect_query_equal(
+    .input$join_asof(.input2, on = "date", strategy = "backward", tolerance = 18 * 7),
+    .input = l_gdp, .input2 = l_pop,
+    pl$DataFrame(
+      date = as.Date(c("2016-1-1", "2017-1-1", "2018-1-1", "2019-1-1")),
+      gdp = c(4164, 4411, 4566, 4696),
+      group = c("a", "a", "b", "b"),
+      population = rep(NA_real_, 4),
+      group_right = rep(NA_character_, 4)
+    )
+  )
+})
+

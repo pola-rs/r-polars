@@ -949,3 +949,119 @@ dataframe__unnest <- function(...) {
   self$lazy()$unnest(...)$collect(`_eager` = TRUE) |>
     wrap()
 }
+
+#' @inherit lazyframe__join_asof title description params
+#'
+#' @param other DataFrame to join with.
+#'
+#' @inheritSection polars_duration_string Polars duration string language
+#' @inherit as_polars_df return
+#' @examples
+#' gdp <- pl$DataFrame(
+#'   date = as.Date(c("2016-1-1", "2017-5-1", "2018-1-1", "2019-1-1", "2020-1-1")),
+#'   gdp = c(4164, 4411, 4566, 4696, 4827)
+#' )
+#'
+#' pop <- pl$DataFrame(
+#'   date = as.Date(c("2016-3-1", "2018-8-1", "2019-1-1")),
+#'   population = c(82.19, 82.66, 83.12)
+#' )
+#'
+#' # optional make sure tables are already sorted with "on" join-key
+#' gdp <- gdp$sort("date")
+#' pop <- pop$sort("date")
+#'
+#'
+#' # Note how the dates don’t quite match. If we join them using join_asof and
+#' # strategy = 'backward', then each date from population which doesn’t have
+#' # an exact match is matched with the closest earlier date from gdp:
+#' pop$join_asof(gdp, on = "date", strategy = "backward")
+#'
+#' # Note how:
+#' # - date 2016-03-01 from population is matched with 2016-01-01 from gdp;
+#' # - date 2018-08-01 from population is matched with 2018-01-01 from gdp.
+#' # You can verify this by passing coalesce = FALSE:
+#' pop$join_asof(
+#'   gdp,
+#'   on = "date", strategy = "backward", coalesce = FALSE
+#' )
+#'
+#' # If we instead use strategy = 'forward', then each date from population
+#' # which doesn’t have an exact match is matched with the closest later date
+#' # from gdp:
+#' pop$join_asof(gdp, on = "date", strategy = "forward")
+#'
+#' # Note how:
+#' # - date 2016-03-01 from population is matched with 2017-01-01 from gdp;
+#' # - date 2018-08-01 from population is matched with 2019-01-01 from gdp.
+#'
+#' # Finally, strategy = 'nearest' gives us a mix of the two results above, as
+#' # each date from population which doesn’t have an exact match is matched
+#' # with the closest date from gdp, regardless of whether it’s earlier or
+#' # later:
+#' pop$join_asof(gdp, on = "date", strategy = "nearest")
+#'
+#' # Note how:
+#' # - date 2016-03-01 from population is matched with 2016-01-01 from gdp;
+#' # - date 2018-08-01 from population is matched with 2019-01-01 from gdp.
+#'
+#' # The `by` argument allows joining on another column first, before the asof
+#' # join. In this example we join by country first, then asof join by date, as
+#' # above.
+#' gdp2 <- pl$DataFrame(
+#'   country = rep(c("Germany", "Netherlands"), each = 5),
+#'   date = rep(
+#'     as.Date(c("2016-1-1", "2017-1-1", "2018-1-1", "2019-1-1", "2020-1-1")),
+#'     2
+#'   ),
+#'   gdp = c(4164, 4411, 4566, 4696, 4827, 784, 833, 914, 910, 909)
+#' )$sort("country", "date")
+#' gdp2
+#'
+#' pop2 <- pl$DataFrame(
+#'   country = rep(c("Germany", "Netherlands"), each = 3),
+#'   date = rep(as.Date(c("2016-3-1", "2018-8-1", "2019-1-1")), 2),
+#'   population = c(82.19, 82.66, 83.12, 17.11, 17.32, 17.40)
+#' )$sort("country", "date")
+#' pop2
+#'
+#' pop2$join_asof(
+#'   gdp2,
+#'   by = "country", on = "date", strategy = "nearest"
+#' )
+dataframe__join_asof <- function(
+    other,
+    ...,
+    left_on = NULL,
+    right_on = NULL,
+    on = NULL,
+    by_left = NULL,
+    by_right = NULL,
+    by = NULL,
+    strategy = c("backward", "forward", "nearest"),
+    suffix = "_right",
+    tolerance = NULL,
+    allow_parallel = TRUE,
+    force_parallel = FALSE,
+    coalesce = TRUE,
+    allow_exact_matches = TRUE,
+    check_sortedness = TRUE) {
+  self$lazy()$join_asof(
+    other$lazy(),
+    left_on = left_on,
+    right_on = right_on,
+    on = on,
+    by_left = by_left,
+    by_right = by_right,
+    by = by,
+    strategy = strategy,
+    suffix = suffix,
+    tolerance = tolerance,
+    allow_parallel = allow_parallel,
+    force_parallel = force_parallel,
+    coalesce = coalesce,
+    allow_exact_matches = allow_exact_matches,
+    check_sortedness = check_sortedness,
+  )$collect(`_eager` = TRUE) |>
+    wrap()
+}
