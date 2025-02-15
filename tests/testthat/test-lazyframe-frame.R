@@ -824,3 +824,58 @@ patrick::with_parameters_test_that(
   },
   fun = c("as_polars_df", "as_polars_lf")
 )
+
+test_that("explode() works", {
+  df <- pl$DataFrame(
+    letters = c("a", "a", "b", "c"),
+    numbers = list(1, c(2, 3), c(4, 5), c(6, 7, 8)),
+    jumpers = list(1, c(2, 3), c(4, 5), c(6, 7, 8))
+  )
+
+  expected_df <- pl$DataFrame(
+    letters = c(rep("a", 3), "b", "b", rep("c", 3)),
+    numbers = c(1, 2, 3, 4, 5, 6, 7, 8),
+    jumpers = c(1, 2, 3, 4, 5, 6, 7, 8)
+  )
+
+  expect_query_equal(
+    .input$explode(c("numbers", "jumpers")),
+    df,
+    expected_df
+  )
+  expect_query_equal(
+    .input$explode("numbers", pl$col("jumpers")),
+    df,
+    expected_df
+  )
+
+  # empty values -> NA
+  df <- pl$DataFrame(
+    letters = c("a", "a", "b", "c"),
+    numbers = list(1, NULL, c(4, 5), c(6, 7, 8))
+  )
+  expect_query_equal(
+    .input$explode("numbers"),
+    df,
+    pl$DataFrame(
+      letters = c(rep("a", 2), "b", "b", rep("c", 3)),
+      numbers = c(1, NA, 4:8)
+    )
+  )
+
+  # several cols to explode test2
+  df <- pl$DataFrame(
+    letters = c("a", "a", "b", "c"),
+    numbers = list(1, NULL, c(4, 5), c(6, 7, 8)),
+    numbers2 = list(1, NULL, c(4, 5), c(6, 7, 8))
+  )
+  expect_query_equal(
+    .input$explode("numbers", pl$col("numbers2")),
+    df,
+    pl$DataFrame(
+      letters = c(rep("a", 2), "b", "b", rep("c", 3)),
+      numbers = c(1, NA, 4:8),
+      numbers2 = c(1, NA, 4:8)
+    )
+  )
+})

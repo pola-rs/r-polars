@@ -1517,7 +1517,7 @@ lazyframe__serialize <- function() {
     wrap()
 }
 
-#' Explode the DataFrame to long format by exploding the given columns
+#' Explode the frame to long format by exploding the given columns
 #'
 #' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Column names, expressions, or
 #' a selector defining them. The underlying columns being exploded must be of

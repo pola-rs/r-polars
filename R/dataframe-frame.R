@@ -868,7 +868,7 @@ dataframe__gather_every <- function(n, offset = 0) {
     wrap()
 }
 
-#' @inherit lazyframe__rename title params details 
+#' @inherit lazyframe__rename title params details
 #'
 #' @inherit as_polars_df return
 #' @examples
@@ -910,5 +910,20 @@ dataframe__fill_null <- function(
     ...,
     matches_supertype = TRUE) {
   self$lazy()$fill_null(value, strategy, limit, matches_supertype = matches_supertype)$collect(`_eager` = TRUE) |>
+    wrap()
+}
+
+#' @inherit lazyframe__explode title params
+#'
+#' @inherit as_polars_df return
+#' @examples
+#' df <- pl$DataFrame(
+#'   letters = c("a", "a", "b", "c"),
+#'   numbers = list(1, c(2, 3), c(4, 5), c(6, 7, 8))
+#' )
+#'
+#' df$explode("numbers")
+dataframe__explode <- function(...) {
+  self$lazy()$explode(...)$collect(`_eager` = TRUE) |>
     wrap()
 }
