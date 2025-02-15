@@ -456,51 +456,52 @@ test_that("semi and anti join", {
   )
 })
 
-# TODO-REWRITE: panics
-# test_that("cross join", {
-#   dat <- pl$DataFrame(x = letters[1:3])
-#   dat2 <- pl$DataFrame(y = 1:4)
+test_that("cross join", {
+  dat <- pl$DataFrame(x = letters[1:3])
+  dat2 <- pl$DataFrame(y = 1:4)
 
-#   expect_query_equal(
-#     .input$join(.input2, how = "cross"),
-#     .input = dat, .input2 = dat2,
-#     pl$DataFrame(
-#       x = rep(letters[1:3], each = 4),
-#       y = rep(1:4, 3)
-#     )
-#   )
+  expect_query_equal(
+    .input$join(.input2, how = "cross"),
+    .input = dat, .input2 = dat2,
+    pl$DataFrame(
+      x = rep(letters[1:3], each = 4),
+      y = rep(1:4, 3)
+    )
+  )
+  expect_query_error(
+    dat$join(.input2, how = "cross", on = "foo"),
+    "cross join should not pass join keys"
+  )
+  expect_query_error(
+    dat$join(.input2, how = "cross", left_on = "foo", right_on = "foo2"),
+    "cross join should not pass join keys"
+  )
 
-#   expect_query_error(
-#     dat$lazy()$join(.input2$lazy(), how = "cross", on = "foo"),
-#     "cross join should not pass join keys"
-#   )
-#   expect_query_error(
-#     dat$lazy()$join(.input2$lazy(), how = "cross", left_on = "foo", right_on = "foo2"),
-#     "cross join should not pass join keys"
-#   )
+  # one empty dataframe
+  dat_empty <- pl$DataFrame(y = character())
+  expect_query_equal(
+    .input$join(.input2, how = "cross"),
+    .input = dat,
+    .input2 = dat_empty,
+    pl$DataFrame(x = character(), y = character())
+  )
+  expect_query_equal(
+    .input$join(.input2, how = "cross"),
+    .input = dat_empty,
+    .input2 = dat,
+    pl$DataFrame(y = character(), x = character())
+  )
 
-#   # one empty dataframe
-#   dat_empty <- pl$DataFrame(y = character())
-#   expect_query_equal(
-#     .input$join(dat_empty, how = "cross"),
-#     .input = dat, .input2 = dat2,
-#     pl$DataFrame(x = character(), y = character())
-#   )
-#   expect_query_equal(
-#     dat_empty$join(dat, how = "cross"),
-#     pl$DataFrame(y = character(), x = character())
-#   )
-
-#   # suffix works
-#   expect_query_equal(
-#     .input$join(.input, how = "cross"),
-#     .input = dat,
-#     pl$DataFrame(
-#       x = rep(letters[1:3], each = 3),
-#       x_right = rep(letters[1:3], 3)
-#     )
-#   )
-# })
+  # suffix works
+  expect_query_equal(
+    .input$join(.input, how = "cross"),
+    .input = dat,
+    pl$DataFrame(
+      x = rep(letters[1:3], each = 3),
+      x_right = rep(letters[1:3], 3)
+    )
+  )
+})
 
 test_that("argument 'validate' works", {
   df1 <- pl$DataFrame(x = letters[1:5], y = 1:5)

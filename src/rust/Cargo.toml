@@ -37,6 +37,7 @@ features = [
     "business",
     "cloud",
     "concat_str",
+    "cross_join",
     "cse",
     "csv",
     "cum_agg",
