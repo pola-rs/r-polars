@@ -1281,3 +1281,34 @@ test_that("$clear() works", {
     "must be an integer"
   )
 })
+
+test_that("shift() works", {
+  df <- as_polars_df(mtcars[1:3, 1:2])
+  expect_query_equal(
+    .input$shift(2),
+    df,
+    pl$DataFrame(mpg = c(NA, NA, 21), cyl = c(NA, NA, 6))
+  )
+  expect_query_equal(
+    .input$shift(-2),
+    df,
+    pl$DataFrame(mpg = c(22.8, NA, NA), cyl = c(4, NA, NA))
+  )
+  expect_query_equal(
+    .input$shift(2, fill_value = 999),
+    df,
+    pl$DataFrame(mpg = c(999, 999, 21), cyl = c(999, 999, 6))
+  )
+  expect_query_equal(
+    .input$shift(2, fill_value = "a"),
+    df,
+    pl$DataFrame(mpg = c("a", "a", "21.0"), cyl = c("a", "a", "6.0"))
+  )
+  # TODO: add a check with expression in fill_value when this is resolved:
+  # https://github.com/pola-rs/polars/issues/21280
+  expect_query_error(
+    .input$shift(2, 999),
+    df,
+    "Did you forget to name an argument"
+  )
+})

@@ -1077,7 +1077,7 @@ lazyframe__fill_null <- function(
 lazyframe__shift <- function(n = 1, ..., fill_value = NULL) {
   wrap({
     check_dots_empty0(...)
-    self$`_ldf`$shift(as_polars_expr(n)$`_rexpr`, as_polars_expr(fill_value)$`_rexpr`)
+    self$`_ldf`$shift(as_polars_expr(n)$`_rexpr`, as_polars_expr(fill_value, as_lit = TRUE)$`_rexpr`)
   })
 }
 
