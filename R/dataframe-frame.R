@@ -487,19 +487,21 @@ dataframe__tail <- function(n = 5) {
   })
 }
 
-#' Drop columns of a DataFrame
-#'
-#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Characters of column names to
-#' drop. Passed to [`pl$col()`][pl__col].
-#' @param strict Validate that all column names exist in the schema and throw an
-#' exception if a column name does not exist in the schema.
+#' @inherit lazyframe__drop title params
 #'
 #' @inherit as_polars_df return
 #' @examples
-#' as_polars_df(mtcars)$drop(c("mpg", "hp"))
+#' # Drop columns by passing the name of those columns
+#' df <- pl$DataFrame(
+#'   foo = 1:3,
+#'   bar = c(6, 7, 8),
+#'   ham = c("a", "b", "c")
+#' )
+#' df$drop("ham")
+#' df$drop("ham", "bar")
 #'
-#' # equivalent
-#' as_polars_df(mtcars)$drop("mpg", "hp")
+#' # Drop multiple columns by passing a selector
+#' df$drop(cs$all())
 dataframe__drop <- function(..., strict = TRUE) {
   self$lazy()$drop(..., strict = strict)$collect(`_eager` = TRUE) |>
     wrap()

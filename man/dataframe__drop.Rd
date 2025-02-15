@@ -2,26 +2,33 @@
 % Please edit documentation in R/dataframe-frame.R
 \name{dataframe__drop}
 \alias{dataframe__drop}
-\title{Drop columns of a DataFrame}
+\title{Remove columns}
 \usage{
 dataframe__drop(..., strict = TRUE)
 }
 \arguments{
-\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Characters of column names to
-drop. Passed to \code{\link[=pl__col]{pl$col()}}.}
+\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Names of the columns that
+should be removed. Accepts column selector input.}
 
-\item{strict}{Validate that all column names exist in the schema and throw an
-exception if a column name does not exist in the schema.}
+\item{strict}{Validate that all column names exist in the current schema,
+and throw an exception if any do not.}
 }
 \value{
 A polars \link{DataFrame}
 }
 \description{
-Drop columns of a DataFrame
+Remove columns
 }
 \examples{
-as_polars_df(mtcars)$drop(c("mpg", "hp"))
+# Drop columns by passing the name of those columns
+df <- pl$DataFrame(
+  foo = 1:3,
+  bar = c(6, 7, 8),
+  ham = c("a", "b", "c")
+)
+df$drop("ham")
+df$drop("ham", "bar")
 
-# equivalent
-as_polars_df(mtcars)$drop("mpg", "hp")
+# Drop multiple columns by passing a selector
+df$drop(cs$all())
 }

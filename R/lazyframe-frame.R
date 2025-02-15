@@ -744,10 +744,10 @@ lazyframe__with_columns_seq <- function(...) {
   })
 }
 
-#' Remove columns from the DataFrame
+#' Remove columns
 #'
 #' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Names of the columns that
-#' should be removed from the dataframe. Accepts column selector input.
+#' should be removed. Accepts column selector input.
 #' @param strict Validate that all column names exist in the current schema,
 #' and throw an exception if any do not.
 #'

@@ -1170,3 +1170,34 @@ test_that("quantile", {
     "should be between"
   )
 })
+
+test_that("drop() works", {
+  df <- pl$DataFrame(x = c(1, NA, 2), y = c(NA, 1, 2))
+  expect_query_equal(
+    .input$drop("x"),
+    df,
+    pl$DataFrame(y = c(NA, 1, 2))
+  )
+  expect_query_equal(
+    .input$drop("x", "y"),
+    df,
+    pl$DataFrame()
+  )
+  expect_query_equal(
+    .input$drop(cs$numeric()),
+    df,
+    pl$DataFrame()
+  )
+
+  # arg 'strict' works
+  expect_query_error(
+    .input$drop("foo"),
+    df,
+    r"("foo" not found)"
+  )
+  expect_query_equal(
+    .input$drop("foo", strict = FALSE),
+    df,
+    df
+  )
+})

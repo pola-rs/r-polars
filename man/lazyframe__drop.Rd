@@ -2,13 +2,13 @@
 % Please edit documentation in R/lazyframe-frame.R
 \name{lazyframe__drop}
 \alias{lazyframe__drop}
-\title{Remove columns from the DataFrame}
+\title{Remove columns}
 \usage{
 lazyframe__drop(..., strict = TRUE)
 }
 \arguments{
 \item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Names of the columns that
-should be removed from the dataframe. Accepts column selector input.}
+should be removed. Accepts column selector input.}
 
 \item{strict}{Validate that all column names exist in the current schema,
 and throw an exception if any do not.}
@@ -17,7 +17,7 @@ and throw an exception if any do not.}
 A polars \link{LazyFrame}
 }
 \description{
-Remove columns from the DataFrame
+Remove columns
 }
 \examples{
 # Drop columns by passing the name of those columns
