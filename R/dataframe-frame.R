@@ -1157,3 +1157,47 @@ dataframe__shift <- function(n = 1, ..., fill_value = NULL) {
     self$lazy()$shift(n, fill_value = fill_value)$collect(`_eager` = TRUE)
   })
 }
+
+#' @description
+#' `r lifecycle::badge("experimental")`
+#'
+#' This performs an inner join, so only rows where all predicates are true are
+#' included in the result, and a row from either DataFrame may be included
+#' multiple times in the result.
+#'
+#' Note that the row order of the input DataFrames is not preserved.
+#'
+#' @inherit lazyframe__join_where title params
+#' @param other DataFrame to join with.
+#'
+#' @inherit as_polars_df return
+#'
+#' @examples
+#' east <- pl$DataFrame(
+#'   id = c(100, 101, 102),
+#'   dur = c(120, 140, 160),
+#'   rev = c(12, 14, 16),
+#'   cores = c(2, 8, 4)
+#' )
+#'
+#' west <- pl$DataFrame(
+#'   t_id = c(404, 498, 676, 742),
+#'   time = c(90, 130, 150, 170),
+#'   cost = c(9, 13, 15, 16),
+#'   cores = c(4, 2, 1, 4)
+#' )
+#'
+#' east$join_where(
+#'   west,
+#'   pl$col("dur") < pl$col("time"),
+#'   pl$col("rev") < pl$col("cost")
+#' )
+dataframe__join_where <- function(
+    other,
+    ...,
+    suffix = "_right") {
+  wrap({
+    check_polars_df(other)
+    self$lazy()$join_where(other$lazy(), ..., suffix = suffix)$collect(`_eager` = TRUE)
+  })
+}
