@@ -927,9 +927,11 @@ lazyframe__std <- function(ddof = 1) {
     wrap()
 }
 
-#' Aggregate the columns in the DataFrame to a unique quantile value
+#' Aggregate the columns to a unique quantile value
 #'
-#' @inheritParams DataFrame_quantile
+#' @param quantile Quantile between 0.0 and 1.0.
+#' @param interpolation Interpolation method.
+#'
 #' @inherit as_polars_lf return
 #' @examples
 #' lf <- pl$LazyFrame(a = 1:4, b = c(1, 2, 1, 1))

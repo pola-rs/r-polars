@@ -1126,3 +1126,47 @@ test_that("filter with nulls", {
     pl$DataFrame(x = NA_real_)
   )
 })
+
+test_that("quantile", {
+  df <- pl$DataFrame(x = c(1, 2, 3, 1, 5, 6), y = 1:6)
+  expect_query_equal(
+    .input$quantile(1),
+    df,
+    pl$DataFrame(x = 6, y = 6)
+  )
+  expect_query_equal(
+    .input$quantile(0.5),
+    df,
+    pl$DataFrame(x = 3, y = 4)
+  )
+  expect_query_equal(
+    .input$quantile(0.5, "higher"),
+    df,
+    pl$DataFrame(x = 3, y = 4)
+  )
+  expect_query_equal(
+    .input$quantile(0.5, "lower"),
+    df,
+    pl$DataFrame(x = 2, y = 3)
+  )
+  expect_query_equal(
+    .input$quantile(0.5, "midpoint"),
+    df,
+    pl$DataFrame(x = 2.5, y = 3.5)
+  )
+  expect_query_equal(
+    .input$quantile(0.5, "linear"),
+    df,
+    pl$DataFrame(x = 2.5, y = 3.5)
+  )
+  expect_query_error(
+    .input$quantile(0.5, "foobar"),
+    df,
+    "must be one of"
+  )
+  expect_query_error(
+    .input$quantile(1.5, "linear"),
+    df,
+    "should be between"
+  )
+})
