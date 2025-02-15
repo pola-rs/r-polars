@@ -927,3 +927,25 @@ dataframe__explode <- function(...) {
   self$lazy()$explode(...)$collect(`_eager` = TRUE) |>
     wrap()
 }
+
+#' @inherit lazyframe__unnest title description params
+#'
+#' @inherit as_polars_df return
+#' @examples
+#' df <- pl$DataFrame(
+#'   a = 1:5,
+#'   b = c("one", "two", "three", "four", "five"),
+#'   c = 6:10
+#' )$
+#'   select(
+#'   pl$struct("b"),
+#'   pl$struct(c("a", "c"))$alias("a_and_c")
+#' )
+#' df
+#'
+#' df$unnest("a_and_c")
+#' df$unnest(pl$col("a_and_c"))
+dataframe__unnest <- function(...) {
+  self$lazy()$unnest(...)$collect(`_eager` = TRUE) |>
+    wrap()
+}

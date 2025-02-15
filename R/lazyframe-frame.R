@@ -1580,8 +1580,7 @@ lazyframe__clone <- function() {
 
 #' Decompose struct columns into separate columns for each of their fields
 #'
-#' The new columns will be inserted into the LazyFrame at the location of the
-#' struct column.
+#' The new columns will be inserted at the location of the struct column.
 #'
 #' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Name of the struct column(s)
 #' that should be unnested.
