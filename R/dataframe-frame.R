@@ -1080,3 +1080,17 @@ dataframe__quantile <- function(
   self$lazy()$quantile(quantile, interpolation)$collect(`_eager` = TRUE) |>
     wrap()
 }
+                    
+#' @inherit lazyframe__fill_nan title params
+#'
+#' @inherit as_polars_df return
+#' @examples
+#' df <- pl$DataFrame(
+#'   a = c(1.5, 2, NaN, 4),
+#'   b = c(1.5, NaN, NaN, 4)
+#' )
+#' df$fill_nan(99)$collect()
+dataframe__fill_nan <- function(value) {
+  self$lazy()$fill_nan(value)$collect(`_eager` = TRUE) |>
+    wrap()
+}

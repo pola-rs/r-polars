@@ -1201,3 +1201,50 @@ test_that("drop() works", {
     df
   )
 })
+
+test_that("fill_nan() works", {
+  df <- pl$DataFrame(
+    a = c(1.5, 2, NaN, NA),
+    b = c(1.5, NaN, NaN, 4)
+  )
+  expect_query_equal(
+    .input$fill_nan(99),
+    df,
+    pl$DataFrame(
+      a = c(1.5, 2, 99, NA),
+      b = c(1.5, 99, 99, 4)
+    )
+  )
+  # string parsed as column names
+  expect_query_equal(
+    .input$fill_nan("a"),
+    df,
+    pl$DataFrame(
+      a = c(1.5, 2, NaN, NA),
+      b = c(1.5, 2, NaN, 4)
+    )
+  )
+  expect_query_error(
+    .input$fill_nan("foo"),
+    df,
+    "not found: foo"
+  )
+  # accepts expressions
+  expect_query_equal(
+    .input$fill_nan(pl$col("a") + 1),
+    df,
+    pl$DataFrame(
+      a = c(1.5, 2, NaN, NA),
+      b = c(1.5, 3, NaN, 4)
+    )
+  )
+  # casts to replacement type
+  expect_query_equal(
+    .input$fill_nan(pl$lit("a")),
+    df,
+    pl$DataFrame(
+      a = c("1.5", "2.0", "a", NA),
+      b = c("1.5", "a", "a", "4.0")
+    )
+  )
+})
