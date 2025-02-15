@@ -802,3 +802,25 @@ patrick::with_parameters_test_that("fill_null(): arg 'strategy' works",
     )
   }
 )
+
+patrick::with_parameters_test_that(
+  "rename() works",
+  {
+    dat <- do.call(fun, list(mtcars))
+    dat2 <- dat$rename(mpg = "miles_per_gallon", hp = "horsepower")
+    if (is_polars_lf(dat2)) {
+      dat2 <- dat2$collect()
+    }
+    nms <- names(dat2)
+    expect_false("hp" %in% nms)
+    expect_false("mpg" %in% nms)
+    expect_true("miles_per_gallon" %in% nms)
+    expect_true("horsepower" %in% nms)
+
+    expect_error(
+      dat$rename(),
+      "must be character, not NULL"
+    )
+  },
+  fun = c("as_polars_df", "as_polars_lf")
+)
