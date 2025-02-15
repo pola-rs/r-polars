@@ -554,21 +554,29 @@ dataframe__filter <- function(...) {
     wrap()
 }
 
-#' Sort a DataFrame
-#' @inherit LazyFrame_sort details description params
-#' @inheritParams dataframe__unique
+#' Sort a DataFrame by the given columns
+#'
+#' @inherit lazyframe__sort description params details
+#'
 #' @inherit as_polars_df return
 #' @examples
-#' df <- mtcars
-#' df$mpg[1] <- NA
-#' df <- as_polars_df(df)
-#' df$sort("mpg")
-#' df$sort("mpg", nulls_last = TRUE)
-#' df$sort("cyl", "mpg")
-#' df$sort(c("cyl", "mpg"))
-#' df$sort(c("cyl", "mpg"), descending = TRUE)
-#' df$sort(c("cyl", "mpg"), descending = c(TRUE, FALSE))
-#' df$sort(pl$col("cyl"), pl$col("mpg"))
+#' df <- pl$DataFrame(
+#'   a = c(1, 2, NA, 4),
+#'   b = c(6, 5, 4, 3),
+#'   c = c("a", "c", "b", "a")
+#' )
+#'
+#' # Pass a single column name to sort by that column.
+#' df$sort("a")
+#'
+#' # Sorting by expressions is also supported
+#' df$sort(pl$col("a") + pl$col("b") * 2, nulls_last = TRUE)
+#'
+#' # Sort by multiple columns by passing a vector of columns
+#' df$sort(c("c", "a"), descending = TRUE)
+#'
+#' # Or use positional arguments to sort by multiple columns in the same way
+#' df$sort("c", "a", descending = c(FALSE, TRUE))
 dataframe__sort <- function(
     ...,
     descending = FALSE,

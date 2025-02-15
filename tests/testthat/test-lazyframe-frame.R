@@ -1312,3 +1312,138 @@ test_that("shift() works", {
     "Did you forget to name an argument"
   )
 })
+
+test_that("sort(): various errors", {
+  expect_query_error(
+    .input$sort(complex(1)),
+    pl$DataFrame(x = 1),
+    "Unsupported class"
+  )
+  expect_query_error(
+    .input$sort(by = complex(1)),
+    pl$DataFrame(x = 1),
+    "must be passed by position"
+  )
+  expect_query_error(
+    .input$sort(),
+    pl$DataFrame(x = 1),
+    "at least one element"
+  )
+  # `descending` and `nulls_last` need either 1 or as many booleans as items
+  expect_query_error(
+    .input$sort("cyl", "mpg", "drat", descending = c(TRUE, FALSE)),
+    pl$DataFrame(x = 1),
+    "does not match"
+  )
+  expect_query_error(
+    .input$sort("cyl", "mpg", "drat", nulls_last = c(TRUE, FALSE)),
+    pl$DataFrame(x = 1),
+    "does not match"
+  )
+
+  # `descending` and `nulls_last` can only take booleans
+  expect_query_error(
+    .input$sort("cyl", "mpg", "drat", descending = 42),
+    pl$DataFrame(x = 1),
+    "must be a logical vector"
+  )
+  expect_query_error(
+    .input$sort("cyl", "mpg", "drat", descending = NULL),
+    pl$DataFrame(x = 1),
+    "must be a logical vector"
+  )
+  expect_query_error(
+    .input$sort("cyl", "mpg", "drat", nulls_last = 42),
+    pl$DataFrame(x = 1),
+    "must be a logical vector"
+  )
+  expect_query_error(
+    .input$sort("cyl", "mpg", "drat", nulls_last = NULL),
+    pl$DataFrame(x = 1),
+    "must be a logical vector"
+  )
+})
+
+test_that("sort(): basic behavior", {
+  df <- pl$DataFrame(
+    x = c(3, 3, 4, 1, 2),
+    y = c(2, 1, 5, 4, 3)
+  )
+  expect_query_equal(
+    .input$sort("x", maintain_order = TRUE),
+    df,
+    pl$DataFrame(x = c(1, 2, 3, 3, 4), y = c(4, 3, 2, 1, 5))
+  )
+  expect_query_equal(
+    .input$sort(pl$col("x"), maintain_order = TRUE),
+    df,
+    pl$DataFrame(x = c(1, 2, 3, 3, 4), y = c(4, 3, 2, 1, 5))
+  )
+  # several columns
+  expect_query_equal(
+    .input$sort("x", "y", maintain_order = TRUE),
+    df,
+    pl$DataFrame(x = c(1, 2, 3, 3, 4), y = c(4, 3, 1, 2, 5))
+  )
+  expect_query_equal(
+    .input$sort(pl$col("x"), pl$col("y"), maintain_order = TRUE),
+    df,
+    pl$DataFrame(x = c(1, 2, 3, 3, 4), y = c(4, 3, 1, 2, 5))
+  )
+  expect_query_equal(
+    .input$sort(c("x", "y"), maintain_order = TRUE),
+    df,
+    pl$DataFrame(x = c(1, 2, 3, 3, 4), y = c(4, 3, 1, 2, 5))
+  )
+})
+
+test_that("sort(): arg 'descending'", {
+  df <- pl$DataFrame(
+    x = c(3, 3, 4, 1, 2),
+    y = c(2, 1, 5, 4, 3)
+  )
+
+  # descending arg
+  expect_query_equal(
+    .input$sort("x", "y", maintain_order = TRUE, descending = TRUE),
+    df,
+    pl$DataFrame(x = c(4, 3, 3, 2, 1), y = c(5, 2, 1, 3, 4))
+  )
+
+  # descending arg: vector of boolean
+  expect_query_equal(
+    .input$sort("x", "y", maintain_order = TRUE, descending = c(TRUE, FALSE)),
+    df,
+    pl$DataFrame(x = c(4, 3, 3, 2, 1), y = c(5, 1, 2, 3, 4))
+  )
+
+  # expr: one increasing and one decreasing
+  expect_query_equal(
+    .input$sort(-pl$col("x"), pl$col("y"), maintain_order = TRUE),
+    df,
+    pl$DataFrame(x = c(4, 3, 3, 2, 1), y = c(5, 1, 2, 3, 4))
+  )
+})
+
+test_that("sort(): arg 'nulls_last'", {
+  df <- pl$DataFrame(
+    x = c(3, 3, 4, 1, 2),
+    y = c(2, 1, 5, 4, 3)
+  )
+
+  # nulls_last
+  df <- pl$DataFrame(
+    x = c(NA, 3, 4, 1, 2),
+    y = c(2, 1, 5, 4, 3)
+  )
+  expect_query_equal(
+    .input$sort("x", "y", maintain_order = TRUE, nulls_last = TRUE),
+    df,
+    pl$DataFrame(x = c(1, 2, 3, 4, NA), y = c(4, 3, 1, 5, 2))
+  )
+  expect_query_equal(
+    .input$sort("x", "y", maintain_order = TRUE, nulls_last = FALSE),
+    df,
+    pl$DataFrame(x = c(NA, 1, 2, 3, 4), y = c(2, 4, 3, 1, 5))
+  )
+})
