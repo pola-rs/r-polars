@@ -1248,3 +1248,36 @@ test_that("fill_nan() works", {
     )
   )
 })
+
+test_that("$clear() works", {
+  df <- pl$DataFrame(
+    a = c(NA, 2),
+    b = c("a", NA),
+    c = c(TRUE, TRUE)
+  )
+
+  expect_query_equal(
+    .input$clear(),
+    df,
+    pl$DataFrame(a = numeric(0), b = character(0), c = logical(0))
+  )
+
+  # n > number of rows
+  expect_query_equal(
+    .input$clear(3),
+    df,
+    pl$DataFrame(a = rep(NA_real_, 3), b = rep(NA_character_, 3), c = rep(NA, 3))
+  )
+
+  # error
+  expect_query_error(
+    .input$clear(-1),
+    df,
+    "greater than or equal to 0"
+  )
+  expect_query_error(
+    .input$clear(1.5),
+    df,
+    "must be an integer"
+  )
+})

@@ -372,6 +372,12 @@ class(`PlRChainedWhen`) <- c("PlRChainedWhen__bundle", "savvy_neopolars__sealed"
 
 ### wrapper functions for PlRDataFrame
 
+`PlRDataFrame_clear` <- function(self) {
+  function() {
+    .savvy_wrap_PlRDataFrame(.Call(savvy_PlRDataFrame_clear__impl, `self`))
+  }
+}
+
 `PlRDataFrame_clone` <- function(self) {
   function() {
     .savvy_wrap_PlRDataFrame(.Call(savvy_PlRDataFrame_clone__impl, `self`))
@@ -484,6 +490,7 @@ class(`PlRChainedWhen`) <- c("PlRChainedWhen__bundle", "savvy_neopolars__sealed"
 `.savvy_wrap_PlRDataFrame` <- function(ptr) {
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
+  e$`clear` <- `PlRDataFrame_clear`(ptr)
   e$`clone` <- `PlRDataFrame_clone`(ptr)
   e$`columns` <- `PlRDataFrame_columns`(ptr)
   e$`dtypes` <- `PlRDataFrame_dtypes`(ptr)

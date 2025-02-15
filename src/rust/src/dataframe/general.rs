@@ -160,4 +160,8 @@ impl PlRDataFrame {
         df.as_single_chunk_par();
         Ok(df.into())
     }
+
+    pub fn clear(&self) -> Result<Self> {
+        Ok(self.df.clear().into())
+    }
 }

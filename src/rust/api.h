@@ -51,6 +51,7 @@ SEXP savvy_PlRChainedThen_when__ffi(SEXP self__, SEXP c_arg__condition);
 SEXP savvy_PlRChainedWhen_then__ffi(SEXP self__, SEXP c_arg__statement);
 
 // methods and associated functions for PlRDataFrame
+SEXP savvy_PlRDataFrame_clear__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_clone__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_columns__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_dtypes__ffi(SEXP self__);

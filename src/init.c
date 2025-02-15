@@ -269,6 +269,11 @@ SEXP savvy_PlRChainedWhen_then__impl(SEXP self__, SEXP c_arg__statement) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRDataFrame_clear__impl(SEXP self__) {
+    SEXP res = savvy_PlRDataFrame_clear__ffi(self__);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRDataFrame_clone__impl(SEXP self__) {
     SEXP res = savvy_PlRDataFrame_clone__ffi(self__);
     return handle_result(res);
@@ -2798,6 +2803,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRChainedThen_otherwise__impl", (DL_FUNC) &savvy_PlRChainedThen_otherwise__impl, 2},
     {"savvy_PlRChainedThen_when__impl", (DL_FUNC) &savvy_PlRChainedThen_when__impl, 2},
     {"savvy_PlRChainedWhen_then__impl", (DL_FUNC) &savvy_PlRChainedWhen_then__impl, 2},
+    {"savvy_PlRDataFrame_clear__impl", (DL_FUNC) &savvy_PlRDataFrame_clear__impl, 1},
     {"savvy_PlRDataFrame_clone__impl", (DL_FUNC) &savvy_PlRDataFrame_clone__impl, 1},
     {"savvy_PlRDataFrame_columns__impl", (DL_FUNC) &savvy_PlRDataFrame_columns__impl, 1},
     {"savvy_PlRDataFrame_dtypes__impl", (DL_FUNC) &savvy_PlRDataFrame_dtypes__impl, 1},

@@ -1912,32 +1912,32 @@ lazyframe__to_dot <- function(
   self$`_ldf`$to_dot(optimized)
 }
 
-#' Create an empty or n-row null-filled copy of the LazyFrame
+#' Create an empty or `n`-row null-filled copy of the frame
 #'
-#' Returns a n-row null-filled LazyFrame with an identical schema. `n` can be
-#' greater than the current number of rows in the LazyFrame.
+#' Returns a `n`-row null-filled frame with an identical schema. `n` can be
+#' greater than the current number of rows in the frame.
 #'
-#' @param n Number of (empty) rows to return in the cleared frame.
+#' @param n Number of (null-filled) rows to return in the cleared frame.
 #'
-#' @return A n-row null-filled LazyFrame with an identical schema
-#'
+#' @inherit as_polars_lf return
 #' @examples
 #' df <- pl$LazyFrame(
 #'   a = c(NA, 2, 3, 4),
 #'   b = c(0.5, NA, 2.5, 13),
 #'   c = c(TRUE, TRUE, FALSE, NA)
 #' )
+#' df$clear()$collect()
 #'
-#' df$clear()
-#'
-#' df$clear(n = 5)
+#' df$clear(n = 2)$collect()
 lazyframe__clear <- function(n = 0) {
-  cols <- names(self)
-  dat <- vector("list", length(cols))
-  names(dat) <- cols
-  pl$DataFrame(!!!dat, .schema_overrides = self$collect_schema())$
-    clear(n)$
-    lazy()
+  wrap({
+    cols <- names(self)
+    dat <- vector("list", length(cols))
+    names(dat) <- cols
+    pl$DataFrame(!!!dat, .schema_overrides = self$collect_schema())$
+      clear(n)$
+      lazy()
+  })
 }
 
 #' Take every nth row in the LazyFrame
