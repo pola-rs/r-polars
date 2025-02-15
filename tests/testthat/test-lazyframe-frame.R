@@ -1034,3 +1034,95 @@ test_that("join_asof", {
   )
 })
 
+test_that("filter() works", {
+  df <- pl$DataFrame(
+    x = c(1, 2, 3, 4, 5),
+    y = letters[1:5],
+    z = c(TRUE, TRUE, FALSE, TRUE, FALSE)
+  )
+
+  # using ==
+  expect_query_equal(
+    .input$filter(pl$col("x") == 1),
+    df,
+    pl$DataFrame(x = 1, y = "a", z = TRUE)
+  )
+  expect_query_equal(
+    .input$filter(pl$col("z")),
+    df,
+    pl$DataFrame(x = c(1, 2, 4), y = c("a", "b", "d"), z = c(TRUE, TRUE, TRUE))
+  )
+  expect_query_equal(
+    .input$filter(!pl$col("z")),
+    df,
+    pl$DataFrame(x = c(3, 5), y = c("c", "e"), z = c(FALSE, FALSE))
+  )
+
+  # using inequality operators
+  expect_query_equal(
+    .input$filter(pl$col("x") > 4),
+    df,
+    pl$DataFrame(x = 5, y = "e", z = FALSE)
+  )
+  expect_query_equal(
+    .input$filter(pl$col("x") >= 4),
+    df,
+    pl$DataFrame(x = c(4, 5), y = c("d", "e"), z = c(TRUE, FALSE))
+  )
+  expect_query_equal(
+    .input$filter(pl$col("x") < 2),
+    df,
+    pl$DataFrame(x = 1, y = "a", z = TRUE)
+  )
+  expect_query_equal(
+    .input$filter(pl$col("x") <= 2),
+    df,
+    pl$DataFrame(x = c(1, 2), y = c("a", "b"), z = c(TRUE, TRUE))
+  )
+  expect_query_equal(
+    .input$filter(pl$col("x") != 3),
+    df,
+    pl$DataFrame(
+      x = c(1, 2, 4, 5),
+      y = c("a", "b", "d", "e"),
+      z = c(TRUE, TRUE, TRUE, FALSE)
+    )
+  )
+
+  # using &
+  expect_query_equal(
+    .input$filter(pl$col("x") <= 3 & pl$col("z")),
+    df,
+    pl$DataFrame(x = c(1, 2), y = c("a", "b"), z = c(TRUE, TRUE))
+  )
+  expect_query_equal(
+    .input$filter(pl$col("x") <= 3, pl$col("z")),
+    df,
+    pl$DataFrame(x = c(1, 2), y = c("a", "b"), z = c(TRUE, TRUE))
+  )
+
+  # using |
+  expect_query_equal(
+    .input$filter(pl$col("x") <= 3 | pl$col("z")),
+    df,
+    pl$DataFrame(
+      x = c(1, 2, 3, 4),
+      y = c("a", "b", "c", "d"),
+      z = c(TRUE, TRUE, FALSE, TRUE)
+    )
+  )
+})
+
+test_that("filter with nulls", {
+  df <- pl$DataFrame(x = c(1, 2, NA))
+  expect_query_equal(
+    .input$filter(pl$col("x") == 1),
+    df,
+    pl$DataFrame(x = 1)
+  )
+  expect_query_equal(
+    .input$filter(pl$col("x")$is_null()),
+    df,
+    pl$DataFrame(x = NA_real_)
+  )
+})
