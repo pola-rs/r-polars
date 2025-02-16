@@ -38,6 +38,7 @@ SEXP savvy_lit_null__ffi(void);
 SEXP savvy_max_horizontal__ffi(SEXP c_arg__exprs);
 SEXP savvy_mean_horizontal__ffi(SEXP c_arg__exprs, SEXP c_arg__ignore_nulls);
 SEXP savvy_min_horizontal__ffi(SEXP c_arg__exprs);
+SEXP savvy_repeat___ffi(SEXP c_arg__value, SEXP c_arg__n, SEXP c_arg__dtype);
 SEXP savvy_sum_horizontal__ffi(SEXP c_arg__exprs, SEXP c_arg__ignore_nulls);
 SEXP savvy_time_range__ffi(SEXP c_arg__start, SEXP c_arg__end, SEXP c_arg__every, SEXP c_arg__closed);
 SEXP savvy_time_ranges__ffi(SEXP c_arg__start, SEXP c_arg__end, SEXP c_arg__every, SEXP c_arg__closed);

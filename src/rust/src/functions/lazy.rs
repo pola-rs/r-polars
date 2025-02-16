@@ -1,4 +1,4 @@
-use crate::{prelude::*, PlRDataFrame, PlRExpr, PlRLazyFrame, PlRSeries, RPolarsErr};
+use crate::{prelude::*, PlRDataFrame, PlRDataType, PlRExpr, PlRLazyFrame, PlRSeries, RPolarsErr};
 use polars::functions;
 use polars::lazy::dsl;
 use savvy::{savvy, ListSexp, NumericSexp, RawSexp, Result, StringSexp};
@@ -274,4 +274,15 @@ pub fn concat_str(s: ListSexp, separator: &str, ignore_nulls: bool) -> Result<Pl
 #[savvy]
 pub fn arg_where(condition: PlRExpr) -> Result<PlRExpr> {
     Ok(dsl::arg_where(condition.inner.clone()).into())
+}
+
+#[savvy]
+#[allow(non_snake_case)]
+pub fn repeat_(value: PlRExpr, n: PlRExpr, dtype: Option<&PlRDataType>) -> Result<PlRExpr> {
+    let mut value = value.inner;
+    let n = n.inner;
+    if let Some(dtype) = dtype {
+        value = value.cast(dtype.dt.clone());
+    }
+    Ok(dsl::repeat(value, n).into())
 }

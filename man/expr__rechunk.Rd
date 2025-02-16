@@ -16,5 +16,5 @@ Create a single chunk of memory for this Series
 df <- pl$DataFrame(a = c(1, 1, 2))
 
 # Create a Series with 3 nulls, append column a then rechunk
-df$select(pl$repeat(NA, 3)$append(pl$col("a"))$rechunk())
+df$select(pl$repeat_(NA, 3)$append(pl$col("a"))$rechunk())
 }

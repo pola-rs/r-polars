@@ -272,6 +272,14 @@ NULL
 }
 
 
+`repeat_` <- function(`value`, `n`, `dtype` = NULL) {
+  `value` <- .savvy_extract_ptr(`value`, "PlRExpr")
+  `n` <- .savvy_extract_ptr(`n`, "PlRExpr")
+  `dtype` <- .savvy_extract_ptr(`dtype`, "PlRDataType")
+  .savvy_wrap_PlRExpr(.Call(savvy_repeat___impl, `value`, `n`, `dtype`))
+}
+
+
 `sum_horizontal` <- function(`exprs`, `ignore_nulls`) {
   .savvy_wrap_PlRExpr(.Call(savvy_sum_horizontal__impl, `exprs`, `ignore_nulls`))
 }

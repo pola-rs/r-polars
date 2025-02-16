@@ -234,6 +234,11 @@ SEXP savvy_min_horizontal__impl(SEXP c_arg__exprs) {
     return handle_result(res);
 }
 
+SEXP savvy_repeat___impl(SEXP c_arg__value, SEXP c_arg__n, SEXP c_arg__dtype) {
+    SEXP res = savvy_repeat___ffi(c_arg__value, c_arg__n, c_arg__dtype);
+    return handle_result(res);
+}
+
 SEXP savvy_sum_horizontal__impl(SEXP c_arg__exprs, SEXP c_arg__ignore_nulls) {
     SEXP res = savvy_sum_horizontal__ffi(c_arg__exprs, c_arg__ignore_nulls);
     return handle_result(res);
@@ -2796,6 +2801,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_max_horizontal__impl", (DL_FUNC) &savvy_max_horizontal__impl, 1},
     {"savvy_mean_horizontal__impl", (DL_FUNC) &savvy_mean_horizontal__impl, 2},
     {"savvy_min_horizontal__impl", (DL_FUNC) &savvy_min_horizontal__impl, 1},
+    {"savvy_repeat___impl", (DL_FUNC) &savvy_repeat___impl, 3},
     {"savvy_sum_horizontal__impl", (DL_FUNC) &savvy_sum_horizontal__impl, 2},
     {"savvy_time_range__impl", (DL_FUNC) &savvy_time_range__impl, 4},
     {"savvy_time_ranges__impl", (DL_FUNC) &savvy_time_ranges__impl, 4},
