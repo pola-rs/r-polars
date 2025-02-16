@@ -1526,3 +1526,56 @@ test_that("inequality joins require suffix when identical column names", {
     )
   )
 })
+
+test_that("unpivot() works", {
+  df <- pl$DataFrame(
+    a = c("x", "y", "z"),
+    b = c(1, 3, 5),
+    c = c(2, 4, 6)
+  )
+
+  expect_query_equal(
+    .input$unpivot(index = "a", on = c("b", "c")),
+    .input = df,
+    pl$DataFrame(
+      a = c("x", "y", "z", "x", "y", "z"),
+      variable = c("b", "b", "b", "c", "c", "c"),
+      value = c(1, 3, 5, 2, 4, 6)
+    )
+  )
+  expect_query_equal(
+    .input$unpivot(index = c("a", "b"), value_name = "c"),
+    .input = df,
+    pl$DataFrame(
+      a = c("x", "y", "z"),
+      b = c(1, 3, 5),
+      variable = rep("c", 3),
+      c = c(2, 4, 6)
+    )
+  )
+  expect_query_equal(
+    .input$unpivot(
+      index = c("a", "b"),
+      on = "c",
+      value_name = "alice",
+      variable_name = "bob"
+    ),
+    .input = df,
+    pl$DataFrame(
+      a = c("x", "y", "z"),
+      b = c(1, 3, 5),
+      bob = rep("c", 3),
+      alice = c(2, 4, 6)
+    )
+  )
+  expect_query_error(
+    .input$unpivot(
+      index = c("a", "b"),
+      foo = "c",
+      value_name = "alice",
+      variable_name = "bob"
+    ),
+    .input = df,
+    "must be empty"
+  )
+})

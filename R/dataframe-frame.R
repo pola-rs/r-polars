@@ -1201,3 +1201,33 @@ dataframe__join_where <- function(
     self$lazy()$join_where(other$lazy(), ..., suffix = suffix)$collect(`_eager` = TRUE)
   })
 }
+
+#' @inherit lazyframe__unpivot title description params
+#'
+#' @inherit as_polars_lf return
+#'
+#' @examples
+#' df <- pl$DataFrame(
+#'   a = c("x", "y", "z"),
+#'   b = c(1, 3, 5),
+#'   c = c(2, 4, 6)
+#' )
+#' df$unpivot(index = "a", on = c("b", "c"))
+dataframe__unpivot <- function(
+    on = NULL,
+    ...,
+    index = NULL,
+    variable_name = NULL,
+    value_name = NULL) {
+  wrap({
+    check_dots_empty0(...)
+    # TODO: add selectors handling when py-polars' _expand_selectors() has moved
+    # to Rust
+    self$`_df`$unpivot(
+      on = on %||% character(),
+      index = index,
+      value_name = value_name,
+      variable_name = variable_name
+    )
+  })
+}

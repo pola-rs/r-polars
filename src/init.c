@@ -374,6 +374,11 @@ SEXP savvy_PlRDataFrame_to_struct__impl(SEXP self__, SEXP c_arg__name) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRDataFrame_unpivot__impl(SEXP self__, SEXP c_arg__on, SEXP c_arg__index, SEXP c_arg__value_name, SEXP c_arg__variable_name) {
+    SEXP res = savvy_PlRDataFrame_unpivot__ffi(self__, c_arg__on, c_arg__index, c_arg__value_name, c_arg__variable_name);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRDataFrame_width__impl(SEXP self__) {
     SEXP res = savvy_PlRDataFrame_width__ffi(self__);
     return handle_result(res);
@@ -2829,6 +2834,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRDataFrame_tail__impl", (DL_FUNC) &savvy_PlRDataFrame_tail__impl, 2},
     {"savvy_PlRDataFrame_to_series__impl", (DL_FUNC) &savvy_PlRDataFrame_to_series__impl, 2},
     {"savvy_PlRDataFrame_to_struct__impl", (DL_FUNC) &savvy_PlRDataFrame_to_struct__impl, 2},
+    {"savvy_PlRDataFrame_unpivot__impl", (DL_FUNC) &savvy_PlRDataFrame_unpivot__impl, 5},
     {"savvy_PlRDataFrame_width__impl", (DL_FUNC) &savvy_PlRDataFrame_width__impl, 1},
     {"savvy_PlRDataType__get_datatype_fields__impl", (DL_FUNC) &savvy_PlRDataType__get_datatype_fields__impl, 1},
     {"savvy_PlRDataType__get_dtype_names__impl", (DL_FUNC) &savvy_PlRDataType__get_dtype_names__impl, 1},

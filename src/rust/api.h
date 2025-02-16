@@ -72,6 +72,7 @@ SEXP savvy_PlRDataFrame_slice__ffi(SEXP self__, SEXP c_arg__offset, SEXP c_arg__
 SEXP savvy_PlRDataFrame_tail__ffi(SEXP self__, SEXP c_arg__n);
 SEXP savvy_PlRDataFrame_to_series__ffi(SEXP self__, SEXP c_arg__index);
 SEXP savvy_PlRDataFrame_to_struct__ffi(SEXP self__, SEXP c_arg__name);
+SEXP savvy_PlRDataFrame_unpivot__ffi(SEXP self__, SEXP c_arg__on, SEXP c_arg__index, SEXP c_arg__value_name, SEXP c_arg__variable_name);
 SEXP savvy_PlRDataFrame_width__ffi(SEXP self__);
 
 // methods and associated functions for PlRDataType

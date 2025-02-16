@@ -164,4 +164,30 @@ impl PlRDataFrame {
     pub fn clear(&self) -> Result<Self> {
         Ok(self.df.clear().into())
     }
+
+    pub fn unpivot(
+        &self,
+        on: StringSexp,
+        index: StringSexp,
+        value_name: Option<&str>,
+        variable_name: Option<&str>,
+    ) -> Result<Self> {
+        let args = UnpivotArgsIR {
+            on: on
+                .to_vec()
+                .iter()
+                .map(|x| PlSmallStr::from_str(*x))
+                .collect(),
+            index: index
+                .to_vec()
+                .iter()
+                .map(|x| PlSmallStr::from_str(*x))
+                .collect(),
+            value_name: value_name.map(|s| s.into()),
+            variable_name: variable_name.map(|s| s.into()),
+        };
+        let out = self.df.unpivot2(args).map_err(RPolarsErr::from)?;
+
+        Ok(out.into())
+    }
 }

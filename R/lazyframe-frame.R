@@ -1422,11 +1422,11 @@ lazyframe__join_where <- function(
   })
 }
 
-#' Unpivot a LazyFrame from wide to long format
+#' Unpivot a frame from wide to long format
 #'
-#' This function is useful to massage a LazyFrame into a format where one or
+#' This function is useful to massage a frame into a format where one or
 #' more columns are identifier variables (`index`) while all other columns,
-#' considered measured variables (`on`), are “unpivoted” to the row axis
+#' considered measured variables (`on`), are "unpivoted" to the row axis
 #' leaving just two non-identifier columns, "variable" and "value".
 #'
 #' @inheritParams rlang::args_dots_empty
@@ -1457,6 +1457,8 @@ lazyframe__unpivot <- function(
     check_dots_empty0(...)
     if (!is.null(on)) {
       on <- parse_into_list_of_expressions(!!!on)
+    } else {
+      on <- list()
     }
     if (!is.null(index)) {
       index <- parse_into_list_of_expressions(!!!index)
