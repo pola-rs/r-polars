@@ -230,7 +230,7 @@ expr_list_gather <- function(index, ..., null_on_oob = FALSE) {
 
 #' Take every `n`-th value starting from offset in sub-lists
 #'
-#' @inheritParams expr_gather_every
+#' @inheritParams expr__gather_every
 #'
 #' @inherit as_polars_expr return
 #' @examples
@@ -304,7 +304,7 @@ expr_list_contains <- function(item) {
 #'
 #' @param separator String to separate the items with. Can be an Expr. Strings
 #'   are *not* parsed as columns.
-#' @inheritParams pl_concat_str
+#' @inheritParams pl__concat_str
 #' @inheritParams rlang::args_dots_empty
 #'
 #' @inherit as_polars_expr return
@@ -383,7 +383,7 @@ expr_list_diff <- function(n = 1, null_behavior = c("ignore", "drop")) {
 
 #' Shift list values by the given number of indices
 #'
-#' @inheritParams DataFrame_shift
+#' @inheritParams dataframe__shift
 #'
 #' @inherit as_polars_expr return
 #'

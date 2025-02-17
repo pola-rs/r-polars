@@ -6,11 +6,16 @@
 \usage{
 dataframe__filter(...)
 }
+\arguments{
+\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Expression that evaluates to
+a boolean Series.}
+}
 \value{
 A polars \link{DataFrame}
 }
 \description{
-Filter rows of a DataFrame
+The original order of the remaining rows is preserved. Rows where the filter
+does not evaluate to \code{TRUE} are discarded, including nulls.
 }
 \examples{
 df <- as_polars_df(iris)

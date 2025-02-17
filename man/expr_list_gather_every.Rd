@@ -6,6 +6,11 @@
 \usage{
 expr_list_gather_every(n, offset = 0)
 }
+\arguments{
+\item{n}{Gather every n-th row.}
+
+\item{offset}{Starting index.}
+}
 \value{
 A polars \link{expression}
 }

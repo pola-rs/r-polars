@@ -9,6 +9,8 @@ lazyframe__bottom_k(k, ..., by, reverse = FALSE)
 \arguments{
 \item{k}{Number of rows to return.}
 
+\item{...}{These dots are for future extensions and must be empty.}
+
 \item{by}{Column(s) used to determine the bottom rows. Accepts expression
 input. Strings are parsed as column names.}
 

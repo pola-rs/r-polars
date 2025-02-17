@@ -10,7 +10,13 @@ expr_list_join(separator, ..., ignore_nulls = FALSE)
 \item{separator}{String to separate the items with. Can be an Expr. Strings
 are \emph{not} parsed as columns.}
 
-\item{...}{These dots are for future extensions and must be empty.}
+\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Columns to concatenate into a
+single string column. Accepts expression input. Strings are parsed as column
+names, other non-expression inputs are parsed as literals. Non-\code{String}
+columns are cast to \code{String}.}
+
+\item{ignore_nulls}{If \code{FALSE} (default), null values will be propagated,
+i.e. if the row contains any null values, the output is null.}
 }
 \value{
 A polars \link{expression}

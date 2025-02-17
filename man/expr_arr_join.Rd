@@ -11,6 +11,9 @@ expr_arr_join(separator, ..., ignore_nulls = FALSE)
 are not parsed as columns.}
 
 \item{...}{These dots are for future extensions and must be empty.}
+
+\item{ignore_nulls}{If \code{FALSE} (default), null values will be propagated,
+i.e. if the row contains any null values, the output is null.}
 }
 \value{
 A polars \link{expression}

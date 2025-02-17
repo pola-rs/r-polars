@@ -242,7 +242,7 @@ dataframe__get_columns <- function() {
 
 #' Group a DataFrame
 #'
-#' @inherit LazyFrame_group_by description params
+#' @inherit lazyframe__group_by description params
 #' @details Within each group, the order of the rows is always preserved,
 #' regardless of the `maintain_order` argument.
 #' @return [GroupBy][GroupBy_class] (a DataFrame with special groupby methods like `$agg()`)
@@ -447,7 +447,7 @@ dataframe__slice <- function(offset, length = NULL) {
   })
 }
 
-#' @inherit LazyFrame_head title details
+#' @inherit lazyframe__head title details
 #' @param n Number of rows to return. If a negative value is passed,
 #' return all rows except the last [`abs(n)`][abs].
 #' @return A [DataFrame][DataFrame_class]
@@ -467,10 +467,10 @@ dataframe__head <- function(n = 5) {
   })
 }
 
-#' @inherit LazyFrame_tail title
+#' @inherit lazyframe__tail title
 #' @param n Number of rows to return. If a negative value is passed,
 #' return all rows except the first [`abs(n)`][abs].
-#' @inherit DataFrame_head return
+#' @inherit dataframe__head return
 #' @examples
 #' df <- pl$DataFrame(foo = 1:5, bar = 6:10, ham = letters[1:5])
 #'
@@ -531,8 +531,7 @@ dataframe__cast <- function(..., .strict = TRUE) {
 
 #' Filter rows of a DataFrame
 #'
-#' @inherit LazyFrame_filter description params details
-#'
+#' @inherit lazyframe__filter description params details
 #' @inherit as_polars_df return
 #' @examples
 #' df <- as_polars_df(iris)

@@ -8,6 +8,10 @@ expr_arr_sort(..., descending = FALSE, nulls_last = FALSE)
 }
 \arguments{
 \item{...}{These dots are for future extensions and must be empty.}
+
+\item{descending}{Sort in descending order.}
+
+\item{nulls_last}{Place null values last.}
 }
 \description{
 Sort values in every sub-array

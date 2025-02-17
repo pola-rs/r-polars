@@ -6,6 +6,10 @@
 \usage{
 expr_arr_shift(n = 1)
 }
+\arguments{
+\item{n}{Number of indices to shift forward. If a negative value is passed,
+values are shifted in the opposite direction instead.}
+}
 \value{
 A polars \link{expression}
 }

@@ -6,6 +6,14 @@
 \usage{
 dataframe__group_by(..., .maintain_order = FALSE)
 }
+\arguments{
+\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Column(s) to group by.
+Accepts expression input. Strings are parsed as column names.}
+
+\item{.maintain_order}{Ensure that the order of the groups is consistent with
+the input data. This is slower than a default group by. Setting this to
+\code{TRUE} blocks the possibility to run on the streaming engine.}
+}
 \value{
 \link[=GroupBy_class]{GroupBy} (a DataFrame with special groupby methods like \verb{$agg()})
 }
