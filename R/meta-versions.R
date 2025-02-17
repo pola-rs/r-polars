@@ -4,6 +4,7 @@
   "cli",
   "clock",
   "data.table",
+  "ggplot2",
   "hms",
   "tibble",
   "vctrs"

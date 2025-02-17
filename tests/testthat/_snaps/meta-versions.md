@@ -14,6 +14,7 @@
       cli:        0.0.0
       clock:      0.0.0
       data.table: 0.0.0
+      ggplot2:    0.0.0
       hms:        0.0.0
       tibble:     0.0.0
       vctrs:      0.0.0

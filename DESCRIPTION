@@ -22,6 +22,7 @@ Suggests:
     cli,
     clock,
     data.table,
+    ggplot2,
     hms,
     jsonlite,
     nanoarrow,
