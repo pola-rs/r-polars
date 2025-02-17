@@ -1,4 +1,5 @@
 ^\.devcontainer$
+^\.github$
 ^\.vscode$
 ^LICENSE\.md$
 ^\.task$
