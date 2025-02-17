@@ -215,6 +215,11 @@ NULL
 }
 
 
+`len` <- function() {
+  .savvy_wrap_PlRExpr(.Call(savvy_len__impl))
+}
+
+
 `lit_from_bool` <- function(`value`) {
   .savvy_wrap_PlRExpr(.Call(savvy_lit_from_bool__impl, `value`))
 }

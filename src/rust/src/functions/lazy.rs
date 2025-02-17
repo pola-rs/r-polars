@@ -286,3 +286,8 @@ pub fn repeat_(value: PlRExpr, n: PlRExpr, dtype: Option<&PlRDataType>) -> Resul
     }
     Ok(dsl::repeat(value, n).into())
 }
+
+#[savvy]
+pub fn len() -> Result<PlRExpr> {
+    Ok(dsl::len().into())
+}

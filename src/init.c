@@ -179,6 +179,11 @@ SEXP savvy_last__impl(void) {
     return handle_result(res);
 }
 
+SEXP savvy_len__impl(void) {
+    SEXP res = savvy_len__ffi();
+    return handle_result(res);
+}
+
 SEXP savvy_lit_from_bool__impl(SEXP c_arg__value) {
     SEXP res = savvy_lit_from_bool__ffi(c_arg__value);
     return handle_result(res);
@@ -2795,6 +2800,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_int_range__impl", (DL_FUNC) &savvy_int_range__impl, 4},
     {"savvy_int_ranges__impl", (DL_FUNC) &savvy_int_ranges__impl, 4},
     {"savvy_last__impl", (DL_FUNC) &savvy_last__impl, 0},
+    {"savvy_len__impl", (DL_FUNC) &savvy_len__impl, 0},
     {"savvy_lit_from_bool__impl", (DL_FUNC) &savvy_lit_from_bool__impl, 1},
     {"savvy_lit_from_f64__impl", (DL_FUNC) &savvy_lit_from_f64__impl, 1},
     {"savvy_lit_from_i32__impl", (DL_FUNC) &savvy_lit_from_i32__impl, 1},
