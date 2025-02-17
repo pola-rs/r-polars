@@ -288,6 +288,12 @@ test_that("merge_sorted works", {
   )
 })
 
+test_that("$to_dot() works", {
+  lf <- as_polars_lf(mtcars)
+  expect_snapshot(cat(lf$to_dot()))
+  expect_snapshot(cat(lf$select("am")$to_dot()))
+})
+
 test_that("set_sorted works", {
   df1 <- pl$DataFrame(
     name = c("steve", "elise", "bob"),

@@ -220,9 +220,13 @@ impl PlRLazyFrame {
         Ok(ldf.with_columns(exprs).into())
     }
 
-    fn to_dot(&self, optimized: bool) -> Result<String> {
-        let result = self.ldf.to_dot(optimized).map_err(RPolarsErr::from)?;
-        Ok(result)
+    fn to_dot(&self, optimized: bool) -> Result<Sexp> {
+        let result: OwnedStringSexp = self
+            .ldf
+            .to_dot(optimized)
+            .map_err(RPolarsErr::from)?
+            .try_into()?;
+        Ok(result.into())
     }
 
     fn sort(

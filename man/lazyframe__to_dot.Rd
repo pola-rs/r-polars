@@ -8,6 +8,7 @@ lazyframe__to_dot(
   ...,
   optimized = TRUE,
   type_coercion = TRUE,
+  `_type_check` = TRUE,
   predicate_pushdown = TRUE,
   projection_pushdown = TRUE,
   simplify_expression = TRUE,
@@ -15,7 +16,9 @@ lazyframe__to_dot(
   comm_subplan_elim = TRUE,
   comm_subexpr_elim = TRUE,
   cluster_with_columns = TRUE,
-  streaming = FALSE
+  collapse_joins = TRUE,
+  streaming = FALSE,
+  `_check_order` = TRUE
 )
 }
 \arguments{
@@ -39,10 +42,14 @@ lazyframe__to_dot(
 
 \item{cluster_with_columns}{A logical, indicats to combine sequential independent calls to with_columns.}
 
+\item{collapse_joins}{Collapse a join and filters into a faster join.}
+
 \item{streaming}{A logical. If \code{TRUE}, process the query in batches to handle larger-than-memory data.
 If \code{FALSE} (default), the entire query is processed in a single batch.
 Note that streaming mode is considered unstable.
 It may be changed at any point without it being considered a breaking change.}
+
+\item{_check_order, _type_check}{For internal use only.}
 }
 \value{
 A character vector

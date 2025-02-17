@@ -1,3 +1,21 @@
+# $to_dot() works
+
+    Code
+      cat(lf$to_dot())
+    Output
+      graph  polars_query {
+        p1[label="TABLE\nπ */11"]
+      }
+
+---
+
+    Code
+      cat(lf$select("am")$to_dot())
+    Output
+      graph  polars_query {
+        p1[label="TABLE\nπ 1/11"]
+      }
+
 # explain() works
 
     Code

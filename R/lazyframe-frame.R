@@ -1887,6 +1887,7 @@ lazyframe__to_dot <- function(
     ...,
     optimized = TRUE,
     type_coercion = TRUE,
+    `_type_check` = TRUE,
     predicate_pushdown = TRUE,
     projection_pushdown = TRUE,
     simplify_expression = TRUE,
@@ -1894,7 +1895,9 @@ lazyframe__to_dot <- function(
     comm_subplan_elim = TRUE,
     comm_subexpr_elim = TRUE,
     cluster_with_columns = TRUE,
-    streaming = FALSE) {
+    collapse_joins = TRUE,
+    streaming = FALSE,
+    `_check_order` = TRUE) {
   ldf <- self$`_ldf`$optimization_toggle(
     type_coercion = type_coercion,
     `_type_check` = `_type_check`,

@@ -3616,7 +3616,7 @@ class(`PlRExpr`) <- c("PlRExpr__bundle", "savvy_neopolars__sealed")
 
 `PlRLazyFrame_to_dot` <- function(self) {
   function(`optimized`) {
-    .savvy_wrap_String(.Call(savvy_PlRLazyFrame_to_dot__impl, `self`, `optimized`))
+    .Call(savvy_PlRLazyFrame_to_dot__impl, `self`, `optimized`)
   }
 }
 
