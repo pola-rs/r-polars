@@ -114,6 +114,7 @@ features = [
     "string_to_integer",
     "temporal",
     "timezones",
+    "to_dummies",
     "top_k",
     "trigonometry",
     "unique_counts"

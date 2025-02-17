@@ -190,4 +190,22 @@ impl PlRDataFrame {
 
         Ok(out.into())
     }
+
+    pub fn to_dummies(
+        &self,
+        drop_first: bool,
+        columns: Option<StringSexp>,
+        separator: Option<&str>,
+    ) -> Result<Self> {
+        let out = match columns {
+            Some(cols) => self.df.columns_to_dummies(
+                cols.iter().map(|x| x as &str).collect(),
+                separator,
+                drop_first,
+            ),
+            None => self.df.to_dummies(separator, drop_first),
+        }
+        .map_err(RPolarsErr::from)?;
+        Ok(out.into())
+    }
 }

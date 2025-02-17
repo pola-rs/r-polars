@@ -1230,3 +1230,50 @@ dataframe__unpivot <- function(
     )
   })
 }
+
+#' Convert categorical variables into dummy/indicator variables
+#'
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Column name(s)
+#' that should be converted to dummy variables. If empty (default), convert
+#' all columns.
+#' @param separator Separator/delimiter used when generating column names.
+#' @param drop_first Remove the first category from the variables being encoded.
+#'
+#' @inherit as_polars_df return
+#' @examples
+#' df <- pl$DataFrame(
+#'   foo = c(1L, 2L),
+#'   bar = c(3L, 4L),
+#'   ham = c("a", "b")
+#' )
+#' df$to_dummies()
+#'
+#' df$to_dummies(drop_first = TRUE)
+#' df$to_dummies("foo", "bar", separator = ":")
+# df$to_dummies(cs$integer(), separator=":")
+# df$to_dummies(cs$integer(), drop_first = TRUE, separator = ":")
+dataframe__to_dummies <- function(
+    ...,
+    separator = "_",
+    drop_first = FALSE) {
+  # TODO: add selectors handling when py-polars' _expand_selectors() has moved
+  # to Rust (and update examples above)
+  wrap({
+    check_dots_unnamed()
+
+    dots <- list2(...)
+    check_list_of_string(dots, arg = "...")
+
+    if (length(dots) == 0L) {
+      columns <- NULL
+    } else {
+      columns <- as.character(dots)
+    }
+
+    self$`_df`$to_dummies(
+      columns = columns,
+      separator = separator,
+      drop_first = drop_first
+    )
+  })
+}

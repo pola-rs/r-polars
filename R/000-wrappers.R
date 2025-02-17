@@ -482,6 +482,12 @@ class(`PlRChainedWhen`) <- c("PlRChainedWhen__bundle", "savvy_neopolars__sealed"
   }
 }
 
+`PlRDataFrame_to_dummies` <- function(self) {
+  function(`drop_first`, `columns` = NULL, `separator` = NULL) {
+    .savvy_wrap_PlRDataFrame(.Call(savvy_PlRDataFrame_to_dummies__impl, `self`, `drop_first`, `columns`, `separator`))
+  }
+}
+
 `PlRDataFrame_to_series` <- function(self) {
   function(`index`) {
     .savvy_wrap_PlRSeries(.Call(savvy_PlRDataFrame_to_series__impl, `self`, `index`))
@@ -525,6 +531,7 @@ class(`PlRChainedWhen`) <- c("PlRChainedWhen__bundle", "savvy_neopolars__sealed"
   e$`shape` <- `PlRDataFrame_shape`(ptr)
   e$`slice` <- `PlRDataFrame_slice`(ptr)
   e$`tail` <- `PlRDataFrame_tail`(ptr)
+  e$`to_dummies` <- `PlRDataFrame_to_dummies`(ptr)
   e$`to_series` <- `PlRDataFrame_to_series`(ptr)
   e$`to_struct` <- `PlRDataFrame_to_struct`(ptr)
   e$`unpivot` <- `PlRDataFrame_unpivot`(ptr)
