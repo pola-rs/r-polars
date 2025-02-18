@@ -448,12 +448,11 @@ expr_dt_weekday <- function() {
 #'
 #' @inherit as_polars_expr return
 #' @examples
-#' df <- pl$DataFrame(
+#' df <- pl$select(
 #'   date = pl$date_range(
 #'     as.Date("2020-12-25"),
 #'     as.Date("2021-1-05"),
-#'     interval = "1d",
-#'     time_zone = "GMT"
+#'     interval = "1d"
 #'   )
 #' )
 #' df$with_columns(
@@ -493,7 +492,7 @@ expr_dt_ordinal_day <- function() {
 #'
 #' @inherit as_polars_expr return
 #' @examples
-#' df <- pl$DataFrame(
+#' df <- pl$select(
 #'   date = pl$datetime_range(
 #'     as.Date("2020-12-25"),
 #'     as.Date("2021-1-05"),
@@ -647,7 +646,7 @@ expr_dt_nanosecond <- function() {
 #'
 #' @inherit as_polars_expr return
 #' @examples
-#' df <- pl$DataFrame(date = pl$date_range(as.Date("2001-1-1"), as.Date("2001-1-3")))
+#' df <- pl$select(date = pl$date_range(as.Date("2001-1-1"), as.Date("2001-1-3")))
 #'
 #' df$with_columns(
 #'   epoch_ns = pl$col("date")$dt$epoch(),

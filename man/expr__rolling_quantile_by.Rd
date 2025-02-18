@@ -89,7 +89,8 @@ df_temporal <- pl$select(
 df_temporal$with_columns(
   rolling_row_quantile = pl$col("index")$rolling_quantile_by(
     "date",
-    window_size = "2h"
+    window_size = "2h",
+    quantile = 0.3
   )
 )
 
@@ -98,6 +99,7 @@ df_temporal$with_columns(
   rolling_row_quantile = pl$col("index")$rolling_quantile_by(
     "date",
     window_size = "2h",
+    quantile = 0.3,
     closed = "both"
   )
 )

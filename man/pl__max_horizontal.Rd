@@ -21,7 +21,7 @@ Get the maximum value horizontally across columns
 df <- pl$DataFrame(
   a = c(1, 8, 3),
   b = c(4, 5, NA),
-  c = c(1, 2, NA, Inf)
+  c = c("x", "y", "z")
 )
 df$with_columns(
   max = pl$max_horizontal("a", "b")

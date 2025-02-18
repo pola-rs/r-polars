@@ -42,6 +42,9 @@ NULL
 #' # A single difftime is converted to a duration string
 #' parse_as_duration_string(as.difftime(1, units = "days"))
 parse_as_duration_string <- function(x) {
+  if (is.null(x)) {
+    return(NULL)
+  }
   UseMethod("parse_as_duration_string")
 }
 

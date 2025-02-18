@@ -83,20 +83,13 @@ as_polars_lf(iris)$
   group_by("Species", maintain_order = TRUE)$
   agg(pl$col(pl$Float64)$first() + 5)$
   profile()
-
-# -2-  map each Species-group of each numeric column with an R function
-
-# some R function, prints `.` for each time called by polars
-r_func <- \(s) {
-  cat(".")
-  s$to_r()[1] + 5
-}
-
-as_polars_lf(iris)$
-  sort("Sepal.Length")$
-  group_by("Species", maintain_order = TRUE)$
-  agg(pl$col(pl$Float64)$map_elements(r_func))$
-  profile()
+## some R function, prints `.` for each time called by polars
+#  cat(".")
+#  s$to_r()[1] + 5
+#  sort("Sepal.Length")$
+#  group_by("Species", maintain_order = TRUE)$
+#  agg(pl$col(pl$Float64)$map_elements(r_func))$
+#  profile()
 }
 \seealso{
 \itemize{

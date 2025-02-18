@@ -52,7 +52,7 @@ df$select(
 )
 
 # Get the bottom 2 rows by column a in each group
-df$group_by("c", maintain_order = TRUE)$agg(
+df$group_by("c", .maintain_order = TRUE)$agg(
   pl$all()$bottom_k_by("a", 2)
 )$explode(pl$all()$exclude("c"))
 }

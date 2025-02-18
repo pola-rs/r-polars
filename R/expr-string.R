@@ -284,7 +284,9 @@ expr_str_concat <- function(
 #' @description Transform to uppercase variant.
 #' @inherit as_polars_expr return
 #' @examples
-#' pl$lit(c("A", "b", "c", "1", NA))$str$to_uppercase()$to_series()
+#' pl$select(
+#'   pl$lit(c("A", "b", "c", "1", NA))$str$to_uppercase()
+#' )$to_series()
 expr_str_to_uppercase <- function() {
   self$`_rexpr`$str_to_uppercase() |>
     wrap()
@@ -295,7 +297,9 @@ expr_str_to_uppercase <- function() {
 #' @description Transform to lowercase variant.
 #' @inherit as_polars_expr return
 #' @examples
-#' pl$lit(c("A", "b", "c", "1", NA))$str$to_lowercase()$to_series()
+#' pl$select(
+#'   pl$lit(c("A", "b", "c", "1", NA))$str$to_lowercase()
+#' )$to_series()
 expr_str_to_lowercase <- function() {
   self$`_rexpr`$str_to_lowercase() |>
     wrap()
@@ -310,7 +314,9 @@ expr_str_to_lowercase <- function() {
 # #' This method is only available with the "nightly" feature.
 # #' See [polars_info()] for more details.
 # #' @examplesIf polars_info()$features$nightly
-# #' pl$lit(c("hello there", "HI, THERE", NA))$str$to_titlecase()$to_series()
+# #' pl$select(
+# #'   pl$lit(c("hello there", "HI, THERE", NA))$str$to_titlecase()
+# #' )$to_series()
 # expr_str_to_titlecase <- function() {
 #   check_feature("nightly", "in $to_titlecase():")
 
@@ -879,7 +885,7 @@ expr_str_splitn <- function(by, n) {
 #'
 #' # Apply case-insensitive string replacement using the `(?i)` flag.
 #' df <- pl$DataFrame(
-#'   city = "Philadelphia",
+#'   city = rep("Philadelphia", 4),
 #'   season = c("Spring", "Summer", "Autumn", "Winter"),
 #'   weather = c("Rainy", "Sunny", "Cloudy", "Snowy")
 #' )
@@ -916,7 +922,7 @@ expr_str_replace <- function(pattern, value, ..., literal = FALSE, n = 1L) {
 #'
 #' # Apply case-insensitive string replacement using the `(?i)` flag.
 #' df <- pl$DataFrame(
-#'   city = "Philadelphia",
+#'   city = rep("Philadelphia", 4),
 #'   season = c("Spring", "Summer", "Autumn", "Winter"),
 #'   weather = c("Rainy", "Sunny", "Cloudy", "Snowy")
 #' )
@@ -989,7 +995,7 @@ expr_str_reverse <- function() {
     wrap()
 }
 
-#' Use the aho-corasick algorithm to find matches
+#' Use the Aho-Corasick algorithm to find matches
 #'
 #' This function determines if any of the patterns find a match.
 #' @inherit expr_str_contains params return
@@ -1019,7 +1025,7 @@ expr_str_contains_any <- function(patterns, ..., ascii_case_insensitive = FALSE)
   })
 }
 
-#' Use the aho-corasick algorithm to replace many matches
+#' Use the Aho-Corasick algorithm to replace many matches
 #'
 #' This function replaces several matches at once.
 #'
@@ -1193,7 +1199,7 @@ expr_str_tail <- function(n) {
 }
 
 
-#' Use the aho-corasick algorithm to extract matches
+#' Use the Aho-Corasick algorithm to extract matches
 #'
 #' @param patterns String patterns to search. This can be an Expr or something
 #' coercible to an Expr. Strings are parsed as column names.

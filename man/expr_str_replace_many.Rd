@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr-string.R
 \name{expr_str_replace_many}
 \alias{expr_str_replace_many}
-\title{Use the aho-corasick algorithm to replace many matches}
+\title{Use the Aho-Corasick algorithm to replace many matches}
 \usage{
 expr_str_replace_many(patterns, replace_with, ascii_case_insensitive = FALSE)
 }

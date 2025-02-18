@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr-string.R
 \name{expr_str_extract_many}
 \alias{expr_str_extract_many}
-\title{Use the aho-corasick algorithm to extract matches}
+\title{Use the Aho-Corasick algorithm to extract matches}
 \usage{
 expr_str_extract_many(
   patterns,
@@ -27,7 +27,7 @@ case for ASCII letters (a-z and A-Z) only.}
 A polars \link{expression}
 }
 \description{
-Use the aho-corasick algorithm to extract matches
+Use the Aho-Corasick algorithm to extract matches
 }
 \examples{
 df <- pl$DataFrame(values = "discontent")

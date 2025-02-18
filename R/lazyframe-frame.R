@@ -300,20 +300,18 @@ lazyframe__collect <- function(
 #'   group_by("Species", maintain_order = TRUE)$
 #'   agg(pl$col(pl$Float64)$first() + 5)$
 #'   profile()
-#'
-#' # -2-  map each Species-group of each numeric column with an R function
-#'
-#' # some R function, prints `.` for each time called by polars
-#' r_func <- \(s) {
-#'   cat(".")
-#'   s$to_r()[1] + 5
-#' }
-#'
-#' as_polars_lf(iris)$
-#'   sort("Sepal.Length")$
-#'   group_by("Species", maintain_order = TRUE)$
-#'   agg(pl$col(pl$Float64)$map_elements(r_func))$
-#'   profile()
+# TODO-REWRITE: uncomment when map_elements() is implemented
+# 2-  map each Species-group of each numeric column with an R function
+#' ## some R function, prints `.` for each time called by polars
+# r_func <- \(s) {
+#' #  cat(".")
+#' #  s$to_r()[1] + 5
+# }
+# as_polars_lf(iris)$
+#' #  sort("Sepal.Length")$
+#' #  group_by("Species", maintain_order = TRUE)$
+#' #  agg(pl$col(pl$Float64)$map_elements(r_func))$
+#' #  profile()
 lazyframe__profile <- function(
     ...,
     type_coercion = TRUE,
@@ -362,7 +360,7 @@ lazyframe__profile <- function(
       collapse_joins = collapse_joins,
       streaming = streaming,
       `_check_order` = `_check_order`,
-      `_eager` = `_eager`
+      `_eager` = FALSE
     )
 
     out <- lapply(self$`_ldf`$profile(), \(x) {
@@ -1489,10 +1487,9 @@ lazyframe__unpivot <- function(
 #' )
 #'
 #' lf$rename(foo = "apple")$collect()
-#'
-#' lf$rename(
-#'   \(column_name) paste0("c", substr(column_name, 2, 100))
-#' )$collect()
+# lf$rename(
+#   \(column_name) paste0("c", substr(column_name, 2, 100))
+# )$collect()
 lazyframe__rename <- function(..., .strict = TRUE) {
   wrap({
     mapping <- list2(...)
@@ -1760,8 +1757,8 @@ lazyframe__rolling <- function(
 #' @examples
 #' lf <- pl$select(
 #'   time = pl$datetime_range(
-#'     start = strptime("2021-12-16 00:00:00", format = "%Y-%m-%d %H:%M:%S", tz = "UTC"),
-#'     end = strptime("2021-12-16 03:00:00", format = "%Y-%m-%d %H:%M:%S", tz = "UTC"),
+#'     start = as.POSIXct(strptime("2021-12-16 00:00:00", format = "%Y-%m-%d %H:%M:%S", tz = "UTC")),
+#'     end = as.POSIXct(strptime("2021-12-16 03:00:00", format = "%Y-%m-%d %H:%M:%S", tz = "UTC")),
 #'     interval = "30m"
 #'   ),
 #'   n = 0:6
@@ -1873,11 +1870,9 @@ lazyframe__group_by_dynamic <- function(
 #'   c = 6:1
 #' )
 #'
-#' query <- lf$group_by("a", maintain_order = TRUE)$agg(
+#' query <- lf$group_by("a", .maintain_order = TRUE)$agg(
 #'   pl$all()$sum()
-#' )$sort(
-#'   "a"
-#' )
+#' )$sort("a")
 #'
 #' query$to_dot() |> cat()
 #'

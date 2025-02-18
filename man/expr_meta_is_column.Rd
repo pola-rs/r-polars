@@ -16,9 +16,9 @@ Indicate if this expression is a basic (non-regex) unaliased column
 e <- pl$col("foo")
 e$meta$is_column()
 
-e <- pl.col("foo") * pl.col("bar")
+e <- pl$col("foo") * pl$col("bar")
 e$meta$is_column()
 
-e <- pl.col(r"^col.*\d+$")
+e <- pl$col("^col\\\\.*\\\\d+$")
 e$meta$is_column()
 }

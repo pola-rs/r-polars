@@ -696,17 +696,21 @@ expr__sum <- function() {
 #' @examples
 #' df <- pl$DataFrame(a = 1:3, b = c(1, 2, 3))
 #' df$with_columns(
-#'   pl$col("a")$cast(pl$dtypes$Float64),
-#'   pl$col("b")$cast(pl$dtypes$Int32)
+#'   pl$col("a")$cast(pl$Float64),
+#'   pl$col("b")$cast(pl$Int32)
 #' )
 #'
 #' # strict FALSE, inserts null for any cast failure
-#' pl$lit(c(100, 200, 300))$cast(pl$dtypes$UInt8, strict = FALSE)$to_series()
+#' pl$select(
+#'   pl$lit(c(100, 200, 300))$cast(pl$UInt8, strict = FALSE)
+#' )$to_series()
 #'
 #' # strict TRUE, raise any failure as an error when query is executed.
 #' tryCatch(
 #'   {
-#'     pl$lit("a")$cast(pl$dtypes$Float64, strict = TRUE)$to_series()
+#'     pl$select(
+#'       pl$lit("a")$cast(pl$Float64, strict = TRUE)
+#'     )$to_series()
 #'   },
 #'   error = function(e) e
 #' )
@@ -1104,7 +1108,7 @@ expr__filter <- function(...) {
 #'   select(
 #'   pl$col("Sepal.Length")$map_batches(\(x) {
 #'     paste("cheese", as.character(x$to_vector()))
-#'   }, pl$dtypes$String)
+#'   }, pl$String)
 #' )
 #'
 #' # R parallel process example, use Sys.sleep() to imitate some CPU expensive
@@ -1256,12 +1260,6 @@ expr__dot <- function(other) {
 #' # Use `-1` to infer the other dimension
 #' df$select(pl$col("foo")$reshape(c(-1, 3)))
 #' df$select(pl$col("foo")$reshape(c(3, -1)))
-#'
-#' # One can specify more than 2 dimensions by using the Array type
-#' df <- pl$DataFrame(foo = 1:12)
-#' df$select(
-#'   pl$col("foo")$reshape(c(3, 2, 2), nested_type = pl$Array(pl$Float32, 2))
-#' )
 expr__reshape <- function(dimensions) {
   wrap({
     if (is.numeric(dimensions) && anyNA(dimensions)) {
@@ -3162,7 +3160,8 @@ expr__rolling_sum_by <- function(
 #' df_temporal$with_columns(
 #'   rolling_row_quantile = pl$col("index")$rolling_quantile_by(
 #'     "date",
-#'     window_size = "2h"
+#'     window_size = "2h",
+#'     quantile = 0.3
 #'   )
 #' )
 #'
@@ -3171,6 +3170,7 @@ expr__rolling_sum_by <- function(
 #'   rolling_row_quantile = pl$col("index")$rolling_quantile_by(
 #'     "date",
 #'     window_size = "2h",
+#'     quantile = 0.3,
 #'     closed = "both"
 #'   )
 #' )
@@ -3607,7 +3607,7 @@ expr__top_k <- function(k = 5) {
 #' )
 #'
 #' # Get the bottom 2 rows by column a in each group
-#' df$group_by("c", maintain_order = TRUE)$agg(
+#' df$group_by("c", .maintain_order = TRUE)$agg(
 #'   pl$all()$bottom_k_by("a", 2)
 #' )$explode(pl$all()$exclude("c"))
 expr__bottom_k_by <- function(by, k = 5, ..., reverse = FALSE) {
@@ -3651,7 +3651,7 @@ expr__bottom_k_by <- function(by, k = 5, ..., reverse = FALSE) {
 #' )
 #'
 #' # Get the top 2 rows by column a in each group
-#' df$group_by("c", maintain_order = TRUE)$agg(
+#' df$group_by("c", .maintain_order = TRUE)$agg(
 #'   pl$all()$top_k_by("a", 2)
 #' )$explode(pl$all()$exclude("c"))
 expr__top_k_by <- function(by, k = 5, ..., reverse = FALSE) {

@@ -30,6 +30,6 @@ df <- pl$DataFrame(
 )
 
 df$with_columns(
-  any = pl$any_horizontal("a", "b", "c")
+  any = pl$any_horizontal("a", "b")
 )
 }

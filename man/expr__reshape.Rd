@@ -31,10 +31,4 @@ df$select(pl$col("foo")$reshape(c(3, 3)))
 # Use `-1` to infer the other dimension
 df$select(pl$col("foo")$reshape(c(-1, 3)))
 df$select(pl$col("foo")$reshape(c(3, -1)))
-
-# One can specify more than 2 dimensions by using the Array type
-df <- pl$DataFrame(foo = 1:12)
-df$select(
-  pl$col("foo")$reshape(c(3, 2, 2), nested_type = pl$Array(pl$Float32, 2))
-)
 }

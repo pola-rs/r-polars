@@ -397,9 +397,6 @@ dataframe__with_columns_seq <- function(...) {
 #'
 #' # Polars is 0-indexed, so we use index = 1 to extract the *2nd* column
 #' df$to_series(index = 1)
-#'
-#' # doesn't error if the column isn't there
-#' df$to_series(index = 8)
 dataframe__to_series <- function(index = 0) {
   self$`_df`$to_series(index) |>
     wrap()
@@ -888,10 +885,9 @@ dataframe__gather_every <- function(n, offset = 0) {
 #' )
 #'
 #' df$rename(foo = "apple")
-#'
-#' df$rename(
-#'   \(column_name) paste0("c", substr(column_name, 2, 100))
-#' )
+# df$rename(
+#   \(column_name) paste0("c", substr(column_name, 2, 100))
+# )
 dataframe__rename <- function(..., .strict = TRUE) {
   self$lazy()$rename(..., .strict = .strict)$collect(`_eager` = TRUE) |>
     wrap()
@@ -1096,7 +1092,7 @@ dataframe__quantile <- function(
 #'   a = c(1.5, 2, NaN, 4),
 #'   b = c(1.5, NaN, NaN, 4)
 #' )
-#' df$fill_nan(99)$collect()
+#' df$fill_nan(99)
 dataframe__fill_nan <- function(value) {
   self$lazy()$fill_nan(value)$collect(`_eager` = TRUE) |>
     wrap()

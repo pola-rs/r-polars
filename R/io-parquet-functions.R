@@ -59,21 +59,19 @@
 #' default behavior is to raise an error. However, if `allow_missing_columns`
 #' is set to `TRUE`, a full-NULL column is returned instead of erroring for the
 #' files that do not contain the column.
-#' @examplesIf requireNamespace("withr", quietly = TRUE)
-#' # Write a Parquet file than we can then import as DataFrame
-#' temp_file <- withr::local_tempfile(fileext = ".parquet")
-#' as_polars_df(mtcars)$write_parquet(temp_file)
-#'
-#' pl$scan_parquet(temp_file)$collect()
-#'
-#' # Write a hive-style partitioned parquet dataset
-#' temp_dir <- withr::local_tempdir()
-#' as_polars_df(mtcars)$write_parquet(temp_dir, partition_by = c("cyl", "gear"))
-#' list.files(temp_dir, recursive = TRUE)
-#'
-#' # If the path is a folder, Polars automatically tries to detect partitions
-#' # and includes them in the output
-#' pl$scan_parquet(temp_dir)$collect()
+# TODO-REWRITE: uncomment when write_parquet() is implemented
+# @examplesIf requireNamespace("withr", quietly = TRUE)
+# # Write a Parquet file than we can then import as DataFrame
+# temp_file <- withr::local_tempfile(fileext = ".parquet")
+# as_polars_df(mtcars)$write_parquet(temp_file)
+# pl$scan_parquet(temp_file)$collect()
+# # Write a hive-style partitioned parquet dataset
+# temp_dir <- withr::local_tempdir()
+# as_polars_df(mtcars)$write_parquet(temp_dir, partition_by = c("cyl", "gear"))
+# list.files(temp_dir, recursive = TRUE)
+# # If the path is a folder, Polars automatically tries to detect partitions
+# # and includes them in the output
+# pl$scan_parquet(temp_dir)$collect()
 pl__scan_parquet <- function(
     source,
     ...,
@@ -138,21 +136,19 @@ pl__scan_parquet <- function(
 #'
 #' @inherit pl__DataFrame return
 #' @inheritParams pl__scan_parquet
-#' @examplesIf requireNamespace("withr", quietly = TRUE)
-#' # Write a Parquet file than we can then import as DataFrame
-#' temp_file <- withr::local_tempfile(fileext = ".parquet")
-#' as_polars_df(mtcars)$write_parquet(temp_file)
-#'
-#' pl$read_parquet(temp_file)
-#'
-#' # Write a hive-style partitioned parquet dataset
-#' temp_dir <- withr::local_tempdir()
-#' as_polars_df(mtcars)$write_parquet(temp_dir, partition_by = c("cyl", "gear"))
-#' list.files(temp_dir, recursive = TRUE)
-#'
-#' # If the path is a folder, Polars automatically tries to detect partitions
-#' # and includes them in the output
-#' pl$read_parquet(temp_dir)
+# TODO-REWRITE: uncomment when write_parquet() is implemented
+# @examplesIf requireNamespace("withr", quietly = TRUE)
+# # Write a Parquet file than we can then import as DataFrame
+# temp_file <- withr::local_tempfile(fileext = ".parquet")
+# as_polars_df(mtcars)$write_parquet(temp_file)
+# pl$read_parquet(temp_file)
+# # Write a hive-style partitioned parquet dataset
+# temp_dir <- withr::local_tempdir()
+# as_polars_df(mtcars)$write_parquet(temp_dir, partition_by = c("cyl", "gear"))
+# list.files(temp_dir, recursive = TRUE)
+# # If the path is a folder, Polars automatically tries to detect partitions
+# # and includes them in the output
+# pl$read_parquet(temp_dir)
 pl__read_parquet <- function(
     source,
     ...,

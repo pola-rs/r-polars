@@ -32,7 +32,7 @@ pl__min_horizontal <- function(...) {
 #' df <- pl$DataFrame(
 #'   a = c(1, 8, 3),
 #'   b = c(4, 5, NA),
-#'   c = c(1, 2, NA, Inf)
+#'   c = c("x", "y", "z")
 #' )
 #' df$with_columns(
 #'   max = pl$max_horizontal("a", "b")
@@ -64,7 +64,7 @@ pl__max_horizontal <- function(...) {
 #' )
 #'
 #' df$with_columns(
-#'   all = pl$all_horizontal("a", "b", "c")
+#'   all = pl$all_horizontal("a", "b")
 #' )
 pl__all_horizontal <- function(...) {
   wrap({
@@ -88,7 +88,7 @@ pl__all_horizontal <- function(...) {
 #' )
 #'
 #' df$with_columns(
-#'   any = pl$any_horizontal("a", "b", "c")
+#'   any = pl$any_horizontal("a", "b")
 #' )
 pl__any_horizontal <- function(...) {
   wrap({
@@ -107,7 +107,7 @@ pl__any_horizontal <- function(...) {
 #' any null value in the input will lead to a null output.
 #' @examples
 #' df <- pl$DataFrame(
-#'   a = c(1, 8, 3)
+#'   a = c(1, 8, 3),
 #'   b = c(4, 5, NA),
 #'   c = c("x", "y", "z")
 #' )
@@ -130,7 +130,7 @@ pl__sum_horizontal <- function(..., ignore_nulls = TRUE) {
 #'
 #' @examples
 #' df <- pl$DataFrame(
-#'   a = c(1, 8, 3)
+#'   a = c(1, 8, 3),
 #'   b = c(4, 5, NA),
 #'   c = c("x", "y", "z")
 #' )

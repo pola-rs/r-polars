@@ -14,12 +14,11 @@ Returns the day of month starting from 1. The return value ranges from 1 to
 31 (the last day of month differs across months).
 }
 \examples{
-df <- pl$DataFrame(
+df <- pl$select(
   date = pl$date_range(
     as.Date("2020-12-25"),
     as.Date("2021-1-05"),
-    interval = "1d",
-    time_zone = "GMT"
+    interval = "1d"
   )
 )
 df$with_columns(

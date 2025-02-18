@@ -57,7 +57,7 @@ df$with_columns(
 
 # Apply case-insensitive string replacement using the `(?i)` flag.
 df <- pl$DataFrame(
-  city = "Philadelphia",
+  city = rep("Philadelphia", 4),
   season = c("Spring", "Summer", "Autumn", "Winter"),
   weather = c("Rainy", "Sunny", "Cloudy", "Snowy")
 )

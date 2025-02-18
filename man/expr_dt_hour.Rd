@@ -13,7 +13,7 @@ A polars \link{expression}
 Returns the hour number from 0 to 23.
 }
 \examples{
-df <- pl$DataFrame(
+df <- pl$select(
   date = pl$datetime_range(
     as.Date("2020-12-25"),
     as.Date("2021-1-05"),

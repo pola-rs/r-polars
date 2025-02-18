@@ -24,7 +24,4 @@ df$to_series()
 
 # Polars is 0-indexed, so we use index = 1 to extract the *2nd* column
 df$to_series(index = 1)
-
-# doesn't error if the column isn't there
-df$to_series(index = 8)
 }

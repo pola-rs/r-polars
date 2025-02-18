@@ -13,5 +13,7 @@ A polars \link{expression}
 Transform to uppercase variant.
 }
 \examples{
-pl$lit(c("A", "b", "c", "1", NA))$str$to_uppercase()$to_series()
+pl$select(
+  pl$lit(c("A", "b", "c", "1", NA))$str$to_uppercase()
+)$to_series()
 }

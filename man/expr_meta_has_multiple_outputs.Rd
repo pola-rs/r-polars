@@ -13,6 +13,6 @@ A polars \link{expression}
 Indicate if this expression expands into multiple expressions
 }
 \examples{
-e <- pl$col(c("a", "b"))$name$suffix("_foo")
+e <- pl$col("a", "b")$name$suffix("_foo")
 e$meta$has_multiple_outputs()
 }

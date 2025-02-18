@@ -70,8 +70,4 @@ df1 <- pl$DataFrame(a = 1L, b = 3L)
 df2 <- pl$DataFrame(a = 2L, c = 4L)
 pl$concat(df1, df2, how = "diagonal")
 
-df_a1 <- pl$DataFrame(id = 1:2, x = 3:4)
-df_a2 <- pl$DataFrame(id = 2:3, y = 5:6)
-df_a3 <- pl$DataFrame(id = c(1L, 3L), z = 7:8)
-pl$concat(df_a1, df_a2, df_a3, how = "align")
 }

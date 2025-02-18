@@ -21,7 +21,7 @@ namespace_expr_meta <- function(x) {
 #'
 #' @inherit as_polars_expr return
 #' @examples
-#' e <- pl$col(c("a", "b"))$name$suffix("_foo")
+#' e <- pl$col("a", "b")$name$suffix("_foo")
 #' e$meta$has_multiple_outputs()
 expr_meta_has_multiple_outputs <- function() {
   self$`_rexpr`$meta_has_multiple_outputs() |>
@@ -226,7 +226,7 @@ expr_meta_tree_format <- function() {
 #'
 #' e <- pl$col("foo") * pl$col("bar")
 #' e$meta$is_column_selection()
-#' 
+#'
 #' e <- cs$starts_with("foo")
 #' e$meta$is_column_selection()
 expr_meta_is_column_selection <- function(..., allow_aliasing = FALSE) {
@@ -243,10 +243,10 @@ expr_meta_is_column_selection <- function(..., allow_aliasing = FALSE) {
 #' e <- pl$col("foo")
 #' e$meta$is_column()
 #'
-#' e <- pl.col("foo") * pl.col("bar")
+#' e <- pl$col("foo") * pl$col("bar")
 #' e$meta$is_column()
 #'
-#' e <- pl.col(r"^col.*\d+$")
+#' e <- pl$col("^col\\.*\\d+$")
 #' e$meta$is_column()
 expr_meta_is_column <- function() {
   wrap({

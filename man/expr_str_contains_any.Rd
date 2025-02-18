@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr-string.R
 \name{expr_str_contains_any}
 \alias{expr_str_contains_any}
-\title{Use the aho-corasick algorithm to find matches}
+\title{Use the Aho-Corasick algorithm to find matches}
 \usage{
 expr_str_contains_any(patterns, ..., ascii_case_insensitive = FALSE)
 }

@@ -13,5 +13,7 @@ A polars \link{expression}
 Transform to lowercase variant.
 }
 \examples{
-pl$lit(c("A", "b", "c", "1", NA))$str$to_lowercase()$to_series()
+pl$select(
+  pl$lit(c("A", "b", "c", "1", NA))$str$to_lowercase()
+)$to_series()
 }

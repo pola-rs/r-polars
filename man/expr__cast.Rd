@@ -26,17 +26,21 @@ Cast between DataType
 \examples{
 df <- pl$DataFrame(a = 1:3, b = c(1, 2, 3))
 df$with_columns(
-  pl$col("a")$cast(pl$dtypes$Float64),
-  pl$col("b")$cast(pl$dtypes$Int32)
+  pl$col("a")$cast(pl$Float64),
+  pl$col("b")$cast(pl$Int32)
 )
 
 # strict FALSE, inserts null for any cast failure
-pl$lit(c(100, 200, 300))$cast(pl$dtypes$UInt8, strict = FALSE)$to_series()
+pl$select(
+  pl$lit(c(100, 200, 300))$cast(pl$UInt8, strict = FALSE)
+)$to_series()
 
 # strict TRUE, raise any failure as an error when query is executed.
 tryCatch(
   {
-    pl$lit("a")$cast(pl$dtypes$Float64, strict = TRUE)$to_series()
+    pl$select(
+      pl$lit("a")$cast(pl$Float64, strict = TRUE)
+    )$to_series()
   },
   error = function(e) e
 )

@@ -65,11 +65,9 @@ lf <- pl$LazyFrame(
   c = 6:1
 )
 
-query <- lf$group_by("a", maintain_order = TRUE)$agg(
+query <- lf$group_by("a", .maintain_order = TRUE)$agg(
   pl$all()$sum()
-)$sort(
-  "a"
-)
+)$sort("a")
 
 query$to_dot() |> cat()
 
