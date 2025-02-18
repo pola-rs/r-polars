@@ -191,6 +191,7 @@ as_polars_series.polars_series <- function(x, name = NULL, ...) {
   }
 }
 
+# TODO: add as_polars_series.polars_lazy_frame
 #' @rdname as_polars_series
 #' @export
 as_polars_series.polars_data_frame <- function(x, name = NULL, ...) {
@@ -390,6 +391,7 @@ as_polars_series.NULL <- function(x, name = NULL, ...) {
   })
 }
 
+# TODO: move the infer supertype logic on the Rust side to `infer_polars_dtype()`
 #' @rdname as_polars_series
 #' @export
 as_polars_series.list <- function(x, name = NULL, ..., strict = FALSE) {

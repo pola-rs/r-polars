@@ -409,6 +409,11 @@ SEXP savvy_PlRDataType_eq__impl(SEXP self__, SEXP c_arg__other) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRDataType_infer_supertype__impl(SEXP c_arg__dtypes, SEXP c_arg__strict) {
+    SEXP res = savvy_PlRDataType_infer_supertype__ffi(c_arg__dtypes, c_arg__strict);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRDataType_max__impl(SEXP self__) {
     SEXP res = savvy_PlRDataType_max__ffi(self__);
     return handle_result(res);
@@ -2851,6 +2856,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRDataType__get_datatype_fields__impl", (DL_FUNC) &savvy_PlRDataType__get_datatype_fields__impl, 1},
     {"savvy_PlRDataType__get_dtype_names__impl", (DL_FUNC) &savvy_PlRDataType__get_dtype_names__impl, 1},
     {"savvy_PlRDataType_eq__impl", (DL_FUNC) &savvy_PlRDataType_eq__impl, 2},
+    {"savvy_PlRDataType_infer_supertype__impl", (DL_FUNC) &savvy_PlRDataType_infer_supertype__impl, 2},
     {"savvy_PlRDataType_max__impl", (DL_FUNC) &savvy_PlRDataType_max__impl, 1},
     {"savvy_PlRDataType_min__impl", (DL_FUNC) &savvy_PlRDataType_min__impl, 1},
     {"savvy_PlRDataType_ne__impl", (DL_FUNC) &savvy_PlRDataType_ne__impl, 2},

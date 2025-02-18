@@ -1,9 +1,9 @@
 use crate::{prelude::*, PlRExpr, RPolarsErr};
 use polars::lazy::dsl;
-use polars_core::utils::arrow::array::Utf8ViewArray;
+use polars_core::utils::{arrow::array::Utf8ViewArray, try_get_supertype};
 use savvy::{
     r_println, savvy, EnvironmentSexp, ListSexp, NullSexp, NumericScalar, NumericSexp,
-    OwnedListSexp, OwnedRealSexp, OwnedStringSexp, Result, Sexp, StringSexp,
+    OwnedListSexp, OwnedRealSexp, OwnedStringSexp, Result, Sexp, StringSexp, TypedSexp,
 };
 
 // As not like in Python, define the data type class in
@@ -145,15 +145,15 @@ impl PlRDataType {
         name.try_into().map_err(savvy::Error::from)
     }
 
-    pub fn new_decimal(scale: Option<NumericScalar>, precision: Option<NumericScalar>) -> Result<Self> {
+    pub fn new_decimal(
+        scale: Option<NumericScalar>,
+        precision: Option<NumericScalar>,
+    ) -> Result<Self> {
         let precision = precision
             .map(<Wrap<usize>>::try_from)
             .transpose()?
             .map(|p| p.0);
-        let scale = scale
-            .map(<Wrap<usize>>::try_from)
-            .transpose()?
-            .map(|s| s.0);
+        let scale = scale.map(<Wrap<usize>>::try_from).transpose()?.map(|s| s.0);
         Ok(DataType::Decimal(precision, scale).into())
     }
 
@@ -209,6 +209,51 @@ impl PlRDataType {
 
     pub fn new_struct(fields: ListSexp) -> Result<Self> {
         Ok(DataType::Struct(<Wrap<Vec<Field>>>::try_from(fields)?.0).into())
+    }
+
+    // A function to get supertype of a list of data types
+    pub fn infer_supertype(dtypes: ListSexp, strict: bool) -> Result<Self> {
+        let dtype_vec: Vec<Option<DataType>> = dtypes
+            .values_iter()
+            .map(|dtype| match dtype.into_typed() {
+                TypedSexp::Null(_) => None,
+                TypedSexp::Environment(e) => {
+                    <&PlRDataType>::try_from(e).ok().map(|dt| dt.dt.clone())
+                }
+                _ => unreachable!("Only accept a list of PlRDataType"),
+            })
+            .collect();
+
+        if strict {
+            let expected_dtype = dtype_vec
+                .iter()
+                .find(|opt_dt| opt_dt.is_some())
+                .map(|opt_dt| opt_dt.as_ref().unwrap().clone())
+                .unwrap_or(DataType::Null);
+            for (i, dt) in dtype_vec.iter().enumerate() {
+                if let Some(dt) = dt {
+                    if dt != &expected_dtype {
+                        return Err(
+                            format!("If `strict = TRUE`, all elements of the list except `NULL` must have the same datatype. expected: `{}`, got: `{}` at index: {}", expected_dtype, dt, i + 1).into()
+                        );
+                    }
+                }
+            }
+            Ok(expected_dtype.into())
+        } else {
+            let dtype = dtype_vec
+                .iter()
+                .map(|opt_dt| {
+                    if let Some(dt) = opt_dt {
+                        dt.clone()
+                    } else {
+                        DataType::Null
+                    }
+                })
+                .reduce(|acc, b| try_get_supertype(&acc, &b).unwrap_or(DataType::Null))
+                .unwrap_or(DataType::Null);
+            Ok(dtype.into())
+        }
     }
 
     fn print(&self) -> Result<()> {

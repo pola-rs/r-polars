@@ -630,6 +630,10 @@ class(`PlRDataFrame`) <- c("PlRDataFrame__bundle", "savvy_neopolars__sealed")
 
 ### associated functions for PlRDataType
 
+`PlRDataType`$`infer_supertype` <- function(`dtypes`, `strict`) {
+  .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_infer_supertype__impl, `dtypes`, `strict`))
+}
+
 `PlRDataType`$`new_array` <- function(`inner`, `shape`) {
   `inner` <- .savvy_extract_ptr(`inner`, "PlRDataType")
   .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_new_array__impl, `inner`, `shape`))
