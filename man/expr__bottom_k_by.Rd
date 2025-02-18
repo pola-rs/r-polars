@@ -12,6 +12,12 @@ expr__bottom_k_by(by, k = 5, ..., reverse = FALSE)
 expression input. Strings are parsed as column names.}
 
 \item{k}{Number of elements to return.}
+
+\item{...}{These dots are for future extensions and must be empty.}
+
+\item{reverse}{Consider the \code{k} largest elements of the \code{by} column(s)
+(instead of the \code{k} smallest). This can be specified per column by passing a
+sequence of booleans.}
 }
 \value{
 A polars \link{expression}

@@ -4,7 +4,7 @@
 \alias{expr__dot}
 \title{Compute the dot/inner product between two Expressions}
 \usage{
-expr__dot(expr)
+expr__dot(other)
 }
 \arguments{
 \item{other}{Expression to compute dot product with.}

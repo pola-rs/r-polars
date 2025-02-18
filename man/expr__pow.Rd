@@ -4,7 +4,7 @@
 \alias{expr__pow}
 \title{Exponentiation using two expressions}
 \usage{
-expr__pow(other)
+expr__pow(exponent)
 }
 \arguments{
 \item{exponent}{Numeric literal or expression value.}

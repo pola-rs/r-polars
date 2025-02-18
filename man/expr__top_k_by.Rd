@@ -2,7 +2,8 @@
 % Please edit documentation in R/expr-expr.R
 \name{expr__top_k_by}
 \alias{expr__top_k_by}
-\title{Return the \code{k} largest elements}
+\title{Return the elements corresponding to the \code{k} largest elements of the \code{by}
+column(s)}
 \usage{
 expr__top_k_by(by, k = 5, ..., reverse = FALSE)
 }
@@ -11,6 +12,12 @@ expr__top_k_by(by, k = 5, ..., reverse = FALSE)
 expression input. Strings are parsed as column names.}
 
 \item{k}{Number of elements to return.}
+
+\item{...}{These dots are for future extensions and must be empty.}
+
+\item{reverse}{Consider the \code{k} smallest elements of the \code{by} column(s)
+(instead of the \code{k} largest). This can be specified per column by passing a
+sequence of booleans.}
 }
 \value{
 A polars \link{expression}

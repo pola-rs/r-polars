@@ -7,6 +7,8 @@
 expr__unique(..., maintain_order = FALSE)
 }
 \arguments{
+\item{...}{These dots are for future extensions and must be empty.}
+
 \item{maintain_order}{Maintain order of data. This requires more work.}
 }
 \value{

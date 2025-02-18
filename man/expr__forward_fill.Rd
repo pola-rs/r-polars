@@ -7,7 +7,7 @@
 expr__forward_fill(limit = NULL)
 }
 \arguments{
-\item{fill}{The number of consecutive null values to forward fill.}
+\item{limit}{The number of consecutive null values to forward fill.}
 }
 \value{
 A polars \link{expression}

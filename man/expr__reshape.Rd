@@ -10,10 +10,6 @@ expr__reshape(dimensions)
 \item{dimensions}{A integer vector of length of the dimension size.
 If \code{-1} is used in any of the dimensions, that dimension is inferred.
 Currently, more than two dimensions not supported.}
-
-\item{nested_type}{The nested data type to create. \link[=DataType_List]{List} only
-supports 2 dimensions, whereas \link[=DataType_Array]{Array} supports an arbitrary
-number of dimensions.}
 }
 \value{
 A polars \link{expression}
