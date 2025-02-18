@@ -446,6 +446,12 @@ class(`PlRChainedWhen`) <- c("PlRChainedWhen__bundle", "savvy_neopolars__sealed"
   }
 }
 
+`PlRDataFrame_partition_by` <- function(self) {
+  function(`by`, `maintain_order`, `include_key`) {
+    .Call(savvy_PlRDataFrame_partition_by__impl, `self`, `by`, `maintain_order`, `include_key`)
+  }
+}
+
 `PlRDataFrame_print` <- function(self) {
   function() {
     invisible(.Call(savvy_PlRDataFrame_print__impl, `self`))
@@ -525,6 +531,7 @@ class(`PlRChainedWhen`) <- c("PlRChainedWhen__bundle", "savvy_neopolars__sealed"
   e$`height` <- `PlRDataFrame_height`(ptr)
   e$`lazy` <- `PlRDataFrame_lazy`(ptr)
   e$`n_chunks` <- `PlRDataFrame_n_chunks`(ptr)
+  e$`partition_by` <- `PlRDataFrame_partition_by`(ptr)
   e$`print` <- `PlRDataFrame_print`(ptr)
   e$`rechunk` <- `PlRDataFrame_rechunk`(ptr)
   e$`set_column_names` <- `PlRDataFrame_set_column_names`(ptr)

@@ -334,6 +334,11 @@ SEXP savvy_PlRDataFrame_n_chunks__impl(SEXP self__) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRDataFrame_partition_by__impl(SEXP self__, SEXP c_arg__by, SEXP c_arg__maintain_order, SEXP c_arg__include_key) {
+    SEXP res = savvy_PlRDataFrame_partition_by__ffi(self__, c_arg__by, c_arg__maintain_order, c_arg__include_key);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRDataFrame_print__impl(SEXP self__) {
     SEXP res = savvy_PlRDataFrame_print__ffi(self__);
     return handle_result(res);
@@ -2841,6 +2846,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRDataFrame_init__impl", (DL_FUNC) &savvy_PlRDataFrame_init__impl, 1},
     {"savvy_PlRDataFrame_lazy__impl", (DL_FUNC) &savvy_PlRDataFrame_lazy__impl, 1},
     {"savvy_PlRDataFrame_n_chunks__impl", (DL_FUNC) &savvy_PlRDataFrame_n_chunks__impl, 1},
+    {"savvy_PlRDataFrame_partition_by__impl", (DL_FUNC) &savvy_PlRDataFrame_partition_by__impl, 4},
     {"savvy_PlRDataFrame_print__impl", (DL_FUNC) &savvy_PlRDataFrame_print__impl, 1},
     {"savvy_PlRDataFrame_read_ipc_stream__impl", (DL_FUNC) &savvy_PlRDataFrame_read_ipc_stream__impl, 7},
     {"savvy_PlRDataFrame_rechunk__impl", (DL_FUNC) &savvy_PlRDataFrame_rechunk__impl, 1},

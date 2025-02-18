@@ -143,3 +143,58 @@ test_that("to_dummies() works", {
     "must be passed by positio"
   )
 })
+
+test_that("partition_by() works", {
+  df <- pl$DataFrame(
+    a = c("a", "b", "a", "b", "c"),
+    b = c(1, 2, 1, 3, 3),
+    c = c(5, 4, 3, 2, 1)
+  )
+  expect_equal(
+    df$partition_by("a"),
+    list(
+      pl$DataFrame(a = c("a", "a"), b = c(1, 1), c = c(5, 3)),
+      pl$DataFrame(a = c("b", "b"), b = c(2, 3), c = c(4, 2)),
+      pl$DataFrame(a = "c", b = 3, c = 1)
+    )
+  )
+  expect_equal(
+    df$partition_by("a", "b"),
+    list(
+      pl$DataFrame(a = c("a", "a"), b = c(1, 1), c = c(5, 3)),
+      pl$DataFrame(a = "b", b = 2, c = 4),
+      pl$DataFrame(a = "b", b = 3, c = 2),
+      pl$DataFrame(a = "c", b = 3, c = 1)
+    )
+  )
+  # arg "include_key"
+  expect_equal(
+    df$partition_by("a", include_key = FALSE),
+    list(
+      pl$DataFrame(b = c(1, 1), c = c(5, 3)),
+      pl$DataFrame(b = c(2, 3), c = c(4, 2)),
+      pl$DataFrame(b = 3, c = 1)
+    )
+  )
+  # errors
+  expect_error(
+    df$partition_by(),
+    "must contain at least one column name"
+  )
+  expect_error(
+    df$partition_by("a", NA),
+    "only accepts column names"
+  )
+  expect_error(
+    df$partition_by(pl$col("a") + 1),
+    "only accepts column names"
+  )
+  expect_error(
+    df$partition_by(foo = "a"),
+    "must be passed by position"
+  )
+  expect_error(
+    df$partition_by("a", include_key = 42),
+    "must be logical, not double"
+  )
+})

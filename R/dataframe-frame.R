@@ -1273,3 +1273,46 @@ dataframe__to_dummies <- function(
     )
   })
 }
+
+#' Group by the given columns and return the groups as separate dataframes
+#'
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Column name(s) to group by.
+#' @param maintain_order Ensure that the order of the groups is consistent with
+#' the input data. This is slower than a default partition by operation.
+#' @param include_key Include the columns used to partition the DataFrame in
+#' the output.
+#'
+#' @return A list of polars [DataFrame]s
+#' @examples
+#' # Pass a single column name to partition by that column.
+#' df <- pl$DataFrame(
+#'   a = c("a", "b", "a", "b", "c"),
+#'   b = c(1, 2, 1, 3, 3),
+#'   c = c(5, 4, 3, 2, 1)
+#' )
+#' df$partition_by("a")
+#'
+#' # Partition by multiple columns:
+#' df$partition_by("a", "b")
+dataframe__partition_by <- function(..., maintain_order = TRUE, include_key = TRUE) {
+  wrap({
+    # TODO: add selectors handling when py-polars' _expand_selectors() has moved
+    # to Rust
+    check_dots_unnamed()
+    dots <- list2(...)
+
+    if (!is_list_of_string(dots)) {
+      abort("`...` only accepts column names.")
+    }
+    if (length(dots) == 0L) {
+      abort("`...` must contain at least one column name.")
+    }
+
+    self$`_df`$partition_by(
+      by = as.character(dots),
+      maintain_order = maintain_order,
+      include_key = include_key
+    ) |>
+      lapply(\(ptr) .savvy_wrap_PlRDataFrame(ptr) |> wrap())
+  })
+}

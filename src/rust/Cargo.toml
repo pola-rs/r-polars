@@ -85,6 +85,7 @@ features = [
     "month_end",
     "offset_by",
     "parquet",
+    "partition_by",
     "pct_change",
     "peaks",
     "pivot",
