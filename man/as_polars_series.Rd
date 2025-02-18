@@ -5,6 +5,7 @@
 \alias{as_polars_series.default}
 \alias{as_polars_series.polars_series}
 \alias{as_polars_series.polars_data_frame}
+\alias{as_polars_series.polars_lazy_frame}
 \alias{as_polars_series.double}
 \alias{as_polars_series.integer}
 \alias{as_polars_series.character}
@@ -39,6 +40,8 @@ as_polars_series(x, name = NULL, ...)
 \method{as_polars_series}{polars_series}(x, name = NULL, ...)
 
 \method{as_polars_series}{polars_data_frame}(x, name = NULL, ...)
+
+\method{as_polars_series}{polars_lazy_frame}(x, name = NULL, ...)
 
 \method{as_polars_series}{double}(x, name = NULL, ...)
 
@@ -167,9 +170,10 @@ the internal representation of seconds.
 Please check the \link[clock:duration-helper]{clock_duration} documentation for more details.
 }
 
-\subsection{S3 method for \link[=DataFrame]{polars_data_frame}}{
+\subsection{S3 method for \link[=DataFrame]{polars_data_frame}, \link[=LazyFrame]{polars_lazy_frame}, and \link{data.frame}}{
 
-This method is a shortcut for \code{\link[=dataframe__to_struct]{<DataFrame>$to_struct()}}.
+These methods are shortcuts for \code{as_polars_df(x, ...)$to_struct()}.
+See \code{\link[=as_polars_df]{as_polars_df()}} and \code{\link[=dataframe__to_struct]{<DataFrame>$to_struct()}} for more details.
 }
 }
 \examples{

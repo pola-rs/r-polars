@@ -20,6 +20,17 @@
       	{1,true}
       ]
 
+# as_polars_series works for classes polars_lazy_frame
+
+    Code
+      print(pl_series)
+    Output
+      shape: (1,)
+      Series: '' [struct[2]]
+      [
+      	{1,true}
+      ]
+
 # as_polars_series works for classes double
 
     Code

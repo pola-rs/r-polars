@@ -12,7 +12,7 @@ patrick::with_parameters_test_that(
       list2(
         as_polars_series(1),
         pl$DataFrame(a = 1L, b = "foo"),
-        # TODO: add LazyFrame case
+        pl$LazyFrame(a = 1L, b = "foo"),
         1:10,
         integer(),
         NA,

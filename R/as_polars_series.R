@@ -53,9 +53,10 @@
 #' the internal representation of seconds.
 #' Please check the [clock_duration][clock::duration-helper] documentation for more details.
 #'
-#' ## S3 method for [polars_data_frame][DataFrame]
+#' ## S3 method for [polars_data_frame][DataFrame], [polars_lazy_frame][LazyFrame], and [data.frame]
 #'
-#' This method is a shortcut for [`<DataFrame>$to_struct()`][dataframe__to_struct].
+#' These methods are shortcuts for `as_polars_df(x, ...)$to_struct()`.
+#' See [as_polars_df()] and [`<DataFrame>$to_struct()`][dataframe__to_struct] for more details.
 #' @param x An R object.
 #' @param name A single string or `NULL`. Name of the Series.
 #' Will be used as a column name when used in a [polars DataFrame][DataFrame].
@@ -191,12 +192,15 @@ as_polars_series.polars_series <- function(x, name = NULL, ...) {
   }
 }
 
-# TODO: add as_polars_series.polars_lazy_frame
 #' @rdname as_polars_series
 #' @export
 as_polars_series.polars_data_frame <- function(x, name = NULL, ...) {
-  x$to_struct(name = name %||% "")
+  as_polars_df(x, ...)$to_struct(name = name %||% "")
 }
+
+#' @rdname as_polars_series
+#' @export
+as_polars_series.polars_lazy_frame <- as_polars_series.polars_data_frame
 
 # This is only used for showing the special error message.
 # So, this method is not documented.
@@ -416,9 +420,7 @@ as_polars_series.AsIs <- function(x, name = NULL, ...) {
 
 #' @rdname as_polars_series
 #' @export
-as_polars_series.data.frame <- function(x, name = NULL, ...) {
-  as_polars_df(x, ...)$to_struct(name = name %||% "")
-}
+as_polars_series.data.frame <- as_polars_series.polars_data_frame
 
 #' @rdname as_polars_series
 #' @export
