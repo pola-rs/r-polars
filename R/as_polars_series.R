@@ -14,6 +14,8 @@
 #' all elements must have the same type.
 #' So the [as_polars_series()] function automatically casts all elements to the same type
 #' or throws an error, depending on the `strict` argument.
+#' We can check the [data type][DataType] of the [Series] that will be created from the [list] by using the
+#' [infer_polars_dtype()] function in advance.
 #' If you want to create a list with all elements of the same type in R,
 #' consider using the [vctrs::list_of()] function.
 #'
@@ -53,7 +55,7 @@
 #' the internal representation of seconds.
 #' Please check the [clock_duration][clock::duration-helper] documentation for more details.
 #'
-#' ## S3 method for [polars_data_frame][DataFrame], [polars_lazy_frame][LazyFrame], and [data.frame]
+#' ## S3 methods for [polars_data_frame][DataFrame], [polars_lazy_frame][LazyFrame], and [data.frame]
 #'
 #' These methods are shortcuts for `as_polars_df(x, ...)$to_struct()`.
 #' See [as_polars_df()] and [`<DataFrame>$to_struct()`][dataframe__to_struct] for more details.
@@ -71,6 +73,7 @@
 #' @seealso
 #' - [`<Series>$to_r_vector()`][series__to_r_vector]: Export the Series as an R vector.
 #' - [as_polars_df()]: Create a Polars DataFrame from an R object.
+#' - [infer_polars_dtype()]: Infer the Polars [DataType] corresponding to an R object.
 #' @examples
 #' # double
 #' as_polars_series(c(NA, 1, 2))

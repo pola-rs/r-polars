@@ -2,12 +2,12 @@
 #' Infer Polars DataType corresponding to a given R object
 #'
 #' This function is a helper function used to quickly find the [DataType] corresponding to an R object.
-#' In many cases, this function simply performs something like [`as_polars_series(x[0])`][as_polars_series].
+#' In many cases, this function simply performs something like `head(x, 0) |> as_polars_series()`.
 #' It is much faster than actually constructing a [Series] using the entire object.
 #' This function is similar to [nanoarrow::infer_nanoarrow_schema()].
 #'
 #' S3 objects based on atomic vectors or classes built on the vctrs package will work accurately
-#' if the S3 method of the [as_polars_series] function is defined.
+#' if the S3 method of the [as_polars_series()] function is defined.
 #' @inheritParams as_polars_series
 #' @param x An R object.
 #' @return A [polars DataType][DataType]
@@ -16,7 +16,8 @@
 #' @examples
 #' infer_polars_dtype(1:10)
 #'
-#' # The type inference is fast even if the object is huge
+#' # The type inference is also fast for objects
+#' # that would take a long time to construct a Series.
 #' infer_polars_dtype(1:100000000)
 #' @export
 infer_polars_dtype <- function(x, ...) {
