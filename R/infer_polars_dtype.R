@@ -71,6 +71,7 @@ infer_polars_dtype.NULL <- function(x, ...) {
   pl$Null
 }
 
+# TODO: Because this is very slow for long lists, an option to stop when the first non-NULL element is found is needed
 #' @rdname infer_polars_dtype
 #' @export
 infer_polars_dtype.list <- function(x, ..., strict = FALSE) {
