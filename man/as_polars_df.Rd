@@ -84,14 +84,18 @@ A polars \link{DataFrame}
 }
 \description{
 The \code{\link[=as_polars_df]{as_polars_df()}} function creates a \link[=DataFrame]{polars DataFrame} from various R objects.
-\link[=DataFrame]{Polars DataFrame} is based on a sequence of \link[=Series]{Polars Series},
-so basically, the input object is converted to a \link{list} of
-\link[=Series]{Polars Series} by \code{\link[=as_polars_series]{as_polars_series()}},
-then a \link[=DataFrame]{Polars DataFrame} is created from the list.
+Because \link[=DataFrame]{Polars DataFrame} can be converted to a \link[=pl__Struct]{struct type} \link{Series}
+and vice versa, objects that are converted to a \link[=pl__Struct]{struct type} type \link{Series} by
+\code{\link[=as_polars_series]{as_polars_series()}} are supported by this function.
 }
 \details{
-The default method of \code{\link[=as_polars_df]{as_polars_df()}} throws an error,
-so we need to define methods for the classes we want to support.
+\subsection{Default S3 method}{
+
+Basically, this method is a shortcut for \code{as_polars_series(x, ...)$struct$unnest()}.
+Before converting the object to a \link{Series}, the \code{\link[=infer_polars_dtype]{infer_polars_dtype()}} function is used
+to check if the object can be converted to a \link[=pl__Struct]{struct dtype}.
+}
+
 \subsection{S3 method for \link{list}}{
 \itemize{
 \item The argument \code{...} (except \code{name}) is passed to \code{\link[=as_polars_series]{as_polars_series()}} for each element of the list.

@@ -27,7 +27,20 @@ patrick::with_parameters_test_that(
 )
 
 test_that("as_polars_df.default throws an error", {
-  expect_error(as_polars_df(1), "Unsupported class")
+  expect_snapshot(as_polars_df(1), error = TRUE)
+  expect_snapshot(as_polars_df(1i), error = TRUE)
+})
+
+test_that("as_polars_df.default works for vctrs_rcrd", {
+  skip_if_not_installed("vctrs")
+
+  base_list <- list(a = 1L, b = list("foo"), c = list(list("bar")))
+  vec <- vctrs::new_rcrd(base_list)
+
+  expect_equal(
+    as_polars_df.default(vec),
+    as_polars_df(base_list)
+  )
 })
 
 test_that("column_name argument", {

@@ -114,3 +114,20 @@
       ╞╡
       └┘
 
+# as_polars_df.default throws an error
+
+    Code
+      as_polars_df(1)
+    Condition
+      Error:
+      ! This object is not supported for the default method of `as_polars_df()` because it is not a Struct dtype like object.
+      i Use `infer_polars_dtype()` to check the dtype for corresponding to the object.
+
+---
+
+    Code
+      as_polars_df(0+1i)
+    Condition
+      Error in `infer_polars_dtype_default_impl()`:
+      ! Unsupported class for `as_polars_series()`: complex
+
