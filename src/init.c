@@ -759,6 +759,51 @@ SEXP savvy_PlRExpr_bin_starts_with__impl(SEXP self__, SEXP c_arg__prefix) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_bitwise_and__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_bitwise_and__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_bitwise_count_ones__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_bitwise_count_ones__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_bitwise_count_zeros__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_bitwise_count_zeros__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_bitwise_leading_ones__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_bitwise_leading_ones__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_bitwise_leading_zeros__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_bitwise_leading_zeros__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_bitwise_or__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_bitwise_or__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_bitwise_trailing_ones__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_bitwise_trailing_ones__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_bitwise_trailing_zeros__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_bitwise_trailing_zeros__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_bitwise_xor__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_bitwise_xor__ffi(self__);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_bottom_k__impl(SEXP self__, SEXP c_arg__k) {
     SEXP res = savvy_PlRExpr_bottom_k__ffi(self__, c_arg__k);
     return handle_result(res);
@@ -2936,6 +2981,15 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_bin_hex_encode__impl", (DL_FUNC) &savvy_PlRExpr_bin_hex_encode__impl, 1},
     {"savvy_PlRExpr_bin_size_bytes__impl", (DL_FUNC) &savvy_PlRExpr_bin_size_bytes__impl, 1},
     {"savvy_PlRExpr_bin_starts_with__impl", (DL_FUNC) &savvy_PlRExpr_bin_starts_with__impl, 2},
+    {"savvy_PlRExpr_bitwise_and__impl", (DL_FUNC) &savvy_PlRExpr_bitwise_and__impl, 1},
+    {"savvy_PlRExpr_bitwise_count_ones__impl", (DL_FUNC) &savvy_PlRExpr_bitwise_count_ones__impl, 1},
+    {"savvy_PlRExpr_bitwise_count_zeros__impl", (DL_FUNC) &savvy_PlRExpr_bitwise_count_zeros__impl, 1},
+    {"savvy_PlRExpr_bitwise_leading_ones__impl", (DL_FUNC) &savvy_PlRExpr_bitwise_leading_ones__impl, 1},
+    {"savvy_PlRExpr_bitwise_leading_zeros__impl", (DL_FUNC) &savvy_PlRExpr_bitwise_leading_zeros__impl, 1},
+    {"savvy_PlRExpr_bitwise_or__impl", (DL_FUNC) &savvy_PlRExpr_bitwise_or__impl, 1},
+    {"savvy_PlRExpr_bitwise_trailing_ones__impl", (DL_FUNC) &savvy_PlRExpr_bitwise_trailing_ones__impl, 1},
+    {"savvy_PlRExpr_bitwise_trailing_zeros__impl", (DL_FUNC) &savvy_PlRExpr_bitwise_trailing_zeros__impl, 1},
+    {"savvy_PlRExpr_bitwise_xor__impl", (DL_FUNC) &savvy_PlRExpr_bitwise_xor__impl, 1},
     {"savvy_PlRExpr_bottom_k__impl", (DL_FUNC) &savvy_PlRExpr_bottom_k__impl, 2},
     {"savvy_PlRExpr_bottom_k_by__impl", (DL_FUNC) &savvy_PlRExpr_bottom_k_by__impl, 4},
     {"savvy_PlRExpr_cast__impl", (DL_FUNC) &savvy_PlRExpr_cast__impl, 4},

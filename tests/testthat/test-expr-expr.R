@@ -2918,3 +2918,67 @@ test_that("has_nulls works", {
     pl$DataFrame(a = TRUE, b = TRUE, c = FALSE)
   )
 })
+
+test_that("bitwise detection works", {
+  df <- pl$DataFrame(n = c(-1L, 0L, 2L, 1L))
+  expect_equal(
+    df$select(pl$col("n")$bitwise_count_ones()),
+    pl$DataFrame(n = c(32, 0, 1, 1))$cast(pl$UInt32)
+  )
+  expect_equal(
+    df$select(pl$col("n")$bitwise_count_zeros()),
+    pl$DataFrame(n = c(0, 32, 31, 31))$cast(pl$UInt32)
+  )
+  expect_equal(
+    df$select(pl$col("n")$bitwise_trailing_ones()),
+    pl$DataFrame(n = c(32, 0, 0, 1))$cast(pl$UInt32)
+  )
+  expect_equal(
+    df$select(pl$col("n")$bitwise_trailing_zeros()),
+    pl$DataFrame(n = c(0, 32, 1, 0))$cast(pl$UInt32)
+  )
+  expect_equal(
+    df$select(pl$col("n")$bitwise_leading_ones()),
+    pl$DataFrame(n = c(32, 0, 0, 0))$cast(pl$UInt32)
+  )
+  expect_equal(
+    df$select(pl$col("n")$bitwise_leading_zeros()),
+    pl$DataFrame(n = c(0, 32, 30, 31))$cast(pl$UInt32)
+  )
+})
+
+test_that("bitwise aggregation works", {
+  df <- pl$DataFrame(n = -1:1)
+  expect_equal(
+    df$select(pl$col("n")$bitwise_and()),
+    pl$DataFrame(n = 0L)
+  )
+  expect_equal(
+    df$select(pl$col("n")$bitwise_or()),
+    pl$DataFrame(n = -1L)
+  )
+  expect_equal(
+    df$select(pl$col("n")$bitwise_xor()),
+    pl$DataFrame(n = -2L)
+  )
+
+  df <- pl$DataFrame(
+    grouper = c("a", "a", "a", "b", "b"),
+    n = c(-1L, 0L, 1L, -1L, 1L)
+  )
+  expect_equal(
+    df$group_by("grouper", .maintain_order = TRUE)$
+      agg(pl$col("n")$bitwise_and()),
+    pl$DataFrame(grouper = c("a", "b"), n = c(0L, 1L))
+  )
+  expect_equal(
+    df$group_by("grouper", .maintain_order = TRUE)$
+      agg(pl$col("n")$bitwise_or()),
+    pl$DataFrame(grouper = c("a", "b"), n = c(-1L, -1L))
+  )
+  expect_equal(
+    df$group_by("grouper", .maintain_order = TRUE)$
+      agg(pl$col("n")$bitwise_xor()),
+    pl$DataFrame(grouper = c("a", "b"), n = c(-2L, -2L))
+  )
+})

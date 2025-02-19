@@ -1,5 +1,6 @@
 mod array;
 mod binary;
+mod bitwise;
 mod categorical;
 mod datetime;
 mod general;

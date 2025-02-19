@@ -1037,6 +1037,60 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_neopolars__sealed")
   }
 }
 
+`PlRExpr_bitwise_and` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_bitwise_and__impl, `self`))
+  }
+}
+
+`PlRExpr_bitwise_count_ones` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_bitwise_count_ones__impl, `self`))
+  }
+}
+
+`PlRExpr_bitwise_count_zeros` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_bitwise_count_zeros__impl, `self`))
+  }
+}
+
+`PlRExpr_bitwise_leading_ones` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_bitwise_leading_ones__impl, `self`))
+  }
+}
+
+`PlRExpr_bitwise_leading_zeros` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_bitwise_leading_zeros__impl, `self`))
+  }
+}
+
+`PlRExpr_bitwise_or` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_bitwise_or__impl, `self`))
+  }
+}
+
+`PlRExpr_bitwise_trailing_ones` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_bitwise_trailing_ones__impl, `self`))
+  }
+}
+
+`PlRExpr_bitwise_trailing_zeros` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_bitwise_trailing_zeros__impl, `self`))
+  }
+}
+
+`PlRExpr_bitwise_xor` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_bitwise_xor__impl, `self`))
+  }
+}
+
 `PlRExpr_bottom_k` <- function(self) {
   function(`k`) {
     `k` <- .savvy_extract_ptr(`k`, "PlRExpr")
@@ -3028,6 +3082,15 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_neopolars__sealed")
   e$`bin_hex_encode` <- `PlRExpr_bin_hex_encode`(ptr)
   e$`bin_size_bytes` <- `PlRExpr_bin_size_bytes`(ptr)
   e$`bin_starts_with` <- `PlRExpr_bin_starts_with`(ptr)
+  e$`bitwise_and` <- `PlRExpr_bitwise_and`(ptr)
+  e$`bitwise_count_ones` <- `PlRExpr_bitwise_count_ones`(ptr)
+  e$`bitwise_count_zeros` <- `PlRExpr_bitwise_count_zeros`(ptr)
+  e$`bitwise_leading_ones` <- `PlRExpr_bitwise_leading_ones`(ptr)
+  e$`bitwise_leading_zeros` <- `PlRExpr_bitwise_leading_zeros`(ptr)
+  e$`bitwise_or` <- `PlRExpr_bitwise_or`(ptr)
+  e$`bitwise_trailing_ones` <- `PlRExpr_bitwise_trailing_ones`(ptr)
+  e$`bitwise_trailing_zeros` <- `PlRExpr_bitwise_trailing_zeros`(ptr)
+  e$`bitwise_xor` <- `PlRExpr_bitwise_xor`(ptr)
   e$`bottom_k` <- `PlRExpr_bottom_k`(ptr)
   e$`bottom_k_by` <- `PlRExpr_bottom_k_by`(ptr)
   e$`cast` <- `PlRExpr_cast`(ptr)

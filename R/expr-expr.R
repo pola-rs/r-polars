@@ -4596,3 +4596,110 @@ prepare_alpha <- function(com = NULL, span = NULL, half_life = NULL, alpha = NUL
     alpha
   }
 }
+#' Evaluate the number of set bits.
+#' @inherit as_polars_expr return
+#' @examples
+#' df <- pl$DataFrame(n = c(-1L, 0L, 2L, 1L))
+#' df$with_columns(set_bits = pl$col("n")$bitwise_count_ones())
+expr__bitwise_count_ones <- function() {
+  self$`_rexpr`$bitwise_count_ones() |>
+    wrap()
+}
+
+#' Evaluate the number of unset bits.
+#' @inherit as_polars_expr return
+#' @examples
+#' df <- pl$DataFrame(n = c(-1L, 0L, 2L, 1L))
+#' df$with_columns(unset_bits = pl$col("n")$bitwise_count_zeros())
+expr__bitwise_count_zeros <- function() {
+  self$`_rexpr`$bitwise_count_zeros() |>
+    wrap()
+}
+
+#' Evaluate the number most-significant set bits before seeing an unset bit.
+#' @inherit as_polars_expr return
+#' @examples
+#' df <- pl$DataFrame(n = c(-1L, 0L, 2L, 1L))
+#' df$with_columns(leading_ones = pl$col("n")$bitwise_leading_ones())
+expr__bitwise_leading_ones <- function() {
+  self$`_rexpr`$bitwise_leading_ones() |>
+    wrap()
+}
+
+#' Evaluate the number most-significant unset bits before seeing a set bit.
+#' @inherit as_polars_expr return
+#' @examples
+#' df <- pl$DataFrame(n = c(-1L, 0L, 2L, 1L))
+#' df$with_columns(leading_zeros = pl$col("n")$bitwise_leading_zeros())
+expr__bitwise_leading_zeros <- function() {
+  self$`_rexpr`$bitwise_leading_zeros() |>
+    wrap()
+}
+
+#' Evaluate the number least-significant set bits before seeing an unset bit.
+#' @inherit as_polars_expr return
+#' @examples
+#' df <- pl$DataFrame(n = c(-1L, 0L, 2L, 1L))
+#' df$with_columns(trailing_ones = pl$col("n")$bitwise_trailing_ones())
+expr__bitwise_trailing_ones <- function() {
+  self$`_rexpr`$bitwise_trailing_ones() |>
+    wrap()
+}
+
+#' Evaluate the number least-significant unset bits before seeing a set bit.
+#' @inherit as_polars_expr return
+#' @examples
+#' df <- pl$DataFrame(n = c(-1L, 0L, 2L, 1L))
+#' df$with_columns(trailing_zeros = pl$col("n")$bitwise_trailing_zeros())
+expr__bitwise_trailing_zeros <- function() {
+  self$`_rexpr`$bitwise_trailing_zeros() |>
+    wrap()
+}
+
+#' Perform an aggregation of bitwise ANDs.
+#' @inherit as_polars_expr return
+#' @examples
+#' df <- pl$DataFrame(n = -1:1)
+#' df$select(pl$col("n")$bitwise_and())
+#'
+#' df <- pl$DataFrame(
+#'   grouper = c("a", "a", "a", "b", "b"),
+#'   n = c(-1L, 0L, 1L, -1L, 1L)
+#' )
+#' df$group_by("grouper", .maintain_order = TRUE)$agg(pl$col("n")$bitwise_and())
+expr__bitwise_and <- function() {
+  self$`_rexpr`$bitwise_and() |>
+    wrap()
+}
+
+#' Perform an aggregation of bitwise ORs.
+#' @inherit as_polars_expr return
+#' @examples
+#' df <- pl$DataFrame(n = -1:1)
+#' df$select(pl$col("n")$bitwise_or())
+#'
+#' df <- pl$DataFrame(
+#'   grouper = c("a", "a", "a", "b", "b"),
+#'   n = c(-1L, 0L, 1L, -1L, 1L)
+#' )
+#' df$group_by("grouper", .maintain_order = TRUE)$agg(pl$col("n")$bitwise_or())
+expr__bitwise_or <- function() {
+  self$`_rexpr`$bitwise_or() |>
+    wrap()
+}
+
+#' Perform an aggregation of bitwise XORs.
+#' @inherit as_polars_expr return
+#' @examples
+#' df <- pl$DataFrame(n = -1:1)
+#' df$select(pl$col("n")$bitwise_xor())
+#'
+#' df <- pl$DataFrame(
+#'   grouper = c("a", "a", "a", "b", "b"),
+#'   n = c(-1L, 0L, 1L, -1L, 1L)
+#' )
+#' df$group_by("grouper", .maintain_order = TRUE)$agg(pl$col("n")$bitwise_xor())
+expr__bitwise_xor <- function() {
+  self$`_rexpr`$bitwise_xor() |>
+    wrap()
+}
