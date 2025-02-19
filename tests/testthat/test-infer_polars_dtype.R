@@ -24,7 +24,7 @@ patrick::with_parameters_test_that(
         as.POSIXlt(NA, "UTC"),
         as.difftime(integer(), units = "days"),
         numeric_version(character()),
-        numeric_version(NA_character_),
+        numeric_version(NA_character_, strict = FALSE),
         NULL,
         list(1, "foo"),
         list(NULL, 1L),
