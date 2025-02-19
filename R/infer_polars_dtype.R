@@ -99,21 +99,28 @@ infer_polars_dtype.data.frame <- function(x, ...) {
   pl$Struct(!!!lapply(x, \(col) infer_polars_dtype(col, ...)))
 }
 
-# To avoid defining a dedicated method for inferring from classes built on vctrs_vctr,
-# the processing is done in this method by if branching.
+# To avoid defining a dedicated method for inferring types from classes built on vctrs_vctr,
+# the processing is handled within this method using conditional branching.
 #' @rdname infer_polars_dtype
 #' @export
 infer_polars_dtype.vctrs_vctr <- function(x, ...) {
   dtype_from_sliced <- infer_polars_dtype_default_impl(x, ...)
 
   if (dtype_from_sliced$is_nested()) {
-    # Nested type may multiple nested, so we can't infer type from the slice
-    if (inherits(dtype_from_sliced, "polars_dtype_struct")) {
-      # Struct
+    # Nested type may be nested multiple times,
+    # so we can't infer type from the slice
+    if (inherits(x, "vctrs_rcrd")) {
+      # vctrs_rcrd
       infer_polars_dtype_vctrs_rcrd_impl(x, ...)
     } else {
-      # List or Array
-      infer_polars_dtype.list(x, ...)
+      # list_of
+      child_type <- infer_polars_dtype(attr(x, "ptype"), ...)
+      if (child_type$is_nested()) {
+        NextMethod()
+      } else {
+        # If not nested `list_of()`, recursive solution is not needed
+        pl$List(child_type)
+      }
     }
   } else {
     dtype_from_sliced
