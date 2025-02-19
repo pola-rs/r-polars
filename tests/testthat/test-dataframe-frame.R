@@ -198,3 +198,105 @@ test_that("partition_by() works", {
     "must be logical, not double"
   )
 })
+
+test_that("pivot() works", {
+  df <- pl$DataFrame(
+    foo = c("one", "one", "one", "two", "two", "two"),
+    bar = c("A", "B", "C", "A", "B", "C"),
+    baz = c(1, 2, 3, 4, 5, 6)
+  )
+
+  expect_equal(
+    df$pivot(
+      values = "baz", index = "foo", on = "bar", aggregate_function = "first"
+    ),
+    pl$DataFrame(foo = c("one", "two"), A = c(1, 4), B = c(2, 5), C = c(3, 6))
+  )
+
+  # Run an expression as aggregation function
+  df <- pl$DataFrame(
+    col1 = c("a", "a", "a", "b", "b", "b"),
+    col2 = c("x", "x", "x", "x", "y", "y"),
+    col3 = c(6, 7, 3, 2, 5, 7)
+  )
+
+  expect_equal(
+    df$pivot(
+      index = "col1",
+      on = "col2",
+      values = "col3",
+      aggregate_function = pl$element()$tanh()$mean()
+    ),
+    pl$DataFrame(
+      col1 = c("a", "b"),
+      x = c(0.998346934093824, 0.964027580075817),
+      y = c(NA, 0.99995377060327)
+    )
+  )
+})
+
+test_that("pivot args work", {
+  df <- pl$DataFrame(
+    foo = c("one", "one", "one", "two", "two", "two"),
+    bar = c("A", "B", "C", "A", "B", "C"),
+    baz = c(1, 2, 3, 4, 5, 6),
+    jaz = 6:1
+  )
+  expect_equal(
+    df$pivot("baz", index = "bar", values = "foo"),
+    pl$DataFrame(
+      bar = c("A", "B", "C"),
+      `1.0` = c("one", NA, NA),
+      `2.0` = c(NA, "one", NA),
+      `3.0` = c(NA, NA, "one"),
+      `4.0` = c("two", NA, NA),
+      `5.0` = c(NA, "two", NA),
+      `6.0` = c(NA, NA, "two")
+    )
+  )
+
+  df <- pl$DataFrame(
+    ann = c("one", "one", "one", "two", "two", "two"),
+    bob = c("A", "B", "A", "B", "A", "B"),
+    cat = c(1, 2, 3, 4, 5, 6)
+  )
+
+  # aggr functions
+  expect_equal(
+    df$pivot("bob", index = "ann", values = "cat", aggregate_function = "mean"),
+    pl$DataFrame(ann = c("one", "two"), A = c(2, 5), B = c(2, 5))
+  )
+  expect_equal(
+    df$pivot("bob", index = "ann", values = "cat", aggregate_function = pl$element()$mean()),
+    df$pivot("bob", index = "ann", values = "cat", aggregate_function = "mean")
+  )
+  expect_error(
+    df$pivot("cat", index = "bob", values = "ann", aggregate_function = 42),
+    "must be `NULL`, a character, or a"
+  )
+  expect_error(
+    df$pivot("cat", index = "bob", values = "ann", aggregate_function = "dummy"),
+    "must be one of"
+  )
+
+  # check maintain_order
+  expect_error(
+    df$pivot("cat", index = "bob", values = "ann", aggregate_function = "mean", maintain_order = 42),
+    "must be logical, not double"
+  )
+  # check sort_columns
+  expect_error(
+    df$pivot("cat", index = "bob", values = "ann", aggregate_function = "mean", sort_columns = 42),
+    "must be logical, not double"
+  )
+
+  # separator
+  expect_named(
+    df$pivot("cat", index = "ann", values = c("ann", "bob"), aggregate_function = "mean", separator = "."),
+    c(
+      "ann", "ann.1.0", "ann.2.0", "ann.3.0", "ann.4.0",
+      "ann.5.0", "ann.6.0", "bob.1.0", "bob.2.0", "bob.3.0",
+      "bob.4.0", "bob.5.0", "bob.6.0"
+    )
+  )
+})

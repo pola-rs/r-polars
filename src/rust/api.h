@@ -65,6 +65,7 @@ SEXP savvy_PlRDataFrame_init__ffi(SEXP c_arg__columns);
 SEXP savvy_PlRDataFrame_lazy__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_n_chunks__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_partition_by__ffi(SEXP self__, SEXP c_arg__by, SEXP c_arg__maintain_order, SEXP c_arg__include_key);
+SEXP savvy_PlRDataFrame_pivot_expr__ffi(SEXP self__, SEXP c_arg__on, SEXP c_arg__maintain_order, SEXP c_arg__sort_columns, SEXP c_arg__aggregate_expr, SEXP c_arg__separator, SEXP c_arg__index, SEXP c_arg__values);
 SEXP savvy_PlRDataFrame_print__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_read_ipc_stream__ffi(SEXP c_arg__source, SEXP c_arg__row_index_offset, SEXP c_arg__rechunk, SEXP c_arg__columns, SEXP c_arg__projection, SEXP c_arg__n_rows, SEXP c_arg__row_index_name);
 SEXP savvy_PlRDataFrame_rechunk__ffi(SEXP self__);

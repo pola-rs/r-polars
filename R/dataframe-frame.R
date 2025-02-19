@@ -1316,3 +1316,140 @@ dataframe__partition_by <- function(..., maintain_order = TRUE, include_key = TR
       lapply(\(ptr) .savvy_wrap_PlRDataFrame(ptr) |> wrap())
   })
 }
+
+#' Pivot a frame from long to wide format
+#'
+#' Only available in eager mode. See "Examples" section below for how to do a
+#' "lazy pivot" if you know the unique column values in advance.
+#'
+#' @inheritParams rlang::args_dots_empty
+#' @param on The column(s) whose values will be used as the new columns of the
+#' output DataFrame.
+#' @param index The column(s) that remain from the input to the output. The
+#' output DataFrame will have one row for each unique combination of the
+#' `index`'s values. If `NULL`, all remaining columns not specified in `on` and
+#' `values` will be used. At least one of `index` and `values` must be
+#' specified.
+#' @param values The existing column(s) of values which will be moved under the
+#' new columns from `index`. If an aggregation is specified, these are the
+#' values on which the aggregation will be computed. If `NULL`, all remaining
+#' columns not specified in `on` and `index` will be used. At least one of
+#' `index` and `values` must be specified.
+#' @param aggregate_function Choose from:
+#' * `NULL`: no aggregation takes place, will raise error if multiple values
+#'   are in group;
+#' * A predefined aggregate function string, one of `"min"`, `"max"`,
+#'   `"first"`, `"last"`, `"sum"`, `"mean"`, `"median"`, `"len"`;
+#' * An expression to do the aggregation.
+#' @param maintain_order Ensure the values of `index` are sorted by discovery
+#' order.
+#' @param sort_columns Sort the transposed columns by name. Default is by order
+#' of discovery.
+#' @param separator Used as separator/delimiter in generated column names in
+#' case of multiple values columns.
+#'
+#' @inherit as_polars_df return
+#' @examples
+#' # Suppose we have a dataframe of test scores achieved by some students,
+#' # where each row represents a distinct test.
+#' df <- pl$DataFrame(
+#'   name = c("Cady", "Cady", "Karen", "Karen"),
+#'   subject = c("maths", "physics", "maths", "physics"),
+#'   test_1 = c(98, 99, 61, 58),
+#'   test_2 = c(100, 100, 60, 60)
+#' )
+#' df
+#'
+#' # Using pivot(), we can reshape so we have one row per student, with
+#' # different subjects as columns, and their `test_1` scores as values:
+#' df$pivot("subject", index = "name", values = "test_1")
+#'
+# You can use selectors too - here we include all test scores in the pivoted
+# table:
+# df$pivot("subject", values = cs$starts_with("test"))
+#'
+#' # If you end up with multiple values per cell, you can specify how to
+#' # aggregate them with `aggregate_function`:
+#' df <- pl$DataFrame(
+#'   ix = c(1, 1, 2, 2, 1, 2),
+#'   col = c("a", "a", "a", "a", "b", "b"),
+#'   foo = c(0, 1, 2, 2, 7, 1),
+#'   bar = c(0, 2, 0, 0, 9, 4)
+#' )
+#' df
+#'
+#' df$pivot("col", index = "ix", aggregate_function = "sum")
+#'
+#' # You can also pass a custom aggregation function using `pl$element()`:
+#' df <- pl$DataFrame(
+#'   col1 = c("a", "a", "a", "b", "b", "b"),
+#'   col2 = c("x", "x", "x", "x", "y", "y"),
+#'   col3 = c(6, 7, 3, 2, 5, 7),
+#' )
+#' df$pivot(
+#'   "col2",
+#'   index = "col1",
+#'   values = "col3",
+#'   aggregate_function = pl$element()$tanh()$mean(),
+#' )
+#'
+#' # Note that pivot is only available in eager mode. If you know the unique
+#' # column values in advance, you can use `$group_by()` on a LazyFrame to get
+#' # the same result as above in lazy mode:
+#' index <- pl$col("col1")
+#' on <- pl$col("col2")
+#' values <- pl$col("col3")
+#' unique_column_values <- c("x", "y")
+#' aggregate_function <- \(col) col$tanh()$mean()
+#' funs <- lapply(unique_column_values, \(value) {
+#'   aggregate_function(values$filter(on == value))$alias(value)
+#' })
+#' df$lazy()$group_by(index)$agg(!!!funs)$collect()
+dataframe__pivot <- function(
+    on,
+    ...,
+    index = NULL,
+    values = NULL,
+    aggregate_function = NULL,
+    maintain_order = TRUE,
+    sort_columns = FALSE,
+    separator = "_") {
+  # TODO: add selectors handling when py-polars' _expand_selectors() has moved
+  # to Rust (and uncomment example above)
+
+  wrap({
+    check_dots_empty0(...)
+    aggregate_expr <- NULL
+    if (is_character(aggregate_function)) {
+      aggregate_function <- arg_match0(
+        aggregate_function,
+        values = c("min", "max", "first", "last", "sum", "mean", "median", "len")
+      )
+      aggregate_expr <- switch(aggregate_function,
+        "min" = pl$element()$min()$`_rexpr`,
+        "max" = pl$element()$max()$`_rexpr`,
+        "first" = pl$element()$first()$`_rexpr`,
+        "last" = pl$element()$last()$`_rexpr`,
+        "sum" = pl$element()$sum()$`_rexpr`,
+        "mean" = pl$element()$mean()$`_rexpr`,
+        "median" = pl$element()$median()$`_rexpr`,
+        "len" = pl$len()$`_rexpr`,
+        abort("unreachable")
+      )
+    } else if (is_polars_expr(aggregate_function)) {
+      aggregate_expr <- aggregate_function$`_rexpr`
+    } else if (!is.null(aggregate_function)) {
+      abort("`aggregate_function` must be `NULL`, a character, or a Polars expression.")
+    }
+
+    self$`_df`$pivot_expr(
+      on = on,
+      index = index,
+      values = values,
+      maintain_order = maintain_order,
+      sort_columns = sort_columns,
+      aggregate_expr = aggregate_expr,
+      separator = separator
+    )
+  })
+}

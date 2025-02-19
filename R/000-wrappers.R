@@ -452,6 +452,13 @@ class(`PlRChainedWhen`) <- c("PlRChainedWhen__bundle", "savvy_neopolars__sealed"
   }
 }
 
+`PlRDataFrame_pivot_expr` <- function(self) {
+  function(`on`, `maintain_order`, `sort_columns`, `aggregate_expr` = NULL, `separator` = NULL, `index` = NULL, `values` = NULL) {
+    `aggregate_expr` <- .savvy_extract_ptr(`aggregate_expr`, "PlRExpr")
+    .savvy_wrap_PlRDataFrame(.Call(savvy_PlRDataFrame_pivot_expr__impl, `self`, `on`, `maintain_order`, `sort_columns`, `aggregate_expr`, `separator`, `index`, `values`))
+  }
+}
+
 `PlRDataFrame_print` <- function(self) {
   function() {
     invisible(.Call(savvy_PlRDataFrame_print__impl, `self`))
@@ -532,6 +539,7 @@ class(`PlRChainedWhen`) <- c("PlRChainedWhen__bundle", "savvy_neopolars__sealed"
   e$`lazy` <- `PlRDataFrame_lazy`(ptr)
   e$`n_chunks` <- `PlRDataFrame_n_chunks`(ptr)
   e$`partition_by` <- `PlRDataFrame_partition_by`(ptr)
+  e$`pivot_expr` <- `PlRDataFrame_pivot_expr`(ptr)
   e$`print` <- `PlRDataFrame_print`(ptr)
   e$`rechunk` <- `PlRDataFrame_rechunk`(ptr)
   e$`set_column_names` <- `PlRDataFrame_set_column_names`(ptr)
