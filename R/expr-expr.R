@@ -473,7 +473,6 @@ expr__exclude <- function(...) {
       self$`_rexpr`$exclude_dtype(exclude_dtypes)
     }
   })
-
 }
 
 
@@ -1512,7 +1511,7 @@ expr__arg_unique <- function() {
 #' df <- pl$DataFrame(a = c(1, 1, 2, 1))
 #' df$select((pl$col("a") == 1)$arg_true())
 expr__arg_true <- function() {
-  arg_where(self$`_rexpr`) |> 
+  arg_where(self$`_rexpr`) |>
     wrap()
 }
 
@@ -2819,7 +2818,7 @@ expr__rolling_var <- function(
 #' dates <- as.POSIXct(
 #'   c(
 #'     "2020-01-01 13:45:48", "2020-01-01 16:42:13", "2020-01-01 16:45:09",
-#'     "2020-01-02 18:12:48", "2020-01-03 19:45:32","2020-01-08 23:16:43"
+#'     "2020-01-02 18:12:48", "2020-01-03 19:45:32", "2020-01-08 23:16:43"
 #'   )
 #' )
 #' df <- pl$DataFrame(dt = dates, a = c(3, 7, 5, 9, 2, 1))
@@ -2830,11 +2829,11 @@ expr__rolling_var <- function(
 #'   max_a = pl$col("a")$max()$rolling(index_column = "dt", period = "2d")
 #' )
 expr__rolling <- function(
-  index_column,
-  ...,
-  period,
-  offset = NULL,
-  closed = "right") {
+    index_column,
+    ...,
+    period,
+    offset = NULL,
+    closed = "right") {
   wrap({
     check_dots_empty0(...)
     closed <- arg_match0(closed, values = c("both", "left", "right", "none"))
@@ -2859,9 +2858,9 @@ expr__rolling <- function(
 #' * …
 #' * `(t_n - window_size, t_n]`
 #'
-#' @param by Should be DateTime, Date, UInt64, UInt32, Int64, or Int32 data 
+#' @param by Should be DateTime, Date, UInt64, UInt32, Int64, or Int32 data
 #' type after conversion by [as_polars_expr()]. Note that the
-#' integer ones require using `"i"` in `window_size`. Accepts expression input. 
+#' integer ones require using `"i"` in `window_size`. Accepts expression input.
 #' Strings are parsed as column names.
 #' @param window_size The length of the window. Can be a dynamic temporal size
 #' indicated by a timedelta or the following string language:
@@ -4292,7 +4291,8 @@ expr__replace <- function(old, new) {
 #' # inferring it
 #' df$with_columns(
 #'   replaced = pl$col("a")$replace_strict(
-#'     mapping, default = 1, return_dtype = pl$Int32
+#'     mapping,
+#'     default = 1, return_dtype = pl$Int32
 #'   )
 #' )
 #'
@@ -4306,30 +4306,30 @@ expr__replace <- function(old, new) {
 #'   )
 #' )
 expr__replace_strict <- function(
-  old,
-  new,
-  ...,
-  default = NULL,
-  return_dtype = NULL) {
-    wrap({
-      check_dots_empty0(...)
-      if (missing(new)) {
-        if (!is.list(old)) {
-          abort("`new` argument is required if `old` argument is not a list.")
-        }
-        new <- unlist(old, use.names = FALSE)
-        old <- names(old)
+    old,
+    new,
+    ...,
+    default = NULL,
+    return_dtype = NULL) {
+  wrap({
+    check_dots_empty0(...)
+    if (missing(new)) {
+      if (!is.list(old)) {
+        abort("`new` argument is required if `old` argument is not a list.")
       }
-      if (!is.null(default)) {
-        default <- as_polars_expr(default, as_lit = TRUE)$`_rexpr`
-      }
-      self$`_rexpr`$replace_strict(
-        as_polars_expr(old, as_lit = TRUE)$`_rexpr`,
-        as_polars_expr(new, as_lit = TRUE)$`_rexpr`,
-        default = default,
-        return_dtype = return_dtype$`_dt`
-      )
-    })
+      new <- unlist(old, use.names = FALSE)
+      old <- names(old)
+    }
+    if (!is.null(default)) {
+      default <- as_polars_expr(default, as_lit = TRUE)$`_rexpr`
+    }
+    self$`_rexpr`$replace_strict(
+      as_polars_expr(old, as_lit = TRUE)$`_rexpr`,
+      as_polars_expr(new, as_lit = TRUE)$`_rexpr`,
+      default = default,
+      return_dtype = return_dtype$`_dt`
+    )
+  })
 }
 
 #' Compress the column data using run-length encoding
@@ -4393,13 +4393,12 @@ expr__rle_id <- function() {
 #'   fraction = 1, with_replacement = TRUE, seed = 1
 #' ))
 expr__sample <- function(
-  n = NULL,
-  ...,
-  fraction = NULL,
-  with_replacement = FALSE,
-  shuffle = FALSE,
-  seed = NULL
-) {
+    n = NULL,
+    ...,
+    fraction = NULL,
+    with_replacement = FALSE,
+    shuffle = FALSE,
+    seed = NULL) {
   wrap({
     check_dots_empty0(...)
     if (!is.null(fraction)) {
