@@ -128,6 +128,8 @@
     Code
       as_polars_df(0+1i)
     Condition
-      Error in `infer_polars_dtype_default_impl()`:
+      Error:
+      ! Unsupported class for `infer_polars_dtype()`: complex
+      Caused by error in `infer_polars_dtype_default_impl()`:
       ! Unsupported class for `as_polars_series()`: complex
 

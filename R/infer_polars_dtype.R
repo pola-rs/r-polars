@@ -32,14 +32,16 @@ infer_polars_dtype_default_impl <- function(x, ...) {
 #' @rdname infer_polars_dtype
 #' @export
 infer_polars_dtype.default <- function(x, ...) {
-  if (is.atomic(x)) {
-    infer_polars_dtype_default_impl(x, ...)
-  } else {
-    abort(
-      sprintf("Unsupported class for `infer_polars_dtype()`: %s", toString(class(x))),
-      call = parent.frame()
-    )
-  }
+  try_fetch(
+    infer_polars_dtype_default_impl(x, ...),
+    error = function(cnd) {
+      abort(
+        sprintf("Unsupported class for `infer_polars_dtype()`: %s", toString(class(x))),
+        call = parent.frame(),
+        parent = cnd
+      )
+    }
+  )
 }
 
 #' @rdname infer_polars_dtype
@@ -57,10 +59,6 @@ infer_polars_dtype.polars_data_frame <- function(x, ...) {
 #' @rdname infer_polars_dtype
 #' @export
 infer_polars_dtype.polars_lazy_frame <- infer_polars_dtype.polars_data_frame
-
-#' @rdname infer_polars_dtype
-#' @export
-infer_polars_dtype.POSIXlt <- infer_polars_dtype_default_impl
 
 #' @rdname infer_polars_dtype
 #' @export

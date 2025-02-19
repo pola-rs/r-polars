@@ -58,3 +58,15 @@ patrick::with_parameters_test_that(
     )
   }
 )
+
+patrick::with_parameters_test_that(
+  "infer_polars_dtype() works for various objects",
+  .cases = tibble::tribble(
+    ~.test_name, ~x,
+    "complex", 1i,
+    "polars_dtype", pl$Null,
+  ),
+  code = {
+    expect_snapshot(infer_polars_dtype(x), error = TRUE)
+  }
+)
