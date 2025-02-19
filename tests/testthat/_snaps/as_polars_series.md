@@ -340,6 +340,28 @@
       	["foo"]
       ]
 
+# as_polars_series works for classes numeric_version
+
+    Code
+      print(pl_series)
+    Output
+      shape: (2,)
+      Series: '' [list[i32]]
+      [
+      	[]
+      	[4, 2, 2]
+      ]
+
+# as_polars_series works for classes numeric_version (0-length)
+
+    Code
+      print(pl_series)
+    Output
+      shape: (0,)
+      Series: '' [list[i32]]
+      [
+      ]
+
 # as_polars_series works for classes AsIs
 
     Code

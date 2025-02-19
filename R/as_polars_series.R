@@ -119,6 +119,9 @@
 #' as.difftime(c(0.0005, 0.0010, 0.0015, 0.0020), units = "weeks") |>
 #'   as_polars_series()
 #'
+#' # numeric_version
+#' as_polars_series(getRversion())
+#'
 #' # NULL
 #' as_polars_series(NULL)
 #'
@@ -352,6 +355,21 @@ as_polars_series.difftime <- function(x, name = NULL, ...) {
     name %||% "", x, mul_value, "round"
   )$cast(pl$Duration("ms")$`_dt`, strict = TRUE) |>
     wrap()
+}
+
+#' @rdname as_polars_series
+#' @export
+as_polars_series.numeric_version <- function(x, name = NULL, ...) {
+  wrap({
+    if (length(x) == 0L) {
+      # Because if the length is 0, new_series_list will return a List(Null) type
+      PlRSeries$new_null(name %||% "", 0L)$cast(pl$List(pl$Int32)$`_dt`, TRUE)
+    } else {
+      unclass(x) |>
+        lapply(\(item) PlRSeries$new_i32("", item)) |>
+        PlRSeries$new_series_list(name %||% "", values = _, strict = TRUE)
+    }
+  })
 }
 
 #' @rdname as_polars_series

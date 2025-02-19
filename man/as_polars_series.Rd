@@ -16,6 +16,7 @@
 \alias{as_polars_series.POSIXct}
 \alias{as_polars_series.POSIXlt}
 \alias{as_polars_series.difftime}
+\alias{as_polars_series.numeric_version}
 \alias{as_polars_series.hms}
 \alias{as_polars_series.blob}
 \alias{as_polars_series.array}
@@ -62,6 +63,8 @@ as_polars_series(x, name = NULL, ...)
 \method{as_polars_series}{POSIXlt}(x, name = NULL, ...)
 
 \method{as_polars_series}{difftime}(x, name = NULL, ...)
+
+\method{as_polars_series}{numeric_version}(x, name = NULL, ...)
 
 \method{as_polars_series}{hms}(x, name = NULL, ...)
 
@@ -222,6 +225,9 @@ as.difftime(c(0.0005, 0.0010, 0.0015, 0.0020), units = "secs") |>
 
 as.difftime(c(0.0005, 0.0010, 0.0015, 0.0020), units = "weeks") |>
   as_polars_series()
+
+# numeric_version
+as_polars_series(getRversion())
 
 # NULL
 as_polars_series(NULL)
