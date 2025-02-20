@@ -4023,7 +4023,6 @@ expr__upper_bound <- function() {
   })
 }
 
-# TODO-REWRITE: requires unnest() in second example
 #' Bin continuous values into discrete categories
 #'
 #' `r lifecycle::badge("experimental")`
@@ -4049,7 +4048,7 @@ expr__upper_bound <- function() {
 #' # Add both the category and the breakpoint.
 #' df$with_columns(
 #'   cut = pl$col("foo")$cut(c(-1, 1), include_breaks = TRUE)
-#' )$unnest()
+#' )$unnest("cut")
 expr__cut <- function(
     breaks,
     ...,
@@ -4067,7 +4066,6 @@ expr__cut <- function(
   })
 }
 
-# TODO-REWRITE: requires unnest() in third example
 #' Bin continuous values into discrete categories based on their quantiles
 #'
 #' `r lifecycle::badge("experimental")`
@@ -4100,7 +4098,7 @@ expr__cut <- function(
 #' # Add both the category and the breakpoint.
 #' df$with_columns(
 #'   qcut = pl$col("foo")$qcut(c(0.25, 0.75), include_breaks = TRUE)
-#' )$unnest()
+#' )$unnest("qcut")
 expr__qcut <- function(
     quantiles,
     ...,

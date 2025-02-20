@@ -56,5 +56,5 @@ df$with_columns(
 # Add both the category and the breakpoint.
 df$with_columns(
   qcut = pl$col("foo")$qcut(c(0.25, 0.75), include_breaks = TRUE)
-)$unnest()
+)$unnest("qcut")
 }

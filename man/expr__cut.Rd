@@ -43,5 +43,5 @@ df$with_columns(
 # Add both the category and the breakpoint.
 df$with_columns(
   cut = pl$col("foo")$cut(c(-1, 1), include_breaks = TRUE)
-)$unnest()
+)$unnest("cut")
 }
