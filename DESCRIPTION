@@ -31,6 +31,7 @@ Suggests:
     tibble,
     vctrs,
     withr
+Additional_repositories: https://community.r-multiverse.org
 Config/Needs/dev: devtools, lifecycle
 Config/testthat/edition: 3
 Config/testthat/parallel: true
