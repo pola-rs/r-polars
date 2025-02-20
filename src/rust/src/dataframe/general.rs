@@ -1,5 +1,6 @@
 use super::*;
 use crate::{PlRDataType, PlRExpr, PlRLazyFrame, PlRSeries, RPolarsErr};
+use either::Either;
 use polars::prelude::pivot::{pivot, pivot_stable};
 use savvy::{
     r_println, savvy, ListSexp, NumericScalar, OwnedIntegerSexp, OwnedListSexp, Result, Sexp,
@@ -51,6 +52,28 @@ impl PlRDataFrame {
             );
         }
         Ok(list.into())
+    }
+
+    pub fn transpose(
+        &mut self,
+        column_names: StringSexp,
+        keep_names_as: Option<&str>,
+    ) -> Result<Self> {
+        let column_names = column_names.to_vec();
+        let new_col_names = if column_names.len() == 1 {
+            Some(Either::Left(column_names[0].to_string()))
+        } else if column_names.len() > 1 {
+            Some(Either::Right(
+                column_names.iter().map(|x| x.to_string()).collect(),
+            ))
+        } else {
+            None
+        };
+        let out = self
+            .df
+            .transpose(keep_names_as, new_col_names)
+            .map_err(RPolarsErr::from)?;
+        Ok(out.into())
     }
 
     pub fn slice(&self, offset: NumericScalar, length: Option<NumericScalar>) -> Result<Self> {

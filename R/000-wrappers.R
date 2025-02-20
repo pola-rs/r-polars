@@ -531,6 +531,12 @@ class(`PlRChainedWhen`) <- c("PlRChainedWhen__bundle", "savvy_neopolars__sealed"
   }
 }
 
+`PlRDataFrame_transpose` <- function(self) {
+  function(`column_names`, `keep_names_as` = NULL) {
+    .savvy_wrap_PlRDataFrame(.Call(savvy_PlRDataFrame_transpose__impl, `self`, `column_names`, `keep_names_as`))
+  }
+}
+
 `PlRDataFrame_unpivot` <- function(self) {
   function(`on`, `index`, `value_name` = NULL, `variable_name` = NULL) {
     .savvy_wrap_PlRDataFrame(.Call(savvy_PlRDataFrame_unpivot__impl, `self`, `on`, `index`, `value_name`, `variable_name`))
@@ -570,6 +576,7 @@ class(`PlRChainedWhen`) <- c("PlRChainedWhen__bundle", "savvy_neopolars__sealed"
   e$`to_dummies` <- `PlRDataFrame_to_dummies`(ptr)
   e$`to_series` <- `PlRDataFrame_to_series`(ptr)
   e$`to_struct` <- `PlRDataFrame_to_struct`(ptr)
+  e$`transpose` <- `PlRDataFrame_transpose`(ptr)
   e$`unpivot` <- `PlRDataFrame_unpivot`(ptr)
   e$`width` <- `PlRDataFrame_width`(ptr)
 

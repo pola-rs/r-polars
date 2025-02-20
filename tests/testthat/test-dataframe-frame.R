@@ -356,3 +356,103 @@ test_that("is_empty() works", {
   df <- pl$DataFrame(a = NULL, b = NULL)
   expect_true(df$is_empty())
 })
+
+test_that("transpose() works", {
+  df <- pl$DataFrame(a = c(1, 2, 3), b = c(4, 5, 6))
+  expect_equal(
+    df$transpose(include_header = TRUE),
+    pl$DataFrame(
+      column = c("a", "b"),
+      column_0 = c(1, 4),
+      column_1 = c(2, 5),
+      column_2 = c(3, 6)
+    )
+  )
+
+  # Replace the auto-generated column names with a list
+  expect_equal(
+    df$transpose(include_header = FALSE, column_names = c("x", "y", "z")),
+    pl$DataFrame(
+      x = c(1, 4),
+      y = c(2, 5),
+      z = c(3, 6)
+    )
+  )
+
+  # Include the header as a separate column
+  expect_equal(
+    df$transpose(
+      include_header = TRUE,
+      header_name = "foo",
+      column_names = c("x", "y", "z")
+    ),
+    pl$DataFrame(
+      foo = c("a", "b"),
+      x = c(1, 4),
+      y = c(2, 5),
+      z = c(3, 6)
+    )
+  )
+  expect_error(
+    df$transpose(include_header = TRUE, header_name = 1),
+    "must be a single string"
+  )
+  expect_error(
+    df$transpose(include_header = TRUE, header_name = c("a", "b")),
+    "must be a single string"
+  )
+
+  # Own function for new column names
+  name_generator <- function(x) {
+    paste0("my_column_", x)
+  }
+  expect_equal(
+    df$transpose(
+      include_header = FALSE,
+      column_names = name_generator
+    ),
+    pl$DataFrame(
+      my_column_0 = c(1, 4),
+      my_column_1 = c(2, 5),
+      my_column_2 = c(3, 6)
+    )
+  )
+  wrong_name_generator_1 <- function(x) {
+    x + 1
+  }
+  wrong_name_generator_2 <- function(x) {
+    paste0("my_column_", x[1])
+  }
+  expect_error(
+    df$transpose(column_names = wrong_name_generator_1),
+    "must return a character"
+  )
+  expect_error(
+    df$transpose(column_names = wrong_name_generator_2),
+    "must return a character"
+  )
+
+  # Use an existing column as the new column names
+  df <- pl$DataFrame(id = c("i", "j", "k"), a = c(1, 2, 3), b = c(4, 5, 6))
+  expect_equal(
+    df$transpose(column_names = "id"),
+    pl$DataFrame(
+      i = c(1, 4),
+      j = c(2, 5),
+      k = c(3, 6)
+    )
+  )
+  expect_equal(
+    df$transpose(
+      include_header = TRUE,
+      header_name = "new_id",
+      column_names = "id"
+    ),
+    pl$DataFrame(
+      new_id = c("a", "b"),
+      i = c(1, 4),
+      j = c(2, 5),
+      k = c(3, 6)
+    )
+  )
+})
