@@ -33,4 +33,5 @@ lf <- pl$LazyFrame(
 )
 
 lf$rename(foo = "apple")$collect()
+#  \(column_name) paste0("c", substr(column_name, 2, 100))
 }

@@ -901,7 +901,9 @@ lazyframe__sum <- function() {
 
 #' Aggregate the columns in the LazyFrame to their variance value
 #'
-#' @inheritParams DataFrame_var
+#' @param ddof "Delta Degrees of Freedom": the divisor used in the calculation
+#' is `N - ddof`, where `N` represents the number of elements. By default
+#' `ddof` is 1.
 #' @inherit as_polars_lf return
 #' @examples
 #' lf <- pl$LazyFrame(a = 1:4, b = c(1, 2, 1, 1))
@@ -914,7 +916,7 @@ lazyframe__var <- function(ddof = 1) {
 
 #' Aggregate the columns of this LazyFrame to their standard deviation values
 #'
-#' @inheritParams DataFrame_std
+#' @inheritParams lazyframe__var
 #' @inherit as_polars_lf return
 #' @examples
 #' lf <- pl$LazyFrame(a = 1:4, b = c(1, 2, 1, 1))

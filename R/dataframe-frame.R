@@ -1506,3 +1506,102 @@ dataframe__sum_horizontal <- function() {
   self$select(sum = pl$sum_horizontal(pl$all()))$to_series() |>
     wrap()
 }
+
+#' Aggregate the columns in the DataFrame to their maximum value
+#'
+#' @inherit as_polars_df return
+#' @examples
+#' df <- pl$DataFrame(a = 1:4, b = c(1, 2, 1, 1))
+#' df$max()
+dataframe__max <- function() {
+  self$lazy()$max()$collect(`_eager` = TRUE) |>
+    wrap()
+}
+
+#' Aggregate the columns in the DataFrame to their minimum value
+#'
+#' @inherit as_polars_df return
+#' @examples
+#' df <- pl$DataFrame(a = 1:4, b = c(1, 2, 1, 1))
+#' df$min()
+dataframe__min <- function() {
+  self$lazy()$min()$collect(`_eager` = TRUE) |>
+    wrap()
+}
+
+#' Aggregate the columns in the DataFrame to their mean value
+#'
+#' @inherit as_polars_df return
+#' @examples
+#' df <- pl$DataFrame(a = 1:4, b = c(1, 2, 1, 1))
+#' df$mean()
+dataframe__mean <- function() {
+  self$lazy()$mean()$collect(`_eager` = TRUE) |>
+    wrap()
+}
+
+#' Aggregate the columns in the DataFrame to their median value
+#'
+#' @inherit as_polars_df return
+#' @examples
+#' df <- pl$DataFrame(a = 1:4, b = c(1, 2, 1, 1))
+#' df$median()
+dataframe__median <- function() {
+  self$lazy()$median()$collect(`_eager` = TRUE) |>
+    wrap()
+}
+
+#' Aggregate the columns of this DataFrame to their sum values
+#'
+#' @inherit as_polars_df return
+#' @examples
+#' df <- pl$DataFrame(a = 1:4, b = c(1, 2, 1, 1))
+#' df$sum()
+dataframe__sum <- function() {
+  self$lazy()$sum()$collect(`_eager` = TRUE) |>
+    wrap()
+}
+
+#' Aggregate the columns in the DataFrame to their variance value
+#'
+#' @inheritParams lazyframe__var
+#' @inherit as_polars_df return
+#' @examples
+#' df <- pl$DataFrame(a = 1:4, b = c(1, 2, 1, 1))
+#' df$var()
+#' df$var(ddof = 0)
+dataframe__var <- function(ddof = 1) {
+  self$lazy()$var(ddof)$collect(`_eager` = TRUE) |>
+    wrap()
+}
+
+#' Aggregate the columns of this DataFrame to their standard deviation values
+#'
+#' @inheritParams lazyframe__std
+#' @inherit as_polars_df return
+#' @examples
+#' df <- pl$DataFrame(a = 1:4, b = c(1, 2, 1, 1))
+#' df$std()
+#' df$std(ddof = 0)
+dataframe__std <- function(ddof = 1) {
+  self$lazy()$std(ddof)$collect(`_eager` = TRUE) |>
+    wrap()
+}
+
+#' @inherit lazyframe__quantile title params
+#'
+#' @inherit as_polars_df return
+#' @examples
+#' df <- pl$DataFrame(a = 1:4, b = c(1, 2, 1, 1))
+#' df$quantile(0.7)
+dataframe__quantile <- function(
+    quantile,
+    interpolation = c("nearest", "higher", "lower", "midpoint", "linear")) {
+  wrap({
+    interpolation <- arg_match0(
+      interpolation,
+      values = c("nearest", "higher", "lower", "midpoint", "linear")
+    )
+    self$lazy()$quantile(quantile, interpolation)$collect(`_eager` = TRUE)
+  })
+}

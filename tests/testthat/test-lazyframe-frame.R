@@ -1585,3 +1585,42 @@ test_that("unpivot() works", {
     "must be empty"
   )
 })
+
+test_that("various aggregation functions work", {
+  df <- pl$DataFrame(a = 1:4, b = c(1, 2, 1, 1))
+  expect_query_equal(
+    .input$sum(),
+    .input = df,
+    pl$DataFrame(a = 10L, b = 5)
+  )
+  expect_query_equal(
+    .input$min(),
+    .input = df,
+    pl$DataFrame(a = 1L, b = 1)
+  )
+  expect_query_equal(
+    .input$max(),
+    .input = df,
+    pl$DataFrame(a = 4L, b = 2)
+  )
+  expect_query_equal(
+    .input$mean(),
+    .input = df,
+    pl$DataFrame(a = 2.5, b = 1.25)
+  )
+  expect_query_equal(
+    .input$median(),
+    .input = df,
+    pl$DataFrame(a = 2.5, b = 1)
+  )
+  expect_query_equal(
+    .input$var(),
+    .input = df,
+    pl$DataFrame(a = var(1:4), b = var(c(1, 2, 1, 1)))
+  )
+  expect_query_equal(
+    .input$std(),
+    .input = df,
+    pl$DataFrame(a = sd(1:4), b = sd(c(1, 2, 1, 1)))
+  )
+})
