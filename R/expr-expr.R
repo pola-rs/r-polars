@@ -1243,7 +1243,6 @@ expr__dot <- function(other) {
 #'
 #' @param dimensions A integer vector of length of the dimension size.
 #' If `-1` is used in any of the dimensions, that dimension is inferred.
-#' Currently, more than two dimensions not supported.
 #' @inherit as_polars_expr return
 #'
 #' @details
@@ -1259,9 +1258,16 @@ expr__dot <- function(other) {
 #' # Use `-1` to infer the other dimension
 #' df$select(pl$col("foo")$reshape(c(-1, 3)))
 #' df$select(pl$col("foo")$reshape(c(3, -1)))
+#'
+#' # We can have more than 2 dimensions
+#' df <- pl$DataFrame(foo = 1:8)
+#' df$select(pl$col("foo")$reshape(c(2, 2, 2)))
 expr__reshape <- function(dimensions) {
   wrap({
-    if (is.numeric(dimensions) && anyNA(dimensions)) {
+    if (!is_integerish(dimensions)) {
+      abort("`dimensions` only accepts integer-ish values.")
+    }
+    if (anyNA(dimensions)) {
       abort("`dimensions` must not contain any NA values.")
     }
     self$`_rexpr`$reshape(dimensions)

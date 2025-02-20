@@ -206,7 +206,17 @@
       Error:
       ! Evaluation failed in `$reshape()`.
       Caused by error:
-      ! Argument `dimensions` must be numeric, not character
+      ! `dimensions` only accepts integer-ish values.
+
+---
+
+    Code
+      pl$lit(1:12)$reshape(NaN)
+    Condition
+      Error:
+      ! Evaluation failed in `$reshape()`.
+      Caused by error:
+      ! `dimensions` must not contain any NA values.
 
 ---
 
@@ -216,7 +226,7 @@
       Error:
       ! Evaluation failed in `$reshape()`.
       Caused by error:
-      ! Should not reach here!
+      ! `dimensions` only accepts integer-ish values.
 
 # shuffle
 

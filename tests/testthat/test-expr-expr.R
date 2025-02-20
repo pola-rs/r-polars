@@ -2187,14 +2187,10 @@ test_that("reshape", {
     pl$lit(1:12)$reshape("hej"),
     error = TRUE
   )
-
-  # TODO-REWRITE: this should error
-  # https://github.com/eitsupi/neo-r-polars/issues/29
-  # expect_snapshot(
-  #   pl$lit(1:12)$reshape(NaN),
-  #   error = TRUE
-  # )
-
+  expect_snapshot(
+    pl$lit(1:12)$reshape(NaN),
+    error = TRUE
+  )
   expect_snapshot(
     pl$lit(1:12)$reshape(NA),
     error = TRUE

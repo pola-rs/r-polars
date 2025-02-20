@@ -8,8 +8,7 @@ expr__reshape(dimensions)
 }
 \arguments{
 \item{dimensions}{A integer vector of length of the dimension size.
-If \code{-1} is used in any of the dimensions, that dimension is inferred.
-Currently, more than two dimensions not supported.}
+If \code{-1} is used in any of the dimensions, that dimension is inferred.}
 }
 \value{
 A polars \link{expression}
@@ -31,4 +30,8 @@ df$select(pl$col("foo")$reshape(c(3, 3)))
 # Use `-1` to infer the other dimension
 df$select(pl$col("foo")$reshape(c(-1, 3)))
 df$select(pl$col("foo")$reshape(c(3, -1)))
+
+# We can have more than 2 dimensions
+df <- pl$DataFrame(foo = 1:8)
+df$select(pl$col("foo")$reshape(c(2, 2, 2)))
 }
