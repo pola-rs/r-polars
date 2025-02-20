@@ -72,7 +72,8 @@ POLARS_STORE_ENVS <- list(
   "lazyframe__" = polars_lazyframe__methods,
   "lazygroupby__" = polars_lazygroupby__methods,
   "dataframe__" = polars_dataframe__methods,
-  "groupby__" = polars_groupby__methods
+  "groupby__" = polars_groupby__methods,
+  "rolling_groupby__" = polars_rolling_groupby__methods
 )
 
 lapply(names(POLARS_STORE_ENVS), function(name) {

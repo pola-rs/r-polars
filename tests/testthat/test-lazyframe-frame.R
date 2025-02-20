@@ -1624,3 +1624,184 @@ test_that("various aggregation functions work", {
     pl$DataFrame(a = sd(1:4), b = sd(c(1, 2, 1, 1)))
   )
 })
+
+
+test_that("rolling: date variable", {
+  df <- pl$DataFrame(
+    dt = c(
+      "2020-01-01", "2020-01-01", "2020-01-01",
+      "2020-01-02", "2020-01-03", "2020-01-08"
+    ),
+    a = c(3, 7, 5, 9, 2, 1)
+  )$with_columns(
+    pl$col("dt")$str$strptime(pl$Date, format = NULL)
+  )
+
+  expect_query_equal(
+    .input$rolling(index_column = "dt", period = "2d")$agg(
+      pl$sum("a")$alias("sum_a"),
+      pl$min("a")$alias("min_a"),
+      pl$max("a")$alias("max_a")
+    )$select("sum_a", "min_a", "max_a"),
+    .input = df,
+    pl$DataFrame(
+      sum_a = c(15, 15, 15, 24, 11, 1),
+      min_a = c(3, 3, 3, 3, 2, 1),
+      max_a = c(7, 7, 7, 9, 9, 1)
+    )
+  )
+})
+
+test_that("rolling: datetime variable", {
+  df <- pl$DataFrame(
+    dt = c(
+      "2020-01-01 13:45:48", "2020-01-01 16:42:13", "2020-01-01 16:45:09",
+      "2020-01-02 18:12:48", "2020-01-03 19:45:32", "2020-01-08 23:16:43"
+    ),
+    a = c(3, 7, 5, 9, 2, 1)
+  )$with_columns(
+    pl$col("dt")$str$strptime(pl$Datetime("ms"), format = NULL)
+  )
+
+  expect_query_equal(
+    .input$rolling(index_column = "dt", period = "2d")$agg(
+      pl$sum("a")$alias("sum_a"),
+      pl$min("a")$alias("min_a"),
+      pl$max("a")$alias("max_a")
+    )$select("sum_a", "min_a", "max_a"),
+    .input = df,
+    pl$DataFrame(
+      sum_a = c(3, 10, 15, 24, 11, 1),
+      min_a = c(3, 3, 3, 3, 2, 1),
+      max_a = c(3, 7, 7, 9, 9, 1)
+    )
+  )
+})
+
+test_that("rolling: integer variable", {
+  df <- pl$DataFrame(
+    index = c(1L, 2L, 3L, 4L, 8L, 9L),
+    a = c(3, 7, 5, 9, 2, 1)
+  )
+  expect_query_equal(
+    .input$rolling(index_column = "index", period = "2i")$agg(
+      pl$sum("a")$alias("sum_a"),
+      pl$min("a")$alias("min_a"),
+      pl$max("a")$alias("max_a")
+    )$select("sum_a", "min_a", "max_a"),
+    .input = df,
+    pl$DataFrame(
+      sum_a = c(3, 10, 12, 14, 2, 3),
+      min_a = c(3, 3, 5, 5, 2, 1),
+      max_a = c(3, 7, 7, 9, 2, 2)
+    )
+  )
+})
+
+test_that("rolling: using difftime as period", {
+  df <- pl$DataFrame(
+    dt = c(
+      "2020-01-01", "2020-01-01", "2020-01-01",
+      "2020-01-02", "2020-01-03", "2020-01-08"
+    ),
+    a = c(3, 7, 5, 9, 2, 1)
+  )$with_columns(
+    pl$col("dt")$str$strptime(pl$Date, format = NULL)
+  )
+
+  expect_query_equal(
+    .input$rolling(
+      index_column = "dt", period = as.difftime(2, units = "days")
+    )$agg(
+      pl$sum("a")$alias("sum_a")
+    ),
+    .input = df,
+    df$rolling(index_column = "dt", period = "2d")$agg(
+      pl$sum("a")$alias("sum_a")
+    )
+  )
+})
+
+test_that("rolling: error if period is negative", {
+  df <- pl$DataFrame(
+    index = c(1L, 2L, 3L, 4L, 8L, 9L),
+    a = c(3, 7, 5, 9, 2, 1)
+  )
+  expect_error(
+    df$rolling(index_column = "index", period = "-2i")$agg(pl$col("a"))$collect(),
+    "rolling window period should be strictly positive"
+  )
+})
+
+test_that("rolling: argument 'group_by' works", {
+  df <- pl$DataFrame(
+    index = c(1L, 2L, 3L, 4L, 8L, 9L),
+    grp = c("a", "a", rep("b", 4)),
+    a = c(3, 7, 5, 9, 2, 1)
+  )
+
+  expect_query_equal(
+    .input$rolling(index_column = "index", period = "2i", group_by = pl$col("grp"))$agg(
+      pl$sum("a")$alias("sum_a"),
+      pl$min("a")$alias("min_a"),
+      pl$max("a")$alias("max_a")
+    )$select("sum_a", "min_a", "max_a"),
+    .input = df,
+    pl$DataFrame(
+      sum_a = c(3, 10, 5, 14, 2, 3),
+      min_a = c(3, 3, 5, 5, 2, 1),
+      max_a = c(3, 7, 5, 9, 2, 2)
+    )
+  )
+
+  # string is parsed as column name in "group_by"
+  expect_query_equal(
+    .input$rolling(index_column = "index", period = "2i", group_by = "grp")$agg(
+      pl$sum("a")$alias("sum_a")
+    ),
+    .input = df,
+    df$rolling(index_column = "index", period = "2i", group_by = pl$col("grp"))$agg(
+      pl$sum("a")$alias("sum_a")
+    )
+  )
+})
+
+test_that("rolling: error if index not int or date/time", {
+  df <- pl$DataFrame(
+    index = c(1:5, 6.0),
+    a = c(3, 7, 5, 9, 2, 1)
+  )
+
+  expect_error(
+    df$rolling(index_column = "index", period = "2i")$agg(
+      pl$sum("a")$alias("sum_a")
+    ),
+    "unsupported data type"
+  )
+})
+
+test_that("rolling: arg 'offset' works", {
+  df <- pl$DataFrame(
+    dt = c(
+      "2020-01-01", "2020-01-01", "2020-01-01",
+      "2020-01-02", "2020-01-03", "2020-01-08"
+    ),
+    a = c(3, 7, 5, 9, 2, 1)
+  )$with_columns(
+    pl$col("dt")$str$strptime(pl$Date, format = NULL)
+  )
+
+  expect_query_equal(
+    .input$rolling(index_column = "dt", period = "2d", offset = "1d")$agg(
+      pl$sum("a")$alias("sum_a"),
+      pl$min("a")$alias("min_a"),
+      pl$max("a")$alias("max_a")
+    )$select("sum_a", "min_a", "max_a"),
+    .input = df,
+    pl$DataFrame(
+      sum_a = c(2, 2, 2, NA, NA, NA),
+      min_a = c(2, 2, 2, NA, NA, NA),
+      max_a = c(2, 2, 2, NA, NA, NA)
+    )
+  )
+})
