@@ -3,6 +3,8 @@ Title: R Bindings for the 'polars' Rust Library
 Version: 0.0.0.9000
 Authors@R: c(
     person("Tatsuya", "Shima", , "ts1s1andn@gmail.com", role = c("aut", "cre")),
+    person("Etienne", "Bacher", , "etienne.bacher@protonmail.com", role = "aut",
+           comment = c(ORCID = "0000-0002-9271-5075")),
     person("Authors of the dependency Rust crates", role = "aut")
   )
 Description: Lightning-fast 'DataFrame' library written in 'Rust'. Convert
