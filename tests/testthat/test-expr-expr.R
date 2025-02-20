@@ -2384,52 +2384,51 @@ test_that("unique_counts", {
   }
 })
 
-# TODO-REWRITE: requires $unnest()
-# test_that("$value_counts", {
-#   df <- as_polars_df(iris)
+test_that("$value_counts", {
+  df <- as_polars_df(iris)
 
-#   expect_equal(
-#     df$select(pl$col("Species")$value_counts())$
-#       unnest()$
-#       sort("Species"),
-#     pl$DataFrame(
-#       Species = factor(c("setosa", "versicolor", "virginica")),
-#       count = rep(50, 3)
-#     )
-#   )
+  expect_equal(
+    df$select(pl$col("Species")$value_counts())$
+      unnest("Species")$
+      sort("Species"),
+    pl$DataFrame(
+      Species = factor(c("setosa", "versicolor", "virginica")),
+      count = rep(50, 3)
+    )$cast(count = pl$UInt32)
+  )
 
-#   # arg "name"
-#   expect_equal(
-#     df$select(pl$col("Species")$value_counts(name = "foobar"))$
-#       unnest()$
-#       sort("Species"),
-#     pl$DataFrame(
-#       Species = factor(c("setosa", "versicolor", "virginica")),
-#       foobar = rep(50, 3)
-#     )
-#   )
+  # arg "name"
+  expect_equal(
+    df$select(pl$col("Species")$value_counts(name = "foobar"))$
+      unnest("Species")$
+      sort("Species"),
+    pl$DataFrame(
+      Species = factor(c("setosa", "versicolor", "virginica")),
+      foobar = rep(50, 3)
+    )$cast(foobar = pl$UInt32)
+  )
 
-#   # arg "sort"
-#   expect_equal(
-#     df$select(pl$col("Species")$value_counts(sort = TRUE))$
-#       unnest(),
-#     pl$DataFrame(
-#       Species = factor(c("setosa", "versicolor", "virginica")),
-#       count = rep(50, 3)
-#     )
-#   )
+  # arg "sort"
+  expect_equal(
+    df$select(pl$col("Species")$value_counts(sort = TRUE))$
+      unnest("Species"),
+    pl$DataFrame(
+      Species = factor(c("setosa", "versicolor", "virginica")),
+      count = rep(50, 3)
+    )$cast(count = pl$UInt32)
+  )
 
-#   # arg "normalize"
-#   expect_equal(
-#     df$select(pl$col("Species")$value_counts(normalize = TRUE))$
-#       unnest()$
-#       sort("Species"),
-#     pl$DataFrame(
-#       Species = factor(c("setosa", "versicolor", "virginica")),
-#       proportion = rep(0.33333333, 3)
-#     )
-#   )
-# })
+  # arg "normalize"
+  expect_equal(
+    df$select(pl$col("Species")$value_counts(normalize = TRUE))$
+      unnest("Species")$
+      sort("Species"),
+    pl$DataFrame(
+      Species = factor(c("setosa", "versicolor", "virginica")),
+      proportion = rep(0.33333333, 3)
+    )
+  )
+})
 
 test_that("entropy", {
   # https://stackoverflow.com/questions/27254550/calculating-entropy
@@ -2770,17 +2769,16 @@ test_that("replace_strict works", {
   )
 })
 
-# TODO-REWRITE: requires $unnest()
-# test_that("rle works", {
-#   df <- pl$DataFrame(s = c(1, 1, 2, 1, NA, 1, 3, 3))
-#   expect_equal(
-#     df$select(pl$col("s")$rle())$unnest("s"),
-#     pl$DataFrame(
-#       len = c(2, 1, 1, 1, 1, 2),
-#       value = c(1, 2, 1, NA, 1, 3)
-#     )
-#   )
-# })
+test_that("rle works", {
+  df <- pl$DataFrame(s = c(1, 1, 2, 1, NA, 1, 3, 3))
+  expect_equal(
+    df$select(pl$col("s")$rle())$unnest("s"),
+    pl$DataFrame(
+      len = c(2, 1, 1, 1, 1, 2),
+      value = c(1, 2, 1, NA, 1, 3)
+    )$cast(len = pl$UInt32)
+  )
+})
 
 test_that("rle_id works", {
   df <- pl$DataFrame(s = c(1, 1, 2, 1, NA, 1, 3, 3))
@@ -2793,44 +2791,43 @@ test_that("rle_id works", {
   )
 })
 
-# TODO-REWRITE: requires $unnest()
-# test_that("cut works", {
-#   df <- pl$DataFrame(foo = c(-2, -1, 0, 1, 2))
+test_that("cut works", {
+  df <- pl$DataFrame(foo = c(-2, -1, 0, 1, 2))
 
-#   expect_equal(
-#     df$select(
-#       cut = pl$col("foo")$cut(c(-1, 1), labels = c("a", "b", "c"))
-#     ),
-#     pl$DataFrame(cut = factor(c("a", "a", "b", "b", "c")))
-#   )
+  expect_equal(
+    df$select(
+      cut = pl$col("foo")$cut(c(-1, 1), labels = c("a", "b", "c"))
+    ),
+    pl$DataFrame(cut = factor(c("a", "a", "b", "b", "c")))
+  )
 
-#   expect_equal(
-#     df$select(
-#       cut = pl$col("foo")$cut(c(-1, 1), labels = c("a", "b", "c"), left_closed = TRUE)
-#     ),
-#     pl$DataFrame(cut = factor(c("a", "b", "b", "c", "c")))
-#   )
+  expect_equal(
+    df$select(
+      cut = pl$col("foo")$cut(c(-1, 1), labels = c("a", "b", "c"), left_closed = TRUE)
+    ),
+    pl$DataFrame(cut = factor(c("a", "b", "b", "c", "c")))
+  )
 
-#   expect_equal(
-#     df$select(
-#       cut = pl$col("foo")$cut(c(-1, 1), include_breaks = TRUE)
-#     )$unnest("cut"),
-#     pl$DataFrame(
-#       breakpoint = c(-1, -1, 1, 1, Inf),
-#       category = factor(c("(-inf, -1]", "(-inf, -1]", "(-1, 1]", "(-1, 1]", "(1, inf]"))
-#     )
-#   )
+  expect_equal(
+    df$select(
+      cut = pl$col("foo")$cut(c(-1, 1), include_breaks = TRUE)
+    )$unnest("cut"),
+    pl$DataFrame(
+      breakpoint = c(-1, -1, 1, 1, Inf),
+      category = factor(c("(-inf, -1]", "(-inf, -1]", "(-1, 1]", "(-1, 1]", "(1, inf]"))
+    )
+  )
 
-#   expect_equal(
-#     df$select(
-#       cut = pl$col("foo")$cut(c(-1, 1), include_breaks = TRUE, left_closed = TRUE)
-#     )$unnest("cut"),
-#     pl$DataFrame(
-#       breakpoint = c(-1, 1, 1, Inf, Inf),
-#       category = factor(c("[-inf, -1)", "[-1, 1)", "[-1, 1)", "[1, inf)", "[1, inf)"))
-#     )
-#   )
-# })
+  expect_equal(
+    df$select(
+      cut = pl$col("foo")$cut(c(-1, 1), include_breaks = TRUE, left_closed = TRUE)
+    )$unnest("cut"),
+    pl$DataFrame(
+      breakpoint = c(-1, 1, 1, Inf, Inf),
+      category = factor(c("[-inf, -1)", "[-1, 1)", "[-1, 1)", "[1, inf)", "[1, inf)"))
+    )
+  )
+})
 
 test_that("qcut works", {
   df <- pl$DataFrame(foo = c(-2, -1, 0, 1, 2))
@@ -2842,13 +2839,12 @@ test_that("qcut works", {
     pl$DataFrame(qcut = factor(c("a", "a", "b", "b", "c")))
   )
 
-  # TODO-REWRITE: requires $unnest()
-  # expect_equal(
-  #   df$select(
-  #     qcut = pl$col("foo")$qcut(c(0.25, 0.75), labels = c("a", "b", "c"), include_breaks = TRUE)
-  #   )$unnest("qcut"),
-  #   pl$DataFrame(breakpoint = c(-1, -1, 1, 1, Inf), category = factor(c("a", "a", "b", "b", "c")))
-  # )
+  expect_equal(
+    df$select(
+      qcut = pl$col("foo")$qcut(c(0.25, 0.75), labels = c("a", "b", "c"), include_breaks = TRUE)
+    )$unnest("qcut"),
+    pl$DataFrame(breakpoint = c(-1, -1, 1, 1, Inf), category = factor(c("a", "a", "b", "b", "c")))
+  )
 
   expect_equal(
     df$select(

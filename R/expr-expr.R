@@ -2298,8 +2298,8 @@ expr__hist <- function(
 #' @param parallel Execute the computation in parallel. This option should
 #' likely not be enabled in a group by context, as the computation is already
 #' parallelized per group.
-#' @param name Give the resulting count field a specific name. Default is
-#' `"count"`.
+#' @param name Give the resulting count field a specific name. If `normalize`
+#' is `TRUE` it defaults to `"proportion"`, otherwise it defaults to `"count"`.
 #' @param normalize If `TRUE`, gives relative frequencies of the unique values.
 #'
 #' @inherit as_polars_expr return
@@ -2311,15 +2311,22 @@ expr__hist <- function(
 #' df <- df$select(pl$col("color")$value_counts(sort = TRUE, name = "n"))
 #' df
 #'
-#' df$unnest()
+#' df$unnest("n")
 expr__value_counts <- function(
     ...,
     sort = FALSE,
     parallel = FALSE,
-    name = "count",
+    name = NULL,
     normalize = FALSE) {
   wrap({
     check_dots_empty0(...)
+    if (is.null(name)) {
+      if (isTRUE(normalize)) {
+        name <- "proportion"
+      } else {
+        name <- "count"
+      }
+    }
     self$`_rexpr`$value_counts(sort, parallel, name, normalize)
   })
 }
