@@ -41,5 +41,5 @@ df$select(pl$col("color")$value_counts())
 df <- df$select(pl$col("color")$value_counts(sort = TRUE, name = "n"))
 df
 
-df$unnest("n")
+df$unnest("color")
 }

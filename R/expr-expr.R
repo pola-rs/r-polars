@@ -2317,7 +2317,7 @@ expr__hist <- function(
 #' df <- df$select(pl$col("color")$value_counts(sort = TRUE, name = "n"))
 #' df
 #'
-#' df$unnest("n")
+#' df$unnest("color")
 expr__value_counts <- function(
     ...,
     sort = FALSE,
