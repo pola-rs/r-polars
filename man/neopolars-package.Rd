@@ -13,6 +13,7 @@ Lightning-fast 'DataFrame' library written in 'Rust'. Convert R data to 'Polars'
 
 Authors:
 \itemize{
+  \item Etienne Bacher \email{etienne.bacher@protonmail.com} (\href{https://orcid.org/0000-0002-9271-5075}{ORCID})
   \item Authors of the dependency Rust crates
 }
 
