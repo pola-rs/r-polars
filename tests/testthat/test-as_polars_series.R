@@ -42,7 +42,7 @@ patrick::with_parameters_test_that(
         "NULL", NULL, "", pl$Null,
         "list", list("foo", 1L, NULL, NA, vctrs::unspecified(), as_polars_series(NULL), list(NULL)), "", pl$List(pl$String),
         "list (casting failed)", list(list("bar"), "foo"), "", pl$List(pl$String),
-        "numeric_version", numeric_version(c(NA, "4.2.2")), "", pl$List(pl$Int32),
+        "numeric_version", numeric_version(c(NA, "4.2.2"), strict = FALSE), "", pl$List(pl$Int32),
         "numeric_version (0-length)", numeric_version(character()), "", pl$List(pl$Int32),
         "AsIs", I(1L), "", pl$Int32,
         "data.frame", data.frame(x = 1L, y = TRUE), "", pl$Struct(x = pl$Int32, y = pl$Boolean),
