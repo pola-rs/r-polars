@@ -1654,7 +1654,7 @@ dataframe__is_empty <- function() {
   self$`_df`$is_empty() |>
     wrap()
 }
-                    
+
 #' @inherit lazyframe__rolling title description params
 #'
 #' @return [RollingGroupBy][RollingGroupBy_class] (a DataFrame with special
@@ -1697,4 +1697,4 @@ dataframe__rolling <- function(
       group_by = group_by
     )
   })
-})
+}
