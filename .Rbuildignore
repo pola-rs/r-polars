@@ -4,6 +4,7 @@
 ^LICENSE\.md$
 ^\.task$
 ^Taskfile\.yml$
+^\.editorconfig$
 
 ^src/Makevars$
 ^src/rust/.cargo$
