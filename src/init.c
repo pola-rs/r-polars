@@ -324,6 +324,21 @@ SEXP savvy_PlRDataFrame_init__impl(SEXP c_arg__columns) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRDataFrame_is_duplicated__impl(SEXP self__) {
+    SEXP res = savvy_PlRDataFrame_is_duplicated__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRDataFrame_is_empty__impl(SEXP self__) {
+    SEXP res = savvy_PlRDataFrame_is_empty__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRDataFrame_is_unique__impl(SEXP self__) {
+    SEXP res = savvy_PlRDataFrame_is_unique__ffi(self__);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRDataFrame_lazy__impl(SEXP self__) {
     SEXP res = savvy_PlRDataFrame_lazy__ffi(self__);
     return handle_result(res);
@@ -2894,6 +2909,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRDataFrame_head__impl", (DL_FUNC) &savvy_PlRDataFrame_head__impl, 2},
     {"savvy_PlRDataFrame_height__impl", (DL_FUNC) &savvy_PlRDataFrame_height__impl, 1},
     {"savvy_PlRDataFrame_init__impl", (DL_FUNC) &savvy_PlRDataFrame_init__impl, 1},
+    {"savvy_PlRDataFrame_is_duplicated__impl", (DL_FUNC) &savvy_PlRDataFrame_is_duplicated__impl, 1},
+    {"savvy_PlRDataFrame_is_empty__impl", (DL_FUNC) &savvy_PlRDataFrame_is_empty__impl, 1},
+    {"savvy_PlRDataFrame_is_unique__impl", (DL_FUNC) &savvy_PlRDataFrame_is_unique__impl, 1},
     {"savvy_PlRDataFrame_lazy__impl", (DL_FUNC) &savvy_PlRDataFrame_lazy__impl, 1},
     {"savvy_PlRDataFrame_n_chunks__impl", (DL_FUNC) &savvy_PlRDataFrame_n_chunks__impl, 1},
     {"savvy_PlRDataFrame_partition_by__impl", (DL_FUNC) &savvy_PlRDataFrame_partition_by__impl, 4},

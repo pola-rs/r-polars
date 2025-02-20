@@ -259,4 +259,26 @@ impl PlRDataFrame {
 
         Ok(out.into())
     }
+
+    pub fn is_unique(&self) -> Result<PlRSeries> {
+        Ok(self
+            .df
+            .is_unique()
+            .map_err(RPolarsErr::from)?
+            .into_series()
+            .into())
+    }
+
+    pub fn is_duplicated(&self) -> Result<PlRSeries> {
+        Ok(self
+            .df
+            .is_duplicated()
+            .map_err(RPolarsErr::from)?
+            .into_series()
+            .into())
+    }
+
+    pub fn is_empty(&self) -> Result<Sexp> {
+        self.df.is_empty().try_into()
+    }
 }

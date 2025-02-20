@@ -33,4 +33,5 @@ df <- pl$DataFrame(
 )
 
 df$rename(foo = "apple")
+#  \(column_name) paste0("c", substr(column_name, 2, 100))
 }

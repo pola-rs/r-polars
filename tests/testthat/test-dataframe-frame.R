@@ -323,3 +323,36 @@ test_that("*_horizontal() functions work", {
     pl$Series("max", c(4, 5, 6))
   )
 })
+
+test_that("is_unique() works", {
+  df <- pl$DataFrame(
+    a = c(1, 2, 3, 1),
+    b = c("x", "y", "z", "x")
+  )
+  expect_equal(
+    df$is_unique(),
+    pl$Series("", c(FALSE, TRUE, TRUE, FALSE))
+  )
+})
+
+test_that("is_duplicated() works", {
+  df <- pl$DataFrame(
+    a = c(1, 2, 3, 1),
+    b = c("x", "y", "z", "x")
+  )
+  expect_equal(
+    df$is_duplicated(),
+    pl$Series("", c(TRUE, FALSE, FALSE, TRUE))
+  )
+})
+
+test_that("is_empty() works", {
+  df <- pl$DataFrame(
+    a = c(1, 2, 3, 1),
+    b = c("x", "y", "z", "x")
+  )
+  expect_false(df$is_empty())
+
+  df <- pl$DataFrame(a = NULL, b = NULL)
+  expect_true(df$is_empty())
+})

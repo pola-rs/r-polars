@@ -434,6 +434,24 @@ class(`PlRChainedWhen`) <- c("PlRChainedWhen__bundle", "savvy_neopolars__sealed"
   }
 }
 
+`PlRDataFrame_is_duplicated` <- function(self) {
+  function() {
+    .savvy_wrap_PlRSeries(.Call(savvy_PlRDataFrame_is_duplicated__impl, `self`))
+  }
+}
+
+`PlRDataFrame_is_empty` <- function(self) {
+  function() {
+    .Call(savvy_PlRDataFrame_is_empty__impl, `self`)
+  }
+}
+
+`PlRDataFrame_is_unique` <- function(self) {
+  function() {
+    .savvy_wrap_PlRSeries(.Call(savvy_PlRDataFrame_is_unique__impl, `self`))
+  }
+}
+
 `PlRDataFrame_lazy` <- function(self) {
   function() {
     .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRDataFrame_lazy__impl, `self`))
@@ -536,6 +554,9 @@ class(`PlRChainedWhen`) <- c("PlRChainedWhen__bundle", "savvy_neopolars__sealed"
   e$`get_columns` <- `PlRDataFrame_get_columns`(ptr)
   e$`head` <- `PlRDataFrame_head`(ptr)
   e$`height` <- `PlRDataFrame_height`(ptr)
+  e$`is_duplicated` <- `PlRDataFrame_is_duplicated`(ptr)
+  e$`is_empty` <- `PlRDataFrame_is_empty`(ptr)
+  e$`is_unique` <- `PlRDataFrame_is_unique`(ptr)
   e$`lazy` <- `PlRDataFrame_lazy`(ptr)
   e$`n_chunks` <- `PlRDataFrame_n_chunks`(ptr)
   e$`partition_by` <- `PlRDataFrame_partition_by`(ptr)
