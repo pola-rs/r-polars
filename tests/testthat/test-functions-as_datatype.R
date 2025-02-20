@@ -67,3 +67,41 @@ test_that("concat_str", {
     error = TRUE
   )
 })
+
+test_that("pl$struct()", {
+  df <- pl$DataFrame(
+    int = 1:2,
+    str = c("a", "b"),
+    bool = c(TRUE, NA),
+    list = list(1:2, 3L),
+  )
+  expect_equal(
+    df$select(pl$struct(pl$all())$alias("my_struct"))$unnest("my_struct"),
+    df
+  )
+  expect_equal(
+    df$select(pl$struct("int", FALSE)$alias("my_struct"))$unnest("my_struct"),
+    df$select("int", literal = FALSE)
+  )
+  expect_equal(
+    df$select(pl$struct(p = "int", q = "bool")$alias("my_struct"))$unnest("my_struct"),
+    df$select(p = "int", q = "bool")
+  )
+  struct_schema <- list(int = pl$UInt32, list = pl$List(pl$Float32))
+  expect_equal(
+    df$select(
+      my_struct = pl$struct(pl$col("int", "list"), .schema = struct_schema)
+    )$unnest("my_struct"),
+    df$select("int", "list")$cast(int = pl$UInt32, list = pl$List(pl$Float32))
+  )
+  expect_equal(
+    df$select(
+      my_struct = pl$struct(.schema = struct_schema)
+    )$unnest("my_struct"),
+    df$select("int", "list")$cast(int = pl$UInt32, list = pl$List(pl$Float32))
+  )
+  expect_error(
+    df$select(my_struct = pl$struct(.schema = list(a = 1))),
+    "must be a list of polars data types"
+  )
+})

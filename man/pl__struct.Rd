@@ -4,7 +4,7 @@
 \alias{pl__struct}
 \title{Collect columns into a struct column}
 \usage{
-pl__struct(...)
+pl__struct(..., .schema = NULL)
 }
 \arguments{
 \item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}>
@@ -12,6 +12,10 @@ Name-value pairs of objects to be converted to polars \link[=Expr]{expressions}
 by the \code{\link[=as_polars_expr]{as_polars_expr()}} function.
 Characters are parsed as column names, other non-expression inputs are parsed as \link[=pl__lit]{literals}.
 Each name will be used as the expression name.}
+
+\item{.schema}{Optional schema that explicitly defines the struct field
+dtypes. If no columns or expressions are provided, \code{.schema} keys are used
+to define columns.}
 }
 \value{
 A polars \link{expression}
@@ -20,7 +24,7 @@ A polars \link{expression}
 Collect columns into a struct column
 }
 \examples{
-# Collect all columns of a dataframe into a struct by passing pl.all().
+# Collect all columns of a dataframe into a struct by passing pl$all().
 df <- pl$DataFrame(
   int = 1:2,
   str = c("a", "b"),
@@ -29,6 +33,16 @@ df <- pl$DataFrame(
 )
 df$select(pl$struct(pl$all())$alias("my_struct"))
 
+# Collect selected columns into a struct by either passing a list of
+# columns, or by specifying each column as a positional argument.
+df$select(pl$struct("int", FALSE)$alias("my_struct"))
+
 # Name each struct field.
 df$select(pl$struct(p = "int", q = "bool")$alias("my_struct"))$schema
+
+# Pass a schema to specify the datatype of each field in the struct:
+struct_schema <- list(int = pl$UInt32, list = pl$List(pl$Float32))
+df$select(
+  new_struct = pl$struct(pl$col("int", "list"), .schema = struct_schema)
+)$unnest("new_struct")
 }

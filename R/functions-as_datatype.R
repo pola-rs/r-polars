@@ -211,13 +211,16 @@ pl__duration <- function(
   })
 }
 
-# TODO: support `schema` argument
 #' Collect columns into a struct column
 #'
-#' @inherit as_polars_expr return
 #' @inheritParams lazyframe__select
+#' @param .schema Optional schema that explicitly defines the struct field
+#' dtypes. If no columns or expressions are provided, `.schema` keys are used
+#' to define columns.
+#'
+#' @inherit as_polars_expr return
 #' @examples
-#' # Collect all columns of a dataframe into a struct by passing pl.all().
+#' # Collect all columns of a dataframe into a struct by passing pl$all().
 #' df <- pl$DataFrame(
 #'   int = 1:2,
 #'   str = c("a", "b"),
@@ -226,12 +229,35 @@ pl__duration <- function(
 #' )
 #' df$select(pl$struct(pl$all())$alias("my_struct"))
 #'
+#' # Collect selected columns into a struct by either passing a list of
+#' # columns, or by specifying each column as a positional argument.
+#' df$select(pl$struct("int", FALSE)$alias("my_struct"))
+#'
 #' # Name each struct field.
 #' df$select(pl$struct(p = "int", q = "bool")$alias("my_struct"))$schema
-pl__struct <- function(...) {
-  parse_into_list_of_expressions(...) |>
-    as_struct() |>
-    wrap()
+#'
+#' # Pass a schema to specify the datatype of each field in the struct:
+#' struct_schema <- list(int = pl$UInt32, list = pl$List(pl$Float32))
+#' df$select(
+#'   new_struct = pl$struct(pl$col("int", "list"), .schema = struct_schema)
+#' )$unnest("new_struct")
+pl__struct <- function(..., .schema = NULL) {
+  wrap({
+    rexprs <- parse_into_list_of_expressions(...)
+    if (is.null(.schema)) {
+      as_struct(rexprs)
+    } else {
+      check_list_of_polars_dtype(.schema)
+      if (length(rexprs) == 0L) {
+        expr <- parse_into_list_of_expressions(!!!names(.schema)) |>
+          as_struct() |>
+          wrap()
+      } else {
+        expr <- wrap(as_struct(rexprs))
+      }
+      expr$cast(pl$Struct(!!!.schema), strict = FALSE)
+    }
+  })
 }
 
 #' Horizontally concatenate columns into a single list column
