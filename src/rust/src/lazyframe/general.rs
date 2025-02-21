@@ -328,8 +328,8 @@ impl PlRLazyFrame {
 
         let mut out = OwnedListSexp::new(2, true)?;
         unsafe {
-            let _ = out.set_value_unchecked(0, Sexp::try_from(data)?.0);
-            let _ = out.set_value_unchecked(1, Sexp::try_from(timings)?.0);
+            out.set_value_unchecked(0, Sexp::try_from(data)?.0);
+            out.set_value_unchecked(1, Sexp::try_from(timings)?.0);
         };
         Ok(out.into())
     }

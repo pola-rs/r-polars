@@ -10,6 +10,9 @@ crate-type = ["staticlib", "lib"]
 [profile.release]
 panic = "unwind"
 
+[lints.clippy]
+too_many_arguments = "allow"
+
 [dependencies]
 ciborium = "0.2"
 either = "1.11"

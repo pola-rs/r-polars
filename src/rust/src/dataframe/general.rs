@@ -38,8 +38,8 @@ impl PlRDataFrame {
         let cols: Vec<Series> = self
             .df
             .get_columns()
-            .to_vec()
-            .into_iter()
+            .iter()
+            .cloned()
             .map(|c| c.take_materialized_series())
             .collect();
         let len = cols.len();
@@ -200,12 +200,12 @@ impl PlRDataFrame {
             on: on
                 .to_vec()
                 .iter()
-                .map(|x| PlSmallStr::from_str(*x))
+                .map(|x| PlSmallStr::from_str(x))
                 .collect(),
             index: index
                 .to_vec()
                 .iter()
-                .map(|x| PlSmallStr::from_str(*x))
+                .map(|x| PlSmallStr::from_str(x))
                 .collect(),
             value_name: value_name.map(|s| s.into()),
             variable_name: variable_name.map(|s| s.into()),

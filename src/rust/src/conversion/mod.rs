@@ -93,8 +93,8 @@ impl TryFrom<&str> for Wrap<u8> {
         let mut utf8_byte_iter = string.as_bytes().iter();
         match (utf8_byte_iter.next(), utf8_byte_iter.next()) {
             (Some(s), None) => Ok(Wrap(*s)),
-            (None, None) => Err(format!("cannot extract single byte from empty string")),
-            (Some(_), Some(_)) => Err(format!("multi byte-string not allowed")),
+            (None, None) => Err("cannot extract single byte from empty string".to_string()),
+            (Some(_), Some(_)) => Err("multi byte-string not allowed".to_string()),
             (None, Some(_)) => unreachable!("the iter() cannot yield Some after None(depleted)"),
         }
     }
