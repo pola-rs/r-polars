@@ -5,6 +5,7 @@
 ^\.task$
 ^Taskfile\.yml$
 ^\.editorconfig$
+^air\.toml$
 
 ^src/Makevars$
 ^src/rust/.cargo$

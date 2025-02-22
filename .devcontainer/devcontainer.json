@@ -9,7 +9,8 @@
     "customizations": {
         "vscode": {
             "extensions": [
-                "EditorConfig.EditorConfig"
+                "EditorConfig.EditorConfig",
+                "Posit.air-vscode"
             ]
         }
     },
@@ -27,6 +28,7 @@
         "PKG_SYSREQS": "false"
     },
     "updateContentCommand": {
-        "setup-r-polars-requirements": "task setup-dev"
+        "setup-r-polars-requirements": "task setup-dev",
+        "install-air-cli": "curl -LsSf https://github.com/posit-dev/air/releases/latest/download/air-installer.sh | sh"
     }
 }
