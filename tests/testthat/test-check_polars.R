@@ -1,5 +1,6 @@
 patrick::with_parameters_test_that("check_polars functions work",
   .cases = {
+    # fmt: skip
     tibble::tribble(
       ~.test_name, ~is_func, ~check_func, ~ok_object,
       "dtype", is_polars_dtype, check_polars_dtype, pl$Int8,

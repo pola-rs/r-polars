@@ -1,4 +1,4 @@
-test_that("x argument can't be missing",{
+test_that("x argument can't be missing", {
   expect_error(as_polars_expr(), r"(The `x` argument of `as_polars_expr\(\)` can't be missing)")
 })
 
@@ -24,6 +24,7 @@ test_that("as_polars_expr for character `as_lit=FALSE`", {
 patrick::with_parameters_test_that(
   "as_polars_expr works for classes",
   .cases = {
+    # fmt: skip
     tibble::tribble(
       ~.test_name, ~x, ~expected_expr, ~expected_length,
       "chr (0)", character(), as_polars_expr(as_polars_series(character(), "literal")), 0,

@@ -63,6 +63,7 @@ patrick::with_parameters_test_that(
 
 patrick::with_parameters_test_that(
   "infer_polars_dtype() works for various objects",
+  # fmt: skip
   .cases = tibble::tribble(
     ~.test_name, ~x,
     "complex", 1i,

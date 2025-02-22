@@ -452,7 +452,7 @@
     Output
       Struct(`a`=Struct(`b`=Int32), `c`=String)
 
-# data types print Struct(Int8, ` ` = String, r"(`'")" = Int16)
+# data types print Struct(Int8, ` ` = String, "`'"" = Int16))
 
     Code
       print(class(object))

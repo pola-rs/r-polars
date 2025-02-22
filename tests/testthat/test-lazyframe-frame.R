@@ -787,6 +787,7 @@ test_that("fill_null(): basic usage", {
 
 patrick::with_parameters_test_that("fill_null(): arg 'strategy' works",
   .cases = {
+    # fmt: skip
     tibble::tribble(
       ~.strategy, ~.a, ~.b,
       "forward", c(1.5, 2, 2, NaN), c(1.5, 1.5, 1.5, 4),

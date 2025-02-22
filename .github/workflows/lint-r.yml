@@ -1,0 +1,33 @@
+name: Lint R
+
+on:
+  pull_request:
+    paths:
+      - "**/*.R"
+      - .github/workflows/lint-r.yml
+  push:
+    branches:
+      - main
+    paths:
+      - "**/*.R"
+      - .github/workflows/lint-r.yml
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  air-format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Air
+        run: curl -LsSf https://github.com/posit-dev/air/releases/latest/download/air-installer.sh | sh
+
+      - name: Run air format
+        run: air format --check .

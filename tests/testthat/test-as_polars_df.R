@@ -1,5 +1,8 @@
-test_that("x argument can't be missing",{
-  expect_error(as_polars_df(), r"(The `x` argument of `as_polars_df\(\)` can't be missing)")
+test_that("x argument can't be missing", {
+  expect_error(
+    as_polars_df(),
+    r"(The `x` argument of `as_polars_df\(\)` can't be missing)"
+  )
 })
 
 patrick::with_parameters_test_that(
@@ -7,6 +10,7 @@ patrick::with_parameters_test_that(
   .cases = {
     pldf <- pl$DataFrame(x = 1:2, y = c("a", "b"))
 
+    # fmt: skip
     tibble::tribble(
       ~.test_name, ~x,
       "polars_series", as_polars_series(1:2, "foo"),

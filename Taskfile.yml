@@ -11,6 +11,7 @@ vars:
   MANIFEST: src/rust/Cargo.toml
   CARGO_LOCK: src/rust/Cargo.lock
   R_SOURCE: R/*
+  R_TESTS: tests/*
   VIGNETTES: vignettes/**/*.Rmd
   RUST_SOURCE: src/rust/src/**/*.rs
 
@@ -56,6 +57,8 @@ tasks:
       - "{{.RUST_SOURCE}}"
     generates:
       - R/000-wrappers.R
+    deps:
+      - format-rust
     cmds:
       - savvy-cli update .
       - Rscript -e 'pkgbuild::compile_dll()'
@@ -87,6 +90,7 @@ tasks:
     deps:
       - build-rust
       - build-standalone-files
+      - format-r
     cmds:
       - Rscript -e
         '{{.R_FUNC_LOAD_REQUIRED_PKGS}};
@@ -158,3 +162,43 @@ tasks:
     desc: Accept all test snapshots. (Shortcut to accept snapshots after running tests)
     cmds:
       - Rscript -e 'testthat::snapshot_accept()'
+
+  format-all:
+    desc: Format all files.
+    aliases:
+      - fmt
+      - fmt-all
+    deps:
+      - format-r
+      - format-rust
+
+  format-r:
+    desc: Format R files.
+    aliases:
+      - fmt-r
+    sources:
+      - "{{.R_SOURCE}}"
+      - "{{.R_TESTS}}"
+      - air.toml
+      # These files are auto-generated and ignored by the formatter
+      - exclude: R/000-wrappers.R
+      - exclude: R/import-standalone-*.R
+    generates:
+      - "{{.R_SOURCE}}"
+      - "{{.R_TESTS}}"
+      - exclude: R/000-wrappers.R
+      - exclude: R/import-standalone-*.R
+    cmds:
+      - air format R/ tests/
+
+  format-rust:
+    desc: Format Rust files.
+    aliases:
+      - fmt-rust
+    sources:
+      - "{{.RUST_SOURCE}}"
+      - "{{.MANIFEST}}"
+    generates:
+      - "{{.RUST_SOURCE}}"
+    cmds:
+      - cargo fmt --all --manifest-path {{.MANIFEST}}
