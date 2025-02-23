@@ -49,6 +49,8 @@ tasks:
 
   build-rust:
     desc: Build the Rust library wrappers.
+    aliases:
+      - br
     sources:
       - src/Makevars*
       - configure*
@@ -80,6 +82,8 @@ tasks:
 
   build-documents:
     desc: Build the R package and generate documents.
+    aliases:
+      - bd
     sources:
       - DESCRIPTION
       - "{{.R_SOURCE}}"
