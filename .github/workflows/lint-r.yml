@@ -4,12 +4,14 @@ on:
   pull_request:
     paths:
       - "**/*.R"
+      - air.toml
       - .github/workflows/lint-r.yml
   push:
     branches:
       - main
     paths:
       - "**/*.R"
+      - air.toml
       - .github/workflows/lint-r.yml
   workflow_dispatch:
 
