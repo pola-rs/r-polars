@@ -526,7 +526,7 @@ RPolarsExpr$xor <- function(other) .Call(wrap__RPolarsExpr__xor, self, other)
 
 RPolarsExpr$to_physical <- function() .Call(wrap__RPolarsExpr__to_physical, self)
 
-RPolarsExpr$cast <- function(data_type, strict) .Call(wrap__RPolarsExpr__cast, self, data_type, strict)
+RPolarsExpr$cast <- function(data_type, strict, wrap_numerical) .Call(wrap__RPolarsExpr__cast, self, data_type, strict, wrap_numerical)
 
 RPolarsExpr$sort_with <- function(descending, nulls_last) .Call(wrap__RPolarsExpr__sort_with, self, descending, nulls_last)
 
