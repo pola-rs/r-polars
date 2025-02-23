@@ -42,9 +42,7 @@ test_that("struct$rename_fields", {
     bbb = c("ab", "cd"),
     ccc = c(TRUE, NA),
     ddd = list(1:2, 3)
-  )$
-    select(struct_col = pl$struct("aaa", "bbb", "ccc", "ddd"))$
-    select(
+  )$select(struct_col = pl$struct("aaa", "bbb", "ccc", "ddd"))$select(
     pl$col("struct_col")$struct$rename_fields(c("www", "xxx", "yyy", "zzz"))
   )
   expect_named(
@@ -74,9 +72,7 @@ test_that("struct$with_fields", {
     x = c(1, 4, 9),
     y = c(4, 9, 16),
     multiply = c(10, 2, 3)
-  )$
-    select(coords = pl$struct("x", "y"), "multiply")$
-    with_columns(
+  )$select(coords = pl$struct("x", "y"), "multiply")$with_columns(
     pl$col("coords")$struct$with_fields(
       y_mul = pl$field("y") * pl$col("multiply")
     )

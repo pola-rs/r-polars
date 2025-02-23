@@ -19,11 +19,12 @@
 #'   )
 #' )
 pl__time_range <- function(
-    start = NULL,
-    end = NULL,
-    interval = "1h",
-    ...,
-    closed = c("both", "left", "none", "right")) {
+  start = NULL,
+  end = NULL,
+  interval = "1h",
+  ...,
+  closed = c("both", "left", "none", "right")
+) {
   wrap({
     check_dots_empty0(...)
     closed <- arg_match0(closed, values = c("both", "left", "none", "right"))
@@ -59,11 +60,12 @@ pl__time_range <- function(
 #' )
 #' df$with_columns(time_range = pl$time_ranges("start", "end"))
 pl__time_ranges <- function(
-    start = NULL,
-    end = NULL,
-    interval = "1h",
-    ...,
-    closed = c("both", "left", "none", "right")) {
+  start = NULL,
+  end = NULL,
+  interval = "1h",
+  ...,
+  closed = c("both", "left", "none", "right")
+) {
   wrap({
     check_dots_empty0(...)
     closed <- arg_match0(closed, values = c("both", "left", "none", "right"))

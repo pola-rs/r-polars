@@ -168,16 +168,17 @@
 #'   series_datetime$to_r_vector(as_clock_class = TRUE)
 #' }
 series__to_r_vector <- function(
-    ...,
-    ensure_vector = FALSE,
-    int64 = c("double", "character", "integer", "integer64"),
-    date = c("Date", "IDate"),
-    time = c("hms", "ITime"),
-    struct = c("dataframe", "tibble"),
-    decimal = c("double", "character"),
-    as_clock_class = FALSE,
-    ambiguous = c("raise", "earliest", "latest", "null"),
-    non_existent = c("raise", "null")) {
+  ...,
+  ensure_vector = FALSE,
+  int64 = c("double", "character", "integer", "integer64"),
+  date = c("Date", "IDate"),
+  time = c("hms", "ITime"),
+  struct = c("dataframe", "tibble"),
+  decimal = c("double", "character"),
+  as_clock_class = FALSE,
+  ambiguous = c("raise", "earliest", "latest", "null"),
+  non_existent = c("raise", "null")
+) {
   wrap({
     check_dots_empty0(...)
 
@@ -196,22 +197,30 @@ series__to_r_vector <- function(
     # Ensure the bit64 package is loaded if int64 is set to 'integer64'
     if (identical(int64, "integer64")) {
       if (!is_bit64_installed()) {
-        abort("If the `int64` argument is set to 'integer64', the `bit64` package must be installed.")
+        abort(
+          "If the `int64` argument is set to 'integer64', the `bit64` package must be installed."
+        )
       }
     }
     if (identical(time, "ITime")) {
       if (!is_datatable_installed()) {
-        abort("If the `time` argument is set to 'ITime', the `data.table` package must be installed.")
+        abort(
+          "If the `time` argument is set to 'ITime', the `data.table` package must be installed."
+        )
       }
     }
     if (identical(struct, "tibble")) {
       if (!is_tibble_installed()) {
-        warn("If the `struct` argument is set to 'tibble', the `tibble` package is recommended to be installed.")
+        warn(
+          "If the `struct` argument is set to 'tibble', the `tibble` package is recommended to be installed."
+        )
       }
     }
     if (isTRUE(as_clock_class)) {
       if (!is_clock_installed()) {
-        abort("If the `as_clock_class` argument is set to `TRUE`, the `clock` package must be installed.")
+        abort(
+          "If the `as_clock_class` argument is set to `TRUE`, the `clock` package must be installed."
+        )
       }
     }
 

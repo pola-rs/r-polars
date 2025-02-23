@@ -83,7 +83,8 @@ test_that("how = 'vertical' works", {
   # works with Series
   expect_equal(
     pl$concat(
-      as_polars_series(1:2, "a"), as_polars_series(5:1, "b"),
+      as_polars_series(1:2, "a"),
+      as_polars_series(5:1, "b"),
       how = "vertical"
     ),
     as_polars_series(c(1:2, 5:1), "a")
@@ -119,8 +120,12 @@ test_that("how = 'horizontal' works", {
   expect_equal(
     pl$concat(df, df2, df3, how = "horizontal"),
     pl$DataFrame(
-      a = 1:2, b = letters[1:2], a2 = 1:2, b2 = letters[1:2],
-      a3 = 1:2, b3 = letters[1:2]
+      a = 1:2,
+      b = letters[1:2],
+      a2 = 1:2,
+      b2 = letters[1:2],
+      a3 = 1:2,
+      b3 = letters[1:2]
     )
   )
 
@@ -138,8 +143,12 @@ test_that("how = 'horizontal' works", {
   expect_equal(
     pl$concat(lf, lf2, lf3, how = "horizontal")$collect(),
     pl$DataFrame(
-      a = 1:2, b = letters[1:2], a2 = 1:2, b2 = letters[1:2],
-      a3 = 1:2, b3 = letters[1:2]
+      a = 1:2,
+      b = letters[1:2],
+      a2 = 1:2,
+      b2 = letters[1:2],
+      a3 = 1:2,
+      b3 = letters[1:2]
     )
   )
 
@@ -157,7 +166,9 @@ test_that("how = 'diagonal' works", {
   expect_equal(
     pl$concat(df, df2, how = "diagonal"),
     pl$DataFrame(
-      a = c(1:2, NA, NA), b = c(1:2, 1:2), b2 = c(NA, NA, "a", "b")
+      a = c(1:2, NA, NA),
+      b = c(1:2, 1:2),
+      b2 = c(NA, NA, "a", "b")
     )
   )
 
@@ -176,7 +187,9 @@ test_that("how = 'diagonal' works", {
   expect_equal(
     pl$concat(lf, lf2, how = "diagonal")$collect(),
     pl$DataFrame(
-      a = c(1:2, NA, NA), b = c(1:2, 1:2), b2 = c(NA, NA, "a", "b")
+      a = c(1:2, NA, NA),
+      b = c(1:2, 1:2),
+      b2 = c(NA, NA, "a", "b")
     )
   )
 
@@ -193,7 +206,9 @@ test_that("how = 'diagonal_relaxed' works", {
   expect_equal(
     pl$concat(df, df2, how = "diagonal_relaxed"),
     pl$DataFrame(
-      a = c(1:2, NA, NA), b = c("1", "2", "a", "b"), b2 = c(NA, NA, "a", "b")
+      a = c(1:2, NA, NA),
+      b = c("1", "2", "a", "b"),
+      b2 = c(NA, NA, "a", "b")
     )
   )
 
@@ -203,7 +218,9 @@ test_that("how = 'diagonal_relaxed' works", {
   expect_equal(
     pl$concat(lf, lf2, how = "diagonal_relaxed")$collect(),
     pl$DataFrame(
-      a = c(1:2, NA, NA), b = c("1", "2", "a", "b"), b2 = c(NA, NA, "a", "b")
+      a = c(1:2, NA, NA),
+      b = c("1", "2", "a", "b"),
+      b2 = c(NA, NA, "a", "b")
     )
   )
 })

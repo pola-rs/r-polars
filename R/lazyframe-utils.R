@@ -24,8 +24,10 @@ make_profile_plot <- function(data, truncate_nodes) {
   plot <- ggplot2::ggplot(
     timings,
     ggplot2::aes(
-      x = .data[["start"]], xend = .data[["end"]],
-      y = .data[["node"]], yend = .data[["node"]]
+      x = .data[["start"]],
+      xend = .data[["end"]],
+      y = .data[["node"]],
+      yend = .data[["node"]]
     )
   ) +
     ggplot2::geom_segment(linewidth = 6) +

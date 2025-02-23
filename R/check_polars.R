@@ -95,11 +95,12 @@ is_list_of_polars_dtype <- function(x, n = NULL) {
 #' @rdname check_polars
 #' @export
 check_polars_dtype <- function(
-    x,
-    ...,
-    allow_null = FALSE,
-    arg = caller_arg(x),
-    call = caller_env()) {
+  x,
+  ...,
+  allow_null = FALSE,
+  arg = caller_arg(x),
+  call = caller_env()
+) {
   if (!missing(x)) {
     if (is_polars_dtype(x)) {
       return(invisible(NULL))
@@ -123,11 +124,12 @@ check_polars_dtype <- function(
 #' @rdname check_polars
 #' @export
 check_polars_df <- function(
-    x,
-    ...,
-    allow_null = FALSE,
-    arg = caller_arg(x),
-    call = caller_env()) {
+  x,
+  ...,
+  allow_null = FALSE,
+  arg = caller_arg(x),
+  call = caller_env()
+) {
   if (!missing(x)) {
     if (is_polars_df(x)) {
       return(invisible(NULL))
@@ -151,11 +153,12 @@ check_polars_df <- function(
 #' @rdname check_polars
 #' @export
 check_polars_expr <- function(
-    x,
-    ...,
-    allow_null = FALSE,
-    arg = caller_arg(x),
-    call = caller_env()) {
+  x,
+  ...,
+  allow_null = FALSE,
+  arg = caller_arg(x),
+  call = caller_env()
+) {
   if (!missing(x)) {
     if (is_polars_expr(x)) {
       return(invisible(NULL))
@@ -179,11 +182,12 @@ check_polars_expr <- function(
 #' @rdname check_polars
 #' @export
 check_polars_lf <- function(
-    x,
-    ...,
-    allow_null = FALSE,
-    arg = caller_arg(x),
-    call = caller_env()) {
+  x,
+  ...,
+  allow_null = FALSE,
+  arg = caller_arg(x),
+  call = caller_env()
+) {
   if (!missing(x)) {
     if (is_polars_lf(x)) {
       return(invisible(NULL))
@@ -207,11 +211,12 @@ check_polars_lf <- function(
 #' @rdname check_polars
 #' @export
 check_polars_selector <- function(
-    x,
-    ...,
-    allow_null = FALSE,
-    arg = caller_arg(x),
-    call = caller_env()) {
+  x,
+  ...,
+  allow_null = FALSE,
+  arg = caller_arg(x),
+  call = caller_env()
+) {
   if (!missing(x)) {
     if (is_polars_selector(x)) {
       return(invisible(NULL))
@@ -235,11 +240,12 @@ check_polars_selector <- function(
 #' @rdname check_polars
 #' @export
 check_polars_series <- function(
-    x,
-    ...,
-    allow_null = FALSE,
-    arg = caller_arg(x),
-    call = caller_env()) {
+  x,
+  ...,
+  allow_null = FALSE,
+  arg = caller_arg(x),
+  call = caller_env()
+) {
   if (!missing(x)) {
     if (is_polars_series(x)) {
       return(invisible(NULL))
@@ -264,11 +270,12 @@ check_polars_series <- function(
 #' @rdname check_polars
 #' @export
 check_list_of_polars_dtype <- function(
-    x,
-    ...,
-    allow_null = FALSE,
-    arg = caller_arg(x),
-    call = caller_env()) {
+  x,
+  ...,
+  allow_null = FALSE,
+  arg = caller_arg(x),
+  call = caller_env()
+) {
   if (!missing(x)) {
     if (is_list_of_polars_dtype(x)) {
       return(invisible(NULL))

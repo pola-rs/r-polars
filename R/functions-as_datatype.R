@@ -56,17 +56,18 @@
 #'
 #' df$filter(pl$col("end") > pl$datetime(2024, 6, 1))
 pl__datetime <- function(
-    year,
-    month,
-    day,
-    hour = NULL,
-    minute = NULL,
-    second = NULL,
-    microsecond = NULL,
-    ...,
-    time_unit = c("us", "ns", "ms"),
-    time_zone = NULL,
-    ambiguous = c("raise", "earliest", "latest", "null")) {
+  year,
+  month,
+  day,
+  hour = NULL,
+  minute = NULL,
+  second = NULL,
+  microsecond = NULL,
+  ...,
+  time_unit = c("us", "ns", "ms"),
+  time_zone = NULL,
+  ambiguous = c("raise", "earliest", "latest", "null")
+) {
   wrap({
     check_dots_empty0(...)
 
@@ -154,16 +155,17 @@ pl__datetime <- function(
 #'   add_hours = pl$col("dt") + pl$duration(hours = pl$col("add"))
 #' )
 pl__duration <- function(
-    ...,
-    weeks = NULL,
-    days = NULL,
-    hours = NULL,
-    minutes = NULL,
-    seconds = NULL,
-    milliseconds = NULL,
-    microseconds = NULL,
-    nanoseconds = NULL,
-    time_unit = NULL) {
+  ...,
+  weeks = NULL,
+  days = NULL,
+  hours = NULL,
+  minutes = NULL,
+  seconds = NULL,
+  milliseconds = NULL,
+  microseconds = NULL,
+  nanoseconds = NULL,
+  time_unit = NULL
+) {
   wrap({
     check_dots_empty0(...)
 

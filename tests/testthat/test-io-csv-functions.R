@@ -27,7 +27,10 @@ test_that("works with URLs", {
 
   # multiple URL
   out <- pl$read_csv(
-    c("https://vincentarelbundock.github.io/Rdatasets/csv/AER/BenderlyZwick.csv", "https://vincentarelbundock.github.io/Rdatasets/csv/AER/BenderlyZwick.csv")
+    c(
+      "https://vincentarelbundock.github.io/Rdatasets/csv/AER/BenderlyZwick.csv",
+      "https://vincentarelbundock.github.io/Rdatasets/csv/AER/BenderlyZwick.csv"
+    )
   )
   expect_equal(dim(out), c(62, 6))
 })
@@ -37,8 +40,9 @@ test_that("args separator and eol work", {
   tmpf <- tempfile(fileext = ".csv")
   write.table(dat, tmpf, row.names = FALSE, sep = "|", eol = "#")
 
-  out <- pl$read_csv(tmpf, separator = "|", eol_char = "#")$
-    with_columns(pl$col("Species")$cast(pl$Categorical()))
+  out <- pl$read_csv(tmpf, separator = "|", eol_char = "#")$with_columns(pl$col(
+    "Species"
+  )$cast(pl$Categorical()))
   expect_equal(out, as_polars_df(iris))
 })
 
@@ -133,7 +137,8 @@ test_that("arg null_values works", {
   )
 
   expected <- pl$DataFrame(
-    a = c(1.5, 2), b = c(
+    a = c(1.5, 2),
+    b = c(
       NA_character_,
       NA_character_
     ),
@@ -185,8 +190,7 @@ test_that("multiple files works correctly if same schema", {
   write.csv(dat1, tmpf1, row.names = FALSE)
   write.csv(dat2, tmpf2, row.names = FALSE)
 
-  read <- pl$read_csv(c(tmpf1, tmpf2))$
-    with_columns(pl$col("Species")$cast(pl$Categorical()))
+  read <- pl$read_csv(c(tmpf1, tmpf2))$with_columns(pl$col("Species")$cast(pl$Categorical()))
   expect_equal(read, as_polars_df(iris))
 })
 

@@ -12,11 +12,11 @@ namespace_expr_arr <- function(x) {
   })
 
   class(self) <- c(
-    "polars_namespace_expr", "polars_object"
+    "polars_namespace_expr",
+    "polars_object"
   )
   self
 }
-
 
 
 #' Compute the sum of the sub-arrays

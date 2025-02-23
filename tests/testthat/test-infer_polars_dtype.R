@@ -49,15 +49,12 @@ patrick::with_parameters_test_that(
     )
   },
   code = {
-    withr::with_timezone(
-      "UTC",
-      {
-        expect_equal(
-          infer_polars_dtype(x),
-          as_polars_series(x)$dtype
-        )
-      }
-    )
+    withr::with_timezone("UTC", {
+      expect_equal(
+        infer_polars_dtype(x),
+        as_polars_series(x)$dtype
+      )
+    })
   }
 )
 

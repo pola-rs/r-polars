@@ -1,4 +1,5 @@
-patrick::with_parameters_test_that("check_polars functions work",
+patrick::with_parameters_test_that(
+  "check_polars functions work",
   .cases = {
     # fmt: skip
     tibble::tribble(

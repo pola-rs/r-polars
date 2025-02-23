@@ -38,11 +38,12 @@
 #'   )
 #' )
 pl__date_range <- function(
-    start,
-    end,
-    interval = "1d",
-    ...,
-    closed = c("both", "left", "none", "right")) {
+  start,
+  end,
+  interval = "1d",
+  ...,
+  closed = c("both", "left", "none", "right")
+) {
   wrap({
     check_dots_empty0(...)
     check_date_or_datetime(start)
@@ -89,11 +90,12 @@ pl__date_range <- function(
 #'   date_range_lit = pl$date_ranges("start", pl$lit(as.Date("2022-01-02")))
 #' )
 pl__date_ranges <- function(
-    start,
-    end,
-    interval = "1d",
-    ...,
-    closed = c("both", "left", "none", "right")) {
+  start,
+  end,
+  interval = "1d",
+  ...,
+  closed = c("both", "left", "none", "right")
+) {
   wrap({
     check_dots_empty0(...)
     check_date_or_datetime(start)

@@ -21,7 +21,9 @@ namespace_series_struct <- function(x) {
   })
 
   class(self) <- c(
-    "polars_namespace_series", "polars_struct_namespace", "polars_object"
+    "polars_namespace_series",
+    "polars_struct_namespace",
+    "polars_object"
   )
   self
 }

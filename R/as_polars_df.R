@@ -92,9 +92,11 @@ as_polars_df.default <- function(x, ...) {
 #' @rdname as_polars_df
 #' @export
 as_polars_df.polars_series <- function(
-    x, ...,
-    column_name = NULL,
-    from_struct = TRUE) {
+  x,
+  ...,
+  column_name = NULL,
+  from_struct = TRUE
+) {
   if (isTRUE(from_struct) && inherits(x$dtype, "polars_dtype_struct")) {
     x$struct$unnest()
   } else {
@@ -117,16 +119,19 @@ as_polars_df.polars_group_by <- function(x, ...) {
 #' @rdname as_polars_df
 #' @export
 as_polars_df.polars_lazy_frame <- function(
-    x, ..., type_coercion = TRUE,
-    predicate_pushdown = TRUE,
-    projection_pushdown = TRUE,
-    simplify_expression = TRUE,
-    slice_pushdown = TRUE,
-    comm_subplan_elim = TRUE,
-    comm_subexpr_elim = TRUE,
-    cluster_with_columns = TRUE,
-    no_optimization = FALSE,
-    streaming = FALSE) {
+  x,
+  ...,
+  type_coercion = TRUE,
+  predicate_pushdown = TRUE,
+  projection_pushdown = TRUE,
+  simplify_expression = TRUE,
+  slice_pushdown = TRUE,
+  comm_subplan_elim = TRUE,
+  comm_subexpr_elim = TRUE,
+  cluster_with_columns = TRUE,
+  no_optimization = FALSE,
+  streaming = FALSE
+) {
   x$collect(
     type_coercion = type_coercion,
     predicate_pushdown = predicate_pushdown,

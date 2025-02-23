@@ -230,7 +230,8 @@ test_that("decimal argument error", {
   )
 })
 
-patrick::with_parameters_test_that("datetime conversion to clock classes",
+patrick::with_parameters_test_that(
+  "datetime conversion to clock classes",
   .cases = {
     skip_if_not_installed("clock")
 
@@ -260,7 +261,8 @@ patrick::with_parameters_test_that("datetime conversion to clock classes",
   }
 )
 
-patrick::with_parameters_test_that("duration conversion to clock class",
+patrick::with_parameters_test_that(
+  "duration conversion to clock class",
   .cases = {
     skip_if_not_installed("clock")
 

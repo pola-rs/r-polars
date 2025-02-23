@@ -53,17 +53,18 @@
 # df_a3 <- pl$DataFrame(id = c(1L, 3L), z = 7:8)
 # pl$concat(df_a1, df_a2, df_a3, how = "align")
 pl__concat <- function(
-    ...,
-    how = c(
-      "vertical",
-      "vertical_relaxed",
-      "diagonal",
-      "diagonal_relaxed",
-      "horizontal",
-      "align"
-    ),
-    rechunk = FALSE,
-    parallel = TRUE) {
+  ...,
+  how = c(
+    "vertical",
+    "vertical_relaxed",
+    "diagonal",
+    "diagonal_relaxed",
+    "horizontal",
+    "align"
+  ),
+  rechunk = FALSE,
+  parallel = TRUE
+) {
   check_dots_unnamed()
   dots <- list2(...)
   how <- arg_match0(
@@ -84,7 +85,9 @@ pl__concat <- function(
 
   first <- dots[[1]]
 
-  if (length(dots) == 1 && (is_polars_df(first) || is_polars_series(first) || is_polars_lf(first))) {
+  if (
+    length(dots) == 1 && (is_polars_df(first) || is_polars_series(first) || is_polars_lf(first))
+  ) {
     return(first)
   }
 
@@ -118,9 +121,14 @@ pl__concat <- function(
       \(x, y) {
         x$join(
           y,
-          how = "full", on = common_cols, suffix = "_PL_CONCAT_RIGHT"
+          how = "full",
+          on = common_cols,
+          suffix = "_PL_CONCAT_RIGHT"
         )$with_columns(
-          !!!lapply(common_cols, \(col) pl$coalesce(pl$col(col), pl$col(paste0(col, "_PL_CONCAT_RIGHT"))))
+          !!!lapply(
+            common_cols,
+            \(col) pl$coalesce(pl$col(col), pl$col(paste0(col, "_PL_CONCAT_RIGHT")))
+          )
         )$drop(paste0(common_cols, "_PL_CONCAT_RIGHT"))
       },
       accumulate = TRUE
@@ -135,6 +143,7 @@ pl__concat <- function(
   }
 
   if (is_polars_df(first)) {
+    # fmt: skip
     out <- switch(how,
       vertical = {
         dots |>
@@ -181,6 +190,7 @@ pl__concat <- function(
       abort("Unreachable")
     )
   } else if (is_polars_lf(first)) {
+    # fmt: skip
     out <- switch(how,
       vertical = ,
       vertical_relaxed = {
@@ -211,6 +221,7 @@ pl__concat <- function(
     ) |>
       wrap()
   } else if (is_polars_series(first)) {
+    # fmt: skip
     out <- switch(how,
       vertical = {
         dots |>

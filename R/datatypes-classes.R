@@ -105,20 +105,28 @@ wrap.PlRDataType <- function(x, ...) {
 
   ## _inner is a pointer now, so it should be wrapped
   if (exists("_inner", envir = self)) {
-    makeActiveBinding("inner", function() {
-      .savvy_wrap_PlRDataType(self$`_inner`) |>
-        wrap()
-    }, self)
+    makeActiveBinding(
+      "inner",
+      function() {
+        .savvy_wrap_PlRDataType(self$`_inner`) |>
+          wrap()
+      },
+      self
+    )
   }
 
   ## _fields is a list of pointers now, so they should be wrapped
   if (exists("_fields", envir = self)) {
-    makeActiveBinding("fields", function() {
-      lapply(self$`_fields`, function(x) {
-        .savvy_wrap_PlRDataType(x) |>
-          wrap()
-      })
-    }, self)
+    makeActiveBinding(
+      "fields",
+      function() {
+        lapply(self$`_fields`, function(x) {
+          .savvy_wrap_PlRDataType(x) |>
+            wrap()
+        })
+      },
+      self
+    )
   }
 
   class(self) <- c(dtype_names, "polars_dtype", "polars_object")

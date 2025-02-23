@@ -79,7 +79,11 @@ POLARS_STORE_ENVS <- list(
 lapply(names(POLARS_STORE_ENVS), function(name) {
   target_env <- POLARS_STORE_ENVS[[name]]
   class(target_env) <- c("polars_object")
-  assign_objects_to_env(POLARS_STORE_ENVS[[name]], sprintf("^%s", name), search_env = parent.frame(2L))
+  assign_objects_to_env(
+    POLARS_STORE_ENVS[[name]],
+    sprintf("^%s", name),
+    search_env = parent.frame(2L)
+  )
 })
 
 # Avoid R CMD check's 'no visible binding for global variable' note

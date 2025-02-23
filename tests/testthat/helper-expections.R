@@ -60,13 +60,25 @@ expect_query_equal <- function(object, ...) {
 expect_query_error <- function(object, .input, regexp = NULL, class = NULL, .input2 = NULL, ...) {
   query <- rlang::enquo(object)
   expect_error(
-    rlang::eval_tidy(query, rlang::new_data_mask(rlang::env(.input = as_polars_lf(.input), .input2 = as_polars_lf(.input2))))$collect(),
+    rlang::eval_tidy(
+      query,
+      rlang::new_data_mask(rlang::env(
+        .input = as_polars_lf(.input),
+        .input2 = as_polars_lf(.input2)
+      ))
+    )$collect(),
     regexp = regexp,
     class = class,
     ...
   )
   expect_error(
-    rlang::eval_tidy(query, rlang::new_data_mask(rlang::env(.input = as_polars_df(.input), .input2 = as_polars_df(.input2)))),
+    rlang::eval_tidy(
+      query,
+      rlang::new_data_mask(rlang::env(
+        .input = as_polars_df(.input),
+        .input2 = as_polars_df(.input2)
+      ))
+    ),
     regexp = regexp,
     class = class,
     ...
@@ -78,13 +90,26 @@ expect_query_error <- function(object, .input, regexp = NULL, class = NULL, .inp
 #' Mix of `expect_query_equal()` and `expect_query_error()`
 #'
 #' The query only succeeds for DataFrame, but fails for LazyFrame.
-expect_eager_equal_lazy_error <- function(object, input, expected, regexp = NULL, class = NULL, ...) {
+expect_eager_equal_lazy_error <- function(
+  object,
+  input,
+  expected,
+  regexp = NULL,
+  class = NULL,
+  ...
+) {
   query <- rlang::enquo(object)
-  out_eager <- rlang::eval_tidy(query, rlang::new_data_mask(rlang::env(.input = as_polars_df(input))))
+  out_eager <- rlang::eval_tidy(
+    query,
+    rlang::new_data_mask(rlang::env(.input = as_polars_df(input)))
+  )
 
   expect_equal(out_eager, expected)
   expect_error(
-    rlang::eval_tidy(query, rlang::new_data_mask(rlang::env(.input = as_polars_lf(input))))$collect(),
+    rlang::eval_tidy(
+      query,
+      rlang::new_data_mask(rlang::env(.input = as_polars_lf(input)))
+    )$collect(),
     regexp = regexp,
     class = class,
     ...

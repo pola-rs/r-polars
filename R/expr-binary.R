@@ -117,6 +117,7 @@ expr_bin_decode <- function(encoding, ..., strict = TRUE) {
     check_dots_empty0(...)
     encoding <- arg_match0(encoding, c("hex", "base64"))
 
+    # fmt: skip
     switch(encoding,
       hex = self$`_rexpr`$bin_hex_decode(strict),
       base64 = self$`_rexpr`$bin_base64_decode(strict),
@@ -142,6 +143,7 @@ expr_bin_encode <- function(encoding) {
   wrap({
     encoding <- arg_match0(encoding, c("hex", "base64"))
 
+    # fmt: skip
     switch(encoding,
       hex = self$`_rexpr`$bin_hex_encode(),
       base64 = self$`_rexpr`$bin_base64_encode(),
@@ -171,6 +173,7 @@ expr_bin_size <- function(unit = c("b", "kb", "mb", "gb", "tb")) {
   wrap({
     unit <- arg_match0(unit, values = c("b", "kb", "mb", "gb", "tb"))
     sz <- self$`_rexpr`$bin_size_bytes()
+    # fmt: skip
     switch(unit,
       "b" = sz,
       "kb" = sz$div(as_polars_expr(1024)$`_rexpr`),

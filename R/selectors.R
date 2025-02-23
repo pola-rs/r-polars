@@ -793,8 +793,14 @@ cs__float <- function() {
 #' df$select(!cs$integer())
 cs__integer <- function() {
   list_dtypes <- list(
-    pl$Int8, pl$Int16, pl$Int32, pl$Int64,
-    pl$UInt8, pl$UInt16, pl$UInt32, pl$UInt64
+    pl$Int8,
+    pl$Int16,
+    pl$Int32,
+    pl$Int64,
+    pl$UInt8,
+    pl$UInt16,
+    pl$UInt32,
+    pl$UInt64
   )
   wrap_to_selector(
     pl$col(!!!list_dtypes),
@@ -889,9 +895,16 @@ cs__matches <- function(pattern) {
 #' df$select(!cs$numeric())
 cs__numeric <- function() {
   list_dtypes <- list(
-    pl$Float32, pl$Float64,
-    pl$Int8, pl$Int16, pl$Int32, pl$Int64,
-    pl$UInt8, pl$UInt16, pl$UInt32, pl$UInt64
+    pl$Float32,
+    pl$Float64,
+    pl$Int8,
+    pl$Int16,
+    pl$Int32,
+    pl$Int64,
+    pl$UInt8,
+    pl$UInt16,
+    pl$UInt32,
+    pl$UInt64
   )
   wrap_to_selector(
     pl$col(!!!list_dtypes),
@@ -1020,7 +1033,9 @@ cs__temporal <- function() {
     pl$col(!!!list_dtypes),
     name = "temporal",
     parameters = list_dtypes
-  ) | cs$datetime() | cs$duration()
+  ) |
+    cs$datetime() |
+    cs$duration()
 }
 
 #' Select all time columns

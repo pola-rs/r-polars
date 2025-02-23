@@ -12,7 +12,8 @@ namespace_expr_str <- function(x) {
   })
 
   class(self) <- c(
-    "polars_namespace_expr", "polars_object"
+    "polars_namespace_expr",
+    "polars_object"
   )
   self
 }
@@ -97,13 +98,14 @@ namespace_expr_str <- function(x) {
 #'   strict = FALSE
 #' ))
 expr_str_strptime <- function(
-    dtype,
-    format = NULL,
-    ...,
-    strict = TRUE,
-    exact = TRUE,
-    cache = TRUE,
-    ambiguous = c("raise", "earliest", "latest", "null")) {
+  dtype,
+  format = NULL,
+  ...,
+  strict = TRUE,
+  exact = TRUE,
+  cache = TRUE,
+  ambiguous = c("raise", "earliest", "latest", "null")
+) {
   wrap({
     check_dots_empty0(...)
     check_polars_dtype(dtype)
@@ -114,8 +116,12 @@ expr_str_strptime <- function(
           as_polars_expr(as_lit = TRUE)
       }
       self$`_rexpr`$str_to_datetime(
-        format = format, time_unit = dtype$time_unit, time_zone = dtype$time_zone,
-        strict = strict, exact = exact, cache = cache,
+        format = format,
+        time_unit = dtype$time_unit,
+        time_zone = dtype$time_zone,
+        strict = strict,
+        exact = exact,
+        cache = cache,
         ambiguous = ambiguous$`_rexpr`
       )
     } else if ("polars_dtype_date" %in% dtype_class) {
@@ -148,7 +154,10 @@ expr_str_to_date <- function(format = NULL, ..., strict = TRUE, exact = TRUE, ca
   wrap({
     check_dots_empty0(...)
     self$`_rexpr`$str_to_date(
-      format = format, strict = strict, exact = exact, cache = cache
+      format = format,
+      strict = strict,
+      exact = exact,
+      cache = cache
     )
   })
 }
@@ -191,14 +200,15 @@ expr_str_to_time <- function(format = NULL, ..., strict = TRUE, cache = TRUE) {
 #' df$select(pl$col("x")$str$to_datetime("%Y-%m-%d %H:%M%#z"))
 #' df$select(pl$col("x")$str$to_datetime(time_unit = "ms"))
 expr_str_to_datetime <- function(
-    format = NULL,
-    ...,
-    time_unit = NULL,
-    time_zone = NULL,
-    strict = TRUE,
-    exact = TRUE,
-    cache = TRUE,
-    ambiguous = c("raise", "earliest", "latest", "null")) {
+  format = NULL,
+  ...,
+  time_unit = NULL,
+  time_zone = NULL,
+  strict = TRUE,
+  exact = TRUE,
+  cache = TRUE,
+  ambiguous = c("raise", "earliest", "latest", "null")
+) {
   wrap({
     check_dots_empty0(...)
     if (!is_polars_expr(ambiguous)) {
@@ -206,8 +216,12 @@ expr_str_to_datetime <- function(
         as_polars_expr(as_lit = TRUE)
     }
     self$`_rexpr`$str_to_datetime(
-      format = format, time_unit = time_unit, time_zone = time_zone,
-      strict = strict, exact = exact, cache = cache,
+      format = format,
+      time_unit = time_unit,
+      time_zone = time_zone,
+      strict = strict,
+      exact = exact,
+      cache = cache,
       ambiguous = ambiguous$`_rexpr`
     )
   })
@@ -261,9 +275,10 @@ expr_str_len_chars <- function() {
 #'
 #' df$select(pl$col("foo")$str$join("-", ignore_nulls = FALSE))
 expr_str_join <- function(
-    delimiter = "",
-    ...,
-    ignore_nulls = TRUE) {
+  delimiter = "",
+  ...,
+  ignore_nulls = TRUE
+) {
   wrap({
     check_dots_empty0(...)
     self$`_rexpr`$str_join(delimiter, ignore_nulls)
@@ -271,9 +286,10 @@ expr_str_join <- function(
 }
 
 expr_str_concat <- function(
-    delimiter = "",
-    ...,
-    ignore_nulls = TRUE) {
+  delimiter = "",
+  ...,
+  ignore_nulls = TRUE
+) {
   deprecate_warn("$str$concat() is deprecated as of 0.18.0. Use $str$join() instead.")
   self$`_rexpr`$str_join(delimiter, ignore_nulls) |>
     wrap()
@@ -323,7 +339,6 @@ expr_str_to_lowercase <- function() {
 #   self$`_rexpr`$str_to_titlecase(self) |>
 #     wrap()
 # }
-
 
 #' Strip leading and trailing characters
 #'
@@ -677,6 +692,7 @@ expr_str_decode <- function(encoding, ..., strict = TRUE) {
   wrap({
     check_dots_empty0(...)
     encoding <- arg_match0(encoding, values = c("hex", "base64"))
+    # fmt: skip
     switch(encoding,
       "hex" = self$`_rexpr`$str_hex_decode(strict),
       "base64" = self$`_rexpr`$str_base64_decode(strict),
@@ -703,6 +719,7 @@ expr_str_decode <- function(encoding, ..., strict = TRUE) {
 expr_str_encode <- function(encoding) {
   wrap({
     encoding <- arg_match0(encoding, values = c("hex", "base64"))
+    # fmt: skip
     switch(encoding,
       "hex" = self$`_rexpr`$str_hex_encode(),
       "base64" = self$`_rexpr`$str_base64_encode(),
@@ -895,10 +912,14 @@ expr_str_splitn <- function(by, n) {
 expr_str_replace <- function(pattern, value, ..., literal = FALSE, n = 1L) {
   wrap({
     check_dots_empty0(...)
-    self$`_rexpr`$str_replace(as_polars_expr(pattern, as_lit = TRUE)$`_rexpr`, as_polars_expr(value, as_lit = TRUE)$`_rexpr`, literal, n)
+    self$`_rexpr`$str_replace(
+      as_polars_expr(pattern, as_lit = TRUE)$`_rexpr`,
+      as_polars_expr(value, as_lit = TRUE)$`_rexpr`,
+      literal,
+      n
+    )
   })
 }
-
 
 
 #' Replace all matching regex/literal substrings with a new string value
@@ -934,7 +955,11 @@ expr_str_replace <- function(pattern, value, ..., literal = FALSE, n = 1L) {
 expr_str_replace_all <- function(pattern, value, ..., literal = FALSE) {
   wrap({
     check_dots_empty0(...)
-    self$`_rexpr`$str_replace_all(as_polars_expr(pattern, as_lit = TRUE)$`_rexpr`, as_polars_expr(value, as_lit = TRUE)$`_rexpr`, literal)
+    self$`_rexpr`$str_replace_all(
+      as_polars_expr(pattern, as_lit = TRUE)$`_rexpr`,
+      as_polars_expr(value, as_lit = TRUE)$`_rexpr`,
+      literal
+    )
   })
 }
 
@@ -1021,7 +1046,10 @@ expr_str_reverse <- function() {
 expr_str_contains_any <- function(patterns, ..., ascii_case_insensitive = FALSE) {
   wrap({
     check_dots_empty0(...)
-    self$`_rexpr`$str_contains_any(as_polars_expr(patterns, as_lit = TRUE)$`_rexpr`, ascii_case_insensitive)
+    self$`_rexpr`$str_contains_any(
+      as_polars_expr(patterns, as_lit = TRUE)$`_rexpr`,
+      ascii_case_insensitive
+    )
   })
 }
 
@@ -1224,11 +1252,18 @@ expr_str_tail <- function(n) {
 #' )
 #'
 #' df$select(pl$col("values")$str$extract_many("patterns"))
-expr_str_extract_many <- function(patterns, ..., ascii_case_insensitive = FALSE, overlapping = FALSE) {
+expr_str_extract_many <- function(
+  patterns,
+  ...,
+  ascii_case_insensitive = FALSE,
+  overlapping = FALSE
+) {
   wrap({
     check_dots_empty0(...)
     self$`_rexpr`$str_extract_many(
-      as_polars_expr(patterns)$`_rexpr`, ascii_case_insensitive, overlapping
+      as_polars_expr(patterns)$`_rexpr`,
+      ascii_case_insensitive,
+      overlapping
     )
   })
 }

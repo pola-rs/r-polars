@@ -7,11 +7,13 @@ test_that("pl$concat_list()", {
   )
   expect_equal(
     df$select(x = pl$concat_list("a", pl$lit("x"))),
-    pl$DataFrame(x = list(
-      c("1.0", "2.0", "x"),
-      c("3.0", "x"),
-      c("4.0", "5.0", "x")
-    ))
+    pl$DataFrame(
+      x = list(
+        c("1.0", "2.0", "x"),
+        c("3.0", "x"),
+        c("4.0", "5.0", "x")
+      )
+    )
   )
   expect_snapshot(
     df$select(x = pl$concat_list("a", factor("a"))),
@@ -28,7 +30,9 @@ test_that("concat_str", {
   expect_equal(
     df$select(
       x = pl$concat_str(
-        pl$col("a") * 2L, "b", pl$col("c"),
+        pl$col("a") * 2L,
+        "b",
+        pl$col("c"),
         separator = " "
       )
     ),
@@ -39,7 +43,9 @@ test_that("concat_str", {
   expect_equal(
     df$select(
       x = pl$concat_str(
-        1L, "b", pl$col("c"),
+        1L,
+        "b",
+        pl$col("c"),
         separator = " "
       )
     ),
@@ -50,7 +56,9 @@ test_that("concat_str", {
   expect_equal(
     df$select(
       x = pl$concat_str(
-        pl$col("a") * 2L, "b", pl$col("c"),
+        pl$col("a") * 2L,
+        "b",
+        pl$col("c"),
         separator = " ",
         ignore_nulls = TRUE
       )

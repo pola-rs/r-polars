@@ -94,10 +94,11 @@ expr_dt_convert_time_zone <- function(time_zone) {
 #'   )
 #' )
 expr_dt_replace_time_zone <- function(
-    time_zone,
-    ...,
-    ambiguous = c("raise", "earliest", "latest", "null"),
-    non_existent = c("raise", "null")) {
+  time_zone,
+  ...,
+  ambiguous = c("raise", "earliest", "latest", "null"),
+  non_existent = c("raise", "null")
+) {
   wrap({
     check_dots_empty0(...)
     non_existent <- arg_match0(non_existent, c("raise", "null"))
@@ -655,12 +656,17 @@ expr_dt_nanosecond <- function() {
 expr_dt_epoch <- function(time_unit = c("us", "ns", "ms", "s", "d")) {
   wrap({
     time_unit <- arg_match0(time_unit, values = c("us", "ns", "ms", "s", "d"))
+    # fmt: skip
     switch(time_unit,
       "ms" = ,
       "us" = ,
       "ns" = self$`_rexpr`$dt_timestamp(time_unit),
       "s" = self$`_rexpr`$dt_epoch_seconds(),
-      "d" = self$`_rexpr`$cast(pl$Date$`_dt`, strict = TRUE, wrap_numerical = FALSE)$cast(pl$Int32$`_dt`, strict = TRUE, wrap_numerical = FALSE),
+      "d" = self$`_rexpr`$cast(
+        pl$Date$`_dt`, strict = TRUE, wrap_numerical = FALSE
+      )$cast(
+        pl$Int32$`_dt`, strict = TRUE, wrap_numerical = FALSE
+      ),
       abort("Unreachable")
     )
   })
@@ -712,7 +718,9 @@ expr_dt_timestamp <- function(time_unit = c("us", "ns", "ms")) {
 #' )
 expr_dt_with_time_unit <- function(time_unit = c("ns", "us", "ms")) {
   wrap({
-    deprecate_warn("$dt$with_time_unit() is deprecated. Cast to Int64 and to Datetime(<desired unit>) instead.")
+    deprecate_warn(
+      "$dt$with_time_unit() is deprecated. Cast to Int64 and to Datetime(<desired unit>) instead."
+    )
     time_unit <- arg_match0(time_unit, values = c("ns", "us", "ms"))
     self$`_rexpr`$dt_with_time_unit(time_unit)
   })
@@ -1106,11 +1114,12 @@ expr_dt_date <- function() {
 #'   rolled_forwards = pl$col("start")$dt$add_business_days(0, roll = "forward")
 #' )
 expr_dt_add_business_days <- function(
-    n,
-    ...,
-    week_mask = c(TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, FALSE),
-    holidays = as.Date(integer(0)),
-    roll = c("raise", "backward", "forward")) {
+  n,
+  ...,
+  week_mask = c(TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, FALSE),
+  holidays = as.Date(integer(0)),
+  roll = c("raise", "backward", "forward")
+) {
   wrap({
     check_dots_empty0(...)
 

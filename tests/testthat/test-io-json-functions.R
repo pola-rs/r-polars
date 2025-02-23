@@ -26,10 +26,7 @@ test_that("arg row_index_offset works", {
   ndjson_filename <- withr::local_tempfile()
   df <- data.frame(a = letters[1:3], b = c(1, 2.5, 3))
   jsonlite::stream_out(df, file(ndjson_filename), verbose = FALSE)
-  out <- pl$read_ndjson(ndjson_filename,
-    row_index_name = "foo",
-    row_index_offset = 3
-  )
+  out <- pl$read_ndjson(ndjson_filename, row_index_name = "foo", row_index_offset = 3)
   expect_equal(
     out,
     pl$DataFrame(foo = 3:5, !!!df)$cast(foo = pl$UInt32)

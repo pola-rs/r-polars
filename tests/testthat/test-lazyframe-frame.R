@@ -368,7 +368,8 @@ test_that("join: basic usage", {
   # inner default
   expect_query_equal(
     .input$join(.input2, on = "ham"),
-    .input = df, .input2 = other_df,
+    .input = df,
+    .input2 = other_df,
     pl$DataFrame(
       foo = 1:2,
       bar = c(6, 7),
@@ -380,7 +381,8 @@ test_that("join: basic usage", {
   # outer
   expect_query_equal(
     .input$join(.input2, on = "ham", how = "full"),
-    .input = df, .input2 = other_df,
+    .input = df,
+    .input2 = other_df,
     pl$DataFrame(
       foo = c(1L, 2L, NA, 3L),
       bar = c(6, 7, NA, 8),
@@ -411,7 +413,8 @@ test_that("right join works", {
   b <- pl$DataFrame(a = c(1, 3), b = c(1, 3), c = c(1, 3))
   expect_query_equal(
     .input$join(.input2, on = "a", how = "right", coalesce = TRUE),
-    .input = a, .input2 = b,
+    .input = a,
+    .input2 = b,
     pl$DataFrame(
       b = c(1, 4),
       a = c(1, 3),
@@ -421,7 +424,8 @@ test_that("right join works", {
   )
   expect_query_equal(
     .input$join(.input2, on = "a", how = "right", coalesce = FALSE),
-    .input = a, .input2 = b,
+    .input = a,
+    .input2 = b,
     pl$DataFrame(
       a = c(1, 3),
       b = c(1, 4),
@@ -438,12 +442,14 @@ test_that("semi and anti join", {
 
   expect_query_equal(
     .input$join(.input2, on = "key", how = "anti"),
-    .input = df_a, .input2 = df_b,
+    .input = df_a,
+    .input2 = df_b,
     pl$DataFrame(key = 1:2, payload = c("f", "i"))
   )
   expect_query_equal(
     .input$join(.input2, on = "key", how = "semi"),
-    .input = df_a, .input2 = df_b,
+    .input = df_a,
+    .input2 = df_b,
     pl$DataFrame(key = 3L, payload = NA_character_)
   )
 
@@ -452,12 +458,14 @@ test_that("semi and anti join", {
 
   expect_query_equal(
     .input$join(.input2, on = c("a", "b"), how = "anti"),
-    .input = df_a, .input2 = df_b,
+    .input = df_a,
+    .input2 = df_b,
     pl$DataFrame(a = c(1:2, 1L), b = c("a", "b", "a"), payload = c(10L, 20L, 40L))
   )
   expect_query_equal(
     .input$join(.input2, on = c("a", "b"), how = "semi"),
-    .input = df_a, .input2 = df_b,
+    .input = df_a,
+    .input2 = df_b,
     pl$DataFrame(a = 3L, b = "c", payload = 30L)
   )
 })
@@ -468,7 +476,8 @@ test_that("cross join", {
 
   expect_query_equal(
     .input$join(.input2, how = "cross"),
-    .input = dat, .input2 = dat2,
+    .input = dat,
+    .input2 = dat2,
     pl$DataFrame(
       x = rep(letters[1:3], each = 4),
       y = rep(1:4, 3)
@@ -538,14 +547,16 @@ test_that("argument 'join_nulls' works", {
   # discard nulls by default
   expect_query_equal(
     .input$join(.input2, on = "x"),
-    .input = df1, .input2 = df2,
+    .input = df1,
+    .input2 = df2,
     pl$DataFrame(x = "b", y = 3L, y2 = 5L)
   )
 
   # consider nulls as a valid key
   expect_query_equal(
     .input$join(.input2, on = "x", join_nulls = TRUE),
-    .input = df1, .input2 = df2,
+    .input = df1,
+    .input2 = df2,
     pl$DataFrame(x = c(NA, "b"), y = c(1L, 3L), y2 = c(4L, 5L))
   )
 
@@ -553,7 +564,8 @@ test_that("argument 'join_nulls' works", {
   df3 <- pl$DataFrame(x = c(NA, letters[2:3], NA), y2 = 4:7)
   expect_query_equal(
     .input$join(.input2, on = "x", join_nulls = TRUE),
-    .input = df1, .input2 = df3,
+    .input = df1,
+    .input2 = df3,
     pl$DataFrame(x = c(NA, "b", NA), y = c(1L, 3L, 1L), y2 = c(4L, 5L, 7L))
   )
 })
@@ -785,7 +797,8 @@ test_that("fill_null(): basic usage", {
   )
 })
 
-patrick::with_parameters_test_that("fill_null(): arg 'strategy' works",
+patrick::with_parameters_test_that(
+  "fill_null(): arg 'strategy' works",
   .cases = {
     # fmt: skip
     tibble::tribble(
@@ -898,8 +911,7 @@ test_that("unnest", {
     f = rep(NA_real_, 5)
   )
 
-  df2 <- df$
-    select(
+  df2 <- df$select(
     pl$struct(c("a", "b", "c"))$alias("first_struct"),
     pl$struct(c("d", "e", "f"))$alias("second_struct")
   )
@@ -919,8 +931,7 @@ test_that("unnest", {
   expect_query_equal(
     .input$unnest("first_struct"),
     .input = df2,
-    df$
-      select(
+    df$select(
       pl$col("a", "b", "c"),
       pl$struct(c("d", "e", "f"))$alias("second_struct")
     )
@@ -948,7 +959,8 @@ test_that("join_asof", {
   # argument "strategy"
   expect_query_equal(
     .input$join_asof(.input2, on = "date", strategy = "backward"),
-    .input = l_gdp, .input2 = l_pop,
+    .input = l_gdp,
+    .input2 = l_pop,
     pl$DataFrame(
       date = as.Date(c("2016-1-1", "2017-1-1", "2018-1-1", "2019-1-1")),
       gdp = c(4164, 4411, 4566, 4696),
@@ -959,7 +971,8 @@ test_that("join_asof", {
   )
   expect_query_equal(
     .input$join_asof(.input2, on = "date", strategy = "forward"),
-    .input = l_gdp, .input2 = l_pop,
+    .input = l_gdp,
+    .input2 = l_pop,
     pl$DataFrame(
       date = as.Date(c("2016-1-1", "2017-1-1", "2018-1-1", "2019-1-1")),
       gdp = c(4164, 4411, 4566, 4696),
@@ -970,14 +983,16 @@ test_that("join_asof", {
   )
   expect_query_error(
     .input$join_asof(.input2, on = "date", strategy = "foobar"),
-    .input = l_gdp, .input2 = l_pop,
+    .input = l_gdp,
+    .input2 = l_pop,
     "must be one of"
   )
 
   # left_on / right_on
   expect_query_equal(
     .input$join_asof(.input2, left_on = "date", right_on = "date", strategy = "forward"),
-    .input = l_gdp, .input2 = l_pop,
+    .input = l_gdp,
+    .input2 = l_pop,
     pl$DataFrame(
       date = as.Date(c("2016-1-1", "2017-1-1", "2018-1-1", "2019-1-1")),
       gdp = c(4164, 4411, 4566, 4696),
@@ -991,10 +1006,13 @@ test_that("join_asof", {
   expect_query_equal(
     .input$join_asof(
       .input2,
-      on = "date", by_left = "group",
-      by_right = "group_right", strategy = "backward"
+      on = "date",
+      by_left = "group",
+      by_right = "group_right",
+      strategy = "backward"
     ),
-    .input = l_gdp, .input2 = l_pop,
+    .input = l_gdp,
+    .input2 = l_pop,
     pl$DataFrame(
       date = as.Date(c("2016-01-01", "2017-01-01", "2018-01-01", "2019-01-01")),
       gdp = c(4164, 4411, 4566, 4696),
@@ -1005,10 +1023,13 @@ test_that("join_asof", {
   expect_query_equal(
     .input$join_asof(
       .input2,
-      on = "date", by_left = "group",
-      by_right = "group_right", strategy = "forward"
+      on = "date",
+      by_left = "group",
+      by_right = "group_right",
+      strategy = "forward"
     ),
-    .input = l_gdp, .input2 = l_pop,
+    .input = l_gdp,
+    .input2 = l_pop,
     pl$DataFrame(
       date = as.Date(c("2016-01-01", "2017-01-01", "2018-01-01", "2019-01-01")),
       gdp = c(4164, 4411, 4566, 4696),
@@ -1020,7 +1041,8 @@ test_that("join_asof", {
   # tolerance exceeding 18w
   expect_query_equal(
     .input$join_asof(.input2, on = "date", strategy = "backward", tolerance = "18w"),
-    .input = l_gdp, .input2 = l_pop,
+    .input = l_gdp,
+    .input2 = l_pop,
     pl$DataFrame(
       date = as.Date(c("2016-1-1", "2017-1-1", "2018-1-1", "2019-1-1")),
       gdp = c(4164, 4411, 4566, 4696),
@@ -1031,7 +1053,8 @@ test_that("join_asof", {
   )
   expect_query_equal(
     .input$join_asof(.input2, on = "date", strategy = "backward", tolerance = 18 * 7),
-    .input = l_gdp, .input2 = l_pop,
+    .input = l_gdp,
+    .input2 = l_pop,
     pl$DataFrame(
       date = as.Date(c("2016-1-1", "2017-1-1", "2018-1-1", "2019-1-1")),
       gdp = c(4164, 4411, 4566, 4696),
@@ -1476,7 +1499,8 @@ test_that("inequality joins work", {
       pl$col("dur") < pl$col("time"),
       pl$col("rev") < pl$col("cost")
     ),
-    .input = east, .input2 = west,
+    .input = east,
+    .input2 = west,
     pl$DataFrame(
       id = rep(c(100, 101), 3:2),
       dur = rep(c(120, 140), 3:2),
@@ -1520,7 +1544,8 @@ test_that("inequality joins require suffix when identical column names", {
       pl$col("dur") < pl$col("dur_right"),
       pl$col("rev") < pl$col("rev_right")
     ),
-    .input = east, .input2 = west,
+    .input = east,
+    .input2 = west,
     pl$DataFrame(
       id = rep(c(100, 101), 3:2),
       dur = rep(c(120, 140), 3:2),
@@ -1630,8 +1655,12 @@ test_that("various aggregation functions work", {
 test_that("rolling: date variable", {
   df <- pl$DataFrame(
     dt = c(
-      "2020-01-01", "2020-01-01", "2020-01-01",
-      "2020-01-02", "2020-01-03", "2020-01-08"
+      "2020-01-01",
+      "2020-01-01",
+      "2020-01-01",
+      "2020-01-02",
+      "2020-01-03",
+      "2020-01-08"
     ),
     a = c(3, 7, 5, 9, 2, 1)
   )$with_columns(
@@ -1656,8 +1685,12 @@ test_that("rolling: date variable", {
 test_that("rolling: datetime variable", {
   df <- pl$DataFrame(
     dt = c(
-      "2020-01-01 13:45:48", "2020-01-01 16:42:13", "2020-01-01 16:45:09",
-      "2020-01-02 18:12:48", "2020-01-03 19:45:32", "2020-01-08 23:16:43"
+      "2020-01-01 13:45:48",
+      "2020-01-01 16:42:13",
+      "2020-01-01 16:45:09",
+      "2020-01-02 18:12:48",
+      "2020-01-03 19:45:32",
+      "2020-01-08 23:16:43"
     ),
     a = c(3, 7, 5, 9, 2, 1)
   )$with_columns(
@@ -1702,8 +1735,12 @@ test_that("rolling: integer variable", {
 test_that("rolling: using difftime as period", {
   df <- pl$DataFrame(
     dt = c(
-      "2020-01-01", "2020-01-01", "2020-01-01",
-      "2020-01-02", "2020-01-03", "2020-01-08"
+      "2020-01-01",
+      "2020-01-01",
+      "2020-01-01",
+      "2020-01-02",
+      "2020-01-03",
+      "2020-01-08"
     ),
     a = c(3, 7, 5, 9, 2, 1)
   )$with_columns(
@@ -1712,7 +1749,8 @@ test_that("rolling: using difftime as period", {
 
   expect_query_equal(
     .input$rolling(
-      index_column = "dt", period = as.difftime(2, units = "days")
+      index_column = "dt",
+      period = as.difftime(2, units = "days")
     )$agg(
       pl$sum("a")$alias("sum_a")
     ),
@@ -1784,8 +1822,12 @@ test_that("rolling: error if index not int or date/time", {
 test_that("rolling: arg 'offset' works", {
   df <- pl$DataFrame(
     dt = c(
-      "2020-01-01", "2020-01-01", "2020-01-01",
-      "2020-01-02", "2020-01-03", "2020-01-08"
+      "2020-01-01",
+      "2020-01-01",
+      "2020-01-01",
+      "2020-01-02",
+      "2020-01-03",
+      "2020-01-08"
     ),
     a = c(3, 7, 5, 9, 2, 1)
   )$with_columns(

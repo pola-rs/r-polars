@@ -162,7 +162,12 @@ series__slice <- function(offset, length = NULL) {
 }
 
 series__equals <- function(
-    other, ..., check_dtypes = FALSE, check_names = FALSE, null_equal = TRUE) {
+  other,
+  ...,
+  check_dtypes = FALSE,
+  check_names = FALSE,
+  null_equal = TRUE
+) {
   wrap({
     check_dots_empty0(...)
     check_polars_series(other)

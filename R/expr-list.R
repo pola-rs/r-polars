@@ -717,8 +717,13 @@ expr_list_explode <- function() {
 #'   sample = pl$col("values")$list$sample(n = pl$col("n"), seed = 1)
 #' )
 expr_list_sample <- function(
-    n = NULL, ..., fraction = NULL, with_replacement = FALSE, shuffle = FALSE,
-    seed = NULL) {
+  n = NULL,
+  ...,
+  fraction = NULL,
+  with_replacement = FALSE,
+  shuffle = FALSE,
+  seed = NULL
+) {
   wrap({
     check_dots_empty0(...)
     if (!is.null(n) && !is.null(fraction)) {
@@ -726,7 +731,12 @@ expr_list_sample <- function(
     } else if (!is.null(n)) {
       self$`_rexpr`$list_sample_n(as_polars_expr(n)$`_rexpr`, with_replacement, shuffle, seed)
     } else {
-      self$`_rexpr`$list_sample_frac(as_polars_expr(fraction %||% 1)$`_rexpr`, with_replacement, shuffle, seed)
+      self$`_rexpr`$list_sample_frac(
+        as_polars_expr(fraction %||% 1)$`_rexpr`,
+        with_replacement,
+        shuffle,
+        seed
+      )
     }
   })
 }

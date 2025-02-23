@@ -12,22 +12,23 @@
 #' jsonlite::stream_out(iris, file(ndjson_filename), verbose = FALSE)
 #' pl$scan_ndjson(ndjson_filename)$collect()
 pl__scan_ndjson <- function(
-    source,
-    ...,
-    schema = NULL,
-    schema_overrides = NULL,
-    infer_schema_length = 100,
-    batch_size = 1024,
-    n_rows = NULL,
-    low_memory = FALSE,
-    rechunk = FALSE,
-    row_index_name = NULL,
-    row_index_offset = 0L,
-    ignore_errors = FALSE,
-    storage_options = NULL,
-    retries = 2,
-    file_cache_ttl = NULL,
-    include_file_paths = NULL) {
+  source,
+  ...,
+  schema = NULL,
+  schema_overrides = NULL,
+  infer_schema_length = 100,
+  batch_size = 1024,
+  n_rows = NULL,
+  low_memory = FALSE,
+  rechunk = FALSE,
+  row_index_name = NULL,
+  row_index_offset = 0L,
+  ignore_errors = FALSE,
+  storage_options = NULL,
+  retries = 2,
+  file_cache_ttl = NULL,
+  include_file_paths = NULL
+) {
   check_dots_empty0(...)
   check_character(source, allow_na = FALSE)
   if (length(source) == 0) {
@@ -70,22 +71,23 @@ pl__scan_ndjson <- function(
 #' jsonlite::stream_out(iris, file(ndjson_filename), verbose = FALSE)
 #' pl$read_ndjson(ndjson_filename)
 pl__read_ndjson <- function(
-    source,
-    ...,
-    schema = NULL,
-    schema_overrides = NULL,
-    infer_schema_length = 100,
-    batch_size = 1024,
-    n_rows = NULL,
-    low_memory = FALSE,
-    rechunk = FALSE,
-    row_index_name = NULL,
-    row_index_offset = 0L,
-    ignore_errors = FALSE,
-    storage_options = NULL,
-    retries = 2,
-    file_cache_ttl = NULL,
-    include_file_paths = NULL) {
+  source,
+  ...,
+  schema = NULL,
+  schema_overrides = NULL,
+  infer_schema_length = 100,
+  batch_size = 1024,
+  n_rows = NULL,
+  low_memory = FALSE,
+  rechunk = FALSE,
+  row_index_name = NULL,
+  row_index_offset = 0L,
+  ignore_errors = FALSE,
+  storage_options = NULL,
+  retries = 2,
+  file_cache_ttl = NULL,
+  include_file_paths = NULL
+) {
   check_dots_empty0(...)
   .args <- as.list(environment())
   do.call(pl__scan_ndjson, .args)$collect() |>

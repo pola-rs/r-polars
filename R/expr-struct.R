@@ -12,7 +12,9 @@ namespace_expr_struct <- function(x) {
   })
 
   class(self) <- c(
-    "polars_namespace_expr", "polars_struct_namespace", "polars_object"
+    "polars_namespace_expr",
+    "polars_struct_namespace",
+    "polars_object"
   )
   self
 }

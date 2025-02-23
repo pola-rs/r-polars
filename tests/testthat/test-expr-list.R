@@ -49,9 +49,9 @@ test_that("list$sum max min mean", {
   )
 
   r_res <- pl$DataFrame(
-    sum  = sapply(ints, sum, na.rm = TRUE),
-    max  = sapply(ints, max, na.rm = TRUE),
-    min  = sapply(ints, min, na.rm = TRUE),
+    sum = sapply(ints, sum, na.rm = TRUE),
+    max = sapply(ints, max, na.rm = TRUE),
+    min = sapply(ints, min, na.rm = TRUE),
     mean = sapply(ints, mean, na.rm = TRUE)
   )
   expect_equal(p_res, r_res)
@@ -65,9 +65,9 @@ test_that("list$sum max min mean", {
   )
 
   r_res <- pl$DataFrame(
-    sum  = sapply(floats, sum, na.rm = TRUE),
-    max  = sapply(floats, max, na.rm = TRUE),
-    min  = sapply(floats, min, na.rm = TRUE),
+    sum = sapply(floats, sum, na.rm = TRUE),
+    max = sapply(floats, max, na.rm = TRUE),
+    min = sapply(floats, min, na.rm = TRUE),
     mean = sapply(floats, mean, na.rm = TRUE)
   )
 
@@ -94,12 +94,12 @@ test_that("list$unique list$sort", {
   )
   df <- pl$DataFrame(!!!l)
   p_res <- df$select(pl$all()$list$unique()$list$sort())
-  r_res <- pl$DataFrame(!!!lapply(l, lapply, \(x)  sort(unique(x), na.last = FALSE)))
+  r_res <- pl$DataFrame(!!!lapply(l, lapply, \(x) sort(unique(x), na.last = FALSE)))
   expect_equal(p_res, r_res)
 
   df <- pl$DataFrame(!!!l)
   p_res <- df$select(pl$all()$list$unique()$list$sort(descending = TRUE))
-  r_res <- pl$DataFrame(!!!lapply(l, lapply, \(x)  sort(unique(x), na.last = FALSE, decr = TRUE)))
+  r_res <- pl$DataFrame(!!!lapply(l, lapply, \(x) sort(unique(x), na.last = FALSE, decr = TRUE)))
   expect_equal(p_res, r_res)
 
   expect_snapshot(
@@ -134,15 +134,17 @@ test_that("list$get", {
 
   for (i in -5:5) {
     p_res <- df$select(pl$all()$list$get(i))
-    r_res <- pl$DataFrame(!!!lapply(l, sapply, \(x) {
-      if (i >= 0) {
-        x[i + 1]
-      } else if (i < 0) {
-        rev(x)[-i]
-      } else {
-        stop("internal error in test")
-      }
-    }))
+    r_res <- pl$DataFrame(
+      !!!lapply(l, sapply, \(x) {
+        if (i >= 0) {
+          x[i + 1]
+        } else if (i < 0) {
+          rev(x)[-i]
+        } else {
+          stop("internal error in test")
+        }
+      })
+    )
     expect_equal(p_res, r_res)
   }
 })
@@ -152,10 +154,12 @@ test_that("gather", {
   l_roundtrip <- pl$DataFrame(x = l)$with_columns(pl$col("x")$list$gather(lapply(l, "-", 1L)))
   expect_equal(l_roundtrip, pl$DataFrame(x = l))
 
-
   l <- list(1:3, 4:5, 6L)
   expect_equal(
-    pl$DataFrame(x = l)$with_columns(pl$col("x")$list$gather(list(c(0:3), 0L, 0L), null_on_oob = TRUE)),
+    pl$DataFrame(x = l)$with_columns(pl$col("x")$list$gather(
+      list(c(0:3), 0L, 0L),
+      null_on_oob = TRUE
+    )),
     pl$DataFrame(x = list(c(1:3, NA), 4L, 6L))
   )
 
@@ -184,19 +188,28 @@ test_that("gather_every", {
   )
 
   # wrong n
-  expect_snapshot(df$select(
-    out = pl$col("a")$list$gather_every(-1)
-  ), error = TRUE)
+  expect_snapshot(
+    df$select(
+      out = pl$col("a")$list$gather_every(-1)
+    ),
+    error = TRUE
+  )
 
   # missing n
-  expect_snapshot(df$select(
-    out = pl$col("a")$list$gather_every()
-  ), error = TRUE)
+  expect_snapshot(
+    df$select(
+      out = pl$col("a")$list$gather_every()
+    ),
+    error = TRUE
+  )
 
   # wrong offset
-  expect_snapshot(df$select(
-    out = pl$col("a")$list$gather_every(n = 2, offset = -1)
-  ), error = TRUE)
+  expect_snapshot(
+    df$select(
+      out = pl$col("a")$list$gather_every(n = 2, offset = -1)
+    ),
+    error = TRUE
+  )
 })
 
 test_that("first last head tail", {
@@ -220,9 +233,11 @@ test_that("first last head tail", {
 
   for (i in 0:5) {
     p_res <- df$select(pl$all()$list$head(i))
-    r_res <- pl$DataFrame(!!!lapply(l, lapply, \(x) {
-      head(x, i)
-    }))
+    r_res <- pl$DataFrame(
+      !!!lapply(l, lapply, \(x) {
+        head(x, i)
+      })
+    )
     expect_equal(p_res, r_res)
   }
 
@@ -375,11 +390,9 @@ test_that("slice", {
   l_exp_slice <- pl$DataFrame(!!!lapply(l, lapply, r_slice, 0, 3))
   expect_equal(l_act_slice, l_exp_slice)
 
-
   l_act_slice <- df$select(pl$all()$list$slice(1, 3))
   l_exp_slice <- pl$DataFrame(!!!lapply(l, lapply, r_slice, 1, 3))
   expect_equal(l_act_slice, l_exp_slice)
-
 
   l_act_slice <- df$select(pl$all()$list$slice(1, 5))
   l_exp_slice <- pl$DataFrame(!!!lapply(l, lapply, r_slice, 1, 5))
@@ -474,7 +487,6 @@ test_that("concat", {
 #     n_field_strategy = "max_width",
 #     fields = \(idx) paste0("hello_you_", idx)
 #   ))
-
 
 #   exp_1 <- list(
 #     a = list(

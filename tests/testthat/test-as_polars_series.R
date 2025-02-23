@@ -54,19 +54,16 @@ patrick::with_parameters_test_that(
     )
   },
   code = {
-    withr::with_timezone(
-      "UTC",
-      {
-        pl_series <- as_polars_series(x, argument_should_be_ignored = "foo")
-        expect_s3_class(pl_series, "polars_series")
-        expect_snapshot(print(pl_series))
+    withr::with_timezone("UTC", {
+      pl_series <- as_polars_series(x, argument_should_be_ignored = "foo")
+      expect_s3_class(pl_series, "polars_series")
+      expect_snapshot(print(pl_series))
 
-        expect_equal(pl_series$name, expected_name)
-        expect_equal(pl_series$dtype, expected_dtype)
+      expect_equal(pl_series$name, expected_name)
+      expect_equal(pl_series$dtype, expected_dtype)
 
-        expect_equal(as_polars_series(x, name = "bar")$name, "bar")
-      }
-    )
+      expect_equal(as_polars_series(x, name = "bar")$name, "bar")
+    })
   }
 )
 
@@ -83,7 +80,8 @@ test_that("as_polars_series.polars_expr throws an error", {
   )
 })
 
-patrick::with_parameters_test_that("difftime's units (mins, hours, days) support",
+patrick::with_parameters_test_that(
+  "difftime's units (mins, hours, days) support",
   .cases = {
     # fmt: skip
     tibble::tribble(
@@ -164,7 +162,12 @@ test_that("as_polars_series(<POSIXlt>) works for ambiguous time as like clock::a
 })
 
 test_that("as_polars_series(<POSIXlt>) works for leap second as like str_to_datetime()", {
-  chr_vec <- c("2005-12-31 23:59:59", "2005-12-31 23:59:60", "2005-12-31 23:59:60.123456789", "2006-01-01 00:00:00")
+  chr_vec <- c(
+    "2005-12-31 23:59:59",
+    "2005-12-31 23:59:60",
+    "2005-12-31 23:59:60.123456789",
+    "2006-01-01 00:00:00"
+  )
   lt_vec <- as.POSIXlt(chr_vec, tz = "UTC")
 
   expect_equal(
@@ -201,7 +204,8 @@ test_that("as_polars_series works for vctrs_rcrd", {
   )
 })
 
-patrick::with_parameters_test_that("clock datetime classes support",
+patrick::with_parameters_test_that(
+  "clock datetime classes support",
   {
     skip_if_not_installed("clock")
 
@@ -212,6 +216,7 @@ patrick::with_parameters_test_that("clock datetime classes support",
       "2212-01-01T12:34:56.123456789"
     )
 
+    # fmt: skip
     expected_time_unit <- switch(precision,
       nanosecond = "ns",
       microsecond = "us",
@@ -250,7 +255,8 @@ patrick::with_parameters_test_that("clock datetime classes support",
   .test_name = precision
 )
 
-patrick::with_parameters_test_that("clock duration class support",
+patrick::with_parameters_test_that(
+  "clock duration class support",
   .cases = {
     skip_if_not_installed("clock")
 

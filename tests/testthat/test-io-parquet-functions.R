@@ -67,8 +67,7 @@ test_that("scanning from hive partition works", {
   # partitioning columns
   expect_equal(
     pl$scan_parquet(temp_dir)$select("mpg", "gear")$collect(),
-    as_polars_df(mtcars[order(mtcars$cyl, mtcars$gear), c("mpg", "gear")])$
-      cast(gear = pl$Int64)
+    as_polars_df(mtcars[order(mtcars$cyl, mtcars$gear), c("mpg", "gear")])$cast(gear = pl$Int64)
   )
 
   # TODO: uncomment when https://github.com/pola-rs/polars/issues/18293 is resolved
@@ -131,15 +130,13 @@ test_that("scan_parquet can include file path", {
   # There are 8 partitions so 8 file paths
   expect_equal(dim(out), c(32L, 12L))
   expect_equal(
-    out$
-      select("file_paths") |>
+    out$select("file_paths") |>
       as.data.frame() |>
       unique() |>
       dim(),
     c(8L, 1L)
   )
 })
-
 
 # TODO-REWRITE: uncomment when $write_parquet() is implemented
 

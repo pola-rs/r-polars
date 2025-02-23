@@ -9,7 +9,10 @@ extend_bool <- function(value, n_match, value_name, match_name) {
       # TODO: error message improvement
       sprintf(
         "the length of `%s` (%d) does not match the length of `%s` (%d)",
-        value_name, length(value), match_name, n_match
+        value_name,
+        length(value),
+        match_name,
+        n_match
       )
     )
   } else {

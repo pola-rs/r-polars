@@ -39,13 +39,14 @@
 #'   )
 #' )
 pl__datetime_range <- function(
-    start,
-    end,
-    interval = "1d",
-    ...,
-    closed = c("both", "left", "none", "right"),
-    time_unit = NULL,
-    time_zone = NULL) {
+  start,
+  end,
+  interval = "1d",
+  ...,
+  closed = c("both", "left", "none", "right"),
+  time_unit = NULL,
+  time_zone = NULL
+) {
   wrap({
     check_dots_empty0(...)
     check_date_or_datetime(start)
@@ -55,7 +56,10 @@ pl__datetime_range <- function(
     datetime_range(
       as_polars_expr(start)$`_rexpr`,
       as_polars_expr(end)$`_rexpr`,
-      interval, closed, time_unit, time_zone
+      interval,
+      closed,
+      time_unit,
+      time_zone
     )
   })
 }
@@ -89,13 +93,14 @@ pl__datetime_range <- function(
 #'   )
 #' )
 pl__datetime_ranges <- function(
-    start,
-    end,
-    interval = "1d",
-    ...,
-    closed = c("both", "left", "none", "right"),
-    time_unit = NULL,
-    time_zone = NULL) {
+  start,
+  end,
+  interval = "1d",
+  ...,
+  closed = c("both", "left", "none", "right"),
+  time_unit = NULL,
+  time_zone = NULL
+) {
   wrap({
     check_dots_empty0(...)
     check_date_or_datetime(start)
@@ -105,7 +110,10 @@ pl__datetime_ranges <- function(
     datetime_ranges(
       as_polars_expr(start)$`_rexpr`,
       as_polars_expr(end)$`_rexpr`,
-      interval, closed, time_unit, time_zone
+      interval,
+      closed,
+      time_unit,
+      time_zone
     )
   })
 }

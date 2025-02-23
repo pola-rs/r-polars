@@ -24,15 +24,17 @@
 #' tibble::as_tibble(df$lazy(), .name_repair = "unique")
 #' @rdname s3-as_tibble
 as_tibble.polars_data_frame <- function(
-    x, ...,
-    .name_repair = c("check_unique", "unique", "universal", "minimal"),
-    int64 = c("double", "character", "integer", "integer64"),
-    date = c("Date", "IDate"),
-    time = c("hms", "ITime"),
-    decimal = c("double", "character"),
-    as_clock_class = FALSE,
-    ambiguous = c("raise", "earliest", "latest", "null"),
-    non_existent = c("raise", "null")) {
+  x,
+  ...,
+  .name_repair = c("check_unique", "unique", "universal", "minimal"),
+  int64 = c("double", "character", "integer", "integer64"),
+  date = c("Date", "IDate"),
+  time = c("hms", "ITime"),
+  decimal = c("double", "character"),
+  as_clock_class = FALSE,
+  ambiguous = c("raise", "earliest", "latest", "null"),
+  non_existent = c("raise", "null")
+) {
   as_polars_df(x, ...)$to_struct()$to_r_vector(
     ensure_vector = FALSE,
     int64 = int64,

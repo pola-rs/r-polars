@@ -16,7 +16,8 @@ test_that("str$strptime datetime", {
   expect_equal(
     df$select(pl$col("x")$str$strptime(
       pl$Datetime(time_unit = "ms"),
-      format = "%Y-%m-%d %H:%M:%S %z", strict = FALSE
+      format = "%Y-%m-%d %H:%M:%S %z",
+      strict = FALSE
     )),
     pl$DataFrame(x = as.POSIXct(vals, format = "%Y-%m-%d %H:%M:%S %z", tz = "UTC"))
   )
@@ -44,7 +45,9 @@ test_that("str$strptime date", {
   expect_equal(
     df$select(pl$col("x")$str$strptime(
       pl$Date,
-      format = "%Y-%m-%d ", exact = TRUE, strict = FALSE
+      format = "%Y-%m-%d ",
+      exact = TRUE,
+      strict = FALSE
     )),
     pl$DataFrame(x = as.Date(c(NA, NA, "2022-1-1", NA)))
   )
@@ -52,7 +55,9 @@ test_that("str$strptime date", {
   expect_equal(
     df$select(pl$col("x")$str$strptime(
       pl$Date,
-      format = "%Y-%m-%d", exact = FALSE, strict = FALSE
+      format = "%Y-%m-%d",
+      exact = FALSE,
+      strict = FALSE
     )),
     pl$DataFrame(x = as.Date(vals))
   )
@@ -119,12 +124,21 @@ test_that("$str$to_datetime", {
   df <- pl$DataFrame(x = c("2009-01-02 01:00", "2009-01-03 02:00", "2009-1-4 03:00"))
   expect_equal(
     df$select(pl$col("x")$str$to_datetime(time_zone = "UTC", time_unit = "ms")),
-    pl$DataFrame(x = as.POSIXct(c("2009-01-02 01:00:00", "2009-01-03 02:00:00", "2009-01-04 03:00:00"), tz = "UTC"))
+    pl$DataFrame(
+      x = as.POSIXct(
+        c("2009-01-02 01:00:00", "2009-01-03 02:00:00", "2009-01-04 03:00:00"),
+        tz = "UTC"
+      )
+    )
   )
 
   df <- pl$DataFrame(x = c("2009-01-02 01:00", "2009-01-03 02:00", "2009-1-4"))
   expect_equal(
-    df$select(pl$col("x")$str$to_datetime(format = "%Y / %m / %d", strict = FALSE, time_unit = "ms")),
+    df$select(pl$col("x")$str$to_datetime(
+      format = "%Y / %m / %d",
+      strict = FALSE,
+      time_unit = "ms"
+    )),
     pl$DataFrame(x = as.POSIXct(c(NA, NA, NA)))
   )
 
@@ -150,8 +164,7 @@ test_that("str$len_bytes str$len_chars", {
       s = test_str,
       lengths = c(5, NA_integer_, 3, 6),
       n_chars = nchar(test_str) |> as.numeric()
-    )$
-      cast(lengths = pl$UInt32, n_chars = pl$UInt32)
+    )$cast(lengths = pl$UInt32, n_chars = pl$UInt32)
   )
 })
 
@@ -219,7 +232,6 @@ test_that("to_uppercase, to_lowercase", {
 #     error = TRUE
 #   )
 # })
-
 
 test_that("strip_chars_*()", {
   dat <- pl$DataFrame(x = " 123abc ")
@@ -355,7 +367,6 @@ test_that("str$pad_start str$pad_start", {
   expect_snapshot(df$select(pl$col("a")$str$pad_end(-2, "w")), error = TRUE)
   expect_snapshot(df$select(pl$col("a")$str$pad_end(5, "multiple_chars")), error = TRUE)
 
-
   # rjust
   expect_equal(
     df$select(pl$col("a")$str$pad_start(8, "*")),
@@ -382,7 +393,6 @@ test_that("str$pad_start str$pad_start", {
 })
 
 
-
 test_that("str$contains", {
   df <- pl$DataFrame(a = c("Crab", "cat and dog", "rab$bit", NA))
 
@@ -395,10 +405,14 @@ test_that("str$contains", {
   expect_equal(
     df_act,
     pl$DataFrame(
-      a = c("Crab", "cat and dog", "rab$bit", NA), regex = c(
+      a = c("Crab", "cat and dog", "rab$bit", NA),
+      regex = c(
         FALSE,
-        TRUE, TRUE, NA
-      ), literal = c(FALSE, FALSE, TRUE, NA)
+        TRUE,
+        TRUE,
+        NA
+      ),
+      literal = c(FALSE, FALSE, TRUE, NA)
     )
   )
 
@@ -472,7 +486,9 @@ test_that("encode decode", {
   expect_equal(l$select(foo = "strings"), l$select(foo = "hex_decoded"))
 
   expect_equal(
-    pl$DataFrame(x = "?")$with_columns(pl$col("x")$str$decode("base64", strict = FALSE)$cast(pl$String)),
+    pl$DataFrame(x = "?")$with_columns(pl$col("x")$str$decode("base64", strict = FALSE)$cast(
+      pl$String
+    )),
     pl$DataFrame(x = NA_character_)
   )
 
@@ -489,7 +505,6 @@ test_that("encode decode", {
     error = TRUE
   )
 })
-
 
 
 test_that("str$extract", {
@@ -831,13 +846,19 @@ test_that("str$replace_many", {
   )
 
   # error if different lengths
-  expect_snapshot(dat$with_columns(
-    pl$col("x")$str$replace_many(c("hi", "hello"), c("foo", "bar", "foo2"))
-  ), error = TRUE)
+  expect_snapshot(
+    dat$with_columns(
+      pl$col("x")$str$replace_many(c("hi", "hello"), c("foo", "bar", "foo2"))
+    ),
+    error = TRUE
+  )
 
-  expect_snapshot(dat$with_columns(
-    pl$col("x")$str$replace_many(c("hi", "hello", "good morning"), c("foo", "bar"))
-  ), error = TRUE)
+  expect_snapshot(
+    dat$with_columns(
+      pl$col("x")$str$replace_many(c("hi", "hello", "good morning"), c("foo", "bar"))
+    ),
+    error = TRUE
+  )
 })
 
 
@@ -915,7 +936,10 @@ test_that("str$find works", {
       default = pl$col("s")$str$find("Aa"),
       insensitive = pl$col("s")$str$find("(?i)Aa")
     ),
-    pl$DataFrame(default = c(NA, 1, NA, 4), insensitive = c(0, 0, 0, 4))$cast(default = pl$UInt32, insensitive = pl$UInt32)
+    pl$DataFrame(default = c(NA, 1, NA, 4), insensitive = c(0, 0, 0, 4))$cast(
+      default = pl$UInt32,
+      insensitive = pl$UInt32
+    )
   )
 
   # dots must be empty
@@ -954,13 +978,16 @@ test_that("$str$head works", {
     n = c(3, 4, -2, -5)
   )
 
-  expect_equal(df$select(
-    s_head_5 = pl$col("s")$str$head(5),
-    s_head_n = pl$col("s")$str$head("n")
-  ), pl$DataFrame(
-    s_head_5 = c("pear", NA, "papay", "drago"),
-    s_head_n = c("pea", NA, "papa", "dragon")
-  ))
+  expect_equal(
+    df$select(
+      s_head_5 = pl$col("s")$str$head(5),
+      s_head_n = pl$col("s")$str$head("n")
+    ),
+    pl$DataFrame(
+      s_head_5 = c("pear", NA, "papay", "drago"),
+      s_head_n = c("pea", NA, "papa", "dragon")
+    )
+  )
 })
 
 test_that("$str$tail works", {
@@ -969,13 +996,16 @@ test_that("$str$tail works", {
     n = c(3, 4, -2, -5)
   )
 
-  expect_equal(df$select(
-    s_tail_5 = pl$col("s")$str$tail(5),
-    s_tail_n = pl$col("s")$str$tail("n")
-  ), pl$DataFrame(
-    s_tail_5 = c("pear", NA, "apaya", "fruit"),
-    s_tail_n = c("ear", NA, "paya", "nfruit")
-  ))
+  expect_equal(
+    df$select(
+      s_tail_5 = pl$col("s")$str$tail(5),
+      s_tail_n = pl$col("s")$str$tail("n")
+    ),
+    pl$DataFrame(
+      s_tail_5 = c("pear", NA, "apaya", "fruit"),
+      s_tail_n = c("ear", NA, "paya", "nfruit")
+    )
+  )
 })
 
 test_that("$str$extract_many works", {
@@ -1004,7 +1034,8 @@ test_that("$str$extract_many works", {
     df$select(
       matches_overlap = pl$col("values")$str$extract_many(
         patterns,
-        ascii_case_insensitive = TRUE, overlapping = TRUE
+        ascii_case_insensitive = TRUE,
+        overlapping = TRUE
       )
     ),
     pl$DataFrame(

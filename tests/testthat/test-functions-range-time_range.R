@@ -7,9 +7,11 @@ test_that("$time_range", {
         interval = as.difftime("3:15:00")
       )
     ),
-    pl$DataFrame(time = hms::parse_hms(
-      c("14:00:00", "17:15:00", "20:30:00", "23:45:00")
-    ))
+    pl$DataFrame(
+      time = hms::parse_hms(
+        c("14:00:00", "17:15:00", "20:30:00", "23:45:00")
+      )
+    )
   )
   expect_equal(
     pl$select(
@@ -18,9 +20,11 @@ test_that("$time_range", {
         interval = "3h15m"
       )
     ),
-    pl$DataFrame(time = hms::parse_hms(
-      c("14:00:00", "17:15:00", "20:30:00", "23:45:00")
-    ))
+    pl$DataFrame(
+      time = hms::parse_hms(
+        c("14:00:00", "17:15:00", "20:30:00", "23:45:00")
+      )
+    )
   )
   expect_snapshot(
     pl$time_range(
@@ -39,17 +43,21 @@ test_that("$time_ranges", {
   )
   expect_equal(
     df$select(time_range = pl$time_ranges("start", "end")),
-    pl$DataFrame(time_range = list(
-      hms::parse_hms(c("21:00:00", "22:00:00", "23:00:00")),
-      hms::parse_hms(c("22:00:00", "23:00:00"))
-    ))
+    pl$DataFrame(
+      time_range = list(
+        hms::parse_hms(c("21:00:00", "22:00:00", "23:00:00")),
+        hms::parse_hms(c("22:00:00", "23:00:00"))
+      )
+    )
   )
   expect_equal(
     df$select(time_range = pl$time_ranges("start")),
-    pl$DataFrame(time_range = list(
-      hms::parse_hms(c("21:00:00", "22:00:00", "23:00:00")),
-      hms::parse_hms(c("22:00:00", "23:00:00"))
-    ))
+    pl$DataFrame(
+      time_range = list(
+        hms::parse_hms(c("21:00:00", "22:00:00", "23:00:00")),
+        hms::parse_hms(c("22:00:00", "23:00:00"))
+      )
+    )
   )
   expect_snapshot(
     pl$time_ranges(

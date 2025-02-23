@@ -1,6 +1,7 @@
 patrick::with_parameters_test_that(
   "use pl$DataFrame() to construct a DataFrame",
   .cases = {
+    # fmt: skip
     tibble::tribble(
       ~.test_name, ~object, ~expected,
       "simple", pl$DataFrame(a = 1, b = list("b"), ), as_polars_df(list(a = 1, b = list("b"))),
@@ -208,7 +209,10 @@ test_that("pivot() works", {
 
   expect_equal(
     df$pivot(
-      values = "baz", index = "foo", on = "bar", aggregate_function = "first"
+      values = "baz",
+      index = "foo",
+      on = "bar",
+      aggregate_function = "first"
     ),
     pl$DataFrame(foo = c("one", "two"), A = c(1, 4), B = c(2, 5), C = c(3, 6))
   )
@@ -281,7 +285,13 @@ test_that("pivot args work", {
 
   # check maintain_order
   expect_error(
-    df$pivot("cat", index = "bob", values = "ann", aggregate_function = "mean", maintain_order = 42),
+    df$pivot(
+      "cat",
+      index = "bob",
+      values = "ann",
+      aggregate_function = "mean",
+      maintain_order = 42
+    ),
     "must be logical, not double"
   )
   # check sort_columns
@@ -292,11 +302,27 @@ test_that("pivot args work", {
 
   # separator
   expect_named(
-    df$pivot("cat", index = "ann", values = c("ann", "bob"), aggregate_function = "mean", separator = "."),
+    df$pivot(
+      "cat",
+      index = "ann",
+      values = c("ann", "bob"),
+      aggregate_function = "mean",
+      separator = "."
+    ),
     c(
-      "ann", "ann.1.0", "ann.2.0", "ann.3.0", "ann.4.0",
-      "ann.5.0", "ann.6.0", "bob.1.0", "bob.2.0", "bob.3.0",
-      "bob.4.0", "bob.5.0", "bob.6.0"
+      "ann",
+      "ann.1.0",
+      "ann.2.0",
+      "ann.3.0",
+      "ann.4.0",
+      "ann.5.0",
+      "ann.6.0",
+      "bob.1.0",
+      "bob.2.0",
+      "bob.3.0",
+      "bob.4.0",
+      "bob.5.0",
+      "bob.6.0"
     )
   )
 })

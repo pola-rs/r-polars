@@ -1,20 +1,25 @@
 is_list_of_string <- function(
+  x,
+  ...,
+  allow_empty = TRUE,
+  allow_na = FALSE,
+  allow_null = FALSE
+) {
+  is_list_of_string_impl <- function(
     x,
     ...,
     allow_empty = TRUE,
     allow_na = FALSE,
-    allow_null = FALSE) {
-  is_list_of_string_impl <- function(
-      x,
-      ...,
-      allow_empty = TRUE,
-      allow_na = FALSE,
-      allow_null = FALSE) {
+    allow_null = FALSE
+  ) {
     for (i in seq_along(x)) {
-      if (!.rlang_check_is_string(
-        x[[i]],
-        allow_empty = allow_empty, allow_na = allow_na, allow_null = allow_null
-      )
+      if (
+        !.rlang_check_is_string(
+          x[[i]],
+          allow_empty = allow_empty,
+          allow_na = allow_na,
+          allow_null = allow_null
+        )
       ) {
         return(FALSE)
       }
@@ -32,20 +37,23 @@ is_list_of_string <- function(
 }
 
 check_list_of_string <- function(
-    x,
-    ...,
-    allow_empty = TRUE,
-    allow_na = FALSE,
-    allow_null = FALSE,
-    arg = caller_arg(x),
-    call = caller_env()) {
+  x,
+  ...,
+  allow_empty = TRUE,
+  allow_na = FALSE,
+  allow_null = FALSE,
+  arg = caller_arg(x),
+  call = caller_env()
+) {
   if (!missing(x)) {
-    if (is_list_of_string(
-      x,
-      allow_empty = allow_empty,
-      allow_na = allow_na,
-      allow_null = allow_null
-    )) {
+    if (
+      is_list_of_string(
+        x,
+        allow_empty = allow_empty,
+        allow_na = allow_na,
+        allow_null = allow_null
+      )
+    ) {
       return(invisible(NULL))
     }
   }
@@ -63,11 +71,12 @@ check_list_of_string <- function(
 
 # TODO: rename and rewrite to allow more types
 check_date_or_datetime <- function(
-    x,
-    ...,
-    allow_null = FALSE,
-    arg = caller_arg(x),
-    call = caller_env()) {
+  x,
+  ...,
+  allow_null = FALSE,
+  arg = caller_arg(x),
+  call = caller_env()
+) {
   if (!missing(x)) {
     if (inherits(x, c("Date", "POSIXct", "polars_expr"))) {
       return(invisible(NULL))

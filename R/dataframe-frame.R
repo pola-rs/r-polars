@@ -104,10 +104,14 @@ wrap.PlRDataFrame <- function(x, ...) {
   self$`_df` <- x
 
   makeActiveBinding("columns", function() self$`_df`$columns(), self)
-  makeActiveBinding("dtypes", function() {
-    self$`_df`$dtypes() |>
-      lapply(\(x) .savvy_wrap_PlRDataType(x) |> wrap())
-  }, self)
+  makeActiveBinding(
+    "dtypes",
+    function() {
+      self$`_df`$dtypes() |>
+        lapply(\(x) .savvy_wrap_PlRDataType(x) |> wrap())
+    },
+    self
+  )
   makeActiveBinding("schema", function() structure(self$dtypes, names = self$columns), self)
   makeActiveBinding("shape", function() self$`_df`$shape(), self)
   makeActiveBinding("height", function() self$`_df`$height(), self)
@@ -574,11 +578,12 @@ dataframe__filter <- function(...) {
 #' # Or use positional arguments to sort by multiple columns in the same way
 #' df$sort("c", "a", descending = c(FALSE, TRUE))
 dataframe__sort <- function(
-    ...,
-    descending = FALSE,
-    nulls_last = FALSE,
-    multithreaded = TRUE,
-    maintain_order = FALSE) {
+  ...,
+  descending = FALSE,
+  nulls_last = FALSE,
+  multithreaded = TRUE,
+  maintain_order = FALSE
+) {
   self$lazy()$sort(
     ...,
     descending = descending,
@@ -648,7 +653,8 @@ dataframe__bottom_k <- function(k, ..., by, reverse = FALSE) {
     predicate_pushdown = FALSE,
     comm_subplan_elim = FALSE,
     slice_pushdown = TRUE
-  ) |> wrap()
+  ) |>
+    wrap()
 }
 
 #' @inherit lazyframe__top_k title description params
@@ -672,7 +678,8 @@ dataframe__top_k <- function(k, ..., by, reverse = FALSE) {
     predicate_pushdown = FALSE,
     comm_subplan_elim = FALSE,
     slice_pushdown = TRUE
-  ) |> wrap()
+  ) |>
+    wrap()
 }
 
 #' Take two sorted DataFrames and merge them by the sorted key
@@ -734,11 +741,14 @@ dataframe__set_sorted <- function(column, ..., descending = FALSE) {
 #'
 #' df$unique(keep = "last", maintain_order = TRUE)
 dataframe__unique <- function(
-    subset = NULL,
-    ...,
-    keep = c("any", "none", "first", "last"),
-    maintain_order = FALSE) {
-  self$lazy()$unique(subset = subset, keep = keep, maintain_order = maintain_order)$collect(`_eager` = TRUE) |>
+  subset = NULL,
+  ...,
+  keep = c("any", "none", "first", "last"),
+  maintain_order = FALSE
+) {
+  self$lazy()$unique(subset = subset, keep = keep, maintain_order = maintain_order)$collect(
+    `_eager` = TRUE
+  ) |>
     wrap()
 }
 
@@ -776,19 +786,20 @@ dataframe__unique <- function(
 #'
 #' df$join(other_df, on = "ham", how = "anti")
 dataframe__join <- function(
-    other,
-    on = NULL,
-    how = c("inner", "full", "left", "right", "semi", "anti", "cross"),
-    ...,
-    left_on = NULL,
-    right_on = NULL,
-    suffix = "_right",
-    validate = c("m:m", "1:m", "m:1", "1:1"),
-    join_nulls = FALSE,
-    maintain_order = c("none", "left", "right", "left_right", "right_left"),
-    allow_parallel = TRUE,
-    force_parallel = FALSE,
-    coalesce = NULL) {
+  other,
+  on = NULL,
+  how = c("inner", "full", "left", "right", "semi", "anti", "cross"),
+  ...,
+  left_on = NULL,
+  right_on = NULL,
+  suffix = "_right",
+  validate = c("m:m", "1:m", "m:1", "1:1"),
+  join_nulls = FALSE,
+  maintain_order = c("none", "left", "right", "left_right", "right_left"),
+  allow_parallel = TRUE,
+  force_parallel = FALSE,
+  coalesce = NULL
+) {
   wrap({
     check_polars_df(other)
     self$lazy()$join(
@@ -906,12 +917,15 @@ dataframe__rename <- function(..., .strict = TRUE) {
 #'
 #' df$fill_null(strategy = "zero")
 dataframe__fill_null <- function(
-    value,
-    strategy = NULL,
-    limit = NULL,
-    ...,
-    matches_supertype = TRUE) {
-  self$lazy()$fill_null(value, strategy, limit, matches_supertype = matches_supertype)$collect(`_eager` = TRUE) |>
+  value,
+  strategy = NULL,
+  limit = NULL,
+  ...,
+  matches_supertype = TRUE
+) {
+  self$lazy()$fill_null(value, strategy, limit, matches_supertype = matches_supertype)$collect(
+    `_eager` = TRUE
+  ) |>
     wrap()
 }
 
@@ -1032,22 +1046,23 @@ dataframe__unnest <- function(...) {
 #'   by = "country", on = "date", strategy = "nearest"
 #' )
 dataframe__join_asof <- function(
-    other,
-    ...,
-    left_on = NULL,
-    right_on = NULL,
-    on = NULL,
-    by_left = NULL,
-    by_right = NULL,
-    by = NULL,
-    strategy = c("backward", "forward", "nearest"),
-    suffix = "_right",
-    tolerance = NULL,
-    allow_parallel = TRUE,
-    force_parallel = FALSE,
-    coalesce = TRUE,
-    allow_exact_matches = TRUE,
-    check_sortedness = TRUE) {
+  other,
+  ...,
+  left_on = NULL,
+  right_on = NULL,
+  on = NULL,
+  by_left = NULL,
+  by_right = NULL,
+  by = NULL,
+  strategy = c("backward", "forward", "nearest"),
+  suffix = "_right",
+  tolerance = NULL,
+  allow_parallel = TRUE,
+  force_parallel = FALSE,
+  coalesce = TRUE,
+  allow_exact_matches = TRUE,
+  check_sortedness = TRUE
+) {
   self$lazy()$join_asof(
     other$lazy(),
     left_on = left_on,
@@ -1075,8 +1090,9 @@ dataframe__join_asof <- function(
 #' df <- pl$DataFrame(a = 1:4, b = c(1, 2, 1, 1))
 #' df$quantile(0.7)
 dataframe__quantile <- function(
-    quantile,
-    interpolation = c("nearest", "higher", "lower", "midpoint", "linear")) {
+  quantile,
+  interpolation = c("nearest", "higher", "lower", "midpoint", "linear")
+) {
   self$lazy()$quantile(quantile, interpolation)$collect(`_eager` = TRUE) |>
     wrap()
 }
@@ -1185,9 +1201,10 @@ dataframe__shift <- function(n = 1, ..., fill_value = NULL) {
 #'   pl$col("rev") < pl$col("cost")
 #' )
 dataframe__join_where <- function(
-    other,
-    ...,
-    suffix = "_right") {
+  other,
+  ...,
+  suffix = "_right"
+) {
   wrap({
     check_polars_df(other)
     self$lazy()$join_where(other$lazy(), ..., suffix = suffix)$collect(`_eager` = TRUE)
@@ -1206,11 +1223,12 @@ dataframe__join_where <- function(
 #' )
 #' df$unpivot(index = "a", on = c("b", "c"))
 dataframe__unpivot <- function(
-    on = NULL,
-    ...,
-    index = NULL,
-    variable_name = NULL,
-    value_name = NULL) {
+  on = NULL,
+  ...,
+  index = NULL,
+  variable_name = NULL,
+  value_name = NULL
+) {
   wrap({
     check_dots_empty0(...)
     # TODO: add selectors handling when py-polars' _expand_selectors() has moved
@@ -1246,9 +1264,10 @@ dataframe__unpivot <- function(
 # df$to_dummies(cs$integer(), separator=":")
 # df$to_dummies(cs$integer(), drop_first = TRUE, separator = ":")
 dataframe__to_dummies <- function(
-    ...,
-    separator = "_",
-    drop_first = FALSE) {
+  ...,
+  separator = "_",
+  drop_first = FALSE
+) {
   # TODO: add selectors handling when py-polars' _expand_selectors() has moved
   # to Rust (and update examples above)
   wrap({
@@ -1403,14 +1422,15 @@ dataframe__partition_by <- function(..., maintain_order = TRUE, include_key = TR
 #' })
 #' df$lazy()$group_by(index)$agg(!!!funs)$collect()
 dataframe__pivot <- function(
-    on,
-    ...,
-    index = NULL,
-    values = NULL,
-    aggregate_function = NULL,
-    maintain_order = TRUE,
-    sort_columns = FALSE,
-    separator = "_") {
+  on,
+  ...,
+  index = NULL,
+  values = NULL,
+  aggregate_function = NULL,
+  maintain_order = TRUE,
+  sort_columns = FALSE,
+  separator = "_"
+) {
   # TODO: add selectors handling when py-polars' _expand_selectors() has moved
   # to Rust (and uncomment example above)
 
@@ -1422,6 +1442,7 @@ dataframe__pivot <- function(
         aggregate_function,
         values = c("min", "max", "first", "last", "sum", "mean", "median", "len")
       )
+      # fmt: skip
       aggregate_expr <- switch(aggregate_function,
         "min" = pl$element()$min()$`_rexpr`,
         "max" = pl$element()$max()$`_rexpr`,
@@ -1595,8 +1616,9 @@ dataframe__std <- function(ddof = 1) {
 #' df <- pl$DataFrame(a = 1:4, b = c(1, 2, 1, 1))
 #' df$quantile(0.7)
 dataframe__quantile <- function(
-    quantile,
-    interpolation = c("nearest", "higher", "lower", "midpoint", "linear")) {
+  quantile,
+  interpolation = c("nearest", "higher", "lower", "midpoint", "linear")
+) {
   wrap({
     interpolation <- arg_match0(
       interpolation,
@@ -1681,15 +1703,17 @@ dataframe__is_empty <- function() {
 #'   max_a = pl$col("a")$max()
 #' )
 dataframe__rolling <- function(
-    index_column,
-    ...,
-    period,
-    offset = NULL,
-    closed = c("right", "left", "both", "none"),
-    group_by = NULL) {
+  index_column,
+  ...,
+  period,
+  offset = NULL,
+  closed = c("right", "left", "both", "none"),
+  group_by = NULL
+) {
   wrap({
     check_dots_empty0(...)
-    wrap_to_rolling_group_by(self,
+    wrap_to_rolling_group_by(
+      self,
       index_column = index_column,
       period = period,
       offset = offset,
@@ -1738,10 +1762,11 @@ dataframe__rolling <- function(
 #' df$transpose(column_names = "id")
 #' df$transpose(include_header = TRUE, header_name = "new_id", column_names = "id")
 dataframe__transpose <- function(
-    ...,
-    include_header = FALSE,
-    header_name = "column",
-    column_names = NULL) {
+  ...,
+  include_header = FALSE,
+  header_name = "column",
+  column_names = NULL
+) {
   wrap({
     check_dots_empty0(...)
     keep_names_as <- if (isTRUE(include_header)) {
@@ -1755,10 +1780,17 @@ dataframe__transpose <- function(
       column_names <- column_names(seq_len(n_elems) - 1)
       if (!is_character(column_names, n = n_elems)) {
         abort(
-          paste("The function in `column_names` must return a character vector with", n_elems, "elements.")
+          paste(
+            "The function in `column_names` must return a character vector with",
+            n_elems,
+            "elements."
+          )
         )
       }
     }
-    self$`_df`$transpose(keep_names_as = keep_names_as, column_names = column_names %||% character())
+    self$`_df`$transpose(
+      keep_names_as = keep_names_as,
+      column_names = column_names %||% character()
+    )
   })
 }

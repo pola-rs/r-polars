@@ -38,20 +38,21 @@
 #' # We can also impose a schema to the partition
 #' pl$scan_ipc(temp_dir, hive_schema = list(cyl = pl$String, gear = pl$Int32))$collect()
 pl__scan_ipc <- function(
-    source,
-    ...,
-    n_rows = NULL,
-    cache = TRUE,
-    rechunk = FALSE,
-    row_index_name = NULL,
-    row_index_offset = 0L,
-    storage_options = NULL,
-    retries = 2,
-    file_cache_ttl = NULL,
-    hive_partitioning = NULL,
-    hive_schema = NULL,
-    try_parse_hive_dates = TRUE,
-    include_file_paths = NULL) {
+  source,
+  ...,
+  n_rows = NULL,
+  cache = TRUE,
+  rechunk = FALSE,
+  row_index_name = NULL,
+  row_index_offset = 0L,
+  storage_options = NULL,
+  retries = 2,
+  file_cache_ttl = NULL,
+  hive_partitioning = NULL,
+  hive_schema = NULL,
+  try_parse_hive_dates = TRUE,
+  include_file_paths = NULL
+) {
   check_dots_empty0(...)
   check_character(source, allow_na = FALSE)
   if (length(source) == 0) {
@@ -105,20 +106,21 @@ pl__scan_ipc <- function(
 #' # We can also impose a schema to the partition
 #' pl$read_ipc(temp_dir, hive_schema = list(cyl = pl$String, gear = pl$Int32))
 pl__read_ipc <- function(
-    source,
-    ...,
-    n_rows = NULL,
-    cache = TRUE,
-    rechunk = FALSE,
-    row_index_name = NULL,
-    row_index_offset = 0L,
-    storage_options = NULL,
-    retries = 2,
-    file_cache_ttl = NULL,
-    hive_partitioning = NULL,
-    hive_schema = NULL,
-    try_parse_hive_dates = TRUE,
-    include_file_paths = NULL) {
+  source,
+  ...,
+  n_rows = NULL,
+  cache = TRUE,
+  rechunk = FALSE,
+  row_index_name = NULL,
+  row_index_offset = 0L,
+  storage_options = NULL,
+  retries = 2,
+  file_cache_ttl = NULL,
+  hive_partitioning = NULL,
+  hive_schema = NULL,
+  try_parse_hive_dates = TRUE,
+  include_file_paths = NULL
+) {
   check_dots_empty0(...)
   .args <- as.list(environment())
   do.call(pl__scan_ipc, .args)$collect() |>
@@ -143,13 +145,14 @@ pl__read_ipc <- function(
 #'
 #' pl$read_ipc_stream(temp_file, columns = c("cyl", "am"))
 pl__read_ipc_stream <- function(
-    source,
-    ...,
-    columns = NULL,
-    n_rows = NULL,
-    row_index_name = NULL,
-    row_index_offset = 0L,
-    rechunk = TRUE) {
+  source,
+  ...,
+  columns = NULL,
+  n_rows = NULL,
+  row_index_name = NULL,
+  row_index_offset = 0L,
+  rechunk = TRUE
+) {
   check_dots_empty0(...)
   check_character(columns, allow_na = FALSE, allow_null = TRUE)
 

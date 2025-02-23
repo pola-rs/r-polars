@@ -73,25 +73,26 @@
 # # and includes them in the output
 # pl$scan_parquet(temp_dir)$collect()
 pl__scan_parquet <- function(
-    source,
-    ...,
-    n_rows = NULL,
-    row_index_name = NULL,
-    row_index_offset = 0L,
-    parallel = c("auto", "columns", "row_groups", "prefiltered", "none"),
-    use_statistics = TRUE,
-    hive_partitioning = NULL,
-    glob = TRUE,
-    schema = NULL,
-    hive_schema = NULL,
-    try_parse_hive_dates = TRUE,
-    rechunk = FALSE,
-    low_memory = FALSE,
-    cache = TRUE,
-    storage_options = NULL,
-    retries = 2,
-    include_file_paths = NULL,
-    allow_missing_columns = FALSE) {
+  source,
+  ...,
+  n_rows = NULL,
+  row_index_name = NULL,
+  row_index_offset = 0L,
+  parallel = c("auto", "columns", "row_groups", "prefiltered", "none"),
+  use_statistics = TRUE,
+  hive_partitioning = NULL,
+  glob = TRUE,
+  schema = NULL,
+  hive_schema = NULL,
+  try_parse_hive_dates = TRUE,
+  rechunk = FALSE,
+  low_memory = FALSE,
+  cache = TRUE,
+  storage_options = NULL,
+  retries = 2,
+  include_file_paths = NULL,
+  allow_missing_columns = FALSE
+) {
   check_dots_empty0(...)
   check_character(source, allow_na = FALSE)
   if (length(source) == 0) {
@@ -150,25 +151,26 @@ pl__scan_parquet <- function(
 # # and includes them in the output
 # pl$read_parquet(temp_dir)
 pl__read_parquet <- function(
-    source,
-    ...,
-    n_rows = NULL,
-    row_index_name = NULL,
-    row_index_offset = 0L,
-    parallel = c("auto", "columns", "row_groups", "prefiltered", "none"),
-    use_statistics = TRUE,
-    hive_partitioning = NULL,
-    glob = TRUE,
-    schema = NULL,
-    hive_schema = NULL,
-    try_parse_hive_dates = TRUE,
-    rechunk = FALSE,
-    low_memory = FALSE,
-    cache = TRUE,
-    storage_options = NULL,
-    retries = 2,
-    include_file_paths = NULL,
-    allow_missing_columns = FALSE) {
+  source,
+  ...,
+  n_rows = NULL,
+  row_index_name = NULL,
+  row_index_offset = 0L,
+  parallel = c("auto", "columns", "row_groups", "prefiltered", "none"),
+  use_statistics = TRUE,
+  hive_partitioning = NULL,
+  glob = TRUE,
+  schema = NULL,
+  hive_schema = NULL,
+  try_parse_hive_dates = TRUE,
+  rechunk = FALSE,
+  low_memory = FALSE,
+  cache = TRUE,
+  storage_options = NULL,
+  retries = 2,
+  include_file_paths = NULL,
+  allow_missing_columns = FALSE
+) {
   check_dots_empty0(...)
   .args <- as.list(environment())
   do.call(pl__scan_parquet, .args)$collect() |>

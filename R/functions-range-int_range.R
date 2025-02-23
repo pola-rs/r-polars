@@ -21,11 +21,12 @@
 #'   pl$all()
 #' )
 pl__int_range <- function(
-    start = 0,
-    end = NULL,
-    step = 1,
-    ...,
-    dtype = pl$Int64) {
+  start = 0,
+  end = NULL,
+  step = 1,
+  ...,
+  dtype = pl$Int64
+) {
   wrap({
     check_dots_empty0(...)
     check_polars_dtype(dtype)
@@ -54,11 +55,12 @@ pl__int_range <- function(
 #' # end can be omitted for a shorter syntax$
 #' df$select("end", int_range = pl$int_ranges("end"))
 pl__int_ranges <- function(
-    start = 0,
-    end = NULL,
-    step = 1,
-    ...,
-    dtype = pl$Int64) {
+  start = 0,
+  end = NULL,
+  step = 1,
+  ...,
+  dtype = pl$Int64
+) {
   wrap({
     check_dots_empty0(...)
     check_polars_dtype(dtype)

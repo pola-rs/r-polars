@@ -12,7 +12,8 @@ namespace_expr_name <- function(x) {
   })
 
   class(self) <- c(
-    "polars_namespace_expr", "polars_object"
+    "polars_namespace_expr",
+    "polars_object"
   )
   self
 }
