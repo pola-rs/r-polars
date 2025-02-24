@@ -1488,6 +1488,10 @@ dataframe__max_horizontal <- function() {
 
 #' Take the mean of all values horizontally across columns.
 #'
+#' @inheritParams rlang::args_dots_empty
+#' @param ignore_nulls Ignore null values (default). If `FALSE`, any null value
+#' in the input will lead to a null output.
+#'
 #' @inherit as_polars_series return
 #' @examples
 #' df <- pl$DataFrame(
@@ -1495,9 +1499,11 @@ dataframe__max_horizontal <- function() {
 #'   bar = c(4.0, 5.0, 6.0),
 #' )
 #' df$mean_horizontal()
-dataframe__mean_horizontal <- function() {
-  self$select(mean = pl$mean_horizontal(pl$all()))$to_series() |>
-    wrap()
+dataframe__mean_horizontal <- function(..., ignore_nulls = TRUE) {
+  wrap({
+    check_dots_empty0(...)
+    self$select(mean = pl$mean_horizontal(pl$all(), ignore_nulls = ignore_nulls))$to_series()
+  })
 }
 
 #' Get the minimum value horizontally across columns.
@@ -1516,6 +1522,10 @@ dataframe__min_horizontal <- function() {
 
 #' Sum all values horizontally across columns.
 #'
+#' @inheritParams rlang::args_dots_empty
+#' @param ignore_nulls Ignore null values (default). If `FALSE`, any null value
+#' in the input will lead to a null output.
+#'
 #' @inherit as_polars_series return
 #' @examples
 #' df <- pl$DataFrame(
@@ -1523,9 +1533,11 @@ dataframe__min_horizontal <- function() {
 #'   bar = c(4.0, 5.0, 6.0),
 #' )
 #' df$sum_horizontal()
-dataframe__sum_horizontal <- function() {
-  self$select(sum = pl$sum_horizontal(pl$all()))$to_series() |>
-    wrap()
+dataframe__sum_horizontal <- function(..., ignore_nulls = TRUE) {
+  wrap({
+    check_dots_empty0(...)
+    self$select(sum = pl$sum_horizontal(pl$all(), ignore_nulls = ignore_nulls))$to_series()
+  })
 }
 
 #' Aggregate the columns in the DataFrame to their maximum value

@@ -350,6 +350,29 @@ test_that("*_horizontal() functions work", {
   )
 })
 
+test_that("*_horizontal() functions: arg 'ignore_nulls'", {
+  df <- pl$DataFrame(
+    foo = c(1, NA, 3),
+    bar = c(4.0, 5.0, NA),
+  )
+  expect_equal(
+    df$mean_horizontal(ignore_nulls = FALSE),
+    pl$Series("mean", c(2.5, NA, NA))
+  )
+  expect_equal(
+    df$sum_horizontal(ignore_nulls = FALSE),
+    pl$Series("sum", c(5, NA, NA))
+  )
+  expect_error(
+    df$sum_horizontal(FALSE),
+    "Did you forget to name an argument"
+  )
+  expect_error(
+    df$mean_horizontal(FALSE),
+    "Did you forget to name an argument"
+  )
+})
+
 test_that("is_unique() works", {
   df <- pl$DataFrame(
     a = c(1, 2, 3, 1),

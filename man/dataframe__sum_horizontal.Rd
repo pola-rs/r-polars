@@ -4,7 +4,13 @@
 \alias{dataframe__sum_horizontal}
 \title{Sum all values horizontally across columns.}
 \usage{
-dataframe__sum_horizontal()
+dataframe__sum_horizontal(..., ignore_nulls = TRUE)
+}
+\arguments{
+\item{...}{These dots are for future extensions and must be empty.}
+
+\item{ignore_nulls}{Ignore null values (default). If \code{FALSE}, any null value
+in the input will lead to a null output.}
 }
 \value{
 A \link[=Series]{polars Series}
