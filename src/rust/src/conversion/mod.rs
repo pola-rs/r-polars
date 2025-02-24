@@ -823,3 +823,42 @@ impl TryFrom<&str> for Wrap<MaintainOrderJoin> {
         Ok(Wrap(parsed))
     }
 }
+
+#[cfg(not(target_arch = "wasm32"))]
+pub(crate) fn parse_parquet_compression(
+    compression: &str,
+    compression_level: Option<i32>,
+) -> savvy::Result<ParquetCompression> {
+    let parsed = match compression {
+        "uncompressed" => ParquetCompression::Uncompressed,
+        "snappy" => ParquetCompression::Snappy,
+        "gzip" => ParquetCompression::Gzip(
+            compression_level
+                .map(|lvl| {
+                    GzipLevel::try_new(lvl as u8)
+                        .map_err(|e| savvy::Error::new(format!("{e:?}").as_str()))
+                })
+                .transpose()?,
+        ),
+        "lzo" => ParquetCompression::Lzo,
+        "brotli" => ParquetCompression::Brotli(
+            compression_level
+                .map(|lvl| {
+                    BrotliLevel::try_new(lvl as u32)
+                        .map_err(|e| savvy::Error::new(format!("{e:?}").as_str()))
+                })
+                .transpose()?,
+        ),
+        "lz4" => ParquetCompression::Lz4Raw,
+        "zstd" => ParquetCompression::Zstd(
+            compression_level
+                .map(|lvl| {
+                    ZstdLevel::try_new(lvl)
+                        .map_err(|e| savvy::Error::new(format!("{e:?}").as_str()))
+                })
+                .transpose()?,
+        ),
+        _ => return Err(RPolarsErr::Other("unreachable".to_string()).into()),
+    };
+    Ok(parsed)
+}

@@ -58,3 +58,71 @@ make_profile_plot <- function(data, truncate_nodes) {
   }
   plot
 }
+
+#' @rdname lazyframe__sink_parquet
+#' @param min Include stats on the minimum values in the column.
+#' @param max Include stats on the maximum values in the column.
+#' @param distinct_count Include stats on the number of distinct values in the
+#' column.
+#' @param null_count Include stats on the number of null values in the column.
+#'
+#' @export
+parquet_statistics <- function(
+  ...,
+  min = TRUE,
+  max = TRUE,
+  distinct_count = TRUE,
+  null_count = TRUE
+) {
+  check_dots_empty0(...)
+  check_bool(min)
+  check_bool(max)
+  check_bool(distinct_count)
+  check_bool(null_count)
+
+  structure(
+    list(
+      min = min,
+      max = max,
+      distinct_count = distinct_count,
+      null_count = null_count
+    ),
+    class = c("polars_parquet_statistics", "list")
+  )
+}
+
+set_sink_optimizations <- function(
+  self,
+  type_coercion = TRUE,
+  `_type_check` = TRUE,
+  predicate_pushdown = TRUE,
+  projection_pushdown = TRUE,
+  simplify_expression = TRUE,
+  slice_pushdown = TRUE,
+  collapse_joins = TRUE,
+  no_optimization = FALSE,
+  `_check_order` = TRUE
+) {
+  if (isTRUE(no_optimization)) {
+    predicate_pushdown <- FALSE
+    projection_pushdown <- FALSE
+    slice_pushdown <- FALSE
+    `_check_order` <- FALSE
+  }
+
+  self$`_ldf`$optimization_toggle(
+    type_coercion = type_coercion,
+    `_type_check` = `_type_check`,
+    predicate_pushdown = predicate_pushdown,
+    projection_pushdown = projection_pushdown,
+    simplify_expression = simplify_expression,
+    slice_pushdown = slice_pushdown,
+    comm_subplan_elim = FALSE,
+    comm_subexpr_elim = FALSE,
+    cluster_with_columns = FALSE,
+    collapse_joins = collapse_joins,
+    streaming = TRUE,
+    `_eager` = FALSE,
+    `_check_order` = `_check_order`
+  )
+}

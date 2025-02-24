@@ -1194,4 +1194,73 @@ impl PlRLazyFrame {
             Err(RPolarsErr::Other(format!("Not supported in WASM")).into())
         }
     }
+
+    #[cfg(not(target_arch = "wasm32"))]
+    fn sink_parquet(
+        &self,
+        path: &str,
+        compression: &str,
+        maintain_order: bool,
+        stat_min: bool,
+        stat_max: bool,
+        stat_distinct_count: bool,
+        stat_null_count: bool,
+        retries: NumericScalar,
+        compression_level: Option<NumericScalar>,
+        row_group_size: Option<NumericScalar>,
+        data_page_size: Option<NumericScalar>,
+        storage_options: Option<StringSexp>,
+    ) -> Result<()> {
+        let path: PathBuf = path.into();
+        let statistics = StatisticsOptions {
+            min_value: stat_min,
+            max_value: stat_max,
+            null_count: stat_null_count,
+            distinct_count: stat_distinct_count,
+        };
+        let compression_level: Option<i32> = match compression_level {
+            Some(x) => Some(x.as_i32()?),
+            None => None,
+        };
+        let compression = parse_parquet_compression(compression, compression_level)?;
+        let row_group_size: Option<usize> = match row_group_size {
+            Some(x) => Some(<Wrap<usize>>::try_from(x)?.0),
+            None => None,
+        };
+        let data_page_size: Option<usize> = match data_page_size {
+            Some(x) => Some(<Wrap<usize>>::try_from(x)?.0),
+            None => None,
+        };
+        let retries = <Wrap<usize>>::try_from(retries)?.0;
+
+        let options = ParquetWriteOptions {
+            compression,
+            statistics,
+            row_group_size,
+            data_page_size,
+            maintain_order,
+        };
+        let cloud_options = match storage_options {
+            Some(x) => {
+                let out = <Wrap<Vec<(String, String)>>>::try_from(x).map_err(|_| {
+                    RPolarsErr::Other(
+                        "`storage_options` must be a named character vector".to_string(),
+                    )
+                })?;
+                Some(out.0)
+            }
+            None => None,
+        };
+        let cloud_options = {
+            let cloud_options =
+                parse_cloud_options(path.to_str().unwrap(), cloud_options.unwrap_or_default())?;
+            Some(cloud_options.with_max_retries(retries))
+        };
+        let _ = self
+            .ldf
+            .clone()
+            .sink_parquet(&path, options, cloud_options)
+            .map_err(RPolarsErr::from);
+        Ok(())
+    }
 }
