@@ -5,16 +5,15 @@ use polars::series::ops::NullBehavior;
 use polars_core::chunked_array::cast::CastOptions;
 use polars_core::series::IsSorted;
 use savvy::{
-    r_println, savvy, FunctionSexp, ListSexp, LogicalSexp, NumericScalar, NumericSexp, Result,
+    savvy, FunctionSexp, ListSexp, LogicalSexp, NumericScalar, NumericSexp, Result, Sexp,
     StringSexp,
 };
 use std::ops::Neg;
 
 #[savvy]
 impl PlRExpr {
-    fn print(&self) -> Result<()> {
-        r_println!("{:?}", self.inner);
-        Ok(())
+    fn as_str(&self) -> Result<Sexp> {
+        format!("{:?}", self.inner).try_into()
     }
 
     fn abs(&self) -> Result<Self> {

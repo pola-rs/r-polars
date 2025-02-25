@@ -1,6 +1,7 @@
 #' @export
 print.polars_data_frame <- function(x, ...) {
-  x$`_df`$print()
+  x$`_df`$as_str() |>
+    writeLines()
   invisible(x)
 }
 

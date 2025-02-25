@@ -5,7 +5,7 @@ compare_proxy.polars_expr <- function(x, path) {
     object = tryCatch(
       x$meta$serialize(format = "json"),
       error = function(e) {
-        utils::capture.output(print(x))
+        x$`_rexpr`$as_str()
       }
     ),
     path = path

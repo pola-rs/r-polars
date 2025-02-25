@@ -1,7 +1,7 @@
 # exported in zzz.R
 compare_proxy.polars_dtype <- function(x, path) {
   list(
-    object = utils::capture.output(print(x)),
+    object = x$`_dt`$as_str(),
     path = path
   )
 }

@@ -1,6 +1,7 @@
 #' @export
 print.polars_series <- function(x, ...) {
-  x$`_s`$print()
+  x$`_s`$as_str() |>
+    writeLines()
   invisible(x)
 }
 

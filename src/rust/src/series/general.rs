@@ -1,12 +1,11 @@
 use crate::{prelude::*, PlRDataFrame, PlRDataType, PlRSeries, RPolarsErr};
 use polars_core::series::IsSorted;
-use savvy::{r_println, savvy, NumericScalar, NumericSexp, Result, Sexp};
+use savvy::{savvy, NumericScalar, NumericSexp, Result, Sexp};
 
 #[savvy]
 impl PlRSeries {
-    fn print(&self) -> Result<()> {
-        r_println!("{:?}", self.series);
-        Ok(())
+    fn as_str(&self) -> Result<Sexp> {
+        format!("{:?}", self.series).try_into()
     }
 
     fn struct_unnest(&self) -> Result<PlRDataFrame> {

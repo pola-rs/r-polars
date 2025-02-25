@@ -3,8 +3,8 @@ use crate::{PlRDataType, PlRExpr, PlRLazyFrame, PlRSeries, RPolarsErr};
 use either::Either;
 use polars::prelude::pivot::{pivot, pivot_stable};
 use savvy::{
-    r_println, savvy, ListSexp, NumericScalar, OwnedIntegerSexp, OwnedListSexp, Result, Sexp,
-    StringSexp, TypedSexp,
+    savvy, ListSexp, NumericScalar, OwnedIntegerSexp, OwnedListSexp, Result, Sexp, StringSexp,
+    TypedSexp,
 };
 
 #[savvy]
@@ -29,9 +29,8 @@ impl PlRDataFrame {
         Ok(df.into())
     }
 
-    pub fn print(&self) -> Result<()> {
-        r_println!("{:?}", self.df);
-        Ok(())
+    pub fn as_str(&self) -> Result<Sexp> {
+        format!("{:?}", self.df).try_into()
     }
 
     pub fn get_columns(&self) -> Result<Sexp> {
