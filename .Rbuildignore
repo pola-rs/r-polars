@@ -12,3 +12,4 @@
 ^src/rust/target$
 ^README\.Rmd$
 ^DEVELOPMENT\.md$
+^\.mega-linter\.yml$
