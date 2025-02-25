@@ -99,3 +99,34 @@ check_date_or_datetime <- function(
     call = call
   )
 }
+
+
+check_arg_is_1byte <- function(arg_name, arg, ..., can_be_empty = FALSE) {
+  if (!is_string(arg)) {
+    abort(paste0("`", arg_name, "` should be a single byte character."))
+  }
+  arg_byte_length <- nchar(arg, type = "bytes")
+  if (isTRUE(can_be_empty)) {
+    if (arg_byte_length > 1) {
+      abort(paste0(
+        "`",
+        arg_name,
+        "` = '",
+        arg,
+        "' should be a single byte character or empty, but is ",
+        arg_byte_length,
+        " bytes long."
+      ))
+    }
+  } else if (arg_byte_length != 1) {
+    abort(paste0(
+      "`",
+      arg_name,
+      "` = '",
+      arg,
+      "' should be a single byte character, but is ",
+      arg_byte_length,
+      " bytes long."
+    ))
+  }
+}

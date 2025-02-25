@@ -1263,4 +1263,86 @@ impl PlRLazyFrame {
             .map_err(RPolarsErr::from);
         Ok(())
     }
+
+    fn sink_csv(
+        &self,
+        path: &str,
+        include_bom: bool,
+        include_header: bool,
+        separator: &str,
+        line_terminator: &str,
+        quote_char: &str,
+        maintain_order: bool,
+        batch_size: NumericScalar,
+        retries: NumericScalar,
+        datetime_format: Option<&str>,
+        date_format: Option<&str>,
+        time_format: Option<&str>,
+        float_scientific: Option<bool>,
+        float_precision: Option<NumericScalar>,
+        null_value: Option<&str>,
+        quote_style: Option<&str>,
+        storage_options: Option<StringSexp>,
+    ) -> Result<()> {
+        let path: PathBuf = path.into();
+        let quote_style = match quote_style {
+            Some(x) => <Wrap<QuoteStyle>>::try_from(x)?.0,
+            None => QuoteStyle::default(),
+        };
+        let retries = <Wrap<usize>>::try_from(retries)?.0;
+        let null_value = null_value
+            .map(|x| x.to_string())
+            .unwrap_or(SerializeOptions::default().null);
+        let batch_size = <Wrap<NonZeroUsize>>::try_from(batch_size)?.0;
+        let float_precision = match float_precision {
+            Some(x) => Some(<Wrap<usize>>::try_from(x)?.0),
+            None => None,
+        };
+        let separator = <Wrap<u8>>::try_from(separator)?.0;
+        let quote_char = <Wrap<u8>>::try_from(quote_char)?.0;
+
+        let serialize_options = SerializeOptions {
+            date_format: date_format.map(|x| x.to_string()),
+            time_format: time_format.map(|x| x.to_string()),
+            datetime_format: datetime_format.map(|x| x.to_string()),
+            float_scientific,
+            float_precision,
+            separator,
+            quote_char,
+            null: null_value.to_string(),
+            line_terminator: line_terminator.to_string(),
+            quote_style,
+        };
+
+        let options = CsvWriterOptions {
+            include_bom,
+            include_header,
+            maintain_order,
+            batch_size,
+            serialize_options,
+        };
+        let cloud_options = match storage_options {
+            Some(x) => {
+                let out = <Wrap<Vec<(String, String)>>>::try_from(x).map_err(|_| {
+                    RPolarsErr::Other(
+                        "`storage_options` must be a named character vector".to_string(),
+                    )
+                })?;
+                Some(out.0)
+            }
+            None => None,
+        };
+        let cloud_options = {
+            let cloud_options =
+                parse_cloud_options(path.to_str().unwrap(), cloud_options.unwrap_or_default())?;
+            Some(cloud_options.with_max_retries(retries))
+        };
+
+        let _ = self
+            .ldf
+            .clone()
+            .sink_csv(&path, options, cloud_options)
+            .map_err(RPolarsErr::from);
+        Ok(())
+    }
 }
