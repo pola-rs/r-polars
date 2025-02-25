@@ -1853,7 +1853,7 @@ test_that("sink_parquet(): basic usage", {
   lf <- as_polars_lf(mtcars)
   df <- as_polars_df(mtcars)
 
-  tmpf <- tempfile()
+  tmpf <- withr::local_tempfile()
   expect_error(
     lf$sink_parquet(tmpf, compression = "rar"),
     "must be one of"
@@ -1869,7 +1869,7 @@ test_that("sink_parquet(): basic usage", {
 test_that("sink_parquet: argument 'statistics'", {
   lf <- as_polars_lf(mtcars)
 
-  tmpf <- tempfile()
+  tmpf <- withr::local_tempfile()
   expect_silent(lf$sink_parquet(tmpf, statistics = TRUE))
   expect_silent(lf$sink_parquet(tmpf, statistics = FALSE))
   expect_silent(lf$sink_parquet(tmpf, statistics = "full"))
@@ -1900,7 +1900,7 @@ test_that("sink_parquet: argument 'statistics'", {
 
 test_that("sink_csv works", {
   lf <- as_polars_lf(mtcars)
-  temp_out <- tempfile(fileext = ".csv")
+  temp_out <- withr::local_tempfile(fileext = ".csv")
   lf$sink_csv(temp_out)
 
   expect_equal(pl$read_csv(temp_out), lf$collect())
@@ -1914,7 +1914,7 @@ test_that("sink_csv: null_value works", {
   dat <- mtcars
   dat[c(1, 3, 9, 12), c(3, 4, 5)] <- NA
   lf <- as_polars_lf(dat)
-  temp_out <- tempfile(fileext = ".csv")
+  temp_out <- withr::local_tempfile(fileext = ".csv")
   expect_error(
     lf$sink_csv(temp_out, null_value = 1),
     "must be character, not double"
@@ -1928,7 +1928,8 @@ test_that("sink_csv: null_value works", {
 
 test_that("sink_csv: separator works", {
   lf <- as_polars_lf(mtcars)
-  temp_out <- tempfile(fileext = ".csv")
+  temp_out <- withr::local_tempfile(fileext = ".csv")
+
   lf$sink_csv(temp_out, separator = "|")
   expect_equal(
     pl$read_csv(temp_out, separator = "|"),
@@ -1942,7 +1943,7 @@ test_that("sink_csv: separator works", {
 
 test_that("sink_csv: quote_style and quote works", {
   lf <- as_polars_lf(head(iris))
-  temp_out <- tempfile(fileext = ".csv")
+  temp_out <- withr::local_tempfile(fileext = ".csv")
 
   expect_error(
     lf$sink_csv(temp_out, quote_style = "foo"),
@@ -1969,7 +1970,8 @@ test_that("sink_csv: quote_style and quote works", {
 patrick::with_parameters_test_that(
   "sink_csv: quote_style",
   {
-    df = pl$LazyFrame(
+    temp_out <- withr::local_tempfile(fileext = ".csv")
+    df <- pl$LazyFrame(
       a = c(r"("foo")"),
       b = 1,
       c = letters[1]
@@ -1987,7 +1989,9 @@ test_that("sink_csv: date_format works", {
       interval = "1y"
     )
   )$lazy()
+  temp_out <- withr::local_tempfile(fileext = ".csv")
   dat$sink_csv(temp_out, date_format = "%Y")
+
   expect_equal(
     pl$read_csv(temp_out)$with_columns(pl$col("date"))$sort("date")$cast(pl$Int32),
     pl$DataFrame(date = 2020:2023)
@@ -2007,7 +2011,9 @@ test_that("sink_csv: datetime_format works", {
       interval = "6h"
     )
   )$lazy()
+  temp_out <- withr::local_tempfile(fileext = ".csv")
   dat$sink_csv(temp_out, datetime_format = "%Hh%Mm - %d/%m/%Y")
+
   expect_equal(
     pl$read_csv(temp_out)$sort("date"),
     pl$DataFrame(
@@ -2028,7 +2034,9 @@ test_that("sink_csv: time_format works", {
       "8h"
     )
   )$with_columns(pl$col("date")$dt$time())$lazy()
+  temp_out <- withr::local_tempfile(fileext = ".csv")
   dat$sink_csv(temp_out, time_format = "%Hh%Mm%Ss")
+
   expect_equal(
     pl$read_csv(temp_out)$sort("date"),
     pl$DataFrame(date = paste0(c("00", "00", "08", "16"), "h00m00s"))
@@ -2037,7 +2045,9 @@ test_that("sink_csv: time_format works", {
 
 test_that("sink_csv: float_precision works", {
   dat <- pl$LazyFrame(x = c(1.234, 5.6))
+  temp_out <- withr::local_tempfile(fileext = ".csv")
   dat$sink_csv(temp_out, float_precision = 1)
+
   expect_equal(
     pl$read_csv(temp_out)$sort("x"),
     pl$DataFrame(x = c(1.2, 5.6))
@@ -2052,7 +2062,7 @@ test_that("sink_csv: float_precision works", {
 
 test_that("sink_csv: float_scientific works", {
   dat <- pl$LazyFrame(x = c(1e7, 5.6))
-
+  temp_out <- withr::local_tempfile(fileext = ".csv")
   dat$sink_csv(temp_out, float_scientific = FALSE)
   # cannot use read.csv() since it already formats as scientific
   expect_equal(
