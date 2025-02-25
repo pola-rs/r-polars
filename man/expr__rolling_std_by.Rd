@@ -47,6 +47,10 @@ equal to \code{window_size}.}
 
 \item{closed}{Define which sides of the interval are closed (inclusive).
 Default is \code{"right"}.}
+
+\item{ddof}{"Delta Degrees of Freedom": the divisor used in the calculation
+is \code{N - ddof}, where \code{N} represents the number of elements. By default
+\code{ddof} is 1.}
 }
 \value{
 A polars \link{expression}

@@ -6,6 +6,11 @@
 \usage{
 expr__var(ddof = 1)
 }
+\arguments{
+\item{ddof}{"Delta Degrees of Freedom": the divisor used in the calculation
+is \code{N - ddof}, where \code{N} represents the number of elements. By default
+\code{ddof} is 1.}
+}
 \value{
 A polars \link{expression}
 }

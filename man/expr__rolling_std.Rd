@@ -26,6 +26,10 @@ non-null before computing a result. If \code{NULL} (default), it will be set
 equal to \code{window_size}.}
 
 \item{center}{If \code{TRUE}, set the labels at the center of the window.}
+
+\item{ddof}{"Delta Degrees of Freedom": the divisor used in the calculation
+is \code{N - ddof}, where \code{N} represents the number of elements. By default
+\code{ddof} is 1.}
 }
 \value{
 A polars \link{expression}

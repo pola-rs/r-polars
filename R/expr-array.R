@@ -35,7 +35,6 @@ expr_arr_sum <- function() {
 #' Compute the max value of the sub-arrays
 #'
 #' @inherit as_polars_expr return
-#' @inherit expr_str_to_titlecase details
 #' @examples
 #' df <- pl$DataFrame(
 #'   values = list(c(1, 2), c(3, 4), c(NA, NA))
@@ -48,7 +47,6 @@ expr_arr_max <- function() {
 
 #' Compute the min value of the sub-arrays
 #'
-#' @inherit expr_str_to_titlecase details
 #' @inherit as_polars_expr return
 #' @examples
 #' df <- pl$DataFrame(
@@ -75,7 +73,7 @@ expr_arr_median <- function() {
 
 #' Compute the standard deviation of the sub-arrays
 #'
-#' @inheritParams DataFrame_std
+#' @inheritParams dataframe__std
 #' @inherit as_polars_expr return
 #' @examples
 #' df <- pl$DataFrame(
@@ -89,7 +87,7 @@ expr_arr_std <- function(ddof = 1) {
 
 #' Compute the variance of the sub-arrays
 #'
-#' @inheritParams DataFrame_var
+#' @inheritParams dataframe__var
 #' @inherit as_polars_expr return
 #' @examples
 #' df <- pl$DataFrame(

@@ -1604,7 +1604,7 @@ expr__quantile <- function(
 
 #' Compute the standard deviation
 #'
-#' @inheritParams DataFrame_var
+#' @inheritParams dataframe__var
 #' @inherit as_polars_expr return
 #' @examples
 #' pl$DataFrame(a = c(1, 3, 5, 6))$
@@ -1616,7 +1616,7 @@ expr__std <- function(ddof = 1) {
 
 #' Compute the variance
 #'
-#' @inheritParams DataFrame_var
+#' @inheritParams dataframe__var
 #' @inherit as_polars_expr return
 #' @examples
 #' pl$DataFrame(a = c(1, 3, 5, 6))$
