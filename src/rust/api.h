@@ -82,6 +82,7 @@ SEXP savvy_PlRDataFrame_to_struct__ffi(SEXP self__, SEXP c_arg__name);
 SEXP savvy_PlRDataFrame_transpose__ffi(SEXP self__, SEXP c_arg__column_names, SEXP c_arg__keep_names_as);
 SEXP savvy_PlRDataFrame_unpivot__ffi(SEXP self__, SEXP c_arg__on, SEXP c_arg__index, SEXP c_arg__value_name, SEXP c_arg__variable_name);
 SEXP savvy_PlRDataFrame_width__ffi(SEXP self__);
+SEXP savvy_PlRDataFrame_write_parquet__ffi(SEXP self__, SEXP c_arg__path, SEXP c_arg__compression, SEXP c_arg__retries, SEXP c_arg__partition_chunk_size_bytes, SEXP c_arg__stat_min, SEXP c_arg__stat_max, SEXP c_arg__stat_distinct_count, SEXP c_arg__stat_null_count, SEXP c_arg__compression_level, SEXP c_arg__row_group_size, SEXP c_arg__data_page_size, SEXP c_arg__partition_by, SEXP c_arg__storage_options);
 
 // methods and associated functions for PlRDataType
 SEXP savvy_PlRDataType__get_datatype_fields__ffi(SEXP self__);

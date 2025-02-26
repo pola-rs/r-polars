@@ -1806,3 +1806,85 @@ dataframe__transpose <- function(
     )
   })
 }
+
+#' Write to Parquet file
+#'
+#' @inheritParams lazyframe__sink_parquet
+#' @param file File path to which the result should be written. This should be
+#' a path to a directory if writing a partitioned dataset.
+#' @param partition_by A character vector indicating column(s) to partition by.
+#' A partitioned dataset will be written if this is specified.
+#' @param partition_chunk_size_bytes Approximate size to split DataFrames within
+#' a single partition when writing. Note this is calculated using the size of
+#' the DataFrame in memory (the size of the output file may differ depending
+#' on the file format / compression).
+#'
+#' @return The input DataFrame is returned.
+#' @examplesIf requireNamespace("withr", quietly = TRUE)
+#' dat = as_polars_df(mtcars)
+#'
+#' # write data to a single parquet file
+#' destination = withr::local_tempfile(fileext = ".parquet")
+#' dat$write_parquet(destination)
+#'
+#' # write data to folder with a hive-partitioned structure
+#' dest_folder = withr::local_tempdir()
+#' dat$write_parquet(dest_folder, partition_by = c("gear", "cyl"))
+#' list.files(dest_folder, recursive = TRUE)
+dataframe__write_parquet <- function(
+  file,
+  ...,
+  compression = c("lz4", "uncompressed", "snappy", "gzip", "lzo", "brotli", "zstd"),
+  compression_level = NULL,
+  statistics = TRUE,
+  row_group_size = NULL,
+  data_page_size = NULL,
+  partition_by = NULL,
+  partition_chunk_size_bytes = 4294967296,
+  storage_options = NULL,
+  retries = 2
+) {
+  wrap({
+    compression <- compression %||% "uncompressed"
+    check_dots_empty0(...)
+    check_character(partition_by, allow_null = TRUE)
+    compression <- arg_match0(
+      compression,
+      values = c("lz4", "uncompressed", "snappy", "gzip", "lzo", "brotli", "zstd")
+    )
+    if (is_bool(statistics)) {
+      statistics <- parquet_statistics(
+        min = statistics,
+        max = statistics,
+        distinct_count = FALSE,
+        null_count = statistics
+      )
+    } else if (identical(statistics, "full")) {
+      statistics <- parquet_statistics(
+        min = TRUE,
+        max = TRUE,
+        distinct_count = TRUE,
+        null_count = TRUE
+      )
+    }
+    if (!inherits(statistics, "polars_parquet_statistics")) {
+      abort("`statistics` must be TRUE, FALSE, 'full', or a call to `parquet_statistics()`.")
+    }
+    self$`_df`$write_parquet(
+      path = file,
+      compression = compression,
+      compression_level = compression_level,
+      stat_min = statistics[["min"]],
+      stat_max = statistics[["max"]],
+      stat_null_count = statistics[["null_count"]],
+      stat_distinct_count = statistics[["distinct_count"]],
+      row_group_size = row_group_size,
+      data_page_size = data_page_size,
+      partition_by = partition_by,
+      partition_chunk_size_bytes = partition_chunk_size_bytes,
+      storage_options = storage_options,
+      retries = retries
+    )
+    invisible(self)
+  })
+}

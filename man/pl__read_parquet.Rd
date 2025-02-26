@@ -110,3 +110,20 @@ A polars \link{DataFrame}
 \description{
 Read into a DataFrame from Parquet file
 }
+\examples{
+\dontshow{if (requireNamespace("withr", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+# Write a Parquet file than we can then import as DataFrame
+temp_file <- withr::local_tempfile(fileext = ".parquet")
+as_polars_df(mtcars)$write_parquet(temp_file)
+pl$read_parquet(temp_file)
+
+# Write a hive-style partitioned parquet dataset
+temp_dir <- withr::local_tempdir()
+as_polars_df(mtcars)$write_parquet(temp_dir, partition_by = c("cyl", "gear"))
+list.files(temp_dir, recursive = TRUE)
+
+# If the path is a folder, Polars automatically tries to detect partitions
+# and includes them in the output
+pl$read_parquet(temp_dir)
+\dontshow{\}) # examplesIf}
+}

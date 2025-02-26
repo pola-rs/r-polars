@@ -2382,7 +2382,8 @@ lazyframe__join_asof <- function(
 #'  * `"zstd"`: min-level: 1, max-level: 22.
 #' @param statistics Whether statistics should be written to the Parquet
 #' headers. Possible values:
-#' * `TRUE`: enable default set of statistics (default)
+#' * `TRUE`: enable default set of statistics (default). Some statistics may be
+#'   disabled.
 #' * `FALSE`: disable all statistics
 #' * `"full"`: calculate and write all available statistics
 #' * A list created via [parquet_statistics()] to specify which statistics to
