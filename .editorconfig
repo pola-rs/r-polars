@@ -5,6 +5,14 @@ end_of_line = lf
 charset = utf-8
 insert_final_newline = true
 
-[*.{R,Rmd}]
+[*.R]
 indent_style = space
 indent_size = 2
+
+# Auto generated files
+[R/import-standalone-*.R]
+indent_size = unset
+
+# TODO: Fix at upstream
+[src/rust/api.h]
+insert_final_newline = false
