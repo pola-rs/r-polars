@@ -1,6 +1,4 @@
 test_that("map_batches works", {
-  skip("map_batches seems buggy (Stacking observed on R-universe builder)")
-
   .data <- pl$DataFrame(a = c(0, 1, 0, 1), b = 1:4)
 
   expect_query_equal(
@@ -26,6 +24,10 @@ test_that("map_batches works", {
   )
   expect_snapshot(
     .data$select(pl$col("a")$map_batches(\(...) integer)),
+    error = TRUE
+  )
+  expect_snapshot(
+    .data$select(pl$col("a")$map_batches(\(...) 1i)),
     error = TRUE
   )
 })

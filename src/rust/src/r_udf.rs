@@ -2,43 +2,30 @@
 // In the case of Python, it does not exist because there is a special feature in polars-plan.
 
 use crate::{prelude::*, r_threads::ThreadCom, PlRSeries};
-use savvy::{
-    ffi::SEXP,
-    protect::{insert_to_preserved_list, release_from_preserved_list},
-    FunctionArgs, FunctionSexp, Sexp, TypedSexp,
-};
+use savvy::{FunctionArgs, FunctionSexp, Sexp, TypedSexp};
 use state::InitCell;
-use std::sync::{Arc, Mutex, RwLock};
-
-// TODO: comments
-#[derive(Clone)]
-struct UnsafeToken(SEXP);
-unsafe impl Send for UnsafeToken {}
-unsafe impl Sync for UnsafeToken {}
+use std::sync::RwLock;
 
 struct UnsafeFunctionSexp(FunctionSexp);
 unsafe impl Send for UnsafeFunctionSexp {}
 unsafe impl Sync for UnsafeFunctionSexp {}
 
+impl Clone for UnsafeFunctionSexp {
+    fn clone(&self) -> Self {
+        Self(FunctionSexp(self.0.inner().clone()))
+    }
+}
+
 #[derive(Clone)]
 pub struct RUdf {
-    function: Arc<Mutex<UnsafeFunctionSexp>>,
-    token: UnsafeToken,
+    function: UnsafeFunctionSexp,
 }
 
 impl RUdf {
     pub fn new(function: FunctionSexp) -> Self {
-        let token = insert_to_preserved_list(function.inner());
         Self {
-            function: Arc::new(Mutex::new(UnsafeFunctionSexp(function))),
-            token: UnsafeToken(token),
+            function: UnsafeFunctionSexp(function),
         }
-    }
-}
-
-impl Drop for RUdf {
-    fn drop(&mut self) {
-        release_from_preserved_list(self.token.0);
     }
 }
 
@@ -62,7 +49,7 @@ impl RUdfSignature {
     pub fn eval(self) -> Result<RUdfReturn, Box<dyn std::error::Error>> {
         match self {
             RUdfSignature::SeriesToSeries(r_udf, series) => {
-                let r_udf = (*r_udf.function).lock().unwrap();
+                let r_udf = r_udf.function;
                 let mut args = FunctionArgs::new();
                 args.add("series", <PlRSeries>::from(series))?;
                 let res = <Sexp>::from(r_udf.0.call(args)?);
