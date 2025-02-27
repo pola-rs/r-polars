@@ -133,11 +133,11 @@ This allows streaming results that are larger than RAM to be written to disk.
 }
 \examples{
 # sink table 'mtcars' from mem to CSV
-tmpf <- tempfile()
-pl$LazyFrame(mtcars)$sink_csv(tmpf)
+tmpf <- tempfile(fileext = ".csv")
+as_polars_lf(mtcars)$sink_csv(tmpf)
 
 # stream a query end-to-end
-tmpf2 <- tempfile()
+tmpf2 <- tempfile(fileext = ".csv")
 pl$scan_csv(tmpf)$select(pl$col("cyl") * 2)$sink_csv(tmpf2)
 
 # load parquet directly into a DataFrame / memory
