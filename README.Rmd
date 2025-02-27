@@ -27,6 +27,23 @@ knitr::opts_chunk$set(
 [![Docs dev version](https://img.shields.io/badge/docs-dev-blue.svg)](https://pola-rs.github.io/r-polars)
 <!-- badges: end -->
 
+---
+
+IMPORTANT: 
+
+This package is now in maintenance mode, meaning that important bugs will be 
+fixed if possible but we won't adding new features in the next few weeks / months.
+
+The focus of future development is on a completely rewritten version (`neopolars`)
+that currently exists in the `next` branch. 
+
+The package in that branch will become the new `polars` package once the rewrite
+is complete (so the installation method will not change).
+
+Check https://github.com/pola-rs/r-polars/issues/1152 for more info.
+
+---
+
 The **polars** package for R gives users access to [a lightning
 fast](https://duckdblabs.github.io/db-benchmark/) Data Frame library written in
 Rust. [Polars](https://www.pola.rs/)' embarrassingly parallel execution, cache
