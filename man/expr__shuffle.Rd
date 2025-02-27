@@ -16,7 +16,7 @@ A polars \link{expression}
 \description{
 Note this is shuffled independently of any other column or Expression.
 If you want each row to stay the same use
-\code{\link[=dataframe_sample]{df$sample(shuffle = TRUE)}}.
+\code{\link[=dataframe__sample]{df$sample(shuffle = TRUE)}}.
 }
 \examples{
 df <- pl$DataFrame(a = 1:3)

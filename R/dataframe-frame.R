@@ -251,7 +251,7 @@ dataframe__get_columns <- function() {
 #' regardless of the `maintain_order` argument.
 #' @return [GroupBy][GroupBy_class] (a DataFrame with special groupby methods like `$agg()`)
 #' @seealso
-#' - [`<DataFrame>$partition_by()`][DataFrame_partition_by]
+#' - [`<DataFrame>$partition_by()`][dataframe__partition_by]
 #' @examples
 #' df <- pl$DataFrame(
 #'   a = c("a", "b", "a", "b", "c"),

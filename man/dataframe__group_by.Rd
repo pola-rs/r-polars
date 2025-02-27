@@ -53,6 +53,6 @@ df$group_by(d = "a", e = pl$col("b") \%/\% 2)$agg(
 }
 \seealso{
 \itemize{
-\item \code{\link[=DataFrame_partition_by]{<DataFrame>$partition_by()}}
+\item \code{\link[=dataframe__partition_by]{<DataFrame>$partition_by()}}
 }
 }

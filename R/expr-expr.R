@@ -4558,7 +4558,7 @@ expr__shrink_dtype <- function() {
 #'
 #' Note this is shuffled independently of any other column or Expression.
 #' If you want each row to stay the same use
-#' [`df$sample(shuffle = TRUE)`][dataframe_sample].
+#' [`df$sample(shuffle = TRUE)`][dataframe__sample].
 #'
 #' @param seed Integer indicating the seed for the random number generator. If
 #' `NULL` (default), a random seed is generated each time the shuffle is called.

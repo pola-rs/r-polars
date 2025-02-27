@@ -18,7 +18,7 @@ The suffix will be removed from the string exactly once, if found.
 \details{
 This method strips the exact character sequence provided in \code{suffix} from
 the end of the input. To strip a set of characters in any order, use
-\code{\link[=expr_str_chars_end]{$strip_chars_end()}} instead.
+\code{\link[=expr_str_strip_chars_end]{$strip_chars_end()}} instead.
 }
 \examples{
 df <- pl$DataFrame(a = c("foobar", "foobarbar", "foo", "bar"))

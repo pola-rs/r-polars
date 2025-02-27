@@ -421,7 +421,7 @@ expr_str_strip_chars_end <- function(characters = NULL) {
 #' @details
 #' This method strips the exact character sequence provided in `prefix` from
 #' the start of the input. To strip a set of characters in any order, use
-#' [`$strip_chars_start()`][expr_str_chars_start] instead.
+#' [`$strip_chars_start()`][expr_str_strip_chars_start] instead.
 #'
 #' @inherit as_polars_expr return
 #' @examples
@@ -444,7 +444,7 @@ expr_str_strip_prefix <- function(prefix = NULL) {
 #' @details
 #' This method strips the exact character sequence provided in `suffix` from
 #' the end of the input. To strip a set of characters in any order, use
-#' [`$strip_chars_end()`][expr_str_chars_end] instead.
+#' [`$strip_chars_end()`][expr_str_strip_chars_end] instead.
 #'
 #' @inherit as_polars_expr return
 #' @examples

@@ -18,7 +18,7 @@ The prefix will be removed from the string exactly once, if found.
 \details{
 This method strips the exact character sequence provided in \code{prefix} from
 the start of the input. To strip a set of characters in any order, use
-\code{\link[=expr_str_chars_start]{$strip_chars_start()}} instead.
+\code{\link[=expr_str_strip_chars_start]{$strip_chars_start()}} instead.
 }
 \examples{
 df <- pl$DataFrame(a = c("foobar", "foofoobar", "foo", "bar"))
