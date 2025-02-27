@@ -42,6 +42,8 @@ By "calendar day", we mean the corresponding time on the next day
 (which may not be 24 hours, due to daylight savings). Similarly for
 "calendar week", "calendar month", "calendar quarter", and "calendar year".}
 
+\item{...}{These dots are for future extensions and must be empty.}
+
 \item{quantile}{Quantile between 0.0 and 1.0.}
 
 \item{interpolation}{Interpolation method. Must be one of \code{"nearest"},

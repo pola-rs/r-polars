@@ -41,6 +41,8 @@ By "calendar day", we mean the corresponding time on the next day
 (which may not be 24 hours, due to daylight savings). Similarly for
 "calendar week", "calendar month", "calendar quarter", and "calendar year".}
 
+\item{...}{These dots are for future extensions and must be empty.}
+
 \item{min_periods}{The number of values in the window that should be
 non-null before computing a result. If \code{NULL} (default), it will be set
 equal to \code{window_size}.}

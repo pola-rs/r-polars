@@ -66,7 +66,7 @@ expr_bin_ends_with <- function(suffix) {
 
 #' Check if values start with a binary substring
 #'
-#' @param sub Prefix substring.
+#' @param prefix Prefix substring.
 #'
 #' @inherit as_polars_expr return
 #'

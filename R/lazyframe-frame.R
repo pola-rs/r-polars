@@ -503,8 +503,8 @@ lazyframe__collect_schema <- function() {
 #' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Either a datatype to which
 #' all columns will be cast, or a list where the names are column names and the
 #' values are the datatypes to convert to.
-#' @param strict If `TRUE` (default), throw an error if a cast could not be done
-#' (for instance, due to an overflow). Otherwise, return `null`.
+#' @param .strict If `TRUE` (default), throw an error if a cast could not be
+#' done (for instance, due to an overflow). Otherwise, return `null`.
 #'
 #' @return A LazyFrame
 #'

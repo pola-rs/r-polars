@@ -7,9 +7,9 @@
 expr_list_std(ddof = 1)
 }
 \arguments{
-\item{"Delta}{Degrees of Freedom": the divisor used in the calculation is
-\code{N - ddof}, where \code{N} represents the number of elements. By default ddof is
-1.}
+\item{ddof}{"Delta Degrees of Freedom": the divisor used in the calculation
+is \code{N - ddof}, where \code{N} represents the number of elements. By default
+\code{ddof} is 1.}
 }
 \value{
 A polars \link{expression}

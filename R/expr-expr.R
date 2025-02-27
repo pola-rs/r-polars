@@ -2894,6 +2894,7 @@ expr__rolling <- function(
 #' * …
 #' * `(t_n - window_size, t_n]`
 #'
+#' @inheritParams rlang::args_dots_empty
 #' @param by Should be DateTime, Date, UInt64, UInt32, Int64, or Int32 data
 #' type after conversion by [as_polars_expr()]. Note that the
 #' integer ones require using `"i"` in `window_size`. Accepts expression input.
@@ -3545,7 +3546,7 @@ expr__append <- function(other, ..., upcast = TRUE) {
 
 #' Fill missing values with the next non-null value
 #'
-#' @param fill The number of consecutive null values to backward fill.
+#' @param limit The number of consecutive null values to backward fill.
 #'
 #' @inherit as_polars_expr return
 #' @examples

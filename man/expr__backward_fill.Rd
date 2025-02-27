@@ -7,7 +7,7 @@
 expr__backward_fill(limit = NULL)
 }
 \arguments{
-\item{fill}{The number of consecutive null values to backward fill.}
+\item{limit}{The number of consecutive null values to backward fill.}
 }
 \value{
 A polars \link{expression}

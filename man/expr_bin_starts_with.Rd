@@ -7,7 +7,7 @@
 expr_bin_starts_with(prefix)
 }
 \arguments{
-\item{sub}{Prefix substring.}
+\item{prefix}{Prefix substring.}
 }
 \value{
 A polars \link{expression}

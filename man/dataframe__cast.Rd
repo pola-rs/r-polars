@@ -11,8 +11,8 @@ dataframe__cast(..., .strict = TRUE)
 all columns will be cast, or a list where the names are column names and the
 values are the datatypes to convert to.}
 
-\item{.strict}{If \code{TRUE} (default), throw an error if a cast could not be done
-(for instance, due to an overflow). Otherwise, return \code{null}.}
+\item{.strict}{If \code{TRUE} (default), throw an error if a cast could not be
+done (for instance, due to an overflow). Otherwise, return \code{null}.}
 }
 \value{
 A polars \link{DataFrame}

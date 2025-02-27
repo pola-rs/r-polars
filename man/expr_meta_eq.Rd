@@ -6,6 +6,9 @@
 \usage{
 expr_meta_eq(other)
 }
+\arguments{
+\item{other}{Expression to compare with.}
+}
 \value{
 A polars \link{expression}
 }

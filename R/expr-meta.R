@@ -147,6 +147,7 @@ expr_meta_serialize <- function(..., format = c("binary", "json")) {
 
 #' Indicate if this expression is the same as another expression
 #'
+#' @param other Expression to compare with.
 #' @inherit as_polars_expr return
 #' @examples
 #' foo_bar <- pl$col("foo")$alias("bar")
@@ -162,6 +163,7 @@ expr_meta_eq <- function(other) {
 
 #' Indicate if this expression is not the same as another expression
 #'
+#' @inheritParams expr_meta_eq
 #' @inherit as_polars_expr return
 #' @examples
 #' foo_bar <- pl$col("foo")$alias("bar")
