@@ -6,6 +6,7 @@
 ^Taskfile\.yml$
 ^\.editorconfig$
 ^air\.toml$
+^\.lycheeignore$
 
 ^src/Makevars$
 ^src/rust/.cargo$
