@@ -2076,3 +2076,27 @@ test_that("sink_csv: float_scientific works", {
     c("x", "1e7", "5.6e0")
   )
 })
+
+test_that("with_row_index() works", {
+  df <- pl$DataFrame(x = c(1, 3, 5), y = c(2, 4, 6))
+  expect_query_equal(
+    .input$with_row_index(),
+    .input = df,
+    pl$DataFrame(index = 0:2, x = c(1, 3, 5), y = c(2, 4, 6))$cast(index = pl$UInt32)
+  )
+  expect_query_equal(
+    .input$with_row_index("id", offset = 1000),
+    .input = df,
+    pl$DataFrame(id = 1000:1002, x = c(1, 3, 5), y = c(2, 4, 6))$cast(id = pl$UInt32)
+  )
+  expect_query_error(
+    .input$with_row_index(offset = -1),
+    .input = df,
+    "cannot be negative"
+  )
+  expect_query_error(
+    .input$with_row_index(name = 1),
+    .input = df,
+    "must be character"
+  )
+})

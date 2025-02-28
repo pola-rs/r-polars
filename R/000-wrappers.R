@@ -561,6 +561,12 @@ class(`PlRChainedWhen`) <- c("PlRChainedWhen__bundle", "savvy_neopolars__sealed"
   }
 }
 
+`PlRDataFrame_with_row_index` <- function(self) {
+  function(`name`, `offset` = NULL) {
+    .savvy_wrap_PlRDataFrame(.Call(savvy_PlRDataFrame_with_row_index__impl, `self`, `name`, `offset`))
+  }
+}
+
 `PlRDataFrame_write_parquet` <- function(self) {
   function(`path`, `compression`, `retries`, `partition_chunk_size_bytes`, `stat_min`, `stat_max`, `stat_distinct_count`, `stat_null_count`, `compression_level` = NULL, `row_group_size` = NULL, `data_page_size` = NULL, `partition_by` = NULL, `storage_options` = NULL) {
     invisible(.Call(savvy_PlRDataFrame_write_parquet__impl, `self`, `path`, `compression`, `retries`, `partition_chunk_size_bytes`, `stat_min`, `stat_max`, `stat_distinct_count`, `stat_null_count`, `compression_level`, `row_group_size`, `data_page_size`, `partition_by`, `storage_options`))
@@ -599,6 +605,7 @@ class(`PlRChainedWhen`) <- c("PlRChainedWhen__bundle", "savvy_neopolars__sealed"
   e$`transpose` <- `PlRDataFrame_transpose`(ptr)
   e$`unpivot` <- `PlRDataFrame_unpivot`(ptr)
   e$`width` <- `PlRDataFrame_width`(ptr)
+  e$`with_row_index` <- `PlRDataFrame_with_row_index`(ptr)
   e$`write_parquet` <- `PlRDataFrame_write_parquet`(ptr)
 
   class(e) <- c("PlRDataFrame", "savvy_neopolars__sealed")

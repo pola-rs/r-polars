@@ -320,4 +320,16 @@ impl PlRDataFrame {
     pub fn is_empty(&self) -> Result<Sexp> {
         self.df.is_empty().try_into()
     }
+
+    fn with_row_index(&self, name: &str, offset: Option<NumericScalar>) -> Result<Self> {
+        let offset: Option<u32> = match offset {
+            Some(x) => Some(<Wrap<u32>>::try_from(x)?.0),
+            None => None,
+        };
+        Ok(self
+            .df
+            .with_row_index(name.into(), offset)
+            .map_err(RPolarsErr::from)?
+            .into())
+    }
 }

@@ -1925,3 +1925,41 @@ dataframe__write_parquet <- function(
     invisible(self)
   })
 }
+
+#' Add a row index as the first column in the DataFrame
+#'
+#' @inheritParams lazyframe__with_row_index
+#'
+#' @inherit as_polars_df return
+#' @examples
+#' df <- pl$DataFrame(x = c(1, 3, 5), y = c(2, 4, 6))
+#' df$with_row_index()
+#'
+#' df$with_row_index("id", offset = 1000)
+#'
+#' # An index column can also be created using the expressions int_range()
+#' # and len()$
+#' df$with_columns(
+#'   index = pl$int_range(pl$len(), dtype = pl$UInt32)
+#' )
+dataframe__with_row_index <- function(name = "index", offset = 0) {
+  wrap({
+    tryCatch(
+      self$`_df`$with_row_index(name, offset),
+      error = function(e) {
+        is_overflow_error <- grepl("out of range", e$message)
+        if (isTRUE(is_overflow_error)) {
+          issue <- if (offset < 0) {
+            "negative"
+          } else {
+            "greater than the maximum index value"
+          }
+          msg <- paste0("`offset` input for `with_row_index` cannot be ", issue, ", got ", offset)
+        } else {
+          msg <- e$message
+        }
+        abort(msg, call = caller_env(4))
+      }
+    )
+  })
+}
