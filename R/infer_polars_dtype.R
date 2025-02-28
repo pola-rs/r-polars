@@ -69,6 +69,18 @@ infer_polars_dtype.polars_data_frame <- function(x, ...) {
   pl$Struct(!!!x$collect_schema())
 }
 
+# This is only used for showing the special error message.
+# So, this method is not documented.
+#' @export
+infer_polars_dtype.polars_expr <- function(x, name = NULL, ...) {
+  abort(
+    c(
+      "passing polars expression objects to `infer_polars_dtype()` is not supported.",
+      i = "You may want to eval the expression with `pl$select()` first."
+    )
+  )
+}
+
 #' @rdname infer_polars_dtype
 #' @export
 infer_polars_dtype.polars_lazy_frame <- infer_polars_dtype.polars_data_frame

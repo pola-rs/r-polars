@@ -1,3 +1,12 @@
+# infer_polars_dtype() raises an error for unsupported objects polars_expr
+
+    Code
+      infer_polars_dtype(x)
+    Condition
+      Error in `infer_polars_dtype()`:
+      ! passing polars expression objects to `infer_polars_dtype()` is not supported.
+      i You may want to eval the expression with `pl$select()` first.
+
 # infer_polars_dtype() raises an error for unsupported objects complex
 
     Code

@@ -63,6 +63,7 @@ patrick::with_parameters_test_that(
   # fmt: skip
   .cases = tibble::tribble(
     ~.test_name, ~x,
+    "polars_expr", pl$lit(1L),
     "complex", 1i,
     "polars_dtype", pl$Null,
   ),
