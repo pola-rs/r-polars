@@ -147,7 +147,18 @@ series__clone <- function() {
     wrap()
 }
 
-series__rename <- function(name) {
+#' Rename the Series
+#'
+#' [`<Series>$rename()`][series__rename] is an alias for [`<Series>$alias()`][series__alias].
+#' @param name The new name.
+#'
+#' @inherit as_polars_series return
+#' @examples
+#' series <- pl$Series("a", 1:3)
+#'
+#' series$alias("b")
+#' series$rename("b")
+series__alias <- function(name) {
   wrap({
     s <- self$clone()
 
@@ -155,6 +166,9 @@ series__rename <- function(name) {
     s
   })
 }
+
+#' @rdname series__alias
+series__rename <- series__alias
 
 series__slice <- function(offset, length = NULL) {
   self$`_s`$slice(offset, length) |>
