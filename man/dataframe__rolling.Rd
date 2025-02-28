@@ -30,6 +30,9 @@ performance matters, use an Int64 column.}
 
 \item{closed}{Define which sides of the interval are closed (inclusive).
 Default is \code{"left"}.}
+
+\item{group_by}{Also group by this column/these columns. Can be expressions
+or objects coercible to expressions.}
 }
 \value{
 \link[=RollingGroupBy_class]{RollingGroupBy} (a DataFrame with special

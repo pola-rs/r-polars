@@ -538,6 +538,7 @@ expr_list_tail <- function(n = 5L) {
 
 #' Run any polars expression on the sub-lists' values
 #'
+#' @inheritParams rlang::args_dots_empty
 #' @param expr Expression to run. Note that you can select an element with
 #'   `pl$element()`, `pl$first()`, and more. See Examples.
 #' @param parallel Run all expressions in parallel. Don't activate this blindly.

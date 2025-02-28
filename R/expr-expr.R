@@ -3483,6 +3483,7 @@ expr__ewm_mean <- function(
 #' \deqn{y_i = \alpha_i x_i + (1 - \alpha_i) y_{i-1}; \quad i > 0}
 #' where \eqn{\tau} is the `half_life`.
 #'
+#' @inheritParams rlang::args_dots_empty
 #' @param by Times to calculate average by. Should be DateTime, Date, UInt64,
 #' UInt32, Int64, or Int32 data type.
 #' @param half_life Unit over which observation decays to half its value. Can

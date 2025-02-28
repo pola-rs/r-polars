@@ -8,6 +8,8 @@ dataframe__equals(other, ..., null_equal = TRUE)
 }
 \arguments{
 \item{other}{DataFrame to compare with.}
+
+\item{null_equal}{Consider null values as equal.}
 }
 \value{
 A logical value

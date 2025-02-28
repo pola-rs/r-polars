@@ -24,7 +24,7 @@ namespace_expr_str <- function(x) {
 #' Similar to the [strptime()] function.
 #'
 #' When parsing a Datetime the column precision will be inferred from the format
-#' string, if given, e.g.: `"%F %T%.3f"` => [`pl$Datetime("ms")`][pl_Datetime].
+#' string, if given, e.g.: `"%F %T%.3f"` => [`pl$Datetime("ms")`][pl__Datetime].
 #' If no fractional second component is found then the default is `"us"` (microsecond).
 # TODO: link to data type docs
 #' @param dtype The data type to convert into. Can be either `pl$Date`,
@@ -185,9 +185,9 @@ expr_str_to_time <- function(format = NULL, ..., strict = TRUE, cache = TRUE) {
 #' @inheritParams expr_str_strptime
 #' @param time_unit Unit of time for the resulting Datetime column. If `NULL` (default),
 #' the time unit is inferred from the format string if given,
-#' e.g.: `"%F %T%.3f"` => [`pl$Datetime("ms")`][pl_Datetime].
+#' e.g.: `"%F %T%.3f"` => [`pl$Datetime("ms")`][pl__Datetime].
 #' If no fractional second component is found, the default is `"us"` (microsecond).
-#' @param time_zone for the resulting [Datetime][pl_Datetime] column.
+#' @param time_zone for the resulting [Datetime][pl__Datetime] column.
 #' @param exact If `TRUE` (default), require an exact format match. If `FALSE`, allow the format to match
 #' anywhere in the target string. Note that using `exact = FALSE` introduces a performance
 #' penalty - cleaning your data beforehand will almost certainly be more performant.

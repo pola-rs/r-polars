@@ -10,6 +10,8 @@ expr__ewm_mean_by(by, ..., half_life)
 \item{by}{Times to calculate average by. Should be DateTime, Date, UInt64,
 UInt32, Int64, or Int32 data type.}
 
+\item{...}{These dots are for future extensions and must be empty.}
+
 \item{half_life}{Unit over which observation decays to half its value. Can
 be created either from a timedelta, or by using the following string
 language:

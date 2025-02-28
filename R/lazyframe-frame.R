@@ -1748,6 +1748,8 @@ lazyframe__rolling <- function(
 #' * `"datapoint"`: the first value of the index column in the given window. If
 #' you don’t need the label to be at one of the boundaries, choose this option
 #' for maximum performance.
+#' @param group_by Also group by this column/these columns. Can be expressions
+#' or objects coercible to expressions.
 #' @param start_by The strategy to determine the start of the first window by:
 #' * `"window"`: start by taking the earliest timestamp, truncating it with
 #'   `every`, and then adding `offset`. Note that weekly windows start on

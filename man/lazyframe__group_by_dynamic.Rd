@@ -52,6 +52,9 @@ you don’t need the label to be at one of the boundaries, choose this option
 for maximum performance.
 }}
 
+\item{group_by}{Also group by this column/these columns. Can be expressions
+or objects coercible to expressions.}
+
 \item{start_by}{The strategy to determine the start of the first window by:
 \itemize{
 \item \code{"window"}: start by taking the earliest timestamp, truncating it with

@@ -27,10 +27,10 @@ Numeric time zones like \verb{\%z} or \verb{\%:z} are supported.}
 
 \item{time_unit}{Unit of time for the resulting Datetime column. If \code{NULL} (default),
 the time unit is inferred from the format string if given,
-e.g.: \code{"\%F \%T\%.3f"} => \code{\link[=pl_Datetime]{pl$Datetime("ms")}}.
+e.g.: \code{"\%F \%T\%.3f"} => \code{\link[=pl__Datetime]{pl$Datetime("ms")}}.
 If no fractional second component is found, the default is \code{"us"} (microsecond).}
 
-\item{time_zone}{for the resulting \link[=pl_Datetime]{Datetime} column.}
+\item{time_zone}{for the resulting \link[=pl__Datetime]{Datetime} column.}
 
 \item{strict}{If \code{TRUE} (default), raise an error if a single string cannot
 be parsed. If \code{FALSE}, produce a polars \code{null}.}

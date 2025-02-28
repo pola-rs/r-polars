@@ -10,6 +10,8 @@ expr_list_eval(expr, ..., parallel = FALSE)
 \item{expr}{Expression to run. Note that you can select an element with
 \code{pl$element()}, \code{pl$first()}, and more. See Examples.}
 
+\item{...}{These dots are for future extensions and must be empty.}
+
 \item{parallel}{Run all expressions in parallel. Don't activate this blindly.
 Parallelism is worth it if there is enough work to do per thread. This
 likely should not be used in the \verb{$group_by()} context, because groups are
