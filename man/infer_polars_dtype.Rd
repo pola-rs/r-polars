@@ -25,7 +25,7 @@ infer_polars_dtype(x, ...)
 
 \method{infer_polars_dtype}{`NULL`}(x, ...)
 
-\method{infer_polars_dtype}{list}(x, ..., strict = FALSE)
+\method{infer_polars_dtype}{list}(x, ..., strict = FALSE, infer_dtype_length = 10L)
 
 \method{infer_polars_dtype}{AsIs}(x, ...)
 
@@ -43,6 +43,11 @@ the input \link{list}'s elements have different data types.
 If \code{FALSE} (default), all elements are automatically cast to the super type, or,
 casting to the super type is failed, the value will be \code{null}.
 If \code{TRUE}, the first non-\code{NULL} element's data type is used as the data type of the inner Series.}
+
+\item{infer_dtype_length}{The number of non-\code{NULL} elements to use for type inference.
+Must be a single positive integer-ish value. The default is \code{10}.
+If you want to infer the type of the entire list, set this to \code{Inf},
+but be aware that it may be slow.}
 }
 \value{
 A \link[=DataType]{polars DataType}
@@ -63,6 +68,19 @@ infer_polars_dtype(1:10)
 # The type inference is also fast for objects
 # that would take a long time to construct a Series.
 infer_polars_dtype(1:100000000)
+
+# For lists, it is not possible to infer the type
+# without inspecting all elements.
+# However, this function can be configured to inspect only a few elements
+# via the `infer_dtype_length` argument.
+# If a sufficient length is specified, the correct type can be inferred.
+# (By default, the length is set to 10.)
+mixed_list <- list(1, NULL, "foo")
+infer_polars_dtype(mixed_list)
+infer_polars_dtype(mixed_list, infer_dtype_length = 2)
+
+# But if the length is too short, an incorrect type may be inferred.
+infer_polars_dtype(mixed_list, infer_dtype_length = 1)
 }
 \seealso{
 \itemize{

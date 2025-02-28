@@ -19,6 +19,19 @@
 #' # The type inference is also fast for objects
 #' # that would take a long time to construct a Series.
 #' infer_polars_dtype(1:100000000)
+#'
+#' # For lists, it is not possible to infer the type
+#' # without inspecting all elements.
+#' # However, this function can be configured to inspect only a few elements
+#' # via the `infer_dtype_length` argument.
+#' # If a sufficient length is specified, the correct type can be inferred.
+#' # (By default, the length is set to 10.)
+#' mixed_list <- list(1, NULL, "foo")
+#' infer_polars_dtype(mixed_list)
+#' infer_polars_dtype(mixed_list, infer_dtype_length = 2)
+#'
+#' # But if the length is too short, an incorrect type may be inferred.
+#' infer_polars_dtype(mixed_list, infer_dtype_length = 1)
 #' @export
 infer_polars_dtype <- function(x, ...) {
   UseMethod("infer_polars_dtype")
@@ -69,17 +82,27 @@ infer_polars_dtype.NULL <- function(x, ...) {
   pl$Null
 }
 
-# TODO: Because this is very slow for long lists, an option to stop when the first non-NULL element is found is needed
 #' @rdname infer_polars_dtype
+#' @param infer_dtype_length The number of non-`NULL` elements to use for type inference.
+#' Must be a single positive integer-ish value. The default is `10`.
+#' If you want to infer the type of the entire list, set this to `Inf`,
+#' but be aware that it may be slow.
 #' @export
-infer_polars_dtype.list <- function(x, ..., strict = FALSE) {
-  lapply(x, \(child) {
-    if (is.null(child)) {
-      NULL
-    } else {
-      infer_polars_dtype(child, ..., strict = strict)$`_dt`
-    }
-  }) |>
+infer_polars_dtype.list <- function(x, ..., strict = FALSE, infer_dtype_length = 10L) {
+  if (!(is_scalar_integerish(infer_dtype_length) && isTRUE(infer_dtype_length > 0L))) {
+    abort("`infer_dtype_length` must be a single positive integer-ish value")
+  }
+
+  Filter(Negate(is.null), x) |>
+    head(infer_dtype_length) |>
+    lapply(\(child) {
+      infer_polars_dtype(
+        child,
+        ...,
+        strict = strict,
+        infer_dtype_length = infer_dtype_length
+      )$`_dt`
+    }) |>
     PlRDataType$infer_supertype(strict = strict) |>
     PlRDataType$new_list() |>
     wrap()

@@ -3,5 +3,6 @@
 
 ## usethis namespace: start
 #' @import rlang
+#' @importFrom utils head
 ## usethis namespace: end
 NULL

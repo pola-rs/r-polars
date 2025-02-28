@@ -59,7 +59,7 @@ patrick::with_parameters_test_that(
 )
 
 patrick::with_parameters_test_that(
-  "infer_polars_dtype() works for various objects",
+  "infer_polars_dtype() raises an error for unsupported objects",
   # fmt: skip
   .cases = tibble::tribble(
     ~.test_name, ~x,
@@ -68,5 +68,34 @@ patrick::with_parameters_test_that(
   ),
   code = {
     expect_snapshot(infer_polars_dtype(x), error = TRUE)
+  }
+)
+
+patrick::with_parameters_test_that(
+  "infer_polars_dtype(<list>)'s infer_dtype_length option works",
+  # fmt: skip
+  .cases = tibble::tribble(
+    ~.test_name, ~infer_dtype_length, ~expected_dtype,
+    "too short", 1, pl$List(pl$Int32),
+    "enough", 2, pl$List(pl$String),
+    "Inf", Inf, pl$List(pl$String),
+  ),
+  code = {
+    list_to_check <- list(NULL, 1L, NULL, "foo")
+
+    expect_equal(
+      infer_polars_dtype(
+        list_to_check,
+        infer_dtype_length = infer_dtype_length
+      ),
+      expected_dtype
+    )
+    expect_equal(
+      infer_polars_dtype(
+        data.frame(a = seq_along(list_to_check), b = I(list_to_check)),
+        infer_dtype_length = infer_dtype_length
+      ),
+      pl$Struct(a = pl$Int32, b = expected_dtype)
+    )
   }
 )
