@@ -422,6 +422,18 @@ class(`PlRChainedWhen`) <- c("PlRChainedWhen__bundle", "savvy_neopolars__sealed"
   }
 }
 
+`PlRDataFrame_get_column` <- function(self) {
+  function(`name`) {
+    .savvy_wrap_PlRSeries(.Call(savvy_PlRDataFrame_get_column__impl, `self`, `name`))
+  }
+}
+
+`PlRDataFrame_get_column_index` <- function(self) {
+  function(`name`) {
+    .Call(savvy_PlRDataFrame_get_column_index__impl, `self`, `name`)
+  }
+}
+
 `PlRDataFrame_get_columns` <- function(self) {
   function() {
     .Call(savvy_PlRDataFrame_get_columns__impl, `self`)
@@ -564,6 +576,8 @@ class(`PlRChainedWhen`) <- c("PlRChainedWhen__bundle", "savvy_neopolars__sealed"
   e$`columns` <- `PlRDataFrame_columns`(ptr)
   e$`dtypes` <- `PlRDataFrame_dtypes`(ptr)
   e$`equals` <- `PlRDataFrame_equals`(ptr)
+  e$`get_column` <- `PlRDataFrame_get_column`(ptr)
+  e$`get_column_index` <- `PlRDataFrame_get_column_index`(ptr)
   e$`get_columns` <- `PlRDataFrame_get_columns`(ptr)
   e$`head` <- `PlRDataFrame_head`(ptr)
   e$`height` <- `PlRDataFrame_height`(ptr)

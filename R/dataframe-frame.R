@@ -244,6 +244,42 @@ dataframe__get_columns <- function() {
     })
 }
 
+#' Get a single column by name
+#'
+#' @param name Name of the column to retrieve.
+#'
+#' @inherit as_polars_series return
+#' @examples
+#' df <- pl$DataFrame(foo = 1:3, bar = 4:6)
+#' df$get_column("foo")
+#'
+#' tryCatch(
+#'   df$get_column("baz"),
+#'   error = function(e) print(e)
+#' )
+dataframe__get_column <- function(name) {
+  self$`_df`$get_column(name) |>
+    wrap()
+}
+
+#' Find the index of a column by name
+#'
+#' @param name Name of the column to find.
+#'
+#' @return Numeric value (0-indexed) indicating the index of the column
+#' @examples
+#' df <- pl$DataFrame(foo = 1:3, bar = 4:6, ham = c("a", "b", "c"))
+#' df$get_column_index("ham")
+#'
+#' tryCatch(
+#'   df$get_column_index("sandwich"),
+#'   error = function(e) print(e)
+#' )
+dataframe__get_column_index <- function(name) {
+  self$`_df`$get_column_index(name) |>
+    wrap()
+}
+
 #' Group a DataFrame
 #'
 #' @inherit lazyframe__group_by description params

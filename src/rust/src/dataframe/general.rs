@@ -53,6 +53,23 @@ impl PlRDataFrame {
         Ok(list.into())
     }
 
+    pub fn get_column(&self, name: &str) -> Result<PlRSeries> {
+        let series = self
+            .df
+            .column(name)
+            .map(|s| PlRSeries::new(s.as_materialized_series().clone()))
+            .map_err(RPolarsErr::from)?;
+        Ok(series)
+    }
+
+    pub fn get_column_index(&self, name: &str) -> Result<Sexp> {
+        let out = self
+            .df
+            .try_get_column_index(name)
+            .map_err(RPolarsErr::from)?;
+        (out as i32).try_into()
+    }
+
     pub fn transpose(
         &mut self,
         column_names: StringSexp,
