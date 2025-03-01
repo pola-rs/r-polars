@@ -1070,85 +1070,100 @@ expr__filter <- function(...) {
     wrap()
 }
 
-## TODO Better explain aggregate list
-
-#' Map an expression with an R function
+#' Apply a custom R function to a whole Series or sequence of Series.
+#'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#'
+#' The output of this custom function is presumed to be either a Series, or a
+#' scalar that will be converted into a Series. If the result is a scalar and
+#' you want it to stay as a scalar, pass in `returns_scalar = TRUE`.
+#'
+#' If you want to apply a custom function elementwise over single values, see
+#' [map_elements()][expr__map_elements]. A reasonable use case for map
+#' functions is transforming the values represented by an expression using a
+#' third-party package.
 #'
 #' @inheritParams rlang::args_dots_empty
-#' @param f a function to map with
-#' @param output_type `NULL` or a type available in `names(pl$dtypes)`. If `NULL`
-#' (default), the output datatype will match the input datatype. This is used
-#' to inform schema of the actual return type of the R function. Setting this wrong
-#' could theoretically have some downstream implications to the query.
-#' @param agg_list Aggregate list. Map from vector to group in group_by context.
-#' @param in_background Logical. Whether to execute the map in a background R
-#' process. Combined with setting e.g. `options(polars.rpool_cap = 4)` it can speed
-#' up some slow R functions as they can run in parallel R sessions. The
-#' communication speed between processes is quite slower than between threads.
-#' This will likely only give a speed-up in a "low IO - high CPU" use case.
-#' If there are multiple [`$map_batches(in_background = TRUE)`][expr__map_batches]
-#' calls in the query, they will be run in parallel.
-#'
+#' @param lambda Function to apply.
+#' @param return_dtype Dtype of the output Series. If `NULL` (default), the
+#' dtype will be inferred based on the first non-null value that is returned by
+#' the function. This can lead to unexpected results, so it is recommended to
+#' provide the return dtype.
+#' @param agg_list Aggregate the values of the expression into a list before
+#' applying the function. This parameter only works in a group-by context. The
+#' function will be invoked only once on a list of groups, rather than once per
+#' group.
+# TODO: uncomment when those arguments are supported
+# @param is_elementwise If `TRUE`, this can run in the streaming engine, but
+# may yield incorrect results in group-by. Ensure you know what you are doing!
+# @param returns_scalar If the function returns a scalar, by default it will
+# be wrapped in a list in the output, since the assumption is that the
+# function always returns something Series-like. If you want to keep the
+# result as a scalar, set this argument to `TRUE`.
 #'
 #' @inherit as_polars_expr return
-#' @details
-#' It is sometimes necessary to apply a specific R function on one or several
-#' columns. However, note that using R code in [`$map_batches()`][expr__map_batches]
-#' is slower than native polars.
-#' The user function must take one polars `Series` as input and the return
-#' should be a `Series` or any Robj convertible into a `Series` (e.g. vectors).
-#' Map fully supports `browser()`.
-#'
-#' If `in_background = FALSE` the function can access any global variable of the
-#' R session. However, note that several calls to [`$map_batches()`][expr__map_batches]
-#' will sequentially share the same main R session,
-#' so the global environment might change between the start of the query and the moment
-#' a [`$map_batches()`][expr__map_batches] call is evaluated. Any native
-#' polars computations can still be executed meanwhile. If `in_background = TRUE`,
-#' the map will run in one or more other R sessions and will not have access
-#' to global variables. Use `options(polars.rpool_cap = 4)` and
-#' `polars_options()$rpool_cap` to set and view number of parallel R sessions.
-#'
 #' @examples
-#' pl$DataFrame(iris)$
-#'   select(
-#'   pl$col("Sepal.Length")$map_batches(\(x) {
-#'     paste("cheese", as.character(x$to_vector()))
-#'   }, pl$String)
+#' df <- pl$DataFrame(
+#'   sine = c(0.0, 1.0, 0.0, -1.0),
+#'   cosine = c(1.0, 0.0, -1.0, 0.0)
 #' )
+#' df$select(pl$all()$map_batches(\(x) {
+#'   elems <- as.vector(x)
+#'   which.max(elems)
+#' }))
 #'
-#' # R parallel process example, use Sys.sleep() to imitate some CPU expensive
-#' # computation.
+#' # In a group-by context, the `agg_list` parameter can improve performance if
+#' # used correctly. The following example has `agg_list = FALSE`, which causes
+#' # the function to be applied once per group. The input of the function is a
+#' # Series of type Int64. This is less efficient.
+#' df <- pl$DataFrame(
+#'   a = c(0, 1, 0, 1),
+#'   b = c(1, 2, 3, 4)
+#' )
+#' system.time({
+#'   print(
+#'     df$group_by("a")$agg(
+#'       pl$col("b")$map_batches(\(x) x + 2, agg_list = FALSE)
+#'     )
+#'   )
+#' })
 #'
-#' # map a,b,c,d sequentially
-#' pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
-#'   pl$all()$map_batches(\(s) {
-#'     Sys.sleep(.1)
-#'     s * 2
-#'   })
-#' )$collect() |> system.time()
+#' # Using `agg_list = TRUE` would be more efficient. In this example, the input
+#' # of the function is a Series of type List(Int64).
+#' system.time({
+#'   print(
+#'     df$group_by("a")$agg(
+#'       pl$col("b")$map_batches(
+#'         \(x) x$list$eval(pl$element() + 2),
+#'         agg_list = TRUE
+#'       )
+#'     )
+#'   )
+#' })
 #'
-#' # map in parallel 1: Overhead to start up extra R processes / sessions
-#' options(polars.rpool_cap = 0) # drop any previous processes, just to show start-up overhead
-#' options(polars.rpool_cap = 4) # set back to 4, the default
-#' polars_options()$rpool_cap
-#' pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
-#'   pl$all()$map_batches(\(s) {
-#'     Sys.sleep(.1)
-#'     s * 2
-#'   }, in_background = TRUE)
-#' )$collect() |> system.time()
+# TODO: uncomment when returns_scalar is supported
+# # Here’s an example of a function that returns a scalar, where we want it to
+# # stay as a scalar:
+# df <- pl$DataFrame(
+#   a = c(0, 1, 0, 1),
+#   b = c(1, 2, 3, 4),
+# )
+# df$group_by("a")$agg(
+#   pl$col("b")$map_batches(\(x) x$max(), returns_scalar = TRUE)
+# )
 #'
-#' # map in parallel 2: Reuse R processes in "polars global_rpool".
-#' polars_options()$rpool_cap
-#' pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
-#'   pl$all()$map_batches(\(s) {
-#'     Sys.sleep(.1)
-#'     s * 2
-#'   }, in_background = TRUE)
-#' )$collect() |> system.time()
-# TODO: remove the noRd tag
-#' @noRd
+#' # Call a function that takes multiple arguments by creating a struct and
+#' # referencing its fields inside the function call.
+#' df <- pl$DataFrame(
+#'   a = c(5, 1, 0, 3),
+#'   b = c(4, 2, 3, 4),
+#' )
+#' df$with_columns(
+#'   a_times_b = pl$struct("a", "b")$map_batches(
+#'     \(x) x$struct$field("a") * x$struct$field("b")
+#'   )
+#' )
 expr__map_batches <- function(
   lambda,
   return_dtype = NULL,
