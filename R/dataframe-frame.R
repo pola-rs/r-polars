@@ -1963,3 +1963,49 @@ dataframe__with_row_index <- function(name = "index", offset = 0) {
     )
   })
 }
+
+#' Sample from this DataFrame
+#'
+#' @inheritParams expr__sample
+#' @inherit as_polars_df return
+#' @examples
+#' df <- pl$DataFrame(
+#'   foo = 1:3,
+#'   bar = 6:8,
+#'   ham = c("a", "b", "c")
+#' )
+#' df$sample(n = 2, seed = 0)
+dataframe__sample <- function(
+  n = NULL,
+  ...,
+  fraction = NULL,
+  with_replacement = FALSE,
+  shuffle = FALSE,
+  seed = NULL
+) {
+  wrap({
+    check_dots_empty0(...)
+    if (!is.null(fraction) && !is.null(n)) {
+      abort("cannot specify both `n` and `fraction`")
+    }
+    if (is.null(seed)) {
+      seed <- sample.int(10000, 1)
+    }
+    if (!is.null(fraction)) {
+      if (!is_polars_series(fraction)) {
+        fraction <- as_polars_series(fraction, "frac")
+      }
+      return(
+        self$`_df`$sample_frac(fraction$`_s`, with_replacement, shuffle, seed) |>
+          wrap()
+      )
+    }
+    if (is.null(n)) {
+      n <- 1
+    }
+    if (!is_polars_series(n)) {
+      n <- as_polars_series(n, "")
+    }
+    self$`_df`$sample_n(n$`_s`, with_replacement, shuffle, seed)
+  })
+}

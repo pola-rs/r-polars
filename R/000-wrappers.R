@@ -501,6 +501,20 @@ class(`PlRChainedWhen`) <- c("PlRChainedWhen__bundle", "savvy_neopolars__sealed"
   }
 }
 
+`PlRDataFrame_sample_frac` <- function(self) {
+  function(`frac`, `with_replacement`, `shuffle`, `seed` = NULL) {
+    `frac` <- .savvy_extract_ptr(`frac`, "PlRSeries")
+    .savvy_wrap_PlRDataFrame(.Call(savvy_PlRDataFrame_sample_frac__impl, `self`, `frac`, `with_replacement`, `shuffle`, `seed`))
+  }
+}
+
+`PlRDataFrame_sample_n` <- function(self) {
+  function(`n`, `with_replacement`, `shuffle`, `seed` = NULL) {
+    `n` <- .savvy_extract_ptr(`n`, "PlRSeries")
+    .savvy_wrap_PlRDataFrame(.Call(savvy_PlRDataFrame_sample_n__impl, `self`, `n`, `with_replacement`, `shuffle`, `seed`))
+  }
+}
+
 `PlRDataFrame_set_column_names` <- function(self) {
   function(`names`) {
     invisible(.Call(savvy_PlRDataFrame_set_column_names__impl, `self`, `names`))
@@ -595,6 +609,8 @@ class(`PlRChainedWhen`) <- c("PlRChainedWhen__bundle", "savvy_neopolars__sealed"
   e$`partition_by` <- `PlRDataFrame_partition_by`(ptr)
   e$`pivot_expr` <- `PlRDataFrame_pivot_expr`(ptr)
   e$`rechunk` <- `PlRDataFrame_rechunk`(ptr)
+  e$`sample_frac` <- `PlRDataFrame_sample_frac`(ptr)
+  e$`sample_n` <- `PlRDataFrame_sample_n`(ptr)
   e$`set_column_names` <- `PlRDataFrame_set_column_names`(ptr)
   e$`shape` <- `PlRDataFrame_shape`(ptr)
   e$`slice` <- `PlRDataFrame_slice`(ptr)

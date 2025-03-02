@@ -534,3 +534,41 @@ test_that("transpose() works", {
     )
   )
 })
+
+test_that("sample() works", {
+  df <- pl$DataFrame(
+    foo = 1:3,
+    bar = 6:8,
+    ham = c("a", "b", "c")
+  )
+  expect_silent(df$sample(n = 2))
+  expect_equal(
+    df$sample(n = 2, seed = 0),
+    pl$DataFrame(
+      foo = 3:2,
+      bar = 8:7,
+      ham = c("c", "b")
+    )
+  )
+  expect_equal(
+    df$sample(fraction = 0.5, seed = 0),
+    pl$DataFrame(foo = 2L, bar = 7L, ham = "b")
+  )
+  expect_error(
+    df$sample(n = 2, fraction = 0.1),
+    "cannot specify both `n` and `fraction`"
+  )
+  expect_error(
+    df$sample(frac = 0.1),
+    "must be empty"
+  )
+
+  # TODO: uncomment when https://github.com/pola-rs/polars/issues/21521
+  # is resolved
+  # expect_error(
+  #   df$sample(fraction = "a")
+  # )
+  # expect_error(
+  #   df$sample(n = "a")
+  # )
+})

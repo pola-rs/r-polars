@@ -332,4 +332,40 @@ impl PlRDataFrame {
             .map_err(RPolarsErr::from)?
             .into())
     }
+
+    pub fn sample_n(
+        &self,
+        n: &PlRSeries,
+        with_replacement: bool,
+        shuffle: bool,
+        seed: Option<NumericScalar>,
+    ) -> Result<Self> {
+        let seed = match seed {
+            Some(x) => Some(<Wrap<u64>>::try_from(x)?.0),
+            None => None,
+        };
+        Ok(self
+            .df
+            .sample_n(&n.series, with_replacement, shuffle, seed)
+            .map_err(RPolarsErr::from)?
+            .into())
+    }
+
+    pub fn sample_frac(
+        &self,
+        frac: &PlRSeries,
+        with_replacement: bool,
+        shuffle: bool,
+        seed: Option<NumericScalar>,
+    ) -> Result<Self> {
+        let seed = match seed {
+            Some(x) => Some(<Wrap<u64>>::try_from(x)?.0),
+            None => None,
+        };
+        Ok(self
+            .df
+            .sample_frac(&frac.series, with_replacement, shuffle, seed)
+            .map_err(RPolarsErr::from)?
+            .into())
+    }
 }
