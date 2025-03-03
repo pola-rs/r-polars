@@ -1,4 +1,4 @@
-# arg raise_if_empty works
+# read/scan: arg raise_if_empty works
 
     Code
       pl$read_csv(tmpf)
@@ -10,7 +10,7 @@
       Caused by error:
       ! no data: empty CSV: 'csv scan'
 
-# arg null_values works
+# read/scan: arg null_values works
 
     Code
       pl$read_csv(tmpf, null_values = 1:2)
@@ -20,7 +20,7 @@
       Caused by error:
       ! `null_values` must be a character vector or `NULL`, not an integer vector.
 
-# arg encoding works
+# read/scan: arg encoding works
 
     Code
       pl$read_csv(tmpf, encoding = "foo")
@@ -30,7 +30,7 @@
       Caused by error:
       ! `encoding` must be one of "utf8" or "utf8-lossy", not "foo".
 
-# multiple files errors if different schema
+# read/scan: multiple files errors if different schema
 
     Code
       pl$read_csv(c(tmpf1, tmpf2))
@@ -42,7 +42,7 @@
       Caused by error:
       ! schema lengths differ: 'csv scan'
 
-# bad paths
+# read/scan: bad paths
 
     Code
       pl$read_csv(character())
@@ -64,7 +64,7 @@
       Caused by error:
       ! No such file or directory (os error 2): some invalid path: 'csv scan'
 
-# arg 'schema_overrides' works
+# read/scan: arg 'schema_overrides' works
 
     Code
       pl$read_csv(tmpf, schema_overrides = list(b = 1, c = pl$Int32))
@@ -74,7 +74,7 @@
       Caused by error:
       ! `schema_overrides` must be a list of polars data types or `NULL`, not a list.
 
-# arg 'schema' works
+# read/scan: arg 'schema' works
 
     Code
       pl$read_csv(tmpf, schema = list(b = pl$Categorical(), c = pl$Int32))
@@ -109,7 +109,7 @@
       Caused by error:
       ! unsupported data type when reading CSV: binary when reading CSV
 
-# arg 'storage_options' throws basic errors
+# read/scan: arg 'storage_options' throws basic errors
 
     Code
       pl$read_csv(tmpf, storage_options = 1)
@@ -128,4 +128,32 @@
       ! Evaluation failed in `$read_csv()`.
       Caused by error:
       ! `storage_options` must be a character vector or `NULL`, not a list.
+
+# write_csv: quote_style quote_style=necessary
+
+    Code
+      readLines(temp_out)
+    Output
+      [1] "a,b,c"                 "\"\"\"foo\"\"\",1.0,a"
+
+# write_csv: quote_style quote_style=always
+
+    Code
+      readLines(temp_out)
+    Output
+      [1] "\"a\",\"b\",\"c\""             "\"\"\"foo\"\"\",\"1.0\",\"a\""
+
+# write_csv: quote_style quote_style=non_numeric
+
+    Code
+      readLines(temp_out)
+    Output
+      [1] "\"a\",\"b\",\"c\""         "\"\"\"foo\"\"\",1.0,\"a\""
+
+# write_csv: quote_style quote_style=never
+
+    Code
+      readLines(temp_out)
+    Output
+      [1] "a,b,c"         "\"foo\",1.0,a"
 
