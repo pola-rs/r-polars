@@ -61,12 +61,6 @@ wrap.PlRSeries <- function(x, ...) {
     self
   )
 
-  lapply(names(polars_series__methods), function(name) {
-    fn <- polars_series__methods[[name]]
-    environment(fn) <- environment()
-    assign(name, fn, envir = self)
-  })
-
   lapply(names(polars_namespaces_series), function(namespace) {
     makeActiveBinding(namespace, function() polars_namespaces_series[[namespace]](self), self)
   })

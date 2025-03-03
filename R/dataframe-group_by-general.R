@@ -7,12 +7,6 @@ wrap_to_group_by <- function(x, by, maintain_order) {
   self$by <- by
   self$maintain_order <- maintain_order
 
-  lapply(names(polars_groupby__methods), function(name) {
-    fn <- polars_groupby__methods[[name]]
-    environment(fn) <- environment()
-    assign(name, fn, envir = self)
-  })
-
   class(self) <- c("polars_group_by", "polars_object")
   self
 }

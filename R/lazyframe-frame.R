@@ -35,12 +35,6 @@ wrap.PlRLazyFrame <- function(x, ...) {
   self <- new.env(parent = emptyenv())
   self$`_ldf` <- x
 
-  lapply(names(polars_lazyframe__methods), function(name) {
-    fn <- polars_lazyframe__methods[[name]]
-    environment(fn) <- environment()
-    assign(name, fn, envir = self)
-  })
-
   class(self) <- c("polars_lazy_frame", "polars_object")
   self
 }

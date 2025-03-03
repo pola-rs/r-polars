@@ -7,6 +7,9 @@ end_of_line = lf
 charset = utf-8
 insert_final_newline = true
 
+[*.tsv]
+indent_style = tab
+
 # TODO: Remove after new savvy-cli release includes https://github.com/yutannihilation/savvy/pull/350
 [src/rust/api.h]
 insert_final_newline = false

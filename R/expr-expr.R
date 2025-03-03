@@ -42,12 +42,6 @@ wrap.PlRExpr <- function(x, ...) {
   self <- new.env(parent = emptyenv())
   self$`_rexpr` <- x
 
-  lapply(names(polars_expr__methods), function(name) {
-    fn <- polars_expr__methods[[name]]
-    environment(fn) <- environment()
-    assign(name, fn, envir = self)
-  })
-
   lapply(names(polars_namespaces_expr), function(namespace) {
     makeActiveBinding(namespace, function() polars_namespaces_expr[[namespace]](self), self)
   })

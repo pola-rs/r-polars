@@ -3,6 +3,6 @@
 
 ## usethis namespace: start
 #' @import rlang
-#' @importFrom utils head
+#' @importFrom utils findMatches head
 ## usethis namespace: end
 NULL

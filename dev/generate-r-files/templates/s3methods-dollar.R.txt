@@ -1,0 +1,27 @@
+#' @export
+`$.{{class_name}}` <- function(x, name) {
+  member_names <- ls(x, all.names = TRUE)
+  method_names <- names({{env_name}})
+
+  if (name %in% member_names) {
+    env_get(x, name)
+  } else if (name %in% method_names) {
+    fn <- {{env_name}}[[name]]
+    self <- x
+    environment(fn) <- environment()
+    fn
+  } else {
+    NextMethod()
+  }
+}
+
+#' @exportS3Method utils::.DollarNames
+`.DollarNames.{{class_name}}` <- function(x, pattern = "") {
+  member_names <- ls(x, all.names = TRUE)
+  method_names <- names({{env_name}})
+
+  all_names <- union(member_names, method_names)
+  filtered_names <- findMatches(pattern, all_names)
+
+  filtered_names[!startsWith(filtered_names, "_")]
+}

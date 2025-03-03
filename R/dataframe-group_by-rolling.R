@@ -10,23 +10,17 @@ wrap_to_rolling_group_by <- function(x, index_column, period, offset, closed, gr
   self$closed <- closed
   self$group_by <- group_by
 
-  lapply(names(polars_rolling_groupby__methods), function(name) {
-    fn <- polars_rolling_groupby__methods[[name]]
-    environment(fn) <- environment()
-    assign(name, fn, envir = self)
-  })
-
   class(self) <- c("polars_rolling_group_by", "polars_object")
   self
 }
 
 rolling_groupby__agg <- function(...) {
   self$df$lazy()$rolling(
-    index_column = index_column,
-    period = period,
-    offset = offset,
-    closed = closed,
-    group_by = group_by
+    index_column = self$index_column,
+    period = self$period,
+    offset = self$offset,
+    closed = self$closed,
+    group_by = self$group_by
   )$agg(...)$collect(no_optimization = TRUE) |>
     wrap()
 }

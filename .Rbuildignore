@@ -8,6 +8,7 @@
 ^air\.toml$
 ^\.lycheeignore$
 
+^dev$
 ^src/Makevars$
 ^src/rust/.cargo$
 ^src/rust/target$

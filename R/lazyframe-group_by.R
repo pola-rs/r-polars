@@ -6,12 +6,6 @@ wrap.PlRLazyGroupBy <- function(x, ...) {
   self <- new.env(parent = emptyenv())
   self$lgb <- x
 
-  lapply(names(polars_lazygroupby__methods), function(name) {
-    fn <- polars_lazygroupby__methods[[name]]
-    environment(fn) <- environment()
-    assign(name, fn, envir = self)
-  })
-
   class(self) <- c("polars_lazy_group_by", "polars_object")
   self
 }

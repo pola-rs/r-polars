@@ -122,12 +122,6 @@ wrap.PlRDataFrame <- function(x, ...) {
     self
   )
 
-  lapply(names(polars_dataframe__methods), function(name) {
-    fn <- polars_dataframe__methods[[name]]
-    environment(fn) <- environment()
-    assign(name, fn, envir = self)
-  })
-
   class(self) <- c("polars_data_frame", "polars_object")
   self
 }

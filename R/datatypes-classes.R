@@ -78,28 +78,6 @@ wrap.PlRDataType <- function(x, ...) {
   self$`_dt` <- x
   dtype_names <- x$`_get_dtype_names`()
 
-  lapply(names(polars_datatype__methods), function(name) {
-    fn <- polars_datatype__methods[[name]]
-    environment(fn) <- environment()
-    assign(name, fn, envir = self)
-  })
-
-  ## Enum only method
-  if ("polars_dtype_enum" %in% dtype_names) {
-    fn <- function(other) {
-      wrap({
-        check_polars_dtype(other)
-        if (!inherits(other, "polars_dtype_enum")) {
-          abort("`other` must be a Enum data type")
-        }
-
-        PlRDataType$new_enum(unique(c(self$categories, other$categories)))
-      })
-    }
-    environment(fn) <- environment()
-    assign("union", fn, envir = self)
-  }
-
   # Bindings mimic attributes of DataType classes of Python Polars
   env_bind(self, !!!x$`_get_datatype_fields`())
 
