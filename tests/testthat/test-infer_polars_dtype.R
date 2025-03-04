@@ -54,6 +54,8 @@ patrick::with_parameters_test_that(
         infer_polars_dtype(x),
         as_polars_series(x)$dtype
       )
+      expect_true(is_convertible_to_polars_series(x))
+      expect_true(is_convertible_to_polars_expr(x))
     })
   }
 )
@@ -69,6 +71,8 @@ patrick::with_parameters_test_that(
   ),
   code = {
     expect_snapshot(infer_polars_dtype(x), error = TRUE)
+    expect_snapshot(is_convertible_to_polars_expr(x))
+    expect_false(is_convertible_to_polars_series(x))
   }
 )
 
@@ -98,5 +102,7 @@ patrick::with_parameters_test_that(
       ),
       pl$Struct(a = pl$Int32, b = expected_dtype)
     )
+    expect_true(is_convertible_to_polars_series(list_to_check))
+    expect_true(is_convertible_to_polars_expr(list_to_check))
   }
 )

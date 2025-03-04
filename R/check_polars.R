@@ -26,6 +26,8 @@
 #' @return
 #' - `is_polars_*` functions return `TRUE` or `FALSE`.
 #' - `check_polars_*` functions return `NULL` invisibly if the input is valid.
+#' @seealso
+#' - [infer_polars_dtype()]: Check if the object can be converted to a [Series].
 #' @examples
 #' is_polars_df(as_polars_df(mtcars))
 #' is_polars_df(mtcars)

@@ -146,3 +146,8 @@ sample_func <- function(x) {
 sample_func(as_polars_df(mtcars))
 try(sample_func(mtcars))
 }
+\seealso{
+\itemize{
+\item \code{\link[=infer_polars_dtype]{infer_polars_dtype()}}: Check if the object can be converted to a \link{Series}.
+}
+}
