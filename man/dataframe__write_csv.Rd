@@ -5,7 +5,7 @@
 \title{Write to comma-separated values (CSV) file}
 \usage{
 dataframe__write_csv(
-  file = NULL,
+  file,
   ...,
   include_bom = FALSE,
   include_header = TRUE,
