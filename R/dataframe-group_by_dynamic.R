@@ -25,12 +25,6 @@ wrap_to_group_by_dynamic <- function(
   self$group_by <- group_by
   self$start_by <- start_by
 
-  lapply(names(polars_group_by_dynamic__methods), function(name) {
-    fn <- polars_group_by_dynamic__methods[[name]]
-    environment(fn) <- environment()
-    assign(name, fn, envir = self)
-  })
-
   class(self) <- c("polars_group_by_dynamic", "polars_object")
   self
 }

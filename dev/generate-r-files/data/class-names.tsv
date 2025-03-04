@@ -1,6 +1,7 @@
 class_name	env_name
 polars_data_frame	polars_dataframe__methods
 polars_group_by	polars_groupby__methods
+polars_group_by_dynamic	polars_group_by_dynamic__methods
 polars_rolling_group_by	polars_rolling_groupby__methods
 polars_dtype	polars_datatype__methods
 polars_expr	polars_expr__methods
