@@ -2754,6 +2754,11 @@ SEXP savvy_PlRSeries_equals__impl(SEXP self__, SEXP c_arg__other, SEXP c_arg__ch
     return handle_result(res);
 }
 
+SEXP savvy_PlRSeries_from_arrow_c_stream__impl(SEXP c_arg__stream_ptr) {
+    SEXP res = savvy_PlRSeries_from_arrow_c_stream__ffi(c_arg__stream_ptr);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRSeries_is_sorted_ascending_flag__impl(SEXP self__) {
     SEXP res = savvy_PlRSeries_is_sorted_ascending_flag__ffi(self__);
     return handle_result(res);
@@ -3445,6 +3450,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRSeries_div__impl", (DL_FUNC) &savvy_PlRSeries_div__impl, 2},
     {"savvy_PlRSeries_dtype__impl", (DL_FUNC) &savvy_PlRSeries_dtype__impl, 1},
     {"savvy_PlRSeries_equals__impl", (DL_FUNC) &savvy_PlRSeries_equals__impl, 5},
+    {"savvy_PlRSeries_from_arrow_c_stream__impl", (DL_FUNC) &savvy_PlRSeries_from_arrow_c_stream__impl, 1},
     {"savvy_PlRSeries_is_sorted_ascending_flag__impl", (DL_FUNC) &savvy_PlRSeries_is_sorted_ascending_flag__impl, 1},
     {"savvy_PlRSeries_is_sorted_descending_flag__impl", (DL_FUNC) &savvy_PlRSeries_is_sorted_descending_flag__impl, 1},
     {"savvy_PlRSeries_len__impl", (DL_FUNC) &savvy_PlRSeries_len__impl, 1},

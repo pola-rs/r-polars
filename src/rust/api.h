@@ -558,6 +558,7 @@ SEXP savvy_PlRSeries_clone__ffi(SEXP self__);
 SEXP savvy_PlRSeries_div__ffi(SEXP self__, SEXP c_arg__other);
 SEXP savvy_PlRSeries_dtype__ffi(SEXP self__);
 SEXP savvy_PlRSeries_equals__ffi(SEXP self__, SEXP c_arg__other, SEXP c_arg__check_dtypes, SEXP c_arg__check_names, SEXP c_arg__null_equal);
+SEXP savvy_PlRSeries_from_arrow_c_stream__ffi(SEXP c_arg__stream_ptr);
 SEXP savvy_PlRSeries_is_sorted_ascending_flag__ffi(SEXP self__);
 SEXP savvy_PlRSeries_is_sorted_descending_flag__ffi(SEXP self__);
 SEXP savvy_PlRSeries_len__ffi(SEXP self__);

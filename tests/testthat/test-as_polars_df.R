@@ -47,6 +47,31 @@ test_that("as_polars_df.default works for vctrs_rcrd", {
   )
 })
 
+test_that("as_polars_df.default works for nanoarrow objects", {
+  skip_if_not_installed("nanoarrow")
+
+  expect_equal(
+    as_polars_df.default(nanoarrow::as_nanoarrow_array(mtcars)),
+    as_polars_df(mtcars)
+  )
+  expect_equal(
+    as_polars_df.default(nanoarrow::as_nanoarrow_array_stream(mtcars)),
+    as_polars_df(mtcars)
+  )
+
+  # Error occurs when the object is not a Struct type
+  na_array <- nanoarrow::as_nanoarrow_array(1)
+  error_pattern <- "it is not a Struct dtype like object"
+  expect_error(
+    as_polars_df(na_array),
+    error_pattern
+  )
+  expect_error(
+    as_polars_df(nanoarrow::as_nanoarrow_array_stream(na_array)),
+    error_pattern
+  )
+})
+
 test_that("column_name argument", {
   pls <- as_polars_series(1:2, "foo")
   expect_equal(

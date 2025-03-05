@@ -289,3 +289,26 @@ patrick::with_parameters_test_that(
     expect_equal(series_duration$dtype, pl$Duration(time_unit))
   }
 )
+
+patrick::with_parameters_test_that(
+  "nanoarrow_array/nanoarrow_array_stream support",
+  .cases = {
+    skip_if_not_installed("nanoarrow")
+    # TODO: add more types
+    # fmt: skip
+    tibble::tribble(
+      ~.test_name, ~na_array,
+      "int16", nanoarrow::as_nanoarrow_array(1:10, schema = nanoarrow::na_int16()),
+      "int32", nanoarrow::as_nanoarrow_array(1:10, schema = nanoarrow::na_int32()),
+      "int64", nanoarrow::as_nanoarrow_array(1:10, schema = nanoarrow::na_int64()),
+    )
+  },
+  code = {
+    series_from_array <- as_polars_series(na_array)
+    series_from_stream <- as_polars_series(nanoarrow::as_nanoarrow_array_stream(na_array))
+
+    expect_s3_class(series_from_array, "polars_series")
+    expect_snapshot(print(series_from_array))
+    expect_equal(series_from_array, series_from_stream)
+  }
+)

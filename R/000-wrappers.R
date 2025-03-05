@@ -4192,6 +4192,10 @@ class(`PlRLazyGroupBy`) <- c("PlRLazyGroupBy__bundle", "savvy_neopolars__sealed"
 
 ### associated functions for PlRSeries
 
+`PlRSeries`$`from_arrow_c_stream` <- function(`stream_ptr`) {
+  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_from_arrow_c_stream__impl, `stream_ptr`))
+}
+
 `PlRSeries`$`new_binary` <- function(`name`, `values`) {
   .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_binary__impl, `name`, `values`))
 }
