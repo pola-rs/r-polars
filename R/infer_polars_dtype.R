@@ -58,6 +58,7 @@ infer_polars_dtype <- function(x, ...) {
 }
 
 #' @rdname infer_polars_dtype
+#' @export
 is_convertible_to_polars_series <- function(x, ...) {
   tryCatch(
     {
@@ -69,6 +70,7 @@ is_convertible_to_polars_series <- function(x, ...) {
 }
 
 #' @rdname infer_polars_dtype
+#' @export
 is_convertible_to_polars_expr <- function(x, ...) {
   is_polars_expr(x) || is_convertible_to_polars_series(x, ...)
 }
