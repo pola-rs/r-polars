@@ -40,6 +40,18 @@
 #'
 #' # But if the length is too short, an incorrect type may be inferred.
 #' infer_polars_dtype(mixed_list, infer_dtype_length = 1)
+#'
+#' # is_convertible_to_polars_* functions are useful for checking if
+#' # the object can be converted to a Series or Expr quickly.
+#' try(infer_polars_dtype(1i))
+#' is_convertible_to_polars_series(1i)
+#' is_convertible_to_polars_expr(1i)
+#'
+#' # For polars Expr objects, infer_polars_dtype() will raise an error
+#' # because Expr can't be converted to a Series by `as_polars_series()`.
+#' try(infer_polars_dtype(pl$lit(1)))
+#' is_convertible_to_polars_series(pl$lit(1))
+#' is_convertible_to_polars_expr(pl$lit(1))
 #' @export
 infer_polars_dtype <- function(x, ...) {
   UseMethod("infer_polars_dtype")
