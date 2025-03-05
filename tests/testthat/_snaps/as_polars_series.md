@@ -884,3 +884,63 @@
       	1ns
       ]
 
+# nanoarrow_array/nanoarrow_array_stream support int16
+
+    Code
+      print(series_from_array)
+    Output
+      shape: (10,)
+      Series: '' [i16]
+      [
+      	1
+      	2
+      	3
+      	4
+      	5
+      	6
+      	7
+      	8
+      	9
+      	10
+      ]
+
+# nanoarrow_array/nanoarrow_array_stream support int32
+
+    Code
+      print(series_from_array)
+    Output
+      shape: (10,)
+      Series: '' [i32]
+      [
+      	1
+      	2
+      	3
+      	4
+      	5
+      	6
+      	7
+      	8
+      	9
+      	10
+      ]
+
+# nanoarrow_array/nanoarrow_array_stream support int64
+
+    Code
+      print(series_from_array)
+    Output
+      shape: (10,)
+      Series: '' [i64]
+      [
+      	1
+      	2
+      	3
+      	4
+      	5
+      	6
+      	7
+      	8
+      	9
+      	10
+      ]
+
