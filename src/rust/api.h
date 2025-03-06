@@ -88,6 +88,8 @@ SEXP savvy_PlRDataFrame_unpivot__ffi(SEXP self__, SEXP c_arg__on, SEXP c_arg__in
 SEXP savvy_PlRDataFrame_width__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_with_row_index__ffi(SEXP self__, SEXP c_arg__name, SEXP c_arg__offset);
 SEXP savvy_PlRDataFrame_write_csv__ffi(SEXP self__, SEXP c_arg__path, SEXP c_arg__include_bom, SEXP c_arg__include_header, SEXP c_arg__separator, SEXP c_arg__line_terminator, SEXP c_arg__quote_char, SEXP c_arg__batch_size, SEXP c_arg__retries, SEXP c_arg__datetime_format, SEXP c_arg__date_format, SEXP c_arg__time_format, SEXP c_arg__float_scientific, SEXP c_arg__float_precision, SEXP c_arg__null_value, SEXP c_arg__quote_style, SEXP c_arg__storage_options);
+SEXP savvy_PlRDataFrame_write_json__ffi(SEXP self__, SEXP c_arg__path);
+SEXP savvy_PlRDataFrame_write_ndjson__ffi(SEXP self__, SEXP c_arg__path);
 SEXP savvy_PlRDataFrame_write_parquet__ffi(SEXP self__, SEXP c_arg__path, SEXP c_arg__compression, SEXP c_arg__retries, SEXP c_arg__partition_chunk_size_bytes, SEXP c_arg__stat_min, SEXP c_arg__stat_max, SEXP c_arg__stat_distinct_count, SEXP c_arg__stat_null_count, SEXP c_arg__compression_level, SEXP c_arg__row_group_size, SEXP c_arg__data_page_size, SEXP c_arg__partition_by, SEXP c_arg__storage_options);
 
 // methods and associated functions for PlRDataType

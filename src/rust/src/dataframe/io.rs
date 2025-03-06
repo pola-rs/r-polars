@@ -208,4 +208,27 @@ impl PlRDataFrame {
 
         Ok(out.into())
     }
+
+    #[cfg(not(target_arch = "wasm32"))]
+    pub fn write_json(&mut self, path: &str) -> Result<()> {
+        let f = std::fs::File::create(path).map_err(RPolarsErr::from)?;
+
+        JsonWriter::new(f)
+            .with_json_format(JsonFormat::Json)
+            .finish(&mut self.df)
+            .map_err(RPolarsErr::from)?;
+        Ok(())
+    }
+
+    #[cfg(not(target_arch = "wasm32"))]
+    pub fn write_ndjson(&mut self, path: &str) -> Result<()> {
+        let f = std::fs::File::create(path).map_err(RPolarsErr::from)?;
+
+        JsonWriter::new(f)
+            .with_json_format(JsonFormat::JsonLines)
+            .finish(&mut self.df)
+            .map_err(RPolarsErr::from)?;
+
+        Ok(())
+    }
 }

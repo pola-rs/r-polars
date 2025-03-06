@@ -454,6 +454,16 @@ SEXP savvy_PlRDataFrame_write_csv__impl(SEXP self__, SEXP c_arg__path, SEXP c_ar
     return handle_result(res);
 }
 
+SEXP savvy_PlRDataFrame_write_json__impl(SEXP self__, SEXP c_arg__path) {
+    SEXP res = savvy_PlRDataFrame_write_json__ffi(self__, c_arg__path);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRDataFrame_write_ndjson__impl(SEXP self__, SEXP c_arg__path) {
+    SEXP res = savvy_PlRDataFrame_write_ndjson__ffi(self__, c_arg__path);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRDataFrame_write_parquet__impl(SEXP self__, SEXP c_arg__path, SEXP c_arg__compression, SEXP c_arg__retries, SEXP c_arg__partition_chunk_size_bytes, SEXP c_arg__stat_min, SEXP c_arg__stat_max, SEXP c_arg__stat_distinct_count, SEXP c_arg__stat_null_count, SEXP c_arg__compression_level, SEXP c_arg__row_group_size, SEXP c_arg__data_page_size, SEXP c_arg__partition_by, SEXP c_arg__storage_options) {
     SEXP res = savvy_PlRDataFrame_write_parquet__ffi(self__, c_arg__path, c_arg__compression, c_arg__retries, c_arg__partition_chunk_size_bytes, c_arg__stat_min, c_arg__stat_max, c_arg__stat_distinct_count, c_arg__stat_null_count, c_arg__compression_level, c_arg__row_group_size, c_arg__data_page_size, c_arg__partition_by, c_arg__storage_options);
     return handle_result(res);
@@ -2990,6 +3000,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRDataFrame_width__impl", (DL_FUNC) &savvy_PlRDataFrame_width__impl, 1},
     {"savvy_PlRDataFrame_with_row_index__impl", (DL_FUNC) &savvy_PlRDataFrame_with_row_index__impl, 3},
     {"savvy_PlRDataFrame_write_csv__impl", (DL_FUNC) &savvy_PlRDataFrame_write_csv__impl, 17},
+    {"savvy_PlRDataFrame_write_json__impl", (DL_FUNC) &savvy_PlRDataFrame_write_json__impl, 2},
+    {"savvy_PlRDataFrame_write_ndjson__impl", (DL_FUNC) &savvy_PlRDataFrame_write_ndjson__impl, 2},
     {"savvy_PlRDataFrame_write_parquet__impl", (DL_FUNC) &savvy_PlRDataFrame_write_parquet__impl, 14},
     {"savvy_PlRDataType__get_datatype_fields__impl", (DL_FUNC) &savvy_PlRDataType__get_datatype_fields__impl, 1},
     {"savvy_PlRDataType__get_dtype_names__impl", (DL_FUNC) &savvy_PlRDataType__get_dtype_names__impl, 1},
