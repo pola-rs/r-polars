@@ -1,6 +1,7 @@
 use crate::{prelude::*, PlRExpr, PlRSeries, RPolarsErr};
 use savvy::{
-    savvy, FunctionArgs, FunctionSexp, OwnedIntegerSexp, OwnedListSexp, OwnedLogicalSexp, Sexp,
+    savvy, FunctionArgs, FunctionSexp, OwnedIntegerSexp, OwnedListSexp, OwnedLogicalSexp, Result,
+    Sexp,
 };
 use strum_macros::EnumString;
 
@@ -36,7 +37,7 @@ enum DateConversion {
 #[derive(Debug, Clone, EnumString)]
 enum TimeConversion {
     #[strum(serialize = "hms")]
-    HMS,
+    Hms,
     ITime,
 }
 
@@ -78,7 +79,7 @@ impl PlRSeries {
         ambiguous: &PlRExpr,
         non_existent: &str,
         local_time_zone: &str,
-    ) -> savvy::Result<Sexp> {
+    ) -> Result<Sexp> {
         let series = &self.series;
 
         let int64 = Int64Conversion::try_from(int64).map_err(RPolarsErr::from)?;
@@ -101,7 +102,7 @@ impl PlRSeries {
             ambiguous: Expr,
             non_existent: NonExistent,
             local_time_zone: &str,
-        ) -> savvy::Result<Sexp> {
+        ) -> Result<Sexp> {
             match series.dtype() {
                 DataType::Boolean => Ok(<Sexp>::from(Wrap(series.bool().unwrap()))),
                 DataType::UInt8 | DataType::UInt16 | DataType::Int8 | DataType::Int16 => Ok(
@@ -237,7 +238,7 @@ impl PlRSeries {
                     ))),
                 },
                 DataType::Time => match time {
-                    TimeConversion::HMS => Ok(<Sexp>::from(Wrap(series.time().unwrap()))),
+                    TimeConversion::Hms => Ok(<Sexp>::from(Wrap(series.time().unwrap()))),
                     TimeConversion::ITime => Ok(<Sexp>::from(<data_table::ITime>::from(
                         series.cast(&DataType::Float64).unwrap().f64().unwrap(),
                     ))),
@@ -344,7 +345,7 @@ impl PlRSeries {
             }
         }
 
-        let r_vector = to_r_vector_recursive(
+        to_r_vector_recursive(
             series,
             ensure_vector,
             int64,
@@ -356,7 +357,6 @@ impl PlRSeries {
             ambiguous,
             non_existent,
             local_time_zone,
-        )?;
-        Ok(r_vector)
+        )
     }
 }
