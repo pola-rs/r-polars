@@ -762,6 +762,14 @@ test_that("fill_null(): basic usage", {
       b = c(1, 99, 99, 4)
     )
   )
+  expect_query_equal(
+    .input$fill_null(pl$lit(99) + 1),
+    df,
+    pl$DataFrame(
+      a = c(1.5, 2, 100, NaN),
+      b = c(1, 100, 100, 4)
+    )
+  )
 
   # can't pass "value" and "strategy"
   expect_query_error(
@@ -794,6 +802,51 @@ test_that("fill_null(): basic usage", {
     .input$fill_null(99, matches_supertype = FALSE),
     df,
     df
+  )
+})
+
+test_that("fill_null() fills categoricals if fill is character", {
+  df <- pl$DataFrame(
+    num = c(1, 2, NA),
+    str = c("a", "b", NA),
+    cat_lex = c("a", "b", NA),
+    cat_phy = c("a", "b", NA)
+  )$cast(cat_lex = pl$Categorical("lexical"), cat_phy = pl$Categorical("physical"))
+
+  expect_query_equal(
+    .input$fill_null("foobar"),
+    df,
+    pl$DataFrame(
+      num = c(1, 2, NA),
+      str = c("a", "b", "foobar"),
+      cat_lex = c("a", "b", "foobar"),
+      cat_phy = c("a", "b", "foobar")
+    )$cast(cat_lex = pl$Categorical("lexical"), cat_phy = pl$Categorical("physical"))
+  )
+})
+
+test_that("fill_null() works on date/datetime", {
+  df <- pl$DataFrame(
+    dt = as.Date(c("2020-01-01", NA)),
+    dtime = as.POSIXct(c("2020-01-01 00:00:00", NA), tz = "UTC")
+  )
+
+  expect_query_equal(
+    .input$fill_null(as.Date("2020-01-02")),
+    df,
+    pl$DataFrame(
+      dt = as.Date(c("2020-01-01", "2020-01-02")),
+      dtime = as.POSIXct(c("2020-01-01 00:00:00", NA), tz = "UTC")
+    )
+  )
+
+  expect_query_equal(
+    .input$fill_null(as.POSIXct("2020-01-02 00:00:00", tz = "UTC")),
+    df,
+    pl$DataFrame(
+      dt = as.Date(c("2020-01-01", NA)),
+      dtime = as.POSIXct(c("2020-01-01 00:00:00", "2020-01-02 00:00:00"), tz = "UTC")
+    )
   )
 })
 

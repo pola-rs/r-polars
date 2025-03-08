@@ -993,50 +993,36 @@ lazyframe__fill_null <- function(
   matches_supertype = TRUE
 ) {
   wrap({
-    # Can't use check_exclusive() because it errors when we call this from the
-    # eager method.
-    if (!missing(value) && !missing(strategy) && !is.null(value) && !is.null(strategy)) {
-      abort("Exactly one of `value` or `strategy` must be supplied.")
-    }
+    check_exclusive_or_null(value, strategy)
     check_dots_empty0(...)
     if (!missing(value) && !is.null(value)) {
       if (is_polars_expr(value)) {
         dtypes <- NULL
-      } else if (is.logical(value)) {
-        dtypes <- pl$Boolean
-      } else if (isTRUE(matches_supertype) && is.numeric(value)) {
-        dtypes <- c(
-          pl$Int8,
-          pl$Int16,
-          pl$Int32,
-          pl$Int64,
-          pl$Int128,
-          pl$UInt8,
-          pl$UInt16,
-          pl$UInt32,
-          pl$UInt64,
-          pl$Float32,
-          pl$Float64,
-          pl$Decimal()
-        )
-      } else if (is.integer(value)) {
-        dtypes <- pl$Int64
-      } else if (is.double(value)) {
-        dtypes <- pl$Float64
-      } else if (inherits(value, "POSIXct")) {
-        abort("TODO")
-      } else if (is(x, "Duration")) {
-        abort("TODO")
-      } else if (is.Date(value)) {
-        dtypes <- pl$Date
-      } else if (is.character(value)) {
-        dtypes <- c(pl$String, pl$Categorical("physical"), pl$Categorical("lexical"))
       } else {
-        dtypes <- NULL
+        dtype <- infer_polars_dtype(value)
+        if (dtype$is_numeric() && isTRUE(matches_supertype)) {
+          dtypes <- c(
+            pl$Int8,
+            pl$Int16,
+            pl$Int32,
+            pl$Int64,
+            pl$Int128,
+            pl$UInt8,
+            pl$UInt16,
+            pl$UInt32,
+            pl$UInt64,
+            pl$Float32,
+            pl$Float64,
+            pl$Decimal()
+          )
+        } else if (inherits(dtype, "polars_dtype_string")) {
+          dtypes <- c(pl$String, pl$Categorical("physical"), pl$Categorical("lexical"))
+        } else {
+          dtypes <- dtype
+        }
       }
-      # TODO: time datatype
 
-      if (!is_list_of_polars_dtype(dtypes)) {
+      if (is_polars_dtype(dtypes)) {
         dtypes <- list(dtypes)
       }
 
