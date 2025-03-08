@@ -12,7 +12,7 @@ unsafe impl Sync for UnsafeFunctionSexp {}
 
 impl Clone for UnsafeFunctionSexp {
     fn clone(&self) -> Self {
-        Self(FunctionSexp(self.0.inner().clone()))
+        Self(FunctionSexp(self.0.inner()))
     }
 }
 

@@ -107,7 +107,7 @@ impl PlRDataFrame {
                 data_page_size,
                 maintain_order: true,
             };
-            let out = write_partitioned_dataset(
+            write_partitioned_dataset(
                 &mut self.df,
                 std::path::Path::new(&path),
                 partition_by.into_iter().map(|x| x.into()).collect(),
@@ -116,11 +116,11 @@ impl PlRDataFrame {
                 partition_chunk_size_bytes,
             )
             .map_err(RPolarsErr::from)?;
-            return Ok(out.into());
+            return Ok(());
         };
         let f = std::fs::File::create(path).map_err(RPolarsErr::from)?;
 
-        let out = ParquetWriter::new(f)
+        ParquetWriter::new(f)
             .with_compression(compression)
             .with_statistics(statistics)
             .with_row_group_size(row_group_size)
@@ -129,7 +129,7 @@ impl PlRDataFrame {
             .map(|_| ())
             .map_err(RPolarsErr::from)?;
 
-        Ok(out.into())
+        Ok(())
     }
 
     pub fn write_csv(
@@ -188,7 +188,7 @@ impl PlRDataFrame {
 
         let f = std::fs::File::create(path).map_err(RPolarsErr::from)?;
 
-        let out = CsvWriter::new(f)
+        CsvWriter::new(f)
             .include_bom(include_bom)
             .include_header(include_header)
             .with_separator(separator)
@@ -206,7 +206,7 @@ impl PlRDataFrame {
             .map(|_| ())
             .map_err(RPolarsErr::from)?;
 
-        Ok(out.into())
+        Ok(())
     }
 
     #[cfg(not(target_arch = "wasm32"))]
