@@ -1,3 +1,5 @@
+# Input Parquet functions: scan_parquet, read_parquet
+
 #' Lazily read from a local or cloud-hosted parquet file (or files)
 #'
 #' @inherit pl__scan_ipc description

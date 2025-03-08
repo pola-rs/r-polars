@@ -1,9 +1,9 @@
+# Input CSV functions: scan_csv, read_csv
+
 #' Lazily read from a CSV file or multiple files via glob patterns
 #'
 #' This allows the query optimizer to push down predicates and projections to
 #' the scan level, thereby potentially reducing memory overhead.
-#'
-#' @rdname IO_scan_csv
 #'
 #' @inheritParams rlang::check_dots_empty0
 #' @param source Path to a file or URL. It is possible to provide multiple paths
@@ -202,7 +202,6 @@ pl__scan_csv <- function(
 }
 
 #' New DataFrame from CSV
-#' @rdname IO_read_csv
 #' @inheritParams pl__scan_csv
 #' @inherit as_polars_df return
 #' @examples

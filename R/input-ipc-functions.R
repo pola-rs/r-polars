@@ -1,3 +1,5 @@
+# Input IPC functions: scan_ipc, read_ipc, read_ipc_stream
+
 # TODO: swap param inheritance with pl__scan_parquet
 #' Lazily read from an Arrow IPC (Feather v2) file or multiple files via glob
 #' patterns
