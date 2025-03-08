@@ -368,4 +368,24 @@ impl PlRDataFrame {
             .map_err(RPolarsErr::from)?
             .into())
     }
+
+    pub fn hash_rows(
+        &mut self,
+        seed: NumericScalar,
+        seed_1: NumericScalar,
+        seed_2: NumericScalar,
+        seed_3: NumericScalar,
+    ) -> Result<PlRSeries> {
+        let k0 = <Wrap<u64>>::try_from(seed)?.0;
+        let k1 = <Wrap<u64>>::try_from(seed_1)?.0;
+        let k2 = <Wrap<u64>>::try_from(seed_2)?.0;
+        let k3 = <Wrap<u64>>::try_from(seed_3)?.0;
+        let hb = PlRandomState::with_seeds(k0, k1, k2, k3);
+        let series = self
+            .df
+            .hash_rows(Some(hb))
+            .map_err(RPolarsErr::from)?
+            .into_series();
+        Ok(series.into())
+    }
 }

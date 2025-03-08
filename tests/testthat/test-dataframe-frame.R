@@ -572,3 +572,30 @@ test_that("sample() works", {
   #   df$sample(n = "a")
   # )
 })
+
+test_that("hash_rows() works", {
+  df <- pl$DataFrame(
+    foo = c(1, NA, 3, 4),
+    ham = c("a", "b", NA, "d")
+  )
+  expect_equal(
+    df$hash_rows(seed = 42)$dtype,
+    pl$UInt64
+  )
+  expect_error(
+    df$hash_rows(seed = 42, seed_1 = "a"),
+    "`seed_1` must be a whole number or `NULL`, not the string"
+  )
+  expect_error(
+    df$hash_rows(seed = 42, seed_1 = 1.5),
+    "`seed_1` must be a whole number or `NULL`"
+  )
+  expect_error(
+    df$hash_rows(seed = 42, seed_1 = 1:2),
+    "`seed_1` must be a whole number or `NULL`"
+  )
+  expect_error(
+    df$hash_rows(seed = 42, seed_1 = -1),
+    "`seed_1` must be a whole number larger than or equal to 0 or `NULL`"
+  )
+})

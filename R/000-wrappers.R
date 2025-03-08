@@ -440,6 +440,12 @@ class(`PlRChainedWhen`) <- c("PlRChainedWhen__bundle", "savvy_neopolars__sealed"
   }
 }
 
+`PlRDataFrame_hash_rows` <- function(self) {
+  function(`seed`, `seed_1`, `seed_2`, `seed_3`) {
+    .savvy_wrap_PlRSeries(.Call(savvy_PlRDataFrame_hash_rows__impl, `self`, `seed`, `seed_1`, `seed_2`, `seed_3`))
+  }
+}
+
 `PlRDataFrame_head` <- function(self) {
   function(`n`) {
     .savvy_wrap_PlRDataFrame(.Call(savvy_PlRDataFrame_head__impl, `self`, `n`))
@@ -617,6 +623,7 @@ class(`PlRChainedWhen`) <- c("PlRChainedWhen__bundle", "savvy_neopolars__sealed"
   e$`get_column` <- `PlRDataFrame_get_column`(ptr)
   e$`get_column_index` <- `PlRDataFrame_get_column_index`(ptr)
   e$`get_columns` <- `PlRDataFrame_get_columns`(ptr)
+  e$`hash_rows` <- `PlRDataFrame_hash_rows`(ptr)
   e$`head` <- `PlRDataFrame_head`(ptr)
   e$`height` <- `PlRDataFrame_height`(ptr)
   e$`is_duplicated` <- `PlRDataFrame_is_duplicated`(ptr)

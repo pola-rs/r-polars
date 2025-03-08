@@ -324,6 +324,11 @@ SEXP savvy_PlRDataFrame_get_columns__impl(SEXP self__) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRDataFrame_hash_rows__impl(SEXP self__, SEXP c_arg__seed, SEXP c_arg__seed_1, SEXP c_arg__seed_2, SEXP c_arg__seed_3) {
+    SEXP res = savvy_PlRDataFrame_hash_rows__ffi(self__, c_arg__seed, c_arg__seed_1, c_arg__seed_2, c_arg__seed_3);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRDataFrame_head__impl(SEXP self__, SEXP c_arg__n) {
     SEXP res = savvy_PlRDataFrame_head__ffi(self__, c_arg__n);
     return handle_result(res);
@@ -2974,6 +2979,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRDataFrame_get_column__impl", (DL_FUNC) &savvy_PlRDataFrame_get_column__impl, 2},
     {"savvy_PlRDataFrame_get_column_index__impl", (DL_FUNC) &savvy_PlRDataFrame_get_column_index__impl, 2},
     {"savvy_PlRDataFrame_get_columns__impl", (DL_FUNC) &savvy_PlRDataFrame_get_columns__impl, 1},
+    {"savvy_PlRDataFrame_hash_rows__impl", (DL_FUNC) &savvy_PlRDataFrame_hash_rows__impl, 5},
     {"savvy_PlRDataFrame_head__impl", (DL_FUNC) &savvy_PlRDataFrame_head__impl, 2},
     {"savvy_PlRDataFrame_height__impl", (DL_FUNC) &savvy_PlRDataFrame_height__impl, 1},
     {"savvy_PlRDataFrame_init__impl", (DL_FUNC) &savvy_PlRDataFrame_init__impl, 1},
