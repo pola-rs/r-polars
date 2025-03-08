@@ -887,7 +887,7 @@
 # nanoarrow_array/nanoarrow_array_stream support int16
 
     Code
-      print(series_from_array)
+      print(series_from_array_default)
     Output
       shape: (10,)
       Series: '' [i16]
@@ -907,7 +907,7 @@
 # nanoarrow_array/nanoarrow_array_stream support int32
 
     Code
-      print(series_from_array)
+      print(series_from_array_default)
     Output
       shape: (10,)
       Series: '' [i32]
@@ -927,7 +927,7 @@
 # nanoarrow_array/nanoarrow_array_stream support int64
 
     Code
-      print(series_from_array)
+      print(series_from_array_default)
     Output
       shape: (10,)
       Series: '' [i64]
@@ -947,7 +947,7 @@
 # arrow RecordBatchReader and Tabular objects support table
 
     Code
-      print(series_from_libarrow)
+      print(series_default)
     Output
       shape: (2,)
       Series: '' [struct[3]]
@@ -959,7 +959,7 @@
 # arrow RecordBatchReader and Tabular objects support record_batch
 
     Code
-      print(series_from_libarrow)
+      print(series_default)
     Output
       shape: (2,)
       Series: '' [struct[3]]
@@ -971,7 +971,7 @@
 # arrow RecordBatchReader and Tabular objects support record_batch_reader
 
     Code
-      print(series_from_libarrow)
+      print(series_default)
     Output
       shape: (2,)
       Series: '' [struct[3]]

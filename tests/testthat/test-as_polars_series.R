@@ -304,12 +304,19 @@ patrick::with_parameters_test_that(
     )
   },
   code = {
-    series_from_array <- as_polars_series(na_array)
-    series_from_stream <- as_polars_series(nanoarrow::as_nanoarrow_array_stream(na_array))
+    series_from_array_default <- as_polars_series(na_array)
+    series_from_stream_default <- as_polars_series(nanoarrow::as_nanoarrow_array_stream(na_array))
+    series_from_array_named <- as_polars_series(na_array, name = "foo")
+    series_from_stream_named <- as_polars_series(
+      nanoarrow::as_nanoarrow_array_stream(na_array),
+      name = "foo"
+    )
 
-    expect_s3_class(series_from_array, "polars_series")
-    expect_snapshot(print(series_from_array))
-    expect_equal(series_from_array, series_from_stream)
+    expect_s3_class(series_from_array_default, "polars_series")
+    expect_identical(series_from_array_default$name, "")
+    expect_snapshot(print(series_from_array_default))
+    expect_equal(series_from_array_default, series_from_stream_default)
+    expect_equal(series_from_array_named, series_from_stream_named)
   }
 )
 
@@ -326,15 +333,18 @@ patrick::with_parameters_test_that(
     )
   },
   code = {
-    series_from_libarrow <- data.frame(
+    obj <- data.frame(
       int = 1:2,
       chr = letters[1:2],
       lst = I(list(TRUE, NA))
     ) |>
-      construct_function() |>
-      as_polars_series()
+      construct_function()
 
-    expect_s3_class(series_from_libarrow, "polars_series")
-    expect_snapshot(print(series_from_libarrow))
+    series_default <- as_polars_series(obj)
+    series_named <- as_polars_series(obj, name = "foo")
+
+    expect_s3_class(series_default, "polars_series")
+    expect_identical(series_named$name, "foo")
+    expect_snapshot(print(series_default))
   }
 )

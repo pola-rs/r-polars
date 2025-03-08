@@ -464,6 +464,7 @@ as_polars_series.nanoarrow_array_stream <- function(x, name = NULL, ...) {
       plrseries
     } else {
       plrseries$rename(name)
+      plrseries
     }
   })
 }
