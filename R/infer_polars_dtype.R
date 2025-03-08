@@ -185,6 +185,20 @@ infer_polars_dtype.nanoarrow_array_stream <- function(x, ...) {
 #' @export
 infer_polars_dtype.nanoarrow_array <- infer_polars_dtype.nanoarrow_array_stream
 
+#' @rdname infer_polars_dtype
+#' @export
+infer_polars_dtype.RecordBatchReader <- function(x, ...) {
+  wrap({
+    arrow_schema <- arrow::infer_schema(x)
+    empty_rbr <- arrow::RecordBatchReader$create(schema = arrow_schema)
+    as_polars_series(empty_rbr)$dtype
+  })
+}
+
+#' @rdname infer_polars_dtype
+#' @export
+infer_polars_dtype.ArrowTabular <- infer_polars_dtype.RecordBatchReader
+
 # To avoid defining a dedicated method for inferring types from classes built on vctrs_vctr,
 # the processing is handled within this method using conditional branching.
 #' @rdname infer_polars_dtype

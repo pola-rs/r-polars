@@ -14,6 +14,8 @@
 \alias{infer_polars_dtype.data.frame}
 \alias{infer_polars_dtype.nanoarrow_array_stream}
 \alias{infer_polars_dtype.nanoarrow_array}
+\alias{infer_polars_dtype.RecordBatchReader}
+\alias{infer_polars_dtype.ArrowTabular}
 \alias{infer_polars_dtype.vctrs_vctr}
 \title{Infer Polars DataType corresponding to a given R object}
 \usage{
@@ -42,6 +44,10 @@ is_convertible_to_polars_expr(x, ...)
 \method{infer_polars_dtype}{nanoarrow_array_stream}(x, ...)
 
 \method{infer_polars_dtype}{nanoarrow_array}(x, ...)
+
+\method{infer_polars_dtype}{RecordBatchReader}(x, ...)
+
+\method{infer_polars_dtype}{ArrowTabular}(x, ...)
 
 \method{infer_polars_dtype}{vctrs_vctr}(x, ...)
 }

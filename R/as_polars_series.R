@@ -477,6 +477,25 @@ as_polars_series.nanoarrow_array <- function(x, name = NULL, ...) {
 
 #' @rdname as_polars_series
 #' @export
+as_polars_series.RecordBatchReader <- function(x, name = NULL, ...) {
+  wrap({
+    # This function is not exported from the arrow package
+    # <https://github.com/apache/arrow/issues/39793>
+    stream_ptr <- utils::getFromNamespace("allocate_arrow_array_stream", "arrow")()
+    x$export_to_c(stream_ptr)
+    as_polars_series.nanoarrow_array_stream(stream_ptr, name = name, ...)
+  })
+}
+
+#' @rdname as_polars_series
+#' @export
+as_polars_series.ArrowTabular <- function(x, name = NULL, ...) {
+  arrow::as_record_batch_reader(x) |>
+    as_polars_series(name = name, ...)
+}
+
+#' @rdname as_polars_series
+#' @export
 as_polars_series.integer64 <- function(x, name = NULL, ...) {
   PlRSeries$new_i64(name %||% "", x) |>
     wrap()

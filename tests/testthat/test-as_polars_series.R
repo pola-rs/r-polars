@@ -312,3 +312,29 @@ patrick::with_parameters_test_that(
     expect_equal(series_from_array, series_from_stream)
   }
 )
+
+patrick::with_parameters_test_that(
+  "arrow RecordBatchReader and Tabular objects support",
+  .cases = {
+    skip_if_not_installed("arrow")
+    # fmt: skip
+    tibble::tribble(
+      ~.test_name, ~construct_function,
+      "table", arrow::as_arrow_table,
+      "record_batch", arrow::as_record_batch,
+      "record_batch_reader", arrow::as_record_batch_reader,
+    )
+  },
+  code = {
+    series_from_libarrow <- data.frame(
+      int = 1:2,
+      chr = letters[1:2],
+      lst = I(list(TRUE, NA))
+    ) |>
+      construct_function() |>
+      as_polars_series()
+
+    expect_s3_class(series_from_libarrow, "polars_series")
+    expect_snapshot(print(series_from_libarrow))
+  }
+)

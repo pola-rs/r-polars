@@ -944,3 +944,39 @@
       	10
       ]
 
+# arrow RecordBatchReader and Tabular objects support table
+
+    Code
+      print(series_from_libarrow)
+    Output
+      shape: (2,)
+      Series: '' [struct[3]]
+      [
+      	{1,"a",[true]}
+      	{2,"b",[null]}
+      ]
+
+# arrow RecordBatchReader and Tabular objects support record_batch
+
+    Code
+      print(series_from_libarrow)
+    Output
+      shape: (2,)
+      Series: '' [struct[3]]
+      [
+      	{1,"a",[true]}
+      	{2,"b",[null]}
+      ]
+
+# arrow RecordBatchReader and Tabular objects support record_batch_reader
+
+    Code
+      print(series_from_libarrow)
+    Output
+      shape: (2,)
+      Series: '' [struct[3]]
+      [
+      	{1,"a",[true]}
+      	{2,"b",[null]}
+      ]
+

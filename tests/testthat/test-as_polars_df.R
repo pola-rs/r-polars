@@ -72,6 +72,19 @@ test_that("as_polars_df.default works for nanoarrow objects", {
   )
 })
 
+test_that("as_polars_df.default works for arrow Tabular", {
+  skip_if_not_installed("arrow")
+
+  expect_equal(
+    as_polars_df.default(arrow::as_arrow_table(mtcars)),
+    as_polars_df(mtcars)
+  )
+  expect_equal(
+    as_polars_df.default(arrow::as_record_batch(mtcars)),
+    as_polars_df(mtcars)
+  )
+})
+
 test_that("column_name argument", {
   pls <- as_polars_series(1:2, "foo")
   expect_equal(
