@@ -175,7 +175,7 @@ infer_polars_dtype.data.frame <- function(x, ...) {
 #' @export
 infer_polars_dtype.nanoarrow_array_stream <- function(x, ...) {
   wrap({
-    na_schema <- x$get_schema()
+    na_schema <- nanoarrow::infer_nanoarrow_schema(x)
     empty_stream <- nanoarrow::basic_array_stream(list(), na_schema)
     as_polars_series(empty_stream)$dtype
   })
@@ -183,10 +183,7 @@ infer_polars_dtype.nanoarrow_array_stream <- function(x, ...) {
 
 #' @rdname infer_polars_dtype
 #' @export
-infer_polars_dtype.nanoarrow_array <- function(x, ...) {
-  nanoarrow::as_nanoarrow_array_stream(x) |>
-    infer_polars_dtype(...)
-}
+infer_polars_dtype.nanoarrow_array <- infer_polars_dtype.nanoarrow_array_stream
 
 # To avoid defining a dedicated method for inferring types from classes built on vctrs_vctr,
 # the processing is handled within this method using conditional branching.
