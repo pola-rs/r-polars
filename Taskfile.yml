@@ -6,7 +6,7 @@ env:
   DEBUG: "true"
 
 vars:
-  REQUIRED_R_PKGS_FOR_S3_METHODS: tibble
+  REQUIRED_R_PKGS_FOR_S3_METHODS: nanoarrow,tibble
 
   MANIFEST: src/rust/Cargo.toml
   CARGO_LOCK: src/rust/Cargo.lock

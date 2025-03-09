@@ -98,6 +98,8 @@ on_load(local_use_cli())
   run_on_load()
 
   # Register S3 methods for optional packages
+  s3_register("nanoarrow::as_nanoarrow_array_stream", "polars_data_frame")
+  s3_register("nanoarrow::as_nanoarrow_array_stream", "polars_series")
   s3_register("tibble::as_tibble", "polars_data_frame")
   s3_register("tibble::as_tibble", "polars_lazy_frame")
   s3_register("waldo::compare_proxy", "polars_expr")

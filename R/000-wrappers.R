@@ -4167,6 +4167,12 @@ class(`PlRLazyGroupBy`) <- c("PlRLazyGroupBy__bundle", "savvy_neopolars__sealed"
   }
 }
 
+`PlRSeries_to_arrow_c_stream` <- function(self) {
+  function(`stream_ptr`) {
+    invisible(.Call(savvy_PlRSeries_to_arrow_c_stream__impl, `self`, `stream_ptr`))
+  }
+}
+
 `PlRSeries_to_r_vector` <- function(self) {
   function(`ensure_vector`, `int64`, `date`, `time`, `struct`, `decimal`, `as_clock_class`, `ambiguous`, `non_existent`, `local_time_zone`) {
     `ambiguous` <- .savvy_extract_ptr(`ambiguous`, "PlRExpr")
@@ -4201,6 +4207,7 @@ class(`PlRLazyGroupBy`) <- c("PlRLazyGroupBy__bundle", "savvy_neopolars__sealed"
   e$`struct_fields` <- `PlRSeries_struct_fields`(ptr)
   e$`struct_unnest` <- `PlRSeries_struct_unnest`(ptr)
   e$`sub` <- `PlRSeries_sub`(ptr)
+  e$`to_arrow_c_stream` <- `PlRSeries_to_arrow_c_stream`(ptr)
   e$`to_r_vector` <- `PlRSeries_to_r_vector`(ptr)
 
   class(e) <- c("PlRSeries", "savvy_neopolars__sealed")

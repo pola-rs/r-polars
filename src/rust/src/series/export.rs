@@ -1,7 +1,11 @@
 use crate::{prelude::*, PlRExpr, PlRSeries, RPolarsErr};
+use polars_core::utils::arrow::{
+    array::Array,
+    ffi::{export_iterator, ArrowArrayStream},
+};
 use savvy::{
-    savvy, FunctionArgs, FunctionSexp, OwnedIntegerSexp, OwnedListSexp, OwnedLogicalSexp, Result,
-    Sexp,
+    savvy, ExternalPointerSexp, FunctionArgs, FunctionSexp, OwnedIntegerSexp, OwnedListSexp,
+    OwnedLogicalSexp, Result, Sexp,
 };
 use strum_macros::EnumString;
 
@@ -358,5 +362,59 @@ impl PlRSeries {
             non_existent,
             local_time_zone,
         )
+    }
+
+    // TODO: move to upstream polars
+    // TODO: add `compat_level` argument
+    pub fn to_arrow_c_stream(&self, stream_ptr: Sexp) -> Result<()> {
+        let stream_ptr = unsafe {
+            ExternalPointerSexp::try_from(stream_ptr)?.cast_mut_unchecked::<ArrowArrayStream>()
+        };
+        let field = self.series.field().to_arrow(CompatLevel::newest());
+        let iter = Box::new(SeriesStreamIterator::new(
+            self.series.clone(),
+            CompatLevel::newest(),
+        ));
+        let stream = export_iterator(iter, field);
+
+        unsafe {
+            std::ptr::replace(stream_ptr, stream);
+        };
+
+        Ok(())
+    }
+}
+
+// TODO: move to upstream polars
+struct SeriesStreamIterator {
+    series: Series,
+    idx: usize,
+    n_chunks: usize,
+    compat_level: CompatLevel,
+}
+
+impl SeriesStreamIterator {
+    fn new(series: Series, compat_level: CompatLevel) -> Self {
+        Self {
+            series: series.clone(),
+            idx: 0,
+            n_chunks: series.n_chunks(),
+            compat_level,
+        }
+    }
+}
+
+impl Iterator for SeriesStreamIterator {
+    type Item = std::result::Result<Box<dyn Array>, PolarsError>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.idx >= self.n_chunks {
+            None
+        } else {
+            let batch = self.series.to_arrow(self.idx, self.compat_level);
+            self.idx += 1;
+
+            Some(std::result::Result::Ok(batch))
+        }
     }
 }

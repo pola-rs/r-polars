@@ -27,7 +27,7 @@ Suggests:
     ggplot2,
     hms,
     jsonlite,
-    nanoarrow,
+    nanoarrow (>= 0.6.0),
     patrick (>= 0.3.0),
     testthat (>= 3.0.0),
     tibble,
