@@ -2057,3 +2057,120 @@ dataframe__hash_rows <- function(seed = 0, seed_1 = NULL, seed_2 = NULL, seed_3 
     )
   })
 }
+
+#' Unstack a long table to a wide form without doing an aggregation
+#'
+#' This can be much faster than a pivot, because it can skip the grouping phase.
+#'
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Column name(s) and selector(s)
+#' to include in the operation. If empty, use all columns.
+#' @param step Number of rows in the unstacked frame.
+#' @param how Direction of the unstack. Must be one of `"vertical"` or
+#' `"horizontal"`.
+#' @param fill_values Fill values that don't fit the new size with this value.
+#' This can be a scalar value or a named list of the sort
+#' `list(<column_name> = <fill_value>)`. See examples.
+#'
+#' @inherit as_polars_df return
+#' @examples
+#' df <- pl$DataFrame(x = LETTERS[1:8], y = 1:8)$with_columns(
+#'   z = pl$int_ranges(pl$col("y"), pl$col("y") + 2, dtype = pl$UInt8)
+#' )
+#' df
+#'
+#' df$unstack(step = 4, how = "vertical")
+#' df$unstack(step = 2, how = "horizontal")
+#' df$unstack(cs$numeric(), step = 5, fill_values = 0)
+#' df$unstack("x", "y", step = 5, fill_values = list(y = 999, x = "foo"))
+dataframe__unstack <- function(
+  ...,
+  step,
+  how = c("vertical", "horizontal"),
+  fill_values = NULL
+) {
+  wrap({
+    check_dots_unnamed()
+
+    if (!(is_scalar_integerish(step, finite = TRUE) && step > 0L)) {
+      abort("`step` must be a single positive integer-ish value")
+    }
+    how <- arg_match0(how, values = c("vertical", "horizontal"))
+
+    fill_values_is_named_list <- is_list(fill_values) &&
+      is_named(fill_values) &&
+      all(vapply(fill_values, is_convertible_to_polars_expr, logical(1)))
+    if (!fill_values_is_named_list && !is_convertible_to_polars_expr(fill_values)) {
+      abort(
+        "`fill_value` must be a object convertible to a Polars expression, or a named list of such objects."
+      )
+    }
+
+    dots <- list2(...)
+    df <- if (length(dots) == 0L) {
+      self
+    } else {
+      self$select(!!!dots)
+    }
+
+    height <- self$height
+    if (how == "vertical") {
+      n_rows <- step
+      n_cols <- ceiling(height / n_rows)
+    } else {
+      n_cols <- step
+      n_rows <- ceiling(height / n_cols)
+    }
+
+    # We know whether unstacking will create empty cells, so we extend the
+    # data (and potentially fill missing values) before unstacking.
+    n_fill <- n_cols * n_rows - height
+    if (n_fill > 0) {
+      if (!fill_values_is_named_list) {
+        fill_values <- rep(list(as_polars_expr(fill_values, as_lit = TRUE)), df$width)
+        names(fill_values) <- names(df)
+      }
+      list_series <- list()
+      for (col_name in df$columns) {
+        list_series[[col_name]] <- pl$col(col_name)$extend_constant(fill_values[[col_name]], n_fill)
+      }
+      # The error message comes from `<expr>$extend_constant()` is not clear,
+      # so we wrap it in a tryCatch to provide a more informative message.
+      df <- try_fetch(
+        df$select(!!!list_series),
+        error = function(cnd) {
+          msg_part <- if (fill_values_is_named_list) "one of " else ""
+          abort(
+            sprintf(
+              "Expanding the DataFrame failed. Maybe %s`fill_values` is not a scalar value.",
+              msg_part
+            ),
+            call = parent.frame(),
+            parent = cnd
+          )
+        }
+      )
+    }
+
+    if (how == "horizontal") {
+      df <- df$with_columns(
+        (pl$int_range(0, n_cols * n_rows) %% n_cols)$alias(
+          "__sort_order"
+        )
+      )$sort("__sort_order")$drop("__sort_order")
+    }
+
+    # Equivalent to zfill_val in Python Polars
+    sprintf_fmt_val <- sprintf("%%0%dd", floor(log10(n_cols)) + 1)
+
+    columns <- df$get_columns()
+    new_columns <- list()
+    for (column in columns) {
+      for (slice_nbr in seq_len(n_cols) - 1) {
+        old_col_name <- column$name
+        new_col_name <- paste0(old_col_name, "_", sprintf(sprintf_fmt_val, slice_nbr))
+        new_columns[[new_col_name]] <- column$slice(slice_nbr * n_rows, n_rows)$`_s`
+      }
+    }
+    PlRDataFrame$init(new_columns)
+  })
+}
