@@ -126,3 +126,26 @@ set_sink_optimizations <- function(
     `_check_order` = `_check_order`
   )
 }
+
+#' Transforms raw percentiles into our preferred format, adding the 50th
+#' percentile.
+#' Raises an error if the percentile sequence is invalid (e.g. outside the
+#' range [0, 1]).
+#' @noRd
+parse_percentiles <- function(percentiles, inject_median = FALSE) {
+  if (!all(percentiles >= 0 & percentiles <= 1)) {
+    abort("`percentiles` must all be in the range [0, 1]")
+  }
+  sub_50_percentiles <- percentiles[percentiles < 50] |>
+    sort()
+  at_or_above_50_percentiles <- percentiles[percentiles >= 50] |>
+    sort()
+  if (
+    isTRUE(inject_median) &&
+      (length(at_or_above_50_percentiles) == 0 || at_or_above_50_percentiles[1] != 0.5)
+  ) {
+    at_or_above_50_percentiles <- c(0.5, at_or_above_50_percentiles)
+  }
+
+  c(sub_50_percentiles, at_or_above_50_percentiles)
+}

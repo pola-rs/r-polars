@@ -2246,3 +2246,35 @@ test_that("group_by_dynamic: arg 'include_boundaries' works", {
     )
   )
 })
+
+test_that("describe() works", {
+  df <- pl$DataFrame(
+    float = c(1.5, 2, NA),
+    string = c(letters[1:2], NA),
+    date = c(as.Date("2024-01-20"), as.Date("2024-01-21"), NA),
+    cat = factor(c("zz", "a", NA)),
+    bool = c(TRUE, FALSE, NA)
+  )
+  expect_snapshot(df$describe())
+  expect_snapshot(df$lazy()$describe())
+
+  expect_query_error(
+    .input$describe(percentiles = 1.1),
+    .input = df,
+    "`percentiles` must all be in the range [0, 1]",
+    fixed = TRUE
+  )
+  expect_error(
+    pl$DataFrame()$describe(),
+    "cannot describe a DataFrame without any columns"
+  )
+  expect_error(
+    pl$LazyFrame()$describe(),
+    "cannot describe a LazyFrame without any columns"
+  )
+
+  expect_snapshot(df$describe(percentiles = 0.1))
+
+  # min/max different depending on categorical ordering
+  expect_snapshot(df$select(pl$col("cat")$cast(pl$Categorical("lexical")))$describe())
+})
