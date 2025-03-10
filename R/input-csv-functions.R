@@ -5,7 +5,7 @@
 #' This allows the query optimizer to push down predicates and projections to
 #' the scan level, thereby potentially reducing memory overhead.
 #'
-#' @inheritParams rlang::check_dots_empty0
+#' @inheritParams rlang::args_dots_empty
 #' @param source Path to a file or URL. It is possible to provide multiple paths
 #' provided that all CSV files have the same schema. It is not possible to
 #' provide several URLs.

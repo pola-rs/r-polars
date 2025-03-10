@@ -22,7 +22,7 @@ dataframe__write_parquet(
 \item{file}{File path to which the result should be written. This should be
 a path to a directory if writing a partitioned dataset.}
 
-\item{...}{Dots which should be empty.}
+\item{...}{These dots are for future extensions and must be empty.}
 
 \item{compression}{The compression method. Must be one of:
 \itemize{

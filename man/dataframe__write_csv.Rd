@@ -27,7 +27,7 @@ dataframe__write_csv(
 \arguments{
 \item{file}{File path to which the result will be written.}
 
-\item{...}{Dots which should be empty.}
+\item{...}{These dots are for future extensions and must be empty.}
 
 \item{include_bom}{Logical, whether to include UTF-8 BOM in the CSV output.}
 

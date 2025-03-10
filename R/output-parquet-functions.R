@@ -7,7 +7,7 @@
 #'
 #' This allows streaming results that are larger than RAM to be written to disk.
 #'
-#' @inheritParams rlang::check_dots_empty0
+#' @inheritParams rlang::args_dots_empty
 #' @param path A character. File path to which the file should be written.
 #' @param compression The compression method. Must be one of:
 #' * `"lz4"`: fast compression/decompression.

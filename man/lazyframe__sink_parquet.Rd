@@ -35,7 +35,7 @@ lazyframe__sink_parquet(
 )
 }
 \arguments{
-\item{...}{Dots which should be empty.}
+\item{...}{These dots are for future extensions and must be empty.}
 
 \item{min}{Include stats on the minimum values in the column.}
 

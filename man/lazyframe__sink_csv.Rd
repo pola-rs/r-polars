@@ -36,7 +36,7 @@ lazyframe__sink_csv(
 \arguments{
 \item{path}{A character. File path to which the file should be written.}
 
-\item{...}{Dots which should be empty.}
+\item{...}{These dots are for future extensions and must be empty.}
 
 \item{include_bom}{Logical, whether to include UTF-8 BOM in the CSV output.}
 
