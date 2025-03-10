@@ -2904,8 +2904,8 @@ SEXP savvy_PlRSeries_sub__impl(SEXP self__, SEXP c_arg__other) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRSeries_to_arrow_c_stream__impl(SEXP self__, SEXP c_arg__stream_ptr) {
-    SEXP res = savvy_PlRSeries_to_arrow_c_stream__ffi(self__, c_arg__stream_ptr);
+SEXP savvy_PlRSeries_to_arrow_c_stream__impl(SEXP self__, SEXP c_arg__stream_ptr, SEXP c_arg__polars_compat_level) {
+    SEXP res = savvy_PlRSeries_to_arrow_c_stream__ffi(self__, c_arg__stream_ptr, c_arg__polars_compat_level);
     return handle_result(res);
 }
 
@@ -3505,7 +3505,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRSeries_struct_fields__impl", (DL_FUNC) &savvy_PlRSeries_struct_fields__impl, 1},
     {"savvy_PlRSeries_struct_unnest__impl", (DL_FUNC) &savvy_PlRSeries_struct_unnest__impl, 1},
     {"savvy_PlRSeries_sub__impl", (DL_FUNC) &savvy_PlRSeries_sub__impl, 2},
-    {"savvy_PlRSeries_to_arrow_c_stream__impl", (DL_FUNC) &savvy_PlRSeries_to_arrow_c_stream__impl, 2},
+    {"savvy_PlRSeries_to_arrow_c_stream__impl", (DL_FUNC) &savvy_PlRSeries_to_arrow_c_stream__impl, 3},
     {"savvy_PlRSeries_to_r_vector__impl", (DL_FUNC) &savvy_PlRSeries_to_r_vector__impl, 11},
     {"savvy_PlRThen_otherwise__impl", (DL_FUNC) &savvy_PlRThen_otherwise__impl, 2},
     {"savvy_PlRThen_when__impl", (DL_FUNC) &savvy_PlRThen_when__impl, 2},

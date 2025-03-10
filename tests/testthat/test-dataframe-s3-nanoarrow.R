@@ -17,3 +17,20 @@ test_that("roundtrip via nanoarrow array stream", {
   expect_equal(from_nanoarrow, df)
   expect_equal(from_schema_specified, df)
 })
+
+test_that("polars_compat_level works", {
+  skip_if_not_installed("nanoarrow")
+
+  expect_identical(
+    pl$DataFrame(x = letters[1:3]) |>
+      nanoarrow::as_nanoarrow_array_stream(polars_compat_level = 0) |>
+      nanoarrow::infer_nanoarrow_schema() |>
+      format(),
+    "<nanoarrow_schema struct<x: large_string>>"
+  )
+  expect_snapshot(
+    pl$DataFrame(x = letters[1:3]) |>
+      nanoarrow::as_nanoarrow_array_stream(polars_compat_level = TRUE),
+    error = TRUE
+  )
+})

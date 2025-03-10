@@ -365,16 +365,14 @@ impl PlRSeries {
     }
 
     // TODO: move to upstream polars
-    // TODO: add `compat_level` argument
-    pub fn to_arrow_c_stream(&self, stream_ptr: Sexp) -> Result<()> {
+    pub fn to_arrow_c_stream(&self, stream_ptr: Sexp, polars_compat_level: Sexp) -> Result<()> {
         let stream_ptr = unsafe {
             ExternalPointerSexp::try_from(stream_ptr)?.cast_mut_unchecked::<ArrowArrayStream>()
         };
-        let field = self.series.field().to_arrow(CompatLevel::newest());
-        let iter = Box::new(SeriesStreamIterator::new(
-            self.series.clone(),
-            CompatLevel::newest(),
-        ));
+        let compat_level = <Wrap<CompatLevel>>::try_from(polars_compat_level)?.0;
+
+        let field = self.series.field().to_arrow(compat_level);
+        let iter = Box::new(SeriesStreamIterator::new(self.series.clone(), compat_level));
         let stream = export_iterator(iter, field);
 
         unsafe {

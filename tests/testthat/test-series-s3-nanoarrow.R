@@ -63,3 +63,34 @@ patrick::with_parameters_test_that(
     stream$release()
   }
 )
+
+patrick::with_parameters_test_that(
+  "the polars_compat_level argument works",
+  .cases = {
+    skip_if_not_installed("nanoarrow")
+
+    # fmt: skip
+    tibble::tribble(
+      ~.test_name, ~level, ~expect_error, ~x,
+      "NULL", NULL, TRUE, as_polars_series(NA),
+      "int vec", 0:1, TRUE, as_polars_series(NA),
+      "newest", "newest", FALSE, as_polars_series(c("foo", "bar")),
+      "oldest", "oldest", FALSE, as_polars_series(c("foo", "bar")),
+      "invalid name", "foo", TRUE, as_polars_series(c("foo", "bar")),
+      "1", 1, FALSE, as_polars_series(c("foo", "bar")),
+      "0", 0, FALSE, as_polars_series(c("foo", "bar")),
+      "2", 2, TRUE, as_polars_series(c("foo", "bar")),
+      "invalid int", -1, TRUE, as_polars_series(NA),
+      "not integer-ish", 1.5, TRUE, as_polars_series(NA),
+      "bool", TRUE, TRUE, as_polars_series(NA),
+    )
+  },
+  code = {
+    expect_snapshot(
+      nanoarrow::as_nanoarrow_array_stream(x, polars_compat_level = level) |>
+        nanoarrow::infer_nanoarrow_schema() |>
+        format(),
+      error = expect_error
+    )
+  }
+)

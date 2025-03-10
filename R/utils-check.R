@@ -142,3 +142,21 @@ check_exclusive_or_null <- function(x, y) {
     )
   }
 }
+
+# similar to arg_match0() but also allows for integerish values
+arg_match_compat_level <- function(arg, arg_nm = caller_arg(arg), error_call = caller_env()) {
+  if (is_character(arg)) {
+    arg_match0(arg, c("newest", "oldest"), arg_nm = arg_nm, error_call = error_call)
+  } else if (is_scalar_integerish(arg, finite = TRUE)) {
+    arg
+  } else {
+    abort(
+      sprintf(
+        "`%s` must be a string or an integerish scalar value, got: %s",
+        arg_nm,
+        toString(class(arg))
+      ),
+      call = error_call
+    )
+  }
+}

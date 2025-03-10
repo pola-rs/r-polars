@@ -6,14 +6,24 @@
 \alias{as_nanoarrow_array_stream.polars_series}
 \title{Create a nanoarrow_array_stream from a Polars object}
 \usage{
-\method{as_nanoarrow_array_stream}{polars_data_frame}(x, ..., schema = NULL)
+\method{as_nanoarrow_array_stream}{polars_data_frame}(
+  x,
+  ...,
+  schema = NULL,
+  polars_compat_level = c("newest", "oldest")
+)
 
-\method{as_nanoarrow_array_stream}{polars_series}(x, ..., schema = NULL)
+\method{as_nanoarrow_array_stream}{polars_series}(
+  x,
+  ...,
+  schema = NULL,
+  polars_compat_level = c("newest", "oldest")
+)
 }
 \arguments{
 \item{x}{A polars object}
 
-\item{...}{Ignored}
+\item{...}{Ignored.}
 
 \item{schema}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 An optional \link[nanoarrow:as_nanoarrow_schema]{nanoarrow schema object}.
@@ -21,6 +31,18 @@ If specified, interpret the nanoarrow schema as a corresponding polars dtype
 and then convert the original object using \code{\link[=series__cast]{<Series>$cast()}}.
 Note that the schema of the returned object cannot be fully controlled
 because Polars does not support all Arrow types.}
+
+\item{polars_compat_level}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Determines the compatibility level when exporting Polars' internal data structures.
+When specifying a new compatibility level, Polars exports its internal data structures
+that might not be interpretable by other Arrow implementations.
+The level can be specified as the name (e.g., \code{"newest"}) or as a scalar integer
+(Currently, \code{0} or \code{1} is supported).
+\itemize{
+\item \code{"newest"} (default): Use the highest level, currently same as \code{1}
+(Low compatibility).
+\item \code{"oldest"}: Same as \code{0} (High compatibility).
+}}
 }
 \value{
 A \link[nanoarrow:as_nanoarrow_array_stream]{nanoarrow array stream}
@@ -44,6 +66,17 @@ as_polars_series(1:3, name = "numbers") |>
 pl$DataFrame(a = 1:3, b = letters[1:3]) |>
   nanoarrow::as_nanoarrow_array_stream() |>
   as_polars_df()
+
+# Compatibility level
+as_polars_series(letters[1:3]) |>
+  nanoarrow::as_nanoarrow_array_stream(polars_compat_level = 1) |>
+  nanoarrow::infer_nanoarrow_schema() |>
+  format()
+
+as_polars_series(letters[1:3]) |>
+  nanoarrow::as_nanoarrow_array_stream(polars_compat_level = "oldest") |>
+  nanoarrow::infer_nanoarrow_schema() |>
+  format()
 \dontshow{\}) # examplesIf}
 }
 \seealso{

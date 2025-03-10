@@ -4175,8 +4175,8 @@ class(`PlRLazyGroupBy`) <- c("PlRLazyGroupBy__bundle", "savvy_neopolars__sealed"
 }
 
 `PlRSeries_to_arrow_c_stream` <- function(self) {
-  function(`stream_ptr`) {
-    invisible(.Call(savvy_PlRSeries_to_arrow_c_stream__impl, `self`, `stream_ptr`))
+  function(`stream_ptr`, `polars_compat_level`) {
+    invisible(.Call(savvy_PlRSeries_to_arrow_c_stream__impl, `self`, `stream_ptr`, `polars_compat_level`))
   }
 }
 

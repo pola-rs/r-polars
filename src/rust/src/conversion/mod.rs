@@ -4,7 +4,7 @@ use crate::prelude::*;
 use crate::{PlRDataFrame, PlRDataType, PlRExpr, PlRLazyFrame, PlRSeries, RPolarsErr};
 use polars::prelude::cloud::CloudOptions;
 use polars::series::ops::NullBehavior;
-use savvy::{ListSexp, NumericScalar, NumericSexp, NumericTypedSexp, StringSexp, TypedSexp};
+use savvy::{ListSexp, NumericScalar, NumericSexp, NumericTypedSexp, Sexp, StringSexp, TypedSexp};
 use search_sorted::SearchSortedSide;
 pub mod base_date;
 mod chunked_array;
@@ -821,6 +821,44 @@ impl TryFrom<&str> for Wrap<MaintainOrderJoin> {
             _ => return Err("unreachable".to_string()),
         };
         Ok(Wrap(parsed))
+    }
+}
+
+impl TryFrom<NumericScalar> for Wrap<CompatLevel> {
+    type Error = savvy::Error;
+
+    fn try_from(value: NumericScalar) -> Result<Self, Self::Error> {
+        // CompatLevel is u16, but currently only use 0 and 1, so u8 is enough
+        let level = <Wrap<u8>>::try_from(value)?.0 as u16;
+        let compat_level = CompatLevel::with_level(level).map_err(RPolarsErr::from)?;
+        Ok(Wrap(compat_level))
+    }
+}
+
+impl TryFrom<&str> for Wrap<CompatLevel> {
+    type Error = savvy::Error;
+
+    fn try_from(value: &str) -> Result<Self, Self::Error> {
+        let compat_level = match value {
+            "newest" => CompatLevel::newest(),
+            "oldest" => CompatLevel::oldest(),
+            _ => return Err("unreachable".to_string().into()),
+        };
+        Ok(Wrap(compat_level))
+    }
+}
+
+impl TryFrom<Sexp> for Wrap<CompatLevel> {
+    type Error = savvy::Error;
+
+    fn try_from(value: Sexp) -> Result<Self, Self::Error> {
+        if value.is_numeric() {
+            <NumericScalar>::try_from(value).and_then(|v| <Wrap<CompatLevel>>::try_from(v))
+        } else if value.is_string() {
+            <&str>::try_from(value).and_then(|v| <Wrap<CompatLevel>>::try_from(v))
+        } else {
+            Err("Invalid compat level".to_string().into())
+        }
     }
 }
 
