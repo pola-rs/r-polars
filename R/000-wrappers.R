@@ -3778,6 +3778,12 @@ class(`PlRExpr`) <- c("PlRExpr__bundle", "savvy_neopolars__sealed")
   }
 }
 
+`PlRLazyFrame_sink_json` <- function(self) {
+  function(`path`, `retries`, `maintain_order`, `storage_options` = NULL) {
+    invisible(.Call(savvy_PlRLazyFrame_sink_json__impl, `self`, `path`, `retries`, `maintain_order`, `storage_options`))
+  }
+}
+
 `PlRLazyFrame_sink_parquet` <- function(self) {
   function(`path`, `compression`, `maintain_order`, `stat_min`, `stat_max`, `stat_distinct_count`, `stat_null_count`, `retries`, `compression_level` = NULL, `row_group_size` = NULL, `data_page_size` = NULL, `storage_options` = NULL) {
     invisible(.Call(savvy_PlRLazyFrame_sink_parquet__impl, `self`, `path`, `compression`, `maintain_order`, `stat_min`, `stat_max`, `stat_distinct_count`, `stat_null_count`, `retries`, `compression_level`, `row_group_size`, `data_page_size`, `storage_options`))
@@ -3917,6 +3923,7 @@ class(`PlRExpr`) <- c("PlRExpr__bundle", "savvy_neopolars__sealed")
   e$`serialize` <- `PlRLazyFrame_serialize`(ptr)
   e$`shift` <- `PlRLazyFrame_shift`(ptr)
   e$`sink_csv` <- `PlRLazyFrame_sink_csv`(ptr)
+  e$`sink_json` <- `PlRLazyFrame_sink_json`(ptr)
   e$`sink_parquet` <- `PlRLazyFrame_sink_parquet`(ptr)
   e$`slice` <- `PlRLazyFrame_slice`(ptr)
   e$`sort` <- `PlRLazyFrame_sort`(ptr)
