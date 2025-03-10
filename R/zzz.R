@@ -98,6 +98,9 @@ on_load(local_use_cli())
   run_on_load()
 
   # Register S3 methods for optional packages
+  s3_register("arrow::as_arrow_table", "polars_data_frame")
+  s3_register("arrow::as_record_batch_reader", "polars_data_frame")
+  s3_register("arrow::as_record_batch_reader", "polars_series")
   s3_register("nanoarrow::as_nanoarrow_array_stream", "polars_data_frame")
   s3_register("nanoarrow::as_nanoarrow_array_stream", "polars_series")
   s3_register("tibble::as_tibble", "polars_data_frame")
