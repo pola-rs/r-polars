@@ -1693,12 +1693,13 @@ lazyframe__rolling <- function(
 
 #' Group based on a date/time or integer column
 #'
+#' @description
 #' Time windows are calculated and rows are assigned to windows. Different from
 #' a normal group by is that a row can be member of multiple groups. By
 #' default, the windows look like:
 #' * [start, start + period)
 #' * [start + every, start + every + period)
-#' * [start + 2*every, start + 2*every + period)
+#' * [start + 2 * every, start + 2 * every + period)
 #' * …
 #'
 #' where `start` is determined by `start_by`, `offset`, `every`, and the

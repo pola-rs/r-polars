@@ -75,14 +75,14 @@ default, the windows look like:
 \itemize{
 \item [start, start + period)
 \item [start + every, start + every + period)
-\item [start + 2\emph{every, start + 2}every + period)
+\item [start + 2 * every, start + 2 * every + period)
 \item …
 }
-}
-\details{
+
 where \code{start} is determined by \code{start_by}, \code{offset}, \code{every}, and the
 earliest datapoint. See the \code{start_by} argument description for details.
-
+}
+\details{
 The \code{every}, \code{period}, and \code{offset} arguments are created with the following
 string language:
 \itemize{
