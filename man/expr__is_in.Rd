@@ -4,10 +4,15 @@
 \alias{expr__is_in}
 \title{Check if elements of an expression are present in another expression}
 \usage{
-expr__is_in(other)
+expr__is_in(other, ..., nulls_equal = FALSE)
 }
 \arguments{
 \item{other}{Accepts expression input. Strings are parsed as column names.}
+
+\item{...}{These dots are for future extensions and must be empty.}
+
+\item{nulls_equal}{A bool to indicate treating null as a distinct value.
+If \code{TRUE}, null values will not propagate.}
 }
 \value{
 A polars \link{expression}

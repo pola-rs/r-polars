@@ -16,7 +16,7 @@ patrick::with_parameters_test_that(
 )
 
 test_that("pl$DataFrame() requires series the same length", {
-  expect_error(pl$DataFrame(a = 1:2, b = "foo"), "has length 2")
+  expect_error(pl$DataFrame(a = 1:2, b = "foo"), "lengths don't match")
 })
 
 test_that("pl$DataFrame() rejects expressions", {

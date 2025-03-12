@@ -507,8 +507,12 @@ impl PlRExpr {
         Ok(self.inner.clone().is_duplicated().into())
     }
 
-    fn is_in(&self, expr: &PlRExpr) -> Result<Self> {
-        Ok(self.inner.clone().is_in(expr.inner.clone()).into())
+    fn is_in(&self, expr: &PlRExpr, nulls_equal: bool) -> Result<Self> {
+        Ok(self
+            .inner
+            .clone()
+            .is_in(expr.inner.clone(), nulls_equal)
+            .into())
     }
 
     fn sqrt(&self) -> Result<Self> {

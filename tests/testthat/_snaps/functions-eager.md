@@ -42,7 +42,7 @@
       Error in `pl$concat()`:
       ! Evaluation failed in `$concat()`.
       Caused by error:
-      ! Duplicated column(s): unable to hstack, column with name "a" already exists
+      ! Duplicated column(s): column with name 'a' has more than one occurrence
 
 ---
 

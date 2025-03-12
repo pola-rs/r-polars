@@ -1744,7 +1744,10 @@ expr__is_last_distinct <- function() {
 #' Check if elements of an expression are present in another expression
 #'
 #' @param other Accepts expression input. Strings are parsed as column names.
+#' @param nulls_equal A bool to indicate treating null as a distinct value.
+#' If `TRUE`, null values will not propagate.
 #' @inherit as_polars_expr return
+#' @inheritParams rlang::args_dots_empty
 #' @examples
 #' df <- pl$DataFrame(
 #'   sets = list(1:3, 1:2, 9:10),
@@ -1753,9 +1756,11 @@ expr__is_last_distinct <- function() {
 #' df$with_columns(
 #'   contains = pl$col("optional_members")$is_in("sets")
 #' )
-expr__is_in <- function(other) {
-  self$`_rexpr`$is_in(as_polars_expr(other)$`_rexpr`) |>
-    wrap()
+expr__is_in <- function(other, ..., nulls_equal = FALSE) {
+  wrap({
+    check_dots_empty0(...)
+    self$`_rexpr`$is_in(as_polars_expr(other)$`_rexpr`, nulls_equal = nulls_equal)
+  })
 }
 
 #' Return a boolean mask indicating unique values

@@ -280,7 +280,7 @@ SEXP savvy_PlRExpr_is_between__ffi(SEXP self__, SEXP c_arg__lower, SEXP c_arg__u
 SEXP savvy_PlRExpr_is_duplicated__ffi(SEXP self__);
 SEXP savvy_PlRExpr_is_finite__ffi(SEXP self__);
 SEXP savvy_PlRExpr_is_first_distinct__ffi(SEXP self__);
-SEXP savvy_PlRExpr_is_in__ffi(SEXP self__, SEXP c_arg__expr);
+SEXP savvy_PlRExpr_is_in__ffi(SEXP self__, SEXP c_arg__expr, SEXP c_arg__nulls_equal);
 SEXP savvy_PlRExpr_is_infinite__ffi(SEXP self__);
 SEXP savvy_PlRExpr_is_last_distinct__ffi(SEXP self__);
 SEXP savvy_PlRExpr_is_nan__ffi(SEXP self__);

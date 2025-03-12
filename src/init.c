@@ -1394,8 +1394,8 @@ SEXP savvy_PlRExpr_is_first_distinct__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_is_in__impl(SEXP self__, SEXP c_arg__expr) {
-    SEXP res = savvy_PlRExpr_is_in__ffi(self__, c_arg__expr);
+SEXP savvy_PlRExpr_is_in__impl(SEXP self__, SEXP c_arg__expr, SEXP c_arg__nulls_equal) {
+    SEXP res = savvy_PlRExpr_is_in__ffi(self__, c_arg__expr, c_arg__nulls_equal);
     return handle_result(res);
 }
 
@@ -3203,7 +3203,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_is_duplicated__impl", (DL_FUNC) &savvy_PlRExpr_is_duplicated__impl, 1},
     {"savvy_PlRExpr_is_finite__impl", (DL_FUNC) &savvy_PlRExpr_is_finite__impl, 1},
     {"savvy_PlRExpr_is_first_distinct__impl", (DL_FUNC) &savvy_PlRExpr_is_first_distinct__impl, 1},
-    {"savvy_PlRExpr_is_in__impl", (DL_FUNC) &savvy_PlRExpr_is_in__impl, 2},
+    {"savvy_PlRExpr_is_in__impl", (DL_FUNC) &savvy_PlRExpr_is_in__impl, 3},
     {"savvy_PlRExpr_is_infinite__impl", (DL_FUNC) &savvy_PlRExpr_is_infinite__impl, 1},
     {"savvy_PlRExpr_is_last_distinct__impl", (DL_FUNC) &savvy_PlRExpr_is_last_distinct__impl, 1},
     {"savvy_PlRExpr_is_nan__impl", (DL_FUNC) &savvy_PlRExpr_is_nan__impl, 1},

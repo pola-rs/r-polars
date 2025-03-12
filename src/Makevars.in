@@ -33,7 +33,7 @@ $(STATLIB):
 	    export CFLAGS="$(CFLAGS)" && \
 	    export CARGO_PROFILE_DEV_PANIC="abort" && \
 	    export CARGO_PROFILE_RELEASE_PANIC="abort" && \
-	    cargo +nightly build $(CARGO_BUILD_ARGS) --target $(TARGET) -Zbuild-std=panic_abort,std; \
+	    cargo build $(CARGO_BUILD_ARGS) --target $(TARGET) -Zbuild-std=panic_abort,std; \
 	  fi
 
 C_clean:

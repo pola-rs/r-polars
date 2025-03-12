@@ -1,5 +1,18 @@
+#!/bin/sh
+
 if [ "$(uname)" = "Emscripten" ]; then
   TARGET="wasm32-unknown-emscripten"
+  # TODO: We should put this elsewhere
+  rust_toolchain=nightly-2025-01-05
+  cat <<EOF
+-------------------- [NIGHTLY TOOLCHAIN NEEDED] --------------------
+It seems that building for Emscripten.
+'polars' requires a very recent Rust nightly toolchain.
+So executing 'rustup toolchain install ${rust_toolchain}' before building.
+--------------------------------------------------------------------
+EOF
+  rustup toolchain install "${rust_toolchain}" --force --component rust-src
+  rustup default "${rust_toolchain}"
 fi
 
-sed -e "s/@TARGET@/${TARGET}/" src/Makevars.in > src/Makevars
+sed -e "s/@TARGET@/${TARGET}/" src/Makevars.in >src/Makevars

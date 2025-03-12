@@ -1835,9 +1835,9 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_neopolars__sealed")
 }
 
 `PlRExpr_is_in` <- function(self) {
-  function(`expr`) {
+  function(`expr`, `nulls_equal`) {
     `expr` <- .savvy_extract_ptr(`expr`, "PlRExpr")
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_is_in__impl, `self`, `expr`))
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_is_in__impl, `self`, `expr`, `nulls_equal`))
   }
 }
 
