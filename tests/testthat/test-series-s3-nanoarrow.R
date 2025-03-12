@@ -3,8 +3,6 @@ patrick::with_parameters_test_that(
   .cases = {
     skip_if_not_installed("nanoarrow")
 
-    # TODO: Test categorical (`as_polars_series(c("a", "b"))$cast(pl$Categorical())`) once upstream issue is fixed
-    # TODO: Test decimal (`as_polars_series(1:3)$cast(pl$Decimal(scale = 2))`) once upstream issue is fixed
     # fmt: skip
     tibble::tribble(
       ~.test_name, ~x,

@@ -525,7 +525,7 @@ test_that("is_in", {
   )
 
   # Works with list
-  # TODO: is this an expected behavior? (The last value of out should be null)
+  # TODO: The last value of the out column should be a null (<https://github.com/pola-rs/polars/issues/21485>)
   expect_equal(
     pl$DataFrame(a = c(2L, 1L, NA))$with_columns(out = pl$col("a")$is_in(list(0:1, 1:2, NA))),
     pl$DataFrame(a = c(2L, 1L, NA), out = c(FALSE, TRUE, TRUE))
