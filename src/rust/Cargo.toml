@@ -26,6 +26,13 @@ strum = "0.26"
 strum_macros = "0.26"
 thiserror = "2"
 
+# These features are enabled by default, but not supported on emscripten
+# <https://github.com/pola-rs/polars/blob/93ceaccdac6f05c9b07a5117f3a4a90c238dbd29/.github/workflows/test-pyodide.yml#L40-L45>
+[target.'cfg(not(target_os = "emscripten"))'.dependencies.polars]
+git = "https://github.com/pola-rs/polars.git"
+rev = "6e6c97e5ded0603ef7dd6620e65124dfd780ed61"
+features = ["cloud", "extract_jsonpath", "json", "parquet"]
+
 [dependencies.polars]
 git = "https://github.com/pola-rs/polars.git"
 rev = "6e6c97e5ded0603ef7dd6620e65124dfd780ed61"
@@ -40,7 +47,6 @@ features = [
     "binary_encoding",
     "bitwise",
     "business",
-    "cloud",
     "concat_str",
     "cross_join",
     "cse",
@@ -57,7 +63,6 @@ features = [
     "ewma",
     "ewma_by",
     "extract_groups",
-    "extract_jsonpath",
     "find_many",
     "fused",
     "hist",
@@ -71,7 +76,6 @@ features = [
     "is_in",
     "is_last_distinct",
     "is_unique",
-    "json",
     "lazy",
     "list_any_all",
     "list_count",
@@ -89,7 +93,6 @@ features = [
     "month_start",
     "month_end",
     "offset_by",
-    "parquet",
     "partition_by",
     "pct_change",
     "peaks",
@@ -123,7 +126,7 @@ features = [
     "to_dummies",
     "top_k",
     "trigonometry",
-    "unique_counts"
+    "unique_counts",
 ]
 
 [target.'cfg(all(any(not(target_family = "unix"), target_os = "emscripten", allocator = "mimalloc")))'.dependencies]
