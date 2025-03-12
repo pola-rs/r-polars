@@ -225,4 +225,67 @@ test_that("how = 'diagonal_relaxed' works", {
   )
 })
 
-# TODO: test for "align" when pl$coalesce() is implemented
+test_that("how = 'align', 'align_left', 'align_right', 'align_full' works", {
+  df1 <- pl$DataFrame(id = 1:2, x = 3:4)
+  df2 <- pl$DataFrame(id = 2:3, y = 5:6)
+  df3 <- pl$DataFrame(id = c(1L, 3L), z = 7:8)
+
+  expect_query_equal(
+    pl$concat(.input, .input2, .input3, how = "align"),
+    .input = df1,
+    .input2 = df2,
+    .input3 = df3,
+    pl$DataFrame(
+      id = 1:3,
+      x = c(3L, 4L, NA),
+      y = c(NA, 5L, 6L),
+      z = c(7L, NA, 8L)
+    )
+  )
+  expect_query_equal(
+    pl$concat(.input, .input2, .input3, how = "align_full"),
+    .input = df1,
+    .input2 = df2,
+    .input3 = df3,
+    pl$DataFrame(
+      id = 1:3,
+      x = c(3L, 4L, NA),
+      y = c(NA, 5L, 6L),
+      z = c(7L, NA, 8L)
+    )
+  )
+  expect_query_equal(
+    pl$concat(.input, .input2, .input3, how = "align_left"),
+    .input = df1,
+    .input2 = df2,
+    .input3 = df3,
+    pl$DataFrame(
+      id = 1:2,
+      x = c(3L, 4L),
+      y = c(NA, 5L),
+      z = c(7L, NA)
+    )
+  )
+  expect_query_equal(
+    pl$concat(.input, .input2, .input3, how = "align_right"),
+    .input = df1,
+    .input2 = df2,
+    .input3 = df3,
+    pl$DataFrame(
+      id = c(1L, 3L),
+      x = c(NA_integer_, NA_integer_),
+      y = c(NA, 6L),
+      z = c(7L, 8L)
+    )
+  )
+
+  ## Errors
+  expect_error(
+    pl$concat(pl$Series("a", 1:2), pl$Series("b", 1:2), how = "align"),
+    "strategy is only supported on DataFrames and LazyFrames"
+  )
+  expect_error(
+    pl$concat(pl$DataFrame(a = 1), pl$DataFrame(b = 1), how = "align"),
+    "strategy requires at least one common column"
+  )
+})

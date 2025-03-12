@@ -4,13 +4,7 @@
 \alias{pl__concat}
 \title{Combine multiple DataFrames, LazyFrames, or Series into a single object}
 \usage{
-pl__concat(
-  ...,
-  how = c("vertical", "vertical_relaxed", "diagonal", "diagonal_relaxed", "horizontal",
-    "align"),
-  rechunk = FALSE,
-  parallel = TRUE
-)
+pl__concat(..., how = "vertical", rechunk = FALSE, parallel = TRUE)
 }
 \arguments{
 \item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> \link[=DataFrame]{DataFrames},
@@ -29,11 +23,14 @@ columns to their common supertype if they are mismatched (eg: Int32 to
 Int64);
 \item \code{"horizontal"}: stacks Series from DataFrames horizontally and fills with
 \code{null} if the lengths don’t match;
-\item \code{"align"}: Combines frames horizontally, auto-determining the common key
-columns and aligning rows using the same logic as \code{align_frames}; this
-behaviour is patterned after a full outer join, but does not handle
-column-name collision. (If you need more control, you should use a
-suitable join method instead).
+\item \code{"align"}, \code{"align_full"}, \code{"align_left"}, \code{"align_right"}: Combines
+frames horizontally, auto-determining the common key columns and aligning
+rows using the same logic as \code{align_frames} (note that \code{"align"} is an
+alias for \code{"align_full"}). The "align" strategy determines the type of
+join used to align the frames, equivalent to the "how" parameter on
+\code{align_frames}. Note that the common join columns are automatically
+coalesced, but other column collisions will raise an error (if you need
+more control over this you should use a suitable \code{join} method directly).
 }
 
 \link{Series} only support the \code{"vertical"} strategy.}
@@ -70,4 +67,10 @@ df1 <- pl$DataFrame(a = 1L, b = 3L)
 df2 <- pl$DataFrame(a = 2L, c = 4L)
 pl$concat(df1, df2, how = "diagonal")
 
+df_a1 <- pl$DataFrame(id = 1:2, x = 3:4)
+df_a2 <- pl$DataFrame(id = 2:3, y = 5:6)
+df_a3 <- pl$DataFrame(id = c(1L, 3L), z = 7:8)
+pl$concat(df_a1, df_a2, df_a3, how = "align")
+pl$concat(df_a1, df_a2, df_a3, how = "align_left")
+pl$concat(df_a1, df_a2, df_a3, how = "align_right")
 }
