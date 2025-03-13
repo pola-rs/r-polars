@@ -36,7 +36,7 @@ opt-level = 3 # was 1 to support 1.66, but since 1.70 is needed anyway it does n
 opt-level = 3
 
 [dependencies]
-extendr-api = { git = "https://github.com/rpolars/extendr", rev = "24ec0933892fe6d926e3d293b92fc2eeb22b06ad", default-features = false, features = [
+extendr-api = { git = "https://github.com/rpolars/extendr", rev = "53bc326c5cdb4ac8684219d283d0ad21450072c1", default-features = false, features = [
   "result_list",
   "serde",
 ] }
