@@ -544,13 +544,13 @@ Series_to_r = \(int64_conversion = polars_options()$int64_conversion) {
 #' @rdname Series_to_r
 #' @inheritParams DataFrame_to_data_frame
 Series_to_vector = \(int64_conversion = polars_options()$int64_conversion) {
-  unlist(unwrap(.pr$Series$to_r(self, int64_conversion)), "in $to_vector():")
+  unlist(unwrap(.pr$Series$to_r(self, int64_conversion), "in $to_vector():"))
 }
 
 #' @rdname Series_to_r
 #' @inheritParams DataFrame_to_data_frame
 Series_to_list = \(int64_conversion = polars_options()$int64_conversion) {
-  as.list(unwrap(.pr$Series$to_r(self, int64_conversion)), "in $to_list():")
+  as.list(unwrap(.pr$Series$to_r(self, int64_conversion), "in $to_list():"))
 }
 
 #' Count the occurrences of unique values
