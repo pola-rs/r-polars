@@ -10,7 +10,7 @@
 >
 > Please check the GitHub issue #1152.
 
-## polars (development version)
+## Polars R Package 0.22.2
 
 ### Bug fixes
 
