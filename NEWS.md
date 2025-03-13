@@ -10,11 +10,13 @@
 >
 > Please check the GitHub issue #1152.
 
-## polars (development version)
+## Polars R Package (development version)
+
+## Polars R Package 0.22.2
 
 ### Bug fixes
 
-- Function to convert Polars to R (`<Series>$to_r()` etc.) no longer fail with
+- Functions to convert Polars to R (`<Series>$to_r()` etc.) no longer fail with
   the "NA in coercion to boolean" error in R 4.5 (#1337).
 
 ## Polars R Package 0.22.1
