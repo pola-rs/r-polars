@@ -120,5 +120,5 @@ Collate:
     'zzz.R'
 Config/rextendr/version: 0.3.1
 VignetteBuilder: knitr
-Config/polars/LibVersion: 0.45.0
+Config/polars/LibVersion: 0.45.1
 Config/polars/RustToolchainVersion: nightly-2024-11-28
