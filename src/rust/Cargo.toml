@@ -15,7 +15,7 @@ too_many_arguments = "allow"
 
 [dependencies]
 ciborium = "0.2"
-either = "1.14"
+either = "1.15"
 flume = "0.11"
 polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "6e6c97e5ded0603ef7dd6620e65124dfd780ed61", default-features = false }
 polars-error = { git = "https://github.com/pola-rs/polars.git", rev = "6e6c97e5ded0603ef7dd6620e65124dfd780ed61", default-features = false }
