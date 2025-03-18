@@ -596,8 +596,7 @@ impl RPolarsSeries {
 
     pub fn export_stream(&self, stream_ptr: &str, compat_level: Robj) {
         let compat_level = robj_to!(CompatLevel, compat_level).unwrap();
-        let data_type = self.0.dtype().to_arrow(compat_level);
-        let field = pl::ArrowField::new("".into(), data_type, false);
+        let field = self.0.field().to_arrow(compat_level);
 
         let iter_boxed = Box::new(OwnedSeriesIterator::new(self.0.clone(), compat_level));
         let mut stream = arrow::ffi::export_iterator(iter_boxed, field);
@@ -612,8 +611,7 @@ impl RPolarsSeries {
         }
     }
 
-    pub fn import_stream(name: Robj, stream_ptr: Robj) -> RResult<Self> {
-        let name: PlSmallStr = robj_to!(str, name)?.into();
+    pub fn import_stream(stream_ptr: Robj) -> RResult<Self> {
         let stream_in_ptr_addr = robj_to!(usize, stream_ptr)?;
         let stream_in_ptr =
             unsafe { Box::from_raw(stream_in_ptr_addr as *mut arrow::ffi::ArrowArrayStream) };
@@ -625,7 +623,7 @@ impl RPolarsSeries {
         }
 
         let chunks = arrays.into_iter().collect::<Vec<_>>();
-        let s = pl::Series::try_from((name, chunks)).map_err(polars_to_rpolars_err)?;
+        let s = pl::Series::try_from((stream.field(), chunks)).map_err(polars_to_rpolars_err)?;
 
         Ok(s.into())
     }

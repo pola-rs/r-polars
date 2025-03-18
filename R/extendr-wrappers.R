@@ -1412,7 +1412,7 @@ RPolarsSeries$struct_fields <- function() .Call(wrap__RPolarsSeries__struct_fiel
 
 RPolarsSeries$export_stream <- function(stream_ptr, compat_level) invisible(.Call(wrap__RPolarsSeries__export_stream, self, stream_ptr, compat_level))
 
-RPolarsSeries$import_stream <- function(name, stream_ptr) .Call(wrap__RPolarsSeries__import_stream, name, stream_ptr)
+RPolarsSeries$import_stream <- function(stream_ptr) .Call(wrap__RPolarsSeries__import_stream, stream_ptr)
 
 RPolarsSeries$from_arrow_array_robj <- function(name, array) .Call(wrap__RPolarsSeries__from_arrow_array_robj, name, array)
 

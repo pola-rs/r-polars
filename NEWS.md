@@ -12,6 +12,11 @@
 
 ## Polars R Package (development version)
 
+### Bug fixes
+
+- The name of the Series is now correctly exported and imported when using the Arrow C stream interface
+  via the `nanoarrow_array_stream` object (#1347).
+
 ## Polars R Package 0.22.2
 
 ### Bug fixes
