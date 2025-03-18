@@ -413,11 +413,16 @@ as_polars_series.RecordBatchReader = function(x, name = NULL, ...) {
   stream_out = polars_allocate_array_stream()
   x$export_to_c(stream_out)
 
-  .pr$Series$import_stream(
-    name %||% "",
+  out = .pr$Series$import_stream(
     stream_out
   ) |>
     unwrap("in as_polars_series(<RecordBatchReader>):")
+
+  if (!is.null(name)) {
+    out$rename(name)
+  } else {
+    out
+  }
 }
 
 
@@ -441,11 +446,16 @@ as_polars_series.nanoarrow_array_stream = function(x, name = NULL, ..., experime
     stream_out = polars_allocate_array_stream()
     nanoarrow::nanoarrow_pointer_export(x, stream_out)
 
-    .pr$Series$import_stream(
-      name %||% "",
+    out = .pr$Series$import_stream(
       stream_out
     ) |>
       unwrap("in as_polars_series(<nanoarrow_array_stream>):")
+
+    if (!is.null(name)) {
+      out$rename(name)
+    } else {
+      out
+    }
   } else {
     list_of_arrays = nanoarrow::collect_array_stream(x, validate = FALSE)
 
@@ -453,7 +463,8 @@ as_polars_series.nanoarrow_array_stream = function(x, name = NULL, ..., experime
       # TODO: support 0-length array stream
       out = pl$Series(name = name)
     } else {
-      out = as_polars_series.nanoarrow_array(list_of_arrays[[1L]], name = name)
+      name_of_array = nanoarrow::infer_nanoarrow_schema(list_of_arrays[[1L]])$name
+      out = as_polars_series.nanoarrow_array(list_of_arrays[[1L]], name = name %||% name_of_array)
       lapply(
         list_of_arrays[-1L],
         \(array) .pr$Series$append_mut(out, as_polars_series.nanoarrow_array(array))
