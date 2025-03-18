@@ -14,6 +14,7 @@
 
 ### Bug fixes
 
+- Some non-API calls for R were removed to pass `R CMD check` on R 4.5.0 (#1339).
 - The name of the Series is now correctly exported and imported when using the Arrow C stream interface
   via the `nanoarrow_array_stream` object (#1347).
 
