@@ -16,6 +16,9 @@ ignore_rules = list(
     # yes polars is huge way above 10Mb nothing to do about that
     ignore_lib_size = function(msg) {
       isTRUE(grepl("checking installed package size ... NOTE", msg))
+    },
+    ignore_non_api_call = function(msg) {
+      isTRUE(grepl("checking compiled code ... NOTE", msg))
     }
   ),
   warnings = list(),
