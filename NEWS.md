@@ -12,6 +12,8 @@
 
 ## Polars R Package (development version)
 
+## Polars R Package 0.22.3
+
 ### Bug fixes
 
 - Some non-API calls for R were removed to pass `R CMD check` on R 4.5.0 (#1339).
