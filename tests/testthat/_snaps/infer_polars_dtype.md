@@ -19,10 +19,10 @@
     Code
       infer_polars_dtype(x)
     Condition
-      Error:
-      ! Unsupported class for `infer_polars_dtype()`: complex
-      Caused by error in `infer_polars_dtype_default_impl()`:
-      ! Unsupported class for `as_polars_series()`: complex
+      Error in `infer_polars_dtype()`:
+      ! Can't infer polars dtype of the complex number 0+1i
+      Caused by error in `as_polars_series()`:
+      ! an empty complex vector can't be converted to a polars Series.
 
 ---
 
@@ -36,8 +36,8 @@
     Code
       infer_polars_dtype(x)
     Condition
-      Error:
-      ! Unsupported class for `infer_polars_dtype()`: polars_dtype_null, polars_dtype, polars_object
+      Error in `infer_polars_dtype()`:
+      ! Can't infer polars dtype of a <polars_dtype_null> object
       Caused by error in `x[0L]`:
       ! [ - syntax error: Extracting elements of this polars object with `[` is not supported
 

@@ -154,7 +154,7 @@ arg_match_compat_level <- function(arg, arg_nm = caller_arg(arg), error_call = c
       sprintf(
         "`%s` must be a string or an integerish scalar value, got: %s",
         arg_nm,
-        toString(class(arg))
+        obj_type_friendly(arg)
       ),
       call = error_call
     )

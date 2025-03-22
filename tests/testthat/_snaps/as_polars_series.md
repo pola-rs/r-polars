@@ -424,6 +424,14 @@
       	null
       ]
 
+# as_polars_series.default throws an error
+
+    Code
+      as_polars_series(x)
+    Condition
+      Error in `as_polars_series()`:
+      ! a <foo> object can't be converted to a polars Series.
+
 # as_polars_series works for vctrs_rcrd
 
     Code

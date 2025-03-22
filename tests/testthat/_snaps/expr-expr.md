@@ -7,8 +7,8 @@
       ! Evaluation failed in `$select()`.
       Caused by error:
       ! Evaluation failed in `$collect()`.
-      Caused by error:
-      ! Unsupported class for `as_polars_series()`: function
+      Caused by error in `as_polars_series()`:
+      ! a function can't be converted to a polars Series.
       Error:
       ! Evaluation failed in `$select()`.
       Caused by error:
@@ -25,8 +25,8 @@
       ! Evaluation failed in `$select()`.
       Caused by error:
       ! Evaluation failed in `$collect()`.
-      Caused by error:
-      ! Unsupported class for `as_polars_series()`: complex
+      Caused by error in `as_polars_series()`:
+      ! the complex number 0+1i can't be converted to a polars Series.
       Error:
       ! Evaluation failed in `$select()`.
       Caused by error:

@@ -26,5 +26,5 @@
       Caused by error in `as_record_batch_reader.polars_series()`:
       ! Evaluation failed.
       Caused by error in `as_record_batch_reader.polars_series()`:
-      ! `polars_compat_level` must be a string or an integerish scalar value, got: logical
+      ! `polars_compat_level` must be a string or an integerish scalar value, got: `TRUE`
 

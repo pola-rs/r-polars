@@ -7,8 +7,8 @@
       ! Evaluation failed in `$eq()`.
       Caused by error in `as_polars_expr()`:
       ! Evaluation failed.
-      Caused by error in `as_polars_expr()`:
-      ! Unsupported class for `as_polars_series()`: complex
+      Caused by error in `as_polars_series()`:
+      ! the complex number 0+0i can't be converted to a polars Series.
 
 # meta$output_name
 

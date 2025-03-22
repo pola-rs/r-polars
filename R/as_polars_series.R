@@ -182,10 +182,7 @@ as_polars_series <- function(x, name = NULL, ...) {
 #' @rdname as_polars_series
 #' @export
 as_polars_series.default <- function(x, name = NULL, ...) {
-  abort(
-    paste0("Unsupported class for `as_polars_series()`: ", toString(class(x))),
-    call = parent.frame()
-  )
+  abort(sprintf("%s can't be converted to a polars Series.", obj_type_friendly(x)))
 }
 
 #' @rdname as_polars_series

@@ -35,7 +35,7 @@
       Error in `nanoarrow::as_nanoarrow_array_stream()`:
       ! Evaluation failed.
       Caused by error in `nanoarrow::as_nanoarrow_array_stream()`:
-      ! `polars_compat_level` must be a string or an integerish scalar value, got: NULL
+      ! `polars_compat_level` must be a string or an integerish scalar value, got: `NULL`
 
 # the polars_compat_level argument works int vec
 
@@ -46,7 +46,7 @@
       Error in `nanoarrow::as_nanoarrow_array_stream()`:
       ! Evaluation failed.
       Caused by error in `nanoarrow::as_nanoarrow_array_stream()`:
-      ! `polars_compat_level` must be a string or an integerish scalar value, got: integer
+      ! `polars_compat_level` must be a string or an integerish scalar value, got: an integer vector
 
 # the polars_compat_level argument works newest
 
@@ -122,7 +122,7 @@
       Error in `nanoarrow::as_nanoarrow_array_stream()`:
       ! Evaluation failed.
       Caused by error in `nanoarrow::as_nanoarrow_array_stream()`:
-      ! `polars_compat_level` must be a string or an integerish scalar value, got: numeric
+      ! `polars_compat_level` must be a string or an integerish scalar value, got: the number 1.5
 
 # the polars_compat_level argument works bool
 
@@ -133,5 +133,5 @@
       Error in `nanoarrow::as_nanoarrow_array_stream()`:
       ! Evaluation failed.
       Caused by error in `nanoarrow::as_nanoarrow_array_stream()`:
-      ! `polars_compat_level` must be a string or an integerish scalar value, got: logical
+      ! `polars_compat_level` must be a string or an integerish scalar value, got: `TRUE`
 

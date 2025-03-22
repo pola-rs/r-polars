@@ -72,7 +72,7 @@ a <- 1
 class(a) <- "foo"
 as_polars_series(a)
 #> Error:
-#> ! Unsupported class for `as_polars_series()`: foo
+#> a <foo> object can't be converted to a polars Series.
 #> Run `rlang::last_trace()` to see where the error occurred.
 ```
 

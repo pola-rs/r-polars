@@ -74,7 +74,18 @@ as_polars_df <- function(x, ...) {
 #' @rdname as_polars_df
 #' @export
 as_polars_df.default <- function(x, ...) {
-  dtype <- infer_polars_dtype(x, ...)
+  dtype <- try_fetch(
+    infer_polars_dtype(x, ...),
+    error = function(cnd) {
+      abort(
+        sprintf(
+          "%s may not be converted to a polars Series, and hence to a polars DataFrame.",
+          obj_type_friendly(x)
+        ),
+        parent = cnd
+      )
+    }
+  )
   if (inherits(dtype, "polars_dtype_struct")) {
     as_polars_series(x, ...)$struct$unnest()
   } else {
@@ -83,8 +94,7 @@ as_polars_df.default <- function(x, ...) {
       c(
         "This object is not supported for the default method of `as_polars_df()` because it is not a Struct dtype like object.",
         i = "Use `infer_polars_dtype()` to check the dtype for corresponding to the object."
-      ),
-      call = parent.frame()
+      )
     )
   }
 }

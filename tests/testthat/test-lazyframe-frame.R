@@ -1401,7 +1401,7 @@ test_that("sort(): various errors", {
   expect_query_error(
     .input$sort(complex(1)),
     pl$DataFrame(x = 1),
-    "Unsupported class"
+    "can't be converted to a polars Series"
   )
   expect_query_error(
     .input$sort(by = complex(1)),

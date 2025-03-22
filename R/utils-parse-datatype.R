@@ -5,7 +5,7 @@ parse_into_list_of_datatypes <- function(...) {
     lapply(\(x) {
       if (!isTRUE(is_polars_dtype(x))) {
         abort(
-          sprintf("Dynamic dots `...` must be polars data types, got %s", toString(class(x))),
+          sprintf("Dynamic dots `...` must be polars data types, got %s", obj_type_friendly(x)),
           call = parent.frame(3L)
         )
       }

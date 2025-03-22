@@ -70,7 +70,7 @@ patrick::with_parameters_test_that(
 test_that("as_polars_series.default throws an error", {
   x <- 1
   class(x) <- "foo"
-  expect_error(as_polars_series(x), "Unsupported class")
+  expect_snapshot(as_polars_series(x), error = TRUE)
 })
 
 test_that("as_polars_series.polars_expr throws an error", {
