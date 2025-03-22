@@ -1,18 +1,159 @@
 #!/bin/sh
 
-if [ "$(uname)" = "Emscripten" ]; then
-  TARGET="wasm32-unknown-emscripten"
-  # TODO: We should put this elsewhere
-  rust_toolchain=nightly-2025-01-05
-  cat <<EOF
+export PATH="$PATH:$HOME/.cargo/bin"
+
+NOT_CRAN=${NOT_CRAN:-"false"}
+LIBR_POLARS_BUILD=${LIBR_POLARS_BUILD:-""}
+
+# Detect if this is on R-universe.
+MY_UNIVERSE=${MY_UNIVERSE:-""}
+
+LIBNAME="libr_polars.a"
+LIBR_POLARS_DEFAULT_PATH="$(pwd)/tools/${LIBNAME}"
+LIBR_POLARS_PATH=${LIBR_POLARS_PATH:-${LIBR_POLARS_DEFAULT_PATH}}
+
+check_cargo() {
+  if [ ! "$(command -v cargo)" ]; then
+    cat <<EOF
+------------------------- [RUST NOT FOUND] -------------------------
+The 'cargo' command was not found on the PATH. Please install rustc
+from: https://www.rust-lang.org/tools/install
+
+Alternatively, you may install cargo from your OS package manager:
+  - Debian/Ubuntu: apt-get install cargo
+  - Fedora/CentOS: dnf install cargo
+  - macOS: brew install rustc
+--------------------------------------------------------------------
+EOF
+    exit 1
+  else
+    cat <<EOF
+--------------------------- [RUST FOUND] ---------------------------
+$(cargo -V)
+
+$(rustc -vV)
+--------------------------------------------------------------------
+EOF
+  fi
+}
+
+check_rustup() {
+  if [ "$(command -v rustup)" ]; then
+    cat <<EOF
+-------------------------- [RUSTUP FOUND] --------------------------
+$(rustup show)
+--------------------------------------------------------------------
+EOF
+  else
+    cat <<EOF
+------------------------ [RUSTUP NOT FOUND] ------------------------
+The 'rustup' command was not found on the PATH.
+--------------------------------------------------------------------
+EOF
+  fi
+}
+
+check_emscripten() {
+  if [ "$(uname)" = "Emscripten" ]; then
+    # TODO: We should put this elsewhere
+    rust_toolchain=nightly-2025-01-05
+    cat <<EOF
 -------------------- [NIGHTLY TOOLCHAIN NEEDED] --------------------
 It seems that building for Emscripten.
 'polars' requires a very recent Rust nightly toolchain.
 So executing 'rustup toolchain install ${rust_toolchain}' before building.
 --------------------------------------------------------------------
 EOF
-  rustup toolchain install "${rust_toolchain}" --force --component rust-src
-  rustup default "${rust_toolchain}"
+    export TARGET="wasm32-unknown-emscripten"
+    if [ "$(command -v rustup)" ]; then
+      rustup toolchain install "${rust_toolchain}" --force --component rust-src
+      rustup default "${rust_toolchain}"
+    fi
+  fi
+}
+
+check_bin_lib() {
+  if [ "${NOT_CRAN}" = "true" ] && [ -z "${LIBR_POLARS_BUILD}" ]; then
+    LIBR_POLARS_BUILD="false"
+  fi
+
+  # On R-universe, we try to download the pre-built binary from GitHub releases.
+  if [ -n "${MY_UNIVERSE}" ] && [ -z "${LIBR_POLARS_BUILD}" ]; then
+    cat <<EOF
+--------------------- [SETTING FOR R-UNIVERSE] ---------------------
+It seems that this is on R-universe <${MY_UNIVERSE}>.
+Trying to download pre-built binary.
+--------------------------------------------------------------------
+EOF
+    LIBR_POLARS_BUILD="false"
+  fi
+
+  if [ "${LIBR_POLARS_BUILD}" = "false" ]; then
+    if [ -f "tools/lib-sums.tsv" ] && [ ! -f "${LIBR_POLARS_PATH}" ]; then
+      cat <<EOF
+---------------- [TRY TO DOWNLOAD PRE-BUILT BINARY] ----------------
+The library was not found at <${LIBR_POLARS_PATH}>.
+Trying to download pre-built binary from the Internet...
+--------------------------------------------------------------------
+EOF
+      "${R_HOME}/bin${R_ARCH_BIN}/Rscript" "tools/prep-lib.R" && echo "Done!" ||
+        echo "Failed to download pre-built binary."
+    fi
+
+    if [ -f "${LIBR_POLARS_PATH}" ] && [ "${LIBR_POLARS_PATH}" != "${LIBR_POLARS_DEFAULT_PATH}" ]; then
+      cat <<EOF
+------------------------- [COPYING BINARY] -------------------------
+Copying <${LIBR_POLARS_PATH}> to <${LIBR_POLARS_DEFAULT_PATH}>.
+--------------------------------------------------------------------
+EOF
+      mkdir -p "$(dirname "${LIBR_POLARS_DEFAULT_PATH}")"
+      cp "${LIBR_POLARS_PATH}" "${LIBR_POLARS_DEFAULT_PATH}" && echo "Done!" || echo "Failed to copy binary."
+    fi
+
+    if [ -f "${LIBR_POLARS_DEFAULT_PATH}" ]; then
+      cat <<EOF
+---------------------- [LIBRARY BINARY FOUND] ----------------------
+The library was found at <${LIBR_POLARS_DEFAULT_PATH}>. No need to build it.
+
+Note: rustc version: $(command -v rustc >/dev/null && rustc -V || echo "Not found")
+--------------------------------------------------------------------
+EOF
+      export TARGET=""
+      generate_makevars
+    fi
+    cat <<EOF
+-------------------- [LIBRARY BINARY NOT FOUND] --------------------
+The library was not found at <${LIBR_POLARS_PATH}>.
+Falling back to building from source.
+--------------------------------------------------------------------
+EOF
+  fi
+}
+
+generate_makevars() {
+  for suffix in "" ".win"; do
+    makefile="src/Makevars${suffix}"
+    sed \
+      -e "s|@TARGET@|${TARGET}|" \
+      -e "s|@PROFILE@|${PROFILE}|" \
+      "$makefile.in" >"$makefile"
+  done
+
+  exit 0
+}
+
+# catch DEBUG envvar, which is passed from pkgbuild::compile_dll()
+if [ "${DEBUG}" = "true" ]; then
+  PROFILE=dev
+else
+  PROFILE=release
 fi
 
-sed -e "s/@TARGET@/${TARGET}/" src/Makevars.in >src/Makevars
+check_bin_lib
+check_rustup
+check_cargo
+check_emscripten
+
+TARGET="${TARGET:-$(rustc -vV | grep host | cut -d' ' -f2)}"
+
+generate_makevars

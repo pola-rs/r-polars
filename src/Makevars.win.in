@@ -1,18 +1,25 @@
+# TODO: support arm64 target (c.f. the hellorust package)
 TARGET = x86_64-pc-windows-gnu
+PROFILE = @PROFILE@
 
-# catch DEBUG envvar, which is passed from pkgbuild::compile_dll()
-PROFILE = $(subst x,release,$(subst truex,dev,$(DEBUG)x))
-
+LIBNAME = libr_polars.a
 TARGET_DIR = $(CURDIR)/rust/target
 LIBDIR = $(TARGET_DIR)/$(TARGET)/$(subst dev,debug,$(PROFILE))
-STATLIB = $(LIBDIR)/libr_polars.a
+STATLIB = $(LIBDIR)/$(LIBNAME)
 PKG_LIBS = -L$(LIBDIR) -lr_polars -lws2_32 -lncrypt -lcrypt32 -ladvapi32 -luserenv -lbcrypt -lole32 -lntdll -lpsapi -liphlpapi -lpdh -lpowrprof -loleaut32 -lnetapi32 -lsecur32 -lsynchronization -lpropsys -lruntimeobject -t
+
+CARGO_BUILD_ARGS = --lib \
+	--profile "$(PROFILE)" \
+	--manifest-path="$(CURDIR)/rust/Cargo.toml" \
+	--target-dir "$(TARGET_DIR)" \
+	--target $(TARGET)
 
 # Rtools doesn't have the linker in the location that cargo expects, so we need
 # to overwrite it via configuration.
 CARGO_LINKER = x86_64-w64-mingw32.static.posix-gcc.exe
 
-all: C_clean
+.PHONY: all
+all: $(SHLIB) cleanup
 
 $(SHLIB): $(STATLIB)
 
@@ -22,12 +29,22 @@ $(STATLIB):
 	# in actual, but we need this tweak to please the compiler.
 	mkdir -p $(LIBDIR)/libgcc_mock && touch $(LIBDIR)/libgcc_mock/libgcc_eh.a
 
+	if [ -f "$(CURDIR)/../tools/$(LIBNAME)" ]; then \
+		mkdir -p "$(LIBDIR)" ; \
+		mv "$(CURDIR)/../tools/$(LIBNAME)" "$(STATLIB)" ; \
+		exit 0; \
+	fi && \
 	export CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER="$(CARGO_LINKER)" && \
 	  export LIBRARY_PATH="$${LIBRARY_PATH};$(LIBDIR)/libgcc_mock" && \
-	  cargo build --target $(TARGET) --lib --profile $(PROFILE) --manifest-path ./rust/Cargo.toml --target-dir $(TARGET_DIR)
+	  cargo build $(CARGO_BUILD_ARGS)
 
-C_clean:
-	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS)
+.PHONY: cleanup
+# Clean up files that may cause warnings in R CMD check on CRAN just after the build
+cleanup: $(SHLIB)
+	if [ "$(NOT_CRAN)" != "true" ]; then \
+		rm -Rf "$(STATLIB)" "$(CARGOTMP)" "$(VENDOR_DIR)" "$(LIBDIR)/build"; \
+	fi
 
+.PHONY: clean
 clean:
-	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) rust/target
+	rm -Rf "$(SHLIB)" "$(STATLIB)" "$(OBJECTS)" "$(LIBGCC_MOCK_DIR)" "$(TARGET_DIR)"

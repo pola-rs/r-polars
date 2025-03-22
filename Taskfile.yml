@@ -14,6 +14,7 @@ vars:
   R_TESTS: tests/*
   VIGNETTES: vignettes/**/*.Rmd
   RUST_SOURCE: src/rust/src/**/*.rs
+  MAKEVARS_IN: src/Makevars{{if eq OS "windows"}}.win{{end}}.in
 
   R_FUNC_LOAD_REQUIRED_PKGS:
     strsplit("{{.REQUIRED_R_PKGS_FOR_S3_METHODS}}", ",") |>
@@ -52,7 +53,7 @@ tasks:
     aliases:
       - br
     sources:
-      - src/Makevars*
+      - "{{.MAKEVARS_IN}}"
       - configure*
       - "{{.MANIFEST}}"
       - "{{.CARGO_LOCK}}"
@@ -131,7 +132,7 @@ tasks:
     sources:
       - tests/**/*
       - "{{.R_SOURCE}}"
-      - src/Makevars*
+      - "{{.MAKEVARS_IN}}"
       - configure*
       - "{{.MANIFEST}}"
       - "{{.CARGO_LOCK}}"
@@ -145,7 +146,7 @@ tasks:
     sources:
       - README.Rmd
       - "{{.R_SOURCE}}"
-      - src/Makevars*
+      - "{{.MAKEVARS_IN}}"
       - configure*
       - "{{.MANIFEST}}"
       - "{{.CARGO_LOCK}}"
@@ -164,7 +165,7 @@ tasks:
     sources:
       - DESCRIPTION
       - "{{.R_SOURCE}}"
-      - src/Makevars*
+      - "{{.MAKEVARS_IN}}"
       - configure*
       - "{{.MANIFEST}}"
       - "{{.CARGO_LOCK}}"

@@ -1,0 +1,119 @@
+name: R-CMD-check
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/test-r.yml
+      - R/**
+      - src/**
+      - tests/**
+      - tools/**
+      - vignettes/*
+      - configure*
+      - DESCRIPTION
+      - NAMESPACE
+  pull_request:
+    branches:
+      - main
+    paths:
+      - .github/workflows/test-r.yml
+      - R/**
+      - src/**
+      - tests/**
+      - tools/**
+      - vignettes/*
+      - configure*
+      - DESCRIPTION
+      - NAMESPACE
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  R-CMD-check:
+    runs-on: ${{ matrix.os }}
+
+    name: ${{ matrix.os }} (${{ matrix.r }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
+        r:
+          - release
+        include:
+          - os: ubuntu-latest
+            r: devel
+          - os: ubuntu-latest
+            r: "4.3"
+
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      R_KEEP_PKG_SOURCE: yes
+      LIBR_POLARS_BUILD: "true"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: ${{ matrix.r }}
+          http-user-agent: ${{ runner.os == 'Windows' && 'release' || '' }}
+          use-public-rspm: true
+          Ncpus: "2"
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::rcmdcheck
+          needs: check
+          cache: "always"
+        env:
+          NOT_CRAN: "true"
+
+      - id: rust-target
+        name: Set Rust target
+        run: |
+          if [ "${{ runner.os }}" == "Windows" ]; then
+            echo "TARGET=x86_64-pc-windows-gnu" >>"$GITHUB_OUTPUT"
+          else
+            echo "TARGET=$(rustc -vV | grep host | cut -d' ' -f2)" >>"$GITHUB_OUTPUT"
+          fi
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "src/rust -> target"
+          shared-key: ${{ steps.rust-target.outputs.TARGET }}
+
+      - name: Build lib
+        env:
+          NOT_CRAN: "true"
+        run: |
+          # make sure savvy is built from source because rust-cache doesn't work well.
+          (find ~/.cargo/registry/ src/rust/target -name 'savvy-*' -print0 | xargs -0 rm -rf) || true
+
+          # Since the debug build is faster to compile (200 sec v.s. 600 sec on macos-14 runner without cache),
+          # R CMD check is slower (100 sec v.s. 700 sec on macos-14 runner).
+          # So we don't use the debug build for now here.
+          Rscript -e 'pkgbuild::compile_dll(debug = FALSE)'
+          echo "LIBR_POLARS_PATH=$(pwd)/src/rust/target/${{ steps.rust-target.outputs.TARGET }}/release/libr_polars.a" >>"$GITHUB_ENV"
+
+      - uses: r-lib/actions/check-r-package@v2
+        env:
+          LIBR_POLARS_BUILD: "false"
+          NOT_CRAN: "false"
+        with:
+          upload-snapshots: true
+          # TODO: remove this line once R CMD check is ok
+          error-on: '"never"'

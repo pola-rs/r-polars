@@ -1,23 +1,29 @@
 TARGET = @TARGET@
+PROFILE = @PROFILE@
 
-# catch DEBUG envvar, which is passed from pkgbuild::compile_dll()
-PROFILE = $(subst x,release,$(subst truex,dev,$(DEBUG)x))
-
+LIBNAME = libr_polars.a
 TARGET_DIR = $(CURDIR)/rust/target
 LIBDIR = $(TARGET_DIR)/$(TARGET)/$(subst dev,debug,$(PROFILE))
-STATLIB = $(LIBDIR)/libr_polars.a
+STATLIB = $(LIBDIR)/$(LIBNAME)
 PKG_LIBS = -L$(LIBDIR) -lr_polars
 
-CARGO_BUILD_ARGS = --lib --profile $(PROFILE) --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR)
+CARGO_BUILD_ARGS = --lib \
+	--profile "$(PROFILE)" \
+	--manifest-path="$(CURDIR)/rust/Cargo.toml" \
+	--target-dir "$(TARGET_DIR)" \
+	--target $(TARGET)
 
-all: C_clean
+.PHONY: all
+all: $(SHLIB) cleanup
 
 $(SHLIB): $(STATLIB)
 
 $(STATLIB):
-	# In some environments, ~/.cargo/bin might not be included in PATH, so we need
-	# to set it here to ensure cargo can be invoked. It is appended to PATH and
-	# therefore is only used if cargo is absent from the user's PATH.
+	if [ -f "$(CURDIR)/../tools/$(LIBNAME)" ]; then \
+		mkdir -p "$(LIBDIR)" ; \
+		mv "$(CURDIR)/../tools/$(LIBNAME)" "$(STATLIB)" ; \
+		exit 0; \
+	fi && \
 	export PATH="$(PATH):$(HOME)/.cargo/bin" && \
 	  if [ "$(TARGET)" != "wasm32-unknown-emscripten" ]; then \
 	    cargo build $(CARGO_BUILD_ARGS); \
@@ -26,11 +32,16 @@ $(STATLIB):
 	    export CFLAGS="$(CFLAGS)" && \
 	    export CARGO_PROFILE_DEV_PANIC="abort" && \
 	    export CARGO_PROFILE_RELEASE_PANIC="abort" && \
-	    cargo build $(CARGO_BUILD_ARGS) --target $(TARGET) -Zbuild-std=panic_abort,std; \
+	    cargo build $(CARGO_BUILD_ARGS) -Zbuild-std=panic_abort,std; \
 	  fi
 
-C_clean:
-	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS)
+.PHONY: cleanup
+# Clean up files that may cause warnings in R CMD check on CRAN just after the build
+cleanup: $(SHLIB)
+	if [ "$(NOT_CRAN)" != "true" ]; then \
+		rm -Rf "$(STATLIB)" "$(CARGOTMP)" "$(VENDOR_DIR)" "$(LIBDIR)/build"; \
+	fi
 
+.PHONY: clean
 clean:
-	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) rust/target
+	rm -Rf "$(SHLIB)" "$(STATLIB)" "$(OBJECTS)" "$(TARGET_DIR)"
