@@ -8,3 +8,4 @@ polars_expr	polars_expr__methods
 polars_lazy_frame	polars_lazyframe__methods
 polars_lazy_group_by	polars_lazygroupby__methods
 polars_series	polars_series__methods
+polars_sql_context	polars_sql_context__methods

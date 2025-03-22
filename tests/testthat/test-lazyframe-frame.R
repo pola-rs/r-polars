@@ -2278,3 +2278,70 @@ test_that("describe() works", {
   # min/max different depending on categorical ordering
   expect_snapshot(df$select(pl$col("cat")$cast(pl$Categorical("lexical")))$describe())
 })
+
+test_that("sql() works", {
+  lf <- pl$LazyFrame(a = 1:3, b = 6:8, c = c("z", "y", "x"))
+
+  expect_equal(
+    lf$sql("SELECT c, b FROM self WHERE a > 1")$collect(),
+    pl$DataFrame(c = c("y", "x"), b = 7:8)
+  )
+
+  # Can chain SQL and other functions
+  expect_equal(
+    lf$sql(
+      query = "
+         SELECT
+            a,
+            (a % 2 == 0) AS a_is_even,
+            (b::float4 / 2) AS 'b/2',
+            CONCAT_WS(':', c, c, c) AS c_c_c
+         FROM frame
+         ORDER BY a
+   ",
+      table_name = "frame",
+    )$filter(!pl$col("c_c_c")$str$starts_with("x"))$collect(),
+    pl$DataFrame(
+      a = 1:2,
+      a_is_even = c(FALSE, TRUE),
+      `b/2` = c(3, 3.5),
+      c_c_c = c("z:z:z", "y:y:y")
+    )$cast(`b/2` = pl$Float32)
+  )
+
+  # arg "table_name" works
+  expect_equal(
+    lf$sql(
+      query = "
+         SELECT
+            a
+         FROM foobar
+   ",
+      table_name = "foobar",
+    )$collect(),
+    pl$DataFrame(a = 1:3)
+  )
+  expect_error(
+    lf$sql(
+      query = "
+         SELECT
+            a
+         FROM wrong_name
+   ",
+      table_name = "foobar"
+    ),
+    "relation 'wrong_name' was not found"
+  )
+
+  expect_error(
+    lf$sql(
+      query = "
+         SELECT
+            a
+         FROM self
+      ",
+      a = 1
+    ),
+    "must be empty"
+  )
+})

@@ -2560,4 +2560,49 @@ lazyframe__describe <- function(
   })
 }
 
+#' Execute a SQL query against the LazyFrame
+#'
+#' @inheritParams rlang::args_dots_empty
+#' @param query SQL query to execute.
+#' @param table_name Optionally provide an explicit name for the table that
+#' represents the calling frame (defaults to `"self"`).
+#'
+#' @details
+#' The calling frame is automatically registered as a table in the SQL context
+#' under the name `"self"`. If you want access to the DataFrames and LazyFrames
+#' found in the current globals, use the top-level [`pl$sql()`][pl__sql].
+#'
+#' More control over registration and execution behaviour is available by using
+#' the [`SQLContext`][pl__SQLContext] object.
+#'
+#' @inherit as_polars_lf return
+#' @examples
+#' lf1 <- pl$LazyFrame(a = 1:3, b = 6:8, c = c("z", "y", "x"))
+#'
+#' # Query the LazyFrame using SQL:
+#' lf1$sql("SELECT c, b FROM self WHERE a > 1")$collect()
+#'
+#' # Apply SQL transforms (aliasing "self" to "frame") then filter natively
+#' # (you can freely mix SQL and native operations):
+#' lf1$sql(
+#'   query = "
+#'        SELECT
+#'           a,
+#'           (a % 2 == 0) AS a_is_even,
+#'           (b::float4 / 2) AS 'b/2',
+#'           CONCAT_WS(':', c, c, c) AS c_c_c
+#'        FROM frame
+#'        ORDER BY a
+#'  ",
+#'   table_name = "frame",
+#' )$filter(!pl$col("c_c_c")$str$starts_with("x"))$collect()
+lazyframe__sql <- function(query, ..., table_name = "self") {
+  wrap({
+    check_dots_empty0(...)
+    ctx <- pl$SQLContext()
+    ctx$register(name = table_name, frame = self)
+    ctx$execute(query)
+  })
+}
+
 # TODO-REWRITE: implement $deserialize() for LazyFrame

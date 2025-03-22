@@ -2719,6 +2719,26 @@ SEXP savvy_PlRLazyGroupBy_tail__impl(SEXP self__, SEXP c_arg__n) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRSQLContext_execute__impl(SEXP self__, SEXP c_arg__query) {
+    SEXP res = savvy_PlRSQLContext_execute__ffi(self__, c_arg__query);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSQLContext_get_tables__impl(SEXP self__) {
+    SEXP res = savvy_PlRSQLContext_get_tables__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSQLContext_new__impl(void) {
+    SEXP res = savvy_PlRSQLContext_new__ffi();
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSQLContext_register__impl(SEXP self__, SEXP c_arg__name, SEXP c_arg__lf) {
+    SEXP res = savvy_PlRSQLContext_register__ffi(self__, c_arg__name, c_arg__lf);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRSeries_add__impl(SEXP self__, SEXP c_arg__other) {
     SEXP res = savvy_PlRSeries_add__ffi(self__, c_arg__other);
     return handle_result(res);
@@ -3468,6 +3488,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRLazyGroupBy_agg__impl", (DL_FUNC) &savvy_PlRLazyGroupBy_agg__impl, 2},
     {"savvy_PlRLazyGroupBy_head__impl", (DL_FUNC) &savvy_PlRLazyGroupBy_head__impl, 2},
     {"savvy_PlRLazyGroupBy_tail__impl", (DL_FUNC) &savvy_PlRLazyGroupBy_tail__impl, 2},
+    {"savvy_PlRSQLContext_execute__impl", (DL_FUNC) &savvy_PlRSQLContext_execute__impl, 2},
+    {"savvy_PlRSQLContext_get_tables__impl", (DL_FUNC) &savvy_PlRSQLContext_get_tables__impl, 1},
+    {"savvy_PlRSQLContext_new__impl", (DL_FUNC) &savvy_PlRSQLContext_new__impl, 0},
+    {"savvy_PlRSQLContext_register__impl", (DL_FUNC) &savvy_PlRSQLContext_register__impl, 3},
     {"savvy_PlRSeries_add__impl", (DL_FUNC) &savvy_PlRSeries_add__impl, 2},
     {"savvy_PlRSeries_as_str__impl", (DL_FUNC) &savvy_PlRSeries_as_str__impl, 1},
     {"savvy_PlRSeries_can_fast_explode_flag__impl", (DL_FUNC) &savvy_PlRSeries_can_fast_explode_flag__impl, 1},

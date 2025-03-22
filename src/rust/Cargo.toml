@@ -115,6 +115,7 @@ features = [
     "serde",
     "serde-lazy",
     "sign",
+    "sql",
     "streaming",
     "strings",
     "string_encoding",
