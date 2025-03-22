@@ -2312,22 +2312,14 @@ test_that("sql() works", {
   # arg "table_name" works
   expect_equal(
     lf$sql(
-      query = "
-         SELECT
-            a
-         FROM foobar
-   ",
+      query = "SELECT a FROM foobar",
       table_name = "foobar",
     )$collect(),
     pl$DataFrame(a = 1:3)
   )
   expect_error(
     lf$sql(
-      query = "
-         SELECT
-            a
-         FROM wrong_name
-   ",
+      query = "SELECT a FROM wrong_name",
       table_name = "foobar"
     ),
     "relation 'wrong_name' was not found"
@@ -2335,11 +2327,7 @@ test_that("sql() works", {
 
   expect_error(
     lf$sql(
-      query = "
-         SELECT
-            a
-         FROM self
-      ",
+      query = "SELECT a FROM self",
       a = 1
     ),
     "must be empty"
