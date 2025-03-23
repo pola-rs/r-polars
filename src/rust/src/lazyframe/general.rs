@@ -1364,4 +1364,47 @@ impl PlRLazyFrame {
         let _ = ldf.sink_json(path, options, cloud_options);
         Ok(())
     }
+
+    fn sink_ipc(
+        &self,
+        path: &str,
+        compression: &str,
+        maintain_order: bool,
+        retries: NumericScalar,
+        storage_options: Option<StringSexp>,
+    ) -> Result<()> {
+        let path: PathBuf = path.into();
+
+        let retries = <Wrap<usize>>::try_from(retries)?.0;
+        let compression: Option<IpcCompression> =
+            <Wrap<Option<IpcCompression>>>::try_from(compression)?.0;
+        let options = IpcWriterOptions {
+            compression,
+            maintain_order,
+        };
+
+        let cloud_options = match storage_options {
+            Some(x) => {
+                let out = <Wrap<Vec<(String, String)>>>::try_from(x).map_err(|_| {
+                    RPolarsErr::Other(
+                        "`storage_options` must be a named character vector".to_string(),
+                    )
+                })?;
+                Some(out.0)
+            }
+            None => None,
+        };
+        let cloud_options = {
+            let cloud_options =
+                parse_cloud_options(path.to_str().unwrap(), cloud_options.unwrap_or_default())?;
+            Some(cloud_options.with_max_retries(retries))
+        };
+
+        let _ = self
+            .ldf
+            .clone()
+            .sink_ipc(&path, options, cloud_options)
+            .map_err(RPolarsErr::from);
+        Ok(())
+    }
 }
