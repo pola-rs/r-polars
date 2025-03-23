@@ -82,7 +82,6 @@ test_that("read/scan: arg raise_if_empty works", {
 })
 
 test_that("read/scan: arg glob works", {
-  skip_if_not_installed("withr")
   tmpdir <- withr::local_tempdir()
   file1 <- withr::local_tempfile(fileext = ".csv", tmpdir = tmpdir)
   file2 <- withr::local_tempfile(fileext = ".csv", tmpdir = tmpdir)
@@ -95,9 +94,11 @@ test_that("read/scan: arg glob works", {
     pl$DataFrame(a = 1:2)$cast(pl$Int64)
   )
   # Don't use snapshot because path printed in error message changes every time
+  # and, on Windows, '*' is not a valid character in a path so the error message
+  # is different
   expect_error(
     pl$read_csv(paste0(tmpdir, "/*.csv"), glob = FALSE),
-    "No such file or directory"
+    "os error"
   )
 })
 
@@ -210,11 +211,11 @@ test_that("read/scan: multiple files errors if different schema", {
 
 test_that("read/scan: bad paths", {
   expect_snapshot(pl$read_csv(character()), error = TRUE)
-  expect_snapshot(pl$read_csv("some invalid path"), error = TRUE)
+  # Error message is platform dependent
+  expect_error(pl$read_csv("some invalid path"), "os error 2")
 })
 
 test_that("read/scan: scan_csv can include file path", {
-  skip_if_not_installed("withr")
   temp_file_1 <- withr::local_tempfile()
   temp_file_2 <- withr::local_tempfile()
   write.csv(mtcars, temp_file_1)

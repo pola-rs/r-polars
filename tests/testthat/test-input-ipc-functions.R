@@ -41,9 +41,10 @@ test_that("Test reading data from Apache Arrow file", {
   )
 
   expect_no_error(pl$scan_ipc("nonexistent.arrow"))
-  expect_snapshot(
+  # Error message is platform dependent
+  expect_error(
     pl$read_ipc("nonexistent.arrow"),
-    error = TRUE
+    "os error 2"
   )
 })
 

@@ -52,18 +52,6 @@
       Caused by error:
       ! `source` must have length > 0.
 
----
-
-    Code
-      pl$read_csv("some invalid path")
-    Condition
-      Error in `pl$read_csv()`:
-      ! Evaluation failed in `$read_csv()`.
-      Caused by error in `do.call(pl$scan_csv, .args)$collect()`:
-      ! Evaluation failed in `$collect()`.
-      Caused by error:
-      ! No such file or directory (os error 2): some invalid path: 'csv scan'
-
 # read/scan: arg 'schema_overrides' works
 
     Code

@@ -116,4 +116,4 @@ jobs:
         with:
           upload-snapshots: true
           # TODO: remove this line once R CMD check is ok
-          error-on: '"never"'
+          error-on: '"error"'

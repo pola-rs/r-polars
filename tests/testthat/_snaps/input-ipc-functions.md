@@ -74,18 +74,6 @@
       Caused by error:
       ! Argument `row_index_offset` must be numeric, not list
 
----
-
-    Code
-      pl$read_ipc("nonexistent.arrow")
-    Condition
-      Error in `pl$read_ipc()`:
-      ! Evaluation failed in `$read_ipc()`.
-      Caused by error in `do.call(pl__scan_ipc, .args)$collect()`:
-      ! Evaluation failed in `$collect()`.
-      Caused by error:
-      ! No such file or directory (os error 2): nonexistent.arrow: 'ipc scan'
-
 # scanning from hive partition works
 
     Code

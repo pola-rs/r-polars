@@ -23,6 +23,7 @@ Suggests:
     blob,
     cli,
     clock,
+    curl,
     data.table,
     ggplot2,
     hms,
