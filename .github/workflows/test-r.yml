@@ -1,4 +1,4 @@
-name: R-CMD-check
+name: Test R
 on:
   push:
     branches:
@@ -32,36 +32,30 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 defaults:
   run:
     shell: bash
 
+env:
+  GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+  R_KEEP_PKG_SOURCE: yes
+  NOT_CRAN: "true"
+
 jobs:
   R-CMD-check:
     runs-on: ${{ matrix.os }}
-
-    name: ${{ matrix.os }} (${{ matrix.r }})
-
+    name: R CMD check (R ${{ matrix.r }})
     strategy:
       fail-fast: false
       matrix:
         os:
           - ubuntu-latest
-          - macos-latest
-          - windows-latest
         r:
           - release
-        include:
-          - os: ubuntu-latest
-            r: devel
-          - os: ubuntu-latest
-            r: "4.3"
-
-    env:
-      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      R_KEEP_PKG_SOURCE: yes
-      LIBR_POLARS_BUILD: "true"
-
+          - devel
     steps:
       - uses: actions/checkout@v4
 
@@ -77,10 +71,7 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck
-          needs: check
           cache: "always"
-        env:
-          NOT_CRAN: "true"
 
       - id: rust-target
         name: Set Rust target
@@ -94,11 +85,11 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: "src/rust -> target"
-          shared-key: ${{ steps.rust-target.outputs.TARGET }}
+          shared-key: ${{ steps.rust-target.outputs.TARGET }}-release
 
       - name: Build lib
         env:
-          NOT_CRAN: "true"
+          LIBR_POLARS_BUILD: "true"
         run: |
           # make sure savvy is built from source because rust-cache doesn't work well.
           (find ~/.cargo/registry/ src/rust/target -name 'savvy-*' -print0 | xargs -0 rm -rf) || true
@@ -117,3 +108,71 @@ jobs:
           upload-snapshots: true
           # TODO: remove this line once R CMD check is ok
           error-on: '"error"'
+
+  # TODO: use Taskfile on this job
+  test-r:
+    runs-on: ${{ matrix.os }}
+    name: Test R ${{ matrix.r }} on ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - macos-latest
+          # TODO: Windows seems buggy, so we disable it for now
+          # - windows-latest
+        r:
+          - release
+        include:
+          - os: ubuntu-latest
+            r: "4.3"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: ${{ matrix.r }}
+          http-user-agent: ${{ runner.os == 'Windows' && 'release' || '' }}
+          use-public-rspm: true
+          Ncpus: "2"
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::devtools
+          cache: "always"
+
+      - id: rust-target
+        name: Set Rust target
+        run: |
+          if [ "${{ runner.os }}" == "Windows" ]; then
+            echo "TARGET=x86_64-pc-windows-gnu" >>"$GITHUB_OUTPUT"
+          else
+            echo "TARGET=$(rustc -vV | grep host | cut -d' ' -f2)" >>"$GITHUB_OUTPUT"
+          fi
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "src/rust -> target"
+          shared-key: ${{ steps.rust-target.outputs.TARGET }}-debug
+
+      - name: Build lib
+        env:
+          LIBR_POLARS_BUILD: "true"
+        run: |
+          # make sure savvy is built from source because rust-cache doesn't work well.
+          (find ~/.cargo/registry/ src/rust/target -name 'savvy-*' -print0 | xargs -0 rm -rf) || true
+
+          # Since the debug build is faster to compile (200 sec v.s. 600 sec on macos-14 runner without cache),
+          # we use the debug build here.
+          Rscript -e 'pkgbuild::compile_dll(debug = TRUE)'
+
+      - name: Run tests
+        shell: Rscript {0}
+        run: |
+          devtools::test()
+
+      - name: Run examples
+        shell: Rscript {0}
+        run: |
+          devtools::run_examples(document = FALSE)
