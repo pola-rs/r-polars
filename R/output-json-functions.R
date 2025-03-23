@@ -84,7 +84,7 @@ dataframe__write_json <- function(file) {
 
 #' Serialize to newline delimited JSON representation
 #'
-#' @inheritParams dataframe__write_ndjson
+#' @inheritParams dataframe__write_json
 #' @inherit dataframe__write_parquet return
 #' @examplesIf requireNamespace("jsonlite", quiet = TRUE)
 #' dat <- as_polars_df(head(mtcars))

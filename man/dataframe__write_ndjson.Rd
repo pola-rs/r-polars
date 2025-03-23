@@ -6,6 +6,9 @@
 \usage{
 dataframe__write_ndjson(file)
 }
+\arguments{
+\item{file}{File path to which the result will be written.}
+}
 \value{
 The input DataFrame is returned.
 }

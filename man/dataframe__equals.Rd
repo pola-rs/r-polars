@@ -9,6 +9,8 @@ dataframe__equals(other, ..., null_equal = TRUE)
 \arguments{
 \item{other}{DataFrame to compare with.}
 
+\item{...}{These dots are for future extensions and must be empty.}
+
 \item{null_equal}{Consider null values as equal.}
 }
 \value{

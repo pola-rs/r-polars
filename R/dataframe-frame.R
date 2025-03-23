@@ -438,6 +438,7 @@ dataframe__to_series <- function(index = 0) {
 
 #' Check whether the DataFrame is equal to another DataFrame
 #'
+#' @inheritParams rlang::args_dots_empty
 #' @param other DataFrame to compare with.
 #' @param null_equal Consider null values as equal.
 #' @return A logical value
