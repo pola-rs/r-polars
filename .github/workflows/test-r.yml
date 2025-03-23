@@ -118,8 +118,7 @@ jobs:
       matrix:
         os:
           - macos-latest
-          # TODO: Windows seems buggy, so we disable it for now
-          # - windows-latest
+          - windows-latest
         r:
           - release
         include:
@@ -154,7 +153,8 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: "src/rust -> target"
-          shared-key: ${{ steps.rust-target.outputs.TARGET }}-debug
+          # On Windows, DEBUG build seems buggy <https://github.com/eitsupi/neo-r-polars/issues/218>
+          shared-key: ${{ steps.rust-target.outputs.TARGET }}${{ runner.os == 'Windows' && '-release' || '-debug' }}
 
       - name: Build lib
         env:
@@ -165,7 +165,7 @@ jobs:
 
           # Since the debug build is faster to compile (200 sec v.s. 600 sec on macos-14 runner without cache),
           # we use the debug build here.
-          Rscript -e 'pkgbuild::compile_dll(debug = TRUE)'
+          Rscript -e "pkgbuild::compile_dll(debug = ${{ runner.os == 'Windows' && 'FALSE' || 'TRUE' }})"
 
       - name: Run tests
         shell: Rscript {0}
