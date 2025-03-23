@@ -775,7 +775,7 @@ lazyframe__drop <- function(..., strict = TRUE) {
 #' @param length Length of the slice. If `NULL` (default), all rows starting at
 #' the offset will be selected.
 #'
-#' @return A [LazyFrame][lazyframe__class]
+#' @inherit as_polars_lf return
 #' @examples
 #' lf <- pl$LazyFrame(x = c("a", "b", "c"), y = 1:3, z = 4:6)
 #' lf$slice(1, 2)$collect()
@@ -1545,7 +1545,7 @@ lazyframe__explode <- function(...) {
 #' Clone a LazyFrame
 #'
 #' This makes a very cheap deep copy/clone of an existing
-#' [`LazyFrame`][lazyframe__class]. Rarely useful as `LazyFrame`s are nearly 100%
+#' [LazyFrame]. Rarely useful as `LazyFrame`s are nearly 100%
 #' immutable. Any modification of a `LazyFrame` should lead to a clone anyways,
 #' but this can be useful when dealing with attributes (see examples).
 #'

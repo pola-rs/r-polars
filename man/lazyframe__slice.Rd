@@ -13,7 +13,7 @@ lazyframe__slice(offset, length = NULL)
 the offset will be selected.}
 }
 \value{
-A \link[=lazyframe__class]{LazyFrame}
+A polars \link{LazyFrame}
 }
 \description{
 Get a slice of the LazyFrame.

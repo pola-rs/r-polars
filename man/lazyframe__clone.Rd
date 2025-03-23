@@ -11,7 +11,7 @@ A polars \link{LazyFrame}
 }
 \description{
 This makes a very cheap deep copy/clone of an existing
-\code{\link[=lazyframe__class]{LazyFrame}}. Rarely useful as \code{LazyFrame}s are nearly 100\%
+\link{LazyFrame}. Rarely useful as \code{LazyFrame}s are nearly 100\%
 immutable. Any modification of a \code{LazyFrame} should lead to a clone anyways,
 but this can be useful when dealing with attributes (see examples).
 }
