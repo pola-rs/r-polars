@@ -11,7 +11,7 @@ dataframe__head(n = 5)
 return all rows except the last \code{\link[=abs]{abs(n)}}.}
 }
 \value{
-A \link[=DataFrame_class]{DataFrame}
+A polars \link{DataFrame}
 }
 \description{
 Get the first \code{n} rows

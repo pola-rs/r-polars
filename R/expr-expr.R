@@ -940,7 +940,7 @@ expr__last <- function() {
 #' Compute expressions over the given groups
 #'
 #' This expression is similar to performing a group by aggregation and
-#' joining the result back into the original [DataFrame][DataFrame_class].
+#' joining the result back into the original [DataFrame].
 #' The outcome is similar to how window functions work in
 #' [PostgreSQL](https://www.postgresql.org/docs/current/tutorial-window.html).
 #'

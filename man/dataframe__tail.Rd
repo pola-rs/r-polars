@@ -11,7 +11,7 @@ dataframe__tail(n = 5)
 return all rows except the first \code{\link[=abs]{abs(n)}}.}
 }
 \value{
-A \link[=DataFrame_class]{DataFrame}
+A polars \link{DataFrame}
 }
 \description{
 Get the last \code{n} rows.
