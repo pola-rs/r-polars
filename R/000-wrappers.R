@@ -48,6 +48,11 @@ NULL
 }
 
 
+`arg_sort_by` <- function(`by`, `descending`, `nulls_last`, `maintain_order`, `multithreaded`) {
+  .savvy_wrap_PlRExpr(.Call(savvy_arg_sort_by__impl, `by`, `descending`, `nulls_last`, `maintain_order`, `multithreaded`))
+}
+
+
 `arg_where` <- function(`condition`) {
   `condition` <- .savvy_extract_ptr(`condition`, "PlRExpr")
   .savvy_wrap_PlRExpr(.Call(savvy_arg_where__impl, `condition`))

@@ -1,7 +1,7 @@
 use crate::{prelude::*, PlRDataFrame, PlRDataType, PlRExpr, PlRLazyFrame, PlRSeries, RPolarsErr};
 use polars::functions;
 use polars::lazy::dsl;
-use savvy::{savvy, ListSexp, NumericSexp, RawSexp, Result, StringSexp};
+use savvy::{savvy, ListSexp, LogicalSexp, NumericSexp, RawSexp, Result, StringSexp};
 
 macro_rules! set_unwrapped_or_0 {
     ($($var:ident),+ $(,)?) => {
@@ -274,6 +274,28 @@ pub fn concat_str(s: ListSexp, separator: &str, ignore_nulls: bool) -> Result<Pl
 #[savvy]
 pub fn arg_where(condition: PlRExpr) -> Result<PlRExpr> {
     Ok(dsl::arg_where(condition.inner.clone()).into())
+}
+
+#[savvy]
+pub fn arg_sort_by(
+    by: ListSexp,
+    descending: LogicalSexp,
+    nulls_last: LogicalSexp,
+    maintain_order: bool,
+    multithreaded: bool,
+) -> Result<PlRExpr> {
+    let by = <Wrap<Vec<Expr>>>::from(by).0;
+    Ok(dsl::arg_sort_by(
+        by,
+        SortMultipleOptions {
+            descending: descending.to_vec(),
+            nulls_last: nulls_last.to_vec(),
+            maintain_order,
+            multithreaded,
+            limit: None,
+        },
+    )
+    .into())
 }
 
 #[savvy]

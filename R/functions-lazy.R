@@ -75,3 +75,49 @@ pl__arg_where <- function(condition) {
   arg_where(as_polars_expr(condition)$`_rexpr`) |>
     wrap()
 }
+
+#' Return the row indices that would sort the column(s)
+#'
+#' @inheritParams lazyframe__sort
+#'
+#' @inherit as_polars_expr return
+#' @examples
+#' # Pass a single column name to compute the arg sort by that column.
+#' df <- pl$DataFrame(
+#'   a = c(0, 1, 1, 0),
+#'   b = c(3, 2, 3, 2),
+#'   c = c(1, 2, 3, 4)
+#' )
+#' df$select(pl$arg_sort_by("a"))
+#'
+#' # Compute the arg sort by multiple columns by either passing a list of
+#' # columns, or by specifying each column as a positional argument.
+#' df$select(pl$arg_sort_by("a", "b", descending = TRUE))
+#'
+#' # Use gather to apply the arg sort to other columns.
+#' df$select(pl$col("c")$gather(pl$arg_sort_by("a")))
+pl__arg_sort_by <- function(
+  ...,
+  descending = FALSE,
+  nulls_last = FALSE,
+  multithreaded = TRUE,
+  maintain_order = FALSE
+) {
+  wrap({
+    check_dots_unnamed()
+    if (missing(...)) {
+      abort("`...` must contain at least one element.")
+    }
+    by <- parse_into_list_of_expressions(...)
+    descending <- extend_bool(descending, length(by), "descending", "...")
+    nulls_last <- extend_bool(nulls_last, length(by), "nulls_last", "...")
+
+    arg_sort_by(
+      by,
+      descending = descending,
+      nulls_last = nulls_last,
+      multithreaded = multithreaded,
+      maintain_order = maintain_order
+    )
+  })
+}

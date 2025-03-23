@@ -44,6 +44,11 @@ SEXP savvy_any_horizontal__impl(SEXP c_arg__exprs) {
     return handle_result(res);
 }
 
+SEXP savvy_arg_sort_by__impl(SEXP c_arg__by, SEXP c_arg__descending, SEXP c_arg__nulls_last, SEXP c_arg__maintain_order, SEXP c_arg__multithreaded) {
+    SEXP res = savvy_arg_sort_by__ffi(c_arg__by, c_arg__descending, c_arg__nulls_last, c_arg__maintain_order, c_arg__multithreaded);
+    return handle_result(res);
+}
+
 SEXP savvy_arg_where__impl(SEXP c_arg__condition) {
     SEXP res = savvy_arg_where__ffi(c_arg__condition);
     return handle_result(res);
@@ -2953,6 +2958,7 @@ SEXP savvy_PlRWhen_then__impl(SEXP self__, SEXP c_arg__statement) {
 static const R_CallMethodDef CallEntries[] = {
     {"savvy_all_horizontal__impl", (DL_FUNC) &savvy_all_horizontal__impl, 1},
     {"savvy_any_horizontal__impl", (DL_FUNC) &savvy_any_horizontal__impl, 1},
+    {"savvy_arg_sort_by__impl", (DL_FUNC) &savvy_arg_sort_by__impl, 5},
     {"savvy_arg_where__impl", (DL_FUNC) &savvy_arg_where__impl, 1},
     {"savvy_as_struct__impl", (DL_FUNC) &savvy_as_struct__impl, 1},
     {"savvy_coalesce__impl", (DL_FUNC) &savvy_coalesce__impl, 1},

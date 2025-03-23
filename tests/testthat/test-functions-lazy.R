@@ -26,3 +26,41 @@ test_that("arg_where", {
     pl$DataFrame(a = c(1, 3))$cast(pl$UInt32)
   )
 })
+
+test_that("arg_sort_by", {
+  df <- pl$DataFrame(
+    a = c(0, 1, 1, 0),
+    b = c(3, 2, 3, 2),
+    c = c(1, 2, 3, 4)
+  )
+  expect_equal(
+    df$select(pl$arg_sort_by("a")),
+    pl$DataFrame(a = c(0, 3, 1, 2))$cast(pl$UInt32)
+  )
+  expect_equal(
+    df$select(pl$arg_sort_by("a", "b", descending = TRUE)),
+    pl$DataFrame(a = c(2, 1, 0, 3))$cast(pl$UInt32)
+  )
+  expect_equal(
+    df$select(pl$col("c")$gather(pl$arg_sort_by("a"))),
+    pl$DataFrame(c = c(1, 4, 2, 3))
+  )
+  expect_error(
+    df$select(pl$arg_sort_by()),
+    "`...` must contain at least one element"
+  )
+  expect_error(
+    df$select(pl$arg_sort_by(a = "a")),
+    "must be passed by position"
+  )
+  expect_error(
+    df$select(pl$arg_sort_by("a", "b", descending = c(TRUE, TRUE, TRUE))),
+    "the length of `descending` (3) does not match",
+    fixed = TRUE
+  )
+  expect_error(
+    df$select(pl$arg_sort_by("a", "b", nulls_last = c(TRUE, TRUE, TRUE))),
+    "the length of `nulls_last` (3) does not match",
+    fixed = TRUE
+  )
+})
