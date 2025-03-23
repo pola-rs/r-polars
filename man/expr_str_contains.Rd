@@ -7,7 +7,7 @@
 expr_str_contains(pattern, ..., literal = FALSE, strict = TRUE)
 }
 \arguments{
-\item{pattern}{A character or something can be coerced to a string \link[=Expr_class]{Expr}
+\item{pattern}{A character or something can be coerced to a string \link{Expr}
 of a valid regex pattern, compatible with the \href{https://docs.rs/regex/latest/regex/}{regex crate}.}
 
 \item{...}{These dots are for future extensions and must be empty.}

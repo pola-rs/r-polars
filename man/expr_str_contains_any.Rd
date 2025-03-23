@@ -7,7 +7,7 @@
 expr_str_contains_any(patterns, ..., ascii_case_insensitive = FALSE)
 }
 \arguments{
-\item{patterns}{Character vector or something can be coerced to strings \link[=Expr_class]{Expr}
+\item{patterns}{Character vector or something can be coerced to strings \link{Expr}
 of a valid regex pattern, compatible with the \href{https://docs.rs/regex/latest/regex/}{regex crate}.}
 
 \item{...}{These dots are for future extensions and must be empty.}

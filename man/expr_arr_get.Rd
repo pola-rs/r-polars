@@ -16,7 +16,7 @@ single index.}
 Otherwise, raise an error.}
 }
 \value{
-\link[=expr_class]{Expr}
+A polars \link{expression}
 }
 \description{
 This allows to extract one value per array only. Values are 0-indexed (so

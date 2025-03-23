@@ -170,7 +170,7 @@ expr_list_concat <- function(other) {
 #' @inheritParams rlang::args_dots_empty
 #' @param null_on_oob If `TRUE`, return `null` if an index is out of bounds.
 #' Otherwise, raise an error.
-#' @return [Expr][expr_class]
+#' @inherit as_polars_expr return
 #' @examples
 #' df <- pl$DataFrame(
 #'   values = list(c(2, 2, NA), c(1, 2, 3), NA, NULL),
