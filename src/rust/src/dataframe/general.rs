@@ -3,8 +3,8 @@ use crate::{PlRDataType, PlRExpr, PlRLazyFrame, PlRSeries, RPolarsErr};
 use either::Either;
 use polars::prelude::pivot::{pivot, pivot_stable};
 use savvy::{
-    savvy, ListSexp, NumericScalar, OwnedIntegerSexp, OwnedListSexp, Result, Sexp, StringSexp,
-    TypedSexp,
+    ListSexp, NumericScalar, OwnedIntegerSexp, OwnedListSexp, Result, Sexp, StringSexp, TypedSexp,
+    savvy,
 };
 
 #[savvy]

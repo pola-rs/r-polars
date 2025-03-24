@@ -2,7 +2,7 @@ mod general;
 mod io;
 
 use crate::prelude::*;
-use savvy::{savvy, EnvironmentSexp};
+use savvy::{EnvironmentSexp, savvy};
 
 #[savvy]
 #[derive(Clone)]

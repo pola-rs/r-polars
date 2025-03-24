@@ -1,12 +1,12 @@
 use crate::map::lazy::map_single;
-use crate::{prelude::*, PlRDataType, PlRExpr};
+use crate::{PlRDataType, PlRExpr, prelude::*};
 use polars::lazy::dsl;
 use polars::series::ops::NullBehavior;
 use polars_core::chunked_array::cast::CastOptions;
 use polars_core::series::IsSorted;
 use savvy::{
-    savvy, FunctionSexp, ListSexp, LogicalSexp, NumericScalar, NumericSexp, Result, Sexp,
-    StringSexp,
+    FunctionSexp, ListSexp, LogicalSexp, NumericScalar, NumericSexp, Result, Sexp, StringSexp,
+    savvy,
 };
 use std::ops::Neg;
 

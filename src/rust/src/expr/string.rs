@@ -1,5 +1,5 @@
-use crate::{prelude::*, PlRDataType, PlRExpr, RPolarsErr};
-use savvy::{savvy, NumericScalar, Result};
+use crate::{PlRDataType, PlRExpr, RPolarsErr, prelude::*};
+use savvy::{NumericScalar, Result, savvy};
 
 #[savvy]
 impl PlRExpr {

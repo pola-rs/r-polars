@@ -1,9 +1,9 @@
-use crate::{prelude::*, PlRExpr, RPolarsErr};
+use crate::{PlRExpr, RPolarsErr, prelude::*};
 use polars::lazy::dsl;
 use polars_core::utils::{arrow::array::Utf8ViewArray, try_get_supertype};
 use savvy::{
-    savvy, EnvironmentSexp, ListSexp, NullSexp, NumericScalar, NumericSexp, OwnedListSexp,
-    OwnedRealSexp, OwnedStringSexp, Result, Sexp, StringSexp, TypedSexp,
+    EnvironmentSexp, ListSexp, NullSexp, NumericScalar, NumericSexp, OwnedListSexp, OwnedRealSexp,
+    OwnedStringSexp, Result, Sexp, StringSexp, TypedSexp, savvy,
 };
 
 // As not like in Python, define the data type class in

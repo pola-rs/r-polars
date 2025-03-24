@@ -1,7 +1,7 @@
 mod general;
 
 use crate::prelude::*;
-use savvy::{savvy, EnvironmentSexp};
+use savvy::{EnvironmentSexp, savvy};
 
 #[savvy]
 #[repr(transparent)]

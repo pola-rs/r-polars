@@ -1,12 +1,12 @@
 use crate::{
-    prelude::*, PlRDataFrame, PlRDataType, PlRExpr, PlRLazyFrame, PlRLazyGroupBy, PlRSeries,
-    RPolarsErr,
+    PlRDataFrame, PlRDataType, PlRExpr, PlRLazyFrame, PlRLazyGroupBy, PlRSeries, RPolarsErr,
+    prelude::*,
 };
 use polars::io::cloud::CloudOptions;
 use polars::io::{HiveOptions, RowIndex};
 use savvy::{
-    savvy, ListSexp, LogicalSexp, NumericScalar, OwnedListSexp, OwnedStringSexp, Result, Sexp,
-    StringSexp,
+    ListSexp, LogicalSexp, NumericScalar, OwnedListSexp, OwnedStringSexp, Result, Sexp, StringSexp,
+    savvy,
 };
 use std::num::NonZeroUsize;
 use std::path::PathBuf;
@@ -104,8 +104,8 @@ impl PlRLazyFrame {
 
     fn collect(&self) -> Result<PlRDataFrame> {
         use crate::{
-            r_threads::{concurrent_handler, ThreadCom},
-            r_udf::{RUdfReturn, RUdfSignature, CONFIG},
+            r_threads::{ThreadCom, concurrent_handler},
+            r_udf::{CONFIG, RUdfReturn, RUdfSignature},
         };
         fn serve_r(
             udf_sig: RUdfSignature,
@@ -288,8 +288,8 @@ impl PlRLazyFrame {
 
     fn profile(&self) -> Result<Sexp> {
         use crate::{
-            r_threads::{concurrent_handler, ThreadCom},
-            r_udf::{RUdfReturn, RUdfSignature, CONFIG},
+            r_threads::{ThreadCom, concurrent_handler},
+            r_udf::{CONFIG, RUdfReturn, RUdfSignature},
         };
         fn serve_r(
             udf_sig: RUdfSignature,

@@ -1,6 +1,6 @@
-use crate::{prelude::*, PlRDataFrame, PlRDataType, PlRSeries, RPolarsErr};
+use crate::{PlRDataFrame, PlRDataType, PlRSeries, RPolarsErr, prelude::*};
 use polars_core::series::IsSorted;
-use savvy::{savvy, NumericScalar, NumericSexp, Result, Sexp};
+use savvy::{NumericScalar, NumericSexp, Result, Sexp, savvy};
 
 #[savvy]
 impl PlRSeries {

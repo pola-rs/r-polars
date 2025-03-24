@@ -4,7 +4,7 @@ mod export;
 mod general;
 mod import;
 use crate::prelude::*;
-use savvy::{savvy, EnvironmentSexp};
+use savvy::{EnvironmentSexp, savvy};
 
 #[savvy]
 #[repr(transparent)]

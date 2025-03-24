@@ -1,11 +1,11 @@
-use crate::{prelude::*, PlRExpr, PlRSeries, RPolarsErr};
+use crate::{PlRExpr, PlRSeries, RPolarsErr, prelude::*};
 use polars_core::utils::arrow::{
     array::Array,
-    ffi::{export_iterator, ArrowArrayStream},
+    ffi::{ArrowArrayStream, export_iterator},
 };
 use savvy::{
-    savvy, ExternalPointerSexp, FunctionArgs, FunctionSexp, OwnedIntegerSexp, OwnedListSexp,
-    OwnedLogicalSexp, Result, Sexp,
+    ExternalPointerSexp, FunctionArgs, FunctionSexp, OwnedIntegerSexp, OwnedListSexp,
+    OwnedLogicalSexp, Result, Sexp, savvy,
 };
 use strum_macros::EnumString;
 

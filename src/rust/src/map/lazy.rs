@@ -1,8 +1,8 @@
 use crate::{
+    PlRDataType, PlRExpr,
     prelude::*,
     r_threads::ThreadCom,
-    r_udf::{RUdf, RUdfSignature, CONFIG},
-    PlRDataType, PlRExpr,
+    r_udf::{CONFIG, RUdf, RUdfSignature},
 };
 use savvy::{FunctionSexp, Result};
 

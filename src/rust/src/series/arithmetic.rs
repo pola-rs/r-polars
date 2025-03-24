@@ -1,5 +1,5 @@
 use crate::{PlRSeries, RPolarsErr};
-use savvy::{savvy, Result};
+use savvy::{Result, savvy};
 
 #[savvy]
 impl PlRSeries {

@@ -1,6 +1,6 @@
 use crate::PlRExpr;
 use polars::lazy::dsl;
-use savvy::{savvy, Result};
+use savvy::{Result, savvy};
 
 #[savvy]
 pub fn when(condition: &PlRExpr) -> Result<PlRWhen> {

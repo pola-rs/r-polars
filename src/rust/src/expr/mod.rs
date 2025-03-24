@@ -12,7 +12,7 @@ mod serde;
 mod string;
 mod r#struct;
 use polars::lazy::dsl::Expr;
-use savvy::{savvy, EnvironmentSexp};
+use savvy::{EnvironmentSexp, savvy};
 
 #[savvy]
 #[repr(transparent)]

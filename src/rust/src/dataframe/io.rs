@@ -1,6 +1,6 @@
-use crate::{prelude::*, PlRDataFrame, RPolarsErr};
+use crate::{PlRDataFrame, RPolarsErr, prelude::*};
 use polars::io::RowIndex;
-use savvy::{savvy, NumericScalar, NumericSexp, Result, StringSexp};
+use savvy::{NumericScalar, NumericSexp, Result, StringSexp, savvy};
 use std::num::NonZeroUsize;
 use std::path::PathBuf;
 

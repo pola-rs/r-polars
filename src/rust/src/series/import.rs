@@ -1,9 +1,9 @@
-use crate::{prelude::*, PlRSeries};
+use crate::{PlRSeries, prelude::*};
 use polars_core::utils::arrow::{
     array::Array,
     ffi::{ArrowArrayStream, ArrowArrayStreamReader},
 };
-use savvy::{savvy, ExternalPointerSexp, Result, Sexp};
+use savvy::{ExternalPointerSexp, Result, Sexp, savvy};
 
 // TODO: implement upstream polars
 #[savvy]

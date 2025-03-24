@@ -1,5 +1,5 @@
-use crate::{prelude::*, PlRExpr};
-use savvy::{savvy, Result};
+use crate::{PlRExpr, prelude::*};
+use savvy::{Result, savvy};
 
 #[savvy]
 impl PlRExpr {

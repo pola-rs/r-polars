@@ -1,7 +1,7 @@
 // A module for converting functions defined on the R side.
 // In the case of Python, it does not exist because there is a special feature in polars-plan.
 
-use crate::{prelude::*, r_threads::ThreadCom, PlRSeries};
+use crate::{PlRSeries, prelude::*, r_threads::ThreadCom};
 use savvy::{FunctionArgs, FunctionSexp, Sexp, TypedSexp};
 use state::InitCell;
 use std::sync::RwLock;

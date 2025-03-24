@@ -1,6 +1,6 @@
-use crate::{prelude::*, PlRExpr, RPolarsErr};
+use crate::{PlRExpr, RPolarsErr, prelude::*};
 use polars::lazy::dsl;
-use savvy::{savvy, ListSexp, Result};
+use savvy::{ListSexp, Result, savvy};
 
 #[savvy]
 pub fn all_horizontal(exprs: ListSexp) -> Result<PlRExpr> {

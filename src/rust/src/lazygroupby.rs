@@ -1,5 +1,5 @@
-use crate::{prelude::*, PlRLazyFrame, Wrap};
-use savvy::{savvy, ListSexp, NumericScalar, Result};
+use crate::{PlRLazyFrame, Wrap, prelude::*};
+use savvy::{ListSexp, NumericScalar, Result, savvy};
 
 #[savvy]
 #[repr(transparent)]

@@ -1,6 +1,6 @@
-use crate::{datatypes::PlRDataType, prelude::*, PlRExpr, RPolarsErr};
+use crate::{PlRExpr, RPolarsErr, datatypes::PlRDataType, prelude::*};
 use polars::lazy::dsl;
-use savvy::{savvy, NumericScalar, Result};
+use savvy::{NumericScalar, Result, savvy};
 
 #[savvy]
 pub fn int_range(

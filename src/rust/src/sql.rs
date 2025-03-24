@@ -1,6 +1,6 @@
 use crate::{PlRLazyFrame, RPolarsErr};
 use polars::sql::SQLContext;
-use savvy::{savvy, EnvironmentSexp, Result, Sexp};
+use savvy::{EnvironmentSexp, Result, Sexp, savvy};
 
 #[savvy]
 #[repr(transparent)]

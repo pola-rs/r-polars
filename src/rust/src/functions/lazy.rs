@@ -1,7 +1,7 @@
-use crate::{prelude::*, PlRDataFrame, PlRDataType, PlRExpr, PlRLazyFrame, PlRSeries, RPolarsErr};
+use crate::{PlRDataFrame, PlRDataType, PlRExpr, PlRLazyFrame, PlRSeries, RPolarsErr, prelude::*};
 use polars::functions;
 use polars::lazy::dsl;
-use savvy::{savvy, ListSexp, LogicalSexp, NumericSexp, RawSexp, Result, StringSexp};
+use savvy::{ListSexp, LogicalSexp, NumericSexp, RawSexp, Result, StringSexp, savvy};
 
 macro_rules! set_unwrapped_or_0 {
     ($($var:ident),+ $(,)?) => {

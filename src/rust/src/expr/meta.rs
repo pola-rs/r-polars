@@ -1,5 +1,5 @@
 use crate::{PlRExpr, RPolarsErr};
-use savvy::{savvy, OwnedListSexp, Result, Sexp};
+use savvy::{OwnedListSexp, Result, Sexp, savvy};
 
 #[savvy]
 impl PlRExpr {

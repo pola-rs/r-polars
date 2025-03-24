@@ -1,6 +1,6 @@
-use crate::{prelude::*, PlRExpr};
+use crate::{PlRExpr, prelude::*};
 use polars::{prelude::SetOperation, series::ops::NullBehavior};
-use savvy::{savvy, NumericScalar, Result};
+use savvy::{NumericScalar, Result, savvy};
 
 #[savvy]
 impl PlRExpr {
