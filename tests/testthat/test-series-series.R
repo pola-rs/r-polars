@@ -27,3 +27,30 @@ test_that("alias/rename works", {
     pl$Series("b", 1:3)
   )
 })
+
+test_that("rechunk() and n_chunks() work", {
+  s <- as_polars_series(1:3)
+  expect_identical(s$n_chunks(), 1L)
+
+  s2 <- as_polars_series(4:6)
+  s3 <- pl$concat(s, s2, rechunk = FALSE)
+  expect_identical(s3$n_chunks(), 2L)
+
+  expect_identical(s3$rechunk()$n_chunks(), 1L)
+  # The original chunk size is not changed yet
+  expect_identical(s3$n_chunks(), 2L)
+  expect_identical(s3$rechunk(in_place = TRUE)$n_chunks(), 1L)
+  # The operation above changes the original chunk size
+  expect_identical(s3$n_chunks(), 1L)
+})
+
+test_that("rechunk() and chunk_lengths() work", {
+  s <- as_polars_series(1:3)
+  expect_identical(s$chunk_lengths(), 3L)
+
+  s2 <- as_polars_series(4:6)
+  s3 <- pl$concat(s, s2, rechunk = FALSE)
+  expect_identical(s3$chunk_lengths(), c(3L, 3L))
+
+  expect_identical(s3$rechunk()$chunk_lengths(), 6L)
+})

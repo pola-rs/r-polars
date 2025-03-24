@@ -231,19 +231,65 @@ series__len <- function() {
 #' Get the number of chunks that this Series contains
 #'
 #' @return An integer value
-# TODO-REWRITE: uncomment when $rechunk() implemented for Series
-# @examples
-# s <- pl$Series("a", c(1, 2, 3))
-# s$n_chunks()
-#
-# s2 <- pl$Series("a", c(4, 5, 6))
-#
-# # Concatenate Series with rechunk = TRUE
-# pl$concat(s, s2, rechunk = TRUE)$n_chunks()
-#
-# # Concatenate Series with rechunk = FALSE
-# pl$concat(s, s2, rechunk = FALSE)$n_chunks()
+#' @examples
+#' s <- pl$Series("a", c(1, 2, 3))
+#' s$n_chunks()
+#'
+#' s2 <- pl$Series("a", c(4, 5, 6))
+#'
+#' # Concatenate Series with rechunk = TRUE
+#' pl$concat(s, s2, rechunk = TRUE)$n_chunks()
+#'
+#' # Concatenate Series with rechunk = FALSE
+#' pl$concat(s, s2, rechunk = FALSE)$n_chunks()
 series__n_chunks <- function() {
   self$`_s`$n_chunks() |>
     wrap()
+}
+
+#' Get the length of each individual chunk
+#'
+#' @return A numeric vector
+#' @examples
+#' s <- pl$Series("a", c(1, 2, 3))
+#' s$chunk_lengths()
+#'
+#' s2 <- pl$Series("a", c(4, 5, 6))
+#'
+#' # Concatenate Series with rechunk = TRUE
+#' pl$concat(s, s2, rechunk = TRUE)$chunk_lengths()
+#'
+#' # Concatenate Series with rechunk = FALSE
+#' pl$concat(s, s2, rechunk = FALSE)$chunk_lengths()
+series__chunk_lengths <- function() {
+  self$`_s`$chunk_lengths() |>
+    wrap()
+}
+
+#' Create a single chunk of memory for this Series
+#'
+#' @inherit as_polars_series return
+#' @inheritParams rlang::args_dots_empty
+#' @param in_place Bool to indicate if the operation should be done in place.
+#' @examples
+#' s <- pl$Series("a", c(1, 2, 3))
+#' s$n_chunks()
+#'
+#' s2 <- pl$Series("a", c(4, 5, 6))
+#' s <- pl$concat(s, s2, rechunk = FALSE)
+#' s$n_chunks()
+#'
+#' s$rechunk()$n_chunks()
+series__rechunk <- function(..., in_place = FALSE) {
+  wrap({
+    check_dots_empty0(...)
+
+    opt_s <- self$`_s`$rechunk(in_place)
+    if (in_place) {
+      self
+    } else {
+      opt_s |>
+        .savvy_wrap_PlRSeries()
+    }
+  })
 }

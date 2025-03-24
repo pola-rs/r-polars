@@ -567,6 +567,7 @@ SEXP savvy_PlRSeries_cast__ffi(SEXP self__, SEXP c_arg__dtype, SEXP c_arg__stric
 SEXP savvy_PlRSeries_cat_is_local__ffi(SEXP self__);
 SEXP savvy_PlRSeries_cat_to_local__ffi(SEXP self__);
 SEXP savvy_PlRSeries_cat_uses_lexical_ordering__ffi(SEXP self__);
+SEXP savvy_PlRSeries_chunk_lengths__ffi(SEXP self__);
 SEXP savvy_PlRSeries_clone__ffi(SEXP self__);
 SEXP savvy_PlRSeries_div__ffi(SEXP self__, SEXP c_arg__other);
 SEXP savvy_PlRSeries_dtype__ffi(SEXP self__);
@@ -590,6 +591,7 @@ SEXP savvy_PlRSeries_new_null__ffi(SEXP c_arg__name, SEXP c_arg__length);
 SEXP savvy_PlRSeries_new_series_list__ffi(SEXP c_arg__name, SEXP c_arg__values, SEXP c_arg__strict);
 SEXP savvy_PlRSeries_new_single_binary__ffi(SEXP c_arg__name, SEXP c_arg__values);
 SEXP savvy_PlRSeries_new_str__ffi(SEXP c_arg__name, SEXP c_arg__values);
+SEXP savvy_PlRSeries_rechunk__ffi(SEXP self__, SEXP c_arg__in_place);
 SEXP savvy_PlRSeries_rem__ffi(SEXP self__, SEXP c_arg__other);
 SEXP savvy_PlRSeries_rename__ffi(SEXP self__, SEXP c_arg__name);
 SEXP savvy_PlRSeries_reshape__ffi(SEXP self__, SEXP c_arg__dimensions);

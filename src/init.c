@@ -2789,6 +2789,11 @@ SEXP savvy_PlRSeries_cat_uses_lexical_ordering__impl(SEXP self__) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRSeries_chunk_lengths__impl(SEXP self__) {
+    SEXP res = savvy_PlRSeries_chunk_lengths__ffi(self__);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRSeries_clone__impl(SEXP self__) {
     SEXP res = savvy_PlRSeries_clone__ffi(self__);
     return handle_result(res);
@@ -2901,6 +2906,11 @@ SEXP savvy_PlRSeries_new_single_binary__impl(SEXP c_arg__name, SEXP c_arg__value
 
 SEXP savvy_PlRSeries_new_str__impl(SEXP c_arg__name, SEXP c_arg__values) {
     SEXP res = savvy_PlRSeries_new_str__ffi(c_arg__name, c_arg__values);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSeries_rechunk__impl(SEXP self__, SEXP c_arg__in_place) {
+    SEXP res = savvy_PlRSeries_rechunk__ffi(self__, c_arg__in_place);
     return handle_result(res);
 }
 
@@ -3517,6 +3527,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRSeries_cat_is_local__impl", (DL_FUNC) &savvy_PlRSeries_cat_is_local__impl, 1},
     {"savvy_PlRSeries_cat_to_local__impl", (DL_FUNC) &savvy_PlRSeries_cat_to_local__impl, 1},
     {"savvy_PlRSeries_cat_uses_lexical_ordering__impl", (DL_FUNC) &savvy_PlRSeries_cat_uses_lexical_ordering__impl, 1},
+    {"savvy_PlRSeries_chunk_lengths__impl", (DL_FUNC) &savvy_PlRSeries_chunk_lengths__impl, 1},
     {"savvy_PlRSeries_clone__impl", (DL_FUNC) &savvy_PlRSeries_clone__impl, 1},
     {"savvy_PlRSeries_div__impl", (DL_FUNC) &savvy_PlRSeries_div__impl, 2},
     {"savvy_PlRSeries_dtype__impl", (DL_FUNC) &savvy_PlRSeries_dtype__impl, 1},
@@ -3540,6 +3551,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRSeries_new_series_list__impl", (DL_FUNC) &savvy_PlRSeries_new_series_list__impl, 3},
     {"savvy_PlRSeries_new_single_binary__impl", (DL_FUNC) &savvy_PlRSeries_new_single_binary__impl, 2},
     {"savvy_PlRSeries_new_str__impl", (DL_FUNC) &savvy_PlRSeries_new_str__impl, 2},
+    {"savvy_PlRSeries_rechunk__impl", (DL_FUNC) &savvy_PlRSeries_rechunk__impl, 2},
     {"savvy_PlRSeries_rem__impl", (DL_FUNC) &savvy_PlRSeries_rem__impl, 2},
     {"savvy_PlRSeries_rename__impl", (DL_FUNC) &savvy_PlRSeries_rename__impl, 2},
     {"savvy_PlRSeries_reshape__impl", (DL_FUNC) &savvy_PlRSeries_reshape__impl, 2},
