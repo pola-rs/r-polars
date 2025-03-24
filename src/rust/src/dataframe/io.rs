@@ -1,6 +1,6 @@
 use crate::{PlRDataFrame, RPolarsErr, prelude::*};
 use polars::io::RowIndex;
-use savvy::{NumericScalar, NumericSexp, Result, StringSexp, savvy};
+use savvy::{NumericScalar, NumericSexp, Result, Sexp, StringSexp, savvy};
 use std::num::NonZeroUsize;
 use std::path::PathBuf;
 
@@ -226,6 +226,48 @@ impl PlRDataFrame {
 
         JsonWriter::new(f)
             .with_json_format(JsonFormat::JsonLines)
+            .finish(&mut self.df)
+            .map_err(RPolarsErr::from)?;
+
+        Ok(())
+    }
+
+    pub fn write_ipc(
+        &mut self,
+        path: &str,
+        retries: NumericScalar,
+        compat_level: Sexp,
+        compression: &str,
+        storage_options: Option<StringSexp>,
+    ) -> Result<()> {
+        let path: PathBuf = path.into();
+        let compat_level = <Wrap<CompatLevel>>::try_from(compat_level)?.0;
+        let retries = <Wrap<usize>>::try_from(retries)?.0;
+        let compression: Option<IpcCompression> =
+            <Wrap<Option<IpcCompression>>>::try_from(compression)?.0;
+
+        let cloud_options = match storage_options {
+            Some(x) => {
+                let out = <Wrap<Vec<(String, String)>>>::try_from(x).map_err(|_| {
+                    RPolarsErr::Other(
+                        "`storage_options` must be a named character vector".to_string(),
+                    )
+                })?;
+                Some(out.0)
+            }
+            None => None,
+        };
+        let cloud_options = {
+            let cloud_options =
+                parse_cloud_options(path.to_str().unwrap(), cloud_options.unwrap_or_default())?;
+            Some(cloud_options.with_max_retries(retries))
+        };
+
+        let mut f = std::fs::File::create(path).map_err(RPolarsErr::from)?;
+
+        IpcWriter::new(&mut f)
+            .with_compression(compression)
+            .with_compat_level(compat_level)
             .finish(&mut self.df)
             .map_err(RPolarsErr::from)?;
 

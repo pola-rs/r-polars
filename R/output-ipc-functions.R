@@ -1,5 +1,3 @@
-# TODO: add write_ipc
-
 #' Evaluate the query in streaming mode and write to an Arrow IPC file
 #'
 #' @inherit lazyframe__sink_parquet description params return
@@ -53,6 +51,53 @@ lazyframe__sink_ipc <- function(
       path = path,
       compression = compression,
       maintain_order = maintain_order,
+      storage_options = storage_options,
+      retries = retries
+    )
+
+    invisible(self)
+  })
+}
+
+#' Write to Arrow IPC file.
+#'
+#' @inherit lazyframe__sink_parquet description params return
+#' @inheritParams rlang::args_dots_empty
+#' @inheritParams lazyframe__sink_ipc
+#'
+#' @param compat_level Determines the compatibility level when exporting Polars' internal data structures.
+#' When specifying a new compatibility level, Polars exports its internal data structures
+#' that might not be interpretable by other Arrow implementations.
+#' The level can be specified as the name (e.g., `"newest"`) or as a scalar integer
+#' (Currently, `0` or `1` is supported).
+#' - `"newest"` (default): Use the highest level, currently same as `1`
+#'   (Low compatibility).
+#' - `"oldest"`: Same as `0` (High compatibility).
+#' @inherit write_csv return
+#' @examples
+#' tmpf <- tempfile()
+#' as_polars_df(mtcars)$write_ipc(tmpf)
+#' pl$read_ipc(tmpf)
+dataframe__write_ipc <- function(
+  path,
+  ...,
+  compression = c("zstd", "lz4", "uncompressed"),
+  compat_level = c("newest", "oldest"),
+  storage_options = NULL,
+  retries = 2
+) {
+  wrap({
+    check_dots_empty0(...)
+    compression <- arg_match0(
+      compression %||% "uncompressed",
+      values = c("zstd", "lz4", "uncompressed")
+    )
+    compat_level <- arg_match_compat_level(compat_level)
+
+    self$`_df`$write_ipc(
+      path = path,
+      compression = compression,
+      compat_level = compat_level,
       storage_options = storage_options,
       retries = retries
     )

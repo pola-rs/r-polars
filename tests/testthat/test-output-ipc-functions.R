@@ -1,5 +1,5 @@
 patrick::with_parameters_test_that(
-  "Test sinking data to IPC file",
+  "Test sinking data to Arrow file",
   {
     lf <- as_polars_lf(iris)
     df <- as_polars_df(iris)
@@ -30,36 +30,46 @@ test_that("sink_ipc: wrong compression", {
   )
 })
 
-# TODO-REWRITE: needs $write_ipc()
-# patrick::with_parameters_test_that("write and read Apache Arrow file",
-#   {
-#     tmpf <- tempfile(fileext = ".arrow")
-#     on.exit(unlink(tmpf))
+patrick::with_parameters_test_that(
+  "Test writing data to Arrow file {compression %||% 'NULL'} - {compat_level}",
+  .cases = {
+    skip_if_not_installed("arrow")
 
-#     df <- pl$DataFrame(
-#       int = 1:4,
-#       chr = letters[1:4],
-#       fct = factor(letters[1:4])
-#     )
-#     df$write_ipc(tmpf, compression = compression)
+    expand.grid(
+      compression = list("uncompressed", "zstd", "lz4", NULL),
+      compat_level = list(0, 1, "oldest", "newest")
+    ) |>
+      tibble::as_tibble()
+  },
+  code = {
+    df <- pl$DataFrame(
+      int = 1:3,
+      chr = letters[1:3],
+      cat = factor(letters[1:3]),
+    )
+    tmpf <- withr::local_tempfile()
+    expect_silent(df$write_ipc(tmpf, compression = compression, compat_level = compat_level))
+    expect_snapshot(arrow::read_ipc_file(tmpf, as_data_frame = FALSE)$schema)
+    expect_equal(pl$read_ipc(tmpf), df)
 
-#     expect_identical(
-#       as.data.frame(df),
-#       as.data.frame(pl$read_ipc(tmpf, memory_map = FALSE))
-#     )
+    # update with new data
+    df$slice(5, 5)$write_ipc(tmpf)
+    expect_equal(
+      pl$read_ipc(tmpf),
+      df$slice(5, 5)
+    )
 
-#     expect_true(
-#       df$equals(pl$read_ipc(tmpf, memory_map = FALSE))
-#     )
-#   },
-#   compression = list(NULL, "uncompressed", "lz4", "zstd"),
-#   .test_name = compression
-# )
+    # return the input data
+    x <- df$write_ipc(tmpf)
+    expect_identical(x, df)
+  }
+)
 
-# TODO-REWRITE: needs $write_ipc()
-# test_that("write_ipc returns the input data", {
-#   dat <- as_polars_df(mtcars)
-#   tmpf <- tempfile(fileext = ".arrow")
-#   x <- dat$write_ipc(tmpf)
-#   expect_identical(x$to_list(), dat$to_list())
-# })
+test_that("write_ipc: wrong compression", {
+  df <- as_polars_df(iris)
+  tmpf <- withr::local_tempfile()
+  expect_error(
+    df$write_ipc(tmpf, compression = "rar"),
+    "must be one of"
+  )
+})
