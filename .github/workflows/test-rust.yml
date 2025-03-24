@@ -1,0 +1,33 @@
+name: Test Rust
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/test-rust.yml
+      - src/rust/**
+  pull_request:
+    branches:
+      - main
+    paths:
+      - .github/workflows/test-rust.yml
+      - src/rust/**
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test-min-rust-version:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: baptiste0928/cargo-install@v3
+        with:
+          crate: cargo-msrv
+      - name: Verify minimum rust version
+        run: cargo-msrv --path src/rust/ verify
