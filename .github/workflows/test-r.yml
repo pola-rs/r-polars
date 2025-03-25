@@ -170,7 +170,7 @@ jobs:
       - name: Run tests
         shell: Rscript {0}
         run: |
-          devtools::test()
+          devtools::test(stop_on_failure = TRUE)
 
       - name: Run examples
         shell: Rscript {0}
