@@ -23,7 +23,7 @@ all: $(SHLIB) cleanup
 
 $(SHLIB): $(STATLIB)
 
-$(STATLIB):
+$(STATLIB): remove-prev
 	# When the GNU toolchain is used (i.e. on CRAN), -lgcc_eh is specified for
 	# building proc-macro2, but Rtools doesn't contain libgcc_eh. This isn't used
 	# in actual, but we need this tweak to please the compiler.
@@ -37,6 +37,11 @@ $(STATLIB):
 	export CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER="$(CARGO_LINKER)" && \
 	  export LIBRARY_PATH="$${LIBRARY_PATH};$(LIBDIR)/libgcc_mock" && \
 	  cargo build $(CARGO_BUILD_ARGS)
+
+.PHONY: remove-prev
+# Remove previous build artifacts
+remove-prev:
+	rm -f "$(STATLIB)"
 
 .PHONY: cleanup
 # Clean up files that may cause warnings in R CMD check on CRAN just after the build

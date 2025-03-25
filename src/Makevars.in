@@ -18,7 +18,7 @@ all: $(SHLIB) cleanup
 
 $(SHLIB): $(STATLIB)
 
-$(STATLIB):
+$(STATLIB): remove-prev
 	if [ -f "$(CURDIR)/../tools/$(LIBNAME)" ]; then \
 		mkdir -p "$(LIBDIR)" ; \
 		mv "$(CURDIR)/../tools/$(LIBNAME)" "$(STATLIB)" ; \
@@ -34,6 +34,11 @@ $(STATLIB):
 	    export CARGO_PROFILE_RELEASE_PANIC="abort" && \
 	    cargo build $(CARGO_BUILD_ARGS) -Zbuild-std=panic_abort,std; \
 	  fi
+
+.PHONY: remove-prev
+# Remove previous build artifacts
+remove-prev:
+	rm -f "$(STATLIB)"
 
 .PHONY: cleanup
 # Clean up files that may cause warnings in R CMD check on CRAN just after the build
