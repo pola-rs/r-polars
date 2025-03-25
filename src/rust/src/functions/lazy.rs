@@ -143,26 +143,6 @@ pub fn last() -> Result<PlRExpr> {
 }
 
 #[savvy]
-pub fn lit_from_bool(value: bool) -> Result<PlRExpr> {
-    Ok(dsl::lit(value).into())
-}
-
-#[savvy]
-pub fn lit_from_i32(value: i32) -> Result<PlRExpr> {
-    Ok(dsl::lit(value).into())
-}
-
-#[savvy]
-pub fn lit_from_f64(value: f64) -> Result<PlRExpr> {
-    Ok(dsl::lit(value).into())
-}
-
-#[savvy]
-pub fn lit_from_str(value: &str) -> Result<PlRExpr> {
-    Ok(dsl::lit(value).into())
-}
-
-#[savvy]
 pub fn lit_from_raw(value: RawSexp) -> Result<PlRExpr> {
     Ok(dsl::lit(value.as_slice()).into())
 }

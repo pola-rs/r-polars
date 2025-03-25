@@ -23,7 +23,7 @@
     Code
       out
     Output
-      String(foo)
+      "foo"
 
 ---
 
@@ -66,7 +66,7 @@
     Code
       out
     Output
-      null.strict_cast(String)
+      null
 
 ---
 
@@ -150,7 +150,7 @@
     Code
       out
     Output
-      null.strict_cast(Boolean)
+      null
 
 ---
 
@@ -191,7 +191,7 @@
     Code
       out
     Output
-      dyn int: 1
+      1
 
 ---
 
@@ -234,7 +234,7 @@
     Code
       out
     Output
-      null.strict_cast(Int32)
+      null
 
 ---
 
@@ -275,7 +275,7 @@
     Code
       out
     Output
-      dyn float: 1.0
+      1.0
 
 ---
 
@@ -318,7 +318,7 @@
     Code
       out
     Output
-      dyn float: NaN
+      NaN
 
 ---
 
@@ -339,7 +339,7 @@
     Code
       out
     Output
-      null.strict_cast(Float64)
+      null
 
 ---
 

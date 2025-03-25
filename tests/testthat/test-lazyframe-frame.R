@@ -796,7 +796,7 @@ test_that("fill_null(): basic usage", {
     pl$DataFrame(
       a = c(1.5, 2, 99, NaN),
       b = c(1, 99, 99, 4)
-    )$cast(a = pl$Float32, b = pl$Float64)
+    )
   )
   expect_query_equal(
     .input$fill_null(99, matches_supertype = FALSE),

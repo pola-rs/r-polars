@@ -6,9 +6,6 @@
 \alias{as_polars_expr.polars_expr}
 \alias{as_polars_expr.polars_series}
 \alias{as_polars_expr.character}
-\alias{as_polars_expr.logical}
-\alias{as_polars_expr.integer}
-\alias{as_polars_expr.double}
 \alias{as_polars_expr.raw}
 \alias{as_polars_expr.NULL}
 \title{Create a Polars expression from an R object}
@@ -22,12 +19,6 @@ as_polars_expr(x, ...)
 \method{as_polars_expr}{polars_series}(x, ...)
 
 \method{as_polars_expr}{character}(x, ..., as_lit = FALSE)
-
-\method{as_polars_expr}{logical}(x, ...)
-
-\method{as_polars_expr}{integer}(x, ...)
-
-\method{as_polars_expr}{double}(x, ...)
 
 \method{as_polars_expr}{raw}(x, ...)
 
@@ -75,23 +66,16 @@ Additional arguments \code{...} are passed to \code{\link[=as_polars_series]{as_
 If the \code{as_lit} argument is \code{FALSE} (default), this function will call \code{\link[=pl__col]{pl$col()}} and
 the character vector is treated as column names.
 }
-}
-\section{Literal scalar mapping}{
-Since R has no scalar class, each of the following types of length 1 cases is specially
-converted to a scalar literal.
-\itemize{
-\item character: String
-\item logical: Boolean
-\item integer: Int32
-\item double: Float64
-}
 
-These types' \code{NA} is converted to a \code{null} literal with casting to the corresponding Polars type.
+\subsection{S3 method for \link{raw}}{
 
 The \link{raw} type vector is converted to a Binary scalar.
 \itemize{
 \item raw: Binary
 }
+}
+
+\subsection{S3 method for \code{NULL}}{
 
 \code{NULL} is converted to a Null type \code{null} literal.
 \itemize{
@@ -101,7 +85,7 @@ The \link{raw} type vector is converted to a Binary scalar.
 For other R class, the default S3 method is called and R object will be converted via
 \code{\link[=as_polars_series]{as_polars_series()}}. So the type mapping is defined by \code{\link[=as_polars_series]{as_polars_series()}}.
 }
-
+}
 \examples{
 # character
 ## as_lit = FALSE (default)

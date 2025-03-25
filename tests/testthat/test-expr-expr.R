@@ -511,16 +511,19 @@ test_that("is_in", {
   )
 
   # behavior for NA and NULL
+  # TODO: replace `pl$lit(NULL)$cast(pl$Boolean)` to `pl$lit(NA)` causes panic, should be fixed at upstream
   expect_equal(
-    pl$select(pl$lit(NA)$is_in(NA)),
+    pl$select(pl$lit(NULL)$cast(pl$Boolean)$is_in(NA)),
     pl$DataFrame(literal = NA)
   )
+  # TODO: replace `pl$lit(NULL)$cast(pl$Boolean)` to `pl$lit(NA)` causes panic, should be fixed at upstream
   expect_equal(
-    pl$select(pl$lit(NA)$is_in(NULL)),
+    pl$select(pl$lit(NULL)$cast(pl$Boolean)$is_in(NULL)),
     pl$DataFrame(literal = NA)
   )
+  # TODO: replace `pl$lit(NULL)$cast(pl$Boolean)` to `NA` causes panic, should be fixed at upstream
   expect_equal(
-    pl$select(pl$lit(NULL)$is_in(NA)),
+    pl$select(pl$lit(NULL)$is_in(pl$lit(NULL)$cast(pl$Boolean))),
     pl$DataFrame(literal = NA)
   )
 

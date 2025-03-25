@@ -1,5 +1,6 @@
 # Same as Python Polars' `parse_into_expression`
 # TODO: link to data type page
+# TODO: Map raw to list(binary) (maybe optional?)
 #' Create a Polars expression from an R object
 #'
 #' The [as_polars_expr()] function creates a polars [expression] from various R objects.
@@ -27,21 +28,13 @@
 #' If the `as_lit` argument is `FALSE` (default), this function will call [`pl$col()`][pl__col] and
 #' the character vector is treated as column names.
 #'
-#' # Literal scalar mapping
-#'
-#' Since R has no scalar class, each of the following types of length 1 cases is specially
-#' converted to a scalar literal.
-#'
-#' - character: String
-#' - logical: Boolean
-#' - integer: Int32
-#' - double: Float64
-#'
-#' These types' `NA` is converted to a `null` literal with casting to the corresponding Polars type.
+#' ## S3 method for [raw]
 #'
 #' The [raw] type vector is converted to a Binary scalar.
 #'
 #' - raw: Binary
+#'
+#' ## S3 method for `NULL`
 #'
 #' `NULL` is converted to a Null type `null` literal.
 #'
@@ -118,6 +111,7 @@ as_polars_expr <- function(x, ...) {
   UseMethod("as_polars_expr")
 }
 
+# TODO: replace wrap to try_fetch
 #' @rdname as_polars_expr
 #' @export
 as_polars_expr.default <- function(x, ...) {
@@ -153,69 +147,11 @@ as_polars_expr.polars_series <- function(x, ...) {
 #' @rdname as_polars_expr
 #' @export
 as_polars_expr.character <- function(x, ..., as_lit = FALSE) {
-  wrap({
-    if (isFALSE(as_lit)) {
-      pl$col(!!!x)
-    } else {
-      if (length(x) == 1L) {
-        if (identical(x, NA_character_)) {
-          lit_null()$cast(pl$String$`_dt`, strict = TRUE, wrap_numerical = FALSE)
-        } else {
-          lit_from_str(x)
-        }
-      } else {
-        as_polars_expr.default(x)
-      }
-    }
-  })
-}
-
-#' @rdname as_polars_expr
-#' @export
-as_polars_expr.logical <- function(x, ...) {
-  wrap({
-    if (length(x) == 1L) {
-      if (identical(x, NA)) {
-        lit_null()$cast(pl$Boolean$`_dt`, strict = TRUE, wrap_numerical = FALSE)
-      } else {
-        lit_from_bool(x)
-      }
-    } else {
-      as_polars_expr.default(x)
-    }
-  })
-}
-
-#' @rdname as_polars_expr
-#' @export
-as_polars_expr.integer <- function(x, ...) {
-  wrap({
-    if (length(x) == 1L) {
-      if (identical(x, NA_integer_)) {
-        lit_null()$cast(pl$Int32$`_dt`, strict = TRUE, wrap_numerical = FALSE)
-      } else {
-        lit_from_i32(x)
-      }
-    } else {
-      as_polars_expr.default(x)
-    }
-  })
-}
-
-#' @rdname as_polars_expr
-#' @export
-as_polars_expr.double <- function(x, ...) {
-  wrap({
-    if (length(x) == 1L) {
-      if (identical(x, NA_real_)) {
-        lit_null()$cast(pl$Float64$`_dt`, strict = TRUE, wrap_numerical = FALSE)
-      } else {
-        lit_from_f64(x)
-      }
-    } else {
-      as_polars_expr.default(x)
-    }
-  })
+  if (isFALSE(as_lit)) {
+    pl$col(!!!x)
+  } else {
+    NextMethod()
+  }
 }
 
 #' @rdname as_polars_expr

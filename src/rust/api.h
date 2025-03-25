@@ -29,13 +29,9 @@ SEXP savvy_int_range__ffi(SEXP c_arg__start, SEXP c_arg__end, SEXP c_arg__step, 
 SEXP savvy_int_ranges__ffi(SEXP c_arg__start, SEXP c_arg__end, SEXP c_arg__step, SEXP c_arg__dtype);
 SEXP savvy_last__ffi(void);
 SEXP savvy_len__ffi(void);
-SEXP savvy_lit_from_bool__ffi(SEXP c_arg__value);
-SEXP savvy_lit_from_f64__ffi(SEXP c_arg__value);
-SEXP savvy_lit_from_i32__ffi(SEXP c_arg__value);
 SEXP savvy_lit_from_raw__ffi(SEXP c_arg__value);
 SEXP savvy_lit_from_series__ffi(SEXP c_arg__value);
 SEXP savvy_lit_from_series_first__ffi(SEXP c_arg__value);
-SEXP savvy_lit_from_str__ffi(SEXP c_arg__value);
 SEXP savvy_lit_null__ffi(void);
 SEXP savvy_max_horizontal__ffi(SEXP c_arg__exprs);
 SEXP savvy_mean_horizontal__ffi(SEXP c_arg__exprs, SEXP c_arg__ignore_nulls);

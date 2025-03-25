@@ -225,21 +225,6 @@ NULL
 }
 
 
-`lit_from_bool` <- function(`value`) {
-  .savvy_wrap_PlRExpr(.Call(savvy_lit_from_bool__impl, `value`))
-}
-
-
-`lit_from_f64` <- function(`value`) {
-  .savvy_wrap_PlRExpr(.Call(savvy_lit_from_f64__impl, `value`))
-}
-
-
-`lit_from_i32` <- function(`value`) {
-  .savvy_wrap_PlRExpr(.Call(savvy_lit_from_i32__impl, `value`))
-}
-
-
 `lit_from_raw` <- function(`value`) {
   .savvy_wrap_PlRExpr(.Call(savvy_lit_from_raw__impl, `value`))
 }
@@ -254,11 +239,6 @@ NULL
 `lit_from_series_first` <- function(`value`) {
   `value` <- .savvy_extract_ptr(`value`, "PlRSeries")
   .savvy_wrap_PlRExpr(.Call(savvy_lit_from_series_first__impl, `value`))
-}
-
-
-`lit_from_str` <- function(`value`) {
-  .savvy_wrap_PlRExpr(.Call(savvy_lit_from_str__impl, `value`))
 }
 
 

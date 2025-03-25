@@ -19,32 +19,6 @@ A polars \link{expression}
 This function is a shorthand for \code{\link[=as_polars_expr]{as_polars_expr(x, as_lit = TRUE)}} and
 in most cases, the actual conversion is done by \code{\link[=as_polars_series]{as_polars_series()}}.
 }
-\section{Literal scalar mapping}{
-Since R has no scalar class, each of the following types of length 1 cases is specially
-converted to a scalar literal.
-\itemize{
-\item character: String
-\item logical: Boolean
-\item integer: Int32
-\item double: Float64
-}
-
-These types' \code{NA} is converted to a \code{null} literal with casting to the corresponding Polars type.
-
-The \link{raw} type vector is converted to a Binary scalar.
-\itemize{
-\item raw: Binary
-}
-
-\code{NULL} is converted to a Null type \code{null} literal.
-\itemize{
-\item NULL: Null
-}
-
-For other R class, the default S3 method is called and R object will be converted via
-\code{\link[=as_polars_series]{as_polars_series()}}. So the type mapping is defined by \code{\link[=as_polars_series]{as_polars_series()}}.
-}
-
 \examples{
 # Literal scalar values
 pl$lit(1L)

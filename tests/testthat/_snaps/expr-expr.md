@@ -46,7 +46,7 @@
       Caused by error:
       ! the length of the window expression did not match that of the group
       
-      Error originated in expression: 'col("val").top_k([dyn float: 2.0]).over([col("a")])'
+      Error originated in expression: 'col("val").top_k([2.0]).over([col("a")])'
 
 # to_physical + cast
 

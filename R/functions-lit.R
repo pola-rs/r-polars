@@ -5,7 +5,6 @@
 #' This function is a shorthand for [`as_polars_expr(x, as_lit = TRUE)`][as_polars_expr] and
 #' in most cases, the actual conversion is done by [as_polars_series()].
 #' @inherit as_polars_expr return
-#' @inheritSection as_polars_expr Literal scalar mapping
 #' @param value An R object. Passed as the `x` param of [as_polars_expr()].
 #' @param dtype A polars data type or `NULL` (default).
 #' If not `NULL`, casted to the specified data type.
