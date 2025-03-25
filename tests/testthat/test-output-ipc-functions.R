@@ -49,7 +49,9 @@ patrick::with_parameters_test_that(
     )
     tmpf <- withr::local_tempfile()
     expect_silent(df$write_ipc(tmpf, compression = compression, compat_level = compat_level))
-    expect_snapshot(arrow::read_ipc_file(tmpf, as_data_frame = FALSE)$schema)
+    expect_snapshot(
+      arrow::read_ipc_file(tmpf, as_data_frame = FALSE, mmap = FALSE)$schema
+    )
     expect_equal(pl$read_ipc(tmpf), df)
 
     # update with new data
