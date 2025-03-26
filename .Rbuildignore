@@ -11,7 +11,7 @@
 ^dev$
 ^src/Makevars$
 ^src/Makevars\.win$
-^src/rust/.cargo$
+^src/rust/\.cargo$
 ^src/rust/target$
 ^README\.Rmd$
 ^DEVELOPMENT\.md$
