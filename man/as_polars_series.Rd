@@ -207,7 +207,7 @@ as_polars_series(c(NA, "foo", "bar"))
 as_polars_series(c(NA, TRUE, FALSE))
 
 # raw
-as_polars_series(charToRaw("foo"))
+as_polars_series(as.raw(c(0, 16, 255)))
 
 # factor
 as_polars_series(factor(c(NA, "a", "b")))

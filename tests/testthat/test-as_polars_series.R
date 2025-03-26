@@ -23,7 +23,7 @@ patrick::with_parameters_test_that(
         "integer", c(1L, NA), "", pl$Int32,
         "character", c("foo", NA), "", pl$String,
         "logical", c(TRUE, FALSE, NA), "", pl$Boolean,
-        "raw", charToRaw("foo"), "", pl$Binary,
+        "raw", charToRaw("foo"), "", pl$UInt8,
         "array", array(1:24, c(2, 3, 4)), "", pl$Array(pl$Int32, c(3, 2)),
         "factor", factor("foo"), "", pl$Categorical(),
         "Date", as.Date(c("2021-01-01", NA)), "", pl$Date,

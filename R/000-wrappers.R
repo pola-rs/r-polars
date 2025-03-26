@@ -225,8 +225,8 @@ NULL
 }
 
 
-`lit_from_raw` <- function(`value`) {
-  .savvy_wrap_PlRExpr(.Call(savvy_lit_from_raw__impl, `value`))
+`lit_bin_from_raw` <- function(`value`) {
+  .savvy_wrap_PlRExpr(.Call(savvy_lit_bin_from_raw__impl, `value`))
 }
 
 
@@ -4334,12 +4334,12 @@ class(`PlRSQLContext`) <- c("PlRSQLContext__bundle", "savvy_neopolars__sealed")
   .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_series_list__impl, `name`, `values`, `strict`))
 }
 
-`PlRSeries`$`new_single_binary` <- function(`name`, `values`) {
-  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_single_binary__impl, `name`, `values`))
-}
-
 `PlRSeries`$`new_str` <- function(`name`, `values`) {
   .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_str__impl, `name`, `values`))
+}
+
+`PlRSeries`$`new_uint8` <- function(`name`, `values`) {
+  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_new_uint8__impl, `name`, `values`))
 }
 
 

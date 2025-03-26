@@ -20,7 +20,7 @@ as_polars_expr(x, ...)
 
 \method{as_polars_expr}{character}(x, ..., as_lit = FALSE)
 
-\method{as_polars_expr}{raw}(x, ...)
+\method{as_polars_expr}{raw}(x, ..., raw_as_binary = TRUE)
 
 \method{as_polars_expr}{`NULL`}(x, ...)
 }
@@ -35,6 +35,10 @@ by calling \code{\link[=pl__struct]{pl$struct()}}. Otherwise (default), done not
 \item{as_lit}{A logical value indicating whether to treat vector as literal values or not.
 This argument is always set to \code{TRUE} when calling this function from \code{\link[=pl__lit]{pl$lit()}},
 and expects to return literal values. See examples for details.}
+
+\item{raw_as_binary}{A logical value indicating whether to convert \link{raw} vector to
+a \link[=DataType]{Binary} type scalar. If \code{TRUE} (default), the output is a \link[=DataType]{Binary} type scalar
+instead of \link[=DataType]{UInt8} type literal.}
 }
 \value{
 A polars \link{expression}
@@ -69,21 +73,13 @@ the character vector is treated as column names.
 
 \subsection{S3 method for \link{raw}}{
 
-The \link{raw} type vector is converted to a Binary scalar.
-\itemize{
-\item raw: Binary
-}
+If the \code{raw_as_binary} argument is \code{TRUE} (default), the raw vector is converted to
+a \link[=DataType]{Binary} type scalar. Otherwise, the default method is called.
 }
 
 \subsection{S3 method for \code{NULL}}{
 
 \code{NULL} is converted to a Null type \code{null} literal.
-\itemize{
-\item NULL: Null
-}
-
-For other R class, the default S3 method is called and R object will be converted via
-\code{\link[=as_polars_series]{as_polars_series()}}. So the type mapping is defined by \code{\link[=as_polars_series]{as_polars_series()}}.
 }
 }
 \examples{
@@ -117,8 +113,10 @@ as_polars_expr(NA_real_)
 as_polars_expr(c(1, 2))
 
 # raw
-as_polars_expr(raw(0))
+as_polars_expr(as.raw(1))
+as_polars_expr(as.raw(1), raw_as_binary = FALSE)
 as_polars_expr(charToRaw("foo"))
+as_polars_expr(charToRaw("foo"), raw_as_binary = FALSE)
 
 # NULL
 as_polars_expr(NULL)

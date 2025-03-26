@@ -189,8 +189,8 @@ SEXP savvy_len__impl(void) {
     return handle_result(res);
 }
 
-SEXP savvy_lit_from_raw__impl(SEXP c_arg__value) {
-    SEXP res = savvy_lit_from_raw__ffi(c_arg__value);
+SEXP savvy_lit_bin_from_raw__impl(SEXP c_arg__value) {
+    SEXP res = savvy_lit_bin_from_raw__ffi(c_arg__value);
     return handle_result(res);
 }
 
@@ -2879,13 +2879,13 @@ SEXP savvy_PlRSeries_new_series_list__impl(SEXP c_arg__name, SEXP c_arg__values,
     return handle_result(res);
 }
 
-SEXP savvy_PlRSeries_new_single_binary__impl(SEXP c_arg__name, SEXP c_arg__values) {
-    SEXP res = savvy_PlRSeries_new_single_binary__ffi(c_arg__name, c_arg__values);
+SEXP savvy_PlRSeries_new_str__impl(SEXP c_arg__name, SEXP c_arg__values) {
+    SEXP res = savvy_PlRSeries_new_str__ffi(c_arg__name, c_arg__values);
     return handle_result(res);
 }
 
-SEXP savvy_PlRSeries_new_str__impl(SEXP c_arg__name, SEXP c_arg__values) {
-    SEXP res = savvy_PlRSeries_new_str__ffi(c_arg__name, c_arg__values);
+SEXP savvy_PlRSeries_new_uint8__impl(SEXP c_arg__name, SEXP c_arg__values) {
+    SEXP res = savvy_PlRSeries_new_uint8__ffi(c_arg__name, c_arg__values);
     return handle_result(res);
 }
 
@@ -2987,7 +2987,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_int_ranges__impl", (DL_FUNC) &savvy_int_ranges__impl, 4},
     {"savvy_last__impl", (DL_FUNC) &savvy_last__impl, 0},
     {"savvy_len__impl", (DL_FUNC) &savvy_len__impl, 0},
-    {"savvy_lit_from_raw__impl", (DL_FUNC) &savvy_lit_from_raw__impl, 1},
+    {"savvy_lit_bin_from_raw__impl", (DL_FUNC) &savvy_lit_bin_from_raw__impl, 1},
     {"savvy_lit_from_series__impl", (DL_FUNC) &savvy_lit_from_series__impl, 1},
     {"savvy_lit_from_series_first__impl", (DL_FUNC) &savvy_lit_from_series_first__impl, 1},
     {"savvy_lit_null__impl", (DL_FUNC) &savvy_lit_null__impl, 0},
@@ -3525,8 +3525,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRSeries_new_i64_from_numeric_and_multiplier__impl", (DL_FUNC) &savvy_PlRSeries_new_i64_from_numeric_and_multiplier__impl, 4},
     {"savvy_PlRSeries_new_null__impl", (DL_FUNC) &savvy_PlRSeries_new_null__impl, 2},
     {"savvy_PlRSeries_new_series_list__impl", (DL_FUNC) &savvy_PlRSeries_new_series_list__impl, 3},
-    {"savvy_PlRSeries_new_single_binary__impl", (DL_FUNC) &savvy_PlRSeries_new_single_binary__impl, 2},
     {"savvy_PlRSeries_new_str__impl", (DL_FUNC) &savvy_PlRSeries_new_str__impl, 2},
+    {"savvy_PlRSeries_new_uint8__impl", (DL_FUNC) &savvy_PlRSeries_new_uint8__impl, 2},
     {"savvy_PlRSeries_rechunk__impl", (DL_FUNC) &savvy_PlRSeries_rechunk__impl, 2},
     {"savvy_PlRSeries_rem__impl", (DL_FUNC) &savvy_PlRSeries_rem__impl, 2},
     {"savvy_PlRSeries_rename__impl", (DL_FUNC) &savvy_PlRSeries_rename__impl, 2},

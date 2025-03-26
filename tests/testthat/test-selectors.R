@@ -131,11 +131,11 @@ test_that("alphanumeric", {
 })
 
 test_that("binary", {
-  df <- pl$DataFrame(
+  df <- pl$select(
     a = charToRaw("hello"),
-    b = "world",
+    b = pl$lit("world"),
     c = charToRaw("!"),
-    d = ":"
+    d = pl$lit(":"),
   )
 
   expect_named(df$select(cs$binary()), c("a", "c"))

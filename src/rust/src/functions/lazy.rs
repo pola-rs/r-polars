@@ -143,7 +143,7 @@ pub fn last() -> Result<PlRExpr> {
 }
 
 #[savvy]
-pub fn lit_from_raw(value: RawSexp) -> Result<PlRExpr> {
+pub fn lit_bin_from_raw(value: RawSexp) -> Result<PlRExpr> {
     Ok(dsl::lit(value.as_slice()).into())
 }
 

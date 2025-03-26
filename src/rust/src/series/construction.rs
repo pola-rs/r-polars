@@ -62,8 +62,8 @@ impl PlRSeries {
         Ok(ca.with_name(name.into()).into_series().into())
     }
 
-    fn new_single_binary(name: &str, values: RawSexp) -> Result<Self> {
-        let ca = BinaryChunked::from_slice(name.into(), &[values.as_slice()]);
+    fn new_uint8(name: &str, values: RawSexp) -> Result<Self> {
+        let ca = UInt8Chunked::new(name.into(), values.as_slice());
         Ok(ca.into_series().into())
     }
 

@@ -13,11 +13,11 @@ A Polars selector
 Select all binary columns
 }
 \examples{
-df <- pl$DataFrame(
+df <- pl$select(
   a = charToRaw("hello"),
-  b = "world",
+  b = pl$lit("world"),
   c = charToRaw("!"),
-  d = ":"
+  d = pl$lit(":"),
 )
 
 # Select binary columns:

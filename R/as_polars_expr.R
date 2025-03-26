@@ -1,6 +1,5 @@
 # Same as Python Polars' `parse_into_expression`
 # TODO: link to data type page
-# TODO: Map raw to list(binary) (maybe optional?)
 #' Create a Polars expression from an R object
 #'
 #' The [as_polars_expr()] function creates a polars [expression] from various R objects.
@@ -30,22 +29,20 @@
 #'
 #' ## S3 method for [raw]
 #'
-#' The [raw] type vector is converted to a Binary scalar.
-#'
-#' - raw: Binary
+#' If the `raw_as_binary` argument is `TRUE` (default), the raw vector is converted to
+#' a [Binary][DataType] type scalar. Otherwise, the default method is called.
 #'
 #' ## S3 method for `NULL`
 #'
 #' `NULL` is converted to a Null type `null` literal.
 #'
-#' - NULL: Null
-#'
-#' For other R class, the default S3 method is called and R object will be converted via
-#' [as_polars_series()]. So the type mapping is defined by [as_polars_series()].
 #' @inheritParams as_polars_series
 #' @param as_lit A logical value indicating whether to treat vector as literal values or not.
 #' This argument is always set to `TRUE` when calling this function from [`pl$lit()`][pl__lit],
 #' and expects to return literal values. See examples for details.
+#' @param raw_as_binary A logical value indicating whether to convert [raw] vector to
+#' a [Binary][DataType] type scalar. If `TRUE` (default), the output is a [Binary][DataType] type scalar
+#' instead of [UInt8][DataType] type literal.
 #' @param structify A logical. If `TRUE`, convert multi-column expressions to a single struct expression
 #' by calling [`pl$struct()`][pl__struct]. Otherwise (default), done nothing.
 #' @return A polars [expression]
@@ -82,8 +79,10 @@
 #' as_polars_expr(c(1, 2))
 #'
 #' # raw
-#' as_polars_expr(raw(0))
+#' as_polars_expr(as.raw(1))
+#' as_polars_expr(as.raw(1), raw_as_binary = FALSE)
 #' as_polars_expr(charToRaw("foo"))
+#' as_polars_expr(charToRaw("foo"), raw_as_binary = FALSE)
 #'
 #' # NULL
 #' as_polars_expr(NULL)
@@ -156,9 +155,13 @@ as_polars_expr.character <- function(x, ..., as_lit = FALSE) {
 
 #' @rdname as_polars_expr
 #' @export
-as_polars_expr.raw <- function(x, ...) {
-  lit_from_raw(x) |>
-    wrap()
+as_polars_expr.raw <- function(x, ..., raw_as_binary = TRUE) {
+  if (isTRUE(raw_as_binary)) {
+    lit_bin_from_raw(x) |>
+      wrap()
+  } else {
+    NextMethod()
+  }
 }
 
 #' @rdname as_polars_expr

@@ -262,11 +262,11 @@ cs__alphanumeric <- function(ascii_only = FALSE, ..., ignore_spaces = FALSE) {
 #'
 #' @inherit cs__all return seealso
 #' @examples
-#' df <- pl$DataFrame(
+#' df <- pl$select(
 #'   a = charToRaw("hello"),
-#'   b = "world",
+#'   b = pl$lit("world"),
 #'   c = charToRaw("!"),
-#'   d = ":"
+#'   d = pl$lit(":"),
 #' )
 #'
 #' # Select binary columns:

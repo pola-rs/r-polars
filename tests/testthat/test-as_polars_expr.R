@@ -21,6 +21,15 @@ test_that("as_polars_expr for character `as_lit=FALSE`", {
   expect_error(as_polars_expr(c("foo", NA_character_)), invalid_error_message)
 })
 
+test_that("as_polars_expr for raw `raw_as_binary=FALSE`", {
+  expect_equal(
+    as_polars_expr(as.raw(1:8), raw_as_binary = FALSE) |>
+      pl$select(),
+    as_polars_series(1:8, "literal")$cast(pl$UInt8) |>
+      pl$select()
+  )
+})
+
 patrick::with_parameters_test_that(
   "as_polars_expr works for classes",
   .cases = {
@@ -49,8 +58,8 @@ patrick::with_parameters_test_that(
       "dbl NaN", NaN, lit_from_single_via_series(NaN), 1,
       "dbl NA", NA_real_, lit_from_single_via_series(NA_real_), 1,
       "raw (0)", raw(), as_polars_expr(charToRaw("")), 1,
-      "raw (1)", charToRaw("a"), wrap(lit_from_raw(charToRaw("a"))), 1,
-      "raw (2)", charToRaw("ab"), wrap(lit_from_raw(charToRaw("ab"))), 1,
+      "raw (1)", charToRaw("a"), wrap(lit_bin_from_raw(charToRaw("a"))), 1,
+      "raw (2)", charToRaw("ab"), wrap(lit_bin_from_raw(charToRaw("ab"))), 1,
       "NULL", NULL, wrap(lit_null()), 1,
       "list (0)", list(), as_polars_expr(as_polars_series(list(), "literal")), 0,
       "list (1)", list(TRUE), as_polars_expr(list(TRUE)), 1,

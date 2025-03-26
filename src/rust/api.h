@@ -29,7 +29,7 @@ SEXP savvy_int_range__ffi(SEXP c_arg__start, SEXP c_arg__end, SEXP c_arg__step, 
 SEXP savvy_int_ranges__ffi(SEXP c_arg__start, SEXP c_arg__end, SEXP c_arg__step, SEXP c_arg__dtype);
 SEXP savvy_last__ffi(void);
 SEXP savvy_len__ffi(void);
-SEXP savvy_lit_from_raw__ffi(SEXP c_arg__value);
+SEXP savvy_lit_bin_from_raw__ffi(SEXP c_arg__value);
 SEXP savvy_lit_from_series__ffi(SEXP c_arg__value);
 SEXP savvy_lit_from_series_first__ffi(SEXP c_arg__value);
 SEXP savvy_lit_null__ffi(void);
@@ -585,8 +585,8 @@ SEXP savvy_PlRSeries_new_i64_from_clock_pair__ffi(SEXP c_arg__name, SEXP c_arg__
 SEXP savvy_PlRSeries_new_i64_from_numeric_and_multiplier__ffi(SEXP c_arg__name, SEXP c_arg__values, SEXP c_arg__multiplier, SEXP c_arg__rounding);
 SEXP savvy_PlRSeries_new_null__ffi(SEXP c_arg__name, SEXP c_arg__length);
 SEXP savvy_PlRSeries_new_series_list__ffi(SEXP c_arg__name, SEXP c_arg__values, SEXP c_arg__strict);
-SEXP savvy_PlRSeries_new_single_binary__ffi(SEXP c_arg__name, SEXP c_arg__values);
 SEXP savvy_PlRSeries_new_str__ffi(SEXP c_arg__name, SEXP c_arg__values);
+SEXP savvy_PlRSeries_new_uint8__ffi(SEXP c_arg__name, SEXP c_arg__values);
 SEXP savvy_PlRSeries_rechunk__ffi(SEXP self__, SEXP c_arg__in_place);
 SEXP savvy_PlRSeries_rem__ffi(SEXP self__, SEXP c_arg__other);
 SEXP savvy_PlRSeries_rename__ffi(SEXP self__, SEXP c_arg__name);

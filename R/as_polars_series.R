@@ -88,7 +88,7 @@
 #' as_polars_series(c(NA, TRUE, FALSE))
 #'
 #' # raw
-#' as_polars_series(charToRaw("foo"))
+#' as_polars_series(as.raw(c(0, 16, 255)))
 #'
 #' # factor
 #' as_polars_series(factor(c(NA, "a", "b")))
@@ -248,7 +248,7 @@ as_polars_series.logical <- function(x, name = NULL, ...) {
 #' @rdname as_polars_series
 #' @export
 as_polars_series.raw <- function(x, name = NULL, ...) {
-  PlRSeries$new_single_binary(name %||% "", x) |>
+  PlRSeries$new_uint8(name %||% "", x) |>
     wrap()
 }
 
