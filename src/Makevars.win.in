@@ -19,7 +19,7 @@ CARGO_BUILD_ARGS = --lib \
 CARGO_LINKER = x86_64-w64-mingw32.static.posix-gcc.exe
 
 .PHONY: all
-all: $(SHLIB) cleanup
+all: cleanup
 
 $(SHLIB): $(STATLIB)
 

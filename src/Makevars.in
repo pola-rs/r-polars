@@ -14,7 +14,7 @@ CARGO_BUILD_ARGS = --lib \
 	--target $(TARGET)
 
 .PHONY: all
-all: $(SHLIB) cleanup
+all: cleanup
 
 $(SHLIB): $(STATLIB)
 
