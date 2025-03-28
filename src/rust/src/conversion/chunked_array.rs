@@ -38,6 +38,21 @@ impl From<Wrap<&BinaryChunked>> for Sexp {
     }
 }
 
+impl From<Wrap<&UInt8Chunked>> for Sexp {
+    fn from(value: Wrap<&UInt8Chunked>) -> Self {
+        let ca = value.0;
+        let mut sexp = unsafe { OwnedRawSexp::new_without_init(ca.len()).unwrap() };
+        for (i, v) in ca.into_iter().enumerate() {
+            if let Some(v) = v {
+                let _ = sexp.set_elt(i, v);
+            } else {
+                let _ = sexp.set_elt(i, 0);
+            }
+        }
+        sexp.into()
+    }
+}
+
 impl From<Wrap<&Int32Chunked>> for Sexp {
     fn from(ca: Wrap<&Int32Chunked>) -> Self {
         let ca = ca.0;

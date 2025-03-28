@@ -43,6 +43,7 @@ as.list.polars_data_frame <- function(
   x,
   ...,
   as_series = FALSE,
+  uint8 = c("integer", "raw"),
   int64 = c("double", "character", "integer", "integer64"),
   date = c("Date", "IDate"),
   time = c("hms", "ITime"),
@@ -57,6 +58,7 @@ as.list.polars_data_frame <- function(
   } else {
     as_polars_df(x, ...)$to_struct()$to_r_vector(
       ensure_vector = TRUE,
+      uint8 = uint8,
       int64 = int64,
       date = date,
       time = time,
@@ -85,6 +87,7 @@ as.list.polars_data_frame <- function(
 as.data.frame.polars_data_frame <- function(
   x,
   ...,
+  uint8 = c("integer", "raw"),
   int64 = c("double", "character", "integer", "integer64"),
   date = c("Date", "IDate"),
   time = c("hms", "ITime"),
@@ -95,6 +98,7 @@ as.data.frame.polars_data_frame <- function(
 ) {
   as_polars_df(x, ...)$to_struct()$to_r_vector(
     ensure_vector = FALSE,
+    uint8 = uint8,
     int64 = int64,
     date = date,
     time = time,

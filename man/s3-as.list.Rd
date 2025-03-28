@@ -9,6 +9,7 @@
   x,
   ...,
   as_series = FALSE,
+  uint8 = c("integer", "raw"),
   int64 = c("double", "character", "integer", "integer64"),
   date = c("Date", "IDate"),
   time = c("hms", "ITime"),
@@ -23,6 +24,7 @@
   x,
   ...,
   as_series = FALSE,
+  uint8 = c("integer", "raw"),
   int64 = c("double", "character", "integer", "integer64"),
   date = c("Date", "IDate"),
   time = c("hms", "ITime"),
@@ -40,6 +42,14 @@
 
 \item{as_series}{Whether to convert each column to an \link[=vector]{R vector} or a \link{Series}.
 If \code{TRUE}, return a list of \link{Series}, otherwise a list of \link[=vector]{vectors} (default).}
+
+\item{uint8}{Determine how to convert Polars' UInt8 type values to R type.
+One of the followings:
+\itemize{
+\item \code{"integer"} (default): Convert to the R's \link{integer} type.
+\item \code{"raw"}: Convert to the R's \link{raw} type.
+If the value is \code{null}, export as \code{00}.
+}}
 
 \item{int64}{Determine how to convert Polars' Int64, UInt32, or UInt64 type values to R type.
 One of the followings:

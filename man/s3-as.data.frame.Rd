@@ -8,6 +8,7 @@
 \method{as.data.frame}{polars_data_frame}(
   x,
   ...,
+  uint8 = c("integer", "raw"),
   int64 = c("double", "character", "integer", "integer64"),
   date = c("Date", "IDate"),
   time = c("hms", "ITime"),
@@ -20,6 +21,7 @@
 \method{as.data.frame}{polars_lazy_frame}(
   x,
   ...,
+  uint8 = c("integer", "raw"),
   int64 = c("double", "character", "integer", "integer64"),
   date = c("Date", "IDate"),
   time = c("hms", "ITime"),
@@ -33,6 +35,14 @@
 \item{x}{A polars object}
 
 \item{...}{Passed to \code{\link[=as_polars_df]{as_polars_df()}}.}
+
+\item{uint8}{Determine how to convert Polars' UInt8 type values to R type.
+One of the followings:
+\itemize{
+\item \code{"integer"} (default): Convert to the R's \link{integer} type.
+\item \code{"raw"}: Convert to the R's \link{raw} type.
+If the value is \code{null}, export as \code{00}.
+}}
 
 \item{int64}{Determine how to convert Polars' Int64, UInt32, or UInt64 type values to R type.
 One of the followings:

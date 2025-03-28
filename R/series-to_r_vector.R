@@ -12,7 +12,8 @@
 #'
 #' The class/type of the exported object depends on the data type of the Series as follows:
 #' - Boolean: [logical].
-#' - UInt8, UInt16, Int8, Int16, Int32: [integer].
+#' - UInt8: [integer] or [raw], depending on the `uint8` argument.
+#' - UInt16, Int8, Int16, Int32: [integer].
 #' - Int64, UInt32, UInt64: [double], [character], [integer], or [bit64::integer64],
 #'   depending on the `int64` argument.
 #' - Float32, Float64: [double].
@@ -40,6 +41,11 @@
 #' When the Series has the Struct data type and this argument is `FALSE` (default),
 #' the return value is a [data.frame], not a [vector] (`is.vector(<data.frame>)` is `FALSE`).
 #' If `TRUE`, return a named [list] instead of a [data.frame].
+#' @param uint8 Determine how to convert Polars' UInt8 type values to R type.
+#' One of the followings:
+#' - `"integer"` (default): Convert to the R's [integer] type.
+#' - `"raw"`: Convert to the R's [raw] type.
+#'   If the value is `null`, export as `00`.
 #' @param int64 Determine how to convert Polars' Int64, UInt32, or UInt64 type values to R type.
 #' One of the followings:
 #' - `"double"` (default): Convert to the R's [double] type.
@@ -117,7 +123,17 @@
 #' ## but the top-level Struct is exported as a named list
 #' series_struct$to_r_vector(struct = "tibble", ensure_vector = TRUE)
 #'
-#' # Integer values handling
+#' # UInt8 values handling
+#' series_uint8 <- as_polars_series(c(NA, 0, 255))$cast(pl$UInt8)
+#' series_uint8
+#'
+#' ## Export UInt8 as integer
+#' series_uint8$to_r_vector(uint8 = "integer")
+#'
+#' ## Export UInt8 as raw (`null` is exported as `00`)
+#' series_uint8$to_r_vector(uint8 = "raw")
+#'
+#' # Other Integer values handlings
 #' series_uint64 <- as_polars_series(
 #'   c(NA, "0", "4294967295", "18446744073709551615")
 #' )$cast(pl$UInt64)
@@ -170,6 +186,7 @@
 series__to_r_vector <- function(
   ...,
   ensure_vector = FALSE,
+  uint8 = c("integer", "raw"),
   int64 = c("double", "character", "integer", "integer64"),
   date = c("Date", "IDate"),
   time = c("hms", "ITime"),
@@ -182,6 +199,7 @@ series__to_r_vector <- function(
   wrap({
     check_dots_empty0(...)
 
+    uint8 <- arg_match0(uint8, c("integer", "raw"))
     int64 <- arg_match0(int64, c("double", "character", "integer", "integer64"))
     date <- arg_match0(date, c("Date", "IDate"))
     time <- arg_match0(time, c("hms", "ITime"))
@@ -227,6 +245,7 @@ series__to_r_vector <- function(
     ambiguous <- as_polars_expr(ambiguous, as_lit = TRUE)$`_rexpr`
     self$`_s`$to_r_vector(
       ensure_vector = ensure_vector,
+      uint8 = uint8,
       int64 = int64,
       date = date,
       time = time,

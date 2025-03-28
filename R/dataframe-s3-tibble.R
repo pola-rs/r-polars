@@ -27,6 +27,7 @@ as_tibble.polars_data_frame <- function(
   x,
   ...,
   .name_repair = c("check_unique", "unique", "universal", "minimal"),
+  uint8 = c("integer", "raw"),
   int64 = c("double", "character", "integer", "integer64"),
   date = c("Date", "IDate"),
   time = c("hms", "ITime"),
@@ -37,6 +38,7 @@ as_tibble.polars_data_frame <- function(
 ) {
   as_polars_df(x, ...)$to_struct()$to_r_vector(
     ensure_vector = FALSE,
+    uint8 = uint8,
     int64 = int64,
     date = date,
     time = time,

@@ -7,6 +7,7 @@
 series__to_r_vector(
   ...,
   ensure_vector = FALSE,
+  uint8 = c("integer", "raw"),
   int64 = c("double", "character", "integer", "integer64"),
   date = c("Date", "IDate"),
   time = c("hms", "ITime"),
@@ -24,6 +25,14 @@ series__to_r_vector(
 When the Series has the Struct data type and this argument is \code{FALSE} (default),
 the return value is a \link{data.frame}, not a \link{vector} (\verb{is.vector(<data.frame>)} is \code{FALSE}).
 If \code{TRUE}, return a named \link{list} instead of a \link{data.frame}.}
+
+\item{uint8}{Determine how to convert Polars' UInt8 type values to R type.
+One of the followings:
+\itemize{
+\item \code{"integer"} (default): Convert to the R's \link{integer} type.
+\item \code{"raw"}: Convert to the R's \link{raw} type.
+If the value is \code{null}, export as \code{00}.
+}}
 
 \item{int64}{Determine how to convert Polars' Int64, UInt32, or UInt64 type values to R type.
 One of the followings:
@@ -115,7 +124,8 @@ or use the \code{\link[=as.vector]{as.vector()}} function instead.
 The class/type of the exported object depends on the data type of the Series as follows:
 \itemize{
 \item Boolean: \link{logical}.
-\item UInt8, UInt16, Int8, Int16, Int32: \link{integer}.
+\item UInt8: \link{integer} or \link{raw}, depending on the \code{uint8} argument.
+\item UInt16, Int8, Int16, Int32: \link{integer}.
 \item Int64, UInt32, UInt64: \link{double}, \link{character}, \link{integer}, or \link[bit64:bit64-package]{bit64::integer64},
 depending on the \code{int64} argument.
 \item Float32, Float64: \link{double}.
@@ -164,7 +174,17 @@ series_struct$to_r_vector(struct = "tibble")
 ## but the top-level Struct is exported as a named list
 series_struct$to_r_vector(struct = "tibble", ensure_vector = TRUE)
 
-# Integer values handling
+# UInt8 values handling
+series_uint8 <- as_polars_series(c(NA, 0, 255))$cast(pl$UInt8)
+series_uint8
+
+## Export UInt8 as integer
+series_uint8$to_r_vector(uint8 = "integer")
+
+## Export UInt8 as raw (`null` is exported as `00`)
+series_uint8$to_r_vector(uint8 = "raw")
+
+# Other Integer values handlings
 series_uint64 <- as_polars_series(
   c(NA, "0", "4294967295", "18446744073709551615")
 )$cast(pl$UInt64)

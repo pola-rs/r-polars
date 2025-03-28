@@ -9,6 +9,7 @@
   x,
   ...,
   .name_repair = c("check_unique", "unique", "universal", "minimal"),
+  uint8 = c("integer", "raw"),
   int64 = c("double", "character", "integer", "integer64"),
   date = c("Date", "IDate"),
   time = c("hms", "ITime"),
@@ -22,6 +23,7 @@
   x,
   ...,
   .name_repair = c("check_unique", "unique", "universal", "minimal"),
+  uint8 = c("integer", "raw"),
   int64 = c("double", "character", "integer", "integer64"),
   date = c("Date", "IDate"),
   time = c("hms", "ITime"),
@@ -51,6 +53,14 @@ for names in the style of base R).
 This argument is passed on as \code{repair} to \code{\link[vctrs:vec_as_names]{vctrs::vec_as_names()}}.
 See there for more details on these terms and the strategies used
 to enforce them.}
+
+\item{uint8}{Determine how to convert Polars' UInt8 type values to R type.
+One of the followings:
+\itemize{
+\item \code{"integer"} (default): Convert to the R's \link{integer} type.
+\item \code{"raw"}: Convert to the R's \link{raw} type.
+If the value is \code{null}, export as \code{00}.
+}}
 
 \item{int64}{Determine how to convert Polars' Int64, UInt32, or UInt64 type values to R type.
 One of the followings:

@@ -1,4 +1,26 @@
 patrick::with_parameters_test_that(
+  "uint8 conversion",
+  .cases = {
+    # fmt: skip
+    tibble::tribble(
+      ~.test_name, ~as_func,
+      "raw", as.raw,
+      "integer", as.integer,
+    )
+  },
+  code = {
+    double_vec <- c(NA, 0, 16, 255)
+    series_uint8 <- as_polars_series(double_vec)$cast(pl$UInt8)
+
+    out <- series_uint8$to_r_vector(uint8 = .test_name)
+
+    # `as.raw(NA)` returns `as.raw(0)` and warns, so we should suppress the warning
+    expected <- suppressWarnings(as_func(double_vec))
+    expect_identical(out, expected)
+  }
+)
+
+patrick::with_parameters_test_that(
   "int64 conversion",
   .cases = {
     skip_if_not_installed("bit64")

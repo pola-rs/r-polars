@@ -4242,9 +4242,9 @@ class(`PlRSQLContext`) <- c("PlRSQLContext__bundle", "savvy_neopolars__sealed")
 }
 
 `PlRSeries_to_r_vector` <- function(self) {
-  function(`ensure_vector`, `int64`, `date`, `time`, `struct`, `decimal`, `as_clock_class`, `ambiguous`, `non_existent`, `local_time_zone`) {
+  function(`ensure_vector`, `uint8`, `int64`, `date`, `time`, `struct`, `decimal`, `as_clock_class`, `ambiguous`, `non_existent`, `local_time_zone`) {
     `ambiguous` <- .savvy_extract_ptr(`ambiguous`, "PlRExpr")
-    .Call(savvy_PlRSeries_to_r_vector__impl, `self`, `ensure_vector`, `int64`, `date`, `time`, `struct`, `decimal`, `as_clock_class`, `ambiguous`, `non_existent`, `local_time_zone`)
+    .Call(savvy_PlRSeries_to_r_vector__impl, `self`, `ensure_vector`, `uint8`, `int64`, `date`, `time`, `struct`, `decimal`, `as_clock_class`, `ambiguous`, `non_existent`, `local_time_zone`)
   }
 }
 
