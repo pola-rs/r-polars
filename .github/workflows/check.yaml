@@ -115,15 +115,6 @@ jobs:
       - uses: r-lib/actions/check-r-package@v2
         env:
           LIBR_POLARS_BUILD: "false"
-        with:
-          upload-snapshots: false
-          error-on: '"never"' #errors are filtered by rules below
-
-      - name: raise remaining rcmdcheck errors
-        run: |
-         print(getwd());
-         source("./inst/misc/filter_rcmdcheck.R");
-        shell: Rscript {0}
 
       - name: upload artifact
         if: matrix.config.full-features
