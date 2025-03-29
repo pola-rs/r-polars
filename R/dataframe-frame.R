@@ -326,6 +326,23 @@ dataframe__select <- function(...) {
     wrap()
 }
 
+#' Select columns from this DataFrame
+#'
+#' @inherit lazyframe__select_seq description params
+#' @inherit as_polars_df return
+#'
+#' @examples
+#' df <- pl$DataFrame(
+#'   foo = 1:3,
+#'   bar = 6:8,
+#'   ham = letters[1:3]
+#' )
+#' df$select_seq("foo", bar2 = pl$col("bar") * 2)
+dataframe__select_seq <- function(...) {
+  self$lazy()$select_seq(...)$collect(`_eager` = TRUE) |>
+    wrap()
+}
+
 #' Modify/append column(s) of a DataFrame
 #'
 #' @inherit lazyframe__with_columns description params

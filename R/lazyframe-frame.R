@@ -110,7 +110,7 @@ lazyframe__select <- function(...) {
 #'   bar = 6:8,
 #'   ham = letters[1:3]
 #' )
-#' lf$select_seq("foo")$collect()
+#' lf$select_seq("foo", bar2 = pl$col("bar") * 2)$collect()
 lazyframe__select_seq <- function(...) {
   wrap({
     structify <- parse_env_auto_structify()

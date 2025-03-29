@@ -22,6 +22,30 @@ test_that("select works lazy/eager", {
   )
 })
 
+test_that("select_seq() works", {
+  .data <- pl$DataFrame(
+    int32 = 1:5,
+    int64 = as_polars_series(1:5)$cast(pl$Int64),
+    string = letters[1:5],
+  )
+
+  expect_query_equal(
+    .input$select_seq("int32"),
+    .data,
+    pl$DataFrame(int32 = 1:5)
+  )
+  expect_query_equal(
+    .input$select_seq(pl$lit("int32")),
+    .data,
+    pl$DataFrame(literal = "int32")
+  )
+  expect_query_equal(
+    .input$select_seq(foo = "int32"),
+    .data,
+    pl$DataFrame(foo = 1:5)
+  )
+})
+
 test_that("POLARS_AUTO_STRUCTIFY works for select", {
   .data <- pl$DataFrame(
     foo = 1:3,
