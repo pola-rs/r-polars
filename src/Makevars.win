@@ -12,13 +12,14 @@ PKG_LIBS = -L$(LIBDIR) -lr_polars -lws2_32 -lncrypt -lcrypt32 -ladvapi32 -lusere
 # need to overwrite it via configuration.
 CARGO_LINKER = x86_64-w64-mingw32.static.posix-gcc.exe
 
-all: C_clean
+.PHONY: all
+all: cleanup
 
 $(SHLIB): $(STATLIB)
 
 CARGOTMP = $(CURDIR)/.cargo
 
-$(STATLIB):
+$(STATLIB): remove-prev
 	# `rustc` adds `-lgcc_eh` flags to the compiler, but Rtools' GCC doesn't have
 	# `libgcc_eh` due to the compilation settings. So, in order to please the
 	# compiler, we need to add empty `libgcc_eh` to the library search paths.
@@ -42,12 +43,17 @@ $(STATLIB):
 		cargo build --lib --manifest-path="$(CURDIR)/rust/Cargo.toml" --target-dir "$(TARGET_DIR)" --target="$(TARGET)" \
 			--profile="$(LIBR_POLARS_PROFILE)" --features="$(LIBR_POLARS_FEATURES)"
 
-	if [ "true" != "true" ]; then \
-		rm -Rf "$(CARGOTMP)" "$(LIBDIR)/build"; \
+.PHONY: remove-prev
+# Remove previous build artifacts
+remove-prev:
+	rm -f "$(STATLIB)"
+
+.PHONY: cleanup
+cleanup: $(SHLIB)
+	if [ "$(NOT_CRAN)" != "true" ]; then \
+		rm -Rf "$(STATLIB)"; \
 	fi
 
-C_clean:
-	rm -Rf "$(SHLIB)" "$(STATLIB)" "$(OBJECTS)"
-
+.PHONY: clean
 clean:
 	rm -Rf "$(SHLIB)" "$(STATLIB)" "$(OBJECTS)" "$(TARGET_DIR)"
