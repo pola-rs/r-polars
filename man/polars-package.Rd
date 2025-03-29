@@ -18,12 +18,12 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Soren Welling \email{sorhawell@gmail.com}
+\strong{Maintainer}: Tatsuya Shima \email{ts1s1andn@gmail.com}
 
 Authors:
 \itemize{
   \item Ritchie Vink \email{ritchie46@gmail.com}
-  \item Tatsuya Shima \email{ts1s1andn@gmail.com}
+  \item Soren Welling \email{sorhawell@gmail.com}
   \item Etienne Bacher \email{etienne.bacher@protonmail.com} (\href{https://orcid.org/0000-0002-9271-5075}{ORCID})
 }
 
