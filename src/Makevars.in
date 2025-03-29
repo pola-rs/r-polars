@@ -8,7 +8,8 @@ LIBDIR = $(TARGET_DIR)/$(TARGET)/$(LIBR_POLARS_PROFILE)
 STATLIB = $(LIBDIR)/$(LIBNAME)
 PKG_LIBS = -L$(LIBDIR) -lr_polars @ADDITIONAL_PKG_LIBS_FLAG@
 
-all: C_clean
+.PHONY: all
+all: cleanup
 
 $(SHLIB): $(STATLIB)
 
@@ -28,12 +29,12 @@ $(STATLIB):
 		cargo build --lib --manifest-path="$(CURDIR)/rust/Cargo.toml" --target-dir "$(TARGET_DIR)" --target="$(TARGET)" \
 			--profile="$(LIBR_POLARS_PROFILE)" --features="$(LIBR_POLARS_FEATURES)"
 
-	if [ "true" != "true" ]; then \
-		rm -Rf "$(CARGOTMP)" "$(LIBDIR)/build"; \
+.PHONY: cleanup
+cleanup: $(SHLIB)
+	if [ "$(NOT_CRAN)" != "true" ]; then \
+		rm -Rf "$(STATLIB)"; \
 	fi
 
-C_clean:
-	rm -Rf "$(SHLIB)" "$(STATLIB)" "$(OBJECTS)"
-
+.PHONY: clean
 clean:
 	rm -Rf "$(SHLIB)" "$(STATLIB)" "$(OBJECTS)" "$(TARGET_DIR)"
