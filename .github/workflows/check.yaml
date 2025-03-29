@@ -103,7 +103,7 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck
-          needs: check
+          cache: always
 
       - name: Build lib
         env:
@@ -189,7 +189,7 @@ jobs:
         if: env.TEST_BIN_LIB == 'true'
         with:
           extra-packages: any::testthat, any::remotes
-          needs: check
+          cache: always
 
       - name: Install with pre-built binary
         if: env.TEST_BIN_LIB == 'true'
