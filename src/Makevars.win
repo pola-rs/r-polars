@@ -19,7 +19,7 @@ $(SHLIB): $(STATLIB)
 
 CARGOTMP = $(CURDIR)/.cargo
 
-$(STATLIB):
+$(STATLIB): remove-prev
 	# `rustc` adds `-lgcc_eh` flags to the compiler, but Rtools' GCC doesn't have
 	# `libgcc_eh` due to the compilation settings. So, in order to please the
 	# compiler, we need to add empty `libgcc_eh` to the library search paths.
@@ -42,6 +42,11 @@ $(STATLIB):
 		export LIBRARY_PATH="$${LIBRARY_PATH};$(TARGET_DIR)/libgcc_mock" && \
 		cargo build --lib --manifest-path="$(CURDIR)/rust/Cargo.toml" --target-dir "$(TARGET_DIR)" --target="$(TARGET)" \
 			--profile="$(LIBR_POLARS_PROFILE)" --features="$(LIBR_POLARS_FEATURES)"
+
+.PHONY: remove-prev
+# Remove previous build artifacts
+remove-prev:
+	rm -f "$(STATLIB)"
 
 .PHONY: cleanup
 cleanup: $(SHLIB)
