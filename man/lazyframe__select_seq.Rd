@@ -26,5 +26,5 @@ lf <- pl$LazyFrame(
   bar = 6:8,
   ham = letters[1:3]
 )
-lf$select_seq("foo")$collect()
+lf$select_seq("foo", bar2 = pl$col("bar") * 2)$collect()
 }
