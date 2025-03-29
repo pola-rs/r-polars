@@ -2228,3 +2228,14 @@ dataframe__reverse <- function() {
   self$select(pl$col("*")$reverse()) |>
     wrap()
 }
+
+#' @inherit lazyframe__count title
+#' @inherit as_polars_df return
+#'
+#' @examples
+#' df <- pl$DataFrame(a = 1:4, b = c(1, 2, 1, NA), c = rep(NA, 4))
+#' df$count()
+dataframe__count <- function() {
+  self$lazy()$count()$collect(`_eager` = TRUE) |>
+    wrap()
+}

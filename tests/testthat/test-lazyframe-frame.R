@@ -2345,3 +2345,17 @@ test_that("reverse() works", {
   df <- pl$DataFrame()
   expect_query_equal(.input$reverse(), .input = df, df)
 })
+
+test_that("count() works", {
+  df <- pl$DataFrame(
+    a = 1:4,
+    b = c(1, 2, 1, NA),
+    c = rep(NA, 4)
+  )
+
+  expect_query_equal(
+    .input$count(),
+    df,
+    pl$DataFrame(a = 4, b = 3, c = 0)$cast(pl$UInt32)
+  )
+})
