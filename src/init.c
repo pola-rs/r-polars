@@ -474,8 +474,8 @@ SEXP savvy_PlRDataType__get_dtype_names__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRDataType_as_str__impl(SEXP self__) {
-    SEXP res = savvy_PlRDataType_as_str__ffi(self__);
+SEXP savvy_PlRDataType_as_str__impl(SEXP self__, SEXP c_arg__abbreviated) {
+    SEXP res = savvy_PlRDataType_as_str__ffi(self__, c_arg__abbreviated);
     return handle_result(res);
 }
 
@@ -3044,7 +3044,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRDataFrame_write_parquet__impl", (DL_FUNC) &savvy_PlRDataFrame_write_parquet__impl, 14},
     {"savvy_PlRDataType__get_datatype_fields__impl", (DL_FUNC) &savvy_PlRDataType__get_datatype_fields__impl, 1},
     {"savvy_PlRDataType__get_dtype_names__impl", (DL_FUNC) &savvy_PlRDataType__get_dtype_names__impl, 1},
-    {"savvy_PlRDataType_as_str__impl", (DL_FUNC) &savvy_PlRDataType_as_str__impl, 1},
+    {"savvy_PlRDataType_as_str__impl", (DL_FUNC) &savvy_PlRDataType_as_str__impl, 2},
     {"savvy_PlRDataType_eq__impl", (DL_FUNC) &savvy_PlRDataType_eq__impl, 2},
     {"savvy_PlRDataType_infer_supertype__impl", (DL_FUNC) &savvy_PlRDataType_infer_supertype__impl, 2},
     {"savvy_PlRDataType_max__impl", (DL_FUNC) &savvy_PlRDataType_max__impl, 1},

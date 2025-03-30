@@ -685,8 +685,8 @@ class(`PlRDataFrame`) <- c("PlRDataFrame__bundle", "savvy_neopolars__sealed")
 }
 
 `PlRDataType_as_str` <- function(self) {
-  function() {
-    .Call(savvy_PlRDataType_as_str__impl, `self`)
+  function(`abbreviated`) {
+    .Call(savvy_PlRDataType_as_str__impl, `self`, `abbreviated`)
   }
 }
 

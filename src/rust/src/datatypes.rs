@@ -256,8 +256,12 @@ impl PlRDataType {
         }
     }
 
-    fn as_str(&self) -> Result<Sexp> {
-        format!("{}", self).try_into()
+    fn as_str(&self, abbreviated: bool) -> Result<Sexp> {
+        if abbreviated {
+            self.dt.clone().to_string().try_into()
+        } else {
+            format!("{}", self).try_into()
+        }
     }
 
     fn _get_dtype_names(&self) -> Result<Sexp> {

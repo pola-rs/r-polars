@@ -94,7 +94,7 @@ SEXP savvy_PlRDataFrame_write_parquet__ffi(SEXP self__, SEXP c_arg__path, SEXP c
 // methods and associated functions for PlRDataType
 SEXP savvy_PlRDataType__get_datatype_fields__ffi(SEXP self__);
 SEXP savvy_PlRDataType__get_dtype_names__ffi(SEXP self__);
-SEXP savvy_PlRDataType_as_str__ffi(SEXP self__);
+SEXP savvy_PlRDataType_as_str__ffi(SEXP self__, SEXP c_arg__abbreviated);
 SEXP savvy_PlRDataType_eq__ffi(SEXP self__, SEXP c_arg__other);
 SEXP savvy_PlRDataType_infer_supertype__ffi(SEXP c_arg__dtypes, SEXP c_arg__strict);
 SEXP savvy_PlRDataType_max__ffi(SEXP self__);

@@ -2256,3 +2256,90 @@ dataframe__count <- function() {
   self$lazy()$count()$collect(`_eager` = TRUE) |>
     wrap()
 }
+
+#' Show a dense preview of the DataFrame
+#'
+#' The formatting shows one line per column so that wide DataFrames display
+#' cleanly. Each line shows the column name, the data type, and the first few
+#' values.
+#'
+#' @inheritParams rlang::args_dots_empty
+#' @param max_items_per_column Maximum number of items to show per column.
+#' @param max_colname_length Maximum length of the displayed column names.
+#' Values that exceed this value are truncated with a trailing ellipsis.
+#'
+#' @return Returns a character value (invisibly)
+#'
+#' @examples
+#' df <- as_polars_df(iris)
+#' df$glimpse()
+#'
+#' df$glimpse(max_items_per_column = 3)
+#'
+#' df$glimpse(max_items_per_column = 3, max_colname_length = 3)
+dataframe__glimpse <- function(
+  ...,
+  max_items_per_column = 10,
+  max_colname_length = 50
+) {
+  wrap({
+    check_dots_empty0(...)
+    max_n_values <- min(max_items_per_column, self$height)
+    schema <- self$schema
+
+    parse_column <- \(col_name, dtype) {
+      values <- self$select(pl$col(col_name)$slice(0, max_n_values)$cast(pl$String)) |>
+        as.list()
+      val_str <- toString(values[[1]])
+      if (nchar(col_name) > max_colname_length) {
+        col_name <- paste0(substr(col_name, 1, max_colname_length - 1), "...")
+      }
+      list(
+        col_name = col_name,
+        dtype_str = dtype$`_dt`$as_str(abbreviated = TRUE),
+        val_str = val_str
+      )
+    }
+
+    data <- lapply(seq_along(schema), \(x) {
+      parse_column(names(schema)[x], schema[[x]])
+    })
+
+    # determine column layout widths
+    max_col_name <- lapply(data, \(x) x[["col_name"]]) |>
+      unlist() |>
+      nchar() |>
+      max()
+    max_col_dtype <- lapply(data, \(x) x[["dtype_str"]]) |>
+      unlist() |>
+      nchar() |>
+      max()
+
+    # header
+    output <- paste0("Rows: ", self$height, "\nColumns: ", self$width, "\n")
+
+    # individual columns: one row per column
+    for (i in seq_along(data)) {
+      dat <- data[[i]]
+      if (nchar(dat$col_name) < max_col_name) {
+        dat$col_name <- paste0(dat$col_name, strrep(" ", max_col_name - nchar(dat$col_name)))
+      }
+      if (nchar(dat$dtype_str) < max_col_dtype) {
+        dat$dtype_str <- paste0(
+          strrep(" ", max_col_dtype - nchar(dat$dtype_str)),
+          " <",
+          dat$dtype_str,
+          ">"
+        )
+      } else {
+        dat$dtype_str <- paste0(" <", dat$dtype_str, ">")
+      }
+      output <- paste0(
+        output,
+        paste0("$ ", dat$col_name, dat$dtype_str, ": ", dat$val_str, "\n")
+      )
+    }
+    cat(output)
+  })
+  invisible(output)
+}

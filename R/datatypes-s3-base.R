@@ -38,7 +38,7 @@
 
 #' @export
 print.polars_dtype <- function(x, ...) {
-  x$`_dt`$as_str() |>
+  x$`_dt`$as_str(abbreviated = FALSE) |>
     writeLines()
   invisible(x)
 }
