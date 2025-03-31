@@ -784,11 +784,11 @@ impl PlRExpr {
         Ok(self.inner.clone().forward_fill(limit).into())
     }
 
-    fn shift(&self, n: PlRExpr, fill_value: Option<PlRExpr>) -> Result<Self> {
+    fn shift(&self, n: &PlRExpr, fill_value: Option<&PlRExpr>) -> Result<Self> {
         let expr = self.inner.clone();
         let out = match fill_value {
             Some(v) => expr.shift_and_fill(n.inner.clone(), v.inner.clone()),
-            None => expr.shift(n.inner),
+            None => expr.shift(n.inner.clone()),
         };
         Ok(out.into())
     }

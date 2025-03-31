@@ -5,7 +5,7 @@ use savvy::{ListSexp, LogicalSexp, NumericSexp, RawSexp, Result, StringSexp, sav
 
 macro_rules! set_unwrapped_or_0 {
     ($($var:ident),+ $(,)?) => {
-        $(let $var = $var.map(|e| e.inner).unwrap_or(dsl::lit(0));)+
+        $(let $var = $var.map(|e| e.inner.clone()).unwrap_or(dsl::lit(0));)+
     };
 }
 
@@ -22,22 +22,22 @@ pub fn as_struct(exprs: ListSexp) -> Result<PlRExpr> {
 
 #[savvy]
 pub fn datetime(
-    year: PlRExpr,
-    month: PlRExpr,
-    day: PlRExpr,
+    year: &PlRExpr,
+    month: &PlRExpr,
+    day: &PlRExpr,
     time_unit: &str,
-    ambiguous: PlRExpr,
-    hour: Option<PlRExpr>,
-    minute: Option<PlRExpr>,
-    second: Option<PlRExpr>,
-    microsecond: Option<PlRExpr>,
+    ambiguous: &PlRExpr,
+    hour: Option<&PlRExpr>,
+    minute: Option<&PlRExpr>,
+    second: Option<&PlRExpr>,
+    microsecond: Option<&PlRExpr>,
     time_zone: Option<&str>,
 ) -> Result<PlRExpr> {
-    let year = year.inner;
-    let month = month.inner;
-    let day = day.inner;
+    let year = year.inner.clone();
+    let month = month.inner.clone();
+    let day = day.inner.clone();
     set_unwrapped_or_0!(hour, minute, second, microsecond);
-    let ambiguous = ambiguous.inner;
+    let ambiguous = ambiguous.inner.clone();
     let time_unit = <Wrap<TimeUnit>>::try_from(time_unit)?.0;
     let time_zone = time_zone.map(|x| x.into());
     let args = DatetimeArgs {
@@ -58,14 +58,14 @@ pub fn datetime(
 #[savvy]
 pub fn duration(
     time_unit: &str,
-    weeks: Option<PlRExpr>,
-    days: Option<PlRExpr>,
-    hours: Option<PlRExpr>,
-    minutes: Option<PlRExpr>,
-    seconds: Option<PlRExpr>,
-    milliseconds: Option<PlRExpr>,
-    microseconds: Option<PlRExpr>,
-    nanoseconds: Option<PlRExpr>,
+    weeks: Option<&PlRExpr>,
+    days: Option<&PlRExpr>,
+    hours: Option<&PlRExpr>,
+    minutes: Option<&PlRExpr>,
+    seconds: Option<&PlRExpr>,
+    milliseconds: Option<&PlRExpr>,
+    microseconds: Option<&PlRExpr>,
+    nanoseconds: Option<&PlRExpr>,
 ) -> Result<PlRExpr> {
     set_unwrapped_or_0!(
         weeks,
@@ -252,7 +252,7 @@ pub fn concat_str(s: ListSexp, separator: &str, ignore_nulls: bool) -> Result<Pl
 }
 
 #[savvy]
-pub fn arg_where(condition: PlRExpr) -> Result<PlRExpr> {
+pub fn arg_where(condition: &PlRExpr) -> Result<PlRExpr> {
     Ok(dsl::arg_where(condition.inner.clone()).into())
 }
 
@@ -280,9 +280,9 @@ pub fn arg_sort_by(
 
 #[savvy]
 #[allow(non_snake_case)]
-pub fn repeat_(value: PlRExpr, n: PlRExpr, dtype: Option<&PlRDataType>) -> Result<PlRExpr> {
-    let mut value = value.inner;
-    let n = n.inner;
+pub fn repeat_(value: &PlRExpr, n: &PlRExpr, dtype: Option<&PlRDataType>) -> Result<PlRExpr> {
+    let mut value = value.inner.clone();
+    let n = n.inner.clone();
     if let Some(dtype) = dtype {
         value = value.cast(dtype.dt.clone());
     }

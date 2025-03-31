@@ -254,13 +254,13 @@ impl PlRDataFrame {
         on: StringSexp,
         maintain_order: bool,
         sort_columns: bool,
-        aggregate_expr: Option<PlRExpr>,
+        aggregate_expr: Option<&PlRExpr>,
         separator: Option<&str>,
         index: Option<StringSexp>,
         values: Option<StringSexp>,
     ) -> Result<Self> {
         let fun = if maintain_order { pivot_stable } else { pivot };
-        let agg_expr = aggregate_expr.map(|expr| expr.inner);
+        let agg_expr = aggregate_expr.map(|expr| expr.inner.clone());
         let on = on.to_vec();
         let index = index.map(|x| x.to_vec());
         let values = values.map(|x| x.to_vec());
