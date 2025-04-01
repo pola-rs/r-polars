@@ -73,7 +73,9 @@ lazyframe__sink_parquet <- function(
   collapse_joins = TRUE,
   no_optimization = FALSE,
   storage_options = NULL,
-  retries = 2
+  retries = 2,
+  sync_on_close = c("none", "data", "all"),
+  mkdir = FALSE
 ) {
   wrap({
     check_dots_empty0(...)
@@ -81,6 +83,11 @@ lazyframe__sink_parquet <- function(
       compression,
       values = c("lz4", "uncompressed", "snappy", "gzip", "lzo", "brotli", "zstd")
     )
+    sync_on_close <- arg_match0(
+      sync_on_close %||% "none",
+      values = c("none", "data", "all")
+    )
+
     lf <- set_sink_optimizations(
       self,
       type_coercion = type_coercion,
@@ -111,7 +118,7 @@ lazyframe__sink_parquet <- function(
       abort("`statistics` must be TRUE, FALSE, 'full', or a call to `parquet_statistics()`.")
     }
 
-    lf$sink_parquet(
+    lf <- lf$sink_parquet(
       path = path,
       compression = compression,
       compression_level = compression_level,
@@ -122,12 +129,16 @@ lazyframe__sink_parquet <- function(
       row_group_size = row_group_size,
       data_page_size = data_page_size,
       maintain_order = maintain_order,
+      sync_on_close = sync_on_close,
+      mkdir = mkdir,
       storage_options = storage_options,
       retries = retries
     )
 
-    invisible(self)
+    # TODO: support `engine`, `lazy` arguments
+    wrap(lf)$collect()
   })
+  invisible(self)
 }
 
 #' Write to Parquet file

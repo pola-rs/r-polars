@@ -12,7 +12,7 @@
       
       Resolved plan until failure:
       
-      	---> FAILED HERE RESOLVING 'select' <---
+      	---> FAILED HERE RESOLVING 'sink' <---
       DF ["struct_col"]; PROJECT */1 COLUMNS
 
 # struct$json_encode

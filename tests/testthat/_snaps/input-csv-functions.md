@@ -8,7 +8,7 @@
       Caused by error in `do.call(pl$scan_csv, .args)$collect()`:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! no data: empty CSV: 'csv scan'
+      ! no data: empty CSV: 'csv scan': 'sink'
 
 # read/scan: arg null_values works
 
@@ -40,7 +40,7 @@
       Caused by error in `do.call(pl$scan_csv, .args)$collect()`:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! schema lengths differ: 'csv scan'
+      ! schema lengths differ: 'csv scan': 'sink'
 
 # read/scan: bad paths
 

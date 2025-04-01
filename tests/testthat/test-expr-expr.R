@@ -521,9 +521,11 @@ test_that("is_in", {
     pl$select(pl$lit(NULL)$cast(pl$Boolean)$is_in(NULL)),
     pl$DataFrame(literal = NA)
   )
-  # TODO: replace `pl$lit(NULL)$cast(pl$Boolean)` to `NA` causes panic, should be fixed at upstream
+  # TODO: replace the first `pl$lit(NULL)$cast(pl$Boolean)` to `NULL` causes panic, should be fixed at upstream
+  # TODO: replace the first `pl$lit(NULL)$cast(pl$Boolean)` to `NULL` and the second `pl$lit(NULL)$cast(pl$Boolean)` to `NA` causes panic, should be fixed at upstream
+  # Original code: pl$select(pl$lit(NULL)$is_in(NA))
   expect_equal(
-    pl$select(pl$lit(NULL)$is_in(pl$lit(NULL)$cast(pl$Boolean))),
+    pl$select(pl$lit(NULL)$cast(pl$Boolean)$is_in(pl$lit(NULL)$cast(pl$Boolean))),
     pl$DataFrame(literal = NA)
   )
 

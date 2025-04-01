@@ -31,7 +31,9 @@ lazyframe__sink_parquet(
   collapse_joins = TRUE,
   no_optimization = FALSE,
   storage_options = NULL,
-  retries = 2
+  retries = 2,
+  sync_on_close = c("none", "data", "all"),
+  mkdir = FALSE
 )
 }
 \arguments{

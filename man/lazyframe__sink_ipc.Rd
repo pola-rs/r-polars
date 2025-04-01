@@ -8,6 +8,7 @@ lazyframe__sink_ipc(
   path,
   ...,
   compression = c("zstd", "lz4", "uncompressed"),
+  compat_level = c("newest", "oldest"),
   maintain_order = TRUE,
   type_coercion = TRUE,
   `_type_check` = TRUE,
@@ -18,7 +19,9 @@ lazyframe__sink_ipc(
   collapse_joins = TRUE,
   no_optimization = FALSE,
   storage_options = NULL,
-  retries = 2
+  retries = 2,
+  sync_on_close = c("none", "data", "all"),
+  mkdir = FALSE
 )
 }
 \arguments{
@@ -32,6 +35,17 @@ Must be one of:
 \item \code{"uncompressed"} or \code{NULL}: Write an uncompressed Arrow file.
 \item \code{"lz4"}: Fast compression/decompression.
 \item \code{"zstd"} (default): Good compression performance.
+}}
+
+\item{compat_level}{Determines the compatibility level when exporting Polars' internal data structures.
+When specifying a new compatibility level, Polars exports its internal data structures
+that might not be interpretable by other Arrow implementations.
+The level can be specified as the name (e.g., \code{"newest"}) or as a scalar integer
+(Currently, \code{0} or \code{1} is supported).
+\itemize{
+\item \code{"newest"} (default): Use the highest level, currently same as \code{1}
+(Low compatibility).
+\item \code{"oldest"}: Same as \code{0} (High compatibility).
 }}
 
 \item{maintain_order}{Maintain the order in which data is processed. Setting

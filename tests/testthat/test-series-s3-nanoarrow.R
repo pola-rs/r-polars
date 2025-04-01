@@ -7,6 +7,7 @@ patrick::with_parameters_test_that(
     tibble::tribble(
       ~.test_name, ~x,
       "int32", as_polars_series(1:3),
+      "int128", as_polars_series(1:3)$cast(pl$Int128),
       "string (with name)", as_polars_series(letters[1:3], "foo"),
       "struct", as_polars_series(data.frame(a = 1:3, b = letters[1:3])),
       "list", as_polars_series(list(1:2, 3:4)),
@@ -23,17 +24,6 @@ patrick::with_parameters_test_that(
     expect_equal(from_nanoarrow, x)
   }
 )
-
-test_that("Int128 can be exported, but cannot be consumed", {
-  skip_if_not_installed("nanoarrow")
-
-  expect_error(
-    as_polars_series(1L)$cast(pl$Int128) |>
-      nanoarrow::as_nanoarrow_array_stream() |>
-      as_polars_series(),
-    'The datatype "_pli128" is still not supported in Rust implementation'
-  )
-})
 
 patrick::with_parameters_test_that(
   "the schema argument works",

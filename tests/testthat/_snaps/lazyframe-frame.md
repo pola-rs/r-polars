@@ -21,7 +21,8 @@
     Code
       cat(lazy_query$explain(optimized = FALSE))
     Output
-      FILTER [(col("Species")) != ("setosa")] FROM
+      FILTER [(col("Species")) != ("setosa")]
+      FROM
         SORT BY [col("Species")]
           DF ["Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width", ...]; PROJECT */5 COLUMNS
 
@@ -31,7 +32,8 @@
       cat(lazy_query$explain())
     Output
       SORT BY [col("Species")]
-        FILTER [(col("Species")) != ("setosa")] FROM
+        FILTER [(col("Species")) != ("setosa")]
+        FROM
           DF ["Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width", ...]; PROJECT */5 COLUMNS
 
 ---

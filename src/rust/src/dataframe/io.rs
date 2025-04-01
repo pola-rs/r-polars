@@ -105,7 +105,6 @@ impl PlRDataFrame {
                 statistics,
                 row_group_size,
                 data_page_size,
-                maintain_order: true,
             };
             write_partitioned_dataset(
                 &mut self.df,

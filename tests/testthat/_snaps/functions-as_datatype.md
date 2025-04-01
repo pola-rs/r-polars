@@ -12,7 +12,7 @@
       
       Resolved plan until failure:
       
-      	---> FAILED HERE RESOLVING 'select' <---
+      	---> FAILED HERE RESOLVING 'sink' <---
       DF ["a", "b"]; PROJECT */2 COLUMNS
 
 # concat_str

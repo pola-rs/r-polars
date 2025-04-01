@@ -3765,26 +3765,26 @@ class(`PlRExpr`) <- c("PlRExpr__bundle", "savvy_neopolars__sealed")
 }
 
 `PlRLazyFrame_sink_csv` <- function(self) {
-  function(`path`, `include_bom`, `include_header`, `separator`, `line_terminator`, `quote_char`, `maintain_order`, `batch_size`, `retries`, `datetime_format` = NULL, `date_format` = NULL, `time_format` = NULL, `float_scientific` = NULL, `float_precision` = NULL, `null_value` = NULL, `quote_style` = NULL, `storage_options` = NULL) {
-    invisible(.Call(savvy_PlRLazyFrame_sink_csv__impl, `self`, `path`, `include_bom`, `include_header`, `separator`, `line_terminator`, `quote_char`, `maintain_order`, `batch_size`, `retries`, `datetime_format`, `date_format`, `time_format`, `float_scientific`, `float_precision`, `null_value`, `quote_style`, `storage_options`))
+  function(`path`, `include_bom`, `include_header`, `separator`, `line_terminator`, `quote_char`, `batch_size`, `retries`, `sync_on_close`, `maintain_order`, `mkdir`, `datetime_format` = NULL, `date_format` = NULL, `time_format` = NULL, `float_scientific` = NULL, `float_precision` = NULL, `null_value` = NULL, `quote_style` = NULL, `storage_options` = NULL) {
+    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_sink_csv__impl, `self`, `path`, `include_bom`, `include_header`, `separator`, `line_terminator`, `quote_char`, `batch_size`, `retries`, `sync_on_close`, `maintain_order`, `mkdir`, `datetime_format`, `date_format`, `time_format`, `float_scientific`, `float_precision`, `null_value`, `quote_style`, `storage_options`))
   }
 }
 
 `PlRLazyFrame_sink_ipc` <- function(self) {
-  function(`path`, `compression`, `maintain_order`, `retries`, `storage_options` = NULL) {
-    invisible(.Call(savvy_PlRLazyFrame_sink_ipc__impl, `self`, `path`, `compression`, `maintain_order`, `retries`, `storage_options`))
+  function(`path`, `compression`, `compat_level`, `retries`, `sync_on_close`, `maintain_order`, `mkdir`, `storage_options` = NULL) {
+    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_sink_ipc__impl, `self`, `path`, `compression`, `compat_level`, `retries`, `sync_on_close`, `maintain_order`, `mkdir`, `storage_options`))
   }
 }
 
 `PlRLazyFrame_sink_json` <- function(self) {
-  function(`path`, `retries`, `maintain_order`, `storage_options` = NULL) {
-    invisible(.Call(savvy_PlRLazyFrame_sink_json__impl, `self`, `path`, `retries`, `maintain_order`, `storage_options`))
+  function(`path`, `retries`, `sync_on_close`, `maintain_order`, `mkdir`, `storage_options` = NULL) {
+    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_sink_json__impl, `self`, `path`, `retries`, `sync_on_close`, `maintain_order`, `mkdir`, `storage_options`))
   }
 }
 
 `PlRLazyFrame_sink_parquet` <- function(self) {
-  function(`path`, `compression`, `maintain_order`, `stat_min`, `stat_max`, `stat_distinct_count`, `stat_null_count`, `retries`, `compression_level` = NULL, `row_group_size` = NULL, `data_page_size` = NULL, `storage_options` = NULL) {
-    invisible(.Call(savvy_PlRLazyFrame_sink_parquet__impl, `self`, `path`, `compression`, `maintain_order`, `stat_min`, `stat_max`, `stat_distinct_count`, `stat_null_count`, `retries`, `compression_level`, `row_group_size`, `data_page_size`, `storage_options`))
+  function(`path`, `compression`, `stat_min`, `stat_max`, `stat_distinct_count`, `stat_null_count`, `retries`, `sync_on_close`, `maintain_order`, `mkdir`, `compression_level` = NULL, `row_group_size` = NULL, `data_page_size` = NULL, `storage_options` = NULL) {
+    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_sink_parquet__impl, `self`, `path`, `compression`, `stat_min`, `stat_max`, `stat_distinct_count`, `stat_null_count`, `retries`, `sync_on_close`, `maintain_order`, `mkdir`, `compression_level`, `row_group_size`, `data_page_size`, `storage_options`))
   }
 }
 

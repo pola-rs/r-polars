@@ -36,10 +36,16 @@ lazyframe__sink_ndjson <- function(
   collapse_joins = TRUE,
   no_optimization = FALSE,
   storage_options = NULL,
-  retries = 2
+  retries = 2,
+  sync_on_close = c("none", "data", "all"),
+  mkdir = FALSE
 ) {
   wrap({
     check_dots_empty0(...)
+    sync_on_close <- arg_match0(
+      sync_on_close %||% "none",
+      values = c("none", "data", "all")
+    )
 
     lf <- set_sink_optimizations(
       self,
@@ -53,15 +59,19 @@ lazyframe__sink_ndjson <- function(
       no_optimization = no_optimization
     )
 
-    lf$sink_json(
+    lf <- lf$sink_json(
       path = path,
       maintain_order = maintain_order,
+      sync_on_close = sync_on_close,
+      mkdir = mkdir,
       storage_options = storage_options,
       retries = retries
     )
 
-    invisible(self)
+    # TODO: support `engine`, `lazy` arguments
+    wrap(lf)$collect()
   })
+  invisible(self)
 }
 
 #' Serialize to JSON representation

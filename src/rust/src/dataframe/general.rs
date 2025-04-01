@@ -6,6 +6,7 @@ use savvy::{
     ListSexp, NumericScalar, OwnedIntegerSexp, OwnedListSexp, Result, Sexp, StringSexp, TypedSexp,
     savvy,
 };
+use std::hash::BuildHasher;
 
 #[savvy]
 impl PlRDataFrame {
@@ -380,7 +381,8 @@ impl PlRDataFrame {
         let k1 = <Wrap<u64>>::try_from(seed_1)?.0;
         let k2 = <Wrap<u64>>::try_from(seed_2)?.0;
         let k3 = <Wrap<u64>>::try_from(seed_3)?.0;
-        let hb = PlRandomState::with_seeds(k0, k1, k2, k3);
+        let seed = PlFixedStateQuality::default().hash_one((k0, k1, k2, k3));
+        let hb = PlSeedableRandomStateQuality::seed_from_u64(seed);
         let series = self
             .df
             .hash_rows(Some(hb))

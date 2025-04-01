@@ -77,7 +77,9 @@ lazyframe__sink_csv <- function(
   collapse_joins = TRUE,
   no_optimization = FALSE,
   storage_options = NULL,
-  retries = 2
+  retries = 2,
+  sync_on_close = c("none", "data", "all"),
+  mkdir = FALSE
 ) {
   wrap({
     check_dots_empty0(...)
@@ -86,6 +88,10 @@ lazyframe__sink_csv <- function(
     quote_style <- arg_match0(
       quote_style,
       values = c("necessary", "always", "never", "non_numeric")
+    )
+    sync_on_close <- arg_match0(
+      sync_on_close %||% "none",
+      values = c("none", "data", "all")
     )
 
     lf <- set_sink_optimizations(
@@ -100,7 +106,7 @@ lazyframe__sink_csv <- function(
       no_optimization = no_optimization
     )
 
-    lf$sink_csv(
+    lf <- lf$sink_csv(
       path = path,
       include_bom = include_bom,
       include_header = include_header,
@@ -116,12 +122,16 @@ lazyframe__sink_csv <- function(
       null_value = null_value,
       quote_style = quote_style,
       maintain_order = maintain_order,
+      sync_on_close = sync_on_close,
+      mkdir = mkdir,
       storage_options = storage_options,
       retries = retries
     )
 
-    invisible(self)
+    # TODO: support `engine`, `lazy` arguments
+    wrap(lf)$collect()
   })
+  invisible(self)
 }
 
 #' Write to comma-separated values (CSV) file

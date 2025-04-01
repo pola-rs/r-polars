@@ -360,7 +360,7 @@
     Code
       out
     Output
-      [binary value]
+      b""
 
 ---
 
@@ -381,7 +381,7 @@
     Code
       out
     Output
-      [binary value]
+      b"a"
 
 ---
 
@@ -402,7 +402,7 @@
     Code
       out
     Output
-      [binary value]
+      b"ab"
 
 ---
 
