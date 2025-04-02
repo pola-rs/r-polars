@@ -49,7 +49,6 @@
 #
 # nocov start
 
-
 #' Signal deprecation
 #'
 #' @description
@@ -99,9 +98,7 @@
 #' @noRd
 NULL
 
-deprecate_soft <- function(msg,
-                           id = msg,
-                           user_env = rlang::caller_env(2)) {
+deprecate_soft <- function(msg, id = msg, user_env = rlang::caller_env(2)) {
   .rlang_lifecycle_signal_stage(msg, "deprecated")
 
   id <- paste(id, collapse = "\n")
@@ -111,25 +108,26 @@ deprecate_soft <- function(msg,
     verbosity,
     quiet = NULL,
     warning = ,
-    default =
-      if (rlang::env_is_user_facing(user_env)) {
-        always <- verbosity == "warning"
-        trace <- rlang::trace_back(bottom = caller_env())
-        .rlang_lifecycle_deprecate_warn0(
-          msg,
-          id = id,
-          trace = trace,
-          always = always
-        )
-      },
+    default = if (rlang::env_is_user_facing(user_env)) {
+      always <- verbosity == "warning"
+      trace <- rlang::trace_back(bottom = caller_env())
+      .rlang_lifecycle_deprecate_warn0(
+        msg,
+        id = id,
+        trace = trace,
+        always = always
+      )
+    },
     error = deprecate_stop(msg)
   ))
 }
 
-deprecate_warn <- function(msg,
-                           id = msg,
-                           always = FALSE,
-                           user_env = rlang::caller_env(2)) {
+deprecate_warn <- function(
+  msg,
+  id = msg,
+  always = FALSE,
+  user_env = rlang::caller_env(2)
+) {
   .rlang_lifecycle_signal_stage(msg, "deprecated")
 
   id <- paste(id, collapse = "\n")
@@ -159,11 +157,13 @@ deprecate_warn <- function(msg,
   ))
 }
 
-.rlang_lifecycle_deprecate_warn0 <- function(msg,
-                                             id = msg,
-                                             trace = NULL,
-                                             always = FALSE,
-                                             call = rlang::caller_env()) {
+.rlang_lifecycle_deprecate_warn0 <- function(
+  msg,
+  id = msg,
+  trace = NULL,
+  always = FALSE,
+  call = rlang::caller_env()
+) {
   if (always) {
     freq <- "always"
   } else {
