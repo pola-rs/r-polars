@@ -3547,8 +3547,8 @@ class(`PlRExpr`) <- c("PlRExpr__bundle", "savvy_neopolars__sealed")
 }
 
 `PlRLazyFrame_collect` <- function(self) {
-  function() {
-    .savvy_wrap_PlRDataFrame(.Call(savvy_PlRLazyFrame_collect__impl, `self`))
+  function(`engine`) {
+    .savvy_wrap_PlRDataFrame(.Call(savvy_PlRLazyFrame_collect__impl, `self`, `engine`))
   }
 }
 

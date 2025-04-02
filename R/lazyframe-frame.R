@@ -159,6 +159,8 @@ lazyframe__group_by <- function(..., .maintain_order = FALSE) {
 }
 
 # TODO: see also section
+# TODO: Enable new-streaming feature and the default value of engine to auto (If without new-streaming, panic)
+# TODO: The panic issue above must be fixed on the upstream
 #' Materialize this LazyFrame into a DataFrame
 #'
 #' By default, all query optimizations are enabled.
@@ -219,12 +221,18 @@ lazyframe__collect <- function(
   cluster_with_columns = TRUE,
   collapse_joins = TRUE,
   no_optimization = FALSE,
+  engine = c("in-memory", "old-streaming"),
   streaming = FALSE,
   `_check_order` = TRUE,
   `_eager` = FALSE
 ) {
   wrap({
     check_dots_empty0(...)
+    engine <- arg_match0(engine, c("in-memory", "old-streaming"))
+    # TODO: remove the streaming argument
+    if (isTRUE(streaming)) {
+      engine <- "old-streaming"
+    }
 
     if (isTRUE(no_optimization) || isTRUE(`_eager`)) {
       predicate_pushdown <- FALSE
@@ -253,7 +261,7 @@ lazyframe__collect <- function(
       `_eager` = `_eager`
     )
 
-    ldf$collect()
+    ldf$collect(engine)
   })
 }
 

@@ -102,7 +102,7 @@ impl PlRLazyFrame {
         Ok(lazy_gb.into())
     }
 
-    fn collect(&self) -> Result<PlRDataFrame> {
+    fn collect(&self, engine: &str) -> Result<PlRDataFrame> {
         use crate::{
             r_threads::{ThreadCom, concurrent_handler},
             r_udf::{CONFIG, RUdfReturn, RUdfSignature},
@@ -114,17 +114,18 @@ impl PlRLazyFrame {
         }
 
         let ldf = self.ldf.clone();
+        let engine = <Wrap<Engine>>::try_from(engine)?.0;
 
         #[cfg(not(target_arch = "wasm32"))]
         let df = if ThreadCom::try_from_global(&CONFIG).is_ok() {
-            ldf.collect().map_err(RPolarsErr::from)?
+            ldf.collect_with_engine(engine).map_err(RPolarsErr::from)?
         } else {
             concurrent_handler(
                 // closure 1: spawned by main thread
                 // tc is a ThreadCom which any child thread can use to submit R jobs to main thread
                 move |tc| {
                     // get return value
-                    let retval = ldf.collect();
+                    let retval = ldf.collect_with_engine(engine);
 
                     // drop the last two ThreadCom clones, signals to main/R-serving thread to shut down.
                     ThreadCom::kill_global(&CONFIG);

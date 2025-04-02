@@ -17,6 +17,7 @@ lazyframe__collect(
   cluster_with_columns = TRUE,
   collapse_joins = TRUE,
   no_optimization = FALSE,
+  engine = c("in-memory", "old-streaming"),
   streaming = FALSE,
   `_check_order` = TRUE,
   `_eager` = FALSE

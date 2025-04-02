@@ -1,4 +1,5 @@
 use std::num::NonZeroUsize;
+use std::str::FromStr;
 
 use crate::prelude::*;
 use crate::{PlRDataFrame, PlRDataType, PlRExpr, PlRLazyFrame, PlRSeries, RPolarsErr};
@@ -824,6 +825,14 @@ impl TryFrom<&str> for Wrap<MaintainOrderJoin> {
             _ => return Err("unreachable".to_string()),
         };
         Ok(Wrap(parsed))
+    }
+}
+
+impl TryFrom<&str> for Wrap<Engine> {
+    type Error = savvy::Error;
+
+    fn try_from(value: &str) -> Result<Self, Self::Error> {
+        Engine::from_str(value).map_err(Into::into).map(Wrap)
     }
 }
 

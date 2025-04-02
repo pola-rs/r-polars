@@ -486,7 +486,7 @@ SEXP savvy_PlRLazyFrame_cache__ffi(SEXP self__);
 SEXP savvy_PlRLazyFrame_cast__ffi(SEXP self__, SEXP c_arg__dtypes, SEXP c_arg__strict);
 SEXP savvy_PlRLazyFrame_cast_all__ffi(SEXP self__, SEXP c_arg__dtype, SEXP c_arg__strict);
 SEXP savvy_PlRLazyFrame_clone__ffi(SEXP self__);
-SEXP savvy_PlRLazyFrame_collect__ffi(SEXP self__);
+SEXP savvy_PlRLazyFrame_collect__ffi(SEXP self__, SEXP c_arg__engine);
 SEXP savvy_PlRLazyFrame_collect_schema__ffi(SEXP self__);
 SEXP savvy_PlRLazyFrame_count__ffi(SEXP self__);
 SEXP savvy_PlRLazyFrame_describe_optimized_plan__ffi(SEXP self__);
