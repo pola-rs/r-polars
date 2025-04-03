@@ -2383,3 +2383,30 @@ test_that("count() works", {
     pl$DataFrame(a = 4, b = 3, c = 0)$cast(pl$UInt32)
   )
 })
+
+patrick::with_parameters_test_that(
+  "engine arguments of collect works",
+  engine = c("auto", "in-memory", "streaming", "old-streaming"),
+  {
+    df <- pl$DataFrame(a = 1:4, b = letters[1:4])
+
+    expect_equal(
+      df$lazy()$collect(engine = engine),
+      df
+    )
+  }
+)
+
+test_that("error and warning from collect engines", {
+  expect_snapshot(
+    as_polars_lf(mtcars)$collect(engine = "gpu"),
+    error = TRUE
+  )
+
+  expect_deprecated(
+    as_polars_lf(mtcars)$collect(streaming = TRUE)
+  )
+  expect_deprecated(
+    as_polars_lf(mtcars)$collect(streaming = FALSE)
+  )
+})

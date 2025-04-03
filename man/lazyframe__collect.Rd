@@ -46,7 +46,18 @@ lazyframe__collect(
 
 \item{no_optimization}{A logical. If \code{TRUE}, turn off (certain) optimizations.}
 
-\item{streaming}{A logical. If \code{TRUE}, process the query in batches to handle larger-than-memory data.
+\item{engine}{The engine name to use for processing the query.
+One of the followings:
+\itemize{
+\item \code{"auto"} (default): Select the engine automatically.
+The \code{"in-memory"} engine will be selected for most cases.
+\item \code{"in-memory"}: Use the in-memory engine.
+\item \code{"streaming"}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} Use the (new) streaming engine.
+\item \code{"old-streaming"}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#superseded}{\figure{lifecycle-superseded.svg}{options: alt='[Superseded]'}}}{\strong{[Superseded]}} Use the old streaming engine.
+}}
+
+\item{streaming}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+A logical. If \code{TRUE}, process the query in batches to handle larger-than-memory data.
 If \code{FALSE} (default), the entire query is processed in a single batch.
 Note that streaming mode is considered unstable.
 It may be changed at any point without it being considered a breaking change.}
@@ -80,9 +91,6 @@ lf$group_by("a")$agg(pl$all()$sum())$collect(
 \itemize{
 \item \code{\link[=lazyframe__profile]{$profile()}} - same as \verb{$collect()} but also returns
 a table with each operation profiled.
-\item \code{\link[=lazyframe__collect_in_background]{$collect_in_background()}} - non-blocking
-collect returns a future handle. Can also just be used via
-\verb{$collect(collect_in_background = TRUE)}.
 \item \code{\link[=lazyframe__sink_parquet]{$sink_parquet()}} streams query to a parquet file.
 \item \code{\link[=lazyframe__sink_ipc]{$sink_ipc()}} streams query to a arrow file.
 }

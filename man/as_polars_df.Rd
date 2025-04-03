@@ -34,7 +34,7 @@ as_polars_df(x, ...)
   comm_subexpr_elim = TRUE,
   cluster_with_columns = TRUE,
   no_optimization = FALSE,
-  streaming = FALSE
+  engine = c("auto", "in-memory", "streaming", "old-streaming")
 )
 
 \method{as_polars_df}{list}(x, ...)
@@ -74,10 +74,15 @@ from the struct \link{Series}. In this case, the \code{column_name} argument is 
 
 \item{no_optimization}{A logical. If \code{TRUE}, turn off (certain) optimizations.}
 
-\item{streaming}{A logical. If \code{TRUE}, process the query in batches to handle larger-than-memory data.
-If \code{FALSE} (default), the entire query is processed in a single batch.
-Note that streaming mode is considered unstable.
-It may be changed at any point without it being considered a breaking change.}
+\item{engine}{The engine name to use for processing the query.
+One of the followings:
+\itemize{
+\item \code{"auto"} (default): Select the engine automatically.
+The \code{"in-memory"} engine will be selected for most cases.
+\item \code{"in-memory"}: Use the in-memory engine.
+\item \code{"streaming"}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} Use the (new) streaming engine.
+\item \code{"old-streaming"}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#superseded}{\figure{lifecycle-superseded.svg}{options: alt='[Superseded]'}}}{\strong{[Superseded]}} Use the old streaming engine.
+}}
 }
 \value{
 A polars \link{DataFrame}

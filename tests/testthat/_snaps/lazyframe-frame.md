@@ -173,3 +173,13 @@
       │ max        ┆ zz   │
       └────────────┴──────┘
 
+# error and warning from collect engines
+
+    Code
+      as_polars_lf(mtcars)$collect(engine = "gpu")
+    Condition
+      Error in `as_polars_lf(mtcars)$collect()`:
+      ! Evaluation failed in `$collect()`.
+      Caused by error in `as_polars_lf(mtcars)$collect()`:
+      ! `engine` must be one of "auto", "in-memory", "streaming", or "old-streaming", not "gpu".
+

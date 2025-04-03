@@ -49,7 +49,8 @@ subsequent optimization flags control which optimizations run.}
 
 \item{collapse_joins}{Collapse a join and filters into a faster join.}
 
-\item{streaming}{A logical. If \code{TRUE}, process the query in batches to handle larger-than-memory data.
+\item{streaming}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+A logical. If \code{TRUE}, process the query in batches to handle larger-than-memory data.
 If \code{FALSE} (default), the entire query is processed in a single batch.
 Note that streaming mode is considered unstable.
 It may be changed at any point without it being considered a breaking change.}

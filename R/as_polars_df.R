@@ -140,7 +140,7 @@ as_polars_df.polars_lazy_frame <- function(
   comm_subexpr_elim = TRUE,
   cluster_with_columns = TRUE,
   no_optimization = FALSE,
-  streaming = FALSE
+  engine = c("auto", "in-memory", "streaming", "old-streaming")
 ) {
   x$collect(
     type_coercion = type_coercion,
@@ -151,7 +151,8 @@ as_polars_df.polars_lazy_frame <- function(
     comm_subplan_elim = comm_subplan_elim,
     comm_subexpr_elim = comm_subexpr_elim,
     cluster_with_columns = cluster_with_columns,
-    streaming = streaming
+    no_optimization = no_optimization,
+    engine = engine
   )
 }
 

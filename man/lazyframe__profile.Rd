@@ -44,7 +44,8 @@ lazyframe__profile(
 
 \item{collapse_joins}{Collapse a join and filters into a faster join.}
 
-\item{streaming}{A logical. If \code{TRUE}, process the query in batches to handle larger-than-memory data.
+\item{streaming}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+A logical. If \code{TRUE}, process the query in batches to handle larger-than-memory data.
 If \code{FALSE} (default), the entire query is processed in a single batch.
 Note that streaming mode is considered unstable.
 It may be changed at any point without it being considered a breaking change.}
@@ -94,9 +95,6 @@ as_polars_lf(iris)$
 \seealso{
 \itemize{
 \item \code{\link[=lazyframe__collect]{$collect()}} - regular collect.
-\item \code{\link[=lazyframe__collect_in_background]{$collect_in_background()}} - non-blocking
-collect returns a future handle. Can also just be used via
-\verb{$collect(collect_in_background = TRUE)}.
 \item \code{\link[=lazyframe__sink_parquet]{$sink_parquet()}} streams query to a parquet file.
 \item \code{\link[=lazyframe__sink_ipc]{$sink_ipc()}} streams query to a arrow file.
 }
