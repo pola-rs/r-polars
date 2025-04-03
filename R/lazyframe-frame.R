@@ -159,8 +159,7 @@ lazyframe__group_by <- function(..., .maintain_order = FALSE) {
 }
 
 # TODO: see also section
-# TODO: Enable new-streaming feature and the default value of engine to auto (If without new-streaming, panic)
-# TODO: The panic issue above must be fixed on the upstream
+# TODO: engine's default value "auto" causes panic when `sink_*` if without the new_streaming feature <https://github.com/pola-rs/polars/pull/22074>
 #' Materialize this LazyFrame into a DataFrame
 #'
 #' By default, all query optimizations are enabled.
@@ -221,14 +220,14 @@ lazyframe__collect <- function(
   cluster_with_columns = TRUE,
   collapse_joins = TRUE,
   no_optimization = FALSE,
-  engine = c("in-memory", "old-streaming"),
+  engine = c("auto", "in-memory", "streaming", "old-streaming"),
   streaming = FALSE,
   `_check_order` = TRUE,
   `_eager` = FALSE
 ) {
   wrap({
     check_dots_empty0(...)
-    engine <- arg_match0(engine, c("in-memory", "old-streaming"))
+    engine <- arg_match0(engine, c("auto", "in-memory", "streaming", "old-streaming"))
     # TODO: remove the streaming argument
     if (isTRUE(streaming)) {
       engine <- "old-streaming"

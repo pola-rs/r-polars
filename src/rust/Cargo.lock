@@ -2223,6 +2223,7 @@ dependencies = [
  "polars",
  "polars-core",
  "polars-error",
+ "polars-lazy",
  "savvy",
  "serde_json",
  "state",

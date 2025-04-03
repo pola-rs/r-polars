@@ -34,6 +34,11 @@ git = "https://github.com/pola-rs/polars.git"
 rev = "ac9d598fd07d85b26a29bd7465a7bfa945b6f963"
 features = ["cloud", "extract_jsonpath", "json", "parquet"]
 
+[target.'cfg(not(target_os = "emscripten"))'.dependencies.polars-lazy]
+git = "https://github.com/pola-rs/polars.git"
+rev = "ac9d598fd07d85b26a29bd7465a7bfa945b6f963"
+features = ["new_streaming"]
+
 [dependencies.polars]
 git = "https://github.com/pola-rs/polars.git"
 rev = "ac9d598fd07d85b26a29bd7465a7bfa945b6f963"
