@@ -139,7 +139,7 @@ pl$DataFrame(a = "a")$cast(a = integer)
 #> Caused by error:
 #> ! Evaluation failed in `$cast()`.
 #> Caused by error:
-#> ! Dynamic dots `...` must be polars data types, got function
+#> ! Dynamic dots `...` must be polars data types, got a function
 ```
 
 The functionality to dispatch the methods of `Expr` to `Series` has also
