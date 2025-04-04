@@ -5,6 +5,9 @@ print.polars_series <- function(x, ...) {
   invisible(x)
 }
 
+#' @export
+`[.polars_namespace_series_struct` <- `[.polars_namespace_expr_struct`
+
 # TODO: support the mode argument
 #' @export
 as.vector.polars_series <- function(x, mode = "any") {

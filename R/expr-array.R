@@ -5,13 +5,8 @@ namespace_expr_arr <- function(x) {
   self <- new.env(parent = emptyenv())
   self$`_rexpr` <- x$`_rexpr`
 
-  lapply(names(polars_expr_arr_methods), function(name) {
-    fn <- polars_expr_arr_methods[[name]]
-    environment(fn) <- environment()
-    assign(name, fn, envir = self)
-  })
-
   class(self) <- c(
+    "polars_namespace_expr_arr",
     "polars_namespace_expr",
     "polars_object"
   )

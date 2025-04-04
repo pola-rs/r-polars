@@ -1,0 +1,33 @@
+#' @export
+`$.{{class_name}}` <- function(x, name) {
+  member_names <- ls(x, all.names = TRUE)
+  method_names <- names({{env_name}})
+  dispatched_method_names <- names(polars_expr_{{namespace_name}}_methods)
+
+  if (name %in% member_names) {
+    env_get(x, name)
+  } else if (name %in% method_names) {
+    fn <- {{env_name}}[[name]]
+    self <- x
+    environment(fn) <- environment()
+    fn
+  } else if (name %in% dispatched_method_names) {
+    fn <- polars_expr_{{namespace_name}}_methods[[name]]
+    expr_wrap_function_factory(fn, x, "{{namespace_name}}")
+  } else {
+    NextMethod()
+  }
+}
+
+#' @exportS3Method utils::.DollarNames
+`.DollarNames.{{class_name}}` <- function(x, pattern = "") {
+  member_names <- ls(x, all.names = TRUE)
+  method_names <- names({{env_name}})
+  dispatched_method_names <- names(polars_expr_{{namespace_name}}_methods)
+
+  all_names <- union(member_names, method_names) |>
+    union(dispatched_method_names)
+  filtered_names <- findMatches(pattern, all_names)
+
+  filtered_names[!startsWith(filtered_names, "_")]
+}

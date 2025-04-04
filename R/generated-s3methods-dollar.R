@@ -279,3 +279,255 @@
 
   filtered_names[!startsWith(filtered_names, "_")]
 }
+
+#' @export
+`$.polars_namespace_expr_arr` <- function(x, name) {
+  member_names <- ls(x, all.names = TRUE)
+  method_names <- names(polars_expr_arr_methods)
+
+  if (name %in% member_names) {
+    env_get(x, name)
+  } else if (name %in% method_names) {
+    fn <- polars_expr_arr_methods[[name]]
+    self <- x
+    environment(fn) <- environment()
+    fn
+  } else {
+    NextMethod()
+  }
+}
+
+#' @exportS3Method utils::.DollarNames
+`.DollarNames.polars_namespace_expr_arr` <- function(x, pattern = "") {
+  member_names <- ls(x, all.names = TRUE)
+  method_names <- names(polars_expr_arr_methods)
+
+  all_names <- union(member_names, method_names)
+  filtered_names <- findMatches(pattern, all_names)
+
+  filtered_names[!startsWith(filtered_names, "_")]
+}
+
+#' @export
+`$.polars_namespace_expr_bin` <- function(x, name) {
+  member_names <- ls(x, all.names = TRUE)
+  method_names <- names(polars_expr_bin_methods)
+
+  if (name %in% member_names) {
+    env_get(x, name)
+  } else if (name %in% method_names) {
+    fn <- polars_expr_bin_methods[[name]]
+    self <- x
+    environment(fn) <- environment()
+    fn
+  } else {
+    NextMethod()
+  }
+}
+
+#' @exportS3Method utils::.DollarNames
+`.DollarNames.polars_namespace_expr_bin` <- function(x, pattern = "") {
+  member_names <- ls(x, all.names = TRUE)
+  method_names <- names(polars_expr_bin_methods)
+
+  all_names <- union(member_names, method_names)
+  filtered_names <- findMatches(pattern, all_names)
+
+  filtered_names[!startsWith(filtered_names, "_")]
+}
+
+#' @export
+`$.polars_namespace_expr_cat` <- function(x, name) {
+  member_names <- ls(x, all.names = TRUE)
+  method_names <- names(polars_expr_cat_methods)
+
+  if (name %in% member_names) {
+    env_get(x, name)
+  } else if (name %in% method_names) {
+    fn <- polars_expr_cat_methods[[name]]
+    self <- x
+    environment(fn) <- environment()
+    fn
+  } else {
+    NextMethod()
+  }
+}
+
+#' @exportS3Method utils::.DollarNames
+`.DollarNames.polars_namespace_expr_cat` <- function(x, pattern = "") {
+  member_names <- ls(x, all.names = TRUE)
+  method_names <- names(polars_expr_cat_methods)
+
+  all_names <- union(member_names, method_names)
+  filtered_names <- findMatches(pattern, all_names)
+
+  filtered_names[!startsWith(filtered_names, "_")]
+}
+
+#' @export
+`$.polars_namespace_expr_dt` <- function(x, name) {
+  member_names <- ls(x, all.names = TRUE)
+  method_names <- names(polars_expr_dt_methods)
+
+  if (name %in% member_names) {
+    env_get(x, name)
+  } else if (name %in% method_names) {
+    fn <- polars_expr_dt_methods[[name]]
+    self <- x
+    environment(fn) <- environment()
+    fn
+  } else {
+    NextMethod()
+  }
+}
+
+#' @exportS3Method utils::.DollarNames
+`.DollarNames.polars_namespace_expr_dt` <- function(x, pattern = "") {
+  member_names <- ls(x, all.names = TRUE)
+  method_names <- names(polars_expr_dt_methods)
+
+  all_names <- union(member_names, method_names)
+  filtered_names <- findMatches(pattern, all_names)
+
+  filtered_names[!startsWith(filtered_names, "_")]
+}
+
+#' @export
+`$.polars_namespace_expr_list` <- function(x, name) {
+  member_names <- ls(x, all.names = TRUE)
+  method_names <- names(polars_expr_list_methods)
+
+  if (name %in% member_names) {
+    env_get(x, name)
+  } else if (name %in% method_names) {
+    fn <- polars_expr_list_methods[[name]]
+    self <- x
+    environment(fn) <- environment()
+    fn
+  } else {
+    NextMethod()
+  }
+}
+
+#' @exportS3Method utils::.DollarNames
+`.DollarNames.polars_namespace_expr_list` <- function(x, pattern = "") {
+  member_names <- ls(x, all.names = TRUE)
+  method_names <- names(polars_expr_list_methods)
+
+  all_names <- union(member_names, method_names)
+  filtered_names <- findMatches(pattern, all_names)
+
+  filtered_names[!startsWith(filtered_names, "_")]
+}
+
+#' @export
+`$.polars_namespace_expr_meta` <- function(x, name) {
+  member_names <- ls(x, all.names = TRUE)
+  method_names <- names(polars_expr_meta_methods)
+
+  if (name %in% member_names) {
+    env_get(x, name)
+  } else if (name %in% method_names) {
+    fn <- polars_expr_meta_methods[[name]]
+    self <- x
+    environment(fn) <- environment()
+    fn
+  } else {
+    NextMethod()
+  }
+}
+
+#' @exportS3Method utils::.DollarNames
+`.DollarNames.polars_namespace_expr_meta` <- function(x, pattern = "") {
+  member_names <- ls(x, all.names = TRUE)
+  method_names <- names(polars_expr_meta_methods)
+
+  all_names <- union(member_names, method_names)
+  filtered_names <- findMatches(pattern, all_names)
+
+  filtered_names[!startsWith(filtered_names, "_")]
+}
+
+#' @export
+`$.polars_namespace_expr_name` <- function(x, name) {
+  member_names <- ls(x, all.names = TRUE)
+  method_names <- names(polars_expr_name_methods)
+
+  if (name %in% member_names) {
+    env_get(x, name)
+  } else if (name %in% method_names) {
+    fn <- polars_expr_name_methods[[name]]
+    self <- x
+    environment(fn) <- environment()
+    fn
+  } else {
+    NextMethod()
+  }
+}
+
+#' @exportS3Method utils::.DollarNames
+`.DollarNames.polars_namespace_expr_name` <- function(x, pattern = "") {
+  member_names <- ls(x, all.names = TRUE)
+  method_names <- names(polars_expr_name_methods)
+
+  all_names <- union(member_names, method_names)
+  filtered_names <- findMatches(pattern, all_names)
+
+  filtered_names[!startsWith(filtered_names, "_")]
+}
+
+#' @export
+`$.polars_namespace_expr_str` <- function(x, name) {
+  member_names <- ls(x, all.names = TRUE)
+  method_names <- names(polars_expr_str_methods)
+
+  if (name %in% member_names) {
+    env_get(x, name)
+  } else if (name %in% method_names) {
+    fn <- polars_expr_str_methods[[name]]
+    self <- x
+    environment(fn) <- environment()
+    fn
+  } else {
+    NextMethod()
+  }
+}
+
+#' @exportS3Method utils::.DollarNames
+`.DollarNames.polars_namespace_expr_str` <- function(x, pattern = "") {
+  member_names <- ls(x, all.names = TRUE)
+  method_names <- names(polars_expr_str_methods)
+
+  all_names <- union(member_names, method_names)
+  filtered_names <- findMatches(pattern, all_names)
+
+  filtered_names[!startsWith(filtered_names, "_")]
+}
+
+#' @export
+`$.polars_namespace_expr_struct` <- function(x, name) {
+  member_names <- ls(x, all.names = TRUE)
+  method_names <- names(polars_expr_struct_methods)
+
+  if (name %in% member_names) {
+    env_get(x, name)
+  } else if (name %in% method_names) {
+    fn <- polars_expr_struct_methods[[name]]
+    self <- x
+    environment(fn) <- environment()
+    fn
+  } else {
+    NextMethod()
+  }
+}
+
+#' @exportS3Method utils::.DollarNames
+`.DollarNames.polars_namespace_expr_struct` <- function(x, pattern = "") {
+  member_names <- ls(x, all.names = TRUE)
+  method_names <- names(polars_expr_struct_methods)
+
+  all_names <- union(member_names, method_names)
+  filtered_names <- findMatches(pattern, all_names)
+
+  filtered_names[!startsWith(filtered_names, "_")]
+}
