@@ -225,34 +225,6 @@
 }
 
 #' @export
-`$.polars_series` <- function(x, name) {
-  member_names <- ls(x, all.names = TRUE)
-  method_names <- names(polars_series__methods)
-
-  if (name %in% member_names) {
-    env_get(x, name)
-  } else if (name %in% method_names) {
-    fn <- polars_series__methods[[name]]
-    self <- x
-    environment(fn) <- environment()
-    fn
-  } else {
-    NextMethod()
-  }
-}
-
-#' @exportS3Method utils::.DollarNames
-`.DollarNames.polars_series` <- function(x, pattern = "") {
-  member_names <- ls(x, all.names = TRUE)
-  method_names <- names(polars_series__methods)
-
-  all_names <- union(member_names, method_names)
-  filtered_names <- findMatches(pattern, all_names)
-
-  filtered_names[!startsWith(filtered_names, "_")]
-}
-
-#' @export
 `$.polars_sql_context` <- function(x, name) {
   member_names <- ls(x, all.names = TRUE)
   method_names <- names(polars_sql_context__methods)
