@@ -1,13 +1,11 @@
-test_that("Extract works for series struct namespace", {
-  s <- as_polars_series(mtcars)
+test_that("<series>$struct$unnest() works", {
+  expect_equal(
+    as_polars_series(mtcars)$struct$unnest(),
+    as_polars_df(mtcars)
+  )
 
-  expect_equal(
-    s$struct["am"],
-    as_polars_series(mtcars$am, name = "am")
+  expect_snapshot(
+    as_polars_series(1)$struct$unnest(),
+    error = TRUE
   )
-  expect_equal(
-    s$struct[1],
-    as_polars_series(mtcars$cyl, name = "cyl")
-  )
-  expect_error(s$struct[NA_character_])
 })
