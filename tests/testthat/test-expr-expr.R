@@ -762,17 +762,16 @@ test_that("Expr_append", {
   )
 })
 
-# TODO-REWRITE: needs Series$chunk_lengths()
-# test_that("rechunk chunk_lengths", {
-#   series_list <- pl$DataFrame(list(a = 1:3, b = 4:6))$select(
-#     pl$col("a")$append(pl$col("b"))$alias("a_chunked"),
-#     pl$col("a")$append(pl$col("b"))$rechunk()$alias("a_rechunked")
-#   )$get_columns()
-#   expect_equal(
-#     lapply(series_list, \(x) x$chunk_lengths()),
-#     list(c(3, 3), 6)
-#   )
-# })
+test_that("rechunk() works", {
+  series_list <- pl$DataFrame(a = 1:3, b = 4:6)$select(
+    a_chunked = pl$col("a")$append(pl$col("b")),
+    a_rechunked = pl$col("a")$append(pl$col("b"))$rechunk()
+  )$get_columns()
+  expect_identical(
+    lapply(series_list, \(x) x$chunk_lengths()),
+    list(a_chunked = c(3L, 3L), a_rechunked = 6L)
+  )
+})
 
 test_that("cum_sum cum_prod cum_min cum_max cum_count", {
   l_actual <- pl$DataFrame(a = 1:4)$select(
