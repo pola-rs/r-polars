@@ -54,7 +54,7 @@ enum TimeConversion {
 
 // `vctrs::unspecified` like function
 fn vctrs_unspecified_sexp(n: usize) -> Sexp {
-    let mut sexp = OwnedLogicalSexp::new(n).unwrap();
+    let mut sexp = unsafe { OwnedLogicalSexp::new_without_init(n).unwrap() };
     let _ = sexp.set_class(["vctrs_unspecified"]);
     for i in 0..n {
         let _ = sexp.set_na(i);

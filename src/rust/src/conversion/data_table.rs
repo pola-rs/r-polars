@@ -19,7 +19,7 @@ impl From<&DateChunked> for IDate {
 
 impl From<&Float64Chunked> for ITime {
     fn from(ca: &Float64Chunked) -> Self {
-        let mut sexp = OwnedIntegerSexp::new(ca.len()).unwrap();
+        let mut sexp = unsafe { OwnedIntegerSexp::new_without_init(ca.len()).unwrap() };
         let _ = sexp.set_class(["ITime"]);
         for (i, v) in ca.into_iter().enumerate() {
             if let Some(v) = v {
