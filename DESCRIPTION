@@ -36,6 +36,7 @@ Suggests:
     withr
 Additional_repositories: https://community.r-multiverse.org
 Config/Needs/dev: devtools, lifecycle, readr, glue
+Config/build/bootstrap: TRUE
 Config/testthat/edition: 3
 Config/testthat/parallel: true
 Config/testthat/start-first: lazyframe-frame, expr-expr, expr-*

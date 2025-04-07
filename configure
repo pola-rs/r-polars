@@ -39,11 +39,15 @@ EOF
 
 check_rustup() {
   if [ "$(command -v rustup)" ]; then
+  root_dir="$(pwd)"
+  # Change to the src directory to detect rust-toolchain.toml
+  cd "${root_dir}/src" || true
     cat <<EOF
 -------------------------- [RUSTUP FOUND] --------------------------
 $(rustup show)
 --------------------------------------------------------------------
 EOF
+  cd "${root_dir}" || true
   else
     cat <<EOF
 ------------------------ [RUSTUP NOT FOUND] ------------------------
@@ -55,20 +59,20 @@ EOF
 
 check_emscripten() {
   if [ "$(uname)" = "Emscripten" ]; then
-    # TODO: We should put this elsewhere
-    rust_toolchain=nightly-2025-01-05
     cat <<EOF
 -------------------- [NIGHTLY TOOLCHAIN NEEDED] --------------------
 It seems that building for Emscripten.
 'polars' requires a very recent Rust nightly toolchain.
-So executing 'rustup toolchain install ${rust_toolchain}' before building.
+So using the rust-toolchain.toml file to set the toolchain.
 --------------------------------------------------------------------
 EOF
     export TARGET="wasm32-unknown-emscripten"
-    if [ "$(command -v rustup)" ]; then
-      rustup toolchain install "${rust_toolchain}" --force --component rust-src
-      rustup default "${rust_toolchain}"
-    fi
+    copy_rust_toolchain_toml
+    # rust-src is needed for Emscripten builds
+    root_dir="$(pwd)"
+    cd "${root_dir}/src" || true
+    rustup component add rust-src
+    cd "${root_dir}" || true
   fi
 }
 
@@ -142,6 +146,21 @@ generate_makevars() {
   exit 0
 }
 
+copy_rust_toolchain_toml() {
+  toolchain_file="rust-toolchain.toml"
+
+  if [ -f "tools/${toolchain_file}" ]; then
+    cat <<EOF
+------------------ [RUST TOOLCHAIN CONFIGURATION] ------------------
+The Rust toolchain file was found at <tools/${toolchain_file}>.
+Copying it to <src/${toolchain_file}>.
+--------------------------------------------------------------------
+EOF
+  cp "tools/${toolchain_file}" "src/${toolchain_file}" &&
+    echo "Done!" || echo "Failed to copy ${toolchain_file}."
+  fi
+}
+
 # catch DEBUG envvar, which is passed from pkgbuild::compile_dll()
 if [ "${DEBUG}" = "true" ]; then
   PROFILE=dev
@@ -150,9 +169,9 @@ else
 fi
 
 check_bin_lib
-check_rustup
 check_cargo
 check_emscripten
+check_rustup
 
 TARGET="${TARGET:-$(rustc -vV | grep host | cut -d' ' -f2)}"
 
