@@ -113,7 +113,7 @@ jobs:
   # TODO: use Taskfile on this job
   test-r:
     runs-on: ${{ matrix.os }}
-    name: Test R ${{ matrix.r }} on ${{ matrix.os }}
+    name: Test R ${{ matrix.r }} on ${{ matrix.os }}${{ matrix.features != '' && ' with ' || '' }}${{ matrix.features }}${{ matrix.features != '' && ' features' || '' }}
     strategy:
       fail-fast: false
       matrix:
@@ -122,9 +122,12 @@ jobs:
           - windows-latest
         r:
           - release
+        features:
+          - ""
         include:
           - os: ubuntu-latest
             r: "4.3"
+            features: "nightly"
     steps:
       - uses: actions/checkout@v4
 
@@ -155,11 +158,12 @@ jobs:
         with:
           workspaces: "src/rust -> target"
           # On Windows, DEBUG build seems buggy <https://github.com/eitsupi/neo-r-polars/issues/218>
-          shared-key: ${{ steps.rust-target.outputs.TARGET }}${{ runner.os == 'Windows' && '-release' || '-debug' }}
+          shared-key: ${{ steps.rust-target.outputs.TARGET }}${{ runner.os == 'Windows' && '-release' || '-debug' }}${{ matrix.features != '' && '-' || '' }}${{ matrix.features }}
 
       - name: Build lib
         env:
           LIBR_POLARS_BUILD: "true"
+          LIBR_POLARS_FEATURES: ${{ matrix.features }}
         run: |
           # make sure savvy is built from source because rust-cache doesn't work well.
           (find ~/.cargo/registry/ src/rust/target -name 'savvy-*' -print0 | xargs -0 rm -rf) || true
