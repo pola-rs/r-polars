@@ -461,6 +461,7 @@ SEXP savvy_PlRExpr_str_to_decimal__ffi(SEXP self__, SEXP c_arg__infer_len);
 SEXP savvy_PlRExpr_str_to_integer__ffi(SEXP self__, SEXP c_arg__base, SEXP c_arg__strict);
 SEXP savvy_PlRExpr_str_to_lowercase__ffi(SEXP self__);
 SEXP savvy_PlRExpr_str_to_time__ffi(SEXP self__, SEXP c_arg__strict, SEXP c_arg__cache, SEXP c_arg__format);
+SEXP savvy_PlRExpr_str_to_titlecase__ffi(SEXP self__);
 SEXP savvy_PlRExpr_str_to_uppercase__ffi(SEXP self__);
 SEXP savvy_PlRExpr_str_zfill__ffi(SEXP self__, SEXP c_arg__length);
 SEXP savvy_PlRExpr_struct_field_by_index__ffi(SEXP self__, SEXP c_arg__index);

@@ -215,23 +215,20 @@ test_that("to_uppercase, to_lowercase", {
   )
 })
 
-# TODO-REWRITE: uncomment when polars_info() is implemented
-# test_that("to_titlecase - enabled via the nightly feature", {
-#   skip_if_not(polars_info()$features$nightly)
-#   df2 <- pl$DataFrame(foo = c("hi there", "HI, THERE", NA))
-#   expect_equal(
-#     df2$select(pl$col("foo")$str$to_titlecase()),
-#     pl$DataFrame(x = c("Hi There", "Hi, There", NA))
-#   )
-# })
+test_that("to_titlecase - enabled via the nightly feature", {
+  skip_if_not(polars_info()$features$nightly)
 
-# test_that("to_titlecase - enabled via the nightly feature", {
-#   skip_if(polars_info()$features$nightly)
-#   expect_snapshot(
-#     pl$col("foo")$str$to_titlecase(),
-#     error = TRUE
-#   )
-# })
+  df <- pl$DataFrame(foo = c("hi there", "HI, THERE", NA))
+  expect_equal(
+    df$select(pl$col("foo")$str$to_titlecase()),
+    pl$DataFrame(foo = c("Hi There", "Hi, There", NA))
+  )
+})
+
+test_that("to_titlecase - enabled via the nightly feature", {
+  skip_if(polars_info()$features$nightly)
+  expect_error(pl$col("foo")$str$to_titlecase())
+})
 
 test_that("strip_chars_*()", {
   dat <- pl$DataFrame(x = " 123abc ")

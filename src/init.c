@@ -2299,6 +2299,11 @@ SEXP savvy_PlRExpr_str_to_time__impl(SEXP self__, SEXP c_arg__strict, SEXP c_arg
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_str_to_titlecase__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_str_to_titlecase__ffi(self__);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_str_to_uppercase__impl(SEXP self__) {
     SEXP res = savvy_PlRExpr_str_to_uppercase__ffi(self__);
     return handle_result(res);
@@ -3424,6 +3429,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_str_to_integer__impl", (DL_FUNC) &savvy_PlRExpr_str_to_integer__impl, 3},
     {"savvy_PlRExpr_str_to_lowercase__impl", (DL_FUNC) &savvy_PlRExpr_str_to_lowercase__impl, 1},
     {"savvy_PlRExpr_str_to_time__impl", (DL_FUNC) &savvy_PlRExpr_str_to_time__impl, 4},
+    {"savvy_PlRExpr_str_to_titlecase__impl", (DL_FUNC) &savvy_PlRExpr_str_to_titlecase__impl, 1},
     {"savvy_PlRExpr_str_to_uppercase__impl", (DL_FUNC) &savvy_PlRExpr_str_to_uppercase__impl, 1},
     {"savvy_PlRExpr_str_zfill__impl", (DL_FUNC) &savvy_PlRExpr_str_zfill__impl, 2},
     {"savvy_PlRExpr_struct_field_by_index__impl", (DL_FUNC) &savvy_PlRExpr_struct_field_by_index__impl, 2},
