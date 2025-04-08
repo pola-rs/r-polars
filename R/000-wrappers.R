@@ -183,6 +183,11 @@ NULL
 }
 
 
+`feature_nightly_enabled` <- function() {
+  .Call(savvy_feature_nightly_enabled__impl)
+}
+
+
 `field` <- function(`names`) {
   .savvy_wrap_PlRExpr(.Call(savvy_field__impl, `names`))
 }
@@ -270,8 +275,18 @@ NULL
 }
 
 
+`rust_polars_version` <- function() {
+  .Call(savvy_rust_polars_version__impl)
+}
+
+
 `sum_horizontal` <- function(`exprs`, `ignore_nulls`) {
   .savvy_wrap_PlRExpr(.Call(savvy_sum_horizontal__impl, `exprs`, `ignore_nulls`))
+}
+
+
+`thread_pool_size` <- function() {
+  .Call(savvy_thread_pool_size__impl)
 }
 
 

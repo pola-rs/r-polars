@@ -154,6 +154,11 @@ SEXP savvy_duration__impl(SEXP c_arg__time_unit, SEXP c_arg__weeks, SEXP c_arg__
     return handle_result(res);
 }
 
+SEXP savvy_feature_nightly_enabled__impl(void) {
+    SEXP res = savvy_feature_nightly_enabled__ffi();
+    return handle_result(res);
+}
+
 SEXP savvy_field__impl(SEXP c_arg__names) {
     SEXP res = savvy_field__ffi(c_arg__names);
     return handle_result(res);
@@ -229,8 +234,18 @@ SEXP savvy_repeat___impl(SEXP c_arg__value, SEXP c_arg__n, SEXP c_arg__dtype) {
     return handle_result(res);
 }
 
+SEXP savvy_rust_polars_version__impl(void) {
+    SEXP res = savvy_rust_polars_version__ffi();
+    return handle_result(res);
+}
+
 SEXP savvy_sum_horizontal__impl(SEXP c_arg__exprs, SEXP c_arg__ignore_nulls) {
     SEXP res = savvy_sum_horizontal__ffi(c_arg__exprs, c_arg__ignore_nulls);
+    return handle_result(res);
+}
+
+SEXP savvy_thread_pool_size__impl(void) {
+    SEXP res = savvy_thread_pool_size__ffi();
     return handle_result(res);
 }
 
@@ -2980,6 +2995,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_datetime_ranges__impl", (DL_FUNC) &savvy_datetime_ranges__impl, 6},
     {"savvy_dtype_cols__impl", (DL_FUNC) &savvy_dtype_cols__impl, 1},
     {"savvy_duration__impl", (DL_FUNC) &savvy_duration__impl, 9},
+    {"savvy_feature_nightly_enabled__impl", (DL_FUNC) &savvy_feature_nightly_enabled__impl, 0},
     {"savvy_field__impl", (DL_FUNC) &savvy_field__impl, 1},
     {"savvy_first__impl", (DL_FUNC) &savvy_first__impl, 0},
     {"savvy_index_cols__impl", (DL_FUNC) &savvy_index_cols__impl, 1},
@@ -2995,7 +3011,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_mean_horizontal__impl", (DL_FUNC) &savvy_mean_horizontal__impl, 2},
     {"savvy_min_horizontal__impl", (DL_FUNC) &savvy_min_horizontal__impl, 1},
     {"savvy_repeat___impl", (DL_FUNC) &savvy_repeat___impl, 3},
+    {"savvy_rust_polars_version__impl", (DL_FUNC) &savvy_rust_polars_version__impl, 0},
     {"savvy_sum_horizontal__impl", (DL_FUNC) &savvy_sum_horizontal__impl, 2},
+    {"savvy_thread_pool_size__impl", (DL_FUNC) &savvy_thread_pool_size__impl, 0},
     {"savvy_time_range__impl", (DL_FUNC) &savvy_time_range__impl, 4},
     {"savvy_time_ranges__impl", (DL_FUNC) &savvy_time_ranges__impl, 4},
     {"savvy_when__impl", (DL_FUNC) &savvy_when__impl, 1},

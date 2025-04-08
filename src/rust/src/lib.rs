@@ -6,6 +6,7 @@ mod datatypes;
 mod error;
 mod expr;
 mod functions;
+mod info;
 mod lazyframe;
 mod lazygroupby;
 mod map;
