@@ -3,7 +3,10 @@
 export PATH="$PATH:$HOME/.cargo/bin"
 
 NOT_CRAN=${NOT_CRAN:-"false"}
+
 LIBR_POLARS_BUILD=${LIBR_POLARS_BUILD:-""}
+# Passed to the --feture flag of cargo build
+FEATURES=${LIBR_POLARS_FEATURES:-""}
 
 # Detect if this is on R-universe.
 MY_UNIVERSE=${MY_UNIVERSE:-""}
@@ -39,15 +42,15 @@ EOF
 
 check_rustup() {
   if [ "$(command -v rustup)" ]; then
-  root_dir="$(pwd)"
-  # Change to the src directory to detect rust-toolchain.toml
-  cd "${root_dir}/src" || true
+    root_dir="$(pwd)"
+    # Change to the src directory to detect rust-toolchain.toml
+    cd "${root_dir}/src" || true
     cat <<EOF
 -------------------------- [RUSTUP FOUND] --------------------------
 $(rustup show)
 --------------------------------------------------------------------
 EOF
-  cd "${root_dir}" || true
+    cd "${root_dir}" || true
   else
     cat <<EOF
 ------------------------ [RUSTUP NOT FOUND] ------------------------
@@ -67,6 +70,7 @@ So using the rust-toolchain.toml file to set the toolchain.
 --------------------------------------------------------------------
 EOF
     export TARGET="wasm32-unknown-emscripten"
+    export FEATURES="${FEATURES:-"nightly"}"
     copy_rust_toolchain_toml
     # rust-src is needed for Emscripten builds
     root_dir="$(pwd)"
@@ -140,6 +144,7 @@ generate_makevars() {
     sed \
       -e "s|@TARGET@|${TARGET}|" \
       -e "s|@PROFILE@|${PROFILE}|" \
+      -e "s|@FEATURES@|${FEATURES}|" \
       "$makefile.in" >"$makefile"
   done
 
@@ -156,8 +161,26 @@ The Rust toolchain file was found at <tools/${toolchain_file}>.
 Copying it to <src/${toolchain_file}>.
 --------------------------------------------------------------------
 EOF
-  cp "tools/${toolchain_file}" "src/${toolchain_file}" &&
-    echo "Done!" || echo "Failed to copy ${toolchain_file}."
+    cp "tools/${toolchain_file}" "src/${toolchain_file}" &&
+      echo "Done!" || echo "Failed to copy ${toolchain_file}."
+  fi
+}
+
+check_feature() {
+  cat <<EOF
+------------------------- [FEATURES CHECK] -------------------------
+Selected features: '${FEATURES}'
+--------------------------------------------------------------------
+EOF
+  # TODO: needs documented, and maybe also use on R-universe?
+  if echo "${FEATURES}" | grep -q nightly && [ "${NOT_CRAN}" = "true" ]; then
+    cat <<EOF
+-------------------- [NIGHTLY TOOLCHAIN NEEDED] --------------------
+The 'nightly' feature requires a specific version of the Rust nightly toolchain.
+So using the rust-toolchain.toml file to set the toolchain.
+--------------------------------------------------------------------
+EOF
+    copy_rust_toolchain_toml
   fi
 }
 
@@ -168,9 +191,13 @@ else
   PROFILE=release
 fi
 
+# Ensure run bootstrap.R
+"${R_HOME}/bin${R_ARCH_BIN}/Rscript" "bootstrap.R"
+
 check_bin_lib
 check_cargo
 check_emscripten
+check_feature
 check_rustup
 
 TARGET="${TARGET:-$(rustc -vV | grep host | cut -d' ' -f2)}"

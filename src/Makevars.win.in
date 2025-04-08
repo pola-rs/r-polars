@@ -9,10 +9,11 @@ STATLIB = $(LIBDIR)/$(LIBNAME)
 PKG_LIBS = -L$(LIBDIR) -lr_polars -lws2_32 -lncrypt -lcrypt32 -ladvapi32 -luserenv -lbcrypt -lole32 -lntdll -lpsapi -liphlpapi -lpdh -lpowrprof -loleaut32 -lnetapi32 -lsecur32 -lsynchronization -lpropsys -lruntimeobject -t
 
 CARGO_BUILD_ARGS = --lib \
-	--profile "$(PROFILE)" \
+	--profile="$(PROFILE)" \
 	--manifest-path="$(CURDIR)/rust/Cargo.toml" \
-	--target-dir "$(TARGET_DIR)" \
-	--target $(TARGET)
+	--target-dir="$(TARGET_DIR)" \
+	--target="$(TARGET)" \
+	--features="$(FEATURES)"
 
 # Rtools doesn't have the linker in the location that cargo expects, so we need
 # to overwrite it via configuration.

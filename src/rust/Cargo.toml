@@ -8,6 +8,11 @@ publish = false
 [lib]
 crate-type = ["staticlib", "lib"]
 
+[features]
+default = []
+# also includes simd
+nightly = ["polars/nightly"]
+
 [profile.release]
 panic = "unwind"
 

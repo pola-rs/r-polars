@@ -2,6 +2,7 @@
 	"rust-analyzer.linkedProjects": [
 		"src/rust/Cargo.toml"
 	],
+	"rust-analyzer.cargo.features": "all",
 	"[r]": {
 		"editor.tabSize": 2,
 		"editor.formatOnSave": true,

@@ -3,6 +3,7 @@ version: "3"
 env:
   NOT_CRAN: "true"
   LIBR_POLARS_BUILD: "true"
+  LIBR_POLARS_FEATURES: "nightly"
   DEBUG: "true"
 
 vars:
@@ -212,6 +213,7 @@ tasks:
 
   format-rust:
     desc: Format Rust files.
+    # TODO: use the rust-toolchain.toml file
     aliases:
       - fmt-rust
     sources:
@@ -226,8 +228,10 @@ tasks:
     desc: Format dev scripts.
     sources:
       - dev/**/*.R
+      - bootstrap.R
       - air.toml
     generates:
       - dev/**/*.R
+      - bootstrap.R
     cmds:
-      - air format dev/
+      - air format dev/ bootstrap.R

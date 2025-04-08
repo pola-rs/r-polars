@@ -1,5 +1,6 @@
 TARGET = @TARGET@
 PROFILE = @PROFILE@
+FEATURES = @FEATURES@
 
 LIBNAME = libr_polars.a
 TARGET_DIR = $(CURDIR)/rust/target
@@ -8,10 +9,11 @@ STATLIB = $(LIBDIR)/$(LIBNAME)
 PKG_LIBS = -L$(LIBDIR) -lr_polars
 
 CARGO_BUILD_ARGS = --lib \
-	--profile "$(PROFILE)" \
+	--profile="$(PROFILE)" \
 	--manifest-path="$(CURDIR)/rust/Cargo.toml" \
-	--target-dir "$(TARGET_DIR)" \
-	--target $(TARGET)
+	--target-dir="$(TARGET_DIR)" \
+	--target="$(TARGET)" \
+	--features="$(FEATURES)"
 
 .PHONY: all
 all: cleanup
