@@ -124,10 +124,11 @@ jobs:
           - release
         features:
           - ""
+          - nightly
         include:
           - os: ubuntu-latest
             r: "4.3"
-            features: "nightly"
+            features: nightly
     steps:
       - uses: actions/checkout@v4
 
