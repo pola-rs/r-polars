@@ -70,13 +70,9 @@ So using the rust-toolchain.toml file to set the toolchain.
 --------------------------------------------------------------------
 EOF
     export TARGET="wasm32-unknown-emscripten"
-    export FEATURES="${FEATURES:-"nightly"}"
-    copy_rust_toolchain_toml
-    # rust-src is needed for Emscripten builds
-    root_dir="$(pwd)"
-    cd "${root_dir}/src" || true
-    rustup component add rust-src
-    cd "${root_dir}" || true
+    # Set these for to use the project specific nightly toolchain
+    NOT_CRAN="true"
+    FEATURES="${FEATURES:-"nightly"}"
   fi
 }
 
@@ -181,6 +177,17 @@ So using the rust-toolchain.toml file to set the toolchain.
 --------------------------------------------------------------------
 EOF
     copy_rust_toolchain_toml
+
+    # Try to add the target
+    root_dir="$(pwd)"
+    cd "${root_dir}/src" || true
+    rustup target add "${TARGET}" || echo "Failed to add target ${TARGET}."
+
+    # For Emscripten build, the rust-src is needed for to include the stdlib to reduce the size of the binary.
+    if [ "${TARGET}" = "wasm32-unknown-emscripten" ]; then
+      rustup component add rust-src || echo "Failed to add rust-src."
+    fi
+    cd "${root_dir}" || true
   fi
 }
 
@@ -194,12 +201,15 @@ fi
 # Ensure run bootstrap.R
 "${R_HOME}/bin${R_ARCH_BIN}/Rscript" "bootstrap.R"
 
+check_emscripten
 check_bin_lib
 check_cargo
-check_emscripten
+
+# This needs rustc to be installed
+TARGET="${TARGET:-$(rustc -vV | grep host | cut -d' ' -f2)}"
+
+# They need the TARGET to be set
 check_feature
 check_rustup
-
-TARGET="${TARGET:-$(rustc -vV | grep host | cut -d' ' -f2)}"
 
 generate_makevars

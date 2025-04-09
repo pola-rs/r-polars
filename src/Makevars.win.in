@@ -1,6 +1,6 @@
-# TODO: support arm64 target (c.f. the hellorust package)
-TARGET = x86_64-pc-windows-gnu
+TARGET = @TARGET@
 PROFILE = @PROFILE@
+FEATURES = @FEATURES@
 
 LIBNAME = libr_polars.a
 TARGET_DIR = $(CURDIR)/rust/target
