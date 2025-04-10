@@ -77,3 +77,117 @@ groupby__tail <- function(n = 5) {
   )$tail(n)$collect(no_optimization = TRUE) |>
     wrap()
 }
+
+#' @inherit lazygroupby__max title
+#'
+#' @inherit as_polars_df return
+#' @examples
+#' df <- pl$DataFrame(
+#'   grp = c("c", "c", "a", "c", "a", "b"),
+#'   x = c(0.5, 0.5, 4, 10, 13, 14),
+#'   y = 1:6,
+#'   z = c(TRUE, TRUE, FALSE, TRUE, FALSE, TRUE)
+#' )
+#' df
+#'
+#' df$group_by("grp")$max()
+groupby__max <- function() {
+  self$agg(pl$all()$max()) |>
+    wrap()
+}
+
+#' @inherit lazygroupby__min title
+#'
+#' @inherit as_polars_df return
+#' @examples
+#' df <- pl$DataFrame(
+#'   grp = c("c", "c", "a", "c", "a", "b"),
+#'   x = c(0.5, 0.5, 4, 10, 13, 14),
+#'   y = 1:6,
+#'   z = c(TRUE, TRUE, FALSE, TRUE, FALSE, TRUE)
+#' )
+#' df
+#'
+#' df$group_by("grp")$min()
+groupby__min <- function() {
+  self$agg(pl$all()$min()) |>
+    wrap()
+}
+
+#' @inherit lazygroupby__median title
+#'
+#' @inherit as_polars_df return
+#' @examples
+#' df <- pl$DataFrame(
+#'   grp = c("c", "c", "a", "c", "a", "b"),
+#'   x = c(0.5, 0.5, 4, 10, 13, 14),
+#'   y = 1:6,
+#'   z = c(TRUE, TRUE, FALSE, TRUE, FALSE, TRUE)
+#' )
+#' df
+#'
+#' df$group_by("grp")$median()
+groupby__median <- function() {
+  self$agg(pl$all()$median()) |>
+    wrap()
+}
+
+#' @inherit lazygroupby__sum title
+#'
+#' @inherit as_polars_df return
+#' @examples
+#' df <- pl$DataFrame(
+#'   grp = c("c", "c", "a", "c", "a", "b"),
+#'   x = c(0.5, 0.5, 4, 10, 13, 14),
+#'   y = 1:6,
+#'   z = c(TRUE, TRUE, FALSE, TRUE, FALSE, TRUE)
+#' )
+#' df
+#'
+#' df$group_by("grp")$sum()
+groupby__sum <- function() {
+  self$agg(pl$all()$sum()) |>
+    wrap()
+}
+
+#' @inherit lazygroupby__quantile title params
+#'
+#' @inherit as_polars_df return
+#' @examples
+#' df <- pl$DataFrame(
+#'   grp = c("c", "c", "a", "c", "a", "b"),
+#'   x = c(0.5, 0.5, 4, 10, 13, 14),
+#'   y = 1:6,
+#'   z = c(TRUE, TRUE, FALSE, TRUE, FALSE, TRUE)
+#' )
+#' df
+#'
+#' df$group_by("grp")$quantile(0.5)
+groupby__quantile <- function(
+  quantile,
+  ...,
+  interpolation = c("nearest", "higher", "lower", "midpoint", "linear")
+) {
+  wrap({
+    check_dots_empty0(...)
+    self$agg(pl$all()$quantile(quantile = quantile, interpolation = interpolation))
+  })
+}
+
+#' @inherit lazygroupby__n_unique title
+#'
+#' @inherit as_polars_df return
+#' @examples
+#' df <- pl$DataFrame(
+#'   grp = c("c", "c", "a", "c", "a", "b"),
+#'   x = c(0.5, 0.5, 4, 10, 13, 14),
+#'   y = 1:6,
+#'   z = c(TRUE, TRUE, FALSE, TRUE, FALSE, TRUE)
+#' )
+#' df
+#'
+#' df$group_by("grp")$n_unique()
+groupby__n_unique <- function() {
+  self$agg(pl$all()$n_unique()) |>
+    wrap()
+}

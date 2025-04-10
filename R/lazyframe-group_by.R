@@ -76,3 +76,118 @@ lazygroupby__tail <- function(n = 5) {
   self$lgb$tail(n) |>
     wrap()
 }
+
+#' Reduce the groups to the maximal value
+#'
+#' @inherit as_polars_lf return
+#' @examples
+#' lf <- pl$LazyFrame(
+#'   grp = c("c", "c", "a", "c", "a", "b"),
+#'   x = c(0.5, 0.5, 4, 10, 13, 14),
+#'   y = 1:6,
+#'   z = c(TRUE, TRUE, FALSE, TRUE, FALSE, TRUE)
+#' )
+#' lf$collect()
+#'
+#' lf$group_by("grp")$max()$collect()
+lazygroupby__max <- function() {
+  self$agg(pl$all()$max()) |>
+    wrap()
+}
+
+#' Reduce the groups to the minimal value
+#'
+#' @inherit as_polars_lf return
+#' @examples
+#' lf <- pl$LazyFrame(
+#'   grp = c("c", "c", "a", "c", "a", "b"),
+#'   x = c(0.5, 0.5, 4, 10, 13, 14),
+#'   y = 1:6,
+#'   z = c(TRUE, TRUE, FALSE, TRUE, FALSE, TRUE)
+#' )
+#' lf$collect()
+#'
+#' lf$group_by("grp")$min()$collect()
+lazygroupby__min <- function() {
+  self$agg(pl$all()$min()) |>
+    wrap()
+}
+
+#' Return the median per group
+#'
+#' @inherit as_polars_lf return
+#' @examples
+#' lf <- pl$LazyFrame(
+#'   grp = c("c", "c", "a", "c", "a", "b"),
+#'   x = c(0.5, 0.5, 4, 10, 13, 14),
+#'   y = 1:6,
+#'   z = c(TRUE, TRUE, FALSE, TRUE, FALSE, TRUE)
+#' )
+#' lf$collect()
+#'
+#' lf$group_by("grp")$median()$collect()
+lazygroupby__median <- function() {
+  self$agg(pl$all()$median()) |>
+    wrap()
+}
+
+#' Return the sum per group
+#'
+#' @inherit as_polars_lf return
+#' @examples
+#' lf <- pl$LazyFrame(
+#'   grp = c("c", "c", "a", "c", "a", "b"),
+#'   x = c(0.5, 0.5, 4, 10, 13, 14),
+#'   y = 1:6,
+#'   z = c(TRUE, TRUE, FALSE, TRUE, FALSE, TRUE)
+#' )
+#' lf$collect()
+#'
+#' lf$group_by("grp")$sum()$collect()
+lazygroupby__sum <- function() {
+  self$agg(pl$all()$sum()) |>
+    wrap()
+}
+
+#' Compute the quantile per group
+#'
+#' @inheritParams lazyframe__quantile
+#' @inherit as_polars_lf return
+#' @examples
+#' lf <- pl$LazyFrame(
+#'   grp = c("c", "c", "a", "c", "a", "b"),
+#'   x = c(0.5, 0.5, 4, 10, 13, 14),
+#'   y = 1:6,
+#'   z = c(TRUE, TRUE, FALSE, TRUE, FALSE, TRUE)
+#' )
+#' lf$collect()
+#'
+#' lf$group_by("grp")$quantile(0.5)$collect()
+lazygroupby__quantile <- function(
+  quantile,
+  ...,
+  interpolation = c("nearest", "higher", "lower", "midpoint", "linear")
+) {
+  wrap({
+    check_dots_empty0(...)
+    self$agg(pl$all()$quantile(quantile = quantile, interpolation = interpolation))
+  })
+}
+
+#' Count the unique values per group
+#'
+#' @inherit as_polars_lf return
+#' @examples
+#' lf <- pl$LazyFrame(
+#'   grp = c("c", "c", "a", "c", "a", "b"),
+#'   x = c(0.5, 0.5, 4, 10, 13, 14),
+#'   y = 1:6,
+#'   z = c(TRUE, TRUE, FALSE, TRUE, FALSE, TRUE)
+#' )
+#' lf$collect()
+#'
+#' lf$group_by("grp")$n_unique()$collect()
+lazygroupby__n_unique <- function() {
+  self$agg(pl$all()$n_unique()) |>
+    wrap()
+}
