@@ -35,7 +35,7 @@ df$group_by("a")$agg(pl$col("b")$sum())
 
 # Set `maintain_order = TRUE` to ensure the order of the groups is
 # consistent with the input.
-df$group_by("a", maintain_order = TRUE)$agg(pl$col("c"))
+df$group_by("a", .maintain_order = TRUE)$agg(pl$col("c"))
 
 # Group by multiple columns by passing a list of column names.
 df$group_by(c("a", "b"))$agg(pl$max("c"))
