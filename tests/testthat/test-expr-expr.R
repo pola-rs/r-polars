@@ -1224,9 +1224,8 @@ test_that("std var", {
     )
   )
   expect_equal(
-    pl$select(pl$lit(1:5)$std(3) != sd(1:5)) |>
-      as.list(),
-    list(literal = TRUE)
+    pl$select(pl$lit(1:5)$std(3) != sd(1:5)),
+    pl$select(literal = TRUE)
   )
 
   expect_equal(
@@ -1240,9 +1239,8 @@ test_that("std var", {
     )
   )
   expect_equal(
-    pl$select(pl$lit(1:5)$var(3) != var(1:5)) |>
-      as.list(),
-    list(literal = TRUE)
+    pl$select(pl$lit(1:5)$var(3) != var(1:5)),
+    pl$select(literal = TRUE)
   )
 
   # trigger u8 conversion errors
@@ -1562,9 +1560,9 @@ test_that("hash", {
   )
 
   expect_false(
-    identical(as.list(hash_values1), as.list(hash_values2))
+    identical(as.list(hash_values1, as_series = FALSE), as.list(hash_values2, as_series = FALSE))
   )
-  expect_false(anyDuplicated(as.list(hash_values1)$Sepal.Width) > 0)
+  expect_false(anyDuplicated(as.list(hash_values1, as_series = FALSE)$Sepal.Width) > 0)
 })
 
 test_that("reinterpret", {

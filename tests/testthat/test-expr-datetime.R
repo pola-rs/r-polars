@@ -327,7 +327,7 @@ test_that("second, milli, micro, nano", {
     df$select("second"),
     pl$DataFrame(
       !!!df$select(second = "date") |>
-        as.list() |>
+        as.list(as_series = FALSE) |>
         lapply(format, "%S") |>
         lapply(as.numeric)
     )$cast(pl$Int8)
@@ -647,7 +647,7 @@ test_that("dt$replace_time_zone() works", {
     pl$col("London")$dt$replace_time_zone("Europe/Amsterdam")$alias("Amsterdam")
   )
 
-  r_vals <- as.list(df)
+  r_vals <- as.list(df, as_series = FALSE)
 
   expect_equal(
     r_vals |> lapply(attr, "tz"),

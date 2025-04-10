@@ -8,7 +8,7 @@
 \method{as.list}{polars_data_frame}(
   x,
   ...,
-  as_series = FALSE,
+  as_series = TRUE,
   uint8 = c("integer", "raw"),
   int64 = c("double", "character", "integer", "integer64"),
   date = c("Date", "IDate"),
@@ -23,7 +23,7 @@
 \method{as.list}{polars_lazy_frame}(
   x,
   ...,
-  as_series = FALSE,
+  as_series = TRUE,
   uint8 = c("integer", "raw"),
   int64 = c("double", "character", "integer", "integer64"),
   date = c("Date", "IDate"),
@@ -41,7 +41,7 @@
 \item{...}{Passed to \code{\link[=as_polars_df]{as_polars_df()}}.}
 
 \item{as_series}{Whether to convert each column to an \link[=vector]{R vector} or a \link{Series}.
-If \code{TRUE}, return a list of \link{Series}, otherwise a list of \link[=vector]{vectors} (default).}
+If \code{TRUE} (default), return a list of \link{Series}, otherwise a list of \link[=vector]{vectors}.}
 
 \item{uint8}{Determine how to convert Polars' UInt8 type values to R type.
 One of the followings:

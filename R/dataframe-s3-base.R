@@ -25,7 +25,7 @@ names.polars_data_frame <- function(x) x$columns
 #' @param x A polars object
 #' @param ... Passed to [as_polars_df()].
 #' @param as_series Whether to convert each column to an [R vector][vector] or a [Series].
-#' If `TRUE`, return a list of [Series], otherwise a list of [vectors][vector] (default).
+#' If `TRUE` (default), return a list of [Series], otherwise a list of [vectors][vector].
 #' @return A [list]
 #' @seealso
 #' - [`<DataFrame>$get_columns()`][dataframe__get_columns]
@@ -42,7 +42,7 @@ names.polars_data_frame <- function(x) x$columns
 as.list.polars_data_frame <- function(
   x,
   ...,
-  as_series = FALSE,
+  as_series = TRUE,
   uint8 = c("integer", "raw"),
   int64 = c("double", "character", "integer", "integer64"),
   date = c("Date", "IDate"),
