@@ -15,7 +15,7 @@ that will replace the matched substring.}
 
 \item{...}{These dots are for future extensions and must be empty.}
 
-\item{literal}{Logical. If \code{TRUE} (default), treat \code{pattern} as a literal string,
+\item{literal}{Logical. If \code{TRUE}, treat \code{pattern} as a literal string,
 not as a regular expression.}
 }
 \value{

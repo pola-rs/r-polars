@@ -541,7 +541,7 @@ expr_str_pad_start <- function(length, fill_char = " ") {
 #' @param pattern A character or something can be coerced to a string [Expr]
 #' of a valid regex pattern, compatible with the [regex crate](https://docs.rs/regex/latest/regex/).
 #' @inheritParams rlang::args_dots_empty
-#' @param literal Logical. If `TRUE` (default), treat `pattern` as a literal string,
+#' @param literal Logical. If `TRUE`, treat `pattern` as a literal string,
 #' not as a regular expression.
 #' @param strict Logical. If `TRUE` (default), raise an error if the underlying pattern is
 #' not a valid regex, otherwise mask out with a null value.
