@@ -131,8 +131,9 @@ One of the followings:
 A \link{list}
 }
 \description{
-This S3 method calls \code{\link[=dataframe__get_columns]{as_polars_df(x, ...)$get_columns()}} or
-\code{as_polars_df(x, ...)$to_struct()$to_r_vector(ensure_vector = TRUE)} depending on the \code{as_series} argument.
+These S3 methods call \code{\link[=dataframe__get_columns]{as_polars_df(x, ...)$get_columns()}} with
+\code{\link[rlang:set_names]{rlang::set_names()}}, or, \code{as_polars_df(x, ...)$to_struct()$to_r_vector(ensure_vector = TRUE)}
+depending on the \code{as_series} argument.
 }
 \details{
 Arguments other than \code{x} and \code{as_series} are passed to \code{\link[=series__to_r_vector]{<Series>$to_r_vector()}},

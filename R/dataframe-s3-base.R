@@ -16,8 +16,9 @@ names.polars_data_frame <- function(x) x$columns
 
 #' Export the polars object as an R list
 #'
-#' This S3 method calls [`as_polars_df(x, ...)$get_columns()`][dataframe__get_columns] or
-#' `as_polars_df(x, ...)$to_struct()$to_r_vector(ensure_vector = TRUE)` depending on the `as_series` argument.
+#' These S3 methods call [`as_polars_df(x, ...)$get_columns()`][dataframe__get_columns] with
+#' [rlang::set_names()], or, `as_polars_df(x, ...)$to_struct()$to_r_vector(ensure_vector = TRUE)`
+#' depending on the `as_series` argument.
 #'
 #' Arguments other than `x` and `as_series` are passed to [`<Series>$to_r_vector()`][series__to_r_vector],
 #' so they are ignored when `as_series=TRUE`.
@@ -54,7 +55,10 @@ as.list.polars_data_frame <- function(
   non_existent = c("raise", "null")
 ) {
   if (isTRUE(as_series)) {
-    as_polars_df(x, ...)$get_columns()
+    # Ensure collect data because x may be a lazy frame
+    x <- as_polars_df(x, ...)
+    x$get_columns() |>
+      set_names(x$columns)
   } else {
     as_polars_df(x, ...)$to_struct()$to_r_vector(
       ensure_vector = TRUE,
