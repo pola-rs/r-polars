@@ -203,16 +203,13 @@ impl PlRLazyFrame {
         let ldf = self.ldf.clone();
         let by = <Wrap<Vec<Expr>>>::from(by).0;
         Ok(ldf
-            .sort_by_exprs(
-                by,
-                SortMultipleOptions {
-                    descending: descending.to_vec(),
-                    nulls_last: nulls_last.to_vec(),
-                    maintain_order,
-                    multithreaded,
-                    limit: None,
-                },
-            )
+            .sort_by_exprs(by, SortMultipleOptions {
+                descending: descending.to_vec(),
+                nulls_last: nulls_last.to_vec(),
+                maintain_order,
+                multithreaded,
+                limit: None,
+            })
             .into())
     }
 
@@ -241,16 +238,13 @@ impl PlRLazyFrame {
     ) -> Result<Self> {
         let ldf = self.ldf.clone();
         Ok(ldf
-            .sort(
-                [by_column],
-                SortMultipleOptions {
-                    descending: vec![descending],
-                    nulls_last: vec![nulls_last],
-                    multithreaded,
-                    maintain_order,
-                    limit: None,
-                },
-            )
+            .sort([by_column], SortMultipleOptions {
+                descending: vec![descending],
+                nulls_last: vec![nulls_last],
+                multithreaded,
+                maintain_order,
+                limit: None,
+            })
             .into())
     }
 
@@ -359,16 +353,12 @@ impl PlRLazyFrame {
         let closed_window = <Wrap<ClosedWindow>>::try_from(closed)?.0;
         let ldf = self.ldf.clone();
         let by = <Wrap<Vec<Expr>>>::from(by).0;
-        let lazy_gb = ldf.rolling(
-            index_column.inner.clone(),
-            by,
-            RollingGroupOptions {
-                index_column: "".into(),
-                period: Duration::try_parse(period).map_err(RPolarsErr::from)?,
-                offset: Duration::try_parse(offset).map_err(RPolarsErr::from)?,
-                closed_window,
-            },
-        );
+        let lazy_gb = ldf.rolling(index_column.inner.clone(), by, RollingGroupOptions {
+            index_column: "".into(),
+            period: Duration::try_parse(period).map_err(RPolarsErr::from)?,
+            offset: Duration::try_parse(offset).map_err(RPolarsErr::from)?,
+            closed_window,
+        });
 
         Ok(PlRLazyGroupBy { lgb: Some(lazy_gb) })
     }
@@ -390,10 +380,8 @@ impl PlRLazyFrame {
         let ldf = self.ldf.clone();
         let label = <Wrap<Label>>::try_from(label)?.0;
         let start_by = <Wrap<StartBy>>::try_from(start_by)?.0;
-        let lazy_gb = ldf.group_by_dynamic(
-            index_column.inner.clone(),
-            group_by,
-            DynamicGroupOptions {
+        let lazy_gb =
+            ldf.group_by_dynamic(index_column.inner.clone(), group_by, DynamicGroupOptions {
                 every: Duration::try_parse(every).map_err(RPolarsErr::from)?,
                 period: Duration::try_parse(period).map_err(RPolarsErr::from)?,
                 offset: Duration::try_parse(offset).map_err(RPolarsErr::from)?,
@@ -402,8 +390,7 @@ impl PlRLazyFrame {
                 closed_window,
                 start_by,
                 ..Default::default()
-            },
-        );
+            });
 
         Ok(PlRLazyGroupBy { lgb: Some(lazy_gb) })
     }

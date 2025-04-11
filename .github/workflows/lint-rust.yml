@@ -26,8 +26,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Rust
-        run: rustup component add rustfmt
-
       - name: Run cargo fmt
-        run: cargo fmt --all --check --manifest-path src/rust/Cargo.toml
+        working-directory: src/rust
+        run: |
+          rustup component add rustfmt
+          cargo fmt --all --check

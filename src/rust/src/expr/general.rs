@@ -195,16 +195,13 @@ impl PlRExpr {
         Ok(self
             .inner
             .clone()
-            .sort_by(
-                by,
-                SortMultipleOptions {
-                    descending: descending.to_vec(),
-                    nulls_last: nulls_last.to_vec(),
-                    multithreaded,
-                    maintain_order,
-                    limit: None,
-                },
-            )
+            .sort_by(by, SortMultipleOptions {
+                descending: descending.to_vec(),
+                nulls_last: nulls_last.to_vec(),
+                multithreaded,
+                maintain_order,
+                limit: None,
+            })
             .into())
     }
 
@@ -242,15 +239,12 @@ impl PlRExpr {
     ) -> Result<Self> {
         let partition_by = <Wrap<Vec<Expr>>>::from(partition_by).0;
         let order_by = order_by.map(|order_by| {
-            (
-                <Wrap<Vec<Expr>>>::from(order_by).0,
-                SortOptions {
-                    descending: order_by_descending,
-                    nulls_last: order_by_nulls_last,
-                    maintain_order: false,
-                    ..Default::default()
-                },
-            )
+            (<Wrap<Vec<Expr>>>::from(order_by).0, SortOptions {
+                descending: order_by_descending,
+                nulls_last: order_by_nulls_last,
+                maintain_order: false,
+                ..Default::default()
+            })
         });
         let mapping_strategy = <Wrap<WindowMapping>>::try_from(mapping_strategy)?.0;
 
