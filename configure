@@ -148,18 +148,22 @@ generate_makevars() {
 }
 
 copy_rust_toolchain_toml() {
-  toolchain_file="rust-toolchain.toml"
+  # The file for setting the toolchain is included in the src/rust directory, which is the root directory of the Rust package.
+  # However, this is ignored during the R package build because the cargo build command is executed in the src directory.
+  # This ignored behavior is actually desirable to avoid unexpected file downloads on the user's computer,
+  # but in CI environments or when the user opts in, the rust-toolchain.toml file is copied to src/rust
+  # so that it can be recognized during the R package build.
+  path_from="$(pwd)/src/rust/rust-toolchain.toml"
+  path_to="$(pwd)/src/rust-toolchain.toml"
 
-  if [ -f "tools/${toolchain_file}" ]; then
-    cat <<EOF
+  cat <<EOF
 ------------------ [RUST TOOLCHAIN CONFIGURATION] ------------------
-The Rust toolchain file was found at <tools/${toolchain_file}>.
-Copying it to <src/${toolchain_file}>.
+The Rust toolchain file was found at <${path_from}>.
+Copying it to <${path_to}>.
 --------------------------------------------------------------------
 EOF
-    cp "tools/${toolchain_file}" "src/${toolchain_file}" &&
-      echo "Done!" || echo "Failed to copy ${toolchain_file}."
-  fi
+  cp "${path_from}" "${path_to}" && echo "Done!" ||
+    echo "Failed to copy ${path_from} to ${path_to}."
 }
 
 check_feature() {
@@ -197,9 +201,6 @@ if [ "${DEBUG}" = "true" ]; then
 else
   PROFILE=release
 fi
-
-# Ensure run bootstrap.R
-"${R_HOME}/bin${R_ARCH_BIN}/Rscript" "bootstrap.R"
 
 check_emscripten
 check_bin_lib

@@ -13,7 +13,6 @@
 ^src/Makevars\.win$
 ^src/rust/\.cargo$
 ^src/rust-toolchain\.toml$
-^src/rust/rust-toolchain\.toml$
 ^src/rust/target$
 ^bootstrap\.R$
 ^README\.Rmd$

@@ -234,10 +234,8 @@ tasks:
     desc: Format dev scripts.
     sources:
       - dev/**/*.R
-      - bootstrap.R
       - air.toml
     generates:
       - dev/**/*.R
-      - bootstrap.R
     cmds:
-      - air format dev/ bootstrap.R
+      - air format dev/
