@@ -10,7 +10,7 @@
 >
 > Please check the GitHub issue #1152.
 
-## Polars R Package (development version)
+## Polars R Package 0.22.4
 
 ## Polars R Package 0.22.3
 
