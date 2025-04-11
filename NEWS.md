@@ -12,6 +12,12 @@
 
 ## Polars R Package 0.22.4
 
+Candidate for last version based on current code base.
+
+### Bug fixes
+
+- Changes related to build to pass R CMD check on R 4.5.0 (#1357).
+
 ## Polars R Package 0.22.3
 
 ### Bug fixes
