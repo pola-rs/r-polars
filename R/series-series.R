@@ -15,6 +15,9 @@
 #'   of the Series and width of the Series (always 1).
 #' @inheritParams as_polars_series
 #' @param values An R object. Passed as the `x` param of [as_polars_series()].
+#
+# TODO: add info on Expr -> Series dispatch
+#'
 #' @seealso
 #' - [as_polars_series()]
 #' @examples

@@ -5,9 +5,14 @@ env:
   LIBR_POLARS_BUILD: "true"
   LIBR_POLARS_FEATURES: "nightly"
   DEBUG: "true"
+  VIRTUAL_ENV: "{{.VENV_DIR}}"
 
 vars:
   REQUIRED_R_PKGS_FOR_S3_METHODS: nanoarrow,tibble
+
+  VENV_DIR: .venv_altdoc
+  VENV_BIN:
+    sh: echo '{{.VENV_DIR}}/{{if eq OS "windows"}}Scripts{{else}}bin{{end}}'
 
   MANIFEST: src/rust/Cargo.toml
   CARGO_LOCK: src/rust/Cargo.lock
@@ -49,6 +54,22 @@ tasks:
     cmds:
       # TODO: check the savvy version
       - cargo install savvy-cli
+
+  setup-venv:
+    desc: Setup Python venv for development.
+    internal: true
+    generates:
+      - "{{.VENV_BIN}}"
+    cmds:
+      - python3 -m venv {{.VENV_DIR}}
+
+  setup-python-tools:
+    desc: Install Python tools for development.
+    deps:
+      - setup-venv
+    cmds:
+      - "{{.VENV_BIN}}/python -m pip install --upgrade uv"
+      - "{{.VENV_BIN}}/uv pip install --upgrade mkdocs-material mdx_truly_sane_lists"
 
   build-rust:
     desc: Build the Rust library wrappers.
@@ -239,3 +260,39 @@ tasks:
       - dev/**/*.R
     cmds:
       - air format dev/
+
+  build-website:
+    desc: Build the website.
+    sources:
+      - man/*.Rd
+      - altdoc/altdoc_postprocessing.R
+      - altdoc/*.yml
+      - "{{.VIGNETTES}}"
+    generates:
+      - docs/**
+    cmds:
+      - task: build-readme
+      - task: build-altdoc-ref-home
+      - Rscript -e
+        'future::plan(future::multicore);
+        altdoc::render_docs(freeze = FALSE, parallel = TRUE, verbose = TRUE);
+        source("altdoc/altdoc_postprocessing.R");'
+
+  build-altdoc-ref-home:
+    internal: true
+    desc: Build the altdoc reference home markdown
+    sources:
+      - "{{.R_SOURCE}}"
+      - src/Makevars*
+      - configure*
+      - "{{.MANIFEST}}"
+      - "{{.CARGO_LOCK}}"
+      - "{{.RUST_SOURCE}}"
+    generates:
+      - altdoc/reference_home.md
+    deps:
+      - install-package
+    cmds:
+      - Rscript -e
+        'library({{.PACKAGE_NAME}});
+        rmarkdown::render("altdoc/reference_home.Rmd")'

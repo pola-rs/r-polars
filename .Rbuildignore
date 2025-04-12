@@ -18,3 +18,6 @@
 ^README\.Rmd$
 ^DEVELOPMENT\.md$
 ^\.mega-linter\.yml$
+
+^altdoc$
+^docs$

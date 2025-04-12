@@ -1,0 +1,702 @@
+site_name: Polars R Package
+repo_url: https://github.com/pola-rs/r-polars/
+repo_name: polars
+plugins:
+  search:
+    separator: '[\s\-\$]+|(pl__|series__|dataframe__|lazyframe__|expr_list_|expr_bin_|expr_cat_|expr_dt_|expr_meta_|expr_name_|expr_str_|expr_struct_|expr_arr_|expr__)'
+theme:
+  name: material
+  logo: polars-logo.png
+  favicon: polars-logo.png
+  font:
+    text: Roboto
+  palette:
+    - media: '(prefers-color-scheme: light)'
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+    - media: '(prefers-color-scheme: dark)'
+      scheme: slate
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.top
+    - content.code.copy
+    - toc.follow
+markdown_extensions:
+  - mdx_truly_sane_lists
+  - footnotes
+  - toc:
+      baselevel: 1
+      toc_depth: 3
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - pymdownx.snippets
+extra_css:
+  - stylesheets/extra.css
+use_directory_urls: false
+nav:
+  - Home: README.md
+  - Articles:
+      - Get started: vignettes/polars.md
+      - Installation details: vignettes/install.md
+      - User Guide: vignettes/userguide.md
+      - Optimize polars performance: vignettes/performance.md
+      - Differences with Python: vignettes/differences-with-python.md
+  - Reference:
+      Reference: reference_home.md
+      DataFrame:
+        - Aggregation:
+            - count: man/dataframe__count.md
+            - max_horizontal: man/dataframe__max_horizontal.md
+            - max: man/dataframe__max.md
+            - mean_horizontal: man/dataframe__mean_horizontal.md
+            - mean: man/dataframe__mean.md
+            - median: man/dataframe__median.md
+            - min_horizontal: man/dataframe__min_horizontal.md
+            - min: man/dataframe__min.md
+            - quantile: man/dataframe__quantile.md
+            - std: man/dataframe__std.md
+            - sum_horizontal: man/dataframe__sum_horizontal.md
+            - sum: man/dataframe__sum.md
+            - var: man/dataframe__var.md
+        - Computation:
+            - hash_rows: man/dataframe__hash_rows.md
+        - Descriptive:
+            - describe: man/dataframe__describe.md
+            - glimpse: man/dataframe__glimpse.md
+            - is_duplicated: man/dataframe__is_duplicated.md
+            - is_empty: man/dataframe__is_empty.md
+            - is_unique: man/dataframe__is_unique.md
+            - n_chunks: man/dataframe__n_chunks.md
+        - GroupBy:
+            - agg: man/groupby__agg.md
+            - head: man/groupby__head.md
+            - tail: man/groupby__tail.md
+        - Manipulation/Selection:
+            - bottom_k: man/dataframe__bottom_k.md
+            - cast: man/dataframe__cast.md
+            - clear: man/dataframe__clear.md
+            - clone: man/dataframe__clone.md
+            - drop_nans: man/dataframe__drop_nans.md
+            - drop_nulls: man/dataframe__drop_nulls.md
+            - drop: man/dataframe__drop.md
+            - explode: man/dataframe__explode.md
+            - fill_nan: man/dataframe__fill_nan.md
+            - fill_null: man/dataframe__fill_null.md
+            - filter: man/dataframe__filter.md
+            - gather_every: man/dataframe__gather_every.md
+            - get_column_index: man/dataframe__get_column_index.md
+            - get_column: man/dataframe__get_column.md
+            - get_columns: man/dataframe__get_columns.md
+            - group_by_dynamic: man/dataframe__group_by_dynamic.md
+            - group_by: man/dataframe__group_by.md
+            - head: man/dataframe__head.md
+            - join_asof: man/dataframe__join_asof.md
+            - join_where: man/dataframe__join_where.md
+            - join: man/dataframe__join.md
+            - merge_sorted: man/dataframe__merge_sorted.md
+            - partition_by: man/dataframe__partition_by.md
+            - pivot: man/dataframe__pivot.md
+            - rechunk: man/dataframe__rechunk.md
+            - rename: man/dataframe__rename.md
+            - reverse: man/dataframe__reverse.md
+            - rolling: man/dataframe__rolling.md
+            - sample: man/dataframe__sample.md
+            - select_seq: man/dataframe__select_seq.md
+            - select: man/dataframe__select.md
+            - set_sorted: man/dataframe__set_sorted.md
+            - shift: man/dataframe__shift.md
+            - slice: man/dataframe__slice.md
+            - sort: man/dataframe__sort.md
+            - tail: man/dataframe__tail.md
+            - to_dummies: man/dataframe__to_dummies.md
+            - to_series: man/dataframe__to_series.md
+            - to_struct: man/dataframe__to_struct.md
+            - top_k: man/dataframe__top_k.md
+            - transpose: man/dataframe__transpose.md
+            - unique: man/dataframe__unique.md
+            - unnest: man/dataframe__unnest.md
+            - unpivot: man/dataframe__unpivot.md
+            - unstack: man/dataframe__unstack.md
+            - with_columns_seq: man/dataframe__with_columns_seq.md
+            - with_columns: man/dataframe__with_columns.md
+            - with_row_index: man/dataframe__with_row_index.md
+        - Misc:
+            - equals: man/dataframe__equals.md
+            - lazy: man/dataframe__lazy.md
+      LazyFrame:
+        - Aggregation:
+            - count: man/lazyframe__count.md
+            - max: man/lazyframe__max.md
+            - mean: man/lazyframe__mean.md
+            - median: man/lazyframe__median.md
+            - min: man/lazyframe__min.md
+            - null_count: man/lazyframe__null_count.md
+            - quantile: man/lazyframe__quantile.md
+            - std: man/lazyframe__std.md
+            - sum: man/lazyframe__sum.md
+            - var: man/lazyframe__var.md
+        - Descriptive:
+            - describe: man/lazyframe__describe.md
+            - explain: man/lazyframe__explain.md
+        - GroupBy:
+            - agg: man/lazygroupby__agg.md
+            - head: man/lazygroupby__head.md
+            - tail: man/lazygroupby__tail.md
+        - Manipulation/Selection:
+            - bottom_k: man/lazyframe__bottom_k.md
+            - cast: man/lazyframe__cast.md
+            - clear: man/lazyframe__clear.md
+            - clone: man/lazyframe__clone.md
+            - drop_nans: man/lazyframe__drop_nans.md
+            - drop_nulls: man/lazyframe__drop_nulls.md
+            - drop: man/lazyframe__drop.md
+            - explode: man/lazyframe__explode.md
+            - fill_nan: man/lazyframe__fill_nan.md
+            - fill_null: man/lazyframe__fill_null.md
+            - filter: man/lazyframe__filter.md
+            - first: man/lazyframe__first.md
+            - gather_every: man/lazyframe__gather_every.md
+            - group_by_dynamic: man/lazyframe__group_by_dynamic.md
+            - group_by: man/lazyframe__group_by.md
+            - head: man/lazyframe__head.md
+            - interpolate: man/lazyframe__interpolate.md
+            - join_asof: man/lazyframe__join_asof.md
+            - join_where: man/lazyframe__join_where.md
+            - join: man/lazyframe__join.md
+            - last: man/lazyframe__last.md
+            - merge_sorted: man/lazyframe__merge_sorted.md
+            - quantile: man/lazyframe__quantile.md
+            - rename: man/lazyframe__rename.md
+            - reverse: man/lazyframe__reverse.md
+            - rolling: man/lazyframe__rolling.md
+            - select_seq: man/lazyframe__select_seq.md
+            - select: man/lazyframe__select.md
+            - set_sorted: man/lazyframe__set_sorted.md
+            - shift: man/lazyframe__shift.md
+            - slice: man/lazyframe__slice.md
+            - sort: man/lazyframe__sort.md
+            - sql: man/lazyframe__sql.md
+            - tail: man/lazyframe__tail.md
+            - to_dot: man/lazyframe__to_dot.md
+            - top_k: man/lazyframe__top_k.md
+            - unique: man/lazyframe__unique.md
+            - unnest: man/lazyframe__unnest.md
+            - unpivot: man/lazyframe__unpivot.md
+            - with_columns_seq: man/lazyframe__with_columns_seq.md
+            - with_columns: man/lazyframe__with_columns.md
+            - with_row_index: man/lazyframe__with_row_index.md
+        - Misc:
+            - collect: man/lazyframe__collect.md
+            - collect_schema: man/lazyframe__collect_schema.md
+            - profile: man/lazyframe__profile.md
+            - serialize: man/lazyframe__serialize.md
+      Series:
+        - Series: man/pl__Series.md
+        - to_r_vector: man/series__to_r_vector.md
+      Expressions:
+        - All others:
+            - abs: man/expr__abs.md
+            - add: man/expr__add.md
+            - agg_groups: man/expr__agg_groups.md
+            - all: man/expr__all.md
+            - and: man/expr__and.md
+            - any: man/expr__any.md
+            - append: man/expr__append.md
+            - approx_n_unique: man/expr__approx_n_unique.md
+            - arccos: man/expr__arccos.md
+            - arccosh: man/expr__arccosh.md
+            - arcsin: man/expr__arcsin.md
+            - arcsinh: man/expr__arcsinh.md
+            - arctan: man/expr__arctan.md
+            - arctanh: man/expr__arctanh.md
+            - arg_max: man/expr__arg_max.md
+            - arg_min: man/expr__arg_min.md
+            - arg_sort: man/expr__arg_sort.md
+            - arg_true: man/expr__arg_true.md
+            - arg_unique: man/expr__arg_unique.md
+            - backward_fill: man/expr__backward_fill.md
+            - bitwise_and: man/expr__bitwise_and.md
+            - bitwise_count_ones: man/expr__bitwise_count_ones.md
+            - bitwise_count_zeros: man/expr__bitwise_count_zeros.md
+            - bitwise_leading_ones: man/expr__bitwise_leading_ones.md
+            - bitwise_leading_zeros: man/expr__bitwise_leading_zeros.md
+            - bitwise_or: man/expr__bitwise_or.md
+            - bitwise_trailing_ones: man/expr__bitwise_trailing_ones.md
+            - bitwise_trailing_zeros: man/expr__bitwise_trailing_zeros.md
+            - bitwise_xor: man/expr__bitwise_xor.md
+            - bottom_k_by: man/expr__bottom_k_by.md
+            - bottom_k: man/expr__bottom_k.md
+            - cast: man/expr__cast.md
+            - cbrt: man/expr__cbrt.md
+            - ceil: man/expr__ceil.md
+            - clip: man/expr__clip.md
+            - cos: man/expr__cos.md
+            - cosh: man/expr__cosh.md
+            - cot: man/expr__cot.md
+            - count: man/expr__count.md
+            - cum_count: man/expr__cum_count.md
+            - cum_max: man/expr__cum_max.md
+            - cum_min: man/expr__cum_min.md
+            - cum_prod: man/expr__cum_prod.md
+            - cum_sum: man/expr__cum_sum.md
+            - cumulative_eval: man/expr__cumulative_eval.md
+            - cut: man/expr__cut.md
+            - degrees: man/expr__degrees.md
+            - diff: man/expr__diff.md
+            - dot: man/expr__dot.md
+            - drop_nans: man/expr__drop_nans.md
+            - drop_nulls: man/expr__drop_nulls.md
+            - entropy: man/expr__entropy.md
+            - eq_missing: man/expr__eq_missing.md
+            - eq: man/expr__eq.md
+            - ewm_mean_by: man/expr__ewm_mean_by.md
+            - ewm_mean: man/expr__ewm_mean.md
+            - ewm_std: man/expr__ewm_std.md
+            - ewm_var: man/expr__ewm_var.md
+            - exp: man/expr__exp.md
+            - explode: man/expr__explode.md
+            - extend_constant: man/expr__extend_constant.md
+            - fill_nan: man/expr__fill_nan.md
+            - fill_null: man/expr__fill_null.md
+            - filter: man/expr__filter.md
+            - first: man/expr__first.md
+            - flatten: man/expr__flatten.md
+            - floor_div: man/expr__floor_div.md
+            - floor: man/expr__floor.md
+            - forward_fill: man/expr__forward_fill.md
+            - gather_every: man/expr__gather_every.md
+            - gather: man/expr__gather.md
+            - ge: man/expr__ge.md
+            - get: man/expr__get.md
+            - gt: man/expr__gt.md
+            - has_nulls: man/expr__has_nulls.md
+            - hash: man/expr__hash.md
+            - head: man/expr__head.md
+            - hist: man/expr__hist.md
+            - implode: man/expr__implode.md
+            - interpolate_by: man/expr__interpolate_by.md
+            - interpolate: man/expr__interpolate.md
+            - is_between: man/expr__is_between.md
+            - is_duplicated: man/expr__is_duplicated.md
+            - is_finite: man/expr__is_finite.md
+            - is_first_distinct: man/expr__is_first_distinct.md
+            - is_in: man/expr__is_in.md
+            - is_infinite: man/expr__is_infinite.md
+            - is_last_distinct: man/expr__is_last_distinct.md
+            - is_nan: man/expr__is_nan.md
+            - is_not_nan: man/expr__is_not_nan.md
+            - is_not_null: man/expr__is_not_null.md
+            - is_null: man/expr__is_null.md
+            - is_unique: man/expr__is_unique.md
+            - kurtosis: man/expr__kurtosis.md
+            - last: man/expr__last.md
+            - le: man/expr__le.md
+            - len: man/expr__len.md
+            - limit: man/expr__limit.md
+            - log: man/expr__log.md
+            - log10: man/expr__log10.md
+            - log1p: man/expr__log1p.md
+            - lower_bound: man/expr__lower_bound.md
+            - lt: man/expr__lt.md
+            - map_batches: man/expr__map_batches.md
+            - max: man/expr__max.md
+            - mean: man/expr__mean.md
+            - median: man/expr__median.md
+            - min: man/expr__min.md
+            - mod: man/expr__mod.md
+            - mode: man/expr__mode.md
+            - mul: man/expr__mul.md
+            - n_unique: man/expr__n_unique.md
+            - nan_max: man/expr__nan_max.md
+            - nan_min: man/expr__nan_min.md
+            - ne_missing: man/expr__ne_missing.md
+            - ne: man/expr__ne.md
+            - not: man/expr__not.md
+            - null_count: man/expr__null_count.md
+            - or: man/expr__or.md
+            - pct_change: man/expr__pct_change.md
+            - peak_max: man/expr__peak_max.md
+            - peak_min: man/expr__peak_min.md
+            - pow: man/expr__pow.md
+            - product: man/expr__product.md
+            - qcut: man/expr__qcut.md
+            - quantile: man/expr__quantile.md
+            - radians: man/expr__radians.md
+            - rank: man/expr__rank.md
+            - rechunk: man/expr__rechunk.md
+            - reinterpret: man/expr__reinterpret.md
+            - repeat_: man/pl__repeat_.md
+            - repeat_by: man/expr__repeat_by.md
+            - replace_strict: man/expr__replace_strict.md
+            - replace: man/expr__replace.md
+            - reshape: man/expr__reshape.md
+            - reverse: man/expr__reverse.md
+            - rle_id: man/expr__rle_id.md
+            - rle: man/expr__rle.md
+            - rolling_max_by: man/expr__rolling_max_by.md
+            - rolling_max: man/expr__rolling_max.md
+            - rolling_mean_by: man/expr__rolling_mean_by.md
+            - rolling_mean: man/expr__rolling_mean.md
+            - rolling_median_by: man/expr__rolling_median_by.md
+            - rolling_median: man/expr__rolling_median.md
+            - rolling_min_by: man/expr__rolling_min_by.md
+            - rolling_min: man/expr__rolling_min.md
+            - rolling_quantile_by: man/expr__rolling_quantile_by.md
+            - rolling_quantile: man/expr__rolling_quantile.md
+            - rolling_skew: man/expr__rolling_skew.md
+            - rolling_std_by: man/expr__rolling_std_by.md
+            - rolling_std: man/expr__rolling_std.md
+            - rolling_sum_by: man/expr__rolling_sum_by.md
+            - rolling_sum: man/expr__rolling_sum.md
+            - rolling_var_by: man/expr__rolling_var_by.md
+            - rolling_var: man/expr__rolling_var.md
+            - round_sig_figs: man/expr__round_sig_figs.md
+            - round: man/expr__round.md
+            - sample: man/expr__sample.md
+            - search_sorted: man/expr__search_sorted.md
+            - set_sorted: man/expr__set_sorted.md
+            - shift: man/expr__shift.md
+            - shrink_dtype: man/expr__shrink_dtype.md
+            - shuffle: man/expr__shuffle.md
+            - sign: man/expr__sign.md
+            - sin: man/expr__sin.md
+            - sinh: man/expr__sinh.md
+            - skew: man/expr__skew.md
+            - slice: man/expr__slice.md
+            - sort_by: man/expr__sort_by.md
+            - sort: man/expr__sort.md
+            - sqrt: man/expr__sqrt.md
+            - std: man/expr__std.md
+            - sub: man/expr__sub.md
+            - sum: man/expr__sum.md
+            - tail: man/expr__tail.md
+            - tan: man/expr__tan.md
+            - tanh: man/expr__tanh.md
+            - to_physical: man/expr__to_physical.md
+            - top_k_by: man/expr__top_k_by.md
+            - top_k: man/expr__top_k.md
+            - true_div: man/expr__true_div.md
+            - unique_counts: man/expr__unique_counts.md
+            - unique: man/expr__unique.md
+            - upper_bound: man/expr__upper_bound.md
+            - value_counts: man/expr__value_counts.md
+            - var: man/expr__var.md
+            - xor: man/expr__xor.md
+        - Array:
+            - arr_all: man/expr_arr_all.md
+            - arr_any: man/expr_arr_any.md
+            - arr_arg_max: man/expr_arr_arg_max.md
+            - arr_arg_min: man/expr_arr_arg_min.md
+            - arr_contains: man/expr_arr_contains.md
+            - arr_count_matches: man/expr_arr_count_matches.md
+            - arr_explode: man/expr_arr_explode.md
+            - arr_first: man/expr_arr_first.md
+            - arr_get: man/expr_arr_get.md
+            - arr_join: man/expr_arr_join.md
+            - arr_last: man/expr_arr_last.md
+            - arr_max: man/expr_arr_max.md
+            - arr_median: man/expr_arr_median.md
+            - arr_min: man/expr_arr_min.md
+            - arr_n_unique: man/expr_arr_n_unique.md
+            - arr_reverse: man/expr_arr_reverse.md
+            - arr_shift: man/expr_arr_shift.md
+            - arr_sort: man/expr_arr_sort.md
+            - arr_std: man/expr_arr_std.md
+            - arr_sum: man/expr_arr_sum.md
+            - arr_to_list: man/expr_arr_to_list.md
+            - arr_unique: man/expr_arr_unique.md
+            - arr_var: man/expr_arr_var.md
+        - Binary:
+            - bin_contains: man/expr_bin_contains.md
+            - bin_decode: man/expr_bin_decode.md
+            - bin_encode: man/expr_bin_encode.md
+            - bin_ends_with: man/expr_bin_ends_with.md
+            - bin_size: man/expr_bin_size.md
+            - bin_starts_with: man/expr_bin_starts_with.md
+        - Categories:
+            - cat_get_categories: man/expr_cat_get_categories.md
+            - cat_set_ordering: man/expr_cat_set_ordering.md
+        - Columns / names:
+            - alias: man/expr__alias.md
+            - exclude: man/expr__exclude.md
+            - col: man/pl__col.md
+        - Functions:
+            - all_horizontal: man/pl__all_horizontal.md
+            - all: man/pl__all.md
+            - any_horizontal: man/pl__any_horizontal.md
+            - any: man/pl__any.md
+            - arg_sort_by: man/pl__arg_sort_by.md
+            - arg_where: man/pl__arg_where.md
+            - coalesce: man/pl__coalesce.md
+            - concat_list: man/pl__concat_list.md
+            - concat_str: man/pl__concat_str.md
+            - cum_sum: man/pl__cum_sum.md
+            - date_range: man/pl__date_range.md
+            - date_ranges: man/pl__date_ranges.md
+            - datetime: man/pl__datetime.md
+            - datetime_range: man/pl__datetime_range.md
+            - datetime_ranges: man/pl__datetime_ranges.md
+            - duration: man/pl__duration.md
+            - element: man/pl__element.md
+            - first: man/pl__first.md
+            - int_range: man/pl__int_range.md
+            - int_ranges: man/pl__int_ranges.md
+            - last: man/pl__last.md
+            - len: man/pl__len.md
+            - lit: man/pl__lit.md
+            - max: man/pl__max.md
+            - max_horizontal: man/pl__max_horizontal.md
+            - mean_horizontal: man/pl__mean_horizontal.md
+            - min: man/pl__min.md
+            - min_horizontal: man/pl__min_horizontal.md
+            - nth: man/pl__nth.md
+            - struct: man/pl__struct.md
+            - sum_horizontal: man/pl__sum_horizontal.md
+            - sum: man/pl__sum.md
+            - time_range: man/pl__time_range.md
+            - time_ranges: man/pl__time_ranges.md
+        - List:
+            - list_all: man/expr_list_all.md
+            - list_any: man/expr_list_any.md
+            - list_arg_max: man/expr_list_arg_max.md
+            - list_arg_min: man/expr_list_arg_min.md
+            - list_concat: man/expr_list_concat.md
+            - list_contains: man/expr_list_contains.md
+            - list_count_matches: man/expr_list_count_matches.md
+            - list_diff: man/expr_list_diff.md
+            - list_drop_nulls: man/expr_list_drop_nulls.md
+            - list_eval: man/expr_list_eval.md
+            - list_explode: man/expr_list_explode.md
+            - list_first: man/expr_list_first.md
+            - list_gather_every: man/expr_list_gather_every.md
+            - list_gather: man/expr_list_gather.md
+            - list_get: man/expr_list_get.md
+            - list_head: man/expr_list_head.md
+            - list_join: man/expr_list_join.md
+            - list_last: man/expr_list_last.md
+            - list_len: man/expr_list_len.md
+            - list_max: man/expr_list_max.md
+            - list_mean: man/expr_list_mean.md
+            - list_median: man/expr_list_median.md
+            - list_min: man/expr_list_min.md
+            - list_n_unique: man/expr_list_n_unique.md
+            - list_reverse: man/expr_list_reverse.md
+            - list_sample: man/expr_list_sample.md
+            - list_set_difference: man/expr_list_set_difference.md
+            - list_set_intersection: man/expr_list_set_intersection.md
+            - list_set_symmetric_difference: man/expr_list_set_symmetric_difference.md
+            - list_set_union: man/expr_list_set_union.md
+            - list_shift: man/expr_list_shift.md
+            - list_slice: man/expr_list_slice.md
+            - list_sort: man/expr_list_sort.md
+            - list_std: man/expr_list_std.md
+            - list_sum: man/expr_list_sum.md
+            - list_tail: man/expr_list_tail.md
+            - list_to_array: man/expr_list_to_array.md
+            - list_unique: man/expr_list_unique.md
+            - list_var: man/expr_list_var.md
+        - Meta:
+            - meta_eq: man/expr_meta_eq.md
+            - meta_has_multiple_outputs: man/expr_meta_has_multiple_outputs.md
+            - meta_is_column_selection: man/expr_meta_is_column_selection.md
+            - meta_is_column: man/expr_meta_is_column.md
+            - meta_is_regex_projection: man/expr_meta_is_regex_projection.md
+            - meta_ne: man/expr_meta_ne.md
+            - meta_output_name: man/expr_meta_output_name.md
+            - meta_pop: man/expr_meta_pop.md
+            - meta_root_names: man/expr_meta_root_names.md
+            - meta_serialize: man/expr_meta_serialize.md
+            - meta_tree_format: man/expr_meta_tree_format.md
+            - meta_undo_aliases: man/expr_meta_undo_aliases.md
+        - Name:
+            - name_keep: man/expr_name_keep.md
+            - name_prefix_fields: man/expr_name_prefix_fields.md
+            - name_prefix: man/expr_name_prefix.md
+            - name_suffix_fields: man/expr_name_suffix_fields.md
+            - name_suffix: man/expr_name_suffix.md
+            - name_to_lowercase: man/expr_name_to_lowercase.md
+            - name_to_uppercase: man/expr_name_to_uppercase.md
+        - String:
+            - str_contains_any: man/expr_str_contains_any.md
+            - str_contains: man/expr_str_contains.md
+            - str_count_matches: man/expr_str_count_matches.md
+            - str_decode: man/expr_str_decode.md
+            - str_encode: man/expr_str_encode.md
+            - str_ends_with: man/expr_str_ends_with.md
+            - str_extract_all: man/expr_str_extract_all.md
+            - str_extract_groups: man/expr_str_extract_groups.md
+            - str_extract_many: man/expr_str_extract_many.md
+            - str_extract: man/expr_str_extract.md
+            - str_find: man/expr_str_find.md
+            - str_head: man/expr_str_head.md
+            - str_join: man/expr_str_join.md
+            - str_json_decode: man/expr_str_json_decode.md
+            - str_json_path_match: man/expr_str_json_path_match.md
+            - str_len_bytes: man/expr_str_len_bytes.md
+            - str_len_chars: man/expr_str_len_chars.md
+            - str_pad_end: man/expr_str_pad_end.md
+            - str_pad_start: man/expr_str_pad_start.md
+            - str_replace_all: man/expr_str_replace_all.md
+            - str_replace_many: man/expr_str_replace_many.md
+            - str_replace: man/expr_str_replace.md
+            - str_reverse: man/expr_str_reverse.md
+            - str_slice: man/expr_str_slice.md
+            - str_split_exact: man/expr_str_split_exact.md
+            - str_split: man/expr_str_split.md
+            - str_splitn: man/expr_str_splitn.md
+            - str_starts_with: man/expr_str_starts_with.md
+            - str_strip_chars_end: man/expr_str_strip_chars_end.md
+            - str_strip_chars_start: man/expr_str_strip_chars_start.md
+            - str_strip_chars: man/expr_str_strip_chars.md
+            - str_strip_prefix: man/expr_str_strip_prefix.md
+            - str_strip_suffix: man/expr_str_strip_suffix.md
+            - str_strptime: man/expr_str_strptime.md
+            - str_tail: man/expr_str_tail.md
+            - str_to_date: man/expr_str_to_date.md
+            - str_to_datetime: man/expr_str_to_datetime.md
+            - str_to_decimal: man/expr_str_to_decimal.md
+            - str_to_integer: man/expr_str_to_integer.md
+            - str_to_lowercase: man/expr_str_to_lowercase.md
+            - str_to_time: man/expr_str_to_time.md
+            - str_to_titlecase: man/expr_str_to_titlecase.md
+            - str_to_uppercase: man/expr_str_to_uppercase.md
+            - str_zfill: man/expr_str_zfill.md
+        - Struct:
+            - struct_field: man/expr_struct_field.md
+            - struct_json_encode: man/expr_struct_json_encode.md
+            - struct_rename_fields: man/expr_struct_rename_fields.md
+            - struct_unnest: man/expr_struct_unnest.md
+            - struct_with_fields: man/expr_struct_with_fields.md
+        - Temporal:
+            - dt_add_business_days: man/expr_dt_add_business_days.md
+            - dt_base_utc_offset: man/expr_dt_base_utc_offset.md
+            - dt_cast_time_unit: man/expr_dt_cast_time_unit.md
+            - dt_century: man/expr_dt_century.md
+            - dt_combine: man/expr_dt_combine.md
+            - dt_convert_time_zone: man/expr_dt_convert_time_zone.md
+            - dt_date: man/expr_dt_date.md
+            - dt_day: man/expr_dt_day.md
+            - dt_dst_offset: man/expr_dt_dst_offset.md
+            - dt_epoch: man/expr_dt_epoch.md
+            - dt_hour: man/expr_dt_hour.md
+            - dt_is_leap_year: man/expr_dt_is_leap_year.md
+            - dt_iso_year: man/expr_dt_iso_year.md
+            - dt_microsecond: man/expr_dt_microsecond.md
+            - dt_millisecond: man/expr_dt_millisecond.md
+            - dt_minute: man/expr_dt_minute.md
+            - dt_month_end: man/expr_dt_month_end.md
+            - dt_month_start: man/expr_dt_month_start.md
+            - dt_month: man/expr_dt_month.md
+            - dt_nanosecond: man/expr_dt_nanosecond.md
+            - dt_offset_by: man/expr_dt_offset_by.md
+            - dt_ordinal_day: man/expr_dt_ordinal_day.md
+            - dt_quarter: man/expr_dt_quarter.md
+            - dt_replace_time_zone: man/expr_dt_replace_time_zone.md
+            - dt_round: man/expr_dt_round.md
+            - dt_second: man/expr_dt_second.md
+            - dt_strftime: man/expr_dt_strftime.md
+            - dt_time: man/expr_dt_time.md
+            - dt_timestamp: man/expr_dt_timestamp.md
+            - dt_to_string: man/expr_dt_to_string.md
+            - dt_total_days: man/expr_dt_total_days.md
+            - dt_total_hours: man/expr_dt_total_hours.md
+            - dt_total_microseconds: man/expr_dt_total_microseconds.md
+            - dt_total_milliseconds: man/expr_dt_total_milliseconds.md
+            - dt_total_minutes: man/expr_dt_total_minutes.md
+            - dt_total_nanoseconds: man/expr_dt_total_nanoseconds.md
+            - dt_total_seconds: man/expr_dt_total_seconds.md
+            - dt_truncate: man/expr_dt_truncate.md
+            - dt_week: man/expr_dt_week.md
+            - dt_weekday: man/expr_dt_weekday.md
+            - dt_with_time_unit: man/expr_dt_with_time_unit.md
+            - dt_year: man/expr_dt_year.md
+        - Window:
+            - over: man/expr__over.md
+            - rolling: man/expr__rolling.md
+      Selectors:
+        - cs__all: man/cs__all.md
+        - cs__alpha: man/cs__alpha.md
+        - cs__alphanumeric: man/cs__alphanumeric.md
+        - cs__binary: man/cs__binary.md
+        - cs__boolean: man/cs__boolean.md
+        - cs__by_dtype: man/cs__by_dtype.md
+        - cs__by_index: man/cs__by_index.md
+        - cs__by_name: man/cs__by_name.md
+        - cs__categorical: man/cs__categorical.md
+        - cs__contains: man/cs__contains.md
+        - cs__date: man/cs__date.md
+        - cs__datetime: man/cs__datetime.md
+        - cs__decimal: man/cs__decimal.md
+        - cs__digit: man/cs__digit.md
+        - cs__duration: man/cs__duration.md
+        - cs__ends_with: man/cs__ends_with.md
+        - cs__exclude: man/cs__exclude.md
+        - cs__first: man/cs__first.md
+        - cs__float: man/cs__float.md
+        - cs__integer: man/cs__integer.md
+        - cs__last: man/cs__last.md
+        - cs__matches: man/cs__matches.md
+        - cs__numeric: man/cs__numeric.md
+        - cs__signed_integer: man/cs__signed_integer.md
+        - cs__starts_with: man/cs__starts_with.md
+        - cs__string: man/cs__string.md
+        - cs__temporal: man/cs__temporal.md
+        - cs__time: man/cs__time.md
+        - cs__unsigned_integer: man/cs__unsigned_integer.md
+        - cs: man/cs.md
+      Functions:
+        - concat: man/pl__concat.md
+        - Expr: man/polars_expr.md
+        - DataFrame: man/pl__DataFrame.md
+        - LazyFrame: man/pl__LazyFrame.md
+      Data types:
+        - infer_polars_dtype: man/infer_polars_dtype.md
+        - polars_dtype: man/polars_dtype.md
+      Input/Output:
+        - read_csv: man/pl__read_csv.md
+        - scan_csv: man/pl__scan_csv.md
+        - sink_csv: man/lazyframe__sink_csv.md
+        - write_csv: man/dataframe__write_csv.md
+        - read_ipc: man/pl__read_ipc.md
+        - read_ipc_stream: man/pl__read_ipc_stream.md
+        - scan_ipc: man/pl__scan_ipc.md
+        - sink_ipc: man/lazyframe__sink_ipc.md
+        - write_ipc: man/dataframe__write_ipc.md
+        - read_ndjson: man/pl__read_ndjson.md
+        - scan_ndjson: man/pl__scan_ndjson.md
+        - sink_ndjson: man/lazyframe__sink_ndjson.md
+        - write_json: man/dataframe__write_json.md
+        - write_ndjson: man/dataframe__write_ndjson.md
+        - read_parquet: man/pl__read_parquet.md
+        - scan_parquet: man/pl__scan_parquet.md
+        - sink_parquet: man/lazyframe__sink_parquet.md
+        - write_parquet: man/dataframe__write_parquet.md
+      S3 methods:
+        - s3-as_nanoarrow_array_stream: man/s3-as_nanoarrow_array_stream.md
+        - s3-as_tibble: man/s3-as_tibble.md
+        - s3-as.data.frame: man/s3-as.data.frame.md
+        - s3-as.list: man/s3-as.list.md
+      SQL Interface:
+        - SQLContext: man/pl__SQLContext.md
+        - sql_context__execute: man/sql_context__execute.md
+        - sql_context__register_many: man/sql_context__register_many.md
+        - sql_context__register: man/sql_context__register.md
+        - sql_context__tables: man/sql_context__tables.md
+      From R:
+        - as_polars_df: man/as_polars_df.md
+        - as_polars_expr: man/as_polars_expr.md
+        - as_polars_lf: man/as_polars_lf.md
+        - as_polars_series: man/as_polars_series.md
+      Other:
+        - check_polars: man/check_polars.md
+        - pl_api_register_series_namespace: man/pl_api_register_series_namespace.md
+        - pl: man/pl.md
+        - polars_duration_string: man/polars_duration_string.md
+        - show_versions: man/pl__show_versions.md
+  - About: about.md
+  - Changelog: NEWS.md

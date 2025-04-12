@@ -1,1 +1,6 @@
+<!-- pak's home sprintf pattern -->
 https://r-lib.github.io/p/pak/stable/%s/%s/%s
+
+<!-- document roots -->
+https://pola-rs.github.io/r-polars/vignettes
+https://pola-rs.github.io/r-polars/man

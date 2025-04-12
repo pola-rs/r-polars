@@ -9,3 +9,9 @@ src/Makevars.win
 
 # Copied files
 src/rust-toolchain.toml
+
+# altdoc stuff
+altdoc/freeze.rds
+docs
+.venv_altdoc
+altdoc/reference_home.md

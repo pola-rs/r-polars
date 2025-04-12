@@ -1,0 +1,7 @@
+---
+always_allow_html: true
+default-image-extension: ""
+knitr:
+  opts_chunk:
+    comment: "#>"
+---
