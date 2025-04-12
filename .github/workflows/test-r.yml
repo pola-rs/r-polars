@@ -127,6 +127,9 @@ jobs:
           - nightly
         include:
           - os: ubuntu-latest
+            r: devel
+            features: nightly
+          - os: ubuntu-latest
             r: "4.3"
             features: nightly
     steps:
