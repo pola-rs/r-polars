@@ -75,6 +75,13 @@ nav:
         - GroupBy:
             - agg: man/groupby__agg.md
             - head: man/groupby__head.md
+            - mean: man/groupby__mean.md
+            - median: man/groupby__median.md
+            - min: man/groupby__min.md
+            - max: man/groupby__max.md
+            - n_unique: man/groupby__n_unique.md
+            - quantile: man/groupby__quantile.md
+            - sum: man/groupby__sum.md
             - tail: man/groupby__tail.md
         - Manipulation/Selection:
             - bottom_k: man/dataframe__bottom_k.md
@@ -146,6 +153,13 @@ nav:
         - GroupBy:
             - agg: man/lazygroupby__agg.md
             - head: man/lazygroupby__head.md
+            - mean: man/lazygroupby__mean.md
+            - median: man/lazygroupby__median.md
+            - min: man/lazygroupby__min.md
+            - max: man/lazygroupby__max.md
+            - n_unique: man/lazygroupby__n_unique.md
+            - quantile: man/lazygroupby__quantile.md
+            - sum: man/lazygroupby__sum.md
             - tail: man/lazygroupby__tail.md
         - Manipulation/Selection:
             - bottom_k: man/lazyframe__bottom_k.md
@@ -197,7 +211,13 @@ nav:
             - serialize: man/lazyframe__serialize.md
       Series:
         - Series: man/pl__Series.md
+        - alias: man/series__alias.md
+        - chunk_lengths: man/series__chunk_lengths.md
+        - n_chunks: man/series__n_chunks.md
+        - rechunk: man/series__rechunk.md
+        - to_frame: man/series__to_frame.md
         - to_r_vector: man/series__to_r_vector.md
+        - struct_unnest: man/series_struct_unnest.md
       Expressions:
         - All others:
             - abs: man/expr__abs.md
@@ -695,6 +715,7 @@ nav:
       Other:
         - check_polars: man/check_polars.md
         - pl_api_register_series_namespace: man/pl_api_register_series_namespace.md
+        - neopolars-package: man/neopolars-package.md
         - pl: man/pl.md
         - polars_duration_string: man/polars_duration_string.md
         - show_versions: man/pl__show_versions.md
