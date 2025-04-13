@@ -1,0 +1,55 @@
+name: Test documentation
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/test-docs.yml
+      - altdoc/mkdocs.yml
+      - man/**
+  pull_request:
+    branches:
+      - main
+    paths:
+      - .github/workflows/test-docs.yml
+      - altdoc/mkdocs.yml
+      - man/**
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test-docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check missing man pages in mkdocs.yml
+        run: |
+          YAML_FILE="altdoc/mkdocs.yml"
+          FILE_LIST=(man/*.Rd)
+
+          # Track missing files
+          missing=0
+
+          for file in "${FILE_LIST[@]}"; do
+              base=$(basename "$file" .Rd)
+              expected_name="$base.md"
+
+              if ! grep -q "$expected_name" "$YAML_FILE"; then
+                  echo "Missing in mkdocs.yml: $expected_name"
+                  missing=1
+              fi
+          done
+
+          if [ "$missing" -ne 0 ]; then
+              echo "One or more man pages are not referenced mkdocs.yml."
+              exit 1
+          fi
