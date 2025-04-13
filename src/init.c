@@ -2799,6 +2799,11 @@ SEXP savvy_PlRSeries_clone__impl(SEXP self__) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRSeries_deserialize__impl(SEXP c_arg__data) {
+    SEXP res = savvy_PlRSeries_deserialize__ffi(c_arg__data);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRSeries_div__impl(SEXP self__, SEXP c_arg__other) {
     SEXP res = savvy_PlRSeries_div__ffi(self__, c_arg__other);
     return handle_result(res);
@@ -2926,6 +2931,11 @@ SEXP savvy_PlRSeries_rename__impl(SEXP self__, SEXP c_arg__name) {
 
 SEXP savvy_PlRSeries_reshape__impl(SEXP self__, SEXP c_arg__dimensions) {
     SEXP res = savvy_PlRSeries_reshape__ffi(self__, c_arg__dimensions);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSeries_serialize__impl(SEXP self__) {
+    SEXP res = savvy_PlRSeries_serialize__ffi(self__);
     return handle_result(res);
 }
 
@@ -3529,6 +3539,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRSeries_cat_uses_lexical_ordering__impl", (DL_FUNC) &savvy_PlRSeries_cat_uses_lexical_ordering__impl, 1},
     {"savvy_PlRSeries_chunk_lengths__impl", (DL_FUNC) &savvy_PlRSeries_chunk_lengths__impl, 1},
     {"savvy_PlRSeries_clone__impl", (DL_FUNC) &savvy_PlRSeries_clone__impl, 1},
+    {"savvy_PlRSeries_deserialize__impl", (DL_FUNC) &savvy_PlRSeries_deserialize__impl, 1},
     {"savvy_PlRSeries_div__impl", (DL_FUNC) &savvy_PlRSeries_div__impl, 2},
     {"savvy_PlRSeries_dtype__impl", (DL_FUNC) &savvy_PlRSeries_dtype__impl, 1},
     {"savvy_PlRSeries_equals__impl", (DL_FUNC) &savvy_PlRSeries_equals__impl, 5},
@@ -3555,6 +3566,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRSeries_rem__impl", (DL_FUNC) &savvy_PlRSeries_rem__impl, 2},
     {"savvy_PlRSeries_rename__impl", (DL_FUNC) &savvy_PlRSeries_rename__impl, 2},
     {"savvy_PlRSeries_reshape__impl", (DL_FUNC) &savvy_PlRSeries_reshape__impl, 2},
+    {"savvy_PlRSeries_serialize__impl", (DL_FUNC) &savvy_PlRSeries_serialize__impl, 1},
     {"savvy_PlRSeries_slice__impl", (DL_FUNC) &savvy_PlRSeries_slice__impl, 3},
     {"savvy_PlRSeries_struct_fields__impl", (DL_FUNC) &savvy_PlRSeries_struct_fields__impl, 1},
     {"savvy_PlRSeries_struct_unnest__impl", (DL_FUNC) &savvy_PlRSeries_struct_unnest__impl, 1},

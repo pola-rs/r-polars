@@ -139,6 +139,30 @@ series__mod <- function(other) {
     wrap()
 }
 
+#' Serialize and deserialize a Series
+#'
+#' @details
+#' Similar to `polars.Series.__getstate__()` and `polars.Series.__setstate__()` in Python Polars.
+#' @return
+#' - `<Series>$serialize()` returns a raw vector of serialized [Series].
+#' - `pl$deserialize_series()` returns a deserialized [Series].
+#' @examples
+#' serialized <- as_polars_series(1:3)$serialize()
+#' serialized
+#'
+#' pl$deserialize_series(serialized)
+series__serialize <- function() {
+  self$`_s`$serialize() |>
+    wrap()
+}
+
+#' @rdname series__serialize
+#' @param data A raw vector of serialized [Series].
+pl__deserialize_series <- function(data) {
+  PlRSeries$deserialize(data) |>
+    wrap()
+}
+
 series__clone <- function() {
   self$`_s`$clone() |>
     wrap()

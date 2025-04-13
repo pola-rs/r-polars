@@ -217,6 +217,7 @@ nav:
         - rechunk: man/series__rechunk.md
         - to_frame: man/series__to_frame.md
         - to_r_vector: man/series__to_r_vector.md
+        - serialize: man/series__serialize.md
         - struct_unnest: man/series_struct_unnest.md
       Expressions:
         - All others:

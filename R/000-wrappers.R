@@ -4232,6 +4232,12 @@ class(`PlRSQLContext`) <- c("PlRSQLContext__bundle", "savvy_neopolars__sealed")
   }
 }
 
+`PlRSeries_serialize` <- function(self) {
+  function() {
+    .Call(savvy_PlRSeries_serialize__impl, `self`)
+  }
+}
+
 `PlRSeries_slice` <- function(self) {
   function(`offset`, `length` = NULL) {
     .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_slice__impl, `self`, `offset`, `length`))
@@ -4295,6 +4301,7 @@ class(`PlRSQLContext`) <- c("PlRSQLContext__bundle", "savvy_neopolars__sealed")
   e$`rem` <- `PlRSeries_rem`(ptr)
   e$`rename` <- `PlRSeries_rename`(ptr)
   e$`reshape` <- `PlRSeries_reshape`(ptr)
+  e$`serialize` <- `PlRSeries_serialize`(ptr)
   e$`slice` <- `PlRSeries_slice`(ptr)
   e$`struct_fields` <- `PlRSeries_struct_fields`(ptr)
   e$`struct_unnest` <- `PlRSeries_struct_unnest`(ptr)
@@ -4311,6 +4318,10 @@ class(`PlRSQLContext`) <- c("PlRSQLContext__bundle", "savvy_neopolars__sealed")
 `PlRSeries` <- new.env(parent = emptyenv())
 
 ### associated functions for PlRSeries
+
+`PlRSeries`$`deserialize` <- function(`data`) {
+  .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_deserialize__impl, `data`))
+}
 
 `PlRSeries`$`from_arrow_c_stream` <- function(`stream_ptr`) {
   .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_from_arrow_c_stream__impl, `stream_ptr`))

@@ -1,11 +1,30 @@
 use crate::{PlRDataFrame, PlRDataType, PlRSeries, RPolarsErr, prelude::*};
 use polars_core::series::IsSorted;
-use savvy::{NullSexp, NumericScalar, NumericSexp, OwnedIntegerSexp, Result, Sexp, savvy};
+use savvy::{
+    NullSexp, NumericScalar, NumericSexp, OwnedIntegerSexp, OwnedRawSexp, RawSexp, Result, Sexp,
+    savvy,
+};
+use std::io::Cursor;
 
 #[savvy]
 impl PlRSeries {
     fn as_str(&self) -> Result<Sexp> {
         format!("{:?}", self.series).try_into()
+    }
+
+    // Similar to `__getstate__` in Python
+    fn serialize(&self) -> Result<Sexp> {
+        let bytes = self.series.serialize_to_bytes().map_err(RPolarsErr::from)?;
+        OwnedRawSexp::try_from_iter(bytes).map(Into::into)
+    }
+
+    // Similar to `__setstate__` in Python
+    fn deserialize(data: RawSexp) -> Result<Self> {
+        let mut cursor = Cursor::new(data.as_slice());
+        let series = Series::deserialize_from_reader(&mut cursor).map_err(|_| {
+            RPolarsErr::Other("The input value is not a valid serialized Series.".to_string())
+        })?;
+        Ok(series.into())
     }
 
     fn struct_unnest(&self) -> Result<PlRDataFrame> {
