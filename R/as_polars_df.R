@@ -89,11 +89,14 @@ as_polars_df.default <- function(x, ...) {
   if (inherits(dtype, "polars_dtype_struct")) {
     as_polars_series(x, ...)$struct$unnest()
   } else {
-    # TODO: improve error message after `format(<dtype>)` or something else is implemented to show the dtype
     abort(
       c(
-        "This object is not supported for the default method of `as_polars_df()` because it is not a Struct dtype like object.",
-        i = "Use `infer_polars_dtype()` to check the dtype for corresponding to the object."
+        "This object is not supported for the default method of `as_polars_df()`.",
+        i = "It requires `x` to be Series with dtype 'struct'.",
+        i = sprintf(
+          "`x` would have dtype '%s' once converted to polars Series by `as_polars_series()`.",
+          format(dtype, abbreviated = TRUE)
+        )
       )
     )
   }

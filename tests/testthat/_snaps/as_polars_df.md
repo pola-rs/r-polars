@@ -120,8 +120,9 @@
       as_polars_df(1)
     Condition
       Error in `as_polars_df()`:
-      ! This object is not supported for the default method of `as_polars_df()` because it is not a Struct dtype like object.
-      i Use `infer_polars_dtype()` to check the dtype for corresponding to the object.
+      ! This object is not supported for the default method of `as_polars_df()`.
+      i It requires `x` to be Series with dtype 'struct'.
+      i `x` would have dtype 'f64' once converted to polars Series by `as_polars_series()`.
 
 ---
 

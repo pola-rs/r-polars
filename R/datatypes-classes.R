@@ -280,6 +280,3 @@ datatype__min <- function() {
   self$`_dt`$min() |>
     wrap()
 }
-
-# TODO: add S3 format.polars_dtype with an arg `abbreviated` instead of
-# x$`_dt`$as_str()

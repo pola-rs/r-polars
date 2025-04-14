@@ -38,7 +38,16 @@
 
 #' @export
 print.polars_dtype <- function(x, ...) {
-  x$`_dt`$as_str(abbreviated = FALSE) |>
+  format(x, abbreviated = FALSE) |>
     writeLines()
   invisible(x)
+}
+
+#' @param abbreviated If `TRUE`, use the abbreviated form of the dtype name,
+#' e.g. "i64" instead of "Int64".
+#' @export
+#' @noRd
+format.polars_dtype <- function(x, ..., abbreviated = FALSE) {
+  check_dots_empty0(...)
+  x$`_dt`$as_str(abbreviated = abbreviated)
 }
