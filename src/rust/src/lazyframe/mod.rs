@@ -1,4 +1,5 @@
 mod general;
+mod serde;
 mod sink;
 
 use crate::prelude::*;

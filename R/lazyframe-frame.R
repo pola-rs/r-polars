@@ -39,6 +39,48 @@ wrap.PlRLazyFrame <- function(x, ...) {
   self
 }
 
+#' Serialize the logical plan of this LazyFrame
+#'
+#' @inheritParams rlang::args_dots_empty
+#' @param format A character of the format in which to serialize.
+#' One of:
+#' - `"binary"` (default): Serialize to binary format (raw vector).
+#' - `"json"`: `r lifecycle::badge("deprecated")`
+#'   Serialize to JSON format (character vector).
+#' @return
+#' - `<lazyframe>$serialize()` returns raw or character, depending on the `format` argument.
+#' - `pl$deserialize_lf()` returns a deserialized [LazyFrame].
+#' @examples
+#' lf <- pl$LazyFrame(a = 1:3)$sum()
+#'
+#' # Serialize the logical plan to a binary representation.
+#' serialized <- lf$serialize()
+#' serialized
+#'
+#' # The bytes can later be deserialized back into a LazyFrame.
+#' pl$deserialize_lf(serialized)$collect()
+lazyframe__serialize <- function(..., format = c("binary", "json")) {
+  wrap({
+    check_dots_empty0(...)
+    format <- arg_match0(format, values = c("binary", "json"))
+
+    if (format == "binary") {
+      self$`_ldf`$serialize_binary()
+    } else {
+      deprecate_warn("'json' serialization format of LazyFrame is deprecated.")
+      self$`_ldf`$serialize_json()
+    }
+  })
+}
+
+# TODO: support json format
+#' @param data A raw vector of serialized [LazyFrame].
+#' @rdname lazyframe__serialize
+pl__deserialize_lf <- function(data) {
+  PlRLazyFrame$deserialize_binary(data) |>
+    wrap()
+}
+
 # TODO: link to pl__select
 #' Select and modify columns of a LazyFrame
 #'
@@ -1528,17 +1570,6 @@ lazyframe__rename <- function(..., .strict = TRUE) {
   })
 }
 
-#' Serialize the logical plan of this LazyFrame to a string in JSON format
-#'
-#' @return A character value
-#' @examples
-#' lf <- pl$LazyFrame(a = 1:3)$sum()
-#' lf$serialize()
-lazyframe__serialize <- function() {
-  self$`_ldf`$serialize() |>
-    wrap()
-}
-
 #' Explode the frame to long format by exploding the given columns
 #'
 #' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Column names, expressions, or
@@ -2623,5 +2654,3 @@ lazyframe__sql <- function(query, ..., table_name = "self") {
     ctx$execute(query)
   })
 }
-
-# TODO-REWRITE: implement $deserialize() for LazyFrame

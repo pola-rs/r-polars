@@ -8,8 +8,7 @@ use savvy::{
     ListSexp, LogicalSexp, NumericScalar, OwnedListSexp, OwnedStringSexp, Result, Sexp, StringSexp,
     savvy,
 };
-use std::num::NonZeroUsize;
-use std::path::PathBuf;
+use std::{num::NonZeroUsize, path::PathBuf};
 
 #[savvy]
 impl PlRLazyFrame {
@@ -328,12 +327,6 @@ impl PlRLazyFrame {
             out.set_value_unchecked(1, Sexp::try_from(timings)?.0);
         };
         Ok(out.into())
-    }
-
-    fn serialize(&self) -> Result<Sexp> {
-        let dump = serde_json::to_string(&self.ldf.logical_plan)
-            .map_err(|err| RPolarsErr::Other(err.to_string()))?;
-        dump.try_into()
     }
 
     fn select_seq(&mut self, exprs: ListSexp) -> Result<Self> {

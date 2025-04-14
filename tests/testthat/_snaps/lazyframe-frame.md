@@ -1,3 +1,43 @@
+# Can't serialize lazyframe includes map function
+
+    Code
+      pl$LazyFrame()$select(pl$lit(1)$map_batches(function(x) x + 1))$serialize()
+    Condition
+      Error:
+      ! Evaluation failed in `$serialize()`.
+      Caused by error:
+      ! serialization not supported for this 'opaque' function
+
+# deserialize lazyframe' error
+
+    Code
+      pl$deserialize_lf(0L)
+    Condition
+      Error in `pl$deserialize_lf()`:
+      ! Evaluation failed in `$deserialize_lf()`.
+      Caused by error:
+      ! Argument `data` must be raw, not integer
+
+---
+
+    Code
+      pl$deserialize_lf(raw(0))
+    Condition
+      Error in `pl$deserialize_lf()`:
+      ! Evaluation failed in `$deserialize_lf()`.
+      Caused by error:
+      ! The input value is not a valid serialized LazyFrame.
+
+---
+
+    Code
+      pl$deserialize_lf(as.raw(1:100))
+    Condition
+      Error in `pl$deserialize_lf()`:
+      ! Evaluation failed in `$deserialize_lf()`.
+      Caused by error:
+      ! The input value is not a valid serialized LazyFrame.
+
 # $to_dot() works
 
     Code

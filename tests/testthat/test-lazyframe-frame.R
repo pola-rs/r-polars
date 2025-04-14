@@ -1,3 +1,47 @@
+patrick::with_parameters_test_that(
+  "roundtrip around serialization",
+  .cases = {
+    tmpf <- withr::local_tempfile(fileext = ".arrow")
+    pl$DataFrame(a = 1, b = "foo")$write_ipc(tmpf)
+
+    # fmt: skip
+    tibble::tribble(
+      ~.test_name, ~x,
+      "empty", as_polars_lf(NULL),
+      "dataframe", pl$LazyFrame(a = 1:3, b = letters[1:3]),
+      "scan", pl$scan_ipc(tmpf),
+    )
+  },
+  code = {
+    serialized <- x$serialize()
+    expect_type(serialized, "raw")
+
+    expect_equal(pl$deserialize_lf(serialized)$collect(), x$collect())
+  }
+)
+
+test_that("Can't serialize lazyframe includes map function", {
+  expect_snapshot(
+    pl$LazyFrame()$select(pl$lit(1)$map_batches(\(x) x + 1))$serialize(),
+    error = TRUE
+  )
+})
+
+test_that("deserialize lazyframe' error", {
+  expect_snapshot(
+    pl$deserialize_lf(0L),
+    error = TRUE
+  )
+  expect_snapshot(
+    pl$deserialize_lf(raw(0)),
+    error = TRUE
+  )
+  expect_snapshot(
+    pl$deserialize_lf(as.raw(1:100)),
+    error = TRUE
+  )
+})
+
 test_that("select works lazy/eager", {
   .data <- pl$DataFrame(
     int32 = 1:5,

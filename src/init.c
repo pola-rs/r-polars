@@ -2469,6 +2469,11 @@ SEXP savvy_PlRLazyFrame_describe_plan_tree__impl(SEXP self__) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRLazyFrame_deserialize_binary__impl(SEXP c_arg__data) {
+    SEXP res = savvy_PlRLazyFrame_deserialize_binary__ffi(c_arg__data);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRLazyFrame_drop__impl(SEXP self__, SEXP c_arg__columns, SEXP c_arg__strict) {
     SEXP res = savvy_PlRLazyFrame_drop__ffi(self__, c_arg__columns, c_arg__strict);
     return handle_result(res);
@@ -2614,8 +2619,13 @@ SEXP savvy_PlRLazyFrame_select_seq__impl(SEXP self__, SEXP c_arg__exprs) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRLazyFrame_serialize__impl(SEXP self__) {
-    SEXP res = savvy_PlRLazyFrame_serialize__ffi(self__);
+SEXP savvy_PlRLazyFrame_serialize_binary__impl(SEXP self__) {
+    SEXP res = savvy_PlRLazyFrame_serialize_binary__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRLazyFrame_serialize_json__impl(SEXP self__) {
+    SEXP res = savvy_PlRLazyFrame_serialize_json__ffi(self__);
     return handle_result(res);
 }
 
@@ -3473,6 +3483,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRLazyFrame_describe_optimized_plan_tree__impl", (DL_FUNC) &savvy_PlRLazyFrame_describe_optimized_plan_tree__impl, 1},
     {"savvy_PlRLazyFrame_describe_plan__impl", (DL_FUNC) &savvy_PlRLazyFrame_describe_plan__impl, 1},
     {"savvy_PlRLazyFrame_describe_plan_tree__impl", (DL_FUNC) &savvy_PlRLazyFrame_describe_plan_tree__impl, 1},
+    {"savvy_PlRLazyFrame_deserialize_binary__impl", (DL_FUNC) &savvy_PlRLazyFrame_deserialize_binary__impl, 1},
     {"savvy_PlRLazyFrame_drop__impl", (DL_FUNC) &savvy_PlRLazyFrame_drop__impl, 3},
     {"savvy_PlRLazyFrame_drop_nans__impl", (DL_FUNC) &savvy_PlRLazyFrame_drop_nans__impl, 2},
     {"savvy_PlRLazyFrame_drop_nulls__impl", (DL_FUNC) &savvy_PlRLazyFrame_drop_nulls__impl, 2},
@@ -3502,7 +3513,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRLazyFrame_rolling__impl", (DL_FUNC) &savvy_PlRLazyFrame_rolling__impl, 6},
     {"savvy_PlRLazyFrame_select__impl", (DL_FUNC) &savvy_PlRLazyFrame_select__impl, 2},
     {"savvy_PlRLazyFrame_select_seq__impl", (DL_FUNC) &savvy_PlRLazyFrame_select_seq__impl, 2},
-    {"savvy_PlRLazyFrame_serialize__impl", (DL_FUNC) &savvy_PlRLazyFrame_serialize__impl, 1},
+    {"savvy_PlRLazyFrame_serialize_binary__impl", (DL_FUNC) &savvy_PlRLazyFrame_serialize_binary__impl, 1},
+    {"savvy_PlRLazyFrame_serialize_json__impl", (DL_FUNC) &savvy_PlRLazyFrame_serialize_json__impl, 1},
     {"savvy_PlRLazyFrame_shift__impl", (DL_FUNC) &savvy_PlRLazyFrame_shift__impl, 3},
     {"savvy_PlRLazyFrame_sink_csv__impl", (DL_FUNC) &savvy_PlRLazyFrame_sink_csv__impl, 20},
     {"savvy_PlRLazyFrame_sink_ipc__impl", (DL_FUNC) &savvy_PlRLazyFrame_sink_ipc__impl, 9},

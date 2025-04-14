@@ -3772,9 +3772,15 @@ class(`PlRExpr`) <- c("PlRExpr__bundle", "savvy_neopolars__sealed")
   }
 }
 
-`PlRLazyFrame_serialize` <- function(self) {
+`PlRLazyFrame_serialize_binary` <- function(self) {
   function() {
-    .Call(savvy_PlRLazyFrame_serialize__impl, `self`)
+    .Call(savvy_PlRLazyFrame_serialize_binary__impl, `self`)
+  }
+}
+
+`PlRLazyFrame_serialize_json` <- function(self) {
+  function() {
+    .Call(savvy_PlRLazyFrame_serialize_json__impl, `self`)
   }
 }
 
@@ -3940,7 +3946,8 @@ class(`PlRExpr`) <- c("PlRExpr__bundle", "savvy_neopolars__sealed")
   e$`rolling` <- `PlRLazyFrame_rolling`(ptr)
   e$`select` <- `PlRLazyFrame_select`(ptr)
   e$`select_seq` <- `PlRLazyFrame_select_seq`(ptr)
-  e$`serialize` <- `PlRLazyFrame_serialize`(ptr)
+  e$`serialize_binary` <- `PlRLazyFrame_serialize_binary`(ptr)
+  e$`serialize_json` <- `PlRLazyFrame_serialize_json`(ptr)
   e$`shift` <- `PlRLazyFrame_shift`(ptr)
   e$`sink_csv` <- `PlRLazyFrame_sink_csv`(ptr)
   e$`sink_ipc` <- `PlRLazyFrame_sink_ipc`(ptr)
@@ -3971,6 +3978,10 @@ class(`PlRExpr`) <- c("PlRExpr__bundle", "savvy_neopolars__sealed")
 `PlRLazyFrame` <- new.env(parent = emptyenv())
 
 ### associated functions for PlRLazyFrame
+
+`PlRLazyFrame`$`deserialize_binary` <- function(`data`) {
+  .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_deserialize_binary__impl, `data`))
+}
 
 `PlRLazyFrame`$`new_from_csv` <- function(`source`, `separator`, `has_header`, `ignore_errors`, `skip_rows`, `cache`, `missing_utf8_is_empty_string`, `low_memory`, `rechunk`, `skip_rows_after_header`, `encoding`, `try_parse_dates`, `eol_char`, `raise_if_empty`, `truncate_ragged_lines`, `decimal_comma`, `glob`, `retries`, `row_index_offset`, `comment_prefix` = NULL, `quote_char` = NULL, `null_values` = NULL, `infer_schema_length` = NULL, `row_index_name` = NULL, `n_rows` = NULL, `overwrite_dtype` = NULL, `schema` = NULL, `storage_options` = NULL, `file_cache_ttl` = NULL, `include_file_paths` = NULL) {
   .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_new_from_csv__impl, `source`, `separator`, `has_header`, `ignore_errors`, `skip_rows`, `cache`, `missing_utf8_is_empty_string`, `low_memory`, `rechunk`, `skip_rows_after_header`, `encoding`, `try_parse_dates`, `eol_char`, `raise_if_empty`, `truncate_ragged_lines`, `decimal_comma`, `glob`, `retries`, `row_index_offset`, `comment_prefix`, `quote_char`, `null_values`, `infer_schema_length`, `row_index_name`, `n_rows`, `overwrite_dtype`, `schema`, `storage_options`, `file_cache_ttl`, `include_file_paths`))
