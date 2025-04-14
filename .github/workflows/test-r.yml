@@ -54,7 +54,6 @@ jobs:
         os:
           - ubuntu-latest
         r:
-          - release
           - devel
           - "4.3"
     steps:
