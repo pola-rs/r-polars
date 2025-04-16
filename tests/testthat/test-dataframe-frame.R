@@ -26,6 +26,55 @@ test_that("pl$DataFrame() rejects expressions", {
   )
 })
 
+patrick::with_parameters_test_that(
+  "roundtrip around serialization",
+  .cases = {
+    # fmt: skip
+    tibble::tribble(
+      ~.test_name, ~x,
+      "empty", as_polars_df(NULL),
+      "string", pl$DataFrame(a = letters[1:5]),
+      "i128", pl$DataFrame(a = 1:3)$cast(pl$Int128),
+    )
+  },
+  code = {
+    serialized <- x$serialize()
+    expect_type(serialized, "raw")
+
+    expect_equal(pl$deserialize_df(serialized), x)
+  }
+)
+
+test_that("serialized dataframe is arrow format", {
+  skip_if_not_installed("nanoarrow")
+
+  expect_s3_class(
+    nanoarrow::example_ipc_stream() |>
+      pl$deserialize_df(),
+    "polars_data_frame"
+  )
+  expect_s3_class(
+    pl$DataFrame(some_col = 1:3)$serialize() |>
+      nanoarrow::read_nanoarrow(),
+    "nanoarrow_array_stream"
+  )
+})
+
+test_that("deserialize dataframe' error", {
+  expect_snapshot(
+    pl$deserialize_df(0L),
+    error = TRUE
+  )
+  expect_snapshot(
+    pl$deserialize_df(raw(0)),
+    error = TRUE
+  )
+  expect_snapshot(
+    pl$deserialize_df(as.raw(1:100)),
+    error = TRUE
+  )
+})
+
 test_that("to_struct()", {
   expect_equal(
     as_polars_df(mtcars)$to_struct("foo"),

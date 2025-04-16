@@ -299,6 +299,11 @@ SEXP savvy_PlRDataFrame_columns__impl(SEXP self__) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRDataFrame_deserialize_binary__impl(SEXP c_arg__data) {
+    SEXP res = savvy_PlRDataFrame_deserialize_binary__ffi(c_arg__data);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRDataFrame_dtypes__impl(SEXP self__) {
     SEXP res = savvy_PlRDataFrame_dtypes__ffi(self__);
     return handle_result(res);
@@ -396,6 +401,11 @@ SEXP savvy_PlRDataFrame_sample_frac__impl(SEXP self__, SEXP c_arg__frac, SEXP c_
 
 SEXP savvy_PlRDataFrame_sample_n__impl(SEXP self__, SEXP c_arg__n, SEXP c_arg__with_replacement, SEXP c_arg__shuffle, SEXP c_arg__seed) {
     SEXP res = savvy_PlRDataFrame_sample_n__ffi(self__, c_arg__n, c_arg__with_replacement, c_arg__shuffle, c_arg__seed);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRDataFrame_serialize_binary__impl(SEXP self__) {
+    SEXP res = savvy_PlRDataFrame_serialize_binary__ffi(self__);
     return handle_result(res);
 }
 
@@ -3049,6 +3059,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRDataFrame_clear__impl", (DL_FUNC) &savvy_PlRDataFrame_clear__impl, 1},
     {"savvy_PlRDataFrame_clone__impl", (DL_FUNC) &savvy_PlRDataFrame_clone__impl, 1},
     {"savvy_PlRDataFrame_columns__impl", (DL_FUNC) &savvy_PlRDataFrame_columns__impl, 1},
+    {"savvy_PlRDataFrame_deserialize_binary__impl", (DL_FUNC) &savvy_PlRDataFrame_deserialize_binary__impl, 1},
     {"savvy_PlRDataFrame_dtypes__impl", (DL_FUNC) &savvy_PlRDataFrame_dtypes__impl, 1},
     {"savvy_PlRDataFrame_equals__impl", (DL_FUNC) &savvy_PlRDataFrame_equals__impl, 3},
     {"savvy_PlRDataFrame_get_column__impl", (DL_FUNC) &savvy_PlRDataFrame_get_column__impl, 2},
@@ -3069,6 +3080,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRDataFrame_rechunk__impl", (DL_FUNC) &savvy_PlRDataFrame_rechunk__impl, 1},
     {"savvy_PlRDataFrame_sample_frac__impl", (DL_FUNC) &savvy_PlRDataFrame_sample_frac__impl, 5},
     {"savvy_PlRDataFrame_sample_n__impl", (DL_FUNC) &savvy_PlRDataFrame_sample_n__impl, 5},
+    {"savvy_PlRDataFrame_serialize_binary__impl", (DL_FUNC) &savvy_PlRDataFrame_serialize_binary__impl, 1},
     {"savvy_PlRDataFrame_set_column_names__impl", (DL_FUNC) &savvy_PlRDataFrame_set_column_names__impl, 2},
     {"savvy_PlRDataFrame_shape__impl", (DL_FUNC) &savvy_PlRDataFrame_shape__impl, 1},
     {"savvy_PlRDataFrame_slice__impl", (DL_FUNC) &savvy_PlRDataFrame_slice__impl, 3},

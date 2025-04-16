@@ -135,6 +135,7 @@ nav:
         - Misc:
             - equals: man/dataframe__equals.md
             - lazy: man/dataframe__lazy.md
+            - serialize: man/dataframe__serialize.md
       LazyFrame:
         - Aggregation:
             - count: man/lazyframe__count.md

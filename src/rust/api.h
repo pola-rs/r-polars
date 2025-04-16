@@ -57,6 +57,7 @@ SEXP savvy_PlRDataFrame_as_str__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_clear__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_clone__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_columns__ffi(SEXP self__);
+SEXP savvy_PlRDataFrame_deserialize_binary__ffi(SEXP c_arg__data);
 SEXP savvy_PlRDataFrame_dtypes__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_equals__ffi(SEXP self__, SEXP c_arg__other, SEXP c_arg__null_equal);
 SEXP savvy_PlRDataFrame_get_column__ffi(SEXP self__, SEXP c_arg__name);
@@ -77,6 +78,7 @@ SEXP savvy_PlRDataFrame_read_ipc_stream__ffi(SEXP c_arg__source, SEXP c_arg__row
 SEXP savvy_PlRDataFrame_rechunk__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_sample_frac__ffi(SEXP self__, SEXP c_arg__frac, SEXP c_arg__with_replacement, SEXP c_arg__shuffle, SEXP c_arg__seed);
 SEXP savvy_PlRDataFrame_sample_n__ffi(SEXP self__, SEXP c_arg__n, SEXP c_arg__with_replacement, SEXP c_arg__shuffle, SEXP c_arg__seed);
+SEXP savvy_PlRDataFrame_serialize_binary__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_set_column_names__ffi(SEXP self__, SEXP c_arg__names);
 SEXP savvy_PlRDataFrame_shape__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_slice__ffi(SEXP self__, SEXP c_arg__offset, SEXP c_arg__length);

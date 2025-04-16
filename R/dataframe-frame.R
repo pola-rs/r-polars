@@ -135,6 +135,45 @@ dataframe__set_column_names <- function(names) {
   })
 }
 
+# TODO: support json format
+# TODO: use nanoarrow instead of arrow in examples after <https://github.com/apache/arrow-nanoarrow/issues/743> is fixed
+#' Serialize the DataFrame to a binary format
+#'
+#' Serialize the DataFrame to a binary format.
+#' Currently, this format is uncompressed Arrow IPC stream format,
+#' so other Apache Arrow implementations may be able to read it.
+#' @return
+#' - `<dataframe>$serialize()` returns raw vector of serialized [DataFrame].
+#' - `pl$deserialize_df()` returns a deserialized [DataFrame].
+#' @examples
+#' df <- pl$DataFrame(
+#'   foo = 1:3,
+#'   bar = 6:8,
+#' )$cast(bar = pl$UInt8)
+#'
+#' # Serialize the DataFrame to a binary format
+#' serialized <- df$serialize()
+#' serialized
+#'
+#' # The bytes can later be deserialized back to a DataFrame
+#' pl$deserialize_df(serialized)
+#'
+#' # Other Apache Arrow implementations may be able to read it.
+#' if (requireNamespace("arrow", quietly = TRUE)) {
+#'   arrow::read_ipc_stream(serialized, as_data_frame = FALSE)
+#' }
+dataframe__serialize <- function() {
+  self$`_df`$serialize_binary() |>
+    wrap()
+}
+
+#' @param data A raw vector of serialized [DataFrame].
+#' @rdname dataframe__serialize
+pl__deserialize_df <- function(data) {
+  PlRDataFrame$deserialize_binary(data) |>
+    wrap()
+}
+
 dataframe__collect_schema <- function() self$schema
 
 # TODO: link to data type docs

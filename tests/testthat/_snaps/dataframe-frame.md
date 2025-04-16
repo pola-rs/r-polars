@@ -1,3 +1,33 @@
+# deserialize dataframe' error
+
+    Code
+      pl$deserialize_df(0L)
+    Condition
+      Error in `pl$deserialize_df()`:
+      ! Evaluation failed in `$deserialize_df()`.
+      Caused by error:
+      ! Argument `data` must be raw, not integer
+
+---
+
+    Code
+      pl$deserialize_df(raw(0))
+    Condition
+      Error in `pl$deserialize_df()`:
+      ! Evaluation failed in `$deserialize_df()`.
+      Caused by error:
+      ! The input value is not a valid serialized DataFrame.
+
+---
+
+    Code
+      pl$deserialize_df(as.raw(1:100))
+    Condition
+      Error in `pl$deserialize_df()`:
+      ! Evaluation failed in `$deserialize_df()`.
+      Caused by error:
+      ! The input value is not a valid serialized DataFrame.
+
 # $glimpse() works
 
     Code

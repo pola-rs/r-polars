@@ -521,6 +521,12 @@ class(`PlRChainedWhen`) <- c("PlRChainedWhen__bundle", "savvy_neopolars__sealed"
   }
 }
 
+`PlRDataFrame_serialize_binary` <- function(self) {
+  function() {
+    .Call(savvy_PlRDataFrame_serialize_binary__impl, `self`)
+  }
+}
+
 `PlRDataFrame_set_column_names` <- function(self) {
   function(`names`) {
     invisible(.Call(savvy_PlRDataFrame_set_column_names__impl, `self`, `names`))
@@ -642,6 +648,7 @@ class(`PlRChainedWhen`) <- c("PlRChainedWhen__bundle", "savvy_neopolars__sealed"
   e$`rechunk` <- `PlRDataFrame_rechunk`(ptr)
   e$`sample_frac` <- `PlRDataFrame_sample_frac`(ptr)
   e$`sample_n` <- `PlRDataFrame_sample_n`(ptr)
+  e$`serialize_binary` <- `PlRDataFrame_serialize_binary`(ptr)
   e$`set_column_names` <- `PlRDataFrame_set_column_names`(ptr)
   e$`shape` <- `PlRDataFrame_shape`(ptr)
   e$`slice` <- `PlRDataFrame_slice`(ptr)
@@ -668,6 +675,10 @@ class(`PlRChainedWhen`) <- c("PlRChainedWhen__bundle", "savvy_neopolars__sealed"
 `PlRDataFrame` <- new.env(parent = emptyenv())
 
 ### associated functions for PlRDataFrame
+
+`PlRDataFrame`$`deserialize_binary` <- function(`data`) {
+  .savvy_wrap_PlRDataFrame(.Call(savvy_PlRDataFrame_deserialize_binary__impl, `data`))
+}
 
 `PlRDataFrame`$`init` <- function(`columns`) {
   .savvy_wrap_PlRDataFrame(.Call(savvy_PlRDataFrame_init__impl, `columns`))
