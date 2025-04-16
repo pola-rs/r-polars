@@ -35,9 +35,9 @@ impl PlRExpr {
         }
         #[cfg(not(feature = "nightly"))]
         {
-            Err(RPolarsErr::Other(format!(
-                "The 'nightly' feature is not enabled for this build."
-            ))
+            Err(RPolarsErr::Other(
+                "The 'nightly' feature is not enabled for this build.".to_string(),
+            )
             .into())
         }
     }
