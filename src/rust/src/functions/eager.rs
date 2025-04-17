@@ -32,11 +32,11 @@ pub fn concat_df(dfs: ListSexp) -> Result<PlRDataFrame> {
 
 #[savvy]
 pub fn concat_series(series: ListSexp) -> Result<PlRSeries> {
-    let series = <Wrap<Vec<Series>>>::try_from(series)?.0;
-    let mut s = series.first().unwrap().clone();
+    let vec = <Wrap<Vec<Series>>>::try_from(series)?.0;
+    let mut s = vec.first().unwrap().clone();
 
-    for id in 1..series.len() {
-        s.append(&series[id]).map_err(RPolarsErr::from)?;
+    for series in vec.iter().skip(1) {
+        s.append(series).map_err(RPolarsErr::from)?;
     }
     Ok(s.into())
 }

@@ -6,7 +6,7 @@ use savvy::{
     ListSexp, NumericScalar, OwnedIntegerSexp, OwnedListSexp, Result, Sexp, StringSexp, TypedSexp,
     savvy,
 };
-use std::hash::BuildHasher;
+use std::{cmp::Ordering, hash::BuildHasher};
 
 #[savvy]
 impl PlRDataFrame {
@@ -42,13 +42,12 @@ impl PlRDataFrame {
             .cloned()
             .map(|c| c.take_materialized_series())
             .collect();
-        let len = cols.len();
-        let mut list = OwnedListSexp::new(len, true)?;
-        for i in 0..len {
+        let mut list = OwnedListSexp::new(cols.len(), true)?;
+        for (i, col) in cols.iter().enumerate() {
             let _ = list.set_name_and_value(
                 i,
-                cols[i].name(),
-                Sexp::try_from(PlRSeries::from(cols[i].clone()))?,
+                col.name(),
+                Sexp::try_from(PlRSeries::from(col.clone()))?,
             );
         }
         Ok(list.into())
@@ -77,14 +76,12 @@ impl PlRDataFrame {
         keep_names_as: Option<&str>,
     ) -> Result<Self> {
         let column_names = column_names.to_vec();
-        let new_col_names = if column_names.len() == 1 {
-            Some(Either::Left(column_names[0].to_string()))
-        } else if column_names.len() > 1 {
-            Some(Either::Right(
+        let new_col_names = match column_names.len().cmp(&1) {
+            Ordering::Less => None,
+            Ordering::Equal => Some(Either::Left(column_names[0].to_string())),
+            Ordering::Greater => Some(Either::Right(
                 column_names.iter().map(|x| x.to_string()).collect(),
-            ))
-        } else {
-            None
+            )),
         };
         let out = self
             .df
@@ -293,8 +290,8 @@ impl PlRDataFrame {
         .map_err(RPolarsErr::from)?;
 
         let mut out = OwnedListSexp::new(res.len(), false)?;
-        for i in 0..res.len() {
-            let _ = out.set_value(i, Sexp::try_from(PlRDataFrame::from(res[i].clone()))?);
+        for (i, df) in res.iter().enumerate() {
+            let _ = out.set_value(i, Sexp::try_from(PlRDataFrame::from(df.clone()))?);
         }
 
         Ok(out.into())

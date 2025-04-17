@@ -84,22 +84,6 @@ where
         *val = None;
     }
 
-    pub fn from_global(config: &InitCell<RwLock<Option<ThreadCom<S, R>>>>) -> Self
-    where
-        S: Send,
-        R: Send,
-    {
-        let thread_com = config
-            .get()
-            .read()
-            .expect("failded to restore thread_com")
-            .as_ref()
-            .unwrap()
-            .clone();
-
-        thread_com
-    }
-
     // TODO: use TryFrom trait instead of this function
     pub fn try_from_global(
         config: &InitCell<RwLock<Option<ThreadCom<S, R>>>>,
