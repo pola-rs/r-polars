@@ -2,7 +2,6 @@ use crate::{
     PlRDataFrame, PlRDataType, PlRExpr, PlRLazyFrame, PlRLazyGroupBy, PlRSeries, RPolarsErr,
     prelude::{sync_on_close::SyncOnCloseType, *},
 };
-use polars::io::cloud::CloudOptions;
 use polars::io::{HiveOptions, RowIndex};
 use savvy::{
     ListSexp, LogicalSexp, NumericScalar, OwnedListSexp, OwnedStringSexp, Result, Sexp, StringSexp,
@@ -1352,10 +1351,26 @@ impl PlRLazyFrame {
         mkdir: bool,
         storage_options: Option<StringSexp>,
     ) -> Result<Self> {
+        let path: PathBuf = path.into();
         let options = JsonWriterOptions {};
-        let _retries = <Wrap<usize>>::try_from(retries)?.0;
+        let retries = <Wrap<usize>>::try_from(retries)?.0;
 
-        let cloud_options = Some(CloudOptions::default());
+        let cloud_options = match storage_options {
+            Some(x) => {
+                let out = <Wrap<Vec<(String, String)>>>::try_from(x).map_err(|_| {
+                    RPolarsErr::Other(
+                        "`storage_options` must be a named character vector".to_string(),
+                    )
+                })?;
+                Some(out.0)
+            }
+            None => None,
+        };
+        let cloud_options = {
+            let cloud_options =
+                parse_cloud_options(path.to_str().unwrap(), cloud_options.unwrap_or_default())?;
+            Some(cloud_options.with_max_retries(retries))
+        };
         let sync_on_close = <Wrap<SyncOnCloseType>>::try_from(sync_on_close)?.0;
         let sink_options = SinkOptions {
             sync_on_close,

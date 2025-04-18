@@ -23,8 +23,8 @@ too_many_arguments = "allow"
 ciborium = "0.2"
 either = "1.15"
 flume = "0.11"
-polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "ac9d598fd07d85b26a29bd7465a7bfa945b6f963", default-features = false }
-polars-error = { git = "https://github.com/pola-rs/polars.git", rev = "ac9d598fd07d85b26a29bd7465a7bfa945b6f963", default-features = false }
+polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "ac9d598fd07d85b26a29bd7465a7bfa945b6f963" }
+polars-error = { git = "https://github.com/pola-rs/polars.git", rev = "ac9d598fd07d85b26a29bd7465a7bfa945b6f963" }
 savvy = { version = "0.8", features = ["use-custom-error"] }
 serde_json = "1"
 state = "0.6"

@@ -150,7 +150,6 @@ impl PlRDataFrame {
         quote_style: Option<&str>,
         storage_options: Option<StringSexp>,
     ) -> Result<()> {
-        let path: PathBuf = path.into();
         let quote_style = match quote_style {
             Some(x) => <Wrap<QuoteStyle>>::try_from(x)?.0,
             None => QuoteStyle::default(),
@@ -179,13 +178,15 @@ impl PlRDataFrame {
             }
             None => None,
         };
+        #[cfg(not(target_os = "emscripten"))]
         let cloud_options = {
-            let cloud_options =
-                parse_cloud_options(path.to_str().unwrap(), cloud_options.unwrap_or_default())?;
+            let cloud_options = parse_cloud_options(path, cloud_options.unwrap_or_default())?;
             Some(cloud_options.with_max_retries(retries))
         };
+        #[cfg(target_os = "emscripten")]
+        let cloud_options = None;
 
-        let f = std::fs::File::create(path).map_err(RPolarsErr::from)?;
+        let f = file::try_get_writeable(path, cloud_options.as_ref()).map_err(RPolarsErr::from)?;
 
         CsvWriter::new(f)
             .include_bom(include_bom)
@@ -239,7 +240,6 @@ impl PlRDataFrame {
         compression: &str,
         storage_options: Option<StringSexp>,
     ) -> Result<()> {
-        let path: PathBuf = path.into();
         let compat_level = <Wrap<CompatLevel>>::try_from(compat_level)?.0;
         let retries = <Wrap<usize>>::try_from(retries)?.0;
         let compression: Option<IpcCompression> =
@@ -256,13 +256,16 @@ impl PlRDataFrame {
             }
             None => None,
         };
+        #[cfg(not(target_os = "emscripten"))]
         let cloud_options = {
-            let cloud_options =
-                parse_cloud_options(path.to_str().unwrap(), cloud_options.unwrap_or_default())?;
+            let cloud_options = parse_cloud_options(path, cloud_options.unwrap_or_default())?;
             Some(cloud_options.with_max_retries(retries))
         };
+        #[cfg(target_os = "emscripten")]
+        let cloud_options = None;
 
-        let mut f = std::fs::File::create(path).map_err(RPolarsErr::from)?;
+        let mut f =
+            file::try_get_writeable(path, cloud_options.as_ref()).map_err(RPolarsErr::from)?;
 
         IpcWriter::new(&mut f)
             .with_compression(compression)
