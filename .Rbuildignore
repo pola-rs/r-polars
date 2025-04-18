@@ -2,10 +2,12 @@
 ^\.github$
 ^\.vscode$
 ^LICENSE\.md$
+^\.cache$
 ^\.task$
 ^Taskfile\.yml$
 ^\.editorconfig$
 ^air\.toml$
+^\.lintr\.R$
 ^\.lycheeignore$
 
 ^dev$

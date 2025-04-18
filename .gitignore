@@ -3,6 +3,9 @@
 # Task cache
 .task
 
+# cache files
+.cache
+
 # Generated Makefiles
 src/Makevars
 src/Makevars.win
