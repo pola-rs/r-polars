@@ -471,8 +471,6 @@ dataframe__with_columns_seq <- function(...) {
     wrap()
 }
 
-# TODO-REWRITE: before release, add in news that param idx was renamed "index"
-# and mention that it errors if out of bounds
 #' Select column as Series at index location
 #'
 #' @param index Index of the column to return as Series. Defaults to 0, which is

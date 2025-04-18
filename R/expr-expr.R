@@ -3992,20 +3992,6 @@ expr__gather_every <- function(n, offset = 0) {
   })
 }
 
-# TODO-REWRITE: Requires $map_batches()
-# #' Print the value that this expression evaluates to and pass on the value
-# #'
-# #' @param fmt How to format the expression. Use `"{}"` where you want to print
-# #' the value of the expression.
-# #'
-# #' @inherit as_polars_expr return
-# #' @examples
-# #' df <- pl$DataFrame(foo = c(1, 1, 2))
-# #' df$select(pl$col("foo")$cum_sum()$inspect("value is: {}")$alias("bar"))
-# expr__format <- function(fmt) {
-#
-# }
-
 #' Fill null values using interpolation
 #'
 #' @param method Interpolation method. Must be one of `"linear"` or `"nearest"`.

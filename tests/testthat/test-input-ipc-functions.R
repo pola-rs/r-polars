@@ -48,24 +48,6 @@ test_that("Test reading data from Apache Arrow file", {
   )
 })
 
-# TODO-REWRITE: needs $to_raw_ipc()
-# patrick::with_parameters_test_that("input/output DataFrame as raw vector",
-#   {
-#     df <- as_polars_df(mtcars)
-
-#     raw_vec <- df$to_raw_ipc(
-#       compression = compression,
-#       compat_level = TRUE
-#     )
-
-#     expect_true(
-#       df$equals(pl$read_ipc(raw_vec))
-#     )
-#   },
-#   compression = c("uncompressed", "lz4", "zstd"),
-#   .test_name = compression
-# )
-
 test_that("scanning from hive partition works", {
   skip_if_not_installed("arrow")
   temp_dir <- withr::local_tempdir()
