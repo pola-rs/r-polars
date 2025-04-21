@@ -67,3 +67,18 @@ as.vector.polars_series <- function(x, mode = "any") {
 
 #' @export
 length.polars_series <- function(x) x$len()
+
+#' @export
+max.polars_series <- function(x, ...) x$max()
+
+#' @export
+min.polars_series <- function(x, ...) x$min()
+
+#' @export
+mean.polars_series <- function(x, ...) x$mean()
+
+#' @exportS3Method stats::median
+median.polars_series <- function(x, ...) x$median()
+
+#' @export
+sum.polars_series <- function(x, ...) x$sum()
