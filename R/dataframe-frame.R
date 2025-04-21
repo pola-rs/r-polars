@@ -1987,8 +1987,8 @@ dataframe__sample <- function(
 #' @examples
 #' df <- pl$select(
 #'   time = pl$datetime_range(
-#'     start = as.POSIXct(strptime("2021-12-16 00:00:00", format = "%Y-%m-%d %H:%M:%S", tz = "UTC")),
-#'     end = as.POSIXct(strptime("2021-12-16 03:00:00", format = "%Y-%m-%d %H:%M:%S", tz = "UTC")),
+#'     start = strptime("2021-12-16 00:00:00", format = "%Y-%m-%d %H:%M:%S", tz = "UTC"),
+#'     end = strptime("2021-12-16 03:00:00", format = "%Y-%m-%d %H:%M:%S", tz = "UTC"),
 #'     interval = "30m"
 #'   ),
 #'   n = 0:6

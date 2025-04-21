@@ -6,7 +6,7 @@
       Error in `pl$date_range()`:
       ! Evaluation failed in `$date_range()`.
       Caused by error in `pl$date_range()`:
-      ! `start` must be a Date, POSIXct, character, or Polars expression, not the number 1.
+      ! `start` must be a single string, Polars expression, or something convertible to date/datetime type Series, not the number 1.
 
 ---
 
@@ -16,7 +16,7 @@
       Error in `pl$date_range()`:
       ! Evaluation failed in `$date_range()`.
       Caused by error in `pl$date_range()`:
-      ! `end` must be a Date, POSIXct, character, or Polars expression, not `TRUE`.
+      ! `end` must be a single string, Polars expression, or something convertible to date/datetime type Series, not `TRUE`.
 
 # $date_ranges() error
 
@@ -26,7 +26,7 @@
       Error in `pl$date_ranges()`:
       ! Evaluation failed in `$date_ranges()`.
       Caused by error in `pl$date_ranges()`:
-      ! `start` must be a Date, POSIXct, character, or Polars expression, not the number 1.
+      ! `start` must be a single string, Polars expression, or something convertible to date/datetime type Series, not the number 1.
 
 ---
 
@@ -36,5 +36,5 @@
       Error in `pl$date_ranges()`:
       ! Evaluation failed in `$date_ranges()`.
       Caused by error in `pl$date_ranges()`:
-      ! `end` must be a Date, POSIXct, character, or Polars expression, not `TRUE`.
+      ! `end` must be a single string, Polars expression, or something convertible to date/datetime type Series, not `TRUE`.
 

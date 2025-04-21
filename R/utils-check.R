@@ -78,20 +78,24 @@ check_date_or_datetime <- function(
   call = caller_env()
 ) {
   if (!missing(x)) {
-    if (inherits(x, c("Date", "POSIXct", "polars_expr"))) {
+    if (is_polars_expr(x) || is_string(x)) {
       return(invisible(NULL))
     }
     if (allow_null && is_null(x)) {
       return(invisible(NULL))
     }
-    if (is_character(x)) {
+    maybe_dtype <- tryCatch(
+      infer_polars_dtype(x),
+      error = function(e) NULL
+    )
+    if (inherits(maybe_dtype, c("polars_dtype_date", "polars_dtype_datetime"))) {
       return(invisible(NULL))
     }
   }
 
   stop_input_type(
     x,
-    "a Date, POSIXct, character, or Polars expression",
+    "a single string, Polars expression, or something convertible to date/datetime type Series",
     ...,
     allow_na = FALSE,
     allow_null = allow_null,
