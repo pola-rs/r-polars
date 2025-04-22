@@ -35,8 +35,9 @@ If no fractional second component is found, the default is \code{"us"} (microsec
 \item{strict}{If \code{TRUE} (default), raise an error if a single string cannot
 be parsed. If \code{FALSE}, produce a polars \code{null}.}
 
-\item{exact}{If \code{TRUE} (default), require an exact format match. If \code{FALSE}, allow the format to match
-anywhere in the target string. Note that using \code{exact = FALSE} introduces a performance
+\item{exact}{If \code{TRUE} (default), require an exact format match.
+If \code{FALSE}, allow the format to match anywhere in the target string.
+Note that using \code{exact = FALSE} introduces a performance
 penalty - cleaning your data beforehand will almost certainly be more performant.}
 
 \item{cache}{Use a cache of unique, converted dates to apply the datetime

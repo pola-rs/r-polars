@@ -1,4 +1,5 @@
-# Unlike Python Polars, the DataType object is defined on the Rust side, so this file provide wrappers
+# Unlike Python Polars, the DataType object is defined on the Rust side,
+# so this file provide wrappers
 
 # TODO: link to data type mapping vignette
 # TODO: floating point numbers section
@@ -21,6 +22,7 @@
 #' @details
 #' ## Full data types table
 #'
+# nolint start: line_length_linter
 #' | Type(s)                                        | Details                                                                         |
 #' | ---------------------------------------------- | ------------------------------------------------------------------------------- |
 #' | `Boolean`                                      | Boolean type that is bit packed efficiently.                                    |
@@ -40,7 +42,7 @@
 #' | `Enum` `r lifecycle::badge("experimental")`    | Efficient ordered encoding of a set of predetermined string categories.         |
 #' | `Struct`                                       | Composite product type that can store multiple fields.                          |
 #' | `Null`                                         | Represents null values.                                                         |
-#'
+# nolint end
 #' @name polars_dtype
 #' @aliases DataType
 #' @examples
@@ -140,8 +142,8 @@ on_load({
 #' @rdname polars_dtype
 #' @param precision Single integer or `NULL` (default), maximum number of digits in each number.
 #' If `NULL`, the precision is inferred.
-#' @param scale Single integer or `NULL`. Number of digits to the right of the decimal point in each number.
-#' The default is `0`.
+#' @param scale Single integer or `NULL`. Number of digits to the right of the decimal point
+#' in each number. The default is `0`.
 pl__Decimal <- function(precision = NULL, scale = 0L) {
   PlRDataType$new_decimal(scale = scale, precision = precision) |>
     wrap()

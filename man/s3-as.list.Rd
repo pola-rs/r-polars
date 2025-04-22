@@ -136,7 +136,8 @@ These S3 methods call \code{\link[=dataframe__get_columns]{as_polars_df(x, ...)$
 depending on the \code{as_series} argument.
 }
 \details{
-Arguments other than \code{x} and \code{as_series} are passed to \code{\link[=series__to_r_vector]{<Series>$to_r_vector()}},
+Arguments other than \code{x} and \code{as_series} are passed to
+\code{\link[=series__to_r_vector]{<Series>$to_r_vector()}},
 so they are ignored when \code{as_series=TRUE}.
 }
 \examples{

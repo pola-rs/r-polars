@@ -36,16 +36,19 @@ while Polars DataFrame's columns are \link[=Series]{Polars Series}.
 \details{
 The \code{pl$DataFrame()} function mimics the constructor of the DataFrame class of Python Polars.
 This function is basically a shortcut for
-\code{as_polars_df(list(...))$cast(!!!.schema_overrides, .strict = .strict)}, so each argument in \code{...} is
-converted to a Polars Series by \code{\link[=as_polars_series]{as_polars_series()}} and then passed to \code{\link[=as_polars_df]{as_polars_df()}}.
+\code{as_polars_df(list(...))$cast(!!!.schema_overrides, .strict = .strict)},
+so each argument in \code{...} is converted to a Polars Series by \code{\link[=as_polars_series]{as_polars_series()}}
+and then passed to \code{\link[=as_polars_df]{as_polars_df()}}.
 }
 \section{Active bindings}{
 
 \itemize{
 \item \code{columns}: \verb{$columns} returns a character vector with the names of the columns.
 \item \code{dtypes}: \verb{$dtypes} returns a nameless list of the data type of each column.
-\item \code{schema}: \verb{$schema} returns a named list with the column names as names and the data types as values.
-\item \code{shape}: \verb{$shape} returns a integer vector of length two with the number of rows and columns of the DataFrame.
+\item \code{schema}: \verb{$schema} returns a named list with the column names as names
+and the data types as values.
+\item \code{shape}: \verb{$shape} returns a integer vector of length two with the number of rows
+and columns of the DataFrame.
 \item \code{height}: \verb{$height} returns a integer with the number of rows of the DataFrame.
 \item \code{width}: \verb{$width} returns a integer with the number of columns of the DataFrame.
 \item \code{flags}: \verb{$flags} returns a list with column names as names and a named

@@ -21,7 +21,8 @@ Within a series all elements have the same Data Type.
 }
 \details{
 The \code{pl$Series()} function mimics the constructor of the Series class of Python Polars.
-This function calls \code{\link[=as_polars_series]{as_polars_series()}} internally to convert the input object to a Polars Series.
+This function calls \code{\link[=as_polars_series]{as_polars_series()}} internally to convert the input object
+to a Polars Series.
 }
 \section{Active bindings}{
 

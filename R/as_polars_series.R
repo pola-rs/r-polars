@@ -14,14 +14,14 @@
 #' all elements must have the same type.
 #' So the [as_polars_series()] function automatically casts all elements to the same type
 #' or throws an error, depending on the `strict` argument.
-#' We can check the [data type][DataType] of the [Series] that will be created from the [list] by using the
-#' [infer_polars_dtype()] function in advance.
+#' We can check the [data type][DataType] of the [Series] that will be created from
+#' the [list] by using the [infer_polars_dtype()] function in advance.
 #' If you want to create a list with all elements of the same type in R,
 #' consider using the [vctrs::list_of()] function.
 #'
 #' Since a [list] can contain another [list], the `strict` argument is also used
-#' when creating [Series] from the inner [list] in the case of classes constructed on top of a [list],
-#' such as [data.frame] or [vctrs_rcrd][vctrs::new_rcrd].
+#' when creating [Series] from the inner [list] in the case of classes constructed
+#' on top of a [list], such as [data.frame] or [vctrs_rcrd][vctrs::new_rcrd].
 #'
 #' ## S3 method for [Date]
 #'
@@ -55,7 +55,8 @@
 #' the internal representation of seconds.
 #' Please check the [clock_duration][clock::duration-helper] documentation for more details.
 #'
-#' ## S3 methods for [polars_data_frame][DataFrame], [polars_lazy_frame][LazyFrame], and [data.frame]
+#' ## S3 methods for [polars_data_frame][DataFrame], [polars_lazy_frame][LazyFrame],
+#' and [data.frame]
 #'
 #' These methods are shortcuts for `as_polars_df(x, ...)$to_struct()`.
 #' See [as_polars_df()] and [`<DataFrame>$to_struct()`][dataframe__to_struct] for more details.

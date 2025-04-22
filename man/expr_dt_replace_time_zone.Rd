@@ -51,7 +51,9 @@ df <- pl$select(
   )$dt$convert_time_zone(time_zone = "Europe/London")
 )
 df$with_columns(
-  London_to_Amsterdam = pl$col("london_timezone")$dt$replace_time_zone(time_zone="Europe/Amsterdam")
+  London_to_Amsterdam = pl$col("london_timezone")$dt$replace_time_zone(
+    time_zone="Europe/Amsterdam"
+  )
 )
 # You can use `ambiguous` to deal with ambiguous datetimes:
 dates <- c(

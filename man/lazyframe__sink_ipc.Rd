@@ -37,11 +37,11 @@ Must be one of:
 \item \code{"zstd"} (default): Good compression performance.
 }}
 
-\item{compat_level}{Determines the compatibility level when exporting Polars' internal data structures.
-When specifying a new compatibility level, Polars exports its internal data structures
-that might not be interpretable by other Arrow implementations.
-The level can be specified as the name (e.g., \code{"newest"}) or as a scalar integer
-(Currently, \code{0} or \code{1} is supported).
+\item{compat_level}{Determines the compatibility level when exporting
+Polars' internal data structures. When specifying a new compatibility level,
+Polars exports its internal data structures that might not be interpretable by
+other Arrow implementations. The level can be specified as the name
+(e.g., \code{"newest"}) or as a scalar integer (Currently, \code{0} or \code{1} is supported).
 \itemize{
 \item \code{"newest"} (default): Use the highest level, currently same as \code{1}
 (Low compatibility).

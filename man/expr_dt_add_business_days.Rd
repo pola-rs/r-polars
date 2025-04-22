@@ -19,7 +19,8 @@ business days to offset by.}
 \item{...}{These dots are for future extensions and must be empty.}
 
 \item{week_mask}{Non-NA logical vector of length 7, representing the days of
-the week to count. The default is Monday to Friday (\code{c(TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, FALSE)}).
+the week to count. The default is Monday to Friday
+(\code{c(TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, FALSE)}).
 If you wanted to count only Monday to Thursday, you would pass
 \code{c(TRUE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE)}.}
 

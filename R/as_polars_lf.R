@@ -7,7 +7,8 @@
 #'
 #' ## Default S3 method
 #'
-#' Create a [DataFrame] by calling [as_polars_df()] and then create a [LazyFrame] from the [DataFrame].
+#' Create a [DataFrame] by calling [as_polars_df()] and then create
+#' a [LazyFrame] from the [DataFrame].
 #' Additional arguments `...` are passed to [as_polars_df()].
 #' @inherit pl__LazyFrame return
 #' @inheritParams as_polars_df

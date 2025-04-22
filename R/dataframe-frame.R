@@ -9,15 +9,18 @@
 #'
 #' The `pl$DataFrame()` function mimics the constructor of the DataFrame class of Python Polars.
 #' This function is basically a shortcut for
-#' `as_polars_df(list(...))$cast(!!!.schema_overrides, .strict = .strict)`, so each argument in `...` is
-#' converted to a Polars Series by [as_polars_series()] and then passed to [as_polars_df()].
+#' `as_polars_df(list(...))$cast(!!!.schema_overrides, .strict = .strict)`,
+#' so each argument in `...` is converted to a Polars Series by [as_polars_series()]
+#' and then passed to [as_polars_df()].
 #' @aliases polars_data_frame DataFrame
 #'
 #' @section Active bindings:
 #' - `columns`: `$columns` returns a character vector with the names of the columns.
 #' - `dtypes`: `$dtypes` returns a nameless list of the data type of each column.
-#' - `schema`: `$schema` returns a named list with the column names as names and the data types as values.
-#' - `shape`: `$shape` returns a integer vector of length two with the number of rows and columns of the DataFrame.
+#' - `schema`: `$schema` returns a named list with the column names as names
+#'   and the data types as values.
+#' - `shape`: `$shape` returns a integer vector of length two with the number of rows
+#'   and columns of the DataFrame.
 #' - `height`: `$height` returns a integer with the number of rows of the DataFrame.
 #' - `width`: `$width` returns a integer with the number of columns of the DataFrame.
 #' - `flags`: `$flags` returns a list with column names as names and a named
@@ -136,7 +139,7 @@ dataframe__set_column_names <- function(names) {
 }
 
 # TODO: support json format
-# TODO: use nanoarrow instead of arrow in examples after <https://github.com/apache/arrow-nanoarrow/issues/743> is fixed
+# TODO: use nanoarrow instead of arrow in examples after <https://github.com/apache/arrow-nanoarrow/issues/743> is fixed # nolint
 #' Serialize the DataFrame to a binary format
 #'
 #' Serialize the DataFrame to a binary format.

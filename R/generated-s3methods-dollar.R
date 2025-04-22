@@ -9,7 +9,9 @@
     env_get(x, name)
   } else if (name %in% method_names) {
     fn <- polars_dataframe__methods[[name]]
+    # nolint start: object_usage_linter
     self <- x
+    # nolint end
     environment(fn) <- environment()
     fn
   } else {
@@ -37,7 +39,9 @@
     env_get(x, name)
   } else if (name %in% method_names) {
     fn <- polars_groupby__methods[[name]]
+    # nolint start: object_usage_linter
     self <- x
+    # nolint end
     environment(fn) <- environment()
     fn
   } else {
@@ -65,7 +69,9 @@
     env_get(x, name)
   } else if (name %in% method_names) {
     fn <- polars_group_by_dynamic__methods[[name]]
+    # nolint start: object_usage_linter
     self <- x
+    # nolint end
     environment(fn) <- environment()
     fn
   } else {
@@ -93,7 +99,9 @@
     env_get(x, name)
   } else if (name %in% method_names) {
     fn <- polars_rolling_groupby__methods[[name]]
+    # nolint start: object_usage_linter
     self <- x
+    # nolint end
     environment(fn) <- environment()
     fn
   } else {
@@ -121,7 +129,9 @@
     env_get(x, name)
   } else if (name %in% method_names) {
     fn <- polars_datatype__methods[[name]]
+    # nolint start: object_usage_linter
     self <- x
+    # nolint end
     environment(fn) <- environment()
     fn
   } else {
@@ -149,7 +159,9 @@
     env_get(x, name)
   } else if (name %in% method_names) {
     fn <- polars_expr__methods[[name]]
+    # nolint start: object_usage_linter
     self <- x
+    # nolint end
     environment(fn) <- environment()
     fn
   } else {
@@ -177,7 +189,9 @@
     env_get(x, name)
   } else if (name %in% method_names) {
     fn <- polars_lazyframe__methods[[name]]
+    # nolint start: object_usage_linter
     self <- x
+    # nolint end
     environment(fn) <- environment()
     fn
   } else {
@@ -205,7 +219,9 @@
     env_get(x, name)
   } else if (name %in% method_names) {
     fn <- polars_lazygroupby__methods[[name]]
+    # nolint start: object_usage_linter
     self <- x
+    # nolint end
     environment(fn) <- environment()
     fn
   } else {
@@ -233,7 +249,9 @@
     env_get(x, name)
   } else if (name %in% method_names) {
     fn <- polars_sql_context__methods[[name]]
+    # nolint start: object_usage_linter
     self <- x
+    # nolint end
     environment(fn) <- environment()
     fn
   } else {
@@ -261,7 +279,9 @@
     env_get(x, name)
   } else if (name %in% method_names) {
     fn <- polars_expr_arr_methods[[name]]
+    # nolint start: object_usage_linter
     self <- x
+    # nolint end
     environment(fn) <- environment()
     fn
   } else {
@@ -289,7 +309,9 @@
     env_get(x, name)
   } else if (name %in% method_names) {
     fn <- polars_expr_bin_methods[[name]]
+    # nolint start: object_usage_linter
     self <- x
+    # nolint end
     environment(fn) <- environment()
     fn
   } else {
@@ -317,7 +339,9 @@
     env_get(x, name)
   } else if (name %in% method_names) {
     fn <- polars_expr_cat_methods[[name]]
+    # nolint start: object_usage_linter
     self <- x
+    # nolint end
     environment(fn) <- environment()
     fn
   } else {
@@ -345,7 +369,9 @@
     env_get(x, name)
   } else if (name %in% method_names) {
     fn <- polars_expr_dt_methods[[name]]
+    # nolint start: object_usage_linter
     self <- x
+    # nolint end
     environment(fn) <- environment()
     fn
   } else {
@@ -373,7 +399,9 @@
     env_get(x, name)
   } else if (name %in% method_names) {
     fn <- polars_expr_list_methods[[name]]
+    # nolint start: object_usage_linter
     self <- x
+    # nolint end
     environment(fn) <- environment()
     fn
   } else {
@@ -401,7 +429,9 @@
     env_get(x, name)
   } else if (name %in% method_names) {
     fn <- polars_expr_meta_methods[[name]]
+    # nolint start: object_usage_linter
     self <- x
+    # nolint end
     environment(fn) <- environment()
     fn
   } else {
@@ -429,7 +459,9 @@
     env_get(x, name)
   } else if (name %in% method_names) {
     fn <- polars_expr_name_methods[[name]]
+    # nolint start: object_usage_linter
     self <- x
+    # nolint end
     environment(fn) <- environment()
     fn
   } else {
@@ -457,7 +489,9 @@
     env_get(x, name)
   } else if (name %in% method_names) {
     fn <- polars_expr_str_methods[[name]]
+    # nolint start: object_usage_linter
     self <- x
+    # nolint end
     environment(fn) <- environment()
     fn
   } else {
@@ -485,7 +519,9 @@
     env_get(x, name)
   } else if (name %in% method_names) {
     fn <- polars_expr_struct_methods[[name]]
+    # nolint start: object_usage_linter
     self <- x
+    # nolint end
     environment(fn) <- environment()
     fn
   } else {

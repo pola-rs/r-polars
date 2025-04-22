@@ -35,10 +35,12 @@ which represents a column or literal number of minutes, or \code{NULL} (default)
 \item{seconds}{Something can be coerced to an \link[=Expr]{polars expression} by \code{\link[=as_polars_expr]{as_polars_expr()}}
 which represents a column or literal number of seconds, or \code{NULL} (default).}
 
-\item{milliseconds}{Something can be coerced to an \link[=Expr]{polars expression} by \code{\link[=as_polars_expr]{as_polars_expr()}}
+\item{milliseconds}{Something can be coerced to an \link[=Expr]{polars expression}
+by \code{\link[=as_polars_expr]{as_polars_expr()}}
 which represents a column or literal number of milliseconds, or \code{NULL} (default).}
 
-\item{microseconds}{Something can be coerced to an \link[=Expr]{polars expression} by \code{\link[=as_polars_expr]{as_polars_expr()}}
+\item{microseconds}{Something can be coerced to an \link[=Expr]{polars expression}
+by \code{\link[=as_polars_expr]{as_polars_expr()}}
 which represents a column or literal number of microseconds, or \code{NULL} (default).}
 
 \item{nanoseconds}{Something can be coerced to an \link[=Expr]{polars expression} by \code{\link[=as_polars_expr]{as_polars_expr()}}

@@ -28,7 +28,8 @@ It is basically a shortcut for \link[=as_polars_df]{as_polars_df(x, ...)} with t
 \details{
 \subsection{Default S3 method}{
 
-Create a \link{DataFrame} by calling \code{\link[=as_polars_df]{as_polars_df()}} and then create a \link{LazyFrame} from the \link{DataFrame}.
+Create a \link{DataFrame} by calling \code{\link[=as_polars_df]{as_polars_df()}} and then create
+a \link{LazyFrame} from the \link{DataFrame}.
 Additional arguments \code{...} are passed to \code{\link[=as_polars_df]{as_polars_df()}}.
 }
 }

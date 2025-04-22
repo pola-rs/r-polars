@@ -2,15 +2,17 @@
 #' Infer Polars DataType corresponding to a given R object
 #'
 #' @description
-#' [infer_polars_dtype()] is a helper function used to quickly find the [DataType] corresponding to an R object,
-#' in order words, it infers the type of the Polars [Series] that would be constructed from the object.
+#' [infer_polars_dtype()] is a helper function used to quickly find the [DataType]
+#' corresponding to an R object, in order words, it infers the type of the Polars [Series]
+#' that would be constructed from the object.
 #' In many cases, this function simply performs something like `head(x, 0) |> as_polars_series()`.
 #' It is much faster than actually constructing a [Series] using the entire object.
 #' This function is similar to [nanoarrow::infer_nanoarrow_schema()].
 #'
 #' [is_convertible_to_polars_series()] and [is_convertible_to_polars_expr()] are helper functions
 #' that check if the object can be converted to a [Series] or [Expr] respectively.
-#' These functions call [infer_polars_dtype()] internally and return `TRUE` if the type can be inferred without error.
+#' These functions call [infer_polars_dtype()] internally and return `TRUE`
+#' if the type can be inferred without error.
 #' (Or, that object is already a Polars [Expr] for [is_convertible_to_polars_expr()].)
 #' @details
 #' S3 objects based on atomic vectors or classes built on [the vctrs package][vctrs::vctrs-package]

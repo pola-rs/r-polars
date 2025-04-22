@@ -6,7 +6,8 @@
 #' Within a series all elements have the same Data Type.
 #'
 #' The `pl$Series()` function mimics the constructor of the Series class of Python Polars.
-#' This function calls [as_polars_series()] internally to convert the input object to a Polars Series.
+#' This function calls [as_polars_series()] internally to convert the input object
+#' to a Polars Series.
 #' @aliases polars_series Series
 #' @section Active bindings:
 #' - `dtype`: `$dtype` returns the data type of the Series.

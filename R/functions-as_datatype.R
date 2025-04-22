@@ -130,9 +130,11 @@ pl__datetime <- function(
 #' which represents a column or literal number of minutes, or `NULL` (default).
 #' @param seconds Something can be coerced to an [polars expression][Expr] by [as_polars_expr()]
 #' which represents a column or literal number of seconds, or `NULL` (default).
-#' @param milliseconds Something can be coerced to an [polars expression][Expr] by [as_polars_expr()]
+#' @param milliseconds Something can be coerced to an [polars expression][Expr]
+#' by [as_polars_expr()]
 #' which represents a column or literal number of milliseconds, or `NULL` (default).
-#' @param microseconds Something can be coerced to an [polars expression][Expr] by [as_polars_expr()]
+#' @param microseconds Something can be coerced to an [polars expression][Expr]
+#' by [as_polars_expr()]
 #' which represents a column or literal number of microseconds, or `NULL` (default).
 #' @param nanoseconds Something can be coerced to an [polars expression][Expr] by [as_polars_expr()]
 #' which represents a column or literal number of nanoseconds, or `NULL` (default).

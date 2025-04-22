@@ -33,8 +33,8 @@ pl__Struct(...)
 \item{precision}{Single integer or \code{NULL} (default), maximum number of digits in each number.
 If \code{NULL}, the precision is inferred.}
 
-\item{scale}{Single integer or \code{NULL}. Number of digits to the right of the decimal point in each number.
-The default is \code{0}.}
+\item{scale}{Single integer or \code{NULL}. Number of digits to the right of the decimal point
+in each number. The default is \code{0}.}
 
 \item{time_unit}{One of \code{"us"} (default, microseconds),
 \code{"ns"} (nanoseconds) or \code{"ms"}(milliseconds). Representing the unit of time.}

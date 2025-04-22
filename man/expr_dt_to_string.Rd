@@ -12,7 +12,8 @@ expr_dt_to_string(format = NULL)
 Available formats depend on the column \link[=DataType]{data type}:
 \itemize{
 \item For \link[=DataType]{Date/Time/Datetime}, refer to the
-\link[=https://docs.rs/chrono/latest/chrono/format/strftime/index.html]{chrono strftime documentation}
+\link{chrono strftime documentation}
+\link{https://docs.rs/chrono/latest/chrono/format/strftime/index.html}
 for specification. Example: \code{"\%y-\%m-\%d"}.
 Special case \code{"iso"} will use the ISO8601 format.
 \item For \link[=DataType]{Duration}, \code{"iso"} or \code{"polars"} can be used.

@@ -1,4 +1,3 @@
-# TODO: `$meta$serialize` does not support all literal values https://github.com/pola-rs/polars/pull/17679
 # exported in zzz.R
 compare_proxy.polars_expr <- function(x, path) {
   list(

@@ -66,11 +66,13 @@ from the struct \link{Series}. In this case, the \code{column_name} argument is 
 
 \item{slice_pushdown}{A logical, indicats slice pushdown optimization.}
 
-\item{comm_subplan_elim}{A logical, indicats tring to cache branching subplans that occur on self-joins or unions.}
+\item{comm_subplan_elim}{A logical, indicats tring to cache branching subplans that occur
+on self-joins or unions.}
 
 \item{comm_subexpr_elim}{A logical, indicats tring to cache common subexpressions.}
 
-\item{cluster_with_columns}{A logical, indicats to combine sequential independent calls to with_columns.}
+\item{cluster_with_columns}{A logical, indicats to combine sequential independent calls
+to with_columns.}
 
 \item{no_optimization}{A logical. If \code{TRUE}, turn off (certain) optimizations.}
 
@@ -103,10 +105,13 @@ to check if the object can be converted to a \link[=pl__Struct]{struct dtype}.
 
 \subsection{S3 method for \link{list}}{
 \itemize{
-\item The argument \code{...} (except \code{name}) is passed to \code{\link[=as_polars_series]{as_polars_series()}} for each element of the list.
-\item All elements of the list must be converted to the same length of \link{Series} by \code{\link[=as_polars_series]{as_polars_series()}}.
+\item The argument \code{...} (except \code{name}) is passed to \code{\link[=as_polars_series]{as_polars_series()}}
+for each element of the list.
+\item All elements of the list must be converted to the same length of \link{Series} by
+\code{\link[=as_polars_series]{as_polars_series()}}.
 \item The name of the each element is used as the column name of the \link{DataFrame}.
-For unnamed elements, the column name will be an empty string \code{""} or if the element is a \link{Series},
+For unnamed elements, the column name will be an empty string \code{""} or if the element is
+a \link{Series},
 the column name will be the name of the \link{Series}.
 }
 }
@@ -121,8 +126,10 @@ the column name will be the name of the \link{Series}.
 \subsection{S3 method for \link[=Series]{polars_series}}{
 
 This is a shortcut for \code{\link[=series__to_frame]{<Series>$to_frame()}} or
-\code{\link[=series_struct_unnest]{<Series>$struct$unnest()}}, depending on the \code{from_struct} argument and the \link{Series} data type.
-The \code{column_name} argument is passed to the \code{name} argument of the \code{\link[=series__to_frame]{$to_frame()}} method.
+\code{\link[=series_struct_unnest]{<Series>$struct$unnest()}}, depending on the \code{from_struct} argument
+and the \link{Series} data type.
+The \code{column_name} argument is passed to the \code{name} argument of the
+\code{\link[=series__to_frame]{$to_frame()}} method.
 }
 
 \subsection{S3 method for \link[=LazyFrame]{polars_lazy_frame}}{
@@ -154,6 +161,7 @@ as_polars_df(s_struct)
 \seealso{
 \itemize{
 \item \code{\link[=as.list.polars_data_frame]{as.list(<polars_data_frame>)}}: Export the DataFrame as an R list.
-\item \code{\link[=as.data.frame.polars_data_frame]{as.data.frame(<polars_data_frame>)}}: Export the DataFrame as an R data frame.
+\item \code{\link[=as.data.frame.polars_data_frame]{as.data.frame(<polars_data_frame>)}}:
+Export the DataFrame as an R data frame.
 }
 }

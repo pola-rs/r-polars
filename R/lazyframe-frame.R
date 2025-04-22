@@ -97,8 +97,8 @@ pl__deserialize_lf <- function(data) {
 #' @param ... <[`dynamic-dots`][rlang::dyn-dots]>
 #' Name-value pairs of objects to be converted to polars [expressions][Expr]
 #' by the [as_polars_expr()] function.
-#' Characters are parsed as column names, other non-expression inputs are parsed as [literals][pl__lit].
-#' Each name will be used as the expression name.
+#' Characters are parsed as column names, other non-expression inputs are parsed as
+#' [literals][pl__lit]. Each name will be used as the expression name.
 #' @examples
 #' # Pass the name of a column to select that column.
 #' lf <- pl$LazyFrame(
@@ -201,7 +201,6 @@ lazyframe__group_by <- function(..., .maintain_order = FALSE) {
 }
 
 # TODO: see also section
-# TODO: engine's default value "auto" causes panic when `sink_*` if without the new_streaming feature <https://github.com/pola-rs/polars/pull/22074>
 #' Materialize this LazyFrame into a DataFrame
 #'
 #' By default, all query optimizations are enabled.
@@ -213,9 +212,11 @@ lazyframe__group_by <- function(..., .maintain_order = FALSE) {
 #' @param projection_pushdown A logical, indicats projection pushdown optimization.
 #' @param simplify_expression A logical, indicats simplify expression optimization.
 #' @param slice_pushdown A logical, indicats slice pushdown optimization.
-#' @param comm_subplan_elim A logical, indicats tring to cache branching subplans that occur on self-joins or unions.
+#' @param comm_subplan_elim A logical, indicats tring to cache branching subplans that occur
+#' on self-joins or unions.
 #' @param comm_subexpr_elim A logical, indicats tring to cache common subexpressions.
-#' @param cluster_with_columns A logical, indicats to combine sequential independent calls to with_columns.
+#' @param cluster_with_columns A logical, indicats to combine sequential independent calls
+#' to with_columns.
 #' @param collapse_joins Collapse a join and filters into a faster join.
 #' @param no_optimization A logical. If `TRUE`, turn off (certain) optimizations.
 #' @param streaming `r lifecycle::badge("deprecated")`

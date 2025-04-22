@@ -183,8 +183,9 @@ expr_str_to_time <- function(format = NULL, ..., strict = TRUE, cache = TRUE) {
 #' e.g.: `"%F %T%.3f"` => [`pl$Datetime("ms")`][pl__Datetime].
 #' If no fractional second component is found, the default is `"us"` (microsecond).
 #' @param time_zone for the resulting [Datetime][pl__Datetime] column.
-#' @param exact If `TRUE` (default), require an exact format match. If `FALSE`, allow the format to match
-#' anywhere in the target string. Note that using `exact = FALSE` introduces a performance
+#' @param exact If `TRUE` (default), require an exact format match.
+#' If `FALSE`, allow the format to match anywhere in the target string.
+#' Note that using `exact = FALSE` introduces a performance
 #' penalty - cleaning your data beforehand will almost certainly be more performant.
 #' @inherit as_polars_expr return
 #' @seealso
@@ -1094,7 +1095,8 @@ expr_str_replace_many <- function(patterns, replace_with, ascii_case_insensitive
 #' All group names are strings. If your pattern contains unnamed groups, their
 #' numerical position is converted to a string. See examples.
 #' @param pattern A character of a valid regular expression pattern containing
-#' at least one capture group, compatible with the [regex crate](https://docs.rs/regex/latest/regex/).
+#' at least one capture group, compatible with the
+#' [regex crate](https://docs.rs/regex/latest/regex/).
 #' @inherit as_polars_expr return
 #'
 #' @examples

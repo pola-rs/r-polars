@@ -29,16 +29,16 @@ as_polars_expr(x, ...)
 
 \item{...}{Additional arguments passed to the methods.}
 
-\item{structify}{A logical. If \code{TRUE}, convert multi-column expressions to a single struct expression
-by calling \code{\link[=pl__struct]{pl$struct()}}. Otherwise (default), done nothing.}
+\item{structify}{A logical. If \code{TRUE}, convert multi-column expressions to a single struct
+expression by calling \code{\link[=pl__struct]{pl$struct()}}. Otherwise (default), done nothing.}
 
 \item{as_lit}{A logical value indicating whether to treat vector as literal values or not.
 This argument is always set to \code{TRUE} when calling this function from \code{\link[=pl__lit]{pl$lit()}},
 and expects to return literal values. See examples for details.}
 
 \item{raw_as_binary}{A logical value indicating whether to convert \link{raw} vector to
-a \link[=DataType]{Binary} type scalar. If \code{TRUE} (default), the output is a \link[=DataType]{Binary} type scalar
-instead of \link[=DataType]{UInt8} type literal.}
+a \link[=DataType]{Binary} type scalar. If \code{TRUE} (default), the output is a \link[=DataType]{Binary}
+type scalar instead of \link[=DataType]{UInt8} type literal.}
 }
 \value{
 A polars \link{expression}
@@ -52,9 +52,11 @@ a shorthand for \code{as_polars_expr(x, as_lit = TRUE)}.
 the \code{lit} function of the Polars API in other languages.)
 }
 \details{
-Because R objects are typically mapped to \link{Series}, this function often calls \code{\link[=as_polars_series]{as_polars_series()}} internally.
-However, unlike R, Polars has scalars of length 1, so if an R object is converted to a \link{Series} of length 1,
-this function get the first value of the Series and convert it to a scalar literal.
+Because R objects are typically mapped to \link{Series}, this function often calls
+\code{\link[=as_polars_series]{as_polars_series()}} internally.
+However, unlike R, Polars has scalars of length 1, so if an R object is converted to
+a \link{Series} of length 1, this function get the first value of the Series
+and convert it to a scalar literal.
 If you want to implement your own conversion from an R class to a Polars object,
 define an S3 method for \code{\link[=as_polars_series]{as_polars_series()}} instead of this function.
 \subsection{Default S3 method}{

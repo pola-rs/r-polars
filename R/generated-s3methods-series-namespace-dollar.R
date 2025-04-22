@@ -10,7 +10,9 @@
     env_get(x, name)
   } else if (name %in% method_names) {
     fn <- polars_series_arr_methods[[name]]
+    # nolint start: object_usage_linter
     self <- x
+    # nolint end
     environment(fn) <- environment()
     fn
   } else if (name %in% dispatched_method_names) {
@@ -44,7 +46,9 @@
     env_get(x, name)
   } else if (name %in% method_names) {
     fn <- polars_series_bin_methods[[name]]
+    # nolint start: object_usage_linter
     self <- x
+    # nolint end
     environment(fn) <- environment()
     fn
   } else if (name %in% dispatched_method_names) {
@@ -78,7 +82,9 @@
     env_get(x, name)
   } else if (name %in% method_names) {
     fn <- polars_series_cat_methods[[name]]
+    # nolint start: object_usage_linter
     self <- x
+    # nolint end
     environment(fn) <- environment()
     fn
   } else if (name %in% dispatched_method_names) {
@@ -112,7 +118,9 @@
     env_get(x, name)
   } else if (name %in% method_names) {
     fn <- polars_series_dt_methods[[name]]
+    # nolint start: object_usage_linter
     self <- x
+    # nolint end
     environment(fn) <- environment()
     fn
   } else if (name %in% dispatched_method_names) {
@@ -146,7 +154,9 @@
     env_get(x, name)
   } else if (name %in% method_names) {
     fn <- polars_series_list_methods[[name]]
+    # nolint start: object_usage_linter
     self <- x
+    # nolint end
     environment(fn) <- environment()
     fn
   } else if (name %in% dispatched_method_names) {
@@ -180,7 +190,9 @@
     env_get(x, name)
   } else if (name %in% method_names) {
     fn <- polars_series_str_methods[[name]]
+    # nolint start: object_usage_linter
     self <- x
+    # nolint end
     environment(fn) <- environment()
     fn
   } else if (name %in% dispatched_method_names) {
@@ -214,7 +226,9 @@
     env_get(x, name)
   } else if (name %in% method_names) {
     fn <- polars_series_struct_methods[[name]]
+    # nolint start: object_usage_linter
     self <- x
+    # nolint end
     environment(fn) <- environment()
     fn
   } else if (name %in% dispatched_method_names) {

@@ -71,15 +71,17 @@ but be aware that it may be slow.}
 A \link[=DataType]{polars DataType}
 }
 \description{
-\code{\link[=infer_polars_dtype]{infer_polars_dtype()}} is a helper function used to quickly find the \link{DataType} corresponding to an R object,
-in order words, it infers the type of the Polars \link{Series} that would be constructed from the object.
+\code{\link[=infer_polars_dtype]{infer_polars_dtype()}} is a helper function used to quickly find the \link{DataType}
+corresponding to an R object, in order words, it infers the type of the Polars \link{Series}
+that would be constructed from the object.
 In many cases, this function simply performs something like \code{head(x, 0) |> as_polars_series()}.
 It is much faster than actually constructing a \link{Series} using the entire object.
 This function is similar to \code{\link[nanoarrow:as_nanoarrow_schema]{nanoarrow::infer_nanoarrow_schema()}}.
 
 \code{\link[=is_convertible_to_polars_series]{is_convertible_to_polars_series()}} and \code{\link[=is_convertible_to_polars_expr]{is_convertible_to_polars_expr()}} are helper functions
 that check if the object can be converted to a \link{Series} or \link{Expr} respectively.
-These functions call \code{\link[=infer_polars_dtype]{infer_polars_dtype()}} internally and return \code{TRUE} if the type can be inferred without error.
+These functions call \code{\link[=infer_polars_dtype]{infer_polars_dtype()}} internally and return \code{TRUE}
+if the type can be inferred without error.
 (Or, that object is already a Polars \link{Expr} for \code{\link[=is_convertible_to_polars_expr]{is_convertible_to_polars_expr()}}.)
 }
 \details{

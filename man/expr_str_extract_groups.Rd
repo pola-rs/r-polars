@@ -8,7 +8,8 @@ expr_str_extract_groups(pattern)
 }
 \arguments{
 \item{pattern}{A character of a valid regular expression pattern containing
-at least one capture group, compatible with the \href{https://docs.rs/regex/latest/regex/}{regex crate}.}
+at least one capture group, compatible with the
+\href{https://docs.rs/regex/latest/regex/}{regex crate}.}
 }
 \value{
 A polars \link{expression}

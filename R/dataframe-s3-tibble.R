@@ -2,14 +2,17 @@
 #' Export the polars object as a tibble data frame
 #'
 #' This S3 method is basically a shortcut of
-#' [`as_polars_df(x, ...)$to_struct()$to_r_vector(ensure_vector = FALSE, struct = "tibble")`][series__to_r_vector].
+#' [`as_polars_df(x, ...)$to_struct()$to_r_vector(ensure_vector = FALSE, struct = "tibble")`]
+#' [series__to_r_vector].
 #' Additionally, you can check or repair the column names by specifying the `.name_repair` argument.
-#' Because polars [DataFrame] allows empty column name, which is not generally valid column name in R data frame.
+#' Because polars [DataFrame] allows empty column name, which is not generally valid column name
+#' in R data frame.
 #' @inheritParams as.data.frame.polars_data_frame
 #' @inheritParams tibble::as_tibble
 #' @return A [tibble][tibble::tbl_df]
 #' @seealso
-#' - [`as.data.frame(<polars_object>)`][as.data.frame.polars_data_frame]: Export the polars object as a basic data frame.
+#' - [`as.data.frame(<polars_object>)`][as.data.frame.polars_data_frame]:
+#'   Export the polars object as a basic data frame.
 #' @examplesIf requireNamespace("tibble", quietly = TRUE)
 #' # Polars DataFrame may have empty column name
 #' df <- pl$DataFrame(x = 1:2, c("a", "b"))

@@ -11,10 +11,9 @@ expr_dt_strftime(format)
 \code{NULL} will be treated as \code{"iso"}.
 Available formats depend on the column \link[=DataType]{data type}:
 \itemize{
-\item For \link[=DataType]{Date/Time/Datetime}, refer to the
-\link[=https://docs.rs/chrono/latest/chrono/format/strftime/index.html]{chrono strftime documentation}
-for specification. Example: \code{"\%y-\%m-\%d"}.
-Special case \code{"iso"} will use the ISO8601 format.
+\item For \link[=DataType]{Date/Time/Datetime}, refer to the \link{chrono strftime documentation}
+\link{https://docs.rs/chrono/latest/chrono/format/strftime/index.html} for specification.
+Example: \code{"\%y-\%m-\%d"}. Special case \code{"iso"} will use the ISO8601 format.
 \item For \link[=DataType]{Duration}, \code{"iso"} or \code{"polars"} can be used.
 The \code{"iso"} format string results in ISO8601 duration string output,
 and \code{"polars"} results in the same form seen in the polars print representation.
