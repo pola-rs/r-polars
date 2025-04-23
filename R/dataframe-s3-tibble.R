@@ -1,3 +1,5 @@
+# nolint start: object_name_linter
+
 # exported in zzz.R
 #' Export the polars object as a tibble data frame
 #'
@@ -53,3 +55,5 @@ as_tibble.polars_data_frame <- function(
   ) |>
     tibble::as_tibble(.name_repair = .name_repair)
 }
+
+# nolint end

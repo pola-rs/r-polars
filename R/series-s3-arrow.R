@@ -1,3 +1,5 @@
+# nolint start: object_name_linter
+
 # exported in zzz.R
 as_record_batch_reader.polars_series <- function(
   x,
@@ -22,3 +24,5 @@ as_record_batch_reader.polars_series <- function(
     }
   )
 }
+
+# nolint end

@@ -1,3 +1,5 @@
+# nolint start: object_name_linter
+
 # exported in zzz.R
 #' @rdname s3-as_nanoarrow_array_stream
 as_nanoarrow_array_stream.polars_data_frame <- function(
@@ -13,3 +15,5 @@ as_nanoarrow_array_stream.polars_data_frame <- function(
       polars_compat_level = polars_compat_level
     )
 }
+
+# nolint end

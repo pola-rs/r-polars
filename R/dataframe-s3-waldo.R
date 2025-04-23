@@ -1,3 +1,5 @@
+# nolint start: object_name_linter
+
 # exported in zzz.R
 compare_proxy.polars_data_frame <- function(x, path) {
   list(
@@ -9,3 +11,5 @@ compare_proxy.polars_data_frame <- function(x, path) {
     path = path
   )
 }
+
+# nolint end

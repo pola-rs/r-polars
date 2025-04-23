@@ -1,3 +1,5 @@
+# nolint start: object_name_linter
+
 # exported in zzz.R
 as_record_batch_reader.polars_data_frame <- function(
   x,
@@ -29,3 +31,5 @@ as_arrow_table.polars_data_frame <- function(
     }
   )
 }
+
+# nolint end

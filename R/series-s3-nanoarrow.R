@@ -1,5 +1,7 @@
 # TODO: infer_nanoarrow_schema.polars_series
 
+# nolint start: object_name_linter
+
 # exported in zzz.R
 #' Create a nanoarrow_array_stream from a Polars object
 #'
@@ -84,3 +86,5 @@ as_nanoarrow_array_stream.polars_series <- function(
     }
   )
 }
+
+# nolint end
