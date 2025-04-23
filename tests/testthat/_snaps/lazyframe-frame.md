@@ -223,3 +223,21 @@
       Caused by error in `as_polars_lf(mtcars)$collect()`:
       ! `engine` must be one of "auto", "in-memory", "streaming", or "old-streaming", not "gpu".
 
+# group_by() warns with arg maintain_order
+
+    Code
+      dat$group_by("a", maintain_order = TRUE)$agg()
+    Condition
+      Warning:
+      ! In `$group_by()`, `...` contain an argument named `maintain_order`.
+      i You may want to specify the argument `.maintain_order` instead.
+    Output
+      shape: (1, 2)
+      ┌─────┬────────────────┐
+      │ a   ┆ maintain_order │
+      │ --- ┆ ---            │
+      │ i32 ┆ bool           │
+      ╞═════╪════════════════╡
+      │ 1   ┆ true           │
+      └─────┴────────────────┘
+

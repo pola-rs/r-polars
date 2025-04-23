@@ -229,6 +229,9 @@ as_polars_df(mtcars)$group_by("cyl", maintain_order = TRUE)$agg()
 #> │ 4.0 ┆ true           │
 #> │ 6.0 ┆ true           │
 #> └─────┴────────────────┘
+#> Warning message:
+#> ! In `$group_by()`, `...` contain an argument named `maintain_order`.
+#> ℹ You may want to specify the argument `.maintain_order` instead.
 
 as_polars_df(mtcars)$group_by("cyl", .maintain_order = TRUE)$agg()
 #> shape: (3, 1)
