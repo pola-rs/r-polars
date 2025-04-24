@@ -1,3 +1,16 @@
+test_that("Optional package suggestion", {
+  with_mocked_bindings(
+    {
+      expect_snapshot(
+        as_polars_series(1)$to_r_vector()
+      )
+    },
+    is_vctrs_installed = \() FALSE,
+    is_blob_installed = \() FALSE,
+    is_hms_installed = \() FALSE,
+  )
+})
+
 patrick::with_parameters_test_that(
   "uint8 conversion",
   .cases = {

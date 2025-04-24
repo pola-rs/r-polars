@@ -1,3 +1,19 @@
+# Optional package suggestion
+
+    Code
+      as_polars_series(1)$to_r_vector()
+    Message
+      i The `vctrs` package is not installed.
+      i Return value may not be printed correctly.
+      i The `blob` package is not installed.
+      i The blob class vector will not be printed correctly.
+    Condition
+      Warning:
+      ! The `hms` package is not installed.
+      i The hms class vector will be printed as difftime.
+    Output
+      [1] 1
+
 # int64 argument error
 
     Code

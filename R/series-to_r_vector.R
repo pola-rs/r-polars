@@ -63,6 +63,7 @@
 #' @param time Determine how to convert Polars' Time type values to R class.
 #' One of the followings:
 #' - `"hms"` (default): Convert to the [hms::hms] class.
+#'   If the [hms][hms::hms-package] package is not installed, a warning will be shown.
 #' - `"ITime"`: Convert to the [data.table::ITime][data.table::IDateTime] class.
 #'   The [data.table][data.table::data.table-package] package must be installed.
 #' @param struct Determine how to convert Polars' Struct type values to R class.
@@ -212,6 +213,26 @@ series__to_r_vector <- function(
         as_polars_expr(as_lit = TRUE)
     }
 
+    # The vctrs package should be loaded to print vctrs_list_of and vctrs_unspecified correctly.
+    if (!is_vctrs_installed()) {
+      inform(
+        c(
+          i = "The `vctrs` package is not installed.",
+          i = "Return value may not be printed correctly."
+        )
+      )
+    }
+
+    # The blob package should be loaded to print blob correctly.
+    if (!is_blob_installed()) {
+      inform(
+        c(
+          i = "The `blob` package is not installed.",
+          i = "The blob class vector will not be printed correctly."
+        )
+      )
+    }
+
     # Ensure the bit64 package is loaded if int64 is set to 'integer64'
     if (identical(int64, "integer64")) {
       if (!is_bit64_installed()) {
@@ -229,6 +250,16 @@ series__to_r_vector <- function(
           c(
             "The `data.table` package is not installed.",
             `*` = 'If `time = "ITime"`, the `data.table` package must be installed.'
+          )
+        )
+      }
+    } else {
+      # The hms package should be loaded to print hms correctly.
+      if (!is_hms_installed()) {
+        warn(
+          c(
+            `!` = "The `hms` package is not installed.",
+            i = "The hms class vector will be printed as difftime."
           )
         )
       }
@@ -269,6 +300,18 @@ series__to_r_vector <- function(
       local_time_zone = Sys.timezone()
     )
   })
+}
+
+is_vctrs_installed <- function() {
+  is_installed("vctrs")
+}
+
+is_blob_installed <- function() {
+  is_installed("blob")
+}
+
+is_hms_installed <- function() {
+  is_installed("hms")
 }
 
 is_bit64_installed <- function() {

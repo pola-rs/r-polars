@@ -58,6 +58,7 @@ One of the followings:
 One of the followings:
 \itemize{
 \item \code{"hms"} (default): Convert to the \link[hms:hms]{hms::hms} class.
+If the \link[hms:hms-package]{hms} package is not installed, a warning will be shown.
 \item \code{"ITime"}: Convert to the \link[data.table:IDateTime]{data.table::ITime} class.
 The \link[data.table:data.table]{data.table} package must be installed.
 }}
