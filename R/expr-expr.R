@@ -456,11 +456,22 @@ expr__exclude <- function(...) {
   wrap({
     check_dots_unnamed()
     by <- list2(...)
-    exclude_cols <- Filter(is.character, by)
+    exclude_cols <- Filter(is_string, by)
     exclude_dtypes <- Filter(is_polars_dtype, by)
 
-    if (length(exclude_cols) > 0 && length(exclude_dtypes) > 0) {
-      abort("cannot exclude by both column name and dtype; use a selector instead")
+    unknown <- Filter(
+      \(x) !is_string(x) && !is_polars_dtype(x),
+      by
+    )
+
+    if (length(unknown) > 0 || length(exclude_cols) > 0 && length(exclude_dtypes) > 0) {
+      abort(
+        c(
+          "Invalid `...` elements.",
+          `*` = "All elements in `...` must be either single strings or Polars data types.",
+          i = "`cs$exclude()` accepts mixing column names and Polars data types."
+        )
+      )
     } else if (length(exclude_cols) > 0) {
       self$`_rexpr`$exclude(unlist(exclude_cols))
     } else if (length(exclude_dtypes) > 0) {
@@ -3927,7 +3938,7 @@ expr__fill_null <- function(value, strategy = NULL, limit = NULL) {
       )
     }
     if (!strategy %in% c("forward", "backward") && !is.null(limit)) {
-      abort("can only specify `limit` when strategy is set to 'backward' or 'forward'")
+      abort('Can only specify `limit` when strategy is set to "backward" or "forward".')
     }
     if (!missing(value)) {
       self$`_rexpr`$fill_null(as_polars_expr(value, as_lit = TRUE)$`_rexpr`)
@@ -4454,7 +4465,7 @@ expr__sample <- function(
     check_dots_empty0(...)
     if (!is.null(fraction)) {
       if (!is.null(n)) {
-        abort("cannot specify both `n` and `fraction`")
+        abort("Can't specify both `n` and `fraction`.")
       }
       self$`_rexpr`$sample_frac(
         as_polars_expr(fraction, as_lit = TRUE)$`_rexpr`,

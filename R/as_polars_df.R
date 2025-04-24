@@ -84,9 +84,13 @@ as_polars_df.default <- function(x, ...) {
     infer_polars_dtype(x, ...),
     error = function(cnd) {
       abort(
-        sprintf(
-          "%s may not be converted to a polars Series, and hence to a polars DataFrame.",
-          obj_type_friendly(x)
+        c(
+          "This object can't be converted to a Polars Series, and hence to a Polars DataFrame.",
+          `*` = sprintf(
+            "%s can't be converted to a Polars Series by `as_polars_series()`.",
+            obj_type_friendly(x)
+          ),
+          i = "The object must be converted to a struct type Series by `as_polars_series()` first."
         ),
         parent = cnd
       )
@@ -98,11 +102,11 @@ as_polars_df.default <- function(x, ...) {
     abort(
       c(
         "This object is not supported for the default method of `as_polars_df()`.",
-        i = "It requires `x` to be Series with dtype 'struct'.",
-        i = sprintf(
-          "`x` would have dtype '%s' once converted to polars Series by `as_polars_series()`.",
+        `*` = sprintf(
+          "It requires `x` to be Series with struct type, got: %s.",
           format(dtype, abbreviated = TRUE)
-        )
+        ),
+        i = "Use `infer_polars_dtype()` to check the data type of the object."
       )
     )
   }

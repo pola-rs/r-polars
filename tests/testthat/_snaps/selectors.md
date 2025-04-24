@@ -102,7 +102,7 @@
       Caused by error:
       ! Evaluation failed in `$select()`.
       Caused by error in `cs$exclude()`:
-      ! `...` can only contain column names, regexes, polars data types or polars selectors.
+      ! `...` can only contain column names, regexes, Polars data types or polars selectors.
 
 # starts_with
 

@@ -102,10 +102,10 @@ patrick::with_parameters_test_that(
 test_that("Before 0-oclock or after 24-oclock hms must be rejected", {
   skip_if_not_installed("hms")
 
-  hms_24 <- hms::as_hms(c(NA, "24:00:00", "04:00:00"))
+  hms_24 <- hms::as_hms(c(NA, "24:00:00", "23:59:59.999999"))
   hms_minus_1 <- hms::as_hms(c(NA, -3600, 0))
-  expect_error(as_polars_series(hms_24), "not supported")
-  expect_error(as_polars_series(hms_minus_1), "not supported")
+  expect_snapshot(as_polars_series(hms_24), error = TRUE)
+  expect_snapshot(as_polars_series(hms_minus_1), error = TRUE)
 })
 
 test_that("as_polars_series(<list>, strict = TRUE)", {

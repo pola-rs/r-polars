@@ -4,7 +4,7 @@
       infer_polars_dtype(x)
     Condition
       Error in `infer_polars_dtype()`:
-      ! passing polars expression objects to `infer_polars_dtype()` is not supported.
+      ! Passing Polars expression objects to `infer_polars_dtype()` is not supported.
       i You may want to eval the expression with `pl$select()` first.
 
 ---
@@ -39,7 +39,7 @@
       Error in `infer_polars_dtype()`:
       ! Can't infer polars dtype of a <polars_dtype_null> object
       Caused by error in `x[0L]`:
-      ! [ - syntax error: Extracting elements of this polars object with `[` is not supported
+      ! [ - syntax error: Extracting elements of this polars object with `[` is not supported.
 
 ---
 

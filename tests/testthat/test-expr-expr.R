@@ -648,7 +648,7 @@ test_that("exclude", {
 
   # char vec
   expect_equal(
-    df$select(pl$all()$exclude(c("Species", "Petal.Width")))$columns,
+    df$select(pl$all()$exclude(!!!c("Species", "Petal.Width")))$columns,
     c("Sepal.Length", "Sepal.Width", "Petal.Length")
   )
 

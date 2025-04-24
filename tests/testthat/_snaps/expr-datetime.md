@@ -203,7 +203,8 @@
       as_polars_series(as.Date("2022-1-1"))$dt$with_time_unit("bob")
     Condition
       Warning:
-      $dt$with_time_unit() is deprecated. Cast to Int64 and to Datetime(<desired unit>) instead.
+      ! `$dt$with_time_unit()` is deprecated.
+      i Cast to Int64 and then to Datetime with the desired time unit instead.
       Error in `as_polars_series(as.Date("2022-1-1"))$dt$with_time_unit()`:
       ! Evaluation failed in `$with_time_unit()`.
       Caused by error:
@@ -217,7 +218,8 @@
       as_polars_series(as.Date("2022-1-1"))$dt$with_time_unit(42)
     Condition
       Warning:
-      $dt$with_time_unit() is deprecated. Cast to Int64 and to Datetime(<desired unit>) instead.
+      ! `$dt$with_time_unit()` is deprecated.
+      i Cast to Int64 and then to Datetime with the desired time unit instead.
       Error in `as_polars_series(as.Date("2022-1-1"))$dt$with_time_unit()`:
       ! Evaluation failed in `$with_time_unit()`.
       Caused by error:
@@ -237,7 +239,7 @@
       Caused by error in `pl$col("x")$dt$add_business_days()`:
       ! Evaluation failed in `$add_business_days()`.
       Caused by error in `pl$col("x")$dt$add_business_days()`:
-      ! `n` must be a single non-`NA` integer-ish value or a polars expression.
+      ! `n` must be a single non-`NA` integer-ish value or a Polars expression.
 
 ---
 

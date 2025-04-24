@@ -67,7 +67,7 @@ lazyframe__serialize <- function(..., format = c("binary", "json")) {
     if (format == "binary") {
       self$`_ldf`$serialize_binary()
     } else {
-      deprecate_warn("'json' serialization format of LazyFrame is deprecated.")
+      deprecate_warn(c(`!` = '"json" serialization format of LazyFrame is deprecated.'))
       self$`_ldf`$serialize_json()
     }
   })
@@ -852,7 +852,7 @@ lazyframe__drop <- function(..., strict = TRUE) {
 lazyframe__slice <- function(offset, length = NULL) {
   wrap({
     if (isTRUE(length < 0)) {
-      abort(sprintf("negative slice length (%s) are invalid for LazyFrame", length))
+      abort(sprintf("Negative slice `length` (%s) are invalid for LazyFrame.", length))
     }
     self$`_ldf`$slice(offset, length)
   })
@@ -1386,14 +1386,16 @@ lazyframe__join <- function(
     uses_left_on <- !is.null(left_on)
     uses_right_on <- !is.null(right_on)
     uses_lr_on <- uses_left_on | uses_right_on
+
+    # TODO: improve error message
     if (uses_on && uses_lr_on) {
-      abort("cannot use 'on' in conjunction with 'left_on' or 'right_on'.")
+      abort("Can't use `on` in conjunction with `left_on` or `right_on`.")
     }
     if (uses_left_on && !uses_right_on) {
-      abort("'left_on' requires corresponding 'right_on'")
+      abort("`left_on` requires corresponding `right_on`.")
     }
     if (!uses_left_on && uses_right_on) {
-      abort("'right_on' requires corresponding 'left_on'")
+      abort("`right_on` requires corresponding `left_on`.")
     }
     if (how == "cross") {
       if (uses_on | uses_lr_on) {
@@ -1423,7 +1425,7 @@ lazyframe__join <- function(
       rexprs_left <- parse_into_list_of_expressions(!!!left_on)
       rexprs_right <- parse_into_list_of_expressions(!!!right_on)
     } else {
-      abort("must specify either `on`, or `left_on` and `right_on`.")
+      abort("Must specify either `on`, or `left_on` and `right_on`.")
     }
     self$`_ldf`$join(
       other$`_ldf`,
@@ -2397,7 +2399,12 @@ lazyframe__join_asof <- function(
         tolerance_num <- series$`_s`
       } else {
         abort(
-          "`tolerance` must be one of NULL, a single string, or an R object that can be converted to a Polars Series of length 1."
+          c(
+            "invalid `tolerance`. `tolerance` must be one of the followings:",
+            `*` = "`NULL`.",
+            `*` = "A single string.",
+            `*` = "Something convertible to a Polars Series of length 1."
+          )
         )
       }
     }
@@ -2470,7 +2477,7 @@ lazyframe__describe <- function(
     check_dots_empty0(...)
     schema <- self$collect_schema()
     if (length(schema) == 0) {
-      abort("cannot describe a LazyFrame without any columns")
+      abort("Can't describe a LazyFrame without any columns")
     }
 
     # create list of metrics

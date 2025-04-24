@@ -216,28 +216,40 @@ series__to_r_vector <- function(
     if (identical(int64, "integer64")) {
       if (!is_bit64_installed()) {
         abort(
-          "If the `int64` argument is set to 'integer64', the `bit64` package must be installed."
+          c(
+            "The `bit64` package is not installed.",
+            `*` = 'If `int64 = "integer64"`, the `bit64` package must be installed.'
+          )
         )
       }
     }
     if (identical(time, "ITime")) {
       if (!is_datatable_installed()) {
         abort(
-          "If the `time` argument is set to 'ITime', the `data.table` package must be installed."
+          c(
+            "The `data.table` package is not installed.",
+            `*` = 'If `time = "ITime"`, the `data.table` package must be installed.'
+          )
         )
       }
     }
     if (identical(struct, "tibble")) {
       if (!is_tibble_installed()) {
         warn(
-          "If the `struct` argument is set to 'tibble', the `tibble` package is recommended to be installed."
+          c(
+            `!` = "The `tibble` package is not installed.",
+            i = 'If `struct = "tibble"`, the `tibble` package is recommended to be installed.'
+          )
         )
       }
     }
     if (isTRUE(as_clock_class)) {
       if (!is_clock_installed()) {
         abort(
-          "If the `as_clock_class` argument is set to `TRUE`, the `clock` package must be installed."
+          c(
+            "The `clock` package is not installed.",
+            `*` = "If `as_clock_class = TRUE`, the `clock` package must be installed."
+          )
         )
       }
     }

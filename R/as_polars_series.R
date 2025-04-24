@@ -212,7 +212,7 @@ as_polars_series.polars_lazy_frame <- as_polars_series.polars_data_frame
 as_polars_series.polars_expr <- function(x, name = NULL, ...) {
   abort(
     c(
-      "passing polars expression objects to `as_polars_series()` is not supported.",
+      "Passing Polars expression objects to `as_polars_series()` is not supported.",
       i = "You can evaluating the expression with `pl$select()`."
     )
   )
@@ -385,8 +385,13 @@ as_polars_series.hms <- function(x, name = NULL, ...) {
   wrap({
     if (suppressWarnings(max(x, na.rm = TRUE) >= 86400.0 || min(x, na.rm = TRUE) < 0.0)) {
       abort(c(
-        "Conversion from `hms` vectors to polars series containing values greater than 24-oclocks or less than 0-oclocks is not supported.",
-        i = "If you want to treat the vector as `difftime`, use `vctrs::vec_cast(x, difftime(0, 0))` before converting to a polars series."
+        "Conversion from hms object to Polars Series failed.",
+        `*` = sprintf(
+          "Only values 00:00:00 <= `x` < 24:00:00 are supported, got: %s to %s",
+          x[which.min(x)],
+          x[which.max(x)]
+        ),
+        i = "To treat the object `x` as difftime, use `vctrs::vec_cast(x, difftime(0, 0))` first."
       ))
     }
 

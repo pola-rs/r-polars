@@ -134,7 +134,7 @@ set_sink_optimizations <- function(
 #' @noRd
 parse_percentiles <- function(percentiles, inject_median = FALSE) {
   if (!all(percentiles >= 0 & percentiles <= 1)) {
-    abort("`percentiles` must all be in the range [0, 1]")
+    abort("`percentiles` must all be in the range [0, 1].")
   }
   sub_50_percentiles <- percentiles[percentiles < 50] |>
     sort()

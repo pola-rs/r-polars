@@ -6,7 +6,8 @@
       Error in `pl$time_range()`:
       ! Evaluation failed in `$time_range()`.
       Caused by error in `pl$time_range()`:
-      ! invalid unit in `interval`: found 'y'
+      ! Invalid unit in `interval`, found 'y'
+      i Units "y", "mo", "w", and "d" are not supported.
 
 # $time_ranges
 
@@ -16,5 +17,6 @@
       Error in `pl$time_ranges()`:
       ! Evaluation failed in `$time_ranges()`.
       Caused by error in `pl$time_ranges()`:
-      ! invalid unit in `interval`: found 'y'
+      ! Invalid unit in `interval`, found 'y'
+      i Units "y", "mo", "w", and "d" are not supported.
 

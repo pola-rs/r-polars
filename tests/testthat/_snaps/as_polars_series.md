@@ -434,6 +434,30 @@
       Error in `as_polars_series()`:
       ! a <foo> object can't be converted to a polars Series.
 
+# Before 0-oclock or after 24-oclock hms must be rejected
+
+    Code
+      as_polars_series(hms_24)
+    Condition
+      Error in `as_polars_series()`:
+      ! Evaluation failed.
+      Caused by error in `as_polars_series()`:
+      ! Conversion from hms object to Polars Series failed.
+      * Only values 00:00:00 <= `x` < 24:00:00 are supported, got: 23:59:59.999999 to 24:00:00
+      i To treat the object `x` as difftime, use `vctrs::vec_cast(x, difftime(0, 0))` first.
+
+---
+
+    Code
+      as_polars_series(hms_minus_1)
+    Condition
+      Error in `as_polars_series()`:
+      ! Evaluation failed.
+      Caused by error in `as_polars_series()`:
+      ! Conversion from hms object to Polars Series failed.
+      * Only values 00:00:00 <= `x` < 24:00:00 are supported, got: -01:00:00 to 00:00:00
+      i To treat the object `x` as difftime, use `vctrs::vec_cast(x, difftime(0, 0))` first.
+
 # as_polars_series works for vctrs_rcrd
 
     Code

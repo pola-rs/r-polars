@@ -11,14 +11,14 @@
 
 #' @export
 `[.polars_object` <- function(x, i, ...) {
-  abort("[ - syntax error: Extracting elements of this polars object with `[` is not supported")
+  abort("[ - syntax error: Extracting elements of this polars object with `[` is not supported.")
 }
 
 #' @export
 `$<-.polars_object` <- function(x, name, value) {
   abort(
     sprintf(
-      "$<- - syntax error: Assigning to the member `%s` of this polars object is not supported",
+      "$<- - syntax error: Assigning to the member `%s` of this polars object is not supported.",
       name
     )
   )
@@ -31,5 +31,5 @@
 
 #' @export
 `[<-.polars_object` <- function(x, i, value) {
-  abort("[<- - syntax error: Modifying elements of this polars object with `[` is not supported")
+  abort("[<- - syntax error: Modifying elements of this polars object with `[` is not supported.")
 }

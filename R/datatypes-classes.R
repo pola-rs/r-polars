@@ -189,7 +189,7 @@ pl__Enum <- function(categories) {
 
     if (anyDuplicated(categories)) {
       abort(sprintf(
-        "Enum categories must be unique; found duplicated: %s",
+        "Enum categories must be unique, found duplicated: %s",
         toString(categories[which(duplicated(categories))])
       ))
     }

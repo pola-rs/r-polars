@@ -95,14 +95,19 @@ pl__concat <- function(
     all(vapply(dots, is_polars_lf, FUN.VALUE = logical(1))) ||
     all(vapply(dots, is_polars_series, FUN.VALUE = logical(1)))
   if (!all_df_lf_series) {
+    # TODO: show which elements are not of the same class
     abort(
-      "All elements in `...` must be of the same class (`polars_data_frame`, `polars_lazy_frame`, or `polars_series`)."
+      c(
+        "Invalid `...` elements.",
+        `*` = "All elements must be of the same class.",
+        `*` = "`polars_data_frame`, `polars_lazy_frame`, or `polars_series` are supported."
+      )
     )
   }
 
   if (startsWith(how, "align")) {
     if (!is_polars_df(first) && !is_polars_lf(first)) {
-      abort(sprintf("'%s' strategy is only supported on DataFrames and LazyFrames.", how))
+      abort(sprintf('`how = "%s"` is only supported on DataFrames and LazyFrames.', how))
     }
 
     join_method <- switch(
@@ -118,7 +123,7 @@ pl__concat <- function(
     common_cols <- Reduce(intersect, all_columns)
     output_column_order <- unique(unlist(all_columns))
     if (length(common_cols) == 0) {
-      abort("'align' strategy requires at least one common column.")
+      abort('"align" strategy requires at least one common column.')
     }
 
     lfs <- lapply(dots, as_polars_lf)
@@ -231,7 +236,7 @@ pl__concat <- function(
           concat_series() |>
           wrap()
       },
-      abort("Series only supports 'vertical' concat strategy.")
+      abort('Series only supports `how = "vertical"`.')
     )
   } else {
     abort("Unreachable")

@@ -175,6 +175,26 @@
 ---
 
     Code
+      pl$DataFrame()$describe()
+    Condition
+      Error:
+      ! Evaluation failed in `$describe()`.
+      Caused by error:
+      ! Can't describe a DataFrame without any columns
+
+---
+
+    Code
+      pl$LazyFrame()$describe()
+    Condition
+      Error:
+      ! Evaluation failed in `$describe()`.
+      Caused by error:
+      ! Can't describe a LazyFrame without any columns
+
+---
+
+    Code
       df$describe(percentiles = 0.1)
     Output
       shape: (7, 6)

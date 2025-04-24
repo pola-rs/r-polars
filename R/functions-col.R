@@ -53,8 +53,8 @@ pl__col <- function(...) {
         dtype_cols()
     } else {
       abort(c(
-        "Invalid input for `pl$col()`",
-        i = "`pl$col()` accepts either single strings or polars data types"
+        "Invalid input for `pl$col()`.",
+        `*` = "`pl$col()` accepts either single strings or Polars data types."
       ))
     }
   })

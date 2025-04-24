@@ -719,7 +719,10 @@ expr_dt_timestamp <- function(time_unit = c("us", "ns", "ms")) {
 expr_dt_with_time_unit <- function(time_unit = c("ns", "us", "ms")) {
   wrap({
     deprecate_warn(
-      "$dt$with_time_unit() is deprecated. Cast to Int64 and to Datetime(<desired unit>) instead."
+      c(
+        `!` = "`$dt$with_time_unit()` is deprecated.",
+        i = "Cast to Int64 and then to Datetime with the desired time unit instead."
+      )
     )
     time_unit <- arg_match0(time_unit, values = c("ns", "us", "ms"))
     self$`_rexpr`$dt_with_time_unit(time_unit)
@@ -1125,7 +1128,7 @@ expr_dt_add_business_days <- function(
     check_dots_empty0(...)
 
     if (!(is_scalar_integerish(n) && !anyNA(n)) && !is_polars_expr(n)) {
-      abort("`n` must be a single non-`NA` integer-ish value or a polars expression.")
+      abort("`n` must be a single non-`NA` integer-ish value or a Polars expression.")
     }
     if (!(is_logical(week_mask, n = 7L) && !anyNA(week_mask))) {
       abort("`week_mask` must be a vector with 7 logical values, without any `NA`.")

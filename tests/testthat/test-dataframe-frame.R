@@ -603,14 +603,8 @@ test_that("sample() works", {
     df$sample(fraction = 0.5, seed = 0),
     pl$DataFrame(foo = 2L, bar = 7L, ham = "b")
   )
-  expect_error(
-    df$sample(n = 2, fraction = 0.1),
-    "cannot specify both `n` and `fraction`"
-  )
-  expect_error(
-    df$sample(frac = 0.1),
-    "must be empty"
-  )
+  expect_snapshot(df$sample(n = 2, fraction = 0.1), error = TRUE)
+  expect_snapshot(df$sample(frac = 0.1), error = TRUE)
 
   # TODO: uncomment when https://github.com/pola-rs/polars/issues/21521
   # is resolved
@@ -740,17 +734,17 @@ test_that("unstack() works", {
       z_1 = list(6:7, 7:8, 8:9, c(0, 0), c(0, 0)),
     )$cast(pl$List(pl$UInt8))
   )
-  expect_error(
+  expect_snapshot(
     df$unstack(cs$numeric(), step = 5, fill_values = c(0, 1)),
-    "Maybe `fill_values` is not a scalar value"
+    error = TRUE
   )
-  expect_error(
+  expect_snapshot(
     df$unstack(cs$numeric(), step = 5, fill_values = list(0, 1)),
-    "Maybe `fill_values` is not a scalar value"
+    error = TRUE
   )
-  expect_error(
+  expect_snapshot(
     df$unstack(cs$numeric(), step = 5, fill_values = list(x = 0, 1)),
-    "Maybe `fill_values` is not a scalar value"
+    error = TRUE
   )
 
   ## Named list cases
@@ -768,9 +762,9 @@ test_that("unstack() works", {
       y_1 = c(6L, 7L, 8L, 999L, 999L)
     )
   )
-  expect_error(
+  expect_snapshot(
     df$unstack(cs$numeric(), step = 5, fill_values = list(y = 1:2)),
-    "Maybe one of `fill_values` is not a scalar value"
+    error = TRUE
   )
 
   # column name padding

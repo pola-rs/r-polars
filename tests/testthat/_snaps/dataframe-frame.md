@@ -28,6 +28,92 @@
       Caused by error:
       ! The input value is not a valid serialized DataFrame.
 
+# sample() works
+
+    Code
+      df$sample(n = 2, fraction = 0.1)
+    Condition
+      Error in `df$sample()`:
+      ! Evaluation failed in `$sample()`.
+      Caused by error in `df$sample()`:
+      ! Can't specify both `n` and `fraction`.
+
+---
+
+    Code
+      df$sample(frac = 0.1)
+    Condition
+      Error in `df$sample()`:
+      ! Evaluation failed in `$sample()`.
+      Caused by error in `df$sample()`:
+      ! `...` must be empty.
+      x Problematic argument:
+      * frac = 0.1
+
+# unstack() works
+
+    Code
+      df$unstack(cs$numeric(), step = 5, fill_values = c(0, 1))
+    Condition
+      Error in `df$unstack()`:
+      ! Evaluation failed in `$unstack()`.
+      Caused by error:
+      ! Expanding the DataFrame failed.
+      Caused by error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! value and n should have unit length.
+
+---
+
+    Code
+      df$unstack(cs$numeric(), step = 5, fill_values = list(0, 1))
+    Condition
+      Error in `df$unstack()`:
+      ! Evaluation failed in `$unstack()`.
+      Caused by error:
+      ! Expanding the DataFrame failed.
+      Caused by error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! value and n should have unit length.
+
+---
+
+    Code
+      df$unstack(cs$numeric(), step = 5, fill_values = list(x = 0, 1))
+    Condition
+      Error in `df$unstack()`:
+      ! Evaluation failed in `$unstack()`.
+      Caused by error:
+      ! Expanding the DataFrame failed.
+      Caused by error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! value and n should have unit length.
+
+---
+
+    Code
+      df$unstack(cs$numeric(), step = 5, fill_values = list(y = 1:2))
+    Condition
+      Error in `df$unstack()`:
+      ! Evaluation failed in `$unstack()`.
+      Caused by error:
+      ! Expanding the DataFrame failed.
+      Caused by error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! value and n should have unit length.
+
 # $glimpse() works
 
     Code

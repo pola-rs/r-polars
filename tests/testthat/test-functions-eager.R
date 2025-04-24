@@ -280,12 +280,12 @@ test_that("how = 'align', 'align_left', 'align_right', 'align_full' works", {
   )
 
   ## Errors
-  expect_error(
+  expect_snapshot(
     pl$concat(pl$Series("a", 1:2), pl$Series("b", 1:2), how = "align"),
-    "strategy is only supported on DataFrames and LazyFrames"
+    error = TRUE
   )
-  expect_error(
+  expect_snapshot(
     pl$concat(pl$DataFrame(a = 1), pl$DataFrame(b = 1), how = "align"),
-    "strategy requires at least one common column"
+    error = TRUE
   )
 })

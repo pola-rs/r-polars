@@ -85,7 +85,9 @@
       Caused by error:
       ! Evaluation failed in `$exclude()`.
       Caused by error:
-      ! cannot exclude by both column name and dtype; use a selector instead
+      ! Invalid `...` elements.
+      * All elements in `...` must be either single strings or Polars data types.
+      i `cs$exclude()` accepts mixing column names and Polars data types.
 
 ---
 

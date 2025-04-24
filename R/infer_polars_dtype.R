@@ -114,7 +114,7 @@ infer_polars_dtype.polars_data_frame <- function(x, ...) {
 infer_polars_dtype.polars_expr <- function(x, name = NULL, ...) {
   abort(
     c(
-      "passing polars expression objects to `infer_polars_dtype()` is not supported.",
+      "Passing Polars expression objects to `infer_polars_dtype()` is not supported.",
       i = "You may want to eval the expression with `pl$select()` first."
     )
   )
@@ -128,7 +128,7 @@ infer_polars_dtype.polars_lazy_frame <- infer_polars_dtype.polars_data_frame
 #' @export
 infer_polars_dtype.NULL <- function(x, ...) {
   if (missing(x)) {
-    abort("The `x` argument of `infer_polars_dtype()` can't be missing")
+    abort("The `x` argument of `infer_polars_dtype()` can't be missing.")
   }
   pl$Null
 }

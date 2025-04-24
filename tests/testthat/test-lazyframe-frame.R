@@ -161,7 +161,7 @@ test_that("slice/head/tail works lazy/eager", {
     .input$slice(0, -2),
     .data,
     pl$DataFrame(foo = 1:3, bar = 6:8),
-    r"(negative slice length \(-2\) are invalid for LazyFrame)"
+    r"(Negative slice `length` \(-2\) are invalid for LazyFrame)"
   )
 
   # head
@@ -179,7 +179,7 @@ test_that("slice/head/tail works lazy/eager", {
     .input$head(-4),
     .data,
     pl$DataFrame(foo = 1L, bar = 6L),
-    r"(negative slice length \(-4\) are invalid for LazyFrame)"
+    r"(Negative slice `length` \(-4\) are invalid for LazyFrame)"
   )
 
   # tail
@@ -2332,13 +2332,13 @@ test_that("describe() works", {
     "`percentiles` must all be in the range [0, 1]",
     fixed = TRUE
   )
-  expect_error(
+  expect_snapshot(
     pl$DataFrame()$describe(),
-    "cannot describe a DataFrame without any columns"
+    error = TRUE
   )
-  expect_error(
+  expect_snapshot(
     pl$LazyFrame()$describe(),
-    "cannot describe a LazyFrame without any columns"
+    error = TRUE
   )
 
   expect_snapshot(df$describe(percentiles = 0.1))

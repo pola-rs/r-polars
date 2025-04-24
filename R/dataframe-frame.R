@@ -87,7 +87,7 @@ pl__DataFrame <- function(..., .schema_overrides = NULL, .strict = TRUE) {
       if (is_polars_expr(val)) {
         abort(
           c(
-            "passing polars expression objects to `pl$DataFrame()` is not supported.",
+            "Passing Polars expression objects to `pl$DataFrame()` is not supported.",
             i = "Try evaluating the expression first using `pl$select()`."
           )
         )
@@ -1881,10 +1881,9 @@ dataframe__transpose <- function(
       column_names <- column_names(seq_len(n_elems) - 1)
       if (!is_character(column_names, n = n_elems)) {
         abort(
-          paste(
-            "The function in `column_names` must return a character vector with",
-            n_elems,
-            "elements."
+          sprintf(
+            "The function in `column_names` must return a character vector with %d elements.",
+            n_elems
           )
         )
       }
@@ -1956,7 +1955,7 @@ dataframe__sample <- function(
   wrap({
     check_dots_empty0(...)
     if (!is.null(fraction) && !is.null(n)) {
-      abort("cannot specify both `n` and `fraction`")
+      abort("Can't specify both `n` and `fraction`.")
     }
     if (is.null(seed)) {
       seed <- sample.int(10000, 1)
@@ -2159,7 +2158,10 @@ dataframe__unstack <- function(
       all(vapply(fill_values, is_convertible_to_polars_expr, logical(1)))
     if (!fill_values_is_named_list && !is_convertible_to_polars_expr(fill_values)) {
       abort(
-        "`fill_value` must be a object convertible to a Polars expression, or a named list of such objects."
+        c(
+          "Invalid `fill_values`.",
+          `*` = "It must be convertible to a Polars expression, or a named list of such objects."
+        )
       )
     }
 
@@ -2198,8 +2200,9 @@ dataframe__unstack <- function(
         error = function(cnd) {
           msg_part <- if (fill_values_is_named_list) "one of " else ""
           abort(
-            sprintf(
-              "Expanding the DataFrame failed. Maybe %s`fill_values` is not a scalar value.",
+            "Expanding the DataFrame failed.",
+            `*` = sprintf(
+              "Maybe %s`fill_values` is not a scalar value.",
               msg_part
             ),
             call = parent.frame(),
@@ -2265,7 +2268,7 @@ dataframe__describe <- function(
   wrap({
     check_dots_empty0(...)
     if (length(self$columns) == 0) {
-      abort("cannot describe a DataFrame without any columns")
+      abort("Can't describe a DataFrame without any columns")
     }
     self$lazy()$describe(
       percentiles = percentiles,

@@ -12,6 +12,6 @@ print.polars_expr <- function(x, ...) {
   } else if (is.character(i)) {
     x$field(i)
   } else {
-    abort(sprintf("expected type numeric or character for `i`, got %s", typeof(i)))
+    abort(sprintf("Expected type numeric or character for `i`, got %s", obj_type_friendly(i)))
   }
 }

@@ -80,9 +80,9 @@ test_that("int64 argument error", {
   )
   with_mocked_bindings(
     {
-      expect_error(
+      expect_snapshot(
         as_polars_series(1)$to_r_vector(int64 = "integer64"),
-        "If the `int64` argument is set to 'integer64', the `bit64` package must be installed"
+        error = TRUE
       )
     },
     is_bit64_installed = function() FALSE
@@ -160,9 +160,9 @@ test_that("time argument error", {
   )
   with_mocked_bindings(
     {
-      expect_error(
+      expect_snapshot(
         as_polars_series(1)$to_r_vector(time = "ITime"),
-        r"(If the `time` argument is set to 'ITime', the `data\.table` package must be installed)"
+        error = TRUE
       )
     },
     is_datatable_installed = function() FALSE

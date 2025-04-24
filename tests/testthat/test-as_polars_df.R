@@ -61,7 +61,7 @@ test_that("as_polars_df.default works for nanoarrow objects", {
 
   # Error occurs when the object is not a Struct type
   na_array <- nanoarrow::as_nanoarrow_array(1)
-  error_pattern <- "`x` would have dtype 'f64'"
+  error_pattern <- "got: f64"
   expect_error(
     as_polars_df(na_array),
     error_pattern

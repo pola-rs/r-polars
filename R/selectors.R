@@ -704,11 +704,11 @@ cs__exclude <- function(...) {
   dtypes <- Filter(is_polars_dtype, input)
   selectors <- Filter(is_polars_selector, input)
   unknown <- Filter(
-    \(x) !is_character(x) && !is_polars_dtype(x) && !is_polars_selector(x),
+    \(x) !is_string(x) && !is_polars_dtype(x) && !is_polars_selector(x),
     input
   )
   if (length(unknown) > 0) {
-    abort("`...` can only contain column names, regexes, polars data types or polars selectors.")
+    abort("`...` can only contain column names, regexes, Polars data types or polars selectors.")
   }
 
   selected <- list()

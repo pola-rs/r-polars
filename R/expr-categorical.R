@@ -62,7 +62,10 @@ expr_cat_get_categories <- function() {
 expr_cat_set_ordering <- function(ordering) {
   wrap({
     deprecate_warn(
-      "$cat$set_ordering() is deprecated. Use pl$Categorical(<ordering>) when initiating the variable or with $cast() instead."
+      c(
+        `!` = "$cat$set_ordering() is deprecated.",
+        i = "Use `pl$Categorical(<ordering>)` when initiating or with `$cast()` instead."
+      )
     )
     ordering <- arg_match0(ordering, values = c("lexical", "physical"))
     self$`_rexpr`$cat_set_ordering(ordering)

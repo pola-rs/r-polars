@@ -4,7 +4,9 @@
       pl$concat(as_polars_df(mtcars), as_polars_lf(mtcars))
     Condition
       Error in `pl$concat()`:
-      ! All elements in `...` must be of the same class (`polars_data_frame`, `polars_lazy_frame`, or `polars_series`).
+      ! Invalid `...` elements.
+      * All elements must be of the same class.
+      * `polars_data_frame`, `polars_lazy_frame`, or `polars_series` are supported.
 
 ---
 
@@ -12,7 +14,9 @@
       pl$concat(as_polars_df(mtcars), mtcars$hp, pl$lit(mtcars$mpg))
     Condition
       Error in `pl$concat()`:
-      ! All elements in `...` must be of the same class (`polars_data_frame`, `polars_lazy_frame`, or `polars_series`).
+      ! Invalid `...` elements.
+      * All elements must be of the same class.
+      * `polars_data_frame`, `polars_lazy_frame`, or `polars_series` are supported.
 
 # concat() doesn't accept named input
 
@@ -50,7 +54,7 @@
       pl$concat(as_polars_series(1:2, "a"), as_polars_series(5:1, "b"), how = "horizontal")
     Condition
       Error in `pl$concat()`:
-      ! Series only supports 'vertical' concat strategy.
+      ! Series only supports `how = "vertical"`.
 
 # how = 'diagonal' works
 
@@ -68,5 +72,21 @@
       pl$concat(as_polars_series(1:2, "a"), as_polars_series(5:1, "b"), how = "diagonal")
     Condition
       Error in `pl$concat()`:
-      ! Series only supports 'vertical' concat strategy.
+      ! Series only supports `how = "vertical"`.
+
+# how = 'align', 'align_left', 'align_right', 'align_full' works
+
+    Code
+      pl$concat(pl$Series("a", 1:2), pl$Series("b", 1:2), how = "align")
+    Condition
+      Error in `pl$concat()`:
+      ! `how = "align"` is only supported on DataFrames and LazyFrames.
+
+---
+
+    Code
+      pl$concat(pl$DataFrame(a = 1), pl$DataFrame(b = 1), how = "align")
+    Condition
+      Error in `pl$concat()`:
+      ! "align" strategy requires at least one common column.
 

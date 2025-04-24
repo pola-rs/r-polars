@@ -496,3 +496,33 @@
     Output
       Enum(categories=c('a', 'b', 'c'))
 
+# Enum construct error non-character
+
+    Code
+      pl$Enum(categories)
+    Condition
+      Error in `pl$Enum()`:
+      ! Evaluation failed in `$Enum()`.
+      Caused by error in `pl$Enum()`:
+      ! `categories` must be a character vector, not an integer vector.
+
+# Enum construct error NA
+
+    Code
+      pl$Enum(categories)
+    Condition
+      Error in `pl$Enum()`:
+      ! Evaluation failed in `$Enum()`.
+      Caused by error in `pl$Enum()`:
+      ! `categories` can't contain NA values.
+
+# Enum construct error duplicated
+
+    Code
+      pl$Enum(categories)
+    Condition
+      Error in `pl$Enum()`:
+      ! Evaluation failed in `$Enum()`.
+      Caused by error in `pl$Enum()`:
+      ! Enum categories must be unique, found duplicated: b, a
+
