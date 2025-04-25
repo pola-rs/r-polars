@@ -1,6 +1,7 @@
 patrick::with_parameters_test_that(
   "use pl$DataFrame() to construct a DataFrame",
   .cases = {
+    # nolint start: line_length_linter
     # fmt: skip
     tibble::tribble(
       ~.test_name, ~object, ~expected,
@@ -9,6 +10,7 @@ patrick::with_parameters_test_that(
       "!!! for data.frame", pl$DataFrame(!!!data.frame(a = 1, b = "b"), c = 1), as_polars_df(list(a = 1, b = "b", c = 1)),
       "empty", pl$DataFrame(), as_polars_df(list()),
     )
+    # nolint end
   },
   code = {
     expect_equal(object, expected)

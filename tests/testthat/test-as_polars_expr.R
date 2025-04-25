@@ -37,6 +37,7 @@ patrick::with_parameters_test_that(
       wrap(lit_from_series_first(as_polars_series(x)$`_s`))
     }
 
+    # nolint start: line_length_linter
     # fmt: skip
     tibble::tribble(
       ~.test_name, ~x, ~expected_expr, ~expected_length,
@@ -74,6 +75,7 @@ patrick::with_parameters_test_that(
       "series (1)", as_polars_series(TRUE), as_polars_expr(as_polars_series(TRUE)), 1,
       "series (2)", as_polars_series(c(TRUE, FALSE)), as_polars_expr(as_polars_series(c(TRUE, FALSE))), 2
     )
+    # nolint end
   },
   code = {
     out <- as_polars_expr(x, as_lit = TRUE)
@@ -97,17 +99,17 @@ patrick::with_parameters_test_that(
     if (expected_length == 1) {
       if (is_polars_series(x)) {
         # For Series with length 1, a special error message is thrown
-        expect_error(
+        expect_snapshot(
           lf$collect(),
-          r"(length 1 doesn't match the DataFrame height of 10.*for instance by adding '\.first\(\)')"
+          error = TRUE
         )
       } else {
         expect_no_error(lf$collect())
       }
     } else {
-      expect_error(
+      expect_snapshot(
         lf$collect(),
-        r"(unable to add a column of length \d+ to a DataFrame of height 10)"
+        error = TRUE
       )
     }
   }

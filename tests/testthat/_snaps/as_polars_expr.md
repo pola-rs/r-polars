@@ -18,6 +18,16 @@
       ╞═════════╡
       └─────────┘
 
+---
+
+    Code
+      lf$collect()
+    Condition
+      Error in `lf$collect()`:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! lengths don't match: unable to add a column of length 0 to a DataFrame of height 10
+
 # as_polars_expr works for classes chr (1)
 
     Code
@@ -61,6 +71,16 @@
       │ bar     │
       └─────────┘
 
+---
+
+    Code
+      lf$collect()
+    Condition
+      Error in `lf$collect()`:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! lengths don't match: unable to add a column of length 2 to a DataFrame of height 10
+
 # as_polars_expr works for classes chr NA
 
     Code
@@ -101,6 +121,16 @@
       │ bool    │
       ╞═════════╡
       └─────────┘
+
+---
+
+    Code
+      lf$collect()
+    Condition
+      Error in `lf$collect()`:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! lengths don't match: unable to add a column of length 0 to a DataFrame of height 10
 
 # as_polars_expr works for classes lgl (1)
 
@@ -145,6 +175,16 @@
       │ false   │
       └─────────┘
 
+---
+
+    Code
+      lf$collect()
+    Condition
+      Error in `lf$collect()`:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! lengths don't match: unable to add a column of length 2 to a DataFrame of height 10
+
 # as_polars_expr works for classes lgl NA
 
     Code
@@ -185,6 +225,16 @@
       │ i32     │
       ╞═════════╡
       └─────────┘
+
+---
+
+    Code
+      lf$collect()
+    Condition
+      Error in `lf$collect()`:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! lengths don't match: unable to add a column of length 0 to a DataFrame of height 10
 
 # as_polars_expr works for classes int (1)
 
@@ -229,6 +279,16 @@
       │ 2       │
       └─────────┘
 
+---
+
+    Code
+      lf$collect()
+    Condition
+      Error in `lf$collect()`:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! lengths don't match: unable to add a column of length 2 to a DataFrame of height 10
+
 # as_polars_expr works for classes int NA
 
     Code
@@ -269,6 +329,16 @@
       │ f64     │
       ╞═════════╡
       └─────────┘
+
+---
+
+    Code
+      lf$collect()
+    Condition
+      Error in `lf$collect()`:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! lengths don't match: unable to add a column of length 0 to a DataFrame of height 10
 
 # as_polars_expr works for classes dbl (1)
 
@@ -312,6 +382,16 @@
       │ 1.0     │
       │ 2.0     │
       └─────────┘
+
+---
+
+    Code
+      lf$collect()
+    Condition
+      Error in `lf$collect()`:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! lengths don't match: unable to add a column of length 2 to a DataFrame of height 10
 
 # as_polars_expr works for classes dbl NaN
 
@@ -459,6 +539,16 @@
       ╞════════════╡
       └────────────┘
 
+---
+
+    Code
+      lf$collect()
+    Condition
+      Error in `lf$collect()`:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! lengths don't match: unable to add a column of length 0 to a DataFrame of height 10
+
 # as_polars_expr works for classes list (1)
 
     Code
@@ -502,6 +592,16 @@
       │ [false]    │
       └────────────┘
 
+---
+
+    Code
+      lf$collect()
+    Condition
+      Error in `lf$collect()`:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! lengths don't match: unable to add a column of length 2 to a DataFrame of height 10
+
 # as_polars_expr works for classes Date (0)
 
     Code
@@ -521,6 +621,16 @@
       │ date    │
       ╞═════════╡
       └─────────┘
+
+---
+
+    Code
+      lf$collect()
+    Condition
+      Error in `lf$collect()`:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! lengths don't match: unable to add a column of length 0 to a DataFrame of height 10
 
 # as_polars_expr works for classes Date (1)
 
@@ -565,6 +675,16 @@
       │ 1970-01-02 │
       └────────────┘
 
+---
+
+    Code
+      lf$collect()
+    Condition
+      Error in `lf$collect()`:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! lengths don't match: unable to add a column of length 2 to a DataFrame of height 10
+
 # as_polars_expr works for classes POSIXct (UTC) (0)
 
     Code
@@ -584,6 +704,16 @@
       │ datetime[ms, UTC] │
       ╞═══════════════════╡
       └───────────────────┘
+
+---
+
+    Code
+      lf$collect()
+    Condition
+      Error in `lf$collect()`:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! lengths don't match: unable to add a column of length 0 to a DataFrame of height 10
 
 # as_polars_expr works for classes POSIXct (UTC) (1)
 
@@ -628,6 +758,16 @@
       │ 1970-01-01 00:00:01 UTC │
       └─────────────────────────┘
 
+---
+
+    Code
+      lf$collect()
+    Condition
+      Error in `lf$collect()`:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! lengths don't match: unable to add a column of length 2 to a DataFrame of height 10
+
 # as_polars_expr works for classes series (0)
 
     Code
@@ -647,6 +787,16 @@
       │ bool │
       ╞══════╡
       └──────┘
+
+---
+
+    Code
+      lf$collect()
+    Condition
+      Error in `lf$collect()`:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! lengths don't match: unable to add a column of length 0 to a DataFrame of height 10
 
 # as_polars_expr works for classes series (1)
 
@@ -669,6 +819,18 @@
       │ true │
       └──────┘
 
+---
+
+    Code
+      lf$collect()
+    Condition
+      Error in `lf$collect()`:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Invalid operation: Series b, length 1 doesn't match the DataFrame height of 10
+      
+      If you want expression: Series to be broadcasted, ensure it is a scalar (for instance by adding '.first()').
+
 # as_polars_expr works for classes series (2)
 
     Code
@@ -690,4 +852,14 @@
       │ true  │
       │ false │
       └───────┘
+
+---
+
+    Code
+      lf$collect()
+    Condition
+      Error in `lf$collect()`:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! lengths don't match: unable to add a column of length 2 to a DataFrame of height 10
 

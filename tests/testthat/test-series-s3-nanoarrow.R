@@ -30,6 +30,7 @@ patrick::with_parameters_test_that(
   .cases = {
     skip_if_not_installed("nanoarrow")
 
+    # nolint start: line_length_linter
     # fmt: skip
     tibble::tribble(
       ~.test_name, ~x, ~target_schema,
@@ -38,6 +39,7 @@ patrick::with_parameters_test_that(
       "partial struct", as_polars_series(data.frame(a = 1:3, b = letters[1:3])), nanoarrow::na_struct(list(a = nanoarrow::na_uint8())),
       "empty struct", as_polars_series(data.frame(a = 1:3, b = letters[1:3])), nanoarrow::na_struct(),
     )
+    # nolint end
   },
   code = {
     stream <- nanoarrow::as_nanoarrow_array_stream(x, schema = target_schema)

@@ -354,16 +354,16 @@ test_that("col DataType + col(s) + col regex", {
   )
 
   # multiple cols
-  Names <- c("Sepal.Length", "Sepal.Width")
+  selected_cols <- c("Sepal.Length", "Sepal.Width")
   expect_equal(
-    df$select(pl$col(!!!Names)),
-    as_polars_df(iris[, Names])
+    df$select(pl$col(!!!selected_cols)),
+    as_polars_df(iris[, selected_cols])
   )
 
   # regex
   expect_equal(
     df$select(pl$col("^Sepal.*$")),
-    as_polars_df(iris[, Names])
+    as_polars_df(iris[, selected_cols])
   )
 })
 
@@ -511,26 +511,28 @@ test_that("is_in", {
   )
 
   # behavior for NA and NULL
-  # TODO: replace `pl$lit(NULL)$cast(pl$Boolean)` to `pl$lit(NA)` causes panic, should be fixed at upstream
+  # TODO: replace `pl$lit(NULL)$cast(pl$Boolean)` to `pl$lit(NA)` causes panic
   expect_equal(
     pl$select(pl$lit(NULL)$cast(pl$Boolean)$is_in(NA)),
     pl$DataFrame(literal = NA)
   )
-  # TODO: replace `pl$lit(NULL)$cast(pl$Boolean)` to `pl$lit(NA)` causes panic, should be fixed at upstream
+  # TODO: replace `pl$lit(NULL)$cast(pl$Boolean)` to `pl$lit(NA)` causes panic
   expect_equal(
     pl$select(pl$lit(NULL)$cast(pl$Boolean)$is_in(NULL)),
     pl$DataFrame(literal = NA)
   )
-  # TODO: replace the first `pl$lit(NULL)$cast(pl$Boolean)` to `NULL` causes panic, should be fixed at upstream
-  # TODO: replace the first `pl$lit(NULL)$cast(pl$Boolean)` to `NULL` and the second `pl$lit(NULL)$cast(pl$Boolean)` to `NA` causes panic, should be fixed at upstream
-  # Original code: pl$select(pl$lit(NULL)$is_in(NA))
+  # TODO: replace the first `pl$lit(NULL)$cast(pl$Boolean)` to `NULL` causes panic
+  # TODO: replace the first `pl$lit(NULL)$cast(pl$Boolean)` to `NULL`
+  #  and the second `pl$lit(NULL)$cast(pl$Boolean)` to `NA` causes panic
+  #  Original code: pl$select(pl$lit(NULL)$is_in(NA))
   expect_equal(
     pl$select(pl$lit(NULL)$cast(pl$Boolean)$is_in(pl$lit(NULL)$cast(pl$Boolean))),
     pl$DataFrame(literal = NA)
   )
 
   # Works with list
-  # TODO: The last value of the out column should be a null (<https://github.com/pola-rs/polars/issues/21485>)
+  # TODO: The last value of the out column should be a null
+  #  https://github.com/pola-rs/polars/issues/21485
   expect_equal(
     pl$DataFrame(a = c(2L, 1L, NA))$with_columns(out = pl$col("a")$is_in(list(0:1, 1:2, NA))),
     pl$DataFrame(a = c(2L, 1L, NA), out = c(FALSE, TRUE, TRUE))
@@ -1045,7 +1047,7 @@ test_that("gather that", {
 })
 
 test_that("shift", {
-  R_shift <- \(x, n) {
+  r_shift <- \(x, n) {
     idx <- seq_along(x) - n
     idx[idx <= 0] <- Inf
     x[idx]
@@ -1057,12 +1059,12 @@ test_that("shift", {
       sp2 = pl$lit(0:3)$shift(2)
     ),
     pl$DataFrame(
-      sm2 = R_shift((0:3), -2),
-      sp2 = R_shift((0:3), 2)
+      sm2 = r_shift((0:3), -2),
+      sp2 = r_shift((0:3), 2)
     )
   )
 
-  R_shift_and_fill <- function(x, n, fill_value = NULL) {
+  r_shift_and_fill <- function(x, n, fill_value = NULL) {
     idx <- seq_along(x) - n
     idx[idx <= 0] <- Inf
     new_x <- x[idx]
@@ -1079,8 +1081,8 @@ test_that("shift", {
       sp2 = pl$lit(0:3)$shift(2, fill_value = pl$lit(42) / 2)
     ),
     pl$DataFrame(
-      sm2 = R_shift_and_fill(0:3, -2, 42),
-      sp2 = R_shift_and_fill(0:3, 2, 21)
+      sm2 = r_shift_and_fill(0:3, -2, 42),
+      sp2 = r_shift_and_fill(0:3, 2, 21)
     )
   )
 })
@@ -1099,16 +1101,16 @@ test_that("forward_fill backward_fill", {
 
   # forward
 
-  R_fill_fwd <- \(x, lim = Inf) {
+  r_fill_fwd <- \(x, lim = Inf) {
     last_seen <- NA
     lim_ct <- 0L
     sapply(x, \(this_val) {
       if (is.na(this_val)) {
         lim_ct <<- lim_ct + 1L
         if (lim_ct > lim) {
-          return(this_val) # lim_ct exceed lim since last_seen, return NA
+          this_val # lim_ct exceed lim since last_seen, return NA
         } else {
-          return(last_seen) # return last_seen
+          last_seen # return last_seen
         }
       } else {
         lim_ct <<- 0L # reset counter
@@ -1117,8 +1119,8 @@ test_that("forward_fill backward_fill", {
       }
     })
   }
-  R_fill_bwd <- \(x, lim = Inf) rev(R_fill_fwd(rev(x), lim = lim))
-  R_replace_na <- \(x, y) {
+  r_fill_bwd <- \(x, lim = Inf) rev(r_fill_fwd(rev(x), lim = lim))
+  r_replace_na <- \(x, y) {
     x[is.na(x)] <- y
     x
   }
@@ -1135,14 +1137,14 @@ test_that("forward_fill backward_fill", {
       backward_lim10 = pl$col("a")$fill_null(strategy = "backward", limit = 10),
     ),
     pl$DataFrame(
-      forward = l$a |> R_fill_fwd(),
-      backward = l$a |> R_fill_bwd(),
-      forward_lim1 = l$a |> R_fill_fwd(lim = 1),
-      backward_lim1 = l$a |> R_fill_bwd(lim = 1),
-      forward_lim0 = l$a |> R_fill_fwd(lim = 0),
-      backward_lim0 = l$a |> R_fill_bwd(lim = 0),
-      forward_lim10 = l$a |> R_fill_fwd(lim = 10),
-      backward_lim10 = l$a |> R_fill_bwd(lim = 10)
+      forward = l$a |> r_fill_fwd(),
+      backward = l$a |> r_fill_bwd(),
+      forward_lim1 = l$a |> r_fill_fwd(lim = 1),
+      backward_lim1 = l$a |> r_fill_bwd(lim = 1),
+      forward_lim0 = l$a |> r_fill_fwd(lim = 0),
+      backward_lim0 = l$a |> r_fill_bwd(lim = 0),
+      forward_lim10 = l$a |> r_fill_fwd(lim = 10),
+      backward_lim10 = l$a |> r_fill_bwd(lim = 10)
     )
   )
 
@@ -1155,11 +1157,11 @@ test_that("forward_fill backward_fill", {
       one = pl$col("a")$fill_null(strategy = "one")
     ),
     pl$DataFrame(
-      min = l$a |> R_replace_na(min(l$a, na.rm = TRUE)),
-      max = l$a |> R_replace_na(max(l$a, na.rm = TRUE)),
-      mean = l$a |> R_replace_na(mean(l$a, na.rm = TRUE)),
-      zero = l$a |> R_replace_na(0),
-      one = l$a |> R_replace_na(1)
+      min = l$a |> r_replace_na(min(l$a, na.rm = TRUE)),
+      max = l$a |> r_replace_na(max(l$a, na.rm = TRUE)),
+      mean = l$a |> r_replace_na(mean(l$a, na.rm = TRUE)),
+      zero = l$a |> r_replace_na(0),
+      one = l$a |> r_replace_na(1)
     )
   )
 
@@ -1173,16 +1175,16 @@ test_that("forward_fill backward_fill", {
       a_bfill_NULL = pl$col("a")$backward_fill()
     ),
     pl$DataFrame(
-      a_ffill_1 = R_fill_fwd(l$a, 1),
-      a_ffill_NULL = R_fill_fwd(l$a),
-      a_bfill_1 = R_fill_bwd(l$a, 1),
-      a_bfill_NULL = R_fill_bwd(l$a)
+      a_ffill_1 = r_fill_fwd(l$a, 1),
+      a_ffill_NULL = r_fill_fwd(l$a),
+      a_bfill_1 = r_fill_bwd(l$a, 1),
+      a_bfill_NULL = r_fill_bwd(l$a)
     )
   )
 })
 
 test_that("fill_nan() works", {
-  R_replace_nan <- \(x, y) {
+  r_replace_nan <- \(x, y) {
     x[is.nan(x)] <- y
     x
   }
@@ -1197,12 +1199,12 @@ test_that("fill_nan() works", {
       fnan_series = pl$col("a")$fill_nan(as_polars_series(10))
     ),
     pl$DataFrame(
-      fnan_int = R_replace_nan(l$a, 42L),
-      fnan_NA = R_replace_nan(l$a, NA),
+      fnan_int = r_replace_nan(l$a, 42L),
+      fnan_NA = r_replace_nan(l$a, NA),
       fnan_str = c("1.0", "hej", NA, "hej", "3.0"),
-      fnan_bool = R_replace_nan(l$a, TRUE),
-      fnan_expr = R_replace_nan(l$a, 10 / 2),
-      fnan_series = R_replace_nan(l$a, 10)
+      fnan_bool = r_replace_nan(l$a, TRUE),
+      fnan_expr = r_replace_nan(l$a, 10 / 2),
+      fnan_series = r_replace_nan(l$a, 10)
     )
   )
   # series with length not allowed
@@ -1325,7 +1327,7 @@ test_that("null count", {
     c = c(NaN, NaN, NaN) # integer32 currently not supported
   )
 
-  is.na_only <- \(x) is.na(x) & !is.nan(x)
+  is_non_nan_na <- \(x) is.na(x) & !is.nan(x)
   expect_equal(
     pl$DataFrame(!!!l)$select(
       pl$col("a")$null_count(),
@@ -1333,9 +1335,9 @@ test_that("null count", {
       pl$col("c")$null_count()
     ),
     pl$DataFrame(
-      a = sum(is.na_only(l$a)) * 1.0,
-      b = sum(is.na_only(l$b)) * 1.0,
-      c = sum(is.na_only(l$c)) * 1.0
+      a = sum(is_non_nan_na(l$a)) * 1.0,
+      b = sum(is_non_nan_na(l$b)) * 1.0,
+      c = sum(is_non_nan_na(l$c)) * 1.0
     )$cast(pl$UInt32)
   )
 })
@@ -1943,22 +1945,22 @@ test_that("diff", {
 test_that("pct_change", {
   l <- list(a = c(10L, 11L, 12L, NA_integer_, NA_integer_, 12L))
 
-  R_shift <- \(x, n) {
+  r_shift <- \(x, n) {
     idx <- seq_along(x) - n
     idx[idx <= 0] <- Inf
     x[idx]
   }
 
-  R_fill_fwd <- \(x, lim = Inf) {
+  r_fill_fwd <- \(x, lim = Inf) {
     last_seen <- NA
     lim_ct <- 0L
     sapply(x, \(this_val) {
       if (is.na(this_val)) {
         lim_ct <<- lim_ct + 1L
         if (lim_ct > lim) {
-          return(this_val) # lim_ct exceed lim since last_seen, return NA
+          this_val # lim_ct exceed lim since last_seen, return NA
         } else {
-          return(last_seen) # return last_seen
+          last_seen # return last_seen
         }
       } else {
         lim_ct <<- 0L # reset counter
@@ -1969,8 +1971,8 @@ test_that("pct_change", {
   }
 
   r_pct_chg <- function(x, n = 1) {
-    xf <- R_fill_fwd(x)
-    xs <- R_shift(xf, n)
+    xf <- r_fill_fwd(x)
+    xs <- r_shift(xf, n)
     (xf - xs) / xs
   }
 
@@ -1989,8 +1991,8 @@ test_that("pct_change", {
 })
 
 test_that("skew", {
-  R_skewness <- function(x, bias = TRUE, na.rm = FALSE) {
-    if (na.rm) x <- x[!is.na(x)]
+  r_skewness <- function(x, bias = TRUE, na_rm = FALSE) {
+    if (na_rm) x <- x[!is.na(x)]
     n <- length(x)
     m2 <- sum((x - mean(x))^2) / n
     m3 <- sum((x - mean(x))^3) / n
@@ -2012,17 +2014,17 @@ test_that("skew", {
       b_skew_bias_F = pl$col("b")$skew(bias = FALSE)
     ),
     pl$DataFrame(
-      a_skew = R_skewness(l$a),
-      a_skew_bias_F = R_skewness(l$a, bias = FALSE),
-      b_skew = R_skewness(l$b, na.rm = TRUE),
-      b_skew_bias_F = R_skewness(l$b, bias = FALSE, na.rm = TRUE)
+      a_skew = r_skewness(l$a),
+      a_skew_bias_F = r_skewness(l$a, bias = FALSE),
+      b_skew = r_skewness(l$b, na_rm = TRUE),
+      b_skew_bias_F = r_skewness(l$b, bias = FALSE, na_rm = TRUE)
     )
   )
 })
 
 test_that("kurtosis", {
-  R_kurtosis <- function(x, fisher = TRUE, bias = TRUE, na.rm = TRUE) {
-    if (na.rm) x <- x[!is.na(x)]
+  r_kurtosis <- function(x, fisher = TRUE, bias = TRUE, na_rm = TRUE) {
+    if (na_rm) x <- x[!is.na(x)]
     n <- length(x)
     m2 <- sum((x - mean(x))^2) / n
     m4 <- sum((x - mean(x))^4) / n
@@ -2064,10 +2066,10 @@ test_that("kurtosis", {
       kurt_FF = pl$col("a")$kurtosis(fisher = FALSE, bias = FALSE)
     ),
     pl$DataFrame(
-      kurt_TT = R_kurtosis(l2$a, TRUE, TRUE),
-      kurt_TF = R_kurtosis(l2$a, TRUE, FALSE),
-      kurt_FT = R_kurtosis(l2$a, FALSE, TRUE),
-      kurt_FF = R_kurtosis(l2$a, FALSE, FALSE)
+      kurt_TT = r_kurtosis(l2$a, TRUE, TRUE),
+      kurt_TF = r_kurtosis(l2$a, TRUE, FALSE),
+      kurt_FT = r_kurtosis(l2$a, FALSE, TRUE),
+      kurt_FF = r_kurtosis(l2$a, FALSE, FALSE)
     )
   )
 })

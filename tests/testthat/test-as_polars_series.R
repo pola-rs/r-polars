@@ -13,6 +13,7 @@ patrick::with_parameters_test_that(
 
     withr::with_timezone(
       "UTC",
+      # nolint start: line_length_linter
       # fmt: skip
       tibble::tribble(
         ~.test_name, ~x, ~expected_name, ~expected_dtype,
@@ -51,6 +52,7 @@ patrick::with_parameters_test_that(
         "ITime", data.table::as.ITime(c(NA, 3600, 86400, -1)), "", pl$Time,
         "vctrs_unspecified", vctrs::unspecified(3L), "", pl$Null,
       )
+      # nolint end
     )
   },
   code = {
@@ -183,7 +185,6 @@ test_that("as_polars_series works for vctrs_rcrd", {
   skip_if_not_installed("tibble")
 
   # Sample vctrs_rcrd class
-  # From https://github.com/r-lib/vctrs/blob/8d98911aa64e36dbc249cbc8802618638fd0c603/vignettes/pillar.Rmd#L54-L85
   latlon <- function(lat, lon) {
     vctrs::new_rcrd(list(lat = lat, lon = lon), class = "earth_latlon")
   }

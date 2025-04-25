@@ -1,6 +1,7 @@
 patrick::with_parameters_test_that(
   "data types print",
   .cases = {
+    # nolint start: line_length_linter
     # fmt: skip
     tibble::tribble(
       ~.test_name, ~object,
@@ -38,6 +39,7 @@ patrick::with_parameters_test_that(
       "Categorical()", pl$Categorical(),
       "Enum(c('a', 'b', 'c'))", pl$Enum(c("a", "b", "c")),
     )
+    # nolint end
   },
   code = {
     expect_snapshot(print(class(object)))
