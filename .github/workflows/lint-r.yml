@@ -34,7 +34,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Set up Air
-        run: curl -LsSf https://github.com/posit-dev/air/releases/latest/download/air-installer.sh | sh
+        uses: posit-dev/setup-air@v1
 
       - name: Run air format
         run: air format --check .
