@@ -42,7 +42,9 @@ as_polars_df(mtcars)$`_df` |> str()
 #> Class 'PlRDataFrame' <environment: 0x5625e0cfbf88>
 ```
 
-### Conversion from R to Polars types
+### Type mapping
+
+#### Conversion from R to Polars types
 
 In the previous version, conversion from R to Polars was defined by the S3 method of
 `as_polars_series()` generic function on the R side and branching by match arm on the Rust side.
@@ -76,12 +78,74 @@ as_polars_series(a)
 #> Run `rlang::last_trace()` to see where the error occurred.
 ```
 
-### Conversion from Polars to R types
+#### Conversion from Polars to R types
 
 In the previous version, there were multiple methods for converting Series or DataFrame to R vectors or R lists,
 but in the new version, they have been unified to `$to_r_vector()` of Series.
 
-### Proprietary vector classes
+#### Treat Series of length 1 as scalar
+
+In Polars, there is a Scalar class that represents a single value, different from a Series of length 1.
+On the other hand, in R, a vector of length 1 is treated as a scalar.
+
+In this new version, when converting a Series of length 1 to a Polars expression,
+it is automatically converted to a scalar, allowing it to be treated like an R vector.
+
+```r
+# Previous version
+series <- pl$Series("foo", 1)
+
+pl$lit(series)
+#> polars Expr: Series[foo]
+
+# It works because vectors of length 1 are treated as scalar values
+pl$DataFrame(bar = 1:2)$with_columns(foo = 1)
+#> shape: (2, 2)
+#> ┌─────┬─────┐
+#> │ bar ┆ foo │
+#> │ --- ┆ --- │
+#> │ i32 ┆ f64 │
+#> ╞═════╪═════╡
+#> │ 1   ┆ 1.0 │
+#> │ 2   ┆ 1.0 │
+#> └─────┴─────┘
+
+# But this one causes error
+pl$DataFrame(bar = 1:2)$with_columns(series)
+#> Error: Execution halted with the following contexts
+#>    0: In R: in $with_columns()
+#>    0: During function call [pl$DataFrame(bar = 1:2)$with_columns(series)]
+#>    1: Encountered the following error in Rust-Polars:
+#>         Series foo, length 1 doesn't match the DataFrame height of 2
+#>
+#>       If you want expression: Series[foo] to be broadcasted, ensure it is a scalar (for instance by adding '.first()').
+```
+
+```r
+# New version
+series <- pl$Series("foo", 1)
+
+pl$lit(series)
+#> 1.0
+
+# To prevent conversion to scalar, specify `keep_series = TRUE` in as_polars_expr()
+as_polars_expr(series, keep_series = TRUE)
+#> Series[foo]
+
+# It works (Note that the name of the Series will be lost when conversion to scalar)
+pl$DataFrame(bar = 1:2)$with_columns(series)
+#> shape: (2, 2)
+#> ┌─────┬─────────┐
+#> │ bar ┆ literal │
+#> │ --- ┆ ---     │
+#> │ i32 ┆ f64     │
+#> ╞═════╪═════════╡
+#> │ 1   ┆ 1.0     │
+#> │ 2   ┆ 1.0     │
+#> └─────┴─────────┘
+```
+
+#### Proprietary vector classes are removed
 
 Related to type conversion, the previous version had its own vector classes introduced to represent
 Polars' `Time` and `Binary` types in R (The class names are `PTime` and `rpolars_raw_list`).

@@ -28,6 +28,7 @@
 #'
 #' If the `as_lit` argument is `FALSE` (default), this function will call [`pl$col()`][pl__col] and
 #' the character vector is treated as column names.
+#' Otherwise, the default method is called.
 #'
 #' ## S3 method for [raw]
 #'
@@ -39,6 +40,9 @@
 #' `NULL` is converted to a Null type `null` literal.
 #'
 #' @inheritParams as_polars_series
+#' @param keep_series A logical value indicating whether to treat the object as a [Series] or
+#' scalar value. If `TRUE`, the output is ensured to be a [Series] literal even if
+#' the length of the object is `1`.
 #' @param as_lit A logical value indicating whether to treat vector as literal values or not.
 #' This argument is always set to `TRUE` when calling this function from [`pl$lit()`][pl__lit],
 #' and expects to return literal values. See examples for details.
@@ -62,24 +66,6 @@
 #' as_polars_expr(NA_character_, as_lit = TRUE)
 #' as_polars_expr(c("a", "b"), as_lit = TRUE)
 #'
-#' # logical
-#' as_polars_expr(logical(0))
-#' as_polars_expr(TRUE)
-#' as_polars_expr(NA)
-#' as_polars_expr(c(TRUE, FALSE))
-#'
-#' # integer
-#' as_polars_expr(integer(0))
-#' as_polars_expr(1L)
-#' as_polars_expr(NA_integer_)
-#' as_polars_expr(c(1L, 2L))
-#'
-#' # double
-#' as_polars_expr(double(0))
-#' as_polars_expr(1)
-#' as_polars_expr(NA_real_)
-#' as_polars_expr(c(1, 2))
-#'
 #' # raw
 #' as_polars_expr(as.raw(1))
 #' as_polars_expr(as.raw(1), raw_as_binary = FALSE)
@@ -88,6 +74,18 @@
 #'
 #' # NULL
 #' as_polars_expr(NULL)
+#'
+#' # default method (for integer)
+#' as_polars_expr(integer(0))
+#' as_polars_expr(1L)
+#' as_polars_expr(NA_integer_)
+#' as_polars_expr(c(1L, 2L))
+#'
+#' # default method (for double)
+#' as_polars_expr(double(0))
+#' as_polars_expr(1)
+#' as_polars_expr(NA_real_)
+#' as_polars_expr(c(1, 2))
 #'
 #' # default method (for list)
 #' as_polars_expr(list())
@@ -99,8 +97,7 @@
 #' as_polars_expr(as.Date("2021-01-01"))
 #' as_polars_expr(as.Date(c("2021-01-01", "2021-01-02")))
 #'
-#' # polars_series
-#' ## Unlike the default method, this method does not extract the first value
+#' # default method (for Series)
 #' as_polars_series(1) |>
 #'   as_polars_expr()
 #'
@@ -115,15 +112,20 @@ as_polars_expr <- function(x, ...) {
 # TODO: replace wrap to try_fetch
 #' @rdname as_polars_expr
 #' @export
-as_polars_expr.default <- function(x, ...) {
+as_polars_expr.default <- function(x, ..., keep_series = FALSE) {
   wrap({
-    series <- as_polars_series(x, name = "literal", ...)
+    # If x is already a Series, avoid renaming to "literal"
+    series <- if (is_polars_series(x)) {
+      x
+    } else {
+      as_polars_series(x, name = "literal", ...)
+    }
 
-    if (series$len() == 1L) {
+    if (series$len() != 1L || isTRUE(keep_series)) {
+      lit_from_series(series$`_s`)
+    } else {
       # Treat as scalar
       lit_from_series_first(series$`_s`)
-    } else {
-      lit_from_series(series$`_s`)
     }
   })
 }
@@ -136,13 +138,6 @@ as_polars_expr.polars_expr <- function(x, ..., structify = FALSE) {
   } else {
     x
   }
-}
-
-#' @rdname as_polars_expr
-#' @export
-as_polars_expr.polars_series <- function(x, ...) {
-  lit_from_series(x$`_s`) |>
-    wrap()
 }
 
 #' @rdname as_polars_expr

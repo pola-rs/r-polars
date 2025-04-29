@@ -8,6 +8,13 @@
 ---
 
     Code
+      as_polars_expr(x, as_lit = TRUE, keep_series = TRUE)
+    Output
+      Series[literal]
+
+---
+
+    Code
       selected_out
     Output
       shape: (0, 1)
@@ -38,6 +45,13 @@
 ---
 
     Code
+      as_polars_expr(x, as_lit = TRUE, keep_series = TRUE)
+    Output
+      Series[literal]
+
+---
+
+    Code
       selected_out
     Output
       shape: (1, 1)
@@ -53,6 +67,13 @@
 
     Code
       out
+    Output
+      Series[literal]
+
+---
+
+    Code
+      as_polars_expr(x, as_lit = TRUE, keep_series = TRUE)
     Output
       Series[literal]
 
@@ -91,6 +112,13 @@
 ---
 
     Code
+      as_polars_expr(x, as_lit = TRUE, keep_series = TRUE)
+    Output
+      Series[literal]
+
+---
+
+    Code
       selected_out
     Output
       shape: (1, 1)
@@ -106,6 +134,13 @@
 
     Code
       out
+    Output
+      Series[literal]
+
+---
+
+    Code
+      as_polars_expr(x, as_lit = TRUE, keep_series = TRUE)
     Output
       Series[literal]
 
@@ -142,6 +177,13 @@
 ---
 
     Code
+      as_polars_expr(x, as_lit = TRUE, keep_series = TRUE)
+    Output
+      Series[literal]
+
+---
+
+    Code
       selected_out
     Output
       shape: (1, 1)
@@ -157,6 +199,13 @@
 
     Code
       out
+    Output
+      Series[literal]
+
+---
+
+    Code
+      as_polars_expr(x, as_lit = TRUE, keep_series = TRUE)
     Output
       Series[literal]
 
@@ -195,6 +244,13 @@
 ---
 
     Code
+      as_polars_expr(x, as_lit = TRUE, keep_series = TRUE)
+    Output
+      Series[literal]
+
+---
+
+    Code
       selected_out
     Output
       shape: (1, 1)
@@ -210,6 +266,13 @@
 
     Code
       out
+    Output
+      Series[literal]
+
+---
+
+    Code
+      as_polars_expr(x, as_lit = TRUE, keep_series = TRUE)
     Output
       Series[literal]
 
@@ -246,6 +309,13 @@
 ---
 
     Code
+      as_polars_expr(x, as_lit = TRUE, keep_series = TRUE)
+    Output
+      Series[literal]
+
+---
+
+    Code
       selected_out
     Output
       shape: (1, 1)
@@ -261,6 +331,13 @@
 
     Code
       out
+    Output
+      Series[literal]
+
+---
+
+    Code
+      as_polars_expr(x, as_lit = TRUE, keep_series = TRUE)
     Output
       Series[literal]
 
@@ -299,6 +376,13 @@
 ---
 
     Code
+      as_polars_expr(x, as_lit = TRUE, keep_series = TRUE)
+    Output
+      Series[literal]
+
+---
+
+    Code
       selected_out
     Output
       shape: (1, 1)
@@ -314,6 +398,13 @@
 
     Code
       out
+    Output
+      Series[literal]
+
+---
+
+    Code
+      as_polars_expr(x, as_lit = TRUE, keep_series = TRUE)
     Output
       Series[literal]
 
@@ -350,6 +441,13 @@
 ---
 
     Code
+      as_polars_expr(x, as_lit = TRUE, keep_series = TRUE)
+    Output
+      Series[literal]
+
+---
+
+    Code
       selected_out
     Output
       shape: (1, 1)
@@ -365,6 +463,13 @@
 
     Code
       out
+    Output
+      Series[literal]
+
+---
+
+    Code
+      as_polars_expr(x, as_lit = TRUE, keep_series = TRUE)
     Output
       Series[literal]
 
@@ -403,6 +508,13 @@
 ---
 
     Code
+      as_polars_expr(x, as_lit = TRUE, keep_series = TRUE)
+    Output
+      Series[literal]
+
+---
+
+    Code
       selected_out
     Output
       shape: (1, 1)
@@ -424,6 +536,13 @@
 ---
 
     Code
+      as_polars_expr(x, as_lit = TRUE, keep_series = TRUE)
+    Output
+      Series[literal]
+
+---
+
+    Code
       selected_out
     Output
       shape: (1, 1)
@@ -439,6 +558,13 @@
 
     Code
       out
+    Output
+      b""
+
+---
+
+    Code
+      as_polars_expr(x, as_lit = TRUE, keep_series = TRUE)
     Output
       b""
 
@@ -466,6 +592,13 @@
 ---
 
     Code
+      as_polars_expr(x, as_lit = TRUE, keep_series = TRUE)
+    Output
+      b"a"
+
+---
+
+    Code
       selected_out
     Output
       shape: (1, 1)
@@ -481,6 +614,13 @@
 
     Code
       out
+    Output
+      b"ab"
+
+---
+
+    Code
+      as_polars_expr(x, as_lit = TRUE, keep_series = TRUE)
     Output
       b"ab"
 
@@ -508,6 +648,13 @@
 ---
 
     Code
+      as_polars_expr(x, as_lit = TRUE, keep_series = TRUE)
+    Output
+      null
+
+---
+
+    Code
       selected_out
     Output
       shape: (1, 1)
@@ -523,6 +670,13 @@
 
     Code
       out
+    Output
+      Series[literal]
+
+---
+
+    Code
+      as_polars_expr(x, as_lit = TRUE, keep_series = TRUE)
     Output
       Series[literal]
 
@@ -559,6 +713,13 @@
 ---
 
     Code
+      as_polars_expr(x, as_lit = TRUE, keep_series = TRUE)
+    Output
+      Series[literal]
+
+---
+
+    Code
       selected_out
     Output
       shape: (1, 1)
@@ -574,6 +735,13 @@
 
     Code
       out
+    Output
+      Series[literal]
+
+---
+
+    Code
+      as_polars_expr(x, as_lit = TRUE, keep_series = TRUE)
     Output
       Series[literal]
 
@@ -612,6 +780,13 @@
 ---
 
     Code
+      as_polars_expr(x, as_lit = TRUE, keep_series = TRUE)
+    Output
+      Series[literal]
+
+---
+
+    Code
       selected_out
     Output
       shape: (0, 1)
@@ -642,6 +817,13 @@
 ---
 
     Code
+      as_polars_expr(x, as_lit = TRUE, keep_series = TRUE)
+    Output
+      Series[literal]
+
+---
+
+    Code
       selected_out
     Output
       shape: (1, 1)
@@ -657,6 +839,13 @@
 
     Code
       out
+    Output
+      Series[literal]
+
+---
+
+    Code
+      as_polars_expr(x, as_lit = TRUE, keep_series = TRUE)
     Output
       Series[literal]
 
@@ -695,6 +884,13 @@
 ---
 
     Code
+      as_polars_expr(x, as_lit = TRUE, keep_series = TRUE)
+    Output
+      Series[literal]
+
+---
+
+    Code
       selected_out
     Output
       shape: (0, 1)
@@ -725,6 +921,13 @@
 ---
 
     Code
+      as_polars_expr(x, as_lit = TRUE, keep_series = TRUE)
+    Output
+      Series[literal]
+
+---
+
+    Code
       selected_out
     Output
       shape: (1, 1)
@@ -740,6 +943,13 @@
 
     Code
       out
+    Output
+      Series[literal]
+
+---
+
+    Code
+      as_polars_expr(x, as_lit = TRUE, keep_series = TRUE)
     Output
       Series[literal]
 
@@ -778,6 +988,13 @@
 ---
 
     Code
+      as_polars_expr(x, as_lit = TRUE, keep_series = TRUE)
+    Output
+      Series
+
+---
+
+    Code
       selected_out
     Output
       shape: (0, 1)
@@ -803,6 +1020,13 @@
     Code
       out
     Output
+      true
+
+---
+
+    Code
+      as_polars_expr(x, as_lit = TRUE, keep_series = TRUE)
+    Output
       Series
 
 ---
@@ -811,30 +1035,25 @@
       selected_out
     Output
       shape: (1, 1)
-      ┌──────┐
-      │      │
-      │ ---  │
-      │ bool │
-      ╞══════╡
-      │ true │
-      └──────┘
-
----
-
-    Code
-      lf$collect()
-    Condition
-      Error in `lf$collect()`:
-      ! Evaluation failed in `$collect()`.
-      Caused by error:
-      ! Invalid operation: Series b, length 1 doesn't match the DataFrame height of 10
-      
-      If you want expression: Series to be broadcasted, ensure it is a scalar (for instance by adding '.first()').
+      ┌─────────┐
+      │ literal │
+      │ ---     │
+      │ bool    │
+      ╞═════════╡
+      │ true    │
+      └─────────┘
 
 # as_polars_expr works for classes series (2)
 
     Code
       out
+    Output
+      Series
+
+---
+
+    Code
+      as_polars_expr(x, as_lit = TRUE, keep_series = TRUE)
     Output
       Series
 

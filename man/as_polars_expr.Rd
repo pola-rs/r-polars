@@ -4,7 +4,6 @@
 \alias{as_polars_expr}
 \alias{as_polars_expr.default}
 \alias{as_polars_expr.polars_expr}
-\alias{as_polars_expr.polars_series}
 \alias{as_polars_expr.character}
 \alias{as_polars_expr.raw}
 \alias{as_polars_expr.NULL}
@@ -12,11 +11,9 @@
 \usage{
 as_polars_expr(x, ...)
 
-\method{as_polars_expr}{default}(x, ...)
+\method{as_polars_expr}{default}(x, ..., keep_series = FALSE)
 
 \method{as_polars_expr}{polars_expr}(x, ..., structify = FALSE)
-
-\method{as_polars_expr}{polars_series}(x, ...)
 
 \method{as_polars_expr}{character}(x, ..., as_lit = FALSE)
 
@@ -28,6 +25,10 @@ as_polars_expr(x, ...)
 \item{x}{An R object.}
 
 \item{...}{Additional arguments passed to the methods.}
+
+\item{keep_series}{A logical value indicating whether to treat the object as a \link{Series} or
+scalar value. If \code{TRUE}, the output is ensured to be a \link{Series} literal even if
+the length of the object is \code{1}.}
 
 \item{structify}{A logical. If \code{TRUE}, convert multi-column expressions to a single struct
 expression by calling \code{\link[=pl__struct]{pl$struct()}}. Otherwise (default), done nothing.}
@@ -71,6 +72,7 @@ Additional arguments \code{...} are passed to \code{\link[=as_polars_series]{as_
 
 If the \code{as_lit} argument is \code{FALSE} (default), this function will call \code{\link[=pl__col]{pl$col()}} and
 the character vector is treated as column names.
+Otherwise, the default method is called.
 }
 
 \subsection{S3 method for \link{raw}}{
@@ -96,24 +98,6 @@ as_polars_expr("a", as_lit = TRUE)
 as_polars_expr(NA_character_, as_lit = TRUE)
 as_polars_expr(c("a", "b"), as_lit = TRUE)
 
-# logical
-as_polars_expr(logical(0))
-as_polars_expr(TRUE)
-as_polars_expr(NA)
-as_polars_expr(c(TRUE, FALSE))
-
-# integer
-as_polars_expr(integer(0))
-as_polars_expr(1L)
-as_polars_expr(NA_integer_)
-as_polars_expr(c(1L, 2L))
-
-# double
-as_polars_expr(double(0))
-as_polars_expr(1)
-as_polars_expr(NA_real_)
-as_polars_expr(c(1, 2))
-
 # raw
 as_polars_expr(as.raw(1))
 as_polars_expr(as.raw(1), raw_as_binary = FALSE)
@@ -122,6 +106,18 @@ as_polars_expr(charToRaw("foo"), raw_as_binary = FALSE)
 
 # NULL
 as_polars_expr(NULL)
+
+# default method (for integer)
+as_polars_expr(integer(0))
+as_polars_expr(1L)
+as_polars_expr(NA_integer_)
+as_polars_expr(c(1L, 2L))
+
+# default method (for double)
+as_polars_expr(double(0))
+as_polars_expr(1)
+as_polars_expr(NA_real_)
+as_polars_expr(c(1, 2))
 
 # default method (for list)
 as_polars_expr(list())
@@ -133,8 +129,7 @@ as_polars_expr(as.Date(integer(0)))
 as_polars_expr(as.Date("2021-01-01"))
 as_polars_expr(as.Date(c("2021-01-01", "2021-01-02")))
 
-# polars_series
-## Unlike the default method, this method does not extract the first value
+# default method (for Series)
 as_polars_series(1) |>
   as_polars_expr()
 
