@@ -25,3 +25,132 @@ test_that("tail() works", {
     ignore_attr = TRUE
   )
 })
+
+test_that("`[` operator works to subset columns only", {
+  test <- pl$DataFrame(a = 1:3, b = 4:6, c = 7:9)
+
+  ### Indices
+  expect_identical(test[1], pl$DataFrame(a = 1:3))
+  expect_warning(
+    expect_identical(test[1, drop = TRUE], pl$DataFrame(a = 1:3)),
+    "`drop` argument ignored for subsetting a frame",
+  )
+  expect_identical(test[, 1, drop = TRUE], pl$Series("a", 1:3))
+  expect_identical(test[1:2], pl$DataFrame(a = 1:3, b = 4:6))
+  expect_identical(test[, 1:2, drop = TRUE], pl$DataFrame(a = 1:3, b = 4:6))
+  expect_identical(test[, -2:-1], pl$DataFrame(c = 7:9))
+  expect_snapshot(test[, 10:12], error = TRUE)
+  expect_snapshot(test[, -2:1], error = TRUE)
+  expect_snapshot(test[, 1:-2], error = TRUE)
+  expect_snapshot(test[, 1.5], error = TRUE)
+
+  ### Column names
+  expect_identical(test["a"], pl$DataFrame(a = 1:3))
+  expect_warning(
+    expect_identical(test["a", drop = TRUE], pl$DataFrame(a = 1:3)),
+    "`drop` argument ignored for subsetting a frame",
+  )
+  expect_identical(test[, "a", drop = TRUE], pl$Series("a", 1:3))
+  expect_identical(test[c("a", "b")], pl$DataFrame(a = 1:3, b = 4:6))
+  expect_identical(test[, c("a", "b"), drop = TRUE], pl$DataFrame(a = 1:3, b = 4:6))
+  expect_error(
+    test[c("a", "foo")],
+    "not found: foo"
+  )
+
+  ### Logical values
+  expect_identical(test[TRUE], test)
+  expect_identical(test[c(TRUE, TRUE, FALSE)], pl$DataFrame(a = 1:3, b = 4:6))
+  expect_error(
+    test[c(TRUE, FALSE)],
+    "must be size 1 or 3, not 2"
+  )
+  expect_identical(test[, TRUE, drop = TRUE], test)
+  expect_identical(
+    test[, c(TRUE, FALSE, FALSE), drop = TRUE],
+    pl$Series("a", 1:3)
+  )
+
+  ### Empty args
+  expect_identical(test[], test)
+  expect_identical(test[,], test)
+
+  expect_snapshot(test[mean], error = TRUE)
+  expect_snapshot(test[list(1)], error = TRUE)
+  expect_snapshot(test[NA], error = TRUE)
+  expect_snapshot(test[c(1, NA, NA)], error = TRUE)
+  expect_snapshot(test[c("a", NA)], error = TRUE)
+})
+
+test_that("`[` operator works to subset rows only", {
+  test <- pl$DataFrame(a = 1:3, b = 4:6, c = 7:9)
+
+  ### Indices
+  expect_identical(
+    test[1, ],
+    pl$DataFrame(a = 1L, b = 4L, c = 7L)
+  )
+  expect_identical(
+    test[1:2, ],
+    pl$DataFrame(a = 1:2, b = 4:5, c = 7:8)
+  )
+  # TODO
+  # expect_identical(
+  #   test[c(1, 10), ],
+  #   pl$DataFrame(a = c(1L, NA_integer_), b = c(4L, NA_integer_), c = c(7L, NA_integer_))
+  # )
+  expect_identical(
+    test[-2:-1, ],
+    pl$DataFrame(a = 3L, b = 6L, c = 9L)
+  )
+  expect_snapshot(test[-2:1, ], error = TRUE)
+  expect_snapshot(test[1:-2, ], error = TRUE)
+  expect_snapshot(test[1.5, ], error = TRUE)
+
+  ### Character
+  expect_identical(
+    test["1", ],
+    pl$DataFrame(a = 1L, b = 4L, c = 7L)
+  )
+  expect_identical(
+    test[c("1", "2"), ],
+    pl$DataFrame(a = 1:2, b = 4:5, c = 7:8)
+  )
+  # TODO
+  # expect_identical(
+  #   test["foo", ],
+  #   pl$DataFrame(a = NA_integer_, b = NA_integer_, c = NA_integer_)
+  # )
+
+  ### Logical
+  expect_identical(test[TRUE, ], test)
+  expect_identical(
+    test[c(TRUE, TRUE, FALSE), ],
+    pl$DataFrame(a = 1:2, b = 4:5, c = 7:8)
+  )
+  # TODO
+  # expect_identical(
+  #   test[NA, ],
+  #   pl$DataFrame(a = rep(NA, 3), b = rep(NA, 3), c = rep(NA, 3))
+  # )
+  # expect_identical(
+  #   test[NA_integer_, ],
+  #   pl$DataFrame(a = NA, b = NA, c = NA)
+  # )
+  expect_error(
+    test[c(TRUE, FALSE), ],
+    "must be size 1 or 3, not 2"
+  )
+
+  expect_snapshot(test[mean, ], error = TRUE)
+  expect_snapshot(test[list(1), ], error = TRUE)
+
+  # TODO: test behavior of x[i, , drop = TRUE] when it is clarified
+  # https://github.com/tidyverse/tibble/issues/1570
+})
+
+test_that("`[` operator works to subset both rows and columns", {
+  test <- pl$DataFrame(a = 1:3, b = 4:6, c = 7:9)
+  expect_identical(test[1:2, "a"], pl$DataFrame(a = 1:2))
+  expect_identical(test[TRUE, "a"], pl$DataFrame(a = 1:3))
+})
