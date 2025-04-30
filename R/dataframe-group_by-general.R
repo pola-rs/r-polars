@@ -132,6 +132,24 @@ groupby__median <- function() {
     wrap()
 }
 
+#' @inherit lazygroupby__mean title
+#'
+#' @inherit as_polars_df return
+#' @examples
+#' df <- pl$DataFrame(
+#'   grp = c("c", "c", "a", "c", "a", "b"),
+#'   x = c(0.5, 0.5, 4, 10, 13, 14),
+#'   y = 1:6,
+#'   z = c(TRUE, TRUE, FALSE, TRUE, FALSE, TRUE)
+#' )
+#' df
+#'
+#' df$group_by("grp")$mean()
+groupby__mean <- function() {
+  self$agg(pl$all()$mean()) |>
+    wrap()
+}
+
 #' @inherit lazygroupby__sum title
 #'
 #' @inherit as_polars_df return

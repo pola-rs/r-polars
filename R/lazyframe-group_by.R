@@ -131,6 +131,24 @@ lazygroupby__median <- function() {
     wrap()
 }
 
+#' Return the mean per group
+#'
+#' @inherit as_polars_lf return
+#' @examples
+#' lf <- pl$LazyFrame(
+#'   grp = c("c", "c", "a", "c", "a", "b"),
+#'   x = c(0.5, 0.5, 4, 10, 13, 14),
+#'   y = 1:6,
+#'   z = c(TRUE, TRUE, FALSE, TRUE, FALSE, TRUE)
+#' )
+#' lf$collect()
+#'
+#' lf$group_by("grp")$mean()$collect()
+lazygroupby__mean <- function() {
+  self$agg(pl$all()$mean()) |>
+    wrap()
+}
+
 #' Return the sum per group
 #'
 #' @inherit as_polars_lf return
