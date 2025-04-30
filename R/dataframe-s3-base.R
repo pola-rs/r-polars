@@ -183,7 +183,7 @@ tail.polars_data_frame <- function(x, n = 6L, ...) x$tail(n = n)
     )
   }
 
-  if (is_bare_numeric(i) && !rlang::is_integerish(i)) {
+  if (is_bare_numeric(i) && !is_integerish(i)) {
     abort(
       c(
         sprintf("Can't subset rows with `%s`.", deparse(i_arg)),
@@ -262,7 +262,7 @@ tail.polars_data_frame <- function(x, n = 6L, ...) x$tail(n = n)
     )
   }
 
-  if (is_bare_numeric(j) && !rlang::is_integerish(j)) {
+  if (is_bare_numeric(j) && !is_integerish(j)) {
     abort(
       c(
         sprintf("Can't subset columns with `%s`.", deparse(j_arg)),

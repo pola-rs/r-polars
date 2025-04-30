@@ -73,7 +73,9 @@ test_that("`[` operator works to subset columns only", {
 
   ### Empty args
   expect_identical(test[], test)
-  expect_identical(test[,], test)
+  # fmt: skip
+  # <https://github.com/posit-dev/air/issues/330>
+  expect_identical(test[, ], test)
 
   expect_snapshot(test[mean], error = TRUE)
   expect_snapshot(test[list(1)], error = TRUE)
