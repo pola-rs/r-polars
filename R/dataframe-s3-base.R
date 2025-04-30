@@ -286,7 +286,9 @@ tail.polars_data_frame <- function(x, n = 6L, ...) x$tail(n = n)
     )
   }
 
-  if (!is_null(j)) {
+  to_select <- if (is_null(j)) {
+    cols
+  } else {
     # Can be:
     # - numeric but cannot beyond the number of columns, and cannot mix positive
     #   and negative indices
@@ -325,14 +327,14 @@ tail.polars_data_frame <- function(x, n = 6L, ...) x$tail(n = n)
           )
         )
       }
-      to_select <- cols[j]
+      cols[j]
     } else if (is_bare_character(j)) {
-      to_select <- j
+      j
     } else if (is_bare_logical(j)) {
       if (length(j) == 1) {
-        to_select <- cols
+        cols
       } else if (length(j) == length(cols)) {
-        to_select <- cols[j]
+        cols[j]
       } else {
         abort(
           c(
@@ -347,17 +349,11 @@ tail.polars_data_frame <- function(x, n = 6L, ...) x$tail(n = n)
         )
       }
     }
-
-    # Don't do this too early because x[, TRUE, drop = TRUE] mustn't drop if
-    # x has more than 1 column
-    if (length(to_select) > 1) {
-      drop <- FALSE
-    }
-
-    x <- x$select(to_select)
   }
 
-  if (isTRUE(drop)) {
+  x <- x$select(to_select)
+
+  if (isTRUE(drop) && length(to_select) == 1L) {
     x$get_columns()[[1]]
   } else {
     x

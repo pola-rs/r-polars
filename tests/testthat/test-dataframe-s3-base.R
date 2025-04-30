@@ -156,3 +156,17 @@ test_that("`[` operator works to subset both rows and columns", {
   expect_identical(test[1:2, "a"], pl$DataFrame(a = 1:2))
   expect_identical(test[TRUE, "a"], pl$DataFrame(a = 1:3))
 })
+
+test_that("`[`'s drop argument works correctly", {
+  test <- pl$DataFrame(a = 1:3, b = 4:6, c = 7:9)
+
+  expect_equal(
+    test[1, , drop = TRUE],
+    pl$DataFrame(a = 1L, b = 4L, c = 7L)
+  )
+  # TODO: polars drops the row if columns are dropped
+  expect_equal(
+    test[1, character(), drop = TRUE],
+    as_polars_df(NULL)
+  )
+})
