@@ -9,8 +9,10 @@ classes <- c(
   "series",
   "dataframe",
   "lazyframe",
-  # "GroupBy",
-  # "LazyGroupBy", "IO", "RThreadHandle", "SQLContext", "S3",
+  "groupby",
+  "lazygroupby",
+  "sql_context",
+  # "S3",
   "expr",
   "pl"
 )
@@ -48,10 +50,16 @@ for (i in to_modify) {
     "dataframe"
   } else if (grepl("man/lazyframe__", i)) {
     "lazyframe"
+  } else if (grepl("man/groupby__", i)) {
+    "groupby"
+  } else if (grepl("man/lazygroupby__", i)) {
+    "lazygroupby"
   } else if (grepl("man/series__", i)) {
     "series"
   } else if (grepl("man/pl__", i)) {
     "pl"
+  } else if (grepl("man/sql_context", i)) {
+    "sql_context"
   } else {
     "foobar"
   }
@@ -62,30 +70,8 @@ for (i in to_modify) {
     next
   }
 
-  # IO functions are DataFrame or LazyFrame methods
-  if (which_class == "IO") {
-    if (any(grepl("<code class='language-R'>LazyFrame_sink", orig))) {
-      which_class <<- "LazyFrame"
-    } else if (any(grepl("<code class='language-R'>DataFrame_write", orig))) {
-      which_class <<- "DataFrame"
-    }
-  }
-
   # prefix with pl$ for read/scan
-  if (which_class == "IO") {
-    which_input <- if (any(grepl("<code class='language-R'>read_", orig))) {
-      "read"
-    } else if (any(grepl("<code class='language-R'>scan_", orig))) {
-      "scan"
-    } else {
-      ""
-    }
-    new <- gsub(
-      paste0("<code class='language-R'>", which_input, "_"),
-      paste0("<code class='language-R'>pl$", which_input, "_"),
-      orig
-    )
-  } else if (which_class == "pl") {
+  if (which_class == "pl") {
     new <- gsub(
       "<code class='language-R'>pl__",
       "<code class='language-R'>pl$",
@@ -118,12 +104,23 @@ for (i in to_modify) {
       paste0("<code class='language-R'>&lt;Expr&gt;$", subns, "$"),
       orig
     )
-  } else if (which_class %in% c("dataframe", "lazyframe")) {
+  } else if (
+    which_class %in% c("dataframe", "lazyframe", "groupby", "lazygroupby", "sql_context")
+  ) {
+    replacement <- switch(
+      which_class,
+      dataframe = "DataFrame",
+      lazyframe = "LazyFrame",
+      groupby = "GroupBy",
+      lazygroupby = "LazyGroupBy",
+      sql_context = "SQLContext",
+      "unreachable"
+    )
     new <- gsub(
       paste0("<code class='language-R'>", which_class, "__"),
       paste0(
         "<code class='language-R'>&lt;",
-        if (which_class == "dataframe") "DataFrame" else "LazyFrame",
+        replacement,
         "&gt;$"
       ),
       orig
