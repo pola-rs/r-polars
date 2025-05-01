@@ -40,6 +40,24 @@
 ---
 
     Code
+      test[c("foo", "a", "bar", "baz")]
+    Condition
+      Error in `test[c("foo", "a", "bar", "baz")]`:
+      ! Can't subset columns that don't exist.
+      x Columns `foo`, `bar`, and `baz` don't exist.
+
+---
+
+    Code
+      test["*"]
+    Condition
+      Error in `test["*"]`:
+      ! Can't subset columns that don't exist.
+      x Columns `*` don't exist.
+
+---
+
+    Code
       test[mean]
     Condition
       Error in `test[mean]`:
