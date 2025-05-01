@@ -185,7 +185,6 @@ nav:
             - join: man/lazyframe__join.md
             - last: man/lazyframe__last.md
             - merge_sorted: man/lazyframe__merge_sorted.md
-            - quantile: man/lazyframe__quantile.md
             - rename: man/lazyframe__rename.md
             - reverse: man/lazyframe__reverse.md
             - rolling: man/lazyframe__rolling.md
