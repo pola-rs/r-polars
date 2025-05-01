@@ -72,17 +72,7 @@
       Caused by error in `do.call(pl$scan_csv, .args)$collect()`:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! could not parse `a` as dtype `i32` at column 'c' (column number 2)
-      
-      The current offset in the file is 4 bytes.
-      
-      You might want to try:
-      - increasing `infer_schema_length` (e.g. `infer_schema_length=10000`),
-      - specifying correct dtype with the `schema_overrides` argument
-      - setting `ignore_errors` to `True`,
-      - adding `a` to the `null_values` list.
-      
-      Original error: ```remaining bytes non-empty```
+      ! provided schema does not match number of columns in file (2 != 3 in file)
 
 ---
 

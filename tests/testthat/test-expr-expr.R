@@ -531,11 +531,9 @@ test_that("is_in", {
   )
 
   # Works with list
-  # TODO: The last value of the out column should be a null
-  #  https://github.com/pola-rs/polars/issues/21485
   expect_equal(
     pl$DataFrame(a = c(2L, 1L, NA))$with_columns(out = pl$col("a")$is_in(list(0:1, 1:2, NA))),
-    pl$DataFrame(a = c(2L, 1L, NA), out = c(FALSE, TRUE, TRUE))
+    pl$DataFrame(a = c(2L, 1L, NA), out = c(FALSE, TRUE, NA))
   )
   expect_equal(
     pl$DataFrame(a = c(2L, 1L, NA))$with_columns(
@@ -814,24 +812,22 @@ test_that("cum_sum cum_prod cum_min cum_max cum_count", {
 
 test_that("floor ceil round", {
   l_input <- list(
-    a = c(0.33, 1.02, 1.5, NaN, NA, Inf, -Inf)
-  )
-
-  l_actual <- pl$DataFrame(!!!l_input)$select(
-    floor = pl$col("a")$floor(),
-    ceil = pl$col("a")$ceil(),
-    round = pl$col("a")$round(0)
-  )
-
-  l_expected <- pl$DataFrame(
-    floor = floor(l_input$a),
-    ceil = ceiling(l_input$a),
-    round = round(l_input$a)
+    a = c(0.33, 1.02, 1.5, 2.5, -1.5, NaN, NA, Inf, -Inf)
   )
 
   expect_equal(
-    l_actual,
-    l_expected
+    pl$DataFrame(!!!l_input)$select(
+      floor = pl$col("a")$floor(),
+      ceil = pl$col("a")$ceil(),
+      round = pl$col("a")$round(0),
+      round_half_away_from_zero = pl$col("a")$round(0, "half_away_from_zero"),
+    ),
+    pl$DataFrame(
+      floor = floor(l_input$a),
+      ceil = ceiling(l_input$a),
+      round = round(l_input$a),
+      round_half_away_from_zero = floor(abs(l_input$a) + 0.5) * sign(l_input$a),
+    )
   )
 })
 
@@ -1931,10 +1927,7 @@ test_that("diff", {
   expect_equal(df, known)
 
   expect_silent(pl$select(pl$lit(1:5)$diff(0)))
-  expect_snapshot(
-    pl$lit(1:5)$diff(99^99),
-    error = TRUE
-  )
+  expect_snapshot(pl$lit(1:5)$diff(99^99))
 
   expect_snapshot(
     pl$lit(1:5)$diff(5, "not a null behavior"),

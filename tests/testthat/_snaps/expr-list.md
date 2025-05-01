@@ -35,9 +35,44 @@
 # gather
 
     Code
-      pl$DataFrame(x = l)$with_columns(pl$col("x")$list$gather(list(c(0:3), 0L, 0L)))
+      dat$with_columns(pl$col("x")$list$gather(1L, null_on_oob = TRUE))
+    Output
+      shape: (3, 1)
+      ┌───────────┐
+      │ x         │
+      │ ---       │
+      │ list[i32] │
+      ╞═══════════╡
+      │ [2]       │
+      │ [5]       │
+      │ [null]    │
+      └───────────┘
+
+---
+
+    Code
+      dat$with_columns(pl$col("x")$list$gather(list(1), null_on_oob = TRUE))
     Condition
-      Error:
+      Error in `dat$with_columns()`:
+      ! Evaluation failed in `$with_columns()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Invalid operation: list.gather operation not supported for dtypes `list[i32]` and `list[f64]`
+      
+      Resolved plan until failure:
+      
+      	---> FAILED HERE RESOLVING 'sink' <---
+       WITH_COLUMNS:
+       [col("x").list.gather([[1.0]])] 
+        DF ["x"]; PROJECT */1 COLUMNS
+
+---
+
+    Code
+      dat$with_columns(pl$col("x")$list$gather(list(c(0:3), 0L, 0L)))
+    Condition
+      Error in `dat$with_columns()`:
       ! Evaluation failed in `$with_columns()`.
       Caused by error:
       ! Evaluation failed in `$collect()`.
@@ -47,9 +82,9 @@
 ---
 
     Code
-      pl$DataFrame(x = l)$with_columns(pl$col("x")$list$gather(1, TRUE))
+      dat$with_columns(pl$col("x")$list$gather(1, TRUE))
     Condition
-      Error:
+      Error in `dat$with_columns()`:
       ! Evaluation failed in `$with_columns()`.
       Caused by error:
       ! Evaluation failed in `$with_columns()`.

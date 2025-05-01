@@ -196,12 +196,15 @@ pub fn concat_lf(
 ) -> Result<PlRLazyFrame> {
     let lfs = <Wrap<Vec<LazyFrame>>>::try_from(lfs)?.0;
 
-    let lf = dsl::concat(lfs, UnionArgs {
-        rechunk,
-        parallel,
-        to_supertypes,
-        ..Default::default()
-    })
+    let lf = dsl::concat(
+        lfs,
+        UnionArgs {
+            rechunk,
+            parallel,
+            to_supertypes,
+            ..Default::default()
+        },
+    )
     .map_err(RPolarsErr::from)?;
     Ok(lf.into())
 }
@@ -229,12 +232,15 @@ pub fn concat_lf_diagonal(
 ) -> Result<PlRLazyFrame> {
     let lfs = <Wrap<Vec<LazyFrame>>>::try_from(lfs)?.0;
 
-    let lf = dsl::functions::concat_lf_diagonal(lfs, UnionArgs {
-        rechunk,
-        parallel,
-        to_supertypes,
-        ..Default::default()
-    })
+    let lf = dsl::functions::concat_lf_diagonal(
+        lfs,
+        UnionArgs {
+            rechunk,
+            parallel,
+            to_supertypes,
+            ..Default::default()
+        },
+    )
     .map_err(RPolarsErr::from)?;
     Ok(lf.into())
 }
@@ -259,13 +265,16 @@ pub fn arg_sort_by(
     multithreaded: bool,
 ) -> Result<PlRExpr> {
     let by = <Wrap<Vec<Expr>>>::from(by).0;
-    Ok(dsl::arg_sort_by(by, SortMultipleOptions {
-        descending: descending.to_vec(),
-        nulls_last: nulls_last.to_vec(),
-        maintain_order,
-        multithreaded,
-        limit: None,
-    })
+    Ok(dsl::arg_sort_by(
+        by,
+        SortMultipleOptions {
+            descending: descending.to_vec(),
+            nulls_last: nulls_last.to_vec(),
+            maintain_order,
+            multithreaded,
+            limit: None,
+        },
+    )
     .into())
 }
 

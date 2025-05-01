@@ -728,6 +728,19 @@ impl TryFrom<&str> for Wrap<AsofStrategy> {
     }
 }
 
+impl TryFrom<&str> for Wrap<RoundMode> {
+    type Error = savvy::Error;
+
+    fn try_from(round_mode: &str) -> Result<Self, Self::Error> {
+        let parsed = match round_mode {
+            "half_to_even" => RoundMode::HalfToEven,
+            "half_away_from_zero" => RoundMode::HalfAwayFromZero,
+            _ => return Err("unreachable".to_string().into()),
+        };
+        Ok(Wrap(parsed))
+    }
+}
+
 impl TryFrom<&str> for Wrap<CsvEncoding> {
     type Error = String;
 

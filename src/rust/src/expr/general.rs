@@ -195,13 +195,16 @@ impl PlRExpr {
         Ok(self
             .inner
             .clone()
-            .sort_by(by, SortMultipleOptions {
-                descending: descending.to_vec(),
-                nulls_last: nulls_last.to_vec(),
-                multithreaded,
-                maintain_order,
-                limit: None,
-            })
+            .sort_by(
+                by,
+                SortMultipleOptions {
+                    descending: descending.to_vec(),
+                    nulls_last: nulls_last.to_vec(),
+                    multithreaded,
+                    maintain_order,
+                    limit: None,
+                },
+            )
             .into())
     }
 
@@ -239,12 +242,15 @@ impl PlRExpr {
     ) -> Result<Self> {
         let partition_by = <Wrap<Vec<Expr>>>::from(partition_by).0;
         let order_by = order_by.map(|order_by| {
-            (<Wrap<Vec<Expr>>>::from(order_by).0, SortOptions {
-                descending: order_by_descending,
-                nulls_last: order_by_nulls_last,
-                maintain_order: false,
-                ..Default::default()
-            })
+            (
+                <Wrap<Vec<Expr>>>::from(order_by).0,
+                SortOptions {
+                    descending: order_by_descending,
+                    nulls_last: order_by_nulls_last,
+                    maintain_order: false,
+                    ..Default::default()
+                },
+            )
         });
         let mapping_strategy = <Wrap<WindowMapping>>::try_from(mapping_strategy)?.0;
 
@@ -271,10 +277,13 @@ impl PlRExpr {
         Ok(self.inner.clone().pow(exponent.inner.clone()).into())
     }
 
-    fn diff(&self, n: NumericScalar, null_behavior: &str) -> Result<Self> {
-        let n = <Wrap<i64>>::try_from(n)?.0;
+    fn diff(&self, n: &PlRExpr, null_behavior: &str) -> Result<Self> {
         let null_behavior = <Wrap<NullBehavior>>::try_from(null_behavior)?.0;
-        Ok(self.inner.clone().diff(n, null_behavior).into())
+        Ok(self
+            .inner
+            .clone()
+            .diff(n.inner.clone(), null_behavior)
+            .into())
     }
 
     fn reshape(&self, dimensions: NumericSexp) -> Result<Self> {
@@ -733,9 +742,10 @@ impl PlRExpr {
             .into())
     }
 
-    fn round(&self, decimals: NumericScalar) -> Result<Self> {
+    fn round(&self, decimals: NumericScalar, mode: &str) -> Result<Self> {
         let decimals = <Wrap<u32>>::try_from(decimals)?.0;
-        Ok(self.inner.clone().round(decimals).into())
+        let mode = <Wrap<RoundMode>>::try_from(mode)?.0;
+        Ok(self.inner.clone().round(decimals, mode).into())
     }
 
     fn round_sig_figs(&self, digits: NumericScalar) -> Result<Self> {
@@ -760,22 +770,6 @@ impl PlRExpr {
             (None, None) => expr,
         };
         Ok(out.into())
-    }
-
-    fn backward_fill(&self, limit: Option<NumericScalar>) -> Result<Self> {
-        let limit: FillNullLimit = match limit {
-            Some(x) => Some(<Wrap<u32>>::try_from(x)?.0),
-            None => None,
-        };
-        Ok(self.inner.clone().backward_fill(limit).into())
-    }
-
-    fn forward_fill(&self, limit: Option<NumericScalar>) -> Result<Self> {
-        let limit: FillNullLimit = match limit {
-            Some(x) => Some(<Wrap<u32>>::try_from(x)?.0),
-            None => None,
-        };
-        Ok(self.inner.clone().forward_fill(limit).into())
     }
 
     fn shift(&self, n: &PlRExpr, fill_value: Option<&PlRExpr>) -> Result<Self> {

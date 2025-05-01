@@ -4,10 +4,12 @@
 \alias{expr__round}
 \title{Round underlying floating point data by decimals digits}
 \usage{
-expr__round(decimals)
+expr__round(decimals, mode = c("half_to_even", "half_away_from_zero"))
 }
 \arguments{
 \item{decimals}{Number of decimals to round by.}
+
+\item{mode}{Rounding mode. One of \code{"half_to_even"} (default) or \code{"half_away_from_zero"}.}
 }
 \value{
 A polars \link{expression}
@@ -16,9 +18,10 @@ A polars \link{expression}
 Round underlying floating point data by decimals digits
 }
 \examples{
-df <- pl$DataFrame(a = c(0.33, 0.52, 1.02, 1.17))
+df <- pl$DataFrame(a = c(0.5, 1.5, 2.5, 3.5))
 
 df$with_columns(
-  rounded = pl$col("a")$round(1)
+  half_to_even = pl$col("a")$round(0),
+  half_away_from_zero = pl$col("a")$round(0, "half_away_from_zero"),
 )
 }

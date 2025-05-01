@@ -193,7 +193,7 @@ expr_list_get <- function(index, ..., null_on_oob = TRUE) {
 #' index, use [`$list$get()`][expr_list_get]. The indices may be defined in a
 #' single column, or by sub-lists in another column of dtype List.
 #'
-#' @param index An Expr or something coercible to an Expr, that can return
+#' @param indices An Expr or something coercible to an Expr, that can return
 #'   several indices. Values are 0-indexed (so index 0 would return the
 #'   first item of every sub-list) and negative values start from the end (index
 #'   `-1` returns the last item). If the index is out of bounds, it will return
@@ -212,17 +212,18 @@ expr_list_get <- function(index, ..., null_on_oob = TRUE) {
 #' )
 #'
 #' df$with_columns(
-#'   gathered = pl$col("a")$list$gather(2, null_on_oob = TRUE)
+#'   gathered = pl$col("a")$list$gather(list(2L), null_on_oob = TRUE)
 #' )
 #'
-#' # by some column name, must cast to an Int/Uint type to work
+#' # Indices must be an List(Int/Uint) type to work.
+#' # So we may need to cast the column to List(UInt) first.
 #' df$with_columns(
 #'   gathered = pl$col("a")$list$gather(pl$col("a")$cast(pl$List(pl$UInt64)), null_on_oob = TRUE)
 #' )
-expr_list_gather <- function(index, ..., null_on_oob = FALSE) {
+expr_list_gather <- function(indices, ..., null_on_oob = FALSE) {
   wrap({
     check_dots_empty0(...)
-    self$`_rexpr`$list_gather(as_polars_expr(index)$`_rexpr`, null_on_oob)
+    self$`_rexpr`$list_gather(as_polars_expr(indices)$`_rexpr`, null_on_oob)
   })
 }
 

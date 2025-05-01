@@ -4,7 +4,13 @@
 \alias{expr__rolling_skew}
 \title{Apply a rolling skew over values}
 \usage{
-expr__rolling_skew(window_size, ..., bias = TRUE)
+expr__rolling_skew(
+  window_size,
+  ...,
+  bias = TRUE,
+  min_samples = NULL,
+  center = FALSE
+)
 }
 \arguments{
 \item{window_size}{The length of the window in number of elements.}
@@ -12,6 +18,11 @@ expr__rolling_skew(window_size, ..., bias = TRUE)
 \item{...}{These dots are for future extensions and must be empty.}
 
 \item{bias}{If \code{FALSE}, the calculations are corrected for statistical bias.}
+
+\item{min_samples}{The number of values in the window that should be non-null before computing
+a result. If set to \code{NULL} (default), it will be set equal to \code{window_size}.}
+
+\item{center}{Set the labels at the center of the window.}
 }
 \value{
 A polars \link{expression}

@@ -64,12 +64,12 @@ impl PlRExpr {
         Ok(self.inner.clone().list().n_unique().into())
     }
 
-    fn list_gather(&self, index: &PlRExpr, null_on_oob: bool) -> Result<Self> {
+    fn list_gather(&self, indices: &PlRExpr, null_on_oob: bool) -> Result<Self> {
         Ok(self
             .inner
             .clone()
             .list()
-            .gather(index.inner.clone(), null_on_oob)
+            .gather(indices.inner.clone(), null_on_oob)
             .into())
     }
 

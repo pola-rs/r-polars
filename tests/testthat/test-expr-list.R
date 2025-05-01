@@ -150,25 +150,28 @@ test_that("list$get", {
 })
 
 test_that("gather", {
-  l <- list(1:3, 1:2, 1:1)
-  l_roundtrip <- pl$DataFrame(x = l)$with_columns(pl$col("x")$list$gather(lapply(l, "-", 1L)))
-  expect_equal(l_roundtrip, pl$DataFrame(x = l))
+  dat <- pl$DataFrame(x = list(1:3, 4:5, 6L))
 
-  l <- list(1:3, 4:5, 6L)
   expect_equal(
-    pl$DataFrame(x = l)$with_columns(pl$col("x")$list$gather(
+    dat$with_columns(pl$col("x")$list$gather(
       list(c(0:3), 0L, 0L),
       null_on_oob = TRUE
     )),
     pl$DataFrame(x = list(c(1:3, NA), 4L, 6L))
   )
-
   expect_snapshot(
-    pl$DataFrame(x = l)$with_columns(pl$col("x")$list$gather(list(c(0:3), 0L, 0L))),
+    dat$with_columns(pl$col("x")$list$gather(1L, null_on_oob = TRUE))
+  )
+  expect_snapshot(
+    dat$with_columns(pl$col("x")$list$gather(list(1), null_on_oob = TRUE)),
     error = TRUE
   )
   expect_snapshot(
-    pl$DataFrame(x = l)$with_columns(pl$col("x")$list$gather(1, TRUE)),
+    dat$with_columns(pl$col("x")$list$gather(list(c(0:3), 0L, 0L))),
+    error = TRUE
+  )
+  expect_snapshot(
+    dat$with_columns(pl$col("x")$list$gather(1, TRUE)),
     error = TRUE
   )
 })

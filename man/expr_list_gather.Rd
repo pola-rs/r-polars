@@ -4,10 +4,10 @@
 \alias{expr_list_gather}
 \title{Get several values by index in every sub-list}
 \usage{
-expr_list_gather(index, ..., null_on_oob = FALSE)
+expr_list_gather(indices, ..., null_on_oob = FALSE)
 }
 \arguments{
-\item{index}{An Expr or something coercible to an Expr, that can return
+\item{indices}{An Expr or something coercible to an Expr, that can return
 several indices. Values are 0-indexed (so index 0 would return the
 first item of every sub-list) and negative values start from the end (index
 \code{-1} returns the last item). If the index is out of bounds, it will return
@@ -36,10 +36,11 @@ df$with_columns(
 )
 
 df$with_columns(
-  gathered = pl$col("a")$list$gather(2, null_on_oob = TRUE)
+  gathered = pl$col("a")$list$gather(list(2L), null_on_oob = TRUE)
 )
 
-# by some column name, must cast to an Int/Uint type to work
+# Indices must be an List(Int/Uint) type to work.
+# So we may need to cast the column to List(UInt) first.
 df$with_columns(
   gathered = pl$col("a")$list$gather(pl$col("a")$cast(pl$List(pl$UInt64)), null_on_oob = TRUE)
 )
