@@ -131,8 +131,17 @@ tail.polars_data_frame <- function(x, n = 6L, ...) x$tail(n = n)
   cols <- names(x)
 
   # useful for error messages below
+  called_from_lazy_s3_method <- identical(caller_fn(), `[.polars_lazy_frame`)
+  if (isTRUE(called_from_lazy_s3_method)) {
+    # Necessary so that e.g. `test[mean]` prints "Can't subset columns with
+    # `mean`." and not "Can't subset columns with `j`."
+    j_arg <- env_get(caller_env(), "j_arg", default = NULL)
+    error_env <- caller_env()
+  } else {
+    j_arg <- substitute(j)
+    error_env <- current_env()
+  }
   i_arg <- substitute(i)
-  j_arg <- substitute(j)
 
   if (missing(i)) {
     i <- TRUE
@@ -148,7 +157,7 @@ tail.polars_data_frame <- function(x, n = 6L, ...) x$tail(n = n)
     if (!missing(drop)) {
       warn(
         c(
-          `!` = "`drop` argument ignored for subsetting a frame with `x[j]`.",
+          `!` = "`drop` argument ignored for subsetting a DataFrame with `x[j]`.",
           i = "It has an effect only for `x[i, j]`."
         )
       )
@@ -167,6 +176,15 @@ tail.polars_data_frame <- function(x, n = 6L, ...) x$tail(n = n)
   i <- i %||% FALSE
   j <- j %||% character()
 
+  # Same as `nrow(x)`, but `nrow()` calls `$collect_schema()` internally
+  # which is expensive for LazyFrame, so we should avoid it.
+  n_rows <- if (called_from_lazy_s3_method) {
+    NA_integer_
+  } else {
+    x$height
+  }
+  n_cols <- length(cols)
+
   #### Rows -----------------------------------------------------
 
   # check accepted types for subsetting rows
@@ -179,7 +197,8 @@ tail.polars_data_frame <- function(x, n = 6L, ...) x$tail(n = n)
           deparse(i_arg),
           obj_type_friendly(i)
         )
-      )
+      ),
+      call = error_env
     )
   }
 
@@ -188,13 +207,14 @@ tail.polars_data_frame <- function(x, n = 6L, ...) x$tail(n = n)
       c(
         sprintf("Can't subset rows with `%s`.", deparse(i_arg)),
         x = "Can't convert from `i` <double> to <integer> due to loss of precision."
-      )
+      ),
+      call = error_env
     )
   }
 
   # If logical, `i` must be of length 1 or number of rows
   if (is_bare_logical(i)) {
-    if (length(i) %in% c(1L, x$height)) {
+    if (length(i) %in% c(1L, n_rows)) {
       idx <- i
     } else {
       abort(
@@ -203,18 +223,21 @@ tail.polars_data_frame <- function(x, n = 6L, ...) x$tail(n = n)
           i = sprintf(
             "Logical subscript `%s` must be size 1 or %s, not %s",
             deparse(i_arg),
-            x$height,
+            n_rows,
             length(i)
           )
         )
       )
     }
   } else {
+    seq_n_rows <- seq_len(n_rows)
     # Negative indices -> drop those rows
     # Do not accept mixing negative and positive indices
     if (is_bare_numeric(i)) {
+      # TODO: NA indices are ignored for now
+      i <- i[!is.na(i)]
       if (all(i < 0)) {
-        i <- setdiff(seq_len(x$height), abs(i))
+        i <- setdiff(seq_n_rows, abs(i))
       } else if (any(i < 0) && any(i > 0)) {
         sign_start <- sign(i[i != 0])[1]
         loc <- if (sign_start == -1) {
@@ -232,12 +255,13 @@ tail.polars_data_frame <- function(x, n = 6L, ...) x$tail(n = n)
               if (sign_start == 1) "negative" else "positive",
               loc
             )
-          )
+          ),
+          call = error_env
         )
       }
     }
 
-    idx <- seq_len(x$height) %in% i
+    idx <- seq_n_rows %in% i
   }
 
   x <- x$filter(pl$lit(idx))
@@ -254,7 +278,8 @@ tail.polars_data_frame <- function(x, n = 6L, ...) x$tail(n = n)
           deparse(j_arg),
           obj_type_friendly(j)
         )
-      )
+      ),
+      call = error_env
     )
   }
 
@@ -263,7 +288,8 @@ tail.polars_data_frame <- function(x, n = 6L, ...) x$tail(n = n)
       c(
         sprintf("Can't subset columns with `%s`.", deparse(j_arg)),
         x = "Can't convert from `j` <double> to <integer> due to loss of precision."
-      )
+      ),
+      call = error_env
     )
   }
 
@@ -278,7 +304,8 @@ tail.polars_data_frame <- function(x, n = 6L, ...) x$tail(n = n)
           "It has missing value(s) at location %s.",
           oxford_comma(na_val, final = "and")
         )
-      )
+      ),
+      call = error_env
     )
   }
 
@@ -288,18 +315,19 @@ tail.polars_data_frame <- function(x, n = 6L, ...) x$tail(n = n)
   # - logical but must be of length 1 or number of columns
   # - character, should not contain non-existing column names
   to_select <- if (is_bare_numeric(j)) {
-    wrong_locs <- j[j > length(cols)]
+    wrong_locs <- j[j > n_cols]
     if (length(wrong_locs) > 0) {
       abort(
         c(
           "Can't subset columns past the end.",
           i = sprintf("Location(s) %s don't exist.", oxford_comma(wrong_locs, final = "and")),
-          i = sprintf("There are only %s columns.", length(cols))
-        )
+          i = sprintf("There are only %s columns.", n_cols)
+        ),
+        call = error_env
       )
     }
     if (all(j < 0)) {
-      j <- setdiff(seq_len(length(cols)), abs(j))
+      j <- setdiff(seq_len(n_cols), abs(j))
     } else if (any(j < 0) && any(j > 0)) {
       sign_start <- sign(j[j != 0])[1]
       loc <- if (sign_start == -1) {
@@ -317,7 +345,8 @@ tail.polars_data_frame <- function(x, n = 6L, ...) x$tail(n = n)
             if (sign_start == 1) "negative" else "positive",
             loc
           )
-        )
+        ),
+        call = error_env
       )
     }
     cols[j]
@@ -331,13 +360,14 @@ tail.polars_data_frame <- function(x, n = 6L, ...) x$tail(n = n)
             "Columns %s don't exist.",
             oxford_comma(sprintf("`%s`", non_existent_cols), final = "and")
           )
-        )
+        ),
+        call = error_env
       )
     } else {
       j
     }
   } else if (is_bare_logical(j)) {
-    if (length(j) %in% c(1L, length(cols))) {
+    if (length(j) %in% c(1L, n_cols)) {
       cols[j]
     } else {
       abort(
@@ -346,10 +376,11 @@ tail.polars_data_frame <- function(x, n = 6L, ...) x$tail(n = n)
           i = sprintf(
             "Logical subscript `%s` must be size 1 or %s, not %s",
             deparse(j_arg),
-            length(cols),
+            n_cols,
             length(j)
           )
-        )
+        ),
+        call = error_env
       )
     }
   }
