@@ -60,6 +60,7 @@ SEXP savvy_PlRDataFrame_columns__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_deserialize_binary__ffi(SEXP c_arg__data);
 SEXP savvy_PlRDataFrame_dtypes__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_equals__ffi(SEXP self__, SEXP c_arg__other, SEXP c_arg__null_equal);
+SEXP savvy_PlRDataFrame_gather_with_series__ffi(SEXP self__, SEXP c_arg__indices);
 SEXP savvy_PlRDataFrame_get_column__ffi(SEXP self__, SEXP c_arg__name);
 SEXP savvy_PlRDataFrame_get_column_index__ffi(SEXP self__, SEXP c_arg__name);
 SEXP savvy_PlRDataFrame_get_columns__ffi(SEXP self__);

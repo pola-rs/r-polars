@@ -422,6 +422,13 @@ class(`PlRChainedWhen`) <- c("PlRChainedWhen__bundle", "savvy_neopolars__sealed"
   }
 }
 
+`PlRDataFrame_gather_with_series` <- function(self) {
+  function(`indices`) {
+    `indices` <- .savvy_extract_ptr(`indices`, "PlRSeries")
+    .savvy_wrap_PlRDataFrame(.Call(savvy_PlRDataFrame_gather_with_series__impl, `self`, `indices`))
+  }
+}
+
 `PlRDataFrame_get_column` <- function(self) {
   function(`name`) {
     .savvy_wrap_PlRSeries(.Call(savvy_PlRDataFrame_get_column__impl, `self`, `name`))
@@ -632,6 +639,7 @@ class(`PlRChainedWhen`) <- c("PlRChainedWhen__bundle", "savvy_neopolars__sealed"
   e$`columns` <- `PlRDataFrame_columns`(ptr)
   e$`dtypes` <- `PlRDataFrame_dtypes`(ptr)
   e$`equals` <- `PlRDataFrame_equals`(ptr)
+  e$`gather_with_series` <- `PlRDataFrame_gather_with_series`(ptr)
   e$`get_column` <- `PlRDataFrame_get_column`(ptr)
   e$`get_column_index` <- `PlRDataFrame_get_column_index`(ptr)
   e$`get_columns` <- `PlRDataFrame_get_columns`(ptr)

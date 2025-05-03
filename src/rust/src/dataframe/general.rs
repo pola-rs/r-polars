@@ -70,6 +70,15 @@ impl PlRDataFrame {
         (out as i32).try_into()
     }
 
+    pub fn gather_with_series(&self, indices: &PlRSeries) -> Result<Self> {
+        let indices = indices.series.idx().map_err(RPolarsErr::from)?;
+        self.df
+            .take(indices)
+            .map_err(RPolarsErr::from)
+            .map(Into::into)
+            .map_err(Into::into)
+    }
+
     pub fn transpose(
         &mut self,
         column_names: StringSexp,

@@ -106,6 +106,16 @@
 # `[` operator works to subset rows only
 
     Code
+      test[c(-1, NA), ]
+    Condition
+      Error in `test[c(-1, NA), ]`:
+      ! Can't subset rows with `c(-1, NA)`.
+      x Negative locations can't have missing values.
+      i Subscript `c(-1, NA)` has 1 missing values at location 2.
+
+---
+
+    Code
       test[-2:1, ]
     Condition
       Error in `test[-2:1, ]`:
@@ -131,6 +141,24 @@
       Error in `test[1.5, ]`:
       ! Can't subset rows with `1.5`.
       x Can't convert from `i` <double> to <integer> due to loss of precision.
+
+---
+
+    Code
+      test[c(TRUE, FALSE), ]
+    Condition
+      Error in `test[c(TRUE, FALSE), ]`:
+      ! Can't subset rows with `c(TRUE, FALSE)`.
+      i Logical subscript `c(TRUE, FALSE)` must be size 1 or 3, not 2
+
+---
+
+    Code
+      test[c(NA, FALSE), ]
+    Condition
+      Error in `test[c(NA, FALSE), ]`:
+      ! Can't subset rows with `c(NA, FALSE)`.
+      i Logical subscript `c(NA, FALSE)` must be size 1 or 3, not 2
 
 ---
 

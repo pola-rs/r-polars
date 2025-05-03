@@ -314,6 +314,11 @@ SEXP savvy_PlRDataFrame_equals__impl(SEXP self__, SEXP c_arg__other, SEXP c_arg_
     return handle_result(res);
 }
 
+SEXP savvy_PlRDataFrame_gather_with_series__impl(SEXP self__, SEXP c_arg__indices) {
+    SEXP res = savvy_PlRDataFrame_gather_with_series__ffi(self__, c_arg__indices);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRDataFrame_get_column__impl(SEXP self__, SEXP c_arg__name) {
     SEXP res = savvy_PlRDataFrame_get_column__ffi(self__, c_arg__name);
     return handle_result(res);
@@ -3052,6 +3057,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRDataFrame_deserialize_binary__impl", (DL_FUNC) &savvy_PlRDataFrame_deserialize_binary__impl, 1},
     {"savvy_PlRDataFrame_dtypes__impl", (DL_FUNC) &savvy_PlRDataFrame_dtypes__impl, 1},
     {"savvy_PlRDataFrame_equals__impl", (DL_FUNC) &savvy_PlRDataFrame_equals__impl, 3},
+    {"savvy_PlRDataFrame_gather_with_series__impl", (DL_FUNC) &savvy_PlRDataFrame_gather_with_series__impl, 2},
     {"savvy_PlRDataFrame_get_column__impl", (DL_FUNC) &savvy_PlRDataFrame_get_column__impl, 2},
     {"savvy_PlRDataFrame_get_column_index__impl", (DL_FUNC) &savvy_PlRDataFrame_get_column_index__impl, 2},
     {"savvy_PlRDataFrame_get_columns__impl", (DL_FUNC) &savvy_PlRDataFrame_get_columns__impl, 1},
