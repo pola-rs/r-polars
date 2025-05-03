@@ -23,7 +23,9 @@ series_cat_to_local <- function() {
     wrap()
 }
 
+# nolint start: object_length_linter
 series_cat_uses_lexical_ordering <- function() {
   self$`_s`$cat_uses_lexical_ordering() |>
     wrap()
 }
+# nolint end

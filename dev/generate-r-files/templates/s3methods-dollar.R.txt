@@ -7,9 +7,7 @@
     env_get(x, name)
   } else if (name %in% method_names) {
     fn <- {{env_name}}[[name]]
-    # nolint start: object_usage_linter
-    self <- x
-    # nolint end
+    self <- x # nolint: object_usage_linter
     environment(fn) <- environment()
     fn
   } else {

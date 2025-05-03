@@ -32,9 +32,11 @@
 }
 
 #' @export
+# nolint start: object_name_linter
 `%/%.polars_expr` <- function(e1, e2) {
   as_polars_expr(e1, as_lit = TRUE)$floor_div(e2)
 }
+# nolint end
 
 #' @export
 `^.polars_expr` <- function(e1, e2) {

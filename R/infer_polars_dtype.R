@@ -61,6 +61,7 @@ infer_polars_dtype <- function(x, ...) {
 
 #' @rdname infer_polars_dtype
 #' @export
+# nolint start: object_length_linter
 is_convertible_to_polars_series <- function(x, ...) {
   tryCatch(
     {
@@ -70,6 +71,7 @@ is_convertible_to_polars_series <- function(x, ...) {
     error = function(e) FALSE
   )
 }
+# nolint end
 
 #' @rdname infer_polars_dtype
 #' @export
@@ -77,10 +79,12 @@ is_convertible_to_polars_expr <- function(x, ...) {
   is_polars_expr(x) || is_convertible_to_polars_series(x, ...)
 }
 
+# nolint start: object_length_linter
 infer_polars_dtype_default_impl <- function(x, ...) {
   as_polars_series(x[0L]) |>
     infer_polars_dtype(...)
 }
+# nolint end
 
 #' @rdname infer_polars_dtype
 #' @export
@@ -228,6 +232,7 @@ infer_polars_dtype.vctrs_vctr <- function(x, ...) {
   }
 }
 
+# nolint start: object_length_linter
 infer_polars_dtype_vctrs_rcrd_impl <- function(x, ...) {
   field_names <- vctrs::fields(x)
   inner_dtypes <- field_names |>
@@ -238,3 +243,4 @@ infer_polars_dtype_vctrs_rcrd_impl <- function(x, ...) {
 
   pl$Struct(!!!structure(inner_dtypes, names = field_names))
 }
+# nolint end

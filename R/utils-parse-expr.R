@@ -21,6 +21,7 @@ parse_into_list_of_expressions <- function(..., `__structify` = FALSE) {
 
 #' Parse dynamic dots into a single expression (PlRExpr, not polars-expr)
 #' @noRd
+# nolint start: object_length_linter
 parse_predicates_constraints_into_expression <- function(...) {
   check_dots_unnamed()
 
@@ -30,3 +31,4 @@ parse_predicates_constraints_into_expression <- function(...) {
 
   expr$`_rexpr`
 }
+# nolint end

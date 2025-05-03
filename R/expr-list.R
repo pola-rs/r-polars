@@ -685,10 +685,12 @@ expr_list_set_difference <- function(other) {
 #' df$with_columns(
 #'   symmetric_difference = pl$col("a")$list$set_symmetric_difference("b")
 #' )
+# nolint start: object_length_linter
 expr_list_set_symmetric_difference <- function(other) {
   self$`_rexpr`$list_set_operation(as_polars_expr(other)$`_rexpr`, "symmetric_difference") |>
     wrap()
 }
+# nolint end
 
 #' Returns a column with a separate row for every list element
 #'

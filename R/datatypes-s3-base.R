@@ -16,9 +16,7 @@
         PlRDataType$new_enum(unique(c(self$categories, other$categories)))
       })
     }
-    # nolint start: object_usage_linter
-    self <- x
-    # nolint end
+    self <- x # nolint: object_usage_linter
     environment(fn) <- environment()
     fn
   } else {

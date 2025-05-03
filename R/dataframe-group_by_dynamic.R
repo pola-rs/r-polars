@@ -1,5 +1,5 @@
 # The env for storing rolling_group_by methods
-polars_group_by_dynamic__methods <- new.env(parent = emptyenv())
+polars_group_by_dynamic__methods <- new.env(parent = emptyenv()) # nolint: object_length_linter
 
 wrap_to_group_by_dynamic <- function(
   x,

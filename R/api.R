@@ -36,6 +36,7 @@ pl__api <- new.env(parent = emptyenv())
 #'
 #' s <- as_polars_series(1:5)
 #' s$math$cube()$rename("s^3")
+# nolint start: object_length_linter
 pl_api_register_series_namespace <- function(name, ns_fn) {
   wrap({
     check_string(name)
@@ -45,3 +46,4 @@ pl_api_register_series_namespace <- function(name, ns_fn) {
   })
   invisible(NULL)
 }
+# nolint end
