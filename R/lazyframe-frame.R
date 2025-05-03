@@ -429,7 +429,7 @@ lazyframe__profile <- function(
       `_eager` = FALSE
     )
 
-    out <- lapply(self$`_ldf`$profile(), \(x) {
+    out <- lapply(lf$profile(), \(x) {
       x |>
         .savvy_wrap_PlRDataFrame() |>
         wrap()
@@ -2001,7 +2001,7 @@ lazyframe__to_dot <- function(
     `_eager` = FALSE
   )
 
-  self$`_ldf`$to_dot(optimized)
+  ldf$to_dot(optimized)
 }
 
 #' Create an empty or `n`-row null-filled copy of the frame
@@ -2507,7 +2507,6 @@ lazyframe__describe <- function(
     has_numeric_result <- c()
     sort_cols <- c()
     metric_exprs <- list()
-    null <- pl$lit(NULL)
 
     for (i in seq_along(schema)) {
       name <- names(schema)[i]
