@@ -1,210 +1,971 @@
-# `[` operator works to subset columns only
+# Row subsetting with `[` raise error for positive not integer-ish: 1.005
 
     Code
-      test[, 10]
+      pl_df[first_arg, ]
     Condition
-      Error in `test[, 10]`:
-      ! Can't subset columns past the end.
-      i Location(s) 10 don't exist.
-      i There are only 3 columns.
+      Error in `pl_df[first_arg, ]`:
+      ! Can't subset rows with `first_arg`.
+      x Can't convert from `i` <double> to <integer> due to loss of precision.
 
 ---
 
     Code
-      test[, 10:12]
+      pl_df$lazy()[first_arg, ]
     Condition
-      Error in `test[, 10:12]`:
-      ! Can't subset columns past the end.
-      i Location(s) 10, 11, and 12 don't exist.
-      i There are only 3 columns.
+      Error in `pl_df$lazy()[first_arg, ]`:
+      ! Cannot subset rows of a LazyFrame with `[`.
+      i There are several functions that can be used to get a specific rows.
+      * `$slice()` can be used to get a slice of rows with start index and length.
+      * `$gather_every()` can be used to take every nth row.
+      * `$filter()` can be used to filter rows based on a condition.
+      * `$reverse()` can be used to reverse the order of rows.
 
----
+# Row subsetting with `[` raise error for mixed positive and negative (positive first): c(1, 0, -2)
 
     Code
-      test[, -10]
+      pl_df[first_arg, ]
     Condition
-      Error in `test[, -10]`:
-      ! Can't negate columns past the end.
-      i Location(s) 10 don't exist.
-      i There are only 3 columns.
-
----
-
-    Code
-      test[, -12:-10]
-    Condition
-      Error in `test[, -12:-10]`:
-      ! Can't negate columns past the end.
-      i Location(s) 12, 11, and 10 don't exist.
-      i There are only 3 columns.
-
----
-
-    Code
-      test[, -2:1]
-    Condition
-      Error in `test[, -2:1]`:
-      ! Can't subset columns with `-2:1`.
+      Error in `pl_df[first_arg, ]`:
+      ! Can't subset rows with `first_arg`.
       x Negative and positive locations can't be mixed.
-      i Subscript `-2:1` has a positive value at location 4.
+      i Subscript `first_arg` has a negative value at location 3.
 
 ---
 
     Code
-      test[, 1:-2]
+      pl_df$lazy()[first_arg, ]
     Condition
-      Error in `test[, 1:-2]`:
-      ! Can't subset columns with `1:-2`.
+      Error in `pl_df$lazy()[first_arg, ]`:
+      ! Cannot subset rows of a LazyFrame with `[`.
+      i There are several functions that can be used to get a specific rows.
+      * `$slice()` can be used to get a slice of rows with start index and length.
+      * `$gather_every()` can be used to take every nth row.
+      * `$filter()` can be used to filter rows based on a condition.
+      * `$reverse()` can be used to reverse the order of rows.
+
+# Row subsetting with `[` raise error for mixed positive and negative (negative first): c(-2, 0, 1)
+
+    Code
+      pl_df[first_arg, ]
+    Condition
+      Error in `pl_df[first_arg, ]`:
+      ! Can't subset rows with `first_arg`.
       x Negative and positive locations can't be mixed.
-      i Subscript `1:-2` has a negative value at location 3.
+      i Subscript `first_arg` has a positive value at location 3.
 
 ---
 
     Code
-      test[, 1.5]
+      pl_df$lazy()[first_arg, ]
     Condition
-      Error in `test[, 1.5]`:
-      ! Can't subset columns with `1.5`.
+      Error in `pl_df$lazy()[first_arg, ]`:
+      ! Cannot subset rows of a LazyFrame with `[`.
+      i There are several functions that can be used to get a specific rows.
+      * `$slice()` can be used to get a slice of rows with start index and length.
+      * `$gather_every()` can be used to take every nth row.
+      * `$filter()` can be used to filter rows based on a condition.
+      * `$reverse()` can be used to reverse the order of rows.
+
+# Row subsetting with `[` raise error for negative not integer-ish: -1.005
+
+    Code
+      pl_df[first_arg, ]
+    Condition
+      Error in `pl_df[first_arg, ]`:
+      ! Can't subset rows with `first_arg`.
+      x Can't convert from `i` <double> to <integer> due to loss of precision.
+
+---
+
+    Code
+      pl_df$lazy()[first_arg, ]
+    Condition
+      Error in `pl_df$lazy()[first_arg, ]`:
+      ! Cannot subset rows of a LazyFrame with `[`.
+      i There are several functions that can be used to get a specific rows.
+      * `$slice()` can be used to get a slice of rows with start index and length.
+      * `$gather_every()` can be used to take every nth row.
+      * `$filter()` can be used to filter rows based on a condition.
+      * `$reverse()` can be used to reverse the order of rows.
+
+# Row subsetting with `[` raise error for negative includes NA: c(NA, -2, NA)
+
+    Code
+      pl_df[first_arg, ]
+    Condition
+      Error in `pl_df[first_arg, ]`:
+      ! Can't subset rows with `first_arg`.
+      x Negative locations can't have missing values.
+      i Subscript `first_arg` has 2 missing values at location 1 and 3.
+
+---
+
+    Code
+      pl_df$lazy()[first_arg, ]
+    Condition
+      Error in `pl_df$lazy()[first_arg, ]`:
+      ! Cannot subset rows of a LazyFrame with `[`.
+      i There are several functions that can be used to get a specific rows.
+      * `$slice()` can be used to get a slice of rows with start index and length.
+      * `$gather_every()` can be used to take every nth row.
+      * `$filter()` can be used to filter rows based on a condition.
+      * `$reverse()` can be used to reverse the order of rows.
+
+# Row subsetting with `[` raise error for logical with not the same length to the height: c(TRUE, FALSE)
+
+    Code
+      pl_df[first_arg, ]
+    Condition
+      Error in `pl_df[first_arg, ]`:
+      ! Can't subset rows with `first_arg`.
+      i Logical subscript `first_arg` must be size 1 or 3, not 2
+
+---
+
+    Code
+      pl_df$lazy()[first_arg, ]
+    Condition
+      Error in `pl_df$lazy()[first_arg, ]`:
+      ! Cannot subset rows of a LazyFrame with `[`.
+      i There are several functions that can be used to get a specific rows.
+      * `$slice()` can be used to get a slice of rows with start index and length.
+      * `$gather_every()` can be used to take every nth row.
+      * `$filter()` can be used to filter rows based on a condition.
+      * `$reverse()` can be used to reverse the order of rows.
+
+# Row subsetting with `[` raise error for logical includes NA with not the same length to the height: c(NA, TRUE)
+
+    Code
+      pl_df[first_arg, ]
+    Condition
+      Error in `pl_df[first_arg, ]`:
+      ! Can't subset rows with `first_arg`.
+      i Logical subscript `first_arg` must be size 1 or 3, not 2
+
+---
+
+    Code
+      pl_df$lazy()[first_arg, ]
+    Condition
+      Error in `pl_df$lazy()[first_arg, ]`:
+      ! Cannot subset rows of a LazyFrame with `[`.
+      i There are several functions that can be used to get a specific rows.
+      * `$slice()` can be used to get a slice of rows with start index and length.
+      * `$gather_every()` can be used to take every nth row.
+      * `$filter()` can be used to filter rows based on a condition.
+      * `$reverse()` can be used to reverse the order of rows.
+
+# Row subsetting with `[` raise error for not supported object (function): function (x, ...) UseMethod("mean")
+
+    Code
+      pl_df[first_arg, ]
+    Condition
+      Error in `pl_df[first_arg, ]`:
+      ! Can't subset rows with `first_arg`.
+      i `first_arg` must be logical, numeric, or character, not a function.
+
+---
+
+    Code
+      pl_df$lazy()[first_arg, ]
+    Condition
+      Error in `pl_df$lazy()[first_arg, ]`:
+      ! Cannot subset rows of a LazyFrame with `[`.
+      i There are several functions that can be used to get a specific rows.
+      * `$slice()` can be used to get a slice of rows with start index and length.
+      * `$gather_every()` can be used to take every nth row.
+      * `$filter()` can be used to filter rows based on a condition.
+      * `$reverse()` can be used to reverse the order of rows.
+
+# Row subsetting with `[` raise error for not supported object (Date): structure(1:2, class = "Date")
+
+    Code
+      pl_df[first_arg, ]
+    Condition
+      Error in `pl_df[first_arg, ]`:
+      ! Can't subset rows with `first_arg`.
+      i `first_arg` must be logical, numeric, or character, not a <Date> object.
+
+---
+
+    Code
+      pl_df$lazy()[first_arg, ]
+    Condition
+      Error in `pl_df$lazy()[first_arg, ]`:
+      ! Cannot subset rows of a LazyFrame with `[`.
+      i There are several functions that can be used to get a specific rows.
+      * `$slice()` can be used to get a slice of rows with start index and length.
+      * `$gather_every()` can be used to take every nth row.
+      * `$filter()` can be used to filter rows based on a condition.
+      * `$reverse()` can be used to reverse the order of rows.
+
+# Row subsetting with `[` raise error for not supported object (list): list(1)
+
+    Code
+      pl_df[first_arg, ]
+    Condition
+      Error in `pl_df[first_arg, ]`:
+      ! Can't subset rows with `first_arg`.
+      i `first_arg` must be logical, numeric, or character, not a list.
+
+---
+
+    Code
+      pl_df$lazy()[first_arg, ]
+    Condition
+      Error in `pl_df$lazy()[first_arg, ]`:
+      ! Cannot subset rows of a LazyFrame with `[`.
+      i There are several functions that can be used to get a specific rows.
+      * `$slice()` can be used to get a slice of rows with start index and length.
+      * `$gather_every()` can be used to take every nth row.
+      * `$filter()` can be used to filter rows based on a condition.
+      * `$reverse()` can be used to reverse the order of rows.
+
+# Column subsetting with `[` raise error for positive not integer-ish: 1.005
+
+    Code
+      pl_df[, second_arg]
+    Condition
+      Error in `pl_df[, second_arg]`:
+      ! Can't subset columns with `second_arg`.
       x Can't convert from `j` <double> to <integer> due to loss of precision.
 
 ---
 
     Code
-      test[c("foo", "a", "bar", "baz")]
+      pl_df$lazy()[, second_arg]$collect()
     Condition
-      Error in `test[c("foo", "a", "bar", "baz")]`:
-      ! Can't subset columns that don't exist.
-      x Columns `foo`, `bar`, and `baz` don't exist.
+      Error in `pl_df$lazy()[, second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      x Can't convert from `j` <double> to <integer> due to loss of precision.
 
 ---
 
     Code
-      test["*"]
+      pl_df[second_arg]
     Condition
-      Error in `test["*"]`:
+      Error in `pl_df[second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      x Can't convert from `j` <double> to <integer> due to loss of precision.
+
+---
+
+    Code
+      pl_df$lazy()[second_arg]$collect()
+    Condition
+      Error in `pl_df$lazy()[second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      x Can't convert from `j` <double> to <integer> due to loss of precision.
+
+# Column subsetting with `[` raise error for positive out of bounds: c(1, 2, 10)
+
+    Code
+      pl_df[, second_arg]
+    Condition
+      Error in `pl_df[, second_arg]`:
+      ! Can't subset columns past the end.
+      i Location(s) 10 don't exist.
+      i There are only 3 columns.
+
+---
+
+    Code
+      pl_df$lazy()[, second_arg]$collect()
+    Condition
+      Error in `pl_df$lazy()[, second_arg]`:
+      ! Can't subset columns past the end.
+      i Location(s) 10 don't exist.
+      i There are only 3 columns.
+
+---
+
+    Code
+      pl_df[second_arg]
+    Condition
+      Error in `pl_df[second_arg]`:
+      ! Can't subset columns past the end.
+      i Location(s) 10 don't exist.
+      i There are only 3 columns.
+
+---
+
+    Code
+      pl_df$lazy()[second_arg]$collect()
+    Condition
+      Error in `pl_df$lazy()[second_arg]`:
+      ! Can't subset columns past the end.
+      i Location(s) 10 don't exist.
+      i There are only 3 columns.
+
+# Column subsetting with `[` raise error for positive includes NA: c(1, NA, 2)
+
+    Code
+      pl_df[, second_arg]
+    Condition
+      Error in `pl_df[, second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      x Subscript `second_arg` can't contain missing values.
+      x It has missing value(s) at location 2.
+
+---
+
+    Code
+      pl_df$lazy()[, second_arg]$collect()
+    Condition
+      Error in `pl_df$lazy()[, second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      x Subscript `second_arg` can't contain missing values.
+      x It has missing value(s) at location 2.
+
+---
+
+    Code
+      pl_df[second_arg]
+    Condition
+      Error in `pl_df[second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      x Subscript `second_arg` can't contain missing values.
+      x It has missing value(s) at location 2.
+
+---
+
+    Code
+      pl_df$lazy()[second_arg]$collect()
+    Condition
+      Error in `pl_df$lazy()[second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      x Subscript `second_arg` can't contain missing values.
+      x It has missing value(s) at location 2.
+
+# Column subsetting with `[` raise error for positive includes the same column twice: c(1, 2, 2)
+
+    Code
+      pl_df[, second_arg]
+    Condition
+      Error in `x$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Duplicated column(s): the name 'b' is duplicate
+      
+      It's possible that multiple expressions are returning the same default column name. If this is the case, try renaming the columns with `.alias("new_name")` to avoid duplicate column names.
+
+---
+
+    Code
+      pl_df$lazy()[, second_arg]$collect()
+    Condition
+      Error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Duplicated column(s): the name 'b' is duplicate
+      
+      It's possible that multiple expressions are returning the same default column name. If this is the case, try renaming the columns with `.alias("new_name")` to avoid duplicate column names.
+
+---
+
+    Code
+      pl_df[second_arg]
+    Condition
+      Error in `x$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Duplicated column(s): the name 'b' is duplicate
+      
+      It's possible that multiple expressions are returning the same default column name. If this is the case, try renaming the columns with `.alias("new_name")` to avoid duplicate column names.
+
+---
+
+    Code
+      pl_df$lazy()[second_arg]$collect()
+    Condition
+      Error in `pl_df$lazy()[second_arg]$collect()`:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Duplicated column(s): the name 'b' is duplicate
+      
+      It's possible that multiple expressions are returning the same default column name. If this is the case, try renaming the columns with `.alias("new_name")` to avoid duplicate column names.
+
+# Column subsetting with `[` raise error for mixed positive and negative (positive first): c(1, 0, -2)
+
+    Code
+      pl_df[, second_arg]
+    Condition
+      Error in `pl_df[, second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      x Negative and positive locations can't be mixed.
+      i Subscript `second_arg` has a negative value at location 3.
+
+---
+
+    Code
+      pl_df$lazy()[, second_arg]$collect()
+    Condition
+      Error in `pl_df$lazy()[, second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      x Negative and positive locations can't be mixed.
+      i Subscript `second_arg` has a negative value at location 3.
+
+---
+
+    Code
+      pl_df[second_arg]
+    Condition
+      Error in `pl_df[second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      x Negative and positive locations can't be mixed.
+      i Subscript `second_arg` has a negative value at location 3.
+
+---
+
+    Code
+      pl_df$lazy()[second_arg]$collect()
+    Condition
+      Error in `pl_df$lazy()[second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      x Negative and positive locations can't be mixed.
+      i Subscript `second_arg` has a negative value at location 3.
+
+# Column subsetting with `[` raise error for mixed positive and negative (negative first): c(-2, 0, 1)
+
+    Code
+      pl_df[, second_arg]
+    Condition
+      Error in `pl_df[, second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      x Negative and positive locations can't be mixed.
+      i Subscript `second_arg` has a positive value at location 3.
+
+---
+
+    Code
+      pl_df$lazy()[, second_arg]$collect()
+    Condition
+      Error in `pl_df$lazy()[, second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      x Negative and positive locations can't be mixed.
+      i Subscript `second_arg` has a positive value at location 3.
+
+---
+
+    Code
+      pl_df[second_arg]
+    Condition
+      Error in `pl_df[second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      x Negative and positive locations can't be mixed.
+      i Subscript `second_arg` has a positive value at location 3.
+
+---
+
+    Code
+      pl_df$lazy()[second_arg]$collect()
+    Condition
+      Error in `pl_df$lazy()[second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      x Negative and positive locations can't be mixed.
+      i Subscript `second_arg` has a positive value at location 3.
+
+# Column subsetting with `[` raise error for negative not integer-ish: -1.005
+
+    Code
+      pl_df[, second_arg]
+    Condition
+      Error in `pl_df[, second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      x Can't convert from `j` <double> to <integer> due to loss of precision.
+
+---
+
+    Code
+      pl_df$lazy()[, second_arg]$collect()
+    Condition
+      Error in `pl_df$lazy()[, second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      x Can't convert from `j` <double> to <integer> due to loss of precision.
+
+---
+
+    Code
+      pl_df[second_arg]
+    Condition
+      Error in `pl_df[second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      x Can't convert from `j` <double> to <integer> due to loss of precision.
+
+---
+
+    Code
+      pl_df$lazy()[second_arg]$collect()
+    Condition
+      Error in `pl_df$lazy()[second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      x Can't convert from `j` <double> to <integer> due to loss of precision.
+
+# Column subsetting with `[` raise error for negative includes NA: c(NA, -2, NA)
+
+    Code
+      pl_df[, second_arg]
+    Condition
+      Error in `pl_df[, second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      x Subscript `second_arg` can't contain missing values.
+      x It has missing value(s) at location 1 and 3.
+
+---
+
+    Code
+      pl_df$lazy()[, second_arg]$collect()
+    Condition
+      Error in `pl_df$lazy()[, second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      x Subscript `second_arg` can't contain missing values.
+      x It has missing value(s) at location 1 and 3.
+
+---
+
+    Code
+      pl_df[second_arg]
+    Condition
+      Error in `pl_df[second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      x Subscript `second_arg` can't contain missing values.
+      x It has missing value(s) at location 1 and 3.
+
+---
+
+    Code
+      pl_df$lazy()[second_arg]$collect()
+    Condition
+      Error in `pl_df$lazy()[second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      x Subscript `second_arg` can't contain missing values.
+      x It has missing value(s) at location 1 and 3.
+
+# Column subsetting with `[` raise error for character includes NA: c("a", NA, "b")
+
+    Code
+      pl_df[, second_arg]
+    Condition
+      Error in `pl_df[, second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      x Subscript `second_arg` can't contain missing values.
+      x It has missing value(s) at location 2.
+
+---
+
+    Code
+      pl_df$lazy()[, second_arg]$collect()
+    Condition
+      Error in `pl_df$lazy()[, second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      x Subscript `second_arg` can't contain missing values.
+      x It has missing value(s) at location 2.
+
+---
+
+    Code
+      pl_df[second_arg]
+    Condition
+      Error in `pl_df[second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      x Subscript `second_arg` can't contain missing values.
+      x It has missing value(s) at location 2.
+
+---
+
+    Code
+      pl_df$lazy()[second_arg]$collect()
+    Condition
+      Error in `pl_df$lazy()[second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      x Subscript `second_arg` can't contain missing values.
+      x It has missing value(s) at location 2.
+
+# Column subsetting with `[` raise error for character includes non-existing: c("foo", "a", "bar", "b")
+
+    Code
+      pl_df[, second_arg]
+    Condition
+      Error in `pl_df[, second_arg]`:
+      ! Can't subset columns that don't exist.
+      x Columns `foo` and `bar` don't exist.
+
+---
+
+    Code
+      pl_df$lazy()[, second_arg]$collect()
+    Condition
+      Error in `pl_df$lazy()[, second_arg]`:
+      ! Can't subset columns that don't exist.
+      x Columns `foo` and `bar` don't exist.
+
+---
+
+    Code
+      pl_df[second_arg]
+    Condition
+      Error in `pl_df[second_arg]`:
+      ! Can't subset columns that don't exist.
+      x Columns `foo` and `bar` don't exist.
+
+---
+
+    Code
+      pl_df$lazy()[second_arg]$collect()
+    Condition
+      Error in `pl_df$lazy()[second_arg]`:
+      ! Can't subset columns that don't exist.
+      x Columns `foo` and `bar` don't exist.
+
+# Column subsetting with `[` raise error for character wildcard (valid for pl$col()): "*"
+
+    Code
+      pl_df[, second_arg]
+    Condition
+      Error in `pl_df[, second_arg]`:
       ! Can't subset columns that don't exist.
       x Columns `*` don't exist.
 
 ---
 
     Code
-      test[mean]
+      pl_df$lazy()[, second_arg]$collect()
     Condition
-      Error in `test[mean]`:
-      ! Can't subset columns with `mean`.
-      i `mean` must be logical, numeric, or character, not a function.
+      Error in `pl_df$lazy()[, second_arg]`:
+      ! Can't subset columns that don't exist.
+      x Columns `*` don't exist.
 
 ---
 
     Code
-      test[list(1)]
+      pl_df[second_arg]
     Condition
-      Error in `test[list(1)]`:
-      ! Can't subset columns with `list(1)`.
-      i `list(1)` must be logical, numeric, or character, not a list.
+      Error in `pl_df[second_arg]`:
+      ! Can't subset columns that don't exist.
+      x Columns `*` don't exist.
 
 ---
 
     Code
-      test[NA]
+      pl_df$lazy()[second_arg]$collect()
     Condition
-      Error in `test[NA]`:
-      ! Can't subset columns with `NA`.
-      x Subscript `NA` can't contain missing values.
-      x It has missing value(s) at location 1.
+      Error in `pl_df$lazy()[second_arg]`:
+      ! Can't subset columns that don't exist.
+      x Columns `*` don't exist.
+
+# Column subsetting with `[` raise error for character includes the same column twice: c("a", "b", "b")
+
+    Code
+      pl_df[, second_arg]
+    Condition
+      Error in `x$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Duplicated column(s): the name 'b' is duplicate
+      
+      It's possible that multiple expressions are returning the same default column name. If this is the case, try renaming the columns with `.alias("new_name")` to avoid duplicate column names.
 
 ---
 
     Code
-      test[c(1, NA, NA)]
+      pl_df$lazy()[, second_arg]$collect()
     Condition
-      Error in `test[c(1, NA, NA)]`:
-      ! Can't subset columns with `c(1, NA, NA)`.
-      x Subscript `c(1, NA, NA)` can't contain missing values.
-      x It has missing value(s) at location 2 and 3.
+      Error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Duplicated column(s): the name 'b' is duplicate
+      
+      It's possible that multiple expressions are returning the same default column name. If this is the case, try renaming the columns with `.alias("new_name")` to avoid duplicate column names.
 
 ---
 
     Code
-      test[c("a", NA)]
+      pl_df[second_arg]
     Condition
-      Error in `test[c("a", NA)]`:
-      ! Can't subset columns with `c("a", NA)`.
-      x Subscript `c("a", NA)` can't contain missing values.
+      Error in `x$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Duplicated column(s): the name 'b' is duplicate
+      
+      It's possible that multiple expressions are returning the same default column name. If this is the case, try renaming the columns with `.alias("new_name")` to avoid duplicate column names.
+
+---
+
+    Code
+      pl_df$lazy()[second_arg]$collect()
+    Condition
+      Error in `pl_df$lazy()[second_arg]$collect()`:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Duplicated column(s): the name 'b' is duplicate
+      
+      It's possible that multiple expressions are returning the same default column name. If this is the case, try renaming the columns with `.alias("new_name")` to avoid duplicate column names.
+
+# Column subsetting with `[` raise error for logical includes NA: c(TRUE, NA, FALSE)
+
+    Code
+      pl_df[, second_arg]
+    Condition
+      Error in `pl_df[, second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      x Subscript `second_arg` can't contain missing values.
       x It has missing value(s) at location 2.
 
-# `[` operator works to subset rows only
+---
 
     Code
-      test[c(-1, NA), ]
+      pl_df$lazy()[, second_arg]$collect()
     Condition
-      Error in `test[c(-1, NA), ]`:
-      ! Can't subset rows with `c(-1, NA)`.
-      x Negative locations can't have missing values.
-      i Subscript `c(-1, NA)` has 1 missing values at location 2.
+      Error in `pl_df$lazy()[, second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      x Subscript `second_arg` can't contain missing values.
+      x It has missing value(s) at location 2.
 
 ---
 
     Code
-      test[-2:1, ]
+      pl_df[second_arg]
     Condition
-      Error in `test[-2:1, ]`:
-      ! Can't subset rows with `-2:1`.
-      x Negative and positive locations can't be mixed.
-      i Subscript `-2:1` has a positive value at location 4.
+      Error in `pl_df[second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      x Subscript `second_arg` can't contain missing values.
+      x It has missing value(s) at location 2.
 
 ---
 
     Code
-      test[1:-2, ]
+      pl_df$lazy()[second_arg]$collect()
     Condition
-      Error in `test[1:-2, ]`:
-      ! Can't subset rows with `1:-2`.
-      x Negative and positive locations can't be mixed.
-      i Subscript `1:-2` has a negative value at location 3.
+      Error in `pl_df$lazy()[second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      x Subscript `second_arg` can't contain missing values.
+      x It has missing value(s) at location 2.
+
+# Column subsetting with `[` raise error for logical with not the same length to the width: c(TRUE, FALSE)
+
+    Code
+      pl_df[, second_arg]
+    Condition
+      Error in `pl_df[, second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      i Logical subscript `second_arg` must be size 1 or 3, not 2
 
 ---
 
     Code
-      test[1.5, ]
+      pl_df$lazy()[, second_arg]$collect()
     Condition
-      Error in `test[1.5, ]`:
-      ! Can't subset rows with `1.5`.
-      x Can't convert from `i` <double> to <integer> due to loss of precision.
+      Error in `pl_df$lazy()[, second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      i Logical subscript `second_arg` must be size 1 or 3, not 2
 
 ---
 
     Code
-      test[c(TRUE, FALSE), ]
+      pl_df[second_arg]
     Condition
-      Error in `test[c(TRUE, FALSE), ]`:
-      ! Can't subset rows with `c(TRUE, FALSE)`.
-      i Logical subscript `c(TRUE, FALSE)` must be size 1 or 3, not 2
+      Error in `pl_df[second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      i Logical subscript `second_arg` must be size 1 or 3, not 2
 
 ---
 
     Code
-      test[c(NA, FALSE), ]
+      pl_df$lazy()[second_arg]$collect()
     Condition
-      Error in `test[c(NA, FALSE), ]`:
-      ! Can't subset rows with `c(NA, FALSE)`.
-      i Logical subscript `c(NA, FALSE)` must be size 1 or 3, not 2
+      Error in `pl_df$lazy()[second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      i Logical subscript `second_arg` must be size 1 or 3, not 2
+
+# Column subsetting with `[` raise error for logical length 0: logical(0)
+
+    Code
+      pl_df[, second_arg]
+    Condition
+      Error in `pl_df[, second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      i Logical subscript `second_arg` must be size 1 or 3, not 0
 
 ---
 
     Code
-      test[mean, ]
+      pl_df$lazy()[, second_arg]$collect()
     Condition
-      Error in `test[mean, ]`:
-      ! Can't subset rows with `mean`.
-      i `mean` must be logical, numeric, or character, not a function.
+      Error in `pl_df$lazy()[, second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      i Logical subscript `second_arg` must be size 1 or 3, not 0
 
 ---
 
     Code
-      test[list(1), ]
+      pl_df[second_arg]
     Condition
-      Error in `test[list(1), ]`:
-      ! Can't subset rows with `list(1)`.
-      i `list(1)` must be logical, numeric, or character, not a list.
+      Error in `pl_df[second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      i Logical subscript `second_arg` must be size 1 or 3, not 0
+
+---
+
+    Code
+      pl_df$lazy()[second_arg]$collect()
+    Condition
+      Error in `pl_df$lazy()[second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      i Logical subscript `second_arg` must be size 1 or 3, not 0
+
+# Column subsetting with `[` raise error for not supported object (function): function (x, ...) UseMethod("mean")
+
+    Code
+      pl_df[, second_arg]
+    Condition
+      Error in `pl_df[, second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      i `second_arg` must be logical, numeric, or character, not a function.
+
+---
+
+    Code
+      pl_df$lazy()[, second_arg]$collect()
+    Condition
+      Error in `pl_df$lazy()[, second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      i `second_arg` must be logical, numeric, or character, not a function.
+
+---
+
+    Code
+      pl_df[second_arg]
+    Condition
+      Error in `pl_df[second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      i `second_arg` must be logical, numeric, or character, not a function.
+
+---
+
+    Code
+      pl_df$lazy()[second_arg]$collect()
+    Condition
+      Error in `pl_df$lazy()[second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      i `second_arg` must be logical, numeric, or character, not a function.
+
+# Column subsetting with `[` raise error for not supported object (Date): structure(1:2, class = "Date")
+
+    Code
+      pl_df[, second_arg]
+    Condition
+      Error in `pl_df[, second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      i `second_arg` must be logical, numeric, or character, not a <Date> object.
+
+---
+
+    Code
+      pl_df$lazy()[, second_arg]$collect()
+    Condition
+      Error in `pl_df$lazy()[, second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      i `second_arg` must be logical, numeric, or character, not a <Date> object.
+
+---
+
+    Code
+      pl_df[second_arg]
+    Condition
+      Error in `pl_df[second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      i `second_arg` must be logical, numeric, or character, not a <Date> object.
+
+---
+
+    Code
+      pl_df$lazy()[second_arg]$collect()
+    Condition
+      Error in `pl_df$lazy()[second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      i `second_arg` must be logical, numeric, or character, not a <Date> object.
+
+# Column subsetting with `[` raise error for not supported object (list): list(1)
+
+    Code
+      pl_df[, second_arg]
+    Condition
+      Error in `pl_df[, second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      i `second_arg` must be logical, numeric, or character, not a list.
+
+---
+
+    Code
+      pl_df$lazy()[, second_arg]$collect()
+    Condition
+      Error in `pl_df$lazy()[, second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      i `second_arg` must be logical, numeric, or character, not a list.
+
+---
+
+    Code
+      pl_df[second_arg]
+    Condition
+      Error in `pl_df[second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      i `second_arg` must be logical, numeric, or character, not a list.
+
+---
+
+    Code
+      pl_df$lazy()[second_arg]$collect()
+    Condition
+      Error in `pl_df$lazy()[second_arg]`:
+      ! Can't subset columns with `second_arg`.
+      i `second_arg` must be logical, numeric, or character, not a list.
+
+# `[`'s drop argument works correctly
+
+    Code
+      pl_df[1, drop = TRUE]
+    Condition
+      Warning:
+      ! `drop` argument ignored for subsetting a DataFrame with `x[j]`.
+      i It has an effect only for `x[i, j]`.
+    Output
+      shape: (3, 1)
+      ┌─────┐
+      │ a   │
+      │ --- │
+      │ i32 │
+      ╞═════╡
+      │ 1   │
+      │ 2   │
+      │ 3   │
+      └─────┘
+
+---
+
+    Code
+      pl_df["a", drop = TRUE]
+    Condition
+      Warning:
+      ! `drop` argument ignored for subsetting a DataFrame with `x[j]`.
+      i It has an effect only for `x[i, j]`.
+    Output
+      shape: (3, 1)
+      ┌─────┐
+      │ a   │
+      │ --- │
+      │ i32 │
+      ╞═════╡
+      │ 1   │
+      │ 2   │
+      │ 3   │
+      └─────┘
 
