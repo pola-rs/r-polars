@@ -1,11 +1,41 @@
 # `[` operator works to subset columns only
 
     Code
+      test[, 10]
+    Condition
+      Error in `test[, 10]`:
+      ! Can't subset columns past the end.
+      i Location(s) 10 don't exist.
+      i There are only 3 columns.
+
+---
+
+    Code
       test[, 10:12]
     Condition
       Error in `test[, 10:12]`:
       ! Can't subset columns past the end.
       i Location(s) 10, 11, and 12 don't exist.
+      i There are only 3 columns.
+
+---
+
+    Code
+      test[, -10]
+    Condition
+      Error in `test[, -10]`:
+      ! Can't negate columns past the end.
+      i Location(s) 10 don't exist.
+      i There are only 3 columns.
+
+---
+
+    Code
+      test[, -12:-10]
+    Condition
+      Error in `test[, -12:-10]`:
+      ! Can't negate columns past the end.
+      i Location(s) 12, 11, and 10 don't exist.
       i There are only 3 columns.
 
 ---
