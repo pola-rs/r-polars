@@ -295,6 +295,8 @@ patrick::with_parameters_test_that(
   "nanoarrow_array/nanoarrow_array_stream support",
   .cases = {
     skip_if_not_installed("nanoarrow")
+    # arrow is required for create int16/int64 array from object of type integer
+    skip_if_not_installed("arrow")
     # TODO: add more types
     # fmt: skip
     tibble::tribble(
