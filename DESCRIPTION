@@ -34,7 +34,6 @@ Suggests:
     tibble,
     vctrs,
     withr
-Additional_repositories: https://community.r-multiverse.org
 Config/Needs/dev: devtools, lifecycle, readr, glue
 Config/Needs/lint: fs, lintr
 Config/Needs/website: etiennebacher/altdoc, future.apply
