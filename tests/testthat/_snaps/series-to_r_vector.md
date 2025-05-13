@@ -104,3 +104,54 @@
       
       
 
+# ambiguous argument 'raise'
+
+    Code
+      series_ambiguous$to_r_vector(ambiguous = ambiguous)
+    Condition
+      Error in `series_ambiguous$to_r_vector()`:
+      ! Evaluation failed in `$to_r_vector()`.
+      Caused by error:
+      ! datetime '2020-11-01 01:00:00' is ambiguous in time zone 'America/New_York'. Please use `ambiguous` to tell how it should be localized.
+
+# ambiguous argument 'earliest'
+
+    Code
+      series_ambiguous$to_r_vector(ambiguous = ambiguous)
+    Output
+      [1] "2020-11-01 00:00:00 EDT" "2020-11-01 01:00:00 EDT"
+      [3] "2020-11-01 02:00:00 EST"
+
+# ambiguous argument 'latest'
+
+    Code
+      series_ambiguous$to_r_vector(ambiguous = ambiguous)
+    Output
+      [1] "2020-11-01 00:00:00 EDT" "2020-11-01 01:00:00 EST"
+      [3] "2020-11-01 02:00:00 EST"
+
+# ambiguous argument 'null'
+
+    Code
+      series_ambiguous$to_r_vector(ambiguous = ambiguous)
+    Output
+      [1] "2020-11-01 00:00:00 EDT" NA                       
+      [3] "2020-11-01 02:00:00 EST"
+
+# non_existent argument 'raise'
+
+    Code
+      series_non_existent$to_r_vector(non_existent = non_existent)
+    Condition
+      Error in `series_non_existent$to_r_vector()`:
+      ! Evaluation failed in `$to_r_vector()`.
+      Caused by error:
+      ! datetime '2020-03-08 02:00:00' is non-existent in time zone 'America/New_York'. You may be able to use `non_existent='null'` to return `null` in this case.
+
+# non_existent argument 'null'
+
+    Code
+      series_non_existent$to_r_vector(non_existent = non_existent)
+    Output
+      [1] NA                        "2020-03-08 03:00:00 EDT"
+

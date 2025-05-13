@@ -200,6 +200,32 @@ series__to_r_vector <- function(
   wrap({
     check_dots_empty0(...)
 
+    option_name_prefix <- "polars.to_r_vector."
+    uint8 <- use_option_if_missing(uint8, missing(uint8), "integer", option_name_prefix)
+    int64 <- use_option_if_missing(int64, missing(int64), "double", option_name_prefix)
+    date <- use_option_if_missing(date, missing(date), "Date", option_name_prefix)
+    time <- use_option_if_missing(time, missing(time), "hms", option_name_prefix)
+    struct <- use_option_if_missing(struct, missing(struct), "dataframe", option_name_prefix)
+    as_clock_class <- use_option_if_missing(
+      as_clock_class,
+      missing(as_clock_class),
+      FALSE,
+      option_name_prefix
+    )
+    decimal <- use_option_if_missing(decimal, missing(decimal), "double", option_name_prefix)
+    ambiguous <- use_option_if_missing(
+      ambiguous,
+      missing(ambiguous),
+      "raise",
+      option_name_prefix
+    )
+    non_existent <- use_option_if_missing(
+      non_existent,
+      missing(non_existent),
+      "raise",
+      option_name_prefix
+    )
+
     uint8 <- arg_match0(uint8, c("integer", "raw"))
     int64 <- arg_match0(int64, c("double", "character", "integer", "integer64"))
     date <- arg_match0(date, c("Date", "IDate"))
