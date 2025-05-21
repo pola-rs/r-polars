@@ -134,7 +134,7 @@
     Code
       df$describe()
     Output
-      shape: (8, 6)
+      shape: (9, 6)
       ┌────────────┬──────────┬────────┬─────────────────────────┬──────┬──────┐
       │ statistic  ┆ float    ┆ string ┆ date                    ┆ cat  ┆ bool │
       │ ---        ┆ ---      ┆ ---    ┆ ---                     ┆ ---  ┆ ---  │
@@ -146,6 +146,7 @@
       │ std        ┆ 0.353553 ┆ null   ┆ null                    ┆ null ┆ null │
       │ min        ┆ 1.5      ┆ a      ┆ 2024-01-20              ┆ zz   ┆ 0.0  │
       │ 25%        ┆ 1.5      ┆ null   ┆ 2024-01-20              ┆ null ┆ null │
+      │ 50%        ┆ 2.0      ┆ null   ┆ 2024-01-21              ┆ null ┆ null │
       │ 75%        ┆ 2.0      ┆ null   ┆ 2024-01-21              ┆ null ┆ null │
       │ max        ┆ 2.0      ┆ b      ┆ 2024-01-21              ┆ a    ┆ 1.0  │
       └────────────┴──────────┴────────┴─────────────────────────┴──────┴──────┘
@@ -217,7 +218,7 @@
     Code
       df$select(pl$col("cat")$cast(pl$Categorical("lexical")))$describe()
     Output
-      shape: (8, 2)
+      shape: (9, 2)
       ┌────────────┬──────┐
       │ statistic  ┆ cat  │
       │ ---        ┆ ---  │
@@ -229,6 +230,7 @@
       │ std        ┆ null │
       │ min        ┆ a    │
       │ 25%        ┆ null │
+      │ 50%        ┆ null │
       │ 75%        ┆ null │
       │ max        ┆ zz   │
       └────────────┴──────┘
