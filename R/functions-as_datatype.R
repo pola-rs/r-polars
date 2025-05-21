@@ -109,6 +109,24 @@ pl__datetime <- function(
   })
 }
 
+#' Create a Polars literal expression of type Date
+#'
+#' @inherit pl__datetime params return
+#' @examples
+#' df <- pl$DataFrame(month = 1:3, day = 4:6)
+#' df$with_columns(pl$date(2024, pl$col("month"), pl$col("day")))
+#'
+#' # We can also use `pl$date()` for filtering:
+#' df <- pl$DataFrame(
+#'   start = rep(as.Date("2024-01-01"), 3),
+#'   end = as.Date(c("2024-05-01", "2024-07-01", "2024-09-01"))
+#' )
+#' df$filter(pl$col("end") > pl$date(2024, 6, 1))
+pl__date <- function(year, month, day) {
+  pl__datetime(year, month, day)$cast(pl$Date)$alias("date") |>
+    wrap()
+}
+
 # TODO: more examples
 #' Create polars Duration from distinct time components
 #'

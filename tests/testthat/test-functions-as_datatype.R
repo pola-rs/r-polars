@@ -113,3 +113,30 @@ test_that("pl$struct()", {
     "must be a list of polars data types"
   )
 })
+
+test_that("pl$date() works", {
+  df <- pl$DataFrame(month = 1:3, day = 4:6)
+  expect_equal(
+    df$select(pl$date(2024, pl$col("month"), pl$col("day"))),
+    pl$DataFrame(
+      date = as.Date(c("2024-01-04", "2024-02-05", "2024-03-06"))
+    )
+  )
+  expect_equal(
+    df$select(pl$date(2024, NA, 1)),
+    pl$DataFrame(date = as.Date(NA))
+  )
+
+  # Can use in filter() for instance
+  df <- pl$DataFrame(
+    start = rep(as.Date("2024-01-01"), 3),
+    end = as.Date(c("2024-05-01", "2024-07-01", "2024-09-01"))
+  )
+  expect_equal(
+    df$filter(pl$col("end") > pl$date(2024, 6, 1)),
+    pl$DataFrame(
+      start = rep(as.Date("2024-01-01"), 2),
+      end = as.Date(c("2024-07-01", "2024-09-01"))
+    )
+  )
+})

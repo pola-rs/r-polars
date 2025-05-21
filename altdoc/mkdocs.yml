@@ -459,6 +459,7 @@ nav:
             - cum_sum: man/pl__cum_sum.md
             - date_range: man/pl__date_range.md
             - date_ranges: man/pl__date_ranges.md
+            - date: man/pl__date.md
             - datetime: man/pl__datetime.md
             - datetime_range: man/pl__datetime_range.md
             - datetime_ranges: man/pl__datetime_ranges.md
