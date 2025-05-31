@@ -58,10 +58,22 @@ METHODS_EXCLUDE <- c(
   filtered_names[!startsWith(filtered_names, "_")]
 }
 
-# TODO: support the mode argument
 #' @export
 as.vector.polars_series <- function(x, mode = "any") {
-  x$to_r_vector(ensure_vector = TRUE) |>
+  out <- x$to_r_vector()
+  if (is_atomic(out) && !is.null(attributes(out)) || is.data.frame(out)) {
+    inform(
+      c(
+        i = sprintf(
+          "`as.vector()` on a Polars Series of type %s may drop some useful attributes.",
+          format(x$dtype, abbreviated = TRUE)
+        ),
+        i = "Use `$to_r_vector()` instead for finer control of the conversion from Polars to R."
+      )
+    )
+  }
+
+  out |>
     as.vector(mode = mode)
 }
 
