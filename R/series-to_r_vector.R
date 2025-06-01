@@ -329,29 +329,29 @@ series__to_r_vector <- function(
 }
 
 is_vctrs_installed <- function() {
-  is_installed("vctrs")
+  requireNamespace("vctrs", quietly = TRUE)
 }
 
 is_blob_installed <- function() {
-  is_installed("blob")
+  requireNamespace("blob", quietly = TRUE)
 }
 
 is_hms_installed <- function() {
-  is_installed("hms")
+  requireNamespace("hms", quietly = TRUE)
 }
 
 is_bit64_installed <- function() {
-  is_installed("bit64")
+  requireNamespace("bit64", quietly = TRUE)
 }
 
 is_datatable_installed <- function() {
-  is_installed("data.table")
+  requireNamespace("data.table", quietly = TRUE)
 }
 
 is_tibble_installed <- function() {
-  is_installed("tibble")
+  requireNamespace("tibble", quietly = TRUE)
 }
 
 is_clock_installed <- function() {
-  is_installed("clock")
+  requireNamespace("clock", quietly = TRUE)
 }
