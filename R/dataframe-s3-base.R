@@ -17,7 +17,7 @@ names.polars_data_frame <- function(x) x$columns
 #' Export the polars object as an R list
 #'
 #' These S3 methods call [`as_polars_df(x, ...)$get_columns()`][dataframe__get_columns] with
-#' [rlang::set_names()], or, `as_polars_df(x, ...)$to_struct()$to_r_vector(ensure_vector = TRUE)`
+#' [rlang::set_names()], or, `as_polars_df(x, ...)$to_struct()$to_r_vector() |> as.list()`
 #' depending on the `as_series` argument.
 #'
 #' Arguments other than `x` and `as_series` are passed to
@@ -90,7 +90,6 @@ as.list.polars_data_frame <- function(
       set_names(x$columns)
   } else {
     as_polars_df(x, ...)$to_struct()$to_r_vector(
-      ensure_vector = TRUE,
       uint8 = uint8,
       int64 = int64,
       date = date,
@@ -100,14 +99,15 @@ as.list.polars_data_frame <- function(
       as_clock_class = as_clock_class,
       ambiguous = ambiguous,
       non_existent = non_existent
-    )
+    ) |>
+      as.list()
   }
 }
 
 #' Export the polars object as an R DataFrame
 #'
 #' This S3 method is a shortcut for
-#' [`as_polars_df(x, ...)$to_struct()$to_r_vector(ensure_vector = FALSE, struct = "dataframe")`]
+#' [`as_polars_df(x, ...)$to_struct()$to_r_vector(struct = "dataframe")`]
 #' [series__to_r_vector].
 #' @inheritParams as.list.polars_data_frame
 #' @return An [R data frame][data.frame]
@@ -156,7 +156,6 @@ as.data.frame.polars_data_frame <- function(
   }
 
   as_polars_df(x, ...)$to_struct()$to_r_vector(
-    ensure_vector = FALSE,
     uint8 = uint8,
     int64 = int64,
     date = date,

@@ -136,7 +136,7 @@ A \link[tibble:tbl_df-class]{tibble}
 }
 \description{
 This S3 method is basically a shortcut of
-\code{\link{as_polars_df(x, ...)$to_struct()$to_r_vector(ensure_vector = FALSE, struct = "tibble")}}
+\code{\link{as_polars_df(x, ...)$to_struct()$to_r_vector(struct = "tibble")}}
 \link{series__to_r_vector}.
 Additionally, you can check or repair the column names by specifying the \code{.name_repair} argument.
 Because polars \link{DataFrame} allows empty column name, which is not generally valid column name

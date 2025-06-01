@@ -605,7 +605,7 @@ SEXP savvy_PlRSeries_struct_fields__ffi(SEXP self__);
 SEXP savvy_PlRSeries_struct_unnest__ffi(SEXP self__);
 SEXP savvy_PlRSeries_sub__ffi(SEXP self__, SEXP c_arg__other);
 SEXP savvy_PlRSeries_to_arrow_c_stream__ffi(SEXP self__, SEXP c_arg__stream_ptr, SEXP c_arg__polars_compat_level);
-SEXP savvy_PlRSeries_to_r_vector__ffi(SEXP self__, SEXP c_arg__ensure_vector, SEXP c_arg__uint8, SEXP c_arg__int64, SEXP c_arg__date, SEXP c_arg__time, SEXP c_arg__struct, SEXP c_arg__decimal, SEXP c_arg__as_clock_class, SEXP c_arg__ambiguous, SEXP c_arg__non_existent, SEXP c_arg__local_time_zone);
+SEXP savvy_PlRSeries_to_r_vector__ffi(SEXP self__, SEXP c_arg__uint8, SEXP c_arg__int64, SEXP c_arg__date, SEXP c_arg__time, SEXP c_arg__struct, SEXP c_arg__decimal, SEXP c_arg__as_clock_class, SEXP c_arg__ambiguous, SEXP c_arg__non_existent, SEXP c_arg__local_time_zone);
 
 // methods and associated functions for PlRThen
 SEXP savvy_PlRThen_otherwise__ffi(SEXP self__, SEXP c_arg__statement);

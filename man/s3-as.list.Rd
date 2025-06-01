@@ -133,7 +133,7 @@ A \link{list}
 }
 \description{
 These S3 methods call \code{\link[=dataframe__get_columns]{as_polars_df(x, ...)$get_columns()}} with
-\code{\link[rlang:set_names]{rlang::set_names()}}, or, \code{as_polars_df(x, ...)$to_struct()$to_r_vector(ensure_vector = TRUE)}
+\code{\link[rlang:set_names]{rlang::set_names()}}, or, \code{as_polars_df(x, ...)$to_struct()$to_r_vector() |> as.list()}
 depending on the \code{as_series} argument.
 }
 \details{

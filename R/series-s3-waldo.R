@@ -4,7 +4,7 @@
 compare_proxy.polars_series <- function(x, path) {
   list(
     object = structure(
-      x$to_r_vector(ensure_vector = FALSE, int64 = "character", decimal = "character"),
+      x$to_r_vector(int64 = "character", decimal = "character"),
       name = x$name,
       dtype = x$dtype
     ),

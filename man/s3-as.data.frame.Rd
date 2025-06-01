@@ -118,7 +118,7 @@ An \link[=data.frame]{R data frame}
 }
 \description{
 This S3 method is a shortcut for
-\code{\link{as_polars_df(x, ...)$to_struct()$to_r_vector(ensure_vector = FALSE, struct = "dataframe")}}
+\code{\link{as_polars_df(x, ...)$to_struct()$to_r_vector(struct = "dataframe")}}
 \link{series__to_r_vector}.
 }
 \examples{

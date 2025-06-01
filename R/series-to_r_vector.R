@@ -5,10 +5,6 @@
 #' Export the Series as an R vector
 #'
 #' Export the [Series] as an R [vector].
-#' But note that the Struct data type is exported as a [data.frame] by default for consistency,
-#' and a [data.frame] is not a vector.
-#' If you want to ensure the return value is a [vector], please set `ensure_vector = TRUE`,
-#' or use the [as.vector()] function instead.
 #'
 #' The class/type of the exported object depends on the data type of the Series as follows:
 #' - Boolean: [logical].
@@ -34,13 +30,7 @@
 #' - Null: [vctrs::unspecified].
 #' - List, Array: [vctrs::list_of].
 #' - Struct: [data.frame] or [tibble][tibble::tbl_df], depending on the `struct` argument.
-#'   If `ensure_vector = TRUE`, the top-level Struct is exported as a named [list] for
-#'   to ensure the return value is a [vector].
 #' @inheritParams rlang::args_dots_empty
-#' @param ensure_vector A logical value indicating whether to ensure the return value is a [vector].
-#' When the Series has the Struct data type and this argument is `FALSE` (default),
-#' the return value is a [data.frame], not a [vector] (`is.vector(<data.frame>)` is `FALSE`).
-#' If `TRUE`, return a named [list] instead of a [data.frame].
 #' @param uint8 Determine how to convert Polars' UInt8 type values to R type.
 #' One of the followings:
 #' - `"integer"` (default): Convert to the R's [integer] type.
@@ -110,19 +100,11 @@
 #' )
 #' series_struct
 #'
-#' ## Export Struct as data.frame
+#' ## Export Struct as normal R data frame
 #' series_struct$to_r_vector()
 #'
-#' ## Export Struct as data.frame,
-#' ## but the top-level Struct is exported as a named list
-#' series_struct$to_r_vector(ensure_vector = TRUE)
-#'
-#' ## Export Struct as tibble
+#' ## Export Struct as tibble data frame
 #' series_struct$to_r_vector(struct = "tibble")
-#'
-#' ## Export Struct as tibble,
-#' ## but the top-level Struct is exported as a named list
-#' series_struct$to_r_vector(struct = "tibble", ensure_vector = TRUE)
 #'
 #' # UInt8 values handling
 #' series_uint8 <- as_polars_series(c(NA, 0, 255))$cast(pl$UInt8)
@@ -186,7 +168,6 @@
 #' }
 series__to_r_vector <- function(
   ...,
-  ensure_vector = FALSE,
   uint8 = c("integer", "raw"),
   int64 = c("double", "character", "integer", "integer64"),
   date = c("Date", "IDate"),
@@ -313,7 +294,6 @@ series__to_r_vector <- function(
 
     ambiguous <- as_polars_expr(ambiguous, as_lit = TRUE)$`_rexpr`
     self$`_s`$to_r_vector(
-      ensure_vector = ensure_vector,
       uint8 = uint8,
       int64 = int64,
       date = date,

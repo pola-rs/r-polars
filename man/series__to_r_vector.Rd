@@ -6,7 +6,6 @@
 \usage{
 series__to_r_vector(
   ...,
-  ensure_vector = FALSE,
   uint8 = c("integer", "raw"),
   int64 = c("double", "character", "integer", "integer64"),
   date = c("Date", "IDate"),
@@ -20,11 +19,6 @@ series__to_r_vector(
 }
 \arguments{
 \item{...}{These dots are for future extensions and must be empty.}
-
-\item{ensure_vector}{A logical value indicating whether to ensure the return value is a \link{vector}.
-When the Series has the Struct data type and this argument is \code{FALSE} (default),
-the return value is a \link{data.frame}, not a \link{vector} (\verb{is.vector(<data.frame>)} is \code{FALSE}).
-If \code{TRUE}, return a named \link{list} instead of a \link{data.frame}.}
 
 \item{uint8}{Determine how to convert Polars' UInt8 type values to R type.
 One of the followings:
@@ -116,10 +110,6 @@ A \link{vector}
 }
 \description{
 Export the \link{Series} as an R \link{vector}.
-But note that the Struct data type is exported as a \link{data.frame} by default for consistency,
-and a \link{data.frame} is not a vector.
-If you want to ensure the return value is a \link{vector}, please set \code{ensure_vector = TRUE},
-or use the \code{\link[=as.vector]{as.vector()}} function instead.
 }
 \details{
 The class/type of the exported object depends on the data type of the Series as follows:
@@ -147,8 +137,6 @@ depending on the \code{as_clock_class} argument.
 \item Null: \link[vctrs:unspecified]{vctrs::unspecified}.
 \item List, Array: \link[vctrs:list_of]{vctrs::list_of}.
 \item Struct: \link{data.frame} or \link[tibble:tbl_df-class]{tibble}, depending on the \code{struct} argument.
-If \code{ensure_vector = TRUE}, the top-level Struct is exported as a named \link{list} for
-to ensure the return value is a \link{vector}.
 }
 }
 \examples{
@@ -161,19 +149,11 @@ series_struct <- as_polars_series(
 )
 series_struct
 
-## Export Struct as data.frame
+## Export Struct as normal R data frame
 series_struct$to_r_vector()
 
-## Export Struct as data.frame,
-## but the top-level Struct is exported as a named list
-series_struct$to_r_vector(ensure_vector = TRUE)
-
-## Export Struct as tibble
+## Export Struct as tibble data frame
 series_struct$to_r_vector(struct = "tibble")
-
-## Export Struct as tibble,
-## but the top-level Struct is exported as a named list
-series_struct$to_r_vector(struct = "tibble", ensure_vector = TRUE)
 
 # UInt8 values handling
 series_uint8 <- as_polars_series(c(NA, 0, 255))$cast(pl$UInt8)
