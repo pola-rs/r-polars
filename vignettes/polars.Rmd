@@ -1,0 +1,555 @@
+---
+title: "An Introduction to Polars from R"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{An Introduction to Polars from R}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+options(rmarkdown.html_vignette.check_title = FALSE)
+```
+
+## What is Polars?
+
+Polars is [a lightning fast](https://duckdblabs.github.io/db-benchmark/) Data Frame
+library. Its embarrassingly parallel execution, cache efficient algorithms and
+expressive API makes it perfect for efficient data wrangling, data pipelines,
+snappy APIs, and much more besides. Polars also supports "streaming mode" for
+out-of-memory operations. This allows users to analyze datasets many times
+larger than RAM.
+
+The underlying computation engine is written in Rust and is built on the Apache
+Arrow columnar memory format. It can be used in Rust or via Python bindings.
+The **polars** R-package provides equivalent bindings from R. To help distinguish
+the different language implementations, we typically use a convention of
+referring to them with prefixes: rust-polars, py-polars, r-polars,
+nodejs-polars, etc. But within each language, the relevant library is always
+just called _polars_.
+
+**polars** users can expect orders of magnitude(s) improvement compared to
+**dplyr** for simple transformations on datasets >500Mb. The automatic Polars
+optimization framework means that that this speed boost can be even greater for
+complex queries that chain together many operations. Performance is similar to
+that of **data.table**, although **polars** supports additional functionality
+via its relationship to the Apache Arrow memory model. For example, it can scan
+multiple Parquet files and datasets and selectively import random subsets
+without having to read all of the data.
+
+Polars syntax is similar to that of Spark, but the workflow is column-oriented
+rather than row-oriented. Since R is itself a column-oriented language, this
+should immediately feel familiar to most R users. Like Spark and modern SQL
+variants, Polars optimizes queries for memory consumption and speed, so you
+don't have to. However, unlike Spark, Polars is natively multithreaded instead
+of multinoded. This makes (r)polars much simpler to install and can be used as
+one would any other R package.
+
+This R port relies on the [**savvy**](https://docs.rs/savvy)
+package, which is the R equivalent to pyo3+maturin. **savvy** is very
+convenient for calling Rust from R, and vice versa, and is what we use to build
+the **polars** package. Once built, however, **polars** only depends on [`rlang`](https://rlang.r-lib.org/).
+This makes it very fast and lightweight to
+install, and so **polars** can immediately be used to tackle your big (or
+small!) data wrangling tasks.
+
+## Documentation and tutorials
+
+Users can find detailed documentation for all objects, functions, and methods
+on the Reference page of [this website](https://pola-rs.github.io/r-polars/). This documentation
+can also be accessed from the R console using the typical `?` syntax. For
+example, we will later use the `DataFrame()` constructor function and apply the
+`group_by()` method to a `DataFrame` object.
+The documentation for these can be accessed by typing these commands:
+
+```r
+?pl__DataFrame
+?dataframe__group_by
+?lazyframe__filter
+```
+
+The [Polars user guide](https://docs.pola.rs/) offers a
+great introduction to the Polars data frame library, with a very large number
+of examples in Python and Rust. The syntax and expressions in the `polars`
+package for R are (deliberately) as close to the Python implementation as
+possible, so you can always refer to the user guide for more ideas. Just
+remember to switch out any "." (Python) for a "$" (R) when chaining methods.
+For example, here are two equivalent lines of code for some hypothetical
+dataset.
+
+```python
+# Python
+df.group_by("id").mean()
+```
+
+```r
+# R
+df$group_by("id")$mean()
+```
+
+## `Series` and `DataFrames`
+
+In `polars`, objects of class `Series` are analogous to R vectors. Objects of
+class `DataFrame` are analogous to R data frames. Notice that to avoid
+collision with classes provided by other packages, the class name of all objects
+created by `polars` starts with "polars_". For example, a `polars` `DataFrame`
+has the class "polars_data_frame".
+
+To create Polars `Series` and `DataFrame`s objects, we
+load the library and use constructor functions with the `pl$` prefix. This
+prefix is very important, as most of the `polars` functions are made available
+via `pl$`:
+
+```{r}
+library(neopolars) # TODO: change to polars
+
+pl$Series(name = "a", values = (1:5) * 5)
+
+pl$DataFrame(a = 1:5, b = letters[1:5])
+```
+
+Or, to convert existing R objects to Polars objects, we can use the
+`as_polars_*()` functions.
+
+```{r}
+ser <- as_polars_series((1:5) * 5)
+ser
+
+dat <- as_polars_df(mtcars)
+dat
+```
+
+`pl$DataFrame()` is similar to `data.frame()`, and `as_polars_df()` is similar to `as.data.frame()`.
+
+Both Polars and R are column-orientated. So you can think of `DataFrame`s
+(data.frames) as being made up of a collection of `Series` (vectors). In fact,
+you can create a new Polars `DataFrame` as a mix of `Series` and/or regular R
+vectors.
+
+```{r}
+pl$DataFrame(
+  a = as_polars_series((1:5) * 5),
+  b = as_polars_series(letters[1:5]),
+  c = as_polars_series(c(1, 2, 3, 4, 5)),
+  d = c(15, 14, 13, 12, 11),
+  e = c(5, 4, 3, 2, 1),
+  f = 1:5
+)
+```
+
+`Series` and `DataFrame` can be operated on using many standard R functions. For example:
+
+```{r}
+# Series
+length(ser)
+
+max(ser)
+
+# DataFrame
+dat[c(1:3, 12), c("mpg", "hp")]
+
+names(dat)
+
+dim(dat)
+
+head(dat, n = 2)
+```
+
+## Methods and pipelines
+
+Although some simple R functions work out of the box on **polars** objects, the
+full power of Polars is realized via _methods_. Polars methods are accessed
+using the `$` syntax. For example, to sort a `Series` object, we use the
+`$sort()` method:
+
+```{r}
+ser$sort()
+```
+
+There are numerous methods designed to accomplish various tasks:
+
+```{r}
+ser$max()
+
+dat$slice(offset = 2, length = 3)
+```
+
+One advantage of using methods is that many more operations are possible on
+Polars objects using methods than through base R functions.
+
+A second advantage is _Methods Chaining_, a core part of the Polars workflow.
+If you are coming from one of the other popular data wrangling libraries in R,
+then you probably already have an innate sense of what this means. For
+instance,
+
+- In **dplyr** we use a pipe operator, e.g. `dat |> filter(...) |> select(...)`
+- In **data.table** we use its indexing syntax, e.g. `DT[i, j, by][...]`
+- Etc.
+
+In **polars** our method chaining syntax takes the form `object$m1()$m2()`,
+where `object` is our data object, and `$m1()` and `$m2()` are appropriate
+methods, like subsetting or aggregation expressions.
+
+This might all seem a little abstract, so let's walk through some quick
+examples to help make things concrete. We continue with the `mtcars` dataset that we
+coerced to a `DataFrame` in the introduction.^[Similar to how (most) **data.table**
+operations are limited to objects of class `data.table`, we can only perform
+polars operations on objects that have been converted to an appropriate
+**polars** class. Later on, we'll see how to read data from disk directly in Polars format.]
+
+To start, say we compute the maximum value in each column. We can use the
+`$max()` method:
+
+```{r}
+dat$max()
+```
+
+Now, we first use the `$tail()` method to select the last 10 rows of the dataset,
+and then use the `$max()` method to compute the maximums in those 10 rows:
+
+```{r}
+dat$tail(10)$max()
+```
+
+Finally, we convert the result to a standard R data frame:
+
+```{r}
+dat$tail(10)$max() |>
+  as.data.frame()
+```
+
+Below, we will introduce several other methods, including `$select()`, `$filter()`,
+and `$group_by()` which allow us to do powerful data manipulations easily. To give
+you a small taste, we now take group-wise means:
+
+```{r}
+dat$group_by("cyl")$mean()
+```
+
+
+## Subset
+
+We can now start chaining together various methods (expressions) to manipulate
+it in different ways. For example, we can subset the data by rows
+([`$filter()`](https://pola-rs.github.io/r-polars/man/dataframe__filter.html))
+and also columns
+([`$select()`](https://pola-rs.github.io/r-polars/man/dataframe__select.html)):
+
+```{r}
+dat$filter(pl$col("cyl") == 6)
+
+dat$filter(pl$col("cyl") == 6 & pl$col("am") == 1)
+
+dat$select(pl$col("mpg", "hp"))
+```
+
+Of course, we can chain those methods to create a pipeline:
+
+```{r}
+dat$filter(
+  pl$col("cyl") == 6
+)$select(
+  pl$col("mpg", "hp", "cyl")
+)
+```
+
+## Aggregate and modify
+
+The `$select()` method that we introduced above also supports data modification,
+so you can simultaneously transform it while you are subsetting. However, the
+result will exclude any columns that weren't specified as part of the
+expression. To modify or add some columns---whilst preserving all others in the
+dataset---it is therefore better to use the
+[`$with_columns()`](https://pola-rs.github.io/r-polars/man/dataframe__with_columns.html)
+method. This next code chunk is equivalent to `mtcars |>
+dplyr::mutate(sum_mpg = sum(mpg), sum_hp = sum(hp), .by = cyl)`.
+
+```{r}
+# Add the grouped sums of some selected columns.
+dat$with_columns(
+  pl$col("mpg")$sum()$over("cyl")$alias("sum_mpg"),
+  pl$col("hp")$sum()$over("cyl")$alias("sum_hp")
+)
+```
+
+For what it's worth, the previous query could have been written more concisely as:
+
+```{r}
+dat$with_columns(
+  pl$col("mpg", "hp")$sum()$over("cyl")$name$prefix("sum_")
+)
+```
+
+Similarly, here's how we could have aggregated (i.e., collapsed) the dataset
+by groups instead of modifying them. We need simply invoke the `$group_by()` and
+[`$agg()`](https://pola-rs.github.io/r-polars/man/groupby__agg.html) methods.
+
+```{r}
+dat$group_by("cyl", .maintain_order = TRUE)$agg(
+  pl$col("mpg", "hp")$sum()
+)
+```
+
+(arg `.maintain_order = TRUE` is optional, since **polars** doesn't sort the results
+of grouped operations by default. This is similar to what **data.table** does
+and is also true for newer versions of **dplyr**.)
+
+The same principles of method chaining can be combined very flexibly to group by
+multiple variables and aggregation types.
+
+```{r}
+dat$group_by(
+  "cyl",
+  manual = pl$col("am")$cast(pl$Boolean)
+)$agg(
+  mean_mpg = pl$col("mpg")$mean(),
+  med_hp = pl$col("hp")$median()
+)
+```
+
+Note that we used the `$cast()` method to convert the data type of the `am`
+column. See the section below for more details on data types.
+
+## Reshape
+
+Polars supports data reshaping, going from both long to wide (a.k.a. "pivotting",
+or `pivot_wider()` in `tidyr`), and from wide to long (a.k.a. "unpivotting",
+"melting", or `pivot_longer()` in `tidyr`).
+Let's switch to the `Indometh` dataset to demonstrate some basic examples.
+Note that the data are currently in long format.
+
+```{r}
+indo <- as_polars_df(Indometh)
+indo
+```
+
+To go from long to wide, we use the `$pivot()` method.
+Here we pivot the data so that every subject takes its own column.
+
+```{r}
+indo_wide <- indo$pivot(values = "conc", index = "time", on = "Subject")
+indo_wide
+```
+
+To go from wide to long, we use the `$unpivot()` method.
+
+```{r}
+indo_wide$unpivot(index = "time", variable_name = "subject", value_name = "conc")
+```
+
+Basic functionality aside, it should be noted that `$pivot()` can perform
+aggregations as part of the reshaping operation. This is useful when you have
+multiple observations per ID variable that need to be collapsed into unique
+values. The aggregating functions can be arbitrarily complex, but let's
+consider a relatively simple example using our `dat` ("mtcars") DataFrame from
+earlier: what is the median MPG value (`mpg`) across cylinders (`cyl`), cut by
+different combinations of transmission type (`am`) and engine shape (`vs`)?
+
+```{r}
+dat$pivot(
+  values = "mpg",
+  index = c("am", "vs"),
+  on = "cyl",
+  aggregate_function = "median" # aggregating function
+)
+```
+
+Here, `"median"` is a convenience string that is equivalent to the more verbose
+`pl$element()$median()`. Other convenience strings include `"first"`, `"last"`,
+`"min"`, `"max"`, `"mean"`, `"sum"`, and `"count"`.
+
+## Join
+
+As a final example of how **polars** can be used for standard data wrangling
+tasks, let's implement a (left) join. For this example, we'll borrow some
+datasets from the **nycflights13** package.
+
+```{r, eval = requireNamespace("nycflights13", quietly = TRUE)}
+data("flights", "planes", package = "nycflights13")
+flights <- as_polars_df(flights)
+planes <- as_polars_df(planes)
+
+flights$join(planes, on = "tailnum", how = "left")
+```
+
+More information on the **polars** joining method can be found in the
+[reference manual](https://pola-rs.github.io/r-polars/man/dataframe__join.html).
+
+The package supports many other data manipulation operations, which we won't
+cover here. Hopefully, you will already have a sense of the key syntax features.
+We now turn to another core idea of the Polars ecosystem: _lazy execution_.
+
+## Lazy execution
+
+While the "eager" execution engine of **polars** works perfectly well---as
+evidenced by all of the previous examples---to get the most out of the package
+you need to go _lazy_.
+Lazy execution enables several benefits, but the most important is that it improves
+performance. Delaying execution until the last possible moment allows Polars to
+apply automatic optimization to every query. Let's take a quick look.
+
+To create a so-called
+"[LazyFrame](https://pola-rs.github.io/r-polars/man/pl__LazyFrame.html)" from an
+existing object in memory, we can invoke the `$lazy()` method.
+
+```{r}
+ldat <- dat$lazy()
+ldat
+```
+
+Or, use the `as_polars_lf()` generic function.
+
+```{r}
+as_polars_lf(dat)
+```
+
+Now consider what happens when we run our subsetting query from earlier on this
+LazyFrame.
+
+```{r}
+subset_query <- ldat$filter(
+  pl$col("cyl") == 6
+)$select(
+  pl$col("mpg", "hp", "cyl")
+)
+
+subset_query
+```
+
+Right now we only have a tree of instructions. But underneath the hood,
+Polars has already worked out a more optimized version of the query. We can
+view this optimized plan this by requesting it.
+
+```{r}
+cat(subset_query$explain())
+```
+
+Here we see a simple, but surprisingly effective component in query
+optimization: _projection_. Changing the order in which our subsetting
+operations occurs---in this case, subsetting on columns first---reduces the
+memory overhead of the overall query and leads to a downstream speedup. Of
+course, you would hardly notice a difference for this small dataset. But the
+same principles carry over to much bigger datasets and more complex queries.
+
+To actually execute the plan, we just need to invoke the `$collect()` method.
+This should feel very familiar if you have previously used other lazy execution
+engines like those provided by **arrow** or **dbplyr**.
+
+```{r}
+subset_query$collect()
+```
+
+## Data import
+
+**polars** supports data import of both CSV and Parquet files formats. Here we
+demonstrate using the `airquality` dataset that also comes bundled with base R.
+
+```{r}
+write.csv(airquality, "airquality.csv", row.names = FALSE)
+
+pl$read_csv("airquality.csv")
+```
+
+Again, however, the package works best if we take the lazy approach.
+
+```{r}
+pl$scan_csv("airquality.csv")
+```
+
+We could obviously append a set of query operators to the above LazyFrame and
+then collect the results. However, this workflow is even better suited to
+Parquet files, since we can leverage their efficient storage format
+on disk. Let's see an example.
+
+```{r}
+as_polars_df(airquality)$write_parquet("airquality.parquet")
+
+# eager version (okay)
+aq_collected <- pl$read_parquet("airquality.parquet")
+
+# lazy version (better)
+aq <- pl$scan_parquet("airquality.parquet")
+
+aq$filter(
+  pl$col("Month") <= 6
+)$group_by(
+  "Month"
+)$agg(
+  pl$col("Ozone", "Temp")$mean()
+)$collect()
+```
+
+Finally, we can read/scan multiple files in the same directory through pattern
+globbing.
+
+```{r, eval=(requireNamespace("arrow", quietly = TRUE) && arrow::arrow_with_dataset())}
+dir.create("airquality-ds")
+
+# Create a hive-partitioned dataset with the function from the arrow package
+arrow::write_dataset(airquality, "airquality-ds", partitioning = "Month")
+
+# Use pattern globbing to scan all parquet files in the folder
+aq2 <- pl$scan_parquet("airquality-ds/**/*.parquet")
+
+# Scan the first two rows
+aq2$head(2)$collect()
+```
+
+Before continuing, don't forget to clean up by removing the newly created temp files
+and directory on disk.
+
+```{r}
+# Remove LazyFrames which reference the files
+rm(aq, aq2)
+
+file.remove(c("airquality.csv", "airquality.parquet"))
+unlink("airquality-ds", recursive = TRUE)
+```
+
+## Execute R functions within a Polars query
+
+You may want to apply functions that are not supported natively in Polars,
+for instance because they come from another R package. When this is the case,
+you can use the package `mirai` to perform computations in parallel.
+
+This can unlock a lot of flexibility, but note that it can inhibit performance
+since it doesn't take advantage of Polars optimizations anymore. R functions are
+also typically slower, so we recommend using native Polars functions and
+expressions wherever possible.
+
+```{r}
+mirai::daemons(4)
+
+pl$DataFrame(a = 1, b = 2, c = 3, d = 4)$cast(pl$Int128) |>
+  as.list() |>
+  mirai::mirai_map(\(s) {
+    s * 2L
+  }) |>
+  _[] |>
+  as_polars_df()
+```
+
+<!-- TODO-REWRITE: add link -->
+This is explained in more details in the vignette on ["Using custom functions"]().
+
+## Data types
+
+Polars is
+[strongly typed](https://en.wikipedia.org/wiki/Strong_and_weak_typing) and new
+types can be created with the `dtypes` constructor. For example:
+
+```{r}
+pl$Float64
+```
+
+The full list of valid Polars types can be found by typing `pl$`
+into your R console. These include _Boolean_, _Float32(64)_, _Int32(64)_,
+_Utf8_, _Categorical_, _Date_, etc. Note that some type names differ from what
+they are called in R (e.g., _Boolean_ in Polars is equivalent to `logical()` in
+R). This might occasionally require you to look up a specific type. But the good
+news is that **polars** generally does a good job of inferring types
+automatically.
