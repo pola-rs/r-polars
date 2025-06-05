@@ -34,17 +34,28 @@ jobs:
       - name: Check missing man pages in mkdocs.yml
         run: |
           YAML_FILE="altdoc/mkdocs.yml"
-          FILE_LIST=(man/*.Rd)
+          MAN_LIST=(man/*.Rd)
+          VIGNETTES_LIST=(vignettes/*.Rmd)
 
           # Track missing files
           missing=0
 
-          for file in "${FILE_LIST[@]}"; do
+          for file in "${MAN_LIST[@]}"; do
               base=$(basename "$file" .Rd)
               expected_name="$base.md"
 
               if ! grep -q "$expected_name" "$YAML_FILE"; then
-                  echo "Missing in mkdocs.yml: $expected_name"
+                  echo "Missing man page in mkdocs.yml: $expected_name"
+                  missing=1
+              fi
+          done
+
+          for file in "${VIGNETTES_LIST[@]}"; do
+              base=$(basename "$file" .Rmd)
+              expected_name="$base.md"
+
+              if ! grep -q "$expected_name" "$YAML_FILE"; then
+                  echo "Missing vignette in mkdocs.yml: $expected_name"
                   missing=1
               fi
           done
