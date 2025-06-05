@@ -1,5 +1,14 @@
 # Development
 
+This package has a unique structure for several reasons,
+so here are some points that may help with development.
+
+For more general information on development, please refer to the following documents:
+
+- [Savvy User Guide](https://yutannihilation.github.io/savvy/guide/): How to create R packages using savvy.
+- [Tidyverse style guide](https://style.tidyverse.org/): Coding style for the R part.
+- [Tidy design principles](https://design.tidyverse.org/): Principles for designing R packages in the Tidyverse ecosystem.
+
 ## Translation from Python Polars
 
 ### Basic Translation
@@ -28,6 +37,8 @@ impl PyExpr {
 }
 ```
 
+_source: `crates/polars-python/src/expr/general.rs` of <https://github.com/pola-rs/polars>_
+
 The equivalent in R Polars would be:
 
 ```rust
@@ -48,6 +59,8 @@ impl PlRExpr {
     }
 }
 ```
+
+_source: `src/rust/src/expr/general.rs` of this repository_
 
 These two look almost the same except for the difference in the name of the struct (`PyExpr` and `PlRExpr`).
 
@@ -76,6 +89,8 @@ class Expr:
         return self._from_pyexpr(self._pyexpr.sum())
 ```
 
+_source: `py-polars/polars/expr/expr.py` of <https://github.com/pola-rs/polars>_
+
 That `Expr` class stores a `PyExpr` as a member `_pyexpr` and calls the `sum` method of `PyExpr`
 (defined on the Rust side) in the `sum` method.
 
@@ -99,15 +114,17 @@ expr__sum <- function() {
 }
 ```
 
+_source: `R/expr-expr.R` of this repository_
+
 Some points:
 
 1. Just like `PyExpr` was stored in `Expr` as `_pyexpr`, `polars_expr` also stores `PlRExpr` in `_rexpr`.
 2. `polars_expr` objects are constructed by passing `PlRExpr` to the generic function `wrap()`.
    So, calling a function that returns `PlRExpr` defined on the Rust side and passing it to `wrap()` will result in a `polars_expr` object.
 3. Methods must be defined as functions with a specific prefix, such as `expr__sum`.
-   This is because the prefix `expr__` is a marker for registering the function as a member of the `polars_expr` class object,
-   so the `sum` method is defined as the `expr__sum` function.
-   The part that registers these functions as members of `wrap.PlRExpr()` is written in the snipped part of the `wrap.PlRExpr()` function.
+   This is because the prefix `expr__` is a marker for registering the function as a member of the `polars_expr__methods` environment
+   (done in `zzz.R`), so the `sum` method is defined as the `expr__sum` function.
+   Members of the `polars_expr__methods` environment are called via the `$` operator on `polars_expr` objects.
 
 Check that the `sum` method works using the `pl$lit()` function that returns a `polars_expr` object.
 
@@ -123,7 +140,7 @@ pl$lit(1)$sum()
 #> dyn float: 1.0.sum()
 ```
 
-### Type Conversion on the Rust Side
+### Rust Function Arguments
 
 Functions created with savvy have very limited types that can be used as arguments.
 
@@ -150,6 +167,8 @@ impl PyLazyFrame {
     }
 }
 ```
+
+_source: `crates/polars-python/src/lazyframe/general.rs` of <https://github.com/pola-rs/polars>_
 
 The `expr` argument of this method is a vector of `PyExpr`. `exprs` is converted from `Vec<PyExpr>` to `Vec<Expr>`
 by the `to_exprs` method and used.
@@ -182,6 +201,8 @@ impl PlRLazyFrame {
 }
 ```
 
+_source: `src/rust/src/lazyframe/general.rs` of this repository_
+
 The `Wrap` struct and type conversion implementation are as follows:
 
 ```rust
@@ -198,16 +219,17 @@ impl From<ListSexp> for Wrap<Vec<Expr>> {
 }
 ```
 
-### Argument check on the R side
+_source: `src/rust/src/conversion/mod.rs` of this repository_
 
-Want to check arguments on the R side, use functions from the imported `rlang` package.
-One common function is `check_dots_empty0()`, which checks that `...` is empty.
+### R Function Arguments
 
-When using such functions, wrap the entire process with `wrap({})` and catch errors that occur on the R side with the `wrap()` function.
-This will display more informative error messages.
+#### Arguments Should Be Named
 
-Cases where we need to check that `...` is empty are when simulating methods with keyword-only arguments,
-such as the `Expr.any()` method in Python Polars below.
+When mimicking _keyword-only_ arguments (arguments that must be specified as named arguments) in Python Polars,
+we place these arguments after the `...` argument and use `rlang::check_dots_empty0()` function
+to raise an error if any arguments are passed by position.
+
+For example, the `Expr.any()` method in Python Polars is defined as follows:
 
 ```python
 class Expr:
@@ -216,7 +238,9 @@ class Expr:
         return self._from_pyexpr(self._pyexpr.any(ignore_nulls))
 ```
 
-For example, if you pass a value to `...` in the `any()` method of Expr defined as follows in R Polars:
+_source: `py-polars/polars/expr/expr.py` of <https://github.com/pola-rs/polars>_
+
+This is defined as follows in R Polars:
 
 ```r
 expr__any <- function(..., ignore_nulls = TRUE) {
@@ -227,26 +251,168 @@ expr__any <- function(..., ignore_nulls = TRUE) {
 }
 ```
 
-Display an error message like this:
+_source: `R/expr-expr.R` of this repository_
+
+Thanks to `rlang::check_dots_empty0()`, if we try to pass the argument by position, an error will be raised.
 
 ```r
-pl$lit(1)$any(foo = 1)
+pl$lit(1)$any(TRUE)
 #> Error:
 #> ! Evaluation failed in `$any()`.
 #> Caused by error:
 #> ! `...` must be empty.
 #> ✖ Problematic argument:
-#> • foo = 1
+#> • ..1 = TRUE
+#> ℹ Did you forget to name an argument?
 #> Run `rlang::last_trace()` to see where the error occurred.
 ```
 
-Note that `ignore_nulls` is directly passed to the Rust side and checked there, so there is no need to check it on the R side.
+#### Dynamic Dots
+
+Variable length arguments in Python (like `*args` or `**kwargs`) can be implemented in R using `...`.
+In R, we can use `rlang::list2()` to handle these arguments, which is a feature known as Dynamic Dots.
+
+For example, the `LazyFrame.select()` method in Python Polars is defined as follows:
+
+```python
+class LazyFrame:
+    # snip
+    def select(
+        self, *exprs: IntoExpr | Iterable[IntoExpr], **named_exprs: IntoExpr
+    ) -> LazyFrame:
+        structify = bool(int(os.environ.get("POLARS_AUTO_STRUCTIFY", 0)))
+
+        pyexprs = parse_into_list_of_expressions(
+            *exprs, **named_exprs, __structify=structify
+        )
+        return self._from_pyldf(self._ldf.select(pyexprs))
+```
+
+_source: `py-polars/polars/lazyframe/frame.py` of <https://github.com/pola-rs/polars>_
+
+The `parse_into_list_of_expressions` function is responsible for converting the variable-length arguments
+(`*exprs` and `**named_exprs`) into a list of expressions.
+
+In R Polars, `parse_into_list_of_expressions` is implemented as follows:
 
 ```r
-pl$lit(1)$any(ignore_nulls = 1)
-#> Error:
-#> ! Evaluation failed in `$any()`.
-#> Caused by error:
-#> ! Argument `ignore_nulls` must be logical, not double
-#> Run `rlang::last_trace()` to see where the error occurred.
+parse_into_list_of_expressions <- function(..., `__structify` = FALSE) {
+  list2(...) |>
+    lapply(\(x) as_polars_expr(x, structify = `__structify`)$`_rexpr`)
+}
 ```
+
+_source: `R/utils-parse-expr.R` of this repository_
+
+This function is called in the `select` method, handling variable-length arguments,
+as same as in Python Polars:
+
+```r
+lazyframe__select <- function(...) {
+  wrap({
+    structify <- parse_env_auto_structify()
+
+    parse_into_list_of_expressions(..., `__structify` = structify) |>
+      self$`_ldf`$select()
+  })
+}
+```
+
+_source: `R/lazyframe-frame.R` of this repository_
+
+## Value Conversion between Polars and R
+
+Value conversion between Polars and R is quite different from Python Polars.
+This is related to the fact that R is centered around vectors, while Polars is centered around Series.
+
+- R to Polars: via the generic function `as_polars_series()`
+- Polars to R: via `PlRSeries::to_r_vector()`
+
+### R to Polars
+
+For example, the method to convert an R double vector to a Series is defined as follows,
+calling a function defined on the Rust side:
+
+```r
+#' @export
+as_polars_series <- function(x, name = NULL, ...) {
+  UseMethod("as_polars_series")
+}
+
+#' @export
+as_polars_series.double <- function(x, name = NULL, ...) {
+  PlRSeries$new_f64(name %||% "", x) |>
+    wrap()
+}
+```
+
+_source: `R/as_polars_series.R` of this repository_
+
+Rust side implementation of `PlRSeries::new_f64` is as follows:
+
+```rust
+use crate::{PlRSeries, prelude::*};
+use savvy::{RealSexp, Result, savvy};
+
+#[savvy]
+impl PlRSeries {
+    fn new_f64(name: &str, values: RealSexp) -> Result<Self> {
+        let ca: Float64Chunked = values
+            .iter()
+            .map(|value| if value.is_na() { None } else { Some(*value) })
+            .collect_trusted();
+        Ok(ca.with_name(name.into()).into_series().into())
+    }
+}
+```
+
+_source: `src/rust/src/series/construction.rs` of this repository_
+
+This function should be the only one that generates Polars' Float64 type values by referencing R values.
+
+Thus, operations like creating a Float64 literal Expression using the `lit()`
+function will internally call `as_polars_series()` to generate the Expression via Series.
+
+```r
+pl$lit(1.0)
+#> 1.0
+```
+
+### Polars to R
+
+Exporting a Series to an R vector is done through a single large Rust function.
+
+```rust
+#[savvy]
+impl PlRSeries {
+    pub fn to_r_vector(
+        &self,
+        // snip
+    ) -> Result<Sexp> {
+        // snip
+    }
+}
+```
+
+_source: `src/rust/src/series/export.rs` of this repository_
+
+This is called from the following function on the R side:
+
+```r
+series__to_r_vector <- function(
+  ...,
+  # snip
+) {
+  wrap({
+    check_dots_empty0(...)
+    # snip
+    self$`_s`$to_r_vector(
+      # snip
+    )
+  })
+}
+```
+
+_source: `R/series-to_r_vector.R` of this repository_
+
+Exporting R values from Polars is always done through this function.
