@@ -357,7 +357,9 @@ tail.polars_data_frame <- function(x, n = 6L, ...) x$tail(n = n)
       # Need to replace invalid indices with NA
       idx[!idx %in% seq_n_rows] <- NA
       # Ensure idx is numeric for further processing
-      if (is_character(idx)) mode(idx) <- "numeric"
+      if (is_character(idx)) {
+        mode(idx) <- "numeric"
+      }
       idx
     }
     # Similar to Python Polars' _convert_series_to_indices,

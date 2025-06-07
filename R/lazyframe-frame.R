@@ -295,7 +295,9 @@ lazyframe__collect <- function(
         ),
         always = TRUE
       )
-      if (isTRUE(streaming)) engine <- "old-streaming"
+      if (isTRUE(streaming)) {
+        engine <- "old-streaming"
+      }
       if (isFALSE(streaming)) engine <- "in-memory"
     }
 
@@ -2385,8 +2387,12 @@ lazyframe__join_asof <- function(
   wrap({
     check_dots_empty0(...)
     strategy <- arg_match0(strategy, values = c("backward", "forward", "nearest"))
-    if (!is.null(by)) by_left <- by_right <- by
-    if (!is.null(on)) left_on <- right_on <- on
+    if (!is.null(by)) {
+      by_left <- by_right <- by
+    }
+    if (!is.null(on)) {
+      left_on <- right_on <- on
+    }
 
     tolerance_str <- NULL
     tolerance_num <- NULL

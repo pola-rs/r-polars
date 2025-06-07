@@ -1985,7 +1985,9 @@ test_that("pct_change", {
 
 test_that("skew", {
   r_skewness <- function(x, bias = TRUE, na_rm = FALSE) {
-    if (na_rm) x <- x[!is.na(x)]
+    if (na_rm) {
+      x <- x[!is.na(x)]
+    }
     n <- length(x)
     m2 <- sum((x - mean(x))^2) / n
     m3 <- sum((x - mean(x))^3) / n
@@ -2017,7 +2019,9 @@ test_that("skew", {
 
 test_that("kurtosis", {
   r_kurtosis <- function(x, fisher = TRUE, bias = TRUE, na_rm = TRUE) {
-    if (na_rm) x <- x[!is.na(x)]
+    if (na_rm) {
+      x <- x[!is.na(x)]
+    }
     n <- length(x)
     m2 <- sum((x - mean(x))^2) / n
     m4 <- sum((x - mean(x))^4) / n
@@ -2476,7 +2480,9 @@ test_that("$value_counts", {
 test_that("entropy", {
   # https://stackoverflow.com/questions/27254550/calculating-entropy
   r_entropy <- function(x, base = exp(1), normalize = TRUE) {
-    if (normalize) x <- x / sum(x)
+    if (normalize) {
+      x <- x / sum(x)
+    }
     -sum(x * log(x) / log(base))
   }
 
