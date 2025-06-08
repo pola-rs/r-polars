@@ -68,7 +68,7 @@ polars_options <- function() {
     c("raise", "null"),
     arg_nm = "to_r_vector.non_existent"
   )
-  structure(out, class = "polars_options")
+  structure(out, class = "polars_options_list")
 }
 
 #' @rdname polars_options
@@ -92,7 +92,7 @@ polars_options_reset <- function() {
 
 #' @noRd
 #' @export
-print.polars_options <- function(x, ...) {
+print.polars_options_list <- function(x, ...) {
   # Copied from the arrow package
   # nolint https://github.com/apache/arrow/blob/6f3bd2524c2abe3a4a278fc1c62fc5c49b56cab3/r/R/arrow-info.R#L149-L157
   print_key_values <- function(title, vals, ...) {

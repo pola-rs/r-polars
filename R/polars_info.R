@@ -11,11 +11,11 @@ polars_info <- function() {
       nightly = feature_nightly_enabled()
     )
   )
-  structure(out, class = "polars_info")
+  structure(out, class = "polars_info_list")
 }
 
 #' @export
-print.polars_info <- function(x, ...) {
+print.polars_info_list <- function(x, ...) {
   # Copied from the arrow package
   # https://github.com/apache/arrow/blob/6f3bd2524c2abe3a4a278fc1c62fc5c49b56cab3/r/R/arrow-info.R#L149-L157 # nolint
   print_key_values <- function(title, vals, ...) {
