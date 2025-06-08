@@ -10,16 +10,16 @@ test_that("mirai serialization works", {
   # Test for Series
   expect_equal(
     list(series) |>
-      mirai::mirai_map(\(x) x * 2) |>
-      _[1][[1]],
-    series * 2
+      mirai::mirai_map(\(x) x * 2L) |>
+      _[][[1]],
+    series * 2L
   )
 
   # Test for DataFrame and LazyFrame
   expect_equal(
     list(lf) |>
       mirai::mirai_map(\(x) x$collect()) |>
-      _[1][[1]],
+      _[][[1]],
     df
   )
 })
