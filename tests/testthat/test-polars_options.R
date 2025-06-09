@@ -31,7 +31,6 @@ patrick::with_parameters_test_that(
     skip_if_not_installed("hms")
     skip_if_not_installed("clock")
 
-    # fmt: skip
     tibble::tribble(
       ~opt_name, ~opt_value,
       "duppy", NULL, # work around for creating a list column

@@ -23,7 +23,6 @@ test_that("$datetime_ranges() error", {
 patrick::with_parameters_test_that(
   "difftime interval works",
   .cases = {
-    # fmt: skip
     tibble::tribble(
       ~.test_name, ~expected_interval,
       "secs", "500ms",
@@ -57,7 +56,6 @@ patrick::with_parameters_test_that(
   .cases = {
     skip_if_not_installed("clock")
 
-    # fmt: skip
     tibble::tribble(
       ~.test_name, ~construct_fn, ~expected_interval,
       "ns", clock::duration_nanoseconds, "10ns",

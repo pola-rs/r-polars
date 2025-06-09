@@ -1,7 +1,6 @@
 patrick::with_parameters_test_that(
   "pl$col() works",
   .cases = {
-    # fmt: skip
     tibble::tribble(
       ~.test_name, ~object, ~expected_columns,
       "int8, int16", pl$col("i8", "i16"), c("i8", "i16"),

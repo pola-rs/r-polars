@@ -2,7 +2,6 @@ patrick::with_parameters_test_that(
   "use pl$DataFrame() to construct a DataFrame",
   .cases = {
     # nolint start: line_length_linter
-    # fmt: skip
     tibble::tribble(
       ~.test_name, ~object, ~expected,
       "simple", pl$DataFrame(a = 1, b = list("b"), ), as_polars_df(list(a = 1, b = list("b"))),
@@ -31,7 +30,6 @@ test_that("pl$DataFrame() rejects expressions", {
 patrick::with_parameters_test_that(
   "roundtrip around serialization",
   .cases = {
-    # fmt: skip
     tibble::tribble(
       ~.test_name, ~x,
       "empty", as_polars_df(NULL),

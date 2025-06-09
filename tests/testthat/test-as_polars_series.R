@@ -14,7 +14,6 @@ patrick::with_parameters_test_that(
     withr::with_timezone(
       "UTC",
       # nolint start: line_length_linter
-      # fmt: skip
       tibble::tribble(
         ~.test_name, ~x, ~expected_name, ~expected_dtype,
         "polars_series", as_polars_series(1L, "foo"), "foo", pl$Int32,
@@ -85,7 +84,6 @@ test_that("as_polars_series.polars_expr throws an error", {
 patrick::with_parameters_test_that(
   "difftime's units (mins, hours, days) support",
   .cases = {
-    # fmt: skip
     tibble::tribble(
       ~.test_name, ~expected_series,
       "mins", as_polars_series(as.difftime(c(NA, 60), units = "secs")),
@@ -261,7 +259,6 @@ patrick::with_parameters_test_that(
   .cases = {
     skip_if_not_installed("clock")
 
-    # fmt: skip
     tibble::tribble(
       ~.test_name, ~time_unit, ~construct_function,
       "year", "ms", clock::duration_years,
@@ -298,7 +295,6 @@ patrick::with_parameters_test_that(
     # arrow is required for create int16/int64 array from object of type integer
     skip_if_not_installed("arrow")
     # TODO: add more types
-    # fmt: skip
     tibble::tribble(
       ~.test_name, ~na_array,
       "int16", nanoarrow::as_nanoarrow_array(1:10, schema = nanoarrow::na_int16()),
@@ -327,7 +323,6 @@ patrick::with_parameters_test_that(
   "arrow RecordBatchReader and Tabular objects support",
   .cases = {
     skip_if_not_installed("arrow")
-    # fmt: skip
     tibble::tribble(
       ~.test_name, ~construct_function,
       "table", arrow::as_arrow_table,

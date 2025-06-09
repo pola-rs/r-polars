@@ -860,7 +860,6 @@ test_that("str$replace_many", {
 
 
 make_datetime_format_cases <- function() {
-  # fmt: skip
   tibble::tribble(
     ~.test_name, ~time_str, ~dtype, ~type_expected,
     "utc-example", "2020-01-01 01:00Z", pl$Datetime(), pl$Datetime("us", "UTC"),

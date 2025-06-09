@@ -176,7 +176,6 @@ test_that("dt$combine", {
 patrick::with_parameters_test_that(
   "dt$to_string and dt$strftime works",
   .cases = {
-    # fmt: skip
     tibble::tribble(
       ~.test_name, ~temporal_dtype, ~format_to_test,
       "datetime_ns", pl$Datetime("ns"), "%F %T",

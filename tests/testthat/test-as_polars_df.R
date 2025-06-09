@@ -10,7 +10,6 @@ patrick::with_parameters_test_that(
   .cases = {
     pldf <- pl$DataFrame(x = 1:2, y = c("a", "b"))
 
-    # fmt: skip
     tibble::tribble(
       ~.test_name, ~x,
       "polars_series", as_polars_series(1:2, "foo"),

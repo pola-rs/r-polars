@@ -38,7 +38,6 @@ patrick::with_parameters_test_that(
     }
 
     # nolint start: line_length_linter
-    # fmt: skip
     tibble::tribble(
       ~.test_name, ~x, ~expected_expr, ~expected_length,
       "chr (0)", character(), as_polars_expr(as_polars_series(character(), "literal")), 0,

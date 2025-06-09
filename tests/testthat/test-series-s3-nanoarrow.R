@@ -3,7 +3,6 @@ patrick::with_parameters_test_that(
   .cases = {
     skip_if_not_installed("nanoarrow")
 
-    # fmt: skip
     tibble::tribble(
       ~.test_name, ~x,
       "int32", as_polars_series(1:3),
@@ -31,7 +30,6 @@ patrick::with_parameters_test_that(
     skip_if_not_installed("nanoarrow")
 
     # nolint start: line_length_linter
-    # fmt: skip
     tibble::tribble(
       ~.test_name, ~x, ~target_schema,
       "na_string", as_polars_series(c("foo", "bar")), nanoarrow::na_string(),
@@ -59,7 +57,6 @@ patrick::with_parameters_test_that(
   .cases = {
     skip_if_not_installed("nanoarrow")
 
-    # fmt: skip
     tibble::tribble(
       ~.test_name, ~level, ~expect_error, ~x,
       "NULL", NULL, TRUE, as_polars_series(NA),

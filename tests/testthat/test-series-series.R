@@ -1,7 +1,6 @@
 patrick::with_parameters_test_that(
   "roundtrip around serialization",
   .cases = {
-    # fmt: skip
     tibble::tribble(
       ~.test_name, ~x,
       "null", as_polars_series(NULL),
