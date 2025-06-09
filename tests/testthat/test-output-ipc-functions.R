@@ -31,13 +31,9 @@ test_that("sink_ipc: wrong compression", {
 })
 
 patrick::with_parameters_test_that(
-  "Test writing data to Arrow file {compression %||% 'NULL'} - {compat_level}",
+  "Test writing data to Arrow file {rlang::quo_text(compression)} - {compat_level}",
   .cases = {
     skip_if_not_installed("arrow")
-
-    # Workaround for R < 4.4
-    # https://github.com/eitsupi/neo-r-polars/pull/240
-    skip_if_not(exists("%||%", envir = baseenv()))
 
     expand.grid(
       compression = list("uncompressed", "zstd", "lz4", NULL),
