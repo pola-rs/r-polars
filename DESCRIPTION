@@ -34,7 +34,7 @@ Suggests:
     patrick (>= 0.3.0),
     pkgload,
     testthat (>= 3.0.0),
-    tibble,
+    tibble (>= 3.3.0),
     vctrs,
     withr
 Config/Needs/dev: devtools, lifecycle, readr, glue
