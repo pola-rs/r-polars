@@ -28,9 +28,9 @@ The goal of Polars is to deliver fast, efficient data processing that:
 - Adheres to a strict schema (data-types should be known before running
   the query).
 
-This `polars` R package provides the R bindings for Polars. It can be
-used to process Polars DataFrames and other data structures, convert
-objects between Polars and R, and can be integrated with other common R
+This polars R package provides the R bindings for Polars. It can be used
+to process Polars DataFrames and other data structures, convert objects
+between Polars and R, and can be integrated with other common R
 packages.
 
 To learn more, read the [online
@@ -60,9 +60,9 @@ install.packages('polars', repos = c("https://rpolars.r-universe.dev", "https://
 ## Usage
 
 To avoid conflicts with other packages and base R function names, many
-of `polars`’s functions are hosted in the `pl` environment, and
-accessible via the `pl$` prefix. Most of the functions for `polars`
-objects should be chained with the `$` operator.
+of polars’ functions are hosted in the `pl` environment, and accessible
+via the `pl$` prefix. Most of the functions for polars objects should be
+chained with the `$` operator.
 
 Additionally, the majority of the functions are intended to match the
 Python Polars API.
@@ -102,8 +102,8 @@ df
 #> └────────────┴──────────────┴─────────────┴──────────────┴─────────────┘
 ```
 
-There are also some functions to manipulate `polars` objects using base
-R and some popular other packages.
+There are also some functions to manipulate polars objects using base R
+and some popular other packages.
 
 ``` r
 # Subset a Polars DataFrame using the `[` operator
@@ -149,9 +149,9 @@ provide different APIs:
 - [SHIMA Tatsuya](https://github.com/eitsupi)
 - [Etienne Bacher](https://github.com/etiennebacher)
 
-Version 0 of this package was previously maintained by [Søren Havelund
+[Version 0 of R Polars](https://github.com/rpolars/r-polars0) was
+previously maintained by [Søren Havelund
 Welling](https://github.com/sorhawell).
-<!-- TODO: link to the v0 branch -->
 
 ## Acknowledgements
 
