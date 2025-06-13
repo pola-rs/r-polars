@@ -8,7 +8,8 @@
 \method{as_tibble}{polars_data_frame}(
   x,
   ...,
-  .name_repair = c("check_unique", "unique", "universal", "minimal"),
+  .name_repair = c("check_unique", "unique", "universal", "minimal", "unique_quiet",
+    "universal_quiet"),
   uint8 = c("integer", "raw"),
   int64 = c("double", "character", "integer", "integer64"),
   date = c("Date", "IDate"),
@@ -22,7 +23,8 @@
 \method{as_tibble}{polars_lazy_frame}(
   x,
   ...,
-  .name_repair = c("check_unique", "unique", "universal", "minimal"),
+  .name_repair = c("check_unique", "unique", "universal", "minimal", "unique_quiet",
+    "universal_quiet"),
   uint8 = c("integer", "raw"),
   int64 = c("double", "character", "integer", "integer64"),
   date = c("Date", "IDate"),
@@ -45,6 +47,8 @@
 \item \code{"check_unique"}: (default value), no name repair, but check they are
 \code{unique},
 \item \code{"universal"}: Make the names \code{unique} and syntactic
+\item \code{"unique_quiet"}: Same as \code{"unique"}, but "quiet"
+\item \code{"universal_quiet"}: Same as \code{"universal"}, but "quiet"
 \item a function: apply custom name repair (e.g., \code{.name_repair = make.names}
 for names in the style of base R).
 \item A purrr-style anonymous function, see \code{\link[rlang:as_function]{rlang::as_function()}}

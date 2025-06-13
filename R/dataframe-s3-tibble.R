@@ -31,7 +31,14 @@
 as_tibble.polars_data_frame <- function(
   x,
   ...,
-  .name_repair = c("check_unique", "unique", "universal", "minimal"),
+  .name_repair = c(
+    "check_unique",
+    "unique",
+    "universal",
+    "minimal",
+    "unique_quiet",
+    "universal_quiet"
+  ),
   uint8 = c("integer", "raw"),
   int64 = c("double", "character", "integer", "integer64"),
   date = c("Date", "IDate"),
