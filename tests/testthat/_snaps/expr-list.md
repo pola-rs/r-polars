@@ -154,15 +154,15 @@
 # eval
 
     Code
-      df$with_columns(pl$concat_list(list("a", "b"))$list$eval(pl$element(), TRUE))
+      df$with_columns(pl$concat_list("a", "b")$list$eval(pl$element(), TRUE))
     Condition
       Error in `df$with_columns()`:
       ! Evaluation failed in `$with_columns()`.
       Caused by error:
       ! Evaluation failed in `$with_columns()`.
-      Caused by error in `pl$concat_list(list("a", "b"))$list$eval()`:
+      Caused by error in `pl$concat_list("a", "b")$list$eval()`:
       ! Evaluation failed in `$eval()`.
-      Caused by error in `pl$concat_list(list("a", "b"))$list$eval()`:
+      Caused by error in `pl$concat_list("a", "b")$list$eval()`:
       ! `...` must be empty.
       x Problematic argument:
       * ..1 = TRUE
