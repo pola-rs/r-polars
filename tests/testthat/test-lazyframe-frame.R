@@ -1454,12 +1454,15 @@ test_that("shift() works", {
     df,
     pl$DataFrame(mpg = c("a", "a", "21.0"), cyl = c("a", "a", "6.0"))
   )
-  # TODO: add a check with expression in fill_value when this is resolved:
-  # https://github.com/pola-rs/polars/issues/21280
   expect_query_error(
     .input$shift(2, 999),
     df,
     "Did you forget to name an argument"
+  )
+  expect_query_error(
+    .input$shift(2, fill_value = pl$col("mpg")),
+    df,
+    "'fill_value' must be scalar value"
   )
 })
 
