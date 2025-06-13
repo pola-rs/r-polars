@@ -13,7 +13,7 @@ pl__DataFrame(..., .schema_overrides = NULL, .strict = TRUE)
 Name-value pairs of objects to be converted to polars \link{Series}
 by the \code{\link[=as_polars_series]{as_polars_series()}} function.
 Each \link{Series} will be used as a column of the \link{DataFrame}.
-All values must be the same length.
+All values must be the same length or length 1.
 Each name will be used as the column name. If the name is empty,
 the original name of the \link{Series} will be used.}
 

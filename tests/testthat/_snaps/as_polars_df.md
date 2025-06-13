@@ -88,6 +88,34 @@
       │ 2   ┆ ["d"]     │
       └─────┴───────────┘
 
+# as_polars_df works for classes list (length 1 and 2)
+
+    Code
+      print(pl_df)
+    Output
+      shape: (2, 2)
+      ┌─────┬─────┐
+      │ a   ┆ y   │
+      │ --- ┆ --- │
+      │ f64 ┆ i32 │
+      ╞═════╪═════╡
+      │ 1.0 ┆ 1   │
+      │ 1.0 ┆ 2   │
+      └─────┴─────┘
+
+# as_polars_df works for classes list (length 0 and 1)
+
+    Code
+      print(pl_df)
+    Output
+      shape: (0, 2)
+      ┌─────┬─────┐
+      │ a   ┆ y   │
+      │ --- ┆ --- │
+      │ f64 ┆ i32 │
+      ╞═════╪═════╡
+      └─────┴─────┘
+
 # as_polars_df works for classes data.frame
 
     Code
@@ -137,4 +165,14 @@
       ! Can't infer polars dtype of the complex number 0+1i
       Caused by error in `as_polars_series()`:
       ! an empty complex vector can't be converted to a polars Series.
+
+# as_polars_df(<list>) raises an error if the list has different lengths
+
+    Code
+      as_polars_df(list(a = 1, b = 1:2, c = 1:3))
+    Condition
+      Error in `as_polars_df()`:
+      ! Evaluation failed.
+      Caused by error:
+      ! lengths don't match: could not create a new DataFrame: height of column 'b' (2) does not match height of column 'a' (3)
 

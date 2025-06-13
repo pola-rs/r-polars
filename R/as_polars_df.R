@@ -16,8 +16,10 @@
 #'
 #' - The argument `...` (except `name`) is passed to [as_polars_series()]
 #'   for each element of the list.
-#' - All elements of the list must be converted to the same length of [Series] by
-#'   [as_polars_series()].
+#' - All elements of the list must be converted to [Series] by [as_polars_series()].
+#' - All of the [Series] must be converted to the same length, except for the case of length 1,
+#'   which will be recycled to match the length of the other [Series]
+#'   if they have a length other than 1.
 #' - The name of the each element is used as the column name of the [DataFrame].
 #'   For unnamed elements, the column name will be an empty string `""` or if the element is
 #'   a [Series],
@@ -175,7 +177,34 @@ as_polars_df.list <- function(x, ...) {
   .args <- list2(...)
   # Should not pass the `name` argument
   .args$name <- NULL
-  lapply(x, \(column) eval(call2("as_polars_series", column, !!!.args))$`_s`) |>
+  list_of_series <- lapply(x, \(column) eval(call2("as_polars_series", column, !!!.args)))
+
+  # Series with length 1 should be recycled
+  length_of_series <- vapply(list_of_series, length, integer(1))
+
+  # n_rows must be -Inf, 0, 2, 3, ..., because series with length 1 will be recycled even if
+  # the other series have length 0.
+  n_rows <- suppressWarnings(max(length_of_series[length_of_series != 1L]))
+
+  list_of_plr_series <- if (is.infinite(n_rows)) {
+    # This case all series have length 1
+    list_of_series |>
+      lapply(\(series) series$`_s`)
+  } else {
+    list_of_series |>
+      lapply(
+        \(series) {
+          if (length(series) == 1L) {
+            # Recycle the series with length 1
+            pl$select(pl$repeat_(series, n_rows))$to_series()$`_s`
+          } else {
+            series$`_s`
+          }
+        }
+      )
+  }
+
+  list_of_plr_series |>
     PlRDataFrame$init() |>
     wrap()
 }

@@ -42,7 +42,7 @@
 #' Name-value pairs of objects to be converted to polars [Series]
 #' by the [as_polars_series()] function.
 #' Each [Series] will be used as a column of the [DataFrame].
-#' All values must be the same length.
+#' All values must be the same length or length 1.
 #' Each name will be used as the column name. If the name is empty,
 #' the original name of the [Series] will be used.
 #' @param .schema_overrides `r lifecycle::badge("experimental")`

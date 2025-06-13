@@ -18,6 +18,8 @@ patrick::with_parameters_test_that(
       "polars_group_by", pldf$group_by("x"),
       "polars_lazy_frame", pldf$lazy(),
       "list", list(x = 1:2, y = list("c", "d")),
+      "list (length 1 and 2)", list(a = 1, y = 1:2),
+      "list (length 0 and 1)", list(a = double(), y = 1L),
       "data.frame", data.frame(x = 1:3, y = I(list("c", "d", TRUE))),
       "NULL", NULL,
     )
@@ -128,5 +130,13 @@ test_that("as_polars_df(<list>, name = '...') should not pass the `name` argumen
   expect_equal(
     as_polars_df(x = data.frame(foo = 1), name = "bar"),
     pl$DataFrame(foo = 1)
+  )
+})
+
+test_that("as_polars_df(<list>) raises an error if the list has different lengths", {
+  expect_snapshot(
+    list(a = 1, b = 1:2, c = 1:3) |>
+      as_polars_df(),
+    error = TRUE
   )
 })

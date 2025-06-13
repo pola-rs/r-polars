@@ -107,8 +107,10 @@ to check if the object can be converted to a \link[=pl__Struct]{struct dtype}.
 \itemize{
 \item The argument \code{...} (except \code{name}) is passed to \code{\link[=as_polars_series]{as_polars_series()}}
 for each element of the list.
-\item All elements of the list must be converted to the same length of \link{Series} by
-\code{\link[=as_polars_series]{as_polars_series()}}.
+\item All elements of the list must be converted to \link{Series} by \code{\link[=as_polars_series]{as_polars_series()}}.
+\item All of the \link{Series} must be converted to the same length, except for the case of length 1,
+which will be recycled to match the length of the other \link{Series}
+if they have a length other than 1.
 \item The name of the each element is used as the column name of the \link{DataFrame}.
 For unnamed elements, the column name will be an empty string \code{""} or if the element is
 a \link{Series},
