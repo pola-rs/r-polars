@@ -8,6 +8,7 @@ on:
       - .github/workflows/test-docs.yml
       - altdoc/mkdocs.yml
       - man/**
+      - vignettes/**
   pull_request:
     branches:
       - main
@@ -15,6 +16,7 @@ on:
       - .github/workflows/test-docs.yml
       - altdoc/mkdocs.yml
       - man/**
+      - vignettes/**
   workflow_dispatch:
 
 concurrency:
