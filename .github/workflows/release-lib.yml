@@ -1,0 +1,229 @@
+name: Release binary libraries
+on:
+  push:
+    tags:
+      - "lib-v*"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - .github/workflows/release-lib.yml
+      - configure*
+      - src/Makevars*
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  LIB_NAME: libr_polars
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            target: x86_64-unknown-linux-musl
+          - os: ubuntu-22.04
+            target: x86_64-unknown-linux-gnu
+          - os: ubuntu-22.04-arm
+            target: aarch64-unknown-linux-musl
+          - os: ubuntu-22.04-arm
+            target: aarch64-unknown-linux-gnu
+          - os: macos-latest
+            target: x86_64-apple-darwin
+          - os: macos-latest
+            target: aarch64-apple-darwin
+          - os: windows-latest
+            target: x86_64-pc-windows-gnu
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: prep Rust
+        working-directory: src/rust
+        run: |
+          LIB_VERSION="$(cargo metadata --format-version=1 --no-deps | jq --raw-output '.packages[0].version')"
+          echo "LIB_VERSION=${LIB_VERSION}" >>"$GITHUB_ENV"
+          rustup target add ${{ matrix.target }}
+          # savvy needs R_INCLUDE_DIR envvar
+          echo R_INCLUDE_DIR="$(Rscript -e 'cat(normalizePath(R.home("include")))')" >>"$GITHUB_ENV"
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "src/rust -> target"
+          shared-key: ${{ matrix.target }}-release # TODO: change to dist-release
+
+      - name: prep for musl
+        if: endsWith(matrix.target, '-musl')
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y musl-tools
+
+      - name: pref for aarch64-unknown-linux-musl
+        if: matrix.target == 'aarch64-unknown-linux-musl'
+        # Ref <https://github.com/rust-lang/stacker/issues/80>
+        run: |
+          echo 'CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER=aarch64-linux-gnu-gcc' >>"$GITHUB_ENV"
+          echo 'CC=aarch64-linux-gnu-gcc' >>"$GITHUB_ENV"
+
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          # TODO: `true` after rspm supports arm linux <https://github.com/r-lib/actions/issues/960>
+          use-public-rspm: ${{ runner.os != 'Linux' || runner.arch != 'ARM64' }}
+          Ncpus: 2
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: any::pkgbuild, deps::.
+          dependencies: "'hard'"
+
+      - name: build lib
+        env:
+          NOT_CRAN: "true"
+          TARGET: ${{ matrix.target }}
+          LIBR_POLARS_BUILD: "true"
+          LIBR_POLARS_FEATURES: nightly
+          LIBR_POLARS_PROFILE: release # TODO: support changing profile via this envvar
+        run: |
+          # make sure savvy is built from source because rust-cache doesn't work well.
+          (find ~/.cargo/registry/ src/rust/target -name 'savvy-*' -print0 | xargs -0 rm -rf) || true
+
+          ARTIFACT_NAME="${LIB_NAME}-${LIB_VERSION}-${TARGET}.tar.gz"
+          Rscript -e 'pkgbuild::compile_dll(debug = FALSE)'
+
+          tar -czf "${ARTIFACT_NAME}" -C "src/rust/target/${TARGET}/${LIBR_POLARS_PROFILE}" "${LIB_NAME}.a"
+          echo "ARTIFACT_NAME=${ARTIFACT_NAME}" >>"$GITHUB_ENV"
+
+      - name: upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: libs-${{ matrix.target }}
+          path: ${{ env.ARTIFACT_NAME }}
+
+  test:
+    needs: build
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - macos-latest
+          - windows-latest
+          - ubuntu-latest
+        r:
+          - oldrel-1
+          - release
+          - devel
+        exclude:
+          - os: macos-latest
+            r: devel
+          - os: macos-latest
+            r: oldrel-1
+        include:
+          - os: macos-13
+            r: release
+          - os: ubuntu-22.04-arm
+            r: release
+
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: prep Rust
+        working-directory: src/rust
+        run: |
+          LIB_VERSION="$(cargo metadata --format-version=1 --no-deps | jq --raw-output '.packages[0].version')"
+          echo "LIB_VERSION=${LIB_VERSION}" >>"$GITHUB_ENV"
+          if [[ "${{ runner.os }}" == "Windows" ]]; then
+            echo "LIB_TARGET=x86_64-pc-windows-gnu" >>"$GITHUB_ENV"
+          elif [[ "${{ runner.os }}" == "Linux" ]]; then
+            echo "LIB_TARGET=$(uname -m)-unknown-linux-gnu" >>"$GITHUB_ENV"
+          else
+            echo "LIB_TARGET=$(rustc -vV | grep host | cut -d' ' -f2)" >>"$GITHUB_ENV"
+          fi
+          rm "$(rustup which cargo)"
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: libs-${{ env.LIB_TARGET }}
+          path: libs
+
+      - name: prep lib
+        run: |
+          ARTIFACT_NAME="${LIB_NAME}-${LIB_VERSION}-${LIB_TARGET}.tar.gz"
+          mkdir -p tools
+          tar -xzf "libs/${ARTIFACT_NAME}" -C "tools"
+          rm -rf "libs"
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: ${{ matrix.r }}
+          # TODO: `true` after rspm supports arm linux <https://github.com/r-lib/actions/issues/960>
+          use-public-rspm: ${{ runner.os != 'Linux' || runner.arch != 'ARM64' }}
+          Ncpus: "2"
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          # Only install minimum dependencies for testing
+          # TODO: move to the DESCRIPTION file
+          packages: >-
+            any::pkgload,
+            any::testthat,
+            any::knitr,
+            any::patrick,
+            any::blob,
+            any::hms
+
+      - name: R test
+        shell: Rscript {0}
+        run: |
+          pkgload::load_all()
+          testthat::test_local()
+
+  release:
+    needs:
+      - build
+      - test
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: libs-*
+          path: libs
+          merge-multiple: true
+
+      - name: create checksums
+        working-directory: libs
+        run: |
+          sha256sum ./* >"../sha256sums.txt"
+
+      - name: create release
+        uses: softprops/action-gh-release@v2
+        with:
+          prerelease: true
+          files: |
+            libs/*
+            sha256sums.txt

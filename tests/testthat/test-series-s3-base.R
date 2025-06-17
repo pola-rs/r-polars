@@ -39,10 +39,6 @@ test_that("as.vector() suggests $to_r_vector() for datatypes that need attribute
   # any attribute.
   expect_silent(as.vector(pl$Series("a", 1:2)$cast(pl$Int64)))
 
-  withr::with_options(
-    list(polars.to_r_vector.int64 = "integer64"),
-    expect_snapshot(as.vector(pl$Series("a", 1:2)$cast(pl$Int64)))
-  )
   expect_snapshot(as.vector(pl$Series("a", as.Date("2020-01-01"))))
   expect_snapshot(as.vector(pl$Series("a", as.POSIXct("2020-01-01", tz = "UTC"))))
 
@@ -51,6 +47,12 @@ test_that("as.vector() suggests $to_r_vector() for datatypes that need attribute
 
   s_list <- pl$Series("a", list(as.Date("2020-01-01")))
   expect_silent(as.vector(s_list))
+
+  skip_if_not_installed("bit64")
+  withr::with_options(
+    list(polars.to_r_vector.int64 = "integer64"),
+    expect_snapshot(as.vector(pl$Series("a", 1:2)$cast(pl$Int64)))
+  )
 
   skip_if_not_installed("hms")
   expect_snapshot(as.vector(pl$Series("a", hms::hms(1, 2, 3))))

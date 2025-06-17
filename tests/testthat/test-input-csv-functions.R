@@ -18,6 +18,7 @@ test_that("read/scan: basic test", {
 })
 
 test_that("read/scan: works with URLs", {
+  skip_if_not_installed("curl")
   skip_if_offline()
   # single URL
   out <- pl$read_csv(
