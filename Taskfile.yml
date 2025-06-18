@@ -137,9 +137,22 @@ tasks:
         '{{.R_FUNC_LOAD_REQUIRED_PKGS}};
         devtools::document()'
 
+  build-lib-sums:
+    desc: Build lib-sums.tsv.
+    sources:
+      - dev/generate-lib-sums.R
+      - tools/prep-lib.R
+      - DESCRIPTION
+      - "{{.CARGO_LOCK}}"
+    generates:
+      - tools/lib-sums.tsv
+    cmds:
+      - Rscript dev/generate-lib-sums.R
+
   build-all:
     desc: Build the R package, generate documents, run all tests, and update files.
     deps:
+      - build-lib-sums
       - build-documents
     cmds:
       - task: test-all
