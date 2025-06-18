@@ -218,7 +218,7 @@ jobs:
       - name: create checksums
         working-directory: libs
         run: |
-          sha256sum ./* >"../sha256sums.txt"
+          find . -type f | cut -c3- | xargs sha256sum >"../sha256sums.txt"
 
       - name: create release
         uses: softprops/action-gh-release@v2
