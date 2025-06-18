@@ -1,4 +1,5 @@
 .dependencies <- c(
+  "arrow",
   "bit64",
   "blob",
   "cli",
@@ -6,6 +7,8 @@
   "data.table",
   "ggplot2",
   "hms",
+  "mirai",
+  "nanoarrow",
   "tibble",
   "vctrs"
 )

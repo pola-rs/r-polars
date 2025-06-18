@@ -9,6 +9,7 @@
       R:        mocked R version
       
       ----Optional dependencies----                 
+      arrow:      0.0.0
       bit64:      0.0.0
       blob:       0.0.0
       cli:        0.0.0
@@ -16,6 +17,8 @@
       data.table: 0.0.0
       ggplot2:    0.0.0
       hms:        0.0.0
+      mirai:      0.0.0
+      nanoarrow:  0.0.0
       tibble:     0.0.0
       vctrs:      0.0.0
       
