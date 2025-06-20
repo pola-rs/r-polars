@@ -8,11 +8,6 @@ dataframe__quantile(
   quantile,
   interpolation = c("nearest", "higher", "lower", "midpoint", "linear")
 )
-
-dataframe__quantile(
-  quantile,
-  interpolation = c("nearest", "higher", "lower", "midpoint", "linear")
-)
 }
 \arguments{
 \item{quantile}{Quantile between 0.0 and 1.0.}
@@ -26,8 +21,6 @@ A polars \link{DataFrame}
 Aggregate the columns to a unique quantile value
 }
 \examples{
-df <- pl$DataFrame(a = 1:4, b = c(1, 2, 1, 1))
-df$quantile(0.7)
 df <- pl$DataFrame(a = 1:4, b = c(1, 2, 1, 1))
 df$quantile(0.7)
 }

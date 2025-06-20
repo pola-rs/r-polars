@@ -8,6 +8,7 @@
 #' @inheritParams rlang::args_dots_empty
 #' @inheritParams pl__scan_parquet
 #' @inheritParams pl__scan_csv
+#' @inheritParams lazyframe__sink_csv
 #'
 #' @examplesIf requireNamespace("jsonlite", quietly = TRUE)
 #' ndjson_filename <- tempfile()

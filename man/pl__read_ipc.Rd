@@ -58,6 +58,10 @@ information from environment variables.}
 
 \item{retries}{Number of retries if accessing a cloud instance fails.}
 
+\item{file_cache_ttl}{Amount of time to keep downloaded cloud files since
+their last access time, in seconds. Uses the \code{POLARS_FILE_CACHE_TTL}
+environment variable (which defaults to 1 hour) if not given.}
+
 \item{hive_partitioning}{Infer statistics and schema from Hive partitioned
 sources and use them to prune reads. If \code{NULL} (default), it is automatically
 enabled when a single directory is passed, and otherwise disabled.}

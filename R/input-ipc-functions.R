@@ -10,6 +10,7 @@
 #' @inherit pl__LazyFrame return
 #' @inheritParams rlang::args_dots_empty
 #' @inheritParams pl__scan_parquet
+#' @inheritParams pl__scan_csv
 #' @param hive_partitioning Infer statistics and schema from Hive partitioned
 #' sources and use them to prune reads. If `NULL` (default), it is automatically
 #' enabled when a single directory is passed, and otherwise disabled.

@@ -94,9 +94,6 @@
 #'
 #' If `storage_options` is not provided, Polars will try to infer the
 #' information from environment variables.
-#' @param credential_provider Provide a function that can be called to provide
-#' cloud storage credentials. The function is expected to return a dictionary
-#' of credential keys along with an optional credential expiry time.
 #' @param retries Number of retries if accessing a cloud instance fails.
 #' @param file_cache_ttl Amount of time to keep downloaded cloud files since
 #' their last access time, in seconds. Uses the `POLARS_FILE_CACHE_TTL`

@@ -41,6 +41,12 @@
 #' this to `FALSE` will be slightly faster.
 #' @inheritParams lazyframe__collect
 #' @inheritParams pl__scan_parquet
+#' @param _type_check For internal use only.
+#' @param sync_on_close Sync to disk when before closing a file. Must be one of:
+#' * `"none"`: does not sync;
+#' * `"data"`: syncs the file contents;
+#' * `"all"`: syncs the file contents and metadata.
+#' @param mkdir Recursively create all the directories in the path.
 #'
 #' @return Invisibly returns the input LazyFrame
 #'

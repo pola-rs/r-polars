@@ -155,10 +155,6 @@ environment variable (which defaults to 1 hour) if not given.}
 
 \item{include_file_paths}{Include the path of the source file(s) as a column
 with this name.}
-
-\item{credential_provider}{Provide a function that can be called to provide
-cloud storage credentials. The function is expected to return a dictionary
-of credential keys along with an optional credential expiry time.}
 }
 \value{
 A polars \link{LazyFrame}

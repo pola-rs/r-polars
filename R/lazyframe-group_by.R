@@ -183,11 +183,9 @@ lazygroupby__sum <- function() {
 #' lf$group_by("grp")$quantile(0.5)$collect()
 lazygroupby__quantile <- function(
   quantile,
-  ...,
   interpolation = c("nearest", "higher", "lower", "midpoint", "linear")
 ) {
   wrap({
-    check_dots_empty0(...)
     self$agg(pl$all()$quantile(quantile = quantile, interpolation = interpolation))
   })
 }
