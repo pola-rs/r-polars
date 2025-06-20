@@ -25,6 +25,6 @@ df$with_columns(
 }
 \seealso{
 \itemize{
-\item \link[=S3_arithmetic]{Arithmetic operators}
+\item \link[=s3-arithmetic]{Arithmetic operators}
 }
 }

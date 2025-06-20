@@ -30,7 +30,7 @@ df$with_columns(
 }
 \seealso{
 \itemize{
-\item \link[=S3_arithmetic]{Arithmetic operators}
+\item \link[=s3-arithmetic]{Arithmetic operators}
 \item \code{\link[=expr__true_div]{<Expr>$true_div()}}
 \item \code{\link[=expr__mod]{<Expr>$mod()}}
 }

@@ -72,7 +72,7 @@ pl__deserialize_expr <- function(data, ..., format = c("binary", "json")) {
 #' numeric value or an other expression.
 #' @inherit as_polars_expr return
 #' @seealso
-#' - [Arithmetic operators][S3_arithmetic]
+#' - [Arithmetic operators][s3-arithmetic]
 #' @examples
 #' df <- pl$DataFrame(x = 1:5)
 #'
@@ -103,7 +103,7 @@ expr__add <- function(other) {
 #' @inheritParams expr__true_div
 #' @inherit as_polars_expr return
 #' @seealso
-#' - [Arithmetic operators][S3_arithmetic]
+#' - [Arithmetic operators][s3-arithmetic]
 #' @examples
 #' df <- pl$DataFrame(x = 0:4)
 #'
@@ -124,7 +124,7 @@ expr__sub <- function(other) {
 #' @inheritParams expr__true_div
 #' @inherit as_polars_expr return
 #' @seealso
-#' - [Arithmetic operators][S3_arithmetic]
+#' - [Arithmetic operators][s3-arithmetic]
 #' @examples
 #' df <- pl$DataFrame(x = c(1, 2, 4, 8, 16))
 #'
@@ -151,7 +151,7 @@ expr__mul <- function(other) {
 #' @inherit as_polars_expr return
 #' @param other Numeric literal or expression value.
 #' @seealso
-#' - [Arithmetic operators][S3_arithmetic]
+#' - [Arithmetic operators][s3-arithmetic]
 #' - [`<Expr>$floor_div()`][Expr_floor_div]
 #' @examples
 #' df <- pl$DataFrame(
@@ -180,7 +180,7 @@ expr__truediv <- expr__true_div
 #' @param exponent Numeric literal or expression value.
 #' @inherit as_polars_expr return
 #' @seealso
-#' - [Arithmetic operators][S3_arithmetic]
+#' - [Arithmetic operators][s3-arithmetic]
 #' @examples
 #' df <- pl$DataFrame(x = c(1, 2, 4, 8))
 #'
@@ -201,7 +201,7 @@ expr__pow <- function(exponent) {
 #' @inheritParams expr__true_div
 #' @inherit as_polars_expr return
 #' @seealso
-#' - [Arithmetic operators][S3_arithmetic]
+#' - [Arithmetic operators][s3-arithmetic]
 #' - [`<Expr>$floor_div()`][expr__floor_div]
 #' @examples
 #' df <- pl$DataFrame(x = -5L:5L)
@@ -224,7 +224,7 @@ expr__mod <- function(other) {
 #' @inheritParams expr__true_div
 #' @inherit as_polars_expr return
 #' @seealso
-#' - [Arithmetic operators][S3_arithmetic]
+#' - [Arithmetic operators][s3-arithmetic]
 #' - [`<Expr>$true_div()`][expr__true_div]
 #' - [`<Expr>$mod()`][expr__mod]
 #' @examples
