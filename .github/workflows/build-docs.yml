@@ -121,7 +121,7 @@ jobs:
         id: build-docs
         shell: Rscript {0}
         run: |
-          library(neopolars)
+          library(polars)
           rmarkdown::render("altdoc/reference_home.Rmd")
           future::plan(future::multicore)
           altdoc::render_docs(freeze = FALSE, parallel = TRUE, verbose = TRUE)

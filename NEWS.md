@@ -1,6 +1,6 @@
 # NEWS
 
-## neopolars (development version)
+## polars (development version)
 
 This is a completely rewritten new version of the polars R package.
 The old version and this version are same in that they are based on Python Polars,

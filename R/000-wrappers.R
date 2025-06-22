@@ -5,7 +5,7 @@
 #   first, which allows users to override the functions defined here (e.g., a
 #   print() method for an enum).
 
-#' @useDynLib neopolars, .registration = TRUE
+#' @useDynLib polars, .registration = TRUE
 #' @keywords internal
 NULL
 
@@ -26,13 +26,13 @@ NULL
 # Prohibit modifying environments
 
 #' @export
-`$<-.savvy_neopolars__sealed` <- function(x, name, value) {
+`$<-.savvy_polars__sealed` <- function(x, name, value) {
   class <- gsub("__bundle$", "", class(x)[1])
   stop(class, " cannot be modified", call. = FALSE)
 }
 
 #' @export
-`[[<-.savvy_neopolars__sealed` <- function(x, i, value) {
+`[[<-.savvy_polars__sealed` <- function(x, i, value) {
   class <- gsub("__bundle$", "", class(x)[1])
   stop(class, " cannot be modified", call. = FALSE)
 }
@@ -331,7 +331,7 @@ NULL
   e$`otherwise` <- `PlRChainedThen_otherwise`(ptr)
   e$`when` <- `PlRChainedThen_when`(ptr)
 
-  class(e) <- c("PlRChainedThen", "savvy_neopolars__sealed")
+  class(e) <- c("PlRChainedThen", "savvy_polars__sealed")
   e
 }
 
@@ -343,7 +343,7 @@ NULL
 
 
 
-class(`PlRChainedThen`) <- c("PlRChainedThen__bundle", "savvy_neopolars__sealed")
+class(`PlRChainedThen`) <- c("PlRChainedThen__bundle", "savvy_polars__sealed")
 
 #' @export
 `print.PlRChainedThen__bundle` <- function(x, ...) {
@@ -364,7 +364,7 @@ class(`PlRChainedThen`) <- c("PlRChainedThen__bundle", "savvy_neopolars__sealed"
   e$.ptr <- ptr
   e$`then` <- `PlRChainedWhen_then`(ptr)
 
-  class(e) <- c("PlRChainedWhen", "savvy_neopolars__sealed")
+  class(e) <- c("PlRChainedWhen", "savvy_polars__sealed")
   e
 }
 
@@ -376,7 +376,7 @@ class(`PlRChainedThen`) <- c("PlRChainedThen__bundle", "savvy_neopolars__sealed"
 
 
 
-class(`PlRChainedWhen`) <- c("PlRChainedWhen__bundle", "savvy_neopolars__sealed")
+class(`PlRChainedWhen`) <- c("PlRChainedWhen__bundle", "savvy_polars__sealed")
 
 #' @export
 `print.PlRChainedWhen__bundle` <- function(x, ...) {
@@ -674,7 +674,7 @@ class(`PlRChainedWhen`) <- c("PlRChainedWhen__bundle", "savvy_neopolars__sealed"
   e$`write_ndjson` <- `PlRDataFrame_write_ndjson`(ptr)
   e$`write_parquet` <- `PlRDataFrame_write_parquet`(ptr)
 
-  class(e) <- c("PlRDataFrame", "savvy_neopolars__sealed")
+  class(e) <- c("PlRDataFrame", "savvy_polars__sealed")
   e
 }
 
@@ -697,7 +697,7 @@ class(`PlRChainedWhen`) <- c("PlRChainedWhen__bundle", "savvy_neopolars__sealed"
 }
 
 
-class(`PlRDataFrame`) <- c("PlRDataFrame__bundle", "savvy_neopolars__sealed")
+class(`PlRDataFrame`) <- c("PlRDataFrame__bundle", "savvy_polars__sealed")
 
 #' @export
 `print.PlRDataFrame__bundle` <- function(x, ...) {
@@ -761,7 +761,7 @@ class(`PlRDataFrame`) <- c("PlRDataFrame__bundle", "savvy_neopolars__sealed")
   e$`min` <- `PlRDataType_min`(ptr)
   e$`ne` <- `PlRDataType_ne`(ptr)
 
-  class(e) <- c("PlRDataType", "savvy_neopolars__sealed")
+  class(e) <- c("PlRDataType", "savvy_polars__sealed")
   e
 }
 
@@ -814,7 +814,7 @@ class(`PlRDataFrame`) <- c("PlRDataFrame__bundle", "savvy_neopolars__sealed")
 }
 
 
-class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_neopolars__sealed")
+class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_polars__sealed")
 
 #' @export
 `print.PlRDataType__bundle` <- function(x, ...) {
@@ -3515,7 +3515,7 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_neopolars__sealed")
   e$`var` <- `PlRExpr_var`(ptr)
   e$`xor` <- `PlRExpr_xor`(ptr)
 
-  class(e) <- c("PlRExpr", "savvy_neopolars__sealed")
+  class(e) <- c("PlRExpr", "savvy_polars__sealed")
   e
 }
 
@@ -3534,7 +3534,7 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_neopolars__sealed")
 }
 
 
-class(`PlRExpr`) <- c("PlRExpr__bundle", "savvy_neopolars__sealed")
+class(`PlRExpr`) <- c("PlRExpr__bundle", "savvy_polars__sealed")
 
 #' @export
 `print.PlRExpr__bundle` <- function(x, ...) {
@@ -3975,7 +3975,7 @@ class(`PlRExpr`) <- c("PlRExpr__bundle", "savvy_neopolars__sealed")
   e$`with_columns_seq` <- `PlRLazyFrame_with_columns_seq`(ptr)
   e$`with_row_index` <- `PlRLazyFrame_with_row_index`(ptr)
 
-  class(e) <- c("PlRLazyFrame", "savvy_neopolars__sealed")
+  class(e) <- c("PlRLazyFrame", "savvy_polars__sealed")
   e
 }
 
@@ -4006,7 +4006,7 @@ class(`PlRExpr`) <- c("PlRExpr__bundle", "savvy_neopolars__sealed")
 }
 
 
-class(`PlRLazyFrame`) <- c("PlRLazyFrame__bundle", "savvy_neopolars__sealed")
+class(`PlRLazyFrame`) <- c("PlRLazyFrame__bundle", "savvy_polars__sealed")
 
 #' @export
 `print.PlRLazyFrame__bundle` <- function(x, ...) {
@@ -4040,7 +4040,7 @@ class(`PlRLazyFrame`) <- c("PlRLazyFrame__bundle", "savvy_neopolars__sealed")
   e$`head` <- `PlRLazyGroupBy_head`(ptr)
   e$`tail` <- `PlRLazyGroupBy_tail`(ptr)
 
-  class(e) <- c("PlRLazyGroupBy", "savvy_neopolars__sealed")
+  class(e) <- c("PlRLazyGroupBy", "savvy_polars__sealed")
   e
 }
 
@@ -4052,7 +4052,7 @@ class(`PlRLazyFrame`) <- c("PlRLazyFrame__bundle", "savvy_neopolars__sealed")
 
 
 
-class(`PlRLazyGroupBy`) <- c("PlRLazyGroupBy__bundle", "savvy_neopolars__sealed")
+class(`PlRLazyGroupBy`) <- c("PlRLazyGroupBy__bundle", "savvy_polars__sealed")
 
 #' @export
 `print.PlRLazyGroupBy__bundle` <- function(x, ...) {
@@ -4087,7 +4087,7 @@ class(`PlRLazyGroupBy`) <- c("PlRLazyGroupBy__bundle", "savvy_neopolars__sealed"
   e$`get_tables` <- `PlRSQLContext_get_tables`(ptr)
   e$`register` <- `PlRSQLContext_register`(ptr)
 
-  class(e) <- c("PlRSQLContext", "savvy_neopolars__sealed")
+  class(e) <- c("PlRSQLContext", "savvy_polars__sealed")
   e
 }
 
@@ -4102,7 +4102,7 @@ class(`PlRLazyGroupBy`) <- c("PlRLazyGroupBy__bundle", "savvy_neopolars__sealed"
 }
 
 
-class(`PlRSQLContext`) <- c("PlRSQLContext__bundle", "savvy_neopolars__sealed")
+class(`PlRSQLContext`) <- c("PlRSQLContext__bundle", "savvy_polars__sealed")
 
 #' @export
 `print.PlRSQLContext__bundle` <- function(x, ...) {
@@ -4326,7 +4326,7 @@ class(`PlRSQLContext`) <- c("PlRSQLContext__bundle", "savvy_neopolars__sealed")
   e$`to_arrow_c_stream` <- `PlRSeries_to_arrow_c_stream`(ptr)
   e$`to_r_vector` <- `PlRSeries_to_r_vector`(ptr)
 
-  class(e) <- c("PlRSeries", "savvy_neopolars__sealed")
+  class(e) <- c("PlRSeries", "savvy_polars__sealed")
   e
 }
 
@@ -4393,7 +4393,7 @@ class(`PlRSQLContext`) <- c("PlRSQLContext__bundle", "savvy_neopolars__sealed")
 }
 
 
-class(`PlRSeries`) <- c("PlRSeries__bundle", "savvy_neopolars__sealed")
+class(`PlRSeries`) <- c("PlRSeries__bundle", "savvy_polars__sealed")
 
 #' @export
 `print.PlRSeries__bundle` <- function(x, ...) {
@@ -4422,7 +4422,7 @@ class(`PlRSeries`) <- c("PlRSeries__bundle", "savvy_neopolars__sealed")
   e$`otherwise` <- `PlRThen_otherwise`(ptr)
   e$`when` <- `PlRThen_when`(ptr)
 
-  class(e) <- c("PlRThen", "savvy_neopolars__sealed")
+  class(e) <- c("PlRThen", "savvy_polars__sealed")
   e
 }
 
@@ -4434,7 +4434,7 @@ class(`PlRSeries`) <- c("PlRSeries__bundle", "savvy_neopolars__sealed")
 
 
 
-class(`PlRThen`) <- c("PlRThen__bundle", "savvy_neopolars__sealed")
+class(`PlRThen`) <- c("PlRThen__bundle", "savvy_polars__sealed")
 
 #' @export
 `print.PlRThen__bundle` <- function(x, ...) {
@@ -4455,7 +4455,7 @@ class(`PlRThen`) <- c("PlRThen__bundle", "savvy_neopolars__sealed")
   e$.ptr <- ptr
   e$`then` <- `PlRWhen_then`(ptr)
 
-  class(e) <- c("PlRWhen", "savvy_neopolars__sealed")
+  class(e) <- c("PlRWhen", "savvy_polars__sealed")
   e
 }
 
@@ -4467,7 +4467,7 @@ class(`PlRThen`) <- c("PlRThen__bundle", "savvy_neopolars__sealed")
 
 
 
-class(`PlRWhen`) <- c("PlRWhen__bundle", "savvy_neopolars__sealed")
+class(`PlRWhen`) <- c("PlRWhen__bundle", "savvy_polars__sealed")
 
 #' @export
 `print.PlRWhen__bundle` <- function(x, ...) {

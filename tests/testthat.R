@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(neopolars)
+library(polars)
 
-test_check("neopolars")
+test_check("polars")

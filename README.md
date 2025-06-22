@@ -74,7 +74,7 @@ For example, writing the [example from the user guide of
 Python/Rust](https://docs.pola.rs/#example) in R:
 
 ``` r
-library(neopolars) # TODO: rename to polars
+library(polars)
 
 # Prepare a CSV file
 csv_file <- tempfile(fileext = ".csv")

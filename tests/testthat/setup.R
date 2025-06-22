@@ -14,6 +14,6 @@ if (rlang::is_installed("mirai")) {
 
   # Ensure load the package even if not installed
   mirai::everywhere({
-    if (!rlang::is_installed("neopolars")) pkgload::load_all()
+    if (!rlang::is_installed("polars")) pkgload::load_all()
   })
 }

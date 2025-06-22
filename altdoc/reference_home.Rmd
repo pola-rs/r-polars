@@ -5,7 +5,7 @@ output:
 ---
 
 ```{r, include = FALSE}
-library(neopolars)
+library(polars)
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
