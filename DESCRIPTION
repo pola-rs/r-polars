@@ -37,7 +37,7 @@ Suggests:
     tibble (>= 3.3.0),
     vctrs,
     withr
-Config/Needs/dev: devtools, lifecycle, readr, glue
+Config/Needs/dev: devtools, lifecycle, readr, glue, RcppTOML, semver
 Config/Needs/lint: fs, lintr
 Config/Needs/website: etiennebacher/altdoc, future.apply
 Config/neopolars/lib-version: 1.0.0-alpha.2
