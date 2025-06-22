@@ -252,9 +252,10 @@ expr_dt_combine <- function(time, time_unit = c("us", "ns", "ms")) {
 #' @param format Single string of format to use, or `NULL` (default).
 #' `NULL` will be treated as `"iso"`.
 #' Available formats depend on the column [data type][DataType]:
+# nolint start: line_length_linter
 #' - For [Date/Time/Datetime][DataType], refer to the
-#'   [chrono strftime documentation]
-#'   [https://docs.rs/chrono/latest/chrono/format/strftime/index.html]
+#'   [chrono strftime documentation](https://docs.rs/chrono/latest/chrono/format/strftime/index.html)
+# nolint end
 #'   for specification. Example: `"%y-%m-%d"`.
 #'   Special case `"iso"` will use the ISO8601 format.
 #' - For [Duration][DataType], `"iso"` or `"polars"` can be used.
@@ -304,8 +305,9 @@ expr_dt_to_string <- function(format = NULL) {
 #' @param format Single string of format to use, or `NULL`.
 #' `NULL` will be treated as `"iso"`.
 #' Available formats depend on the column [data type][DataType]:
-#' - For [Date/Time/Datetime][DataType], refer to the [chrono strftime documentation]
-#'   [https://docs.rs/chrono/latest/chrono/format/strftime/index.html] for specification.
+# nolint start: line_length_linter
+#' - For [Date/Time/Datetime][DataType], refer to the [chrono strftime documentation](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) for specification.
+# nolint end
 #'   Example: `"%y-%m-%d"`. Special case `"iso"` will use the ISO8601 format.
 #' - For [Duration][DataType], `"iso"` or `"polars"` can be used.
 #'   The `"iso"` format string results in ISO8601 duration string output,
@@ -700,22 +702,11 @@ expr_dt_timestamp <- function(time_unit = c("us", "ns", "ms")) {
 # TODO: mark deprecated in news before next release
 #' Set time unit of a Series of dtype Datetime or Duration
 #' @description
-#' This is deprecated. Cast to Int64 and then to Datetime instead.
+#' `r lifecycle::badge("deprecated")`
+#' Cast to Int64 and then to Datetime instead.
 #'
 #' @inheritParams expr_dt_timestamp
 #' @inherit as_polars_expr return
-#' @examples
-#' df <- pl$select(
-#'   date = pl$datetime_range(
-#'     start = as.Date("2001-1-1"),
-#'     end = as.Date("2001-1-3"),
-#'     interval = "1d1s"
-#'   )
-#' )
-#' df$with_columns(
-#'   with_time_unit_ns = pl$col("date")$dt$with_time_unit(),
-#'   with_time_unit_ms = pl$col("date")$dt$with_time_unit(time_unit = "ms")
-#' )
 expr_dt_with_time_unit <- function(time_unit = c("ns", "us", "ms")) {
   wrap({
     deprecate_warn(

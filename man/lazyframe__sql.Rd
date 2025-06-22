@@ -22,8 +22,7 @@ Execute a SQL query against the LazyFrame
 }
 \details{
 The calling frame is automatically registered as a table in the SQL context
-under the name \code{"self"}. If you want access to the DataFrames and LazyFrames
-found in the current globals, use the top-level \code{\link[=pl__sql]{pl$sql()}}.
+under the name \code{"self"}.
 
 More control over registration and execution behaviour is available by using
 the \code{\link[=pl__SQLContext]{SQLContext}} object.

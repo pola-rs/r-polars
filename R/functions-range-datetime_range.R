@@ -4,9 +4,9 @@
 #' @inheritParams pl__date_range
 #' @inheritSection polars_duration_string  Polars duration string language
 #'
-#' @param time_unit Time unit of the resulting the [Datetime][DataType_Datetime]
+#' @param time_unit Time unit of the resulting the [Datetime][pl__Datetime]
 #' data type. One of `"ns"`, `"us"`, `"ms"` or `NULL`
-#' @param time_zone Time zone of the resulting [Datetime][DataType_Datetime]
+#' @param time_zone Time zone of the resulting [Datetime][pl__Datetime]
 #' data type.
 #'
 #' @inherit as_polars_expr return

@@ -15,7 +15,7 @@ the input data. This is slower than a default group by. Setting this to
 \code{TRUE} blocks the possibility to run on the streaming engine.}
 }
 \value{
-\link[=GroupBy_class]{GroupBy} (a DataFrame with special groupby methods like \verb{$agg()})
+An object of class \code{polars_group_by}
 }
 \description{
 Group a DataFrame

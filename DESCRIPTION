@@ -28,11 +28,13 @@ Suggests:
     ggplot2,
     hms,
     jsonlite,
+    knitr,
     mirai (>= 2.3.0),
     nanoarrow (>= 0.6.0),
     nycflights13,
     patrick (>= 0.3.0),
     pkgload,
+    rmarkdown,
     testthat (>= 3.0.0),
     tibble (>= 3.3.0),
     vctrs,
@@ -49,3 +51,4 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 SystemRequirements: Cargo (Rust's package manager), rustc
+VignetteBuilder: knitr

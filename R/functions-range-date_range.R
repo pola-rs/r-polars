@@ -7,9 +7,9 @@
 #'
 #' @inheritParams rlang::args_dots_empty
 #' @param start Lower bound of the date range. Something that can be coerced to
-#' a Date or a [Datetime][DataType_Datetime] expression. See examples for details.
+#' a Date or a [Datetime][pl__Datetime] expression. See examples for details.
 #' @param end Upper bound of the date range. Something that can be coerced to a
-#' Date or a [Datetime][DataType_Datetime] expression. See examples for details.
+#' Date or a [Datetime][pl__Datetime] expression. See examples for details.
 #' @param interval Interval of the range periods, specified as a [difftime]
 #' object or using the Polars duration string language. See the `Polars
 #' duration string language` section for details. Must consist of full days.

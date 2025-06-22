@@ -25,6 +25,6 @@ pl$DataFrame(
 )$with_columns(arg_sorted = pl$col("a")$arg_sort())
 }
 \seealso{
-\link[=pl_arg_sort_by]{pl$arg_sort_by()} to find the row indices that would
+\link[=pl__arg_sort_by]{pl$arg_sort_by()} to find the row indices that would
 sort multiple columns.
 }

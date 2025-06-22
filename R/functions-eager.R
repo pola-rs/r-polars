@@ -1,7 +1,7 @@
 #' Combine multiple DataFrames, LazyFrames, or Series into a single object
 #'
 #' @param ... <[`dynamic-dots`][rlang::dyn-dots]> [DataFrames][DataFrame],
-#' [LazyFrames], [Series]. All elements must have the same class.
+#' [LazyFrames][LazyFrame], [Series]. All elements must have the same class.
 #' @param how Strategy to concatenate items. Must be one of:
 #' * `"vertical"`: applies multiple vstack operations;
 #' * `"vertical_relaxed"`: same as `"vertical"`, but additionally coerces

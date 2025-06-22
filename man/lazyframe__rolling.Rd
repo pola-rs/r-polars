@@ -35,7 +35,7 @@ Default is \code{"left"}.}
 or objects coercible to expressions.}
 }
 \value{
-A \link[=LazyGroupBy_class]{LazyGroupBy} object
+An object of class \code{polars_lazy_group_by}
 }
 \description{
 Different from \code{group_by_dynamic()}, the windows are now determined by the

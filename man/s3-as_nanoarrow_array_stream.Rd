@@ -28,7 +28,7 @@
 \item{schema}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 An optional \link[nanoarrow:as_nanoarrow_schema]{nanoarrow schema object}.
 If specified, interpret the nanoarrow schema as a corresponding polars dtype
-and then convert the original object using \code{\link[=series__cast]{<Series>$cast()}}.
+and then convert the original object using \verb{<Series>$cast()}.
 Note that the schema of the returned object cannot be fully controlled
 because Polars does not support all Arrow types.}
 

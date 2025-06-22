@@ -16,10 +16,10 @@ pl__datetime_range(
 }
 \arguments{
 \item{start}{Lower bound of the date range. Something that can be coerced to
-a Date or a \link[=DataType_Datetime]{Datetime} expression. See examples for details.}
+a Date or a \link[=pl__Datetime]{Datetime} expression. See examples for details.}
 
 \item{end}{Upper bound of the date range. Something that can be coerced to a
-Date or a \link[=DataType_Datetime]{Datetime} expression. See examples for details.}
+Date or a \link[=pl__Datetime]{Datetime} expression. See examples for details.}
 
 \item{interval}{Interval of the range periods, specified as a \link{difftime}
 object or using the Polars duration string language. See the \verb{Polars duration string language} section for details. Must consist of full days.}
@@ -29,10 +29,10 @@ object or using the Polars duration string language. See the \verb{Polars durati
 \item{closed}{Define which sides of the range are closed (inclusive).
 One of the following: \code{"both"} (default), \code{"left"}, \code{"right"}, \code{"none"}.}
 
-\item{time_unit}{Time unit of the resulting the \link[=DataType_Datetime]{Datetime}
+\item{time_unit}{Time unit of the resulting the \link[=pl__Datetime]{Datetime}
 data type. One of \code{"ns"}, \code{"us"}, \code{"ms"} or \code{NULL}}
 
-\item{time_zone}{Time zone of the resulting \link[=DataType_Datetime]{Datetime}
+\item{time_zone}{Time zone of the resulting \link[=pl__Datetime]{Datetime}
 data type.}
 }
 \value{

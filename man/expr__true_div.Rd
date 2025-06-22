@@ -41,6 +41,6 @@ df$with_columns(
 \seealso{
 \itemize{
 \item \link[=s3-arithmetic]{Arithmetic operators}
-\item \code{\link[=Expr_floor_div]{<Expr>$floor_div()}}
+\item \code{\link[=expr__floor_div]{<Expr>$floor_div()}}
 }
 }

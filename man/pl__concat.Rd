@@ -8,7 +8,7 @@ pl__concat(..., how = "vertical", rechunk = FALSE, parallel = TRUE)
 }
 \arguments{
 \item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> \link[=DataFrame]{DataFrames},
-\link{LazyFrames}, \link{Series}. All elements must have the same class.}
+\link[=LazyFrame]{LazyFrames}, \link{Series}. All elements must have the same class.}
 
 \item{how}{Strategy to concatenate items. Must be one of:
 \itemize{

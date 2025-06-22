@@ -66,7 +66,7 @@ starts the window on the Monday before the first data point, etc.
 }}
 }
 \value{
-A \link{LazyGroupBy} object
+An object of class \code{polars_lazy_group_by}
 }
 \description{
 Time windows are calculated and rows are assigned to windows. Different from

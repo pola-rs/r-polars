@@ -35,8 +35,7 @@ Default is \code{"left"}.}
 or objects coercible to expressions.}
 }
 \value{
-\link[=RollingGroupBy_class]{RollingGroupBy} (a DataFrame with special
-rolling groupby methods like \verb{$agg()}).
+An object of class \code{polars_rolling_group_by}
 }
 \description{
 Different from \code{group_by_dynamic()}, the windows are now determined by the

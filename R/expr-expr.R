@@ -152,7 +152,7 @@ expr__mul <- function(other) {
 #' @param other Numeric literal or expression value.
 #' @seealso
 #' - [Arithmetic operators][s3-arithmetic]
-#' - [`<Expr>$floor_div()`][Expr_floor_div]
+#' - [`<Expr>$floor_div()`][expr__floor_div]
 #' @examples
 #' df <- pl$DataFrame(
 #'   x = -2:2,
@@ -766,7 +766,7 @@ expr__sort <- function(..., descending = FALSE, nulls_last = FALSE) {
 #'
 #' @inheritParams expr__sort
 #' @inherit as_polars_expr return
-#' @seealso [pl$arg_sort_by()][pl_arg_sort_by()] to find the row indices that would
+#' @seealso [pl$arg_sort_by()][pl__arg_sort_by()] to find the row indices that would
 #' sort multiple columns.
 #' @examples
 #' pl$DataFrame(

@@ -66,7 +66,7 @@ starts the window on the Monday before the first data point, etc.
 }}
 }
 \value{
-A \link{GroupByDynamic} object
+An object of class \code{polars_group_by_dynamic}
 }
 \description{
 Time windows are calculated and rows are assigned to windows. Different from

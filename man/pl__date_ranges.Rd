@@ -14,10 +14,10 @@ pl__date_ranges(
 }
 \arguments{
 \item{start}{Lower bound of the date range. Something that can be coerced to
-a Date or a \link[=DataType_Datetime]{Datetime} expression. See examples for details.}
+a Date or a \link[=pl__Datetime]{Datetime} expression. See examples for details.}
 
 \item{end}{Upper bound of the date range. Something that can be coerced to a
-Date or a \link[=DataType_Datetime]{Datetime} expression. See examples for details.}
+Date or a \link[=pl__Datetime]{Datetime} expression. See examples for details.}
 
 \item{interval}{Interval of the range periods, specified as a \link{difftime}
 object or using the Polars duration string language. See the \verb{Polars duration string language} section for details. Must consist of full days.}

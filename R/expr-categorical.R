@@ -36,6 +36,8 @@ expr_cat_get_categories <- function() {
 
 #' Set Ordering
 #'
+#' @description
+#' `r lifecycle::badge("deprecated")`
 #' Determine how this categorical series should be sorted.
 #'
 #' @param ordering string either 'physical' or 'lexical'
@@ -44,21 +46,6 @@ expr_cat_get_categories <- function() {
 #' - `"lexical"`: use the string values to determine the order.
 #'
 #' @inherit as_polars_expr return
-#' @examples
-#' df <- pl$DataFrame(
-#'   cats = factor(c("z", "z", "k", "a", "b")),
-#'   vals = c(3, 1, 2, 2, 3)
-#' )
-#'
-#' # sort by the string value of categories
-#' df$with_columns(
-#'   pl$col("cats")$cat$set_ordering("lexical")
-#' )$sort("cats", "vals")
-#'
-#' # sort by the underlying value of categories
-#' df$with_columns(
-#'   pl$col("cats")$cat$set_ordering("physical")
-#' )$sort("cats", "vals")
 expr_cat_set_ordering <- function(ordering) {
   wrap({
     deprecate_warn(

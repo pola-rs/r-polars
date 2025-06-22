@@ -10,7 +10,7 @@
 #' @param schema `r lifecycle::badge("experimental")`
 #' An optional [nanoarrow schema object][nanoarrow::as_nanoarrow_schema].
 #' If specified, interpret the nanoarrow schema as a corresponding polars dtype
-#' and then convert the original object using [`<Series>$cast()`][series__cast].
+#' and then convert the original object using `<Series>$cast()`.
 #' Note that the schema of the returned object cannot be fully controlled
 #' because Polars does not support all Arrow types.
 #' @param polars_compat_level `r lifecycle::badge("experimental")`
