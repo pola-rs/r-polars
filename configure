@@ -4,7 +4,7 @@ export PATH="$PATH:$HOME/.cargo/bin"
 
 NOT_CRAN=${NOT_CRAN:-"false"}
 
-LIBR_POLARS_BUILD=${LIBR_POLARS_BUILD:-""}
+LIB_BUILD=${LIBR_POLARS_BUILD:-""}
 # Passed to the --feture flag of cargo build
 FEATURES=${LIBR_POLARS_FEATURES:-""}
 
@@ -12,8 +12,8 @@ FEATURES=${LIBR_POLARS_FEATURES:-""}
 MY_UNIVERSE=${MY_UNIVERSE:-""}
 
 LIBNAME="libr_polars.a"
-LIBR_POLARS_DEFAULT_PATH="$(pwd)/tools/${LIBNAME}"
-LIBR_POLARS_PATH=${LIBR_POLARS_PATH:-${LIBR_POLARS_DEFAULT_PATH}}
+LIB_DEFAULT_PATH="$(pwd)/tools/${LIBNAME}"
+LIB_PATH=${LIBR_POLARS_PATH:-${LIB_DEFAULT_PATH}}
 
 check_cargo() {
   if [ ! "$(command -v cargo)" ]; then
@@ -77,26 +77,26 @@ EOF
 }
 
 check_bin_lib() {
-  if [ "${NOT_CRAN}" = "true" ] && [ -z "${LIBR_POLARS_BUILD}" ]; then
-    LIBR_POLARS_BUILD="false"
+  if [ "${NOT_CRAN}" = "true" ] && [ -z "${LIB_BUILD}" ]; then
+    LIB_BUILD="false"
   fi
 
   # On R-universe, we try to download the pre-built binary from GitHub releases.
-  if [ -n "${MY_UNIVERSE}" ] && [ -z "${LIBR_POLARS_BUILD}" ]; then
+  if [ -n "${MY_UNIVERSE}" ] && [ -z "${LIB_BUILD}" ]; then
     cat <<EOF
 --------------------- [SETTING FOR R-UNIVERSE] ---------------------
 It seems that this is on R-universe <${MY_UNIVERSE}>.
 Trying to download pre-built binary.
 --------------------------------------------------------------------
 EOF
-    LIBR_POLARS_BUILD="false"
+    LIB_BUILD="false"
   fi
 
-  if [ "${LIBR_POLARS_BUILD}" = "false" ]; then
-    if [ -f "tools/lib-sums.tsv" ] && [ ! -f "${LIBR_POLARS_PATH}" ]; then
+  if [ "${LIB_BUILD}" = "false" ]; then
+    if [ -f "tools/lib-sums.tsv" ] && [ ! -f "${LIB_PATH}" ]; then
       cat <<EOF
 ---------------- [TRY TO DOWNLOAD PRE-BUILT BINARY] ----------------
-The library was not found at <${LIBR_POLARS_PATH}>.
+The library was not found at <${LIB_PATH}>.
 Trying to download pre-built binary from the Internet...
 --------------------------------------------------------------------
 EOF
@@ -104,20 +104,20 @@ EOF
         echo "Failed to download pre-built binary."
     fi
 
-    if [ -f "${LIBR_POLARS_PATH}" ] && [ "${LIBR_POLARS_PATH}" != "${LIBR_POLARS_DEFAULT_PATH}" ]; then
+    if [ -f "${LIB_PATH}" ] && [ "${LIB_PATH}" != "${LIB_DEFAULT_PATH}" ]; then
       cat <<EOF
 ------------------------- [COPYING BINARY] -------------------------
-Copying <${LIBR_POLARS_PATH}> to <${LIBR_POLARS_DEFAULT_PATH}>.
+Copying <${LIB_PATH}> to <${LIB_DEFAULT_PATH}>.
 --------------------------------------------------------------------
 EOF
-      mkdir -p "$(dirname "${LIBR_POLARS_DEFAULT_PATH}")"
-      cp "${LIBR_POLARS_PATH}" "${LIBR_POLARS_DEFAULT_PATH}" && echo "Done!" || echo "Failed to copy binary."
+      mkdir -p "$(dirname "${LIB_DEFAULT_PATH}")"
+      cp "${LIB_PATH}" "${LIB_DEFAULT_PATH}" && echo "Done!" || echo "Failed to copy binary."
     fi
 
-    if [ -f "${LIBR_POLARS_DEFAULT_PATH}" ]; then
+    if [ -f "${LIB_DEFAULT_PATH}" ]; then
       cat <<EOF
 ---------------------- [LIBRARY BINARY FOUND] ----------------------
-The library was found at <${LIBR_POLARS_DEFAULT_PATH}>. No need to build it.
+The library was found at <${LIB_DEFAULT_PATH}>. No need to build it.
 
 Note: rustc version: $(command -v rustc >/dev/null && rustc -V || echo "Not found")
 --------------------------------------------------------------------
@@ -127,7 +127,7 @@ EOF
     fi
     cat <<EOF
 -------------------- [LIBRARY BINARY NOT FOUND] --------------------
-The library was not found at <${LIBR_POLARS_PATH}>.
+The library was not found at <${LIB_PATH}>.
 Falling back to building from source.
 --------------------------------------------------------------------
 EOF
