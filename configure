@@ -5,8 +5,10 @@ export PATH="$PATH:$HOME/.cargo/bin"
 NOT_CRAN=${NOT_CRAN:-"false"}
 
 LIB_BUILD=${LIBR_POLARS_BUILD:-""}
-# Passed to the --feture flag of cargo build
+# Passed to the --feature flag of cargo build
 FEATURES=${LIBR_POLARS_FEATURES:-""}
+# Passed to the --profile flag of cargo build
+PROFILE=${LIBR_POLARS_PROFILE:-"release"}
 
 # Detect if this is on R-universe.
 MY_UNIVERSE=${MY_UNIVERSE:-""}
@@ -198,8 +200,6 @@ EOF
 # catch DEBUG envvar, which is passed from pkgbuild::compile_dll()
 if [ "${DEBUG}" = "true" ]; then
   PROFILE=dev
-else
-  PROFILE=release
 fi
 
 check_emscripten
