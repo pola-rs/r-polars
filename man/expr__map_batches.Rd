@@ -32,7 +32,7 @@ scalar that will be converted into a Series. If the result is a scalar and
 you want it to stay as a scalar, pass in \code{returns_scalar = TRUE}.
 
 If you want to apply a custom function elementwise over single values, see
-\link[=expr__map_elements]{map_elements()}. A reasonable use case for map
+map_elements(). A reasonable use case for map
 functions is transforming the values represented by an expression using a
 third-party package.
 }

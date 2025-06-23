@@ -1085,7 +1085,7 @@ expr__filter <- function(...) {
 #' you want it to stay as a scalar, pass in `returns_scalar = TRUE`.
 #'
 #' If you want to apply a custom function elementwise over single values, see
-#' [map_elements()][expr__map_elements]. A reasonable use case for map
+#' map_elements(). A reasonable use case for map
 #' functions is transforming the values represented by an expression using a
 #' third-party package.
 #'
