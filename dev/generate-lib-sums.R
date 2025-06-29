@@ -12,7 +12,7 @@ latest_released_lib_version <- gert::git_remote_ls(remote = git_remote_url) |>
   dplyr::pull(ref) |>
   stringr::str_subset(stringr::str_c(r"(^refs/tags/)", tag_prefix)) |>
   stringr::str_remove(stringr::str_c(".*", tag_prefix)) |>
-  semver::parse_version() |>
+  smvr::parse_semver() |>
   sort() |>
   tail(1) |>
   as.character()
