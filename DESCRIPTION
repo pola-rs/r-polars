@@ -1,6 +1,6 @@
 Package: polars
 Title: R Bindings for the 'polars' Rust Library
-Version: 0.0.9000.9000
+Version: 0.9000.9000.9000
 Authors@R: c(
     person("Tatsuya", "Shima", , "ts1s1andn@gmail.com", role = c("aut", "cre")),
     person("Etienne", "Bacher", , "etienne.bacher@protonmail.com", role = "aut",
@@ -13,6 +13,9 @@ Description: Lightning-fast 'DataFrame' library written in 'Rust'. Convert
     interoperable with the package 'arrow', as both are based on the
     'Apache Arrow' Columnar Format.
 License: MIT + file LICENSE
+URL: https://pola-rs.github.io/r-polars/,
+    https://github.com/pola-rs/r-polars,
+    https://rpolars.r-universe.dev/polars
 Depends:
     R (>= 4.3)
 Imports:
@@ -39,7 +42,7 @@ Suggests:
     tibble (>= 3.3.0),
     vctrs,
     withr
-VignetteBuilder: 
+VignetteBuilder:
     knitr
 Config/Needs/dev: devtools, lifecycle, readr, glue, RcppTOML, smvr
 Config/Needs/lint: fs, lintr

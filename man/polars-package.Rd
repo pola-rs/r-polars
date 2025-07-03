@@ -8,6 +8,15 @@
 \description{
 Lightning-fast 'DataFrame' library written in 'Rust'. Convert R data to 'Polars' data and vice versa. Perform fast, lazy, larger-than-memory and optimized data queries. 'Polars' is interoperable with the package 'arrow', as both are based on the 'Apache Arrow' Columnar Format.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://pola-rs.github.io/r-polars/}
+  \item \url{https://github.com/pola-rs/r-polars}
+  \item \url{https://rpolars.r-universe.dev/polars}
+}
+
+}
 \author{
 \strong{Maintainer}: Tatsuya Shima \email{ts1s1andn@gmail.com}
 
