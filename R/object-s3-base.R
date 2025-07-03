@@ -1,4 +1,10 @@
 #' @export
+print.polars_object <- function(x, ...) {
+  cat(sprintf("<%s>\n", class(x)[[1L]]))
+  invisible(x)
+}
+
+#' @export
 `$.polars_object` <- function(x, name) {
   if (!exists(name, envir = x)) {
     abort(

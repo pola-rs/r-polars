@@ -1,10 +1,3 @@
-# TODO: mimic the Python's one
-#' @export
-print.polars_lazy_frame <- function(x, ...) {
-  cat(sprintf("<polars_lazy_frame at %s>\n", obj_address(x)))
-  invisible(x)
-}
-
 #' @export
 dim.polars_lazy_frame <- function(x) c(NA_integer_, length(x$collect_schema()))
 

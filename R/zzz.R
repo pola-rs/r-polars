@@ -23,12 +23,6 @@
 #' @export
 pl <- new.env(parent = emptyenv())
 
-#' @export
-print.polars_object <- function(x, ...) {
-  cat("<polars_object>\n")
-  invisible(x)
-}
-
 # A function to collect objects to be assigned to the environment
 # These environments are used inside the wrap function etc.
 assign_objects_to_env <- function(env, obj_name_pattern, ..., search_env = parent.frame()) {
