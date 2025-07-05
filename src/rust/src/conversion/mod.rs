@@ -66,7 +66,7 @@ impl TryFrom<&str> for PlRDataType {
             "Null" => DataType::Null,
             "Unknown" => DataType::Unknown(Default::default()),
             _ => {
-                return Err(format!("'{}' is not a valid data type name.", name));
+                return Err(format!("'{name}' is not a valid data type name."));
             }
         };
         Ok(Self { dt })
@@ -923,6 +923,7 @@ pub(crate) fn parse_parquet_compression(
     Ok(parsed)
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 impl TryFrom<&str> for Wrap<Option<IpcCompression>> {
     type Error = String;
 
@@ -934,5 +935,27 @@ impl TryFrom<&str> for Wrap<Option<IpcCompression>> {
             _ => return Err("unreachable".to_string()),
         };
         Ok(Wrap(parsed))
+    }
+}
+
+impl TryFrom<&str> for Wrap<Option<TimeZone>> {
+    type Error = savvy::Error;
+
+    fn try_from(tz: &str) -> Result<Self, Self::Error> {
+        TimeZone::opt_try_new(tz.into())
+            .map_err(RPolarsErr::from)
+            .map_err(Into::into)
+            .map(Wrap)
+    }
+}
+
+impl TryFrom<Option<&str>> for Wrap<Option<TimeZone>> {
+    type Error = savvy::Error;
+
+    fn try_from(tz: Option<&str>) -> Result<Self, Self::Error> {
+        match tz {
+            Some(tz) => <Wrap<Option<TimeZone>>>::try_from(tz),
+            None => Ok(Wrap(None)),
+        }
     }
 }

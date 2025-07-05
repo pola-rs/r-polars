@@ -121,7 +121,6 @@ set_sink_optimizations <- function(
     comm_subexpr_elim = FALSE,
     cluster_with_columns = FALSE,
     collapse_joins = collapse_joins,
-    streaming = TRUE,
     `_eager` = FALSE,
     `_check_order` = `_check_order`
   )

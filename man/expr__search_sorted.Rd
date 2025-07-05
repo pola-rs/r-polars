@@ -4,7 +4,12 @@
 \alias{expr__search_sorted}
 \title{Find indices where elements should be inserted to maintain order}
 \usage{
-expr__search_sorted(element, side = c("any", "left", "right"))
+expr__search_sorted(
+  element,
+  side = c("any", "left", "right"),
+  ...,
+  descending = FALSE
+)
 }
 \arguments{
 \item{element}{Expression or scalar value.}
@@ -15,6 +20,10 @@ expr__search_sorted(element, side = c("any", "left", "right"))
 \item \code{"left"}: the index of the leftmost suitable location found is given;
 \item \code{"right"}: the index the rightmost suitable location found is given.
 }}
+
+\item{...}{These dots are for future extensions and must be empty.}
+
+\item{descending}{Boolean indicating whether the values are descending or not.}
 }
 \value{
 A polars \link{expression}

@@ -131,6 +131,12 @@ jobs:
             r: "4.3"
             features: nightly
     steps:
+      - name: more space for debug build
+        if: runner.os == 'Linux'
+        run: |
+          du -hsc /usr/local/lib/*
+          sudo rm -rf /usr/local/lib/android || true
+
       - uses: actions/checkout@v4
 
       - uses: r-lib/actions/setup-pandoc@v2

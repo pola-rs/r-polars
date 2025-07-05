@@ -45,10 +45,6 @@ impl std::fmt::Display for PlRDataType {
             opt.map_or_else(|| "NULL".to_string(), |v| v.to_string())
         }
 
-        fn opt_string_to_string(opt: Option<PlSmallStr>) -> String {
-            opt.map_or_else(|| "NULL".to_string(), |v| format!("'{v}'"))
-        }
-
         match &self.dt {
             DataType::Decimal(precision, scale) => {
                 write!(
@@ -63,7 +59,10 @@ impl std::fmt::Display for PlRDataType {
                     f,
                     "Datetime(time_unit='{}', time_zone={})",
                     time_unit.to_ascii(),
-                    opt_string_to_string(time_zone.clone())
+                    match time_zone {
+                        Some(tz) => format!("'{tz}'"),
+                        None => "NULL".to_string(),
+                    }
                 )
             }
             DataType::Duration(time_unit) => {
@@ -106,7 +105,7 @@ impl std::fmt::Display for PlRDataType {
                     })
                     .collect::<Vec<_>>()
                     .join(", ");
-                write!(f, "Struct({})", fields)
+                write!(f, "Struct({fields})")
             }
             DataType::Categorical(_, ordering) => {
                 write!(
@@ -159,7 +158,7 @@ impl PlRDataType {
 
     pub fn new_datetime(time_unit: &str, time_zone: Option<&str>) -> Result<Self> {
         let time_unit = <Wrap<TimeUnit>>::try_from(time_unit)?.0;
-        let time_zone: Option<PlSmallStr> = time_zone.map(|s| s.into());
+        let time_zone = <Wrap<Option<TimeZone>>>::try_from(time_zone)?.0;
         Ok(DataType::Datetime(time_unit, time_zone).into())
     }
 
@@ -260,7 +259,7 @@ impl PlRDataType {
         if abbreviated {
             self.dt.clone().to_string().try_into()
         } else {
-            format!("{}", self).try_into()
+            format!("{self}").try_into()
         }
     }
 

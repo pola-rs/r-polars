@@ -227,18 +227,12 @@ lazyframe__group_by <- function(..., .maintain_order = FALSE) {
 #' to with_columns.
 #' @param collapse_joins Collapse a join and filters into a faster join.
 #' @param no_optimization A logical. If `TRUE`, turn off (certain) optimizations.
-#' @param streaming `r lifecycle::badge("deprecated")`
-#' A logical. If `TRUE`, process the query in batches to handle larger-than-memory data.
-#' If `FALSE` (default), the entire query is processed in a single batch.
-#' Note that streaming mode is considered unstable.
-#' It may be changed at any point without it being considered a breaking change.
 #' @param engine The engine name to use for processing the query.
 #' One of the followings:
 #' - `"auto"` (default): Select the engine automatically.
 #'   The `"in-memory"` engine will be selected for most cases.
 #' - `"in-memory"`: Use the in-memory engine.
 #' - `"streaming"`: `r lifecycle::badge("experimental")` Use the (new) streaming engine.
-#' - `"old-streaming"`: `r lifecycle::badge("superseded")` Use the old streaming engine.
 #' @param _eager A logical, indicates to turn off multi-node optimizations and
 #' the other optimizations. This option is intended for internal use only.
 #' @param _check_order,_type_check For internal use only.
@@ -261,7 +255,7 @@ lazyframe__group_by <- function(..., .maintain_order = FALSE) {
 #'
 #' # Collect in streaming mode
 #' lf$group_by("a")$agg(pl$all()$sum())$collect(
-#'   streaming = TRUE
+#'   engine = "streaming"
 #' )
 lazyframe__collect <- function(
   ...,
@@ -276,30 +270,13 @@ lazyframe__collect <- function(
   cluster_with_columns = TRUE,
   collapse_joins = TRUE,
   no_optimization = FALSE,
-  engine = c("auto", "in-memory", "streaming", "old-streaming"),
-  streaming = FALSE,
+  engine = c("auto", "in-memory", "streaming"),
   `_check_order` = TRUE,
   `_eager` = FALSE
 ) {
   wrap({
     check_dots_empty0(...)
-    engine <- arg_match0(engine, c("auto", "in-memory", "streaming", "old-streaming"))
-    # TODO: remove the streaming argument
-    if (!missing(streaming)) {
-      deprecate_warn(
-        c(
-          "The `streaming` argument is deprecated and will be removed in the future.",
-          i = "Use `engine = \"old-streaming\"` for traditional streaming mode.",
-          i = "Use `engine = \"streaming\"` for the new streaming mode.",
-          i = "Use `engine = \"in-memory\"` for non-streaming mode."
-        ),
-        always = TRUE
-      )
-      if (isTRUE(streaming)) {
-        engine <- "old-streaming"
-      }
-      if (isFALSE(streaming)) engine <- "in-memory"
-    }
+    engine <- arg_match0(engine, c("auto", "in-memory", "streaming"))
 
     if (isTRUE(no_optimization) || isTRUE(`_eager`)) {
       predicate_pushdown <- FALSE
@@ -323,7 +300,6 @@ lazyframe__collect <- function(
       comm_subexpr_elim = comm_subexpr_elim,
       cluster_with_columns = cluster_with_columns,
       collapse_joins = collapse_joins,
-      streaming = FALSE,
       `_check_order` = `_check_order`,
       `_eager` = `_eager`
     )
@@ -354,31 +330,16 @@ lazyframe__collect <- function(
 #'  - [`$collect()`][lazyframe__collect] - regular collect.
 #'  - [`$sink_parquet()`][lazyframe__sink_parquet()] streams query to a parquet file.
 #'  - [`$sink_ipc()`][lazyframe__sink_ipc()] streams query to a arrow file.
-#'
 #' @examples
-#' ## Simplest use case
-#' pl$LazyFrame()$select(pl$lit(2) + 2)$profile()
+#' lf <- pl$LazyFrame(
+#'   a = c("a", "b", "a", "b", "b", "c"),
+#'   b = 1:6,
+#'   c = 6:1,
+#' )
 #'
-#' ## Use $profile() to compare two queries
-#'
-#' # -1-  map each Species-group with native polars
-#' as_polars_lf(iris)$
-#'   sort("Sepal.Length")$
-#'   group_by("Species", maintain_order = TRUE)$
-#'   agg(pl$col(pl$Float64)$first() + 5)$
-#'   profile()
-# TODO-REWRITE: uncomment when map_elements() is implemented
-# 2-  map each Species-group of each numeric column with an R function
-#' ## some R function, prints `.` for each time called by polars
-# r_func <- \(s) {
-#' #  cat(".")
-#' #  s$to_r()[1] + 5
-# }
-# as_polars_lf(iris)$
-#' #  sort("Sepal.Length")$
-#' #  group_by("Species", maintain_order = TRUE)$
-#' #  agg(pl$col(pl$Float64)$map_elements(r_func))$
-#' #  profile()
+#' lf$group_by("a", .maintain_order = TRUE)$agg(
+#'   pl$all()$sum()
+#' )$sort("a")$profile()
 lazyframe__profile <- function(
   ...,
   type_coercion = TRUE,
@@ -391,7 +352,6 @@ lazyframe__profile <- function(
   comm_subexpr_elim = TRUE,
   cluster_with_columns = TRUE,
   collapse_joins = TRUE,
-  streaming = FALSE,
   no_optimization = FALSE,
   `_check_order` = TRUE,
   show_plot = FALSE,
@@ -411,10 +371,6 @@ lazyframe__profile <- function(
       `_check_order` <- FALSE
     }
 
-    if (isTRUE(streaming)) {
-      comm_subplan_elim <- FALSE
-    }
-
     lf <- self$`_ldf`$optimization_toggle(
       type_coercion = type_coercion,
       `_type_check` = `_type_check`,
@@ -426,7 +382,6 @@ lazyframe__profile <- function(
       comm_subexpr_elim = comm_subexpr_elim,
       cluster_with_columns = cluster_with_columns,
       collapse_joins = collapse_joins,
-      streaming = streaming,
       `_check_order` = `_check_order`,
       `_eager` = FALSE
     )
@@ -491,7 +446,6 @@ lazyframe__explain <- function(
   comm_subexpr_elim = TRUE,
   cluster_with_columns = TRUE,
   collapse_joins = TRUE,
-  streaming = FALSE,
   `_check_order` = TRUE
 ) {
   wrap({
@@ -511,7 +465,6 @@ lazyframe__explain <- function(
         comm_subexpr_elim = comm_subexpr_elim,
         cluster_with_columns = cluster_with_columns,
         collapse_joins = collapse_joins,
-        streaming = streaming,
         `_check_order` = `_check_order`,
         `_eager` = FALSE
       )
@@ -1983,7 +1936,6 @@ lazyframe__to_dot <- function(
   comm_subexpr_elim = TRUE,
   cluster_with_columns = TRUE,
   collapse_joins = TRUE,
-  streaming = FALSE,
   `_check_order` = TRUE
 ) {
   ldf <- self$`_ldf`$optimization_toggle(
@@ -1997,7 +1949,6 @@ lazyframe__to_dot <- function(
     comm_subexpr_elim = comm_subexpr_elim,
     cluster_with_columns = cluster_with_columns,
     collapse_joins = collapse_joins,
-    streaming = streaming,
     `_check_order` = `_check_order`,
     `_eager` = FALSE
   )

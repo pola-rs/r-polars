@@ -525,12 +525,6 @@ test_that("eval", {
       rank = list(c(1, 2), c(2, 1), c(2, 1))
     )
   )
-  expect_snapshot(
-    df$with_columns(
-      pl$concat_list("a", "b")$list$eval(pl$element(), TRUE)
-    ),
-    error = TRUE
-  )
 })
 
 test_that("$list$all() works", {

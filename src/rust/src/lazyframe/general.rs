@@ -1,3 +1,4 @@
+use super::sink::RSinkTarget;
 use crate::{
     PlRDataFrame, PlRDataType, PlRExpr, PlRLazyFrame, PlRLazyGroupBy, PlRSeries, RPolarsErr,
     prelude::{sync_on_close::SyncOnCloseType, *},
@@ -53,7 +54,6 @@ impl PlRLazyFrame {
         comm_subexpr_elim: bool,
         cluster_with_columns: bool,
         collapse_joins: bool,
-        streaming: bool,
         _eager: bool,
         _check_order: bool,
     ) -> Result<Self> {
@@ -70,7 +70,6 @@ impl PlRLazyFrame {
             .with_comm_subplan_elim(comm_subplan_elim)
             .with_comm_subexpr_elim(comm_subexpr_elim)
             .with_cluster_with_columns(cluster_with_columns)
-            .with_streaming(streaming)
             ._with_eager(_eager)
             .with_projection_pushdown(projection_pushdown);
 
@@ -728,78 +727,85 @@ impl PlRLazyFrame {
         file_cache_ttl: Option<NumericScalar>,
         include_file_paths: Option<&str>,
     ) -> Result<Self> {
-        let source = source
-            .to_vec()
-            .iter()
-            .map(PathBuf::from)
-            .collect::<Vec<PathBuf>>();
-        let row_index_offset = <Wrap<u32>>::try_from(row_index_offset)?.0;
-        let retries = <Wrap<usize>>::try_from(retries)?.0;
-        let hive_schema = match hive_schema {
-            Some(x) => Some(<Wrap<Schema>>::try_from(x)?),
-            None => None,
-        };
-        let n_rows = match n_rows {
-            Some(x) => Some(<Wrap<usize>>::try_from(x)?.0),
-            None => None,
-        };
-        let row_index = row_index_name.map(|x| RowIndex {
-            name: x.into(),
-            offset: row_index_offset,
-        });
-        let file_cache_ttl = match file_cache_ttl {
-            Some(x) => Some(<Wrap<u64>>::try_from(x)?.0),
-            None => None,
-        };
-        let hive_options = HiveOptions {
-            enabled: hive_partitioning,
-            hive_start_idx: 0,
-            schema: hive_schema.map(|x| Arc::new(x.0)),
-            try_parse_dates: try_parse_hive_dates,
-        };
-        // TODO: better error message
-        // TODO: Refactor with adding `cloud` feature as like Python Polars
         #[cfg(not(target_arch = "wasm32"))]
-        let cloud_options = match storage_options {
-            Some(x) => {
-                let out = <Wrap<Vec<(String, String)>>>::try_from(x).map_err(|_| {
-                    RPolarsErr::Other(
-                        "`storage_options` must be a named character vector".to_string(),
-                    )
-                })?;
-                Some(out.0)
+        {
+            let source = source
+                .to_vec()
+                .iter()
+                .map(PathBuf::from)
+                .collect::<Vec<PathBuf>>();
+            let row_index_offset = <Wrap<u32>>::try_from(row_index_offset)?.0;
+            let retries = <Wrap<usize>>::try_from(retries)?.0;
+            let hive_schema = match hive_schema {
+                Some(x) => Some(<Wrap<Schema>>::try_from(x)?),
+                None => None,
+            };
+            let n_rows = match n_rows {
+                Some(x) => Some(<Wrap<usize>>::try_from(x)?.0),
+                None => None,
+            };
+            let row_index = row_index_name.map(|x| RowIndex {
+                name: x.into(),
+                offset: row_index_offset,
+            });
+            let file_cache_ttl = match file_cache_ttl {
+                Some(x) => Some(<Wrap<u64>>::try_from(x)?.0),
+                None => None,
+            };
+            let hive_options = HiveOptions {
+                enabled: hive_partitioning,
+                hive_start_idx: 0,
+                schema: hive_schema.map(|x| Arc::new(x.0)),
+                try_parse_dates: try_parse_hive_dates,
+            };
+            // TODO: better error message
+            // TODO: Refactor with adding `cloud` feature as like Python Polars
+            #[cfg(not(target_arch = "wasm32"))]
+            let cloud_options = match storage_options {
+                Some(x) => {
+                    let out = <Wrap<Vec<(String, String)>>>::try_from(x).map_err(|_| {
+                        RPolarsErr::Other(
+                            "`storage_options` must be a named character vector".to_string(),
+                        )
+                    })?;
+                    Some(out.0)
+                }
+                None => None,
+            };
+
+            #[cfg(target_arch = "wasm32")]
+            let cloud_options: Option<Vec<(String, String)>> = None;
+
+            let mut args = ScanArgsIpc {
+                n_rows,
+                cache,
+                rechunk,
+                row_index,
+                cloud_options: None,
+                hive_options,
+                include_file_paths: include_file_paths.map(|x| x.into()),
+            };
+
+            let first_path: Option<PathBuf> = source.first().unwrap().clone().into();
+
+            // TODO: Refactor with adding `cloud` feature as like Python Polars
+            #[cfg(not(target_arch = "wasm32"))]
+            if let Some(first_path) = first_path {
+                let first_path_url = first_path.to_string_lossy();
+                let mut cloud_options =
+                    parse_cloud_options(&first_path_url, cloud_options.unwrap_or_default())?;
+                if let Some(file_cache_ttl) = file_cache_ttl {
+                    cloud_options.file_cache_ttl = file_cache_ttl;
+                }
+                args.cloud_options = Some(cloud_options.with_max_retries(retries));
             }
-            None => None,
-        };
-
-        #[cfg(target_arch = "wasm32")]
-        let cloud_options: Option<Vec<(String, String)>> = None;
-
-        let mut args = ScanArgsIpc {
-            n_rows,
-            cache,
-            rechunk,
-            row_index,
-            cloud_options: None,
-            hive_options,
-            include_file_paths: include_file_paths.map(|x| x.into()),
-        };
-
-        let first_path: Option<PathBuf> = source.first().unwrap().clone().into();
-
-        // TODO: Refactor with adding `cloud` feature as like Python Polars
-        #[cfg(not(target_arch = "wasm32"))]
-        if let Some(first_path) = first_path {
-            let first_path_url = first_path.to_string_lossy();
-            let mut cloud_options =
-                parse_cloud_options(&first_path_url, cloud_options.unwrap_or_default())?;
-            if let Some(file_cache_ttl) = file_cache_ttl {
-                cloud_options.file_cache_ttl = file_cache_ttl;
-            }
-            args.cloud_options = Some(cloud_options.with_max_retries(retries));
+            let lf = LazyFrame::scan_ipc_files(source.into(), args).map_err(RPolarsErr::from)?;
+            Ok(lf.into())
         }
-        let lf = LazyFrame::scan_ipc_files(source.into(), args).map_err(RPolarsErr::from)?;
-        Ok(lf.into())
+        #[cfg(target_arch = "wasm32")]
+        {
+            Err(RPolarsErr::Other(format!("Not supported in WASM")).into())
+        }
     }
 
     fn new_from_csv(
@@ -834,132 +840,139 @@ impl PlRLazyFrame {
         file_cache_ttl: Option<NumericScalar>,
         include_file_paths: Option<&str>,
     ) -> Result<Self> {
-        let source = source
-            .to_vec()
-            .iter()
-            .map(PathBuf::from)
-            .collect::<Vec<PathBuf>>();
-        let encoding = <Wrap<CsvEncoding>>::try_from(encoding)?.0;
-        let skip_rows = <Wrap<usize>>::try_from(skip_rows)?.0;
-        let skip_rows_after_header = <Wrap<usize>>::try_from(skip_rows_after_header)?.0;
-        let infer_schema_length = match infer_schema_length {
-            Some(x) => Some(<Wrap<usize>>::try_from(x)?.0),
-            None => None,
-        };
-        let row_index_offset = <Wrap<u32>>::try_from(row_index_offset)?.0;
-        let n_rows = match n_rows {
-            Some(x) => Some(<Wrap<usize>>::try_from(x)?.0),
-            None => None,
-        };
-        let null_values = match null_values {
-            Some(x) => Some(<Wrap<NullValues>>::try_from(x)?.0),
-            None => None,
-        };
-        let retries = <Wrap<usize>>::try_from(retries)?.0;
-        let file_cache_ttl = match file_cache_ttl {
-            Some(x) => Some(<Wrap<u64>>::try_from(x)?.0),
-            None => None,
-        };
-
-        let quote_char = quote_char
-            .map(|s| {
-                s.as_bytes()
-                    .first()
-                    .ok_or_else(|| polars_err!(InvalidOperation: "`quote_char` cannot be empty"))
-            })
-            .transpose()
-            .map_err(RPolarsErr::from)?
-            .copied();
-        let separator = separator
-            .as_bytes()
-            .first()
-            .ok_or_else(|| polars_err!(InvalidOperation: "`separator` cannot be empty"))
-            .copied()
-            .map_err(RPolarsErr::from)?;
-        let eol_char = eol_char
-            .as_bytes()
-            .first()
-            .ok_or_else(|| polars_err!(InvalidOperation: "`eol_char` cannot be empty"))
-            .copied()
-            .map_err(RPolarsErr::from)?;
-
-        let row_index = row_index_name.map(|x| RowIndex {
-            name: x.into(),
-            offset: row_index_offset,
-        });
-
-        let overwrite_dtype = match overwrite_dtype {
-            Some(x) => Some(<Wrap<Schema>>::try_from(x)?.0),
-            None => None,
-        };
-
-        let schema = match schema {
-            Some(x) => Some(<Wrap<Schema>>::try_from(x)?.0),
-            None => None,
-        };
-
-        // TODO: Refactor with adding `cloud` feature as like Python Polars
         #[cfg(not(target_arch = "wasm32"))]
-        let cloud_options = match storage_options {
-            Some(x) => {
-                let out = <Wrap<Vec<(String, String)>>>::try_from(x).map_err(|_| {
-                    RPolarsErr::Other(
-                        "`storage_options` must be a named character vector".to_string(),
+        {
+            let source = source
+                .to_vec()
+                .iter()
+                .map(PathBuf::from)
+                .collect::<Vec<PathBuf>>();
+            let encoding = <Wrap<CsvEncoding>>::try_from(encoding)?.0;
+            let skip_rows = <Wrap<usize>>::try_from(skip_rows)?.0;
+            let skip_rows_after_header = <Wrap<usize>>::try_from(skip_rows_after_header)?.0;
+            let infer_schema_length = match infer_schema_length {
+                Some(x) => Some(<Wrap<usize>>::try_from(x)?.0),
+                None => None,
+            };
+            let row_index_offset = <Wrap<u32>>::try_from(row_index_offset)?.0;
+            let n_rows = match n_rows {
+                Some(x) => Some(<Wrap<usize>>::try_from(x)?.0),
+                None => None,
+            };
+            let null_values = match null_values {
+                Some(x) => Some(<Wrap<NullValues>>::try_from(x)?.0),
+                None => None,
+            };
+            let retries = <Wrap<usize>>::try_from(retries)?.0;
+            let file_cache_ttl = match file_cache_ttl {
+                Some(x) => Some(<Wrap<u64>>::try_from(x)?.0),
+                None => None,
+            };
+
+            let quote_char = quote_char
+                .map(|s| {
+                    s.as_bytes().first().ok_or_else(
+                        || polars_err!(InvalidOperation: "`quote_char` cannot be empty"),
                     )
-                })?;
-                Some(out.0)
+                })
+                .transpose()
+                .map_err(RPolarsErr::from)?
+                .copied();
+            let separator = separator
+                .as_bytes()
+                .first()
+                .ok_or_else(|| polars_err!(InvalidOperation: "`separator` cannot be empty"))
+                .copied()
+                .map_err(RPolarsErr::from)?;
+            let eol_char = eol_char
+                .as_bytes()
+                .first()
+                .ok_or_else(|| polars_err!(InvalidOperation: "`eol_char` cannot be empty"))
+                .copied()
+                .map_err(RPolarsErr::from)?;
+
+            let row_index = row_index_name.map(|x| RowIndex {
+                name: x.into(),
+                offset: row_index_offset,
+            });
+
+            let overwrite_dtype = match overwrite_dtype {
+                Some(x) => Some(<Wrap<Schema>>::try_from(x)?.0),
+                None => None,
+            };
+
+            let schema = match schema {
+                Some(x) => Some(<Wrap<Schema>>::try_from(x)?.0),
+                None => None,
+            };
+
+            // TODO: Refactor with adding `cloud` feature as like Python Polars
+            #[cfg(not(target_arch = "wasm32"))]
+            let cloud_options = match storage_options {
+                Some(x) => {
+                    let out = <Wrap<Vec<(String, String)>>>::try_from(x).map_err(|_| {
+                        RPolarsErr::Other(
+                            "`storage_options` must be a named character vector".to_string(),
+                        )
+                    })?;
+                    Some(out.0)
+                }
+                None => None,
+            };
+
+            #[cfg(target_arch = "wasm32")]
+            let cloud_options: Option<Vec<(String, String)>> = None;
+
+            let mut r = LazyCsvReader::new_paths(source.clone().into());
+            let first_path: Option<PathBuf> = source.first().unwrap().clone().into();
+
+            // TODO: Refactor with adding `cloud` feature as like Python Polars
+            #[cfg(not(target_arch = "wasm32"))]
+            if let Some(first_path) = first_path {
+                let first_path_url = first_path.to_string_lossy();
+
+                let mut cloud_options =
+                    parse_cloud_options(&first_path_url, cloud_options.unwrap_or_default())?;
+                if let Some(file_cache_ttl) = file_cache_ttl {
+                    cloud_options.file_cache_ttl = file_cache_ttl;
+                }
+                cloud_options = cloud_options.with_max_retries(retries);
+                r = r.with_cloud_options(Some(cloud_options));
             }
-            None => None,
-        };
 
-        #[cfg(target_arch = "wasm32")]
-        let cloud_options: Option<Vec<(String, String)>> = None;
+            let r = r
+                .with_infer_schema_length(infer_schema_length)
+                .with_separator(separator)
+                .with_has_header(has_header)
+                .with_ignore_errors(ignore_errors)
+                .with_skip_rows(skip_rows)
+                .with_n_rows(n_rows)
+                .with_cache(cache)
+                .with_dtype_overwrite(overwrite_dtype.map(Arc::new))
+                .with_schema(schema.map(Arc::new))
+                .with_low_memory(low_memory)
+                .with_comment_prefix(comment_prefix.map(|x| x.into()))
+                .with_quote_char(quote_char)
+                .with_eol_char(eol_char)
+                .with_rechunk(rechunk)
+                .with_skip_rows_after_header(skip_rows_after_header)
+                .with_encoding(encoding)
+                .with_row_index(row_index)
+                .with_try_parse_dates(try_parse_dates)
+                .with_null_values(null_values)
+                .with_missing_is_null(!missing_utf8_is_empty_string)
+                .with_truncate_ragged_lines(truncate_ragged_lines)
+                .with_decimal_comma(decimal_comma)
+                .with_glob(glob)
+                .with_raise_if_empty(raise_if_empty)
+                .with_include_file_paths(include_file_paths.map(|x| x.into()));
 
-        let mut r = LazyCsvReader::new_paths(source.clone().into());
-        let first_path: Option<PathBuf> = source.first().unwrap().clone().into();
-
-        // TODO: Refactor with adding `cloud` feature as like Python Polars
-        #[cfg(not(target_arch = "wasm32"))]
-        if let Some(first_path) = first_path {
-            let first_path_url = first_path.to_string_lossy();
-
-            let mut cloud_options =
-                parse_cloud_options(&first_path_url, cloud_options.unwrap_or_default())?;
-            if let Some(file_cache_ttl) = file_cache_ttl {
-                cloud_options.file_cache_ttl = file_cache_ttl;
-            }
-            cloud_options = cloud_options.with_max_retries(retries);
-            r = r.with_cloud_options(Some(cloud_options));
+            Ok(r.finish().map_err(RPolarsErr::from)?.into())
         }
-
-        let r = r
-            .with_infer_schema_length(infer_schema_length)
-            .with_separator(separator)
-            .with_has_header(has_header)
-            .with_ignore_errors(ignore_errors)
-            .with_skip_rows(skip_rows)
-            .with_n_rows(n_rows)
-            .with_cache(cache)
-            .with_dtype_overwrite(overwrite_dtype.map(Arc::new))
-            .with_schema(schema.map(Arc::new))
-            .with_low_memory(low_memory)
-            .with_comment_prefix(comment_prefix.map(|x| x.into()))
-            .with_quote_char(quote_char)
-            .with_eol_char(eol_char)
-            .with_rechunk(rechunk)
-            .with_skip_rows_after_header(skip_rows_after_header)
-            .with_encoding(encoding)
-            .with_row_index(row_index)
-            .with_try_parse_dates(try_parse_dates)
-            .with_null_values(null_values)
-            .with_missing_is_null(!missing_utf8_is_empty_string)
-            .with_truncate_ragged_lines(truncate_ragged_lines)
-            .with_decimal_comma(decimal_comma)
-            .with_glob(glob)
-            .with_raise_if_empty(raise_if_empty)
-            .with_include_file_paths(include_file_paths.map(|x| x.into()));
-
-        Ok(r.finish().map_err(RPolarsErr::from)?.into())
+        #[cfg(target_arch = "wasm32")]
+        {
+            Err(RPolarsErr::Other(format!("Not supported in WASM")).into())
+        }
     }
 
     #[allow(unused_variables)]
@@ -1189,10 +1202,9 @@ impl PlRLazyFrame {
         }
     }
 
-    #[cfg(not(target_arch = "wasm32"))]
     fn sink_parquet(
         &self,
-        path: &str,
+        target: Sexp,
         compression: &str,
         stat_min: bool,
         stat_max: bool,
@@ -1206,73 +1218,102 @@ impl PlRLazyFrame {
         row_group_size: Option<NumericScalar>,
         data_page_size: Option<NumericScalar>,
         storage_options: Option<StringSexp>,
+        // TODO: support these arguments
+        // metadata,
+        // field_overwrites,
     ) -> Result<Self> {
-        let path: PathBuf = path.into();
-        let statistics = StatisticsOptions {
-            min_value: stat_min,
-            max_value: stat_max,
-            null_count: stat_null_count,
-            distinct_count: stat_distinct_count,
-        };
-        let compression_level: Option<i32> = match compression_level {
-            Some(x) => Some(x.as_i32()?),
-            None => None,
-        };
-        let compression = parse_parquet_compression(compression, compression_level)?;
-        let row_group_size: Option<usize> = match row_group_size {
-            Some(x) => Some(<Wrap<usize>>::try_from(x)?.0),
-            None => None,
-        };
-        let data_page_size: Option<usize> = match data_page_size {
-            Some(x) => Some(<Wrap<usize>>::try_from(x)?.0),
-            None => None,
-        };
-        let retries = <Wrap<usize>>::try_from(retries)?.0;
+        #[cfg(not(target_arch = "wasm32"))]
+        {
+            let target: RSinkTarget = target.try_into()?;
 
-        let options = ParquetWriteOptions {
-            compression,
-            statistics,
-            row_group_size,
-            data_page_size,
-        };
-        let cloud_options = match storage_options {
-            Some(x) => {
-                let out = <Wrap<Vec<(String, String)>>>::try_from(x).map_err(|_| {
-                    RPolarsErr::Other(
-                        "`storage_options` must be a named character vector".to_string(),
-                    )
-                })?;
-                Some(out.0)
-            }
-            None => None,
-        };
-        let cloud_options = {
-            let cloud_options =
-                parse_cloud_options(path.to_str().unwrap(), cloud_options.unwrap_or_default())?;
-            Some(cloud_options.with_max_retries(retries))
-        };
-        let sync_on_close = <Wrap<SyncOnCloseType>>::try_from(sync_on_close)?.0;
-        let sink_options = SinkOptions {
-            sync_on_close,
-            maintain_order,
-            mkdir,
-        };
-        self.ldf
-            .clone()
-            .sink_parquet(
-                SinkTarget::Path(Arc::new(path)),
-                options,
-                cloud_options,
-                sink_options,
-            )
-            .map(PlRLazyFrame::from)
+            let statistics = StatisticsOptions {
+                min_value: stat_min,
+                max_value: stat_max,
+                null_count: stat_null_count,
+                distinct_count: stat_distinct_count,
+            };
+            let compression_level: Option<i32> = match compression_level {
+                Some(x) => Some(x.as_i32()?),
+                None => None,
+            };
+            let compression = parse_parquet_compression(compression, compression_level)?;
+            let row_group_size: Option<usize> = match row_group_size {
+                Some(x) => Some(<Wrap<usize>>::try_from(x)?.0),
+                None => None,
+            };
+            let data_page_size: Option<usize> = match data_page_size {
+                Some(x) => Some(<Wrap<usize>>::try_from(x)?.0),
+                None => None,
+            };
+            let retries = <Wrap<usize>>::try_from(retries)?.0;
+
+            let options = ParquetWriteOptions {
+                compression,
+                statistics,
+                row_group_size,
+                data_page_size,
+                key_value_metadata: None,
+                field_overwrites: vec![],
+            };
+            let cloud_options = match storage_options {
+                Some(x) => {
+                    let out = <Wrap<Vec<(String, String)>>>::try_from(x).map_err(|_| {
+                        RPolarsErr::Other(
+                            "`storage_options` must be a named character vector".to_string(),
+                        )
+                    })?;
+                    Some(out.0)
+                }
+                None => None,
+            };
+            let cloud_options = match target.base_path() {
+                None => None,
+                Some(base_path) => {
+                    let cloud_options = parse_cloud_options(
+                        base_path.to_str().unwrap(),
+                        cloud_options.unwrap_or_default(),
+                    )?;
+                    Some(cloud_options.with_max_retries(retries))
+                }
+            };
+            let sync_on_close = <Wrap<SyncOnCloseType>>::try_from(sync_on_close)?.0;
+            let sink_options = SinkOptions {
+                sync_on_close,
+                maintain_order,
+                mkdir,
+            };
+
+            ({
+                let ldf = self.ldf.clone();
+                match target {
+                    RSinkTarget::File(target) => {
+                        ldf.sink_parquet(target, options, cloud_options, sink_options)
+                    }
+                    RSinkTarget::Partition(partition) => ldf.sink_parquet_partitioned(
+                        Arc::new(partition.base_path),
+                        None,
+                        partition.variant,
+                        options,
+                        cloud_options,
+                        sink_options,
+                        partition.per_partition_sort_by,
+                        None,
+                    ),
+                }
+            })
+            .map(Into::into)
             .map_err(RPolarsErr::from)
             .map_err(Into::into)
+        }
+        #[cfg(target_arch = "wasm32")]
+        {
+            Err(RPolarsErr::Other(format!("Not supported in WASM")).into())
+        }
     }
 
     fn sink_csv(
         &self,
-        path: &str,
+        target: Sexp,
         include_bom: bool,
         include_header: bool,
         separator: &str,
@@ -1292,130 +1333,176 @@ impl PlRLazyFrame {
         quote_style: Option<&str>,
         storage_options: Option<StringSexp>,
     ) -> Result<Self> {
-        let path: PathBuf = path.into();
-        let quote_style = match quote_style {
-            Some(x) => <Wrap<QuoteStyle>>::try_from(x)?.0,
-            None => QuoteStyle::default(),
-        };
-        let retries = <Wrap<usize>>::try_from(retries)?.0;
-        let null_value = null_value
-            .map(|x| x.to_string())
-            .unwrap_or(SerializeOptions::default().null);
-        let batch_size = <Wrap<NonZeroUsize>>::try_from(batch_size)?.0;
-        let float_precision = match float_precision {
-            Some(x) => Some(<Wrap<usize>>::try_from(x)?.0),
-            None => None,
-        };
-        let separator = <Wrap<u8>>::try_from(separator)?.0;
-        let quote_char = <Wrap<u8>>::try_from(quote_char)?.0;
+        #[cfg(not(target_arch = "wasm32"))]
+        {
+            let target: RSinkTarget = target.try_into()?;
 
-        let serialize_options = SerializeOptions {
-            date_format: date_format.map(|x| x.to_string()),
-            time_format: time_format.map(|x| x.to_string()),
-            datetime_format: datetime_format.map(|x| x.to_string()),
-            float_scientific,
-            float_precision,
-            separator,
-            quote_char,
-            null: null_value.to_string(),
-            line_terminator: line_terminator.to_string(),
-            quote_style,
-        };
+            let quote_style = match quote_style {
+                Some(x) => <Wrap<QuoteStyle>>::try_from(x)?.0,
+                None => QuoteStyle::default(),
+            };
+            let retries = <Wrap<usize>>::try_from(retries)?.0;
+            let null_value = null_value
+                .map(|x| x.to_string())
+                .unwrap_or(SerializeOptions::default().null);
+            let batch_size = <Wrap<NonZeroUsize>>::try_from(batch_size)?.0;
+            let float_precision = match float_precision {
+                Some(x) => Some(<Wrap<usize>>::try_from(x)?.0),
+                None => None,
+            };
+            let separator = <Wrap<u8>>::try_from(separator)?.0;
+            let quote_char = <Wrap<u8>>::try_from(quote_char)?.0;
 
-        let options = CsvWriterOptions {
-            include_bom,
-            include_header,
-            batch_size,
-            serialize_options,
-        };
-        let cloud_options = match storage_options {
-            Some(x) => {
-                let out = <Wrap<Vec<(String, String)>>>::try_from(x).map_err(|_| {
-                    RPolarsErr::Other(
-                        "`storage_options` must be a named character vector".to_string(),
-                    )
-                })?;
-                Some(out.0)
-            }
-            None => None,
-        };
-        let cloud_options = {
-            let cloud_options =
-                parse_cloud_options(path.to_str().unwrap(), cloud_options.unwrap_or_default())?;
-            Some(cloud_options.with_max_retries(retries))
-        };
-        let sync_on_close = <Wrap<SyncOnCloseType>>::try_from(sync_on_close)?.0;
-        let sink_options = SinkOptions {
-            sync_on_close,
-            maintain_order,
-            mkdir,
-        };
+            let serialize_options = SerializeOptions {
+                date_format: date_format.map(|x| x.to_string()),
+                time_format: time_format.map(|x| x.to_string()),
+                datetime_format: datetime_format.map(|x| x.to_string()),
+                float_scientific,
+                float_precision,
+                separator,
+                quote_char,
+                null: null_value.to_string(),
+                line_terminator: line_terminator.to_string(),
+                quote_style,
+            };
 
-        self.ldf
-            .clone()
-            .sink_csv(
-                SinkTarget::Path(Arc::new(path)),
-                options,
-                cloud_options,
-                sink_options,
-            )
-            .map(PlRLazyFrame::from)
+            let options = CsvWriterOptions {
+                include_bom,
+                include_header,
+                batch_size,
+                serialize_options,
+            };
+            let cloud_options = match storage_options {
+                Some(x) => {
+                    let out = <Wrap<Vec<(String, String)>>>::try_from(x).map_err(|_| {
+                        RPolarsErr::Other(
+                            "`storage_options` must be a named character vector".to_string(),
+                        )
+                    })?;
+                    Some(out.0)
+                }
+                None => None,
+            };
+            let cloud_options = match target.base_path() {
+                None => None,
+                Some(base_path) => {
+                    let cloud_options = parse_cloud_options(
+                        base_path.to_str().unwrap(),
+                        cloud_options.unwrap_or_default(),
+                    )?;
+                    Some(cloud_options.with_max_retries(retries))
+                }
+            };
+            let sync_on_close = <Wrap<SyncOnCloseType>>::try_from(sync_on_close)?.0;
+            let sink_options = SinkOptions {
+                sync_on_close,
+                maintain_order,
+                mkdir,
+            };
+
+            ({
+                let ldf = self.ldf.clone();
+                match target {
+                    RSinkTarget::File(target) => {
+                        ldf.sink_csv(target, options, cloud_options, sink_options)
+                    }
+                    RSinkTarget::Partition(partition) => ldf.sink_csv_partitioned(
+                        Arc::new(partition.base_path),
+                        None,
+                        partition.variant,
+                        options,
+                        cloud_options,
+                        sink_options,
+                        partition.per_partition_sort_by,
+                        None,
+                    ),
+                }
+            })
+            .map(Into::into)
             .map_err(RPolarsErr::from)
             .map_err(Into::into)
+        }
+        #[cfg(target_arch = "wasm32")]
+        {
+            Err(RPolarsErr::Other(format!("Not supported in WASM")).into())
+        }
     }
 
-    #[cfg(not(target_arch = "wasm32"))]
     fn sink_json(
         &self,
-        path: &str,
+        target: Sexp,
         retries: NumericScalar,
         sync_on_close: &str,
         maintain_order: bool,
         mkdir: bool,
         storage_options: Option<StringSexp>,
     ) -> Result<Self> {
-        let path: PathBuf = path.into();
-        let options = JsonWriterOptions {};
-        let retries = <Wrap<usize>>::try_from(retries)?.0;
+        #[cfg(not(target_arch = "wasm32"))]
+        {
+            let target: RSinkTarget = target.try_into()?;
 
-        let cloud_options = match storage_options {
-            Some(x) => {
-                let out = <Wrap<Vec<(String, String)>>>::try_from(x).map_err(|_| {
-                    RPolarsErr::Other(
-                        "`storage_options` must be a named character vector".to_string(),
-                    )
-                })?;
-                Some(out.0)
-            }
-            None => None,
-        };
-        let cloud_options = {
-            let cloud_options =
-                parse_cloud_options(path.to_str().unwrap(), cloud_options.unwrap_or_default())?;
-            Some(cloud_options.with_max_retries(retries))
-        };
-        let sync_on_close = <Wrap<SyncOnCloseType>>::try_from(sync_on_close)?.0;
-        let sink_options = SinkOptions {
-            sync_on_close,
-            maintain_order,
-            mkdir,
-        };
+            let options = JsonWriterOptions {};
+            let retries = <Wrap<usize>>::try_from(retries)?.0;
 
-        let ldf = self.ldf.clone();
-        ldf.sink_json(
-            SinkTarget::Path(Arc::new(path)),
-            options,
-            cloud_options,
-            sink_options,
-        )
-        .map(PlRLazyFrame::from)
-        .map_err(RPolarsErr::from)
-        .map_err(Into::into)
+            let cloud_options = match storage_options {
+                Some(x) => {
+                    let out = <Wrap<Vec<(String, String)>>>::try_from(x).map_err(|_| {
+                        RPolarsErr::Other(
+                            "`storage_options` must be a named character vector".to_string(),
+                        )
+                    })?;
+                    Some(out.0)
+                }
+                None => None,
+            };
+            let cloud_options = match target.base_path() {
+                None => None,
+                Some(base_path) => {
+                    let cloud_options = parse_cloud_options(
+                        base_path.to_str().unwrap(),
+                        cloud_options.unwrap_or_default(),
+                    )?;
+                    Some(cloud_options.with_max_retries(retries))
+                }
+            };
+            let sync_on_close = <Wrap<SyncOnCloseType>>::try_from(sync_on_close)?.0;
+            let sink_options = SinkOptions {
+                sync_on_close,
+                maintain_order,
+                mkdir,
+            };
+
+            ({
+                let ldf = self.ldf.clone();
+                match target {
+                    RSinkTarget::File(target) => {
+                        ldf.sink_json(target, options, cloud_options, sink_options)
+                    }
+                    RSinkTarget::Partition(partition) => ldf.sink_json_partitioned(
+                        Arc::new(partition.base_path),
+                        None,
+                        partition.variant,
+                        options,
+                        cloud_options,
+                        sink_options,
+                        partition.per_partition_sort_by,
+                        None,
+                    ),
+                }
+            })
+            .map(Into::into)
+            .map_err(RPolarsErr::from)
+            .map_err(Into::into)
+        }
+        #[cfg(target_arch = "wasm32")]
+        {
+            Err(RPolarsErr::Other(format!("Not supported in WASM")).into())
+        }
     }
 
     fn sink_ipc(
         &self,
-        path: &str,
+        target: Sexp,
         compression: &str,
         compat_level: Sexp,
         retries: NumericScalar,
@@ -1424,51 +1511,73 @@ impl PlRLazyFrame {
         mkdir: bool,
         storage_options: Option<StringSexp>,
     ) -> Result<Self> {
-        let path: PathBuf = path.into();
+        #[cfg(not(target_arch = "wasm32"))]
+        {
+            let target: RSinkTarget = target.try_into()?;
 
-        let retries = <Wrap<usize>>::try_from(retries)?.0;
-        let compression: Option<IpcCompression> =
-            <Wrap<Option<IpcCompression>>>::try_from(compression)?.0;
-        let compat_level = <Wrap<CompatLevel>>::try_from(compat_level)?.0;
-        let options = IpcWriterOptions {
-            compression,
-            compat_level,
-            ..Default::default()
-        };
+            let retries = <Wrap<usize>>::try_from(retries)?.0;
+            let compression: Option<IpcCompression> =
+                <Wrap<Option<IpcCompression>>>::try_from(compression)?.0;
+            let compat_level = <Wrap<CompatLevel>>::try_from(compat_level)?.0;
+            let options = IpcWriterOptions {
+                compression,
+                compat_level,
+                ..Default::default()
+            };
 
-        let cloud_options = match storage_options {
-            Some(x) => {
-                let out = <Wrap<Vec<(String, String)>>>::try_from(x).map_err(|_| {
-                    RPolarsErr::Other(
-                        "`storage_options` must be a named character vector".to_string(),
-                    )
-                })?;
-                Some(out.0)
-            }
-            None => None,
-        };
-        let cloud_options = {
-            let cloud_options =
-                parse_cloud_options(path.to_str().unwrap(), cloud_options.unwrap_or_default())?;
-            Some(cloud_options.with_max_retries(retries))
-        };
-        let sync_on_close = <Wrap<SyncOnCloseType>>::try_from(sync_on_close)?.0;
-        let sink_options = SinkOptions {
-            sync_on_close,
-            maintain_order,
-            mkdir,
-        };
+            let cloud_options = match storage_options {
+                Some(x) => {
+                    let out = <Wrap<Vec<(String, String)>>>::try_from(x).map_err(|_| {
+                        RPolarsErr::Other(
+                            "`storage_options` must be a named character vector".to_string(),
+                        )
+                    })?;
+                    Some(out.0)
+                }
+                None => None,
+            };
+            let cloud_options = match target.base_path() {
+                None => None,
+                Some(base_path) => {
+                    let cloud_options = parse_cloud_options(
+                        base_path.to_str().unwrap(),
+                        cloud_options.unwrap_or_default(),
+                    )?;
+                    Some(cloud_options.with_max_retries(retries))
+                }
+            };
+            let sync_on_close = <Wrap<SyncOnCloseType>>::try_from(sync_on_close)?.0;
+            let sink_options = SinkOptions {
+                sync_on_close,
+                maintain_order,
+                mkdir,
+            };
 
-        self.ldf
-            .clone()
-            .sink_ipc(
-                SinkTarget::Path(Arc::new(path)),
-                options,
-                cloud_options,
-                sink_options,
-            )
-            .map(PlRLazyFrame::from)
+            ({
+                let ldf = self.ldf.clone();
+                match target {
+                    RSinkTarget::File(target) => {
+                        ldf.sink_ipc(target, options, cloud_options, sink_options)
+                    }
+                    RSinkTarget::Partition(partition) => ldf.sink_ipc_partitioned(
+                        Arc::new(partition.base_path),
+                        None,
+                        partition.variant,
+                        options,
+                        cloud_options,
+                        sink_options,
+                        partition.per_partition_sort_by,
+                        None,
+                    ),
+                }
+            })
+            .map(Into::into)
             .map_err(RPolarsErr::from)
             .map_err(Into::into)
+        }
+        #[cfg(target_arch = "wasm32")]
+        {
+            Err(RPolarsErr::Other(format!("Not supported in WASM")).into())
+        }
     }
 }

@@ -269,12 +269,11 @@ expr_meta_is_regex_projection <- function() {
 #'
 #' @inherit as_polars_expr return
 #' @examples
-#' e <- pl$col("foo")$alias("bar")
-#' pop <- e$meta$pop()
-#' pop
+#' e <- pl$col("foo") + pl$col("bar")
+#' first <- e$meta$pop()[[1]]
 #'
-#' pop[[1]]$meta$eq(pl$col("foo"))
-#' pop[[1]]$meta$eq(pl$col("foo"))
+#' first$meta$eq(pl$col("bar"))
+#' first$meta$eq(pl$col("foo"))
 expr_meta_pop <- function() {
   lapply(self$`_rexpr`$meta_pop(), \(ptr) {
     .savvy_wrap_PlRExpr(ptr) |>

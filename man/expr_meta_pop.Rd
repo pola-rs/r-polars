@@ -13,10 +13,9 @@ A polars \link{expression}
 Pop the latest expression and return the input(s) of the popped expression
 }
 \examples{
-e <- pl$col("foo")$alias("bar")
-pop <- e$meta$pop()
-pop
+e <- pl$col("foo") + pl$col("bar")
+first <- e$meta$pop()[[1]]
 
-pop[[1]]$meta$eq(pl$col("foo"))
-pop[[1]]$meta$eq(pl$col("foo"))
+first$meta$eq(pl$col("bar"))
+first$meta$eq(pl$col("foo"))
 }

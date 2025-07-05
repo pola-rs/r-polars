@@ -1,5 +1,5 @@
-use crate::{PlRExpr, RPolarsErr};
-use savvy::{OwnedListSexp, Result, Sexp, savvy};
+use crate::{PlRExpr, RPolarsErr, prelude::*};
+use savvy::{ListSexp, OwnedListSexp, Result, Sexp, savvy};
 
 #[savvy]
 impl PlRExpr {
@@ -8,8 +8,17 @@ impl PlRExpr {
         out.try_into()
     }
 
-    fn meta_pop(&self) -> Result<Sexp> {
-        let exprs = self.inner.clone().meta().pop().map_err(RPolarsErr::from)?;
+    fn meta_pop(&self, schema: Option<ListSexp>) -> Result<Sexp> {
+        let schema = match schema {
+            Some(s) => Some(<Wrap<Schema>>::try_from(s)?.0),
+            None => None,
+        };
+        let exprs = self
+            .inner
+            .clone()
+            .meta()
+            .pop(schema.as_ref())
+            .map_err(RPolarsErr::from)?;
         let iter = exprs.iter().map(|x| <PlRExpr>::from(x.clone()));
         let mut out = OwnedListSexp::new(exprs.len(), false)?;
         for (i, expr) in iter.enumerate() {
@@ -105,12 +114,16 @@ impl PlRExpr {
         Ok(self.inner.clone().meta()._into_selector().into())
     }
 
-    fn compute_tree_format(&self, display_as_dot: bool) -> Result<Sexp> {
+    fn compute_tree_format(&self, display_as_dot: bool, schema: Option<ListSexp>) -> Result<Sexp> {
+        let schema = match schema {
+            Some(s) => Some(<Wrap<Schema>>::try_from(s)?.0),
+            None => None,
+        };
         let e = self
             .inner
             .clone()
             .meta()
-            .into_tree_formatter(display_as_dot)
+            .into_tree_formatter(display_as_dot, schema.as_ref())
             .map_err(RPolarsErr::from)?;
         format!("{e}").try_into()
     }

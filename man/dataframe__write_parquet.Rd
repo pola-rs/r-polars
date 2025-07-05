@@ -63,10 +63,12 @@ may reduce memory pressure and improve writing speeds.}
 \item{data_page_size}{Size of the data page in bytes. If \code{NULL} (default), it
 is set to 1024^2 bytes.}
 
-\item{partition_by}{A character vector indicating column(s) to partition by.
+\item{partition_by}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+A character vector indicating column(s) to partition by.
 A partitioned dataset will be written if this is specified.}
 
-\item{partition_chunk_size_bytes}{Approximate size to split DataFrames within
+\item{partition_chunk_size_bytes}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Approximate size to split DataFrames within
 a single partition when writing. Note this is calculated using the size of
 the DataFrame in memory (the size of the output file may differ depending
 on the file format / compression).}

@@ -9,6 +9,7 @@
 \alias{is_polars_lf}
 \alias{is_polars_selector}
 \alias{is_polars_series}
+\alias{is_polars_partitioning_scheme}
 \alias{is_list_of_polars_dtype}
 \alias{check_polars_dtype}
 \alias{check_polars_df}
@@ -16,6 +17,7 @@
 \alias{check_polars_lf}
 \alias{check_polars_selector}
 \alias{check_polars_series}
+\alias{check_polars_partitioning_scheme}
 \alias{check_list_of_polars_dtype}
 \title{Check if the object is a polars object}
 \usage{
@@ -30,6 +32,8 @@ is_polars_lf(x)
 is_polars_selector(x, ...)
 
 is_polars_series(x)
+
+is_polars_partitioning_scheme(x)
 
 is_list_of_polars_dtype(x, n = NULL)
 
@@ -81,6 +85,14 @@ check_polars_series(
   call = caller_env()
 )
 
+check_polars_partitioning_scheme(
+  x,
+  ...,
+  allow_null = FALSE,
+  arg = caller_arg(x),
+  call = caller_env()
+)
+
 check_list_of_polars_dtype(
   x,
   ...,
@@ -123,6 +135,7 @@ Suffixes are corresponding to the polars object classes:
 \item \verb{*_df}: For \link[=DataFrame]{polars data frames}.
 \item \verb{*_expr}: For \link[=Expr]{polars expressions}.
 \item \verb{*_lf}: For \link[=LazyFrame]{polars lazy frames}.
+\item \verb{*_partitioning_scheme}: For \link[=polars_partitioning_scheme]{polars partitioning schemes}.
 \item \verb{*_selector}: For \link[=cs]{polars selectors}.
 \item \verb{*_series}: For \link[=Series]{polars series}.
 }

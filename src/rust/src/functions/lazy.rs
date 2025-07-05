@@ -39,7 +39,7 @@ pub fn datetime(
     set_unwrapped_or_0!(hour, minute, second, microsecond);
     let ambiguous = ambiguous.inner.clone();
     let time_unit = <Wrap<TimeUnit>>::try_from(time_unit)?.0;
-    let time_zone = time_zone.map(|x| x.into());
+    let time_zone = <Wrap<Option<TimeZone>>>::try_from(time_zone)?.0;
     let args = DatetimeArgs {
         year,
         month,

@@ -42,6 +42,8 @@ lazyframe__sink_ndjson <- function(
 ) {
   wrap({
     check_dots_empty0(...)
+
+    target <- arg_to_sink_target(path)
     sync_on_close <- arg_match0(
       sync_on_close %||% "none",
       values = c("none", "data", "all")
@@ -60,7 +62,7 @@ lazyframe__sink_ndjson <- function(
     )
 
     lf <- lf$sink_json(
-      path = path,
+      target = target,
       maintain_order = maintain_order,
       sync_on_close = sync_on_close,
       mkdir = mkdir,
@@ -104,7 +106,8 @@ dataframe__write_json <- function(file) {
 #' jsonlite::stream_in(file(destination))
 dataframe__write_ndjson <- function(file) {
   wrap({
-    self$`_df`$write_ndjson(file)
+    # TODO: Update like https://github.com/pola-rs/polars/pull/22582
+    self$lazy()$sink_ndjson(file)
     invisible(self)
   })
 }

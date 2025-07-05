@@ -17,8 +17,7 @@ lazyframe__collect(
   cluster_with_columns = TRUE,
   collapse_joins = TRUE,
   no_optimization = FALSE,
-  engine = c("auto", "in-memory", "streaming", "old-streaming"),
-  streaming = FALSE,
+  engine = c("auto", "in-memory", "streaming"),
   `_check_order` = TRUE,
   `_eager` = FALSE
 )
@@ -55,14 +54,7 @@ One of the followings:
 The \code{"in-memory"} engine will be selected for most cases.
 \item \code{"in-memory"}: Use the in-memory engine.
 \item \code{"streaming"}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} Use the (new) streaming engine.
-\item \code{"old-streaming"}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#superseded}{\figure{lifecycle-superseded.svg}{options: alt='[Superseded]'}}}{\strong{[Superseded]}} Use the old streaming engine.
 }}
-
-\item{streaming}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
-A logical. If \code{TRUE}, process the query in batches to handle larger-than-memory data.
-If \code{FALSE} (default), the entire query is processed in a single batch.
-Note that streaming mode is considered unstable.
-It may be changed at any point without it being considered a breaking change.}
 
 \item{_check_order, _type_check}{For internal use only.}
 
@@ -86,7 +78,7 @@ lf$group_by("a")$agg(pl$all()$sum())$collect()
 
 # Collect in streaming mode
 lf$group_by("a")$agg(pl$all()$sum())$collect(
-  streaming = TRUE
+  engine = "streaming"
 )
 }
 \seealso{

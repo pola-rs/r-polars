@@ -17,7 +17,6 @@ lazyframe__to_dot(
   comm_subexpr_elim = TRUE,
   cluster_with_columns = TRUE,
   collapse_joins = TRUE,
-  streaming = FALSE,
   `_check_order` = TRUE
 )
 }
@@ -45,12 +44,6 @@ on self-joins or unions.}
 to with_columns.}
 
 \item{collapse_joins}{Collapse a join and filters into a faster join.}
-
-\item{streaming}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
-A logical. If \code{TRUE}, process the query in batches to handle larger-than-memory data.
-If \code{FALSE} (default), the entire query is processed in a single batch.
-Note that streaming mode is considered unstable.
-It may be changed at any point without it being considered a breaking change.}
 
 \item{_check_order, _type_check}{For internal use only.}
 }

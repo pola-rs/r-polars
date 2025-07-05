@@ -44,7 +44,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! the length of the window expression did not match that of the group
+      ! lengths don't match: the length of the window expression did not match that of the group
       
       Error originated in expression: 'col("val").top_k([2.0]).over([col("a")])'
 

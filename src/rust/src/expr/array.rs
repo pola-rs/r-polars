@@ -92,12 +92,12 @@ impl PlRExpr {
             .into())
     }
 
-    fn arr_contains(&self, other: &PlRExpr) -> Result<Self> {
+    fn arr_contains(&self, other: &PlRExpr, nulls_equal: bool) -> Result<Self> {
         Ok(self
             .inner
             .clone()
             .arr()
-            .contains(other.inner.clone())
+            .contains(other.inner.clone(), nulls_equal)
             .into())
     }
 

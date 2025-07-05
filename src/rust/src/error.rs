@@ -31,13 +31,13 @@ impl From<RPolarsErr> for savvy::Error {
 
         match err {
             Polars(PolarsError::ColumnNotFound(x)) => {
-                savvy::Error::new(format!("Column(s) not found: {}", x).as_str())
+                savvy::Error::new(format!("Column(s) not found: {x}").as_str())
             }
             Polars(PolarsError::Duplicate(x)) => {
-                savvy::Error::new(format!("Duplicated column(s): {}", x).as_str())
+                savvy::Error::new(format!("Duplicated column(s): {x}").as_str())
             }
             Polars(PolarsError::InvalidOperation(x)) => {
-                savvy::Error::new(format!("Invalid operation: {}", x).as_str())
+                savvy::Error::new(format!("Invalid operation: {x}").as_str())
             }
             _ => default(),
         }

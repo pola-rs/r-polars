@@ -180,8 +180,7 @@ where
 
     let thread_return_value = handle.join().map_err(|err| {
         format!(
-            "A polars sub-thread panicked. See panic msg, which is likely more informative than this error: {:?}",
-            err
+            "A polars sub-thread panicked. See panic msg, which is likely more informative than this error: {err:?}"
         )
     })?;
 

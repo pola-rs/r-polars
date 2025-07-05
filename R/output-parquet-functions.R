@@ -85,6 +85,8 @@ lazyframe__sink_parquet <- function(
 ) {
   wrap({
     check_dots_empty0(...)
+
+    target <- arg_to_sink_target(path)
     compression <- arg_match0(
       compression,
       values = c("lz4", "uncompressed", "snappy", "gzip", "lzo", "brotli", "zstd")
@@ -125,7 +127,7 @@ lazyframe__sink_parquet <- function(
     }
 
     lf <- lf$sink_parquet(
-      path = path,
+      target = target,
       compression = compression,
       compression_level = compression_level,
       stat_min = statistics[["min"]],
@@ -152,9 +154,11 @@ lazyframe__sink_parquet <- function(
 #' @inheritParams lazyframe__sink_parquet
 #' @param file File path to which the result should be written. This should be
 #' a path to a directory if writing a partitioned dataset.
-#' @param partition_by A character vector indicating column(s) to partition by.
+#' @param partition_by `r lifecycle::badge("experimental")`
+#' A character vector indicating column(s) to partition by.
 #' A partitioned dataset will be written if this is specified.
-#' @param partition_chunk_size_bytes Approximate size to split DataFrames within
+#' @param partition_chunk_size_bytes `r lifecycle::badge("experimental")`
+#' Approximate size to split DataFrames within
 #' a single partition when writing. Note this is calculated using the size of
 #' the DataFrame in memory (the size of the output file may differ depending
 #' on the file format / compression).
@@ -185,46 +189,34 @@ dataframe__write_parquet <- function(
   retries = 2
 ) {
   wrap({
-    compression <- compression %||% "uncompressed"
     check_dots_empty0(...)
-    check_character(partition_by, allow_null = TRUE)
-    compression <- arg_match0(
-      compression,
-      values = c("lz4", "uncompressed", "snappy", "gzip", "lzo", "brotli", "zstd")
-    )
-    if (is_bool(statistics)) {
-      statistics <- parquet_statistics(
-        min = statistics,
-        max = statistics,
-        distinct_count = FALSE,
-        null_count = statistics
-      )
-    } else if (identical(statistics, "full")) {
-      statistics <- parquet_statistics(
-        min = TRUE,
-        max = TRUE,
-        distinct_count = TRUE,
-        null_count = TRUE
-      )
+
+    target <- file
+    mkdir <- FALSE
+
+    if (!is.null(partition_by)) {
+      if (!is_string(file)) {
+        abort(c(
+          "Invalid `file` argument in the case when `partition_by` is specified.",
+          x = sprintf("Expected single string, got: %s", obj_type_friendly(file))
+        ))
+      }
+
+      target <- pl$PartitionByKey(file, by = partition_by)
+      mkdir <- TRUE
     }
-    if (!inherits(statistics, "polars_parquet_statistics")) {
-      abort("`statistics` must be TRUE, FALSE, 'full', or a call to `parquet_statistics()`.")
-    }
-    self$`_df`$write_parquet(
-      path = file,
+
+    self$lazy()$sink_parquet(
+      path = target,
       compression = compression,
       compression_level = compression_level,
-      stat_min = statistics[["min"]],
-      stat_max = statistics[["max"]],
-      stat_null_count = statistics[["null_count"]],
-      stat_distinct_count = statistics[["distinct_count"]],
+      statistics = statistics,
       row_group_size = row_group_size,
       data_page_size = data_page_size,
-      partition_by = partition_by,
-      partition_chunk_size_bytes = partition_chunk_size_bytes,
       storage_options = storage_options,
-      retries = retries
+      retries = retries,
+      mkdir = mkdir,
     )
-    invisible(self)
   })
+  invisible(self)
 }

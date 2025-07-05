@@ -281,12 +281,12 @@ impl PlRSeries {
                                     .select([col(series.name().clone())
                                         .dt()
                                         .replace_time_zone(
-                                            Some(local_time_zone.into()),
+                                            <Wrap<Option<TimeZone>>>::try_from(local_time_zone)?.0,
                                             ambiguous.clone(),
                                             non_existent,
                                         )
                                         .dt()
-                                        .convert_time_zone("UTC".into())
+                                        .convert_time_zone(TimeZone::UTC)
                                         .dt()
                                         .replace_time_zone(None, lit("raise"), NonExistent::Raise)])
                                     .collect()

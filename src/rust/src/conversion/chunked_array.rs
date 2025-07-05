@@ -168,7 +168,11 @@ impl From<Wrap<&DatetimeChunked>> for Sexp {
             TimeUnit::Microseconds => 1_000_000.0,
             TimeUnit::Milliseconds => 1_000.0,
         };
-        let tzone_attr = ca.time_zone().as_deref().unwrap_or("");
+        let tzone_attr = ca
+            .time_zone()
+            .as_deref()
+            .map(|tz| tz.as_str())
+            .unwrap_or("");
 
         let mut sexp = unsafe { OwnedRealSexp::new_without_init(ca.len()).unwrap() };
         let _ = sexp.set_class(["POSIXct", "POSIXt"]);

@@ -106,61 +106,61 @@ test_that("write_parquet: argument 'statistics'", {
 test_that("write_parquet can create a hive partition", {
   temp_dir <- withr::local_tempdir()
   dat <- as_polars_df(mtcars)
-  on.exit(unlink(temp_dir))
 
   # basic
   dat$write_parquet(temp_dir, partition_by = c("gear", "cyl"))
   expect_equal(
     list.files(temp_dir, recursive = TRUE),
     c(
-      "gear=3.0/cyl=4.0/00000000.parquet",
-      "gear=3.0/cyl=6.0/00000000.parquet",
-      "gear=3.0/cyl=8.0/00000000.parquet",
-      "gear=4.0/cyl=4.0/00000000.parquet",
-      "gear=4.0/cyl=6.0/00000000.parquet",
-      "gear=5.0/cyl=4.0/00000000.parquet",
-      "gear=5.0/cyl=6.0/00000000.parquet",
-      "gear=5.0/cyl=8.0/00000000.parquet"
+      "gear=3.0/cyl=4.0/0.parquet",
+      "gear=3.0/cyl=6.0/0.parquet",
+      "gear=3.0/cyl=8.0/0.parquet",
+      "gear=4.0/cyl=4.0/0.parquet",
+      "gear=4.0/cyl=6.0/0.parquet",
+      "gear=5.0/cyl=4.0/0.parquet",
+      "gear=5.0/cyl=6.0/0.parquet",
+      "gear=5.0/cyl=8.0/0.parquet"
     )
   )
 
   # works fine with integers
   temp_dir <- withr::local_tempdir()
+
   dat2 <- dat$with_columns(pl$col("gear")$cast(pl$Int32), pl$col("cyl")$cast(pl$Int32))
   dat2$write_parquet(temp_dir, partition_by = c("gear", "cyl"))
   expect_equal(
     list.files(temp_dir, recursive = TRUE),
     c(
-      "gear=3/cyl=4/00000000.parquet",
-      "gear=3/cyl=6/00000000.parquet",
-      "gear=3/cyl=8/00000000.parquet",
-      "gear=4/cyl=4/00000000.parquet",
-      "gear=4/cyl=6/00000000.parquet",
-      "gear=5/cyl=4/00000000.parquet",
-      "gear=5/cyl=6/00000000.parquet",
-      "gear=5/cyl=8/00000000.parquet"
+      "gear=3/cyl=4/0.parquet",
+      "gear=3/cyl=6/0.parquet",
+      "gear=3/cyl=8/0.parquet",
+      "gear=4/cyl=4/0.parquet",
+      "gear=4/cyl=6/0.parquet",
+      "gear=5/cyl=4/0.parquet",
+      "gear=5/cyl=6/0.parquet",
+      "gear=5/cyl=8/0.parquet"
     )
   )
 
   # check inputs
-  expect_error(
+  expect_snapshot(
     dat$write_parquet(temp_dir, partition_by = "foo"),
-    r"("foo" not found)"
+    error = TRUE
   )
-  expect_error(
+  expect_snapshot(
     dat$write_parquet(temp_dir, partition_by = ""),
-    r"("" not found)"
+    error = TRUE
   )
-  expect_error(dat$write_parquet(temp_dir, partition_by = 1))
 })
 
 test_that("polars and arrow create the same hive partition", {
   skip_if_not_installed("arrow")
+  skip_if_not(arrow::arrow_with_dataset())
 
   # arrow
   temp_dir_arrow <- withr::local_tempdir()
   dat <- mtcars
-  on.exit(unlink(temp_dir_arrow))
+
   arrow::write_dataset(
     dat,
     temp_dir_arrow,
@@ -171,11 +171,11 @@ test_that("polars and arrow create the same hive partition", {
 
   # polars
   temp_dir_polars <- withr::local_tempdir()
+
   dat2 <- as_polars_df(mtcars)$with_columns(
     pl$col("gear")$cast(pl$Int32),
     pl$col("cyl")$cast(pl$Int32)
   )
-  on.exit(unlink(temp_dir_polars))
   dat2$write_parquet(temp_dir_polars, partition_by = c("cyl", "gear"))
 
   # check dirnames because filenames are different between the two

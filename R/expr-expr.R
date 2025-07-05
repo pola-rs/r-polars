@@ -1036,10 +1036,10 @@ expr__over <- function(
     mapping_strategy <- arg_match0(mapping_strategy, c("group_to_rows", "join", "explode"))
 
     self$`_rexpr`$over(
-      partition_by,
       order_by = order_by,
       order_by_descending = FALSE, # does not work yet
       order_by_nulls_last = FALSE, # does not work yet
+      partition_by = partition_by,
       mapping_strategy = mapping_strategy
     )
   })
@@ -1095,11 +1095,11 @@ expr__filter <- function(...) {
 #' dtype will be inferred based on the first non-null value that is returned by
 #' the function. This can lead to unexpected results, so it is recommended to
 #' provide the return dtype.
-#' @param agg_list Aggregate the values of the expression into a list before
-#' applying the function. This parameter only works in a group-by context. The
-#' function will be invoked only once on a list of groups, rather than once per
-#' group.
 # TODO: uncomment when those arguments are supported
+# @param agg_list Aggregate the values of the expression into a list before
+# applying the function. This parameter only works in a group-by context. The
+# function will be invoked only once on a list of groups, rather than once per
+# group.
 # @param is_elementwise If `TRUE`, this can run in the streaming engine, but
 # may yield incorrect results in group-by. Ensure you know what you are doing!
 # @param returns_scalar If the function returns a scalar, by default it will
@@ -1118,35 +1118,36 @@ expr__filter <- function(...) {
 #'   which.max(elems)
 #' }))
 #'
-#' # In a group-by context, the `agg_list` parameter can improve performance if
-#' # used correctly. The following example has `agg_list = FALSE`, which causes
-#' # the function to be applied once per group. The input of the function is a
-#' # Series of type Int64. This is less efficient.
-#' df <- pl$DataFrame(
-#'   a = c(0, 1, 0, 1),
-#'   b = c(1, 2, 3, 4)
-#' )
-#' system.time({
-#'   print(
-#'     df$group_by("a")$agg(
-#'       pl$col("b")$map_batches(\(x) x + 2, agg_list = FALSE)
-#'     )
-#'   )
-#' })
-#'
-#' # Using `agg_list = TRUE` would be more efficient. In this example, the input
-#' # of the function is a Series of type List(Int64).
-#' system.time({
-#'   print(
-#'     df$group_by("a")$agg(
-#'       pl$col("b")$map_batches(
-#'         \(x) x$list$eval(pl$element() + 2),
-#'         agg_list = TRUE
-#'       )
-#'     )
-#'   )
-#' })
-#'
+# TODO: uncomment when agg_list is supported
+# # In a group-by context, the `agg_list` parameter can improve performance if
+# # used correctly. The following example has `agg_list = FALSE`, which causes
+# # the function to be applied once per group. The input of the function is a
+# # Series of type Int64. This is less efficient.
+# df <- pl$DataFrame(
+#   a = c(0, 1, 0, 1),
+#   b = c(1, 2, 3, 4)
+# )
+# system.time({
+#   print(
+#     df$group_by("a")$agg(
+#       pl$col("b")$map_batches(\(x) x + 2, agg_list = FALSE)
+#     )
+#   )
+# })
+#
+# # Using `agg_list = TRUE` would be more efficient. In this example, the input
+# # of the function is a Series of type List(Int64).
+# system.time({
+#   print(
+#     df$group_by("a")$agg(
+#       pl$col("b")$map_batches(
+#         \(x) x$list$eval(pl$element() + 2),
+#         agg_list = TRUE
+#       )
+#     )
+#   )
+# })
+#
 # TODO: uncomment when returns_scalar is supported
 # # Here’s an example of a function that returns a scalar, where we want it to
 # # stay as a scalar:
@@ -1172,8 +1173,7 @@ expr__filter <- function(...) {
 expr__map_batches <- function(
   lambda,
   return_dtype = NULL,
-  ...,
-  agg_list = FALSE
+  ...
 ) {
   wrap({
     check_dots_empty0(...)
@@ -1184,8 +1184,7 @@ expr__map_batches <- function(
       lambda = function(series) {
         as_polars_series(lambda(wrap(.savvy_wrap_PlRSeries(series))))$`_s`
       },
-      output_type = return_dtype$`_dt`,
-      agg_list = agg_list
+      output_type = return_dtype$`_dt`
     )
   })
 }
@@ -1461,8 +1460,6 @@ expr__cum_count <- function(..., reverse = FALSE) {
 #' @inheritParams rlang::args_dots_empty
 #' @param min_periods Number of valid values (i.e. `length - null_count`) there
 #' should be in the window before the expression is evaluated.
-#' @param parallel Run in parallel. Don’t do this in a group by or another
-#' operation that already has much parallelization.
 #'
 #' @details
 #' This can be really slow as it can have `O(n^2)` complexity. Don’t use this
@@ -1477,14 +1474,10 @@ expr__cum_count <- function(..., reverse = FALSE) {
 #'     pl$element()$first() - pl$element()$last()**2
 #'   )
 #' )
-expr__cumulative_eval <- function(expr, ..., min_periods = 1, parallel = FALSE) {
+expr__cumulative_eval <- function(expr, ..., min_periods = 1) {
   wrap({
     check_dots_empty0(...)
-    self$`_rexpr`$cumulative_eval(
-      as_polars_expr(expr)$`_rexpr`,
-      min_periods,
-      parallel
-    )
+    self$`_rexpr`$cumulative_eval(as_polars_expr(expr)$`_rexpr`, min_periods)
   })
 }
 
@@ -2434,12 +2427,13 @@ expr__sign <- function() {
 #' This returns -1 if x is lower than 0, 0 if x == 0, and 1 if x is greater
 #' than 0.
 #'
+#' @inheritParams rlang::args_dots_empty
 #' @param element Expression or scalar value.
 #' @param side Must be one of the following:
 #' * `"any"`: the index of the first suitable location found is given;
 #' * `"left"`: the index of the leftmost suitable location found is given;
 #' * `"right"`: the index the rightmost suitable location found is given.
-#'
+#' @param descending Boolean indicating whether the values are descending or not.
 #' @inherit as_polars_expr return
 #' @examples
 #' df <- pl$DataFrame(values = c(1, 2, 3, 5))
@@ -2448,10 +2442,16 @@ expr__sign <- function() {
 #'   three = pl$col("values")$search_sorted(3),
 #'   six = pl$col("values")$search_sorted(6),
 #' )
-expr__search_sorted <- function(element, side = c("any", "left", "right")) {
+expr__search_sorted <- function(
+  element,
+  side = c("any", "left", "right"),
+  ...,
+  descending = FALSE
+) {
   wrap({
+    check_dots_empty0(...)
     side <- arg_match0(side, values = c("any", "left", "right"))
-    self$`_rexpr`$search_sorted(as_polars_expr(element)$`_rexpr`, side)
+    self$`_rexpr`$search_sorted(as_polars_expr(element)$`_rexpr`, side, descending)
   })
 }
 

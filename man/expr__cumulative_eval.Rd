@@ -4,7 +4,7 @@
 \alias{expr__cumulative_eval}
 \title{Return the cumulative count of the non-null values in the column}
 \usage{
-expr__cumulative_eval(expr, ..., min_periods = 1, parallel = FALSE)
+expr__cumulative_eval(expr, ..., min_periods = 1)
 }
 \arguments{
 \item{expr}{Expression to evaluate.}
@@ -13,9 +13,6 @@ expr__cumulative_eval(expr, ..., min_periods = 1, parallel = FALSE)
 
 \item{min_periods}{Number of valid values (i.e. \code{length - null_count}) there
 should be in the window before the expression is evaluated.}
-
-\item{parallel}{Run in parallel. Don’t do this in a group by or another
-operation that already has much parallelization.}
 }
 \value{
 A polars \link{expression}

@@ -4,11 +4,15 @@
 \alias{expr_list_contains}
 \title{Check if sub-lists contains a given value}
 \usage{
-expr_list_contains(item)
+expr_list_contains(item, ..., nulls_equal = TRUE)
 }
 \arguments{
 \item{item}{Item that will be checked for membership. Can be an Expr or
 something coercible to an Expr. Strings are not parsed as columns.}
+
+\item{...}{These dots are for future extensions and must be empty.}
+
+\item{nulls_equal}{If \code{TRUE}, treat null as a distinct value. Null values will not propagate.}
 }
 \value{
 A polars \link{expression}

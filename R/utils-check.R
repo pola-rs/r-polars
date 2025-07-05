@@ -164,3 +164,21 @@ arg_match_compat_level <- function(arg, arg_nm = caller_arg(arg), error_call = c
     )
   }
 }
+
+# Same as Python Polars' `_to_sink_target`
+arg_to_sink_target <- function(arg, arg_nm = caller_arg(arg), error_call = caller_env()) {
+  if (is_string(arg)) {
+    arg
+  } else if (is_polars_partitioning_scheme(arg)) {
+    arg$`_r_partitioning`
+  } else {
+    abort(
+      sprintf(
+        "`%s` must be a string or a polars_partitioning_scheme, got: %s",
+        arg_nm,
+        obj_type_friendly(arg)
+      ),
+      call = error_call
+    )
+  }
+}

@@ -45,7 +45,7 @@ impl From<&Int64Chunked> for Float64Pair {
 
 impl From<&DurationChunked> for Duration {
     fn from(ca: &DurationChunked) -> Self {
-        let ca_i64 = &ca.0;
+        let ca_i64 = &ca.phys;
         let value = Float64Pair::from(ca_i64);
         let precision: i32 = match ca.time_unit() {
             TimeUnit::Nanoseconds => 10,
@@ -58,7 +58,7 @@ impl From<&DurationChunked> for Duration {
 
 impl From<&DatetimeChunked> for TimePoint {
     fn from(ca: &DatetimeChunked) -> Self {
-        let ca_i64 = &ca.0;
+        let ca_i64 = &ca.phys;
         let value = Float64Pair::from(ca_i64);
         let precision: i32 = match ca.time_unit() {
             TimeUnit::Nanoseconds => 10,

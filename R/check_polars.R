@@ -9,6 +9,7 @@
 #' - `*_df`: For [polars data frames][DataFrame].
 #' - `*_expr`: For [polars expressions][Expr].
 #' - `*_lf`: For [polars lazy frames][LazyFrame].
+#' - `*_partitioning_scheme`: For [polars partitioning schemes][polars_partitioning_scheme].
 #' - `*_selector`: For [polars selectors][cs].
 #' - `*_series`: For [polars series][Series].
 #'
@@ -77,6 +78,12 @@ is_polars_selector <- function(x, ...) {
 #' @export
 is_polars_series <- function(x) {
   inherits(x, "polars_series")
+}
+
+#' @rdname check_polars
+#' @export
+is_polars_partitioning_scheme <- function(x) {
+  inherits(x, "polars_partitioning_scheme")
 }
 
 #' @rdname check_polars
@@ -260,6 +267,37 @@ check_polars_series <- function(
   stop_input_type(
     x,
     "a polars series",
+    ...,
+    allow_na = FALSE,
+    allow_null = allow_null,
+    arg = arg,
+    call = call
+  )
+}
+
+#' @rdname check_polars
+#' @export
+# nolint start: object_name_linter
+check_polars_partitioning_scheme <- function(
+  # nolint end: object_name_linter
+  x,
+  ...,
+  allow_null = FALSE,
+  arg = caller_arg(x),
+  call = caller_env()
+) {
+  if (!missing(x)) {
+    if (is_polars_partitioning_scheme(x)) {
+      return(invisible(NULL))
+    }
+    if (allow_null && is_null(x)) {
+      return(invisible(NULL))
+    }
+  }
+
+  stop_input_type(
+    x,
+    "a polars partitioning scheme",
     ...,
     allow_na = FALSE,
     allow_null = allow_null,

@@ -16,7 +16,6 @@ lazyframe__profile(
   comm_subexpr_elim = TRUE,
   cluster_with_columns = TRUE,
   collapse_joins = TRUE,
-  streaming = FALSE,
   no_optimization = FALSE,
   `_check_order` = TRUE,
   show_plot = FALSE,
@@ -46,12 +45,6 @@ to with_columns.}
 
 \item{collapse_joins}{Collapse a join and filters into a faster join.}
 
-\item{streaming}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
-A logical. If \code{TRUE}, process the query in batches to handle larger-than-memory data.
-If \code{FALSE} (default), the entire query is processed in a single batch.
-Note that streaming mode is considered unstable.
-It may be changed at any point without it being considered a breaking change.}
-
 \item{no_optimization}{A logical. If \code{TRUE}, turn off (certain) optimizations.}
 
 \item{_check_order, _type_check}{For internal use only.}
@@ -75,24 +68,15 @@ of each node that is executed.
 The units of the timings are microseconds.
 }
 \examples{
-## Simplest use case
-pl$LazyFrame()$select(pl$lit(2) + 2)$profile()
+lf <- pl$LazyFrame(
+  a = c("a", "b", "a", "b", "b", "c"),
+  b = 1:6,
+  c = 6:1,
+)
 
-## Use $profile() to compare two queries
-
-# -1-  map each Species-group with native polars
-as_polars_lf(iris)$
-  sort("Sepal.Length")$
-  group_by("Species", maintain_order = TRUE)$
-  agg(pl$col(pl$Float64)$first() + 5)$
-  profile()
-## some R function, prints `.` for each time called by polars
-#  cat(".")
-#  s$to_r()[1] + 5
-#  sort("Sepal.Length")$
-#  group_by("Species", maintain_order = TRUE)$
-#  agg(pl$col(pl$Float64)$map_elements(r_func))$
-#  profile()
+lf$group_by("a", .maintain_order = TRUE)$agg(
+  pl$all()$sum()
+)$sort("a")$profile()
 }
 \seealso{
 \itemize{

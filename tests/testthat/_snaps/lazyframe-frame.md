@@ -243,7 +243,18 @@
       Error in `as_polars_lf(mtcars)$collect()`:
       ! Evaluation failed in `$collect()`.
       Caused by error in `as_polars_lf(mtcars)$collect()`:
-      ! `engine` must be one of "auto", "in-memory", "streaming", or "old-streaming", not "gpu".
+      ! `engine` must be one of "auto", "in-memory", or "streaming", not "gpu".
+
+---
+
+    Code
+      as_polars_lf(mtcars)$collect(engine = "old-streaming")
+    Condition
+      Error in `as_polars_lf(mtcars)$collect()`:
+      ! Evaluation failed in `$collect()`.
+      Caused by error in `as_polars_lf(mtcars)$collect()`:
+      ! `engine` must be one of "auto", "in-memory", or "streaming", not "old-streaming".
+      i Did you mean "streaming"?
 
 # group_by() warns with arg maintain_order
 

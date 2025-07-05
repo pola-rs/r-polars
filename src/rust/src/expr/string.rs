@@ -274,7 +274,7 @@ impl PlRExpr {
             Some(x) => Some(<Wrap<TimeUnit>>::try_from(x)?.0),
             None => None,
         };
-        let time_zone: Option<PlSmallStr> = time_zone.map(|x| x.into());
+        let time_zone = <Wrap<Option<TimeZone>>>::try_from(time_zone)?.0;
 
         Ok(self
             .inner

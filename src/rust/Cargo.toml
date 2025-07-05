@@ -1,6 +1,6 @@
 [package]
 name = "r-polars"
-version = "1.0.0-alpha.2"
+version = "1.0.0-alpha.3"
 edition = "2024"
 rust-version = "1.85.0"
 publish = false
@@ -28,8 +28,8 @@ too_many_arguments = "allow"
 ciborium = "0.2"
 either = "1.15"
 flume = "0.11"
-polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "a0e3e3817783ba70a9791cf6a1cf6778de372e33" }
-polars-error = { git = "https://github.com/pola-rs/polars.git", rev = "a0e3e3817783ba70a9791cf6a1cf6778de372e33" }
+polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "171c8474b11e9e62209f5f7f03615f24fe62da98" }
+polars-error = { git = "https://github.com/pola-rs/polars.git", rev = "171c8474b11e9e62209f5f7f03615f24fe62da98" }
 savvy = { version = "0.8", features = ["use-custom-error"] }
 serde_json = "1"
 state = "0.6"
@@ -41,26 +41,38 @@ thiserror = "2"
 # <https://github.com/pola-rs/polars/blob/93ceaccdac6f05c9b07a5117f3a4a90c238dbd29/.github/workflows/test-pyodide.yml#L40-L45>
 [target.'cfg(not(target_os = "emscripten"))'.dependencies.polars]
 git = "https://github.com/pola-rs/polars.git"
-rev = "a0e3e3817783ba70a9791cf6a1cf6778de372e33"
+rev = "171c8474b11e9e62209f5f7f03615f24fe62da98"
+default-features = false
 features = [
     "aws",
     "azure",
     "cloud",
+    "csv",
     "extract_jsonpath",
     "gcp",
     "http",
+    "ipc",
+    "ipc_streaming",
     "json",
     "parquet",
 ]
 
 [target.'cfg(not(target_os = "emscripten"))'.dependencies.polars-lazy]
 git = "https://github.com/pola-rs/polars.git"
-rev = "a0e3e3817783ba70a9791cf6a1cf6778de372e33"
+rev = "171c8474b11e9e62209f5f7f03615f24fe62da98"
+default-features = false
 features = ["new_streaming"]
+
+[target.'cfg(not(target_os = "emscripten"))'.dependencies.polars-mem-engine]
+git = "https://github.com/pola-rs/polars.git"
+rev = "171c8474b11e9e62209f5f7f03615f24fe62da98"
+default-features = false
+features = ["csv", "ipc", "json", "parquet"]
 
 [dependencies.polars]
 git = "https://github.com/pola-rs/polars.git"
-rev = "a0e3e3817783ba70a9791cf6a1cf6778de372e33"
+rev = "171c8474b11e9e62209f5f7f03615f24fe62da98"
+default-features = false
 features = [
     "abs",
     "approx_unique",
@@ -75,7 +87,6 @@ features = [
     "concat_str",
     "cross_join",
     "cse",
-    "csv",
     "cum_agg",
     "cutqcut",
     "diagonal_concat",
@@ -88,13 +99,12 @@ features = [
     "ewma_by",
     "extract_groups",
     "find_many",
+    "fmt",
     "fused",
     "hist",
     "iejoin",
     "interpolate",
     "interpolate_by",
-    "ipc",
-    "ipc_streaming",
     "is_between",
     "is_first_distinct",
     "is_in",
@@ -140,7 +150,6 @@ features = [
     "serde-lazy",
     "sign",
     "sql",
-    "streaming",
     "strings",
     "string_encoding",
     "string_pad",

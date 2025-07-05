@@ -34,7 +34,7 @@ as_polars_df(x, ...)
   comm_subexpr_elim = TRUE,
   cluster_with_columns = TRUE,
   no_optimization = FALSE,
-  engine = c("auto", "in-memory", "streaming", "old-streaming")
+  engine = c("auto", "in-memory", "streaming")
 )
 
 \method{as_polars_df}{list}(x, ...)
@@ -83,7 +83,6 @@ One of the followings:
 The \code{"in-memory"} engine will be selected for most cases.
 \item \code{"in-memory"}: Use the in-memory engine.
 \item \code{"streaming"}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} Use the (new) streaming engine.
-\item \code{"old-streaming"}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#superseded}{\figure{lifecycle-superseded.svg}{options: alt='[Superseded]'}}}{\strong{[Superseded]}} Use the old streaming engine.
 }}
 }
 \value{

@@ -171,10 +171,8 @@ expr_arr_get <- function(index, ..., null_on_oob = TRUE) {
 
 #' Check if sub-arrays contain the given item
 #'
-#' @param item Expr or something coercible to an Expr. Strings are *not* parsed
-#' as columns.
-#'
 #' @inherit as_polars_expr return
+#' @inheritParams expr_list_contains
 #' @examples
 #' df <- pl$DataFrame(
 #'   values = list(0:2, 4:6, c(NA, NA, NA)),
@@ -184,9 +182,11 @@ expr_arr_get <- function(index, ..., null_on_oob = TRUE) {
 #'   with_expr = pl$col("values")$arr$contains(pl$col("item")),
 #'   with_lit = pl$col("values")$arr$contains(1)
 #' )
-expr_arr_contains <- function(item) {
-  self$`_rexpr`$arr_contains(as_polars_expr(item, as_lit = TRUE)$`_rexpr`) |>
-    wrap()
+expr_arr_contains <- function(item, ..., nulls_equal = TRUE) {
+  wrap({
+    check_dots_empty0(...)
+    self$`_rexpr`$arr_contains(as_polars_expr(item, as_lit = TRUE)$`_rexpr`, nulls_equal)
+  })
 }
 
 #' Join elements in every sub-array

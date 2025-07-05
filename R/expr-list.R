@@ -279,9 +279,9 @@ expr_list_last <- function() {
 #'
 #' @param item Item that will be checked for membership. Can be an Expr or
 #' something coercible to an Expr. Strings are not parsed as columns.
-#'
+#' @param nulls_equal If `TRUE`, treat null as a distinct value. Null values will not propagate.
 #' @inherit as_polars_expr return
-#'
+#' @inheritParams rlang::args_dots_empty
 #' @examples
 #' df <- pl$DataFrame(
 #'   a = list(3:1, NULL, 1:2),
@@ -291,9 +291,11 @@ expr_list_last <- function() {
 #'   with_expr = pl$col("a")$list$contains(pl$col("item")),
 #'   with_lit = pl$col("a")$list$contains(1)
 #' )
-expr_list_contains <- function(item) {
-  self$`_rexpr`$list_contains(as_polars_expr(item, as_lit = TRUE)$`_rexpr`) |>
-    wrap()
+expr_list_contains <- function(item, ..., nulls_equal = TRUE) {
+  wrap({
+    check_dots_empty0(...)
+    self$`_rexpr`$list_contains(as_polars_expr(item, as_lit = TRUE)$`_rexpr`, nulls_equal)
+  })
 }
 
 #' Join elements of every sub-list
@@ -537,14 +539,8 @@ expr_list_tail <- function(n = 5L) {
 
 #' Run any polars expression on the sub-lists' values
 #'
-#' @inheritParams rlang::args_dots_empty
 #' @param expr Expression to run. Note that you can select an element with
 #'   `pl$element()`, `pl$first()`, and more. See Examples.
-#' @param parallel Run all expressions in parallel. Don't activate this blindly.
-#'   Parallelism is worth it if there is enough work to do per thread. This
-#'   likely should not be used in the `$group_by()` context, because groups are
-#'   already executed in parallel.
-#'
 #' @inherit as_polars_expr return
 #'
 #' @examples
@@ -574,11 +570,9 @@ expr_list_tail <- function(n = 5L) {
 #' df$select(
 #'   pl$col("b")$list$eval(pl$element()$str$join(" "))$list$first()
 #' )
-expr_list_eval <- function(expr, ..., parallel = FALSE) {
-  wrap({
-    check_dots_empty0(...)
-    self$`_rexpr`$list_eval(as_polars_expr(expr)$`_rexpr`, parallel)
-  })
+expr_list_eval <- function(expr) {
+  self$`_rexpr`$list_eval(as_polars_expr(expr)$`_rexpr`) |>
+    wrap()
 }
 
 #' Evaluate whether all boolean values in a sub-list are true

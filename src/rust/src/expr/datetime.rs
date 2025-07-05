@@ -4,12 +4,10 @@ use savvy::{LogicalSexp, NumericSexp, Result, savvy};
 #[savvy]
 impl PlRExpr {
     fn dt_convert_time_zone(&self, time_zone: &str) -> Result<Self> {
-        Ok(self
-            .inner
-            .clone()
-            .dt()
-            .convert_time_zone(time_zone.into())
-            .into())
+        let time_zone = <Wrap<Option<TimeZone>>>::try_from(time_zone)?
+            .0
+            .unwrap_or(TimeZone::UTC);
+        Ok(self.inner.clone().dt().convert_time_zone(time_zone).into())
     }
 
     fn dt_replace_time_zone(
@@ -18,12 +16,13 @@ impl PlRExpr {
         non_existent: &str,
         time_zone: Option<&str>,
     ) -> Result<Self> {
+        let time_zone = <Wrap<Option<TimeZone>>>::try_from(time_zone)?.0;
         Ok(self
             .inner
             .clone()
             .dt()
             .replace_time_zone(
-                time_zone.map(|x| x.into()),
+                time_zone,
                 ambiguous.inner.clone(),
                 <Wrap<NonExistent>>::try_from(non_existent)?.0,
             )
