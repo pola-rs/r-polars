@@ -89,3 +89,93 @@
       Caused by error:
       ! cannot compare string with numeric type (i64)
 
+# arr$to_struct with fields = NULL
+
+    Code
+      pl$DataFrame(values = list(c(1, 2), c(1, 1), c(2, 2)), .schema_overrides = list(
+        values = pl$Array(pl$Int64, 2)))$select(pl$col("values")$arr$to_struct(
+        fields = fields))$unnest("values")
+    Output
+      shape: (3, 2)
+      ┌─────────┬─────────┐
+      │ field_0 ┆ field_1 │
+      │ ---     ┆ ---     │
+      │ i64     ┆ i64     │
+      ╞═════════╪═════════╡
+      │ 1       ┆ 2       │
+      │ 1       ┆ 1       │
+      │ 2       ┆ 2       │
+      └─────────┴─────────┘
+
+# arr$to_struct with fields = "a"
+
+    Code
+      pl$DataFrame(values = list(c(1, 2), c(1, 1), c(2, 2)), .schema_overrides = list(
+        values = pl$Array(pl$Int64, 2)))$select(pl$col("values")$arr$to_struct(
+        fields = fields))$unnest("values")
+    Output
+      shape: (3, 1)
+      ┌─────┐
+      │ a   │
+      │ --- │
+      │ i64 │
+      ╞═════╡
+      │ 1   │
+      │ 1   │
+      │ 2   │
+      └─────┘
+
+# arr$to_struct with fields = c("a", "b", "c", "d")
+
+    Code
+      pl$DataFrame(values = list(c(1, 2), c(1, 1), c(2, 2)), .schema_overrides = list(
+        values = pl$Array(pl$Int64, 2)))$select(pl$col("values")$arr$to_struct(
+        fields = fields))$unnest("values")
+    Output
+      shape: (3, 2)
+      ┌─────┬─────┐
+      │ a   ┆ b   │
+      │ --- ┆ --- │
+      │ i64 ┆ i64 │
+      ╞═════╪═════╡
+      │ 1   ┆ 2   │
+      │ 1   ┆ 1   │
+      │ 2   ┆ 2   │
+      └─────┴─────┘
+
+# arr$to_struct with fields = function (x) sprintf("field_%s", x)
+
+    Code
+      pl$DataFrame(values = list(c(1, 2), c(1, 1), c(2, 2)), .schema_overrides = list(
+        values = pl$Array(pl$Int64, 2)))$select(pl$col("values")$arr$to_struct(
+        fields = fields))$unnest("values")
+    Output
+      shape: (3, 2)
+      ┌─────────┬─────────┐
+      │ field_0 ┆ field_1 │
+      │ ---     ┆ ---     │
+      │ i64     ┆ i64     │
+      ╞═════════╪═════════╡
+      │ 1       ┆ 2       │
+      │ 1       ┆ 1       │
+      │ 2       ┆ 2       │
+      └─────────┴─────────┘
+
+# arr$to_struct with fields = ~paste0("field_", .)
+
+    Code
+      pl$DataFrame(values = list(c(1, 2), c(1, 1), c(2, 2)), .schema_overrides = list(
+        values = pl$Array(pl$Int64, 2)))$select(pl$col("values")$arr$to_struct(
+        fields = fields))$unnest("values")
+    Output
+      shape: (3, 2)
+      ┌─────────┬─────────┐
+      │ field_0 ┆ field_1 │
+      │ ---     ┆ ---     │
+      │ i64     ┆ i64     │
+      ╞═════════╪═════════╡
+      │ 1       ┆ 2       │
+      │ 1       ┆ 1       │
+      │ 2       ┆ 2       │
+      └─────────┴─────────┘
+

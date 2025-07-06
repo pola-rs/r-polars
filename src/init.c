@@ -774,6 +774,11 @@ SEXP savvy_PlRExpr_arr_to_list__impl(SEXP self__) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_arr_to_struct__impl(SEXP self__, SEXP c_arg__name_gen) {
+    SEXP res = savvy_PlRExpr_arr_to_struct__ffi(self__, c_arg__name_gen);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_arr_unique__impl(SEXP self__, SEXP c_arg__maintain_order) {
     SEXP res = savvy_PlRExpr_arr_unique__ffi(self__, c_arg__maintain_order);
     return handle_result(res);
@@ -3149,6 +3154,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_arr_std__impl", (DL_FUNC) &savvy_PlRExpr_arr_std__impl, 2},
     {"savvy_PlRExpr_arr_sum__impl", (DL_FUNC) &savvy_PlRExpr_arr_sum__impl, 1},
     {"savvy_PlRExpr_arr_to_list__impl", (DL_FUNC) &savvy_PlRExpr_arr_to_list__impl, 1},
+    {"savvy_PlRExpr_arr_to_struct__impl", (DL_FUNC) &savvy_PlRExpr_arr_to_struct__impl, 2},
     {"savvy_PlRExpr_arr_unique__impl", (DL_FUNC) &savvy_PlRExpr_arr_unique__impl, 2},
     {"savvy_PlRExpr_arr_var__impl", (DL_FUNC) &savvy_PlRExpr_arr_var__impl, 2},
     {"savvy_PlRExpr_as_str__impl", (DL_FUNC) &savvy_PlRExpr_as_str__impl, 1},

@@ -2,7 +2,7 @@
 // In the case of Python, it does not exist because there is a special feature in polars-plan.
 
 use crate::{PlRSeries, prelude::*, r_threads::ThreadCom};
-use savvy::{FunctionArgs, FunctionSexp, Sexp, TypedSexp};
+use savvy::{FunctionArgs, FunctionSexp, Sexp, StringSexp, TypedSexp};
 use state::InitCell;
 use std::sync::RwLock;
 
@@ -34,11 +34,13 @@ impl RUdf {
 pub enum RUdfSignature {
     // function with input 1 Series mapped to output 1 Series
     SeriesToSeries(RUdf, Series),
+    Int32ToString(RUdf, i32),
 }
 
 #[derive(Debug)]
 pub enum RUdfReturn {
     Series(Series),
+    String(PlSmallStr),
 }
 
 type ThreadComStorage = InitCell<RwLock<Option<ThreadCom<RUdfSignature, RUdfReturn>>>>;
@@ -48,7 +50,7 @@ pub static CONFIG: ThreadComStorage = InitCell::new();
 impl RUdfSignature {
     pub fn eval(self) -> Result<RUdfReturn, Box<dyn std::error::Error>> {
         match self {
-            RUdfSignature::SeriesToSeries(r_udf, series) => {
+            Self::SeriesToSeries(r_udf, series) => {
                 let r_udf = r_udf.function;
                 let mut args = FunctionArgs::new();
                 args.add("series", <PlRSeries>::from(series))?;
@@ -61,6 +63,14 @@ impl RUdfSignature {
                 };
                 Ok(RUdfReturn::Series(s))
             }
+            Self::Int32ToString(r_udf, idx) => {
+                let r_udf = r_udf.function;
+                let mut args = FunctionArgs::new();
+                args.add("idx", idx)?;
+                let res: StringSexp = <Sexp>::from(r_udf.0.call(args)?).try_into()?;
+                let out: PlSmallStr = res.iter().next().ok_or("Expected a string")?.into();
+                Ok(RUdfReturn::String(out))
+            }
         }
     }
 }
@@ -71,6 +81,18 @@ impl TryFrom<RUdfReturn> for Series {
     fn try_from(value: RUdfReturn) -> Result<Self, Self::Error> {
         match value {
             RUdfReturn::Series(s) => Ok(s),
+            _ => Err("Expected a Series".to_string()),
+        }
+    }
+}
+
+impl TryFrom<RUdfReturn> for PlSmallStr {
+    type Error = String;
+
+    fn try_from(value: RUdfReturn) -> Result<Self, Self::Error> {
+        match value {
+            RUdfReturn::String(s) => Ok(s),
+            _ => Err("Expected a String".to_string()),
         }
     }
 }

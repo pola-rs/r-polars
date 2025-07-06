@@ -156,6 +156,7 @@ SEXP savvy_PlRExpr_arr_sort__ffi(SEXP self__, SEXP c_arg__descending, SEXP c_arg
 SEXP savvy_PlRExpr_arr_std__ffi(SEXP self__, SEXP c_arg__ddof);
 SEXP savvy_PlRExpr_arr_sum__ffi(SEXP self__);
 SEXP savvy_PlRExpr_arr_to_list__ffi(SEXP self__);
+SEXP savvy_PlRExpr_arr_to_struct__ffi(SEXP self__, SEXP c_arg__name_gen);
 SEXP savvy_PlRExpr_arr_unique__ffi(SEXP self__, SEXP c_arg__maintain_order);
 SEXP savvy_PlRExpr_arr_var__ffi(SEXP self__, SEXP c_arg__ddof);
 SEXP savvy_PlRExpr_as_str__ffi(SEXP self__);

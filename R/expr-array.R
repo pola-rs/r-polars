@@ -309,34 +309,45 @@ expr_arr_to_list <- function() {
     wrap()
 }
 
-
-# TODO-REWRITE: implement this
-# #' Convert array to struct
-# #'
-# #' @inheritParams expr_list_to_struct
-# #'
-# #' @inherit as_polars_expr return
-# #' @examples
-# #' df <- pl$DataFrame(
-# #'   values = list(1:3, c(2L, NA, 5L))
-# #' )$cast(pl$Array(pl$Int32, 3))
-# #' df$with_columns(
-# #'   struct = pl$col("values")$arr$to_struct()
-# #' )
-# #'
-# #' # pass a custom function that will name all fields by adding a prefix
-# #' df2 <- df$with_columns(
-# #'   pl$col("values")$arr$to_struct(
-# #'     fields = \(idx) paste0("col_", idx)
-# #'   )
-# #' )
-# #' df2
-# #'
-# #' df2$unnest()
-# expr_arr_to_struct <- function(fields = NULL) {
-#   self$`_rexpr`$arr_to_struct(fields) |>
-#     wrap()
-# }
+#' Convert the Series of type Array to a Series of type Struct
+#'
+#' @param fields `r lifecycle::badge("experimental")`
+#'   `NULL` (default) or character vector of field names, or a function that
+#'   takes an integer index and returns character.
+#'   If the name and number of the desired fields is known in advance,
+#'   character vector of field names can be given, which will be assigned by index.
+#'   Otherwise, to dynamically assign field names, a custom function can be used;
+#'   if neither are set, fields will be `field_0`, `field_1`...
+#'   See the examples for details.
+#' @inherit as_polars_expr return
+#' @examples
+#' df <- pl$DataFrame(
+#'   n = list(c(0, 1, 2), c(3, 4, 5)),
+#'   .schema_overrides = list(n = pl$Array(pl$Int8, 3))
+#' )
+#'
+#' df$with_columns(struct = pl$col("n")$arr$to_struct())
+#'
+#' # Convert array to struct with field name assignment by function/index:
+#' df$select(pl$col("n")$arr$to_struct(\(idx) paste0("n", idx)))$unnest("n")
+#'
+#' # Convert array to struct with field name assignment by index from character:
+#' df$select(pl$col("n")$arr$to_struct(c("a", "b", "c")))$unnest("n")
+expr_arr_to_struct <- function(fields = NULL) {
+  wrap({
+    if (is_character(fields)) {
+      wrap(self$`_rexpr`$arr_to_struct())$struct$rename_fields(fields)
+    } else {
+      name_gen <- if (is.null(fields)) {
+        NULL
+      } else {
+        fields <- as_function(fields)
+        \(idx) fields(idx)
+      }
+      self$`_rexpr`$arr_to_struct(name_gen)
+    }
+  })
+}
 
 #' Count how often a value occurs in every sub-array
 #'

@@ -1066,6 +1066,12 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_polars__sealed")
   }
 }
 
+`PlRExpr_arr_to_struct` <- function(self) {
+  function(`name_gen` = NULL) {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_arr_to_struct__impl, `self`, `name_gen`))
+  }
+}
+
 `PlRExpr_arr_unique` <- function(self) {
   function(`maintain_order`) {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_arr_unique__impl, `self`, `maintain_order`))
@@ -3164,6 +3170,7 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_polars__sealed")
   e$`arr_std` <- `PlRExpr_arr_std`(ptr)
   e$`arr_sum` <- `PlRExpr_arr_sum`(ptr)
   e$`arr_to_list` <- `PlRExpr_arr_to_list`(ptr)
+  e$`arr_to_struct` <- `PlRExpr_arr_to_struct`(ptr)
   e$`arr_unique` <- `PlRExpr_arr_unique`(ptr)
   e$`arr_var` <- `PlRExpr_arr_var`(ptr)
   e$`as_str` <- `PlRExpr_as_str`(ptr)

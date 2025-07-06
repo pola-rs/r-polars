@@ -430,6 +430,7 @@ nav:
             - arr_std: man/expr_arr_std.md
             - arr_sum: man/expr_arr_sum.md
             - arr_to_list: man/expr_arr_to_list.md
+            - arr_to_struct: man/expr_arr_to_struct.md
             - arr_unique: man/expr_arr_unique.md
             - arr_var: man/expr_arr_var.md
         - Binary:

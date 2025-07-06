@@ -1,5 +1,5 @@
 use crate::{PlRExpr, prelude::*};
-use savvy::{NumericScalar, Result, savvy};
+use savvy::{FunctionSexp, NumericScalar, Result, savvy};
 
 #[savvy]
 impl PlRExpr {
@@ -110,21 +110,43 @@ impl PlRExpr {
             .into())
     }
 
-    // fn arr_to_struct(&self, fields: Robj) -> Result<Self> {
-    //     let fields = robj_to!(Option, Robj, fields)?.map(|robj| {
-    //         let par_fn: ParRObj = robj.into();
-    //         let f: Arc<(dyn Fn(usize) -> pl::PlSmallStr + Send + Sync + 'static)> =
-    //             pl::Arc::new(move |idx: usize| {
-    //                 let thread_com = ThreadCom::from_global(&CONFIG);
-    //                 thread_com.send(RFnSignature::FnF64ToString(par_fn.clone(), idx as f64));
-    //                 let s = thread_com.recv().unwrap_string();
-    //                 let s: pl::PlSmallStr = s.into();
-    //                 s
-    //             });
-    //         f
-    //     });
-    //     Ok(Ok(RPolarsExpr(self.inner.clone().arr().to_struct(fields))))
-    // }
+    fn arr_to_struct(&self, name_gen: Option<FunctionSexp>) -> Result<Self> {
+        use crate::{
+            RPolarsErr,
+            r_threads::ThreadCom,
+            r_udf::{CONFIG, RUdf, RUdfSignature},
+        };
+        use polars::prelude::array::ArrToStructNameGenerator;
+
+        #[cfg(not(target_arch = "wasm32"))]
+        let name_gen = name_gen.map(|lambda| {
+            let lambda = RUdf::new(lambda);
+            Arc::new(move |idx: usize| {
+                let thread_com = ThreadCom::try_from_global(&CONFIG).unwrap();
+                thread_com.send(RUdfSignature::Int32ToString(lambda.clone(), idx as i32));
+                let res: PlSmallStr = thread_com.recv().try_into().unwrap();
+                res
+            }) as ArrToStructNameGenerator
+        });
+        #[cfg(target_arch = "wasm32")]
+        let name_gen = match name_gen {
+            Some(_) => {
+                return Err(RPolarsErr::Other(
+                    "Specifying a function name generator is not supported in WASM".to_string(),
+                )
+                .into());
+            }
+            None => None,
+        };
+
+        Ok(self
+            .inner
+            .clone()
+            .arr()
+            .to_struct(name_gen)
+            .map_err(RPolarsErr::from)?
+            .into())
+    }
 
     fn arr_shift(&self, n: &PlRExpr) -> Result<Self> {
         Ok(self.inner.clone().arr().shift(n.inner.clone()).into())
