@@ -1,0 +1,108 @@
+---
+title: "Installation details"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Installation details}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+The polars package can be installed from R-multiverse.
+
+Some platforms can install pre-compiled binaries, and others will need to build from source.
+
+## How to install
+
+### From R-multiverse (recommended)
+
+Installing the latest release version.
+
+```r
+Sys.setenv(NOT_CRAN = "true") # Enable installation with pre-built Rust library binary, or enable Rust caching
+install.packages("polars", repos = "https://community.r-multiverse.org")
+```
+
+- On supported platforms, binary R package will be installed.
+- On the other platforms, the pre-built Rust library binary will be downloaded while building the R source package.
+- If the pre-built Rust library binary is not available, the Rust library will be built from source (provided that Rust is installed).
+
+### From GitHub
+
+Installing from the GitHub repository can be done using the `{remotes}` package's functions.
+
+```r
+Sys.setenv(NOT_CRAN = "true") # Enable installation with pre-built Rust library binary, or enable Rust caching
+remotes::install_github("pola-rs/r-polars@fe76af47c482835162e4c5a0e20d20b1fd956dc2") # Install from a specific commit
+```
+
+## Details of installation
+
+### Pre-built Rust library binaries
+
+If one of the following environment variables is set,
+a pre-built Rust library binary will be tried to be used before building the Rust source.
+
+- `NOT_CRAN="true"`
+- `MY_UNIVERSE` is not empty (This environment variable is set by R-universe)
+- `LIBR_POLARS_BUILD="false"` (This is prioritized, so if you want to force a source build, set `LIBR_POLARS_BUILD="true"`)
+
+By default, the pre-built Rust library binary is downloaded from the URL recorded in `tools/lib-sums.tsv`.
+If `tools/lib-sums.tsv` does not exist, or the corresponding URL does not exist,
+or the hash of the downloaded file does not match the recorded one, it falls back to building from source.
+
+If you want to use a pre-built Rust library binary that exists locally,
+set the `LIBR_POLARS_PATH` environment variable to the path to the binary.
+For example (on Bash):
+
+```sh
+export LIBR_POLARS_BUILD="false"
+export LIBR_POLARS_PATH="/tmp/libr_polars.a"
+Rscript -e 'install.packages("polars", repos = "https://community.r-multiverse.org", type = "source")'
+```
+
+### Rust build time options
+
+r-polars Rust library has some [feature flags](https://doc.rust-lang.org/cargo/reference/features.html)
+that affect the R package features.
+These flags are set at compile time, and cannot be changed at runtime.
+
+The features enabled in the compiled Rust library are shown by the `polars_info()` function.
+
+```{r}
+library(polars)
+polars_info()
+```
+
+At this time, the following environment variables can be used to change the Rust library build time options.
+
+#### Features
+
+The feature flags can be set by the `LIBR_POLARS_FEATURES` environment variable,
+which will be passed to the `--features` option of the `cargo build` command.
+For example, to enable the `nightly` feature, set the environment variable as like `LIBR_POLARS_FEATURES="nightly"`.
+
+- `nightly` for nightly toolchain features and SIMD.
+  If this feature is enabled, the nightly Rust toolchain will be downloaded and used.
+  (By the `src/rust/rust-toolchain.toml` file)
+
+#### Profile
+
+The profile can be set by the `LIBR_POLARS_PROFILE` environment variable.
+For example, to build with more optimization, set the environment variable as like
+`LIBR_POLARS_PROFILE="dist-release"`.
+
+### Minimum Supported Rust Version (MSRV)
+
+The minimum supported Rust version (MSRV) is declared
+in the `src/rust/Cargo.toml` file's `package.rust-version` field.
+
+This MSRV is for the default features.
+For other features, the nightly Rust toolchain is required.
