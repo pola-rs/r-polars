@@ -215,8 +215,7 @@ infer_polars_dtype.vctrs_vctr <- function(x, ...) {
     # Nested type may be nested multiple times,
     # so we can't infer type from the slice
     if (inherits(x, "vctrs_rcrd")) {
-      # vctrs_rcrd
-      infer_polars_dtype_vctrs_rcrd_impl(x, ...)
+      infer_polars_dtype.data.frame(vctrs::vec_data(x), ...)
     } else {
       # list_of
       child_type <- infer_polars_dtype(attr(x, "ptype"), ...)
@@ -231,16 +230,3 @@ infer_polars_dtype.vctrs_vctr <- function(x, ...) {
     dtype_from_sliced
   }
 }
-
-# nolint start: object_length_linter
-infer_polars_dtype_vctrs_rcrd_impl <- function(x, ...) {
-  field_names <- vctrs::fields(x)
-  inner_dtypes <- field_names |>
-    lapply(\(field_name) {
-      vctrs::field(x, field_name) |>
-        infer_polars_dtype(...)
-    })
-
-  pl$Struct(!!!structure(inner_dtypes, names = field_names))
-}
-# nolint end
