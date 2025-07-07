@@ -274,3 +274,30 @@
       │ 1   ┆ true           │
       └─────┴────────────────┘
 
+# active bindings
+
+    Code
+      as_polars_lf(mtcars)$width
+    Condition
+      Warning:
+      ! Potentially expensive operation.
+      * Determining the width of a LazyFrame requires resolving its schema,
+      * so this calls `$collect_schema()` internally.
+      i Use `length(<lazyframe>)` to get the width without this warning.
+    Output
+      [1] 11
+
+---
+
+    Code
+      as_polars_lf(mtcars)$columns
+    Condition
+      Warning:
+      ! Potentially expensive operation.
+      * Determining the column names of a LazyFrame requires resolving its schema,
+      * so this calls `$collect_schema()` internally.
+      i Use `names(<lazyframe>)` to get the column names without this warning.
+    Output
+       [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear"
+      [11] "carb"
+

@@ -35,6 +35,37 @@ wrap.PlRLazyFrame <- function(x, ...) {
   self <- new.env(parent = emptyenv())
   self$`_ldf` <- x
 
+  makeActiveBinding(
+    "columns",
+    function() {
+      warn(
+        c(
+          `!` = "Potentially expensive operation.",
+          `*` = "Determining the column names of a LazyFrame requires resolving its schema,",
+          `*` = "so this calls `$collect_schema()` internally.",
+          i = "Use `names(<lazyframe>)` to get the column names without this warning."
+        )
+      )
+      names(self)
+    },
+    self
+  )
+  makeActiveBinding(
+    "width",
+    function() {
+      warn(
+        c(
+          `!` = "Potentially expensive operation.",
+          `*` = "Determining the width of a LazyFrame requires resolving its schema,",
+          `*` = "so this calls `$collect_schema()` internally.",
+          i = "Use `length(<lazyframe>)` to get the width without this warning."
+        )
+      )
+      length(self)
+    },
+    self
+  )
+
   class(self) <- c("polars_lazy_frame", "polars_object")
   self
 }

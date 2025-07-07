@@ -2469,3 +2469,8 @@ test_that("group_by() warns with arg maintain_order", {
     dat$group_by("a", maintain_order = TRUE)$agg()
   )
 })
+
+test_that("active bindings", {
+  expect_snapshot(as_polars_lf(mtcars)$width)
+  expect_snapshot(as_polars_lf(mtcars)$columns)
+})
