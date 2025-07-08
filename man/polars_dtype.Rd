@@ -116,4 +116,5 @@ pl$Categorical()
 pl$Enum(c("a", "b", "c"))
 pl$Struct(a = pl$Int32, b = pl$String)
 pl$Null
+pl$Unknown
 }

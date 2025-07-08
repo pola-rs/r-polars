@@ -69,6 +69,7 @@
 #' pl$Enum(c("a", "b", "c"))
 #' pl$Struct(a = pl$Int32, b = pl$String)
 #' pl$Null
+#' pl$Unknown
 NULL
 
 # The env for storing data type methods
@@ -132,7 +133,8 @@ on_load({
     "Binary",
     "Date",
     "Time",
-    "Null"
+    "Null",
+    "Unknown"
   ) |>
     lapply(function(name) {
       makeActiveBinding(name, function() PlRDataType$new_from_name(name) |> wrap(), pl)
