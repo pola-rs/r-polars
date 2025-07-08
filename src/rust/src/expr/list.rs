@@ -1,6 +1,6 @@
 use crate::{PlRExpr, prelude::*};
-use polars::{prelude::SetOperation, series::ops::NullBehavior};
-use savvy::{NumericScalar, Result, savvy};
+use polars::series::ops::NullBehavior;
+use savvy::{FunctionSexp, NumericScalar, Result, StringSexp, savvy};
 
 #[savvy]
 impl PlRExpr {
@@ -141,32 +141,65 @@ impl PlRExpr {
         Ok(self.inner.clone().list().eval(expr.inner.clone()).into())
     }
 
-    // fn list_to_struct(
-    //     &self,
-    //     n_field_strategy: &str,
-    //     fields: Robj,
-    //     upper_bound: Robj,
-    // ) -> Result<Self> {
-    //     let n_field_strategy = <Wrap<ListToStructWidthStrategy>>::try_from(n_field_strategy)?.0;
-    //     let fields = robj_to!(Option, Robj, fields)?.map(|robj| {
-    //         let par_fn: ParRObj = robj.into();
-    //         let f: Arc<(dyn Fn(usize) -> pl::PlSmallStr + Send + Sync + 'static)> =
-    //             pl::Arc::new(move |idx: usize| {
-    //                 let thread_com = ThreadCom::from_global(&CONFIG);
-    //                 thread_com.send(RFnSignature::FnF64ToString(par_fn.clone(), idx as f64));
-    //                 let s = thread_com.recv().unwrap_string();
-    //                 let s: pl::PlSmallStr = s.into();
-    //                 s
-    //             });
-    //         f
-    //     });
-    //     let ub = robj_to!(usize, upper_bound)?;
-    //     Ok(RPolarsExpr(self.inner.clone().list().to_struct(
-    //         n_field_strategy,
-    //         fields,
-    //         ub,
-    //     )))
-    // }
+    fn list_to_struct(
+        &self,
+        width_strat: &str,
+        name_gen: Option<FunctionSexp>,
+        upper_bound: Option<NumericScalar>,
+    ) -> Result<Self> {
+        let width_strat = Wrap::<ListToStructWidthStrategy>::try_from(width_strat)?.0;
+        let upper_bound = upper_bound
+            .map(<Wrap<usize>>::try_from)
+            .transpose()?
+            .map(|x| x.0);
+
+        use crate::{
+            r_threads::ThreadCom,
+            r_udf::{CONFIG, RUdf, RUdfSignature},
+        };
+
+        #[cfg(not(target_arch = "wasm32"))]
+        let name_gen = name_gen.map(|lambda| {
+            let lambda = RUdf::new(lambda);
+            NameGenerator::from_func(move |idx: usize| {
+                let thread_com = ThreadCom::try_from_global(&CONFIG).unwrap();
+                thread_com.send(RUdfSignature::Int32ToString(lambda.clone(), idx as i32));
+                let res: PlSmallStr = thread_com.recv().try_into().unwrap();
+                res
+            })
+        });
+        #[cfg(target_arch = "wasm32")]
+        let name_gen = match name_gen {
+            Some(_) => {
+                return Err(crate::RPolarsErr::Other(
+                    "Specifying a function name generator is not supported in WASM".to_string(),
+                )
+                .into());
+            }
+            None => None,
+        };
+
+        Ok(self
+            .inner
+            .clone()
+            .list()
+            .to_struct(ListToStructArgs::InferWidth {
+                infer_field_strategy: width_strat,
+                get_index_name: name_gen,
+                max_fields: upper_bound,
+            })
+            .into())
+    }
+
+    fn list_to_struct_fixed_width(&self, names: StringSexp) -> Result<Self> {
+        let names: Arc<[PlSmallStr]> = names.iter().map(PlSmallStr::from).collect::<Arc<_>>();
+        Ok(self
+            .inner
+            .clone()
+            .list()
+            .to_struct(ListToStructArgs::FixedWidth(names))
+            .into())
+    }
 
     fn list_all(&self) -> Result<Self> {
         Ok(self.inner.clone().list().all().into())

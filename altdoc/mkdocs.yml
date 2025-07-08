@@ -521,6 +521,7 @@ nav:
             - list_sum: man/expr_list_sum.md
             - list_tail: man/expr_list_tail.md
             - list_to_array: man/expr_list_to_array.md
+            - list_to_struct: man/expr_list_to_struct.md
             - list_unique: man/expr_list_unique.md
             - list_var: man/expr_list_var.md
         - Meta:

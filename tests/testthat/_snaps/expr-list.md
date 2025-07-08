@@ -168,3 +168,269 @@
       Caused by error:
       ! lengths don't match: cannot take a larger sample than the total population when `with_replacement=false`
 
+# list$to_struct with field = NULL, n_field_strategy = "first_non_null", upper_bound = 1
+
+    Code
+      pl$DataFrame(values = list(c(1, 2), c(1, 2, 3), c(1)), .schema_overrides = list(
+        values = pl$List(pl$Int64)))$select(pl$col("values")$list$to_struct(fields = fields,
+        n_field_strategy = n_field_strategy, upper_bound = upper_bound))$unnest(
+        "values")
+    Output
+      shape: (3, 1)
+      ┌─────────┐
+      │ field_0 │
+      │ ---     │
+      │ i64     │
+      ╞═════════╡
+      │ 1       │
+      │ 1       │
+      │ 1       │
+      └─────────┘
+
+# list$to_struct with field = function (x) sprintf("field-%s", x + 1), n_field_strategy = "first_non_null", upper_bound = 1
+
+    Code
+      pl$DataFrame(values = list(c(1, 2), c(1, 2, 3), c(1)), .schema_overrides = list(
+        values = pl$List(pl$Int64)))$select(pl$col("values")$list$to_struct(fields = fields,
+        n_field_strategy = n_field_strategy, upper_bound = upper_bound))$unnest(
+        "values")
+    Output
+      shape: (3, 1)
+      ┌─────────┐
+      │ field-1 │
+      │ ---     │
+      │ i64     │
+      ╞═════════╡
+      │ 1       │
+      │ 1       │
+      │ 1       │
+      └─────────┘
+
+# list$to_struct with field = ~paste0("field-", . + 1), n_field_strategy = "first_non_null", upper_bound = 1
+
+    Code
+      pl$DataFrame(values = list(c(1, 2), c(1, 2, 3), c(1)), .schema_overrides = list(
+        values = pl$List(pl$Int64)))$select(pl$col("values")$list$to_struct(fields = fields,
+        n_field_strategy = n_field_strategy, upper_bound = upper_bound))$unnest(
+        "values")
+    Output
+      shape: (3, 1)
+      ┌─────────┐
+      │ field-1 │
+      │ ---     │
+      │ i64     │
+      ╞═════════╡
+      │ 1       │
+      │ 1       │
+      │ 1       │
+      └─────────┘
+
+# list$to_struct with field = NULL, n_field_strategy = "max_width", upper_bound = 1
+
+    Code
+      pl$DataFrame(values = list(c(1, 2), c(1, 2, 3), c(1)), .schema_overrides = list(
+        values = pl$List(pl$Int64)))$select(pl$col("values")$list$to_struct(fields = fields,
+        n_field_strategy = n_field_strategy, upper_bound = upper_bound))$unnest(
+        "values")
+    Output
+      shape: (3, 1)
+      ┌─────────┐
+      │ field_0 │
+      │ ---     │
+      │ i64     │
+      ╞═════════╡
+      │ 1       │
+      │ 1       │
+      │ 1       │
+      └─────────┘
+
+# list$to_struct with field = function (x) sprintf("field-%s", x + 1), n_field_strategy = "max_width", upper_bound = 1
+
+    Code
+      pl$DataFrame(values = list(c(1, 2), c(1, 2, 3), c(1)), .schema_overrides = list(
+        values = pl$List(pl$Int64)))$select(pl$col("values")$list$to_struct(fields = fields,
+        n_field_strategy = n_field_strategy, upper_bound = upper_bound))$unnest(
+        "values")
+    Output
+      shape: (3, 1)
+      ┌─────────┐
+      │ field-1 │
+      │ ---     │
+      │ i64     │
+      ╞═════════╡
+      │ 1       │
+      │ 1       │
+      │ 1       │
+      └─────────┘
+
+# list$to_struct with field = ~paste0("field-", . + 1), n_field_strategy = "max_width", upper_bound = 1
+
+    Code
+      pl$DataFrame(values = list(c(1, 2), c(1, 2, 3), c(1)), .schema_overrides = list(
+        values = pl$List(pl$Int64)))$select(pl$col("values")$list$to_struct(fields = fields,
+        n_field_strategy = n_field_strategy, upper_bound = upper_bound))$unnest(
+        "values")
+    Output
+      shape: (3, 1)
+      ┌─────────┐
+      │ field-1 │
+      │ ---     │
+      │ i64     │
+      ╞═════════╡
+      │ 1       │
+      │ 1       │
+      │ 1       │
+      └─────────┘
+
+# list$to_struct with field = NULL, n_field_strategy = "first_non_null", upper_bound = 5
+
+    Code
+      pl$DataFrame(values = list(c(1, 2), c(1, 2, 3), c(1)), .schema_overrides = list(
+        values = pl$List(pl$Int64)))$select(pl$col("values")$list$to_struct(fields = fields,
+        n_field_strategy = n_field_strategy, upper_bound = upper_bound))$unnest(
+        "values")
+    Output
+      shape: (3, 2)
+      ┌─────────┬─────────┐
+      │ field_0 ┆ field_1 │
+      │ ---     ┆ ---     │
+      │ i64     ┆ i64     │
+      ╞═════════╪═════════╡
+      │ 1       ┆ 2       │
+      │ 1       ┆ 2       │
+      │ 1       ┆ null    │
+      └─────────┴─────────┘
+
+# list$to_struct with field = function (x) sprintf("field-%s", x + 1), n_field_strategy = "first_non_null", upper_bound = 5
+
+    Code
+      pl$DataFrame(values = list(c(1, 2), c(1, 2, 3), c(1)), .schema_overrides = list(
+        values = pl$List(pl$Int64)))$select(pl$col("values")$list$to_struct(fields = fields,
+        n_field_strategy = n_field_strategy, upper_bound = upper_bound))$unnest(
+        "values")
+    Output
+      shape: (3, 2)
+      ┌─────────┬─────────┐
+      │ field-1 ┆ field-2 │
+      │ ---     ┆ ---     │
+      │ i64     ┆ i64     │
+      ╞═════════╪═════════╡
+      │ 1       ┆ 2       │
+      │ 1       ┆ 2       │
+      │ 1       ┆ null    │
+      └─────────┴─────────┘
+
+# list$to_struct with field = ~paste0("field-", . + 1), n_field_strategy = "first_non_null", upper_bound = 5
+
+    Code
+      pl$DataFrame(values = list(c(1, 2), c(1, 2, 3), c(1)), .schema_overrides = list(
+        values = pl$List(pl$Int64)))$select(pl$col("values")$list$to_struct(fields = fields,
+        n_field_strategy = n_field_strategy, upper_bound = upper_bound))$unnest(
+        "values")
+    Output
+      shape: (3, 2)
+      ┌─────────┬─────────┐
+      │ field-1 ┆ field-2 │
+      │ ---     ┆ ---     │
+      │ i64     ┆ i64     │
+      ╞═════════╪═════════╡
+      │ 1       ┆ 2       │
+      │ 1       ┆ 2       │
+      │ 1       ┆ null    │
+      └─────────┴─────────┘
+
+# list$to_struct with field = NULL, n_field_strategy = "max_width", upper_bound = 5
+
+    Code
+      pl$DataFrame(values = list(c(1, 2), c(1, 2, 3), c(1)), .schema_overrides = list(
+        values = pl$List(pl$Int64)))$select(pl$col("values")$list$to_struct(fields = fields,
+        n_field_strategy = n_field_strategy, upper_bound = upper_bound))$unnest(
+        "values")
+    Output
+      shape: (3, 3)
+      ┌─────────┬─────────┬─────────┐
+      │ field_0 ┆ field_1 ┆ field_2 │
+      │ ---     ┆ ---     ┆ ---     │
+      │ i64     ┆ i64     ┆ i64     │
+      ╞═════════╪═════════╪═════════╡
+      │ 1       ┆ 2       ┆ null    │
+      │ 1       ┆ 2       ┆ 3       │
+      │ 1       ┆ null    ┆ null    │
+      └─────────┴─────────┴─────────┘
+
+# list$to_struct with field = function (x) sprintf("field-%s", x + 1), n_field_strategy = "max_width", upper_bound = 5
+
+    Code
+      pl$DataFrame(values = list(c(1, 2), c(1, 2, 3), c(1)), .schema_overrides = list(
+        values = pl$List(pl$Int64)))$select(pl$col("values")$list$to_struct(fields = fields,
+        n_field_strategy = n_field_strategy, upper_bound = upper_bound))$unnest(
+        "values")
+    Output
+      shape: (3, 3)
+      ┌─────────┬─────────┬─────────┐
+      │ field-1 ┆ field-2 ┆ field-3 │
+      │ ---     ┆ ---     ┆ ---     │
+      │ i64     ┆ i64     ┆ i64     │
+      ╞═════════╪═════════╪═════════╡
+      │ 1       ┆ 2       ┆ null    │
+      │ 1       ┆ 2       ┆ 3       │
+      │ 1       ┆ null    ┆ null    │
+      └─────────┴─────────┴─────────┘
+
+# list$to_struct with field = ~paste0("field-", . + 1), n_field_strategy = "max_width", upper_bound = 5
+
+    Code
+      pl$DataFrame(values = list(c(1, 2), c(1, 2, 3), c(1)), .schema_overrides = list(
+        values = pl$List(pl$Int64)))$select(pl$col("values")$list$to_struct(fields = fields,
+        n_field_strategy = n_field_strategy, upper_bound = upper_bound))$unnest(
+        "values")
+    Output
+      shape: (3, 3)
+      ┌─────────┬─────────┬─────────┐
+      │ field-1 ┆ field-2 ┆ field-3 │
+      │ ---     ┆ ---     ┆ ---     │
+      │ i64     ┆ i64     ┆ i64     │
+      ╞═════════╪═════════╪═════════╡
+      │ 1       ┆ 2       ┆ null    │
+      │ 1       ┆ 2       ┆ 3       │
+      │ 1       ┆ null    ┆ null    │
+      └─────────┴─────────┴─────────┘
+
+# list$to_struct with field = "a", n_field_strategy = NA_character_, upper_bound = NA_real_
+
+    Code
+      pl$DataFrame(values = list(c(1, 2), c(1, 2, 3), c(1)), .schema_overrides = list(
+        values = pl$List(pl$Int64)))$select(pl$col("values")$list$to_struct(fields = fields,
+        n_field_strategy = n_field_strategy, upper_bound = upper_bound))$unnest(
+        "values")
+    Output
+      shape: (3, 1)
+      ┌─────┐
+      │ a   │
+      │ --- │
+      │ i64 │
+      ╞═════╡
+      │ 1   │
+      │ 1   │
+      │ 1   │
+      └─────┘
+
+# list$to_struct with field = c("a", "b", "c", "d"), n_field_strategy = NA_character_, upper_bound = NA_real_
+
+    Code
+      pl$DataFrame(values = list(c(1, 2), c(1, 2, 3), c(1)), .schema_overrides = list(
+        values = pl$List(pl$Int64)))$select(pl$col("values")$list$to_struct(fields = fields,
+        n_field_strategy = n_field_strategy, upper_bound = upper_bound))$unnest(
+        "values")
+    Output
+      shape: (3, 4)
+      ┌─────┬──────┬──────┬──────┐
+      │ a   ┆ b    ┆ c    ┆ d    │
+      │ --- ┆ ---  ┆ ---  ┆ ---  │
+      │ i64 ┆ i64  ┆ i64  ┆ i64  │
+      ╞═════╪══════╪══════╪══════╡
+      │ 1   ┆ 2    ┆ null ┆ null │
+      │ 1   ┆ 2    ┆ 3    ┆ null │
+      │ 1   ┆ null ┆ null ┆ null │
+      └─────┴──────┴──────┴──────┘
+
