@@ -89,6 +89,7 @@ features = [
     "cse",
     "cum_agg",
     "cutqcut",
+    "decompress",
     "diagonal_concat",
     "diff",
     "dot_diagram",

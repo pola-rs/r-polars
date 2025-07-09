@@ -1835,6 +1835,7 @@ dependencies = [
  "chrono",
  "chrono-tz",
  "fast-float2",
+ "flate2",
  "fs4",
  "futures",
  "glob",
@@ -1865,6 +1866,7 @@ dependencies = [
  "tokio",
  "tokio-util",
  "url",
+ "zstd",
 ]
 
 [[package]]
