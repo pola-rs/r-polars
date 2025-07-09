@@ -262,6 +262,7 @@ tasks:
     generates:
       - "{{.RUST_SOURCE}}"
     cmds:
+      - rustup component add rustfmt
       - cargo fmt --all
 
   format-devscripts:
