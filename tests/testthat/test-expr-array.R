@@ -300,25 +300,6 @@ test_that("arr$to_list", {
   )
 })
 
-# TODO-REWRITE: unsure how to do it in Rust
-# test_that("arr$to_struct", {
-#   df <- pl$DataFrame(
-#     strings = list(c("a", "b"), c("c", "d"))
-#   )$cast(strings = pl$Array(pl$String, 2))
-
-#   expect_equal(
-#     df$select(pl$col("strings")$arr$to_struct()),
-#     pl$DataFrame(strings = list(field_0 = c("a", "c"), field_1 = c("b", "d")))
-#   )
-
-#   expect_equal(
-#     df$select(pl$col("strings")$arr$to_struct(
-#       fields = \(idx) paste0("col_", idx)
-#     )),
-#     pl$DataFrame(strings = list(col_0 = c("a", "c"), col_1 = c("b", "d")))
-#   )
-# })
-
 test_that("arr$count_matches", {
   df <- pl$DataFrame(
     x = list(c(1, 2), c(1, 1), c(2, 2))
