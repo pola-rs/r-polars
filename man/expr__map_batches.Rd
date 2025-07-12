@@ -25,11 +25,6 @@ A polars \link{expression}
 The output of this custom function is presumed to be either a Series, or a
 scalar that will be converted into a Series. If the result is a scalar and
 you want it to stay as a scalar, pass in \code{returns_scalar = TRUE}.
-
-If you want to apply a custom function elementwise over single values, see
-map_elements(). A reasonable use case for map
-functions is transforming the values represented by an expression using a
-third-party package.
 }
 \examples{
 df <- pl$DataFrame(
@@ -40,7 +35,6 @@ df$select(pl$all()$map_batches(\(x) {
   elems <- as.vector(x)
   which.max(elems)
 }))
-
 
 # Call a function that takes multiple arguments by creating a struct and
 # referencing its fields inside the function call.

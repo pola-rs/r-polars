@@ -301,7 +301,14 @@ impl PlRExpr {
     }
 
     fn map_batches(&self, lambda: FunctionSexp, output_type: Option<&PlRDataType>) -> Result<Self> {
-        map_single(self, lambda, output_type)
+        #[cfg(not(target_arch = "wasm32"))]
+        {
+            map_single(self, lambda, output_type)
+        }
+        #[cfg(target_arch = "wasm32")]
+        {
+            Err(RPolarsErr::Other(format!("Not supported in WASM")).into())
+        }
     }
 
     fn cum_sum(&self, reverse: bool) -> Result<Self> {
