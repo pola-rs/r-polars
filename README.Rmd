@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![R-multiverse status](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fcommunity.r-multiverse.org%2Fapi%2Fpackages%2Fpolars&query=%24.Version&label=r-multiverse)](https://community.r-multiverse.org/polars)
-[![R-universe status badge](https://rpolars.r-universe.dev/badges/polars)](https://rpolars.r-universe.dev)
+[![R-universe status](https://rpolars.r-universe.dev/polars/badges/version)](https://rpolars.r-universe.dev/polars)
 [![CRAN status](https://www.r-pkg.org/badges/version/polars)](https://CRAN.R-project.org/package=polars)
 [![Docs dev version](https://img.shields.io/badge/docs-dev-blue.svg)](https://pola-rs.github.io/r-polars)
 <!-- badges: end -->
