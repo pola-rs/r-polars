@@ -114,8 +114,10 @@ as_polars_expr <- function(x, ...) {
 #' @export
 as_polars_expr.default <- function(x, ..., keep_series = FALSE) {
   wrap({
+    is_series <- is_polars_series(x)
+
     # If x is already a Series, avoid renaming to "literal"
-    series <- if (is_polars_series(x)) {
+    series <- if (is_series) {
       x
     } else {
       as_polars_series(x, name = "literal", ...)
@@ -125,7 +127,12 @@ as_polars_expr.default <- function(x, ..., keep_series = FALSE) {
       lit_from_series(series$`_s`)
     } else {
       # Treat as scalar
-      lit_from_series_first(series$`_s`)
+      if (is_series) {
+        # If x is a Series, keep the name of the Series
+        lit_from_series_first(series$`_s`)$alias(x$name)
+      } else {
+        lit_from_series_first(series$`_s`)
+      }
     }
   })
 }

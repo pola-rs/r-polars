@@ -71,7 +71,7 @@ patrick::with_parameters_test_that(
       "POSIXct (UTC) (1)", as.POSIXct(0, "UTC"), as_polars_expr(as.POSIXct(0, "UTC")), 1,
       "POSIXct (UTC) (2)", as.POSIXct(0:1, "UTC"), as_polars_expr(as_polars_series(as.POSIXct(0:1, "UTC"), "literal")), 2,
       "series (0)", as_polars_series(logical()), as_polars_expr(as_polars_series(logical())), 0,
-      "series (1)", as_polars_series(TRUE), as_polars_expr(TRUE), 1,
+      "series (1)", as_polars_series(TRUE), as_polars_expr(as_polars_series(TRUE)), 1,
       "series (2)", as_polars_series(c(TRUE, FALSE)), as_polars_expr(as_polars_series(c(TRUE, FALSE))), 2
     )
     # nolint end
@@ -85,8 +85,8 @@ patrick::with_parameters_test_that(
     expect_snapshot(as_polars_expr(x, as_lit = TRUE, keep_series = TRUE))
 
     expect_equal(selected_out$height, expected_length)
-    if (is_polars_series(x) && length(x) != 1L) {
-      # For non-scalar-ish Series, the column name is came from the Series' name
+    if (is_polars_series(x)) {
+      # For Series, the column name is came from the Series' name
       expect_equal(selected_out$columns[1], x$name)
     } else {
       expect_equal(selected_out$columns[1], "literal")

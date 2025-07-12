@@ -1020,7 +1020,7 @@
     Code
       out
     Output
-      true
+      true.alias("")
 
 ---
 
@@ -1035,13 +1035,13 @@
       selected_out
     Output
       shape: (1, 1)
-      ┌─────────┐
-      │ literal │
-      │ ---     │
-      │ bool    │
-      ╞═════════╡
-      │ true    │
-      └─────────┘
+      ┌──────┐
+      │      │
+      │ ---  │
+      │ bool │
+      ╞══════╡
+      │ true │
+      └──────┘
 
 # as_polars_expr works for classes series (2)
 
