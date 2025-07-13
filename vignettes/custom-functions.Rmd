@@ -1,0 +1,146 @@
+---
+title: "Using custom functions or other R packages"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using custom functions or other R packages}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+purrr_parallel_available <- rlang::is_installed(
+  c("purrr", "carrier", "mirai"),
+  version = c("1.1.0", "0.2.0", "2.4.0")
+)
+```
+
+```{r setup}
+library(polars)
+```
+
+polars contains a large set of functions to manipulate variables, whether they are numerical, strings, dates, or other types.
+Still, it is sometimes necessary to apply custom functions either written by you or available in other R packages.
+This vignette details several ways to do that in the most computationally efficient way.
+
+## Writing functions using polars expressions
+
+One of polars' biggest strength is the composability of expressions.
+Chaining multiple functions to create custom functions is quite simple.
+For example, polars doesn't provide a built-in function to standardize a variable, but we could create one using expressions:
+
+```{r}
+pl_standardize <- function(x) {
+  (x - x$mean()) / x$std()
+}
+```
+
+And we can then run it in `$with_columns()` for instance:
+```{r}
+dat <- as_polars_df(mtcars[, c("carb", "mpg", "drat")])
+dat$with_columns(
+  carb_stand = pl_standardize(pl$col("carb"))
+)
+```
+
+## Using purrr
+
+polars expressions allow one to write their own functions, but it is sometimes necessary to use functions that already exist in other R packages.
+When this is the case, one should keep in mind that applying functions that are external to polars will limit polars' strengths.
+In particular, polars is fast in part because it is able to detect the various transformations applied to the data and run them in parallel or cache them so that only the strict minimum of computations is made.
+Using polars expressions will also allow the code to be run in streaming mode, allowing for larger-than-memory data.
+When one uses functions that polars doesn't natively know, those benefits are lost.
+This is the reason why it is better to use polars expressions in your own functions if you can.
+
+To apply an external function to a polars object, we must convert this object to R, apply the function, and then convert it back to polars.
+If you come from Python Polars, this is a big difference.
+In Python Polars, several functions (for instance `map_batches()` and `map_elements()`) allow one to pass custom functions.
+There is `<expr>$map_batches()` in this package, but it is not recommended to use it because it is unstable and may not work as expected in the streaming mode.
+
+Instead, it is recommended to convert the polars object to an R DataFrame or similar, and then use common higher-order functions like `lapply()` or `purrr::map()`.
+
+Note that when you convert your polars object to R, you may run out of memory if your object is a LazyFrame that is too big to fit in memory once collected.
+Another crucial point is that we want the R function to run as fast as possible on the data.
+One way to do that is to take advantage of `{purrr}` to run the function [in parallel](https://purrr.tidyverse.org/reference/in_parallel.html).
+
+```{r}
+library(purrr)
+```
+
+If we do not want to run the function in parallel, something like this will suffice:
+
+```{r}
+dat |>
+  as.data.frame() |>
+  map(\(col) scale(col)[, 1]) |>
+  as_polars_df()
+```
+
+When running in parallel, we need to create background processes using `mirai::daemons()`
+(see the documentation of `{purrr}` for details).
+
+```{r, eval=purrr_parallel_available}
+# Set the number of background processes to use
+mirai::daemons(3)
+```
+
+```{r, eval=purrr_parallel_available}
+#| include: false
+# Ensure load the package to the daemons
+mirai::everywhere({
+  if (!rlang::is_installed("polars")) pkgload::load_all()
+})
+```
+
+After starting the daemons, we can wrap the function passed to `purrr::map()`
+with `purrr::in_parallel()` to run it in parallel in the background processes.
+
+```{r, eval=purrr_parallel_available}
+dat |>
+  as.data.frame() |>
+  map(in_parallel(\(col) scale(col)[, 1])) |>
+  as_polars_df()
+```
+
+Note that this applies the function on the entire data on memory and all data is collected in R.
+To apply this to a subset of columns only, we can use `purrr::map_at()`.
+
+In this case, instead of using `as.data.frame()` to convert all data to R,
+we can use `as.list()` to convert the polars DataFrame to a list of Series
+and only convert some Series to R, thus avoiding unnecessary conversions between
+Polars and R[^serialization].
+
+[^serialization]: In technical terms, polars Series and other objects are wrappers around external pointers,
+which usually cannot be sent to other processes. However, this package has built-in integration with `{mirai}`,
+which registers the serialization and deserialization functions for Series and other objects
+when the package is loaded. This allows users to treat Series and other polars objects like regular R objects.
+
+```{r, eval=purrr_parallel_available}
+dat |>
+  as.list() |> # Convert to a list of Series, not converting each column to R vector yet.
+  map_at(
+    c("carb", "mpg"),
+    # Since the Series are sent to each daemon,
+    # we need to convert them to R vectors first by `$to_r_vector()`.
+    # Finally, we convert them back to Series by `as_polars_series()` (in this case, optional).
+    in_parallel(\(s) scale(s$to_r_vector())[, 1] |> polars::as_polars_series())
+  ) |>
+  as_polars_df()
+```
+
+After running the parallel computations, it is a good practice
+to stop the background processes to free up resources.
+
+```{r, eval=purrr_parallel_available}
+mirai::daemons(0)
+```
+
+## Conclusion
+
+Using custom functions is sometimes necessary when processing data.
+polars allows one to chain many expressions, thus making it possible to create custom functions that benefit from all its optimizations, such as parallelism and streaming mode.
+
+While using polars expressions is the recommended way to write custom functions, one can also apply functions by converting the DataFrame or LazyFrame to R first, and then use purrr to run functions in parallel.

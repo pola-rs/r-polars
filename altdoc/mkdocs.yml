@@ -46,6 +46,7 @@ nav:
       - User Guide: vignettes/userguide.md
       - Optimize polars performance: vignettes/performance.md
       - Differences with Python: vignettes/differences-with-python.md
+      - Using custom functions: vignettes/custom-functions.md
   - Reference:
       Reference: reference_home.md
       DataFrame:

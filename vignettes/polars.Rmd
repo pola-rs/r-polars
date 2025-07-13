@@ -13,6 +13,10 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 options(rmarkdown.html_vignette.check_title = FALSE)
+purrr_parallel_available <- rlang::is_installed(
+  c("purrr", "carrier", "mirai"),
+  version = c("1.1.0", "0.2.0", "2.4.0")
+)
 ```
 
 ## What is Polars?
@@ -514,23 +518,34 @@ unlink("airquality-ds", recursive = TRUE)
 
 You may want to apply functions that are not supported natively in Polars,
 for instance because they come from another R package. When this is the case,
-you can use the package `mirai` to perform computations in parallel.
+you can use `{purrr}` to perform computations in parallel.
 
 This can unlock a lot of flexibility, but note that it can inhibit performance
 since it doesn't take advantage of Polars optimizations anymore. R functions are
 also typically slower, so we recommend using native Polars functions and
 expressions wherever possible.
 
-```{r}
+```{r, eval=purrr_parallel_available}
 mirai::daemons(4)
+```
 
+```{r, eval=purrr_parallel_available}
+#| include: false
+# Ensure load the package to the daemons
+mirai::everywhere({
+  if (!rlang::is_installed("polars")) pkgload::load_all()
+})
+```
+
+```{r, eval=purrr_parallel_available}
 pl$DataFrame(a = 1, b = 2, c = 3, d = 4)$cast(pl$Int128) |>
   as.list() |>
-  mirai::mirai_map(\(s) {
-    s * 2L
-  }) |>
-  _[] |>
+  purrr::map(purrr::in_parallel(\(s) s * 2L)) |>
   as_polars_df()
+```
+
+```{r, eval=purrr_parallel_available}
+mirai::daemons(0)
 ```
 
 <!-- TODO-REWRITE: add link -->

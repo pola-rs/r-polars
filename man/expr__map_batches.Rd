@@ -22,9 +22,8 @@ A polars \link{expression}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-The output of this custom function is presumed to be either a Series, or a
-scalar that will be converted into a Series. If the result is a scalar and
-you want it to stay as a scalar, pass in \code{returns_scalar = TRUE}.
+The output of this custom function is presumed to be either a Series, or an
+R vector that will be converted into a Series by \code{\link[=as_polars_series]{as_polars_series()}}.
 }
 \examples{
 df <- pl$DataFrame(
@@ -32,8 +31,8 @@ df <- pl$DataFrame(
   cosine = c(1.0, 0.0, -1.0, 0.0)
 )
 df$select(pl$all()$map_batches(\(x) {
-  elems <- as.vector(x)
-  which.max(elems)
+  x$to_r_vector() |>
+    which.max()
 }))
 
 # Call a function that takes multiple arguments by creating a struct and

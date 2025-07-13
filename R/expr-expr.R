@@ -1080,10 +1080,8 @@ expr__filter <- function(...) {
 #' @description
 #' `r lifecycle::badge("experimental")`
 #'
-#' The output of this custom function is presumed to be either a Series, or a
-#' scalar that will be converted into a Series. If the result is a scalar and
-#' you want it to stay as a scalar, pass in `returns_scalar = TRUE`.
-#'
+#' The output of this custom function is presumed to be either a Series, or an
+#' R vector that will be converted into a Series by [as_polars_series()].
 #' @inheritParams rlang::args_dots_empty
 #' @param lambda Function to apply.
 #' @param return_dtype Dtype of the output Series. If `NULL` (default), the
@@ -1098,8 +1096,8 @@ expr__filter <- function(...) {
 #'   cosine = c(1.0, 0.0, -1.0, 0.0)
 #' )
 #' df$select(pl$all()$map_batches(\(x) {
-#'   elems <- as.vector(x)
-#'   which.max(elems)
+#'   x$to_r_vector() |>
+#'     which.max()
 #' }))
 #'
 #' # Call a function that takes multiple arguments by creating a struct and
