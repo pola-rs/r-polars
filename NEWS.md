@@ -1,358 +1,315 @@
 # NEWS
 
-## polars (development version)
+## polars 1.0.0
 
-This is a completely rewritten new version of the polars R package.
-The old version and this version are same in that they are based on Python Polars,
-so the basic functions are the same, but the internals are completely different,
-so there is a possibility that they will behave differently.
+This is a completely rewritten new version of the polars R package. It improves
+the internal structure of the package and catches up with Python Polars' API.
+At the time of writing, this version of R Polars matches Python Polars 1.31.0.
 
-Major changes in the API are as follows:
+Therefore it contains many breaking changes compared to the previous R Polars
+implementation. Some of those breaking changes are explained below, but many
+others are due to modifications of function names, argument names, or argument
+positions. There are too many to list here, so you should refer to the [Python
+Polars API docs](https://docs.pola.rs/api/python/dev/reference/index.html).
 
-### Class names and internal structures
-
-In the previous version, the classes which are bindings to Rust structs like polars DataFrame
-were external pointers.
-
-```r
-# Previous version
-as_polars_df(mtcars) |> str()
-#> Class 'RPolarsDataFrame' <externalptr>
-```
-
-In the new version, the classes such as DataFrame that users manipulate are custom environment objects
-created entirely on the R side. (Similar to `{R6}` classes)
-
-Class names are in snake case.
+Installation instructions for the rewritten version are now identical to the
+instructions for the old version. The old version (referred to as `polars0` in
+the docs) can be installed from R-universe with:
 
 ```r
-# New version
-as_polars_df(mtcars) |> str()
-#> Classes 'polars_data_frame', 'polars_object' <environment: 0x5625e081b908>
+Sys.setenv(NOT_CRAN = "true")
+install.packages("polars0", repos = "https://rpolars.r-universe.dev")
 ```
 
-Objects created from Rust structs are enclosed as members like `_df`, as in Python Polars.
+### Breaking changes
 
-To aboid confusion and conflicts, the names of classes defined on the Rust side
-have been changed from the previous ones. (e.g. `RPolarsDataFrame` -> `PlRDataFrame` here)
+* The class names of polars objects have changed:
+  - `RPolarsLazyFrame` -> `polars_lazy_frame`
+  - `RPolarsDataFrame` -> `polars_data_frame`
+  - `RPolarsSeries` -> `polars_series`
+  - `RPolarsExpr` -> `polars_expr`
 
-```r
-# New version
-as_polars_df(mtcars)$`_df` |> str()
-#> Class 'PlRDataFrame' <environment: 0x5625e0cfbf88>
-```
+* Conversion from unknown classes to Polars objects now fails. Developers can
+  specify how those objects should be handled by polars by creating a method
+  for `as_polars_series.my_class`.
 
-### Type mapping
+  ```r
+  ### OLD
+  a <- 1
+  class(a) <- "foo"
+  as_polars_series(a)
+  #> polars Series: shape: (1,)
+  #> Series: '' [f64]
+  #> [
+  #>         1.0
+  #> ]
+  ```
 
-#### Conversion from R to Polars types
+  ```r
+  ### NEW
+  a <- 1
+  class(a) <- "foo"
+  as_polars_series(a)
+  #> Error:
+  #> a <foo> object can't be converted to a polars Series.
+  #> Run `rlang::last_trace()` to see where the error occurred.
+  ```
 
-In the previous version, conversion from R to Polars was defined by the S3 method of
-`as_polars_series()` generic function on the R side and branching by match arm on the Rust side.
-And, conversion to Expression was done entirely on the Rust side.
+* Conversion from polars objects to R vectors has been revamped: `$to_r()`,
+  `$to_list()` and `$to_data_frame()` no longer exist. Instead, you must use
+  `as.data.frame()`, `as.list()` and `as.vector()`.
 
-In the new version, the default method of `as_polars_series()` has been changed to raise an error,
-so all R classes converted to Polars need to define S3 methods for `as_polars_series()`.
-In addition, a new function `as_polars_expr()` has been added, can be used to create a scalar literal expression.
+  `as.vector()` will remove attributes that might be useful, for instance to
+  convert Int64 values using the bit64 package or to convert Time values using
+  the hms package. If finer control is needed, use either `$to_r_vector()` or
+  set options for the entire session with `polars_options()`.
 
-Due to this change, conversion from unknown classes to Polars objects will fail.
+* In general, polars now uses dots (`...`) in two scenarios:
 
-```r
-# Previous version
-a <- 1
-class(a) <- "foo"
-as_polars_series(a)
-#> polars Series: shape: (1,)
-#> Series: '' [f64]
-#> [
-#>         1.0
-#> ]
-```
+  1. to pass an unlimited number of inputs (for instance in `select()`, `cast()`,
+     or `group_by()`), using [dynamic-dots](https://rlang.r-lib.org/reference/dyn-dots.html).
 
-```r
-# New version
-a <- 1
-class(a) <- "foo"
-as_polars_series(a)
-#> Error:
-#> a <foo> object can't be converted to a polars Series.
-#> Run `rlang::last_trace()` to see where the error occurred.
-```
+     For example, if you used to pass a vector of column names or a list of
+     expressions, you now need to expand it with `!!!`:
+     ```r
+     ### OLD
+     dat <- as_polars_df(head(mtcars, 3))
+     my_exprs <- list(pl$col("drat") + 1, "mpg", "cyl")
+     dat$select(my_exprs)
+     #> shape: (6, 3)
+     #> ┌──────┬──────┬─────┐
+     #> │ drat ┆ mpg  ┆ cyl │
+     #> │ ---  ┆ ---  ┆ --- │
+     #> │ f64  ┆ f64  ┆ f64 │
+     #> ╞══════╪══════╪═════╡
+     #> │ 4.9  ┆ 21.0 ┆ 6.0 │
+     #> │ 4.9  ┆ 21.0 ┆ 6.0 │
+     #> │ 4.85 ┆ 22.8 ┆ 4.0 │
+     #> └──────┴──────┴─────┘
+     ```
 
-#### Conversion from Polars to R types
+     ```r
+     ### NEW
+     dat <- as_polars_df(head(mtcars, 3))
+     my_exprs <- list(pl$col("drat") + 1, "mpg", "cyl")
+     dat$select(!!!my_exprs)
+     #> shape: (3, 3)
+     #> ┌──────┬──────┬─────┐
+     #> │ drat ┆ mpg  ┆ cyl │
+     #> │ ---  ┆ ---  ┆ --- │
+     #> │ f64  ┆ f64  ┆ f64 │
+     #> ╞══════╪══════╪═════╡
+     #> │ 4.9  ┆ 21.0 ┆ 6.0 │
+     #> │ 4.9  ┆ 21.0 ┆ 6.0 │
+     #> │ 4.85 ┆ 22.8 ┆ 4.0 │
+     #> └──────┴──────┴─────┘
+     ```
 
-In the previous version, there were multiple methods for converting Series or DataFrame to R vectors or R lists,
-but in the new version, they have been unified to `$to_r_vector()` of Series.
+     This also affects `pl$col()`:
+     ```r
+     ### OLD
+     pl$col(c("foo", "bar"), "baz")
+     #> polars Expr: cols(["foo", "bar", "baz"])
+     ```
 
-#### Treat Series of length 1 as scalar
+     ```r
+     ### NEW
+     pl$col(c("foo", "bar"), "baz")
+     #> Error in `pl$col()`:
+     #> ! Evaluation failed in `$col()`.
+     #> Caused by error in `pl$col()`:
+     #> ! Invalid input for `pl$col()`.
+     #> • `pl$col()` accepts either single strings or Polars data types.
 
-In Polars, there is a Scalar class that represents a single value, different from a Series of length 1.
-On the other hand, in R, a vector of length 1 is treated as a scalar.
+     pl$col(!!!c("foo", "bar"), "baz")
+     #> cols(["foo", "bar", "baz"])
+     ```
 
-In this new version, when converting a Series of length 1 to a Polars expression,
-it is automatically converted to a scalar, allowing it to be treated like an R vector.
+     Another important change in functions that accept dynamic dots is that
+     additional arguments are prefixed with `.`. For example, `group_by()` now
+     takes dynamic dots, meaning that the argument `maintain_order` is renamed
+     `.maintain_order` (for now, we add a warning if we detect an argument named
+     `maintain_order` in the dots).
 
-```r
-# Previous version
-series <- pl$Series("foo", 1)
+  2. to force some arguments to be named. We now throw an error if an argument
+     is not named while it should be, for example:
+      ``` r
+      df <- pl$DataFrame(a = 1:4)
+      df$with_columns(pl$col("a")$shift(1, 3))
+      #> Error in `df$with_columns()`:
+      #> ! Evaluation failed in `$with_columns()`.
+      #> Caused by error:
+      #> ! Evaluation failed in `$with_columns()`.
+      #> Caused by error:
+      #> ! Evaluation failed in `$shift()`.
+      #> Caused by error:
+      #> ! `...` must be empty.
+      #> ✖ Problematic argument:
+      #> • ..1 = 3
+      #> ℹ Did you forget to name an argument?
 
-pl$lit(series)
-#> polars Expr: Series[foo]
+      df$with_columns(pl$col("a")$shift(1, fill_value = 3))
+      #> shape: (4, 1)
+      #> ┌─────┐
+      #> │ a   │
+      #> │ --- │
+      #> │ f64 │
+      #> ╞═════╡
+      #> │ 3.0 │
+      #> │ 1.0 │
+      #> │ 2.0 │
+      #> │ 3.0 │
+      #> └─────┘
+      ```
 
-# It works because vectors of length 1 are treated as scalar values
-pl$DataFrame(bar = 1:2)$with_columns(foo = 1)
-#> shape: (2, 2)
-#> ┌─────┬─────┐
-#> │ bar ┆ foo │
-#> │ --- ┆ --- │
-#> │ i32 ┆ f64 │
-#> ╞═════╪═════╡
-#> │ 1   ┆ 1.0 │
-#> │ 2   ┆ 1.0 │
-#> └─────┴─────┘
+* Related to the extended use of dynamic dots, `pl$DataFrame()` and
+  `pl$LazyFrame()` more accurately convert input to the correct datatype, for
+  instance when the input is an R `data.frame`:
 
-# But this one causes error
-pl$DataFrame(bar = 1:2)$with_columns(series)
-#> Error: Execution halted with the following contexts
-#>    0: In R: in $with_columns()
-#>    0: During function call [pl$DataFrame(bar = 1:2)$with_columns(series)]
-#>    1: Encountered the following error in Rust-Polars:
-#>         Series foo, length 1 doesn't match the DataFrame height of 2
-#>
-#>       If you want expression: Series[foo] to be broadcasted, ensure it is a scalar (for instance by adding '.first()').
-```
+  ```r
+  ### OLD
+  pl$DataFrame(data.frame(x = 1, y = "a"))
+  #> shape: (1, 2)
+  #> ┌─────┬─────┐
+  #> │ x   ┆ y   │
+  #> │ --- ┆ --- │
+  #> │ f64 ┆ str │
+  #> ╞═════╪═════╡
+  #> │ 1.0 ┆ a   │
+  #> └─────┴─────┘
+  ```
 
-```r
-# New version
-series <- pl$Series("foo", 1)
+  ```r
+  ### NEW
+  pl$DataFrame(data.frame(x = 1, y = "a"))
+  #> shape: (1, 1)
+  #> ┌───────────┐
+  #> │           │
+  #> │ ---       │
+  #> │ struct[2] │
+  #> ╞═══════════╡
+  #> │ {1.0,"a"} │
+  #> └───────────┘
 
-pl$lit(series)
-#> 1.0
+  pl$DataFrame(!!!data.frame(x = 1, y = "a"))
+  #> shape: (1, 2)
+  #> ┌─────┬─────┐
+  #> │ x   ┆ y   │
+  #> │ --- ┆ --- │
+  #> │ f64 ┆ str │
+  #> ╞═════╪═════╡
+  #> │ 1.0 ┆ a   │
+  #> └─────┴─────┘
+  ```
 
-# To prevent conversion to scalar, specify `keep_series = TRUE` in as_polars_expr()
-as_polars_expr(series, keep_series = TRUE)
-#> Series[foo]
+  Use `as_polars_df()` and `as_polars_lf()` to convert existing R `data.frame`s
+  to their polars equivalents.
 
-# It works (Note that the name of the Series will be lost when conversion to scalar)
-pl$DataFrame(bar = 1:2)$with_columns(series)
-#> shape: (2, 2)
-#> ┌─────┬─────────┐
-#> │ bar ┆ literal │
-#> │ --- ┆ ---     │
-#> │ i32 ┆ f64     │
-#> ╞═════╪═════════╡
-#> │ 1   ┆ 1.0     │
-#> │ 2   ┆ 1.0     │
-#> └─────┴─────────┘
-```
+* The class names `PTime` and `rpolars_raw_list` (used to handle time and binary
+  variables) are removed. One should use the classes provided in packages
+  hms and blob instead.
 
-#### Proprietary vector classes are removed
+  ```r
+  ### OLD
+  r_df <- tibble::tibble(
+    time = hms::as_hms(c("12:00:00", NA, "14:00:00")),
+    binary = blob::as_blob(c(1L, NA, 2L)),
+  )
 
-Related to type conversion, the previous version had its own vector classes introduced to represent
-Polars' `Time` and `Binary` types in R (The class names are `PTime` and `rpolars_raw_list`).
+  # R to Polars
+  pl_df <- as_polars_df(r_df)
+  pl_df
+  #> shape: (3, 2)
+  #> ┌─────────┬──────────────┐
+  #> │ time    ┆ binary       │
+  #> │ ---     ┆ ---          │
+  #> │ f64     ┆ list[binary] │
+  #> ╞═════════╪══════════════╡
+  #> │ 43200.0 ┆ [b"\x01"]    │
+  #> │ null    ┆ []           │
+  #> │ 50400.0 ┆ [b"\x02"]    │
+  #> └─────────┴──────────────┘
 
-Since these are alternatives to the classes provided by widely used external packages `{hms}` and `{blob}`,
-they were dropped in favor of them.
+  # Polars to R
+  tibble::as_tibble(pl_df)
+  #> # A tibble: 3 × 2
+  #>    time binary
+  #>   <dbl> <list>
+  #> 1 43200 <rplrs_r_ [1]>
+  #> 2    NA <rplrs_r_ [0]>
+  #> 3 50400 <rplrs_r_ [1]>
+  ```
 
-We think it is rare for users to handle data saved as these classes, but we can migrate data to the other classes
-by the following steps.
+  ```r
+  ### NEW
+  r_df <- tibble::tibble(
+    time = hms::as_hms(c("12:00:00", NA, "14:00:00")),
+    binary = blob::as_blob(c(1L, NA, 2L)),
+  )
 
-- `PTime` objects can be converted to `hms` objects by `hms::as_hms()` after `as.vector(<PTime>)`
-  to remove the attributes of the `PTime` object.
-  However, it can be converted as it is only when the time unit of `PTime` is seconds.
-  In other cases, division processing to convert the unit to seconds is required after removing the attributes.
-- `blob::as_blob(unclass(<rpolars_raw_list>))` can be used to convert `rpolars_raw_list` to `blob`.
+  ## R to Polars
+  pl_df <- as_polars_df(r_df)
+  pl_df
+  #> shape: (3, 2)
+  #> ┌──────────┬─────────┐
+  #> │ time     ┆ binary  │
+  #> │ ---      ┆ ---     │
+  #> │ time     ┆ binary  │
+  #> ╞══════════╪═════════╡
+  #> │ 12:00:00 ┆ b"\x01" │
+  #> │ null     ┆ null    │
+  #> │ 14:00:00 ┆ b"\x02" │
+  #> └──────────┴─────────┘
 
-The new version does not support these proprietary classes at all,
-and `hms` and `blob` are fully supported.
+  ## Polars to R
+  tibble::as_tibble(pl_df)
+  #> # A tibble: 3 × 2
+  #>   time      binary
+  #>   <time>    <blob>
+  #> 1 12:00  <raw 1 B>
+  #> 2    NA         NA
+  #> 3 14:00  <raw 1 B>
+  ```
 
-```r
-# Previous version
-r_df <- tibble::tibble(
-  time = hms::as_hms(c("12:00:00", NA, "14:00:00")),
-  binary = blob::as_blob(c(1L, NA, 2L)),
-)
 
-## R to Polars
-pl_df <- as_polars_df(r_df)
-pl_df
-#> shape: (3, 2)
-#> ┌─────────┬──────────────┐
-#> │ time    ┆ binary       │
-#> │ ---     ┆ ---          │
-#> │ f64     ┆ list[binary] │
-#> ╞═════════╪══════════════╡
-#> │ 43200.0 ┆ [b"\x01"]    │
-#> │ null    ┆ []           │
-#> │ 50400.0 ┆ [b"\x02"]    │
-#> └─────────┴──────────────┘
+### Other changes
 
-## Polars to R
-tibble::as_tibble(pl_df)
-#> # A tibble: 3 × 2
-#>    time binary
-#>   <dbl> <list>
-#> 1 43200 <rplrs_r_ [1]>
-#> 2    NA <rplrs_r_ [0]>
-#> 3 50400 <rplrs_r_ [1]>
-```
+* R objects that convert to a Series of length 1 are now treated like scalar
+  values when converting to polars expressions:
 
-```r
-# New version
-r_df <- tibble::tibble(
-  time = hms::as_hms(c("12:00:00", NA, "14:00:00")),
-  binary = blob::as_blob(c(1L, NA, 2L)),
-)
+  ```r
+  ### OLD
+  series <- pl$Series("foo", 1)
+  pl$DataFrame(bar = 1:2)$with_columns(series)
+  #> [...truncated...]
+  #> Encountered the following error in Rust-Polars:
+  #>     	Series foo, length 1 doesn't match the DataFrame height of 2
+  #>
+  #>     If you want expression: Series[foo] to be broadcasted, ensure it is a
+  #>     scalar (for instance by adding '.first()').
+  ```
 
-## R to Polars
-pl_df <- as_polars_df(r_df)
-pl_df
-#> shape: (3, 2)
-#> ┌──────────┬─────────┐
-#> │ time     ┆ binary  │
-#> │ ---      ┆ ---     │
-#> │ time     ┆ binary  │
-#> ╞══════════╪═════════╡
-#> │ 12:00:00 ┆ b"\x01" │
-#> │ null     ┆ null    │
-#> │ 14:00:00 ┆ b"\x02" │
-#> └──────────┴─────────┘
+  ```r
+  ### NEW
+  series <- pl$Series("foo", 1)
+  pl$DataFrame(bar = 1:2)$with_columns(series)
+  #> shape: (2, 2)
+  #> ┌─────┬─────┐
+  #> │ bar ┆ foo │
+  #> │ --- ┆ --- │
+  #> │ i32 ┆ f64 │
+  #> ╞═════╪═════╡
+  #> │ 1   ┆ 1.0 │
+  #> │ 2   ┆ 1.0 │
+  #> └─────┴─────┘
+  ```
 
-## Polars to R
-tibble::as_tibble(pl_df)
-#> # A tibble: 3 × 2
-#>   time      binary
-#>   <time>    <blob>
-#> 1 12:00  <raw 1 B>
-#> 2    NA         NA
-#> 3 14:00  <raw 1 B>
-```
+* `<expr>$map_batches()` still exists but its usage is discouraged. This function is
+  not guaranteed to interact correctly with the streaming engine. To apply
+  functions from external packages or custom functions that cannot be translated
+  to polars syntax, we now recommend converting the data to a `data.frame` and
+  using purrr (note that as of 1.1.0, purrr enables parallel computation).
+  The vignette "Using custom functions" contains more details about this.
 
-### Dynamic dots features
 
-This package has started to use [dynamic-dots](https://rlang.r-lib.org/reference/dyn-dots.html) actively.
 
-### Single string handling
-
-In the previous version, we could give a character vector of length 2 or more to `pl$col()`,
-but in the new version, all elements must be of length 1.
-If we want to use a vector of length 2 or more, we need to expand it using `!!!`.
-
-```r
-# Previous version
-pl$col(c("foo", "bar"), "baz")
-#> polars Expr: cols(["foo", "bar", "baz"])
-```
-
-```r
-# New version
-pl$col(!!!c("foo", "bar"), "baz")
-#> cols(["foo", "bar", "baz"])
-```
-
-#### Argument name changes
-
-Argument names of functions which have dynamic-dots may have dot (`.`) prefix.
-
-```r
-# Previous version
-as_polars_df(mtcars)$group_by("cyl", maintain_order = TRUE)$agg()
-#> shape: (3, 1)
-#> ┌─────┐
-#> │ cyl │
-#> │ --- │
-#> │ f64 │
-#> ╞═════╡
-#> │ 6.0 │
-#> │ 4.0 │
-#> │ 8.0 │
-#> └─────┘
-
-as_polars_df(mtcars)$group_by("cyl", .maintain_order = TRUE)$agg()
-#> shape: (3, 2)
-#> ┌─────┬─────────────────┐
-#> │ cyl ┆ .maintain_order │
-#> │ --- ┆ ---             │
-#> │ f64 ┆ bool            │
-#> ╞═════╪═════════════════╡
-#> │ 8.0 ┆ true            │
-#> │ 4.0 ┆ true            │
-#> │ 6.0 ┆ true            │
-#> └─────┴─────────────────┘
-```
-
-```r
-# New version
-as_polars_df(mtcars)$group_by("cyl", maintain_order = TRUE)$agg()
-#> shape: (3, 2)
-#> ┌─────┬────────────────┐
-#> │ cyl ┆ maintain_order │
-#> │ --- ┆ ---            │
-#> │ f64 ┆ bool           │
-#> ╞═════╪════════════════╡
-#> │ 8.0 ┆ true           │
-#> │ 4.0 ┆ true           │
-#> │ 6.0 ┆ true           │
-#> └─────┴────────────────┘
-#> Warning message:
-#> ! In `$group_by()`, `...` contain an argument named `maintain_order`.
-#> ℹ You may want to specify the argument `.maintain_order` instead.
-
-as_polars_df(mtcars)$group_by("cyl", .maintain_order = TRUE)$agg()
-#> shape: (3, 1)
-#> ┌─────┐
-#> │ cyl │
-#> │ --- │
-#> │ f64 │
-#> ╞═════╡
-#> │ 6.0 │
-#> │ 4.0 │
-#> │ 8.0 │
-#> └─────┘
-```
-
-#### Simplification of class constructor functions
-
-In the new version, since conversion from R classes to Polars classes is completely done through
-generic functions like `as_polars_df()`, functions that mimic class constructors of Python Polars
-such as `pl$DataFrame()` have basically become shortcuts to `as_polars_*` functions.
-For example, `pl$DataFrame(...)` is a shortcut for `rlang::list2(...) |> as_polars_df()`.
-
-In previous versions, `pl$DataFrame()` had special handling when passed a data frame as an argument,
-but such things have been removed, so you need to switch to `as_polars_df()` or use `!!!` to
-combine arguments in `rlang::list2()`.
-
-```r
-# Previous version
-pl$DataFrame(data.frame(x = 1, y = "a"))
-#> shape: (1, 2)
-#> ┌─────┬─────┐
-#> │ x   ┆ y   │
-#> │ --- ┆ --- │
-#> │ f64 ┆ str │
-#> ╞═════╪═════╡
-#> │ 1.0 ┆ a   │
-#> └─────┴─────┘
-```
-
-```r
-# New version
-pl$DataFrame(data.frame(x = 1, y = "a"))
-#> shape: (1, 1)
-#> ┌───────────┐
-#> │           │
-#> │ ---       │
-#> │ struct[2] │
-#> ╞═══════════╡
-#> │ {1.0,"a"} │
-#> └───────────┘
-
-pl$DataFrame(!!!data.frame(x = 1, y = "a"))
-#> shape: (1, 2)
-#> ┌─────┬─────┐
-#> │ x   ┆ y   │
-#> │ --- ┆ --- │
-#> │ f64 ┆ str │
-#> ╞═════╪═════╡
-#> │ 1.0 ┆ a   │
-#> └─────┴─────┘
-```
