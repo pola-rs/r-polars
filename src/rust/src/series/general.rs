@@ -83,6 +83,38 @@ impl PlRSeries {
         Ok(out.into())
     }
 
+    fn get_fmt(&self, str_len_limit: NumericScalar) -> Result<Sexp> {
+        let str_len_limit = <Wrap<usize>>::try_from(str_len_limit)?.0;
+
+        // Same as Python Polars' `PySeries::get_fmt`
+        fn get_fmt_each(series: &Series, index: usize, str_len_limit: usize) -> String {
+            let v = format!("{}", series.get(index).unwrap());
+            if let DataType::String | DataType::Categorical(_, _) | DataType::Enum(_, _) =
+                series.dtype()
+            {
+                let v_no_quotes = &v[1..v.len() - 1];
+                let v_trunc = &v_no_quotes[..v_no_quotes
+                    .char_indices()
+                    .take(str_len_limit)
+                    .last()
+                    .map(|(i, c)| i + c.len_utf8())
+                    .unwrap_or(0)];
+                if v_no_quotes == v_trunc {
+                    v
+                } else {
+                    format!("\"{v_trunc}…")
+                }
+            } else {
+                v
+            }
+        }
+
+        (0..self.series.len())
+            .map(|i| get_fmt_each(&self.series, i, str_len_limit))
+            .collect::<Vec<_>>()
+            .try_into()
+    }
+
     fn clone(&self) -> Result<Self> {
         Ok(self.series.clone().into())
     }

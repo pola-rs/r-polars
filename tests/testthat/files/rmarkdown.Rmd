@@ -1,0 +1,16 @@
+---
+output:
+  github_document:
+    df_print: kable
+    html_preview: false
+---
+
+```{r}
+df <- as_polars_df(nycflights13::flights)
+
+df
+```
+
+```{r}
+df$to_series()
+```

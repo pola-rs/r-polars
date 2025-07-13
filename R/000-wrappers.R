@@ -4223,6 +4223,12 @@ class(`PlRSQLContext`) <- c("PlRSQLContext__bundle", "savvy_polars__sealed")
   }
 }
 
+`PlRSeries_get_fmt` <- function(self) {
+  function(`str_len_limit`) {
+    .Call(savvy_PlRSeries_get_fmt__impl, `self`, `str_len_limit`)
+  }
+}
+
 `PlRSeries_is_sorted_ascending_flag` <- function(self) {
   function() {
     .Call(savvy_PlRSeries_is_sorted_ascending_flag__impl, `self`)
@@ -4344,6 +4350,7 @@ class(`PlRSQLContext`) <- c("PlRSQLContext__bundle", "savvy_polars__sealed")
   e$`div` <- `PlRSeries_div`(ptr)
   e$`dtype` <- `PlRSeries_dtype`(ptr)
   e$`equals` <- `PlRSeries_equals`(ptr)
+  e$`get_fmt` <- `PlRSeries_get_fmt`(ptr)
   e$`is_sorted_ascending_flag` <- `PlRSeries_is_sorted_ascending_flag`(ptr)
   e$`is_sorted_descending_flag` <- `PlRSeries_is_sorted_descending_flag`(ptr)
   e$`len` <- `PlRSeries_len`(ptr)

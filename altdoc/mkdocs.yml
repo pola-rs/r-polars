@@ -707,6 +707,7 @@ nav:
         - s3-as.data.frame: man/s3-as.data.frame.md
         - s3-as.list: man/s3-as.list.md
         - s3-arithmetic: man/s3-arithmetic.md
+        - s3-knit_print: man/s3-knit_print.md
       SQL Interface:
         - SQLContext: man/pl__SQLContext.md
         - sql_context__execute: man/sql_context__execute.md
