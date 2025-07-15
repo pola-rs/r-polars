@@ -102,7 +102,9 @@ test_that("meta$is_column_selection", {
 test_that("meta$tree_format", {
   e <- (pl$col("foo") * pl$col("bar"))$sum()$over(pl$col("ham")) / 2
   expect_true(is.character(e$meta$tree_format()))
+  expect_true(is.character(e$meta$tree_format(as_dot = TRUE)))
   expect_snapshot(cat(e$meta$tree_format()))
+  expect_snapshot(cat(e$meta$tree_format(as_dot = TRUE)))
 })
 
 test_that("meta$serialize", {

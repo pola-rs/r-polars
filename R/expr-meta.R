@@ -190,18 +190,32 @@ expr_meta_root_names <- function() {
   self$`_rexpr`$meta_root_names()
 }
 
-# TODO: add equivalent of meta.show_graph of Python Polars
 #' Format the expression as a tree
 #'
-#' @return A character vector
+#' @inheritParams rlang::args_dots_empty
+#' @param as_dot If `TRUE`, show the dot syntax that can be used in other
+#' packages, such as `DiagrammeR`.
+#'
+#' @return
+#' A string, either with the tree itself (if `as_dot = FALSE`) or with the
+#' corresponding GraphViz code (if `as_dot = TRUE`).
+#'
 #' @examples
 #' my_expr <- (pl$col("foo") * pl$col("bar"))$sum()$over(pl$col("ham")) / 2
-#' my_expr$meta$tree_format() |>
-#'   cat()
-expr_meta_tree_format <- function() {
-  self$`_rexpr`$compute_tree_format(FALSE) |>
-    wrap()
+#' cat(my_expr$meta$tree_format())
+#'
+#' \dontrun{
+#' # This output can be displayed with DiagrammeR for instance
+#' graph <- my_expr$meta$tree_format(as_dot = TRUE)
+#' DiagrammeR::grViz(graph)
+#' }
+expr_meta_tree_format <- function(..., as_dot = FALSE) {
+  wrap({
+    check_dots_empty0(...)
+    self$`_rexpr`$compute_tree_format(display_as_dot = as_dot)
+  })
 }
+
 
 #' Indicate if this expression only selects columns (optionally with aliasing)
 #'
