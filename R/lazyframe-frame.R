@@ -246,15 +246,15 @@ lazyframe__group_by <- function(..., .maintain_order = FALSE) {
 #' Individual optimizations may be disabled by setting the corresponding parameter to `FALSE`.
 #' @inherit pl__DataFrame return
 #' @inheritParams rlang::args_dots_empty
-#' @param type_coercion A logical, indicats type coercion optimization.
-#' @param predicate_pushdown A logical, indicats predicate pushdown optimization.
-#' @param projection_pushdown A logical, indicats projection pushdown optimization.
-#' @param simplify_expression A logical, indicats simplify expression optimization.
-#' @param slice_pushdown A logical, indicats slice pushdown optimization.
-#' @param comm_subplan_elim A logical, indicats tring to cache branching subplans that occur
+#' @param type_coercion A logical, indicates type coercion optimization.
+#' @param predicate_pushdown A logical, indicates predicate pushdown optimization.
+#' @param projection_pushdown A logical, indicates projection pushdown optimization.
+#' @param simplify_expression A logical, indicates simplify expression optimization.
+#' @param slice_pushdown A logical, indicates slice pushdown optimization.
+#' @param comm_subplan_elim A logical, indicates trying to cache branching subplans that occur
 #' on self-joins or unions.
-#' @param comm_subexpr_elim A logical, indicats tring to cache common subexpressions.
-#' @param cluster_with_columns A logical, indicats to combine sequential independent calls
+#' @param comm_subexpr_elim A logical, indicates trying to cache common subexpressions.
+#' @param cluster_with_columns A logical, indicates to combine sequential independent calls
 #' to with_columns.
 #' @param collapse_joins Collapse a join and filters into a faster join.
 #' @param no_optimization A logical. If `TRUE`, turn off (certain) optimizations.
@@ -267,9 +267,6 @@ lazyframe__group_by <- function(..., .maintain_order = FALSE) {
 #' @param _eager A logical, indicates to turn off multi-node optimizations and
 #' the other optimizations. This option is intended for internal use only.
 #' @param _check_order,_type_check For internal use only.
-#'
-#' @inherit as_polars_lf return
-#'
 #' @seealso
 #'  - [`$profile()`][lazyframe__profile] - same as `$collect()` but also returns
 #'    a table with each operation profiled.

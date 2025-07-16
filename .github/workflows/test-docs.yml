@@ -36,7 +36,12 @@ jobs:
       - name: Check missing man pages in mkdocs.yml
         run: |
           YAML_FILE="altdoc/mkdocs.yml"
-          MAN_LIST=(man/*.Rd)
+          MAN_LIST=()
+          for file in man/*.Rd; do
+              if ! grep -q '\\keyword{internal}' "$file"; then
+                  MAN_LIST+=("$file")
+              fi
+          done
           VIGNETTES_LIST=(vignettes/*.Rmd)
 
           # Track missing files

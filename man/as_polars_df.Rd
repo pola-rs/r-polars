@@ -56,22 +56,22 @@ If \code{NULL}, the column name is taken from the \link{Series} name.}
 the \code{\link[=series_struct_unnest]{<Series>$struct$unnest()}} method is used to create a \link{DataFrame}
 from the struct \link{Series}. In this case, the \code{column_name} argument is ignored.}
 
-\item{type_coercion}{A logical, indicats type coercion optimization.}
+\item{type_coercion}{A logical, indicates type coercion optimization.}
 
-\item{predicate_pushdown}{A logical, indicats predicate pushdown optimization.}
+\item{predicate_pushdown}{A logical, indicates predicate pushdown optimization.}
 
-\item{projection_pushdown}{A logical, indicats projection pushdown optimization.}
+\item{projection_pushdown}{A logical, indicates projection pushdown optimization.}
 
-\item{simplify_expression}{A logical, indicats simplify expression optimization.}
+\item{simplify_expression}{A logical, indicates simplify expression optimization.}
 
-\item{slice_pushdown}{A logical, indicats slice pushdown optimization.}
+\item{slice_pushdown}{A logical, indicates slice pushdown optimization.}
 
-\item{comm_subplan_elim}{A logical, indicats tring to cache branching subplans that occur
+\item{comm_subplan_elim}{A logical, indicates trying to cache branching subplans that occur
 on self-joins or unions.}
 
-\item{comm_subexpr_elim}{A logical, indicats tring to cache common subexpressions.}
+\item{comm_subexpr_elim}{A logical, indicates trying to cache common subexpressions.}
 
-\item{cluster_with_columns}{A logical, indicats to combine sequential independent calls
+\item{cluster_with_columns}{A logical, indicates to combine sequential independent calls
 to with_columns.}
 
 \item{no_optimization}{A logical. If \code{TRUE}, turn off (certain) optimizations.}

@@ -18,8 +18,8 @@ pub fn map_single(
     let output_type = output_type.map(|t| t.dt.clone());
     let lambda = RUdf::new(lambda);
     let func = move |col: Column| {
-        let thread_com = ThreadCom::try_from_global(&CONFIG)
-            .expect("polars was thread could not initiate ThreadCommunication to R");
+        let thread_com =
+            ThreadCom::try_from_global(&CONFIG).map_err(|e| PolarsError::ComputeError(e.into()))?;
         thread_com.send(RUdfSignature::SeriesToSeries(
             lambda.clone(),
             col.as_materialized_series().clone(),
