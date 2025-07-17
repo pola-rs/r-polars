@@ -352,7 +352,7 @@ lazyframe__collect <- function(
 #' @details The units of the timings are microseconds.
 #'
 #' @return List of two `DataFrame`s: one with the collected result, the other
-#' with the timings of each step. If `show_graph = TRUE`, then the plot is
+#' with the timings of each step. If `show_plot = TRUE`, then the plot is
 #' also stored in the list.
 #' @seealso
 #'  - [`$collect()`][lazyframe__collect] - regular collect.
