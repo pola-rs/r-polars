@@ -40,9 +40,8 @@ pl__read_csv(
 )
 }
 \arguments{
-\item{source}{Path to a file or URL. It is possible to provide multiple paths
-provided that all CSV files have the same schema. It is not possible to
-provide several URLs.}
+\item{source}{Path(s) to a file or directory. When needing to authenticate
+for scanning cloud locations, see the \code{storage_options} parameter.}
 
 \item{...}{These dots are for future extensions and must be empty.}
 
@@ -94,32 +93,31 @@ not inferred and will be \code{pl$String} if not specified in \code{schema} or
 inference. If \code{NULL}, the full data may be scanned (this is slow). Set
 \code{infer_schema = FALSE} to read all columns as \code{pl$String}.}
 
-\item{n_rows}{Stop reading from CSV file after reading \code{n_rows}.}
+\item{n_rows}{Stop reading from the source after reading \code{n_rows}.}
 
 \item{encoding}{Either \code{"utf8"} or \code{"utf8-lossy"}. Lossy means that invalid
 UTF8 values are replaced with "?" characters.}
 
 \item{low_memory}{Reduce memory pressure at the expense of performance.}
 
-\item{rechunk}{Reallocate to contiguous memory when all chunks / files are
-parsed.}
+\item{rechunk}{Reallocate to contiguous memory when all chunks/files are parsed.}
 
 \item{skip_rows_after_header}{Skip this number of rows when the header is
 parsed.}
 
 \item{row_index_name}{If not \code{NULL}, this will insert a row index column with
-the given name into the DataFrame.}
+the given name.}
 
 \item{row_index_offset}{Offset to start the row index column (only used if
-the name is set).}
+the name is set by \code{row_index_name}).}
 
 \item{try_parse_dates}{Try to automatically parse dates. Most ISO8601-like
 formats can be inferred, as well as a handful of others. If this does not
 succeed, the column remains of data type \code{pl$String}.}
 
-\item{eol_char}{Single byte end of line character (default: \verb{\\n}). When
-encountering a file with Windows line endings (\verb{\\r\\n}), one can go with the
-default \verb{\\n}. The extra \verb{\\r} will be removed when processed.}
+\item{eol_char}{Single byte end of line character (default: \code{"\\n"}). When
+encountering a file with Windows line endings (\code{"\\r\\n"}), one can go with the
+default \code{"\\n"}. The extra \code{"\\r"} will be removed when processed.}
 
 \item{raise_if_empty}{If \code{FALSE}, parsing an empty file returns an empty
 DataFrame or LazyFrame.}

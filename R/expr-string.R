@@ -1228,6 +1228,9 @@ expr_str_tail <- function(n) {
 
 #' Use the Aho-Corasick algorithm to extract matches
 #'
+#' `r lifecycle::badge("experimental")`
+#' This method supports matching on string literals only,
+#' and does not support regular expression matching.
 #' @param patterns String patterns to search. This can be an Expr or something
 #' coercible to an Expr. Strings are parsed as column names.
 #' @inheritParams expr_str_contains_any

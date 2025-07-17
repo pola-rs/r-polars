@@ -29,9 +29,10 @@ for scanning cloud locations, see the \code{storage_options} parameter.}
 
 \item{...}{These dots are for future extensions and must be empty.}
 
-\item{schema}{Specify the datatypes of the columns. The datatypes must match
-the datatypes in the file(s). If there are extra columns that are not in the
-file(s), consider also enabling \code{allow_missing_columns}.}
+\item{schema}{Provide the schema. This means that polars doesn't do schema
+inference. This argument expects the complete schema, whereas
+\code{schema_overrides} can be used to partially overwrite a schema. This must be
+a list. Names of list elements are used to match to inferred columns.}
 
 \item{schema_overrides}{Overwrite dtypes during inference. This must be a
 list. Names of list elements are used to match to inferred columns.}
@@ -40,20 +41,19 @@ list. Names of list elements are used to match to inferred columns.}
 inference. If \code{NULL}, the full data may be scanned (this is slow). Set
 \code{infer_schema = FALSE} to read all columns as \code{pl$String}.}
 
-\item{batch_size}{Number of rows that will be processed per thread.}
+\item{batch_size}{Number of rows to read in each batch.}
 
-\item{n_rows}{Stop reading from parquet file after reading \code{n_rows}.}
+\item{n_rows}{Stop reading from the source after reading \code{n_rows}.}
 
-\item{low_memory}{Reduce memory pressure at the expense of performance}
+\item{low_memory}{Reduce memory pressure at the expense of performance.}
 
-\item{rechunk}{In case of reading multiple files via a glob pattern rechunk
-the final DataFrame into contiguous memory chunks.}
+\item{rechunk}{Reallocate to contiguous memory when all chunks/files are parsed.}
 
 \item{row_index_name}{If not \code{NULL}, this will insert a row index column with
-the given name into the DataFrame.}
+the given name.}
 
 \item{row_index_offset}{Offset to start the row index column (only used if
-the name is set).}
+the name is set by \code{row_index_name}).}
 
 \item{ignore_errors}{Keep reading the file even if some lines yield errors.
 You can also use \code{infer_schema = FALSE} to read all columns as UTF8 to
@@ -81,8 +81,8 @@ information from environment variables.}
 their last access time, in seconds. Uses the \code{POLARS_FILE_CACHE_TTL}
 environment variable (which defaults to 1 hour) if not given.}
 
-\item{include_file_paths}{Character value indicating the column name that
-will include the path of the source file(s).}
+\item{include_file_paths}{Include the path of the source file(s) as a column
+with this name.}
 }
 \value{
 A polars \link{LazyFrame}

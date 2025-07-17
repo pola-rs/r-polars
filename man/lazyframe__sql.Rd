@@ -18,14 +18,15 @@ represents the calling frame (defaults to \code{"self"}).}
 A polars \link{LazyFrame}
 }
 \description{
-Execute a SQL query against the LazyFrame
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Execute a SQL query against the LazyFrame.
 }
 \details{
 The calling frame is automatically registered as a table in the SQL context
 under the name \code{"self"}.
 
 More control over registration and execution behaviour is available by using
-the \code{\link[=pl__SQLContext]{SQLContext}} object.
+the \link{SQLContext} object.
 }
 \examples{
 lf1 <- pl$LazyFrame(a = 1:3, b = 6:8, c = c("z", "y", "x"))

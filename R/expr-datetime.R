@@ -1072,6 +1072,8 @@ expr_dt_date <- function() {
 
 #' Offset by `n` business days.
 #'
+#' `r lifecycle::badge("experimental")`
+#' Offset by `n` business days.
 #' @inherit as_polars_expr return
 #' @inheritParams rlang::args_dots_empty
 #' @param n An integer value or a [polars expression][Expr] representing the number of

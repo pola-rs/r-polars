@@ -15,7 +15,7 @@ LazyFrame via \code{as_polars_lf()}. All elements must be named.}
 An object of class \code{"polars_sql_context"}
 }
 \description{
-Register multiple eager/lazy frames as tables, using the associated names
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \examples{
 df <- pl$DataFrame(x = 1)

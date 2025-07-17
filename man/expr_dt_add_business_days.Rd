@@ -38,6 +38,7 @@ Options are:
 A polars \link{expression}
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 Offset by \code{n} business days.
 }
 \examples{

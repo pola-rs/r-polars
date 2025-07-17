@@ -5,57 +5,27 @@
 #' @inherit pl__scan_ipc description
 #'
 #' @inherit pl__LazyFrame return
-#' @inheritParams rlang::args_dots_empty
-#' @param source Path(s) to a file or directory. When needing to authenticate
-#' for scanning cloud locations, see the `storage_options` parameter.
-#' @param n_rows Stop reading from parquet file after reading `n_rows`.
-#' @param row_index_name If not `NULL`, this will insert a row index column with
-#' the given name into the DataFrame.
-#' @param row_index_offset Offset to start the row index column (only used if
-#' the name is set).
+#' @inheritParams pl__scan_ipc
 #' @param parallel This determines the direction and strategy of parallelism.
-#' `"auto"` will try to determine the optimal direction. The `"prefiltered"`
-#' strategy first evaluates the pushed-down predicates in parallel and
-#' determines a mask of which rows to read. Then, it parallelizes over both the
-#' columns and the row groups while filtering out rows that do not need to be
-#' read. This can provide significant speedups for large files (i.e. many
-#' row-groups) with a predicate that filters clustered rows or filters heavily.
-#' In other cases, prefiltered may slow down the scan compared other strategies.
-#'
-#' The prefiltered settings falls back to auto if no predicate is given.
+#'   - `"auto"` (default): Will try to determine the optimal direction.
+#'   - `"prefiltered"`: `r lifecycle::badge("experimental")`
+#'     Strategy first evaluates the pushed-down predicates in parallel and
+#'     determines a mask of which rows to read. Then, it parallelizes over both the
+#'     columns and the row groups while filtering out rows that do not need to be
+#'     read. This can provide significant speedups for large files (i.e. many
+#'     row-groups) with a predicate that filters clustered rows or filters heavily.
+#'     In other cases, prefiltered may slow down the scan compared other strategies.
+#'     Falls back to `"auto"` if no predicate is given.
+#'   - `"columns"`, `"row_groups"`: Use the specified direction.
+#'   - `"none"`: No parallelism.
 #' @param use_statistics Use statistics in the parquet to determine if pages
 #' can be skipped from reading.
-#' @param hive_partitioning Infer statistics and schema from Hive partitioned
-#' sources and use them to prune reads.
 #' @param glob Expand path given via globbing rules.
-#' @param schema Specify the datatypes of the columns. The datatypes must match
-#' the datatypes in the file(s). If there are extra columns that are not in the
-#' file(s), consider also enabling `allow_missing_columns`.
-#' @param hive_schema The column names and data types of the columns by which
-#' the data is partitioned. If `NULL` (default), the schema of the hive
-#' partitions is inferred.
-#' @param try_parse_hive_dates Whether to try parsing hive values as date /
-#' datetime types.
-#' @param rechunk In case of reading multiple files via a glob pattern rechunk
-#' the final DataFrame into contiguous memory chunks.
+#' @param schema `r lifecycle::badge("experimental")`
+#'   Named list of [datatypes][DataType] of the columns. The datatypes must match
+#'   the datatypes in the file(s). If there are extra columns that are not in the
+#'   file(s), consider also enabling `allow_missing_columns`.
 #' @param low_memory Reduce memory pressure at the expense of performance
-#' @param cache Cache the result after reading.
-#' @param storage_options Named vector containing options that indicate how to
-#' connect to a cloud provider. The cloud providers currently supported are
-#' AWS, GCP, and Azure.
-#' See supported keys here:
-#' * [aws](https://docs.rs/object_store/latest/object_store/aws/enum.AmazonS3ConfigKey.html)
-#' * [gcp](https://docs.rs/object_store/latest/object_store/gcp/enum.GoogleConfigKey.html)
-#' * [azure](https://docs.rs/object_store/latest/object_store/azure/enum.AzureConfigKey.html)
-#' * Hugging Face (`hf://`): Accepts an API key under the token parameter
-#'   `c(token = YOUR_TOKEN)` or by setting the `HF_TOKEN` environment
-#'   variable.
-#'
-#' If `storage_options` is not provided, Polars will try to infer the
-#' information from environment variables.
-#' @param retries Number of retries if accessing a cloud instance fails.
-#' @param include_file_paths Character value indicating the column name that
-#' will include the path of the source file(s).
 #' @param allow_missing_columns When reading a list of parquet files, if a
 #' column existing in the first file cannot be found in subsequent files, the
 #' default behavior is to raise an error. However, if `allow_missing_columns`

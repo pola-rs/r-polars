@@ -2,8 +2,11 @@
 % Please edit documentation in R/output-partition.R
 \name{pl__PartitionByKey}
 \alias{pl__PartitionByKey}
+\alias{PartitionByKey}
 \alias{pl__PartitionMaxSize}
+\alias{PartitionMaxSize}
 \alias{pl__PartitionParted}
+\alias{PartitionParted}
 \alias{polars_partitioning_scheme}
 \title{Partitioning scheme to write files}
 \usage{

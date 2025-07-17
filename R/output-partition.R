@@ -75,6 +75,7 @@ wrap.PlRPartitioning <- function(x, ...) {
 }
 
 #' @rdname polars_partitioning_scheme
+#' @aliases PartitionMaxSize
 #' @order 2
 pl__PartitionMaxSize <- function(
   base_path,
@@ -98,6 +99,7 @@ pl__PartitionMaxSize <- function(
 }
 
 #' @rdname polars_partitioning_scheme
+#' @aliases PartitionByKey
 #' @order 1
 pl__PartitionByKey <- function(
   base_path,
@@ -124,6 +126,7 @@ pl__PartitionByKey <- function(
 }
 
 #' @rdname polars_partitioning_scheme
+#' @aliases PartitionParted
 #' @order 3
 pl__PartitionParted <- function(
   base_path,

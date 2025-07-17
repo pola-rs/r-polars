@@ -2611,6 +2611,8 @@ lazyframe__describe <- function(
 
 #' Execute a SQL query against the LazyFrame
 #'
+#' `r lifecycle::badge("experimental")`
+#' Execute a SQL query against the LazyFrame.
 #' @inheritParams rlang::args_dots_empty
 #' @param query SQL query to execute.
 #' @param table_name Optionally provide an explicit name for the table that
@@ -2625,7 +2627,7 @@ lazyframe__describe <- function(
 # globals, use the top-level [`pl$sql()`][pl__sql].
 #'
 #' More control over registration and execution behaviour is available by using
-#' the [`SQLContext`][pl__SQLContext] object.
+#' the [SQLContext] object.
 #'
 #' @inherit as_polars_lf return
 #' @examples

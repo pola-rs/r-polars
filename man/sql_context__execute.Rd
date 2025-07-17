@@ -13,7 +13,7 @@ sql_context__execute(query)
 A polars \link{LazyFrame}
 }
 \description{
-Parse the given SQL query and execute it against the registered frame data
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \examples{
 # Declare frame data and register with a SQLContext:

@@ -3,13 +3,9 @@
 #' Lazily read from a local or cloud-hosted NDJSON file(s)
 #'
 #' @inherit pl__scan_ipc description
-#'
-#' @inherit pl__LazyFrame return
-#' @inheritParams rlang::args_dots_empty
-#' @inheritParams pl__scan_parquet
+#' @inherit as_polars_lf return
 #' @inheritParams pl__scan_csv
-#' @inheritParams lazyframe__sink_csv
-#'
+#' @param batch_size Number of rows to read in each batch.
 #' @examplesIf requireNamespace("jsonlite", quietly = TRUE)
 #' ndjson_filename <- tempfile()
 #' jsonlite::stream_out(iris, file(ndjson_filename), verbose = FALSE)
@@ -67,7 +63,7 @@ pl__scan_ndjson <- function(
 
 #' Read into a DataFrame from NDJSON file
 #'
-#' @inherit pl__DataFrame return
+#' @inherit as_polars_df return
 #' @inheritParams pl__scan_ndjson
 #' @examplesIf requireNamespace("jsonlite", quietly = TRUE)
 #' ndjson_filename <- tempfile()

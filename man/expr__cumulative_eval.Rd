@@ -18,7 +18,7 @@ should be in the window before the expression is evaluated.}
 A polars \link{expression}
 }
 \description{
-Return the cumulative count of the non-null values in the column
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \details{
 This can be really slow as it can have \code{O(n^2)} complexity. Don’t use this

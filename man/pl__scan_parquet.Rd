@@ -32,46 +32,52 @@ for scanning cloud locations, see the \code{storage_options} parameter.}
 
 \item{...}{These dots are for future extensions and must be empty.}
 
-\item{n_rows}{Stop reading from parquet file after reading \code{n_rows}.}
+\item{n_rows}{Stop reading from the source after reading \code{n_rows}.}
 
 \item{row_index_name}{If not \code{NULL}, this will insert a row index column with
-the given name into the DataFrame.}
+the given name.}
 
 \item{row_index_offset}{Offset to start the row index column (only used if
-the name is set).}
+the name is set by \code{row_index_name}).}
 
 \item{parallel}{This determines the direction and strategy of parallelism.
-\code{"auto"} will try to determine the optimal direction. The \code{"prefiltered"}
-strategy first evaluates the pushed-down predicates in parallel and
+\itemize{
+\item \code{"auto"} (default): Will try to determine the optimal direction.
+\item \code{"prefiltered"}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Strategy first evaluates the pushed-down predicates in parallel and
 determines a mask of which rows to read. Then, it parallelizes over both the
 columns and the row groups while filtering out rows that do not need to be
 read. This can provide significant speedups for large files (i.e. many
 row-groups) with a predicate that filters clustered rows or filters heavily.
 In other cases, prefiltered may slow down the scan compared other strategies.
-
-The prefiltered settings falls back to auto if no predicate is given.}
+Falls back to \code{"auto"} if no predicate is given.
+\item \code{"columns"}, \code{"row_groups"}: Use the specified direction.
+\item \code{"none"}: No parallelism.
+}}
 
 \item{use_statistics}{Use statistics in the parquet to determine if pages
 can be skipped from reading.}
 
 \item{hive_partitioning}{Infer statistics and schema from Hive partitioned
-sources and use them to prune reads.}
+sources and use them to prune reads. If \code{NULL} (default), it is automatically
+enabled when a single directory is passed, and otherwise disabled.}
 
 \item{glob}{Expand path given via globbing rules.}
 
-\item{schema}{Specify the datatypes of the columns. The datatypes must match
+\item{schema}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Named list of \link[=DataType]{datatypes} of the columns. The datatypes must match
 the datatypes in the file(s). If there are extra columns that are not in the
 file(s), consider also enabling \code{allow_missing_columns}.}
 
-\item{hive_schema}{The column names and data types of the columns by which
-the data is partitioned. If \code{NULL} (default), the schema of the hive
-partitions is inferred.}
+\item{hive_schema}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+A list containing the column names and data types of the columns by
+which the data is partitioned, e.g. \code{list(a = pl$String, b = pl$Float32)}.
+If \code{NULL} (default), the schema of the Hive partitions is inferred.}
 
 \item{try_parse_hive_dates}{Whether to try parsing hive values as date /
 datetime types.}
 
-\item{rechunk}{In case of reading multiple files via a glob pattern rechunk
-the final DataFrame into contiguous memory chunks.}
+\item{rechunk}{Reallocate to contiguous memory when all chunks/files are parsed.}
 
 \item{low_memory}{Reduce memory pressure at the expense of performance}
 
@@ -95,8 +101,8 @@ information from environment variables.}
 
 \item{retries}{Number of retries if accessing a cloud instance fails.}
 
-\item{include_file_paths}{Character value indicating the column name that
-will include the path of the source file(s).}
+\item{include_file_paths}{Include the path of the source file(s) as a column
+with this name.}
 
 \item{allow_missing_columns}{When reading a list of parquet files, if a
 column existing in the first file cannot be found in subsequent files, the

@@ -1397,6 +1397,7 @@ expr__cum_count <- function(..., reverse = FALSE) {
 
 #' Return the cumulative count of the non-null values in the column
 #'
+#' `r lifecycle::badge("experimental")`
 #' @param expr Expression to evaluate.
 #' @inheritParams rlang::args_dots_empty
 #' @param min_periods Number of valid values (i.e. `length - null_count`) there
@@ -2955,7 +2956,6 @@ expr__rolling_max_by <- function(
 #' Apply a rolling min based on another column
 #'
 #' @inherit expr__rolling_max_by description params details
-#'
 #' @inherit as_polars_expr return
 #' @examples
 #' df_temporal <- pl$select(
@@ -3006,7 +3006,6 @@ expr__rolling_min_by <- function(
 #' Apply a rolling mean based on another column
 #'
 #' @inherit expr__rolling_max_by description params details
-#'
 #' @inherit as_polars_expr return
 #' @examples
 #' df_temporal <- pl$select(
@@ -3057,7 +3056,6 @@ expr__rolling_mean_by <- function(
 #' Apply a rolling median based on another column
 #'
 #' @inherit expr__rolling_max_by description params details
-#'
 #' @inherit as_polars_expr return
 #' @examples
 #' df_temporal <- pl$select(
@@ -3108,7 +3106,6 @@ expr__rolling_median_by <- function(
 #' Apply a rolling sum based on another column
 #'
 #' @inherit expr__rolling_max_by description params details
-#'
 #' @inherit as_polars_expr return
 #' @examples
 #' df_temporal <- pl$select(
@@ -3159,9 +3156,8 @@ expr__rolling_sum_by <- function(
 #' Apply a rolling quantile based on another column
 #'
 #' @inherit expr__rolling_max_by description params details
-#' @inheritParams expr__quantile
-#'
 #' @inherit as_polars_expr return
+#' @inheritParams expr__quantile
 #' @examples
 #' df_temporal <- pl$select(
 #'   index = 0:24,
@@ -3222,7 +3218,6 @@ expr__rolling_quantile_by <- function(
 #'
 #' @inherit expr__rolling_max_by description params details
 #' @inheritParams expr__std
-#'
 #' @inherit as_polars_expr return
 #' @examples
 #' df_temporal <- pl$select(
@@ -3276,7 +3271,6 @@ expr__rolling_std_by <- function(
 #'
 #' @inherit expr__rolling_max_by description params details
 #' @inheritParams expr__var
-#'
 #' @inherit as_polars_expr return
 #' @examples
 #' df_temporal <- pl$select(

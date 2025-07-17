@@ -21,13 +21,13 @@ pl__read_ipc_stream(
 
 \item{columns}{A character vector of column names to read.}
 
-\item{n_rows}{Stop reading from parquet file after reading \code{n_rows}.}
+\item{n_rows}{Stop reading from the source after reading \code{n_rows}.}
 
 \item{row_index_name}{If not \code{NULL}, this will insert a row index column with
-the given name into the DataFrame.}
+the given name.}
 
 \item{row_index_offset}{Offset to start the row index column (only used if
-the name is set).}
+the name is set by \code{row_index_name}).}
 
 \item{rechunk}{A logical value to indicate whether to make sure that all data is contiguous.}
 }

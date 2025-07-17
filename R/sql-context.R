@@ -12,6 +12,7 @@ wrap.PlRSQLContext <- function(x, ...) {
 
 #' Initialize a new `SQLContext`
 #'
+#' `r lifecycle::badge("experimental")`
 #' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Elements that are known in the
 #' current `SQLContext`. It accepts any R object that can be converted to a
 #' LazyFrame via `as_polars_lf()`. All elements must be named.
@@ -28,6 +29,7 @@ wrap.PlRSQLContext <- function(x, ...) {
 #' pl$SQLContext(mtcars = mtcars)
 #'
 #' pl$SQLContext(mtcars = mtcars, a = data.frame(x = 1))
+#' @aliases polars_sql_context SQLContext
 pl__SQLContext <- function(...) {
   wrap({
     self <- PlRSQLContext$new() |>
@@ -39,6 +41,7 @@ pl__SQLContext <- function(...) {
 
 #' Register a single frame as a table, using the given name
 #'
+#' `r lifecycle::badge("experimental")`
 #' @param name Name of the table.
 #' @param frame Object to associate with this table name.
 #'
@@ -57,6 +60,7 @@ sql_context__register <- function(name, frame = NULL) {
 
 #' Register multiple eager/lazy frames as tables, using the associated names
 #'
+#' `r lifecycle::badge("experimental")`
 #' @inherit pl__SQLContext params return
 #' @examples
 #' df <- pl$DataFrame(x = 1)
@@ -80,6 +84,7 @@ sql_context__register_many <- function(...) {
 
 #' Return a list of the registered table names
 #'
+#' `r lifecycle::badge("experimental")`
 #' @details
 #' This method will return the same values as the "SHOW TABLES" SQL statement,
 #' but as a vector instead of a frame.
@@ -102,6 +107,7 @@ sql_context__tables <- function() {
 
 #' Parse the given SQL query and execute it against the registered frame data
 #'
+#' `r lifecycle::badge("experimental")`
 #' @param query A valid string SQL query.
 #'
 #' @inherit as_polars_lf return

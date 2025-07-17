@@ -2,6 +2,8 @@
 % Please edit documentation in R/sql-context.R
 \name{pl__SQLContext}
 \alias{pl__SQLContext}
+\alias{polars_sql_context}
+\alias{SQLContext}
 \title{Initialize a new \code{SQLContext}}
 \usage{
 pl__SQLContext(...)
@@ -15,7 +17,7 @@ LazyFrame via \code{as_polars_lf()}. All elements must be named.}
 An object of class \code{"polars_sql_context"}
 }
 \description{
-Initialize a new \code{SQLContext}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \examples{
 pl$SQLContext(mtcars = mtcars)

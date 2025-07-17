@@ -28,18 +28,17 @@ for scanning cloud locations, see the \code{storage_options} parameter.}
 
 \item{...}{These dots are for future extensions and must be empty.}
 
-\item{n_rows}{Stop reading from parquet file after reading \code{n_rows}.}
+\item{n_rows}{Stop reading from the source after reading \code{n_rows}.}
 
 \item{cache}{Cache the result after reading.}
 
-\item{rechunk}{In case of reading multiple files via a glob pattern rechunk
-the final DataFrame into contiguous memory chunks.}
+\item{rechunk}{Reallocate to contiguous memory when all chunks/files are parsed.}
 
 \item{row_index_name}{If not \code{NULL}, this will insert a row index column with
-the given name into the DataFrame.}
+the given name.}
 
 \item{row_index_offset}{Offset to start the row index column (only used if
-the name is set).}
+the name is set by \code{row_index_name}).}
 
 \item{storage_options}{Named vector containing options that indicate how to
 connect to a cloud provider. The cloud providers currently supported are
@@ -67,16 +66,16 @@ environment variable (which defaults to 1 hour) if not given.}
 sources and use them to prune reads. If \code{NULL} (default), it is automatically
 enabled when a single directory is passed, and otherwise disabled.}
 
-\item{hive_schema}{A list containing the column names and data types of the
-columns by which the data is partitioned, e.g.
-\code{list(a = pl$String, b = pl$Float32)}. If \code{NULL} (default), the schema of
-the Hive partitions is inferred.}
+\item{hive_schema}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+A list containing the column names and data types of the columns by
+which the data is partitioned, e.g. \code{list(a = pl$String, b = pl$Float32)}.
+If \code{NULL} (default), the schema of the Hive partitions is inferred.}
 
 \item{try_parse_hive_dates}{Whether to try parsing hive values as date /
 datetime types.}
 
-\item{include_file_paths}{Character value indicating the column name that
-will include the path of the source file(s).}
+\item{include_file_paths}{Include the path of the source file(s) as a column
+with this name.}
 }
 \value{
 A polars \link{LazyFrame}

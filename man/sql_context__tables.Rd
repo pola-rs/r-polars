@@ -10,7 +10,7 @@ sql_context__tables()
 A character vector
 }
 \description{
-Return a list of the registered table names
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \details{
 This method will return the same values as the "SHOW TABLES" SQL statement,
