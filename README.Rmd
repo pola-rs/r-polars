@@ -61,8 +61,6 @@ Sys.setenv(NOT_CRAN = "true")
 install.packages('polars', repos = c("https://rpolars.r-universe.dev", "https://cloud.r-project.org"))
 ```
 
-<!-- TODO: link to the installation vignette -->
-
 ## Usage
 
 To avoid conflicts with other packages and base R function names, many of polars'
