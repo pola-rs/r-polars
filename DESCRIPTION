@@ -16,6 +16,7 @@ License: MIT + file LICENSE
 URL: https://pola-rs.github.io/r-polars/,
     https://github.com/pola-rs/r-polars,
     https://rpolars.r-universe.dev/polars
+BugReports: https://github.com/pola-rs/r-polars/issues
 Depends:
     R (>= 4.3)
 Imports:

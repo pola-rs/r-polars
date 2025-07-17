@@ -14,6 +14,7 @@ Useful links:
   \item \url{https://pola-rs.github.io/r-polars/}
   \item \url{https://github.com/pola-rs/r-polars}
   \item \url{https://rpolars.r-universe.dev/polars}
+  \item Report bugs at \url{https://github.com/pola-rs/r-polars/issues}
 }
 
 }
