@@ -699,7 +699,6 @@ expr_dt_timestamp <- function(time_unit = c("us", "ns", "ms")) {
   })
 }
 
-# TODO: mark deprecated in news before next release
 #' Set time unit of a Series of dtype Datetime or Duration
 #' @description
 #' `r lifecycle::badge("deprecated")`
