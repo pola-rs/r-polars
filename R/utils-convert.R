@@ -1,6 +1,7 @@
 #' The Polars duration string language
 #'
-#' @name polars_duration_string
+#' @name polars-duration-string
+#' @keywords internal
 #' @section Polars duration string language:
 #' Polars duration string language is a simple representation of
 #' durations. It is used in many Polars functions that accept durations.

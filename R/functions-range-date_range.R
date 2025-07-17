@@ -18,7 +18,7 @@
 #'
 #' @inherit as_polars_expr return
 #'
-#' @inheritSection polars_duration_string Polars duration string language
+#' @inheritSection polars-duration-string Polars duration string language
 #'
 #' @seealso [`pl$date_ranges()`][pl__date_ranges] to create a simple Series of
 #' data type list(Date) based on column values.
@@ -67,7 +67,7 @@ pl__date_range <- function(
 #' also of type Date. All other permutations return a Datetime.
 #'
 #' @inheritParams pl__date_range
-#' @inheritSection polars_duration_string  Polars duration string language
+#' @inheritSection polars-duration-string Polars duration string language
 #'
 #' @inherit as_polars_expr return
 #'

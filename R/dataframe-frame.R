@@ -1059,7 +1059,7 @@ dataframe__unnest <- function(...) {
 #'
 #' @param other DataFrame to join with.
 #'
-#' @inheritSection polars_duration_string Polars duration string language
+#' @inheritSection polars-duration-string Polars duration string language
 #' @inherit as_polars_df return
 #' @examples
 #' gdp <- pl$DataFrame(

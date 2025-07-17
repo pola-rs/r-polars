@@ -2,7 +2,7 @@
 #' Generate a datetime range
 #'
 #' @inheritParams pl__date_range
-#' @inheritSection polars_duration_string  Polars duration string language
+#' @inheritSection polars-duration-string Polars duration string language
 #'
 #' @param time_unit Time unit of the resulting the [Datetime][pl__Datetime]
 #' data type. One of `"ns"`, `"us"`, `"ms"` or `NULL`
@@ -67,7 +67,7 @@ pl__datetime_range <- function(
 #' Generate a list containing a datetime range
 #'
 #' @inheritParams pl__datetime_range
-#' @inheritSection polars_duration_string  Polars duration string language
+#' @inheritSection polars-duration-string Polars duration string language
 #'
 #' @inherit as_polars_expr return
 #'

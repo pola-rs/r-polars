@@ -9,7 +9,7 @@
 #' @param interval Interval of the range periods, specified as a [difftime]
 #' or using the Polars duration string language (see details).
 #'
-#' @inheritSection polars_duration_string Polars duration string language
+#' @inheritSection polars-duration-string Polars duration string language
 #' @inherit as_polars_expr return
 #' @examplesIf requireNamespace("hms", quietly = TRUE)
 #' pl$select(
@@ -48,7 +48,7 @@ pl__time_range <- function(
 #' @inheritParams rlang::args_dots_empty
 #' @inheritParams pl__time_range
 #'
-#' @inheritSection polars_duration_string Polars duration string language
+#' @inheritSection polars-duration-string Polars duration string language
 #' @inherit as_polars_expr return
 #' @examplesIf requireNamespace("hms", quietly = TRUE)
 #' df <- pl$DataFrame(

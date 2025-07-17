@@ -723,7 +723,6 @@ nav:
         - pl_api_register_series_namespace: man/pl_api_register_series_namespace.md
         - polars-package: man/polars-package.md
         - pl: man/pl.md
-        - polars_duration_string: man/polars_duration_string.md
         - polars_options: man/polars_options.md
         - polars_info: man/polars_info.md
         - show_versions: man/pl__show_versions.md

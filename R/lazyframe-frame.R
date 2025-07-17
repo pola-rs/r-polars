@@ -2269,7 +2269,7 @@ lazyframe__with_row_index <- function(name = "index", offset = 0) {
 #' are not sorted, polars will error, or raise a warning if the `by` argument
 #' is provided. This might become a hard error in the future.
 #'
-#' @inheritSection polars_duration_string Polars duration string language
+#' @inheritSection polars-duration-string Polars duration string language
 #' @inherit as_polars_lf return
 #' @examples
 #' gdp <- pl$LazyFrame(
