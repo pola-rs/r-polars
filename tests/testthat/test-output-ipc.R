@@ -4,19 +4,15 @@ patrick::with_parameters_test_that(
     lf <- as_polars_lf(iris)
     df <- as_polars_df(iris)
     tmpf <- withr::local_tempfile()
-    expect_silent(lf$sink_ipc(tmpf, compression = compression))
+    expect_null(lf$sink_ipc(tmpf, compression = compression))
     expect_equal(pl$read_ipc(tmpf), df)
 
     # update with new data
-    lf$slice(5, 5)$sink_ipc(tmpf)
+    expect_null(lf$slice(5, 5)$sink_ipc(tmpf))
     expect_equal(
       pl$read_ipc(tmpf),
       df$slice(5, 5)
     )
-
-    # return the input data
-    x <- lf$sink_ipc(tmpf)
-    expect_identical(x, lf)
   },
   compression = list("uncompressed", "zstd", "lz4", NULL)
 )
@@ -48,7 +44,7 @@ patrick::with_parameters_test_that(
       cat = factor(letters[1:3]),
     )
     tmpf <- withr::local_tempfile()
-    expect_silent(df$write_ipc(tmpf, compression = compression, compat_level = compat_level))
+    expect_null(df$write_ipc(tmpf, compression = compression, compat_level = compat_level))
     expect_snapshot(
       arrow::read_ipc_file(tmpf, as_data_frame = FALSE, mmap = FALSE)$schema
     )
@@ -60,10 +56,6 @@ patrick::with_parameters_test_that(
       pl$read_ipc(tmpf),
       df$slice(5, 5)
     )
-
-    # return the input data
-    x <- df$write_ipc(tmpf)
-    expect_identical(x, df)
   }
 )
 

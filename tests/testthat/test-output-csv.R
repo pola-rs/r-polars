@@ -1,13 +1,8 @@
 test_that("sink_csv works", {
   lf <- as_polars_lf(mtcars)
   temp_out <- withr::local_tempfile(fileext = ".csv")
-  lf$sink_csv(temp_out)
-
+  expect_null(lf$sink_csv(temp_out))
   expect_equal(pl$read_csv(temp_out), lf$collect())
-
-  # return the input data
-  x <- lf$sink_csv(temp_out)
-  expect_equal(x$collect(), lf$collect())
 })
 
 test_that("sink_csv: null_value works", {
@@ -180,13 +175,8 @@ test_that("sink_csv: float_scientific works", {
 test_that("write_csv works", {
   df <- as_polars_df(mtcars)
   temp_out <- withr::local_tempfile(fileext = ".csv")
-  df$write_csv(temp_out)
-
+  expect_null(df$write_csv(temp_out))
   expect_equal(pl$read_csv(temp_out), df)
-
-  # return the input data
-  x <- df$write_csv(temp_out)
-  expect_equal(x, df)
 })
 
 test_that("write_csv: null_value works", {

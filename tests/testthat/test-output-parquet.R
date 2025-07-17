@@ -7,12 +7,8 @@ test_that("sink_parquet(): basic usage", {
     lf$sink_parquet(tmpf, compression = "rar"),
     "must be one of"
   )
-  lf$sink_parquet(tmpf)
+  expect_null(lf$sink_parquet(tmpf))
   expect_equal(pl$scan_parquet(tmpf)$collect(), df)
-
-  # return the input data
-  x <- lf$sink_parquet(tmpf)
-  expect_equal(x$collect(), df)
 })
 
 test_that("sink_parquet: argument 'statistics'", {
@@ -51,7 +47,7 @@ test_that("write_parquet works", {
   tmpf <- withr::local_tempfile()
   on.exit(unlink(tmpf))
   df_exp <- as_polars_df(mtcars)
-  df_exp$write_parquet(tmpf)
+  expect_null(df_exp$write_parquet(tmpf))
 
   expect_equal(
     pl$read_parquet(tmpf),
@@ -68,13 +64,6 @@ test_that("throw error if invalid compression is passed", {
     df_exp$write_parquet(tmpf, compression = "invalid"),
     "must be one of"
   )
-})
-
-test_that("write_parquet returns the input data", {
-  dat <- as_polars_df(mtcars)
-  tmpf <- withr::local_tempfile()
-  x <- dat$write_parquet(tmpf)
-  expect_equal(x, dat)
 })
 
 test_that("write_parquet: argument 'statistics'", {

@@ -78,7 +78,7 @@ lazyframe__sink_ipc <- function(
     # TODO: support `engine`, `lazy` arguments
     wrap(lf)$collect()
   })
-  invisible(self)
+  invisible(NULL)
 }
 
 #' Write to Arrow IPC file.
@@ -110,7 +110,6 @@ dataframe__write_ipc <- function(
       storage_options = storage_options,
       retries = retries
     )
-
-    invisible(self)
   })
+  invisible(NULL)
 }

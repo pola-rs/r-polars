@@ -48,7 +48,7 @@
 #' * `"all"`: syncs the file contents and metadata.
 #' @param mkdir Recursively create all the directories in the path.
 #'
-#' @return Invisibly returns the input LazyFrame
+#' @return `NULL` invisibly.
 #'
 #' @examples
 #' # sink table 'mtcars' from mem to parquet
@@ -146,7 +146,7 @@ lazyframe__sink_parquet <- function(
     # TODO: support `engine`, `lazy` arguments
     wrap(lf)$collect()
   })
-  invisible(self)
+  invisible(NULL)
 }
 
 #' Write to Parquet file
@@ -163,7 +163,7 @@ lazyframe__sink_parquet <- function(
 #' the DataFrame in memory (the size of the output file may differ depending
 #' on the file format / compression).
 #'
-#' @return The input DataFrame is returned.
+#' @return `NULL` invisibly.
 #' @examplesIf requireNamespace("withr", quietly = TRUE)
 #' dat = as_polars_df(mtcars)
 #'
@@ -218,5 +218,5 @@ dataframe__write_parquet <- function(
       mkdir = mkdir,
     )
   })
-  invisible(self)
+  invisible(NULL)
 }

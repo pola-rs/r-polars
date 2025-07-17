@@ -9,14 +9,12 @@
 #'
 #' This allows streaming results that are larger than RAM to be written to disk.
 #'
+#' @inherit lazyframe__sink_parquet return
 #' @inheritParams rlang::args_dots_empty
 #' @param path A character. File path to which the file should be written.
 #' @inheritParams lazyframe__sink_parquet
 #' @inheritParams lazyframe__collect
 #' @inheritParams pl__scan_parquet
-#'
-#' @return Invisibly returns the input LazyFrame
-#'
 #' @examplesIf requireNamespace("jsonlite", quiet = TRUE)
 #' dat <- as_polars_lf(head(mtcars))
 #' destination <- tempfile()
@@ -73,7 +71,7 @@ lazyframe__sink_ndjson <- function(
     # TODO: support `engine`, `lazy` arguments
     wrap(lf)$collect()
   })
-  invisible(self)
+  invisible(NULL)
 }
 
 #' Serialize to JSON representation
@@ -90,8 +88,8 @@ lazyframe__sink_ndjson <- function(
 dataframe__write_json <- function(file) {
   wrap({
     self$`_df`$write_json(file)
-    invisible(self)
   })
+  invisible(NULL)
 }
 
 #' Serialize to newline delimited JSON representation
@@ -108,6 +106,6 @@ dataframe__write_ndjson <- function(file) {
   wrap({
     # TODO: Update like https://github.com/pola-rs/polars/pull/22582
     self$lazy()$sink_ndjson(file)
-    invisible(self)
   })
+  invisible(NULL)
 }

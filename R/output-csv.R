@@ -133,7 +133,7 @@ lazyframe__sink_csv <- function(
     # TODO: support `engine`, `lazy` arguments
     wrap(lf)$collect()
   })
-  invisible(self)
+  invisible(NULL)
 }
 
 #' Write to comma-separated values (CSV) file
@@ -190,6 +190,6 @@ dataframe__write_csv <- function(
       storage_options = storage_options,
       retries = retries
     )
-    invisible(self)
   })
+  invisible(NULL)
 }
