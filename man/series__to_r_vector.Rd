@@ -20,7 +20,8 @@ series__to_r_vector(
 \arguments{
 \item{...}{These dots are for future extensions and must be empty.}
 
-\item{uint8}{Determine how to convert Polars' UInt8 type values to R type.
+\item{uint8}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Determine how to convert Polars' UInt8 type values to R type.
 One of the followings:
 \itemize{
 \item \code{"integer"} (default): Convert to the R's \link{integer} type.
@@ -28,7 +29,8 @@ One of the followings:
 If the value is \code{null}, export as \code{00}.
 }}
 
-\item{int64}{Determine how to convert Polars' Int64, UInt32, or UInt64 type values to R type.
+\item{int64}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Determine how to convert Polars' Int64, UInt32, or UInt64 type values to R type.
 One of the followings:
 \itemize{
 \item \code{"double"} (default): Convert to the R's \link{double} type.
@@ -41,14 +43,16 @@ The \link[bit64:bit64-package]{bit64} package must be installed.
 If the value is out of the range of \link[bit64:bit64-package]{bit64::integer64}, export as \link[bit64:as.integer64.character]{bit64::NA_integer64_}.
 }}
 
-\item{date}{Determine how to convert Polars' Date type values to R class.
+\item{date}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Determine how to convert Polars' Date type values to R class.
 One of the followings:
 \itemize{
 \item \code{"Date"} (default): Convert to the R's \link{Date} class.
 \item \code{"IDate"}: Convert to the \link[data.table:IDateTime]{data.table::IDate} class.
 }}
 
-\item{time}{Determine how to convert Polars' Time type values to R class.
+\item{time}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Determine how to convert Polars' Time type values to R class.
 One of the followings:
 \itemize{
 \item \code{"hms"} (default): Convert to the \link[hms:hms]{hms::hms} class.
@@ -57,7 +61,8 @@ If the \link[hms:hms-package]{hms} package is not installed, a warning will be s
 The \link[data.table:data.table]{data.table} package must be installed.
 }}
 
-\item{struct}{Determine how to convert Polars' Struct type values to R class.
+\item{struct}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Determine how to convert Polars' Struct type values to R class.
 One of the followings:
 \itemize{
 \item \code{"dataframe"} (default): Convert to the R's \link{data.frame} class.
@@ -65,14 +70,16 @@ One of the followings:
 If the \link[tibble:tibble-package]{tibble} package is not installed, a warning will be shown.
 }}
 
-\item{decimal}{Determine how to convert Polars' Decimal type values to R type.
+\item{decimal}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Determine how to convert Polars' Decimal type values to R type.
 One of the followings:
 \itemize{
 \item \code{"double"} (default): Convert to the R's \link{double} type.
 \item \code{"character"}: Convert to the R's \link{character} type.
 }}
 
-\item{as_clock_class}{A logical value indicating whether to export datetimes and duration as
+\item{as_clock_class}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+A logical value indicating whether to export datetimes and duration as
 the \link[clock:clock-package]{clock} package's classes.
 \itemize{
 \item \code{FALSE} (default): Duration values are exported as \link{difftime}
@@ -85,7 +92,8 @@ For this case, the \link[clock:clock-package]{clock} package must be installed.
 Accuracy will be maintained.
 }}
 
-\item{ambiguous}{Determine how to deal with ambiguous datetimes.
+\item{ambiguous}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Determine how to deal with ambiguous datetimes.
 Only applicable when \code{as_clock_class} is set to \code{FALSE} and
 datetime without timezone values are exported as \link{POSIXct}.
 Character vector or \link{expression} containing the followings:
@@ -96,7 +104,8 @@ Character vector or \link{expression} containing the followings:
 \item \code{"null"}: Return a \code{NA} value
 }}
 
-\item{non_existent}{Determine how to deal with non-existent datetimes.
+\item{non_existent}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Determine how to deal with non-existent datetimes.
 Only applicable when \code{as_clock_class} is set to \code{FALSE} and
 datetime without timezone values are exported as \link{POSIXct}.
 One of the followings:
@@ -112,7 +121,7 @@ A \link{vector}
 Export the \link{Series} as an R \link{vector}.
 }
 \details{
-The class/type of the exported object depends on the data type of the Series as follows:
+The class/type of the exported object depends on the \link{DataType} of the \link{Series} as follows:
 \itemize{
 \item Boolean: \link{logical}.
 \item UInt8: \link{integer} or \link{raw}, depending on the \code{uint8} argument.

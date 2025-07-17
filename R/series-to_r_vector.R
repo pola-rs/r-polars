@@ -1,12 +1,11 @@
-# TODO: use options to set the default arguments
 # TODO: more notes about naive time
 # TODO: link to the type mapping vignette
-# TODO: link to the data type doc
 #' Export the Series as an R vector
 #'
 #' Export the [Series] as an R [vector].
 #'
-#' The class/type of the exported object depends on the data type of the Series as follows:
+#' The class/type of the exported object depends on the [DataType] of the [Series] as follows:
+#'
 #' - Boolean: [logical].
 #' - UInt8: [integer] or [raw], depending on the `uint8` argument.
 #' - UInt16, Int8, Int16, Int32: [integer].
@@ -31,64 +30,82 @@
 #' - List, Array: [vctrs::list_of].
 #' - Struct: [data.frame] or [tibble][tibble::tbl_df], depending on the `struct` argument.
 #' @inheritParams rlang::args_dots_empty
-#' @param uint8 Determine how to convert Polars' UInt8 type values to R type.
-#' One of the followings:
-#' - `"integer"` (default): Convert to the R's [integer] type.
-#' - `"raw"`: Convert to the R's [raw] type.
-#'   If the value is `null`, export as `00`.
-#' @param int64 Determine how to convert Polars' Int64, UInt32, or UInt64 type values to R type.
-#' One of the followings:
-#' - `"double"` (default): Convert to the R's [double] type.
-#'   Accuracy may be degraded.
-#' - `"character"`: Convert to the R's [character] type.
-#' - `"integer"`: Convert to the R's [integer] type.
-#'   If the value is out of the range of R's integer type, export as [NA_integer_].
-#' - `"integer64"`: Convert to the [bit64::integer64] class.
-#'   The [bit64][bit64::bit64-package] package must be installed.
-#'   If the value is out of the range of [bit64::integer64], export as [bit64::NA_integer64_].
-#' @param date Determine how to convert Polars' Date type values to R class.
-#' One of the followings:
-#' - `"Date"` (default): Convert to the R's [Date] class.
-#' - `"IDate"`: Convert to the [data.table::IDate][data.table::IDateTime] class.
-#' @param time Determine how to convert Polars' Time type values to R class.
-#' One of the followings:
-#' - `"hms"` (default): Convert to the [hms::hms] class.
-#'   If the [hms][hms::hms-package] package is not installed, a warning will be shown.
-#' - `"ITime"`: Convert to the [data.table::ITime][data.table::IDateTime] class.
-#'   The [data.table][data.table::data.table-package] package must be installed.
-#' @param struct Determine how to convert Polars' Struct type values to R class.
-#' One of the followings:
-#' - `"dataframe"` (default): Convert to the R's [data.frame] class.
-#' - `"tibble"`: Convert to the [tibble][tibble::tbl_df] class.
-#'   If the [tibble][tibble::tibble-package] package is not installed, a warning will be shown.
-#' @param decimal Determine how to convert Polars' Decimal type values to R type.
-#' One of the followings:
-#' - `"double"` (default): Convert to the R's [double] type.
-#' - `"character"`: Convert to the R's [character] type.
-#' @param as_clock_class A logical value indicating whether to export datetimes and duration as
-#' the [clock][clock::clock] package's classes.
-#' - `FALSE` (default): Duration values are exported as [difftime]
-#'   and datetime values are exported as [POSIXct].
-#'   Accuracy may be degraded.
-#' - `TRUE`: Duration values are exported as [clock_duration][clock::duration-helper],
-#'   datetime without timezone values are exported as [clock_naive_time][clock::as_naive_time],
-#'   and datetime with timezone values are exported as [clock_zoned_time][clock::as_zoned_time].
-#'   For this case, the [clock][clock::clock] package must be installed.
-#'   Accuracy will be maintained.
-#' @param ambiguous Determine how to deal with ambiguous datetimes.
-#' Only applicable when `as_clock_class` is set to `FALSE` and
-#' datetime without timezone values are exported as [POSIXct].
-#' Character vector or [expression] containing the followings:
-#' - `"raise"` (default): Throw an error
-#' - `"earliest"`: Use the earliest datetime
-#' - `"latest"`: Use the latest datetime
-#' - `"null"`: Return a `NA` value
-#' @param non_existent Determine how to deal with non-existent datetimes.
-#' Only applicable when `as_clock_class` is set to `FALSE` and
-#' datetime without timezone values are exported as [POSIXct].
-#' One of the followings:
-#' - `"raise"` (default): Throw an error
-#' - `"null"`: Return a `NA` value
+#' @param uint8 `r lifecycle::badge("experimental")`
+#'   Determine how to convert Polars' UInt8 type values to R type.
+#'   One of the followings:
+#'
+#'   - `"integer"` (default): Convert to the R's [integer] type.
+#'   - `"raw"`: Convert to the R's [raw] type.
+#'     If the value is `null`, export as `00`.
+#' @param int64 `r lifecycle::badge("experimental")`
+#'   Determine how to convert Polars' Int64, UInt32, or UInt64 type values to R type.
+#'   One of the followings:
+#'
+#'   - `"double"` (default): Convert to the R's [double] type.
+#'     Accuracy may be degraded.
+#'   - `"character"`: Convert to the R's [character] type.
+#'   - `"integer"`: Convert to the R's [integer] type.
+#'     If the value is out of the range of R's integer type, export as [NA_integer_].
+#'   - `"integer64"`: Convert to the [bit64::integer64] class.
+#'     The [bit64][bit64::bit64-package] package must be installed.
+#'     If the value is out of the range of [bit64::integer64], export as [bit64::NA_integer64_].
+#' @param date `r lifecycle::badge("experimental")`
+#'   Determine how to convert Polars' Date type values to R class.
+#'   One of the followings:
+#'
+#'   - `"Date"` (default): Convert to the R's [Date] class.
+#'   - `"IDate"`: Convert to the [data.table::IDate][data.table::IDateTime] class.
+#' @param time `r lifecycle::badge("experimental")`
+#'   Determine how to convert Polars' Time type values to R class.
+#'   One of the followings:
+#'
+#'   - `"hms"` (default): Convert to the [hms::hms] class.
+#'     If the [hms][hms::hms-package] package is not installed, a warning will be shown.
+#'   - `"ITime"`: Convert to the [data.table::ITime][data.table::IDateTime] class.
+#'     The [data.table][data.table::data.table-package] package must be installed.
+#' @param struct `r lifecycle::badge("experimental")`
+#'   Determine how to convert Polars' Struct type values to R class.
+#'   One of the followings:
+#'
+#'   - `"dataframe"` (default): Convert to the R's [data.frame] class.
+#'   - `"tibble"`: Convert to the [tibble][tibble::tbl_df] class.
+#'     If the [tibble][tibble::tibble-package] package is not installed, a warning will be shown.
+#' @param decimal `r lifecycle::badge("experimental")`
+#'   Determine how to convert Polars' Decimal type values to R type.
+#'   One of the followings:
+#'
+#'   - `"double"` (default): Convert to the R's [double] type.
+#'   - `"character"`: Convert to the R's [character] type.
+#' @param as_clock_class `r lifecycle::badge("experimental")`
+#'   A logical value indicating whether to export datetimes and duration as
+#'   the [clock][clock::clock] package's classes.
+#'
+#'   - `FALSE` (default): Duration values are exported as [difftime]
+#'     and datetime values are exported as [POSIXct].
+#'     Accuracy may be degraded.
+#'   - `TRUE`: Duration values are exported as [clock_duration][clock::duration-helper],
+#'     datetime without timezone values are exported as [clock_naive_time][clock::as_naive_time],
+#'     and datetime with timezone values are exported as [clock_zoned_time][clock::as_zoned_time].
+#'     For this case, the [clock][clock::clock] package must be installed.
+#'     Accuracy will be maintained.
+#' @param ambiguous `r lifecycle::badge("experimental")`
+#'   Determine how to deal with ambiguous datetimes.
+#'   Only applicable when `as_clock_class` is set to `FALSE` and
+#'   datetime without timezone values are exported as [POSIXct].
+#'   Character vector or [expression] containing the followings:
+#'
+#'   - `"raise"` (default): Throw an error
+#'   - `"earliest"`: Use the earliest datetime
+#'   - `"latest"`: Use the latest datetime
+#'   - `"null"`: Return a `NA` value
+#' @param non_existent `r lifecycle::badge("experimental")`
+#'   Determine how to deal with non-existent datetimes.
+#'   Only applicable when `as_clock_class` is set to `FALSE` and
+#'   datetime without timezone values are exported as [POSIXct].
+#'   One of the followings:
+#'
+#'   - `"raise"` (default): Throw an error
+#'   - `"null"`: Return a `NA` value
 #' @return A [vector]
 #' @examples
 #' # Struct values handling
