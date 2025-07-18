@@ -122,11 +122,11 @@ pub fn dtype_cols(dtypes: ListSexp) -> Result<PlRExpr> {
 
 #[savvy]
 pub fn index_cols(indices: NumericSexp) -> Result<PlRExpr> {
-    let n = <Wrap<Vec<i64>>>::try_from(indices)?.0;
-    let out = if n.len() == 1 {
-        dsl::nth(n[0])
+    let indices = <Wrap<Vec<i64>>>::try_from(indices)?.0;
+    let out = if indices.len() == 1 {
+        dsl::nth(indices[0])
     } else {
-        dsl::index_cols(n)
+        dsl::index_cols(indices)
     }
     .into();
     Ok(out)

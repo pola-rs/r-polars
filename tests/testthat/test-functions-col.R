@@ -40,3 +40,13 @@ test_that("pl$col() input error", {
   expect_error(pl$col(pl$Int8, "foo"), invalid_error_message)
   expect_error(pl$col(foo = "bar"), "Arguments in `...` must be passed by position, not name")
 })
+
+test_that("pl$nth()", {
+  expect_snapshot(pl$nth(1))
+  expect_snapshot(pl$nth(c(1, 2)))
+  expect_snapshot(pl$nth(NA_integer_), error = TRUE)
+  expect_snapshot(pl$nth(NA_real_), error = TRUE)
+  expect_snapshot(pl$nth(Inf), error = TRUE)
+  expect_snapshot(pl$nth(c(1L, NA_integer_)), error = TRUE)
+  expect_snapshot(pl$nth(c(1, 2, 3.1, 4.1)), error = TRUE)
+})

@@ -241,7 +241,7 @@
       Error:
       ! Evaluation failed in `$reshape()`.
       Caused by error:
-      ! `dimensions` only accepts integer-ish values.
+      ! Argument `dimensions` must be numeric, not character
 
 ---
 
@@ -251,7 +251,7 @@
       Error:
       ! Evaluation failed in `$reshape()`.
       Caused by error:
-      ! `dimensions` must not contain any NA values.
+      ! `NA` or `NaN` at index 1 cannot be converted to i64
 
 ---
 
@@ -261,7 +261,7 @@
       Error:
       ! Evaluation failed in `$reshape()`.
       Caused by error:
-      ! `dimensions` only accepts integer-ish values.
+      ! Should not reach here!
 
 # shuffle
 

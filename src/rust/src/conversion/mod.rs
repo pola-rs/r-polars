@@ -5,7 +5,10 @@ use crate::prelude::*;
 use crate::{PlRDataFrame, PlRDataType, PlRExpr, PlRLazyFrame, PlRSeries, RPolarsErr};
 use polars::prelude::cloud::CloudOptions;
 use polars::series::ops::NullBehavior;
-use savvy::{ListSexp, NumericScalar, NumericSexp, NumericTypedSexp, Sexp, StringSexp, TypedSexp};
+use savvy::{
+    ListSexp, NumericScalar, NumericSexp, NumericTypedSexp, Sexp, StringSexp, TypedSexp,
+    sexp::na::NotAvailableValue,
+};
 use search_sorted::SearchSortedSide;
 pub mod base_date;
 mod chunked_array;
@@ -284,9 +287,17 @@ impl TryFrom<NumericScalar> for Wrap<i64> {
 
     fn try_from(v: NumericScalar) -> Result<Self, savvy::Error> {
         match v {
-            NumericScalar::Integer(i) => Ok(Wrap(i as i64)),
+            NumericScalar::Integer(i) => {
+                if i.is_na() {
+                    Err("`NA` cannot be converted to i64".into())
+                } else {
+                    Ok(Wrap(i as i64))
+                }
+            }
             NumericScalar::Real(f) => {
-                if f.is_nan() {
+                if f.is_na() {
+                    Err("`NA` cannot be converted to i64".into())
+                } else if f.is_nan() {
                     Err("`NaN` cannot be converted to i64".into())
                 } else if f.is_infinite() || !(F64_MIN_SIGFIG..=F64_MAX_SIGFIG).contains(&f) {
                     Err(format!("{f:?} is out of range that can be safely converted to i64").into())
@@ -305,21 +316,41 @@ impl TryFrom<NumericSexp> for Wrap<Vec<i64>> {
 
     fn try_from(v: NumericSexp) -> Result<Self, savvy::Error> {
         let v = match v.into_typed() {
-            NumericTypedSexp::Integer(i) => i.iter().map(|&x| x as i64).collect::<Vec<_>>(),
-            NumericTypedSexp::Real(f) => {
-                if f.iter().any(|&x| x.is_nan()) {
-                    return Err("`NaN` cannot be converted to i64".into());
-                } else if f.iter().any(|&x| x.is_infinite()) {
-                    return Err("infinite values cannot be converted to i64".into());
-                } else if f
-                    .iter()
-                    .any(|&x| !(F64_MIN_SIGFIG..=F64_MAX_SIGFIG).contains(&x))
-                {
-                    return Err("out of range values cannot be converted to i64".into());
-                } else if f.iter().any(|&x| (x - x.round()).abs() > F64_TOLERANCE) {
-                    return Err("non-integer-ish values cannot be converted to i64".into());
+            NumericTypedSexp::Integer(i) => {
+                if let Some(idx) = i.iter().position(|&x| x.is_na()) {
+                    let idx = idx + 1;
+                    return Err(format!("`NA` at index {idx} cannot be converted to i64").into());
                 } else {
-                    f.iter().map(|&x| x as i64).collect::<Vec<_>>()
+                    i.iter().map(|&x| x as i64).collect::<Vec<_>>()
+                }
+            }
+            NumericTypedSexp::Real(r) => {
+                if let Some(idx) = r.iter().position(|&x| x.is_na() || x.is_nan()) {
+                    let idx = idx + 1;
+                    return Err(
+                        format!("`NA` or `NaN` at index {idx} cannot be converted to i64").into(),
+                    );
+                } else if let Some(idx) = r
+                    .iter()
+                    .position(|&x| !(F64_MIN_SIGFIG..=F64_MAX_SIGFIG).contains(&x))
+                {
+                    let vat_val = r.as_slice()[idx];
+                    let idx = idx + 1;
+                    return Err(format!(
+                        "The value {vat_val:?} at index {idx} is out of range that can be converted to i64"
+                    )
+                    .into());
+                } else if let Some(idx) = r
+                    .iter()
+                    .position(|&x| (x - x.round()).abs() > F64_TOLERANCE)
+                {
+                    let vat_val = r.as_slice()[idx];
+                    let idx = idx + 1;
+                    return Err(
+                        format!("The value {vat_val:?} at index {idx} is not integer-ish").into(),
+                    );
+                } else {
+                    r.iter().map(|&x| x as i64).collect::<Vec<_>>()
                 }
             }
         };

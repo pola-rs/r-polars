@@ -1231,15 +1231,8 @@ expr__dot <- function(other) {
 #' df <- pl$DataFrame(foo = 1:8)
 #' df$select(pl$col("foo")$reshape(c(2, 2, 2)))
 expr__reshape <- function(dimensions) {
-  wrap({
-    if (!is_integerish(dimensions)) {
-      abort("`dimensions` only accepts integer-ish values.")
-    }
-    if (anyNA(dimensions)) {
-      abort("`dimensions` must not contain any NA values.")
-    }
-    self$`_rexpr`$reshape(dimensions)
-  })
+  self$`_rexpr`$reshape(dimensions) |>
+    wrap()
 }
 
 #' Check if any boolean value in a column is true
