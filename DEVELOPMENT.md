@@ -9,6 +9,20 @@ For more general information on development, please refer to the following docum
 - [Tidyverse style guide](https://style.tidyverse.org/): Coding style for the R part.
 - [Tidy design principles](https://design.tidyverse.org/): Principles for designing R packages in the Tidyverse ecosystem.
 
+## System Requirements
+
+To install the development version of Polars or develop new features, you must install some tools outside of R.
+
+- [rustup](https://rustup.rs/)
+- [CMake](https://cmake.org/)
+
+Note that the `Taskfile.yml` used by [Task](https://taskfile.dev/) in the root directory of the repository
+provides some useful commands (e.g. `task build-documents` to build all R documents).
+
+If you have access to a [Dev Container](https://containers.dev/) execution environment
+such as [GitHub Codespaces](https://github.com/features/codespaces) or [DevPod](https://devpod.sh/),
+you can work within a container that contains all of the above tools.
+
 ## Translation from Python Polars
 
 ### Basic Translation
@@ -416,3 +430,93 @@ series__to_r_vector <- function(
 _source: `R/series-to_r_vector.R` of this repository_
 
 Exporting R values from Polars is always done through this function.
+The class of the exported R vector can be controlled by the arguments passed to this function.
+For example, the `int64` argument controls how Int64 dtype Series are exported to R vectors.
+
+```r
+series__to_r_vector <- function(
+  ...,
+  # snip
+  int64 = c("double", "character", "integer", "integer64"),
+  # snip
+) {
+  # snip
+}
+```
+
+_source: `R/series-to_r_vector.R` of this repository_
+
+```rust
+#[savvy]
+impl PlRSeries {
+    pub fn to_r_vector(
+        // snip
+        int64: &str,
+        // snip
+    ) -> Result<Sexp> {
+        // snip
+    }
+}
+```
+
+_source: `src/rust/src/series/export.rs` of this repository_
+
+## Writing and Running Tests
+
+The tests in this package are written using the [testthat](https://testthat.r-lib.org/) package,
+and parameterized tests use the [patrick](https://github.com/google/patrick) package.
+
+For example, we can write parameterized tests like this:
+
+```r
+patrick::with_parameters_test_that(
+  "arrow RecordBatchReader and Tabular objects support",
+  .cases = {
+    skip_if_not_installed("arrow")
+    tibble::tribble(
+      ~.test_name, ~construct_function,
+      "table", arrow::as_arrow_table,
+      "record_batch", arrow::as_record_batch,
+      "record_batch_reader", arrow::as_record_batch_reader,
+    )
+  },
+  code = {
+    obj <- data.frame(
+      int = 1:2,
+      chr = letters[1:2],
+      lst = I(list(TRUE, NA))
+    ) |>
+      construct_function()
+
+    series_default <- as_polars_series(obj)
+    series_named <- as_polars_series(obj, name = "foo")
+
+    expect_s3_class(series_default, "polars_series")
+    expect_identical(series_named$name, "foo")
+    expect_snapshot(print(series_default))
+  }
+)
+```
+
+_source: `tests/testthat/test-as_polars_series.R` of this repository_
+
+There are several helper functions to write concise tests for LazyFrame and DataFrame,
+so please use them when testing the behavior of queries.
+
+```r
+test_that("select works lazy/eager", {
+  .data <- pl$DataFrame(
+    int32 = 1:5,
+    int64 = as_polars_series(1:5)$cast(pl$Int64),
+    string = letters[1:5],
+  )
+
+  expect_query_equal(
+    .input$select("int32"),
+    .data,
+    pl$DataFrame(int32 = 1:5)
+  )
+})
+```
+
+_source: `tests/testthat/test-lazyframe-frame.R` of this repository_
