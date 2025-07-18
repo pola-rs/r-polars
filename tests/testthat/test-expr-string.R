@@ -169,7 +169,6 @@ test_that("str$len_bytes str$len_chars", {
 })
 
 test_that("str$concat", {
-  # concatenate a Series of strings to a single string
   df <- pl$DataFrame(x = c("1", "a", NA))
   expect_equal(
     df$select(pl$col("x")$str$join()),
@@ -186,7 +185,7 @@ test_that("str$concat", {
   # deprecated
   expect_warning(
     expect_equal(
-      df$select(pl$col("x")$str$concat("-")),
+      df$select(pl$col("x")$str$concat()),
       pl$DataFrame(x = "1-a")
     ),
     "deprecated"

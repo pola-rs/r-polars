@@ -899,11 +899,6 @@ SEXP savvy_PlRExpr_cat_get_categories__impl(SEXP self__) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_cat_set_ordering__impl(SEXP self__, SEXP c_arg__ordering) {
-    SEXP res = savvy_PlRExpr_cat_set_ordering__ffi(self__, c_arg__ordering);
-    return handle_result(res);
-}
-
 SEXP savvy_PlRExpr_cbrt__impl(SEXP self__) {
     SEXP res = savvy_PlRExpr_cbrt__ffi(self__);
     return handle_result(res);
@@ -3194,7 +3189,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_bottom_k_by__impl", (DL_FUNC) &savvy_PlRExpr_bottom_k_by__impl, 4},
     {"savvy_PlRExpr_cast__impl", (DL_FUNC) &savvy_PlRExpr_cast__impl, 4},
     {"savvy_PlRExpr_cat_get_categories__impl", (DL_FUNC) &savvy_PlRExpr_cat_get_categories__impl, 1},
-    {"savvy_PlRExpr_cat_set_ordering__impl", (DL_FUNC) &savvy_PlRExpr_cat_set_ordering__impl, 2},
     {"savvy_PlRExpr_cbrt__impl", (DL_FUNC) &savvy_PlRExpr_cbrt__impl, 1},
     {"savvy_PlRExpr_ceil__impl", (DL_FUNC) &savvy_PlRExpr_ceil__impl, 1},
     {"savvy_PlRExpr_clip__impl", (DL_FUNC) &savvy_PlRExpr_clip__impl, 3},

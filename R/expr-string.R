@@ -282,7 +282,7 @@ expr_str_join <- function(
 }
 
 expr_str_concat <- function(
-  delimiter = "",
+  delimiter = NULL,
   ...,
   ignore_nulls = TRUE
 ) {
@@ -292,6 +292,7 @@ expr_str_concat <- function(
       i = "Use `$str$join()` instead."
     )
   )
+  delimiter <- delimiter %||% "-"
   self$`_rexpr`$str_join(delimiter, ignore_nulls) |>
     wrap()
 }

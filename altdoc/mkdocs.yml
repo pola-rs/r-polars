@@ -441,7 +441,6 @@ nav:
             - bin_starts_with: man/expr_bin_starts_with.md
         - Categories:
             - cat_get_categories: man/expr_cat_get_categories.md
-            - cat_set_ordering: man/expr_cat_set_ordering.md
         - Columns / names:
             - alias: man/expr__alias.md
             - exclude: man/expr__exclude.md
@@ -636,7 +635,6 @@ nav:
             - dt_truncate: man/expr_dt_truncate.md
             - dt_week: man/expr_dt_week.md
             - dt_weekday: man/expr_dt_weekday.md
-            - dt_with_time_unit: man/expr_dt_with_time_unit.md
             - dt_year: man/expr_dt_year.md
         - Window:
             - over: man/expr__over.md

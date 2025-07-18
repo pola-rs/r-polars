@@ -706,6 +706,7 @@ expr_dt_timestamp <- function(time_unit = c("us", "ns", "ms")) {
 #'
 #' @inheritParams expr_dt_timestamp
 #' @inherit as_polars_expr return
+#' @keywords internal
 expr_dt_with_time_unit <- function(time_unit = c("ns", "us", "ms")) {
   wrap({
     deprecate_warn(
