@@ -1,6 +1,6 @@
 Package: polars
 Title: R Bindings for the 'polars' Rust Library
-Version: 0.9000.9000.9000
+Version: 1.0.0
 Authors@R: c(
     person("Tatsuya", "Shima", , "ts1s1andn@gmail.com", role = c("aut", "cre")),
     person("Etienne", "Bacher", , "etienne.bacher@protonmail.com", role = "aut",
