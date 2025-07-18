@@ -9,7 +9,7 @@ expr__rolling_quantile_by(
   window_size,
   ...,
   quantile,
-  interpolation = c("nearest", "higher", "lower", "midpoint", "linear"),
+  interpolation = c("nearest", "higher", "lower", "midpoint", "linear", "equiprobable"),
   min_periods = 1,
   closed = c("right", "both", "left", "none")
 )

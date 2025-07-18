@@ -1544,14 +1544,15 @@ expr__product <- function() {
 #' df$select(pl$col("a")$quantile(0.3, interpolation = "lower"))
 #' df$select(pl$col("a")$quantile(0.3, interpolation = "midpoint"))
 #' df$select(pl$col("a")$quantile(0.3, interpolation = "linear"))
+#' df$select(pl$col("a")$quantile(0.3, interpolation = "equiprobable"))
 expr__quantile <- function(
   quantile,
-  interpolation = c("nearest", "higher", "lower", "midpoint", "linear")
+  interpolation = c("nearest", "higher", "lower", "midpoint", "linear", "equiprobable")
 ) {
   wrap({
     interpolation <- arg_match0(
       interpolation,
-      values = c("nearest", "higher", "lower", "midpoint", "linear")
+      values = c("nearest", "higher", "lower", "midpoint", "linear", "equiprobable")
     )
     self$`_rexpr`$quantile(as_polars_expr(quantile, as_lit = TRUE)$`_rexpr`, interpolation)
   })
@@ -2656,7 +2657,7 @@ expr__rolling_sum <- function(
 #' )
 expr__rolling_quantile <- function(
   quantile,
-  interpolation = c("nearest", "higher", "lower", "midpoint", "linear"),
+  interpolation = c("nearest", "higher", "lower", "midpoint", "linear", "equiprobable"),
   window_size,
   weights = NULL,
   ...,
@@ -2667,7 +2668,7 @@ expr__rolling_quantile <- function(
     check_dots_empty0(...)
     interpolation <- arg_match0(
       interpolation,
-      values = c("nearest", "higher", "lower", "midpoint", "linear")
+      values = c("nearest", "higher", "lower", "midpoint", "linear", "equiprobable")
     )
     self$`_rexpr`$rolling_quantile(
       quantile = quantile,
@@ -3192,7 +3193,7 @@ expr__rolling_quantile_by <- function(
   window_size,
   ...,
   quantile,
-  interpolation = c("nearest", "higher", "lower", "midpoint", "linear"),
+  interpolation = c("nearest", "higher", "lower", "midpoint", "linear", "equiprobable"),
   min_periods = 1,
   closed = c("right", "both", "left", "none")
 ) {
@@ -3201,7 +3202,7 @@ expr__rolling_quantile_by <- function(
     closed <- arg_match0(closed, values = c("both", "left", "right", "none"))
     interpolation <- arg_match0(
       interpolation,
-      values = c("nearest", "higher", "lower", "midpoint", "linear")
+      values = c("nearest", "higher", "lower", "midpoint", "linear", "equiprobable")
     )
     self$`_rexpr`$rolling_quantile_by(
       by = as_polars_expr(by)$`_rexpr`,

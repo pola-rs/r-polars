@@ -6,7 +6,7 @@
 \usage{
 expr__rolling_quantile(
   quantile,
-  interpolation = c("nearest", "higher", "lower", "midpoint", "linear"),
+  interpolation = c("nearest", "higher", "lower", "midpoint", "linear", "equiprobable"),
   window_size,
   weights = NULL,
   ...,

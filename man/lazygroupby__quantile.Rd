@@ -6,7 +6,7 @@
 \usage{
 lazygroupby__quantile(
   quantile,
-  interpolation = c("nearest", "higher", "lower", "midpoint", "linear")
+  interpolation = c("nearest", "higher", "lower", "midpoint", "linear", "equiprobable")
 )
 }
 \arguments{

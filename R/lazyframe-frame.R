@@ -989,12 +989,12 @@ lazyframe__std <- function(ddof = 1) {
 #' lf$quantile(0.7)$collect()
 lazyframe__quantile <- function(
   quantile,
-  interpolation = c("nearest", "higher", "lower", "midpoint", "linear")
+  interpolation = c("nearest", "higher", "lower", "midpoint", "linear", "equiprobable")
 ) {
   wrap({
     interpolation <- arg_match0(
       interpolation,
-      values = c("nearest", "higher", "lower", "midpoint", "linear")
+      values = c("nearest", "higher", "lower", "midpoint", "linear", "equiprobable")
     )
     self$`_ldf`$quantile(as_polars_expr(quantile, as_lit = TRUE)$`_rexpr`, interpolation)
   })
@@ -2455,7 +2455,7 @@ lazyframe__join_asof <- function(
 lazyframe__describe <- function(
   percentiles = c(0.25, 0.5, 0.75),
   ...,
-  interpolation = c("nearest", "higher", "lower", "midpoint", "linear")
+  interpolation = c("nearest", "higher", "lower", "midpoint", "linear", "equiprobable")
 ) {
   wrap({
     check_dots_empty0(...)

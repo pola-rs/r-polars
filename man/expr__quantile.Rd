@@ -6,7 +6,7 @@
 \usage{
 expr__quantile(
   quantile,
-  interpolation = c("nearest", "higher", "lower", "midpoint", "linear")
+  interpolation = c("nearest", "higher", "lower", "midpoint", "linear", "equiprobable")
 )
 }
 \arguments{
@@ -28,4 +28,5 @@ df$select(pl$col("a")$quantile(0.3, interpolation = "higher"))
 df$select(pl$col("a")$quantile(0.3, interpolation = "lower"))
 df$select(pl$col("a")$quantile(0.3, interpolation = "midpoint"))
 df$select(pl$col("a")$quantile(0.3, interpolation = "linear"))
+df$select(pl$col("a")$quantile(0.3, interpolation = "equiprobable"))
 }

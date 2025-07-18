@@ -2248,7 +2248,7 @@ dataframe__unstack <- function(
 dataframe__describe <- function(
   percentiles = c(0.25, 0.5, 0.75),
   ...,
-  interpolation = c("nearest", "higher", "lower", "midpoint", "linear")
+  interpolation = c("nearest", "higher", "lower", "midpoint", "linear", "equiprobable")
 ) {
   wrap({
     check_dots_empty0(...)
