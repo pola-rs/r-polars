@@ -1,6 +1,8 @@
 #' Report information of the package
 #'
+#' @description `r lifecycle::badge("experimental")`
 #' This function reports the following information:
+#'
 #' - Package versions (the Polars R package version and the dependent Rust
 #'   Polars crate version)
 #' - Number of threads used by Polars

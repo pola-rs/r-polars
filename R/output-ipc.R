@@ -8,13 +8,14 @@
 #' - `"lz4"`: Fast compression/decompression.
 #' - `"zstd"` (default): Good compression performance.
 #' @param compat_level Determines the compatibility level when exporting
-#' Polars' internal data structures. When specifying a new compatibility level,
-#' Polars exports its internal data structures that might not be interpretable by
-#' other Arrow implementations. The level can be specified as the name
-#' (e.g., `"newest"`) or as a scalar integer (Currently, `0` or `1` is supported).
-#' - `"newest"` (default): Use the highest level, currently same as `1`
-#'   (Low compatibility).
-#' - `"oldest"`: Same as `0` (High compatibility).
+#'   Polars' internal data structures. When specifying a new compatibility level,
+#'   Polars exports its internal data structures that might not be interpretable by
+#'   other Arrow implementations. The level can be specified as the name
+#'   (e.g., `"newest"`) or as a scalar integer (Currently, `0` or `1` is supported).
+#'
+#'   - `"newest"` `r lifecycle::badge("experimental")` (default):
+#'     Use the highest level, currently same as `1` (Low compatibility).
+#'   - `"oldest"`: Same as `0` (High compatibility).
 #' @examples
 #' tmpf <- tempfile(fileext = ".arrow")
 #' as_polars_lf(mtcars)$sink_ipc(tmpf)

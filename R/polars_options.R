@@ -1,7 +1,7 @@
 # TODO: add engine_affinity
 #' Get and reset polars options
 #'
-#' @description
+#' @description `r lifecycle::badge("experimental")`
 #' `polars_options()` returns a list of options for polars. Options
 #' can be set with [`options()`]. Note that **options must be prefixed with
 #' "polars."**, e.g to modify the option `to_r_vector.int64` you need to pass

@@ -14,14 +14,15 @@
 #' Note that the schema of the returned object cannot be fully controlled
 #' because Polars does not support all Arrow types.
 #' @param polars_compat_level `r lifecycle::badge("experimental")`
-#' Determines the compatibility level when exporting Polars' internal data structures.
-#' When specifying a new compatibility level, Polars exports its internal data structures
-#' that might not be interpretable by other Arrow implementations.
-#' The level can be specified as the name (e.g., `"newest"`) or as a scalar integer
-#' (Currently, `0` or `1` is supported).
-#' - `"newest"` (default): Use the highest level, currently same as `1`
-#'   (Low compatibility).
-#' - `"oldest"`: Same as `0` (High compatibility).
+#'   Determines the compatibility level when exporting Polars' internal data structures.
+#'   When specifying a new compatibility level, Polars exports its internal data structures
+#'   that might not be interpretable by other Arrow implementations.
+#'   The level can be specified as the name (e.g., `"newest"`) or as a scalar integer
+#'   (Currently, `0` or `1` is supported).
+#'
+#'   - `"newest"` `r lifecycle::badge("experimental")` (default): Use the highest level, currently same as `1`
+#'     (Low compatibility).
+#'   - `"oldest"`: Same as `0` (High compatibility).
 #' @return A [nanoarrow array stream][nanoarrow::as_nanoarrow_array_stream]
 #' @seealso
 #' - [`as_polars_series(<nanoarrow_array_stream>)`][as_polars_series]:

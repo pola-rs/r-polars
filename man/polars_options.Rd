@@ -16,6 +16,7 @@ values are option values.
 \code{polars_options_reset()} doesn't return anything.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 \code{polars_options()} returns a list of options for polars. Options
 can be set with \code{\link[=options]{options()}}. Note that \strong{options must be prefixed with
 "polars."}, e.g to modify the option \code{to_r_vector.int64} you need to pass
