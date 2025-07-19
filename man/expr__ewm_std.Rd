@@ -6,10 +6,10 @@
 \usage{
 expr__ewm_std(
   ...,
-  com,
-  span,
-  half_life,
-  alpha,
+  com = NULL,
+  span = NULL,
+  half_life = NULL,
+  alpha = NULL,
   adjust = TRUE,
   bias = FALSE,
   min_samples = 1,

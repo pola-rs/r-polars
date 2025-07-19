@@ -1083,7 +1083,6 @@ lazyframe__fill_null <- function(
       if (!is.null(dtypes)) {
         return(
           self$with_columns(
-            # do not specify strategy otherwise check_exclusive() errors
             pl$col(!!!dtypes)$fill_null(value = value, limit = limit)
           ) |>
             wrap()

@@ -3352,10 +3352,10 @@ expr__rolling_var_by <- function(
 #' df$select(pl$col("a")$ewm_var(com = 1, ignore_nulls = FALSE))
 expr__ewm_var <- function(
   ...,
-  com,
-  span,
-  half_life,
-  alpha,
+  com = NULL,
+  span = NULL,
+  half_life = NULL,
+  alpha = NULL,
   adjust = TRUE,
   bias = FALSE,
   min_samples = 1,
@@ -3385,10 +3385,10 @@ expr__ewm_var <- function(
 #' df$select(pl$col("a")$ewm_std(com = 1, ignore_nulls = FALSE))
 expr__ewm_std <- function(
   ...,
-  com,
-  span,
-  half_life,
-  alpha,
+  com = NULL,
+  span = NULL,
+  half_life = NULL,
+  alpha = NULL,
   adjust = TRUE,
   bias = FALSE,
   min_samples = 1,
@@ -3418,10 +3418,10 @@ expr__ewm_std <- function(
 #' df$select(pl$col("a")$ewm_mean(com = 1, ignore_nulls = FALSE))
 expr__ewm_mean <- function(
   ...,
-  com,
-  span,
-  half_life,
-  alpha,
+  com = NULL,
+  span = NULL,
+  half_life = NULL,
+  alpha = NULL,
   adjust = TRUE,
   min_samples = 1,
   ignore_nulls = FALSE
@@ -4581,18 +4581,35 @@ expr__to_physical <- function() {
 #' Used in ewm_* functions
 #' @noRd
 prepare_alpha <- function(com = NULL, span = NULL, half_life = NULL, alpha = NULL) {
-  check_exclusive(com, span, half_life, alpha, .call = caller_env())
+  # TODO: After https://github.com/r-lib/rlang/issues/1647, switch to rlang::check_exclusive
+  n_specified <- list(com, span, half_life, alpha) |>
+    vapply(\(x) !is.null(x), logical(1)) |>
+    Reduce(`+`, x = _)
 
-  if (!missing(com)) {
+  if (n_specified > 1L) {
+    abort(
+      "Can't specify multiple of parameters `com`, `span`, `half_life`, or `alpha`.",
+      call = caller_env()
+    )
+  }
+
+  if (n_specified == 0L) {
+    abort(
+      "One of `com`, `span`, `half_life`, or `alpha` must be supplied.",
+      call = caller_env()
+    )
+  }
+
+  if (!is.null(com)) {
     check_number_decimal(com, min = 0, call = caller_env())
     1 / (1 + com)
-  } else if (!missing(span)) {
+  } else if (!is.null(span)) {
     check_number_decimal(span, min = 1, call = caller_env())
     2 / (span + 1)
-  } else if (!missing(half_life)) {
+  } else if (!is.null(half_life)) {
     check_number_decimal(half_life, min = 0, call = caller_env())
     1 - exp(-log(2) / half_life)
-  } else if (!missing(alpha)) {
+  } else {
     # Can't use "min" arg in check_number_decimal() since requirement is > 0
     check_number_decimal(alpha, call = caller_env())
     if (!(alpha > 0 && alpha <= 1)) {
