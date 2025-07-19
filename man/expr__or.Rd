@@ -4,11 +4,11 @@
 \alias{expr__or}
 \title{Apply logical OR on two expressions}
 \usage{
-expr__or(other)
+expr__or(...)
 }
 \arguments{
-\item{other}{Element to add. Can be a string (only if \code{expr} is a string), a
-numeric value or an other expression.}
+\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> One or more integer or
+boolean expressions to evaluate/combine.}
 }
 \value{
 A polars \link{expression}
@@ -17,6 +17,15 @@ A polars \link{expression}
 Combine two boolean expressions with OR.
 }
 \examples{
-pl$lit(TRUE) | FALSE
-pl$lit(TRUE)$or(pl$lit(TRUE))
+df <- pl$DataFrame(
+  x = c(5, 6, 7, 4, 8),
+  y = c(1.5, 2.5, 1.0, 4.0, -5.75),
+  z = c(-9, 2, -1, 4, 8),
+)
+df$with_columns(
+  (pl$col("x") == pl$col("y"))$or(
+    pl$col("y") == pl$col("z"),
+    pl$col("y")$cast(pl$Int32) == pl$col("z"),
+  )$alias("any")
+)
 }

@@ -1133,15 +1133,31 @@ expr__map_batches <- function(
 #' Apply logical AND on two expressions
 #'
 #' Combine two boolean expressions with AND.
-#' @inheritParams expr__add
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> One or more integer or
+#' boolean expressions to evaluate/combine.
 #' @inherit as_polars_expr return
 #' @examples
-#' pl$lit(TRUE) & TRUE
-#' pl$lit(TRUE)$and(pl$lit(TRUE))
-expr__and <- function(other) {
+#' df <- pl$DataFrame(
+#'   x = c(5, 6, 7, 4, 8),
+#'   y = c(1.5, 2.5, 1.0, 4.0, -5.75),
+#'   z = c(-9, 2, -1, 4, 8),
+#' )
+#' df$with_columns(
+#'   (pl$col("x") >= pl$col("z"))$and(
+#'     pl$col("y") >= pl$col("z"),
+#'     pl$col("y") == pl$col("y"),
+#'     pl$col("z") <= pl$col("x"),
+#'     pl$col("y") != pl$col("x"),
+#'   )$alias("all")
+#' )
+expr__and <- function(...) {
   wrap({
-    other <- as_polars_expr(other, as_lit = TRUE)
-    self$`_rexpr`$and(other$`_rexpr`)
+    dots <- parse_into_list_of_expressions(...)
+    Reduce(
+      \(x, y) x$and(y),
+      dots,
+      init = self$`_rexpr`
+    )
   })
 }
 
@@ -1149,15 +1165,28 @@ expr__and <- function(other) {
 #'
 #' Combine two boolean expressions with OR.
 #'
-#' @inheritParams expr__add
+#' @inheritParams expr__and
 #' @inherit as_polars_expr return
 #' @examples
-#' pl$lit(TRUE) | FALSE
-#' pl$lit(TRUE)$or(pl$lit(TRUE))
-expr__or <- function(other) {
+#' df <- pl$DataFrame(
+#'   x = c(5, 6, 7, 4, 8),
+#'   y = c(1.5, 2.5, 1.0, 4.0, -5.75),
+#'   z = c(-9, 2, -1, 4, 8),
+#' )
+#' df$with_columns(
+#'   (pl$col("x") == pl$col("y"))$or(
+#'     pl$col("y") == pl$col("z"),
+#'     pl$col("y")$cast(pl$Int32) == pl$col("z"),
+#'   )$alias("any")
+#' )
+expr__or <- function(...) {
   wrap({
-    other <- as_polars_expr(other, as_lit = TRUE)
-    self$`_rexpr`$or(other$`_rexpr`)
+    dots <- parse_into_list_of_expressions(...)
+    Reduce(
+      \(x, y) x$or(y),
+      dots,
+      init = self$`_rexpr`
+    )
   })
 }
 

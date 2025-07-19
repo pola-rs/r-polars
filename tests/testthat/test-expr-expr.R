@@ -2961,3 +2961,30 @@ test_that("bitwise aggregation works", {
     pl$DataFrame(grouper = c("a", "b"), n = c(-2L, -2L))
   )
 })
+
+test_that("and() and or() work", {
+  df <- pl$DataFrame(
+    x = c(5, 6, 7, 4, 8),
+    y = c(1.5, 2.5, 1.0, 4.0, -5.75),
+    z = c(-9, 2, -1, 4, 8),
+  )
+  expect_equal(
+    df$select(
+      (pl$col("x") >= pl$col("z"))$and(
+        pl$col("y") >= pl$col("z"),
+        pl$col("y") == pl$col("y"),
+        pl$col("z") <= pl$col("x"),
+        pl$col("y") != pl$col("x"),
+      )$alias("all")
+    ),
+    pl$DataFrame(all = c(TRUE, TRUE, TRUE, FALSE, FALSE))
+  )
+
+  df$select(
+    (pl$col("x") == pl$col("y"))$or(
+      pl$col("y") == pl$col("z"),
+      pl$col("y")$cast(pl$Int32) == pl$col("z"),
+    )$alias("any"),
+    pl$DataFrame(any = c(FALSE, TRUE, FALSE, TRUE, FALSE))
+  )
+})

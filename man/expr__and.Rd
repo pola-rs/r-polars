@@ -4,11 +4,11 @@
 \alias{expr__and}
 \title{Apply logical AND on two expressions}
 \usage{
-expr__and(other)
+expr__and(...)
 }
 \arguments{
-\item{other}{Element to add. Can be a string (only if \code{expr} is a string), a
-numeric value or an other expression.}
+\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> One or more integer or
+boolean expressions to evaluate/combine.}
 }
 \value{
 A polars \link{expression}
@@ -17,6 +17,17 @@ A polars \link{expression}
 Combine two boolean expressions with AND.
 }
 \examples{
-pl$lit(TRUE) & TRUE
-pl$lit(TRUE)$and(pl$lit(TRUE))
+df <- pl$DataFrame(
+  x = c(5, 6, 7, 4, 8),
+  y = c(1.5, 2.5, 1.0, 4.0, -5.75),
+  z = c(-9, 2, -1, 4, 8),
+)
+df$with_columns(
+  (pl$col("x") >= pl$col("z"))$and(
+    pl$col("y") >= pl$col("z"),
+    pl$col("y") == pl$col("y"),
+    pl$col("z") <= pl$col("x"),
+    pl$col("y") != pl$col("x"),
+  )$alias("all")
+)
 }
