@@ -991,7 +991,6 @@ dataframe__rename <- function(..., .strict = TRUE) {
 }
 
 #' @inherit lazyframe__fill_null title description params
-#'
 #' @inherit as_polars_df return
 #' @examples
 #' df <- pl$DataFrame(
@@ -1006,13 +1005,13 @@ dataframe__rename <- function(..., .strict = TRUE) {
 #'
 #' df$fill_null(strategy = "zero")
 dataframe__fill_null <- function(
-  value,
+  value = NULL,
   strategy = NULL,
   limit = NULL,
   ...,
   matches_supertype = TRUE
 ) {
-  self$lazy()$fill_null(value, strategy, limit, matches_supertype = matches_supertype)$collect(
+  self$lazy()$fill_null(value, strategy, limit, ..., matches_supertype = matches_supertype)$collect(
     `_eager` = TRUE
   ) |>
     wrap()

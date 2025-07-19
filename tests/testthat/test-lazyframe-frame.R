@@ -842,7 +842,7 @@ test_that("fill_null(): basic usage", {
   expect_query_error(
     .input$fill_null(99, strategy = "one"),
     .input = df,
-    "Exactly one of `value` or `strategy`"
+    "Can't specify both `value` and `strategy`"
   )
 
   # arg "limit" works

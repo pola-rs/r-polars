@@ -5,7 +5,7 @@
 \title{Fill null values using the specified value or strategy}
 \usage{
 lazyframe__fill_null(
-  value,
+  value = NULL,
   strategy = NULL,
   limit = NULL,
   ...,

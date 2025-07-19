@@ -135,16 +135,25 @@ check_arg_is_1byte <- function(arg_name, arg, ..., can_be_empty = FALSE) {
   }
 }
 
-# Less strict than rlang::check_exclusive() since we allow arguments to be NULL
-check_exclusive_or_null <- function(x, y) {
+# Similar to rlang::check_exclusive(), but check NULL instead of missing
+check_null_exclusive <- function(x, y) {
   x_name <- quo_name(enquo(x))
   y_name <- quo_name(enquo(y))
-  if (!missing(x) && !missing(y) && !is.null(x) && !is.null(y)) {
-    abort(
-      paste0("Exactly one of `", x_name, "` or `", y_name, "` must be supplied."),
-      call = caller_env()
-    )
+
+  x_is_null <- is.null(x)
+  y_is_null <- is.null(y)
+
+  if (xor(x_is_null, y_is_null)) {
+    return(invisible(NULL))
   }
+
+  msg <- if (!x_is_null && !y_is_null) {
+    sprintf("Can't specify both `%s` and `%s`.", x_name, y_name)
+  } else {
+    sprintf("Must specify either `%s` or `%s`.", x_name, y_name)
+  }
+
+  abort(msg, call = caller_env())
 }
 
 # similar to arg_match0() but also allows for integerish values

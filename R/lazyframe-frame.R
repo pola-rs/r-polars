@@ -1039,16 +1039,17 @@ lazyframe__fill_nan <- function(value) {
 #'
 #' lf$fill_null(strategy = "zero")$collect()
 lazyframe__fill_null <- function(
-  value,
+  value = NULL,
   strategy = NULL,
   limit = NULL,
   ...,
   matches_supertype = TRUE
 ) {
   wrap({
-    check_exclusive_or_null(value, strategy)
     check_dots_empty0(...)
-    if (!missing(value) && !is.null(value)) {
+    check_null_exclusive(value, strategy)
+
+    if (!is.null(value)) {
       if (is_polars_expr(value)) {
         dtypes <- NULL
       } else {

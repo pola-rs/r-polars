@@ -4,14 +4,14 @@
 \alias{expr__fill_null}
 \title{Fill floating point null value with a fill value}
 \usage{
-expr__fill_null(value, strategy = NULL, limit = NULL)
+expr__fill_null(value = NULL, strategy = NULL, limit = NULL)
 }
 \arguments{
-\item{value}{Value used to fill null values. Can be missing if \code{strategy} is
+\item{value}{Value used to fill null values. Can be \code{NULL} if \code{strategy} is
 specified. Accepts expression input, strings are parsed as column names.}
 
-\item{strategy}{Strategy used to fill null values. Must be one of
-\code{"forward"}, \code{"backward"}, \code{"min"}, \code{"max"}, \code{"mean"}, \code{"zero"}, \code{"one"}.}
+\item{strategy}{Strategy used to fill null values. If \code{value} is \code{NULL},
+must be one of \code{"forward"}, \code{"backward"}, \code{"min"}, \code{"max"}, \code{"mean"}, \code{"zero"}, \code{"one"}.}
 
 \item{limit}{Number of consecutive null values to fill when using the
 \code{"forward"} or \code{"backward"} strategy.}
