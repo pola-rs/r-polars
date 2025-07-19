@@ -2509,8 +2509,8 @@ SEXP savvy_PlRLazyFrame_group_by_dynamic__impl(SEXP self__, SEXP c_arg__index_co
     return handle_result(res);
 }
 
-SEXP savvy_PlRLazyFrame_join__impl(SEXP self__, SEXP c_arg__other, SEXP c_arg__left_on, SEXP c_arg__right_on, SEXP c_arg__allow_parallel, SEXP c_arg__force_parallel, SEXP c_arg__join_nulls, SEXP c_arg__how, SEXP c_arg__suffix, SEXP c_arg__validate, SEXP c_arg__maintain_order, SEXP c_arg__coalesce) {
-    SEXP res = savvy_PlRLazyFrame_join__ffi(self__, c_arg__other, c_arg__left_on, c_arg__right_on, c_arg__allow_parallel, c_arg__force_parallel, c_arg__join_nulls, c_arg__how, c_arg__suffix, c_arg__validate, c_arg__maintain_order, c_arg__coalesce);
+SEXP savvy_PlRLazyFrame_join__impl(SEXP self__, SEXP c_arg__other, SEXP c_arg__left_on, SEXP c_arg__right_on, SEXP c_arg__allow_parallel, SEXP c_arg__force_parallel, SEXP c_arg__nulls_equal, SEXP c_arg__how, SEXP c_arg__suffix, SEXP c_arg__validate, SEXP c_arg__maintain_order, SEXP c_arg__coalesce) {
+    SEXP res = savvy_PlRLazyFrame_join__ffi(self__, c_arg__other, c_arg__left_on, c_arg__right_on, c_arg__allow_parallel, c_arg__force_parallel, c_arg__nulls_equal, c_arg__how, c_arg__suffix, c_arg__validate, c_arg__maintain_order, c_arg__coalesce);
     return handle_result(res);
 }
 

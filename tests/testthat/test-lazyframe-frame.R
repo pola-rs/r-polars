@@ -607,7 +607,7 @@ test_that("argument 'validate' works", {
   )
 })
 
-test_that("argument 'join_nulls' works", {
+test_that("argument 'nulls_equal' works", {
   df1 <- pl$DataFrame(x = c(NA, letters[1:2]), y = 1:3)
   df2 <- pl$DataFrame(x = c(NA, letters[2:3]), y2 = 4:6)
 
@@ -621,7 +621,7 @@ test_that("argument 'join_nulls' works", {
 
   # consider nulls as a valid key
   expect_query_equal(
-    .input$join(.input2, on = "x", join_nulls = TRUE),
+    .input$join(.input2, on = "x", nulls_equal = TRUE),
     .input = df1,
     .input2 = df2,
     pl$DataFrame(x = c(NA, "b"), y = c(1L, 3L), y2 = c(4L, 5L))
@@ -630,7 +630,7 @@ test_that("argument 'join_nulls' works", {
   # several nulls
   df3 <- pl$DataFrame(x = c(NA, letters[2:3], NA), y2 = 4:7)
   expect_query_equal(
-    .input$join(.input2, on = "x", join_nulls = TRUE),
+    .input$join(.input2, on = "x", nulls_equal = TRUE),
     .input = df1,
     .input2 = df3,
     pl$DataFrame(x = c(NA, "b", NA), y = c(1L, 3L, 1L), y2 = c(4L, 5L, 7L))

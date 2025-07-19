@@ -505,7 +505,7 @@ SEXP savvy_PlRLazyFrame_fill_nan__ffi(SEXP self__, SEXP c_arg__fill_value);
 SEXP savvy_PlRLazyFrame_filter__ffi(SEXP self__, SEXP c_arg__predicate);
 SEXP savvy_PlRLazyFrame_group_by__ffi(SEXP self__, SEXP c_arg__by, SEXP c_arg__maintain_order);
 SEXP savvy_PlRLazyFrame_group_by_dynamic__ffi(SEXP self__, SEXP c_arg__index_column, SEXP c_arg__every, SEXP c_arg__period, SEXP c_arg__offset, SEXP c_arg__label, SEXP c_arg__include_boundaries, SEXP c_arg__closed, SEXP c_arg__group_by, SEXP c_arg__start_by);
-SEXP savvy_PlRLazyFrame_join__ffi(SEXP self__, SEXP c_arg__other, SEXP c_arg__left_on, SEXP c_arg__right_on, SEXP c_arg__allow_parallel, SEXP c_arg__force_parallel, SEXP c_arg__join_nulls, SEXP c_arg__how, SEXP c_arg__suffix, SEXP c_arg__validate, SEXP c_arg__maintain_order, SEXP c_arg__coalesce);
+SEXP savvy_PlRLazyFrame_join__ffi(SEXP self__, SEXP c_arg__other, SEXP c_arg__left_on, SEXP c_arg__right_on, SEXP c_arg__allow_parallel, SEXP c_arg__force_parallel, SEXP c_arg__nulls_equal, SEXP c_arg__how, SEXP c_arg__suffix, SEXP c_arg__validate, SEXP c_arg__maintain_order, SEXP c_arg__coalesce);
 SEXP savvy_PlRLazyFrame_join_asof__ffi(SEXP self__, SEXP c_arg__other, SEXP c_arg__left_on, SEXP c_arg__right_on, SEXP c_arg__allow_parallel, SEXP c_arg__force_parallel, SEXP c_arg__suffix, SEXP c_arg__coalesce, SEXP c_arg__strategy, SEXP c_arg__allow_eq, SEXP c_arg__check_sortedness, SEXP c_arg__left_by, SEXP c_arg__right_by, SEXP c_arg__tolerance, SEXP c_arg__tolerance_str);
 SEXP savvy_PlRLazyFrame_join_where__ffi(SEXP self__, SEXP c_arg__other, SEXP c_arg__predicates, SEXP c_arg__suffix);
 SEXP savvy_PlRLazyFrame_max__ffi(SEXP self__);

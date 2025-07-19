@@ -1292,7 +1292,7 @@ lazyframe__unique <- function(
 #'
 #' Note that this is currently not supported by the streaming engine.
 #'
-#' @param join_nulls Join on null values. By default null values will never
+#' @param nulls_equal Join on null values. By default null values will never
 #'   produce matches.
 #' @param allow_parallel Allow the physical plan to optionally evaluate the
 #'   computation of both LazyFrames up to the join in parallel.
@@ -1347,11 +1347,11 @@ lazyframe__join <- function(
   right_on = NULL,
   suffix = "_right",
   validate = c("m:m", "1:m", "m:1", "1:1"),
-  join_nulls = FALSE,
+  nulls_equal = FALSE,
+  coalesce = NULL,
   maintain_order = c("none", "left", "right", "left_right", "right_left"),
   allow_parallel = TRUE,
-  force_parallel = FALSE,
-  coalesce = NULL
+  force_parallel = FALSE
 ) {
   wrap({
     check_dots_empty0(...)
@@ -1391,7 +1391,7 @@ lazyframe__join <- function(
           right_on = list(),
           how = how,
           validate = validate,
-          join_nulls = join_nulls,
+          nulls_equal = nulls_equal,
           suffix = suffix,
           allow_parallel = allow_parallel,
           force_parallel = force_parallel,
@@ -1416,7 +1416,7 @@ lazyframe__join <- function(
       right_on = rexprs_right,
       how = how,
       validate = validate,
-      join_nulls = join_nulls,
+      nulls_equal = nulls_equal,
       suffix = suffix,
       allow_parallel = allow_parallel,
       force_parallel = force_parallel,

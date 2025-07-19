@@ -883,11 +883,11 @@ dataframe__join <- function(
   right_on = NULL,
   suffix = "_right",
   validate = c("m:m", "1:m", "m:1", "1:1"),
-  join_nulls = FALSE,
+  nulls_equal = FALSE,
+  coalesce = NULL,
   maintain_order = c("none", "left", "right", "left_right", "right_left"),
   allow_parallel = TRUE,
-  force_parallel = FALSE,
-  coalesce = NULL
+  force_parallel = FALSE
 ) {
   wrap({
     check_polars_df(other)
@@ -899,7 +899,7 @@ dataframe__join <- function(
       how = how,
       suffix = suffix,
       validate = validate,
-      join_nulls = join_nulls,
+      nulls_equal = nulls_equal,
       coalesce = coalesce,
       maintain_order = maintain_order
     )$collect(`_eager` = TRUE)

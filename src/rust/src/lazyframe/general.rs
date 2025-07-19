@@ -467,7 +467,7 @@ impl PlRLazyFrame {
         right_on: ListSexp,
         allow_parallel: bool,
         force_parallel: bool,
-        join_nulls: bool,
+        nulls_equal: bool,
         how: &str,
         suffix: &str,
         validate: &str,
@@ -494,7 +494,7 @@ impl PlRLazyFrame {
             .right_on(right_on)
             .allow_parallel(allow_parallel)
             .force_parallel(force_parallel)
-            .join_nulls(join_nulls)
+            .join_nulls(nulls_equal)
             .how(how)
             .coalesce(coalesce)
             .validate(validate)

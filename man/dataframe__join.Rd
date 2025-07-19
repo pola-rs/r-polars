@@ -13,11 +13,11 @@ dataframe__join(
   right_on = NULL,
   suffix = "_right",
   validate = c("m:m", "1:m", "m:1", "1:1"),
-  join_nulls = FALSE,
+  nulls_equal = FALSE,
+  coalesce = NULL,
   maintain_order = c("none", "left", "right", "left_right", "right_left"),
   allow_parallel = TRUE,
-  force_parallel = FALSE,
-  coalesce = NULL
+  force_parallel = FALSE
 )
 }
 \arguments{
@@ -61,8 +61,17 @@ datasets;
 
 Note that this is currently not supported by the streaming engine.}
 
-\item{join_nulls}{Join on null values. By default null values will never
+\item{nulls_equal}{Join on null values. By default null values will never
 produce matches.}
+
+\item{coalesce}{Coalescing behavior (merging of join columns).
+\itemize{
+\item \code{NULL}: join specific.
+\item \code{TRUE}: Always coalesce join columns.
+\item \code{FALSE}: Never coalesce join columns.
+Note that joining on any other expressions than \code{col} will turn off
+coalescing.
+}}
 
 \item{maintain_order}{Which frame row order to preserve, if any. Do not rely
 on any observed ordering without explicitly setting this parameter, as your
@@ -84,15 +93,6 @@ computation of both DataFrames up to the join in parallel.}
 
 \item{force_parallel}{Force the physical plan to evaluate the computation of
 both DataFrames up to the join in parallel.}
-
-\item{coalesce}{Coalescing behavior (merging of join columns).
-\itemize{
-\item \code{NULL}: join specific.
-\item \code{TRUE}: Always coalesce join columns.
-\item \code{FALSE}: Never coalesce join columns.
-Note that joining on any other expressions than \code{col} will turn off
-coalescing.
-}}
 }
 \value{
 A polars \link{DataFrame}
