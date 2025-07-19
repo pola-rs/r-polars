@@ -2159,8 +2159,8 @@ SEXP savvy_PlRExpr_str_join__impl(SEXP self__, SEXP c_arg__delimiter, SEXP c_arg
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_str_json_decode__impl(SEXP self__, SEXP c_arg__dtype, SEXP c_arg__infer_schema_len) {
-    SEXP res = savvy_PlRExpr_str_json_decode__ffi(self__, c_arg__dtype, c_arg__infer_schema_len);
+SEXP savvy_PlRExpr_str_json_decode__impl(SEXP self__, SEXP c_arg__infer_schema_length, SEXP c_arg__dtype) {
+    SEXP res = savvy_PlRExpr_str_json_decode__ffi(self__, c_arg__infer_schema_length, c_arg__dtype);
     return handle_result(res);
 }
 

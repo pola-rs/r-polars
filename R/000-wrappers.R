@@ -2810,9 +2810,9 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_polars__sealed")
 }
 
 `PlRExpr_str_json_decode` <- function(self) {
-  function(`dtype`, `infer_schema_len`) {
+  function(`infer_schema_length`, `dtype` = NULL) {
     `dtype` <- .savvy_extract_ptr(`dtype`, "PlRDataType")
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_str_json_decode__impl, `self`, `dtype`, `infer_schema_len`))
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_str_json_decode__impl, `self`, `infer_schema_length`, `dtype`))
   }
 }
 

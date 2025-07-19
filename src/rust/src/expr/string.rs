@@ -164,17 +164,18 @@ impl PlRExpr {
     #[allow(unused_variables)]
     fn str_json_decode(
         &self,
-        dtype: &PlRDataType,
-        infer_schema_len: NumericScalar,
+        infer_schema_length: NumericScalar,
+        dtype: Option<&PlRDataType>,
     ) -> Result<Self> {
         #[cfg(not(target_arch = "wasm32"))]
         {
-            let infer_schema_len = <Wrap<usize>>::try_from(infer_schema_len)?.0;
+            let infer_schema_len = <Wrap<usize>>::try_from(infer_schema_length)?.0;
+            let dtype = dtype.map(|x| x.dt.clone());
             Ok(self
                 .inner
                 .clone()
                 .str()
-                .json_decode(Some(dtype.dt.clone()), Some(infer_schema_len))
+                .json_decode(dtype, Some(infer_schema_len))
                 .into())
         }
         #[cfg(target_arch = "wasm32")]

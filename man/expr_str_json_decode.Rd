@@ -4,7 +4,7 @@
 \alias{expr_str_json_decode}
 \title{Parse string values as JSON.}
 \usage{
-expr_str_json_decode(dtype, ..., infer_schema_length = 100)
+expr_str_json_decode(dtype = NULL, ..., infer_schema_length = 100)
 }
 \arguments{
 \item{dtype}{The dtype to cast the extracted value to. If \code{NULL}, the dtype
@@ -28,6 +28,13 @@ Throw errors if encounter invalid json strings.
 df <- pl$DataFrame(
   json_val = c('{"a":1, "b": true}', NA, '{"a":2, "b": false}')
 )
-dtype <- pl$Struct(a = pl$Int64, b = pl$Boolean)
-df$select(pl$col("json_val")$str$json_decode(dtype))
+
+df$select(
+  pl$col("json_val")$str$json_decode()
+)$unnest("json_val")
+
+dtype <- pl$Struct(a = pl$UInt8, b = pl$Boolean)
+df$select(
+  pl$col("json_val")$str$json_decode(dtype)
+)$unnest("json_val")
 }

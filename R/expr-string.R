@@ -639,12 +639,19 @@ expr_str_starts_with <- function(prefix) {
 #' df <- pl$DataFrame(
 #'   json_val = c('{"a":1, "b": true}', NA, '{"a":2, "b": false}')
 #' )
-#' dtype <- pl$Struct(a = pl$Int64, b = pl$Boolean)
-#' df$select(pl$col("json_val")$str$json_decode(dtype))
-expr_str_json_decode <- function(dtype, ..., infer_schema_length = 100) {
+#'
+#' df$select(
+#'   pl$col("json_val")$str$json_decode()
+#' )$unnest("json_val")
+#'
+#' dtype <- pl$Struct(a = pl$UInt8, b = pl$Boolean)
+#' df$select(
+#'   pl$col("json_val")$str$json_decode(dtype)
+#' )$unnest("json_val")
+expr_str_json_decode <- function(dtype = NULL, ..., infer_schema_length = 100) {
   wrap({
     check_dots_empty0(...)
-    self$`_rexpr`$str_json_decode(dtype$`_dt`, infer_schema_length)
+    self$`_rexpr`$str_json_decode(dtype = dtype$`_dt`, infer_schema_length = infer_schema_length)
   })
 }
 
