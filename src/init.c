@@ -2779,6 +2779,11 @@ SEXP savvy_PlRSQLContext_register__impl(SEXP self__, SEXP c_arg__name, SEXP c_ar
     return handle_result(res);
 }
 
+SEXP savvy_PlRSQLContext_unregister__impl(SEXP self__, SEXP c_arg__name) {
+    SEXP res = savvy_PlRSQLContext_unregister__ffi(self__, c_arg__name);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRSeries_add__impl(SEXP self__, SEXP c_arg__other) {
     SEXP res = savvy_PlRSeries_add__ffi(self__, c_arg__other);
     return handle_result(res);
@@ -3565,6 +3570,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRSQLContext_get_tables__impl", (DL_FUNC) &savvy_PlRSQLContext_get_tables__impl, 1},
     {"savvy_PlRSQLContext_new__impl", (DL_FUNC) &savvy_PlRSQLContext_new__impl, 0},
     {"savvy_PlRSQLContext_register__impl", (DL_FUNC) &savvy_PlRSQLContext_register__impl, 3},
+    {"savvy_PlRSQLContext_unregister__impl", (DL_FUNC) &savvy_PlRSQLContext_unregister__impl, 2},
     {"savvy_PlRSeries_add__impl", (DL_FUNC) &savvy_PlRSeries_add__impl, 2},
     {"savvy_PlRSeries_as_str__impl", (DL_FUNC) &savvy_PlRSeries_as_str__impl, 1},
     {"savvy_PlRSeries_can_fast_explode_flag__impl", (DL_FUNC) &savvy_PlRSeries_can_fast_explode_flag__impl, 1},

@@ -711,6 +711,7 @@ nav:
         - sql_context__register_many: man/sql_context__register_many.md
         - sql_context__register: man/sql_context__register.md
         - sql_context__tables: man/sql_context__tables.md
+        - sql_context__unregister: man/sql_context__unregister.md
       From R:
         - as_polars_df: man/as_polars_df.md
         - as_polars_expr: man/as_polars_expr.md

@@ -52,4 +52,9 @@ impl PlRSQLContext {
         self.context.register(name, lf.ldf.clone());
         Ok(())
     }
+
+    pub fn unregister(&mut self, name: &str) -> Result<()> {
+        self.context.unregister(name);
+        Ok(())
+    }
 }

@@ -82,6 +82,33 @@ sql_context__register_many <- function(...) {
   })
 }
 
+#' Unregister one or more frames by name
+#'
+#' `r lifecycle::badge("experimental")`
+#' @inherit pl__SQLContext return
+#' @param names Names of the tables to unregister.
+#' @examples
+#' df <- pl$DataFrame(ints = 9:5)
+#' lf1 <- pl$LazyFrame(text = letters[1:3])
+#' lf2 <- pl$LazyFrame(misc = "testing1234")
+#'
+#' # Register with a SQLContext object:
+#' ctx <- pl$SQLContext(test1 = df, test2 = lf1, test3 = lf2)
+#' ctx$tables()
+#'
+#' # Unregister one or more of the tables:
+#' ctx$unregister(c("test1", "test3"))$tables()
+#' ctx$unregister("test2")$tables()
+sql_context__unregister <- function(names) {
+  wrap({
+    check_character(names, allow_na = FALSE, allow_null = FALSE)
+
+    lapply(names, \(name) self$`_ctxt`$unregister(name)) |>
+      invisible()
+    self
+  })
+}
+
 #' Return a list of the registered table names
 #'
 #' `r lifecycle::badge("experimental")`

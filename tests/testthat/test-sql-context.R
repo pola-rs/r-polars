@@ -12,3 +12,16 @@ test_that("pl$SQLContext() works", {
     "Failed to create a polars LazyFrame"
   )
 })
+
+test_that("<sqlcontext>$unregister()", {
+  ctx <- pl$SQLContext(mtcars = mtcars)
+  # Unregister a non-existent table should not error
+  expect_identical(
+    ctx$unregister(c("non_existent", "more_non_existent"))$tables(),
+    "mtcars"
+  )
+  expect_identical(
+    ctx$unregister("mtcars")$tables(),
+    character()
+  )
+})

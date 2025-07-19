@@ -4109,12 +4109,19 @@ class(`PlRPartitioning`) <- c("PlRPartitioning__bundle", "savvy_polars__sealed")
   }
 }
 
+`PlRSQLContext_unregister` <- function(self) {
+  function(`name`) {
+    invisible(.Call(savvy_PlRSQLContext_unregister__impl, `self`, `name`))
+  }
+}
+
 `.savvy_wrap_PlRSQLContext` <- function(ptr) {
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
   e$`execute` <- `PlRSQLContext_execute`(ptr)
   e$`get_tables` <- `PlRSQLContext_get_tables`(ptr)
   e$`register` <- `PlRSQLContext_register`(ptr)
+  e$`unregister` <- `PlRSQLContext_unregister`(ptr)
 
   class(e) <- c("PlRSQLContext", "savvy_polars__sealed")
   e

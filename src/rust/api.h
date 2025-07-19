@@ -565,6 +565,7 @@ SEXP savvy_PlRSQLContext_execute__ffi(SEXP self__, SEXP c_arg__query);
 SEXP savvy_PlRSQLContext_get_tables__ffi(SEXP self__);
 SEXP savvy_PlRSQLContext_new__ffi(void);
 SEXP savvy_PlRSQLContext_register__ffi(SEXP self__, SEXP c_arg__name, SEXP c_arg__lf);
+SEXP savvy_PlRSQLContext_unregister__ffi(SEXP self__, SEXP c_arg__name);
 
 // methods and associated functions for PlRSeries
 SEXP savvy_PlRSeries_add__ffi(SEXP self__, SEXP c_arg__other);
