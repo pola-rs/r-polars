@@ -4,7 +4,12 @@
 \alias{expr_str_replace_many}
 \title{Use the Aho-Corasick algorithm to replace many matches}
 \usage{
-expr_str_replace_many(patterns, replace_with, ascii_case_insensitive = FALSE)
+expr_str_replace_many(
+  patterns,
+  replace_with,
+  ...,
+  ascii_case_insensitive = FALSE
+)
 }
 \arguments{
 \item{patterns}{String patterns to search. Can be an Expr.}
@@ -12,6 +17,8 @@ expr_str_replace_many(patterns, replace_with, ascii_case_insensitive = FALSE)
 \item{replace_with}{A vector of strings used as replacements. If this is of
 length 1, then it is applied to all matches. Otherwise, it must be of same
 length as the \code{patterns} argument.}
+
+\item{...}{These dots are for future extensions and must be empty.}
 
 \item{ascii_case_insensitive}{Enable ASCII-aware case insensitive matching.
 When this option is enabled, searching will be performed without respect to

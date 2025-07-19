@@ -1063,6 +1063,8 @@ expr_str_contains_any <- function(patterns, ..., ascii_case_insensitive = FALSE)
 #'
 #' This function replaces several matches at once.
 #'
+#' @inherit as_polars_expr return
+#' @inheritParams rlang::args_dots_empty
 #' @param patterns String patterns to search. Can be an Expr.
 #' @param replace_with A vector of strings used as replacements. If this is of
 #' length 1, then it is applied to all matches. Otherwise, it must be of same
@@ -1070,9 +1072,6 @@ expr_str_contains_any <- function(patterns, ..., ascii_case_insensitive = FALSE)
 #' @param ascii_case_insensitive Enable ASCII-aware case insensitive matching.
 #' When this option is enabled, searching will be performed without respect to
 #' case for ASCII letters (a-z and A-Z) only.
-#'
-#' @inherit as_polars_expr return
-#'
 #' @examples
 #' df <- pl$DataFrame(
 #'   lyrics = c(
@@ -1092,13 +1091,16 @@ expr_str_contains_any <- function(patterns, ..., ascii_case_insensitive = FALSE)
 #' df$with_columns(
 #'   fake_pronouns = pl$col("lyrics")$str$replace_many(c("you", "me"), c("foo", "bar"))
 #' )
-expr_str_replace_many <- function(patterns, replace_with, ascii_case_insensitive = FALSE) {
-  self$`_rexpr`$str_replace_many(
-    as_polars_expr(patterns, as_lit = TRUE)$`_rexpr`,
-    as_polars_expr(replace_with, as_lit = TRUE)$`_rexpr`,
-    ascii_case_insensitive
-  ) |>
-    wrap()
+expr_str_replace_many <- function(patterns, replace_with, ..., ascii_case_insensitive = FALSE) {
+  wrap({
+    check_dots_empty0(...)
+
+    self$`_rexpr`$str_replace_many(
+      as_polars_expr(patterns, as_lit = TRUE)$`_rexpr`,
+      as_polars_expr(replace_with, as_lit = TRUE)$`_rexpr`,
+      ascii_case_insensitive
+    )
+  })
 }
 
 
