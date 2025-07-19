@@ -4,7 +4,13 @@
 \alias{expr_meta_pop}
 \title{Pop the latest expression and return the input(s) of the popped expression}
 \usage{
-expr_meta_pop()
+expr_meta_pop(..., schema = NULL)
+}
+\arguments{
+\item{...}{These dots are for future extensions and must be empty.}
+
+\item{schema}{An optional schema. Must be \code{NULL} or a named list of
+\link{DataType}.}
 }
 \value{
 A polars \link{expression}

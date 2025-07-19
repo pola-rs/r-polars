@@ -289,15 +289,28 @@ expr_meta_is_regex_projection <- function() {
 #' Pop the latest expression and return the input(s) of the popped expression
 #'
 #' @inherit as_polars_expr return
+#' @inheritParams rlang::args_dots_empty
+#' @param schema An optional schema. Must be `NULL` or a named list of
+#'   [DataType].
 #' @examples
 #' e <- pl$col("foo") + pl$col("bar")
 #' first <- e$meta$pop()[[1]]
 #'
 #' first$meta$eq(pl$col("bar"))
 #' first$meta$eq(pl$col("foo"))
-expr_meta_pop <- function() {
-  lapply(self$`_rexpr`$meta_pop(), \(ptr) {
-    .savvy_wrap_PlRExpr(ptr) |>
-      wrap()
+expr_meta_pop <- function(..., schema = NULL) {
+  wrap({
+    check_dots_empty0(...)
+    check_list_of_polars_dtype(schema, allow_null = TRUE)
+
+    if (!is.null(schema)) {
+      schema <- parse_into_list_of_datatypes(!!!schema)
+    }
+
+    self$`_rexpr`$meta_pop(schema = schema) |>
+      lapply(\(ptr) {
+        .savvy_wrap_PlRExpr(ptr) |>
+          wrap()
+      })
   })
 }
