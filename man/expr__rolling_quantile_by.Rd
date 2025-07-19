@@ -10,7 +10,7 @@ expr__rolling_quantile_by(
   ...,
   quantile,
   interpolation = c("nearest", "higher", "lower", "midpoint", "linear", "equiprobable"),
-  min_periods = 1,
+  min_samples = 1,
   closed = c("right", "both", "left", "none")
 )
 }
@@ -49,7 +49,7 @@ By "calendar day", we mean the corresponding time on the next day
 \item{interpolation}{Interpolation method. Must be one of \code{"nearest"},
 \code{"higher"}, \code{"lower"}, \code{"midpoint"}, \code{"linear"}.}
 
-\item{min_periods}{The number of values in the window that should be
+\item{min_samples}{The number of values in the window that should be
 non-null before computing a result. If \code{NULL} (default), it will be set
 equal to \code{window_size}.}
 

@@ -12,7 +12,7 @@ expr__ewm_var(
   alpha,
   adjust = TRUE,
   bias = FALSE,
-  min_periods = 1,
+  min_samples = 1,
   ignore_nulls = FALSE
 )
 }
@@ -44,7 +44,7 @@ account for imbalance in relative weightings:
 \item{bias}{If \code{FALSE} (default), apply a correction to make the estimate
 statistically unbiased.}
 
-\item{min_periods}{The number of values in the window that should be
+\item{min_samples}{The number of values in the window that should be
 non-null before computing a result. If \code{NULL} (default), it will be set
 equal to \code{window_size}.}
 

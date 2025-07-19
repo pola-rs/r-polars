@@ -1393,7 +1393,7 @@ expr__cum_count <- function(..., reverse = FALSE) {
 #' `r lifecycle::badge("experimental")`
 #' @param expr Expression to evaluate.
 #' @inheritParams rlang::args_dots_empty
-#' @param min_periods Number of valid values (i.e. `length - null_count`) there
+#' @param min_samples Number of valid values (i.e. `length - null_count`) there
 #' should be in the window before the expression is evaluated.
 #'
 #' @details
@@ -1409,10 +1409,10 @@ expr__cum_count <- function(..., reverse = FALSE) {
 #'     pl$element()$first() - pl$element()$last()**2
 #'   )
 #' )
-expr__cumulative_eval <- function(expr, ..., min_periods = 1) {
+expr__cumulative_eval <- function(expr, ..., min_samples = 1) {
   wrap({
     check_dots_empty0(...)
-    self$`_rexpr`$cumulative_eval(as_polars_expr(expr)$`_rexpr`, min_periods)
+    self$`_rexpr`$cumulative_eval(as_polars_expr(expr)$`_rexpr`, min_samples)
   })
 }
 
@@ -2407,7 +2407,7 @@ expr__search_sorted <- function(
 #' @param window_size The length of the window in number of elements.
 #' @param weights An optional slice with the same length as the window that
 #' will be multiplied elementwise with the values in the window.
-#' @param min_periods The number of values in the window that should be
+#' @param min_samples The number of values in the window that should be
 #' non-null before computing a result. If `NULL` (default), it will be set
 #' equal to `window_size`.
 #' @param center If `TRUE`, set the labels at the center of the window.
@@ -2439,7 +2439,7 @@ expr__rolling_max <- function(
   window_size,
   weights = NULL,
   ...,
-  min_periods = NULL,
+  min_samples = NULL,
   center = FALSE
 ) {
   wrap({
@@ -2447,7 +2447,7 @@ expr__rolling_max <- function(
     self$`_rexpr`$rolling_max(
       window_size = window_size,
       weights = weights,
-      min_periods = min_periods,
+      min_samples = min_samples,
       center = center
     )
   })
@@ -2479,7 +2479,7 @@ expr__rolling_min <- function(
   window_size,
   weights = NULL,
   ...,
-  min_periods = NULL,
+  min_samples = NULL,
   center = FALSE
 ) {
   wrap({
@@ -2487,7 +2487,7 @@ expr__rolling_min <- function(
     self$`_rexpr`$rolling_min(
       window_size = window_size,
       weights = weights,
-      min_periods = min_periods,
+      min_samples = min_samples,
       center = center
     )
   })
@@ -2519,7 +2519,7 @@ expr__rolling_mean <- function(
   window_size,
   weights = NULL,
   ...,
-  min_periods = NULL,
+  min_samples = NULL,
   center = FALSE
 ) {
   wrap({
@@ -2527,7 +2527,7 @@ expr__rolling_mean <- function(
     self$`_rexpr`$rolling_mean(
       window_size = window_size,
       weights = weights,
-      min_periods = min_periods,
+      min_samples = min_samples,
       center = center
     )
   })
@@ -2559,7 +2559,7 @@ expr__rolling_median <- function(
   window_size,
   weights = NULL,
   ...,
-  min_periods = NULL,
+  min_samples = NULL,
   center = FALSE
 ) {
   wrap({
@@ -2567,7 +2567,7 @@ expr__rolling_median <- function(
     self$`_rexpr`$rolling_median(
       window_size = window_size,
       weights = weights,
-      min_periods = min_periods,
+      min_samples = min_samples,
       center = center
     )
   })
@@ -2599,7 +2599,7 @@ expr__rolling_sum <- function(
   window_size,
   weights = NULL,
   ...,
-  min_periods = NULL,
+  min_samples = NULL,
   center = FALSE
 ) {
   wrap({
@@ -2607,7 +2607,7 @@ expr__rolling_sum <- function(
     self$`_rexpr`$rolling_sum(
       window_size = window_size,
       weights = weights,
-      min_periods = min_periods,
+      min_samples = min_samples,
       center = center
     )
   })
@@ -2654,7 +2654,7 @@ expr__rolling_quantile <- function(
   window_size,
   weights = NULL,
   ...,
-  min_periods = NULL,
+  min_samples = NULL,
   center = FALSE
 ) {
   wrap({
@@ -2668,7 +2668,7 @@ expr__rolling_quantile <- function(
       interpolation = interpolation,
       window_size = window_size,
       weights = weights,
-      min_periods = min_periods,
+      min_samples = min_samples,
       center = center
     )
   })
@@ -2732,7 +2732,7 @@ expr__rolling_std <- function(
   window_size,
   weights = NULL,
   ...,
-  min_periods = NULL,
+  min_samples = NULL,
   center = FALSE,
   ddof = 1
 ) {
@@ -2741,7 +2741,7 @@ expr__rolling_std <- function(
     self$`_rexpr`$rolling_std(
       window_size = window_size,
       weights = weights,
-      min_periods = min_periods,
+      min_samples = min_samples,
       center = center,
       ddof = ddof
     )
@@ -2775,7 +2775,7 @@ expr__rolling_var <- function(
   window_size,
   weights = NULL,
   ...,
-  min_periods = NULL,
+  min_samples = NULL,
   center = FALSE,
   ddof = 1
 ) {
@@ -2784,7 +2784,7 @@ expr__rolling_var <- function(
     self$`_rexpr`$rolling_var(
       window_size = window_size,
       weights = weights,
-      min_periods = min_periods,
+      min_samples = min_samples,
       center = center,
       ddof = ddof
     )
@@ -2889,7 +2889,7 @@ expr__rolling <- function(
 #' By "calendar day", we mean the corresponding time on the next day
 #' (which may not be 24 hours, due to daylight savings). Similarly for
 #' "calendar week", "calendar month", "calendar quarter", and "calendar year".
-#' @param min_periods The number of values in the window that should be
+#' @param min_samples The number of values in the window that should be
 #' non-null before computing a result. If `NULL` (default), it will be set
 #' equal to `window_size`.
 #' @param closed Define which sides of the interval are closed (inclusive).
@@ -2932,7 +2932,7 @@ expr__rolling_max_by <- function(
   by,
   window_size,
   ...,
-  min_periods = 1,
+  min_samples = 1,
   closed = c("right", "both", "left", "none")
 ) {
   wrap({
@@ -2941,7 +2941,7 @@ expr__rolling_max_by <- function(
     self$`_rexpr`$rolling_max_by(
       by = as_polars_expr(by)$`_rexpr`,
       window_size = window_size,
-      min_periods = min_periods,
+      min_samples = min_samples,
       closed = closed
     )
   })
@@ -2982,7 +2982,7 @@ expr__rolling_min_by <- function(
   by,
   window_size,
   ...,
-  min_periods = 1,
+  min_samples = 1,
   closed = c("right", "both", "left", "none")
 ) {
   wrap({
@@ -2991,7 +2991,7 @@ expr__rolling_min_by <- function(
     self$`_rexpr`$rolling_min_by(
       by = as_polars_expr(by)$`_rexpr`,
       window_size = window_size,
-      min_periods = min_periods,
+      min_samples = min_samples,
       closed = closed
     )
   })
@@ -3032,7 +3032,7 @@ expr__rolling_mean_by <- function(
   by,
   window_size,
   ...,
-  min_periods = 1,
+  min_samples = 1,
   closed = c("right", "both", "left", "none")
 ) {
   wrap({
@@ -3041,7 +3041,7 @@ expr__rolling_mean_by <- function(
     self$`_rexpr`$rolling_mean_by(
       by = as_polars_expr(by)$`_rexpr`,
       window_size = window_size,
-      min_periods = min_periods,
+      min_samples = min_samples,
       closed = closed
     )
   })
@@ -3082,7 +3082,7 @@ expr__rolling_median_by <- function(
   by,
   window_size,
   ...,
-  min_periods = 1,
+  min_samples = 1,
   closed = c("right", "both", "left", "none")
 ) {
   wrap({
@@ -3091,7 +3091,7 @@ expr__rolling_median_by <- function(
     self$`_rexpr`$rolling_median_by(
       by = as_polars_expr(by)$`_rexpr`,
       window_size = window_size,
-      min_periods = min_periods,
+      min_samples = min_samples,
       closed = closed
     )
   })
@@ -3132,7 +3132,7 @@ expr__rolling_sum_by <- function(
   by,
   window_size,
   ...,
-  min_periods = 1,
+  min_samples = 1,
   closed = c("right", "both", "left", "none")
 ) {
   wrap({
@@ -3141,7 +3141,7 @@ expr__rolling_sum_by <- function(
     self$`_rexpr`$rolling_sum_by(
       by = as_polars_expr(by)$`_rexpr`,
       window_size = window_size,
-      min_periods = min_periods,
+      min_samples = min_samples,
       closed = closed
     )
   })
@@ -3187,7 +3187,7 @@ expr__rolling_quantile_by <- function(
   ...,
   quantile,
   interpolation = c("nearest", "higher", "lower", "midpoint", "linear", "equiprobable"),
-  min_periods = 1,
+  min_samples = 1,
   closed = c("right", "both", "left", "none")
 ) {
   wrap({
@@ -3202,7 +3202,7 @@ expr__rolling_quantile_by <- function(
       window_size = window_size,
       quantile = quantile,
       interpolation = interpolation,
-      min_periods = min_periods,
+      min_samples = min_samples,
       closed = closed
     )
   })
@@ -3244,7 +3244,7 @@ expr__rolling_std_by <- function(
   by,
   window_size,
   ...,
-  min_periods = 1,
+  min_samples = 1,
   closed = c("right", "both", "left", "none"),
   ddof = 1
 ) {
@@ -3254,7 +3254,7 @@ expr__rolling_std_by <- function(
     self$`_rexpr`$rolling_std_by(
       by = as_polars_expr(by)$`_rexpr`,
       window_size = window_size,
-      min_periods = min_periods,
+      min_samples = min_samples,
       closed = closed,
       ddof = ddof
     )
@@ -3297,7 +3297,7 @@ expr__rolling_var_by <- function(
   by,
   window_size,
   ...,
-  min_periods = 1,
+  min_samples = 1,
   closed = c("right", "both", "left", "none"),
   ddof = 1
 ) {
@@ -3307,7 +3307,7 @@ expr__rolling_var_by <- function(
     self$`_rexpr`$rolling_var_by(
       by = as_polars_expr(by)$`_rexpr`,
       window_size = window_size,
-      min_periods = min_periods,
+      min_samples = min_samples,
       closed = closed,
       ddof = ddof
     )
@@ -3358,7 +3358,7 @@ expr__ewm_var <- function(
   alpha,
   adjust = TRUE,
   bias = FALSE,
-  min_periods = 1,
+  min_samples = 1,
   ignore_nulls = FALSE
 ) {
   wrap({
@@ -3368,7 +3368,7 @@ expr__ewm_var <- function(
       alpha = alpha,
       adjust = adjust,
       bias = bias,
-      min_periods = min_periods,
+      min_samples = min_samples,
       ignore_nulls = ignore_nulls
     )
   })
@@ -3391,7 +3391,7 @@ expr__ewm_std <- function(
   alpha,
   adjust = TRUE,
   bias = FALSE,
-  min_periods = 1,
+  min_samples = 1,
   ignore_nulls = FALSE
 ) {
   wrap({
@@ -3401,7 +3401,7 @@ expr__ewm_std <- function(
       alpha = alpha,
       adjust = adjust,
       bias = bias,
-      min_periods = min_periods,
+      min_samples = min_samples,
       ignore_nulls = ignore_nulls
     )
   })
@@ -3423,7 +3423,7 @@ expr__ewm_mean <- function(
   half_life,
   alpha,
   adjust = TRUE,
-  min_periods = 1,
+  min_samples = 1,
   ignore_nulls = FALSE
 ) {
   wrap({
@@ -3432,7 +3432,7 @@ expr__ewm_mean <- function(
     self$`_rexpr`$ewm_mean(
       alpha = alpha,
       adjust = adjust,
-      min_periods = min_periods,
+      min_samples = min_samples,
       ignore_nulls = ignore_nulls
     )
   })

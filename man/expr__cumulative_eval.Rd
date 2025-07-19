@@ -4,14 +4,14 @@
 \alias{expr__cumulative_eval}
 \title{Return the cumulative count of the non-null values in the column}
 \usage{
-expr__cumulative_eval(expr, ..., min_periods = 1)
+expr__cumulative_eval(expr, ..., min_samples = 1)
 }
 \arguments{
 \item{expr}{Expression to evaluate.}
 
 \item{...}{These dots are for future extensions and must be empty.}
 
-\item{min_periods}{Number of valid values (i.e. \code{length - null_count}) there
+\item{min_samples}{Number of valid values (i.e. \code{length - null_count}) there
 should be in the window before the expression is evaluated.}
 }
 \value{

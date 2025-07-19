@@ -8,7 +8,7 @@ expr__rolling_median(
   window_size,
   weights = NULL,
   ...,
-  min_periods = NULL,
+  min_samples = NULL,
   center = FALSE
 )
 }
@@ -20,7 +20,7 @@ will be multiplied elementwise with the values in the window.}
 
 \item{...}{These dots are for future extensions and must be empty.}
 
-\item{min_periods}{The number of values in the window that should be
+\item{min_samples}{The number of values in the window that should be
 non-null before computing a result. If \code{NULL} (default), it will be set
 equal to \code{window_size}.}
 

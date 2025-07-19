@@ -1714,7 +1714,7 @@ test_that("rolling_*_by only works with date, datetime, or integers", {
   )
 })
 
-test_that("rolling_*_by: arg 'min_periods'", {
+test_that("rolling_*_by: arg 'min_samples'", {
   df <- pl$select(
     a = 1:6,
     date = pl$datetime_range(as.Date("2001-1-1"), as.Date("2001-1-6"), "1d")
@@ -1733,18 +1733,18 @@ test_that("rolling_*_by: arg 'min_periods'", {
 
   expect_equal(
     df$select(
-      min = pl$col("a")$rolling_min_by("date", window_size = "2d", min_periods = 2),
-      max = pl$col("a")$rolling_max_by("date", window_size = "2d", min_periods = 2),
-      mean = pl$col("a")$rolling_mean_by("date", window_size = "2d", min_periods = 2),
-      sum = pl$col("a")$rolling_sum_by("date", window_size = "2d", min_periods = 2),
-      std = pl$col("a")$rolling_std_by("date", window_size = "2d", min_periods = 2),
-      var = pl$col("a")$rolling_var_by("date", window_size = "2d", min_periods = 2),
-      median = pl$col("a")$rolling_median_by("date", window_size = "2d", min_periods = 2),
+      min = pl$col("a")$rolling_min_by("date", window_size = "2d", min_samples = 2),
+      max = pl$col("a")$rolling_max_by("date", window_size = "2d", min_samples = 2),
+      mean = pl$col("a")$rolling_mean_by("date", window_size = "2d", min_samples = 2),
+      sum = pl$col("a")$rolling_sum_by("date", window_size = "2d", min_samples = 2),
+      std = pl$col("a")$rolling_std_by("date", window_size = "2d", min_samples = 2),
+      var = pl$col("a")$rolling_var_by("date", window_size = "2d", min_samples = 2),
+      median = pl$col("a")$rolling_median_by("date", window_size = "2d", min_samples = 2),
       quantile_linear = pl$col("a")$rolling_quantile_by(
         quantile = 0.33,
         "date",
         window_size = "2d",
-        min_periods = 2,
+        min_samples = 2,
         interpolation = "linear"
       )
     ),
@@ -1752,7 +1752,7 @@ test_that("rolling_*_by: arg 'min_periods'", {
   )
 
   expect_snapshot(
-    df$select(pl$col("a")$rolling_min_by("date", window_size = "2d", min_periods = -1)),
+    df$select(pl$col("a")$rolling_min_by("date", window_size = "2d", min_samples = -1)),
     error = TRUE
   )
 })
@@ -2272,7 +2272,7 @@ test_that("ewm_", {
     com1_noadjust = pl$col("a")$ewm_mean(com = 1, adjust = FALSE),
     a.5_noadjust = pl$col("a")$ewm_mean(alpha = 0.5, adjust = FALSE),
     hl2_noadjust = pl$col("a")$ewm_mean(half_life = 3, adjust = FALSE),
-    com1_min_periods = pl$col("a")$ewm_mean(com = 1, min_periods = 4)
+    com1_min_samples = pl$col("a")$ewm_mean(com = 1, min_samples = 4)
   )
   expect_snapshot(ewm_mean_res)
   expect_snapshot(
@@ -2296,7 +2296,7 @@ test_that("ewm_", {
     com1_noadjust = pl$col("a")$ewm_std(com = 1, adjust = FALSE),
     a.5_noadjust = pl$col("a")$ewm_std(alpha = 0.5, adjust = FALSE),
     hl2_noadjust = pl$col("a")$ewm_std(half_life = 3, adjust = FALSE),
-    com1_min_periods = pl$col("a")$ewm_std(com = 1, min_periods = 4)
+    com1_min_samples = pl$col("a")$ewm_std(com = 1, min_samples = 4)
   )
   expect_snapshot(ewm_std_res)
 
@@ -2308,7 +2308,7 @@ test_that("ewm_", {
     com1_noadjust = pl$col("a")$ewm_var(com = 1, adjust = FALSE),
     a.5_noadjust = pl$col("a")$ewm_var(alpha = 0.5, adjust = FALSE),
     hl2_noadjust = pl$col("a")$ewm_var(half_life = 3, adjust = FALSE),
-    com1_min_periods = pl$col("a")$ewm_var(com = 1, min_periods = 4)
+    com1_min_samples = pl$col("a")$ewm_var(com = 1, min_samples = 4)
   )
   expect_snapshot(ewm_var_res)
 })
@@ -2439,37 +2439,6 @@ test_that("entropy", {
     error = TRUE
   )
 })
-
-# test_that("cumulative_eval", {
-#   r_cumulative_eval <- function(x, f, min_periods = 1L, ...) {
-#     g <- function(x) if (length(x) < min_periods) x[length(x) + 1L] else f(x)
-#     sapply(lapply(seq_along(x), \(i) x[1:i]), g)
-#   }
-
-#   first <- \(x, n = 1) head(x, n)
-#   last <- \(x, n = 1) tail(x, n)
-#   expect_equal(
-#     pl$lit(1:5)$cumulative_eval(pl$element()$first() - pl$element()$last()**2),
-#     r_cumulative_eval(1:5, \(x) first(x) - last(x)**2)
-#   )
-
-#   expect_equal(
-#     pl$lit(1:5)$cumulative_eval(
-#       pl$element()$first() - pl$element()$last()**2,
-#       min_periods = 4
-#     ),
-#     r_cumulative_eval(1:5, \(x) first(x) - last(x)**2, min_periods = 4)
-#   )
-
-#   expect_equal(
-#     pl$lit(1:5)$cumulative_eval(
-#       pl$element()$first() - pl$element()$last()**2,
-#       min_periods = 3,
-#       parallel = TRUE
-#     ),
-#     r_cumulative_eval(1:5, \(x) first(x) - last(x)**2, min_periods = 3)
-#   )
-# })
 
 test_that("shrink_dtype", {
   df <- pl$DataFrame(

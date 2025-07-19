@@ -533,12 +533,12 @@ impl PlRExpr {
         Ok(self.inner.clone().dot(expr.inner.clone()).into())
     }
 
-    fn cumulative_eval(&self, expr: &PlRExpr, min_periods: NumericScalar) -> Result<Self> {
-        let min_periods = <Wrap<usize>>::try_from(min_periods)?.0;
+    fn cumulative_eval(&self, expr: &PlRExpr, min_samples: NumericScalar) -> Result<Self> {
+        let min_samples = <Wrap<usize>>::try_from(min_samples)?.0;
         Ok(self
             .inner
             .clone()
-            .cumulative_eval(expr.inner.clone(), min_periods)
+            .cumulative_eval(expr.inner.clone(), min_samples)
             .into())
     }
 
@@ -638,10 +638,10 @@ impl PlRExpr {
         &self,
         alpha: f64,
         adjust: bool,
-        min_periods: NumericScalar,
+        min_samples: NumericScalar,
         ignore_nulls: bool,
     ) -> Result<Self> {
-        let min_periods = <Wrap<usize>>::try_from(min_periods)?.0;
+        let min_periods = <Wrap<usize>>::try_from(min_samples)?.0;
         let options = EWMOptions {
             alpha,
             adjust,
@@ -666,10 +666,10 @@ impl PlRExpr {
         alpha: f64,
         adjust: bool,
         bias: bool,
-        min_periods: NumericScalar,
+        min_samples: NumericScalar,
         ignore_nulls: bool,
     ) -> Result<Self> {
-        let min_periods = <Wrap<usize>>::try_from(min_periods)?.0;
+        let min_periods = <Wrap<usize>>::try_from(min_samples)?.0;
         let options = EWMOptions {
             alpha,
             adjust,
@@ -684,10 +684,10 @@ impl PlRExpr {
         alpha: f64,
         adjust: bool,
         bias: bool,
-        min_periods: NumericScalar,
+        min_samples: NumericScalar,
         ignore_nulls: bool,
     ) -> Result<Self> {
-        let min_periods = <Wrap<usize>>::try_from(min_periods)?.0;
+        let min_periods = <Wrap<usize>>::try_from(min_samples)?.0;
         let options = EWMOptions {
             alpha,
             adjust,

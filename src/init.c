@@ -964,8 +964,8 @@ SEXP savvy_PlRExpr_cum_sum__impl(SEXP self__, SEXP c_arg__reverse) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_cumulative_eval__impl(SEXP self__, SEXP c_arg__expr, SEXP c_arg__min_periods) {
-    SEXP res = savvy_PlRExpr_cumulative_eval__ffi(self__, c_arg__expr, c_arg__min_periods);
+SEXP savvy_PlRExpr_cumulative_eval__impl(SEXP self__, SEXP c_arg__expr, SEXP c_arg__min_samples) {
+    SEXP res = savvy_PlRExpr_cumulative_eval__ffi(self__, c_arg__expr, c_arg__min_samples);
     return handle_result(res);
 }
 
@@ -1234,8 +1234,8 @@ SEXP savvy_PlRExpr_eq_missing__impl(SEXP self__, SEXP c_arg__other) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_ewm_mean__impl(SEXP self__, SEXP c_arg__alpha, SEXP c_arg__adjust, SEXP c_arg__min_periods, SEXP c_arg__ignore_nulls) {
-    SEXP res = savvy_PlRExpr_ewm_mean__ffi(self__, c_arg__alpha, c_arg__adjust, c_arg__min_periods, c_arg__ignore_nulls);
+SEXP savvy_PlRExpr_ewm_mean__impl(SEXP self__, SEXP c_arg__alpha, SEXP c_arg__adjust, SEXP c_arg__min_samples, SEXP c_arg__ignore_nulls) {
+    SEXP res = savvy_PlRExpr_ewm_mean__ffi(self__, c_arg__alpha, c_arg__adjust, c_arg__min_samples, c_arg__ignore_nulls);
     return handle_result(res);
 }
 
@@ -1244,13 +1244,13 @@ SEXP savvy_PlRExpr_ewm_mean_by__impl(SEXP self__, SEXP c_arg__times, SEXP c_arg_
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_ewm_std__impl(SEXP self__, SEXP c_arg__alpha, SEXP c_arg__adjust, SEXP c_arg__bias, SEXP c_arg__min_periods, SEXP c_arg__ignore_nulls) {
-    SEXP res = savvy_PlRExpr_ewm_std__ffi(self__, c_arg__alpha, c_arg__adjust, c_arg__bias, c_arg__min_periods, c_arg__ignore_nulls);
+SEXP savvy_PlRExpr_ewm_std__impl(SEXP self__, SEXP c_arg__alpha, SEXP c_arg__adjust, SEXP c_arg__bias, SEXP c_arg__min_samples, SEXP c_arg__ignore_nulls) {
+    SEXP res = savvy_PlRExpr_ewm_std__ffi(self__, c_arg__alpha, c_arg__adjust, c_arg__bias, c_arg__min_samples, c_arg__ignore_nulls);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_ewm_var__impl(SEXP self__, SEXP c_arg__alpha, SEXP c_arg__adjust, SEXP c_arg__bias, SEXP c_arg__min_periods, SEXP c_arg__ignore_nulls) {
-    SEXP res = savvy_PlRExpr_ewm_var__ffi(self__, c_arg__alpha, c_arg__adjust, c_arg__bias, c_arg__min_periods, c_arg__ignore_nulls);
+SEXP savvy_PlRExpr_ewm_var__impl(SEXP self__, SEXP c_arg__alpha, SEXP c_arg__adjust, SEXP c_arg__bias, SEXP c_arg__min_samples, SEXP c_arg__ignore_nulls) {
+    SEXP res = savvy_PlRExpr_ewm_var__ffi(self__, c_arg__alpha, c_arg__adjust, c_arg__bias, c_arg__min_samples, c_arg__ignore_nulls);
     return handle_result(res);
 }
 
@@ -1899,53 +1899,53 @@ SEXP savvy_PlRExpr_rolling__impl(SEXP self__, SEXP c_arg__index_column, SEXP c_a
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_rolling_max__impl(SEXP self__, SEXP c_arg__window_size, SEXP c_arg__center, SEXP c_arg__weights, SEXP c_arg__min_periods) {
-    SEXP res = savvy_PlRExpr_rolling_max__ffi(self__, c_arg__window_size, c_arg__center, c_arg__weights, c_arg__min_periods);
+SEXP savvy_PlRExpr_rolling_max__impl(SEXP self__, SEXP c_arg__window_size, SEXP c_arg__center, SEXP c_arg__weights, SEXP c_arg__min_samples) {
+    SEXP res = savvy_PlRExpr_rolling_max__ffi(self__, c_arg__window_size, c_arg__center, c_arg__weights, c_arg__min_samples);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_rolling_max_by__impl(SEXP self__, SEXP c_arg__by, SEXP c_arg__window_size, SEXP c_arg__min_periods, SEXP c_arg__closed) {
-    SEXP res = savvy_PlRExpr_rolling_max_by__ffi(self__, c_arg__by, c_arg__window_size, c_arg__min_periods, c_arg__closed);
+SEXP savvy_PlRExpr_rolling_max_by__impl(SEXP self__, SEXP c_arg__by, SEXP c_arg__window_size, SEXP c_arg__min_samples, SEXP c_arg__closed) {
+    SEXP res = savvy_PlRExpr_rolling_max_by__ffi(self__, c_arg__by, c_arg__window_size, c_arg__min_samples, c_arg__closed);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_rolling_mean__impl(SEXP self__, SEXP c_arg__window_size, SEXP c_arg__center, SEXP c_arg__weights, SEXP c_arg__min_periods) {
-    SEXP res = savvy_PlRExpr_rolling_mean__ffi(self__, c_arg__window_size, c_arg__center, c_arg__weights, c_arg__min_periods);
+SEXP savvy_PlRExpr_rolling_mean__impl(SEXP self__, SEXP c_arg__window_size, SEXP c_arg__center, SEXP c_arg__weights, SEXP c_arg__min_samples) {
+    SEXP res = savvy_PlRExpr_rolling_mean__ffi(self__, c_arg__window_size, c_arg__center, c_arg__weights, c_arg__min_samples);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_rolling_mean_by__impl(SEXP self__, SEXP c_arg__by, SEXP c_arg__window_size, SEXP c_arg__min_periods, SEXP c_arg__closed) {
-    SEXP res = savvy_PlRExpr_rolling_mean_by__ffi(self__, c_arg__by, c_arg__window_size, c_arg__min_periods, c_arg__closed);
+SEXP savvy_PlRExpr_rolling_mean_by__impl(SEXP self__, SEXP c_arg__by, SEXP c_arg__window_size, SEXP c_arg__min_samples, SEXP c_arg__closed) {
+    SEXP res = savvy_PlRExpr_rolling_mean_by__ffi(self__, c_arg__by, c_arg__window_size, c_arg__min_samples, c_arg__closed);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_rolling_median__impl(SEXP self__, SEXP c_arg__window_size, SEXP c_arg__center, SEXP c_arg__weights, SEXP c_arg__min_periods) {
-    SEXP res = savvy_PlRExpr_rolling_median__ffi(self__, c_arg__window_size, c_arg__center, c_arg__weights, c_arg__min_periods);
+SEXP savvy_PlRExpr_rolling_median__impl(SEXP self__, SEXP c_arg__window_size, SEXP c_arg__center, SEXP c_arg__weights, SEXP c_arg__min_samples) {
+    SEXP res = savvy_PlRExpr_rolling_median__ffi(self__, c_arg__window_size, c_arg__center, c_arg__weights, c_arg__min_samples);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_rolling_median_by__impl(SEXP self__, SEXP c_arg__by, SEXP c_arg__window_size, SEXP c_arg__min_periods, SEXP c_arg__closed) {
-    SEXP res = savvy_PlRExpr_rolling_median_by__ffi(self__, c_arg__by, c_arg__window_size, c_arg__min_periods, c_arg__closed);
+SEXP savvy_PlRExpr_rolling_median_by__impl(SEXP self__, SEXP c_arg__by, SEXP c_arg__window_size, SEXP c_arg__min_samples, SEXP c_arg__closed) {
+    SEXP res = savvy_PlRExpr_rolling_median_by__ffi(self__, c_arg__by, c_arg__window_size, c_arg__min_samples, c_arg__closed);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_rolling_min__impl(SEXP self__, SEXP c_arg__window_size, SEXP c_arg__center, SEXP c_arg__weights, SEXP c_arg__min_periods) {
-    SEXP res = savvy_PlRExpr_rolling_min__ffi(self__, c_arg__window_size, c_arg__center, c_arg__weights, c_arg__min_periods);
+SEXP savvy_PlRExpr_rolling_min__impl(SEXP self__, SEXP c_arg__window_size, SEXP c_arg__center, SEXP c_arg__weights, SEXP c_arg__min_samples) {
+    SEXP res = savvy_PlRExpr_rolling_min__ffi(self__, c_arg__window_size, c_arg__center, c_arg__weights, c_arg__min_samples);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_rolling_min_by__impl(SEXP self__, SEXP c_arg__by, SEXP c_arg__window_size, SEXP c_arg__min_periods, SEXP c_arg__closed) {
-    SEXP res = savvy_PlRExpr_rolling_min_by__ffi(self__, c_arg__by, c_arg__window_size, c_arg__min_periods, c_arg__closed);
+SEXP savvy_PlRExpr_rolling_min_by__impl(SEXP self__, SEXP c_arg__by, SEXP c_arg__window_size, SEXP c_arg__min_samples, SEXP c_arg__closed) {
+    SEXP res = savvy_PlRExpr_rolling_min_by__ffi(self__, c_arg__by, c_arg__window_size, c_arg__min_samples, c_arg__closed);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_rolling_quantile__impl(SEXP self__, SEXP c_arg__quantile, SEXP c_arg__interpolation, SEXP c_arg__window_size, SEXP c_arg__center, SEXP c_arg__weights, SEXP c_arg__min_periods) {
-    SEXP res = savvy_PlRExpr_rolling_quantile__ffi(self__, c_arg__quantile, c_arg__interpolation, c_arg__window_size, c_arg__center, c_arg__weights, c_arg__min_periods);
+SEXP savvy_PlRExpr_rolling_quantile__impl(SEXP self__, SEXP c_arg__quantile, SEXP c_arg__interpolation, SEXP c_arg__window_size, SEXP c_arg__center, SEXP c_arg__weights, SEXP c_arg__min_samples) {
+    SEXP res = savvy_PlRExpr_rolling_quantile__ffi(self__, c_arg__quantile, c_arg__interpolation, c_arg__window_size, c_arg__center, c_arg__weights, c_arg__min_samples);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_rolling_quantile_by__impl(SEXP self__, SEXP c_arg__by, SEXP c_arg__quantile, SEXP c_arg__interpolation, SEXP c_arg__window_size, SEXP c_arg__min_periods, SEXP c_arg__closed) {
-    SEXP res = savvy_PlRExpr_rolling_quantile_by__ffi(self__, c_arg__by, c_arg__quantile, c_arg__interpolation, c_arg__window_size, c_arg__min_periods, c_arg__closed);
+SEXP savvy_PlRExpr_rolling_quantile_by__impl(SEXP self__, SEXP c_arg__by, SEXP c_arg__quantile, SEXP c_arg__interpolation, SEXP c_arg__window_size, SEXP c_arg__min_samples, SEXP c_arg__closed) {
+    SEXP res = savvy_PlRExpr_rolling_quantile_by__ffi(self__, c_arg__by, c_arg__quantile, c_arg__interpolation, c_arg__window_size, c_arg__min_samples, c_arg__closed);
     return handle_result(res);
 }
 
@@ -1954,33 +1954,33 @@ SEXP savvy_PlRExpr_rolling_skew__impl(SEXP self__, SEXP c_arg__window_size, SEXP
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_rolling_std__impl(SEXP self__, SEXP c_arg__window_size, SEXP c_arg__center, SEXP c_arg__ddof, SEXP c_arg__weights, SEXP c_arg__min_periods) {
-    SEXP res = savvy_PlRExpr_rolling_std__ffi(self__, c_arg__window_size, c_arg__center, c_arg__ddof, c_arg__weights, c_arg__min_periods);
+SEXP savvy_PlRExpr_rolling_std__impl(SEXP self__, SEXP c_arg__window_size, SEXP c_arg__center, SEXP c_arg__ddof, SEXP c_arg__weights, SEXP c_arg__min_samples) {
+    SEXP res = savvy_PlRExpr_rolling_std__ffi(self__, c_arg__window_size, c_arg__center, c_arg__ddof, c_arg__weights, c_arg__min_samples);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_rolling_std_by__impl(SEXP self__, SEXP c_arg__by, SEXP c_arg__window_size, SEXP c_arg__min_periods, SEXP c_arg__closed, SEXP c_arg__ddof) {
-    SEXP res = savvy_PlRExpr_rolling_std_by__ffi(self__, c_arg__by, c_arg__window_size, c_arg__min_periods, c_arg__closed, c_arg__ddof);
+SEXP savvy_PlRExpr_rolling_std_by__impl(SEXP self__, SEXP c_arg__by, SEXP c_arg__window_size, SEXP c_arg__min_samples, SEXP c_arg__closed, SEXP c_arg__ddof) {
+    SEXP res = savvy_PlRExpr_rolling_std_by__ffi(self__, c_arg__by, c_arg__window_size, c_arg__min_samples, c_arg__closed, c_arg__ddof);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_rolling_sum__impl(SEXP self__, SEXP c_arg__window_size, SEXP c_arg__center, SEXP c_arg__weights, SEXP c_arg__min_periods) {
-    SEXP res = savvy_PlRExpr_rolling_sum__ffi(self__, c_arg__window_size, c_arg__center, c_arg__weights, c_arg__min_periods);
+SEXP savvy_PlRExpr_rolling_sum__impl(SEXP self__, SEXP c_arg__window_size, SEXP c_arg__center, SEXP c_arg__weights, SEXP c_arg__min_samples) {
+    SEXP res = savvy_PlRExpr_rolling_sum__ffi(self__, c_arg__window_size, c_arg__center, c_arg__weights, c_arg__min_samples);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_rolling_sum_by__impl(SEXP self__, SEXP c_arg__by, SEXP c_arg__window_size, SEXP c_arg__min_periods, SEXP c_arg__closed) {
-    SEXP res = savvy_PlRExpr_rolling_sum_by__ffi(self__, c_arg__by, c_arg__window_size, c_arg__min_periods, c_arg__closed);
+SEXP savvy_PlRExpr_rolling_sum_by__impl(SEXP self__, SEXP c_arg__by, SEXP c_arg__window_size, SEXP c_arg__min_samples, SEXP c_arg__closed) {
+    SEXP res = savvy_PlRExpr_rolling_sum_by__ffi(self__, c_arg__by, c_arg__window_size, c_arg__min_samples, c_arg__closed);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_rolling_var__impl(SEXP self__, SEXP c_arg__window_size, SEXP c_arg__center, SEXP c_arg__ddof, SEXP c_arg__weights, SEXP c_arg__min_periods) {
-    SEXP res = savvy_PlRExpr_rolling_var__ffi(self__, c_arg__window_size, c_arg__center, c_arg__ddof, c_arg__weights, c_arg__min_periods);
+SEXP savvy_PlRExpr_rolling_var__impl(SEXP self__, SEXP c_arg__window_size, SEXP c_arg__center, SEXP c_arg__ddof, SEXP c_arg__weights, SEXP c_arg__min_samples) {
+    SEXP res = savvy_PlRExpr_rolling_var__ffi(self__, c_arg__window_size, c_arg__center, c_arg__ddof, c_arg__weights, c_arg__min_samples);
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_rolling_var_by__impl(SEXP self__, SEXP c_arg__by, SEXP c_arg__window_size, SEXP c_arg__min_periods, SEXP c_arg__closed, SEXP c_arg__ddof) {
-    SEXP res = savvy_PlRExpr_rolling_var_by__ffi(self__, c_arg__by, c_arg__window_size, c_arg__min_periods, c_arg__closed, c_arg__ddof);
+SEXP savvy_PlRExpr_rolling_var_by__impl(SEXP self__, SEXP c_arg__by, SEXP c_arg__window_size, SEXP c_arg__min_samples, SEXP c_arg__closed, SEXP c_arg__ddof) {
+    SEXP res = savvy_PlRExpr_rolling_var_by__ffi(self__, c_arg__by, c_arg__window_size, c_arg__min_samples, c_arg__closed, c_arg__ddof);
     return handle_result(res);
 }
 

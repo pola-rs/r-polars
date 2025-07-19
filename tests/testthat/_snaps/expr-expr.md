@@ -187,10 +187,10 @@
       Caused by error:
       ! Invalid operation: `by` column in `rolling_*_by` must be the same length as values column
 
-# rolling_*_by: arg 'min_periods'
+# rolling_*_by: arg 'min_samples'
 
     Code
-      df$select(pl$col("a")$rolling_min_by("date", window_size = "2d", min_periods = -
+      df$select(pl$col("a")$rolling_min_by("date", window_size = "2d", min_samples = -
         1))
     Condition
       Error in `df$select()`:
@@ -322,8 +322,8 @@
     Output
       shape: (11, 8)
       ┌──────────┬──────────┬──────────┬──────────┬─────────────┬─────────────┬─────────────┬────────────┐
-      │ com1     ┆ span2    ┆ hl2      ┆ a.5      ┆ com1_noadju ┆ a.5_noadjus ┆ hl2_noadjus ┆ com1_min_p │
-      │ ---      ┆ ---      ┆ ---      ┆ ---      ┆ st          ┆ t           ┆ t           ┆ eriods     │
+      │ com1     ┆ span2    ┆ hl2      ┆ a.5      ┆ com1_noadju ┆ a.5_noadjus ┆ hl2_noadjus ┆ com1_min_s │
+      │ ---      ┆ ---      ┆ ---      ┆ ---      ┆ st          ┆ t           ┆ t           ┆ amples     │
       │ f64      ┆ f64      ┆ f64      ┆ f64      ┆ ---         ┆ ---         ┆ ---         ┆ ---        │
       │          ┆          ┆          ┆          ┆ f64         ┆ f64         ┆ f64         ┆ f64        │
       ╞══════════╪══════════╪══════════╪══════════╪═════════════╪═════════════╪═════════════╪════════════╡
@@ -389,8 +389,8 @@
     Output
       shape: (11, 8)
       ┌──────────┬──────────┬──────────┬──────────┬─────────────┬─────────────┬─────────────┬────────────┐
-      │ com1     ┆ span2    ┆ hl2      ┆ a.5      ┆ com1_noadju ┆ a.5_noadjus ┆ hl2_noadjus ┆ com1_min_p │
-      │ ---      ┆ ---      ┆ ---      ┆ ---      ┆ st          ┆ t           ┆ t           ┆ eriods     │
+      │ com1     ┆ span2    ┆ hl2      ┆ a.5      ┆ com1_noadju ┆ a.5_noadjus ┆ hl2_noadjus ┆ com1_min_s │
+      │ ---      ┆ ---      ┆ ---      ┆ ---      ┆ st          ┆ t           ┆ t           ┆ amples     │
       │ f64      ┆ f64      ┆ f64      ┆ f64      ┆ ---         ┆ ---         ┆ ---         ┆ ---        │
       │          ┆          ┆          ┆          ┆ f64         ┆ f64         ┆ f64         ┆ f64        │
       ╞══════════╪══════════╪══════════╪══════════╪═════════════╪═════════════╪═════════════╪════════════╡
@@ -414,8 +414,8 @@
     Output
       shape: (11, 8)
       ┌──────────┬──────────┬──────────┬──────────┬─────────────┬─────────────┬─────────────┬────────────┐
-      │ com1     ┆ span2    ┆ hl2      ┆ a.5      ┆ com1_noadju ┆ a.5_noadjus ┆ hl2_noadjus ┆ com1_min_p │
-      │ ---      ┆ ---      ┆ ---      ┆ ---      ┆ st          ┆ t           ┆ t           ┆ eriods     │
+      │ com1     ┆ span2    ┆ hl2      ┆ a.5      ┆ com1_noadju ┆ a.5_noadjus ┆ hl2_noadjus ┆ com1_min_s │
+      │ ---      ┆ ---      ┆ ---      ┆ ---      ┆ st          ┆ t           ┆ t           ┆ amples     │
       │ f64      ┆ f64      ┆ f64      ┆ f64      ┆ ---         ┆ ---         ┆ ---         ┆ ---        │
       │          ┆          ┆          ┆          ┆ f64         ┆ f64         ┆ f64         ┆ f64        │
       ╞══════════╪══════════╪══════════╪══════════╪═════════════╪═════════════╪═════════════╪════════════╡

@@ -11,7 +11,7 @@ expr__ewm_mean(
   half_life,
   alpha,
   adjust = TRUE,
-  min_periods = 1,
+  min_samples = 1,
   ignore_nulls = FALSE
 )
 }
@@ -40,7 +40,7 @@ account for imbalance in relative weightings:
 \deqn{y_t = (1 - \alpha)y_{t - 1} + \alpha x_t}
 }}
 
-\item{min_periods}{The number of values in the window that should be
+\item{min_samples}{The number of values in the window that should be
 non-null before computing a result. If \code{NULL} (default), it will be set
 equal to \code{window_size}.}
 
