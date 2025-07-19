@@ -4,9 +4,11 @@
 \alias{expr_dt_second}
 \title{Extract seconds from underlying Datetime representation}
 \usage{
-expr_dt_second(fractional = FALSE)
+expr_dt_second(..., fractional = FALSE)
 }
 \arguments{
+\item{...}{These dots are for future extensions and must be empty.}
+
 \item{fractional}{If \code{TRUE}, include the fractional component of the second.}
 }
 \value{

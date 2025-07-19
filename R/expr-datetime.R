@@ -541,8 +541,9 @@ expr_dt_minute <- function() {
 #' from 0 to 60 if `fractional = TRUE` that includes any milli/micro/nanosecond
 #' component.
 #'
-#' @param fractional If `TRUE`, include the fractional component of the second.
 #' @inherit as_polars_expr return
+#' @inheritParams rlang::args_dots_empty
+#' @param fractional If `TRUE`, include the fractional component of the second.
 #' @examples
 #' df <- pl$DataFrame(
 #'   datetime = as.POSIXct(
@@ -559,8 +560,10 @@ expr_dt_minute <- function() {
 #'   second = pl$col("datetime")$dt$second(),
 #'   second_fractional = pl$col("datetime")$dt$second(fractional = TRUE)
 #' )
-expr_dt_second <- function(fractional = FALSE) {
+expr_dt_second <- function(..., fractional = FALSE) {
   wrap({
+    check_dots_empty0(...)
+
     sec <- self$`_rexpr`$dt_second()
     if (isTRUE(fractional)) {
       sec$add(self$`_rexpr`$dt_nanosecond()$div(pl$lit(1E9)$`_rexpr`))
