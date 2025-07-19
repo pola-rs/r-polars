@@ -114,7 +114,7 @@ impl PlRExpr {
         Ok(self.inner.clone().meta()._into_selector().into())
     }
 
-    fn compute_tree_format(&self, display_as_dot: bool, schema: Option<ListSexp>) -> Result<Sexp> {
+    fn compute_tree_format(&self, as_dot: bool, schema: Option<ListSexp>) -> Result<Sexp> {
         let schema = match schema {
             Some(s) => Some(<Wrap<Schema>>::try_from(s)?.0),
             None => None,
@@ -123,7 +123,7 @@ impl PlRExpr {
             .inner
             .clone()
             .meta()
-            .into_tree_formatter(display_as_dot, schema.as_ref())
+            .into_tree_formatter(as_dot, schema.as_ref())
             .map_err(RPolarsErr::from)?;
         format!("{e}").try_into()
     }

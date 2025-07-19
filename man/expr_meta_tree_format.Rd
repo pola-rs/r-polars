@@ -4,13 +4,17 @@
 \alias{expr_meta_tree_format}
 \title{Format the expression as a tree}
 \usage{
-expr_meta_tree_format(..., as_dot = FALSE)
+expr_meta_tree_format(..., as_dot = FALSE, schema = NULL)
 }
 \arguments{
 \item{...}{These dots are for future extensions and must be empty.}
 
-\item{as_dot}{If \code{TRUE}, show the dot syntax that can be used in other
+\item{as_dot}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+If \code{TRUE}, show the dot syntax that can be used in other
 packages, such as \code{DiagrammeR}.}
+
+\item{schema}{An optional schema. Must be \code{NULL} or a named list of
+\link{DataType}.}
 }
 \value{
 A string, either with the tree itself (if \code{as_dot = FALSE}) or with the

@@ -1243,8 +1243,8 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_polars__sealed")
 }
 
 `PlRExpr_compute_tree_format` <- function(self) {
-  function(`display_as_dot`, `schema` = NULL) {
-    .Call(savvy_PlRExpr_compute_tree_format__impl, `self`, `display_as_dot`, `schema`)
+  function(`as_dot`, `schema` = NULL) {
+    .Call(savvy_PlRExpr_compute_tree_format__impl, `self`, `as_dot`, `schema`)
   }
 }
 

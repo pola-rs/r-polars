@@ -184,7 +184,7 @@ SEXP savvy_PlRExpr_cat_get_categories__ffi(SEXP self__);
 SEXP savvy_PlRExpr_cbrt__ffi(SEXP self__);
 SEXP savvy_PlRExpr_ceil__ffi(SEXP self__);
 SEXP savvy_PlRExpr_clip__ffi(SEXP self__, SEXP c_arg__min, SEXP c_arg__max);
-SEXP savvy_PlRExpr_compute_tree_format__ffi(SEXP self__, SEXP c_arg__display_as_dot, SEXP c_arg__schema);
+SEXP savvy_PlRExpr_compute_tree_format__ffi(SEXP self__, SEXP c_arg__as_dot, SEXP c_arg__schema);
 SEXP savvy_PlRExpr_cos__ffi(SEXP self__);
 SEXP savvy_PlRExpr_cosh__ffi(SEXP self__);
 SEXP savvy_PlRExpr_cot__ffi(SEXP self__);

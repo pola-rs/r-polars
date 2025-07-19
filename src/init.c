@@ -914,8 +914,8 @@ SEXP savvy_PlRExpr_clip__impl(SEXP self__, SEXP c_arg__min, SEXP c_arg__max) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_compute_tree_format__impl(SEXP self__, SEXP c_arg__display_as_dot, SEXP c_arg__schema) {
-    SEXP res = savvy_PlRExpr_compute_tree_format__ffi(self__, c_arg__display_as_dot, c_arg__schema);
+SEXP savvy_PlRExpr_compute_tree_format__impl(SEXP self__, SEXP c_arg__as_dot, SEXP c_arg__schema) {
+    SEXP res = savvy_PlRExpr_compute_tree_format__ffi(self__, c_arg__as_dot, c_arg__schema);
     return handle_result(res);
 }
 
