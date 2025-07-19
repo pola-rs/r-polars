@@ -4,14 +4,16 @@
 \alias{expr_str_extract}
 \title{Extract the target capture group from provided patterns}
 \usage{
-expr_str_extract(pattern, group_index)
+expr_str_extract(pattern, group_index = 1L)
 }
 \arguments{
-\item{pattern}{A valid regex pattern. Can be an Expr or something coercible
-to an Expr. Strings are parsed as column names.}
+\item{pattern}{A valid regular expression pattern
+containing at least one capture group,
+compatible with the \href{https://docs.rs/regex/latest/regex/}{regex crate}.}
 
-\item{group_index}{Index of the targeted capture group. Group 0 means the whole
-pattern, first group begin at index 1 (default).}
+\item{group_index}{Index of the targeted capture group.
+Group 0 means the whole pattern, the first group begins at index 1.
+Defaults to the first capture group.}
 }
 \value{
 A polars \link{expression}
@@ -19,15 +21,34 @@ A polars \link{expression}
 \description{
 Extract the target capture group from provided patterns
 }
+\details{
+To modify regular expression behaviour (such as multi-line matching) with flags,
+use the inline \code{(?iLmsuxU)} syntax. See the example.
+
+See the regex crate's section on
+\href{https://docs.rs/regex/latest/regex/#grouping-and-flags}{grouping and flags}
+for additional information about the use of inline expression modifiers.
+}
 \examples{
 df <- pl$DataFrame(
-  a = c(
-    "http://vote.com/ballon_dor?candidate=messi&ref=polars",
-    "http://vote.com/ballon_dor?candidat=jorginho&ref=polars",
+  url = c(
+    "http://vote.com/ballon_dor?error=404&ref=unknown",
+    "http://vote.com/ballon_dor?ref=polars&candidate=messi",
     "http://vote.com/ballon_dor?candidate=ronaldo&ref=polars"
   )
 )
+df$select(
+  extracted = pl$col("url")$str$extract(r"(candidate=(\w+))", 1),
+  referer = pl$col("url")$str$extract(r"(ref=(\w+))", 1),
+  error = pl$col("url")$str$extract(r"(error=(\w+))", 1)
+)
+
+# Using the multi-line mode flag `(?m)`
+df <- pl$DataFrame(
+  lines = c("I Like\nThose\nOdds", "This is\nThe Way")
+)
 df$with_columns(
-  extracted = pl$col("a")$str$extract(pl$lit(r"(candidate=(\w+))"), 1)
+  with_m_flag = pl$col("lines")$str$extract(r"((?m)^(T\w+))", 1),
+  without_flag = pl$col("lines")$str$extract(r"(^(T\w+))", 1),
 )
 }

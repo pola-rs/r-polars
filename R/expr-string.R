@@ -737,26 +737,44 @@ expr_str_encode <- function(encoding) {
 
 #' Extract the target capture group from provided patterns
 #'
-#' @param pattern A valid regex pattern. Can be an Expr or something coercible
-#' to an Expr. Strings are parsed as column names.
-#' @param group_index Index of the targeted capture group. Group 0 means the whole
-#' pattern, first group begin at index 1 (default).
+#' @details
+#' To modify regular expression behaviour (such as multi-line matching) with flags,
+#' use the inline `(?iLmsuxU)` syntax. See the example.
 #'
+#' See the regex crate's section on
+#' [grouping and flags](https://docs.rs/regex/latest/regex/#grouping-and-flags)
+#' for additional information about the use of inline expression modifiers.
 #' @inherit as_polars_expr return
-#'
+#' @param pattern A valid regular expression pattern
+#'   containing at least one capture group,
+#'   compatible with the [regex crate](https://docs.rs/regex/latest/regex/).
+#' @param group_index Index of the targeted capture group.
+#'   Group 0 means the whole pattern, the first group begins at index 1.
+#'   Defaults to the first capture group.
 #' @examples
 #' df <- pl$DataFrame(
-#'   a = c(
-#'     "http://vote.com/ballon_dor?candidate=messi&ref=polars",
-#'     "http://vote.com/ballon_dor?candidat=jorginho&ref=polars",
+#'   url = c(
+#'     "http://vote.com/ballon_dor?error=404&ref=unknown",
+#'     "http://vote.com/ballon_dor?ref=polars&candidate=messi",
 #'     "http://vote.com/ballon_dor?candidate=ronaldo&ref=polars"
 #'   )
 #' )
-#' df$with_columns(
-#'   extracted = pl$col("a")$str$extract(pl$lit(r"(candidate=(\w+))"), 1)
+#' df$select(
+#'   extracted = pl$col("url")$str$extract(r"(candidate=(\w+))", 1),
+#'   referer = pl$col("url")$str$extract(r"(ref=(\w+))", 1),
+#'   error = pl$col("url")$str$extract(r"(error=(\w+))", 1)
 #' )
-expr_str_extract <- function(pattern, group_index) {
-  self$`_rexpr`$str_extract(as_polars_expr(pattern)$`_rexpr`, group_index) |>
+#'
+#' # Using the multi-line mode flag `(?m)`
+#' df <- pl$DataFrame(
+#'   lines = c("I Like\nThose\nOdds", "This is\nThe Way")
+#' )
+#' df$with_columns(
+#'   with_m_flag = pl$col("lines")$str$extract(r"((?m)^(T\w+))", 1),
+#'   without_flag = pl$col("lines")$str$extract(r"(^(T\w+))", 1),
+#' )
+expr_str_extract <- function(pattern, group_index = 1L) {
+  self$`_rexpr`$str_extract(as_polars_expr(pattern, as_lit = TRUE)$`_rexpr`, group_index) |>
     wrap()
 }
 
@@ -1273,7 +1291,7 @@ expr_str_extract_many <- function(
   wrap({
     check_dots_empty0(...)
     self$`_rexpr`$str_extract_many(
-      as_polars_expr(patterns)$`_rexpr`,
+      as_polars_expr(patterns, as_lit = FALSE)$`_rexpr`,
       ascii_case_insensitive,
       overlapping
     )

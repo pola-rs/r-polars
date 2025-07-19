@@ -512,7 +512,7 @@ test_that("str$extract", {
     )
   )
   expect_equal(
-    df$with_columns(pl$col("x")$str$extract(pl$lit("candidate=(\\w+)"), 1)),
+    df$with_columns(pl$col("x")$str$extract("candidate=(\\w+)")),
     pl$DataFrame(x = c("messi", NA, "ronaldo"))
   )
 
