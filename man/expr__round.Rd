@@ -4,12 +4,16 @@
 \alias{expr__round}
 \title{Round underlying floating point data by decimals digits}
 \usage{
-expr__round(decimals, mode = c("half_to_even", "half_away_from_zero"))
+expr__round(decimals = 0L, mode = c("half_to_even", "half_away_from_zero"))
 }
 \arguments{
 \item{decimals}{Number of decimals to round by.}
 
-\item{mode}{Rounding mode. One of \code{"half_to_even"} (default) or \code{"half_away_from_zero"}.}
+\item{mode}{Rounding mode. One of the following:
+\itemize{
+\item \code{"half_to_even"} (default): round to the nearest even number;
+\item \code{"half_away_from_zero"}: round to the nearest number away from zero.
+}}
 }
 \value{
 A polars \link{expression}
@@ -18,10 +22,16 @@ A polars \link{expression}
 Round underlying floating point data by decimals digits
 }
 \examples{
-df <- pl$DataFrame(a = c(0.5, 1.5, 2.5, 3.5))
+df <- pl$DataFrame(a = c(0.33, 0.52, 1.02, 1.17))
+df$select(pl$col("a")$round(1))
+
+df <- pl$DataFrame(
+  f64 = c(-3.5, -2.5, -1.5, -0.5, 0.5, 1.5, 2.5, 3.5),
+  d = c("-3.5", "-2.5", "-1.5", "-0.5", "0.5", "1.5", "2.5", "3.5")
+)$cast(d = pl$Decimal(scale = 1))
 
 df$with_columns(
-  half_to_even = pl$col("a")$round(0),
-  half_away_from_zero = pl$col("a")$round(0, "half_away_from_zero"),
+  pl$all()$round(mode = "half_away_from_zero")$name$suffix("_away"),
+  pl$all()$round(mode = "half_to_even")$name$suffix("_to_even"),
 )
 }

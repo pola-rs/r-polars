@@ -4460,17 +4460,25 @@ expr__sample <- function(
 #' Round underlying floating point data by decimals digits
 #'
 #' @param decimals Number of decimals to round by.
-#' @param mode Rounding mode. One of `"half_to_even"` (default) or `"half_away_from_zero"`.
+#' @param mode Rounding mode. One of the following:
+#' * `"half_to_even"` (default): round to the nearest even number;
+#' * `"half_away_from_zero"`: round to the nearest number away from zero.
 #'
 #' @inherit as_polars_expr return
 #' @examples
-#' df <- pl$DataFrame(a = c(0.5, 1.5, 2.5, 3.5))
+#' df <- pl$DataFrame(a = c(0.33, 0.52, 1.02, 1.17))
+#' df$select(pl$col("a")$round(1))
+#'
+#' df <- pl$DataFrame(
+#'   f64 = c(-3.5, -2.5, -1.5, -0.5, 0.5, 1.5, 2.5, 3.5),
+#'   d = c("-3.5", "-2.5", "-1.5", "-0.5", "0.5", "1.5", "2.5", "3.5")
+#' )$cast(d = pl$Decimal(scale = 1))
 #'
 #' df$with_columns(
-#'   half_to_even = pl$col("a")$round(0),
-#'   half_away_from_zero = pl$col("a")$round(0, "half_away_from_zero"),
+#'   pl$all()$round(mode = "half_away_from_zero")$name$suffix("_away"),
+#'   pl$all()$round(mode = "half_to_even")$name$suffix("_to_even"),
 #' )
-expr__round <- function(decimals, mode = c("half_to_even", "half_away_from_zero")) {
+expr__round <- function(decimals = 0L, mode = c("half_to_even", "half_away_from_zero")) {
   wrap({
     mode <- arg_match0(mode, values = c("half_to_even", "half_away_from_zero"))
     self$`_rexpr`$round(decimals, mode)

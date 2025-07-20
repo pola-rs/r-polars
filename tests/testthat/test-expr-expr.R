@@ -818,8 +818,8 @@ test_that("floor ceil round", {
     pl$DataFrame(!!!l_input)$select(
       floor = pl$col("a")$floor(),
       ceil = pl$col("a")$ceil(),
-      round = pl$col("a")$round(0),
-      round_half_away_from_zero = pl$col("a")$round(0, "half_away_from_zero"),
+      round = pl$col("a")$round(),
+      round_half_away_from_zero = pl$col("a")$round(mode = "half_away_from_zero"),
     ),
     pl$DataFrame(
       floor = floor(l_input$a),
