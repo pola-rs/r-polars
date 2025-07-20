@@ -14,6 +14,14 @@ length.polars_data_frame <- function(x) x$width
 #' @export
 names.polars_data_frame <- function(x) x$columns
 
+# Same as arrow::ArrowTabular
+#' @export
+row.names.polars_data_frame <- function(x) as.character(seq_len(nrow(x)))
+
+# Same as arrow::ArrowTabular
+#' @export
+dimnames.polars_data_frame <- function(x) list(row.names(x), names(x))
+
 #' Export the polars object as an R list
 #'
 #' These S3 methods call [`as_polars_df(x, ...)$get_columns()`][dataframe__get_columns] with

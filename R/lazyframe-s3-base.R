@@ -7,6 +7,10 @@ length.polars_lazy_frame <- function(x) length(x$collect_schema())
 #' @export
 names.polars_lazy_frame <- function(x) names(x$collect_schema())
 
+# Same as dbplyr::tbl_lazy or arrow::Dataset
+#' @export
+dimnames.polars_lazy_frame <- function(x) list(NULL, names(x))
+
 #' @export
 #' @rdname s3-as.list
 as.list.polars_lazy_frame <- as.list.polars_data_frame
