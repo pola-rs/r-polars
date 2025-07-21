@@ -35,6 +35,9 @@ on:
       - NAMESPACE
       - README.md
       - NEWS.md
+  release:
+    types:
+      - published
   workflow_dispatch:
 
 concurrency:
@@ -97,16 +100,22 @@ jobs:
         uses: actions/configure-pages@v5
 
       - id: rust-target
+        # Use the pre-built binary for release builds
+        if: github.event_name != 'release'
         name: Set Rust target
         run: |
           echo "TARGET=$(rustc -vV | grep host | cut -d' ' -f2)" >>"$GITHUB_OUTPUT"
 
       - uses: Swatinem/rust-cache@v2
+        # Use the pre-built binary for release builds
+        if: github.event_name != 'release'
         with:
           workspaces: "src/rust -> target"
           shared-key: ${{ steps.rust-target.outputs.TARGET }}-debug-nightly
 
       - name: Build lib
+        # Use the pre-built binary for release builds
+        if: github.event_name != 'release'
         env:
           LIBR_POLARS_BUILD: "true"
           LIBR_POLARS_FEATURES: nightly
