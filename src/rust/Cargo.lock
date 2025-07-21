@@ -1673,7 +1673,7 @@ dependencies = [
  "serde",
  "simdutf8",
  "streaming-iterator",
- "strum_macros",
+ "strum_macros 0.26.4",
  "version_check",
  "zstd",
 ]
@@ -1709,7 +1709,7 @@ dependencies = [
  "serde",
  "skiplist",
  "strength_reduce",
- "strum_macros",
+ "strum_macros 0.26.4",
  "version_check",
 ]
 
@@ -1742,7 +1742,7 @@ dependencies = [
  "regex",
  "serde",
  "serde_json",
- "strum_macros",
+ "strum_macros 0.26.4",
  "uuid",
  "version_check",
  "xxhash-rust",
@@ -1932,7 +1932,7 @@ dependencies = [
  "regex-syntax 0.8.5",
  "serde",
  "serde_json",
- "strum_macros",
+ "strum_macros 0.26.4",
  "unicode-normalization",
  "unicode-reverse",
  "version_check",
@@ -2004,7 +2004,7 @@ dependencies = [
  "recursive",
  "regex",
  "serde",
- "strum_macros",
+ "strum_macros 0.26.4",
  "version_check",
 ]
 
@@ -2109,7 +2109,7 @@ dependencies = [
  "rayon",
  "regex",
  "serde",
- "strum_macros",
+ "strum_macros 0.26.4",
 ]
 
 [[package]]
@@ -2275,7 +2275,7 @@ dependencies = [
  "serde_json",
  "state",
  "strum",
- "strum_macros",
+ "strum_macros 0.27.2",
  "thiserror",
 ]
 
@@ -2991,6 +2991,18 @@ dependencies = [
  "proc-macro2",
  "quote",
  "rustversion",
+ "syn",
+]
+
+[[package]]
+name = "strum_macros"
+version = "0.27.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7695ce3845ea4b33927c055a39dc438a45b059f7c1b3d91d38d10355fb8cbca7"
+dependencies = [
+ "heck",
+ "proc-macro2",
+ "quote",
  "syn",
 ]
 
