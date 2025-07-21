@@ -969,3 +969,102 @@
       │ 3   │
       └─────┘
 
+# Column subsetting with `[[` fails with value = NULL
+
+    Code
+      dat[[value]]
+    Condition
+      Error in `dat[[value]]`:
+      ! Can't subset a polars DataFrame with `[[`.
+      i Subscript `value` must be a string or a non-0 scalar integer, not `NULL`.
+
+# Column subsetting with `[[` fails with value = 1.5
+
+    Code
+      dat[[value]]
+    Condition
+      Error in `dat[[value]]`:
+      ! Can't subset a polars DataFrame with `[[`.
+      i Subscript `value` must be a string or a non-0 scalar integer, not the number 1.5.
+
+# Column subsetting with `[[` fails with value = 0
+
+    Code
+      dat[[value]]
+    Condition
+      Error in `dat[[value]]`:
+      ! Can't subset a polars DataFrame with `[[`.
+      i Subscript `value` must be a string or a non-0 scalar integer, not the number 0.
+
+# Column subsetting with `[[` fails with value = NA_character_
+
+    Code
+      dat[[value]]
+    Condition
+      Error in `dat[[value]]`:
+      ! Can't subset a polars DataFrame with `[[`.
+      i Subscript `value` must be a string or a non-0 scalar integer, not a character `NA`.
+
+# Column subsetting with `[[` fails with value = NA
+
+    Code
+      dat[[value]]
+    Condition
+      Error in `dat[[value]]`:
+      ! Can't subset a polars DataFrame with `[[`.
+      i Subscript `value` must be a string or a non-0 scalar integer, not `NA`.
+
+# Column subsetting with `[[` fails with value = NA_integer_
+
+    Code
+      dat[[value]]
+    Condition
+      Error in `dat[[value]]`:
+      ! Can't subset a polars DataFrame with `[[`.
+      i Subscript `value` must be a string or a non-0 scalar integer, not an integer `NA`.
+
+# Column subsetting with `[[` fails with value = 1:2
+
+    Code
+      dat[[value]]
+    Condition
+      Error in `dat[[value]]`:
+      ! Can't subset a polars DataFrame with `[[`.
+      i Subscript `value` must be a string or a non-0 scalar integer, not an integer vector.
+
+# Column subsetting with `[[` fails with value = c("a", "b")
+
+    Code
+      dat[[value]]
+    Condition
+      Error in `dat[[value]]`:
+      ! Can't subset a polars DataFrame with `[[`.
+      i Subscript `value` must be a string or a non-0 scalar integer, not a character vector.
+
+# Column subsetting with `[[` fails with value = character(0)
+
+    Code
+      dat[[value]]
+    Condition
+      Error in `dat[[value]]`:
+      ! Can't subset a polars DataFrame with `[[`.
+      i Subscript `value` must be a string or a non-0 scalar integer, not an empty character vector.
+
+# Column subsetting with `[[` fails with value = integer(0)
+
+    Code
+      dat[[value]]
+    Condition
+      Error in `dat[[value]]`:
+      ! Can't subset a polars DataFrame with `[[`.
+      i Subscript `value` must be a string or a non-0 scalar integer, not an empty integer vector.
+
+# Column subsetting with `[[` fails with value = TRUE
+
+    Code
+      dat[[value]]
+    Condition
+      Error in `dat[[value]]`:
+      ! Can't subset a polars DataFrame with `[[`.
+      i Subscript `value` must be a string or a non-0 scalar integer, not `TRUE`.
+

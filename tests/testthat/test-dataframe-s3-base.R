@@ -287,3 +287,52 @@ test_that("Special cases of `[` behavior", {
   # TODO: test behavior of x[i, , drop = TRUE] when it is clarified
   # https://github.com/tidyverse/tibble/issues/1570
 })
+
+patrick::with_parameters_test_that(
+  "Column subsetting with `[[` works with {rlang::quo_text(value)}",
+  .cases = {
+    series_a <- pl$Series("a", 1L)
+    series_b <- pl$Series("b", 2L)
+    series_c <- pl$Series("c", 3L)
+    tibble::tribble(
+      ~value, ~expected,
+      NULL, NULL, # dummy value to create list columns
+      1L, series_a,
+      1, series_a,
+      "a", series_a,
+      "non_existing", NULL,
+      -1, series_c,
+    )[-1, ] # remove dummy value
+  },
+  code = {
+    dat <- pl$DataFrame(a = 1L, b = 2L, c = 3L)
+    expect_equal(
+      dat[[value]],
+      expected
+    )
+  }
+)
+
+patrick::with_parameters_test_that(
+  "Column subsetting with `[[` fails with value = {rlang::quo_text(value)}",
+  .cases = {
+    tibble::tribble(
+      ~value,
+      NULL,
+      1.5,
+      0,
+      NA_character_,
+      NA,
+      NA_integer_,
+      1:2,
+      c("a", "b"),
+      character(0),
+      integer(0),
+      TRUE,
+    )
+  },
+  code = {
+    dat <- pl$DataFrame(a = 1L, b = 2L, c = 3L)
+    expect_snapshot(dat[[value]], error = TRUE)
+  }
+)

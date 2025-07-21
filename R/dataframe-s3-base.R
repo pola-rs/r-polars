@@ -565,8 +565,9 @@ tail.polars_data_frame <- function(x, n = 6L, ...) x$tail(n = n)
           format_code("[[")
         )),
         i = format_error(sprintf(
-          "Subscript %s must be a string or a non-0 scalar integer.",
-          format_var(deparse(substitute(i)))
+          "Subscript %s must be a string or a non-0 scalar integer, not %s.",
+          format_var(deparse(substitute(i))),
+          obj_type_friendly(i)
         ))
       )
     )
