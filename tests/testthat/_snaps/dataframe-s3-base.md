@@ -996,6 +996,30 @@
       ! Can't subset a polars DataFrame with `[[`.
       i Subscript `value` must be a string or a non-0 scalar integer, not the number 0.
 
+# Column subsetting with `[[` fails with value = 4
+
+    Code
+      dat[[value]]
+    Condition
+      Error in `x$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Column(s) not found: nth
+
+# Column subsetting with `[[` fails with value = -4
+
+    Code
+      dat[[value]]
+    Condition
+      Error in `x$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Column(s) not found: nth
+
 # Column subsetting with `[[` fails with value = NA_character_
 
     Code

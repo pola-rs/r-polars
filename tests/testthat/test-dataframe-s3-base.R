@@ -320,6 +320,8 @@ patrick::with_parameters_test_that(
       NULL,
       1.5,
       0,
+      4,
+      -4,
       NA_character_,
       NA,
       NA_integer_,
