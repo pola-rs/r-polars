@@ -33,7 +33,7 @@ polars-error = { git = "https://github.com/pola-rs/polars.git", rev = "171c8474b
 savvy = { version = "0.8", features = ["use-custom-error"] }
 serde_json = "1"
 state = "0.6"
-strum = "0.26"
+strum = "0.27"
 strum_macros = "0.26"
 thiserror = "2"
 
