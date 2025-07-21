@@ -184,6 +184,7 @@ tail.polars_data_frame <- function(x, n = 6L, ...) x$tail(n = n)
 # Try to match `tibble` behavior as much as possible, following
 # https://tibble.tidyverse.org/articles/invariants.html#column-subsetting
 # TODO: add document
+# TODO: move the implementation to polars_subsetting or something similar
 #' @export
 `[.polars_data_frame` <- function(x, i, j, ..., drop = FALSE) {
   # taken from tibble:::`[.tbl_df`
@@ -522,5 +523,34 @@ tail.polars_data_frame <- function(x, n = 6L, ...) x$tail(n = n)
     x$get_columns()[[1]]
   } else {
     x
+  }
+}
+
+#' @export
+`[[.polars_data_frame` <- function(x, i, ...) {
+  dots <- list2(...)
+  if (length(dots) > 0L) {
+    warn(
+      c(`!` = "Subsetting a polars DataFrame with `[[` ignores other than the first argument `i`.")
+    )
+  }
+
+  if (is_string(i)) {
+    tryCatch(
+      x$get_column(i),
+      error = function(e) NULL
+    )
+  } else if (is_scalar_integerish(i, finite = TRUE) && i >= 1L) {
+    x$select(pl$nth(i - 1L))$to_series()
+  } else {
+    abort(
+      c(
+        `!` = "Can't subset a polars DataFrame with `[[`.",
+        i = sprintf(
+          "Subscript `%s` must be a string or a positive scalar integer.",
+          deparse(substitute(i))
+        )
+      )
+    )
   }
 }
