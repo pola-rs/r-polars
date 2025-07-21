@@ -726,5 +726,4 @@ nav:
         - polars_info: man/polars_info.md
         - show_versions: man/pl__show_versions.md
         - thread_pool_size: man/pl__thread_pool_size.md
-  - About: about.md
   - Changelog: NEWS.md
