@@ -4,7 +4,7 @@
 
 ### New features
 
-- polars DataFrame can be subset with `[[` (#1442).
+- `[[` can be used to extract a column from a polars DataFrame as a Series (#1442).
 
 ## polars 1.0.0
 
