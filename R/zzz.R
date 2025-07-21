@@ -36,6 +36,7 @@ assign_objects_to_env <- function(env, obj_name_pattern, ..., search_env = paren
 }
 
 POLARS_STORE_ENVS <- list(
+  "PlRExpr_" = PlRExprMethods,
   "pl__" = pl,
   "cs__" = cs,
   "pl_api_" = pl__api,
