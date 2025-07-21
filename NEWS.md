@@ -2,6 +2,10 @@
 
 ## polars (development version)
 
+### New features
+
+- polars DataFrame can be subset with `[[` (#1442).
+
 ## polars 1.0.0
 
 This is a completely rewritten new version of the polars R package. It improves
