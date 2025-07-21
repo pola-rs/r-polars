@@ -292,7 +292,6 @@ patrick::with_parameters_test_that(
   "Column subsetting with `[[` works with {rlang::quo_text(value)}",
   .cases = {
     series_a <- pl$Series("a", 1L)
-    series_b <- pl$Series("b", 2L)
     series_c <- pl$Series("c", 3L)
     tibble::tribble(
       ~value, ~expected,
