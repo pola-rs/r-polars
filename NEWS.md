@@ -1,5 +1,7 @@
 # NEWS
 
+## polars (development version)
+
 ## polars 1.0.0
 
 This is a completely rewritten new version of the polars R package. It improves
