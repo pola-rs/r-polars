@@ -9,6 +9,7 @@ linters <- linters_with_defaults(
 exclusions <- as.list(
   c(
     "R/000-wrappers.R",
+    "R/001-wrappers.R",
     fs::dir_ls("R", glob = "**/import-standalone-*.R") |>
       rlang::set_names(NULL)
   )
