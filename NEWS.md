@@ -1,5 +1,7 @@
 # NEWS
 
+## polars (development version)
+
 ## polars 1.0.1
 
 This is a small patch release that includes minor improvements discovered right after the 1.0.0 release.
