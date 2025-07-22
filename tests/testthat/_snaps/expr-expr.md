@@ -261,7 +261,7 @@
       Error:
       ! Evaluation failed in `$reshape()`.
       Caused by error:
-      ! Should not reach here!
+      ! Argument `dimensions` must be numeric, not logical
 
 # shuffle
 
