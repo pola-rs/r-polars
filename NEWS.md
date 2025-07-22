@@ -2,6 +2,10 @@
 
 ## polars (development version)
 
+### New features
+
+- `[[` can be used to extract a column from a polars DataFrame as a Series (#1442).
+
 ## polars 1.0.0
 
 This is a completely rewritten new version of the polars R package. It improves

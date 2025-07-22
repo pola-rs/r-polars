@@ -184,6 +184,7 @@ tail.polars_data_frame <- function(x, n = 6L, ...) x$tail(n = n)
 # Try to match `tibble` behavior as much as possible, following
 # https://tibble.tidyverse.org/articles/invariants.html#column-subsetting
 # TODO: add document
+# TODO: move the implementation to polars_subset or something similar
 #' @export
 `[.polars_data_frame` <- function(x, i, j, ..., drop = FALSE) {
   # taken from tibble:::`[.tbl_df`
@@ -522,5 +523,53 @@ tail.polars_data_frame <- function(x, n = 6L, ...) x$tail(n = n)
     x$get_columns()[[1]]
   } else {
     x
+  }
+}
+
+# TODO: move the implementation to polars_subset2 or something similar
+#' @export
+`[[.polars_data_frame` <- function(x, i, ...) {
+  if (...length() > 0L) {
+    warn(
+      format_warning(
+        c(
+          `!` = sprintf(
+            "Subsetting a polars DataFrame with %s ignores arguments other than %s (%s).",
+            format_code("[["),
+            format_arg("i"),
+            format_var(deparse(substitute(i)))
+          )
+        )
+      )
+    )
+  }
+
+  if (is_string(i)) {
+    tryCatch(
+      x$get_column(i),
+      error = function(e) NULL
+    )
+  } else if (is_scalar_integerish(i, finite = TRUE) && i != 0L) {
+    if (i >= 1L) {
+      # nth requires 0-based index
+      x$select(pl$nth(i - 1L))$to_series()
+    } else {
+      # Negative index
+      x$select(pl$nth(i))$to_series()
+    }
+  } else {
+    abort(
+      c(
+        format_error(sprintf(
+          "Can't subset a polars DataFrame with %s.",
+          format_code("[[")
+        )),
+        i = format_error(sprintf(
+          "Subscript %s must be a string or a non-0 scalar integer, not %s.",
+          format_var(deparse(substitute(i))),
+          obj_type_friendly(i)
+        ))
+      )
+    )
   }
 }
