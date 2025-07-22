@@ -1,10 +1,17 @@
 # NEWS
 
-## polars (development version)
+## polars 1.0.1
 
-### New features
+This is a small patch release that includes minor improvements discovered right after the 1.0.0 release.
 
-- `[[` can be used to extract a column from a polars DataFrame as a Series (#1442).
+### Performance
+
+- The performance of creating polars expressions has been significantly improved (#1444).
+
+### Other improvements
+
+- To improve interoperability with other `data.frame`-like objects,
+  the `[[` operator can now be used to extract a column from a polars DataFrame as a Series (#1442).
 
 ## polars 1.0.0
 
