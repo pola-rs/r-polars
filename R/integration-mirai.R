@@ -19,13 +19,18 @@ register_mirai_serial <- function() {
               format_pkg("mirai")
             ),
             i = sprintf(
-              "To apply the serialization configs registered by %s, recreate daemons.",
+              "To apply the serialization config registered by %s, recreate daemons.",
               format_pkg("polars")
             ),
             `*` = sprintf(
               "Run %s to reset daemon connections, then recreate daemons with %s.",
               format_code("mirai::daemons(0)"),
               format_fn("mirai::daemons")
+            ),
+            i = sprintf(
+              "Suppress this message by loading %s before creating daemons (or loading %s.)",
+              format_pkg("polars"),
+              format_pkg("mirai")
             )
           )
         )
