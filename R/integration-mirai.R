@@ -10,15 +10,23 @@ register_mirai_serial <- function() {
     # Safety: mirai::daemons_set is added in mirai 2.3.0,
     # the same version that introduced the `register_serial` function.
     if (mirai::daemons_set()) {
-      warn(
-        format_warning(
+      inform(
+        format_message(
           c(
-            `!` = sprintf(
-              "Automatically registered %s serialization configs by %s does not affect existing daemons.", # nolint: line_length_linter
-              format_pkg("mirai"),
+            i = sprintf(
+              "The %s package was loaded after %s daemons were already created.",
+              format_pkg("polars"),
+              format_pkg("mirai")
+            ),
+            i = sprintf(
+              "To apply the serialization configs registered by %s, recreate daemons.",
               format_pkg("polars")
             ),
-            i = "To apply the configs, recreating daemons is needed."
+            `*` = sprintf(
+              "Run %s to reset daemon connections, then recreate daemons with %s.",
+              format_code("mirai::daemons(0)"),
+              format_fn("mirai::daemons")
+            )
           )
         )
       )

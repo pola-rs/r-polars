@@ -2,7 +2,6 @@
 
     Code
       register_mirai_serial()
-    Condition <rlang_warning>
-      Warning:
-      ! Automatically registered mirai serialization configs by polars does not affect existing daemons. i To apply the configs, recreating daemons is needed.
+    Message <rlang_message>
+      i The polars package was loaded after mirai daemons were already created. i To apply the serialization configs registered by polars, recreate daemons. * Run `mirai::daemons(0)` to reset daemon connections, then recreate daemons with `mirai::daemons()`.
 
