@@ -28,7 +28,7 @@ register_mirai_serial <- function() {
               format_fn("mirai::daemons")
             ),
             i = sprintf(
-              "Suppress this message by loading %s before creating daemons (or loading %s.)",
+              "Suppress this message by loading %s before creating daemons (or loading %s).",
               format_pkg("polars"),
               format_pkg("mirai")
             )
