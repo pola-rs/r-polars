@@ -14,7 +14,7 @@ register_mirai_serial <- function() {
         format_warning(
           c(
             `!` = sprintf(
-              "Auto registered %s serialization configs by %s does not affect existing daemons.",
+              "Automatically registered %s serialization configs by %s does not affect existing daemons.", # nolint: line_length_linter
               format_pkg("mirai"),
               format_pkg("polars")
             ),
