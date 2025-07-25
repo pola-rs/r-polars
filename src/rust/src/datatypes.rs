@@ -107,12 +107,9 @@ impl std::fmt::Display for PlRDataType {
                     .join(", ");
                 write!(f, "Struct({fields})")
             }
-            DataType::Categorical(_, ordering) => {
-                write!(
-                    f,
-                    "Categorical(ordering='{}')",
-                    <String>::from(Wrap(ordering))
-                )
+            DataType::Categorical(_, _) => {
+                // TODO: include categories
+                write!(f, "Categorical(ordering='lexical')")
             }
             DataType::Enum(categories, _) => {
                 write!(
@@ -365,8 +362,9 @@ impl PlRDataType {
                 Ok(out.into())
             }
             DataType::Categorical(_, ordering) => {
+                // TODO: return categories
                 let mut out = OwnedListSexp::new(1, true)?;
-                let ordering: Sexp = <String>::from(Wrap(ordering)).try_into()?;
+                let ordering: Sexp = "lexical".try_into()?;
                 let _ = out.set_name_and_value(0, "ordering", ordering);
                 Ok(out.into())
             }
