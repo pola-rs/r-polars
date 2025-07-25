@@ -161,11 +161,12 @@ impl PlRExpr {
         #[cfg(not(target_arch = "wasm32"))]
         let name_gen = name_gen.map(|lambda| {
             let lambda = RUdf::new(lambda);
-            NameGenerator::from_func(move |idx: usize| {
-                let thread_com = ThreadCom::try_from_global(&CONFIG).unwrap();
+            PlanCallback::new(move |idx: usize| {
+                let thread_com = ThreadCom::try_from_global(&CONFIG)
+                    .map_err(|e| PolarsError::ComputeError(e.into()))?;
                 thread_com.send(RUdfSignature::Int32ToString(lambda.clone(), idx as i32));
-                let res: PlSmallStr = thread_com.recv().try_into().unwrap();
-                res
+                <String>::try_from(thread_com.recv())
+                    .map_err(|e| PolarsError::ComputeError(e.into()))
             })
         });
         #[cfg(target_arch = "wasm32")]
@@ -183,7 +184,7 @@ impl PlRExpr {
             .inner
             .clone()
             .list()
-            .to_struct(ListToStructArgs::InferWidth {
+            .to_struct(ListToStruct::InferWidth {
                 infer_field_strategy: width_strat,
                 get_index_name: name_gen,
                 max_fields: upper_bound,
@@ -197,7 +198,7 @@ impl PlRExpr {
             .inner
             .clone()
             .list()
-            .to_struct(ListToStructArgs::FixedWidth(names))
+            .to_struct(ListToStruct::FixedWidth(names))
             .into())
     }
 

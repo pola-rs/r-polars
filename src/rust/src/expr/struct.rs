@@ -44,8 +44,7 @@ impl PlRExpr {
             .inner
             .clone()
             .struct_()
-            .with_fields(fields)
-            .map_err(RPolarsErr::from)?;
+            .with_fields(fields);
         Ok(e.into())
     }
 }
