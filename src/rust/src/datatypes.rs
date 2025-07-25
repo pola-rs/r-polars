@@ -1,4 +1,4 @@
-use crate::{PlRExpr, RPolarsErr, prelude::*};
+use crate::{PlRCategories, PlRExpr, RPolarsErr, prelude::*};
 use polars::lazy::dsl;
 use polars_core::utils::{arrow::array::Utf8ViewArray, try_get_supertype};
 use savvy::{
@@ -167,9 +167,8 @@ impl PlRDataType {
         Ok(DataType::Duration(time_unit).into())
     }
 
-    pub fn new_categorical(ordering: &str) -> Result<Self> {
-        let ordering = <Wrap<CategoricalOrdering>>::try_from(ordering)?.0;
-        Ok(DataType::Categorical(None, ordering).into())
+    pub fn new_categorical(categories: &PlRCategories) -> Result<Self> {
+        Ok(DataType::from_categories(categories.categories().clone()).into())
     }
 
     pub fn new_enum(categories: StringSexp) -> Result<Self> {

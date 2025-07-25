@@ -845,8 +845,9 @@ class(`PlRDataFrame`) <- c("PlRDataFrame__bundle", "savvy_polars__sealed")
   .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_new_array__impl, `inner`, `shape`))
 }
 
-`PlRDataType`$`new_categorical` <- function(`ordering`) {
-  .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_new_categorical__impl, `ordering`))
+`PlRDataType`$`new_categorical` <- function(`categories`) {
+  `categories` <- .savvy_extract_ptr(`categories`, "PlRCategories")
+  .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_new_categorical__impl, `categories`))
 }
 
 `PlRDataType`$`new_datetime` <- function(`time_unit`, `time_zone` = NULL) {

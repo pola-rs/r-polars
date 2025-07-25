@@ -574,8 +574,8 @@ SEXP savvy_PlRDataType_new_array__impl(SEXP c_arg__inner, SEXP c_arg__shape) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRDataType_new_categorical__impl(SEXP c_arg__ordering) {
-    SEXP res = savvy_PlRDataType_new_categorical__ffi(c_arg__ordering);
+SEXP savvy_PlRDataType_new_categorical__impl(SEXP c_arg__categories) {
+    SEXP res = savvy_PlRDataType_new_categorical__ffi(c_arg__categories);
     return handle_result(res);
 }
 

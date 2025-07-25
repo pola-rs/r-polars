@@ -58,8 +58,8 @@ impl TryFrom<&str> for PlRDataType {
             "Boolean" => DataType::Boolean,
             "String" => DataType::String,
             "Binary" => DataType::Binary,
-            "Categorical" => DataType::Categorical(None, Default::default()),
-            "Enum" => DataType::Enum(None, Default::default()),
+            "Categorical" => DataType::from_categories(Categories::global()),
+            "Enum" => DataType::from_frozen_categories(FrozenCategories::new([]).unwrap()),
             "Date" => DataType::Date,
             "Time" => DataType::Time,
             "Datetime" => DataType::Datetime(TimeUnit::Microseconds, None),
@@ -204,23 +204,6 @@ impl TryFrom<ListSexp> for Wrap<Vec<Field>> {
     }
 }
 
-impl TryFrom<&str> for Wrap<CategoricalOrdering> {
-    type Error = String;
-
-    fn try_from(ordering: &str) -> Result<Self, String> {
-        let ordering = match ordering {
-            "physical" => CategoricalOrdering::Physical,
-            "lexical" => CategoricalOrdering::Lexical,
-            v => {
-                return Err(format!(
-                    "categorical `ordering` must be one of ('physical', 'lexical'), got '{v}'"
-                ));
-            }
-        };
-        Ok(Wrap(ordering))
-    }
-}
-
 impl From<Wrap<&Arc<RevMapping>>> for Vec<String> {
     fn from(mapping: Wrap<&Arc<RevMapping>>) -> Vec<String> {
         mapping
@@ -229,15 +212,6 @@ impl From<Wrap<&Arc<RevMapping>>> for Vec<String> {
             .into_iter()
             .map(|v| v.unwrap_or_default().to_string())
             .collect::<Vec<_>>()
-    }
-}
-
-impl From<Wrap<&CategoricalOrdering>> for String {
-    fn from(ordering: Wrap<&CategoricalOrdering>) -> String {
-        match *ordering.0 {
-            CategoricalOrdering::Physical => "physical".into(),
-            CategoricalOrdering::Lexical => "lexical".into(),
-        }
     }
 }
 

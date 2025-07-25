@@ -116,7 +116,7 @@ SEXP savvy_PlRDataType_max__ffi(SEXP self__);
 SEXP savvy_PlRDataType_min__ffi(SEXP self__);
 SEXP savvy_PlRDataType_ne__ffi(SEXP self__, SEXP c_arg__other);
 SEXP savvy_PlRDataType_new_array__ffi(SEXP c_arg__inner, SEXP c_arg__shape);
-SEXP savvy_PlRDataType_new_categorical__ffi(SEXP c_arg__ordering);
+SEXP savvy_PlRDataType_new_categorical__ffi(SEXP c_arg__categories);
 SEXP savvy_PlRDataType_new_datetime__ffi(SEXP c_arg__time_unit, SEXP c_arg__time_zone);
 SEXP savvy_PlRDataType_new_decimal__ffi(SEXP c_arg__scale, SEXP c_arg__precision);
 SEXP savvy_PlRDataType_new_duration__ffi(SEXP c_arg__time_unit);
