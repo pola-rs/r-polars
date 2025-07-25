@@ -3,6 +3,7 @@ use std::str::FromStr;
 
 use crate::prelude::*;
 use crate::{PlRDataFrame, PlRDataType, PlRExpr, PlRLazyFrame, PlRSeries, RPolarsErr};
+pub use categorical::PlRCategories;
 use polars::prelude::cloud::CloudOptions;
 use polars::series::ops::NullBehavior;
 use savvy::{
@@ -11,6 +12,7 @@ use savvy::{
 };
 use search_sorted::SearchSortedSide;
 pub mod base_date;
+mod categorical;
 mod chunked_array;
 pub mod clock;
 pub mod data_table;

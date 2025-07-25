@@ -309,6 +309,99 @@ NULL
   .savvy_wrap_PlRWhen(.Call(savvy_when__impl, `condition`))
 }
 
+### wrapper functions for PlRCategories
+
+`PlRCategories_cat_to_str` <- function(self) {
+  function(`cat`) {
+    .Call(savvy_PlRCategories_cat_to_str__impl, `self`, `cat`)
+  }
+}
+
+`PlRCategories_eq` <- function(self) {
+  function(`other`) {
+    `other` <- .savvy_extract_ptr(`other`, "PlRCategories")
+    .Call(savvy_PlRCategories_eq__impl, `self`, `other`)
+  }
+}
+
+`PlRCategories_get_cat` <- function(self) {
+  function(`s`) {
+    .Call(savvy_PlRCategories_get_cat__impl, `self`, `s`)
+  }
+}
+
+`PlRCategories_hash` <- function(self) {
+  function() {
+    .Call(savvy_PlRCategories_hash__impl, `self`)
+  }
+}
+
+`PlRCategories_is_global` <- function(self) {
+  function() {
+    .Call(savvy_PlRCategories_is_global__impl, `self`)
+  }
+}
+
+`PlRCategories_name` <- function(self) {
+  function() {
+    .Call(savvy_PlRCategories_name__impl, `self`)
+  }
+}
+
+`PlRCategories_namespace` <- function(self) {
+  function() {
+    .Call(savvy_PlRCategories_namespace__impl, `self`)
+  }
+}
+
+`PlRCategories_physical` <- function(self) {
+  function() {
+    .Call(savvy_PlRCategories_physical__impl, `self`)
+  }
+}
+
+`.savvy_wrap_PlRCategories` <- function(ptr) {
+  e <- new.env(parent = emptyenv())
+  e$.ptr <- ptr
+  e$`cat_to_str` <- `PlRCategories_cat_to_str`(ptr)
+  e$`eq` <- `PlRCategories_eq`(ptr)
+  e$`get_cat` <- `PlRCategories_get_cat`(ptr)
+  e$`hash` <- `PlRCategories_hash`(ptr)
+  e$`is_global` <- `PlRCategories_is_global`(ptr)
+  e$`name` <- `PlRCategories_name`(ptr)
+  e$`namespace` <- `PlRCategories_namespace`(ptr)
+  e$`physical` <- `PlRCategories_physical`(ptr)
+
+  class(e) <- c("PlRCategories", "savvy_polars__sealed")
+  e
+}
+
+
+
+`PlRCategories` <- new.env(parent = emptyenv())
+
+### associated functions for PlRCategories
+
+`PlRCategories`$`global_categories` <- function() {
+  .savvy_wrap_PlRCategories(.Call(savvy_PlRCategories_global_categories__impl))
+}
+
+`PlRCategories`$`init` <- function(`name`, `namespace`, `physical`) {
+  .savvy_wrap_PlRCategories(.Call(savvy_PlRCategories_init__impl, `name`, `namespace`, `physical`))
+}
+
+`PlRCategories`$`random` <- function(`namespace`, `physical`) {
+  .savvy_wrap_PlRCategories(.Call(savvy_PlRCategories_random__impl, `namespace`, `physical`))
+}
+
+
+class(`PlRCategories`) <- c("PlRCategories__bundle", "savvy_polars__sealed")
+
+#' @export
+`print.PlRCategories__bundle` <- function(x, ...) {
+  cat('PlRCategories\n')
+}
+
 ### wrapper functions for PlRChainedThen
 
 `PlRChainedThen_otherwise` <- function(self) {

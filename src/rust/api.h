@@ -45,6 +45,19 @@ SEXP savvy_time_range__ffi(SEXP c_arg__start, SEXP c_arg__end, SEXP c_arg__every
 SEXP savvy_time_ranges__ffi(SEXP c_arg__start, SEXP c_arg__end, SEXP c_arg__every, SEXP c_arg__closed);
 SEXP savvy_when__ffi(SEXP c_arg__condition);
 
+// methods and associated functions for PlRCategories
+SEXP savvy_PlRCategories_cat_to_str__ffi(SEXP self__, SEXP c_arg__cat);
+SEXP savvy_PlRCategories_eq__ffi(SEXP self__, SEXP c_arg__other);
+SEXP savvy_PlRCategories_get_cat__ffi(SEXP self__, SEXP c_arg__s);
+SEXP savvy_PlRCategories_global_categories__ffi(void);
+SEXP savvy_PlRCategories_hash__ffi(SEXP self__);
+SEXP savvy_PlRCategories_init__ffi(SEXP c_arg__name, SEXP c_arg__namespace, SEXP c_arg__physical);
+SEXP savvy_PlRCategories_is_global__ffi(SEXP self__);
+SEXP savvy_PlRCategories_name__ffi(SEXP self__);
+SEXP savvy_PlRCategories_namespace__ffi(SEXP self__);
+SEXP savvy_PlRCategories_physical__ffi(SEXP self__);
+SEXP savvy_PlRCategories_random__ffi(SEXP c_arg__namespace, SEXP c_arg__physical);
+
 // methods and associated functions for PlRChainedThen
 SEXP savvy_PlRChainedThen_otherwise__ffi(SEXP self__, SEXP c_arg__statement);
 SEXP savvy_PlRChainedThen_when__ffi(SEXP self__, SEXP c_arg__condition);

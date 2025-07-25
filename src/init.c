@@ -264,6 +264,61 @@ SEXP savvy_when__impl(SEXP c_arg__condition) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRCategories_cat_to_str__impl(SEXP self__, SEXP c_arg__cat) {
+    SEXP res = savvy_PlRCategories_cat_to_str__ffi(self__, c_arg__cat);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRCategories_eq__impl(SEXP self__, SEXP c_arg__other) {
+    SEXP res = savvy_PlRCategories_eq__ffi(self__, c_arg__other);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRCategories_get_cat__impl(SEXP self__, SEXP c_arg__s) {
+    SEXP res = savvy_PlRCategories_get_cat__ffi(self__, c_arg__s);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRCategories_global_categories__impl(void) {
+    SEXP res = savvy_PlRCategories_global_categories__ffi();
+    return handle_result(res);
+}
+
+SEXP savvy_PlRCategories_hash__impl(SEXP self__) {
+    SEXP res = savvy_PlRCategories_hash__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRCategories_init__impl(SEXP c_arg__name, SEXP c_arg__namespace, SEXP c_arg__physical) {
+    SEXP res = savvy_PlRCategories_init__ffi(c_arg__name, c_arg__namespace, c_arg__physical);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRCategories_is_global__impl(SEXP self__) {
+    SEXP res = savvy_PlRCategories_is_global__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRCategories_name__impl(SEXP self__) {
+    SEXP res = savvy_PlRCategories_name__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRCategories_namespace__impl(SEXP self__) {
+    SEXP res = savvy_PlRCategories_namespace__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRCategories_physical__impl(SEXP self__) {
+    SEXP res = savvy_PlRCategories_physical__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRCategories_random__impl(SEXP c_arg__namespace, SEXP c_arg__physical) {
+    SEXP res = savvy_PlRCategories_random__ffi(c_arg__namespace, c_arg__physical);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRChainedThen_otherwise__impl(SEXP self__, SEXP c_arg__statement) {
     SEXP res = savvy_PlRChainedThen_otherwise__ffi(self__, c_arg__statement);
     return handle_result(res);
@@ -3067,6 +3122,17 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_time_range__impl", (DL_FUNC) &savvy_time_range__impl, 4},
     {"savvy_time_ranges__impl", (DL_FUNC) &savvy_time_ranges__impl, 4},
     {"savvy_when__impl", (DL_FUNC) &savvy_when__impl, 1},
+    {"savvy_PlRCategories_cat_to_str__impl", (DL_FUNC) &savvy_PlRCategories_cat_to_str__impl, 2},
+    {"savvy_PlRCategories_eq__impl", (DL_FUNC) &savvy_PlRCategories_eq__impl, 2},
+    {"savvy_PlRCategories_get_cat__impl", (DL_FUNC) &savvy_PlRCategories_get_cat__impl, 2},
+    {"savvy_PlRCategories_global_categories__impl", (DL_FUNC) &savvy_PlRCategories_global_categories__impl, 0},
+    {"savvy_PlRCategories_hash__impl", (DL_FUNC) &savvy_PlRCategories_hash__impl, 1},
+    {"savvy_PlRCategories_init__impl", (DL_FUNC) &savvy_PlRCategories_init__impl, 3},
+    {"savvy_PlRCategories_is_global__impl", (DL_FUNC) &savvy_PlRCategories_is_global__impl, 1},
+    {"savvy_PlRCategories_name__impl", (DL_FUNC) &savvy_PlRCategories_name__impl, 1},
+    {"savvy_PlRCategories_namespace__impl", (DL_FUNC) &savvy_PlRCategories_namespace__impl, 1},
+    {"savvy_PlRCategories_physical__impl", (DL_FUNC) &savvy_PlRCategories_physical__impl, 1},
+    {"savvy_PlRCategories_random__impl", (DL_FUNC) &savvy_PlRCategories_random__impl, 2},
     {"savvy_PlRChainedThen_otherwise__impl", (DL_FUNC) &savvy_PlRChainedThen_otherwise__impl, 2},
     {"savvy_PlRChainedThen_when__impl", (DL_FUNC) &savvy_PlRChainedThen_when__impl, 2},
     {"savvy_PlRChainedWhen_then__impl", (DL_FUNC) &savvy_PlRChainedWhen_then__impl, 2},
