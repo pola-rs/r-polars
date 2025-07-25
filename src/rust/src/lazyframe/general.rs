@@ -8,7 +8,7 @@ use savvy::{
     ListSexp, LogicalSexp, NumericScalar, OwnedListSexp, OwnedStringSexp, Result, Sexp, StringSexp,
     savvy,
 };
-use std::{num::NonZeroUsize, path::PathBuf};
+use std::{num::NonZeroUsize};
 
 #[savvy]
 impl PlRLazyFrame {
@@ -732,8 +732,8 @@ impl PlRLazyFrame {
             let source = source
                 .to_vec()
                 .iter()
-                .map(PathBuf::from)
-                .collect::<Vec<PathBuf>>();
+                .map(|s| PlPath::new(*s))
+                .collect::<Vec<_>>();
             let row_index_offset = <Wrap<u32>>::try_from(row_index_offset)?.0;
             let retries = <Wrap<usize>>::try_from(retries)?.0;
             let hive_schema = match hive_schema {
@@ -786,14 +786,14 @@ impl PlRLazyFrame {
                 include_file_paths: include_file_paths.map(|x| x.into()),
             };
 
-            let first_path: Option<PathBuf> = source.first().unwrap().clone().into();
+            let first_path = source.first().unwrap().clone().into();
 
             // TODO: Refactor with adding `cloud` feature as like Python Polars
             #[cfg(not(target_arch = "wasm32"))]
             if let Some(first_path) = first_path {
-                let first_path_url = first_path.to_string_lossy();
+                let first_path_url = first_path.to_str();
                 let mut cloud_options =
-                    parse_cloud_options(&first_path_url, cloud_options.unwrap_or_default())?;
+                    parse_cloud_options(first_path_url, cloud_options.unwrap_or_default())?;
                 if let Some(file_cache_ttl) = file_cache_ttl {
                     cloud_options.file_cache_ttl = file_cache_ttl;
                 }
@@ -845,8 +845,8 @@ impl PlRLazyFrame {
             let source = source
                 .to_vec()
                 .iter()
-                .map(PathBuf::from)
-                .collect::<Vec<PathBuf>>();
+                .map(|s| PlPath::new(*s))
+                .collect::<Vec<_>>();
             let encoding = <Wrap<CsvEncoding>>::try_from(encoding)?.0;
             let skip_rows = <Wrap<usize>>::try_from(skip_rows)?.0;
             let skip_rows_after_header = <Wrap<usize>>::try_from(skip_rows_after_header)?.0;
@@ -924,15 +924,15 @@ impl PlRLazyFrame {
             let cloud_options: Option<Vec<(String, String)>> = None;
 
             let mut r = LazyCsvReader::new_paths(source.clone().into());
-            let first_path: Option<PathBuf> = source.first().unwrap().clone().into();
+            let first_path = source.first().unwrap().clone().into();
 
             // TODO: Refactor with adding `cloud` feature as like Python Polars
             #[cfg(not(target_arch = "wasm32"))]
             if let Some(first_path) = first_path {
-                let first_path_url = first_path.to_string_lossy();
+                let first_path_url = first_path.to_str();
 
                 let mut cloud_options =
-                    parse_cloud_options(&first_path_url, cloud_options.unwrap_or_default())?;
+                    parse_cloud_options(first_path_url, cloud_options.unwrap_or_default())?;
                 if let Some(file_cache_ttl) = file_cache_ttl {
                     cloud_options.file_cache_ttl = file_cache_ttl;
                 }
@@ -1001,8 +1001,8 @@ impl PlRLazyFrame {
             let source = source
                 .to_vec()
                 .iter()
-                .map(PathBuf::from)
-                .collect::<Vec<PathBuf>>();
+                .map(|s| PlPath::new(*s))
+                .collect::<Vec<_>>();
             let row_index_offset = <Wrap<u32>>::try_from(row_index_offset)?.0;
             let n_rows = match n_rows {
                 Some(x) => Some(<Wrap<usize>>::try_from(x)?.0),
@@ -1069,9 +1069,9 @@ impl PlRLazyFrame {
             // TODO: Refactor with adding `cloud` feature as like Python Polars
             #[cfg(not(target_arch = "wasm32"))]
             if let Some(first_path) = first_path {
-                let first_path_url = first_path.to_string_lossy();
+                let first_path_url = first_path.to_str();
                 let cloud_options =
-                    parse_cloud_options(&first_path_url, cloud_options.unwrap_or_default())?;
+                    parse_cloud_options(first_path_url, cloud_options.unwrap_or_default())?;
                 args.cloud_options = Some(cloud_options.with_max_retries(retries));
             }
 
@@ -1109,8 +1109,8 @@ impl PlRLazyFrame {
             let source = source
                 .to_vec()
                 .iter()
-                .map(PathBuf::from)
-                .collect::<Vec<PathBuf>>();
+                .map(|s| PlPath::new(*s))
+                .collect::<Vec<_>>();
             let row_index_offset = <Wrap<u32>>::try_from(row_index_offset)?.0;
             let infer_schema_length = match infer_schema_length {
                 Some(x) => Some(<Wrap<usize>>::try_from(x)?.0),
@@ -1167,10 +1167,10 @@ impl PlRLazyFrame {
             // TODO: Refactor with adding `cloud` feature as like Python Polars
             #[cfg(not(target_arch = "wasm32"))]
             if let Some(first_path) = first_path {
-                let first_path_url = first_path.to_string_lossy();
+                let first_path_url = first_path.to_str();
 
                 let mut cloud_options =
-                    parse_cloud_options(&first_path_url, cloud_options.unwrap_or_default())?;
+                    parse_cloud_options(first_path_url, cloud_options.unwrap_or_default())?;
                 cloud_options = cloud_options.with_max_retries(retries);
 
                 if let Some(file_cache_ttl) = file_cache_ttl {
@@ -1269,10 +1269,8 @@ impl PlRLazyFrame {
             let cloud_options = match target.base_path() {
                 None => None,
                 Some(base_path) => {
-                    let cloud_options = parse_cloud_options(
-                        base_path.to_str().unwrap(),
-                        cloud_options.unwrap_or_default(),
-                    )?;
+                    let cloud_options =
+                        parse_cloud_options(base_path.to_str(), cloud_options.unwrap_or_default())?;
                     Some(cloud_options.with_max_retries(retries))
                 }
             };
@@ -1386,10 +1384,8 @@ impl PlRLazyFrame {
             let cloud_options = match target.base_path() {
                 None => None,
                 Some(base_path) => {
-                    let cloud_options = parse_cloud_options(
-                        base_path.to_str().unwrap(),
-                        cloud_options.unwrap_or_default(),
-                    )?;
+                    let cloud_options =
+                        parse_cloud_options(base_path.to_str(), cloud_options.unwrap_or_default())?;
                     Some(cloud_options.with_max_retries(retries))
                 }
             };
@@ -1458,10 +1454,8 @@ impl PlRLazyFrame {
             let cloud_options = match target.base_path() {
                 None => None,
                 Some(base_path) => {
-                    let cloud_options = parse_cloud_options(
-                        base_path.to_str().unwrap(),
-                        cloud_options.unwrap_or_default(),
-                    )?;
+                    let cloud_options =
+                        parse_cloud_options(base_path.to_str(), cloud_options.unwrap_or_default())?;
                     Some(cloud_options.with_max_retries(retries))
                 }
             };
@@ -1539,10 +1533,8 @@ impl PlRLazyFrame {
             let cloud_options = match target.base_path() {
                 None => None,
                 Some(base_path) => {
-                    let cloud_options = parse_cloud_options(
-                        base_path.to_str().unwrap(),
-                        cloud_options.unwrap_or_default(),
-                    )?;
+                    let cloud_options =
+                        parse_cloud_options(base_path.to_str(), cloud_options.unwrap_or_default())?;
                     Some(cloud_options.with_max_retries(retries))
                 }
             };

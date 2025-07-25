@@ -1,9 +1,6 @@
 use crate::prelude::{sync_on_close::SyncOnCloseType, *};
+use polars_utils::plpath::PlPathRef;
 use savvy::{EnvironmentSexp, ListSexp, NumericScalar, Result, Sexp, StringSexp, TypedSexp, savvy};
-use std::{
-    path::{Path, PathBuf},
-    sync::Arc,
-};
 
 #[derive(Clone)]
 pub enum RSinkTarget {
@@ -14,7 +11,7 @@ pub enum RSinkTarget {
 #[savvy]
 #[derive(Clone)]
 pub struct PlRPartitioning {
-    pub base_path: PathBuf,
+    pub base_path: PlPath,
     pub variant: PartitionVariant,
     pub per_partition_sort_by: Option<Vec<SortColumn>>,
 }
@@ -33,13 +30,13 @@ fn parse_per_partition_sort_by(sort_by: Option<Vec<Expr>>) -> Option<Vec<SortCol
 }
 
 impl RSinkTarget {
-    pub fn base_path(&self) -> Option<&Path> {
+    pub fn base_path(&self) -> Option<PlPathRef> {
         match self {
             Self::File(t) => match t {
-                SinkTarget::Path(p) => Some(p.as_path()),
+                SinkTarget::Path(p) => Some(p.as_ref()),
                 SinkTarget::Dyn(_) => None,
             },
-            Self::Partition(p) => Some(&p.base_path),
+            Self::Partition(p) => Some(p.base_path.as_ref()),
         }
     }
 }
@@ -47,7 +44,7 @@ impl RSinkTarget {
 #[savvy]
 impl PlRPartitioning {
     fn base_path(&self) -> Result<Sexp> {
-        self.base_path.to_str().unwrap_or_default().try_into()
+        self.base_path.to_str().try_into()
     }
 
     pub fn new_max_size(
@@ -55,7 +52,7 @@ impl PlRPartitioning {
         max_size: NumericScalar,
         per_partition_sort_by: Option<ListSexp>,
     ) -> Result<Self> {
-        let base_path = PathBuf::from(base_path);
+        let base_path = PlPath::new(base_path);
         let max_size = <Wrap<IdxSize>>::try_from(max_size)?.0;
         let per_partition_sort_by = <Wrap<Option<Vec<SortColumn>>>>::from(per_partition_sort_by).0;
 
@@ -72,7 +69,7 @@ impl PlRPartitioning {
         include_key: bool,
         per_partition_sort_by: Option<ListSexp>,
     ) -> Result<Self> {
-        let base_path = PathBuf::from(base_path);
+        let base_path = PlPath::new(base_path);
         let by = <Wrap<Vec<Expr>>>::from(by).0;
         let per_partition_sort_by = <Wrap<Option<Vec<SortColumn>>>>::from(per_partition_sort_by).0;
 
@@ -92,7 +89,7 @@ impl PlRPartitioning {
         include_key: bool,
         per_partition_sort_by: Option<ListSexp>,
     ) -> Result<Self> {
-        let base_path = PathBuf::from(base_path);
+        let base_path = PlPath::new(base_path);
         let by = <Wrap<Vec<Expr>>>::from(by).0;
         let per_partition_sort_by = <Wrap<Option<Vec<SortColumn>>>>::from(per_partition_sort_by).0;
 
@@ -124,8 +121,8 @@ impl TryFrom<StringSexp> for RSinkTarget {
 
     fn try_from(value: StringSexp) -> Result<Self> {
         let string_value: &str = <Sexp>::from(value).try_into()?;
-        Ok(RSinkTarget::File(SinkTarget::Path(Arc::new(
-            PathBuf::from(string_value),
+        Ok(RSinkTarget::File(SinkTarget::Path(PlPath::new(
+            string_value,
         ))))
     }
 }

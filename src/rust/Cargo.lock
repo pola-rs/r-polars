@@ -2299,6 +2299,7 @@ dependencies = [
  "polars-error",
  "polars-lazy",
  "polars-mem-engine",
+ "polars-utils",
  "savvy",
  "serde_json",
  "state",
