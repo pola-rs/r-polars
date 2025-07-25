@@ -23,3 +23,11 @@ test_that("mirai serialization works", {
     df
   )
 })
+
+test_that("Warn if daemons already exist when registering mirai serialization configs", {
+  skip_if_not_installed("mirai", minimum_version = "2.3.0")
+  # Daemons should be set by the setup.R file
+  skip_if_not(mirai::daemons_set())
+
+  expect_snapshot(register_mirai_serial(), cnd_class = TRUE)
+})

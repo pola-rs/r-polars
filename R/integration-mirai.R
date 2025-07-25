@@ -5,6 +5,38 @@ register_mirai_serial <- function() {
   # If the mirai package is not installed, `asNamespace("mirai")` will throw an error,
   # so this function should only be called when the mirai package is loaded.
   if (exists("register_serial", envir = asNamespace("mirai"), mode = "function")) {
+    # If the daemons are already set, registering serialization configs
+    # will not affect existing daemons. So warn to the user.
+    # Safety: mirai::daemons_set is added in mirai 2.3.0,
+    # the same version that introduced the `register_serial` function.
+    if (mirai::daemons_set()) {
+      inform(
+        format_message(
+          c(
+            i = sprintf(
+              "The %s package was loaded after %s daemons were already created.",
+              format_pkg("polars"),
+              format_pkg("mirai")
+            ),
+            i = sprintf(
+              "To apply the serialization config registered by %s, recreate daemons.",
+              format_pkg("polars")
+            ),
+            `*` = sprintf(
+              "Run %s to reset daemon connections, then recreate daemons with %s.",
+              format_code("mirai::daemons(0)"),
+              format_fn("mirai::daemons")
+            ),
+            i = sprintf(
+              "Suppress this message by loading %s before creating daemons (or loading %s).",
+              format_pkg("polars"),
+              format_pkg("mirai")
+            )
+          )
+        )
+      )
+    }
+
     mirai::register_serial(
       c("polars_data_frame", "polars_lazy_frame", "polars_series"),
       sfunc = list(\(x) x$serialize(), \(x) x$serialize(), \(x) x$serialize()),
