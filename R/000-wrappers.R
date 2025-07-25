@@ -652,8 +652,8 @@ class(`PlRChainedWhen`) <- c("PlRChainedWhen__bundle", "savvy_polars__sealed")
 }
 
 `PlRDataFrame_to_dummies` <- function(self) {
-  function(`drop_first`, `columns` = NULL, `separator` = NULL) {
-    .savvy_wrap_PlRDataFrame(.Call(savvy_PlRDataFrame_to_dummies__impl, `self`, `drop_first`, `columns`, `separator`))
+  function(`drop_first`, `drop_nulls`, `columns` = NULL, `separator` = NULL) {
+    .savvy_wrap_PlRDataFrame(.Call(savvy_PlRDataFrame_to_dummies__impl, `self`, `drop_first`, `drop_nulls`, `columns`, `separator`))
   }
 }
 
@@ -863,6 +863,7 @@ class(`PlRDataFrame`) <- c("PlRDataFrame__bundle", "savvy_polars__sealed")
 }
 
 `PlRDataType`$`new_enum` <- function(`categories`) {
+  `categories` <- .savvy_extract_ptr(`categories`, "PlRSeries")
   .savvy_wrap_PlRDataType(.Call(savvy_PlRDataType_new_enum__impl, `categories`))
 }
 

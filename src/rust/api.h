@@ -97,7 +97,7 @@ SEXP savvy_PlRDataFrame_set_column_names__ffi(SEXP self__, SEXP c_arg__names);
 SEXP savvy_PlRDataFrame_shape__ffi(SEXP self__);
 SEXP savvy_PlRDataFrame_slice__ffi(SEXP self__, SEXP c_arg__offset, SEXP c_arg__length);
 SEXP savvy_PlRDataFrame_tail__ffi(SEXP self__, SEXP c_arg__n);
-SEXP savvy_PlRDataFrame_to_dummies__ffi(SEXP self__, SEXP c_arg__drop_first, SEXP c_arg__columns, SEXP c_arg__separator);
+SEXP savvy_PlRDataFrame_to_dummies__ffi(SEXP self__, SEXP c_arg__drop_first, SEXP c_arg__drop_nulls, SEXP c_arg__columns, SEXP c_arg__separator);
 SEXP savvy_PlRDataFrame_to_series__ffi(SEXP self__, SEXP c_arg__index);
 SEXP savvy_PlRDataFrame_to_struct__ffi(SEXP self__, SEXP c_arg__name);
 SEXP savvy_PlRDataFrame_transpose__ffi(SEXP self__, SEXP c_arg__column_names, SEXP c_arg__keep_names_as);
