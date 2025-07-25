@@ -470,7 +470,7 @@ SEXP savvy_PlRExpr_str_tail__ffi(SEXP self__, SEXP c_arg__n);
 SEXP savvy_PlRExpr_str_to_date__ffi(SEXP self__, SEXP c_arg__strict, SEXP c_arg__exact, SEXP c_arg__cache, SEXP c_arg__format);
 SEXP savvy_PlRExpr_str_to_datetime__ffi(SEXP self__, SEXP c_arg__strict, SEXP c_arg__exact, SEXP c_arg__cache, SEXP c_arg__ambiguous, SEXP c_arg__format, SEXP c_arg__time_unit, SEXP c_arg__time_zone);
 SEXP savvy_PlRExpr_str_to_decimal__ffi(SEXP self__, SEXP c_arg__infer_len);
-SEXP savvy_PlRExpr_str_to_integer__ffi(SEXP self__, SEXP c_arg__base, SEXP c_arg__strict);
+SEXP savvy_PlRExpr_str_to_integer__ffi(SEXP self__, SEXP c_arg__base, SEXP c_arg__strict, SEXP c_arg__dtype);
 SEXP savvy_PlRExpr_str_to_lowercase__ffi(SEXP self__);
 SEXP savvy_PlRExpr_str_to_time__ffi(SEXP self__, SEXP c_arg__strict, SEXP c_arg__cache, SEXP c_arg__format);
 SEXP savvy_PlRExpr_str_to_titlecase__ffi(SEXP self__);

@@ -8,7 +8,7 @@ use savvy::{
     ListSexp, LogicalSexp, NumericScalar, OwnedListSexp, OwnedStringSexp, Result, Sexp, StringSexp,
     savvy,
 };
-use std::{num::NonZeroUsize};
+use std::num::NonZeroUsize;
 
 #[savvy]
 impl PlRLazyFrame {

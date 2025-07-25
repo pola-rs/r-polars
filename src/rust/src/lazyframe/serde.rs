@@ -9,7 +9,7 @@ impl PlRLazyFrame {
         let writer = BufWriter::new(&mut dump);
         self.ldf
             .logical_plan
-            .serialize_versioned(writer)
+            .serialize_versioned(writer, Default::default())
             .map_err(RPolarsErr::from)?;
         dump.try_into()
     }

@@ -376,12 +376,17 @@ impl PlRExpr {
             .into())
     }
 
-    fn str_to_integer(&self, base: &PlRExpr, strict: bool) -> Result<Self> {
+    fn str_to_integer(
+        &self,
+        base: &PlRExpr,
+        strict: bool,
+        dtype: Option<&PlRDataType>,
+    ) -> Result<Self> {
         Ok(self
             .inner
             .clone()
             .str()
-            .to_integer(base.inner.clone(), strict)
+            .to_integer(base.inner.clone(), dtype.map(|x| x.dt.clone()), strict)
             .into())
     }
 

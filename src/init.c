@@ -2334,8 +2334,8 @@ SEXP savvy_PlRExpr_str_to_decimal__impl(SEXP self__, SEXP c_arg__infer_len) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_str_to_integer__impl(SEXP self__, SEXP c_arg__base, SEXP c_arg__strict) {
-    SEXP res = savvy_PlRExpr_str_to_integer__ffi(self__, c_arg__base, c_arg__strict);
+SEXP savvy_PlRExpr_str_to_integer__impl(SEXP self__, SEXP c_arg__base, SEXP c_arg__strict, SEXP c_arg__dtype) {
+    SEXP res = savvy_PlRExpr_str_to_integer__ffi(self__, c_arg__base, c_arg__strict, c_arg__dtype);
     return handle_result(res);
 }
 
@@ -3536,7 +3536,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_str_to_date__impl", (DL_FUNC) &savvy_PlRExpr_str_to_date__impl, 5},
     {"savvy_PlRExpr_str_to_datetime__impl", (DL_FUNC) &savvy_PlRExpr_str_to_datetime__impl, 8},
     {"savvy_PlRExpr_str_to_decimal__impl", (DL_FUNC) &savvy_PlRExpr_str_to_decimal__impl, 2},
-    {"savvy_PlRExpr_str_to_integer__impl", (DL_FUNC) &savvy_PlRExpr_str_to_integer__impl, 3},
+    {"savvy_PlRExpr_str_to_integer__impl", (DL_FUNC) &savvy_PlRExpr_str_to_integer__impl, 4},
     {"savvy_PlRExpr_str_to_lowercase__impl", (DL_FUNC) &savvy_PlRExpr_str_to_lowercase__impl, 1},
     {"savvy_PlRExpr_str_to_time__impl", (DL_FUNC) &savvy_PlRExpr_str_to_time__impl, 4},
     {"savvy_PlRExpr_str_to_titlecase__impl", (DL_FUNC) &savvy_PlRExpr_str_to_titlecase__impl, 1},

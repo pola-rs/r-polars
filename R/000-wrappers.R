@@ -3070,9 +3070,10 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_polars__sealed")
 }
 
 `PlRExpr_str_to_integer` <- function(self) {
-  function(`base`, `strict`) {
+  function(`base`, `strict`, `dtype` = NULL) {
     `base` <- .savvy_extract_ptr(`base`, "PlRExpr")
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_str_to_integer__impl, `self`, `base`, `strict`))
+    `dtype` <- .savvy_extract_ptr(`dtype`, "PlRDataType")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_str_to_integer__impl, `self`, `base`, `strict`, `dtype`))
   }
 }
 
