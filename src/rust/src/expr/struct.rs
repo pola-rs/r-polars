@@ -1,4 +1,4 @@
-use crate::{PlRExpr, error::RPolarsErr, prelude::*};
+use crate::{PlRExpr, prelude::*};
 use savvy::{ListSexp, NumericScalar, Result, StringSexp, savvy};
 
 #[savvy]
