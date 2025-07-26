@@ -3648,19 +3648,22 @@ class(`PlRExpr`) <- c("PlRExpr__bundle", "savvy_polars__sealed")
 
 `PlRLazyFrame_drop_nans` <- function(self) {
   function(`subset` = NULL) {
+    `subset` <- .savvy_extract_ptr(`subset`, "PlRSelector")
     .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_drop_nans__impl, `self`, `subset`))
   }
 }
 
 `PlRLazyFrame_drop_nulls` <- function(self) {
   function(`subset` = NULL) {
+    `subset` <- .savvy_extract_ptr(`subset`, "PlRSelector")
     .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_drop_nulls__impl, `self`, `subset`))
   }
 }
 
 `PlRLazyFrame_explode` <- function(self) {
-  function(`column`) {
-    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_explode__impl, `self`, `column`))
+  function(`subset`) {
+    `subset` <- .savvy_extract_ptr(`subset`, "PlRSelector")
+    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_explode__impl, `self`, `subset`))
   }
 }
 
@@ -3896,12 +3899,14 @@ class(`PlRExpr`) <- c("PlRExpr__bundle", "savvy_polars__sealed")
 
 `PlRLazyFrame_unique` <- function(self) {
   function(`maintain_order`, `keep`, `subset` = NULL) {
+    `subset` <- .savvy_extract_ptr(`subset`, "PlRSelector")
     .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_unique__impl, `self`, `maintain_order`, `keep`, `subset`))
   }
 }
 
 `PlRLazyFrame_unnest` <- function(self) {
   function(`columns`) {
+    `columns` <- .savvy_extract_ptr(`columns`, "PlRSelector")
     .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_unnest__impl, `self`, `columns`))
   }
 }

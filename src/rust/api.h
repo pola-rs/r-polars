@@ -504,7 +504,7 @@ SEXP savvy_PlRLazyFrame_deserialize_binary__ffi(SEXP c_arg__data);
 SEXP savvy_PlRLazyFrame_drop__ffi(SEXP self__, SEXP c_arg__columns);
 SEXP savvy_PlRLazyFrame_drop_nans__ffi(SEXP self__, SEXP c_arg__subset);
 SEXP savvy_PlRLazyFrame_drop_nulls__ffi(SEXP self__, SEXP c_arg__subset);
-SEXP savvy_PlRLazyFrame_explode__ffi(SEXP self__, SEXP c_arg__column);
+SEXP savvy_PlRLazyFrame_explode__ffi(SEXP self__, SEXP c_arg__subset);
 SEXP savvy_PlRLazyFrame_fill_nan__ffi(SEXP self__, SEXP c_arg__fill_value);
 SEXP savvy_PlRLazyFrame_filter__ffi(SEXP self__, SEXP c_arg__predicate);
 SEXP savvy_PlRLazyFrame_group_by__ffi(SEXP self__, SEXP c_arg__by, SEXP c_arg__maintain_order);

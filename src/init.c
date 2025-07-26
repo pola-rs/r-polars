@@ -2494,8 +2494,8 @@ SEXP savvy_PlRLazyFrame_drop_nulls__impl(SEXP self__, SEXP c_arg__subset) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRLazyFrame_explode__impl(SEXP self__, SEXP c_arg__column) {
-    SEXP res = savvy_PlRLazyFrame_explode__ffi(self__, c_arg__column);
+SEXP savvy_PlRLazyFrame_explode__impl(SEXP self__, SEXP c_arg__subset) {
+    SEXP res = savvy_PlRLazyFrame_explode__ffi(self__, c_arg__subset);
     return handle_result(res);
 }
 
