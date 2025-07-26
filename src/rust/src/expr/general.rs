@@ -1019,16 +1019,6 @@ impl PlRExpr {
         Ok(self.inner.clone().rolling(options).into())
     }
 
-    fn exclude(&self, columns: StringSexp) -> Result<Self> {
-        let columns = columns.to_vec();
-        Ok(self.inner.clone().exclude(columns).into())
-    }
-
-    fn exclude_dtype(&self, dtypes: ListSexp) -> Result<Self> {
-        let dtypes = <Wrap<Vec<DataType>>>::try_from(dtypes)?.0;
-        Ok(self.inner.clone().exclude_dtype(dtypes).into())
-    }
-
     #[allow(clippy::wrong_self_convention)]
     fn into_selector(&self) -> Result<PlRSelector> {
         self.inner
