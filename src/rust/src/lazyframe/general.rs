@@ -424,13 +424,15 @@ impl PlRLazyFrame {
         let left_by = left_by.map(|x| x.to_vec().into_iter().map(|y| y.into()).collect());
         let right_by = right_by.map(|x| x.to_vec().into_iter().map(|y| y.into()).collect());
         let tolerance = match tolerance {
-            Some(x) => Some(
-                x.series
+            Some(s) => {
+                let av = s
+                    .series
                     .clone()
                     .get(0)
                     .map_err(RPolarsErr::from)?
-                    .into_static(),
-            ),
+                    .into_static();
+                Some(Scalar::new(av.dtype(), av))
+            }
             None => None,
         };
         Ok(ldf
@@ -441,7 +443,7 @@ impl PlRLazyFrame {
             .allow_parallel(allow_parallel)
             .force_parallel(force_parallel)
             .coalesce(coalesce)
-            .how(JoinType::AsOf(AsOfOptions {
+            .how(JoinType::AsOf(Box::new(AsOfOptions {
                 strategy,
                 left_by,
                 right_by,
@@ -449,7 +451,7 @@ impl PlRLazyFrame {
                 tolerance_str: tolerance_str.map(|s| s.into()),
                 allow_eq,
                 check_sortedness,
-            }))
+            })))
             .suffix(suffix)
             .finish()
             .into())
