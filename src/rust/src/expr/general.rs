@@ -170,17 +170,7 @@ impl PlRExpr {
     }
 
     fn arg_sort(&self, descending: bool, nulls_last: bool) -> Result<Self> {
-        Ok(self
-            .inner
-            .clone()
-            .arg_sort(SortOptions {
-                descending,
-                nulls_last,
-                multithreaded: true,
-                maintain_order: false,
-                limit: None,
-            })
-            .into())
+        Ok(self.inner.clone().arg_sort(descending, nulls_last).into())
     }
 
     fn sort_by(
