@@ -1,4 +1,4 @@
-use crate::map::lazy::map_single;
+use super::selector::PlRSelector;
 use crate::{PlRDataType, PlRExpr, RPolarsErr, prelude::*};
 use polars::lazy::dsl;
 use polars::series::ops::NullBehavior;
@@ -293,7 +293,7 @@ impl PlRExpr {
     fn map_batches(&self, lambda: FunctionSexp, output_type: Option<&PlRDataType>) -> Result<Self> {
         #[cfg(not(target_arch = "wasm32"))]
         {
-            map_single(self, lambda, output_type)
+            crate::map::lazy::map_single(self, lambda, output_type)
         }
         #[cfg(target_arch = "wasm32")]
         {
@@ -1027,5 +1027,22 @@ impl PlRExpr {
     fn exclude_dtype(&self, dtypes: ListSexp) -> Result<Self> {
         let dtypes = <Wrap<Vec<DataType>>>::try_from(dtypes)?.0;
         Ok(self.inner.clone().exclude_dtype(dtypes).into())
+    }
+
+    #[allow(clippy::wrong_self_convention)]
+    fn into_selector(&self) -> Result<PlRSelector> {
+        self.inner
+            .clone()
+            .into_selector()
+            .ok_or_else(
+                || polars_err!(InvalidOperation: "expr `{}` is not a selector", &self.inner),
+            )
+            .map_err(RPolarsErr::from)
+            .map_err(Into::into)
+            .map(PlRSelector::from)
+    }
+
+    fn new_selector(selector: PlRSelector) -> Result<Self> {
+        Ok(Expr::Selector(selector.inner).into())
     }
 }
