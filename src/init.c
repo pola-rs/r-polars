@@ -2839,6 +2839,146 @@ SEXP savvy_PlRSQLContext_unregister__impl(SEXP self__, SEXP c_arg__name) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRSelector_all__impl(void) {
+    SEXP res = savvy_PlRSelector_all__ffi();
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSelector_array__impl(SEXP c_arg__inner_dst, SEXP c_arg__width) {
+    SEXP res = savvy_PlRSelector_array__ffi(c_arg__inner_dst, c_arg__width);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSelector_by_dtype__impl(SEXP c_arg__dtypes) {
+    SEXP res = savvy_PlRSelector_by_dtype__ffi(c_arg__dtypes);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSelector_by_index__impl(SEXP c_arg__indices, SEXP c_arg__strict) {
+    SEXP res = savvy_PlRSelector_by_index__ffi(c_arg__indices, c_arg__strict);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSelector_by_name__impl(SEXP c_arg__names, SEXP c_arg__strict) {
+    SEXP res = savvy_PlRSelector_by_name__ffi(c_arg__names, c_arg__strict);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSelector_categorical__impl(void) {
+    SEXP res = savvy_PlRSelector_categorical__ffi();
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSelector_datetime__impl(SEXP c_arg__time_unit, SEXP c_arg__time_zone) {
+    SEXP res = savvy_PlRSelector_datetime__ffi(c_arg__time_unit, c_arg__time_zone);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSelector_decimal__impl(void) {
+    SEXP res = savvy_PlRSelector_decimal__ffi();
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSelector_difference__impl(SEXP self__, SEXP c_arg__other) {
+    SEXP res = savvy_PlRSelector_difference__ffi(self__, c_arg__other);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSelector_duration__impl(SEXP c_arg__time_unit) {
+    SEXP res = savvy_PlRSelector_duration__ffi(c_arg__time_unit);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSelector_empty__impl(void) {
+    SEXP res = savvy_PlRSelector_empty__ffi();
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSelector_exclusive_or__impl(SEXP self__, SEXP c_arg__other) {
+    SEXP res = savvy_PlRSelector_exclusive_or__ffi(self__, c_arg__other);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSelector_first__impl(SEXP c_arg__strict) {
+    SEXP res = savvy_PlRSelector_first__ffi(c_arg__strict);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSelector_float__impl(void) {
+    SEXP res = savvy_PlRSelector_float__ffi();
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSelector_hash__impl(SEXP self__) {
+    SEXP res = savvy_PlRSelector_hash__ffi(self__);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSelector_integer__impl(void) {
+    SEXP res = savvy_PlRSelector_integer__ffi();
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSelector_intersect__impl(SEXP self__, SEXP c_arg__other) {
+    SEXP res = savvy_PlRSelector_intersect__ffi(self__, c_arg__other);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSelector_last__impl(SEXP c_arg__strict) {
+    SEXP res = savvy_PlRSelector_last__ffi(c_arg__strict);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSelector_list__impl(SEXP c_arg__inner_dst) {
+    SEXP res = savvy_PlRSelector_list__ffi(c_arg__inner_dst);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSelector_matches__impl(SEXP c_arg__pattern) {
+    SEXP res = savvy_PlRSelector_matches__ffi(c_arg__pattern);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSelector_nested__impl(void) {
+    SEXP res = savvy_PlRSelector_nested__ffi();
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSelector_numeric__impl(void) {
+    SEXP res = savvy_PlRSelector_numeric__ffi();
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSelector_enum__impl(void) {
+    SEXP res = savvy_PlRSelector_enum__ffi();
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSelector_struct__impl(void) {
+    SEXP res = savvy_PlRSelector_struct__ffi();
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSelector_signed_integer__impl(void) {
+    SEXP res = savvy_PlRSelector_signed_integer__ffi();
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSelector_temporal__impl(void) {
+    SEXP res = savvy_PlRSelector_temporal__ffi();
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSelector_union__impl(SEXP self__, SEXP c_arg__other) {
+    SEXP res = savvy_PlRSelector_union__ffi(self__, c_arg__other);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSelector_unsigned_integer__impl(void) {
+    SEXP res = savvy_PlRSelector_unsigned_integer__ffi();
+    return handle_result(res);
+}
+
 SEXP savvy_PlRSeries_add__impl(SEXP self__, SEXP c_arg__other) {
     SEXP res = savvy_PlRSeries_add__ffi(self__, c_arg__other);
     return handle_result(res);
@@ -3637,6 +3777,34 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRSQLContext_new__impl", (DL_FUNC) &savvy_PlRSQLContext_new__impl, 0},
     {"savvy_PlRSQLContext_register__impl", (DL_FUNC) &savvy_PlRSQLContext_register__impl, 3},
     {"savvy_PlRSQLContext_unregister__impl", (DL_FUNC) &savvy_PlRSQLContext_unregister__impl, 2},
+    {"savvy_PlRSelector_all__impl", (DL_FUNC) &savvy_PlRSelector_all__impl, 0},
+    {"savvy_PlRSelector_array__impl", (DL_FUNC) &savvy_PlRSelector_array__impl, 2},
+    {"savvy_PlRSelector_by_dtype__impl", (DL_FUNC) &savvy_PlRSelector_by_dtype__impl, 1},
+    {"savvy_PlRSelector_by_index__impl", (DL_FUNC) &savvy_PlRSelector_by_index__impl, 2},
+    {"savvy_PlRSelector_by_name__impl", (DL_FUNC) &savvy_PlRSelector_by_name__impl, 2},
+    {"savvy_PlRSelector_categorical__impl", (DL_FUNC) &savvy_PlRSelector_categorical__impl, 0},
+    {"savvy_PlRSelector_datetime__impl", (DL_FUNC) &savvy_PlRSelector_datetime__impl, 2},
+    {"savvy_PlRSelector_decimal__impl", (DL_FUNC) &savvy_PlRSelector_decimal__impl, 0},
+    {"savvy_PlRSelector_difference__impl", (DL_FUNC) &savvy_PlRSelector_difference__impl, 2},
+    {"savvy_PlRSelector_duration__impl", (DL_FUNC) &savvy_PlRSelector_duration__impl, 1},
+    {"savvy_PlRSelector_empty__impl", (DL_FUNC) &savvy_PlRSelector_empty__impl, 0},
+    {"savvy_PlRSelector_exclusive_or__impl", (DL_FUNC) &savvy_PlRSelector_exclusive_or__impl, 2},
+    {"savvy_PlRSelector_first__impl", (DL_FUNC) &savvy_PlRSelector_first__impl, 1},
+    {"savvy_PlRSelector_float__impl", (DL_FUNC) &savvy_PlRSelector_float__impl, 0},
+    {"savvy_PlRSelector_hash__impl", (DL_FUNC) &savvy_PlRSelector_hash__impl, 1},
+    {"savvy_PlRSelector_integer__impl", (DL_FUNC) &savvy_PlRSelector_integer__impl, 0},
+    {"savvy_PlRSelector_intersect__impl", (DL_FUNC) &savvy_PlRSelector_intersect__impl, 2},
+    {"savvy_PlRSelector_last__impl", (DL_FUNC) &savvy_PlRSelector_last__impl, 1},
+    {"savvy_PlRSelector_list__impl", (DL_FUNC) &savvy_PlRSelector_list__impl, 1},
+    {"savvy_PlRSelector_matches__impl", (DL_FUNC) &savvy_PlRSelector_matches__impl, 1},
+    {"savvy_PlRSelector_nested__impl", (DL_FUNC) &savvy_PlRSelector_nested__impl, 0},
+    {"savvy_PlRSelector_numeric__impl", (DL_FUNC) &savvy_PlRSelector_numeric__impl, 0},
+    {"savvy_PlRSelector_enum__impl", (DL_FUNC) &savvy_PlRSelector_enum__impl, 0},
+    {"savvy_PlRSelector_struct__impl", (DL_FUNC) &savvy_PlRSelector_struct__impl, 0},
+    {"savvy_PlRSelector_signed_integer__impl", (DL_FUNC) &savvy_PlRSelector_signed_integer__impl, 0},
+    {"savvy_PlRSelector_temporal__impl", (DL_FUNC) &savvy_PlRSelector_temporal__impl, 0},
+    {"savvy_PlRSelector_union__impl", (DL_FUNC) &savvy_PlRSelector_union__impl, 2},
+    {"savvy_PlRSelector_unsigned_integer__impl", (DL_FUNC) &savvy_PlRSelector_unsigned_integer__impl, 0},
     {"savvy_PlRSeries_add__impl", (DL_FUNC) &savvy_PlRSeries_add__impl, 2},
     {"savvy_PlRSeries_as_str__impl", (DL_FUNC) &savvy_PlRSeries_as_str__impl, 1},
     {"savvy_PlRSeries_can_fast_explode_flag__impl", (DL_FUNC) &savvy_PlRSeries_can_fast_explode_flag__impl, 1},

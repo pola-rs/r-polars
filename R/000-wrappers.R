@@ -4241,6 +4241,163 @@ class(`PlRSQLContext`) <- c("PlRSQLContext__bundle", "savvy_polars__sealed")
   cat('PlRSQLContext\n')
 }
 
+### wrapper functions for PlRSelector
+
+`PlRSelector_difference` <- function(self) {
+  function(`other`) {
+    `other` <- .savvy_extract_ptr(`other`, "PlRSelector")
+    .savvy_wrap_PlRSelector(.Call(savvy_PlRSelector_difference__impl, `self`, `other`))
+  }
+}
+
+`PlRSelector_exclusive_or` <- function(self) {
+  function(`other`) {
+    `other` <- .savvy_extract_ptr(`other`, "PlRSelector")
+    .savvy_wrap_PlRSelector(.Call(savvy_PlRSelector_exclusive_or__impl, `self`, `other`))
+  }
+}
+
+`PlRSelector_hash` <- function(self) {
+  function() {
+    .Call(savvy_PlRSelector_hash__impl, `self`)
+  }
+}
+
+`PlRSelector_intersect` <- function(self) {
+  function(`other`) {
+    `other` <- .savvy_extract_ptr(`other`, "PlRSelector")
+    .savvy_wrap_PlRSelector(.Call(savvy_PlRSelector_intersect__impl, `self`, `other`))
+  }
+}
+
+`PlRSelector_union` <- function(self) {
+  function(`other`) {
+    `other` <- .savvy_extract_ptr(`other`, "PlRSelector")
+    .savvy_wrap_PlRSelector(.Call(savvy_PlRSelector_union__impl, `self`, `other`))
+  }
+}
+
+`.savvy_wrap_PlRSelector` <- function(ptr) {
+  e <- new.env(parent = emptyenv())
+  e$.ptr <- ptr
+  e$`difference` <- `PlRSelector_difference`(ptr)
+  e$`exclusive_or` <- `PlRSelector_exclusive_or`(ptr)
+  e$`hash` <- `PlRSelector_hash`(ptr)
+  e$`intersect` <- `PlRSelector_intersect`(ptr)
+  e$`union` <- `PlRSelector_union`(ptr)
+
+  class(e) <- c("PlRSelector", "savvy_polars__sealed")
+  e
+}
+
+
+
+`PlRSelector` <- new.env(parent = emptyenv())
+
+### associated functions for PlRSelector
+
+`PlRSelector`$`all` <- function() {
+  .savvy_wrap_PlRSelector(.Call(savvy_PlRSelector_all__impl))
+}
+
+`PlRSelector`$`array` <- function(`inner_dst` = NULL, `width` = NULL) {
+  `inner_dst` <- .savvy_extract_ptr(`inner_dst`, "PlRSelector")
+  .savvy_wrap_PlRSelector(.Call(savvy_PlRSelector_array__impl, `inner_dst`, `width`))
+}
+
+`PlRSelector`$`by_dtype` <- function(`dtypes`) {
+  .savvy_wrap_PlRSelector(.Call(savvy_PlRSelector_by_dtype__impl, `dtypes`))
+}
+
+`PlRSelector`$`by_index` <- function(`indices`, `strict`) {
+  .savvy_wrap_PlRSelector(.Call(savvy_PlRSelector_by_index__impl, `indices`, `strict`))
+}
+
+`PlRSelector`$`by_name` <- function(`names`, `strict`) {
+  .savvy_wrap_PlRSelector(.Call(savvy_PlRSelector_by_name__impl, `names`, `strict`))
+}
+
+`PlRSelector`$`categorical` <- function() {
+  .savvy_wrap_PlRSelector(.Call(savvy_PlRSelector_categorical__impl))
+}
+
+`PlRSelector`$`datetime` <- function(`time_unit`, `time_zone`) {
+  .savvy_wrap_PlRSelector(.Call(savvy_PlRSelector_datetime__impl, `time_unit`, `time_zone`))
+}
+
+`PlRSelector`$`decimal` <- function() {
+  .savvy_wrap_PlRSelector(.Call(savvy_PlRSelector_decimal__impl))
+}
+
+`PlRSelector`$`duration` <- function(`time_unit`) {
+  .savvy_wrap_PlRSelector(.Call(savvy_PlRSelector_duration__impl, `time_unit`))
+}
+
+`PlRSelector`$`empty` <- function() {
+  .savvy_wrap_PlRSelector(.Call(savvy_PlRSelector_empty__impl))
+}
+
+`PlRSelector`$`first` <- function(`strict`) {
+  .savvy_wrap_PlRSelector(.Call(savvy_PlRSelector_first__impl, `strict`))
+}
+
+`PlRSelector`$`float` <- function() {
+  .savvy_wrap_PlRSelector(.Call(savvy_PlRSelector_float__impl))
+}
+
+`PlRSelector`$`integer` <- function() {
+  .savvy_wrap_PlRSelector(.Call(savvy_PlRSelector_integer__impl))
+}
+
+`PlRSelector`$`last` <- function(`strict`) {
+  .savvy_wrap_PlRSelector(.Call(savvy_PlRSelector_last__impl, `strict`))
+}
+
+`PlRSelector`$`list` <- function(`inner_dst` = NULL) {
+  `inner_dst` <- .savvy_extract_ptr(`inner_dst`, "PlRSelector")
+  .savvy_wrap_PlRSelector(.Call(savvy_PlRSelector_list__impl, `inner_dst`))
+}
+
+`PlRSelector`$`matches` <- function(`pattern`) {
+  .savvy_wrap_PlRSelector(.Call(savvy_PlRSelector_matches__impl, `pattern`))
+}
+
+`PlRSelector`$`nested` <- function() {
+  .savvy_wrap_PlRSelector(.Call(savvy_PlRSelector_nested__impl))
+}
+
+`PlRSelector`$`numeric` <- function() {
+  .savvy_wrap_PlRSelector(.Call(savvy_PlRSelector_numeric__impl))
+}
+
+`PlRSelector`$`enum` <- function() {
+  .savvy_wrap_PlRSelector(.Call(savvy_PlRSelector_enum__impl))
+}
+
+`PlRSelector`$`struct` <- function() {
+  .savvy_wrap_PlRSelector(.Call(savvy_PlRSelector_struct__impl))
+}
+
+`PlRSelector`$`signed_integer` <- function() {
+  .savvy_wrap_PlRSelector(.Call(savvy_PlRSelector_signed_integer__impl))
+}
+
+`PlRSelector`$`temporal` <- function() {
+  .savvy_wrap_PlRSelector(.Call(savvy_PlRSelector_temporal__impl))
+}
+
+`PlRSelector`$`unsigned_integer` <- function() {
+  .savvy_wrap_PlRSelector(.Call(savvy_PlRSelector_unsigned_integer__impl))
+}
+
+
+class(`PlRSelector`) <- c("PlRSelector__bundle", "savvy_polars__sealed")
+
+#' @export
+`print.PlRSelector__bundle` <- function(x, ...) {
+  cat('PlRSelector\n')
+}
+
 ### wrapper functions for PlRSeries
 
 `PlRSeries_add` <- function(self) {

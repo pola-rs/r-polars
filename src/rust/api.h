@@ -580,6 +580,36 @@ SEXP savvy_PlRSQLContext_new__ffi(void);
 SEXP savvy_PlRSQLContext_register__ffi(SEXP self__, SEXP c_arg__name, SEXP c_arg__lf);
 SEXP savvy_PlRSQLContext_unregister__ffi(SEXP self__, SEXP c_arg__name);
 
+// methods and associated functions for PlRSelector
+SEXP savvy_PlRSelector_all__ffi(void);
+SEXP savvy_PlRSelector_array__ffi(SEXP c_arg__inner_dst, SEXP c_arg__width);
+SEXP savvy_PlRSelector_by_dtype__ffi(SEXP c_arg__dtypes);
+SEXP savvy_PlRSelector_by_index__ffi(SEXP c_arg__indices, SEXP c_arg__strict);
+SEXP savvy_PlRSelector_by_name__ffi(SEXP c_arg__names, SEXP c_arg__strict);
+SEXP savvy_PlRSelector_categorical__ffi(void);
+SEXP savvy_PlRSelector_datetime__ffi(SEXP c_arg__time_unit, SEXP c_arg__time_zone);
+SEXP savvy_PlRSelector_decimal__ffi(void);
+SEXP savvy_PlRSelector_difference__ffi(SEXP self__, SEXP c_arg__other);
+SEXP savvy_PlRSelector_duration__ffi(SEXP c_arg__time_unit);
+SEXP savvy_PlRSelector_empty__ffi(void);
+SEXP savvy_PlRSelector_exclusive_or__ffi(SEXP self__, SEXP c_arg__other);
+SEXP savvy_PlRSelector_first__ffi(SEXP c_arg__strict);
+SEXP savvy_PlRSelector_float__ffi(void);
+SEXP savvy_PlRSelector_hash__ffi(SEXP self__);
+SEXP savvy_PlRSelector_integer__ffi(void);
+SEXP savvy_PlRSelector_intersect__ffi(SEXP self__, SEXP c_arg__other);
+SEXP savvy_PlRSelector_last__ffi(SEXP c_arg__strict);
+SEXP savvy_PlRSelector_list__ffi(SEXP c_arg__inner_dst);
+SEXP savvy_PlRSelector_matches__ffi(SEXP c_arg__pattern);
+SEXP savvy_PlRSelector_nested__ffi(void);
+SEXP savvy_PlRSelector_numeric__ffi(void);
+SEXP savvy_PlRSelector_enum__ffi(void);
+SEXP savvy_PlRSelector_struct__ffi(void);
+SEXP savvy_PlRSelector_signed_integer__ffi(void);
+SEXP savvy_PlRSelector_temporal__ffi(void);
+SEXP savvy_PlRSelector_union__ffi(SEXP self__, SEXP c_arg__other);
+SEXP savvy_PlRSelector_unsigned_integer__ffi(void);
+
 // methods and associated functions for PlRSeries
 SEXP savvy_PlRSeries_add__ffi(SEXP self__, SEXP c_arg__other);
 SEXP savvy_PlRSeries_as_str__ffi(SEXP self__);
