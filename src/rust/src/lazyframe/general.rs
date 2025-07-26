@@ -159,8 +159,8 @@ impl PlRLazyFrame {
         Ok(ldf.tail(n).into())
     }
 
-    fn drop(&self, columns: PlRSelector) -> Result<Self> {
-        Ok(self.ldf.clone().drop(columns.inner).into())
+    fn drop(&self, columns: &PlRSelector) -> Result<Self> {
+        Ok(self.ldf.clone().drop(columns.inner.clone()).into())
     }
 
     fn cast(&self, dtypes: ListSexp, strict: bool) -> Result<Self> {
