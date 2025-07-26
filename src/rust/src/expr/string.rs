@@ -91,16 +91,24 @@ impl PlRExpr {
         Ok(self.inner.clone().str().zfill(length.inner.clone()).into())
     }
 
-    fn str_pad_end(&self, length: NumericScalar, fill_char: &str) -> Result<Self> {
-        let length = <Wrap<usize>>::try_from(length)?.0;
+    fn str_pad_end(&self, length: PlRExpr, fill_char: &str) -> Result<Self> {
         let fill_char = <Wrap<char>>::try_from(fill_char)?.0;
-        Ok(self.inner.clone().str().pad_end(length, fill_char).into())
+        Ok(self
+            .inner
+            .clone()
+            .str()
+            .pad_end(length.inner.clone(), fill_char)
+            .into())
     }
 
-    fn str_pad_start(&self, length: NumericScalar, fill_char: &str) -> Result<Self> {
-        let length = <Wrap<usize>>::try_from(length)?.0;
+    fn str_pad_start(&self, length: PlRExpr, fill_char: &str) -> Result<Self> {
         let fill_char = <Wrap<char>>::try_from(fill_char)?.0;
-        Ok(self.inner.clone().str().pad_start(length, fill_char).into())
+        Ok(self
+            .inner
+            .clone()
+            .str()
+            .pad_start(length.inner.clone(), fill_char)
+            .into())
     }
 
     fn str_to_decimal(&self, infer_len: NumericScalar) -> Result<Self> {
