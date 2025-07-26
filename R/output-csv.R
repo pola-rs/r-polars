@@ -25,6 +25,8 @@
 #' never (`FALSE`), or automatically (`NULL`) for Float32 and Float64 datatypes.
 #' @param float_precision Number of decimal places to write, applied to both
 #' Float32 and Float64 datatypes.
+#' @param decimal_comma If `TRUE`, use a comma `","` as the decimal separator
+#'   instead of a point. Floats will be encapsulated in quotes if necessary.
 #' @param null_value A string representing null values (defaulting to the empty
 #' string).
 #' @param quote_style Determines the quoting strategy used. Must be one of:
@@ -65,6 +67,7 @@ lazyframe__sink_csv <- function(
   time_format = NULL,
   float_scientific = NULL,
   float_precision = NULL,
+  decimal_comma = FALSE,
   null_value = "",
   quote_style = c("necessary", "always", "never", "non_numeric"),
   maintain_order = TRUE,
@@ -121,6 +124,7 @@ lazyframe__sink_csv <- function(
       time_format = time_format,
       float_scientific = float_scientific,
       float_precision = float_precision,
+      decimal_comma = decimal_comma,
       null_value = null_value,
       quote_style = quote_style,
       maintain_order = maintain_order,
@@ -163,6 +167,7 @@ dataframe__write_csv <- function(
   time_format = NULL,
   float_scientific = NULL,
   float_precision = NULL,
+  decimal_comma = FALSE,
   null_value = "",
   quote_style = c("necessary", "always", "never", "non_numeric"),
   storage_options = NULL,
@@ -185,6 +190,7 @@ dataframe__write_csv <- function(
       time_format = time_format,
       float_scientific = float_scientific,
       float_precision = float_precision,
+      decimal_comma = decimal_comma,
       null_value = null_value,
       quote_style = quote_style,
       storage_options = storage_options,
