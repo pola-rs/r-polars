@@ -3640,8 +3640,9 @@ class(`PlRExpr`) <- c("PlRExpr__bundle", "savvy_polars__sealed")
 }
 
 `PlRLazyFrame_drop` <- function(self) {
-  function(`columns`, `strict`) {
-    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_drop__impl, `self`, `columns`, `strict`))
+  function(`columns`) {
+    `columns` <- .savvy_extract_ptr(`columns`, "PlRSelector")
+    .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_drop__impl, `self`, `columns`))
   }
 }
 

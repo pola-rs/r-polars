@@ -1,6 +1,7 @@
 use super::sink::RSinkTarget;
 use crate::{
     PlRDataFrame, PlRDataType, PlRExpr, PlRLazyFrame, PlRLazyGroupBy, PlRSeries, RPolarsErr,
+    expr::selector::PlRSelector,
     prelude::{sync_on_close::SyncOnCloseType, *},
 };
 use polars::io::{HiveOptions, RowIndex};
@@ -158,14 +159,8 @@ impl PlRLazyFrame {
         Ok(ldf.tail(n).into())
     }
 
-    fn drop(&self, columns: ListSexp, strict: bool) -> Result<Self> {
-        let ldf = self.ldf.clone();
-        let columns = <Wrap<Vec<Expr>>>::from(columns).0;
-        if strict {
-            Ok(ldf.drop(columns).into())
-        } else {
-            Ok(ldf.drop_no_validate(columns).into())
-        }
+    fn drop(&self, columns: PlRSelector) -> Result<Self> {
+        Ok(self.ldf.clone().drop(columns.inner).into())
     }
 
     fn cast(&self, dtypes: ListSexp, strict: bool) -> Result<Self> {
