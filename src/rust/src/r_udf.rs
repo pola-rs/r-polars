@@ -40,7 +40,7 @@ pub enum RUdfSignature {
 #[derive(Debug)]
 pub enum RUdfReturn {
     Series(Series),
-    String(PlSmallStr),
+    String(String),
 }
 
 type ThreadComStorage = InitCell<RwLock<Option<ThreadCom<RUdfSignature, RUdfReturn>>>>;
@@ -68,7 +68,7 @@ impl RUdfSignature {
                 let mut args = FunctionArgs::new();
                 args.add("idx", idx)?;
                 let res: StringSexp = <Sexp>::from(r_udf.0.call(args)?).try_into()?;
-                let out: PlSmallStr = res.iter().next().ok_or("Expected a string")?.into();
+                let out: String = res.iter().next().ok_or("Expected a string")?.into();
                 Ok(RUdfReturn::String(out))
             }
         }
@@ -86,7 +86,7 @@ impl TryFrom<RUdfReturn> for Series {
     }
 }
 
-impl TryFrom<RUdfReturn> for PlSmallStr {
+impl TryFrom<RUdfReturn> for String {
     type Error = String;
 
     fn try_from(value: RUdfReturn) -> Result<Self, Self::Error> {

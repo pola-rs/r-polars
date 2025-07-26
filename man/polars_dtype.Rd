@@ -19,7 +19,7 @@ pl__Datetime(time_unit = c("us", "ns", "ms"), time_zone = NULL)
 
 pl__Duration(time_unit = c("us", "ns", "ms"))
 
-pl__Categorical(ordering = c("physical", "lexical"))
+pl__Categorical(ordering = NULL)
 
 pl__Enum(categories)
 
@@ -41,8 +41,10 @@ in each number. The default is \code{0}.}
 
 \item{time_zone}{A string or \code{NULL} (default). Representing the timezone.}
 
-\item{ordering}{One of \code{"physical"} (default) or \code{"lexical"}.
-Ordering by order of appearance (\code{"physical"}) or string value (\code{"lexical"}).}
+\item{ordering}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+One of \code{"lexical"} or \code{"physical"}.
+This argument is deprecated and ignored.
+Always behaves as if \code{"lexical"} was passed.}
 
 \item{categories}{A character vector.
 Should not contain \code{NA} values and all values should be unique.}

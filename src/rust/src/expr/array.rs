@@ -112,21 +112,20 @@ impl PlRExpr {
 
     fn arr_to_struct(&self, name_gen: Option<FunctionSexp>) -> Result<Self> {
         use crate::{
-            RPolarsErr,
             r_threads::ThreadCom,
             r_udf::{CONFIG, RUdf, RUdfSignature},
         };
-        use polars::prelude::array::ArrToStructNameGenerator;
 
         #[cfg(not(target_arch = "wasm32"))]
         let name_gen = name_gen.map(|lambda| {
             let lambda = RUdf::new(lambda);
-            Arc::new(move |idx: usize| {
-                let thread_com = ThreadCom::try_from_global(&CONFIG).unwrap();
+            PlanCallback::new(move |idx: usize| {
+                let thread_com = ThreadCom::try_from_global(&CONFIG)
+                    .map_err(|e| PolarsError::ComputeError(e.into()))?;
                 thread_com.send(RUdfSignature::Int32ToString(lambda.clone(), idx as i32));
-                let res: PlSmallStr = thread_com.recv().try_into().unwrap();
-                res
-            }) as ArrToStructNameGenerator
+                <String>::try_from(thread_com.recv())
+                    .map_err(|e| PolarsError::ComputeError(e.into()))
+            })
         });
         #[cfg(target_arch = "wasm32")]
         let name_gen = match name_gen {
@@ -139,13 +138,7 @@ impl PlRExpr {
             None => None,
         };
 
-        Ok(self
-            .inner
-            .clone()
-            .arr()
-            .to_struct(name_gen)
-            .map_err(RPolarsErr::from)?
-            .into())
+        Ok(self.inner.clone().arr().to_struct(name_gen).into())
     }
 
     fn arr_shift(&self, n: &PlRExpr) -> Result<Self> {

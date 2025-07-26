@@ -4,7 +4,7 @@
 \alias{expr_str_to_integer}
 \title{Convert a String column into an Int64 column with base radix}
 \usage{
-expr_str_to_integer(..., base = 10L, strict = TRUE)
+expr_str_to_integer(..., base = 10L, dtype = pl$Int64, strict = TRUE)
 }
 \arguments{
 \item{...}{These dots are for future extensions and must be empty.}

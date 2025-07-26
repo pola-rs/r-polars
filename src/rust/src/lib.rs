@@ -16,6 +16,7 @@ mod r_udf;
 mod series;
 mod sql;
 
+use crate::conversion::PlRCategories;
 use crate::conversion::Wrap;
 use crate::dataframe::PlRDataFrame;
 use crate::datatypes::PlRDataType;

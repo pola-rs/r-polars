@@ -241,6 +241,7 @@ impl PlRDataFrame {
     pub fn to_dummies(
         &self,
         drop_first: bool,
+        drop_nulls: bool,
         columns: Option<StringSexp>,
         separator: Option<&str>,
     ) -> Result<Self> {
@@ -249,8 +250,9 @@ impl PlRDataFrame {
                 cols.iter().map(|x| x as &str).collect(),
                 separator,
                 drop_first,
+                drop_nulls,
             ),
-            None => self.df.to_dummies(separator, drop_first),
+            None => self.df.to_dummies(separator, drop_first, drop_nulls),
         }
         .map_err(RPolarsErr::from)?;
         Ok(out.into())

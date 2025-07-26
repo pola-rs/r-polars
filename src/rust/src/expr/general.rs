@@ -1,4 +1,4 @@
-use crate::map::lazy::map_single;
+use super::selector::PlRSelector;
 use crate::{PlRDataType, PlRExpr, RPolarsErr, prelude::*};
 use polars::lazy::dsl;
 use polars::series::ops::NullBehavior;
@@ -170,17 +170,7 @@ impl PlRExpr {
     }
 
     fn arg_sort(&self, descending: bool, nulls_last: bool) -> Result<Self> {
-        Ok(self
-            .inner
-            .clone()
-            .arg_sort(SortOptions {
-                descending,
-                nulls_last,
-                multithreaded: true,
-                maintain_order: false,
-                limit: None,
-            })
-            .into())
+        Ok(self.inner.clone().arg_sort(descending, nulls_last).into())
     }
 
     fn sort_by(
@@ -303,7 +293,7 @@ impl PlRExpr {
     fn map_batches(&self, lambda: FunctionSexp, output_type: Option<&PlRDataType>) -> Result<Self> {
         #[cfg(not(target_arch = "wasm32"))]
         {
-            map_single(self, lambda, output_type)
+            crate::map::lazy::map_single(self, lambda, output_type)
         }
         #[cfg(target_arch = "wasm32")]
         {
@@ -1029,13 +1019,20 @@ impl PlRExpr {
         Ok(self.inner.clone().rolling(options).into())
     }
 
-    fn exclude(&self, columns: StringSexp) -> Result<Self> {
-        let columns = columns.to_vec();
-        Ok(self.inner.clone().exclude(columns).into())
+    #[allow(clippy::wrong_self_convention)]
+    fn into_selector(&self) -> Result<PlRSelector> {
+        self.inner
+            .clone()
+            .into_selector()
+            .ok_or_else(
+                || polars_err!(InvalidOperation: "expr `{}` is not a selector", &self.inner),
+            )
+            .map_err(RPolarsErr::from)
+            .map_err(Into::into)
+            .map(PlRSelector::from)
     }
 
-    fn exclude_dtype(&self, dtypes: ListSexp) -> Result<Self> {
-        let dtypes = <Wrap<Vec<DataType>>>::try_from(dtypes)?.0;
-        Ok(self.inner.clone().exclude_dtype(dtypes).into())
+    fn new_selector(selector: &PlRSelector) -> Result<Self> {
+        Ok(Expr::Selector(selector.inner.clone()).into())
     }
 }

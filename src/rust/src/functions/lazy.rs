@@ -1,7 +1,7 @@
 use crate::{PlRDataFrame, PlRDataType, PlRExpr, PlRLazyFrame, PlRSeries, RPolarsErr, prelude::*};
 use polars::functions;
 use polars::lazy::dsl;
-use savvy::{ListSexp, LogicalSexp, NumericSexp, RawSexp, Result, StringSexp, savvy};
+use savvy::{ListSexp, LogicalSexp, RawSexp, Result, StringSexp, savvy};
 
 macro_rules! set_unwrapped_or_0 {
     ($($var:ident),+ $(,)?) => {
@@ -111,35 +111,7 @@ pub fn col(name: &str) -> Result<PlRExpr> {
 #[savvy]
 pub fn cols(names: StringSexp) -> Result<PlRExpr> {
     let names = names.iter().collect::<Vec<_>>();
-    Ok(dsl::cols(names).into())
-}
-
-#[savvy]
-pub fn dtype_cols(dtypes: ListSexp) -> Result<PlRExpr> {
-    let dtypes = <Wrap<Vec<DataType>>>::try_from(dtypes)?.0;
-    Ok(dsl::dtype_cols(&dtypes).into())
-}
-
-#[savvy]
-pub fn index_cols(indices: NumericSexp) -> Result<PlRExpr> {
-    let indices = <Wrap<Vec<i64>>>::try_from(indices)?.0;
-    let out = if indices.len() == 1 {
-        dsl::nth(indices[0])
-    } else {
-        dsl::index_cols(indices)
-    }
-    .into();
-    Ok(out)
-}
-
-#[savvy]
-pub fn first() -> Result<PlRExpr> {
-    Ok(dsl::first().into())
-}
-
-#[savvy]
-pub fn last() -> Result<PlRExpr> {
-    Ok(dsl::last().into())
+    Ok(dsl::cols(names).as_expr().into())
 }
 
 #[savvy]

@@ -99,8 +99,9 @@ expr_meta__selector_xor <- function(other) {
     wrap()
 }
 
-expr_meta__as_selector <- function() {
-  self$`_rexpr`$`_meta_as_selector`() |>
+# TODO: document
+expr_meta_as_selector <- function() {
+  self$`_rexpr`$into_selector() |>
     wrap()
 }
 

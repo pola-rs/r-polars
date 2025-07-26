@@ -1025,10 +1025,10 @@ expr_str_slice <- function(offset, length = NULL) {
 #' df$with_columns(
 #'   parsed = pl$col("hex")$str$to_integer(base = 16, strict = TRUE)
 #' )
-expr_str_to_integer <- function(..., base = 10L, strict = TRUE) {
+expr_str_to_integer <- function(..., base = 10L, dtype = pl$Int64, strict = TRUE) {
   wrap({
     check_dots_empty0(...)
-    self$`_rexpr`$str_to_integer(as_polars_expr(base)$`_rexpr`, strict)
+    self$`_rexpr`$str_to_integer(as_polars_expr(base)$`_rexpr`, strict, dtype$`_dt`)
   })
 }
 
