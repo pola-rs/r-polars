@@ -605,10 +605,15 @@ impl PlRLazyFrame {
         Ok(ldf.null_count().into())
     }
 
-    fn unique(&self, maintain_order: bool, keep: &str, subset: Option<ListSexp>) -> Result<Self> {
+    fn unique(
+        &self,
+        maintain_order: bool,
+        keep: &str,
+        subset: Option<&PlRSelector>,
+    ) -> Result<Self> {
         let ldf = self.ldf.clone();
         let keep = <Wrap<UniqueKeepStrategy>>::try_from(keep)?.0;
-        let subset = subset.map(|e| <Wrap<Vec<Expr>>>::from(e).0);
+        let subset = subset.map(|e| e.inner.clone());
         let out = match maintain_order {
             true => ldf.unique_stable_generic(subset, keep),
             false => ldf.unique_generic(subset, keep),
@@ -616,15 +621,15 @@ impl PlRLazyFrame {
         Ok(out.into())
     }
 
-    fn drop_nulls(&self, subset: Option<ListSexp>) -> Result<Self> {
+    fn drop_nulls(&self, subset: Option<&PlRSelector>) -> Result<Self> {
         let ldf = self.ldf.clone();
-        let subset = subset.map(|e| <Wrap<Vec<Expr>>>::from(e).0);
+        let subset = subset.map(|e| e.inner.clone());
         Ok(ldf.drop_nulls(subset).into())
     }
 
-    fn drop_nans(&self, subset: Option<ListSexp>) -> Result<Self> {
+    fn drop_nans(&self, subset: Option<&PlRSelector>) -> Result<Self> {
         let ldf = self.ldf.clone();
-        let subset = subset.map(|e| <Wrap<Vec<Expr>>>::from(e).0);
+        let subset = subset.map(|e| e.inner.clone());
         Ok(ldf.drop_nans(subset).into())
     }
 
@@ -657,40 +662,12 @@ impl PlRLazyFrame {
         Ok(ldf.with_row_index(name, offset).into())
     }
 
-    // fn map_batches(
-    //     &self,
-    //     lambda: PyObject,
-    //     predicate_pushdown: bool,
-    //     projection_pushdown: bool,
-    //     slice_pushdown: bool,
-    //     streamable: bool,
-    //     schema: Option<Wrap<Schema>>,
-    //     validate_output: bool,
-    // ) -> Result<Self> {
-    //     let mut opt = OptFlags::default();
-    //     opt.set(OptFlags::PREDICATE_PUSHDOWN, predicate_pushdown);
-    //     opt.set(OptFlags::PROJECTION_PUSHDOWN, projection_pushdown);
-    //     opt.set(OptFlags::SLICE_PUSHDOWN, slice_pushdown);
-    //     opt.set(OptFlags::STREAMING, streamable);
-
-    //     self.ldf
-    //         .clone()
-    //         .map_python(
-    //             lambda.into(),
-    //             opt,
-    //             schema.map(|s| Arc::new(s.0)),
-    //             validate_output,
-    //         )
-    //         .into()
-    // }
-
     fn clone(&self) -> Result<Self> {
         Ok(self.ldf.clone().into())
     }
 
-    fn unnest(&self, columns: ListSexp) -> Result<Self> {
-        let columns = <Wrap<Vec<Expr>>>::from(columns).0;
-        Ok(self.ldf.clone().unnest(columns).into())
+    fn unnest(&self, columns: &PlRSelector) -> Result<Self> {
+        Ok(self.ldf.clone().unnest(columns.inner.clone()).into())
     }
 
     fn count(&self) -> Result<Self> {
