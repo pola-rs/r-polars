@@ -596,10 +596,8 @@ impl PlRLazyFrame {
         Ok(out.into())
     }
 
-    fn explode(&self, column: ListSexp) -> Result<Self> {
-        let ldf = self.ldf.clone();
-        let column = <Wrap<Vec<Expr>>>::from(column).0;
-        Ok(ldf.explode(column).into())
+    fn explode(&self, subset: &PlRSelector) -> Result<Self> {
+        Ok(self.ldf.clone().explode(subset.inner.clone()).into())
     }
 
     fn null_count(&self) -> Result<Self> {
