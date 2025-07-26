@@ -126,11 +126,6 @@ SEXP savvy_PlRDataType_new_list__ffi(SEXP c_arg__inner);
 SEXP savvy_PlRDataType_new_struct__ffi(SEXP c_arg__fields);
 
 // methods and associated functions for PlRExpr
-SEXP savvy_PlRExpr__meta_as_selector__ffi(SEXP self__);
-SEXP savvy_PlRExpr__meta_selector_add__ffi(SEXP self__, SEXP c_arg__other);
-SEXP savvy_PlRExpr__meta_selector_and__ffi(SEXP self__, SEXP c_arg__other);
-SEXP savvy_PlRExpr__meta_selector_sub__ffi(SEXP self__, SEXP c_arg__other);
-SEXP savvy_PlRExpr__meta_selector_xor__ffi(SEXP self__, SEXP c_arg__other);
 SEXP savvy_PlRExpr_abs__ffi(SEXP self__);
 SEXP savvy_PlRExpr_add__ffi(SEXP self__, SEXP c_arg__rhs);
 SEXP savvy_PlRExpr_agg_groups__ffi(SEXP self__);
@@ -265,8 +260,6 @@ SEXP savvy_PlRExpr_ewm_mean__ffi(SEXP self__, SEXP c_arg__alpha, SEXP c_arg__adj
 SEXP savvy_PlRExpr_ewm_mean_by__ffi(SEXP self__, SEXP c_arg__times, SEXP c_arg__half_life);
 SEXP savvy_PlRExpr_ewm_std__ffi(SEXP self__, SEXP c_arg__alpha, SEXP c_arg__adjust, SEXP c_arg__bias, SEXP c_arg__min_samples, SEXP c_arg__ignore_nulls);
 SEXP savvy_PlRExpr_ewm_var__ffi(SEXP self__, SEXP c_arg__alpha, SEXP c_arg__adjust, SEXP c_arg__bias, SEXP c_arg__min_samples, SEXP c_arg__ignore_nulls);
-SEXP savvy_PlRExpr_exclude__ffi(SEXP self__, SEXP c_arg__columns);
-SEXP savvy_PlRExpr_exclude_dtype__ffi(SEXP self__, SEXP c_arg__dtypes);
 SEXP savvy_PlRExpr_exp__ffi(SEXP self__);
 SEXP savvy_PlRExpr_explode__ffi(SEXP self__);
 SEXP savvy_PlRExpr_extend_constant__ffi(SEXP self__, SEXP c_arg__value, SEXP c_arg__n);
@@ -287,6 +280,7 @@ SEXP savvy_PlRExpr_hist__ffi(SEXP self__, SEXP c_arg__include_category, SEXP c_a
 SEXP savvy_PlRExpr_implode__ffi(SEXP self__);
 SEXP savvy_PlRExpr_interpolate__ffi(SEXP self__, SEXP c_arg__method);
 SEXP savvy_PlRExpr_interpolate_by__ffi(SEXP self__, SEXP c_arg__by);
+SEXP savvy_PlRExpr_into_selector__ffi(SEXP self__);
 SEXP savvy_PlRExpr_is_between__ffi(SEXP self__, SEXP c_arg__lower, SEXP c_arg__upper, SEXP c_arg__closed);
 SEXP savvy_PlRExpr_is_duplicated__ffi(SEXP self__);
 SEXP savvy_PlRExpr_is_finite__ffi(SEXP self__);
@@ -369,6 +363,7 @@ SEXP savvy_PlRExpr_nan_min__ffi(SEXP self__);
 SEXP savvy_PlRExpr_neg__ffi(SEXP self__);
 SEXP savvy_PlRExpr_neq__ffi(SEXP self__, SEXP c_arg__other);
 SEXP savvy_PlRExpr_neq_missing__ffi(SEXP self__, SEXP c_arg__other);
+SEXP savvy_PlRExpr_new_selector__ffi(SEXP c_arg__selector);
 SEXP savvy_PlRExpr_not__ffi(SEXP self__);
 SEXP savvy_PlRExpr_null_count__ffi(SEXP self__);
 SEXP savvy_PlRExpr_or__ffi(SEXP self__, SEXP c_arg__other);

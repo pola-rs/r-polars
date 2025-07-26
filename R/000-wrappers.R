@@ -890,40 +890,6 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_polars__sealed")
 
 ### wrapper functions for PlRExpr
 
-`PlRExpr__meta_as_selector` <- function(self) {
-  function() {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr__meta_as_selector__impl, `self`))
-  }
-}
-
-`PlRExpr__meta_selector_add` <- function(self) {
-  function(`other`) {
-    `other` <- .savvy_extract_ptr(`other`, "PlRExpr")
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr__meta_selector_add__impl, `self`, `other`))
-  }
-}
-
-`PlRExpr__meta_selector_and` <- function(self) {
-  function(`other`) {
-    `other` <- .savvy_extract_ptr(`other`, "PlRExpr")
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr__meta_selector_and__impl, `self`, `other`))
-  }
-}
-
-`PlRExpr__meta_selector_sub` <- function(self) {
-  function(`other`) {
-    `other` <- .savvy_extract_ptr(`other`, "PlRExpr")
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr__meta_selector_sub__impl, `self`, `other`))
-  }
-}
-
-`PlRExpr__meta_selector_xor` <- function(self) {
-  function(`other`) {
-    `other` <- .savvy_extract_ptr(`other`, "PlRExpr")
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr__meta_selector_xor__impl, `self`, `other`))
-  }
-}
-
 `PlRExpr_abs` <- function(self) {
   function() {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_abs__impl, `self`))
@@ -1746,18 +1712,6 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_polars__sealed")
   }
 }
 
-`PlRExpr_exclude` <- function(self) {
-  function(`columns`) {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_exclude__impl, `self`, `columns`))
-  }
-}
-
-`PlRExpr_exclude_dtype` <- function(self) {
-  function(`dtypes`) {
-    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_exclude_dtype__impl, `self`, `dtypes`))
-  }
-}
-
 `PlRExpr_exp` <- function(self) {
   function() {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_exp__impl, `self`))
@@ -1887,6 +1841,12 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_polars__sealed")
   function(`by`) {
     `by` <- .savvy_extract_ptr(`by`, "PlRExpr")
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_interpolate_by__impl, `self`, `by`))
+  }
+}
+
+`PlRExpr_into_selector` <- function(self) {
+  function() {
+    .savvy_wrap_PlRSelector(.Call(savvy_PlRExpr_into_selector__impl, `self`))
   }
 }
 
@@ -3229,11 +3189,6 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_polars__sealed")
 `.savvy_wrap_PlRExpr` <- function(ptr) {
   e <- new.env(parent = emptyenv())
   e$.ptr <- ptr
-  e$`_meta_as_selector` <- `PlRExpr__meta_as_selector`(ptr)
-  e$`_meta_selector_add` <- `PlRExpr__meta_selector_add`(ptr)
-  e$`_meta_selector_and` <- `PlRExpr__meta_selector_and`(ptr)
-  e$`_meta_selector_sub` <- `PlRExpr__meta_selector_sub`(ptr)
-  e$`_meta_selector_xor` <- `PlRExpr__meta_selector_xor`(ptr)
   e$`abs` <- `PlRExpr_abs`(ptr)
   e$`add` <- `PlRExpr_add`(ptr)
   e$`agg_groups` <- `PlRExpr_agg_groups`(ptr)
@@ -3366,8 +3321,6 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_polars__sealed")
   e$`ewm_mean_by` <- `PlRExpr_ewm_mean_by`(ptr)
   e$`ewm_std` <- `PlRExpr_ewm_std`(ptr)
   e$`ewm_var` <- `PlRExpr_ewm_var`(ptr)
-  e$`exclude` <- `PlRExpr_exclude`(ptr)
-  e$`exclude_dtype` <- `PlRExpr_exclude_dtype`(ptr)
   e$`exp` <- `PlRExpr_exp`(ptr)
   e$`explode` <- `PlRExpr_explode`(ptr)
   e$`extend_constant` <- `PlRExpr_extend_constant`(ptr)
@@ -3388,6 +3341,7 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_polars__sealed")
   e$`implode` <- `PlRExpr_implode`(ptr)
   e$`interpolate` <- `PlRExpr_interpolate`(ptr)
   e$`interpolate_by` <- `PlRExpr_interpolate_by`(ptr)
+  e$`into_selector` <- `PlRExpr_into_selector`(ptr)
   e$`is_between` <- `PlRExpr_is_between`(ptr)
   e$`is_duplicated` <- `PlRExpr_is_duplicated`(ptr)
   e$`is_finite` <- `PlRExpr_is_finite`(ptr)
@@ -3613,6 +3567,11 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_polars__sealed")
 
 `PlRExpr`$`deserialize_json` <- function(`data`) {
   .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_deserialize_json__impl, `data`))
+}
+
+`PlRExpr`$`new_selector` <- function(`selector`) {
+  `selector` <- .savvy_extract_ptr(`selector`, "PlRSelector")
+  .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_new_selector__impl, `selector`))
 }
 
 

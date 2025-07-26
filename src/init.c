@@ -614,31 +614,6 @@ SEXP savvy_PlRDataType_new_struct__impl(SEXP c_arg__fields) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr__meta_as_selector__impl(SEXP self__) {
-    SEXP res = savvy_PlRExpr__meta_as_selector__ffi(self__);
-    return handle_result(res);
-}
-
-SEXP savvy_PlRExpr__meta_selector_add__impl(SEXP self__, SEXP c_arg__other) {
-    SEXP res = savvy_PlRExpr__meta_selector_add__ffi(self__, c_arg__other);
-    return handle_result(res);
-}
-
-SEXP savvy_PlRExpr__meta_selector_and__impl(SEXP self__, SEXP c_arg__other) {
-    SEXP res = savvy_PlRExpr__meta_selector_and__ffi(self__, c_arg__other);
-    return handle_result(res);
-}
-
-SEXP savvy_PlRExpr__meta_selector_sub__impl(SEXP self__, SEXP c_arg__other) {
-    SEXP res = savvy_PlRExpr__meta_selector_sub__ffi(self__, c_arg__other);
-    return handle_result(res);
-}
-
-SEXP savvy_PlRExpr__meta_selector_xor__impl(SEXP self__, SEXP c_arg__other) {
-    SEXP res = savvy_PlRExpr__meta_selector_xor__ffi(self__, c_arg__other);
-    return handle_result(res);
-}
-
 SEXP savvy_PlRExpr_abs__impl(SEXP self__) {
     SEXP res = savvy_PlRExpr_abs__ffi(self__);
     return handle_result(res);
@@ -1309,16 +1284,6 @@ SEXP savvy_PlRExpr_ewm_var__impl(SEXP self__, SEXP c_arg__alpha, SEXP c_arg__adj
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_exclude__impl(SEXP self__, SEXP c_arg__columns) {
-    SEXP res = savvy_PlRExpr_exclude__ffi(self__, c_arg__columns);
-    return handle_result(res);
-}
-
-SEXP savvy_PlRExpr_exclude_dtype__impl(SEXP self__, SEXP c_arg__dtypes) {
-    SEXP res = savvy_PlRExpr_exclude_dtype__ffi(self__, c_arg__dtypes);
-    return handle_result(res);
-}
-
 SEXP savvy_PlRExpr_exp__impl(SEXP self__) {
     SEXP res = savvy_PlRExpr_exp__ffi(self__);
     return handle_result(res);
@@ -1416,6 +1381,11 @@ SEXP savvy_PlRExpr_interpolate__impl(SEXP self__, SEXP c_arg__method) {
 
 SEXP savvy_PlRExpr_interpolate_by__impl(SEXP self__, SEXP c_arg__by) {
     SEXP res = savvy_PlRExpr_interpolate_by__ffi(self__, c_arg__by);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_into_selector__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_into_selector__ffi(self__);
     return handle_result(res);
 }
 
@@ -1826,6 +1796,11 @@ SEXP savvy_PlRExpr_neq__impl(SEXP self__, SEXP c_arg__other) {
 
 SEXP savvy_PlRExpr_neq_missing__impl(SEXP self__, SEXP c_arg__other) {
     SEXP res = savvy_PlRExpr_neq_missing__ffi(self__, c_arg__other);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRExpr_new_selector__impl(SEXP c_arg__selector) {
+    SEXP res = savvy_PlRExpr_new_selector__ffi(c_arg__selector);
     return handle_result(res);
 }
 
@@ -3332,11 +3307,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRDataType_new_from_name__impl", (DL_FUNC) &savvy_PlRDataType_new_from_name__impl, 1},
     {"savvy_PlRDataType_new_list__impl", (DL_FUNC) &savvy_PlRDataType_new_list__impl, 1},
     {"savvy_PlRDataType_new_struct__impl", (DL_FUNC) &savvy_PlRDataType_new_struct__impl, 1},
-    {"savvy_PlRExpr__meta_as_selector__impl", (DL_FUNC) &savvy_PlRExpr__meta_as_selector__impl, 1},
-    {"savvy_PlRExpr__meta_selector_add__impl", (DL_FUNC) &savvy_PlRExpr__meta_selector_add__impl, 2},
-    {"savvy_PlRExpr__meta_selector_and__impl", (DL_FUNC) &savvy_PlRExpr__meta_selector_and__impl, 2},
-    {"savvy_PlRExpr__meta_selector_sub__impl", (DL_FUNC) &savvy_PlRExpr__meta_selector_sub__impl, 2},
-    {"savvy_PlRExpr__meta_selector_xor__impl", (DL_FUNC) &savvy_PlRExpr__meta_selector_xor__impl, 2},
     {"savvy_PlRExpr_abs__impl", (DL_FUNC) &savvy_PlRExpr_abs__impl, 1},
     {"savvy_PlRExpr_add__impl", (DL_FUNC) &savvy_PlRExpr_add__impl, 2},
     {"savvy_PlRExpr_agg_groups__impl", (DL_FUNC) &savvy_PlRExpr_agg_groups__impl, 1},
@@ -3471,8 +3441,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_ewm_mean_by__impl", (DL_FUNC) &savvy_PlRExpr_ewm_mean_by__impl, 3},
     {"savvy_PlRExpr_ewm_std__impl", (DL_FUNC) &savvy_PlRExpr_ewm_std__impl, 6},
     {"savvy_PlRExpr_ewm_var__impl", (DL_FUNC) &savvy_PlRExpr_ewm_var__impl, 6},
-    {"savvy_PlRExpr_exclude__impl", (DL_FUNC) &savvy_PlRExpr_exclude__impl, 2},
-    {"savvy_PlRExpr_exclude_dtype__impl", (DL_FUNC) &savvy_PlRExpr_exclude_dtype__impl, 2},
     {"savvy_PlRExpr_exp__impl", (DL_FUNC) &savvy_PlRExpr_exp__impl, 1},
     {"savvy_PlRExpr_explode__impl", (DL_FUNC) &savvy_PlRExpr_explode__impl, 1},
     {"savvy_PlRExpr_extend_constant__impl", (DL_FUNC) &savvy_PlRExpr_extend_constant__impl, 3},
@@ -3493,6 +3461,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_implode__impl", (DL_FUNC) &savvy_PlRExpr_implode__impl, 1},
     {"savvy_PlRExpr_interpolate__impl", (DL_FUNC) &savvy_PlRExpr_interpolate__impl, 2},
     {"savvy_PlRExpr_interpolate_by__impl", (DL_FUNC) &savvy_PlRExpr_interpolate_by__impl, 2},
+    {"savvy_PlRExpr_into_selector__impl", (DL_FUNC) &savvy_PlRExpr_into_selector__impl, 1},
     {"savvy_PlRExpr_is_between__impl", (DL_FUNC) &savvy_PlRExpr_is_between__impl, 4},
     {"savvy_PlRExpr_is_duplicated__impl", (DL_FUNC) &savvy_PlRExpr_is_duplicated__impl, 1},
     {"savvy_PlRExpr_is_finite__impl", (DL_FUNC) &savvy_PlRExpr_is_finite__impl, 1},
@@ -3575,6 +3544,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_neg__impl", (DL_FUNC) &savvy_PlRExpr_neg__impl, 1},
     {"savvy_PlRExpr_neq__impl", (DL_FUNC) &savvy_PlRExpr_neq__impl, 2},
     {"savvy_PlRExpr_neq_missing__impl", (DL_FUNC) &savvy_PlRExpr_neq_missing__impl, 2},
+    {"savvy_PlRExpr_new_selector__impl", (DL_FUNC) &savvy_PlRExpr_new_selector__impl, 1},
     {"savvy_PlRExpr_not__impl", (DL_FUNC) &savvy_PlRExpr_not__impl, 1},
     {"savvy_PlRExpr_null_count__impl", (DL_FUNC) &savvy_PlRExpr_null_count__impl, 1},
     {"savvy_PlRExpr_or__impl", (DL_FUNC) &savvy_PlRExpr_or__impl, 2},
