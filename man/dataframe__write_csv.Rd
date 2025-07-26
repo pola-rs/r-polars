@@ -18,6 +18,7 @@ dataframe__write_csv(
   time_format = NULL,
   float_scientific = NULL,
   float_precision = NULL,
+  decimal_comma = FALSE,
   null_value = "",
   quote_style = c("necessary", "always", "never", "non_numeric"),
   storage_options = NULL,
@@ -60,6 +61,9 @@ never (\code{FALSE}), or automatically (\code{NULL}) for Float32 and Float64 dat
 
 \item{float_precision}{Number of decimal places to write, applied to both
 Float32 and Float64 datatypes.}
+
+\item{decimal_comma}{If \code{TRUE}, use a comma \code{","} as the decimal separator
+instead of a point. Floats will be encapsulated in quotes if necessary.}
 
 \item{null_value}{A string representing null values (defaulting to the empty
 string).}
