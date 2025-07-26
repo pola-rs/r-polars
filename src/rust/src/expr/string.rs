@@ -91,7 +91,7 @@ impl PlRExpr {
         Ok(self.inner.clone().str().zfill(length.inner.clone()).into())
     }
 
-    fn str_pad_end(&self, length: PlRExpr, fill_char: &str) -> Result<Self> {
+    fn str_pad_end(&self, length: &PlRExpr, fill_char: &str) -> Result<Self> {
         let fill_char = <Wrap<char>>::try_from(fill_char)?.0;
         Ok(self
             .inner
@@ -101,7 +101,7 @@ impl PlRExpr {
             .into())
     }
 
-    fn str_pad_start(&self, length: PlRExpr, fill_char: &str) -> Result<Self> {
+    fn str_pad_start(&self, length: &PlRExpr, fill_char: &str) -> Result<Self> {
         let fill_char = <Wrap<char>>::try_from(fill_char)?.0;
         Ok(self
             .inner
