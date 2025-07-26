@@ -205,16 +205,31 @@ impl TryFrom<ListSexp> for Wrap<Vec<Field>> {
 }
 
 impl TryFrom<&str> for Wrap<TimeUnit> {
-    type Error = String;
+    type Error = savvy::Error;
 
-    fn try_from(time_unit: &str) -> Result<Self, String> {
+    fn try_from(time_unit: &str) -> Result<Self, Self::Error> {
         let time_unit = match time_unit {
             "ns" => TimeUnit::Nanoseconds,
             "us" => TimeUnit::Microseconds,
             "ms" => TimeUnit::Milliseconds,
-            _ => return Err("unreachable".to_string()),
+            _ => return Err("unreachable".into()),
         };
         Ok(Wrap(time_unit))
+    }
+}
+
+impl TryFrom<StringSexp> for Wrap<Vec<TimeUnit>> {
+    type Error = savvy::Error;
+
+    fn try_from(time_unit: StringSexp) -> Result<Self, Self::Error> {
+        let time_units = time_unit
+            .iter()
+            .map(<Wrap<TimeUnit>>::try_from)
+            .collect::<Result<Vec<_>, _>>()?
+            .into_iter()
+            .map(|wrap| wrap.0)
+            .collect::<Vec<_>>();
+        Ok(Wrap(time_units))
     }
 }
 
@@ -953,5 +968,58 @@ impl TryFrom<Option<&str>> for Wrap<Option<TimeZone>> {
             Some(tz) => <Wrap<Option<TimeZone>>>::try_from(tz),
             None => Ok(Wrap(None)),
         }
+    }
+}
+
+impl TryFrom<Sexp> for Wrap<Vec<Option<TimeZone>>> {
+    type Error = savvy::Error;
+
+    fn try_from(value: Sexp) -> Result<Self, Self::Error> {
+        match value.into_typed() {
+            TypedSexp::String(s) => s.try_into(),
+            TypedSexp::List(l) => l.try_into(),
+            TypedSexp::Null(_) => Ok(Wrap(vec![None])),
+            _ => Err("`time_zone` must be a character vector, a list, or `NULL`.".into()),
+        }
+    }
+}
+
+impl TryFrom<StringSexp> for Wrap<Vec<Option<TimeZone>>> {
+    type Error = savvy::Error;
+
+    fn try_from(tz: StringSexp) -> Result<Self, Self::Error> {
+        let tz = tz
+            .iter()
+            .map(<Wrap<Option<TimeZone>>>::try_from)
+            .collect::<Result<Vec<_>, _>>()?
+            .into_iter()
+            .map(|wrap| wrap.0)
+            .collect::<Vec<_>>();
+        Ok(Wrap(tz))
+    }
+}
+
+impl TryFrom<ListSexp> for Wrap<Vec<Option<TimeZone>>> {
+    type Error = savvy::Error;
+
+    fn try_from(tz: ListSexp) -> Result<Self, Self::Error> {
+        let err_msg = "`time_zone` list must contain only `NULL` or single string values.";
+        let tz = tz
+            .values_iter()
+            .map(|sexp| match sexp.into_typed() {
+                TypedSexp::Null(_) => Ok(Wrap(None)),
+                TypedSexp::String(s) => {
+                    if s.len() != 1 {
+                        return Err(err_msg.into());
+                    }
+                    <Wrap<Option<TimeZone>>>::try_from(s.iter().next().unwrap())
+                }
+                _ => return Err(err_msg.into()),
+            })
+            .collect::<Result<Vec<_>, _>>()?
+            .into_iter()
+            .map(|wrap| wrap.0)
+            .collect::<Vec<_>>();
+        Ok(Wrap(tz))
     }
 }
