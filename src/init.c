@@ -144,11 +144,6 @@ SEXP savvy_datetime_ranges__impl(SEXP c_arg__start, SEXP c_arg__end, SEXP c_arg_
     return handle_result(res);
 }
 
-SEXP savvy_dtype_cols__impl(SEXP c_arg__dtypes) {
-    SEXP res = savvy_dtype_cols__ffi(c_arg__dtypes);
-    return handle_result(res);
-}
-
 SEXP savvy_duration__impl(SEXP c_arg__time_unit, SEXP c_arg__weeks, SEXP c_arg__days, SEXP c_arg__hours, SEXP c_arg__minutes, SEXP c_arg__seconds, SEXP c_arg__milliseconds, SEXP c_arg__microseconds, SEXP c_arg__nanoseconds) {
     SEXP res = savvy_duration__ffi(c_arg__time_unit, c_arg__weeks, c_arg__days, c_arg__hours, c_arg__minutes, c_arg__seconds, c_arg__milliseconds, c_arg__microseconds, c_arg__nanoseconds);
     return handle_result(res);
@@ -164,16 +159,6 @@ SEXP savvy_field__impl(SEXP c_arg__names) {
     return handle_result(res);
 }
 
-SEXP savvy_first__impl(void) {
-    SEXP res = savvy_first__ffi();
-    return handle_result(res);
-}
-
-SEXP savvy_index_cols__impl(SEXP c_arg__indices) {
-    SEXP res = savvy_index_cols__ffi(c_arg__indices);
-    return handle_result(res);
-}
-
 SEXP savvy_int_range__impl(SEXP c_arg__start, SEXP c_arg__end, SEXP c_arg__step, SEXP c_arg__dtype) {
     SEXP res = savvy_int_range__ffi(c_arg__start, c_arg__end, c_arg__step, c_arg__dtype);
     return handle_result(res);
@@ -181,11 +166,6 @@ SEXP savvy_int_range__impl(SEXP c_arg__start, SEXP c_arg__end, SEXP c_arg__step,
 
 SEXP savvy_int_ranges__impl(SEXP c_arg__start, SEXP c_arg__end, SEXP c_arg__step, SEXP c_arg__dtype) {
     SEXP res = savvy_int_ranges__ffi(c_arg__start, c_arg__end, c_arg__step, c_arg__dtype);
-    return handle_result(res);
-}
-
-SEXP savvy_last__impl(void) {
-    SEXP res = savvy_last__ffi();
     return handle_result(res);
 }
 
@@ -3213,15 +3193,11 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_datetime__impl", (DL_FUNC) &savvy_datetime__impl, 10},
     {"savvy_datetime_range__impl", (DL_FUNC) &savvy_datetime_range__impl, 6},
     {"savvy_datetime_ranges__impl", (DL_FUNC) &savvy_datetime_ranges__impl, 6},
-    {"savvy_dtype_cols__impl", (DL_FUNC) &savvy_dtype_cols__impl, 1},
     {"savvy_duration__impl", (DL_FUNC) &savvy_duration__impl, 9},
     {"savvy_feature_nightly_enabled__impl", (DL_FUNC) &savvy_feature_nightly_enabled__impl, 0},
     {"savvy_field__impl", (DL_FUNC) &savvy_field__impl, 1},
-    {"savvy_first__impl", (DL_FUNC) &savvy_first__impl, 0},
-    {"savvy_index_cols__impl", (DL_FUNC) &savvy_index_cols__impl, 1},
     {"savvy_int_range__impl", (DL_FUNC) &savvy_int_range__impl, 4},
     {"savvy_int_ranges__impl", (DL_FUNC) &savvy_int_ranges__impl, 4},
-    {"savvy_last__impl", (DL_FUNC) &savvy_last__impl, 0},
     {"savvy_len__impl", (DL_FUNC) &savvy_len__impl, 0},
     {"savvy_lit_bin_from_raw__impl", (DL_FUNC) &savvy_lit_bin_from_raw__impl, 1},
     {"savvy_lit_from_series__impl", (DL_FUNC) &savvy_lit_from_series__impl, 1},
