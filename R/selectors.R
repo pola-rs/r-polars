@@ -30,6 +30,17 @@ cs <- new.env(parent = emptyenv())
 # The env for storing selector methods
 polars_selector__methods <- new.env(parent = emptyenv())
 
+#' @export
+wrap.PlRSelector <- function(x, ...) {
+  self <- new.env(parent = emptyenv())
+  self$`_rselector` <- x
+  self$`_rexpr` <- PlRExpr$new_selector(x)
+
+  class(self) <- c("polars_selector", "polars_expr", "polars_object")
+  self
+}
+
+# TODO: remove this
 wrap_to_selector <- function(x, name, parameters = NULL) {
   self <- new.env(parent = emptyenv())
   self$`_rexpr` <- x$`_rexpr`
@@ -382,29 +393,13 @@ cs__by_index <- function(indices) {
 #' # Match all columns except for those given:
 #' df$select(!cs$by_name("foo", "bar"))
 cs__by_name <- function(..., require_all = TRUE) {
-  check_dots_unnamed()
-  dots <- list2(...)
-  check_list_of_string(dots, arg = "...")
+  wrap({
+    check_dots_unnamed()
+    names <- list2(...)
+    check_list_of_string(names, arg = "...")
 
-  all_names <- as.character(dots)
-
-  selector_params <- list(
-    "*names" = all_names
-  )
-
-  if (isFALSE(require_all)) {
-    match_cols <- paste0(all_names, collapse = "|") |>
-      (\(x) (paste0("^(", x, ")$")))()
-    selector_params$require_all <- require_all
-  } else {
-    match_cols <- all_names
-  }
-
-  wrap_to_selector(
-    pl$col(!!!match_cols),
-    name = "by_name",
-    parameters = selector_params
-  )
+    PlRSelector$by_name(as.character(names), require_all)
+  })
 }
 
 #' Select all categorical columns

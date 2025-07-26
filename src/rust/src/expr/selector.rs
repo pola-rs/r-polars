@@ -79,8 +79,8 @@ impl PlRSelector {
         })
     }
 
-    fn by_name(names: StringSexp, strict: bool) -> Result<Self> {
-        Ok(dsl::by_name(names.to_vec(), strict).into())
+    fn by_name(names: StringSexp, require_all: bool) -> Result<Self> {
+        Ok(dsl::by_name(names.to_vec(), require_all).into())
     }
 
     fn by_index(indices: NumericSexp, strict: bool) -> Result<Self> {

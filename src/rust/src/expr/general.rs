@@ -1032,7 +1032,7 @@ impl PlRExpr {
             .map(PlRSelector::from)
     }
 
-    fn new_selector(selector: PlRSelector) -> Result<Self> {
-        Ok(Expr::Selector(selector.inner).into())
+    fn new_selector(selector: &PlRSelector) -> Result<Self> {
+        Ok(Expr::Selector(selector.inner.clone()).into())
     }
 }

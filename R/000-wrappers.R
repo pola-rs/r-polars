@@ -4262,8 +4262,8 @@ class(`PlRSQLContext`) <- c("PlRSQLContext__bundle", "savvy_polars__sealed")
   .savvy_wrap_PlRSelector(.Call(savvy_PlRSelector_by_index__impl, `indices`, `strict`))
 }
 
-`PlRSelector`$`by_name` <- function(`names`, `strict`) {
-  .savvy_wrap_PlRSelector(.Call(savvy_PlRSelector_by_name__impl, `names`, `strict`))
+`PlRSelector`$`by_name` <- function(`names`, `require_all`) {
+  .savvy_wrap_PlRSelector(.Call(savvy_PlRSelector_by_name__impl, `names`, `require_all`))
 }
 
 `PlRSelector`$`categorical` <- function() {
