@@ -3913,6 +3913,8 @@ class(`PlRExpr`) <- c("PlRExpr__bundle", "savvy_polars__sealed")
 
 `PlRLazyFrame_unpivot` <- function(self) {
   function(`on`, `index`, `value_name` = NULL, `variable_name` = NULL) {
+    `on` <- .savvy_extract_ptr(`on`, "PlRSelector")
+    `index` <- .savvy_extract_ptr(`index`, "PlRSelector")
     .savvy_wrap_PlRLazyFrame(.Call(savvy_PlRLazyFrame_unpivot__impl, `self`, `on`, `index`, `value_name`, `variable_name`))
   }
 }

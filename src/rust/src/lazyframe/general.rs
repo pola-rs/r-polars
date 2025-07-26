@@ -635,16 +635,14 @@ impl PlRLazyFrame {
 
     fn unpivot(
         &self,
-        on: ListSexp,
-        index: ListSexp,
+        on: &PlRSelector,
+        index: &PlRSelector,
         value_name: Option<&str>,
         variable_name: Option<&str>,
     ) -> Result<Self> {
-        let on = <Wrap<Vec<Expr>>>::from(on).0;
-        let index = <Wrap<Vec<Expr>>>::from(index).0;
         let args = UnpivotArgsDSL {
-            on: on.into_iter().map(|e| e.into()).collect(),
-            index: index.into_iter().map(|e| e.into()).collect(),
+            on: on.inner.clone(),
+            index: index.inner.clone(),
             value_name: value_name.map(|s| s.into()),
             variable_name: variable_name.map(|s| s.into()),
         };
