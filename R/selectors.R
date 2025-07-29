@@ -21,9 +21,6 @@
 #'
 #' @examples
 #' cs
-#'
-#' # How many members are in the `cs` environment?
-#' length(cs)
 #' @aliases polars_selector Selector
 #' @export
 cs <- new.env(parent = emptyenv())
@@ -36,6 +33,10 @@ wrap.PlRSelector <- function(x, ...) {
   self <- new.env(parent = emptyenv())
   self$`_rselector` <- x
   self$`_rexpr` <- PlRExpr$new_selector(x)
+
+  lapply(names(polars_namespaces_expr), function(namespace) {
+    makeActiveBinding(namespace, function() polars_namespaces_expr[[namespace]](self), self)
+  })
 
   class(self) <- c("polars_selector", "polars_expr", "polars_object")
   self
@@ -73,81 +74,60 @@ is_column <- function(obj) {
 }
 
 selector__invert <- function() {
-  inverted <- cs$all()$sub(self)
-  # TODO: we want to print something like `!cs$all()` when call `!cs$all()`
-  # inverted$`_print_override` <- deparse1(sys.call(sys.nframe() - 1))
-
-  inverted
+  cs__all() - self
 }
 
 selector__sub <- function(other) {
-  if (is_polars_selector(other)) {
-    wrap_to_selector(
-      self$meta$`_as_selector`()$meta$`_selector_sub`(other),
-      name = "sub",
-      parameters = list(
-        self = self,
-        other = other
-      )
-    )
-  } else {
-    self$as_expr()$sub(other)
-  }
+  wrap({
+    if (is_polars_selector(other)) {
+      self$`_rselector`$difference(other$`_rselector`)
+    } else {
+      self$as_expr()$sub(other)
+    }
+  })
 }
 
 selector__or <- function(other) {
-  if (is_column(other)) {
-    other <- cs$by_name(other$meta$output_name())
-  }
-  if (is_polars_selector(other)) {
-    wrap_to_selector(
-      self$meta$`_as_selector`()$meta$`_selector_add`(other),
-      name = "or",
-      parameters = list(
-        self = self,
-        other = other
-      )
-    )
-  } else {
-    self$as_expr()$or(other)
-  }
+  wrap({
+    if (is_column(other)) {
+      # TODO: @2.0 remove? (check polars-python)
+      other <- cs__by_name(other$meta$output_name())
+    }
+    if (is_polars_selector(other)) {
+      self$`_rselector`$union(other$`_rselector`)
+    } else {
+      self$as_expr()$or(other)
+    }
+  })
 }
 
 selector__and <- function(other) {
-  if (is_column(other)) {
-    colname <- other$meta$output_name()
-    other <- cs$by_name(colname)
-  }
-  if (is_polars_selector(other)) {
-    wrap_to_selector(
-      self$meta$`_as_selector`()$meta$`_selector_and`(other),
-      name = "and",
-      parameters = list(
-        self = self,
-        other = other
-      )
-    )
-  } else {
-    self$as_expr()$and(other)
-  }
+  wrap({
+    if (is_column(other)) {
+      # TODO: @2.0 remove? (check polars-python)
+      colname <- other$meta$output_name()
+      other <- cs__by_name(colname)
+    }
+    if (is_polars_selector(other)) {
+      self$`_rselector`$intersect(other$`_rselector`)
+    } else {
+      self$as_expr()$and(other)
+    }
+  })
 }
 
 selector__xor <- function(other) {
-  if (is_column(other)) {
-    other <- cs$by_name(other$meta$output_name())
-  }
-  if (is_polars_selector(other)) {
-    wrap_to_selector(
-      self$meta$`_as_selector`()$meta$`_selector_xor`(other),
-      name = "xor",
-      parameters = list(
-        self = self,
-        other = other
-      )
-    )
-  } else {
-    self$as_expr()$xor(other)
-  }
+  wrap({
+    if (is_column(other)) {
+      # TODO: @2.0 remove? (check polars-python)
+      other <- cs$by_name(other$meta$output_name())
+    }
+    if (is_polars_selector(other)) {
+      self$`_rselector`$difference(other$`_rselector`)
+    } else {
+      self$as_expr()$xor(other)
+    }
+  })
 }
 
 # TODO: add document
