@@ -1,5 +1,4 @@
 use crate::prelude::{sync_on_close::SyncOnCloseType, *};
-use polars_utils::plpath::PlPathRef;
 use savvy::{EnvironmentSexp, ListSexp, NumericScalar, Result, Sexp, StringSexp, TypedSexp, savvy};
 
 #[derive(Clone)]
