@@ -201,19 +201,12 @@ cs__all <- function() {
 #' df$select(!cs$alpha())
 #' df$select(!cs$alpha(ignore_spaces = TRUE))
 cs__alpha <- function(ascii_only = FALSE, ..., ignore_spaces = FALSE) {
-  check_dots_empty0(...)
-  if (isTRUE(ascii_only)) {
-    re_alpha <- r"(a-zA-Z)"
-  } else {
-    re_alpha <- r"(\p{Alphabetic})"
-  }
-  if (isTRUE(ignore_spaces)) {
-    re_space <- " "
-  } else {
-    re_space <- ""
-  }
-  raw_params <- paste0("^[", re_alpha, re_space, "]+$")
-  wrap_to_selector(pl$col(!!!raw_params), name = "alpha")
+  wrap({
+    check_dots_empty0(...)
+    re_alpha <- if (isTRUE(ascii_only)) r"(a-zA-Z)" else r"(\p{Alphabetic})"
+    re_space <- if (isTRUE(ignore_spaces)) " " else ""
+    PlRSelector$matches(sprintf("^[%s%s]+$", re_alpha, re_space))
+  })
 }
 
 #' Select all columns with alphanumeric names (e.g. only letters and the digits 0-9)
@@ -244,21 +237,13 @@ cs__alpha <- function(ascii_only = FALSE, ..., ignore_spaces = FALSE) {
 #' df$select(!cs$alphanumeric())
 #' df$select(!cs$alphanumeric(ignore_spaces = TRUE))
 cs__alphanumeric <- function(ascii_only = FALSE, ..., ignore_spaces = FALSE) {
-  check_dots_empty0(...)
-  if (isTRUE(ascii_only)) {
-    re_alphanumeric <- r"(a-zA-Z)"
-    re_digit <- "0-9"
-  } else {
-    re_alphanumeric <- r"(\p{Alphabetic})"
-    re_digit <- r"(\d)"
-  }
-  if (isTRUE(ignore_spaces)) {
-    re_space <- " "
-  } else {
-    re_space <- ""
-  }
-  raw_params <- paste0("^[", re_alphanumeric, re_digit, re_space, "]+$")
-  wrap_to_selector(pl$col(!!!raw_params), name = "alphanumeric")
+  wrap({
+    check_dots_empty0(...)
+    re_alphanumeric <- if (isTRUE(ascii_only)) r"(a-zA-Z)" else r"(\p{Alphabetic})"
+    re_digit <- if (isTRUE(ascii_only)) "0-9" else r"(\d)"
+    re_space <- if (isTRUE(ignore_spaces)) " " else ""
+    PlRSelector$matches(sprintf("^[%s%s%s]+$", re_alphanumeric, re_digit, re_space))
+  })
 }
 
 #' Select all binary columns
