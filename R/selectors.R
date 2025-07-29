@@ -263,7 +263,7 @@ cs__alphanumeric <- function(ascii_only = FALSE, ..., ignore_spaces = FALSE) {
 #' # Select all columns except for those that are binary:
 #' df$select(!cs$binary())
 cs__binary <- function() {
-  wrap_to_selector(pl$col(pl$Binary), name = "binary")
+  cs__by_dtype(pl$Binary)
 }
 
 #' Select all boolean columns
@@ -281,7 +281,7 @@ cs__binary <- function() {
 #' # Select all columns except for those that are boolean:
 #' df$select(!cs$boolean())
 cs__boolean <- function() {
-  wrap_to_selector(pl$col(pl$Boolean), name = "boolean")
+  cs__by_dtype(pl$Boolean)
 }
 
 #' Select all columns matching the given dtypes
@@ -382,6 +382,43 @@ cs__by_name <- function(..., require_all = TRUE) {
   })
 }
 
+# TODO: add docs
+cs__enum <- function() {
+  PlRSelector$enum() |>
+    wrap()
+}
+
+# TODO: add docs
+cs__list <- function(inner = NULL) {
+  wrap({
+    check_polars_selector(inner, allow_null = TRUE)
+
+    PlRSelector$list(inner$`_rselector`)
+  })
+}
+
+# TODO: add docs
+cs__array <- function(inner = NULL, ..., width = NULL) {
+  wrap({
+    check_dots_empty0(...)
+    check_polars_selector(inner, allow_null = TRUE)
+
+    PlRSelector$array(inner$`_rselector`, width)
+  })
+}
+
+# TODO: add docs
+cs__struct <- function() {
+  PlRSelector$struct() |>
+    wrap()
+}
+
+# TODO: add docs
+cs__nested <- function() {
+  PlRSelector$nested() |>
+    wrap()
+}
+
 #' Select all categorical columns
 #'
 #' @inherit cs__empty return seealso
@@ -399,7 +436,8 @@ cs__by_name <- function(..., require_all = TRUE) {
 #' # Select all columns except for those that are categorical:
 #' df$select(!cs$categorical())
 cs__categorical <- function() {
-  wrap_to_selector(pl$col(pl$Categorical()), name = "categorical")
+  PlRSelector$categorical() |>
+    wrap()
 }
 
 #' Select columns whose names contain the given literal substring(s)
