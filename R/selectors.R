@@ -150,6 +150,7 @@ selector__xor <- function(other) {
   }
 }
 
+# TODO: add document
 selector__as_expr <- function() {
   self$`_rexpr` |>
     wrap()
