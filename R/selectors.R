@@ -328,15 +328,11 @@ cs__boolean <- function() {
 #' # Group by string columns and sum the numeric columns:
 #' df$group_by(cs$string())$agg(cs$numeric()$sum())$sort("other")
 cs__by_dtype <- function(...) {
-  check_dots_unnamed()
-  list_dtypes <- list2(...)
-  check_list_of_polars_dtype(list_dtypes, arg = "...")
-
-  wrap_to_selector(
-    pl$col(!!!list_dtypes),
-    name = "by_dtype",
-    parameters = list_dtypes
-  )
+  wrap({
+    check_dots_unnamed()
+    parse_into_list_of_datatypes(...) |>
+      PlRSelector$by_dtype()
+  })
 }
 
 #' Select all columns matching the given indices (or range objects)
