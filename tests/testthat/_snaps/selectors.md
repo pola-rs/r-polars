@@ -8,6 +8,8 @@
       Caused by error:
       ! Evaluation failed in `$select()`.
       Caused by error in `cs$alpha()`:
+      ! Evaluation failed in `$alpha()`.
+      Caused by error in `cs$alpha()`:
       ! `...` must be empty.
       x Problematic argument:
       * ..1 = TRUE
@@ -22,6 +24,8 @@
       ! Evaluation failed in `$select()`.
       Caused by error:
       ! Evaluation failed in `$select()`.
+      Caused by error in `cs$alphanumeric()`:
+      ! Evaluation failed in `$alphanumeric()`.
       Caused by error in `cs$alphanumeric()`:
       ! `...` must be empty.
       x Problematic argument:
@@ -38,6 +42,8 @@
       Caused by error:
       ! Evaluation failed in `$select()`.
       Caused by error in `cs$by_dtype()`:
+      ! Evaluation failed in `$by_dtype()`.
+      Caused by error in `cs$by_dtype()`:
       ! Arguments in `...` must be passed by position, not name.
       x Problematic argument:
       * a = pl$String
@@ -51,6 +57,8 @@
       ! Evaluation failed in `$select()`.
       Caused by error:
       ! Evaluation failed in `$select()`.
+      Caused by error in `cs$by_name()`:
+      ! Evaluation failed in `$by_name()`.
       Caused by error in `cs$by_name()`:
       ! Arguments in `...` must be passed by position, not name.
       x Problematic argument:
@@ -66,6 +74,8 @@
       Caused by error:
       ! Evaluation failed in `$select()`.
       Caused by error in `cs$contains()`:
+      ! Evaluation failed in `$contains()`.
+      Caused by error in `cs$contains()`:
       ! `...` must be a list of single strings, not a list.
 
 ---
@@ -77,6 +87,8 @@
       ! Evaluation failed in `$select()`.
       Caused by error:
       ! Evaluation failed in `$select()`.
+      Caused by error in `cs$contains()`:
+      ! Evaluation failed in `$contains()`.
       Caused by error in `cs$contains()`:
       ! `...` must be a list of single strings, not a list.
 
@@ -90,6 +102,8 @@
       Caused by error:
       ! Evaluation failed in `$select()`.
       Caused by error in `cs$ends_with()`:
+      ! Evaluation failed in `$ends_with()`.
+      Caused by error in `cs$ends_with()`:
       ! `...` must be a list of single strings, not a list.
 
 # exclude
@@ -102,7 +116,9 @@
       Caused by error:
       ! Evaluation failed in `$select()`.
       Caused by error in `cs$exclude()`:
-      ! `...` can only contain column names, regexes, Polars data types or polars selectors.
+      ! Evaluation failed in `$exclude()`.
+      Caused by error in `cs$exclude()`:
+      ! `...` can only contain column names, regexes, polars data types or polars selectors.
 
 # starts_with
 
@@ -113,6 +129,8 @@
       ! Evaluation failed in `$select()`.
       Caused by error:
       ! Evaluation failed in `$select()`.
+      Caused by error in `cs$starts_with()`:
+      ! Evaluation failed in `$starts_with()`.
       Caused by error in `cs$starts_with()`:
       ! `...` must be a list of single strings, not a list.
 
