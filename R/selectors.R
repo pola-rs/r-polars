@@ -341,8 +341,12 @@ cs__by_dtype <- function(...) {
 
 #' Select all columns matching the given indices (or range objects)
 #'
-#' @param indices One or more column indices (or ranges). Negative indexing is
-#' supported.
+#' @inheritParams rlang::args_dots_empty
+# @param indices One or more column indices (or ranges). Negative indexing is
+# supported.
+#' @param indices 0-based column indices to select.
+#'   Negative indexing is supported.
+#' @param require_all Whether to match all indices (the default) or any of the indices.
 #'
 #' @details
 #' Matching columns are returned in the order in which their indexes appear in
@@ -359,20 +363,23 @@ cs__by_dtype <- function(...) {
 #' df$select(cs$by_index(c(0, 1, -2, -1)))
 #'
 #' # Use seq()
-#' df$select(cs$by_index(c(0, seq(1, 101, 20))))
-#' df$select(cs$by_index(c(0, seq(101, 0, -25))))
+#' df$select(cs$by_index(c(0, seq(1, 101, 20)), require_all = FALSE))
+#' df$select(cs$by_index(c(0, seq(101, 0, -25)), require_all = FALSE))
 #'
 #' # Select only odd-indexed columns:
 #' df$select(!cs$by_index(seq(0, 100, 2)))
-cs__by_index <- function(indices) {
-  wrap_to_selector(pl$nth(indices), name = "by_index")
+cs__by_index <- function(indices, ..., require_all = TRUE) {
+  wrap({
+    check_dots_empty0(...)
+
+    PlRSelector$by_index(indices, require_all)
+  })
 }
 
 #' Select all columns matching the given names
 #'
 #' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Column names to select.
-#' @param require_all Whether to match all names (the default) or any of the
-#' names.
+#' @param require_all Whether to match all names (the default) or any of the names.
 #'
 #' @inherit cs__by_index details
 #' @inherit cs__all return seealso

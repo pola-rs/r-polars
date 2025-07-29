@@ -2809,8 +2809,8 @@ SEXP savvy_PlRSelector_by_dtype__impl(SEXP c_arg__dtypes) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRSelector_by_index__impl(SEXP c_arg__indices, SEXP c_arg__strict) {
-    SEXP res = savvy_PlRSelector_by_index__ffi(c_arg__indices, c_arg__strict);
+SEXP savvy_PlRSelector_by_index__impl(SEXP c_arg__indices, SEXP c_arg__require_all) {
+    SEXP res = savvy_PlRSelector_by_index__ffi(c_arg__indices, c_arg__require_all);
     return handle_result(res);
 }
 

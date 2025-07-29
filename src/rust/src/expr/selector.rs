@@ -83,9 +83,13 @@ impl PlRSelector {
         Ok(dsl::by_name(names.to_vec(), require_all).into())
     }
 
-    fn by_index(indices: NumericSexp, strict: bool) -> Result<Self> {
+    fn by_index(indices: NumericSexp, require_all: bool) -> Result<Self> {
         let indices = <Wrap<Vec<i64>>>::try_from(indices)?.0.into();
-        Ok(Selector::ByIndex { indices, strict }.into())
+        Ok(Selector::ByIndex {
+            indices,
+            strict: require_all,
+        }
+        .into())
     }
 
     fn first(strict: bool) -> Result<Self> {

@@ -575,7 +575,7 @@ SEXP savvy_PlRSQLContext_unregister__ffi(SEXP self__, SEXP c_arg__name);
 SEXP savvy_PlRSelector_all__ffi(void);
 SEXP savvy_PlRSelector_array__ffi(SEXP c_arg__inner_dst, SEXP c_arg__width);
 SEXP savvy_PlRSelector_by_dtype__ffi(SEXP c_arg__dtypes);
-SEXP savvy_PlRSelector_by_index__ffi(SEXP c_arg__indices, SEXP c_arg__strict);
+SEXP savvy_PlRSelector_by_index__ffi(SEXP c_arg__indices, SEXP c_arg__require_all);
 SEXP savvy_PlRSelector_by_name__ffi(SEXP c_arg__names, SEXP c_arg__require_all);
 SEXP savvy_PlRSelector_categorical__ffi(void);
 SEXP savvy_PlRSelector_datetime__ffi(SEXP c_arg__time_unit, SEXP c_arg__time_zone);
