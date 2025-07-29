@@ -19,3 +19,14 @@ extend_bool <- function(value, n_match, value_name, match_name) {
     value
   }
 }
+
+# Escape a string for use in a Polars (Rust) regex.
+re_escape <- function(s) {
+  rust_metachars <- r"(\\?()|\[\]{}^$#&~.+*-)"
+  gsub(
+    sprintf("([%s])", rust_metachars),
+    r"(\\\1)",
+    s,
+    perl = TRUE
+  )
+}

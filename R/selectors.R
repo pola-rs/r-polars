@@ -136,6 +136,13 @@ selector__as_expr <- function() {
     wrap()
 }
 
+# Return escaped regex, potentially representing multiple string fragments.
+re_string <- function(string, ..., escape = TRUE) {
+  rx <- if (escape) re_escape(string) else string
+  paste0(rx, collapse = "|") |>
+    sprintf("(%s)", x = _)
+}
+
 #' Select no columns
 #'
 #' This is useful for composition with other selectors.
@@ -463,14 +470,16 @@ cs__categorical <- function() {
 #' # Select all columns except for those that contain the substring "ba":
 #' df$select(!cs$contains("ba"))
 cs__contains <- function(...) {
-  check_dots_unnamed()
-  dots <- list2(...)
-  check_list_of_string(dots, arg = "...")
+  wrap({
+    check_dots_unnamed()
+    dots <- list2(...)
+    check_list_of_string(dots, arg = "...")
 
-  substrings <- as.character(dots) |>
-    paste0(collapse = "|")
-  raw_params <- paste0("^.*", substrings, ".*$")
-  wrap_to_selector(pl$col(!!!raw_params), name = "contains")
+    as.character(dots) |>
+      re_string() |>
+      sprintf("^.*%s.*$", x = _) |>
+      PlRSelector$matches()
+  })
 }
 
 #' Select all date columns
