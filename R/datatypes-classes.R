@@ -172,27 +172,25 @@ pl__Duration <- function(time_unit = c("us", "ns", "ms")) {
 }
 
 #' @rdname polars_dtype
+#' @inheritParams rlang::args_dots_empty
 #' @param ordering `r lifecycle::badge("deprecated")`
 #'   One of `"lexical"` or `"physical"`.
 #'   This argument is deprecated and ignored.
 #'   Always behaves as if `"lexical"` was passed.
-pl__Categorical <- function(ordering = NULL) {
+pl__Categorical <- function(ordering = NULL, ...) {
   wrap({
-    categories <- if (is_character(ordering)) {
+    categories <- if (!is.null(ordering)) {
       ordering <- arg_match0(ordering, c("lexical", "physical"))
       deprecate_warn(
-        format_warning(
-          sprintf(
-            "Specifying %s is deprecated.",
-            format_arg("ordering")
-          )
+        c(
+          `!` = sprintf("Specifying %s is deprecated.", format_arg("ordering")),
+          `i` = 'Always behaves as if "lexical" was passed in the past versions.'
         )
       )
-      # TODO: should return `Categories()`
-      NULL
+      PlRCategories$global_categories()
     } else {
-      # Hidden pattern, Categories object is passed
-      ordering
+      # TODO: hidden pattern, Categories object is passed
+      PlRCategories$global_categories()
     }
 
     PlRDataType$new_categorical(categories)
