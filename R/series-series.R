@@ -317,3 +317,10 @@ series__rechunk <- function(..., in_place = FALSE) {
     }
   })
 }
+
+#' Check if the Series is empty
+#' @return `TRUE` or `FALSE`
+#' @examples
+#' s <- pl$Series("a", integer())
+#' s$is_empty()
+series__is_empty <- function() self$len() == 0L
