@@ -13,7 +13,9 @@
           )
         }
 
-        PlRDataType$new_enum(unique(c(self$categories, other$categories)))
+        PlRDataType$new_enum(
+          as_polars_series(unique(c(self$categories, other$categories)), name = "category")$`_s`
+        )
       })
     }
     self <- x # nolint: object_usage_linter

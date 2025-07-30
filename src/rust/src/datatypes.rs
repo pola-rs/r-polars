@@ -111,26 +111,26 @@ impl std::fmt::Display for PlRDataType {
                 // TODO: include categories
                 write!(f, "Categorical(ordering='lexical')")
             }
-            // TODO: enable Enum print
-            // DataType::Enum(categories, _) => {
-            //     write!(
-            //         f,
-            //         "Enum(categories={})",
-            //         categories.as_ref().map_or_else(
-            //             || "NULL".to_string(),
-            //             |v| {
-            //                 format!(
-            //                     "c({})",
-            //                     <Vec<String>>::from(Wrap(v))
-            //                         .iter()
-            //                         .map(|v| format!("'{v}'"))
-            //                         .collect::<Vec<_>>()
-            //                         .join(", ")
-            //                 )
-            //             }
-            //         )
-            //     )
-            // }
+            DataType::Enum(_, mapping) => {
+                let categories = unsafe {
+                    StringChunked::from_chunks(
+                        PlSmallStr::from_static("category"),
+                        vec![mapping.to_arrow(true)],
+                    )
+                };
+                write!(
+                    f,
+                    "Enum(categories={})",
+                    format!(
+                        "c({})",
+                        categories
+                            .into_iter()
+                            .filter_map(|opt_v| format!("'{}'", opt_v.unwrap()).into())
+                            .collect::<Vec<String>>()
+                            .join(", ")
+                    )
+                )
+            }
             _ => write!(f, "{:?}", self.dt),
         }
     }
@@ -380,9 +380,8 @@ impl PlRDataType {
                         PlSmallStr::from_static("category"),
                         vec![mapping.to_arrow(true)],
                     )
-                }
-                .into_series();
-                let sexp: Sexp = PlRSeries::from(categories).try_into()?;
+                };
+                let sexp: Sexp = Wrap(&categories).into();
                 let _ = out.set_name_and_value(0, "categories", sexp);
                 Ok(out.into())
             }
