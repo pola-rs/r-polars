@@ -440,6 +440,17 @@ tail.polars_data_frame <- function(x, n = 6L, ...) x$tail(n = n)
           ),
           call = error_env
         )
+      } else if (anyDuplicated(j[j != 0])) {
+        abort(
+          c(
+            "Can't subset columns with duplicated indices.",
+            x = format_error(sprintf(
+              "Column indices %s are duplicated.",
+              oxford_comma(unique(j[duplicated(j)]), final = "and")
+            ))
+          ),
+          call = error_env
+        )
       } else {
         cols[j]
       }
@@ -491,6 +502,17 @@ tail.polars_data_frame <- function(x, n = 6L, ...) x$tail(n = n)
             "Columns %s don't exist.",
             oxford_comma(sprintf("`%s`", non_existent_cols), final = "and")
           )
+        ),
+        call = error_env
+      )
+    } else if (anyDuplicated(j)) {
+      abort(
+        c(
+          "Can't subset columns with duplicated names.",
+          x = format_error(sprintf(
+            "Column names %s are duplicated.",
+            oxford_comma(format_code(unique(j[duplicated(j)])), final = "and")
+          ))
         ),
         call = error_env
       )
