@@ -999,7 +999,7 @@ cs__string <- function(..., include_categorical = FALSE) {
   wrap({
     check_dots_empty0(...)
     if (isTRUE(include_categorical)) {
-      cs__by_dtype(pl$String) + cs__categorical()
+      cs__by_dtype(pl$String) | cs__categorical()
     } else {
       cs__by_dtype(pl$String)
     }
