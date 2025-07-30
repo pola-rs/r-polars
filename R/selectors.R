@@ -914,6 +914,23 @@ cs__matches <- function(pattern) {
   })
 }
 
+#' Select all numeric columns.
+#'
+#' @inherit cs__all return seealso
+#' @examples
+#' df <- pl$DataFrame(
+#'   foo = c("x", "y"),
+#'   bar = c(123L, 456L),
+#'   baz = c(2.0, 5.5),
+#'   zap = 0:1,
+#'   .schema_overrides = list(bar = pl$Int16, baz = pl$Float32, zap = pl$UInt8),
+#' )
+#'
+#' # Select all numeric columns:
+#' df$select(cs$numeric())
+#'
+#' # Select all columns except for those that are numeric:
+#' df$select(!cs$numeric())
 cs__numeric <- function() {
   PlRSelector$numeric() |>
     wrap()

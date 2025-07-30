@@ -32,6 +32,5 @@ df$select(cs$matches("[^z]a"))
 df$select(!cs$matches(r"((?i)R|z$)"))
 }
 \seealso{
-\link{cs} for the documentation on operators supported by Polars
-selectors.
+\link{cs} for the documentation on operators supported by Polars selectors.
 }

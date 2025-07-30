@@ -3,9 +3,11 @@
 \docType{data}
 \name{cs}
 \alias{cs}
+\alias{polars_selector}
+\alias{Selector}
 \title{Polars column selector function namespace}
 \format{
-An object of class \code{polars_object} of length 29.
+An object of class \code{polars_object} of length 35.
 }
 \usage{
 cs
@@ -36,8 +38,5 @@ Note that Python Polars uses \code{~} instead of \code{!} to invert selectors.
 
 \examples{
 cs
-
-# How many members are in the `cs` environment?
-length(cs)
 }
 \keyword{datasets}

@@ -40,6 +40,5 @@ df$select(!cs$duration())
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-\link{cs} for the documentation on operators supported by Polars
-selectors.
+\link{cs} for the documentation on operators supported by Polars selectors.
 }

@@ -45,6 +45,5 @@ df$select(!cs$alphanumeric())
 df$select(!cs$alphanumeric(ignore_spaces = TRUE))
 }
 \seealso{
-\link{cs} for the documentation on operators supported by Polars
-selectors.
+\link{cs} for the documentation on operators supported by Polars selectors.
 }

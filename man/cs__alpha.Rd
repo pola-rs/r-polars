@@ -50,6 +50,5 @@ df$select(!cs$alpha())
 df$select(!cs$alpha(ignore_spaces = TRUE))
 }
 \seealso{
-\link{cs} for the documentation on operators supported by Polars
-selectors.
+\link{cs} for the documentation on operators supported by Polars selectors.
 }

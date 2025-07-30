@@ -22,6 +22,5 @@ df$select(cs$all()$cast(pl$String))
 df$select(cs$all() - cs$numeric())
 }
 \seealso{
-\link{cs} for the documentation on operators supported by Polars
-selectors.
+\link{cs} for the documentation on operators supported by Polars selectors.
 }

@@ -4,11 +4,15 @@
 \alias{cs__by_index}
 \title{Select all columns matching the given indices (or range objects)}
 \usage{
-cs__by_index(indices)
+cs__by_index(indices, ..., require_all = TRUE)
 }
 \arguments{
-\item{indices}{One or more column indices (or ranges). Negative indexing is
-supported.}
+\item{indices}{0-based column indices to select.
+Negative indexing is supported.}
+
+\item{...}{These dots are for future extensions and must be empty.}
+
+\item{require_all}{Whether to match all indices (the default) or any of the indices.}
 }
 \value{
 A Polars selector
@@ -30,13 +34,12 @@ df
 df$select(cs$by_index(c(0, 1, -2, -1)))
 
 # Use seq()
-df$select(cs$by_index(c(0, seq(1, 101, 20))))
-df$select(cs$by_index(c(0, seq(101, 0, -25))))
+df$select(cs$by_index(c(0, seq(1, 101, 20)), require_all = FALSE))
+df$select(cs$by_index(c(0, seq(101, 0, -25)), require_all = FALSE))
 
 # Select only odd-indexed columns:
 df$select(!cs$by_index(seq(0, 100, 2)))
 }
 \seealso{
-\link{cs} for the documentation on operators supported by Polars
-selectors.
+\link{cs} for the documentation on operators supported by Polars selectors.
 }
