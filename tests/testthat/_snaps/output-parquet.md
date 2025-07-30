@@ -10,7 +10,12 @@
       Caused by error in `wrap(lf)$collect()`:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! Column(s) not found: foo
+      ! Column(s) not found: unable to find column "foo"; valid columns: ["mpg", "cyl", "disp", "hp", "drat", "wt", "qsec", "vs", "am", "gear", "carb"]
+      
+      Resolved plan until failure:
+      
+      	---> FAILED HERE RESOLVING THIS_NODE <---
+      DF ["mpg", "cyl", "disp", "hp", ...]; PROJECT */11 COLUMNS
 
 ---
 
@@ -24,5 +29,10 @@
       Caused by error in `wrap(lf)$collect()`:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! Column(s) not found: 
+      ! Column(s) not found: unable to find column ""; valid columns: ["mpg", "cyl", "disp", "hp", "drat", "wt", "qsec", "vs", "am", "gear", "carb"]
+      
+      Resolved plan until failure:
+      
+      	---> FAILED HERE RESOLVING THIS_NODE <---
+      DF ["mpg", "cyl", "disp", "hp", ...]; PROJECT */11 COLUMNS
 

@@ -480,7 +480,7 @@
     Code
       print(object)
     Output
-      Categorical(ordering='physical')
+      Categorical(ordering='lexical')
 
 # data types print Enum(c('a', 'b', 'c'))
 

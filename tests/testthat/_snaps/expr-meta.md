@@ -18,7 +18,7 @@
       Error in `pl$all()$meta$output_name()`:
       ! Evaluation failed in `$output_name()`.
       Caused by error:
-      ! cannot determine output column without a context for this expression
+      ! unable to find root column name for expr 'cs.all()' when calling 'output_name'
 
 ---
 
@@ -28,7 +28,7 @@
       Error in `pl$all()$name$suffix("_")$meta$output_name()`:
       ! Evaluation failed in `$output_name()`.
       Caused by error:
-      ! cannot determine output column without a context for this expression
+      ! unable to find root column name for expr 'cs.all()' when calling 'output_name'
 
 # meta$tree_format
 

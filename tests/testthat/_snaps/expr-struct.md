@@ -8,7 +8,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! field not found: aaa
+      ! Column(s) not found: "aaa" not found
 
 # struct$json_encode
 
