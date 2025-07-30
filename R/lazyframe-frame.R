@@ -815,10 +815,10 @@ lazyframe__with_columns_seq <- function(...) {
 #' lf$drop(cs$all())$collect()
 lazyframe__drop <- function(..., strict = TRUE) {
   wrap({
-    check_dots_unnamed()
+    check_bool(strict)
 
-    parse_into_list_of_expressions(...) |>
-      self$`_ldf`$drop(strict)
+    parse_into_selector(..., .strict = strict)$`_rselector` |>
+      self$`_ldf`$drop()
   })
 }
 
@@ -1159,9 +1159,8 @@ lazyframe__reverse <- function() {
 #' lf$drop_nulls(cs$integer())$collect()
 lazyframe__drop_nulls <- function(...) {
   wrap({
-    check_dots_unnamed()
-    subset <- parse_into_list_of_expressions(...)
-    if (length(subset) == 0) {
+    subset <- parse_into_selector(...)$`_rselector`
+    if (length(subset) == 0L) {
       subset <- NULL
     }
     self$`_ldf`$drop_nulls(subset)
@@ -1203,15 +1202,15 @@ lazyframe__drop_nulls <- function(...) {
 #' df$filter(!pl$all_horizontal(pl$all()$is_nan()))$collect()
 lazyframe__drop_nans <- function(...) {
   wrap({
-    check_dots_unnamed()
-    subset <- parse_into_list_of_expressions(...)
-    if (length(subset) == 0) {
+    subset <- parse_into_selector(...)$`_rselector`
+    if (length(subset) == 0L) {
       subset <- NULL
     }
     self$`_ldf`$drop_nans(subset)
   })
 }
 
+# TODO: @2.0 replace subset to dyn-dots and rename all arguments
 #' Drop duplicate rows
 #'
 #' @inheritParams rlang::args_dots_empty
@@ -1249,7 +1248,7 @@ lazyframe__unique <- function(
     check_dots_empty0(...)
     keep <- arg_match0(keep, values = c("any", "none", "first", "last"))
     if (!is.null(subset)) {
-      subset <- parse_into_list_of_expressions(!!!subset)
+      subset <- parse_into_selector(!!!subset)$`_rselector`
     }
     self$`_ldf`$unique(subset = subset, keep = keep, maintain_order = maintain_order)
   })
@@ -1513,14 +1512,8 @@ lazyframe__unpivot <- function(
 ) {
   wrap({
     check_dots_empty0(...)
-    if (!is.null(on)) {
-      on <- parse_into_list_of_expressions(!!!on)
-    } else {
-      on <- list()
-    }
-    if (!is.null(index)) {
-      index <- parse_into_list_of_expressions(!!!index)
-    }
+    on <- parse_into_selector(!!!on)$`_rselector`
+    index <- parse_into_selector(!!!index)$`_rselector`
     self$`_ldf`$unpivot(on, index, value_name, variable_name)
   })
 }
@@ -1579,11 +1572,9 @@ lazyframe__rename <- function(..., .strict = TRUE) {
 #'
 #' lf$explode("numbers")$collect()
 lazyframe__explode <- function(...) {
-  wrap({
-    check_dots_unnamed()
-    by <- parse_into_list_of_expressions(...)
-    self$`_ldf`$explode(by)
-  })
+  parse_into_selector(...)$`_rselector` |>
+    self$`_ldf`$explode() |>
+    wrap()
 }
 
 #' Clone a LazyFrame
@@ -1648,11 +1639,9 @@ lazyframe__clone <- function() {
 #' lf$unnest("a_and_c")$collect()
 #' lf$unnest(pl$col("a_and_c"))$collect()
 lazyframe__unnest <- function(...) {
-  wrap({
-    check_dots_unnamed()
-    columns <- parse_into_list_of_expressions(...)
-    self$`_ldf`$unnest(columns)
-  })
+  parse_into_selector(...)$`_rselector` |>
+    self$`_ldf`$unnest() |>
+    wrap()
 }
 
 #' Create rolling groups based on a date/time or integer column
