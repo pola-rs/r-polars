@@ -1302,17 +1302,20 @@ dataframe__unpivot <- function(
 #'   that should be converted to dummy variables. If empty (default), convert all columns.
 #' @param separator Separator/delimiter used when generating column names.
 #' @param drop_first Remove the first category from the variables being encoded.
+#' @param drop_nulls A boolean indicating whether to generate columns for `null` values.
 #'
 #' @inherit as_polars_df return
 #' @examples
 #' df <- pl$DataFrame(
 #'   foo = c(1L, 2L),
-#'   bar = c(3L, 4L),
+#'   bar = c(3, NA),
 #'   ham = c("a", "b")
 #' )
 #' df$to_dummies()
 #'
 #' df$to_dummies(drop_first = TRUE)
+#' df$to_dummies(drop_nulls = TRUE)
+#'
 #' df$to_dummies("foo", "bar", separator = ":")
 #' df$to_dummies(cs$integer(), separator=":")
 #' df$to_dummies(cs$integer(), drop_first = TRUE, separator = ":")
