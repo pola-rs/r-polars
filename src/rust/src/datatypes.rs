@@ -120,15 +120,12 @@ impl std::fmt::Display for PlRDataType {
                 };
                 write!(
                     f,
-                    "Enum(categories={})",
-                    format!(
-                        "c({})",
-                        categories
-                            .into_iter()
-                            .filter_map(|opt_v| format!("'{}'", opt_v.unwrap()).into())
-                            .collect::<Vec<String>>()
-                            .join(", ")
-                    )
+                    "Enum(categories=c({}))",
+                    categories
+                        .into_iter()
+                        .filter_map(|opt_v| format!("'{}'", opt_v.unwrap()).into())
+                        .collect::<Vec<String>>()
+                        .join(", ")
                 )
             }
             _ => write!(f, "{:?}", self.dt),

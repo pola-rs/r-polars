@@ -782,14 +782,14 @@ impl TryFrom<StringSexp> for Wrap<NullValues> {
         } else if null_values.len() == 1 {
             let vals = null_values.to_vec();
             let val = *(vals.first().unwrap());
-            return Ok(Wrap(NullValues::AllColumnsSingle(val.into())));
+            Ok(Wrap(NullValues::AllColumnsSingle(val.into())))
         } else {
             let vals = null_values
                 .to_vec()
                 .into_iter()
                 .map(|x| x.into())
                 .collect::<Vec<PlSmallStr>>();
-            return Ok(Wrap(NullValues::AllColumns(vals)));
+            Ok(Wrap(NullValues::AllColumns(vals)))
         }
     }
 }
@@ -1014,7 +1014,7 @@ impl TryFrom<ListSexp> for Wrap<Vec<Option<TimeZone>>> {
                     }
                     <Wrap<Option<TimeZone>>>::try_from(s.iter().next().unwrap())
                 }
-                _ => return Err(err_msg.into()),
+                _ => Err(err_msg.into()),
             })
             .collect::<Result<Vec<_>, _>>()?
             .into_iter()

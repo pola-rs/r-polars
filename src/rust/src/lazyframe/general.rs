@@ -702,7 +702,7 @@ impl PlRLazyFrame {
             let source = source
                 .to_vec()
                 .iter()
-                .map(|s| PlPath::new(*s))
+                .map(|s| PlPath::new(s))
                 .collect::<Vec<_>>();
             let row_index_offset = <Wrap<u32>>::try_from(row_index_offset)?.0;
             let retries = <Wrap<usize>>::try_from(retries)?.0;
@@ -815,7 +815,7 @@ impl PlRLazyFrame {
             let source = source
                 .to_vec()
                 .iter()
-                .map(|s| PlPath::new(*s))
+                .map(|s| PlPath::new(s))
                 .collect::<Vec<_>>();
             let encoding = <Wrap<CsvEncoding>>::try_from(encoding)?.0;
             let skip_rows = <Wrap<usize>>::try_from(skip_rows)?.0;
@@ -970,7 +970,7 @@ impl PlRLazyFrame {
             let source = source
                 .to_vec()
                 .iter()
-                .map(|s| PlPath::new(*s))
+                .map(|s| PlPath::new(s))
                 .collect::<Vec<_>>();
             let row_index_offset = <Wrap<u32>>::try_from(row_index_offset)?.0;
             let n_rows = match n_rows {
@@ -1077,7 +1077,7 @@ impl PlRLazyFrame {
             let source = source
                 .to_vec()
                 .iter()
-                .map(|s| PlPath::new(*s))
+                .map(|s| PlPath::new(s))
                 .collect::<Vec<_>>();
             let row_index_offset = <Wrap<u32>>::try_from(row_index_offset)?.0;
             let infer_schema_length = match infer_schema_length {
