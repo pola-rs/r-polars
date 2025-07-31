@@ -42,33 +42,6 @@ wrap.PlRSelector <- function(x, ...) {
   self
 }
 
-# TODO: remove this
-wrap_to_selector <- function(x, name, parameters = NULL) {
-  self <- new.env(parent = emptyenv())
-  self$`_rexpr` <- x$`_rexpr`
-  self$`_attrs` <- list(name = name, parameters = parameters)
-  self$`_print_override` <- NULL
-
-  lapply(names(polars_selector__methods), function(name) {
-    fn <- polars_selector__methods[[name]]
-    environment(fn) <- environment()
-    assign(name, fn, envir = self)
-  })
-
-  lapply(setdiff(names(polars_expr__methods), names(self)), function(name) {
-    fn <- polars_expr__methods[[name]]
-    environment(fn) <- environment()
-    assign(name, fn, envir = self)
-  })
-
-  lapply(names(polars_namespaces_expr), function(namespace) {
-    makeActiveBinding(namespace, function() polars_namespaces_expr[[namespace]](self), self)
-  })
-
-  class(self) <- c("polars_selector", "polars_expr", "polars_object")
-  self
-}
-
 is_column <- function(obj) {
   is_polars_expr(obj) && obj$meta$is_column()
 }
