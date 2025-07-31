@@ -7,7 +7,9 @@
 expr_str_pad_end(length, fill_char = " ")
 }
 \arguments{
-\item{length}{Justify left to this length.}
+\item{length}{Pad the string until it reaches this length.
+Strings with length equal to or greater than this value are returned as-is.
+Can be integer or \link[=Expr]{expression}.}
 
 \item{fill_char}{Fill with this ASCII character.}
 }
@@ -16,10 +18,6 @@ A polars \link{expression}
 }
 \description{
 Return the string left justified in a string of length \code{width}.
-}
-\details{
-Padding is done using the specified \code{fill_char}. The original string
-is returned if \code{length} is less than or equal to \code{len(s)}.
 }
 \examples{
 df <- pl$DataFrame(a = c("cow", "monkey", NA, "hippopotamus"))

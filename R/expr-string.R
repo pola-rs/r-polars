@@ -509,16 +509,16 @@ expr_str_to_decimal <- function(..., inference_length = 100) {
 #' Left justify strings
 #'
 #' @description Return the string left justified in a string of length `width`.
-#' @param length Justify left to this length.
+#' @param length Pad the string until it reaches this length.
+#'   Strings with length equal to or greater than this value are returned as-is.
+#'   Can be integer or [expression][Expr].
 #' @param fill_char Fill with this ASCII character.
-#' @details Padding is done using the specified `fill_char`. The original string
-#' is returned if `length` is less than or equal to `len(s)`.
 #' @inherit as_polars_expr return
 #' @examples
 #' df <- pl$DataFrame(a = c("cow", "monkey", NA, "hippopotamus"))
 #' df$select(pl$col("a")$str$pad_end(8, "*"))
 expr_str_pad_end <- function(length, fill_char = " ") {
-  self$`_rexpr`$str_pad_end(length, fill_char) |>
+  self$`_rexpr`$str_pad_end(as_polars_expr(length)$`_rexpr`, fill_char) |>
     wrap()
 }
 
@@ -526,14 +526,12 @@ expr_str_pad_end <- function(length, fill_char = " ") {
 #' Right justify strings
 #'
 #' @description Return the string right justified in a string of length `length`.
-#' @param length Justify right to this length.
-#' @param fill_char Fill with this ASCII character.
-#' @inherit expr_str_pad_end details return
+#' @inherit expr_str_pad_end return params
 #' @examples
 #' df <- pl$DataFrame(a = c("cow", "monkey", NA, "hippopotamus"))
 #' df$select(pl$col("a")$str$pad_start(8, "*"))
 expr_str_pad_start <- function(length, fill_char = " ") {
-  self$`_rexpr`$str_pad_start(length, fill_char) |>
+  self$`_rexpr`$str_pad_start(as_polars_expr(length)$`_rexpr`, fill_char) |>
     wrap()
 }
 

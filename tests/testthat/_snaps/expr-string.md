@@ -139,6 +139,82 @@
       Caused by error:
       ! Invalid operation: conversion from `f64` to `u64` failed in column 'scalar' for 1 out of 1 values: [-3.0]
 
+# str$pad_start str$pad_start
+
+    Code
+      df$select(pl$col("a")$str$pad_end("wrong_string", "w"))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Column(s) not found: unable to find column "wrong_string"; valid columns: ["a"]
+
+---
+
+    Code
+      df$select(pl$col("a")$str$pad_end(-2, "w"))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Invalid operation: conversion from `f64` to `u64` failed in column 'scalar' for 1 out of 1 values: [-2.0]
+
+---
+
+    Code
+      df$select(pl$col("a")$str$pad_end(5, "multiple_chars"))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$select()`.
+      Caused by error in `pl$col("a")$str$pad_end()`:
+      ! Evaluation failed in `$pad_end()`.
+      Caused by error:
+      ! Expected a string with one character only, currently has 14 (from "multiple_chars").
+
+---
+
+    Code
+      df$select(pl$col("a")$str$pad_start("wrong_string", "w"))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Column(s) not found: unable to find column "wrong_string"; valid columns: ["a"]
+
+---
+
+    Code
+      df$select(pl$col("a")$str$pad_start(-2, "w"))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! Invalid operation: conversion from `f64` to `u64` failed in column 'scalar' for 1 out of 1 values: [-2.0]
+
+---
+
+    Code
+      df$select(pl$col("a")$str$pad_start(5, "multiple_chars"))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$select()`.
+      Caused by error in `pl$col("a")$str$pad_start()`:
+      ! Evaluation failed in `$pad_start()`.
+      Caused by error:
+      ! Expected a string with one character only, currently has 14 (from "multiple_chars").
+
 # encode decode
 
     Code
