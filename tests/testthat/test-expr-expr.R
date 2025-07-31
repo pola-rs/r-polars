@@ -542,21 +542,7 @@ test_that("is_in", {
   )
 })
 
-test_that("to_physical + cast", {
-  # to_physical and some casting
-  df <- pl$DataFrame(vals = c("a", "x", NA, "a"))$with_columns(
-    pl$col("vals")$cast(pl$Categorical()),
-    vals_physical = pl$col("vals")$cast(pl$Categorical())$to_physical()
-  )
-
-  expect_equal(
-    df,
-    pl$DataFrame(
-      vals = factor(c("a", "x", NA_character_, "a")),
-      vals_physical = c(0:1, NA, 0)
-    )$cast(vals_physical = pl$UInt32)
-  )
-
+test_that("cast", {
   # cast error raised for String to Boolean
   expect_snapshot(
     as_polars_df(iris)$with_columns(

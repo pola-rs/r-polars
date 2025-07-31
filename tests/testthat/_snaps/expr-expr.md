@@ -48,7 +48,7 @@
       
       Error originated in expression: 'col("val").top_k([2.0]).over([col("a")])'
 
-# to_physical + cast
+# cast
 
     Code
       as_polars_df(iris)$with_columns(pl$col("Species")$cast(pl$String)$cast(pl$

@@ -4570,15 +4570,17 @@ expr__set_sorted <- function(..., descending = FALSE) {
 #'
 #' @description
 #' The following data types will be changed:
+#'
 #' * Date -> Int32
 #' * Datetime -> Int64
 #' * Time -> Int64
 #' * Duration -> Int64
 #' * Categorical -> UInt32
-#' * List(inner) -> List(physical of inner)
 #'
 #' Other data types will be left unchanged.
 #'
+#' Note that the physical representations are an implementation detail
+#' and not guaranteed to be stable.
 #' @inherit as_polars_expr return
 #' @examples
 #' df <- pl$DataFrame(a = factor(c("a", "x", NA, "a")))
