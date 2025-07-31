@@ -31,7 +31,7 @@ parse_into_list_of_expressions <- function(..., `__structify` = NULL) {
 # Parse dynamic dots into a selector
 # Same as `parse_list_into_selector` of Python Polars
 # (The role of `parse_into_selector` in Python Polars is taken by `as_polars_selector`)
-parse_into_selector <- function(..., .strict = TRUE) {
+parse_into_selector <- function(..., .strict = TRUE, .arg_name = "...") {
   call <- caller_env()
   check_dots_unnamed(call = call)
 
@@ -42,7 +42,12 @@ parse_into_selector <- function(..., .strict = TRUE) {
       Reduce(`|`, x = _),
     error = function(cnd) {
       abort(
-        "`...` can only contain single strings or polars selectors.",
+        format_error(
+          sprintf(
+            "%s can only contain single strings or polars selectors.",
+            format_arg(.arg_name)
+          )
+        ),
         call = call
       )
     }

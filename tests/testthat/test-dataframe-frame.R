@@ -319,14 +319,14 @@ test_that("pivot() works", {
 })
 
 test_that("pivot args work", {
-  df <- pl$DataFrame(
+  df_1 <- pl$DataFrame(
     foo = c("one", "one", "one", "two", "two", "two"),
     bar = c("A", "B", "C", "A", "B", "C"),
     baz = c(1, 2, 3, 4, 5, 6),
     jaz = 6:1
   )
   expect_equal(
-    df$pivot("baz", index = "bar", values = "foo"),
+    df_1$pivot("baz", index = "bar", values = "foo"),
     pl$DataFrame(
       bar = c("A", "B", "C"),
       `1.0` = c("one", NA, NA),
@@ -338,7 +338,7 @@ test_that("pivot args work", {
     )
   )
 
-  df <- pl$DataFrame(
+  df_2 <- pl$DataFrame(
     ann = c("one", "one", "one", "two", "two", "two"),
     bob = c("A", "B", "A", "B", "A", "B"),
     cat = c(1, 2, 3, 4, 5, 6)
@@ -346,42 +346,59 @@ test_that("pivot args work", {
 
   # aggr functions
   expect_equal(
-    df$pivot("bob", index = "ann", values = "cat", aggregate_function = "mean"),
+    df_2$pivot("bob", index = "ann", values = "cat", aggregate_function = "mean"),
     pl$DataFrame(ann = c("one", "two"), A = c(2, 5), B = c(2, 5))
   )
   expect_equal(
-    df$pivot("bob", index = "ann", values = "cat", aggregate_function = pl$element()$mean()),
-    df$pivot("bob", index = "ann", values = "cat", aggregate_function = "mean")
+    df_2$pivot("bob", index = "ann", values = "cat", aggregate_function = pl$element()$mean()),
+    df_2$pivot("bob", index = "ann", values = "cat", aggregate_function = "mean")
   )
-  expect_error(
-    df$pivot("cat", index = "bob", values = "ann", aggregate_function = 42),
-    "must be `NULL`, a character, or a"
+  expect_snapshot(
+    df_2$pivot("cat", index = "bob", values = "ann", aggregate_function = 42),
+    error = TRUE
   )
-  expect_error(
-    df$pivot("cat", index = "bob", values = "ann", aggregate_function = "dummy"),
-    "must be one of"
+  expect_snapshot(
+    df_2$pivot("cat", index = "bob", values = "ann", aggregate_function = "dummy"),
+    error = TRUE
+  )
+
+  # on, index, values may be list of selectors
+  expect_equal(
+    df_2$pivot(
+      on = list(cs$by_name("bob"), cs$categorical()), # list of selectors is supported
+      index = cs$by_name("ann"), # single selector is supported
+      values = list(cs$numeric()),
+      aggregate_function = "mean"
+    ),
+    df_2$pivot("bob", index = "ann", values = "cat", aggregate_function = "mean")
   )
 
   # check maintain_order
-  expect_error(
-    df$pivot(
+  expect_snapshot(
+    df_2$pivot(
       "cat",
       index = "bob",
       values = "ann",
       aggregate_function = "mean",
       maintain_order = 42
     ),
-    "must be logical, not double"
+    error = TRUE
   )
   # check sort_columns
-  expect_error(
-    df$pivot("cat", index = "bob", values = "ann", aggregate_function = "mean", sort_columns = 42),
-    "must be logical, not double"
+  expect_snapshot(
+    df_2$pivot(
+      "cat",
+      index = "bob",
+      values = "ann",
+      aggregate_function = "mean",
+      sort_columns = 42
+    ),
+    error = TRUE
   )
 
   # separator
   expect_named(
-    df$pivot(
+    df_2$pivot(
       "cat",
       index = "ann",
       values = c("ann", "bob"),

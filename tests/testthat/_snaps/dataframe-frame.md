@@ -28,6 +28,48 @@
       Caused by error:
       ! The input value is not a valid serialized DataFrame.
 
+# pivot args work
+
+    Code
+      df_2$pivot("cat", index = "bob", values = "ann", aggregate_function = 42)
+    Condition
+      Error in `df_2$pivot()`:
+      ! Evaluation failed in `$pivot()`.
+      Caused by error in `df_2$pivot()`:
+      ! `aggregate_function` must be `NULL`, a character, or a Polars expression.
+
+---
+
+    Code
+      df_2$pivot("cat", index = "bob", values = "ann", aggregate_function = "dummy")
+    Condition
+      Error in `df_2$pivot()`:
+      ! Evaluation failed in `$pivot()`.
+      Caused by error in `df_2$pivot()`:
+      ! `aggregate_function` must be one of "min", "max", "first", "last", "sum", "mean", "median", or "len", not "dummy".
+
+---
+
+    Code
+      df_2$pivot("cat", index = "bob", values = "ann", aggregate_function = "mean",
+        maintain_order = 42)
+    Condition
+      Error in `df_2$pivot()`:
+      ! Evaluation failed in `$pivot()`.
+      Caused by error:
+      ! Argument `maintain_order` must be logical, not double
+
+---
+
+    Code
+      df_2$pivot("cat", index = "bob", values = "ann", aggregate_function = "mean",
+        sort_columns = 42)
+    Condition
+      Error in `df_2$pivot()`:
+      ! Evaluation failed in `$pivot()`.
+      Caused by error:
+      ! Argument `sort_columns` must be logical, not double
+
 # sample() works
 
     Code
