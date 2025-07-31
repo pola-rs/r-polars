@@ -26,7 +26,6 @@ impl PlRExpr {
             .into())
     }
 
-    #[allow(unused_variables)]
     fn struct_json_encode(&self) -> Result<Self> {
         #[cfg(not(target_arch = "wasm32"))]
         {
@@ -34,7 +33,7 @@ impl PlRExpr {
         }
         #[cfg(target_arch = "wasm32")]
         {
-            Err(RPolarsErr::Other(format!("Not supported in WASM")).into())
+            Err(crate::RPolarsErr::Other(format!("Not supported in WASM")).into())
         }
     }
 

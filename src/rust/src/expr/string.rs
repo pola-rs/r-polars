@@ -152,7 +152,6 @@ impl PlRExpr {
             .into())
     }
 
-    #[allow(unused_variables)]
     fn str_json_path_match(&self, pat: &PlRExpr) -> Result<Self> {
         #[cfg(not(target_arch = "wasm32"))]
         {
@@ -169,7 +168,6 @@ impl PlRExpr {
         }
     }
 
-    #[allow(unused_variables)]
     fn str_json_decode(
         &self,
         infer_schema_length: NumericScalar,

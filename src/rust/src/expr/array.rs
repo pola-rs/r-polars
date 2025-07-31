@@ -130,7 +130,7 @@ impl PlRExpr {
         #[cfg(target_arch = "wasm32")]
         let name_gen = match name_gen {
             Some(_) => {
-                return Err(RPolarsErr::Other(
+                return Err(crate::RPolarsErr::Other(
                     "Specifying a function name generator is not supported in WASM".to_string(),
                 )
                 .into());
