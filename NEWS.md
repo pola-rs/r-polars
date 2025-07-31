@@ -7,36 +7,36 @@ This is a update that corresponds to Python Polars 1.32.0, which includes signif
 ### Deprecations
 
 - `pl$Categorical()`'s first argument `ordering` is deprecated (#1452).
-  It will always use global categories in this version, and behave like the previous `ordering = "lexical"`.
-- The experimental functionality called "auto structify" is deprecated (#1452).
-  Since this functionality can be used in the following two ways, these are deprecated:
+  In this version, global categories are always used, and the behavior matches the previous `ordering = "lexical"`.
+- The experimental feature "auto structify" is deprecated (#1452).
+  Since this feature could previously be used in two ways, both are now deprecated:
   - `as_polars_expr()`'s argument `structify`.
-  - Set the `POLARS_AUTO_STRUCTIFY` environment variable to `1`.
+  - Setting the `POLARS_AUTO_STRUCTIFY` environment variable to `1`.
 
 ### New features
 
-- New experimental polars selectors are added (#1452).
-  - `cs$empty()` for avoiding matching any column.
+- New experimental polars selectors have been added (#1452).
+  - `cs$empty()` to avoid matching any column.
   - `cs$enum()` for Enum data types.
   - `cs$list()` for List data types.
   - `cs$array()` for Array data types.
   - `cs$struct()` for Struct data types.
   - `cs$nested()` for List, Array, or Struct data types.
-- polars selectors can now be used instead of column names in more places (#1452).
-  - `<dataframe>$to_dummies()`'s `...` (dynamic dots).
-  - `<lazyframe>$drop()` and `<dataframe>$drop()`'s `...` (dynamic dots).
-  - `<lazyframe>$drop_nulls()` and `<dataframe>$drop_nulls()`'s `...` (dynamic dots).
-  - `<lazyframe>$drop_nans()` and `<dataframe>$drop_nans()`'s `...` (dynamic dots).
+- polars selectors can now be used in place of column names in more locations (#1452).
+  - The `...` argument (dynamic dots) of `<dataframe>$to_dummies()`.
+  - The `...` argument (dynamic dots) of `<dataframe>$partition_by()`.
+  - The `...` argument (dynamic dots) of `<lazyframe>$drop()` and `<dataframe>$drop()`.
+  - The `...` argument (dynamic dots) of `<lazyframe>$drop_nulls()` and `<dataframe>$drop_nulls()`.
+  - The `...` argument (dynamic dots) of `<lazyframe>$drop_nans()` and `<dataframe>$drop_nans()`.
+  - The `...` argument (dynamic dots) of `<lazyframe>$unnest()` and `<dataframe>$unnest()`.
+  - The `...` argument (dynamic dots) of `<lazyframe>$explode()` and `<dataframe>$explode()`.
+  - The `on`, `index`, and `values` arguments of `<dataframe>$pivot()`.
+  - The `on` and `index` arguments of `<lazyframe>$unpivot()` and `<dataframe>$unpivot()`.
   <!-- - `<lazyframe>$unique()` and `<dataframe>$unique()`'s `...` (dynamic dots). -->
-  - `<lazyframe>$unnest()` and `<dataframe>$unnest()`'s `...` (dynamic dots).
-  - `<lazyframe>$explode()` and `<dataframe>$explode()`'s `...` (dynamic dots).
-  - `<dataframe>$pivot()`'s `on`, `index` and `values` arguments.
-  - `<lazyframe>$unpivot()` and `<dataframe>$unpivot()`'s `on` and `index` arguments.
-  - `<dataframe>$partition_by()`'s `...` (dynamic dots).
-- `pl$nth()`'s `strict` argument (#1452).
+- `pl$nth()` gains the `strict` argument (#1452).
 - `<expr>$str$pad_end()` and `<expr>$str$pad_start()`'s `length` argument accepts a polars expression (#1452).
-- `<expr>$str$to_integer()`'s `dtype` argument to specify the output type (#1452).
-- `<lazyframe>$sink_csv()` and `<dataframe>$write_csv()`'s `decimal_commna` argument (#1452).
+- `<expr>$str$to_integer()` gains the `dtype` argument to specify the output data type (#1452).
+- `<lazyframe>$sink_csv()` and `<dataframe>$write_csv()` gains the `decimal_commna` argument (#1452).
 
 ## polars 1.0.1
 
