@@ -25,7 +25,7 @@ This is a update that corresponds to Python Polars 1.32.0, which includes signif
   - `<lazyframe>$unnest()` and `<dataframe>$unnest()`'s `...` (dynamic dots).
   - `<lazyframe>$explode()` and `<dataframe>$explode()`'s `...` (dynamic dots).
   - `<dataframe>$pivot()`'s `on`, `index` and `values` arguments.
-  <!-- - `<lazyframe>$unpivot()` and `<dataframe>$unpivot()`'s `on` and `index` arguments. -->
+  - `<lazyframe>$unpivot()` and `<dataframe>$unpivot()`'s `on` and `index` arguments.
   <!-- - `<dataframe>$partition_by()`'s `...` (dynamic dots). -->
 - `pl$nth()`'s `strict` argument (#1452).
 - `<expr>$str$pad_end()` and `<expr>$str$pad_start()`'s `length` argument accepts a polars expression (#1452).

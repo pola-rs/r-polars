@@ -1736,6 +1736,22 @@ test_that("unpivot() works", {
       alice = c(2, 4, 6)
     )
   )
+  expect_query_equal(
+    .input$unpivot(
+      index = list(cs$by_name("a"), cs$by_name("b")), # list of selectors is allowed
+      on = cs$by_name("c"), # single selector is allowed
+      value_name = "alice",
+      variable_name = "bob"
+    ),
+    .input = df,
+    df$unpivot(
+      index = c("a", "b"),
+      on = "c",
+      value_name = "alice",
+      variable_name = "bob"
+    )
+  )
+
   expect_query_error(
     .input$unpivot(
       index = c("a", "b"),

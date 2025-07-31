@@ -1483,8 +1483,8 @@ lazyframe__unpivot <- function(
 ) {
   wrap({
     check_dots_empty0(...)
-    on <- parse_into_selector(!!!on)$`_rselector`
-    index <- parse_into_selector(!!!index)$`_rselector`
+    on <- parse_into_selector(!!!c(on))$`_rselector`
+    index <- parse_into_selector(!!!c(index))$`_rselector`
     self$`_ldf`$unpivot(on, index, value_name, variable_name)
   })
 }
