@@ -1010,13 +1010,19 @@ expr_str_slice <- function(offset, length = NULL) {
 #' @inheritParams rlang::args_dots_empty
 #' @param base A positive integer or expression which is the base of the string
 #' we are parsing. Characters are parsed as column names. Default: `10L`.
+#' @param dtype A polars integer [dtype][DataType] (e.g. `pl$UInt8`, `pl$Int32`, etc.).
+#'   The default is `pl$Int64`.
 #' @param strict A logical. If `TRUE` (default), parsing errors or integer overflow will
 #' raise an error. If `FALSE`, silently convert to `null`.
 #' @inherit as_polars_expr return
 #' @examples
 #' df <- pl$DataFrame(bin = c("110", "101", "010", "invalid"))
 #' df$with_columns(
-#'   parsed = pl$col("bin")$str$to_integer(base = 2, strict = FALSE)
+#'   parsed = pl$col("bin")$str$to_integer(
+#'     base = 2,
+#'     dtype = pl$Int32,
+#'     strict = FALSE
+#'   )
 #' )
 #'
 #' df <- pl$DataFrame(hex = c("fa1e", "ff00", "cafe", NA))
