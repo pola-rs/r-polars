@@ -990,6 +990,11 @@ test_that("explode() works", {
     df,
     expected_df
   )
+  expect_query_equal(
+    .input$explode(cs$exclude("letters")),
+    df,
+    expected_df
+  )
 
   # empty values -> NA
   df <- pl$DataFrame(
@@ -1045,6 +1050,12 @@ test_that("unnest", {
 
   expect_query_equal(
     .input$unnest(pl$col("first_struct", "second_struct")),
+    .input = df2,
+    df
+  )
+
+  expect_query_equal(
+    .input$unnest(cs$ends_with("_struct")),
     .input = df2,
     df
   )
