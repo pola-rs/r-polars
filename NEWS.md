@@ -1,6 +1,35 @@
 # NEWS
 
-## polars (development version)
+## polars 1.1.0
+
+This is a update that corresponds to Python Polars 1.32.0, which includes significant internal changes.
+
+### Deprecations
+
+- `pl$Categorical()`'s first argument `ordering` is deprecated (#1452).
+  It will always use global categories in this version, and behave like the previous `ordering = "lexical"`.
+- The experimental functionality called "auto structify" is deprecated (#1452).
+  Since this functionality can be used in the following two ways, these are deprecated:
+  - `as_polars_expr()`'s argument `structify`.
+  - Set the `POLARS_AUTO_STRUCTIFY` environment variable to `1`.
+
+### New features
+
+- New experimental polars selectors are added (#1452).
+- polars selectors can now be used instead of column names in more places (#1452).
+  - `<dataframe>$to_dummies()`'s `...` (dynamic dots).
+  - `<lazyframe>$drop()` and `<dataframe>$drop()`'s `...` (dynamic dots).
+  - `<lazyframe>$drop_nulls()` and `<dataframe>$drop_nulls()`'s `...` (dynamic dots).
+  - `<lazyframe>$drop_nans()` and `<dataframe>$drop_nans()`'s `...` (dynamic dots).
+  <!-- - `<lazyframe>$unique()` and `<dataframe>$unique()`'s `...` (dynamic dots). -->
+  - `<lazyframe>$unnest()` and `<dataframe>$unnest()`'s `...` (dynamic dots).
+  - `<lazyframe>$explode()` and `<dataframe>$explode()`'s `...` (dynamic dots).
+  <!-- - `<dataframe>$pivot()`'s `on` and `index` arguments. -->
+  - `<lazyframe>$unpivot()` and `<dataframe>$unpivot()`'s `on` and `index` arguments.
+- `pl$nth()`'s `strict` argument (#1452).
+- `<expr>$str$pad_end()` and `<expr>$str$pad_start()`'s `length` argument accepts a polars expression (#1452).
+- `<expr>$str$to_integer()`'s `dtype` argument to specify the output type (#1452).
+- `<lazyframe>$sink_csv()` and `<dataframe>$write_csv()`'s `decimal_commna` argument (#1452).
 
 ## polars 1.0.1
 
@@ -19,7 +48,7 @@ This is a small patch release that includes minor improvements discovered right 
 
 This is a completely rewritten new version of the polars R package. It improves
 the internal structure of the package and catches up with Python Polars' API.
-At the time of writing, this version of R Polars matches Python Polars 1.31.0.
+This version of R Polars matches Python Polars 1.31.0.
 
 Therefore it contains many breaking changes compared to the previous R Polars
 implementation. Some of those breaking changes are explained below, but many
