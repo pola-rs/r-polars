@@ -130,6 +130,39 @@ selector__xor <- function(other) {
   })
 }
 
+selector__exclude <- function(...) {
+  wrap({
+    check_dots_unnamed()
+
+    input <- list2(...)
+
+    exclude_cols <- Filter(is_string, input)
+    exclude_dtypes <- Filter(is_polars_dtype, input)
+    unknown <- Filter(
+      \(x) !is_string(x) && !is_polars_dtype(x),
+      input
+    )
+
+    if (length(unknown) > 0L) {
+      abort("`...` can only contain column names or polars data types.")
+    }
+    if (length(exclude_cols) != 0L && length(exclude_dtypes) != 0L) {
+      abort(
+        c(
+          "Can't exclude by both column name and dtype",
+          i = "Use a polars selector instead."
+        )
+      )
+    }
+
+    if (length(exclude_dtypes) > 0L) {
+      self - cs__by_dtype(...)
+    } else {
+      self - cs__by_name(..., require_all = FALSE)
+    }
+  })
+}
+
 # TODO: add document
 selector__as_expr <- function() {
   self$`_rexpr` |>

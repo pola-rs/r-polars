@@ -453,32 +453,8 @@ expr__alias <- function(name) {
 #' # Exclude by dtype(s), e.g. removing all columns of type Int64 or Float64:
 #' df$select(pl$all()$exclude(pl$Int64, pl$Float64))
 expr__exclude <- function(...) {
-  wrap({
-    check_dots_unnamed()
-    by <- list2(...)
-    exclude_cols <- Filter(is_string, by)
-    exclude_dtypes <- Filter(is_polars_dtype, by)
-
-    unknown <- Filter(
-      \(x) !is_string(x) && !is_polars_dtype(x),
-      by
-    )
-
-    if (length(unknown) > 0 || length(exclude_cols) > 0 && length(exclude_dtypes) > 0) {
-      abort(
-        c(
-          "Invalid `...` elements.",
-          `*` = "All elements in `...` must be either single strings or Polars data types.",
-          i = "`cs$exclude()` accepts mixing column names and Polars data types."
-        )
-      )
-    } else if (length(exclude_cols) > 0) {
-      self$`_rexpr`$exclude(unlist(exclude_cols))
-    } else if (length(exclude_dtypes) > 0) {
-      exclude_dtypes <- lapply(exclude_dtypes, \(x) x$`_dt`)
-      self$`_rexpr`$exclude_dtype(exclude_dtypes)
-    }
-  })
+  self$meta$as_selector()$exclude(...)$as_expr() |>
+    wrap()
 }
 
 
