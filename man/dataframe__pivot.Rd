@@ -73,8 +73,8 @@ df
 # different subjects as columns, and their `test_1` scores as values:
 df$pivot("subject", index = "name", values = "test_1")
 
-You can use selectors too - here we include all test scores in the pivoted
-table:
+# You can use selectors too - here we include all test scores
+# in the pivoted table:
 df$pivot("subject", values = cs$starts_with("test"))
 
 # If you end up with multiple values per cell, you can specify how to
