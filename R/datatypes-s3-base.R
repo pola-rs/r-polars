@@ -47,11 +47,17 @@ print.polars_dtype <- function(x, ...) {
   invisible(x)
 }
 
-#' @param abbreviated If `TRUE`, use the abbreviated form of the dtype name,
-#' e.g. "i64" instead of "Int64".
+#' Format a data type
+#'
+#' @param ... Ignored.
+#' @param abbreviated `r lifecycle::badge("experimental")`
+#'   A boolean. If `TRUE`, use the abbreviated form of the dtype name,
+#'   e.g. "i64" instead of "Int64".
+#' @examples
+#' format(pl$Int64)
+#' format(pl$Float64, abbreviated = TRUE)
 #' @export
-#' @noRd
+#' @keywords internal
 format.polars_dtype <- function(x, ..., abbreviated = FALSE) {
-  check_dots_empty0(...)
   x$`_dt`$as_str(abbreviated = abbreviated)
 }
