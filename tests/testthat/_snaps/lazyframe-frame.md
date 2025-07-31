@@ -216,11 +216,7 @@
 ---
 
     Code
-      df$select(pl$col("cat")$cast(pl$Categorical("lexical")))$describe()
-    Condition
-      Warning:
-      ! Specifying `ordering` is deprecated.
-      i Always behaves as if "lexical" was passed in the past versions.
+      df$select(pl$col("cat")$cast(pl$Categorical()))$describe()
     Output
       shape: (9, 2)
       ┌────────────┬──────┐

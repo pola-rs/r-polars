@@ -1039,7 +1039,7 @@ lazyframe__fill_null <- function(
             pl$Decimal()
           )
         } else if (inherits(dtype, "polars_dtype_string")) {
-          dtypes <- c(pl$String, pl$Categorical("physical"), pl$Categorical("lexical"))
+          dtypes <- c(pl$String, pl$Categorical())
         } else {
           dtypes <- dtype
         }

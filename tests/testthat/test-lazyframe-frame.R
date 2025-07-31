@@ -880,9 +880,8 @@ test_that("fill_null() fills categoricals if fill is character", {
   df <- pl$DataFrame(
     num = c(1, 2, NA),
     str = c("a", "b", NA),
-    cat_lex = c("a", "b", NA),
-    cat_phy = c("a", "b", NA)
-  )$cast(cat_lex = pl$Categorical("lexical"), cat_phy = pl$Categorical("physical"))
+    cat = c("a", "b", NA),
+  )$cast(cat = pl$Categorical())
 
   expect_query_equal(
     .input$fill_null("foobar"),
@@ -890,9 +889,8 @@ test_that("fill_null() fills categoricals if fill is character", {
     pl$DataFrame(
       num = c(1, 2, NA),
       str = c("a", "b", "foobar"),
-      cat_lex = c("a", "b", "foobar"),
-      cat_phy = c("a", "b", "foobar")
-    )$cast(cat_lex = pl$Categorical("lexical"), cat_phy = pl$Categorical("physical"))
+      cat = c("a", "b", "foobar"),
+    )$cast(cat = pl$Categorical())
   )
 })
 
@@ -2350,7 +2348,7 @@ test_that("describe() works", {
   expect_snapshot(df$describe(percentiles = 0.1))
 
   # min/max different depending on categorical ordering
-  expect_snapshot(df$select(pl$col("cat")$cast(pl$Categorical("lexical")))$describe())
+  expect_snapshot(df$select(pl$col("cat")$cast(pl$Categorical()))$describe())
 })
 
 test_that("sql() works", {
