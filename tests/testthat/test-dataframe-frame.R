@@ -594,14 +594,14 @@ test_that("sample() works", {
   expect_equal(
     df$sample(n = 2, seed = 0),
     pl$DataFrame(
-      foo = 3:2,
-      bar = 8:7,
-      ham = c("c", "b")
+      foo = 1:2,
+      bar = 6:7,
+      ham = c("a", "b")
     )
   )
   expect_equal(
     df$sample(fraction = 0.5, seed = 0),
-    pl$DataFrame(foo = 2L, bar = 7L, ham = "b")
+    pl$DataFrame(foo = 1L, bar = 6L, ham = "a")
   )
   expect_snapshot(df$sample(n = 2, fraction = 0.1), error = TRUE)
   expect_snapshot(df$sample(frac = 0.1), error = TRUE)

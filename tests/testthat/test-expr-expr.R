@@ -2226,11 +2226,11 @@ test_that("sample", {
   # Numerical checks
   expect_equal(
     df$select(pl$col("a")$sample(fraction = 0.2, seed = 1)),
-    pl$DataFrame(a = c(7, 1))$cast(pl$Int32)
+    pl$DataFrame(a = c(10L, 8L))$cast(pl$Int32)
   )
   expect_equal(
     df$select(pl$col("a")$sample(n = 2, seed = 1)),
-    pl$DataFrame(a = c(7, 1))$cast(pl$Int32)
+    pl$DataFrame(a = c(10L, 8L))$cast(pl$Int32)
   )
 
   # Check fraction arg

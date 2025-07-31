@@ -607,7 +607,7 @@ test_that("$list$sample() works", {
     df$select(
       sample = pl$col("values")$list$sample(n = pl$col("n"), seed = 1)
     ),
-    pl$DataFrame(sample = list(3L, NA, 3L, 6:5))
+    pl$DataFrame(sample = list(3L, NA, 3L, c(6L, 7L)))
   )
 
   expect_snapshot(df$select(pl$col("values")$list$sample(fraction = 2)), error = TRUE)
@@ -618,10 +618,10 @@ test_that("$list$sample() works", {
     ),
     pl$DataFrame(
       sample = list(
-        c(3L, 1L, 1L, 2L, 2L, 3L),
+        c(3L, 3L, 1L, 3L, 1L, 2L),
         c(NA, NA),
-        c(3L, NA, NA, NA),
-        c(7L, 5L, 5L, 6L, 6L, 7L)
+        c(3L, 3L, NA, 3L),
+        c(7L, 7L, 5L, 7L, 5L, 6L)
       )
     )
   )
