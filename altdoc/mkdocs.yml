@@ -641,6 +641,7 @@ nav:
             - over: man/expr__over.md
             - rolling: man/expr__rolling.md
       Selectors:
+        - cs__empty: man/cs__empty.md
         - cs__all: man/cs__all.md
         - cs__alpha: man/cs__alpha.md
         - cs__alphanumeric: man/cs__alphanumeric.md
