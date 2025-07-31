@@ -16,6 +16,12 @@ This is a update that corresponds to Python Polars 1.32.0, which includes signif
 ### New features
 
 - New experimental polars selectors are added (#1452).
+  - `cs$empty()` for avoiding matching any column.
+  - `cs$enum()` for Enum data types.
+  - `cs$list()` for List data types.
+  - `cs$array()` for Array data types.
+  - `cs$struct()` for Struct data types.
+  - `cs$nested()` for List, Array, or Struct data types.
 - polars selectors can now be used instead of column names in more places (#1452).
   - `<dataframe>$to_dummies()`'s `...` (dynamic dots).
   - `<lazyframe>$drop()` and `<dataframe>$drop()`'s `...` (dynamic dots).
