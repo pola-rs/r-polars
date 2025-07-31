@@ -149,17 +149,6 @@ pl__deserialize_lf <- function(data) {
 #' lf$select(
 #'   threshold = pl$when(pl$col("foo") > 2)$then(10)$otherwise(0)
 #' )$collect()
-#'
-#' # Expressions with multiple outputs can be automatically instantiated
-#' # as Structs by setting the `POLARS_AUTO_STRUCTIFY` environment variable.
-#' # (Experimental)
-#' if (requireNamespace("withr", quietly = TRUE)) {
-#'   withr::with_envvar(c(POLARS_AUTO_STRUCTIFY = "1"), {
-#'     lf$select(
-#'       is_odd = ((pl$col(pl$Int32) %% 2) == 1)$name$suffix("_is_odd"),
-#'     )$collect()
-#'   })
-#' }
 lazyframe__select <- function(...) {
   wrap({
     structify <- parse_env_auto_structify()
@@ -715,16 +704,6 @@ lazyframe__sort <- function(
 #'   `b/2` = pl$col("b") / 2,
 #'   `not c` = pl$col("c")$not(),
 #' )$collect()
-#'
-#' # Expressions with multiple outputs can automatically be instantiated
-#' # as Structs by enabling the experimental setting `POLARS_AUTO_STRUCTIFY`:
-#' if (requireNamespace("withr", quietly = TRUE)) {
-#'   withr::with_envvar(c(POLARS_AUTO_STRUCTIFY = "1"), {
-#'     lf$drop("c")$with_columns(
-#'       diffs = pl$col("a", "b")$diff()$name$suffix("_diff"),
-#'     )$collect()
-#'   })
-#' }
 lazyframe__with_columns <- function(...) {
   structify <- parse_env_auto_structify()
 
@@ -774,16 +753,6 @@ lazyframe__with_columns <- function(...) {
 #'   `b/2` = pl$col("b") / 2,
 #'   `not c` = pl$col("c")$not(),
 #' )$collect()
-#'
-#' # Expressions with multiple outputs can automatically be instantiated
-#' # as Structs by enabling the experimental setting `POLARS_AUTO_STRUCTIFY`:
-#' if (requireNamespace("withr", quietly = TRUE)) {
-#'   withr::with_envvar(c(POLARS_AUTO_STRUCTIFY = "1"), {
-#'     lf$drop("c")$with_columns_seq(
-#'       diffs = pl$col("a", "b")$diff()$name$suffix("_diff"),
-#'     )$collect()
-#'   })
-#' }
 lazyframe__with_columns_seq <- function(...) {
   wrap({
     structify <- parse_env_auto_structify()

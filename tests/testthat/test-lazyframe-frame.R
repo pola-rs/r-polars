@@ -90,6 +90,9 @@ test_that("select_seq() works", {
 })
 
 test_that("POLARS_AUTO_STRUCTIFY works for select", {
+  # This feature is deprecated
+  withr::local_options(list(lifecycle_verbosity = "quiet"))
+
   .data <- pl$DataFrame(
     foo = 1:3,
     bar = 6:8,

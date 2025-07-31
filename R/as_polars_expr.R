@@ -49,8 +49,10 @@
 #' @param raw_as_binary A logical value indicating whether to convert [raw] vector to
 #' a [Binary][DataType] type scalar. If `TRUE` (default), the output is a [Binary][DataType]
 #' type scalar instead of [UInt8][DataType] type literal.
-#' @param structify A logical. If `TRUE`, convert multi-column expressions to a single struct
-#' expression by calling [`pl$struct()`][pl__struct]. Otherwise (default), done nothing.
+#' @param structify `r lifecycle::badge("deprecated")`
+#'   A logical. If `TRUE`, convert multi-column expressions to a single struct
+#'   expression by calling [`pl$struct()`][pl__struct]. Otherwise (default), done nothing.
+#'   Deprecated since polars 1.1.0.
 #' @return A polars [expression]
 #' @seealso
 #' - [as_polars_series()]: R -> Polars type mapping is mostly defined by this function.
@@ -103,7 +105,6 @@
 #'
 #' # polars_expr
 #' as_polars_expr(pl$col("a", "b"))
-#' as_polars_expr(pl$col("a", "b"), structify = TRUE)
 #' @export
 as_polars_expr <- function(x, ...) {
   UseMethod("as_polars_expr")
@@ -139,7 +140,20 @@ as_polars_expr.default <- function(x, ..., keep_series = FALSE) {
 
 #' @rdname as_polars_expr
 #' @export
-as_polars_expr.polars_expr <- function(x, ..., structify = FALSE) {
+as_polars_expr.polars_expr <- function(x, ..., structify = NULL) {
+  if (!is.null(structify)) {
+    deprecate_warn(
+      format_warning(
+        sprintf(
+          "The %s argument of %s for %s is deprecated as of %s 1.1.0.",
+          format_arg("structify"),
+          format_fn("as_polars_expr"),
+          format_cls("polars_expr"),
+          format_pkg("polars")
+        )
+      )
+    )
+  }
   if (isTRUE(structify)) {
     .structify_expression(x)
   } else {

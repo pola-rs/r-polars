@@ -414,16 +414,6 @@ dataframe__select_seq <- function(...) {
 #'   `b/2` = pl$col("b") / 2,
 #'   `not c` = pl$col("c")$not(),
 #' )
-#'
-#' # Expressions with multiple outputs can automatically be instantiated
-#' # as Structs by enabling the experimental setting `POLARS_AUTO_STRUCTIFY`:
-#' if (requireNamespace("withr", quietly = TRUE)) {
-#'   withr::with_envvar(c(POLARS_AUTO_STRUCTIFY = "1"), {
-#'     df$drop("c")$with_columns(
-#'       diffs = pl$col("a", "b")$diff()$name$suffix("_diff"),
-#'     )
-#'   })
-#' }
 dataframe__with_columns <- function(...) {
   self$lazy()$with_columns(...)$collect(`_eager` = TRUE) |>
     wrap()
@@ -459,16 +449,6 @@ dataframe__with_columns <- function(...) {
 #'   `b/2` = pl$col("b") / 2,
 #'   `not c` = pl$col("c")$not(),
 #' )
-#'
-#' # Expressions with multiple outputs can automatically be instantiated
-#' # as Structs by enabling the experimental setting `POLARS_AUTO_STRUCTIFY`:
-#' if (requireNamespace("withr", quietly = TRUE)) {
-#'   withr::with_envvar(c(POLARS_AUTO_STRUCTIFY = "1"), {
-#'     df$drop("c")$with_columns_seq(
-#'       diffs = pl$col("a", "b")$diff()$name$suffix("_diff"),
-#'     )
-#'   })
-#' }
 dataframe__with_columns_seq <- function(...) {
   self$lazy()$with_columns_seq(...)$collect(`_eager` = TRUE) |>
     wrap()
