@@ -228,12 +228,12 @@ impl PlRDataType {
                 .map(|opt_dt| opt_dt.as_ref().unwrap().clone())
                 .unwrap_or(DataType::Null);
             for (i, dt) in dtype_vec.iter().enumerate() {
-                if let Some(dt) = dt {
-                    if dt != &expected_dtype {
-                        return Err(
+                if let Some(dt) = dt
+                    && dt != &expected_dtype
+                {
+                    return Err(
                             format!("If `strict = TRUE`, all elements of the list except `NULL` must have the same datatype. expected: `{}`, got: `{}` at index: {}", expected_dtype, dt, i + 1).into()
                         );
-                    }
                 }
             }
             Ok(expected_dtype.into())
