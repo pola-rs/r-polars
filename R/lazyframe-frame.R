@@ -1159,9 +1159,10 @@ lazyframe__reverse <- function() {
 #' lf$drop_nulls(cs$integer())$collect()
 lazyframe__drop_nulls <- function(...) {
   wrap({
-    subset <- parse_into_selector(...)$`_rselector`
-    if (length(subset) == 0L) {
-      subset <- NULL
+    subset <- if (...length() == 0L) {
+      NULL
+    } else {
+      parse_into_selector(..., .strict = TRUE)$`_rselector`
     }
     self$`_ldf`$drop_nulls(subset)
   })
@@ -1202,9 +1203,10 @@ lazyframe__drop_nulls <- function(...) {
 #' df$filter(!pl$all_horizontal(pl$all()$is_nan()))$collect()
 lazyframe__drop_nans <- function(...) {
   wrap({
-    subset <- parse_into_selector(...)$`_rselector`
-    if (length(subset) == 0L) {
-      subset <- NULL
+    subset <- if (...length() == 0L) {
+      NULL
+    } else {
+      parse_into_selector(..., .strict = TRUE)$`_rselector`
     }
     self$`_ldf`$drop_nans(subset)
   })
