@@ -247,6 +247,14 @@ test_that("partition_by() works", {
       pl$DataFrame(a = "c", b = 3, c = 1)
     )
   )
+  expect_equal(
+    df$partition_by(cs$exclude("c")),
+    df$partition_by("a", "b")
+  )
+  expect_equal(
+    df$partition_by(cs$string(), cs$by_name("b")),
+    df$partition_by("a", "b")
+  )
   # arg "include_key"
   expect_equal(
     df$partition_by("a", include_key = FALSE),
@@ -257,26 +265,11 @@ test_that("partition_by() works", {
     )
   )
   # errors
-  expect_error(
-    df$partition_by(),
-    "must contain at least one column name"
-  )
-  expect_error(
-    df$partition_by("a", NA),
-    "only accepts column names"
-  )
-  expect_error(
-    df$partition_by(pl$col("a") + 1),
-    "only accepts column names"
-  )
-  expect_error(
-    df$partition_by(foo = "a"),
-    "must be passed by position"
-  )
-  expect_error(
-    df$partition_by("a", include_key = 42),
-    "must be logical, not double"
-  )
+  expect_snapshot(df$partition_by(), error = TRUE)
+  expect_snapshot(df$partition_by("a", NA), error = TRUE)
+  expect_snapshot(df$partition_by(pl$col("a") + 1), error = TRUE)
+  expect_snapshot(df$partition_by(foo = "a"), error = TRUE)
+  expect_snapshot(df$partition_by("a", include_key = 42), error = TRUE)
 })
 
 test_that("pivot() works", {

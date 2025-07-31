@@ -1378,20 +1378,18 @@ dataframe__to_dummies <- function(
 #' df$partition_by("a", "b")
 dataframe__partition_by <- function(..., maintain_order = TRUE, include_key = TRUE) {
   wrap({
-    # TODO: add selectors handling when py-polars' _expand_selectors() has moved
-    # to Rust
     check_dots_unnamed()
-    dots <- list2(...)
 
-    if (!is_list_of_string(dots)) {
-      abort("`...` only accepts column names.")
-    }
-    if (length(dots) == 0L) {
+    if (...length() == 0L) {
       abort("`...` must contain at least one column name.")
     }
 
+    # Like `_expand_selectors` in Python Polars
+    selector <- parse_into_selector(..., .strict = TRUE)
+    by <- self$clear()$select(selector)$columns
+
     self$`_df`$partition_by(
-      by = as.character(dots),
+      by = by,
       maintain_order = maintain_order,
       include_key = include_key
     ) |>
