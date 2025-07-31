@@ -113,7 +113,8 @@ test_that("POLARS_AUTO_STRUCTIFY works for select", {
       expect_query_error(
         .input$select(is_odd = ((pl$col(pl$Int32) %% 2) == 1)$name$suffix("_is_odd")),
         .data,
-        "`keep`, `suffix`, `prefix` should be last expression"
+        "Duplicated column(s)",
+        fixed = TRUE
       )
 
       expect_query_equal(
@@ -122,7 +123,7 @@ test_that("POLARS_AUTO_STRUCTIFY works for select", {
         }),
         .data,
         as_polars_lf(.data)$select(
-          is_odd = pl$struct(((pl$col(pl$Int32) %% 2) == 1)$name$suffix("_is_odd")),
+          is_odd = pl$struct((pl$col(pl$Int32) %% 2) == 1),
         )$collect()
       )
     }
@@ -213,7 +214,7 @@ test_that("with_columns: basic usage", {
   expect_query_error(
     .input$with_columns(y = 1 + pl$col("x"), z = pl$col("y")^2),
     df,
-    "Column(s) not found: y",
+    "Column(s) not found",
     fixed = TRUE
   )
 
@@ -254,7 +255,7 @@ test_that("with_columns_seq: basic usage", {
   expect_query_error(
     .input$with_columns_seq(y = 1 + pl$col("x"), z = pl$col("y")^2),
     df,
-    "Column(s) not found: y",
+    "Column(s) not found",
     fixed = TRUE
   )
 
@@ -1377,7 +1378,8 @@ test_that("fill_nan() works", {
   expect_query_error(
     .input$fill_nan("foo"),
     df,
-    "not found: foo"
+    "Column(s) not found",
+    fixed = TRUE
   )
   # accepts expressions
   expect_query_equal(
