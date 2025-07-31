@@ -28,6 +28,58 @@
       Caused by error:
       ! The input value is not a valid serialized DataFrame.
 
+# partition_by() works
+
+    Code
+      df$partition_by()
+    Condition
+      Error in `df$partition_by()`:
+      ! Evaluation failed in `$partition_by()`.
+      Caused by error in `df$partition_by()`:
+      ! `...` must contain at least one column name.
+
+---
+
+    Code
+      df$partition_by("a", NA)
+    Condition
+      Error in `df$partition_by()`:
+      ! Evaluation failed in `$partition_by()`.
+      Caused by error in `df$partition_by()`:
+      ! `...` can only contain single strings or polars selectors.
+
+---
+
+    Code
+      df$partition_by(pl$col("a") + 1)
+    Condition
+      Error in `df$partition_by()`:
+      ! Evaluation failed in `$partition_by()`.
+      Caused by error in `df$partition_by()`:
+      ! `...` can only contain single strings or polars selectors.
+
+---
+
+    Code
+      df$partition_by(foo = "a")
+    Condition
+      Error in `df$partition_by()`:
+      ! Evaluation failed in `$partition_by()`.
+      Caused by error in `df$partition_by()`:
+      ! Arguments in `...` must be passed by position, not name.
+      x Problematic argument:
+      * foo = "a"
+
+---
+
+    Code
+      df$partition_by("a", include_key = 42)
+    Condition
+      Error in `df$partition_by()`:
+      ! Evaluation failed in `$partition_by()`.
+      Caused by error:
+      ! Argument `include_key` must be logical, not double
+
 # pivot args work
 
     Code
