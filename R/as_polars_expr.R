@@ -144,12 +144,14 @@ as_polars_expr.polars_expr <- function(x, ..., structify = NULL) {
   if (!is.null(structify)) {
     deprecate_warn(
       format_warning(
-        sprintf(
-          "The %s argument of %s for %s is deprecated as of %s 1.1.0.",
-          format_arg("structify"),
-          format_fn("as_polars_expr"),
-          format_cls("polars_expr"),
-          format_pkg("polars")
+        c(
+          `!` = sprintf(
+            "The %s argument of %s for %s is deprecated as of %s 1.1.0.",
+            format_arg("structify"),
+            format_fn("as_polars_expr"),
+            format_cls("polars_expr"),
+            format_pkg("polars")
+          )
         )
       )
     )
