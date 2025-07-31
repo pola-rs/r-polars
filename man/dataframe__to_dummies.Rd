@@ -4,12 +4,16 @@
 \alias{dataframe__to_dummies}
 \title{Convert categorical variables into dummy/indicator variables}
 \usage{
-dataframe__to_dummies(..., separator = "_", drop_first = FALSE)
+dataframe__to_dummies(
+  ...,
+  separator = "_",
+  drop_first = FALSE,
+  drop_nulls = FALSE
+)
 }
 \arguments{
-\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Column name(s)
-that should be converted to dummy variables. If empty (default), convert
-all columns.}
+\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Column name(s) or \link[=polars_selector]{selector(s)}
+that should be converted to dummy variables. If empty (default), convert all columns.}
 
 \item{separator}{Separator/delimiter used when generating column names.}
 
@@ -31,4 +35,6 @@ df$to_dummies()
 
 df$to_dummies(drop_first = TRUE)
 df$to_dummies("foo", "bar", separator = ":")
+df$to_dummies(cs$integer(), separator=":")
+df$to_dummies(cs$integer(), drop_first = TRUE, separator = ":")
 }

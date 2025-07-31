@@ -185,15 +185,8 @@ test_that("to_dummies() works", {
     )$cast(pl$UInt8)
   )
   expect_equal(
-    df$to_dummies(!!!character()),
-    pl$DataFrame(
-      foo_1 = 1:0,
-      foo_2 = 0:1,
-      bar_3 = 1:0,
-      bar_4 = 0:1,
-      ham_a = 1:0,
-      ham_b = 0:1
-    )$cast(pl$UInt8)
+    df$to_dummies(character()),
+    df
   )
   expect_equal(
     df$to_dummies("foo", "bar"),
@@ -206,6 +199,14 @@ test_that("to_dummies() works", {
     )$cast(foo_1 = pl$UInt8, foo_2 = pl$UInt8, bar_3 = pl$UInt8, bar_4 = pl$UInt8)
   )
   expect_equal(
+    df$to_dummies("foo", "bar"),
+    df$to_dummies(c("foo", "bar"))
+  )
+  expect_equal(
+    df$to_dummies(cs$string(), cs$integer()),
+    df$to_dummies()
+  )
+  expect_equal(
     df$to_dummies(drop_first = TRUE),
     pl$DataFrame(foo_2 = 0:1, bar_4 = 0:1, ham_b = 0:1)$cast(pl$UInt8)
   )
@@ -214,12 +215,8 @@ test_that("to_dummies() works", {
     pl$DataFrame(`foo::2` = 0:1, `bar::4` = 0:1, `ham::b` = 0:1)$cast(pl$UInt8)
   )
   expect_error(
-    df$to_dummies(c("foo", "bar")),
-    "`...` must be a list of single strings"
-  )
-  expect_error(
     df$to_dummies(foobar = TRUE),
-    "must be passed by positio"
+    "must be passed by position"
   )
 })
 

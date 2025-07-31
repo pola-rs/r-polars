@@ -1298,9 +1298,8 @@ dataframe__unpivot <- function(
 
 #' Convert categorical variables into dummy/indicator variables
 #'
-#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Column name(s)
-#' that should be converted to dummy variables. If empty (default), convert
-#' all columns.
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Column name(s) or [selector(s)][polars_selector]
+#'   that should be converted to dummy variables. If empty (default), convert all columns.
 #' @param separator Separator/delimiter used when generating column names.
 #' @param drop_first Remove the first category from the variables being encoded.
 #'
@@ -1315,31 +1314,31 @@ dataframe__unpivot <- function(
 #'
 #' df$to_dummies(drop_first = TRUE)
 #' df$to_dummies("foo", "bar", separator = ":")
-# df$to_dummies(cs$integer(), separator=":")
-# df$to_dummies(cs$integer(), drop_first = TRUE, separator = ":")
+#' df$to_dummies(cs$integer(), separator=":")
+#' df$to_dummies(cs$integer(), drop_first = TRUE, separator = ":")
 dataframe__to_dummies <- function(
   ...,
   separator = "_",
-  drop_first = FALSE
+  drop_first = FALSE,
+  drop_nulls = FALSE
 ) {
-  # TODO: add selectors handling when py-polars' _expand_selectors() has moved
-  # to Rust (and update examples above)
   wrap({
     check_dots_unnamed()
 
-    dots <- list2(...)
-    check_list_of_string(dots, arg = "...")
-
-    if (length(dots) == 0L) {
-      columns <- NULL
+    columns <- if (...length() == 0L) {
+      NULL
     } else {
-      columns <- as.character(dots)
+      # Like `_expand_selectors` in Python Polars
+      selector <- parse_into_selector(..., .strict = TRUE)
+      self$clear()$select(selector) |>
+        names()
     }
 
     self$`_df`$to_dummies(
       columns = columns,
       separator = separator,
-      drop_first = drop_first
+      drop_first = drop_first,
+      drop_nulls = drop_nulls
     )
   })
 }
