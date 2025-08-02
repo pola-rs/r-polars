@@ -26,18 +26,6 @@ wrap.PlRThen <- function(x, ...) {
   self$`_then` <- x
   makeActiveBinding("_rexpr", function() self$`_then`$otherwise(lit_null()), self)
 
-  lapply(names(polars_then__methods), function(name) {
-    fn <- polars_then__methods[[name]]
-    environment(fn) <- environment()
-    assign(name, fn, envir = self)
-  })
-
-  lapply(names(polars_expr__methods), function(name) {
-    fn <- polars_expr__methods[[name]]
-    environment(fn) <- environment()
-    assign(name, fn, envir = self)
-  })
-
   lapply(names(polars_namespaces_expr), function(namespace) {
     makeActiveBinding(namespace, function() polars_namespaces_expr[[namespace]](self), self)
   })
@@ -85,18 +73,6 @@ wrap.PlRChainedThen <- function(x, ...) {
   self <- new.env(parent = emptyenv())
   self$`_chained_then` <- x
   makeActiveBinding("_rexpr", function() self$`_chained_then`$otherwise(lit_null()), self)
-
-  lapply(names(polars_chainedthen__methods), function(name) {
-    fn <- polars_chainedthen__methods[[name]]
-    environment(fn) <- environment()
-    assign(name, fn, envir = self)
-  })
-
-  lapply(names(polars_expr__methods), function(name) {
-    fn <- polars_expr__methods[[name]]
-    environment(fn) <- environment()
-    assign(name, fn, envir = self)
-  })
 
   lapply(names(polars_namespaces_expr), function(namespace) {
     makeActiveBinding(namespace, function() polars_namespaces_expr[[namespace]](self), self)
