@@ -1,4 +1,4 @@
 class_name	env_name
 polars_selector	polars_selector__methods
 polars_then	polars_then__methods
-polars_chained_then	polars_chained_then__methods
+polars_chained_then	polars_chainedthen__methods
