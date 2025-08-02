@@ -12,8 +12,9 @@ dataframe__to_dummies(
 )
 }
 \arguments{
-\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Column name(s) or \link[=polars_selector]{selector(s)}
-that should be converted to dummy variables. If empty (default), convert all columns.}
+\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Column names or \link[=polars_selector]{selectors}
+that should be converted to dummy variables. If empty (default), convert all columns
+(same as specifying with the selector \code{\link[=cs__all]{cs$all()}}).}
 
 \item{separator}{Separator/delimiter used when generating column names.}
 

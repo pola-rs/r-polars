@@ -8,7 +8,7 @@ dataframe__unnest(...)
 }
 \arguments{
 \item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Name of the struct column(s)
-that should be unnested.}
+or \link[=polars_selector]{selectors}  that should be unnested.}
 }
 \value{
 A polars \link{DataFrame}

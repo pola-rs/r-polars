@@ -7,8 +7,8 @@
 dataframe__explode(...)
 }
 \arguments{
-\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Column names, expressions, or
-a selector defining them. The underlying columns being exploded must be of
+\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Column names or \link[=polars_selector]{selectors}
+defining them. The underlying columns being exploded must be of
 the \code{List} or \code{Array} data type.}
 }
 \value{

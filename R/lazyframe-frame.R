@@ -764,8 +764,8 @@ lazyframe__with_columns_seq <- function(...) {
 
 #' Remove columns
 #'
-#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Names of the columns that
-#' should be removed. Accepts column selector input.
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Column names or [selectors][polars_selector]
+#'   that should be removed.
 #' @param strict Validate that all column names exist in the current schema,
 #' and throw an exception if any do not.
 #'
@@ -1107,9 +1107,9 @@ lazyframe__reverse <- function() {
 #'
 #' The original order of the remaining rows is preserved.
 #'
-#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Column name(s) for which null
-#' values are considered. If empty (default), use all columns.
-#'
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Column names or [selectors][polars_selector]
+#'   for which are considered. If empty (default), use all columns
+#'   (same as specifying with the selector [`cs$all()`][cs__all]).
 #' @inherit as_polars_lf return
 #' @examples
 #' lf <- pl$LazyFrame(
@@ -1141,11 +1141,8 @@ lazyframe__drop_nulls <- function(...) {
 #'
 #' The original order of the remaining rows is preserved.
 #'
-#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Column name(s) for which null
-#' values are considered. If empty (default), use all columns (note that only
-#' floating-point columns can contain `NaN`s).
-#'
 #' @inherit as_polars_lf return
+#' @inheritParams lazyframe__drop_nulls
 #' @examples
 #' lf <- pl$LazyFrame(
 #'   foo = c(1, NaN, 2.5),
@@ -1154,7 +1151,7 @@ lazyframe__drop_nulls <- function(...) {
 #' )
 #'
 #' # The default behavior of this method is to drop rows where any single value
-#' # of the row is null.
+#' # of the row is NaN.
 #' lf$drop_nans()$collect()
 #'
 #' # This behaviour can be constrained to consider only a subset of columns, as
@@ -1184,6 +1181,7 @@ lazyframe__drop_nans <- function(...) {
 # TODO: @2.0 remove subset
 #' Drop duplicate rows
 #'
+#' @inheritParams lazyframe__drop_nulls
 #' @param keep Which of the duplicate rows to keep. Must be one of:
 #' * `"any"`: does not give any guarantee of which row is kept. This allows
 #'   more optimizations.
@@ -1579,9 +1577,9 @@ lazyframe__rename <- function(..., .strict = TRUE) {
 
 #' Explode the frame to long format by exploding the given columns
 #'
-#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Column names, expressions, or
-#' a selector defining them. The underlying columns being exploded must be of
-#' the `List` or `Array` data type.
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Column names or [selectors][polars_selector]
+#'   defining them. The underlying columns being exploded must be of
+#'   the `List` or `Array` data type.
 #'
 #' @inherit as_polars_lf return
 #' @examples
@@ -1641,8 +1639,7 @@ lazyframe__clone <- function() {
 #' The new columns will be inserted at the location of the struct column.
 #'
 #' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Name of the struct column(s)
-#' that should be unnested.
-#'
+#'   or [selectors][polars_selector]  that should be unnested.
 #' @inherit as_polars_lf return
 #' @examples
 #' lf <- pl$LazyFrame(

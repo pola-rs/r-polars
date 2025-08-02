@@ -7,9 +7,9 @@
 lazyframe__drop_nans(...)
 }
 \arguments{
-\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Column name(s) for which null
-values are considered. If empty (default), use all columns (note that only
-floating-point columns can contain \code{NaN}s).}
+\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Column names or \link[=polars_selector]{selectors}
+for which are considered. If empty (default), use all columns
+(same as specifying with the selector \code{\link[=cs__all]{cs$all()}}).}
 }
 \value{
 A polars \link{LazyFrame}
@@ -25,7 +25,7 @@ lf <- pl$LazyFrame(
 )
 
 # The default behavior of this method is to drop rows where any single value
-# of the row is null.
+# of the row is NaN.
 lf$drop_nans()$collect()
 
 # This behaviour can be constrained to consider only a subset of columns, as

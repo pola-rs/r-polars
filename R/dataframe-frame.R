@@ -1314,8 +1314,9 @@ dataframe__unpivot <- function(
 
 #' Convert categorical variables into dummy/indicator variables
 #'
-#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Column name(s) or [selector(s)][polars_selector]
-#'   that should be converted to dummy variables. If empty (default), convert all columns.
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Column names or [selectors][polars_selector]
+#'   that should be converted to dummy variables. If empty (default), convert all columns
+#'   (same as specifying with the selector [`cs$all()`][cs__all]).
 #' @param separator Separator/delimiter used when generating column names.
 #' @param drop_first Remove the first category from the variables being encoded.
 #' @param drop_nulls A boolean indicating whether to generate columns for `null` values.
@@ -1363,7 +1364,8 @@ dataframe__to_dummies <- function(
 
 #' Group by the given columns and return the groups as separate dataframes
 #'
-#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Column name(s) to group by.
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Column names or [selectors][polars_selector]
+#'   to group by. Must contain at least one column.
 #' @param maintain_order Ensure that the order of the groups is consistent with
 #' the input data. This is slower than a default partition by operation.
 #' @param include_key Include the columns used to partition the DataFrame in
@@ -1383,8 +1385,6 @@ dataframe__to_dummies <- function(
 #' df$partition_by("a", "b")
 dataframe__partition_by <- function(..., maintain_order = TRUE, include_key = TRUE) {
   wrap({
-    check_dots_unnamed()
-
     if (...length() == 0L) {
       abort("`...` must contain at least one column name.")
     }
