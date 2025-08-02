@@ -81,3 +81,8 @@ test_that("Enum union error", {
   expect_error(pl$Enum("a")$union(1), "`other` must be a polars data type, not the number 1")
   expect_error(pl$Enum("a")$union(pl$Int32), "`other` must be a Enum data type")
 })
+
+test_that("Categorical order deprecation", {
+  expect_deprecated(pl$Categorical("lexical"))
+  expect_deprecated(pl$Categorical("physical"))
+})
