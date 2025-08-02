@@ -12,6 +12,11 @@ This is a update that corresponds to Python Polars 1.32.0, which includes signif
   Since this feature could previously be used in two ways, both are now deprecated:
   - `as_polars_expr()`'s argument `structify`.
   - Setting the `POLARS_AUTO_STRUCTIFY` environment variable to `1`.
+- `<lazyframe>$unique()` and `<dataframe>$unique()`'s first argument is replaced from `subset` to `...`
+  (dynamic dots) (#1463).
+  Because of this change, it is also deprecated to pass the following objects as the first argument of these functions:
+  - `NULL`: Use `cs$all()` or pass nothing to select all columns.
+  - A list of column names or selectors: Use `!!!` to expand the list. e.g. `!!!list("col1", "col2")`.
 
 ### New features
 
@@ -30,9 +35,9 @@ This is a update that corresponds to Python Polars 1.32.0, which includes signif
   - The `...` argument (dynamic dots) of `<lazyframe>$drop_nans()` and `<dataframe>$drop_nans()`.
   - The `...` argument (dynamic dots) of `<lazyframe>$unnest()` and `<dataframe>$unnest()`.
   - The `...` argument (dynamic dots) of `<lazyframe>$explode()` and `<dataframe>$explode()`.
+  - The `...` argument (dynamic dots) of `<lazyframe>$unique()` and `<dataframe>$unique()` (#1463).
   - The `on`, `index`, and `values` arguments of `<dataframe>$pivot()`.
   - The `on` and `index` arguments of `<lazyframe>$unpivot()` and `<dataframe>$unpivot()`.
-  <!-- - `<lazyframe>$unique()` and `<dataframe>$unique()`'s `...` (dynamic dots). -->
 - `pl$nth()` gains the `strict` argument (#1452).
 - `<expr>$str$pad_end()` and `<expr>$str$pad_start()`'s `length` argument accepts a polars expression (#1452).
 - `<expr>$str$to_integer()` gains the `dtype` argument to specify the output data type (#1452).

@@ -399,7 +399,7 @@ test_that("unique works", {
     )
   )
   expect_query_equal(
-    .input$unique(subset = c("bar", "ham"), maintain_order = TRUE),
+    .input$unique(c("bar", "ham"), maintain_order = TRUE),
     .input = df,
     pl$DataFrame(foo = 1, bar = "a", ham = "b")
   )
@@ -413,7 +413,7 @@ test_that("unique works", {
     )
   )
   expect_query_error(
-    .input$unique(subset = "foobar", maintain_order = TRUE),
+    .input$unique("foobar", maintain_order = TRUE),
     df,
     'Column(s) not found: "foobar" not found',
     fixed = TRUE
@@ -424,6 +424,32 @@ test_that("unique works", {
     "must be one of"
   )
 })
+
+patrick::with_parameters_test_that(
+  "$unique's argument deprecation",
+  .cases = {
+    tibble::tribble(
+      ~.test_name, ~value,
+      "NULL", NULL,
+      "list of strings", list("bar", "ham"),
+      "expr", pl$col("bar", "ham")
+    )
+  },
+  code = {
+    df <- pl$DataFrame(
+      foo = c(1, 2, 3, 1),
+      bar = c("a", "a", "a", "a"),
+      ham = c("b", "b", "b", "b"),
+    )
+
+    expect_snapshot(df$lazy()$unique(subset = value, maintain_order = TRUE))
+    expect_snapshot(df$unique(subset = value, maintain_order = TRUE))
+    expect_snapshot(df$lazy()$unique("foo", subset = value, maintain_order = TRUE), error = TRUE)
+    expect_snapshot(df$unique("foo", subset = value, maintain_order = TRUE), error = TRUE)
+    expect_snapshot(df$lazy()$unique(value, maintain_order = TRUE))
+    expect_snapshot(df$unique(value, maintain_order = TRUE))
+  }
+)
 
 test_that("join: basic usage", {
   df <- pl$DataFrame(

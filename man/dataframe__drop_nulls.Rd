@@ -7,8 +7,9 @@
 dataframe__drop_nulls(...)
 }
 \arguments{
-\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Column name(s) for which null
-values are considered. If empty (default), use all columns.}
+\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Column names or \link[=polars_selector]{selectors}
+for which are considered. If empty (default), use all columns
+(same as specifying with the selector \code{\link[=cs__all]{cs$all()}}).}
 }
 \value{
 A polars \link{DataFrame}

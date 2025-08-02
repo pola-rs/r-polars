@@ -7,7 +7,8 @@
 dataframe__partition_by(..., maintain_order = TRUE, include_key = TRUE)
 }
 \arguments{
-\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Column name(s) to group by.}
+\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Column names or \link[=polars_selector]{selectors}
+to group by. Must contain at least one column.}
 
 \item{maintain_order}{Ensure that the order of the groups is consistent with
 the input data. This is slower than a default partition by operation.}

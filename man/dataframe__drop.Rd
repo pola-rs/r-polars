@@ -7,8 +7,8 @@
 dataframe__drop(..., strict = TRUE)
 }
 \arguments{
-\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Names of the columns that
-should be removed. Accepts column selector input.}
+\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Column names or \link[=polars_selector]{selectors}
+that should be removed.}
 
 \item{strict}{Validate that all column names exist in the current schema,
 and throw an exception if any do not.}

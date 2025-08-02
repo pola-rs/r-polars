@@ -810,12 +810,17 @@ dataframe__set_sorted <- function(column, ..., descending = FALSE) {
 #'
 #' df$unique(keep = "last", maintain_order = TRUE)
 dataframe__unique <- function(
-  subset = NULL,
   ...,
   keep = c("any", "none", "first", "last"),
-  maintain_order = FALSE
+  maintain_order = FALSE,
+  subset = deprecated()
 ) {
-  self$lazy()$unique(subset = subset, keep = keep, maintain_order = maintain_order)$collect(
+  self$lazy()$unique(
+    ...,
+    subset = subset,
+    keep = keep,
+    maintain_order = maintain_order
+  )$collect(
     `_eager` = TRUE
   ) |>
     wrap()
@@ -1288,13 +1293,13 @@ dataframe__unpivot <- function(
 
     # Like `_expand_selectors` in Python Polars
     cleared_self <- self$clear()
-    on_selector <- parse_into_selector(!!!c(on), .strict = TRUE, .arg_name = "on")
+    on_selector <- parse_into_selector(!!!c(on), .arg_name = "on")
     on <- cleared_self$select(on_selector)$columns
 
     index <- if (is.null(index)) {
       NULL
     } else {
-      index_selector <- parse_into_selector(!!!c(index), .strict = TRUE, .arg_name = "index")
+      index_selector <- parse_into_selector(!!!c(index), .arg_name = "index")
       cleared_self$select(index_selector)$columns
     }
 
@@ -1309,8 +1314,9 @@ dataframe__unpivot <- function(
 
 #' Convert categorical variables into dummy/indicator variables
 #'
-#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Column name(s) or [selector(s)][polars_selector]
-#'   that should be converted to dummy variables. If empty (default), convert all columns.
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Column names or [selectors][polars_selector]
+#'   that should be converted to dummy variables. If empty (default), convert all columns
+#'   (same as specifying with the selector [`cs$all()`][cs__all]).
 #' @param separator Separator/delimiter used when generating column names.
 #' @param drop_first Remove the first category from the variables being encoded.
 #' @param drop_nulls A boolean indicating whether to generate columns for `null` values.
@@ -1343,7 +1349,7 @@ dataframe__to_dummies <- function(
       NULL
     } else {
       # Like `_expand_selectors` in Python Polars
-      selector <- parse_into_selector(..., .strict = TRUE)
+      selector <- parse_into_selector(...)
       self$clear()$select(selector)$columns
     }
 
@@ -1358,7 +1364,8 @@ dataframe__to_dummies <- function(
 
 #' Group by the given columns and return the groups as separate dataframes
 #'
-#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Column name(s) to group by.
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Column names or [selectors][polars_selector]
+#'   to group by. Must contain at least one column.
 #' @param maintain_order Ensure that the order of the groups is consistent with
 #' the input data. This is slower than a default partition by operation.
 #' @param include_key Include the columns used to partition the DataFrame in
@@ -1378,14 +1385,12 @@ dataframe__to_dummies <- function(
 #' df$partition_by("a", "b")
 dataframe__partition_by <- function(..., maintain_order = TRUE, include_key = TRUE) {
   wrap({
-    check_dots_unnamed()
-
     if (...length() == 0L) {
       abort("`...` must contain at least one column name.")
     }
 
     # Like `_expand_selectors` in Python Polars
-    selector <- parse_into_selector(..., .strict = TRUE)
+    selector <- parse_into_selector(...)
     by <- self$clear()$select(selector)$columns
 
     self$`_df`$partition_by(
@@ -1524,19 +1529,19 @@ dataframe__pivot <- function(
 
     # Like `_expand_selectors` in Python Polars
     cleared_self <- self$clear()
-    on_selector <- parse_into_selector(!!!c(on), .strict = TRUE, .arg_name = "on")
+    on_selector <- parse_into_selector(!!!c(on), .arg_name = "on")
     on <- cleared_self$select(on_selector)$columns
 
     index <- if (is.null(index)) {
       NULL
     } else {
-      index_selector <- parse_into_selector(!!!c(index), .strict = TRUE, .arg_name = "index")
+      index_selector <- parse_into_selector(!!!c(index), .arg_name = "index")
       cleared_self$select(index_selector)$columns
     }
     values <- if (is.null(values)) {
       NULL
     } else {
-      values_selector <- parse_into_selector(!!!c(values), .strict = TRUE, .arg_name = "values")
+      values_selector <- parse_into_selector(!!!c(values), .arg_name = "values")
       cleared_self$select(values_selector)$columns
     }
 
