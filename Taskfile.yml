@@ -8,7 +8,7 @@ env:
   VIRTUAL_ENV: "{{.VENV_DIR}}"
 
 vars:
-  REQUIRED_R_PKGS_FOR_S3_METHODS: nanoarrow,tibble
+  REQUIRED_R_PKGS_FOR_S3_METHODS: nanoarrow,tibble,knitr
 
   VENV_DIR: .venv_altdoc
   VENV_BIN:

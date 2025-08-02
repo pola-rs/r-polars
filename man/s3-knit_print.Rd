@@ -5,9 +5,9 @@
 \alias{knit_print.polars_series}
 \title{knit print polars DataFrame}
 \usage{
-knit_print.polars_data_frame(x, ...)
+\method{knit_print}{polars_data_frame}(x, ...)
 
-knit_print.polars_series(x, ...)
+\method{knit_print}{polars_series}(x, ...)
 }
 \arguments{
 \item{x}{A polars object}
@@ -17,9 +17,7 @@ except two optional arguments \code{options} and \code{inline}; see
 the references below.}
 }
 \value{
-\code{x} invisibly or [knit_asis][knitr::asis_output)] object.
-
-[knitr::asis_output)]: R:knitr::asis_output)
+\code{x} invisibly or \link[knitr:asis_output]{knit_asis} object.
 }
 \description{
 Mimics Python Polars' NotebookFormatter
@@ -34,4 +32,19 @@ Or, the output format can be enforced with R's \code{options} function as follow
 \item \code{options(polars.df_knitr_print  = "default")} for the default print method.
 \item \code{options(polars.df_knitr_print  = "html")} for the HTML table.
 }
+}
+\examples{
+\dontshow{if (requireNamespace("knitr", quietly = TRUE) && requireNamespace("withr", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+# Using the default print method
+withr::with_options(
+  list(polars.df_knitr_print = "default"),
+  knitr::knit_print(as_polars_df(mtcars))
+)
+
+# Returning HTML table
+withr::with_options(
+  list(polars.df_knitr_print = "html"),
+  knitr::knit_print(as_polars_df(mtcars))
+)
+\dontshow{\}) # examplesIf}
 }
