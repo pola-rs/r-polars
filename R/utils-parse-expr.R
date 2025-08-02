@@ -1,5 +1,5 @@
 # Parse dynamic dots into a list of expressions (PlRExpr, not polars_expr)
-parse_into_list_of_expressions <- function(..., `__structify` = NULL) {
+parse_into_list_of_expressions <- function(..., `__structify` = deprecated()) {
   dots <- list2(...)
   call <- caller_env()
   try_fetch(

@@ -90,8 +90,14 @@ test_that("select_seq() works", {
 })
 
 test_that("POLARS_AUTO_STRUCTIFY works for select", {
+  expect_deprecated(
+    withr::with_envvar(c(POLARS_AUTO_STRUCTIFY = "1"), {
+      pl$LazyFrame()$select(pl$lit(1L))
+    })
+  )
+
   # This feature is deprecated
-  withr::local_options(list(lifecycle_verbosity = "quiet"))
+  local_lifecycle_silence()
 
   .data <- pl$DataFrame(
     foo = 1:3,

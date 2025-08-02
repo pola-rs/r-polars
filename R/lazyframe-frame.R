@@ -153,7 +153,7 @@ lazyframe__select <- function(...) {
   wrap({
     structify <- parse_env_auto_structify()
 
-    parse_into_list_of_expressions(..., `__structify` = structify) |>
+    parse_into_list_of_expressions(..., `__structify` = maybe_missing(structify)) |>
       self$`_ldf`$select()
   })
 }
@@ -176,7 +176,7 @@ lazyframe__select <- function(...) {
 lazyframe__select_seq <- function(...) {
   wrap({
     structify <- parse_env_auto_structify()
-    parse_into_list_of_expressions(..., `__structify` = structify) |>
+    parse_into_list_of_expressions(..., `__structify` = maybe_missing(structify)) |>
       self$`_ldf`$select_seq()
   })
 }
@@ -707,7 +707,7 @@ lazyframe__sort <- function(
 lazyframe__with_columns <- function(...) {
   structify <- parse_env_auto_structify()
 
-  parse_into_list_of_expressions(..., `__structify` = structify) |>
+  parse_into_list_of_expressions(..., `__structify` = maybe_missing(structify)) |>
     self$`_ldf`$with_columns() |>
     wrap()
 }
@@ -757,7 +757,7 @@ lazyframe__with_columns_seq <- function(...) {
   wrap({
     structify <- parse_env_auto_structify()
 
-    parse_into_list_of_expressions(..., `__structify` = structify) |>
+    parse_into_list_of_expressions(..., `__structify` = maybe_missing(structify)) |>
       self$`_ldf`$with_columns_seq()
   })
 }

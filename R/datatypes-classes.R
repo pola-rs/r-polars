@@ -176,16 +176,16 @@ pl__Duration <- function(time_unit = c("us", "ns", "ms")) {
 #'   One of `"lexical"` or `"physical"`.
 #'   This argument is deprecated and ignored.
 #'   Always behaves as if `"lexical"` was passed.
-pl__Categorical <- function(ordering = NULL) {
+pl__Categorical <- function(ordering = deprecated()) {
   wrap({
-    categories <- if (!is.null(ordering)) {
-      ordering <- arg_match0(ordering, c("lexical", "physical"))
+    categories <- if (is_present(ordering)) {
       deprecate_warn(
         c(
           `!` = sprintf("Specifying %s is deprecated.", format_arg("ordering")),
           `i` = 'Always behaves as if "lexical" was passed in the past versions.'
         )
       )
+      ordering <- arg_match0(ordering, c("lexical", "physical"))
       PlRCategories$global_categories()
     } else {
       # TODO: hidden pattern, Categories object is passed

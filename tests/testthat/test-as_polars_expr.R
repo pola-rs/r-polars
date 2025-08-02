@@ -3,8 +3,10 @@ test_that("x argument can't be missing", {
 })
 
 test_that("as_polars_expr for polars_expr `structify=TRUE`", {
+  expect_deprecated(as_polars_expr(pl$col("a", "b"), structify = TRUE))
+
   # This feature is deprecated
-  withr::local_options(list(lifecycle_verbosity = "quiet"))
+  local_lifecycle_silence()
 
   as_func <- function(x) {
     as_polars_expr(x, structify = TRUE)
