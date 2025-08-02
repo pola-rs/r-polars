@@ -158,7 +158,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! value and n should have unit length.
+      ! lengths don't match: 'value' must be a scalar value
 
 ---
 
@@ -174,7 +174,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! value and n should have unit length.
+      ! lengths don't match: 'value' must be a scalar value
 
 ---
 
@@ -190,7 +190,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! value and n should have unit length.
+      ! lengths don't match: 'value' must be a scalar value
 
 ---
 
@@ -206,7 +206,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! value and n should have unit length.
+      ! lengths don't match: 'value' must be a scalar value
 
 # $glimpse() works
 

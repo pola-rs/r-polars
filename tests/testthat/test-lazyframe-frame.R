@@ -1476,7 +1476,7 @@ test_that("shift() works", {
   expect_query_error(
     .input$shift(2, fill_value = pl$col("mpg")),
     df,
-    "'fill_value' must be scalar value"
+    "'fill_value' must be a scalar value"
   )
 })
 
