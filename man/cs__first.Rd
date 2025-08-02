@@ -4,7 +4,12 @@
 \alias{cs__first}
 \title{Select the first column in the current scope}
 \usage{
-cs__first()
+cs__first(..., strict = TRUE)
+}
+\arguments{
+\item{...}{These dots are for future extensions and must be empty.}
+
+\item{strict}{Require the column exists.}
 }
 \value{
 A Polars selector
@@ -27,6 +32,5 @@ df$select(cs$first())
 df$select(!cs$first())
 }
 \seealso{
-\link{cs} for the documentation on operators supported by Polars
-selectors.
+\link{cs} for the documentation on operators supported by Polars selectors.
 }

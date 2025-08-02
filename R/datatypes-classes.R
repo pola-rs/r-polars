@@ -172,20 +172,35 @@ pl__Duration <- function(time_unit = c("us", "ns", "ms")) {
 }
 
 #' @rdname polars_dtype
-#' @param ordering One of `"physical"` (default) or `"lexical"`.
-#' Ordering by order of appearance (`"physical"`) or string value (`"lexical"`).
-pl__Categorical <- function(ordering = c("physical", "lexical")) {
+#' @param ordering `r lifecycle::badge("deprecated")`
+#'   One of `"lexical"` or `"physical"`.
+#'   This argument is deprecated and ignored.
+#'   Always behaves as if `"lexical"` was passed.
+pl__Categorical <- function(ordering = NULL) {
   wrap({
-    ordering <- arg_match0(ordering, c("physical", "lexical"))
-    PlRDataType$new_categorical(ordering)
+    categories <- if (!is.null(ordering)) {
+      ordering <- arg_match0(ordering, c("lexical", "physical"))
+      deprecate_warn(
+        c(
+          `!` = sprintf("Specifying %s is deprecated.", format_arg("ordering")),
+          `i` = 'Always behaves as if "lexical" was passed in the past versions.'
+        )
+      )
+      PlRCategories$global_categories()
+    } else {
+      # TODO: hidden pattern, Categories object is passed
+      PlRCategories$global_categories()
+    }
+
+    PlRDataType$new_categorical(categories)
   })
 }
 
+# TODO: accept series as categories
 #' @rdname polars_dtype
 #' @param categories A character vector.
 #' Should not contain `NA` values and all values should be unique.
 pl__Enum <- function(categories) {
-  # TODO: impliment `issue_unstable_warning`
   wrap({
     check_character(categories, allow_na = FALSE)
 
@@ -196,7 +211,7 @@ pl__Enum <- function(categories) {
       ))
     }
 
-    PlRDataType$new_enum(categories)
+    PlRDataType$new_enum(as_polars_series(categories, name = "category")$`_s`)
   })
 }
 

@@ -187,13 +187,13 @@ test_that("by_name", {
     zap = c(FALSE, TRUE)
   )
 
-  expect_named(
+  expect_equal(
     df$select(cs$by_name("foo", "bar")),
-    c("foo", "bar")
+    df$select("foo", "bar")
   )
-  expect_named(
+  expect_equal(
     df$select(cs$by_name("baz", "moose", "foo", "bear", require_all = FALSE)),
-    c("foo", "baz")
+    df$select("baz", "foo")
   )
   expect_snapshot(
     df$select(cs$by_name(a = "foo")),
@@ -530,7 +530,7 @@ test_that("string", {
     y = c(3.0, 4.5, 1.0, 2.5, -2.0),
     z = c("a", "b", "a", "b", "b")
   )$with_columns(
-    z = pl$col("z")$cast(pl$Categorical("lexical"))
+    z = pl$col("z")$cast(pl$Categorical())
   )
 
   expect_named(

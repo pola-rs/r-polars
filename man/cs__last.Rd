@@ -4,7 +4,12 @@
 \alias{cs__last}
 \title{Select the last column in the current scope}
 \usage{
-cs__last()
+cs__last(..., strict = TRUE)
+}
+\arguments{
+\item{...}{These dots are for future extensions and must be empty.}
+
+\item{strict}{Require the column exists.}
 }
 \value{
 A Polars selector
@@ -27,6 +32,5 @@ df$select(cs$last())
 df$select(!cs$last())
 }
 \seealso{
-\link{cs} for the documentation on operators supported by Polars
-selectors.
+\link{cs} for the documentation on operators supported by Polars selectors.
 }

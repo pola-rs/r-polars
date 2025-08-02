@@ -125,7 +125,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! Invalid operation: conversion from `str` to `u64` failed in column 'literal' for 1 out of 1 values: ["a"]
+      ! Invalid operation: conversion from `str` to `u64` failed in column 'scalar' for 1 out of 1 values: ["a"]
 
 ---
 
@@ -137,7 +137,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! Invalid operation: conversion from `f64` to `u64` failed in column 'literal' for 1 out of 1 values: [-3.0]
+      ! Invalid operation: conversion from `f64` to `u64` failed in column 'scalar' for 1 out of 1 values: [-3.0]
 
 # str$pad_start str$pad_start
 
@@ -147,11 +147,9 @@
       Error in `df$select()`:
       ! Evaluation failed in `$select()`.
       Caused by error:
-      ! Evaluation failed in `$select()`.
-      Caused by error in `pl$col("a")$str$pad_end()`:
-      ! Evaluation failed in `$pad_end()`.
+      ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! Argument `length` must be numeric, not character
+      ! Column(s) not found: unable to find column "wrong_string"; valid columns: ["a"]
 
 ---
 
@@ -161,11 +159,9 @@
       Error in `df$select()`:
       ! Evaluation failed in `$select()`.
       Caused by error:
-      ! Evaluation failed in `$select()`.
-      Caused by error in `pl$col("a")$str$pad_end()`:
-      ! Evaluation failed in `$pad_end()`.
+      ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! -2.0 is out of range that can be safely converted to usize
+      ! Invalid operation: conversion from `f64` to `u64` failed in column 'scalar' for 1 out of 1 values: [-2.0]
 
 ---
 
@@ -189,11 +185,9 @@
       Error in `df$select()`:
       ! Evaluation failed in `$select()`.
       Caused by error:
-      ! Evaluation failed in `$select()`.
-      Caused by error in `pl$col("a")$str$pad_start()`:
-      ! Evaluation failed in `$pad_start()`.
+      ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! Argument `length` must be numeric, not character
+      ! Column(s) not found: unable to find column "wrong_string"; valid columns: ["a"]
 
 ---
 
@@ -203,11 +197,9 @@
       Error in `df$select()`:
       ! Evaluation failed in `$select()`.
       Caused by error:
-      ! Evaluation failed in `$select()`.
-      Caused by error in `pl$col("a")$str$pad_start()`:
-      ! Evaluation failed in `$pad_start()`.
+      ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! -2.0 is out of range that can be safely converted to usize
+      ! Invalid operation: conversion from `f64` to `u64` failed in column 'scalar' for 1 out of 1 values: [-2.0]
 
 ---
 

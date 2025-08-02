@@ -90,6 +90,9 @@ test_that("select_seq() works", {
 })
 
 test_that("POLARS_AUTO_STRUCTIFY works for select", {
+  # This feature is deprecated
+  withr::local_options(list(lifecycle_verbosity = "quiet"))
+
   .data <- pl$DataFrame(
     foo = 1:3,
     bar = 6:8,
@@ -113,7 +116,8 @@ test_that("POLARS_AUTO_STRUCTIFY works for select", {
       expect_query_error(
         .input$select(is_odd = ((pl$col(pl$Int32) %% 2) == 1)$name$suffix("_is_odd")),
         .data,
-        "`keep`, `suffix`, `prefix` should be last expression"
+        "Duplicated column(s)",
+        fixed = TRUE
       )
 
       expect_query_equal(
@@ -122,7 +126,7 @@ test_that("POLARS_AUTO_STRUCTIFY works for select", {
         }),
         .data,
         as_polars_lf(.data)$select(
-          is_odd = pl$struct(((pl$col(pl$Int32) %% 2) == 1)$name$suffix("_is_odd")),
+          is_odd = pl$struct((pl$col(pl$Int32) %% 2) == 1),
         )$collect()
       )
     }
@@ -213,7 +217,7 @@ test_that("with_columns: basic usage", {
   expect_query_error(
     .input$with_columns(y = 1 + pl$col("x"), z = pl$col("y")^2),
     df,
-    "Column(s) not found: y",
+    "Column(s) not found",
     fixed = TRUE
   )
 
@@ -254,7 +258,7 @@ test_that("with_columns_seq: basic usage", {
   expect_query_error(
     .input$with_columns_seq(y = 1 + pl$col("x"), z = pl$col("y")^2),
     df,
-    "Column(s) not found: y",
+    "Column(s) not found",
     fixed = TRUE
   )
 
@@ -876,9 +880,8 @@ test_that("fill_null() fills categoricals if fill is character", {
   df <- pl$DataFrame(
     num = c(1, 2, NA),
     str = c("a", "b", NA),
-    cat_lex = c("a", "b", NA),
-    cat_phy = c("a", "b", NA)
-  )$cast(cat_lex = pl$Categorical("lexical"), cat_phy = pl$Categorical("physical"))
+    cat = c("a", "b", NA),
+  )$cast(cat = pl$Categorical())
 
   expect_query_equal(
     .input$fill_null("foobar"),
@@ -886,9 +889,8 @@ test_that("fill_null() fills categoricals if fill is character", {
     pl$DataFrame(
       num = c(1, 2, NA),
       str = c("a", "b", "foobar"),
-      cat_lex = c("a", "b", "foobar"),
-      cat_phy = c("a", "b", "foobar")
-    )$cast(cat_lex = pl$Categorical("lexical"), cat_phy = pl$Categorical("physical"))
+      cat = c("a", "b", "foobar"),
+    )$cast(cat = pl$Categorical())
   )
 })
 
@@ -988,6 +990,11 @@ test_that("explode() works", {
     df,
     expected_df
   )
+  expect_query_equal(
+    .input$explode(cs$exclude("letters")),
+    df,
+    expected_df
+  )
 
   # empty values -> NA
   df <- pl$DataFrame(
@@ -1043,6 +1050,12 @@ test_that("unnest", {
 
   expect_query_equal(
     .input$unnest(pl$col("first_struct", "second_struct")),
+    .input = df2,
+    df
+  )
+
+  expect_query_equal(
+    .input$unnest(cs$ends_with("_struct")),
     .input = df2,
     df
   )
@@ -1377,7 +1390,8 @@ test_that("fill_nan() works", {
   expect_query_error(
     .input$fill_nan("foo"),
     df,
-    "not found: foo"
+    "Column(s) not found",
+    fixed = TRUE
   )
   # accepts expressions
   expect_query_equal(
@@ -1462,7 +1476,7 @@ test_that("shift() works", {
   expect_query_error(
     .input$shift(2, fill_value = pl$col("mpg")),
     df,
-    "'fill_value' must be scalar value"
+    "'fill_value' must be a scalar value"
   )
 })
 
@@ -1722,6 +1736,22 @@ test_that("unpivot() works", {
       alice = c(2, 4, 6)
     )
   )
+  expect_query_equal(
+    .input$unpivot(
+      index = list(cs$by_name("a"), cs$by_name("b")), # list of selectors is allowed
+      on = cs$by_name("c"), # single selector is allowed
+      value_name = "alice",
+      variable_name = "bob"
+    ),
+    .input = df,
+    df$unpivot(
+      index = c("a", "b"),
+      on = "c",
+      value_name = "alice",
+      variable_name = "bob"
+    )
+  )
+
   expect_query_error(
     .input$unpivot(
       index = c("a", "b"),
@@ -2345,7 +2375,7 @@ test_that("describe() works", {
   expect_snapshot(df$describe(percentiles = 0.1))
 
   # min/max different depending on categorical ordering
-  expect_snapshot(df$select(pl$col("cat")$cast(pl$Categorical("lexical")))$describe())
+  expect_snapshot(df$select(pl$col("cat")$cast(pl$Categorical()))$describe())
 })
 
 test_that("sql() works", {

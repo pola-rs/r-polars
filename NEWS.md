@@ -1,6 +1,42 @@
 # NEWS
 
-## polars (development version)
+## polars 1.1.0
+
+This is a update that corresponds to Python Polars 1.32.0, which includes significant internal changes.
+
+### Deprecations
+
+- `pl$Categorical()`'s first argument `ordering` is deprecated (#1452).
+  In this version, global categories are always used, and the behavior matches the previous `ordering = "lexical"`.
+- The experimental feature "auto structify" is deprecated (#1452).
+  Since this feature could previously be used in two ways, both are now deprecated:
+  - `as_polars_expr()`'s argument `structify`.
+  - Setting the `POLARS_AUTO_STRUCTIFY` environment variable to `1`.
+
+### New features
+
+- New experimental polars selectors have been added (#1452).
+  - `cs$empty()` to avoid matching any column.
+  - `cs$enum()` for Enum data types.
+  - `cs$list()` for List data types.
+  - `cs$array()` for Array data types.
+  - `cs$struct()` for Struct data types.
+  - `cs$nested()` for List, Array, or Struct data types.
+- polars selectors can now be used in place of column names in more locations (#1452).
+  - The `...` argument (dynamic dots) of `<dataframe>$to_dummies()`.
+  - The `...` argument (dynamic dots) of `<dataframe>$partition_by()`.
+  - The `...` argument (dynamic dots) of `<lazyframe>$drop()` and `<dataframe>$drop()`.
+  - The `...` argument (dynamic dots) of `<lazyframe>$drop_nulls()` and `<dataframe>$drop_nulls()`.
+  - The `...` argument (dynamic dots) of `<lazyframe>$drop_nans()` and `<dataframe>$drop_nans()`.
+  - The `...` argument (dynamic dots) of `<lazyframe>$unnest()` and `<dataframe>$unnest()`.
+  - The `...` argument (dynamic dots) of `<lazyframe>$explode()` and `<dataframe>$explode()`.
+  - The `on`, `index`, and `values` arguments of `<dataframe>$pivot()`.
+  - The `on` and `index` arguments of `<lazyframe>$unpivot()` and `<dataframe>$unpivot()`.
+  <!-- - `<lazyframe>$unique()` and `<dataframe>$unique()`'s `...` (dynamic dots). -->
+- `pl$nth()` gains the `strict` argument (#1452).
+- `<expr>$str$pad_end()` and `<expr>$str$pad_start()`'s `length` argument accepts a polars expression (#1452).
+- `<expr>$str$to_integer()` gains the `dtype` argument to specify the output data type (#1452).
+- `<lazyframe>$sink_csv()` and `<dataframe>$write_csv()` gains the `decimal_commna` argument (#1452).
 
 ## polars 1.0.1
 
@@ -19,7 +55,7 @@ This is a small patch release that includes minor improvements discovered right 
 
 This is a completely rewritten new version of the polars R package. It improves
 the internal structure of the package and catches up with Python Polars' API.
-At the time of writing, this version of R Polars matches Python Polars 1.31.0.
+This version of R Polars matches Python Polars 1.31.0.
 
 Therefore it contains many breaking changes compared to the previous R Polars
 implementation. Some of those breaking changes are explained below, but many

@@ -45,12 +45,10 @@ pl__col <- function(...) {
       if (length(dots) == 1L) {
         col(dots[[1]])
       } else {
-        cols(as.character(dots))
+        cs__by_name(!!!dots, require_all = TRUE)$as_expr()
       }
     } else if (is_list_of_polars_dtype(dots)) {
-      dots |>
-        lapply(\(x) x$`_dt`) |>
-        dtype_cols()
+      cs__by_dtype(!!!dots)$as_expr()
     } else {
       abort(c(
         "Invalid input for `pl$col()`.",
@@ -63,7 +61,8 @@ pl__col <- function(...) {
 #' Get the nth column(s) of the context
 #'
 #' @param indices One or more indices representing the columns to retrieve.
-#'
+#' @param strict `r lifecycle::badge("experimental")` Passed to
+#'   [`cs$by_index()`][cs__by_index]'s `require_all` argument.
 #' @inherit as_polars_expr return
 #' @examples
 #' df <- pl$DataFrame(
@@ -74,9 +73,8 @@ pl__col <- function(...) {
 #'
 #' df$select(pl$nth(1))
 #' df$select(pl$nth(c(2, 0)))
-pl__nth <- function(indices) {
-  index_cols(indices) |>
-    wrap()
+pl__nth <- function(indices, strict = TRUE) {
+  cs__by_index(indices, require_all = strict)$as_expr()
 }
 
 #' Get the first column of the context
@@ -91,8 +89,7 @@ pl__nth <- function(indices) {
 #'
 #' df$select(pl$first())
 pl__first <- function() {
-  first() |>
-    wrap()
+  cs__first()$as_expr()
 }
 
 #' Get the last column of the context
@@ -107,6 +104,5 @@ pl__first <- function() {
 #'
 #' df$select(pl$last())
 pl__last <- function() {
-  last() |>
-    wrap()
+  cs__last()$as_expr()
 }

@@ -32,6 +32,5 @@ df$select(!cs$by_dtype(pl$Date, pl$String))
 df$group_by(cs$string())$agg(cs$numeric()$sum())$sort("other")
 }
 \seealso{
-\link{cs} for the documentation on operators supported by Polars
-selectors.
+\link{cs} for the documentation on operators supported by Polars selectors.
 }

@@ -4,10 +4,13 @@
 \alias{pl__nth}
 \title{Get the nth column(s) of the context}
 \usage{
-pl__nth(indices)
+pl__nth(indices, strict = TRUE)
 }
 \arguments{
 \item{indices}{One or more indices representing the columns to retrieve.}
+
+\item{strict}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} Passed to
+\code{\link[=cs__by_index]{cs$by_index()}}'s \code{require_all} argument.}
 }
 \value{
 A polars \link{expression}

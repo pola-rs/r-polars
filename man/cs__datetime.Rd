@@ -56,6 +56,5 @@ df$select(cs$datetime(time_zone = NULL))
 df$select(!cs$datetime())
 }
 \seealso{
-\link{cs} for the documentation on operators supported by Polars
-selectors.
+\link{cs} for the documentation on operators supported by Polars selectors.
 }

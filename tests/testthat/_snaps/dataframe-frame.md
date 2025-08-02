@@ -28,6 +28,100 @@
       Caused by error:
       ! The input value is not a valid serialized DataFrame.
 
+# partition_by() works
+
+    Code
+      df$partition_by()
+    Condition
+      Error in `df$partition_by()`:
+      ! Evaluation failed in `$partition_by()`.
+      Caused by error in `df$partition_by()`:
+      ! `...` must contain at least one column name.
+
+---
+
+    Code
+      df$partition_by("a", NA)
+    Condition
+      Error in `df$partition_by()`:
+      ! Evaluation failed in `$partition_by()`.
+      Caused by error in `df$partition_by()`:
+      ! `...` can only contain single strings or polars selectors.
+
+---
+
+    Code
+      df$partition_by(pl$col("a") + 1)
+    Condition
+      Error in `df$partition_by()`:
+      ! Evaluation failed in `$partition_by()`.
+      Caused by error in `df$partition_by()`:
+      ! `...` can only contain single strings or polars selectors.
+
+---
+
+    Code
+      df$partition_by(foo = "a")
+    Condition
+      Error in `df$partition_by()`:
+      ! Evaluation failed in `$partition_by()`.
+      Caused by error in `df$partition_by()`:
+      ! Arguments in `...` must be passed by position, not name.
+      x Problematic argument:
+      * foo = "a"
+
+---
+
+    Code
+      df$partition_by("a", include_key = 42)
+    Condition
+      Error in `df$partition_by()`:
+      ! Evaluation failed in `$partition_by()`.
+      Caused by error:
+      ! Argument `include_key` must be logical, not double
+
+# pivot args work
+
+    Code
+      df_2$pivot("cat", index = "bob", values = "ann", aggregate_function = 42)
+    Condition
+      Error in `df_2$pivot()`:
+      ! Evaluation failed in `$pivot()`.
+      Caused by error in `df_2$pivot()`:
+      ! `aggregate_function` must be `NULL`, a character, or a Polars expression.
+
+---
+
+    Code
+      df_2$pivot("cat", index = "bob", values = "ann", aggregate_function = "dummy")
+    Condition
+      Error in `df_2$pivot()`:
+      ! Evaluation failed in `$pivot()`.
+      Caused by error in `df_2$pivot()`:
+      ! `aggregate_function` must be one of "min", "max", "first", "last", "sum", "mean", "median", or "len", not "dummy".
+
+---
+
+    Code
+      df_2$pivot("cat", index = "bob", values = "ann", aggregate_function = "mean",
+        maintain_order = 42)
+    Condition
+      Error in `df_2$pivot()`:
+      ! Evaluation failed in `$pivot()`.
+      Caused by error:
+      ! Argument `maintain_order` must be logical, not double
+
+---
+
+    Code
+      df_2$pivot("cat", index = "bob", values = "ann", aggregate_function = "mean",
+        sort_columns = 42)
+    Condition
+      Error in `df_2$pivot()`:
+      ! Evaluation failed in `$pivot()`.
+      Caused by error:
+      ! Argument `sort_columns` must be logical, not double
+
 # sample() works
 
     Code
@@ -64,7 +158,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! value and n should have unit length.
+      ! lengths don't match: 'value' must be a scalar value
 
 ---
 
@@ -80,7 +174,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! value and n should have unit length.
+      ! lengths don't match: 'value' must be a scalar value
 
 ---
 
@@ -96,7 +190,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! value and n should have unit length.
+      ! lengths don't match: 'value' must be a scalar value
 
 ---
 
@@ -112,7 +206,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! value and n should have unit length.
+      ! lengths don't match: 'value' must be a scalar value
 
 # $glimpse() works
 

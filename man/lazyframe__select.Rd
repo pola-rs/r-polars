@@ -44,15 +44,4 @@ lf$select(pl$col("foo"), pl$col("bar") + 1)$collect()
 lf$select(
   threshold = pl$when(pl$col("foo") > 2)$then(10)$otherwise(0)
 )$collect()
-
-# Expressions with multiple outputs can be automatically instantiated
-# as Structs by setting the `POLARS_AUTO_STRUCTIFY` environment variable.
-# (Experimental)
-if (requireNamespace("withr", quietly = TRUE)) {
-  withr::with_envvar(c(POLARS_AUTO_STRUCTIFY = "1"), {
-    lf$select(
-      is_odd = ((pl$col(pl$Int32) \%\% 2) == 1)$name$suffix("_is_odd"),
-    )$collect()
-  })
-}
 }

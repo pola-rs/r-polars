@@ -25,6 +25,5 @@ df$select(cs$date())
 df$select(!cs$date())
 }
 \seealso{
-\link{cs} for the documentation on operators supported by Polars
-selectors.
+\link{cs} for the documentation on operators supported by Polars selectors.
 }

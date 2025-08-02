@@ -414,16 +414,6 @@ dataframe__select_seq <- function(...) {
 #'   `b/2` = pl$col("b") / 2,
 #'   `not c` = pl$col("c")$not(),
 #' )
-#'
-#' # Expressions with multiple outputs can automatically be instantiated
-#' # as Structs by enabling the experimental setting `POLARS_AUTO_STRUCTIFY`:
-#' if (requireNamespace("withr", quietly = TRUE)) {
-#'   withr::with_envvar(c(POLARS_AUTO_STRUCTIFY = "1"), {
-#'     df$drop("c")$with_columns(
-#'       diffs = pl$col("a", "b")$diff()$name$suffix("_diff"),
-#'     )
-#'   })
-#' }
 dataframe__with_columns <- function(...) {
   self$lazy()$with_columns(...)$collect(`_eager` = TRUE) |>
     wrap()
@@ -459,16 +449,6 @@ dataframe__with_columns <- function(...) {
 #'   `b/2` = pl$col("b") / 2,
 #'   `not c` = pl$col("c")$not(),
 #' )
-#'
-#' # Expressions with multiple outputs can automatically be instantiated
-#' # as Structs by enabling the experimental setting `POLARS_AUTO_STRUCTIFY`:
-#' if (requireNamespace("withr", quietly = TRUE)) {
-#'   withr::with_envvar(c(POLARS_AUTO_STRUCTIFY = "1"), {
-#'     df$drop("c")$with_columns_seq(
-#'       diffs = pl$col("a", "b")$diff()$name$suffix("_diff"),
-#'     )
-#'   })
-#' }
 dataframe__with_columns_seq <- function(...) {
   self$lazy()$with_columns_seq(...)$collect(`_eager` = TRUE) |>
     wrap()
@@ -1305,10 +1285,21 @@ dataframe__unpivot <- function(
 ) {
   wrap({
     check_dots_empty0(...)
-    # TODO: add selectors handling when py-polars' _expand_selectors() has moved
-    # to Rust
+
+    # Like `_expand_selectors` in Python Polars
+    cleared_self <- self$clear()
+    on_selector <- parse_into_selector(!!!c(on), .strict = TRUE, .arg_name = "on")
+    on <- cleared_self$select(on_selector)$columns
+
+    index <- if (is.null(index)) {
+      NULL
+    } else {
+      index_selector <- parse_into_selector(!!!c(index), .strict = TRUE, .arg_name = "index")
+      cleared_self$select(index_selector)$columns
+    }
+
     self$`_df`$unpivot(
-      on = on %||% character(),
+      on = on,
       index = index,
       value_name = value_name,
       variable_name = variable_name
@@ -1318,48 +1309,49 @@ dataframe__unpivot <- function(
 
 #' Convert categorical variables into dummy/indicator variables
 #'
-#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Column name(s)
-#' that should be converted to dummy variables. If empty (default), convert
-#' all columns.
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Column name(s) or [selector(s)][polars_selector]
+#'   that should be converted to dummy variables. If empty (default), convert all columns.
 #' @param separator Separator/delimiter used when generating column names.
 #' @param drop_first Remove the first category from the variables being encoded.
+#' @param drop_nulls A boolean indicating whether to generate columns for `null` values.
 #'
 #' @inherit as_polars_df return
 #' @examples
 #' df <- pl$DataFrame(
 #'   foo = c(1L, 2L),
-#'   bar = c(3L, 4L),
+#'   bar = c(3, NA),
 #'   ham = c("a", "b")
 #' )
 #' df$to_dummies()
 #'
 #' df$to_dummies(drop_first = TRUE)
+#' df$to_dummies(drop_nulls = TRUE)
+#'
 #' df$to_dummies("foo", "bar", separator = ":")
-# df$to_dummies(cs$integer(), separator=":")
-# df$to_dummies(cs$integer(), drop_first = TRUE, separator = ":")
+#' df$to_dummies(cs$integer(), separator=":")
+#' df$to_dummies(cs$integer(), drop_first = TRUE, separator = ":")
 dataframe__to_dummies <- function(
   ...,
   separator = "_",
-  drop_first = FALSE
+  drop_first = FALSE,
+  drop_nulls = FALSE
 ) {
-  # TODO: add selectors handling when py-polars' _expand_selectors() has moved
-  # to Rust (and update examples above)
   wrap({
     check_dots_unnamed()
 
-    dots <- list2(...)
-    check_list_of_string(dots, arg = "...")
-
-    if (length(dots) == 0L) {
-      columns <- NULL
+    columns <- if (...length() == 0L) {
+      NULL
     } else {
-      columns <- as.character(dots)
+      # Like `_expand_selectors` in Python Polars
+      selector <- parse_into_selector(..., .strict = TRUE)
+      self$clear()$select(selector)$columns
     }
 
     self$`_df`$to_dummies(
       columns = columns,
       separator = separator,
-      drop_first = drop_first
+      drop_first = drop_first,
+      drop_nulls = drop_nulls
     )
   })
 }
@@ -1386,20 +1378,18 @@ dataframe__to_dummies <- function(
 #' df$partition_by("a", "b")
 dataframe__partition_by <- function(..., maintain_order = TRUE, include_key = TRUE) {
   wrap({
-    # TODO: add selectors handling when py-polars' _expand_selectors() has moved
-    # to Rust
     check_dots_unnamed()
-    dots <- list2(...)
 
-    if (!is_list_of_string(dots)) {
-      abort("`...` only accepts column names.")
-    }
-    if (length(dots) == 0L) {
+    if (...length() == 0L) {
       abort("`...` must contain at least one column name.")
     }
 
+    # Like `_expand_selectors` in Python Polars
+    selector <- parse_into_selector(..., .strict = TRUE)
+    by <- self$clear()$select(selector)$columns
+
     self$`_df`$partition_by(
-      by = as.character(dots),
+      by = by,
       maintain_order = maintain_order,
       include_key = include_key
     ) |>
@@ -1454,9 +1444,9 @@ dataframe__partition_by <- function(..., maintain_order = TRUE, include_key = TR
 #' # different subjects as columns, and their `test_1` scores as values:
 #' df$pivot("subject", index = "name", values = "test_1")
 #'
-# You can use selectors too - here we include all test scores in the pivoted
-# table:
-# df$pivot("subject", values = cs$starts_with("test"))
+#' # You can use selectors too - here we include all test scores
+#' # in the pivoted table:
+#' df$pivot("subject", values = cs$starts_with("test"))
 #'
 #' # If you end up with multiple values per cell, you can specify how to
 #' # aggregate them with `aggregate_function`:
@@ -1505,33 +1495,49 @@ dataframe__pivot <- function(
   sort_columns = FALSE,
   separator = "_"
 ) {
-  # TODO: add selectors handling when py-polars' _expand_selectors() has moved
-  # to Rust (and uncomment example above)
-
   wrap({
     check_dots_empty0(...)
-    aggregate_expr <- NULL
-    if (is_character(aggregate_function)) {
-      aggregate_function <- arg_match0(
-        aggregate_function,
-        values = c("min", "max", "first", "last", "sum", "mean", "median", "len")
-      )
-      # fmt: skip
-      aggregate_expr <- switch(aggregate_function,
-        "min" = pl$element()$min()$`_rexpr`,
-        "max" = pl$element()$max()$`_rexpr`,
-        "first" = pl$element()$first()$`_rexpr`,
-        "last" = pl$element()$last()$`_rexpr`,
-        "sum" = pl$element()$sum()$`_rexpr`,
-        "mean" = pl$element()$mean()$`_rexpr`,
-        "median" = pl$element()$median()$`_rexpr`,
+
+    aggregate_expr <- if (is_character(aggregate_function)) {
+      switch(
+        arg_match0(
+          aggregate_function,
+          values = c("min", "max", "first", "last", "sum", "mean", "median", "len")
+        ),
+        "min" = pl$element()$min(),
+        "max" = pl$element()$max(),
+        "first" = pl$element()$first(),
+        "last" = pl$element()$last(),
+        "sum" = pl$element()$sum(),
+        "mean" = pl$element()$mean(),
+        "median" = pl$element()$median(),
         "len" = pl$len()$`_rexpr`,
         abort("unreachable")
-      )
+      )$`_rexpr`
     } else if (is_polars_expr(aggregate_function)) {
-      aggregate_expr <- aggregate_function$`_rexpr`
-    } else if (!is.null(aggregate_function)) {
+      aggregate_function$`_rexpr`
+    } else if (is.null(aggregate_function)) {
+      NULL
+    } else {
       abort("`aggregate_function` must be `NULL`, a character, or a Polars expression.")
+    }
+
+    # Like `_expand_selectors` in Python Polars
+    cleared_self <- self$clear()
+    on_selector <- parse_into_selector(!!!c(on), .strict = TRUE, .arg_name = "on")
+    on <- cleared_self$select(on_selector)$columns
+
+    index <- if (is.null(index)) {
+      NULL
+    } else {
+      index_selector <- parse_into_selector(!!!c(index), .strict = TRUE, .arg_name = "index")
+      cleared_self$select(index_selector)$columns
+    }
+    values <- if (is.null(values)) {
+      NULL
+    } else {
+      values_selector <- parse_into_selector(!!!c(values), .strict = TRUE, .arg_name = "values")
+      cleared_self$select(values_selector)$columns
     }
 
     self$`_df`$pivot_expr(

@@ -342,52 +342,36 @@
     Code
       pl_df[, second_arg]
     Condition
-      Error in `x$select()`:
-      ! Evaluation failed in `$select()`.
-      Caused by error:
-      ! Evaluation failed in `$collect()`.
-      Caused by error:
-      ! Duplicated column(s): the name 'b' is duplicate
-      
-      It's possible that multiple expressions are returning the same default column name. If this is the case, try renaming the columns with `.alias("new_name")` to avoid duplicate column names.
+      Error in `pl_df[, second_arg]`:
+      ! Can't subset columns with duplicated indices.
+      x Column indices 2 are duplicated.
 
 ---
 
     Code
       pl_df$lazy()[, second_arg]$collect()
     Condition
-      Error:
-      ! Evaluation failed in `$collect()`.
-      Caused by error:
-      ! Duplicated column(s): the name 'b' is duplicate
-      
-      It's possible that multiple expressions are returning the same default column name. If this is the case, try renaming the columns with `.alias("new_name")` to avoid duplicate column names.
+      Error in `pl_df$lazy()[, second_arg]`:
+      ! Can't subset columns with duplicated indices.
+      x Column indices 2 are duplicated.
 
 ---
 
     Code
       pl_df[second_arg]
     Condition
-      Error in `x$select()`:
-      ! Evaluation failed in `$select()`.
-      Caused by error:
-      ! Evaluation failed in `$collect()`.
-      Caused by error:
-      ! Duplicated column(s): the name 'b' is duplicate
-      
-      It's possible that multiple expressions are returning the same default column name. If this is the case, try renaming the columns with `.alias("new_name")` to avoid duplicate column names.
+      Error in `pl_df[second_arg]`:
+      ! Can't subset columns with duplicated indices.
+      x Column indices 2 are duplicated.
 
 ---
 
     Code
       pl_df$lazy()[second_arg]$collect()
     Condition
-      Error in `pl_df$lazy()[second_arg]$collect()`:
-      ! Evaluation failed in `$collect()`.
-      Caused by error:
-      ! Duplicated column(s): the name 'b' is duplicate
-      
-      It's possible that multiple expressions are returning the same default column name. If this is the case, try renaming the columns with `.alias("new_name")` to avoid duplicate column names.
+      Error in `pl_df$lazy()[second_arg]`:
+      ! Can't subset columns with duplicated indices.
+      x Column indices 2 are duplicated.
 
 # Column subsetting with `[` raise error for mixed positive and negative (positive first): c(1, 0, -2)
 
@@ -662,52 +646,36 @@
     Code
       pl_df[, second_arg]
     Condition
-      Error in `x$select()`:
-      ! Evaluation failed in `$select()`.
-      Caused by error:
-      ! Evaluation failed in `$collect()`.
-      Caused by error:
-      ! Duplicated column(s): the name 'b' is duplicate
-      
-      It's possible that multiple expressions are returning the same default column name. If this is the case, try renaming the columns with `.alias("new_name")` to avoid duplicate column names.
+      Error in `pl_df[, second_arg]`:
+      ! Can't subset columns with duplicated names.
+      x Column names `b` are duplicated.
 
 ---
 
     Code
       pl_df$lazy()[, second_arg]$collect()
     Condition
-      Error:
-      ! Evaluation failed in `$collect()`.
-      Caused by error:
-      ! Duplicated column(s): the name 'b' is duplicate
-      
-      It's possible that multiple expressions are returning the same default column name. If this is the case, try renaming the columns with `.alias("new_name")` to avoid duplicate column names.
+      Error in `pl_df$lazy()[, second_arg]`:
+      ! Can't subset columns with duplicated names.
+      x Column names `b` are duplicated.
 
 ---
 
     Code
       pl_df[second_arg]
     Condition
-      Error in `x$select()`:
-      ! Evaluation failed in `$select()`.
-      Caused by error:
-      ! Evaluation failed in `$collect()`.
-      Caused by error:
-      ! Duplicated column(s): the name 'b' is duplicate
-      
-      It's possible that multiple expressions are returning the same default column name. If this is the case, try renaming the columns with `.alias("new_name")` to avoid duplicate column names.
+      Error in `pl_df[second_arg]`:
+      ! Can't subset columns with duplicated names.
+      x Column names `b` are duplicated.
 
 ---
 
     Code
       pl_df$lazy()[second_arg]$collect()
     Condition
-      Error in `pl_df$lazy()[second_arg]$collect()`:
-      ! Evaluation failed in `$collect()`.
-      Caused by error:
-      ! Duplicated column(s): the name 'b' is duplicate
-      
-      It's possible that multiple expressions are returning the same default column name. If this is the case, try renaming the columns with `.alias("new_name")` to avoid duplicate column names.
+      Error in `pl_df$lazy()[second_arg]`:
+      ! Can't subset columns with duplicated names.
+      x Column names `b` are duplicated.
 
 # Column subsetting with `[` raise error for logical includes NA: c(TRUE, NA, FALSE)
 
@@ -1006,7 +974,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! Column(s) not found: nth
+      ! Column(s) not found: cannot get the 3-th column when schema has 3 columns
 
 # Column subsetting with `[[` fails with value = -4
 
@@ -1018,7 +986,7 @@
       Caused by error:
       ! Evaluation failed in `$collect()`.
       Caused by error:
-      ! Column(s) not found: nth
+      ! Column(s) not found: cannot get the -4-th column when schema has 3 columns
 
 # Column subsetting with `[[` fails with value = NA_character_
 

@@ -3,6 +3,7 @@ use std::str::FromStr;
 
 use crate::prelude::*;
 use crate::{PlRDataFrame, PlRDataType, PlRExpr, PlRLazyFrame, PlRSeries, RPolarsErr};
+pub use categorical::PlRCategories;
 use polars::prelude::cloud::CloudOptions;
 use polars::series::ops::NullBehavior;
 use savvy::{
@@ -11,6 +12,7 @@ use savvy::{
 };
 use search_sorted::SearchSortedSide;
 pub mod base_date;
+mod categorical;
 mod chunked_array;
 pub mod clock;
 pub mod data_table;
@@ -56,8 +58,8 @@ impl TryFrom<&str> for PlRDataType {
             "Boolean" => DataType::Boolean,
             "String" => DataType::String,
             "Binary" => DataType::Binary,
-            "Categorical" => DataType::Categorical(None, Default::default()),
-            "Enum" => DataType::Enum(None, Default::default()),
+            "Categorical" => DataType::from_categories(Categories::global()),
+            "Enum" => DataType::from_frozen_categories(FrozenCategories::new([]).unwrap()),
             "Date" => DataType::Date,
             "Time" => DataType::Time,
             "Datetime" => DataType::Datetime(TimeUnit::Microseconds, None),
@@ -202,54 +204,32 @@ impl TryFrom<ListSexp> for Wrap<Vec<Field>> {
     }
 }
 
-impl TryFrom<&str> for Wrap<CategoricalOrdering> {
-    type Error = String;
-
-    fn try_from(ordering: &str) -> Result<Self, String> {
-        let ordering = match ordering {
-            "physical" => CategoricalOrdering::Physical,
-            "lexical" => CategoricalOrdering::Lexical,
-            v => {
-                return Err(format!(
-                    "categorical `ordering` must be one of ('physical', 'lexical'), got '{v}'"
-                ));
-            }
-        };
-        Ok(Wrap(ordering))
-    }
-}
-
-impl From<Wrap<&Arc<RevMapping>>> for Vec<String> {
-    fn from(mapping: Wrap<&Arc<RevMapping>>) -> Vec<String> {
-        mapping
-            .0
-            .get_categories()
-            .into_iter()
-            .map(|v| v.unwrap_or_default().to_string())
-            .collect::<Vec<_>>()
-    }
-}
-
-impl From<Wrap<&CategoricalOrdering>> for String {
-    fn from(ordering: Wrap<&CategoricalOrdering>) -> String {
-        match *ordering.0 {
-            CategoricalOrdering::Physical => "physical".into(),
-            CategoricalOrdering::Lexical => "lexical".into(),
-        }
-    }
-}
-
 impl TryFrom<&str> for Wrap<TimeUnit> {
-    type Error = String;
+    type Error = savvy::Error;
 
-    fn try_from(time_unit: &str) -> Result<Self, String> {
+    fn try_from(time_unit: &str) -> Result<Self, Self::Error> {
         let time_unit = match time_unit {
             "ns" => TimeUnit::Nanoseconds,
             "us" => TimeUnit::Microseconds,
             "ms" => TimeUnit::Milliseconds,
-            _ => return Err("unreachable".to_string()),
+            _ => return Err("unreachable".into()),
         };
         Ok(Wrap(time_unit))
+    }
+}
+
+impl TryFrom<StringSexp> for Wrap<Vec<TimeUnit>> {
+    type Error = savvy::Error;
+
+    fn try_from(time_unit: StringSexp) -> Result<Self, Self::Error> {
+        let time_units = time_unit
+            .iter()
+            .map(<Wrap<TimeUnit>>::try_from)
+            .collect::<Result<Vec<_>, _>>()?
+            .into_iter()
+            .map(|wrap| wrap.0)
+            .collect::<Vec<_>>();
+        Ok(Wrap(time_units))
     }
 }
 
@@ -802,14 +782,14 @@ impl TryFrom<StringSexp> for Wrap<NullValues> {
         } else if null_values.len() == 1 {
             let vals = null_values.to_vec();
             let val = *(vals.first().unwrap());
-            return Ok(Wrap(NullValues::AllColumnsSingle(val.into())));
+            Ok(Wrap(NullValues::AllColumnsSingle(val.into())))
         } else {
             let vals = null_values
                 .to_vec()
                 .into_iter()
                 .map(|x| x.into())
                 .collect::<Vec<PlSmallStr>>();
-            return Ok(Wrap(NullValues::AllColumns(vals)));
+            Ok(Wrap(NullValues::AllColumns(vals)))
         }
     }
 }
@@ -988,5 +968,58 @@ impl TryFrom<Option<&str>> for Wrap<Option<TimeZone>> {
             Some(tz) => <Wrap<Option<TimeZone>>>::try_from(tz),
             None => Ok(Wrap(None)),
         }
+    }
+}
+
+impl TryFrom<Sexp> for Wrap<Vec<Option<TimeZone>>> {
+    type Error = savvy::Error;
+
+    fn try_from(value: Sexp) -> Result<Self, Self::Error> {
+        match value.into_typed() {
+            TypedSexp::String(s) => s.try_into(),
+            TypedSexp::List(l) => l.try_into(),
+            TypedSexp::Null(_) => Ok(Wrap(vec![None])),
+            _ => Err("`time_zone` must be a character vector, a list, or `NULL`.".into()),
+        }
+    }
+}
+
+impl TryFrom<StringSexp> for Wrap<Vec<Option<TimeZone>>> {
+    type Error = savvy::Error;
+
+    fn try_from(tz: StringSexp) -> Result<Self, Self::Error> {
+        let tz = tz
+            .iter()
+            .map(<Wrap<Option<TimeZone>>>::try_from)
+            .collect::<Result<Vec<_>, _>>()?
+            .into_iter()
+            .map(|wrap| wrap.0)
+            .collect::<Vec<_>>();
+        Ok(Wrap(tz))
+    }
+}
+
+impl TryFrom<ListSexp> for Wrap<Vec<Option<TimeZone>>> {
+    type Error = savvy::Error;
+
+    fn try_from(tz: ListSexp) -> Result<Self, Self::Error> {
+        let err_msg = "`time_zone` list must contain only `NULL` or single string values.";
+        let tz = tz
+            .values_iter()
+            .map(|sexp| match sexp.into_typed() {
+                TypedSexp::Null(_) => Ok(Wrap(None)),
+                TypedSexp::String(s) => {
+                    if s.len() != 1 {
+                        return Err(err_msg.into());
+                    }
+                    <Wrap<Option<TimeZone>>>::try_from(s.iter().next().unwrap())
+                }
+                _ => Err(err_msg.into()),
+            })
+            .collect::<Result<Vec<_>, _>>()?
+            .into_iter()
+            .map(|wrap| wrap.0)
+            .collect::<Vec<_>>();
+        Ok(Wrap(tz))
     }
 }

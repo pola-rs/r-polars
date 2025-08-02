@@ -34,6 +34,5 @@ df$select(cs$ends_with("z", "r"))
 df$select(!cs$ends_with("z"))
 }
 \seealso{
-\link{cs} for the documentation on operators supported by Polars
-selectors.
+\link{cs} for the documentation on operators supported by Polars selectors.
 }

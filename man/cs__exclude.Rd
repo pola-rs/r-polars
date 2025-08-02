@@ -34,6 +34,5 @@ df$select(cs$exclude("ba", "xx"))
 df$select(cs$exclude("aa", cs$string(), pl$Int32))
 }
 \seealso{
-\link{cs} for the documentation on operators supported by Polars
-selectors.
+\link{cs} for the documentation on operators supported by Polars selectors.
 }

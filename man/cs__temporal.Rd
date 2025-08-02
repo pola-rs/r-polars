@@ -29,6 +29,5 @@ df$select(cs$temporal() - cs$datetime())
 df$select(!cs$temporal())
 }
 \seealso{
-\link{cs} for the documentation on operators supported by Polars
-selectors.
+\link{cs} for the documentation on operators supported by Polars selectors.
 }

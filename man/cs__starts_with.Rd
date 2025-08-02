@@ -34,6 +34,5 @@ df$select(cs$starts_with("b", "z"))
 df$select(!cs$starts_with("b"))
 }
 \seealso{
-\link{cs} for the documentation on operators supported by Polars
-selectors.
+\link{cs} for the documentation on operators supported by Polars selectors.
 }

@@ -119,7 +119,7 @@ impl From<Wrap<&StringChunked>> for Sexp {
 pub(super) fn date32_export_impl(ca: &DateChunked, classes: &[&str]) -> OwnedIntegerSexp {
     let mut sexp = unsafe { OwnedIntegerSexp::new_without_init(ca.len()).unwrap() };
     let _ = sexp.set_class(classes);
-    for (i, v) in ca.into_iter().enumerate() {
+    for (i, v) in ca.physical().into_iter().enumerate() {
         if let Some(v) = v {
             let _ = sexp.set_elt(i, v);
         } else {
@@ -148,7 +148,7 @@ impl From<Wrap<&DurationChunked>> for Sexp {
         let _ = sexp.set_class(["difftime"]);
         sexp.set_attrib("units", <OwnedStringSexp>::try_from("secs").unwrap().into())
             .unwrap();
-        for (i, v) in ca.into_iter().enumerate() {
+        for (i, v) in ca.physical().into_iter().enumerate() {
             if let Some(v) = v {
                 let _ = sexp.set_elt(i, v as f64 / div_value);
             } else {
@@ -181,7 +181,7 @@ impl From<Wrap<&DatetimeChunked>> for Sexp {
             <OwnedStringSexp>::try_from(tzone_attr).unwrap().into(),
         )
         .unwrap();
-        for (i, v) in ca.into_iter().enumerate() {
+        for (i, v) in ca.physical().into_iter().enumerate() {
             if let Some(v) = v {
                 let _ = sexp.set_elt(i, v as f64 / div_value);
             } else {
@@ -199,7 +199,7 @@ impl From<Wrap<&TimeChunked>> for Sexp {
         let _ = sexp.set_class(["hms", "difftime"]);
         sexp.set_attrib("units", <OwnedStringSexp>::try_from("secs").unwrap().into())
             .unwrap();
-        for (i, v) in ca.into_iter().enumerate() {
+        for (i, v) in ca.physical().into_iter().enumerate() {
             if let Some(v) = v {
                 let _ = sexp.set_elt(i, v as f64 / 1_000_000_000.0);
             } else {

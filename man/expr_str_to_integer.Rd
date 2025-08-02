@@ -4,13 +4,16 @@
 \alias{expr_str_to_integer}
 \title{Convert a String column into an Int64 column with base radix}
 \usage{
-expr_str_to_integer(..., base = 10L, strict = TRUE)
+expr_str_to_integer(..., base = 10L, dtype = pl$Int64, strict = TRUE)
 }
 \arguments{
 \item{...}{These dots are for future extensions and must be empty.}
 
 \item{base}{A positive integer or expression which is the base of the string
 we are parsing. Characters are parsed as column names. Default: \code{10L}.}
+
+\item{dtype}{A polars integer \link[=DataType]{dtype} (e.g. \code{pl$UInt8}, \code{pl$Int32}, etc.).
+The default is \code{pl$Int64}.}
 
 \item{strict}{A logical. If \code{TRUE} (default), parsing errors or integer overflow will
 raise an error. If \code{FALSE}, silently convert to \code{null}.}
@@ -24,7 +27,11 @@ Convert a String column into an Int64 column with base radix
 \examples{
 df <- pl$DataFrame(bin = c("110", "101", "010", "invalid"))
 df$with_columns(
-  parsed = pl$col("bin")$str$to_integer(base = 2, strict = FALSE)
+  parsed = pl$col("bin")$str$to_integer(
+    base = 2,
+    dtype = pl$Int32,
+    strict = FALSE
+  )
 )
 
 df <- pl$DataFrame(hex = c("fa1e", "ff00", "cafe", NA))

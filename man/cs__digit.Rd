@@ -42,6 +42,5 @@ df$select(cs$digit())
 df$select(cs$digit(ascii_only = TRUE))
 }
 \seealso{
-\link{cs} for the documentation on operators supported by Polars
-selectors.
+\link{cs} for the documentation on operators supported by Polars selectors.
 }

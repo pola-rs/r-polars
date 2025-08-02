@@ -170,7 +170,7 @@ test_that("flags work", {
 test_that("to_dummies() works", {
   df <- pl$DataFrame(
     foo = 1:2,
-    bar = 3:4,
+    bar = c(3, NA),
     ham = c("a", "b")
   )
   expect_equal(
@@ -178,48 +178,49 @@ test_that("to_dummies() works", {
     pl$DataFrame(
       foo_1 = 1:0,
       foo_2 = 0:1,
-      bar_3 = 1:0,
-      bar_4 = 0:1,
+      bar_3.0 = 1:0,
+      bar_null = 0:1,
       ham_a = 1:0,
       ham_b = 0:1
     )$cast(pl$UInt8)
   )
   expect_equal(
-    df$to_dummies(!!!character()),
-    pl$DataFrame(
-      foo_1 = 1:0,
-      foo_2 = 0:1,
-      bar_3 = 1:0,
-      bar_4 = 0:1,
-      ham_a = 1:0,
-      ham_b = 0:1
-    )$cast(pl$UInt8)
+    df$to_dummies(character()),
+    df
   )
   expect_equal(
     df$to_dummies("foo", "bar"),
     pl$DataFrame(
       foo_1 = 1:0,
       foo_2 = 0:1,
-      bar_3 = 1:0,
-      bar_4 = 0:1,
+      bar_3.0 = 1:0,
+      bar_null = 0:1,
       ham = c("a", "b")
-    )$cast(foo_1 = pl$UInt8, foo_2 = pl$UInt8, bar_3 = pl$UInt8, bar_4 = pl$UInt8)
+    )$cast(foo_1 = pl$UInt8, foo_2 = pl$UInt8, bar_3.0 = pl$UInt8, bar_null = pl$UInt8)
+  )
+  expect_equal(
+    df$to_dummies("foo", "bar"),
+    df$to_dummies(c("foo", "bar"))
+  )
+  expect_equal(
+    df$to_dummies(cs$string(), cs$numeric()),
+    df$to_dummies()
   )
   expect_equal(
     df$to_dummies(drop_first = TRUE),
-    pl$DataFrame(foo_2 = 0:1, bar_4 = 0:1, ham_b = 0:1)$cast(pl$UInt8)
+    pl$DataFrame(foo_2 = 0:1, bar_null = 0:1, ham_b = 0:1)$cast(pl$UInt8)
   )
   expect_equal(
     df$to_dummies(drop_first = TRUE, separator = "::"),
-    pl$DataFrame(`foo::2` = 0:1, `bar::4` = 0:1, `ham::b` = 0:1)$cast(pl$UInt8)
+    pl$DataFrame(`foo::2` = 0:1, `bar::null` = 0:1, `ham::b` = 0:1)$cast(pl$UInt8)
   )
-  expect_error(
-    df$to_dummies(c("foo", "bar")),
-    "`...` must be a list of single strings"
+  expect_equal(
+    df$to_dummies(drop_first = TRUE, drop_nulls = TRUE),
+    pl$DataFrame(foo_2 = 0:1, ham_b = 0:1)$cast(pl$UInt8)
   )
   expect_error(
     df$to_dummies(foobar = TRUE),
-    "must be passed by positio"
+    "must be passed by position"
   )
 })
 
@@ -246,6 +247,14 @@ test_that("partition_by() works", {
       pl$DataFrame(a = "c", b = 3, c = 1)
     )
   )
+  expect_equal(
+    df$partition_by(cs$exclude("c")),
+    df$partition_by("a", "b")
+  )
+  expect_equal(
+    df$partition_by(cs$string(), cs$by_name("b")),
+    df$partition_by("a", "b")
+  )
   # arg "include_key"
   expect_equal(
     df$partition_by("a", include_key = FALSE),
@@ -256,26 +265,11 @@ test_that("partition_by() works", {
     )
   )
   # errors
-  expect_error(
-    df$partition_by(),
-    "must contain at least one column name"
-  )
-  expect_error(
-    df$partition_by("a", NA),
-    "only accepts column names"
-  )
-  expect_error(
-    df$partition_by(pl$col("a") + 1),
-    "only accepts column names"
-  )
-  expect_error(
-    df$partition_by(foo = "a"),
-    "must be passed by position"
-  )
-  expect_error(
-    df$partition_by("a", include_key = 42),
-    "must be logical, not double"
-  )
+  expect_snapshot(df$partition_by(), error = TRUE)
+  expect_snapshot(df$partition_by("a", NA), error = TRUE)
+  expect_snapshot(df$partition_by(pl$col("a") + 1), error = TRUE)
+  expect_snapshot(df$partition_by(foo = "a"), error = TRUE)
+  expect_snapshot(df$partition_by("a", include_key = 42), error = TRUE)
 })
 
 test_that("pivot() works", {
@@ -318,14 +312,14 @@ test_that("pivot() works", {
 })
 
 test_that("pivot args work", {
-  df <- pl$DataFrame(
+  df_1 <- pl$DataFrame(
     foo = c("one", "one", "one", "two", "two", "two"),
     bar = c("A", "B", "C", "A", "B", "C"),
     baz = c(1, 2, 3, 4, 5, 6),
     jaz = 6:1
   )
   expect_equal(
-    df$pivot("baz", index = "bar", values = "foo"),
+    df_1$pivot("baz", index = "bar", values = "foo"),
     pl$DataFrame(
       bar = c("A", "B", "C"),
       `1.0` = c("one", NA, NA),
@@ -337,7 +331,7 @@ test_that("pivot args work", {
     )
   )
 
-  df <- pl$DataFrame(
+  df_2 <- pl$DataFrame(
     ann = c("one", "one", "one", "two", "two", "two"),
     bob = c("A", "B", "A", "B", "A", "B"),
     cat = c(1, 2, 3, 4, 5, 6)
@@ -345,42 +339,59 @@ test_that("pivot args work", {
 
   # aggr functions
   expect_equal(
-    df$pivot("bob", index = "ann", values = "cat", aggregate_function = "mean"),
+    df_2$pivot("bob", index = "ann", values = "cat", aggregate_function = "mean"),
     pl$DataFrame(ann = c("one", "two"), A = c(2, 5), B = c(2, 5))
   )
   expect_equal(
-    df$pivot("bob", index = "ann", values = "cat", aggregate_function = pl$element()$mean()),
-    df$pivot("bob", index = "ann", values = "cat", aggregate_function = "mean")
+    df_2$pivot("bob", index = "ann", values = "cat", aggregate_function = pl$element()$mean()),
+    df_2$pivot("bob", index = "ann", values = "cat", aggregate_function = "mean")
   )
-  expect_error(
-    df$pivot("cat", index = "bob", values = "ann", aggregate_function = 42),
-    "must be `NULL`, a character, or a"
+  expect_snapshot(
+    df_2$pivot("cat", index = "bob", values = "ann", aggregate_function = 42),
+    error = TRUE
   )
-  expect_error(
-    df$pivot("cat", index = "bob", values = "ann", aggregate_function = "dummy"),
-    "must be one of"
+  expect_snapshot(
+    df_2$pivot("cat", index = "bob", values = "ann", aggregate_function = "dummy"),
+    error = TRUE
+  )
+
+  # on, index, values may be list of selectors
+  expect_equal(
+    df_2$pivot(
+      on = list(cs$by_name("bob"), cs$categorical()), # list of selectors is supported
+      index = cs$by_name("ann"), # single selector is supported
+      values = list(cs$numeric()),
+      aggregate_function = "mean"
+    ),
+    df_2$pivot("bob", index = "ann", values = "cat", aggregate_function = "mean")
   )
 
   # check maintain_order
-  expect_error(
-    df$pivot(
+  expect_snapshot(
+    df_2$pivot(
       "cat",
       index = "bob",
       values = "ann",
       aggregate_function = "mean",
       maintain_order = 42
     ),
-    "must be logical, not double"
+    error = TRUE
   )
   # check sort_columns
-  expect_error(
-    df$pivot("cat", index = "bob", values = "ann", aggregate_function = "mean", sort_columns = 42),
-    "must be logical, not double"
+  expect_snapshot(
+    df_2$pivot(
+      "cat",
+      index = "bob",
+      values = "ann",
+      aggregate_function = "mean",
+      sort_columns = 42
+    ),
+    error = TRUE
   )
 
   # separator
   expect_named(
-    df$pivot(
+    df_2$pivot(
       "cat",
       index = "ann",
       values = c("ann", "bob"),
@@ -594,14 +605,14 @@ test_that("sample() works", {
   expect_equal(
     df$sample(n = 2, seed = 0),
     pl$DataFrame(
-      foo = 3:2,
-      bar = 8:7,
-      ham = c("c", "b")
+      foo = 1:2,
+      bar = 6:7,
+      ham = c("a", "b")
     )
   )
   expect_equal(
     df$sample(fraction = 0.5, seed = 0),
-    pl$DataFrame(foo = 2L, bar = 7L, ham = "b")
+    pl$DataFrame(foo = 1L, bar = 6L, ham = "a")
   )
   expect_snapshot(df$sample(n = 2, fraction = 0.1), error = TRUE)
   expect_snapshot(df$sample(frac = 0.1), error = TRUE)

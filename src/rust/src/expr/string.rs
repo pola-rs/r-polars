@@ -91,16 +91,24 @@ impl PlRExpr {
         Ok(self.inner.clone().str().zfill(length.inner.clone()).into())
     }
 
-    fn str_pad_end(&self, length: NumericScalar, fill_char: &str) -> Result<Self> {
-        let length = <Wrap<usize>>::try_from(length)?.0;
+    fn str_pad_end(&self, length: &PlRExpr, fill_char: &str) -> Result<Self> {
         let fill_char = <Wrap<char>>::try_from(fill_char)?.0;
-        Ok(self.inner.clone().str().pad_end(length, fill_char).into())
+        Ok(self
+            .inner
+            .clone()
+            .str()
+            .pad_end(length.inner.clone(), fill_char)
+            .into())
     }
 
-    fn str_pad_start(&self, length: NumericScalar, fill_char: &str) -> Result<Self> {
-        let length = <Wrap<usize>>::try_from(length)?.0;
+    fn str_pad_start(&self, length: &PlRExpr, fill_char: &str) -> Result<Self> {
         let fill_char = <Wrap<char>>::try_from(fill_char)?.0;
-        Ok(self.inner.clone().str().pad_start(length, fill_char).into())
+        Ok(self
+            .inner
+            .clone()
+            .str()
+            .pad_start(length.inner.clone(), fill_char)
+            .into())
     }
 
     fn str_to_decimal(&self, infer_len: NumericScalar) -> Result<Self> {
@@ -144,7 +152,6 @@ impl PlRExpr {
             .into())
     }
 
-    #[allow(unused_variables)]
     fn str_json_path_match(&self, pat: &PlRExpr) -> Result<Self> {
         #[cfg(not(target_arch = "wasm32"))]
         {
@@ -161,7 +168,6 @@ impl PlRExpr {
         }
     }
 
-    #[allow(unused_variables)]
     fn str_json_decode(
         &self,
         infer_schema_length: NumericScalar,
@@ -376,12 +382,17 @@ impl PlRExpr {
             .into())
     }
 
-    fn str_to_integer(&self, base: &PlRExpr, strict: bool) -> Result<Self> {
+    fn str_to_integer(
+        &self,
+        base: &PlRExpr,
+        strict: bool,
+        dtype: Option<&PlRDataType>,
+    ) -> Result<Self> {
         Ok(self
             .inner
             .clone()
             .str()
-            .to_integer(base.inner.clone(), strict)
+            .to_integer(base.inner.clone(), dtype.map(|x| x.dt.clone()), strict)
             .into())
     }
 

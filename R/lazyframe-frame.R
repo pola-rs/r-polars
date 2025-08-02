@@ -149,17 +149,6 @@ pl__deserialize_lf <- function(data) {
 #' lf$select(
 #'   threshold = pl$when(pl$col("foo") > 2)$then(10)$otherwise(0)
 #' )$collect()
-#'
-#' # Expressions with multiple outputs can be automatically instantiated
-#' # as Structs by setting the `POLARS_AUTO_STRUCTIFY` environment variable.
-#' # (Experimental)
-#' if (requireNamespace("withr", quietly = TRUE)) {
-#'   withr::with_envvar(c(POLARS_AUTO_STRUCTIFY = "1"), {
-#'     lf$select(
-#'       is_odd = ((pl$col(pl$Int32) %% 2) == 1)$name$suffix("_is_odd"),
-#'     )$collect()
-#'   })
-#' }
 lazyframe__select <- function(...) {
   wrap({
     structify <- parse_env_auto_structify()
@@ -715,16 +704,6 @@ lazyframe__sort <- function(
 #'   `b/2` = pl$col("b") / 2,
 #'   `not c` = pl$col("c")$not(),
 #' )$collect()
-#'
-#' # Expressions with multiple outputs can automatically be instantiated
-#' # as Structs by enabling the experimental setting `POLARS_AUTO_STRUCTIFY`:
-#' if (requireNamespace("withr", quietly = TRUE)) {
-#'   withr::with_envvar(c(POLARS_AUTO_STRUCTIFY = "1"), {
-#'     lf$drop("c")$with_columns(
-#'       diffs = pl$col("a", "b")$diff()$name$suffix("_diff"),
-#'     )$collect()
-#'   })
-#' }
 lazyframe__with_columns <- function(...) {
   structify <- parse_env_auto_structify()
 
@@ -774,16 +753,6 @@ lazyframe__with_columns <- function(...) {
 #'   `b/2` = pl$col("b") / 2,
 #'   `not c` = pl$col("c")$not(),
 #' )$collect()
-#'
-#' # Expressions with multiple outputs can automatically be instantiated
-#' # as Structs by enabling the experimental setting `POLARS_AUTO_STRUCTIFY`:
-#' if (requireNamespace("withr", quietly = TRUE)) {
-#'   withr::with_envvar(c(POLARS_AUTO_STRUCTIFY = "1"), {
-#'     lf$drop("c")$with_columns_seq(
-#'       diffs = pl$col("a", "b")$diff()$name$suffix("_diff"),
-#'     )$collect()
-#'   })
-#' }
 lazyframe__with_columns_seq <- function(...) {
   wrap({
     structify <- parse_env_auto_structify()
@@ -815,10 +784,10 @@ lazyframe__with_columns_seq <- function(...) {
 #' lf$drop(cs$all())$collect()
 lazyframe__drop <- function(..., strict = TRUE) {
   wrap({
-    check_dots_unnamed()
+    check_bool(strict)
 
-    parse_into_list_of_expressions(...) |>
-      self$`_ldf`$drop(strict)
+    parse_into_selector(..., .strict = strict)$`_rselector` |>
+      self$`_ldf`$drop()
   })
 }
 
@@ -1070,7 +1039,7 @@ lazyframe__fill_null <- function(
             pl$Decimal()
           )
         } else if (inherits(dtype, "polars_dtype_string")) {
-          dtypes <- c(pl$String, pl$Categorical("physical"), pl$Categorical("lexical"))
+          dtypes <- c(pl$String, pl$Categorical())
         } else {
           dtypes <- dtype
         }
@@ -1159,10 +1128,10 @@ lazyframe__reverse <- function() {
 #' lf$drop_nulls(cs$integer())$collect()
 lazyframe__drop_nulls <- function(...) {
   wrap({
-    check_dots_unnamed()
-    subset <- parse_into_list_of_expressions(...)
-    if (length(subset) == 0) {
-      subset <- NULL
+    subset <- if (...length() == 0L) {
+      NULL
+    } else {
+      parse_into_selector(..., .strict = TRUE)$`_rselector`
     }
     self$`_ldf`$drop_nulls(subset)
   })
@@ -1203,15 +1172,16 @@ lazyframe__drop_nulls <- function(...) {
 #' df$filter(!pl$all_horizontal(pl$all()$is_nan()))$collect()
 lazyframe__drop_nans <- function(...) {
   wrap({
-    check_dots_unnamed()
-    subset <- parse_into_list_of_expressions(...)
-    if (length(subset) == 0) {
-      subset <- NULL
+    subset <- if (...length() == 0L) {
+      NULL
+    } else {
+      parse_into_selector(..., .strict = TRUE)$`_rselector`
     }
     self$`_ldf`$drop_nans(subset)
   })
 }
 
+# TODO: @2.0 replace subset to dyn-dots and rename all arguments
 #' Drop duplicate rows
 #'
 #' @inheritParams rlang::args_dots_empty
@@ -1249,7 +1219,7 @@ lazyframe__unique <- function(
     check_dots_empty0(...)
     keep <- arg_match0(keep, values = c("any", "none", "first", "last"))
     if (!is.null(subset)) {
-      subset <- parse_into_list_of_expressions(!!!subset)
+      subset <- parse_into_selector(!!!subset)$`_rselector`
     }
     self$`_ldf`$unique(subset = subset, keep = keep, maintain_order = maintain_order)
   })
@@ -1513,14 +1483,8 @@ lazyframe__unpivot <- function(
 ) {
   wrap({
     check_dots_empty0(...)
-    if (!is.null(on)) {
-      on <- parse_into_list_of_expressions(!!!on)
-    } else {
-      on <- list()
-    }
-    if (!is.null(index)) {
-      index <- parse_into_list_of_expressions(!!!index)
-    }
+    on <- parse_into_selector(!!!c(on))$`_rselector`
+    index <- parse_into_selector(!!!c(index))$`_rselector`
     self$`_ldf`$unpivot(on, index, value_name, variable_name)
   })
 }
@@ -1579,11 +1543,9 @@ lazyframe__rename <- function(..., .strict = TRUE) {
 #'
 #' lf$explode("numbers")$collect()
 lazyframe__explode <- function(...) {
-  wrap({
-    check_dots_unnamed()
-    by <- parse_into_list_of_expressions(...)
-    self$`_ldf`$explode(by)
-  })
+  parse_into_selector(...)$`_rselector` |>
+    self$`_ldf`$explode() |>
+    wrap()
 }
 
 #' Clone a LazyFrame
@@ -1648,11 +1610,9 @@ lazyframe__clone <- function() {
 #' lf$unnest("a_and_c")$collect()
 #' lf$unnest(pl$col("a_and_c"))$collect()
 lazyframe__unnest <- function(...) {
-  wrap({
-    check_dots_unnamed()
-    columns <- parse_into_list_of_expressions(...)
-    self$`_ldf`$unnest(columns)
-  })
+  parse_into_selector(...)$`_rselector` |>
+    self$`_ldf`$unnest() |>
+    wrap()
 }
 
 #' Create rolling groups based on a date/time or integer column

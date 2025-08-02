@@ -21,32 +21,18 @@
 #'
 #' @examples
 #' cs
-#'
-#' # How many members are in the `cs` environment?
-#' length(cs)
+#' @aliases polars_selector Selector
 #' @export
 cs <- new.env(parent = emptyenv())
 
 # The env for storing selector methods
 polars_selector__methods <- new.env(parent = emptyenv())
 
-wrap_to_selector <- function(x, name, parameters = NULL) {
+#' @export
+wrap.PlRSelector <- function(x, ...) {
   self <- new.env(parent = emptyenv())
-  self$`_rexpr` <- x$`_rexpr`
-  self$`_attrs` <- list(name = name, parameters = parameters)
-  self$`_print_override` <- NULL
-
-  lapply(names(polars_selector__methods), function(name) {
-    fn <- polars_selector__methods[[name]]
-    environment(fn) <- environment()
-    assign(name, fn, envir = self)
-  })
-
-  lapply(setdiff(names(polars_expr__methods), names(self)), function(name) {
-    fn <- polars_expr__methods[[name]]
-    environment(fn) <- environment()
-    assign(name, fn, envir = self)
-  })
+  self$`_rselector` <- x
+  self$`_rexpr` <- PlRExpr$new_selector(x)
 
   lapply(names(polars_namespaces_expr), function(namespace) {
     makeActiveBinding(namespace, function() polars_namespaces_expr[[namespace]](self), self)
@@ -61,93 +47,123 @@ is_column <- function(obj) {
 }
 
 selector__invert <- function() {
-  inverted <- cs$all()$sub(self)
-  # TODO: we want to print something like `!cs$all()` when call `!cs$all()`
-  # inverted$`_print_override` <- deparse1(sys.call(sys.nframe() - 1))
-
-  inverted
+  cs__all() - self
 }
 
 selector__sub <- function(other) {
-  if (is_polars_selector(other)) {
-    wrap_to_selector(
-      self$meta$`_as_selector`()$meta$`_selector_sub`(other),
-      name = "sub",
-      parameters = list(
-        self = self,
-        other = other
-      )
-    )
-  } else {
-    self$as_expr()$sub(other)
-  }
+  wrap({
+    if (is_polars_selector(other)) {
+      self$`_rselector`$difference(other$`_rselector`)
+    } else {
+      self$as_expr()$sub(other)
+    }
+  })
 }
 
 selector__or <- function(other) {
-  if (is_column(other)) {
-    other <- cs$by_name(other$meta$output_name())
-  }
-  if (is_polars_selector(other)) {
-    wrap_to_selector(
-      self$meta$`_as_selector`()$meta$`_selector_add`(other),
-      name = "or",
-      parameters = list(
-        self = self,
-        other = other
-      )
-    )
-  } else {
-    self$as_expr()$or(other)
-  }
+  wrap({
+    if (is_column(other)) {
+      # TODO: @2.0 remove? (check polars-python)
+      other <- cs__by_name(other$meta$output_name())
+    }
+    if (is_polars_selector(other)) {
+      self$`_rselector`$union(other$`_rselector`)
+    } else {
+      self$as_expr()$or(other)
+    }
+  })
 }
 
 selector__and <- function(other) {
-  if (is_column(other)) {
-    colname <- other$meta$output_name()
-    other <- cs$by_name(colname)
-  }
-  if (is_polars_selector(other)) {
-    wrap_to_selector(
-      self$meta$`_as_selector`()$meta$`_selector_and`(other),
-      name = "and",
-      parameters = list(
-        self = self,
-        other = other
-      )
-    )
-  } else {
-    self$as_expr()$and(other)
-  }
+  wrap({
+    if (is_column(other)) {
+      # TODO: @2.0 remove? (check polars-python)
+      colname <- other$meta$output_name()
+      other <- cs__by_name(colname)
+    }
+    if (is_polars_selector(other)) {
+      self$`_rselector`$intersect(other$`_rselector`)
+    } else {
+      self$as_expr()$and(other)
+    }
+  })
 }
 
 selector__xor <- function(other) {
-  if (is_column(other)) {
-    other <- cs$by_name(other$meta$output_name())
-  }
-  if (is_polars_selector(other)) {
-    wrap_to_selector(
-      self$meta$`_as_selector`()$meta$`_selector_xor`(other),
-      name = "xor",
-      parameters = list(
-        self = self,
-        other = other
-      )
-    )
-  } else {
-    self$as_expr()$xor(other)
-  }
+  wrap({
+    if (is_column(other)) {
+      # TODO: @2.0 remove? (check polars-python)
+      other <- cs$by_name(other$meta$output_name())
+    }
+    if (is_polars_selector(other)) {
+      self$`_rselector`$exclusive_or(other$`_rselector`)
+    } else {
+      self$as_expr()$xor(other)
+    }
+  })
 }
 
+selector__exclude <- function(...) {
+  wrap({
+    check_dots_unnamed()
+
+    input <- list2(...)
+
+    exclude_cols <- Filter(is_string, input)
+    exclude_dtypes <- Filter(is_polars_dtype, input)
+    unknown <- Filter(
+      \(x) !is_string(x) && !is_polars_dtype(x),
+      input
+    )
+
+    if (length(unknown) > 0L) {
+      abort("`...` can only contain column names or polars data types.")
+    }
+    if (length(exclude_cols) != 0L && length(exclude_dtypes) != 0L) {
+      abort(
+        c(
+          "Can't exclude by both column name and dtype",
+          i = "Use a polars selector instead."
+        )
+      )
+    }
+
+    if (length(exclude_dtypes) > 0L) {
+      self - cs__by_dtype(...)
+    } else {
+      self - cs__by_name(..., require_all = FALSE)
+    }
+  })
+}
+
+# TODO: add document
 selector__as_expr <- function() {
   self$`_rexpr` |>
     wrap()
 }
 
+# Return escaped regex, potentially representing multiple string fragments.
+re_string <- function(string, ..., escape = TRUE) {
+  rx <- if (escape) re_escape(string) else string
+  paste0(rx, collapse = "|") |>
+    sprintf("(%s)", x = _)
+}
+
+#' Select no columns
+#'
+#' This is useful for composition with other selectors.
+#' @return A Polars selector
+#' @seealso [cs] for the documentation on operators supported by Polars selectors.
+#' @examples
+#' pl$DataFrame(a = 1, b = 2)$select(cs$empty())
+cs__empty <- function() {
+  PlRSelector$empty() |>
+    wrap()
+}
+
 #' Select all columns
 #'
-#' @return A Polars selector
-#' @seealso [cs] for the documentation on operators supported by Polars
-#' selectors.
+#' @inherit cs__empty return seealso
 #' @examples
 #' df <- pl$DataFrame(dt = as.Date(c("2000-1-1")), value = 10)
 #'
@@ -157,8 +173,8 @@ selector__as_expr <- function() {
 #' # Select all columns except for those matching the given dtypes:
 #' df$select(cs$all() - cs$numeric())
 cs__all <- function() {
-  pl$all() |>
-    wrap_to_selector("all")
+  PlRSelector$all() |>
+    wrap()
 }
 
 #' Select all columns with alphabetic names (e.g. only letters)
@@ -176,7 +192,7 @@ cs__all <- function() {
 #' characters (`p{Alphabetic}`) by default; this can be changed by setting
 #' `ascii_only = TRUE`.
 #'
-#' @inherit cs__all return seealso
+#' @inherit cs__empty return seealso
 #' @examples
 #' df <- pl$DataFrame(
 #'   no1 = c(100, 200, 300),
@@ -198,19 +214,12 @@ cs__all <- function() {
 #' df$select(!cs$alpha())
 #' df$select(!cs$alpha(ignore_spaces = TRUE))
 cs__alpha <- function(ascii_only = FALSE, ..., ignore_spaces = FALSE) {
-  check_dots_empty0(...)
-  if (isTRUE(ascii_only)) {
-    re_alpha <- r"(a-zA-Z)"
-  } else {
-    re_alpha <- r"(\p{Alphabetic})"
-  }
-  if (isTRUE(ignore_spaces)) {
-    re_space <- " "
-  } else {
-    re_space <- ""
-  }
-  raw_params <- paste0("^[", re_alpha, re_space, "]+$")
-  wrap_to_selector(pl$col(!!!raw_params), name = "alpha")
+  wrap({
+    check_dots_empty0(...)
+    re_alpha <- if (isTRUE(ascii_only)) r"(a-zA-Z)" else r"(\p{Alphabetic})"
+    re_space <- if (isTRUE(ignore_spaces)) " " else ""
+    PlRSelector$matches(sprintf("^[%s%s]+$", re_alpha, re_space))
+  })
 }
 
 #' Select all columns with alphanumeric names (e.g. only letters and the digits 0-9)
@@ -224,7 +233,7 @@ cs__alpha <- function(ascii_only = FALSE, ..., ignore_spaces = FALSE) {
 #' characters (`p{Alphabetic}`) and digit characters (`d`) by default; this can
 #' be changed by setting `ascii_only = TRUE`.
 #'
-#' @inherit cs__all return seealso
+#' @inherit cs__empty return seealso
 #' @examples
 #' df <- pl$DataFrame(
 #'   `1st_col` = c(100, 200, 300),
@@ -241,26 +250,18 @@ cs__alpha <- function(ascii_only = FALSE, ..., ignore_spaces = FALSE) {
 #' df$select(!cs$alphanumeric())
 #' df$select(!cs$alphanumeric(ignore_spaces = TRUE))
 cs__alphanumeric <- function(ascii_only = FALSE, ..., ignore_spaces = FALSE) {
-  check_dots_empty0(...)
-  if (isTRUE(ascii_only)) {
-    re_alphanumeric <- r"(a-zA-Z)"
-    re_digit <- "0-9"
-  } else {
-    re_alphanumeric <- r"(\p{Alphabetic})"
-    re_digit <- r"(\d)"
-  }
-  if (isTRUE(ignore_spaces)) {
-    re_space <- " "
-  } else {
-    re_space <- ""
-  }
-  raw_params <- paste0("^[", re_alphanumeric, re_digit, re_space, "]+$")
-  wrap_to_selector(pl$col(!!!raw_params), name = "alphanumeric")
+  wrap({
+    check_dots_empty0(...)
+    re_alphanumeric <- if (isTRUE(ascii_only)) r"(a-zA-Z)" else r"(\p{Alphabetic})"
+    re_digit <- if (isTRUE(ascii_only)) "0-9" else r"(\d)"
+    re_space <- if (isTRUE(ignore_spaces)) " " else ""
+    PlRSelector$matches(sprintf("^[%s%s%s]+$", re_alphanumeric, re_digit, re_space))
+  })
 }
 
 #' Select all binary columns
 #'
-#' @inherit cs__all return seealso
+#' @inherit cs__empty return seealso
 #' @examples
 #' df <- pl$select(
 #'   a = charToRaw("hello"),
@@ -275,12 +276,12 @@ cs__alphanumeric <- function(ascii_only = FALSE, ..., ignore_spaces = FALSE) {
 #' # Select all columns except for those that are binary:
 #' df$select(!cs$binary())
 cs__binary <- function() {
-  wrap_to_selector(pl$col(pl$Binary), name = "binary")
+  cs__by_dtype(pl$Binary)
 }
 
 #' Select all boolean columns
 #'
-#' @inherit cs__all return seealso
+#' @inherit cs__empty return seealso
 #' @examples
 #' df <- pl$DataFrame(
 #'   a = 1:4,
@@ -293,14 +294,14 @@ cs__binary <- function() {
 #' # Select all columns except for those that are boolean:
 #' df$select(!cs$boolean())
 cs__boolean <- function() {
-  wrap_to_selector(pl$col(pl$Boolean), name = "boolean")
+  cs__by_dtype(pl$Boolean)
 }
 
 #' Select all columns matching the given dtypes
 #'
 #' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Data types to select.
 #'
-#' @inherit cs__all return seealso
+#' @inherit cs__empty return seealso
 #' @examples
 #' df <- pl$DataFrame(
 #'   dt = as.Date(c("1999-12-31", "2024-1-1", "2010-7-5")),
@@ -317,27 +318,27 @@ cs__boolean <- function() {
 #' # Group by string columns and sum the numeric columns:
 #' df$group_by(cs$string())$agg(cs$numeric()$sum())$sort("other")
 cs__by_dtype <- function(...) {
-  check_dots_unnamed()
-  list_dtypes <- list2(...)
-  check_list_of_polars_dtype(list_dtypes, arg = "...")
-
-  wrap_to_selector(
-    pl$col(!!!list_dtypes),
-    name = "by_dtype",
-    parameters = list_dtypes
-  )
+  wrap({
+    check_dots_unnamed()
+    parse_into_list_of_datatypes(...) |>
+      PlRSelector$by_dtype()
+  })
 }
 
 #' Select all columns matching the given indices (or range objects)
 #'
-#' @param indices One or more column indices (or ranges). Negative indexing is
-#' supported.
+#' @inheritParams rlang::args_dots_empty
+# @param indices One or more column indices (or ranges). Negative indexing is
+# supported.
+#' @param indices 0-based column indices to select.
+#'   Negative indexing is supported.
+#' @param require_all Whether to match all indices (the default) or any of the indices.
 #'
 #' @details
 #' Matching columns are returned in the order in which their indexes appear in
 #' the selector, not the underlying schema order.
 #'
-#' @inherit cs__all return seealso
+#' @inherit cs__empty return seealso
 #' @examples
 #' vals <- as.list(0.5 * 0:100)
 #' names(vals) <- paste0("c", 0:100)
@@ -348,23 +349,26 @@ cs__by_dtype <- function(...) {
 #' df$select(cs$by_index(c(0, 1, -2, -1)))
 #'
 #' # Use seq()
-#' df$select(cs$by_index(c(0, seq(1, 101, 20))))
-#' df$select(cs$by_index(c(0, seq(101, 0, -25))))
+#' df$select(cs$by_index(c(0, seq(1, 101, 20)), require_all = FALSE))
+#' df$select(cs$by_index(c(0, seq(101, 0, -25)), require_all = FALSE))
 #'
 #' # Select only odd-indexed columns:
 #' df$select(!cs$by_index(seq(0, 100, 2)))
-cs__by_index <- function(indices) {
-  wrap_to_selector(pl$nth(indices), name = "by_index")
+cs__by_index <- function(indices, ..., require_all = TRUE) {
+  wrap({
+    check_dots_empty0(...)
+
+    PlRSelector$by_index(indices, require_all)
+  })
 }
 
 #' Select all columns matching the given names
 #'
 #' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Column names to select.
-#' @param require_all Whether to match all names (the default) or any of the
-#' names.
+#' @param require_all Whether to match all names (the default) or any of the names.
 #'
 #' @inherit cs__by_index details
-#' @inherit cs__all return seealso
+#' @inherit cs__empty return seealso
 #' @examples
 #' df <- pl$DataFrame(
 #'   foo = c("x", "y"),
@@ -382,34 +386,55 @@ cs__by_index <- function(indices) {
 #' # Match all columns except for those given:
 #' df$select(!cs$by_name("foo", "bar"))
 cs__by_name <- function(..., require_all = TRUE) {
-  check_dots_unnamed()
-  dots <- list2(...)
-  check_list_of_string(dots, arg = "...")
+  wrap({
+    check_dots_unnamed()
+    names <- list2(...)
+    check_list_of_string(names, arg = "...")
 
-  all_names <- as.character(dots)
+    PlRSelector$by_name(as.character(names), require_all)
+  })
+}
 
-  selector_params <- list(
-    "*names" = all_names
-  )
+# TODO: add docs
+cs__enum <- function() {
+  PlRSelector$enum() |>
+    wrap()
+}
 
-  if (isFALSE(require_all)) {
-    match_cols <- paste0(all_names, collapse = "|") |>
-      (\(x) (paste0("^(", x, ")$")))()
-    selector_params$require_all <- require_all
-  } else {
-    match_cols <- all_names
-  }
+# TODO: add docs
+cs__list <- function(inner = NULL) {
+  wrap({
+    check_polars_selector(inner, allow_null = TRUE)
 
-  wrap_to_selector(
-    pl$col(!!!match_cols),
-    name = "by_name",
-    parameters = selector_params
-  )
+    PlRSelector$list(inner$`_rselector`)
+  })
+}
+
+# TODO: add docs
+cs__array <- function(inner = NULL, ..., width = NULL) {
+  wrap({
+    check_dots_empty0(...)
+    check_polars_selector(inner, allow_null = TRUE)
+
+    PlRSelector$array(inner$`_rselector`, width)
+  })
+}
+
+# TODO: add docs
+cs__struct <- function() {
+  PlRSelector$struct() |>
+    wrap()
+}
+
+# TODO: add docs
+cs__nested <- function() {
+  PlRSelector$nested() |>
+    wrap()
 }
 
 #' Select all categorical columns
 #'
-#' @inherit cs__all return seealso
+#' @inherit cs__empty return seealso
 #' @examples
 #' df <- pl$DataFrame(
 #'   foo = c("xx", "yy"),
@@ -424,7 +449,8 @@ cs__by_name <- function(..., require_all = TRUE) {
 #' # Select all columns except for those that are categorical:
 #' df$select(!cs$categorical())
 cs__categorical <- function() {
-  wrap_to_selector(pl$col(pl$Categorical()), name = "categorical")
+  PlRSelector$categorical() |>
+    wrap()
 }
 
 #' Select columns whose names contain the given literal substring(s)
@@ -432,7 +458,7 @@ cs__categorical <- function() {
 #' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Substring(s) that matching
 #' column names should contain.
 #'
-#' @inherit cs__all return seealso
+#' @inherit cs__empty return seealso
 #' @examples
 #' df <- pl$DataFrame(
 #'   foo = c("x", "y"),
@@ -450,19 +476,21 @@ cs__categorical <- function() {
 #' # Select all columns except for those that contain the substring "ba":
 #' df$select(!cs$contains("ba"))
 cs__contains <- function(...) {
-  check_dots_unnamed()
-  dots <- list2(...)
-  check_list_of_string(dots, arg = "...")
+  wrap({
+    check_dots_unnamed()
+    dots <- list2(...)
+    check_list_of_string(dots, arg = "...")
 
-  substrings <- as.character(dots) |>
-    paste0(collapse = "|")
-  raw_params <- paste0("^.*", substrings, ".*$")
-  wrap_to_selector(pl$col(!!!raw_params), name = "contains")
+    as.character(dots) |>
+      re_string() |>
+      sprintf("^.*%s.*$", x = _) |>
+      PlRSelector$matches()
+  })
 }
 
 #' Select all date columns
 #'
-#' @inherit cs__all return seealso
+#' @inherit cs__empty return seealso
 #' @examples
 #' df <- pl$DataFrame(
 #'   dtm = as.POSIXct(c("2001-5-7 10:25", "2031-12-31 00:30")),
@@ -475,7 +503,7 @@ cs__contains <- function(...) {
 #' # Select all columns except for those that are dates:
 #' df$select(!cs$date())
 cs__date <- function() {
-  wrap_to_selector(pl$col(pl$Date), name = "date")
+  cs__by_dtype(pl$Date)
 }
 
 #' Select all datetime columns
@@ -492,7 +520,7 @@ cs__date <- function() {
 #'   that do not have a timezone or have the (specific) timezone.
 #'   For example, the default value `list("*", NULL)` selects all Datetime columns.
 #'
-#' @inherit cs__all return seealso
+#' @inherit cs__empty return seealso
 #' @examples
 #' chr_vec <- c("1999-07-21 05:20:16.987654", "2000-05-16 06:21:21.123456")
 #' df <- pl$DataFrame(
@@ -520,28 +548,15 @@ cs__date <- function() {
 #' # Select all columns except for datetime columns:
 #' df$select(!cs$datetime())
 cs__datetime <- function(time_unit = c("ms", "us", "ns"), time_zone = list("*", NULL)) {
-  time_unit <- arg_match(time_unit, values = c("ms", "us", "ns"), multiple = TRUE)
-  if (!is_character(time_zone) && !is_list(time_zone) && !is.null(time_zone)) {
-    abort("`time_zone` must be a character vector, a list, or `NULL`.")
-  }
-  time_zone <- time_zone %||% list(NULL)
-
-  datetime_dtypes <- time_unit |>
-    lapply(\(tu) {
-      time_zone |>
-        lapply(\(tz) pl$Datetime(tu, tz))
-    }) |>
-    unlist(recursive = TRUE)
-
-  wrap_to_selector(
-    pl$col(!!!datetime_dtypes),
-    name = "datetime"
-  )
+  wrap({
+    time_unit <- arg_match(time_unit, values = c("ms", "us", "ns"), multiple = TRUE)
+    PlRSelector$datetime(time_unit, time_zone)
+  })
 }
 
 #' Select all decimal columns
 #'
-#' @inherit cs__all return seealso
+#' @inherit cs__empty return seealso
 #' @examples
 #' df <- pl$DataFrame(
 #'   foo = c("x", "y"),
@@ -559,7 +574,8 @@ cs__datetime <- function(time_unit = c("ms", "us", "ns"), time_zone = list("*", 
 #' # Select all columns except for those that are decimal:
 #' df$select(!cs$decimal())
 cs__decimal <- function() {
-  wrap_to_selector(pl$col(pl$Decimal(NULL, NULL)), name = "decimal")
+  PlRSelector$decimal() |>
+    wrap()
 }
 
 #' Select all columns having names consisting only of digits
@@ -571,7 +587,7 @@ cs__decimal <- function() {
 #' definition of "digit" consists of all valid Unicode digit characters (`d`)
 #' by default; this can be changed by setting `ascii_only = TRUE`.
 #'
-#' @inherit cs__all return seealso
+#' @inherit cs__empty return seealso
 #' @examples
 #' df <- pl$DataFrame(
 #'   key = c("aaa", "bbb"),
@@ -591,19 +607,17 @@ cs__decimal <- function() {
 #' df$select(cs$digit())
 #' df$select(cs$digit(ascii_only = TRUE))
 cs__digit <- function(ascii_only = FALSE) {
-  if (isTRUE(ascii_only)) {
-    re_digit <- "[0-9]"
-  } else {
-    re_digit <- r"(\d)"
-  }
-  wrap_to_selector(pl$col(!!!paste0("^", re_digit, "+$")), name = "digit")
+  wrap({
+    re_digit <- if (isTRUE(ascii_only)) "[0-9]" else r"(\d)"
+    PlRSelector$matches(sprintf("^%s+$", re_digit))
+  })
 }
 
 #' Select all duration columns, optionally filtering by time unit
 #'
 #' @inheritParams cs__datetime
 #'
-#' @inherit cs__all return seealso
+#' @inherit cs__empty return seealso
 #' @examplesIf requireNamespace("clock", quietly = TRUE)
 #' df <- pl$DataFrame(
 #'   dtm = as.POSIXct(c("2001-5-7 10:25", "2031-12-31 00:30")),
@@ -624,15 +638,10 @@ cs__digit <- function(ascii_only = FALSE) {
 #' # Select all columns except for those that are duration:
 #' df$select(!cs$duration())
 cs__duration <- function(time_unit = c("ms", "us", "ns")) {
-  time_unit <- arg_match(time_unit, values = c("ms", "us", "ns"), multiple = TRUE)
-
-  duration_dtypes <- time_unit |>
-    lapply(pl$Duration)
-
-  wrap_to_selector(
-    pl$col(!!!duration_dtypes),
-    name = "duration"
-  )
+  wrap({
+    time_unit <- arg_match(time_unit, values = c("ms", "us", "ns"), multiple = TRUE)
+    PlRSelector$duration(time_unit)
+  })
 }
 
 #' Select columns that end with the given substring(s)
@@ -640,7 +649,7 @@ cs__duration <- function(time_unit = c("ms", "us", "ns")) {
 #' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Substring(s) that matching
 #' column names should end with.
 #'
-#' @inherit cs__all return seealso
+#' @inherit cs__empty return seealso
 #' @examples
 #' df <- pl$DataFrame(
 #'   foo = c("x", "y"),
@@ -658,14 +667,16 @@ cs__duration <- function(time_unit = c("ms", "us", "ns")) {
 #' # Select all columns except for those that end with the substring "z":
 #' df$select(!cs$ends_with("z"))
 cs__ends_with <- function(...) {
-  check_dots_unnamed()
-  dots <- list2(...)
-  check_list_of_string(dots, arg = "...")
+  wrap({
+    check_dots_unnamed()
+    dots <- list2(...)
+    check_list_of_string(dots, arg = "...")
 
-  substrings <- as.character(dots) |>
-    paste0(collapse = "|")
-  raw_params <- paste0("^.*(", substrings, ")$")
-  wrap_to_selector(pl$col(!!!raw_params), name = "ends_with")
+    as.character(dots) |>
+      re_string() |>
+      sprintf("^.*%s$", x = _) |>
+      PlRSelector$matches()
+  })
 }
 
 #' Select all columns except those matching the given columns, datatypes, or
@@ -676,7 +687,7 @@ cs__ends_with <- function(...) {
 #' @details
 #' If excluding a single selector it is simpler to write as `!selector` instead.
 #'
-#' @inherit cs__all return seealso
+#' @inherit cs__empty return seealso
 #' @examples
 #' df <- pl$DataFrame(
 #'   aa = 1:3,
@@ -690,48 +701,47 @@ cs__ends_with <- function(...) {
 #' # Exclude using a column name, a selector, and a dtype:
 #' df$select(cs$exclude("aa", cs$string(), pl$Int32))
 cs__exclude <- function(...) {
-  check_dots_unnamed()
-  input <- list2(...)
+  wrap({
+    check_dots_unnamed()
+    input <- list2(...)
 
-  col_names <- Filter(
-    \(x) is_string(x) && !(startsWith(x, "^") && !endsWith(x, "$")),
-    input
-  )
-  regexes <- Filter(
-    \(x) is_string(x) && startsWith(x, "^") && endsWith(x, "$"),
-    input
-  )
-  dtypes <- Filter(is_polars_dtype, input)
-  selectors <- Filter(is_polars_selector, input)
-  unknown <- Filter(
-    \(x) !is_string(x) && !is_polars_dtype(x) && !is_polars_selector(x),
-    input
-  )
-  if (length(unknown) > 0) {
-    abort("`...` can only contain column names, regexes, Polars data types or polars selectors.")
-  }
+    col_names <- Filter(
+      \(x) is_string(x) && !(startsWith(x, "^") && !endsWith(x, "$")),
+      input
+    )
+    regexes <- Filter(
+      \(x) is_string(x) && startsWith(x, "^") && endsWith(x, "$"),
+      input
+    )
+    dtypes <- Filter(is_polars_dtype, input)
+    selectors <- Filter(is_polars_selector, input)
+    unknown <- Filter(
+      \(x) !is_string(x) && !is_polars_dtype(x) && !is_polars_selector(x),
+      input
+    )
+    if (length(unknown) > 0L) {
+      abort("`...` can only contain column names, regexes, polars data types or polars selectors.")
+    }
 
-  selected <- list()
-  if (length(col_names) > 0) {
-    selected <- append(selected, cs$by_name(!!!col_names))
-  }
-  if (length(regexes) > 0) {
-    selected <- append(selected, cs$matches(paste0(unlist(regexes), collapse = "|")))
-  }
-  if (length(dtypes) > 0) {
-    selected <- append(selected, cs$by_dtype(!!!dtypes))
-  }
-  if (length(selectors) > 0) {
-    selected <- append(selected, selectors)
-  }
-  all_selected <- Reduce(`|`, selected)
+    all_selected <- c(
+      cs__by_name(!!!col_names, require_all = FALSE),
+      cs__by_dtype(!!!dtypes),
+      if (length(regexes) > 0L) {
+        cs__matches(sprintf("(%s)", paste0(unlist(regexes), collapse = "|")))
+      },
+      selectors
+    ) |>
+      Reduce(`|`, x = _)
 
-  !all_selected
+    !all_selected
+  })
 }
 
 #' Select the first column in the current scope
 #'
-#' @inherit cs__all return seealso
+#' @inherit cs__empty return seealso
+#' @inheritParams rlang::args_dots_empty
+#' @param strict Require the column exists.
 #' @examples
 #' df <- pl$DataFrame(
 #'   foo = c("x", "y"),
@@ -745,13 +755,16 @@ cs__exclude <- function(...) {
 #'
 #' # Select everything except for the first column:
 #' df$select(!cs$first())
-cs__first <- function() {
-  wrap_to_selector(pl$first(), name = "first")
+cs__first <- function(..., strict = TRUE) {
+  wrap({
+    check_dots_empty0(...)
+    PlRSelector$first(strict)
+  })
 }
 
 #' Select all float columns.
 #'
-#' @inherit cs__all return seealso
+#' @inherit cs__empty return seealso
 #' @examples
 #' df <- pl$DataFrame(
 #'   foo = c("x", "y"),
@@ -767,17 +780,13 @@ cs__first <- function() {
 #' # Select all columns except for those that are float:
 #' df$select(!cs$float())
 cs__float <- function() {
-  list_dtypes <- list(pl$Float32, pl$Float64)
-  wrap_to_selector(
-    pl$col(!!!list_dtypes),
-    name = "float",
-    parameters = list_dtypes
-  )
+  PlRSelector$float() |>
+    wrap()
 }
 
 #' Select all integer columns.
 #'
-#' @inherit cs__all return seealso
+#' @inherit cs__empty return seealso
 #' @examples
 #' df <- pl$DataFrame(
 #'   foo = c("x", "y"),
@@ -792,26 +801,64 @@ cs__float <- function() {
 #' # Select all columns except for those that are integer:
 #' df$select(!cs$integer())
 cs__integer <- function() {
-  list_dtypes <- list(
-    pl$Int8,
-    pl$Int16,
-    pl$Int32,
-    pl$Int64,
-    pl$UInt8,
-    pl$UInt16,
-    pl$UInt32,
-    pl$UInt64
-  )
-  wrap_to_selector(
-    pl$col(!!!list_dtypes),
-    name = "integer",
-    parameters = list_dtypes
-  )
+  PlRSelector$integer() |>
+    wrap()
+}
+
+#' Select all signed integer columns
+#'
+#' @inherit cs__empty return seealso
+#' @examples
+#' df <- pl$DataFrame(
+#'   foo = c(-123L, -456L),
+#'   bar = c(3456L, 6789L),
+#'   baz = c(7654L, 4321L),
+#'   zap = c("ab", "cd"),
+#'   .schema_overrides = list(bar = pl$UInt32, baz = pl$UInt64),
+#' )
+#'
+#' # Select signed integer columns:
+#' df$select(cs$signed_integer())
+#'
+#' # Select all columns except for those that are signed integer:
+#' df$select(!cs$signed_integer())
+#'
+#' # Select all integer columns (both signed and unsigned):
+#' df$select(cs$integer())
+cs__signed_integer <- function() {
+  PlRSelector$signed_integer() |>
+    wrap()
+}
+
+#' Select all unsigned integer columns
+#'
+#' @inherit cs__empty return seealso
+#' @examples
+#' df <- pl$DataFrame(
+#'   foo = c(-123L, -456L),
+#'   bar = c(3456L, 6789L),
+#'   baz = c(7654L, 4321L),
+#'   zap = c("ab", "cd"),
+#'   .schema_overrides = list(bar = pl$UInt32, baz = pl$UInt64),
+#' )
+#'
+#' # Select unsigned integer columns:
+#' df$select(cs$unsigned_integer())
+#'
+#' # Select all columns except for those that are unsigned integer:
+#' df$select(!cs$unsigned_integer())
+#'
+#' # Select all integer columns (both unsigned and unsigned):
+#' df$select(cs$integer())
+cs__unsigned_integer <- function() {
+  PlRSelector$unsigned_integer() |>
+    wrap()
 }
 
 #' Select the last column in the current scope
 #'
-#' @inherit cs__all return seealso
+#' @inherit cs__empty return seealso
+#' @inheritParams cs__first
 #' @examples
 #' df <- pl$DataFrame(
 #'   foo = c("x", "y"),
@@ -825,8 +872,11 @@ cs__integer <- function() {
 #'
 #' # Select everything except for the last column:
 #' df$select(!cs$last())
-cs__last <- function() {
-  wrap_to_selector(pl$last(), name = "last")
+cs__last <- function(..., strict = TRUE) {
+  wrap({
+    check_dots_empty0(...)
+    PlRSelector$last(strict)
+  })
 }
 
 #' Select all columns that match the given regex pattern
@@ -834,7 +884,7 @@ cs__last <- function() {
 #' @param pattern A valid regular expression pattern, compatible with the
 #' `regex crate <https://docs.rs/regex/latest/regex/>`_.
 #'
-#' @inherit cs__all return seealso
+#' @inherit cs__empty return seealso
 #' @examples
 #' df <- pl$DataFrame(
 #'   foo = c("x", "y"),
@@ -850,30 +900,24 @@ cs__last <- function() {
 #' # Do not match column names ending in "R" or "z" (case-insensitively):
 #' df$select(!cs$matches(r"((?i)R|z$)"))
 cs__matches <- function(pattern) {
-  check_character(pattern)
-  if (pattern == ".*") {
-    cs$all()
-  }
+  wrap({
+    check_string(pattern)
 
-  if (startsWith(pattern, ".*")) {
-    pattern <- substr(pattern, 2, nchar(pattern))
-  } else if (endsWith(pattern, ".*")) {
-    pattern <- substr(pattern, 1, nchar(pattern) - 2)
-  }
+    if (pattern == ".*") {
+      cs__all()
+    } else {
+      if (startsWith(pattern, ".*")) {
+        pattern <- substring(pattern, 3)
+      } else if (endsWith(pattern, ".*")) {
+        pattern <- substring(pattern, 1, nchar(pattern) - 2)
+      }
 
-  if (!startsWith(pattern, ".*")) {
-    pfx <- "^.*"
-  } else {
-    pfx <- ""
-  }
-
-  if (!endsWith(pattern, ".*")) {
-    sfx <- ".*$"
-  } else {
-    sfx <- ""
-  }
-  raw_params <- paste0(pfx, pattern, sfx)
-  wrap_to_selector(pl$col(!!!raw_params), name = "matches")
+      pfx <- if (!startsWith(pattern, "^")) "^.*" else ""
+      sfx <- if (!endsWith(pattern, "$")) ".*$" else ""
+      sprintf("%s%s%s", pfx, pattern, sfx) |>
+        PlRSelector$matches()
+    }
+  })
 }
 
 #' Select all numeric columns.
@@ -894,52 +938,8 @@ cs__matches <- function(pattern) {
 #' # Select all columns except for those that are numeric:
 #' df$select(!cs$numeric())
 cs__numeric <- function() {
-  list_dtypes <- list(
-    pl$Float32,
-    pl$Float64,
-    pl$Int8,
-    pl$Int16,
-    pl$Int32,
-    pl$Int64,
-    pl$UInt8,
-    pl$UInt16,
-    pl$UInt32,
-    pl$UInt64
-  )
-  wrap_to_selector(
-    pl$col(!!!list_dtypes),
-    name = "numeric",
-    parameters = list_dtypes
-  )
-}
-
-#' Select all signed integer columns
-#'
-#' @inherit cs__all return seealso
-#' @examples
-#' df <- pl$DataFrame(
-#'   foo = c(-123L, -456L),
-#'   bar = c(3456L, 6789L),
-#'   baz = c(7654L, 4321L),
-#'   zap = c("ab", "cd"),
-#'   .schema_overrides = list(bar = pl$UInt32, baz = pl$UInt64),
-#' )
-#'
-#' # Select signed integer columns:
-#' df$select(cs$signed_integer())
-#'
-#' # Select all columns except for those that are signed integer:
-#' df$select(!cs$signed_integer())
-#'
-#' # Select all integer columns (both signed and unsigned):
-#' df$select(cs$integer())
-cs__signed_integer <- function() {
-  list_dtypes <- list(pl$Int8, pl$Int16, pl$Int32, pl$Int64)
-  wrap_to_selector(
-    pl$col(!!!list_dtypes),
-    name = "signed_integer",
-    parameters = list_dtypes
-  )
+  PlRSelector$numeric() |>
+    wrap()
 }
 
 #' Select columns that start with the given substring(s)
@@ -947,7 +947,7 @@ cs__signed_integer <- function() {
 #' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Substring(s) that matching
 #' column names should end with.
 #'
-#' @inherit cs__all return seealso
+#' @inherit cs__empty return seealso
 #' @examples
 #' df <- pl$DataFrame(
 #'   foo = c("x", "y"),
@@ -965,21 +965,23 @@ cs__signed_integer <- function() {
 #' # Select all columns except for those that start with the substring "b":
 #' df$select(!cs$starts_with("b"))
 cs__starts_with <- function(...) {
-  check_dots_unnamed()
-  dots <- list2(...)
-  check_list_of_string(dots, arg = "...")
+  wrap({
+    check_dots_unnamed()
+    dots <- list2(...)
+    check_list_of_string(dots, arg = "...")
 
-  substrings <- as.character(dots) |>
-    paste0(collapse = "|")
-  raw_params <- paste0("^(", substrings, ").*$")
-  wrap_to_selector(pl$col(!!!raw_params), name = "starts_with")
+    as.character(dots) |>
+      re_string() |>
+      sprintf("^%s.*$", x = _) |>
+      PlRSelector$matches()
+  })
 }
 
 #' Select all String (and, optionally, Categorical) string columns.
 #'
 #' @inheritParams rlang::args_dots_empty
 #' @param include_categorical If `TRUE`, also select categorical columns.
-#' @inherit cs__all return seealso
+#' @inherit cs__empty return seealso
 #' @examples
 #' df <- pl$DataFrame(
 #'   w = c("xx", "yy", "xx", "yy", "xx"),
@@ -1000,18 +1002,19 @@ cs__starts_with <- function(...) {
 #'   agg(cs$numeric()$sum())$
 #'   sort(cs$string(include_categorical = TRUE))
 cs__string <- function(..., include_categorical = FALSE) {
-  check_dots_empty0(...)
-  if (isTRUE(include_categorical)) {
-    list_dtypes <- list(pl$String, pl$Categorical())
-  } else {
-    list_dtypes <- list(pl$String)
-  }
-  wrap_to_selector(pl$col(!!!list_dtypes), name = "string")
+  wrap({
+    check_dots_empty0(...)
+    if (isTRUE(include_categorical)) {
+      cs__by_dtype(pl$String) | cs__categorical()
+    } else {
+      cs__by_dtype(pl$String)
+    }
+  })
 }
 
 #' Select all temporal columns
 #'
-#' @inherit cs__all return seealso
+#' @inherit cs__empty return seealso
 #' @examples
 #' df <- pl$DataFrame(
 #'   dtm = as.POSIXct(c("2001-5-7 10:25", "2031-12-31 00:30")),
@@ -1028,19 +1031,13 @@ cs__string <- function(..., include_categorical = FALSE) {
 #' # Match all columns except for temporal columns:
 #' df$select(!cs$temporal())
 cs__temporal <- function() {
-  list_dtypes <- list(pl$Date, pl$Time)
-  wrap_to_selector(
-    pl$col(!!!list_dtypes),
-    name = "temporal",
-    parameters = list_dtypes
-  ) |
-    cs$datetime() |
-    cs$duration()
+  PlRSelector$temporal() |>
+    wrap()
 }
 
 #' Select all time columns
 #'
-#' @inherit cs__all return seealso
+#' @inherit cs__empty return seealso
 #' @examplesIf requireNamespace("hms", quietly = TRUE)
 #' df <- pl$DataFrame(
 #'   dtm = as.POSIXct(c("2001-5-7 10:25", "2031-12-31 00:30")),
@@ -1054,34 +1051,5 @@ cs__temporal <- function() {
 #' # Select all columns except for those that are time:
 #' df$select(!cs$time())
 cs__time <- function() {
-  wrap_to_selector(pl$col(pl$Time), name = "time")
-}
-
-#' Select all unsigned integer columns
-#'
-#' @inherit cs__all return seealso
-#' @examples
-#' df <- pl$DataFrame(
-#'   foo = c(-123L, -456L),
-#'   bar = c(3456L, 6789L),
-#'   baz = c(7654L, 4321L),
-#'   zap = c("ab", "cd"),
-#'   .schema_overrides = list(bar = pl$UInt32, baz = pl$UInt64),
-#' )
-#'
-#' # Select unsigned integer columns:
-#' df$select(cs$unsigned_integer())
-#'
-#' # Select all columns except for those that are unsigned integer:
-#' df$select(!cs$unsigned_integer())
-#'
-#' # Select all integer columns (both unsigned and unsigned):
-#' df$select(cs$integer())
-cs__unsigned_integer <- function() {
-  list_dtypes <- list(pl$UInt8, pl$UInt16, pl$UInt32, pl$UInt64)
-  wrap_to_selector(
-    pl$col(!!!list_dtypes),
-    name = "integer",
-    parameters = list_dtypes
-  )
+  cs__by_dtype(pl$Time)
 }

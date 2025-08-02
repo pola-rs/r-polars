@@ -218,6 +218,7 @@ nav:
         - to_r_vector: man/series__to_r_vector.md
         - serialize: man/series__serialize.md
         - struct_unnest: man/series_struct_unnest.md
+        - is_empty: man/series__is_empty.md
       Expressions:
         - All others:
             - abs: man/expr__abs.md
@@ -640,6 +641,7 @@ nav:
             - over: man/expr__over.md
             - rolling: man/expr__rolling.md
       Selectors:
+        - cs__empty: man/cs__empty.md
         - cs__all: man/cs__all.md
         - cs__alpha: man/cs__alpha.md
         - cs__alphanumeric: man/cs__alphanumeric.md

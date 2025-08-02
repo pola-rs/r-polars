@@ -8,7 +8,7 @@ patrick::with_parameters_test_that(
       "wildcard", pl$col("*"), c("i8", "i16", "i32", "str", "struct"),
       "str", pl$col("str"), c("str"),
       "^str.*$", pl$col("^str.*$"), c("str", "struct"),
-      "^str.*$, i8", pl$col("^str.*$", "i8"), c("str", "struct", "i8"),
+      "^str.*$, i8", pl$col("^str.*$", "i8"), c("i8", "str", "struct"),
       "pl$Int8", pl$col(pl$Int8), c("i8"),
       "pl$Int8, pl$Int16", pl$col(pl$Int8, pl$Int16), c("i8", "i16"),
       "!!!list(pl$Int8, pl$Int16)", pl$col(!!!list(pl$Int8, pl$Int16)), c("i8", "i16"),

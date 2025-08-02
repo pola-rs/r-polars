@@ -17,10 +17,12 @@ The following data types will be changed:
 \item Time -> Int64
 \item Duration -> Int64
 \item Categorical -> UInt32
-\item List(inner) -> List(physical of inner)
 }
 
 Other data types will be left unchanged.
+
+Note that the physical representations are an implementation detail
+and not guaranteed to be stable.
 }
 \examples{
 df <- pl$DataFrame(a = factor(c("a", "x", NA, "a")))

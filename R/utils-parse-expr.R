@@ -1,6 +1,5 @@
-#' Parse dynamic dots into a list of expressions (PlRExpr, not polars-expr)
-#' @noRd
-parse_into_list_of_expressions <- function(..., `__structify` = FALSE) {
+# Parse dynamic dots into a list of expressions (PlRExpr, not polars_expr)
+parse_into_list_of_expressions <- function(..., `__structify` = NULL) {
   dots <- list2(...)
   call <- caller_env()
   try_fetch(
@@ -27,6 +26,33 @@ parse_into_list_of_expressions <- function(..., `__structify` = FALSE) {
       }
     }
   )
+}
+
+# Parse dynamic dots into a selector
+# Same as `parse_list_into_selector` of Python Polars
+# (The role of `parse_into_selector` in Python Polars is taken by `as_polars_selector`)
+parse_into_selector <- function(..., .strict = TRUE, .arg_name = "...") {
+  call <- caller_env()
+  check_dots_unnamed(call = call)
+
+  dots <- list2(...)
+
+  try_fetch(
+    lapply(dots, \(x) as_polars_selector(x, strict = .strict)) |>
+      Reduce(`|`, x = _),
+    error = function(cnd) {
+      abort(
+        format_error(
+          sprintf(
+            "%s can only contain single strings or polars selectors.",
+            format_arg(.arg_name)
+          )
+        ),
+        call = call
+      )
+    }
+  ) %||%
+    cs__empty()
 }
 
 .structify_expression <- function(expr) {

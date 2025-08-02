@@ -27,6 +27,5 @@ df$select(cs$categorical())
 df$select(!cs$categorical())
 }
 \seealso{
-\link{cs} for the documentation on operators supported by Polars
-selectors.
+\link{cs} for the documentation on operators supported by Polars selectors.
 }

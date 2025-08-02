@@ -97,12 +97,12 @@ impl PlRSeries {
                 })
                 .unwrap_or(DataType::Null);
             for (i, s) in series_vec.iter().enumerate() {
-                if let Some(s) = s {
-                    if s.dtype() != &expected_dtype {
-                        return Err(
+                if let Some(s) = s
+                    && s.dtype() != &expected_dtype
+                {
+                    return Err(
                             format!("If `strict = TRUE`, all elements of the list except `NULL` must have the same datatype. expected: `{}`, got: `{}` at index: {}", expected_dtype, s.dtype(), i + 1).into()
                         );
-                    }
                 }
             }
             return Ok(Series::new(name.into(), series_vec).into());

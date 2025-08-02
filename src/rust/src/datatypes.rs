@@ -1,9 +1,9 @@
-use crate::{PlRExpr, RPolarsErr, prelude::*};
+use crate::{PlRCategories, PlRExpr, PlRSeries, RPolarsErr, prelude::*};
 use polars::lazy::dsl;
-use polars_core::utils::{arrow::array::Utf8ViewArray, try_get_supertype};
+use polars_core::utils::{arrow::array::Array, try_get_supertype};
 use savvy::{
     EnvironmentSexp, ListSexp, NullSexp, NumericScalar, NumericSexp, OwnedListSexp, OwnedRealSexp,
-    OwnedStringSexp, Result, Sexp, StringSexp, TypedSexp, savvy,
+    OwnedStringSexp, Result, Sexp, TypedSexp, savvy,
 };
 
 // As not like in Python, define the data type class in
@@ -107,30 +107,25 @@ impl std::fmt::Display for PlRDataType {
                     .join(", ");
                 write!(f, "Struct({fields})")
             }
-            DataType::Categorical(_, ordering) => {
-                write!(
-                    f,
-                    "Categorical(ordering='{}')",
-                    <String>::from(Wrap(ordering))
-                )
+            DataType::Categorical(_, _) => {
+                // TODO: include categories
+                write!(f, "Categorical(ordering='lexical')")
             }
-            DataType::Enum(categories, _) => {
+            DataType::Enum(_, mapping) => {
+                let categories = unsafe {
+                    StringChunked::from_chunks(
+                        PlSmallStr::from_static("category"),
+                        vec![mapping.to_arrow(true)],
+                    )
+                };
                 write!(
                     f,
-                    "Enum(categories={})",
-                    categories.as_ref().map_or_else(
-                        || "NULL".to_string(),
-                        |v| {
-                            format!(
-                                "c({})",
-                                <Vec<String>>::from(Wrap(v))
-                                    .iter()
-                                    .map(|v| format!("'{v}'"))
-                                    .collect::<Vec<_>>()
-                                    .join(", ")
-                            )
-                        }
-                    )
+                    "Enum(categories=c({}))",
+                    categories
+                        .into_iter()
+                        .filter_map(|opt_v| format!("'{}'", opt_v.unwrap()).into())
+                        .collect::<Vec<String>>()
+                        .join(", ")
                 )
             }
             _ => write!(f, "{:?}", self.dt),
@@ -167,15 +162,18 @@ impl PlRDataType {
         Ok(DataType::Duration(time_unit).into())
     }
 
-    pub fn new_categorical(ordering: &str) -> Result<Self> {
-        let ordering = <Wrap<CategoricalOrdering>>::try_from(ordering)?.0;
-        Ok(DataType::Categorical(None, ordering).into())
+    pub fn new_categorical(categories: &PlRCategories) -> Result<Self> {
+        Ok(DataType::from_categories(categories.categories().clone()).into())
     }
 
-    pub fn new_enum(categories: StringSexp) -> Result<Self> {
-        let categories =
-            Utf8ViewArray::from_slice(categories.iter().map(Some).collect::<Vec<_>>().as_slice());
-        Ok(create_enum_dtype(categories).into())
+    pub fn new_enum(categories: &PlRSeries) -> Result<Self> {
+        let ca = categories.series.str().map_err(RPolarsErr::from)?;
+        let categories = ca.downcast_iter().next().unwrap().clone();
+        assert!(!categories.has_nulls());
+        Ok(DataType::from_frozen_categories(
+            FrozenCategories::new(categories.values_iter()).unwrap(),
+        )
+        .into())
     }
 
     pub fn new_list(inner: &PlRDataType) -> Result<Self> {
@@ -230,12 +228,12 @@ impl PlRDataType {
                 .map(|opt_dt| opt_dt.as_ref().unwrap().clone())
                 .unwrap_or(DataType::Null);
             for (i, dt) in dtype_vec.iter().enumerate() {
-                if let Some(dt) = dt {
-                    if dt != &expected_dtype {
-                        return Err(
+                if let Some(dt) = dt
+                    && dt != &expected_dtype
+                {
+                    return Err(
                             format!("If `strict = TRUE`, all elements of the list except `NULL` must have the same datatype. expected: `{}`, got: `{}` at index: {}", expected_dtype, dt, i + 1).into()
                         );
-                    }
                 }
             }
             Ok(expected_dtype.into())
@@ -365,19 +363,23 @@ impl PlRDataType {
                 let _ = out.set_name_and_value(0, "_fields", list);
                 Ok(out.into())
             }
-            DataType::Categorical(_, ordering) => {
+            DataType::Categorical(_, _) => {
+                // TODO: return categories
                 let mut out = OwnedListSexp::new(1, true)?;
-                let ordering: Sexp = <String>::from(Wrap(ordering)).try_into()?;
+                let ordering: Sexp = "lexical".try_into()?;
                 let _ = out.set_name_and_value(0, "ordering", ordering);
                 Ok(out.into())
             }
-            DataType::Enum(categories, _) => {
+            DataType::Enum(_, mapping) => {
                 let mut out = OwnedListSexp::new(1, true)?;
-                let categories: Sexp = categories.as_ref().map_or_else(
-                    || NullSexp.into(),
-                    |v| <Vec<String>>::from(Wrap(v)).try_into(),
-                )?;
-                let _ = out.set_name_and_value(0, "categories", categories);
+                let categories = unsafe {
+                    StringChunked::from_chunks(
+                        PlSmallStr::from_static("category"),
+                        vec![mapping.to_arrow(true)],
+                    )
+                };
+                let sexp: Sexp = Wrap(&categories).into();
+                let _ = out.set_name_and_value(0, "categories", sexp);
                 Ok(out.into())
             }
             _ => Ok(NullSexp.into()),

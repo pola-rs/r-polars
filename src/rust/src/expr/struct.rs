@@ -1,4 +1,4 @@
-use crate::{PlRExpr, error::RPolarsErr, prelude::*};
+use crate::{PlRExpr, prelude::*};
 use savvy::{ListSexp, NumericScalar, Result, StringSexp, savvy};
 
 #[savvy]
@@ -26,7 +26,6 @@ impl PlRExpr {
             .into())
     }
 
-    #[allow(unused_variables)]
     fn struct_json_encode(&self) -> Result<Self> {
         #[cfg(not(target_arch = "wasm32"))]
         {
@@ -34,18 +33,13 @@ impl PlRExpr {
         }
         #[cfg(target_arch = "wasm32")]
         {
-            Err(RPolarsErr::Other(format!("Not supported in WASM")).into())
+            Err(crate::RPolarsErr::Other(format!("Not supported in WASM")).into())
         }
     }
 
     fn struct_with_fields(&self, fields: ListSexp) -> Result<Self> {
         let fields = <Wrap<Vec<Expr>>>::from(fields).0;
-        let e = self
-            .inner
-            .clone()
-            .struct_()
-            .with_fields(fields)
-            .map_err(RPolarsErr::from)?;
+        let e = self.inner.clone().struct_().with_fields(fields);
         Ok(e.into())
     }
 }

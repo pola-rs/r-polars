@@ -509,16 +509,16 @@ expr_str_to_decimal <- function(..., inference_length = 100) {
 #' Left justify strings
 #'
 #' @description Return the string left justified in a string of length `width`.
-#' @param length Justify left to this length.
+#' @param length Pad the string until it reaches this length.
+#'   Strings with length equal to or greater than this value are returned as-is.
+#'   Can be integer or [expression][Expr].
 #' @param fill_char Fill with this ASCII character.
-#' @details Padding is done using the specified `fill_char`. The original string
-#' is returned if `length` is less than or equal to `len(s)`.
 #' @inherit as_polars_expr return
 #' @examples
 #' df <- pl$DataFrame(a = c("cow", "monkey", NA, "hippopotamus"))
 #' df$select(pl$col("a")$str$pad_end(8, "*"))
 expr_str_pad_end <- function(length, fill_char = " ") {
-  self$`_rexpr`$str_pad_end(length, fill_char) |>
+  self$`_rexpr`$str_pad_end(as_polars_expr(length)$`_rexpr`, fill_char) |>
     wrap()
 }
 
@@ -526,14 +526,12 @@ expr_str_pad_end <- function(length, fill_char = " ") {
 #' Right justify strings
 #'
 #' @description Return the string right justified in a string of length `length`.
-#' @param length Justify right to this length.
-#' @param fill_char Fill with this ASCII character.
-#' @inherit expr_str_pad_end details return
+#' @inherit expr_str_pad_end return params
 #' @examples
 #' df <- pl$DataFrame(a = c("cow", "monkey", NA, "hippopotamus"))
 #' df$select(pl$col("a")$str$pad_start(8, "*"))
 expr_str_pad_start <- function(length, fill_char = " ") {
-  self$`_rexpr`$str_pad_start(length, fill_char) |>
+  self$`_rexpr`$str_pad_start(as_polars_expr(length)$`_rexpr`, fill_char) |>
     wrap()
 }
 
@@ -1012,23 +1010,29 @@ expr_str_slice <- function(offset, length = NULL) {
 #' @inheritParams rlang::args_dots_empty
 #' @param base A positive integer or expression which is the base of the string
 #' we are parsing. Characters are parsed as column names. Default: `10L`.
+#' @param dtype A polars integer [dtype][DataType] (e.g. `pl$UInt8`, `pl$Int32`, etc.).
+#'   The default is `pl$Int64`.
 #' @param strict A logical. If `TRUE` (default), parsing errors or integer overflow will
 #' raise an error. If `FALSE`, silently convert to `null`.
 #' @inherit as_polars_expr return
 #' @examples
 #' df <- pl$DataFrame(bin = c("110", "101", "010", "invalid"))
 #' df$with_columns(
-#'   parsed = pl$col("bin")$str$to_integer(base = 2, strict = FALSE)
+#'   parsed = pl$col("bin")$str$to_integer(
+#'     base = 2,
+#'     dtype = pl$Int32,
+#'     strict = FALSE
+#'   )
 #' )
 #'
 #' df <- pl$DataFrame(hex = c("fa1e", "ff00", "cafe", NA))
 #' df$with_columns(
 #'   parsed = pl$col("hex")$str$to_integer(base = 16, strict = TRUE)
 #' )
-expr_str_to_integer <- function(..., base = 10L, strict = TRUE) {
+expr_str_to_integer <- function(..., base = 10L, dtype = pl$Int64, strict = TRUE) {
   wrap({
     check_dots_empty0(...)
-    self$`_rexpr`$str_to_integer(as_polars_expr(base)$`_rexpr`, strict)
+    self$`_rexpr`$str_to_integer(as_polars_expr(base)$`_rexpr`, strict, dtype$`_dt`)
   })
 }
 
