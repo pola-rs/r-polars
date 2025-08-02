@@ -166,15 +166,13 @@
       Warning:
       ! The `subset` argument of `$unique()` is deprecated and replaced by `...` as of polars 1.1.0.
     Output
-      shape: (3, 3)
+      shape: (1, 3)
       ┌─────┬─────┬─────┐
       │ foo ┆ bar ┆ ham │
       │ --- ┆ --- ┆ --- │
       │ f64 ┆ str ┆ str │
       ╞═════╪═════╪═════╡
       │ 1.0 ┆ a   ┆ b   │
-      │ 2.0 ┆ a   ┆ b   │
-      │ 3.0 ┆ a   ┆ b   │
       └─────┴─────┴─────┘
 
 ---
@@ -229,15 +227,13 @@
       ! Passing a list to the first argument of `$unique()` is deprecated as of polars 1.1.0.
       i Passing `!!!my_list` to `...` instead.
     Output
-      shape: (3, 3)
+      shape: (1, 3)
       ┌─────┬─────┬─────┐
       │ foo ┆ bar ┆ ham │
       │ --- ┆ --- ┆ --- │
       │ f64 ┆ str ┆ str │
       ╞═════╪═════╪═════╡
       │ 1.0 ┆ a   ┆ b   │
-      │ 2.0 ┆ a   ┆ b   │
-      │ 3.0 ┆ a   ┆ b   │
       └─────┴─────┴─────┘
 
 # $unique's argument deprecation expr
@@ -258,15 +254,13 @@
       Warning:
       ! The `subset` argument of `$unique()` is deprecated and replaced by `...` as of polars 1.1.0.
     Output
-      shape: (3, 3)
+      shape: (1, 3)
       ┌─────┬─────┬─────┐
       │ foo ┆ bar ┆ ham │
       │ --- ┆ --- ┆ --- │
       │ f64 ┆ str ┆ str │
       ╞═════╪═════╪═════╡
       │ 1.0 ┆ a   ┆ b   │
-      │ 2.0 ┆ a   ┆ b   │
-      │ 3.0 ┆ a   ┆ b   │
       └─────┴─────┴─────┘
 
 ---
@@ -313,15 +307,13 @@
     Code
       df$unique(value, maintain_order = TRUE)
     Output
-      shape: (3, 3)
+      shape: (1, 3)
       ┌─────┬─────┬─────┐
       │ foo ┆ bar ┆ ham │
       │ --- ┆ --- ┆ --- │
       │ f64 ┆ str ┆ str │
       ╞═════╪═════╪═════╡
       │ 1.0 ┆ a   ┆ b   │
-      │ 2.0 ┆ a   ┆ b   │
-      │ 3.0 ┆ a   ┆ b   │
       └─────┴─────┴─────┘
 
 # explain() works

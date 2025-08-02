@@ -431,8 +431,8 @@ patrick::with_parameters_test_that(
     tibble::tribble(
       ~.test_name, ~value,
       "NULL", NULL,
-      "list of strings", list("foo"),
-      "expr", pl$col("foo")
+      "list of strings", list("bar", "ham"),
+      "expr", pl$col("bar", "ham")
     )
   },
   code = {
