@@ -169,34 +169,6 @@
 }
 
 #' @export
-`$.polars_selector` <- function(x, name) {
-  member_names <- ls(x, all.names = TRUE)
-  method_names <- names(polars_selector__methods)
-
-  if (name %in% member_names) {
-    env_get(x, name)
-  } else if (name %in% method_names) {
-    fn <- polars_selector__methods[[name]]
-    self <- x # nolint: object_usage_linter
-    environment(fn) <- environment()
-    fn
-  } else {
-    NextMethod()
-  }
-}
-
-#' @exportS3Method utils::.DollarNames
-`.DollarNames.polars_selector` <- function(x, pattern = "") {
-  member_names <- ls(x, all.names = TRUE)
-  method_names <- names(polars_selector__methods)
-
-  all_names <- union(member_names, method_names)
-  filtered_names <- findMatches(pattern, all_names)
-
-  filtered_names[!startsWith(filtered_names, "_")]
-}
-
-#' @export
 `$.polars_lazy_frame` <- function(x, name) {
   member_names <- ls(x, all.names = TRUE)
   method_names <- names(polars_lazyframe__methods)

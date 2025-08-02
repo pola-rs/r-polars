@@ -21,6 +21,12 @@ generate_file(
 )
 
 generate_file(
+  data_file = file.path(SCRIPT_ROOT, "data", "expr-subclass-names.tsv"),
+  template_file = file.path(SCRIPT_ROOT, "templates", "s3methods-expr-subclass-dollar.R.txt"),
+  dest_file = file.path("R", "generated-s3methods-expr-subclass-dollar.R")
+)
+
+generate_file(
   data_file = file.path(SCRIPT_ROOT, "data", "series-namespace-names.tsv"),
   template_file = file.path(SCRIPT_ROOT, "templates", "s3methods-series-namespace-dollar.R.txt"),
   dest_file = file.path("R", "generated-s3methods-series-namespace-dollar.R")
