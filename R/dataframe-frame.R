@@ -810,12 +810,17 @@ dataframe__set_sorted <- function(column, ..., descending = FALSE) {
 #'
 #' df$unique(keep = "last", maintain_order = TRUE)
 dataframe__unique <- function(
-  subset = NULL,
   ...,
   keep = c("any", "none", "first", "last"),
-  maintain_order = FALSE
+  maintain_order = FALSE,
+  subset = deprecated()
 ) {
-  self$lazy()$unique(subset = subset, keep = keep, maintain_order = maintain_order)$collect(
+  self$lazy()$unique(
+    ...,
+    subset = subset,
+    keep = keep,
+    maintain_order = maintain_order
+  )$collect(
     `_eager` = TRUE
   ) |>
     wrap()
@@ -1288,13 +1293,13 @@ dataframe__unpivot <- function(
 
     # Like `_expand_selectors` in Python Polars
     cleared_self <- self$clear()
-    on_selector <- parse_into_selector(!!!c(on), .strict = TRUE, .arg_name = "on")
+    on_selector <- parse_into_selector(!!!c(on), .arg_name = "on")
     on <- cleared_self$select(on_selector)$columns
 
     index <- if (is.null(index)) {
       NULL
     } else {
-      index_selector <- parse_into_selector(!!!c(index), .strict = TRUE, .arg_name = "index")
+      index_selector <- parse_into_selector(!!!c(index), .arg_name = "index")
       cleared_self$select(index_selector)$columns
     }
 
@@ -1343,7 +1348,7 @@ dataframe__to_dummies <- function(
       NULL
     } else {
       # Like `_expand_selectors` in Python Polars
-      selector <- parse_into_selector(..., .strict = TRUE)
+      selector <- parse_into_selector(...)
       self$clear()$select(selector)$columns
     }
 
@@ -1385,7 +1390,7 @@ dataframe__partition_by <- function(..., maintain_order = TRUE, include_key = TR
     }
 
     # Like `_expand_selectors` in Python Polars
-    selector <- parse_into_selector(..., .strict = TRUE)
+    selector <- parse_into_selector(...)
     by <- self$clear()$select(selector)$columns
 
     self$`_df`$partition_by(
@@ -1524,19 +1529,19 @@ dataframe__pivot <- function(
 
     # Like `_expand_selectors` in Python Polars
     cleared_self <- self$clear()
-    on_selector <- parse_into_selector(!!!c(on), .strict = TRUE, .arg_name = "on")
+    on_selector <- parse_into_selector(!!!c(on), .arg_name = "on")
     on <- cleared_self$select(on_selector)$columns
 
     index <- if (is.null(index)) {
       NULL
     } else {
-      index_selector <- parse_into_selector(!!!c(index), .strict = TRUE, .arg_name = "index")
+      index_selector <- parse_into_selector(!!!c(index), .arg_name = "index")
       cleared_self$select(index_selector)$columns
     }
     values <- if (is.null(values)) {
       NULL
     } else {
-      values_selector <- parse_into_selector(!!!c(values), .strict = TRUE, .arg_name = "values")
+      values_selector <- parse_into_selector(!!!c(values), .arg_name = "values")
       cleared_self$select(values_selector)$columns
     }
 

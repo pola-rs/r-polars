@@ -56,6 +56,274 @@
         p1[label="TABLE\nπ 1/11"]
       }
 
+# $unique's argument deprecation NULL
+
+    Code
+      df$lazy()$unique(subset = value, maintain_order = TRUE)
+    Condition
+      Warning:
+      ! The `subset` argument of `$unique()` is deprecated and replaced by `...` as of polars 1.1.0.
+    Output
+      <polars_lazy_frame>
+
+---
+
+    Code
+      df$unique(subset = value, maintain_order = TRUE)
+    Condition
+      Warning:
+      ! The `subset` argument of `$unique()` is deprecated and replaced by `...` as of polars 1.1.0.
+    Output
+      shape: (3, 3)
+      ┌─────┬─────┬─────┐
+      │ foo ┆ bar ┆ ham │
+      │ --- ┆ --- ┆ --- │
+      │ f64 ┆ str ┆ str │
+      ╞═════╪═════╪═════╡
+      │ 1.0 ┆ a   ┆ b   │
+      │ 2.0 ┆ a   ┆ b   │
+      │ 3.0 ┆ a   ┆ b   │
+      └─────┴─────┴─────┘
+
+---
+
+    Code
+      df$lazy()$unique("foo", subset = value, maintain_order = TRUE)
+    Condition
+      Warning:
+      ! The `subset` argument of `$unique()` is deprecated and replaced by `...` as of polars 1.1.0.
+      Error:
+      ! Evaluation failed in `$unique()`.
+      Caused by error:
+      ! `...` must be empty.
+      x Problematic argument:
+      * ..1 = "foo"
+      i Did you forget to name an argument?
+
+---
+
+    Code
+      df$unique("foo", subset = value, maintain_order = TRUE)
+    Condition
+      Warning:
+      ! The `subset` argument of `$unique()` is deprecated and replaced by `...` as of polars 1.1.0.
+      Error in `df$unique()`:
+      ! Evaluation failed in `$unique()`.
+      Caused by error:
+      ! Evaluation failed in `$unique()`.
+      Caused by error:
+      ! `...` must be empty.
+      x Problematic argument:
+      * ..1 = "foo"
+      i Did you forget to name an argument?
+
+---
+
+    Code
+      df$lazy()$unique(value, maintain_order = TRUE)
+    Condition
+      Warning:
+      ! Passing `NULL` to the first argument of `$unique()` is deprecated as of polars 1.1.0.
+      i Passing `cs$all()` to `...` instead.
+    Output
+      <polars_lazy_frame>
+
+---
+
+    Code
+      df$unique(value, maintain_order = TRUE)
+    Condition
+      Warning:
+      ! Passing `NULL` to the first argument of `$unique()` is deprecated as of polars 1.1.0.
+      i Passing `cs$all()` to `...` instead.
+    Output
+      shape: (3, 3)
+      ┌─────┬─────┬─────┐
+      │ foo ┆ bar ┆ ham │
+      │ --- ┆ --- ┆ --- │
+      │ f64 ┆ str ┆ str │
+      ╞═════╪═════╪═════╡
+      │ 1.0 ┆ a   ┆ b   │
+      │ 2.0 ┆ a   ┆ b   │
+      │ 3.0 ┆ a   ┆ b   │
+      └─────┴─────┴─────┘
+
+# $unique's argument deprecation list of strings
+
+    Code
+      df$lazy()$unique(subset = value, maintain_order = TRUE)
+    Condition
+      Warning:
+      ! The `subset` argument of `$unique()` is deprecated and replaced by `...` as of polars 1.1.0.
+    Output
+      <polars_lazy_frame>
+
+---
+
+    Code
+      df$unique(subset = value, maintain_order = TRUE)
+    Condition
+      Warning:
+      ! The `subset` argument of `$unique()` is deprecated and replaced by `...` as of polars 1.1.0.
+    Output
+      shape: (3, 3)
+      ┌─────┬─────┬─────┐
+      │ foo ┆ bar ┆ ham │
+      │ --- ┆ --- ┆ --- │
+      │ f64 ┆ str ┆ str │
+      ╞═════╪═════╪═════╡
+      │ 1.0 ┆ a   ┆ b   │
+      │ 2.0 ┆ a   ┆ b   │
+      │ 3.0 ┆ a   ┆ b   │
+      └─────┴─────┴─────┘
+
+---
+
+    Code
+      df$lazy()$unique("foo", subset = value, maintain_order = TRUE)
+    Condition
+      Warning:
+      ! The `subset` argument of `$unique()` is deprecated and replaced by `...` as of polars 1.1.0.
+      Error:
+      ! Evaluation failed in `$unique()`.
+      Caused by error:
+      ! `...` must be empty.
+      x Problematic argument:
+      * ..1 = "foo"
+      i Did you forget to name an argument?
+
+---
+
+    Code
+      df$unique("foo", subset = value, maintain_order = TRUE)
+    Condition
+      Warning:
+      ! The `subset` argument of `$unique()` is deprecated and replaced by `...` as of polars 1.1.0.
+      Error in `df$unique()`:
+      ! Evaluation failed in `$unique()`.
+      Caused by error:
+      ! Evaluation failed in `$unique()`.
+      Caused by error:
+      ! `...` must be empty.
+      x Problematic argument:
+      * ..1 = "foo"
+      i Did you forget to name an argument?
+
+---
+
+    Code
+      df$lazy()$unique(value, maintain_order = TRUE)
+    Condition
+      Warning:
+      ! Passing a list to the first argument of `$unique()` is deprecated as of polars 1.1.0.
+      i Passing `!!!my_list` to `...` instead.
+    Output
+      <polars_lazy_frame>
+
+---
+
+    Code
+      df$unique(value, maintain_order = TRUE)
+    Condition
+      Warning:
+      ! Passing a list to the first argument of `$unique()` is deprecated as of polars 1.1.0.
+      i Passing `!!!my_list` to `...` instead.
+    Output
+      shape: (3, 3)
+      ┌─────┬─────┬─────┐
+      │ foo ┆ bar ┆ ham │
+      │ --- ┆ --- ┆ --- │
+      │ f64 ┆ str ┆ str │
+      ╞═════╪═════╪═════╡
+      │ 1.0 ┆ a   ┆ b   │
+      │ 2.0 ┆ a   ┆ b   │
+      │ 3.0 ┆ a   ┆ b   │
+      └─────┴─────┴─────┘
+
+# $unique's argument deprecation expr
+
+    Code
+      df$lazy()$unique(subset = value, maintain_order = TRUE)
+    Condition
+      Warning:
+      ! The `subset` argument of `$unique()` is deprecated and replaced by `...` as of polars 1.1.0.
+    Output
+      <polars_lazy_frame>
+
+---
+
+    Code
+      df$unique(subset = value, maintain_order = TRUE)
+    Condition
+      Warning:
+      ! The `subset` argument of `$unique()` is deprecated and replaced by `...` as of polars 1.1.0.
+    Output
+      shape: (3, 3)
+      ┌─────┬─────┬─────┐
+      │ foo ┆ bar ┆ ham │
+      │ --- ┆ --- ┆ --- │
+      │ f64 ┆ str ┆ str │
+      ╞═════╪═════╪═════╡
+      │ 1.0 ┆ a   ┆ b   │
+      │ 2.0 ┆ a   ┆ b   │
+      │ 3.0 ┆ a   ┆ b   │
+      └─────┴─────┴─────┘
+
+---
+
+    Code
+      df$lazy()$unique("foo", subset = value, maintain_order = TRUE)
+    Condition
+      Warning:
+      ! The `subset` argument of `$unique()` is deprecated and replaced by `...` as of polars 1.1.0.
+      Error:
+      ! Evaluation failed in `$unique()`.
+      Caused by error:
+      ! `...` must be empty.
+      x Problematic argument:
+      * ..1 = "foo"
+      i Did you forget to name an argument?
+
+---
+
+    Code
+      df$unique("foo", subset = value, maintain_order = TRUE)
+    Condition
+      Warning:
+      ! The `subset` argument of `$unique()` is deprecated and replaced by `...` as of polars 1.1.0.
+      Error in `df$unique()`:
+      ! Evaluation failed in `$unique()`.
+      Caused by error:
+      ! Evaluation failed in `$unique()`.
+      Caused by error:
+      ! `...` must be empty.
+      x Problematic argument:
+      * ..1 = "foo"
+      i Did you forget to name an argument?
+
+---
+
+    Code
+      df$lazy()$unique(value, maintain_order = TRUE)
+    Output
+      <polars_lazy_frame>
+
+---
+
+    Code
+      df$unique(value, maintain_order = TRUE)
+    Output
+      shape: (3, 3)
+      ┌─────┬─────┬─────┐
+      │ foo ┆ bar ┆ ham │
+      │ --- ┆ --- ┆ --- │
+      │ f64 ┆ str ┆ str │
+      ╞═════╪═════╪═════╡
+      │ 1.0 ┆ a   ┆ b   │
+      │ 2.0 ┆ a   ┆ b   │
+      │ 3.0 ┆ a   ┆ b   │
+      └─────┴─────┴─────┘
+
 # explain() works
 
     Code

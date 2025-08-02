@@ -1131,7 +1131,7 @@ lazyframe__drop_nulls <- function(...) {
     subset <- if (...length() == 0L) {
       NULL
     } else {
-      parse_into_selector(..., .strict = TRUE)$`_rselector`
+      parse_into_selector(...)$`_rselector`
     }
     self$`_ldf`$drop_nulls(subset)
   })
@@ -1175,18 +1175,15 @@ lazyframe__drop_nans <- function(...) {
     subset <- if (...length() == 0L) {
       NULL
     } else {
-      parse_into_selector(..., .strict = TRUE)$`_rselector`
+      parse_into_selector(...)$`_rselector`
     }
     self$`_ldf`$drop_nans(subset)
   })
 }
 
-# TODO: @2.0 replace subset to dyn-dots and rename all arguments
+# TODO: @2.0 remove subset
 #' Drop duplicate rows
 #'
-#' @inheritParams rlang::args_dots_empty
-#' @param subset Column name(s) or selector(s), to consider when identifying
-#' duplicate rows. If `NULL` (default), use all columns.
 #' @param keep Which of the duplicate rows to keep. Must be one of:
 #' * `"any"`: does not give any guarantee of which row is kept. This allows
 #'   more optimizations.
@@ -1196,6 +1193,7 @@ lazyframe__drop_nans <- function(...) {
 #' @param maintain_order Keep the same order as the original data. This is
 #' more expensive to compute. Setting this to `TRUE` blocks the possibility to
 #' run on the streaming engine.
+#' @param subset `r lifecycle::badge("deprecated")` Replaced by `...` in 1.1.0.
 #'
 #' @inherit as_polars_lf return
 #' @examples
@@ -1206,22 +1204,73 @@ lazyframe__drop_nans <- function(...) {
 #' )
 #' lf$unique(maintain_order = TRUE)$collect()
 #'
-#' lf$unique(subset = c("bar", "ham"), maintain_order = TRUE)$collect()
+#' lf$unique(c("bar", "ham"), maintain_order = TRUE)$collect()
 #'
 #' lf$unique(keep = "last", maintain_order = TRUE)$collect()
 lazyframe__unique <- function(
-  subset = NULL,
   ...,
   keep = c("any", "none", "first", "last"),
-  maintain_order = FALSE
+  maintain_order = FALSE,
+  subset = deprecated()
 ) {
   wrap({
-    check_dots_empty0(...)
     keep <- arg_match0(keep, values = c("any", "none", "first", "last"))
-    if (!is.null(subset)) {
-      subset <- parse_into_selector(!!!subset)$`_rselector`
+
+    subset <- if (is_present(subset)) {
+      deprecate_warn(
+        format_warning(
+          c(
+            `!` = sprintf(
+              "The %s argument of %s is deprecated and replaced by %s as of %s 1.1.0.",
+              format_arg("subset"),
+              format_code("$unique()"),
+              format_arg("..."),
+              format_pkg("polars")
+            )
+          )
+        )
+      )
+      check_dots_empty0(...)
+
+      if (is.null(subset)) {
+        cs$all()
+      } else {
+        parse_into_selector(!!!c(subset))
+      }
+    } else if (...length() == 1L && (is.null(..1) || is.list(..1))) {
+      check_dots_unnamed()
+      deprecate_warn(
+        c(
+          `!` = format_warning(sprintf(
+            "Passing %s to the first argument of %s is deprecated as of %s 1.1.0.",
+            obj_type_friendly(..1),
+            format_code("$unique()"),
+            format_pkg("polars")
+          )),
+          i = format_warning(sprintf(
+            "Passing %s to %s instead.",
+            format_code(if (is.null(..1)) "cs$all()" else "!!!my_list"),
+            format_arg("...")
+          ))
+        )
+      )
+
+      if (is.null(..1)) {
+        cs$all()
+      } else {
+        parse_into_selector(!!!force(..1))
+      }
+    } else if (...length() == 0L) {
+      NULL
+    } else {
+      parse_into_selector(...)
     }
-    self$`_ldf`$unique(subset = subset, keep = keep, maintain_order = maintain_order)
+
+    self$`_ldf`$unique(
+      subset = subset$`_rselector`,
+      keep = keep,
+      maintain_order = maintain_order
+    )
   })
 }
 
