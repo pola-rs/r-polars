@@ -19,7 +19,7 @@ pl__Datetime(time_unit = c("us", "ns", "ms"), time_zone = NULL)
 
 pl__Duration(time_unit = c("us", "ns", "ms"))
 
-pl__Categorical(ordering = NULL)
+pl__Categorical(ordering = deprecated())
 
 pl__Enum(categories)
 

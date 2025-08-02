@@ -13,7 +13,7 @@ as_polars_expr(x, ...)
 
 \method{as_polars_expr}{default}(x, ..., keep_series = FALSE)
 
-\method{as_polars_expr}{polars_expr}(x, ..., structify = NULL)
+\method{as_polars_expr}{polars_expr}(x, ..., structify = deprecated())
 
 \method{as_polars_expr}{character}(x, ..., as_lit = FALSE)
 

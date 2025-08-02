@@ -140,8 +140,8 @@ as_polars_expr.default <- function(x, ..., keep_series = FALSE) {
 
 #' @rdname as_polars_expr
 #' @export
-as_polars_expr.polars_expr <- function(x, ..., structify = NULL) {
-  if (!is.null(structify)) {
+as_polars_expr.polars_expr <- function(x, ..., structify = deprecated()) {
+  if (is_present(structify)) {
     deprecate_warn(
       format_warning(
         c(
