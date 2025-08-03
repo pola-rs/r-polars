@@ -6,9 +6,11 @@ This is an update that corresponds to Python Polars 1.32.0, which includes signi
 
 ### Deprecations
 
-- `pl$Categorical()`'s first argument `ordering` is deprecated (pola-rs/polars#23016, #1452, #1468).
+- `pl$Categorical()`'s first argument `ordering` is deprecated
+  ([pola-rs/polars#23016](https://github.com/pola-rs/polars/pull/23016), #1452, #1468).
   In this version, global categories are always used, and the behavior matches the previous `ordering = "lexical"`.
-- The experimental feature "auto structify" is deprecated (pola-rs/polars#23351, #1452, #1468).
+- The experimental feature "auto structify" is deprecated
+  ([pola-rs/polars#23351](https://github.com/pola-rs/polars/pull/23351), #1452, #1468).
   Since this feature could previously be used in two ways, both are now deprecated:
   - `as_polars_expr()`'s argument `structify`.
   - Setting the `POLARS_AUTO_STRUCTIFY` environment variable to `1`.
@@ -20,7 +22,8 @@ This is an update that corresponds to Python Polars 1.32.0, which includes signi
 
 ### New features
 
-- New experimental polars selectors have been added (pola-rs/polars#23351, #1452).
+- New experimental polars selectors have been added
+  ([pola-rs/polars#23351](https://github.com/pola-rs/polars/pull/23351), #1452).
   - `cs$empty()` to avoid matching any column.
   - `cs$enum()` for Enum data types.
   - `cs$list()` for List data types.
