@@ -51,6 +51,7 @@ env:
   GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
   R_KEEP_PKG_SOURCE: yes
   NOT_CRAN: "true"
+  LIB_SUMS_PATH: "tools/lib-sums.tsv"
 
 jobs:
   build-docs:
@@ -59,13 +60,21 @@ jobs:
       contents: write
 
     steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for pre-built binary
+        run: |
+          if [[ -f "${LIB_SUMS_PATH}" ]]; then
+            echo "LIBR_POLARS_BUILD=false" >>"${GITHUB_ENV}"
+          else
+            echo "LIBR_POLARS_BUILD=true" >>"${GITHUB_ENV}"
+          fi
+
       - name: more space for debug build
-        if: runner.os == 'Linux'
+        if: runner.os == 'Linux' && env.LIBR_POLARS_BUILD != 'true'
         run: |
           du -hsc /usr/local/lib/*
           sudo rm -rf /usr/local/lib/android || true
-
-      - uses: actions/checkout@v4
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -100,24 +109,20 @@ jobs:
         uses: actions/configure-pages@v5
 
       - id: rust-target
-        # Use the pre-built binary for release builds
-        if: github.event_name != 'release'
+        if: env.LIBR_POLARS_BUILD == 'true'
         name: Set Rust target
         run: |
           echo "TARGET=$(rustc -vV | grep host | cut -d' ' -f2)" >>"$GITHUB_OUTPUT"
 
       - uses: Swatinem/rust-cache@v2
-        # Use the pre-built binary for release builds
-        if: github.event_name != 'release'
+        if: env.LIBR_POLARS_BUILD == 'true'
         with:
           workspaces: "src/rust -> target"
           shared-key: ${{ steps.rust-target.outputs.TARGET }}-debug-nightly
 
       - name: Build lib
-        # Use the pre-built binary for release builds
-        if: github.event_name != 'release'
+        if: env.LIBR_POLARS_BUILD == 'true'
         env:
-          LIBR_POLARS_BUILD: "true"
           LIBR_POLARS_FEATURES: nightly
         run: |
           # make sure savvy is built from source because rust-cache doesn't work well.
