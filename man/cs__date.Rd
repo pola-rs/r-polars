@@ -7,7 +7,7 @@
 cs__date()
 }
 \value{
-A Polars selector
+A Polars \link[=cs]{selector}
 }
 \description{
 Select all date columns
@@ -25,5 +25,5 @@ df$select(cs$date())
 df$select(!cs$date())
 }
 \seealso{
-\link{cs} for the documentation on operators supported by Polars selectors.
+\link{cs} for the documentation on operators supported by selectors.
 }

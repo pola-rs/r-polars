@@ -17,7 +17,7 @@ idiographic, etc).}
 column names; if so, only the other (non-space) characters are considered.}
 }
 \value{
-A Polars selector
+A Polars \link[=cs]{selector}
 }
 \description{
 Select all columns with alphabetic names (e.g. only letters)
@@ -50,5 +50,5 @@ df$select(!cs$alpha())
 df$select(!cs$alpha(ignore_spaces = TRUE))
 }
 \seealso{
-\link{cs} for the documentation on operators supported by Polars selectors.
+\link{cs} for the documentation on operators supported by selectors.
 }

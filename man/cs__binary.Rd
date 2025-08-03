@@ -7,7 +7,7 @@
 cs__binary()
 }
 \value{
-A Polars selector
+A Polars \link[=cs]{selector}
 }
 \description{
 Select all binary columns
@@ -27,5 +27,5 @@ df$select(cs$binary())
 df$select(!cs$binary())
 }
 \seealso{
-\link{cs} for the documentation on operators supported by Polars selectors.
+\link{cs} for the documentation on operators supported by selectors.
 }

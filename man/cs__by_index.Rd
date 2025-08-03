@@ -15,7 +15,7 @@ Negative indexing is supported.}
 \item{require_all}{Whether to match all indices (the default) or any of the indices.}
 }
 \value{
-A Polars selector
+A Polars \link[=cs]{selector}
 }
 \description{
 Select all columns matching the given indices (or range objects)
@@ -41,5 +41,5 @@ df$select(cs$by_index(c(0, seq(101, 0, -25)), require_all = FALSE))
 df$select(!cs$by_index(seq(0, 100, 2)))
 }
 \seealso{
-\link{cs} for the documentation on operators supported by Polars selectors.
+\link{cs} for the documentation on operators supported by selectors.
 }

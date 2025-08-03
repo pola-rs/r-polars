@@ -11,7 +11,7 @@ cs__contains(...)
 column names should contain.}
 }
 \value{
-A Polars selector
+A Polars \link[=cs]{selector}
 }
 \description{
 Select columns whose names contain the given literal substring(s)
@@ -34,5 +34,5 @@ df$select(cs$contains("ba", "z"))
 df$select(!cs$contains("ba"))
 }
 \seealso{
-\link{cs} for the documentation on operators supported by Polars selectors.
+\link{cs} for the documentation on operators supported by selectors.
 }

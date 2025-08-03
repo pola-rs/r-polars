@@ -5,12 +5,15 @@
 \alias{cs}
 \alias{polars_selector}
 \alias{Selector}
+\alias{selector__as_expr}
 \title{Polars column selector function namespace}
 \format{
 An object of class \code{polars_object} of length 35.
 }
 \usage{
 cs
+
+selector__as_expr()
 }
 \description{
 \code{cs} is an \link[=environment-class]{environment class} object that stores all
@@ -34,9 +37,26 @@ type \code{String} with \code{!cs$string()}.
 }
 
 Note that Python Polars uses \code{~} instead of \code{!} to invert selectors.
+
+If we want to apply operators on the data instead of the selector sets,
+\verb{<selector>$as_expr()} can be used to materialize the selector as a normal
+expression.
 }
 
 \examples{
 cs
+
+df <- pl$DataFrame(
+  colx = c("aa", "bb", "cc"),
+  coly = c(TRUE, FALSE, TRUE),
+  colz = c(1, 2, 3),
+)
+
+# Inverting the boolean selector will choose the non-boolean columns:
+df$select(!cs$boolean())
+
+# To invert the values in the selected boolean columns,
+# we need to materialize the selector as a standard expression instead:
+df$select(!cs$boolean()$as_expr())
 }
 \keyword{datasets}

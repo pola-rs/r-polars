@@ -7,7 +7,7 @@
 cs__empty()
 }
 \value{
-A Polars selector
+A Polars \link[=cs]{selector}
 }
 \description{
 This is useful for composition with other selectors.
@@ -16,5 +16,5 @@ This is useful for composition with other selectors.
 pl$DataFrame(a = 1, b = 2)$select(cs$empty())
 }
 \seealso{
-\link{cs} for the documentation on operators supported by Polars selectors.
+\link{cs} for the documentation on operators supported by selectors.
 }

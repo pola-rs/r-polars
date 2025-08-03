@@ -645,6 +645,7 @@ nav:
         - cs__all: man/cs__all.md
         - cs__alpha: man/cs__alpha.md
         - cs__alphanumeric: man/cs__alphanumeric.md
+        - cs__array: man/cs__array.md
         - cs__binary: man/cs__binary.md
         - cs__boolean: man/cs__boolean.md
         - cs__by_dtype: man/cs__by_dtype.md
@@ -658,16 +659,20 @@ nav:
         - cs__digit: man/cs__digit.md
         - cs__duration: man/cs__duration.md
         - cs__ends_with: man/cs__ends_with.md
+        - cs__enum: man/cs__enum.md
         - cs__exclude: man/cs__exclude.md
         - cs__first: man/cs__first.md
         - cs__float: man/cs__float.md
         - cs__integer: man/cs__integer.md
         - cs__last: man/cs__last.md
+        - cs__list: man/cs__list.md
         - cs__matches: man/cs__matches.md
+        - cs__nested: man/cs__nested.md
         - cs__numeric: man/cs__numeric.md
         - cs__signed_integer: man/cs__signed_integer.md
         - cs__starts_with: man/cs__starts_with.md
         - cs__string: man/cs__string.md
+        - cs__struct: man/cs__struct.md
         - cs__temporal: man/cs__temporal.md
         - cs__time: man/cs__time.md
         - cs__unsigned_integer: man/cs__unsigned_integer.md

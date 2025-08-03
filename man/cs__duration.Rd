@@ -12,7 +12,7 @@ cs__duration(time_unit = c("ms", "us", "ns"))
 timeunit.}
 }
 \value{
-A Polars selector
+A Polars \link[=cs]{selector}
 }
 \description{
 Select all duration columns, optionally filtering by time unit
@@ -40,5 +40,5 @@ df$select(!cs$duration())
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-\link{cs} for the documentation on operators supported by Polars selectors.
+\link{cs} for the documentation on operators supported by selectors.
 }

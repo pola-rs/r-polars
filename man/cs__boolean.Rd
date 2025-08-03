@@ -7,7 +7,7 @@
 cs__boolean()
 }
 \value{
-A Polars selector
+A Polars \link[=cs]{selector}
 }
 \description{
 Select all boolean columns
@@ -25,5 +25,5 @@ df$with_columns(inverted = cs$boolean()$not())
 df$select(!cs$boolean())
 }
 \seealso{
-\link{cs} for the documentation on operators supported by Polars selectors.
+\link{cs} for the documentation on operators supported by selectors.
 }

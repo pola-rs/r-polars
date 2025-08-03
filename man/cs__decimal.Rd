@@ -7,7 +7,7 @@
 cs__decimal()
 }
 \value{
-A Polars selector
+A Polars \link[=cs]{selector}
 }
 \description{
 Select all decimal columns
@@ -30,5 +30,5 @@ df$select(cs$decimal())
 df$select(!cs$decimal())
 }
 \seealso{
-\link{cs} for the documentation on operators supported by Polars selectors.
+\link{cs} for the documentation on operators supported by selectors.
 }

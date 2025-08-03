@@ -7,7 +7,7 @@
 cs__signed_integer()
 }
 \value{
-A Polars selector
+A Polars \link[=cs]{selector}
 }
 \description{
 Select all signed integer columns
@@ -31,5 +31,5 @@ df$select(!cs$signed_integer())
 df$select(cs$integer())
 }
 \seealso{
-\link{cs} for the documentation on operators supported by Polars selectors.
+\link{cs} for the documentation on operators supported by selectors.
 }

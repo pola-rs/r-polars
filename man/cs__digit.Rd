@@ -12,7 +12,7 @@ characters, or the full Unicode range of valid letters (accented,
 idiographic, etc).}
 }
 \value{
-A Polars selector
+A Polars \link[=cs]{selector}
 }
 \description{
 Select all columns having names consisting only of digits
@@ -42,5 +42,5 @@ df$select(cs$digit())
 df$select(cs$digit(ascii_only = TRUE))
 }
 \seealso{
-\link{cs} for the documentation on operators supported by Polars selectors.
+\link{cs} for the documentation on operators supported by selectors.
 }
