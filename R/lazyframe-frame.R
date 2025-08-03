@@ -1214,6 +1214,8 @@ lazyframe__unique <- function(
   wrap({
     keep <- arg_match0(keep, values = c("any", "none", "first", "last"))
 
+    # Use `list2(...)` instead of `..1` for compatibility with dynamic dots splicing by `!!!`.
+    # <https://github.com/pola-rs/r-polars/pull/1475>
     dots <- list2(...)
     subset <- if (is_present(subset)) {
       deprecate_warn(
