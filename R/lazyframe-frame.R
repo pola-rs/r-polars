@@ -1214,6 +1214,7 @@ lazyframe__unique <- function(
   wrap({
     keep <- arg_match0(keep, values = c("any", "none", "first", "last"))
 
+    dots <- list2(...)
     subset <- if (is_present(subset)) {
       deprecate_warn(
         format_warning(
@@ -1235,28 +1236,28 @@ lazyframe__unique <- function(
       } else {
         parse_into_selector(!!!c(subset))
       }
-    } else if (...length() == 1L && (is.null(..1) || is.list(..1))) {
+    } else if (...length() == 1L && (is.null(dots[[1]]) || is.list(dots[[1]]))) {
       check_dots_unnamed()
       deprecate_warn(
         c(
           `!` = format_warning(sprintf(
             "Passing %s to the first argument of %s is deprecated as of %s 1.1.0.",
-            obj_type_friendly(..1),
+            obj_type_friendly(dots[[1]]),
             format_code("$unique()"),
             format_pkg("polars")
           )),
           i = format_warning(sprintf(
             "Passing %s to %s instead.",
-            format_code(if (is.null(..1)) "cs$all()" else "!!!my_list"),
+            format_code(if (is.null(dots[[1]])) "cs$all()" else "!!!my_list"),
             format_arg("...")
           ))
         )
       )
 
-      if (is.null(..1)) {
+      if (is.null(dots[[1]])) {
         cs$all()
       } else {
-        parse_into_selector(!!!force(..1))
+        parse_into_selector(!!!dots[[1]])
       }
     } else if (...length() == 0L) {
       NULL
