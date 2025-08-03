@@ -15,7 +15,19 @@
 #'
 #' @inheritParams knitr::knit_print
 #' @param x A polars object
-#' @return `x` invisibly or [knit_asis][knitr::asis_output)] object.
+#' @return `x` invisibly or [knit_asis][knitr::asis_output] object.
+#' @examplesIf requireNamespace("knitr", quietly = TRUE) && requireNamespace("withr", quietly = TRUE)
+#' # Using the default print method
+#' withr::with_options(
+#'   list(polars.df_knitr_print = "default"),
+#'   knitr::knit_print(as_polars_df(mtcars))
+#' )
+#'
+#' # Returning HTML table
+#' withr::with_options(
+#'   list(polars.df_knitr_print = "html"),
+#'   knitr::knit_print(as_polars_df(mtcars))
+#' )
 #' @rdname s3-knit_print
 # exported in zzz.R
 knit_print.polars_data_frame <- function(x, ...) {
