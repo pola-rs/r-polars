@@ -450,6 +450,8 @@ cs__enum <- function() {
 #'
 #' `r lifecycle::badge("experimental")`
 #' @inherit cs__empty return
+#' @param inner An optional inner [selector][cs] to select columns having
+#'   specific inner [data types][DataType]. If `NULL`, all inner types are selected.
 #' @seealso
 #' - [cs] for the documentation on operators supported by selectors.
 #' - [`cs$by_dtype()`][cs__by_dtype]: Select all columns matching the given dtype(s).
@@ -469,8 +471,8 @@ cs__enum <- function() {
 #' df$select(!cs$list())
 #'
 #' # If you want to select specific list columns,
-#' # you can use the `by_dtype()` selector:
-#' df$select(cs$by_dtype(pl$List(pl$String)))
+#' # you can specify the inner data type with a selector:
+#' df$select(cs$list(cs$string()))
 cs__list <- function(inner = NULL) {
   wrap({
     check_polars_selector(inner, allow_null = TRUE)
@@ -483,6 +485,10 @@ cs__list <- function(inner = NULL) {
 #'
 #' `r lifecycle::badge("experimental")`
 #' @inherit cs__empty return
+#' @inheritParams cs__list
+#' @inheritParams rlang::args_dots_empty
+#' @param width An optional integer specifying the width of the array columns to select.
+#'   If `NULL`, all widths are selected.
 #' @seealso
 #' - [cs] for the documentation on operators supported by selectors.
 #' - [`cs$by_dtype()`][cs__by_dtype]: Select all columns matching the given dtype(s).
@@ -491,11 +497,11 @@ cs__list <- function(inner = NULL) {
 #' @examples
 #' df <- pl$DataFrame(
 #'   foo = list(c("xx", "yy"), c("x", "y")),
-#'   bar = list(c(123, 456), c(789, 101)),
+#'   bar = list(123, 456),
 #'   baz = c(2.0, 5.5),
 #'   .schema_overrides = list(
 #'     foo = pl$Array(pl$String, 2),
-#'     bar = pl$Array(pl$Int64, 2)
+#'     bar = pl$Array(pl$Int64, 1)
 #'   )
 #' )
 #'
@@ -506,8 +512,10 @@ cs__list <- function(inner = NULL) {
 #' df$select(!cs$array())
 #'
 #' # If you want to select specific array columns,
-#' # you can use the `by_dtype()` selector:
-#' df$select(cs$by_dtype(pl$Array(pl$String, 2)))
+#' # you can specify the inner data type and/or width:
+#' df$select(cs$array(cs$string()))
+#' df$select(cs$array(width = 1))
+#' df$select(cs$array(cs$string() | cs$numeric(), width = 2))
 cs__array <- function(inner = NULL, ..., width = NULL) {
   wrap({
     check_dots_empty0(...)

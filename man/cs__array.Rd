@@ -6,6 +6,15 @@
 \usage{
 cs__array(inner = NULL, ..., width = NULL)
 }
+\arguments{
+\item{inner}{An optional inner \link[=cs]{selector} to select columns having
+specific inner \link[=DataType]{data types}. If \code{NULL}, all inner types are selected.}
+
+\item{...}{These dots are for future extensions and must be empty.}
+
+\item{width}{An optional integer specifying the width of the array columns to select.
+If \code{NULL}, all widths are selected.}
+}
 \value{
 A Polars \link[=cs]{selector}
 }
@@ -15,11 +24,11 @@ A Polars \link[=cs]{selector}
 \examples{
 df <- pl$DataFrame(
   foo = list(c("xx", "yy"), c("x", "y")),
-  bar = list(c(123, 456), c(789, 101)),
+  bar = list(123, 456),
   baz = c(2.0, 5.5),
   .schema_overrides = list(
     foo = pl$Array(pl$String, 2),
-    bar = pl$Array(pl$Int64, 2)
+    bar = pl$Array(pl$Int64, 1)
   )
 )
 
@@ -30,8 +39,10 @@ df$select(cs$array())
 df$select(!cs$array())
 
 # If you want to select specific array columns,
-# you can use the `by_dtype()` selector:
-df$select(cs$by_dtype(pl$Array(pl$String, 2)))
+# you can specify the inner data type and/or width:
+df$select(cs$array(cs$string()))
+df$select(cs$array(width = 1))
+df$select(cs$array(cs$string() | cs$numeric(), width = 2))
 }
 \seealso{
 \itemize{

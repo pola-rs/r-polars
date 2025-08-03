@@ -6,6 +6,10 @@
 \usage{
 cs__list(inner = NULL)
 }
+\arguments{
+\item{inner}{An optional inner \link[=cs]{selector} to select columns having
+specific inner \link[=DataType]{data types}. If \code{NULL}, all inner types are selected.}
+}
 \value{
 A Polars \link[=cs]{selector}
 }
@@ -26,8 +30,8 @@ df$select(cs$list())
 df$select(!cs$list())
 
 # If you want to select specific list columns,
-# you can use the `by_dtype()` selector:
-df$select(cs$by_dtype(pl$List(pl$String)))
+# you can specify the inner data type with a selector:
+df$select(cs$list(cs$string()))
 }
 \seealso{
 \itemize{
