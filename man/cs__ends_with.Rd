@@ -11,7 +11,7 @@ cs__ends_with(...)
 column names should end with.}
 }
 \value{
-A Polars selector
+A Polars \link[=cs]{selector}
 }
 \description{
 Select columns that end with the given substring(s)
@@ -34,5 +34,5 @@ df$select(cs$ends_with("z", "r"))
 df$select(!cs$ends_with("z"))
 }
 \seealso{
-\link{cs} for the documentation on operators supported by Polars selectors.
+\link{cs} for the documentation on operators supported by selectors.
 }

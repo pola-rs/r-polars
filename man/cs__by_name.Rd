@@ -12,7 +12,7 @@ cs__by_name(..., require_all = TRUE)
 \item{require_all}{Whether to match all names (the default) or any of the names.}
 }
 \value{
-A Polars selector
+A Polars \link[=cs]{selector}
 }
 \description{
 Select all columns matching the given names
@@ -39,5 +39,5 @@ df$select(cs$by_name("baz", "moose", "foo", "bear", require_all = FALSE))
 df$select(!cs$by_name("foo", "bar"))
 }
 \seealso{
-\link{cs} for the documentation on operators supported by Polars selectors.
+\link{cs} for the documentation on operators supported by selectors.
 }

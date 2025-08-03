@@ -23,7 +23,7 @@ For example, the default value \code{list("*", NULL)} selects all Datetime colum
 }}
 }
 \value{
-A Polars selector
+A Polars \link[=cs]{selector}
 }
 \description{
 Select all datetime columns
@@ -56,5 +56,5 @@ df$select(cs$datetime(time_zone = NULL))
 df$select(!cs$datetime())
 }
 \seealso{
-\link{cs} for the documentation on operators supported by Polars selectors.
+\link{cs} for the documentation on operators supported by selectors.
 }

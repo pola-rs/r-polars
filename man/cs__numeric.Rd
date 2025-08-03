@@ -7,7 +7,7 @@
 cs__numeric()
 }
 \value{
-A Polars selector
+A Polars \link[=cs]{selector}
 }
 \description{
 Select all numeric columns.
@@ -28,5 +28,5 @@ df$select(cs$numeric())
 df$select(!cs$numeric())
 }
 \seealso{
-\link{cs} for the documentation on operators supported by Polars selectors.
+\link{cs} for the documentation on operators supported by selectors.
 }

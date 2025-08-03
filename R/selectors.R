@@ -7,6 +7,7 @@
 #'
 #' @section Supported operators:
 #' There are 4 supported operators for selectors:
+#'
 #' * `&` to combine conditions with AND, e.g. select columns that contain
 #'   `"oo"` *and* end with `"t"` with `cs$contains("oo") & cs$ends_with("t")`;
 #' * `|` to combine conditions with OR, e.g. select columns that contain
@@ -19,8 +20,25 @@
 #'
 #' Note that Python Polars uses `~` instead of `!` to invert selectors.
 #'
+#' If we want to apply operators on the data instead of the selector sets,
+#' `<selector>$as_expr()` can be used to materialize the selector as a normal
+#' expression.
+#'
 #' @examples
 #' cs
+#'
+#' df <- pl$DataFrame(
+#'   colx = c("aa", "bb", "cc"),
+#'   coly = c(TRUE, FALSE, TRUE),
+#'   colz = c(1, 2, 3),
+#' )
+#'
+#' # Inverting the boolean selector will choose the non-boolean columns:
+#' df$select(!cs$boolean())
+#'
+#' # To invert the values in the selected boolean columns,
+#' # we need to materialize the selector as a standard expression instead:
+#' df$select(!cs$boolean()$as_expr())
 #' @aliases polars_selector Selector
 #' @export
 cs <- new.env(parent = emptyenv())
@@ -136,7 +154,7 @@ selector__exclude <- function(...) {
   })
 }
 
-# TODO: add document
+#' @rdname cs
 selector__as_expr <- function() {
   self$`_rexpr` |>
     wrap()
@@ -152,8 +170,8 @@ re_string <- function(string, ..., escape = TRUE) {
 #' Select no columns
 #'
 #' This is useful for composition with other selectors.
-#' @return A Polars selector
-#' @seealso [cs] for the documentation on operators supported by Polars selectors.
+#' @return A Polars [selector][cs]
+#' @seealso [cs] for the documentation on operators supported by selectors.
 #' @examples
 #' pl$DataFrame(a = 1, b = 2)$select(cs$empty())
 cs__empty <- function() {
@@ -395,13 +413,66 @@ cs__by_name <- function(..., require_all = TRUE) {
   })
 }
 
-# TODO: add docs
+#' Select all enum columns
+#'
+#' `r lifecycle::badge("experimental")`
+#' @inherit cs__empty return
+#' @seealso
+#' - [cs] for the documentation on operators supported by selectors.
+#' - [`cs$by_dtype()`][cs__by_dtype]: Select all columns matching the given dtype(s).
+#' - [`cs$categorical()`][cs__categorical]: Select all categorical columns.
+#' @examples
+#' df <- pl$DataFrame(
+#'   foo = c("xx", "yy"),
+#'   bar = c("aa", "bb"),
+#'   baz = c(2.0, 5.5),
+#'   .schema_overrides = list(
+#'     foo = pl$Enum(c("xx", "yy")),
+#'     bar = pl$Enum(c("aa", "bb"))
+#'   )
+#' )
+#'
+#' # Select all enum columns:
+#' df$select(cs$enum())
+#'
+#' # Select all columns except for those that are enum:
+#' df$select(!cs$enum())
+#'
+#' # If you want to select specific enum columns,
+#' # you can use the `by_dtype()` selector:
+#' df$select(cs$by_dtype(pl$Enum(c("aa", "bb"))))
 cs__enum <- function() {
   PlRSelector$enum() |>
     wrap()
 }
 
-# TODO: add docs
+#' Select all list columns
+#'
+#' `r lifecycle::badge("experimental")`
+#' @inherit cs__empty return
+#' @param inner An optional inner [selector][cs] to select columns having
+#'   specific inner [data types][DataType]. If `NULL`, all inner types are selected.
+#' @seealso
+#' - [cs] for the documentation on operators supported by selectors.
+#' - [`cs$by_dtype()`][cs__by_dtype]: Select all columns matching the given dtype(s).
+#' - [`cs$array()`][cs__array]: Select all array columns.
+#' - [`cs$nested()`][cs__nested]: Select all nested columns.
+#' @examples
+#' df <- pl$DataFrame(
+#'   foo = list(c("xx", "yy"), "x"),
+#'   bar = list(c(123, 456), 789),
+#'   baz = c(2.0, 5.5),
+#' )
+#'
+#' # Select all list columns:
+#' df$select(cs$list())
+#'
+#' # Select all columns except for those that are list:
+#' df$select(!cs$list())
+#'
+#' # If you want to select specific list columns,
+#' # you can specify the inner data type with a selector:
+#' df$select(cs$list(cs$string()))
 cs__list <- function(inner = NULL) {
   wrap({
     check_polars_selector(inner, allow_null = TRUE)
@@ -410,7 +481,41 @@ cs__list <- function(inner = NULL) {
   })
 }
 
-# TODO: add docs
+#' Select all array columns
+#'
+#' `r lifecycle::badge("experimental")`
+#' @inherit cs__empty return
+#' @inheritParams cs__list
+#' @inheritParams rlang::args_dots_empty
+#' @param width An optional integer specifying the width of the array columns to select.
+#'   If `NULL`, all widths are selected.
+#' @seealso
+#' - [cs] for the documentation on operators supported by selectors.
+#' - [`cs$by_dtype()`][cs__by_dtype]: Select all columns matching the given dtype(s).
+#' - [`cs$list()`][cs__list]: Select all list columns.
+#' - [`cs$nested()`][cs__nested]: Select all nested columns.
+#' @examples
+#' df <- pl$DataFrame(
+#'   foo = list(c("xx", "yy"), c("x", "y")),
+#'   bar = list(123, 456),
+#'   baz = c(2.0, 5.5),
+#'   .schema_overrides = list(
+#'     foo = pl$Array(pl$String, 2),
+#'     bar = pl$Array(pl$Int64, 1)
+#'   )
+#' )
+#'
+#' # Select all array columns:
+#' df$select(cs$array())
+#'
+#' # Select all columns except for those that are array:
+#' df$select(!cs$array())
+#'
+#' # If you want to select specific array columns,
+#' # you can specify the inner data type and/or width:
+#' df$select(cs$array(cs$string()))
+#' df$select(cs$array(width = 1))
+#' df$select(cs$array(cs$string() | cs$numeric(), width = 2))
 cs__array <- function(inner = NULL, ..., width = NULL) {
   wrap({
     check_dots_empty0(...)
@@ -420,13 +525,64 @@ cs__array <- function(inner = NULL, ..., width = NULL) {
   })
 }
 
-# TODO: add docs
+#' Select all struct columns
+#'
+#' `r lifecycle::badge("experimental")`
+#' @inherit cs__empty return
+#' @seealso
+#' - [cs] for the documentation on operators supported by selectors.
+#' - [`cs$by_dtype()`][cs__by_dtype]: Select all columns matching the given dtype(s).
+#' - [`cs$list()`][cs__list]: Select all list columns.
+#' - [`cs$array()`][cs__array]: Select all array columns.
+#' - [`cs$nested()`][cs__nested]: Select all nested columns.
+#' @examples
+#' df <- pl$DataFrame(
+#'   foo = data.frame(a = c("xx", "x"), b = c("yy", "y")),
+#'   bar = data.frame(a = c(123, 456), b = c(789, 101)),
+#'   baz = c(2.0, 5.5),
+#' )
+#'
+#' # Select all struct columns:
+#' df$select(cs$struct())
+#'
+#' # Select all columns except for those that are struct:
+#' df$select(!cs$struct())
+#'
+#' # If you want to select specific struct columns,
+#' # you can use the `by_dtype()` selector:
+#' df$select(cs$by_dtype(pl$Struct(
+#'   a = pl$String,
+#'   b = pl$String
+#' )))
 cs__struct <- function() {
   PlRSelector$struct() |>
     wrap()
 }
 
-# TODO: add docs
+#' Select all nested columns
+#'
+#' `r lifecycle::badge("experimental")`
+#' A nested column is a [list][pl__List], [array][pl__Array] or [struct][pl__Struct].
+#' @inherit cs__empty return
+#' @seealso
+#' - [cs] for the documentation on operators supported by selectors.
+#' - [`cs$by_dtype()`][cs__by_dtype]: Select all columns matching the given dtype(s).
+#' - [`cs$list()`][cs__list]: Select all list columns.
+#' - [`cs$array()`][cs__array]: Select all array columns.
+#' - [`cs$struct()`][cs__struct]: Select all struct columns.
+#' @examples
+#' df <- pl$DataFrame(
+#'   foo = data.frame(a = c("xx", "x"), b = c("yy", "y")),
+#'   bar = c(123, 456),
+#'   baz = c(2, 5.5),
+#'   wow = list(c(1, 2), c(3)),
+#' )
+#'
+#' # Select all nested columns:
+#' df$select(cs$nested())
+#'
+#' # Select all columns except for those that are nested:
+#' df$select(!cs$nested())
 cs__nested <- function() {
   PlRSelector$nested() |>
     wrap()

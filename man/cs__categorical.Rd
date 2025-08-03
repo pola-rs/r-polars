@@ -7,7 +7,7 @@
 cs__categorical()
 }
 \value{
-A Polars selector
+A Polars \link[=cs]{selector}
 }
 \description{
 Select all categorical columns
@@ -27,5 +27,5 @@ df$select(cs$categorical())
 df$select(!cs$categorical())
 }
 \seealso{
-\link{cs} for the documentation on operators supported by Polars selectors.
+\link{cs} for the documentation on operators supported by selectors.
 }

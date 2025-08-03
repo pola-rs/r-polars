@@ -12,7 +12,7 @@ cs__string(..., include_categorical = FALSE)
 \item{include_categorical}{If \code{TRUE}, also select categorical columns.}
 }
 \value{
-A Polars selector
+A Polars \link[=cs]{selector}
 }
 \description{
 Select all String (and, optionally, Categorical) string columns.
@@ -38,5 +38,5 @@ df$
   sort(cs$string(include_categorical = TRUE))
 }
 \seealso{
-\link{cs} for the documentation on operators supported by Polars selectors.
+\link{cs} for the documentation on operators supported by selectors.
 }

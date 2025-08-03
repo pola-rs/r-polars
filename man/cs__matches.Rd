@@ -11,7 +11,7 @@ cs__matches(pattern)
 \verb{regex crate <https://docs.rs/regex/latest/regex/>}_.}
 }
 \value{
-A Polars selector
+A Polars \link[=cs]{selector}
 }
 \description{
 Select all columns that match the given regex pattern
@@ -32,5 +32,5 @@ df$select(cs$matches("[^z]a"))
 df$select(!cs$matches(r"((?i)R|z$)"))
 }
 \seealso{
-\link{cs} for the documentation on operators supported by Polars selectors.
+\link{cs} for the documentation on operators supported by selectors.
 }

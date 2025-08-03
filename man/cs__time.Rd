@@ -7,7 +7,7 @@
 cs__time()
 }
 \value{
-A Polars selector
+A Polars \link[=cs]{selector}
 }
 \description{
 Select all time columns
@@ -28,5 +28,5 @@ df$select(!cs$time())
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-\link{cs} for the documentation on operators supported by Polars selectors.
+\link{cs} for the documentation on operators supported by selectors.
 }

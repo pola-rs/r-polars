@@ -7,7 +7,7 @@
 cs__float()
 }
 \value{
-A Polars selector
+A Polars \link[=cs]{selector}
 }
 \description{
 Select all float columns.
@@ -28,5 +28,5 @@ df$select(cs$float())
 df$select(!cs$float())
 }
 \seealso{
-\link{cs} for the documentation on operators supported by Polars selectors.
+\link{cs} for the documentation on operators supported by selectors.
 }
