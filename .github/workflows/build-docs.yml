@@ -71,7 +71,7 @@ jobs:
           fi
 
       - name: more space for debug build
-        if: runner.os == 'Linux' && env.LIBR_POLARS_BUILD != 'true'
+        if: runner.os == 'Linux' && env.LIBR_POLARS_BUILD == 'true'
         run: |
           du -hsc /usr/local/lib/*
           sudo rm -rf /usr/local/lib/android || true
