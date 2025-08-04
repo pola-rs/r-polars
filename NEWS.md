@@ -17,8 +17,22 @@ This is an update that corresponds to Python Polars 1.32.0, which includes signi
 - `<lazyframe>$unique()` and `<dataframe>$unique()`'s first argument is replaced from `subset` to `...`
   (dynamic dots) (#1463).
   Because of this change, it is also deprecated to pass the following objects as the first argument of these functions:
+
   - `NULL`: Use `cs$all()` or pass nothing to select all columns.
-  - A list of column names or selectors: Use `!!!` to expand the list. e.g. `!!!list("col1", "col2")`.
+    If you want to pass column selections as a variable, you can use the `%||%` (base R >= 4.4.0, or `{rlang}`'s op-null-default)
+    operator to replace `NULL` with `cs$all()`:
+
+    ```r
+    subset <- nullable_selection %||% cs$all()
+    lf$unique(!!!c(subset))
+    ```
+
+  - A list of column names or selectors: Use `!!!` to expand the list to the dynamic-dots.
+
+    ```r
+    subset <- list("col1", "col2")
+    lf$unique(!!!c(subset))
+    ```
 
 ### New features
 
@@ -31,16 +45,76 @@ This is an update that corresponds to Python Polars 1.32.0, which includes signi
   - `cs$struct()` for Struct data types.
   - `cs$nested()` for List, Array, or Struct data types.
 - polars selectors can now be used in place of column names in more locations (#1452).
-  - The `...` argument (dynamic dots) of `<dataframe>$to_dummies()`.
-  - The `...` argument (dynamic dots) of `<dataframe>$partition_by()`.
-  - The `...` argument (dynamic dots) of `<lazyframe>$drop()` and `<dataframe>$drop()`.
-  - The `...` argument (dynamic dots) of `<lazyframe>$drop_nulls()` and `<dataframe>$drop_nulls()`.
-  - The `...` argument (dynamic dots) of `<lazyframe>$drop_nans()` and `<dataframe>$drop_nans()`.
-  - The `...` argument (dynamic dots) of `<lazyframe>$unnest()` and `<dataframe>$unnest()`.
-  - The `...` argument (dynamic dots) of `<lazyframe>$explode()` and `<dataframe>$explode()`.
-  - The `...` argument (dynamic dots) of `<lazyframe>$unique()` and `<dataframe>$unique()` (#1463).
-  - The `on`, `index`, and `values` arguments of `<dataframe>$pivot()`.
-  - The `on` and `index` arguments of `<lazyframe>$unpivot()` and `<dataframe>$unpivot()`.
+
+  - `...` (dynamic dots) of these functions.
+    - `<dataframe>$to_dummies()`
+    - `<dataframe>$partition_by()`
+    - `<lazyframe>$drop_nulls()` and `<dataframe>$drop_nulls()`
+    - `<lazyframe>$drop_nans()` and `<dataframe>$drop_nans()`
+    - `<lazyframe>$unique()` and `<dataframe>$unique()`
+    - `<lazyframe>$drop()` and `<dataframe>$drop()`
+    - `<lazyframe>$explode()` and `<dataframe>$explode()`
+    - `<lazyframe>$unnest()` and `<dataframe>$unnest()`
+  - `<dataframe>$pivot()`'s `on`, `index`, and `values`.
+  - `<lazyframe>$join()` and `<dataframe>$join()`'s `on` and `index`.
+
+  This change also fixes the odd behavior of some functions that had the semantics
+  of selecting all columns by default
+  (`$drop_nulls()`, `$drop_nans()`, and `$unique()` of lazyframe or dataframe).
+
+  In the previous version, passing `c()` (`NULL`) would result in a strange behavior
+  doesn't match neither of "select nothing" or "select all columns".
+  And, expanding an empty vector with `!!!` would select all columns.
+
+  ```r
+  ### OLD
+  df <- pl$DataFrame(a = c(NA, TRUE), b = 1:2)
+  df$drop_nulls(c())
+  #> shape: (0, 2)
+  #> ┌──────┬─────┐
+  #> │ a    ┆ b   │
+  #> │ ---  ┆ --- │
+  #> │ bool ┆ i32 │
+  #> ╞══════╪═════╡
+  #> └──────┴─────┘
+
+  df$drop_nulls(!!!c())
+  #> shape: (1, 2)
+  #> ┌──────┬─────┐
+  #> │ a    ┆ b   │
+  #> │ ---  ┆ --- │
+  #> │ bool ┆ i32 │
+  #> ╞══════╪═════╡
+  #> │ true ┆ 2   │
+  #> └──────┴─────┘
+  ```
+
+  In the new version, passing `c()` (`NULL`) will cause an error,
+  and expanding an empty vector with `!!!` will select no columns.
+
+  ```r
+  ### NEW
+  df <- pl$DataFrame(a = c(NA, TRUE), b = 1:2)
+  df$drop_nulls(c())
+  #> Error:
+  #> ! Evaluation failed in `$drop_nulls()`.
+  #> Caused by error:
+  #> ! Evaluation failed in `$drop_nulls()`.
+  #> Caused by error:
+  #> ! `...` can only contain single strings or polars selectors.
+
+  df$drop_nulls(!!!c())
+  #> shape: (2, 2)
+  #> ┌──────┬─────┐
+  #> │ a    ┆ b   │
+  #> │ ---  ┆ --- │
+  #> │ bool ┆ i32 │
+  #> ╞══════╪═════╡
+  #> │ null ┆ 1   │
+  #> │ true ┆ 2   │
+  #> └──────┴─────┘
+  ```
+
 - `pl$nth()` gains the `strict` argument (#1452).
 - `<expr>$str$pad_end()` and `<expr>$str$pad_start()`'s `length` argument accepts a polars expression (#1452).
 - `<expr>$str$to_integer()` gains the `dtype` argument to specify the output data type (#1452).
