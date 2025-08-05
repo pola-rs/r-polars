@@ -64,8 +64,8 @@ This is an update that corresponds to Python Polars 1.32.0, which includes signi
   of selecting all columns by default
   (`$drop_nulls()`, `$drop_nans()`, and `$unique()` of lazyframe or dataframe).
 
-  In the previous version, passing `c()` (`NULL`) would result in a strange behavior
-  doesn't match neither of "select nothing" or "select all columns".
+  In the previous version, passing `c()` (`NULL`) would result in strange behavior
+  doesn't match either of "select nothing" or "select all columns".
   And, expanding an empty vector with `!!!` would select all columns.
 
   ```r
