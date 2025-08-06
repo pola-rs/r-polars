@@ -466,4 +466,9 @@ impl PlRExpr {
     fn str_tail(&self, n: &PlRExpr) -> Result<Self> {
         Ok(self.inner.clone().str().tail(n.inner.clone()).into())
     }
+
+    fn str_normalize(&self, form: &str) -> Result<Self> {
+        let form = <Wrap<UnicodeForm>>::try_from(form)?.0;
+        Ok(self.inner.clone().str().normalize(form).into())
+    }
 }

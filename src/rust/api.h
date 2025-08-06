@@ -441,6 +441,7 @@ SEXP savvy_PlRExpr_str_json_decode__ffi(SEXP self__, SEXP c_arg__infer_schema_le
 SEXP savvy_PlRExpr_str_json_path_match__ffi(SEXP self__, SEXP c_arg__pat);
 SEXP savvy_PlRExpr_str_len_bytes__ffi(SEXP self__);
 SEXP savvy_PlRExpr_str_len_chars__ffi(SEXP self__);
+SEXP savvy_PlRExpr_str_normalize__ffi(SEXP self__, SEXP c_arg__form);
 SEXP savvy_PlRExpr_str_pad_end__ffi(SEXP self__, SEXP c_arg__length, SEXP c_arg__fill_char);
 SEXP savvy_PlRExpr_str_pad_start__ffi(SEXP self__, SEXP c_arg__length, SEXP c_arg__fill_char);
 SEXP savvy_PlRExpr_str_replace__ffi(SEXP self__, SEXP c_arg__pat, SEXP c_arg__value, SEXP c_arg__literal, SEXP c_arg__n);
