@@ -150,6 +150,7 @@ SEXP savvy_PlRExpr_arr_contains__ffi(SEXP self__, SEXP c_arg__other, SEXP c_arg_
 SEXP savvy_PlRExpr_arr_count_matches__ffi(SEXP self__, SEXP c_arg__expr);
 SEXP savvy_PlRExpr_arr_get__ffi(SEXP self__, SEXP c_arg__index, SEXP c_arg__null_on_oob);
 SEXP savvy_PlRExpr_arr_join__ffi(SEXP self__, SEXP c_arg__separator, SEXP c_arg__ignore_nulls);
+SEXP savvy_PlRExpr_arr_len__ffi(SEXP self__);
 SEXP savvy_PlRExpr_arr_max__ffi(SEXP self__);
 SEXP savvy_PlRExpr_arr_median__ffi(SEXP self__);
 SEXP savvy_PlRExpr_arr_min__ffi(SEXP self__);

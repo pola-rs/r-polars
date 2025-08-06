@@ -148,4 +148,8 @@ impl PlRExpr {
     fn arr_n_unique(&self) -> Result<Self> {
         Ok(self.inner.clone().arr().n_unique().into())
     }
+
+    fn arr_len(&self) -> Result<Self> {
+        Ok(self.inner.clone().arr().len().into())
+    }
 }
