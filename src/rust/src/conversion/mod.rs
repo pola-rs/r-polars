@@ -1023,3 +1023,18 @@ impl TryFrom<ListSexp> for Wrap<Vec<Option<TimeZone>>> {
         Ok(Wrap(tz))
     }
 }
+
+impl TryFrom<&str> for Wrap<UnicodeForm> {
+    type Error = String;
+
+    fn try_from(form: &str) -> Result<Self, String> {
+        let parsed = match form {
+            "NFC" => UnicodeForm::NFC,
+            "NFKC" => UnicodeForm::NFKC,
+            "NFD" => UnicodeForm::NFD,
+            "NFKD" => UnicodeForm::NFKD,
+            _ => return Err("unreachable".to_string()),
+        };
+        Ok(Wrap(parsed))
+    }
+}
