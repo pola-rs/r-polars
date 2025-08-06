@@ -359,6 +359,17 @@ test_that("arr$n_unique", {
   )
 })
 
+test_that("arr$len", {
+  df <- pl$DataFrame(
+    x = list(c(1, 1, 2), c(2, 3, 4))
+  )$cast(pl$Array(pl$Int64, 3))
+
+  expect_equal(
+    df$select(pl$col("x")$arr$len()),
+    pl$DataFrame(x = c(3, 3))$cast(pl$UInt32)
+  )
+})
+
 patrick::with_parameters_test_that(
   "arr$to_struct with fields = {rlang::quo_text(fields)}",
   .cases = {

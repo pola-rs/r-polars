@@ -420,6 +420,7 @@ nav:
             - arr_get: man/expr_arr_get.md
             - arr_join: man/expr_arr_join.md
             - arr_last: man/expr_arr_last.md
+            - arr_len: man/expr_arr_len.md
             - arr_max: man/expr_arr_max.md
             - arr_median: man/expr_arr_median.md
             - arr_min: man/expr_arr_min.md

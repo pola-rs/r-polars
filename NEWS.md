@@ -2,6 +2,10 @@
 
 ## polars (development version)
 
+### New features
+
+* New function `arr$len()` (#1478).
+
 ## polars 1.1.0
 
 This is an update that corresponds to Python Polars 1.32.0, which includes significant internal changes.
