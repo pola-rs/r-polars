@@ -1,31 +1,26 @@
-test_that("pl$linear_space()", {
-  expect_equal(
-    pl$select(
-      pl$linear_space(start = 0, end = 1, num_samples = 3)
-    ),
-    pl$DataFrame(literal = c(0, 0.5, 1))
-  )
-  expect_equal(
-    pl$select(
-      pl$linear_space(start = 0, end = 1, num_samples = 3, closed = "left")
-    ),
-    pl$DataFrame(literal = c(0, 0.333333, 0.66667)),
-    tolerance = 1e-4
-  )
-  expect_equal(
-    pl$select(
-      pl$linear_space(start = 0, end = 1, num_samples = 3, closed = "right")
-    ),
-    pl$DataFrame(literal = c(0.333333, 0.66667, 1)),
-    tolerance = 1e-4
-  )
-  expect_equal(
-    pl$select(
-      pl$linear_space(start = 0, end = 1, num_samples = 3, closed = "none")
-    ),
-    pl$DataFrame(literal = c(0.25, 0.5, 0.75))
-  )
+patrick::with_parameters_test_that(
+  "pl$linear_space()",
+  .cases = {
+    tibble::tribble(
+      ~closed, ~expected_output,
+      "both", c(0, 0.5, 1),
+      "left", c(0, 0.333333, 0.66667),
+      "right", c(0.333333, 0.66667, 1),
+      "none", c(0.25, 0.5, 0.75)
+    )
+  },
+  code = {
+    expect_equal(
+      pl$select(
+        pl$linear_space(start = 0, end = 1, num_samples = 3, closed = closed)
+      ),
+      pl$DataFrame(literal = expected_output),
+      tolerance = 1e-4
+    )
+  }
+)
 
+test_that("pl$linear_space()", {
   expect_equal(
     pl$select(
       pl$linear_space(
