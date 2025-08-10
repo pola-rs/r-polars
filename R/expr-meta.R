@@ -315,3 +315,24 @@ expr_meta_pop <- function(..., schema = NULL) {
       })
   })
 }
+
+#' Indicate if this expression is a literal value (optionally aliased)
+#'
+#' @inherit as_polars_expr return
+#' @inheritParams rlang::args_dots_empty
+#' @param allow_aliasing If `FALSE` (default), only a bare literal will match.
+#' Set to `TRUE` to also allow for aliased literals.
+#'
+#' @examples
+#' e <- pl$lit(123)
+#' e$meta$is_literal()
+#'
+#' e <- pl$lit(123)$alias("foo")
+#' e$meta$is_literal()
+#' e$meta$is_literal(allow_aliasing = TRUE)
+expr_meta_is_literal <- function(..., allow_aliasing = FALSE) {
+  wrap({
+    check_dots_empty0(...)
+    self$`_rexpr`$meta_is_literal(allow_aliasing = allow_aliasing)
+  })
+}

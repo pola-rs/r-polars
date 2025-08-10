@@ -6,8 +6,9 @@ This is an update that corresponds to Python Polars 1.32.2.
 
 ### New features
 
-- New function `arr$len()` (#1478).
+- New function `<expr>$arr$len()` (#1478).
 - New function `<expr>$str$normalize()` (#1479).
+- New function `<expr>$meta$is_literal()` (#1483).
 
 ## polars 1.1.0
 
