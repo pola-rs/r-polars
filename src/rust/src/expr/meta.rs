@@ -87,4 +87,12 @@ impl PlRExpr {
     fn meta_is_column(&self) -> Result<Sexp> {
         self.inner.clone().meta().is_column().try_into()
     }
+
+    fn meta_is_literal(&self, allow_aliasing: bool) -> Result<Sexp> {
+        self.inner
+            .clone()
+            .meta()
+            .is_literal(allow_aliasing)
+            .try_into()
+    }
 }
