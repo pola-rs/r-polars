@@ -2825,6 +2825,13 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_polars__sealed")
   }
 }
 
+`PlRExpr_str_find_many` <- function(self) {
+  function(`patterns`, `ascii_case_insensitive`, `overlapping`) {
+    `patterns` <- .savvy_extract_ptr(`patterns`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_str_find_many__impl, `self`, `patterns`, `ascii_case_insensitive`, `overlapping`))
+  }
+}
+
 `PlRExpr_str_head` <- function(self) {
   function(`n`) {
     `n` <- .savvy_extract_ptr(`n`, "PlRExpr")
@@ -3492,6 +3499,7 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_polars__sealed")
   e$`str_extract_groups` <- `PlRExpr_str_extract_groups`(ptr)
   e$`str_extract_many` <- `PlRExpr_str_extract_many`(ptr)
   e$`str_find` <- `PlRExpr_str_find`(ptr)
+  e$`str_find_many` <- `PlRExpr_str_find_many`(ptr)
   e$`str_head` <- `PlRExpr_str_head`(ptr)
   e$`str_hex_decode` <- `PlRExpr_str_hex_decode`(ptr)
   e$`str_hex_encode` <- `PlRExpr_str_hex_encode`(ptr)

@@ -556,6 +556,7 @@ nav:
             - str_extract_groups: man/expr_str_extract_groups.md
             - str_extract_many: man/expr_str_extract_many.md
             - str_extract: man/expr_str_extract.md
+            - str_find_many: man/expr_str_find_many.md
             - str_find: man/expr_str_find.md
             - str_head: man/expr_str_head.md
             - str_join: man/expr_str_join.md

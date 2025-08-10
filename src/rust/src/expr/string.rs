@@ -471,4 +471,18 @@ impl PlRExpr {
         let form = <Wrap<UnicodeForm>>::try_from(form)?.0;
         Ok(self.inner.clone().str().normalize(form).into())
     }
+
+    fn str_find_many(
+        &self,
+        patterns: &PlRExpr,
+        ascii_case_insensitive: bool,
+        overlapping: bool,
+    ) -> Result<Self> {
+        Ok(self
+            .inner
+            .clone()
+            .str()
+            .find_many(patterns.inner.clone(), ascii_case_insensitive, overlapping)
+            .into())
+    }
 }
