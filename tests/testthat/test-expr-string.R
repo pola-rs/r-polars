@@ -1105,7 +1105,7 @@ test_that("str$find_many()", {
   expect_equal(
     df$select(
       matches = pl$col("values")$str$find_many(
-        patterns,
+        patterns_2,
         ascii_case_insensitive = TRUE,
         overlapping = TRUE
       )
