@@ -930,7 +930,7 @@ test_that("dt$add_business_days", {
 })
 
 patrick::with_parameters_test_that(
-  "foo",
+  "dt$replace() basic behavior",
   .cases = {
     tibble::tribble(
       ~arg, ~new_value, ~expected_date, ~expected_datetime, ~should_error, ~out_of_range,
@@ -978,45 +978,38 @@ patrick::with_parameters_test_that(
   }
 )
 
-test_that("dt$replace() for ambiguous time", {
-  skip_if_not_installed("clock")
+patrick::with_parameters_test_that(
+  "dt$replace() argument 'ambiguous'",
+  .cases = {
+    tibble::tribble(
+      ~ambiguous_pl, ~ambiguous_clock,
+      "error", "error",
+      "earliest", "earliest",
+      "latest", "latest",
+      "null", "NA",
+    )
+  },
+  code = {
+    df <- pl$DataFrame(
+      datetime = clock::date_time_parse("2018-10-28 01:30:00", "Europe/Brussels")
+    )
 
-  df <- pl$DataFrame(
-    datetime = clock::date_time_parse("2018-10-28 01:30:00", "Europe/Brussels")
-  )
-
-  expect_snapshot(
-    df$select(pl$col("datetime")$dt$replace(hour = 2)),
-    error = TRUE
-  )
-  expect_equal(
-    df$select(pl$col("datetime")$dt$replace(hour = 2, ambiguous = "earliest")),
-    pl$DataFrame(
-      datetime = clock::date_time_parse(
-        "2018-10-28 02:30:00",
-        "Europe/Brussels",
-        ambiguous = "earliest"
+    if (ambiguous_pl == "error") {
+      expect_snapshot(
+        df$select(pl$col("datetime")$dt$replace(hour = 2)),
+        error = TRUE
       )
-    )
-  )
-  expect_equal(
-    df$select(pl$col("datetime")$dt$replace(hour = 2, ambiguous = "latest")),
-    pl$DataFrame(
-      datetime = clock::date_time_parse(
-        "2018-10-28 02:30:00",
-        "Europe/Brussels",
-        ambiguous = "latest"
+    } else {
+      expect_equal(
+        df$select(pl$col("datetime")$dt$replace(hour = 2, ambiguous = ambiguous_pl)),
+        pl$DataFrame(
+          datetime = clock::date_time_parse(
+            "2018-10-28 02:30:00",
+            "Europe/Brussels",
+            ambiguous = ambiguous_clock
+          )
+        )
       )
-    )
-  )
-  expect_equal(
-    df$select(pl$col("datetime")$dt$replace(hour = 2, ambiguous = "null")),
-    pl$DataFrame(
-      datetime = clock::date_time_parse(
-        "2018-10-28 02:30:00",
-        "Europe/Brussels",
-        ambiguous = "NA"
-      )
-    )
-  )
-})
+    }
+  }
+)

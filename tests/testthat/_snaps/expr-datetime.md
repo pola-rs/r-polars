@@ -309,7 +309,7 @@
       Caused by error in `pl$col("x")$dt$add_business_days()`:
       ! `roll` must be one of "raise", "backward", or "forward", not "foo".
 
-# foo arg=month, new_value=8, expected_date=18475, expected_datetime=1596232800, should_error=TRUE, out_of_range=13
+# dt$replace() basic behavior arg=month, new_value=8, expected_date=18475, expected_datetime=1596232800, should_error=TRUE, out_of_range=13
 
     Code
       df$select(call2)
@@ -321,7 +321,7 @@
       Caused by error:
       ! Invalid date components (2020, 13, 1) supplied
 
-# foo arg=day, new_value=8, expected_date=18269, expected_datetime=1578438000, should_error=TRUE, out_of_range=32
+# dt$replace() basic behavior arg=day, new_value=8, expected_date=18269, expected_datetime=1578438000, should_error=TRUE, out_of_range=32
 
     Code
       df$select(call2)
@@ -333,7 +333,7 @@
       Caused by error:
       ! Invalid date components (2020, 1, 32) supplied
 
-# foo arg=hour, new_value=8, expected_date=18262, expected_datetime=1577862000, should_error=TRUE, out_of_range=25
+# dt$replace() basic behavior arg=hour, new_value=8, expected_date=18262, expected_datetime=1577862000, should_error=TRUE, out_of_range=25
 
     Code
       df$select(call2)
@@ -345,7 +345,7 @@
       Caused by error:
       ! Invalid time components (25, 0, 0, 0) supplied
 
-# foo arg=minute, new_value=8, expected_date=18262, expected_datetime=1577833680, should_error=TRUE, out_of_range=61
+# dt$replace() basic behavior arg=minute, new_value=8, expected_date=18262, expected_datetime=1577833680, should_error=TRUE, out_of_range=61
 
     Code
       df$select(call2)
@@ -357,7 +357,7 @@
       Caused by error:
       ! Invalid time components (0, 61, 0, 0) supplied
 
-# foo arg=second, new_value=8, expected_date=18262, expected_datetime=1577833208, should_error=TRUE, out_of_range=61
+# dt$replace() basic behavior arg=second, new_value=8, expected_date=18262, expected_datetime=1577833208, should_error=TRUE, out_of_range=61
 
     Code
       df$select(call2)
@@ -369,7 +369,7 @@
       Caused by error:
       ! Invalid time components (0, 0, 61, 0) supplied
 
-# dt$replace() for ambiguous time
+# dt$replace() argument 'ambiguous' ambiguous_pl=error, ambiguous_clock=error
 
     Code
       df$select(pl$col("datetime")$dt$replace(hour = 2))
