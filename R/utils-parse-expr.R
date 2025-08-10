@@ -39,7 +39,7 @@ parse_into_selector <- function(..., .strict = TRUE, .arg_name = "...") {
 
   try_fetch(
     # If all elements are single strings, treat as a single character vector for shortcut
-    if (is_list_of_string(dots)) {
+    if (length(dots) > 0L && is_list_of_string(dots)) {
       as_polars_selector.character(as.character(dots), strict = .strict)
     } else {
       lapply(dots, \(x) as_polars_selector(x, strict = .strict)) |>
