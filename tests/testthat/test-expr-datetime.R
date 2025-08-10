@@ -977,3 +977,46 @@ patrick::with_parameters_test_that(
     }
   }
 )
+
+test_that("dt$replace() for ambiguous time", {
+  skip_if_not_installed("clock")
+
+  df <- pl$DataFrame(
+    datetime = clock::date_time_parse("2018-10-28 01:30:00", "Europe/Brussels")
+  )
+
+  expect_snapshot(
+    df$select(pl$col("datetime")$dt$replace(hour = 2)),
+    error = TRUE
+  )
+  expect_equal(
+    df$select(pl$col("datetime")$dt$replace(hour = 2, ambiguous = "earliest")),
+    pl$DataFrame(
+      datetime = clock::date_time_parse(
+        "2018-10-28 02:30:00",
+        "Europe/Brussels",
+        ambiguous = "earliest"
+      )
+    )
+  )
+  expect_equal(
+    df$select(pl$col("datetime")$dt$replace(hour = 2, ambiguous = "latest")),
+    pl$DataFrame(
+      datetime = clock::date_time_parse(
+        "2018-10-28 02:30:00",
+        "Europe/Brussels",
+        ambiguous = "latest"
+      )
+    )
+  )
+  expect_equal(
+    df$select(pl$col("datetime")$dt$replace(hour = 2, ambiguous = "null")),
+    pl$DataFrame(
+      datetime = clock::date_time_parse(
+        "2018-10-28 02:30:00",
+        "Europe/Brussels",
+        ambiguous = "NA"
+      )
+    )
+  )
+})

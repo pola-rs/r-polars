@@ -369,3 +369,15 @@
       Caused by error:
       ! Invalid time components (0, 0, 61, 0) supplied
 
+# dt$replace() for ambiguous time
+
+    Code
+      df$select(pl$col("datetime")$dt$replace(hour = 2))
+    Condition
+      Error in `df$select()`:
+      ! Evaluation failed in `$select()`.
+      Caused by error:
+      ! Evaluation failed in `$collect()`.
+      Caused by error:
+      ! datetime '2018-10-28 02:30:00' is ambiguous in time zone 'Europe/Brussels'. Please use `ambiguous` to tell how it should be localized.
+
