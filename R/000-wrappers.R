@@ -2803,6 +2803,12 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_polars__sealed")
   }
 }
 
+`PlRExpr_str_escape_regex` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_str_escape_regex__impl, `self`))
+  }
+}
+
 `PlRExpr_str_extract` <- function(self) {
   function(`pattern`, `group_index`) {
     `pattern` <- .savvy_extract_ptr(`pattern`, "PlRExpr")
@@ -3508,6 +3514,7 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_polars__sealed")
   e$`str_contains_any` <- `PlRExpr_str_contains_any`(ptr)
   e$`str_count_matches` <- `PlRExpr_str_count_matches`(ptr)
   e$`str_ends_with` <- `PlRExpr_str_ends_with`(ptr)
+  e$`str_escape_regex` <- `PlRExpr_str_escape_regex`(ptr)
   e$`str_extract` <- `PlRExpr_str_extract`(ptr)
   e$`str_extract_all` <- `PlRExpr_str_extract_all`(ptr)
   e$`str_extract_groups` <- `PlRExpr_str_extract_groups`(ptr)

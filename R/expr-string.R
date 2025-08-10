@@ -1375,3 +1375,16 @@ expr_str_normalize <- function(form = c("NFC", "NFKC", "NFD", "NFKD")) {
     self$`_rexpr`$str_normalize(form)
   })
 }
+
+#' Returns string values with all regular expression meta characters escaped
+#'
+#' @inherit expr_str_slice return
+#'
+#' @examples
+#' df <- pl$DataFrame(text = c("abc", "def", NA, r"(abc(\w+))"))
+#' df$with_columns(escaped = pl$col("text")$str$escape_regex())
+expr_str_escape_regex <- function() {
+  wrap({
+    self$`_rexpr`$str_escape_regex()
+  })
+}
