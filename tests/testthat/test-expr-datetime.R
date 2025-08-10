@@ -945,13 +945,24 @@ patrick::with_parameters_test_that(
   code = {
     df <- pl$DataFrame(date = as.Date("2020-01-01"), datetime = as.POSIXct("2020-01-01"))
 
+    # literals
     new_arg <- list(new_value)
     names(new_arg) <- arg
     call1 <- do.call(pl$col("date")$dt$replace, new_arg)
     call2 <- do.call(pl$col("datetime")$dt$replace, new_arg)
 
+    # polars expression
+    new_arg <- list(as_polars_expr(new_value))
+    names(new_arg) <- arg
+    call3 <- do.call(pl$col("date")$dt$replace, new_arg)
+    call4 <- do.call(pl$col("datetime")$dt$replace, new_arg)
+
     expect_equal(
       df$select(call1, call2),
+      pl$DataFrame(date = expected_date, datetime = expected_datetime)
+    )
+    expect_equal(
+      df$select(call3, call4),
       pl$DataFrame(date = expected_date, datetime = expected_datetime)
     )
 
