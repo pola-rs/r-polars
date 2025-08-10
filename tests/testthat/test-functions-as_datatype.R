@@ -46,7 +46,6 @@ test_that("pl$concat_arr()", {
     df$select(concat_arr = pl$concat_arr("a", "b")),
     pl$DataFrame(concat_arr = list(c(NA, 6), c(5, 5), c(6, NA)))$cast(pl$Array(pl$Int32, 2))
   )
-  df$select(concat_arr = pl$concat_arr("a", "b"))
   # Unit-length columns are broadcasted:
   expect_equal(
     df$select(concat_arr = pl$concat_arr("a", pl$sum("b"))),
