@@ -316,6 +316,45 @@ pl__concat_list <- function(...) {
   })
 }
 
+#' Horizontally concatenate columns into a single array column
+#'
+#' `r lifecycle::badge("experimental")`
+#'
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Columns to concatenate into a
+#' single array column. Accepts expression input. Strings are parsed as column
+#' names, other non-expression inputs are parsed as literals.
+#'
+#' @inherit as_polars_expr return
+#' @examples
+#' # Concatenate two existing array columns.
+#' df <- pl$DataFrame(a = list(1:2, 3:4, 5:6), b = list(4, 1, NA))$cast(
+#'   a = pl$Array(pl$Int64, 2),
+#'   b = pl$Array(pl$Int64, 1)
+#' )
+#'
+#' df$with_columns(concat_arr = pl$concat_arr("a", "b"))
+#'
+#' # Concatenate two existing non-array columns.
+#' df <- pl$DataFrame(a = c(NA, 5, 6), b = c(6, 5, NA))
+#' df$with_columns(concat_arr = pl$concat_arr("a", "b"))
+#'
+#' # Concatenate mixed array and non-array columns.
+#' df <- pl$DataFrame(a = list(NA, 5L, 6L), b = c(6L, 5L, NA))$cast(
+#'   a = pl$Array(pl$Int32, 1)
+#' )
+#' df$with_columns(concat_arr = pl$concat_arr("a", "b"))
+#'
+#'
+#' # Unit-length columns are broadcasted:
+#' df$with_columns(concat_arr = pl$concat_arr("a", pl$sum("b")))
+pl__concat_arr <- function(...) {
+  wrap({
+    check_dots_unnamed()
+    parse_into_list_of_expressions(...) |>
+      concat_arr()
+  })
+}
+
 #' Horizontally concatenate columns into a single string column
 #'
 #' Operates in linear time.
