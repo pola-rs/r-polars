@@ -75,6 +75,17 @@ impl RUdfSignature {
     }
 }
 
+impl From<RUdf> for PlanCallback<usize, String> {
+    fn from(r_udf: RUdf) -> Self {
+        PlanCallback::new(move |idx: usize| {
+            let thread_com = ThreadCom::try_from_global(&CONFIG)
+                .map_err(|e| PolarsError::ComputeError(e.into()))?;
+            thread_com.send(RUdfSignature::Int32ToString(r_udf.clone(), idx as i32));
+            <String>::try_from(thread_com.recv()).map_err(|e| PolarsError::ComputeError(e.into()))
+        })
+    }
+}
+
 impl TryFrom<RUdfReturn> for Series {
     type Error = String;
 
