@@ -324,6 +324,26 @@ expr_dt_strftime <- function(format) {
     wrap()
 }
 
+#' Extract the millennium from underlying representation
+#'
+#' @description
+#' Returns the millennium number in the calendar date.
+#'
+#' @inherit as_polars_expr return
+#' @examples
+#' df <- pl$DataFrame(
+#'   date = as.Date(
+#'     c("999-12-31", "1897-05-07", "2000-01-01", "2001-07-05", "3002-10-20")
+#'   )
+#' )
+#' df$with_columns(
+#'   millennium = pl$col("date")$dt$millennium()
+#' )
+expr_dt_millennium <- function() {
+  self$`_rexpr`$dt_millennium() |>
+    wrap()
+}
+
 #' Extract year from underlying Date representation
 #' @description
 #' Returns the year number in the calendar date.
