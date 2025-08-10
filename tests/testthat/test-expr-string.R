@@ -1113,3 +1113,11 @@ test_that("str$find_many()", {
     pl$DataFrame(matches = list(c(0, 4, 0)))$cast(pl$List(pl$UInt32))
   )
 })
+
+test_that("str$escape_regex()", {
+  df <- pl$DataFrame(text = c("abc", "def", NA, r"(abc(\w+))"))
+  expect_equal(
+    df$select(pl$col("text")$str$escape_regex()),
+    pl$DataFrame(text = c("abc", "def", NA, r"(abc\(\\w\+\))"))
+  )
+})

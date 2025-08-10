@@ -485,4 +485,8 @@ impl PlRExpr {
             .find_many(patterns.inner.clone(), ascii_case_insensitive, overlapping)
             .into())
     }
+
+    fn str_escape_regex(&self) -> Result<Self> {
+        Ok(self.inner.clone().str().escape_regex().into())
+    }
 }

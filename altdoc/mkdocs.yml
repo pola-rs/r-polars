@@ -553,6 +553,7 @@ nav:
             - str_decode: man/expr_str_decode.md
             - str_encode: man/expr_str_encode.md
             - str_ends_with: man/expr_str_ends_with.md
+            - str_escape_regex: man/expr_str_escape_regex.md
             - str_extract_all: man/expr_str_extract_all.md
             - str_extract_groups: man/expr_str_extract_groups.md
             - str_extract_many: man/expr_str_extract_many.md
