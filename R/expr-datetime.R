@@ -1161,3 +1161,58 @@ expr_dt_add_business_days <- function(
     self$`_rexpr`$dt_add_business_days(n$`_rexpr`, week_mask, holidays, roll)
   })
 }
+
+#' Replace time unit
+#'
+#' @inheritParams rlang::args_dots_empty
+#' @param year Column or literal.
+#' @param month Column or literal, ranging from 1-12.
+#' @param day Column or literal, ranging from 1-31
+#' @param hour Column or literal, ranging from 0-23.
+#' @param minute Column or literal, ranging from 0-59.
+#' @param second Column or literal, ranging from 0-59.
+#' @param microsecond Column or literal, ranging from 0-999999.
+#' @inheritParams expr_dt_replace_time_zone
+#'
+#' @inherit as_polars_expr return
+#' @examples
+#' df = pl$DataFrame(
+#'   date = as.Date(c("2024-04-01", "2025-03-16")),
+#'   new_day = c(10, 15)
+#' )
+#' df$with_columns(replaced = pl$col("date")$dt$replace(day = "new_day"))
+expr_dt_replace <- function(
+  ...,
+  year = NULL,
+  month = NULL,
+  day = NULL,
+  hour = NULL,
+  minute = NULL,
+  second = NULL,
+  microsecond = NULL,
+  ambiguous = c("raise", "earliest", "latest", "null")
+) {
+  wrap({
+    check_dots_empty0(...)
+    ambiguous <- arg_match0(ambiguous, c("raise", "earliest", "latest", "null"))
+    year <- as_polars_expr(year)$`_rexpr`
+    month <- as_polars_expr(month)$`_rexpr`
+    day <- as_polars_expr(day)$`_rexpr`
+    hour <- as_polars_expr(hour)$`_rexpr`
+    minute <- as_polars_expr(minute)$`_rexpr`
+    second <- as_polars_expr(second)$`_rexpr`
+    microsecond <- as_polars_expr(microsecond)$`_rexpr`
+    ambiguous <- as_polars_expr(ambiguous, as_lit = TRUE)$`_rexpr`
+
+    self$`_rexpr`$dt_replace(
+      year = year,
+      month = month,
+      day = day,
+      hour = hour,
+      minute = minute,
+      second = second,
+      microsecond = microsecond,
+      ambiguous = ambiguous
+    )
+  })
+}

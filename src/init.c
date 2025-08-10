@@ -1159,6 +1159,11 @@ SEXP savvy_PlRExpr_dt_quarter__impl(SEXP self__) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_dt_replace__impl(SEXP self__, SEXP c_arg__year, SEXP c_arg__month, SEXP c_arg__day, SEXP c_arg__hour, SEXP c_arg__minute, SEXP c_arg__second, SEXP c_arg__microsecond, SEXP c_arg__ambiguous) {
+    SEXP res = savvy_PlRExpr_dt_replace__ffi(self__, c_arg__year, c_arg__month, c_arg__day, c_arg__hour, c_arg__minute, c_arg__second, c_arg__microsecond, c_arg__ambiguous);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_dt_replace_time_zone__impl(SEXP self__, SEXP c_arg__ambiguous, SEXP c_arg__non_existent, SEXP c_arg__time_zone) {
     SEXP res = savvy_PlRExpr_dt_replace_time_zone__ffi(self__, c_arg__ambiguous, c_arg__non_existent, c_arg__time_zone);
     return handle_result(res);
@@ -3436,6 +3441,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_dt_offset_by__impl", (DL_FUNC) &savvy_PlRExpr_dt_offset_by__impl, 2},
     {"savvy_PlRExpr_dt_ordinal_day__impl", (DL_FUNC) &savvy_PlRExpr_dt_ordinal_day__impl, 1},
     {"savvy_PlRExpr_dt_quarter__impl", (DL_FUNC) &savvy_PlRExpr_dt_quarter__impl, 1},
+    {"savvy_PlRExpr_dt_replace__impl", (DL_FUNC) &savvy_PlRExpr_dt_replace__impl, 9},
     {"savvy_PlRExpr_dt_replace_time_zone__impl", (DL_FUNC) &savvy_PlRExpr_dt_replace_time_zone__impl, 4},
     {"savvy_PlRExpr_dt_round__impl", (DL_FUNC) &savvy_PlRExpr_dt_round__impl, 2},
     {"savvy_PlRExpr_dt_second__impl", (DL_FUNC) &savvy_PlRExpr_dt_second__impl, 1},

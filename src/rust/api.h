@@ -235,6 +235,7 @@ SEXP savvy_PlRExpr_dt_nanosecond__ffi(SEXP self__);
 SEXP savvy_PlRExpr_dt_offset_by__ffi(SEXP self__, SEXP c_arg__by);
 SEXP savvy_PlRExpr_dt_ordinal_day__ffi(SEXP self__);
 SEXP savvy_PlRExpr_dt_quarter__ffi(SEXP self__);
+SEXP savvy_PlRExpr_dt_replace__ffi(SEXP self__, SEXP c_arg__year, SEXP c_arg__month, SEXP c_arg__day, SEXP c_arg__hour, SEXP c_arg__minute, SEXP c_arg__second, SEXP c_arg__microsecond, SEXP c_arg__ambiguous);
 SEXP savvy_PlRExpr_dt_replace_time_zone__ffi(SEXP self__, SEXP c_arg__ambiguous, SEXP c_arg__non_existent, SEXP c_arg__time_zone);
 SEXP savvy_PlRExpr_dt_round__ffi(SEXP self__, SEXP c_arg__every);
 SEXP savvy_PlRExpr_dt_second__ffi(SEXP self__);

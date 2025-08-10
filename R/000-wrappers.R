@@ -1564,6 +1564,20 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_polars__sealed")
   }
 }
 
+`PlRExpr_dt_replace` <- function(self) {
+  function(`year`, `month`, `day`, `hour`, `minute`, `second`, `microsecond`, `ambiguous`) {
+    `year` <- .savvy_extract_ptr(`year`, "PlRExpr")
+    `month` <- .savvy_extract_ptr(`month`, "PlRExpr")
+    `day` <- .savvy_extract_ptr(`day`, "PlRExpr")
+    `hour` <- .savvy_extract_ptr(`hour`, "PlRExpr")
+    `minute` <- .savvy_extract_ptr(`minute`, "PlRExpr")
+    `second` <- .savvy_extract_ptr(`second`, "PlRExpr")
+    `microsecond` <- .savvy_extract_ptr(`microsecond`, "PlRExpr")
+    `ambiguous` <- .savvy_extract_ptr(`ambiguous`, "PlRExpr")
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_replace__impl, `self`, `year`, `month`, `day`, `hour`, `minute`, `second`, `microsecond`, `ambiguous`))
+  }
+}
+
 `PlRExpr_dt_replace_time_zone` <- function(self) {
   function(`ambiguous`, `non_existent`, `time_zone` = NULL) {
     `ambiguous` <- .savvy_extract_ptr(`ambiguous`, "PlRExpr")
@@ -3333,6 +3347,7 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_polars__sealed")
   e$`dt_offset_by` <- `PlRExpr_dt_offset_by`(ptr)
   e$`dt_ordinal_day` <- `PlRExpr_dt_ordinal_day`(ptr)
   e$`dt_quarter` <- `PlRExpr_dt_quarter`(ptr)
+  e$`dt_replace` <- `PlRExpr_dt_replace`(ptr)
   e$`dt_replace_time_zone` <- `PlRExpr_dt_replace_time_zone`(ptr)
   e$`dt_round` <- `PlRExpr_dt_round`(ptr)
   e$`dt_second` <- `PlRExpr_dt_second`(ptr)

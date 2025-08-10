@@ -215,4 +215,32 @@ impl PlRExpr {
             .add_business_days(n.inner.clone(), week_mask, holidays, roll)
             .into())
     }
+
+    fn dt_replace(
+        &self,
+        year: &PlRExpr,
+        month: &PlRExpr,
+        day: &PlRExpr,
+        hour: &PlRExpr,
+        minute: &PlRExpr,
+        second: &PlRExpr,
+        microsecond: &PlRExpr,
+        ambiguous: &PlRExpr,
+    ) -> Result<PlRExpr> {
+        Ok(self
+            .inner
+            .clone()
+            .dt()
+            .replace(
+                year.inner.clone(),
+                month.inner.clone(),
+                day.inner.clone(),
+                hour.inner.clone(),
+                minute.inner.clone(),
+                second.inner.clone(),
+                microsecond.inner.clone(),
+                ambiguous.inner.clone(),
+            )
+            .into())
+    }
 }

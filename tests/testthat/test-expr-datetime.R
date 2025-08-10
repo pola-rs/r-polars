@@ -928,3 +928,41 @@ test_that("dt$add_business_days", {
     error = TRUE
   )
 })
+
+patrick::with_parameters_test_that(
+  "foo",
+  .cases = {
+    tibble::tribble(
+      ~arg, ~new_value, ~expected_date, ~expected_datetime, ~should_error, ~out_of_range,
+      "year", 2000, as.Date("2000-01-01"), as.POSIXct("2000-01-01"), FALSE, NA,
+      "month", 08, as.Date("2020-08-01"), as.POSIXct("2020-08-01"), TRUE, 13,
+      "day", 08, as.Date("2020-01-08"), as.POSIXct("2020-01-08"), TRUE, 32,
+      "hour", 08, as.Date("2020-01-01"), as.POSIXct("2020-01-01 08:00:00"), TRUE, 25,
+      "minute", 08, as.Date("2020-01-01"), as.POSIXct("2020-01-01 00:08:00"), TRUE, 61,
+      "second", 08, as.Date("2020-01-01"), as.POSIXct("2020-01-01 00:00:08"), TRUE, 61
+    )
+  },
+  code = {
+    df <- pl$DataFrame(date = as.Date("2020-01-01"), datetime = as.POSIXct("2020-01-01"))
+
+    new_arg <- list(new_value)
+    names(new_arg) <- arg
+    call1 <- do.call(pl$col("date")$dt$replace, new_arg)
+    call2 <- do.call(pl$col("datetime")$dt$replace, new_arg)
+
+    expect_equal(
+      df$select(call1, call2),
+      pl$DataFrame(date = expected_date, datetime = expected_datetime)
+    )
+
+    if (isTRUE(should_error)) {
+      new_arg <- list(out_of_range)
+      names(new_arg) <- arg
+      call2 <- do.call(pl$col("datetime")$dt$replace, new_arg)
+      expect_snapshot(
+        df$select(call2),
+        error = TRUE
+      )
+    }
+  }
+)
