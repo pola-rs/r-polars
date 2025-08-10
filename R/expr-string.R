@@ -1315,8 +1315,8 @@ expr_str_extract_many <- function(
 #' df <- pl$DataFrame(text = c("01²", "ＫＡＤＯＫＡＷＡ"))
 #'
 #' new <- df$with_columns(
-#'   nfc=pl$col("text")$str$normalize("NFC"),
-#'   nfkc=pl$col("text")$str$normalize("NFKC"),
+#'   nfc = pl$col("text")$str$normalize("NFC"),
+#'   nfkc = pl$col("text")$str$normalize("NFKC"),
 #' )
 #' new
 #'
