@@ -144,6 +144,13 @@ pub fn concat_list(s: ListSexp) -> Result<PlRExpr> {
 }
 
 #[savvy]
+pub fn concat_arr(s: ListSexp) -> Result<PlRExpr> {
+    let s = <Wrap<Vec<Expr>>>::from(s).0;
+    let expr = dsl::concat_arr(s).map_err(RPolarsErr::from)?;
+    Ok(expr.into())
+}
+
+#[savvy]
 pub fn concat_df_diagonal(dfs: ListSexp) -> Result<PlRDataFrame> {
     let dfs = <Wrap<Vec<DataFrame>>>::try_from(dfs)?.0;
 
