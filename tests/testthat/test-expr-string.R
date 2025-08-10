@@ -1065,3 +1065,25 @@ test_that("$str$extract_many works", {
 #     ), .schema_overrides = list(x = pl$Decimal(scale = 2)))
 #   )
 # })
+
+make_normalize_cases <- function() {
+  tibble::tribble(
+    ~form, ~expected_data,
+    "NFC", "ＫＡＤＯＫＡＷＡ",
+    "NFD", "ＫＡＤＯＫＡＷＡ",
+    "NFKC", "KADOKAWA",
+    "NFKD", "KADOKAWA"
+  )
+}
+
+patrick::with_parameters_test_that(
+  "str$normalize() works",
+  {
+    df <- pl$DataFrame(x = "ＫＡＤＯＫＡＷＡ")$select(pl$col("x")$str$normalize(form))
+    expect_equal(
+      df,
+      pl$DataFrame(x = expected_data)
+    )
+  },
+  .cases = make_normalize_cases()
+)

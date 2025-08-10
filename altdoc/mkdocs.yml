@@ -563,6 +563,7 @@ nav:
             - str_json_path_match: man/expr_str_json_path_match.md
             - str_len_bytes: man/expr_str_len_bytes.md
             - str_len_chars: man/expr_str_len_chars.md
+            - str_normalize: man/expr_str_normalize.md
             - str_pad_end: man/expr_str_pad_end.md
             - str_pad_start: man/expr_str_pad_start.md
             - str_replace_all: man/expr_str_replace_all.md

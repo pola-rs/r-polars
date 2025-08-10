@@ -2194,6 +2194,11 @@ SEXP savvy_PlRExpr_str_len_chars__impl(SEXP self__) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_str_normalize__impl(SEXP self__, SEXP c_arg__form) {
+    SEXP res = savvy_PlRExpr_str_normalize__ffi(self__, c_arg__form);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_str_pad_end__impl(SEXP self__, SEXP c_arg__length, SEXP c_arg__fill_char) {
     SEXP res = savvy_PlRExpr_str_pad_end__ffi(self__, c_arg__length, c_arg__fill_char);
     return handle_result(res);
@@ -3608,6 +3613,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_str_json_path_match__impl", (DL_FUNC) &savvy_PlRExpr_str_json_path_match__impl, 2},
     {"savvy_PlRExpr_str_len_bytes__impl", (DL_FUNC) &savvy_PlRExpr_str_len_bytes__impl, 1},
     {"savvy_PlRExpr_str_len_chars__impl", (DL_FUNC) &savvy_PlRExpr_str_len_chars__impl, 1},
+    {"savvy_PlRExpr_str_normalize__impl", (DL_FUNC) &savvy_PlRExpr_str_normalize__impl, 2},
     {"savvy_PlRExpr_str_pad_end__impl", (DL_FUNC) &savvy_PlRExpr_str_pad_end__impl, 3},
     {"savvy_PlRExpr_str_pad_start__impl", (DL_FUNC) &savvy_PlRExpr_str_pad_start__impl, 3},
     {"savvy_PlRExpr_str_replace__impl", (DL_FUNC) &savvy_PlRExpr_str_replace__impl, 5},
