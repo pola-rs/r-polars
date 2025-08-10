@@ -1194,7 +1194,10 @@ expr_dt_replace <- function(
 ) {
   wrap({
     check_dots_empty0(...)
-    ambiguous <- arg_match0(ambiguous, c("raise", "earliest", "latest", "null"))
+    if (!is_polars_expr(ambiguous)) {
+      ambiguous <- arg_match0(ambiguous, c("raise", "earliest", "latest", "null")) |>
+        as_polars_expr(as_lit = TRUE)
+    }
     year <- as_polars_expr(year)$`_rexpr`
     month <- as_polars_expr(month)$`_rexpr`
     day <- as_polars_expr(day)$`_rexpr`
@@ -1202,7 +1205,6 @@ expr_dt_replace <- function(
     minute <- as_polars_expr(minute)$`_rexpr`
     second <- as_polars_expr(second)$`_rexpr`
     microsecond <- as_polars_expr(microsecond)$`_rexpr`
-    ambiguous <- as_polars_expr(ambiguous, as_lit = TRUE)$`_rexpr`
 
     self$`_rexpr`$dt_replace(
       year = year,
@@ -1212,7 +1214,7 @@ expr_dt_replace <- function(
       minute = minute,
       second = second,
       microsecond = microsecond,
-      ambiguous = ambiguous
+      ambiguous = ambiguous$`_rexpr`
     )
   })
 }
