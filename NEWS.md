@@ -4,6 +4,10 @@
 
 This is an update that corresponds to Python Polars 1.32.2.
 
+### New features
+
+- New function `<expr>$str$normalize()` (#1479).
+
 ## polars 1.1.0
 
 This is an update that corresponds to Python Polars 1.32.0, which includes significant internal changes.

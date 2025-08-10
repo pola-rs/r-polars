@@ -1301,3 +1301,29 @@ expr_str_extract_many <- function(
     )
   })
 }
+
+#' Returns the Unicode normal form of the string values
+#'
+#' This uses the forms described in Unicode Standard Annex 15:
+#' <https://www.unicode.org/reports/tr15/>.
+#'
+#' @param form Unicode form to use. Must be one of: `"NFC"`, `"NFKC"`, `"NFD"`,
+#' `"NFKD"`.
+#' @inherit expr_str_slice return
+#'
+#' @examples
+#' df <- pl$DataFrame(text = c("01²", "ＫＡＤＯＫＡＷＡ"))
+#'
+#' new <- df$with_columns(
+#'   nfc = pl$col("text")$str$normalize("NFC"),
+#'   nfkc = pl$col("text")$str$normalize("NFKC"),
+#' )
+#' new
+#'
+#' new$select(pl$all()$str$len_bytes())
+expr_str_normalize <- function(form = c("NFC", "NFKC", "NFD", "NFKD")) {
+  wrap({
+    form <- arg_match0(form, values = c("NFC", "NFKC", "NFD", "NFKD"))
+    self$`_rexpr`$str_normalize(form)
+  })
+}
