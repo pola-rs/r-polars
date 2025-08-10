@@ -1099,6 +1099,11 @@ SEXP savvy_PlRExpr_dt_microsecond__impl(SEXP self__) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_dt_millennium__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_dt_millennium__ffi(self__);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_dt_millisecond__impl(SEXP self__) {
     SEXP res = savvy_PlRExpr_dt_millisecond__ffi(self__);
     return handle_result(res);
@@ -3399,6 +3404,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_dt_is_leap_year__impl", (DL_FUNC) &savvy_PlRExpr_dt_is_leap_year__impl, 1},
     {"savvy_PlRExpr_dt_iso_year__impl", (DL_FUNC) &savvy_PlRExpr_dt_iso_year__impl, 1},
     {"savvy_PlRExpr_dt_microsecond__impl", (DL_FUNC) &savvy_PlRExpr_dt_microsecond__impl, 1},
+    {"savvy_PlRExpr_dt_millennium__impl", (DL_FUNC) &savvy_PlRExpr_dt_millennium__impl, 1},
     {"savvy_PlRExpr_dt_millisecond__impl", (DL_FUNC) &savvy_PlRExpr_dt_millisecond__impl, 1},
     {"savvy_PlRExpr_dt_minute__impl", (DL_FUNC) &savvy_PlRExpr_dt_minute__impl, 1},
     {"savvy_PlRExpr_dt_month__impl", (DL_FUNC) &savvy_PlRExpr_dt_month__impl, 1},
