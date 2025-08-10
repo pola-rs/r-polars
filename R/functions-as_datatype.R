@@ -327,8 +327,10 @@ pl__concat_list <- function(...) {
 #' @inherit as_polars_expr return
 #' @examples
 #' # Concatenate two existing array columns.
-#' df <- pl$DataFrame(a = list(1:2, 3, 4:5), b = list(4, integer(0), NULL))$
-#'   cast(a = pl$Array(pl$Int64, 3), pl$Array(pl$Int64, 1))
+#' df <- pl$DataFrame(a = list(1:2, 3:4, 5:6), b = list(4, 1, NA))$cast(
+#'   a = pl$Array(pl$Int64, 2),
+#'   b = pl$Array(pl$Int64, 1)
+#' )
 #'
 #' df$with_columns(concat_arr = pl$concat_arr("a", "b"))
 #'
@@ -337,8 +339,9 @@ pl__concat_list <- function(...) {
 #' df$with_columns(concat_arr = pl$concat_arr("a", "b"))
 #'
 #' # Concatenate mixed array and non-array columns.
-#' df <- pl$DataFrame(a = c(NA, 5, 6), b = c(6, 5, NA))$
-#'   cast(a = pl$Array(pl$Int64, 1))
+#' df <- pl$DataFrame(a = list(NA, 5L, 6L), b = c(6L, 5L, NA))$cast(
+#'   a = pl$Array(pl$Int32, 1)
+#' )
 #' df$with_columns(concat_arr = pl$concat_arr("a", "b"))
 #'
 #'

@@ -21,6 +21,39 @@ test_that("pl$concat_list()", {
   )
 })
 
+test_that("pl$concat_arr()", {
+  # Concatenate two existing array columns.
+  df <- pl$DataFrame(a = list(1:2, 3:4, 5:6), b = list(4, 1, NA))$cast(
+    a = pl$Array(pl$Int64, 2),
+    b = pl$Array(pl$Int64, 1)
+  )
+  expect_equal(
+    df$select(concat_arr = pl$concat_arr("a", "b")),
+    pl$DataFrame(concat_arr = list(c(1, 2, 4), c(3, 4, 1), c(5, 6, NA)))$cast(pl$Array(pl$Int64, 3))
+  )
+  # Concatenate two existing non-array columns.
+  df <- pl$DataFrame(a = c(NA, 5, 6), b = c(6, 5, NA))
+  expect_equal(
+    df$select(concat_arr = pl$concat_arr("a", "b")),
+    pl$DataFrame(concat_arr = list(c(NA, 6), c(5, 5), c(6, NA)))$cast(pl$Array(pl$Float64, 2))
+  )
+
+  # Concatenate mixed array and non-array columns.
+  df <- pl$DataFrame(a = list(NA, 5L, 6L), b = c(6L, 5L, NA))$cast(
+    a = pl$Array(pl$Int32, 1)
+  )
+  expect_equal(
+    df$select(concat_arr = pl$concat_arr("a", "b")),
+    pl$DataFrame(concat_arr = list(c(NA, 6), c(5, 5), c(6, NA)))$cast(pl$Array(pl$Int32, 2))
+  )
+  df$select(concat_arr = pl$concat_arr("a", "b"))
+  # Unit-length columns are broadcasted:
+  expect_equal(
+    df$select(concat_arr = pl$concat_arr("a", pl$sum("b"))),
+    pl$DataFrame(concat_arr = list(c(NA, 11), c(5, 11), c(6, 11)))$cast(pl$Array(pl$Int32, 2))
+  )
+})
+
 test_that("concat_str", {
   df <- pl$DataFrame(
     a = 1:3,
