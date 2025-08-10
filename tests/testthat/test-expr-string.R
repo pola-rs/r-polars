@@ -1087,3 +1087,29 @@ patrick::with_parameters_test_that(
   },
   .cases = make_normalize_cases()
 )
+
+test_that("str$find_many()", {
+  df <- pl$DataFrame(values = "discontent")
+  patterns <- pl$lit(list(c("winter", "disco", "onte", "discontent")))
+
+  expect_equal(
+    df$select(matches = pl$col("values")$str$find_many(patterns, overlapping = FALSE)),
+    pl$DataFrame(matches = list(0))$cast(pl$List(pl$UInt32))
+  )
+  expect_equal(
+    df$select(matches = pl$col("values")$str$find_many(patterns, overlapping = TRUE)),
+    pl$DataFrame(matches = list(c(0, 4, 0)))$cast(pl$List(pl$UInt32))
+  )
+
+  patterns_2 <- pl$lit(list(c("WINTER", "disco", "ONTE", "discontent")))
+  expect_equal(
+    df$select(
+      matches = pl$col("values")$str$find_many(
+        patterns_2,
+        ascii_case_insensitive = TRUE,
+        overlapping = TRUE
+      )
+    ),
+    pl$DataFrame(matches = list(c(0, 4, 0)))$cast(pl$List(pl$UInt32))
+  )
+})

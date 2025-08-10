@@ -436,6 +436,7 @@ SEXP savvy_PlRExpr_str_extract_all__ffi(SEXP self__, SEXP c_arg__pattern);
 SEXP savvy_PlRExpr_str_extract_groups__ffi(SEXP self__, SEXP c_arg__pattern);
 SEXP savvy_PlRExpr_str_extract_many__ffi(SEXP self__, SEXP c_arg__patterns, SEXP c_arg__ascii_case_insensitive, SEXP c_arg__overlapping);
 SEXP savvy_PlRExpr_str_find__ffi(SEXP self__, SEXP c_arg__pat, SEXP c_arg__literal, SEXP c_arg__strict);
+SEXP savvy_PlRExpr_str_find_many__ffi(SEXP self__, SEXP c_arg__patterns, SEXP c_arg__ascii_case_insensitive, SEXP c_arg__overlapping);
 SEXP savvy_PlRExpr_str_head__ffi(SEXP self__, SEXP c_arg__n);
 SEXP savvy_PlRExpr_str_hex_decode__ffi(SEXP self__, SEXP c_arg__strict);
 SEXP savvy_PlRExpr_str_hex_encode__ffi(SEXP self__);

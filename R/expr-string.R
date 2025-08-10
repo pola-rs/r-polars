@@ -1189,6 +1189,54 @@ expr_str_find <- function(pattern, ..., literal = FALSE, strict = TRUE) {
   })
 }
 
+#' Use the Aho-Corasick algorithm to find many matches
+#'
+#' `r lifecycle::badge("experimental")`
+#' The function will return the bytes offset of the start of each match. The
+#' return type will be List(UInt32). This method supports matching on string
+#' literals only, and does not support regular expression matching.
+#'
+#' @inheritParams rlang::args_dots_empty
+#' @inheritParams expr_str_extract_many
+#'
+#' @inherit as_polars_expr return
+#'
+#' @examples
+#' df <- pl$DataFrame(values = "discontent")
+#' patterns <- pl$lit(list(c("winter", "disco", "onte", "discontent")))
+#'
+#' df$with_columns(
+#'   matches = pl$col("values")$str$find_many(patterns, overlapping = FALSE),
+#'   matches_overlapping = pl$col("values")$str$find_many(
+#'     patterns, overlapping = TRUE
+#'   )
+#' )
+#'
+#' df <- pl$DataFrame(
+#'   values = c("discontent", "rhapsody"),
+#'   patterns = list(
+#'     c("winter", "disco", "onte", "discontent"),
+#'     c("rhap", "ody", "coalesce")
+#'   )
+#' )
+#'
+#' df$select(pl$col("values")$str$find_many("patterns"))
+expr_str_find_many <- function(
+  patterns,
+  ...,
+  ascii_case_insensitive = FALSE,
+  overlapping = FALSE
+) {
+  wrap({
+    check_dots_empty0(...)
+    self$`_rexpr`$str_find_many(
+      as_polars_expr(patterns, as_lit = FALSE)$`_rexpr`,
+      ascii_case_insensitive,
+      overlapping
+    )
+  })
+}
+
 #' Return the first n characters of each string
 #'
 #' @inherit expr_str_slice return

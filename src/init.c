@@ -2164,6 +2164,11 @@ SEXP savvy_PlRExpr_str_find__impl(SEXP self__, SEXP c_arg__pat, SEXP c_arg__lite
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_str_find_many__impl(SEXP self__, SEXP c_arg__patterns, SEXP c_arg__ascii_case_insensitive, SEXP c_arg__overlapping) {
+    SEXP res = savvy_PlRExpr_str_find_many__ffi(self__, c_arg__patterns, c_arg__ascii_case_insensitive, c_arg__overlapping);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_str_head__impl(SEXP self__, SEXP c_arg__n) {
     SEXP res = savvy_PlRExpr_str_head__ffi(self__, c_arg__n);
     return handle_result(res);
@@ -3617,6 +3622,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_str_extract_groups__impl", (DL_FUNC) &savvy_PlRExpr_str_extract_groups__impl, 2},
     {"savvy_PlRExpr_str_extract_many__impl", (DL_FUNC) &savvy_PlRExpr_str_extract_many__impl, 4},
     {"savvy_PlRExpr_str_find__impl", (DL_FUNC) &savvy_PlRExpr_str_find__impl, 4},
+    {"savvy_PlRExpr_str_find_many__impl", (DL_FUNC) &savvy_PlRExpr_str_find_many__impl, 4},
     {"savvy_PlRExpr_str_head__impl", (DL_FUNC) &savvy_PlRExpr_str_head__impl, 2},
     {"savvy_PlRExpr_str_hex_decode__impl", (DL_FUNC) &savvy_PlRExpr_str_hex_decode__impl, 2},
     {"savvy_PlRExpr_str_hex_encode__impl", (DL_FUNC) &savvy_PlRExpr_str_hex_encode__impl, 1},
