@@ -1487,6 +1487,12 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_polars__sealed")
   }
 }
 
+`PlRExpr_dt_millennium` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_millennium__impl, `self`))
+  }
+}
+
 `PlRExpr_dt_millisecond` <- function(self) {
   function() {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_dt_millisecond__impl, `self`))
@@ -3295,6 +3301,7 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_polars__sealed")
   e$`dt_is_leap_year` <- `PlRExpr_dt_is_leap_year`(ptr)
   e$`dt_iso_year` <- `PlRExpr_dt_iso_year`(ptr)
   e$`dt_microsecond` <- `PlRExpr_dt_microsecond`(ptr)
+  e$`dt_millennium` <- `PlRExpr_dt_millennium`(ptr)
   e$`dt_millisecond` <- `PlRExpr_dt_millisecond`(ptr)
   e$`dt_minute` <- `PlRExpr_dt_minute`(ptr)
   e$`dt_month` <- `PlRExpr_dt_month`(ptr)

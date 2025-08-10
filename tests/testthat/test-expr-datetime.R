@@ -809,6 +809,18 @@ test_that("dt$century", {
   )
 })
 
+test_that("dt$millennium", {
+  df <- pl$DataFrame(
+    x = as.Date(
+      c("999-12-31", "1897-05-07", "2000-01-01", "2001-07-05", "3002-10-20")
+    )
+  )
+  expect_equal(
+    df$select(pl$col("x")$dt$millennium()),
+    pl$DataFrame(x = c(1, 2, 2, 3, 4))$cast(pl$Int32)
+  )
+})
+
 test_that("dt$date", {
   df <- pl$DataFrame(
     x = as.POSIXct(c("1978-1-1 1:1:1", "1897-5-7 00:00:00"), tz = "UTC")

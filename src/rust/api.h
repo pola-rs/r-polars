@@ -223,6 +223,7 @@ SEXP savvy_PlRExpr_dt_hour__ffi(SEXP self__);
 SEXP savvy_PlRExpr_dt_is_leap_year__ffi(SEXP self__);
 SEXP savvy_PlRExpr_dt_iso_year__ffi(SEXP self__);
 SEXP savvy_PlRExpr_dt_microsecond__ffi(SEXP self__);
+SEXP savvy_PlRExpr_dt_millennium__ffi(SEXP self__);
 SEXP savvy_PlRExpr_dt_millisecond__ffi(SEXP self__);
 SEXP savvy_PlRExpr_dt_minute__ffi(SEXP self__);
 SEXP savvy_PlRExpr_dt_month__ffi(SEXP self__);

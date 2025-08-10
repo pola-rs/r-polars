@@ -614,6 +614,7 @@ nav:
             - dt_is_leap_year: man/expr_dt_is_leap_year.md
             - dt_iso_year: man/expr_dt_iso_year.md
             - dt_microsecond: man/expr_dt_microsecond.md
+            - dt_millennium: man/expr_dt_millennium.md
             - dt_millisecond: man/expr_dt_millisecond.md
             - dt_minute: man/expr_dt_minute.md
             - dt_month_end: man/expr_dt_month_end.md

@@ -57,6 +57,9 @@ impl PlRExpr {
     fn dt_to_string(&self, format: &str) -> Result<Self> {
         Ok(self.inner.clone().dt().to_string(format).into())
     }
+    fn dt_millennium(&self) -> Result<Self> {
+        Ok(self.clone().inner.dt().millennium().into())
+    }
     fn dt_year(&self) -> Result<Self> {
         Ok(self.clone().inner.dt().year().into())
     }
