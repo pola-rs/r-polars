@@ -79,6 +79,11 @@ NULL
 }
 
 
+`concat_arr` <- function(`s`) {
+  .savvy_wrap_PlRExpr(.Call(savvy_concat_arr__impl, `s`))
+}
+
+
 `concat_df` <- function(`dfs`) {
   .savvy_wrap_PlRDataFrame(.Call(savvy_concat_df__impl, `dfs`))
 }

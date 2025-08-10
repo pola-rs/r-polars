@@ -12,6 +12,7 @@ This is an update that corresponds to Python Polars 1.32.2.
 - New function `<expr>$str$escape_regex()` (#1486).
 - New function `<expr>$str$find_many()` (#1484).
 - New function `<expr>$str$normalize()` (#1479).
+- New function `pl$concat_arr()` (#1490).
 - New functions `pl$linear_space()` and `pl$linear_spaces()` (#1487).
 
 ## polars 1.1.0

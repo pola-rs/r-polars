@@ -455,6 +455,7 @@ nav:
             - arg_sort_by: man/pl__arg_sort_by.md
             - arg_where: man/pl__arg_where.md
             - coalesce: man/pl__coalesce.md
+            - concat_arr: man/pl__concat_arr.md
             - concat_list: man/pl__concat_list.md
             - concat_str: man/pl__concat_str.md
             - cum_sum: man/pl__cum_sum.md
