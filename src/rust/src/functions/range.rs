@@ -1,3 +1,4 @@
+use crate::RPolarsErr;
 use crate::{PlRExpr, datatypes::PlRDataType, prelude::*};
 use polars::lazy::dsl;
 use savvy::{NumericScalar, Result, savvy};
@@ -114,4 +115,35 @@ pub fn time_ranges(start: &PlRExpr, end: &PlRExpr, every: &str, closed: &str) ->
     let every = Duration::parse(every);
     let closed = <Wrap<ClosedWindow>>::try_from(closed)?.0;
     Ok(dsl::time_ranges(start, end, every, closed).into())
+}
+
+#[savvy]
+pub fn linear_space(
+    start: &PlRExpr,
+    end: &PlRExpr,
+    num_samples: &PlRExpr,
+    closed: &str,
+) -> Result<PlRExpr> {
+    let closed = <Wrap<ClosedInterval>>::try_from(closed)?.0;
+    let start = start.inner.clone();
+    let end = end.inner.clone();
+    let num_samples = num_samples.inner.clone();
+    Ok(dsl::linear_space(start, end, num_samples, closed).into())
+}
+
+#[savvy]
+pub fn linear_spaces(
+    start: &PlRExpr,
+    end: &PlRExpr,
+    num_samples: &PlRExpr,
+    closed: &str,
+    as_array: bool,
+) -> Result<PlRExpr> {
+    let closed = <Wrap<ClosedInterval>>::try_from(closed)?.0;
+    let start = start.inner.clone();
+    let end = end.inner.clone();
+    let num_samples = num_samples.inner.clone();
+    let out =
+        dsl::linear_spaces(start, end, num_samples, closed, as_array).map_err(RPolarsErr::from)?;
+    Ok(out.into())
 }

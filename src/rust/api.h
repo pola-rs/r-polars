@@ -26,6 +26,8 @@ SEXP savvy_field__ffi(SEXP c_arg__names);
 SEXP savvy_int_range__ffi(SEXP c_arg__start, SEXP c_arg__end, SEXP c_arg__step, SEXP c_arg__dtype);
 SEXP savvy_int_ranges__ffi(SEXP c_arg__start, SEXP c_arg__end, SEXP c_arg__step, SEXP c_arg__dtype);
 SEXP savvy_len__ffi(void);
+SEXP savvy_linear_space__ffi(SEXP c_arg__start, SEXP c_arg__end, SEXP c_arg__num_samples, SEXP c_arg__closed);
+SEXP savvy_linear_spaces__ffi(SEXP c_arg__start, SEXP c_arg__end, SEXP c_arg__num_samples, SEXP c_arg__closed, SEXP c_arg__as_array);
 SEXP savvy_lit_bin_from_raw__ffi(SEXP c_arg__value);
 SEXP savvy_lit_from_series__ffi(SEXP c_arg__value);
 SEXP savvy_lit_from_series_first__ffi(SEXP c_arg__value);

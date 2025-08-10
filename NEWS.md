@@ -11,6 +11,7 @@ This is an update that corresponds to Python Polars 1.32.2.
 - New function `<expr>$meta$is_literal()` (#1483).
 - New function `<expr>$str$find_many()` (#1484).
 - New function `<expr>$str$normalize()` (#1479).
+- New functions `pl$linear_space()` and `pl$linear_spaces()` (#1487).
 
 ## polars 1.1.0
 
