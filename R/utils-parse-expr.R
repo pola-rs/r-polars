@@ -38,8 +38,13 @@ parse_into_selector <- function(..., .strict = TRUE, .arg_name = "...") {
   dots <- list2(...)
 
   try_fetch(
-    lapply(dots, \(x) as_polars_selector(x, strict = .strict)) |>
-      Reduce(`|`, x = _),
+    # If all elements are single strings, treat as a single character vector for shortcut
+    if (is_list_of_string(dots)) {
+      as_polars_selector.character(as.character(dots), strict = .strict)
+    } else {
+      lapply(dots, \(x) as_polars_selector(x, strict = .strict)) |>
+        Reduce(`|`, x = _)
+    },
     error = function(cnd) {
       abort(
         format_error(
