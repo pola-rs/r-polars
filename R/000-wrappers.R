@@ -215,6 +215,22 @@ NULL
 }
 
 
+`linear_space` <- function(`start`, `end`, `num_samples`, `closed`) {
+  `start` <- .savvy_extract_ptr(`start`, "PlRExpr")
+  `end` <- .savvy_extract_ptr(`end`, "PlRExpr")
+  `num_samples` <- .savvy_extract_ptr(`num_samples`, "PlRExpr")
+  .savvy_wrap_PlRExpr(.Call(savvy_linear_space__impl, `start`, `end`, `num_samples`, `closed`))
+}
+
+
+`linear_spaces` <- function(`start`, `end`, `num_samples`, `closed`, `as_array`) {
+  `start` <- .savvy_extract_ptr(`start`, "PlRExpr")
+  `end` <- .savvy_extract_ptr(`end`, "PlRExpr")
+  `num_samples` <- .savvy_extract_ptr(`num_samples`, "PlRExpr")
+  .savvy_wrap_PlRExpr(.Call(savvy_linear_spaces__impl, `start`, `end`, `num_samples`, `closed`, `as_array`))
+}
+
+
 `lit_bin_from_raw` <- function(`value`) {
   .savvy_wrap_PlRExpr(.Call(savvy_lit_bin_from_raw__impl, `value`))
 }

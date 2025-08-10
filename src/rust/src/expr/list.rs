@@ -153,22 +153,11 @@ impl PlRExpr {
             .transpose()?
             .map(|x| x.0);
 
-        use crate::{
-            r_threads::ThreadCom,
-            r_udf::{CONFIG, RUdf, RUdfSignature},
-        };
+        #[cfg(not(target_arch = "wasm32"))]
+        use crate::r_udf::RUdf;
 
         #[cfg(not(target_arch = "wasm32"))]
-        let name_gen = name_gen.map(|lambda| {
-            let lambda = RUdf::new(lambda);
-            PlanCallback::new(move |idx: usize| {
-                let thread_com = ThreadCom::try_from_global(&CONFIG)
-                    .map_err(|e| PolarsError::ComputeError(e.into()))?;
-                thread_com.send(RUdfSignature::Int32ToString(lambda.clone(), idx as i32));
-                <String>::try_from(thread_com.recv())
-                    .map_err(|e| PolarsError::ComputeError(e.into()))
-            })
-        });
+        let name_gen = name_gen.map(|lambda| RUdf::new(lambda).into());
         #[cfg(target_arch = "wasm32")]
         let name_gen = match name_gen {
             Some(_) => {

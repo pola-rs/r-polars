@@ -179,6 +179,16 @@ SEXP savvy_len__impl(void) {
     return handle_result(res);
 }
 
+SEXP savvy_linear_space__impl(SEXP c_arg__start, SEXP c_arg__end, SEXP c_arg__num_samples, SEXP c_arg__closed) {
+    SEXP res = savvy_linear_space__ffi(c_arg__start, c_arg__end, c_arg__num_samples, c_arg__closed);
+    return handle_result(res);
+}
+
+SEXP savvy_linear_spaces__impl(SEXP c_arg__start, SEXP c_arg__end, SEXP c_arg__num_samples, SEXP c_arg__closed, SEXP c_arg__as_array) {
+    SEXP res = savvy_linear_spaces__ffi(c_arg__start, c_arg__end, c_arg__num_samples, c_arg__closed, c_arg__as_array);
+    return handle_result(res);
+}
+
 SEXP savvy_lit_bin_from_raw__impl(SEXP c_arg__value) {
     SEXP res = savvy_lit_bin_from_raw__ffi(c_arg__value);
     return handle_result(res);
@@ -3235,6 +3245,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_int_range__impl", (DL_FUNC) &savvy_int_range__impl, 4},
     {"savvy_int_ranges__impl", (DL_FUNC) &savvy_int_ranges__impl, 4},
     {"savvy_len__impl", (DL_FUNC) &savvy_len__impl, 0},
+    {"savvy_linear_space__impl", (DL_FUNC) &savvy_linear_space__impl, 4},
+    {"savvy_linear_spaces__impl", (DL_FUNC) &savvy_linear_spaces__impl, 5},
     {"savvy_lit_bin_from_raw__impl", (DL_FUNC) &savvy_lit_bin_from_raw__impl, 1},
     {"savvy_lit_from_series__impl", (DL_FUNC) &savvy_lit_from_series__impl, 1},
     {"savvy_lit_from_series_first__impl", (DL_FUNC) &savvy_lit_from_series_first__impl, 1},
