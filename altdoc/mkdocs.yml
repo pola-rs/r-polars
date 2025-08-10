@@ -529,6 +529,7 @@ nav:
             - meta_has_multiple_outputs: man/expr_meta_has_multiple_outputs.md
             - meta_is_column_selection: man/expr_meta_is_column_selection.md
             - meta_is_column: man/expr_meta_is_column.md
+            - meta_is_literal: man/expr_meta_is_literal.md
             - meta_is_regex_projection: man/expr_meta_is_regex_projection.md
             - meta_ne: man/expr_meta_ne.md
             - meta_output_name: man/expr_meta_output_name.md

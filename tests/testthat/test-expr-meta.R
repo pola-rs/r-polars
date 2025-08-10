@@ -120,3 +120,12 @@ test_that("meta$serialize", {
       jsonlite::prettify()
   )
 })
+
+test_that("meta$is_literal", {
+  e <- pl$lit(123)
+  expect_true(e$meta$is_literal())
+
+  e <- pl$lit(123)$alias("foo")
+  expect_false(e$meta$is_literal())
+  expect_true(e$meta$is_literal(allow_aliasing = TRUE))
+})

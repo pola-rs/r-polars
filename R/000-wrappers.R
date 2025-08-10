@@ -2223,6 +2223,12 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_polars__sealed")
   }
 }
 
+`PlRExpr_meta_is_literal` <- function(self) {
+  function(`allow_aliasing`) {
+    .Call(savvy_PlRExpr_meta_is_literal__impl, `self`, `allow_aliasing`)
+  }
+}
+
 `PlRExpr_meta_is_regex_projection` <- function(self) {
   function() {
     .Call(savvy_PlRExpr_meta_is_regex_projection__impl, `self`)
@@ -3405,6 +3411,7 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_polars__sealed")
   e$`meta_has_multiple_outputs` <- `PlRExpr_meta_has_multiple_outputs`(ptr)
   e$`meta_is_column` <- `PlRExpr_meta_is_column`(ptr)
   e$`meta_is_column_selection` <- `PlRExpr_meta_is_column_selection`(ptr)
+  e$`meta_is_literal` <- `PlRExpr_meta_is_literal`(ptr)
   e$`meta_is_regex_projection` <- `PlRExpr_meta_is_regex_projection`(ptr)
   e$`meta_output_name` <- `PlRExpr_meta_output_name`(ptr)
   e$`meta_pop` <- `PlRExpr_meta_pop`(ptr)
