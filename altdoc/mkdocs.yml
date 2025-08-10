@@ -471,6 +471,8 @@ nav:
             - int_ranges: man/pl__int_ranges.md
             - last: man/pl__last.md
             - len: man/pl__len.md
+            - linear_space: man/pl__linear_space.md
+            - linear_spaces: man/pl__linear_spaces.md
             - lit: man/pl__lit.md
             - max: man/pl__max.md
             - max_horizontal: man/pl__max_horizontal.md
