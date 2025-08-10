@@ -4,7 +4,7 @@
 \alias{expr_meta_is_literal}
 \title{Indicate if this expression is a literal value (optionally aliased)}
 \usage{
-expr_meta_is_literal(..., allow_aliasing = NULL)
+expr_meta_is_literal(..., allow_aliasing = FALSE)
 }
 \arguments{
 \item{...}{These dots are for future extensions and must be empty.}
