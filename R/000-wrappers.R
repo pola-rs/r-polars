@@ -1046,6 +1046,12 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_polars__sealed")
   }
 }
 
+`PlRExpr_arr_len` <- function(self) {
+  function() {
+    .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_arr_len__impl, `self`))
+  }
+}
+
 `PlRExpr_arr_max` <- function(self) {
   function() {
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_arr_max__impl, `self`))
@@ -3205,6 +3211,7 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_polars__sealed")
   e$`arr_count_matches` <- `PlRExpr_arr_count_matches`(ptr)
   e$`arr_get` <- `PlRExpr_arr_get`(ptr)
   e$`arr_join` <- `PlRExpr_arr_join`(ptr)
+  e$`arr_len` <- `PlRExpr_arr_len`(ptr)
   e$`arr_max` <- `PlRExpr_arr_max`(ptr)
   e$`arr_median` <- `PlRExpr_arr_median`(ptr)
   e$`arr_min` <- `PlRExpr_arr_min`(ptr)

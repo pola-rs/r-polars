@@ -418,3 +418,16 @@ expr_arr_n_unique <- function() {
   self$`_rexpr`$arr_n_unique() |>
     wrap()
 }
+
+#' Return the number of elements in each sub-array
+#'
+#' @inherit as_polars_expr return
+#' @examples
+#' df <- pl$DataFrame(
+#'   a = list(c(1, 1, 2), c(2, 3, 4))
+#' )$cast(pl$Array(pl$Int64, 3))
+#' df$with_columns(len = pl$col("a")$arr$len())
+expr_arr_len <- function() {
+  self$`_rexpr`$arr_len() |>
+    wrap()
+}

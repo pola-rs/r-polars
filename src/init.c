@@ -734,6 +734,11 @@ SEXP savvy_PlRExpr_arr_join__impl(SEXP self__, SEXP c_arg__separator, SEXP c_arg
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_arr_len__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_arr_len__ffi(self__);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_arr_max__impl(SEXP self__) {
     SEXP res = savvy_PlRExpr_arr_max__ffi(self__);
     return handle_result(res);
@@ -3316,6 +3321,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_arr_count_matches__impl", (DL_FUNC) &savvy_PlRExpr_arr_count_matches__impl, 2},
     {"savvy_PlRExpr_arr_get__impl", (DL_FUNC) &savvy_PlRExpr_arr_get__impl, 3},
     {"savvy_PlRExpr_arr_join__impl", (DL_FUNC) &savvy_PlRExpr_arr_join__impl, 3},
+    {"savvy_PlRExpr_arr_len__impl", (DL_FUNC) &savvy_PlRExpr_arr_len__impl, 1},
     {"savvy_PlRExpr_arr_max__impl", (DL_FUNC) &savvy_PlRExpr_arr_max__impl, 1},
     {"savvy_PlRExpr_arr_median__impl", (DL_FUNC) &savvy_PlRExpr_arr_median__impl, 1},
     {"savvy_PlRExpr_arr_min__impl", (DL_FUNC) &savvy_PlRExpr_arr_min__impl, 1},
