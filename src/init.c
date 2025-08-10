@@ -2149,6 +2149,11 @@ SEXP savvy_PlRExpr_str_ends_with__impl(SEXP self__, SEXP c_arg__suffix) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_str_escape_regex__impl(SEXP self__) {
+    SEXP res = savvy_PlRExpr_str_escape_regex__ffi(self__);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_str_extract__impl(SEXP self__, SEXP c_arg__pattern, SEXP c_arg__group_index) {
     SEXP res = savvy_PlRExpr_str_extract__ffi(self__, c_arg__pattern, c_arg__group_index);
     return handle_result(res);
@@ -3629,6 +3634,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_str_contains_any__impl", (DL_FUNC) &savvy_PlRExpr_str_contains_any__impl, 3},
     {"savvy_PlRExpr_str_count_matches__impl", (DL_FUNC) &savvy_PlRExpr_str_count_matches__impl, 3},
     {"savvy_PlRExpr_str_ends_with__impl", (DL_FUNC) &savvy_PlRExpr_str_ends_with__impl, 2},
+    {"savvy_PlRExpr_str_escape_regex__impl", (DL_FUNC) &savvy_PlRExpr_str_escape_regex__impl, 1},
     {"savvy_PlRExpr_str_extract__impl", (DL_FUNC) &savvy_PlRExpr_str_extract__impl, 3},
     {"savvy_PlRExpr_str_extract_all__impl", (DL_FUNC) &savvy_PlRExpr_str_extract_all__impl, 2},
     {"savvy_PlRExpr_str_extract_groups__impl", (DL_FUNC) &savvy_PlRExpr_str_extract_groups__impl, 2},

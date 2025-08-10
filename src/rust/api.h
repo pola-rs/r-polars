@@ -433,6 +433,7 @@ SEXP savvy_PlRExpr_str_contains__ffi(SEXP self__, SEXP c_arg__pat, SEXP c_arg__l
 SEXP savvy_PlRExpr_str_contains_any__ffi(SEXP self__, SEXP c_arg__patterns, SEXP c_arg__ascii_case_insensitive);
 SEXP savvy_PlRExpr_str_count_matches__ffi(SEXP self__, SEXP c_arg__pat, SEXP c_arg__literal);
 SEXP savvy_PlRExpr_str_ends_with__ffi(SEXP self__, SEXP c_arg__suffix);
+SEXP savvy_PlRExpr_str_escape_regex__ffi(SEXP self__);
 SEXP savvy_PlRExpr_str_extract__ffi(SEXP self__, SEXP c_arg__pattern, SEXP c_arg__group_index);
 SEXP savvy_PlRExpr_str_extract_all__ffi(SEXP self__, SEXP c_arg__pattern);
 SEXP savvy_PlRExpr_str_extract_groups__ffi(SEXP self__, SEXP c_arg__pattern);
