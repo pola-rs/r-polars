@@ -28,6 +28,7 @@ test_that("parse_into_selector works", {
     cs$empty()
   )
   expect_snapshot(parse_into_selector(NULL), error = TRUE)
+  expect_snapshot(parse_into_selector(NA_character_), error = TRUE)
   expect_equal(
     parse_into_selector(character()),
     cs$by_name(require_all = TRUE)

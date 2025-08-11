@@ -37,6 +37,14 @@
 ---
 
     Code
+      parse_into_selector(NA_character_)
+    Condition
+      Error:
+      ! `...` can only contain single strings or polars selectors.
+
+---
+
+    Code
       parse_into_selector(integer())
     Condition
       Error:
