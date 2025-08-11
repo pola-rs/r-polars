@@ -16,6 +16,11 @@ This is an update that corresponds to Python Polars 1.32.2.
 - New function `pl$concat_arr()` (#1490).
 - New functions `pl$linear_space()` and `pl$linear_spaces()` (#1487).
 
+### Performance
+
+- The performance of converting character vectors to selectors has been improved,
+  resolving performance issues when specifying column names with a large number of strings.
+
 ## polars 1.1.0
 
 This is an update that corresponds to Python Polars 1.32.0, which includes significant internal changes.
