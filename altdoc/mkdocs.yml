@@ -628,6 +628,7 @@ nav:
             - dt_offset_by: man/expr_dt_offset_by.md
             - dt_ordinal_day: man/expr_dt_ordinal_day.md
             - dt_quarter: man/expr_dt_quarter.md
+            - dt_replace: man/expr_dt_replace.md
             - dt_replace_time_zone: man/expr_dt_replace_time_zone.md
             - dt_round: man/expr_dt_round.md
             - dt_second: man/expr_dt_second.md

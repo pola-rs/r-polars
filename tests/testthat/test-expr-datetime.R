@@ -928,3 +928,90 @@ test_that("dt$add_business_days", {
     error = TRUE
   )
 })
+
+patrick::with_parameters_test_that(
+  "dt$replace() basic behavior",
+  .cases = {
+    tibble::tribble(
+      ~arg, ~new_value, ~expected_date, ~expected_datetime, ~should_error, ~out_of_range,
+      "year", 2000, as.Date("2000-01-01"), as.POSIXct("2000-01-01"), FALSE, NA,
+      "month", 08, as.Date("2020-08-01"), as.POSIXct("2020-08-01"), TRUE, 13,
+      "day", 08, as.Date("2020-01-08"), as.POSIXct("2020-01-08"), TRUE, 32,
+      "hour", 08, as.Date("2020-01-01"), as.POSIXct("2020-01-01 08:00:00"), TRUE, 25,
+      "minute", 08, as.Date("2020-01-01"), as.POSIXct("2020-01-01 00:08:00"), TRUE, 61,
+      "second", 08, as.Date("2020-01-01"), as.POSIXct("2020-01-01 00:00:08"), TRUE, 61
+    )
+  },
+  code = {
+    df <- pl$DataFrame(date = as.Date("2020-01-01"), datetime = as.POSIXct("2020-01-01"))
+
+    # literals
+    new_arg <- list(new_value)
+    names(new_arg) <- arg
+    call1 <- do.call(pl$col("date")$dt$replace, new_arg)
+    call2 <- do.call(pl$col("datetime")$dt$replace, new_arg)
+
+    # polars expression
+    new_arg <- list(as_polars_expr(new_value))
+    names(new_arg) <- arg
+    call3 <- do.call(pl$col("date")$dt$replace, new_arg)
+    call4 <- do.call(pl$col("datetime")$dt$replace, new_arg)
+
+    expect_equal(
+      df$select(call1, call2),
+      pl$DataFrame(date = expected_date, datetime = expected_datetime)
+    )
+    expect_equal(
+      df$select(call3, call4),
+      pl$DataFrame(date = expected_date, datetime = expected_datetime)
+    )
+
+    if (isTRUE(should_error)) {
+      new_arg <- list(out_of_range)
+      names(new_arg) <- arg
+      call2 <- do.call(pl$col("datetime")$dt$replace, new_arg)
+      expect_snapshot(
+        df$select(call2),
+        error = TRUE
+      )
+    }
+  }
+)
+
+patrick::with_parameters_test_that(
+  "dt$replace() argument 'ambiguous'",
+  .cases = {
+    skip_if_not_installed("clock")
+
+    tibble::tribble(
+      ~ambiguous_pl, ~ambiguous_clock,
+      "error", "error",
+      "earliest", "earliest",
+      "latest", "latest",
+      "null", "NA",
+    )
+  },
+  code = {
+    df <- pl$DataFrame(
+      datetime = clock::date_time_parse("2018-10-28 01:30:00", "Europe/Brussels")
+    )
+
+    if (ambiguous_pl == "error") {
+      expect_snapshot(
+        df$select(pl$col("datetime")$dt$replace(hour = 2)),
+        error = TRUE
+      )
+    } else {
+      expect_equal(
+        df$select(pl$col("datetime")$dt$replace(hour = 2, ambiguous = ambiguous_pl)),
+        pl$DataFrame(
+          datetime = clock::date_time_parse(
+            "2018-10-28 02:30:00",
+            "Europe/Brussels",
+            ambiguous = ambiguous_clock
+          )
+        )
+      )
+    }
+  }
+)
