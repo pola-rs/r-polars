@@ -981,6 +981,8 @@ patrick::with_parameters_test_that(
 patrick::with_parameters_test_that(
   "dt$replace() argument 'ambiguous'",
   .cases = {
+    skip_if_not_installed("clock")
+
     tibble::tribble(
       ~ambiguous_pl, ~ambiguous_clock,
       "error", "error",
