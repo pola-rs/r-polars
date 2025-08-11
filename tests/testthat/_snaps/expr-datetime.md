@@ -309,7 +309,7 @@
       Caused by error in `pl$col("x")$dt$add_business_days()`:
       ! `roll` must be one of "raise", "backward", or "forward", not "foo".
 
-# dt$replace() basic behavior arg=month, new_value=8, expected_date=18475, expected_datetime=1596232800, should_error=TRUE, out_of_range=13
+# dt$replace() basic behavior arg=month, new_value=8, expected_date=18475, expected_datetime=1596240000, should_error=TRUE, out_of_range=13
 
     Code
       df$select(call2)
@@ -321,7 +321,7 @@
       Caused by error:
       ! Invalid date components (2020, 13, 1) supplied
 
-# dt$replace() basic behavior arg=day, new_value=8, expected_date=18269, expected_datetime=1578438000, should_error=TRUE, out_of_range=32
+# dt$replace() basic behavior arg=day, new_value=8, expected_date=18269, expected_datetime=1578441600, should_error=TRUE, out_of_range=32
 
     Code
       df$select(call2)
@@ -333,7 +333,7 @@
       Caused by error:
       ! Invalid date components (2020, 1, 32) supplied
 
-# dt$replace() basic behavior arg=hour, new_value=8, expected_date=18262, expected_datetime=1577862000, should_error=TRUE, out_of_range=25
+# dt$replace() basic behavior arg=hour, new_value=8, expected_date=18262, expected_datetime=1577865600, should_error=TRUE, out_of_range=25
 
     Code
       df$select(call2)
@@ -345,7 +345,7 @@
       Caused by error:
       ! Invalid time components (25, 0, 0, 0) supplied
 
-# dt$replace() basic behavior arg=minute, new_value=8, expected_date=18262, expected_datetime=1577833680, should_error=TRUE, out_of_range=61
+# dt$replace() basic behavior arg=minute, new_value=8, expected_date=18262, expected_datetime=1577837280, should_error=TRUE, out_of_range=61
 
     Code
       df$select(call2)
@@ -357,7 +357,7 @@
       Caused by error:
       ! Invalid time components (0, 61, 0, 0) supplied
 
-# dt$replace() basic behavior arg=second, new_value=8, expected_date=18262, expected_datetime=1577833208, should_error=TRUE, out_of_range=61
+# dt$replace() basic behavior arg=second, new_value=8, expected_date=18262, expected_datetime=1577836808, should_error=TRUE, out_of_range=61
 
     Code
       df$select(call2)

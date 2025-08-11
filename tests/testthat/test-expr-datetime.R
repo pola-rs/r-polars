@@ -934,16 +934,16 @@ patrick::with_parameters_test_that(
   .cases = {
     tibble::tribble(
       ~arg, ~new_value, ~expected_date, ~expected_datetime, ~should_error, ~out_of_range,
-      "year", 2000, as.Date("2000-01-01"), as.POSIXct("2000-01-01"), FALSE, NA,
-      "month", 08, as.Date("2020-08-01"), as.POSIXct("2020-08-01"), TRUE, 13,
-      "day", 08, as.Date("2020-01-08"), as.POSIXct("2020-01-08"), TRUE, 32,
-      "hour", 08, as.Date("2020-01-01"), as.POSIXct("2020-01-01 08:00:00"), TRUE, 25,
-      "minute", 08, as.Date("2020-01-01"), as.POSIXct("2020-01-01 00:08:00"), TRUE, 61,
-      "second", 08, as.Date("2020-01-01"), as.POSIXct("2020-01-01 00:00:08"), TRUE, 61
+      "year", 2000, as.Date("2000-01-01"), as.POSIXct("2000-01-01", "UTC"), FALSE, NA,
+      "month", 08, as.Date("2020-08-01"), as.POSIXct("2020-08-01", "UTC"), TRUE, 13,
+      "day", 08, as.Date("2020-01-08"), as.POSIXct("2020-01-08", "UTC"), TRUE, 32,
+      "hour", 08, as.Date("2020-01-01"), as.POSIXct("2020-01-01 08:00:00", "UTC"), TRUE, 25,
+      "minute", 08, as.Date("2020-01-01"), as.POSIXct("2020-01-01 00:08:00", "UTC"), TRUE, 61,
+      "second", 08, as.Date("2020-01-01"), as.POSIXct("2020-01-01 00:00:08", "UTC"), TRUE, 61
     )
   },
   code = {
-    df <- pl$DataFrame(date = as.Date("2020-01-01"), datetime = as.POSIXct("2020-01-01"))
+    df <- pl$DataFrame(date = as.Date("2020-01-01"), datetime = as.POSIXct("2020-01-01", "UTC"))
 
     # literals
     new_arg <- list(new_value)
