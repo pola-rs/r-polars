@@ -36,15 +36,20 @@ parse_into_selector <- function(..., .strict = TRUE, .arg_name = "...") {
   check_dots_unnamed(call = call)
 
   dots <- list2(...)
+  is_char <- vapply(dots, is_character, logical(1))
+  chrs <- dots[is_char]
+  others <- dots[!is_char]
 
   try_fetch(
-    # If all elements are single strings, treat as a single character vector for shortcut
-    if (length(dots) > 0L && is_list_of_string(dots)) {
-      as_polars_selector.character(as.character(dots), strict = .strict)
-    } else {
-      lapply(dots, \(x) as_polars_selector(x, strict = .strict)) |>
-        Reduce(`|`, x = _)
-    },
+    c(
+      if (length(chrs) > 0L) {
+        as_polars_selector.character(unlist(chrs), strict = .strict)
+      } else {
+        NULL
+      },
+      lapply(others, \(x) as_polars_selector(x, strict = .strict))
+    ) |>
+      Reduce(`|`, x = _),
     error = function(cnd) {
       abort(
         format_error(
