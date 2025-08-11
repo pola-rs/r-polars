@@ -92,7 +92,7 @@ pl__linear_spaces <- function(
     check_dots_empty0(...)
     # Non-integer values are rejected in the Rust function but we want to allow
     # num_samples = 3 for instance (for a better user experience).
-    if (is_integerish(num_samples)) {
+    if (is_bare_double(num_samples) && is_integerish(num_samples)) {
       num_samples <- as.integer(num_samples)
     }
     closed <- arg_match0(closed, values = c("both", "left", "none", "right"))
