@@ -2,6 +2,8 @@
 
 ## polars (development version)
 
+## polars 1.2.0
+
 This is an update that corresponds to Python Polars 1.32.2.
 
 ### New features
