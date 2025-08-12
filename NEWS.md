@@ -25,7 +25,7 @@ This is an update that corresponds to Python Polars 1.32.2.
 ### Performance
 
 - The performance of converting character vectors to selectors has been improved,
-  resolving performance issues when specifying column names with a large number of strings (#1493).
+  resolving performance issues when specifying column names with a large number of strings (#1481, #1493).
 
 ## polars 1.1.0
 
