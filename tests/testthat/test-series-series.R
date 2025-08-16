@@ -88,3 +88,33 @@ test_that("rechunk() and chunk_lengths() work", {
 
   expect_identical(s3$rechunk()$chunk_lengths(), 6L)
 })
+
+test_that("shrink_dtype", {
+  df <- pl$DataFrame(
+    a = c(1L, 2L, 3L),
+    b = c(1L, 2L, bitwShiftL(2L, 29)),
+    c = c(-1L, 2L, bitwShiftL(1L, 15)),
+    d = c(-112L, 2L, 112L),
+    e = c(-112L, 2L, 129L),
+    f = c("a", "b", "c"),
+    g = c(0.1, 1.32, 0.12),
+    h = c(TRUE, NA, FALSE)
+  )$with_columns(pl$col("b")$cast(pl$Int64) * 32L) |>
+    as.list() |>
+    lapply(\(s) s$shrink_dtype()) |>
+    as_polars_df()
+
+  expect_equal(
+    df$schema,
+    list(
+      a = pl$Int8,
+      b = pl$Int64,
+      c = pl$Int32,
+      d = pl$Int8,
+      e = pl$Int16,
+      f = pl$String,
+      g = pl$Float32,
+      h = pl$Boolean
+    )
+  )
+})

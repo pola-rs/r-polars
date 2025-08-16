@@ -683,21 +683,20 @@ test_that("list$count_matches", {
 })
 
 patrick::with_parameters_test_that(
-  "list$to_struct with field = {rlang::quo_text(fields)}, n_field_strategy = {rlang::quo_text(n_field_strategy)}, upper_bound = {rlang::quo_text(upper_bound)}", # nolint: line_length_linter
+  "list$to_struct with field = {rlang::quo_text(fields)}, upper_bound = {rlang::quo_text(upper_bound)}", # nolint: line_length_linter
   .cases = {
     expand.grid(
       fields = list(
         NULL,
         \(x) sprintf("field-%s", x + 1),
-        ~ paste0("field-", . + 1)
+        ~ paste0("field-", . + 1),
+        "a",
+        c("a", "b", "c", "d")
       ),
-      n_field_strategy = c("first_non_null", "max_width"),
       upper_bound = c(1, 5),
       stringsAsFactors = FALSE
     ) |>
-      tibble::as_tibble() |>
-      # Add character cases (ignoring n_field_strategy and upper_bound)
-      vctrs::vec_rbind(tibble::tibble(fields = list(c("a"), c("a", "b", "c", "d"))))
+      tibble::as_tibble()
   },
   code = {
     expect_snapshot(
@@ -707,7 +706,6 @@ patrick::with_parameters_test_that(
       )$select(
         pl$col("values")$list$to_struct(
           fields = fields,
-          n_field_strategy = n_field_strategy,
           upper_bound = upper_bound
         )
       )$unnest("values")

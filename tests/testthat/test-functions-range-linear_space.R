@@ -32,7 +32,7 @@ test_that("pl$linear_space()", {
     ),
     pl$DataFrame(
       literal = as.POSIXct(c("2025-01-11 08:00:00", "2025-01-21 16:00:00", "2025-02-01 00:00:00"))
-    )
+    )$with_columns(pl$col("literal")$cast(pl$Datetime("us")))
   )
 
   df <- pl$DataFrame(a = c(1, 2, 3, 4, 5))
