@@ -10,6 +10,7 @@ This is an update that corresponds to Python Polars 1.33.0, which includes signi
   - `<expr>$shrink_dtype()` (#1507). Use `<series>$shrink_dtype()` instead.
 - Arguments
   - `<expr>$list$to_struct()`'s first argument `n_field_strategy` (#1507).
+  - `<expr>$str$json_decode()`'s first argument `dtype` must be specified (#1507).
   - `<expr>$str$json_decode()`'s `infer_schema_length` (#1507).
   - `<expr>$str$to_decimal()`'s `inference_length` (#1507).
   - `<expr>$str$to_decimal()`'s new `scale` argument must be specified (#1507).

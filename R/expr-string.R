@@ -515,13 +515,13 @@ expr_str_to_decimal <- function(..., scale, inference_length = deprecated()) {
       )
     }
 
-    # Python Polars does not allow `scale` is empty,
+    # Python Polars does not allow `scale` to be empty,
     # but avoiding breaking change for the API, this is needed.
     if (is_missing(scale)) {
       deprecate_warn(
         c(
           `!` = sprintf(
-            "%s without %s is deprecated and set %s instead.",
+            "%s without %s is deprecated and set %s automatically.",
             format_code("<expr>$str$to_decimal()"),
             format_arg("scale"),
             format_code("scale = 0L")
@@ -654,8 +654,7 @@ expr_str_starts_with <- function(prefix) {
 #' Parse string values as JSON.
 #'
 #' @inheritParams rlang::args_dots_empty
-#' @param dtype The dtype to cast the extracted value to. If `NULL`, the dtype
-#' will be inferred from the JSON value.
+#' @param dtype The dtype to cast the extracted value to.
 #' @param infer_schema_length `r lifecycle::badge("deprecated")`
 #'   Ignored.
 #' @details
@@ -667,17 +666,29 @@ expr_str_starts_with <- function(prefix) {
 #'   json_val = c('{"a":1, "b": true}', NA, '{"a":2, "b": false}')
 #' )
 #'
-#' df$select(
-#'   pl$col("json_val")$str$json_decode()
-#' )$unnest("json_val")
-#'
 #' dtype <- pl$Struct(a = pl$UInt8, b = pl$Boolean)
 #' df$select(
 #'   pl$col("json_val")$str$json_decode(dtype)
 #' )$unnest("json_val")
-expr_str_json_decode <- function(dtype = NULL, ..., infer_schema_length = deprecated()) {
+expr_str_json_decode <- function(dtype, ..., infer_schema_length = deprecated()) {
   wrap({
     check_dots_empty0(...)
+
+    # Python Polars does not allow `dtype` to be empty,
+    # but avoiding breaking change for the API, this is needed.
+    if (is_missing(dtype)) {
+      deprecate_warn(
+        c(
+          `!` = sprintf(
+            "%s without %s is deprecated and set %s automatically.",
+            format_code("<expr>$str$to_decimal()"),
+            format_arg("dtype"),
+            format_code("dtype = pl$Struct()")
+          )
+        )
+      )
+      dtype <- pl$Struct()
+    }
     if (is_present(infer_schema_length)) {
       deprecate_warn(
         c(
