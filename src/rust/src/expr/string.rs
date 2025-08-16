@@ -111,9 +111,9 @@ impl PlRExpr {
             .into())
     }
 
-    fn str_to_decimal(&self, infer_len: NumericScalar) -> Result<Self> {
-        let infer_len = <Wrap<usize>>::try_from(infer_len)?.0;
-        Ok(self.inner.clone().str().to_decimal(infer_len).into())
+    fn str_to_decimal(&self, scale: NumericScalar) -> Result<Self> {
+        let scale = <Wrap<usize>>::try_from(scale)?.0;
+        Ok(self.inner.clone().str().to_decimal(scale).into())
     }
 
     fn str_contains(&self, pat: &PlRExpr, literal: bool, strict: bool) -> Result<Self> {
@@ -168,20 +168,14 @@ impl PlRExpr {
         }
     }
 
-    fn str_json_decode(
-        &self,
-        infer_schema_length: NumericScalar,
-        dtype: Option<&PlRDataType>,
-    ) -> Result<Self> {
+    fn str_json_decode(&self, dtype: &PlRDataType) -> Result<Self> {
         #[cfg(not(target_arch = "wasm32"))]
         {
-            let infer_schema_len = <Wrap<usize>>::try_from(infer_schema_length)?.0;
-            let dtype = dtype.map(|x| x.dt.clone());
             Ok(self
                 .inner
                 .clone()
                 .str()
-                .json_decode(dtype, Some(infer_schema_len))
+                .json_decode(dtype.dt.clone())
                 .into())
         }
         #[cfg(target_arch = "wasm32")]

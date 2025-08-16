@@ -1,6 +1,6 @@
 use crate::{PlRExpr, prelude::*};
 use polars::series::ops::NullBehavior;
-use savvy::{FunctionSexp, NumericScalar, Result, StringSexp, savvy};
+use savvy::{NumericScalar, Result, StringSexp, savvy};
 
 #[savvy]
 impl PlRExpr {
@@ -141,54 +141,9 @@ impl PlRExpr {
         Ok(self.inner.clone().list().eval(expr.inner.clone()).into())
     }
 
-    fn list_to_struct(
-        &self,
-        width_strat: &str,
-        name_gen: Option<FunctionSexp>,
-        upper_bound: Option<NumericScalar>,
-    ) -> Result<Self> {
-        let width_strat = Wrap::<ListToStructWidthStrategy>::try_from(width_strat)?.0;
-        let upper_bound = upper_bound
-            .map(<Wrap<usize>>::try_from)
-            .transpose()?
-            .map(|x| x.0);
-
-        #[cfg(not(target_arch = "wasm32"))]
-        use crate::r_udf::RUdf;
-
-        #[cfg(not(target_arch = "wasm32"))]
-        let name_gen = name_gen.map(|lambda| RUdf::new(lambda).into());
-        #[cfg(target_arch = "wasm32")]
-        let name_gen = match name_gen {
-            Some(_) => {
-                return Err(crate::RPolarsErr::Other(
-                    "Specifying a function name generator is not supported in WASM".to_string(),
-                )
-                .into());
-            }
-            None => None,
-        };
-
-        Ok(self
-            .inner
-            .clone()
-            .list()
-            .to_struct(ListToStruct::InferWidth {
-                infer_field_strategy: width_strat,
-                get_index_name: name_gen,
-                max_fields: upper_bound,
-            })
-            .into())
-    }
-
-    fn list_to_struct_fixed_width(&self, names: StringSexp) -> Result<Self> {
+    fn list_to_struct(&self, names: StringSexp) -> Result<Self> {
         let names: Arc<[PlSmallStr]> = names.iter().map(PlSmallStr::from).collect::<Arc<_>>();
-        Ok(self
-            .inner
-            .clone()
-            .list()
-            .to_struct(ListToStruct::FixedWidth(names))
-            .into())
+        Ok(self.inner.clone().list().to_struct(names).into())
     }
 
     fn list_all(&self) -> Result<Self> {

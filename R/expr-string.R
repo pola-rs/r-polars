@@ -484,11 +484,12 @@ expr_str_zfill <- function(length) {
 
 #' Convert a String column into a Decimal column
 #'
-#' This method infers the needed parameters `precision` and `scale`.
+#' `r lifecycle::badge("experimental")`
 #'
 #' @inheritParams rlang::args_dots_empty
-#' @param inference_length Number of elements to parse to determine the
-#' `precision` and `scale`.
+#' @param scale Number of digits after the comma to use for the decimals.
+#' @param inference_length `r lifecycle::badge("deprecated")`
+#'   Ignored.
 #' @inherit as_polars_expr return
 #'
 #' @examples
@@ -498,11 +499,39 @@ expr_str_zfill <- function(length) {
 #'     "12.90", "143.09", "143.9"
 #'   )
 #' )
-#' df$with_columns(numbers_decimal = pl$col("numbers")$str$to_decimal())
-expr_str_to_decimal <- function(..., inference_length = 100) {
+#' df$with_columns(numbers_decimal = pl$col("numbers")$str$to_decimal(scale = 2))
+expr_str_to_decimal <- function(..., scale, inference_length = deprecated()) {
   wrap({
     check_dots_empty0(...)
-    self$`_rexpr`$str_to_decimal(inference_length)
+    if (is_present(inference_length)) {
+      deprecate_warn(
+        c(
+          `!` = sprintf(
+            "%s with %s is deprecated and has no effect on execution.",
+            format_code("<expr>$str$to_decimal()"),
+            format_arg("inference_length")
+          )
+        )
+      )
+    }
+
+    # Python Polars does not allow `scale` to be empty,
+    # but avoiding breaking change for the API, this is needed.
+    if (is_missing(scale)) {
+      deprecate_warn(
+        c(
+          `!` = sprintf(
+            "%s without %s is deprecated and set %s automatically.",
+            format_code("<expr>$str$to_decimal()"),
+            format_arg("scale"),
+            format_code("scale = 0L")
+          )
+        )
+      )
+      scale <- 0L
+    }
+
+    self$`_rexpr`$str_to_decimal(scale)
   })
 }
 
@@ -625,10 +654,9 @@ expr_str_starts_with <- function(prefix) {
 #' Parse string values as JSON.
 #'
 #' @inheritParams rlang::args_dots_empty
-#' @param dtype The dtype to cast the extracted value to. If `NULL`, the dtype
-#' will be inferred from the JSON value.
-#' @param infer_schema_length How many rows to parse to determine the schema.
-#' If `NULL`, all rows are used.
+#' @param dtype The dtype to cast the extracted value to.
+#' @param infer_schema_length `r lifecycle::badge("deprecated")`
+#'   Ignored.
 #' @details
 #' Throw errors if encounter invalid json strings.
 #'
@@ -638,18 +666,42 @@ expr_str_starts_with <- function(prefix) {
 #'   json_val = c('{"a":1, "b": true}', NA, '{"a":2, "b": false}')
 #' )
 #'
-#' df$select(
-#'   pl$col("json_val")$str$json_decode()
-#' )$unnest("json_val")
-#'
 #' dtype <- pl$Struct(a = pl$UInt8, b = pl$Boolean)
 #' df$select(
 #'   pl$col("json_val")$str$json_decode(dtype)
 #' )$unnest("json_val")
-expr_str_json_decode <- function(dtype = NULL, ..., infer_schema_length = 100) {
+expr_str_json_decode <- function(dtype, ..., infer_schema_length = deprecated()) {
   wrap({
     check_dots_empty0(...)
-    self$`_rexpr`$str_json_decode(dtype = dtype$`_dt`, infer_schema_length = infer_schema_length)
+
+    # Python Polars does not allow `dtype` to be empty,
+    # but avoiding breaking change for the API, this is needed.
+    if (is_missing(dtype)) {
+      deprecate_warn(
+        c(
+          `!` = sprintf(
+            "%s without %s is deprecated and set %s automatically.",
+            format_code("<expr>$str$json_decode()"),
+            format_arg("dtype"),
+            format_code("dtype = pl$Struct()")
+          )
+        )
+      )
+      dtype <- pl$Struct()
+    }
+    if (is_present(infer_schema_length)) {
+      deprecate_warn(
+        c(
+          `!` = sprintf(
+            "%s with %s is deprecated and has no effect on execution.",
+            format_code("<expr>$str$json_decode()"),
+            format_arg("infer_schema_length")
+          )
+        )
+      )
+    }
+
+    self$`_rexpr`$str_json_decode(dtype = dtype$`_dt`)
   })
 }
 

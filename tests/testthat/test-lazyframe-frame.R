@@ -132,7 +132,7 @@ test_that("POLARS_AUTO_STRUCTIFY works for select", {
         }),
         .data,
         as_polars_lf(.data)$select(
-          is_odd = pl$struct((pl$col(pl$Int32) %% 2) == 1),
+          is_odd = pl$struct((pl$col(pl$Int32) %% 2)$name$suffix("_is_odd") == 1),
         )$collect()
       )
     }
@@ -360,7 +360,7 @@ test_that("merge_sorted works", {
     .input$merge_sorted(.input2, key = "foobar"),
     .input = df1,
     .input2 = df2,
-    'Column(s) not found: "foobar" not found',
+    "field not found: foobar",
     fixed = TRUE
   )
 })
@@ -2374,7 +2374,7 @@ test_that("group_by_dynamic: arg 'include_boundaries' works", {
       ),
       dt = as.Date(c("2019-12-31", "2020-01-02", "2020-01-08")),
       n = list(c(3, 7, 5), c(9, 2), 1)
-    )
+    )$with_columns(cs$datetime()$cast(pl$Datetime("us")))
   )
 })
 

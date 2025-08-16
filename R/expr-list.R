@@ -758,43 +758,26 @@ expr_list_to_array <- function(width) {
 #' must be used to obtain the expected result.
 #' @inherit as_polars_expr return
 #' @inheritParams expr_arr_to_struct
-#' @param n_field_strategy One of `"first_non_null"` or `"max_width"`.
-#'   Strategy to determine the number of fields of the struct.
-#'
-#'   - `"first_non_null"` (default): Set number of fields equal to
-#'     the length of the first non zero-length sublist.
-#'   - `"max_width"`: Set number of fields as max length of all sublists.
-#'
-#'   If the `field` argument is character, this argument will be ignored.
+#' @param n_field_strategy `r lifecycle::badge("deprecated")`
+#'   Ignored.
 #' @param upper_bound Single positive integer value or `NULL` (default).
-#'   A [LazyFrame] needs to know the schema at all times,
-#'   so the caller must provide an upper bound of the number of struct fields
-#'   that will be created; if set incorrectly, subsequent operations may fail.
-#'   When operating on a DataFrame, the schema does not need to be tracked
-#'   or pre-determined, as the result will be eagerly evaluated,
-#'   so this argument can be `NULL`.
-#'   If the `fields` argument is character, this argument will be ignored.
+#'   A [polars expression][Expr] needs to be able to evaluate the output datatype at all
+#'   times, so the caller must provide an upper bound of the number of struct
+#'   fields that will be created if `fields` is not a character vector of field names.
 #' @examples
 #' df <- pl$DataFrame(n = list(c(0, 1), c(0, 1, 2)))
 #'
 #' # Convert list to struct with default field name assignment:
 #'
 #' # This will become a struct with 2 fields.
-#' df$select(pl$col("n")$list$to_struct())$unnest("n")
-#'
-#' # As the shorter sublist comes first,
-#' # we must use the max_width strategy to force a search for the longest.
-#' # This will become a struct with 3 fields.
-#' df$select(
-#'   pl$col("n")$list$to_struct(n_field_strategy = "max_width")
-#' )$unnest("n")
+#' df$select(pl$col("n")$list$to_struct(upper_bound = 2))$unnest("n")
 #'
 #' # Convert list to struct with field name assignment by
 #' # function/index:
 #' df$select(
 #'   pl$col("n")$list$to_struct(
 #'     fields = \(idx) paste0("n", idx + 1),
-#'     n_field_strategy = "max_width"
+#'     upper_bound = 2
 #'   )
 #' )$unnest("n")
 #'
@@ -804,26 +787,57 @@ expr_list_to_array <- function(width) {
 #'   fields = c("one", "two", "three"))
 #' )$unnest("n")
 expr_list_to_struct <- function(
-  n_field_strategy = c("first_non_null", "max_width"),
+  n_field_strategy = deprecated(),
   fields = NULL,
   upper_bound = NULL
 ) {
   wrap({
-    if (is_character(fields)) {
-      if (anyNA(fields)) {
-        abort("`field` character must not contain NA values.")
-      }
-      self$`_rexpr`$list_to_struct_fixed_width(fields)
+    if (is_present(n_field_strategy)) {
+      deprecate_warn(
+        c(
+          `!` = sprintf(
+            "%s with %s is deprecated and has no effect on execution.",
+            format_code("<expr>$list$to_struct()"),
+            format_arg("n_field_strategy")
+          )
+        )
+      )
+    }
+
+    check_number_whole(upper_bound, min = 1, allow_null = TRUE)
+
+    fields <- if (is_character(fields)) {
+      fields
     } else {
-      n_field_strategy <- arg_match0(n_field_strategy, values = c("first_non_null", "max_width"))
-      name_gen <- if (is.null(fields)) {
-        NULL
+      if (is.null(upper_bound)) {
+        abort(
+          c(
+            format_error("Invalid operation."),
+            i = format_error(
+              sprintf(
+                "%s requires either %s to be a vector or %s to be set",
+                format_code("<expr>$list$to_struct()"),
+                format_arg("fields"),
+                format_arg("upper_bound")
+              )
+            )
+          )
+        )
+      }
+      idx <- seq(0L, upper_bound - 1L)
+
+      if (is.null(fields)) {
+        sprintf("field_%d", idx)
       } else {
         fields <- as_function(fields)
-        \(idx) fields(idx)
+        fields(idx)
       }
-      self$`_rexpr`$list_to_struct(n_field_strategy, name_gen, upper_bound)
     }
+
+    if (anyNA(fields)) {
+      abort("`fields` must not contain `NA` values.")
+    }
+    self$`_rexpr`$list_to_struct(fields)
   })
 }
 

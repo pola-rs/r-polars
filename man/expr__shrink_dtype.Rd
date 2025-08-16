@@ -10,12 +10,7 @@ expr__shrink_dtype()
 A polars \link{expression}
 }
 \description{
-Shrink to the dtype needed to fit the extrema of this Series. This can be
-used to reduce memory pressure.
-}
-\examples{
-df <- pl$DataFrame(a = c(-112, 2, 112))$cast(pl$Int64)
-df$with_columns(
-  shrunk = pl$col("a")$shrink_dtype()
-)
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Deprecated as of polars 1.3.0 and turned into a no-op.
+Use \code{\link[=series__shrink_dtype]{<series>$shrink_dtype}} instead.
 }

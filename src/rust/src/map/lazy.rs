@@ -6,7 +6,7 @@ use crate::{
 };
 use savvy::{FunctionSexp, Result};
 
-pub fn map_single(
+pub fn map_expr(
     rexpr: &PlRExpr,
     lambda: FunctionSexp,
     output_type: Option<&PlRDataType>,

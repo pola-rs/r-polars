@@ -1060,10 +1060,10 @@ expr__filter <- function(...) {
 #' R vector that will be converted into a Series by [as_polars_series()].
 #' @inheritParams rlang::args_dots_empty
 #' @param lambda Function to apply.
-#' @param return_dtype Dtype of the output Series. If `NULL` (default), the
-#' dtype will be inferred based on the first non-null value that is returned by
-#' the function. This can lead to unexpected results, so it is recommended to
-#' provide the return dtype.
+#' @param return_dtype Dtype of the output Series.
+#'   It is recommended to set this whenever possible. If this is `NULL`, it tries
+#'   to infer the datatype by calling the function with dummy data and looking at
+#'   the output.
 #'
 #' @inherit as_polars_expr return
 #' @examples
@@ -4508,19 +4508,19 @@ expr__shift <- function(n = 1, ..., fill_value = NULL) {
 
 #' Shrink numeric columns to the minimal required datatype
 #'
-#' Shrink to the dtype needed to fit the extrema of this Series. This can be
-#' used to reduce memory pressure.
+#' `r lifecycle::badge("deprecated")`
+#' Deprecated as of polars 1.3.0 and turned into a no-op.
+#' Use [`<series>$shrink_dtype`][series__shrink_dtype] instead.
 #'
 #' @inherit as_polars_expr return
-#' @examples
-#' df <- pl$DataFrame(a = c(-112, 2, 112))$cast(pl$Int64)
-#' df$with_columns(
-#'   shrunk = pl$col("a")$shrink_dtype()
-#' )
 expr__shrink_dtype <- function() {
-  wrap({
-    self$`_rexpr`$shrink_dtype()
-  })
+  deprecate_warn(
+    c(
+      `!` = sprintf("%s is deprecated and is a no-op.", format_code("<expr>$shrink_dtype()")),
+      `i` = sprintf("Use %s instead.", format_code("<series>$shrink_dtype()"))
+    )
+  )
+  self
 }
 
 #' Shuffle the contents of this expression

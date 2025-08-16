@@ -193,4 +193,12 @@ impl PlRSeries {
             PlRSeries::new(series).try_into()
         }
     }
+
+    pub fn shrink_dtype(&self) -> Result<Self> {
+        self.series
+            .shrink_type()
+            .map(Into::into)
+            .map_err(RPolarsErr::from)
+            .map_err(Into::into)
+    }
 }

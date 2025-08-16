@@ -9,10 +9,10 @@ expr__map_batches(lambda, return_dtype = NULL, ...)
 \arguments{
 \item{lambda}{Function to apply.}
 
-\item{return_dtype}{Dtype of the output Series. If \code{NULL} (default), the
-dtype will be inferred based on the first non-null value that is returned by
-the function. This can lead to unexpected results, so it is recommended to
-provide the return dtype.}
+\item{return_dtype}{Dtype of the output Series.
+It is recommended to set this whenever possible. If this is \code{NULL}, it tries
+to infer the datatype by calling the function with dummy data and looking at
+the output.}
 
 \item{...}{These dots are for future extensions and must be empty.}
 }

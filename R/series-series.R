@@ -324,3 +324,16 @@ series__rechunk <- function(..., in_place = FALSE) {
 #' s <- pl$Series("a", integer())
 #' s$is_empty()
 series__is_empty <- function() self$len() == 0L
+
+#' Shrink numeric values to the minimal required datatype
+#'
+#' @inherit as_polars_series return
+#' @examples
+#' s <- as_polars_series(1:6)
+#' s
+#'
+#' s$shrink_dtype()
+series__shrink_dtype <- function() {
+  self$`_s`$shrink_dtype() |>
+    wrap()
+}
