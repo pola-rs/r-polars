@@ -681,7 +681,7 @@ expr_str_json_decode <- function(dtype, ..., infer_schema_length = deprecated())
         c(
           `!` = sprintf(
             "%s without %s is deprecated and set %s automatically.",
-            format_code("<expr>$str$to_decimal()"),
+            format_code("<expr>$str$json_decode()"),
             format_arg("dtype"),
             format_code("dtype = pl$Struct()")
           )
