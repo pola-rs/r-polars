@@ -14,7 +14,7 @@ For more general information on development, please refer to the following docum
 To develop new features, you must install some tools outside of R.
 
 - [rustup](https://rustup.rs/)
-- [savvy-cli](https://crates.io/crates/savvy-cli)
+- [savvy-cli](https://crates.io/crates/savvy-cli/)
 
 Note that the `Taskfile.yml` used by [Task](https://taskfile.dev/) in the root directory of the repository
 provides some useful commands (e.g. `task build-documents` to build all R documents).
