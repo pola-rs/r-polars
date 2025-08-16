@@ -10,8 +10,6 @@ pub fn map_single(
     rexpr: &PlRExpr,
     lambda: FunctionSexp,
     output_type: Option<&PlRDataType>,
-    // TODO: support these options
-    // agg_list: bool,
     // is_elementwise: bool,
     // returns_scalar: bool,
 ) -> Result<PlRExpr> {
@@ -25,13 +23,15 @@ pub fn map_single(
             col.as_materialized_series().clone(),
         ));
         let s: Series = thread_com.recv().try_into().unwrap();
-        Ok(Some(s.into_column()))
+        Ok(s.into_column())
     };
 
-    let output_map = GetOutput::map_field(move |field| match &output_type {
-        Some(dt) => Ok(Field::new(field.name().clone(), dt.clone())),
-        None => Ok(field.clone()),
-    });
-
-    Ok(rexpr.inner.clone().map(func, output_map).into())
+    Ok(rexpr
+        .inner
+        .clone()
+        .map(func, move |_, f| match &output_type {
+            Some(dt) => Ok(Field::new(f.name().clone(), dt.clone())),
+            None => Ok(f.clone()),
+        })
+        .into())
 }

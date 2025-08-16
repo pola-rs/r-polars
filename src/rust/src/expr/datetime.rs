@@ -120,9 +120,9 @@ impl PlRExpr {
                 |s| {
                     s.take_materialized_series()
                         .timestamp(TimeUnit::Milliseconds)
-                        .map(|ca| Some((ca / 1000).into_column()))
+                        .map(|ca| (ca / 1000).into_column())
                 },
-                GetOutput::from_type(DataType::Int64),
+                |_, f| Ok(Field::new(f.name().clone(), DataType::Int64)),
             )
             .into())
     }

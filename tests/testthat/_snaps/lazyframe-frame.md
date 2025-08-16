@@ -43,7 +43,9 @@
     Code
       cat(lf$to_dot())
     Output
-      graph  polars_query {
+      digraph polars_query {
+        rankdir="BT"
+        node [fontname="Monospace", shape="box"]
         p1[label="TABLE\nπ */11"]
       }
 
@@ -52,7 +54,9 @@
     Code
       cat(lf$select("am")$to_dot())
     Output
-      graph  polars_query {
+      digraph polars_query {
+        rankdir="BT"
+        node [fontname="Monospace", shape="box"]
         p1[label="TABLE\nπ 1/11"]
       }
 
