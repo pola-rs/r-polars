@@ -37,23 +37,15 @@ tasks:
     desc: Install tools for development.
     deps:
       - setup-r-tools
-      - setup-rust-tools
 
   setup-r-tools:
     env:
       PKG_SYSREQS: FALSE
     desc: Install R packages for development.
     cmds:
-      - Rscript -e 'install.packages("pak", repos = sprintf("https://r-lib.github.io/p/pak/stable/%s/%s/%s", .Platform$pkgType, R.Version()$os, R.Version()$arch))'
       - Rscript -e
         'pak::repo_add("https://cloud.r-project.org/");
         pak::local_install_deps(dependencies = c("all", "Config/Needs/dev", "Config/Needs/website"))'
-
-  setup-rust-tools:
-    desc: Install Rust tools for development.
-    cmds:
-      # TODO: check the savvy version
-      - cargo install savvy-cli
 
   setup-venv:
     desc: Setup Python venv for development.

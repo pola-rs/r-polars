@@ -11,10 +11,10 @@ For more general information on development, please refer to the following docum
 
 ## System Requirements
 
-To install the development version of Polars or develop new features, you must install some tools outside of R.
+To develop new features, you must install some tools outside of R.
 
 - [rustup](https://rustup.rs/)
-- [CMake](https://cmake.org/)
+- [savvy-cli](https://crates.io/crates/savvy-cli)
 
 Note that the `Taskfile.yml` used by [Task](https://taskfile.dev/) in the root directory of the repository
 provides some useful commands (e.g. `task build-documents` to build all R documents).
