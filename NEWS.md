@@ -2,7 +2,11 @@
 
 ## polars (development version)
 
+## polars 1.2.1
+
 This is an update that corresponds to Python Polars 1.32.3.
+
+Only updates Rust dependencies (#1502).
 
 ## polars 1.2.0
 
