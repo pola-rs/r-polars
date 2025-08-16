@@ -726,7 +726,7 @@ impl PlRExpr {
         Ok(self
             .inner
             .clone()
-            .map(|s| Ok(Some(s.rechunk())), GetOutput::same_type())
+            .map(|s| Ok(s.rechunk()), |_, f| Ok(f.clone()))
             .into())
     }
 
