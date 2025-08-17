@@ -187,7 +187,6 @@ expr_str_to_time <- function(format = NULL, ..., strict = TRUE, cache = TRUE) {
 #' df <- pl$DataFrame(x = c("2020-01-01 01:00Z", "2020-01-01 02:00Z"))
 #'
 #' df$select(pl$col("x")$str$to_datetime("%Y-%m-%d %H:%M%#z"))
-#' df$select(pl$col("x")$str$to_datetime(time_unit = "ms"))
 expr_str_to_datetime <- function(
   format = NULL,
   ...,
