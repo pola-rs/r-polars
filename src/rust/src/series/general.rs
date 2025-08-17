@@ -230,7 +230,6 @@ impl PlRSeries {
         let inference_length = <Wrap<usize>>::try_from(inference_length)?.0;
         let ca = self.series.str().map_err(RPolarsErr::from)?;
         ca.to_decimal_infer(inference_length)
-            .map(Series::from)
             .map(Into::into)
             .map_err(RPolarsErr::from)
             .map_err(Into::into)
