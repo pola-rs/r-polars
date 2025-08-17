@@ -209,9 +209,7 @@ impl PlRSeries {
         ambiguous: &PlRSeries,
         time_unit: Option<&str>,
     ) -> Result<Self> {
-        let time_unit = time_unit
-            .map(|tu| <Wrap<TimeUnit>>::try_from(tu))
-            .transpose()?;
+        let time_unit = time_unit.map(<Wrap<TimeUnit>>::try_from).transpose()?;
         let datetime_strings = self.series.str().map_err(RPolarsErr::from)?;
         let ambiguous = ambiguous.series.str().map_err(RPolarsErr::from)?;
 
