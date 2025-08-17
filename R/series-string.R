@@ -122,7 +122,7 @@ series_str_strptime <- function(
 
     if (is.null(format) && inherits(dtype, "polars_dtype_datetime") && is.null(dtype$time_zone)) {
       self$to_datetime(
-        time_unit = NULL,
+        time_unit = dtype$time_unit,
         strict = strict,
         exact = exact,
         cache = cache,

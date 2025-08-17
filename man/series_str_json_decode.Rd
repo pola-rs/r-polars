@@ -13,7 +13,8 @@ If \code{NULL}, the dtype will be inferred from the JSON value.}
 \item{...}{These dots are for future extensions and must be empty.}
 
 \item{infer_schema_length}{The maximum number of rows to scan for schema inference.
-If set to \code{NULL}, the full data may be scanned \emph{(this is slow)}.}
+If set to \code{NULL}, the full data may be scanned \emph{(this is slow)}.
+Only used if the \code{dtype} argument is \code{NULL}.}
 }
 \value{
 A \link[=Series]{polars Series}
