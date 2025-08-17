@@ -15,8 +15,8 @@ series_str_strptime(
 )
 }
 \arguments{
-\item{dtype}{The data type to convert into. Can be either \code{\link[=pl__Date]{pl$Date}},
-\code{\link[=pl__Datetime]{pl$Datetime}}, or \code{\link[=pl__Time]{pl$Time}}.}
+\item{dtype}{The data type to convert into. Can be either \code{\link[=DataType]{pl$Date}},
+\code{\link[=pl__Datetime]{pl$Datetime}}, or \code{\link[=DataType]{pl$Time}}.}
 
 \item{format}{Format to use for conversion. Refer to
 \href{https://docs.rs/chrono/latest/chrono/format/strftime/index.html}{the chrono crate documentation}
