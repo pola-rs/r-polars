@@ -223,6 +223,7 @@ nav:
         - List:
             - to_struct: man/series_list_to_struct.md
         - String:
+            - strptime: man/series_string_strptime.md
             - to_datetime: man/series_string_to_datetime.md
       Expressions:
         - All others:
