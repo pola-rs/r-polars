@@ -201,4 +201,99 @@ impl PlRSeries {
             .map_err(RPolarsErr::from)
             .map_err(Into::into)
     }
+
+    fn str_to_datetime_infer(
+        &self,
+        time_unit: &str,
+        strict: bool,
+        exact: bool,
+        ambiguous: &PlRSeries,
+    ) -> Result<Self> {
+        let time_unit = <Wrap<TimeUnit>>::try_from(time_unit)?.0;
+        let datetime_strings = self.series.str().map_err(RPolarsErr::from)?;
+        let ambiguous = ambiguous.series.str().map_err(RPolarsErr::from)?;
+
+        polars::time::prelude::string::infer::to_datetime_with_inferred_tz(
+            datetime_strings,
+            time_unit,
+            strict,
+            exact,
+            ambiguous,
+        )
+        .map(IntoSeries::into_series)
+        .map(PlRSeries::from)
+        .map_err(RPolarsErr::from)
+        .map_err(Into::into)
+    }
+
+    pub fn str_to_decimal_infer(&self, inference_length: NumericScalar) -> Result<Self> {
+        let inference_length = <Wrap<usize>>::try_from(inference_length)?.0;
+        let ca = self.series.str().map_err(RPolarsErr::from)?;
+        ca.to_decimal_infer(inference_length)
+            .map(Series::from)
+            .map(Into::into)
+            .map_err(RPolarsErr::from)
+            .map_err(Into::into)
+    }
+
+    fn list_to_struct(
+        &self,
+        n_field_strategy: &str,
+        name_gen: Option<savvy::FunctionSexp>,
+    ) -> Result<Self> {
+        let infer_field_strategy = Wrap::<ListToStructWidthStrategy>::try_from(n_field_strategy)?.0;
+
+        #[cfg(not(target_arch = "wasm32"))]
+        use crate::r_udf::RUdf;
+
+        #[cfg(not(target_arch = "wasm32"))]
+        let get_index_name = name_gen
+            .map(|lambda| <PlanCallback<usize, String>>::from(RUdf::new(lambda)))
+            .map(|f| NameGenerator(Arc::new(move |i| f.call(i).map(PlSmallStr::from)) as Arc<_>));
+        #[cfg(target_arch = "wasm32")]
+        let get_index_name = match name_gen {
+            Some(_) => {
+                return Err(crate::RPolarsErr::Other(
+                    "Specifying a function name generator is not supported in WASM".to_string(),
+                )
+                .into());
+            }
+            None => None,
+        };
+
+        self.series
+            .list()
+            .map_err(RPolarsErr::from)?
+            .to_struct(&ListToStructArgs::InferWidth {
+                infer_field_strategy,
+                get_index_name,
+                max_fields: None,
+            })
+            .map(IntoSeries::into_series)
+            .map(PlRSeries::from)
+            .map_err(RPolarsErr::from)
+            .map_err(Into::into)
+    }
+
+    fn str_json_decode(&self, infer_schema_length: Option<NumericScalar>) -> Result<Self> {
+        #[cfg(not(target_arch = "wasm32"))]
+        {
+            let infer_schema_length = infer_schema_length
+                .map(|l| <Wrap<usize>>::try_from(l).map(|l| l.0))
+                .transpose()?;
+            self.series
+                .str()
+                .map_err(RPolarsErr::from)?
+                .json_decode(None, infer_schema_length)
+                .map(|s| s.with_name(self.series.name().clone()))
+                .map(PlRSeries::from)
+                .map_err(RPolarsErr::from)
+                .map_err(Into::into)
+        }
+
+        #[cfg(target_arch = "wasm32")]
+        {
+            Err(RPolarsErr::Other(format!("Not supported in WASM")).into())
+        }
+    }
 }
