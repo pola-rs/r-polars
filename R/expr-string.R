@@ -52,13 +52,6 @@ namespace_expr_str <- function(x) {
 #'
 #' df$select(pl$col("x")$str$strptime(pl$Datetime(), "%Y-%m-%d %H:%M%#z"))
 #'
-#' # Auto infer format
-#' df$select(pl$col("x")$str$strptime(pl$Datetime()))
-#'
-#' # Datetime with timezone is interpreted as UTC timezone
-#' df <- pl$DataFrame(x = c("2020-01-01T01:00:00+09:00"))
-#' df$select(pl$col("x")$str$strptime(pl$Datetime()))
-#'
 #' # Dealing with different formats.
 #' df <- pl$DataFrame(
 #'   date = c(
