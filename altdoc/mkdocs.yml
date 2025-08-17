@@ -222,6 +222,8 @@ nav:
         - is_empty: man/series__is_empty.md
         - List:
             - to_struct: man/series_list_to_struct.md
+        - String:
+            - to_datetime: man/series_string_to_datetime.md
       Expressions:
         - All others:
             - abs: man/expr__abs.md

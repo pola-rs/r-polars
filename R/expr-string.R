@@ -199,10 +199,14 @@ expr_str_to_datetime <- function(
 ) {
   wrap({
     check_dots_empty0(...)
-    if (!is_polars_expr(ambiguous)) {
-      ambiguous <- arg_match0(ambiguous, c("raise", "earliest", "latest", "null")) |>
+
+    ambiguous <- if (!is_polars_expr(ambiguous)) {
+      arg_match0(ambiguous, c("raise", "earliest", "latest", "null")) |>
         as_polars_expr(as_lit = TRUE)
+    } else {
+      ambiguous
     }
+
     self$`_rexpr`$str_to_datetime(
       format = format,
       time_unit = time_unit,

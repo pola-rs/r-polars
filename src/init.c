@@ -3184,8 +3184,8 @@ SEXP savvy_PlRSeries_str_json_decode__impl(SEXP self__, SEXP c_arg__infer_schema
     return handle_result(res);
 }
 
-SEXP savvy_PlRSeries_str_to_datetime_infer__impl(SEXP self__, SEXP c_arg__time_unit, SEXP c_arg__strict, SEXP c_arg__exact, SEXP c_arg__ambiguous) {
-    SEXP res = savvy_PlRSeries_str_to_datetime_infer__ffi(self__, c_arg__time_unit, c_arg__strict, c_arg__exact, c_arg__ambiguous);
+SEXP savvy_PlRSeries_str_to_datetime_infer__impl(SEXP self__, SEXP c_arg__strict, SEXP c_arg__exact, SEXP c_arg__ambiguous, SEXP c_arg__time_unit) {
+    SEXP res = savvy_PlRSeries_str_to_datetime_infer__ffi(self__, c_arg__strict, c_arg__exact, c_arg__ambiguous, c_arg__time_unit);
     return handle_result(res);
 }
 

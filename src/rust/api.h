@@ -652,7 +652,7 @@ SEXP savvy_PlRSeries_serialize__ffi(SEXP self__);
 SEXP savvy_PlRSeries_shrink_dtype__ffi(SEXP self__);
 SEXP savvy_PlRSeries_slice__ffi(SEXP self__, SEXP c_arg__offset, SEXP c_arg__length);
 SEXP savvy_PlRSeries_str_json_decode__ffi(SEXP self__, SEXP c_arg__infer_schema_length);
-SEXP savvy_PlRSeries_str_to_datetime_infer__ffi(SEXP self__, SEXP c_arg__time_unit, SEXP c_arg__strict, SEXP c_arg__exact, SEXP c_arg__ambiguous);
+SEXP savvy_PlRSeries_str_to_datetime_infer__ffi(SEXP self__, SEXP c_arg__strict, SEXP c_arg__exact, SEXP c_arg__ambiguous, SEXP c_arg__time_unit);
 SEXP savvy_PlRSeries_str_to_decimal_infer__ffi(SEXP self__, SEXP c_arg__inference_length);
 SEXP savvy_PlRSeries_struct_fields__ffi(SEXP self__);
 SEXP savvy_PlRSeries_struct_unnest__ffi(SEXP self__);

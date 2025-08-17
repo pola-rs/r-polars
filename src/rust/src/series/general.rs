@@ -204,18 +204,20 @@ impl PlRSeries {
 
     fn str_to_datetime_infer(
         &self,
-        time_unit: &str,
         strict: bool,
         exact: bool,
         ambiguous: &PlRSeries,
+        time_unit: Option<&str>,
     ) -> Result<Self> {
-        let time_unit = <Wrap<TimeUnit>>::try_from(time_unit)?.0;
+        let time_unit = time_unit
+            .map(|tu| <Wrap<TimeUnit>>::try_from(tu))
+            .transpose()?;
         let datetime_strings = self.series.str().map_err(RPolarsErr::from)?;
         let ambiguous = ambiguous.series.str().map_err(RPolarsErr::from)?;
 
         polars::time::prelude::string::infer::to_datetime_with_inferred_tz(
             datetime_strings,
-            time_unit,
+            time_unit.map_or(TimeUnit::Microseconds, |v| v.0),
             strict,
             exact,
             ambiguous,

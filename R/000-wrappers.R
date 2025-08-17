@@ -4589,9 +4589,9 @@ class(`PlRSelector`) <- c("PlRSelector__bundle", "savvy_polars__sealed")
 }
 
 `PlRSeries_str_to_datetime_infer` <- function(self) {
-  function(`time_unit`, `strict`, `exact`, `ambiguous`) {
+  function(`strict`, `exact`, `ambiguous`, `time_unit` = NULL) {
     `ambiguous` <- .savvy_extract_ptr(`ambiguous`, "PlRSeries")
-    .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_str_to_datetime_infer__impl, `self`, `time_unit`, `strict`, `exact`, `ambiguous`))
+    .savvy_wrap_PlRSeries(.Call(savvy_PlRSeries_str_to_datetime_infer__impl, `self`, `strict`, `exact`, `ambiguous`, `time_unit`))
   }
 }
 
