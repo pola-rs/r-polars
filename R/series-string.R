@@ -151,3 +151,78 @@ series_str_strptime <- function(
     }
   })
 }
+
+#' Convert a String Series into a Decimal Series
+#'
+#' `r lifecycle::badge("experimental")`
+#'
+#' @inherit as_polars_series return
+#' @inheritParams rlang::args_dots_empty
+#' @param scale Number of digits after the comma to use for the decimals, or `NULL` (default).
+#'   If `NULL`, the method will infer the scale from the data.
+#' @param inference_length Number of elements to parse to determine the
+#'   `precision` and `scale` of the [decimal data type][pl__Decimal].
+#' @examples
+#' s <- as_polars_series(c(
+#'   "40.12",
+#'   "3420.13",
+#'   "120134.19",
+#'   "3212.98",
+#'   "12.90",
+#'   "143.09",
+#'   "143.9"
+#' ))
+#'
+#' s$str$to_decimal()
+#' s$str$to_decimal(scale = 4)
+series_str_to_decimal <- function(..., scale = NULL, inference_length = 100L) {
+  wrap({
+    check_dots_empty0(...)
+
+    if (is.null(scale)) {
+      self$`_s`$str_to_decimal_infer(inference_length)
+    } else {
+      s <- wrap(self$`_s`)
+      s$to_frame()$select_seq(
+        pl__col(s$name)$str$to_decimal(
+          scale = scale
+        )
+      )$to_series()
+    }
+  })
+}
+
+#' Parse string values as JSON
+#'
+#' Throws an error if invalid JSON strings are encountered.
+#' @inherit as_polars_series return
+#' @inheritParams rlang::args_dots_empty
+#' @param dtype The [dtype][DataType] to cast the extracted value to, or `NULL` (default).
+#'   If `NULL`, the dtype will be inferred from the JSON value.
+#' @param infer_schema_length The maximum number of rows to scan for schema inference.
+#'   If set to `NULL`, the full data may be scanned *(this is slow)*.
+#'   Only used if the `dtype` argument is `NULL`.
+#' @examples
+#' s1 <- as_polars_series(c('{"a":1, "b": true}', NA, '{"a":2, "b": false}'))
+#'
+#' s2 <- s1$str$json_decode()
+#' s2
+#' s2$dtype
+#'
+#' s3 <- s1$str$json_decode(pl$Struct(a = pl$UInt8, b = pl$Boolean))
+#' s3
+#' s3$dtype
+series_str_json_decode <- function(dtype = NULL, ..., infer_schema_length = 100L) {
+  wrap({
+    check_dots_empty0(...)
+
+    if (is.null(dtype)) {
+      self$`_s`$str_json_decode(infer_schema_length)
+    } else {
+      s <- wrap(self$`_s`)
+      s$to_frame()$select_seq(
+        pl__col(s$name)$str$json_decode(dtype = dtype)
+      )$to_series()
+    }
+  })
+}

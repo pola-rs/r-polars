@@ -223,8 +223,10 @@ nav:
         - List:
             - to_struct: man/series_list_to_struct.md
         - String:
+            - json_decode: man/series_string_json_decode.md
             - strptime: man/series_string_strptime.md
             - to_datetime: man/series_string_to_datetime.md
+            - to_decimal: man/series_string_to_decimal.md
       Expressions:
         - All others:
             - abs: man/expr__abs.md
