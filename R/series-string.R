@@ -55,7 +55,7 @@ series_str_to_datetime <- function(
       )
     } else {
       ambiguous_expr <- as_polars_expr(ambiguous)
-      s <- wrap(s$`_s`)
+      s <- wrap(self$`_s`)
 
       s$to_frame()$select_seq(
         pl__col(s$name)$str$to_datetime(
