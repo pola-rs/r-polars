@@ -217,8 +217,16 @@ nav:
         - to_frame: man/series__to_frame.md
         - to_r_vector: man/series__to_r_vector.md
         - serialize: man/series__serialize.md
+        - shrink_dtype: man/series__shrink_dtype.md
         - struct_unnest: man/series_struct_unnest.md
         - is_empty: man/series__is_empty.md
+        - List:
+            - to_struct: man/series_list_to_struct.md
+        - String:
+            - json_decode: man/series_str_json_decode.md
+            - strptime: man/series_str_strptime.md
+            - to_datetime: man/series_str_to_datetime.md
+            - to_decimal: man/series_str_to_decimal.md
       Expressions:
         - All others:
             - abs: man/expr__abs.md

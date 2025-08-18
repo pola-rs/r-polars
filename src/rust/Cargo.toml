@@ -1,6 +1,6 @@
 [package]
 name = "r-polars"
-version = "1.2.1-rc.1"
+version = "1.3.0-rc.1"
 edition = "2024"
 rust-version = "1.88.0"
 publish = false
@@ -28,8 +28,8 @@ too_many_arguments = "allow"
 ciborium = "0.2"
 either = "1.15"
 flume = "0.11"
-polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "2468e6fa51d7b84d2ccbacd659cc6f8031939d0c", default-features = false }
-polars-error = { git = "https://github.com/pola-rs/polars.git", rev = "2468e6fa51d7b84d2ccbacd659cc6f8031939d0c", default-features = false }
+polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "6c5a27dac6ddffb0e42a7b72392f277cd0da7a37", default-features = false }
+polars-error = { git = "https://github.com/pola-rs/polars.git", rev = "6c5a27dac6ddffb0e42a7b72392f277cd0da7a37", default-features = false }
 savvy = { version = "0.8", features = ["use-custom-error"] }
 serde_json = "1"
 state = "0.6"
@@ -41,7 +41,7 @@ thiserror = "2"
 # <https://github.com/pola-rs/polars/blob/93ceaccdac6f05c9b07a5117f3a4a90c238dbd29/.github/workflows/test-pyodide.yml#L40-L45>
 [target.'cfg(not(target_os = "emscripten"))'.dependencies.polars]
 git = "https://github.com/pola-rs/polars.git"
-rev = "2468e6fa51d7b84d2ccbacd659cc6f8031939d0c"
+rev = "6c5a27dac6ddffb0e42a7b72392f277cd0da7a37"
 default-features = false
 features = [
     "aws",
@@ -59,19 +59,19 @@ features = [
 
 [target.'cfg(not(target_os = "emscripten"))'.dependencies.polars-lazy]
 git = "https://github.com/pola-rs/polars.git"
-rev = "2468e6fa51d7b84d2ccbacd659cc6f8031939d0c"
+rev = "6c5a27dac6ddffb0e42a7b72392f277cd0da7a37"
 default-features = false
 features = ["new_streaming"]
 
 [target.'cfg(not(target_os = "emscripten"))'.dependencies.polars-mem-engine]
 git = "https://github.com/pola-rs/polars.git"
-rev = "2468e6fa51d7b84d2ccbacd659cc6f8031939d0c"
+rev = "6c5a27dac6ddffb0e42a7b72392f277cd0da7a37"
 default-features = false
 features = ["csv", "ipc", "json", "parquet"]
 
 [dependencies.polars]
 git = "https://github.com/pola-rs/polars.git"
-rev = "2468e6fa51d7b84d2ccbacd659cc6f8031939d0c"
+rev = "6c5a27dac6ddffb0e42a7b72392f277cd0da7a37"
 default-features = false
 features = [
     "abs",

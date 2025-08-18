@@ -1619,13 +1619,8 @@ SEXP savvy_PlRExpr_list_to_array__impl(SEXP self__, SEXP c_arg__width) {
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_list_to_struct__impl(SEXP self__, SEXP c_arg__width_strat, SEXP c_arg__name_gen, SEXP c_arg__upper_bound) {
-    SEXP res = savvy_PlRExpr_list_to_struct__ffi(self__, c_arg__width_strat, c_arg__name_gen, c_arg__upper_bound);
-    return handle_result(res);
-}
-
-SEXP savvy_PlRExpr_list_to_struct_fixed_width__impl(SEXP self__, SEXP c_arg__names) {
-    SEXP res = savvy_PlRExpr_list_to_struct_fixed_width__ffi(self__, c_arg__names);
+SEXP savvy_PlRExpr_list_to_struct__impl(SEXP self__, SEXP c_arg__names) {
+    SEXP res = savvy_PlRExpr_list_to_struct__ffi(self__, c_arg__names);
     return handle_result(res);
 }
 
@@ -2074,11 +2069,6 @@ SEXP savvy_PlRExpr_shift__impl(SEXP self__, SEXP c_arg__n, SEXP c_arg__fill_valu
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_shrink_dtype__impl(SEXP self__) {
-    SEXP res = savvy_PlRExpr_shrink_dtype__ffi(self__);
-    return handle_result(res);
-}
-
 SEXP savvy_PlRExpr_shuffle__impl(SEXP self__, SEXP c_arg__seed) {
     SEXP res = savvy_PlRExpr_shuffle__ffi(self__, c_arg__seed);
     return handle_result(res);
@@ -2214,8 +2204,8 @@ SEXP savvy_PlRExpr_str_join__impl(SEXP self__, SEXP c_arg__delimiter, SEXP c_arg
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_str_json_decode__impl(SEXP self__, SEXP c_arg__infer_schema_length, SEXP c_arg__dtype) {
-    SEXP res = savvy_PlRExpr_str_json_decode__ffi(self__, c_arg__infer_schema_length, c_arg__dtype);
+SEXP savvy_PlRExpr_str_json_decode__impl(SEXP self__, SEXP c_arg__dtype) {
+    SEXP res = savvy_PlRExpr_str_json_decode__ffi(self__, c_arg__dtype);
     return handle_result(res);
 }
 
@@ -2334,8 +2324,8 @@ SEXP savvy_PlRExpr_str_to_datetime__impl(SEXP self__, SEXP c_arg__strict, SEXP c
     return handle_result(res);
 }
 
-SEXP savvy_PlRExpr_str_to_decimal__impl(SEXP self__, SEXP c_arg__infer_len) {
-    SEXP res = savvy_PlRExpr_str_to_decimal__ffi(self__, c_arg__infer_len);
+SEXP savvy_PlRExpr_str_to_decimal__impl(SEXP self__, SEXP c_arg__scale) {
+    SEXP res = savvy_PlRExpr_str_to_decimal__ffi(self__, c_arg__scale);
     return handle_result(res);
 }
 
@@ -3074,6 +3064,11 @@ SEXP savvy_PlRSeries_len__impl(SEXP self__) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRSeries_list_to_struct__impl(SEXP self__, SEXP c_arg__n_field_strategy, SEXP c_arg__name_gen) {
+    SEXP res = savvy_PlRSeries_list_to_struct__ffi(self__, c_arg__n_field_strategy, c_arg__name_gen);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRSeries_mul__impl(SEXP self__, SEXP c_arg__other) {
     SEXP res = savvy_PlRSeries_mul__ffi(self__, c_arg__other);
     return handle_result(res);
@@ -3174,8 +3169,28 @@ SEXP savvy_PlRSeries_serialize__impl(SEXP self__) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRSeries_shrink_dtype__impl(SEXP self__) {
+    SEXP res = savvy_PlRSeries_shrink_dtype__ffi(self__);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRSeries_slice__impl(SEXP self__, SEXP c_arg__offset, SEXP c_arg__length) {
     SEXP res = savvy_PlRSeries_slice__ffi(self__, c_arg__offset, c_arg__length);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSeries_str_json_decode__impl(SEXP self__, SEXP c_arg__infer_schema_length) {
+    SEXP res = savvy_PlRSeries_str_json_decode__ffi(self__, c_arg__infer_schema_length);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSeries_str_to_datetime_infer__impl(SEXP self__, SEXP c_arg__strict, SEXP c_arg__exact, SEXP c_arg__ambiguous, SEXP c_arg__time_unit) {
+    SEXP res = savvy_PlRSeries_str_to_datetime_infer__ffi(self__, c_arg__strict, c_arg__exact, c_arg__ambiguous, c_arg__time_unit);
+    return handle_result(res);
+}
+
+SEXP savvy_PlRSeries_str_to_decimal_infer__impl(SEXP self__, SEXP c_arg__inference_length) {
+    SEXP res = savvy_PlRSeries_str_to_decimal_infer__ffi(self__, c_arg__inference_length);
     return handle_result(res);
 }
 
@@ -3538,8 +3553,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_list_std__impl", (DL_FUNC) &savvy_PlRExpr_list_std__impl, 2},
     {"savvy_PlRExpr_list_sum__impl", (DL_FUNC) &savvy_PlRExpr_list_sum__impl, 1},
     {"savvy_PlRExpr_list_to_array__impl", (DL_FUNC) &savvy_PlRExpr_list_to_array__impl, 2},
-    {"savvy_PlRExpr_list_to_struct__impl", (DL_FUNC) &savvy_PlRExpr_list_to_struct__impl, 4},
-    {"savvy_PlRExpr_list_to_struct_fixed_width__impl", (DL_FUNC) &savvy_PlRExpr_list_to_struct_fixed_width__impl, 2},
+    {"savvy_PlRExpr_list_to_struct__impl", (DL_FUNC) &savvy_PlRExpr_list_to_struct__impl, 2},
     {"savvy_PlRExpr_list_unique__impl", (DL_FUNC) &savvy_PlRExpr_list_unique__impl, 2},
     {"savvy_PlRExpr_list_var__impl", (DL_FUNC) &savvy_PlRExpr_list_var__impl, 2},
     {"savvy_PlRExpr_log__impl", (DL_FUNC) &savvy_PlRExpr_log__impl, 2},
@@ -3629,7 +3643,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_serialize_json__impl", (DL_FUNC) &savvy_PlRExpr_serialize_json__impl, 1},
     {"savvy_PlRExpr_set_sorted_flag__impl", (DL_FUNC) &savvy_PlRExpr_set_sorted_flag__impl, 2},
     {"savvy_PlRExpr_shift__impl", (DL_FUNC) &savvy_PlRExpr_shift__impl, 3},
-    {"savvy_PlRExpr_shrink_dtype__impl", (DL_FUNC) &savvy_PlRExpr_shrink_dtype__impl, 1},
     {"savvy_PlRExpr_shuffle__impl", (DL_FUNC) &savvy_PlRExpr_shuffle__impl, 2},
     {"savvy_PlRExpr_sign__impl", (DL_FUNC) &savvy_PlRExpr_sign__impl, 1},
     {"savvy_PlRExpr_sin__impl", (DL_FUNC) &savvy_PlRExpr_sin__impl, 1},
@@ -3657,7 +3670,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_str_hex_decode__impl", (DL_FUNC) &savvy_PlRExpr_str_hex_decode__impl, 2},
     {"savvy_PlRExpr_str_hex_encode__impl", (DL_FUNC) &savvy_PlRExpr_str_hex_encode__impl, 1},
     {"savvy_PlRExpr_str_join__impl", (DL_FUNC) &savvy_PlRExpr_str_join__impl, 3},
-    {"savvy_PlRExpr_str_json_decode__impl", (DL_FUNC) &savvy_PlRExpr_str_json_decode__impl, 3},
+    {"savvy_PlRExpr_str_json_decode__impl", (DL_FUNC) &savvy_PlRExpr_str_json_decode__impl, 2},
     {"savvy_PlRExpr_str_json_path_match__impl", (DL_FUNC) &savvy_PlRExpr_str_json_path_match__impl, 2},
     {"savvy_PlRExpr_str_len_bytes__impl", (DL_FUNC) &savvy_PlRExpr_str_len_bytes__impl, 1},
     {"savvy_PlRExpr_str_len_chars__impl", (DL_FUNC) &savvy_PlRExpr_str_len_chars__impl, 1},
@@ -3829,6 +3842,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRSeries_is_sorted_ascending_flag__impl", (DL_FUNC) &savvy_PlRSeries_is_sorted_ascending_flag__impl, 1},
     {"savvy_PlRSeries_is_sorted_descending_flag__impl", (DL_FUNC) &savvy_PlRSeries_is_sorted_descending_flag__impl, 1},
     {"savvy_PlRSeries_len__impl", (DL_FUNC) &savvy_PlRSeries_len__impl, 1},
+    {"savvy_PlRSeries_list_to_struct__impl", (DL_FUNC) &savvy_PlRSeries_list_to_struct__impl, 3},
     {"savvy_PlRSeries_mul__impl", (DL_FUNC) &savvy_PlRSeries_mul__impl, 2},
     {"savvy_PlRSeries_n_chunks__impl", (DL_FUNC) &savvy_PlRSeries_n_chunks__impl, 1},
     {"savvy_PlRSeries_name__impl", (DL_FUNC) &savvy_PlRSeries_name__impl, 1},
@@ -3849,7 +3863,11 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRSeries_rename__impl", (DL_FUNC) &savvy_PlRSeries_rename__impl, 2},
     {"savvy_PlRSeries_reshape__impl", (DL_FUNC) &savvy_PlRSeries_reshape__impl, 2},
     {"savvy_PlRSeries_serialize__impl", (DL_FUNC) &savvy_PlRSeries_serialize__impl, 1},
+    {"savvy_PlRSeries_shrink_dtype__impl", (DL_FUNC) &savvy_PlRSeries_shrink_dtype__impl, 1},
     {"savvy_PlRSeries_slice__impl", (DL_FUNC) &savvy_PlRSeries_slice__impl, 3},
+    {"savvy_PlRSeries_str_json_decode__impl", (DL_FUNC) &savvy_PlRSeries_str_json_decode__impl, 2},
+    {"savvy_PlRSeries_str_to_datetime_infer__impl", (DL_FUNC) &savvy_PlRSeries_str_to_datetime_infer__impl, 5},
+    {"savvy_PlRSeries_str_to_decimal_infer__impl", (DL_FUNC) &savvy_PlRSeries_str_to_decimal_infer__impl, 2},
     {"savvy_PlRSeries_struct_fields__impl", (DL_FUNC) &savvy_PlRSeries_struct_fields__impl, 1},
     {"savvy_PlRSeries_struct_unnest__impl", (DL_FUNC) &savvy_PlRSeries_struct_unnest__impl, 1},
     {"savvy_PlRSeries_sub__impl", (DL_FUNC) &savvy_PlRSeries_sub__impl, 2},

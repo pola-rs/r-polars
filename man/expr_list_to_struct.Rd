@@ -5,21 +5,14 @@
 \title{Convert the Series of type List to a Series of type Struct}
 \usage{
 expr_list_to_struct(
-  n_field_strategy = c("first_non_null", "max_width"),
+  n_field_strategy = deprecated(),
   fields = NULL,
   upper_bound = NULL
 )
 }
 \arguments{
-\item{n_field_strategy}{One of \code{"first_non_null"} or \code{"max_width"}.
-Strategy to determine the number of fields of the struct.
-\itemize{
-\item \code{"first_non_null"} (default): Set number of fields equal to
-the length of the first non zero-length sublist.
-\item \code{"max_width"}: Set number of fields as max length of all sublists.
-}
-
-If the \code{field} argument is character, this argument will be ignored.}
+\item{n_field_strategy}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Ignored.}
 
 \item{fields}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 \code{NULL} (default) or character vector of field names, or a function that
@@ -31,13 +24,9 @@ if neither are set, fields will be \code{field_0}, \code{field_1}...
 See the examples for details.}
 
 \item{upper_bound}{Single positive integer value or \code{NULL} (default).
-A \link{LazyFrame} needs to know the schema at all times,
-so the caller must provide an upper bound of the number of struct fields
-that will be created; if set incorrectly, subsequent operations may fail.
-When operating on a DataFrame, the schema does not need to be tracked
-or pre-determined, as the result will be eagerly evaluated,
-so this argument can be \code{NULL}.
-If the \code{fields} argument is character, this argument will be ignored.}
+A \link[=Expr]{polars expression} needs to be able to evaluate the output datatype at all
+times, so the caller must provide an upper bound of the number of struct
+fields that will be created if \code{fields} is not a character vector of field names.}
 }
 \value{
 A polars \link{expression}
@@ -62,21 +51,14 @@ df <- pl$DataFrame(n = list(c(0, 1), c(0, 1, 2)))
 # Convert list to struct with default field name assignment:
 
 # This will become a struct with 2 fields.
-df$select(pl$col("n")$list$to_struct())$unnest("n")
-
-# As the shorter sublist comes first,
-# we must use the max_width strategy to force a search for the longest.
-# This will become a struct with 3 fields.
-df$select(
-  pl$col("n")$list$to_struct(n_field_strategy = "max_width")
-)$unnest("n")
+df$select(pl$col("n")$list$to_struct(upper_bound = 2))$unnest("n")
 
 # Convert list to struct with field name assignment by
 # function/index:
 df$select(
   pl$col("n")$list$to_struct(
     fields = \(idx) paste0("n", idx + 1),
-    n_field_strategy = "max_width"
+    upper_bound = 2
   )
 )$unnest("n")
 

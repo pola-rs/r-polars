@@ -4,19 +4,21 @@
 \alias{expr_str_to_decimal}
 \title{Convert a String column into a Decimal column}
 \usage{
-expr_str_to_decimal(..., inference_length = 100)
+expr_str_to_decimal(..., scale, inference_length = deprecated())
 }
 \arguments{
 \item{...}{These dots are for future extensions and must be empty.}
 
-\item{inference_length}{Number of elements to parse to determine the
-\code{precision} and \code{scale}.}
+\item{scale}{Number of digits after the comma to use for the decimals.}
+
+\item{inference_length}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Ignored.}
 }
 \value{
 A polars \link{expression}
 }
 \description{
-This method infers the needed parameters \code{precision} and \code{scale}.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \examples{
 df <- pl$DataFrame(
@@ -25,5 +27,5 @@ df <- pl$DataFrame(
     "12.90", "143.09", "143.9"
   )
 )
-df$with_columns(numbers_decimal = pl$col("numbers")$str$to_decimal())
+df$with_columns(numbers_decimal = pl$col("numbers")$str$to_decimal(scale = 2))
 }

@@ -293,7 +293,7 @@ impl PlRExpr {
     fn map_batches(&self, lambda: FunctionSexp, output_type: Option<&PlRDataType>) -> Result<Self> {
         #[cfg(not(target_arch = "wasm32"))]
         {
-            crate::map::lazy::map_single(self, lambda, output_type)
+            crate::map::lazy::map_expr(self, lambda, output_type)
         }
         #[cfg(target_arch = "wasm32")]
         {
@@ -982,10 +982,6 @@ impl PlRExpr {
             .clone()
             .sample_frac(frac.inner.clone(), with_replacement, shuffle, seed)
             .into())
-    }
-
-    fn shrink_dtype(&self) -> Result<Self> {
-        Ok(self.inner.clone().shrink_dtype().into())
     }
 
     fn set_sorted_flag(&self, descending: bool) -> Result<Self> {
