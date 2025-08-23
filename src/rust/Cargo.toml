@@ -104,6 +104,7 @@ features = [
     "fused",
     "hist",
     "iejoin",
+    "index_of",
     "interpolate",
     "interpolate_by",
     "is_between",

@@ -1384,6 +1384,11 @@ SEXP savvy_PlRExpr_implode__impl(SEXP self__) {
     return handle_result(res);
 }
 
+SEXP savvy_PlRExpr_index_of__impl(SEXP self__, SEXP c_arg__element) {
+    SEXP res = savvy_PlRExpr_index_of__ffi(self__, c_arg__element);
+    return handle_result(res);
+}
+
 SEXP savvy_PlRExpr_interpolate__impl(SEXP self__, SEXP c_arg__method) {
     SEXP res = savvy_PlRExpr_interpolate__ffi(self__, c_arg__method);
     return handle_result(res);
@@ -3506,6 +3511,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_PlRExpr_hash__impl", (DL_FUNC) &savvy_PlRExpr_hash__impl, 5},
     {"savvy_PlRExpr_hist__impl", (DL_FUNC) &savvy_PlRExpr_hist__impl, 5},
     {"savvy_PlRExpr_implode__impl", (DL_FUNC) &savvy_PlRExpr_implode__impl, 1},
+    {"savvy_PlRExpr_index_of__impl", (DL_FUNC) &savvy_PlRExpr_index_of__impl, 2},
     {"savvy_PlRExpr_interpolate__impl", (DL_FUNC) &savvy_PlRExpr_interpolate__impl, 2},
     {"savvy_PlRExpr_interpolate_by__impl", (DL_FUNC) &savvy_PlRExpr_interpolate_by__impl, 2},
     {"savvy_PlRExpr_into_selector__impl", (DL_FUNC) &savvy_PlRExpr_into_selector__impl, 1},

@@ -280,6 +280,7 @@ SEXP savvy_PlRExpr_gt_eq__ffi(SEXP self__, SEXP c_arg__other);
 SEXP savvy_PlRExpr_hash__ffi(SEXP self__, SEXP c_arg__seed, SEXP c_arg__seed_1, SEXP c_arg__seed_2, SEXP c_arg__seed_3);
 SEXP savvy_PlRExpr_hist__ffi(SEXP self__, SEXP c_arg__include_category, SEXP c_arg__include_breakpoint, SEXP c_arg__bin_count, SEXP c_arg__bins);
 SEXP savvy_PlRExpr_implode__ffi(SEXP self__);
+SEXP savvy_PlRExpr_index_of__ffi(SEXP self__, SEXP c_arg__element);
 SEXP savvy_PlRExpr_interpolate__ffi(SEXP self__, SEXP c_arg__method);
 SEXP savvy_PlRExpr_interpolate_by__ffi(SEXP self__, SEXP c_arg__by);
 SEXP savvy_PlRExpr_into_selector__ffi(SEXP self__);
