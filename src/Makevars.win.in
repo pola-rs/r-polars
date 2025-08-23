@@ -6,7 +6,29 @@ LIBNAME = libr_polars.a
 TARGET_DIR = $(CURDIR)/rust/target
 LIBDIR = $(TARGET_DIR)/$(TARGET)/$(subst dev,debug,$(PROFILE))
 STATLIB = $(LIBDIR)/$(LIBNAME)
-PKG_LIBS = -L$(LIBDIR) -lr_polars -lws2_32 -lncrypt -lcrypt32 -ladvapi32 -luserenv -lbcrypt -lole32 -lntdll -lpsapi -liphlpapi -lpdh -lpowrprof -loleaut32 -lnetapi32 -lsecur32 -lsynchronization -lpropsys -lruntimeobject -t
+PKG_LIBS = \
+	-L$(LIBDIR) \
+	-lr_polars \
+	-lws2_32 \
+	-lncrypt \
+	-lcrypt32 \
+	-ladvapi32 \
+	-luserenv \
+	-lbcrypt \
+	-lole32 \
+	-lntdll \
+	-lpsapi \
+	-liphlpapi \
+	-lpdh \
+	-lpowrprof \
+	-loleaut32 \
+	-lnetapi32 \
+	-lsecur32 \
+	-lsynchronization \
+	-lpropsys \
+	-lruntimeobject \
+	@ADDITIONAL_LIBS@ \
+	-t
 
 CARGO_BUILD_ARGS = --lib \
 	--profile="$(PROFILE)" \

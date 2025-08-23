@@ -40,6 +40,8 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - uses: rui314/setup-mold@v1
+
       - name: Cache Rust
         uses: Swatinem/rust-cache@v2
         with:

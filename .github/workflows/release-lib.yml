@@ -60,6 +60,8 @@ jobs:
           # savvy needs R_INCLUDE_DIR envvar
           echo R_INCLUDE_DIR="$(Rscript -e 'cat(normalizePath(R.home("include")))')" >>"$GITHUB_ENV"
 
+      - uses: rui314/setup-mold@v1
+
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: "src/rust -> target"
@@ -143,6 +145,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
+
+      - uses: rui314/setup-mold@v1
 
       - name: prep Rust
         working-directory: src/rust
