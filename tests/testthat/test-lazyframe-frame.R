@@ -2410,6 +2410,29 @@ test_that("describe() works", {
   expect_snapshot(df$select(pl$col("cat")$cast(pl$Categorical()))$describe())
 })
 
+test_that("describe() shows optional package messages only once per session", {
+  # Mock packages as not installed to trigger the messages
+  with_mocked_bindings(
+    {
+      # Reset the message tracking variables for this test
+      .vctrs_message_shown <<- FALSE
+      .blob_message_shown <<- FALSE
+      
+      # Create a simple dataframe
+      df <- pl$LazyFrame(a = 1:2, b = 3:4)
+      
+      # First describe call should show the messages
+      expect_snapshot(df$describe(), transform = identity)
+      
+      # Second describe call should NOT show the messages again
+      expect_snapshot(df$describe(), transform = identity)
+    },
+    is_vctrs_installed = \() FALSE,
+    is_blob_installed = \() FALSE,
+    is_hms_installed = \() FALSE
+  )
+})
+
 test_that("sql() works", {
   lf <- pl$LazyFrame(a = 1:3, b = 6:8, c = c("z", "y", "x"))
 
