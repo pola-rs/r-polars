@@ -289,6 +289,7 @@ impl PlRDataType {
             DataType::List(_) => vec!["list", "nested"],
             DataType::Array(_, _) => vec!["array", "nested"],
             DataType::Struct(_) => vec!["struct", "nested"],
+            DataType::Object(_) => vec!["object"],
             // TODO: what is this? It does not seem supported by py-polars
             DataType::BinaryOffset => vec!["binary_offset"],
         }

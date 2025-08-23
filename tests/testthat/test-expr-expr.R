@@ -2947,3 +2947,22 @@ test_that("and() and or() work", {
     pl$DataFrame(any = c(FALSE, TRUE, FALSE, TRUE, FALSE))
   )
 })
+
+test_that("index_of works", {
+  df <- pl$DataFrame(a = c(1, NA, 17), b = c("x", "y", "z"))
+
+  expect_equal(
+    df$select(
+      seventeen = pl$col("a")$index_of(17),
+      null = pl$col("a")$index_of(NA),
+      fiftyfive = pl$col("a")$index_of(55),
+      x_char = pl$col("b")$index_of("x")
+    ),
+    pl$DataFrame(
+      seventeen = 2,
+      null = 1,
+      fiftyfive = NA,
+      x_char = 0
+    )$cast(pl$UInt32)
+  )
+})

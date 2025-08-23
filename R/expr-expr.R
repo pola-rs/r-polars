@@ -4750,10 +4750,10 @@ expr__bitwise_xor <- function() {
 #' df <- pl$DataFrame(a = c(1, NA, 17))
 #' df$select(
 #'   seventeen = pl$col("a")$index_of(17),
-#'   null = pl$col("a")$index_of(None),
+#'   null = pl$col("a")$index_of(NA),
 #'   fiftyfive = pl$col("a")$index_of(55),
 #' )
 expr__index_of <- function(element) {
-  self$`_rexpr`$index_of(as_polars_expr(element, as_lit = TRUE)$`_s`) |>
+  self$`_rexpr`$index_of(as_polars_expr(element, as_lit = TRUE)$`_rexpr`) |>
     wrap()
 }

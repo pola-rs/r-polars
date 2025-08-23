@@ -1033,6 +1033,6 @@ impl PlRExpr {
     }
 
     fn index_of(&self, element: &PlRExpr) -> Result<Self> {
-        Ok(self.inner.clone().index_of(element.inner).into())
+        Ok(self.inner.clone().index_of(element.inner.clone()).into())
     }
 }
