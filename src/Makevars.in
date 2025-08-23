@@ -6,7 +6,10 @@ LIBNAME = libr_polars.a
 TARGET_DIR = $(CURDIR)/rust/target
 LIBDIR = $(TARGET_DIR)/$(TARGET)/$(subst dev,debug,$(PROFILE))
 STATLIB = $(LIBDIR)/$(LIBNAME)
-PKG_LIBS = -L$(LIBDIR) -lr_polars
+PKG_LIBS = \
+	-L$(LIBDIR) \
+	-lr_polars \
+	@ADDITIONAL_LIBS@
 
 CARGO_BUILD_ARGS = --lib \
 	--profile="$(PROFILE)" \

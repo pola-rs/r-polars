@@ -17,6 +17,12 @@ LIBNAME="libr_polars.a"
 LIB_DEFAULT_PATH="$(pwd)/tools/${LIBNAME}"
 LIB_PATH=${LIBR_POLARS_PATH:-${LIB_DEFAULT_PATH}}
 
+# Control whether to use mold: true = enabled by default
+USE_MOLD=${R_POLARS_USE_MOLD:-"true"}
+
+# Space-separated list of additional linker flags to insert into Makevars
+ADDITIONAL_LIBS_LIST=""
+
 check_cargo() {
   if [ ! "$(command -v cargo)" ]; then
     cat <<EOF
@@ -143,6 +149,7 @@ generate_makevars() {
       -e "s|@TARGET@|${TARGET}|" \
       -e "s|@PROFILE@|${PROFILE}|" \
       -e "s|@FEATURES@|${FEATURES}|" \
+      -e "s|@ADDITIONAL_LIBS@|${ADDITIONAL_LIBS_LIST}|" \
       "$makefile.in" >"$makefile"
   done
 
@@ -197,6 +204,40 @@ EOF
   fi
 }
 
+# Simplified mold check: use single env var USE_MOLD and append flags
+check_mold() {
+  if [ "${USE_MOLD}" != "true" ]; then
+    return
+  fi
+
+  if command -v mold >/dev/null 2>&1; then
+    add_additional_lib "-fuse-ld=mold"
+    export RUSTFLAGS="${RUSTFLAGS:-} -C link-args=-fuse-ld=mold"
+    cat <<EOF
+---------------------- [MOLD LINKER ENABLED] ----------------------
+mold detected in PATH: enabling '-fuse-ld=mold'
+To disable, set R_POLARS_USE_MOLD='false'
+-------------------------------------------------------------------
+EOF
+  else
+    cat <<EOF
+---------------------- [MOLD LINKER DISABLED] ----------------------
+'mold' not found in PATH. Continuing without mold.
+--------------------------------------------------------------------
+EOF
+  fi
+}
+
+# Helper to build a space-separated list of additional libs/flags (POSIX-safe)
+add_additional_lib() {
+  lib="$1"
+  if [ -z "${ADDITIONAL_LIBS_LIST}" ]; then
+    ADDITIONAL_LIBS_LIST="${lib}"
+  else
+    ADDITIONAL_LIBS_LIST="${ADDITIONAL_LIBS_LIST} ${lib}"
+  fi
+}
+
 # catch DEBUG envvar, which is passed from pkgbuild::compile_dll()
 if [ "${DEBUG}" = "true" ]; then
   PROFILE=dev
@@ -212,5 +253,8 @@ TARGET="${TARGET:-$(rustc -vV | grep host | cut -d' ' -f2)}"
 # They need the TARGET to be set
 check_feature
 check_rustup
+
+# Check for mold
+check_mold
 
 generate_makevars
