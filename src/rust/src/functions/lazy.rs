@@ -127,8 +127,7 @@ pub fn lit_null() -> Result<PlRExpr> {
 #[savvy]
 pub fn lit_from_series(value: &PlRSeries, keep_series: bool, keep_name: bool) -> Result<PlRExpr> {
     let s = value.series.clone();
-    let len = s.len();
-    if keep_series || len != 1 {
+    if keep_series || s.len() != 1 {
         Ok(dsl::lit(s).into())
     } else {
         // Safety: only called on length 1 series
