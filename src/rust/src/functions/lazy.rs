@@ -125,15 +125,21 @@ pub fn lit_null() -> Result<PlRExpr> {
 }
 
 #[savvy]
-pub fn lit_from_series(value: &PlRSeries) -> Result<PlRExpr> {
-    Ok(dsl::lit(value.series.clone()).into())
-}
-
-#[savvy]
-pub fn lit_from_series_first(value: &PlRSeries) -> Result<PlRExpr> {
+pub fn lit_from_series(value: &PlRSeries, keep_series: bool, keep_name: bool) -> Result<PlRExpr> {
     let s = value.series.clone();
-    let av = s.get(0).map_err(RPolarsErr::from)?.into_static();
-    Ok(dsl::lit(Scalar::new(s.dtype().clone(), av)).into())
+    let len = s.len();
+    if keep_series || len != 1 {
+        Ok(dsl::lit(s).into())
+    } else {
+        // Safety: only called on non-empty series
+        let av = unsafe { s.get_unchecked(0).into_static() };
+        let lit = dsl::lit(Scalar::new(s.dtype().clone(), av));
+        if keep_name {
+            Ok(lit.alias(&**s.name()).into())
+        } else {
+            Ok(lit.into())
+        }
+    }
 }
 
 #[savvy]
