@@ -114,6 +114,8 @@ jobs:
         run: |
           echo "TARGET=$(rustc -vV | grep host | cut -d' ' -f2)" >>"$GITHUB_OUTPUT"
 
+      - uses: rui314/setup-mold@v1
+
       - uses: Swatinem/rust-cache@v2
         if: env.LIBR_POLARS_BUILD == 'true'
         with:
