@@ -236,15 +236,9 @@ NULL
 }
 
 
-`lit_from_series` <- function(`value`) {
+`lit_from_series` <- function(`value`, `keep_series`, `keep_name`) {
   `value` <- .savvy_extract_ptr(`value`, "PlRSeries")
-  .savvy_wrap_PlRExpr(.Call(savvy_lit_from_series__impl, `value`))
-}
-
-
-`lit_from_series_first` <- function(`value`) {
-  `value` <- .savvy_extract_ptr(`value`, "PlRSeries")
-  .savvy_wrap_PlRExpr(.Call(savvy_lit_from_series_first__impl, `value`))
+  .savvy_wrap_PlRExpr(.Call(savvy_lit_from_series__impl, `value`, `keep_series`, `keep_name`))
 }
 
 

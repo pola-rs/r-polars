@@ -194,13 +194,8 @@ SEXP savvy_lit_bin_from_raw__impl(SEXP c_arg__value) {
     return handle_result(res);
 }
 
-SEXP savvy_lit_from_series__impl(SEXP c_arg__value) {
-    SEXP res = savvy_lit_from_series__ffi(c_arg__value);
-    return handle_result(res);
-}
-
-SEXP savvy_lit_from_series_first__impl(SEXP c_arg__value) {
-    SEXP res = savvy_lit_from_series_first__ffi(c_arg__value);
+SEXP savvy_lit_from_series__impl(SEXP c_arg__value, SEXP c_arg__keep_series, SEXP c_arg__keep_name) {
+    SEXP res = savvy_lit_from_series__ffi(c_arg__value, c_arg__keep_series, c_arg__keep_name);
     return handle_result(res);
 }
 
@@ -3273,8 +3268,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"savvy_linear_space__impl", (DL_FUNC) &savvy_linear_space__impl, 4},
     {"savvy_linear_spaces__impl", (DL_FUNC) &savvy_linear_spaces__impl, 5},
     {"savvy_lit_bin_from_raw__impl", (DL_FUNC) &savvy_lit_bin_from_raw__impl, 1},
-    {"savvy_lit_from_series__impl", (DL_FUNC) &savvy_lit_from_series__impl, 1},
-    {"savvy_lit_from_series_first__impl", (DL_FUNC) &savvy_lit_from_series_first__impl, 1},
+    {"savvy_lit_from_series__impl", (DL_FUNC) &savvy_lit_from_series__impl, 3},
     {"savvy_lit_null__impl", (DL_FUNC) &savvy_lit_null__impl, 0},
     {"savvy_max_horizontal__impl", (DL_FUNC) &savvy_max_horizontal__impl, 1},
     {"savvy_mean_horizontal__impl", (DL_FUNC) &savvy_mean_horizontal__impl, 2},

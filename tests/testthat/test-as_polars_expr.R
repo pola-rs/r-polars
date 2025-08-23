@@ -39,7 +39,7 @@ patrick::with_parameters_test_that(
   "as_polars_expr works for classes",
   .cases = {
     lit_from_single_via_series <- function(x) {
-      wrap(lit_from_series_first(as_polars_series(x)$`_s`))
+      wrap(lit_from_series(as_polars_series(x)$`_s`, keep_series = FALSE, keep_name = FALSE))
     }
 
     # nolint start: line_length_linter

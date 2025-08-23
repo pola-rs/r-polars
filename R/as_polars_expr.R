@@ -124,17 +124,7 @@ as_polars_expr.default <- function(x, ..., keep_series = FALSE) {
       as_polars_series(x, name = "literal", ...)
     }
 
-    if (series$len() != 1L || isTRUE(keep_series)) {
-      lit_from_series(series$`_s`)
-    } else {
-      # Treat as scalar
-      if (is_series) {
-        # If x is a Series, keep the name of the Series
-        lit_from_series_first(series$`_s`)$alias(x$name)
-      } else {
-        lit_from_series_first(series$`_s`)
-      }
-    }
+    lit_from_series(series$`_s`, keep_series = keep_series, keep_name = is_series)
   })
 }
 
