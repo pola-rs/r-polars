@@ -146,6 +146,8 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - uses: rui314/setup-mold@v1
+
       - name: prep Rust
         working-directory: src/rust
         run: |

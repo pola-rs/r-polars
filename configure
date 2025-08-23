@@ -243,6 +243,7 @@ if [ "${DEBUG}" = "true" ]; then
   PROFILE=dev
 fi
 
+check_mold
 check_emscripten
 check_bin_lib
 check_cargo
@@ -253,8 +254,5 @@ TARGET="${TARGET:-$(rustc -vV | grep host | cut -d' ' -f2)}"
 # They need the TARGET to be set
 check_feature
 check_rustup
-
-# Check for mold
-check_mold
 
 generate_makevars
