@@ -131,7 +131,7 @@ pub fn lit_from_series(value: &PlRSeries, keep_series: bool, keep_name: bool) ->
     if keep_series || len != 1 {
         Ok(dsl::lit(s).into())
     } else {
-        // Safety: only called on non-empty series
+        // Safety: only called on length 1 series
         let av = unsafe { s.get_unchecked(0).into_static() };
         let lit = dsl::lit(Scalar::new(s.dtype().clone(), av));
         if keep_name {
