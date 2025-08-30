@@ -2172,6 +2172,7 @@ class(`PlRDataType`) <- c("PlRDataType__bundle", "savvy_polars__sealed")
 
 `PlRExpr_log` <- function(self) {
   function(`base`) {
+    `base` <- .savvy_extract_ptr(`base`, "PlRExpr")
     .savvy_wrap_PlRExpr(.Call(savvy_PlRExpr_log__impl, `self`, `base`))
   }
 }

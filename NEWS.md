@@ -23,6 +23,7 @@ They still work the same way on series.
 
 ### New features
 
+- In `<expr>$log()`, argument `base` can now take an expression (#1523).
 - New argument `mkdir` in `<DataFrame>$write_parquet()` (#1525).
 
 ## polars 1.2.1
