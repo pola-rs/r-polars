@@ -21,6 +21,10 @@ They still work the same way on series.
 - `<expr>$str$to_decimal()`'s `inference_length` (#1507).
 - `<expr>$str$to_decimal()`'s new `scale` argument must be specified (#1507).
 
+### New features
+
+- New argument `mkdir` in `<DataFrame>$write_parquet()` (#1525).
+
 ## polars 1.2.1
 
 This is an update that corresponds to Python Polars 1.32.3.

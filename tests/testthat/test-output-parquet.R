@@ -173,3 +173,22 @@ test_that("polars and arrow create the same hive partition", {
     dirname(list.files(temp_dir_polars, recursive = TRUE))
   )
 })
+
+test_that("argument `mkdir` works", {
+  tmpf <- file.path(withr::local_tempdir(), "out", "foo.parquet")
+  on.exit(unlink(tmpf))
+  df_exp <- as_polars_df(mtcars)
+
+  expect_error(
+    df_exp$write_parquet(tmpf),
+    "No such file or directory"
+  )
+
+  df_exp$write_parquet(tmpf, mkdir = TRUE)
+
+  expect_equal(
+    pl$read_parquet(tmpf),
+    mtcars,
+    ignore_attr = TRUE
+  )
+})
