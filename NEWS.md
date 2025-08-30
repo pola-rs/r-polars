@@ -21,6 +21,10 @@ They still work the same way on series.
 - `<expr>$str$to_decimal()`'s `inference_length` (#1507).
 - `<expr>$str$to_decimal()`'s new `scale` argument must be specified (#1507).
 
+### New features
+
+- In `<expr>$log()`, argument `base` can now take an expression (#1523).
+
 ## polars 1.2.1
 
 This is an update that corresponds to Python Polars 1.32.3.

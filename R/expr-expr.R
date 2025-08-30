@@ -1996,7 +1996,7 @@ expr__exp <- function() {
 #'   log_base_2 = pl$col("a")$log(base = 2)
 #' )
 expr__log <- function(base = exp(1)) {
-  self$`_rexpr`$log(base) |>
+  self$`_rexpr`$log(as_polars_expr(base)$`_rexpr`) |>
     wrap()
 }
 
