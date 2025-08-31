@@ -4741,3 +4741,19 @@ expr__bitwise_xor <- function() {
   self$`_rexpr`$bitwise_xor() |>
     wrap()
 }
+
+#' Get the index of the first occurrence of a value, or `NA` if it's not found
+#'
+#' @param element Value to find.
+#' @inherit as_polars_expr return
+#' @examples
+#' df <- pl$DataFrame(a = c(1, NA, 17))
+#' df$select(
+#'   seventeen = pl$col("a")$index_of(17),
+#'   null = pl$col("a")$index_of(NA),
+#'   fiftyfive = pl$col("a")$index_of(55),
+#' )
+expr__index_of <- function(element) {
+  self$`_rexpr`$index_of(as_polars_expr(element, as_lit = TRUE)$`_rexpr`) |>
+    wrap()
+}
